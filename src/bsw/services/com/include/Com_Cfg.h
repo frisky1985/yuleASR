@@ -1,0 +1,116 @@
+/**
+ * @file Com_Cfg.h
+ * @brief COM Services configuration header
+ * @version 1.0.0
+ * @date 2026-04-14
+ * @author Shanghai Yule Electronics Technology Co., Ltd.
+ */
+
+#ifndef COM_CFG_H
+#define COM_CFG_H
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+==================================================================================================*/
+#define COM_DEV_ERROR_DETECT            (STD_ON)
+#define COM_VERSION_INFO_API            (STD_ON)
+#define COM_ENABLE_MDT_FOR_CYCLIC_TRANSMISSION (STD_ON)
+#define COM_RETRY_FAILED_TRANSMIT_REQUESTS (STD_ON)
+
+/*==================================================================================================
+*                                    NUMBER OF SIGNALS
+==================================================================================================*/
+#define COM_NUM_SIGNALS                 (64U)
+#define COM_NUM_GROUP_SIGNALS           (16U)
+#define COM_NUM_IPDUS                   (32U)
+#define COM_NUM_IPDU_GROUPS             (4U)
+
+/*==================================================================================================
+*                                    SIGNAL DEFINITIONS
+==================================================================================================*/
+#define COM_SIGNAL_ENGINE_RPM           ((Com_SignalIdType)0U)
+#define COM_SIGNAL_VEHICLE_SPEED        ((Com_SignalIdType)1U)
+#define COM_SIGNAL_BATTERY_VOLTAGE      ((Com_SignalIdType)2U)
+#define COM_SIGNAL_ENGINE_TEMP          ((Com_SignalIdType)3U)
+#define COM_SIGNAL_FUEL_LEVEL           ((Com_SignalIdType)4U)
+#define COM_SIGNAL_ODOMETER             ((Com_SignalIdType)5U)
+#define COM_SIGNAL_GEAR_POSITION        ((Com_SignalIdType)6U)
+#define COM_SIGNAL_DOOR_STATUS          ((Com_SignalIdType)7U)
+
+/*==================================================================================================
+*                                    I-PDU DEFINITIONS
+==================================================================================================*/
+#define COM_IPDU_ENGINE_STATUS          ((PduIdType)0U)
+#define COM_IPDU_VEHICLE_SPEED          ((PduIdType)1U)
+#define COM_IPDU_BATTERY_STATUS         ((PduIdType)2U)
+#define COM_IPDU_DIAG_REQUEST           ((PduIdType)3U)
+#define COM_IPDU_DIAG_RESPONSE          ((PduIdType)4U)
+
+/*==================================================================================================
+*                                    I-PDU GROUP DEFINITIONS
+==================================================================================================*/
+#define COM_IPDU_GROUP_0                (0U)
+#define COM_IPDU_GROUP_1                (1U)
+#define COM_IPDU_GROUP_2                (2U)
+#define COM_IPDU_GROUP_3                (3U)
+
+/*==================================================================================================
+*                                    TRANSMISSION MODES
+==================================================================================================*/
+#define COM_TX_MODE_DIRECT              (0U)
+#define COM_TX_MODE_PERIODIC            (1U)
+#define COM_TX_MODE_MIXED               (2U)
+#define COM_TX_MODE_NONE                (3U)
+
+/*==================================================================================================
+*                                    SIGNAL TYPE DEFINITIONS
+==================================================================================================*/
+#define COM_SIGNAL_TYPE_UINT8           (0U)
+#define COM_SIGNAL_TYPE_SINT8           (1U)
+#define COM_SIGNAL_TYPE_UINT16          (2U)
+#define COM_SIGNAL_TYPE_SINT16          (3U)
+#define COM_SIGNAL_TYPE_UINT32          (4U)
+#define COM_SIGNAL_TYPE_SINT32          (5U)
+#define COM_SIGNAL_TYPE_UINT64          (6U)
+#define COM_SIGNAL_TYPE_SINT64          (7U)
+#define COM_SIGNAL_TYPE_FLOAT32         (8U)
+#define COM_SIGNAL_TYPE_FLOAT64         (9U)
+#define COM_SIGNAL_TYPE_BOOLEAN         (10U)
+#define COM_SIGNAL_TYPE_UINT8_N         (11U)
+
+/*==================================================================================================
+*                                    ENDIANNESS
+==================================================================================================*/
+#define COM_LITTLE_ENDIAN               (0U)
+#define COM_BIG_ENDIAN                  (1U)
+#define COM_OPAQUE                      (2U)
+
+/*==================================================================================================
+*                                    UPDATE BIT POSITION
+==================================================================================================*/
+#define COM_UPDATE_BIT_NOT_USED         (255U)
+
+/*==================================================================================================
+*                                    TIMEOUT CONFIGURATION
+==================================================================================================*/
+#define COM_FIRST_TIMEOUT_FACTOR        (10U)
+#define COM_TIMEOUT_FACTOR              (100U)
+
+/*==================================================================================================
+*                                    MAIN FUNCTION PERIODS
+==================================================================================================*/
+#define COM_MAIN_FUNCTION_PERIOD_MS     (10U)
+#define COM_MAIN_FUNCTION_RX_PERIOD_MS  (10U)
+#define COM_MAIN_FUNCTION_TX_PERIOD_MS  (10U)
+
+/*==================================================================================================
+*                                    GATEWAY SUPPORT
+==================================================================================================*/
+#define COM_GATEWAY_SUPPORT             (STD_ON)
+
+/*==================================================================================================
+*                                    SIGNAL GATEWAY MAPPING
+==================================================================================================*/
+#define COM_NUM_SIGNAL_GW_MAPPINGS      (8U)
+
+#endif /* COM_CFG_H */
