@@ -5,6 +5,20 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/frisky1985/yuleASR/stargazers"><img src="https://img.shields.io/github/stars/frisky1985/yuleASR?style=flat-square&logo=github&color=yellow" alt="Stars"></a>
+  <a href="https://github.com/frisky1985/yuleASR/network/members"><img src="https://img.shields.io/github/forks/frisky1985/yuleASR?style=flat-square&logo=github&color=blue" alt="Forks"></a>
+  <a href="https://github.com/frisky1985/yuleASR/issues"><img src="https://img.shields.io/github/issues/frisky1985/yuleASR?style=flat-square&logo=github&color=red" alt="Issues"></a>
+  <a href="https://github.com/frisky1985/yuleASR/blob/master/LICENSE"><img src="https://img.shields.io/github/license/frisky1985/yuleASR?style=flat-square&color=green" alt="License"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/AutoSAR-4.x-blue?style=flat-square&logo=automotive" alt="AutoSAR 4.x">
+  <img src="https://img.shields.io/badge/C-99-blue?style=flat-square&logo=c" alt="C99">
+  <img src="https://img.shields.io/badge/Platform-i.MX8M%20Mini-orange?style=flat-square&logo=nxp" alt="i.MX8M Mini">
+  <img src="https://img.shields.io/badge/Status-Production%20Ready-success?style=flat-square" alt="Status">
+</p>
+
+<p align="center">
   <a href="#overview">概览</a> •
   <a href="#features">特性</a> •
   <a href="#quick-start">快速开始</a> •
@@ -67,6 +81,15 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 - **✅ 符合 AutoSAR 4.x 标准** - 严格遵循 AutoSAR 规范
 - **✅ 完整的错误检测** - DET (Development Error Tracer) 支持
 - **✅ 内存分区管理** - MemMap 内存分区支持
+
+### 项目统计
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Modules-24-blue?style=flat-square" alt="24 Modules">
+  <img src="https://img.shields.io/badge/Lines%20of%20Code-32K+-blue?style=flat-square" alt="32K+ LOC">
+  <img src="https://img.shields.io/badge/Verification%20Reports-3-success?style=flat-square" alt="3 Verification Reports">
+  <img src="https://img.shields.io/badge/Documentation-5%20Docs-success?style=flat-square" alt="5 Documentation">
+</p>
 
 ## 快速开始
 
