@@ -23,6 +23,7 @@
   <a href="#features">特性</a> •
   <a href="#quick-start">快速开始</a> •
   <a href="#documentation">文档</a> •
+  <a href="#development">开发流程</a> •
   <a href="#contributing">贡献</a>
 </p>
 
@@ -255,6 +256,8 @@ yuletech-openspec/
 4. **验证审查** (`/triple-verify`) - 验证实现符合规范
 5. **归档合并** (`/triple-archive`) - 合并到主分支
 
+详细的开发流程文档请参考 [开发流程 Skill](.harness/yuletech-dev-process.md)。
+
 ### 代码规范
 
 - 遵循 AutoSAR 命名规范
@@ -270,6 +273,35 @@ yuletech-openspec/
 3. 提交变更 (`git commit -m 'Add amazing feature'`)
 4. 推送分支 (`git push origin feature/amazing-feature`)
 5. 创建 Pull Request
+
+## 开发流程
+
+本项目使用 **yuletech-dev-process** Skill 定义的开发流程：
+
+```
+Stage 0: 初始化工程    → /triple-init
+Stage 1: 需求探索      → /triple-explore
+Stage 2: 创建变更      → /triple-new
+Stage 3: 开发执行      → /triple-dev (TDD)
+Stage 4: 验证审查      → /triple-verify
+Stage 5: 归档合并      → /triple-archive
+```
+
+### 快速命令参考
+
+| 命令 | 用途 | 阶段 |
+|:-----|:-----|:-----|
+| `/triple-init` | 初始化工程环境 | Stage 0 |
+| `/triple-explore` | 需求探索分析 | Stage 1 |
+| `/triple-new "描述"` | 创建新变更 | Stage 2 |
+| `/triple-dev` | 开发执行 | Stage 3 |
+| `/triple-verify` | 验证审查 | Stage 4 |
+| `/triple-archive` | 归档合并 | Stage 5 |
+| `/triple-health` | 健康检查 | Stage 6 |
+
+### Skill 文件
+
+开发流程 Skill 保存在 `.harness/yuletech-dev-process.md`，包含完整的开发方法论、代码规范、验证清单和最佳实践。
 
 ## 许可证
 
