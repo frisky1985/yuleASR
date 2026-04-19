@@ -4,9 +4,9 @@
  * @version 1.0.0
  * @date 2026-04-13
  * @author YuleTech
- * 
+ *
  * @copyright Copyright (c) 2026 YuleTech
- * 
+ *
  * @details 提供编译器特定的宏定义，用于支持不同编译器
  */
 
@@ -28,37 +28,37 @@
 #if defined(__GNUC__)
     /** @brief 函数内联 */
     #define INLINE              inline
-    
+
     /** @brief 局部内联函数 */
     #define LOCAL_INLINE        static inline
-    
+
     /** @brief 强制内联 */
     #define FORCE_INLINE        __attribute__((always_inline)) inline
-    
+
     /** @brief 从不内联 */
     #define NO_INLINE           __attribute__((noinline))
-    
+
     /** @brief 中断服务程序 */
     #define INTERRUPT           __attribute__((interrupt))
-    
+
     /** @brief 弱符号 */
     #define WEAK                __attribute__((weak))
-    
+
     /** @brief 已使用标记 */
     #define USED                __attribute__((used))
-    
+
     /** @brief 未使用标记 */
     #define UNUSED              __attribute__((unused))
-    
+
     /** @brief 对齐 */
     #define ALIGN(n)            __attribute__((aligned(n)))
-    
+
     /** @brief 打包 */
     #define PACKED              __attribute__((packed))
-    
+
     /** @brief 段定义 */
     #define SECTION(name)       __attribute__((section(name)))
-    
+
     /** @brief 中断向量 */
     #define ISR(vector)         void vector(void) __attribute__((interrupt))
 

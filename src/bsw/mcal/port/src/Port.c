@@ -103,7 +103,7 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
 static uint32 Port_GetGpioBaseAddr(uint8 port)
 {
     uint32 baseAddr;
-    
+
     switch (port) {
         case PORT_A:
             baseAddr = PORT_GPIO1_BASE_ADDR;
@@ -124,7 +124,7 @@ static uint32 Port_GetGpioBaseAddr(uint8 port)
             baseAddr = 0U;
             break;
     }
-    
+
     return baseAddr;
 }
 
@@ -136,10 +136,10 @@ static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
     uint8 port = (uint8)(pin >> 8);
     uint8 pinNum = (uint8)(pin & 0xFF);
     uint32 regAddr;
-    
-    regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET + 
+
+    regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET +
               ((port * 32U + pinNum) * 4U);
-    
+
     return regAddr;
 }
 
@@ -151,10 +151,10 @@ static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
     uint8 port = (uint8)(pin >> 8);
     uint8 pinNum = (uint8)(pin & 0xFF);
     uint32 regAddr;
-    
-    regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET + 
+
+    regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET +
               ((port * 32U + pinNum) * 4U);
-    
+
     return regAddr;
 }
 
@@ -165,10 +165,10 @@ static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
 {
     uint32 muxRegAddr = Port_GetMuxRegisterAddr(pin);
     uint32 muxValue;
-    
+
     muxValue = REG_READ32(muxRegAddr);
     muxValue &= ~0x07U; /* Clear MUX_MODE bits */
-    
+
     switch (mode) {
         case PORT_PIN_MODE_GPIO:
             muxValue |= PORT_MUX_MODE_GPIO;
@@ -198,7 +198,7 @@ static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
             muxValue |= PORT_MUX_MODE_GPIO;
             break;
     }
-    
+
     REG_WRITE32(muxRegAddr, muxValue);
 }
 
@@ -209,20 +209,20 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
 {
     uint32 padRegAddr = Port_GetPadRegisterAddr(pin);
     uint32 padValue = 0U;
-    
+
     /* Configure slew rate */
     if (config->Mode == PORT_PIN_MODE_GPIO) {
         padValue |= PORT_SRE_SLOW;
     } else {
         padValue |= PORT_SRE_FAST;
     }
-    
+
     /* Configure drive strength */
     padValue |= PORT_DSE_ENABLE;
-    
+
     /* Configure hysteresis */
     padValue |= PORT_HYS_DISABLE;
-    
+
     /* Configure pull up/down */
     if (config->PullUpEnable) {
         padValue |= PORT_PUS_UP;
@@ -233,10 +233,10 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
     } else {
         padValue |= PORT_PUE_KEEPER;
     }
-    
+
     /* Configure open drain */
     padValue |= PORT_ODE_DISABLE;
-    
+
     REG_WRITE32(padRegAddr, padValue);
 }
 
@@ -256,35 +256,35 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_PARAM_CONFIG);
         return;
     }
-    
+
     if (Port_DriverState.initialized == TRUE) {
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_INIT, PORT_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
-    
+
     /* Configure all pins */
     for (uint16 i = 0U; i < ConfigPtr->NumPins; i++) {
         const Port_PinConfigType* pinConfig = &ConfigPtr->PinConfigs[i];
-        
+
         /* Configure pin mux */
         Port_ConfigurePinMux(pinConfig->Pin, pinConfig->Mode);
-        
+
         /* Configure pin pad settings */
         Port_ConfigurePinPad(pinConfig->Pin, pinConfig);
-        
+
         /* Configure GPIO direction if GPIO mode */
         if (pinConfig->Mode == PORT_PIN_MODE_GPIO) {
             uint8 port = (uint8)(pinConfig->Pin >> 8);
             uint8 pinNum = (uint8)(pinConfig->Pin & 0xFF);
             uint32 gpioBase = Port_GetGpioBaseAddr(port);
             uint32 gdirValue;
-            
+
             gdirValue = REG_READ32(gpioBase + PORT_GPIO_GDIR);
-            
+
             if (pinConfig->Direction == PORT_PIN_OUT) {
                 gdirValue |= (1U << pinNum);
-                
+
                 /* Set initial level */
                 uint32 drValue = REG_READ32(gpioBase + PORT_GPIO_DR);
                 if (pinConfig->InitialLevel == PORT_PIN_LEVEL_HIGH) {
@@ -296,11 +296,11 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
             } else {
                 gdirValue &= ~(1U << pinNum);
             }
-            
+
             REG_WRITE32(gpioBase + PORT_GPIO_GDIR, gdirValue);
         }
     }
-    
+
     Port_DriverState.configPtr = ConfigPtr;
     Port_DriverState.initialized = TRUE;
 }
@@ -316,13 +316,13 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_UNINIT);
         return;
     }
-    
+
     if (Pin >= PORT_TOTAL_NUM_PINS) {
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_PARAM_PIN);
         return;
     }
     #endif
-    
+
     /* Check if direction is changeable */
     boolean directionChangeable = FALSE;
     for (uint16 i = 0U; i < Port_DriverState.configPtr->NumPins; i++) {
@@ -331,27 +331,27 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
             break;
         }
     }
-    
+
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (directionChangeable == FALSE) {
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_DIRECTION, PORT_E_DIRECTION_UNCHANGEABLE);
         return;
     }
     #endif
-    
+
     uint8 port = (uint8)(Pin >> 8);
     uint8 pinNum = (uint8)(Pin & 0xFF);
     uint32 gpioBase = Port_GetGpioBaseAddr(port);
     uint32 gdirValue;
-    
+
     gdirValue = REG_READ32(gpioBase + PORT_GPIO_GDIR);
-    
+
     if (Direction == PORT_PIN_OUT) {
         gdirValue |= (1U << pinNum);
     } else {
         gdirValue &= ~(1U << pinNum);
     }
-    
+
     REG_WRITE32(gpioBase + PORT_GPIO_GDIR, gdirValue);
 }
 #endif
@@ -367,25 +367,25 @@ void Port_RefreshPortDirection(void)
         return;
     }
     #endif
-    
+
     /* Refresh all pin directions from configuration */
     for (uint16 i = 0U; i < Port_DriverState.configPtr->NumPins; i++) {
         const Port_PinConfigType* pinConfig = &Port_DriverState.configPtr->PinConfigs[i];
-        
+
         if (pinConfig->Mode == PORT_PIN_MODE_GPIO) {
             uint8 port = (uint8)(pinConfig->Pin >> 8);
             uint8 pinNum = (uint8)(pinConfig->Pin & 0xFF);
             uint32 gpioBase = Port_GetGpioBaseAddr(port);
             uint32 gdirValue;
-            
+
             gdirValue = REG_READ32(gpioBase + PORT_GPIO_GDIR);
-            
+
             if (pinConfig->Direction == PORT_PIN_OUT) {
                 gdirValue |= (1U << pinNum);
             } else {
                 gdirValue &= ~(1U << pinNum);
             }
-            
+
             REG_WRITE32(gpioBase + PORT_GPIO_GDIR, gdirValue);
         }
     }
@@ -403,7 +403,7 @@ void Port_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = PORT_VENDOR_ID;
     versioninfo->moduleID = PORT_MODULE_ID;
     versioninfo->sw_major_version = PORT_SW_MAJOR_VERSION;
@@ -423,18 +423,18 @@ void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_UNINIT);
         return;
     }
-    
+
     if (Pin >= PORT_TOTAL_NUM_PINS) {
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_PARAM_PIN);
         return;
     }
-    
+
     if (Mode > PORT_PIN_MODE_DISABLED) {
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_PARAM_INVALID_MODE);
         return;
     }
     #endif
-    
+
     /* Check if mode is changeable */
     boolean modeChangeable = FALSE;
     for (uint16 i = 0U; i < Port_DriverState.configPtr->NumPins; i++) {
@@ -443,14 +443,14 @@ void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
             break;
         }
     }
-    
+
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
     if (modeChangeable == FALSE) {
         Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_SET_PIN_MODE, PORT_E_MODE_UNCHANGEABLE);
         return;
     }
     #endif
-    
+
     /* Configure pin mux */
     Port_ConfigurePinMux(Pin, Mode);
 }

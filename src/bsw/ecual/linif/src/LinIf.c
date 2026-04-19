@@ -57,9 +57,9 @@ void LinIf_Init(const LinIf_ConfigType* Config)
         return;
     }
     #endif
-    
+
     LinIf_ConfigPtr = Config;
-    
+
     /* Initialize channels */
     for (uint8 i = 0U; i < LINIF_NUM_CHANNELS; i++) {
         LinIf_ChannelStatus[i] = LINIF_CHNL_SLEEP;
@@ -68,14 +68,14 @@ void LinIf_Init(const LinIf_ConfigType* Config)
         LinIf_ScheduleEntryIdx[i] = 0U;
         LinIf_ScheduleTimer[i] = 0U;
         LinIf_WakeupEnabled[i] = TRUE;
-        
+
         /* Clear schedule queue */
         for (uint8 j = 0U; j < LINIF_SCHEDULE_REQUEST_QUEUE_LENGTH; j++) {
             LinIf_ScheduleQueue[i][j].Schedule = LINIF_SCHEDULE_NULL;
             LinIf_ScheduleQueue[i][j].Pending = FALSE;
         }
     }
-    
+
     LinIf_Status = LINIF_INIT;
 }
 
@@ -91,13 +91,13 @@ Std_ReturnType LinIf_InitChannel(uint8 Channel)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Initialize the LIN channel */
     /* In a real implementation, this would call Lin_InitChannel */
-    
+
     LinIf_ChannelStatus[Channel] = LINIF_CHNL_OPERATIONAL;
     LinIf_TransceiverMode[Channel] = LINIF_TRCV_MODE_NORMAL;
-    
+
     return E_OK;
 }
 
@@ -117,35 +117,35 @@ Std_ReturnType LinIf_Transmit(PduIdType LinTxPduId, const PduInfoType* PduInfoPt
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if channel is operational */
     uint8 channel = 0U;  /* Would be derived from PDU configuration */
-    
+
     if (channel >= LINIF_NUM_CHANNELS) {
         return E_NOT_OK;
     }
-    
+
     if (LinIf_ChannelStatus[channel] != LINIF_CHNL_OPERATIONAL) {
         return E_NOT_OK;
     }
-    
+
     /* In a real implementation, this would:
      * 1. Find the PDU configuration
      * 2. Build the LIN frame header
      * 3. Call Lin_SendFrame
      */
-    
+
     /* Build LIN PDU info: PID + Data + Checksum */
     uint8 linPdu[9];  /* Max 8 data bytes + 1 header/PID */
     linPdu[0] = 0x00U;  /* PID - would be from configuration */
-    
+
     for (uint8 i = 0U; i < PduInfoPtr->SduLength && i < 8U; i++) {
         linPdu[i + 1U] = PduInfoPtr->SduDataPtr[i];
     }
-    
+
     /* Call LIN driver */
     /* Lin_SendFrame(channel, linPdu); */
-    
+
     return E_OK;
 }
 
@@ -165,12 +165,12 @@ Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, uint8 Schedule)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if channel is operational */
     if (LinIf_ChannelStatus[Channel] != LINIF_CHNL_OPERATIONAL) {
         return E_NOT_OK;
     }
-    
+
     /* Add schedule request to queue */
     for (uint8 i = 0U; i < LINIF_SCHEDULE_REQUEST_QUEUE_LENGTH; i++) {
         if (LinIf_ScheduleQueue[Channel][i].Pending == FALSE) {
@@ -179,7 +179,7 @@ Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, uint8 Schedule)
             return E_OK;
         }
     }
-    
+
     /* Queue full */
     return E_NOT_OK;
 }
@@ -196,19 +196,19 @@ Std_ReturnType LinIf_GotoSleep(uint8 Channel)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if channel is operational */
     if (LinIf_ChannelStatus[Channel] != LINIF_CHNL_OPERATIONAL) {
         return E_NOT_OK;
     }
-    
+
     /* Send go-to-sleep command */
     /* Lin_GoToSleep(Channel); */
-    
+
     LinIf_ChannelStatus[Channel] = LINIF_CHNL_SLEEP;
     LinIf_TransceiverMode[Channel] = LINIF_TRCV_MODE_SLEEP;
     LinIf_CurrentSchedule[Channel] = LINIF_SCHEDULE_NULL;
-    
+
     return E_OK;
 }
 
@@ -224,19 +224,19 @@ Std_ReturnType LinIf_WakeUp(uint8 Channel)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if channel is in sleep */
     if (LinIf_ChannelStatus[Channel] != LINIF_CHNL_SLEEP) {
         return E_NOT_OK;
     }
-    
+
     #if (LINIF_WAKEUP_SUPPORT == STD_ON)
     /* Send wakeup signal */
     /* Lin_WakeUp(Channel); */
-    
+
     LinIf_ChannelStatus[Channel] = LINIF_CHNL_OPERATIONAL;
     LinIf_TransceiverMode[Channel] = LINIF_TRCV_MODE_NORMAL;
-    
+
     return E_OK;
     #else
     (void)Channel;
@@ -256,7 +256,7 @@ Std_ReturnType LinIf_SetTransceiverMode(uint8 Channel, LinIf_TransceiverModeType
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (LINIF_TRCV_DRIVER_SUPPORTED == STD_ON)
     switch (Mode) {
         case LINIF_TRCV_MODE_NORMAL:
@@ -265,7 +265,7 @@ Std_ReturnType LinIf_SetTransceiverMode(uint8 Channel, LinIf_TransceiverModeType
             LinIf_TransceiverMode[Channel] = Mode;
             /* In a real implementation, this would call the transceiver driver */
             return E_OK;
-            
+
         default:
             #if (LINIF_DEV_ERROR_DETECT == STD_ON)
             Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SETTRCVMODE, LINIF_E_TRCV_INV_MODE);
@@ -295,7 +295,7 @@ Std_ReturnType LinIf_GetTransceiverMode(uint8 Channel, LinIf_TransceiverModeType
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (LINIF_TRCV_DRIVER_SUPPORTED == STD_ON)
     *Mode = LinIf_TransceiverMode[Channel];
     return E_OK;
@@ -314,7 +314,7 @@ Std_ReturnType LinIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (LINIF_WAKEUP_SUPPORT == STD_ON)
     /* Check all channels for wakeup */
     for (uint8 i = 0U; i < LINIF_NUM_CHANNELS; i++) {
@@ -323,7 +323,7 @@ Std_ReturnType LinIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
             /* If wakeup detected, return E_OK */
         }
     }
-    
+
     (void)WakeupSource;
     return E_NOT_OK;
     #else
@@ -344,7 +344,7 @@ Std_ReturnType LinIf_DisableWakeup(uint8 Channel)
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (LINIF_WAKEUP_SUPPORT == STD_ON)
     LinIf_WakeupEnabled[Channel] = FALSE;
     return E_OK;
@@ -366,7 +366,7 @@ Std_ReturnType LinIf_EnableWakeup(uint8 Channel)
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (LINIF_WAKEUP_SUPPORT == STD_ON)
     LinIf_WakeupEnabled[Channel] = TRUE;
     return E_OK;
@@ -388,7 +388,7 @@ Std_ReturnType LinIf_CancelTransmit(PduIdType LinTxPduId)
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (LINIF_CANCEL_TRANSMIT_SUPPORTED == STD_ON)
     /* In a real implementation, this would cancel the ongoing transmission */
     (void)LinTxPduId;
@@ -407,7 +407,7 @@ void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = LINIF_VENDOR_ID;
     versioninfo->moduleID = LINIF_MODULE_ID;
     versioninfo->sw_major_version = LINIF_SW_MAJOR_VERSION;
@@ -427,11 +427,11 @@ void LinIf_WakeUpConfirmation(uint8 Channel)
         return;
     }
     #endif
-    
+
     /* Wakeup confirmed - channel is now operational */
     LinIf_ChannelStatus[Channel] = LINIF_CHNL_OPERATIONAL;
     LinIf_TransceiverMode[Channel] = LINIF_TRCV_MODE_NORMAL;
-    
+
     /* Notify upper layer */
     /* EcuM_SetWakeupEvent(LINIF_WAKEUP_SOURCE); */
 }
@@ -441,13 +441,13 @@ void LinIf_MainFunction(void)
     if (LinIf_Status == LINIF_UNINIT) {
         return;
     }
-    
+
     /* Process each channel */
     for (uint8 i = 0U; i < LINIF_NUM_CHANNELS; i++) {
         if (LinIf_ChannelStatus[i] != LINIF_CHNL_OPERATIONAL) {
             continue;
         }
-        
+
         /* Check for schedule requests */
         for (uint8 j = 0U; j < LINIF_SCHEDULE_REQUEST_QUEUE_LENGTH; j++) {
             if (LinIf_ScheduleQueue[i][j].Pending == TRUE) {
@@ -459,14 +459,14 @@ void LinIf_MainFunction(void)
                 break;
             }
         }
-        
+
         /* Process current schedule */
         if (LinIf_CurrentSchedule[i] != LINIF_SCHEDULE_NULL) {
             /* Decrement timer */
             if (LinIf_ScheduleTimer[i] > 0U) {
                 LinIf_ScheduleTimer[i]--;
             }
-            
+
             /* Execute schedule entry when timer expires */
             if (LinIf_ScheduleTimer[i] == 0U) {
                 /* In a real implementation, this would:
@@ -475,13 +475,13 @@ void LinIf_MainFunction(void)
                  * 3. Move to next entry
                  * 4. Set timer for next entry delay
                  */
-                
+
                 /* For now, just move to next entry */
                 LinIf_ScheduleEntryIdx[i]++;
                 LinIf_ScheduleTimer[i] = 10U;  /* Default delay */
             }
         }
-        
+
         /* Check for received frames */
         /* In a real implementation, this would:
          * 1. Check LIN driver for received frames

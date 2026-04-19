@@ -17,7 +17,7 @@ static Mcu_ConfigType g_test_config;
 static uint8 g_mcu_state = MCU_STATE_UNINIT;
 
 /* Test: Mcu_Init with valid config */
-TEST_CASE(test_mcu_init_valid_config)
+void test_mcu_init_valid_config(void)
 {
     /* Setup */
     g_test_config.ClockSettings = NULL;
@@ -34,7 +34,7 @@ TEST_CASE(test_mcu_init_valid_config)
 }
 
 /* Test: Mcu_Init with NULL config */
-TEST_CASE(test_mcu_init_null_config)
+void test_mcu_init_null_config(void)
 {
     /* Execute */
     Mcu_Init(NULL);
@@ -44,7 +44,7 @@ TEST_CASE(test_mcu_init_null_config)
 }
 
 /* Test: Mcu_DeInit */
-TEST_CASE(test_mcu_deinit)
+void test_mcu_deinit(void)
 {
     /* Setup */
     Mcu_Init(&g_test_config);
@@ -58,7 +58,7 @@ TEST_CASE(test_mcu_deinit)
 }
 
 /* Test: Mcu_GetVersionInfo */
-TEST_CASE(test_mcu_get_version_info)
+void test_mcu_get_version_info(void)
 {
     Std_VersionInfoType version_info;
     
@@ -73,7 +73,7 @@ TEST_CASE(test_mcu_get_version_info)
 }
 
 /* Test: Mcu_GetVersionInfo with NULL pointer */
-TEST_CASE(test_mcu_get_version_info_null)
+void test_mcu_get_version_info_null(void)
 {
     /* Execute */
     Mcu_GetVersionInfo(NULL);
@@ -83,7 +83,7 @@ TEST_CASE(test_mcu_get_version_info_null)
 }
 
 /* Test: Mcu_DistributePllClock when not initialized */
-TEST_CASE(test_mcu_distribute_pll_not_init)
+void test_mcu_distribute_pll_not_init(void)
 {
     /* Setup */
     g_mcu_state = MCU_STATE_UNINIT;
@@ -96,7 +96,7 @@ TEST_CASE(test_mcu_distribute_pll_not_init)
 }
 
 /* Test: Mcu_GetPllStatus when not initialized */
-TEST_CASE(test_mcu_get_pll_status_not_init)
+void test_mcu_get_pll_status_not_init(void)
 {
     Mcu_PllStatusType status;
     
@@ -112,7 +112,7 @@ TEST_CASE(test_mcu_get_pll_status_not_init)
 }
 
 /* Test: Mcu_GetResetReason when not initialized */
-TEST_CASE(test_mcu_get_reset_reason_not_init)
+void test_mcu_get_reset_reason_not_init(void)
 {
     Mcu_ResetType reset_reason;
     
@@ -128,7 +128,7 @@ TEST_CASE(test_mcu_get_reset_reason_not_init)
 }
 
 /* Test: Mcu_GetResetRawValue when not initialized */
-TEST_CASE(test_mcu_get_reset_raw_not_init)
+void test_mcu_get_reset_raw_not_init(void)
 {
     Mcu_RawResetType raw_value;
     
@@ -144,7 +144,7 @@ TEST_CASE(test_mcu_get_reset_raw_not_init)
 }
 
 /* Test: Mcu_PerformReset when not initialized */
-TEST_CASE(test_mcu_perform_reset_not_init)
+void test_mcu_perform_reset_not_init(void)
 {
     /* Setup */
     g_mcu_state = MCU_STATE_UNINIT;
@@ -157,7 +157,7 @@ TEST_CASE(test_mcu_perform_reset_not_init)
 }
 
 /* Test: Mcu_SetMode with invalid mode */
-TEST_CASE(test_mcu_set_mode_invalid)
+void test_mcu_set_mode_invalid(void)
 {
     /* Setup */
     Mcu_Init(&g_test_config);
@@ -170,7 +170,7 @@ TEST_CASE(test_mcu_set_mode_invalid)
 }
 
 /* Test: Mcu_GetClockFrequency with invalid clock */
-TEST_CASE(test_mcu_get_clock_freq_invalid)
+void test_mcu_get_clock_freq_invalid(void)
 {
     Mcu_ClockType clock;
     uint32 freq;

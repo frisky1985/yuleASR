@@ -122,41 +122,41 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     Gpt_ConfigPtr = ConfigPtr;
-    
+
     for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
         const Gpt_ChannelConfigType* chConfig = &ConfigPtr->Channels[i];
         uint32 baseAddr = Gpt_GetBaseAddr(chConfig->ChannelId);
         if (baseAddr == 0U) continue;
-        
+
         Gpt_EnableClock(chConfig->ChannelId);
-        
+
         /* Software reset */
         REG_WRITE32(baseAddr + GPT_CR, GPT_CR_SWR);
         while ((REG_READ32(baseAddr + GPT_CR) & GPT_CR_SWR) != 0U);
-        
+
         /* Configure prescaler */
         uint32 prValue = (1U << chConfig->ClockPrescaler) - 1U;
         REG_WRITE32(baseAddr + GPT_PR, prValue);
-        
+
         /* Configure control register */
         uint32 crValue = 0U;
         crValue |= GPT_CR_FRR; /* Free-run mode */
         crValue |= (0x01U << 6); /* Peripheral clock source */
         REG_WRITE32(baseAddr + GPT_CR, crValue);
-        
+
         /* Clear status */
         REG_WRITE32(baseAddr + GPT_SR, 0x3FU);
-        
+
         /* Disable interrupts */
         REG_WRITE32(baseAddr + GPT_IR, 0U);
-        
+
         Gpt_ChannelRunning[i] = FALSE;
         Gpt_ChannelTargetValue[i] = 0U;
         Gpt_ChannelElapsedValue[i] = 0U;
     }
-    
+
     Gpt_DriverMode = ConfigPtr->DefaultMode;
     Gpt_DriverInitialized = TRUE;
 }
@@ -170,25 +170,25 @@ void Gpt_DeInit(void)
         return;
     }
     #endif
-    
+
     for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
         if (Gpt_ChannelRunning[i]) {
             return; /* Cannot deinit if any channel is running */
         }
     }
-    
+
     for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
         uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[i].ChannelId);
         if (baseAddr == 0U) continue;
-        
+
         /* Disable timer */
         uint32 crValue = REG_READ32(baseAddr + GPT_CR);
         crValue &= ~GPT_CR_EN;
         REG_WRITE32(baseAddr + GPT_CR, crValue);
-        
+
         Gpt_DisableClock(Gpt_ConfigPtr->Channels[i].ChannelId);
     }
-    
+
     Gpt_DriverInitialized = FALSE;
 }
 #endif
@@ -206,10 +206,10 @@ Gpt_ValueType Gpt_GetTimeElapsed(Gpt_ChannelType Channel)
         return 0U;
     }
     #endif
-    
+
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
     Gpt_ValueType elapsed = REG_READ32(baseAddr + GPT_CNT);
-    
+
     return elapsed;
 }
 #endif
@@ -227,14 +227,14 @@ Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel)
         return 0U;
     }
     #endif
-    
+
     if (!Gpt_ChannelRunning[Channel]) {
         return 0U;
     }
-    
+
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
     Gpt_ValueType current = REG_READ32(baseAddr + GPT_CNT);
-    
+
     if (Gpt_ChannelTargetValue[Channel] > current) {
         return Gpt_ChannelTargetValue[Channel] - current;
     }
@@ -262,23 +262,23 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
     uint8 chOffset = Gpt_GetChannelOffset(Gpt_ConfigPtr->Channels[Channel].ChannelId);
-    
+
     Gpt_ChannelTargetValue[Channel] = Value;
     Gpt_ChannelRunning[Channel] = TRUE;
-    
+
     /* Set output compare value */
     REG_WRITE32(baseAddr + GPT_OCR1 + (chOffset * 4U), Value);
-    
+
     /* Enable interrupt if notification is enabled */
     if (Gpt_ConfigPtr->Channels[Channel].NotificationEnabled) {
         uint32 irValue = REG_READ32(baseAddr + GPT_IR);
         irValue |= (GPT_IR_OF1IE << chOffset);
         REG_WRITE32(baseAddr + GPT_IR, irValue);
     }
-    
+
     /* Enable timer */
     uint32 crValue = REG_READ32(baseAddr + GPT_CR);
     crValue |= GPT_CR_EN;
@@ -297,19 +297,19 @@ void Gpt_StopTimer(Gpt_ChannelType Channel)
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
-    
+
     /* Disable interrupt */
     uint32 irValue = REG_READ32(baseAddr + GPT_IR);
     irValue &= ~GPT_IR_OF1IE;
     REG_WRITE32(baseAddr + GPT_IR, irValue);
-    
+
     /* Disable timer */
     uint32 crValue = REG_READ32(baseAddr + GPT_CR);
     crValue &= ~GPT_CR_EN;
     REG_WRITE32(baseAddr + GPT_CR, crValue);
-    
+
     Gpt_ChannelRunning[Channel] = FALSE;
 }
 
@@ -326,11 +326,11 @@ void Gpt_EnableNotification(Gpt_ChannelType Channel)
         return;
     }
     #endif
-    
+
     if (Gpt_ChannelRunning[Channel]) {
         uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
         uint8 chOffset = Gpt_GetChannelOffset(Gpt_ConfigPtr->Channels[Channel].ChannelId);
-        
+
         uint32 irValue = REG_READ32(baseAddr + GPT_IR);
         irValue |= (GPT_IR_OF1IE << chOffset);
         REG_WRITE32(baseAddr + GPT_IR, irValue);
@@ -349,10 +349,10 @@ void Gpt_DisableNotification(Gpt_ChannelType Channel)
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
     uint8 chOffset = Gpt_GetChannelOffset(Gpt_ConfigPtr->Channels[Channel].ChannelId);
-    
+
     uint32 irValue = REG_READ32(baseAddr + GPT_IR);
     irValue &= ~(GPT_IR_OF1IE << chOffset);
     REG_WRITE32(baseAddr + GPT_IR, irValue);
@@ -382,7 +382,7 @@ void Gpt_SetMode(Gpt_ModeType Mode)
         return;
     }
     #endif
-    
+
     if (Mode == GPT_MODE_SLEEP) {
         /* Stop all channels */
         for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
@@ -391,7 +391,7 @@ void Gpt_SetMode(Gpt_ModeType Mode)
             }
         }
     }
-    
+
     Gpt_DriverMode = Mode;
 }
 
@@ -459,10 +459,10 @@ Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* 
         return E_NOT_OK;
     }
     #endif
-    
+
     uint32 baseAddr = GPT1_BASE_ADDR;
     *TimeValuePtr = REG_READ32(baseAddr + GPT_CNT);
-    
+
     (void)PredefTimer;
     return E_OK;
 }

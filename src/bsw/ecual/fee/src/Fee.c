@@ -79,9 +79,9 @@ void Fee_Init(const Fee_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     Fee_ConfigPtr = ConfigPtr;
-    
+
     /* Initialize block info */
     for (uint16 i = 0U; i < FEE_NUM_BLOCKS; i++) {
         Fee_BlockInfo[i].BlockAddress = 0U;
@@ -90,17 +90,17 @@ void Fee_Init(const Fee_ConfigType* ConfigPtr)
         Fee_BlockInfo[i].IsInvalidated = FALSE;
         Fee_BlockInfo[i].WriteCycleCounter = 0U;
     }
-    
+
     /* Scan flash to build block table */
     /* In a real implementation, this would scan the flash sectors
      * to find valid blocks and build the block management table */
-    
+
     Fee_Status = FEE_IDLE;
     Fee_JobResult = FEE_JOB_OK;
     Fee_CurrentMode = FEE_MODE_FAST;
     Fee_CurrentJob = FEE_JOB_NONE;
     Fee_GcState = FEE_GC_IDLE;
-    
+
     Fee_Initialized = TRUE;
 }
 
@@ -118,7 +118,7 @@ void Fee_SetMode(Fee_ModeType Mode)
     }
     #endif
     #endif
-    
+
     #if (FEE_SET_MODE_SUPPORTED == STD_ON)
     Fee_CurrentMode = Mode;
     #else
@@ -153,23 +153,23 @@ Std_ReturnType Fee_Read(Fee_BlockIdType BlockNumber,
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if block is valid */
     if (Fee_BlockInfo[BlockNumber].IsValid == FALSE) {
         Fee_JobResult = FEE_BLOCK_INVALID;
         return E_NOT_OK;
     }
-    
+
     if (Fee_BlockInfo[BlockNumber].IsInvalidated == TRUE) {
         Fee_JobResult = FEE_BLOCK_INVALID;
         return E_NOT_OK;
     }
-    
+
     /* Check if another job is pending */
     if (Fee_Status == FEE_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup read job */
     Fee_CurrentJob = FEE_JOB_READ;
     Fee_CurrentBlock = BlockNumber;
@@ -178,10 +178,10 @@ Std_ReturnType Fee_Read(Fee_BlockIdType BlockNumber,
     Fee_DataLength = Length;
     Fee_Status = FEE_BUSY;
     Fee_JobResult = FEE_JOB_PENDING;
-    
+
     /* In a real implementation, this would start the flash read operation */
     /* For now, simulate successful read */
-    
+
     return E_OK;
 }
 
@@ -201,12 +201,12 @@ Std_ReturnType Fee_Write(Fee_BlockIdType BlockNumber, const uint8* DataBufferPtr
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if another job is pending */
     if (Fee_Status == FEE_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup write job */
     Fee_CurrentJob = FEE_JOB_WRITE;
     Fee_CurrentBlock = BlockNumber;
@@ -215,14 +215,14 @@ Std_ReturnType Fee_Write(Fee_BlockIdType BlockNumber, const uint8* DataBufferPtr
     Fee_DataLength = Fee_BlockInfo[BlockNumber].BlockSize;
     Fee_Status = FEE_BUSY;
     Fee_JobResult = FEE_JOB_PENDING;
-    
+
     /* In a real implementation, this would:
      * 1. Find next free flash location
      * 2. Write block header + data
      * 3. Mark old block as obsolete
      * 4. Trigger garbage collection if needed
      */
-    
+
     return E_OK;
 }
 
@@ -234,13 +234,13 @@ void Fee_Cancel(void)
         return;
     }
     #endif
-    
+
     if (Fee_Status == FEE_BUSY) {
         /* Cancel current job */
         Fee_Status = FEE_IDLE;
         Fee_JobResult = FEE_JOB_CANCELLED;
         Fee_CurrentJob = FEE_JOB_NONE;
-        
+
         /* In a real implementation, this would cancel the underlying flash operation */
     }
 }
@@ -253,7 +253,7 @@ Fee_StatusType Fee_GetStatus(void)
         return FEE_IDLE;
     }
     #endif
-    
+
     return Fee_Status;
 }
 
@@ -265,7 +265,7 @@ Fee_JobResultType Fee_GetJobResult(void)
         return FEE_JOB_FAILED;
     }
     #endif
-    
+
     return Fee_JobResult;
 }
 
@@ -281,18 +281,18 @@ Std_ReturnType Fee_InvalidateBlock(Fee_BlockIdType BlockNumber)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if another job is pending */
     if (Fee_Status == FEE_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup invalidate job */
     Fee_CurrentJob = FEE_JOB_INVALIDATE;
     Fee_CurrentBlock = BlockNumber;
     Fee_Status = FEE_BUSY;
     Fee_JobResult = FEE_JOB_PENDING;
-    
+
     return E_OK;
 }
 
@@ -308,18 +308,18 @@ Std_ReturnType Fee_EraseImmediateBlock(Fee_BlockIdType BlockNumber)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if another job is pending */
     if (Fee_Status == FEE_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup erase immediate job */
     Fee_CurrentJob = FEE_JOB_ERASE_IMMEDIATE;
     Fee_CurrentBlock = BlockNumber;
     Fee_Status = FEE_BUSY;
     Fee_JobResult = FEE_JOB_PENDING;
-    
+
     return E_OK;
 }
 
@@ -347,7 +347,7 @@ void Fee_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = FEE_VENDOR_ID;
     versioninfo->moduleID = FEE_MODULE_ID;
     versioninfo->sw_major_version = FEE_SW_MAJOR_VERSION;
@@ -363,7 +363,7 @@ uint32 Fee_GetCycleCount(void)
         return 0U;
     }
     #endif
-    
+
     return Fee_WriteCycleCounter;
 }
 
@@ -375,7 +375,7 @@ uint32 Fee_GetEraseCycleCount(void)
         return 0U;
     }
     #endif
-    
+
     return Fee_EraseCycleCounter;
 }
 
@@ -387,7 +387,7 @@ uint32 Fee_GetWriteCycleCount(void)
         return 0U;
     }
     #endif
-    
+
     return Fee_WriteCycleCounter;
 }
 
@@ -396,17 +396,17 @@ void Fee_MainFunction(void)
     if (Fee_Initialized == FALSE) {
         return;
     }
-    
+
     /* Process current job */
     if (Fee_Status == FEE_BUSY) {
         Fee_ProcessJob();
     }
-    
+
     /* Process garbage collection */
     if (Fee_GcState != FEE_GC_IDLE) {
         Fee_ProcessGc();
     }
-    
+
     /* Check if garbage collection is needed */
     /* In a real implementation, this would check free space
      * and trigger GC when necessary */
@@ -427,7 +427,7 @@ static void Fee_ProcessJob(void)
             Fee_CurrentJob = FEE_JOB_NONE;
             Fee_JobEndNotification();
             break;
-            
+
         case FEE_JOB_WRITE:
             /* Process write job */
             /* In a real implementation, this would:
@@ -443,7 +443,7 @@ static void Fee_ProcessJob(void)
             Fee_CurrentJob = FEE_JOB_NONE;
             Fee_JobEndNotification();
             break;
-            
+
         case FEE_JOB_INVALIDATE:
             /* Process invalidate job */
             Fee_BlockInfo[Fee_CurrentBlock].IsInvalidated = TRUE;
@@ -452,7 +452,7 @@ static void Fee_ProcessJob(void)
             Fee_CurrentJob = FEE_JOB_NONE;
             Fee_JobEndNotification();
             break;
-            
+
         case FEE_JOB_ERASE_IMMEDIATE:
             /* Process erase immediate job */
             Fee_BlockInfo[Fee_CurrentBlock].IsValid = FALSE;
@@ -462,7 +462,7 @@ static void Fee_ProcessJob(void)
             Fee_CurrentJob = FEE_JOB_NONE;
             Fee_JobEndNotification();
             break;
-            
+
         default:
             Fee_Status = FEE_IDLE;
             Fee_CurrentJob = FEE_JOB_NONE;
@@ -476,13 +476,13 @@ static void Fee_ProcessGc(void)
         case FEE_GC_COPY:
             /* Copy valid blocks to new sector */
             break;
-            
+
         case FEE_GC_ERASE:
             /* Erase old sector */
             Fee_EraseCycleCounter++;
             Fee_GcState = FEE_GC_IDLE;
             break;
-            
+
         default:
             Fee_GcState = FEE_GC_IDLE;
             break;
@@ -494,11 +494,11 @@ static Std_ReturnType Fee_FindBlockAddress(Fee_BlockIdType BlockNumber, uint32* 
     if (BlockNumber >= FEE_NUM_BLOCKS) {
         return E_NOT_OK;
     }
-    
+
     if (Fee_BlockInfo[BlockNumber].IsValid == FALSE) {
         return E_NOT_OK;
     }
-    
+
     *BlockAddress = Fee_BlockInfo[BlockNumber].BlockAddress;
     return E_OK;
 }
@@ -507,10 +507,10 @@ static Std_ReturnType Fee_WriteBlockToFlash(Fee_BlockIdType BlockNumber, const u
 {
     (void)BlockNumber;
     (void)DataBufferPtr;
-    
+
     /* In a real implementation, this would write the block to flash
      * with proper header information */
-    
+
     return E_OK;
 }
 

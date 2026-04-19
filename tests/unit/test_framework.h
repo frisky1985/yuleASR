@@ -32,14 +32,15 @@ static TestStats g_test_stats = {0, 0, 0, NULL};
         printf("\n=== Test Suite: %s ===\n", #name); \
     }
 
-#define TEST_CASE(name) \
-    void test_case_##name(void)
+/* Test case declaration - user should define function directly */
+#define TEST_CASE_DECLARE(name) \
+    void test_##name(void)
 
 #define RUN_TEST(name) \
     do { \
         printf("  Running: %s ... ", #name); \
         g_test_stats.total++; \
-        test_case_##name(); \
+        test_##name(); \
     } while(0)
 
 #define ASSERT_TRUE(condition) \

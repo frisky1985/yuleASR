@@ -38,15 +38,15 @@ void EthIf_Init(const EthIf_ConfigType* CfgPtr)
         return;
     }
     #endif
-    
+
     EthIf_ConfigPtr = CfgPtr;
-    
+
     /* Initialize all controllers */
     for (uint8 i = 0U; i < ETHIF_NUM_CONTROLLERS; i++) {
         EthIf_ControllerMode[i] = ETHIF_MODE_DOWN;
         EthIf_LinkState[i] = ETHIF_LINK_STATE_DOWN;
         EthIf_EgressTimestampEnabled[i] = FALSE;
-        
+
         /* Copy default MAC address */
         if (i < CfgPtr->NumControllers) {
             for (uint8 j = 0U; j < 6U; j++) {
@@ -54,7 +54,7 @@ void EthIf_Init(const EthIf_ConfigType* CfgPtr)
             }
         }
     }
-    
+
     EthIf_Initialized = TRUE;
 }
 
@@ -70,10 +70,10 @@ void EthIf_ControllerInit(uint8 CtrlIdx, uint8 CfgIdx)
         return;
     }
     #endif
-    
+
     /* Initialize the specific controller */
     /* In a real implementation, this would call the Ethernet driver */
-    
+
     (void)CfgIdx;
 }
 
@@ -89,28 +89,28 @@ Std_ReturnType EthIf_SetControllerMode(uint8 CtrlIdx, EthIf_ControllerModeType C
         return E_NOT_OK;
     }
     #endif
-    
+
     Std_ReturnType result = E_OK;
-    
+
     switch (CtrlMode) {
         case ETHIF_MODE_DOWN:
             /* Disable controller */
             EthIf_ControllerMode[CtrlIdx] = ETHIF_MODE_DOWN;
             EthIf_LinkState[CtrlIdx] = ETHIF_LINK_STATE_DOWN;
             break;
-            
+
         case ETHIF_MODE_ACTIVE:
             /* Enable controller */
             EthIf_ControllerMode[CtrlIdx] = ETHIF_MODE_ACTIVE;
             /* Link state would be determined by actual hardware */
             EthIf_LinkState[CtrlIdx] = ETHIF_LINK_STATE_ACTIVE;
             break;
-            
+
         default:
             result = E_NOT_OK;
             break;
     }
-    
+
     return result;
 }
 
@@ -130,7 +130,7 @@ Std_ReturnType EthIf_GetControllerMode(uint8 CtrlIdx, EthIf_ControllerModeType* 
         return E_NOT_OK;
     }
     #endif
-    
+
     *CtrlModePtr = EthIf_ControllerMode[CtrlIdx];
     return E_OK;
 }
@@ -151,7 +151,7 @@ void EthIf_GetPhysAddr(uint8 CtrlIdx, uint8* PhysAddrPtr)
         return;
     }
     #endif
-    
+
     for (uint8 i = 0U; i < 6U; i++) {
         PhysAddrPtr[i] = EthIf_CurrentMacAddr[CtrlIdx][i];
     }
@@ -173,11 +173,11 @@ void EthIf_SetPhysAddr(uint8 CtrlIdx, const uint8* PhysAddr)
         return;
     }
     #endif
-    
+
     for (uint8 i = 0U; i < 6U; i++) {
         EthIf_CurrentMacAddr[CtrlIdx][i] = PhysAddr[i];
     }
-    
+
     /* In a real implementation, this would update the hardware MAC address */
 }
 
@@ -204,24 +204,24 @@ Std_ReturnType EthIf_Transmit(uint8 CtrlIdx,
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check controller is active */
     if (EthIf_ControllerMode[CtrlIdx] != ETHIF_MODE_ACTIVE) {
         return E_NOT_OK;
     }
-    
+
     /* Check link is up */
     if (EthIf_LinkState[CtrlIdx] != ETHIF_LINK_STATE_ACTIVE) {
         return E_NOT_OK;
     }
-    
+
     /* In a real implementation, this would:
      * 1. Build Ethernet frame with MAC header
      * 2. Call Ethernet driver to transmit
      */
-    
+
     (void)FrameType;
-    
+
     return E_OK;
 }
 
@@ -233,7 +233,7 @@ void EthIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = ETHIF_VENDOR_ID;
     versioninfo->moduleID = ETHIF_MODULE_ID;
     versioninfo->sw_major_version = ETHIF_SW_MAJOR_VERSION;
@@ -257,7 +257,7 @@ Std_ReturnType EthIf_GetCurrentTime(uint8 CtrlIdx, EthIf_TimestampType* timeStam
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (ETHIF_GET_CURRENT_TIME_API == STD_ON)
     /* In a real implementation, this would read from PTP hardware clock */
     timeStampPtr->seconds = 0U;
@@ -281,7 +281,7 @@ void EthIf_EnableEgressTimeStamp(uint8 CtrlIdx, uint8 BufIdx)
         return;
     }
     #endif
-    
+
     #if (ETHIF_ENABLE_EGRESS_TIMESTAMP_API == STD_ON)
     EthIf_EgressTimestampEnabled[CtrlIdx] = TRUE;
     (void)BufIdx;
@@ -310,7 +310,7 @@ void EthIf_GetEgressTimeStamp(uint8 CtrlIdx,
         return;
     }
     #endif
-    
+
     #if (ETHIF_GET_EGRESS_TIMESTAMP_API == STD_ON)
     /* In a real implementation, this would read the egress timestamp from hardware */
     timeStampPtr->seconds = 0U;
@@ -344,7 +344,7 @@ void EthIf_GetIngressTimeStamp(uint8 CtrlIdx,
         return;
     }
     #endif
-    
+
     #if (ETHIF_GET_INGRESS_TIMESTAMP_API == STD_ON)
     /* In a real implementation, this would read the ingress timestamp from hardware */
     timeStampPtr->seconds = 0U;
@@ -363,14 +363,14 @@ void EthIf_MainFunction(void)
     if (EthIf_Initialized == FALSE) {
         return;
     }
-    
+
     /* Periodic processing for each controller */
     for (uint8 i = 0U; i < ETHIF_NUM_CONTROLLERS; i++) {
         /* Check link state */
         /* In a real implementation, this would poll the PHY status */
-        
+
         /* Process pending transmissions/receptions */
-        
+
         /* Handle time synchronization if enabled */
         #if (ETHIF_TIME_SYNC_ENABLED == STD_ON)
         /* gPTP processing */
@@ -388,31 +388,31 @@ void EthIf_RxIndication(uint8 CtrlIdx,
     if (EthIf_Initialized == FALSE) {
         return;
     }
-    
+
     if (CtrlIdx >= ETHIF_NUM_CONTROLLERS) {
         return;
     }
-    
+
     /* Route frame to appropriate upper layer based on FrameType */
     switch (FrameType) {
         case ETHIF_FRAMETYPE_IPV4:
         case ETHIF_FRAMETYPE_IPV6:
             /* Route to TCP/IP stack */
             break;
-            
+
         case ETHIF_FRAMETYPE_ARP:
             /* Route to ARP handler */
             break;
-            
+
         case ETHIF_FRAMETYPE_SOMEIP:
             /* Route to SOME/IP module */
             break;
-            
+
         default:
             /* Unknown frame type - drop */
             break;
     }
-    
+
     (void)IsBroadcast;
     (void)PhysAddrPtr;
     (void)DataPtr;
@@ -424,14 +424,14 @@ void EthIf_TxConfirmation(uint8 CtrlIdx, uint8 BufIdx)
     if (EthIf_Initialized == FALSE) {
         return;
     }
-    
+
     if (CtrlIdx >= ETHIF_NUM_CONTROLLERS) {
         return;
     }
-    
+
     /* Handle transmission confirmation */
     /* Notify upper layer modules */
-    
+
     (void)BufIdx;
 }
 

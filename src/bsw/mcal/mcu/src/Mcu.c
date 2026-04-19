@@ -93,7 +93,7 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
 {
     Std_ReturnType status = E_OK;
     uint32 timeout;
-    
+
     /* Configure ARM PLL if needed */
     if (clockConfig->PllConfigs != NULL_PTR) {
         for (uint8 i = 0U; i < clockConfig->NumPllConfigs; i++) {
@@ -104,11 +104,11 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
             }
         }
     }
-    
+
     if (status == E_OK) {
         /* Set clock dividers */
         Mcu_SetClockDividers(clockConfig);
-        
+
         /* Switch to target clock source */
         timeout = MCU_CLOCK_SWITCH_TIMEOUT;
         while ((REG_READ32(MCU_CCM_CCSR) & 0x01U) != clockConfig->ClockSource) {
@@ -119,7 +119,7 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
             timeout--;
         }
     }
-    
+
     return status;
 }
 
@@ -130,37 +130,37 @@ static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigTy
 {
     Std_ReturnType status = E_OK;
     uint32 regValue;
-    
+
     /* Bypass PLL during configuration */
     regValue = REG_READ32(pllBaseAddr + 0x00);
     regValue |= 0x1000U; /* Set BYPASS bit */
     REG_WRITE32(pllBaseAddr + 0x00, regValue);
-    
+
     /* Configure PLL parameters */
     regValue = ((pllConfig->Prediv - 1U) & 0x07U) << 12;
     regValue |= (pllConfig->Multiplier & 0x3FFU) << 0;
     REG_WRITE32(pllBaseAddr + 0x04, regValue);
-    
+
     /* Configure post dividers */
     regValue = ((pllConfig->Postdiv1 - 1U) & 0x07U) << 4;
     regValue |= ((pllConfig->Postdiv2 - 1U) & 0x07U) << 0;
     REG_WRITE32(pllBaseAddr + 0x08, regValue);
-    
+
     /* Enable PLL */
     regValue = REG_READ32(pllBaseAddr + 0x00);
     regValue |= 0x2000U; /* Set ENABLE bit */
     REG_WRITE32(pllBaseAddr + 0x00, regValue);
-    
+
     /* Wait for PLL lock */
     status = Mcu_WaitForPLLLock(pllBaseAddr);
-    
+
     if (status == E_OK) {
         /* Disable bypass */
         regValue = REG_READ32(pllBaseAddr + 0x00);
         regValue &= ~0x1000U; /* Clear BYPASS bit */
         REG_WRITE32(pllBaseAddr + 0x00, regValue);
     }
-    
+
     return status;
 }
 
@@ -172,7 +172,7 @@ static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
     Std_ReturnType status = E_NOT_OK;
     uint32 timeout = MCU_PLL_LOCK_TIMEOUT;
     uint32 regValue;
-    
+
     do {
         regValue = REG_READ32(pllBaseAddr + 0x00);
         if ((regValue & 0x80000000U) != 0U) { /* LOCK bit */
@@ -181,7 +181,7 @@ static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
         }
         timeout--;
     } while (timeout > 0U);
-    
+
     return status;
 }
 
@@ -191,19 +191,19 @@ static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
 static void Mcu_SetClockDividers(const Mcu_ClockConfigType* clockConfig)
 {
     uint32 regValue;
-    
+
     /* Configure ARM clock divider */
     regValue = REG_READ32(MCU_CCM_CACRR);
     regValue &= ~0x07U;
     regValue |= (clockConfig->ArmDiv - 1U) & 0x07U;
     REG_WRITE32(MCU_CCM_CACRR, regValue);
-    
+
     /* Configure AXI clock divider */
     regValue = REG_READ32(MCU_CCM_CBCDR);
     regValue &= ~(0x07U << 16);
     regValue |= ((clockConfig->AxiDiv - 1U) & 0x07U) << 16;
     REG_WRITE32(MCU_CCM_CBCDR, regValue);
-    
+
     /* Configure AHB clock divider */
     regValue = REG_READ32(MCU_CCM_CBCMR);
     regValue &= ~(0x07U << 18);
@@ -218,9 +218,9 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
 {
     Mcu_ResetType resetReason;
     uint32 srsrValue;
-    
+
     srsrValue = REG_READ32(MCU_SRC_SRSR);
-    
+
     if ((srsrValue & 0x01U) != 0U) {
         resetReason = MCU_POWER_ON_RESET;
     }
@@ -236,7 +236,7 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
     else {
         resetReason = MCU_RESET_UNDEFINED;
     }
-    
+
     return resetReason;
 }
 
@@ -256,17 +256,17 @@ void Mcu_Init(const Mcu_ConfigType* ConfigPtr)
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_PARAM_CONFIG);
         return;
     }
-    
+
     if (Mcu_DriverState.initialized == TRUE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_ALREADY_INITIALIZED);
         return;
     }
     #endif
-    
+
     Mcu_ConfigPtr = ConfigPtr;
     Mcu_DriverState.initialized = TRUE;
     Mcu_DriverState.currentMode = MCU_MODE_RUN;
-    
+
     /* Initialize RAM sections if configured */
     if (ConfigPtr->RamSections != NULL_PTR) {
         for (uint8 i = 0U; i < ConfigPtr->NumRamSections; i++) {
@@ -285,27 +285,27 @@ void Mcu_Init(const Mcu_ConfigType* ConfigPtr)
 Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
 {
     Std_ReturnType status = E_OK;
-    
+
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_CLOCK, MCU_E_UNINIT);
         return E_NOT_OK;
     }
-    
+
     if (ClockSetting >= Mcu_ConfigPtr->NumClockConfigs) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_CLOCK, MCU_E_PARAM_CLOCK);
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (MCU_NO_PLL == STD_OFF)
     status = Mcu_ConfigureClock(&Mcu_ConfigPtr->ClockConfigs[ClockSetting]);
     #endif
-    
+
     if (status == E_OK) {
         Mcu_DriverState.currentClock = ClockSetting;
     }
-    
+
     return status;
 }
 
@@ -319,13 +319,13 @@ void Mcu_DistributePllClock(void)
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_UNINIT);
         return;
     }
-    
+
     if (Mcu_DriverState.currentClock == 0U) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_PLL_NOT_LOCKED);
         return;
     }
     #endif
-    
+
     /* Enable clock distribution */
     uint32 regValue = REG_READ32(MCU_CCM_CCR);
     regValue |= 0x01U; /* Set CLK_ENABLE bit */
@@ -338,14 +338,14 @@ void Mcu_DistributePllClock(void)
 Mcu_PllStatusType Mcu_GetPllStatus(void)
 {
     Mcu_PllStatusType pllStatus;
-    
+
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_PLL_STATUS, MCU_E_UNINIT);
         return MCU_PLL_STATUS_UNDEFINED;
     }
     #endif
-    
+
     #if (MCU_NO_PLL == STD_ON)
     pllStatus = MCU_PLL_STATUS_LOCKED;
     #else
@@ -357,7 +357,7 @@ Mcu_PllStatusType Mcu_GetPllStatus(void)
         pllStatus = MCU_PLL_STATUS_UNLOCKED;
     }
     #endif
-    
+
     return pllStatus;
 }
 
@@ -371,37 +371,37 @@ void Mcu_SetMode(Mcu_ModeType McuMode)
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_SET_MODE, MCU_E_UNINIT);
         return;
     }
-    
+
     if (McuMode >= Mcu_ConfigPtr->NumModes) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_SET_MODE, MCU_E_PARAM_MODE);
         return;
     }
     #endif
-    
+
     /* Configure mode based on target */
     switch (Mcu_ConfigPtr->ModeConfigs[McuMode].Mode) {
         case MCU_MODE_RUN:
             /* Set run mode */
             REG_WRITE32(MCU_GPC_PGC_CPU_MAPPING, 0x01U);
             break;
-            
+
         case MCU_MODE_SLEEP:
             /* Set sleep mode */
             REG_WRITE32(MCU_GPC_PGC_CPU_MAPPING, 0x02U);
             REG_WRITE32(MCU_GPC_PU_PGC_SW_PDN_REQ, 0x01U);
             break;
-            
+
         case MCU_MODE_DEEP_SLEEP:
             /* Set deep sleep mode */
             REG_WRITE32(MCU_GPC_PGC_CPU_MAPPING, 0x04U);
             REG_WRITE32(MCU_GPC_PU_PGC_SW_PDN_REQ, 0x01U);
             break;
-            
+
         default:
             /* Do nothing */
             break;
     }
-    
+
     Mcu_DriverState.currentMode = McuMode;
 }
 
@@ -411,16 +411,16 @@ void Mcu_SetMode(Mcu_ModeType McuMode)
 Mcu_ResetType Mcu_GetResetReason(void)
 {
     Mcu_ResetType resetReason;
-    
+
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_REASON, MCU_E_UNINIT);
         return MCU_RESET_UNDEFINED;
     }
     #endif
-    
+
     resetReason = Mcu_GetResetReasonFromRegister();
-    
+
     return resetReason;
 }
 
@@ -430,16 +430,16 @@ Mcu_ResetType Mcu_GetResetReason(void)
 Mcu_RawResetType Mcu_GetResetRawValue(void)
 {
     Mcu_RawResetType rawValue;
-    
+
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_RAW_VALUE, MCU_E_UNINIT);
         return 0U;
     }
     #endif
-    
+
     rawValue = REG_READ32(MCU_SRC_SRSR);
-    
+
     return rawValue;
 }
 
@@ -454,11 +454,11 @@ void Mcu_PerformReset(void)
         return;
     }
     #endif
-    
+
     #if (MCU_PERFORM_RESET_API == STD_ON)
     /* Trigger software reset */
     REG_WRITE32(MCU_SRC_SCR, 0x01U);
-    
+
     /* Wait for reset */
     while (1) {
         /* Infinite loop until reset occurs */
@@ -477,7 +477,7 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     #if (MCU_VERSION_INFO_API == STD_ON)
     versioninfo->vendorID = MCU_VENDOR_ID;
     versioninfo->moduleID = MCU_MODULE_ID;
@@ -493,19 +493,19 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 Std_ReturnType Mcu_InitRamSection(Mcu_RamSectionType RamSection)
 {
     Std_ReturnType status = E_NOT_OK;
-    
+
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_RAM_SECTION, MCU_E_UNINIT);
         return E_NOT_OK;
     }
-    
+
     if (RamSection >= Mcu_ConfigPtr->NumRamSections) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT_RAM_SECTION, MCU_E_PARAM_RAMSECTION);
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (MCU_GET_RAM_STATE_API == STD_ON)
     /* Initialize RAM section */
     uint8* ramPtr = (uint8*)Mcu_ConfigPtr->RamSections[RamSection].RamBaseAddr;
@@ -514,7 +514,7 @@ Std_ReturnType Mcu_InitRamSection(Mcu_RamSectionType RamSection)
     }
     status = E_OK;
     #endif
-    
+
     return status;
 }
 
@@ -524,21 +524,21 @@ Std_ReturnType Mcu_InitRamSection(Mcu_RamSectionType RamSection)
 Mcu_RamStateType Mcu_GetRamState(void)
 {
     Mcu_RamStateType ramState;
-    
+
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RAM_STATE, MCU_E_UNINIT);
         return MCU_RAMSTATE_INVALID;
     }
     #endif
-    
+
     #if (MCU_GET_RAM_STATE_API == STD_ON)
     /* Check RAM integrity */
     ramState = MCU_RAMSTATE_VALID;
     #else
     ramState = MCU_RAMSTATE_INVALID;
     #endif
-    
+
     return ramState;
 }
 

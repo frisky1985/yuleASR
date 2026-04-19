@@ -94,18 +94,18 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     Wdg_ConfigPtr = ConfigPtr;
-    
+
     uint32 baseAddr = Wdg_GetBaseAddr();
-    
+
     Wdg_EnableClock();
-    
+
     /* Disable watchdog during configuration */
     uint16 wcrValue = REG_READ16(baseAddr + WDG_WCR);
     wcrValue &= ~WDG_WCR_WDE;
     REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-    
+
     /* Configure timeout */
     Wdg_TimeoutType timeout;
     if (ConfigPtr->InitialMode == WDGIF_FAST_MODE) {
@@ -113,13 +113,13 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
     } else {
         timeout = ConfigPtr->SlowModeSettings.TimeoutPeriod;
     }
-    
+
     uint16 wtValue = Wdg_CalculateTimeoutValue(timeout);
     wcrValue = REG_READ16(baseAddr + WDG_WCR);
     wcrValue &= ~WDG_WCR_WT_MASK;
     wcrValue |= ((uint16)wtValue << 8) & WDG_WCR_WT_MASK;
     REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-    
+
     /* Configure interrupt if enabled */
     #if (WDG_FAST_MODE_INTERRUPT == STD_ON)
     if (ConfigPtr->FastModeSettings.InterruptMode) {
@@ -128,7 +128,7 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
         REG_WRITE16(baseAddr + WDG_WICR, wicrValue);
     }
     #endif
-    
+
     /* Enable watchdog if not OFF mode */
     if (ConfigPtr->InitialMode != WDGIF_OFF_MODE) {
         wcrValue = REG_READ16(baseAddr + WDG_WCR);
@@ -136,7 +136,7 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
         wcrValue |= WDG_WCR_WDT; /* Enable time-out assertion */
         REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
     }
-    
+
     Wdg_CurrentMode = ConfigPtr->InitialMode;
     Wdg_CurrentTimeout = timeout;
     Wdg_DriverInitialized = TRUE;
@@ -150,58 +150,58 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
         return E_NOT_OK;
     }
     #endif
-    
+
     #if (WDG_DISABLE_ALLOWED == STD_OFF)
     if (Mode == WDGIF_OFF_MODE) {
         Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_DISABLE_NOT_ALLOWED);
         return E_NOT_OK;
     }
     #endif
-    
+
     uint32 baseAddr = Wdg_GetBaseAddr();
     uint16 wcrValue = REG_READ16(baseAddr + WDG_WCR);
-    
+
     switch (Mode) {
         case WDGIF_OFF_MODE:
             /* Disable watchdog */
             wcrValue &= ~WDG_WCR_WDE;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
             break;
-            
+
         case WDGIF_SLOW_MODE:
             /* Enable with slow mode timeout */
             wcrValue |= WDG_WCR_WDE;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-            
+
             /* Update timeout */
             uint16 wtValueSlow = Wdg_CalculateTimeoutValue(Wdg_ConfigPtr->SlowModeSettings.TimeoutPeriod);
             wcrValue = REG_READ16(baseAddr + WDG_WCR);
             wcrValue &= ~WDG_WCR_WT_MASK;
             wcrValue |= ((uint16)wtValueSlow << 8) & WDG_WCR_WT_MASK;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-            
+
             Wdg_CurrentTimeout = Wdg_ConfigPtr->SlowModeSettings.TimeoutPeriod;
             break;
-            
+
         case WDGIF_FAST_MODE:
             /* Enable with fast mode timeout */
             wcrValue |= WDG_WCR_WDE;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-            
+
             /* Update timeout */
             uint16 wtValueFast = Wdg_CalculateTimeoutValue(Wdg_ConfigPtr->FastModeSettings.TimeoutPeriod);
             wcrValue = REG_READ16(baseAddr + WDG_WCR);
             wcrValue &= ~WDG_WCR_WT_MASK;
             wcrValue |= ((uint16)wtValueFast << 8) & WDG_WCR_WT_MASK;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-            
+
             Wdg_CurrentTimeout = Wdg_ConfigPtr->FastModeSettings.TimeoutPeriod;
             break;
-            
+
         default:
             return E_NOT_OK;
     }
-    
+
     Wdg_CurrentMode = Mode;
     return E_OK;
 }
@@ -214,13 +214,13 @@ void Wdg_Trigger(void)
         return;
     }
     #endif
-    
+
     if (Wdg_CurrentMode == WDGIF_OFF_MODE) {
         return;
     }
-    
+
     uint32 baseAddr = Wdg_GetBaseAddr();
-    
+
     /* Service sequence: write 0x5555 then 0xAAAA */
     REG_WRITE16(baseAddr + WDG_WSR, WDG_WSR_SEQ1);
     REG_WRITE16(baseAddr + WDG_WSR, WDG_WSR_SEQ2);
@@ -249,11 +249,11 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
         return E_NOT_OK;
     }
     #endif
-    
+
     if (Wdg_CurrentMode == WDGIF_OFF_MODE) {
         return E_NOT_OK;
     }
-    
+
     /* Validate timeout */
     if (timeout > WDG_MAX_TIMEOUT) {
         timeout = WDG_MAX_TIMEOUT;
@@ -261,19 +261,19 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
     if (timeout < WDG_MIN_TIMEOUT) {
         timeout = WDG_MIN_TIMEOUT;
     }
-    
+
     uint32 baseAddr = Wdg_GetBaseAddr();
-    
+
     /* Update timeout value */
     uint16 wtValue = Wdg_CalculateTimeoutValue(timeout);
     uint16 wcrValue = REG_READ16(baseAddr + WDG_WCR);
     wcrValue &= ~WDG_WCR_WT_MASK;
     wcrValue |= ((uint16)wtValue << 8) & WDG_WCR_WT_MASK;
     REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-    
+
     /* Trigger watchdog */
     Wdg_Trigger();
-    
+
     Wdg_CurrentTimeout = timeout;
     return E_OK;
 }

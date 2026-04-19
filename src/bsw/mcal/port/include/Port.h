@@ -4,11 +4,11 @@
  * @version 1.0.0
  * @date 2026-04-14
  * @author YuleTech
- * 
+ *
  * @copyright Copyright (c) 2026 YuleTech
- * 
+ *
  * @details Provides access to basic microcontroller port functionality.
- *          This includes the initialization of the port structure and 
+ *          This includes the initialization of the port structure and
  *          the configuration of individual port pins.
  */
 
@@ -108,25 +108,25 @@ extern const Port_ConfigType Port_Config;
 
 /**
  * @brief Initializes the Port Driver module
- * 
+ *
  * @param[in] ConfigPtr Pointer to configuration set
- * 
+ *
  * @pre None
  * @post Port Driver initialized
- * 
+ *
  * @note This function must be called before any other Port function
  */
 void Port_Init(const Port_ConfigType* ConfigPtr);
 
 /**
  * @brief Sets the port pin direction
- * 
+ *
  * @param[in] Pin Port pin ID number
  * @param[in] Direction Port pin direction (input/output)
- * 
+ *
  * @pre Port Driver initialized
  * @post Pin direction set
- * 
+ *
  * @note Only available if PORT_SET_PIN_DIRECTION_API is STD_ON
  */
 #if (PORT_SET_PIN_DIRECTION_API == STD_ON)
@@ -135,22 +135,22 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction);
 
 /**
  * @brief Refreshes port direction
- * 
+ *
  * @pre Port Driver initialized
  * @post All port pins refreshed
- * 
+ *
  * @note Used to refresh the direction of all configured ports to the configured direction
  */
 void Port_RefreshPortDirection(void);
 
 /**
  * @brief Gets the version information of this module
- * 
+ *
  * @param[out] versioninfo Pointer to where to store the version information
- * 
+ *
  * @pre None
  * @post Version information stored
- * 
+ *
  * @note Only available if PORT_VERSION_INFO_API is STD_ON
  */
 #if (PORT_VERSION_INFO_API == STD_ON)
@@ -159,13 +159,13 @@ void Port_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 /**
  * @brief Sets the port pin mode
- * 
+ *
  * @param[in] Pin Port pin ID number
  * @param[in] Mode New port pin mode to be set
- * 
+ *
  * @pre Port Driver initialized
  * @post Pin mode set
- * 
+ *
  * @note Only available if PORT_SET_PIN_MODE_API is STD_ON
  */
 #if (PORT_SET_PIN_MODE_API == STD_ON)

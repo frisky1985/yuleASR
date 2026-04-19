@@ -90,16 +90,16 @@ static void Spi_ConfigureBaudrate(uint32 baseAddr, uint32 baudrate)
     uint32 preDiv = 0U;
     uint32 postDiv = 0U;
     uint32 refClk = 24000000U; /* 24MHz reference clock */
-    
+
     /* Calculate dividers for target baudrate */
     uint32 targetDiv = refClk / baudrate;
     if (targetDiv > 0) {
         targetDiv--;
     }
-    
+
     preDiv = (targetDiv >> 4) & 0x0FU;
     postDiv = targetDiv & 0x0FU;
-    
+
     conreg &= ~(SPI_CONREG_PRE_DIVIDER_MASK | SPI_CONREG_POST_DIVIDER_MASK);
     conreg |= (preDiv << 8) | (postDiv << 12);
     REG_WRITE32(baseAddr + SPI_CONREG, conreg);
@@ -108,7 +108,7 @@ static void Spi_ConfigureBaudrate(uint32 baseAddr, uint32 baudrate)
 static void Spi_ConfigureMode(uint32 baseAddr, const Spi_JobConfigType* jobConfig)
 {
     uint32 configreg = 0U;
-    
+
     /* Configure clock polarity and phase */
     if (jobConfig->SpiShiftClockIdleLevel == STD_HIGH) {
         configreg |= (1U << (jobConfig->ChipSelect * 4 + 3));
@@ -116,12 +116,12 @@ static void Spi_ConfigureMode(uint32 baseAddr, const Spi_JobConfigType* jobConfi
     if (jobConfig->SpiDataShiftEdge == STD_HIGH) {
         configreg |= (1U << (jobConfig->ChipSelect * 4 + 2));
     }
-    
+
     /* Configure SS polarity */
     if (jobConfig->CsPolarity == STD_LOW) {
         configreg |= (1U << (jobConfig->ChipSelect * 4 + 1));
     }
-    
+
     REG_WRITE32(baseAddr + SPI_CONFIGREG, configreg);
 }
 
@@ -140,35 +140,35 @@ void Spi_Init(const Spi_ConfigType* Config)
         return;
     }
     #endif
-    
+
     Spi_ConfigPtr = Config;
-    
+
     for (uint8 i = 0U; i < SPI_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Spi_GetBaseAddr(i);
         if (baseAddr == 0U) continue;
-        
+
         Spi_EnableClock(i);
-        
+
         /* Disable SPI */
         REG_WRITE32(baseAddr + SPI_CONREG, 0U);
-        
+
         /* Clear status */
         REG_READ32(baseAddr + SPI_RXDATA);
-        
+
         /* Configure default settings */
         REG_WRITE32(baseAddr + SPI_CONREG, SPI_CONREG_EN);
         REG_WRITE32(baseAddr + SPI_PERIODREG, 0U);
         REG_WRITE32(baseAddr + SPI_INTREG, 0U);
     }
-    
+
     for (uint8 i = 0U; i < SPI_NUM_JOBS; i++) {
         Spi_JobResult[i] = SPI_JOB_OK;
     }
-    
+
     for (uint8 i = 0U; i < SPI_NUM_SEQUENCES; i++) {
         Spi_SeqResult[i] = SPI_SEQ_OK;
     }
-    
+
     Spi_DriverStatus = SPI_IDLE;
     Spi_DriverInitialized = TRUE;
 }
@@ -181,20 +181,20 @@ Std_ReturnType Spi_DeInit(void)
         return E_NOT_OK;
     }
     #endif
-    
+
     if (Spi_DriverStatus == SPI_BUSY) {
         return E_NOT_OK;
     }
-    
+
     for (uint8 i = 0U; i < SPI_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Spi_GetBaseAddr(i);
         if (baseAddr == 0U) continue;
-        
+
         /* Disable SPI */
         REG_WRITE32(baseAddr + SPI_CONREG, 0U);
         Spi_DisableClock(i);
     }
-    
+
     Spi_DriverInitialized = FALSE;
     Spi_DriverStatus = SPI_UNINIT;
     return E_OK;
@@ -228,67 +228,67 @@ Std_ReturnType Spi_AsyncTransmit(Spi_SequenceType Sequence)
         return E_NOT_OK;
     }
     #endif
-    
+
     if (Spi_SeqResult[Sequence] == SPI_SEQ_PENDING) {
         return E_NOT_OK;
     }
-    
+
     Spi_SeqResult[Sequence] = SPI_SEQ_PENDING;
     Spi_DriverStatus = SPI_BUSY;
-    
+
     /* Start transmission */
     const Spi_SequenceConfigType* seqConfig = &Spi_ConfigPtr->Sequences[Sequence];
-    
+
     for (uint8 i = 0U; i < seqConfig->NumJobs; i++) {
         Spi_JobType job = seqConfig->Jobs[i];
         const Spi_JobConfigType* jobConfig = &Spi_ConfigPtr->Jobs[job];
         uint32 baseAddr = Spi_GetBaseAddr((uint8)jobConfig->HwUnit);
-        
+
         Spi_JobResult[job] = SPI_JOB_PENDING;
-        
+
         /* Configure job */
         Spi_ConfigureChannel(baseAddr, jobConfig->ChipSelect);
         Spi_ConfigureBaudrate(baseAddr, jobConfig->Baudrate);
         Spi_ConfigureMode(baseAddr, jobConfig);
-        
+
         /* Execute channels */
         for (uint8 j = 0U; j < jobConfig->NumChannels; j++) {
             Spi_ChannelType channel = jobConfig->Channels[j];
             const Spi_ChannelConfigType* chConfig = &Spi_ConfigPtr->Channels[channel];
-            
+
             /* Set burst length */
             uint32 conreg = REG_READ32(baseAddr + SPI_CONREG);
             conreg &= ~SPI_CONREG_BURST_LENGTH_MASK;
             conreg |= ((uint32)(chConfig->DataWidth - 1U) << 24) & SPI_CONREG_BURST_LENGTH_MASK;
             REG_WRITE32(baseAddr + SPI_CONREG, conreg);
-            
+
             /* Exchange data */
             for (uint16 k = 0U; k < chConfig->MaxDataLength; k++) {
                 /* Wait for TX ready */
                 while ((REG_READ32(baseAddr + SPI_STATREG) & SPI_STATREG_TE) == 0U);
-                
+
                 /* Write data */
                 REG_WRITE32(baseAddr + SPI_TXDATA, 0U); /* Write actual data here */
-                
+
                 /* Start exchange */
                 conreg = REG_READ32(baseAddr + SPI_CONREG);
                 conreg |= SPI_CONREG_XCH;
                 REG_WRITE32(baseAddr + SPI_CONREG, conreg);
-                
+
                 /* Wait for RX ready */
                 while ((REG_READ32(baseAddr + SPI_STATREG) & SPI_STATREG_RR) == 0U);
-                
+
                 /* Read data */
                 (void)REG_READ32(baseAddr + SPI_RXDATA);
             }
         }
-        
+
         Spi_JobResult[job] = SPI_JOB_OK;
     }
-    
+
     Spi_SeqResult[Sequence] = SPI_SEQ_OK;
     Spi_DriverStatus = SPI_IDLE;
-    
+
     return E_OK;
 }
 
@@ -395,7 +395,7 @@ Spi_StatusType Spi_GetHWUnitStatus(Spi_HWUnitType HWUnit)
         return SPI_UNINIT;
     }
     #endif
-    
+
     if (Spi_DriverStatus == SPI_BUSY) {
         return SPI_BUSY;
     }
@@ -414,7 +414,7 @@ void Spi_Cancel(Spi_SequenceType Sequence)
         return;
     }
     #endif
-    
+
     if (Spi_SeqResult[Sequence] == SPI_SEQ_PENDING) {
         Spi_SeqResult[Sequence] = SPI_SEQ_CANCELLED;
         Spi_DriverStatus = SPI_IDLE;

@@ -102,36 +102,36 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     Adc_ConfigPtr = ConfigPtr;
-    
+
     for (uint8 i = 0U; i < ADC_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Adc_GetBaseAddr(ConfigPtr->HwUnits[i].HwUnitId);
         if (baseAddr == 0U) continue;
-        
+
         Adc_EnableClock(ConfigPtr->HwUnits[i].HwUnitId);
-        
+
         /* Configure ADC */
         uint32 cfgValue = 0U;
         cfgValue |= (0x01U << 0); /* IPG clock */
         cfgValue |= (0x02U << 2); /* 12-bit mode */
         cfgValue |= (0x01U << 5); /* Clock divide by 2 */
         REG_WRITE32(baseAddr + ADC_CFG, cfgValue);
-        
+
         /* Enable ADC */
         uint32 gcValue = ADC_GC_ADACKEN;
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
-        
+
         /* Calibration */
         gcValue |= ADC_GC_ADCONV;
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
         while ((REG_READ32(baseAddr + ADC_GS) & ADC_GS_ADACT) != 0U);
     }
-    
+
     for (uint8 i = 0U; i < ADC_NUM_GROUPS; i++) {
         Adc_GroupStatus[i] = ADC_IDLE;
     }
-    
+
     Adc_DriverInitialized = TRUE;
 }
 
@@ -144,23 +144,23 @@ void Adc_DeInit(void)
         return;
     }
     #endif
-    
+
     for (uint8 i = 0U; i < ADC_NUM_GROUPS; i++) {
         if (Adc_GroupStatus[i] == ADC_BUSY) {
             return;
         }
     }
-    
+
     for (uint8 i = 0U; i < ADC_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Adc_GetBaseAddr(Adc_ConfigPtr->HwUnits[i].HwUnitId);
         if (baseAddr == 0U) continue;
-        
+
         /* Disable ADC */
         REG_WRITE32(baseAddr + ADC_GC, 0U);
-        
+
         Adc_DisableClock(Adc_ConfigPtr->HwUnits[i].HwUnitId);
     }
-    
+
     Adc_DriverInitialized = FALSE;
 }
 #endif
@@ -177,43 +177,43 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
         return;
     }
     #endif
-    
+
     if (Adc_GroupStatus[Group] == ADC_BUSY) {
         return;
     }
-    
+
     const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
     uint32 baseAddr = Adc_GetBaseAddr(groupConfig->HwUnit);
-    
+
     Adc_GroupStatus[Group] = ADC_BUSY;
-    
+
     /* Configure for software trigger */
     uint32 gcValue = REG_READ32(baseAddr + ADC_GC);
     gcValue &= ~ADC_GC_ADTRG; /* Software trigger */
     REG_WRITE32(baseAddr + ADC_GC, gcValue);
-    
+
     /* Start conversion for each channel */
     for (uint8 i = 0U; i < groupConfig->NumChannels; i++) {
         Adc_ChannelType channel = groupConfig->Channels[i];
-        
+
         /* Select channel */
         uint32 hcValue = channel & ADC_HC_ADCH_MASK;
         REG_WRITE32(baseAddr + ADC_HC0, hcValue);
-        
+
         /* Start conversion */
         gcValue = REG_READ32(baseAddr + ADC_GC);
         gcValue |= ADC_GC_ADCONV;
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
-        
+
         /* Wait for conversion complete */
         while ((REG_READ32(baseAddr + ADC_HS) & ADC_HS_COCO0) == 0U);
-        
+
         /* Read result */
         Adc_GroupResults[Group][i] = (Adc_ValueGroupType)(REG_READ32(baseAddr + ADC_R0) & 0xFFFU);
     }
-    
+
     Adc_GroupStatus[Group] = ADC_STREAM_COMPLETED;
-    
+
     /* Call notification if enabled */
     if (groupConfig->GroupNotification) {
         if (groupConfig->NotificationFn != NULL_PTR) {
@@ -234,20 +234,20 @@ void Adc_StopGroupConversion(Adc_GroupType Group)
         return;
     }
     #endif
-    
+
     if (Adc_GroupStatus[Group] != ADC_BUSY) {
         return;
     }
-    
+
     const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
     uint32 baseAddr = Adc_GetBaseAddr(groupConfig->HwUnit);
-    
+
     /* Stop conversion */
     uint32 gcValue = REG_READ32(baseAddr + ADC_GC);
     gcValue &= ~ADC_GC_ADCONV;
     gcValue &= ~ADC_GC_ADCO;
     REG_WRITE32(baseAddr + ADC_GC, gcValue);
-    
+
     Adc_GroupStatus[Group] = ADC_IDLE;
 }
 
@@ -267,13 +267,13 @@ Std_ReturnType Adc_ReadGroup(Adc_GroupType Group, Adc_ValueGroupType* DataBuffer
         return E_NOT_OK;
     }
     #endif
-    
+
     const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
-    
+
     for (uint8 i = 0U; i < groupConfig->NumChannels; i++) {
         DataBufferPtr[i] = Adc_GroupResults[Group][i];
     }
-    
+
     return E_OK;
 }
 
@@ -290,14 +290,14 @@ void Adc_EnableHardwareTrigger(Adc_GroupType Group)
         return;
     }
     #endif
-    
+
     const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
     if (groupConfig->TriggerSource != ADC_TRIGG_SRC_HW) {
         return;
     }
-    
+
     uint32 baseAddr = Adc_GetBaseAddr(groupConfig->HwUnit);
-    
+
     /* Enable hardware trigger */
     uint32 gcValue = REG_READ32(baseAddr + ADC_GC);
     gcValue |= ADC_GC_ADTRG;
@@ -316,10 +316,10 @@ void Adc_DisableHardwareTrigger(Adc_GroupType Group)
         return;
     }
     #endif
-    
+
     const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
     uint32 baseAddr = Adc_GetBaseAddr(groupConfig->HwUnit);
-    
+
     /* Disable hardware trigger */
     uint32 gcValue = REG_READ32(baseAddr + ADC_GC);
     gcValue &= ~ADC_GC_ADTRG;
@@ -406,7 +406,7 @@ Adc_StreamNumSampleType Adc_GetStreamLastPointer(Adc_GroupType Group, Adc_ValueG
         return 0U;
     }
     #endif
-    
+
     *PtrToSamplePtr = Adc_GroupResults[Group];
     return Adc_ConfigPtr->Groups[Group].NumChannels;
 }

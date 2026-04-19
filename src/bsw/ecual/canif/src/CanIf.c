@@ -38,14 +38,14 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     CanIf_ConfigPtr = ConfigPtr;
-    
+
     for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
         CanIf_ControllerMode[i] = CANIF_CS_STOPPED;
         CanIf_PduMode[i] = CANIF_OFFLINE;
     }
-    
+
     CanIf_DriverInitialized = TRUE;
 }
 
@@ -57,12 +57,12 @@ void CanIf_DeInit(void)
         return;
     }
     #endif
-    
+
     for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
         CanIf_ControllerMode[i] = CANIF_CS_UNINIT;
         CanIf_PduMode[i] = CANIF_OFFLINE;
     }
-    
+
     CanIf_DriverInitialized = FALSE;
 }
 
@@ -78,10 +78,10 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
         return E_NOT_OK;
     }
     #endif
-    
+
     Std_ReturnType status = E_OK;
     Can_ReturnType canStatus;
-    
+
     switch (ControllerMode) {
         case CANIF_CS_STARTED:
             canStatus = Can_SetControllerMode(ControllerId, CAN_CS_STARTED);
@@ -91,7 +91,7 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
                 status = E_NOT_OK;
             }
             break;
-            
+
         case CANIF_CS_STOPPED:
             canStatus = Can_SetControllerMode(ControllerId, CAN_CS_STOPPED);
             if (canStatus == CAN_OK) {
@@ -100,7 +100,7 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
                 status = E_NOT_OK;
             }
             break;
-            
+
         case CANIF_CS_SLEEP:
             canStatus = Can_SetControllerMode(ControllerId, CAN_CS_SLEEP);
             if (canStatus == CAN_OK) {
@@ -109,12 +109,12 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
                 status = E_NOT_OK;
             }
             break;
-            
+
         default:
             status = E_NOT_OK;
             break;
     }
-    
+
     return status;
 }
 
@@ -134,7 +134,7 @@ Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
         return E_NOT_OK;
     }
     #endif
-    
+
     *ControllerModePtr = CanIf_ControllerMode[ControllerId];
     return E_OK;
 }
@@ -155,32 +155,32 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
         return E_NOT_OK;
     }
     #endif
-    
+
     const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[TxPduId];
     uint8 controllerId = txPduConfig->ControllerId;
-    
+
     if (CanIf_ControllerMode[controllerId] != CANIF_CS_STARTED) {
         return E_NOT_OK;
     }
-    
+
     if (CanIf_PduMode[controllerId] == CANIF_OFFLINE) {
         return E_NOT_OK;
     }
-    
+
     Can_PduType canPdu;
     canPdu.idType = txPduConfig->CanIdType;
     canPdu.CanId = txPduConfig->CanId;
     canPdu.CanDlc = (uint8)PduInfoPtr->SduLength;
     canPdu.SduPtr = PduInfoPtr->SduDataPtr;
-    
+
     Can_ReturnType canStatus = Can_Write(txPduConfig->Hth, &canPdu);
-    
+
     if (canStatus == CAN_OK) {
         return E_OK;
     } else if (canStatus == CAN_BUSY) {
         return E_NOT_OK;
     }
-    
+
     return E_NOT_OK;
 }
 
@@ -196,7 +196,7 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeReq
         return E_NOT_OK;
     }
     #endif
-    
+
     CanIf_PduMode[ControllerId] = PduModeRequest;
     return E_OK;
 }
@@ -217,7 +217,7 @@ Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePt
         return E_NOT_OK;
     }
     #endif
-    
+
     *PduModePtr = CanIf_PduMode[ControllerId];
     return E_OK;
 }
@@ -242,7 +242,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
     if (CanIf_DriverInitialized == FALSE) {
         return;
     }
-    
+
     if (CanTxPduId < CANIF_NUM_TX_PDUS) {
         const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[CanTxPduId];
         if (txPduConfig->TxConfirmation) {
@@ -256,20 +256,20 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr
     if (CanIf_DriverInitialized == FALSE) {
         return;
     }
-    
+
     /* Find matching Rx PDU */
     for (PduIdType i = 0U; i < CANIF_NUM_RX_PDUS; i++) {
         const CanIf_RxPduConfigType* rxPduConfig = &CanIf_ConfigPtr->RxPdus[i];
-        
+
         if (rxPduConfig->Hrh == Mailbox->Hoh &&
             rxPduConfig->CanId == Mailbox->CanId) {
-            
+
             if (rxPduConfig->RxIndication) {
                 PduInfoType pduInfo;
                 pduInfo.SduDataPtr = PduInfoPtr->SduDataPtr;
                 pduInfo.SduLength = PduInfoPtr->SduLength;
                 pduInfo.MetaDataPtr = NULL_PTR;
-                
+
                 PduR_RxIndication(rxPduConfig->PduId, &pduInfo);
             }
             break;
@@ -282,10 +282,10 @@ void CanIf_ControllerBusOff(uint8 ControllerId)
     if (CanIf_DriverInitialized == FALSE) {
         return;
     }
-    
+
     if (ControllerId < CANIF_NUM_CONTROLLERS) {
         CanIf_ControllerMode[ControllerId] = CANIF_CS_STOPPED;
-        
+
         /* Notify upper layer */
         /* CanSM_ControllerBusOff(ControllerId); */
     }
@@ -296,10 +296,10 @@ void CanIf_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType
     if (CanIf_DriverInitialized == FALSE) {
         return;
     }
-    
+
     if (ControllerId < CANIF_NUM_CONTROLLERS) {
         CanIf_ControllerMode[ControllerId] = ControllerMode;
-        
+
         /* Notify upper layer */
         /* CanSM_ControllerModeIndication(ControllerId, ControllerMode); */
     }
@@ -317,12 +317,12 @@ Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Update dynamic CAN ID */
     /* Note: In real implementation, this would modify the configuration */
     (void)CanTxPduId;
     (void)CanId;
-    
+
     return E_OK;
 }
 
@@ -334,14 +334,14 @@ Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check all controllers for wakeup */
     for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
         if (Can_CheckWakeup(i) == E_OK) {
             return E_OK;
         }
     }
-    
+
     (void)WakeupSource;
     return E_NOT_OK;
 }
@@ -358,7 +358,7 @@ Std_ReturnType CanIf_SetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType 
         return E_NOT_OK;
     }
     #endif
-    
+
     (void)TransceiverId;
     (void)TransceiverMode;
     return E_OK;
@@ -380,7 +380,7 @@ Std_ReturnType CanIf_GetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType*
         return E_NOT_OK;
     }
     #endif
-    
+
     *TransceiverModePtr = CANIF_TRCV_MODE_NORMAL;
     return E_OK;
 }
@@ -401,7 +401,7 @@ Std_ReturnType CanIf_GetTrcvWakeupReason(uint8 TransceiverId, CanIf_TrcvWakeupRe
         return E_NOT_OK;
     }
     #endif
-    
+
     *TrcvWuReasonPtr = CANIF_TRCV_WU_NOT_SUPPORTED;
     return E_OK;
 }
@@ -418,7 +418,7 @@ Std_ReturnType CanIf_SetTrcvWakeupMode(uint8 TransceiverId, CanIf_TrcvWakeupMode
         return E_NOT_OK;
     }
     #endif
-    
+
     (void)TransceiverId;
     (void)TrcvWakeupMode;
     return E_OK;
@@ -436,7 +436,7 @@ Std_ReturnType CanIf_SetBaudrate(uint8 ControllerId, uint16 BaudRate)
         return E_NOT_OK;
     }
     #endif
-    
+
     (void)ControllerId;
     (void)BaudRate;
     return E_OK;
@@ -458,7 +458,7 @@ Std_ReturnType CanIf_GetBaudrate(uint8 ControllerId, uint16* BaudRatePtr)
         return E_NOT_OK;
     }
     #endif
-    
+
     *BaudRatePtr = CANIF_DEFAULT_BAUDRATE;
     return E_OK;
 }

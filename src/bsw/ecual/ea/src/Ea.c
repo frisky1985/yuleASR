@@ -75,9 +75,9 @@ void Ea_Init(const Ea_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     Ea_ConfigPtr = ConfigPtr;
-    
+
     /* Initialize block info */
     for (uint16 i = 0U; i < EA_NUM_BLOCKS; i++) {
         Ea_BlockInfo[i].EepromAddress = Ea_CalculateBlockAddress((Ea_BlockIdType)i);
@@ -86,7 +86,7 @@ void Ea_Init(const Ea_ConfigType* ConfigPtr)
         Ea_BlockInfo[i].IsInvalidated = FALSE;
         Ea_BlockInfo[i].WriteCycleCounter = 0U;
     }
-    
+
     /* Load block configuration */
     if (ConfigPtr->BlockConfig != NULL_PTR) {
         for (uint16 i = 0U; i < ConfigPtr->NumBlocks; i++) {
@@ -97,12 +97,12 @@ void Ea_Init(const Ea_ConfigType* ConfigPtr)
             }
         }
     }
-    
+
     Ea_Status = EA_IDLE;
     Ea_JobResult = EA_JOB_OK;
     Ea_CurrentMode = EA_MODE_FAST;
     Ea_CurrentJob = EA_JOB_NONE;
-    
+
     Ea_Initialized = TRUE;
 }
 
@@ -120,7 +120,7 @@ void Ea_SetMode(Ea_ModeType Mode)
     }
     #endif
     #endif
-    
+
     #if (EA_SET_MODE_SUPPORTED == STD_ON)
     Ea_CurrentMode = Mode;
     /* Propagate mode to EEPROM driver */
@@ -157,23 +157,23 @@ Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if block is valid */
     if (Ea_BlockInfo[BlockNumber].IsValid == FALSE) {
         Ea_JobResult = EA_BLOCK_INVALID;
         return E_NOT_OK;
     }
-    
+
     if (Ea_BlockInfo[BlockNumber].IsInvalidated == TRUE) {
         Ea_JobResult = EA_BLOCK_INVALID;
         return E_NOT_OK;
     }
-    
+
     /* Check if another job is pending */
     if (Ea_Status == EA_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup read job */
     Ea_CurrentJob = EA_JOB_READ;
     Ea_CurrentBlock = BlockNumber;
@@ -182,18 +182,18 @@ Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
     Ea_DataLength = Length;
     Ea_Status = EA_BUSY;
     Ea_JobResult = EA_JOB_PENDING;
-    
+
     /* Start EEPROM read operation */
     uint32 eepromAddress = Ea_BlockInfo[BlockNumber].EepromAddress + BlockOffset;
     Std_ReturnType result = Eep_Read(eepromAddress, DataBufferPtr, Length);
-    
+
     if (result != E_OK) {
         Ea_Status = EA_IDLE;
         Ea_JobResult = EA_JOB_FAILED;
         Ea_CurrentJob = EA_JOB_NONE;
         return E_NOT_OK;
     }
-    
+
     return E_OK;
 }
 
@@ -213,17 +213,17 @@ Std_ReturnType Ea_Write(Ea_BlockIdType BlockNumber, const uint8* DataBufferPtr)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if block is valid */
     if (Ea_BlockInfo[BlockNumber].IsValid == FALSE) {
         return E_NOT_OK;
     }
-    
+
     /* Check if another job is pending */
     if (Ea_Status == EA_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup write job */
     Ea_CurrentJob = EA_JOB_WRITE;
     Ea_CurrentBlock = BlockNumber;
@@ -232,18 +232,18 @@ Std_ReturnType Ea_Write(Ea_BlockIdType BlockNumber, const uint8* DataBufferPtr)
     Ea_DataLength = Ea_BlockInfo[BlockNumber].BlockSize;
     Ea_Status = EA_BUSY;
     Ea_JobResult = EA_JOB_PENDING;
-    
+
     /* Start EEPROM write operation */
     uint32 eepromAddress = Ea_BlockInfo[BlockNumber].EepromAddress;
     Std_ReturnType result = Eep_Write(eepromAddress, DataBufferPtr, Ea_DataLength);
-    
+
     if (result != E_OK) {
         Ea_Status = EA_IDLE;
         Ea_JobResult = EA_JOB_FAILED;
         Ea_CurrentJob = EA_JOB_NONE;
         return E_NOT_OK;
     }
-    
+
     return E_OK;
 }
 
@@ -255,7 +255,7 @@ void Ea_Cancel(void)
         return;
     }
     #endif
-    
+
     if (Ea_Status == EA_BUSY) {
         /* Cancel current job */
         Eep_Cancel();
@@ -273,7 +273,7 @@ Ea_StatusType Ea_GetStatus(void)
         return EA_IDLE;
     }
     #endif
-    
+
     return Ea_Status;
 }
 
@@ -285,7 +285,7 @@ Ea_JobResultType Ea_GetJobResult(void)
         return EA_JOB_FAILED;
     }
     #endif
-    
+
     return Ea_JobResult;
 }
 
@@ -301,30 +301,30 @@ Std_ReturnType Ea_InvalidateBlock(Ea_BlockIdType BlockNumber)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if another job is pending */
     if (Ea_Status == EA_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup invalidate job */
     Ea_CurrentJob = EA_JOB_INVALIDATE;
     Ea_CurrentBlock = BlockNumber;
     Ea_Status = EA_BUSY;
     Ea_JobResult = EA_JOB_PENDING;
-    
+
     /* Mark block as invalidated */
     Ea_BlockInfo[BlockNumber].IsInvalidated = TRUE;
-    
+
     /* Complete immediately for now */
     Ea_Status = EA_IDLE;
     Ea_JobResult = EA_JOB_OK;
     Ea_CurrentJob = EA_JOB_NONE;
-    
+
     #if (EA_NVM_JOB_END_NOTIFICATION == STD_ON)
     Ea_JobEndNotification();
     #endif
-    
+
     return E_OK;
 }
 
@@ -340,33 +340,33 @@ Std_ReturnType Ea_EraseImmediateBlock(Ea_BlockIdType BlockNumber)
         return E_NOT_OK;
     }
     #endif
-    
+
     /* Check if another job is pending */
     if (Ea_Status == EA_BUSY) {
         return E_NOT_OK;
     }
-    
+
     /* Setup erase immediate job */
     Ea_CurrentJob = EA_JOB_ERASE_IMMEDIATE;
     Ea_CurrentBlock = BlockNumber;
     Ea_Status = EA_BUSY;
     Ea_JobResult = EA_JOB_PENDING;
-    
+
     /* Erase the block in EEPROM */
     uint32 eepromAddress = Ea_BlockInfo[BlockNumber].EepromAddress;
     uint16 blockSize = Ea_BlockInfo[BlockNumber].BlockSize;
-    
+
     Std_ReturnType result = Eep_Erase(eepromAddress, blockSize);
-    
+
     if (result != E_OK) {
         Ea_Status = EA_IDLE;
         Ea_JobResult = EA_JOB_FAILED;
         Ea_CurrentJob = EA_JOB_NONE;
         return E_NOT_OK;
     }
-    
+
     Ea_EraseCycleCounter++;
-    
+
     return E_OK;
 }
 
@@ -394,7 +394,7 @@ void Ea_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = EA_VENDOR_ID;
     versioninfo->moduleID = EA_MODULE_ID;
     versioninfo->sw_major_version = EA_SW_MAJOR_VERSION;
@@ -410,7 +410,7 @@ uint32 Ea_GetEraseCycleCount(void)
         return 0U;
     }
     #endif
-    
+
     return Ea_EraseCycleCounter;
 }
 
@@ -419,7 +419,7 @@ void Ea_MainFunction(void)
     if (Ea_Initialized == FALSE) {
         return;
     }
-    
+
     /* Process current job */
     if (Ea_Status == EA_BUSY) {
         Ea_ProcessJob();
@@ -429,40 +429,40 @@ void Ea_MainFunction(void)
 static void Ea_ProcessJob(void)
 {
     MemIf_JobResultType eepResult = Eep_GetJobResult();
-    
+
     if (eepResult == MEMIF_JOB_PENDING) {
         /* Job still pending */
         return;
     }
-    
+
     if (eepResult == MEMIF_JOB_OK) {
         /* Job completed successfully */
         switch (Ea_CurrentJob) {
             case EA_JOB_READ:
                 Ea_JobResult = EA_JOB_OK;
                 break;
-                
+
             case EA_JOB_WRITE:
                 Ea_BlockInfo[Ea_CurrentBlock].WriteCycleCounter++;
                 Ea_JobResult = EA_JOB_OK;
                 break;
-                
+
             case EA_JOB_INVALIDATE:
                 Ea_JobResult = EA_JOB_OK;
                 break;
-                
+
             case EA_JOB_ERASE_IMMEDIATE:
                 Ea_JobResult = EA_JOB_OK;
                 break;
-                
+
             default:
                 Ea_JobResult = EA_JOB_OK;
                 break;
         }
-        
+
         Ea_Status = EA_IDLE;
         Ea_CurrentJob = EA_JOB_NONE;
-        
+
         #if (EA_NVM_JOB_END_NOTIFICATION == STD_ON)
         Ea_JobEndNotification();
         #endif
@@ -471,7 +471,7 @@ static void Ea_ProcessJob(void)
         Ea_JobResult = EA_JOB_FAILED;
         Ea_Status = EA_IDLE;
         Ea_CurrentJob = EA_JOB_NONE;
-        
+
         #if (EA_NVM_JOB_ERROR_NOTIFICATION == STD_ON)
         Ea_JobErrorNotification();
         #endif
@@ -483,11 +483,11 @@ static Std_ReturnType Ea_FindBlockAddress(Ea_BlockIdType BlockNumber, uint32* Bl
     if (BlockNumber >= EA_NUM_BLOCKS) {
         return E_NOT_OK;
     }
-    
+
     if (Ea_BlockInfo[BlockNumber].IsValid == FALSE) {
         return E_NOT_OK;
     }
-    
+
     *BlockAddress = Ea_BlockInfo[BlockNumber].EepromAddress;
     return E_OK;
 }

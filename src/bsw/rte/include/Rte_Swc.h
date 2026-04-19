@@ -211,7 +211,7 @@ extern Rte_StatusType Swc_Stop(Swc_ComponentHandleType componentHandle);
  * @param state Pointer to store state
  * @return RTE status
  */
-extern Rte_StatusType Swc_GetState(Swc_ComponentHandleType componentHandle, 
+extern Rte_StatusType Swc_GetState(Swc_ComponentHandleType componentHandle,
                                     Swc_ComponentStateType* state);
 
 /**
@@ -220,7 +220,7 @@ extern Rte_StatusType Swc_GetState(Swc_ComponentHandleType componentHandle,
  * @param runnableId Runnable ID
  * @return RTE status
  */
-extern Rte_StatusType Swc_ExecuteRunnable(Swc_ComponentHandleType componentHandle, 
+extern Rte_StatusType Swc_ExecuteRunnable(Swc_ComponentHandleType componentHandle,
                                            Swc_RunnableIdType runnableId);
 
 /**

@@ -49,16 +49,16 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     MemIf_ConfigPtr = ConfigPtr;
-    
+
     /* Initialize mode for each device */
     for (uint8 i = 0U; i < MEMIF_NUM_DEVICES; i++) {
         if (i < ConfigPtr->NumDevices) {
             MemIf_CurrentMode[i] = ConfigPtr->Devices[i].DefaultMode;
         }
     }
-    
+
     MemIf_Initialized = TRUE;
 }
 
@@ -90,32 +90,32 @@ Std_ReturnType MemIf_Read(MemIf_DeviceIdType DeviceIndex,
         return E_NOT_OK;
     }
     #endif
-    
+
     Std_ReturnType result = E_NOT_OK;
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 result = Fee_Read(BlockNumber, BlockOffset, DataBufferPtr, Length);
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 result = Ea_Read(BlockNumber, BlockOffset, DataBufferPtr, Length);
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access - would call Eep_Read */
                 result = E_NOT_OK;
                 break;
-                
+
             default:
                 result = E_NOT_OK;
                 break;
         }
     }
-    
+
     return result;
 }
 
@@ -141,32 +141,32 @@ Std_ReturnType MemIf_Write(MemIf_DeviceIdType DeviceIndex,
         return E_NOT_OK;
     }
     #endif
-    
+
     Std_ReturnType result = E_NOT_OK;
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 result = Fee_Write(BlockNumber, DataBufferPtr);
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 result = Ea_Write(BlockNumber, DataBufferPtr);
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access */
                 result = E_NOT_OK;
                 break;
-                
+
             default:
                 result = E_NOT_OK;
                 break;
         }
     }
-    
+
     return result;
 }
 
@@ -182,23 +182,23 @@ void MemIf_Cancel(MemIf_DeviceIdType DeviceIndex)
         return;
     }
     #endif
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 Fee_Cancel();
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 Ea_Cancel();
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access */
                 break;
-                
+
             default:
                 break;
         }
@@ -217,32 +217,32 @@ MemIf_StatusType MemIf_GetStatus(MemIf_DeviceIdType DeviceIndex)
         return MEMIF_IDLE;
     }
     #endif
-    
+
     MemIf_StatusType status = MEMIF_IDLE;
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 status = Fee_GetStatus();
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 status = Ea_GetStatus();
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access */
                 status = MEMIF_IDLE;
                 break;
-                
+
             default:
                 status = MEMIF_IDLE;
                 break;
         }
     }
-    
+
     return status;
 }
 
@@ -258,32 +258,32 @@ MemIf_JobResultType MemIf_GetJobResult(MemIf_DeviceIdType DeviceIndex)
         return MEMIF_JOB_FAILED;
     }
     #endif
-    
+
     MemIf_JobResultType result = MEMIF_JOB_FAILED;
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 result = Fee_GetJobResult();
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 result = Ea_GetJobResult();
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access */
                 result = MEMIF_JOB_OK;
                 break;
-                
+
             default:
                 result = MEMIF_JOB_FAILED;
                 break;
         }
     }
-    
+
     return result;
 }
 
@@ -304,32 +304,32 @@ Std_ReturnType MemIf_InvalidateBlock(MemIf_DeviceIdType DeviceIndex,
         return E_NOT_OK;
     }
     #endif
-    
+
     Std_ReturnType result = E_NOT_OK;
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 result = Fee_InvalidateBlock(BlockNumber);
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 result = Ea_InvalidateBlock(BlockNumber);
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access */
                 result = E_NOT_OK;
                 break;
-                
+
             default:
                 result = E_NOT_OK;
                 break;
         }
     }
-    
+
     return result;
 }
 
@@ -350,32 +350,32 @@ Std_ReturnType MemIf_EraseImmediateBlock(MemIf_DeviceIdType DeviceIndex,
         return E_NOT_OK;
     }
     #endif
-    
+
     Std_ReturnType result = E_NOT_OK;
-    
+
     if (MemIf_ConfigPtr != NULL_PTR && DeviceIndex < MemIf_ConfigPtr->NumDevices) {
         const MemIf_DeviceConfigType* deviceConfig = &MemIf_ConfigPtr->Devices[DeviceIndex];
-        
+
         switch (deviceConfig->UnderlyingDriver) {
             case MEMIF_UNDERLYING_FEE:
                 result = Fee_EraseImmediateBlock(BlockNumber);
                 break;
-                
+
             case MEMIF_UNDERLYING_EA:
                 result = Ea_EraseImmediateBlock(BlockNumber);
                 break;
-                
+
             case MEMIF_UNDERLYING_EEP:
                 /* Direct EEPROM access */
                 result = E_NOT_OK;
                 break;
-                
+
             default:
                 result = E_NOT_OK;
                 break;
         }
     }
-    
+
     return result;
 }
 
@@ -387,7 +387,7 @@ void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = MEMIF_VENDOR_ID;
     versioninfo->moduleID = MEMIF_MODULE_ID;
     versioninfo->sw_major_version = MEMIF_SW_MAJOR_VERSION;
@@ -407,10 +407,10 @@ void MemIf_SetMode(MemIf_DeviceIdType DeviceIndex, MemIf_ModeType Mode)
         return;
     }
     #endif
-    
+
     if (DeviceIndex < MEMIF_NUM_DEVICES) {
         MemIf_CurrentMode[DeviceIndex] = Mode;
-        
+
         /* In a real implementation, this would propagate the mode change
          * to the underlying driver (Fee_SetMode, Ea_SetMode, etc.) */
     }

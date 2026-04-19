@@ -93,36 +93,36 @@ void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     Pwm_ConfigPtr = ConfigPtr;
-    
+
     for (uint8 i = 0U; i < PWM_NUM_CHANNELS; i++) {
         const Pwm_ChannelConfigType* chConfig = &ConfigPtr->Channels[i];
         uint32 baseAddr = Pwm_GetBaseAddr(chConfig->ChannelId);
         if (baseAddr == 0U) continue;
-        
+
         Pwm_EnableClock(chConfig->ChannelId);
-        
+
         /* Software reset */
         REG_WRITE32(baseAddr + PWM_CR, PWM_CR_SWR);
         while ((REG_READ32(baseAddr + PWM_CR) & PWM_CR_SWR) != 0U);
-        
+
         /* Configure period */
         REG_WRITE32(baseAddr + PWM_PR, chConfig->DefaultPeriod);
-        
+
         /* Configure sample (duty cycle) */
         uint32 sample = (chConfig->DefaultDutyCycle * chConfig->DefaultPeriod) / PWM_DUTY_CYCLE_RESOLUTION;
         REG_WRITE32(baseAddr + PWM_SAR, sample);
-        
+
         /* Configure control register */
         uint32 crValue = 0U;
         crValue |= ((uint32)chConfig->ClockPrescaler << 4) & PWM_CR_PRESCALER_MASK;
         crValue |= PWM_CR_EN;
         REG_WRITE32(baseAddr + PWM_CR, crValue);
-        
+
         Pwm_ChannelDutyCycle[i] = chConfig->DefaultDutyCycle;
     }
-    
+
     Pwm_DriverInitialized = TRUE;
 }
 
@@ -135,17 +135,17 @@ void Pwm_DeInit(void)
         return;
     }
     #endif
-    
+
     for (uint8 i = 0U; i < PWM_NUM_CHANNELS; i++) {
         uint32 baseAddr = Pwm_GetBaseAddr(Pwm_ConfigPtr->Channels[i].ChannelId);
         if (baseAddr == 0U) continue;
-        
+
         /* Disable PWM */
         REG_WRITE32(baseAddr + PWM_CR, 0U);
-        
+
         Pwm_DisableClock(Pwm_ConfigPtr->Channels[i].ChannelId);
     }
-    
+
     Pwm_DriverInitialized = FALSE;
 }
 #endif
@@ -162,13 +162,13 @@ void Pwm_SetDutyCycle(Pwm_ChannelType Channel, uint16 DutyCycle)
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
     uint32 period = REG_READ32(baseAddr + PWM_PR);
-    
+
     /* Calculate sample value from duty cycle */
     uint32 sample = ((uint32)DutyCycle * period) / PWM_DUTY_CYCLE_RESOLUTION;
-    
+
     REG_WRITE32(baseAddr + PWM_SAR, sample);
     Pwm_ChannelDutyCycle[Channel] = DutyCycle;
 }
@@ -190,16 +190,16 @@ void Pwm_SetPeriodAndDuty(Pwm_ChannelType Channel, Pwm_PeriodType Period, uint16
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
-    
+
     /* Set new period */
     REG_WRITE32(baseAddr + PWM_PR, Period);
-    
+
     /* Set duty cycle */
     uint32 sample = ((uint32)DutyCycle * Period) / PWM_DUTY_CYCLE_RESOLUTION;
     REG_WRITE32(baseAddr + PWM_SAR, sample);
-    
+
     Pwm_ChannelDutyCycle[Channel] = DutyCycle;
 }
 #endif
@@ -217,9 +217,9 @@ void Pwm_SetOutputToIdle(Pwm_ChannelType Channel)
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
-    
+
     /* Set duty cycle to 0 (idle) */
     REG_WRITE32(baseAddr + PWM_SAR, 0U);
 }
@@ -238,12 +238,12 @@ Pwm_OutputStateType Pwm_GetOutputState(Pwm_ChannelType Channel)
         return PWM_LOW;
     }
     #endif
-    
+
     /* Read current counter value and compare */
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
     uint32 cnr = REG_READ32(baseAddr + PWM_CNR);
     uint32 sar = REG_READ32(baseAddr + PWM_SAR);
-    
+
     if (cnr < sar) {
         return PWM_HIGH;
     }
@@ -264,7 +264,7 @@ void Pwm_DisableNotification(Pwm_ChannelType Channel)
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
     REG_WRITE32(baseAddr + PWM_IR, 0U);
 }
@@ -281,17 +281,17 @@ void Pwm_EnableNotification(Pwm_ChannelType Channel, Pwm_EdgeNotificationType No
         return;
     }
     #endif
-    
+
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
     uint32 irValue = 0U;
-    
+
     if (Notification == PWM_RISING_EDGE || Notification == PWM_BOTH_EDGES) {
         irValue |= PWM_IR_FIE;
     }
     if (Notification == PWM_FALLING_EDGE || Notification == PWM_BOTH_EDGES) {
         irValue |= PWM_IR_CIE;
     }
-    
+
     REG_WRITE32(baseAddr + PWM_IR, irValue);
     (void)Notification;
 }

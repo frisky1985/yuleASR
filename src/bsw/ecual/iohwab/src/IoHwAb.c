@@ -41,34 +41,34 @@ void IoHwAb_Init(const IoHwAb_ConfigType* ConfigPtr)
         return;
     }
     #endif
-    
+
     IoHwAb_ConfigPtr = ConfigPtr;
-    
+
     /* Initialize ADC driver */
     Adc_Init(NULL_PTR);  /* ADC uses its own global config */
-    
+
     /* Initialize DIO driver (no init needed for DIO) */
-    
+
     /* Initialize PWM driver */
     Pwm_Init(NULL_PTR);  /* PWM uses its own global config */
-    
+
     /* Initialize SPI driver */
     Spi_Init(NULL_PTR);  /* SPI uses its own global config */
-    
+
     /* Clear internal buffers */
     for (uint8 i = 0U; i < IOHWAB_NUM_ANALOG_CHANNELS; i++) {
         IoHwAb_AnalogBuffer[i] = 0U;
     }
-    
+
     for (uint8 i = 0U; i < IOHWAB_NUM_DIGITAL_CHANNELS; i++) {
         IoHwAb_DigitalBuffer[i] = FALSE;
     }
-    
+
     for (uint8 i = 0U; i < IOHWAB_NUM_PWM_CHANNELS; i++) {
         IoHwAb_PwmBuffer[i].DutyCycle = 0U;
         IoHwAb_PwmBuffer[i].Frequency = 0U;
     }
-    
+
     IoHwAb_DriverInitialized = TRUE;
 }
 
@@ -80,16 +80,16 @@ void IoHwAb_DeInit(void)
         return;
     }
     #endif
-    
+
     /* Deinitialize PWM driver */
     Pwm_DeInit();
-    
+
     /* Deinitialize ADC driver */
     Adc_DeInit();
-    
+
     /* Deinitialize SPI driver */
     (void)Spi_DeInit();
-    
+
     IoHwAb_ConfigPtr = NULL_PTR;
     IoHwAb_DriverInitialized = FALSE;
 }
@@ -110,34 +110,34 @@ IoHwAb_ReturnType IoHwAb_AnalogRead(IoHwAb_ChannelType Channel, IoHwAb_AnalogVal
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     const IoHwAb_AnalogChannelConfigType* channelConfig = &IoHwAb_ConfigPtr->AnalogChannels[Channel];
-    
+
     /* Start ADC conversion for the configured ADC channel */
     Adc_StartGroupConversion(0U);  /* Use group 0 for single channel conversion */
-    
+
     /* Wait for conversion to complete (simplified - in real implementation use interrupt) */
     while (Adc_GetGroupStatus(0U) == ADC_BUSY) {
         /* Wait */
     }
-    
+
     /* Read ADC result */
     Adc_ValueGroupType adcValue;
     Std_ReturnType status = Adc_ReadGroup(0U, &adcValue);
-    
+
     if (status == E_OK) {
         /* Apply scaling and offset */
         float32 scaledValue = ((float32)adcValue * channelConfig->ScalingFactor) + channelConfig->Offset;
-        
+
         /* Convert to IoHwAb value (0-65535 range based on resolution) */
         *Value = (IoHwAb_AnalogValueType)((scaledValue / channelConfig->MaxValue) * 65535.0f);
-        
+
         /* Update internal buffer */
         IoHwAb_AnalogBuffer[Channel] = *Value;
-        
+
         return IOHWAB_OK;
     }
-    
+
     return IOHWAB_NOT_OK;
 }
 
@@ -153,12 +153,12 @@ IoHwAb_ReturnType IoHwAb_AnalogWrite(IoHwAb_ChannelType Channel, IoHwAb_AnalogVa
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     /* Note: Analog write would require DAC hardware support
      * For now, this is a placeholder that could use PWM as DAC alternative */
     (void)Channel;
     (void)Value;
-    
+
     return IOHWAB_NOT_OK;  /* Not implemented - no DAC on i.MX8M Mini */
 }
 
@@ -178,22 +178,22 @@ IoHwAb_ReturnType IoHwAb_DigitalRead(IoHwAb_ChannelType Channel, IoHwAb_DigitalV
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     const IoHwAb_DigitalChannelConfigType* channelConfig = &IoHwAb_ConfigPtr->DigitalChannels[Channel];
-    
+
     /* Read from DIO */
     Dio_LevelType dioLevel = Dio_ReadChannel(channelConfig->DioChannel);
-    
+
     /* Apply inversion if configured */
     if (channelConfig->Inverted) {
         *Value = (dioLevel == STD_LOW) ? TRUE : FALSE;
     } else {
         *Value = (dioLevel == STD_HIGH) ? TRUE : FALSE;
     }
-    
+
     /* Update internal buffer */
     IoHwAb_DigitalBuffer[Channel] = *Value;
-    
+
     return IOHWAB_OK;
 }
 
@@ -209,9 +209,9 @@ IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, IoHwAb_Digital
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     const IoHwAb_DigitalChannelConfigType* channelConfig = &IoHwAb_ConfigPtr->DigitalChannels[Channel];
-    
+
     /* Apply inversion if configured */
     Dio_LevelType dioLevel;
     if (channelConfig->Inverted) {
@@ -219,13 +219,13 @@ IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, IoHwAb_Digital
     } else {
         dioLevel = (Value == TRUE) ? STD_HIGH : STD_LOW;
     }
-    
+
     /* Write to DIO */
     Dio_WriteChannel(channelConfig->DioChannel, dioLevel);
-    
+
     /* Update internal buffer */
     IoHwAb_DigitalBuffer[Channel] = Value;
-    
+
     return IOHWAB_OK;
 }
 
@@ -245,18 +245,18 @@ IoHwAb_ReturnType IoHwAb_PwmSetDuty(IoHwAb_ChannelType Channel, uint16 DutyCycle
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     const IoHwAb_PwmChannelConfigType* channelConfig = &IoHwAb_ConfigPtr->PwmChannels[Channel];
-    
+
     /* Convert IoHwAb duty cycle (0-10000 = 0-100.00%) to PWM driver format (0-0x8000) */
     uint16 pwmDuty = (uint16)(((uint32)DutyCycle * 0x8000U) / IOHWAB_PWM_DUTY_SCALE);
-    
+
     /* Set PWM duty cycle */
     Pwm_SetDutyCycle(channelConfig->PwmChannel, pwmDuty);
-    
+
     /* Update internal buffer */
     IoHwAb_PwmBuffer[Channel].DutyCycle = DutyCycle;
-    
+
     return IOHWAB_OK;
 }
 
@@ -276,22 +276,22 @@ IoHwAb_ReturnType IoHwAb_PwmSetFreqAndDuty(IoHwAb_ChannelType Channel, uint32 Fr
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     const IoHwAb_PwmChannelConfigType* channelConfig = &IoHwAb_ConfigPtr->PwmChannels[Channel];
-    
+
     /* Calculate period from frequency (assuming 24MHz PWM clock) */
     Pwm_PeriodType period = 24000000U / Frequency;
-    
+
     /* Convert IoHwAb duty cycle (0-10000 = 0-100.00%) to PWM driver format (0-0x8000) */
     uint16 pwmDuty = (uint16)(((uint32)DutyCycle * 0x8000U) / IOHWAB_PWM_DUTY_SCALE);
-    
+
     /* Set PWM period and duty cycle */
     Pwm_SetPeriodAndDuty(channelConfig->PwmChannel, period, pwmDuty);
-    
+
     /* Update internal buffer */
     IoHwAb_PwmBuffer[Channel].Frequency = Frequency;
     IoHwAb_PwmBuffer[Channel].DutyCycle = DutyCycle;
-    
+
     return IOHWAB_OK;
 }
 
@@ -311,34 +311,34 @@ IoHwAb_ReturnType IoHwAb_SpiTransfer(uint8 DeviceId, const uint8* TxData, uint8*
         return IOHWAB_NOT_OK;
     }
     #endif
-    
+
     const IoHwAb_SpiDeviceConfigType* deviceConfig = &IoHwAb_ConfigPtr->SpiDevices[DeviceId];
-    
+
     /* Setup external buffer for SPI transfer */
     Spi_DataBufferType txBuffer;
     txBuffer.SrcPtr = TxData;
     txBuffer.DestPtr = NULL_PTR;
     txBuffer.Length = Length;
-    
+
     Spi_DataBufferType rxBuffer;
     rxBuffer.SrcPtr = NULL_PTR;
     rxBuffer.DestPtr = RxData;
     rxBuffer.Length = Length;
-    
+
     /* Setup EB buffers */
     Std_ReturnType status = Spi_SetupEB(0U, &txBuffer, &rxBuffer, Length);
-    
+
     if (status != E_OK) {
         return IOHWAB_NOT_OK;
     }
-    
+
     /* Perform synchronous transfer */
     status = Spi_SyncTransmit(deviceConfig->SpiSequence);
-    
+
     if (status == E_OK) {
         return IOHWAB_OK;
     }
-    
+
     return IOHWAB_NOT_OK;
 }
 
@@ -350,7 +350,7 @@ void IoHwAb_GetVersionInfo(Std_VersionInfoType* versioninfo)
         return;
     }
     #endif
-    
+
     versioninfo->vendorID = IOHWAB_VENDOR_ID;
     versioninfo->moduleID = IOHWAB_MODULE_ID;
     versioninfo->sw_major_version = IOHWAB_SW_MAJOR_VERSION;
@@ -363,20 +363,20 @@ void IoHwAb_MainFunction(void)
     if (IoHwAb_DriverInitialized == FALSE) {
         return;
     }
-    
+
     /* Periodic processing for analog channels */
     for (uint8 i = 0U; i < IoHwAb_ConfigPtr->NumAnalogChannels; i++) {
         /* Trigger ADC conversions for channels that need periodic sampling */
         /* In a real implementation, this would use DMA or interrupt-driven sampling */
     }
-    
+
     /* Periodic processing for digital channels */
     for (uint8 i = 0U; i < IoHwAb_ConfigPtr->NumDigitalChannels; i++) {
         /* Read digital inputs and update buffers */
         IoHwAb_DigitalValueType value;
         (void)IoHwAb_DigitalRead(i, &value);
     }
-    
+
     /* Call SPI main function for handling async operations */
     Spi_MainFunction_Handling();
 }

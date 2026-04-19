@@ -78,12 +78,12 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
         return STD_LOW;
     }
     #endif
-    
+
     uint8 port = DIO_GET_PORT(ChannelId);
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
     uint32 psrValue = REG_READ32(gpioBase + DIO_GPIO_PSR);
-    
+
     level = ((psrValue & (1U << pin)) != 0U) ? STD_HIGH : STD_LOW;
     return level;
 }
@@ -100,12 +100,12 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
         return;
     }
     #endif
-    
+
     uint8 port = DIO_GET_PORT(ChannelId);
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
     uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
-    
+
     if (Level == STD_HIGH) {
         drValue |= (1U << pin);
     } else {
@@ -127,7 +127,7 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
         return 0U;
     }
     #endif
-    
+
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
     level = (Dio_PortLevelType)REG_READ32(gpioBase + DIO_GPIO_PSR);
     return level;
@@ -145,7 +145,7 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
         return;
     }
     #endif
-    
+
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
     REG_WRITE32(gpioBase + DIO_GPIO_DR, (uint32)Level);
 }
@@ -163,7 +163,7 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
         return 0U;
     }
     #endif
-    
+
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)ChannelGroupIdPtr->port);
     uint32 portValue = REG_READ32(gpioBase + DIO_GPIO_PSR);
     level = (Dio_PortLevelType)((portValue & ChannelGroupIdPtr->mask) >> ChannelGroupIdPtr->offset);
@@ -182,7 +182,7 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_Po
         return;
     }
     #endif
-    
+
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)ChannelGroupIdPtr->port);
     uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
     drValue &= ~(ChannelGroupIdPtr->mask);
@@ -221,12 +221,12 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
         return STD_LOW;
     }
     #endif
-    
+
     uint8 port = DIO_GET_PORT(ChannelId);
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
     uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
-    
+
     if ((drValue & (1U << pin)) != 0U) {
         drValue &= ~(1U << pin);
         newLevel = STD_LOW;
@@ -252,7 +252,7 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
         return;
     }
     #endif
-    
+
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
     uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
     drValue &= ~((uint32)Mask);

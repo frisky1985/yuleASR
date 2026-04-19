@@ -4,9 +4,9 @@
  * @version 1.0.0
  * @date 2026-04-13
  * @author YuleTech
- * 
+ *
  * @copyright Copyright (c) 2026 YuleTech
- * 
+ *
  * @details 提供微控制器初始化、时钟配置、复位管理和低功耗模式控制功能
  */
 
@@ -133,15 +133,15 @@ extern const Mcu_ConfigType Mcu_Config;
 
 /**
  * @brief 初始化 MCU 模块
- * 
+ *
  * @param[in] ConfigPtr 指向 MCU 配置结构的指针
- * @return Std_ReturnType 
+ * @return Std_ReturnType
  *         - E_OK: 初始化成功
  *         - E_NOT_OK: 初始化失败
- * 
+ *
  * @pre 模块处于 MCU_UNINIT 状态
  * @post 模块处于 MCU_CLOCK_UNINIT 状态
- * 
+ *
  * @note 必须在其他模块初始化之前调用
  * @note 如果 ConfigPtr 为 NULL_PTR，使用默认配置
  */
@@ -149,26 +149,26 @@ Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr);
 
 /**
  * @brief 初始化时钟系统
- * 
+ *
  * @param[in] ClockSetting 时钟配置设置
- * @return Std_ReturnType 
+ * @return Std_ReturnType
  *         - E_OK: 时钟初始化成功
  *         - E_NOT_OK: 时钟初始化失败
- * 
+ *
  * @pre MCU 模块已初始化
  * @post 时钟系统已配置
- * 
+ *
  * @note 此函数会等待 PLL 锁定
  */
 Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting);
 
 /**
  * @brief 分发 PLL 时钟到系统
- * 
- * @return Std_ReturnType 
+ *
+ * @return Std_ReturnType
  *         - E_OK: 分发成功
  *         - E_NOT_OK: PLL 未锁定
- * 
+ *
  * @pre PLL 已锁定
  * @post 系统时钟已切换到 PLL
  */
@@ -176,54 +176,54 @@ Std_ReturnType Mcu_DistributePllClock(void);
 
 /**
  * @brief 获取 PLL 状态
- * 
+ *
  * @return Mcu_PllStatusType PLL 当前状态
  */
 Mcu_PllStatusType Mcu_GetPllStatus(void);
 
 /**
  * @brief 设置 MCU 模式
- * 
+ *
  * @param[in] McuMode 目标模式
- * 
+ *
  * @pre 时钟系统已初始化
  * @post MCU 进入指定模式
- * 
+ *
  * @note 支持正常模式、睡眠模式、深度睡眠模式
  */
 void Mcu_SetMode(Mcu_ModeType McuMode);
 
 /**
  * @brief 获取复位原因
- * 
+ *
  * @return Mcu_ResetType 复位原因
- * 
+ *
  * @note 读取后复位原因寄存器会被清除
  */
 Mcu_ResetType Mcu_GetResetReason(void);
 
 /**
  * @brief 获取复位原因原始值
- * 
+ *
  * @return Mcu_RawResetType 复位寄存器原始值
  */
 Mcu_RawResetType Mcu_GetResetRawValue(void);
 
 /**
  * @brief 执行系统复位
- * 
+ *
  * @pre 系统处于安全状态
  * @post 系统复位重启
- * 
+ *
  * @warning 此函数不会返回
  */
 void Mcu_PerformReset(void);
 
 /**
  * @brief 获取版本信息
- * 
+ *
  * @param[out] versioninfo 指向版本信息结构的指针
- * 
+ *
  * @note 如果 versioninfo 为 NULL_PTR，报告开发错误
  */
 void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo);

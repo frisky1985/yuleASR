@@ -4,9 +4,9 @@
  * @version 1.0.0
  * @date 2026-04-14
  * @author YuleTech
- * 
+ *
  * @copyright Copyright (c) 2026 YuleTech
- * 
+ *
  * @details Provides services for reading and writing to DIO channels,
  *          DIO ports and DIO channel groups.
  */
@@ -89,12 +89,12 @@ typedef struct {
 
 /**
  * @brief Returns the value of the specified DIO channel
- * 
+ *
  * @param[in] ChannelId ID of DIO channel
- * @return Dio_LevelType 
+ * @return Dio_LevelType
  *         - STD_HIGH: Physical level of the corresponding pin is STD_HIGH
  *         - STD_LOW: Physical level of the corresponding pin is STD_LOW
- * 
+ *
  * @pre None
  * @post None
  */
@@ -102,10 +102,10 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId);
 
 /**
  * @brief Service to set a level of a channel
- * 
+ *
  * @param[in] ChannelId ID of DIO channel
  * @param[in] Level Value to be written
- * 
+ *
  * @pre None
  * @post Channel level set
  */
@@ -113,10 +113,10 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level);
 
 /**
  * @brief Returns the level of all channels of that port
- * 
+ *
  * @param[in] PortId ID of DIO Port
  * @return Dio_PortLevelType Level of all channels of that port
- * 
+ *
  * @pre None
  * @post None
  */
@@ -124,10 +124,10 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId);
 
 /**
  * @brief Service to set a value to the port
- * 
+ *
  * @param[in] PortId ID of DIO Port
  * @param[in] Level Value to be written
- * 
+ *
  * @pre None
  * @post Port level set
  */
@@ -135,10 +135,10 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level);
 
 /**
  * @brief This Service reads a subset of the adjoining bits of a port
- * 
+ *
  * @param[in] ChannelGroupIdPtr Pointer to ChannelGroup
  * @return Dio_PortLevelType Level of a subset of the adjoining bits of a port
- * 
+ *
  * @pre None
  * @post None
  */
@@ -146,10 +146,10 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
 
 /**
  * @brief Service to set a subset of the adjoining bits of a port to a specified level
- * 
+ *
  * @param[in] ChannelGroupIdPtr Pointer to ChannelGroup
  * @param[in] Level Value to be written
- * 
+ *
  * @pre None
  * @post Channel group level set
  */
@@ -157,12 +157,12 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_Po
 
 /**
  * @brief Service to get the version information of this module
- * 
+ *
  * @param[out] versioninfo Pointer to where to store the version information
- * 
+ *
  * @pre None
  * @post Version information stored
- * 
+ *
  * @note Only available if DIO_VERSION_INFO_API is STD_ON
  */
 #if (DIO_VERSION_INFO_API == STD_ON)
@@ -171,13 +171,13 @@ void Dio_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 /**
  * @brief Service to flip (change from 1 to 0 or from 0 to 1) the level of a channel
- * 
+ *
  * @param[in] ChannelId ID of DIO channel
  * @return Dio_LevelType Level of the channel after flip
- * 
+ *
  * @pre None
  * @post Channel level flipped
- * 
+ *
  * @note Only available if DIO_FLIP_CHANNEL_API is STD_ON
  */
 #if (DIO_FLIP_CHANNEL_API == STD_ON)
