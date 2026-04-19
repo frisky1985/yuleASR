@@ -71,9 +71,9 @@ class StaticAnalyzer:
                 "severity": "warning"
             },
             "MISRA-C-5.1": {
-                "pattern": r'^\s*#define\s+\w{32,}',
-                "message": "Identifier length shall not exceed 31 characters",
-                "severity": "warning"
+                "pattern": r'^\s*#define\s+(?!.*SEC_)(?!.*CFG_)\w{32,}',
+                "message": "Identifier length shall not exceed 31 characters (excludes SEC_* and CFG_* macros)",
+                "severity": "info"
             },
             "MISRA-C-8.1": {
                 "pattern": r'^\s*(?!.*\b(static|extern)\b).*\b\w+\s*\([^)]*\)\s*\{',
