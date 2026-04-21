@@ -64,6 +64,21 @@
 #define COM_API_ID_ENABLE_RECEPTION_DM          0x21U
 #define COM_API_ID_DISABLE_RECEPTION_DM         0x22U
 
+/* Service ID aliases for backward compatibility */
+#define COM_SERVICE_ID_INIT                     COM_API_ID_INIT
+#define COM_SERVICE_ID_DEINIT                   COM_API_ID_DEINIT
+#define COM_SERVICE_ID_SENDSIGNAL               COM_API_ID_SEND_SIGNAL
+#define COM_SERVICE_ID_RECEIVESIGNAL            COM_API_ID_RECEIVE_SIGNAL
+#define COM_SERVICE_ID_SENDSIGNALGROUP          COM_API_ID_SEND_SIGNAL_GROUP
+#define COM_SERVICE_ID_RECEIVESIGNALGROUP       COM_API_ID_RECEIVE_SIGNAL_GROUP
+#define COM_SERVICE_ID_TRIGGERIPDUSEND          COM_API_ID_TRIGGER_IPDU_SEND
+#define COM_SERVICE_ID_TXCONFIRMATION           COM_API_ID_TRIGGER_IPDU_SEND
+#define COM_SERVICE_ID_RXINDICATION             COM_API_ID_TRIGGER_IPDU_SEND
+#define COM_SERVICE_ID_TRIGGERTRANSMIT          COM_API_ID_TRIGGER_IPDU_SEND_WITH_META
+#define COM_SERVICE_ID_UPDATESHADOWSIGNAL       COM_API_ID_SEND_SIGNAL
+#define COM_SERVICE_ID_RECEIVESHADOWSIGNAL      COM_API_ID_RECEIVE_SIGNAL
+#define COM_SERVICE_ID_GETVERSIONINFO           COM_API_ID_GET_VERSION_INFO
+
 /* Error Codes */
 #define COM_E_PARAM                             0x01U
 #define COM_E_UNINIT                            0x02U
@@ -73,6 +88,11 @@
 #define COM_E_INVALID_SIGNAL_ID                 0x06U
 #define COM_E_INVALID_SIGNAL_GROUP_ID           0x07U
 #define COM_E_INVALID_IPDU_ID                   0x08U
+
+/* Error code aliases for backward compatibility */
+#define COM_E_PARAM_SIGNAL                      COM_E_INVALID_SIGNAL_ID
+#define COM_E_PARAM_SIGNALGROUP                 COM_E_INVALID_SIGNAL_GROUP_ID
+#define COM_E_PARAM_IPDU                        COM_E_INVALID_IPDU_ID
 
 /* Signal Status */
 #define COM_E_OK                                0x00U
@@ -94,12 +114,37 @@
 #define COM_SIG_VALID                           0x10U
 #define COM_SIG_INVALID                         0x20U
 
+/* Service Return Codes */
+#define COM_SERVICE_OK                          0x00U
+#define COM_SERVICE_NOT_OK                      0x01U
+
 /* Transmission Modes */
 typedef uint8 ComTxModeModeType;
 #define COM_DIRECT                              0x00U
 #define COM_MIXED                               0x01U
 #define COM_NONE                                0x02U
 #define COM_PERIODIC                            0x03U
+
+/* Signal Transfer Properties */
+#define COM_TRIGGERED                           0x00U
+#define COM_TRIGGERED_ON_CHANGE                 0x01U
+#define COM_TRIGGERED_ON_CHANGE_WITHOUT_REPETITION 0x02U
+#define COM_PENDING                             0x03U
+
+/* Filter Algorithms */
+#define COM_ALWAYS                              0x00U
+#define COM_NEVER                               0x01U
+#define COM_MASKED_NEW_EQUALS_X                 0x02U
+#define COM_MASKED_NEW_DIFFERS_X                0x03U
+#define COM_MASKED_NEW_DIFFERS_MASKED_OLD       0x04U
+#define COM_NEW_IS_WITHIN                       0x05U
+#define COM_NEW_IS_OUTSIDE                      0x06U
+#define COM_ONE_EVERY_N                         0x07U
+
+/* Endianness */
+#define COM_LITTLE_ENDIAN                       0x00U
+#define COM_BIG_ENDIAN                          0x01U
+#define COM_OPAQUE                              0x02U
 
 /*==================================================================================================
 *                                          TYPE DEFINITIONS
@@ -138,6 +183,40 @@ typedef struct {
     uint16 RepetitionPeriodFactor;
     uint16 TimePeriodFactor;
 } ComTxModeType;
+
+/** @brief Type for I-PDU group vector */
+typedef uint8 Com_IpduGroupVector[(COM_NUM_IPDU_GROUPS + 7U) / 8U];
+
+/** @brief Type for signal configuration */
+typedef struct {
+    Com_SignalIdType SignalId;
+    uint16 BitPosition;
+    uint8 BitSize;
+    uint8 Endianness;
+    uint8 TransferProperty;
+    uint8 FilterAlgorithm;
+    uint32 FilterMask;
+    uint32 FilterX;
+    uint16 SignalGroupRef;
+} Com_SignalConfigType;
+
+/** @brief Type for IPDU configuration */
+typedef struct {
+    PduIdType PduId;
+    uint16 DataLength;
+    boolean RepeatingEnabled;
+    uint8 NumRepetitions;
+    uint16 TimeBetweenRepetitions;
+    uint16 TimePeriod;
+} Com_IPduConfigType;
+
+/** @brief Type for COM configuration */
+typedef struct {
+    const Com_SignalConfigType* Signals;
+    uint16 NumSignals;
+    const Com_IPduConfigType* IPdus;
+    uint16 NumIPdus;
+} Com_ConfigType;
 
 /*==================================================================================================
 *                                      GLOBAL CONSTANTS

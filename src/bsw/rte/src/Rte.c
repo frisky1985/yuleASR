@@ -229,8 +229,8 @@ Rte_StatusType Rte_Init(void)
         for (j = 0U; j < RTE_MAX_PORTS_PER_COMPONENT; j++)
         {
             Rte_ComponentStates[i].Ports[j].IsConnected = FALSE;
-            Rte_ComponentStates[i].Ports[j].IsValid = FALSE;
-            Rte_ComponentStates[i].Ports[j].Length = 0U;
+            Rte_ComponentStates[i].Ports[j].Buffer.IsValid = FALSE;
+            Rte_ComponentStates[i].Ports[j].Buffer.Length = 0U;
         }
     }
 

@@ -68,6 +68,22 @@
 #define DEM_SID_GETDTCOFCHECKWARMUP     (0x1FU)
 #define DEM_SID_GETDTCOFCHECKWARMUPCOUNTER (0x20U)
 
+/* Service ID aliases used in Dem.c */
+#define DEM_SERVICE_ID_INIT             DEM_SID_INIT
+#define DEM_SERVICE_ID_DEINIT           DEM_SID_SHUTDOWN
+#define DEM_SERVICE_ID_SETEVENTSTATUS   DEM_SID_SETEVENTSTATUS
+#define DEM_SERVICE_ID_RESETEVENTSTATUS DEM_SID_RESETEVENTSTATUS
+#define DEM_SERVICE_ID_GETEVENTSTATUS   DEM_SID_GETSTATUSOFDTC
+#define DEM_SERVICE_ID_GETEVENTFAILED   DEM_SID_GETSTATUSOFDTC
+#define DEM_SERVICE_ID_GETEVENTTESTED   DEM_SID_GETSTATUSOFDTC
+#define DEM_SERVICE_ID_GETFAULTDETECTION DEM_SID_GETFAULTDETECTIONCOUNTER
+#define DEM_SERVICE_ID_GETDTCSTATUS     DEM_SID_GETSTATUSOFDTC
+#define DEM_SERVICE_ID_CLEARDTC         DEM_SID_CLEARDTC
+#define DEM_SERVICE_ID_SELECTEDDTC      DEM_SID_GETSTATUSOFDTC
+#define DEM_SERVICE_ID_DISABLEDTCRECORD DEM_SID_DISABLEDTCSETTING
+#define DEM_SERVICE_ID_ENABLEDTCRECORD  DEM_SID_ENABLEDTCSETTING
+#define DEM_SERVICE_ID_GETVERSIONINFO   DEM_SID_GETVERSIONINFO
+
 /*==================================================================================================
 *                                    DET ERROR CODES
 ==================================================================================================*/
@@ -78,6 +94,9 @@
 #define DEM_E_NODATAAVAILABLE           (0x30U)
 #define DEM_E_WRONG_CONDITION           (0x40U)
 #define DEM_E_WRONG_CONFIGURATION       (0x50U)
+
+/* Error code aliases used in Dem.c */
+#define DEM_E_PARAM_EVENT_ID            DEM_E_PARAM_DATA
 
 /*==================================================================================================
 *                                    DEM EVENT STATUS TYPE
@@ -106,6 +125,16 @@ typedef uint8 Dem_UdsStatusByteType;
 #define DEM_UDS_STATUS_TFSLC            (0x20U)  /* Test Failed Since Last Clear */
 #define DEM_UDS_STATUS_TNCTOC           (0x40U)  /* Test Not Completed This Operation Cycle */
 #define DEM_UDS_STATUS_WIR              (0x80U)  /* Warning Indicator Requested */
+
+/* DTC status bit aliases used in Dem.c */
+#define DEM_DTC_STATUS_TEST_FAILED                          DEM_UDS_STATUS_TF
+#define DEM_DTC_STATUS_TEST_FAILED_THIS_OPERATION_CYCLE     DEM_UDS_STATUS_TFTOC
+#define DEM_DTC_STATUS_PENDING_DTC                          DEM_UDS_STATUS_PDTC
+#define DEM_DTC_STATUS_CONFIRMED_DTC                        DEM_UDS_STATUS_CDTC
+#define DEM_DTC_STATUS_TEST_NOT_COMPLETED_SINCE_LAST_CLEAR  DEM_UDS_STATUS_TNCSLC
+#define DEM_DTC_STATUS_TEST_FAILED_SINCE_LAST_CLEAR         DEM_UDS_STATUS_TFSLC
+#define DEM_DTC_STATUS_TEST_NOT_COMPLETED_THIS_OPERATION_CYCLE DEM_UDS_STATUS_TNCTOC
+#define DEM_DTC_STATUS_WARNING_INDICATOR_REQUESTED          DEM_UDS_STATUS_WIR
 
 /*==================================================================================================
 *                                    DEM DTC ORIGIN TYPE
@@ -150,6 +179,13 @@ typedef enum {
     DEM_CYCLE_STATE_END
 } Dem_OperationCycleStateType;
 
+/* Cycle state aliases */
+#define DEM_OPCYC_POWER                 (0U)
+#define DEM_OPCYC_IGNITION              (1U)
+#define DEM_OPCYC_WARMUP                (2U)
+#define DEM_OPCYC_OBD_DCY               (3U)
+#define DEM_OPCYC_OTHER                 (4U)
+
 /*==================================================================================================
 *                                    DEM INDICATOR STATUS TYPE
 ==================================================================================================*/
@@ -168,6 +204,28 @@ typedef enum {
 *                                    DEM EVENT ID TYPE
 ==================================================================================================*/
 typedef uint16 Dem_EventIdType;
+
+/*==================================================================================================
+*                                    DEM DTC TYPE ALIASES
+==================================================================================================*/
+typedef Dem_DtcType Dem_DTCType;
+typedef uint8 Dem_DTCStatusType;
+typedef sint8 Dem_FaultDetectionCounterType;
+
+/*==================================================================================================
+*                                    DEM EVENT STATE TYPE
+==================================================================================================*/
+typedef struct {
+    Dem_EventStatusType LastReportedStatus;
+    uint8 DTCStatus;
+    Dem_FaultDetectionCounterType FaultDetectionCounter;
+    sint16 DebounceCounter;
+    boolean TestFailedThisOperationCycle;
+    boolean TestCompletedThisOperationCycle;
+    uint8 OccurrenceCounter;
+    uint8 AgingCounter;
+    boolean IsAged;
+} Dem_EventStateType;
 
 /*==================================================================================================
 *                                    DEM DTC TYPE
@@ -395,6 +453,68 @@ Std_ReturnType Dem_RestartOperationCycle(Dem_OperationCycleType OperationCycleTy
  * @return Result of operation
  */
 Std_ReturnType Dem_GetFaultDetectionCounter(Dem_EventIdType EventId, sint8* FaultDetectionCounter);
+
+/**
+ * @brief Gets event status
+ * @param EventId Event ID
+ * @param EventStatus Pointer to store status
+ * @return Result of operation
+ */
+Std_ReturnType Dem_GetEventStatus(Dem_EventIdType EventId, Dem_EventStatusType* EventStatus);
+
+/**
+ * @brief Gets event failed status
+ * @param EventId Event ID
+ * @param EventFailed Pointer to store failed status
+ * @return Result of operation
+ */
+Std_ReturnType Dem_GetEventFailed(Dem_EventIdType EventId, boolean* EventFailed);
+
+/**
+ * @brief Gets event tested status
+ * @param EventId Event ID
+ * @param EventTested Pointer to store tested status
+ * @return Result of operation
+ */
+Std_ReturnType Dem_GetEventTested(Dem_EventIdType EventId, boolean* EventTested);
+
+/**
+ * @brief Gets DTC status
+ * @param DTC DTC number
+ * @param DTCOrigin DTC origin
+ * @param DTCStatus Pointer to store status
+ * @return Result of operation
+ */
+Std_ReturnType Dem_GetDTCStatus(Dem_DTCType DTC, Dem_DTCOriginType DTCOrigin, Dem_DTCStatusType* DTCStatus);
+
+/**
+ * @brief Selects a DTC
+ * @param DTC DTC to select
+ * @param DTCFormat DTC format
+ * @param DTCOrigin DTC origin
+ * @return Result of operation
+ */
+Std_ReturnType Dem_SelectDTC(Dem_DTCType DTC, Dem_DTCFormatType DTCFormat, Dem_DTCOriginType DTCOrigin);
+
+/**
+ * @brief Disables DTC record update
+ * @return Result of operation
+ */
+Std_ReturnType Dem_DisableDTCRecordUpdate(void);
+
+/**
+ * @brief Enables DTC record update
+ * @return Result of operation
+ */
+Std_ReturnType Dem_EnableDTCRecordUpdate(void);
+
+/**
+ * @brief Gets operation cycle state
+ * @param OperationCycleId Operation cycle ID
+ * @param CycleState Pointer to store cycle state
+ * @return Result of operation
+ */
+Std_ReturnType Dem_GetOperationCycleState(uint8 OperationCycleId, uint8* CycleState);
 
 /**
  * @brief Main function for periodic processing

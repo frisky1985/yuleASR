@@ -159,6 +159,9 @@ yuletech-openspec/
 - **ASW 层**: 8个组件全部完成 ✓
   - EngineControl, VehicleDynamics, DiagnosticManager, CommunicationManager
   - StorageManager, IOControl, ModeManager, WatchdogManager
+- **OS 层**: 全部完成 ✓
+  - Os (基于 FreeRTOS V10.6.x / V11.x)
+  - 任务管理、事件管理、资源管理、报警管理、中断管理
 
 ### 验证状态
 - PduR: ✅ 验证通过

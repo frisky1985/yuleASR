@@ -174,6 +174,32 @@
 #define RTE_DE_DIAG_RESPONSE_DATA           (10U)
 
 /*==================================================================================================
+*                                    RTE COM SIGNAL IDs
+==================================================================================================*/
+#define RTE_COMSIGNAL_ENGINE_RPM            (0U)
+#define RTE_COMSIGNAL_VEHICLE_SPEED         (1U)
+#define RTE_COMSIGNAL_BATTERY_VOLTAGE       (2U)
+#define RTE_COMSIGNAL_ENGINE_TEMP           (3U)
+#define RTE_COMSIGNAL_FUEL_LEVEL            (4U)
+#define RTE_COMSIGNAL_ODOMETER              (5U)
+#define RTE_COMSIGNAL_GEAR_POSITION         (6U)
+#define RTE_COMSIGNAL_DOOR_STATUS           (7U)
+
+/*==================================================================================================
+*                                    RTE NVM BLOCK IDs
+==================================================================================================*/
+#define RTE_NVMBLOCK_ODOMETER               ((NvM_BlockIdType)5U)
+#define RTE_NVMBLOCK_VIN                    ((NvM_BlockIdType)4U)
+#define RTE_NVMBLOCK_ERROR_LOG              ((NvM_BlockIdType)3U)
+#define RTE_NVMBLOCK_CALIBRATION_DATA       ((NvM_BlockIdType)2U)
+#define RTE_NVMBLOCK_USER_SETTINGS          ((NvM_BlockIdType)6U)
+
+/*==================================================================================================
+*                                    RTE NVM PORT HANDLES
+==================================================================================================*/
+#define RTE_PORT_NVM_READ                   ((Rte_PortHandleType)0x0300U)
+
+/*==================================================================================================
 *                                    RTE OPERATION IDs
 ==================================================================================================*/
 #define RTE_OP_DIAG_READ_DATA               (0U)

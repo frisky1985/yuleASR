@@ -88,6 +88,9 @@
 ==================================================================================================*/
 #define DEM_AGING_CYCLE_THRESHOLD       (40U)
 #define DEM_AGING_CYCLE_COUNTER_MAX     (255U)
+#define DEM_AGING_THRESHOLD             DEM_AGING_CYCLE_THRESHOLD
+#define DEM_MAX_OCCURRENCE_COUNTER      (255U)
+#define DEM_DTC_GROUP_ALL               ((Dem_DtcType)0xFFFFFFU)
 
 /*==================================================================================================
 *                                    DEBOUNCE CONFIGURATION
@@ -103,6 +106,8 @@
 #define DEM_DEBOUNCE_COUNTER_PASSED_THRESHOLD   (-128)
 #define DEM_DEBOUNCE_COUNTER_INCREMENT          (1)
 #define DEM_DEBOUNCE_COUNTER_DECREMENT          (1)
+#define DEM_DEBOUNCE_COUNTER_INCREMENT_STEP     DEM_DEBOUNCE_COUNTER_INCREMENT
+#define DEM_DEBOUNCE_COUNTER_DECREMENT_STEP     DEM_DEBOUNCE_COUNTER_DECREMENT
 
 /*==================================================================================================
 *                                    TIME BASED DEBOUNCE

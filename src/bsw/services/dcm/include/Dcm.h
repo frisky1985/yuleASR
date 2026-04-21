@@ -54,6 +54,14 @@
 #define DCM_SID_RXINDICATION            (0x42U)
 #define DCM_SID_SVCHANDLER              (0x50U)
 
+/* Service ID aliases used in Dcm.c */
+#define DCM_SERVICE_ID_INIT             DCM_SID_INIT
+#define DCM_SERVICE_ID_DEINIT           DCM_SID_DEINIT
+#define DCM_SERVICE_ID_TXCONFIRMATION   DCM_SID_TXCONFIRMATION
+#define DCM_SERVICE_ID_RXINDICATION     DCM_SID_RXINDICATION
+#define DCM_SERVICE_ID_TRIGGERTRANSMIT  DCM_SID_TXCONFIRMATION
+#define DCM_SERVICE_ID_GETVERSIONINFO   DCM_SID_GETVERSIONINFO
+
 /*==================================================================================================
 *                                    DET ERROR CODES
 ==================================================================================================*/
@@ -95,6 +103,29 @@
 #define DCM_UDS_SID_TRANSFER_DATA                   (0x36U)
 #define DCM_UDS_SID_REQUEST_TRANSFER_EXIT           (0x37U)
 #define DCM_UDS_SID_REQUEST_FILE_TRANSFER           (0x38U)
+
+/* Service ID aliases used in Dcm.c */
+#define DCM_SERVICE_DIAGNOSTIC_SESSION_CONTROL      DCM_UDS_SID_DIAGNOSTIC_SESSION_CONTROL
+#define DCM_SERVICE_ECU_RESET                       DCM_UDS_SID_ECU_RESET
+#define DCM_SERVICE_SECURITY_ACCESS                 DCM_UDS_SID_SECURITY_ACCESS
+#define DCM_SERVICE_TESTER_PRESENT                  DCM_UDS_SID_TESTER_PRESENT
+#define DCM_SERVICE_READ_DATA_BY_IDENTIFIER         DCM_UDS_SID_READ_DATA_BY_IDENTIFIER
+#define DCM_SERVICE_WRITE_DATA_BY_IDENTIFIER        DCM_UDS_SID_WRITE_DATA_BY_IDENTIFIER
+#define DCM_SERVICE_READ_DTC_INFORMATION            DCM_UDS_SID_READ_DTC_INFORMATION
+#define DCM_SERVICE_CLEAR_DIAGNOSTIC_INFORMATION    DCM_UDS_SID_CLEAR_DIAGNOSTIC_INFORMATION
+#define DCM_SERVICE_ROUTINE_CONTROL                 DCM_UDS_SID_ROUTINE_CONTROL
+
+/* NRC aliases used in Dcm.c */
+#define DCM_E_SUBFUNCTION_NOT_SUPPORTED             DCM_E_SUBFUNCTIONNOTSUPPORTED
+#define DCM_E_INCORRECT_MESSAGE_LENGTH              DCM_E_INCORRECTMESSAGELENGTHORINVALIDFORMAT
+#define DCM_E_SERVICE_NOT_SUPPORTED                 DCM_E_SERVICENOTSUPPORTED
+#define DCM_E_REQUEST_OUT_OF_RANGE                  DCM_E_REQUESTOUTOFRANGE
+#define DCM_E_SECURITY_ACCESS_DENIED                DCM_E_SECURITYACCESSDENIED
+#define DCM_E_CONDITIONS_NOT_CORRECT                DCM_E_CONDITIONSNOTCORRECT
+#define DCM_E_RESPONSE_TOO_LONG                     DCM_E_RESPONSETOOLONG
+#define DCM_E_INVALID_KEY                           DCM_E_INVALIDKEY
+#define DCM_E_REQUIRED_TIME_DELAY_NOT_EXPIRED       DCM_E_REQUIREDTIMEDELAYNOTEXPIRED
+#define DCM_E_EXCEED_NUMBER_OF_ATTEMPTS             DCM_E_EXCEEDNUMBEROFATTEMPTS
 
 /*==================================================================================================
 *                                    DCM SESSION TYPE
@@ -172,6 +203,30 @@ typedef enum {
 } Dcm_NegativeResponseCodeType;
 
 /*==================================================================================================
+*                                    DCM DID CONFIG TYPE
+==================================================================================================*/
+typedef struct {
+    uint16 DID;
+    uint16 DataLength;
+    uint8 SessionType;
+    uint8 SecurityLevel;
+    Std_ReturnType (*ReadDataFnc)(uint8* Data);
+    Std_ReturnType (*WriteDataFnc)(const uint8* Data, uint16 DataLength);
+} Dcm_DIDConfigType;
+
+/*==================================================================================================
+*                                    DCM RID CONFIG TYPE
+==================================================================================================*/
+typedef struct {
+    uint16 RID;
+    uint8 SessionType;
+    uint8 SecurityLevel;
+    Std_ReturnType (*StartFnc)(const uint8* RequestData, uint16 RequestDataLength, uint8* ResponseData, uint16* ResponseDataLength);
+    Std_ReturnType (*StopFnc)(const uint8* RequestData, uint16 RequestDataLength, uint8* ResponseData, uint16* ResponseDataLength);
+    Std_ReturnType (*RequestResultFnc)(uint8* ResponseData, uint16* ResponseDataLength);
+} Dcm_RIDConfigType;
+
+/*==================================================================================================
 *                                    DCM MSG CONTEXT TYPE
 ==================================================================================================*/
 typedef struct {
@@ -243,18 +298,23 @@ void Dcm_Stop(void);
 void Dcm_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 /**
+ * @brief Deinitializes the DCM module
+ */
+void Dcm_DeInit(void);
+
+/**
  * @brief Gets current security level
  * @param SecLevel Pointer to store security level
  * @return Result of operation
  */
-Std_ReturnType Dcm_GetSecurityLevel(Dcm_SecLevelType* SecLevel);
+Std_ReturnType Dcm_GetSecurityLevel(uint8* SecLevel);
 
 /**
  * @brief Gets current session control type
  * @param SesCtrlType Pointer to store session type
  * @return Result of operation
  */
-Std_ReturnType Dcm_GetSesCtrlType(Dcm_SesCtrlType* SesCtrlType);
+Std_ReturnType Dcm_GetSesCtrlType(uint8* SesCtrlType);
 
 /**
  * @brief Gets active diagnostic status
@@ -284,15 +344,24 @@ Std_ReturnType Dcm_TriggerOnEvent(uint8 RoeEventId, uint8 OpStatus);
 /**
  * @brief Tx confirmation callback
  * @param TxPduId PDU ID
+ * @param result Result of transmission
  */
-void Dcm_TpTxConfirmation(PduIdType TxPduId);
+void Dcm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
 /**
  * @brief Rx indication callback
  * @param RxPduId PDU ID
  * @param PduInfoPtr Pointer to PDU info
  */
-void Dcm_TpRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+
+/**
+ * @brief Trigger transmit callback
+ * @param TxPduId PDU ID
+ * @param PduInfoPtr Pointer to PDU info
+ * @return Result of operation
+ */
+Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
 
 /**
  * @brief Main function for periodic processing

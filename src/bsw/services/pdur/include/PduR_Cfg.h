@@ -56,6 +56,7 @@
 ==================================================================================================*/
 #define PDUR_GATEWAY_OPERATION_ENABLED  (STD_ON)
 #define PDUR_FIFO_DEPTH                 (8U)
+#define PDUR_MAX_FIFO_DEPTH             (PDUR_FIFO_DEPTH)
 
 /*==================================================================================================
 *                                    MAIN FUNCTION PERIOD

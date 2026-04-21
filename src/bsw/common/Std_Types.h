@@ -52,6 +52,10 @@ typedef int16_t   sint16;   /**< 16-bit signed integer */
 typedef int32_t   sint32;   /**< 32-bit signed integer */
 typedef int64_t   sint64;   /**< 64-bit signed integer */
 
+/* Floating point types */
+typedef float     float32;  /**< 32-bit floating point */
+typedef double    float64;  /**< 64-bit floating point */
+
 /* Boolean type */
 typedef bool      boolean;  /**< Boolean type */
 

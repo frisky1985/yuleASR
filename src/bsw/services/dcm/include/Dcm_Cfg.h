@@ -108,4 +108,24 @@
 #define DCM_DATA_TRANSFER_SUPPORT       (STD_ON)
 #define DCM_TRANSFER_BLOCK_SIZE         (1024U)
 
+/*==================================================================================================
+*                                    BUFFER SIZES
+==================================================================================================*/
+#define DCM_RX_BUFFER_SIZE              (256U)
+#define DCM_TX_BUFFER_SIZE              (256U)
+
+/*==================================================================================================
+*                                    SECURITY CONFIGURATION
+==================================================================================================*/
+#define DCM_SEED_SIZE                   (4U)
+#define DCM_KEY_SIZE                    (4U)
+#define DCM_MAX_SECURITY_ATTEMPTS       DCM_SECURITY_MAX_ATTEMPTS
+#define DCM_SEC_LEV_LOCKED              DCM_SEC_LEVEL_LOCKED
+
+/*==================================================================================================
+*                                    DID/RID CONFIGURATION
+==================================================================================================*/
+#define DCM_NUM_DIDS                    (32U)
+#define DCM_NUM_RIDS                    (8U)
+
 #endif /* DCM_CFG_H */

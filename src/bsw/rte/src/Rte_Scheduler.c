@@ -107,8 +107,8 @@ STATIC void Rte_SchedulerDispatch(void);
 STATIC void Rte_SchedulerSelectNextTask(void);
 STATIC uint8 Rte_SchedulerFindHighestPriorityReadyTask(void);
 STATIC void Rte_SchedulerUpdateTaskTimers(void);
-STATIC Std_ReturnType Rte_SchedulerActivateTask(uint8 taskId);
-STATIC void Rte_SchedulerTerminateTask(uint8 taskId);
+STATIC Std_ReturnType Rte_SchedulerActivateTaskInternal(uint8 taskId);
+STATIC void Rte_SchedulerTerminateTaskInternal(uint8 taskId);
 
 /*==================================================================================================
 *                                      LOCAL FUNCTIONS
@@ -222,9 +222,9 @@ STATIC void Rte_SchedulerDispatch(void)
 }
 
 /**
- * @brief   Activate a task
+ * @brief   Activate a task (internal)
  */
-STATIC Std_ReturnType Rte_SchedulerActivateTask(uint8 taskId)
+STATIC Std_ReturnType Rte_SchedulerActivateTaskInternal(uint8 taskId)
 {
     Std_ReturnType result = E_NOT_OK;
 
@@ -241,9 +241,9 @@ STATIC Std_ReturnType Rte_SchedulerActivateTask(uint8 taskId)
 }
 
 /**
- * @brief   Terminate a task
+ * @brief   Terminate a task (internal)
  */
-STATIC void Rte_SchedulerTerminateTask(uint8 taskId)
+STATIC void Rte_SchedulerTerminateTaskInternal(uint8 taskId)
 {
     if (taskId < Rte_SchedulerState.NumTasks)
     {
@@ -358,7 +358,7 @@ Std_ReturnType Rte_SchedulerCreateTask(uint8 taskId, uint8 priority, uint32 peri
  */
 Std_ReturnType Rte_SchedulerActivateTask(uint8 taskId)
 {
-    return Rte_SchedulerActivateTask(taskId);
+    return Rte_SchedulerActivateTaskInternal(taskId);
 }
 
 /**
@@ -368,7 +368,7 @@ void Rte_SchedulerTerminateTask(void)
 {
     if (Rte_SchedulerState.CurrentTask != 0xFFU)
     {
-        Rte_SchedulerTerminateTask(Rte_SchedulerState.CurrentTask);
+        Rte_SchedulerTerminateTaskInternal(Rte_SchedulerState.CurrentTask);
     }
 }
 

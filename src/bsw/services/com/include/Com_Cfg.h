@@ -25,6 +25,13 @@
 #define COM_NUM_IPDUS                   (32U)
 #define COM_NUM_IPDU_GROUPS             (4U)
 
+/* Aliases for source compatibility */
+#define COM_NUM_OF_SIGNALS              (COM_NUM_SIGNALS)
+#define COM_NUM_OF_IPDUS                (COM_NUM_IPDUS)
+#define COM_NUM_OF_SIGNAL_GROUPS        (COM_NUM_GROUP_SIGNALS)
+#define COM_NUM_OF_IPDU_GROUPS          (COM_NUM_IPDU_GROUPS)
+#define COM_MAX_IPDU_BUFFER_SIZE        (64U)
+
 /*==================================================================================================
 *                                    SIGNAL DEFINITIONS
 ==================================================================================================*/
