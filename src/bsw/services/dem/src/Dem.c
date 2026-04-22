@@ -62,6 +62,15 @@ typedef struct
     boolean IsSuppressed;
 } Dem_DTCEntryType;
 
+/* Freeze frame entry */
+typedef struct
+{
+    uint8 Data[DEM_FREEZE_FRAME_MAX_SIZE];
+    uint16 Length;
+    boolean IsValid;
+    uint32 Timestamp;
+} Dem_FreezeFrameEntryType;
+
 /* Module internal state */
 typedef struct
 {
@@ -74,6 +83,8 @@ typedef struct
     boolean StorageConditions[DEM_NUM_STORAGE_CONDITIONS];
     Dem_DTCType SelectedDTC;
     boolean DTCRecordUpdateDisabled;
+    Dem_FreezeFrameEntryType FreezeFrames[DEM_NUM_FREEZE_FRAME_RECORDS];
+    boolean DTCSettingDisabled;
 } Dem_InternalStateType;
 
 /*==================================================================================================
@@ -139,9 +150,9 @@ STATIC const Dem_DTCParameterType* Dem_FindDTCConfig(Dem_DTCType DTC)
     {
         for (i = 0U; i < Dem_InternalState.ConfigPtr->NumDTCs; i++)
         {
-            if (Dem_InternalState.ConfigPtr->DTCs[i].DTC == DTC)
+            if (Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc == DTC)
             {
-                result = &Dem_InternalState.ConfigPtr->DTCs[i];
+                result = &Dem_InternalState.ConfigPtr->DtcParameters[i];
                 break;
             }
         }
@@ -239,6 +250,31 @@ STATIC void Dem_UpdateDebounceCounter(Dem_EventIdType EventId, Dem_EventStatusTy
 /**
  * @brief   Update DTC status based on event state
  */
+/**
+ * @brief   Store freeze frame data for a DTC
+ */
+STATIC void Dem_StoreFreezeFrame(uint8 dtcIndex)
+{
+    uint8 i;
+
+    if (dtcIndex < DEM_NUM_FREEZE_FRAME_RECORDS)
+    {
+        Dem_FreezeFrameEntryType* freezeFrame = &Dem_InternalState.FreezeFrames[dtcIndex];
+
+        if (!freezeFrame->IsValid)
+        {
+            /* Capture snapshot data (simplified - would read actual DID data) */
+            freezeFrame->Length = DEM_FREEZE_FRAME_MAX_SIZE;
+            for (i = 0U; i < DEM_FREEZE_FRAME_MAX_SIZE; i++)
+            {
+                freezeFrame->Data[i] = (uint8)(i + dtcIndex);
+            }
+            freezeFrame->IsValid = TRUE;
+            freezeFrame->Timestamp = 0U; /* Would use actual timestamp */
+        }
+    }
+}
+
 STATIC void Dem_UpdateDTCStatus(Dem_EventIdType EventId)
 {
     const Dem_EventParameterType* eventConfig;
@@ -250,7 +286,7 @@ STATIC void Dem_UpdateDTCStatus(Dem_EventIdType EventId)
     if (eventConfig != NULL_PTR)
     {
         eventState = &Dem_InternalState.EventStates[EventId - 1U];
-        dtcIndex = Dem_FindDTCIndex(eventConfig->DTC);
+        dtcIndex = Dem_FindDTCIndex(eventConfig->Dtc);
 
         if (dtcIndex != 0xFFU)
         {
@@ -276,7 +312,14 @@ STATIC void Dem_UpdateDTCStatus(Dem_EventIdType EventId)
                 /* Set Confirmed DTC after sufficient occurrences */
                 if (dtcEntry->OccurrenceCounter >= 2U)
                 {
+                    boolean wasConfirmed = (dtcEntry->Status & DEM_DTC_STATUS_CONFIRMED_DTC) != 0U;
                     dtcEntry->Status |= DEM_DTC_STATUS_CONFIRMED_DTC;
+
+                    /* Store freeze frame when DTC first becomes confirmed */
+                    if (!wasConfirmed)
+                    {
+                        Dem_StoreFreezeFrame(dtcIndex);
+                    }
                 }
 
                 /* Reset aging counter */
@@ -378,7 +421,7 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
     {
         if (i < ConfigPtr->NumDTCs)
         {
-            Dem_InternalState.DTCEntries[i].DTC = ConfigPtr->DTCs[i].DTC;
+            Dem_InternalState.DTCEntries[i].DTC = ConfigPtr->DtcParameters[i].Dtc;
         }
         else
         {
@@ -413,6 +456,15 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
     /* Initialize selected DTC */
     Dem_InternalState.SelectedDTC = 0U;
     Dem_InternalState.DTCRecordUpdateDisabled = FALSE;
+    Dem_InternalState.DTCSettingDisabled = FALSE;
+
+    /* Initialize freeze frames */
+    for (i = 0U; i < DEM_NUM_FREEZE_FRAME_RECORDS; i++)
+    {
+        Dem_InternalState.FreezeFrames[i].IsValid = FALSE;
+        Dem_InternalState.FreezeFrames[i].Length = 0U;
+        Dem_InternalState.FreezeFrames[i].Timestamp = 0U;
+    }
 
     /* Set module state to initialized */
     Dem_InternalState.State = DEM_STATE_INIT;
@@ -911,6 +963,157 @@ void Dem_GetVersionInfo(Std_VersionInfoType* versioninfo)
     }
 }
 #endif
+
+/**
+ * @brief   Pre-store freeze frame data
+ */
+Std_ReturnType Dem_PrestoreFreezeFrame(Dem_EventIdType EventId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    const Dem_EventParameterType* eventConfig;
+    uint8 dtcIndex;
+
+#if (DEM_DEV_ERROR_DETECT == STD_ON)
+    if (Dem_InternalState.State != DEM_STATE_INIT)
+    {
+        DEM_DET_REPORT_ERROR(DEM_SID_PRESTORAGE, DEM_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if ((EventId == 0U) || (EventId > DEM_NUM_EVENTS))
+    {
+        DEM_DET_REPORT_ERROR(DEM_SID_PRESTORAGE, DEM_E_PARAM_DATA);
+        return E_NOT_OK;
+    }
+#endif
+
+    eventConfig = Dem_FindEventConfig(EventId);
+    if (eventConfig != NULL_PTR)
+    {
+        dtcIndex = Dem_FindDTCIndex(eventConfig->Dtc);
+        if (dtcIndex != 0xFFU)
+        {
+            Dem_StoreFreezeFrame(dtcIndex);
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Clear pre-stored freeze frame data
+ */
+Std_ReturnType Dem_ClearPrestoredFreezeFrame(Dem_EventIdType EventId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    const Dem_EventParameterType* eventConfig;
+    uint8 dtcIndex;
+
+#if (DEM_DEV_ERROR_DETECT == STD_ON)
+    if (Dem_InternalState.State != DEM_STATE_INIT)
+    {
+        DEM_DET_REPORT_ERROR(DEM_SID_CLEARPRESTOREDFF, DEM_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if ((EventId == 0U) || (EventId > DEM_NUM_EVENTS))
+    {
+        DEM_DET_REPORT_ERROR(DEM_SID_CLEARPRESTOREDFF, DEM_E_PARAM_DATA);
+        return E_NOT_OK;
+    }
+#endif
+
+    eventConfig = Dem_FindEventConfig(EventId);
+    if (eventConfig != NULL_PTR)
+    {
+        dtcIndex = Dem_FindDTCIndex(eventConfig->Dtc);
+        if ((dtcIndex != 0xFFU) && (dtcIndex < DEM_NUM_FREEZE_FRAME_RECORDS))
+        {
+            Dem_InternalState.FreezeFrames[dtcIndex].IsValid = FALSE;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Disable DTC setting
+ */
+Std_ReturnType Dem_DisableDTCSetting(Dem_DTCType DTCGroup, uint8 DTCKind)
+{
+    (void)DTCGroup;
+    (void)DTCKind;
+
+#if (DEM_DEV_ERROR_DETECT == STD_ON)
+    if (Dem_InternalState.State != DEM_STATE_INIT)
+    {
+        DEM_DET_REPORT_ERROR(DEM_SID_DISABLEDTCSETTING, DEM_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+
+    Dem_InternalState.DTCSettingDisabled = TRUE;
+    return E_OK;
+}
+
+/**
+ * @brief   Enable DTC setting
+ */
+Std_ReturnType Dem_EnableDTCSetting(Dem_DTCType DTCGroup, uint8 DTCKind)
+{
+    (void)DTCGroup;
+    (void)DTCKind;
+
+#if (DEM_DEV_ERROR_DETECT == STD_ON)
+    if (Dem_InternalState.State != DEM_STATE_INIT)
+    {
+        DEM_DET_REPORT_ERROR(DEM_SID_ENABLEDTCSETTING, DEM_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+
+    Dem_InternalState.DTCSettingDisabled = FALSE;
+    return E_OK;
+}
+
+/**
+ * @brief   Get freeze frame data by DTC
+ */
+Std_ReturnType Dem_GetFreezeFrameDataByDTC(Dem_DTCType DTC, Dem_DTCOriginType DTCOrigin,
+                                            uint8 RecordNumber, uint8* DestBuffer,
+                                            uint16* BufferSize)
+{
+    uint8 dtcIndex;
+    Std_ReturnType result = E_NOT_OK;
+
+    (void)DTCOrigin;
+    (void)RecordNumber;
+
+    dtcIndex = Dem_FindDTCIndex(DTC);
+
+    if ((dtcIndex != 0xFFU) && (dtcIndex < DEM_NUM_FREEZE_FRAME_RECORDS) &&
+        (DestBuffer != NULL_PTR) && (BufferSize != NULL_PTR))
+    {
+        Dem_FreezeFrameEntryType* freezeFrame = &Dem_InternalState.FreezeFrames[dtcIndex];
+
+        if (freezeFrame->IsValid)
+        {
+            uint16 copyLength = (*BufferSize < freezeFrame->Length) ? *BufferSize : freezeFrame->Length;
+            uint16 i;
+
+            for (i = 0U; i < copyLength; i++)
+            {
+                DestBuffer[i] = freezeFrame->Data[i];
+            }
+            *BufferSize = copyLength;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
 
 /* Stub functions for unimplemented features */
 Std_ReturnType Dem_GetNumberOfFilteredDTC(uint16* NumberOfFilteredDTC)

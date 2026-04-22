@@ -724,6 +724,44 @@ uint8 Com_ReceiveShadowSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 }
 
 /**
+ * @brief   Trigger transmit callback from PduR
+ */
+Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
+{
+    Std_ReturnType result = E_NOT_OK;
+    const Com_IPduConfigType* ipduConfig;
+
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+    if (Com_InternalState.State != COM_STATE_INIT)
+    {
+        COM_DET_REPORT_ERROR(COM_SERVICE_ID_TRIGGERTRANSMIT, COM_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if (PduInfoPtr == NULL_PTR)
+    {
+        COM_DET_REPORT_ERROR(COM_SERVICE_ID_TRIGGERTRANSMIT, COM_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+#endif
+
+    if ((TxPduId < COM_NUM_OF_IPDUS) && (PduInfoPtr != NULL_PTR))
+    {
+        ipduConfig = Com_GetIPduConfig(TxPduId);
+
+        if (ipduConfig != NULL_PTR)
+        {
+            /* Provide current IPDU data */
+            PduInfoPtr->SduDataPtr = Com_InternalState.IPduBuffer[TxPduId];
+            PduInfoPtr->SduLength = ipduConfig->DataLength;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+
+/**
  * @brief   Trigger IPDU send
  */
 Std_ReturnType Com_TriggerIPDUSend(PduIdType PduId)
@@ -867,7 +905,31 @@ Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
  */
 void Com_MainFunctionRx(void)
 {
-    /* Process deferred reception if needed */
+    uint8 i;
+    const Com_IPduConfigType* ipduConfig;
+
+    if (Com_InternalState.State == COM_STATE_INIT)
+    {
+        for (i = 0U; i < COM_NUM_OF_IPDUS; i++)
+        {
+            ipduConfig = Com_GetIPduConfig(i);
+
+            if (ipduConfig != NULL_PTR)
+            {
+                /* Check if IPDU group is enabled */
+                if (Com_InternalState.IPduStates[i].GroupEnabled)
+                {
+                    /* Process received data */
+                    if (Com_InternalState.IPduStates[i].Updated)
+                    {
+                        /* Signal unpacking is done on-demand in Com_ReceiveSignal */
+                        /* Clear IPDU update flag after processing cycle */
+                        Com_InternalState.IPduStates[i].Updated = FALSE;
+                    }
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -886,28 +948,32 @@ void Com_MainFunctionTx(void)
 
             if (ipduConfig != NULL_PTR)
             {
-                /* Handle periodic transmission */
-                if (ipduConfig->TimePeriod > 0U)
+                /* Check if IPDU group is enabled */
+                if (Com_InternalState.IPduStates[i].GroupEnabled)
                 {
-                    if (Com_InternalState.IPduStates[i].TimeCounter == 0U)
+                    /* Handle periodic transmission */
+                    if (ipduConfig->TimePeriod > 0U)
                     {
-                        /* Time to transmit */
-                        (void)Com_TransmitIPdu(i);
-                        Com_InternalState.IPduStates[i].TimeCounter = ipduConfig->TimePeriod;
+                        if (Com_InternalState.IPduStates[i].TimeCounter == 0U)
+                        {
+                            /* Time to transmit */
+                            (void)Com_TransmitIPdu(i);
+                            Com_InternalState.IPduStates[i].TimeCounter = ipduConfig->TimePeriod;
+                        }
+                        else
+                        {
+                            Com_InternalState.IPduStates[i].TimeCounter--;
+                        }
                     }
-                    else
-                    {
-                        Com_InternalState.IPduStates[i].TimeCounter--;
-                    }
-                }
 
-                /* Handle repetitions */
-                if ((ipduConfig->RepeatingEnabled) &&
-                    (Com_InternalState.IPduStates[i].RepetitionCount > 0U) &&
-                    (Com_InternalState.IPduStates[i].TimeCounter == 0U))
-                {
-                    (void)Com_TransmitIPdu(i);
-                    Com_InternalState.IPduStates[i].TimeCounter = ipduConfig->TimeBetweenRepetitions;
+                    /* Handle repetitions */
+                    if ((ipduConfig->RepeatingEnabled) &&
+                        (Com_InternalState.IPduStates[i].RepetitionCount > 0U) &&
+                        (Com_InternalState.IPduStates[i].TimeCounter == 0U))
+                    {
+                        (void)Com_TransmitIPdu(i);
+                        Com_InternalState.IPduStates[i].TimeCounter = ipduConfig->TimeBetweenRepetitions;
+                    }
                 }
             }
         }
@@ -919,7 +985,18 @@ void Com_MainFunctionTx(void)
  */
 void Com_MainFunctionRouteSignals(void)
 {
-    /* Process signal gateway routing if needed */
+#if (COM_GATEWAY_SUPPORT == STD_ON)
+    uint8 i;
+
+    if (Com_InternalState.State == COM_STATE_INIT)
+    {
+        for (i = 0U; i < COM_NUM_SIGNAL_GW_MAPPINGS; i++)
+        {
+            /* Signal gateway routing would be implemented here */
+            /* Map source signals to destination signals across different IPDUs */
+        }
+    }
+#endif
 }
 
 /**

@@ -517,6 +517,19 @@ Std_ReturnType Dem_EnableDTCRecordUpdate(void);
 Std_ReturnType Dem_GetOperationCycleState(uint8 OperationCycleId, uint8* CycleState);
 
 /**
+ * @brief Gets freeze frame data by DTC
+ * @param DTC DTC number
+ * @param DTCOrigin DTC origin
+ * @param RecordNumber Record number
+ * @param DestBuffer Destination buffer
+ * @param BufferSize Buffer size
+ * @return Result of operation
+ */
+Std_ReturnType Dem_GetFreezeFrameDataByDTC(Dem_DtcType DTC, Dem_DTCOriginType DTCOrigin,
+                                            uint8 RecordNumber, uint8* DestBuffer,
+                                            uint16* BufferSize);
+
+/**
  * @brief Main function for periodic processing
  */
 void Dem_MainFunction(void);

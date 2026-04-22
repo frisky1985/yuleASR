@@ -305,6 +305,13 @@ Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
 /**
+ * @brief Cancels a CAN transmit request
+ * @param TxPduId PDU to cancel
+ * @return Result of operation
+ */
+Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId);
+
+/**
  * @brief Sets the PDU mode
  * @param ControllerId Controller to set
  * @param PduModeRequest Mode to set

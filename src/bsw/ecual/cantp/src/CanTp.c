@@ -580,7 +580,7 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
 
         if (runtime->State == CANTP_CH_TX_SF) {
             /* Single Frame transmission complete */
-            PduR_TxConfirmation(runtime->ActiveNsduId);
+            PduR_TxConfirmation(runtime->ActiveNsduId, E_OK);
             CanTp_ResetChannel((CanTp_ChannelType)i);
         } else if (runtime->State == CANTP_CH_TX_FF) {
             /* First Frame sent, waiting for FC */
@@ -590,7 +590,7 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
             /* Consecutive Frame sent */
             if (runtime->DataIndex >= runtime->DataLength) {
                 /* All data sent */
-                PduR_TxConfirmation(runtime->ActiveNsduId);
+                PduR_TxConfirmation(runtime->ActiveNsduId, E_OK);
                 CanTp_ResetChannel((CanTp_ChannelType)i);
             } else {
                 /* More frames to send */

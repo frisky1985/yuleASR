@@ -496,9 +496,10 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 /**
  * @brief   TxConfirmation callback from lower layer
  * @param   TxPduId - PDU identifier
+ * @param   result  - Transmission result
  * @return  None
  */
-void PduR_TxConfirmation(PduIdType TxPduId)
+void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     uint8 pathIndex;
 
@@ -523,11 +524,11 @@ void PduR_TxConfirmation(PduIdType TxPduId)
             switch (pathPtr->DestPdus[i].DestModule)
             {
                 case PDUR_MODULE_COM:
-                    Com_TxConfirmation(pathPtr->DestPdus[i].DestPduId);
+                    Com_TxConfirmation(pathPtr->DestPdus[i].DestPduId, result);
                     break;
 
                 case PDUR_MODULE_DCM:
-                    Dcm_TxConfirmation(pathPtr->DestPdus[i].DestPduId);
+                    Dcm_TxConfirmation(pathPtr->DestPdus[i].DestPduId, result);
                     break;
 
                 default:
@@ -537,6 +538,174 @@ void PduR_TxConfirmation(PduIdType TxPduId)
         }
     }
 }
+
+/**
+ * @brief   TriggerTransmit callback from lower layer
+ * @param   TxPduId     - PDU identifier
+ * @param   PduInfoPtr  - Pointer to PDU info
+ * @return  E_OK if successful, E_NOT_OK otherwise
+ */
+Std_ReturnType PduR_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 pathIndex;
+
+#if (PDUR_DEV_ERROR_DETECT == STD_ON)
+    if (PduR_InternalState.State != PDUR_STATE_INIT)
+    {
+        PDUR_DET_REPORT_ERROR(0x06U, PDUR_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if (PduInfoPtr == NULL_PTR)
+    {
+        PDUR_DET_REPORT_ERROR(0x06U, PDUR_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+#endif
+
+    /* Find routing path for this TxPduId from CanIf module */
+    if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_CANIF, &pathIndex) == E_OK)
+    {
+        const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
+        uint8 i;
+
+        /* Forward to upper layers that support TriggerTransmit */
+        for (i = 0U; i < pathPtr->NumDestPdus; i++)
+        {
+            switch (pathPtr->DestPdus[i].DestModule)
+            {
+                case PDUR_MODULE_COM:
+                    result = Com_TriggerTransmit(pathPtr->DestPdus[i].DestPduId, PduInfoPtr);
+                    break;
+
+                case PDUR_MODULE_DCM:
+                    result = Dcm_TriggerTransmit(pathPtr->DestPdus[i].DestPduId, PduInfoPtr);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Cancel a transmit request
+ * @param   TxPduId - PDU identifier
+ * @return  E_OK if canceled, E_NOT_OK otherwise
+ */
+Std_ReturnType PduR_CancelTransmitRequest(PduIdType TxPduId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 pathIndex;
+
+#if (PDUR_DEV_ERROR_DETECT == STD_ON)
+    if (PduR_InternalState.State != PDUR_STATE_INIT)
+    {
+        PDUR_DET_REPORT_ERROR(0x07U, PDUR_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+
+    if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_COM, &pathIndex) == E_OK)
+    {
+        const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
+        uint8 i;
+
+        for (i = 0U; i < pathPtr->NumDestPdus; i++)
+        {
+            if (pathPtr->DestPdus[i].DestModule == PDUR_MODULE_CANIF)
+            {
+                result = CanIf_CancelTransmit(pathPtr->DestPdus[i].DestPduId);
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Cancel a receive request
+ * @param   RxPduId - PDU identifier
+ * @return  E_OK if canceled, E_NOT_OK otherwise
+ */
+Std_ReturnType PduR_CancelReceiveRequest(PduIdType RxPduId)
+{
+    (void)RxPduId;
+    return E_NOT_OK;
+}
+
+/**
+ * @brief   Change routing path parameter
+ * @param   id          - PDU ID
+ * @param   parameter   - Parameter to change
+ * @param   value       - New value
+ * @return  E_OK if changed, E_NOT_OK otherwise
+ */
+Std_ReturnType PduR_ChangeParameterRequest(PduIdType id, TPParameterType parameter, uint16 value)
+{
+    (void)id;
+    (void)parameter;
+    (void)value;
+    return E_NOT_OK;
+}
+
+/**
+ * @brief   Enable a routing path group
+ * @param   id - Group ID to enable
+ * @return  None
+ */
+void PduR_EnableRouting(uint8 id)
+{
+    if (id < PDUR_NUMBER_OF_ROUTING_PATH_GROUPS)
+    {
+        PduR_InternalState.PathStates[id].IsEnabled = TRUE;
+    }
+}
+
+/**
+ * @brief   Disable a routing path group
+ * @param   id - Group ID to disable
+ * @return  None
+ */
+void PduR_DisableRouting(uint8 id)
+{
+    if (id < PDUR_NUMBER_OF_ROUTING_PATH_GROUPS)
+    {
+        PduR_InternalState.PathStates[id].IsEnabled = FALSE;
+    }
+}
+
+/**
+ * @brief   Get version information
+ * @param   versioninfo - Pointer to version info structure
+ * @return  None
+ */
+#if (PDUR_VERSION_INFO_API == STD_ON)
+void PduR_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+#if (PDUR_DEV_ERROR_DETECT == STD_ON)
+    if (versioninfo == NULL_PTR)
+    {
+        PDUR_DET_REPORT_ERROR(PDUR_SID_GETVERSIONINFO, PDUR_E_PARAM_POINTER);
+        return;
+    }
+#endif
+
+    if (versioninfo != NULL_PTR)
+    {
+        versioninfo->vendorID = PDUR_VENDOR_ID;
+        versioninfo->moduleID = PDUR_MODULE_ID;
+        versioninfo->sw_major_version = PDUR_SW_MAJOR_VERSION;
+        versioninfo->sw_minor_version = PDUR_SW_MINOR_VERSION;
+        versioninfo->sw_patch_version = PDUR_SW_PATCH_VERSION;
+    }
+}
+#endif
 
 /**
  * @brief   Trigger transmission of deferred PDUs (FIFO processing)

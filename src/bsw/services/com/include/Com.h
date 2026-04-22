@@ -373,6 +373,18 @@ uint8 Com_ReceiveSignalGroup(Com_SignalGroupIdType SignalGroupId);
 Std_ReturnType Com_TriggerIPDUSend(PduIdType PduId);
 
 /**
+ * @brief Trigger transmit callback from PduR
+ *
+ * @param[in] TxPduId PDU to trigger
+ * @param[out] PduInfoPtr Pointer to PDU info
+ *
+ * @return Std_ReturnType
+ *         - E_OK: Data provided
+ *         - E_NOT_OK: Data not provided
+ */
+Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
+
+/**
  * @brief Switches the transmission mode of an I-PDU
  *
  * @param[in] PduId ID of the I-PDU

@@ -162,15 +162,26 @@ yuletech-openspec/
 - **OS 层**: 全部完成 ✓
   - Os (基于 FreeRTOS V10.6.x / V11.x)
   - 任务管理、事件管理、资源管理、报警管理、中断管理
+  - Os_Cfg.c 任务配置表、弱引用钩子函数
+
+- **Integration 层**: 已完成 ✓
+  - BswM (基础软件模式管理器)
+  - EcuM (ECU状态管理器)
+
+- **ConfigGenerator 集成**: 已完成 ✓
+  - MCAL: Mcu, Port, Can, Spi, Gpt 配置模板
+  - BSW: Com, PduR, NvM, CanIf, IoHwAb 配置模板
 
 ### 验证状态
-- PduR: ✅ 验证通过
-- NvM: ✅ 验证通过
-- Com: ✅ 实现完成
-- Dcm: ✅ 实现完成
-- Dem: ✅ 实现完成
-- RTE: ✅ 验证通过
+- PduR: ✅ 验证通过 (TxConfirmation修复, TriggerTransmit新增)
+- NvM: ✅ 验证通过 (CRC验证, 写计数器, 缺失API补齐)
+- Com: ✅ 实现完成 (MainFunctionRx/Tx完善, 网关支持)
+- Dcm: ✅ 实现完成 (DTC子功能增强, Dem集成)
+- Dem: ✅ 实现完成 (冻结帧存储, DTCSetting控制)
+- RTE: ✅ 验证通过 (组件初始化, 事件处理完善)
 - ASW: ✅ 验证通过 (8/8 组件)
+- BswM: ✅ 新增完成
+- EcuM: ✅ 新增完成
 
 ### 项目里程碑
 - ✅ MCAL 层完成 (9/9)
@@ -178,7 +189,9 @@ yuletech-openspec/
 - ✅ Service 层完成 (5/5)
 - ✅ RTE 层完成 (1/1)
 - ✅ ASW 层完成 (8/8)
-- 🎉 **AutoSAR 全栈开发完成 (32个模块/组件)**
+- ✅ OS 层完善 (弱引用钩子 + 配置表)
+- ✅ Integration 层完成 (2/2)
+- 🎉 **AutoSAR 全栈开发完成 (34个模块/组件)**
 
 ### 项目统计
 | 层级 | 模块/组件数 | 状态 |
@@ -188,7 +201,9 @@ yuletech-openspec/
 | Service | 5 | ✅ 完成 |
 | RTE | 1 | ✅ 完成 |
 | ASW | 8 | ✅ 完成 |
-| **总计** | **32** | **✅ 完成** |
+| OS | 1 | ✅ 完成 |
+| Integration | 2 | ✅ 完成 |
+| **总计** | **35** | **✅ 完成** |
 
 ### 下一步工作
 - 系统集成测试

@@ -234,8 +234,9 @@ void PduR_MainFunction(void);
 /**
  * @brief Transmit confirmation callback
  * @param TxPduId PDU that was transmitted
+ * @param result Transmission result
  */
-void PduR_TxConfirmation(PduIdType TxPduId);
+void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
 /**
  * @brief Receive indication callback

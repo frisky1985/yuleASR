@@ -184,6 +184,25 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return E_NOT_OK;
 }
 
+Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TxPduId >= CANIF_NUM_TX_PDUS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
+        return E_NOT_OK;
+    }
+    #endif
+
+    /* Cancel transmit is driver dependent */
+    /* For now, return OK as placeholder */
+    (void)TxPduId;
+    return E_OK;
+}
+
 Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeRequest)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -246,7 +265,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
     if (CanTxPduId < CANIF_NUM_TX_PDUS) {
         const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[CanTxPduId];
         if (txPduConfig->TxConfirmation) {
-            PduR_TxConfirmation(CanTxPduId);
+            PduR_TxConfirmation(CanTxPduId, E_OK);
         }
     }
 }

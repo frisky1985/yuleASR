@@ -1195,6 +1195,24 @@ void Os_Internal_ErrorHook(StatusType Error)
     /* Default implementation - can be overridden by application */
 }
 
+/* Weak reference macro for GCC/Clang compilers */
+#ifndef OS_WEAK
+    #ifdef __GNUC__
+        #define OS_WEAK __attribute__((weak))
+    #else
+        #define OS_WEAK
+    #endif
+#endif
+
+/**
+ * @brief Application error hook - weak reference
+ *        Can be overridden by application code
+ */
+OS_WEAK void Appl_ErrorHook(StatusType Error)
+{
+    (void)Error;
+}
+
 /**
  * @brief Pre-task hook - called before task switch in
  */
@@ -1209,6 +1227,15 @@ void PreTaskHook(void)
 void Os_Internal_PreTaskHook(void)
 {
     /* Default implementation - can be overridden by application */
+}
+
+/**
+ * @brief Application pre-task hook - weak reference
+ *        Can be overridden by application code
+ */
+OS_WEAK void Appl_PreTaskHook(void)
+{
+    /* Default empty implementation */
 }
 
 /**
@@ -1228,6 +1255,15 @@ void Os_Internal_PostTaskHook(void)
 }
 
 /**
+ * @brief Application post-task hook - weak reference
+ *        Can be overridden by application code
+ */
+OS_WEAK void Appl_PostTaskHook(void)
+{
+    /* Default empty implementation */
+}
+
+/**
  * @brief Startup hook - called after OS initialization
  */
 void StartupHook(void)
@@ -1241,6 +1277,15 @@ void StartupHook(void)
 void Os_Internal_StartupHook(void)
 {
     /* Default implementation - can be overridden by application */
+}
+
+/**
+ * @brief Application startup hook - weak reference
+ *        Can be overridden by application code
+ */
+OS_WEAK void Appl_StartupHook(void)
+{
+    /* Default empty implementation */
 }
 
 /**
@@ -1260,6 +1305,15 @@ void Os_Internal_ShutdownHook(StatusType Error)
 {
     (void)Error;
     /* Default implementation - can be overridden by application */
+}
+
+/**
+ * @brief Application shutdown hook - weak reference
+ *        Can be overridden by application code
+ */
+OS_WEAK void Appl_ShutdownHook(StatusType Error)
+{
+    (void)Error;
 }
 
 /*==================================================================================================

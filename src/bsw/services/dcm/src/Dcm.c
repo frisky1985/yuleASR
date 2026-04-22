@@ -591,21 +591,158 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 subFunction;
-    uint8 responseData[10];
+    uint8 responseData[DCM_TX_BUFFER_SIZE];
+    uint16 responseLength = 0U;
 
     if (Length >= 1U)
     {
         subFunction = Data[0];
 
-        /* Simplified implementation - return no DTCs */
-        responseData[0] = subFunction;
-        responseData[1] = 0x00U; /* DTCStatusAvailabilityMask */
-        responseData[2] = 0x00U; /* FormatIdentifier */
-        responseData[3] = 0x00U; /* DTCCountHigh */
-        responseData[4] = 0x00U; /* DTCCountLow */
+        switch (subFunction)
+        {
+            case 0x01U: /* reportNumberOfDTCByStatusMask */
+            case 0x12U: /* reportNumberOfEmissionsRelatedOBDDTCByStatusMask */
+                if (Length >= 2U)
+                {
+                    uint8 dtcStatusMask = Data[1];
+                    uint16 dtcCount = 0U;
+                    uint8 i;
 
-        Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, responseData, 5U);
-        result = E_OK;
+                    /* Count DTCs matching the status mask */
+                    for (i = 0U; i < DEM_NUM_DTCS; i++)
+                    {
+                        Dem_DTCStatusType dtcStatus;
+                        if (Dem_GetDTCStatus(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc,
+                                             DEM_DTC_ORIGIN_PRIMARY_MEMORY, &dtcStatus) == E_OK)
+                        {
+                            if ((dtcStatus & dtcStatusMask) != 0U)
+                            {
+                                dtcCount++;
+                            }
+                        }
+                    }
+
+                    responseData[0] = subFunction;
+                    responseData[1] = DEM_DTC_STATUS_AVAILABILITY_MASK;
+                    responseData[2] = 0x00U; /* DTCFormatIdentifier = ISO_14229 */
+                    responseData[3] = (uint8)(dtcCount >> 8);
+                    responseData[4] = (uint8)(dtcCount);
+                    responseLength = 5U;
+                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, responseData, responseLength);
+                    result = E_OK;
+                }
+                else
+                {
+                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, DCM_E_INCORRECT_MESSAGE_LENGTH);
+                }
+                break;
+
+            case 0x02U: /* reportDTCByStatusMask */
+            case 0x13U: /* reportEmissionsRelatedOBDDTCByStatusMask */
+                if (Length >= 2U)
+                {
+                    uint8 dtcStatusMask = Data[1];
+                    uint8 i;
+                    uint16 idx = 2U;
+
+                    responseData[0] = subFunction;
+                    responseData[1] = DEM_DTC_STATUS_AVAILABILITY_MASK;
+
+                    /* Return all DTCs matching the status mask */
+                    for (i = 0U; i < DEM_NUM_DTCS; i++)
+                    {
+                        Dem_DTCStatusType dtcStatus;
+                        if (Dem_GetDTCStatus(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc,
+                                             DEM_DTC_ORIGIN_PRIMARY_MEMORY, &dtcStatus) == E_OK)
+                        {
+                            if ((dtcStatus & dtcStatusMask) != 0U)
+                            {
+                                if ((idx + 4U) < DCM_TX_BUFFER_SIZE)
+                                {
+                                    responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 16);
+                                    responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 8);
+                                    responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc);
+                                    responseData[idx++] = dtcStatus;
+                                }
+                            }
+                        }
+                    }
+
+                    responseLength = idx;
+                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, responseData, responseLength);
+                    result = E_OK;
+                }
+                else
+                {
+                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, DCM_E_INCORRECT_MESSAGE_LENGTH);
+                }
+                break;
+
+            case 0x06U: /* reportDTCExtDataRecordByDTCNumber */
+                if (Length >= 5U)
+                {
+                    uint32 dtc = ((uint32)Data[1] << 16) | ((uint32)Data[2] << 8) | Data[3];
+                    uint8 extDataRecordNumber = Data[4];
+
+                    /* Simplified: return empty extended data */
+                    responseData[0] = subFunction;
+                    responseData[1] = (uint8)(dtc >> 16);
+                    responseData[2] = (uint8)(dtc >> 8);
+                    responseData[3] = (uint8)(dtc);
+                    responseData[4] = 0x00U; /* DTC status */
+                    responseData[5] = extDataRecordNumber;
+                    responseLength = 6U;
+                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, responseData, responseLength);
+                    result = E_OK;
+                }
+                else
+                {
+                    Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, DCM_E_INCORRECT_MESSAGE_LENGTH);
+                }
+                break;
+
+            case 0x0AU: /* reportSupportedDTC */
+                {
+                    uint8 i;
+                    uint16 idx = 2U;
+
+                    responseData[0] = subFunction;
+                    responseData[1] = DEM_DTC_STATUS_AVAILABILITY_MASK;
+
+                    /* Return all configured DTCs */
+                    for (i = 0U; i < DEM_NUM_DTCS; i++)
+                    {
+                        Dem_DTCStatusType dtcStatus;
+                        if (Dem_GetDTCStatus(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc,
+                                             DEM_DTC_ORIGIN_PRIMARY_MEMORY, &dtcStatus) == E_OK)
+                        {
+                            if ((idx + 4U) < DCM_TX_BUFFER_SIZE)
+                            {
+                                responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 16);
+                                responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 8);
+                                responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc);
+                                responseData[idx++] = dtcStatus;
+                            }
+                        }
+                    }
+
+                    responseLength = idx;
+                    Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, responseData, responseLength);
+                    result = E_OK;
+                }
+                break;
+
+            default:
+                /* Simplified fallback - return no DTCs */
+                responseData[0] = subFunction;
+                responseData[1] = DEM_DTC_STATUS_AVAILABILITY_MASK;
+                responseData[2] = 0x00U;
+                responseData[3] = 0x00U;
+                responseData[4] = 0x00U;
+                Dcm_SendPositiveResponse(ProtocolId, DCM_SERVICE_READ_DTC_INFORMATION, responseData, 5U);
+                result = E_OK;
+                break;
+        }
     }
     else
     {

@@ -378,13 +378,68 @@ void Rte_SchedulerTerminateTask(void)
 Rte_StatusType Rte_WaitForEvent(Rte_InstanceHandleType instance, Rte_EventType eventMask, uint32 timeout)
 {
     Rte_StatusType result = RTE_E_OK;
+    uint8 i;
+    uint8 taskId = (uint8)instance;
+    boolean eventReceived = FALSE;
+    uint32 waitCounter = 0U;
 
-    (void)instance;
-    (void)eventMask;
-    (void)timeout;
+#if (RTE_DEV_ERROR_DETECT == STD_ON)
+    if (!Rte_SchedulerState.IsInitialized)
+    {
+        return RTE_E_UNINIT;
+    }
 
-    /* Event waiting implementation would go here */
-    /* For now, return OK */
+    if (taskId >= Rte_SchedulerState.NumTasks)
+    {
+        return RTE_E_OUT_OF_RANGE;
+    }
+#endif
+
+    if (taskId < RTE_MAX_TASKS)
+    {
+        Rte_TaskControlBlockType* taskPtr = &Rte_SchedulerState.Tasks[taskId];
+
+        if (taskPtr->Type == RTE_TASK_EXTENDED)
+        {
+            /* Set task to waiting state */
+            taskPtr->State = RTE_TASK_WAITING;
+            taskPtr->WaitedEvents = eventMask;
+
+            /* Wait for event or timeout */
+            while (!eventReceived)
+            {
+                /* Check if any requested event is set */
+                if ((taskPtr->EventMask & eventMask) != 0U)
+                {
+                    eventReceived = TRUE;
+                }
+
+                /* Check timeout */
+                if ((timeout > 0U) && (waitCounter >= timeout))
+                {
+                    result = RTE_E_TIMEOUT;
+                    break;
+                }
+
+                waitCounter++;
+
+                /* In a real OS, this would yield to other tasks */
+                if (!eventReceived)
+                {
+                    /* Simple yield - would be replaced by actual OS call */
+                }
+            }
+
+            /* Clear the events that were waited for */
+            taskPtr->EventMask &= ~eventMask;
+            taskPtr->WaitedEvents = 0U;
+            taskPtr->State = RTE_TASK_READY;
+        }
+        else
+        {
+            result = RTE_E_OK; /* Basic tasks don't support event waiting */
+        }
+    }
 
     return result;
 }
@@ -395,12 +450,42 @@ Rte_StatusType Rte_WaitForEvent(Rte_InstanceHandleType instance, Rte_EventType e
 Rte_StatusType Rte_SetEvent(Rte_InstanceHandleType instance, Rte_EventType event)
 {
     Rte_StatusType result = RTE_E_OK;
+    uint8 taskId = (uint8)instance;
+    uint8 i;
 
-    (void)instance;
-    (void)event;
+#if (RTE_DEV_ERROR_DETECT == STD_ON)
+    if (!Rte_SchedulerState.IsInitialized)
+    {
+        return RTE_E_UNINIT;
+    }
 
-    /* Event setting implementation would go here */
-    /* For now, return OK */
+    if (taskId >= Rte_SchedulerState.NumTasks)
+    {
+        return RTE_E_OUT_OF_RANGE;
+    }
+#endif
+
+    if (taskId < RTE_MAX_TASKS)
+    {
+        Rte_TaskControlBlockType* taskPtr = &Rte_SchedulerState.Tasks[taskId];
+
+        if (taskPtr->Type == RTE_TASK_EXTENDED)
+        {
+            /* Set the event bits */
+            taskPtr->EventMask |= event;
+
+            /* If task is waiting for this event, make it ready */
+            if ((taskPtr->State == RTE_TASK_WAITING) &&
+                ((taskPtr->WaitedEvents & event) != 0U))
+            {
+                taskPtr->State = RTE_TASK_READY;
+            }
+        }
+        else
+        {
+            result = RTE_E_OK; /* Basic tasks don't support events */
+        }
+    }
 
     return result;
 }
@@ -411,12 +496,30 @@ Rte_StatusType Rte_SetEvent(Rte_InstanceHandleType instance, Rte_EventType event
 Rte_StatusType Rte_ClearEvent(Rte_InstanceHandleType instance, Rte_EventType event)
 {
     Rte_StatusType result = RTE_E_OK;
+    uint8 taskId = (uint8)instance;
 
-    (void)instance;
-    (void)event;
+#if (RTE_DEV_ERROR_DETECT == STD_ON)
+    if (!Rte_SchedulerState.IsInitialized)
+    {
+        return RTE_E_UNINIT;
+    }
 
-    /* Event clearing implementation would go here */
-    /* For now, return OK */
+    if (taskId >= Rte_SchedulerState.NumTasks)
+    {
+        return RTE_E_OUT_OF_RANGE;
+    }
+#endif
+
+    if (taskId < RTE_MAX_TASKS)
+    {
+        Rte_TaskControlBlockType* taskPtr = &Rte_SchedulerState.Tasks[taskId];
+
+        if (taskPtr->Type == RTE_TASK_EXTENDED)
+        {
+            /* Clear the event bits */
+            taskPtr->EventMask &= ~event;
+        }
+    }
 
     return result;
 }

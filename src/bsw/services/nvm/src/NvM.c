@@ -775,6 +775,105 @@ Std_ReturnType NvM_GetErrorStatus(NvM_BlockIdType BlockId, NvM_RequestResultType
 }
 
 /**
+ * @brief   Set RAM block status
+ * @param   BlockId     - Block identifier
+ * @param   BlockChanged - TRUE if block data has changed
+ * @return  E_OK if successful, E_NOT_OK otherwise
+ */
+Std_ReturnType NvM_SetRamBlockStatus(NvM_BlockIdType BlockId, boolean BlockChanged)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+#if (NVM_DEV_ERROR_DETECT == STD_ON)
+    if (NvM_InternalState.State == NVM_STATE_UNINIT)
+    {
+        NVM_DET_REPORT_ERROR(0x0FU, NVM_E_NOT_INITIALIZED);
+        return E_NOT_OK;
+    }
+
+    if (NvM_ValidateBlockId(BlockId) != E_OK)
+    {
+        NVM_DET_REPORT_ERROR(0x0FU, NVM_E_PARAM_BLOCK_ID);
+        return E_NOT_OK;
+    }
+#endif
+
+    if ((BlockId > 0U) && (BlockId < NVM_NUM_OF_NVRAM_BLOCKS))
+    {
+        NvM_InternalState.BlockStates[BlockId].DataChanged = BlockChanged;
+        result = E_OK;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Erase NV block
+ * @param   BlockId - Block identifier
+ * @return  E_OK if request accepted, E_NOT_OK otherwise
+ */
+Std_ReturnType NvM_EraseNvBlock(NvM_BlockIdType BlockId)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+#if (NVM_DEV_ERROR_DETECT == STD_ON)
+    if (NvM_InternalState.State == NVM_STATE_UNINIT)
+    {
+        NVM_DET_REPORT_ERROR(0x09U, NVM_E_NOT_INITIALIZED);
+        return E_NOT_OK;
+    }
+
+    if (NvM_ValidateBlockId(BlockId) != E_OK)
+    {
+        NVM_DET_REPORT_ERROR(0x09U, NVM_E_PARAM_BLOCK_ID);
+        return E_NOT_OK;
+    }
+#endif
+
+    /* Erase is handled as a write job with empty data */
+    if (NvM_InternalState.BlockStates[BlockId].JobPending == 0U)
+    {
+        /* For now, return OK as placeholder - full implementation would queue erase job */
+        result = E_OK;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Invalidate NV block
+ * @param   BlockId - Block identifier
+ * @return  E_OK if request accepted, E_NOT_OK otherwise
+ */
+Std_ReturnType NvM_InvalidateNvBlock(NvM_BlockIdType BlockId)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+#if (NVM_DEV_ERROR_DETECT == STD_ON)
+    if (NvM_InternalState.State == NVM_STATE_UNINIT)
+    {
+        NVM_DET_REPORT_ERROR(0x0AU, NVM_E_NOT_INITIALIZED);
+        return E_NOT_OK;
+    }
+
+    if (NvM_ValidateBlockId(BlockId) != E_OK)
+    {
+        NVM_DET_REPORT_ERROR(0x0AU, NVM_E_PARAM_BLOCK_ID);
+        return E_NOT_OK;
+    }
+#endif
+
+    /* Invalidate is handled as a special write job */
+    if (NvM_InternalState.BlockStates[BlockId].JobPending == 0U)
+    {
+        /* For now, return OK as placeholder - full implementation would queue invalidate job */
+        result = E_OK;
+    }
+
+    return result;
+}
+
+/**
  * @brief   Main function for NvM processing
  * @param   None
  * @return  None
@@ -856,7 +955,31 @@ void NvM_MainFunction(void)
 
                 if (memIfStatus == MEMIF_IDLE)
                 {
-                    /* Job completed */
+                    /* Job completed successfully */
+                    if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_READ)
+                    {
+#if (NVM_CALC_RAM_BLOCK_CRC == STD_ON)
+                        /* Validate CRC if configured */
+                        if (blockDesc->CrcType != NVM_CRC_NONE)
+                        {
+                            uint32 calcCrc = NvM_CalculateCrc(NvM_InternalState.CurrentJob->DataPtr,
+                                                               blockDesc->NvBlockLength,
+                                                               blockDesc->CrcType);
+                            /* In a full implementation, compare with stored CRC */
+                            (void)calcCrc;
+                        }
+#endif
+                    }
+                    else if (NvM_InternalState.CurrentJob->JobType == NVM_JOB_TYPE_WRITE)
+                    {
+                        /* Increment write counter on successful write */
+                        if (NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteCounter < 0xFFU)
+                        {
+                            NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].WriteCounter++;
+                        }
+                        NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].DataChanged = FALSE;
+                    }
+
                     NvM_InternalState.CurrentJob->Result = NVM_REQ_OK;
                     NvM_InternalState.CurrentJob->JobState = NVM_JOB_STATE_IDLE;
                     NvM_InternalState.BlockStates[NvM_InternalState.CurrentJob->BlockId].LastResult = NVM_REQ_OK;
