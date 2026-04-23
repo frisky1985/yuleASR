@@ -67,6 +67,9 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/ecum/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/bswm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/schm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/comm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/nm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/pdur/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/os/include
     ${CMAKE_SOURCE_DIR}/mocks
     ${CMAKE_SOURCE_DIR}/unit
@@ -130,6 +133,8 @@ set(SERVICE_SOURCES
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/ecum/src/EcuM.c
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/bswm/src/BswM.c
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/schm/src/SchM.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/comm/src/ComM.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/nm/src/Nm.c
 )
 #==================================================================================================
 # MCAL Tests
@@ -149,6 +154,8 @@ add_executable(test_cantp unit/ecual/test_cantp.c ${ECUAL_SOURCES} ${MOCK_SOURCE
 
 # Service Tests
 add_executable(test_ecum unit/services/test_ecum.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
+add_executable(test_comm unit/services/test_comm.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
+add_executable(test_nm unit/services/test_nm.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
 
 # Integration Tests
 add_executable(test_ecum_bswm_integration integration/bsw/test_ecum_bswm_integration.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
@@ -158,7 +165,7 @@ add_executable(test_mcal_canif_integration integration/ecual/test_mcal_canif_int
 set(TEST_EXECUTABLES
     test_mcu test_port test_dio test_can test_spi
     test_gpt test_pwm test_adc test_wdg
-    test_canif test_cantp test_ecum
+    test_canif test_cantp test_ecum test_comm test_nm
     test_ecum_bswm_integration test_mcal_canif_integration
 )
 
@@ -188,6 +195,8 @@ add_test(NAME Wdg_Test COMMAND test_wdg)
 add_test(NAME CanIf_Test COMMAND test_canif)
 add_test(NAME CanTp_Test COMMAND test_cantp)
 add_test(NAME EcuM_Test COMMAND test_ecum)
+add_test(NAME ComM_Test COMMAND test_comm)
+add_test(NAME Nm_Test COMMAND test_nm)
 add_test(NAME EcuM_BswM_Integration COMMAND test_ecum_bswm_integration)
 add_test(NAME MCAL_CanIf_Integration COMMAND test_mcal_canif_integration)
 
