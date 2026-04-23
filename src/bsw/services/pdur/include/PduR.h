@@ -43,6 +43,9 @@
 #define PDUR_SID_CANCELRECEIVEREQUEST   (0x4BU)
 #define PDUR_SID_CHANGEPARAMETREREQUEST (0x4CU)
 #define PDUR_SID_MAINFUNCTION           (0xEFU)
+#define PDUR_SID_RXINDICATION           (0x50U)
+#define PDUR_SID_TXCONFIRMATION         (0x51U)
+#define PDUR_SID_TRIGGERTRANSMIT        (0x52U)
 
 /*==================================================================================================
 *                                    DET ERROR CODES
@@ -226,6 +229,25 @@ void PduR_DisableRouting(uint8 id);
  * @brief Main function for periodic processing
  */
 void PduR_MainFunction(void);
+
+/*==================================================================================================
+*                                    MODULE SPECIFIC API MAPPINGS
+==================================================================================================*/
+
+/** @brief Com transmit request mapped to generic PduR_Transmit */
+#define PduR_ComTransmit                PduR_Transmit
+
+/** @brief Dcm transmit request mapped to generic PduR_Transmit */
+#define PduR_DcmTransmit                PduR_Transmit
+
+/** @brief CanIf RxIndication mapped to generic PduR_RxIndication */
+#define PduR_CanIfRxIndication          PduR_RxIndication
+
+/** @brief CanIf TxConfirmation mapped to generic PduR_TxConfirmation */
+#define PduR_CanIfTxConfirmation        PduR_TxConfirmation
+
+/** @brief CanIf TriggerTransmit mapped to generic PduR_TriggerTransmit */
+#define PduR_CanIfTriggerTransmit       PduR_TriggerTransmit
 
 /*==================================================================================================
 *                                    UPPER LAYER CALLBACKS

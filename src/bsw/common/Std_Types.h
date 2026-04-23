@@ -68,6 +68,18 @@ typedef bool      boolean;  /**< Boolean type */
 #endif
 
 /*==================================================================================================
+*                                     VERSION INFO TYPE
+==================================================================================================*/
+/** @brief Standard version information structure */
+typedef struct {
+    uint16 vendorID;
+    uint16 moduleID;
+    uint8  sw_major_version;
+    uint8  sw_minor_version;
+    uint8  sw_patch_version;
+} Std_VersionInfoType;
+
+/*==================================================================================================
 *                                     VERSION INFORMATION
 ==================================================================================================*/
 /** @brief 供应商 ID */

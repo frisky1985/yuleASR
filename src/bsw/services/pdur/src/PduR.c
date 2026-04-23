@@ -16,21 +16,31 @@
 /*==================================================================================================
 *                                             INCLUDES
 ==================================================================================================*/
+#include <string.h>
 #include "PduR.h"
 #include "PduR_Cfg.h"
 #include "Det.h"
 #include "MemMap.h"
 
 /*==================================================================================================
+*                             FORWARD DECLARATIONS FOR UPPER/LOWER LAYERS
+==================================================================================================*/
+extern Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
+extern Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId);
+extern void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+extern void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
+extern Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
+extern void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+extern void Dcm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
+extern Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
+
+/*==================================================================================================
 *                                  LOCAL CONSTANT DEFINITIONS
 ==================================================================================================*/
 #define PDUR_INSTANCE_ID                (0x00U)
 
-/* Development error codes */
-#define PDUR_E_PARAM_POINTER            (0x01U)
+/* Development error codes - local aliases to avoid mismatch with PduR.h */
 #define PDUR_E_INVALID_PDU_ID           (0x02U)
-#define PDUR_E_UNINIT                   (0x03U)
-#define PDUR_E_INVALID_REQUEST          (0x04U)
 #define PDUR_E_ROUTING_PATH_NOT_FOUND   (0x05U)
 #define PDUR_E_FIFO_FULL                (0x06U)
 
@@ -368,7 +378,7 @@ void PduR_Init(const PduR_ConfigType* ConfigPtr)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR)
     {
-        PDUR_DET_REPORT_ERROR(0x01U, PDUR_E_PARAM_POINTER);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_INIT, PDUR_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -397,7 +407,7 @@ void PduR_DeInit(void)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (PduR_InternalState.State != PDUR_STATE_INIT)
     {
-        PDUR_DET_REPORT_ERROR(0x02U, PDUR_E_UNINIT);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_DEINIT, PDUR_E_UNINIT);
         return;
     }
 #endif
@@ -423,13 +433,13 @@ Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (PduR_InternalState.State != PDUR_STATE_INIT)
     {
-        PDUR_DET_REPORT_ERROR(0x03U, PDUR_E_UNINIT);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_TRANSMIT, PDUR_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        PDUR_DET_REPORT_ERROR(0x03U, PDUR_E_PARAM_POINTER);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_TRANSMIT, PDUR_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -448,7 +458,7 @@ Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     else
     {
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
-        PDUR_DET_REPORT_ERROR(0x03U, PDUR_E_ROUTING_PATH_NOT_FOUND);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_TRANSMIT, PDUR_E_ROUTING_PATH_NOT_FOUND);
 #endif
     }
 
@@ -468,13 +478,13 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (PduR_InternalState.State != PDUR_STATE_INIT)
     {
-        PDUR_DET_REPORT_ERROR(0x04U, PDUR_E_UNINIT);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_RXINDICATION, PDUR_E_UNINIT);
         return;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        PDUR_DET_REPORT_ERROR(0x04U, PDUR_E_PARAM_POINTER);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_RXINDICATION, PDUR_E_PARAM_POINTER);
         return;
     }
 #endif
@@ -488,7 +498,7 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     else
     {
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
-        PDUR_DET_REPORT_ERROR(0x04U, PDUR_E_ROUTING_PATH_NOT_FOUND);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_RXINDICATION, PDUR_E_ROUTING_PATH_NOT_FOUND);
 #endif
     }
 }
@@ -506,7 +516,7 @@ void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (PduR_InternalState.State != PDUR_STATE_INIT)
     {
-        PDUR_DET_REPORT_ERROR(0x05U, PDUR_E_UNINIT);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_TXCONFIRMATION, PDUR_E_UNINIT);
         return;
     }
 #endif
@@ -537,6 +547,27 @@ void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
             }
         }
     }
+    else
+    {
+        /* Fallback: TxPduId may be the upper-layer PDU ID;
+           search for paths where CanIf is the destination */
+        if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_COM, &pathIndex) == E_OK)
+        {
+            const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
+            if ((pathPtr->NumDestPdus > 0U) && (pathPtr->DestPdus[0U].DestModule == PDUR_MODULE_CANIF))
+            {
+                Com_TxConfirmation(TxPduId, result);
+            }
+        }
+        else if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_DCM, &pathIndex) == E_OK)
+        {
+            const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
+            if ((pathPtr->NumDestPdus > 0U) && (pathPtr->DestPdus[0U].DestModule == PDUR_MODULE_CANIF))
+            {
+                Dcm_TxConfirmation(TxPduId, result);
+            }
+        }
+    }
 }
 
 /**
@@ -553,13 +584,13 @@ Std_ReturnType PduR_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (PduR_InternalState.State != PDUR_STATE_INIT)
     {
-        PDUR_DET_REPORT_ERROR(0x06U, PDUR_E_UNINIT);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_TRIGGERTRANSMIT, PDUR_E_UNINIT);
         return E_NOT_OK;
     }
 
     if (PduInfoPtr == NULL_PTR)
     {
-        PDUR_DET_REPORT_ERROR(0x06U, PDUR_E_PARAM_POINTER);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_TRIGGERTRANSMIT, PDUR_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
@@ -605,7 +636,7 @@ Std_ReturnType PduR_CancelTransmitRequest(PduIdType TxPduId)
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
     if (PduR_InternalState.State != PDUR_STATE_INIT)
     {
-        PDUR_DET_REPORT_ERROR(0x07U, PDUR_E_UNINIT);
+        PDUR_DET_REPORT_ERROR(PDUR_SID_CANCELTRANSMITREQUEST, PDUR_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
