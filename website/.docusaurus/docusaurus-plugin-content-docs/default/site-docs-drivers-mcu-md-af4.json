@@ -1,0 +1,24 @@
+{
+  "id": "drivers/mcu",
+  "title": "MCU 驱动",
+  "description": "MCU 驱动负责微控制器的初始化和时钟配置。",
+  "source": "@site/docs/drivers/mcu.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/mcu",
+  "permalink": "/yuleASR/docs/drivers/mcu",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcu.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Service 层",
+    "permalink": "/yuleASR/docs/concepts/services"
+  },
+  "next": {
+    "title": "Port 驱动",
+    "permalink": "/yuleASR/docs/drivers/port"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "drivers/wdg",
+  "title": "Wdg 驱动",
+  "description": "看门狗驱动实现。",
+  "source": "@site/docs/drivers/wdg.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/wdg",
+  "permalink": "/yuleASR/docs/drivers/wdg",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/wdg.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Adc 驱动",
+    "permalink": "/yuleASR/docs/drivers/adc"
+  },
+  "next": {
+    "title": "工具链",
+    "permalink": "/yuleASR/docs/advanced/toolchain"
+  }
+}

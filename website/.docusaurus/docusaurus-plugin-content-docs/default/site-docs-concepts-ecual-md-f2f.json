@@ -1,0 +1,24 @@
+{
+  "id": "concepts/ecual",
+  "title": "ECUAL",
+  "description": "ECU Abstraction Layer ECU 抽象层。",
+  "source": "@site/docs/concepts/ecual.md",
+  "sourceDirName": "concepts",
+  "slug": "/concepts/ecual",
+  "permalink": "/yuleASR/docs/concepts/ecual",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/ecual.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "MCAL",
+    "permalink": "/yuleASR/docs/concepts/mcal"
+  },
+  "next": {
+    "title": "Service 层",
+    "permalink": "/yuleASR/docs/concepts/services"
+  }
+}

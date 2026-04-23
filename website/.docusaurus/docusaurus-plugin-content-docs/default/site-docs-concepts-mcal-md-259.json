@@ -1,0 +1,24 @@
+{
+  "id": "concepts/mcal",
+  "title": "MCAL",
+  "description": "MCAL (Microcontroller Driver) 微控制器驱动层。",
+  "source": "@site/docs/concepts/mcal.md",
+  "sourceDirName": "concepts",
+  "slug": "/concepts/mcal",
+  "permalink": "/yuleASR/docs/concepts/mcal",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/mcal.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "RTE",
+    "permalink": "/yuleASR/docs/concepts/rte"
+  },
+  "next": {
+    "title": "ECUAL",
+    "permalink": "/yuleASR/docs/concepts/ecual"
+  }
+}
