@@ -1,106 +1,91 @@
+# YuleTech AutoSAR BSW - 构建配置
 cmake_minimum_required(VERSION 3.20)
 
-# Project
-project(YuleTech_BSW VERSION 1.0.0 LANGUAGES C)
+# 源代码目录
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/bsw)
 
-# Set C standard
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-
-# Compiler options
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -O2")
-
-# Include directories
+# ============ 通用头文件 ============
 include_directories(
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/common
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/mcu/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/port/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/dio/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/can/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/spi/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/gpt/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/pwm/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/adc/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/wdg/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/canif/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/iohwab/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/cantp/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/ethif/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/memif/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/fee/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/ea/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/frif/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/linif/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/com/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/pdur/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/nvm/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/dcm/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/dem/include
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/rte/include
+    ${SRC_DIR}/general/inc
+    ${SRC_DIR}/mcal/mcu/include
+    ${SRC_DIR}/mcal/port/include
+    ${SRC_DIR}/mcal/dio/include
+    ${SRC_DIR}/mcal/can/include
+    ${SRC_DIR}/mcal/spi/include
+    ${SRC_DIR}/mcal/gpt/include
+    ${SRC_DIR}/mcal/pwm/include
+    ${SRC_DIR}/mcal/adc/include
+    ${SRC_DIR}/mcal/wdg/include
+    ${SRC_DIR}/ecual/canif/include
+    ${SRC_DIR}/ecual/cantp/include
+    ${SRC_DIR}/ecual/ethif/include
+    ${SRC_DIR}/ecual/frif/include
+    ${SRC_DIR}/ecual/linif/include
+    ${SRC_DIR}/ecual/iohwab/include
+    ${SRC_DIR}/ecual/memif/include
+    ${SRC_DIR}/ecual/fee/include
+    ${SRC_DIR}/ecual/ea/include
+    ${SRC_DIR}/services/com/include
+    ${SRC_DIR}/services/pdur/include
+    ${SRC_DIR}/services/nvm/include
+    ${SRC_DIR}/services/dcm/include
+    ${SRC_DIR}/services/dem/include
+    ${SRC_DIR}/os/include
+    ${SRC_DIR}/rte/include
 )
 
-# Source files
+# ============ 源文件列表 ============
 set(BSW_SOURCES
-    # MCAL
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/mcu/src/Mcu.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/port/src/Port.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/dio/src/Dio.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/can/src/Can.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/spi/src/Spi.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/gpt/src/Gpt.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/pwm/src/Pwm.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/adc/src/Adc.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/mcal/wdg/src/Wdg.c
+    # MCAL 层
+    ${SRC_DIR}/mcal/mcu/src/Mcu.c
+    ${SRC_DIR}/mcal/port/src/Port.c
+    ${SRC_DIR}/mcal/dio/src/Dio.c
+    ${SRC_DIR}/mcal/can/src/Can.c
+    ${SRC_DIR}/mcal/spi/src/Spi.c
+    ${SRC_DIR}/mcal/gpt/src/Gpt.c
+    ${SRC_DIR}/mcal/pwm/src/Pwm.c
+    ${SRC_DIR}/mcal/adc/src/Adc.c
+    ${SRC_DIR}/mcal/wdg/src/Wdg.c
     
-    # ECUAL
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/canif/src/CanIf.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/iohwab/src/IoHwAb.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/cantp/src/CanTp.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/ethif/src/EthIf.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/memif/src/MemIf.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/fee/src/Fee.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/ea/src/Ea.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/frif/src/FrIf.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/ecual/linif/src/LinIf.c
+    # ECUAL 层
+    ${SRC_DIR}/ecual/canif/src/CanIf.c
+    ${SRC_DIR}/ecual/cantp/src/CanTp.c
+    ${SRC_DIR}/ecual/ethif/src/EthIf.c
+    ${SRC_DIR}/ecual/frif/src/FrIf.c
+    ${SRC_DIR}/ecual/linif/src/LinIf.c
+    ${SRC_DIR}/ecual/iohwab/src/IoHwAb.c
+    ${SRC_DIR}/ecual/memif/src/MemIf.c
+    ${SRC_DIR}/ecual/fee/src/Fee.c
+    ${SRC_DIR}/ecual/ea/src/Ea.c
     
-    # Services
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/com/src/Com.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/pdur/src/PduR.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/nvm/src/NvM.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/dcm/src/Dcm.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/services/dem/src/Dem.c
+    # Service 层
+    ${SRC_DIR}/services/com/src/Com.c
+    ${SRC_DIR}/services/pdur/src/PduR.c
+    ${SRC_DIR}/services/nvm/src/NvM.c
+    ${SRC_DIR}/services/dcm/src/Dcm.c
+    ${SRC_DIR}/services/dem/src/Dem.c
     
-    # RTE
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/rte/src/Rte.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/rte/src/Rte_ComInterface.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/rte/src/Rte_NvMInterface.c
-    ${CMAKE_SOURCE_DIR}/../../src/bsw/rte/src/Rte_Scheduler.c
+    # OS 层
+    ${SRC_DIR}/os/src/Os.c
+    
+    # RTE 层
+    ${SRC_DIR}/rte/src/Rte.c
 )
 
-# Create library
-add_library(bsw STATIC ${BSW_SOURCES})
+# ============ 库目标 ============
+add_library(yule_bsw STATIC ${BSW_SOURCES})
 
-# Target properties
-target_compile_definitions(bsw PRIVATE
-    BSW_VERSION_MAJOR=1
-    BSW_VERSION_MINOR=0
-    BSW_VERSION_PATCH=0
+target_compile_options(yule_bsw PRIVATE
+    -Wall
+    -Wextra
+    -O2
 )
 
-# Installation
-install(TARGETS bsw
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-)
+# ============ 测试目标 ============
+if(BUILD_TESTS)
+    # 测试配置在 tests/CMakeLists.txt 中
+    message(STATUS "Tests will be built from tests/CMakeLists.txt")
+endif()
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/../../src/bsw/
-    DESTINATION include
-    FILES_MATCHING PATTERN "*.h"
-)
-
-# Print summary
-message(STATUS "YuleTech BSW Build Configuration")
-message(STATUS "================================")
-message(STATUS "Version: ${PROJECT_VERSION}")
-message(STATUS "C Standard: C${CMAKE_C_STANDARD}")
-message(STATUS "Source files: ${BSW_SOURCES}")
+# ============ 打印信息 ============
+message(STATUS "BSW Sources: ${BSW_SOURCES}")

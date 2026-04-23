@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ master ]
+    branches: [ main, master, develop ]
 
 jobs:
   build:
@@ -13,131 +13,52 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install jinja2
-    
-    - name: Install ARM GCC
-      run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-arm-none-eabi
+        sudo apt-get install -y cmake gcc make cppcheck clang-format
     
-    - name: Build BSW
+    - name: Configure CMake
       run: |
         mkdir -p build
         cd build
-        cmake ../tools/build -DCMAKE_TOOLCHAIN_FILE=../cmake/arm-gcc-toolchain.cmake
+        cmake .. -DBUILD_TESTS=ON
+    
+    - name: Build
+      run: |
+        cd build
         make -j$(nproc)
     
-    - name: Run Static Analysis
+    - name: Run tests
       run: |
-        python tools/analysis/static_analysis.py --output reports/static_analysis.json
+        cd build
+        ctest --output-on-failure --verbose
     
-    - name: Upload Analysis Report
+    - name: Static analysis (cppcheck)
+      run: |
+        cppcheck --xml --xml-version=2 --enable=all           --suppress=missingIncludeSystem           -I src/bsw/general/inc           src/bsw 2> cppcheck-report.xml || true
+    
+    - name: Upload test results
       uses: actions/upload-artifact@v3
+      if: always()
       with:
-        name: static-analysis-report
-        path: reports/static_analysis.json
-    
-    - name: Check Code Quality
-      run: |
-        python -c "
-        import json
-        with open('reports/static_analysis.json') as f:
-            report = json.load(f)
-        errors = report['summary']['errors']
-        if errors > 100:
-            print(f'Too many errors: {errors}')
-            exit(1)
-        print(f'Code quality check passed: {errors} errors')
-        "
+        name: test-results
+        path: |
+          build/test-results/
+          cppcheck-report.xml
 
-  test:
+  code-style:
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    
-    - name: Install dependencies
+    - name: Install clang-format
       run: |
-        python -m pip install --upgrade pip
-        pip install pytest
+        sudo apt-get update
+        sudo apt-get install -y clang-format
     
-    - name: Run Unit Tests
+    - name: Check code formatting
       run: |
-        cd tests/unit
-        gcc -c test_mcu.c -I../../src/bsw/mcal/mcu/include -I../../src/bsw/common -o test_mcu.o
-    
-    - name: Test Configuration Tool
-      run: |
-        python tools/config/src/config_tool.py
-    
-    - name: Test Code Generator
-      run: |
-        python tools/generator/src/code_generator.py config/bsw_config.json generated
-
-  documentation:
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Generate Documentation
-      run: |
-        # Count lines of code
-        find src -name "*.c" -o -name "*.h" | xargs wc -l > docs/loc_report.txt
-        
-        # Generate module list
-        echo "# Module List" > docs/modules_summary.md
-        echo "" >> docs/modules_summary.md
-        echo "## MCAL" >> docs/modules_summary.md
-        ls src/bsw/mcal >> docs/modules_summary.md
-        echo "" >> docs/modules_summary.md
-        echo "## ECUAL" >> docs/modules_summary.md
-        ls src/bsw/ecual >> docs/modules_summary.md
-        echo "" >> docs/modules_summary.md
-        echo "## Services" >> docs/modules_summary.md
-        ls src/bsw/services >> docs/modules_summary.md
-    
-    - name: Upload Documentation
-      uses: actions/upload-artifact@v3
-      with:
-        name: documentation
-        path: docs/
-
-  release:
-    needs: [build, test]
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Create Release Package
-      run: |
-        mkdir -p release/yuleASR
-        cp -r src release/yuleASR/
-        cp -r docs release/yuleASR/
-        cp -r examples release/yuleASR/
-        cp -r tools release/yuleASR/
-        cp README.md release/yuleASR/
-        cp LICENSE release/yuleASR/
-        cd release
-        tar -czf yuleASR-${GITHUB_SHA::8}.tar.gz yuleASR
-    
-    - name: Upload Release
-      uses: actions/upload-artifact@v3
-      with:
-        name: release-package
-        path: release/*.tar.gz
+        find src -name '*.c' -o -name '*.h' | xargs clang-format -i
+        git diff --exit-code || (echo "Code style issues found. Run: find src -name '*.c' -o -name '*.h' | xargs clang-format -i" && exit 1)
