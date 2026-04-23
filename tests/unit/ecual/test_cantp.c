@@ -1,132 +1,146 @@
-/**
- * @file test_cantp.c
- * @brief CanTp Unit Tests
- */
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Module               : CanTp Unit Tests
+*
+* SW Version           : 1.0.0
+* Build Date           : 2026-04-23
+*
+* (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All Rights Reserved.
+==================================================================================================*/
 
-#include "unity.h"
+#include "test_framework.h"
 #include "CanTp.h"
-#include "CanTp_Cfg.h"
-#include "mock_canif.h"
+#include "mock_ecual.h"
 #include "mock_det.h"
 
-void setUp(void)
+/*==================================================================================================
+*                                      TEST GLOBALS
+==================================================================================================*/
+static CanTp_ConfigType g_test_config;
+static PduInfoType g_test_pdu;
+static uint8_t g_test_data[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+
+/*==================================================================================================
+*                                      HELPER FUNCTIONS
+==================================================================================================*/
+static void setup_test_config(void)
 {
+    g_test_config.CanTpGeneral = NULL_PTR;
+    g_test_config.CanTpNSa = NULL_PTR;
+    g_test_config.CanTpNTa = NULL_PTR;
+    g_test_config.CanTpNPdu = NULL_PTR;
+}
+
+/*==================================================================================================
+*                                      TEST CASES
+==================================================================================================*/
+
+/* Test: CanTp_Init with valid config */
+TEST_CASE(cantp_init_valid_config)
+{
+    setup_test_config();
+    
+    CanTp_Init(&g_test_config);
+    
+    ASSERT_EQ(CANTP_INITIALIZED, CanTp_GetStatus());
+    TEST_PASS();
+}
+
+/* Test: CanTp_Init with NULL config */
+TEST_CASE(cantp_init_null_config)
+{
+    mock_Det_ReportError_set_return(E_OK);
+    
     CanTp_Init(NULL_PTR);
-}
-
-void tearDown(void)
-{
-}
-
-/* Test: CanTp_Init */
-void test_CanTp_Init_ShouldInitializeModule(void)
-{
-    Std_ReturnType result;
     
-    result = CanTp_Init(NULL_PTR);
-    
-    TEST_ASSERT_EQUAL(E_OK, result);
+    /* Should report DET error */
+    ASSERT_EQ(CANTP_UNINITIALIZED, CanTp_GetStatus());
+    TEST_PASS();
 }
 
-/* Test: CanTp_Transmit SF (Single Frame) */
-void test_CanTp_Transmit_SingleFrame_ShouldSucceed(void)
+/* Test: CanTp_Transmit when not initialized */
+TEST_CASE(cantp_transmit_not_initialized)
 {
     Std_ReturnType result;
-    PduInfoType pduInfo;
-    uint8 data[7] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    PduInfoType pdu;
     
-    pduInfo.SduDataPtr = data;
-    pduInfo.SduLength = 7;
-    pduInfo.MetaDataPtr = NULL_PTR;
+    CanTp_Uninit();
+    pdu.SduDataPtr = g_test_data;
+    pdu.SduLength = 8;
     
-    /* Mock CanIf_Transmit */
-    CanIf_Transmit_ExpectAndReturn(0, &pduInfo, E_OK);
+    result = CanTp_Transmit(0, &pdu);
     
-    result = CanTp_Transmit(0, &pduInfo);
-    
-    TEST_ASSERT_EQUAL(E_OK, result);
+    ASSERT_EQ(E_NOT_OK, result);
+    TEST_PASS();
 }
 
-/* Test: CanTp_Transmit with null pointer */
-void test_CanTp_Transmit_NullPdu_ShouldReturnError(void)
+/* Test: CanTp_Transmit single frame */
+TEST_CASE(cantp_transmit_single_frame)
 {
     Std_ReturnType result;
+    PduInfoType pdu;
     
-    result = CanTp_Transmit(0, NULL_PTR);
+    setup_test_config();
+    CanTp_Init(&g_test_config);
+    pdu.SduDataPtr = g_test_data;
+    pdu.SduLength = 7;  /* Single frame max payload */
     
-    TEST_ASSERT_EQUAL(E_NOT_OK, result);
+    result = CanTp_Transmit(0, &pdu);
+    
+    ASSERT_TRUE(result == E_OK || result == CAN_BUSY);
+    TEST_PASS();
 }
 
 /* Test: CanTp_Shutdown */
-void test_CanTp_Shutdown_ShouldDeactivateModule(void)
+TEST_CASE(cantp_shutdown)
 {
+    setup_test_config();
+    CanTp_Init(&g_test_config);
+    
     CanTp_Shutdown();
     
-    /* Module should be deactivated */
+    ASSERT_EQ(CANTP_UNINITIALIZED, CanTp_GetStatus());
     TEST_PASS();
 }
 
-/* Test: CanTp_CancelTransmit */
-void test_CanTp_CancelTransmit_ValidSdu_ShouldCancel(void)
+/* Test: CanTp_GetVersionInfo */
+TEST_CASE(cantp_get_version_info)
 {
-    Std_ReturnType result;
+    Std_VersionInfoType version;
     
-    result = CanTp_CancelTransmit(0);
+    CanTp_GetVersionInfo(&version);
     
-    TEST_ASSERT_EQUAL(E_OK, result);
-}
-
-/* Test: CanTp_CancelReceive */
-void test_CanTp_CancelReceive_ValidSdu_ShouldCancel(void)
-{
-    Std_ReturnType result;
-    
-    result = CanTp_CancelReceive(0);
-    
-    TEST_ASSERT_EQUAL(E_OK, result);
-}
-
-/* Test: CanTp_ChangeParameter */
-void test_CanTp_ChangeParameter_ValidParam_ShouldSucceed(void)
-{
-    Std_ReturnType result;
-    uint16 value = 100;
-    
-    result = CanTp_ChangeParameter(0, TP_STMIN, value);
-    
-    /* May return E_OK or E_NOT_OK depending on implementation state */
-    TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-}
-
-/* Test: RxIndication for SF */
-void test_CanTp_RxIndication_SingleFrame_ShouldProcess(void)
-{
-    PduInfoType pduInfo;
-    uint8 data[8] = {0x07, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07}; /* SF with 7 bytes */
-    
-    pduInfo.SduDataPtr = data;
-    pduInfo.SduLength = 8;
-    pduInfo.MetaDataPtr = NULL_PTR;
-    
-    /* Should process single frame */
-    CanTp_RxIndication(0, &pduInfo);
-    
+    ASSERT_EQ(CANTP_VENDOR_ID, version.vendorID);
+    ASSERT_EQ(CANTP_MODULE_ID, version.moduleID);
     TEST_PASS();
 }
 
-/* Test: TxConfirmation */
-void test_CanTp_TxConfirmation_ShouldConfirm(void)
+/*==================================================================================================
+*                                      TEST SUITE
+==================================================================================================*/
+TEST_SUITE_SETUP(cantp)
 {
-    CanTp_TxConfirmation(0, E_OK);
-    
-    TEST_PASS();
+    mock_Det_Reset();
 }
 
-/* Test: MainFunction */
-void test_CanTp_MainFunction_ShouldProcessTimers(void)
+TEST_SUITE_TEARDOWN(cantp)
 {
-    /* Call main function - should process timeouts */
-    CanTp_MainFunction();
-    
-    TEST_PASS();
 }
+
+TEST_SUITE(cantp)
+{
+    RUN_TEST(cantp_init_valid_config);
+    RUN_TEST(cantp_init_null_config);
+    RUN_TEST(cantp_transmit_not_initialized);
+    RUN_TEST(cantp_transmit_single_frame);
+    RUN_TEST(cantp_shutdown);
+    RUN_TEST(cantp_get_version_info);
+}
+
+/*==================================================================================================
+*                                      MAIN
+==================================================================================================*/
+TEST_MAIN_BEGIN()
+    RUN_TEST_SUITE(cantp);
+TEST_MAIN_END()

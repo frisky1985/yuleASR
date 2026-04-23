@@ -1,6 +1,6 @@
 /*==================================================================================================
 * Project              : YuleTech AutoSAR BSW
-* Module               : EcuM Unit Tests
+* Module               : EcuM-BswM Integration Test
 *
 * SW Version           : 1.0.0
 * Build Date           : 2026-04-23
@@ -11,109 +11,105 @@
 
 #include "test_framework.h"
 #include "EcuM.h"
+#include "BswM.h"
 #include "mock_services.h"
 #include "mock_det.h"
 
-/*==================================================================================================
-*                                      TEST GLOBALS
-==================================================================================================*/
+static uint8_t g_initCounter = 0;
 
 /*==================================================================================================
 *                                      TEST CASES
 ==================================================================================================*/
 
-/* Test: EcuM_Init should initialize and enter STARTUP state */
-TEST_CASE(ecum_init_startup_state)
+/* Test: EcuM startup sequence with BswM mode request */
+TEST_CASE(ecum_startup_initializes_bswm)
 {
     EcuM_StateType state;
     
-    EcuM_Init();
-    
-    EcuM_GetState(&state);
-    ASSERT_EQ(ECUM_STATE_STARTUP, state);
-    TEST_PASS();
-}
-
-/* Test: EcuM_StartupTwo should transition to RUN state */
-TEST_CASE(ecum_startup_two_run_state)
-{
-    EcuM_StateType state;
-    
+    /* Initialize EcuM */
     EcuM_Init();
     EcuM_StartupTwo();
     
+    /* Verify EcuM is in RUN state */
     EcuM_GetState(&state);
     ASSERT_EQ(ECUM_STATE_RUN, state);
+    
+    /* Initialize BswM */
+    BswM_Init(NULL_PTR);
+    
+    /* Request mode through BswM */
+    BswM_RequestMode(0, 1);
+    
     TEST_PASS();
 }
 
-/* Test: EcuM_RequestRUN should keep RUN state */
-TEST_CASE(ecum_request_run)
+/* Test: Mode switch during runtime */
+TEST_CASE(mode_switch_during_runtime)
 {
     EcuM_StateType state;
     
+    /* Initialize */
     EcuM_Init();
     EcuM_StartupTwo();
+    BswM_Init(NULL_PTR);
     
+    /* Request RUN mode */
     EcuM_RequestRUN(0);
     EcuM_GetState(&state);
     ASSERT_EQ(ECUM_STATE_RUN, state);
+    
+    /* Change mode via BswM */
+    BswM_RequestMode(0, 2);
+    
+    /* Release RUN */
+    EcuM_ReleaseRUN(0);
+    
     TEST_PASS();
 }
 
-/* Test: EcuM_ReleaseRUN should transition to SHUTDOWN */
-TEST_CASE(ecum_release_run_shutdown)
+/* Test: Shutdown sequence */
+TEST_CASE(shutdown_sequence)
 {
-    EcuM_StateType state;
-    
+    /* Initialize */
     EcuM_Init();
     EcuM_StartupTwo();
+    BswM_Init(NULL_PTR);
     
-    EcuM_ReleaseRUN(0);
-    EcuM_GetState(&state);
-    ASSERT_EQ(ECUM_STATE_SHUTDOWN, state);
-    TEST_PASS();
-}
-
-/* Test: EcuM_SelectShutdownTarget should set target */
-TEST_CASE(ecum_select_shutdown_target)
-{
-    EcuM_StateType target;
-    uint8_t reason;
+    /* Set shutdown target */
+    EcuM_SelectShutdownTarget(ECUM_STATE_OFF, 0);
     
-    EcuM_Init();
-    EcuM_SelectShutdownTarget(ECUM_STATE_SLEEP, 1);
-    EcuM_GetShutdownTarget(&target, &reason);
+    /* Deinitialize BswM */
+    BswM_Deinit();
     
-    ASSERT_EQ(ECUM_STATE_SLEEP, target);
-    ASSERT_EQ(1, reason);
+    /* Shutdown EcuM */
+    EcuM_Shutdown();
+    
     TEST_PASS();
 }
 
 /*==================================================================================================
 *                                      TEST SUITE
 ==================================================================================================*/
-TEST_SUITE_SETUP(ecum)
+TEST_SUITE_SETUP(ecum_bswm_integration)
 {
+    g_initCounter = 0;
     mock_Det_Reset();
 }
 
-TEST_SUITE_TEARDOWN(ecum)
+TEST_SUITE_TEARDOWN(ecum_bswm_integration)
 {
 }
 
-TEST_SUITE(ecum)
+TEST_SUITE(ecum_bswm_integration)
 {
-    RUN_TEST(ecum_init_startup_state);
-    RUN_TEST(ecum_startup_two_run_state);
-    RUN_TEST(ecum_request_run);
-    RUN_TEST(ecum_release_run_shutdown);
-    RUN_TEST(ecum_select_shutdown_target);
+    RUN_TEST(ecum_startup_initializes_bswm);
+    RUN_TEST(mode_switch_during_runtime);
+    RUN_TEST(shutdown_sequence);
 }
 
 /*==================================================================================================
 *                                      MAIN
 ==================================================================================================*/
 TEST_MAIN_BEGIN()
-    RUN_TEST_SUITE(ecum);
+    RUN_TEST_SUITE(ecum_bswm_integration);
 TEST_MAIN_END()

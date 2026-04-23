@@ -64,6 +64,9 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/nvm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/dcm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/dem/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/ecum/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/bswm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/schm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/os/include
     ${CMAKE_SOURCE_DIR}/mocks
     ${CMAKE_SOURCE_DIR}/unit
@@ -115,8 +118,19 @@ set(MCAL_SOURCES
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/wdg/src/Wdg.c
 )
 
-#==================================================================================================
-# Unit Test Executables
+# ECUAL Sources (for testing)
+set(ECUAL_SOURCES
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/canif/src/CanIf.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/cantp/src/CanTp.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/pdur/src/PduR.c
+)
+
+# Service Sources (for testing)
+set(SERVICE_SOURCES
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/ecum/src/EcuM.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/bswm/src/BswM.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/schm/src/SchM.c
+)
 #==================================================================================================
 # MCAL Tests
 add_executable(test_mcu unit/mcal/test_mcu.c ${MOCK_SOURCES})
@@ -129,10 +143,23 @@ add_executable(test_pwm unit/mcal/test_pwm.c ${MOCK_SOURCES})
 add_executable(test_adc unit/mcal/test_adc.c ${MOCK_SOURCES})
 add_executable(test_wdg unit/mcal/test_wdg.c ${MOCK_SOURCES})
 
+# ECUAL Tests
+add_executable(test_canif unit/ecual/test_canif.c ${ECUAL_SOURCES} ${MOCK_SOURCES})
+add_executable(test_cantp unit/ecual/test_cantp.c ${ECUAL_SOURCES} ${MOCK_SOURCES})
+
+# Service Tests
+add_executable(test_ecum unit/services/test_ecum.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
+
+# Integration Tests
+add_executable(test_ecum_bswm_integration integration/bsw/test_ecum_bswm_integration.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
+add_executable(test_mcal_canif_integration integration/ecual/test_mcal_canif_integration.c ${ECUAL_SOURCES} ${MCAL_SOURCES} ${MOCK_SOURCES})
+
 # Set link libraries for all tests
 set(TEST_EXECUTABLES
     test_mcu test_port test_dio test_can test_spi
     test_gpt test_pwm test_adc test_wdg
+    test_canif test_cantp test_ecum
+    test_ecum_bswm_integration test_mcal_canif_integration
 )
 
 foreach(test_exec ${TEST_EXECUTABLES})
@@ -158,6 +185,11 @@ add_test(NAME Gpt_Test COMMAND test_gpt)
 add_test(NAME Pwm_Test COMMAND test_pwm)
 add_test(NAME Adc_Test COMMAND test_adc)
 add_test(NAME Wdg_Test COMMAND test_wdg)
+add_test(NAME CanIf_Test COMMAND test_canif)
+add_test(NAME CanTp_Test COMMAND test_cantp)
+add_test(NAME EcuM_Test COMMAND test_ecum)
+add_test(NAME EcuM_BswM_Integration COMMAND test_ecum_bswm_integration)
+add_test(NAME MCAL_CanIf_Integration COMMAND test_mcal_canif_integration)
 
 #==================================================================================================
 # Custom Targets
