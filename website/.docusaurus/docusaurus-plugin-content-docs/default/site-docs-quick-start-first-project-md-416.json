@@ -1,0 +1,27 @@
+{
+  "id": "quick-start/first-project",
+  "title": "创建第一个项目",
+  "description": "学习如何使用 YuleTech AutoSAR BSW Platform 创建第一个项目。",
+  "source": "@site/docs/quick-start/first-project.md",
+  "sourceDirName": "quick-start",
+  "slug": "/quick-start/first-project",
+  "permalink": "/yuleASR/docs/quick-start/first-project",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/quick-start/first-project.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "安装",
+    "permalink": "/yuleASR/docs/quick-start/installation"
+  },
+  "next": {
+    "title": "配置指南",
+    "permalink": "/yuleASR/docs/quick-start/configuration"
+  }
+}

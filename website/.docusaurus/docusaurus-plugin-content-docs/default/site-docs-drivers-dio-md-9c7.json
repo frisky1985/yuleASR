@@ -1,0 +1,24 @@
+{
+  "id": "drivers/dio",
+  "title": "Dio 驱动",
+  "description": "Dio (Digital I/O) 数字输入/输出驱动。",
+  "source": "@site/docs/drivers/dio.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/dio",
+  "permalink": "/yuleASR/docs/drivers/dio",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/dio.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Port 驱动",
+    "permalink": "/yuleASR/docs/drivers/port"
+  },
+  "next": {
+    "title": "Can 驱动",
+    "permalink": "/yuleASR/docs/drivers/can"
+  }
+}

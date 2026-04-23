@@ -1,0 +1,34 @@
+# YuleTech AutoSAR BSW - Code Style Configuration
+# Based on Linux Kernel style with AutoSAR adaptations
+
+Language: C
+BasedOnStyle: LLVM
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+ColumnLimit: 120
+
+BreakBeforeBraces: Linux
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+
+IndentCaseLabels: false
+IndentGotoLabels: false
+
+AlignConsecutiveMacros: true
+AlignConsecutiveDeclarations: false
+AlignConsecutiveAssignments: false
+
+PointerAlignment: Right
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpacesInParentheses: false
+SpacesInCStyleCastParentheses: false
+
+SortIncludes: true
+IncludeBlocks: Regroup
+
+CommentPragmas: '^\s*\*\s*'

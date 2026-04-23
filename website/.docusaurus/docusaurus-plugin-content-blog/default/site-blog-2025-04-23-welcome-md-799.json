@@ -1,0 +1,44 @@
+{
+  "permalink": "/yuleASR/blog/welcome",
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/blog/2025-04-23-welcome.md",
+  "source": "@site/blog/2025-04-23-welcome.md",
+  "title": "欢迎来到 YuleTech AutoSAR 平台",
+  "description": "欢迎来到 YuleTech AutoSAR BSW Platform 官方文档站！",
+  "date": "2025-04-23T00:00:00.000Z",
+  "tags": [
+    {
+      "inline": true,
+      "label": "autosar",
+      "permalink": "/yuleASR/blog/tags/autosar"
+    },
+    {
+      "inline": true,
+      "label": "welcome",
+      "permalink": "/yuleASR/blog/tags/welcome"
+    }
+  ],
+  "readingTime": 0.38,
+  "hasTruncateMarker": true,
+  "authors": [
+    {
+      "name": "YuleTech Team",
+      "title": "YuleTech Developer",
+      "url": "https://github.com/frisky1985",
+      "imageURL": "https://github.com/frisky1985.png",
+      "key": "yuletech",
+      "page": null
+    }
+  ],
+  "frontMatter": {
+    "slug": "welcome",
+    "title": "欢迎来到 YuleTech AutoSAR 平台",
+    "authors": [
+      "yuletech"
+    ],
+    "tags": [
+      "autosar",
+      "welcome"
+    ]
+  },
+  "unlisted": false
+}

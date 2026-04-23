@@ -1,0 +1,20 @@
+---
+sidebar_position: 1
+---
+
+# 简介
+
+欢迎使用 **YuleTech AutoSAR BSW Platform**！
+
+这是一个基于 AutoSAR 标准的开源基础软件平台，旨在降低汽车基础软件开发门槛，为中国汽车软件产业赋能。
+
+## 特点
+
+- **完整的层级实现**：覆盖 MCAL、ECUAL、Service 层等各个层级
+- **标准规范**：严格遵循 AutoSAR 规范
+- **开源免费**：Apache 2.0 授权
+- **社区支持**：活跃的开源社区和技术支持
+
+## 开始使用
+
+跳到[安装指博](installation) 了解如何安装和配置。

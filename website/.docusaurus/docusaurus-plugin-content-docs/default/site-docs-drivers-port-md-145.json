@@ -1,0 +1,24 @@
+{
+  "id": "drivers/port",
+  "title": "Port 驱动",
+  "description": "Port 驱动负责 GPIO 端口配置。",
+  "source": "@site/docs/drivers/port.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/port",
+  "permalink": "/yuleASR/docs/drivers/port",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/port.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "MCU 驱动",
+    "permalink": "/yuleASR/docs/drivers/mcu"
+  },
+  "next": {
+    "title": "Dio 驱动",
+    "permalink": "/yuleASR/docs/drivers/dio"
+  }
+}

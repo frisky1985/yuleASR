@@ -1,0 +1,27 @@
+{
+  "id": "quick-start/installation",
+  "title": "安装",
+  "description": "本指南将帮助您在本地环境中安装和配置 YuleTech AutoSAR BSW Platform。",
+  "source": "@site/docs/quick-start/installation.md",
+  "sourceDirName": "quick-start",
+  "slug": "/quick-start/installation",
+  "permalink": "/yuleASR/docs/quick-start/installation",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/quick-start/installation.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "简介",
+    "permalink": "/yuleASR/docs/quick-start/intro"
+  },
+  "next": {
+    "title": "创建第一个项目",
+    "permalink": "/yuleASR/docs/quick-start/first-project"
+  }
+}

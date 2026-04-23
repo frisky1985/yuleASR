@@ -1,0 +1,45 @@
+{
+  "critical": [
+    {
+      "category": "\u6d4b\u8bd5",
+      "issue": "\u6d4b\u8bd5\u6587\u4ef6\u4e25\u91cd\u4e0d\u8db3\uff08\u4ec5 1 \u4e2a\uff09",
+      "impact": "\u9879\u76ee\u5df2\u5b8c\u6210 32 \u4e2a\u6a21\u5757\uff0c\u4f46\u7f3a\u4e4f\u5355\u5143\u6d4b\u8bd5\u548c\u96c6\u6210\u6d4b\u8bd5",
+      "action": "\u4e3a\u6bcf\u4e2a\u6a21\u5757\u521b\u5efa\u5355\u5143\u6d4b\u8bd5\uff0c\u4f7f\u7528 CMocka/Unity \u6846\u67b6"
+    }
+  ],
+  "high": [
+    {
+      "category": "\u6784\u5efa",
+      "issue": "CMake \u7f3a\u5c11\u6d4b\u8bd5\u76ee\u6807",
+      "impact": "\u65e0\u6cd5\u6784\u5efa\u548c\u8fd0\u884c\u6d4b\u8bd5",
+      "action": "\u6dfb\u52a0 CTest \u914d\u7f6e\u548c\u6d4b\u8bd5\u76ee\u6807"
+    }
+  ],
+  "medium": [
+    {
+      "category": "\u4ee3\u7801\u8d28\u91cf",
+      "issue": "\u7f3a\u5c11\u81ea\u5b9a\u4e49 lint \u89c4\u5219",
+      "impact": "\u4ee3\u7801\u98ce\u683c\u53ef\u80fd\u4e0d\u4e00\u81f4",
+      "action": "\u6dfb\u52a0 cppcheck \u548c clang-format \u914d\u7f6e"
+    },
+    {
+      "category": "\u9a8c\u8bc1",
+      "issue": "\u7f3a\u5c11 Com \u6a21\u5757\u7684\u9a8c\u8bc1\u62a5\u544a",
+      "impact": "\u65e0\u6cd5\u8bc1\u660e\u6a21\u5757\u8d28\u91cf",
+      "action": "\u521b\u5efa Com_verification.md"
+    },
+    {
+      "category": "\u9a8c\u8bc1",
+      "issue": "\u7f3a\u5c11 Dcm \u6a21\u5757\u7684\u9a8c\u8bc1\u62a5\u544a",
+      "impact": "\u65e0\u6cd5\u8bc1\u660e\u6a21\u5757\u8d28\u91cf",
+      "action": "\u521b\u5efa Dcm_verification.md"
+    },
+    {
+      "category": "\u9a8c\u8bc1",
+      "issue": "\u7f3a\u5c11 Dem \u6a21\u5757\u7684\u9a8c\u8bc1\u62a5\u544a",
+      "impact": "\u65e0\u6cd5\u8bc1\u660e\u6a21\u5757\u8d28\u91cf",
+      "action": "\u521b\u5efa Dem_verification.md"
+    }
+  ],
+  "low": []
+}

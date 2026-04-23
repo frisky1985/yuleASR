@@ -1,0 +1,153 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/yuleASR/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/yuleASR/docs",
+          "mainDocId": "quick-start/intro",
+          "docs": [
+            {
+              "id": "advanced/code-generation",
+              "path": "/yuleASR/docs/advanced/code-generation",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/debugging",
+              "path": "/yuleASR/docs/advanced/debugging",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/performance-optimization",
+              "path": "/yuleASR/docs/advanced/performance-optimization",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/testing",
+              "path": "/yuleASR/docs/advanced/testing",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/toolchain",
+              "path": "/yuleASR/docs/advanced/toolchain",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/bsw-architecture",
+              "path": "/yuleASR/docs/concepts/bsw-architecture",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/ecual",
+              "path": "/yuleASR/docs/concepts/ecual",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/layered-structure",
+              "path": "/yuleASR/docs/concepts/layered-structure",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/mcal",
+              "path": "/yuleASR/docs/concepts/mcal",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/rte",
+              "path": "/yuleASR/docs/concepts/rte",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/services",
+              "path": "/yuleASR/docs/concepts/services",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/what-is-autosar",
+              "path": "/yuleASR/docs/concepts/what-is-autosar",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/adc",
+              "path": "/yuleASR/docs/drivers/adc",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/can",
+              "path": "/yuleASR/docs/drivers/can",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/dio",
+              "path": "/yuleASR/docs/drivers/dio",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/gpt",
+              "path": "/yuleASR/docs/drivers/gpt",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcu",
+              "path": "/yuleASR/docs/drivers/mcu",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/port",
+              "path": "/yuleASR/docs/drivers/port",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/pwm",
+              "path": "/yuleASR/docs/drivers/pwm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/spi",
+              "path": "/yuleASR/docs/drivers/spi",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/wdg",
+              "path": "/yuleASR/docs/drivers/wdg",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/configuration",
+              "path": "/yuleASR/docs/quick-start/configuration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/first-project",
+              "path": "/yuleASR/docs/quick-start/first-project",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/installation",
+              "path": "/yuleASR/docs/quick-start/installation",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/intro",
+              "path": "/yuleASR/docs/quick-start/intro",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/yuleASR/docs/quick-start/intro",
+                "label": "quick-start/intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

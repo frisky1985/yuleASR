@@ -1,166 +1,138 @@
 #!/usr/bin/env python3
 """
-YuleTech BSW Build Tool
-
-自动化编译脚本
+YuleTech AutoSAR BSW - 构建脚本
+Usage: python3 tools/build/build.py [options]
 """
 
-import os
-import sys
-import subprocess
 import argparse
-from pathlib import Path
+import os
+import subprocess
+import sys
 
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-class BuildTool:
-    """编译工具"""
-    
-    def __init__(self, project_root: str):
-        self.project_root = Path(project_root)
-        self.build_dir = self.project_root / "build"
-        self.tools_dir = self.project_root / "tools" / "build"
-        
-    def clean(self) -> bool:
-        """清理构建目录"""
-        print("Cleaning build directory...")
-        try:
-            if self.build_dir.exists():
-                import shutil
-                shutil.rmtree(self.build_dir)
-            print("✓ Clean completed")
-            return True
-        except Exception as e:
-            print(f"✗ Clean failed: {e}")
-            return False
-    
-    def configure(self) -> bool:
-        """配置项目"""
-        print("Configuring project...")
-        try:
-            self.build_dir.mkdir(parents=True, exist_ok=True)
-            
-            cmd = [
-                "cmake",
-                "-S", str(self.tools_dir),
-                "-B", str(self.build_dir),
-                "-DCMAKE_BUILD_TYPE=Release"
-            ]
-            
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            
-            if result.returncode == 0:
-                print("✓ Configuration completed")
-                return True
-            else:
-                print(f"✗ Configuration failed:\n{result.stderr}")
-                return False
-        except Exception as e:
-            print(f"✗ Configuration error: {e}")
-            return False
-    
-    def build(self) -> bool:
-        """编译项目"""
-        print("Building project...")
-        try:
-            cmd = [
-                "cmake",
-                "--build", str(self.build_dir),
-                "--parallel"
-            ]
-            
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            
-            if result.returncode == 0:
-                print("✓ Build completed")
-                return True
-            else:
-                print(f"✗ Build failed:\n{result.stderr}")
-                return False
-        except Exception as e:
-            print(f"✗ Build error: {e}")
-            return False
-    
-    def install(self) -> bool:
-        """安装项目"""
-        print("Installing project...")
-        try:
-            cmd = [
-                "cmake",
-                "--install", str(self.build_dir)
-            ]
-            
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            
-            if result.returncode == 0:
-                print("✓ Installation completed")
-                return True
-            else:
-                print(f"✗ Installation failed:\n{result.stderr}")
-                return False
-        except Exception as e:
-            print(f"✗ Installation error: {e}")
-            return False
-    
-    def full_build(self) -> bool:
-        """完整构建流程"""
-        print("YuleTech BSW Build Tool v1.0.0")
-        print("=" * 50)
-        
-        steps = [
-            ("Clean", self.clean),
-            ("Configure", self.configure),
-            ("Build", self.build),
-            ("Install", self.install)
-        ]
-        
-        for name, step_func in steps:
-            print(f"\n[{name}]")
-            if not step_func():
-                print(f"\n✗ Build failed at step: {name}")
-                return False
-        
-        print("\n" + "=" * 50)
-        print("✓ Full build completed successfully!")
-        return True
+def run_command(cmd, cwd=None):
+    """Run shell command"""
+    print(f">>> {' '.join(cmd)}")
+    result = subprocess.run(cmd, cwd=cwd or PROJECT_ROOT)
+    return result.returncode
 
+def configure(args):
+    """Configure build"""
+    build_dir = os.path.join(PROJECT_ROOT, 'build')
+    os.makedirs(build_dir, exist_ok=True)
+    
+    cmd = ['cmake', '..']
+    
+    if args.tests:
+        cmd.append('-DBUILD_TESTS=ON')
+    if args.coverage:
+        cmd.append('-DENABLE_COVERAGE=ON')
+    if args.sanitizer:
+        cmd.append('-DENABLE_SANITIZER=ON')
+    
+    return run_command(cmd, cwd=build_dir)
+
+def build(args):
+    """Build project"""
+    build_dir = os.path.join(PROJECT_ROOT, 'build')
+    
+    if not os.path.exists(os.path.join(build_dir, 'CMakeCache.txt')):
+        if configure(args) != 0:
+            return 1
+    
+    cmd = ['cmake', '--build', '.', '-j']
+    return run_command(cmd, cwd=build_dir)
+
+def test(args):
+    """Run tests"""
+    build_dir = os.path.join(PROJECT_ROOT, 'build')
+    
+    cmd = ['ctest', '--output-on-failure']
+    if args.verbose:
+        cmd.append('--verbose')
+    
+    return run_command(cmd, cwd=build_dir)
+
+def clean(args):
+    """Clean build"""
+    build_dir = os.path.join(PROJECT_ROOT, 'build')
+    if os.path.exists(build_dir):
+        import shutil
+        shutil.rmtree(build_dir)
+        print(f"Removed {build_dir}")
+    return 0
+
+def lint(args):
+    """Run static analysis"""
+    cmd = [
+        'cppcheck',
+        '--enable=all',
+        '--suppress=missingIncludeSystem',
+        '-I', 'src/bsw/general/inc',
+        'src/bsw'
+    ]
+    return run_command(cmd)
+
+def format_code(args):
+    """Format code"""
+    import glob
+    
+    files = []
+    for pattern in ['src/**/*.c', 'src/**/*.h', 'tests/**/*.c', 'tests/**/*.h']:
+        files.extend(glob.glob(os.path.join(PROJECT_ROOT, pattern), recursive=True))
+    
+    if not files:
+        print("No source files found")
+        return 0
+    
+    cmd = ['clang-format', '-i'] + files
+    return run_command(cmd)
 
 def main():
-    """主函数"""
-    parser = argparse.ArgumentParser(description="YuleTech BSW Build Tool")
-    parser.add_argument("--clean", action="store_true", help="Clean build directory")
-    parser.add_argument("--configure", action="store_true", help="Configure only")
-    parser.add_argument("--build", action="store_true", help="Build only")
-    parser.add_argument("--install", action="store_true", help="Install only")
-    parser.add_argument("--project-root", default=".", help="Project root directory")
+    parser = argparse.ArgumentParser(description='YuleTech BSW Build Script')
+    subparsers = parser.add_subparsers(dest='command')
+    
+    # configure
+    configure_parser = subparsers.add_parser('configure', help='Configure build')
+    configure_parser.add_argument('--tests', action='store_true', help='Enable tests')
+    configure_parser.add_argument('--coverage', action='store_true', help='Enable coverage')
+    configure_parser.add_argument('--sanitizer', action='store_true', help='Enable sanitizer')
+    
+    # build
+    build_parser = subparsers.add_parser('build', help='Build project')
+    build_parser.add_argument('--tests', action='store_true', help='Enable tests')
+    
+    # test
+    test_parser = subparsers.add_parser('test', help='Run tests')
+    test_parser.add_argument('-v', '--verbose', action='store_true', help='Verbose output')
+    
+    # clean
+    subparsers.add_parser('clean', help='Clean build')
+    
+    # lint
+    subparsers.add_parser('lint', help='Run static analysis')
+    
+    # format
+    subparsers.add_parser('format', help='Format code')
     
     args = parser.parse_args()
     
-    tool = BuildTool(args.project_root)
-    
-    # 如果没有指定任何选项，执行完整构建
-    if not any([args.clean, args.configure, args.build, args.install]):
-        if tool.full_build():
-            return 0
-        else:
-            return 1
-    
-    # 执行指定步骤
-    success = True
-    
-    if args.clean:
-        success = success and tool.clean()
-    
-    if args.configure:
-        success = success and tool.configure()
-    
-    if args.build:
-        success = success and tool.build()
-    
-    if args.install:
-        success = success and tool.install()
-    
-    return 0 if success else 1
+    if args.command == 'configure':
+        return configure(args)
+    elif args.command == 'build':
+        return build(args)
+    elif args.command == 'test':
+        return test(args)
+    elif args.command == 'clean':
+        return clean(args)
+    elif args.command == 'lint':
+        return lint(args)
+    elif args.command == 'format':
+        return format_code(args)
+    else:
+        parser.print_help()
+        return 1
 
-
-if __name__ == "__main__":
-    exit(main())
+if __name__ == '__main__':
+    sys.exit(main())

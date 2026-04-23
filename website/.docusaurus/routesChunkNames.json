@@ -1,0 +1,198 @@
+{
+  "/yuleASR/blog-1b5": {
+    "__comp": "a6aa9e1f",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "dbfcced2"
+      }
+    ],
+    "__props": "0068d948"
+  },
+  "/yuleASR/blog/archive-dea": {
+    "__comp": "9e4087bc",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "__props": "c6167633"
+  },
+  "/yuleASR/blog/authors-a2d": {
+    "__comp": "621db11d",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "__props": "6e0552d5"
+  },
+  "/yuleASR/blog/tags-5f1": {
+    "__comp": "01a85c17",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "__props": "c6c02f32"
+  },
+  "/yuleASR/blog/tags/autosar-ef6": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "dbfcced2"
+      }
+    ],
+    "__props": "42f6ad2d"
+  },
+  "/yuleASR/blog/tags/welcome-02f": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "dbfcced2"
+      }
+    ],
+    "__props": "021b8eff"
+  },
+  "/yuleASR/blog/welcome-943": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "79947f27"
+  },
+  "/yuleASR/docs-611": {
+    "__comp": "5e95c892",
+    "__context": {
+      "plugin": "aba21aa0"
+    }
+  },
+  "/yuleASR/docs-f39": {
+    "__comp": "a7bd4aaa",
+    "__props": "a2c88f3a"
+  },
+  "/yuleASR/docs-1d1": {
+    "__comp": "a94703ab"
+  },
+  "/yuleASR/docs/advanced/code-generation-2de": {
+    "__comp": "17896441",
+    "content": "7e0782b1"
+  },
+  "/yuleASR/docs/advanced/debugging-20a": {
+    "__comp": "17896441",
+    "content": "f6bf9afc"
+  },
+  "/yuleASR/docs/advanced/performance-optimization-c77": {
+    "__comp": "17896441",
+    "content": "0e24bb4f"
+  },
+  "/yuleASR/docs/advanced/testing-bd6": {
+    "__comp": "17896441",
+    "content": "01feaeb7"
+  },
+  "/yuleASR/docs/advanced/toolchain-118": {
+    "__comp": "17896441",
+    "content": "b35d599f"
+  },
+  "/yuleASR/docs/concepts/bsw-architecture-04d": {
+    "__comp": "17896441",
+    "content": "0f502cd3"
+  },
+  "/yuleASR/docs/concepts/ecual-2f1": {
+    "__comp": "17896441",
+    "content": "f2fc9872"
+  },
+  "/yuleASR/docs/concepts/layered-structure-4d8": {
+    "__comp": "17896441",
+    "content": "441432fe"
+  },
+  "/yuleASR/docs/concepts/mcal-0a1": {
+    "__comp": "17896441",
+    "content": "2599bf01"
+  },
+  "/yuleASR/docs/concepts/rte-295": {
+    "__comp": "17896441",
+    "content": "fcbaaec9"
+  },
+  "/yuleASR/docs/concepts/services-37c": {
+    "__comp": "17896441",
+    "content": "44549577"
+  },
+  "/yuleASR/docs/concepts/what-is-autosar-889": {
+    "__comp": "17896441",
+    "content": "2e66eb7c"
+  },
+  "/yuleASR/docs/drivers/adc-ff5": {
+    "__comp": "17896441",
+    "content": "e0f094c1"
+  },
+  "/yuleASR/docs/drivers/can-ba8": {
+    "__comp": "17896441",
+    "content": "e3d2e330"
+  },
+  "/yuleASR/docs/drivers/dio-333": {
+    "__comp": "17896441",
+    "content": "9c780fac"
+  },
+  "/yuleASR/docs/drivers/gpt-b80": {
+    "__comp": "17896441",
+    "content": "c94a3c64"
+  },
+  "/yuleASR/docs/drivers/mcu-6c4": {
+    "__comp": "17896441",
+    "content": "af4e3481"
+  },
+  "/yuleASR/docs/drivers/port-3c3": {
+    "__comp": "17896441",
+    "content": "14516dd2"
+  },
+  "/yuleASR/docs/drivers/pwm-d70": {
+    "__comp": "17896441",
+    "content": "b365069e"
+  },
+  "/yuleASR/docs/drivers/spi-ce1": {
+    "__comp": "17896441",
+    "content": "ec14afcc"
+  },
+  "/yuleASR/docs/drivers/wdg-582": {
+    "__comp": "17896441",
+    "content": "af02543a"
+  },
+  "/yuleASR/docs/quick-start/configuration-80e": {
+    "__comp": "17896441",
+    "content": "cbc9dd6d"
+  },
+  "/yuleASR/docs/quick-start/first-project-0b0": {
+    "__comp": "17896441",
+    "content": "416f5f92"
+  },
+  "/yuleASR/docs/quick-start/installation-633": {
+    "__comp": "17896441",
+    "content": "4d812e7e"
+  },
+  "/yuleASR/docs/quick-start/intro-b32": {
+    "__comp": "17896441",
+    "content": "2468810a"
+  },
+  "/yuleASR/-63a": {
+    "__comp": "c4f5d8e4",
+    "__context": {
+      "plugin": "a7456010"
+    },
+    "config": "5e9f5e1a"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "drivers/adc",
+  "title": "Adc 驱动",
+  "description": "ADC 模数转换驱动。",
+  "source": "@site/docs/drivers/adc.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/adc",
+  "permalink": "/yuleASR/docs/drivers/adc",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/adc.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Pwm 驱动",
+    "permalink": "/yuleASR/docs/drivers/pwm"
+  },
+  "next": {
+    "title": "Wdg 驱动",
+    "permalink": "/yuleASR/docs/drivers/wdg"
+  }
+}
