@@ -19,6 +19,7 @@
 #include "Dcm.h"
 #include "Dcm_Cfg.h"
 #include "PduR.h"
+#include "Dem.h"
 #include "Det.h"
 #include "MemMap.h"
 #include "string.h"
@@ -82,6 +83,12 @@ typedef struct
     uint32 SecurityDelayTimer;
     boolean SecurityDelayActive;
     Dcm_ProtocolStateType ProtocolStates[DCM_NUM_PROTOCOLS];
+    /* Download/Transfer state */
+    uint32 DownloadAddress;
+    uint32 DownloadSize;
+    uint32 TransferOffset;
+    uint8 BlockSequenceCounter;
+    boolean TransferActive;
 } Dcm_InternalStateType;
 
 /*==================================================================================================
@@ -110,6 +117,9 @@ STATIC Std_ReturnType Dcm_ProcessWriteDataByIdentifier(uint8 ProtocolId, const u
 STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC Std_ReturnType Dcm_ProcessClearDiagnosticInformation(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC const Dcm_DIDConfigType* Dcm_FindDID(uint16 DID);
 STATIC const Dcm_RIDConfigType* Dcm_FindRID(uint16 RID);
 
@@ -612,7 +622,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                     for (i = 0U; i < DEM_NUM_DTCS; i++)
                     {
                         Dem_DTCStatusType dtcStatus;
-                        if (Dem_GetDTCStatus(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc,
+                        if (Dem_GetDTCStatus(Dem_Config.DtcParameters[i].Dtc,
                                              DEM_DTC_ORIGIN_PRIMARY_MEMORY, &dtcStatus) == E_OK)
                         {
                             if ((dtcStatus & dtcStatusMask) != 0U)
@@ -652,16 +662,16 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                     for (i = 0U; i < DEM_NUM_DTCS; i++)
                     {
                         Dem_DTCStatusType dtcStatus;
-                        if (Dem_GetDTCStatus(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc,
+                        if (Dem_GetDTCStatus(Dem_Config.DtcParameters[i].Dtc,
                                              DEM_DTC_ORIGIN_PRIMARY_MEMORY, &dtcStatus) == E_OK)
                         {
                             if ((dtcStatus & dtcStatusMask) != 0U)
                             {
                                 if ((idx + 4U) < DCM_TX_BUFFER_SIZE)
                                 {
-                                    responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 16);
-                                    responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 8);
-                                    responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc);
+                                    responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 16);
+                                    responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 8);
+                                    responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc);
                                     responseData[idx++] = dtcStatus;
                                 }
                             }
@@ -713,14 +723,14 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                     for (i = 0U; i < DEM_NUM_DTCS; i++)
                     {
                         Dem_DTCStatusType dtcStatus;
-                        if (Dem_GetDTCStatus(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc,
+                        if (Dem_GetDTCStatus(Dem_Config.DtcParameters[i].Dtc,
                                              DEM_DTC_ORIGIN_PRIMARY_MEMORY, &dtcStatus) == E_OK)
                         {
                             if ((idx + 4U) < DCM_TX_BUFFER_SIZE)
                             {
-                                responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 16);
-                                responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc >> 8);
-                                responseData[idx++] = (uint8)(Dem_InternalState.ConfigPtr->DtcParameters[i].Dtc);
+                                responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 16);
+                                responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 8);
+                                responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc);
                                 responseData[idx++] = dtcStatus;
                             }
                         }
@@ -890,6 +900,147 @@ STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* D
 }
 
 /**
+ * @brief   Process Request Download service (0x34)
+ */
+STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 dataFormatIdentifier;
+    uint8 addressAndLengthFormatIdentifier;
+    uint8 memoryAddressSize;
+    uint8 memorySizeSize;
+    uint8 responseData[4];
+
+    if (Length >= 3U)
+    {
+        dataFormatIdentifier = Data[0];
+        addressAndLengthFormatIdentifier = Data[1];
+        memoryAddressSize = (addressAndLengthFormatIdentifier >> 4U) & 0x0FU;
+        memorySizeSize = addressAndLengthFormatIdentifier & 0x0FU;
+
+        if (Length >= (2U + memoryAddressSize + memorySizeSize))
+        {
+            uint32 memoryAddress = 0U;
+            uint32 memorySize = 0U;
+            uint8 i;
+
+            /* Extract memory address */
+            for (i = 0U; i < memoryAddressSize; i++)
+            {
+                memoryAddress = (memoryAddress << 8U) | Data[2U + i];
+            }
+
+            /* Extract memory size */
+            for (i = 0U; i < memorySizeSize; i++)
+            {
+                memorySize = (memorySize << 8U) | Data[2U + memoryAddressSize + i];
+            }
+
+            /* Store download parameters */
+            Dcm_InternalState.DownloadAddress = memoryAddress;
+            Dcm_InternalState.DownloadSize = memorySize;
+            Dcm_InternalState.TransferOffset = 0U;
+            Dcm_InternalState.BlockSequenceCounter = 0U;
+            Dcm_InternalState.TransferActive = TRUE;
+
+            /* Build response: lengthFormatIdentifier + maxNumberOfBlockLength */
+            responseData[0] = 0x20U; /* lengthFormatIdentifier */
+            responseData[1] = 0x00U;
+            responseData[2] = (uint8)(DCM_TRANSFER_BLOCK_SIZE >> 8U);
+            responseData[3] = (uint8)(DCM_TRANSFER_BLOCK_SIZE);
+
+            Dcm_SendPositiveResponse(ProtocolId, DCM_UDS_SID_REQUEST_DOWNLOAD, responseData, 4U);
+            result = E_OK;
+        }
+        else
+        {
+            Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_REQUEST_DOWNLOAD, DCM_E_INCORRECT_MESSAGE_LENGTH);
+        }
+    }
+    else
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_REQUEST_DOWNLOAD, DCM_E_INCORRECT_MESSAGE_LENGTH);
+    }
+
+    (void)dataFormatIdentifier; /* Unused in simplified implementation */
+    return result;
+}
+
+/**
+ * @brief   Process Transfer Data service (0x36)
+ */
+STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 blockSequenceCounter;
+    uint16 dataLength;
+
+    if (!Dcm_InternalState.TransferActive)
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_TRANSFER_DATA, DCM_E_REQUEST_SEQUENCE_ERROR);
+        return result;
+    }
+
+    if (Length >= 1U)
+    {
+        blockSequenceCounter = Data[0];
+        dataLength = Length - 1U;
+
+        /* Validate block sequence counter */
+        if (blockSequenceCounter == (uint8)(Dcm_InternalState.BlockSequenceCounter + 1U))
+        {
+            /* Update transfer state */
+            Dcm_InternalState.BlockSequenceCounter = blockSequenceCounter;
+            Dcm_InternalState.TransferOffset += dataLength;
+
+            /* In a real implementation, data would be written to flash here */
+            /* For now, just acknowledge the transfer */
+
+            /* Build response: blockSequenceCounter */
+            Dcm_SendPositiveResponse(ProtocolId, DCM_UDS_SID_TRANSFER_DATA, &blockSequenceCounter, 1U);
+            result = E_OK;
+        }
+        else
+        {
+            Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_TRANSFER_DATA, DCM_E_WRONGBLOCKSEQUENCECOUNTER);
+        }
+    }
+    else
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_TRANSFER_DATA, DCM_E_INCORRECT_MESSAGE_LENGTH);
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Process Request Transfer Exit service (0x37)
+ */
+STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if (!Dcm_InternalState.TransferActive)
+    {
+        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_REQUEST_TRANSFER_EXIT, DCM_E_REQUEST_SEQUENCE_ERROR);
+        return result;
+    }
+
+    (void)Data;
+    (void)Length;
+
+    /* Finalize transfer */
+    Dcm_InternalState.TransferActive = FALSE;
+    Dcm_InternalState.BlockSequenceCounter = 0U;
+
+    /* Build positive response (no parameters) */
+    Dcm_SendPositiveResponse(ProtocolId, DCM_UDS_SID_REQUEST_TRANSFER_EXIT, NULL_PTR, 0U);
+    result = E_OK;
+
+    return result;
+}
+
+/**
  * @brief   Process incoming diagnostic request
  */
 STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
@@ -940,6 +1091,18 @@ STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
                 (void)Dcm_ProcessRoutineControl(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
                 break;
 
+            case DCM_UDS_SID_REQUEST_DOWNLOAD:
+                (void)Dcm_ProcessRequestDownload(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
+            case DCM_UDS_SID_TRANSFER_DATA:
+                (void)Dcm_ProcessTransferData(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
+            case DCM_UDS_SID_REQUEST_TRANSFER_EXIT:
+                (void)Dcm_ProcessRequestTransferExit(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
             default:
                 Dcm_SendNegativeResponse(ProtocolId, serviceId, DCM_E_SERVICE_NOT_SUPPORTED);
                 break;
@@ -975,6 +1138,13 @@ void Dcm_Init(const Dcm_ConfigType* ConfigPtr)
     Dcm_InternalState.SecurityAttempts = 0U;
     Dcm_InternalState.SecurityDelayActive = FALSE;
     Dcm_InternalState.SecurityDelayTimer = 0U;
+
+    /* Initialize transfer state */
+    Dcm_InternalState.DownloadAddress = 0U;
+    Dcm_InternalState.DownloadSize = 0U;
+    Dcm_InternalState.TransferOffset = 0U;
+    Dcm_InternalState.BlockSequenceCounter = 0U;
+    Dcm_InternalState.TransferActive = FALSE;
 
     /* Initialize protocol states */
     for (i = 0U; i < DCM_NUM_PROTOCOLS; i++)

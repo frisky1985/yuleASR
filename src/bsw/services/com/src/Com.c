@@ -26,8 +26,6 @@
 /*==================================================================================================
 *                                  LOCAL CONSTANT DEFINITIONS
 ==================================================================================================*/
-#define COM_INSTANCE_ID                 (0x00U)
-
 /* Module state */
 #define COM_STATE_UNINIT                (0x00U)
 #define COM_STATE_INIT                  (0x01U)
@@ -107,6 +105,7 @@ typedef struct
 #include "MemMap.h"
 
 STATIC Com_InternalStateType Com_InternalState;
+STATIC boolean Com_DMEnabled[COM_NUM_OF_IPDUS];
 
 #define COM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
@@ -862,45 +861,6 @@ void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 }
 
 /**
- * @brief   TriggerTransmit callback from PduR
- */
-Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
-{
-    Std_ReturnType result = E_NOT_OK;
-    const Com_IPduConfigType* ipduConfig;
-
-#if (COM_DEV_ERROR_DETECT == STD_ON)
-    if (Com_InternalState.State != COM_STATE_INIT)
-    {
-        COM_DET_REPORT_ERROR(COM_SERVICE_ID_TRIGGERTRANSMIT, COM_E_UNINIT);
-        return E_NOT_OK;
-    }
-
-    if (PduInfoPtr == NULL_PTR)
-    {
-        COM_DET_REPORT_ERROR(COM_SERVICE_ID_TRIGGERTRANSMIT, COM_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#endif
-
-    if ((TxPduId < COM_NUM_OF_IPDUS) && (PduInfoPtr != NULL_PTR))
-    {
-        ipduConfig = Com_GetIPduConfig(TxPduId);
-
-        if (ipduConfig != NULL_PTR)
-        {
-            /* Copy IPDU buffer to PDU info */
-            PduInfoPtr->SduDataPtr = Com_InternalState.IPduBuffer[TxPduId];
-            PduInfoPtr->SduLength = ipduConfig->DataLength;
-
-            result = E_OK;
-        }
-    }
-
-    return result;
-}
-
-/**
  * @brief   Main function for reception processing
  */
 void Com_MainFunctionRx(void)
@@ -1063,19 +1023,115 @@ void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
     {
         Com_InternalState.IPduStates[i].GroupEnabled = enable;
     }
+    (void)ipduGroupVector;
+}
+
+void Com_ReceptionDMControl(Com_IpduGroupVector ipduGroupVector, boolean Enable)
+{
+    uint8 i;
+
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+    if (Com_InternalState.State != COM_STATE_INIT)
+    {
+        COM_DET_REPORT_ERROR(COM_API_ID_RECEPTION_DM_CONTROL, COM_E_UNINIT);
+        return;
+    }
+#endif
+
+    for (i = 0U; i < COM_NUM_OF_IPDUS; i++)
+    {
+        Com_DMEnabled[i] = Enable;
+    }
+    (void)ipduGroupVector;
+}
+
+void Com_EnableReceptionDM(Com_IpduGroupVector ipduGroupVector)
+{
+    Com_ReceptionDMControl(ipduGroupVector, TRUE);
+}
+
+void Com_DisableReceptionDM(Com_IpduGroupVector ipduGroupVector)
+{
+    Com_ReceptionDMControl(ipduGroupVector, FALSE);
 }
 
 /* Stub functions for unimplemented features */
 uint8 Com_InvalidateSignal(Com_SignalIdType SignalId)
 {
-    (void)SignalId;
-    return COM_SERVICE_NOT_OK;
+    uint8 result = COM_SERVICE_NOT_OK;
+    const Com_SignalConfigType* signalConfig;
+    uint16 i;
+    uint16 startByte;
+    uint8 endByte;
+
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+    if (Com_InternalState.State != COM_STATE_INIT)
+    {
+        COM_DET_REPORT_ERROR(COM_API_ID_INVALIDATE_SIGNAL, COM_E_UNINIT);
+        return COM_SERVICE_NOT_OK;
+    }
+
+    if (SignalId >= COM_NUM_OF_SIGNALS)
+    {
+        COM_DET_REPORT_ERROR(COM_API_ID_INVALIDATE_SIGNAL, COM_E_INVALID_SIGNAL_ID);
+        return COM_SERVICE_NOT_OK;
+    }
+#endif
+
+    signalConfig = Com_GetSignalConfig(SignalId);
+
+    if (signalConfig != NULL_PTR)
+    {
+        startByte = signalConfig->BitPosition / 8U;
+        endByte = (uint8)((signalConfig->BitPosition + signalConfig->BitSize + 7U) / 8U);
+
+        /* Set signal bytes to invalid pattern (all 0xFF) */
+        for (i = startByte; i < endByte; i++)
+        {
+            Com_InternalState.IPduBuffer[signalConfig->SignalGroupRef][i] = 0xFFU;
+        }
+
+        /* Mark signal and IPDU as updated */
+        Com_InternalState.SignalStates[SignalId].Updated = TRUE;
+        Com_InternalState.IPduStates[signalConfig->SignalGroupRef].Updated = TRUE;
+
+        result = COM_SERVICE_OK;
+    }
+
+    return result;
 }
 
 uint8 Com_InvalidateSignalGroup(Com_SignalGroupIdType SignalGroupId)
 {
-    (void)SignalGroupId;
-    return COM_SERVICE_NOT_OK;
+    uint8 result = COM_SERVICE_NOT_OK;
+    uint16 i;
+
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+    if (Com_InternalState.State != COM_STATE_INIT)
+    {
+        COM_DET_REPORT_ERROR(COM_API_ID_INVALIDATE_SIGNAL_GROUP, COM_E_UNINIT);
+        return COM_SERVICE_NOT_OK;
+    }
+
+    if (SignalGroupId >= COM_NUM_OF_SIGNAL_GROUPS)
+    {
+        COM_DET_REPORT_ERROR(COM_API_ID_INVALIDATE_SIGNAL_GROUP, COM_E_INVALID_SIGNAL_GROUP_ID);
+        return COM_SERVICE_NOT_OK;
+    }
+#endif
+
+    /* Set entire signal group buffer to invalid pattern */
+    for (i = 0U; i < COM_MAX_IPDU_BUFFER_SIZE; i++)
+    {
+        Com_InternalState.IPduBuffer[SignalGroupId][i] = 0xFFU;
+    }
+
+    /* Mark IPDU as updated */
+    Com_InternalState.IPduStates[SignalGroupId].Updated = TRUE;
+
+    result = COM_SERVICE_OK;
+
+    return result;
 }
 
 uint8 Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length)
@@ -1094,7 +1150,7 @@ uint8 Com_ReceiveDynSignal(Com_SignalIdType SignalId, void* SignalDataPtr, uint1
     return COM_SERVICE_NOT_OK;
 }
 
-void Com_SwitchIpduTxMode(PduIdType PduId, boolean Mode)
+void Com_SwitchIpduTxMode(PduIdType PduId, ComTxModeModeType Mode)
 {
     (void)PduId;
     (void)Mode;

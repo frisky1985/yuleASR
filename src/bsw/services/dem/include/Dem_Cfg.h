@@ -88,7 +88,14 @@
 ==================================================================================================*/
 #define DEM_AGING_CYCLE_THRESHOLD       (40U)
 #define DEM_AGING_CYCLE_COUNTER_MAX     (255U)
+#define DEM_AGING_CYCLE_COUNTER_THRESHOLD DEM_AGING_CYCLE_THRESHOLD
 #define DEM_AGING_THRESHOLD             DEM_AGING_CYCLE_THRESHOLD
+
+/*==================================================================================================
+*                                    ENABLE / STORAGE CONDITIONS
+==================================================================================================*/
+#define DEM_NUM_ENABLE_CONDITIONS       (8U)
+#define DEM_NUM_STORAGE_CONDITIONS      (8U)
 #define DEM_MAX_OCCURRENCE_COUNTER      (255U)
 #define DEM_DTC_GROUP_ALL               ((Dem_DtcType)0xFFFFFFU)
 

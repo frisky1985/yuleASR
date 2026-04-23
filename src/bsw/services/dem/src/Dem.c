@@ -127,7 +127,7 @@ STATIC const Dem_EventParameterType* Dem_FindEventConfig(Dem_EventIdType EventId
     {
         for (i = 0U; i < Dem_InternalState.ConfigPtr->NumEvents; i++)
         {
-            if (Dem_InternalState.ConfigPtr->Events[i].EventId == EventId)
+            if (Dem_InternalState.ConfigPtr->EventParameters[i].EventId == EventId)
             {
                 result = &Dem_InternalState.ConfigPtr->Events[i];
                 break;

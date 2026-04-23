@@ -33,6 +33,13 @@
 /** @brief COM Instance ID */
 #define COM_INSTANCE_ID                         0x00U
 
+/*==================================================================================================
+*                                    VERSION INFORMATION
+==================================================================================================*/
+#define COM_SW_MAJOR_VERSION                    0x01U
+#define COM_SW_MINOR_VERSION                    0x00U
+#define COM_SW_PATCH_VERSION                    0x00U
+
 /* API Service IDs */
 #define COM_API_ID_INIT                         0x01U
 #define COM_API_ID_DEINIT                       0x02U
@@ -105,6 +112,10 @@
 #define COM_NOT_STARTED                         0x04U
 #define COM_STARTED                             0x08U
 
+/* Module Status */
+#define COM_UNINIT                              0x00U
+#define COM_INIT                                0x01U
+
 /* Signal Status */
 #define COM_FALSE                               0x00U
 #define COM_TRUE                                0x01U
@@ -141,10 +152,7 @@ typedef uint8 ComTxModeModeType;
 #define COM_NEW_IS_OUTSIDE                      0x06U
 #define COM_ONE_EVERY_N                         0x07U
 
-/* Endianness */
-#define COM_LITTLE_ENDIAN                       0x00U
-#define COM_BIG_ENDIAN                          0x01U
-#define COM_OPAQUE                              0x02U
+/* Endianness definitions are in Com_Cfg.h */
 
 /*==================================================================================================
 *                                          TYPE DEFINITIONS
@@ -273,6 +281,26 @@ void Com_IpduGroupControl(Com_IpduGroupVector IpduGroupVector, boolean Initializ
 void Com_ReceptionDMControl(Com_IpduGroupVector IpduGroupVector, boolean Enable);
 
 /**
+ * @brief Enables deadline monitoring for I-PDU groups
+ *
+ * @param[in] IpduGroupVector I-PDU group vector
+ *
+ * @pre COM module initialized
+ * @post Deadline monitoring enabled for specified groups
+ */
+void Com_EnableReceptionDM(Com_IpduGroupVector IpduGroupVector);
+
+/**
+ * @brief Disables deadline monitoring for I-PDU groups
+ *
+ * @param[in] IpduGroupVector I-PDU group vector
+ *
+ * @pre COM module initialized
+ * @post Deadline monitoring disabled for specified groups
+ */
+void Com_DisableReceptionDM(Com_IpduGroupVector IpduGroupVector);
+
+/**
  * @brief Returns the status of the COM module
  *
  * @return Com_StatusType Status of the COM module
@@ -359,6 +387,34 @@ uint8 Com_SendSignalGroup(Com_SignalGroupIdType SignalGroupId);
 uint8 Com_ReceiveSignalGroup(Com_SignalGroupIdType SignalGroupId);
 
 /**
+ * @brief Invalidates a signal
+ *
+ * @param[in] SignalId ID of the signal to be invalidated
+ *
+ * @return uint8
+ *         - COM_SERVICE_NOT_AVAILABLE: Service not available
+ *         - E_OK: Service accepted
+ *
+ * @pre COM module initialized
+ * @post Signal set to invalid value
+ */
+uint8 Com_InvalidateSignal(Com_SignalIdType SignalId);
+
+/**
+ * @brief Invalidates a signal group
+ *
+ * @param[in] SignalGroupId ID of the signal group to be invalidated
+ *
+ * @return uint8
+ *         - COM_SERVICE_NOT_AVAILABLE: Service not available
+ *         - E_OK: Service accepted
+ *
+ * @pre COM module initialized
+ * @post Signal group set to invalid values
+ */
+uint8 Com_InvalidateSignalGroup(Com_SignalGroupIdType SignalGroupId);
+
+/**
  * @brief Triggers the transmission of an I-PDU
  *
  * @param[in] PduId ID of the I-PDU to be transmitted
@@ -383,6 +439,28 @@ Std_ReturnType Com_TriggerIPDUSend(PduIdType PduId);
  *         - E_NOT_OK: Data not provided
  */
 Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
+
+/**
+ * @brief Receive indication callback from PduR
+ *
+ * @param[in] RxPduId PDU that was received
+ * @param[in] PduInfoPtr Pointer to PDU info
+ *
+ * @pre COM module initialized
+ * @post Received data copied to IPDU buffer
+ */
+void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+
+/**
+ * @brief Transmit confirmation callback from PduR
+ *
+ * @param[in] TxPduId PDU that was transmitted
+ * @param[in] result Transmission result
+ *
+ * @pre COM module initialized
+ * @post IPDU transmission state updated
+ */
+void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
 /**
  * @brief Switches the transmission mode of an I-PDU
