@@ -203,6 +203,9 @@ void ShutdownHook(StatusType Error);
 /* Version Info */
 void Os_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/* BSW Alarm Callback Dispatcher */
+void Os_Callback_Alarm(AlarmType AlarmID);
+
 #define OS_STOP_SEC_CODE
 #include "MemMap.h"
 

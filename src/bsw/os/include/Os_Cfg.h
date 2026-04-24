@@ -51,13 +51,18 @@
 ==================================================================================================*/
 #define OS_CFG_NUM_ALARMS               (6U)
 
-/* Alarm IDs */
-#define OsAlarm_10ms                    (0U)
-#define OsAlarm_50ms                    (1U)
-#define OsAlarm_100ms                   (2U)
-#define OsAlarm_ComRx                   (3U)
-#define OsAlarm_ComTx                   (4U)
-#define OsAlarm_Diagnostic              (5U)
+/* Alarm IDs - mapped to BSW MainFunction cyclic calls */
+#define OsAlarm_BswM_MainFunction       (0U)   /**< 10ms - BswM_MainFunction */
+#define OsAlarm_Com_MainFunction        (1U)   /**< 10ms - Com_MainFunctionRx + Com_MainFunctionTx */
+#define OsAlarm_CanIf_MainFunction      (2U)   /**< 10ms - CanIf_MainFunction (if available) */
+#define OsAlarm_Dcm_MainFunction        (3U)   /**< 10ms - Dcm_MainFunction */
+#define OsAlarm_NvM_MainFunction        (4U)   /**< 100ms - NvM_MainFunction */
+#define OsAlarm_Dem_MainFunction        (5U)   /**< 100ms - Dem_MainFunction */
+
+/* Alarm periods in milliseconds */
+#define OS_ALARM_PERIOD_10MS            (10U)
+#define OS_ALARM_PERIOD_50MS            (50U)
+#define OS_ALARM_PERIOD_100MS           (100U)
 
 /*==================================================================================================
 *                                    RESOURCE CONFIGURATION

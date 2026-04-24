@@ -6,7 +6,7 @@
 *
 * SW Version           : 1.0.0
 * Build Version        : YULETECH_BSWM_1.0.0
-* Build Date           : 2026-04-22
+* Build Date           : 2026-04-24
 * Author               : AI Agent (BswM Development)
 *
 * (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
@@ -20,14 +20,17 @@
 #include "Det.h"
 #include "MemMap.h"
 
+/* Service Layer headers for mode actions */
+#include "Com.h"
+#include "PduR.h"
+#include "NvM.h"
+#include "Dcm.h"
+#include "Dem.h"
+
 /*==================================================================================================
 *                                  LOCAL CONSTANT DEFINITIONS
 ==================================================================================================*/
 #define BSWM_INSTANCE_ID                (0x00U)
-
-/* Module state */
-#define BSWM_STATE_UNINIT               (0x00U)
-#define BSWM_STATE_INIT                 (0x01U)
 
 /*==================================================================================================
 *                                  LOCAL MACRO DEFINITIONS
@@ -54,6 +57,7 @@ typedef struct
 typedef struct
 {
     uint8 State;
+    BswM_StateType ModuleState;
     const BswM_ConfigType* ConfigPtr;
     BswM_ModeType CurrentMode[BSWM_NUM_REQUESTING_USERS];
     BswM_ModeRequestEntryType ModeRequestQueue[BSWM_MODE_REQUEST_QUEUE_SIZE];
@@ -61,6 +65,8 @@ typedef struct
     uint8 QueueTail;
     uint8 QueueCount;
     boolean ModeRequestPending;
+    BswM_ModeType ArbitrationResult;
+    boolean ArbitrationChanged;
 } BswM_InternalStateType;
 
 /*==================================================================================================
@@ -80,12 +86,58 @@ STATIC BswM_InternalStateType BswM_InternalState;
 STATIC void BswM_ProcessModeRequest(BswM_UserType requestingUser, BswM_ModeType requestedMode);
 STATIC void BswM_ExecuteModeActions(BswM_ModeType mode);
 STATIC void BswM_ExecuteRules(void);
+STATIC BswM_ModeType BswM_ArbitrateMode(void);
+STATIC void BswM_EnterModeRun(void);
+STATIC void BswM_EnterModeShutdown(void);
+STATIC void BswM_EnterModeSleep(void);
 
 /*==================================================================================================
 *                                      LOCAL FUNCTIONS
 ==================================================================================================*/
 #define BSWM_START_SEC_CODE
 #include "MemMap.h"
+
+/**
+ * @brief   Enter RUN mode actions
+ */
+STATIC void BswM_EnterModeRun(void)
+{
+    /* Start COM I-PDU groups */
+    Com_IpduGroupControl(NULL_PTR, TRUE);
+
+    /* Enable PDU routing */
+    PduR_EnableRouting(0U);
+
+    /* Switch NvM to normal write mode */
+    /* NvM_SetBlockProtection(...) would be called here */
+}
+
+/**
+ * @brief   Enter SHUTDOWN mode actions
+ */
+STATIC void BswM_EnterModeShutdown(void)
+{
+    /* Stop COM I-PDU groups */
+    Com_IpduGroupControl(NULL_PTR, FALSE);
+
+    /* Disable PDU routing */
+    PduR_DisableRouting(0U);
+
+    /* Write all pending NvM blocks */
+    /* NvM_WriteAll() would be called here */
+}
+
+/**
+ * @brief   Enter SLEEP mode actions
+ */
+STATIC void BswM_EnterModeSleep(void)
+{
+    /* Prepare communication for sleep */
+    Com_IpduGroupControl(NULL_PTR, FALSE);
+
+    /* Disable PDU routing */
+    PduR_DisableRouting(0U);
+}
 
 /**
  * @brief   Execute mode-specific actions
@@ -95,29 +147,53 @@ STATIC void BswM_ExecuteModeActions(BswM_ModeType mode)
     switch (mode)
     {
         case BSWM_MODE_STARTUP:
-            /* Initialize communication stack */
-            /* EcuM_StartupTwo() would be called here */
+            /* Communication stack not yet initialized */
             break;
 
         case BSWM_MODE_RUN:
-            /* Enable communication */
+            BswM_EnterModeRun();
             break;
 
         case BSWM_MODE_POST_RUN:
-            /* Prepare for shutdown */
+            /* Prepare for shutdown - keep minimal communication */
             break;
 
         case BSWM_MODE_SHUTDOWN:
-            /* Shutdown sequence */
+            BswM_EnterModeShutdown();
             break;
 
         case BSWM_MODE_SLEEP:
-            /* Sleep preparation */
+            BswM_EnterModeSleep();
             break;
 
         default:
             break;
     }
+}
+
+/**
+ * @brief   Mode arbitration logic
+ *
+ * Simple state machine: STARTUP -> RUN -> SHUTDOWN/SLEEP
+ * The mode with the highest priority request wins.
+ */
+STATIC BswM_ModeType BswM_ArbitrateMode(void)
+{
+    BswM_ModeType arbitrateMode = BSWM_MODE_STARTUP;
+    uint8 i;
+
+    for (i = 0U; i < BSWM_NUM_REQUESTING_USERS; i++)
+    {
+        BswM_ModeType userMode = BswM_InternalState.CurrentMode[i];
+
+        /* Higher numeric value = higher priority for RUN/SHUTDOWN */
+        if (userMode > arbitrateMode)
+        {
+            arbitrateMode = userMode;
+        }
+    }
+
+    return arbitrateMode;
 }
 
 /**
@@ -130,11 +206,9 @@ STATIC void BswM_ProcessModeRequest(BswM_UserType requestingUser, BswM_ModeType 
         /* Store the requested mode */
         BswM_InternalState.CurrentMode[requestingUser] = requestedMode;
 
-        /* Execute associated mode actions */
-        BswM_ExecuteModeActions(requestedMode);
-
-        /* Evaluate and execute rules */
-        BswM_ExecuteRules();
+        /* Run arbitration */
+        BswM_InternalState.ArbitrationResult = BswM_ArbitrateMode();
+        BswM_InternalState.ArbitrationChanged = TRUE;
     }
 }
 
@@ -201,6 +275,8 @@ void BswM_Init(const BswM_ConfigType* ConfigPtr)
     BswM_InternalState.QueueTail = 0U;
     BswM_InternalState.QueueCount = 0U;
     BswM_InternalState.ModeRequestPending = FALSE;
+    BswM_InternalState.ArbitrationResult = BSWM_MODE_STARTUP;
+    BswM_InternalState.ArbitrationChanged = FALSE;
 
     /* Initialize current modes to default */
     for (i = 0U; i < BSWM_NUM_REQUESTING_USERS; i++)
@@ -216,6 +292,7 @@ void BswM_Init(const BswM_ConfigType* ConfigPtr)
 
     /* Set module state to initialized */
     BswM_InternalState.State = BSWM_STATE_INIT;
+    BswM_InternalState.ModuleState = BSWM_STATE_INIT;
 }
 
 /**
@@ -236,10 +313,13 @@ void BswM_Deinit(void)
 
     /* Set module state to uninitialized */
     BswM_InternalState.State = BSWM_STATE_UNINIT;
+    BswM_InternalState.ModuleState = BSWM_STATE_UNINIT;
 }
 
 /**
  * @brief   Main function for BswM processing
+ *
+ * Performs mode arbitration and executes mode switch actions.
  */
 void BswM_MainFunction(void)
 {
@@ -247,6 +327,8 @@ void BswM_MainFunction(void)
 
     if (BswM_InternalState.State == BSWM_STATE_INIT)
     {
+        BswM_InternalState.ModuleState = BSWM_STATE_BUSY;
+
         /* Process pending mode requests */
         if (BswM_InternalState.ModeRequestPending)
         {
@@ -265,8 +347,17 @@ void BswM_MainFunction(void)
             BswM_InternalState.ModeRequestPending = FALSE;
         }
 
+        /* Execute mode actions if arbitration result changed */
+        if (BswM_InternalState.ArbitrationChanged)
+        {
+            BswM_ExecuteModeActions(BswM_InternalState.ArbitrationResult);
+            BswM_InternalState.ArbitrationChanged = FALSE;
+        }
+
         /* Execute rules periodically */
         BswM_ExecuteRules();
+
+        BswM_InternalState.ModuleState = BSWM_STATE_INIT;
     }
 }
 
@@ -338,6 +429,14 @@ BswM_ModeType BswM_GetCurrentMode(BswM_UserType requestingUser)
     }
 
     return result;
+}
+
+/**
+ * @brief   Get the current BswM module state
+ */
+BswM_StateType BswM_GetState(void)
+{
+    return BswM_InternalState.ModuleState;
 }
 
 /**

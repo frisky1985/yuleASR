@@ -6,7 +6,7 @@
 *
 * SW Version           : 1.0.0
 * Build Version        : YULETECH_ECUM_1.0.0
-* Build Date           : 2026-04-22
+* Build Date           : 2026-04-24
 * Author               : AI Agent (EcuM Development)
 *
 * (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
@@ -17,10 +17,41 @@
 *                                             INCLUDES
 ==================================================================================================*/
 #include "EcuM.h"
-#include "Mcu.h"
-#include "BswM.h"
+#include "Os.h"
 #include "Det.h"
 #include "MemMap.h"
+
+/* MCAL Layer */
+#include "Mcu.h"
+#include "Port.h"
+#include "Dio.h"
+#include "Gpt.h"
+#include "Can.h"
+#include "Spi.h"
+#include "Adc.h"
+#include "Pwm.h"
+#include "Wdg.h"
+
+/* ECUAL Layer */
+#include "CanIf.h"
+#include "CanTp.h"
+#include "MemIf.h"
+#include "Fee.h"
+#include "Ea.h"
+#include "EthIf.h"
+#include "LinIf.h"
+#include "IoHwAb.h"
+
+/* Service Layer */
+#include "PduR.h"
+#include "Com.h"
+#include "NvM.h"
+#include "Dcm.h"
+#include "Dem.h"
+#include "BswM.h"
+
+/* External configuration for modules without global config pointer */
+extern const Com_ConfigType Com_Config;
 
 /*==================================================================================================
 *                                  LOCAL CONSTANT DEFINITIONS
@@ -50,6 +81,7 @@ typedef enum
     ECUM_SUBSTATE_UNINIT = 0,
     ECUM_SUBSTATE_STARTUP_ONE,
     ECUM_SUBSTATE_STARTUP_TWO,
+    ECUM_SUBSTATE_STARTUP_THREE,
     ECUM_SUBSTATE_APP_RUN,
     ECUM_SUBSTATE_APP_POST_RUN,
     ECUM_SUBSTATE_SHUTDOWN,
@@ -89,7 +121,6 @@ STATIC EcuM_InternalStateType EcuM_InternalState;
 *                                  LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
 STATIC void EcuM_StartupOne(void);
-STATIC void EcuM_StartupTwo(void);
 STATIC void EcuM_OnGoOffOne(void);
 STATIC void EcuM_OnGoOffTwo(void);
 STATIC void EcuM_ProcessWakeupEvents(void);
@@ -101,69 +132,95 @@ STATIC void EcuM_ProcessWakeupEvents(void);
 #include "MemMap.h"
 
 /**
- * @brief   Startup phase one - minimal initialization
+ * @brief   Startup phase one - MCAL initialization
+ *
+ * Initializes all MCAL drivers in the correct order:
+ * Mcu -> Port -> Dio -> Gpt -> Can -> Spi -> Adc -> Pwm -> Wdg
  */
 STATIC void EcuM_StartupOne(void)
 {
-    /* Initialize MCU */
-    Mcu_Init(EcuM_InternalState.ConfigPtr->McuConfigPtr);
+    /* Initialize MCU (must be first) */
+    (void)Mcu_Init(&Mcu_Config);
 
-    /* Select default clock settings */
-    Mcu_InitClock(MCU_CLOCK_SETTING_DEFAULT);
+    /* Initialize clock */
+    (void)Mcu_InitClock(MCU_CLOCK_SETTING_DEFAULT);
 
-    /* Distribute PLL if needed */
-    /* Mcu_DistributePllClock(); */
+    /* Distribute PLL clock */
+    (void)Mcu_DistributePllClock();
 
     /* Initialize port pins */
-    /* Port_Init(EcuM_InternalState.ConfigPtr->PortConfigPtr); */
+    Port_Init(&Port_Config);
+
+    /* Initialize general purpose timers */
+    Gpt_Init(&Gpt_Config);
+
+    /* Initialize CAN controller */
+    Can_Init(&Can_Config);
+
+    /* Initialize SPI */
+    Spi_Init(&Spi_Config);
+
+    /* Initialize ADC */
+    Adc_Init(&Adc_Config);
+
+    /* Initialize PWM */
+    Pwm_Init(&Pwm_Config);
+
+    /* Initialize Watchdog */
+    Wdg_Init(&Wdg_Config);
 
     EcuM_InternalState.SubState = ECUM_SUBSTATE_STARTUP_ONE;
 }
 
 /**
- * @brief   Startup phase two - full BSW initialization
- */
-STATIC void EcuM_StartupTwo(void)
-{
-    /* Initialize DET (Development Error Tracer) */
-    /* Det_Init(); */
-
-    /* Initialize BswM */
-    BswM_Init(EcuM_InternalState.ConfigPtr->BswMConfigPtr);
-
-    /* Initialize OS */
-    /* StartOS(OSDEFAULTAPPMODE); */
-
-    EcuM_InternalState.SubState = ECUM_SUBSTATE_STARTUP_TWO;
-    EcuM_InternalState.CurrentState = ECUM_STATE_APP_RUN;
-}
-
-/**
- * @brief   First phase of shutdown
+ * @brief   First phase of shutdown - Service layer deinitialization
  */
 STATIC void EcuM_OnGoOffOne(void)
 {
-    /* Deinitialize communication stack */
-    /* Com_DeInit(); */
-    /* PduR_DeInit(); */
-    /* CanIf_DeInit(); */
+    /* Deinitialize Service layer (reverse order of init) */
+    /* Dem_DeInit not implemented */
+    Dcm_DeInit();
+    /* NvM_DeInit not implemented */
+    Com_DeInit();
+    PduR_DeInit();
+
+    /* Deinitialize BswM */
+    BswM_Deinit();
 
     EcuM_InternalState.CurrentState = ECUM_STATE_SHUTDOWN;
     EcuM_InternalState.SubState = ECUM_SUBSTATE_SHUTDOWN;
 }
 
 /**
- * @brief   Second phase of shutdown
+ * @brief   Second phase of shutdown - ECUAL and MCAL deinitialization
  */
 STATIC void EcuM_OnGoOffTwo(void)
 {
-    /* Deinitialize NvM */
-    /* NvM_WriteAll(); */
+    /* Deinitialize ECUAL layer */
+    IoHwAb_DeInit();
+    /* LinIf_DeInit not implemented */
+    /* EthIf_DeInit not implemented */
+    /* Ea_DeInit not implemented */
+    /* Fee_DeInit not implemented */
+    /* MemIf_DeInit not implemented */
+    /* CanTp_DeInit not implemented */
+    CanIf_DeInit();
 
-    /* Deinitialize MCU */
-    /* Mcu_DeInit(); */
+    /* Deinitialize MCAL layer */
+    /* Wdg_DeInit not implemented */
+    Pwm_DeInit();
+    Adc_DeInit();
+    /* Spi_DeInit not implemented */
+    /* Can_DeInit not implemented */
+    Gpt_DeInit();
+    /* Dio has no DeInit */
+    /* Port has no DeInit in this implementation */
+    /* Mcu_DeInit not implemented */
 
-    /* Infinite loop - system halted */
+    /* Shutdown OS */
+    ShutdownOS(E_OS_OK);
+
+    /* Infinite loop - system halted if OS shutdown returns */
     for (;;)
     {
         /* System is shut down */
@@ -178,7 +235,6 @@ STATIC void EcuM_ProcessWakeupEvents(void)
     if (EcuM_InternalState.PendingWakeupEvents != ECUM_WKSOURCE_NONE)
     {
         /* Validate pending wakeup events */
-        /* In a full implementation, check with drivers */
         EcuM_InternalState.ValidatedWakeupEvents |= EcuM_InternalState.PendingWakeupEvents;
         EcuM_InternalState.PendingWakeupEvents = ECUM_WKSOURCE_NONE;
     }
@@ -189,7 +245,9 @@ STATIC void EcuM_ProcessWakeupEvents(void)
 ==================================================================================================*/
 
 /**
- * @brief   Initializes the EcuM module
+ * @brief   Initializes the EcuM module and performs Phase I startup (MCAL init + OS start)
+ *
+ * This function never returns because it starts the OS scheduler.
  */
 void EcuM_Init(void)
 {
@@ -205,20 +263,97 @@ void EcuM_Init(void)
     EcuM_InternalState.ShutdownTarget = ECUM_STATE_SLEEP;
     EcuM_InternalState.SleepMode = 0U;
     EcuM_InternalState.EcuMCounter = 0U;
+
+    /* Phase I: MCAL initialization */
+    EcuM_StartupOne();
+
+    /* Start OS - this never returns */
+    StartOS(OSDEFAULTAPPMODE);
 }
 
 /**
- * @brief   Startup the ECU (called from startup code)
+ * @brief   Startup phase two - ECUAL initialization
+ *
+ * Called after OS has started (from startup hook or init task).
+ */
+void EcuM_StartupTwo(void)
+{
+#if (ECUM_DEV_ERROR_DETECT == STD_ON)
+    if (EcuM_InternalState.State != ECUM_STATE_INIT)
+    {
+        ECUM_DET_REPORT_ERROR(ECUM_SERVICE_ID_STARTUP_TWO, ECUM_E_UNINIT);
+        return;
+    }
+    if (EcuM_InternalState.SubState != ECUM_SUBSTATE_STARTUP_ONE)
+    {
+        ECUM_DET_REPORT_ERROR(ECUM_SERVICE_ID_STARTUP_TWO, ECUM_E_STATE_TRANSITION);
+        return;
+    }
+#endif
+
+    /* Initialize ECUAL layer */
+    CanIf_Init(&CanIf_Config);
+    CanTp_Init(&CanTp_Config);
+    MemIf_Init(&MemIf_Config);
+    Fee_Init(&Fee_Config);
+    Ea_Init(&Ea_Config);
+    EthIf_Init(&EthIf_Config);
+    LinIf_Init(&LinIf_Config);
+    IoHwAb_Init(&IoHwAb_Config);
+
+    EcuM_InternalState.SubState = ECUM_SUBSTATE_STARTUP_TWO;
+}
+
+/**
+ * @brief   Startup phase three - Service layer initialization
+ *
+ * Called after ECUAL initialization is complete.
+ */
+void EcuM_StartupThree(void)
+{
+#if (ECUM_DEV_ERROR_DETECT == STD_ON)
+    if (EcuM_InternalState.State != ECUM_STATE_INIT)
+    {
+        ECUM_DET_REPORT_ERROR(ECUM_SERVICE_ID_STARTUP_THREE, ECUM_E_UNINIT);
+        return;
+    }
+    if (EcuM_InternalState.SubState != ECUM_SUBSTATE_STARTUP_TWO)
+    {
+        ECUM_DET_REPORT_ERROR(ECUM_SERVICE_ID_STARTUP_THREE, ECUM_E_STATE_TRANSITION);
+        return;
+    }
+#endif
+
+    /* Initialize Service layer */
+    PduR_Init(&PduR_Config);
+    Com_Init(&Com_Config);
+    NvM_Init(&NvM_Config);
+    Dcm_Init(&Dcm_Config);
+    Dem_Init(&Dem_Config);
+
+    /* Initialize BswM last among services */
+    BswM_Init(&BswM_Config);
+
+    EcuM_InternalState.SubState = ECUM_SUBSTATE_STARTUP_THREE;
+    EcuM_InternalState.CurrentState = ECUM_STATE_RUN;
+
+    /* Notify BswM that startup is complete, request RUN mode */
+    BswM_RequestMode(BSWM_USER_ECU_STATE, BSWM_MODE_RUN);
+}
+
+/**
+ * @brief   Startup the ECU (legacy combined startup)
+ *
+ * Note: In the phased startup model, this is equivalent to EcuM_Init
+ * which starts the OS. Phase II and III are executed separately.
  */
 void EcuM_Startup(void)
 {
     if (EcuM_InternalState.State == ECUM_STATE_INIT)
     {
-        /* Startup phase one */
+        /* Phase I only - OS start never returns */
         EcuM_StartupOne();
-
-        /* Startup phase two */
-        EcuM_StartupTwo();
+        StartOS(OSDEFAULTAPPMODE);
     }
 }
 
@@ -312,7 +447,7 @@ EcuM_WakeupSourceType EcuM_GetValidatedWakeupEvents(void)
 }
 
 /**
- * @brief   Clear validated wakeup events
+ * @brief   Clear wakeup events
  */
 void EcuM_ClearWakeupEvent(EcuM_WakeupSourceType wakeupSource)
 {

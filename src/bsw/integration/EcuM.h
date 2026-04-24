@@ -35,6 +35,8 @@
 ==================================================================================================*/
 #define ECUM_SERVICE_ID_INIT            (0x01U)
 #define ECUM_SERVICE_ID_STARTUP         (0x02U)
+#define ECUM_SERVICE_ID_STARTUP_TWO     (0x0EU)
+#define ECUM_SERVICE_ID_STARTUP_THREE   (0x0FU)
 #define ECUM_SERVICE_ID_SHUTDOWN        (0x03U)
 #define ECUM_SERVICE_ID_GETVERSIONINFO  (0x04U)
 #define ECUM_SERVICE_ID_SETWAKEUPEVENT  (0x05U)
@@ -132,9 +134,19 @@ extern const EcuM_ConfigType EcuM_Config;
 void EcuM_Init(void);
 
 /**
- * @brief Startup the ECU
+ * @brief Startup the ECU (legacy combined startup)
  */
 void EcuM_Startup(void);
+
+/**
+ * @brief Startup phase two - ECUAL initialization (called after OS start)
+ */
+void EcuM_StartupTwo(void);
+
+/**
+ * @brief Startup phase three - Service layer initialization
+ */
+void EcuM_StartupThree(void);
 
 /**
  * @brief Shutdown the ECU

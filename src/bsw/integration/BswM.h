@@ -39,6 +39,7 @@
 #define BSWM_SERVICE_ID_REQUESTMODE     (0x02U)
 #define BSWM_SERVICE_ID_GETMODE         (0x0BU)
 #define BSWM_SERVICE_ID_MAINFUNCTION    (0x03U)
+#define BSWM_SERVICE_ID_GETSTATE        (0x0CU)
 
 /*==================================================================================================
 *                                    DET ERROR CODES
@@ -72,6 +73,16 @@ typedef uint8 BswM_ModeType;
 #define BSWM_MODE_SHUTDOWN              (0x03U)
 #define BSWM_MODE_SLEEP                 (0x04U)
 #define BSWM_MODE_MAX                   (0x05U)
+
+/*==================================================================================================
+*                                    STATE DEFINITIONS
+==================================================================================================*/
+typedef uint8 BswM_StateType;
+
+#define BSWM_STATE_UNINIT               (0x00U)
+#define BSWM_STATE_INIT                 (0x01U)
+#define BSWM_STATE_IDLE                 (0x02U)
+#define BSWM_STATE_BUSY                 (0x03U)
 
 /*==================================================================================================
 *                                    USER TYPE DEFINITIONS
@@ -155,6 +166,12 @@ void BswM_RequestMode(BswM_UserType requestingUser, BswM_ModeType requestedMode)
  * @return Current mode
  */
 BswM_ModeType BswM_GetCurrentMode(BswM_UserType requestingUser);
+
+/**
+ * @brief Gets the current BswM module state
+ * @return Current state (BSWM_STATE_UNINIT, BSWM_STATE_INIT, etc.)
+ */
+BswM_StateType BswM_GetState(void);
 
 /**
  * @brief Main function for periodic processing

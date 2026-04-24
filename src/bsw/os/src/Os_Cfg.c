@@ -2,7 +2,7 @@
  * @file Os_Cfg.c
  * @brief AutoSAR OS Configuration - Task and Resource Tables
  * @version 1.0.0
- * @date 2026-04-22
+ * @date 2026-04-24
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  *
  * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
@@ -21,6 +21,14 @@
 #include "Compiler.h"
 #include "MemMap.h"
 
+/* BSW MainFunction headers */
+#include "BswM.h"
+#include "Com.h"
+#include "CanIf.h"
+#include "Dcm.h"
+#include "NvM.h"
+#include "Dem.h"
+
 /*==================================================================================================
 *                                    TASK ENTRY POINT DECLARATIONS
 ==================================================================================================*/
@@ -36,12 +44,12 @@ extern void OsTask_Diagnostic_Entry(void);
 /*==================================================================================================
 *                                    ALARM CALLBACK DECLARATIONS
 ==================================================================================================*/
-extern void OsAlarm_10ms_Callback(void);
-extern void OsAlarm_50ms_Callback(void);
-extern void OsAlarm_100ms_Callback(void);
-extern void OsAlarm_ComRx_Callback(void);
-extern void OsAlarm_ComTx_Callback(void);
-extern void OsAlarm_Diagnostic_Callback(void);
+STATIC void OsAlarm_BswM_MainFunction_Callback(void);
+STATIC void OsAlarm_Com_MainFunction_Callback(void);
+STATIC void OsAlarm_CanIf_MainFunction_Callback(void);
+STATIC void OsAlarm_Dcm_MainFunction_Callback(void);
+STATIC void OsAlarm_NvM_MainFunction_Callback(void);
+STATIC void OsAlarm_Dem_MainFunction_Callback(void);
 
 /*==================================================================================================
 *                                    TASK CONFIGURATION TABLE
@@ -151,69 +159,69 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
 
 STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
 {
-    /* Alarm 0: 10ms Alarm */
+    /* Alarm 0: BswM_MainFunction - 10ms */
     {
-        /* AlarmID           */ OsAlarm_10ms,
-        /* Increment         */ 0U,
-        /* Cycle             */ 0U,
+        /* AlarmID           */ OsAlarm_BswM_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_10MS,
+        /* Cycle             */ OS_ALARM_PERIOD_10MS,
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
-        /* Callback          */ OsAlarm_10ms_Callback,
+        /* Callback          */ OsAlarm_BswM_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL
     },
 
-    /* Alarm 1: 50ms Alarm */
+    /* Alarm 1: Com_MainFunctionRx/Tx - 10ms */
     {
-        /* AlarmID           */ OsAlarm_50ms,
-        /* Increment         */ 0U,
-        /* Cycle             */ 0U,
+        /* AlarmID           */ OsAlarm_Com_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_10MS,
+        /* Cycle             */ OS_ALARM_PERIOD_10MS,
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
-        /* Callback          */ OsAlarm_50ms_Callback,
+        /* Callback          */ OsAlarm_Com_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL
     },
 
-    /* Alarm 2: 100ms Alarm */
+    /* Alarm 2: CanIf_MainFunction - 10ms */
     {
-        /* AlarmID           */ OsAlarm_100ms,
-        /* Increment         */ 0U,
-        /* Cycle             */ 0U,
+        /* AlarmID           */ OsAlarm_CanIf_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_10MS,
+        /* Cycle             */ OS_ALARM_PERIOD_10MS,
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
-        /* Callback          */ OsAlarm_100ms_Callback,
+        /* Callback          */ OsAlarm_CanIf_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL
     },
 
-    /* Alarm 3: COM Rx Alarm */
+    /* Alarm 3: Dcm_MainFunction - 10ms */
     {
-        /* AlarmID           */ OsAlarm_ComRx,
-        /* Increment         */ 0U,
-        /* Cycle             */ 0U,
+        /* AlarmID           */ OsAlarm_Dcm_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_10MS,
+        /* Cycle             */ OS_ALARM_PERIOD_10MS,
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
-        /* Callback          */ OsAlarm_ComRx_Callback,
+        /* Callback          */ OsAlarm_Dcm_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL
     },
 
-    /* Alarm 4: COM Tx Alarm */
+    /* Alarm 4: NvM_MainFunction - 100ms */
     {
-        /* AlarmID           */ OsAlarm_ComTx,
-        /* Increment         */ 0U,
-        /* Cycle             */ 0U,
+        /* AlarmID           */ OsAlarm_NvM_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_100MS,
+        /* Cycle             */ OS_ALARM_PERIOD_100MS,
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
-        /* Callback          */ OsAlarm_ComTx_Callback,
+        /* Callback          */ OsAlarm_NvM_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL
     },
 
-    /* Alarm 5: Diagnostic Alarm */
+    /* Alarm 5: Dem_MainFunction - 100ms */
     {
-        /* AlarmID           */ OsAlarm_Diagnostic,
-        /* Increment         */ 0U,
-        /* Cycle             */ 0U,
+        /* AlarmID           */ OsAlarm_Dem_MainFunction,
+        /* Increment         */ OS_ALARM_PERIOD_100MS,
+        /* Cycle             */ OS_ALARM_PERIOD_100MS,
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
-        /* Callback          */ OsAlarm_Diagnostic_Callback,
+        /* Callback          */ OsAlarm_Dem_MainFunction_Callback,
         /* FreeRTOS_Timer    */ NULL
     }
 };
@@ -292,4 +300,104 @@ Os_GlobalStateType Os_GlobalState =
 };
 
 #define OS_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include "MemMap.h"
+
+/*==================================================================================================
+*                                    ALARM CALLBACK FUNCTIONS
+==================================================================================================*/
+#define OS_START_SEC_CODE
+#include "MemMap.h"
+
+/**
+ * @brief Unified alarm callback dispatcher
+ *
+ * Called by the OS alarm callback wrapper. Dispatches to the appropriate
+ * BSW MainFunction based on the alarm ID.
+ *
+ * @param[in] AlarmID ID of the expired alarm
+ */
+void Os_Callback_Alarm(AlarmType AlarmID)
+{
+    switch (AlarmID)
+    {
+        case OsAlarm_BswM_MainFunction:
+            BswM_MainFunction();
+            break;
+
+        case OsAlarm_Com_MainFunction:
+            Com_MainFunctionRx();
+            Com_MainFunctionTx();
+            break;
+
+        case OsAlarm_CanIf_MainFunction:
+            /* CanIf_MainFunction not implemented in this project */
+            break;
+
+        case OsAlarm_Dcm_MainFunction:
+            Dcm_MainFunction();
+            break;
+
+        case OsAlarm_NvM_MainFunction:
+            NvM_MainFunction();
+            break;
+
+        case OsAlarm_Dem_MainFunction:
+            Dem_MainFunction();
+            break;
+
+        default:
+            /* Unknown alarm ID - no action */
+            break;
+    }
+}
+
+/**
+ * @brief Alarm callback for BswM_MainFunction (10ms)
+ */
+STATIC void OsAlarm_BswM_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_BswM_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for Com_MainFunction (10ms)
+ */
+STATIC void OsAlarm_Com_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_Com_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for CanIf_MainFunction (10ms)
+ */
+STATIC void OsAlarm_CanIf_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_CanIf_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for Dcm_MainFunction (10ms)
+ */
+STATIC void OsAlarm_Dcm_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_Dcm_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for NvM_MainFunction (100ms)
+ */
+STATIC void OsAlarm_NvM_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_NvM_MainFunction);
+}
+
+/**
+ * @brief Alarm callback for Dem_MainFunction (100ms)
+ */
+STATIC void OsAlarm_Dem_MainFunction_Callback(void)
+{
+    Os_Callback_Alarm(OsAlarm_Dem_MainFunction);
+}
+
+#define OS_STOP_SEC_CODE
 #include "MemMap.h"
