@@ -93,3 +93,14 @@ core.*
 tmp/
 temp/
 *.tmp
+
+# FreeRTOS build artifacts
+FreeRTOSConfig.h.bak
+*.d
+*.map
+*.lst
+*.elf
+*.bin
+*.hex
+*.srec
+*.sym

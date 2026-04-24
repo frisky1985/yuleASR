@@ -331,6 +331,10 @@ target_include_directories(eth_dds PUBLIC
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/autosar/e2e>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/autosar/arxml>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/safety/ram>
+    $<$<BOOL:${ENABLE_PLATFORM_FREERTOS}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/freertos/kernel/include>>
+    $<$<BOOL:${ENABLE_PLATFORM_FREERTOS}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/freertos/config>>
+    $<$<BOOL:${ENABLE_PLATFORM_FREERTOS}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/freertos/port>>
+    $<$<TARGET_EXISTS:os_module>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/bsw/os/include>>
     $<INSTALL_INTERFACE:include/eth_dds>
 )
 
@@ -383,7 +387,30 @@ if(NOT ENABLE_PLATFORM_BAREMETAL)
 endif()
 
 #==============================================================================
-# 子目录
+# 子目录 - Platform and BSW Modules
+#==============================================================================
+if(EXISTS ${ETH_DDS_SRC_DIR}/CMakeLists.txt)
+    add_subdirectory(src)
+endif()
+
+#==============================================================================
+# 链接 BSW 模块
+#==============================================================================
+if(TARGET os_module)
+    target_link_libraries(eth_dds PUBLIC os_module)
+endif()
+
+if(ENABLE_SAFETY_RAM AND TARGET saferam_module)
+    target_link_libraries(eth_dds PUBLIC saferam_module)
+endif()
+
+if(ENABLE_PLATFORM_FREERTOS AND TARGET freertos_kernel)
+    target_link_libraries(eth_dds PUBLIC freertos_kernel)
+    target_compile_definitions(eth_dds PUBLIC FREERTOS_USED)
+endif()
+
+#==============================================================================
+# 子目录 - Examples and Tests
 #==============================================================================
 if(BUILD_EXAMPLES)
     add_subdirectory(examples)
