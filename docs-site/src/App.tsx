@@ -9,6 +9,7 @@ import ModulesPage from './pages/ModulesPage';
 import ModuleDetailPage from './pages/ModuleDetailPage';
 import TestsPage from './pages/TestsPage';
 import GuidePage from './pages/GuidePage';
+import SearchResultsPage from './pages/SearchResultsPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -37,6 +38,7 @@ function Layout() {
               <Route path="/module/:layer/:moduleId" element={<ModuleDetailPage />} />
               <Route path="/tests" element={<TestsPage />} />
               <Route path="/guide" element={<GuidePage />} />
+              <Route path="/search" element={<SearchResultsPage />} />
             </Routes>
           </div>
         </div>

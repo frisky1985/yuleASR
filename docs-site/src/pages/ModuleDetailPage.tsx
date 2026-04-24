@@ -1,11 +1,51 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, AlertTriangle } from 'lucide-react';
 import { getModuleById, getModuleDetail, layers } from '../data/modules';
+
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function useHighlight() {
+  const [searchParams] = useSearchParams();
+  const highlightQuery = searchParams.get('highlight') || '';
+
+  if (!highlightQuery.trim()) {
+    return (text: string) => text;
+  }
+
+  const words = highlightQuery
+    .trim()
+    .split(/\s+/)
+    .filter((w) => w.length > 0);
+  if (words.length === 0) {
+    return (text: string) => text;
+  }
+
+  const pattern = new RegExp(`(${words.map(escapeRegExp).join('|')})`, 'gi');
+
+  return (text: string) => {
+    const parts = text.split(pattern);
+    return parts.map((part, i) =>
+      i % 2 === 1 ? (
+        <mark
+          key={i}
+          className="bg-cyan-500/30 text-cyan-200 rounded px-0.5"
+        >
+          {part}
+        </mark>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
+}
 
 export default function ModuleDetailPage() {
   const { layer, moduleId } = useParams<{ layer: string; moduleId: string }>();
   const moduleInfo = layer && moduleId ? getModuleById(layer, moduleId) : undefined;
   const detail = moduleId ? getModuleDetail(moduleId) : undefined;
+  const hl = useHighlight();
 
   if (!moduleInfo) {
     return (
@@ -42,7 +82,7 @@ export default function ModuleDetailPage() {
       {/* Header */}
       <div>
         <h1>{moduleInfo.name}</h1>
-        <p className="text-slate-400">{moduleInfo.description}</p>
+        <p className="text-slate-400">{hl(moduleInfo.description)}</p>
       </div>
 
       {detail ? (
@@ -50,7 +90,7 @@ export default function ModuleDetailPage() {
           {/* Overview */}
           <section>
             <h2>功能概述</h2>
-            <p>{detail.overview}</p>
+            <p>{hl(detail.overview)}</p>
           </section>
 
           {/* APIs */}
@@ -69,10 +109,14 @@ export default function ModuleDetailPage() {
                   <tbody>
                     {apiGroup.items.map((item) => (
                       <tr key={item.name}>
-                        <td className="font-mono text-cyan-400 text-sm whitespace-nowrap">{item.name}</td>
-                        <td>{item.description}</td>
+                        <td className="font-mono text-cyan-400 text-sm whitespace-nowrap">
+                          {hl(item.name)}
+                        </td>
+                        <td>{hl(item.description)}</td>
                         {apiGroup.items.some((i) => i.calledBy) && (
-                          <td className="text-slate-500 text-sm">{item.calledBy || '-'}</td>
+                          <td className="text-slate-500 text-sm">
+                            {item.calledBy ? hl(item.calledBy) : '-'}
+                          </td>
                         )}
                       </tr>
                     ))}
@@ -96,8 +140,8 @@ export default function ModuleDetailPage() {
                 <tbody>
                   {detail.dataTypes.map((dt) => (
                     <tr key={dt.name}>
-                      <td className="font-mono text-cyan-400 text-sm">{dt.name}</td>
-                      <td className="font-mono text-sm">{dt.definition}</td>
+                      <td className="font-mono text-cyan-400 text-sm">{hl(dt.name)}</td>
+                      <td className="font-mono text-sm">{hl(dt.definition)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -114,8 +158,8 @@ export default function ModuleDetailPage() {
                   key={sc.title}
                   className="p-5 rounded-xl bg-slate-900 border border-slate-800"
                 >
-                  <h3 className="text-lg font-semibold text-slate-100 mb-2">{sc.title}</h3>
-                  <p className="text-slate-400 text-sm mb-4">{sc.description}</p>
+                  <h3 className="text-lg font-semibold text-slate-100 mb-2">{hl(sc.title)}</h3>
+                  <p className="text-slate-400 text-sm mb-4">{hl(sc.description)}</p>
                   <div className="mb-3">
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
                       流程
@@ -124,7 +168,7 @@ export default function ModuleDetailPage() {
                       {sc.flow.map((step, idx) => (
                         <li key={idx} className="text-sm text-slate-300 flex gap-2">
                           <span className="text-cyan-500 font-mono shrink-0">{idx + 1}.</span>
-                          <span>{step}</span>
+                          <span>{hl(step)}</span>
                         </li>
                       ))}
                     </ol>
@@ -133,7 +177,7 @@ export default function ModuleDetailPage() {
                     <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
                       预期结果
                     </div>
-                    <p className="text-sm text-emerald-400">{sc.expected}</p>
+                    <p className="text-sm text-emerald-400">{hl(sc.expected)}</p>
                   </div>
                 </div>
               ))}
@@ -155,9 +199,9 @@ export default function ModuleDetailPage() {
                 <tbody>
                   {detail.configParams.map((cp) => (
                     <tr key={cp.name}>
-                      <td className="font-mono text-cyan-400 text-sm">{cp.name}</td>
-                      <td className="font-mono text-sm">{cp.defaultValue}</td>
-                      <td>{cp.description}</td>
+                      <td className="font-mono text-cyan-400 text-sm">{hl(cp.name)}</td>
+                      <td className="font-mono text-sm">{hl(cp.defaultValue)}</td>
+                      <td>{hl(cp.description)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -181,9 +225,9 @@ export default function ModuleDetailPage() {
                   <tbody>
                     {detail.errorCodes.map((ec) => (
                       <tr key={ec.name}>
-                        <td className="font-mono text-rose-400 text-sm">{ec.name}</td>
-                        <td className="font-mono text-sm">{ec.value}</td>
-                        <td>{ec.description}</td>
+                        <td className="font-mono text-rose-400 text-sm">{hl(ec.name)}</td>
+                        <td className="font-mono text-sm">{hl(ec.value)}</td>
+                        <td>{hl(ec.description)}</td>
                       </tr>
                     ))}
                   </tbody>

@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { GitBranch, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import Search from './Search';
 
 const navLinks = [
   { to: '/', label: '首页' },
@@ -41,6 +42,9 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <div className="mx-2">
+              <Search />
+            </div>
             <a
               href="https://github.com/yuletech-openspec"
               target="_blank"
@@ -65,6 +69,9 @@ export default function Navbar() {
       {mobileOpen && (
         <div className="md:hidden border-t border-slate-800 bg-slate-900">
           <div className="px-2 pt-2 pb-3 space-y-1">
+            <div className="px-3 py-2">
+              <Search mobile />
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.to}
