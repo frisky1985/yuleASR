@@ -1,0 +1,28 @@
+[Unit]
+Description=DDS Web GUI Server
+After=network.target
+
+[Service]
+Type=simple
+User=admin
+Group=admin
+WorkingDirectory=/home/admin/eth-dds-integration/tools/web_gui
+Environment="PATH=/home/admin/eth-dds-integration/tools/web_gui/venv/bin"
+Environment="SECRET_KEY=change-this-in-production"
+Environment="JWT_SECRET_KEY=change-this-in-production"
+Environment="FLASK_ENV=production"
+Environment="DDS_CONFIG_PATH=/home/admin/eth-dds-integration/dds-config-tool/config.yaml"
+Environment="LOG_LEVEL=INFO"
+
+ExecStart=/home/admin/eth-dds-integration/tools/web_gui/venv/bin/python server/app.py
+ExecReload=/bin/kill -HUP $MAINPID
+
+Restart=always
+RestartSec=5
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dds-web-gui
+
+[Install]
+WantedBy=multi-user.target

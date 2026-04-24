@@ -1,0 +1,66 @@
+# E2E Configuration for Body Electronics
+system:
+  name: "Body_E2E_Configuration"
+  safety_level: "ASIL-B"
+
+profiles:
+  profile_05:
+    profile_id: 5
+    description: "CRC16 protection for body electronics"
+    crc_polynomial: "CCITT"
+    header_size: 2
+    use_cases:
+      - "Seat control"
+      - "HVAC data"
+      - "Door management"
+      - "Lighting control"
+    data_ids:
+      seat: 0x2001
+      hvac: 0x2002
+      door: 0x2003
+      lighting: 0x2004
+      mirror: 0x2005
+
+topics:
+  Body_Seat_Status:
+    topic_name: "Body/Seat/Status"
+    profile: 5
+    data_id: 0x2001
+    safety_level: "ASIL-B"
+    max_latency_ms: 150
+    expected_rate_hz: 10
+
+  Body_HVAC_Status:
+    topic_name: "Body/HVAC/Status"
+    profile: 5
+    data_id: 0x2002
+    safety_level: "ASIL-B"
+    max_latency_ms: 250
+    expected_rate_hz: 5
+
+  Body_Door_Status:
+    topic_name: "Body/Door/Status"
+    profile: 5
+    data_id: 0x2003
+    safety_level: "ASIL-B"
+    max_latency_ms: 150
+    expected_rate_hz: 10
+
+  Body_Lighting_Status:
+    topic_name: "Body/Lighting/Status"
+    profile: 5
+    data_id: 0x2004
+    safety_level: "ASIL-B"
+    max_latency_ms: 75
+    expected_rate_hz: 20
+
+error_handling:
+  on_crc_error:
+    action: "log"
+    severity: "medium"
+  on_counter_error:
+    action: "log"
+    severity: "low"
+  on_timeout:
+    action: "report"
+    severity: "medium"

@@ -1,0 +1,103 @@
+# Infotainment System Configuration
+# Non-safety critical (QM)
+
+system:
+  name: "Infotainment_System"
+  version: "1.0.0"
+  safety_level: "QM"
+  domain_id: 4
+
+# HUD Configuration
+hud:
+  system_id: 0xD001
+  enabled: true
+  publish_rate_hz: 30
+  topic: "Infotainment/HUD/Display"
+  qos:
+    reliability: "best_effort"
+    durability: "volatile"
+    deadline_ms: 50
+  
+  display:
+    resolution: "800x480"
+    brightness_levels: 10
+    auto_brightness: true
+    
+  elements:
+    - type: "speed"
+      priority: "high"
+      position: [0.5, 0.3]
+    - type: "navigation"
+      priority: "medium"
+      position: [0.5, 0.5]
+    - type: "adas"
+      priority: "high"
+      position: [0.5, 0.7]
+    - type: "warning"
+      priority: "critical"
+      blink: true
+
+# Navigation Configuration
+navigation:
+  system_id: 0xD002
+  publish_rate_hz: 5
+  topic: "Infotainment/Navigation/Status"
+  qos:
+    reliability: "best_effort"
+    durability: "transient_local"
+    deadline_ms: 250
+  
+  features:
+    realtime_traffic: true
+    lane_guidance: true
+    speed_limit_warning: true
+    alternate_routes: true
+    voice_guidance: true
+    offline_maps: true
+
+# Media Configuration
+media:
+  system_id: 0xD003
+  publish_rate_hz: 10
+  topic: "Infotainment/Media/Status"
+  qos:
+    reliability: "best_effort"
+    durability: "volatile"
+    deadline_ms: 150
+  
+  sources:
+    - "bluetooth"
+    - "usb"
+    - "streaming"
+    - "radio_fm"
+    - "radio_dab"
+    - "carplay"
+    - "android_auto"
+  
+  audio:
+    speakers: 12
+    subwoofer: true
+    amplifier: "500W"
+    equalizer_bands: 10
+    surround_modes:
+      - "stereo"
+      - "surround"
+      - "driver_focus"
+
+# Network Configuration
+network:
+  interface: "eth0"
+  multicast_group: "239.255.0.4"
+  port_base: 7600
+  transport: "udp"
+
+# QoS Strategy (Non-safety critical)
+# Using BEST_EFFORT for lower latency and bandwidth
+qos_strategy:
+  reliability: "best_effort"
+  durability: "volatile"
+  history: "keep_last"
+  history_depth: 1
+  
+  # No E2E for non-safety data
+  e2e_enabled: false

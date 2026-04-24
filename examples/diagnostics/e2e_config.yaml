@@ -1,0 +1,52 @@
+# E2E Configuration for Diagnostics
+system:
+  name: "Diagnostics_E2E_Configuration"
+  safety_level: "ASIL-B"
+
+profiles:
+  profile_06:
+    profile_id: 6
+    description: "CRC16 + Counter for diagnostic data"
+    crc_polynomial: "CCITT"
+    header_size: 4
+    counter_max: 15
+    use_cases:
+      - "DTC status"
+      - "Snapshot records"
+      - "Routine results"
+      - "FID status"
+    data_ids:
+      dtc: 0x4001
+      snapshot: 0x4002
+      extended: 0x4003
+      routine: 0x4004
+      fid: 0x4005
+      session: 0x4006
+
+topics:
+  Diagnostics_DTC_Status:
+    topic_name: "Diagnostics/DTC/Status"
+    profile: 6
+    data_id: 0x4001
+    safety_level: "ASIL-B"
+    max_latency_ms: 2000
+    expected_rate_hz: 1
+
+  Diagnostics_Routine_Results:
+    topic_name: "Diagnostics/Routine/Results"
+    profile: 6
+    data_id: 0x4004
+    safety_level: "ASIL-B"
+    max_latency_ms: 600
+    expected_rate_hz: 2
+
+error_handling:
+  on_crc_error:
+    action: "log"
+    severity: "medium"
+  on_counter_error:
+    action: "log"
+    severity: "low"
+  on_timeout:
+    action: "report"
+    severity: "medium"

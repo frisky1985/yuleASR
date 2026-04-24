@@ -1,0 +1,23 @@
+# DDS Web GUI Server Dependencies
+
+# Web Framework
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-SocketIO==5.3.6
+
+# WebSocket Support
+python-socketio==5.9.0
+python-engineio==4.8.0
+
+# Authentication
+PyJWT==2.8.0
+
+# YAML Processing
+PyYAML==6.0.1
+
+# WSGI Server
+eventlet==0.33.3
+gunicorn==21.2.0
+
+# Optional: Production WSGI
+# uwsgi==2.0.23

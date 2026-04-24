@@ -1,0 +1,221 @@
+# Powertrain Control System Configuration
+# AUTOSAR DDS Integration - Powertrain Configuration
+
+system:
+  name: "Powertrain_Control_System"
+  version: "1.0.0"
+  safety_level: "ASIL-D"
+  domain_id: 2
+
+# Motor Configuration
+motors:
+  system_id: 0x5001
+  motor_count: 2
+  publish_rate_hz: 100
+  topic: "Powertrain/Motor/Status"
+  e2e_enabled: true
+  e2e_profile: 7
+  motors:
+    - id: 0x5101
+      name: "Motor_Front"
+      type: "PMSM"
+      location: "front"
+      max_power_kw: 150
+      max_torque_nm: 350
+      max_speed_rpm: 12000
+      
+    - id: 0x5102
+      name: "Motor_Rear"
+      type: "PMSM"
+      location: "rear"
+      max_power_kw: 150
+      max_torque_nm: 350
+      max_speed_rpm: 12000
+  
+  qos:
+    reliability: "reliable"
+    durability: "volatile"
+    deadline_ms: 15
+    latency_budget_ms: 2
+
+# Battery Management System Configuration
+bms:
+  system_id: 0x6001
+  publish_rate_hz: 10
+  topic: "Powertrain/BMS/Status"
+  e2e_enabled: true
+  e2e_profile: 7
+  
+  battery:
+    nominal_voltage: 400
+    capacity_ah: 75
+    cell_count: 96
+    cells_in_parallel: 2
+    chemistry: "NMC"
+    
+  limits:
+    max_charge_current_a: 150
+    max_discharge_current_a: 300
+    max_charge_power_kw: 120
+    max_discharge_power_kw: 300
+    max_regen_power_kw: 100
+    
+    temperature_limits:
+      min_charge_c: -10
+      max_charge_c: 50
+      min_discharge_c: -20
+      max_discharge_c: 60
+      
+  contactors:
+    main_positive: true
+    main_negative: true
+    precharge: true
+    charge: true
+    
+  qos:
+    reliability: "reliable"
+    durability: "volatile"
+    deadline_ms: 150
+    latency_budget_ms: 10
+
+# Vehicle Control Unit Configuration
+vcu:
+  system_id: 0x7001
+  publish_rate_hz: 50
+  topic: "Powertrain/VCU/Status"
+  e2e_enabled: true
+  e2e_profile: 7
+  
+  vehicle:
+    max_speed_kph: 200
+    max_acceleration_ms2: 5.0
+    mass_kg: 2200
+    drag_coefficient: 0.23
+    frontal_area_m2: 2.5
+    
+  control:
+    torque_vectoring: true
+    traction_control: true
+    stability_control: true
+    creep_mode: true
+    
+  qos:
+    reliability: "reliable"
+    durability: "volatile"
+    deadline_ms: 30
+    latency_budget_ms: 5
+
+# Energy Recovery Configuration
+regen:
+  system_id: 0x8001
+  publish_rate_hz: 50
+  topic: "Powertrain/Regen/Status"
+  e2e_enabled: true
+  e2e_profile: 7
+  
+  modes:
+    - name: "OFF"
+      level: 0.0
+    - name: "LOW"
+      level: 0.2
+    - name: "MEDIUM"
+      level: 0.4
+    - name: "HIGH"
+      level: 0.7
+    - name: "AUTO"
+      level: "adaptive"
+      
+  limits:
+    max_regen_power_kw: 100
+    max_regen_torque_nm: 200
+    speed_threshold_kph: 10
+    soc_limit_start: 90
+    soc_limit_end: 95
+    
+  qos:
+    reliability: "reliable"
+    durability: "volatile"
+    deadline_ms: 30
+    latency_budget_ms: 5
+
+# Safety Configuration
+safety:
+  asil_level: "ASIL-D"
+  fault_reactions:
+    over_current:
+      severity: "high"
+      action: "limit_power"
+      limit_percent: 50
+      
+    over_temperature:
+      severity: "high"
+      action: "reduce_power"
+      derate_rate: "5_percent_per_degree"
+      
+    insulation_fault:
+      severity: "critical"
+      action: "immediate_shutdown"
+      
+    communication_loss:
+      severity: "high"
+      action: "safe_state"
+      timeout_ms: 100
+
+# Diagnostics Configuration
+diagnostics:
+  dtc_storage: true
+  dtc_max_count: 64
+  freeze_frame_enabled: true
+  snapshot_enabled: true
+  
+  monitor:
+    - name: "OverVoltage"
+      threshold: 450.0
+      hysteresis: 10.0
+      debounce_ms: 100
+      
+    - name: "UnderVoltage"
+      threshold: 280.0
+      hysteresis: 5.0
+      debounce_ms: 100
+      
+    - name: "OverTemperature"
+      threshold: 70.0
+      hysteresis: 5.0
+      debounce_ms: 500
+
+# Network Configuration
+network:
+  interface: "eth0"
+  multicast_group: "239.255.0.2"
+  port_base: 7500
+  transport: "udp"
+  
+# TSN Configuration
+tsn:
+  enabled: false
+  talker_streams:
+    - stream_id: "MotorControl"
+      priority: 7
+      bandwidth_mbps: 10
+      deadline_us: 1000
+    - stream_id: "BMSStatus"
+      priority: 6
+      bandwidth_mbps: 2
+      deadline_us: 10000
+
+# Logging Configuration
+logging:
+  level: "info"
+  output: "console"
+  file: "/var/log/powertrain.log"
+  
+  topics:
+    - name: "Motor"
+      level: "info"
+    - name: "BMS"
+      level: "info"
+    - name: "VCU"
+      level: "info"
+    - name: "Regen"
+      level: "info"

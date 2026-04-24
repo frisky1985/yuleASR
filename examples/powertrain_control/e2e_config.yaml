@@ -1,0 +1,176 @@
+# E2E Protection Configuration
+# Powertrain Control System - E2E Configuration
+# ASIL-D Safety Level
+
+system:
+  name: "Powertrain_E2E_Configuration"
+  safety_level: "ASIL-D"
+  e2e_library_version: "R22-11"
+
+# E2E Profile Configurations
+profiles:
+  # Profile 7: CRC32 + Counter - PRIMARY FOR POWERTRAIN
+  profile_07:
+    profile_id: 7
+    description: "CRC32 with 8-bit counter - Primary for ASIL-D powertrain data"
+    crc_polynomial: "IEEE_802.3"  # 0x04C11DB7
+    header_size: 8
+    counter_max: 255
+    max_delta_counter: 2
+    use_cases:
+      - "Motor control status"
+      - "Battery management system"
+      - "Vehicle control unit"
+      - "Energy recovery management"
+      - "Powertrain commands"
+    data_ids:
+      motor_status: 0x1001
+      bms_status: 0x1002
+      vcu_status: 0x1003
+      regen_status: 0x1004
+      powertrain_command: 0x1005
+
+  # Profile 6: CRC16 + Counter - for lower bandwidth
+  profile_06:
+    profile_id: 6
+    description: "CRC16 with 4-bit counter"
+    crc_polynomial: "CCITT"  # 0x1021
+    header_size: 4
+    counter_max: 15
+    use_cases:
+      - "Auxiliary powertrain data"
+      - "Diagnostic data"
+    data_ids:
+      range_start: 0x1600
+      range_end: 0x16FF
+
+# Topic-Specific E2E Configuration
+topics:
+  Powertrain_Motor_Status:
+    topic_name: "Powertrain/Motor/Status"
+    profile: 7
+    data_id: 0x1001
+    safety_level: "ASIL-D"
+    max_latency_ms: 15
+    expected_rate_hz: 100
+    timeout_action: "safe_state"
+
+  Powertrain_BMS_Status:
+    topic_name: "Powertrain/BMS/Status"
+    profile: 7
+    data_id: 0x1002
+    safety_level: "ASIL-D"
+    max_latency_ms: 150
+    expected_rate_hz: 10
+    timeout_action: "reduce_power"
+
+  Powertrain_VCU_Status:
+    topic_name: "Powertrain/VCU/Status"
+    profile: 7
+    data_id: 0x1003
+    safety_level: "ASIL-D"
+    max_latency_ms: 30
+    expected_rate_hz: 50
+    timeout_action: "safe_state"
+
+  Powertrain_Regen_Status:
+    topic_name: "Powertrain/Regen/Status"
+    profile: 7
+    data_id: 0x1004
+    safety_level: "ASIL-D"
+    max_latency_ms: 30
+    expected_rate_hz: 50
+    timeout_action: "disable_regen"
+
+  Powertrain_Command:
+    topic_name: "Powertrain/Command"
+    profile: 7
+    data_id: 0x1005
+    safety_level: "ASIL-D"
+    max_latency_ms: 10
+    expected_rate_hz: 100
+    timeout_action: "emergency_shutdown"
+    command_validation: true
+
+# E2E Error Handling
+error_handling:
+  # Actions on E2E errors
+  on_crc_error:
+    action: "log_and_report"
+    severity: "high"
+    max_errors_before_action: 3
+    
+  on_counter_error:
+    action: "log_and_report"
+    max_drops_before_alert: 2
+    severity: "high"
+    
+  on_timeout:
+    action: "report_to_safety_monitor"
+    timeout_threshold_ms: 200
+    severity: "critical"
+
+  # Command-specific error handling
+  command_errors:
+    invalid_sequence:
+      action: "reject_command"
+      log: true
+    crc_mismatch:
+      action: "reject_command"
+      alert: true
+    timeout:
+      action: "emergency_shutdown"
+      delay_ms: 100
+
+  # Safety monitor integration
+  safety_monitor:
+    enabled: true
+    report_topic: "Safety/E2E/Errors"
+    heartbeat_enabled: true
+    heartbeat_period_ms: 10
+
+# Monitoring and Diagnostics
+monitoring:
+  # E2E statistics collection
+  statistics:
+    enabled: true
+    collection_period_ms: 1000
+    metrics:
+      - total_messages
+      - crc_errors
+      - sequence_errors
+      - timeout_errors
+      - average_latency_us
+      - max_latency_us
+      - message_rate
+
+  # Latency monitoring
+  latency_monitor:
+    enabled: true
+    warning_threshold_us: 5000
+    error_threshold_us: 10000
+    critical_threshold_us: 15000
+
+  # Health monitoring
+  health_check:
+    enabled: true
+    check_period_ms: 10
+    degradation_threshold_percent: 1
+
+# Safety Validation
+safety_validation:
+  command_validation:
+    enabled: true
+    max_torque_delta_nm: 100
+    max_power_delta_kw: 50
+    rate_limiting_enabled: true
+    
+  torque_validation:
+    max_total_torque_nm: 800
+    max_single_motor_torque_nm: 400
+    validation_frequency_hz: 100
+    
+  thermal_validation:
+    motor_temp_limit_c: 80
+    inverter_temp_limit_c: 75
+    battery_temp_limit_c: 50

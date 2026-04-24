@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDS Visualizer - Automotive Ethernet DDS Management</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/static/css/custom.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Vis.js for Topology -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-bg: #1e293b;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            background-color: #f1f5f9;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        .sidebar {
+            background: var(--dark-bg);
+            min-height: 100vh;
+            width: 260px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-brand h4 {
+            color: white;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75rem;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 0.875rem 1.5rem;
+            border-radius: 0;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 1.5rem;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .status-online {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-online .status-dot {
+            background: var(--success-color);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon.primary { background: rgba(37, 99, 235, 0.1); color: var(--primary-color); }
+        .stat-icon.success { background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        .stat-icon.warning { background: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+        .stat-icon.danger { background: rgba(239, 68, 68, 0.1); color: var(--danger-color); }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .alert-item {
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 3px solid var(--warning-color);
+        }
+        
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid var(--danger-color);
+        }
+        
+        .alert-info {
+            background: rgba(37, 99, 235, 0.1);
+            border-left: 3px solid var(--primary-color);
+        }
+        
+        #topology-container {
+            height: 400px;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+        }
+        
+        .mode-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 2rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .mode-normal { background: rgba(16, 185, 129, 0.1); color: var(--success-color); }
+        .mode-eol { background: rgba(245, 158, 11, 0.1); color: var(--warning-color); }
+        .mode-ota { background: rgba(37, 99, 235, 0.1); color: var(--primary-color); }
+        
+        .table-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-card table {
+            margin-bottom: 0;
+        }
+        
+        .table-card th {
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .btn-action {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        .config-editor {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        
+        .connection-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+        
+        .connection-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .connection-connected { background: var(--success-color); }
+        .connection-disconnected { background: var(--danger-color); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="bi bi-diagram-3"></i> DDS Visualizer</h4>
+            <small>Automotive Ethernet DDS</small>
+        </div>
+        <ul class="nav flex-column mt-3">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" data-page="dashboard">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="nodes">
+                    <i class="bi bi-hdd-rack"></i> Nodes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="topics">
+                    <i class="bi bi-chat-dots"></i> Topics
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="qos">
+                    <i class="bi bi-graph-up"></i> QoS Monitor
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="topology">
+                    <i class="bi bi-diagram-2"></i> Topology
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="config">
+                    <i class="bi bi-gear"></i> Configuration
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <a class="nav-link" href="#" data-page="eol">
+                    <i class="bi bi-tools"></i> EOL Test
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#" data-page="ota">
+                    <i class="bi bi-cloud-arrow-down"></i> OTA Update
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="d-flex align-items-center gap-3">
+                <h5 class="mb-0" id="page-title">Dashboard</h5>
+                <span class="mode-badge mode-normal" id="system-mode">Normal Mode</span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="connection-status">
+                    <span class="connection-dot connection-disconnected" id="connection-dot"></span>
+                    <span id="connection-text">Disconnected</span>
+                </div>
+                <div class="status-indicator status-online">
+                    <span class="status-dot"></span>
+                    <span>ASIL-D</span>
+                </div>
+                <button class="btn btn-sm btn-outline-primary" onclick="showLoginModal()">
+                    <i class="bi bi-person"></i> Login
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard Page -->
+        <div class="page active" id="page-dashboard">
+            <!-- Stats Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon primary">
+                            <i class="bi bi-hdd-rack"></i>
+                        </div>
+                        <div class="stat-value" id="stat-participants">8</div>
+                        <div class="stat-label">Active Participants</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon success">
+                            <i class="bi bi-chat-dots"></i>
+                        </div>
+                        <div class="stat-value" id="stat-topics">6</div>
+                        <div class="stat-label">Active Topics</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon warning">
+                            <i class="bi bi-lightning"></i>
+                        </div>
+                        <div class="stat-value" id="stat-latency">2.4<span class="fs-6">ms</span></div>
+                        <div class="stat-label">Avg Latency</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <div class="stat-icon danger">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-value" id="stat-alerts">0</div>
+                        <div class="stat-label">Active Alerts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-8">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Real-time Latency & Throughput</h6>
+                            <div class="btn-group btn-group-sm">
+                                <button class="btn btn-outline-secondary active">1m</button>
+                                <button class="btn btn-outline-secondary">5m</button>
+                                <button class="btn btn-outline-secondary">1h</button>
+                            </div>
+                        </div>
+                        <canvas id="mainChart" height="100"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Packet Loss Rate</h6>
+                        </div>
+                        <canvas id="packetLossChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alerts Row -->
+            <div class="row">
+                <div class="col-12">
+                    <h6 class="section-title">
+                        <i class="bi bi-bell"></i> Recent Alerts
+                    </h6>
+                    <div id="alerts-container">
+                        <div class="text-center text-muted py-5">
+                            <i class="bi bi-check-circle fs-1"></i>
+                            <p class="mt-3">No active alerts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nodes Page -->
+        <div class="page" id="page-nodes">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="section-title mb-0">
+                    <i class="bi bi-hdd-rack"></i> DDS Nodes
+                </h6>
+                <div class="d-flex gap-2">
+                    <input type="text" class="form-control form-control-sm" placeholder="Search nodes..." id="node-search">
+                    <button class="btn btn-sm btn-primary" onclick="refreshNodes()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="table-card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Node ID</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>IP Address</th>
+                            <th>Topics</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="nodes-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Topics Page -->
+        <div class="page" id="page-topics">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="section-title mb-0">
+                    <i class="bi bi-chat-dots"></i> DDS Topics
+                </h6>
+                <button class="btn btn-sm btn-primary" onclick="refreshTopics()">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+            <div class="table-card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Topic Name</th>
+                            <th>Type</th>
+                            <th>QoS Profile</th>
+                            <th>Publishers</th>
+                            <th>Subscribers</th>
+                            <th>Message Rate</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topics-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- QoS Monitor Page -->
+        <div class="page" id="page-qos">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Latency Distribution</h6>
+                        </div>
+                        <canvas id="latencyChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Throughput Over Time</h6>
+                        </div>
+                        <canvas id="throughputChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Packet Loss History</h6>
+                        </div>
+                        <canvas id="packetLossHistoryChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">QoS Statistics Summary</h6>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded">
+                                    <small class="text-muted">Min Latency</small>
+                                    <div class="fs-4 fw-bold" id="qos-min-latency">0.5 ms</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded">
+                                    <small class="text-muted">Max Latency</small>
+                                    <div class="fs-4 fw-bold" id="qos-max-latency">4.8 ms</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded">
+                                    <small class="text-muted">Avg Throughput</small>
+                                    <div class="fs-4 fw-bold" id="qos-avg-throughput">550 KB/s</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded">
+                                    <small class="text-muted">Total Messages</small>
+                                    <div class="fs-4 fw-bold" id="qos-total-messages">1.2M</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Topology Page -->
+        <div class="page" id="page-topology">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="section-title mb-0">
+                    <i class="bi bi-diagram-2"></i> Network Topology
+                </h6>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="resetTopologyView()">
+                        <i class="bi bi-fullscreen"></i> Reset View
+                    </button>
+                    <button class="btn btn-sm btn-primary" onclick="refreshTopology()">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div id="topology-container"></div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-primary">&nbsp;</span>
+                        <small>Sensor</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-success">&nbsp;</span>
+                        <small>Controller</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-warning">&nbsp;</span>
+                        <small>Actuator</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-info">&nbsp;</span>
+                        <small>Gateway</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Configuration Page -->
+        <div class="page" id="page-config">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h6 class="section-title mb-0">
+                    <i class="bi bi-gear"></i> Configuration Management
+                </h6>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="validateConfig()">
+                        <i class="bi bi-check-circle"></i> Validate
+                    </button>
+                    <button class="btn btn-sm btn-success" onclick="saveConfig()">
+                        <i class="bi bi-save"></i> Save
+                    </button>
+                    <button class="btn btn-sm btn-primary" onclick="deployConfig()">
+                        <i class="bi bi-rocket"></i> Deploy
+                    </button>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Configuration Editor</h6>
+                            <span class="badge bg-secondary">YAML</span>
+                        </div>
+                        <textarea class="form-control config-editor" id="config-editor" rows="25" spellcheck="false"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Configuration History</h6>
+                        </div>
+                        <div id="config-history">
+                            <div class="text-muted text-center py-4">
+                                <i class="bi bi-clock-history fs-2"></i>
+                                <p class="mt-2">No history available</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EOL Test Page -->
+        <div class="page" id="page-eol">
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">End-of-Line Test</h6>
+                            <span class="badge bg-warning">Test Mode</span>
+                        </div>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-check-circle text-success fs-1"></i>
+                                        <h5 class="mt-3">Communication</h5>
+                                        <p class="text-muted mb-0">PASSED</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-check-circle text-success fs-1"></i>
+                                        <h5 class="mt-3">Latency</h5>
+                                        <p class="text-muted mb-0">PASSED</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body text-center">
+                                        <i class="bi bi-x-circle text-danger fs-1"></i>
+                                        <h5 class="mt-3">Throughput</h5>
+                                        <p class="text-muted mb-0">FAILED</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button class="btn btn-primary" onclick="startEOLTest()">
+                                <i class="bi bi-play"></i> Start EOL Test
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="generateEOLReport()">
+                                <i class="bi bi-file-text"></i> Generate Report
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Test Results</h6>
+                        </div>
+                        <div id="eol-results">
+                            <div class="text-muted text-center py-4">
+                                <i class="bi bi-clipboard-check fs-2"></i>
+                                <p class="mt-2">No test results yet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTA Update Page -->
+        <div class="page" id="page-ota">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">OTA Update Management</h6>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Current Version</label>
+                            <input type="text" class="form-control" value="v2.3.1" readonly>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Target Version</label>
+                            <select class="form-select" id="ota-target-version">
+                                <option value="v2.3.2">v2.3.2 (Latest)</option>
+                                <option value="v2.3.1">v2.3.1 (Current)</option>
+                                <option value="v2.3.0">v2.3.0</option>
+                                <option value="v2.2.5">v2.2.5</option>
+                            </select>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" onclick="startOTAUpdate()">
+                                <i class="bi bi-cloud-arrow-up"></i> Start Update
+                            </button>
+                            <button class="btn btn-warning" onclick="rollbackOTA()">
+                                <i class="bi bi-arrow-counterclockwise"></i> Rollback
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h6 class="chart-title">Update Progress</h6>
+                        </div>
+                        <div id="ota-progress">
+                            <div class="text-muted text-center py-4">
+                                <i class="bi bi-cloud fs-2"></i>
+                                <p class="mt-2">No update in progress</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" id="login-username" placeholder="admin">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="login-password" placeholder="admin123">
+                    </div>
+                    <div id="login-error" class="alert alert-danger d-none"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="performLogin()">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart Utilities -->
+    <script src="/static/js/charts.js"></script>
+    <!-- Application JS -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

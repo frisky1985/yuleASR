@@ -1,0 +1,656 @@
+# Automotive DDS Configuration Example
+# 
+# This configuration demonstrates automotive-grade DDS setup with:
+# - AUTOSAR Adaptive integration
+# - TSN (Time-Sensitive Networking) configuration
+# - ASIL-D safety requirements
+# - E2E protection
+# - Redundancy for safety-critical applications
+#
+# Copyright (c) 2024 DDS Config Tool Authors
+# SPDX-License-Identifier: MIT
+
+version: "2.0.0"
+
+system:
+  name: "Automotive_ADAS_DDS"
+  description: "ADAS domain controller DDS configuration"
+  version: "1.0.0"
+
+# ============================================================================
+# AUTOSAR Adaptive Configuration
+# ============================================================================
+autosar_adaptive:
+  enabled: true
+  compliance_mode: "strict"
+  ara_com_version: 2206  # AUTOSAR R22-11
+  
+  # Service Discovery Configuration
+  service_discovery:
+    sd_multicast_address: "224.244.224.245"
+    sd_port: 30490
+    sd_ttl: 255
+    initial_delay_min_ms: 50
+    initial_delay_max_ms: 150
+    repetition_base_delay_ms: 100
+    repetition_max: 3
+    cyclic_offer_delay_ms: 2000
+    request_response_delay_ms: 200
+  
+  # Network Endpoint
+  endpoint:
+    port: 30509
+    protocol: "someip"
+    ttl: 255
+    multicast_enabled: true
+  
+  # Service Interfaces
+  services:
+    # Object Detection Service
+    - name: "ObjectDetectionService"
+      type: "EVENT"
+      service_id: 0x1234
+      instance_id: 0x0001
+      eventgroup_id: 0x0100
+      interface_version: "1.0.0"
+      reliable: true
+      max_sample_count: 10
+      safety_level: "ASIL-D"
+    
+    # Lane Keeping Service
+    - name: "LaneKeepingService"
+      type: "METHOD"
+      service_id: 0x1235
+      instance_id: 0x0001
+      eventgroup_id: 0x0101
+      interface_version: "1.0.0"
+      reliable: true
+      max_sample_count: 1
+      safety_level: "ASIL-B"
+    
+    # Emergency Brake Service
+    - name: "EmergencyBrakeService"
+      type: "EVENT"
+      service_id: 0x1236
+      instance_id: 0x0001
+      eventgroup_id: 0x0102
+      interface_version: "1.0.0"
+      reliable: true
+      max_sample_count: 1
+      safety_level: "ASIL-D"
+    
+    # Vehicle Dynamics Service
+    - name: "VehicleDynamicsService"
+      type: "FIELD"
+      service_id: 0x1237
+      instance_id: 0x0001
+      eventgroup_id: 0x0103
+      interface_version: "1.0.0"
+      reliable: true
+      max_sample_count: 1
+      safety_level: "ASIL-D"
+
+# ============================================================================
+# TSN (Time-Sensitive Networking) Configuration
+# ============================================================================
+tsn:
+  enabled: true
+  scheduler: "TAS"  # Time-Aware Shaper
+  
+  # Frame Preemption
+  frame_preemption:
+    enabled: false
+    preemptable_frame_min_size: 64
+  
+  # Frame Replication for Redundancy
+  frame_replication:
+    enabled: true
+    redundancy_sequence_number: 0
+  
+  # Credit-Based Shaper (for AVB)
+  cbs:
+    enabled: true
+    class_a:
+      idle_slope: 7864320      # 6.25% of 1Gbps
+      send_slope: -70778880
+      hi_credit: 61440
+      lo_credit: -552960
+    class_b:
+      idle_slope: 3932160      # 3.125% of 1Gbps
+      send_slope: -74618880
+      hi_credit: 30720
+      lo_credit: -576720
+  
+  # Gate Control Lists (for TAS)
+  gcl_configs:
+    - name: "ControlTraffic"
+      cycle_time_ns: 1000000    # 1ms cycle
+      cycle_time_extension_ns: 100000
+      base_time_ns: 0
+      max_sdu_size: 1522
+      
+      entries:
+        # Slot 0: Highest priority - Emergency messages
+        - start_time_ns: 0
+          time_interval_ns: 200000    # 200us
+          gate_states: 0b10000000     # Queue 7 open
+          operation: "SET_GATE_STATE"
+          queue_priority: 7
+        
+        # Slot 1: High priority - Safety-critical
+        - start_time_ns: 200000
+          time_interval_ns: 200000    # 200us
+          gate_states: 0b01000000     # Queue 6 open
+          operation: "SET_GATE_STATE"
+          queue_priority: 6
+        
+        # Slot 2: Medium priority - Control
+        - start_time_ns: 400000
+          time_interval_ns: 300000    # 300us
+          gate_states: 0b00100000     # Queue 5 open
+          operation: "SET_GATE_STATE"
+          queue_priority: 5
+        
+        # Slot 3: Best effort
+        - start_time_ns: 700000
+          time_interval_ns: 300000    # 300us
+          gate_states: 0b00011111     # Queues 0-4 open
+          operation: "SET_GATE_STATE"
+          queue_priority: 0
+  
+  # TSN Streams
+  streams:
+    - stream_id: "00:11:22:33:44:55:66:77"
+      destination_address: "01:00:5E:00:00:01"
+      vlan_id: 100
+      priority: 7
+      max_frame_size: 1522
+      max_interval_frames: 1
+      accumulated_latency_ns: 100000
+      redundant: true
+      redundancy_paths: 2
+    
+    - stream_id: "00:11:22:33:44:55:66:78"
+      destination_address: "01:00:5E:00:00:02"
+      vlan_id: 100
+      priority: 6
+      max_frame_size: 1522
+      max_interval_frames: 10
+      accumulated_latency_ns: 200000
+      redundant: true
+      redundancy_paths: 2
+
+# ============================================================================
+# Safety Configuration (ISO 26262 / ASIL)
+# ============================================================================
+safety:
+  asil_level: "ASIL-D"
+  safety_mechanism: "E2E"
+  
+  # E2E Protection
+  e2e_protection:
+    profile: "PROFILE_2"
+    data_id: 0x1234
+    data_id_mode: "NIBBLE"
+    max_delta_counter: 1
+    crc_enabled: true
+    counter_enabled: true
+    data_id_enabled: true
+  
+  # Safety Monitoring
+  monitoring:
+    refresh_period_ms: 10
+    repetition: 0
+    timeout_ms: 50
+    tolerance_ms: 5
+    alive_check_enabled: true
+    sequence_check_enabled: true
+  
+  # Watchdog
+  watchdog:
+    enabled: true
+    timeout_ms: 100
+    window_ms: 10
+  
+  # Safe Monitoring
+  safe_monitor:
+    enabled: true
+    state_check_period_ms: 10
+  
+  # Error Handling
+  error_handling:
+    max_error_count: 10
+    error_recovery_time_ms: 1000
+    fail_silent_enabled: true
+
+# ============================================================================
+# Deterministic Communication
+# ============================================================================
+deterministic:
+  enabled: true
+  synchronized: true
+  sync_domain: 0
+  sync_tolerance_ns: 1000  # 1us synchronization tolerance
+  
+  timing:
+    offset_ns: 0
+    period_ns: 10000000     # 10ms
+    deadline_ns: 5000000    # 5ms deadline
+    priority: 7
+    time_triggered: true
+  
+  latency:
+    max_latency_ns: 500000
+    max_jitter_ns: 100000
+    min_latency_ns: 100000
+    avg_latency_ns: 200000
+    monitoring_enabled: true
+  
+  traffic_shaping:
+    enabled: true
+    bucket_depth: 1000
+    bucket_rate: 100
+
+# ============================================================================
+# Redundancy Configuration
+# ============================================================================
+redundancy:
+  enabled: true
+  mode: "ACTIVE_STANDBY"
+  seamless: true
+  switchover_time_ms: 50
+  duplication_detection_window_ns: 10000000  # 10ms
+  
+  paths:
+    - interface_name: "eth0"
+      priority: 1
+      active: true
+      latency_ns: 50000
+    
+    - interface_name: "eth1"
+      priority: 2
+      active: false
+      latency_ns: 55000
+
+# ============================================================================
+# Power Management
+# ============================================================================
+power_management:
+  enabled: true
+  idle_timeout_ms: 5000
+  traffic_threshold_bps: 1000
+  wake_on_lan: true
+  wake_on_pattern: true
+  initial_mode: "FULL"
+  sleep_mode: "SLEEP"
+
+# ============================================================================
+# Network Management (AUTOSAR NM)
+# ============================================================================
+network_management:
+  enabled: true
+  nm_message_cycle_time_ms: 20
+  nm_timeout_time_ms: 500
+  nm_repeat_message_time_ms: 1600
+  nm_wait_bus_sleep_time_ms: 2000
+  nm_remote_sleep_indication_enabled: true
+  nm_node_id: 0x01
+  initial_state: "NORMAL_OPERATION"
+
+# ============================================================================
+# Diagnostic Configuration (UDS/DoIP)
+# ============================================================================
+diagnostic:
+  uds:
+    enabled: true
+    source_address: 0x1A
+    target_address: 0x7A
+  
+  doip:
+    enabled: true
+    logical_address: 0x0001
+    vehicle_id: "VIN1234567890"
+  
+  session_timeout_ms: 5000
+
+# ============================================================================
+# DDS Domain Configuration
+# ============================================================================
+domains:
+  - domain_id: 0
+    name: "ADAS_Domain"
+    description: "ADAS Safety Critical Domain"
+    
+    discovery:
+      enabled: true
+      protocol: "UDPv4"
+      initial_peers:
+        - "192.168.1.10"
+        - "192.168.1.11"
+      lease_duration: "10s"
+      liveliness_check_interval: "1s"
+    
+    transport:
+      unicast_addresses:
+        - "192.168.1.10"
+      multicast_enabled: true
+      multicast_address: "239.255.0.1"
+    
+    security:
+      enabled: true
+      auth_kind: "PKI_DH"
+      identity_ca: "/etc/dds/security/identity_ca.pem"
+      identity_certificate: "/etc/dds/security/adas_controller_cert.pem"
+      private_key: "/etc/dds/security/adas_controller_key.pem"
+      access_kind: "PERMISSIONS"
+      permissions_ca: "/etc/dds/security/permissions_ca.pem"
+      governance: "/etc/dds/security/governance.xml"
+      permissions: "/etc/dds/security/permissions.xml"
+      crypto_kind: "AES_GCM_GMAC"
+      encrypt_rtps: true
+      encrypt_payload: true
+
+# ============================================================================
+# QoS Profiles
+# ============================================================================
+qos_profiles:
+  # Safety Critical - ASIL D
+  - name: "SafetyCritical"
+    description: "Ultra-reliable, low latency for safety-critical data"
+    reliability:
+      kind: "RELIABLE"
+      max_blocking_time: "10ms"
+    durability:
+      kind: "VOLATILE"
+    history:
+      kind: "KEEP_LAST"
+      depth: 1
+    deadline:
+      period: "10ms"
+    latency_budget:
+      duration: "0us"
+    liveliness:
+      kind: "AUTOMATIC"
+      lease_duration: "100ms"
+    transport_priority:
+      value: 7
+    resource_limits:
+      max_samples: 1
+      max_instances: 1
+      max_samples_per_instance: 1
+  
+  # Sensor Data - High throughput
+  - name: "SensorData"
+    description: "High throughput sensor data stream"
+    reliability:
+      kind: "BEST_EFFORT"
+    durability:
+      kind: "VOLATILE"
+    history:
+      kind: "KEEP_LAST"
+      depth: 10
+    deadline:
+      period: "5ms"
+    transport_priority:
+      value: 6
+    resource_limits:
+      max_samples: 100
+      max_instances: 10
+      max_samples_per_instance: 10
+  
+  # Control Commands - Reliable
+  - name: "ControlCommands"
+    description: "Reliable control command delivery"
+    reliability:
+      kind: "RELIABLE"
+      max_blocking_time: "100ms"
+    durability:
+      kind: "TRANSIENT_LOCAL"
+    history:
+      kind: "KEEP_LAST"
+      depth: 5
+    deadline:
+      period: "20ms"
+    liveliness:
+      kind: "MANUAL_BY_PARTICIPANT"
+      lease_duration: "1s"
+    transport_priority:
+      value: 5
+  
+  # Diagnostics - Best effort
+  - name: "Diagnostics"
+    description: "Diagnostic and logging data"
+    reliability:
+      kind: "BEST_EFFORT"
+    durability:
+      kind: "VOLATILE"
+    history:
+      kind: "KEEP_LAST"
+      depth: 1
+    transport_priority:
+      value: 1
+
+# ============================================================================
+# Topics
+# ============================================================================
+topics:
+  # Object Detection
+  - name: "ObjectDetection"
+    type_name: "ObjectDetectionData"
+    domain_id: 0
+    qos_profile: "SafetyCritical"
+    partitions:
+      - "ADAS"
+      - "Perception"
+    time_based_filter: "2ms"
+    content_filter: "confidence > 0.8"
+  
+  # Lane Detection
+  - name: "LaneDetection"
+    type_name: "LaneDetectionData"
+    domain_id: 0
+    qos_profile: "SafetyCritical"
+    partitions:
+      - "ADAS"
+      - "Perception"
+    time_based_filter: "5ms"
+  
+  # Vehicle State
+  - name: "VehicleState"
+    type_name: "VehicleDynamics"
+    domain_id: 0
+    qos_profile: "SensorData"
+    partitions:
+      - "ADAS"
+      - "State"
+  
+  # Emergency Brake
+  - name: "EmergencyBrake"
+    type_name: "BrakeCommand"
+    domain_id: 0
+    qos_profile: "SafetyCritical"
+    partitions:
+      - "ADAS"
+      - "Control"
+  
+  # Steering Commands
+  - name: "SteeringCommand"
+    type_name: "SteeringControl"
+    domain_id: 0
+    qos_profile: "ControlCommands"
+    partitions:
+      - "ADAS"
+      - "Control"
+  
+  # Diagnostic Data
+  - name: "DiagnosticData"
+    type_name: "DiagnosticRecord"
+    domain_id: 0
+    qos_profile: "Diagnostics"
+    partitions:
+      - "Diagnostics"
+
+# ============================================================================
+# Participants
+# ============================================================================
+participants:
+  - name: "ADAS_Controller"
+    domain_id: 0
+    qos_profile: "SafetyCritical"
+  
+  - name: "Sensor_Fusion"
+    domain_id: 0
+    qos_profile: "SensorData"
+  
+  - name: "Vehicle_Control"
+    domain_id: 0
+    qos_profile: "ControlCommands"
+
+# ============================================================================
+# Data Types (IDL-style definitions)
+# ============================================================================
+types:
+  # Object Detection Data
+  - name: "ObjectDetectionData"
+    kind: "struct"
+    fields:
+      - name: "timestamp"
+        type: "long long"
+        is_key: false
+      - name: "object_id"
+        type: "unsigned long"
+        is_key: true
+      - name: "object_type"
+        type: "ObjectType"
+        is_key: false
+      - name: "position"
+        type: "Point3D"
+        is_key: false
+      - name: "velocity"
+        type: "Vector3D"
+        is_key: false
+      - name: "confidence"
+        type: "float"
+        is_key: false
+      - name: "e2e_counter"
+        type: "unsigned short"
+        is_key: false
+      - name: "e2e_crc"
+        type: "unsigned long"
+        is_key: false
+  
+  # Lane Detection Data
+  - name: "LaneDetectionData"
+    kind: "struct"
+    fields:
+      - name: "timestamp"
+        type: "long long"
+      - name: "lane_id"
+        type: "unsigned long"
+      - name: "lane_type"
+        type: "LaneType"
+      - name: "coefficients"
+        type: "double"
+        array_bounds: [4]
+        array_dimension: 1
+      - name: "confidence"
+        type: "float"
+      - name: "e2e_counter"
+        type: "unsigned short"
+      - name: "e2e_crc"
+        type: "unsigned long"
+  
+  # Vehicle Dynamics
+  - name: "VehicleDynamics"
+    kind: "struct"
+    fields:
+      - name: "timestamp"
+        type: "long long"
+      - name: "speed"
+        type: "float"
+      - name: "acceleration"
+        type: "float"
+      - name: "yaw_rate"
+        type: "float"
+      - name: "steering_angle"
+        type: "float"
+      - name: "position"
+        type: "Point3D"
+  
+  # Point 3D
+  - name: "Point3D"
+    kind: "struct"
+    fields:
+      - name: "x"
+        type: "double"
+      - name: "y"
+        type: "double"
+      - name: "z"
+        type: "double"
+  
+  # Vector 3D
+  - name: "Vector3D"
+    kind: "struct"
+    fields:
+      - name: "vx"
+        type: "double"
+      - name: "vy"
+        type: "double"
+      - name: "vz"
+        type: "double"
+  
+  # Object Type Enum
+  - name: "ObjectType"
+    kind: "enum"
+    fields:
+      - name: "UNKNOWN"
+      - name: "PEDESTRIAN"
+      - name: "VEHICLE"
+      - name: "CYCLIST"
+      - name: "TRAFFIC_SIGN"
+      - name: "TRAFFIC_LIGHT"
+  
+  # Lane Type Enum
+  - name: "LaneType"
+    kind: "enum"
+    fields:
+      - name: "UNKNOWN"
+      - name: "SOLID"
+      - name: "DASHED"
+      - name: "DOUBLE_SOLID"
+      - name: "DOUBLE_DASHED"
+
+# ============================================================================
+# Logging Configuration
+# ============================================================================
+logging:
+  enabled: true
+  level: "INFO"
+  output: "FILE"
+  log_file: "/var/log/dds/adas_controller.log"
+  categories:
+    - name: "DISCOVERY"
+      level: "INFO"
+    - name: "SECURITY"
+      level: "WARN"
+    - name: "TRANSPORT"
+      level: "ERROR"
+    - name: "TSN"
+      level: "INFO"
+    - name: "E2E"
+      level: "WARN"
+    - name: "SAFETY"
+      level: "INFO"
+
+# ============================================================================
+# Monitoring Configuration
+# ============================================================================
+monitoring:
+  enabled: true
+  statistics_enabled: true
+  statistics_interval: "1s"
+  metrics:
+    - "THROUGHPUT"
+    - "LATENCY"
+    - "DISCOVERY"
+    - "RESOURCE_USAGE"

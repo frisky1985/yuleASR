@@ -1,0 +1,118 @@
+# Body Electronics System Configuration
+system:
+  name: "Body_Electronics_System"
+  version: "1.0.0"
+  safety_level: "ASIL-B"
+  domain_id: 3
+
+# Seat Configuration
+seats:
+  system_id: 0xA001
+  seat_count: 4
+  publish_rate_hz: 10
+  topic: "Body/Seat/Status"
+  e2e_enabled: true
+  e2e_profile: 5
+  seats:
+    - id: 0
+      position: "driver"
+      heated: true
+      cooled: true
+      massaging: true
+      memory_positions: 3
+    - id: 1
+      position: "front_passenger"
+      heated: true
+      cooled: true
+      massaging: false
+    - id: 2
+      position: "rear_left"
+      heated: true
+    - id: 3
+      position: "rear_right"
+      heated: true
+
+# HVAC Configuration
+hvac:
+  system_id: 0xA002
+  publish_rate_hz: 5
+  topic: "Body/HVAC/Status"
+  e2e_enabled: true
+  e2e_profile: 5
+  zones:
+    - id: 0
+      name: "front"
+      dual_zone: true
+      auto_mode: true
+    - id: 1
+      name: "rear"
+      dual_zone: false
+  features:
+    air_quality_monitoring: true
+    ionizer: true
+    fragrancing: true
+    heated_steering_wheel: true
+    heated_windshield: true
+
+# Door Configuration
+doors:
+  system_id: 0xA003
+  door_count: 6
+  publish_rate_hz: 10
+  topic: "Body/Door/Status"
+  e2e_enabled: true
+  e2e_profile: 5
+  doors:
+    - position: "front_left"
+      power_operation: true
+      soft_close: true
+    - position: "front_right"
+      power_operation: true
+      soft_close: true
+    - position: "rear_left"
+      power_operation: false
+    - position: "rear_right"
+      power_operation: false
+    - position: "tailgate"
+      power_operation: true
+      hands_free: true
+    - position: "hood"
+  features:
+    keyless_entry: true
+    walk_away_lock: true
+    speed_auto_lock: true
+
+# Lighting Configuration
+lighting:
+  system_id: 0xA004
+  light_count: 18
+  publish_rate_hz: 20
+  topic: "Body/Lighting/Status"
+  e2e_enabled: true
+  e2e_profile: 5
+  lights:
+    - type: "headlight_low"
+      led: true
+      adaptive: true
+    - type: "headlight_high"
+      led: true
+      auto_high_beam: true
+    - type: "daytime_running"
+      led: true
+    - type: "tail"
+      led: true
+    - type: "brake"
+      led: true
+    - type: "turn_front"
+      led: true
+    - type: "turn_rear"
+      led: true
+    - type: "ambient"
+      rgb: true
+      zones: 10
+  features:
+    welcome_lighting: true
+    coming_home: true
+    leaving_home: true
+    cornering_lights: true
+    puddle_lights: true

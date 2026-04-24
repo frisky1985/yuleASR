@@ -1,0 +1,76 @@
+# Diagnostics System Configuration
+system:
+  name: "Diagnostics_System"
+  version: "1.0.0"
+  safety_level: "ASIL-B"
+  domain_id: 5
+
+# DTC Configuration
+dtc:
+  ecu_id: 0xE001
+  publish_rate_hz: 1
+  topic: "Diagnostics/DTC/Status"
+  e2e_enabled: true
+  e2e_profile: 6
+  
+  storage:
+    max_dtcs: 256
+    max_snapshot_records: 10
+    max_extended_records: 10
+    storage_type: "non_volatile"
+    
+  aging:
+    enabled: true
+    threshold: 40
+    cycle_threshold: 200
+    
+  snapshot:
+    automatic_trigger: true
+    records_per_dtc: 3
+    env_data_enabled: true
+    
+  uds_services:
+    - "ReadDTCInformation"
+    - "ClearDiagnosticInformation"
+    - "ControlDTCSetting"
+    - "ReadDataByIdentifier"
+    - "WriteDataByIdentifier"
+    - "RoutineControl"
+    - "SecurityAccess"
+
+# Routine Configuration
+routine:
+  publish_rate_hz: 2
+  topic: "Diagnostics/Routine/Results"
+  e2e_enabled: true
+  e2e_profile: 6
+  
+  available_routines:
+    - rid: 0xFF01
+      name: "Memory Self Test"
+      security_level: 1
+    - rid: 0xFF02
+      name: "Erase Memory"
+      security_level: 3
+    - rid: 0xFF03
+      name: "Check Programming Dependencies"
+      security_level: 1
+
+# Session Management
+session:
+  default_timeout_ms: 5000
+  extended_timeout_ms: 5000
+  programming_timeout_ms: 20000
+  
+  security:
+    seed_length: 4
+    key_length: 4
+    max_attempts: 3
+    delay_on_fail_ms: 10000
+
+# Network Configuration
+network:
+  interface: "eth0"
+  multicast_group: "239.255.0.5"
+  port_base: 7700
+  transport: "udp"
