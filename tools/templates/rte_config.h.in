@@ -1,0 +1,295 @@
+/**
+ * @file rte_config.h
+ * @brief RTE (Runtime Environment) Configuration Header
+ * @warning This file is auto-generated. Do not modify manually.
+ * 
+ * RTE Generation: @RTE_GENERATION_DATE@
+ * Target ECU: @TARGET_ECU@
+ * Safety Level: @RTE_SAFETY_LEVEL@
+ */
+
+#ifndef RTE_CONFIG_H
+#define RTE_CONFIG_H
+
+#include "Rte_Type.h"
+#include "os_cfg.h"
+#include "dds_config.h"
+
+/* =============================================================================
+ * RTE Version
+ * ============================================================================= */
+#define RTE_VERSION_MAJOR @RTE_VERSION_MAJOR@
+#define RTE_VERSION_MINOR @RTE_VERSION_MINOR@
+#define RTE_VERSION_PATCH @RTE_VERSION_PATCH@
+#define RTE_VERSION_STRING "@RTE_VERSION@"
+
+/* AUTOSAR Version Compliance */
+#define RTE_AUTOSAR_VERSION 400  /* AUTOSAR 4.0 */
+
+/* =============================================================================
+ * RTE Generation Configuration
+ * ============================================================================= */
+#define RTE_GENERATOR "DDS-RTE-Gen"
+#define RTE_GENERATOR_VERSION "@RTE_GENERATOR_VERSION@"
+#define RTE_GENERATION_TIMESTAMP "@RTE_GENERATION_TIMESTAMP@"
+
+/* =============================================================================
+ * ECU Configuration
+ * ============================================================================= */
+#define RTE_ECU_ID "@RTE_ECU_ID@"
+#define RTE_ECU_NAME "@RTE_ECU_NAME@"
+
+/* =============================================================================
+ * Component Configuration
+ * ============================================================================= */
+#define RTE_NUM_COMPONENTS @RTE_NUM_COMPONENTS@
+#define RTE_NUM_INTERFACES @RTE_NUM_INTERFACES@
+#define RTE_NUM_PORTS @RTE_NUM_PORTS@
+
+/* Component IDs */
+@RTE_COMPONENT_IDS@
+
+/* =============================================================================
+ * Port Configuration
+ * ============================================================================= */
+#define RTE_NUM_P_PORTS @RTE_NUM_P_PORTS@
+#define RTE_NUM_R_PORTS @RTE_NUM_R_PORTS@
+
+/* Port Handle Base Values */
+#define RTE_PORT_HANDLE_BASE 0x1000
+#define RTE_PPORT_HANDLE_BASE 0x1000
+#define RTE_RPORT_HANDLE_BASE 0x2000
+
+/* =============================================================================
+ * Data Element Configuration
+ * ============================================================================= */
+#define RTE_NUM_DATA_ELEMENTS @RTE_NUM_DATA_ELEMENTS@
+#define RTE_NUM_OPERATION_ELEMENTS @RTE_NUM_OPERATION_ELEMENTS@
+
+/* Queue Configuration */
+#define RTE_DEFAULT_QUEUE_LENGTH @RTE_DEFAULT_QUEUE_LENGTH@
+#define RTE_MAX_QUEUE_LENGTH @RTE_MAX_QUEUE_LENGTH@
+
+/* =============================================================================
+ * Runnable Configuration
+ * ============================================================================= */
+#define RTE_NUM_RUNNABLES @RTE_NUM_RUNNABLES@
+#define RTE_MAX_RUNNABLES_PER_COMPONENT @RTE_MAX_RUNNABLES_PER_COMPONENT@
+
+/* Runnable Properties */
+#define RTE_RUNNABLE_CAN_BE_INVOKED_CONCURRENTLY 1
+#define RTE_RUNNABLE_EXCLUSIVE_AREA_ENABLED 1
+
+/* =============================================================================
+ * Mode Management
+ * ============================================================================= */
+#define RTE_NUM_MODES @RTE_NUM_MODES@
+#define RTE_NUM_MODE_TRANSITIONS @RTE_NUM_MODE_TRANSITIONS@
+#define RTE_MODE_SWITCH_TIMEOUT_MS @RTE_MODE_SWITCH_TIMEOUT@
+
+/* =============================================================================
+ * Communication Configuration
+ * ============================================================================= */
+/* Sender-Receiver Communication */
+#define RTE_SR_COMMUNICATION_ENABLED @RTE_SR_ENABLED@
+#define RTE_SR_BUFFER_STRATEGY @RTE_SR_BUFFER_STRATEGY@  /* DOUBLE_BUFFER, SINGLE_BUFFER, QUEUE */
+
+/* Client-Server Communication */
+#define RTE_CS_COMMUNICATION_ENABLED @RTE_CS_ENABLED@
+#define RTE_CS_TIMEOUT_MS @RTE_CS_TIMEOUT@
+#define RTE_CS_QUEUE_LENGTH @RTE_CS_QUEUE_LENGTH@
+
+/* Mode Switch Communication */
+#define RTE_MS_COMMUNICATION_ENABLED @RTE_MS_ENABLED@
+
+/* Non-Volatile Memory Communication */
+#define RTE_NV_COMMUNICATION_ENABLED @RTE_NV_ENABLED@
+
+/* =============================================================================
+ * DDS Integration Configuration
+ * ============================================================================= */
+#define RTE_DDS_INTEGRATION_ENABLED 1
+#define RTE_DDS_DOMAIN_ID DDS_DEFAULT_DOMAIN_ID
+
+/* DDS to RTE Mapping */
+#define RTE_DDS_TOPIC_PREFIX "@RTE_DDS_TOPIC_PREFIX@"
+#define RTE_DDS_QOS_PROFILE_DEFAULT "@RTE_DDS_QOS_DEFAULT@"
+#define RTE_DDS_QOS_PROFILE_RELIABLE "@RTE_DDS_QOS_RELIABLE@"
+#define RTE_DDS_QOS_PROFILE_REALTIME "@RTE_DDS_QOS_REALTIME@"
+
+/* DDS Topic Configuration */
+#define RTE_DDS_MAX_TOPICS_PER_COMPONENT @RTE_DDS_MAX_TOPICS@
+#define RTE_DDS_MAX_READERS @RTE_DDS_MAX_READERS@
+#define RTE_DDS_MAX_WRITERS @RTE_DDS_MAX_WRITERS@
+
+/* DDS Type Support */
+#define RTE_DDS_TYPE_SUPPORT_STATIC @RTE_DDS_TYPE_SUPPORT_STATIC@
+#define RTE_DDS_TYPE_SUPPORT_DYNAMIC @RTE_DDS_TYPE_SUPPORT_DYNAMIC@
+
+/* =============================================================================
+ * E2E Protection Configuration
+ * ============================================================================= */
+#cmakedefine RTE_E2E_PROTECTION_ENABLED
+#ifdef RTE_E2E_PROTECTION_ENABLED
+    #define RTE_E2E_ENABLED 1
+    #define RTE_E2E_PROFILE @RTE_E2E_PROFILE@  /* PROFILE_01, PROFILE_02, etc. */
+    #define RTE_E2E_MAX_DATA_LENGTH @RTE_E2E_MAX_DATA_LENGTH@
+    
+    /* E2E Check/Protect Configuration */
+    #define RTE_E2E_CHECK_ENABLED @RTE_E2E_CHECK_ENABLED@
+    #define RTE_E2E_PROTECT_ENABLED @RTE_E2E_PROTECT_ENABLED@
+#else
+    #define RTE_E2E_ENABLED 0
+#endif
+
+/* =============================================================================
+ * Safety & Protection
+ * ============================================================================= */
+#define RTE_SAFETY_LEVEL @RTE_SAFETY_LEVEL@
+
+#if RTE_SAFETY_LEVEL >= 4  /* ASIL D */
+    #define RTE_SAFETY_MONITORING 1
+    #define RTE_WATCHDOG_ENABLED 1
+    #define RTE_END_TO_END_PROTECTION 1
+#else
+    #define RTE_SAFETY_MONITORING 0
+    #define RTE_WATCHDOG_ENABLED @RTE_WATCHDOG_ENABLED@
+    #define RTE_END_TO_END_PROTECTION @RTE_E2E_ENABLED@
+#endif
+
+/* Exclusive Areas */
+#define RTE_EXCLUSIVE_AREAS_ENABLED @RTE_EXCLUSIVE_AREAS_ENABLED@
+#if RTE_EXCLUSIVE_AREAS_ENABLED
+    #define RTE_NUM_EXCLUSIVE_AREAS @RTE_NUM_EXCLUSIVE_AREAS@
+    #define RTE_EXCLUSIVE_AREA_MAX_NESTING @RTE_EXCLUSIVE_AREA_MAX_NESTING@
+#endif
+
+/* =============================================================================
+ * Memory Configuration
+ * ============================================================================= */
+#define RTE_MEMORY_ALLOCATION @RTE_MEMORY_ALLOCATION@  /* STATIC, DYNAMIC, MIXED */
+
+#if defined(RTE_MEMORY_STATIC)
+    #define RTE_USE_STATIC_MEMORY 1
+    #define RTE_MAX_STATIC_BUFFERS @RTE_MAX_STATIC_BUFFERS@
+#elif defined(RTE_MEMORY_DYNAMIC)
+    #define RTE_USE_DYNAMIC_MEMORY 1
+#else
+    #define RTE_USE_STATIC_MEMORY 1
+    #define RTE_USE_DYNAMIC_MEMORY 1
+#endif
+
+/* Buffer Sizes */
+#define RTE_BUFFER_ALIGNMENT @RTE_BUFFER_ALIGNMENT@
+#define RTE_MAX_BUFFER_SIZE @RTE_MAX_BUFFER_SIZE@
+
+/* =============================================================================
+ * Timing Configuration
+ * ============================================================================= */
+#define RTE_MINIMUM_START_INTERVAL_MS @RTE_MINIMUM_START_INTERVAL@
+#define RTE_TIMING_VIOLATION_ACTION @RTE_TIMING_VIOLATION_ACTION@
+
+/* Time Measurement */
+#define RTE_TIME_MEASUREMENT_ENABLED @RTE_TIME_MEASUREMENT@
+#if RTE_TIME_MEASUREMENT_ENABLED
+    #define RTE_TIME_MEASUREMENT_BUFFER_SIZE @RTE_TIME_MEASUREMENT_BUFFER_SIZE@
+#endif
+
+/* =============================================================================
+ * Callback Configuration
+ * ============================================================================= */
+#define RTE_CALLBACKS_ENABLED @RTE_CALLBACKS_ENABLED@
+#if RTE_CALLBACKS_ENABLED
+    #define RTE_MAX_CALLBACKS @RTE_MAX_CALLBACKS@
+    #define RTE_CALLBACK_ASYNC_ENABLED @RTE_CALLBACK_ASYNC@
+#endif
+
+/* =============================================================================
+ * Calibration & Measurement
+ * ============================================================================= */
+#define RTE_CALIBRATION_ENABLED @RTE_CALIBRATION_ENABLED@
+#if RTE_CALIBRATION_ENABLED
+    #define RTE_CALIBRATION_BUFFER_SIZE @RTE_CALIBRATION_BUFFER_SIZE@
+#endif
+
+/* Measurement Support */
+#define RTE_MEASUREMENT_ENABLED @RTE_MEASUREMENT_ENABLED@
+#if RTE_MEASUREMENT_ENABLED
+    #define RTE_MEASUREMENT_BUFFER_SIZE @RTE_MEASUREMENT_BUFFER_SIZE@
+#endif
+
+/* =============================================================================
+ * BSW Integration
+ * ============================================================================= */
+/* COM Stack Integration */
+#define RTE_COM_ENABLED @RTE_COM_ENABLED@
+#if RTE_COM_ENABLED
+    #define RTE_COM_MAX_SIGNALS @RTE_COM_MAX_SIGNALS@
+#endif
+
+/* Diagnostic Integration */
+#define RTE_DCM_ENABLED @RTE_DCM_ENABLED@
+#define RTE_DEM_ENABLED @RTE_DEM_ENABLED@
+
+/* NVM Integration */
+#define RTE_NVM_ENABLED @RTE_NVM_ENABLED@
+
+/* =============================================================================
+ * Optimization Settings
+ * ============================================================================= */
+#define RTE_OPTIMIZATION_LEVEL @RTE_OPTIMIZATION@  /* SIZE, SPEED, DEBUG */
+
+#if defined(RTE_OPTIMIZE_SIZE)
+    #define RTE_INLINE_ENABLED 0
+    #define RTE_COMPACT_STRUCTS 1
+#elif defined(RTE_OPTIMIZE_SPEED)
+    #define RTE_INLINE_ENABLED 1
+    #define RTE_COMPACT_STRUCTS 0
+#else
+    #define RTE_INLINE_ENABLED @RTE_INLINE_ENABLED@
+    #define RTE_COMPACT_STRUCTS 0
+#endif
+
+/* =============================================================================
+ * Debugging & Tracing
+ * ============================================================================= */
+#define RTE_DEBUG_ENABLED @RTE_DEBUG_ENABLED@
+#if RTE_DEBUG_ENABLED
+    #define RTE_TRACE_ENABLED 1
+    #define RTE_DETAILED_ERROR_INFO 1
+    #define RTE_PORT_ACCESS_TRACING 1
+#else
+    #define RTE_TRACE_ENABLED 0
+    #define RTE_DETAILED_ERROR_INFO 0
+    #define RTE_PORT_ACCESS_TRACING 0
+#endif
+
+/* Development Error Tracer */
+#define RTE_DET_ENABLED @RTE_DET_ENABLED@
+#if RTE_DET_ENABLED
+    #define RTE_DET_REPORT_ERROR(api, error) Det_ReportError(RTE_MODULE_ID, 0, api, error)
+#else
+    #define RTE_DET_REPORT_ERROR(api, error)
+#endif
+
+/* =============================================================================
+ * Vendor Specific Extensions
+ * ============================================================================= */
+#define RTE_VENDOR_ID @RTE_VENDOR_ID@
+#define RTE_VENDOR_API_INFIX @RTE_VENDOR_INFIX@
+
+/* Vendor specific hooks */
+#define RTE_VENDOR_HOOK_PRE_INIT @RTE_VENDOR_HOOK_PRE_INIT@
+#define RTE_VENDOR_HOOK_POST_INIT @RTE_VENDOR_HOOK_POST_INIT@
+#define RTE_VENDOR_HOOK_PRE_DEINIT @RTE_VENDOR_HOOK_PRE_DEINIT@
+#define RTE_VENDOR_HOOK_POST_DEINIT @RTE_VENDOR_HOOK_POST_DEINIT@
+
+/* =============================================================================
+ * Include Generated RTE Files
+ * ============================================================================= */
+#include "Rte_Type.h"
+
+/* Component specific headers */
+@RTE_COMPONENT_INCLUDES@
+
+#endif /* RTE_CONFIG_H */

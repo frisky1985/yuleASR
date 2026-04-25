@@ -1,0 +1,298 @@
+# Infotainment System Configuration
+# Domain: Multimedia, Navigation, and HMI
+# Safety Level: QM (Quality Managed)
+# Latency Requirements: < 200ms for UI interactions
+
+version: "1.0.0"
+
+system:
+  name: "InfotainmentSystem"
+  description: "In-Vehicle Infotainment and HMI"
+  version: "1.0.0"
+  asil_level: "QM"
+
+domains:
+  - id: 40
+    name: "Infotainment"
+    description: "Multimedia and navigation domain"
+    discovery:
+      enabled: true
+      protocol: UDPv4
+      lease_duration: "120s"
+    transport:
+      multicast: true
+      multicast_address: "239.255.40.1"
+    security:
+      enabled: false  # Infotainment typically non-secure
+
+qos_profiles:
+  - name: "media_stream"
+    description: "Media streaming with high throughput"
+    reliability:
+      kind: BEST_EFFORT
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 5
+    resource_limits:
+      max_samples: 20
+
+  - name: "ui_events"
+    description: "User interface events"
+    reliability:
+      kind: RELIABLE
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 10
+
+  - name: "navigation"
+    description: "Navigation data"
+    reliability:
+      kind: RELIABLE
+    durability:
+      kind: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+  - name: "persistent"
+    description: "User settings and preferences"
+    reliability:
+      kind: RELIABLE
+    durability:
+      kind: PERSISTENT
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+topics:
+  # Media
+  - name: "MediaStatus"
+    type: "MediaInfo"
+    domain_id: 40
+    qos_profile: "media_stream"
+
+  - name: "MediaControl"
+    type: "MediaCommand"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  - name: "AudioVolume"
+    type: "VolumeControl"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  # Navigation
+  - name: "NavigationRoute"
+    type: "RouteData"
+    domain_id: 40
+    qos_profile: "navigation"
+
+  - name: "PositionUpdate"
+    type: "GPSPosition"
+    domain_id: 40
+    qos_profile: "media_stream"
+
+  - name: "TrafficInfo"
+    type: "TrafficData"
+    domain_id: 40
+    qos_profile: "navigation"
+
+  - name: "POIList"
+    type: "PointOfInterest"
+    domain_id: 40
+    qos_profile: "navigation"
+
+  # HMI
+  - name: "HMIInput"
+    type: "UserInput"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  - name: "ScreenState"
+    type: "DisplayInfo"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  - name: "Notification"
+    type: "NotificationData"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  # System
+  - name: "UserSettings"
+    type: "SettingsData"
+    domain_id: 40
+    qos_profile: "persistent"
+
+  - name: "SystemStatus"
+    type: "SystemInfo"
+    domain_id: 40
+    qos_profile: "navigation"
+
+  # Phone
+  - name: "PhoneState"
+    type: "CallInfo"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  - name: "PhoneControl"
+    type: "CallCommand"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+types:
+  - name: "MediaInfo"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: track_title
+        type: string<256>
+      - name: artist
+        type: string<128>
+      - name: album
+        type: string<128>
+      - name: playback_state
+        type: PlaybackState
+      - name: position_ms
+        type: uint32
+      - name: duration_ms
+        type: uint32
+
+  - name: "PlaybackState"
+    kind: enum
+    members:
+      - name: STOPPED
+      - name: PLAYING
+      - name: PAUSED
+      - name: BUFFERING
+      - name: SEEKING
+
+  - name: "GPSPosition"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: latitude
+        type: float64
+      - name: longitude
+        type: float64
+      - name: altitude
+        type: float32
+      - name: speed_ms
+        type: float32
+      - name: heading
+        type: float32
+      - name: accuracy
+        type: float32
+
+  - name: "RouteData"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: route_id
+        type: string<64>
+      - name: destination
+        type: string<256>
+      - name: distance_m
+        type: uint32
+      - name: duration_s
+        type: uint32
+      - name: instructions
+        type: sequence<NavInstruction>
+
+  - name: "NavInstruction"
+    kind: struct
+    fields:
+      - name: instruction_type
+        type: InstructionType
+      - name: distance_m
+        type: uint32
+      - name: text
+        type: string<256>
+
+  - name: "InstructionType"
+    kind: enum
+    members:
+      - name: STRAIGHT
+      - name: TURN_LEFT
+      - name: TURN_RIGHT
+      - name: UTURN
+      - name: MERGE
+      - name: EXIT
+      - name: ARRIVE
+
+  - name: "UserInput"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: input_type
+        type: InputType
+      - name: x
+        type: uint16
+      - name: y
+        type: uint16
+      - name: gesture
+        type: GestureType
+
+  - name: "InputType"
+    kind: enum
+    members:
+      - name: TOUCH
+      - name: BUTTON
+      - name: VOICE
+      - name: KNOB
+      - name: GESTURE
+
+  - name: "GestureType"
+    kind: enum
+    members:
+      - name: NONE
+      - name: SWIPE_LEFT
+      - name: SWIPE_RIGHT
+      - name: SWIPE_UP
+      - name: SWIPE_DOWN
+      - name: PINCH
+      - name: ZOOM
+
+participants:
+  - name: "MediaPlayer"
+    domain_id: 40
+    qos_profile: "media_stream"
+
+  - name: "NavigationSystem"
+    domain_id: 40
+    qos_profile: "navigation"
+
+  - name: "HMI_Controller"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+  - name: "PhoneManager"
+    domain_id: 40
+    qos_profile: "ui_events"
+
+logging:
+  enabled: true
+  level: INFO
+  output: file
+  file: "/var/log/dds/infotainment.log"
+
+monitoring:
+  enabled: true
+  statistics_enabled: true
+  statistics_interval: "5s"
+
+# Android Auto / CarPlay Integration
+smartphone_integration:
+  enabled: true
+  protocols:
+    - AndroidAuto
+    - CarPlay
+  wireless_projection: true

@@ -1,0 +1,161 @@
+/**
+ * @file dds_config.h
+ * @brief DDS Configuration Header - Generated from template
+ * @warning This file is auto-generated. Do not modify manually.
+ * 
+ * CMake Configuration:
+ *   DDS_DOMAIN_ID: @DDS_DOMAIN_ID@
+ *   DDS_MAX_PARTICIPANTS: @DDS_MAX_PARTICIPANTS@
+ *   DDS_MAX_TOPICS: @DDS_MAX_TOPICS@
+ *   DDS_IMPLEMENTATION: @DDS_IMPLEMENTATION@
+ */
+
+#ifndef DDS_CONFIG_H
+#define DDS_CONFIG_H
+
+/* =============================================================================
+ * DDS Implementation Selection
+ * ============================================================================= */
+#define DDS_IMPL_@DDS_IMPLEMENTATION_UPPER@ 1
+
+#if defined(DDS_IMPL_FASTDDS)
+    #define DDS_IMPLEMENTATION_NAME "FastDDS"
+#elif defined(DDS_IMPL_CYCLONE)
+    #define DDS_IMPLEMENTATION_NAME "CycloneDDS"
+#elif defined(DDS_IMPL_RTI)
+    #define DDS_IMPLEMENTATION_NAME "RTI Connext"
+#else
+    #define DDS_IMPLEMENTATION_NAME "Unknown"
+#endif
+
+/* =============================================================================
+ * Domain Configuration
+ * ============================================================================= */
+#define DDS_DEFAULT_DOMAIN_ID @DDS_DOMAIN_ID@
+#define DDS_MAX_DOMAIN_ID 230
+
+/* =============================================================================
+ * Resource Limits
+ * ============================================================================= */
+#define DDS_MAX_PARTICIPANTS @DDS_MAX_PARTICIPANTS@
+#define DDS_MAX_TOPICS @DDS_MAX_TOPICS@
+#define DDS_MAX_PUBLISHERS_PER_TOPIC @DDS_MAX_PUBLISHERS@
+#define DDS_MAX_SUBSCRIBERS_PER_TOPIC @DDS_MAX_SUBSCRIBERS@
+
+/* =============================================================================
+ * Transport Configuration
+ * ============================================================================= */
+#define DDS_TRANSPORT_ENABLE_UDP @DDS_TRANSPORT_ENABLE_UDP@
+#define DDS_TRANSPORT_ENABLE_TCP @DDS_TRANSPORT_ENABLE_TCP@
+#define DDS_TRANSPORT_ENABLE_SHM @DDS_TRANSPORT_ENABLE_SHM@
+
+#define DDS_DEFAULT_UDP_PORT @DDS_DEFAULT_UDP_PORT@
+#define DDS_DISCOVERY_INTERVAL_MS @DDS_DISCOVERY_INTERVAL@
+
+/* =============================================================================
+ * Security Configuration
+ * ============================================================================= */
+#cmakedefine DDS_SECURITY_ENABLED
+#ifdef DDS_SECURITY_ENABLED
+    #define DDS_SECURITY_AUTHENTICATION 1
+    #define DDS_SECURITY_ACCESS_CONTROL 1
+    #define DDS_SECURITY_ENCRYPTION 1
+    
+    #define DDS_IDENTITY_CA_CERT "@DDS_IDENTITY_CA_CERT@"
+    #define DDS_IDENTITY_CERT "@DDS_IDENTITY_CERT@"
+    #define DDS_PRIVATE_KEY "@DDS_PRIVATE_KEY@"
+    #define DDS_GOVERNANCE_FILE "@DDS_GOVERNANCE_FILE@"
+    #define DDS_PERMISSIONS_FILE "@DDS_PERMISSIONS_FILE@"
+#else
+    #define DDS_SECURITY_AUTHENTICATION 0
+    #define DDS_SECURITY_ACCESS_CONTROL 0
+    #define DDS_SECURITY_ENCRYPTION 0
+#endif
+
+/* =============================================================================
+ * Memory Configuration
+ * ============================================================================= */
+#define DDS_MEMORY_ALLOCATOR @DDS_MEMORY_ALLOCATOR@
+#define DDS_MAX_SAMPLE_SIZE @DDS_MAX_SAMPLE_SIZE@
+#define DDS_MAX_SAMPLES_PER_INSTANCE @DDS_MAX_SAMPLES_PER_INSTANCE@
+
+/* =============================================================================
+ * QoS Defaults
+ * ============================================================================= */
+#define DDS_DEFAULT_RELIABILITY @DDS_DEFAULT_RELIABILITY@
+#define DDS_DEFAULT_DURABILITY @DDS_DEFAULT_DURABILITY@
+#define DDS_DEFAULT_HISTORY_KIND @DDS_DEFAULT_HISTORY@
+#define DDS_DEFAULT_HISTORY_DEPTH @DDS_DEFAULT_HISTORY_DEPTH@
+
+/* =============================================================================
+ * TSN Integration
+ * ============================================================================= */
+#cmakedefine DDS_TSN_ENABLED
+#ifdef DDS_TSN_ENABLED
+    #define DDS_TSN_ENABLED_BOOL 1
+    #define DDS_TSN_TRAFFIC_CLASS @DDS_TSN_TRAFFIC_CLASS@
+#else
+    #define DDS_TSN_ENABLED_BOOL 0
+#endif
+
+/* =============================================================================
+ * Safety & E2E
+ * ============================================================================= */
+#cmakedefine DDS_E2E_PROTECTION_ENABLED
+#ifdef DDS_E2E_PROTECTION_ENABLED
+    #define DDS_E2E_PROFILE @DDS_E2E_PROFILE@
+#endif
+
+#define DDS_ASIL_LEVEL @DDS_ASIL_LEVEL@
+
+/* =============================================================================
+ * Monitoring & Diagnostics
+ * ============================================================================= */
+#cmakedefine DDS_MONITORING_ENABLED
+#ifdef DDS_MONITORING_ENABLED
+    #define DDS_MONITORING_STATISTICS_INTERVAL_MS @DDS_MONITORING_INTERVAL@
+    #define DDS_MONITORING_LATENCY_HISTOGRAM_BINS @DDS_LATENCY_BINS@
+#endif
+
+/* =============================================================================
+ * Debug Configuration
+ * ============================================================================= */
+#cmakedefine DDS_DEBUG_ENABLED
+#ifdef DDS_DEBUG_ENABLED
+    #define DDS_LOG_LEVEL @DDS_LOG_LEVEL@
+    #define DDS_ENABLE_TRACING 1
+    #define DDS_ENABLE_ASSERTIONS 1
+#else
+    #define DDS_ENABLE_TRACING 0
+    #define DDS_ENABLE_ASSERTIONS 0
+#endif
+
+/* =============================================================================
+ * Feature Toggles
+ * ============================================================================= */
+#define DDS_FEATURE_DISCOVERY @DDS_FEATURE_DISCOVERY@
+#define DDS_FEATURE_CONTENT_FILTER @DDS_FEATURE_CONTENT_FILTER@
+#define DDS_FEATURE_TIME_BASED_FILTER @DDS_FEATURE_TIME_BASED_FILTER@
+#define DDS_FEATURE_OWNERSHIP @DDS_FEATURE_OWNERSHIP@
+
+/* =============================================================================
+ * Platform-Specific Configuration
+ * ============================================================================= */
+#if defined(__FREERTOS__)
+    #include "dds_config_freertos.h"
+#elif defined(__linux__)
+    #include "dds_config_linux.h"
+#elif defined(__QNX__)
+    #include "dds_config_qnx.h"
+#endif
+
+/* =============================================================================
+ * Version Information
+ * ============================================================================= */
+#define DDS_CONFIG_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define DDS_CONFIG_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define DDS_CONFIG_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define DDS_CONFIG_VERSION_STRING "@PROJECT_VERSION@"
+#define DDS_CONFIG_GENERATED_TIMESTAMP "@GENERATED_TIMESTAMP@"
+
+#endif /* DDS_CONFIG_H */

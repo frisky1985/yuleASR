@@ -52,6 +52,30 @@ option(ENABLE_PLATFORM_FREERTOS "Enable FreeRTOS platform support" OFF)
 option(ENABLE_PLATFORM_BAREMETAL "Enable Bare-metal platform support" OFF)
 
 #==============================================================================
+# Hardware Platform Target Selection
+#==============================================================================
+set(PLATFORM_TARGET "posix" CACHE STRING "Target hardware platform")
+set_property(CACHE PLATFORM_TARGET PROPERTY STRINGS "s32g3" "aurix_tc3xx" "posix")
+
+message(STATUS "Platform Target: ${PLATFORM_TARGET}")
+
+if(PLATFORM_TARGET STREQUAL "s32g3")
+    set(BOARD_S32G3 ON)
+    set(ENABLE_PLATFORM_BAREMETAL ON)
+    add_compile_definitions(BOARD_S32G3 PLATFORM_BAREMETAL)
+elseif(PLATFORM_TARGET STREQUAL "aurix_tc3xx")
+    set(BOARD_AURIX_TC3XX ON)
+    set(ENABLE_PLATFORM_BAREMETAL ON)
+    add_compile_definitions(BOARD_AURIX_TC3XX PLATFORM_BAREMETAL)
+elseif(PLATFORM_TARGET STREQUAL "posix")
+    set(BOARD_POSIX ON)
+    set(ENABLE_PLATFORM_LINUX ON)
+    add_compile_definitions(BOARD_POSIX PLATFORM_LINUX)
+else()
+    message(FATAL_ERROR "Unknown PLATFORM_TARGET: ${PLATFORM_TARGET}")
+endif()
+
+#==============================================================================
 # 编译器警告和优化选项
 #==============================================================================
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
@@ -262,6 +286,62 @@ if(ENABLE_AUTOSAR_ADAPTIVE)
 endif()
 
 #==============================================================================
+# 源文件收集 - Platform Hardware Drivers
+#==============================================================================
+if(ENABLE_PLATFORM_BAREMETAL)
+    # Common PHY and MDIO drivers (shared across platforms)
+    set(PLATFORM_COMMON_SOURCES
+        ${ETH_DDS_SRC_DIR}/platform/common/phy_tja1101.c
+        ${ETH_DDS_SRC_DIR}/platform/common/phy_tja1102.c
+        ${ETH_DDS_SRC_DIR}/platform/common/mdio_bus.c
+    )
+    
+    set(PLATFORM_COMMON_HEADERS
+        ${ETH_DDS_SRC_DIR}/platform/common/phy_tja1101.h
+        ${ETH_DDS_SRC_DIR}/platform/common/phy_tja1102.h
+        ${ETH_DDS_SRC_DIR}/platform/common/mdio_bus.h
+    )
+endif()
+
+if(PLATFORM_TARGET STREQUAL "s32g3")
+    set(PLATFORM_SOURCES
+        ${ETH_DDS_SRC_DIR}/platform/s32g3/enet_driver.c
+        ${ETH_DDS_SRC_DIR}/platform/s32g3/gptp_hw.c
+        ${ETH_DDS_SRC_DIR}/platform/s32g3/cache_manager.c
+        ${ETH_DDS_SRC_DIR}/platform/s32g3/startup_s32g3.c
+        ${PLATFORM_COMMON_SOURCES}
+    )
+    
+    set(PLATFORM_HEADERS
+        ${ETH_DDS_SRC_DIR}/platform/s32g3/enet_driver.h
+        ${ETH_DDS_SRC_DIR}/platform/s32g3/gptp_hw.h
+        ${PLATFORM_COMMON_HEADERS}
+    )
+    
+    message(STATUS "S32G3 platform drivers included")
+    
+elseif(PLATFORM_TARGET STREQUAL "aurix_tc3xx")
+    set(PLATFORM_SOURCES
+        ${ETH_DDS_SRC_DIR}/platform/aurix/geth_driver.c
+        ${ETH_DDS_SRC_DIR}/platform/aurix/gptp_hw_tc3xx.c
+        ${ETH_DDS_SRC_DIR}/platform/aurix/triboard_init.c
+        ${PLATFORM_COMMON_SOURCES}
+    )
+    
+    set(PLATFORM_HEADERS
+        ${ETH_DDS_SRC_DIR}/platform/aurix/geth_driver.h
+        ${PLATFORM_COMMON_HEADERS}
+    )
+    
+    message(STATUS "AURIX TC3xx platform drivers included")
+    
+elseif(PLATFORM_TARGET STREQUAL "posix")
+    # POSIX platform uses Linux socket-based drivers (already included in transport)
+    set(PLATFORM_SOURCES "")
+    set(PLATFORM_HEADERS "")
+endif()
+
+#==============================================================================
 # 源文件收集 - Safety RAM模块 (ASIL-D ECC Protection)
 #==============================================================================
 option(ENABLE_SAFETY_RAM "Enable RAM Safety/ECC protection module" ON)
@@ -296,6 +376,7 @@ add_library(eth_dds
     $<$<BOOL:${ENABLE_AUTOSAR_CLASSIC}>:${AUTOSAR_CLASSIC_SOURCES}>
     $<$<BOOL:${ENABLE_AUTOSAR_ADAPTIVE}>:${AUTOSAR_ADAPTIVE_SOURCES}>
     $<$<BOOL:${ENABLE_SAFETY_RAM}>:${SAFETY_RAM_SOURCES}>
+    $<$<BOOL:${ENABLE_PLATFORM_BAREMETAL}>:${PLATFORM_SOURCES}>
 )
 
 set_target_properties(eth_dds PROPERTIES
@@ -334,6 +415,9 @@ target_include_directories(eth_dds PUBLIC
     $<$<BOOL:${ENABLE_PLATFORM_FREERTOS}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/freertos/kernel/include>>
     $<$<BOOL:${ENABLE_PLATFORM_FREERTOS}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/freertos/config>>
     $<$<BOOL:${ENABLE_PLATFORM_FREERTOS}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/freertos/port>>
+    $<$<BOOL:${ENABLE_PLATFORM_BAREMETAL}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/s32g3>>
+    $<$<BOOL:${ENABLE_PLATFORM_BAREMETAL}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/aurix>>
+    $<$<BOOL:${ENABLE_PLATFORM_BAREMETAL}>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/platform/common>>
     $<$<TARGET_EXISTS:os_module>:$<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/bsw/os/include>>
     $<INSTALL_INTERFACE:include/eth_dds>
 )
@@ -354,6 +438,9 @@ target_compile_definitions(eth_dds PUBLIC
     $<$<BOOL:${ENABLE_DDS_ADVANCED}>:ENABLE_DDS_ADVANCED>
     $<$<BOOL:${ENABLE_DDS_RUNTIME}>:ENABLE_DDS_RUNTIME>
     $<$<BOOL:${ENABLE_SAFETY_RAM}>:ENABLE_SAFETY_RAM>
+    $<$<STREQUAL:${PLATFORM_TARGET},"s32g3">:BOARD_S32G3>
+    $<$<STREQUAL:${PLATFORM_TARGET},"aurix_tc3xx">:BOARD_AURIX_TC3XX>
+    $<$<STREQUAL:${PLATFORM_TARGET},"posix">:BOARD_POSIX>
 )
 
 #==============================================================================

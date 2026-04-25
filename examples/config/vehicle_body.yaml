@@ -1,0 +1,202 @@
+# Vehicle Body Electronics Configuration
+# Domain: Lighting, Doors, Windows, and Comfort Systems
+# Safety Level: ASIL-A to QM
+# Latency Requirements: < 100ms for most functions
+
+version: "1.0.0"
+
+system:
+  name: "VehicleBody"
+  description: "Body Electronics and Comfort Systems"
+  version: "1.0.0"
+  asil_level: "ASIL_A"
+
+domains:
+  - id: 30
+    name: "BodyElectronics"
+    description: "Body control modules"
+    discovery:
+      enabled: true
+      protocol: UDPv4
+      lease_duration: "60s"
+    transport:
+      multicast: true
+      multicast_address: "239.255.30.1"
+
+qos_profiles:
+  - name: "comfort"
+    description: "Comfort and convenience functions"
+    reliability:
+      kind: BEST_EFFORT
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+  - name: "lighting"
+    description: "Lighting control commands"
+    reliability:
+      kind: RELIABLE
+    durability:
+      kind: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+  - name: "diagnostic"
+    description: "Diagnostic and service data"
+    reliability:
+      kind: RELIABLE
+    durability:
+      kind: TRANSIENT
+
+topics:
+  # Lighting
+  - name: "HeadlightState"
+    type: "LightCommand"
+    domain_id: 30
+    qos_profile: "lighting"
+
+  - name: "TurnSignalState"
+    type: "SignalCommand"
+    domain_id: 30
+    qos_profile: "lighting"
+
+  - name: "InteriorLighting"
+    type: "LightCommand"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  # Doors and Windows
+  - name: "DoorStatus"
+    type: "DoorState"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  - name: "WindowPosition"
+    type: "WindowState"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  - name: "LockCommand"
+    type: "LockRequest"
+    domain_id: 30
+    qos_profile: "lighting"
+
+  - name: "CentralLocking"
+    type: "LockState"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  # Climate
+  - name: "ClimateControl"
+    type: "ClimateCommand"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  - name: "ClimateStatus"
+    type: "ClimateState"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  # Seats
+  - name: "SeatPosition"
+    type: "SeatState"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  - name: "SeatHeating"
+    type: "HeatingCommand"
+    domain_id: 30
+    qos_profile: "comfort"
+
+  # Mirrors
+  - name: "MirrorPosition"
+    type: "MirrorState"
+    domain_id: 30
+    qos_profile: "comfort"
+
+types:
+  - name: "LightCommand"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: light_id
+        type: uint8
+      - name: state
+        type: LightState
+      - name: brightness
+        type: uint8
+        optional: true
+
+  - name: "LightState"
+    kind: enum
+    members:
+      - name: OFF
+      - name: ON
+      - name: AUTO
+      - name: DIMMED
+
+  - name: "DoorState"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: door_id
+        type: uint8
+      - name: is_open
+        type: boolean
+      - name: is_locked
+        type: boolean
+      - name: handle_pulled
+        type: boolean
+
+  - name: "ClimateState"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: zone_id
+        type: uint8
+      - name: target_temp
+        type: float32
+      - name: actual_temp
+        type: float32
+      - name: fan_speed
+        type: uint8
+      - name: mode
+        type: ClimateMode
+
+  - name: "ClimateMode"
+    kind: enum
+    members:
+      - name: OFF
+      - name: AUTO
+      - name: COOL
+      - name: HEAT
+      - name: DEFROST
+      - name: RECIRCULATE
+
+  - name: "LockState"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: locked
+        type: boolean
+      - name: secured
+        type: boolean
+      - name: alarm_armed
+        type: boolean
+
+logging:
+  enabled: true
+  level: INFO
+  output: file
+  file: "/var/log/dds/body.log"
+
+monitoring:
+  enabled: true
+  statistics_enabled: false

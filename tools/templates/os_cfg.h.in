@@ -1,0 +1,200 @@
+/**
+ * @file os_cfg.h
+ * @brief Operating System Configuration Header
+ * @warning This file is auto-generated. Do not modify manually.
+ * 
+ * Target OS: @TARGET_OS@
+ * Safety Level: @SAFETY_LEVEL@
+ */
+
+#ifndef OS_CFG_H
+#define OS_CFG_H
+
+/* =============================================================================
+ * OS Selection
+ * ============================================================================= */
+#define OS_TARGET_@TARGET_OS_UPPER@ 1
+#define OS_SAFETY_LEVEL_@SAFETY_LEVEL_UPPER@ 1
+
+#if defined(OS_TARGET_FREERTOS)
+    #define OS_NAME "FreeRTOS"
+#elif defined(OS_TARGET_OSEK)
+    #define OS_NAME "OSEK"
+#elif defined(OS_TARGET_AUTOSAR)
+    #define OS_NAME "AUTOSAR OS"
+#elif defined(OS_TARGET_POSIX)
+    #define OS_NAME "POSIX"
+#else
+    #error "Unknown target OS"
+#endif
+
+/* =============================================================================
+ * Task Configuration
+ * ============================================================================= */
+#define OS_MAX_TASKS @OS_MAX_TASKS@
+#define OS_MAX_PRIORITIES @OS_MAX_PRIORITIES@
+
+/* DDS Task Priorities */
+#define OS_PRIO_DDS_RECEIVER @OS_PRIO_DDS_RECEIVER@
+#define OS_PRIO_DDS_TRANSMITTER @OS_PRIO_DDS_TRANSMITTER@
+#define OS_PRIO_DDS_DISCOVERY @OS_PRIO_DDS_DISCOVERY@
+#define OS_PRIO_DDS_MONITORING @OS_PRIO_DDS_MONITORING@
+
+/* RTE Task Priorities */
+#define OS_PRIO_RTE_HIGH @OS_PRIO_RTE_HIGH@
+#define OS_PRIO_RTE_MEDIUM @OS_PRIO_RTE_MEDIUM@
+#define OS_PRIO_RTE_LOW @OS_PRIO_RTE_LOW@
+
+/* =============================================================================
+ * Stack Configuration
+ * ============================================================================= */
+#define OS_STACK_SIZE_DEFAULT @OS_STACK_SIZE_DEFAULT@
+#define OS_STACK_SIZE_DDS @OS_STACK_SIZE_DDS@
+#define OS_STACK_SIZE_RTE @OS_STACK_SIZE_RTE@
+#define OS_STACK_SIZE_ISR @OS_STACK_SIZE_ISR@
+
+/* =============================================================================
+ * Memory Configuration
+ * ============================================================================= */
+#define OS_MEMORY_ALLOCATOR_@OS_MEMORY_ALLOCATOR@ 1
+#define OS_HEAP_SIZE @OS_HEAP_SIZE@
+#define OS_MAX_MEMORY_POOLS @OS_MAX_MEMORY_POOLS@
+
+/* Static Memory Configuration */
+#define OS_USE_STATIC_MEMORY @OS_USE_STATIC_MEMORY@
+#define OS_MAX_STATIC_OBJECTS @OS_MAX_STATIC_OBJECTS@
+
+/* =============================================================================
+ * Timing Configuration
+ * ============================================================================= */
+#define OS_TICK_RATE_HZ @OS_TICK_RATE_HZ@
+#define OS_TICK_PERIOD_MS (1000 / OS_TICK_RATE_HZ)
+
+#define OS_MAX_DELAY @OS_MAX_DELAY@
+#define OS_MIN_DELAY @OS_MIN_DELAY@
+
+/* DDS Timing */
+#define OS_DDS_TASK_PERIOD_MS @OS_DDS_TASK_PERIOD@
+#define OS_DDS_WATCHDOG_TIMEOUT_MS @OS_DDS_WATCHDOG_TIMEOUT@
+
+/* =============================================================================
+ * Synchronization Primitives
+ * ============================================================================= */
+#define OS_MAX_MUTEXES @OS_MAX_MUTEXES@
+#define OS_MAX_SEMAPHORES @OS_MAX_SEMAPHORES@
+#define OS_MAX_QUEUES @OS_MAX_QUEUES@
+#define OS_MAX_EVENT_GROUPS @OS_MAX_EVENT_GROUPS@
+
+/* Mutex Configuration */
+#define OS_MUTEX_RECURSIVE_ENABLED @OS_MUTEX_RECURSIVE@
+#define OS_MUTEX_PRIORITY_INHERITANCE @OS_MUTEX_PRIORITY_INHERITANCE@
+
+/* Queue Configuration */
+#define OS_QUEUE_MAX_SIZE @OS_QUEUE_MAX_SIZE@
+#define OS_DDS_QUEUE_LENGTH @OS_DDS_QUEUE_LENGTH@
+
+/* =============================================================================
+ * Interrupt Configuration
+ * ============================================================================= */
+#define OS_MAX_INTERRUPTS @OS_MAX_INTERRUPTS@
+#define OS_IRQ_PRIO_HIGHEST @OS_IRQ_PRIO_HIGHEST@
+#define OS_IRQ_PRIO_LOWEST @OS_IRQ_PRIO_LOWEST@
+
+#define OS_DDS_IRQ_PRIORITY @OS_DDS_IRQ_PRIORITY@
+#define OS_ETH_IRQ_PRIORITY @OS_ETH_IRQ_PRIORITY@
+#define OS_TIM_IRQ_PRIORITY @OS_TIM_IRQ_PRIORITY@
+
+/* =============================================================================
+ * Protection & Safety
+ * ============================================================================= */
+#if OS_SAFETY_LEVEL_ASIL_D || OS_SAFETY_LEVEL_ASIL_C || OS_SAFETY_LEVEL_ASIL_B
+    #define OS_PROTECTION_ENABLED 1
+    #define OS_MEMORY_PROTECTION 1
+    #define OS_TIMING_PROTECTION 1
+    #define OS_STACK_MONITORING 1
+#else
+    #define OS_PROTECTION_ENABLED 0
+    #define OS_MEMORY_PROTECTION 0
+    #define OS_TIMING_PROTECTION 0
+    #define OS_STACK_MONITORING @OS_STACK_MONITORING@
+#endif
+
+/* Watchdog Configuration */
+#define OS_WATCHDOG_ENABLED @OS_WATCHDOG_ENABLED@
+#if OS_WATCHDOG_ENABLED
+    #define OS_WATCHDOG_TIMEOUT_MS @OS_WATCHDOG_TIMEOUT@
+    #define OS_WATCHDOG_TASK_PERIOD_MS @OS_WATCHDOG_TASK_PERIOD@
+#endif
+
+/* =============================================================================
+ * Scheduling Configuration
+ * ============================================================================= */
+#define OS_SCHEDULER_@OS_SCHEDULER@ 1
+
+#if defined(OS_SCHEDULER_PREEMPTIVE)
+    #define OS_PREEMPTION_ENABLED 1
+#else
+    #define OS_PREEMPTION_ENABLED 0
+#endif
+
+#define OS_TIME_SLICING_ENABLED @OS_TIME_SLICING@
+#define OS_IDLE_HOOK_ENABLED @OS_IDLE_HOOK@
+#define OS_TICK_HOOK_ENABLED @OS_TICK_HOOK@
+
+/* =============================================================================
+ * Hook Functions
+ * ============================================================================= */
+#define OS_STACK_OVERFLOW_HOOK @OS_STACK_OVERFLOW_HOOK@
+#define OS_MALLOC_FAILED_HOOK @OS_MALLOC_FAILED_HOOK@
+#define OS_IDLE_HOOK @OS_IDLE_HOOK@
+#define OS_TICK_HOOK @OS_TICK_HOOK@
+
+/* =============================================================================
+ * RTE Integration
+ * ============================================================================= */
+#define RTE_OS_INTEGRATION 1
+#define RTE_OS_MAX_RUNNABLES @RTE_OS_MAX_RUNNABLES@
+#define RTE_OS_MAX_EVENTS @RTE_OS_MAX_EVENTS@
+
+/* RTE to OS Task Mapping */
+#define RTE_TASK_PRIORITY_HIGH @RTE_TASK_PRIORITY_HIGH@
+#define RTE_TASK_PRIORITY_NORMAL @RTE_TASK_PRIORITY_NORMAL@
+#define RTE_TASK_PRIORITY_LOW @RTE_TASK_PRIORITY_LOW@
+
+/* =============================================================================
+ * Debug & Trace
+ * ============================================================================= */
+#define OS_DEBUG_ENABLED @OS_DEBUG_ENABLED@
+#if OS_DEBUG_ENABLED
+    #define OS_TRACE_ENABLED @OS_TRACE_ENABLED@
+    #define OS_TRACE_BUFFER_SIZE @OS_TRACE_BUFFER_SIZE@
+    #define OS_ASSERT_ENABLED 1
+#else
+    #define OS_TRACE_ENABLED 0
+    #define OS_ASSERT_ENABLED @OS_ASSERT_ENABLED@
+#endif
+
+/* =============================================================================
+ * Statistics
+ * ============================================================================= */
+#define OS_RUNTIME_STATS_ENABLED @OS_RUNTIME_STATS@
+#if OS_RUNTIME_STATS_ENABLED
+    #define OS_RUNTIME_STATS_PERIOD_MS @OS_RUNTIME_STATS_PERIOD@
+#endif
+
+/* =============================================================================
+ * Platform-Specific Configuration
+ * ============================================================================= */
+#if defined(__ARM_ARCH)
+    #include "os_cfg_arm.h"
+#endif
+
+/* =============================================================================
+ * Version Information
+ * ============================================================================= */
+#define OS_CFG_VERSION_MAJOR @PROJECT_VERSION_MAJOR@
+#define OS_CFG_VERSION_MINOR @PROJECT_VERSION_MINOR@
+#define OS_CFG_VERSION_PATCH @PROJECT_VERSION_PATCH@
+#define OS_CFG_GENERATED_TIMESTAMP "@GENERATED_TIMESTAMP@"
+
+#endif /* OS_CFG_H */

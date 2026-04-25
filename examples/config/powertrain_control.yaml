@@ -1,0 +1,220 @@
+# Powertrain Control System Configuration
+# Domain: Engine, Transmission, and Drivetrain Management
+# Safety Level: ASIL-D
+# Latency Requirements: < 10ms for control loops
+
+version: "1.0.0"
+
+system:
+  name: "PowertrainControl"
+  description: "Engine and Transmission Control System"
+  version: "1.0.0"
+  asil_level: "ASIL_D"
+
+domains:
+  - id: 20
+    name: "EngineManagement"
+    description: "Engine control and monitoring"
+    discovery:
+      enabled: true
+      protocol: SHMEM
+      lease_duration: "60s"
+    transport:
+      unicast: ["192.168.20.10"]
+      multicast: false
+    security:
+      enabled: true
+      authentication:
+        plugin: "DDS:Auth:PKI-DH"
+
+  - id: 21
+    name: "TransmissionControl"
+    description: "Transmission and gear control"
+    discovery:
+      enabled: true
+      protocol: SHMEM
+      lease_duration: "60s"
+
+qos_profiles:
+  - name: "engine_sensor"
+    description: "Engine sensor readings"
+    reliability:
+      kind: BEST_EFFORT
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      period: "10ms"
+
+  - name: "engine_control"
+    description: "Critical engine control commands"
+    reliability:
+      kind: RELIABLE
+      max_blocking_time: "2ms"
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      period: "5ms"
+    transport_priority:
+      value: 255
+
+  - name: "diagnostic"
+    description: "Diagnostic and calibration data"
+    reliability:
+      kind: RELIABLE
+    durability:
+      kind: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_ALL
+
+topics:
+  - name: "EngineSpeed"
+    type: "RPMData"
+    domain_id: 20
+    qos_profile: "engine_sensor"
+
+  - name: "EngineTorque"
+    type: "TorqueData"
+    domain_id: 20
+    qos_profile: "engine_sensor"
+
+  - name: "ThrottlePosition"
+    type: "PercentValue"
+    domain_id: 20
+    qos_profile: "engine_sensor"
+
+  - name: "AirFuelRatio"
+    type: "RatioData"
+    domain_id: 20
+    qos_profile: "engine_sensor"
+
+  - name: "CoolantTemperature"
+    type: "TemperatureData"
+    domain_id: 20
+    qos_profile: "engine_sensor"
+
+  - name: "FuelInjection"
+    type: "InjectionCommand"
+    domain_id: 20
+    qos_profile: "engine_control"
+
+  - name: "IgnitionTiming"
+    type: "TimingCommand"
+    domain_id: 20
+    qos_profile: "engine_control"
+
+  - name: "TransmissionState"
+    type: "GearData"
+    domain_id: 21
+    qos_profile: "engine_sensor"
+
+  - name: "GearCommand"
+    type: "GearRequest"
+    domain_id: 21
+    qos_profile: "engine_control"
+
+  - name: "ClutchPosition"
+    type: "PercentValue"
+    domain_id: 21
+    qos_profile: "engine_sensor"
+
+  - name: "DiagnosticData"
+    type: "DiagnosticReport"
+    domain_id: 20
+    qos_profile: "diagnostic"
+
+types:
+  - name: "RPMData"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+        key: true
+      - name: rpm
+        type: uint16
+      - name: direction
+        type: uint8
+
+  - name: "TorqueData"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+        key: true
+      - name: torque_nm
+        type: float32
+      - name: estimated_max
+        type: float32
+
+  - name: "PercentValue"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: value
+        type: float32
+      - name: valid
+        type: boolean
+
+  - name: "InjectionCommand"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+        key: true
+      - name: pulse_width_us
+        type: uint16
+      - name: cylinder_mask
+        type: uint8
+      - name: timing_offset_deg
+        type: float32
+
+  - name: "GearData"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+      - name: current_gear
+        type: int8
+      - name: target_gear
+        type: int8
+      - name: clutch_engaged
+        type: boolean
+
+participants:
+  - name: "ECU_Master"
+    domain_id: 20
+    qos_profile: "engine_control"
+
+  - name: "ECU_Slave"
+    domain_id: 20
+    qos_profile: "engine_sensor"
+
+  - name: "TCU_Main"
+    domain_id: 21
+    qos_profile: "engine_control"
+
+logging:
+  enabled: true
+  level: WARN
+  output: file
+  file: "/var/log/dds/powertrain.log"
+
+monitoring:
+  enabled: true
+  statistics_enabled: true
+  statistics_interval: "1s"
+
+# OBD-II Integration
+obdii:
+  enabled: true
+  pid_mapping:
+    EngineSpeed: 0x0C
+    EngineTorque: 0x54
+    ThrottlePosition: 0x11
+    CoolantTemperature: 0x05

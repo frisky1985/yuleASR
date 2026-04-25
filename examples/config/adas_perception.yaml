@@ -1,0 +1,278 @@
+# ADAS Perception System Configuration
+# Domain: Advanced Driver Assistance Systems
+# Safety Level: ASIL-D
+# Latency Requirements: < 20ms end-to-end
+
+version: "1.0.0"
+
+system:
+  name: "ADASPerception"
+  description: "ADAS Perception and Decision System"
+  version: "1.0.0"
+  asil_level: "ASIL_D"
+
+domains:
+  - id: 10
+    name: "ADAS_Perception"
+    description: "Sensor fusion and perception domain"
+    discovery:
+      enabled: true
+      protocol: UDPv4
+      lease_duration: "30s"
+      liveliness_check_interval: "1s"
+    transport:
+      unicast: ["192.168.10.10", "192.168.10.11"]
+      multicast: false
+    security:
+      enabled: true
+      authentication:
+        plugin: "DDS:Auth:PKI-DH"
+        identity_ca: "/etc/dds/security/identity_ca.pem"
+        identity_certificate: "/etc/dds/security/adas_cert.pem"
+        private_key: "/etc/dds/security/adas_key.pem"
+      access_control:
+        plugin: "DDS:Access:Permissions"
+        permissions_ca: "/etc/dds/security/permissions_ca.pem"
+        governance: "/etc/dds/security/governance.p7s"
+        permissions: "/etc/dds/security/permissions.p7s"
+      encryption:
+        plugin: "DDS:Crypto:AES-GCM-GMAC"
+        encrypt_rtps: true
+        encrypt_payload: true
+
+  - id: 11
+    name: "ADAS_Control"
+    description: "Vehicle control and actuation domain"
+    discovery:
+      enabled: true
+      protocol: UDPv4
+      lease_duration: "30s"
+    security:
+      enabled: true
+      authentication:
+        plugin: "DDS:Auth:PKI-DH"
+
+qos_profiles:
+  - name: "sensor_data"
+    description: "High-frequency sensor data with best-effort delivery"
+    reliability:
+      kind: BEST_EFFORT
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      period: "50ms"
+    latency_budget:
+      duration: "5ms"
+    resource_limits:
+      max_samples: 10
+      max_instances: 1
+      max_samples_per_instance: 10
+
+  - name: "fusion_output"
+    description: "Critical fusion output requiring reliability"
+    reliability:
+      kind: RELIABLE
+      max_blocking_time: "10ms"
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      period: "20ms"
+    latency_budget:
+      duration: "2ms"
+    liveliness:
+      kind: AUTOMATIC
+      lease_duration: "100ms"
+
+  - name: "decision_commands"
+    description: "Safety-critical control commands"
+    reliability:
+      kind: RELIABLE
+      max_blocking_time: "5ms"
+    durability:
+      kind: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      period: "10ms"
+    latency_budget:
+      duration: "1ms"
+    transport_priority:
+      value: 255
+
+topics:
+  - name: "CameraObjects"
+    type: "ObjectArray"
+    domain_id: 10
+    qos_profile: "sensor_data"
+    partitions: ["sensors", "cameras"]
+
+  - name: "RadarTracks"
+    type: "TrackArray"
+    domain_id: 10
+    qos_profile: "sensor_data"
+    partitions: ["sensors", "radar"]
+
+  - name: "LidarPoints"
+    type: "PointCloud"
+    domain_id: 10
+    qos_profile: "sensor_data"
+    partitions: ["sensors", "lidar"]
+
+  - name: "UltrasonicData"
+    type: "UltrasonicArray"
+    domain_id: 10
+    qos_profile: "sensor_data"
+    partitions: ["sensors", "ultrasonic"]
+
+  - name: "FusionOutput"
+    type: "FusedEnvironment"
+    domain_id: 10
+    qos_profile: "fusion_output"
+    partitions: ["fusion", "output"]
+
+  - name: "PathPlanning"
+    type: "PlannedPath"
+    domain_id: 11
+    qos_profile: "decision_commands"
+    partitions: ["planning"]
+
+  - name: "ControlCommands"
+    type: "VehicleCommand"
+    domain_id: 11
+    qos_profile: "decision_commands"
+    partitions: ["control"]
+
+  - name: "SystemStatus"
+    type: "StatusReport"
+    domain_id: 10
+    qos_profile: "fusion_output"
+    partitions: ["diagnostics"]
+
+types:
+  - name: "ObjectArray"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+        key: true
+      - name: objects
+        type: sequence<DetectedObject>
+      - name: sensor_id
+        type: uint32
+
+  - name: "DetectedObject"
+    kind: struct
+    fields:
+      - name: id
+        type: uint32
+        key: true
+      - name: position
+        type: Point3D
+      - name: velocity
+        type: Vector3D
+      - name: classification
+        type: ObjectClass
+      - name: confidence
+        type: float32
+
+  - name: "ObjectClass"
+    kind: enum
+    members:
+      - name: UNKNOWN
+      - name: PEDESTRIAN
+      - name: VEHICLE
+      - name: CYCLIST
+      - name: TRAFFIC_SIGN
+      - name: TRAFFIC_LIGHT
+
+  - name: "Point3D"
+    kind: struct
+    fields:
+      - name: x
+        type: float64
+      - name: y
+        type: float64
+      - name: z
+        type: float64
+
+  - name: "Vector3D"
+    kind: struct
+    fields:
+      - name: x
+        type: float64
+      - name: y
+        type: float64
+      - name: z
+        type: float64
+
+  - name: "VehicleCommand"
+    kind: struct
+    fields:
+      - name: timestamp
+        type: uint64
+        key: true
+      - name: steering_angle
+        type: float64
+      - name: acceleration
+        type: float64
+      - name: brake_pressure
+        type: float64
+
+participants:
+  - name: "CameraFusionNode"
+    domain_id: 10
+    qos_profile: "sensor_data"
+
+  - name: "RadarFusionNode"
+    domain_id: 10
+    qos_profile: "sensor_data"
+
+  - name: "PerceptionFusion"
+    domain_id: 10
+    qos_profile: "fusion_output"
+
+  - name: "PathPlanner"
+    domain_id: 11
+    qos_profile: "decision_commands"
+
+  - name: "VehicleController"
+    domain_id: 11
+    qos_profile: "decision_commands"
+
+logging:
+  enabled: true
+  level: INFO
+  output: file
+  file: "/var/log/dds/adas_perception.log"
+  categories:
+    - name: "DISCOVERY"
+      level: DEBUG
+    - name: "SECURITY"
+      level: WARN
+
+monitoring:
+  enabled: true
+  statistics_enabled: true
+  statistics_interval: "1s"
+  metrics:
+    - throughput
+    - latency
+    - discovery
+
+# E2E Protection Configuration
+e2e_protection:
+  enabled: true
+  profile: "PROFILE_05"  # AUTOSAR E2E Profile 5
+  protected_topics:
+    - "FusionOutput"
+    - "ControlCommands"
+  data_ids:
+    FusionOutput: 0x1001
+    ControlCommands: 0x1002
