@@ -24,10 +24,14 @@ set(CLASSIC_HEADERS
 # E2E Protection
 set(E2E_SOURCES
     e2e/e2e_protection.c
+    e2e/e2e_state_machine.c
+    e2e/e2e_dds_integration.c
 )
 
 set(E2E_HEADERS
     e2e/e2e_protection.h
+    e2e/e2e_state_machine.h
+    e2e/e2e_dds_integration.h
 )
 
 # ARXML Parser
@@ -122,6 +126,9 @@ message(STATUS "AUTOSAR RTE Module configured:")
 message(STATUS "  - Adaptive ara::com DDS: ENABLED")
 message(STATUS "  - Classic RTE DDS: ENABLED")
 message(STATUS "  - E2E Protection: ENABLED")
+message(STATUS "  - E2E State Machine: ENABLED")
+message(STATUS "  - E2E DDS Integration: ENABLED")
+message(STATUS "  - E2E Profiles: P01, P02, P04, P05, P06, P07, P11, P22")
 message(STATUS "  - ARXML Parser: ENABLED")
 message(STATUS "  - ASIL-D Compliance: YES")
 message(STATUS "  - AUTOSAR Version: R22-11")
