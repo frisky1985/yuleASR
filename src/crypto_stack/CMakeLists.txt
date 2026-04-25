@@ -1,66 +1,70 @@
-# Crypto Stack CMakeLists.txt
-# AUTOSAR Crypto Stack (SecOC/CSM/CryIf/KeyM)
+# Crypto Stack CMake Configuration
+# Includes CSM, CryIf, KeyM, and SecOC modules
 
 cmake_minimum_required(VERSION 3.10)
 
-# SecOC Library
-add_library(secoc STATIC
+# Crypto Stack library
+add_library(crypto_stack STATIC
+    # CSM (Crypto Services Manager)
+    csm/csm_core.c
+    csm/csm_jobs.c
+    
+    # CryIf (Crypto Interface)
+    cryif/cryif_core.c
+    
+    # KeyM (Key Manager)
+    keym/keym_core.c
+    
+    # SecOC (existing)
     secoc/secoc_core.c
     secoc/secoc_freshness.c
     secoc/secoc_dds_integration.c
 )
 
-target_include_directories(secoc PUBLIC
+# Include directories
+target_include_directories(crypto_stack PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/csm
+    ${CMAKE_CURRENT_SOURCE_DIR}/cryif
+    ${CMAKE_CURRENT_SOURCE_DIR}/keym
     ${CMAKE_CURRENT_SOURCE_DIR}/secoc
-    ${CMAKE_SOURCE_DIR}/src/dds/security
-    ${CMAKE_SOURCE_DIR}/src/dds/rtps
-    ${CMAKE_SOURCE_DIR}/src/common
 )
 
-target_link_libraries(secoc PUBLIC
+# Link with DDS security if available
+target_link_libraries(crypto_stack PUBLIC
     dds_security
 )
 
-# CSM Library (stub for future implementation)
-add_library(csm STATIC
-    csm/csm_core.c
-)
-
-target_include_directories(csm PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/csm
-    ${CMAKE_SOURCE_DIR}/src/common
-)
-
-# CryIf Library (stub for future implementation)
-add_library(cryif STATIC
-    cryif/cryif_core.c
-)
-
-target_include_directories(cryif PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/cryif
-    ${CMAKE_SOURCE_DIR}/src/common
-)
-
-# KeyM Library (stub for future implementation)
-add_library(keym STATIC
-    keym/keym_core.c
-)
-
-target_include_directories(keym PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/keym
-    ${CMAKE_SOURCE_DIR}/src/common
-)
-
-# Combined Crypto Stack
-add_library(crypto_stack INTERFACE)
-target_link_libraries(crypto_stack INTERFACE
-    secoc
-    csm
-    cryif
-    keym
+# Compiler flags for security
+target_compile_options(crypto_stack PRIVATE
+    -Wall
+    -Wextra
+    -Werror=implicit-function-declaration
+    -fstack-protector-strong
+    -D_FORTIFY_SOURCE=2
 )
 
 # Tests
-if(ENABLE_TESTS)
-    add_subdirectory(tests)
+if(BUILD_TESTS)
+    enable_testing()
+    
+    # CSM Tests
+    add_executable(test_csm
+        tests/test_csm.c
+    )
+    target_link_libraries(test_csm PRIVATE crypto_stack)
+    add_test(NAME CSM_Tests COMMAND test_csm)
+    
+    # CryIf Tests
+    add_executable(test_cryif
+        tests/test_cryif.c
+    )
+    target_link_libraries(test_cryif PRIVATE crypto_stack)
+    add_test(NAME CryIf_Tests COMMAND test_cryif)
+    
+    # KeyM Tests
+    add_executable(test_keym
+        tests/test_keym.c
+    )
+    target_link_libraries(test_keym PRIVATE crypto_stack)
+    add_test(NAME KeyM_Tests COMMAND test_keym)
 endif()
