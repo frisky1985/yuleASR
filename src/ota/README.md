@@ -1,77 +1,169 @@
-# OTA UDS Client Module
+# OTA Core Module
 
-## Overview
+这个目录包含OTA (Over-The-Air)核心模块的实现，包括OTA Manager、Downloader和Package Parser。
 
-OTA UDS Client模块实现基于ISO 14229-1:2020 UDS协议的在线更新客户端，支持UDS 0x34/0x36/0x37传输服务和0x31例程控制服务。
+## 模块概览
 
-## Features
+### 1. ota_types.h
+定义了OTA模块使用的通用类型、错误码和枚举，包括：
+- OTA状态机状态 (IDLE/DOWNLOADING/VERIFYING/INSTALLING等)
+- 下载状态
+- 压缩类型 (None/Zstd/LZ4/Gzip)
+- 加密类型 (None/AES-128-GCM/AES-256-GCM)
+- ECU更新信息
+- Campaign信息
 
-- **UDS 0x34 Request Download**: 请求下载固件，支持数据格式和目标地址配置
-- **UDS 0x36 Transfer Data**: 分块传输固件数据，支持块序列号管理
-- **UDS 0x37 Request Transfer Exit**: 结束数据传输
-- **UDS 0x31 Routine Control**: 执行验证例程和固件激活
-- **Progress Callback**: 实时传输进度回调
-- **State Management**: 完整的OTA状态机
-- **DEM Integration**: 更新失败DTC记录
+### 2. ota_manager.h/c
+OTA管理器，负责：
+- OTA状态机管理
+- Campaign活动管理
+- 前置条件检查
+- 下载缓存管理 (支持断点续传)
+- 回滚机制
+- 与Bootloader分区管理器集成
 
-## Architecture
-
+#### 状态转换:
 ```
-OTA UDS Client
-    |├-- ota_uds_client.c    # 主实现
-    |├-- ota_uds_client.h    # 头文件和API
+IDLE -> CAMPAIGN_RECEIVED -> DOWNLOADING -> VERIFYING -> READY_TO_INSTALL -> INSTALLING -> ACTIVATING -> SUCCESS
+                                              |
+                                              v
+                                         ROLLING_BACK/FAILED
 ```
 
-## Dependencies
+### 3. ota_downloader.h/c
+HTTP下载器，支持：
+- HTTP/HTTPS下载
+- Range请求支持 (断点续传)
+- 下载进度回调
+- 下载统计信息 (速度、剩余时间)
+- 哈希验证 (SHA-256)
+- 多重试机制
 
-- DCM (Diagnostic Communication Manager): UDS协议基础类型定义
-- CSM (Crypto Services Manager): 签名验证
-- KeyM (Key Manager): 密钥管理
-- DEM (Diagnostic Event Manager): DTC记录
-
-## Usage Example
-
+#### 断点续传支持:
 ```c
-#include "ota_uds_client.h"
+// 检查服务器是否支持Range
+ota_downloader_check_resume_support(ctx, url, &supports_range, &file_size);
 
-// 配置传输接口
-ota_uds_transport_if_t transport = {
-    .send_request = my_send_request,
-    .enter_programming_session = my_enter_session,
-    .unlock_security = my_unlock,
-    .ecu_reset = my_reset
-};
-
-// 初始化
-ota_uds_config_t config = {
-    .target_ecu_id = 0x0101,
-    .transfer_block_size = 4095,
-    .transport = &transport
-};
-
-ota_uds_context_t ctx;
-ota_uds_init(&ctx, &config);
-
-// 启动OTA会话
-eret = ota_uds_start_session(&ctx);
-
-// 请求下载
-ota_firmware_info_t fw_info = {
-    .firmware_version = 0x01020000,
-    .firmware_size = 65536,
-    .download_address = 0x08010000
-};
-ota_uds_request_download(&ctx, &fw_info);
-
-// 传输固件
-eret = ota_uds_transfer_firmware(&ctx, firmware_data, firmware_size);
-
-// 完成更新
-eret = ota_uds_complete_update(&ctx);
+// 从指定偏移量开始下载
+request.offset = previous_offset;
+request.mode = OTA_DL_MODE_RESUME;
 ```
 
-## Compliance
+### 4. ota_package.h/c
+包解析器，支持：
+- Vehicle Package (.vpkg) 格式
+- ECU Package (.epkg) 格式
+- Manifest JSON解析
+- 签名验证 (Raw ECDSA/CMS/COSE)
+- 哈希验证
+- 压缩解压 (Zstd/LZ4)
 
-- ISO 14229-1:2020 UDS
-- UNECE R156 Software Update Management System
-- ISO/SAE 21434 Cybersecurity
+#### 包格式:
+**Vehicle Package (.vpkg)**:
+```
++--------+----------+---------+----------+-----------+
+| Header | Manifest | Payload | Signature|
++--------+----------+---------+----------+
+```
+
+**ECU Package (.epkg)**:
+```
++--------+----------+--------+-----+--------+
+| Header | Firmware | Delta  | Hash| Layout |
++--------+----------+--------+-----+--------+
+```
+
+## 依赖
+
+- Bootloader分区管理 (bl_partition.h/c)
+- CSM密码服务管理 (csm_core.h) - 用于签名验证和哈希计算
+- KeyM密钥管理 (keym_core.h) - 用于验证密钥管理
+- OTA UDS Client (ota_uds_client.h/c) - 用于UDS传输
+
+## API使用示例
+
+### 基本OTA流程:
+```c
+// 1. 初始化OTA Manager
+ota_manager_init(&mgr_ctx, &config, &partition_mgr);
+ota_manager_init_download_cache(&mgr_ctx, cache_buffer, cache_size);
+
+// 2. 接收Campaign
+ota_campaign_info_t campaign = {
+    .campaign_id = "CAMP-001",
+    .name = "Q2 Firmware Update",
+    .num_ecu_updates = 1,
+    ...
+};
+ota_manager_receive_campaign(&mgr_ctx, &campaign);
+
+// 3. 开始下载
+ota_manager_start_download(&mgr_ctx, "CAMP-001");
+
+// 4. 验证包
+ota_manager_start_verify(&mgr_ctx);
+
+// 5. 安装
+ota_manager_start_install(&mgr_ctx);
+
+// 6. 激活
+ota_manager_activate(&mgr_ctx);
+```
+
+### 下载器使用:
+```c
+// 初始化
+ota_downloader_init(&dl_ctx, &dl_config, &transport);
+
+// 配置下载请求
+ota_download_request_t request = {
+    .url = "https://ota.example.com/firmware.bin",
+    .package_id = "PKG-001",
+    .offset = 0,
+    .expected_size = 100000,
+    .mode = OTA_DL_MODE_FULL
+};
+
+// 开始下载
+ota_downloader_start(&dl_ctx, &request);
+
+// 处理下载 (在主循环中)
+while (ota_downloader_process(&dl_ctx)) {
+    // 处理其他任务
+}
+```
+
+## 单元测试
+
+测试位于 `tests/unit/ota/`:
+- `test_ota_manager.c` - OTA Manager测试
+- `test_ota_downloader.c` - OTA Downloader测试
+- `test_ota_package.c` - OTA Package Parser测试
+
+运行测试:
+```bash
+cd /home/admin/eth-dds-integration
+gcc -I src -I tests/unity tests/unit/ota/test_ota_manager.c src/ota/ota_manager.c src/ota/ota_types.h -o test_ota_manager
+./test_ota_manager
+```
+
+## 安全特性
+
+- 固件签名验证 (使用CSM)
+- 固件哈希验证 (SHA-256)
+- 版本回滚保护
+- 加密传输支持 (AES-GCM)
+- 分区交换保护
+
+## 规范合规
+
+- UNECE R156 SUMS
+- ISO/SAE 21434 网络安全
+- ISO 14229-1 UDS
+- ISO 24089 软件更新工程
+
+## 版本
+
+- 版本: 1.0.0
+- 日期: 2026-04-26
+- ASIL等级: D
