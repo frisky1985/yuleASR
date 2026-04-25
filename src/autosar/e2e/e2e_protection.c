@@ -247,6 +247,15 @@ Std_ReturnType E2E_InitContext(E2E_ContextType* context, uint8_t profile)
             context->state.p11.status = E2E_P_OK;
             context->state.p11.synced = FALSE;
             break;
+        case E2E_PROFILE_22:
+            context->state.p22.counter = 0;
+            context->state.p22.maxDeltaCounter = 256;
+            context->state.p22.lastDataId = 0;
+            context->state.p22.lastDataLength = 0;
+            context->state.p22.status = E2E_P_OK;
+            context->state.p22.synced = FALSE;
+            context->state.p22.messageCounter = 0;
+            break;
         default:
             return E_NOT_OK;
     }
@@ -890,6 +899,164 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
 }
 
 /******************************************************************************
+ * Public Functions - Profile 22 (Dynamic CRC16 + Sequence for Large Data)
+ ******************************************************************************/
+
+/**
+ * @brief Profile 22 Protect
+ * @note Supports dynamic length data up to 4096 bytes
+ */
+Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* length)
+{
+    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+        return E_NOT_OK;
+    }
+
+    if (context->profile != E2E_PROFILE_22) {
+        return E_NOT_OK;
+    }
+
+    uint8_t* dataBytes = (uint8_t*)data;
+    E2E_P22ConfigType* config = &context->config.p22;
+    E2E_P22CheckStateType* state = &context->state.p22;
+
+    /* Validate data length */
+    if (config->dataLength < config->minDataLength ||
+        config->dataLength > config->maxDataLength) {
+        return E_NOT_OK;
+    }
+
+    /* Write Data ID (2 bytes, little-endian) */
+    dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFF);
+    dataBytes[config->dataIdOffset + 1] = (uint8_t)((config->dataId >> 8) & 0xFF);
+
+    /* Write Length field (2 bytes, little-endian) */
+    dataBytes[config->lengthOffset] = (uint8_t)(config->dataLength & 0xFF);
+    dataBytes[config->lengthOffset + 1] = (uint8_t)((config->dataLength >> 8) & 0xFF);
+
+    /* Write counter (2 bytes, big-endian) */
+    dataBytes[config->counterOffset] = (uint8_t)((state->counter >> 8) & 0xFF);
+    dataBytes[config->counterOffset + 1] = (uint8_t)(state->counter & 0xFF);
+
+    /* Calculate CRC16 over data including header fields */
+    uint16_t crcDataLen = config->includeLengthInCrc ? 
+                          config->dataLength : config->dataLength - 2;
+    uint16_t crc = E2E_CalculateCRC16(dataBytes, crcDataLen, E2E_CRC16_INIT);
+    crc ^= config->dataId;  /* XOR with Data ID */
+
+    /* Write CRC (big-endian) */
+    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFF);
+    dataBytes[config->crcOffset + 1] = (uint8_t)(crc & 0xFF);
+
+    /* Increment counter (16-bit wraparound) */
+    state->counter++;
+    state->messageCounter++;
+
+    *length = config->dataLength;
+    return E_OK;
+}
+
+/**
+ * @brief Profile 22 Check
+ */
+Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
+{
+    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+        return E_NOT_OK;
+    }
+
+    if (context->profile != E2E_PROFILE_22) {
+        return E_NOT_OK;
+    }
+
+    const uint8_t* dataBytes = (const uint8_t*)data;
+    E2E_P22ConfigType* config = &context->config.p22;
+    E2E_P22CheckStateType* state = &context->state.p22;
+
+    /* Check minimum length */
+    if (length < E2E_P22_MIN_DATA_LENGTH) {
+        *status = E2E_ERROR_LENGTH;
+        return E_OK;
+    }
+
+    /* Read Data ID */
+    uint16_t receivedDataId = ((uint16_t)dataBytes[config->dataIdOffset + 1] << 8) |
+                              (uint16_t)dataBytes[config->dataIdOffset];
+    if (receivedDataId != config->dataId) {
+        *status = E2E_ERROR_INIT;
+        state->status = E2E_P_ERROR;
+        return E_OK;
+    }
+
+    /* Read Length field */
+    uint16_t receivedLength = ((uint16_t)dataBytes[config->lengthOffset + 1] << 8) |
+                              (uint16_t)dataBytes[config->lengthOffset];
+    if (receivedLength < config->minDataLength || receivedLength > config->maxDataLength) {
+        *status = E2E_ERROR_LENGTH;
+        state->status = E2E_P_ERROR;
+        return E_OK;
+    }
+
+    /* Verify CRC */
+    uint16_t receivedCrc = ((uint16_t)dataBytes[config->crcOffset] << 8) |
+                           (uint16_t)dataBytes[config->crcOffset + 1];
+    uint16_t crcDataLen = config->includeLengthInCrc ? receivedLength : receivedLength - 2;
+    uint16_t calculatedCrc = E2E_CalculateCRC16(dataBytes, crcDataLen, E2E_CRC16_INIT);
+    calculatedCrc ^= config->dataId;
+
+    if (receivedCrc != calculatedCrc) {
+        *status = E2E_ERROR_CRC;
+        state->status = E2E_P_ERROR;
+        return E_OK;
+    }
+
+    /* Read and check counter */
+    uint16_t receivedCounter = ((uint16_t)dataBytes[config->counterOffset] << 8) |
+                               (uint16_t)dataBytes[config->counterOffset + 1];
+    int32_t delta = (int32_t)(receivedCounter - state->counter);
+
+    if (!state->synced) {
+        state->counter = receivedCounter;
+        state->lastDataId = receivedDataId;
+        state->lastDataLength = receivedLength;
+        state->synced = TRUE;
+        state->status = E2E_P_OK;
+    } else if (delta == 0) {
+        state->status = E2E_P_REPEATED;
+        *status = E2E_ERROR_COUNTER;
+        return E_OK;
+    } else if (delta < 0 || (uint16_t)delta > state->maxDeltaCounter) {
+        state->status = E2E_P_WRONGSEQUENCE;
+        *status = E2E_ERROR_SEQUENCE;
+    } else {
+        state->status = E2E_P_OK;
+    }
+
+    state->counter = receivedCounter;
+    state->lastDataLength = receivedLength;
+    state->messageCounter++;
+    *status = E2E_ERROR_NONE;
+    return E_OK;
+}
+
+/**
+ * @brief Profile 22 Set Data Length
+ */
+Std_ReturnType E2E_P22_SetDataLength(E2E_ContextType* context, uint16_t dataLength)
+{
+    if (context == NULL || context->profile != E2E_PROFILE_22) {
+        return E_NOT_OK;
+    }
+
+    if (dataLength < E2E_P22_MIN_DATA_LENGTH || dataLength > E2E_P22_MAX_DATA_LENGTH) {
+        return E_NOT_OK;
+    }
+
+    context->config.p22.dataLength = dataLength;
+    return E_OK;
+}
+
+/******************************************************************************
  * Public Functions - Generic Interface
  ******************************************************************************/
 
@@ -917,6 +1084,8 @@ Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* lengt
             return E2E_P07_Protect(context, data, length);
         case E2E_PROFILE_11:
             return E2E_P11_Protect(context, data, length);
+        case E2E_PROFILE_22:
+            return E2E_P22_Protect(context, data, length);
         default:
             return E_NOT_OK;
     }
@@ -946,6 +1115,8 @@ Std_ReturnType E2E_Check(E2E_ContextType* context, const void* data, uint32_t le
             return E2E_P07_Check(context, data, length, status);
         case E2E_PROFILE_11:
             return E2E_P11_Check(context, data, length, status);
+        case E2E_PROFILE_22:
+            return E2E_P22_Check(context, data, length, status);
         default:
             return E_NOT_OK;
     }
@@ -971,6 +1142,8 @@ uint32_t E2E_GetHeaderSize(uint8_t profile)
             return E2E_P07_HEADER_SIZE;
         case E2E_PROFILE_11:
             return E2E_P11_HEADER_SIZE;
+        case E2E_PROFILE_22:
+            return E2E_P22_HEADER_SIZE;
         default:
             return 0;
     }
@@ -996,6 +1169,8 @@ const char* E2E_GetProfileName(uint8_t profile)
             return "Profile 7 (CRC32+Counter)";
         case E2E_PROFILE_11:
             return "Profile 11 (Dynamic)";
+        case E2E_PROFILE_22:
+            return "Profile 22 (Dynamic Large Data)";
         default:
             return "Unknown Profile";
     }
@@ -1050,6 +1225,7 @@ bool E2E_ValidateDataID(uint32_t dataId, uint8_t profile)
         case E2E_PROFILE_05:
         case E2E_PROFILE_06:
         case E2E_PROFILE_11:
+        case E2E_PROFILE_22:
             return (dataId <= 0xFFFF);
         case E2E_PROFILE_04:
         case E2E_PROFILE_07:
@@ -1077,6 +1253,8 @@ bool E2E_ValidateLength(uint32_t length, uint8_t profile)
             return (length <= 4096);
         case E2E_PROFILE_11:
             return (length >= 4 && length <= 256);
+        case E2E_PROFILE_22:
+            return (length >= E2E_P22_MIN_DATA_LENGTH && length <= E2E_P22_MAX_DATA_LENGTH);
         default:
             return TRUE;
     }
