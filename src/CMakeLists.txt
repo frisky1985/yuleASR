@@ -1,45 +1,43 @@
-#==============================================================================
-# src/CMakeLists.txt - Source directory build configuration
-#==============================================================================
+# src/CMakeLists.txt
+# Source directory build configuration
 
-# FreeRTOS platform must be built before OS module
-cmake_minimum_required(VERSION 3.14)
+# Common utilities library
+add_subdirectory(common)
 
-#==============================================================================
-# Platform Selection
-#==============================================================================
-if(ENABLE_PLATFORM_FREERTOS)
-    # FreeRTOS must be built before OS module
-    add_subdirectory(platform/freertos)
+# Ethernet driver
+if(ENABLE_ETHERNET)
+    add_subdirectory(ethernet)
 endif()
 
-#==============================================================================
-# BSW (Basic Software) Modules
-#==============================================================================
-# OS Module - depends on platform
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/os)
-    add_subdirectory(bsw/os)
+# DDS middleware
+if(ENABLE_DDS)
+    add_subdirectory(dds)
 endif()
 
-# NVM Module
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/nvm)
-    add_subdirectory(nvm)
+# Transport layer
+add_subdirectory(transport)
+
+# TSN stack
+if(ENABLE_TSN)
+    add_subdirectory(tsn)
 endif()
 
-# Safety RAM Module
-if(ENABLE_SAFETY_RAM AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/safety/saferam)
-    add_subdirectory(safety/saferam)
+# AUTOSAR integration
+if(ENABLE_AUTOSAR_CLASSIC OR ENABLE_AUTOSAR_ADAPTIVE)
+    add_subdirectory(autosar)
 endif()
 
-#==============================================================================
-# Platform Abstraction Layer
-#==============================================================================
-# Linux platform support
-if(ENABLE_PLATFORM_LINUX AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/platform/linux)
-    add_subdirectory(platform/linux)
+# Safety modules
+if(ENABLE_SAFETY_RAM OR ENABLE_SAFETY_NVM OR ENABLE_SAFETY_SAFERAM)
+    add_subdirectory(safety)
 endif()
 
-# Bare-metal platform support
-if(ENABLE_PLATFORM_BAREMETAL AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/platform/baremetal)
-    add_subdirectory(platform/baremetal)
+# Platform abstraction
+if(ENABLE_PLATFORM_FREERTOS OR ENABLE_PLATFORM_BAREMETAL)
+    add_subdirectory(platform)
+endif()
+
+# BSW (Basic Software)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw)
+    add_subdirectory(bsw)
 endif()

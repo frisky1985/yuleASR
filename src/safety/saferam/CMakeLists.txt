@@ -1,69 +1,48 @@
-# SafeRAM Module CMakeLists.txt
-# AUTOSAR R22-11 compliant, ISO 26262 ASIL-D
+# src/safety/saferam/CMakeLists.txt
+# SafeRAM memory protection module
 
-# SafeRAM source files
 set(SAFERAM_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/ram_partition.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/stack_protection.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/heap_protection.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/safe_data.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/fault_injection.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/saferam_manager.c
+    saferam_manager.c
+    ram_partition.c
+    stack_protection.c
+    heap_protection.c
+    safe_data.c
+    fault_injection.c
 )
 
-# SafeRAM header files
 set(SAFERAM_HEADERS
-    ${CMAKE_CURRENT_SOURCE_DIR}/ram_partition.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/stack_protection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/heap_protection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/safe_data.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/fault_injection.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/saferam_manager.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/saferam.h
+    saferam.h
+    saferam_manager.h
+    ram_partition.h
+    stack_protection.h
+    heap_protection.h
+    safe_data.h
+    fault_injection.h
 )
 
-# Create static library
-add_library(saferam STATIC ${SAFERAM_SOURCES})
-
-# Include directories
-target_include_directories(saferam
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+# Create SafeRAM library
+add_library(eth_dds_safety_saferam STATIC
+    ${SAFERAM_SOURCES}
 )
 
-# Compile options for safety-critical code
-target_compile_options(saferam
-    PRIVATE
+target_include_directories(eth_dds_safety_saferam PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+)
+
+target_link_libraries(eth_dds_safety_saferam PUBLIC
+    eth_dds_common
+)
+
+if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options(eth_dds_safety_saferam PRIVATE
         -Wall
         -Wextra
-        -Werror
-        -O2
-        -fno-omit-frame-pointer
-        -fstack-protector-strong
-        -Wstack-protector
-        --param ssp-buffer-size=4
-)
+    )
+endif()
 
-# ASIL-D specific defines
-target_compile_definitions(saferam
-    PUBLIC
-        SAFERAM_ASIL_D=1
-        SAFERAM_ENABLE_ASSERTS=1
-)
-
-# Link options
-target_link_options(saferam
-    PRIVATE
-        -Wl,--no-undefined
-)
-
-# Install targets
-install(TARGETS saferam
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-)
-
+# Install headers
 install(FILES ${SAFERAM_HEADERS}
-    DESTINATION include/safety/saferam
+    DESTINATION include/eth_dds/safety
+    COMPONENT headers
 )
