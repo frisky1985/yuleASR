@@ -6,6 +6,7 @@
  ******************************************************************************/
 
 #include "pdur_interface.h"
+#include "isotp_core.h"
 #include <string.h>
 #include <stddef.h>
 
