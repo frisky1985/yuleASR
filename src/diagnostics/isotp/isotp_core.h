@@ -308,7 +308,7 @@ uint8_t IsoTp_GetMaxSingleFramePayload(
  * @param stMin STmin value (0-0x7F = ms, 0xF1-0xF9 = 100-900us)
  * @return STmin in milliseconds (fractional values rounded up)
  */
-float32_t IsoTp_StMinToMs(uint8_t stMin);
+float IsoTp_StMinToMs(uint8_t stMin);
 
 /**
  * @brief Validate STmin value

@@ -24,7 +24,7 @@ static Dcm_ResetType s_callback_reset_type;
 static int s_callback_count;
 static bool s_platform_reset_called;
 
-void setUp(void)
+void dcm_reset_test_setUp(void)
 {
     memset(&test_reset_config, 0, sizeof(test_reset_config));
     memset(&test_session_config, 0, sizeof(test_session_config));
@@ -70,7 +70,7 @@ void setUp(void)
     Dcm_SessionInit(&test_session_config);
 }
 
-void tearDown(void)
+void dcm_reset_test_tearDown(void)
 {
     /* Cancel any pending reset */
     Dcm_CancelEcuReset();

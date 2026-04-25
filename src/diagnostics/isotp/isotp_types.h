@@ -310,6 +310,7 @@ typedef struct {
 #define ISOTP_MAX_BLOCK_SIZE            0xFFU   /* Maximum block size */
 #define ISOTP_MAX_WFT                   0xFFU   /* Maximum wait frames */
 #define ISOTP_DEFAULT_WFT_MAX           10U     /* Default max wait frames */
+#define ISOTP_MAX_CHANNELS              16U     /* Maximum channels */
 
 #ifdef __cplusplus
 }

@@ -22,7 +22,7 @@ static Dcm_SessionType s_callback_old_session;
 static Dcm_SessionType s_callback_new_session;
 static int s_callback_count;
 
-void setUp(void)
+void dcm_test_setUp(void)
 {
     memset(&test_session_config, 0, sizeof(test_session_config));
     memset(test_sessions, 0, sizeof(test_sessions));
@@ -64,7 +64,7 @@ void setUp(void)
     test_session_config.sessionChangeCallback = NULL;
 }
 
-void tearDown(void)
+void dcm_test_tearDown(void)
 {
     /* Cleanup */
 }
@@ -189,7 +189,10 @@ void test_dcm_set_session_not_supported(void)
 
 void test_dcm_set_session_invalid_transition(void)
 {
-    /* Setup config with only default session */
+    /* Setup config with only default session - must reinitialize with single session */
+    Dcm_SessionConfigType singleSession[1];
+    memcpy(&singleSession[0], &test_sessions[0], sizeof(Dcm_SessionConfigType));
+    test_session_config.sessionConfigs = singleSession;
     test_session_config.numSessions = 1;
     Dcm_SessionInit(&test_session_config);
     
@@ -398,7 +401,7 @@ void test_dcm_session_timer_update(void)
     
     /* Get initial timeout */
     uint32_t initial_timeout = Dcm_GetSessionTimeoutRemaining();
-    TEST_ASSERT_GREATER_THAN(0, initial_timeout);
+    TEST_ASSERT_TRUE(initial_timeout > 0);
     
     /* Update timer */
     Dcm_SessionTimerUpdate(1000);
@@ -416,7 +419,7 @@ void test_dcm_session_timer_reset(void)
     /* Consume some time */
     Dcm_SessionTimerUpdate(1000);
     uint32_t reduced = Dcm_GetSessionTimeoutRemaining();
-    TEST_ASSERT_LESS_THAN(5000, reduced);
+    TEST_ASSERT_TRUE(reduced < 5000);
     
     /* Reset timer */
     Dcm_ResetSessionTimer();

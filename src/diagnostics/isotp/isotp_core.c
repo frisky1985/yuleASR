@@ -570,7 +570,7 @@ static void IsoTp_TxStateMachine(uint8_t channelId)
         
         case ISOTP_STATE_TX_WAIT_STMIN: {
             /* Wait for STmin timeout */
-            float32_t stMinMs = IsoTp_StMinToMs(ctx->txStMin);
+            float stMinMs = IsoTp_StMinToMs(ctx->txStMin);
             uint32_t elapsed = IsoTp_GetCurrentTime() - ctx->txWaitStartTime;
             
             if (elapsed >= (uint32_t)stMinMs) {
@@ -920,6 +920,8 @@ Isotp_ReturnType IsoTp_SetRxBuffer(
     uint16_t bufferSize
 )
 {
+    (void)bufferSize;
+    
     if (!IsoTp_IsValidChannel(channelId)) {
         return ISOTP_E_INVALID_PARAMETER;
     }
@@ -1014,17 +1016,17 @@ uint8_t IsoTp_GetMaxSingleFramePayload(Isotp_AddressingModeType addrMode, bool i
     }
 }
 
-float32_t IsoTp_StMinToMs(uint8_t stMin)
+float IsoTp_StMinToMs(uint8_t stMin)
 {
     if (stMin <= ISOTP_MAX_STMIN_MS) {
         /* 0x00-0x7F: 0-127 ms */
-        return (float32_t)stMin;
+        return (float)stMin;
     } else if (stMin >= 0xF1U && stMin <= ISOTP_MAX_STMIN_US) {
         /* 0xF1-0xF9: 100-900 us */
-        return (float32_t)(stMin - 0xF0U) * 0.1f;
+        return (float)(stMin - 0xF0U) * 0.1f;
     }
     /* Reserved values - use default */
-    return (float32_t)ISOTP_DEFAULT_STMIN;
+    return (float)ISOTP_DEFAULT_STMIN;
 }
 
 bool IsoTp_IsValidStMin(uint8_t stMin)
@@ -1048,8 +1050,3 @@ Isotp_ChannelContextType* IsoTp_GetChannelContext(uint8_t channelId)
     }
     return &g_channelContexts[channelId];
 }
-
-/******************************************************************************
- * Limits
- ******************************************************************************/
-#define ISOTP_MAX_CHANNELS 16

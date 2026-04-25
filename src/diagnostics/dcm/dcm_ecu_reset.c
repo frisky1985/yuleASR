@@ -25,12 +25,12 @@ typedef struct {
     uint32_t magic;                         /* Initialization marker */
     const Dcm_EcuResetConfigType *config;   /* Configuration pointer */
     Dcm_EcuResetStatusType status;          /* Reset status */
-} Dcm_EcuResetStateType;
+} Dcm_EcuResetInternalStateType;
 
 /******************************************************************************
  * Static Data
  ******************************************************************************/
-static Dcm_EcuResetStateType s_resetState;
+static Dcm_EcuResetInternalStateType s_resetState;
 static bool s_initialized = false;
 
 /******************************************************************************
@@ -377,7 +377,7 @@ Dcm_EcuResetStateType Dcm_GetEcuResetState(void)
     if (!s_initialized) {
         return DCM_ECU_RESET_STATE_IDLE;
     }
-    return s_resetState.status.state;
+    return (Dcm_EcuResetStateType)s_resetState.status.state;
 }
 
 Dcm_ResetType Dcm_GetPendingResetType(void)
