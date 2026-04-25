@@ -6,6 +6,37 @@
 cmake_minimum_required(VERSION 3.14)
 
 #==============================================================================
+# FreeRTOS Port Configuration
+#==============================================================================
+
+# Default port if not specified
+if(NOT DEFINED FREERTOS_PORT)
+    set(FREERTOS_PORT "CM4F" CACHE STRING "FreeRTOS port architecture (CM4F, CM7, CM33, CM33_NTZ)")
+endif()
+
+# Convert to uppercase for comparison
+string(TOUPPER ${FREERTOS_PORT} FREERTOS_PORT_UPPER)
+
+# Map port names to architecture defines
+if(FREERTOS_PORT_UPPER STREQUAL "CM4F")
+    set(PORT_ARCH_DEFINE "PORT_ARCH_CM4F")
+    set(PORT_SOURCE_FILE "")
+elseif(FREERTOS_PORT_UPPER STREQUAL "CM7")
+    set(PORT_ARCH_DEFINE "PORT_ARCH_CM7")
+    set(PORT_SOURCE_FILE "port_cm7.c")
+elseif(FREERTOS_PORT_UPPER STREQUAL "CM33")
+    set(PORT_ARCH_DEFINE "PORT_ARCH_CM33")
+    set(PORT_SOURCE_FILE "port_cm33.c")
+elseif(FREERTOS_PORT_UPPER STREQUAL "CM33_NTZ")
+    set(PORT_ARCH_DEFINE "PORT_ARCH_CM33_NTZ")
+    set(PORT_SOURCE_FILE "port_cm33.c")
+else()
+    message(FATAL_ERROR "Unknown FREERTOS_PORT: ${FREERTOS_PORT}. Valid options: CM4F, CM7, CM33, CM33_NTZ")
+endif()
+
+message(STATUS "OS Module: FreeRTOS Port = ${FREERTOS_PORT} (${PORT_ARCH_DEFINE})")
+
+#==============================================================================
 # OS Module Sources
 #==============================================================================
 set(OS_SOURCES
@@ -40,9 +71,10 @@ target_include_directories(os_module PUBLIC
 if(ENABLE_PLATFORM_FREERTOS)
     message(STATUS "OS Module: Enabling FreeRTOS support")
     
-    # Add FreeRTOS compile definition
+    # Add FreeRTOS compile definitions
     target_compile_definitions(os_module PUBLIC
         FREERTOS_USED
+        ${PORT_ARCH_DEFINE}
     )
     
     # Add FreeRTOS include directories
@@ -50,6 +82,14 @@ if(ENABLE_PLATFORM_FREERTOS)
         ${ETH_DDS_SRC_DIR}/platform/freertos/kernel/include
         ${ETH_DDS_SRC_DIR}/platform/freertos/config
     )
+    
+    # Add port layer source file if architecture-specific
+    if(PORT_SOURCE_FILE)
+        target_sources(os_module PRIVATE
+            ${ETH_DDS_SRC_DIR}/platform/freertos/port/${PORT_SOURCE_FILE}
+        )
+        message(STATUS "OS Module: Added port source - ${PORT_SOURCE_FILE}")
+    endif()
     
     # Link FreeRTOS kernel library
     if(TARGET freertos_kernel)

@@ -1,6 +1,21 @@
 #==============================================================================
 # FreeRTOS Platform CMake Configuration
+# Supports: ARM_CM4F, ARM_CM7, ARM_CM33, ARM_CM33_NTZ, POSIX
 #==============================================================================
+
+#==============================================================================
+# FreeRTOS Port Selection
+#==============================================================================
+set(FREERTOS_PORT "ARM_CM4F" CACHE STRING "FreeRTOS port selection")
+set_property(CACHE FREERTOS_PORT PROPERTY STRINGS
+    ARM_CM4F
+    ARM_CM7
+    ARM_CM33
+    ARM_CM33_NTZ
+    POSIX
+)
+
+message(STATUS "FreeRTOS Port: ${FREERTOS_PORT}")
 
 #==============================================================================
 # FreeRTOS Kernel Library
@@ -19,23 +34,88 @@ set(FREERTOS_SOURCES
     ${FREERTOS_KERNEL_DIR}/portable/MemMang/heap_4.c
 )
 
-# Platform port layer - default to POSIX for simulation/testing
-# In real embedded target, this should be changed to the actual port
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # Use POSIX port for Linux simulation
+#==============================================================================
+# Port-specific Configuration
+#==============================================================================
+set(FREERTOS_PORT_SOURCES "")
+set(FREERTOS_PORT_INCLUDE_DIRS "")
+set(FREERTOS_PORT_DEFINITIONS "")
+
+if(FREERTOS_PORT STREQUAL "POSIX")
+    # POSIX port for Linux simulation
     list(APPEND FREERTOS_SOURCES
         ${FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Posix/port.c
         ${FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Posix/utils/wait_for_event.c
     )
-else()
-    # Default to GCC/ARM_CM4F port for embedded
+    list(APPEND FREERTOS_PORT_INCLUDE_DIRS
+        ${FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Posix
+    )
+    list(APPEND FREERTOS_PORT_DEFINITIONS
+        PORTABLE_GCC_POSIX
+    )
+    message(STATUS "  Using POSIX port (Linux simulation)")
+
+elseif(FREERTOS_PORT STREQUAL "ARM_CM4F")
+    # ARM Cortex-M4F port
     list(APPEND FREERTOS_SOURCES
         ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM4F/port.c
     )
+    list(APPEND FREERTOS_PORT_INCLUDE_DIRS
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM4F
+    )
+    list(APPEND FREERTOS_PORT_DEFINITIONS
+        PORTABLE_GCC_ARM_CM4F
+    )
+    message(STATUS "  Using ARM_CM4F port")
+
+elseif(FREERTOS_PORT STREQUAL "ARM_CM7")
+    # ARM Cortex-M7 port (r0p1 revision)
+    list(APPEND FREERTOS_SOURCES
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM7/r0p1/port.c
+    )
+    list(APPEND FREERTOS_PORT_INCLUDE_DIRS
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM7/r0p1
+    )
+    list(APPEND FREERTOS_PORT_DEFINITIONS
+        PORTABLE_GCC_ARM_CM7
+    )
+    message(STATUS "  Using ARM_CM7 port (r0p1)")
+
+elseif(FREERTOS_PORT STREQUAL "ARM_CM33")
+    # ARM Cortex-M33 port with TrustZone (non-secure side)
+    list(APPEND FREERTOS_SOURCES
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM33/non_secure/port.c
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM33/non_secure/portasm.c
+    )
+    list(APPEND FREERTOS_PORT_INCLUDE_DIRS
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM33/non_secure
+    )
+    list(APPEND FREERTOS_PORT_DEFINITIONS
+        PORTABLE_GCC_ARM_CM33
+    )
+    message(STATUS "  Using ARM_CM33 port (TrustZone non-secure)")
+
+elseif(FREERTOS_PORT STREQUAL "ARM_CM33_NTZ")
+    # ARM Cortex-M33 port without TrustZone
+    list(APPEND FREERTOS_SOURCES
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM33_NTZ/non_secure/port.c
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM33_NTZ/non_secure/portasm.c
+    )
+    list(APPEND FREERTOS_PORT_INCLUDE_DIRS
+        ${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM33_NTZ/non_secure
+    )
+    list(APPEND FREERTOS_PORT_DEFINITIONS
+        PORTABLE_GCC_ARM_CM33_NTZ
+    )
+    message(STATUS "  Using ARM_CM33_NTZ port (No TrustZone)")
+
+else()
+    message(FATAL_ERROR "Unsupported FREERTOS_PORT: ${FREERTOS_PORT}. "
+                        "Valid options: ARM_CM4F, ARM_CM7, ARM_CM33, ARM_CM33_NTZ, POSIX")
 endif()
 
-# FreeRTOS port sources
-set(FREERTOS_PORT_SOURCES
+# FreeRTOS port sources (platform-specific)
+list(APPEND FREERTOS_PORT_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/port/os_port.c
 )
 
@@ -51,15 +131,13 @@ add_library(freertos_kernel STATIC
 target_include_directories(freertos_kernel PUBLIC
     ${FREERTOS_KERNEL_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/config
-    $<$<BOOL:${CMAKE_SYSTEM_NAME STREQUAL "Linux">>:${FREERTOS_KERNEL_DIR}/portable/ThirdParty/GCC/Posix>
-    $<$<NOT:$<BOOL:${CMAKE_SYSTEM_NAME STREQUAL "Linux">>>:${FREERTOS_KERNEL_DIR}/portable/GCC/ARM_CM4F>
+    ${FREERTOS_PORT_INCLUDE_DIRS}
 )
 
 # FreeRTOS compile definitions
 target_compile_definitions(freertos_kernel PUBLIC
     FREERTOS_USED
-    $<$<BOOL:${CMAKE_SYSTEM_NAME STREQUAL "Linux">>:PORTABLE_GCC_POSIX>
-    $<$<NOT:$<BOOL:${CMAKE_SYSTEM_NAME STREQUAL "Linux">>>:PORTABLE_GCC_ARM_CM4F>
+    ${FREERTOS_PORT_DEFINITIONS}
 )
 
 #==============================================================================
@@ -78,7 +156,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 # Link pthread for POSIX port on Linux
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+if(FREERTOS_PORT STREQUAL "POSIX")
     target_link_libraries(freertos_kernel PUBLIC pthread)
 endif()
 
@@ -88,6 +166,7 @@ endif()
 set(FREERTOS_INCLUDE_DIRS
     ${FREERTOS_KERNEL_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/config
+    ${FREERTOS_PORT_INCLUDE_DIRS}
     CACHE INTERNAL "FreeRTOS include directories"
 )
 
