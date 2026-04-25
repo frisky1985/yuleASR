@@ -41,7 +41,7 @@ extern "C" {
 #define E2E_PROFILE_06                  0x06U   /* CRC16 + Counter */
 #define E2E_PROFILE_07                  0x07U   /* CRC32 + Counter */
 #define E2E_PROFILE_11                  0x0BU   /* Dynamic CRC8 + Sequence */
-#define E2E_PROFILE_22                  0x16U   /* Dynamic CRC16 + Sequence */
+#define E2E_PROFILE_22                  0x16U   /* Dynamic CRC16 + Sequence (Large Dynamic Data) */
 
 /* E2E头部大小 */
 #define E2E_P01_HEADER_SIZE             1U      /* CRC8 */
@@ -51,7 +51,12 @@ extern "C" {
 #define E2E_P06_HEADER_SIZE             4U      /* CRC16 + Counter + 2 reserved */
 #define E2E_P07_HEADER_SIZE             8U      /* CRC32 + Counter + 4 reserved */
 #define E2E_P11_HEADER_SIZE             3U      /* Dynamic CRC8 + Seq */
+#define E2E_P22_HEADER_SIZE             12U     /* Dynamic CRC16 + Seq + Length + DataID */
 #define E2E_MAX_OVERHEAD                16U
+
+/* Profile 22 specific */
+#define E2E_P22_MAX_DATA_LENGTH         4096U   /* Max data length for P22 */
+#define E2E_P22_MIN_DATA_LENGTH         16U     /* Min data length for P22 */
 
 /* 计数器最大值 */
 #define E2E_COUNTER_MAX_4BIT            15U
@@ -199,6 +204,30 @@ typedef struct {
     bool synced;
 } E2E_P11CheckStateType;
 
+/* E2E Profile 22 配置（动态大数据） */
+typedef struct {
+    uint16_t dataId;                /* Data ID */
+    uint16_t dataLength;            /* Current data length */
+    uint16_t maxDataLength;         /* Maximum data length (up to 4096 bytes) */
+    uint16_t minDataLength;         /* Minimum data length */
+    uint8_t  crcOffset;             /* CRC offset */
+    uint8_t  counterOffset;         /* Counter offset */
+    uint8_t  dataIdOffset;          /* Data ID offset */
+    uint8_t  lengthOffset;          /* Length field offset */
+    bool     includeLengthInCrc;    /* Include length field in CRC calculation */
+} E2E_P22ConfigType;
+
+/* E2E Profile 22 检查状态 */
+typedef struct {
+    uint16_t counter;               /* 16-bit counter for large sequences */
+    uint16_t maxDeltaCounter;       /* Maximum delta counter allowed */
+    uint16_t lastDataId;            /* Last received Data ID */
+    uint16_t lastDataLength;        /* Last received data length */
+    E2E_PCheckStatusType status;    /* Check status */
+    bool synced;                    /* Synchronization flag */
+    uint32_t messageCounter;        /* Total message counter for statistics */
+} E2E_P22CheckStateType;
+
 /* 通用E2E上下文 */
 typedef struct {
     uint8_t profile;            /* E2E Profile ID */
@@ -210,6 +239,7 @@ typedef struct {
         E2E_P06ConfigType p06;
         E2E_P07ConfigType p07;
         E2E_P11ConfigType p11;
+        E2E_P22ConfigType p22;
     } config;
     union {
         E2E_P01CheckStateType p01;
@@ -219,6 +249,7 @@ typedef struct {
         E2E_P06CheckStateType p06;
         E2E_P07CheckStateType p07;
         E2E_P11CheckStateType p11;
+        E2E_P22CheckStateType p22;
     } state;
     uint32_t initMagic;
     bool initialized;
@@ -409,6 +440,39 @@ Std_ReturnType E2E_P11_Check(
     const void* data,
     uint32_t length,
     uint16_t* status);
+
+/******************************************************************************
+ * Function Prototypes - Profile 22 (Dynamic CRC16 + Sequence for Large Data)
+ ******************************************************************************/
+
+/**
+ * @brief Profile 22 保护数据
+ * @note Profile 22支持动态长度数据，最大 4096 字节
+ */
+Std_ReturnType E2E_P22_Protect(
+    E2E_ContextType* context,
+    void* data,
+    uint32_t* length);
+
+/**
+ * @brief Profile 22 校验数据
+ * @note 适用于大数据量、动态长度场景
+ */
+Std_ReturnType E2E_P22_Check(
+    E2E_ContextType* context,
+    const void* data,
+    uint32_t length,
+    uint16_t* status);
+
+/**
+ * @brief Profile 22 设置动态长度
+ * @param context E2E上下文
+ * @param dataLength 当前数据长度
+ * @return E_OK on success
+ */
+Std_ReturnType E2E_P22_SetDataLength(
+    E2E_ContextType* context,
+    uint16_t dataLength);
 
 /******************************************************************************
  * Function Prototypes - Generic Interface
