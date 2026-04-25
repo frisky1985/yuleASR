@@ -317,41 +317,53 @@ static int test_profile22_large_data(void)
 {
     printf("\n[TEST] Profile 22 Large Dynamic Data...\n");
 
-    E2E_ContextType ctx;
+    E2E_ContextType txCtx, rxCtx;
     uint8_t data[4096] = {0};
     uint32_t length;
     uint16_t status;
 
-    TEST_ASSERT(E2E_InitContext(&ctx, E2E_PROFILE_22) == E_OK);
+    /* TX Context */
+    TEST_ASSERT(E2E_InitContext(&txCtx, E2E_PROFILE_22) == E_OK);
+    txCtx.config.p22.dataId = 0xBEEF;
+    txCtx.config.p22.dataLength = 1000;
+    txCtx.config.p22.maxDataLength = 4096;
+    txCtx.config.p22.minDataLength = E2E_P22_MIN_DATA_LENGTH;
+    txCtx.config.p22.crcOffset = 0;
+    txCtx.config.p22.counterOffset = 2;
+    txCtx.config.p22.dataIdOffset = 4;
+    txCtx.config.p22.lengthOffset = 6;
+    txCtx.config.p22.includeLengthInCrc = TRUE;
 
-    ctx.config.p22.dataId = 0xBEEF;
-    ctx.config.p22.dataLength = 1000;
-    ctx.config.p22.maxDataLength = 4096;
-    ctx.config.p22.minDataLength = E2E_P22_MIN_DATA_LENGTH;
-    ctx.config.p22.crcOffset = 0;
-    ctx.config.p22.counterOffset = 2;
-    ctx.config.p22.dataIdOffset = 4;
-    ctx.config.p22.lengthOffset = 6;
-    ctx.config.p22.includeLengthInCrc = TRUE;
+    /* RX Context */
+    TEST_ASSERT(E2E_InitContext(&rxCtx, E2E_PROFILE_22) == E_OK);
+    rxCtx.config.p22.dataId = 0xBEEF;
+    rxCtx.config.p22.dataLength = 1000;
+    rxCtx.config.p22.maxDataLength = 4096;
+    rxCtx.config.p22.minDataLength = E2E_P22_MIN_DATA_LENGTH;
+    rxCtx.config.p22.crcOffset = 0;
+    rxCtx.config.p22.counterOffset = 2;
+    rxCtx.config.p22.dataIdOffset = 4;
+    rxCtx.config.p22.lengthOffset = 6;
+    rxCtx.config.p22.includeLengthInCrc = TRUE;
 
     /* Test with 1000 bytes */
     memset(data, 0xAA, sizeof(data));
     length = 1000;
-    TEST_ASSERT(E2E_P22_Protect(&ctx, data, &length) == E_OK);
+    TEST_ASSERT(E2E_P22_Protect(&txCtx, data, &length) == E_OK);
     TEST_ASSERT(length == 1000);
     TEST_ASSERT(data[6] == 0xE8 && data[7] == 0x03); /* Length = 1000 (0x03E8) little-endian */
 
     /* Verify data */
-    TEST_ASSERT(E2E_P22_Check(&ctx, data, length, &status) == E_OK);
+    TEST_ASSERT(E2E_P22_Check(&rxCtx, data, length, &status) == E_OK);
     TEST_ASSERT(status == E2E_ERROR_NONE);
 
     /* Test dynamic length setting */
-    TEST_ASSERT(E2E_P22_SetDataLength(&ctx, 2048) == E_OK);
-    TEST_ASSERT(ctx.config.p22.dataLength == 2048);
+    TEST_ASSERT(E2E_P22_SetDataLength(&txCtx, 2048) == E_OK);
+    TEST_ASSERT(txCtx.config.p22.dataLength == 2048);
 
     /* Test invalid length */
-    TEST_ASSERT(E2E_P22_SetDataLength(&ctx, 8) == E_NOT_OK); /* Too small */
-    TEST_ASSERT(E2E_P22_SetDataLength(&ctx, 5000) == E_NOT_OK); /* Too large */
+    TEST_ASSERT(E2E_P22_SetDataLength(&txCtx, 8) == E_NOT_OK); /* Too small */
+    TEST_ASSERT(E2E_P22_SetDataLength(&txCtx, 5000) == E_NOT_OK); /* Too large */
 
     TEST_PASS();
     g_tests_passed++;
