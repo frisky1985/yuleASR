@@ -1,0 +1,153 @@
+# DDS Configuration Example
+# This is a sample DDS configuration file for ADAS sensor fusion system
+
+system:
+  name: "ADAS_Sensor_Fusion"
+  version: "1.2.0"
+  description: "ADAS sensor fusion system with DDS middleware"
+  vendor: "ExampleCorp"
+
+domains:
+  - id: 1
+    name: "PerceptionDomain"
+    description: "Perception domain for sensor data processing"
+    participants:
+      - name: "CameraECU"
+        qos_profile: "sensor_high_reliability"
+        publishers:
+          - topic: "CameraObjectDetection"
+            type: "ObjectDetectionData"
+            qos:
+              reliability: RELIABLE
+              deadline:
+                sec: 0
+                nanosec: 33000000  # 30Hz
+              history:
+                kind: KEEP_LAST
+                depth: 1
+          - topic: "CameraImage"
+            type: "ImageData"
+            qos:
+              reliability: BEST_EFFORT
+              history:
+                kind: KEEP_LAST
+                depth: 2
+
+      - name: "RadarECU"
+        publishers:
+          - topic: "RadarData"
+            type: "RadarPointCloud"
+            qos:
+              reliability: RELIABLE
+              deadline:
+                sec: 0
+                nanosec: 20000000  # 50Hz
+        subscribers:
+          - topic: "FusedObjects"
+            type: "ObjectList"
+
+  - id: 2
+    name: "ControlDomain"
+    participants:
+      - name: "PlanningECU"
+        qos_profile: "control_realtime"
+        subscribers:
+          - topic: "CameraObjectDetection"
+            type: "ObjectDetectionData"
+            qos:
+              reliability: RELIABLE
+          - topic: "RadarData"
+            type: "RadarPointCloud"
+        publishers:
+          - topic: "FusedObjects"
+            type: "ObjectList"
+            qos:
+              reliability: RELIABLE
+              durability: TRANSIENT_LOCAL
+              history:
+                kind: KEEP_LAST
+                depth: 10
+
+topics:
+  - name: "CameraObjectDetection"
+    type: "ObjectDetectionData"
+    description: "Object detection results from camera"
+    qos:
+      reliability: RELIABLE
+      deadline:
+        sec: 0
+        nanosec: 33000000
+
+  - name: "CameraImage"
+    type: "ImageData"
+    description: "Raw camera image data"
+
+  - name: "RadarData"
+    type: "RadarPointCloud"
+    description: "Radar point cloud data"
+
+  - name: "FusedObjects"
+    type: "ObjectList"
+    description: "Fused object list from sensor fusion"
+
+qos_profiles:
+  sensor_high_reliability:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      sec: 0
+      nanosec: 33000000
+
+  control_realtime:
+    reliability: RELIABLE
+    durability: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_LAST
+      depth: 10
+
+  best_effort_sensor:
+    reliability: BEST_EFFORT
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+transport:
+  kind: UDP
+  interface: "eth0"
+  multicast_address: "239.255.0.1"
+  port_base: 7400
+  port_range: 100
+  buffer_size: 65535
+  max_message_size: 65535
+  heartbeat_period_ms: 1000
+
+tsn:
+  enabled: true
+  streams:
+    - name: "CameraStream"
+      priority: 7
+      bandwidth: 10000000  # 10 Mbps
+      max_latency: 100000   # 100 microseconds
+      frame_size: 1500
+
+    - name: "ControlStream"
+      priority: 6
+      bandwidth: 1000000   # 1 Mbps
+      max_latency: 50000    # 50 microseconds
+      frame_size: 1500
+
+security:
+  enabled: false
+  authentication: false
+  encryption: false
+  access_control: false
+  logging: false
+  # Certificate paths (when security is enabled)
+  # identity_ca: "certs/identity_ca.pem"
+  # permissions_ca: "certs/permissions_ca.pem"
+  # private_key: "certs/key.pem"
+  # identity_certificate: "certs/cert.pem"

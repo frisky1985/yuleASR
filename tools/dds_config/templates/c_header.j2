@@ -1,0 +1,80 @@
+/**
+ * @file {{ filename }}
+ * @brief {{ description }}
+ * @version {{ version }}
+ * @date {{ timestamp }}
+ * @author Auto-generated
+ *
+ * @note This file is auto-generated. Do not modify manually.
+ * @copyright Copyright (c) 2026
+ */
+
+#ifndef {{ include_guard }}
+#define {{ include_guard }}
+
+#include <stdint.h>
+#include <stdbool.h>
+#include "dds/core/dds_core.h"
+#include "common/types/eth_types.h"
+
+{% if options.include_version_macro %}
+/* Generated for {{ system_name }} v{{ system_version }} */
+#define DDS_CONFIG_GENERATED_VERSION "{{ system_version }}"
+
+{% endif %}
+{% if domain_macros %}
+/* ============================================================================ */
+/* Domain ID Definitions                                                        */
+/* ============================================================================ */
+{% for macro in domain_macros %}
+/** @brief {{ macro.description }} */
+#define {{ macro.name }} ({{ macro.value }}U)
+{% endfor %}
+{% endif %}
+
+{% if topic_macros %}
+/* ============================================================================ */
+/* Topic Name Definitions                                                       */
+/* ============================================================================ */
+{% for macro in topic_macros %}
+/** @brief {{ macro.description }} */
+#define {{ macro.name }} "{{ macro.value }}"
+{% endfor %}
+{% endif %}
+
+{% if qos_externs %}
+/* ============================================================================ */
+/* QoS Profile Declarations                                                     */
+/* ============================================================================ */
+{% for extern in qos_externs %}
+/** @brief {{ extern.description }} */
+extern const {{ extern.type }} {{ extern.name }};
+{% endfor %}
+{% endif %}
+
+{% if participant_externs %}
+/* ============================================================================ */
+/* Domain Participant Declarations                                              */
+/* ============================================================================ */
+{% for extern in participant_externs %}
+/** @brief {{ extern.description }} */
+extern {{ extern.type }} {{ extern.name }};
+{% endfor %}
+{% endif %}
+
+/* ============================================================================ */
+/* Initialization Functions                                                     */
+/* ============================================================================ */
+
+/**
+ * @brief Initialize all DDS generated configurations
+ * @return eth_status_t ETH_OK on success, error code on failure
+ */
+eth_status_t {{ init_function }}(void);
+
+/**
+ * @brief Deinitialize all DDS generated configurations
+ */
+void {{ deinit_function }}(void);
+
+#endif /* {{ include_guard }} */
