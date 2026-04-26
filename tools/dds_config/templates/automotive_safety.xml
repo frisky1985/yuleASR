@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DDS Automotive Safety Configuration Template
+  
+  This template provides a safety-critical DDS configuration for
+  autonomous driving and safety-critical automotive applications.
+  
+  Features:
+  - Multiple redundant domains
+  - Static discovery with pre-configured peers
+  - High-reliability transport configuration
+  - E2E protection on all safety-critical topics
+  - Deterministic timing with strict deadlines
+  - Full AUTOSAR integration with BswM rules
+-->
+<dds xmlns="http://www.omg.org/dds"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- Domain Configuration - Primary Domain -->
+    <domain domain_id="1" name="SafetyDomain_Primary">
+        <description>Primary safety-critical DDS domain</description>
+        
+        <discovery>
+            <protocol>STATIC</protocol>
+            <lease_duration>1</lease_duration>
+            <announce_period>0.5</announce_period>
+            <static_peers>
+                <peer participant_id="ADAS_ECU" locator="192.168.1.10:7400" kind="UDPv4"/>
+                <peer participant_id="Powertrain_ECU" locator="192.168.1.20:7400" kind="UDPv4"/>
+                <peer participant_id="Chassis_ECU" locator="192.168.1.30:7400" kind="UDPv4"/>
+                <peer participant_id="Gateway_ECU" locator="192.168.1.1:7400" kind="UDPv4"/>
+            </static_peers>
+            <multicast>
+                <enabled>false</enabled>
+            </multicast>
+        </discovery>
+        
+        <transport>
+            <default>SHM+UDP</default>
+            <shm_enabled>true</shm_enabled>
+            <intra_process>true</intra_process>
+        </transport>
+        
+        <resources>
+            <max_participants>20</max_participants>
+            <max_domains>2</max_domains>
+            <shm_size_kb>262144</shm_size_kb>
+            <shm_segments>32</shm_segments>
+        </resources>
+        
+        <timing>
+            <spin_frequency>1000</spin_frequency>
+            <max_blocking_time>10</max_blocking_time>
+        </timing>
+    </domain>
+
+    <!-- Domain Configuration - Redundant Domain -->
+    <domain domain_id="2" name="SafetyDomain_Redundant">
+        <description>Redundant safety-critical DDS domain</description>
+        
+        <discovery>
+            <protocol>STATIC</protocol>
+            <lease_duration>1</lease_duration>
+            <announce_period>0.5</announce_period>
+            <static_peers>
+                <peer participant_id="ADAS_ECU" locator="192.168.2.10:7400" kind="UDPv4"/>
+                <peer participant_id="Powertrain_ECU" locator="192.168.2.20:7400" kind="UDPv4"/>
+                <peer participant_id="Chassis_ECU" locator="192.168.2.30:7400" kind="UDPv4"/>
+                <peer participant_id="Gateway_ECU" locator="192.168.2.1:7400" kind="UDPv4"/>
+            </static_peers>
+            <multicast>
+                <enabled>false</enabled>
+            </multicast>
+        </discovery>
+        
+        <transport>
+            <default>UDPv4</default>
+            <shm_enabled>false</shm_enabled>
+            <intra_process>false</intra_process>
+        </transport>
+    </domain>
+
+    <!-- QoS Profiles -->
+    <profiles>
+        <!-- Safety-critical profile for ADAS -->
+        <qos_profile name="Safety_ADAS">
+            <description>Safety-critical ADAS communication</description>
+            <reliability>
+                <kind>RELIABLE</kind>
+                <max_blocking_time>0.001</max_blocking_time>
+                <synchronous>true</synchronous>
+            </reliability>
+            <durability>
+                <kind>TRANSIENT_LOCAL</kind>
+            </durability>
+            <history>
+                <kind>KEEP_ALL</kind>
+            </history>
+            <deadline>
+                <period>0.005</period>
+            </deadline>
+            <latency_budget>0.0005</latency_budget>
+            <liveliness>
+                <kind>AUTOMATIC</kind>
+                <lease_duration>0.1</lease_duration>
+                <assert_period>0.05</assert_period>
+            </liveliness>
+            <resource_limits>
+                <max_samples>1000</max_samples>
+                <max_instances>10</max_instances>
+                <max_samples_per_instance>100</max_samples_per_instance>
+            </resource_limits>
+            <transport_priority>255</transport_priority>
+        </qos_profile>
+        
+        <!-- Safety profile with E2E protection -->
+        <qos_profile name="Safety_E2E">
+            <description>Safety-critical with end-to-end protection</description>
+            <reliability>
+                <kind>RELIABLE</kind>
+                <max_blocking_time>0.001</max_blocking_time>
+                <synchronous>true</synchronous>
+            </reliability>
+            <durability>
+                <kind>TRANSIENT_LOCAL</kind>
+            </durability>
+            <history>
+                <kind>KEEP_LAST</kind>
+                <depth>5</depth>
+            </history>
+            <deadline>
+                <period>0.01</period>
+            </deadline>
+            <latency_budget>0.001</latency_budget>
+            <liveliness>
+                <kind>AUTOMATIC</kind>
+                <lease_duration>0.05</lease_duration>
+            </liveliness>
+            <transport_priority>255</transport_priority>
+            <ownership>
+                <kind>EXCLUSIVE</kind>
+                <strength>100</strength>
+            </ownership>
+        </qos_profile>
+        
+        <!-- Diagnostic profile -->
+        <qos_profile name="Diagnostic">
+            <description>Diagnostic and logging data</description>
+            <reliability>
+                <kind>BEST_EFFORT</kind>
+            </reliability>
+            <durability>
+                <kind>VOLATILE</kind>
+            </durability>
+            <history>
+                <kind>KEEP_LAST</kind>
+                <depth>100</depth>
+            </history>
+            <lifespan>
+                <enabled>true</enabled>
+                <duration>60</duration>
+            </lifespan>
+            <transport_priority>0</transport_priority>
+        </qos_profile>
+    </profiles>
+
+    <!-- Transport Configurations -->
+    <transports>
+        <!-- Primary SHM transport for intra-ECU communication -->
+        <transport name="shm_safety" type="SHM">
+            <enabled>true</enabled>
+            <priority>255</priority>
+            <shm>
+                <mode>POSIX</mode>
+                <segment_size>262144</segment_size>
+                <max_segments>32</max_segments>
+                <zero_copy>true</zero_copy>
+                <lock_free>true</lock_free>
+                <watchdog>true</watchdog>
+            </shm>
+        </transport>
+        
+        <!-- Primary UDP transport -->
+        <transport name="udp_primary" type="UDPv4">
+            <enabled>true</enabled>
+            <priority>255</priority>
+            <whitelist>
+                <interface>192.168.1.0/24</interface>
+            </whitelist>
+            <udp>
+                <port>7400</port>
+                <ttl>2</ttl>
+                <recv_buffer>8388608</recv_buffer>
+                <send_buffer>2097152</send_buffer>
+            </udp>
+        </transport>
+        
+        <!-- Redundant UDP transport -->
+        <transport name="udp_redundant" type="UDPv4">
+            <enabled>true</enabled>
+            <priority>254</priority>
+            <whitelist>
+                <interface>192.168.2.0/24</interface>
+            </whitelist>
+            <udp>
+                <port>7401</port>
+                <ttl>2</ttl>
+                <recv_buffer>8388608</recv_buffer>
+                <send_buffer>2097152</send_buffer>
+            </udp>
+        </transport>
+    </transports>
+
+    <!-- Safety-Critical Topics -->
+    <topics>
+        <!-- ADAS Perception Output -->
+        <topic name="ObjectList" data_type="ADAS_Objects" kind="SIGNAL">
+            <description>Detected objects from ADAS perception</description>
+            <key_fields>object_id</key_fields>
+            <max_instances>100</max_instances>
+            <qos profile="Safety_ADAS"/>
+            <security>
+                <e2e_enabled>true</e2e_enabled>
+                <e2e_profile>P22</e2e_profile>
+                <e2e_data_id>1001</e2e_data_id>
+                <encryption_enabled>false</encryption_enabled>
+            </security>
+            <autosar>
+                <enabled>true</enabled>
+                <ecu_id>ADAS_ECU</ecu_id>
+                <sw_component>PerceptionSwc</sw_component>
+                <soad_socket>ObjectList_Tcp</soad_socket>
+                <pdur_src_pdu>PDU_ADAS_OBJECTS</pdur_src_pdu>
+            </autosar>
+        </topic>
+        
+        <!-- Trajectory Planning -->
+        <topic name="PlannedTrajectory" data_type="Trajectory" kind="CONTROL">
+            <description>Planned vehicle trajectory</description>
+            <qos profile="Safety_E2E"/>
+            <security>
+                <e2e_enabled>true</e2e_enabled>
+                <e2e_profile>P22</e2e_profile>
+                <e2e_data_id>1002</e2e_data_id>
+            </security>
+            <autosar>
+                <enabled>true</enabled>
+                <ecu_id>ADAS_ECU</ecu_id>
+                <sw_component>PlanningSwc</sw_component>
+                <pdur_src_pdu>PDU_PLANNED_TRAJ</pdur_src_pdu>
+            </autosar>
+        </topic>
+        
+        <!-- Vehicle Control Commands -->
+        <topic name="VehicleControl" data_type="ControlCommand" kind="CONTROL">
+            <description>Vehicle control commands to chassis</description>
+            <qos profile="Safety_E2E"/>
+            <security>
+                <e2e_enabled>true</e2e_enabled>
+                <e2e_profile>P22</e2e_profile>
+                <e2e_data_id>1003</e2e_data_id>
+            </security>
+            <autosar>
+                <enabled>true</enabled>
+                <ecu_id>Chassis_ECU</ecu_id>
+                <sw_component>VehicleControlSwc</sw_component>
+                <pdur_src_pdu>PDU_VEH_CTRL</pdur_src_pdu>
+            </autosar>
+        </topic>
+        
+        <!-- Vehicle State -->
+        <topic name="VehicleState" data_type="VehicleDynamics" kind="SIGNAL">
+            <description>Current vehicle state from chassis</description>
+            <qos profile="Safety_ADAS"/>
+            <security>
+                <e2e_enabled>true</e2e_enabled>
+                <e2e_profile>P01</e2e_profile>
+                <e2e_data_id>2001</e2e_data_id>
+            </security>
+            <autosar>
+                <enabled>true</enabled>
+                <ecu_id>Chassis_ECU</ecu_id>
+                <pdur_src_pdu>PDU_VEH_STATE</pdur_src_pdu>
+            </autosar>
+        </topic>
+        
+        <!-- System Diagnostics -->
+        <topic name="DiagnosticData" data_type="DiagnosticInfo" kind="EVENT">
+            <description>System diagnostic information</description>
+            <qos profile="Diagnostic"/>
+            <autosar>
+                <enabled>true</enabled>
+                <ecu_id>Gateway_ECU</ecu_id>
+                <sw_component>DiagSwc</sw_component>
+            </autosar>
+        </topic>
+    </topics>
+
+    <!-- Security Configuration -->
+    <security>
+        <authentication>DDS:Auth:PKI-DH</authentication>
+        <access_control>true</access_control>
+        <encryption>AES-128-GCM</encryption>
+        <key_store>/opt/dds/keys</key_store>
+        <permissions>
+            <topic name="ObjectList" read="ADAS_ECU" write="ADAS_ECU"/>
+            <topic name="VehicleControl" read="Chassis_ECU" write="ADAS_ECU"/>
+            <topic name="VehicleState" read="ADAS_ECU,Powertrain_ECU" write="Chassis_ECU"/>
+        </permissions>
+    </security>
+
+    <!-- AUTOSAR Configuration -->
+    <autosar>
+        <ecu_id>ADAS_ECU</ecu_id>
+        <swc_name>AdasDdsSwc</swc_name>
+        
+        <!-- EcuM Integration -->
+        <ecum>
+            <fixed_config>
+                <init_function>Dds_Init</init_function>
+                <deinit_function>Dds_Deinit</deinit_function>
+            </fixed_config>
+        </ecum>
+        
+        <!-- BswM Rules -->
+        <bswm_rules>
+            <rule name="Dds_Init" priority="100">
+                <condition>ECUM_STATE_APP_RUN</condition>
+                <action>DDS_INIT</action>
+            </rule>
+            <rule name="Dds_Start" priority="90">
+                <condition>DDS_MODE_REQ_RUN</condition>
+                <action>DDS_START_COMMUNICATION</action>
+            </rule>
+            <rule name="Dds_Stop" priority="80">
+                <condition>ECUM_STATE_SHUTDOWN</condition>
+                <action>DDS_STOP_COMMUNICATION</action>
+            </rule>
+            <rule name="Dds_SafeState" priority="70">
+                <condition>SAFETY_EVENT_DETECTED</condition>
+                <action>DDS_ENTER_SAFE_STATE</action>
+            </rule>
+        </bswm_rules>
+        
+        <!-- SoAd Socket Connections -->
+        <soad>
+            <socket_connection name="ObjectList_Tcp">
+                <protocol>TCP</protocol>
+                <local_port>7500</local_port>
+                <remote_address>192.168.1.10</remote_address>
+                <remote_port>7500</remote_port>
+            </socket_connection>
+        </soad>
+        
+        <!-- PduR Routing -->
+        <pdur>
+            <routing path="PDU_ADAS_OBJECTS">
+                <source>ADAS_ECU</source>
+                <destinations>Gateway_ECU,Chassis_ECU</destinations>
+            </routing>
+            <routing path="PDU_VEH_CTRL">
+                <source>ADAS_ECU</source>
+                <destinations>Chassis_ECU</destinations>
+            </routing>
+        </pdur>
+    </autosar>
+
+</dds>

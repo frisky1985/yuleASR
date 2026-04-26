@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DDS Automotive Basic Configuration Template
+  
+  This template provides a basic DDS configuration suitable for
+  standard automotive Ethernet applications.
+  
+  Features:
+  - Single domain (ID: 0)
+  - Simple discovery protocol
+  - UDPv4 transport with SHM fallback
+  - Standard reliability QoS
+  - Basic AUTOSAR integration
+-->
+<dds xmlns="http://www.omg.org/dds"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+    <!-- Domain Configuration -->
+    <domain domain_id="0" name="AutomotiveDomain">
+        <description>Basic automotive DDS domain configuration</description>
+        
+        <discovery>
+            <protocol>SIMPLE</protocol>
+            <lease_duration>10</lease_duration>
+            <announce_period>5</announce_period>
+            <multicast>
+                <enabled>true</enabled>
+                <address>239.255.0.1</address>
+                <port>7400</port>
+            </multicast>
+        </discovery>
+        
+        <transport>
+            <default>UDPv4</default>
+            <shm_enabled>true</shm_enabled>
+            <intra_process>true</intra_process>
+        </transport>
+        
+        <resources>
+            <max_participants>10</max_participants>
+            <max_domains>1</max_domains>
+            <shm_size_kb>65536</shm_size_kb>
+            <shm_segments>10</shm_segments>
+        </resources>
+        
+        <timing>
+            <spin_frequency>100</spin_frequency>
+            <max_blocking_time>1000</max_blocking_time>
+        </timing>
+    </domain>
+
+    <!-- QoS Profiles -->
+    <profiles>
+        <!-- Default reliable profile -->
+        <qos_profile name="Default">
+            <reliability>
+                <kind>RELIABLE</kind>
+                <max_blocking_time>0.1</max_blocking_time>
+            </reliability>
+            <durability>
+                <kind>VOLATILE</kind>
+            </durability>
+            <history>
+                <kind>KEEP_LAST</kind>
+                <depth>1</depth>
+            </history>
+        </qos_profile>
+        
+        <!-- Best effort sensor data profile -->
+        <qos_profile name="SensorData">
+            <description>For sensor data streaming</description>
+            <reliability>
+                <kind>BEST_EFFORT</kind>
+            </reliability>
+            <durability>
+                <kind>VOLATILE</kind>
+            </durability>
+            <history>
+                <kind>KEEP_LAST</kind>
+                <depth>10</depth>
+            </history>
+        </qos_profile>
+        
+        <!-- Control signal profile -->
+        <qos_profile name="ControlSignal">
+            <description>For control signals with deadline</description>
+            <reliability>
+                <kind>RELIABLE</kind>
+                <max_blocking_time>0.01</max_blocking_time>
+            </reliability>
+            <durability>
+                <kind>TRANSIENT_LOCAL</kind>
+            </durability>
+            <history>
+                <kind>KEEP_LAST</kind>
+                <depth>1</depth>
+            </history>
+            <deadline>
+                <period>0.01</period>
+            </deadline>
+            <latency_budget>0.001</latency_budget>
+        </qos_profile>
+    </profiles>
+
+    <!-- Transport Configurations -->
+    <transports>
+        <transport name="udp_default" type="UDPv4">
+            <enabled>true</enabled>
+            <udp>
+                <port>7400</port>
+                <ttl>1</ttl>
+                <recv_buffer>2097152</recv_buffer>
+                <send_buffer>65536</send_buffer>
+            </udp>
+        </transport>
+        
+        <transport name="shm_default" type="SHM">
+            <enabled>true</enabled>
+            <shm>
+                <mode>POSIX</mode>
+                <segment_size>65536</segment_size>
+                <max_segments>10</max_segments>
+                <zero_copy>true</zero_copy>
+            </shm>
+        </transport>
+    </transports>
+
+    <!-- Example Topics -->
+    <topics>
+        <topic name="VehicleSpeed" data_type="float64" kind="SIGNAL">
+            <description>Vehicle speed signal</description>
+            <qos profile="SensorData"/>
+            <autosar>
+                <enabled>true</enabled>
+                <ecu_id>ECU1</ecu_id>
+                <soad_socket>VehicleSpeed_Socket</soad_socket>
+            </autosar>
+        </topic>
+        
+        <topic name="SteeringAngle" data_type="float32" kind="SIGNAL">
+            <description>Steering angle signal</description>
+            <qos profile="SensorData"/>
+        </topic>
+        
+        <topic name="BrakeCommand" data_type="boolean" kind="CONTROL">
+            <description>Brake command from driver</description>
+            <qos profile="ControlSignal"/>
+            <security>
+                <e2e_enabled>true</e2e_enabled>
+                <e2e_profile>P01</e2e_profile>
+                <e2e_data_id>100</e2e_data_id>
+            </security>
+        </topic>
+    </topics>
+
+    <!-- AUTOSAR Configuration -->
+    <autosar>
+        <ecu_id>ECU1</ecu_id>
+        <swc_name>DdsSwComponent</swc_name>
+        <bswm_rules>
+            <rule name="DdsInit">
+                <condition>ECU_STATE_INIT</condition>
+                <action>DDS_INIT</action>
+            </rule>
+            <rule name="DdsRun">
+                <condition>ECU_STATE_RUN</condition>
+                <action>DDS_START</action>
+            </rule>
+            <rule name="DdsStop">
+                <condition>ECU_STATE_SHUTDOWN</condition>
+                <action>DDS_STOP</action>
+            </rule>
+        </bswm_rules>
+    </autosar>
+
+</dds>

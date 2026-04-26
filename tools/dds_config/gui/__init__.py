@@ -1,23 +1,13 @@
 """
-DDS Configuration GUI Components
+DDS Configuration Tool - GUI Module
 
-This package provides GUI components for DDS configuration management:
-    - Topic Editor: Visual topic configuration
-    - QoS Manager: QoS profile management
-    - Participant Visualizer: DomainParticipant visualization
-
-Author: ETH-DDS Development Team
-Version: 1.0.0
+Provides the graphical user interface for configuring DDS settings.
 """
 
-__version__ = "1.0.0"
+from .main_window import MainWindow
+from .domain_tab import DomainTab
+from .topic_tab import TopicTab
+from .qos_tab import QoSTab
+from .transport_tab import TransportTab
 
-from .topic_editor import TopicEditor, TopicEditorDialog
-from .qos_manager import QoSManager, QoSProfileEditor
-
-__all__ = [
-    'TopicEditor',
-    'TopicEditorDialog', 
-    'QoSManager',
-    'QoSProfileEditor'
-]
+__all__ = ['MainWindow', 'DomainTab', 'TopicTab', 'QoSTab', 'TransportTab']

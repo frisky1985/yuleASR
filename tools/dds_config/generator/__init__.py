@@ -1,36 +1,13 @@
 """
-DDS Config Generator Package
+DDS Configuration Code Generator Module
 
-Provides code generation capabilities for DDS configuration.
+Provides code generators for various output formats:
+- C header files
+- C source files
+- Configuration templates
 """
 
-from .template_engine import TemplateEngine, CodeStyle
-from .code_optimizer import (
-    CodeOptimizer,
-    NamingConvention,
-    CommentGenerator,
-    SystemConfig,
-    DomainConfig,
-    ParticipantConfig,
-    TopicConfig,
-    QoSProfile
-)
-from .header_generator import HeaderGenerator, HeaderGenerationOptions
-from .source_generator import SourceGenerator, SourceGenerationOptions
+from .c_generator import CGenerator
+from .code_templates import CodeTemplates
 
-__all__ = [
-    'TemplateEngine',
-    'CodeStyle',
-    'CodeOptimizer',
-    'NamingConvention',
-    'CommentGenerator',
-    'SystemConfig',
-    'DomainConfig',
-    'ParticipantConfig',
-    'TopicConfig',
-    'QoSProfile',
-    'HeaderGenerator',
-    'HeaderGenerationOptions',
-    'SourceGenerator',
-    'SourceGenerationOptions',
-]
+__all__ = ['CGenerator', 'CodeTemplates']
