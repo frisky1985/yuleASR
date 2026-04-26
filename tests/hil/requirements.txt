@@ -1,0 +1,22 @@
+# HIL Test Framework Dependencies
+# Python 3.10+ required
+
+# Core dependencies
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-html>=3.2.0
+pytest-json-report>=1.5.0
+jinja2>=3.1.0
+
+# CAN/Ethernet interfaces
+python-can>=4.0.0
+scapy>=2.5.0
+
+# Report generation
+weasyprint>=59.0; platform_system!='Windows'
+
+# Cryptography for SecOC tests
+cryptography>=41.0.0
+
+# Utilities
+typing-extensions>=4.5.0

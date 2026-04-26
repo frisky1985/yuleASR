@@ -1,0 +1,193 @@
+{
+  "dcm_params": {
+    "ecu_id": "0x7E0",
+    "logical_address": "0x0001",
+    "functional_address": "0x7DF",
+    "max_response_length": 4095,
+    "p2_timeout_ms": 50,
+    "p2_star_timeout_ms": 5000,
+    "s3_timeout_ms": 2000,
+    "default_session_timeout_ms": 5000,
+    "tester_present_required": true,
+    "tester_present_period_ms": 2000
+  },
+  "services": [
+    {
+      "service_id": "0x10",
+      "name": "DiagnosticSessionControl",
+      "priority": "P0",
+      "enabled": true,
+      "supported_sessions": ["DEFAULT"],
+      "timeout_ms": 5000,
+      "security_level_required": 0
+    },
+    {
+      "service_id": "0x11",
+      "name": "ECUReset",
+      "priority": "P0",
+      "enabled": true,
+      "supported_sessions": ["DEFAULT", "EXTENDED", "PROGRAMMING"],
+      "timeout_ms": 5000,
+      "security_level_required": 0
+    },
+    {
+      "service_id": "0x22",
+      "name": "ReadDataByIdentifier",
+      "priority": "P1",
+      "enabled": true,
+      "supported_sessions": ["DEFAULT", "EXTENDED"],
+      "timeout_ms": 5000,
+      "security_level_required": 0
+    },
+    {
+      "service_id": "0x2E",
+      "name": "WriteDataByIdentifier",
+      "priority": "P1",
+      "enabled": true,
+      "supported_sessions": ["EXTENDED"],
+      "timeout_ms": 5000,
+      "security_level_required": 1
+    },
+    {
+      "service_id": "0x31",
+      "name": "RoutineControl",
+      "priority": "P1",
+      "enabled": true,
+      "supported_sessions": ["EXTENDED"],
+      "timeout_ms": 10000,
+      "security_level_required": 1
+    },
+    {
+      "service_id": "0x34",
+      "name": "RequestDownload",
+      "priority": "P1",
+      "enabled": true,
+      "supported_sessions": ["PROGRAMMING"],
+      "timeout_ms": 5000,
+      "security_level_required": 2
+    },
+    {
+      "service_id": "0x36",
+      "name": "TransferData",
+      "priority": "P1",
+      "enabled": true,
+      "supported_sessions": ["PROGRAMMING"],
+      "timeout_ms": 10000,
+      "security_level_required": 2
+    },
+    {
+      "service_id": "0x37",
+      "name": "RequestTransferExit",
+      "priority": "P1",
+      "enabled": true,
+      "supported_sessions": ["PROGRAMMING"],
+      "timeout_ms": 5000,
+      "security_level_required": 2
+    },
+    {
+      "service_id": "0x3E",
+      "name": "TesterPresent",
+      "priority": "P0",
+      "enabled": true,
+      "supported_sessions": ["DEFAULT", "EXTENDED", "PROGRAMMING"],
+      "timeout_ms": 2000,
+      "security_level_required": 0
+    }
+  ],
+  "dids": [
+    {
+      "did": "0xF180",
+      "name": "BootSoftwareIdentification",
+      "description": "Boot software version",
+      "data_length": 16,
+      "data_type": "uint8_array",
+      "read_security_level": 0,
+      "write_security_level": 1,
+      "read_callback": null,
+      "write_callback": null,
+      "default_value": null
+    },
+    {
+      "did": "0xF190",
+      "name": "VIN",
+      "description": "Vehicle Identification Number",
+      "data_length": 17,
+      "data_type": "string",
+      "read_security_level": 0,
+      "write_security_level": 3,
+      "read_callback": null,
+      "write_callback": null,
+      "default_value": null
+    },
+    {
+      "did": "0xF194",
+      "name": "SystemNameOrEngineType",
+      "description": "System name",
+      "data_length": 16,
+      "data_type": "uint8_array",
+      "read_security_level": 0,
+      "write_security_level": 1,
+      "read_callback": null,
+      "write_callback": null,
+      "default_value": null
+    }
+  ],
+  "dtcs": [
+    {
+      "dtc": "0xP0101",
+      "severity": 3,
+      "fault_type": "MassAirFlowCircuitRangePerformance",
+      "debounce_counter_threshold": 3,
+      "aging_counter_threshold": 40,
+      "enable_freeze_frame": true,
+      "freeze_frame_records": 3,
+      "enable_extended_data": true
+    }
+  ],
+  "security_policies": [
+    {
+      "level": 1,
+      "name": "Programming",
+      "seed_length": 4,
+      "key_length": 4,
+      "max_attempts": 3,
+      "delay_timer_ms": 10000,
+      "algorithm": "default",
+      "key_derivation_seed": null
+    },
+    {
+      "level": 2,
+      "name": "HighProgramming",
+      "seed_length": 4,
+      "key_length": 4,
+      "max_attempts": 3,
+      "delay_timer_ms": 15000,
+      "algorithm": "default",
+      "key_derivation_seed": null
+    },
+    {
+      "level": 3,
+      "name": "CriticalWrite",
+      "seed_length": 4,
+      "key_length": 4,
+      "max_attempts": 2,
+      "delay_timer_ms": 20000,
+      "algorithm": "default",
+      "key_derivation_seed": null
+    }
+  ],
+  "doip_config": {
+    "enabled": true,
+    "local_port": 13400,
+    "discovery_port": 13400,
+    "max_connections": 8,
+    "routing_activation_timeout_ms": 5000,
+    "alive_check_interval_ms": 500,
+    "vehicle_announcement_interval_ms": 500,
+    "vehicle_announcement_count": 3,
+    "vin": "WBA12345678901234",
+    "eid": "",
+    "gid": ""
+  },
+  "supported_sessions": ["DEFAULT", "EXTENDED", "PROGRAMMING"]
+}

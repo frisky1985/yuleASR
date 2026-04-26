@@ -12,10 +12,17 @@ CFLAGS = -Wall -Wextra -Wpedantic -std=c11 -g -O0 \
 # Source files
 UNITY_SRC = ../../unity/unity.c
 DCM_SRC = ../../../src/diagnostics/dcm/dcm_session.c \
-          ../../../src/diagnostics/dcm/dcm_ecu_reset.c
+          ../../../src/diagnostics/dcm/dcm_ecu_reset.c \
+          ../../../src/diagnostics/dcm/dcm_security.c \
+          ../../../src/diagnostics/dcm/dcm_communication.c \
+          ../../../src/diagnostics/dcm/dcm_dynamic_did.c \
+          ../../../src/diagnostics/dcm/dcm_memory.c \
+          ../../../src/diagnostics/dcm/dcm_routine.c \
+          ../../../src/diagnostics/dcm/dcm.c
 
 TEST_SRC = test_dcm_session.c \
            test_dcm_ecu_reset.c \
+           test_dcm_extended.c \
            test_dcm_runner.c
 
 # Output

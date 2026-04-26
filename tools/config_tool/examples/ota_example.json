@@ -1,0 +1,195 @@
+{
+  "partition_layouts": [
+    {
+      "name": "default",
+      "bank_a_partitions": [
+        {
+          "name": "app_a",
+          "partition_type": "app_bank_a",
+          "start_address": "0x00020000",
+          "size_bytes": 393216,
+          "erase_size": 4096,
+          "write_size": 4,
+          "is_active": true,
+          "is_bootable": true,
+          "rollback_supported": true,
+          "version_address": "0x00020000",
+          "magic_marker": null
+        },
+        {
+          "name": "cal_a",
+          "partition_type": "calibration",
+          "start_address": "0x0005F000",
+          "size_bytes": 65536,
+          "erase_size": 4096,
+          "write_size": 4,
+          "is_active": true,
+          "is_bootable": false,
+          "rollback_supported": true,
+          "version_address": null,
+          "magic_marker": null
+        }
+      ],
+      "bank_b_partitions": [
+        {
+          "name": "app_b",
+          "partition_type": "app_bank_b",
+          "start_address": "0x00060000",
+          "size_bytes": 393216,
+          "erase_size": 4096,
+          "write_size": 4,
+          "is_active": false,
+          "is_bootable": true,
+          "rollback_supported": true,
+          "version_address": "0x00060000",
+          "magic_marker": null
+        },
+        {
+          "name": "cal_b",
+          "partition_type": "calibration",
+          "start_address": "0x0009F000",
+          "size_bytes": 65536,
+          "erase_size": 4096,
+          "write_size": 4,
+          "is_active": false,
+          "is_bootable": false,
+          "rollback_supported": true,
+          "version_address": null,
+          "magic_marker": null
+        }
+      ],
+      "shared_partitions": [
+        {
+          "name": "bootloader",
+          "partition_type": "bootloader",
+          "start_address": "0x00000000",
+          "size_bytes": 131072,
+          "erase_size": 4096,
+          "write_size": 4,
+          "is_active": true,
+          "is_bootable": true,
+          "rollback_supported": false,
+          "version_address": null,
+          "magic_marker": null
+        }
+      ],
+      "active_bank": "A",
+      "switch_delay_ms": 100,
+      "rollback_timeout_ms": 30000
+    }
+  ],
+  "download_params": {
+    "chunk_size_bytes": 4096,
+    "max_retries": 3,
+    "retry_delay_ms": 1000,
+    "timeout_ms": 30000,
+    "concurrent_downloads": 1,
+    "resume_supported": true,
+    "compression": "zstd",
+    "encryption": "none",
+    "delta_update": true,
+    "delta_algorithm": "bsdiff"
+  },
+  "security_verification": {
+    "signature_required": true,
+    "signature_algorithm": "ecdsa-p256",
+    "hash_algorithm": "sha256",
+    "verify_certificate_chain": true,
+    "verify_version_rollback": true,
+    "verify_compatibility": true,
+    "secure_boot_required": true,
+    "root_cert_hash": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef",
+    "oem_cert_hash": "sha256:f1e2d3c4b5a6789012345678901234567890fedcba",
+    "key_rotation_interval_days": 90
+  },
+  "campaigns": [
+    {
+      "campaign_id": "CAMP-2026-Q2-001",
+      "name": "Q2 2026 Firmware Update",
+      "description": "Quarterly firmware update for infotainment and powertrain ECUs",
+      "priority": "high",
+      "scheduled_start": "2026-04-26T02:00:00Z",
+      "scheduled_end": "2026-04-30T23:59:59Z",
+      "ecu_updates": [
+        {
+          "ecu_id": "0x0101",
+          "name": "Infotainment_HU",
+          "hardware_version": "2.1.0",
+          "firmware_version_from": "3.2.1",
+          "firmware_version_to": "3.3.0",
+          "package_file": "ecu_0101_v3.3.0.epkg",
+          "package_size": 52428800,
+          "package_hash": "sha256:abc123def456789012345678901234567890abcd",
+          "signature_required": true,
+          "dependencies": [],
+          "pre_conditions": {
+            "battery_voltage_min_v": 12.0,
+            "battery_voltage_max_v": 16.0,
+            "vehicle_speed_max_kmh": 0.0,
+            "engine_state": "off",
+            "parking_brake": "engaged",
+            "gear": "park",
+            "ignition_state": "on",
+            "safe_to_update": true
+          },
+          "installation": {
+            "estimated_time_seconds": 300,
+            "reboot_required": true,
+            "user_confirmation": false,
+            "confirmation_prompt": null,
+            "can_interrupted": false,
+            "progress_report_interval_ms": 1000,
+            "watchdog_timeout_ms": 60000
+          }
+        },
+        {
+          "ecu_id": "0x0201",
+          "name": "Powertrain_ECU",
+          "hardware_version": "1.5.0",
+          "firmware_version_from": "2.0.0",
+          "firmware_version_to": "2.1.0",
+          "package_file": "ecu_0201_v2.1.0.epkg",
+          "package_size": 104857600,
+          "package_hash": "sha256:def456abc7890123456789012345678901234def",
+          "signature_required": true,
+          "dependencies": [
+            {
+              "ecu_id": "0x0101",
+              "min_version": "3.3.0"
+            }
+          ],
+          "pre_conditions": {
+            "battery_voltage_min_v": 13.5,
+            "battery_voltage_max_v": 15.5,
+            "vehicle_speed_max_kmh": 0.0,
+            "engine_state": "off",
+            "parking_brake": "engaged",
+            "gear": "park",
+            "ignition_state": "on",
+            "safe_to_update": true
+          },
+          "installation": {
+            "estimated_time_seconds": 600,
+            "reboot_required": true,
+            "user_confirmation": true,
+            "confirmation_prompt": "Powertrain update requires 10 minutes. Do not drive during update.",
+            "can_interrupted": false,
+            "progress_report_interval_ms": 1000,
+            "watchdog_timeout_ms": 90000
+          }
+        }
+      ],
+      "rollout_strategy": "wave",
+      "batch_size_percent": 10,
+      "success_threshold_percent": 95
+    }
+  ],
+  "current_state": "idle",
+  "active_campaign": null,
+  "update_storage_path": "/tmp/ota_updates",
+  "max_storage_size_mb": 500,
+  "uds_transport": "doip",
+  "uds_tx_id": "0x7E0",
+  "uds_rx_id": "0x7E8",
+  "uds_timeout_ms": 5000
+}

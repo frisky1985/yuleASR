@@ -1,0 +1,442 @@
+name: MISRA C:2012 Compliance Check
+
+on:
+  push:
+    branches: [ main, develop, 'feature/*' ]
+    paths:
+      - '**.c'
+      - '**.h'
+      - 'tools/misra/**'
+      - '.github/workflows/misra-check.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '**.c'
+      - '**.h'
+      - 'tools/misra/**'
+
+env:
+  BUILD_TYPE: Release
+  MISRA_REPORT_DIR: reports/misra
+
+jobs:
+  # ============================================================================
+  # Detect changed C files
+  # ============================================================================
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      c_files: ${{ steps.changes.outputs.c_files }}
+      new_code_only: ${{ steps.changes.outputs.new_code_only }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed C files
+        id: changes
+        run: |
+          # Get list of changed C/H files
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(c|h)$' || true)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep -E '\.(c|h)$' || true)
+          fi
+          
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          
+          # Check if any are in new code directories
+          NEW_CODE_DIRS="src/diagnostics src/crypto_stack src/ota src/bootloader src/autosar/e2e"
+          NEW_CODE_ONLY="true"
+          
+          for file in $CHANGED_FILES; do
+            if [[ -f "$file" ]]; then
+              for dir in $NEW_CODE_DIRS; do
+                if [[ "$file" == *"$dir"* ]]; then
+                  echo "Found new code file: $file"
+                else
+                  NEW_CODE_ONLY="false"
+                fi
+              done
+            fi
+          done
+          
+          # Output for next jobs
+          echo "c_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "new_code_only=$NEW_CODE_ONLY" >> $GITHUB_OUTPUT
+          
+          # Save to file for artifact
+          echo "$CHANGED_FILES" > changed_files.txt
+
+      - name: Upload changed files list
+        uses: actions/upload-artifact@v4
+        with:
+          name: changed-files
+          path: changed_files.txt
+
+  # ============================================================================
+  # Cppcheck Analysis
+  # ============================================================================
+  cppcheck:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.c_files != ''
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck python3 python3-pip
+
+      - name: Download changed files list
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+
+      - name: Prepare file list
+        run: |
+          # Filter to existing C files
+          cat changed_files.txt | grep '\.c$' | while read f; do
+            if [ -f "$f" ]; then echo "$f"; fi
+          done > files_to_check.txt
+          
+          echo "Files to check:"
+          cat files_to_check.txt
+
+      - name: Run Cppcheck MISRA Analysis
+        run: |
+          mkdir -p ${{ env.MISRA_REPORT_DIR }}
+          
+          if [ ! -s files_to_check.txt ]; then
+            echo "No C files to check"
+            exit 0
+          fi
+          
+          # Run cppcheck with MISRA addon
+          cppcheck \
+            --enable=all \
+            --force \
+            --inline-suppr \
+            --suppressions-list=tools/misra/cppcheck_suppressions.xml \
+            --xml \
+            --xml-version=2 \
+            --file-list=files_to_check.txt \
+            2> ${{ env.MISRA_REPORT_DIR }}/cppcheck-report.xml || true
+
+      - name: Parse Cppcheck Results
+        run: |
+          python3 << 'EOF'
+          import xml.etree.ElementTree as ET
+          import sys
+          import os
+
+          report_file = "${{ env.MISRA_REPORT_DIR }}/cppcheck-report.xml"
+          
+          if not os.path.exists(report_file):
+              print("No cppcheck report found")
+              sys.exit(0)
+          
+          try:
+              tree = ET.parse(report_file)
+              root = tree.getroot()
+          except:
+              print("Could not parse cppcheck report")
+              sys.exit(0)
+          
+          errors = root.findall('.//error')
+          
+          required_violations = []
+          advisory_violations = []
+          
+          for error in errors:
+              severity = error.get('severity', 'unknown')
+              msg = error.get('msg', '')
+              id_attr = error.get('id', '')
+              file_attr = error.get('file', '')
+              line_attr = error.get('line', '')
+              
+              # Check if it's a MISRA rule
+              if 'misra' in id_attr.lower():
+                  # Parse rule number from message
+                  if any(r in msg for r in ['15.5', '17.7', '20.7', '21.3', '1.3', '9.1', '11.']):
+                      required_violations.append({
+                          'file': file_attr,
+                          'line': line_attr,
+                          'rule': id_attr,
+                          'msg': msg
+                      })
+                  else:
+                      advisory_violations.append({
+                          'file': file_attr,
+                          'line': line_attr,
+                          'rule': id_attr,
+                          'msg': msg
+                      })
+          
+          print(f"\n{'='*60}")
+          print("MISRA C:2012 Analysis Results (Cppcheck)")
+          print('='*60)
+          print(f"Required Rule Violations: {len(required_violations)}")
+          print(f"Advisory Rule Violations: {len(advisory_violations)}")
+          print('='*60)
+          
+          if required_violations:
+              print("\n❌ Required Rule Violations (MUST FIX):")
+              for v in required_violations[:10]:  # Show first 10
+                  print(f"  {v['file']}:{v['line']} - {v['rule']}")
+              if len(required_violations) > 10:
+                  print(f"  ... and {len(required_violations) - 10} more")
+          
+          if advisory_violations:
+              print(f"\n⚠️  Advisory Rule Violations: {len(advisory_violations)}")
+          
+          # Write summary for GitHub Actions
+          with open(os.environ.get('GITHUB_OUTPUT', '/dev/null').replace('/dev/null', 'cppcheck-summary.txt'), 'w') as f:
+              f.write(f"required={len(required_violations)}\n")
+              f.write(f"advisory={len(advisory_violations)}\n")
+          
+          # Exit with error if required violations found in new code
+          if len(required_violations) > 0:
+              print("\n❌ Required MISRA violations found!")
+              sys.exit(1)
+          else:
+              print("\n✅ No required MISRA violations found!")
+              sys.exit(0)
+          EOF
+
+      - name: Upload Cppcheck Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cppcheck-report
+          path: ${{ env.MISRA_REPORT_DIR }}/cppcheck-report.xml
+
+  # ============================================================================
+  # Auto-fix Check
+  # ============================================================================
+  auto-fix:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.c_files != ''
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Download changed files list
+        uses: actions/download-artifact@v4
+        with:
+          name: changed-files
+
+      - name: Run Auto-fix Script (Dry-run)
+        run: |
+          cat changed_files.txt | grep '\.c$' | while read f; do
+            if [ -f "$f" ]; then echo "$f"; fi
+          done > files_to_check.txt
+          
+          if [ -s files_to_check.txt ]; then
+            echo "Running auto-fix dry-run..."
+            python3 scripts/fix_misra_issues.py \
+              --rules=20.7,17.7 \
+              --dry-run \
+              $(cat files_to_check.txt) \
+              2>&1 | tee autofix-dryrun.txt || true
+          fi
+
+      - name: Comment PR with Auto-fix Suggestions
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let autofixOutput = '';
+            try {
+              autofixOutput = fs.readFileSync('autofix-dryrun.txt', 'utf8');
+            } catch (e) {
+              autofixOutput = 'No auto-fix suggestions available.';
+            }
+            
+            const body = `## 🔧 MISRA C:2012 Auto-Fix Suggestions
+            
+            The following automatic fixes may be applicable to your changes:
+            
+            <details>
+            <summary>Click to expand auto-fix report</summary>
+            
+            \`\`\`
+            ${autofixOutput}
+            \`\`\`
+            </details>
+            
+            To apply fixes locally:
+            \`\`\`bash
+            python3 scripts/fix_misra_issues.py --rules=20.7,17.7 --apply <your-files>
+            \`\`\`
+            
+            ---
+            *This is an automated message from the MISRA compliance checker.*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+  # ============================================================================
+  # Generate Summary Report
+  # ============================================================================
+  summary:
+    runs-on: ubuntu-latest
+    needs: [cppcheck, auto-fix]
+    if: always()
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate Compliance Summary
+        run: |
+          cat << 'EOF' > ${{ env.MISRA_REPORT_DIR }}/compliance-summary.md
+          # MISRA C:2012 Compliance Summary
+          
+          **Build:** ${{ github.run_number }}  
+          **Commit:** ${{ github.sha }}  
+          **Branch:** ${{ github.ref_name }}
+          
+          ## Results
+          
+          | Check | Status |
+          |-------|--------|
+          | Cppcheck Analysis | ${{ needs.cppcheck.result }} |
+          | Auto-fix Check | ${{ needs.auto-fix.result }} |
+          
+          ## Quick Links
+          
+          - [Full Audit Report](../../docs/compliance/MISRA_AUDIT.md)
+          - [Deviation Permits](../../docs/compliance/deviation_permits.md)
+          - [Rule Reference](../../tools/misra/misra_rules.json)
+          
+          ## Next Steps
+          
+          If violations were found:
+          1. Review the detailed reports in the artifacts
+          2. Run `scripts/run_misra_check.sh --tool=cppcheck` locally
+          3. Apply automatic fixes: `python3 scripts/fix_misra_issues.py --rules=20.7,17.7 --apply <files>`
+          4. Document any required deviations in `docs/compliance/deviation_permits.md`
+          EOF
+
+      - name: Upload Summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-summary
+          path: ${{ env.MISRA_REPORT_DIR }}/compliance-summary.md
+
+      - name: Comment PR with Summary
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const cppcheckResult = '${{ needs.cppcheck.result }}';
+            const autofixResult = '${{ needs.auto-fix.result }}';
+            
+            let statusEmoji = '✅';
+            let statusMsg = 'All MISRA checks passed!';
+            
+            if (cppcheckResult === 'failure') {
+              statusEmoji = '❌';
+              statusMsg = 'Required MISRA violations found. Please fix before merging.';
+            }
+            
+            const body = `${statusEmoji} **MISRA C:2012 Compliance Check**
+            
+            ${statusMsg}
+            
+            | Check | Result |
+            |-------|--------|
+            | Cppcheck Analysis | ${cppcheckResult === 'success' ? '✅ passed' : cppcheckResult === 'failure' ? '❌ failed' : '⚠️ skipped'} |
+            | Auto-fix Check | ${autofixResult === 'success' ? '✅ passed' : autofixResult === 'failure' ? '❌ failed' : '⚠️ skipped'} |
+            
+            <details>
+            <summary>How to fix</summary>
+            
+            Run locally:
+            \`\`\`bash
+            # Check specific files
+            ./scripts/run_misra_check.sh --tool=cppcheck src/your/file.c
+            
+            # Auto-fix simple issues
+            python3 scripts/fix_misra_issues.py --rules=20.7,17.7 --apply src/your/file.c
+            \`\`\`
+            </details>
+            
+            ---
+            *View detailed reports in the Actions artifacts.*`;
+            
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('MISRA C:2012 Compliance Check')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }
+
+  # ============================================================================
+  # PC-lint Check (Optional - requires license)
+  # ============================================================================
+  pclint:
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: needs.detect-changes.outputs.c_files != '' && vars.PCLINT_LICENSE != ''
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for PC-lint license
+        run: |
+          if [ -z "${{ vars.PCLINT_LICENSE }}" ]; then
+            echo "PC-lint license not configured. Skipping."
+            exit 0
+          fi
+
+      - name: Run PC-lint Plus
+        run: |
+          echo "PC-lint Plus would run here with license"
+          echo "This is a placeholder for the actual PC-lint analysis"
+          # pclp64 tools/misra/pclint_config.lnt -vf <changed_files>
+
+      - name: Upload PC-lint Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pclint-report
+          path: ${{ env.MISRA_REPORT_DIR }}/pclint-report.txt

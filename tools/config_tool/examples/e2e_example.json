@@ -1,0 +1,214 @@
+{
+  "profiles": {
+    "1": {
+      "profile": 1,
+      "crc_offset": 0,
+      "counter_offset": 1,
+      "data_id_offset": null,
+      "data_id_mode": "all16bit",
+      "data_id": "0x0000",
+      "data_length": 8,
+      "max_delta_counter_init": 1,
+      "max_no_new_or_repeated_data": 3,
+      "sync_counter_init": 0
+    },
+    "5": {
+      "profile": 5,
+      "crc_offset": 0,
+      "counter_offset": 2,
+      "data_id_offset": null,
+      "data_id_mode": "all16bit",
+      "data_id": "0x0100",
+      "data_length": 16,
+      "max_delta_counter_init": 1,
+      "max_no_new_or_repeated_data": 3,
+      "sync_counter_init": 0
+    },
+    "7": {
+      "profile": 7,
+      "crc_offset": 0,
+      "counter_offset": 4,
+      "data_id_offset": null,
+      "data_id_mode": "all16bit",
+      "data_id": "0x0200",
+      "data_length": 32,
+      "max_delta_counter_init": 1,
+      "max_no_new_or_repeated_data": 3,
+      "sync_counter_init": 0
+    }
+  },
+  "data_id_mappings": [
+    {
+      "data_id": "0x0100",
+      "name": "VehicleSpeed",
+      "source_component": "SensorFusion_ECU",
+      "target_component": "Powertrain_ECU",
+      "data_type": "uint32",
+      "signal_name": "VehicleSpeed",
+      "profile": 5,
+      "crc_type": "CRC_16",
+      "safety_level": "ASIL_B",
+      "enabled": true
+    },
+    {
+      "data_id": "0x0101",
+      "name": "EngineTorque",
+      "source_component": "Engine_ECU",
+      "target_component": "Transmission_ECU",
+      "data_type": "uint32",
+      "signal_name": "EngineTorque",
+      "profile": 5,
+      "crc_type": "CRC_16",
+      "safety_level": "ASIL_D",
+      "enabled": true
+    },
+    {
+      "data_id": "0x0200",
+      "name": "BrakePressure",
+      "source_component": "Brake_ECU",
+      "target_component": "Chassis_ECU",
+      "data_type": "uint32",
+      "signal_name": "BrakePressure",
+      "profile": 7,
+      "crc_type": "CRC_32",
+      "safety_level": "ASIL_D",
+      "enabled": true
+    },
+    {
+      "data_id": "0x0201",
+      "name": "SteeringAngle",
+      "source_component": "Steering_ECU",
+      "target_component": "Chassis_ECU",
+      "data_type": "uint32",
+      "signal_name": "SteeringAngle",
+      "profile": 7,
+      "crc_type": "CRC_32",
+      "safety_level": "ASIL_D",
+      "enabled": true
+    },
+    {
+      "data_id": "0x0300",
+      "name": "ThrottlePosition",
+      "source_component": "Engine_ECU",
+      "target_component": "Powertrain_ECU",
+      "data_type": "uint16",
+      "signal_name": "ThrottlePosition",
+      "profile": 1,
+      "crc_type": "CRC_8",
+      "safety_level": "ASIL_A",
+      "enabled": true
+    }
+  ],
+  "protections": [
+    {
+      "name": "SpeedProtection",
+      "source": "SensorFusion_ECU",
+      "destination": "Powertrain_ECU",
+      "data_id": "0x0100",
+      "profile_config": {
+        "profile": 5,
+        "crc_offset": 0,
+        "counter_offset": 2,
+        "data_id_offset": null,
+        "data_id_mode": "all16bit",
+        "data_id": "0x0100",
+        "data_length": 16,
+        "max_delta_counter_init": 1,
+        "max_no_new_or_repeated_data": 3,
+        "sync_counter_init": 0
+      },
+      "crc_polynomial": null,
+      "header_length": 2,
+      "window_size": 3,
+      "timeout_ms": 100
+    },
+    {
+      "name": "BrakeProtection",
+      "source": "Brake_ECU",
+      "destination": "Chassis_ECU",
+      "data_id": "0x0200",
+      "profile_config": {
+        "profile": 7,
+        "crc_offset": 0,
+        "counter_offset": 4,
+        "data_id_offset": null,
+        "data_id_mode": "all16bit",
+        "data_id": "0x0200",
+        "data_length": 32,
+        "max_delta_counter_init": 1,
+        "max_no_new_or_repeated_data": 3,
+        "sync_counter_init": 0
+      },
+      "crc_polynomial": null,
+      "header_length": 4,
+      "window_size": 3,
+      "timeout_ms": 50
+    }
+  ],
+  "monitorings": [
+    {
+      "name": "SpeedMonitor",
+      "source": "SensorFusion_ECU",
+      "data_id": "0x0100",
+      "max_delta_counter": 1,
+      "max_error_state_init": 3,
+      "max_error_state_invalid": 3,
+      "max_error_state_valid": 3,
+      "window_size": 3,
+      "debounce_cycles": 0,
+      "error_callback": "E2E_SpeedErrorCallback"
+    },
+    {
+      "name": "BrakeMonitor",
+      "source": "Brake_ECU",
+      "data_id": "0x0200",
+      "max_delta_counter": 1,
+      "max_error_state_init": 2,
+      "max_error_state_invalid": 2,
+      "max_error_state_valid": 3,
+      "window_size": 3,
+      "debounce_cycles": 1,
+      "error_callback": "E2E_BrakeErrorCallback"
+    }
+  ],
+  "crc_polynomials": {
+    "CRC8": {
+      "name": "CRC-8",
+      "crc_type": "CRC8",
+      "polynomial": "0x1D",
+      "initial_value": "0xFF",
+      "final_xor": "0xFF",
+      "input_reflected": false,
+      "result_reflected": false
+    },
+    "CRC8_SAE_J1850": {
+      "name": "CRC-8-SAE-J1850",
+      "crc_type": "CRC8_SAE_J1850",
+      "polynomial": "0x1D",
+      "initial_value": "0xFF",
+      "final_xor": "0xFF",
+      "input_reflected": false,
+      "result_reflected": false
+    },
+    "CRC16": {
+      "name": "CRC-16",
+      "crc_type": "CRC16",
+      "polynomial": "0x1021",
+      "initial_value": "0xFFFF",
+      "final_xor": "0x0",
+      "input_reflected": false,
+      "result_reflected": false
+    },
+    "CRC32": {
+      "name": "CRC-32",
+      "crc_type": "CRC32",
+      "polynomial": "0x4C11DB7",
+      "initial_value": "0xFFFFFFFF",
+      "final_xor": "0xFFFFFFFF",
+      "input_reflected": true,
+      "result_reflected": true
+    }
+  },
+  "global_window_size": 3,
+  "global_timeout_ms": 100
+}

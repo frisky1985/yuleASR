@@ -1,0 +1,12 @@
+# DDS Configuration Tool - Python Dependencies
+
+# Optional but recommended for enhanced validation
+jsonschema>=4.0.0
+
+# Development dependencies (optional)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Type checking (optional)
+mypy>=1.0.0
+types-python-dateutil

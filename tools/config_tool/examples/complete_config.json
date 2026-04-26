@@ -1,0 +1,237 @@
+{
+  "diagnostic": {
+    "dcm_params": {
+      "ecu_id": "0x7E0",
+      "logical_address": "0x0001",
+      "functional_address": "0x7DF",
+      "max_response_length": 4095,
+      "p2_timeout_ms": 50,
+      "p2_star_timeout_ms": 5000,
+      "s3_timeout_ms": 2000,
+      "default_session_timeout_ms": 5000,
+      "tester_present_required": true,
+      "tester_present_period_ms": 2000
+    },
+    "services": [
+      {
+        "service_id": "0x10",
+        "name": "DiagnosticSessionControl",
+        "priority": "P0",
+        "enabled": true,
+        "supported_sessions": ["DEFAULT"],
+        "timeout_ms": 5000,
+        "security_level_required": 0
+      },
+      {
+        "service_id": "0x22",
+        "name": "ReadDataByIdentifier",
+        "priority": "P1",
+        "enabled": true,
+        "supported_sessions": ["DEFAULT", "EXTENDED"],
+        "timeout_ms": 5000,
+        "security_level_required": 0
+      },
+      {
+        "service_id": "0x2E",
+        "name": "WriteDataByIdentifier",
+        "priority": "P1",
+        "enabled": true,
+        "supported_sessions": ["EXTENDED"],
+        "timeout_ms": 5000,
+        "security_level_required": 1
+      }
+    ],
+    "dids": [
+      {
+        "did": "0xF190",
+        "name": "VIN",
+        "description": "Vehicle Identification Number",
+        "data_length": 17,
+        "data_type": "string",
+        "read_security_level": 0,
+        "write_security_level": 3
+      }
+    ],
+    "dtcs": [],
+    "security_policies": [
+      {
+        "level": 1,
+        "name": "Programming",
+        "seed_length": 4,
+        "key_length": 4,
+        "max_attempts": 3,
+        "delay_timer_ms": 10000
+      }
+    ],
+    "doip_config": {
+      "enabled": true,
+      "local_port": 13400,
+      "discovery_port": 13400,
+      "max_connections": 8,
+      "routing_activation_timeout_ms": 5000,
+      "alive_check_interval_ms": 500,
+      "vehicle_announcement_interval_ms": 500,
+      "vehicle_announcement_count": 3,
+      "vin": "WBA12345678901234",
+      "eid": "",
+      "gid": ""
+    },
+    "supported_sessions": ["DEFAULT", "EXTENDED"]
+  },
+  "e2e": {
+    "profiles": {
+      "5": {
+        "profile": 5,
+        "crc_offset": 0,
+        "counter_offset": 2,
+        "data_id_offset": null,
+        "data_id_mode": "all16bit",
+        "data_id": "0x0100",
+        "data_length": 16,
+        "max_delta_counter_init": 1,
+        "max_no_new_or_repeated_data": 3,
+        "sync_counter_init": 0
+      }
+    },
+    "data_id_mappings": [
+      {
+        "data_id": "0x0100",
+        "name": "VehicleSpeed",
+        "source_component": "SensorFusion_ECU",
+        "target_component": "Powertrain_ECU",
+        "data_type": "uint32",
+        "signal_name": "VehicleSpeed",
+        "profile": 5,
+        "crc_type": "CRC_16",
+        "safety_level": "ASIL_B",
+        "enabled": true
+      }
+    ],
+    "protections": [],
+    "monitorings": [],
+    "crc_polynomials": {},
+    "global_window_size": 3,
+    "global_timeout_ms": 100
+  },
+  "ota": {
+    "partition_layouts": [
+      {
+        "name": "default",
+        "bank_a_partitions": [
+          {
+            "name": "app_a",
+            "partition_type": "app_bank_a",
+            "start_address": "0x00020000",
+            "size_bytes": 393216,
+            "is_active": true,
+            "is_bootable": true,
+            "rollback_supported": true,
+            "version_address": "0x00020000"
+          }
+        ],
+        "bank_b_partitions": [
+          {
+            "name": "app_b",
+            "partition_type": "app_bank_b",
+            "start_address": "0x00060000",
+            "size_bytes": 393216,
+            "is_active": false,
+            "is_bootable": true,
+            "rollback_supported": true,
+            "version_address": "0x00060000"
+          }
+        ],
+        "shared_partitions": [
+          {
+            "name": "bootloader",
+            "partition_type": "bootloader",
+            "start_address": "0x00000000",
+            "size_bytes": 131072,
+            "is_active": true,
+            "is_bootable": true,
+            "rollback_supported": false
+          }
+        ],
+        "active_bank": "A",
+        "switch_delay_ms": 100,
+        "rollback_timeout_ms": 30000
+      }
+    ],
+    "download_params": {
+      "chunk_size_bytes": 4096,
+      "max_retries": 3,
+      "retry_delay_ms": 1000,
+      "timeout_ms": 30000,
+      "concurrent_downloads": 1,
+      "resume_supported": true,
+      "compression": "zstd",
+      "encryption": "none",
+      "delta_update": true,
+      "delta_algorithm": "bsdiff"
+    },
+    "security_verification": {
+      "signature_required": true,
+      "signature_algorithm": "ecdsa-p256",
+      "hash_algorithm": "sha256",
+      "verify_certificate_chain": true,
+      "verify_version_rollback": true,
+      "verify_compatibility": true,
+      "secure_boot_required": true,
+      "root_cert_hash": "sha256:a1b2c3d4e5f6",
+      "oem_cert_hash": "sha256:f1e2d3c4b5a6",
+      "key_rotation_interval_days": 90
+    },
+    "campaigns": [
+      {
+        "campaign_id": "CAMP-2026-001",
+        "name": "Q2 Firmware Update",
+        "description": "Quarterly firmware update",
+        "priority": "high",
+        "scheduled_start": "2026-04-26T02:00:00Z",
+        "scheduled_end": "2026-04-30T23:59:59Z",
+        "ecu_updates": [
+          {
+            "ecu_id": "0x0101",
+            "name": "Infotainment_HU",
+            "hardware_version": "2.1.0",
+            "firmware_version_from": "3.2.1",
+            "firmware_version_to": "3.3.0",
+            "package_file": "ecu_0101_v3.3.0.epkg",
+            "package_size": 52428800,
+            "package_hash": "sha256:abc123...",
+            "signature_required": true,
+            "dependencies": [],
+            "pre_conditions": {
+              "battery_voltage_min_v": 12.0,
+              "vehicle_speed_max_kmh": 0.0,
+              "engine_state": "off",
+              "parking_brake": "engaged",
+              "gear": "park",
+              "ignition_state": "on",
+              "safe_to_update": true
+            },
+            "installation": {
+              "estimated_time_seconds": 300,
+              "reboot_required": true,
+              "user_confirmation": false,
+              "can_interrupted": false,
+              "progress_report_interval_ms": 1000,
+              "watchdog_timeout_ms": 60000
+            }
+          }
+        ],
+        "rollout_strategy": "wave",
+        "batch_size_percent": 10,
+        "success_threshold_percent": 95
+      }
+    ],
+    "current_state": "idle",
+    "active_campaign": null,
+    "update_storage_path": "/tmp/ota_updates",
+    "max_storage_size_mb": 500,
+    "uds_transport": "doip",
+    "uds_tx_id": "0x7E0",
+    "uds_rx_id": "0x7E8",
+    "uds_timeout_ms": 5000
+  }
+}

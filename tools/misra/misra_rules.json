@@ -1,0 +1,566 @@
+{
+  "metadata": {
+    "standard": "MISRA C:2012 Amendment 2",
+    "project": "ETH-DDS Integration",
+    "version": "3.1",
+    "date": "2026-04-26",
+    "compliance_level": "Required + Advisory"
+  },
+  "categories": {
+    "required": {
+      "description": "Category 1: Required - Mandatory compliance unless formally deviated",
+      "severity": "error",
+      "fix_required": true
+    },
+    "advisory": {
+      "description": "Category 2: Advisory - Should be followed unless reasoned deviation",
+      "severity": "warning",
+      "fix_required": false
+    }
+  },
+  "rules": {
+    "1.1": {
+      "category": "required",
+      "title": "C code shall conform to ISO/IEC 9899:2011",
+      "description": "All code shall conform to the C11 standard.",
+      "rationale": "Ensures portability and defined behavior across compilers.",
+      "severity": "error",
+      "tools": {
+        "pclint": "1",
+        "cppcheck": "misra-c2012-1.1"
+      }
+    },
+    "1.3": {
+      "category": "required",
+      "title": "No undefined or critical unspecified behavior",
+      "description": "There shall be no occurrence of undefined or critical unspecified behavior.",
+      "rationale": "Prevents unpredictable runtime behavior in safety-critical systems.",
+      "severity": "error",
+      "tools": {
+        "pclint": "1",
+        "cppcheck": "misra-c2012-1.3"
+      }
+    },
+    "2.1": {
+      "category": "required",
+      "title": "No unreachable code",
+      "description": "A project shall not contain unreachable code.",
+      "rationale": "Dead code increases maintenance burden and may indicate logic errors.",
+      "severity": "warning",
+      "tools": {
+        "pclint": "506, 550",
+        "cppcheck": "misra-c2012-2.1"
+      }
+    },
+    "2.2": {
+      "category": "required",
+      "title": "No dead code",
+      "description": "There shall be no dead code.",
+      "rationale": "Dead code does not affect program operation but increases complexity.",
+      "severity": "warning",
+      "tools": {
+        "pclint": "522, 550",
+        "cppcheck": "misra-c2012-2.2"
+      }
+    },
+    "3.1": {
+      "category": "required",
+      "title": "Character sets and encoding",
+      "description": "The character sequences /* and // shall not be used within comments.",
+      "rationale": "Prevents accidental comment nesting issues.",
+      "severity": "error",
+      "tools": {
+        "pclint": "2",
+        "cppcheck": "misra-c2012-3.1"
+      }
+    },
+    "5.1": {
+      "category": "required",
+      "title": "External identifiers distinct",
+      "description": "External identifiers shall be distinct.",
+      "rationale": "Prevents linker conflicts and ambiguity.",
+      "severity": "error",
+      "tools": {
+        "pclint": "578",
+        "cppcheck": "misra-c2012-5.1"
+      }
+    },
+    "5.9": {
+      "category": "advisory",
+      "title": "Internal linkage identifiers unique",
+      "description": "Identifiers with internal linkage should be unique.",
+      "rationale": "Improves code clarity and maintainability.",
+      "severity": "style",
+      "tools": {
+        "pclint": "578",
+        "cppcheck": "misra-c2012-5.9"
+      }
+    },
+    "8.2": {
+      "category": "required",
+      "title": "Function prototypes with named parameters",
+      "description": "Function types shall be in prototype form with named parameters.",
+      "rationale": "Improves type safety and documentation.",
+      "severity": "error",
+      "tools": {
+        "pclint": "714, 715",
+        "cppcheck": "misra-c2012-8.2"
+      }
+    },
+    "8.4": {
+      "category": "required",
+      "title": "Compatible declaration visible",
+      "description": "A compatible declaration shall be visible when an object/function with external linkage is defined.",
+      "rationale": "Ensures consistent interface definitions.",
+      "severity": "error",
+      "tools": {
+        "pclint": "314, 318",
+        "cppcheck": "misra-c2012-8.4"
+      }
+    },
+    "8.6": {
+      "category": "required",
+      "title": "Single external definition",
+      "description": "An identifier with external linkage shall have exactly one external definition.",
+      "rationale": "Prevents multiple definition linker errors.",
+      "severity": "error",
+      "tools": {
+        "pclint": "69, 323",
+        "cppcheck": "misra-c2012-8.6"
+      }
+    },
+    "8.8": {
+      "category": "required",
+      "title": "Static for internal linkage",
+      "description": "The static storage class specifier shall be used in all declarations of objects and functions that have internal linkage.",
+      "rationale": "Documents intent and limits visibility.",
+      "severity": "error",
+      "tools": {
+        "pclint": "551",
+        "cppcheck": "misra-c2012-8.8"
+      }
+    },
+    "8.13": {
+      "category": "advisory",
+      "title": "Pointer to const where possible",
+      "description": "A pointer should point to a const-qualified type whenever possible.",
+      "rationale": "Documents read-only intent and enables optimizations.",
+      "severity": "style",
+      "tools": {
+        "pclint": "818",
+        "cppcheck": "misra-c2012-8.13"
+      }
+    },
+    "9.1": {
+      "category": "required",
+      "title": "No use before initialization",
+      "description": "The value of an object with automatic storage duration shall not be read before it has been set.",
+      "rationale": "Prevents use of garbage values.",
+      "severity": "error",
+      "tools": {
+        "pclint": "530, 644",
+        "cppcheck": "misra-c2012-9.1"
+      }
+    },
+    "10.1": {
+      "category": "required",
+      "title": "Operands of appropriate essential type",
+      "description": "Operands shall not be of an inappropriate essential type.",
+      "rationale": "Prevents unexpected type conversions.",
+      "severity": "error",
+      "tools": {
+        "pclint": "574",
+        "cppcheck": "misra-c2012-10.1"
+      }
+    },
+    "10.3": {
+      "category": "required",
+      "title": "No assignment to narrower type",
+      "description": "The value of an expression shall not be assigned to an object with a narrower essential type.",
+      "rationale": "Prevents data loss in assignments.",
+      "severity": "error",
+      "tools": {
+        "pclint": "569, 574",
+        "cppcheck": "misra-c2012-10.3"
+      }
+    },
+    "10.4": {
+      "category": "required",
+      "title": "Same essential type category in operations",
+      "description": "Both operands shall have the same essential type category.",
+      "rationale": "Prevents unexpected type promotions.",
+      "severity": "error",
+      "tools": {
+        "pclint": "574",
+        "cppcheck": "misra-c2012-10.4"
+      }
+    },
+    "11.1": {
+      "category": "required",
+      "title": "No conversion between function pointer and other types",
+      "description": "Conversions shall not be performed between pointer to function and other types.",
+      "rationale": "Function pointers have special semantics.",
+      "severity": "error",
+      "tools": {
+        "pclint": "611, 611i",
+        "cppcheck": "misra-c2012-11.1"
+      }
+    },
+    "11.3": {
+      "category": "required",
+      "title": "No cast between different object pointer types",
+      "description": "A cast shall not be performed between a pointer to object type and a pointer to a different object type.",
+      "rationale": "Prevents aliasing violations and undefined behavior.",
+      "severity": "error",
+      "tools": {
+        "pclint": "826",
+        "cppcheck": "misra-c2012-11.3"
+      }
+    },
+    "11.6": {
+      "category": "required",
+      "title": "No cast between pointer to void and arithmetic type",
+      "description": "A cast shall not be performed between pointer to void and an arithmetic type.",
+      "rationale": "Prevents invalid pointer values.",
+      "severity": "error",
+      "tools": {
+        "pclint": "923",
+        "cppcheck": "misra-c2012-11.6"
+      }
+    },
+    "11.8": {
+      "category": "required",
+      "title": "Cast shall not remove const/volatile qualification",
+      "description": "A cast shall not remove any const or volatile qualification.",
+      "rationale": "Preserves type safety and const-correctness.",
+      "severity": "error",
+      "tools": {
+        "pclint": "826",
+        "cppcheck": "misra-c2012-11.8"
+      }
+    },
+    "12.1": {
+      "category": "advisory",
+      "title": "Explicit operator precedence",
+      "description": "The precedence of operators within expressions should be made explicit.",
+      "rationale": "Improves readability and prevents precedence errors.",
+      "severity": "style",
+      "tools": {
+        "pclint": "504",
+        "cppcheck": "misra-c2012-12.1"
+      }
+    },
+    "12.2": {
+      "category": "required",
+      "title": "Shift range check",
+      "description": "The right hand operand of a shift operator shall lie in the range zero to one less than the width.",
+      "rationale": "Prevents undefined behavior in shifts.",
+      "severity": "error",
+      "tools": {
+        "pclint": "572",
+        "cppcheck": "misra-c2012-12.2"
+      }
+    },
+    "13.1": {
+      "category": "required",
+      "title": "No persistent side effects in initializers",
+      "description": "Initializer lists shall not contain persistent side effects.",
+      "rationale": "Order of evaluation is unspecified.",
+      "severity": "error",
+      "tools": {
+        "pclint": "564",
+        "cppcheck": "misra-c2012-13.1"
+      }
+    },
+    "13.2": {
+      "category": "required",
+      "title": "Consistent expression evaluation",
+      "description": "The value of an expression and its persistent side effects shall be the same under all permitted evaluation orders.",
+      "rationale": "Prevents unspecified behavior.",
+      "severity": "error",
+      "tools": {
+        "pclint": "564, 564s",
+        "cppcheck": "misra-c2012-13.2"
+      }
+    },
+    "13.5": {
+      "category": "required",
+      "title": "No side effects in right operand of && or ||",
+      "description": "The right hand operand of a logical && or || operator shall not contain persistent side effects.",
+      "rationale": "Side effects may not occur due to short-circuit evaluation.",
+      "severity": "error",
+      "tools": {
+        "pclint": "564",
+        "cppcheck": "misra-c2012-13.5"
+      }
+    },
+    "14.4": {
+      "category": "required",
+      "title": "Boolean controlling expressions",
+      "description": "The controlling expression shall have essentially Boolean type.",
+      "rationale": "Clarifies intent and prevents accidental assignments.",
+      "severity": "error",
+      "tools": {
+        "pclint": "506",
+        "cppcheck": "misra-c2012-14.4"
+      }
+    },
+    "15.5": {
+      "category": "advisory",
+      "title": "Single point of exit",
+      "description": "A function should have a single point of exit at the end.",
+      "rationale": "Simplifies control flow analysis and resource management.",
+      "severity": "style",
+      "tools": {
+        "pclint": "904",
+        "cppcheck": "misra-c2012-15.5"
+      },
+      "notes": "Major focus area for this project. See deviation permit PERF-001 for exceptions."
+    },
+    "15.6": {
+      "category": "required",
+      "title": "Compound statement for loops and selection",
+      "description": "The body of an iteration-statement or a selection-statement shall be a compound-statement.",
+      "rationale": "Prevents dangling else and other issues.",
+      "severity": "error",
+      "tools": {
+        "pclint": "525",
+        "cppcheck": "misra-c2012-15.6"
+      }
+    },
+    "15.7": {
+      "category": "required",
+      "title": "Else clause for if-else-if",
+      "description": "All if...else if constructs shall be terminated with an else statement.",
+      "rationale": "Ensures all cases are handled explicitly.",
+      "severity": "error",
+      "tools": {
+        "pclint": "544",
+        "cppcheck": "misra-c2012-15.7"
+      }
+    },
+    "16.1": {
+      "category": "required",
+      "title": "Well-formed switch statements",
+      "description": "All switch statements shall be well-formed.",
+      "rationale": "Prevents switch-related defects.",
+      "severity": "error",
+      "tools": {
+        "pclint": "525, 616",
+        "cppcheck": "misra-c2012-16.1"
+      }
+    },
+    "16.3": {
+      "category": "required",
+      "title": "Unconditional break in switch clause",
+      "description": "An unconditional break statement shall terminate every switch-clause.",
+      "rationale": "Prevents unintended fall-through.",
+      "severity": "error",
+      "tools": {
+        "pclint": "616",
+        "cppcheck": "misra-c2012-16.3"
+      }
+    },
+    "16.4": {
+      "category": "required",
+      "title": "Default label in switch",
+      "description": "Every switch statement shall have a default label.",
+      "rationale": "Ensures all cases are handled.",
+      "severity": "error",
+      "tools": {
+        "pclint": "107",
+        "cppcheck": "misra-c2012-16.4"
+      }
+    },
+    "17.2": {
+      "category": "required",
+      "title": "No recursion",
+      "description": "Functions shall not call themselves, either directly or indirectly.",
+      "rationale": "Prevents stack overflow in embedded systems.",
+      "severity": "error",
+      "tools": {
+        "pclint": "833",
+        "cppcheck": "misra-c2012-17.2"
+      }
+    },
+    "17.4": {
+      "category": "required",
+      "title": "Return statement in non-void function",
+      "description": "All exit paths from a function with non-void return type shall have an explicit return statement.",
+      "rationale": "Prevents undefined return values.",
+      "severity": "error",
+      "tools": {
+        "pclint": "433",
+        "cppcheck": "misra-c2012-17.4"
+      }
+    },
+    "17.7": {
+      "category": "required",
+      "title": "Use of non-void return value",
+      "description": "The value returned by a function having non-void return type shall be used.",
+      "rationale": "Unused return values may indicate logic errors.",
+      "severity": "error",
+      "tools": {
+        "pclint": "534",
+        "cppcheck": "misra-c2012-17.7"
+      },
+      "notes": "Major focus area for this project. Exceptions for (void) cast documented."
+    },
+    "17.8": {
+      "category": "advisory",
+      "title": "Function parameter should not be modified",
+      "description": "A function parameter should not be modified.",
+      "rationale": "Improves clarity and prevents aliasing issues.",
+      "severity": "style",
+      "tools": {
+        "pclint": "818",
+        "cppcheck": "misra-c2012-17.8"
+      }
+    },
+    "18.1": {
+      "category": "required",
+      "title": "Pointer arithmetic within array bounds",
+      "description": "A pointer resulting from arithmetic shall address an element of the same array.",
+      "rationale": "Prevents out-of-bounds access.",
+      "severity": "error",
+      "tools": {
+        "pclint": "661, 662, 665, 666",
+        "cppcheck": "misra-c2012-18.1"
+      }
+    },
+    "18.3": {
+      "category": "required",
+      "title": "Relational operators on same object pointers",
+      "description": "The relational operators shall not be applied to objects of pointer type except where they point into the same object.",
+      "rationale": "Comparison of unrelated pointers is undefined.",
+      "severity": "error",
+      "tools": {
+        "pclint": "666",
+        "cppcheck": "misra-c2012-18.3"
+      }
+    },
+    "18.6": {
+      "category": "required",
+      "title": "No address of automatic storage to persistent object",
+      "description": "The address of an object with automatic storage shall not be copied to another object that persists after the first object has ceased to exist.",
+      "rationale": "Prevents dangling pointers.",
+      "severity": "error",
+      "tools": {
+        "pclint": "428, 529",
+        "cppcheck": "misra-c2012-18.6"
+      }
+    },
+    "20.7": {
+      "category": "required",
+      "title": "Macro parameter parentheses",
+      "description": "Expressions resulting from the expansion of macro parameters shall be enclosed in parentheses.",
+      "rationale": "Prevents operator precedence issues with macro arguments.",
+      "severity": "error",
+      "tools": {
+        "pclint": "971",
+        "cppcheck": "misra-c2012-20.7"
+      },
+      "notes": "Major focus area for this project. Fix: Add parentheses around macro parameters."
+    },
+    "21.3": {
+      "category": "required",
+      "title": "No standard library memory management",
+      "description": "The memory allocation and deallocation functions of <stdlib.h> shall not be used.",
+      "rationale": "Dynamic memory can cause heap fragmentation and is non-deterministic.",
+      "severity": "error",
+      "tools": {
+        "pclint": "586",
+        "cppcheck": "misra-c2012-21.3"
+      },
+      "notes": "Use static allocation or memory pools instead. See platform/memory_pool.h"
+    },
+    "21.6": {
+      "category": "required",
+      "title": "No standard library input/output",
+      "description": "The Standard Library input/output functions shall not be used.",
+      "rationale": "stdio is not suitable for embedded systems.",
+      "severity": "error",
+      "tools": {
+        "pclint": "586",
+        "cppcheck": "misra-c2012-21.6"
+      }
+    }
+  },
+  "priority_rules": [
+    {
+      "rule": "15.5",
+      "priority": 1,
+      "action": "Refactor functions to single exit point",
+      "automated_fix": false
+    },
+    {
+      "rule": "17.7",
+      "priority": 1,
+      "action": "Check or explicitly discard return values",
+      "automated_fix": true
+    },
+    {
+      "rule": "20.7",
+      "priority": 1,
+      "action": "Add parentheses around macro parameters",
+      "automated_fix": true
+    },
+    {
+      "rule": "21.3",
+      "priority": 1,
+      "action": "Replace malloc/free with MemoryPool_Allocate/Free",
+      "automated_fix": false
+    }
+  ],
+  "deviation_permits": {
+    "TP-001": {
+      "title": "Third-Party Code",
+      "description": "External library code not under project control",
+      "applicable_files": ["*/freertos/*", "*/lwip/*", "*/cmsis/*"],
+      "rules_affected": ["*"],
+      "justification": "Third-party libraries have their own quality assurance processes",
+      "approval_required": true,
+      "expiry": "project_end"
+    },
+    "PERF-001": {
+      "title": "Performance-Critical Code",
+      "description": "Timing constraints require specific coding patterns",
+      "applicable_files": ["*interrupt*.c", "*eth_driver*.c"],
+      "rules_affected": ["15.5"],
+      "justification": "ISR latency requirements necessitate early returns",
+      "approval_required": true,
+      "review_period": "6_months"
+    },
+    "HW-001": {
+      "title": "Hardware Access Patterns",
+      "description": "Memory-mapped register access requires specific casts",
+      "applicable_files": ["*_regs.h", "*platform*"],
+      "rules_affected": ["11.4", "11.6", "19.2"],
+      "justification": "Hardware register access requires integer-to-pointer conversions",
+      "approval_required": true,
+      "expiry": "project_end"
+    }
+  },
+  "tool_configurations": {
+    "pclint_plus": {
+      "version": "1.4+",
+      "config_file": "tools/misra/pclint_config.lnt",
+      "misra_addon": "au-misra3.lnt",
+      "command": "pclp64 pclint_config.lnt -vf $(SOURCES)"
+    },
+    "cppcheck": {
+      "version": "2.10+",
+      "config_file": "tools/misra/cppcheck_suppressions.xml",
+      "misra_addon": "misra.json",
+      "command": "cppcheck --addon=misra --suppressions-list=tools/misra/cppcheck_suppressions.xml --enable=all $(SOURCES)"
+    }
+  },
+  "reporting": {
+    "format": "html,xml,json",
+    "output_directory": "reports/misra",
+    "ci_threshold": {
+      "required_errors": 0,
+      "advisory_warnings": 100
+    }
+  }
+}
