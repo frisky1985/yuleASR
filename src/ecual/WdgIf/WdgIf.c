@@ -26,11 +26,13 @@
 /******************************************************************************
  * Module Version Information
  ******************************************************************************/
-#define WDGIF_SW_VERSION_MAJOR          1U
-#define WDGIF_SW_VERSION_MINOR          0U
-#define WDGIF_SW_VERSION_PATCH          0U
-#define WDGIF_VENDOR_ID_VALUE           0x01U
-#define WDGIF_MODULE_ID_VALUE           0x43U
+/* Version information now comes from WdgIf_Cfg.h */
+#include "ecual/WdgIf/WdgIf_Cfg.h"
+#define WDGIF_SW_VERSION_MAJOR          WDGIF_CFG_SW_MAJOR_VERSION
+#define WDGIF_SW_VERSION_MINOR          WDGIF_CFG_SW_MINOR_VERSION
+#define WDGIF_SW_VERSION_PATCH          WDGIF_CFG_SW_PATCH_VERSION
+#define WDGIF_VENDOR_ID_VALUE           WDGIF_CFG_VENDOR_ID
+#define WDGIF_MODULE_ID_VALUE           WDGIF_CFG_MODULE_ID
 
 /******************************************************************************
  * Internal Variables
@@ -741,3 +743,18 @@ Std_ReturnType WdgIf_PerformSafetyChecks(WdgIf_DeviceType device)
     (void)device;
     return E_OK;
 }
+
+#if defined(WDGIF_DEV_ERROR_DETECT) && (WDGIF_DEV_ERROR_DETECT == STD_ON)
+/**
+ * @brief Report DET error to Development Error Tracer
+ */
+void WdgIf_ReportDetError(uint8 apiId, uint8 errorId)
+{
+    (void)Det_ReportError(
+        WDGIF_MODULE_ID,    /* Module ID */
+        0U,                 /* Instance ID */
+        apiId,              /* API ID */
+        errorId             /* Error ID */
+    );
+}
+#endif

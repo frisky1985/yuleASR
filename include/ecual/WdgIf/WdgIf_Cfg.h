@@ -18,6 +18,15 @@ extern "C" {
 #endif
 
 /******************************************************************************
+ * Module Version Information (from configuration)
+ ******************************************************************************/
+#define WDGIF_CFG_VENDOR_ID             0x01U
+#define WDGIF_CFG_MODULE_ID             0x43U
+#define WDGIF_CFG_SW_MAJOR_VERSION      1U
+#define WDGIF_CFG_SW_MINOR_VERSION      0U
+#define WDGIF_CFG_SW_PATCH_VERSION      0U
+
+/******************************************************************************
  * Module Configuration
  ******************************************************************************/
 

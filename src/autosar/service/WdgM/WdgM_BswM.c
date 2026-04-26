@@ -9,7 +9,8 @@
  * @copyright Copyright (c) 2024
  ******************************************************************************/
 
-#include "autosar/service/wdgM/wdgM_BswM.h"
+#include "autosar/service/WdgM/WdgM_BswM.h"
+#include "autosar/service/WdgM/WdgM.h"
 
 /******************************************************************************
  * BswM Interface Functions

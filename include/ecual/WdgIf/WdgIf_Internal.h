@@ -187,6 +187,9 @@ void WdgIf_HandleSafetyViolation(WdgIf_DeviceType device, uint8 violationType);
 #if defined(WDGIF_DEV_ERROR_DETECT) && (WDGIF_DEV_ERROR_DETECT == STD_ON)
     #define WDGIF_DET_REPORT_ERROR(apiId, errorId) \
         WdgIf_ReportDetError((apiId), (errorId))
+    
+    /* Function to report DET errors */
+    void WdgIf_ReportDetError(uint8 apiId, uint8 errorId);
 #else
     #define WDGIF_DET_REPORT_ERROR(apiId, errorId) ((void)0)
 #endif

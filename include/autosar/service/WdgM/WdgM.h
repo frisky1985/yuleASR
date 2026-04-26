@@ -17,6 +17,8 @@ extern "C" {
 
 #include "common/autosar_types.h"
 #include "common/autosar_errors.h"
+#include "autosar/service/Dem/Dem.h"
+#include "autosar/service/Det/Det.h"
 #include <stdint.h>
 #include <stdbool.h>
 

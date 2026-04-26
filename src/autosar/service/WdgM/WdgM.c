@@ -9,9 +9,11 @@
  * @copyright Copyright (c) 2024
  ******************************************************************************/
 
-#include "autosar/service/wdgM/wdgM.h"
-#include "autosar/service/wdgM/wdgM_Cfg.h"
-#include "autosar/service/wdgM/wdgIf.h"
+#include "autosar/service/WdgM/WdgM.h"
+#include "autosar/service/WdgM/WdgM_Cfg.h"
+#include "autosar/service/WdgM/WdgIf.h"
+#include "autosar/service/Dem/Dem.h"
+#include "autosar/service/Det/Det.h"
 #include <string.h>
 
 /******************************************************************************
@@ -438,13 +440,25 @@ static void WdgM_ReportProductionError(uint8 errorCode, WdgM_SupervisedEntityIdT
     if (WDGM_DEM_REPORTING_ENABLED == STD_ON) {
         switch (errorCode) {
             case WDGM_E_ALIVE_SUPERVISION:
-                /* Report to DEM: WDGM_E_ALIVE_SUPERVISION_DEM_ID */
+                /* Report to DEM: Alive supervision failure */
+                (void)Dem_ReportErrorStatus(
+                    DEM_EVENT_ID_WDGM_ALIVE_SUPERVISION,
+                    DEM_EVENT_STATUS_FAILED
+                );
                 break;
             case WDGM_E_DEADLINE_SUPERVISION:
-                /* Report to DEM: WDGM_E_DEADLINE_SUPERVISION_DEM_ID */
+                /* Report to DEM: Deadline supervision failure */
+                (void)Dem_ReportErrorStatus(
+                    DEM_EVENT_ID_WDGM_DEADLINE_SUPERVISION,
+                    DEM_EVENT_STATUS_FAILED
+                );
                 break;
             case WDGM_E_LOGICAL_SUPERVISION:
-                /* Report to DEM: WDGM_E_LOGICAL_SUPERVISION_DEM_ID */
+                /* Report to DEM: Logical supervision failure */
+                (void)Dem_ReportErrorStatus(
+                    DEM_EVENT_ID_WDGM_LOGICAL_SUPERVISION,
+                    DEM_EVENT_STATUS_FAILED
+                );
                 break;
             default:
                 /* Unknown error code */
