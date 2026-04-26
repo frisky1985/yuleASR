@@ -7,14 +7,47 @@
 #ifndef DET_H
 #define DET_H
 
-#include "Std_Types.h"
+#include "common/autosar_types.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /*=============================================================================
- * Error IDs for WdgM module
+ * Error IDs for PduR module
+ *=============================================================================*/
+/* PduR Module ID: 0x37 */
+#define PDUR_MODULE_ID                          0x37U
+
+/* PduR Development Error IDs */
+#define PDUR_E_NO_INIT                          0x11U
+#define PDUR_E_ALREADY_INITIALIZED              0x12U
+#define PDUR_E_PARAM_CONFIG                     0x13U
+#define PDUR_E_PARAM_POINTER                    0x14U
+#define PDUR_E_PARAM_PDUID                      0x15U
+#define PDUR_E_ROUTING_ERROR                    0x16U
+#define PDUR_E_BUFFER_ERROR                     0x17U
+
+/*=============================================================================
+ * Error IDs for SoAd module
+ *=============================================================================*/
+/* SoAd Module ID: 0x36 */
+#define SOAD_MODULE_ID                          0x36U
+
+/* SoAd Development Error IDs */
+#define SOAD_E_NO_INIT                          0x11U
+#define SOAD_E_ALREADY_INITIALIZED              0x12U
+#define SOAD_E_PARAM_CONFIG                     0x13U
+#define SOAD_E_PARAM_POINTER                    0x14U
+#define SOAD_E_PARAM_PDUID                      0x15U
+#define SOAD_E_PARAM_SOCKET                     0x16U
+#define SOAD_E_PARAM_MODE                       0x17U
+#define SOAD_E_SOCKET_NOT_CONNECTED             0x18U
+#define SOAD_E_SOCKET_ERROR                     0x19U
+#define SOAD_E_ROUTING_ERROR                    0x1AU
+
+/*=============================================================================*/
+/* Error IDs for WdgM module
  *=============================================================================*/
 /* WdgM Module ID: 0x12 */
 #define WDGM_MODULE_ID                          0x12U
