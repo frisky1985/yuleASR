@@ -43,12 +43,28 @@ set(ARXML_HEADERS
     arxml/arxml_parser.h
 )
 
+# Service Layer Modules (WdgM, etc.)
+set(SERVICE_SOURCES
+    service/wdgM/wdgM.c
+    service/wdgM/wdgIf.c
+    service/wdgM/wdgM_BswM.c
+    service/wdgM/wdgM_Lcfg.c
+)
+
+set(SERVICE_HEADERS
+    service/wdgM/wdgM.h
+    service/wdgM/wdgM_Cfg.h
+    service/wdgM/wdgIf.h
+    service/wdgM/wdgM_BswM.h
+)
+
 # Create AUTOSAR library
 add_library(autosar_rte STATIC
     ${ADAPTIVE_SOURCES}
     ${CLASSIC_SOURCES}
     ${E2E_SOURCES}
     ${ARXML_SOURCES}
+    ${SERVICE_SOURCES}
 )
 
 # Set include directories
@@ -60,6 +76,9 @@ target_include_directories(autosar_rte
         ${CMAKE_CURRENT_SOURCE_DIR}/classic
         ${CMAKE_CURRENT_SOURCE_DIR}/e2e
         ${CMAKE_CURRENT_SOURCE_DIR}/arxml
+        ${CMAKE_CURRENT_SOURCE_DIR}/service
+        ${CMAKE_CURRENT_SOURCE_DIR}/service/wdgM
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/autosar/service/wdgM
 )
 
 # Compiler flags for ASIL-D compliance
@@ -121,6 +140,11 @@ install(FILES
     DESTINATION include/autosar
 )
 
+install(FILES
+    ${SERVICE_HEADERS}
+    DESTINATION include/autosar/service/wdgM
+)
+
 # Summary message
 message(STATUS "AUTOSAR RTE Module configured:")
 message(STATUS "  - Adaptive ara::com DDS: ENABLED")
@@ -130,5 +154,6 @@ message(STATUS "  - E2E State Machine: ENABLED")
 message(STATUS "  - E2E DDS Integration: ENABLED")
 message(STATUS "  - E2E Profiles: P01, P02, P04, P05, P06, P07, P11, P22")
 message(STATUS "  - ARXML Parser: ENABLED")
+message(STATUS "  - Service Layer (WdgM): ENABLED")
 message(STATUS "  - ASIL-D Compliance: YES")
 message(STATUS "  - AUTOSAR Version: R22-11")

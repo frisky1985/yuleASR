@@ -59,11 +59,17 @@ if(ENABLE_DDS)
         ${ETH_DDS_SRC_DIR}/dds/core/*.c
         ${ETH_DDS_SRC_DIR}/dds/rtps/*.c
         ${ETH_DDS_SRC_DIR}/dds/pubsub/*.c
+        ${ETH_DDS_SRC_DIR}/dds/transport/eth/*.c
+        ${ETH_DDS_SRC_DIR}/dds/transport/soad/*.c
+        ${ETH_DDS_SRC_DIR}/dds/transport/tsn/*.c
     )
     file(GLOB_RECURSE DDS_HEADERS
         ${ETH_DDS_SRC_DIR}/dds/core/*.h
         ${ETH_DDS_SRC_DIR}/dds/rtps/*.h
         ${ETH_DDS_SRC_DIR}/dds/pubsub/*.h
+        ${ETH_DDS_SRC_DIR}/dds/transport/eth/*.h
+        ${ETH_DDS_SRC_DIR}/dds/transport/soad/*.h
+        ${ETH_DDS_SRC_DIR}/dds/transport/tsn/*.h
     )
     
     if(ENABLE_DDS_SECURITY)
@@ -107,6 +113,14 @@ if(ENABLE_TSN)
     )
 endif()
 
+# SoAd module (AUTOSAR Socket Adapter)
+file(GLOB_RECURSE SOAD_SOURCES
+    ${ETH_DDS_SRC_DIR}/soad/*.c
+)
+file(GLOB_RECURSE SOAD_HEADERS
+    ${ETH_DDS_SRC_DIR}/soad/*.h
+)
+
 # AUTOSAR module
 if(ENABLE_AUTOSAR_CLASSIC)
     file(GLOB_RECURSE AUTOSAR_CLASSIC_SOURCES
@@ -118,6 +132,16 @@ if(ENABLE_AUTOSAR_CLASSIC)
         ${ETH_DDS_SRC_DIR}/autosar/classic/*.h
         ${ETH_DDS_SRC_DIR}/autosar/e2e/*.h
         ${ETH_DDS_SRC_DIR}/autosar/arxml/*.h
+    )
+endif()
+
+# AUTOSAR Service modules (WdgM, etc.)
+if(ENABLE_AUTOSAR_CLASSIC)
+    file(GLOB_RECURSE AUTOSAR_SERVICE_SOURCES
+        ${ETH_DDS_SRC_DIR}/autosar/service/wdgM/*.c
+    )
+    file(GLOB_RECURSE AUTOSAR_SERVICE_HEADERS
+        ${ETH_DDS_SRC_DIR}/autosar/service/wdgM/*.h
     )
 endif()
 
@@ -185,6 +209,7 @@ add_library(eth_dds
     ${TRANSPORT_SOURCES}
     $<$<BOOL:${ENABLE_TSN}>:${TSN_SOURCES}>
     $<$<BOOL:${ENABLE_AUTOSAR_CLASSIC}>:${AUTOSAR_CLASSIC_SOURCES}>
+    $<$<BOOL:${ENABLE_AUTOSAR_CLASSIC}>:${AUTOSAR_SERVICE_SOURCES}>
     $<$<BOOL:${ENABLE_AUTOSAR_ADAPTIVE}>:${AUTOSAR_ADAPTIVE_SOURCES}>
     $<$<BOOL:${ENABLE_SAFETY_RAM}>:${SAFETY_RAM_SOURCES}>
     $<$<BOOL:${ENABLE_SAFETY_NVM}>:${SAFETY_NVM_SOURCES}>
@@ -227,6 +252,8 @@ target_include_directories(eth_dds PUBLIC
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/autosar/adaptive>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/autosar/e2e>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/autosar/arxml>
+    $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/autosar/service>
+    $<BUILD_INTERFACE:${ETH_DDS_INCLUDE_DIR}/autosar/service/wdgM>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/safety/ram>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/safety/saferam>
     $<BUILD_INTERFACE:${ETH_DDS_SRC_DIR}/safety/nvm>
