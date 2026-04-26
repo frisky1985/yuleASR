@@ -10,9 +10,14 @@
  */
 
 #include <string.h>
-#include <stdlib.h>
 #include "bl_partition.h"
 #include "../common/log/dds_log.h"
+
+/* ============================================================================
+ * Static Memory Pool for CRC Buffer (MISRA Rule 21.3 - replace malloc/free)
+ * ============================================================================ */
+static uint8_t s_crc_buffer_pool[BL_FLASH_SECTOR_SIZE];
+static volatile bool s_crc_buffer_in_use = false;
 
 /* ============================================================================
  * 内部宏和常量
@@ -152,75 +157,76 @@ bl_partition_error_t bl_partition_init(
     uint32_t partition_table_addr
 )
 {
-    if (mgr == NULL || flash_driver == NULL) {
-        return BL_ERROR_INVALID_PARAM;
-    }
+    bl_partition_error_t result = BL_ERROR_INVALID_PARAM;
     
-    memset(mgr, 0, sizeof(bl_partition_manager_t));
-    mgr->flash_driver = flash_driver;
-    
-    /* 初始化Flash驱动 */
-    if (flash_driver->init != NULL) {
-        int32_t result = flash_driver->init();
-        if (result != 0) {
-            DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
-                    "Flash driver init failed: %d", result);
-            return BL_ERROR_FLASH_ERROR;
+    if ((mgr != NULL) && (flash_driver != NULL)) {
+        (void)memset(mgr, 0, sizeof(bl_partition_manager_t));
+        mgr->flash_driver = flash_driver;
+        result = BL_OK;
+        
+        /* 初始化Flash驱动 */
+        if ((result == BL_OK) && (flash_driver->init != NULL)) {
+            int32_t init_result = flash_driver->init();
+            if (init_result != 0) {
+                DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+                        "Flash driver init failed: %d", init_result);
+                result = BL_ERROR_FLASH_ERROR;
+            }
+        }
+        
+        /* 尝试加载分区表 */
+        if ((result == BL_OK) && (partition_table_addr != 0U)) {
+            bl_partition_error_t load_result = bl_partition_table_load(mgr, partition_table_addr);
+            if (load_result != BL_OK) {
+                DDS_LOG(DDS_LOG_WARNING, BL_PARTITION_MODULE_NAME,
+                        "Failed to load partition table, initializing default");
+                
+                /* 获取Flash大小 */
+                uint32_t flash_size = 0U;
+                uint32_t sector_size = 0U;
+                if (flash_driver->get_info != NULL) {
+                    flash_driver->get_info(&flash_size, &sector_size);
+                }
+                
+                if (flash_size == 0U) {
+                    flash_size = 16U * 1024U * 1024U; /* 默认16MB */
+                }
+                
+                result = bl_partition_table_init_default(mgr, flash_size);
+                
+                if (result == BL_OK) {
+                    /* 保存默认分区表 */
+                    (void)bl_partition_table_save(mgr, partition_table_addr);
+                }
+            }
+        }
+        
+        if (result == BL_OK) {
+            mgr->initialized = true;
+            mgr->write_protected = true; /* 默认写保护 */
+            
+            DDS_LOG(BL_PARTITION_LOG_LEVEL, BL_PARTITION_MODULE_NAME,
+                    "Partition manager initialized, %u partitions",
+                    mgr->table.header.num_partitions);
         }
     }
     
-    /* 尝试加载分区表 */
-    if (partition_table_addr != 0) {
-        bl_partition_error_t result = bl_partition_table_load(mgr, partition_table_addr);
-        if (result != BL_OK) {
-            DDS_LOG(DDS_LOG_WARNING, BL_PARTITION_MODULE_NAME,
-                    "Failed to load partition table, initializing default");
-            
-            /* 获取Flash大小 */
-            uint32_t flash_size = 0, sector_size = 0;
-            if (flash_driver->get_info != NULL) {
-                flash_driver->get_info(&flash_size, &sector_size);
-            }
-            
-            if (flash_size == 0) {
-                flash_size = 16 * 1024 * 1024; /* 默认16MB */
-            }
-            
-            result = bl_partition_table_init_default(mgr, flash_size);
-            if (result != BL_OK) {
-                return result;
-            }
-            
-            /* 保存默认分区表 */
-            bl_partition_table_save(mgr, partition_table_addr);
-        }
-    }
-    
-    mgr->initialized = true;
-    mgr->write_protected = true; /* 默认写保护 */
-    
-    DDS_LOG(BL_PARTITION_LOG_LEVEL, BL_PARTITION_MODULE_NAME,
-            "Partition manager initialized, %u partitions",
-            mgr->table.header.num_partitions);
-    
-    return BL_OK;
+    return result;
 }
 
 void bl_partition_deinit(bl_partition_manager_t *mgr)
 {
-    if (mgr == NULL || !mgr->initialized) {
-        return;
+    if ((mgr != NULL) && (mgr->initialized)) {
+        /* 锁定Flash写保护 */
+        if (mgr->flash_driver->lock != NULL) {
+            mgr->flash_driver->lock();
+        }
+        
+        (void)memset(mgr, 0, sizeof(bl_partition_manager_t));
+        
+        DDS_LOG(BL_PARTITION_LOG_LEVEL, BL_PARTITION_MODULE_NAME,
+                "Partition manager deinitialized");
     }
-    
-    /* 锁定Flash写保护 */
-    if (mgr->flash_driver->lock != NULL) {
-        mgr->flash_driver->lock();
-    }
-    
-    memset(mgr, 0, sizeof(bl_partition_manager_t));
-    
-    DDS_LOG(BL_PARTITION_LOG_LEVEL, BL_PARTITION_MODULE_NAME,
-            "Partition manager deinitialized");
 }
 
 bl_partition_error_t bl_partition_table_load(
@@ -783,7 +789,7 @@ bl_partition_error_t bl_partition_verify_crc(
     return BL_OK;
 }
 
-bl_partition_error_t bl_partition_calculate_crc(
+bl_partition_error_t bl_partition_calculate_crc32(
     bl_partition_manager_t *mgr,
     const char *partition_name,
     uint32_t *crc32
@@ -798,11 +804,14 @@ bl_partition_error_t bl_partition_calculate_crc(
         return BL_ERROR_PARTITION_NOT_FOUND;
     }
     
-    /* 分配缓冲区 */
-    uint8_t *buffer = malloc(BL_FLASH_SECTOR_SIZE);
-    if (buffer == NULL) {
+    /* 使用静态内存池而非 malloc (MISRA Rule 21.3) */
+    if (s_crc_buffer_in_use) {
+        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+                "CRC buffer already in use");
         return BL_ERROR_FLASH_ERROR;
     }
+    s_crc_buffer_in_use = true;
+    uint8_t *buffer = s_crc_buffer_pool;
     
     uint32_t crc = 0xFFFFFFFF;
     uint32_t remaining = part->size;
@@ -814,7 +823,7 @@ bl_partition_error_t bl_partition_calculate_crc(
         
         int32_t result = mgr->flash_driver->read(address, buffer, chunk_size);
         if (result != 0) {
-            free(buffer);
+            s_crc_buffer_in_use = false;
             return BL_ERROR_FLASH_ERROR;
         }
         
@@ -824,7 +833,7 @@ bl_partition_error_t bl_partition_calculate_crc(
         remaining -= chunk_size;
     }
     
-    free(buffer);
+    s_crc_buffer_in_use = false;
     *crc32 = ~crc;
     
     return BL_OK;

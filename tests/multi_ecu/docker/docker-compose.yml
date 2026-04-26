@@ -1,0 +1,165 @@
+# Docker Compose for Multi-ECU Testing
+# Simulates 3 ECU nodes in separate containers
+
+version: '3.8'
+
+services:
+  # ECU 1: Body Control Module (BCM)
+  ecu_bcm:
+    build:
+      context: ../..
+      dockerfile: tests/multi_ecu/docker/Dockerfile.ecu
+    container_name: ecu_bcm
+    hostname: ecu-bcm
+    networks:
+      - automotive_eth
+    environment:
+      - ECU_ID=1
+      - ECU_NAME=ECU_BCM
+      - ECU_GROUP=chassis
+      - DDS_DOMAIN_ID=42
+      - ECU_ROLE=body_controller
+    volumes:
+      - ../../:/workspace/eth-dds:ro
+      - ecu_bcm_data:/data
+    command: ["/app/ecu_simulator", "--id", "1", "--name", "ECU_BCM", "--group", "chassis"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ECU 2: ADAS Controller
+  ecu_adas:
+    build:
+      context: ../..
+      dockerfile: tests/multi_ecu/docker/Dockerfile.ecu
+    container_name: ecu_adas
+    hostname: ecu-adas
+    networks:
+      - automotive_eth
+    environment:
+      - ECU_ID=2
+      - ECU_NAME=ECU_ADAS
+      - ECU_GROUP=chassis
+      - DDS_DOMAIN_ID=42
+      - ECU_ROLE=adas_controller
+    volumes:
+      - ../../:/workspace/eth-dds:ro
+      - ecu_adas_data:/data
+    command: ["/app/ecu_simulator", "--id", "2", "--name", "ECU_ADAS", "--group", "chassis"]
+    depends_on:
+      ecu_bcm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # ECU 3: Infotainment System
+  ecu_infotainment:
+    build:
+      context: ../..
+      dockerfile: tests/multi_ecu/docker/Dockerfile.ecu
+    container_name: ecu_infotainment
+    hostname: ecu-infotainment
+    networks:
+      - automotive_eth
+    environment:
+      - ECU_ID=3
+      - ECU_NAME=ECU_INFOTAINMENT
+      - ECU_GROUP=infotainment
+      - DDS_DOMAIN_ID=42
+      - ECU_ROLE=infotainment
+    volumes:
+      - ../../:/workspace/eth-dds:ro
+      - ecu_infotainment_data:/data
+    command: ["/app/ecu_simulator", "--id", "3", "--name", "ECU_INFOTAINMENT", "--group", "infotainment"]
+    depends_on:
+      ecu_bcm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  # OTA Server
+  ota_server:
+    build:
+      context: ../..
+      dockerfile: tests/multi_ecu/docker/Dockerfile.ota
+    container_name: ota_server
+    hostname: ota-server
+    networks:
+      - automotive_eth
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - ota_packages:/packages
+      - ../../tests/multi_ecu/test_packages:/test_packages:ro
+    environment:
+      - OTA_PORT=8080
+      - OTA_HTTPS_PORT=8443
+      - PACKAGE_DIR=/packages
+    command: ["python3", "/app/ota_server.py"]
+
+  # Network Simulator (for Mininet integration)
+  network_sim:
+    build:
+      context: ../..
+      dockerfile: tests/multi_ecu/docker/Dockerfile.network
+    container_name: network_sim
+    hostname: network-sim
+    networks:
+      - automotive_eth
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: ["python3", "/app/network_simulator.py"]
+
+  # Test Coordinator
+  test_coordinator:
+    build:
+      context: ../..
+      dockerfile: tests/multi_ecu/docker/Dockerfile.test
+    container_name: test_coordinator
+    hostname: test-coordinator
+    networks:
+      - automotive_eth
+    volumes:
+      - ../../:/workspace/eth-dds:ro
+      - test_results:/results
+    environment:
+      - ECU_BCM_HOST=ecu_bcm
+      - ECU_ADAS_HOST=ecu_adas
+      - ECU_INFOTAINMENT_HOST=ecu_infotainment
+      - OTA_SERVER_HOST=ota_server
+    command: ["python3", "/app/run_integration_tests.py"]
+    depends_on:
+      - ecu_bcm
+      - ecu_adas
+      - ecu_infotainment
+      - ota_server
+
+networks:
+  automotive_eth:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+          gateway: 192.168.100.1
+
+volumes:
+  ecu_bcm_data:
+  ecu_adas_data:
+  ecu_infotainment_data:
+  ota_packages:
+  test_results:

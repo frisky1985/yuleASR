@@ -1,387 +1,251 @@
-# Architecture Overview
+# ETH-DDS 架构设计文档
 
-**Version**: 2.0.0  
-**Last Updated**: 2025-04-25  
-**Status**: Production Ready
-
----
-
-## Table of Contents
-
-1. [System Context](#system-context)
-2. [Design Principles](#design-principles)
-3. [Layered Architecture](#layered-architecture)
-4. [Data Flow](#data-flow)
-5. [Configuration Management](#configuration-management)
-6. [Deployment Architecture](#deployment-architecture)
-7. [Architecture Decision Records](#architecture-decision-records)
+**版本**: 2.0.0  
+**更新日期**: 2026-04-26
 
 ---
 
-## System Context
+## 目录
 
-### Purpose
-
-The ETH-DDS Integration Framework provides a complete automotive-grade middleware solution for deterministic data communication over Ethernet, combining:
-
-- **DDS (Data Distribution Service)**: Publish-subscribe middleware
-- **TSN (Time-Sensitive Networking)**: Deterministic Ethernet transport
-- **AUTOSAR**: Classic RTE and Adaptive ara::com integration
-- **Functional Safety**: ASIL-D certified safety mechanisms
-
-### Target Applications
-
-| Domain | Use Case | ASIL Level |
-|--------|----------|------------|
-| ADAS | Sensor fusion, perception | ASIL-D |
-| Powertrain | Engine control, transmission | ASIL-D |
-| Body | Lighting, climate | ASIL-B |
-| Infotainment | Media, navigation | QM |
-| Diagnostics | OBD, logging | ASIL-B |
-
-### Stakeholders
-
-- **System Architects**: Define integration patterns
-- **Embedded Developers**: Implement ECU software
-- **Safety Engineers**: Certify ASIL-D compliance
-- **Network Engineers**: Configure TSN parameters
+1. [系统架构](#系统架构)
+2. [模块设计](#模块设计)
+3. [数据流](#数据流)
+4. [安全架构](#安全架构)
+5. [平台适配](#平台适配)
 
 ---
 
-## Design Principles
+## 系统架构
 
-### 1. Separation of Concerns
+### 总体架构图
 
 ```
-┌────────────────0────────────────────────────────┐
-│                    Application Layer                      │
-│         (DDS Topics, QoS Policies, Safety Monitors)       │
-├────────────────────────────────────────────────┤
-│                 Middleware Layer                          │
-│    (DDS Core, RTPS Protocol, TSN Stack, AUTOSAR RTE)      │
-├────────────────────────────────────────────────┤
-│                 Transport Layer                           │
-│         (UDP/IP, Shared Memory, Ethernet MAC)             │
-├────────────────────────────────────────────────┤
-│                Platform Abstraction                       │
-│      (FreeRTOS, Hardware Drivers, Safety Modules)         │
-└────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                   ETH-DDS Integration Framework                       │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                      Application Layer                               │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │   │
+│  │  │AUTOSAR RTE │  │  ROS2 Apps   │  │Custom Apps │          │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘          │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              v                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                    DDS Middleware Layer                              │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │   │
+│  │  │   DDS Core  │  │DDS-Security │  │  RTPS      │          │   │
+│  │  │   Services  │  │  Plugins   │  │ Protocol   │          │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘          │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              v                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                      Transport Layer                                 │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │   │
+│  │  │  UDP/TCP   │  │   SHM      │  │   TSN     │          │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘          │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              v                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                   Platform Abstraction Layer                          │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │   │
+│  │  │    Linux   │  │  FreeRTOS  │  │Bare-metal │          │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘          │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────┘
 ```
-
-### 2. Configurability
-
-All major features are compile-time configurable:
-
-```cmake
-# CMake options for customization
-option(ENABLE_TSN "Enable TSN support" ON)
-option(ENABLE_DDS_SECURITY "Enable DDS-Security" ON)
-option(ENABLE_AUTOSAR_CLASSIC "Enable Classic RTE" ON)
-option(FREERTOS_PORT "Target architecture" ARM_CM7)
-```
-
-### 3. Testability
-
-- **Unit tests**: Component isolation with mocking
-- **Integration tests**: Module interaction verification
-- **System tests**: End-to-end scenarios
-- **HIL tests**: Hardware-in-the-loop validation
 
 ---
 
-## Layered Architecture
+## 模块设计
 
-### Component Diagram
+### DDS核心模块
 
 ```
-                            +------------------+
-                            |   Applications   |
-                            |  (ADAS, Powertrain|
-                            |   Diagnostics)   |
-                            +--------+---------+
-                                     |
-                    +----------------v------------------+
-                    |         AUTOSAR Layer             |
-                    |  +------------+  +-------------+  |
-                    |  |   Classic  |  |  Adaptive   |  |
-                    |  |    RTE     |  |   ara::com  |  |
-                    |  +------------+  +-------------+  |
-                    |  +------------+  +-------------+  |
-                    |  |    E2E     |  |   ARXML     |  |
-                    |  | Protection |  |   Parser    |  |
-                    |  +------------+  +-------------+  |
-                    +----------------+------------------+
-                                     |
-                    +----------------v------------------+
-                    |           DDS Layer               |
-                    |  +------------+  +-------------+  |
-                    |  |   Domain   |  |    Topic    |  |
-                    |  |   Entity   |  |   Entity    |  |
-                    |  +------------+  +-------------+  |
-                    |  +------------+  +-------------+  |
-                    |  |   RTPS     |  |   Security  |  |
-                    |  |  Protocol  |  |   Manager   |  |
-                    |  +------------+  +-------------+  |
-                    +----------------+------------------+
-                                     |
-                    +----------------v------------------+
-                    |           TSN Layer               |
-                    |  +------+ +------+ +------+       |
-                    |  | gPTP | | TAS  | | CBS  |       |
-                    |  | Sync | |Shaper| |Shaper|       |
-                    |  +------+ +------+ +------+       |
-                    |  +------+ +------------------+    |
-                    |  | Frame | | Stream Reservation |  |
-                    |  | Preempt| |      (SRP)        |  |
-                    |  +------+ +------------------+    |
-                    +----------------+------------------+
-                                     |
-                    +----------------v------------------+
-                    |        Transport Layer            |
-                    |  +------------+  +-------------+  |
-                    |  |    UDP     |  |   Shared    |  |
-                    |  | Transport  |  |   Memory    |  |
-                    |  +------------+  +-------------+  |
-                    +----------------+------------------+
-                                     |
-                    +----------------v------------------+
-                    |      Platform Abstraction         |
-                    |  +------------+  +-------------+  |
-                    |  |  Ethernet  |  |   FreeRTOS  |  |
-                    |  |   Driver   |  |    Kernel   |  |
-                    |  +------------+  +-------------+  |
-                    |  +------------+  +-------------+  |
-                    |  |   Safety   |  |    NVM      |  |
-                    |  |   (ECC)    |  |  Manager    |  |
-                    |  +------------+  +-------------+  |
-                    +-----------------------------------+
+┌─────────────────────────────────────────────────────────────────┐
+│                       DDS Core Module                                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                     Entity Manager                                  │   │
+│  │  Participant ─── Topic ─── Publisher ─── Subscriber                   │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              v                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                      QoS Engine                                     │   │
+│  │  Reliability │ Durability │ History │ Deadline │ Latency              │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              v                                          │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │                   Type System                                       │   │
+│  │  IDL Parser │ Type Registry │ Serialization (CDR/XCDR)               │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### Module Responsibilities
+### 安全模块
 
-| Module | Responsibility | Key Files |
-|--------|----------------|-----------|
-| **DDS Core** | Topic management, QoS enforcement | `dds/core/` |
-| **RTPS** | Wire protocol, discovery | `dds/rtps/` |
-| **TSN** | Time synchronization, traffic shaping | `tsn/` |
-| **Transport** | Network abstraction | `transport/` |
-| **Ethernet** | MAC/DMA driver | `ethernet/driver/` |
-| **Safety** | RAM ECC, SafeRAM, NVM | `safety/` |
-| **Platform** | OS abstraction, HW drivers | `platform/` |
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     Security Stack                                    │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  DDS-Security                                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  Authentication │ Access Control │ Cryptography                     │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│  SecOC Stack                                                            │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │     SecOC     │    CSM        │    KeyM                          │   │
+│  │  Authenticator│  MAC/Encrypt  │  Key Management                   │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│  E2E Protection                                                         │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  CRC Check  │ Sequence Number │ Timeout Monitor                   │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Data Flow
+## 数据流
 
-### Publish-Subscribe Flow
-
-```
-Publisher Application
-        |
-        v
-+-----------------------------------+
-| DDS Writer                        |
-| - History cache                   |
-| - QoS policies                    |
-+-----------------------------------+
-        |
-        v
-+-----------------------------------+
-| RTPS Protocol                     |
-| - Serialize data                  |
-| - Create RTPS messages            |
-+-----------------------------------+
-        |
-        v
-+-----------------------------------+
-| Transport Layer                   |
-| - UDP multicast                   |
-| - Or shared memory                |
-+-----------------------------------+
-        |
-        v
-Subscriber Application
-        |
-        v
-+-----------------------------------+
-| RTPS Protocol                     |
-| - Parse messages                  |
-| - Deliver to readers              |
-+-----------------------------------+
-        |
-        v
-+-----------------------------------+
-| DDS Reader                        |
-| - Apply filters                   |
-| - Notify application              |
-+-----------------------------------+
-```
-
-### TSN Data Flow with Time-Triggered Traffic
+### DDS数据流
 
 ```
-Application Data
-        |
-        v
-+------------------+
-| Traffic Classifier|
-| (IEEE 802.1Qci)  |
-+------------------+
-        |
-   +----+----+
-   |         |
-   v         v
-+------+  +------+
-| TAS  |  | CBS  |
-| Gate |  | Queue|
-|(Qbv) |  |(Qav) |
-+------+  +------+
-   |         |
-   +----+----+
-        |
-        v
-+------------------+
-| Frame Preemption |
-|   (802.1Qbu)     |
-+------------------+
-        |
-        v
-+------------------+
-| Ethernet MAC     |
-+------------------+
+┌─────────────────────────────────────────────────────────────────┐
+│                       DDS Data Flow                                   │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Publisher App                    Subscriber App                        │
+│       │                                 │                               │
+│       v                                 v                               │
+│  ┌─────────────────────────────────────────────────────────────────┐  │
+│  │  DataWriter ─────────────────────────────────────────────┾ DataReader │  │
+│  │       │                                                      │       │  │
+│  │       v                                                      v       │  │
+│  │  HistoryCache                                            HistoryCache │  │
+│  │       │                                                      │       │  │
+│  │       v                                                      v       │  │
+│  │  ┌─────────────────────────────────────────────────────────────────┐  │  │
+│  │  │                    RTPS Protocol                               │  │  │
+│  │  │  Data Submessage ────────────────────────────────────┾  │  │  │
+│  │  │  Heartbeat      ────────────────────────────────────┼  │  │  │
+│  │  │  AckNack        ────────────────────────────────────┾  │  │  │
+│  │  └─────────────────────────────────────────────────────────────────┘  │  │
+│  └─────────────────────────────────────────────────────────────────┘  │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────┘
 ```
-
-### QoS to TSN Mapping
-
-| DDS QoS Policy | TSN Feature | Purpose |
-|----------------|-------------|---------|
-| DEADLINE | TAS Time-Aware Shaping | Deterministic latency |
-| RELIABILITY | Frame Preemption | Protect critical traffic |
-| TRANSPORT_PRIORITY | CBS Credit-Based Shaper | Bandwidth allocation |
-| LIFESPAN | gPTP Time Sync | Time synchronization |
 
 ---
 
-## Configuration Management
+## 安全架构
 
-### Configuration Hierarchy
-
-```
-System Configuration
-├── Domain Configuration (DDS domain, global settings)
-│   ├── Participant Configuration
-│   │   ├── Topic Configuration
-│   │   │   ├── Publisher/Subscriber QoS
-│   │   │   └── Writer/Reader Settings
-│   │   └── Transport Configuration
-│   └── TSN Configuration
-│       ├── gPTP Settings
-│       ├── TAS Schedule
-│       └── Stream Reservations
-└── Safety Configuration
-    ├── ECC Monitoring Regions
-    ├── Stack/Heap Protection
-    └── NVM Block Configuration
-```
-
-### Configuration Files
-
-| File | Purpose | Format |
-|------|---------|--------|
-| `dds_config.yaml` | DDS entity configuration | YAML |
-| `tsn_schedule.json` | TAS gate schedule | JSON |
-| `e2e_config.xml` | E2E protection config | ARXML |
-| `safety_config.h` | Safety module parameters | C header |
-
-### Configuration Tools
-
-- **CLI Tool**: `dds_config_tool` for validation and code generation
-- **Web GUI**: Browser-based configuration editor
-- **ARXML Parser**: Import AUTOSAR configurations
-
----
-
-## Deployment Architecture
-
-### Network Topology Example
+### 认证流程
 
 ```
-                    +------------------+
-                    |   Central ECU    |
-                    |  (Domain Controller|
-                    |   + TSN Bridge)  |
-                    +--------+---------+
-                             |
-            +----------------+----------------+
-            |                |                |
-    +-------v------+ +-------v------+ +-------v------+
-    |   ADAS ECU   | | Powertrain   | |  Body ECU    |
-    |   (ASIL-D)   | |   ECU        | |  (ASIL-B)    |
-    |              | |  (ASIL-D)    | |              |
-    | - Cameras    | | - Engine     | | - Lighting   |
-    | - Lidar      | | - Gearbox    | | - Climate    |
-    | - Radar      | | - Battery    | | - Doors      |
-    +--------------+ +--------------+ +--------------+
-            |                |                |
-            +----------------+----------------+
-                             |
-                    +--------v---------+
-                    |   Diagnostics    |
-                    |     Gateway      |
-                    +------------------+
+┌─────────────────────────────────────────────────────────────────┐
+│                    Authentication Flow                                 │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Participant A                         Participant B                   │
+│       │                                     │                           │
+│       │  1. AuthRequest (Identity Token)    │                           │
+│       │────────────────────────────────────────────────┾                           │
+│       │                                     │                           │
+│       │  2. AuthReply (DH Public Key)       │                           │
+│       │────────────────────────────────────────────────┾                           │
+│       │                                     │                           │
+│       │  3. Handshake (Challenge/Response)   │                           │
+│       │────────────────────────────────────────────────┼─────────────────────┐
+│       │                                     │                           │
+│       │  4. Shared Secret Derivation        │                           │
+│       │     (ECDH Key Exchange)             │                           │
+│       │────────────────────────────────────────────────┼─────────────────────┘
+│       │                                     │                           │
+│       │  5. Secure Session Established     │                           │
+│       │────────────────────────────────────────────────┾                           │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-### TSN Stream Mapping
+---
 
-| Stream | Source | Destination | Period | Deadline | TSN Feature |
-|--------|--------|-------------|--------|----------|-------------|
-| Camera | ADAS | Central | 33ms | 5ms | TAS |
-| Engine | Powertrain | Central | 10ms | 2ms | Frame Preemption |
-| Climate | Body | Central | 100ms | 50ms | CBS |
+## 平台适配
 
-### Hardware Deployment Options
+### 平台抽象层
 
-| Platform | MCU | Use Case |
-|----------|-----|----------|
-| S32G3 | Cortex-M7 | Domain controller |
-| AURIX TC3xx | TriCore | Powertrain control |
-| STM32H7 | Cortex-M7 | General purpose |
-| POSIX | x86/ARM64 | Development/simulation |
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    Platform Abstraction Layer                          │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  Core Library                                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │  Thread Abstraction │ Memory Management │ Network Abstraction       │   │
+│  │  Time Management    │ Synchronization   │ File I/O                  │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│          ┌────────────────┴──────────────────────────────────────────┐          │
+│          │                  Platform Implementations                   │          │
+│          │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │          │
+│          │  │  Linux       │  │  FreeRTOS   │  │Bare-metal  │  │          │
+│          │  │  - pthreads  │  │  - tasks    │  │  - cycles  │  │          │
+│          │  │  - sockets   │  │  - queues   │  │  - polled  │  │          │
+│          │  └─────────────┘  └─────────────┘  └─────────────┘  │          │
+│          └───────────────────────────────────────────────────────────┘          │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Architecture Decision Records
+## 模块依赖图
 
-Key architectural decisions are documented in ADRs:
+```
+DDS Core
+    ├──→ RTPS Protocol
+    ├──→ Transport Layer
+    ├──→ Platform Abstraction
+    └──→ Type System
 
-| ADR | Title | Status |
-|-----|-------|--------|
-| [ADR-001](adr/ADR-001-freertos-multi-architecture.md) | FreeRTOS Multi-Architecture Support | Accepted |
-| [ADR-002](adr/ADR-002-dds-tsn-integration.md) | DDS-TSN Integration Strategy | Accepted |
-| [ADR-003](adr/ADR-003-config-tool-architecture.md) | Configuration Tool Architecture | Accepted |
-| [ADR-004](adr/ADR-004-security-architecture.md) | Security Architecture | Accepted |
+DDS-Security
+    ├──→ DDS Core
+    ├──→ Crypto Stack (CSM/CryIf/KeyM)
+    └──→ Platform Abstraction
+
+Diagnostics Stack
+    ├──→ DCM
+    ├──→ DEM
+    ├──→ DoIP
+    ├──→ IsoTp
+    └──→ Platform Abstraction
+
+SecOC Stack
+    ├──→ SecOC
+    ├──→ CSM
+    ├──→ CryIf
+    ├──→ KeyM
+    └──→ Platform Abstraction
+
+TSN Stack
+    ├──→ Ethernet Driver
+    ├──→ Platform Abstraction
+    └──→ Hardware Timer
+```
 
 ---
 
-## Related Documentation
-
-- [Domain Model](domain-model.md) - DDD entity definitions
-- [Testing Strategy](../testing/strategy.md) - L1-L4 test approach
-- [User Stories](../product/user-stories/automotive-dds.md) - Use cases
-- [Safety Reviews](../safety/MODULE_DESIGN_REVIEWS_SUMMARY.md) - ASIL-D compliance
-
----
-
-## Archived Documents
-
-Original detailed documents (superseded by this consolidation):
-
-- [01-architecture-overview.md](../archive/v1/01-architecture-overview.md) - Original architecture overview
-- [02-data-flow-design.md](../archive/v1/02-data-flow-design.md) - Original data flow
-- [03-config-sync-mechanism.md](../archive/v1/03-config-sync-mechanism.md) - Original config docs
-- [04-deployment-architecture.md](../archive/v1/04-deployment-architecture.md) - Original deployment docs
-
----
-
-**Last Updated**: 2025-04-25  
-**Document Version**: 2.0.0
+**版本**: 2.0.0  
+**更新日期**: 2026-04-26
