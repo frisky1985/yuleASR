@@ -405,15 +405,32 @@ void Dlt_MainFunction(void)
                         queueEntry.payloadLen);
         }
 
-        /* 通过传输层发送 */
-        Std_ReturnType result = Dlt_UdpSend(messageBuffer, totalLength);
+        /* 通过传输层发送 (使用抽象接口) */
+        Dlt_TransportProtocolType protocol = DLT_TRANSPORT_UDP;
+        if (g_DltState.config != NULL && g_DltState.config->transportConfig != NULL) {
+            protocol = g_DltState.config->transportConfig->protocol;
+        }
+        
+        Std_ReturnType result = Dlt_TransportSend(messageBuffer, totalLength, protocol);
         
         if (result == E_OK) {
             g_DltState.totalMessagesSent++;
         } else {
             g_DltState.totalMessagesDropped++;
+            
+            /* 报告传输错误 */
+#if (DLT_RUNTIME_ERROR_REPORT == STD_ON)
+            /* TODO: 报告运行时错误 */
+#endif
         }
     }
+    
+    /* 检查消息丢失 */
+#if (DLT_MESSAGE_LOSS_REPORT == STD_ON)
+    if (g_DltState.totalMessagesDropped > DLT_MESSAGE_LOSS_THRESHOLD) {
+        /* TODO: 报告消息丢失事件 */
+    }
+#endif
 }
 
 /**
@@ -620,6 +637,40 @@ Std_ReturnType Dlt_UdpSend(const uint8* data, uint16 length)
     (void)length;
     
     return E_OK;
+}
+
+/**
+ * @brief 传输层发送接口 (抽象)
+ */
+Std_ReturnType Dlt_TransportSend(
+    const uint8* data,
+    uint16 length,
+    Dlt_TransportProtocolType protocol)
+{
+    Std_ReturnType result = E_NOT_OK;
+    
+    /* 根据协议类型选择传输方式 */
+    switch (protocol) {
+        case DLT_TRANSPORT_UDP:
+            result = Dlt_UdpSend(data, length);
+            break;
+            
+        case DLT_TRANSPORT_TCP:
+            /* TODO: 实现 TCP 发送 */
+            result = E_NOT_OK;
+            break;
+            
+        case DLT_TRANSPORT_SOMEIP:
+            /* TODO: 实现 SOME/IP 发送 */
+            result = E_NOT_OK;
+            break;
+            
+        default:
+            result = E_NOT_OK;
+            break;
+    }
+    
+    return result;
 }
 
 /**

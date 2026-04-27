@@ -161,6 +161,20 @@ Std_ReturnType Dlt_DequeueMessage(Dlt_QueueEntryType* queueEntry);
 Std_ReturnType Dlt_UdpSend(const uint8* data, uint16 length);
 
 /**
+ * @brief 传输层发送接口 (抽象)
+ * 
+ * @param data 指向数据的指针
+ * @param length 数据长度
+ * @param protocol 传输协议
+ * 
+ * @return Std_ReturnType
+ */
+Std_ReturnType Dlt_TransportSend(
+    const uint8* data,
+    uint16 length,
+    Dlt_TransportProtocolType protocol);
+
+/**
  * @brief 应用消息过滤器
  * 
  * @param appHandle 应用句柄
