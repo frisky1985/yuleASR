@@ -197,4 +197,18 @@ Dlt_AppHandleType Dlt_AllocateAppHandle(void);
  */
 void Dlt_FreeAppHandle(Dlt_AppHandleType appHandle);
 
+/**
+ * @brief 获取时间戳 (微秒)
+ * 
+ * @return uint64 时间戳
+ */
+uint64 Dlt_GetTimestampUs(void);
+
+/**
+ * @brief 获取下一个序列号
+ * 
+ * @return uint32 序列号
+ */
+uint32 Dlt_GetNextSequenceNumber(void);
+
 #endif /* DLT_INTERNAL_H */

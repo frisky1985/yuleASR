@@ -33,7 +33,10 @@ static Dlt_InternalStateType g_DltState = {
     .queueTail = 0U,
     .queueCount = 0U,
     .totalMessagesSent = 0U,
-    .totalMessagesDropped = 0U
+    .totalMessagesDropped = 0U,
+    .currentSessionId = DLT_DEFAULT_SESSION_ID,
+    .sequenceCounter = 0U,
+    .lastTimestamp = 0U
 };
 
 /**
@@ -280,12 +283,25 @@ Std_ReturnType Dlt_SendLogMessage(
                           MessageId, 
                           Length);
 
+    /* 添加时间戳和会话ID */
+#if (DLT_TIMESTAMP_ENABLED == STD_ON)
+    header.timestamp = Dlt_GetTimestampUs();
+#endif
+
+#if (DLT_SESSION_ID_ENABLED == STD_ON)
+    header.sessionId = g_DltState.currentSessionId;
+#endif
+
+    /* 序列号 */
+    header.sequenceCounter = Dlt_GetNextSequenceNumber();
+
     /* 构建队列项 */
     Dlt_QueueEntryType queueEntry;
     queueEntry.header = header;
     queueEntry.payloadLen = Length;
     (void)memcpy(queueEntry.payload, DataPtr, Length);
     queueEntry.pending = TRUE;
+    queueEntry.priority = appEntry->info.priority;
 
     /* 入队 */
     return Dlt_EnqueueMessage(&queueEntry);
@@ -338,12 +354,25 @@ Std_ReturnType Dlt_SendTraceMessage(
                           TraceId,
                           Length);
 
+    /* 添加时间戳和会话ID */
+#if (DLT_TIMESTAMP_ENABLED == STD_ON)
+    header.timestamp = Dlt_GetTimestampUs();
+#endif
+
+#if (DLT_SESSION_ID_ENABLED == STD_ON)
+    header.sessionId = g_DltState.currentSessionId;
+#endif
+
+    /* 序列号 */
+    header.sequenceCounter = Dlt_GetNextSequenceNumber();
+
     /* 构建队列项 */
     Dlt_QueueEntryType queueEntry;
     queueEntry.header = header;
     queueEntry.payloadLen = Length;
     (void)memcpy(queueEntry.payload, DataPtr, Length);
     queueEntry.pending = TRUE;
+    queueEntry.priority = appEntry->info.priority;
 
     /* 入队 */
     return Dlt_EnqueueMessage(&queueEntry);
@@ -500,18 +529,32 @@ void Dlt_BuildMessageHeader(
     header->endianness = DLT_ENDIANESS_LE;
     header->extendedHeader = 0x01U;
 
-    /* 填充应用 ID 和上下文 ID */
+    /* 填充应用 ID (安全复制，防止溢出) */
     const char* appId = appEntry->info.appId;
-    const char* contextId = "DLT1";
+    if (appId != NULL) {
+        uint32 appIdLen = strlen(appId);
+        if (appIdLen > 4U) {
+            appIdLen = 4U;
+        }
+        (void)memset(header->applicationId, 0, 4U);
+        (void)memcpy(header->applicationId, appId, appIdLen);
+    } else {
+        (void)memset(header->applicationId, 0, 4U);
+    }
     
-    (void)memcpy(header->applicationId, appId, 
-                 (strlen(appId) < 4U) ? strlen(appId) : 4U);
+    /* 填充上下文 ID */
+    const char* contextId = "DLT1";
     (void)memcpy(header->contextId, contextId, 4U);
 
     /* 填充消息类型和 ID */
     header->type = msgType;
     header->subtype = subtype;
     header->messageId = messageId;
+    
+    /* 初始化时间戳和会话ID (由调用方填充) */
+    header->timestamp = 0U;
+    header->sessionId = 0U;
+    header->sequenceCounter = 0U;
 }
 
 /**
@@ -641,4 +684,102 @@ void Dlt_FreeAppHandle(Dlt_AppHandleType appHandle)
 {
     /* 简化实现: 句柄池管理可在后续版本中优化 */
     (void)appHandle;
+}
+
+/**
+ * @brief 获取时间戳 (微秒)
+ */
+uint64 Dlt_GetTimestampUs(void)
+{
+    /* 
+     * TODO: 实现高精度时间戳获取
+     * 
+     * 典型实现:
+     * 1. 使用硬件定时器 (如 GPT)
+     * 2. 使用系统计数器 (System Counter)
+     * 3. 使用RTOS的时钟函数
+     * 
+     * 示例: return GetSystemCounterUs();
+     */
+    
+    /* 简化实现: 返回0 */
+    return 0U;
+}
+
+/**
+ * @brief 获取下一个序列号
+ */
+uint32 Dlt_GetNextSequenceNumber(void)
+{
+    g_DltState.sequenceCounter++;
+    
+    /* 处理序列号溢出 */
+    if (g_DltState.sequenceCounter == UINT32_MAX) {
+        g_DltState.sequenceCounter = 0U;
+    }
+    
+    return g_DltState.sequenceCounter;
+}
+
+/* ========================================================================== */
+/*                          新增 API 函数实现                                  */
+/* ========================================================================== */
+
+/**
+ * @brief 设置会话ID
+ */
+Std_ReturnType Dlt_SetSessionId(uint32 sessionId)
+{
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_SET_SESSION, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+    
+    if (sessionId == 0U) {
+        DLT_DETECT_ERROR(DLT_APIID_SET_SESSION, DLT_E_SESSION_ERROR);
+        return E_NOT_OK;
+    }
+#endif
+
+    /* 更新会话ID */
+    g_DltState.currentSessionId = sessionId;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 获取统计信息
+ */
+void Dlt_GetStatistics(
+    uint32* sentCount,
+    uint32* droppedCount,
+    uint16* queueCount)
+{
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_GET_STATISTICS, DLT_E_UNINIT);
+        return;
+    }
+    
+    if ((sentCount == NULL) || (droppedCount == NULL) || (queueCount == NULL)) {
+        DLT_DETECT_ERROR(DLT_APIID_GET_STATISTICS, DLT_E_PARAM_POINTER);
+        return;
+    }
+#endif
+
+    /* 返回统计信息 */
+    if (sentCount != NULL) {
+        *sentCount = g_DltState.totalMessagesSent;
+    }
+    
+    if (droppedCount != NULL) {
+        *droppedCount = g_DltState.totalMessagesDropped;
+    }
+    
+    if (queueCount != NULL) {
+        *queueCount = g_DltState.queueCount;
+    }
 }
