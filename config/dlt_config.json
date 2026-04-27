@@ -1,0 +1,57 @@
+{
+  "version": "1.0.0",
+  "ecu_id": "ECU1",
+  "default_log_level": "INFO",
+  "enable_timestamp": true,
+  "enable_ecu_id": true,
+  "enable_session_id": true,
+  "enable_extended_header": true,
+  "contexts": [
+    {
+      "app_id": "SYS",
+      "context_id": "MAIN",
+      "description": "System",
+      "log_level": "INFO",
+      "trace_status": true
+    },
+    {
+      "app_id": "DDS",
+      "context_id": "COMM",
+      "description": "DDS Communication",
+      "log_level": "DEBUG",
+      "trace_status": true
+    },
+    {
+      "app_id": "ETH",
+      "context_id": "LINK",
+      "description": "Ethernet Link",
+      "log_level": "DEBUG",
+      "trace_status": true
+    },
+    {
+      "app_id": "UDS",
+      "context_id": "DIAG",
+      "description": "Diagnostic Services",
+      "log_level": "INFO",
+      "trace_status": true
+    }
+  ],
+  "output": {
+    "enable_udp": true,
+    "udp_port": 3490,
+    "udp_address": "239.255.42.99",
+    "enable_tcp": false,
+    "tcp_port": 3490,
+    "enable_serial": false,
+    "serial_port": "/dev/ttyUSB0",
+    "enable_file": true,
+    "file_path": "/tmp/dlt.log",
+    "file_max_size": 10485760,
+    "file_max_count": 5
+  },
+  "buffer": {
+    "buffer_size": 65536,
+    "overflow_strategy": "DROP_OLD",
+    "flush_interval_ms": 100
+  }
+}
