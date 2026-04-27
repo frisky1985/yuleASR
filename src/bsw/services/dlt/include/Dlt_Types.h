@@ -126,6 +126,8 @@ typedef struct {
     const char* appId;          /**< 应用 ID 字符串 */
     const char* appDescription; /**< 应用描述 */
     uint8       maxLogLevel;    /**< 最大日志级别 */
+    Dlt_PriorityType priority;  /**< 消息优先级 */
+    uint32      sessionId;      /**< 会话 ID */
 } Dlt_AppInfoType;
 
 /* ========================================================================== */
@@ -181,6 +183,9 @@ typedef struct {
     uint8  type;              /**< 消息类型 */
     uint8  subtype;           /**< 子类型 (日志级别/跟踪类型) */
     uint16 messageId;         /**< 消息 ID */
+    uint32 timestamp;         /**< 时间戳 (微秒) */
+    uint32 sessionId;         /**< 会话 ID */
+    uint32 sequenceCounter;   /**< 序列计数器 */
 } Dlt_MessageHeaderType;
 
 /**
@@ -201,9 +206,22 @@ typedef struct {
  */
 typedef enum {
     DLT_STATE_UNINIT = 0U,    /**< 未初始化 */
-    DLT_STATE_INIT = 1U,      /**< 已初始化 */
-    DLT_STATE_READY = 2U      /**< 就绪 */
+    DLT_STATE_INIT = 1U,      /**< 初始化中 */
+    DLT_STATE_READY = 2U,     /**< 就绪 */
+    DLT_STATE_BUSY = 3U,      /**< 忙 */
+    DLT_STATE_ERROR = 4U,     /**< 错误状态 */
+    DLT_STATE_STOPPED = 5U    /**< 已停止 */
 } Dlt_ModuleStateType;
+
+/**
+ * @brief DLT 消息优先级
+ */
+typedef enum {
+    DLT_PRIORITY_LOW = 0U,      /**< 低优先级 */
+    DLT_PRIORITY_NORMAL = 1U,   /**< 普通优先级 */
+    DLT_PRIORITY_HIGH = 2U,     /**< 高优先级 */
+    DLT_PRIORITY_CRITICAL = 3U  /**< 关键优先级 */
+} Dlt_PriorityType;
 
 /**
  * @brief DLT 返回码

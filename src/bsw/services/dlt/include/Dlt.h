@@ -244,6 +244,36 @@ Std_ReturnType Dlt_FlushQueue(void);
  */
 Dlt_ModuleStateType Dlt_GetStatus(void);
 
+/**
+ * @brief 设置会话ID
+ * 
+ * @param sessionId 会话ID
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 设置成功
+ * @retval E_NOT_OK 设置失败
+ * 
+ * AUTOSAR SWS DLT_00012
+ */
+Std_ReturnType Dlt_SetSessionId(uint32 sessionId);
+
+/**
+ * @brief 获取统计信息
+ * 
+ * @param sentCount 发送消息计数指针
+ * @param droppedCount 丢弃消息计数指针
+ * @param queueCount 当前队列消息计数指针
+ * 
+ * @return void
+ * 
+ * AUTOSAR SWS DLT_00013
+ */
+void Dlt_GetStatistics(
+    uint32* sentCount,
+    uint32* droppedCount,
+    uint16* queueCount
+);
+
 /* ========================================================================== */
 /*                          开发错误检测 (DET)                                 */
 /* ========================================================================== */
@@ -273,6 +303,11 @@ Dlt_ModuleStateType Dlt_GetStatus(void);
 #define DLT_E_INVALID_HANDLE  0x11U  /**< 无效应用句柄 */
 #define DLT_E_QUEUE_FULL      0x20U  /**< 消息队列满 */
 #define DLT_E_TRANSPORT_ERROR 0x30U  /**< 传输错误 */
+#define DLT_E_FILTER_ERROR    0x31U  /**< 过滤器错误 */
+#define DLT_E_TIMESTAMP_ERROR 0x32U  /**< 时间戳错误 */
+#define DLT_E_SESSION_ERROR   0x33U  /**< 会话错误 */
+#define DLT_E_PRIORITY_ERROR  0x34U  /**< 优先级错误 */
+#define DLT_E_BUFFER_OVERFLOW 0x40U  /**< 缓冲区溢出 */
 
 /* API ID 定义 */
 #define DLT_APIID_INIT            0x00U
@@ -286,6 +321,8 @@ Dlt_ModuleStateType Dlt_GetStatus(void);
 #define DLT_APIID_SET_FILTER      0x08U
 #define DLT_APIID_FLUSH_QUEUE     0x09U
 #define DLT_APIID_GET_STATUS      0x0AU
+#define DLT_APIID_SET_SESSION     0x0BU
+#define DLT_APIID_GET_STATISTICS  0x0CU
 
 #ifdef __cplusplus
 }

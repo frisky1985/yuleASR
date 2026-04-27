@@ -79,6 +79,7 @@ typedef struct {
     uint8                 payload[DLT_MAX_MESSAGE_SIZE]; /**< 负载数据 */
     uint16                payloadLen; /**< 负载长度 */
     boolean               pending;    /**< 是否待发送 */
+    Dlt_PriorityType      priority;   /**< 消息优先级 */
 } Dlt_QueueEntryType;
 
 /**
@@ -95,6 +96,9 @@ typedef struct {
     uint16                    queueCount;       /**< 队列计数 */
     uint32                    totalMessagesSent; /**< 总发送消息数 */
     uint32                    totalMessagesDropped; /**< 总丢弃消息数 */
+    uint32                    currentSessionId; /**< 当前会话 ID */
+    uint32                    sequenceCounter;  /**< 序列计数器 */
+    uint64                    lastTimestamp;    /**< 最后时间戳 */
 } Dlt_InternalStateType;
 
 /* ========================================================================== */
