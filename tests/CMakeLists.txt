@@ -37,6 +37,8 @@ add_executable(eth_dds_tests
     test_diag.c
     test_dlt.c
     test_dlt_adapter.c
+    test_dlt_autosar_compliance.c
+    test_dlt_control_messages.c
     ../src/telemetry/telemetry.c
     ../src/telemetry/telemetry_diag.c
     ../src/dlt/dlt.c
