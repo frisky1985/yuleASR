@@ -59,6 +59,9 @@
 #define WDG_E_FORBIDDEN_INVOCATION      (0x16U)
 #define WDG_E_ALREADY_INITIALIZED       (0x17U)
 #define WDG_E_UNINIT                    (0x18U)
+#define WDG_E_WINDOW_VIOLATION          (0x19U)  /* 窗口违规错误 */
+#define WDG_E_SEQUENCE_ERROR            (0x1AU)  /* 服务序列错误 */
+#define WDG_E_MODE_TRANSITION           (0x1BU)  /* 模式转换错误 */
 
 /*==================================================================================================
 *                                    WDG MODE TYPE
@@ -68,6 +71,28 @@ typedef enum {
     WDGIF_SLOW_MODE,
     WDGIF_FAST_MODE
 } WdgIf_ModeType;
+
+/*==================================================================================================
+*                                    WDG STATE TYPE
+==================================================================================================*/
+typedef enum {
+    WDG_STATE_UNINIT = 0,       /* 未初始化 */
+    WDG_STATE_IDLE,             /* 空闲 */
+    WDG_STATE_RUNNING,          /* 运行中 */
+    WDG_STATE_STOPPED,          /* 已停止 */
+    WDG_STATE_ERROR             /* 错误状态 */
+} Wdg_StateType;
+
+/*==================================================================================================
+*                                    WDG TRIGGER RESULT TYPE
+==================================================================================================*/
+typedef enum {
+    WDG_TRIGGER_OK = 0,              /* 触发成功 */
+    WDG_TRIGGER_WINDOW_EARLY,        /* 窗口期前触发 */
+    WDG_TRIGGER_WINDOW_LATE,         /* 窗口期后触发 */
+    WDG_TRIGGER_SEQUENCE_ERROR,      /* 序列错误 */
+    WDG_TRIGGER_NOT_ALLOWED          /* 不允许触发 */
+} Wdg_TriggerResultType;
 
 /*==================================================================================================
 *                                    WDG TIMEOUT TYPE
@@ -89,6 +114,20 @@ typedef enum {
 } Wdg_ClockPrescalerType;
 
 /*==================================================================================================
+*                                    WDG CALLBACK TYPE
+==================================================================================================*/
+/**
+ * @brief 超时前预警回调函数类型
+ * @param TimeRemainingUs 剩余时间(微秒)
+ */
+typedef void (*Wdg_PreWarningCallbackType)(uint32 TimeRemainingUs);
+
+/**
+ * @brief 窗口违规回调函数类型
+ */
+typedef void (*Wdg_WindowViolationCallbackType)(void);
+
+/*==================================================================================================
 *                                    WDG MODE SETTINGS TYPE
 ==================================================================================================*/
 typedef struct {
@@ -98,6 +137,7 @@ typedef struct {
     Wdg_TimeoutType WindowStart;
     Wdg_TimeoutType WindowEnd;
     boolean InterruptMode;
+    uint16 TimeoutPreWarningUs;  /* 超时前预警时间(微秒) */
 } Wdg_ModeSettingsType;
 
 /*==================================================================================================
@@ -112,6 +152,8 @@ typedef struct {
     boolean DevErrorDetect;
     boolean VersionInfoApi;
     boolean DisableAllowed;
+    Wdg_PreWarningCallbackType PreWarningCallback;     /* 超时前预警回调 */
+    Wdg_WindowViolationCallbackType WindowViolationCallback;  /* 窗口违规回调 */
 } Wdg_ConfigType;
 
 /*==================================================================================================
@@ -124,6 +166,9 @@ extern const Wdg_ConfigType Wdg_Config;
 
 #define WDG_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"
+
+#define WDG_WINDOW_ERROR_RESET          (0x01U)  /* 窗口违规时复位 */
+#define WDG_WINDOW_ERROR_IGNORE         (0x02U)  /* 窗口违规时忽略 */
 
 /*==================================================================================================
 *                                    FUNCTION PROTOTYPES
@@ -161,6 +206,24 @@ void Wdg_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @return Result of operation
  */
 Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout);
+
+/**
+ * @brief 获取看门狗当前状态
+ * @return Wdg_StateType 当前状态
+ */
+Wdg_StateType Wdg_GetStatus(void);
+
+/**
+ * @brief 获取触发计数器值
+ * @return uint32 触发次数
+ */
+uint32 Wdg_GetTriggerCounter(void);
+
+/**
+ * @brief 获取上次触发时间
+ * @return uint32 上次触发时间戳(ms)
+ */
+uint32 Wdg_GetLastTriggerTime(void);
 
 #define WDG_STOP_SEC_CODE
 #include "MemMap.h"

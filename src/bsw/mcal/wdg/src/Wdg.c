@@ -51,6 +51,9 @@ static boolean Wdg_DriverInitialized = FALSE;
 static WdgIf_ModeType Wdg_CurrentMode = WDGIF_OFF_MODE;
 static Wdg_TimeoutType Wdg_CurrentTimeout = 0U;
 static const Wdg_ConfigType* Wdg_ConfigPtr = NULL_PTR;
+static Wdg_StateType Wdg_ModuleState = WDG_STATE_UNINIT;  /* 新增状态机 */
+static uint32 Wdg_TriggerCounter = 0U;  /* 触发计数器 */
+static uint32 Wdg_LastTriggerTime = 0U;  /* 上次触发时间戳 */
 
 #define WDG_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
@@ -72,11 +75,90 @@ static uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs)
 {
     /* WDOG timeout = (WCR[WT] + 1) * 2 / WDOG clock frequency */
     /* WCR[WT] = (timeoutMs * clockFreq / 2000) - 1 */
-    uint32 wtValue = ((uint32)timeoutMs * WDG_CLOCK_FREQ_HZ / 2000U) - 1U;
+    
+    /* 防止溢出 */
+    if (timeoutMs == 0U) {
+        return 0U;
+    }
+    
+    uint64 intermediate = (uint64)timeoutMs * WDG_CLOCK_FREQ_HZ;
+    
+    /* 检查中间值是否溢出 */
+    if (intermediate > UINT32_MAX) {
+        /* 使用最大值 */
+        return 0xFFU;
+    }
+    
+    uint32 wtValue = (uint32)(intermediate / 2000U) - 1U;
+    
+    /* 边界检查 */
     if (wtValue > 0xFFU) {
         wtValue = 0xFFU;
     }
+    
     return (uint16)wtValue;
+}
+
+/**
+ * @brief 验证窗口模式触发是否合法
+ * @param currentTime 当前时间戳(ms)
+ * @param modeSettings 当前模式配置
+ * @return Wdg_TriggerResultType 触发结果
+ */
+static Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
+    uint32 currentTime,
+    const Wdg_ModeSettingsType* modeSettings)
+{
+    if (modeSettings->WindowModeEnabled == FALSE) {
+        return WDG_TRIGGER_OK;  /* 非窗口模式，直接允许 */
+    }
+    
+    uint32 timeSinceLastTrigger = currentTime - Wdg_LastTriggerTime;
+    
+    /* 检查是否在窗口期前 */
+    if (timeSinceLastTrigger < modeSettings->WindowStart) {
+        return WDG_TRIGGER_WINDOW_EARLY;
+    }
+    
+    /* 检查是否在窗口期后 */
+    if (timeSinceLastTrigger > modeSettings->WindowEnd) {
+        return WDG_TRIGGER_WINDOW_LATE;
+    }
+    
+    return WDG_TRIGGER_OK;  /* 在窗口期内 */
+}
+
+/**
+ * @brief 获取当前系统时间戳
+ * @return 当前时间戳(ms)
+ */
+static uint32 Wdg_GetCurrentTimeMs(void)
+{
+    /* TODO: 实现获取系统时间戳 */
+    /* 可以使用 GPT 定时器或系统计数器 */
+    return 0U;
+}
+
+/**
+ * @brief 调用超时前预警回调
+ */
+static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
+{
+    if ((Wdg_ConfigPtr != NULL_PTR) && 
+        (Wdg_ConfigPtr->PreWarningCallback != NULL)) {
+        Wdg_ConfigPtr->PreWarningCallback(TimeRemainingUs);
+    }
+}
+
+/**
+ * @brief 调用窗口违规回调
+ */
+static void Wdg_InvokeWindowViolationCallback(void)
+{
+    if ((Wdg_ConfigPtr != NULL_PTR) && 
+        (Wdg_ConfigPtr->WindowViolationCallback != NULL)) {
+        Wdg_ConfigPtr->WindowViolationCallback();
+    }
 }
 
 #define WDG_START_SEC_CODE
@@ -108,26 +190,33 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
 
     /* Configure timeout */
     Wdg_TimeoutType timeout;
+    const Wdg_ModeSettingsType* modeSettings;
+    
     if (ConfigPtr->InitialMode == WDGIF_FAST_MODE) {
-        timeout = ConfigPtr->FastModeSettings.TimeoutPeriod;
+        modeSettings = &ConfigPtr->FastModeSettings;
+    } else if (ConfigPtr->InitialMode == WDGIF_SLOW_MODE) {
+        modeSettings = &ConfigPtr->SlowModeSettings;
     } else {
-        timeout = ConfigPtr->SlowModeSettings.TimeoutPeriod;
+        modeSettings = NULL;  /* OFF mode */
     }
+    
+    if (modeSettings != NULL) {
+        timeout = modeSettings->TimeoutPeriod;
+        uint16 wtValue = Wdg_CalculateTimeoutValue(timeout);
+        wcrValue = REG_READ16(baseAddr + WDG_WCR);
+        wcrValue &= ~WDG_WCR_WT_MASK;
+        wcrValue |= ((uint16)wtValue << 8) & WDG_WCR_WT_MASK;
+        REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
 
-    uint16 wtValue = Wdg_CalculateTimeoutValue(timeout);
-    wcrValue = REG_READ16(baseAddr + WDG_WCR);
-    wcrValue &= ~WDG_WCR_WT_MASK;
-    wcrValue |= ((uint16)wtValue << 8) & WDG_WCR_WT_MASK;
-    REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-
-    /* Configure interrupt if enabled */
-    #if (WDG_FAST_MODE_INTERRUPT == STD_ON)
-    if (ConfigPtr->FastModeSettings.InterruptMode) {
-        uint16 wicrValue = WDG_WICR_WIE;
-        wicrValue |= ((uint16)wtValue << 8) & WDG_WICR_WICT_MASK;
-        REG_WRITE16(baseAddr + WDG_WICR, wicrValue);
+        /* Configure interrupt and window mode if enabled */
+        if (modeSettings->InterruptMode) {
+            uint16 wicrValue = WDG_WICR_WIE;
+            wicrValue |= ((uint16)wtValue << 8) & WDG_WICR_WICT_MASK;
+            REG_WRITE16(baseAddr + WDG_WICR, wicrValue);
+        }
+    } else {
+        timeout = 0U;
     }
-    #endif
 
     /* Enable watchdog if not OFF mode */
     if (ConfigPtr->InitialMode != WDGIF_OFF_MODE) {
@@ -135,10 +224,16 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
         wcrValue |= WDG_WCR_WDE;
         wcrValue |= WDG_WCR_WDT; /* Enable time-out assertion */
         REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
+        
+        Wdg_ModuleState = WDG_STATE_RUNNING;
+    } else {
+        Wdg_ModuleState = WDG_STATE_IDLE;
     }
 
     Wdg_CurrentMode = ConfigPtr->InitialMode;
     Wdg_CurrentTimeout = timeout;
+    Wdg_TriggerCounter = 0U;
+    Wdg_LastTriggerTime = Wdg_GetCurrentTimeMs();
     Wdg_DriverInitialized = TRUE;
 }
 
@@ -147,6 +242,13 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
     if (Wdg_DriverInitialized == FALSE) {
         Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_UNINIT);
+        return E_NOT_OK;
+    }
+    
+    /* 检查模式转换合法性 */
+    if ((Wdg_CurrentMode == WDGIF_OFF_MODE) && 
+        (Mode != WDGIF_FAST_MODE) && (Mode != WDGIF_SLOW_MODE)) {
+        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_MODE_TRANSITION);
         return E_NOT_OK;
     }
     #endif
@@ -160,49 +262,51 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
 
     uint32 baseAddr = Wdg_GetBaseAddr();
     uint16 wcrValue = REG_READ16(baseAddr + WDG_WCR);
+    const Wdg_ModeSettingsType* modeSettings;
 
     switch (Mode) {
         case WDGIF_OFF_MODE:
             /* Disable watchdog */
             wcrValue &= ~WDG_WCR_WDE;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
+            Wdg_ModuleState = WDG_STATE_IDLE;
+            modeSettings = NULL;
             break;
 
         case WDGIF_SLOW_MODE:
-            /* Enable with slow mode timeout */
-            wcrValue |= WDG_WCR_WDE;
-            REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-
-            /* Update timeout */
-            uint16 wtValueSlow = Wdg_CalculateTimeoutValue(Wdg_ConfigPtr->SlowModeSettings.TimeoutPeriod);
-            wcrValue = REG_READ16(baseAddr + WDG_WCR);
-            wcrValue &= ~WDG_WCR_WT_MASK;
-            wcrValue |= ((uint16)wtValueSlow << 8) & WDG_WCR_WT_MASK;
-            REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-
-            Wdg_CurrentTimeout = Wdg_ConfigPtr->SlowModeSettings.TimeoutPeriod;
+            modeSettings = &Wdg_ConfigPtr->SlowModeSettings;
             break;
 
         case WDGIF_FAST_MODE:
-            /* Enable with fast mode timeout */
-            wcrValue |= WDG_WCR_WDE;
-            REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-
-            /* Update timeout */
-            uint16 wtValueFast = Wdg_CalculateTimeoutValue(Wdg_ConfigPtr->FastModeSettings.TimeoutPeriod);
-            wcrValue = REG_READ16(baseAddr + WDG_WCR);
-            wcrValue &= ~WDG_WCR_WT_MASK;
-            wcrValue |= ((uint16)wtValueFast << 8) & WDG_WCR_WT_MASK;
-            REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
-
-            Wdg_CurrentTimeout = Wdg_ConfigPtr->FastModeSettings.TimeoutPeriod;
+            modeSettings = &Wdg_ConfigPtr->FastModeSettings;
             break;
 
         default:
+            #if (WDG_DEV_ERROR_DETECT == STD_ON)
+            Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETMODE, WDG_E_PARAM_MODE);
+            #endif
             return E_NOT_OK;
+    }
+    
+    /* 配置新的模式 */
+    if (modeSettings != NULL) {
+        /* Enable watchdog */
+        wcrValue |= WDG_WCR_WDE;
+        REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
+
+        /* Update timeout */
+        uint16 wtValue = Wdg_CalculateTimeoutValue(modeSettings->TimeoutPeriod);
+        wcrValue = REG_READ16(baseAddr + WDG_WCR);
+        wcrValue &= ~WDG_WCR_WT_MASK;
+        wcrValue |= ((uint16)wtValue << 8) & WDG_WCR_WT_MASK;
+        REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
+
+        Wdg_CurrentTimeout = modeSettings->TimeoutPeriod;
+        Wdg_ModuleState = WDG_STATE_RUNNING;
     }
 
     Wdg_CurrentMode = Mode;
+    Wdg_LastTriggerTime = Wdg_GetCurrentTimeMs();  /* 重置触发时间 */
     return E_OK;
 }
 
@@ -216,14 +320,74 @@ void Wdg_Trigger(void)
     #endif
 
     if (Wdg_CurrentMode == WDGIF_OFF_MODE) {
+        #if (WDG_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_FORBIDDEN_INVOCATION);
+        #endif
         return;
+    }
+    
+    if (Wdg_ModuleState != WDG_STATE_RUNNING) {
+        return;  /* 不在运行状态，忽略触发 */
     }
 
     uint32 baseAddr = Wdg_GetBaseAddr();
+    uint32 currentTime = Wdg_GetCurrentTimeMs();
+    
+    /* 窗口模式验证 */
+    const Wdg_ModeSettingsType* modeSettings;
+    if (Wdg_CurrentMode == WDGIF_FAST_MODE) {
+        modeSettings = &Wdg_ConfigPtr->FastModeSettings;
+    } else {
+        modeSettings = &Wdg_ConfigPtr->SlowModeSettings;
+    }
+    
+    #if (WDG_VALIDATE_WINDOW_MODE == STD_ON)
+    Wdg_TriggerResultType triggerResult = Wdg_ValidateWindowTrigger(currentTime, modeSettings);
+    
+    if (triggerResult != WDG_TRIGGER_OK) {
+        /* 窗口违规 */
+        #if (WDG_DEV_ERROR_DETECT == STD_ON)
+        if (triggerResult == WDG_TRIGGER_WINDOW_EARLY) {
+            Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_WINDOW_VIOLATION);
+        } else if (triggerResult == WDG_TRIGGER_WINDOW_LATE) {
+            Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_TRIGGER, WDG_E_WINDOW_VIOLATION);
+        }
+        #endif
+        
+        /* 调用窗口违规回调 */
+        Wdg_InvokeWindowViolationCallback();
+        
+        /* 根据配置决定是否执行复位 */
+        #if (WDG_WINDOW_ERROR_ACTION == WDG_WINDOW_ERROR_RESET)
+        /* 触发系统复位 */
+        /* TODO: 实现系统复位 */
+        #endif
+        
+        return;
+    }
+    #endif
+    
+    /* 检查是否接近超时，调用预警回调 */
+    #if (WDG_TIMEOUT_PRE_WARNING == STD_ON)
+    if (modeSettings->InterruptMode && (modeSettings->TimeoutPreWarningUs > 0U)) {
+        uint32 timeSinceLastTrigger = currentTime - Wdg_LastTriggerTime;
+        uint32 timeoutRemaining = modeSettings->TimeoutPeriod - timeSinceLastTrigger;
+        
+        /* 如果剩余时间小于预警时间，调用回调 */
+        uint32 timeoutRemainingUs = timeoutRemaining * 1000U;
+        if (timeoutRemainingUs <= modeSettings->TimeoutPreWarningUs) {
+            Wdg_InvokePreWarningCallback(timeoutRemainingUs);
+        }
+    }
+    #endif
 
     /* Service sequence: write 0x5555 then 0xAAAA */
     REG_WRITE16(baseAddr + WDG_WSR, WDG_WSR_SEQ1);
     REG_WRITE16(baseAddr + WDG_WSR, WDG_WSR_SEQ2);
+    
+    /* 更新触发记录 */
+    Wdg_TriggerCounter++;
+    Wdg_LastTriggerTime = currentTime;
 }
 
 void Wdg_GetVersionInfo(Std_VersionInfoType* versioninfo)
@@ -256,10 +420,16 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
 
     /* Validate timeout */
     if (timeout > WDG_MAX_TIMEOUT) {
-        timeout = WDG_MAX_TIMEOUT;
+        #if (WDG_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_PARAM_TIMEOUT);
+        #endif
+        return E_NOT_OK;
     }
     if (timeout < WDG_MIN_TIMEOUT) {
-        timeout = WDG_MIN_TIMEOUT;
+        #if (WDG_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(WDG_MODULE_ID, 0U, WDG_SID_SETTRIGGERCONDITION, WDG_E_PARAM_TIMEOUT);
+        #endif
+        return E_NOT_OK;
     }
 
     uint32 baseAddr = Wdg_GetBaseAddr();
@@ -276,6 +446,33 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
 
     Wdg_CurrentTimeout = timeout;
     return E_OK;
+}
+
+/**
+ * @brief 获取看门狗当前状态
+ * @return Wdg_StateType 当前状态
+ */
+Wdg_StateType Wdg_GetStatus(void)
+{
+    return Wdg_ModuleState;
+}
+
+/**
+ * @brief 获取触发计数器值
+ * @return uint32 触发次数
+ */
+uint32 Wdg_GetTriggerCounter(void)
+{
+    return Wdg_TriggerCounter;
+}
+
+/**
+ * @brief 获取上次触发时间
+ * @return uint32 上次触发时间戳(ms)
+ */
+uint32 Wdg_GetLastTriggerTime(void)
+{
+    return Wdg_LastTriggerTime;
 }
 
 #define WDG_STOP_SEC_CODE

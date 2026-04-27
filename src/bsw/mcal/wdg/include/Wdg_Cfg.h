@@ -27,20 +27,22 @@
 ==================================================================================================*/
 #define WDG_FAST_MODE_TIMEOUT           ((Wdg_TimeoutType)50U)   /* 50ms */
 #define WDG_FAST_MODE_PRESCALER         (WDG_PRESCALER_64)
-#define WDG_FAST_MODE_WINDOW_ENABLED    (STD_OFF)
-#define WDG_FAST_MODE_WINDOW_START      ((Wdg_TimeoutType)10U)
-#define WDG_FAST_MODE_WINDOW_END        ((Wdg_TimeoutType)40U)
-#define WDG_FAST_MODE_INTERRUPT         (STD_OFF)
+#define WDG_FAST_MODE_WINDOW_ENABLED    (STD_ON)  /* 启用窗口模式 */
+#define WDG_FAST_MODE_WINDOW_START      ((Wdg_TimeoutType)10U)   /* 窗口开启: 10ms */
+#define WDG_FAST_MODE_WINDOW_END        ((Wdg_TimeoutType)40U)   /* 窗口关闭: 40ms */
+#define WDG_FAST_MODE_INTERRUPT         (STD_ON)  /* 启用超时前中断 */
+#define WDG_FAST_MODE_TIMEOUT_PRE_US    ((uint16)500U)  /* 超时前预警时间 500us */
 
 /*==================================================================================================
 *                                    SLOW MODE SETTINGS
 ==================================================================================================*/
 #define WDG_SLOW_MODE_TIMEOUT           ((Wdg_TimeoutType)500U)  /* 500ms */
-#define WDG_SLOW_MODE_PRESCALER         (WDG_PRESCALER_256)
-#define WDG_SLOW_MODE_WINDOW_ENABLED    (STD_OFF)
-#define WDG_SLOW_MODE_WINDOW_START      ((Wdg_TimeoutType)100U)
-#define WDG_SLOW_MODE_WINDOW_END        ((Wdg_TimeoutType)400U)
-#define WDG_SLOW_MODE_INTERRUPT         (STD_OFF)
+#define WDG_SLOW_MODE_PRESCALER         (WDG_PRESCALER_128)
+#define WDG_SLOW_MODE_WINDOW_ENABLED    (STD_ON)  /* 启用窗口模式 */
+#define WDG_SLOW_MODE_WINDOW_START      ((Wdg_TimeoutType)100U)  /* 窗口开启: 100ms */
+#define WDG_SLOW_MODE_WINDOW_END        ((Wdg_TimeoutType)400U)  /* 窗口关闭: 400ms */
+#define WDG_SLOW_MODE_INTERRUPT         (STD_ON)  /* 启用超时前中断 */
+#define WDG_SLOW_MODE_TIMEOUT_PRE_US    ((uint16)1000U)  /* 超时前预警时间 1ms */
 
 /*==================================================================================================
 *                                    HARDWARE BASE ADDRESS
@@ -57,5 +59,17 @@
 ==================================================================================================*/
 #define WDG_MAX_TIMEOUT                 ((uint16)1000U)  /* 1000ms max */
 #define WDG_MIN_TIMEOUT                 ((uint16)1U)     /* 1ms min */
+
+/*==================================================================================================
+*                                    WINDOW MODE VALIDATION
+==================================================================================================*/
+#define WDG_VALIDATE_WINDOW_MODE        (STD_ON)  /* 运行时验证窗口触发 */
+#define WDG_WINDOW_ERROR_ACTION         (WDG_WINDOW_ERROR_RESET)  /* 窗口违规动作 */
+
+/*==================================================================================================
+*                                    TIMEOUT PRE-WARNING
+==================================================================================================*/
+#define WDG_TIMEOUT_PRE_WARNING         (STD_ON)  /* 启用超时前预警 */
+#define WDG_PRE_WARNING_CALLBACK        (STD_ON)  /* 启用预警回调 */
 
 #endif /* WDG_CFG_H */
