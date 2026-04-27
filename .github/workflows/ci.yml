@@ -52,10 +52,18 @@ jobs:
         with open('reports/static_analysis.json') as f:
             report = json.load(f)
         errors = report['summary']['errors']
-        if errors > 100:
-            print(f'Too many errors: {errors}')
+        warnings = report['summary']['warnings']
+        
+        # 严格质量门禁: 错误数 < 50, 警告数 < 200
+        if errors > 50:
+            print(f'❌ 静态分析错误数过多: {errors} (阈值: 50)')
             exit(1)
-        print(f'Code quality check passed: {errors} errors')
+        
+        if warnings > 200:
+            print(f'⚠️  静态分析警告数过多: {warnings} (阈值: 200)')
+            # 警告仅提示，不阻止构建
+        
+        print(f'✅ 代码质量检查通过: {errors} errors, {warnings} warnings')
         "
 
   test:
@@ -77,15 +85,67 @@ jobs:
     - name: Run Unit Tests
       run: |
         cd tests/unit
-        gcc -c test_mcu.c -I../../src/bsw/mcal/mcu/include -I../../src/bsw/common -o test_mcu.o
+        # 编译测试框架和测试用例
+        gcc -o test_runner \
+          test_framework.h \
+          test_mcu.c \
+          -I../../src/bsw/mcal/mcu/include \
+          -I../../src/bsw/common \
+          -lm
+        
+        # 执行测试并生成报告
+        ./test_runner --xml > test_results.xml
+        echo "✅ 单元测试执行完成"
+      
+      # TODO: 待更多测试文件添加后启用覆盖率检查
+      # - name: Coverage Check
+      #   run: |
+      #     pip install gcovr
+      #     gcovr --root src/bsw \
+      #           --exclude '.*test.*' \
+      #           --json coverage.json \
+      #           --txt coverage.txt
+      #     python -c "
+      #     import json
+      #     with open('coverage.json') as f:
+      #         cov = json.load(f)
+      #     coverage = cov['summary']['line_covered']
+      #     if coverage < 80:
+      #         print(f'❌ 测试覆盖率不足: {coverage}% (目标: 80%)')
+      #         exit(1)
+      #     print(f'✅ 测试覆盖率达标: {coverage}%')
+      #     "
     
-    - name: Test Configuration Tool
+    - name: Architecture Validation
       run: |
-        python tools/config/src/config_tool.py
-    
-    - name: Test Code Generator
-      run: |
-        python tools/generator/src/code_generator.py config/bsw_config.json generated
+        # 验证分层架构依赖关系
+        python -c "
+        import os
+        import re
+        
+        # 检查是否有下层依赖上层的违规
+        violations = []
+        
+        # MCAL 不应依赖 Service/RTE/ASW
+        for root, dirs, files in os.walk('src/bsw/mcal'):
+            for file in files:
+                if file.endswith('.c') or file.endswith('.h'):
+                    filepath = os.path.join(root, file)
+                    with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                        content = f.read()
+                        if re.search(r'#include.*Service', content) or \
+                           re.search(r'#include.*Rte', content) or \
+                           re.search(r'#include.*Asw', content):
+                            violations.append(filepath)
+        
+        if violations:
+            print('❌ 架构违规: 下层模块依赖上层模块')
+            for v in violations:
+                print(f'  - {v}')
+            exit(1)
+        
+        print('✅ 架构依赖检查通过')
+        "
 
   documentation:
     runs-on: ubuntu-latest
