@@ -24,6 +24,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../include/dds
     ${CMAKE_SOURCE_DIR}/../include/eth
     ${CMAKE_SOURCE_DIR}/../include/diag
+    ${CMAKE_SOURCE_DIR}/../include/dlt
     ${CMAKE_SOURCE_DIR}/mocks
 )
 
@@ -34,8 +35,13 @@ add_executable(eth_dds_tests
     test_dds.c
     test_eth.c
     test_diag.c
+    test_dlt.c
+    test_dlt_adapter.c
     ../src/telemetry/telemetry.c
     ../src/telemetry/telemetry_diag.c
+    ../src/dlt/dlt.c
+    ../src/dlt/dlt_adapter.c
+    ../src/dlt/dlt_diag.c
 )
 
 # 链接Unity
@@ -59,7 +65,7 @@ if(GCOV)
     
     add_custom_target(coverage
         COMMAND ${CMAKE_CTEST_COMMAND}
-        COMMAND gcov -r ${CMAKE_SOURCE_DIR}/../src/telemetry/*.c
+        COMMAND gcov -r ${CMAKE_SOURCE_DIR}/../src/telemetry/*.c ${CMAKE_SOURCE_DIR}/../src/dlt/*.c
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 endif()
