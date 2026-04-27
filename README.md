@@ -60,6 +60,7 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 │    - NvM (NVRAM 管理器)                  │
 │    - Dcm (诊断通信管理器)                │
 │    - Dem (诊断事件管理器)                │
+│    - Dlt (诊断日志和跟踪)                │
 ├─────────────────────────────────────────┤
 │           ECUAL Layer                    │
 │    - CanIf, CanTp, EthIf, FrIf, LinIf   │
@@ -77,7 +78,7 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 
 - **✅ 完整的 MCAL 层** - 9 个驱动全部实现
 - **✅ 完整的 ECUAL 层** - 9 个模块全部实现
-- **✅ 完整的服务层** - 5 个模块全部实现
+- **✅ 完整的服务层** - 6 个模块全部实现 (新增 Dlt)
 - **✅ 完整的 RTE 层** - 运行时环境完整实现
 - **✅ 符合 AutoSAR 4.x 标准** - 严格遵循 AutoSAR 规范
 - **✅ 完整的错误检测** - DET (Development Error Tracer) 支持
@@ -86,8 +87,8 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 ### 项目统计
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Modules-24-blue?style=flat-square" alt="24 Modules">
-  <img src="https://img.shields.io/badge/Lines%20of%20Code-32K+-blue?style=flat-square" alt="32K+ LOC">
+  <img src="https://img.shields.io/badge/Modules-25-blue?style=flat-square" alt="25 Modules">
+  <img src="https://img.shields.io/badge/Lines%20of%20Code-35K+-blue?style=flat-square" alt="35K+ LOC">
   <img src="https://img.shields.io/badge/Verification%20Reports-3-success?style=flat-square" alt="3 Verification Reports">
   <img src="https://img.shields.io/badge/Documentation-5%20Docs-success?style=flat-square" alt="5 Documentation">
 </p>
@@ -228,7 +229,7 @@ yuletech-openspec/
 | FrIf | FlexRay 接口 | ✅ |
 | LinIf | LIN 接口 | ✅ |
 
-### Service 层 (5/5)
+### Service 层 (6/6)
 
 | 模块 | 描述 | 状态 |
 |:-----|:-----|:----:|
@@ -237,6 +238,7 @@ yuletech-openspec/
 | NvM | NVRAM 管理器 | ✅ |
 | Dcm | 诊断通信管理器 | ✅ |
 | Dem | 诊断事件管理器 | ✅ |
+| Dlt | 诊断日志和跟踪 | ✅ |
 
 ### RTE 层 (1/1)
 
