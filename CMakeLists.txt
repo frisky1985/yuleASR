@@ -22,6 +22,9 @@ include(compiler)
 # External dependencies
 include(dependencies)
 
+# RTE Generator support
+include(rte_generator)
+
 #==============================================================================
 # Project Directories
 #==============================================================================
