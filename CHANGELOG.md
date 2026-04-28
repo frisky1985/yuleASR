@@ -6,6 +6,59 @@
 
 ---
 
+## [0.5.0] - 2025-04-28
+
+### 新增
+
+#### 分支整合
+- 从master分支移植核心内容到main分支
+- 完善的OpenSpec文档规范系统（48个文件）
+  - 按模块整理的规范目录结构
+  - 支持Com、Dcm、Dem、DoCan、DoIp、NvM、PduR、RTE等模块
+
+#### ASW应用层组件
+- 8个完整SWC组件实现（位于src/autosar/asw/）
+  - CommunicationManager - 通信管理
+  - DiagnosticManager - 诊断管理
+  - EngineControl - 发动机控制
+  - IOControl - IO控制
+  - ModeManager - 模式管理
+  - StorageManager - 存储管理
+  - VehicleDynamics - 车辆动力学
+  - WatchdogManager - 看门狗管理
+- 统一的ASW接口定义（asw_interfaces.h）
+
+#### RTE代码生成器
+- Python版RTE生成器工具（tools/rte_generator/）
+- 配置模板和示例
+- CMake集成支持
+
+#### 验证框架
+- 完整的验证报告模板（7份）
+  - ASW验证报告
+  - BSW集成验证报告
+  - NvM模块验证报告
+  - OS操作系统验证报告
+  - PduR路由验证报告
+  - RTE验证报告
+  - 服务层验证报告
+
+#### 文档网站
+- React + Vite + TypeScript文档网站（docs-site/）
+- Tailwind CSS样式
+- 模块文档和API参考
+- 客户端搜索功能
+
+### 文档
+- 添加分支整合报告（docs/BRANCH_INTEGRATION_REPORT.md）
+- 添加双分支并行开发计划（docs/PARALLEL_DEVELOPMENT_PLAN.md）
+
+### 改进
+- 优化项目目录结构，分离master和main分支特性
+- 完善CMake构建系统支持
+
+---
+
 ## [2.0.0] - 2026-04-24
 
 ### 新增
