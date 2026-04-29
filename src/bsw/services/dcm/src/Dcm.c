@@ -18,6 +18,7 @@
 ==================================================================================================*/
 #include "Dcm.h"
 #include "Dcm_Cfg.h"
+#include "dcm_transfer.h"
 #include "PduR.h"
 #include "Det.h"
 #include "MemMap.h"
@@ -110,6 +111,10 @@ STATIC Std_ReturnType Dcm_ProcessWriteDataByIdentifier(uint8 ProtocolId, const u
 STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC Std_ReturnType Dcm_ProcessClearDiagnosticInformation(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessRequestUpload(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Data, uint16 Length);
+STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uint8* Data, uint16 Length);
 STATIC const Dcm_DIDConfigType* Dcm_FindDID(uint16 DID);
 STATIC const Dcm_RIDConfigType* Dcm_FindRID(uint16 RID);
 
@@ -753,8 +758,37 @@ STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* D
 }
 
 /**
- * @brief   Process incoming diagnostic request
+ * @brief   Process Request Download service (0x34)
  */
+STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    return Dcm_TransferProcessRequestDownload(ProtocolId, Data, Length);
+}
+
+/**
+ * @brief   Process Request Upload service (0x35)
+ */
+STATIC Std_ReturnType Dcm_ProcessRequestUpload(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    return Dcm_TransferProcessRequestUpload(ProtocolId, Data, Length);
+}
+
+/**
+ * @brief   Process Transfer Data service (0x36)
+ */
+STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    return Dcm_TransferProcessTransferData(ProtocolId, Data, Length);
+}
+
+/**
+ * @brief   Process Request Transfer Exit service (0x37)
+ */
+STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uint8* Data, uint16 Length)
+{
+    return Dcm_TransferProcessRequestTransferExit(ProtocolId, Data, Length);
+}
+
 STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
 {
     Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[ProtocolId];
@@ -801,6 +835,22 @@ STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
 
             case DCM_SERVICE_ROUTINE_CONTROL:
                 (void)Dcm_ProcessRoutineControl(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
+            case DCM_UDS_SID_REQUEST_DOWNLOAD:
+                (void)Dcm_ProcessRequestDownload(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
+            case DCM_UDS_SID_REQUEST_UPLOAD:
+                (void)Dcm_ProcessRequestUpload(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
+            case DCM_UDS_SID_TRANSFER_DATA:
+                (void)Dcm_ProcessTransferData(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
+                break;
+
+            case DCM_UDS_SID_REQUEST_TRANSFER_EXIT:
+                (void)Dcm_ProcessRequestTransferExit(ProtocolId, &protocolState->RxBuffer[1], protocolState->RxDataLength - 1U);
                 break;
 
             default:
@@ -850,6 +900,9 @@ void Dcm_Init(const Dcm_ConfigType* ConfigPtr)
         Dcm_InternalState.ProtocolStates[i].S3Timer = DCM_S3SERVER;
         Dcm_InternalState.ProtocolStates[i].ResponsePending = FALSE;
     }
+
+    /* Initialize transfer services */
+    Dcm_TransferInit();
 
     /* Set module state to initialized */
     Dcm_InternalState.State = DCM_STATE_INIT;

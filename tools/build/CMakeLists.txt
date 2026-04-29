@@ -16,7 +16,11 @@ include_directories(
     ${SRC_DIR}/mcal/pwm/include
     ${SRC_DIR}/mcal/adc/include
     ${SRC_DIR}/mcal/wdg/include
+    ${SRC_DIR}/mcal/eth/include
+    ${SRC_DIR}/mcal/icu/include
+    ${SRC_DIR}/mcal/ocu/include
     ${SRC_DIR}/ecual/canif/include
+    ${SRC_DIR}/ecual/frtp/include
     ${SRC_DIR}/ecual/cantp/include
     ${SRC_DIR}/ecual/ethif/include
     ${SRC_DIR}/ecual/frif/include
@@ -46,9 +50,22 @@ set(BSW_SOURCES
     ${SRC_DIR}/mcal/pwm/src/Pwm.c
     ${SRC_DIR}/mcal/adc/src/Adc.c
     ${SRC_DIR}/mcal/wdg/src/Wdg.c
+    ${SRC_DIR}/mcal/eth/src/Eth.c
+    ${SRC_DIR}/mcal/eth/src/Eth_Irq.c
+    ${SRC_DIR}/mcal/icu/src/Icu.c
+    ${SRC_DIR}/mcal/icu/src/Icu_Irq.c
+    ${SRC_DIR}/mcal/icu/src/Icu_Lcfg.c
+    ${SRC_DIR}/mcal/ocu/src/Ocu.c
+    ${SRC_DIR}/mcal/ocu/src/Ocu_Irq.c
     
     # ECUAL 层
     ${SRC_DIR}/ecual/canif/src/CanIf.c
+    ${SRC_DIR}/ecual/frtp/src/FrTp.c
+    ${SRC_DIR}/ecual/frtp/src/FrTp_Lcfg.c
+    ${SRC_DIR}/ecual/frtp/src/FrTp_PrivUtil.c
+    ${SRC_DIR}/ecual/frtp/src/FrTp_Rx.c
+    ${SRC_DIR}/ecual/frtp/src/FrTp_Tx.c
+    ${SRC_DIR}/ecual/frtp/src/FrTp_TxSm.c
     ${SRC_DIR}/ecual/cantp/src/CanTp.c
     ${SRC_DIR}/ecual/ethif/src/EthIf.c
     ${SRC_DIR}/ecual/frif/src/FrIf.c

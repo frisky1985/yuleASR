@@ -1,0 +1,684 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="2">
+    <cppcheck version="2.14 dev"/>
+    <errors>
+Checking src/bsw/mcal/eth/src/Eth.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth.h&quot; not found." verbose="Include file: &quot;Eth.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="16" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth_Private.h&quot; not found." verbose="Include file: &quot;Eth_Private.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="17" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth_Cfg.h&quot; not found." verbose="Include file: &quot;Eth_Cfg.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="18" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth_Lcfg.h&quot; not found." verbose="Include file: &quot;Eth_Lcfg.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="19" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="25" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="44" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="47" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="882" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/eth/src/Eth.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/eth/src/Eth.c">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="0" column="0"/>
+        </error>
+1/13 files checked 12% done
+Checking src/bsw/mcal/eth/src/Eth_Irq.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth.h&quot; not found." verbose="Include file: &quot;Eth.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="16" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth_Private.h&quot; not found." verbose="Include file: &quot;Eth_Private.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="17" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Eth_Cfg.h&quot; not found." verbose="Include file: &quot;Eth_Cfg.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="18" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="24" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="339" column="0"/>
+        </error>
+        <error id="knownConditionTrueFalse" severity="style" msg="Condition &apos;(status&amp;ETH_DMA_SR_NIS)!=0u&apos; is always false" verbose="Condition &apos;(status&amp;ETH_DMA_SR_NIS)!=0u&apos; is always false" cwe="570" file0="src/bsw/mcal/eth/src/Eth_Irq.c">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="169" column="35" info="Condition &apos;(status&amp;ETH_DMA_SR_NIS)!=0u&apos; is always false"/>
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="166" column="14" info="Assignment &apos;status=0u&apos;, assigned value is 0"/>
+        </error>
+        <error id="knownConditionTrueFalse" severity="style" msg="Condition &apos;(status&amp;ETH_DMA_SR_AIS)!=0u&apos; is always false" verbose="Condition &apos;(status&amp;ETH_DMA_SR_AIS)!=0u&apos; is always false" cwe="570" file0="src/bsw/mcal/eth/src/Eth_Irq.c">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="199" column="35" info="Condition &apos;(status&amp;ETH_DMA_SR_AIS)!=0u&apos; is always false"/>
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="166" column="14" info="Assignment &apos;status=0u&apos;, assigned value is 0"/>
+        </error>
+        <error id="unassignedVariable" severity="style" msg="Variable &apos;rxDataPtr&apos; is not assigned a value." verbose="Variable &apos;rxDataPtr&apos; is not assigned a value." cwe="665" file0="src/bsw/mcal/eth/src/Eth_Irq.c">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="77" column="12"/>
+            <symbol>rxDataPtr</symbol>
+        </error>
+        <error id="unassignedVariable" severity="style" msg="Variable &apos;rxLen&apos; is not assigned a value." verbose="Variable &apos;rxLen&apos; is not assigned a value." cwe="665" file0="src/bsw/mcal/eth/src/Eth_Irq.c">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="78" column="12"/>
+            <symbol>rxLen</symbol>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/eth/src/Eth_Irq.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/eth/src/Eth_Irq.c">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="0" column="0"/>
+        </error>
+2/13 files checked 17% done
+Checking src/bsw/mcal/icu/src/Icu.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Icu_Private.h&quot; not found." verbose="Include file: &quot;Icu_Private.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="14" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;SchM.h&quot; not found." verbose="Include file: &quot;SchM.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="15" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="67" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="80" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="312" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="1045" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/icu/src/Icu.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/icu/src/Icu.c">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="0" column="0"/>
+        </error>
+3/13 files checked 35% done
+Checking src/bsw/mcal/icu/src/Icu_Irq.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Icu_Private.h&quot; not found." verbose="Include file: &quot;Icu_Private.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="14" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="250" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="301" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/icu/src/Icu_Irq.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/icu/src/Icu_Irq.c">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="0" column="0"/>
+        </error>
+4/13 files checked 41% done
+Checking src/bsw/mcal/icu/src/Icu_Lcfg.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Icu_Lcfg.h&quot; not found." verbose="Include file: &quot;Icu_Lcfg.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Lcfg.c" line="9" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Icu_Cfg.h&quot; not found." verbose="Include file: &quot;Icu_Cfg.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Lcfg.c" line="10" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Lcfg.c" line="41" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/icu/src/Icu_Lcfg.c" line="173" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/icu/src/Icu_Lcfg.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/icu/src/Icu_Lcfg.c">
+            <location file="src/bsw/mcal/icu/src/Icu_Lcfg.c" line="0" column="0"/>
+        </error>
+5/13 files checked 44% done
+Checking src/bsw/ecual/frtp/src/FrTp.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp.h&quot; not found." verbose="Include file: &quot;FrTp.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp.c" line="15" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Private.h&quot; not found." verbose="Include file: &quot;FrTp_Private.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp.c" line="16" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp.c" line="17" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp.c" line="18" column="0"/>
+        </error>
+        <error id="preprocessorErrorDirective" severity="error" msg="#error &quot;FrTp: AR major version mismatch&quot;" verbose="#error &quot;FrTp: AR major version mismatch&quot;" file0="src/bsw/ecual/frtp/src/FrTp.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp.c" line="22" column="6"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/ecual/frtp/src/FrTp.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/ecual/frtp/src/FrTp.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp.c" line="0" column="0"/>
+        </error>
+6/13 files checked 50% done
+Checking src/bsw/ecual/frtp/src/FrTp_Lcfg.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp.h&quot; not found." verbose="Include file: &quot;FrTp.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="12" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Lcfg.h&quot; not found." verbose="Include file: &quot;FrTp_Lcfg.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Private.h&quot; not found." verbose="Include file: &quot;FrTp_Private.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="14" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="20" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="109" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="115" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="123" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/ecual/frtp/src/FrTp_Lcfg.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/ecual/frtp/src/FrTp_Lcfg.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Lcfg.c" line="0" column="0"/>
+        </error>
+7/13 files checked 53% done
+Checking src/bsw/ecual/frtp/src/FrTp_PrivUtil.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp.h&quot; not found." verbose="Include file: &quot;FrTp.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="12" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Private.h&quot; not found." verbose="Include file: &quot;FrTp_Private.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="19" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="481" column="0"/>
+        </error>
+        <error id="variableScope" severity="style" msg="The scope of the variable &apos;runtime&apos; can be reduced." verbose="The scope of the variable &apos;runtime&apos; can be reduced. Warning: Be careful when fixing this message, especially when there are inner loops. Here is an example where cppcheck will write that the scope for &apos;i&apos; can be reduced:\012void f(int x)\012{\012    int i = 0;\012    if (x) {\012        // it&apos;s safe to move &apos;int i = 0;&apos; here\012        for (int n = 0; n &lt; 10; ++n) {\012            // it is possible but not safe to move &apos;int i = 0;&apos; here\012            do_something(&amp;i);\012        }\012    }\012}\012When you see this message it is always safe to reduce the variable scope 1 level." cwe="398" file0="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="459" column="33"/>
+            <symbol>runtime</symbol>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/ecual/frtp/src/FrTp_PrivUtil.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="0" column="0"/>
+        </error>
+8/13 files checked 59% done
+Checking src/bsw/ecual/frtp/src/FrTp_Rx.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp.h&quot; not found." verbose="Include file: &quot;FrTp.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="12" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Private.h&quot; not found." verbose="Include file: &quot;FrTp_Private.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="14" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="15" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="33" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="616" column="0"/>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;runtime&apos; can be declared as pointer to const" verbose="Variable &apos;runtime&apos; can be declared as pointer to const" cwe="398" file0="src/bsw/ecual/frtp/src/FrTp_Rx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="113" column="33" info="Variable &apos;runtime&apos; can be declared as pointer to const"/>
+            <symbol>runtime</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;txPduInfo.SduDataPtr&apos; is assigned a value that is never used." verbose="Variable &apos;txPduInfo.SduDataPtr&apos; is assigned a value that is never used." cwe="563" file0="src/bsw/ecual/frtp/src/FrTp_Rx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="245" column="26"/>
+            <symbol>txPduInfo.SduDataPtr</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;txPduInfo.SduLength&apos; is assigned a value that is never used." verbose="Variable &apos;txPduInfo.SduLength&apos; is assigned a value that is never used." cwe="563" file0="src/bsw/ecual/frtp/src/FrTp_Rx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="246" column="25"/>
+            <symbol>txPduInfo.SduLength</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;txPduInfo.MetaDataPtr&apos; is assigned a value that is never used." verbose="Variable &apos;txPduInfo.MetaDataPtr&apos; is assigned a value that is never used." cwe="563" file0="src/bsw/ecual/frtp/src/FrTp_Rx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="247" column="27"/>
+            <symbol>txPduInfo.MetaDataPtr</symbol>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/ecual/frtp/src/FrTp_Rx.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/ecual/frtp/src/FrTp_Rx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="0" column="0"/>
+        </error>
+9/13 files checked 69% done
+Checking src/bsw/ecual/frtp/src/FrTp_Tx.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp.h&quot; not found." verbose="Include file: &quot;FrTp.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="12" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Private.h&quot; not found." verbose="Include file: &quot;FrTp_Private.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="14" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="15" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="33" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="448" column="0"/>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;runtime&apos; can be declared as pointer to const" verbose="Variable &apos;runtime&apos; can be declared as pointer to const" cwe="398" file0="src/bsw/ecual/frtp/src/FrTp_Tx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="136" column="33" info="Variable &apos;runtime&apos; can be declared as pointer to const"/>
+            <symbol>runtime</symbol>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/ecual/frtp/src/FrTp_Tx.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/ecual/frtp/src/FrTp_Tx.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="0" column="0"/>
+        </error>
+10/13 files checked 77% done
+Checking src/bsw/ecual/frtp/src/FrTp_TxSm.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp.h&quot; not found." verbose="Include file: &quot;FrTp.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="12" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;FrTp_Private.h&quot; not found." verbose="Include file: &quot;FrTp_Private.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="14" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="15" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="33" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="352" column="0"/>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;runtime&apos; can be declared as pointer to const" verbose="Variable &apos;runtime&apos; can be declared as pointer to const" cwe="398" file0="src/bsw/ecual/frtp/src/FrTp_TxSm.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="41" column="33" info="Variable &apos;runtime&apos; can be declared as pointer to const"/>
+            <symbol>runtime</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;txPduInfo.SduDataPtr&apos; is assigned a value that is never used." verbose="Variable &apos;txPduInfo.SduDataPtr&apos; is assigned a value that is never used." cwe="563" file0="src/bsw/ecual/frtp/src/FrTp_TxSm.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="294" column="30"/>
+            <symbol>txPduInfo.SduDataPtr</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;txPduInfo.SduLength&apos; is assigned a value that is never used." verbose="Variable &apos;txPduInfo.SduLength&apos; is assigned a value that is never used." cwe="563" file0="src/bsw/ecual/frtp/src/FrTp_TxSm.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="295" column="29"/>
+            <symbol>txPduInfo.SduLength</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;txPduInfo.MetaDataPtr&apos; is assigned a value that is never used." verbose="Variable &apos;txPduInfo.MetaDataPtr&apos; is assigned a value that is never used." cwe="563" file0="src/bsw/ecual/frtp/src/FrTp_TxSm.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="296" column="31"/>
+            <symbol>txPduInfo.MetaDataPtr</symbol>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/ecual/frtp/src/FrTp_TxSm.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/ecual/frtp/src/FrTp_TxSm.c">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="0" column="0"/>
+        </error>
+11/13 files checked 83% done
+Checking src/bsw/mcal/ocu/src/Ocu.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Ocu.h&quot; not found." verbose="Include file: &quot;Ocu.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="18" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Ocu_Private.h&quot; not found." verbose="Include file: &quot;Ocu_Private.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="19" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="22" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="49" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="57" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="60" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="73" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="79" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="144" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="199" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="690" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/ocu/src/Ocu.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/ocu/src/Ocu.c">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="0" column="0"/>
+        </error>
+12/13 files checked 93% done
+Checking src/bsw/mcal/ocu/src/Ocu_Irq.c ...
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Ocu.h&quot; not found." verbose="Include file: &quot;Ocu.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="18" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Ocu_Private.h&quot; not found." verbose="Include file: &quot;Ocu_Private.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="19" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="22" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="58" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="203" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="210" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;MemMap.h&quot; not found." verbose="Include file: &quot;MemMap.h&quot; not found.">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="407" column="0"/>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Checking file failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli src/bsw/mcal/ocu/src/Ocu_Irq.c.522027.dump\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;" file0="src/bsw/mcal/ocu/src/Ocu_Irq.c">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="0" column="0"/>
+        </error>
+13/13 files checked 100% done
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_SetConnectionState&apos; is never used." verbose="The function &apos;FrTp_SetConnectionState&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="104" column="0"/>
+            <symbol>FrTp_SetConnectionState</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_IsConnectionIdle&apos; is never used." verbose="The function &apos;FrTp_IsConnectionIdle&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="151" column="0"/>
+            <symbol>FrTp_IsConnectionIdle</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_IsTimerRunning&apos; is never used." verbose="The function &apos;FrTp_IsTimerRunning&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="424" column="0"/>
+            <symbol>FrTp_IsTimerRunning</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_UpdateTimers&apos; is never used." verbose="The function &apos;FrTp_UpdateTimers&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_PrivUtil.c" line="456" column="0"/>
+            <symbol>FrTp_UpdateTimers</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_RxIndication&apos; is never used." verbose="The function &apos;FrTp_RxIndication&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="40" column="0"/>
+            <symbol>FrTp_RxIndication</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_CancelReceive&apos; is never used." verbose="The function &apos;FrTp_CancelReceive&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="110" column="0"/>
+            <symbol>FrTp_CancelReceive</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_RxStateMachine&apos; is never used." verbose="The function &apos;FrTp_RxStateMachine&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="150" column="0"/>
+            <symbol>FrTp_RxStateMachine</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_RequestTxBuffer&apos; is never used." verbose="The function &apos;FrTp_RequestTxBuffer&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="535" column="0"/>
+            <symbol>FrTp_RequestTxBuffer</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_ReleaseTxBuffer&apos; is never used." verbose="The function &apos;FrTp_ReleaseTxBuffer&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Rx.c" line="584" column="0"/>
+            <symbol>FrTp_ReleaseTxBuffer</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_Transmit&apos; is never used." verbose="The function &apos;FrTp_Transmit&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="41" column="0"/>
+            <symbol>FrTp_Transmit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_CancelTransmit&apos; is never used." verbose="The function &apos;FrTp_CancelTransmit&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="133" column="0"/>
+            <symbol>FrTp_CancelTransmit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_TxConfirmation&apos; is never used." verbose="The function &apos;FrTp_TxConfirmation&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="174" column="0"/>
+            <symbol>FrTp_TxConfirmation</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_SendConsecutiveFrame&apos; is never used." verbose="The function &apos;FrTp_SendConsecutiveFrame&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_Tx.c" line="355" column="0"/>
+            <symbol>FrTp_SendConsecutiveFrame</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;FrTp_TxStateMachine&apos; is never used." verbose="The function &apos;FrTp_TxStateMachine&apos; is never used." cwe="561">
+            <location file="src/bsw/ecual/frtp/src/FrTp_TxSm.c" line="39" column="0"/>
+            <symbol>FrTp_TxStateMachine</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_FreeRxBuffer&apos; is never used." verbose="The function &apos;Eth_FreeRxBuffer&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="131" column="0"/>
+            <symbol>Eth_FreeRxBuffer</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_ValidateFrame&apos; is never used." verbose="The function &apos;Eth_ValidateFrame&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="144" column="0"/>
+            <symbol>Eth_ValidateFrame</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_Init&apos; is never used." verbose="The function &apos;Eth_Init&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="334" column="0"/>
+            <symbol>Eth_Init</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_DeInit&apos; is never used." verbose="The function &apos;Eth_DeInit&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="376" column="0"/>
+            <symbol>Eth_DeInit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_ControllerInit&apos; is never used." verbose="The function &apos;Eth_ControllerInit&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="399" column="0"/>
+            <symbol>Eth_ControllerInit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_GetVersionInfo&apos; is never used." verbose="The function &apos;Eth_GetVersionInfo&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="432" column="0"/>
+            <symbol>Eth_GetVersionInfo</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_SetControllerMode&apos; is never used." verbose="The function &apos;Eth_SetControllerMode&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="452" column="0"/>
+            <symbol>Eth_SetControllerMode</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_GetControllerMode&apos; is never used." verbose="The function &apos;Eth_GetControllerMode&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="490" column="0"/>
+            <symbol>Eth_GetControllerMode</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_GetControllerIdx&apos; is never used." verbose="The function &apos;Eth_GetControllerIdx&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="516" column="0"/>
+            <symbol>Eth_GetControllerIdx</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_GetPhysAddr&apos; is never used." verbose="The function &apos;Eth_GetPhysAddr&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="542" column="0"/>
+            <symbol>Eth_GetPhysAddr</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_SetPhysAddr&apos; is never used." verbose="The function &apos;Eth_SetPhysAddr&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="567" column="0"/>
+            <symbol>Eth_SetPhysAddr</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_WriteMii&apos; is never used." verbose="The function &apos;Eth_WriteMii&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="592" column="0"/>
+            <symbol>Eth_WriteMii</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_ReadMii&apos; is never used." verbose="The function &apos;Eth_ReadMii&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="616" column="0"/>
+            <symbol>Eth_ReadMii</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_ProvideTxBuffer&apos; is never used." verbose="The function &apos;Eth_ProvideTxBuffer&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="641" column="0"/>
+            <symbol>Eth_ProvideTxBuffer</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_Transmit&apos; is never used." verbose="The function &apos;Eth_Transmit&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="693" column="0"/>
+            <symbol>Eth_Transmit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_Receive&apos; is never used." verbose="The function &apos;Eth_Receive&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="751" column="0"/>
+            <symbol>Eth_Receive</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_TxConfirmation&apos; is never used." verbose="The function &apos;Eth_TxConfirmation&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="809" column="0"/>
+            <symbol>Eth_TxConfirmation</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_EnableIrq&apos; is never used." verbose="The function &apos;Eth_EnableIrq&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="832" column="0"/>
+            <symbol>Eth_EnableIrq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_DisableIrq&apos; is never used." verbose="The function &apos;Eth_DisableIrq&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="850" column="0"/>
+            <symbol>Eth_DisableIrq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_InitBuffers&apos; is never used." verbose="The function &apos;Eth_InitBuffers&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth.c" line="868" column="0"/>
+            <symbol>Eth_InitBuffers</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_IsrCommon&apos; is never used." verbose="The function &apos;Eth_IsrCommon&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="145" column="0"/>
+            <symbol>Eth_IsrCommon</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_IsrTx&apos; is never used." verbose="The function &apos;Eth_IsrTx&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="235" column="0"/>
+            <symbol>Eth_IsrTx</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_IsrRx&apos; is never used." verbose="The function &apos;Eth_IsrRx&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="246" column="0"/>
+            <symbol>Eth_IsrRx</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Eth_IsrError&apos; is never used." verbose="The function &apos;Eth_IsrError&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/eth/src/Eth_Irq.c" line="257" column="0"/>
+            <symbol>Eth_IsrError</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetEdgeConfig&apos; is never used." verbose="The function &apos;Icu_GetEdgeConfig&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="179" column="0"/>
+            <symbol>Icu_GetEdgeConfig</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_Init&apos; is never used." verbose="The function &apos;Icu_Init&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="317" column="0"/>
+            <symbol>Icu_Init</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_DeInit&apos; is never used." verbose="The function &apos;Icu_DeInit&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="348" column="0"/>
+            <symbol>Icu_DeInit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_SetMode&apos; is never used." verbose="The function &apos;Icu_SetMode&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="394" column="0"/>
+            <symbol>Icu_SetMode</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_DisableWakeup&apos; is never used." verbose="The function &apos;Icu_DisableWakeup&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="438" column="0"/>
+            <symbol>Icu_DisableWakeup</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_EnableWakeup&apos; is never used." verbose="The function &apos;Icu_EnableWakeup&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="457" column="0"/>
+            <symbol>Icu_EnableWakeup</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_SetActivationCondition&apos; is never used." verbose="The function &apos;Icu_SetActivationCondition&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="481" column="0"/>
+            <symbol>Icu_SetActivationCondition</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_DisableNotification&apos; is never used." verbose="The function &apos;Icu_DisableNotification&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="510" column="0"/>
+            <symbol>Icu_DisableNotification</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_EnableNotification&apos; is never used." verbose="The function &apos;Icu_EnableNotification&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="542" column="0"/>
+            <symbol>Icu_EnableNotification</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetInputState&apos; is never used." verbose="The function &apos;Icu_GetInputState&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="574" column="0"/>
+            <symbol>Icu_GetInputState</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_StartTimestamp&apos; is never used." verbose="The function &apos;Icu_StartTimestamp&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="608" column="0"/>
+            <symbol>Icu_StartTimestamp</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetTimestampIndex&apos; is never used." verbose="The function &apos;Icu_GetTimestampIndex&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="699" column="0"/>
+            <symbol>Icu_GetTimestampIndex</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_ResetEdgeCount&apos; is never used." verbose="The function &apos;Icu_ResetEdgeCount&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="720" column="0"/>
+            <symbol>Icu_ResetEdgeCount</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_EnableEdgeCount&apos; is never used." verbose="The function &apos;Icu_EnableEdgeCount&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="741" column="0"/>
+            <symbol>Icu_EnableEdgeCount</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetEdgeNumbers&apos; is never used." verbose="The function &apos;Icu_GetEdgeNumbers&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="811" column="0"/>
+            <symbol>Icu_GetEdgeNumbers</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_StartSignalMeasurement&apos; is never used." verbose="The function &apos;Icu_StartSignalMeasurement&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="832" column="0"/>
+            <symbol>Icu_StartSignalMeasurement</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetTimeElapsed&apos; is never used." verbose="The function &apos;Icu_GetTimeElapsed&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="921" column="0"/>
+            <symbol>Icu_GetTimeElapsed</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetDutyCycleValues&apos; is never used." verbose="The function &apos;Icu_GetDutyCycleValues&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="965" column="0"/>
+            <symbol>Icu_GetDutyCycleValues</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_GetVersionInfo&apos; is never used." verbose="The function &apos;Icu_GetVersionInfo&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="998" column="0"/>
+            <symbol>Icu_GetVersionInfo</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_CheckWakeup&apos; is never used." verbose="The function &apos;Icu_CheckWakeup&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu.c" line="1018" column="0"/>
+            <symbol>Icu_CheckWakeup</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_TPM1_IRQHandler&apos; is never used." verbose="The function &apos;Icu_TPM1_IRQHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="255" column="0"/>
+            <symbol>Icu_TPM1_IRQHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_TPM2_IRQHandler&apos; is never used." verbose="The function &apos;Icu_TPM2_IRQHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="267" column="0"/>
+            <symbol>Icu_TPM2_IRQHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_TPM3_IRQHandler&apos; is never used." verbose="The function &apos;Icu_TPM3_IRQHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="279" column="0"/>
+            <symbol>Icu_TPM3_IRQHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Icu_TPM4_IRQHandler&apos; is never used." verbose="The function &apos;Icu_TPM4_IRQHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/icu/src/Icu_Irq.c" line="291" column="0"/>
+            <symbol>Icu_TPM4_IRQHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_Init&apos; is never used." verbose="The function &apos;Ocu_Init&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="206" column="0"/>
+            <symbol>Ocu_Init</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_DeInit&apos; is never used." verbose="The function &apos;Ocu_DeInit&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="255" column="0"/>
+            <symbol>Ocu_DeInit</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_StartChannel&apos; is never used." verbose="The function &apos;Ocu_StartChannel&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="298" column="0"/>
+            <symbol>Ocu_StartChannel</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_StopChannel&apos; is never used." verbose="The function &apos;Ocu_StopChannel&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="339" column="0"/>
+            <symbol>Ocu_StopChannel</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_SetPinState&apos; is never used." verbose="The function &apos;Ocu_SetPinState&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="375" column="0"/>
+            <symbol>Ocu_SetPinState</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_SetPinAction&apos; is never used." verbose="The function &apos;Ocu_SetPinAction&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="420" column="0"/>
+            <symbol>Ocu_SetPinAction</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_SetAbsoluteThreshold&apos; is never used." verbose="The function &apos;Ocu_SetAbsoluteThreshold&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="460" column="0"/>
+            <symbol>Ocu_SetAbsoluteThreshold</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_SetRelativeThreshold&apos; is never used." verbose="The function &apos;Ocu_SetRelativeThreshold&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="512" column="0"/>
+            <symbol>Ocu_SetRelativeThreshold</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_GetCounter&apos; is never used." verbose="The function &apos;Ocu_GetCounter&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="566" column="0"/>
+            <symbol>Ocu_GetCounter</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_DisableNotification&apos; is never used." verbose="The function &apos;Ocu_DisableNotification&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="592" column="0"/>
+            <symbol>Ocu_DisableNotification</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_EnableNotification&apos; is never used." verbose="The function &apos;Ocu_EnableNotification&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="630" column="0"/>
+            <symbol>Ocu_EnableNotification</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_GetVersionInfo&apos; is never used." verbose="The function &apos;Ocu_GetVersionInfo&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu.c" line="668" column="0"/>
+            <symbol>Ocu_GetVersionInfo</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_Channel0_IrqHandler&apos; is never used." verbose="The function &apos;Ocu_Channel0_IrqHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="162" column="0"/>
+            <symbol>Ocu_Channel0_IrqHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_Channel1_IrqHandler&apos; is never used." verbose="The function &apos;Ocu_Channel1_IrqHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="173" column="0"/>
+            <symbol>Ocu_Channel1_IrqHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_Channel2_IrqHandler&apos; is never used." verbose="The function &apos;Ocu_Channel2_IrqHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="184" column="0"/>
+            <symbol>Ocu_Channel2_IrqHandler</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;Ocu_Channel3_IrqHandler&apos; is never used." verbose="The function &apos;Ocu_Channel3_IrqHandler&apos; is never used." cwe="561">
+            <location file="src/bsw/mcal/ocu/src/Ocu_Irq.c" line="195" column="0"/>
+            <symbol>Ocu_Channel3_IrqHandler</symbol>
+        </error>
+        <error id="internalError" severity="error" msg="Bailing out from analysis: Whole program analysis failed: Failed to execute addon &apos;misra&apos; - exitcode is 1" verbose="Bailing out from analysis: Whole program analysis failed: Failed to execute addon &apos;misra&apos; - exitcode is 1: python3  /home/admin/misra.py --cli --file-list src/bsw/mcal/eth/src/cppcheck-addon-ctu-file-list522027\012Output:\012Traceback (most recent call last):\012  File &quot;/home/admin/misra.py&quot;, line 18, in &lt;module&gt;\012    import cppcheckdata\012ModuleNotFoundError: No module named &apos;cppcheckdata&apos;">
+            <location file="" line="0" column="0"/>
+        </error>
+        <error id="unmatchedSuppression" severity="information" msg="Unmatched suppression: missingIncludeSystem" verbose="Unmatched suppression: missingIncludeSystem"/>
+        <error id="checkersReport" severity="information" msg="Active checkers: There was critical errors (use --checkers-report=&lt;filename&gt; to see details)" verbose="Active checkers: There was critical errors (use --checkers-report=&lt;filename&gt; to see details)"/>
+    </errors>
+</results>

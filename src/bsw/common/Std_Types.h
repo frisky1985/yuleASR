@@ -46,6 +46,15 @@ typedef uint16_t  uint16;   /**< 16-bit unsigned integer */
 typedef uint32_t  uint32;   /**< 32-bit unsigned integer */
 typedef uint64_t  uint64;   /**< 64-bit unsigned integer */
 
+/* Version Information Type */
+typedef struct {
+    uint16 vendorID;
+    uint16 moduleID;
+    uint8  sw_major_version;
+    uint8  sw_minor_version;
+    uint8  sw_patch_version;
+} Std_VersionInfoType;
+
 /* Signed integer types */
 typedef int8_t    sint8;    /**< 8-bit signed integer */
 typedef int16_t   sint16;   /**< 16-bit signed integer */
@@ -65,6 +74,15 @@ typedef bool      boolean;  /**< Boolean type */
 
 #ifndef FALSE
     #define FALSE   false
+#endif
+
+/** @brief Standard ON/OFF values for configuration */
+#ifndef STD_ON
+    #define STD_ON      (0x01U)
+#endif
+
+#ifndef STD_OFF
+    #define STD_OFF     (0x00U)
 #endif
 
 /*==================================================================================================

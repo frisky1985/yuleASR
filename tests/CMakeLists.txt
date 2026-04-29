@@ -50,7 +50,11 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/pwm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/adc/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/wdg/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/eth/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/icu/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/ocu/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/canif/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/iohwab/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/cantp/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/ethif/include
@@ -119,6 +123,13 @@ set(MCAL_SOURCES
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/pwm/src/Pwm.c
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/adc/src/Adc.c
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/wdg/src/Wdg.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/eth/src/Eth.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/eth/src/Eth_Irq.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/icu/src/Icu.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/icu/src/Icu_Irq.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/icu/src/Icu_Lcfg.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/ocu/src/Ocu.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/ocu/src/Ocu_Irq.c
 )
 
 # ECUAL Sources (for testing)
@@ -126,6 +137,12 @@ set(ECUAL_SOURCES
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/canif/src/CanIf.c
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/cantp/src/CanTp.c
     ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/pdur/src/PduR.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/src/FrTp.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/src/FrTp_Lcfg.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/src/FrTp_PrivUtil.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/src/FrTp_Rx.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/src/FrTp_Tx.c
+    ${CMAKE_SOURCE_DIR}/../src/bsw/ecual/frtp/src/FrTp_TxSm.c
 )
 
 # Service Sources (for testing)
