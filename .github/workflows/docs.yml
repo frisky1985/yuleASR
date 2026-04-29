@@ -1,0 +1,467 @@
+# Documentation Build and Deploy Workflow
+# Automatically builds and deploys Doxygen API docs and User Guide to GitHub Pages
+
+name: Documentation
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'include/**'
+      - 'docs/**'
+      - 'Doxyfile'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'docs/**'
+      - 'Doxyfile'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # Job 1: Build API Documentation with Doxygen
+  build-api-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            doxygen \
+            graphviz \
+            plantuml \
+            python3-pip
+
+      - name: Generate Doxygen documentation
+        run: |
+          # Create output directories
+          mkdir -p docs/api/html
+          mkdir -p docs/api/latex
+          
+          # Run Doxygen
+          doxygen Doxyfile 2>&1 | tee doxygen.log
+          
+          # Check for warnings
+          if grep -q "warning:" doxygen.log; then
+            echo "::warning::Doxygen generated warnings"
+            grep "warning:" doxygen.log | head -20
+          fi
+
+      - name: Build PDF documentation
+        run: |
+          sudo apt-get install -y texlive-latex-base texlive-latex-extra texlive-fonts-recommended
+          cd docs/api/latex
+          make pdf 2>/dev/null || make
+        continue-on-error: true
+
+      - name: Upload API docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-docs
+          path: |
+            docs/api/html
+            docs/api/latex/*.pdf
+          retention-days: 1
+
+  # Job 2: Build User Guide
+  build-user-guide:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install mdBook
+        run: |
+          cargo install mdbook --version 0.4.36 || true
+          # Alternative: use npm-based markdown converter
+          npm install -g @github-docs/github-markdown
+
+      - name: Build User Guide
+        run: |
+          mkdir -p docs/_site/user-guide
+          
+          # Create a simple HTML version of the user guide
+          cat > docs/_site/user-guide/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>ETH-DDS 用户手册</title>
+              <style>
+                  * { box-sizing: border-box; margin: 0; padding: 0; }
+                  body {
+                      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                      line-height: 1.6;
+                      color: #333;
+                      max-width: 1200px;
+                      margin: 0 auto;
+                      padding: 20px;
+                  }
+                  header {
+                      background: #1a5276;
+                      color: white;
+                      padding: 20px;
+                      border-radius: 8px;
+                      margin-bottom: 20px;
+                  }
+                  h1 { margin-bottom: 10px; }
+                  nav {
+                      background: #f8f9fa;
+                      padding: 15px;
+                      border-radius: 8px;
+                      margin-bottom: 20px;
+                  }
+                  nav ul { list-style: none; }
+                  nav li { margin: 5px 0; }
+                  nav a {
+                      color: #1a5276;
+                      text-decoration: none;
+                      font-weight: 500;
+                  }
+                  nav a:hover { text-decoration: underline; }
+                  .content {
+                      background: white;
+                      padding: 20px;
+                      border: 1px solid #ddd;
+                      border-radius: 8px;
+                  }
+                  footer {
+                      margin-top: 20px;
+                      padding: 15px;
+                      text-align: center;
+                      color: #666;
+                      border-top: 1px solid #ddd;
+                  }
+              </style>
+          </head>
+          <body>
+              <header>
+                  <h1>ETH-DDS Integration Framework</h1>
+                  <p>版本 2.0.0 用户开发手册</p>
+              </header>
+              <nav>
+                  <ul>
+                      <li><a href="01-quick-start.html">第1章: 快速入门</a></li>
+                      <li><a href="02-concepts.html">第2章: 概念指南</a></li>
+                      <li><a href="03-api-reference.html">第3章: API参考</a></li>
+                      <li><a href="04-configuration.html">第4章: 配置指南</a></li>
+                      <li><a href="05-debugging.html">第5章: 调试指南</a></li>
+                      <li><a href="06-deployment.html">第6章: 部署指南</a></li>
+                      <li><a href="07-security-guide.html">第7章: 安全指南</a></li>
+                  </ul>
+              </nav>
+              <div class="content">
+                  <h2>欢迎使用 ETH-DDS Integration Framework</h2>
+                  <p>请从左侧导航选择您想要阅读的章节。</p>
+                  <p>完整API文档请访问: <a href="../api/html/index.html">Doxygen API文档</a></p>
+              </div>
+              <footer>
+                  <p>&copy; 2026 ETH-DDS Team. All rights reserved.</p>
+              </footer>
+          </body>
+          </html>
+          EOF
+          
+          # Convert markdown to HTML
+          for file in docs/user-guide/*.md; do
+              filename=$(basename "$file" .md)
+              # Simple markdown to HTML conversion
+              cat > "docs/_site/user-guide/${filename}.html" << EOF
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>ETH-DDS 用户手册 - ${filename}</title>
+              <style>
+                  * { box-sizing: border-box; margin: 0; padding: 0; }
+                  body {
+                      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                      line-height: 1.6;
+                      color: #333;
+                      max-width: 1200px;
+                      margin: 0 auto;
+                      padding: 20px;
+                  }
+                  header {
+                      background: #1a5276;
+                      color: white;
+                      padding: 20px;
+                      border-radius: 8px;
+                      margin-bottom: 20px;
+                  }
+                  h1 { margin-bottom: 10px; }
+                  h2 { margin-top: 20px; margin-bottom: 10px; color: #1a5276; }
+                  h3 { margin-top: 15px; margin-bottom: 8px; color: #2874a6; }
+                  pre {
+                      background: #f4f4f4;
+                      padding: 15px;
+                      border-radius: 4px;
+                      overflow-x: auto;
+                  }
+                  code {
+                      background: #f4f4f4;
+                      padding: 2px 5px;
+                      border-radius: 3px;
+                      font-family: 'Courier New', monospace;
+                  }
+                  table {
+                      border-collapse: collapse;
+                      width: 100%;
+                      margin: 15px 0;
+                  }
+                  th, td {
+                      border: 1px solid #ddd;
+                      padding: 8px;
+                      text-align: left;
+                  }
+                  th { background: #f8f9fa; }
+                  .nav { margin-bottom: 20px; }
+                  .nav a { color: #1a5276; text-decoration: none; }
+                  footer {
+                      margin-top: 40px;
+                      padding-top: 20px;
+                      border-top: 1px solid #ddd;
+                      color: #666;
+                      text-align: center;
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="nav">
+                  <a href="index.html">← 返回目录</a>
+              </div>
+              <div class="content">
+          $(cat "$file" | sed 's/^# /# /g' | grep -v '^\[ref' || true)
+              </div>
+              <footer>
+                  <p>&copy; 2026 ETH-DDS Team</p>
+              </footer>
+          </body>
+          </html>
+          EOF
+          done
+
+      - name: Upload User Guide artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: user-guide
+          path: docs/_site/user-guide
+          retention-days: 1
+
+  # Job 3: Build Architecture Documentation
+  build-arch-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz plantuml
+
+      - name: Generate architecture diagrams
+        run: |
+          mkdir -p docs/_site/architecture
+          
+          # Copy existing architecture docs
+          cp docs/ARCHITECTURE.md docs/_site/architecture/
+          
+          # Generate diagrams if dot files exist
+          if [ -d "docs/architecture/diagrams" ]; then
+            for dot in docs/architecture/diagrams/*.dot; do
+              if [ -f "$dot" ]; then
+                output=$(basename "$dot" .dot).svg
+                dot -Tsvg "$dot" -o "docs/_site/architecture/$output"
+              fi
+            done
+          fi
+
+      - name: Upload Architecture docs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: architecture-docs
+          path: docs/_site/architecture
+          retention-days: 1
+
+  # Job 4: Deploy to GitHub Pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: [build-api-docs, build-user-guide, build-arch-docs]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: _site
+
+      - name: Organize site structure
+        run: |
+          mkdir -p _site_combined
+          
+          # API docs
+          if [ -d "_site/api-docs" ]; then
+            mv _site/api-docs/html _site_combined/api
+            mv _site/api-docs/latex/*.pdf _site_combined/ 2>/dev/null || true
+          fi
+          
+          # User guide
+          if [ -d "_site/user-guide" ]; then
+            mv _site/user-guide _site_combined/
+          fi
+          
+          # Architecture docs
+          if [ -d "_site/architecture-docs" ]; then
+            mv _site/architecture-docs _site_combined/architecture
+          fi
+          
+          # Create index page
+          cat > _site_combined/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>ETH-DDS Integration Framework 文档</title>
+              <style>
+                  * { box-sizing: border-box; margin: 0; padding: 0; }
+                  body {
+                      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                      line-height: 1.6;
+                      color: #333;
+                      max-width: 1000px;
+                      margin: 0 auto;
+                      padding: 40px 20px;
+                  }
+                  header {
+                      text-align: center;
+                      margin-bottom: 40px;
+                  }
+                  h1 { 
+                      color: #1a5276; 
+                      margin-bottom: 10px;
+                      font-size: 2.5em;
+                  }
+                  .subtitle { 
+                      color: #666; 
+                      font-size: 1.2em;
+                  }
+                  .cards {
+                      display: grid;
+                      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                      gap: 20px;
+                      margin-top: 30px;
+                  }
+                  .card {
+                      background: #f8f9fa;
+                      border: 1px solid #e9ecef;
+                      border-radius: 8px;
+                      padding: 25px;
+                      transition: transform 0.2s, box-shadow 0.2s;
+                  }
+                  .card:hover {
+                      transform: translateY(-5px);
+                      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                  }
+                  .card h2 {
+                      color: #1a5276;
+                      margin-bottom: 10px;
+                  }
+                  .card p {
+                      color: #666;
+                      margin-bottom: 15px;
+                  }
+                  .card a {
+                      display: inline-block;
+                      background: #1a5276;
+                      color: white;
+                      padding: 10px 20px;
+                      text-decoration: none;
+                      border-radius: 4px;
+                  }
+                  .card a:hover {
+                      background: #2874a6;
+                  }
+                  footer {
+                      margin-top: 50px;
+                      text-align: center;
+                      color: #666;
+                      border-top: 1px solid #ddd;
+                      padding-top: 20px;
+                  }
+              </style>
+          </head>
+          <body>
+              <header>
+                  <h1>ETH-DDS Integration Framework</h1>
+                  <p class="subtitle">DDS中间件文档中心 | 版本 2.0.0</p>
+              </header>
+              
+              <div class="cards">
+                  <div class="card">
+                      <h2>📚 用户手册</h2>
+                      <p>完整的用户开发指南，包含快速入门、概念说明、API参考、配置指南等。</p>
+                      <a href="user-guide/index.html">阅读手册</a>
+                  </div>
+                  
+                  <div class="card">
+                      <h2>📁 API文档</h2>
+                      <p>Doxygen生成的完整API参考文档，包含所有模块的详细说明。</p>
+                      <a href="api/index.html">查看API文档</a>
+                  </div>
+                  
+                  <div class="card">
+                      <h2>🏗️ 架构设计</h2>
+                      <p>系统架构设计文档和设计图，帮助理解系统组成和数据流。</p>
+                      <a href="architecture/ARCHITECTURE.md">查看架构</a>
+                  </div>
+                  
+                  <div class="card">
+                      <h2>📄 PDF文档</h2>
+                      <p>下载完整的PDF格式文档供离线阅读。</p>
+                      <a href="refman.pdf">下载PDF</a>
+                  </div>
+              </div>
+              
+              <footer>
+                  <p>&copy; 2026 ETH-DDS Team. All rights reserved.</p>
+                  <p><a href="https://github.com/your-org/eth-dds-integration">GitHub Repository</a></p>
+              </footer>
+          </body>
+          </html>
+          EOF
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site_combined
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
