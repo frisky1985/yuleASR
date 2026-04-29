@@ -7,12 +7,261 @@
 - [以太网API](#以太网api)
 - [DDS API](#dds-api)
 - [传输层API](#传输层api)
+- [UDS诊断服务API](#uds诊断服务api)
 - [工具函数](#工具函数)
 - [错误处理](#错误处理)
 
 ## 概述
 
 ETH-DDS Integration库提供一套统一的API，用于在嵌入式系统中实现以太网与DDS中间件的集成。
+
+## UDS诊断服务API
+
+### 内存访问服务 (0x23/0x3D)
+
+#### 0x23 Read Memory By Address
+
+```c
+/**
+ * @brief 处理ReadMemoryByAddress (0x23) 服务请求
+ *
+ * 该服务允许客户端从指定的内存地址读取数据。
+ * 支持的地址格式: 1字节、2字节、4字节地址。
+ * 支持的大小格式: 1字节、2字节、4字节大小。
+ *
+ * @param request 请求消息结构体指针
+ *                - data[0]: Service ID (0x23)
+ *                - data[1]: Format Identifier (addressLength | sizeLength)
+ *                - data[2..n]: Memory Address (MSB first)
+ *                - data[n+1..m]: Memory Size (MSB first)
+ * @param response 响应消息结构体指针
+ *                 - data[0]: Response SID (0x63)
+ *                 - data[1..n]: Read data
+ * @return Dcm_ReturnType 服务处理结果
+ * @retval DCM_E_OK 操作成功
+ * @retval DCM_E_NOT_OK 操作失败
+ * @retval DCM_E_REQUEST_OUT_OF_RANGE 请求超出范围
+ * @retval DCM_E_SECURITY_ACCESS_DENIED 安全访问被拒绝
+ *
+ * @requirement ISO 14229-1:2020 Section 10.4
+ *
+ * @example
+ * @code
+ * // 读取0x20000000地址的4字节数据
+ * uint8_t req_data[] = {
+ *     0x23,              // SID
+ *     0x44,              // 4-byte address, 4-byte size
+ *     0x20, 0x00, 0x00, 0x00,  // Address: 0x20000000
+ *     0x00, 0x00, 0x00, 0x04   // Size: 4
+ * };
+ * Dcm_RequestType request = {
+ *     .data = req_data,
+ *     .length = sizeof(req_data)
+ * };
+ * Dcm_ResponseType response;
+ * Dcm_ReturnType result = Dcm_ReadMemoryByAddress(&request, &response);
+ * @endcode
+ */
+Dcm_ReturnType Dcm_ReadMemoryByAddress(
+    const Dcm_RequestType *request,
+    Dcm_ResponseType *response
+);
+```
+
+#### 内存读取函数
+
+```c
+/**
+ * @brief 从内存地址读取数据
+ *
+ * 该函数执行实际的内存读取操作。会检查区域权限并调用
+ * 配置的回调函数或执行默认读取。
+ *
+ * @param memoryAddress 源内存地址
+ * @param data 存储读取数据的缓冲区
+ * @param length 要读取的数据长度
+ * @return Dcm_ReturnType 操作结果
+ * @retval DCM_E_OK 读取成功
+ * @retval DCM_E_NOT_OK 读取失败（地址不在有效区域）
+ *
+ * @warning 必须先通过 Dcm_IsMemoryAddressReadable() 验证地址可读
+ */
+Dcm_ReturnType Dcm_ReadMemory(
+    uint32_t memoryAddress,
+    uint8_t *data,
+    uint32_t length
+);
+
+/**
+ * @brief 检查内存地址是否可读
+ *
+ * 检查指定地址和长度是否在可读的内存区域内，
+ * 并验证安全级别和会话要求。
+ *
+ * @param memoryAddress 要检查的内存地址
+ * @param length 读取长度
+ * @return bool 如果可读返回 true
+ * @retval true 地址可读
+ * @retval false 地址不可读（不在有效区域或无读权限）
+ */
+bool Dcm_IsMemoryAddressReadable(uint32_t memoryAddress, uint32_t length);
+```
+
+#### 格式标识符解析
+
+```c
+/**
+ * @brief 解析地址和长度格式标识符
+ *
+ * 格式标识符编码：
+ * - 高半字节: 地址长度 (0x1=1字节, 0x2=2字节, 0x4=4字节)
+ * - 低半字节: 大小长度 (0x1=1字节, 0x2=2字节, 0x4=4字节)
+ *
+ * @param formatId 格式标识符字节
+ * @param addressLength 输出: 地址长度（1、2或4）
+ * @param sizeLength 输出: 大小长度（1、2或4）
+ * @return Dcm_ReturnType 解析结果
+ * @retval DCM_E_OK 格式有效
+ * @retval DCM_E_NOT_OK 格式无效
+ *
+ * @example
+ * @code
+ * uint8_t addrLen, sizeLen;
+ * Dcm_ReturnType result = Dcm_ParseMemoryFormat(0x44, &addrLen, &sizeLen);
+ * // addrLen = 4, sizeLen = 4
+ * @endcode
+ */
+Dcm_ReturnType Dcm_ParseMemoryFormat(
+    uint8_t formatId,
+    uint8_t *addressLength,
+    uint8_t *sizeLength
+);
+
+/**
+ * @brief 从字节数组解析内存地址
+ *
+ * 按大端字节序解析地址。
+ *
+ * @param data 字节数组（MSB在前）
+ * @param length 数组长度（1、2或4）
+ * @return uint32_t 解析后的地址
+ *
+ * @example
+ * @code
+ * uint8_t addr[] = {0x20, 0x00, 0x00, 0x00};
+ * uint32_t address = Dcm_ParseMemoryAddress(addr, 4);
+ * // address = 0x20000000
+ * @endcode
+ */
+uint32_t Dcm_ParseMemoryAddress(const uint8_t *data, uint8_t length);
+
+/**
+ * @brief 从字节数组解析内存大小
+ *
+ * @param data 字节数组（MSB在前）
+ * @param length 数组长度（1、2或4）
+ * @return uint32_t 解析后的大小
+ */
+uint32_t Dcm_ParseMemorySize(const uint8_t *data, uint8_t length);
+```
+
+#### 0x3D Write Memory By Address
+
+```c
+/**
+ * @brief 处理WriteMemoryByAddress (0x3D) 服务请求
+ *
+ * 该服务允许客户端写数据到指定的内存地址。
+ * 需要更高的安全级别，特别是对于Flash操作。
+ *
+ * @param request 请求消息结构体指针
+ *                - data[0]: Service ID (0x3D)
+ *                - data[1]: Format Identifier
+ *                - data[2..n]: Memory Address
+ *                - data[n+1..m]: Memory Size
+ *                - data[m+1..p]: Data to write
+ * @param response 响应消息结构体指针
+ * @return Dcm_ReturnType 服务处理结果
+ *
+ * @requirement ISO 14229-1:2020 Section 10.18
+ */
+Dcm_ReturnType Dcm_WriteMemoryByAddress(
+    const Dcm_RequestType *request,
+    Dcm_ResponseType *response
+);
+
+/**
+ * @brief 写数据到内存地址
+ *
+ * @param memoryAddress 目标内存地址
+ * @param data 要写入的数据
+ * @param length 数据长度
+ * @return Dcm_ReturnType 操作结果
+ */
+Dcm_ReturnType Dcm_WriteMemory(
+    uint32_t memoryAddress,
+    const uint8_t *data,
+    uint32_t length
+);
+
+/**
+ * @brief 检查内存地址是否可写
+ *
+ * @param memoryAddress 要检查的内存地址
+ * @param length 写入长度
+ * @return bool 如果可写返回 true
+ */
+bool Dcm_IsMemoryAddressWritable(uint32_t memoryAddress, uint32_t length);
+```
+
+### 内存服务配置
+
+```c
+/**
+ * @brief 内存区域类型枚举
+ */
+typedef enum {
+    DCM_MEM_REGION_RAM = 0,         /*!< RAM区域 */
+    DCM_MEM_REGION_FLASH,           /*!< Flash/EEPROM区域 */
+    DCM_MEM_REGION_REGISTER,        /*!< 硬件寄存器 */
+    DCM_MEM_REGION_RESERVED         /*!< 保留/受保护区域 */
+} Dcm_MemoryRegionEnum;
+
+/**
+ * @brief 内存区域配置结构体
+ */
+typedef struct {
+    uint32_t startAddress;              /*!< 区域起始地址 */
+    uint32_t endAddress;                /*!< 区域结束地址 */
+    Dcm_MemoryRegionEnum regionType;    /*!< 区域类型 */
+    uint8_t requiredSecurityLevel;      /*!< 所需安全级别 */
+    bool writeAllowed;                  /*!< 是否允许写入 */
+    bool readAllowed;                   /*!< 是否允许读取 */
+    bool eraseRequired;                 /*!< 写入前是否需要擦除 */
+    uint32_t alignment;                 /*!< 写入对齐要求 */
+    const char *description;            /*!< 区域描述 */
+} Dcm_MemoryRegionConfigType;
+
+/**
+ * @brief 内存读取回调函数类型
+ */
+typedef Dcm_ReturnType (*Dcm_MemoryReadCallback)(
+    uint32_t memoryAddress,
+    uint8_t *data,
+    uint32_t length,
+    Dcm_MemoryRegionEnum regionType
+);
+
+/**
+ * @brief 内存写入回调函数类型
+ */
+typedef Dcm_ReturnType (*Dcm_MemoryWriteCallback)(
+    uint32_t memoryAddress,
+    const uint8_t *data,
+    uint32_t length,
+    Dcm_MemoryRegionEnum regionType
+);
+```
 
 ## 数据类型
 

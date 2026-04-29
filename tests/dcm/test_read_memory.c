@@ -11,7 +11,6 @@
  ******************************************************************************/
 
 #include "unity.h"
-#include "dcm.h"
 #include "dcm_memory.h"
 #include <string.h>
 
@@ -47,23 +46,12 @@ static Dcm_MemoryWriteConfigType s_memoryConfig = {
     .regions = s_testRegions,
     .numRegions = 2U,
     .maxWriteSize = 4096U,
-    .requiredSecurityLevel = 0U,
+    .enableVerification = false,
     .requireProgrammingSession = false,
+    .requiredSecurityLevel = 0U,
     .writeCallback = NULL,
     .verifyCallback = NULL,
     .readCallback = NULL
-};
-
-static Dcm_SessionControlConfigType s_sessionConfig = {
-    .defaultSessionTimeoutMs = 5000U,
-    .programmingSessionTimeoutMs = 10000U,
-    .extendedSessionTimeoutMs = 15000U,
-    .enableSessionTimeout = false  /* Disable for tests */
-};
-
-static Dcm_ConfigType s_dcmConfig = {
-    .sessionConfig = &s_sessionConfig,
-    .memoryWriteConfig = &s_memoryConfig
 };
 
 /******************************************************************************
@@ -72,12 +60,13 @@ static Dcm_ConfigType s_dcmConfig = {
 
 void setUp(void)
 {
-    (void)Dcm_DeInit();
+    /* Reset memory module before each test */
+    (void)Dcm_MemoryWriteInit(&s_memoryConfig);
 }
 
 void tearDown(void)
 {
-    (void)Dcm_DeInit();
+    /* Cleanup after each test */
 }
 
 /******************************************************************************
@@ -96,29 +85,28 @@ void test_ReadMemoryByAddress_BasicRead(void)
     Dcm_ReturnType result = Dcm_MemoryWriteInit(&s_memoryConfig);
     TEST_ASSERT_EQUAL(DCM_E_OK, result);
 
-    /* Prepare request: 0x23 + format(0x14) + address(4 bytes) + size(1 byte) */
+    /* Prepare request: 0x23 + format(0x41) + address(4 bytes) + size(1 byte) */
     uint8_t requestData[7] = {
         UDS_SVC_READ_MEMORY_BY_ADDRESS,  /* 0x23 */
-        0x14,                            /* address=4 bytes, size=1 byte */
+        0x41,                            /* address=4 bytes (0x4), size=1 byte (0x1) */
         0x20, 0x00, 0x00, 0x00,          /* address: 0x20000000 */
         0x10                             /* size: 16 bytes */
     };
     
-    Dcm_RequestType request = {
-        .data = requestData,
-        .length = 7U,
-        .protocolId = 0U,
-        .sourceAddress = 0x7E0U,
-        .targetAddress = 0x7E8U
-    };
+    Dcm_RequestType request;
+    request.data = requestData;
+    request.length = 7U;
+    request.sourceAddress = 0x7E0U;
+    request.addrMode = DCM_ADDR_PHYSICAL;
+    request.protocol = DCM_PROTOCOL_UDS_ON_CAN;
+    request.timestamp = 0U;
     
     uint8_t responseBuffer[256];
-    Dcm_ResponseType response = {
-        .data = responseBuffer,
-        .maxLength = 256U,
-        .isNegativeResponse = false,
-        .suppressPositiveResponse = false
-    };
+    Dcm_ResponseType response;
+    response.data = responseBuffer;
+    response.maxLength = 256U;
+    response.isNegativeResponse = false;
+    response.suppressPositiveResponse = false;
 
     /* Execute */
     result = Dcm_ReadMemoryByAddress(&request, &response);
@@ -144,21 +132,20 @@ void test_ReadMemoryByAddress_InvalidFormat(void)
         0x10
     };
     
-    Dcm_RequestType request = {
-        .data = requestData,
-        .length = 7U,
-        .protocolId = 0U,
-        .sourceAddress = 0x7E0U,
-        .targetAddress = 0x7E8U
-    };
+    Dcm_RequestType request;
+    request.data = requestData;
+    request.length = 7U;
+    request.sourceAddress = 0x7E0U;
+    request.addrMode = DCM_ADDR_PHYSICAL;
+    request.protocol = DCM_PROTOCOL_UDS_ON_CAN;
+    request.timestamp = 0U;
     
     uint8_t responseBuffer[256];
-    Dcm_ResponseType response = {
-        .data = responseBuffer,
-        .maxLength = 256U,
-        .isNegativeResponse = false,
-        .suppressPositiveResponse = false
-    };
+    Dcm_ResponseType response;
+    response.data = responseBuffer;
+    response.maxLength = 256U;
+    response.isNegativeResponse = false;
+    response.suppressPositiveResponse = false;
 
     /* Execute */
     result = Dcm_ReadMemoryByAddress(&request, &response);
@@ -178,26 +165,25 @@ void test_ReadMemoryByAddress_AddressOutOfRange(void)
     /* Address outside defined regions */
     uint8_t requestData[7] = {
         UDS_SVC_READ_MEMORY_BY_ADDRESS,
-        0x14,
+        0x41,                            /* address=4 bytes, size=1 byte */
         0xFF, 0xFF, 0xFF, 0xFF,          /* Invalid address */
         0x10
     };
     
-    Dcm_RequestType request = {
-        .data = requestData,
-        .length = 7U,
-        .protocolId = 0U,
-        .sourceAddress = 0x7E0U,
-        .targetAddress = 0x7E8U
-    };
+    Dcm_RequestType request;
+    request.data = requestData;
+    request.length = 7U;
+    request.sourceAddress = 0x7E0U;
+    request.addrMode = DCM_ADDR_PHYSICAL;
+    request.protocol = DCM_PROTOCOL_UDS_ON_CAN;
+    request.timestamp = 0U;
     
     uint8_t responseBuffer[256];
-    Dcm_ResponseType response = {
-        .data = responseBuffer,
-        .maxLength = 256U,
-        .isNegativeResponse = false,
-        .suppressPositiveResponse = false
-    };
+    Dcm_ResponseType response;
+    response.data = responseBuffer;
+    response.maxLength = 256U;
+    response.isNegativeResponse = false;
+    response.suppressPositiveResponse = false;
 
     /* Execute */
     result = Dcm_ReadMemoryByAddress(&request, &response);
@@ -217,24 +203,23 @@ void test_ReadMemoryByAddress_ShortMessage(void)
     /* Request too short */
     uint8_t requestData[2] = {
         UDS_SVC_READ_MEMORY_BY_ADDRESS,
-        0x14
+        0x41
     };
     
-    Dcm_RequestType request = {
-        .data = requestData,
-        .length = 2U,
-        .protocolId = 0U,
-        .sourceAddress = 0x7E0U,
-        .targetAddress = 0x7E8U
-    };
+    Dcm_RequestType request;
+    request.data = requestData;
+    request.length = 2U;
+    request.sourceAddress = 0x7E0U;
+    request.addrMode = DCM_ADDR_PHYSICAL;
+    request.protocol = DCM_PROTOCOL_UDS_ON_CAN;
+    request.timestamp = 0U;
     
     uint8_t responseBuffer[256];
-    Dcm_ResponseType response = {
-        .data = responseBuffer,
-        .maxLength = 256U,
-        .isNegativeResponse = false,
-        .suppressPositiveResponse = false
-    };
+    Dcm_ResponseType response;
+    response.data = responseBuffer;
+    response.maxLength = 256U;
+    response.isNegativeResponse = false;
+    response.suppressPositiveResponse = false;
 
     /* Execute */
     result = Dcm_ReadMemoryByAddress(&request, &response);
@@ -253,28 +238,27 @@ void test_ReadMemoryByAddress_2ByteAddress(void)
     TEST_ASSERT_EQUAL(DCM_E_OK, result);
 
     /* 2-byte address, 2-byte size */
-    uint8_t requestData[5] = {
+    uint8_t requestData[6] = {
         UDS_SVC_READ_MEMORY_BY_ADDRESS,
         0x22,                            /* address=2 bytes, size=2 bytes */
         0x00, 0x00,                      /* address offset within region */
         0x00, 0x10                       /* size: 16 bytes */
     };
     
-    Dcm_RequestType request = {
-        .data = requestData,
-        .length = 5U,
-        .protocolId = 0U,
-        .sourceAddress = 0x7E0U,
-        .targetAddress = 0x7E8U
-    };
+    Dcm_RequestType request;
+    request.data = requestData;
+    request.length = 6U;
+    request.sourceAddress = 0x7E0U;
+    request.addrMode = DCM_ADDR_PHYSICAL;
+    request.protocol = DCM_PROTOCOL_UDS_ON_CAN;
+    request.timestamp = 0U;
     
     uint8_t responseBuffer[256];
-    Dcm_ResponseType response = {
-        .data = responseBuffer,
-        .maxLength = 256U,
-        .isNegativeResponse = false,
-        .suppressPositiveResponse = false
-    };
+    Dcm_ResponseType response;
+    response.data = responseBuffer;
+    response.maxLength = 256U;
+    response.isNegativeResponse = false;
+    response.suppressPositiveResponse = false;
 
     /* Execute */
     result = Dcm_ReadMemoryByAddress(&request, &response);
@@ -295,9 +279,10 @@ void test_ReadMemoryByAddress_IsMemoryReadable(void)
     TEST_ASSERT_TRUE(Dcm_IsMemoryAddressReadable(0x20000000U, 256U));
     TEST_ASSERT_TRUE(Dcm_IsMemoryAddressReadable(0x2001FF00U, 256U));
     
-    /* Test non-readable (Flash is readable, but out of range is not) */
+    /* Test non-readable (out of range addresses) */
     TEST_ASSERT_FALSE(Dcm_IsMemoryAddressReadable(0x30000000U, 256U));
-    TEST_ASSERT_FALSE(Dcm_IsMemoryAddressReadable(0x20000000U, 0x20000U));  /* Too large */
+    /* Address at end of region but size overflows */
+    TEST_ASSERT_FALSE(Dcm_IsMemoryAddressReadable(0x2001FFF0U, 0x20U));
 }
 
 void test_ReadMemoryByAddress_SuppressResponse(void)
@@ -309,26 +294,25 @@ void test_ReadMemoryByAddress_SuppressResponse(void)
     /* Request with SPRMIB (Suppress Positive Response Message Indication Bit) */
     uint8_t requestData[7] = {
         UDS_SVC_READ_MEMORY_BY_ADDRESS,
-        0x94,                            /* 0x80 | 0x14 = SPRMIB + format */
+        0xC1,                            /* 0x80 | 0x41 = SPRMIB + format */
         0x20, 0x00, 0x00, 0x00,
         0x10
     };
     
-    Dcm_RequestType request = {
-        .data = requestData,
-        .length = 7U,
-        .protocolId = 0U,
-        .sourceAddress = 0x7E0U,
-        .targetAddress = 0x7E8U
-    };
+    Dcm_RequestType request;
+    request.data = requestData;
+    request.length = 7U;
+    request.sourceAddress = 0x7E0U;
+    request.addrMode = DCM_ADDR_PHYSICAL;
+    request.protocol = DCM_PROTOCOL_UDS_ON_CAN;
+    request.timestamp = 0U;
     
     uint8_t responseBuffer[256];
-    Dcm_ResponseType response = {
-        .data = responseBuffer,
-        .maxLength = 256U,
-        .isNegativeResponse = false,
-        .suppressPositiveResponse = false
-    };
+    Dcm_ResponseType response;
+    response.data = responseBuffer;
+    response.maxLength = 256U;
+    response.isNegativeResponse = false;
+    response.suppressPositiveResponse = false;
 
     /* Execute */
     result = Dcm_ReadMemoryByAddress(&request, &response);

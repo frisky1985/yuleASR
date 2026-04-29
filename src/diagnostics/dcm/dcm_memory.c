@@ -185,8 +185,9 @@ static Dcm_ReturnType validateWriteRequest(uint32_t address, uint32_t length)
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     
-    /* Check if write crosses region boundary */
-    if ((address + length - 1U) > region->endAddress) {
+    /* Check if write crosses region boundary - use overflow-safe comparison */
+    if ((address > region->endAddress) || 
+        ((length > 0U) && ((region->endAddress - address + 1U) < length))) {
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     
@@ -263,7 +264,7 @@ Dcm_ReturnType Dcm_WriteMemoryByAddress(const Dcm_RequestType *request,
     /* Parse format identifier */
     uint8_t addressLength;
     uint8_t sizeLength;
-    result = Dcm_ParseMemoryFormat(formatId & 0x0FU, &addressLength, &sizeLength);
+    result = Dcm_ParseMemoryFormat(formatId, &addressLength, &sizeLength);
     
     if (result != DCM_E_OK) {
         nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
@@ -388,9 +389,10 @@ bool Dcm_IsMemoryAddressWritable(uint32_t memoryAddress, uint32_t length)
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
         if ((region != NULL) && region->writeAllowed) {
-            /* Check if entire range is within region */
+            /* Check if entire range is within region - use overflow-safe comparison */
             if ((memoryAddress >= region->startAddress) &&
-                ((memoryAddress + length - 1U) <= region->endAddress)) {
+                (memoryAddress <= region->endAddress) &&
+                ((region->endAddress - memoryAddress + 1U) >= length)) {
                 writable = true;
             }
         }
@@ -561,8 +563,9 @@ static Dcm_ReturnType validateReadRequest(uint32_t address, uint32_t length)
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     
-    /* Check if read crosses region boundary */
-    if ((address + length - 1U) > region->endAddress) {
+    /* Check if read crosses region boundary - use overflow-safe comparison */
+    if ((address > region->endAddress) || 
+        ((length > 0U) && ((region->endAddress - address + 1U) < length))) {
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     
@@ -586,7 +589,7 @@ Dcm_ReturnType Dcm_ReadMemoryByAddress(const Dcm_RequestType *request,
         return result;
     }
     
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL) || (response == NULL) || (request->data == NULL) || (response->data == NULL)) {
         return result;
     }
     
@@ -612,7 +615,7 @@ Dcm_ReturnType Dcm_ReadMemoryByAddress(const Dcm_RequestType *request,
     /* Parse format identifier */
     uint8_t addressLength;
     uint8_t sizeLength;
-    result = Dcm_ParseMemoryFormat(formatId & 0x0FU, &addressLength, &sizeLength);
+    result = Dcm_ParseMemoryFormat(formatId, &addressLength, &sizeLength);
     
     if (result != DCM_E_OK) {
         nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
@@ -704,9 +707,10 @@ bool Dcm_IsMemoryAddressReadable(uint32_t memoryAddress, uint32_t length)
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
         if ((region != NULL) && region->readAllowed) {
-            /* Check if entire range is within region */
+            /* Check if entire range is within region - use overflow-safe comparison */
             if ((memoryAddress >= region->startAddress) &&
-                ((memoryAddress + length - 1U) <= region->endAddress)) {
+                (memoryAddress <= region->endAddress) &&
+                ((region->endAddress - memoryAddress + 1U) >= length)) {
                 readable = true;
             }
         }

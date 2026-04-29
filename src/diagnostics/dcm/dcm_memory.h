@@ -1,6 +1,6 @@
 /******************************************************************************
  * @file    dcm_memory.h
- * @brief   DCM Write Memory By Address Service (0x3D) Implementation
+ * @brief   DCM Memory Services - Read (0x23) and Write (0x3D) By Address
  *
  * AUTOSAR R22-11 compliant
  * ISO 14229-1:2020 UDS Specification compliant
