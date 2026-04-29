@@ -11,6 +11,8 @@
 #include "Com.h"
 #include "Com_Cfg.h"
 #include "Det.h"
+#include "Com_DeadlineMon.h"
+#include "Com_ErrorHandling.h"
 
 /*==================[Macros]==============================================*/
 
@@ -79,6 +81,7 @@ typedef struct {
     boolean Triggered;
     uint32 TimeoutTimer;
     boolean TimeoutOccurred;
+    uint16 PduId;                       /*!< PDU ID for PduR interface */
 } Com_IPduRunTimeType;
 
 /* Global Module State */
@@ -142,7 +145,7 @@ static inline uint64 Com_ExtractSignal(
     } else {
         /* Big endian extraction */
         uint8 bytesToRead = (bitSize + bitOffset + 7) / 8;
-        for (int8 i = bytesToRead - 1; i >= 0; i--) {
+        for (sint8 i = bytesToRead - 1; i >= 0; i--) {
             value = (value << 8) | data[bytePos + i];
         }
         value >>= bitOffset;
@@ -182,7 +185,7 @@ static inline void Com_InsertSignal(
         /* Big endian insertion */
         uint8 bytesToWrite = (bitSize + bitOffset + 7) / 8;
         uint64 tempValue = value << bitOffset;
-        for (int8 i = bytesToWrite - 1; i >= 0; i--) {
+        for (sint8 i = bytesToWrite - 1; i >= 0; i--) {
             data[bytePos + i] = (uint8)((tempValue >> (i * 8)) & 0xFF);
         }
     }

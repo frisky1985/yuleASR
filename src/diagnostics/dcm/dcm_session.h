@@ -26,6 +26,17 @@ extern "C" {
 #define DCM_SUBFUNC_SAFETY_SYSTEM_SESSION       0x04U
 
 /******************************************************************************
+ * Tester Present Subfunctions (ISO 14229-1:2020 Section 10.5 Table 87)
+ ******************************************************************************/
+#define DCM_SUBFUNC_TESTER_PRESENT_ZERO_SUBFUNC 0x00U
+#define DCM_SUBFUNC_TESTER_PRESENT_WITH_SPRMIB  0x80U
+
+/******************************************************************************
+ * Tester Present Response Sizes
+ ******************************************************************************/
+#define DCM_TESTER_PRESENT_RESPONSE_SIZE        0x02U
+
+/******************************************************************************
  * Session Timing Parameter Response Sizes
  ******************************************************************************/
 #define DCM_SESSION_RESPONSE_MIN_SIZE           0x06U
@@ -282,6 +293,25 @@ uint32_t Dcm_GetS3ServerTime(void);
  * @return Dcm_ReturnType Result of operation
  */
 Dcm_ReturnType Dcm_ResetS3Timer(void);
+
+/**
+ * @brief Process TesterPresent (0x3E) service request
+ * 
+ * @param request Pointer to request message structure
+ * @param response Pointer to response message structure
+ * @return Dcm_ReturnType Service processing result
+ * 
+ * @details Implements UDS service 0x3E for keeping session active
+ *          - Resets S3Server timer to prevent session timeout
+ *          - Supports sub-function 0x00 (normal response)
+ *          - Supports sub-function 0x80 (suppress positive response)
+ * 
+ * @requirement ISO 14229-1:2020 Section 10.5
+ */
+Dcm_ReturnType Dcm_TesterPresent(
+    const Dcm_RequestType *request,
+    Dcm_ResponseType *response
+);
 
 #ifdef __cplusplus
 }

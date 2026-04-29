@@ -8,7 +8,8 @@
  * Benchmark: ~10x faster for 100+ DTCs
  */
 
-#include "dem.h"
+#include "dem_types.h"
+#include "dem_dtc.h"
 #include <string.h>
 
 /* ============================================================================

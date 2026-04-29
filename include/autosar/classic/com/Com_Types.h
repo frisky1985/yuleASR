@@ -8,6 +8,7 @@
 #define COM_TYPES_H
 
 #include "Std_Types.h"
+#include "PduR.h"  /* For PduIdType and PduInfoType */
 
 /*==================[Type Definitions]======================================*/
 
@@ -121,7 +122,25 @@ typedef struct {
     void (*ComNotification)(void);
 } Com_SignalGroupConfigType;
 
-/* Tx Mode Configuration */
+/* Transmission Mode Mode Enumeration */
+typedef enum {
+    COM_MODE_DIRECT = 0,
+    COM_MODE_PERIODIC,
+    COM_MODE_MIXED,
+    COM_MODE_NONE
+} ComTxModeModeType;
+
+/* Transmission Mode Configuration (ComTxMode) */
+typedef struct {
+    ComTxModeModeType Mode;             /*!< DIRECT, PERIODIC, MIXED, NONE */
+    uint32 CycleTime;                   /*!< Period between transmissions in ms */
+    uint32 RepetitionPeriod;            /*!< Time between repetitions in ms */
+    uint8 NumRepetitions;               /*!< Number of repetitions for direct transmission */
+    uint32 TimeOffset;                  /*!< Initial time offset before first transmission */
+    boolean RepeatingEnabled;           /*!< TRUE if repetitions are enabled */
+} Com_TxModeType;
+
+/* Legacy Tx Mode Configuration (for backward compatibility) */
 typedef struct {
     Com_TransferModeType Mode;
     uint32 Period;
@@ -129,6 +148,32 @@ typedef struct {
     uint8 NumRepetitions;
     uint32 TimeOffset;
 } Com_TxModeConfigType;
+
+/* Transmission Mode Condition (TMC) Configuration */
+typedef struct {
+    Com_SignalIdType SignalId;          /*!< Signal ID for TMC evaluation */
+    uint32 ThresholdValue;              /*!< Threshold for comparison */
+    boolean UseGreaterThan;             /*!< TRUE: signal > threshold, FALSE: signal < threshold */
+    boolean IsConfigured;               /*!< TRUE if TMC is configured */
+} Com_TmcConfigType;
+
+/* Complete I-PDU Transmission Mode Configuration (ComTxModeTrue/ComTxModeFalse) */
+typedef struct {
+    Com_TxModeType TxModeTrue;          /*!< Configuration when TMC is TRUE */
+    Com_TxModeType TxModeFalse;         /*!< Configuration when TMC is FALSE */
+    Com_TmcConfigType TmcConfig;        /*!< TMC evaluation configuration */
+    boolean UseTmc;                     /*!< TRUE if TMC-based switching is enabled */
+} Com_IPduTxModeConfigType;
+
+/* Transmission Confirmation Configuration */
+typedef struct {
+    boolean EnableConfirmation;         /*!< Enable transmission confirmation */
+    uint32 TxTimeout;                   /*!< Transmission timeout in ms (ComTxTimeout) */
+    uint8 MaxRetries;                   /*!< Maximum retry attempts (ComTxRetries) */
+    void (*ComTxConfirmation)(void);    /*!< Success notification callback */
+    void (*ComTxErrorNotification)(void); /*!< Error notification callback */
+    void (*ComTxTimeoutNotification)(void); /*!< Timeout notification callback */
+} Com_TxConfirmationConfigType;
 
 /* IPdu Configuration */
 typedef struct {
@@ -142,11 +187,12 @@ typedef struct {
     uint8 NumSignals;
     Com_SignalGroupIdType* SignalGroupRefs;
     uint8 NumSignalGroups;
-    Com_TxModeConfigType TxMode;
+    Com_IPduTxModeConfigType TxMode;    /*!< Full transmission mode configuration (ComTxModeTrue/False) */
     Com_IpduGroupIdType* IpduGroupRefs;
     uint8 NumIpduGroups;
     uint32 Timeout;
     void (*ComIPduCallout)(PduIdType PduId, PduInfoType* PduInfoPtr);
+    Com_TxConfirmationConfigType TxConfirmation; /*!< Transmission confirmation config */
 } Com_IPduConfigType;
 
 /* IPdu Group Configuration */
@@ -177,5 +223,43 @@ typedef struct {
 #ifndef COM_BUSY
 #define COM_BUSY 0x81
 #endif
+
+/*==================[Deadline Monitoring Types]============================*/
+/* T012: Deadline Monitoring Type Definitions */
+
+/**
+ * @brief Deadline Monitoring State Enumeration
+ * @req SWS_Com_00500
+ */
+typedef enum {
+    COM_DM_STATE_STOPPED = 0,       /*!< Monitoring stopped */
+    COM_DM_STATE_RUNNING,           /*!< Timer running */
+    COM_DM_STATE_EXPIRED,           /*!< Timeout occurred */
+    COM_DM_STATE_ERROR              /*!< Error condition */
+} Com_DmStateType;
+
+/**
+ * @brief Deadline Monitoring Action Type
+ * Defines action on timeout
+ */
+typedef enum {
+    COM_DM_ACTION_NONE = 0,         /*!< No action */
+    COM_DM_ACTION_ERROR_HOOK,       /*!< Call ComErrorHook only */
+    COM_DM_ACTION_DEFAULT_VALUE,    /*!< Substitute default value */
+    COM_DM_ACTION_BOTH              /*!< Both hook and default value */
+} Com_DmActionType;
+
+/**
+ * @brief Rx Deadline Monitoring Configuration
+ * @req SWS_Com_00500: ComIPduRxTimeout configuration
+ */
+typedef struct {
+    uint32 ComIPduRxTimeout;                    /*!< Rx timeout in ms */
+    const uint8* ComIPduRxDefaultValue;         /*!< Default value buffer */
+    uint8 DefaultValueLength;                   /*!< Length of default value */
+    Com_DmActionType TimeoutAction;             /*!< Action on timeout */
+    void (*ComErrorHook)(Com_IPduIdType PduId); /*!< Error notification callback */
+    boolean EnableDeadlineMonitoring;           /*!< Enable/disable flag */
+} Com_DmRxConfigType;
 
 #endif /* COM_TYPES_H */

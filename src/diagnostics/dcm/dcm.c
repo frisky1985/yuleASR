@@ -11,6 +11,8 @@
  ******************************************************************************/
 
 #include "dcm.h"
+#include "dcm_dem_integration.h"
+#include "dcm_did.h"
 #include <string.h>
 
 /******************************************************************************
@@ -105,6 +107,21 @@ Dcm_ReturnType Dcm_Init(const Dcm_ConfigType *config)
             result = Dcm_RoutineControlInit(config->routineConfigs, 
                                             config->numRoutines);
         }
+
+        /* Initialize DCM-DEM integration */
+        if ((result == DCM_E_OK) && (config->demIntegrationConfig != NULL)) {
+            result = Dcm_DemIntegration_Init(config->demIntegrationConfig);
+        }
+
+        /* Initialize DID service */
+        if ((result == DCM_E_OK) && (config->didConfig != NULL)) {
+            result = Dcm_DidInit(config->didConfig);
+        }
+
+        /* Initialize IO Control service */
+        if ((result == DCM_E_OK) && (config->ioControlConfigs != NULL)) {
+            result = Dcm_IoControlInit(config->ioControlConfigs, config->numIoControls);
+        }
         
         if (result == DCM_E_OK) {
             s_dcmState.initialized = true;
@@ -119,6 +136,9 @@ Dcm_ReturnType Dcm_DeInit(void)
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
     if (s_dcmState.initialized) {
+        /* Deinitialize DCM-DEM integration */
+        (void)Dcm_DemIntegration_DeInit();
+
         /* Reset all sub-modules */
         s_dcmState.initialized = false;
         s_dcmState.state = DCM_STATE_UNINIT;
@@ -196,6 +216,10 @@ Dcm_ReturnType Dcm_ProcessRequest(const Dcm_RequestType *request,
             result = Dcm_CommunicationControl(request, response);
             break;
             
+        case UDS_SVC_TESTER_PRESENT:
+            result = Dcm_TesterPresent(request, response);
+            break;
+            
         case UDS_SVC_DYNAMICALLY_DEFINE_DATA_IDENTIFIER:
             result = Dcm_DynamicallyDefineDataIdentifier(request, response);
             break;
@@ -203,9 +227,37 @@ Dcm_ReturnType Dcm_ProcessRequest(const Dcm_RequestType *request,
         case UDS_SVC_WRITE_MEMORY_BY_ADDRESS:
             result = Dcm_WriteMemoryByAddress(request, response);
             break;
+
+        case UDS_SVC_READ_MEMORY_BY_ADDRESS:
+            result = Dcm_ReadMemoryByAddress(request, response);
+            break;
             
         case UDS_SVC_ROUTINE_CONTROL:
             result = Dcm_RoutineControl(request, response);
+            break;
+
+        case UDS_SVC_CLEAR_DIAGNOSTIC_INFORMATION:
+            result = Dcm_DemIntegration_ClearDiagnosticInformation(request, response);
+            break;
+
+        case UDS_SVC_READ_DTC_INFORMATION:
+            result = Dcm_DemIntegration_ReadDTCInformation(request, response);
+            break;
+
+        case UDS_SVC_CONTROL_DTC_SETTING:
+            result = Dcm_DemIntegration_ControlDTCSetting(request, response);
+            break;
+
+        case UDS_SVC_READ_DATA_BY_IDENTIFIER:
+            result = Dcm_ReadDataByIdentifier(request, response);
+            break;
+
+        case UDS_SVC_WRITE_DATA_BY_IDENTIFIER:
+            result = Dcm_WriteDataByIdentifier(request, response);
+            break;
+
+        case UDS_SVC_INPUT_OUTPUT_CONTROL_BY_IDENTIFIER:
+            result = Dcm_InputOutputControlByIdentifier(request, response);
             break;
             
         default:

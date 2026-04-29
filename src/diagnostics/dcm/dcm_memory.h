@@ -18,6 +18,13 @@ extern "C" {
 #include "dcm_types.h"
 
 /******************************************************************************
+ * Read Memory Constants (ISO 14229-1:2020 Table 161)
+ ******************************************************************************/
+#define DCM_READ_MEM_MIN_LENGTH                 0x04U
+#define DCM_READ_MEM_RESPONSE_SID               0x63U  /* 0x23 + 0x40 */
+#define DCM_READ_MEM_MAX_DATA_LENGTH            0xFFFU  /* Max 4KB per read */
+
+/******************************************************************************
  * Write Memory Constants (ISO 14229-1:2020 Table 168)
  ******************************************************************************/
 #define DCM_WRITE_MEM_MIN_LENGTH                0x04U
@@ -84,6 +91,16 @@ typedef struct {
 } Dcm_MemoryRegionConfigType;
 
 /******************************************************************************
+ * Memory Read Callback Type
+ ******************************************************************************/
+typedef Dcm_ReturnType (*Dcm_MemoryReadCallback)(
+    uint32_t memoryAddress,
+    uint8_t *data,
+    uint32_t length,
+    Dcm_MemoryRegionEnum regionType
+);
+
+/******************************************************************************
  * Memory Write Callback Type
  ******************************************************************************/
 typedef Dcm_ReturnType (*Dcm_MemoryWriteCallback)(
@@ -113,6 +130,7 @@ typedef struct {
     bool enableVerification;                /* Enable write verification */
     bool requireProgrammingSession;         /* Require programming session */
     uint8_t requiredSecurityLevel;          /* Required security level */
+    Dcm_MemoryReadCallback readCallback;    /* Read callback function */
     Dcm_MemoryWriteCallback writeCallback;  /* Write callback function */
     Dcm_MemoryVerifyCallback verifyCallback; /* Verify callback function */
 } Dcm_MemoryWriteConfigType;
@@ -140,6 +158,48 @@ typedef struct {
     uint32_t writeErrorCount;               /* Write error count */
     uint64_t lastWriteTime;                 /* Last write timestamp */
 } Dcm_MemoryWriteStatusType;
+
+/******************************************************************************
+ * Memory Read Functions
+ ******************************************************************************/
+
+/**
+ * @brief Process ReadMemoryByAddress (0x23) service request
+ *
+ * @param request Pointer to request message structure
+ * @param response Pointer to response message structure
+ * @return Dcm_ReturnType Service processing result
+ *
+ * @details Implements UDS service 0x23 for memory reading
+ * @requirement ISO 14229-1:2020 10.4
+ */
+Dcm_ReturnType Dcm_ReadMemoryByAddress(
+    const Dcm_RequestType *request,
+    Dcm_ResponseType *response
+);
+
+/**
+ * @brief Read data from memory address
+ *
+ * @param memoryAddress Source memory address
+ * @param data Buffer to store read data
+ * @param length Data length to read
+ * @return Dcm_ReturnType Result of operation
+ */
+Dcm_ReturnType Dcm_ReadMemory(
+    uint32_t memoryAddress,
+    uint8_t *data,
+    uint32_t length
+);
+
+/**
+ * @brief Check if memory address is readable
+ *
+ * @param memoryAddress Memory address to check
+ * @param length Read length
+ * @return bool True if readable
+ */
+bool Dcm_IsMemoryAddressReadable(uint32_t memoryAddress, uint32_t length);
 
 /******************************************************************************
  * Memory Write Functions

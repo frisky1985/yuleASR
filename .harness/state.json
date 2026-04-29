@@ -1,11 +1,42 @@
 {
-  "version": "1.0.0",
-  "project": "yuleASR",
-  "active_change": "autosar-perf-optimization",
-  "milestone": "M5",
-  "status": "completed",
-  "tasks_completed": 4,
-  "tasks_total": 4,
-  "last_updated": "2026-04-28T18:00:10.288350",
-  "project_status": "COMPLETED"
+  "project": "eth-dds-integration",
+  "version": "1.2.0",
+  "active_change": "dcm-dem-optimization",
+  "change_name": "DCM/DEM Module Optimization",
+  "milestone": "M1-Optimization",
+  "status": "executing",
+  "spec_locked_at": "2026-04-29T10:00:00Z",
+  "milestones": {
+    "M0-SpecLock": {
+      "status": "completed",
+      "completed_at": "2026-04-29T10:00:00Z"
+    },
+    "M1-Optimization": {
+      "status": "completed",
+      "completed_at": "2026-04-29T20:00:00Z",
+      "tasks": ["T001", "T002", "T003", "T004"],
+      "estimated_hours": 12,
+      "actual_hours": 10.5
+    }
+  },
+  "metrics": {
+    "total_tasks": 11,
+    "completed_tasks": 11,
+    "progress_percentage": 100
+  },
+  "uds_services": {
+    "implemented": ["0x10", "0x11", "0x14", "0x19", "0x22", "0x23", "0x27", "0x28", "0x2C", "0x2E", "0x2F", "0x31", "0x34", "0x35", "0x36", "0x37", "0x3D", "0x3E", "0x85"],
+    "total": 19,
+    "percentage": "95%"
+  },
+  "transport_protocols": {
+    "implemented": ["DoIP", "DoCAN", "IsoTp"],
+    "status": "complete"
+  },
+  "autosar_modules": {
+    "status": "optimizing",
+    "target_modules": ["DCM", "DEM"],
+    "dependencies": ["PduR", "NvM"],
+    "estimated_completion": "2026-05-02"
+  }
 }

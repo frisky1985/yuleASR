@@ -1,0 +1,65 @@
+/home/admin/eth-dds-integration/include/autosar/classic/com/Com_Types.h:10:0: information: Include file: "Std_Types.h" not found. [missingInclude]
+#include "Std_Types.h"
+^
+/home/admin/eth-dds-integration/include/autosar/classic/com/Com_Types.h:11:0: information: Include file: "PduR.h" not found. [missingInclude]
+#include "PduR.h"  /* For PduIdType and PduInfoType */
+^
+/home/admin/eth-dds-integration/include/autosar/classic/com/Com.h:13:0: information: Include file: "PduR.h" not found. [missingInclude]
+#include "PduR.h"
+^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Private.h:13:0: information: Include file: "Det.h" not found. [missingInclude]
+#include "Det.h"
+^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c:536:26: style: Variable 'ipduRuntime' can be declared as pointer to const [constVariablePointer]
+    Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
+                         ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c:563:26: style: Variable 'ipduRuntime' can be declared as pointer to const [constVariablePointer]
+    Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
+                         ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c:563:38: style: Variable 'ipduRuntime' is assigned a value that is never used. [unreadVariable]
+    Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
+                                     ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c:228:24: style: Assignment 'result=E_OK' is redundant with condition 'result==E_OK'. [duplicateConditionalAssign]
+                result = E_OK;
+                       ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c:226:24: note: Condition 'result==E_OK'
+            if (result == E_OK) {
+                       ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c:228:24: note: Assignment 'result=E_OK' is redundant
+                result = E_OK;
+                       ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c:237:24: style: Assignment 'result=E_OK' is redundant with condition 'result==E_OK'. [duplicateConditionalAssign]
+                result = E_OK;
+                       ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c:235:24: note: Condition 'result==E_OK'
+            if (result == E_OK) {
+                       ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c:237:24: note: Assignment 'result=E_OK' is redundant
+                result = E_OK;
+                       ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Signal.c:207:42: style: Variable 'ipduConfig' is assigned a value that is never used. [unreadVariable]
+    const Com_IPduConfigType* ipduConfig = &Com_GlobalState.Config->IPdus[PduId];
+                                         ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c:24:0: information: Include file: "PduR.h" not found. [missingInclude]
+#include "PduR.h"
+^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c:242:23: style: Variable 'RequestPtr->State' is reassigned a value before the old one has been used. [redundantAssignment]
+    RequestPtr->State = COM_TXREQ_IDLE;
+                      ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c:233:23: note: RequestPtr->State is assigned
+    RequestPtr->State = COM_TXREQ_COMPLETED;
+                      ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c:242:23: note: RequestPtr->State is overwritten
+    RequestPtr->State = COM_TXREQ_IDLE;
+                      ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c:967:46: style: Variable 'signalConfig' is assigned a value that is never used. [unreadVariable]
+    const Com_SignalConfigType* signalConfig =
+                                             ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_TxMode.c:610:26: style: Variable 'modeState' can be declared as pointer to const [constVariablePointer]
+    Com_TxModeStateType* modeState = &Com_TxModeStates[PduId];
+                         ^
+/home/admin/eth-dds-integration/src/autosar/classic/com/Com_TxMode.c:665:21: style: Variable 'txMode' can be declared as pointer to const [constVariablePointer]
+    Com_TxModeType* txMode = modeState->CurrentTxMode;
+                    ^
+nofile:0:0: information: Active checkers: 107/592 (use --checkers-report=<filename> to see details) [checkersReport]
+

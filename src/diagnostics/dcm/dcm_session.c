@@ -602,6 +602,112 @@ Dcm_ReturnType Dcm_ResetS3Timer(void)
 }
 
 /******************************************************************************
+ * Tester Present Service (0x3E) - ISO 14229-1:2020 Section 10.5
+ ******************************************************************************/
+
+/**
+ * @brief Process TesterPresent (0x3E) service request
+ * 
+ * @param request Pointer to request message structure
+ * @param response Pointer to response message structure
+ * @return Dcm_ReturnType Service processing result
+ * 
+ * @details Implements UDS service 0x3E for keeping session active
+ *          - Resets S3Server timer to prevent session timeout
+ *          - Supports sub-function 0x00 (normal response)
+ *          - Supports sub-function 0x80 (suppress positive response)
+ * 
+ * @requirement ISO 14229-1:2020 Section 10.5
+ */
+Dcm_ReturnType Dcm_TesterPresent(
+    const Dcm_RequestType *request,
+    Dcm_ResponseType *response
+)
+{
+    uint8_t subfunction;
+    bool suppressResponse;
+    
+    /* Check initialization state */
+    if (!s_initialized) {
+        return DCM_E_NOT_OK;
+    }
+    
+    /* Validate parameters */
+    if ((request == NULL) || (response == NULL)) {
+        return DCM_E_NOT_OK;
+    }
+    
+    /* Validate request buffer */
+    if (request->data == NULL) {
+        return DCM_E_NOT_OK;
+    }
+    
+    /* Validate minimum request length (SID + Sub-function = 2 bytes) */
+    if (request->length < 2U) {
+        response->isNegativeResponse = true;
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH_OR_FORMAT;
+        return DCM_E_OK;
+    }
+    
+    /* Extract subfunction and SPRMIB */
+    subfunction = request->data[1U] & DCM_SUBFUNCTION_MASK;
+    suppressResponse = (request->data[1U] & DCM_SUPPRESS_POS_RESPONSE_MASK) != 0U;
+    
+    /* Validate subfunction - only 0x00 is supported per ISO 14229-1 */
+    if (subfunction != DCM_SUBFUNC_TESTER_PRESENT_ZERO_SUBFUNC) {
+        response->isNegativeResponse = true;
+        response->negativeResponseCode = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
+        return DCM_E_OK;
+    }
+    
+    /* Validate request length - TesterPresent with sub-function should be exactly 2 bytes */
+    if (request->length != 2U) {
+        response->isNegativeResponse = true;
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH_OR_FORMAT;
+        return DCM_E_OK;
+    }
+    
+    /* Reset S3Server timer - this keeps the session active */
+    /* Per ISO 14229-1:2020 Section 10.5, TesterPresent resets S3Server timer */
+    (void)Dcm_ResetS3Timer();
+    
+    /* Also reset the session timeout timer if in non-default session */
+    const Dcm_SessionConfigType *sessionConfig = NULL;
+    if (Dcm_GetCurrentSessionConfig(&sessionConfig) == DCM_E_OK) {
+        if ((sessionConfig != NULL) && (sessionConfig->sessionTimeoutMs > 0U)) {
+            s_sessionState.sessionTimer = sessionConfig->sessionTimeoutMs;
+        }
+    }
+    
+    /* Build positive response if not suppressed */
+    if (!suppressResponse) {
+        /* Validate response buffer */
+        if ((response->data == NULL) || (response->maxLength < DCM_TESTER_PRESENT_RESPONSE_SIZE)) {
+            response->isNegativeResponse = true;
+            response->negativeResponseCode = UDS_NRC_GENERAL_REJECT;
+            return DCM_E_OK;
+        }
+        
+        /* Build positive response */
+        /* Response format: [SID + 0x40] [Sub-function] */
+        response->data[0U] = UDS_SVC_TESTER_PRESENT + DCM_SID_POSITIVE_RESPONSE_OFFSET;
+        response->data[1U] = subfunction;
+        
+        response->length = DCM_TESTER_PRESENT_RESPONSE_SIZE;
+        response->isNegativeResponse = false;
+        response->suppressPositiveResponse = false;
+    }
+    else {
+        /* Positive response suppressed (SPRMIB = 1) */
+        response->suppressPositiveResponse = true;
+        response->length = 0U;
+        response->isNegativeResponse = false;
+    }
+    
+    return DCM_E_OK;
+}
+
+/******************************************************************************
  * Default Configuration Getter
  ******************************************************************************/
 const Dcm_SessionConfigType* Dcm_GetDefaultSessionConfigs(uint8_t *numSessions)

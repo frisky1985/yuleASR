@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results version="2">
+    <cppcheck version="2.14 dev"/>
+    <errors>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Std_Types.h&quot; not found." verbose="Include file: &quot;Std_Types.h&quot; not found.">
+            <location file="/home/admin/eth-dds-integration/include/autosar/classic/com/Com_Types.h" line="10" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="/home/admin/eth-dds-integration/include/autosar/classic/com/Com_Types.h" line="11" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="/home/admin/eth-dds-integration/include/autosar/classic/com/Com.h" line="13" column="0"/>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;Det.h&quot; not found." verbose="Include file: &quot;Det.h&quot; not found.">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Private.h" line="13" column="0"/>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;ipduRuntime&apos; can be declared as pointer to const" verbose="Variable &apos;ipduRuntime&apos; can be declared as pointer to const" cwe="398" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c" line="536" column="26" info="Variable &apos;ipduRuntime&apos; can be declared as pointer to const"/>
+            <symbol>ipduRuntime</symbol>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;ipduRuntime&apos; can be declared as pointer to const" verbose="Variable &apos;ipduRuntime&apos; can be declared as pointer to const" cwe="398" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c" line="563" column="26" info="Variable &apos;ipduRuntime&apos; can be declared as pointer to const"/>
+            <symbol>ipduRuntime</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;ipduRuntime&apos; is assigned a value that is never used." verbose="Variable &apos;ipduRuntime&apos; is assigned a value that is never used." cwe="563" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Confirmation.c" line="563" column="38"/>
+            <symbol>ipduRuntime</symbol>
+        </error>
+        <error id="duplicateConditionalAssign" severity="style" msg="Assignment &apos;result=E_OK&apos; is redundant with condition &apos;result==E_OK&apos;." verbose="Assignment &apos;result=E_OK&apos; is redundant with condition &apos;result==E_OK&apos;." cwe="398" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c" line="228" column="24" info="Assignment &apos;result=E_OK&apos; is redundant"/>
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c" line="226" column="24" info="Condition &apos;result==E_OK&apos;"/>
+        </error>
+        <error id="duplicateConditionalAssign" severity="style" msg="Assignment &apos;result=E_OK&apos; is redundant with condition &apos;result==E_OK&apos;." verbose="Assignment &apos;result=E_OK&apos; is redundant with condition &apos;result==E_OK&apos;." cwe="398" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c" line="237" column="24" info="Assignment &apos;result=E_OK&apos; is redundant"/>
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_ErrorHandling.c" line="235" column="24" info="Condition &apos;result==E_OK&apos;"/>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;ipduConfig&apos; is assigned a value that is never used." verbose="Variable &apos;ipduConfig&apos; is assigned a value that is never used." cwe="563" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Signal.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Signal.c" line="207" column="42"/>
+            <symbol>ipduConfig</symbol>
+        </error>
+        <error id="missingInclude" severity="information" msg="Include file: &quot;PduR.h&quot; not found." verbose="Include file: &quot;PduR.h&quot; not found.">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c" line="24" column="0"/>
+        </error>
+        <error id="redundantAssignment" severity="style" msg="Variable &apos;RequestPtr-&gt;State&apos; is reassigned a value before the old one has been used." verbose="Variable &apos;RequestPtr-&gt;State&apos; is reassigned a value before the old one has been used." cwe="563" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c" line="242" column="23" info="RequestPtr-&gt;State is overwritten"/>
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c" line="233" column="23" info="RequestPtr-&gt;State is assigned"/>
+            <symbol>RequestPtr-&gt;State</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;signalConfig&apos; is assigned a value that is never used." verbose="Variable &apos;signalConfig&apos; is assigned a value that is never used." cwe="563" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_Transmit.c" line="967" column="46"/>
+            <symbol>signalConfig</symbol>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;modeState&apos; can be declared as pointer to const" verbose="Variable &apos;modeState&apos; can be declared as pointer to const" cwe="398" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_TxMode.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_TxMode.c" line="610" column="26" info="Variable &apos;modeState&apos; can be declared as pointer to const"/>
+            <symbol>modeState</symbol>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;txMode&apos; can be declared as pointer to const" verbose="Variable &apos;txMode&apos; can be declared as pointer to const" cwe="398" file0="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_TxMode.c">
+            <location file="/home/admin/eth-dds-integration/src/autosar/classic/com/Com_TxMode.c" line="665" column="21" info="Variable &apos;txMode&apos; can be declared as pointer to const"/>
+            <symbol>txMode</symbol>
+        </error>
+        <error id="checkersReport" severity="information" msg="Active checkers: 107/592 (use --checkers-report=&lt;filename&gt; to see details)" verbose="Active checkers: 107/592 (use --checkers-report=&lt;filename&gt; to see details)"/>
+    </errors>
+</results>

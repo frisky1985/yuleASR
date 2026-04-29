@@ -7,6 +7,8 @@
 /*==================[Includes]=============================================*/
 
 #include "Com_Private.h"
+#include "Com_Transmit.h"
+#include "Com_TxMode.h"
 
 /*==================[Version Check]=========================================*/
 
@@ -79,6 +81,15 @@ void Com_Init(const Com_ConfigType* config)
         Com_InitSignalGroup((Com_SignalGroupIdType)i, TRUE);
     }
     
+    /* Initialize send request queue (T009: Transmission Scheduler) */
+    Com_TxQueueInit();
+    
+    /* Initialize transmission mode manager (T010: TxMode) */
+    Com_TxModeInit();
+    
+    /* T012: Initialize deadline monitoring (ASIL-D) */
+    Com_Dm_Init();
+    
     /* Set module status */
     Com_GlobalState.Status = COM_READY;
     Com_GlobalState.Initialized = TRUE;
@@ -89,6 +100,9 @@ void Com_DeInit(void)
 {
     COM_VALIDATE_NO_RV(Com_GlobalState.Status == COM_READY, 
                        COM_SERVICE_ID_DEINIT, COM_E_UNINIT);
+    
+    /* T012: De-initialize deadline monitoring */
+    Com_Dm_DeInit();
     
     /* Reset module status */
     Com_GlobalState.Status = COM_UNINIT;
@@ -176,12 +190,13 @@ static void Com_InitIPdu(Com_IPduIdType PduId, boolean initialize)
     
     /* Reset runtime data */
     ipduRuntime->GroupStatus = COM_IPDU_GROUP_STOPPED;
-    ipduRuntime->TxTimer = ipduConfig->TxMode.TimeOffset;
+    ipduRuntime->TxTimer = ipduConfig->TxMode.TxModeFalse.TimeOffset;
     ipduRuntime->RepetitionTimer = 0;
     ipduRuntime->RepetitionCount = 0;
     ipduRuntime->Triggered = FALSE;
     ipduRuntime->TimeoutTimer = ipduConfig->Timeout;
     ipduRuntime->TimeoutOccurred = FALSE;
+    ipduRuntime->PduId = (uint16)PduId;
     
     /* Initialize buffer if requested */
     if (initialize) {
@@ -241,6 +256,54 @@ static void Com_InitSignalGroup(Com_SignalGroupIdType SignalGroupId, boolean ini
             groupRuntime->ShadowBuffer[i] = 0;
         }
     }
+}
+
+/*==================[Send API Implementation]==============================*/
+
+/**
+ * @brief Send a signal (API wrapper)
+ * 
+ * This function implements the AUTOSAR Com_SendSignal API.
+ * It calls the internal implementation in Com_Transmit.c
+ */
+uint8 Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataPtr)
+{
+    /* Call internal implementation with ASIL-D safety checks */
+    return Com_SendSignal_Internal(SignalId, SignalDataPtr);
+}
+
+/**
+ * @brief Send a signal group (API wrapper)
+ */
+uint8 Com_SendSignalGroup(Com_SignalGroupIdType SignalGroupId)
+{
+    return Com_SendSignalGroup_Internal(SignalGroupId);
+}
+
+/**
+ * @brief Trigger I-PDU send (API wrapper)
+ * 
+ * Schedules an I-PDU for immediate transmission.
+ */
+Std_ReturnType Com_TriggerIPDUSend(Com_IPduIdType PduId)
+{
+    return Com_TriggerIPDUSend_Internal(PduId);
+}
+
+/**
+ * @brief Get send request queue fill level
+ */
+uint8 Com_GetTxQueueFillLevel(void)
+{
+    return Com_TxQueueGetFillLevel();
+}
+
+/**
+ * @brief Clear send queue for an I-PDU
+ */
+void Com_ClearTxQueueForPdu(Com_IPduIdType PduId)
+{
+    Com_TxQueueClearForPdu(PduId);
 }
 
 /*==================[End of File]==========================================*/

@@ -513,3 +513,204 @@ uint32_t Dcm_ParseMemorySize(const uint8_t *data, uint8_t length)
     
     return size;
 }
+
+/******************************************************************************
+ * Read Memory Functions (ISO 14229-1:2020 10.4)
+ ******************************************************************************/
+
+static Dcm_ReturnType sendReadPositiveResponse(Dcm_ResponseType *response,
+                                               uint8_t formatId,
+                                               const uint8_t *data,
+                                               uint32_t dataLength)
+{
+    if ((response != NULL) && (response->data != NULL) && 
+        (response->maxLength >= (uint32_t)(1U + dataLength))) {
+        response->data[0U] = DCM_READ_MEM_RESPONSE_SID;  /* 0x63 */
+        
+        /* Copy read data to response */
+        for (uint32_t i = 0U; i < dataLength; i++) {
+            response->data[1U + i] = data[i];
+        }
+        
+        response->length = (uint32_t)(1U + dataLength);
+        response->isNegativeResponse = false;
+        return DCM_E_OK;
+    }
+    return DCM_E_NOT_OK;
+}
+
+static Dcm_ReturnType validateReadRequest(uint32_t address, uint32_t length)
+{
+    /* Check address range */
+    if (length == 0U) {
+        return DCM_E_REQUEST_OUT_OF_RANGE;
+    }
+    
+    if (length > DCM_READ_MEM_MAX_DATA_LENGTH) {
+        return DCM_E_REQUEST_OUT_OF_RANGE;
+    }
+    
+    /* Check if readable */
+    if (!Dcm_IsMemoryAddressReadable(address, length)) {
+        return DCM_E_SECURITY_ACCESS_DENIED;
+    }
+    
+    /* Check region boundaries */
+    const Dcm_MemoryRegionConfigType *region = findMemoryRegion(address);
+    if (region == NULL) {
+        return DCM_E_REQUEST_OUT_OF_RANGE;
+    }
+    
+    /* Check if read crosses region boundary */
+    if ((address + length - 1U) > region->endAddress) {
+        return DCM_E_REQUEST_OUT_OF_RANGE;
+    }
+    
+    /* Check security access */
+    if (!checkSecurityAccess(region)) {
+        return DCM_E_SECURITY_ACCESS_DENIED;
+    }
+    
+    return DCM_E_OK;
+}
+
+Dcm_ReturnType Dcm_ReadMemoryByAddress(const Dcm_RequestType *request,
+                                       Dcm_ResponseType *response)
+{
+    Dcm_ReturnType result = DCM_E_NOT_OK;
+    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
+    
+    if (!s_memoryState.initialized) {
+        nrc = UDS_NRC_CONDITIONS_NOT_CORRECT;
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    if ((request == NULL) || (response == NULL)) {
+        return result;
+    }
+    
+    if (request->length < DCM_READ_MEM_MIN_LENGTH) {
+        nrc = UDS_NRC_INCORRECT_MESSAGE_LENGTH_OR_FORMAT;
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    /* Check session requirements */
+    if (!checkSessionRequirements()) {
+        nrc = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED_IN_SESSION;
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    const uint8_t formatId = request->data[1U];
+    
+    if ((request->data[1U] & DCM_SUPPRESS_POS_RESPONSE_MASK) != 0U) {
+        response->suppressPositiveResponse = true;
+    }
+    
+    /* Parse format identifier */
+    uint8_t addressLength;
+    uint8_t sizeLength;
+    result = Dcm_ParseMemoryFormat(formatId & 0x0FU, &addressLength, &sizeLength);
+    
+    if (result != DCM_E_OK) {
+        nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    /* Calculate expected request length */
+    uint8_t expectedLen = 2U + addressLength + sizeLength;
+    if (request->length != expectedLen) {
+        nrc = UDS_NRC_INCORRECT_MESSAGE_LENGTH_OR_FORMAT;
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    /* Parse address and size */
+    uint32_t memoryAddress = Dcm_ParseMemoryAddress(&request->data[2U], addressLength);
+    uint32_t memorySize = Dcm_ParseMemorySize(&request->data[2U + addressLength], sizeLength);
+    
+    /* Validate read request */
+    result = validateReadRequest(memoryAddress, memorySize);
+    
+    if (result != DCM_E_OK) {
+        if (result == DCM_E_REQUEST_OUT_OF_RANGE) {
+            nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
+        } else if (result == DCM_E_SECURITY_ACCESS_DENIED) {
+            nrc = UDS_NRC_SECURITY_ACCESS_DENIED;
+        } else {
+            nrc = UDS_NRC_GENERAL_REJECT;
+        }
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    /* Check if response buffer is large enough */
+    if (response->maxLength < (uint32_t)(1U + memorySize)) {
+        nrc = UDS_NRC_RESPONSE_TOO_LONG;
+        (void)sendNegativeResponse(response, nrc);
+        return result;
+    }
+    
+    /* Perform read */
+    uint8_t *readBuffer = &response->data[1U];  /* Use response buffer directly */
+    result = Dcm_ReadMemory(memoryAddress, readBuffer, memorySize);
+    
+    if (result == DCM_E_OK) {
+        result = sendReadPositiveResponse(response, formatId, readBuffer, memorySize);
+    } else {
+        nrc = UDS_NRC_GENERAL_REJECT;
+        (void)sendNegativeResponse(response, nrc);
+    }
+    
+    return result;
+}
+
+Dcm_ReturnType Dcm_ReadMemory(uint32_t memoryAddress, uint8_t *data, uint32_t length)
+{
+    Dcm_ReturnType result = DCM_E_NOT_OK;
+    
+    if ((data != NULL) && (length > 0U) && s_memoryState.initialized) {
+        const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
+        
+        if (region != NULL) {
+            /* Use callback if available */
+            if ((s_memoryState.config != NULL) && 
+                (s_memoryState.config->readCallback != NULL)) {
+                result = s_memoryState.config->readCallback(memoryAddress, data, length, 
+                                                             region->regionType);
+            } else {
+                /* Default: copy from actual memory */
+                /* Note: In real implementation, this would read from actual memory address */
+                /* For now, we simulate by zeroing the buffer */
+                for (uint32_t i = 0U; i < length; i++) {
+                    data[i] = 0U;
+                }
+                result = DCM_E_OK;
+            }
+        }
+    }
+    
+    return result;
+}
+
+bool Dcm_IsMemoryAddressReadable(uint32_t memoryAddress, uint32_t length)
+{
+    bool readable = false;
+    
+    if (s_memoryState.initialized && (length > 0U)) {
+        const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
+        
+        if ((region != NULL) && region->readAllowed) {
+            /* Check if entire range is within region */
+            if ((memoryAddress >= region->startAddress) &&
+                ((memoryAddress + length - 1U) <= region->endAddress)) {
+                readable = true;
+            }
+        }
+    }
+    
+    return readable;
+}

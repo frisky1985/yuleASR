@@ -1,0 +1,432 @@
+{
+  "_comment": "AUTOSAR COM Configuration for Engine Data Application",
+  "global": {
+    "dev_error_detect": true,
+    "version_info_api": true,
+    "enable_signal_group_array_api": true,
+    "max_signals": 128,
+    "max_signal_groups": 32,
+    "max_ipdus": 64,
+    "max_ipdu_groups": 16,
+    "max_ipdu_length": 64,
+    "default_tx_timeout": 100,
+    "default_max_retries": 3
+  },
+  
+  "ipdu_groups": [
+    {
+      "name": "EngineGroup",
+      "id": 0,
+      "ipdu_refs": [0, 1]
+    },
+    {
+      "name": "ChassisGroup",
+      "id": 1,
+      "ipdu_refs": [2]
+    },
+    {
+      "name": "BodyGroup",
+      "id": 2,
+      "ipdu_refs": [3]
+    }
+  ],
+  
+  "signals": [
+    {
+      "name": "EngineSpeed",
+      "id": 0,
+      "bit_position": 0,
+      "bit_size": 16,
+      "type": "COM_UINT16",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 0,
+      "description": "Engine Speed: 0-8000 RPM, resolution 0.125 RPM/bit"
+    },
+    {
+      "name": "CoolantTemp",
+      "id": 1,
+      "bit_position": 16,
+      "bit_size": 8,
+      "type": "COM_SINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 20,
+      "ipdu_id": 0,
+      "description": "Coolant Temperature: -40 to 215°C, offset -40"
+    },
+    {
+      "name": "ThrottlePosition",
+      "id": 2,
+      "bit_position": 24,
+      "bit_size": 8,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED",
+      "init_value": 0,
+      "ipdu_id": 0,
+      "description": "Throttle Position: 0-100%, resolution 0.4%/bit"
+    },
+    {
+      "name": "EngineTorque",
+      "id": 3,
+      "bit_position": 32,
+      "bit_size": 16,
+      "type": "COM_UINT16",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 0,
+      "description": "Engine Torque: 0-8000 Nm, resolution 0.125 Nm/bit"
+    },
+    {
+      "name": "EngineState",
+      "id": 4,
+      "bit_position": 48,
+      "bit_size": 8,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 0,
+      "description": "Engine State: 0=Stopped, 1=Starting, 2=Running, 3=Stopping"
+    },
+    {
+      "name": "BatteryVoltage",
+      "id": 5,
+      "bit_position": 56,
+      "bit_size": 8,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 120,
+      "ipdu_id": 0,
+      "description": "Battery Voltage: 0-25.5V, resolution 0.1V/bit"
+    },
+    {
+      "name": "OilPressure",
+      "id": 6,
+      "bit_position": 0,
+      "bit_size": 8,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 1,
+      "description": "Oil Pressure: 0-12.75 bar, resolution 0.05 bar/bit"
+    },
+    {
+      "name": "OilTemp",
+      "id": 7,
+      "bit_position": 8,
+      "bit_size": 8,
+      "type": "COM_SINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 20,
+      "ipdu_id": 1,
+      "description": "Oil Temperature: -40 to 215°C, offset -40"
+    },
+    {
+      "name": "FuelLevel",
+      "id": 8,
+      "bit_position": 16,
+      "bit_size": 8,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 1,
+      "description": "Fuel Level: 0-100%, resolution 0.4%/bit"
+    },
+    {
+      "name": "IntakeAirTemp",
+      "id": 9,
+      "bit_position": 24,
+      "bit_size": 8,
+      "type": "COM_SINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 20,
+      "ipdu_id": 1,
+      "description": "Intake Air Temperature: -40 to 215°C, offset -40"
+    },
+    {
+      "name": "VehicleSpeed",
+      "id": 10,
+      "bit_position": 0,
+      "bit_size": 16,
+      "type": "COM_UINT16",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 2,
+      "description": "Vehicle Speed: 0-300 km/h, resolution 0.01 km/h/bit"
+    },
+    {
+      "name": "WheelSpeed_FL",
+      "id": 11,
+      "bit_position": 16,
+      "bit_size": 16,
+      "type": "COM_UINT16",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 2,
+      "description": "Front Left Wheel Speed: 0-300 km/h"
+    },
+    {
+      "name": "WheelSpeed_FR",
+      "id": 12,
+      "bit_position": 32,
+      "bit_size": 16,
+      "type": "COM_UINT16",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 2,
+      "description": "Front Right Wheel Speed: 0-300 km/h"
+    },
+    {
+      "name": "GearPosition",
+      "id": 13,
+      "bit_position": 0,
+      "bit_size": 4,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 0,
+      "ipdu_id": 3,
+      "description": "Gear Position: 0=P, 1=R, 2=N, 3=D, 4-10=Gear 1-7"
+    },
+    {
+      "name": "TransmissionMode",
+      "id": 14,
+      "bit_position": 4,
+      "bit_size": 2,
+      "type": "COM_UINT8",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": 1,
+      "ipdu_id": 3,
+      "description": "Transmission Mode: 0=Eco, 1=Normal, 2=Sport"
+    },
+    {
+      "name": "ParkingBrake",
+      "id": 15,
+      "bit_position": 6,
+      "bit_size": 1,
+      "type": "COM_BOOLEAN",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": false,
+      "ipdu_id": 3,
+      "description": "Parking Brake Status: 0=Released, 1=Engaged"
+    },
+    {
+      "name": "TurnSignalLeft",
+      "id": 16,
+      "bit_position": 7,
+      "bit_size": 1,
+      "type": "COM_BOOLEAN",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": false,
+      "ipdu_id": 3,
+      "description": "Left Turn Signal Status"
+    },
+    {
+      "name": "TurnSignalRight",
+      "id": 17,
+      "bit_position": 8,
+      "bit_size": 1,
+      "type": "COM_BOOLEAN",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": false,
+      "ipdu_id": 3,
+      "description": "Right Turn Signal Status"
+    },
+    {
+      "name": "Headlights",
+      "id": 18,
+      "bit_position": 9,
+      "bit_size": 1,
+      "type": "COM_BOOLEAN",
+      "endianness": "COM_LITTLE_ENDIAN",
+      "transfer_property": "COM_TRIGGERED_ON_CHANGE",
+      "init_value": false,
+      "ipdu_id": 3,
+      "description": "Headlights Status"
+    }
+  ],
+  
+  "signal_groups": [
+    {
+      "name": "EngineCoreInfo",
+      "id": 0,
+      "signal_refs": [0, 1, 2, 4]
+    },
+    {
+      "name": "EngineDiagnostics",
+      "id": 1,
+      "signal_refs": [6, 7, 8, 9]
+    },
+    {
+      "name": "VehicleDynamics",
+      "id": 2,
+      "signal_refs": [10, 11, 12]
+    }
+  ],
+  
+  "ipdus": [
+    {
+      "name": "EngineData",
+      "id": 0,
+      "length": 8,
+      "direction": "COM_SEND",
+      "type": "COM_NORMAL",
+      "signal_processing": "COM_IMMEDIATE",
+      "signal_refs": [0, 1, 2, 3, 4, 5],
+      "signal_group_refs": [0],
+      "ipdu_group_refs": [0],
+      "description": "Engine primary data - 100ms periodic with fast mode",
+      "tx_mode_false": {
+        "mode": "COM_MODE_PERIODIC",
+        "cycle_time_ms": 100,
+        "repetition_period_ms": 0,
+        "num_repetitions": 0,
+        "time_offset_ms": 0,
+        "repeating_enabled": false
+      },
+      "tx_mode_true": {
+        "mode": "COM_MODE_MIXED",
+        "cycle_time_ms": 50,
+        "repetition_period_ms": 10,
+        "num_repetitions": 2,
+        "time_offset_ms": 0,
+        "repeating_enabled": true
+      },
+      "use_tmc": true,
+      "tmc": {
+        "signal_id": 0,
+        "threshold_value": 3000,
+        "use_greater_than": true,
+        "is_configured": true
+      },
+      "tx_confirmation": {
+        "enable_confirmation": true,
+        "tx_timeout_ms": 100,
+        "max_retries": 3
+      }
+    },
+    {
+      "name": "EngineStatus",
+      "id": 1,
+      "length": 4,
+      "direction": "COM_SEND",
+      "type": "COM_NORMAL",
+      "signal_processing": "COM_IMMEDIATE",
+      "signal_refs": [6, 7, 8, 9],
+      "signal_group_refs": [1],
+      "ipdu_group_refs": [0],
+      "description": "Engine status data - 500ms periodic",
+      "tx_mode_false": {
+        "mode": "COM_MODE_PERIODIC",
+        "cycle_time_ms": 500,
+        "repetition_period_ms": 0,
+        "num_repetitions": 0,
+        "time_offset_ms": 0,
+        "repeating_enabled": false
+      },
+      "tx_mode_true": {
+        "mode": "COM_MODE_NONE",
+        "cycle_time_ms": 0,
+        "repetition_period_ms": 0,
+        "num_repetitions": 0,
+        "time_offset_ms": 0,
+        "repeating_enabled": false
+      },
+      "use_tmc": false,
+      "tx_confirmation": {
+        "enable_confirmation": false,
+        "tx_timeout_ms": 0,
+        "max_retries": 0
+      }
+    },
+    {
+      "name": "VehicleSpeed",
+      "id": 2,
+      "length": 6,
+      "direction": "COM_SEND",
+      "type": "COM_NORMAL",
+      "signal_processing": "COM_IMMEDIATE",
+      "signal_refs": [10, 11, 12],
+      "signal_group_refs": [2],
+      "ipdu_group_refs": [1],
+      "description": "Vehicle speed data - event triggered",
+      "tx_mode_false": {
+        "mode": "COM_MODE_DIRECT",
+        "cycle_time_ms": 0,
+        "repetition_period_ms": 20,
+        "num_repetitions": 1,
+        "time_offset_ms": 0,
+        "repeating_enabled": true
+      },
+      "tx_mode_true": {
+        "mode": "COM_MODE_NONE",
+        "cycle_time_ms": 0,
+        "repetition_period_ms": 0,
+        "num_repetitions": 0,
+        "time_offset_ms": 0,
+        "repeating_enabled": false
+      },
+      "use_tmc": false,
+      "tx_confirmation": {
+        "enable_confirmation": true,
+        "tx_timeout_ms": 50,
+        "max_retries": 2
+      }
+    },
+    {
+      "name": "BodyControl",
+      "id": 3,
+      "length": 2,
+      "direction": "COM_SEND",
+      "type": "COM_NORMAL",
+      "signal_processing": "COM_IMMEDIATE",
+      "signal_refs": [13, 14, 15, 16, 17, 18],
+      "ipdu_group_refs": [2],
+      "description": "Body control data - mixed mode",
+      "tx_mode_false": {
+        "mode": "COM_MODE_MIXED",
+        "cycle_time_ms": 500,
+        "repetition_period_ms": 20,
+        "num_repetitions": 3,
+        "time_offset_ms": 100,
+        "repeating_enabled": true
+      },
+      "tx_mode_true": {
+        "mode": "COM_MODE_DIRECT",
+        "cycle_time_ms": 0,
+        "repetition_period_ms": 10,
+        "num_repetitions": 5,
+        "time_offset_ms": 0,
+        "repeating_enabled": true
+      },
+      "use_tmc": true,
+      "tmc": {
+        "signal_id": 13,
+        "threshold_value": 0,
+        "use_greater_than": false,
+        "is_configured": true
+      },
+      "tx_confirmation": {
+        "enable_confirmation": true,
+        "tx_timeout_ms": 100,
+        "max_retries": 3
+      }
+    }
+  ]
+}

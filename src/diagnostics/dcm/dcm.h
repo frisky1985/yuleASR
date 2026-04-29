@@ -23,6 +23,9 @@ extern "C" {
 #include "dcm_dynamic_did.h"
 #include "dcm_memory.h"
 #include "dcm_routine.h"
+#include "dcm_dem_integration.h"
+#include "dcm_did.h"
+#include "dcm_io_control.h"
 
 /******************************************************************************
  * DCM Version Information
@@ -60,6 +63,16 @@ typedef struct {
     /* Routine Control Configuration */
     const Dcm_RoutineConfigType *routineConfigs;
     uint8_t numRoutines;
+
+    /* DEM Integration Configuration */
+    const Dcm_DemIntegrationConfigType *demIntegrationConfig;
+
+    /* DID Service Configuration */
+    const Dcm_DidConfigType *didConfig;
+
+    /* IO Control Configuration */
+    const Dcm_IoControlConfigType *ioControlConfigs;
+    uint8_t numIoControls;
 } Dcm_ConfigType;
 
 /******************************************************************************
