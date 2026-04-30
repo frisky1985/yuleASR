@@ -654,6 +654,141 @@ extern StatusType Os_TryToGetSpinlock(SpinlockIdType SpinlockId,
  */
 extern StatusType Os_GetTaskExecutionTime(TaskType TaskID, TimeInMicrosecondsType *Value);
 
+/**
+ * @brief Start execution time measurement for a task
+ * @param TaskID - Task to start measurement for
+ * @return StatusType - E_OK or error code
+ * @details Called when task starts executing to begin timing protection monitoring
+ */
+extern StatusType Os_StartExecutionTimeMeasurement(TaskType TaskID);
+
+/**
+ * @brief Stop execution time measurement for a task
+ * @param TaskID - Task to stop measurement for
+ * @return StatusType - E_OK or error code
+ * @details Called when task stops executing (suspends/terminates)
+ */
+extern StatusType Os_StopExecutionTimeMeasurement(TaskType TaskID);
+
+/**
+ * @brief Check if task execution time budget is exceeded
+ * @param TaskID - Task to check
+ * @return StatusType - E_OK if within budget, E_OS_PROTECTION_TIME if exceeded
+ * @details Should be called periodically during task execution
+ */
+extern StatusType Os_CheckExecutionTimeBudget(TaskType TaskID);
+
+/**
+ * @brief Check task arrival time (inter-arrival time)
+ * @param TaskID - Task being activated
+ * @return StatusType - E_OK if activation is allowed, E_OS_PROTECTION_TIME if too frequent
+ * @details Called when task is activated to check inter-arrival timing
+ */
+extern StatusType Os_CheckTaskArrivalTime(TaskType TaskID);
+
+/**
+ * @brief Start resource lock time measurement
+ * @param ResourceID - Resource being locked
+ * @return void
+ * @details Called when GetResource is invoked
+ */
+extern void Os_StartResourceLockTimeMeasurement(ResourceType ResourceID);
+
+/**
+ * @brief Check if resource lock time budget is exceeded
+ * @param ResourceID - Resource being checked
+ * @return StatusType - E_OK if within budget, E_OS_PROTECTION_LOCKED if exceeded
+ * @details Called periodically and before ReleaseResource
+ */
+extern StatusType Os_CheckResourceLockTime(ResourceType ResourceID);
+
+/**
+ * @brief Stop resource lock time measurement
+ * @param ResourceID - Resource being released
+ * @return void
+ * @details Called when ReleaseResource is invoked
+ */
+extern void Os_StopResourceLockTimeMeasurement(ResourceType ResourceID);
+
+/**
+ * @brief Start all interrupts lock time measurement
+ * @return void
+ * @details Called when DisableAllInterrupts or SuspendAllInterrupts is invoked
+ */
+extern void Os_StartAllInterruptsLockMeasurement(void);
+
+/**
+ * @brief Check if all interrupts lock time budget is exceeded
+ * @return StatusType - E_OK if within budget, E_OS_PROTECTION_LOCKED if exceeded
+ */
+extern StatusType Os_CheckAllInterruptsLockTime(void);
+
+/**
+ * @brief Stop all interrupts lock time measurement
+ * @return void
+ * @details Called when EnableAllInterrupts or ResumeAllInterrupts is invoked
+ */
+extern void Os_StopAllInterruptsLockMeasurement(void);
+
+/**
+ * @brief Start OS interrupts lock time measurement
+ * @return void
+ * @details Called when SuspendOSInterrupts is invoked
+ */
+extern void Os_StartOsInterruptsLockMeasurement(void);
+
+/**
+ * @brief Check if OS interrupts lock time budget is exceeded
+ * @return StatusType - E_OK if within budget, E_OS_PROTECTION_LOCKED if exceeded
+ */
+extern StatusType Os_CheckOsInterruptsLockTime(void);
+
+/**
+ * @brief Stop OS interrupts lock time measurement
+ * @return void
+ * @details Called when ResumeOSInterrupts is invoked
+ */
+extern void Os_StopOsInterruptsLockMeasurement(void);
+
+/**
+ * @brief Get current timestamp in microseconds
+ * @return TimeInMicrosecondsType - Current time in microseconds
+ * @details Platform-specific implementation required
+ */
+extern TimeInMicrosecondsType Os_GetCurrentTimeInUs(void);
+
+/**
+ * @brief Handle timing protection violation
+ * @param ViolationType - Type of timing violation detected
+ * @param ObjectID - ID of object that caused violation (task, ISR, resource)
+ * @return ProtectionReturnType - Action to take
+ * @details Called internally when timing protection violation is detected
+ */
+extern ProtectionReturnType Os_HandleTimingViolation(Os_TimingViolationType ViolationType, uint32 ObjectID);
+
+/**
+ * @brief Initialize timing protection module
+ * @return StatusType - E_OK if initialization successful
+ * @details Called during OS initialization
+ */
+extern StatusType Os_InitTimingProtection(void);
+
+/**
+ * @brief Get timing protection state for a task
+ * @param TaskID - Task to query
+ * @param State - Reference to store timing protection state
+ * @return StatusType - E_OK or error code
+ */
+extern StatusType Os_GetTimingProtectionState(TaskType TaskID, Os_TimingProtectionStateType *State);
+
+/**
+ * @brief Get last timing violation information
+ * @param TaskID - Task to query
+ * @param ViolationType - Reference to store violation type
+ * @return StatusType - E_OK or error code
+ */
+extern StatusType Os_GetLastTimingViolation(TaskType TaskID, Os_TimingViolationType *ViolationType);
+
 /*******************************************************************************
  * Control API
  ******************************************************************************/

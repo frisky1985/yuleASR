@@ -225,6 +225,11 @@ static void Os_TaskWrapper(void *pvParameters)
     Os_PreTaskHook();
     #endif
 
+    #if (OS_EXECUTION_TIME_MONITORING == STD_ON)
+    /* Start execution time measurement for timing protection */
+    (void)Os_StartExecutionTimeMeasurement(taskId);
+    #endif
+
     /* Call the actual task entry point */
     if (pTcb->entryPoint != NULL)
     {
@@ -612,6 +617,19 @@ StatusType Os_ActivateTask(TaskType TaskID)
         return E_OS_LIMIT;
     }
 
+    #if (OS_ARRIVAL_TIME_MONITORING == STD_ON)
+    /* Check arrival time (inter-arrival time protection) */
+    {
+        StatusType tpStatus;
+        tpStatus = Os_CheckTaskArrivalTime(TaskID);
+        if (tpStatus != E_OK)
+        {
+            /* Inter-arrival time violation - activation too frequent */
+            return tpStatus;
+        }
+    }
+    #endif
+
     /* Get current task to determine if we need to yield */
     currentTask = xTaskGetCurrentTaskHandle();
 
@@ -672,6 +690,11 @@ StatusType Os_TerminateTask(void)
         /* Call Post-Task Hook */
         #if (OS_USE_POSTTASK_HOOK == STD_ON)
         Os_PostTaskHook();
+        #endif
+
+        #if (OS_EXECUTION_TIME_MONITORING == STD_ON)
+        /* Stop execution time measurement */
+        (void)Os_StopExecutionTimeMeasurement(pTcb->taskId);
         #endif
 
         /* Update TCB */
@@ -1522,6 +1545,11 @@ StatusType Os_GetResource(ResourceType ResID)
     Os_ResourceStackTop++;
     Os_GlobalState.resourceNesting++;
 
+    #if (OS_RESOURCE_LOCK_MONITORING == STD_ON)
+    /* Start resource lock time measurement */
+    Os_StartResourceLockTimeMeasurement(ResID);
+    #endif
+
     return E_OK;
 }
 
@@ -1566,6 +1594,9 @@ StatusType Os_ReleaseResource(ResourceType ResID)
     /* Handle RES_SCHEDULER specially */
     if (ResID == RES_SCHEDULER)
     {
+        #if (OS_RESOURCE_LOCK_MONITORING == STD_ON)
+        Os_StopResourceLockTimeMeasurement(ResID);
+        #endif
         xTaskResumeAll();
         Os_ResourceStackTop--;
         Os_GlobalState.resourceNesting--;
@@ -1601,6 +1632,11 @@ StatusType Os_ReleaseResource(ResourceType ResID)
     /* Pop from resource stack */
     Os_ResourceStackTop--;
     Os_GlobalState.resourceNesting--;
+
+    #if (OS_RESOURCE_LOCK_MONITORING == STD_ON)
+    /* Stop resource lock time measurement */
+    Os_StopResourceLockTimeMeasurement(ResID);
+    #endif
 
     return E_OK;
 }
@@ -2026,6 +2062,9 @@ void Os_GetVersionInfo(Std_VersionInfoType *versioninfo)
  */
 void Os_DisableAllInterrupts(void)
 {
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    Os_StartAllInterruptsLockMeasurement();
+    #endif
     portDISABLE_INTERRUPTS();
 }
 
@@ -2035,6 +2074,9 @@ void Os_DisableAllInterrupts(void)
  */
 void Os_EnableAllInterrupts(void)
 {
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    Os_StopAllInterruptsLockMeasurement();
+    #endif
     portENABLE_INTERRUPTS();
 }
 
@@ -2044,6 +2086,13 @@ void Os_EnableAllInterrupts(void)
  */
 void Os_SuspendAllInterrupts(void)
 {
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    /* Only start measurement on first suspend */
+    if (Os_SuspendAllCount == 0U)
+    {
+        Os_StartAllInterruptsLockMeasurement();
+    }
+    #endif
     vTaskSuspendAll();
     Os_SuspendAllCount++;
 }
@@ -2059,6 +2108,9 @@ void Os_ResumeAllInterrupts(void)
         Os_SuspendAllCount--;
         if (Os_SuspendAllCount == 0U)
         {
+            #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+            Os_StopAllInterruptsLockMeasurement();
+            #endif
             xTaskResumeAll();
         }
     }
@@ -2072,6 +2124,13 @@ void Os_SuspendOSInterrupts(void)
 {
     /* For simplicity, we use the same mechanism as SuspendAllInterrupts */
     /* In a full implementation, this would distinguish between categories */
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    /* Only start measurement on first suspend */
+    if (Os_SuspendOSCount == 0U)
+    {
+        Os_StartOsInterruptsLockMeasurement();
+    }
+    #endif
     vTaskSuspendAll();
     Os_SuspendOSCount++;
 }
@@ -2087,6 +2146,9 @@ void Os_ResumeOSInterrupts(void)
         Os_SuspendOSCount--;
         if (Os_SuspendOSCount == 0U)
         {
+            #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+            Os_StopOsInterruptsLockMeasurement();
+            #endif
             xTaskResumeAll();
         }
     }
@@ -2392,6 +2454,544 @@ StatusType Os_TryToGetSpinlock(SpinlockIdType SpinlockId,
  * Timing Protection Implementation
  ******************************************************************************/
 
+#if (OS_TIMING_PROTECTION == STD_ON)
+
+/* Timing Protection Control Blocks - one per task */
+static Os_TimingProtectionCbType Os_TimingProtectionCb[OS_TASK_COUNT];
+
+/* Task Timing Protection Configuration */
+static Os_TaskTimingProtectionType Os_TaskTimingConfig[OS_TASK_COUNT];
+
+/* Resource Timing Protection Configuration */
+static Os_ResourceLockTimingType Os_ResourceTimingConfig[OS_RESOURCE_COUNT];
+
+/* Interrupt Lock Timing Configuration */
+static Os_InterruptLockTimingType Os_IntLockTimingConfig;
+
+/* Global Timing Protection State */
+static struct {
+    boolean initialized;
+    TimeInMicrosecondsType globalStartTime;
+    uint32 totalViolations;
+} Os_TimingProtectionGlobal;
+
+/**
+ * @brief Get current timestamp in microseconds
+ * @details Platform-specific implementation using FreeRTOS tick count
+ * @return TimeInMicrosecondsType Current time in microseconds
+ */
+TimeInMicrosecondsType Os_GetCurrentTimeInUs(void)
+{
+    TickType ticks;
+    TimeInMicrosecondsType microseconds;
+    
+    /* Get FreeRTOS tick count - needs to be called from critical section if task safety required */
+    ticks = xTaskGetTickCount();
+    
+    /* Convert ticks to microseconds: ticks * tick_period_ms * 1000 */
+    /* Using 1ms tick period (1000 ticks per second), 1 tick = 1000 microseconds */
+    microseconds = (TimeInMicrosecondsType)(ticks * OS_TICK_MS * 1000U);
+    
+    return microseconds;
+}
+
+/**
+ * @brief Initialize timing protection module
+ * @return StatusType E_OK if initialization successful
+ */
+StatusType Os_InitTimingProtection(void)
+{
+    uint32 i;
+    
+    /* Initialize global state */
+    Os_TimingProtectionGlobal.initialized = FALSE;
+    Os_TimingProtectionGlobal.globalStartTime = Os_GetCurrentTimeInUs();
+    Os_TimingProtectionGlobal.totalViolations = 0U;
+    
+    /* Initialize all task timing protection control blocks */
+    for (i = 0U; i < OS_TASK_COUNT; i++)
+    {
+        Os_TimingProtectionCb[i].state = OS_TP_STATE_IDLE;
+        Os_TimingProtectionCb[i].lastViolation = OS_TP_VIOLATION_NONE;
+        Os_TimingProtectionCb[i].startTime = 0U;
+        Os_TimingProtectionCb[i].elapsedTime = 0U;
+        Os_TimingProtectionCb[i].lastArrivalTime = 0U;
+        Os_TimingProtectionCb[i].resourceLockStartTime = 0U;
+        Os_TimingProtectionCb[i].intLockAllStartTime = 0U;
+        Os_TimingProtectionCb[i].intLockOsStartTime = 0U;
+        Os_TimingProtectionCb[i].violationCount = 0U;
+        
+        /* Initialize default task timing configuration */
+        Os_TaskTimingConfig[i].taskId = (TaskType)i;
+        Os_TaskTimingConfig[i].executionBudget = OS_TP_TASK_BUDGET_DEFAULT;
+        Os_TaskTimingConfig[i].timeFrame = OS_TP_TIME_FRAME_DEFAULT;
+        Os_TaskTimingConfig[i].interArrivalTime = OS_TP_ARRIVAL_DEFAULT;
+        Os_TaskTimingConfig[i].enableExecutionLimit = TRUE;
+        Os_TaskTimingConfig[i].enableArrivalLimit = TRUE;
+    }
+    
+    /* Initialize resource timing configuration */
+    for (i = 0U; i < OS_RESOURCE_COUNT; i++)
+    {
+        Os_ResourceTimingConfig[i].resourceId = (ResourceType)i;
+        Os_ResourceTimingConfig[i].lockBudget = OS_TP_RESOURCE_LOCK_DEFAULT;
+    }
+    
+    /* Initialize interrupt lock timing configuration */
+    Os_IntLockTimingConfig.allInterruptLockBudget = OS_TP_INT_LOCK_ALL_DEFAULT;
+    Os_IntLockTimingConfig.osInterruptLockBudget = OS_TP_INT_LOCK_OS_DEFAULT;
+    
+    Os_TimingProtectionGlobal.initialized = TRUE;
+    
+    return E_OK;
+}
+
+/**
+ * @brief Handle timing protection violation
+ * @param ViolationType Type of timing violation detected
+ * @param ObjectID ID of object that caused violation
+ * @return ProtectionReturnType Action to take
+ */
+ProtectionReturnType Os_HandleTimingViolation(Os_TimingViolationType ViolationType, uint32 ObjectID)
+{
+    ProtectionReturnType action = PRO_KILLTASK;
+    
+    /* Increment violation counters */
+    Os_TimingProtectionGlobal.totalViolations++;
+    
+    if (ObjectID < OS_TASK_COUNT)
+    {
+        Os_TimingProtectionCb[ObjectID].violationCount++;
+        Os_TimingProtectionCb[ObjectID].lastViolation = ViolationType;
+        Os_TimingProtectionCb[ObjectID].state = OS_TP_STATE_VIOLATED;
+    }
+    
+    /* Call protection hook if enabled */
+    #if (OS_USE_PROTECTION_HOOK == STD_ON)
+    switch (ViolationType)
+    {
+        case OS_TP_VIOLATION_EXECUTION:
+        case OS_TP_VIOLATION_ARRIVAL:
+            action = Os_ProtectionHook(E_OS_PROTECTION_TIME);
+            break;
+            
+        case OS_TP_VIOLATION_RESOURCE_LOCK:
+        case OS_TP_VIOLATION_INT_LOCK_ALL:
+        case OS_TP_VIOLATION_INT_LOCK_OS:
+            action = Os_ProtectionHook(E_OS_PROTECTION_LOCKED);
+            break;
+            
+        default:
+            action = Os_ProtectionHook(E_OS_PROTECTION_TIME);
+            break;
+    }
+    #else
+    /* Default action based on violation type */
+    switch (ViolationType)
+    {
+        case OS_TP_VIOLATION_EXECUTION:
+        case OS_TP_VIOLATION_ARRIVAL:
+            action = PRO_KILLTASK;
+            break;
+            
+        case OS_TP_VIOLATION_RESOURCE_LOCK:
+        case OS_TP_VIOLATION_INT_LOCK_ALL:
+        case OS_TP_VIOLATION_INT_LOCK_OS:
+            action = PRO_SHUTDOWN;
+            break;
+            
+        default:
+            action = PRO_KILLTASK;
+            break;
+    }
+    #endif
+    
+    /* Log error */
+    Os_SetError(E_OS_PROTECTION_TIME, OS_SID_GET_TASK_ID);
+    Os_CallErrorHook(E_OS_PROTECTION_TIME);
+    
+    return action;
+}
+
+/**
+ * @brief Start execution time measurement for a task
+ * @param TaskID Task to start measurement for
+ * @return StatusType E_OK or error code
+ */
+StatusType Os_StartExecutionTimeMeasurement(TaskType TaskID)
+{
+    #if (OS_EXTENDED_ERROR_CHECK == 1)
+    if (TaskID >= OS_TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+    
+    if (Os_TimingProtectionGlobal.initialized != TRUE)
+    {
+        return E_OS_STATE;
+    }
+    #endif
+    
+    #if (OS_EXECUTION_TIME_MONITORING == STD_ON)
+    /* Start execution time measurement */
+    Os_TimingProtectionCb[TaskID].startTime = Os_GetCurrentTimeInUs();
+    Os_TimingProtectionCb[TaskID].elapsedTime = 0U;
+    Os_TimingProtectionCb[TaskID].state = OS_TP_STATE_MONITORING;
+    #endif
+    
+    return E_OK;
+}
+
+/**
+ * @brief Stop execution time measurement for a task
+ * @param TaskID Task to stop measurement for
+ * @return StatusType E_OK or error code
+ */
+StatusType Os_StopExecutionTimeMeasurement(TaskType TaskID)
+{
+    TimeInMicrosecondsType currentTime;
+    TimeInMicrosecondsType elapsed;
+    
+    #if (OS_EXTENDED_ERROR_CHECK == 1)
+    if (TaskID >= OS_TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+    #endif
+    
+    #if (OS_EXECUTION_TIME_MONITORING == STD_ON)
+    if (Os_TimingProtectionCb[TaskID].state == OS_TP_STATE_MONITORING)
+    {
+        currentTime = Os_GetCurrentTimeInUs();
+        
+        /* Calculate elapsed time */
+        if (currentTime >= Os_TimingProtectionCb[TaskID].startTime)
+        {
+            elapsed = currentTime - Os_TimingProtectionCb[TaskID].startTime;
+        }
+        else
+        {
+            /* Handle overflow */
+            elapsed = (0xFFFFFFFFU - Os_TimingProtectionCb[TaskID].startTime) + currentTime;
+        }
+        
+        Os_TimingProtectionCb[TaskID].elapsedTime += elapsed;
+        Os_TimingProtectionCb[TaskID].state = OS_TP_STATE_IDLE;
+    }
+    #endif
+    
+    return E_OK;
+}
+
+/**
+ * @brief Check if task execution time budget is exceeded
+ * @param TaskID Task to check
+ * @return StatusType E_OK if within budget, E_OS_PROTECTION_TIME if exceeded
+ */
+StatusType Os_CheckExecutionTimeBudget(TaskType TaskID)
+{
+    TimeInMicrosecondsType currentTime;
+    TimeInMicrosecondsType elapsed;
+    StatusType result = E_OK;
+    
+    #if (OS_EXTENDED_ERROR_CHECK == 1)
+    if (TaskID >= OS_TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+    #endif
+    
+    #if (OS_EXECUTION_TIME_MONITORING == STD_ON)
+    if ((Os_TimingProtectionCb[TaskID].state == OS_TP_STATE_MONITORING) &&
+        (Os_TaskTimingConfig[TaskID].enableExecutionLimit == TRUE))
+    {
+        currentTime = Os_GetCurrentTimeInUs();
+        
+        /* Calculate elapsed time */
+        if (currentTime >= Os_TimingProtectionCb[TaskID].startTime)
+        {
+            elapsed = currentTime - Os_TimingProtectionCb[TaskID].startTime;
+        }
+        else
+        {
+            /* Handle overflow */
+            elapsed = (0xFFFFFFFFU - Os_TimingProtectionCb[TaskID].startTime) + currentTime;
+        }
+        
+        /* Add accumulated elapsed time from previous periods */
+        elapsed += Os_TimingProtectionCb[TaskID].elapsedTime;
+        
+        /* Check against budget */
+        if (elapsed > Os_TaskTimingConfig[TaskID].executionBudget)
+        {
+            /* Budget exceeded - handle violation */
+            (void)Os_HandleTimingViolation(OS_TP_VIOLATION_EXECUTION, (uint32)TaskID);
+            result = E_OS_PROTECTION_TIME;
+        }
+    }
+    #endif
+    
+    return result;
+}
+
+/**
+ * @brief Check task arrival time (inter-arrival time)
+ * @param TaskID Task being activated
+ * @return StatusType E_OK if activation is allowed, E_OS_PROTECTION_TIME if too frequent
+ */
+StatusType Os_CheckTaskArrivalTime(TaskType TaskID)
+{
+    TimeInMicrosecondsType currentTime;
+    TimeInMicrosecondsType timeSinceLastArrival;
+    StatusType result = E_OK;
+    
+    #if (OS_EXTENDED_ERROR_CHECK == 1)
+    if (TaskID >= OS_TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+    #endif
+    
+    #if (OS_ARRIVAL_TIME_MONITORING == STD_ON)
+    currentTime = Os_GetCurrentTimeInUs();
+    
+    if ((Os_TaskTimingConfig[TaskID].enableArrivalLimit == TRUE) &&
+        (Os_TimingProtectionCb[TaskID].lastArrivalTime != 0U))
+    {
+        /* Calculate time since last arrival */
+        if (currentTime >= Os_TimingProtectionCb[TaskID].lastArrivalTime)
+        {
+            timeSinceLastArrival = currentTime - Os_TimingProtectionCb[TaskID].lastArrivalTime;
+        }
+        else
+        {
+            /* Handle overflow */
+            timeSinceLastArrival = (0xFFFFFFFFU - Os_TimingProtectionCb[TaskID].lastArrivalTime) + currentTime;
+        }
+        
+        /* Check inter-arrival time */
+        if (timeSinceLastArrival < Os_TaskTimingConfig[TaskID].interArrivalTime)
+        {
+            /* Inter-arrival time violated - too frequent activation */
+            (void)Os_HandleTimingViolation(OS_TP_VIOLATION_ARRIVAL, (uint32)TaskID);
+            result = E_OS_PROTECTION_TIME;
+        }
+    }
+    
+    /* Update last arrival time */
+    Os_TimingProtectionCb[TaskID].lastArrivalTime = currentTime;
+    #endif
+    
+    return result;
+}
+
+/**
+ * @brief Start resource lock time measurement
+ * @param ResourceID Resource being locked
+ */
+void Os_StartResourceLockTimeMeasurement(ResourceType ResourceID)
+{
+    #if (OS_RESOURCE_LOCK_MONITORING == STD_ON)
+    if (ResourceID < OS_RESOURCE_COUNT)
+    {
+        Os_TimingProtectionCb[Os_GlobalState.runningTask].resourceLockStartTime = Os_GetCurrentTimeInUs();
+    }
+    #else
+    (void)ResourceID;
+    #endif
+}
+
+/**
+ * @brief Check if resource lock time budget is exceeded
+ * @param ResourceID Resource being checked
+ * @return StatusType E_OK if within budget, E_OS_PROTECTION_LOCKED if exceeded
+ */
+StatusType Os_CheckResourceLockTime(ResourceType ResourceID)
+{
+    TimeInMicrosecondsType currentTime;
+    TimeInMicrosecondsType lockTime;
+    StatusType result = E_OK;
+    
+    #if (OS_RESOURCE_LOCK_MONITORING == STD_ON)
+    if (ResourceID < OS_RESOURCE_COUNT)
+    {
+        currentTime = Os_GetCurrentTimeInUs();
+        
+        if (Os_TimingProtectionCb[Os_GlobalState.runningTask].resourceLockStartTime != 0U)
+        {
+            /* Calculate lock duration */
+            if (currentTime >= Os_TimingProtectionCb[Os_GlobalState.runningTask].resourceLockStartTime)
+            {
+                lockTime = currentTime - Os_TimingProtectionCb[Os_GlobalState.runningTask].resourceLockStartTime;
+            }
+            else
+            {
+                /* Handle overflow */
+                lockTime = (0xFFFFFFFFU - Os_TimingProtectionCb[Os_GlobalState.runningTask].resourceLockStartTime) + currentTime;
+            }
+            
+            /* Check against budget */
+            if (lockTime > Os_ResourceTimingConfig[ResourceID].lockBudget)
+            {
+                /* Budget exceeded - handle violation */
+                (void)Os_HandleTimingViolation(OS_TP_VIOLATION_RESOURCE_LOCK, (uint32)ResourceID);
+                result = E_OS_PROTECTION_LOCKED;
+            }
+        }
+    }
+    #else
+    (void)ResourceID;
+    #endif
+    
+    return result;
+}
+
+/**
+ * @brief Stop resource lock time measurement
+ * @param ResourceID Resource being released
+ */
+void Os_StopResourceLockTimeMeasurement(ResourceType ResourceID)
+{
+    #if (OS_RESOURCE_LOCK_MONITORING == STD_ON)
+    /* Final check before releasing */
+    (void)Os_CheckResourceLockTime(ResourceID);
+    
+    /* Clear lock start time */
+    if (ResourceID < OS_RESOURCE_COUNT)
+    {
+        Os_TimingProtectionCb[Os_GlobalState.runningTask].resourceLockStartTime = 0U;
+    }
+    #else
+    (void)ResourceID;
+    #endif
+}
+
+/**
+ * @brief Start all interrupts lock time measurement
+ */
+void Os_StartAllInterruptsLockMeasurement(void)
+{
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockAllStartTime = Os_GetCurrentTimeInUs();
+    #endif
+}
+
+/**
+ * @brief Check if all interrupts lock time budget is exceeded
+ * @return StatusType E_OK if within budget, E_OS_PROTECTION_LOCKED if exceeded
+ */
+StatusType Os_CheckAllInterruptsLockTime(void)
+{
+    TimeInMicrosecondsType currentTime;
+    TimeInMicrosecondsType lockTime;
+    StatusType result = E_OK;
+    
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    if (Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockAllStartTime != 0U)
+    {
+        currentTime = Os_GetCurrentTimeInUs();
+        
+        /* Calculate lock duration */
+        if (currentTime >= Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockAllStartTime)
+        {
+            lockTime = currentTime - Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockAllStartTime;
+        }
+        else
+        {
+            /* Handle overflow */
+            lockTime = (0xFFFFFFFFU - Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockAllStartTime) + currentTime;
+        }
+        
+        /* Check against budget */
+        if (lockTime > Os_IntLockTimingConfig.allInterruptLockBudget)
+        {
+            /* Budget exceeded - handle violation */
+            (void)Os_HandleTimingViolation(OS_TP_VIOLATION_INT_LOCK_ALL, (uint32)Os_GlobalState.runningTask);
+            result = E_OS_PROTECTION_LOCKED;
+        }
+    }
+    #endif
+    
+    return result;
+}
+
+/**
+ * @brief Stop all interrupts lock time measurement
+ */
+void Os_StopAllInterruptsLockMeasurement(void)
+{
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    /* Final check before enabling interrupts */
+    (void)Os_CheckAllInterruptsLockTime();
+    
+    /* Clear lock start time */
+    Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockAllStartTime = 0U;
+    #endif
+}
+
+/**
+ * @brief Start OS interrupts lock time measurement
+ */
+void Os_StartOsInterruptsLockMeasurement(void)
+{
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockOsStartTime = Os_GetCurrentTimeInUs();
+    #endif
+}
+
+/**
+ * @brief Check if OS interrupts lock time budget is exceeded
+ * @return StatusType E_OK if within budget, E_OS_PROTECTION_LOCKED if exceeded
+ */
+StatusType Os_CheckOsInterruptsLockTime(void)
+{
+    TimeInMicrosecondsType currentTime;
+    TimeInMicrosecondsType lockTime;
+    StatusType result = E_OK;
+    
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    if (Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockOsStartTime != 0U)
+    {
+        currentTime = Os_GetCurrentTimeInUs();
+        
+        /* Calculate lock duration */
+        if (currentTime >= Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockOsStartTime)
+        {
+            lockTime = currentTime - Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockOsStartTime;
+        }
+        else
+        {
+            /* Handle overflow */
+            lockTime = (0xFFFFFFFFU - Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockOsStartTime) + currentTime;
+        }
+        
+        /* Check against budget */
+        if (lockTime > Os_IntLockTimingConfig.osInterruptLockBudget)
+        {
+            /* Budget exceeded - handle violation */
+            (void)Os_HandleTimingViolation(OS_TP_VIOLATION_INT_LOCK_OS, (uint32)Os_GlobalState.runningTask);
+            result = E_OS_PROTECTION_LOCKED;
+        }
+    }
+    #endif
+    
+    return result;
+}
+
+/**
+ * @brief Stop OS interrupts lock time measurement
+ */
+void Os_StopOsInterruptsLockMeasurement(void)
+{
+    #if (OS_INTERRUPT_LOCK_MONITORING == STD_ON)
+    /* Final check before resuming interrupts */
+    (void)Os_CheckOsInterruptsLockTime();
+    
+    /* Clear lock start time */
+    Os_TimingProtectionCb[Os_GlobalState.runningTask].intLockOsStartTime = 0U;
+    #endif
+}
+
 /**
  * @brief Get task execution time
  * @param TaskID Task to query
@@ -2412,14 +3012,190 @@ StatusType Os_GetTaskExecutionTime(TaskType TaskID, TimeInMicrosecondsType *Valu
     }
     #endif
 
-    (void)TaskID;
     if (Value != NULL)
     {
-        *Value = 0U;  /* Not implemented in this version */
+        #if (OS_EXECUTION_TIME_MONITORING == STD_ON)
+        *Value = Os_TimingProtectionCb[TaskID].elapsedTime;
+        #else
+        *Value = 0U;
+        #endif
     }
 
-    return E_OS_NOFUNC;  /* Feature not available */
+    return E_OK;
 }
+
+/**
+ * @brief Get timing protection state for a task
+ * @param TaskID Task to query
+ * @param State Reference to store timing protection state
+ * @return StatusType E_OK or error code
+ */
+StatusType Os_GetTimingProtectionState(TaskType TaskID, Os_TimingProtectionStateType *State)
+{
+    #if (OS_EXTENDED_ERROR_CHECK == 1)
+    if (TaskID >= OS_TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+
+    if (State == NULL)
+    {
+        return E_OS_ILLEGAL_ADDRESS;
+    }
+    #endif
+
+    if (State != NULL)
+    {
+        #if (OS_TIMING_PROTECTION == STD_ON)
+        *State = Os_TimingProtectionCb[TaskID].state;
+        #else
+        *State = OS_TP_STATE_IDLE;
+        #endif
+    }
+
+    return E_OK;
+}
+
+/**
+ * @brief Get last timing violation information
+ * @param TaskID Task to query
+ * @param ViolationType Reference to store violation type
+ * @return StatusType E_OK or error code
+ */
+StatusType Os_GetLastTimingViolation(TaskType TaskID, Os_TimingViolationType *ViolationType)
+{
+    #if (OS_EXTENDED_ERROR_CHECK == 1)
+    if (TaskID >= OS_TASK_COUNT)
+    {
+        return E_OS_ID;
+    }
+
+    if (ViolationType == NULL)
+    {
+        return E_OS_ILLEGAL_ADDRESS;
+    }
+    #endif
+
+    if (ViolationType != NULL)
+    {
+        #if (OS_TIMING_PROTECTION == STD_ON)
+        *ViolationType = Os_TimingProtectionCb[TaskID].lastViolation;
+        #else
+        *ViolationType = OS_TP_VIOLATION_NONE;
+        #endif
+    }
+
+    return E_OK;
+}
+
+#else /* OS_TIMING_PROTECTION == STD_OFF */
+
+/* Stub implementations when timing protection is disabled */
+
+TimeInMicrosecondsType Os_GetCurrentTimeInUs(void)
+{
+    return 0U;
+}
+
+StatusType Os_InitTimingProtection(void)
+{
+    return E_OK;
+}
+
+ProtectionReturnType Os_HandleTimingViolation(Os_TimingViolationType ViolationType, uint32 ObjectID)
+{
+    (void)ViolationType;
+    (void)ObjectID;
+    return PRO_SHUTDOWN;
+}
+
+StatusType Os_StartExecutionTimeMeasurement(TaskType TaskID)
+{
+    (void)TaskID;
+    return E_OK;
+}
+
+StatusType Os_StopExecutionTimeMeasurement(TaskType TaskID)
+{
+    (void)TaskID;
+    return E_OK;
+}
+
+StatusType Os_CheckExecutionTimeBudget(TaskType TaskID)
+{
+    (void)TaskID;
+    return E_OK;
+}
+
+StatusType Os_CheckTaskArrivalTime(TaskType TaskID)
+{
+    (void)TaskID;
+    return E_OK;
+}
+
+void Os_StartResourceLockTimeMeasurement(ResourceType ResourceID)
+{
+    (void)ResourceID;
+}
+
+StatusType Os_CheckResourceLockTime(ResourceType ResourceID)
+{
+    (void)ResourceID;
+    return E_OK;
+}
+
+void Os_StopResourceLockTimeMeasurement(ResourceType ResourceID)
+{
+    (void)ResourceID;
+}
+
+void Os_StartAllInterruptsLockMeasurement(void)
+{
+}
+
+StatusType Os_CheckAllInterruptsLockTime(void)
+{
+    return E_OK;
+}
+
+void Os_StopAllInterruptsLockMeasurement(void)
+{
+}
+
+void Os_StartOsInterruptsLockMeasurement(void)
+{
+}
+
+StatusType Os_CheckOsInterruptsLockTime(void)
+{
+    return E_OK;
+}
+
+void Os_StopOsInterruptsLockMeasurement(void)
+{
+}
+
+StatusType Os_GetTimingProtectionState(TaskType TaskID, Os_TimingProtectionStateType *State)
+{
+    (void)TaskID;
+    if (State != NULL)
+    {
+        *State = OS_TP_STATE_IDLE;
+    }
+    return E_OK;
+}
+
+StatusType Os_GetLastTimingViolation(TaskType TaskID, Os_TimingViolationType *ViolationType)
+{
+    (void)TaskID;
+    if (ViolationType != NULL)
+    {
+        *ViolationType = OS_TP_VIOLATION_NONE;
+    }
+    return E_OK;
+}
+
+#endif /* OS_TIMING_PROTECTION */
 
 /*******************************************************************************
  * Control Implementation

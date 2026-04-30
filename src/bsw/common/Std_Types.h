@@ -88,6 +88,11 @@ typedef bool      boolean;  /**< Boolean type */
 /*==================================================================================================
 *                                     VERSION INFORMATION
 ==================================================================================================*/
+/** @brief AUTOSAR AR 版本 */
+#define STD_TYPES_AR_RELEASE_MAJOR_VERSION      4U
+#define STD_TYPES_AR_RELEASE_MINOR_VERSION      7U
+#define STD_TYPES_AR_RELEASE_REVISION_VERSION   0U
+
 /** @brief 供应商 ID */
 #define STD_TYPES_VENDOR_ID                     0x0055U  /* YuleTech */
 

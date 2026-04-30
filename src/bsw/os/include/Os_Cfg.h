@@ -112,8 +112,20 @@
 /*******************************************************************************
  * Configuration: Timing Protection
  ******************************************************************************/
-#define OS_TIMING_PROTECTION        (STD_OFF)
-#define OS_EXECUTION_TIME_MONITORING (STD_OFF)
+#define OS_TIMING_PROTECTION        (STD_ON)
+#define OS_EXECUTION_TIME_MONITORING (STD_ON)
+#define OS_ARRIVAL_TIME_MONITORING  (STD_ON)
+#define OS_RESOURCE_LOCK_MONITORING (STD_ON)
+#define OS_INTERRUPT_LOCK_MONITORING (STD_ON)
+
+/* Timing Protection Thresholds */
+#define OS_TP_TASK_BUDGET_DEFAULT       (10000U)    /* Default task budget: 10ms in us */
+#define OS_TP_ISR_BUDGET_DEFAULT        (1000U)     /* Default ISR budget: 1ms in us */
+#define OS_TP_ARRIVAL_DEFAULT           (5000U)     /* Default inter-arrival time: 5ms in us */
+#define OS_TP_RESOURCE_LOCK_DEFAULT     (1000U)     /* Default resource lock time: 1ms in us */
+#define OS_TP_INT_LOCK_ALL_DEFAULT      (500U)      /* Default all interrupt lock: 500us */
+#define OS_TP_INT_LOCK_OS_DEFAULT       (1000U)     /* Default OS interrupt lock: 1ms in us */
+#define OS_TP_TIME_FRAME_DEFAULT        (100000U)   /* Default time frame: 100ms in us */
 
 /*******************************************************************************
  * Configuration: Memory Protection
@@ -161,6 +173,79 @@ typedef TickType *TickRefType;
 
 /* Time in microseconds type for timing protection */
 typedef uint32 TimeInMicrosecondsType;
+
+/*******************************************************************************
+ * Timing Protection Types
+ ******************************************************************************/
+
+/* Timing Protection Budget Type */
+typedef uint32 Os_TimingBudgetType;
+
+/* Timing Protection State Type */
+typedef enum
+{
+    OS_TP_STATE_IDLE = 0,           /* Timing protection inactive */
+    OS_TP_STATE_MONITORING,         /* Timing protection active */
+    OS_TP_STATE_VIOLATED            /* Timing budget violated */
+} Os_TimingProtectionStateType;
+
+/* Task Timing Protection Configuration */
+typedef struct
+{
+    TaskType                    taskId;                 /* Associated task ID */
+    TimeInMicrosecondsType      executionBudget;        /* Max execution time per activation */
+    TimeInMicrosecondsType      timeFrame;              /* Monitoring time frame */
+    TimeInMicrosecondsType      interArrivalTime;       /* Min time between activations */
+    boolean                     enableExecutionLimit;   /* Enable execution time monitoring */
+    boolean                     enableArrivalLimit;     /* Enable inter-arrival monitoring */
+} Os_TaskTimingProtectionType;
+
+/* ISR Timing Protection Configuration */
+typedef struct
+{
+    ISRType                     isrId;                  /* Associated ISR ID */
+    TimeInMicrosecondsType      executionBudget;        /* Max ISR execution time */
+    boolean                     enableExecutionLimit;   /* Enable execution time monitoring */
+} Os_IsrTimingProtectionType;
+
+/* Resource Lock Timing Configuration */
+typedef struct
+{
+    ResourceType                resourceId;             /* Resource ID */
+    TimeInMicrosecondsType      lockBudget;             /* Max time resource can be locked */
+} Os_ResourceLockTimingType;
+
+/* Interrupt Lock Timing Configuration */
+typedef struct
+{
+    TimeInMicrosecondsType      allInterruptLockBudget; /* Max all interrupt lock time */
+    TimeInMicrosecondsType      osInterruptLockBudget;  /* Max OS interrupt lock time */
+} Os_InterruptLockTimingType;
+
+/* Timing Protection Violation Type */
+typedef enum
+{
+    OS_TP_VIOLATION_NONE = 0,           /* No violation */
+    OS_TP_VIOLATION_EXECUTION,          /* Execution time budget exceeded */
+    OS_TP_VIOLATION_ARRIVAL,            /* Inter-arrival time violated */
+    OS_TP_VIOLATION_RESOURCE_LOCK,      /* Resource lock time exceeded */
+    OS_TP_VIOLATION_INT_LOCK_ALL,       /* All interrupt lock time exceeded */
+    OS_TP_VIOLATION_INT_LOCK_OS         /* OS interrupt lock time exceeded */
+} Os_TimingViolationType;
+
+/* Timing Protection Control Block */
+typedef struct
+{
+    Os_TimingProtectionStateType    state;                  /* Current monitoring state */
+    Os_TimingViolationType          lastViolation;          /* Last violation type */
+    TimeInMicrosecondsType          startTime;              /* Execution start timestamp */
+    TimeInMicrosecondsType          elapsedTime;            /* Accumulated execution time */
+    TimeInMicrosecondsType          lastArrivalTime;        /* Last task activation time */
+    TimeInMicrosecondsType          resourceLockStartTime;  /* Resource lock start time */
+    TimeInMicrosecondsType          intLockAllStartTime;    /* All interrupt lock start time */
+    TimeInMicrosecondsType          intLockOsStartTime;     /* OS interrupt lock start time */
+    uint32                          violationCount;         /* Total violation count */
+} Os_TimingProtectionCbType;
 
 /*******************************************************************************
  * Error Codes Configuration
