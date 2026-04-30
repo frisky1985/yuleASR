@@ -74,6 +74,14 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/comm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/nm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/pdur/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/canm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/cansm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/dlt/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/cryif/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/fim/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/xcp/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/dem/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/crypto/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/os/include
     ${CMAKE_SOURCE_DIR}/mocks
     ${CMAKE_SOURCE_DIR}/unit
@@ -174,6 +182,15 @@ add_executable(test_ecum unit/services/test_ecum.c ${SERVICE_SOURCES} ${MOCK_SOU
 add_executable(test_comm unit/services/test_comm.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
 add_executable(test_nm unit/services/test_nm.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
 
+# New Module Tests
+add_executable(test_canm unit/services/test_canm.c ${MOCK_SOURCES})
+add_executable(test_cansm unit/services/test_cansm.c ${MOCK_SOURCES})
+add_executable(test_dlt unit/services/test_dlt.c ${MOCK_SOURCES})
+add_executable(test_cryif unit/services/test_cryif.c ${MOCK_SOURCES})
+add_executable(test_fim unit/services/test_fim.c ${MOCK_SOURCES})
+add_executable(test_xcp unit/xcp/test_xcp.c ${MOCK_SOURCES})
+add_executable(test_crypto unit/mcal/test_crypto.c ${MOCK_SOURCES})
+
 # Integration Tests
 add_executable(test_ecum_bswm_integration integration/bsw/test_ecum_bswm_integration.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
 add_executable(test_mcal_canif_integration integration/ecual/test_mcal_canif_integration.c ${ECUAL_SOURCES} ${MCAL_SOURCES} ${MOCK_SOURCES})
@@ -183,6 +200,7 @@ set(TEST_EXECUTABLES
     test_mcu test_port test_dio test_can test_spi
     test_gpt test_pwm test_adc test_wdg
     test_canif test_cantp test_ecum test_comm test_nm
+    test_canm test_cansm test_dlt test_cryif test_fim test_xcp test_crypto
     test_ecum_bswm_integration test_mcal_canif_integration
 )
 
@@ -214,6 +232,13 @@ add_test(NAME CanTp_Test COMMAND test_cantp)
 add_test(NAME EcuM_Test COMMAND test_ecum)
 add_test(NAME ComM_Test COMMAND test_comm)
 add_test(NAME Nm_Test COMMAND test_nm)
+add_test(NAME CanNm_Test COMMAND test_canm)
+add_test(NAME CanSm_Test COMMAND test_cansm)
+add_test(NAME Dlt_Test COMMAND test_dlt)
+add_test(NAME CryIf_Test COMMAND test_cryif)
+add_test(NAME FiM_Test COMMAND test_fim)
+add_test(NAME Xcp_Test COMMAND test_xcp)
+add_test(NAME Crypto_Test COMMAND test_crypto)
 add_test(NAME EcuM_BswM_Integration COMMAND test_ecum_bswm_integration)
 add_test(NAME MCAL_CanIf_Integration COMMAND test_mcal_canif_integration)
 
