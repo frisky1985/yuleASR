@@ -69,6 +69,7 @@ typedef struct
 
 typedef struct
 {
+    boolean             IsInitialized;      /* OS initialization state */
     boolean             IsRunning;
     AppModeType         CurrentAppMode;
     uint32              NumTasks;

@@ -1,0 +1,98 @@
+# YuleTech OS Configuration Example
+# 基于 AutoSAR OS 标准的配置示例
+
+os:
+  name: "YuleOS"
+  version: "1.0.0"
+  status: "STANDARD"
+  startup_hook: true
+  shutdown_hook: true
+  error_hook: true
+  pretask_hook: false
+  posttask_hook: false
+
+# 任务配置
+tasks:
+  - name: "Init"
+    priority: 10
+    activation: 1
+    autostart: true
+    schedule: "FULL"
+
+  - name: "Cyclic10ms"
+    priority: 5
+    activation: 1
+    autostart: false
+    schedule: "FULL"
+    events: ["Event10ms"]
+
+  - name: "Cyclic100ms"
+    priority: 3
+    activation: 1
+    autostart: false
+    schedule: "FULL"
+    resources: ["Resource1"]
+
+  - name: "Background"
+    priority: 1
+    activation: 1
+    autostart: false
+    schedule: "NON"
+
+# 报警配置
+alarms:
+  - name: "Alarm10ms"
+    counter: "SystemCounter"
+    action: "ACTIVATETASK"
+    task: "Cyclic10ms"
+    autostart: true
+    period: 10
+
+  - name: "Alarm100ms"
+    counter: "SystemCounter"
+    action: "ACTIVATETASK"
+    task: "Cyclic100ms"
+    autostart: true
+    period: 100
+
+  - name: "AlarmEvent"
+    counter: "SystemCounter"
+    action: "SETEVENT"
+    task: "Cyclic10ms"
+    event: "Event10ms"
+    autostart: false
+    period: 0
+
+# 资源配置
+resources:
+  - name: "Resource1"
+    priority_ceiling: 8
+
+  - name: "Resource2"
+    priority_ceiling: 6
+
+# 事件配置
+events:
+  - name: "Event10ms"
+    mask: 0x00000001
+
+  - name: "Event100ms"
+    mask: 0x00000002
+
+  - name: "EventShutdown"
+    mask: 0x80000000
+
+# 调度表配置
+schedule_tables:
+  - name: "ST_Main"
+    periodic: true
+    expiry_points:
+      - offset: 0
+        tasks: ["Cyclic10ms"]
+        events: []
+      - offset: 10
+        tasks: ["Cyclic100ms"]
+        events: []
+      - offset: 20
+        tasks: []
+        events: [["Cyclic10ms", "Event10ms"]]
