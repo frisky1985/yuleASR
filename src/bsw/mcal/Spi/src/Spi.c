@@ -172,15 +172,16 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
     
     tempDiv = refClock / BaudRate;
     
-    /* 计算预分额和后分额 */
-    for (preDiv = 0; preDiv < 16; preDiv++) {
+    /* 计算预分额和后分额 - 使用标志变量替代goto */
+    boolean found = FALSE;
+    for (preDiv = 0; preDiv < 16 && !found; preDiv++) {
         for (postDiv = 0; postDiv < 16; postDiv++) {
             if ((1u << preDiv) * (postDiv + 1)) >= tempDiv) {
-                goto done;
+                found = TRUE;
+                break;
             }
         }
     }
-done:
     
     uint32 periodreg = (preDiv << 0) | (postDiv << 4);
     *(base + (ECSPI_PERIODREG / 4)) = periodreg;
