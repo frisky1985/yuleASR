@@ -81,6 +81,14 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/fim/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/xcp/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/services/dem/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/soad/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/csm/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/keym/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/secoc/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/someip/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/someiptp/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/someipxf/include
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/stbm/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/mcal/crypto/include
     ${CMAKE_SOURCE_DIR}/../src/bsw/os/include
     ${CMAKE_SOURCE_DIR}/mocks
@@ -191,6 +199,33 @@ add_executable(test_fim unit/services/test_fim.c ${MOCK_SOURCES})
 add_executable(test_xcp unit/xcp/test_xcp.c ${MOCK_SOURCES})
 add_executable(test_crypto unit/mcal/test_crypto.c ${MOCK_SOURCES})
 
+# Security Module Tests
+add_executable(test_csm unit/csm/test_csm.c ${MOCK_SOURCES})
+add_executable(test_keym unit/keym/test_keym.c ${MOCK_SOURCES})
+add_executable(test_secoc unit/secoc/test_secoc.c ${MOCK_SOURCES})
+
+# DEM, PduR, SoAd Unit Tests
+set(DEM_SOURCES
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/dem/src/Dem.c
+)
+set(PDUR_SOURCES
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/pdur/src/PduR.c
+)
+set(SOAD_SOURCES
+    ${CMAKE_SOURCE_DIR}/../src/bsw/services/soad/src/SoAd.c
+)
+
+add_executable(test_dem unit/dem/test_dem.c ${DEM_SOURCES} ${MOCK_SOURCES})
+add_executable(test_pdur unit/pdur/test_pdur.c ${PDUR_SOURCES} ${MOCK_SOURCES})
+add_executable(test_soad unit/soad/test_soad.c ${SOAD_SOURCES} ${MOCK_SOURCES})
+
+# Communication Protocol Tests (New)
+add_executable(test_someip unit/someip/test_someip.c ${MOCK_SOURCES})
+add_executable(test_someiptp unit/someiptp/test_someiptp.c ${MOCK_SOURCES})
+add_executable(test_someipxf unit/someipxf/test_someipxf.c ${MOCK_SOURCES})
+add_executable(test_stbm unit/stbm/test_stbm.c ${MOCK_SOURCES})
+add_executable(test_schm unit/schm/test_schm.c ${MOCK_SOURCES})
+
 # Integration Tests
 add_executable(test_ecum_bswm_integration integration/bsw/test_ecum_bswm_integration.c ${SERVICE_SOURCES} ${MOCK_SOURCES})
 add_executable(test_mcal_canif_integration integration/ecual/test_mcal_canif_integration.c ${ECUAL_SOURCES} ${MCAL_SOURCES} ${MOCK_SOURCES})
@@ -201,6 +236,9 @@ set(TEST_EXECUTABLES
     test_gpt test_pwm test_adc test_wdg
     test_canif test_cantp test_ecum test_comm test_nm
     test_canm test_cansm test_dlt test_cryif test_fim test_xcp test_crypto
+    test_csm test_keym test_secoc
+    test_dem test_pdur test_soad
+    test_someip test_someiptp test_someipxf test_stbm test_schm
     test_ecum_bswm_integration test_mcal_canif_integration
 )
 
@@ -239,6 +277,17 @@ add_test(NAME CryIf_Test COMMAND test_cryif)
 add_test(NAME FiM_Test COMMAND test_fim)
 add_test(NAME Xcp_Test COMMAND test_xcp)
 add_test(NAME Crypto_Test COMMAND test_crypto)
+add_test(NAME CSM_Test COMMAND test_csm)
+add_test(NAME KeyM_Test COMMAND test_keym)
+add_test(NAME SecOC_Test COMMAND test_secoc)
+add_test(NAME DEM_Test COMMAND test_dem)
+add_test(NAME PduR_Test COMMAND test_pdur)
+add_test(NAME SoAd_Test COMMAND test_soad)
+add_test(NAME SOMEIP_Test COMMAND test_someip)
+add_test(NAME SOMEIPTP_Test COMMAND test_someiptp)
+add_test(NAME SOMEIPXF_Test COMMAND test_someipxf)
+add_test(NAME StbM_Test COMMAND test_stbm)
+add_test(NAME SchM_Test COMMAND test_schm)
 add_test(NAME EcuM_BswM_Integration COMMAND test_ecum_bswm_integration)
 add_test(NAME MCAL_CanIf_Integration COMMAND test_mcal_canif_integration)
 

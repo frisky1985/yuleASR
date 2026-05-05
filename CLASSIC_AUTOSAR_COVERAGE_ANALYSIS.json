@@ -444,7 +444,7 @@
         "StbM_MemMap.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/stbm",
+      "path": "src/bsw/services/stbm",
       "status": "functional"
     },
     "SomeIpXf": {
@@ -455,7 +455,7 @@
         "SomeIpXf_MemMap.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/someipxf",
+      "path": "src/bsw/services/someipxf",
       "status": "functional"
     },
     "Csm": {
@@ -466,7 +466,7 @@
         "Csm.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/csm",
+      "path": "src/bsw/services/csm",
       "status": "complete"
     },
     "Mem": {
@@ -477,7 +477,7 @@
         "Mem_MemMap.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/mem",
+      "path": "src/bsw/services/mem",
       "status": "complete"
     },
     "SoAd": {
@@ -488,7 +488,7 @@
         "SoAd_MemMap.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/soad",
+      "path": "src/bsw/services/soad",
       "status": "functional"
     },
     "SecOC": {
@@ -499,7 +499,7 @@
         "SecOC_Cfg.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/secoc",
+      "path": "src/bsw/services/secoc",
       "status": "complete"
     },
     "SomeIpTp": {
@@ -510,7 +510,7 @@
         "SomeIpTp.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/someiptp",
+      "path": "src/bsw/services/someiptp",
       "status": "functional"
     },
     "WdgM": {
@@ -521,7 +521,7 @@
         "Wdgm_Cfg.h"
       ],
       "layer": "Services",
-      "path": "src/bsw/service/wdgm",
+      "path": "src/bsw/services/wdgm",
       "status": "functional"
     }
   },

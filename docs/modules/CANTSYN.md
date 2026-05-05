@@ -1,32 +1,63 @@
-# CanTSyn (CAN Time Synchronization) 使用手册
+# CAN Time Synchronization (CANTSYN)
 
-## 概述
+## 模块概述
 
-CanTSyn实现AUTOSAR基于CAN的时间同步机制，支持全局时间基准(Global Time Base)同步。
+CAN 时间同步
 
-## 功能特点
+## AUTOSAR 版本
 
-- SYNC报文发送和接收
-- Follow-up报文支持
-- 时间戳记录
-- 时间偏移补偿
+- AUTOSAR Classic Platform 4.4.0
 
-## API参考
+## 主要功能
 
-| 函数 | 功能 |
-|------|------|
-| `CanTSyn_TransmitSync` | 发送SYNC报文 |
-| `CanTSyn_TransmitFollowUp` | 发送Follow-up报文 |
-| `CanTSyn_GetCurrentTime` | 获取当前时间 |
+- 初始化和反初始化
+- 核心功能处理
+- 事件管理
 
-## 配置示例
+## 主要 API
+
+| API 名称 | 功能 |
+|---------|------|
+| Cantsyn_Init() | 模块初始化 |
+| Cantsyn_DeInit() | 模块反初始化 |
+| Cantsyn_MainFunction() | 主函数 |
+
+## 配置参数
+
+### 编译时配置
+
+- 模块使能/禁用
+- 功能开关
+
+### 链接时配置
+
+- 配置表参数
+- 回调函数指针
+
+## 依赖关系
+
+- DET (可选)
+- DEM (可选)
+
+## 使用示例
 
 ```c
-const CanTSyn_TimeDomainConfigType CanTSyn_Config[] = {
-    {
-        .TimeDomainId = 0,
-        .SyncPeriod = 10,       /* 10ms */
-        .TxPduId = 0
-    }
-};
+#include "Cantsyn.h"
+
+void example(void)
+{
+    /* 初始化 */
+    Cantsyn_Init(NULL);
+    
+    /* 主函数 */
+    Cantsyn_MainFunction();
+}
 ```
+
+## 源代码路径
+
+- `src/bsw/services/cantsyn/`
+
+## 测试
+
+- 单元测试: `tests/unit/cantsyn/`

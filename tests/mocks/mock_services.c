@@ -72,6 +72,15 @@ void Com_Mock_GetSignalData(uint16 signalId, uint8* data, uint8* length)
 }
 
 /*==================================================================================================
+*                                      COM MOCK IMPLEMENTATION
+==================================================================================================*/
+void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
+{
+    (void)RxPduId;
+    (void)PduInfoPtr;
+}
+
+/*==================================================================================================
 *                                      PDUR MOCK FUNCTIONS
 ==================================================================================================*/
 void PduR_Mock_Reset(void)
@@ -146,6 +155,15 @@ void Dcm_Mock_SetDidData(uint16 did, uint8* data, uint16 length)
         Dcm_MockDids[did].DataLength = length;
         Dcm_MockDids[did].Valid = TRUE;
     }
+}
+
+/*==================================================================================================
+*                                      DCM MOCK IMPLEMENTATION
+==================================================================================================*/
+void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
+{
+    (void)RxPduId;
+    (void)PduInfoPtr;
 }
 
 /*==================================================================================================

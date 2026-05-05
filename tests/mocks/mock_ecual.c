@@ -74,6 +74,24 @@ void CanIf_Mock_SetPduMode(uint8 pduId, uint8 mode)
 }
 
 /*==================================================================================================
+*                                      CANIF MOCK IMPLEMENTATION
+==================================================================================================*/
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
+{
+    (void)TxPduId;
+    (void)PduInfoPtr;
+    return E_OK;
+}
+
+void CanIf_RxIndication(uint8 Hrh, uint32 CanId, uint8 CanDlc, const uint8* CanSduPtr)
+{
+    (void)Hrh;
+    (void)CanId;
+    (void)CanDlc;
+    (void)CanSduPtr;
+}
+
+/*==================================================================================================
 *                                      CANTP MOCK FUNCTIONS
 ==================================================================================================*/
 void CanTp_Mock_Reset(void)

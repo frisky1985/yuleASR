@@ -29,7 +29,7 @@
 | Wdgm_MemMap.h | ✓ | 58 行, 内存映射 |
 | Wdgm.c | ✓ | 429 行, 完整实现 |
 | Wdgm_Test.c | ✓ | 319 行, 10 测试用例 |
-| 目录结构 | ✓ | src/bsw/service/wdgm/... |
+| 目录结构 | ✓ | src/bsw/services/wdgm/... |
 
 **结果:** PASS - 所有必要文件都已创建
 

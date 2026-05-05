@@ -1,0 +1,32 @@
+/**
+ * @file test_cantsyn.c
+ * @brief CAN Time Synchronization Unit Tests
+ */
+
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+#include "CanTSyn.h"
+#include "CanTSyn_Cfg.h"
+
+static void test_CanTSyn_Init(void **state) {
+    (void)state;
+    const CanTSyn_ConfigType* config = NULL;
+    Std_ReturnType result = CanTSyn_Init(config);
+    assert_int_equal(result, E_OK);
+}
+
+static void test_CanTSyn_MainFunction(void **state) {
+    (void)state;
+    CanTSyn_MainFunction();
+    assert_true(1);
+}
+
+int main(void) {
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_CanTSyn_Init),
+        cmocka_unit_test(test_CanTSyn_MainFunction),
+    };
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}

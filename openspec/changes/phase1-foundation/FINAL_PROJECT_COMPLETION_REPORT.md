@@ -97,10 +97,10 @@
 
 | 模块 | 路径 | API数 | 代码行 | 功能 |
 |------|------|:-----:|:------:|------|
-| **SoAd** | service/soad/ | 10 | ~890 | Socket适配器，TCP/UDP连接管理 |
-| **SomeIpXf** | service/someipxf/ | 8 | ~936 | SOME/IP数据序列化/反序列化 |
-| **SomeIpTp** | service/someiptp/ | 6 | ~654 | 大数据分片传输 (最大64KB) |
-| **StbM** | service/stbm/ | 10 | ~847 | gPTP时间同步，速率校正 |
+| **SoAd** | services/soad/ | 10 | ~890 | Socket适配器，TCP/UDP连接管理 |
+| **SomeIpXf** | services/someipxf/ | 8 | ~936 | SOME/IP数据序列化/反序列化 |
+| **SomeIpTp** | services/someiptp/ | 6 | ~654 | 大数据分片传输 (最大64KB) |
+| **StbM** | services/stbm/ | 10 | ~847 | gPTP时间同步，速率校正 |
 
 ### 依赖关系
 ```
@@ -193,13 +193,13 @@ src/bsw/mcal/fls/src/Fls_Hw.c                    (Flash硬件抽象)
 src/bsw/mcal/fls/include/Fls_Hw.h
 src/bsw/mcal/wdg/src/Wdg_Hw.c                    (看门狗硬件抽象)
 src/bsw/mcal/wdg/include/Wdg_Hw.h
-src/bsw/service/soad/                            (Socket适配器)
+src/bsw/services/soad/                            (Socket适配器)
 ├── SoAd.h, SoAd.c, SoAd_Cfg.h, SoAd_MemMap.h
-src/bsw/service/someipxf/                        (SOME/IP转换器)
+src/bsw/services/someipxf/                        (SOME/IP转换器)
 ├── SomeIpXf.h, SomeIpXf.c, SomeIpXf_Cfg.h, SomeIpXf_MemMap.h
-src/bsw/service/someiptp/                        (SOME/IP传输协议)
+src/bsw/services/someiptp/                        (SOME/IP传输协议)
 ├── SomeIpTp.h, SomeIpTp.c, SomeIpTp_Cfg.h, SomeIpTp_MemMap.h
-src/bsw/service/stbm/                            (时间同步管理器)
+src/bsw/services/stbm/                            (时间同步管理器)
 ├── StbM.h, StbM.c, StbM_Cfg.h, StbM_MemMap.h
 tests/integration/system_integration_test.c      (系统集成测试)
 tests/integration/mock_flshw.h/c                 (Flash mock层)

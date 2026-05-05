@@ -58,4 +58,31 @@
     #undef DET_STOP_SEC_CODE
 #endif
 
+/* FiM Module Code Sections */
+#ifdef FIM_START_SEC_CODE
+    #undef FIM_START_SEC_CODE
+#endif
+
+#ifdef FIM_STOP_SEC_CODE
+    #undef FIM_STOP_SEC_CODE
+#endif
+
+/* FiM Module Variable Sections */
+#ifdef FIM_START_SEC_VAR_CLEARED_UNSPECIFIED
+    #undef FIM_START_SEC_VAR_CLEARED_UNSPECIFIED
+#endif
+
+#ifdef FIM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+    #undef FIM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+#endif
+
+/* FiM Module Configuration Data Sections */
+#ifdef FIM_START_SEC_CONFIG_DATA_UNSPECIFIED
+    #undef FIM_START_SEC_CONFIG_DATA_UNSPECIFIED
+#endif
+
+#ifdef FIM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+    #undef FIM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#endif
+
 #endif /* MEMMAP_H */

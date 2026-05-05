@@ -14,29 +14,29 @@
 ### 1. Mem (Memory Service) - 内存管理服务
 | 文件 | 路径 | 状态 |
 |:-----|:-----|:----:|
-| Mem.h | src/bsw/service/mem/include/Mem.h | ✅ |
-| Mem_Cfg.h | src/bsw/service/mem/include/Mem_Cfg.h | ✅ |
-| Mem_MemMap.h | src/bsw/service/mem/include/Mem_MemMap.h | ✅ |
-| Mem.c | src/bsw/service/mem/src/Mem.c | ✅ |
-| Mem_Test.c | src/bsw/service/mem/test/Mem_Test.c | ✅ |
+| Mem.h | src/bsw/services/mem/include/Mem.h | ✅ |
+| Mem_Cfg.h | src/bsw/services/mem/include/Mem_Cfg.h | ✅ |
+| Mem_MemMap.h | src/bsw/services/mem/include/Mem_MemMap.h | ✅ |
+| Mem.c | src/bsw/services/mem/src/Mem.c | ✅ |
+| Mem_Test.c | src/bsw/services/mem/test/Mem_Test.c | ✅ |
 
 ### 2. Csm (Crypto Services Manager) - 加密服务管理器
 | 文件 | 路径 | 状态 |
 |:-----|:-----|:----:|
-| Csm.h | src/bsw/service/csm/include/Csm.h | ✅ |
-| Csm_Cfg.h | src/bsw/service/csm/include/Csm_Cfg.h | ✅ |
-| Csm_MemMap.h | src/bsw/service/csm/include/Csm_MemMap.h | ✅ |
-| Csm.c | src/bsw/service/csm/src/Csm.c | ✅ |
-| Csm_Test.c | src/bsw/service/csm/test/Csm_Test.c | ✅ |
+| Csm.h | src/bsw/services/csm/include/Csm.h | ✅ |
+| Csm_Cfg.h | src/bsw/services/csm/include/Csm_Cfg.h | ✅ |
+| Csm_MemMap.h | src/bsw/services/csm/include/Csm_MemMap.h | ✅ |
+| Csm.c | src/bsw/services/csm/src/Csm.c | ✅ |
+| Csm_Test.c | src/bsw/services/csm/test/Csm_Test.c | ✅ |
 
 ### 3. SecOC (Secure Onboard Communication) - 安全通信
 | 文件 | 路径 | 状态 |
 |:-----|:-----|:----:|
-| SecOC.h | src/bsw/service/secoc/include/SecOC.h | ✅ |
-| SecOC_Cfg.h | src/bsw/service/secoc/include/SecOC_Cfg.h | ✅ |
-| SecOC_MemMap.h | src/bsw/service/secoc/include/SecOC_MemMap.h | ✅ |
-| SecOC.c | src/bsw/service/secoc/src/SecOC.c | ✅ |
-| SecOC_Test.c | src/bsw/service/secoc/test/SecOC_Test.c | ✅ |
+| SecOC.h | src/bsw/services/secoc/include/SecOC.h | ✅ |
+| SecOC_Cfg.h | src/bsw/services/secoc/include/SecOC_Cfg.h | ✅ |
+| SecOC_MemMap.h | src/bsw/services/secoc/include/SecOC_MemMap.h | ✅ |
+| SecOC.c | src/bsw/services/secoc/src/SecOC.c | ✅ |
+| SecOC_Test.c | src/bsw/services/secoc/test/SecOC_Test.c | ✅ |
 
 ---
 
@@ -180,7 +180,7 @@ SecOC (依赖: Csm, PduR, Det)
 ### 输出工件
 
 ```
-src/bsw/service/
+src/bsw/services/
 ├── mem/
 │   ├── include/
 │   │   ├── Mem.h
