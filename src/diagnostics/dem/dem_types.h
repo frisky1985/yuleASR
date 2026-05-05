@@ -428,3 +428,214 @@ typedef enum {
 #endif
 
 #endif /* DEM_TYPES_H */
+
+
+/*==================================================================================================
+ *                                      ADDITIONAL TYPE DEFINITIONS
+ * CRITICAL FIX: Added missing types for AUTOSAR compliance
+==================================================================================================*/
+
+/* DTC Group Type */
+typedef uint32 Dem_DTCGroupType;
+#define DEM_DTC_GROUP_ALL_DTCS                (0x000000U)
+#define DEM_DTC_GROUP_EMISSION_DTCS           (0x010000U)
+#define DEM_DTC_GROUP_CHASSIS_DTCS            (0x020000U)
+#define DEM_DTC_GROUP_POWERTRAIN_DTCS         (0x030000U)
+#define DEM_DTC_GROUP_NETWORK_DTCS            (0x040000U)
+#define DEM_DTC_GROUP_BODY_DTCS               (0x050000U)
+#define DEM_DTC_GROUP_UDS_DTCS                (0x060000U)
+
+/* Initialize Monitor Reason Type */
+typedef uint8 Dem_InitMonitorReasonType;
+#define DEM_INIT_MONITOR_CLEAR                (0x00U)
+#define DEM_INIT_MONITOR_RESTART              (0x01U)
+#define DEM_INIT_MONITOR_REENABLED            (0x02U)
+#define DEM_INIT_MONITOR_STORAGE_REENABLED    (0x03U)
+
+/* IUMPR Denominator Condition ID Type */
+typedef uint8 Dem_IumprDenomCondIdType;
+#define DEM_IUMPR_DENOM_COND_COLDSTART        (0x00U)
+#define DEM_IUMPR_DENOM_COND_EVAP             (0x01U)
+#define DEM_IUMPR_DENOM_COND_500MI            (0x02U)
+#define DEM_IUMPR_DENOM_COND_NOIDLE           (0x03U)
+
+/* IUMPR Denominator Condition Status Type */
+typedef uint8 Dem_IumprDenomCondStatusType;
+#define DEM_IUMPR_DENOM_COND_NOT_REACHED      (0x00U)
+#define DEM_IUMPR_DENOM_COND_REACHED          (0x01U)
+#define DEM_IUMPR_DENOM_COND_INHIBITED        (0x02U)
+
+/* Operation Cycle ID Type */
+typedef uint8 Dem_OperationCycleIdType;
+#define DEM_OPCYC_IGNITION                    (0x00U)
+#define DEM_OPCYC_OBD_DCY                     (0x01U)
+#define DEM_OPCYC_WARMUP                      (0x02U)
+#define DEM_OPCYC_POWER                       (0x03U)
+
+/* Operation Cycle Type */
+typedef uint8 Dem_OperationCycleType;
+#define DEM_OPCYC_IGNITION_TYPE               (0x00U)
+#define DEM_OPCYC_OBD_DCY_TYPE                (0x01U)
+#define DEM_OPCYC_WARMUP_TYPE                 (0x02U)
+#define DEM_OPCYC_POWER_TYPE                  (0x03U)
+
+/* Operation Cycle State Type */
+typedef uint8 Dem_OperationCycleStateType;
+#define DEM_CYCLE_STATE_START                 (0x00U)
+#define DEM_CYCLE_STATE_END                   (0x01U)
+
+/* Debounce Algorithm Class Type */
+typedef uint8 Dem_DebounceAlgorithmClassType;
+#define DEM_DEBOUNCE_COUNTER_BASED            (0x00U)
+#define DEM_DEBOUNCE_TIME_BASED               (0x01U)
+#define DEM_DEBOUNCE_MONITOR_BASED            (0x02U)
+#define DEM_DEBOUNCE_FREQUENCY_BASED          (0x03U)
+
+/* Indicator Type */
+typedef uint8 Dem_IndicatorStatusType;
+#define DEM_INDICATOR_OFF                     (0x00U)
+#define DEM_INDICATOR_CONTINUOUS              (0x01U)
+#define DEM_INDICATOR_BLINKING                (0x02U)
+#define DEM_INDICATOR_BLINKING_CONT           (0x03U)
+#define DEM_INDICATOR_SLOW_BLINKING           (0x04U)
+#define DEM_INDICATOR_FAST_BLINKING           (0x05U)
+
+/* Indicator Behavior */
+#define DEM_INDICATOR_BEHAVIOR_FAILURE        (0x00U)
+#define DEM_INDICATOR_BEHAVIOR_HEALING        (0x01U)
+
+/* Update Rule Type */
+typedef uint8 Dem_UpdateRuleType;
+#define DEM_UPDATE_RECORD_NO                  (0x00U)
+#define DEM_UPDATE_RECORD_YES                 (0x01U)
+#define DEM_UPDATE_RECORD_UPDATE              (0x02U)
+
+/* Event Status Extended Type */
+typedef uint8 Dem_EventStatusExtendedType;
+#define DEM_EVENT_STATUS_EXTENDED_INIT        (0x00U)
+
+/* DTC Status Mask Type */
+typedef uint8 Dem_DTCStatusMaskType;
+
+/* Severity Type */
+typedef uint8 Dem_DTCSeverityType;
+#define DEM_SEVERITY_NO_SEVERITY              (0x00U)
+#define DEM_SEVERITY_MAINTENANCE_ONLY         (0x01U)
+#define DEM_SEVERITY_CHECK_AT_NEXT_HALT       (0x02U)
+#define DEM_SEVERITY_CHECK_IMMEDIATELY        (0x04U)
+
+/* Functional Unit Type */
+typedef uint8 Dem_FunctionalUnitType;
+
+/* Client ID Type */
+typedef uint8 Dem_ClientIdType;
+
+/* Clear DTC Type */
+typedef uint8 Dem_ClearDTCType;
+#define DEM_CLEAR_ALL_DTCS                    (0x01U)
+#define DEM_CLEAR_EMISSION_RELATED_DTCS       (0x02U)
+
+/* Control DTC Setting Type */
+typedef uint8 Dem_ControlDTCSettingType;
+#define DEM_CONTROL_DTC_SETTING_ON            (0x00U)
+#define DEM_CONTROL_DTC_SETTING_OFF           (0x01U)
+
+/* Enable Condition Type */
+typedef uint8 Dem_EnableConditionType;
+#define DEM_ENABLE_CONDITION_GENERIC          (0x00U)
+
+/* Storage Condition Type */
+typedef uint8 Dem_StorageConditionType;
+#define DEM_STORAGE_CONDITION_GENERIC         (0x00U)
+
+/* Event Memory Entry Type */
+typedef struct {
+    Dem_EventIdType EventId;
+    uint32 DTC;
+    Dem_EventStatusExtendedType EventStatus;
+    Dem_DTCStatusMaskType DTCStatus;
+    uint16 OccurrenceCounter;
+    uint8 AgingCounter;
+    uint16 Timestamp;
+    boolean ExtendedDataRecorded;
+    boolean FreezeFrameRecorded;
+} Dem_EventMemoryEntryType;
+
+/* Event Queue Entry Type */
+typedef struct {
+    Dem_EventIdType EventId;
+    Dem_EventStatusType EventStatus;
+    uint8 Priority;
+    uint32 Timestamp;
+} Dem_EventQueueEntryType;
+
+/* Debounce Counter Based Type */
+typedef struct {
+    sint16 Counter;
+    sint16 IncrementStep;
+    sint16 DecrementStep;
+    sint16 FailedThreshold;
+    sint16 PassedThreshold;
+} Dem_DebounceCounterBasedType;
+
+/* Debounce Time Based Type */
+typedef struct {
+    uint16 Timer;
+    uint16 FailedThreshold;
+    uint16 PassedThreshold;
+    boolean TimerDirection;
+} Dem_DebounceTimeBasedType;
+
+/* Debounce Info Type */
+typedef struct {
+    Dem_DebounceAlgorithmClassType Algorithm;
+    union {
+        Dem_DebounceCounterBasedType Counter;
+        Dem_DebounceTimeBasedType Time;
+    } Data;
+} Dem_DebounceInfoType;
+
+/* Aging Data Type */
+typedef struct {
+    uint8 AgingCounter;
+    boolean AgingAllowed;
+    Dem_OperationCycleIdType AgingCycle;
+} Dem_AgingDataType;
+
+/* OCC (Occurrence Counter) Type */
+typedef struct {
+    uint16 Counter;
+    uint16 Threshold;
+} Dem_OCCType;
+
+/* Counters Type */
+typedef struct {
+    uint16 FailureCounter;
+    uint16 HealingCounter;
+    uint8 ConsecutiveFailedCounter;
+    uint8 ConsecutivePassedCounter;
+} Dem_CountersType;
+
+/* Indicator Attribute Type */
+typedef struct {
+    uint8 IndicatorId;
+    uint8 Behavior;
+    uint8 FailureCycleThreshold;
+    uint8 HealingCycleThreshold;
+} Dem_IndicatorAttributeType;
+
+/* Freeze Frame Data Type */
+typedef struct {
+    uint8 RecordNumber;
+    uint8 Data[DEM_CFG_MAX_FREEZEFRAME_SIZE];
+    uint16 DataSize;
+    uint32 Timestamp;
+} Dem_FreezeFrameDataType;
+
+/* Extended Data Type */
+typedef struct {
+    uint8 RecordNumber;
+    uint8 Data[DEM_CFG_MAX_EXTENDED_DATA_SIZE];
+    uint16 DataSize;
+} Dem_ExtendedDataType;
+

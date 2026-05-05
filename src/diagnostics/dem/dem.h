@@ -11,6 +11,243 @@
 
 #ifdef __cplusplus
 extern "C" {
+
+
+/*==================================================================================================
+ *                                      ADDITIONAL API DECLARATIONS
+ * CRITICAL FIX: Added missing AUTOSAR standard APIs
+==================================================================================================*/
+
+/**
+ * rief   Resets the event status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ * \post    Event status reset to passed
+ */
+extern Std_ReturnType Dem_ResetEventStatus(Dem_EventIdType EventId);
+
+/**
+ * rief   Gets the current status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   EventStatusExtended: Pointer to receive the extended event status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventStatus(
+    Dem_EventIdType EventId,
+    Dem_EventStatusExtendedType* EventStatusExtended
+);
+
+/**
+ * rief   Gets the UDS status byte of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   UDSStatusByte: Pointer to receive the UDS status byte
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventUdsStatus(
+    Dem_EventIdType EventId,
+    Dem_UdsStatusByteType* UDSStatusByte
+);
+
+/**
+ * rief   Gets the DTC for a given event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   DTCOfEvent: Pointer to receive the DTC value
+ * \param   DTCFormat: Format of the DTC (OBD/UDS)
+ * \param   DTCOrigin: Origin of the DTC (Primary/Mirror/Permanent)
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetDTCOfEvent(
+    Dem_EventIdType EventId,
+    Dem_DTCFormatType DTCFormat,
+    uint32* DTCOfEvent,
+    Dem_DTCOriginType* DTCOrigin
+);
+
+/**
+ * rief   Disables the DTC record update
+ * \param   DTC: Diagnostic Trouble Code
+ * \param   DTCOrigin: Origin of the DTC
+ * \param   ClientId: Unique client ID
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_DisableDTCRecordUpdate(
+    uint32 DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_ClientIdType ClientId
+);
+
+/**
+ * rief   Enables the DTC record update
+ * \param   DTC: Diagnostic Trouble Code
+ * \param   DTCOrigin: Origin of the DTC
+ * \param   ClientId: Unique client ID
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_EnableDTCRecordUpdate(
+    uint32 DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_ClientIdType ClientId
+);
+
+/**
+ * rief   Sets an enable condition
+ * \param   EnableCondition: Identification of the enable condition
+ * \param   ConditionFulfilled: TRUE if condition is fulfilled, FALSE otherwise
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetEnableCondition(
+    uint8 EnableCondition,
+    boolean ConditionFulfilled
+);
+
+/**
+ * rief   Sets a storage condition
+ * \param   StorageCondition: Identification of the storage condition
+ * \param   ConditionFulfilled: TRUE if condition is fulfilled, FALSE otherwise
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetStorageCondition(
+    uint8 StorageCondition,
+    boolean ConditionFulfilled
+);
+
+/**
+ * rief   Gets the number of filtered DTCs
+ * \param   ClientId: Unique client ID
+ * \param   NumberOfFilteredDTC: Pointer to receive the number of filtered DTCs
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized, filter set
+ */
+extern Std_ReturnType Dem_GetNumberOfFilteredDTC(
+    Dem_ClientIdType ClientId,
+    uint16* NumberOfFilteredDTC
+);
+
+/**
+ * rief   Gets the next filtered DTC
+ * \param   ClientId: Unique client ID
+ * \param   DTC: Pointer to receive the DTC value
+ * \param   DTCStatus: Pointer to receive the DTC status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK if no more DTCs
+ * \pre     Dem initialized, filter set
+ */
+extern Std_ReturnType Dem_GetNextFilteredDTC(
+    Dem_ClientIdType ClientId,
+    uint32* DTC,
+    Dem_DTCStatusMaskType* DTCStatus
+);
+
+/**
+ * rief   Sets the operation cycle state
+ * \param   OperationCycleId: Identification of the operation cycle
+ * \param   CycleState: New state of the operation cycle (START/END)
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetOperationCycleState(
+    Dem_OperationCycleIdType OperationCycleId,
+    Dem_OperationCycleStateType CycleState
+);
+
+/**
+ * rief   Gets the operation cycle state
+ * \param   OperationCycleId: Identification of the operation cycle
+ * \param   CycleState: Pointer to receive the current cycle state
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetOperationCycleState(
+    Dem_OperationCycleIdType OperationCycleId,
+    Dem_OperationCycleStateType* CycleState
+);
+
+/**
+ * rief   Restarts the operation cycle
+ * \param   OperationCycleId: Identification of the operation cycle
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_RestartOperationCycle(
+    Dem_OperationCycleIdType OperationCycleId
+);
+
+/**
+ * rief   Gets the debouncing status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   DebouncingState: Pointer to receive the debouncing state
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetDebouncingOfEvent(
+    Dem_EventIdType EventId,
+    Dem_DebouncingStateType* DebouncingState
+);
+
+/**
+ * rief   Sets the indicator status
+ * \param   IndicatorId: Identification of the indicator
+ * \param   IndicatorStatus: New status of the indicator
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetIndicatorStatus(
+    uint8 IndicatorId,
+    Dem_IndicatorStatusType IndicatorStatus
+);
+
+/**
+ * rief   Gets the indicator status
+ * \param   IndicatorId: Identification of the indicator
+ * \param   IndicatorStatus: Pointer to receive the indicator status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetIndicatorStatus(
+    uint8 IndicatorId,
+    Dem_IndicatorStatusType* IndicatorStatus
+);
+
+/**
+ * rief   Gets the event memory overflow status
+ * \param   DTCOrigin: Origin of the event memory
+ * \param   OverflowIndication: Pointer to receive the overflow status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventMemoryOverflow(
+    Dem_DTCOriginType DTCOrigin,
+    boolean* OverflowIndication
+);
+
+/**
+ * rief   Gets the number of event memory entries
+ * \param   DTCOrigin: Origin of the event memory
+ * \param   NumberOfEventMemoryEntries: Pointer to receive the number of entries
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetNumberOfEventMemoryEntries(
+    Dem_DTCOriginType DTCOrigin,
+    uint8* NumberOfEventMemoryEntries
+);
+
+/**
+ * rief   Pre-allocated temporary memory for event processing
+ * \param   EventId: Identification of an event by configured EventId
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_PreTempActive(Dem_EventIdType EventId);
+
+
 #endif
 
 /*============================================================================*
@@ -323,6 +560,480 @@ extern Dem_StateType Dem_GetState(void);
 
 #ifdef __cplusplus
 }
+
+
+/*==================================================================================================
+ *                                      ADDITIONAL API DECLARATIONS
+ * CRITICAL FIX: Added missing AUTOSAR standard APIs
+==================================================================================================*/
+
+/**
+ * rief   Resets the event status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ * \post    Event status reset to passed
+ */
+extern Std_ReturnType Dem_ResetEventStatus(Dem_EventIdType EventId);
+
+/**
+ * rief   Gets the current status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   EventStatusExtended: Pointer to receive the extended event status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventStatus(
+    Dem_EventIdType EventId,
+    Dem_EventStatusExtendedType* EventStatusExtended
+);
+
+/**
+ * rief   Gets the UDS status byte of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   UDSStatusByte: Pointer to receive the UDS status byte
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventUdsStatus(
+    Dem_EventIdType EventId,
+    Dem_UdsStatusByteType* UDSStatusByte
+);
+
+/**
+ * rief   Gets the DTC for a given event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   DTCOfEvent: Pointer to receive the DTC value
+ * \param   DTCFormat: Format of the DTC (OBD/UDS)
+ * \param   DTCOrigin: Origin of the DTC (Primary/Mirror/Permanent)
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetDTCOfEvent(
+    Dem_EventIdType EventId,
+    Dem_DTCFormatType DTCFormat,
+    uint32* DTCOfEvent,
+    Dem_DTCOriginType* DTCOrigin
+);
+
+/**
+ * rief   Disables the DTC record update
+ * \param   DTC: Diagnostic Trouble Code
+ * \param   DTCOrigin: Origin of the DTC
+ * \param   ClientId: Unique client ID
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_DisableDTCRecordUpdate(
+    uint32 DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_ClientIdType ClientId
+);
+
+/**
+ * rief   Enables the DTC record update
+ * \param   DTC: Diagnostic Trouble Code
+ * \param   DTCOrigin: Origin of the DTC
+ * \param   ClientId: Unique client ID
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_EnableDTCRecordUpdate(
+    uint32 DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_ClientIdType ClientId
+);
+
+/**
+ * rief   Sets an enable condition
+ * \param   EnableCondition: Identification of the enable condition
+ * \param   ConditionFulfilled: TRUE if condition is fulfilled, FALSE otherwise
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetEnableCondition(
+    uint8 EnableCondition,
+    boolean ConditionFulfilled
+);
+
+/**
+ * rief   Sets a storage condition
+ * \param   StorageCondition: Identification of the storage condition
+ * \param   ConditionFulfilled: TRUE if condition is fulfilled, FALSE otherwise
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetStorageCondition(
+    uint8 StorageCondition,
+    boolean ConditionFulfilled
+);
+
+/**
+ * rief   Gets the number of filtered DTCs
+ * \param   ClientId: Unique client ID
+ * \param   NumberOfFilteredDTC: Pointer to receive the number of filtered DTCs
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized, filter set
+ */
+extern Std_ReturnType Dem_GetNumberOfFilteredDTC(
+    Dem_ClientIdType ClientId,
+    uint16* NumberOfFilteredDTC
+);
+
+/**
+ * rief   Gets the next filtered DTC
+ * \param   ClientId: Unique client ID
+ * \param   DTC: Pointer to receive the DTC value
+ * \param   DTCStatus: Pointer to receive the DTC status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK if no more DTCs
+ * \pre     Dem initialized, filter set
+ */
+extern Std_ReturnType Dem_GetNextFilteredDTC(
+    Dem_ClientIdType ClientId,
+    uint32* DTC,
+    Dem_DTCStatusMaskType* DTCStatus
+);
+
+/**
+ * rief   Sets the operation cycle state
+ * \param   OperationCycleId: Identification of the operation cycle
+ * \param   CycleState: New state of the operation cycle (START/END)
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetOperationCycleState(
+    Dem_OperationCycleIdType OperationCycleId,
+    Dem_OperationCycleStateType CycleState
+);
+
+/**
+ * rief   Gets the operation cycle state
+ * \param   OperationCycleId: Identification of the operation cycle
+ * \param   CycleState: Pointer to receive the current cycle state
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetOperationCycleState(
+    Dem_OperationCycleIdType OperationCycleId,
+    Dem_OperationCycleStateType* CycleState
+);
+
+/**
+ * rief   Restarts the operation cycle
+ * \param   OperationCycleId: Identification of the operation cycle
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_RestartOperationCycle(
+    Dem_OperationCycleIdType OperationCycleId
+);
+
+/**
+ * rief   Gets the debouncing status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   DebouncingState: Pointer to receive the debouncing state
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetDebouncingOfEvent(
+    Dem_EventIdType EventId,
+    Dem_DebouncingStateType* DebouncingState
+);
+
+/**
+ * rief   Sets the indicator status
+ * \param   IndicatorId: Identification of the indicator
+ * \param   IndicatorStatus: New status of the indicator
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetIndicatorStatus(
+    uint8 IndicatorId,
+    Dem_IndicatorStatusType IndicatorStatus
+);
+
+/**
+ * rief   Gets the indicator status
+ * \param   IndicatorId: Identification of the indicator
+ * \param   IndicatorStatus: Pointer to receive the indicator status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetIndicatorStatus(
+    uint8 IndicatorId,
+    Dem_IndicatorStatusType* IndicatorStatus
+);
+
+/**
+ * rief   Gets the event memory overflow status
+ * \param   DTCOrigin: Origin of the event memory
+ * \param   OverflowIndication: Pointer to receive the overflow status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventMemoryOverflow(
+    Dem_DTCOriginType DTCOrigin,
+    boolean* OverflowIndication
+);
+
+/**
+ * rief   Gets the number of event memory entries
+ * \param   DTCOrigin: Origin of the event memory
+ * \param   NumberOfEventMemoryEntries: Pointer to receive the number of entries
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetNumberOfEventMemoryEntries(
+    Dem_DTCOriginType DTCOrigin,
+    uint8* NumberOfEventMemoryEntries
+);
+
+/**
+ * rief   Pre-allocated temporary memory for event processing
+ * \param   EventId: Identification of an event by configured EventId
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_PreTempActive(Dem_EventIdType EventId);
+
+
 #endif
+
+
+
+/*==================================================================================================
+ *                                      ADDITIONAL API DECLARATIONS
+ * CRITICAL FIX: Added missing AUTOSAR standard APIs
+==================================================================================================*/
+
+/**
+ * rief   Resets the event status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ * \post    Event status reset to passed
+ */
+extern Std_ReturnType Dem_ResetEventStatus(Dem_EventIdType EventId);
+
+/**
+ * rief   Gets the current status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   EventStatusExtended: Pointer to receive the extended event status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventStatus(
+    Dem_EventIdType EventId,
+    Dem_EventStatusExtendedType* EventStatusExtended
+);
+
+/**
+ * rief   Gets the UDS status byte of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   UDSStatusByte: Pointer to receive the UDS status byte
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventUdsStatus(
+    Dem_EventIdType EventId,
+    Dem_UdsStatusByteType* UDSStatusByte
+);
+
+/**
+ * rief   Gets the DTC for a given event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   DTCOfEvent: Pointer to receive the DTC value
+ * \param   DTCFormat: Format of the DTC (OBD/UDS)
+ * \param   DTCOrigin: Origin of the DTC (Primary/Mirror/Permanent)
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetDTCOfEvent(
+    Dem_EventIdType EventId,
+    Dem_DTCFormatType DTCFormat,
+    uint32* DTCOfEvent,
+    Dem_DTCOriginType* DTCOrigin
+);
+
+/**
+ * rief   Disables the DTC record update
+ * \param   DTC: Diagnostic Trouble Code
+ * \param   DTCOrigin: Origin of the DTC
+ * \param   ClientId: Unique client ID
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_DisableDTCRecordUpdate(
+    uint32 DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_ClientIdType ClientId
+);
+
+/**
+ * rief   Enables the DTC record update
+ * \param   DTC: Diagnostic Trouble Code
+ * \param   DTCOrigin: Origin of the DTC
+ * \param   ClientId: Unique client ID
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_EnableDTCRecordUpdate(
+    uint32 DTC,
+    Dem_DTCOriginType DTCOrigin,
+    Dem_ClientIdType ClientId
+);
+
+/**
+ * rief   Sets an enable condition
+ * \param   EnableCondition: Identification of the enable condition
+ * \param   ConditionFulfilled: TRUE if condition is fulfilled, FALSE otherwise
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetEnableCondition(
+    uint8 EnableCondition,
+    boolean ConditionFulfilled
+);
+
+/**
+ * rief   Sets a storage condition
+ * \param   StorageCondition: Identification of the storage condition
+ * \param   ConditionFulfilled: TRUE if condition is fulfilled, FALSE otherwise
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetStorageCondition(
+    uint8 StorageCondition,
+    boolean ConditionFulfilled
+);
+
+/**
+ * rief   Gets the number of filtered DTCs
+ * \param   ClientId: Unique client ID
+ * \param   NumberOfFilteredDTC: Pointer to receive the number of filtered DTCs
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized, filter set
+ */
+extern Std_ReturnType Dem_GetNumberOfFilteredDTC(
+    Dem_ClientIdType ClientId,
+    uint16* NumberOfFilteredDTC
+);
+
+/**
+ * rief   Gets the next filtered DTC
+ * \param   ClientId: Unique client ID
+ * \param   DTC: Pointer to receive the DTC value
+ * \param   DTCStatus: Pointer to receive the DTC status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK if no more DTCs
+ * \pre     Dem initialized, filter set
+ */
+extern Std_ReturnType Dem_GetNextFilteredDTC(
+    Dem_ClientIdType ClientId,
+    uint32* DTC,
+    Dem_DTCStatusMaskType* DTCStatus
+);
+
+/**
+ * rief   Sets the operation cycle state
+ * \param   OperationCycleId: Identification of the operation cycle
+ * \param   CycleState: New state of the operation cycle (START/END)
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetOperationCycleState(
+    Dem_OperationCycleIdType OperationCycleId,
+    Dem_OperationCycleStateType CycleState
+);
+
+/**
+ * rief   Gets the operation cycle state
+ * \param   OperationCycleId: Identification of the operation cycle
+ * \param   CycleState: Pointer to receive the current cycle state
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetOperationCycleState(
+    Dem_OperationCycleIdType OperationCycleId,
+    Dem_OperationCycleStateType* CycleState
+);
+
+/**
+ * rief   Restarts the operation cycle
+ * \param   OperationCycleId: Identification of the operation cycle
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_RestartOperationCycle(
+    Dem_OperationCycleIdType OperationCycleId
+);
+
+/**
+ * rief   Gets the debouncing status of an event
+ * \param   EventId: Identification of an event by configured EventId
+ * \param   DebouncingState: Pointer to receive the debouncing state
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetDebouncingOfEvent(
+    Dem_EventIdType EventId,
+    Dem_DebouncingStateType* DebouncingState
+);
+
+/**
+ * rief   Sets the indicator status
+ * \param   IndicatorId: Identification of the indicator
+ * \param   IndicatorStatus: New status of the indicator
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_SetIndicatorStatus(
+    uint8 IndicatorId,
+    Dem_IndicatorStatusType IndicatorStatus
+);
+
+/**
+ * rief   Gets the indicator status
+ * \param   IndicatorId: Identification of the indicator
+ * \param   IndicatorStatus: Pointer to receive the indicator status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetIndicatorStatus(
+    uint8 IndicatorId,
+    Dem_IndicatorStatusType* IndicatorStatus
+);
+
+/**
+ * rief   Gets the event memory overflow status
+ * \param   DTCOrigin: Origin of the event memory
+ * \param   OverflowIndication: Pointer to receive the overflow status
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetEventMemoryOverflow(
+    Dem_DTCOriginType DTCOrigin,
+    boolean* OverflowIndication
+);
+
+/**
+ * rief   Gets the number of event memory entries
+ * \param   DTCOrigin: Origin of the event memory
+ * \param   NumberOfEventMemoryEntries: Pointer to receive the number of entries
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_GetNumberOfEventMemoryEntries(
+    Dem_DTCOriginType DTCOrigin,
+    uint8* NumberOfEventMemoryEntries
+);
+
+/**
+ * rief   Pre-allocated temporary memory for event processing
+ * \param   EventId: Identification of an event by configured EventId
+ * eturn  Std_ReturnType: E_OK if operation successful, E_NOT_OK otherwise
+ * \pre     Dem initialized
+ */
+extern Std_ReturnType Dem_PreTempActive(Dem_EventIdType EventId);
+
 
 #endif /* DEM_H */

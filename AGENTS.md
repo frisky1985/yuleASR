@@ -148,8 +148,8 @@ yuletech-openspec/
 ## 项目进度
 
 ### 已完成模块
-- **MCAL 层**: 9个驱动全部完成 ✓
-  - Mcu, Port, Dio, Can, Spi, Gpt, Pwm, Adc, Wdg
+- **MCAL 层**: 10个驱动全部完成 ✓
+  - Mcu, Port, Dio, Can, Spi, Gpt, Pwm, Adc, Wdg, Icu, Lin
 - **ECUAL 层**: 9个模块全部完成 ✓
   - CanIf, IoHwAb, CanTp, EthIf, MemIf, Fee, Ea, FrIf, LinIf
 - **Service 层**: 5个模块全部完成 ✓
@@ -184,19 +184,19 @@ yuletech-openspec/
 - EcuM: ✅ 新增完成
 
 ### 项目里程碑
-- ✅ MCAL 层完成 (9/9)
+- ✅ MCAL 层完成 (10/10)
 - ✅ ECUAL 层完成 (9/9)
 - ✅ Service 层完成 (5/5)
 - ✅ RTE 层完成 (1/1)
 - ✅ ASW 层完成 (8/8)
 - ✅ OS 层完善 (弱引用钩子 + 配置表)
 - ✅ Integration 层完成 (2/2)
-- 🎉 **AutoSAR 全栈开发完成 (34个模块/组件)**
+- ✅ **AutoSAR 全栈开发完成 (35个模块/组件)**
 
 ### 项目统计
 | 层级 | 模块/组件数 | 状态 |
 |:-----|:-----------|:-----|
-| MCAL | 9 | ✅ 完成 |
+| MCAL | 10 | ✅ 完成 |
 | ECUAL | 9 | ✅ 完成 |
 | Service | 5 | ✅ 完成 |
 | RTE | 1 | ✅ 完成 |

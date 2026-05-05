@@ -470,3 +470,255 @@ void Dem_NvMMarkExtendedDataModified(void)
         state->dataModified = TRUE;
     }
 }
+
+
+/*==================================================================================================
+ *                                      ADDITIONAL NVM INTEGRATION
+ * CRITICAL FIX: Enhanced NvM integration for AUTOSAR compliance
+==================================================================================================*/
+
+#include "NvM.h"
+#include "Det.h"
+
+/* NvM block IDs for Dem */
+#define DEM_NVM_BLOCK_ID_PRIMARY    (1U)
+#define DEM_NVM_BLOCK_ID_MIRROR     (2U)
+#define DEM_NVM_BLOCK_ID_PERMANENT  (3U)
+#define DEM_NVM_BLOCK_ID_STATUS     (4U)
+
+/* NvM write queue */
+typedef struct {
+    uint8 BlockId;
+    boolean Pending;
+    uint8 RetryCount;
+} Dem_NvmWriteQueueEntryType;
+
+static Dem_NvmWriteQueueEntryType Dem_NvmWriteQueue[DEM_CFG_NVM_WRITE_QUEUE_SIZE];
+static uint8 Dem_NvmWriteQueueHead = 0;
+static uint8 Dem_NvmWriteQueueTail = 0;
+
+/**
+ * rief   Initialize NvM integration
+ */
+void Dem_NvmInit(void)
+{
+    uint8 i;
+    
+    for (i = 0; i < DEM_CFG_NVM_WRITE_QUEUE_SIZE; i++) {
+        Dem_NvmWriteQueue[i].BlockId = 0;
+        Dem_NvmWriteQueue[i].Pending = FALSE;
+        Dem_NvmWriteQueue[i].RetryCount = 0;
+    }
+    
+    Dem_NvmWriteQueueHead = 0;
+    Dem_NvmWriteQueueTail = 0;
+}
+
+/**
+ * rief   Read event memory from NvM
+ */
+Std_ReturnType Dem_NvmReadEventMemory(
+    Dem_DTCOriginType Origin,
+    Dem_EventMemoryEntryType* Entry,
+    uint8 Index)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 blockId;
+    NvM_RequestResultType nvmResult;
+    
+    /* Determine block ID based on origin */
+    switch (Origin) {
+        case DEM_DTC_ORIGIN_PRIMARY_MEMORY:
+            blockId = DEM_NVM_BLOCK_ID_PRIMARY;
+            break;
+        case DEM_DTC_ORIGIN_MIRROR_MEMORY:
+            blockId = DEM_NVM_BLOCK_ID_MIRROR;
+            break;
+        case DEM_DTC_ORIGIN_PERMANENT_MEMORY:
+            blockId = DEM_NVM_BLOCK_ID_PERMANENT;
+            break;
+        default:
+            return E_NOT_OK;
+    }
+    
+    /* Read from NvM */
+    result = NvM_ReadBlock(blockId, (void*)Entry);
+    
+    if (result == E_OK) {
+        /* Wait for read completion with timeout */
+        uint16 timeout = DEM_CFG_NVM_READ_TIMEOUT_MS / DEM_CFG_MAIN_FUNCTION_PERIOD_MS;
+        
+        while (timeout > 0) {
+            NvM_GetErrorStatus(blockId, &nvmResult);
+            
+            if (nvmResult == NVM_REQ_OK) {
+                result = E_OK;
+                break;
+            } else if (nvmResult == NVM_REQ_NOT_OK) {
+                result = E_NOT_OK;
+                break;
+            }
+            
+            timeout--;
+            /* In real implementation, use OS delay */
+        }
+        
+        if (timeout == 0) {
+            result = E_NOT_OK; /* Timeout */
+        }
+    }
+    
+    return result;
+}
+
+/**
+ * rief   Write event memory to NvM
+ */
+Std_ReturnType Dem_NvmWriteEventMemory(
+    Dem_DTCOriginType Origin,
+    const Dem_EventMemoryEntryType* Entry,
+    uint8 Index)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 blockId;
+    
+    /* Determine block ID based on origin */
+    switch (Origin) {
+        case DEM_DTC_ORIGIN_PRIMARY_MEMORY:
+            blockId = DEM_NVM_BLOCK_ID_PRIMARY;
+            break;
+        case DEM_DTC_ORIGIN_MIRROR_MEMORY:
+            blockId = DEM_NVM_BLOCK_ID_MIRROR;
+            break;
+        case DEM_DTC_ORIGIN_PERMANENT_MEMORY:
+            blockId = DEM_NVM_BLOCK_ID_PERMANENT;
+            break;
+        default:
+            return E_NOT_OK;
+    }
+    
+    /* Queue the write request */
+    Dem_EnterCritical();
+    
+    uint8 nextTail = (Dem_NvmWriteQueueTail + 1) % DEM_CFG_NVM_WRITE_QUEUE_SIZE;
+    
+    if (nextTail != Dem_NvmWriteQueueHead) {
+        Dem_NvmWriteQueue[Dem_NvmWriteQueueTail].BlockId = blockId;
+        Dem_NvmWriteQueue[Dem_NvmWriteQueueTail].Pending = TRUE;
+        Dem_NvmWriteQueue[Dem_NvmWriteQueueTail].RetryCount = 0;
+        Dem_NvmWriteQueueTail = nextTail;
+        result = E_OK;
+    } else {
+        /* Queue full */
+        result = E_NOT_OK;
+    }
+    
+    Dem_ExitCritical();
+    
+    return result;
+}
+
+/**
+ * rief   Process NvM write queue (called from main function)
+ */
+void Dem_NvmProcessWriteQueue(void)
+{
+    NvM_RequestResultType nvmResult;
+    
+    while (Dem_NvmWriteQueueHead != Dem_NvmWriteQueueTail) {
+        Dem_NvmWriteQueueEntryType* entry = &Dem_NvmWriteQueue[Dem_NvmWriteQueueHead];
+        
+        if (entry->Pending) {
+            /* Check current NvM status */
+            NvM_GetErrorStatus(entry->BlockId, &nvmResult);
+            
+            if (nvmResult == NVM_REQ_OK || nvmResult == NVM_REQ_BLOCK_INVALID) {
+                /* Start new write request */
+                uint8* ramData = Dem_GetNvmRamData(entry->BlockId);
+                
+                if (NvM_WriteBlock(entry->BlockId, (void*)ramData) == E_OK) {
+                    entry->Pending = FALSE; /* Write started */
+                } else {
+                    /* Retry */
+                    entry->RetryCount++;
+                    if (entry->RetryCount >= DEM_CFG_NVM_WRITE_RETRY) {
+                        /* Max retries reached, drop entry */
+                        Dem_NvmWriteQueueHead = (Dem_NvmWriteQueueHead + 1) % DEM_CFG_NVM_WRITE_QUEUE_SIZE;
+                    }
+                    break; /* Try again next cycle */
+                }
+            } else if (nvmResult == NVM_REQ_PENDING) {
+                /* Write in progress, wait */
+                break;
+            } else if (nvmResult == NVM_REQ_NOT_OK) {
+                /* Write failed, retry */
+                entry->RetryCount++;
+                if (entry->RetryCount >= DEM_CFG_NVM_WRITE_RETRY) {
+                    /* Max retries reached */
+                    Dem_NvmWriteQueueHead = (Dem_NvmWriteQueueHead + 1) % DEM_CFG_NVM_WRITE_QUEUE_SIZE;
+                }
+                break;
+            }
+        } else {
+            /* Check if write completed */
+            NvM_GetErrorStatus(entry->BlockId, &nvmResult);
+            
+            if (nvmResult == NVM_REQ_OK) {
+                /* Write completed successfully */
+                Dem_NvmWriteQueueHead = (Dem_NvmWriteQueueHead + 1) % DEM_CFG_NVM_WRITE_QUEUE_SIZE;
+            } else if (nvmResult == NVM_REQ_NOT_OK) {
+                /* Write failed */
+                entry->RetryCount++;
+                if (entry->RetryCount >= DEM_CFG_NVM_WRITE_RETRY) {
+                    Dem_NvmWriteQueueHead = (Dem_NvmWriteQueueHead + 1) % DEM_CFG_NVM_WRITE_QUEUE_SIZE;
+                } else {
+                    entry->Pending = TRUE; /* Retry */
+                }
+                break;
+            } else {
+                /* Still pending */
+                break;
+            }
+        }
+    }
+}
+
+/**
+ * rief   Invalidate NvM block
+ */
+Std_ReturnType Dem_NvmInvalidateBlock(uint8 BlockId)
+{
+    return NvM_InvalidateNvBlock(BlockId);
+}
+
+/**
+ * rief   Erase NvM block
+ */
+Std_ReturnType Dem_NvmEraseBlock(uint8 BlockId)
+{
+    return NvM_EraseNvBlock(BlockId);
+}
+
+/**
+ * rief   Restore NvM block defaults
+ */
+Std_ReturnType Dem_NvmRestoreBlockDefaults(uint8 BlockId)
+{
+    return NvM_RestoreBlockDefaults(BlockId, NULL_PTR);
+}
+
+/* Helper function to get RAM data pointer for block */
+static uint8* Dem_GetNvmRamData(uint8 BlockId)
+{
+    switch (BlockId) {
+        case DEM_NVM_BLOCK_ID_PRIMARY:
+            return (uint8*)Dem_PrimaryMemory;
+        case DEM_NVM_BLOCK_ID_MIRROR:
+            return (uint8*)Dem_MirrorMemory;
+        case DEM_NVM_BLOCK_ID_PERMANENT:
+            return (uint8*)Dem_PermanentMemory;
+        default:
+            return NULL_PTR;
+    }
+}
+
