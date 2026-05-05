@@ -1,0 +1,50 @@
+/***********************************************************************************************************************
+ * DoCan Configuration
+ * Project: {{ project_name }}
+ * Date: {{ generation_date }}
+ **********************************************************************************************************************/
+
+#ifndef DOCAN_CFG_H
+#define DOCAN_CFG_H
+
+#define DOCAN_NUM_CONNECTIONS    ({{ connections|length }}U)
+
+typedef struct {
+    uint8 ConnId;
+    uint32 RequestCanId;
+    uint32 ResponseCanId;
+    uint32 FuncRequestId;
+    DoCan_AddressingType Addressing;
+    uint16 P2CanMax;
+    uint16 P2CanMin;
+    uint16 P2StarMax;
+    uint16 S3Server;
+    uint16 S3Client;
+    uint16 RxBufferSize;
+    uint16 TxBufferSize;
+    uint8 FcBS;
+    uint8 FcSTmin;
+} DoCan_ConnectionConfigType;
+
+static const DoCan_ConnectionConfigType DoCan_ConnectionConfig[DOCAN_NUM_CONNECTIONS] = {
+{% for conn in connections %}
+    {
+        {{ conn.id }}U,                                    /* ConnId */
+        0x{{ "%03X" | format(conn.req_id) }}UL,           /* RequestCanId */
+        0x{{ "%03X" | format(conn.resp_id) }}UL,          /* ResponseCanId */
+        0x{{ "%03X" | format(conn.func_id) }}UL,          /* FuncRequestId */
+        DOCAN_{{ conn.addressing }}_ADDRESSING,           /* Addressing */
+        {{ conn.p2_max }}U,                              /* P2CanMax */
+        {{ conn.p2_min }}U,                              /* P2CanMin */
+        {{ conn.p2_star }}U,                             /* P2StarMax */
+        {{ conn.s3_server }}U,                           /* S3Server */
+        {{ conn.s3_client }}U,                           /* S3Client */
+        {{ conn.rx_buf }}U,                              /* RxBufferSize */
+        {{ conn.tx_buf }}U,                              /* TxBufferSize */
+        {{ conn.fc_bs }}U,                               /* FcBS */
+        {{ conn.fc_stmin }}U                             /* FcSTmin */
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+#endif
