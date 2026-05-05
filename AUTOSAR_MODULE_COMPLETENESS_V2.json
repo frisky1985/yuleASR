@@ -1,0 +1,1727 @@
+{
+  "timestamp": "2026-05-05",
+  "summary": {
+    "total_modules": 88,
+    "complete": 54,
+    "partial": 0,
+    "shell": 0,
+    "missing": 34,
+    "completion_rate": 61.36363636363637
+  },
+  "by_layer": {
+    "MCAL": [
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Port",
+        "path": "src/bsw/mcal/port",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 747,
+        "code_lines": 461,
+        "comment_lines": 180,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Pwm",
+        "path": "src/bsw/mcal/pwm",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 745,
+        "code_lines": 485,
+        "comment_lines": 155,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Lin",
+        "path": "src/bsw/mcal/lin",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 538,
+        "code_lines": 380,
+        "comment_lines": 68,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Ocu",
+        "path": "src/bsw/mcal/ocu",
+        "c_files": 2,
+        "h_files": 4,
+        "total_lines": 1925,
+        "code_lines": 946,
+        "comment_lines": 701,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Wdg",
+        "path": "src/bsw/mcal/wdg",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1913,
+        "code_lines": 1175,
+        "comment_lines": 420,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Mcu",
+        "path": "src/bsw/mcal/mcu",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 868,
+        "code_lines": 492,
+        "comment_lines": 244,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Gpt",
+        "path": "src/bsw/mcal/gpt",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 806,
+        "code_lines": 551,
+        "comment_lines": 143,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Spi",
+        "path": "src/bsw/mcal/Spi",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 692,
+        "code_lines": 456,
+        "comment_lines": 125,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "RamTst",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Eth",
+        "path": "src/bsw/mcal/eth",
+        "c_files": 2,
+        "h_files": 4,
+        "total_lines": 1855,
+        "code_lines": 1147,
+        "comment_lines": 416,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Dio",
+        "path": "src/bsw/mcal/dio",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 548,
+        "code_lines": 337,
+        "comment_lines": 141,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Icu",
+        "path": "src/bsw/mcal/icu",
+        "c_files": 3,
+        "h_files": 4,
+        "total_lines": 2304,
+        "code_lines": 1465,
+        "comment_lines": 505,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Can",
+        "path": "src/bsw/mcal/can",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 805,
+        "code_lines": 537,
+        "comment_lines": 152,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "Eep",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Adc",
+        "path": "src/bsw/mcal/adc",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 995,
+        "code_lines": 656,
+        "comment_lines": 203,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Fls",
+        "path": "src/bsw/mcal/fls",
+        "c_files": 2,
+        "h_files": 4,
+        "total_lines": 2894,
+        "code_lines": 1608,
+        "comment_lines": 827,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "FrNm",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "MCAL",
+        "module": "Crypto",
+        "path": "src/bsw/mcal/crypto",
+        "c_files": 3,
+        "h_files": 4,
+        "total_lines": 4301,
+        "code_lines": 2605,
+        "comment_lines": 1132,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "Fr",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "EthSwt",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "FlsLoader",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "FrArTp",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "MCAL",
+        "module": "EthTrcv",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      }
+    ],
+    "ECUAL": [
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "Xcp",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "LinIf",
+        "path": "src/bsw/ecual/linif",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 905,
+        "code_lines": 579,
+        "comment_lines": 206,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "Sdi",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "MemIf",
+        "path": "src/bsw/ecual/memif",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 714,
+        "code_lines": 463,
+        "comment_lines": 137,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "EthIf",
+        "path": "src/bsw/ecual/ethif",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 899,
+        "code_lines": 583,
+        "comment_lines": 203,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "WdgIf",
+        "path": "src/bsw/ecual/wdgif",
+        "c_files": 1,
+        "h_files": 3,
+        "total_lines": 569,
+        "code_lines": 297,
+        "comment_lines": 170,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "CanNm",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "LinNm",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "LinSM",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "CanTrcv",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "FrIf",
+        "path": "src/bsw/ecual/frif",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 966,
+        "code_lines": 629,
+        "comment_lines": 209,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "LinTrcv",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "IoHwAb",
+        "path": "src/bsw/ecual/iohwab",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 751,
+        "code_lines": 452,
+        "comment_lines": 178,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "DoIP",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "CanIf",
+        "path": "src/bsw/ecual/canif",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 948,
+        "code_lines": 643,
+        "comment_lines": 184,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "LinTp",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "Fee",
+        "path": "src/bsw/ecual/fee",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 3049,
+        "code_lines": 1868,
+        "comment_lines": 751,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "CanTp",
+        "path": "src/bsw/ecual/cantp",
+        "c_files": 2,
+        "h_files": 2,
+        "total_lines": 1413,
+        "code_lines": 836,
+        "comment_lines": 402,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "J1939Tp",
+        "path": "src/bsw/ecual/j1939tp",
+        "c_files": 2,
+        "h_files": 2,
+        "total_lines": 972,
+        "code_lines": 598,
+        "comment_lines": 217,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "EthSM",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "CanSm",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "SomeIpSd",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "FrNm",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "FiM",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "IpduM",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "Ea",
+        "path": "src/bsw/ecual/ea",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 823,
+        "code_lines": 536,
+        "comment_lines": 163,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "ECUAL",
+        "module": "FrTp",
+        "path": "src/bsw/ecual/frtp",
+        "c_files": 6,
+        "h_files": 4,
+        "total_lines": 3068,
+        "code_lines": 1774,
+        "comment_lines": 848,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "Dlt",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "EthTrcv",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "ECUAL",
+        "module": "SomeIpIf",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      }
+    ],
+    "SERVICES": [
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Xcp",
+        "path": "src/bsw/services/xcp",
+        "c_files": 1,
+        "h_files": 3,
+        "total_lines": 3246,
+        "code_lines": 1895,
+        "comment_lines": 842,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "SecOC",
+        "path": "src/bsw/services/secoc",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1711,
+        "code_lines": 1125,
+        "comment_lines": 362,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "Swc",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Nm",
+        "path": "src/bsw/services/nm",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 671,
+        "code_lines": 497,
+        "comment_lines": 75,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "KeyM",
+        "path": "src/bsw/services/keym",
+        "c_files": 3,
+        "h_files": 5,
+        "total_lines": 1621,
+        "code_lines": 1046,
+        "comment_lines": 406,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "SchM",
+        "path": "src/bsw/services/schm",
+        "c_files": 1,
+        "h_files": 3,
+        "total_lines": 243,
+        "code_lines": 140,
+        "comment_lines": 58,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Com",
+        "path": "src/bsw/services/com",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 1053,
+        "code_lines": 742,
+        "comment_lines": 239,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "SomeIp",
+        "path": "src/bsw/services/someip",
+        "c_files": 2,
+        "h_files": 4,
+        "total_lines": 2154,
+        "code_lines": 1014,
+        "comment_lines": 744,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "NvM",
+        "path": "src/bsw/services/nvm",
+        "c_files": 2,
+        "h_files": 2,
+        "total_lines": 1236,
+        "code_lines": 901,
+        "comment_lines": 237,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "EthSM",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Wdgm",
+        "path": "src/bsw/services/wdgm",
+        "c_files": 1,
+        "h_files": 3,
+        "total_lines": 854,
+        "code_lines": 464,
+        "comment_lines": 242,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "Det",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "CryIf",
+        "path": "src/bsw/services/cryif",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1938,
+        "code_lines": 1245,
+        "comment_lines": 501,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "SomeIpSd",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "Srp",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Dem",
+        "path": "src/bsw/services/dem",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 673,
+        "code_lines": 595,
+        "comment_lines": 53,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "FiM",
+        "path": "src/bsw/services/fim",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 813,
+        "code_lines": 650,
+        "comment_lines": 121,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "IpduM",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "BswM",
+        "path": "src/bsw/services/bswm",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 780,
+        "code_lines": 684,
+        "comment_lines": 50,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Dcm",
+        "path": "src/bsw/services/dcm",
+        "c_files": 3,
+        "h_files": 4,
+        "total_lines": 2887,
+        "code_lines": 2075,
+        "comment_lines": 526,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "LinNm",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "LinSM",
+        "path": "src/bsw/services/linsm",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 759,
+        "code_lines": 434,
+        "comment_lines": 216,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Mem",
+        "path": "src/bsw/services/mem",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1718,
+        "code_lines": 996,
+        "comment_lines": 400,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "DoIP",
+        "path": "src/bsw/services/doip",
+        "c_files": 2,
+        "h_files": 2,
+        "total_lines": 1089,
+        "code_lines": 867,
+        "comment_lines": 147,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "MISSING",
+        "layer": "SERVICES",
+        "module": "EcuC",
+        "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "StbM",
+        "path": "src/bsw/services/stbm",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1354,
+        "code_lines": 969,
+        "comment_lines": 246,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "SomeIpXf",
+        "path": "src/bsw/services/someipxf",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1534,
+        "code_lines": 1094,
+        "comment_lines": 297,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "ComM",
+        "path": "src/bsw/services/comm",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 470,
+        "code_lines": 391,
+        "comment_lines": 44,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "EcuM",
+        "path": "src/bsw/services/ecum",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 2399,
+        "code_lines": 1298,
+        "comment_lines": 710,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "SomeIpTp",
+        "path": "src/bsw/services/someiptp",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1305,
+        "code_lines": 958,
+        "comment_lines": 213,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "PduR",
+        "path": "src/bsw/services/pdur",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 891,
+        "code_lines": 675,
+        "comment_lines": 166,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Dlt",
+        "path": "src/bsw/services/dlt",
+        "c_files": 1,
+        "h_files": 2,
+        "total_lines": 2200,
+        "code_lines": 1304,
+        "comment_lines": 555,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "Csm",
+        "path": "src/bsw/services/csm",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1765,
+        "code_lines": 1182,
+        "comment_lines": 365,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      },
+      {
+        "status": "COMPLETE",
+        "layer": "SERVICES",
+        "module": "SoAd",
+        "path": "src/bsw/services/soad",
+        "c_files": 2,
+        "h_files": 3,
+        "total_lines": 1520,
+        "code_lines": 1054,
+        "comment_lines": 301,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      }
+    ],
+    "GENERAL": [
+      {
+        "status": "COMPLETE",
+        "layer": "GENERAL",
+        "module": "Det",
+        "path": "src/bsw/general/det",
+        "c_files": 1,
+        "h_files": 3,
+        "total_lines": 829,
+        "code_lines": 403,
+        "comment_lines": 294,
+        "quality": "\u5b8c\u6574\u5b9e\u73b0"
+      }
+    ]
+  },
+  "all_results": [
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Port",
+      "path": "src/bsw/mcal/port",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 747,
+      "code_lines": 461,
+      "comment_lines": 180,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Pwm",
+      "path": "src/bsw/mcal/pwm",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 745,
+      "code_lines": 485,
+      "comment_lines": 155,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Lin",
+      "path": "src/bsw/mcal/lin",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 538,
+      "code_lines": 380,
+      "comment_lines": 68,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Ocu",
+      "path": "src/bsw/mcal/ocu",
+      "c_files": 2,
+      "h_files": 4,
+      "total_lines": 1925,
+      "code_lines": 946,
+      "comment_lines": 701,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Wdg",
+      "path": "src/bsw/mcal/wdg",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1913,
+      "code_lines": 1175,
+      "comment_lines": 420,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Mcu",
+      "path": "src/bsw/mcal/mcu",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 868,
+      "code_lines": 492,
+      "comment_lines": 244,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Gpt",
+      "path": "src/bsw/mcal/gpt",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 806,
+      "code_lines": 551,
+      "comment_lines": 143,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Spi",
+      "path": "src/bsw/mcal/Spi",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 692,
+      "code_lines": 456,
+      "comment_lines": 125,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "RamTst",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Eth",
+      "path": "src/bsw/mcal/eth",
+      "c_files": 2,
+      "h_files": 4,
+      "total_lines": 1855,
+      "code_lines": 1147,
+      "comment_lines": 416,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Dio",
+      "path": "src/bsw/mcal/dio",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 548,
+      "code_lines": 337,
+      "comment_lines": 141,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Icu",
+      "path": "src/bsw/mcal/icu",
+      "c_files": 3,
+      "h_files": 4,
+      "total_lines": 2304,
+      "code_lines": 1465,
+      "comment_lines": 505,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Can",
+      "path": "src/bsw/mcal/can",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 805,
+      "code_lines": 537,
+      "comment_lines": 152,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "Eep",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Adc",
+      "path": "src/bsw/mcal/adc",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 995,
+      "code_lines": 656,
+      "comment_lines": 203,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Fls",
+      "path": "src/bsw/mcal/fls",
+      "c_files": 2,
+      "h_files": 4,
+      "total_lines": 2894,
+      "code_lines": 1608,
+      "comment_lines": 827,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "FrNm",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "MCAL",
+      "module": "Crypto",
+      "path": "src/bsw/mcal/crypto",
+      "c_files": 3,
+      "h_files": 4,
+      "total_lines": 4301,
+      "code_lines": 2605,
+      "comment_lines": 1132,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "Fr",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "EthSwt",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "FlsLoader",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "FrArTp",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "MCAL",
+      "module": "EthTrcv",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "Xcp",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "LinIf",
+      "path": "src/bsw/ecual/linif",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 905,
+      "code_lines": 579,
+      "comment_lines": 206,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "Sdi",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "MemIf",
+      "path": "src/bsw/ecual/memif",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 714,
+      "code_lines": 463,
+      "comment_lines": 137,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "EthIf",
+      "path": "src/bsw/ecual/ethif",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 899,
+      "code_lines": 583,
+      "comment_lines": 203,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "WdgIf",
+      "path": "src/bsw/ecual/wdgif",
+      "c_files": 1,
+      "h_files": 3,
+      "total_lines": 569,
+      "code_lines": 297,
+      "comment_lines": 170,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "CanNm",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "LinNm",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "LinSM",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "CanTrcv",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "FrIf",
+      "path": "src/bsw/ecual/frif",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 966,
+      "code_lines": 629,
+      "comment_lines": 209,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "LinTrcv",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "IoHwAb",
+      "path": "src/bsw/ecual/iohwab",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 751,
+      "code_lines": 452,
+      "comment_lines": 178,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "DoIP",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "CanIf",
+      "path": "src/bsw/ecual/canif",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 948,
+      "code_lines": 643,
+      "comment_lines": 184,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "LinTp",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "Fee",
+      "path": "src/bsw/ecual/fee",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 3049,
+      "code_lines": 1868,
+      "comment_lines": 751,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "CanTp",
+      "path": "src/bsw/ecual/cantp",
+      "c_files": 2,
+      "h_files": 2,
+      "total_lines": 1413,
+      "code_lines": 836,
+      "comment_lines": 402,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "J1939Tp",
+      "path": "src/bsw/ecual/j1939tp",
+      "c_files": 2,
+      "h_files": 2,
+      "total_lines": 972,
+      "code_lines": 598,
+      "comment_lines": 217,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "EthSM",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "CanSm",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "SomeIpSd",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "FrNm",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "FiM",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "IpduM",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "Ea",
+      "path": "src/bsw/ecual/ea",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 823,
+      "code_lines": 536,
+      "comment_lines": 163,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "ECUAL",
+      "module": "FrTp",
+      "path": "src/bsw/ecual/frtp",
+      "c_files": 6,
+      "h_files": 4,
+      "total_lines": 3068,
+      "code_lines": 1774,
+      "comment_lines": 848,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "Dlt",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "EthTrcv",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "ECUAL",
+      "module": "SomeIpIf",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Xcp",
+      "path": "src/bsw/services/xcp",
+      "c_files": 1,
+      "h_files": 3,
+      "total_lines": 3246,
+      "code_lines": 1895,
+      "comment_lines": 842,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "SecOC",
+      "path": "src/bsw/services/secoc",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1711,
+      "code_lines": 1125,
+      "comment_lines": 362,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "Swc",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Nm",
+      "path": "src/bsw/services/nm",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 671,
+      "code_lines": 497,
+      "comment_lines": 75,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "KeyM",
+      "path": "src/bsw/services/keym",
+      "c_files": 3,
+      "h_files": 5,
+      "total_lines": 1621,
+      "code_lines": 1046,
+      "comment_lines": 406,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "SchM",
+      "path": "src/bsw/services/schm",
+      "c_files": 1,
+      "h_files": 3,
+      "total_lines": 243,
+      "code_lines": 140,
+      "comment_lines": 58,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Com",
+      "path": "src/bsw/services/com",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 1053,
+      "code_lines": 742,
+      "comment_lines": 239,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "SomeIp",
+      "path": "src/bsw/services/someip",
+      "c_files": 2,
+      "h_files": 4,
+      "total_lines": 2154,
+      "code_lines": 1014,
+      "comment_lines": 744,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "NvM",
+      "path": "src/bsw/services/nvm",
+      "c_files": 2,
+      "h_files": 2,
+      "total_lines": 1236,
+      "code_lines": 901,
+      "comment_lines": 237,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "EthSM",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Wdgm",
+      "path": "src/bsw/services/wdgm",
+      "c_files": 1,
+      "h_files": 3,
+      "total_lines": 854,
+      "code_lines": 464,
+      "comment_lines": 242,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "Det",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "CryIf",
+      "path": "src/bsw/services/cryif",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1938,
+      "code_lines": 1245,
+      "comment_lines": 501,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "SomeIpSd",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "Srp",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Dem",
+      "path": "src/bsw/services/dem",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 673,
+      "code_lines": 595,
+      "comment_lines": 53,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "FiM",
+      "path": "src/bsw/services/fim",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 813,
+      "code_lines": 650,
+      "comment_lines": 121,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "IpduM",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "BswM",
+      "path": "src/bsw/services/bswm",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 780,
+      "code_lines": 684,
+      "comment_lines": 50,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Dcm",
+      "path": "src/bsw/services/dcm",
+      "c_files": 3,
+      "h_files": 4,
+      "total_lines": 2887,
+      "code_lines": 2075,
+      "comment_lines": 526,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "LinNm",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "LinSM",
+      "path": "src/bsw/services/linsm",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 759,
+      "code_lines": 434,
+      "comment_lines": 216,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Mem",
+      "path": "src/bsw/services/mem",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1718,
+      "code_lines": 996,
+      "comment_lines": 400,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "DoIP",
+      "path": "src/bsw/services/doip",
+      "c_files": 2,
+      "h_files": 2,
+      "total_lines": 1089,
+      "code_lines": 867,
+      "comment_lines": 147,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "MISSING",
+      "layer": "SERVICES",
+      "module": "EcuC",
+      "reason": "\u6a21\u5757\u76ee\u5f55\u4e0d\u5b58\u5728"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "StbM",
+      "path": "src/bsw/services/stbm",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1354,
+      "code_lines": 969,
+      "comment_lines": 246,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "SomeIpXf",
+      "path": "src/bsw/services/someipxf",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1534,
+      "code_lines": 1094,
+      "comment_lines": 297,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "ComM",
+      "path": "src/bsw/services/comm",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 470,
+      "code_lines": 391,
+      "comment_lines": 44,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "EcuM",
+      "path": "src/bsw/services/ecum",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 2399,
+      "code_lines": 1298,
+      "comment_lines": 710,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "SomeIpTp",
+      "path": "src/bsw/services/someiptp",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1305,
+      "code_lines": 958,
+      "comment_lines": 213,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "PduR",
+      "path": "src/bsw/services/pdur",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 891,
+      "code_lines": 675,
+      "comment_lines": 166,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Dlt",
+      "path": "src/bsw/services/dlt",
+      "c_files": 1,
+      "h_files": 2,
+      "total_lines": 2200,
+      "code_lines": 1304,
+      "comment_lines": 555,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "Csm",
+      "path": "src/bsw/services/csm",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1765,
+      "code_lines": 1182,
+      "comment_lines": 365,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "SERVICES",
+      "module": "SoAd",
+      "path": "src/bsw/services/soad",
+      "c_files": 2,
+      "h_files": 3,
+      "total_lines": 1520,
+      "code_lines": 1054,
+      "comment_lines": 301,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    },
+    {
+      "status": "COMPLETE",
+      "layer": "GENERAL",
+      "module": "Det",
+      "path": "src/bsw/general/det",
+      "c_files": 1,
+      "h_files": 3,
+      "total_lines": 829,
+      "code_lines": 403,
+      "comment_lines": 294,
+      "quality": "\u5b8c\u6574\u5b9e\u73b0"
+    }
+  ]
+}

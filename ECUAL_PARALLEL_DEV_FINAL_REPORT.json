@@ -1,0 +1,85 @@
+{
+  "timestamp": "2026-05-05",
+  "project": "yuleASR AUTOSAR BSW",
+  "task": "ECUAL\u6838\u5fc3\u6a21\u5757\u5e76\u884c\u5f00\u53d1 (OSH Auto-V2)",
+  "modules_developed": [
+    "canNm",
+    "canSm",
+    "canTrcv",
+    "ethSm",
+    "ethTrcv",
+    "fiM",
+    "ipduM",
+    "linNm",
+    "linTp"
+  ],
+  "summary": {
+    "total_modules": 9,
+    "completed": 9,
+    "total_files": 36,
+    "total_lines": 16239,
+    "completion_rate": 100.0
+  },
+  "module_details": [
+    {
+      "name": "canNm",
+      "files": 4,
+      "lines": 2287,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "canSm",
+      "files": 4,
+      "lines": 1493,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "canTrcv",
+      "files": 4,
+      "lines": 1619,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "ethSm",
+      "files": 4,
+      "lines": 1775,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "ethTrcv",
+      "files": 4,
+      "lines": 2393,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "fiM",
+      "files": 4,
+      "lines": 1247,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "ipduM",
+      "files": 4,
+      "lines": 962,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "linNm",
+      "files": 4,
+      "lines": 2489,
+      "status": "\u2705 \u5b8c\u6574"
+    },
+    {
+      "name": "linTp",
+      "files": 4,
+      "lines": 1974,
+      "status": "\u2705 \u5b8c\u6574"
+    }
+  ],
+  "features": {
+    "parallel_execution": true,
+    "autosar_lcfg_pattern": true,
+    "det_error_reporting": true,
+    "state_machine_implementation": true
+  }
+}
