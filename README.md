@@ -88,11 +88,18 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 ### 项目统计
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Modules-36-blue?style=flat-square" alt="36 Modules">
-  <img src="https://img.shields.io/badge/Lines%20of%20Code-40K+-blue?style=flat-square" alt="40K+ LOC">
-  <img src="https://img.shields.io/badge/Verification%20Reports-3-success?style=flat-square" alt="3 Verification Reports">
-  <img src="https://img.shields.io/badge/Documentation-5%20Docs-success?style=flat-square" alt="5 Documentation">
+  <img src="https://img.shields.io/badge/Modules-91-blue?style=flat-square" alt="91 Modules">
+  <img src="https://img.shields.io/badge/Lines%20of%20Code-88K+-blue?style=flat-square" alt="88K+ LOC">
+  <img src="https://img.shields.io/badge/Verification%20Reports-10+-success?style=flat-square" alt="10+ Verification Reports">
+  <img src="https://img.shields.io/badge/Documentation-15%20Docs-success?style=flat-square" alt="15 Documentation">
 </p>
+
+| 层级 | 模块数 | 状态 |
+|------|--------|------|
+| MCAL | 21 | ✅ 完成 |
+| ECUAL | 30 | ✅ 完成 |
+| Services | 40 | ✅ 完成 |
+| **总计** | **91** | **✅** |
 
 ## 快速开始
 
