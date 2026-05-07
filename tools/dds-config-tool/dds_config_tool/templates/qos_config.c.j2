@@ -1,0 +1,75 @@
+/** @file {{ prefix }}_qos_config.c
+ * @brief DDS QoS配置
+ *
+ * 自动生成于 {{ config.name }} v{{ config.version }}
+ * 请勿手动修改此文件
+ */
+
+#include "{{ prefix }}_config.h"
+
+/* ============================================================================
+ * 默认QoS配置
+ * ============================================================================ */
+
+const DDS_DefaultQos_t {{ prefix | to_c_identifier }}_default_qos = {
+    .topic_qos = {
+        .reliability = {
+            .kind = {{ config.default_qos.reliability.kind | to_upper }}_RELIABILITY_QOS,
+            .max_blocking_time = {{ config.default_qos.reliability.max_blocking_time_sec }}000000000LL + {{ config.default_qos.reliability.max_blocking_time_nsec }}LL
+        },
+        .durability = {
+            .kind = {{ config.default_qos.durability.kind | to_upper }}_DURABILITY_QOS
+        },
+        .deadline = {
+            .period = {{ config.default_qos.deadline.period_sec }}000000000LL + {{ config.default_qos.deadline.period_nsec }}LL
+        },
+        .latency_budget = {
+            .duration = {{ config.default_qos.latency_budget.duration_sec }}000000000LL + {{ config.default_qos.latency_budget.duration_nsec }}LL
+        },
+        .liveliness = {
+            .kind = {{ config.default_qos.liveliness.kind | to_upper }}_LIVELINESS_QOS,
+            .lease_duration = {{ config.default_qos.liveliness.lease_duration_sec }}000000000LL + {{ config.default_qos.liveliness.lease_duration_nsec }}LL
+        },
+        .history = {
+            .kind = {{ config.default_qos.history.kind | to_upper }}_HISTORY_QOS,
+            .depth = {{ config.default_qos.history.depth }}
+        },
+        .resource_limits = {
+            .max_samples = {{ config.default_qos.resource_limits.max_samples }},
+            .max_instances = {{ config.default_qos.resource_limits.max_instances }},
+            .max_samples_per_instance = {{ config.default_qos.resource_limits.max_samples_per_instance }}
+        },
+        .lifespan = {
+            .duration = {{ config.default_qos.lifespan.duration_sec }}000000000LL + {{ config.default_qos.lifespan.duration_nsec }}LL
+        },
+        .ownership = {
+            .kind = {{ config.default_qos.ownership.kind | to_upper }}_OWNERSHIP_QOS,
+            .strength = {{ config.default_qos.ownership.strength }}
+        },
+        .destination_order = {
+            .kind = {{ config.default_qos.destination_order.kind | to_upper }}_DESTINATIONORDER_QOS
+        },
+        .transport_priority = {
+            .value = {{ config.default_qos.transport_priority.value }}
+        }
+    }
+};
+
+/* ============================================================================
+ * QoS策略映射表
+ * ============================================================================ */
+
+const DDS_QosPolicyMapping_t {{ prefix | to_c_identifier }}_qos_mappings[] = {
+    { DDS_RELIABILITY_QOS_POLICY_ID, "Reliability" },
+    { DDS_DURABILITY_QOS_POLICY_ID, "Durability" },
+    { DDS_DEADLINE_QOS_POLICY_ID, "Deadline" },
+    { DDS_LATENCYBUDGET_QOS_POLICY_ID, "LatencyBudget" },
+    { DDS_LIVELINESS_QOS_POLICY_ID, "Liveliness" },
+    { DDS_HISTORY_QOS_POLICY_ID, "History" },
+    { DDS_RESOURCELIMITS_QOS_POLICY_ID, "ResourceLimits" },
+    { DDS_LIFESPAN_QOS_POLICY_ID, "Lifespan" },
+    { DDS_OWNERSHIP_QOS_POLICY_ID, "Ownership" },
+    { DDS_DESTINATIONORDER_QOS_POLICY_ID, "DestinationOrder" },
+    { DDS_TRANSPORTPRIORITY_QOS_POLICY_ID, "TransportPriority" },
+    { DDS_INVALID_QOS_POLICY_ID, NULL }
+};
