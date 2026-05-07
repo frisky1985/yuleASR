@@ -2,17 +2,34 @@
 
 本目录包含YuleTech AUTOSAR BSW平台所使用的第三方库。
 
+## 快速开始
+
+```bash
+# 克隆仓库（包含submodule）
+git clone --recurse-submodules https://github.com/frisky1985/yuleASR.git
+
+# 如果已经克隆，但缺少submodule
+git submodule update --init --recursive
+
+# 更新submodule到指定版本
+cd third_party/mbedtls
+git checkout v2.28.8
+cd ../..
+git add third_party/mbedtls
+git commit -m "更新mbedtls版本"
+```
+
 ## 库列表
 
 ### mbedTLS (v2.28.8 LTS)
 
 **描述**: 轻量级TLS/SSL库，用于MQTT模块的TLS/mTLS安全通信
 
-**安装方法**:
-```bash
-cd third_party
-git clone --depth 1 --branch v2.28.8 https://github.com/Mbed-TLS/mbedtls.git
-```
+**管理方式**: Git Submodule
+
+**位置**: `third_party/mbedtls/` -> https://github.com/Mbed-TLS/mbedtls.git
+
+**版本**: v2.28.8 (`5a764e5555`)
 
 **配置**:
 - 使用自定义配置: `mbedtls/configs/config-yule-autosar.h`
