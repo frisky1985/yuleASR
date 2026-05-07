@@ -1,318 +1,195 @@
-/**=================================================================================================
- * @file Crypto_Cfg.h
- * @brief Hardware Crypto Driver configuration header
- * @version 1.0.0
- * @date 2026-04-30
- * @author Shanghai Yule Electronics Technology Co., Ltd.
- * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
- *
- * AUTOSAR Standard: Crypto Driver Configuration
- * Layer: MCAL (Microcontroller Driver Layer)
- *==================================================================================================*/
+/**********************************************************************************************************************
+ * @file       Crypto_Cfg.h
+ * @brief      Crypto Driver Configuration Header
+ * @author     YuleTech AutoSAR Team
+ * @version    1.0.0
+ * @date       2025-05-01
+ * @copyright  Shanghai Yule Electronics Technology Co., Ltd.
+ *********************************************************************************************************************/
 
 #ifndef CRYPTO_CFG_H
 #define CRYPTO_CFG_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/**********************************************************************************************************************
+ * INCLUDES
+ *********************************************************************************************************************/
+#include "Crypto_Types.h"
 
-/*==================================================================================================
- *                                    VERSION INFORMATION
- *==================================================================================================*/
-#define CRYPTO_CFG_VENDOR_ID                   (0x64U)
-#define CRYPTO_CFG_MODULE_ID                   (0x78U)
-#define CRYPTO_CFG_AR_RELEASE_MAJOR_VERSION    (0x04U)
-#define CRYPTO_CFG_AR_RELEASE_MINOR_VERSION    (0x07U)
-#define CRYPTO_CFG_AR_RELEASE_REVISION_VERSION (0x00U)
+/**********************************************************************************************************************
+ * GLOBAL CONSTANT MACROS
+ *********************************************************************************************************************/
 
-/*==================================================================================================
- *                                    PRE-COMPILE CONFIGURATION
- *==================================================================================================*/
+/* Version Information */
+#define CRYPTO_CFG_MAJOR_VERSION            (1U)
+#define CRYPTO_CFG_MINOR_VERSION            (0U)
+#define CRYPTO_CFG_PATCH_VERSION            (0U)
 
-/**
- * @brief Development error detection enable
- */
-#ifndef CRYPTO_DEV_ERROR_DETECT
-#define CRYPTO_DEV_ERROR_DETECT                (STD_ON)
-#endif
+/* General Configuration */
+#define CRYPTO_CFG_VERSION_INFO_API         (STD_ON)
+#define CRYPTO_CFG_DEV_ERROR_DETECT         (STD_ON)
+#define CRYPTO_CFG_RUNTIME_ERROR_DETECT     (STD_OFF)
 
-/**
- * @brief Version info API enable
- */
-#ifndef CRYPTO_VERSION_INFO_API
-#define CRYPTO_VERSION_INFO_API                (STD_ON)
-#endif
+/* HSM Support */
+#define CRYPTO_CFG_HSM_ENABLED              (STD_ON)
+#define CRYPTO_CFG_HSM_FALLBACK_TO_SW       (STD_ON)
 
-/**
- * @brief Enable hardware acceleration
- */
-#ifndef CRYPTO_HW_ACCELERATION_ENABLED
-#define CRYPTO_HW_ACCELERATION_ENABLED         (STD_ON)
-#endif
+/* Driver Capabilities */
+#define CRYPTO_CFG_MAX_CHANNELS             (4U)
+#define CRYPTO_CFG_QUEUE_SIZE               (8U)
+#define CRYPTO_CFG_MAX_KEYS                 (16U)
+#define CRYPTO_CFG_MAX_KEY_ELEMENTS         (64U)
 
-/**
- * @brief Enable AES hardware support
- */
-#ifndef CRYPTO_AES_HW_SUPPORT
-#define CRYPTO_AES_HW_SUPPORT                  (STD_ON)
-#endif
+/* Buffer Sizes */
+#define CRYPTO_CFG_MAX_KEY_SIZE             (128U)
+#define CRYPTO_CFG_MAX_IV_SIZE              (16U)
+#define CRYPTO_CFG_MAX_TAG_SIZE             (16U)
+#define CRYPTO_CFG_MAX_AAD_SIZE             (256U)
+#define CRYPTO_CFG_MAX_HASH_SIZE            (64U)
+#define CRYPTO_CFG_MAX_SIGNATURE_SIZE       (72U)
+#define CRYPTO_CFG_MAX_ECC_KEY_SIZE         (96U)    /* 3*32 for secp256r1 uncompressed */
+#define CRYPTO_CFG_MAX_SYMMETRIC_KEY_SIZE   (32U)    /* AES-256 */
 
-/**
- * @brief Enable SHA-256 hardware support
- */
-#ifndef CRYPTO_SHA256_HW_SUPPORT
-#define CRYPTO_SHA256_HW_SUPPORT               (STD_ON)
-#endif
+/* CCC Digital Key Specific */
+#define CRYPTO_CFG_CCC_KEY_SIZE             (16U)    /* AES-128 for CCC */
+#define CRYPTO_CFG_CCC_IV_SIZE              (12U)    /* 96-bit IV for GCM */
+#define CRYPTO_CFG_CCC_TAG_SIZE             (16U)    /* 128-bit authentication tag */
+#define CRYPTO_CFG_CCC_ECDSA_SIG_SIZE       (64U)    /* R+S for secp256r1 */
+#define CRYPTO_CFG_CCC_ECC_PUB_KEY_SIZE     (65U)    /* Uncompressed P-256 */
+#define CRYPTO_CFG_CCC_ECC_PRIV_KEY_SIZE    (32U)    /* P-256 private key */
 
-/**
- * @brief Enable HMAC hardware support
- */
-#ifndef CRYPTO_HMAC_HW_SUPPORT
-#define CRYPTO_HMAC_HW_SUPPORT                 (STD_ON)
-#endif
+/**********************************************************************************************************************
+ * HSM CONFIGURATION
+ *********************************************************************************************************************/
 
-/**
- * @brief Enable RSA hardware support
- */
-#ifndef CRYPTO_RSA_HW_SUPPORT
-#define CRYPTO_RSA_HW_SUPPORT                  (STD_ON)
-#endif
+/* HSM Hardware Configuration */
+#define CRYPTO_HSM_INSTANCE_ID              (0U)
+#define CRYPTO_HSM_CHANNEL_ID               (0U)
+#define CRYPTO_HSM_CMD_TIMEOUT_MS           (1000U)
+#define CRYPTO_HSM_RSP_TIMEOUT_MS           (5000U)
+#define CRYPTO_HSM_MAX_CONCURRENT_JOBS      (4U)
 
-/**
- * @brief Enable ECC hardware support
- */
-#ifndef CRYPTO_ECC_HW_SUPPORT
-#define CRYPTO_ECC_HW_SUPPORT                  (STD_ON)
-#endif
+/* HSM Supported Algorithms */
+#define CRYPTO_HSM_SUPPORT_ECDSA            (STD_ON)
+#define CRYPTO_HSM_SUPPORT_ECDH             (STD_ON)
+#define CRYPTO_HSM_SUPPORT_AES_GCM          (STD_ON)
+#define CRYPTO_HSM_SUPPORT_SHA256           (STD_ON)
+#define CRYPTO_HSM_SUPPORT_HKDF             (STD_ON)
+#define CRYPTO_HSM_SUPPORT_HMAC             (STD_ON)
+#define CRYPTO_HSM_SUPPORT_RANDOM           (STD_ON)
 
-/**
- * @brief Enable True Random Number Generator (TRNG)
- */
-#ifndef CRYPTO_TRNG_HW_SUPPORT
-#define CRYPTO_TRNG_HW_SUPPORT                 (STD_ON)
-#endif
+/* HSM Security Levels */
+#define CRYPTO_HSM_SECURITY_LEVEL_1         (0x01U)  /* Software fallback allowed */
+#define CRYPTO_HSM_SECURITY_LEVEL_2         (0x02U)  /* HSM preferred */
+#define CRYPTO_HSM_SECURITY_LEVEL_3         (0x03U)  /* HSM required */
 
-/**
- * @brief Enable pseudo RNG (PRNG) support
- */
-#ifndef CRYPTO_PRNG_SUPPORT
-#define CRYPTO_PRNG_SUPPORT                    (STD_ON)
-#endif
+/**********************************************************************************************************************
+ * KEY CONFIGURATION
+ *********************************************************************************************************************/
 
-/**
- * @brief Asynchronous operation support
- */
-#ifndef CRYPTO_ASYNC_OPERATION_SUPPORT
-#define CRYPTO_ASYNC_OPERATION_SUPPORT         (STD_ON)
-#endif
+/* Key IDs for CCC Digital Key */
+#define CRYPTO_KEY_ID_MASTER                (0U)
+#define CRYPTO_KEY_ID_SIGNING               (1U)
+#define CRYPTO_KEY_ID_ENCRYPTION            (2U)
+#define CRYPTO_KEY_ID_DEVICE                (3U)
+#define CRYPTO_KEY_ID_SESSION               (4U)
+#define CRYPTO_KEY_ID_EPHEMERAL             (5U)
+#define CRYPTO_KEY_ID_CCC_ROOT              (10U)
+#define CRYPTO_KEY_ID_CCC_SUB_CA            (11U)
+#define CRYPTO_KEY_ID_CCC_DEVICE_KEY        (12U)
+#define CRYPTO_KEY_ID_CCC_AUTH_KEY          (13U)
+#define CRYPTO_KEY_ID_CCC_FRIEND_KEY        (14U)
 
-/**
- * @brief Job cancellation support
- */
-#ifndef CRYPTO_JOB_CANCELATION_SUPPORT
-#define CRYPTO_JOB_CANCELATION_SUPPORT         (STD_ON)
-#endif
+/* Key Element IDs */
+#define CRYPTO_KEY_ELEMENT_ID_KEY_MATERIAL  (1U)
+#define CRYPTO_KEY_ELEMENT_ID_IV            (2U)
+#define CRYPTO_KEY_ELEMENT_ID_SALT          (3U)
+#define CRYPTO_KEY_ELEMENT_ID_TAG           (4U)
+#define CRYPTO_KEY_ELEMENT_ID_AAD           (5U)
+#define CRYPTO_KEY_ELEMENT_ID_PUBLIC_KEY    (10U)
+#define CRYPTO_KEY_ELEMENT_ID_PRIVATE_KEY   (11U)
+#define CRYPTO_KEY_ELEMENT_ID_SIGNATURE     (20U)
 
-/**
- * @brief Key storage support
- */
-#ifndef CRYPTO_KEY_STORAGE_SUPPORT
-#define CRYPTO_KEY_STORAGE_SUPPORT             (STD_ON)
-#endif
+/**********************************************************************************************************************
+ * ALGORITHM CONFIGURATION
+ **********************************************************************************************************************/
 
-/**
- * @brief Enable secure key storage (HSM/TEE)
- */
-#ifndef CRYPTO_SECURE_KEY_STORAGE
-#define CRYPTO_SECURE_KEY_STORAGE              (STD_OFF)
-#endif
+/* ECDSA secp256r1 */
+#define CRYPTO_ALG_ECDSA_SECP256R1 \
+    { \
+        .family = CRYPTO_ALGOFAM_ECDSA, \
+        .mode = 0, \
+        .keyLength = 256, \
+        .curve = CRYPTO_ECC_CURVE_SECP256R1 \
+    }
 
-/*==================================================================================================
- *                                    INSTANCE CONFIGURATION
- *==================================================================================================*/
+/* ECDH secp256r1 */
+#define CRYPTO_ALG_ECDH_SECP256R1 \
+    { \
+        .family = CRYPTO_ALGOFAM_ECDH, \
+        .mode = 0, \
+        .keyLength = 256, \
+        .curve = CRYPTO_ECC_CURVE_SECP256R1 \
+    }
 
-/**
- * @brief Number of Crypto driver instances
- */
-#define CRYPTO_NUM_INSTANCES                   (1U)
+/* AES-128-GCM */
+#define CRYPTO_ALG_AES128_GCM \
+    { \
+        .family = CRYPTO_ALGOFAM_AES, \
+        .mode = CRYPTO_ALGOMODE_GCM, \
+        .keyLength = 128, \
+        .curve = 0 \
+    }
 
-/**
- * @brief Number of driver objects
- */
-#define CRYPTO_NUM_DRIVER_OBJECTS              (4U)
+/* AES-256-GCM */
+#define CRYPTO_ALG_AES256_GCM \
+    { \
+        .family = CRYPTO_ALGOFAM_AES, \
+        .mode = CRYPTO_ALGOMODE_GCM, \
+        .keyLength = 256, \
+        .curve = 0 \
+    }
 
-/**
- * @brief Number of channels
- */
-#define CRYPTO_NUM_CHANNELS                    (8U)
+/* SHA-256 */
+#define CRYPTO_ALG_SHA256 \
+    { \
+        .family = CRYPTO_ALGOFAM_SHA2_256, \
+        .mode = 0, \
+        .keyLength = 0, \
+        .curve = 0 \
+    }
 
-/**
- * @brief Number of keys
- */
-#define CRYPTO_NUM_KEYS                        (16U)
+/* HMAC-SHA256 */
+#define CRYPTO_ALG_HMAC_SHA256 \
+    { \
+        .family = CRYPTO_ALGOFAM_HMAC, \
+        .mode = CRYPTO_ALGOFAM_SHA2_256, \
+        .keyLength = 256, \
+        .curve = 0 \
+    }
 
-/**
- * @brief Maximum number of jobs in queue
- */
-#define CRYPTO_MAX_JOB_QUEUE_SIZE              (16U)
+/* HKDF-SHA256 */
+#define CRYPTO_ALG_HKDF_SHA256 \
+    { \
+        .family = CRYPTO_ALGOFAM_HKDF, \
+        .mode = CRYPTO_ALGOFAM_SHA2_256, \
+        .keyLength = 256, \
+        .curve = 0 \
+    }
 
-/**
- * @brief Number of key elements per key
- */
-#define CRYPTO_NUM_KEY_ELEMENTS                (5U)
+/**********************************************************************************************************************
+ * CALLBACK CONFIGURATION
+ *********************************************************************************************************************/
 
-/*==================================================================================================
- *                                    DRIVER OBJECT IDs
- *==================================================================================================*/
-#define CRYPTO_DRIVER_OBJECT_AES_ID            (0U)
-#define CRYPTO_DRIVER_OBJECT_HASH_ID           (1U)
-#define CRYPTO_DRIVER_OBJECT_HMAC_ID           (2U)
-#define CRYPTO_DRIVER_OBJECT_RSA_ID            (3U)
+#define CRYPTO_CFG_CALLBACK_ON_COMPLETE     (STD_ON)
+#define CRYPTO_CFG_CALLBACK_ON_PROGRESS     (STD_OFF)
 
-/*==================================================================================================
- *                                    CHANNEL IDs
- *==================================================================================================*/
-#define CRYPTO_CHANNEL_AES_0                   (0U)
-#define CRYPTO_CHANNEL_AES_1                   (1U)
-#define CRYPTO_CHANNEL_HASH_0                  (2U)
-#define CRYPTO_CHANNEL_HMAC_0                  (3U)
-#define CRYPTO_CHANNEL_RSA_0                   (4U)
-#define CRYPTO_CHANNEL_RNG_0                   (5U)
-#define CRYPTO_CHANNEL_ECC_0                   (6U)
-#define CRYPTO_CHANNEL_GCM_0                   (7U)
+/**********************************************************************************************************************
+ * DEBUG CONFIGURATION
+ *********************************************************************************************************************/
 
-/*==================================================================================================
- *                                    KEY IDs
- *==================================================================================================*/
-#define CRYPTO_KEY_ID_AES_MASTER               (0U)
-#define CRYPTO_KEY_ID_AES_SESSION              (1U)
-#define CRYPTO_KEY_ID_HMAC_MASTER              (2U)
-#define CRYPTO_KEY_ID_RSA_PRIVATE              (3U)
-#define CRYPTO_KEY_ID_RSA_PUBLIC               (4U)
-#define CRYPTO_KEY_ID_ECC_PRIVATE              (5U)
-#define CRYPTO_KEY_ID_ECC_PUBLIC               (6U)
-#define CRYPTO_KEY_ID_RNG_SEED                 (7U)
-#define CRYPTO_KEY_ID_AES_STORAGE              (8U)
-#define CRYPTO_KEY_ID_HMAC_STORAGE             (9U)
-#define CRYPTO_KEY_ID_DERIVE_BASE              (10U)
-#define CRYPTO_KEY_ID_DERIVED_1                (11U)
-#define CRYPTO_KEY_ID_DERIVED_2                (12U)
-#define CRYPTO_KEY_ID_CERT_ROOT                (13U)
-#define CRYPTO_KEY_ID_CERT_DEVICE              (14U)
-#define CRYPTO_KEY_ID_RESERVED                 (15U)
+#define CRYPTO_CFG_DEBUG_LEVEL              (0U)   /* 0=Off, 1=Error, 2=Warning, 3=Info, 4=Debug */
 
-/*==================================================================================================
- *                                    KEY ELEMENT IDs
- *==================================================================================================*/
-#define CRYPTO_KEY_ELEMENT_AES_KEY             (1U)
-#define CRYPTO_KEY_ELEMENT_AES_IV              (2U)
-#define CRYPTO_KEY_ELEMENT_HMAC_KEY            (3U)
-#define CRYPTO_KEY_ELEMENT_RSA_MOD_N           (4U)
-#define CRYPTO_KEY_ELEMENT_RSA_PUB_EXP_E       (5U)
-#define CRYPTO_KEY_ELEMENT_RSA_PRIV_EXP_D      (6U)
-#define CRYPTO_KEY_ELEMENT_ECC_PUB_X           (7U)
-#define CRYPTO_KEY_ELEMENT_ECC_PUB_Y           (8U)
-#define CRYPTO_KEY_ELEMENT_ECC_PRIV_D          (9U)
-#define CRYPTO_KEY_ELEMENT_GCM_TAG             (10U)
-#define CRYPTO_KEY_ELEMENT_SALT                (11U)
-#define CRYPTO_KEY_ELEMENT_SEED                (12U)
-
-/*==================================================================================================
- *                                    ALGORITHM CONFIGURATION
- *==================================================================================================*/
-
-/**
- * @brief AES configuration
- */
-#define CRYPTO_AES_MAX_KEY_SIZE                (256U)      /* Maximum AES key size in bits */
-#define CRYPTO_AES_SUPPORT_ECB                 (STD_ON)
-#define CRYPTO_AES_SUPPORT_CBC                 (STD_ON)
-#define CRYPTO_AES_SUPPORT_CTR                 (STD_ON)
-#define CRYPTO_AES_SUPPORT_GCM                 (STD_ON)
-#define CRYPTO_AES_SUPPORT_CCM                 (STD_OFF)
-
-/**
- * @brief SHA configuration
- */
-#define CRYPTO_SHA_SUPPORT_SHA1                (STD_OFF)
-#define CRYPTO_SHA_SUPPORT_SHA224              (STD_OFF)
-#define CRYPTO_SHA_SUPPORT_SHA256              (STD_ON)
-#define CRYPTO_SHA_SUPPORT_SHA384              (STD_OFF)
-#define CRYPTO_SHA_SUPPORT_SHA512              (STD_OFF)
-
-/**
- * @brief RSA configuration
- */
-#define CRYPTO_RSA_MAX_KEY_SIZE                (2048U)     /* Maximum RSA key size in bits */
-#define CRYPTO_RSA_SUPPORT_PKCS1_V15           (STD_ON)
-#define CRYPTO_RSA_SUPPORT_PKCS1_V21           (STD_OFF)
-#define CRYPTO_RSA_SUPPORT_PSS                 (STD_ON)
-
-/**
- * @brief ECC configuration
- */
-#define CRYPTO_ECC_SUPPORT_P256                (STD_ON)
-#define CRYPTO_ECC_SUPPORT_P384                (STD_OFF)
-#define CRYPTO_ECC_SUPPORT_P521                (STD_OFF)
-
-/**
- * @brief TRNG configuration
- */
-#define CRYPTO_TRNG_ENTROPY_BITS               (256U)
-#define CRYPTO_TRNG_POLLING_TIMEOUT_US         (10000U)
-
-/*==================================================================================================
- *                                    TIMING CONFIGURATION
- *==================================================================================================*/
-
-/**
- * @brief Main function period (in ms)
- */
-#define CRYPTO_MAIN_FUNCTION_PERIOD_MS         (10U)
-
-/**
- * @brief Hardware timeout (in us)
- */
-#define CRYPTO_HW_TIMEOUT_US                   (1000000U)  /* 1 second */
-
-/**
- * @brief Async job timeout (in ms)
- */
-#define CRYPTO_ASYNC_JOB_TIMEOUT_MS            (5000U)
-
-/*==================================================================================================
- *                                    CALLBACK CONFIGURATION
- *==================================================================================================*/
-
-/**
- * @brief Notification function prototype
- */
-typedef void (*Crypto_NotificationFuncType)(uint32 jobId, Std_ReturnType result);
-
-/**
- * @brief Enable notification callbacks
- */
-#ifndef CRYPTO_NOTIFICATIONS_ENABLED
-#define CRYPTO_NOTIFICATIONS_ENABLED           (STD_ON)
-#endif
-
-/*==================================================================================================
- *                                    EXTERNAL DECLARATIONS
- *==================================================================================================*/
-#define CRYPTO_START_SEC_CONFIG_DATA_UNSPECIFIED
-#include "Crypto_MemMap.h"
-
-/**
- * @brief Crypto driver configuration
- */
+/* External Configuration Structure */
 extern const Crypto_ConfigType Crypto_Config;
-
-#define CRYPTO_STOP_SEC_CONFIG_DATA_UNSPECIFIED
-#include "Crypto_MemMap.h"
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* CRYPTO_CFG_H */

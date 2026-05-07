@@ -1,0 +1,28 @@
+{
+  "project_name": "DoCan_Example",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "generation_date": "2024-01-15",
+  "connections": [
+    {
+      "id": 0,
+      "name": "Engine",
+      "req_id": 2016,
+      "resp_id": 2024,
+      "func_id": 2015,
+      "addressing": "PHYSICAL",
+      "p2_max": 150,
+      "p2_min": 25,
+      "p2_star": 5000,
+      "s3_server": 5000,
+      "s3_client": 2000,
+      "rx_buf": 4096,
+      "tx_buf": 4096,
+      "fc_bs": 8,
+      "fc_stmin": 20
+    }
+  ]
+}

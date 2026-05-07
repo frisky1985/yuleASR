@@ -1,0 +1,11 @@
+# DTC Configurator Tool Requirements
+# Install with: pip install -r requirements.txt
+
+# Required for code generation
+jinja2>=3.0.0
+
+# Optional: For Excel support (alternative to CSV)
+# openpyxl>=3.0.0
+
+# Optional: For better GUI look
+# ttkthemes>=3.2.0

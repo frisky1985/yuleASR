@@ -1,207 +1,198 @@
-/*==================================================================================================
- *                              CRYPTO INTERFACE (CryIf)
- *==================================================================================================
- * FILENAME: CryIf_Cfg.h
- * AUTOSAR VERSION: R22-11
- *==================================================================================================
- * PROJECT: yuleASR Classic AUTOSAR BSW
- * DESCRIPTION: Configuration header file for Crypto Interface module
- *==================================================================================================
+/**
+ * @file CryIf_Cfg.h
+ * @brief Crypto Interface Configuration Header
+ * @version 1.0.0
+ * @date 2026-05-01
+ * @author YuleTech
+ *
+ * @copyright Copyright (c) 2026 YuleTech
+ *
+ * @details Configuration parameters for CRYIF module
  */
 
 #ifndef CRYIF_CFG_H
 #define CRYIF_CFG_H
 
 /*==================================================================================================
- *                                    VERSION INFORMATION
- *==================================================================================================*/
-#define CRYIF_CFG_AR_RELEASE_MAJOR_VERSION    (4u)
-#define CRYIF_CFG_AR_RELEASE_MINOR_VERSION    (7u)
-#define CRYIF_CFG_AR_RELEASE_REVISION_VERSION (0u)
-
-#define CRYIF_CFG_SW_MAJOR_VERSION            (1u)
-#define CRYIF_CFG_SW_MINOR_VERSION            (0u)
-#define CRYIF_CFG_SW_PATCH_VERSION            (0u)
+*                                          INCLUDE FILES
+==================================================================================================*/
+#include "CryIf_Types.h"
 
 /*==================================================================================================
- *                                    PRE-COMPILE CONFIGURATION
- *==================================================================================================*/
-
-/**
- * @brief Development error detection enable/disable
- */
-#define CRYIF_DEV_ERROR_DETECT                (STD_ON)
-
-/**
- * @brief Version info API enable/disable
- */
-#define CRYIF_VERSION_INFO_API                (STD_ON)
-
-/**
- * @brief Main function period in milliseconds
- */
-#define CRYIF_MAIN_FUNCTION_PERIOD_MS         (10u)
+*                                    VERSION INFORMATION
+==================================================================================================*/
+#define CRYIF_CFG_AR_RELEASE_MAJOR_VERSION      (0x04U)
+#define CRYIF_CFG_AR_RELEASE_MINOR_VERSION      (0x04U)
+#define CRYIF_CFG_AR_RELEASE_REVISION_VERSION   (0x00U)
+#define CRYIF_CFG_SW_MAJOR_VERSION              (0x01U)
+#define CRYIF_CFG_SW_MINOR_VERSION              (0x00U)
+#define CRYIF_CFG_SW_PATCH_VERSION              (0x00U)
 
 /*==================================================================================================
- *                                    CHANNEL CONFIGURATION
- *==================================================================================================*/
+*                                    PRE-COMPILE CONFIGURATION
+==================================================================================================*/
 
-/**
- * @brief Maximum number of channels
- */
-#define CRYIF_MAX_CHANNEL_COUNT               (16u)
+/** @brief Development error detection enable/disable */
+#ifndef CRYIF_DEV_ERROR_DETECT
+#define CRYIF_DEV_ERROR_DETECT                  (STD_ON)
+#endif
 
-/**
- * @brief Number of configured channels
- */
-#define CRYIF_NUM_CHANNELS                    (8u)
+/** @brief Version info API enable/disable */
+#ifndef CRYIF_VERSION_INFO_API
+#define CRYIF_VERSION_INFO_API                  (STD_ON)
+#endif
 
-/* Channel IDs */
-#define CRYIF_CHANNEL_ID_AES_ENCRYPT          (0u)
-#define CRYIF_CHANNEL_ID_AES_DECRYPT          (1u)
-#define CRYIF_CHANNEL_ID_MAC_GENERATE         (2u)
-#define CRYIF_CHANNEL_ID_MAC_VERIFY           (3u)
-#define CRYIF_CHANNEL_ID_HASH_SHA256          (4u)
-#define CRYIF_CHANNEL_ID_HASH_SHA512          (5u)
-#define CRYIF_CHANNEL_ID_RANDOM               (6u)
-#define CRYIF_CHANNEL_ID_SIGNATURE            (7u)
+/** @brief Key element copy API enable/disable */
+#ifndef CRYIF_KEY_ELEMENT_COPY_API
+#define CRYIF_KEY_ELEMENT_COPY_API              (STD_ON)
+#endif
 
-/* Channel priorities (0 = highest) */
-#define CRYIF_CHANNEL_PRIORITY_HIGH           (0u)
-#define CRYIF_CHANNEL_PRIORITY_NORMAL         (5u)
-#define CRYIF_CHANNEL_PRIORITY_LOW            (10u)
+/** @brief Key valid check API enable/disable */
+#ifndef CRYIF_KEY_VALID_CHECK_API
+#define CRYIF_KEY_VALID_CHECK_API               (STD_ON)
+#endif
 
 /*==================================================================================================
- *                                    KEY CONFIGURATION
- *==================================================================================================*/
+*                                    CONFIGURATION PARAMETERS
+==================================================================================================*/
 
-/**
- * @brief Maximum number of keys
- */
-#define CRYIF_MAX_KEY_COUNT                   (16u)
+/** @brief Maximum number of channels */
+#define CRYIF_CFG_MAX_CHANNEL_COUNT             (0x04U)
 
-/**
- * @brief Number of configured keys
- */
-#define CRYIF_NUM_KEYS                        (8u)
+/** @brief Maximum number of keys */
+#define CRYIF_CFG_MAX_KEY_COUNT                 (0x08U)
 
-/* Key IDs */
-#define CRYIF_KEY_ID_AES_128                  (0u)
-#define CRYIF_KEY_ID_AES_256                  (1u)
-#define CRYIF_KEY_ID_HMAC_SHA256              (2u)
-#define CRYIF_KEY_ID_RSA_PUBLIC               (3u)
-#define CRYIF_KEY_ID_RSA_PRIVATE              (4u)
-#define CRYIF_KEY_ID_ECC_PUBLIC               (5u)
-#define CRYIF_KEY_ID_ECC_PRIVATE              (6u)
-#define CRYIF_KEY_ID_RANDOM_SEED              (7u)
+/** @brief Maximum number of jobs */
+#define CRYIF_CFG_MAX_JOB_COUNT                 (0x10U)
 
-/* Key element IDs */
-#define CRYIF_KEY_ELEMENT_ID_KEY              (1u)
-#define CRYIF_KEY_ELEMENT_ID_IV               (2u)
-#define CRYIF_KEY_ELEMENT_ID_SEED             (3u)
-#define CRYIF_KEY_ELEMENT_ID_SALT             (4u)
-#define CRYIF_KEY_ELEMENT_ID_ITERATIONS       (5u)
+/** @brief Maximum buffer size for crypto operations */
+#define CRYIF_CFG_MAX_BUFFER_SIZE               (0x400U)
 
-/* Key lengths in bytes */
-#define CRYIF_KEY_LENGTH_AES_128              (16u)       /* 128 bits */
-#define CRYIF_KEY_LENGTH_AES_192              (24u)       /* 192 bits */
-#define CRYIF_KEY_LENGTH_AES_256              (32u)       /* 256 bits */
-#define CRYIF_KEY_LENGTH_HMAC_SHA256          (32u)       /* 256 bits */
-#define CRYIF_KEY_LENGTH_RSA_1024             (128u)      /* 1024 bits */
-#define CRYIF_KEY_LENGTH_RSA_2048             (256u)      /* 2048 bits */
-#define CRYIF_KEY_LENGTH_ECC_P256             (32u)       /* 256 bits */
-#define CRYIF_KEY_LENGTH_MAX                  (256u)      /* Maximum key length */
+/** @brief Maximum key element size */
+#define CRYIF_CFG_MAX_KEY_ELEMENT_SIZE          (0x100U)
+
+/** @brief Number of configured channels */
+#define CRYIF_CFG_NUM_CHANNELS                  (0x02U)
+
+/** @brief Number of configured keys */
+#define CRYIF_CFG_NUM_KEYS                      (0x04U)
+
+/** @brief Main function period in milliseconds */
+#define CRYIF_CFG_MAIN_FUNCTION_PERIOD_MS       (0x0AU)
 
 /*==================================================================================================
- *                                    ALGORITHM CONFIGURATION
- *==================================================================================================*/
+*                                    CHANNEL CONFIGURATION
+==================================================================================================*/
 
-/* AES Configuration */
-#define CRYIF_AES_BLOCK_SIZE                  (16u)       /* 128 bits */
-#define CRYIF_AES_IV_SIZE                     (16u)       /* 128 bits */
-#define CRYIF_AES_GCM_TAG_SIZE                (16u)       /* 128 bits */
-#define CRYIF_AES_CCM_TAG_SIZE                (16u)       /* 128 bits */
+/** @brief Channel 0 - Primary Hardware Channel */
+#define CRYIF_CFG_CHANNEL_0_ID                  (0x00U)
+#define CRYIF_CFG_CHANNEL_0_DRIVER_INDEX        (0x00U)
+#define CRYIF_CFG_CHANNEL_0_DRIVER_OBJ          (0x00U)
+#define CRYIF_CFG_CHANNEL_0_MAX_KEY_SIZE        (0x100U)
+#define CRYIF_CFG_CHANNEL_0_MAX_JOB_SIZE        (0x400U)
 
-/* Hash Configuration */
-#define CRYIF_HASH_SHA256_SIZE                (32u)       /* 256 bits */
-#define CRYIF_HASH_SHA512_SIZE                (64u)       /* 512 bits */
-#define CRYIF_HASH_SHA1_SIZE                  (20u)       /* 160 bits */
-#define CRYIF_HASH_SHA224_SIZE                (28u)       /* 224 bits */
-#define CRYIF_HASH_SHA384_SIZE                (48u)       /* 384 bits */
-
-/* MAC Configuration */
-#define CRYIF_HMAC_SHA256_SIZE                (32u)       /* 256 bits */
-#define CRYIF_CMAC_SIZE                       (16u)       /* 128 bits */
-
-/* Random Configuration */
-#define CRYIF_RANDOM_MAX_SIZE                 (256u)      /* Maximum random bytes per request */
-#define CRYIF_RANDOM_SEED_SIZE                (32u)       /* Seed size */
-
-/* RSA Configuration */
-#define CRYIF_RSA_SIGNATURE_SIZE_1024         (128u)      /* 1024 bits */
-#define CRYIF_RSA_SIGNATURE_SIZE_2048         (256u)      /* 2048 bits */
+/** @brief Channel 1 - Secondary Hardware Channel */
+#define CRYIF_CFG_CHANNEL_1_ID                  (0x01U)
+#define CRYIF_CFG_CHANNEL_1_DRIVER_INDEX        (0x00U)
+#define CRYIF_CFG_CHANNEL_1_DRIVER_OBJ          (0x01U)
+#define CRYIF_CFG_CHANNEL_1_MAX_KEY_SIZE        (0x100U)
+#define CRYIF_CFG_CHANNEL_1_MAX_JOB_SIZE        (0x400U)
 
 /*==================================================================================================
- *                                    FEATURE ENABLE/DISABLE
- *==================================================================================================*/
+*                                    KEY CONFIGURATION
+==================================================================================================*/
 
-/**
- * @brief Enable AES encryption support
- */
-#define CRYIF_AES_SUPPORT                     (STD_ON)
+/** @brief Key 0 - Master Key */
+#define CRYIF_CFG_KEY_0_ID                      (0x00U)
+#define CRYIF_CFG_KEY_0_CRYPTO_KEY_ID           (0x00U)
+#define CRYIF_CFG_KEY_0_DRIVER_INDEX            (0x00U)
+#define CRYIF_CFG_KEY_0_SECURITY_LEVEL          (CRYIF_SEC_LEVEL_3)
 
-/**
- * @brief Enable SHA-256 hash support
- */
-#define CRYIF_SHA256_SUPPORT                  (STD_ON)
+/** @brief Key 1 - Session Key */
+#define CRYIF_CFG_KEY_1_ID                      (0x01U)
+#define CRYIF_CFG_KEY_1_CRYPTO_KEY_ID           (0x01U)
+#define CRYIF_CFG_KEY_1_DRIVER_INDEX            (0x00U)
+#define CRYIF_CFG_KEY_1_SECURITY_LEVEL          (CRYIF_SEC_LEVEL_2)
 
-/**
- * @brief Enable HMAC support
- */
-#define CRYIF_HMAC_SUPPORT                    (STD_ON)
+/** @brief Key 2 - Application Key */
+#define CRYIF_CFG_KEY_2_ID                      (0x02U)
+#define CRYIF_CFG_KEY_2_CRYPTO_KEY_ID           (0x02U)
+#define CRYIF_CFG_KEY_2_DRIVER_INDEX            (0x00U)
+#define CRYIF_CFG_KEY_2_SECURITY_LEVEL          (CRYIF_SEC_LEVEL_1)
 
-/**
- * @brief Enable RSA support
- */
-#define CRYIF_RSA_SUPPORT                     (STD_ON)
-
-/**
- * @brief Enable random number generation
- */
-#define CRYIF_RANDOM_GENERATE_SUPPORT         (STD_ON)
-
-/**
- * @brief Enable key derivation
- */
-#define CRYIF_KEY_DERIVE_SUPPORT              (STD_ON)
-
-/**
- * @brief Enable key exchange
- */
-#define CRYIF_KEY_EXCHANGE_SUPPORT            (STD_ON)
-
-/**
- * @brief Enable certificate operations
- */
-#define CRYIF_CERTIFICATE_SUPPORT             (STD_OFF)
-
-/**
- * @brief Enable streaming operations
- */
-#define CRYIF_STREAMING_SUPPORT               (STD_ON)
+/** @brief Key 3 - Debug Key */
+#define CRYIF_CFG_KEY_3_ID                      (0x03U)
+#define CRYIF_CFG_KEY_3_CRYPTO_KEY_ID           (0x03U)
+#define CRYIF_CFG_KEY_3_DRIVER_INDEX            (0x00U)
+#define CRYIF_CFG_KEY_3_SECURITY_LEVEL          (CRYIF_SEC_LEVEL_NONE)
 
 /*==================================================================================================
- *                                    CALLBACK CONFIGURATION
- *==================================================================================================*/
+*                                    KEY ELEMENT CONFIGURATION
+==================================================================================================*/
 
-/**
- * @brief Enable callback notifications
- */
-#define CRYIF_CALLBACK_SUPPORTED              (STD_ON)
+/** @brief Key Element IDs as per AutoSAR Crypto standard */
+#define CRYIF_KEY_ELEMENT_ID_IV                 (0x01U)
+#define CRYIF_KEY_ELEMENT_ID_KEY                (0x02U)
+#define CRYIF_KEY_ELEMENT_ID_SALT               (0x03U)
+#define CRYIF_KEY_ELEMENT_ID_ITERATIONS         (0x04U)
+#define CRYIF_KEY_ELEMENT_ID_ALGORITHM          (0x05U)
+#define CRYIF_KEY_ELEMENT_ID_SEED_STATE         (0x06U)
+#define CRYIF_KEY_ELEMENT_ID_DRBG_STATE         (0x07U)
+#define CRYIF_KEY_ELEMENT_ID_MAC                (0x08U)
+#define CRYIF_KEY_ELEMENT_ID_SIGNATURE          (0x09U)
+#define CRYIF_KEY_ELEMENT_ID_PUBKEY             (0x0AU)
+#define CRYIF_KEY_ELEMENT_ID_PRIVKEY            (0x0BU)
+#define CRYIF_KEY_ELEMENT_ID_CERTIFICATE        (0x0CU)
+#define CRYIF_KEY_ELEMENT_ID_CERTIFICATE_DATA   (0x0DU)
+#define CRYIF_KEY_ELEMENT_ID_CERTIFICATE_SIGN   (0x0EU)
+#define CRYIF_KEY_ELEMENT_ID_CERTIFICATE_ID     (0x0FU)
 
-/**
- * @brief Enable asynchronous operations
- */
-#define CRYIF_ASYNC_OPERATIONS                (STD_OFF)
+/*==================================================================================================
+*                                    SECURITY LEVEL MAPPING
+==================================================================================================*/
+
+/** @brief Security level to CSM security service mapping */
+#define CRYIF_CFG_SEC_LEVEL_TO_CSM(level)       ((level) * 0x10U)
+
+/** @brief Security level validation macro */
+#define CRYIF_CFG_IS_VALID_SEC_LEVEL(level)     \
+    (((level) >= CRYIF_SEC_LEVEL_NONE) && ((level) <= CRYIF_SEC_LEVEL_7))
+
+/*==================================================================================================
+*                                    CALLBACK CONFIGURATION
+==================================================================================================*/
+
+/** @brief Enable notification callbacks */
+#define CRYIF_CFG_NOTIFICATION_ENABLED          (STD_ON)
+
+/** @brief Job completion callback function name */
+#define CRYIF_CFG_JOB_CALLBACK                  CryIf_JobNotificationCallback
+
+/** @brief Key operation callback function name */
+#define CRYIF_CFG_KEY_CALLBACK                  CryIf_KeyNotificationCallback
+
+/*==================================================================================================
+*                                    DEBUG CONFIGURATION
+==================================================================================================*/
+
+/** @brief Enable debug logging */
+#ifndef CRYIF_DEBUG_ENABLED
+#define CRYIF_DEBUG_ENABLED                     (STD_OFF)
+#endif
+
+/** @brief Debug print macro */
+#if (CRYIF_DEBUG_ENABLED == STD_ON)
+    #include <stdio.h>
+    #define CRYIF_DBG_PRINT(fmt, ...)           printf("[CRYIF] " fmt "\n", ##__VA_ARGS__)
+#else
+    #define CRYIF_DBG_PRINT(fmt, ...)           ((void)0)
+#endif
+
+/*==================================================================================================
+*                                    EXTERNAL CONFIGURATION
+==================================================================================================*/
+
+/** @brief External configuration structure declaration */
+extern const CryIf_ConfigType CryIf_Config;
 
 #endif /* CRYIF_CFG_H */

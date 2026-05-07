@@ -1,0 +1,386 @@
+name: HIL Tests
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**' ]
+    paths:
+      - 'src/**'
+      - 'tests/hil/**'
+      - '.github/workflows/hil-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/hil/**'
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_mode:
+        description: 'Test mode (simulation/hardware)'
+        required: true
+        default: 'simulation'
+        type: choice
+        options:
+          - simulation
+          - hardware
+      test_sequences:
+        description: 'Test sequences to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - uds
+          - e2e
+          - ota
+          - secoc
+
+env:
+  PYTHON_VERSION: '3.10'
+  C_STANDARD: 'c11'
+
+jobs:
+  # Build and unit tests
+  build:
+    name: Build and Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          gcc \
+          libcunit1-dev \
+          lcov \
+          gcovr
+
+    - name: Build C code
+      run: |
+        mkdir -p build
+        cd build
+        cmake .. \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DENABLE_TESTS=ON \
+          -DENABLE_COVERAGE=ON
+        make -j$(nproc)
+
+    - name: Run unit tests
+      run: |
+        cd build
+        ctest --output-on-failure -j$(nproc)
+
+    - name: Generate coverage report
+      run: |
+        cd build
+        gcovr --root .. --html --html-details -o coverage.html
+        gcovr --root .. --xml -o coverage.xml
+
+    - name: Upload coverage artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: build/coverage.html
+        retention-days: 30
+
+  # HIL Tests in Simulation Mode
+  hil-simulation-tests:
+    name: HIL Simulation Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        test-suite:
+          - uds
+          - e2e
+          - ota
+          - secoc
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install \
+          pytest \
+          pytest-cov \
+          pytest-html \
+          jinja2 \
+          python-can \
+          scapy
+
+    - name: Run HIL ${{ matrix.test-suite }} tests
+      run: |
+        cd tests/hil
+        python -m pytest test_sequences/${{ matrix.test-suite }}_sequences.py \
+          -v \
+          --tb=short \
+          --html=report-${{ matrix.test-suite }}.html \
+          --self-contained-html
+      timeout-minutes: 30
+
+    - name: Upload test report
+      uses: actions/upload-artifact@v4
+      with:
+        name: hil-test-reports-${{ matrix.test-suite }}
+        path: tests/hil/report-${{ matrix.test-suite }}.html
+        retention-days: 30
+
+  # Full HIL Test Suite
+  hil-full-tests:
+    name: HIL Full Test Suite
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'schedule' || github.event.inputs.test_mode == 'simulation'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install \
+          pytest \
+          pytest-cov \
+          pytest-html \
+          pytest-json-report \
+          jinja2 \
+          weasyprint \
+          python-can \
+          scapy
+
+    - name: Run complete HIL test suite
+      run: |
+        cd tests/hil
+        python -m pytest \
+          test_sequences/ \
+          -v \
+          --tb=short \
+          --cov=./ \
+          --cov-report=xml \
+          --cov-report=html \
+          --html=report-full.html \
+          --self-contained-html \
+          --json-report \
+          --json-report-file=report-full.json
+      timeout-minutes: 60
+
+    - name: Generate comprehensive report
+      run: |
+        cd tests/hil
+        python report_generator.py
+
+    - name: Upload all test reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: hil-full-test-reports
+        path: |
+          tests/hil/reports/
+          tests/hil/report-full.html
+          tests/hil/coverage.xml
+        retention-days: 30
+
+  # HIL Interface C Tests
+  hil-interface-tests:
+    name: HIL C Interface Tests
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Build HIL interface
+      run: |
+        mkdir -p build-hil
+        cd build-hil
+        cmake ../tests/hil -DCMAKE_BUILD_TYPE=Debug
+        make -j$(nproc)
+
+    - name: Run HIL interface tests
+      run: |
+        cd build-hil
+        ./hil_interface_test
+      timeout-minutes: 10
+
+  # Security Tests
+  security-tests:
+    name: Security Tests (SecOC)
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest pytest-html cryptography
+
+    - name: Run security tests
+      run: |
+        cd tests/hil
+        python -m pytest test_sequences/secoc_sequences.py -v --tb=short
+      timeout-minutes: 15
+
+  # Generate and publish report
+  publish-report:
+    name: Publish Test Report
+    runs-on: ubuntu-latest
+    needs: [hil-full-tests, hil-simulation-tests]
+    if: always() && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Prepare report site
+      run: |
+        mkdir -p _site
+        cp -r artifacts/* _site/ 2>/dev/null || true
+        
+        # Create index page
+        cat > _site/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>HIL Test Reports</title>
+          <style>
+            body { font-family: sans-serif; max-width: 1200px; margin: 40px auto; padding: 20px; }
+            h1 { color: #333; }
+            .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 30px; }
+            .report-card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+            .report-card h3 { margin-top: 0; }
+            a { color: #0366d6; text-decoration: none; }
+            a:hover { text-decoration: underline; }
+          </style>
+        </head>
+        <body>
+          <h1>🔧 HIL Test Reports</h1>
+          <p>Generated reports from the latest test runs.</p>
+          <div class="report-grid">
+            <div class="report-card">
+              <h3>Full Test Suite</h3>
+              <a href="hil-full-test-reports/report-full.html">View Report</a>
+            </div>
+            <div class="report-card">
+              <h3>UDS Tests</h3>
+              <a href="hil-test-reports-uds/report-uds.html">View Report</a>
+            </div>
+            <div class="report-card">
+              <h3>E2E Tests</h3>
+              <a href="hil-test-reports-e2e/report-e2e.html">View Report</a>
+            </div>
+            <div class="report-card">
+              <h3>OTA Tests</h3>
+              <a href="hil-test-reports-ota/report-ota.html">View Report</a>
+            </div>
+            <div class="report-card">
+              <h3>SecOC Tests</h3>
+              <a href="hil-test-reports-secoc/report-secoc.html">View Report</a>
+            </div>
+          </div>
+        </body>
+        </html>
+        EOF
+
+    - name: Upload to GitHub Pages
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: _site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: publish-report
+    if: github.ref == 'refs/heads/main'
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+  # Code Quality Checks
+  code-quality:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install analysis tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cppcheck clang-format
+
+    - name: Run cppcheck
+      run: |
+        cppcheck \
+          --enable=all \
+          --error-exitcode=0 \
+          --suppress=missingIncludeSystem \
+          --xml \
+          --xml-version=2 \
+          tests/hil/ 2> cppcheck-results.xml
+
+    - name: Check code formatting
+      run: |
+        find tests/hil -name "*.c" -o -name "*.h" | xargs clang-format -dry-run -Werror || true
+
+    - name: Upload analysis results
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-analysis
+        path: cppcheck-results.xml
+        retention-days: 7

@@ -43,6 +43,8 @@
 #define NVM_SID_RESTOREBLOCKDEFAULTS    (0x08U)
 #define NVM_SID_ERASEBLOCK              (0x09U)
 #define NVM_SID_INVALIDATENVBLOCK       (0x0BU)
+#define NVM_SID_READALL                 (0x0CU)
+#define NVM_SID_WRITEALL                (0x0DU)
 #define NVM_SID_READPRAMBLOCK           (0x16U)
 #define NVM_SID_WRITEPRAMBLOCK          (0x17U)
 #define NVM_SID_WRITEBLOCK_ONCE         (0x0FU)
@@ -55,6 +57,9 @@
 #define NVM_SID_KILLWRITEALL            (0x19U)
 #define NVM_SID_KILLREADALL             (0x1AU)
 #define NVM_SID_MAINFUNCTION            (0x1CU)
+
+/* Multi-block request status ID */
+#define NVM_MULTI_BLOCK_REQUEST_ID      (0xFFFFU)
 
 /*==================================================================================================
 *                                    DET ERROR CODES
@@ -115,6 +120,7 @@ typedef uint16 NvM_BlockIdType;
 ==================================================================================================*/
 typedef struct {
     NvM_BlockIdType BlockId;
+    uint8 DeviceId;
     uint16 BlockBaseNumber;
     NvM_BlockManagementType ManagementType;
     uint8 NumberOfNvBlocks;
@@ -122,8 +128,8 @@ typedef struct {
     uint16 NvBlockLength;
     uint16 NvBlockNum;
     uint16 RomBlockNum;
-    uint16 InitCallback;
-    uint16 JobEndCallback;
+    void (*InitCallback)(void);
+    void (*JobEndCallback)(void);
     NvM_BlockCrcType CrcType;
     boolean BlockUseCrc;
     boolean BlockUseSetRamBlockStatus;
@@ -249,6 +255,18 @@ Std_ReturnType NvM_EraseNvBlock(NvM_BlockIdType BlockId);
  * @return Result of operation
  */
 Std_ReturnType NvM_InvalidateNvBlock(NvM_BlockIdType BlockId);
+
+/**
+ * @brief   Read all permanent RAM blocks from NV memory (startup recovery)
+ * @return  E_OK if request accepted, E_NOT_OK otherwise
+ */
+Std_ReturnType NvM_ReadAll(void);
+
+/**
+ * @brief   Write all dirty permanent RAM blocks to NV memory (shutdown flush)
+ * @return  E_OK if request accepted, E_NOT_OK otherwise
+ */
+Std_ReturnType NvM_WriteAll(void);
 
 /**
  * @brief Reads a permanent RAM block

@@ -1,38 +1,96 @@
-# 环境变量和密钥
-.env
-.env.local
-.env.*.local
-*.pem
-*.key
+# ============================================================================
+# YuleTech AutoSAR BSW Platform - .gitignore
+# 忽略编译产物、IDE配置、临时文件等
+# ============================================================================
 
-# 构建产物
+# Build artifacts (编译产物)
 build/
-dist/
 *.o
-*.a
-*.so
+*.obj
+*.exe
 *.elf
-*.hex
 *.bin
+*.hex
+*.map
+*.lst
+*.sym
+*.out
+*.a
+*.lib
+*.so
+*.dll
 
-# IDE
+# CMake
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# IDE Configuration (IDE 配置)
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.project
+.cproject
+.settings/
+*.sublime-project
+*.sublime-workspace
 
-# 依赖
-node_modules/
+# Generated code (代码生成产物)
+generated/
+
+# Reports (分析报告 - 大文件)
+reports/*.json
+reports/*.xml
+coverage/
+*.gcov
+*.gcda
+*.gcno
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+*.so
 .Python
+env/
+venv/
+*.egg-info/
+dist/
+build/
 
-# 日志
-*.log
-logs/
+# Node.js (docs-site)
+docs-site/node_modules/
+docs-site/dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# 临时文件
-tmp/
-temp/
+# OS Files (操作系统临时文件)
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Temporary files (临时文件)
 *.tmp
+*.temp
+*.log
+*.bak
+*.swp
+
+# Test artifacts
+test_runner
+test_results.xml
+*.test
+
+# AutoSAR configuration backups
+*.arxml.bak
+*.cfg.bak

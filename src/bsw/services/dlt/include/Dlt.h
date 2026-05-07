@@ -1,499 +1,331 @@
 /**
  * @file Dlt.h
- * @brief Diagnostic Log and Trace module following AutoSAR Classic Platform 4.x standard
+ * @brief DLT (Diagnostic Log and Trace) 模块主头文件
+ * 
+ * 提供符合 AutoSAR Classic Platform 4.x 规范的诊断日志和跟踪服务
+ * 
+ * 功能特性:
+ * - 日志消息传输 (Log Messages)
+ * - 跟踪消息传输 (Trace Messages)  
+ * - 多种传输协议支持 (UDP/TCP/SOME/IP)
+ * - 消息优先级和过滤
+ * - 应用注册和管理
+ * 
+ * @company 上海予乐电子科技有限公司
+ * @author YuleTech Team
+ * @date 2026-04-27
  * @version 1.0.0
- * @date 2026-04-30
- * @author Shanghai Yule Electronics Technology Co., Ltd.
- * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
- *
- * AutoSAR Standard: Diagnostic Log and Trace (DLT)
- * Layer: Service Layer
- * Purpose: Provide logging and tracing functionality for debugging and diagnostics
  */
 
 #ifndef DLT_H
 #define DLT_H
 
-/*==================================================================================================
-*                                          INCLUDE FILES
-==================================================================================================*/
+/* ========================================================================== */
+/*                              包含头文件                                     */
+/* ========================================================================== */
+
 #include "Std_Types.h"
-#include "Dlt_Cfg.h"
+#include "Dlt_Types.h"
 #include "ComStack_Types.h"
 
-/*==================================================================================================
-*                                    VERSION INFORMATION
-==================================================================================================*/
-#define DLT_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
-#define DLT_MODULE_ID                   (0x4CU) /* DLT Module ID (76) */
-#define DLT_AR_RELEASE_MAJOR_VERSION    (0x04U)
-#define DLT_AR_RELEASE_MINOR_VERSION    (0x04U)
-#define DLT_AR_RELEASE_REVISION_VERSION (0x00U)
-#define DLT_SW_MAJOR_VERSION            (0x01U)
-#define DLT_SW_MINOR_VERSION            (0x00U)
-#define DLT_SW_PATCH_VERSION            (0x00U)
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-/*==================================================================================================
-*                                    SERVICE IDs
-==================================================================================================*/
-#define DLT_SID_INIT                    (0x01U)
-#define DLT_SID_DEINIT                  (0x02U)
-#define DLT_SID_GETVERSIONINFO          (0x03U)
-#define DLT_SID_MAINFUNCTION            (0x04U)
-#define DLT_SID_LOGMESSAGE              (0x05U)
-#define DLT_SID_LOGMESSAGEWITHARGS      (0x06U)
-#define DLT_SID_TRACEPOINT              (0x07U)
-#define DLT_SID_TRACEVARIABLE           (0x08U)
-#define DLT_SID_REGISTERCONTEXT         (0x09U)
-#define DLT_SID_SETLOGLEVEL             (0x0AU)
-#define DLT_SID_GETLOGLEVEL             (0x0BU)
-#define DLT_SID_TXCONFIRMATION          (0x40U)
-#define DLT_SID_RXINDICATION            (0x41U)
-
-/*==================================================================================================
-*                                    DET ERROR CODES
-==================================================================================================*/
-#define DLT_E_UNINIT                    (0x01U)
-#define DLT_E_PARAM                     (0x02U)
-#define DLT_E_PARAM_POINTER             (0x03U)
-#define DLT_E_INIT_FAILED               (0x04U)
-#define DLT_E_BUFFER_FULL               (0x05U)
-#define DLT_E_INVALID_CONTEXT           (0x06U)
-#define DLT_E_INVALID_LOGLEVEL          (0x07U)
-#define DLT_E_INVALID_TRACETYPE         (0x08U)
-#define DLT_E_INTERFACE_ERROR           (0x09U)
-
-/*==================================================================================================
-*                                    DLT LOG LEVELS
-==================================================================================================*/
-/** @brief Log level - Verbose (most detailed) */
-#define DLT_LOG_VERBOSE                 (0x01U)
-/** @brief Log level - Debug */
-#define DLT_LOG_DEBUG                   (0x02U)
-/** @brief Log level - Info */
-#define DLT_LOG_INFO                    (0x03U)
-/** @brief Log level - Warning */
-#define DLT_LOG_WARN                    (0x04U)
-/** @brief Log level - Error */
-#define DLT_LOG_ERROR                   (0x05U)
-/** @brief Log level - Fatal (most severe) */
-#define DLT_LOG_FATAL                   (0x06U)
-/** @brief Log level - Off (logging disabled) */
-#define DLT_LOG_OFF                     (0x07U)
-
-/*==================================================================================================
-*                                    DLT TRACE TYPES
-==================================================================================================*/
-/** @brief Trace type - Variable */
-#define DLT_TRACE_TYPE_VARIABLE         (0x01U)
-/** @brief Trace type - Function In */
-#define DLT_TRACE_TYPE_FUNCTION_IN      (0x02U)
-/** @brief Trace type - Function Out */
-#define DLT_TRACE_TYPE_FUNCTION_OUT     (0x03U)
-/** @brief Trace type - State */
-#define DLT_TRACE_TYPE_STATE            (0x04U)
-/** @brief Trace type - VFB (Virtual Functional Bus) */
-#define DLT_TRACE_TYPE_VFB              (0x05U)
-
-/*==================================================================================================
-*                                    DLT OUTPUT MODES
-==================================================================================================*/
-/** @brief Output mode - None */
-#define DLT_OUTPUT_MODE_NONE            (0x00U)
-/** @brief Output mode - Serial/UART */
-#define DLT_OUTPUT_MODE_SERIAL          (0x01U)
-/** @brief Output mode - Network (TCP/UDP) */
-#define DLT_OUTPUT_MODE_NETWORK         (0x02U)
-/** @brief Output mode - Both Serial and Network */
-#define DLT_OUTPUT_MODE_BOTH            (0x03U)
-/** @brief Output mode - Internal Buffer only */
-#define DLT_OUTPUT_MODE_BUFFER          (0x04U)
-
-/*==================================================================================================
-*                                    DLT MESSAGE TYPES
-==================================================================================================*/
-/** @brief Message type - Log */
-#define DLT_TYPE_LOG                    (0x00U)
-/** @brief Message type - Trace */
-#define DLT_TYPE_TRACE                  (0x01U)
-/** @brief Message type - Control */
-#define DLT_TYPE_CONTROL                (0x02U)
-
-/*==================================================================================================
-*                                    DLT HEADER CONSTANTS
-==================================================================================================*/
-/** @brief Standard header version */
-#define DLT_HEADER_VERSION              (0x01U)
-/** @brief Header use extended */
-#define DLT_HEADER_EXTENDED             (0x01U)
-/** @brief Header use timestamp */
-#define DLT_HEADER_TIMESTAMP            (0x02U)
-/** @brief Header use storage session */
-#define DLT_HEADER_STORAGE_SESSION      (0x04U)
-
-/*==================================================================================================
-*                                    DLT CONTROL MESSAGES
-==================================================================================================*/
-/** @brief Control message - Set Log Level */
-#define DLT_CTRL_SET_LOG_LEVEL          (0x01U)
-/** @brief Control message - Get Log Level */
-#define DLT_CTRL_GET_LOG_LEVEL          (0x02U)
-/** @brief Control message - Register Context */
-#define DLT_CTRL_REGISTER_CONTEXT       (0x03U)
-/** @brief Control message - Unregister Context */
-#define DLT_CTRL_UNREGISTER_CONTEXT     (0x04U)
-
-/*==================================================================================================
-*                                    TYPE DEFINITIONS
-==================================================================================================*/
-
-/** @brief DLT Log Level Type */
-typedef uint8 Dlt_LogLevelType;
-
-/** @brief DLT Trace Type */
-typedef uint8 Dlt_TraceType;
-
-/** @brief DLT Output Mode Type */
-typedef uint8 Dlt_OutputModeType;
-
-/** @brief DLT Message Type */
-typedef uint8 Dlt_MessageType;
-
-/** @brief DLT Context ID Type (4 chars + null) */
-typedef uint8 Dlt_ContextIdType[5];
-
-/** @brief DLT Application ID Type (4 chars + null) */
-typedef uint8 Dlt_ApplicationIdType[5];
-
-/** @brief DLT Session ID Type */
-typedef uint32 Dlt_SessionIdType;
-
-/** @brief DLT Timestamp Type (microseconds) */
-typedef uint32 Dlt_TimestampType;
-
-/** @brief DLT Message Counter Type */
-typedef uint8 Dlt_MessageCounterType;
-
-/** @brief DLT ECU ID Type (4 chars + null) */
-typedef uint8 Dlt_EcuIdType[5];
-
-/** @brief DLT Return Type */
-typedef Std_ReturnType Dlt_ReturnType;
-
-/*==================================================================================================
-*                                    DLT CONTEXT CONFIG TYPE
-==================================================================================================*/
-typedef struct {
-    Dlt_ApplicationIdType appId;
-    Dlt_ContextIdType contextId;
-    Dlt_LogLevelType logLevel;
-    boolean traceStatus;
-} Dlt_ContextConfigType;
-
-/*==================================================================================================
-*                                    DLT BUFFER ENTRY TYPE
-==================================================================================================*/
-typedef struct {
-    uint8 data[DLT_BUFFER_ENTRY_SIZE];
-    uint16 length;
-    boolean used;
-} Dlt_BufferEntryType;
-
-/*==================================================================================================
-*                                    DLT RING BUFFER TYPE
-==================================================================================================*/
-typedef struct {
-    Dlt_BufferEntryType entries[DLT_RING_BUFFER_SIZE];
-    uint16 head;
-    uint16 tail;
-    uint16 count;
-    boolean overflow;
-} Dlt_RingBufferType;
-
-/*==================================================================================================
-*                                    DLT CONFIG TYPE
-==================================================================================================*/
-typedef struct {
-    Dlt_OutputModeType outputMode;
-    Dlt_LogLevelType defaultLogLevel;
-    boolean timestampEnabled;
-    boolean ecuIdEnabled;
-    boolean sessionIdEnabled;
-    boolean devErrorDetect;
-    boolean versionInfoApi;
-    uint16 networkPort;
-    Dlt_EcuIdType ecuId;
-} Dlt_ConfigType;
-
-/*==================================================================================================
-*                                    DLT CONTEXT TYPE
-==================================================================================================*/
-typedef struct {
-    Dlt_ApplicationIdType appId;
-    Dlt_ContextIdType contextId;
-    Dlt_LogLevelType logLevel;
-    boolean traceStatus;
-    boolean registered;
-    uint32 messageCount;
-} Dlt_ContextType;
-
-/*==================================================================================================
-*                                    DLT MESSAGE HEADER TYPE
-==================================================================================================*/
-typedef struct {
-    uint8 headerType;
-    uint8 messageCounter;
-    uint16 length;
-    Dlt_EcuIdType ecuId;
-    Dlt_SessionIdType sessionId;
-    Dlt_TimestampType timestamp;
-    Dlt_ApplicationIdType appId;
-    Dlt_ContextIdType contextId;
-    uint8 messageType;
-    uint8 messageInfo;
-    uint16 numberOfArguments;
-} Dlt_StandardHeaderType;
-
-/*==================================================================================================
-*                                    DLT CALLBACK TYPES
-==================================================================================================*/
-/** @brief Serial output callback function type */
-typedef Dlt_ReturnType (*Dlt_SerialOutputCbkType)(const uint8* data, uint16 length);
-
-/** @brief Network output callback function type */
-typedef Dlt_ReturnType (*Dlt_NetworkOutputCbkType)(const uint8* data, uint16 length);
-
-/** @brief Timestamp callback function type */
-typedef Dlt_TimestampType (*Dlt_GetTimestampCbkType)(void);
-
-/*==================================================================================================
-*                                    GLOBAL CONFIG POINTER
-==================================================================================================*/
-#define DLT_START_SEC_CONFIG_DATA_UNSPECIFIED
-#include "MemMap.h"
-
-extern const Dlt_ConfigType Dlt_Config;
-
-#define DLT_STOP_SEC_CONFIG_DATA_UNSPECIFIED
-#include "MemMap.h"
-
-/*==================================================================================================
-*                                    FUNCTION PROTOTYPES
-==================================================================================================*/
-#define DLT_START_SEC_CODE
-#include "MemMap.h"
+/* ========================================================================== */
+/*                              版本号定义                                     */
+/* ========================================================================== */
 
 /**
- * @brief Initializes the Diagnostic Log and Trace module
- * @param ConfigPtr Pointer to configuration structure
+ * @brief DLT 模块 ID
+ */
+#define DLT_MODULE_ID  254U
+
+/**
+ * @brief DLT 实例 ID
+ */
+#define DLT_INSTANCE_ID 0U
+
+/**
+ * @brief DLT 供应商 ID
+ */
+#define DLT_VENDOR_ID  1U
+
+/**
+ * @brief DLT 软件版本号
+ */
+#define DLT_SW_MAJOR_VERSION  1U
+#define DLT_SW_MINOR_VERSION  0U
+#define DLT_SW_PATCH_VERSION  0U
+
+/* ========================================================================== */
+/*                              API 函数声明                                   */
+/* ========================================================================== */
+
+/**
+ * @brief 初始化 DLT 模块
+ * 
+ * @param ConfigPtr 指向配置数据的指针
+ * 
+ * @return void
+ * 
+ * @details
+ * - 初始化 DLT 传输层
+ * - 配置消息过滤器
+ * - 分配内部缓冲区
+ * - 将模块状态设置为 READY
+ * 
+ * @note 必须在调用其他 DLT API 之前调用此函数
+ * 
+ * AUTOSAR SWS DLT_00001
  */
 void Dlt_Init(const Dlt_ConfigType* ConfigPtr);
 
 /**
- * @brief Deinitializes the DLT module
+ * @brief 反初始化 DLT 模块
+ * 
+ * @return void
+ * 
+ * @details
+ * - 释放所有分配的资源
+ * - 清空消息队列
+ * - 将模块状态设置为 UNINIT
+ * 
+ * AUTOSAR SWS DLT_00002
  */
 void Dlt_DeInit(void);
 
 /**
- * @brief Gets version information
- * @param versioninfo Pointer to version info structure
+ * @brief 注册应用到 DLT 模块
+ * 
+ * @param AppInfoPtr 指向应用信息的指针
+ * 
+ * @return Dlt_AppHandleType 应用句柄
+ * @retval DLT_INVALID_APP_HANDLE 注册失败
+ * 
+ * @details
+ * - 为应用分配唯一句柄
+ * - 存储应用信息
+ * - 配置应用的日志级别
+ * 
+ * AUTOSAR SWS DLT_00003
  */
-void Dlt_GetVersionInfo(Std_VersionInfoType* versioninfo);
+Dlt_AppHandleType Dlt_RegisterApp(const Dlt_AppInfoType* AppInfoPtr);
 
 /**
- * @brief Logs a message without arguments
- * @param appId Application ID
- * @param contextId Context ID
- * @param logLevel Log level
- * @param message Message string
- * @return Result of operation
+ * @brief 注销应用
+ * 
+ * @param AppHandle 应用句柄
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 注销成功
+ * @retval E_NOT_OK 注销失败 (无效句柄)
+ * 
+ * AUTOSAR SWS DLT_00004
  */
-Dlt_ReturnType Dlt_LogMessage(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    Dlt_LogLevelType logLevel,
-    const char* message
+Std_ReturnType Dlt_UnregisterApp(Dlt_AppHandleType AppHandle);
+
+/**
+ * @brief 发送日志消息
+ * 
+ * @param AppHandle 应用句柄
+ * @param LogLevel 日志级别
+ * @param MessageId 消息 ID
+ * @param DataPtr 指向数据缓冲区的指针
+ * @param Length 数据长度
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 发送成功
+ * @retval E_NOT_OK 发送失败
+ * @retval E_PENDING 发送挂起
+ * 
+ * @details
+ * - 构建 DLT 日志消息
+ * - 应用消息过滤器
+ * - 通过传输层发送
+ * 
+ * AUTOSAR SWS DLT_00005
+ */
+Std_ReturnType Dlt_SendLogMessage(
+    Dlt_AppHandleType  AppHandle,
+    Dlt_LogLevelType   LogLevel,
+    Dlt_MessageIdType  MessageId,
+    const uint8*       DataPtr,
+    uint16             Length
 );
 
 /**
- * @brief Logs a formatted message with arguments
- * @param appId Application ID
- * @param contextId Context ID
- * @param logLevel Log level
- * @param format Format string (printf-style)
- * @param ... Variable arguments
- * @return Result of operation
+ * @brief 发送跟踪消息
+ * 
+ * @param AppHandle 应用句柄
+ * @param TraceType 跟踪类型
+ * @param TraceId 跟踪 ID
+ * @param DataPtr 指向数据缓冲区的指针
+ * @param Length 数据长度
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 发送成功
+ * @retval E_NOT_OK 发送失败
+ * @retval E_PENDING 发送挂起
+ * 
+ * AUTOSAR SWS DLT_00006
  */
-Dlt_ReturnType Dlt_LogMessageWithArg(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    Dlt_LogLevelType logLevel,
-    const char* format,
-    ...
+Std_ReturnType Dlt_SendTraceMessage(
+    Dlt_AppHandleType AppHandle,
+    Dlt_TraceType     TraceType,
+    Dlt_MessageIdType TraceId,
+    const uint8*      DataPtr,
+    uint16            Length
 );
 
 /**
- * @brief Sends a trace point
- * @param appId Application ID
- * @param contextId Context ID
- * @param traceType Trace type
- * @param traceInfo Additional trace information
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_TracePoint(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    Dlt_TraceType traceType,
-    uint32 traceInfo
-);
-
-/**
- * @brief Traces a variable value
- * @param appId Application ID
- * @param contextId Context ID
- * @param variableName Variable name
- * @param variableValue Variable value
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_TraceVariable(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    const char* variableName,
-    sint32 variableValue
-);
-
-/**
- * @brief Registers a context
- * @param appId Application ID
- * @param contextId Context ID
- * @param description Context description
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_RegisterContext(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    const char* description
-);
-
-/**
- * @brief Unregisters a context
- * @param appId Application ID
- * @param contextId Context ID
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_UnregisterContext(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId
-);
-
-/**
- * @brief Sets the log level for a context
- * @param appId Application ID
- * @param contextId Context ID
- * @param newLogLevel New log level
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_SetLogLevel(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    Dlt_LogLevelType newLogLevel
-);
-
-/**
- * @brief Gets the log level for a context
- * @param appId Application ID
- * @param contextId Context ID
- * @param logLevel Pointer to store current log level
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_GetLogLevel(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    Dlt_LogLevelType* logLevel
-);
-
-/**
- * @brief Sets the trace status for a context
- * @param appId Application ID
- * @param contextId Context ID
- * @param traceStatus New trace status
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_SetTraceStatus(
-    const Dlt_ApplicationIdType appId,
-    const Dlt_ContextIdType contextId,
-    boolean traceStatus
-);
-
-/**
- * @brief Sets the output mode
- * @param outputMode New output mode
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_SetOutputMode(Dlt_OutputModeType outputMode);
-
-/**
- * @brief Gets the output mode
- * @param outputMode Pointer to store current output mode
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_GetOutputMode(Dlt_OutputModeType* outputMode);
-
-/**
- * @brief Registers serial output callback
- * @param callback Serial output callback function
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_RegisterSerialOutputCbk(Dlt_SerialOutputCbkType callback);
-
-/**
- * @brief Registers network output callback
- * @param callback Network output callback function
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_RegisterNetworkOutputCbk(Dlt_NetworkOutputCbkType callback);
-
-/**
- * @brief Registers timestamp callback
- * @param callback Timestamp callback function
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_RegisterGetTimestampCbk(Dlt_GetTimestampCbkType callback);
-
-/**
- * @brief Flushes the ring buffer
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_FlushBuffer(void);
-
-/**
- * @brief Gets the buffer status
- * @param usedEntries Pointer to store used entries count
- * @param freeEntries Pointer to store free entries count
- * @return Result of operation
- */
-Dlt_ReturnType Dlt_GetBufferStatus(uint16* usedEntries, uint16* freeEntries);
-
-/**
- * @brief Tx confirmation callback
- * @param TxPduId PDU ID
- * @param result Result of transmission
- */
-void Dlt_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
-
-/**
- * @brief Rx indication callback
- * @param RxPduId PDU ID
- * @param PduInfoPtr Pointer to PDU info
- */
-void Dlt_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
-
-/**
- * @brief Main function for periodic processing
+ * @brief DLT 主函数
+ * 
+ * @return void
+ * 
+ * @details
+ * - 处理消息队列中的待发送消息
+ * - 处理接收到的控制消息
+ * - 更新模块状态
+ * 
+ * @note 应周期性调用 (建议 10ms)
+ * 
+ * AUTOSAR SWS DLT_00007
  */
 void Dlt_MainFunction(void);
 
-#define DLT_STOP_SEC_CODE
-#include "MemMap.h"
+/**
+ * @brief 获取 DLT 模块版本信息
+ * 
+ * @param VersionInfoPtr 指向版本信息结构的指针
+ * 
+ * @return void
+ * 
+ * AUTOSAR SWS DLT_00008
+ */
+void Dlt_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr);
+
+/**
+ * @brief 设置消息过滤器
+ * 
+ * @param AppHandle 应用句柄
+ * @param LogLevel 日志级别阈值
+ * @param Enabled 启用/禁用
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 设置成功
+ * @retval E_NOT_OK 设置失败
+ * 
+ * AUTOSAR SWS DLT_00009
+ */
+Std_ReturnType Dlt_SetFilter(
+    Dlt_AppHandleType AppHandle,
+    Dlt_LogLevelType  LogLevel,
+    boolean           Enabled
+);
+
+/**
+ * @brief 清空消息队列
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 清空成功
+ * @retval E_NOT_OK 清空失败
+ * 
+ * AUTOSAR SWS DLT_00010
+ */
+Std_ReturnType Dlt_FlushQueue(void);
+
+/**
+ * @brief 获取模块状态
+ * 
+ * @return Dlt_ModuleStateType 模块状态
+ * 
+ * AUTOSAR SWS DLT_00011
+ */
+Dlt_ModuleStateType Dlt_GetStatus(void);
+
+/**
+ * @brief 设置会话ID
+ * 
+ * @param sessionId 会话ID
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 设置成功
+ * @retval E_NOT_OK 设置失败
+ * 
+ * AUTOSAR SWS DLT_00012
+ */
+Std_ReturnType Dlt_SetSessionId(uint32 sessionId);
+
+/**
+ * @brief 获取统计信息
+ * 
+ * @param sentCount 发送消息计数指针
+ * @param droppedCount 丢弃消息计数指针
+ * @param queueCount 当前队列消息计数指针
+ * 
+ * @return void
+ * 
+ * AUTOSAR SWS DLT_00013
+ */
+void Dlt_GetStatistics(
+    uint32* sentCount,
+    uint32* droppedCount,
+    uint16* queueCount
+);
+
+/* ========================================================================== */
+/*                          开发错误检测 (DET)                                 */
+/* ========================================================================== */
+
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+
+/**
+ * @brief DLT 开发错误检测启用
+ */
+#define DLT_DETECT_ERROR(ApiId, ErrorId) \
+    Det_ReportError(DLT_MODULE_ID, DLT_INSTANCE_ID, ApiId, ErrorId)
+
+#else
+
+/**
+ * @brief DLT 开发错误检测禁用
+ */
+#define DLT_DETECT_ERROR(ApiId, ErrorId) ((void)0)
+
+#endif
+
+/* DLT 错误代码 */
+#define DLT_E_PARAM_CONFIG    0x01U  /**< 配置参数错误 */
+#define DLT_E_PARAM_POINTER   0x02U  /**< 空指针参数 */
+#define DLT_E_PARAM_LENGTH    0x03U  /**< 长度参数错误 */
+#define DLT_E_UNINIT          0x10U  /**< 模块未初始化 */
+#define DLT_E_INVALID_HANDLE  0x11U  /**< 无效应用句柄 */
+#define DLT_E_QUEUE_FULL      0x20U  /**< 消息队列满 */
+#define DLT_E_TRANSPORT_ERROR 0x30U  /**< 传输错误 */
+#define DLT_E_FILTER_ERROR    0x31U  /**< 过滤器错误 */
+#define DLT_E_TIMESTAMP_ERROR 0x32U  /**< 时间戳错误 */
+#define DLT_E_SESSION_ERROR   0x33U  /**< 会话错误 */
+#define DLT_E_PRIORITY_ERROR  0x34U  /**< 优先级错误 */
+#define DLT_E_BUFFER_OVERFLOW 0x40U  /**< 缓冲区溢出 */
+
+/* API ID 定义 */
+#define DLT_APIID_INIT            0x00U
+#define DLT_APIID_DEINIT          0x01U
+#define DLT_APIID_REGISTER_APP    0x02U
+#define DLT_APIID_UNREGISTER_APP  0x03U
+#define DLT_APIID_SEND_LOG        0x04U
+#define DLT_APIID_SEND_TRACE      0x05U
+#define DLT_APIID_MAIN_FUNCTION   0x06U
+#define DLT_APIID_GET_VERSION     0x07U
+#define DLT_APIID_SET_FILTER      0x08U
+#define DLT_APIID_FLUSH_QUEUE     0x09U
+#define DLT_APIID_GET_STATUS      0x0AU
+#define DLT_APIID_SET_SESSION     0x0BU
+#define DLT_APIID_GET_STATISTICS  0x0CU
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* DLT_H */

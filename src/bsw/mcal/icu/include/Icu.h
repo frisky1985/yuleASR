@@ -1,8 +1,8 @@
 /**
  * @file Icu.h
- * @brief ICU (Input Capture Unit) Driver interface following AutoSAR Classic Platform 4.4.0 standard
+ * @brief ICU (Input Capture Unit) Driver interface following AutoSAR Classic Platform 4.x standard
  * @version 1.0.0
- * @date 2026-04-29
+ * @date 2026-04-30
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
  *
@@ -23,7 +23,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define ICU_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
-#define ICU_MODULE_ID                   (0x10U) /* ICU Driver Module ID */
+#define ICU_MODULE_ID                   (0x16U) /* ICU Driver Module ID */
 #define ICU_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define ICU_AR_RELEASE_MINOR_VERSION    (0x04U)
 #define ICU_AR_RELEASE_REVISION_VERSION (0x00U)
@@ -41,43 +41,50 @@
 /*==================================================================================================
 *                                    SERVICE IDs
 ==================================================================================================*/
-#define ICU_SID_INIT                        (0x00U)
-#define ICU_SID_DEINIT                      (0x01U)
-#define ICU_SID_SETMODE                     (0x02U)
-#define ICU_SID_DISABLEWAKEUP               (0x03U)
-#define ICU_SID_ENABLEWAKEUP                (0x04U)
-#define ICU_SID_SETACTIVATIONCONDITION      (0x05U)
-#define ICU_SID_DISABLENOTIFICATION         (0x06U)
-#define ICU_SID_ENABLENOTIFICATION          (0x07U)
-#define ICU_SID_GETINPUTSTATE               (0x08U)
-#define ICU_SID_STARTTIMESTAMP              (0x09U)
-#define ICU_SID_STOPTIMESTAMP               (0x0AU)
-#define ICU_SID_GETTIMESTAMPINDEX           (0x0BU)
-#define ICU_SID_RESETEDGECOUNT              (0x0CU)
-#define ICU_SID_ENABLEEDGECOUNT             (0x0DU)
-#define ICU_SID_DISABLEEDGECOUNT            (0x0EU)
-#define ICU_SID_GETEDGENUMBERS              (0x0FU)
-#define ICU_SID_STARTSIGNALMEASUREMENT      (0x10U)
-#define ICU_SID_STOPSIGNALMEASUREMENT       (0x11U)
-#define ICU_SID_GETTIMEELAPSED              (0x12U)
-#define ICU_SID_GETDUTYCYCLEVALUES          (0x13U)
-#define ICU_SID_GETVERSIONINFO              (0x14U)
-#define ICU_SID_CHECKWAKEUP                 (0x15U)
+#define ICU_SID_INIT                            (0x00U)
+#define ICU_SID_DEINIT                          (0x01U)
+#define ICU_SID_SETMODE                         (0x02U)
+#define ICU_SID_DISABLEWAKEUP                   (0x03U)
+#define ICU_SID_ENABLEWAKEUP                    (0x04U)
+#define ICU_SID_CHECKWAKEUP                     (0x05U)
+#define ICU_SID_SETACTIVATIONCONDITION          (0x06U)
+#define ICU_SID_DISABLENOTIFICATION             (0x07U)
+#define ICU_SID_ENABLENOTIFICATION              (0x08U)
+#define ICU_SID_GETINPUTSTATE                   (0x09U)
+#define ICU_SID_STARTTIMESTAMP                  (0x0AU)
+#define ICU_SID_STOPTIMESTAMP                   (0x0BU)
+#define ICU_SID_GETTIMESTAMPINDEX               (0x0CU)
+#define ICU_SID_RESETEDGECOUNT                  (0x0DU)
+#define ICU_SID_ENABLEEDGECOUNT                 (0x0EU)
+#define ICU_SID_DISABLEEDGECOUNT                (0x0FU)
+#define ICU_SID_GETEDGENUMBERS                  (0x10U)
+#define ICU_SID_STARTSIGNALMEASUREMENT          (0x11U)
+#define ICU_SID_STOPSIGNALMEASUREMENT           (0x12U)
+#define ICU_SID_GETTIMEELAPSED                  (0x13U)
+#define ICU_SID_GETDUTYCYCLEVALUES              (0x14U)
+#define ICU_SID_GETVERSIONINFO                  (0x15U)
+#define ICU_SID_GETINPUTLEVEL                   (0x16U)
+#define ICU_SID_GETSYSTIMESTAMP                 (0x17U)
 
 /*==================================================================================================
 *                                    DET ERROR CODES
 ==================================================================================================*/
-#define ICU_E_PARAM_CHANNEL                 (0x0AU)
-#define ICU_E_PARAM_BUFFER_SIZE             (0x0BU)
-#define ICU_E_PARAM_POINTER                 (0x0CU)
-#define ICU_E_PARAM_MODE                    (0x0DU)
-#define ICU_E_PARAM_ACTIVATION              (0x0EU)
-#define ICU_E_ALREADY_INITIALIZED           (0x0FU)
-#define ICU_E_NOT_STARTED                   (0x10U)
-#define ICU_E_BUSY_OPERATION                (0x11U)
-#define ICU_E_UNINIT                        (0x12U)
-#define ICU_E_PARAM_CONFIG                  (0x13U)
-#define ICU_E_WAKEUP_CANNOT_BE_ENABLED      (0x14U)
+#define ICU_E_PARAM_CONFIG                      (0x0AU)
+#define ICU_E_UNINIT                            (0x0BU)
+#define ICU_E_PARAM_CHANNEL                     (0x0CU)
+#define ICU_E_PARAM_ACTIVATION                  (0x0DU)
+#define ICU_E_PARAM_BUFFER_SIZE                 (0x0EU)
+#define ICU_E_ALREADY_INITIALIZED               (0x0FU)
+#define ICU_E_PARAM_POINTER                     (0x10U)
+#define ICU_E_BUSY                              (0x11U)
+#define ICU_E_WAKEUP_NOT_ENABLED                (0x12U)
+#define ICU_E_WAKEUP_ALREADY_ENABLED            (0x13U)
+#define ICU_E_MEASUREMENT_NOT_RUNNING           (0x14U)
+#define ICU_E_MEASUREMENT_RUNNING               (0x15U)
+#define ICU_E_STAMP_NOT_RUNNING                 (0x16U)
+#define ICU_E_EDGE_COUNTING_NOT_RUNNING         (0x17U)
+#define ICU_E_EDGE_ALREADY_ENABLED              (0x18U)
+#define ICU_E_EDGE_ALREADY_DISABLED             (0x19U)
 
 /*==================================================================================================
 *                                    ICU CHANNEL TYPE
@@ -85,32 +92,21 @@
 typedef uint8 Icu_ChannelType;
 
 /*==================================================================================================
-*                                    ICU VALUE TYPE
-==================================================================================================*/
-typedef uint32 Icu_ValueType;
-
-/*==================================================================================================
-*                                    ICU INDEX TYPE
-==================================================================================================*/
-typedef uint16 Icu_IndexType;
-
-/*==================================================================================================
 *                                    ICU INPUT STATE TYPE
 ==================================================================================================*/
 typedef enum {
-    ICU_IDLE = 0,
-    ICU_ACTIVE
+    ICU_ACTIVE = 0,
+    ICU_IDLE
 } Icu_InputStateType;
 
 /*==================================================================================================
-*                                    ICU STATE TYPE
+*                                    ICU ACTIVATION TYPE (Edge Detection)
 ==================================================================================================*/
 typedef enum {
-    ICU_STATE_UNINITIALIZED = 0,
-    ICU_STATE_INITIALIZED,
-    ICU_STATE_RUNNING,
-    ICU_STATE_STOPPED
-} Icu_StateType;
+    ICU_FALLING_EDGE = 0,
+    ICU_RISING_EDGE,
+    ICU_BOTH_EDGES
+} Icu_ActivationType;
 
 /*==================================================================================================
 *                                    ICU MODE TYPE
@@ -131,50 +127,51 @@ typedef enum {
 } Icu_MeasurementModeType;
 
 /*==================================================================================================
-*                                    ICU SIGNAL EDGE TYPE
-==================================================================================================*/
-typedef enum {
-    ICU_RISING_EDGE = 0,
-    ICU_FALLING_EDGE,
-    ICU_BOTH_EDGES
-} Icu_SignalEdgeType;
-
-/*==================================================================================================
 *                                    ICU SIGNAL MEASUREMENT PROPERTY TYPE
 ==================================================================================================*/
 typedef enum {
-    ICU_LOW_TIME = 0,
+    ICU_PERIOD_TIME = 0,
     ICU_HIGH_TIME,
-    ICU_PERIOD_TIME,
+    ICU_LOW_TIME,
     ICU_DUTY_CYCLE
 } Icu_SignalMeasurementPropertyType;
 
 /*==================================================================================================
-*                                    ICU NOTIFICATION TYPE
+*                                    ICU TIMESTAMP PROPERTY TYPE
 ==================================================================================================*/
-typedef void (*Icu_NotificationType)(void);
+typedef enum {
+    ICU_LINEAR_BUFFER = 0,
+    ICU_CIRCULAR_BUFFER
+} Icu_TimestampBufferType;
+
+/*==================================================================================================
+*                                    ICU INDEX TYPE
+==================================================================================================*/
+typedef uint16 Icu_IndexType;
 
 /*==================================================================================================
 *                                    ICU DUTY CYCLE TYPE
 ==================================================================================================*/
 typedef struct {
-    Icu_ValueType ActiveTime;
-    Icu_ValueType PeriodTime;
+    uint16 ActiveTime;
+    uint16 PeriodTime;
 } Icu_DutyCycleType;
 
 /*==================================================================================================
 *                                    ICU CHANNEL CONFIG TYPE
 ==================================================================================================*/
 typedef struct {
-    Icu_ChannelType Channel;
+    Icu_ChannelType ChannelId;
     uint32 BaseAddress;
-    Icu_MeasurementModeType Mode;
-    Icu_SignalEdgeType Edge;
-    Icu_SignalMeasurementPropertyType Property;
-    Icu_NotificationType Notification;
-    boolean TimestampEnabled;
-    Icu_IndexType TimestampBufferSize;
+    Icu_MeasurementModeType MeasurementMode;
+    Icu_ActivationType DefaultActivation;
+    Icu_SignalMeasurementPropertyType SignalMeasurementProperty;
+    Icu_TimestampBufferType TimestampBufferType;
+    uint16 BufferSize;
+    uint32* BufferPtr;
     boolean WakeupSupport;
+    boolean NotificationEnabled;
+    void (*NotificationFn)(void);
     uint32 ClockPrescaler;
 } Icu_ChannelConfigType;
 
@@ -186,10 +183,12 @@ typedef struct {
     uint8 NumChannels;
     boolean DevErrorDetect;
     boolean VersionInfoApi;
+    boolean WakeupFunctionalityApi;
     boolean DeInitApi;
     boolean SetModeApi;
-    boolean WakeupFunctionalityApi;
     boolean DisableWakeupApi;
+    boolean EnableWakeupApi;
+    boolean CheckWakeupApi;
     boolean TimestampApi;
     boolean EdgeCountApi;
     boolean SignalMeasurementApi;
@@ -226,68 +225,74 @@ void Icu_DeInit(void);
 
 /**
  * @brief Sets the operation mode
- * @param Mode Mode to set (NORMAL/SLEEP)
+ * @param Mode Mode to set (ICU_MODE_NORMAL or ICU_MODE_SLEEP)
  */
 void Icu_SetMode(Icu_ModeType Mode);
 
 /**
- * @brief Disables wakeup capability for a channel
- * @param Channel Channel to disable
+ * @brief Disables wakeup for a channel
+ * @param Channel Channel to disable wakeup
  */
 void Icu_DisableWakeup(Icu_ChannelType Channel);
 
 /**
- * @brief Enables wakeup capability for a channel
- * @param Channel Channel to enable
+ * @brief Enables wakeup for a channel
+ * @param Channel Channel to enable wakeup
  */
 void Icu_EnableWakeup(Icu_ChannelType Channel);
 
 /**
- * @brief Sets the activation condition for edge detection
- * @param Channel Channel to configure
- * @param Activation Type of edge (RISING/FALLING/BOTH)
+ * @brief Checks for wakeup events
+ * @param WakeupSource Wakeup source to check
+ * @return Wakeup detected flag
  */
-void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_SignalEdgeType Activation);
+Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource);
+
+/**
+ * @brief Sets the activation condition (edge detection) for a channel
+ * @param Channel Channel to configure
+ * @param Activation Activation condition (falling, rising, or both edges)
+ */
+void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Activation);
 
 /**
  * @brief Disables notification for a channel
- * @param Channel Channel to disable
+ * @param Channel Channel to disable notification
  */
 void Icu_DisableNotification(Icu_ChannelType Channel);
 
 /**
  * @brief Enables notification for a channel
- * @param Channel Channel to enable
+ * @param Channel Channel to enable notification
  */
 void Icu_EnableNotification(Icu_ChannelType Channel);
 
 /**
  * @brief Gets the input state of a channel
  * @param Channel Channel to check
- * @return Input state (IDLE/ACTIVE)
+ * @return Current input state (ICU_ACTIVE or ICU_IDLE)
  */
 Icu_InputStateType Icu_GetInputState(Icu_ChannelType Channel);
 
 /**
- * @brief Starts timestamp capture
- * @param Channel Channel to start
- * @param BufferPtr Pointer to timestamp buffer
- * @param BufferSize Size of buffer
- * @param NotifyInterval Interval for notifications
+ * @brief Starts timestamp capture for a channel
+ * @param Channel Channel to start timestamp
+ * @param BufferPtr Pointer to buffer for storing timestamps
+ * @param BufferSize Size of the buffer
+ * @param NotifyInterval Number of captures between notifications
  */
-void Icu_StartTimestamp(Icu_ChannelType Channel, Icu_ValueType* BufferPtr, 
-                        Icu_IndexType BufferSize, Icu_IndexType NotifyInterval);
+void Icu_StartTimestamp(Icu_ChannelType Channel, uint32* BufferPtr, uint16 BufferSize, uint16 NotifyInterval);
 
 /**
- * @brief Stops timestamp capture
- * @param Channel Channel to stop
+ * @brief Stops timestamp capture for a channel
+ * @param Channel Channel to stop timestamp
  */
 void Icu_StopTimestamp(Icu_ChannelType Channel);
 
 /**
  * @brief Gets the current timestamp buffer index
  * @param Channel Channel to check
- * @return Current buffer index
+ * @return Current index in the timestamp buffer
  */
 Icu_IndexType Icu_GetTimestampIndex(Icu_ChannelType Channel);
 
@@ -314,31 +319,32 @@ void Icu_DisableEdgeCount(Icu_ChannelType Channel);
  * @param Channel Channel to check
  * @return Number of edges counted
  */
-Icu_EdgeNumberType Icu_GetEdgeNumbers(Icu_ChannelType Channel);
+uint16 Icu_GetEdgeNumbers(Icu_ChannelType Channel);
 
 /**
  * @brief Starts signal measurement for a channel
- * @param Channel Channel to start
+ * @param Channel Channel to start measurement
+ * @param MeasureKind Type of measurement (period, high time, low time, duty cycle)
  */
-void Icu_StartSignalMeasurement(Icu_ChannelType Channel);
+void Icu_StartSignalMeasurement(Icu_ChannelType Channel, Icu_SignalMeasurementPropertyType MeasureKind);
 
 /**
  * @brief Stops signal measurement for a channel
- * @param Channel Channel to stop
+ * @param Channel Channel to stop measurement
  */
 void Icu_StopSignalMeasurement(Icu_ChannelType Channel);
 
 /**
- * @brief Gets the elapsed time (period/pulse width)
- * @param Channel Channel to check
+ * @brief Gets the elapsed time for signal measurement
+ * @param Channel Channel to get time from
  * @return Elapsed time in ticks
  */
-Icu_ValueType Icu_GetTimeElapsed(Icu_ChannelType Channel);
+uint16 Icu_GetTimeElapsed(Icu_ChannelType Channel);
 
 /**
- * @brief Gets the duty cycle values
- * @param Channel Channel to check
- * @param DutyCycleValues Pointer to duty cycle structure
+ * @brief Gets the duty cycle values for a channel
+ * @param Channel Channel to get duty cycle from
+ * @param DutyCycleValues Pointer to structure to store duty cycle values
  */
 void Icu_GetDutyCycleValues(Icu_ChannelType Channel, Icu_DutyCycleType* DutyCycleValues);
 
@@ -346,16 +352,20 @@ void Icu_GetDutyCycleValues(Icu_ChannelType Channel, Icu_DutyCycleType* DutyCycl
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  */
-#if (ICU_VERSION_INFO_API == STD_ON)
 void Icu_GetVersionInfo(Std_VersionInfoType* versioninfo);
-#endif
 
 /**
- * @brief Checks for wakeup events
+ * @brief Gets the current input level of a channel
  * @param Channel Channel to check
- * @return Wakeup detected flag
+ * @return Current input level (0 or 1)
  */
-Std_ReturnType Icu_CheckWakeup(Icu_ChannelType Channel);
+uint8 Icu_GetInputLevel(Icu_ChannelType Channel);
+
+/**
+ * @brief Gets the system timestamp
+ * @return System timestamp in ticks
+ */
+uint32 Icu_GetSysTimestamp(void);
 
 #define ICU_STOP_SEC_CODE
 #include "MemMap.h"

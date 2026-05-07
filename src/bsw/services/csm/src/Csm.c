@@ -1,511 +1,1846 @@
 /**
  * @file Csm.c
- * @brief Crypto Services Manager
- * @copyright Copyright (c) 2025 yuleASR Project
- * @license MIT License
+ * @brief CSM (Crypto Services Manager) 核心实现
  * 
- * AUTOSAR Classic Platform - BSW Module
- * This file is part of the yuleASR AUTOSAR implementation.
+ * 功能: 密码服务管理器核心功能实现
+ * - 密钥管理
+ * - 服务队列管理
+ * - 异步服务处理
+ * 
+ * @author yuleASR Team
+ * @version 1.0.0
  */
 
-     1|/*==================================================================================================
-     2| *                                CRYPTO SERVICES MANAGER (Csm)
-     3| *==================================================================================================
-     4| * FILENAME: Csm.c
-     5| * AUTOSAR VERSION: R22-11
-     6| * DOCUMENT: AUTOSAR_SWS_CryptoServicesManager.pdf
-     7| *==================================================================================================
-     8| * PROJECT: yuleASR Classic AUTOSAR BSW
-     9| * DESCRIPTION: Implementation of Crypto Services Manager module
-    10| *==================================================================================================
-    11| */
-    12|
-    13|/*==================================================================================================
-    14| *                                         INCLUDES
-    15| *==================================================================================================*/
-    16|#include "Csm.h"
-    17|#include "Det.h"
-    18|#include "SchM_Csm.h"
-    19|
-    20|/*==================================================================================================
-    21| *                                    VERSION CHECK
-    22| *==================================================================================================*/
-    23|#if (CSM_AR_RELEASE_MAJOR_VERSION != 4u)
-    24|    #error "Csm.c: AR major version mismatch"
-    25|#endif
-    26|
-    27|#if (CSM_AR_RELEASE_MINOR_VERSION != 7u)
-    28|    #error "Csm.c: AR minor version mismatch"
-    29|#endif
-    30|
-    31|/*==================================================================================================
-    32| *                                    LOCAL DEFINES
-    33| *==================================================================================================*/
-    34|#define CSM_AES_BLOCK_SIZE              (16u)
-    35|#define CSM_SHA256_SIZE                 (32u)
-    36|#define CSM_SHA512_SIZE                 (64u)
-    37|#define CSM_SHA1_SIZE                   (20u)
-    38|#define CSM_HMAC_SIZE                   (32u)
-    39|
-    40|/*==================================================================================================
-    41| *                                    LOCAL TYPES
-    42| *==================================================================================================*/
-    43|typedef struct {
-    44|    Csm_JobIdType jobId;
-    45|    Csm_JobStateType state;
-    46|    Csm_OperationModeType mode;
-    47|    uint8 retryCount;
-    48|    boolean active;
-    49|} Csm_JobRuntimeType;
-    50|
-    51|/*==================================================================================================
-    52| *                                    LOCAL VARIABLES
-    53| *==================================================================================================*/
-    54|#define CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
-    55|#include "Csm_MemMap.h"
-    56|
-    57|static Csm_JobRuntimeType Csm_Jobs[CSM_NUM_JOBS];
-    58|static Csm_QueueElementType Csm_Queue[CSM_JOB_QUEUE_SIZE];
-    59|static Csm_CallbackType Csm_Callback = NULL_PTR;
-    60|static boolean Csm_Initialized = FALSE;
-    61|
-    62|/* Simulated key storage */
-    63|static uint8 Csm_KeyStorage[CSM_NUM_KEYS][64u];  /* Max 512 bits */
-    64|static boolean Csm_KeyValid[CSM_NUM_KEYS];
-    65|
-    66|#define CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
-    67|#include "Csm_MemMap.h"
-    68|
-    69|/*==================================================================================================
-    70| *                                    GLOBAL VARIABLES
-    71| *==================================================================================================*/
-    72|#define CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
-    73|#include "Csm_MemMap.h"
-    74|
-    75|boolean Csm_Initialized_Global = FALSE;
-    76|const Csm_ConfigType* Csm_ConfigPtr = NULL_PTR;
-    77|
-    78|#define CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
-    79|#include "Csm_MemMap.h"
-    80|
-    81|/*==================================================================================================
-    82| *                                    LOCAL FUNCTIONS
-    83| *==================================================================================================*/
-    84|#define CSM_START_SEC_CODE
-    85|#include "Csm_MemMap.h"
-    86|
-    87|/**
-    88| * @brief Find job index by job ID
-    89| */
-    90|static sint16 Csm_FindJobIndex(Csm_JobIdType jobId)
-    91|{
-    92|    uint16 i;
-    93|    
-    94|    for (i = 0u; i < CSM_NUM_JOBS; i++) {
-    95|        if (Csm_Jobs[i].jobId == jobId) {
-    96|            return (sint16)i;
-    97|        }
-    98|    }
-    99|    return -1;
-   100|}
-   101|
-   102|/**
-   103| * @brief Find key index by key ID
-   104| */
-   105|static sint16 Csm_FindKeyIndex(Csm_KeyIdType keyId)
-   106|{
-   107|    if (keyId < CSM_NUM_KEYS) {
-   108|        return (sint16)keyId;
-   109|    }
-   110|    return -1;
-   111|}
-   112|
-   113|/**
-   114| * @brief Queue a job
-   115| */
-   116|static Std_ReturnType Csm_QueueJob(Csm_JobIdType jobId, Csm_OperationModeType mode, 
-   117|                                    Csm_JobPrimitiveInputOutputType* inputOutput)
-   118|{
-   119|    uint16 i;
-   120|    
-   121|    for (i = 0u; i < CSM_JOB_QUEUE_SIZE; i++) {
-   122|        if (!Csm_Queue[i].inUse) {
-   123|            Csm_Queue[i].jobId = jobId;
-   124|            Csm_Queue[i].mode = mode;
-   125|            Csm_Queue[i].inputOutput = inputOutput;
-   126|            Csm_Queue[i].inUse = TRUE;
-   127|            return E_OK;
-   128|        }
-   129|    }
-   130|    return E_NOT_OK;  /* Queue full */
-   131|}
-   132|
-   133|/**
-   134| * @brief Simple XOR encryption (placeholder for real crypto)
-   135| */
-   136|static void Csm_XorEncrypt(const uint8* input, uint8* output, uint32 length, const uint8* key)
-   137|{
-   138|    uint32 i;
-   139|    for (i = 0u; i < length; i++) {
-   140|        output[i] = input[i] ^ key[i % CSM_AES_BLOCK_SIZE];
-   141|    }
-   142|}
-   143|
-   144|/**
-   145| * @brief Simple XOR decryption (placeholder for real crypto)
-   146| */
-   147|static void Csm_XorDecrypt(const uint8* input, uint8* output, uint32 length, const uint8* key)
-   148|{
-   149|    uint32 i;
-   150|    for (i = 0u; i < length; i++) {
-   151|        output[i] = input[i] ^ key[i % CSM_AES_BLOCK_SIZE];
-   152|    }
-   153|}
-   154|
-   155|/**
-   156| * @brief Simple hash calculation (placeholder for SHA-256)
-   157| */
-   158|static void Csm_CalculateHash(const uint8* input, uint32 length, uint8* output, uint32 outputLength)
-   159|{
-   160|    uint32 i;
-   161|    uint32 hash = 0x12345678u;
-   162|    
-   163|    /* Simple hash algorithm (placeholder) */
-   164|    for (i = 0u; i < length; i++) {
-   165|        hash = ((hash << 5) + hash) + input[i];
-   166|    }
-   167|    
-   168|    /* Fill output */
-   169|    for (i = 0u; i < outputLength; i++) {
-   170|        output[i] = (uint8)(hash >> ((i % 4) * 8));
-   171|    }
-   172|}
-   173|
-   174|/**
-   175| * @brief Generate random bytes
-   176| */
-   177|static void Csm_GenerateRandom(uint8* output, uint32 length)
-   178|{
-   179|    uint32 i;
-   180|    static uint32 seed = 0x12345678u;
-   181|    
-   182|    for (i = 0u; i < length; i++) {
-   183|        seed = (seed * 1103515245u + 12345u) & 0x7FFFFFFFu;
-   184|        output[i] = (uint8)(seed ^ (seed >> 8) ^ (seed >> 16) ^ (seed >> 24));
-   185|    }
-   186|}
-   187|
-   188|/**
-   189| * @brief Process a crypto job
-   190| */
-   191|static Std_ReturnType Csm_ProcessJob(Csm_JobIdType jobId, Csm_OperationModeType mode,
-   192|                                      Csm_JobPrimitiveInputOutputType* inputOutput)
-   193|{
-   194|    sint16 jobIndex;
-   195|    Std_ReturnType result = E_NOT_OK;
-   196|    
-   197|    jobIndex = Csm_FindJobIndex(jobId);
-   198|    if (jobIndex < 0) {
-   199|        return E_NOT_OK;
-   200|    }
-   201|    
-   202|    /* Update job state */
-   203|    Csm_Jobs[jobIndex].state = CSM_JOB_STATE_PROGRESSING;
-   204|    Csm_Jobs[jobIndex].mode = mode;
-   205|    
-   206|    /* Process based on job type */
-   207|    switch (jobId) {
-   208|        case CSM_JOB_ID_ENCRYPT_1:
-   209|            if ((inputOutput != NULL_PTR) && (inputOutput->inputPtr != NULL_PTR) && 
-   210|                (inputOutput->outputPtr != NULL_PTR)) {
-   211|                Csm_XorEncrypt(inputOutput->inputPtr, inputOutput->outputPtr,
-   212|                               inputOutput->inputLength, Csm_KeyStorage[CSM_KEY_ID_AES_128]);
-   213|                if (inputOutput->outputLengthPtr != NULL_PTR) {
-   214|                    *inputOutput->outputLengthPtr = inputOutput->inputLength;
-   215|                }
-   216|                result = E_OK;
-   217|            }
-   218|            break;
-   219|            
-   220|        case CSM_JOB_ID_DECRYPT_1:
-   221|            if ((inputOutput != NULL_PTR) && (inputOutput->inputPtr != NULL_PTR) && 
-   222|                (inputOutput->outputPtr != NULL_PTR)) {
-   223|                Csm_XorDecrypt(inputOutput->inputPtr, inputOutput->outputPtr,
-   224|                               inputOutput->inputLength, Csm_KeyStorage[CSM_KEY_ID_AES_128]);
-   225|                if (inputOutput->outputLengthPtr != NULL_PTR) {
-   226|                    *inputOutput->outputLengthPtr = inputOutput->inputLength;
-   227|                }
-   228|                result = E_OK;
-   229|            }
-   230|            break;
-   231|            
-   232|        case CSM_JOB_ID_MAC_GENERATE_1:
-   233|            if ((inputOutput != NULL_PTR) && (inputOutput->inputPtr != NULL_PTR) && 
-   234|                (inputOutput->outputPtr != NULL_PTR)) {
-   235|                Csm_CalculateHash(inputOutput->inputPtr, inputOutput->inputLength,
-   236|                                  inputOutput->outputPtr, CSM_HMAC_SIZE);
-   237|                if (inputOutput->outputLengthPtr != NULL_PTR) {
-   238|                    *inputOutput->outputLengthPtr = CSM_HMAC_SIZE;
-   239|                }
-   240|                result = E_OK;
-   241|            }
-   242|            break;
-   243|            
-   244|        case CSM_JOB_ID_HASH_SHA256:
-   245|            if ((inputOutput != NULL_PTR) && (inputOutput->inputPtr != NULL_PTR) && 
-   246|                (inputOutput->outputPtr != NULL_PTR)) {
-   247|                Csm_CalculateHash(inputOutput->inputPtr, inputOutput->inputLength,
-   248|                                  inputOutput->outputPtr, CSM_SHA256_SIZE);
-   249|                if (inputOutput->outputLengthPtr != NULL_PTR) {
-   250|                    *inputOutput->outputLengthPtr = CSM_SHA256_SIZE;
-   251|                }
-   252|                result = E_OK;
-   253|            }
-   254|            break;
-   255|            
-   256|        case CSM_JOB_ID_RANDOM_GENERATE:
-   257|            if ((inputOutput != NULL_PTR) && (inputOutput->outputPtr != NULL_PTR)) {
-   258|                Csm_GenerateRandom(inputOutput->outputPtr, inputOutput->outputLength);
-   259|                result = E_OK;
-   260|            }
-   261|            break;
-   262|            
-   263|        default:
-   264|            result = E_NOT_OK;
-   265|            break;
-   266|    }
-   267|    
-   268|    /* Update job state */
-   269|    Csm_Jobs[jobIndex].state = (result == E_OK) ? CSM_JOB_STATE_COMPLETED : CSM_JOB_STATE_FAILED;
-   270|    
-   271|    /* Trigger callback if configured */
-   272|#if (CSM_CALLBACK_SUPPORTED == STD_ON)
-   273|    if (Csm_Callback != NULL_PTR) {
-   274|        Csm_Callback(jobId, Csm_Jobs[jobIndex].state, 
-   275|                      inputOutput != NULL_PTR ? inputOutput->outputPtr : NULL_PTR,
-   276|                      inputOutput != NULL_PTR && inputOutput->outputLengthPtr != NULL_PTR ? 
-   277|                      *inputOutput->outputLengthPtr : 0u);
-   278|    }
-   279|#endif
-   280|    
-   281|    return result;
-   282|}
-   283|
-   284|/*==================================================================================================
-   285| *                                    GLOBAL FUNCTIONS
-   286| *==================================================================================================*/
-   287|
-   288|/**
-   289| * @brief Initializes the Crypto Services Manager module
-   290| */
-   291|void Csm_Init(const Csm_ConfigType* ConfigPtr)
-   292|{
-   293|    uint16 i;
-   294|    
-   295|#if (CSM_DEV_ERROR_DETECT == STD_ON)
-   296|    if (Csm_Initialized == TRUE) {
-   297|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_INIT, CSM_E_ALREADY_INITIALIZED);
-   298|        return;
-   299|    }
-   300|    
-   301|    if (ConfigPtr == NULL_PTR) {
-   302|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_INIT, CSM_E_PARAM_POINTER);
-   303|        return;
-   304|    }
-   305|#endif
-   306|
-   307|    SchM_Enter_Csm_CSM_EXCLUSIVE_AREA_0();
-   308|    
-   309|    /* Initialize jobs */
-   310|    for (i = 0u; i < CSM_NUM_JOBS; i++) {
-   311|        Csm_Jobs[i].jobId = (Csm_JobIdType)i;
-   312|        Csm_Jobs[i].state = CSM_JOB_STATE_IDLE;
-   313|        Csm_Jobs[i].mode = CSM_OPERATIONMODE_START;
-   314|        Csm_Jobs[i].retryCount = 0u;
-   315|        Csm_Jobs[i].active = FALSE;
-   316|    }
-   317|    
-   318|    /* Initialize queue */
-   319|    for (i = 0u; i < CSM_JOB_QUEUE_SIZE; i++) {
-   320|        Csm_Queue[i].inUse = FALSE;
-   321|    }
-   322|    
-   323|    /* Initialize key storage */
-   324|    for (i = 0u; i < CSM_NUM_KEYS; i++) {
-   325|        Csm_KeyValid[i] = FALSE;
-   326|    }
-   327|    
-   328|    Csm_ConfigPtr = ConfigPtr;
-   329|    Csm_Initialized = TRUE;
-   330|    Csm_Initialized_Global = TRUE;
-   331|    
-   332|    SchM_Exit_Csm_CSM_EXCLUSIVE_AREA_0();
-   333|}
-   334|
-   335|/**
-   336| * @brief Deinitializes the Crypto Services Manager module
-   337| */
-   338|void Csm_DeInit(void)
-   339|{
-   340|    uint16 i;
-   341|    
-   342|#if (CSM_DEV_ERROR_DETECT == STD_ON)
-   343|    if (Csm_Initialized == FALSE) {
-   344|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_DEINIT, CSM_E_UNINIT);
-   345|        return;
-   346|    }
-   347|#endif
-   348|
-   349|    SchM_Enter_Csm_CSM_EXCLUSIVE_AREA_0();
-   350|    
-   351|    /* Reset all jobs */
-   352|    for (i = 0u; i < CSM_NUM_JOBS; i++) {
-   353|        Csm_Jobs[i].state = CSM_JOB_STATE_IDLE;
-   354|        Csm_Jobs[i].active = FALSE;
-   355|    }
-   356|    
-   357|    /* Clear queue */
-   358|    for (i = 0u; i < CSM_JOB_QUEUE_SIZE; i++) {
-   359|        Csm_Queue[i].inUse = FALSE;
-   360|    }
-   361|    
-   362|    /* Clear key validity */
-   363|    for (i = 0u; i < CSM_NUM_KEYS; i++) {
-   364|        Csm_KeyValid[i] = FALSE;
-   365|    }
-   366|    
-   367|    Csm_ConfigPtr = NULL_PTR;
-   368|    Csm_Initialized = FALSE;
-   369|    Csm_Initialized_Global = FALSE;
-   370|    Csm_Callback = NULL_PTR;
-   371|    
-   372|    SchM_Exit_Csm_CSM_EXCLUSIVE_AREA_0();
-   373|}
-   374|
-   375|/**
-   376| * @brief Gets version information
-   377| */
-   378|#if (CSM_VERSION_INFO_API == STD_ON)
-   379|void Csm_GetVersionInfo(Std_VersionInfoType* versioninfo)
-   380|{
-   381|#if (CSM_DEV_ERROR_DETECT == STD_ON)
-   382|    if (versioninfo == NULL_PTR) {
-   383|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_GETVERSIONINFO, CSM_E_PARAM_POINTER);
-   384|        return;
-   385|    }
-   386|#endif
-   387|
-   388|    versioninfo->vendorID = CSM_VENDOR_ID;
-   389|    versioninfo->moduleID = CSM_MODULE_ID;
-   390|    versioninfo->sw_major_version = CSM_SW_MAJOR_VERSION;
-   391|    versioninfo->sw_minor_version = CSM_SW_MINOR_VERSION;
-   392|    versioninfo->sw_patch_version = CSM_SW_PATCH_VERSION;
-   393|}
-   394|#endif
-   395|
-   396|/**
-   397| * @brief Encrypts data
-   398| */
-   399|Std_ReturnType Csm_Encrypt(Csm_JobIdType jobId,
-   400|                            Csm_OperationModeType mode,
-   401|                            const uint8* dataPtr,
-   402|                            uint32 dataLength,
-   403|                            uint8* resultPtr,
-   404|                            uint32* resultLengthPtr)
-   405|{
-   406|    Csm_JobPrimitiveInputOutputType inputOutput;
-   407|    Std_ReturnType result;
-   408|    
-   409|#if (CSM_DEV_ERROR_DETECT == STD_ON)
-   410|    if (Csm_Initialized == FALSE) {
-   411|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_ENCRYPT, CSM_E_UNINIT);
-   412|        return E_NOT_OK;
-   413|    }
-   414|    
-   415|    if ((dataPtr == NULL_PTR) || (resultPtr == NULL_PTR) || (resultLengthPtr == NULL_PTR)) {
-   416|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_ENCRYPT, CSM_E_PARAM_POINTER);
-   417|        return E_NOT_OK;
-   418|    }
-   419|#endif
-   420|
-   421|    inputOutput.inputPtr = (uint8*)dataPtr;
-   422|    inputOutput.inputLength = dataLength;
-   423|    inputOutput.outputPtr = resultPtr;
-   424|    inputOutput.outputLengthPtr = resultLengthPtr;
-   425|    inputOutput.secondaryInputPtr = NULL_PTR;
-   426|    inputOutput.secondaryInputLength = 0u;
-   427|    
-   428|    SchM_Enter_Csm_CSM_EXCLUSIVE_AREA_0();
-   429|    result = Csm_ProcessJob(jobId, mode, &inputOutput);
-   430|    SchM_Exit_Csm_CSM_EXCLUSIVE_AREA_0();
-   431|    
-   432|    return result;
-   433|}
-   434|
-   435|/**
-   436| * @brief Decrypts data
-   437| */
-   438|Std_ReturnType Csm_Decrypt(Csm_JobIdType jobId,
-   439|                            Csm_OperationModeType mode,
-   440|                            const uint8* dataPtr,
-   441|                            uint32 dataLength,
-   442|                            uint8* resultPtr,
-   443|                            uint32* resultLengthPtr)
-   444|{
-   445|    Csm_JobPrimitiveInputOutputType inputOutput;
-   446|    Std_ReturnType result;
-   447|    
-   448|#if (CSM_DEV_ERROR_DETECT == STD_ON)
-   449|    if (Csm_Initialized == FALSE) {
-   450|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_DECRYPT, CSM_E_UNINIT);
-   451|        return E_NOT_OK;
-   452|    }
-   453|    
-   454|    if ((dataPtr == NULL_PTR) || (resultPtr == NULL_PTR) || (resultLengthPtr == NULL_PTR)) {
-   455|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_DECRYPT, CSM_E_PARAM_POINTER);
-   456|        return E_NOT_OK;
-   457|    }
-   458|#endif
-   459|
-   460|    inputOutput.inputPtr = (uint8*)dataPtr;
-   461|    inputOutput.inputLength = dataLength;
-   462|    inputOutput.outputPtr = resultPtr;
-   463|    inputOutput.outputLengthPtr = resultLengthPtr;
-   464|    inputOutput.secondaryInputPtr = NULL_PTR;
-   465|    inputOutput.secondaryInputLength = 0u;
-   466|    
-   467|    SchM_Enter_Csm_CSM_EXCLUSIVE_AREA_0();
-   468|    result = Csm_ProcessJob(jobId, mode, &inputOutput);
-   469|    SchM_Exit_Csm_CSM_EXCLUSIVE_AREA_0();
-   470|    
-   471|    return result;
-   472|}
-   473|
-   474|/**
-   475| * @brief Generates MAC
-   476| */
-   477|Std_ReturnType Csm_MacGenerate(Csm_JobIdType jobId,
-   478|                                Csm_OperationModeType mode,
-   479|                                const uint8* dataPtr,
-   480|                                uint32 dataLength,
-   481|                                uint8* macPtr,
-   482|                                uint32* macLengthPtr)
-   483|{
-   484|    Csm_JobPrimitiveInputOutputType inputOutput;
-   485|    Std_ReturnType result;
-   486|    
-   487|#if (CSM_DEV_ERROR_DETECT == STD_ON)
-   488|    if (Csm_Initialized == FALSE) {
-   489|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_MACGENERATE, CSM_E_UNINIT);
-   490|        return E_NOT_OK;
-   491|    }
-   492|    
-   493|    if ((dataPtr == NULL_PTR) || (macPtr == NULL_PTR) || (macLengthPtr == NULL_PTR)) {
-   494|        (void)Det_ReportError(CSM_MODULE_ID, CSM_INSTANCE_ID, CSM_SID_MACGENERATE, CSM_E_PARAM_POINTER);
-   495|        return E_NOT_OK;
-   496|    }
-   497|#endif
-   498|
-   499|    inputOutput.inputPtr = (uint8*)dataPtr;
-   500|    inputOutput.inputLength = dataLength;
-   501|
+/*==================================================================================================
+*                                       包含头文件
+==================================================================================================*/
+#include "Csm.h"
+#include "Csm_Cfg.h"
+#include "Det.h"
+#include "Mcal.h"
+
+#if (CSM_CFG_DEM_INTEGRATION == STD_ON)
+#include "Dem.h"
+#endif
+
+/*==================================================================================================
+*                                       宏定义
+==================================================================================================*/
+/**
+ * @brief 模块ID (用于Det)
+ */
+#define CSM_MODULE_ID                           0x70U
+
+/**
+ * @brief 操作模式定义
+ */
+#define CSM_OPERATION_MODE_START                0x01U
+#define CSM_OPERATION_MODE_UPDATE               0x02U
+#define CSM_OPERATION_MODE_FINISH               0x04U
+#define CSM_OPERATION_MODE_SINGLECALL           0x07U
+
+/**
+ * @brief 魔数用于数据完整性校验
+ */
+#define CSM_MAGIC_INITIALIZED                   0x43534D01U
+#define CSM_MAGIC_KEY_VALID                     0x4B455956U
+
+/**
+ * @brief 开发错误检测宏
+ */
+#if (CSM_CFG_DEV_ERROR_DETECT == STD_ON)
+#define CSM_CHECK_INITIALIZED(apiId) \
+    do { \
+        if (Csm_State == CSM_STATE_UNINIT) { \
+            Csm_ReportError((apiId), CSM_E_NOT_INITIALIZED); \
+            return E_NOT_OK; \
+        } \
+    } while(0)
+
+#define CSM_CHECK_NULL_POINTER(apiId, ptr) \
+    do { \
+        if ((ptr) == NULL_PTR) { \
+            Csm_ReportError((apiId), CSM_E_PARAM_POINTER); \
+            return E_NOT_OK; \
+        } \
+    } while(0)
+#else
+#define CSM_CHECK_INITIALIZED(apiId)
+#define CSM_CHECK_NULL_POINTER(apiId, ptr)
+#endif
+
+/*==================================================================================================
+*                                       类型定义
+==================================================================================================*/
+/**
+ * @brief CSM状态
+ */
+typedef enum
+{
+    CSM_STATE_UNINIT = 0,
+    CSM_STATE_INIT,
+    CSM_STATE_ACTIVE
+} Csm_InternalStateType;
+
+/*==================================================================================================
+*                                       全局变量
+==================================================================================================*/
+#define CSM_START_SEC_VAR_INIT_UNSPECIFIED
+#include "Csm_MemMap.h"
+
+/**
+ * @brief 初始化状态
+ */
+STATIC volatile Csm_InternalStateType Csm_State = CSM_STATE_UNINIT;
+
+/**
+ * @brief 当前配置
+ */
+STATIC const Csm_ConfigType* Csm_CurrentConfig = NULL_PTR;
+
+/**
+ * @brief 初始化魔数
+ */
+STATIC volatile uint32 Csm_InitMagic = 0U;
+
+#define CSM_STOP_SEC_VAR_INIT_UNSPECIFIED
+#include "Csm_MemMap.h"
+
+#define CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
+#include "Csm_MemMap.h"
+
+/**
+ * @brief 密钥数据数组
+ */
+STATIC Csm_KeyType Csm_Keys[CSM_MAX_KEYS];
+
+/**
+ * @brief 作业数据数组
+ */
+STATIC Csm_JobType Csm_Jobs[CSM_MAX_JOBS];
+
+/**
+ * @brief 服务队列
+ */
+STATIC Csm_QueueType Csm_JobQueue;
+
+/**
+ * @brief 回调函数数组
+ */
+STATIC Csm_CallbackType Csm_Callbacks[CSM_MAX_JOBS];
+
+/**
+ * @brief 回调上下文数组
+ */
+STATIC void* Csm_CallbackContexts[CSM_MAX_JOBS];
+
+/**
+ * @brief 当前处理的作业数
+ */
+STATIC uint8 Csm_ActiveJobCount = 0U;
+
+#define CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+#include "Csm_MemMap.h"
+
+/*==================================================================================================
+*                                       静态函数声明
+==================================================================================================*/
+STATIC void Csm_ReportError(uint8 apiId, uint8 errorId);
+STATIC void Csm_NotifyEvent(uint32 jobId, Std_ReturnType result);
+STATIC Std_ReturnType Csm_ValidateConfig(const Csm_ConfigType* config);
+STATIC Std_ReturnType Csm_FindKeyIndex(uint32 keyId, uint8* index);
+STATIC Std_ReturnType Csm_FindJobIndex(uint32 jobId, uint8* index);
+STATIC Std_ReturnType Csm_FindKeyElementIndex(uint8 keyIdx, uint32 elementId, uint8* index);
+STATIC Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority);
+STATIC Std_ReturnType Csm_DequeueJob(uint32* jobId);
+STATIC void Csm_ProcessQueue(void);
+STATIC Std_ReturnType Csm_ExecuteJob(uint8 jobIdx);
+STATIC void Csm_ResetJob(uint8 jobIdx);
+STATIC Std_ReturnType Csm_ValidateKeyUsage(uint32 keyId, Csm_KeyUsageType requiredUsage);
+STATIC void Csm_UpdateKeyStatus(uint8 keyIdx, Csm_KeyStatusType newStatus);
+STATIC Std_ReturnType Csm_PersistKeyElement(uint32 keyId, uint32 elementId);
+STATIC Std_ReturnType Csm_LoadKeyElement(uint32 keyId, uint32 elementId);
+
+/*==================================================================================================
+*                                       函数实现
+==================================================================================================*/
+#define CSM_START_SEC_CODE
+#include "Csm_MemMap.h"
+
+/**
+ * @brief 报告错误
+ */
+STATIC void Csm_ReportError(uint8 apiId, uint8 errorId)
+{
+#if (CSM_CFG_DEV_ERROR_DETECT == STD_ON)
+    Det_ReportError(CSM_MODULE_ID, 0, apiId, errorId);
+#else
+    (void)apiId;
+    (void)errorId;
+#endif
+}
+
+/**
+ * @brief 通知事件回调
+ */
+STATIC void Csm_NotifyEvent(uint32 jobId, Std_ReturnType result)
+{
+    uint8 jobIdx;
+    
+    if (E_OK == Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        if (Csm_Callbacks[jobIdx] != NULL_PTR)
+        {
+            Csm_Callbacks[jobIdx](
+                jobId,
+                result,
+                Csm_Jobs[jobIdx].outputData,
+                Csm_Jobs[jobIdx].resultLength,
+                Csm_CallbackContexts[jobIdx]
+            );
+        }
+    }
+}
+
+/**
+ * @brief 验证配置
+ */
+STATIC Std_ReturnType Csm_ValidateConfig(const Csm_ConfigType* config)
+{
+    if (config == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (config->numKeys > CSM_MAX_KEYS)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (config->numJobs > CSM_MAX_JOBS)
+    {
+        return E_NOT_OK;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 查找密钥索引
+ */
+STATIC Std_ReturnType Csm_FindKeyIndex(uint32 keyId, uint8* index)
+{
+    uint8 i;
+    
+    if (index == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    
+    for (i = 0; i < CSM_MAX_KEYS; i++)
+    {
+        if (Csm_Keys[i].keyId == keyId)
+        {
+            *index = i;
+            return E_OK;
+        }
+    }
+    
+    return E_NOT_OK;
+}
+
+/**
+ * @brief 查找作业索引
+ */
+STATIC Std_ReturnType Csm_FindJobIndex(uint32 jobId, uint8* index)
+{
+    uint8 i;
+    
+    if (index == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    
+    for (i = 0; i < CSM_MAX_JOBS; i++)
+    {
+        if (Csm_Jobs[i].jobId == jobId)
+        {
+            *index = i;
+            return E_OK;
+        }
+    }
+    
+    return E_NOT_OK;
+}
+
+/**
+ * @brief 查找密钥元素索引
+ */
+STATIC Std_ReturnType Csm_FindKeyElementIndex(uint8 keyIdx, uint32 elementId, uint8* index)
+{
+    uint8 i;
+    
+    if ((keyIdx >= CSM_MAX_KEYS) || (index == NULL_PTR))
+    {
+        return E_NOT_OK;
+    }
+    
+    for (i = 0; i < Csm_Keys[keyIdx].numElements; i++)
+    {
+        if (Csm_Keys[keyIdx].elements[i].valid)
+        {
+            /* 简化处理：假设元素ID按顺序存储 */
+            *index = i;
+            return E_OK;
+        }
+    }
+    
+    return E_NOT_OK;
+}
+
+/**
+ * @brief 将作业加入队列
+ */
+STATIC Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority)
+{
+#if (CSM_CFG_QUEUE_SUPPORT == STD_ON)
+    uint8 i, insertPos;
+    
+    if (Csm_JobQueue.count >= CSM_CFG_QUEUE_SIZE)
+    {
+        return E_NOT_OK; /* 队列满 */
+    }
+    
+    /* 按优先级插入作业 (高优先级在前) */
+    insertPos = Csm_JobQueue.tail;
+    for (i = Csm_JobQueue.head; i != Csm_JobQueue.tail; i = (i + 1) % CSM_CFG_QUEUE_SIZE)
+    {
+        if (Csm_JobQueue.items[i].priority < priority)
+        {
+            insertPos = i;
+            break;
+        }
+    }
+    
+    /* 移动元素以插入新作业 */
+    for (i = Csm_JobQueue.tail; i != insertPos; i = (i - 1 + CSM_CFG_QUEUE_SIZE) % CSM_CFG_QUEUE_SIZE)
+    {
+        uint8 prev = (i - 1 + CSM_CFG_QUEUE_SIZE) % CSM_CFG_QUEUE_SIZE;
+        Csm_JobQueue.items[i] = Csm_JobQueue.items[prev];
+    }
+    
+    /* 插入新作业 */
+    Csm_JobQueue.items[insertPos].jobId = jobId;
+    Csm_JobQueue.items[insertPos].priority = priority;
+    Csm_JobQueue.items[insertPos].timestamp = Csm_Cfg_GetTimestamp();
+    Csm_JobQueue.tail = (Csm_JobQueue.tail + 1) % CSM_CFG_QUEUE_SIZE;
+    Csm_JobQueue.count++;
+    
+    return E_OK;
+#else
+    (void)jobId;
+    (void)priority;
+    return E_NOT_OK;
+#endif
+}
+
+/**
+ * @brief 从队列取出作业
+ */
+STATIC Std_ReturnType Csm_DequeueJob(uint32* jobId)
+{
+#if (CSM_CFG_QUEUE_SUPPORT == STD_ON)
+    if (Csm_JobQueue.count == 0)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (jobId != NULL_PTR)
+    {
+        *jobId = Csm_JobQueue.items[Csm_JobQueue.head].jobId;
+    }
+    
+    Csm_JobQueue.head = (Csm_JobQueue.head + 1) % CSM_CFG_QUEUE_SIZE;
+    Csm_JobQueue.count--;
+    
+    return E_OK;
+#else
+    (void)jobId;
+    return E_NOT_OK;
+#endif
+}
+
+/**
+ * @brief 处理队列
+ */
+STATIC void Csm_ProcessQueue(void)
+{
+#if (CSM_CFG_QUEUE_SUPPORT == STD_ON)
+    uint32 jobId;
+    uint8 jobIdx;
+    
+    /* 检查是否可以处理更多作业 */
+    if (Csm_ActiveJobCount >= CSM_CFG_MAX_CONCURRENT_JOBS)
+    {
+        return;
+    }
+    
+    /* 从队列取出作业并执行 */
+    while ((Csm_JobQueue.count > 0) && (Csm_ActiveJobCount < CSM_CFG_MAX_CONCURRENT_JOBS))
+    {
+        if (E_OK == Csm_DequeueJob(&jobId))
+        {
+            if (E_OK == Csm_FindJobIndex(jobId, &jobIdx))
+            {
+                Csm_Jobs[jobIdx].state = CSM_JOB_STATE_PROCESSING;
+                Csm_ActiveJobCount++;
+                (void)Csm_ExecuteJob(jobIdx);
+            }
+        }
+        else
+        {
+            break;
+        }
+    }
+#endif
+}
+
+/**
+ * @brief 执行作业
+ */
+STATIC Std_ReturnType Csm_ExecuteJob(uint8 jobIdx)
+{
+    Std_ReturnType result = E_NOT_OK;
+    Csm_JobType* job = &Csm_Jobs[jobIdx];
+    
+    if (jobIdx >= CSM_MAX_JOBS)
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 调用硬件服务层 */
+    result = Csm_Cfg_HwService(
+        job->jobId,
+        job->service,
+        job->inputData,
+        job->inputLength,
+        job->outputData,
+        &job->resultLength
+    );
+    
+    job->result = result;
+    
+    if (result == E_OK)
+    {
+        job->state = CSM_JOB_STATE_RESULT_READY;
+        Csm_NotifyEvent(job->jobId, E_OK);
+    }
+    else if (result == E_BUSY)
+    {
+        /* 硬件忙碌，保持PROCESSING状态，下次继续 */
+    }
+    else
+    {
+        job->state = CSM_JOB_STATE_IDLE;
+        Csm_NotifyEvent(job->jobId, result);
+        if (Csm_ActiveJobCount > 0)
+        {
+            Csm_ActiveJobCount--;
+        }
+    }
+    
+    return result;
+}
+
+/**
+ * @brief 重置作业
+ */
+STATIC void Csm_ResetJob(uint8 jobIdx)
+{
+    if (jobIdx >= CSM_MAX_JOBS)
+    {
+        return;
+    }
+    
+    Csm_Jobs[jobIdx].state = CSM_JOB_STATE_IDLE;
+    Csm_Jobs[jobIdx].inputLength = 0U;
+    Csm_Jobs[jobIdx].outputLength = 0U;
+    Csm_Jobs[jobIdx].resultLength = 0U;
+    Csm_Jobs[jobIdx].result = E_NOT_OK;
+    Csm_Jobs[jobIdx].verifyResult = FALSE;
+}
+
+/**
+ * @brief 验证密钥使用权限
+ */
+STATIC Std_ReturnType Csm_ValidateKeyUsage(uint32 keyId, Csm_KeyUsageType requiredUsage)
+{
+    uint8 keyIdx;
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (Csm_Keys[keyIdx].status != CSM_KEY_STATUS_VALID)
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查是否有必要的配置信息 */
+    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
+    {
+        uint8 i;
+        for (i = 0; i < Csm_CurrentConfig->numKeys; i++)
+        {
+            if (Csm_CurrentConfig->keys[i].keyId == keyId)
+            {
+                if ((Csm_CurrentConfig->keys[i].allowedUsage & requiredUsage) == 0)
+                {
+                    return E_NOT_OK; /* 权限不足 */
+                }
+                return E_OK;
+            }
+        }
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 更新密钥状态
+ */
+STATIC void Csm_UpdateKeyStatus(uint8 keyIdx, Csm_KeyStatusType newStatus)
+{
+    if (keyIdx >= CSM_MAX_KEYS)
+    {
+        return;
+    }
+    
+    Csm_Keys[keyIdx].status = newStatus;
+}
+
+/**
+ * @brief 持久化密钥元素
+ */
+STATIC Std_ReturnType Csm_PersistKeyElement(uint32 keyId, uint32 elementId)
+{
+#if (CSM_CFG_KEY_PERSISTENCE_SUPPORT == STD_ON)
+    uint8 keyIdx;
+    uint8 elemIdx;
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (E_OK != Csm_FindKeyElementIndex(keyIdx, elementId, &elemIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    return Csm_Cfg_KeyWrite(
+        keyId,
+        elementId,
+        Csm_Keys[keyIdx].elements[elemIdx].data,
+        Csm_Keys[keyIdx].elements[elemIdx].length
+    );
+#else
+    (void)keyId;
+    (void)elementId;
+    return E_OK;
+#endif
+}
+
+/**
+ * @brief 加载密钥元素
+ */
+STATIC Std_ReturnType Csm_LoadKeyElement(uint32 keyId, uint32 elementId)
+{
+#if (CSM_CFG_KEY_PERSISTENCE_SUPPORT == STD_ON)
+    uint8 keyIdx;
+    uint8 elemIdx;
+    uint32 length = CSM_MAX_KEY_LENGTH;
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (E_OK != Csm_FindKeyElementIndex(keyIdx, elementId, &elemIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (E_OK == Csm_Cfg_KeyRead(
+            keyId,
+            elementId,
+            Csm_Keys[keyIdx].elements[elemIdx].data,
+            &length))
+    {
+        Csm_Keys[keyIdx].elements[elemIdx].length = length;
+        Csm_Keys[keyIdx].elements[elemIdx].valid = TRUE;
+        return E_OK;
+    }
+    
+    return E_NOT_OK;
+#else
+    (void)keyId;
+    (void)elementId;
+    return E_OK;
+#endif
+}
+
+/*==================================================================================================
+*                                       API函数实现
+==================================================================================================*/
+
+/**
+ * @brief 初始化CSM模块
+ */
+Std_ReturnType Csm_Init(const Csm_ConfigType* config)
+{
+    uint8 i, j;
+    
+#if (CSM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (config == NULL_PTR)
+    {
+        Csm_ReportError(CSM_API_INIT, CSM_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    
+    if (Csm_State != CSM_STATE_UNINIT)
+    {
+        Csm_ReportError(CSM_API_INIT, CSM_E_ALREADY_INITIALIZED);
+        return E_NOT_OK;
+    }
+#endif
+    
+    /* 验证配置 */
+    if (E_OK != Csm_ValidateConfig(config))
+    {
+        return E_NOT_OK;
+    }
+    
+    Csm_CurrentConfig = config;
+    
+    /* 初始化密钥 */
+    for (i = 0; i < CSM_MAX_KEYS; i++)
+    {
+        Csm_Keys[i].keyId = CSM_KEY_ID_NONE;
+        Csm_Keys[i].status = CSM_KEY_STATUS_EMPTY;
+        Csm_Keys[i].numElements = 0U;
+        Csm_Keys[i].referenceCount = 0U;
+        
+        for (j = 0; j < CSM_MAX_KEY_ELEMENTS; j++)
+        {
+            Csm_Keys[i].elements[j].length = 0U;
+            Csm_Keys[i].elements[j].valid = FALSE;
+        }
+    }
+    
+    /* 配置密钥 */
+    if (config->keys != NULL_PTR)
+    {
+        for (i = 0; i < config->numKeys && i < CSM_MAX_KEYS; i++)
+        {
+            Csm_Keys[i].keyId = config->keys[i].keyId;
+            Csm_Keys[i].status = CSM_KEY_STATUS_INVALID;
+            Csm_Keys[i].numElements = config->keys[i].numElements;
+        }
+    }
+    
+    /* 初始化作业 */
+    for (i = 0; i < CSM_MAX_JOBS; i++)
+    {
+        Csm_Jobs[i].jobId = CSM_JOB_ID_NONE;
+        Csm_Jobs[i].state = CSM_JOB_STATE_IDLE;
+        Csm_ResetJob(i);
+        Csm_Callbacks[i] = NULL_PTR;
+        Csm_CallbackContexts[i] = NULL_PTR;
+    }
+    
+    /* 配置作业 */
+    if (config->jobs != NULL_PTR)
+    {
+        for (i = 0; i < config->numJobs && i < CSM_MAX_JOBS; i++)
+        {
+            Csm_Jobs[i].jobId = config->jobs[i].jobId;
+            Csm_Jobs[i].service = config->jobs[i].serviceType;
+            Csm_Jobs[i].keyId = config->jobs[i].keyId;
+            Csm_Jobs[i].algorithm = config->jobs[i].algorithm;
+        }
+    }
+    
+    /* 初始化队列 */
+#if (CSM_CFG_QUEUE_SUPPORT == STD_ON)
+    Csm_JobQueue.head = 0U;
+    Csm_JobQueue.tail = 0U;
+    Csm_JobQueue.count = 0U;
+#endif
+    
+    Csm_ActiveJobCount = 0U;
+    Csm_InitMagic = CSM_MAGIC_INITIALIZED;
+    Csm_State = CSM_STATE_ACTIVE;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 去初始化CSM模块
+ */
+Std_ReturnType Csm_DeInit(void)
+{
+    uint8 i;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_DEINIT);
+    
+    /* 检查是否有活动的作业 */
+    for (i = 0; i < CSM_MAX_JOBS; i++)
+    {
+        if (Csm_Jobs[i].state == CSM_JOB_STATE_PROCESSING)
+        {
+            return E_NOT_OK;
+        }
+    }
+    
+    Csm_State = CSM_STATE_UNINIT;
+    Csm_CurrentConfig = NULL_PTR;
+    Csm_InitMagic = 0U;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 设置密钥元素数据
+ */
+Std_ReturnType Csm_KeyElementSet(
+    uint32 keyId,
+    uint32 keyElementId,
+    const uint8* keyPtr,
+    uint32 keyLength)
+{
+    uint8 keyIdx;
+    uint8 elemIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_ELEMENT_SET);
+    CSM_CHECK_NULL_POINTER(CSM_API_KEY_ELEMENT_SET, keyPtr);
+    
+    if (keyLength > CSM_MAX_KEY_LENGTH)
+    {
+        Csm_ReportError(CSM_API_KEY_ELEMENT_SET, CSM_E_PARAM_LENGTH);
+        return E_NOT_OK;
+    }
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        Csm_ReportError(CSM_API_KEY_ELEMENT_SET, CSM_E_PARAM_KEY_ID);
+        return E_NOT_OK;
+    }
+    
+    /* 查找或分配元素索引 */
+    if (E_OK != Csm_FindKeyElementIndex(keyIdx, keyElementId, &elemIdx))
+    {
+        /* 新增元素 */
+        if (Csm_Keys[keyIdx].numElements >= CSM_MAX_KEY_ELEMENTS)
+        {
+            return E_NOT_OK;
+        }
+        elemIdx = Csm_Keys[keyIdx].numElements++;
+    }
+    
+    /* 复制数据 */
+    Mcal_MemCopy(Csm_Keys[keyIdx].elements[elemIdx].data, keyPtr, keyLength);
+    Csm_Keys[keyIdx].elements[elemIdx].length = keyLength;
+    Csm_Keys[keyIdx].elements[elemIdx].valid = TRUE;
+    
+    /* 更新状态为更新中 */
+    Csm_UpdateKeyStatus(keyIdx, CSM_KEY_STATUS_UPDATE_IN_PROGRESS);
+    
+    return E_OK;
+}
+
+/**
+ * @brief 设置密钥为有效状态
+ */
+Std_ReturnType Csm_KeySetValid(uint32 keyId)
+{
+    uint8 keyIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_SET_VALID);
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        Csm_ReportError(CSM_API_KEY_SET_VALID, CSM_E_PARAM_KEY_ID);
+        return E_NOT_OK;
+    }
+    
+    /* 检查必需的元素是否已设置 */
+    if (Csm_Keys[keyIdx].numElements == 0)
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 持久化密钥 */
+#if (CSM_CFG_KEY_PERSISTENCE_SUPPORT == STD_ON)
+    {
+        uint8 i;
+        for (i = 0; i < Csm_Keys[keyIdx].numElements; i++)
+        {
+            if (E_OK != Csm_PersistKeyElement(keyId, CSM_KEY_ELEMENT_ID_SECRET + i))
+            {
+                return E_NOT_OK;
+            }
+        }
+    }
+#endif
+    
+    Csm_UpdateKeyStatus(keyIdx, CSM_KEY_STATUS_VALID);
+    
+    return E_OK;
+}
+
+/**
+ * @brief 获取密钥元素数据
+ */
+Std_ReturnType Csm_KeyElementGet(
+    uint32 keyId,
+    uint32 keyElementId,
+    uint8* keyPtr,
+    uint32* keyLengthPtr)
+{
+    uint8 keyIdx;
+    uint8 elemIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_ELEMENT_GET);
+    CSM_CHECK_NULL_POINTER(CSM_API_KEY_ELEMENT_GET, keyPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_KEY_ELEMENT_GET, keyLengthPtr);
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        Csm_ReportError(CSM_API_KEY_ELEMENT_GET, CSM_E_PARAM_KEY_ID);
+        return E_NOT_OK;
+    }
+    
+    if (Csm_Keys[keyIdx].status != CSM_KEY_STATUS_VALID)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (E_OK != Csm_FindKeyElementIndex(keyIdx, keyElementId, &elemIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (*keyLengthPtr < Csm_Keys[keyIdx].elements[elemIdx].length)
+    {
+        *keyLengthPtr = Csm_Keys[keyIdx].elements[elemIdx].length;
+        return E_NOT_OK;
+    }
+    
+    Mcal_MemCopy(keyPtr, Csm_Keys[keyIdx].elements[elemIdx].data, 
+                 Csm_Keys[keyIdx].elements[elemIdx].length);
+    *keyLengthPtr = Csm_Keys[keyIdx].elements[elemIdx].length;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 复制密钥元素
+ */
+Std_ReturnType Csm_KeyElementCopy(
+    uint32 keyId,
+    uint32 keyElementId,
+    uint32 targetKeyId,
+    uint32 targetKeyElementId)
+{
+    uint8 keyData[CSM_MAX_KEY_LENGTH];
+    uint32 length = CSM_MAX_KEY_LENGTH;
+    Std_ReturnType result;
+    
+    result = Csm_KeyElementGet(keyId, keyElementId, keyData, &length);
+    if (result != E_OK)
+    {
+        return result;
+    }
+    
+    return Csm_KeyElementSet(targetKeyId, targetKeyElementId, keyData, length);
+}
+
+/**
+ * @brief 复制完整密钥
+ */
+Std_ReturnType Csm_KeyCopy(uint32 keyId, uint32 targetKeyId)
+{
+    uint8 keyIdx;
+    uint8 i;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_COPY);
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    for (i = 0; i < Csm_Keys[keyIdx].numElements; i++)
+    {
+        result = Csm_KeyElementCopy(keyId, CSM_KEY_ELEMENT_ID_SECRET + i,
+                                     targetKeyId, CSM_KEY_ELEMENT_ID_SECRET + i);
+        if (result != E_OK)
+        {
+            return result;
+        }
+    }
+    
+    return Csm_KeySetValid(targetKeyId);
+}
+
+/**
+ * @brief 获取密钥的元素ID列表
+ */
+Std_ReturnType Csm_KeyElementIdsGet(
+    uint32 keyId,
+    uint32* keyElementIdsPtr,
+    uint32* keyElementIdsLengthPtr)
+{
+    uint8 keyIdx;
+    uint8 i;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_ELEMENT_IDS_GET);
+    CSM_CHECK_NULL_POINTER(CSM_API_KEY_ELEMENT_IDS_GET, keyElementIdsPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_KEY_ELEMENT_IDS_GET, keyElementIdsLengthPtr);
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (*keyElementIdsLengthPtr < Csm_Keys[keyIdx].numElements)
+    {
+        *keyElementIdsLengthPtr = Csm_Keys[keyIdx].numElements;
+        return E_NOT_OK;
+    }
+    
+    for (i = 0; i < Csm_Keys[keyIdx].numElements; i++)
+    {
+        keyElementIdsPtr[i] = CSM_KEY_ELEMENT_ID_SECRET + i;
+    }
+    *keyElementIdsLengthPtr = Csm_Keys[keyIdx].numElements;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 生成密钥
+ */
+Std_ReturnType Csm_KeyGenerate(uint32 keyId)
+{
+    uint8 keyIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_GENERATE);
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* TODO: 调用硬件层生成密钥 */
+    
+    return E_OK;
+}
+
+/**
+ * @brief 派生密钥
+ */
+Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
+{
+    (void)keyId;
+    (void)targetKeyId;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_DERIVE);
+    
+    /* TODO: 实现密钥派生 */
+    
+    return E_OK;
+}
+
+/**
+ * @brief 计算密钥交换公共值
+ */
+Std_ReturnType Csm_KeyExchangeCalcPubVal(
+    uint32 keyId,
+    uint8* publicValuePtr,
+    uint32* publicValueLengthPtr)
+{
+    (void)keyId;
+    (void)publicValuePtr;
+    (void)publicValueLengthPtr;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_EXCHANGE_CALC_PUB_VAL);
+    
+    /* TODO: 实现密钥交换 */
+    
+    return E_OK;
+}
+
+/**
+ * @brief 计算密钥交换共享秘密
+ */
+Std_ReturnType Csm_KeyExchangeCalcSecret(
+    uint32 keyId,
+    const uint8* partnerPublicValuePtr,
+    uint32 partnerPublicValueLength)
+{
+    (void)keyId;
+    (void)partnerPublicValuePtr;
+    (void)partnerPublicValueLength;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_KEY_EXCHANGE_CALC_SECRET);
+    
+    /* TODO: 实现密钥交换 */
+    
+    return E_OK;
+}
+
+/**
+ * @brief 计算哈希值
+ */
+Std_ReturnType Csm_Hash(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    uint8* resultPtr,
+    uint32* resultLengthPtr)
+{
+    uint8 jobIdx;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_HASH);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    {
+        Csm_ResetJob(jobIdx);
+        Csm_Jobs[jobIdx].service = CSM_SERVICE_HASH;
+        Csm_Jobs[jobIdx].state = CSM_JOB_STATE_PROCESSING;
+    }
+    
+    /* 复制输入数据 */
+    if (dataLength > CSM_MAX_DATA_LENGTH)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (dataPtr != NULL_PTR && dataLength > 0)
+    {
+        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+        Csm_Jobs[jobIdx].inputLength = dataLength;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        result = Csm_Cfg_HwService(
+            jobId,
+            CSM_SERVICE_HASH,
+            Csm_Jobs[jobIdx].inputData,
+            Csm_Jobs[jobIdx].inputLength,
+            Csm_Jobs[jobIdx].outputData,
+            &Csm_Jobs[jobIdx].resultLength
+        );
+        
+        if (result == E_OK)
+        {
+            if (resultPtr != NULL_PTR && resultLengthPtr != NULL_PTR)
+            {
+                if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
+                {
+                    Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData, 
+                                Csm_Jobs[jobIdx].resultLength);
+                    *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+                }
+                else
+                {
+                    *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+                    return E_NOT_OK;
+                }
+            }
+            Csm_Jobs[jobIdx].state = CSM_JOB_STATE_IDLE;
+        }
+        
+        return result;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 生成MAC
+ */
+Std_ReturnType Csm_MacGenerate(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    uint8* macPtr,
+    uint32* macLengthPtr)
+{
+    uint8 jobIdx;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_MAC_GENERATE);
+    CSM_CHECK_NULL_POINTER(CSM_API_MAC_GENERATE, dataPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_MAC_GENERATE, macPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_MAC_GENERATE, macLengthPtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查密钥权限 */
+    if (E_OK != Csm_ValidateKeyUsage(Csm_Jobs[jobIdx].keyId, CSM_KEY_USAGE_MAC_GENERATE))
+    {
+        return E_NOT_OK;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    {
+        Csm_ResetJob(jobIdx);
+        Csm_Jobs[jobIdx].service = CSM_SERVICE_MAC_GENERATE;
+    }
+    
+    if (dataLength > CSM_MAX_DATA_LENGTH)
+    {
+        return E_NOT_OK;
+    }
+    
+    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+    Csm_Jobs[jobIdx].inputLength = dataLength;
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        result = Csm_Cfg_HwService(
+            jobId,
+            CSM_SERVICE_MAC_GENERATE,
+            Csm_Jobs[jobIdx].inputData,
+            Csm_Jobs[jobIdx].inputLength,
+            Csm_Jobs[jobIdx].outputData,
+            &Csm_Jobs[jobIdx].resultLength
+        );
+        
+        if (result == E_OK)
+        {
+            if (*macLengthPtr >= Csm_Jobs[jobIdx].resultLength)
+            {
+                Mcal_MemCopy(macPtr, Csm_Jobs[jobIdx].outputData, 
+                            Csm_Jobs[jobIdx].resultLength);
+                *macLengthPtr = Csm_Jobs[jobIdx].resultLength;
+            }
+            else
+            {
+                *macLengthPtr = Csm_Jobs[jobIdx].resultLength;
+                return E_NOT_OK;
+            }
+        }
+        
+        return result;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 验证MAC
+ */
+Std_ReturnType Csm_MacVerify(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    const uint8* macPtr,
+    uint32 macLength,
+    boolean* verifyPtr)
+{
+    uint8 jobIdx;
+    uint8 calculatedMac[CSM_MAX_MAC_LENGTH];
+    uint32 calculatedMacLength = CSM_MAX_MAC_LENGTH;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_MAC_VERIFY);
+    CSM_CHECK_NULL_POINTER(CSM_API_MAC_VERIFY, dataPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_MAC_VERIFY, macPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_MAC_VERIFY, verifyPtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查密钥权限 */
+    if (E_OK != Csm_ValidateKeyUsage(Csm_Jobs[jobIdx].keyId, CSM_KEY_USAGE_MAC_VERIFY))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 生成MAC并比较 */
+    result = Csm_MacGenerate(jobId, mode, dataPtr, dataLength, 
+                              calculatedMac, &calculatedMacLength);
+    if (result != E_OK)
+    {
+        return result;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        if (calculatedMacLength == macLength)
+        {
+            *verifyPtr = (Mcal_MemCompare(calculatedMac, macPtr, macLength) == 0);
+        }
+        else
+        {
+            *verifyPtr = FALSE;
+        }
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 加密数据
+ */
+Std_ReturnType Csm_Encrypt(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    uint8* resultPtr,
+    uint32* resultLengthPtr)
+{
+    uint8 jobIdx;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_ENCRYPT);
+    CSM_CHECK_NULL_POINTER(CSM_API_ENCRYPT, dataPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_ENCRYPT, resultPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_ENCRYPT, resultLengthPtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查密钥权限 */
+    if (E_OK != Csm_ValidateKeyUsage(Csm_Jobs[jobIdx].keyId, CSM_KEY_USAGE_ENCRYPT))
+    {
+        return E_NOT_OK;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    {
+        Csm_ResetJob(jobIdx);
+        Csm_Jobs[jobIdx].service = CSM_SERVICE_ENCRYPT;
+    }
+    
+    if (dataLength > CSM_MAX_DATA_LENGTH)
+    {
+        return E_NOT_OK;
+    }
+    
+    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+    Csm_Jobs[jobIdx].inputLength = dataLength;
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        result = Csm_Cfg_HwService(
+            jobId,
+            CSM_SERVICE_ENCRYPT,
+            Csm_Jobs[jobIdx].inputData,
+            Csm_Jobs[jobIdx].inputLength,
+            Csm_Jobs[jobIdx].outputData,
+            &Csm_Jobs[jobIdx].resultLength
+        );
+        
+        if (result == E_OK)
+        {
+            if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
+            {
+                Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
+                            Csm_Jobs[jobIdx].resultLength);
+                *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+            }
+            else
+            {
+                *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+                return E_NOT_OK;
+            }
+        }
+        
+        return result;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 解密数据
+ */
+Std_ReturnType Csm_Decrypt(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    uint8* resultPtr,
+    uint32* resultLengthPtr)
+{
+    uint8 jobIdx;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_DECRYPT);
+    CSM_CHECK_NULL_POINTER(CSM_API_DECRYPT, dataPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_DECRYPT, resultPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_DECRYPT, resultLengthPtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查密钥权限 */
+    if (E_OK != Csm_ValidateKeyUsage(Csm_Jobs[jobIdx].keyId, CSM_KEY_USAGE_DECRYPT))
+    {
+        return E_NOT_OK;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    {
+        Csm_ResetJob(jobIdx);
+        Csm_Jobs[jobIdx].service = CSM_SERVICE_DECRYPT;
+    }
+    
+    if (dataLength > CSM_MAX_DATA_LENGTH)
+    {
+        return E_NOT_OK;
+    }
+    
+    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+    Csm_Jobs[jobIdx].inputLength = dataLength;
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        result = Csm_Cfg_HwService(
+            jobId,
+            CSM_SERVICE_DECRYPT,
+            Csm_Jobs[jobIdx].inputData,
+            Csm_Jobs[jobIdx].inputLength,
+            Csm_Jobs[jobIdx].outputData,
+            &Csm_Jobs[jobIdx].resultLength
+        );
+        
+        if (result == E_OK)
+        {
+            if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
+            {
+                Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
+                            Csm_Jobs[jobIdx].resultLength);
+                *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+            }
+            else
+            {
+                *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+                return E_NOT_OK;
+            }
+        }
+        
+        return result;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 生成数字签名
+ */
+Std_ReturnType Csm_SignatureGenerate(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    uint8* resultPtr,
+    uint32* resultLengthPtr)
+{
+    uint8 jobIdx;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_SIGNATURE_GENERATE);
+    CSM_CHECK_NULL_POINTER(CSM_API_SIGNATURE_GENERATE, dataPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_SIGNATURE_GENERATE, resultPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_SIGNATURE_GENERATE, resultLengthPtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查密钥权限 */
+    if (E_OK != Csm_ValidateKeyUsage(Csm_Jobs[jobIdx].keyId, CSM_KEY_USAGE_SIGN))
+    {
+        return E_NOT_OK;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    {
+        Csm_ResetJob(jobIdx);
+        Csm_Jobs[jobIdx].service = CSM_SERVICE_SIGNATURE_GENERATE;
+    }
+    
+    if (dataLength > CSM_MAX_DATA_LENGTH)
+    {
+        return E_NOT_OK;
+    }
+    
+    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+    Csm_Jobs[jobIdx].inputLength = dataLength;
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        result = Csm_Cfg_HwService(
+            jobId,
+            CSM_SERVICE_SIGNATURE_GENERATE,
+            Csm_Jobs[jobIdx].inputData,
+            Csm_Jobs[jobIdx].inputLength,
+            Csm_Jobs[jobIdx].outputData,
+            &Csm_Jobs[jobIdx].resultLength
+        );
+        
+        if (result == E_OK)
+        {
+            if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
+            {
+                Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
+                            Csm_Jobs[jobIdx].resultLength);
+                *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+            }
+            else
+            {
+                *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
+                return E_NOT_OK;
+            }
+        }
+        
+        return result;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 验证数字签名
+ */
+Std_ReturnType Csm_SignatureVerify(
+    uint32 jobId,
+    uint8 mode,
+    const uint8* dataPtr,
+    uint32 dataLength,
+    const uint8* signaturePtr,
+    uint32 signatureLength,
+    boolean* verifyPtr)
+{
+    uint8 jobIdx;
+    Std_ReturnType result;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_SIGNATURE_VERIFY);
+    CSM_CHECK_NULL_POINTER(CSM_API_SIGNATURE_VERIFY, dataPtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_SIGNATURE_VERIFY, signaturePtr);
+    CSM_CHECK_NULL_POINTER(CSM_API_SIGNATURE_VERIFY, verifyPtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    /* 检查密钥权限 */
+    if (E_OK != Csm_ValidateKeyUsage(Csm_Jobs[jobIdx].keyId, CSM_KEY_USAGE_VERIFY))
+    {
+        return E_NOT_OK;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    {
+        Csm_ResetJob(jobIdx);
+        Csm_Jobs[jobIdx].service = CSM_SERVICE_SIGNATURE_VERIFY;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_UPDATE) != 0)
+    {
+        if (dataLength > CSM_MAX_DATA_LENGTH)
+        {
+            return E_NOT_OK;
+        }
+        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+        Csm_Jobs[jobIdx].inputLength = dataLength;
+    }
+    
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    {
+        /* 存储签名 */
+        if (signatureLength > CSM_MAX_SIGNATURE_LENGTH)
+        {
+            return E_NOT_OK;
+        }
+        Mcal_MemCopy(Csm_Jobs[jobIdx].outputData, signaturePtr, signatureLength);
+        Csm_Jobs[jobIdx].outputLength = signatureLength;
+        
+        result = Csm_Cfg_HwService(
+            jobId,
+            CSM_SERVICE_SIGNATURE_VERIFY,
+            Csm_Jobs[jobIdx].inputData,
+            Csm_Jobs[jobIdx].inputLength,
+            Csm_Jobs[jobIdx].outputData,
+            &Csm_Jobs[jobIdx].outputLength
+        );
+        
+        if (result == E_OK)
+        {
+            /* 硬件层返回验证结果 */
+            *verifyPtr = Csm_Jobs[jobIdx].verifyResult;
+        }
+        
+        return result;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 生成随机数
+ */
+Std_ReturnType Csm_RandomGenerate(
+    uint32 jobId,
+    uint8* resultPtr,
+    uint32 resultLength)
+{
+    uint8 jobIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_RANDOM_GENERATE);
+    CSM_CHECK_NULL_POINTER(CSM_API_RANDOM_GENERATE, resultPtr);
+    
+    if (resultLength > CSM_MAX_DATA_LENGTH)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return Csm_Cfg_RandomGenerate(resultPtr, resultLength);
+    }
+    
+    Csm_Jobs[jobIdx].service = CSM_SERVICE_RANDOM_GENERATE;
+    Csm_Jobs[jobIdx].resultLength = resultLength;
+    
+    return Csm_Cfg_RandomGenerate(resultPtr, resultLength);
+}
+
+/**
+ * @brief 设置作业密钥
+ */
+Std_ReturnType Csm_JobKeySetUp(uint32 jobId, uint32 keyId)
+{
+    uint8 jobIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_JOB_KEY_SETUP);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    Csm_Jobs[jobIdx].keyId = keyId;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 异步设置作业密钥
+ */
+Std_ReturnType Csm_JobKeySetUpAsync(uint32 jobId, uint32 keyId)
+{
+    /* 目前与同步版本相同 */
+    return Csm_JobKeySetUp(jobId, keyId);
+}
+
+/**
+ * @brief 取消作业
+ */
+Std_ReturnType Csm_CancelJob(uint32 jobId)
+{
+    uint8 jobIdx;
+    
+    CSM_CHECK_INITIALIZED(CSM_API_CANCEL_JOB);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    if (Csm_Jobs[jobIdx].state == CSM_JOB_STATE_PROCESSING)
+    {
+        Csm_ResetJob(jobIdx);
+        if (Csm_ActiveJobCount > 0)
+        {
+            Csm_ActiveJobCount--;
+        }
+    }
+    else if (Csm_Jobs[jobIdx].state == CSM_JOB_STATE_QUEUED)
+    {
+        Csm_ResetJob(jobIdx);
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 主函数处理
+ */
+void Csm_MainFunction(void)
+{
+    uint8 i;
+    
+    if (Csm_State != CSM_STATE_ACTIVE)
+    {
+        return;
+    }
+    
+    /* 处理正在进行的作业 */
+    for (i = 0; i < CSM_MAX_JOBS; i++)
+    {
+        if (Csm_Jobs[i].state == CSM_JOB_STATE_PROCESSING)
+        {
+            (void)Csm_ExecuteJob(i);
+        }
+    }
+    
+    /* 处理队列 */
+#if (CSM_CFG_QUEUE_SUPPORT == STD_ON)
+    Csm_ProcessQueue();
+#endif
+}
+
+/**
+ * @brief 注册作业完成回调
+ */
+Std_ReturnType Csm_RegisterCallback(
+    uint32 jobId,
+    Csm_CallbackType callback,
+    void* userContext)
+{
+    uint8 jobIdx;
+    
+    CSM_CHECK_INITIALIZED(0xF0U);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    Csm_Callbacks[jobIdx] = callback;
+    Csm_CallbackContexts[jobIdx] = userContext;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 获取密钥状态
+ */
+Std_ReturnType Csm_GetKeyStatus(
+    uint32 keyId, Csm_KeyStatusType* keyStatusPtr)
+{
+    uint8 keyIdx;
+    
+    CSM_CHECK_INITIALIZED(0xF1U);
+    CSM_CHECK_NULL_POINTER(0xF1U, keyStatusPtr);
+    
+    if (E_OK != Csm_FindKeyIndex(keyId, &keyIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    *keyStatusPtr = Csm_Keys[keyIdx].status;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 获取作业状态
+ */
+Std_ReturnType Csm_GetJobState(
+    uint32 jobId, Csm_JobStateType* jobStatePtr)
+{
+    uint8 jobIdx;
+    
+    CSM_CHECK_INITIALIZED(0xF2U);
+    CSM_CHECK_NULL_POINTER(0xF2U, jobStatePtr);
+    
+    if (E_OK != Csm_FindJobIndex(jobId, &jobIdx))
+    {
+        return E_NOT_OK;
+    }
+    
+    *jobStatePtr = Csm_Jobs[jobIdx].state;
+    
+    return E_OK;
+}
+
+#if (CSM_VERSION_INFO_API == STD_ON)
+/**
+ * @brief 获取版本信息
+ */
+void Csm_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+    if (versioninfo == NULL_PTR)
+    {
+#if (CSM_CFG_DEV_ERROR_DETECT == STD_ON)
+        Csm_ReportError(CSM_API_INIT, CSM_E_PARAM_POINTER);
+#endif
+        return;
+    }
+    
+    versioninfo->vendorID = CSM_VENDOR_ID;
+    versioninfo->moduleID = CSM_MODULE_ID;
+    versioninfo->sw_major_version = CSM_SW_MAJOR_VERSION;
+    versioninfo->sw_minor_version = CSM_SW_MINOR_VERSION;
+    versioninfo->sw_patch_version = CSM_SW_PATCH_VERSION;
+}
+#endif
+
+#define CSM_STOP_SEC_CODE
+#include "Csm_MemMap.h"
+
+/*==================================================================================================
+*                                       配置定义
+==================================================================================================*/
+#define CSM_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include "Csm_MemMap.h"
+
+/**
+ * @brief 默认密钥元素配置
+ */
+STATIC const Csm_KeyElementConfigType Csm_DefaultKeyElements[] =
+{
+    {
+        .elementId = CSM_KEY_ELEMENT_ID_SECRET,
+        .elementType = CSM_KEY_ELEMENT_TYPE_SECRET,
+        .maxLength = CSM_MAX_KEY_LENGTH,
+        .readAllowed = FALSE,
+        .writeAllowed = TRUE,
+        .partialAccessAllowed = FALSE
+    }
+};
+
+/**
+ * @brief 默认密钥配置
+ */
+STATIC const Csm_KeyConfigType Csm_DefaultKeys[] =
+{
+    {
+        .keyId = CSM_KEY_ID_MASTER,
+        .allowedUsage = CSM_KEY_USAGE_ENCRYPT | CSM_KEY_USAGE_DECRYPT | 
+                       CSM_KEY_USAGE_MAC_GENERATE | CSM_KEY_USAGE_MAC_VERIFY,
+        .elements = Csm_DefaultKeyElements,
+        .numElements = 1,
+        .cryptoKeyType = 0
+    },
+    {
+        .keyId = CSM_KEY_ID_SESSION,
+        .allowedUsage = CSM_KEY_USAGE_ENCRYPT | CSM_KEY_USAGE_DECRYPT,
+        .elements = Csm_DefaultKeyElements,
+        .numElements = 1,
+        .cryptoKeyType = 0
+    }
+};
+
+/**
+ * @brief 默认算法配置
+ */
+STATIC const Csm_AlgorithmType Csm_DefaultAlgorithm =
+{
+    .family = CSM_ALGOFAM_AES,
+    .mode = CSM_ALGOMODE_CBC,
+    .classType = CSM_ALGOCLASS_CIPHER,
+    .keyLength = 128,
+    .secondaryFamily = NULL_PTR
+};
+
+/**
+ * @brief 默认作业配置
+ */
+STATIC const Csm_JobConfigType Csm_DefaultJobs[] =
+{
+    {
+        .jobId = CSM_JOB_ID_ENCRYPT_DEFAULT,
+        .serviceType = CSM_SERVICE_ENCRYPT,
+        .priority = CSM_JOB_PRIORITY_NORMAL,
+        .keyId = CSM_KEY_ID_MASTER,
+        .algorithm = { CSM_ALGOFAM_AES, CSM_ALGOMODE_CBC, CSM_ALGOCLASS_CIPHER, 128, NULL_PTR },
+        .asynchronous = FALSE,
+        .callbackId = 0
+    },
+    {
+        .jobId = CSM_JOB_ID_DECRYPT_DEFAULT,
+        .serviceType = CSM_SERVICE_DECRYPT,
+        .priority = CSM_JOB_PRIORITY_NORMAL,
+        .keyId = CSM_KEY_ID_MASTER,
+        .algorithm = { CSM_ALGOFAM_AES, CSM_ALGOMODE_CBC, CSM_ALGOCLASS_CIPHER, 128, NULL_PTR },
+        .asynchronous = FALSE,
+        .callbackId = 0
+    },
+    {
+        .jobId = CSM_JOB_ID_HASH_DEFAULT,
+        .serviceType = CSM_SERVICE_HASH,
+        .priority = CSM_JOB_PRIORITY_NORMAL,
+        .keyId = CSM_KEY_ID_NONE,
+        .algorithm = { CSM_ALGOFAM_SHA2_256, CSM_ALGOMODE_NOT_SET, CSM_ALGOCLASS_HASH, 0, NULL_PTR },
+        .asynchronous = FALSE,
+        .callbackId = 0
+    },
+    {
+        .jobId = CSM_JOB_ID_MAC_GENERATE_DEFAULT,
+        .serviceType = CSM_SERVICE_MAC_GENERATE,
+        .priority = CSM_JOB_PRIORITY_HIGH,
+        .keyId = CSM_KEY_ID_MASTER,
+        .algorithm = { CSM_ALGOFAM_HMAC, CSM_ALGOMODE_NOT_SET, CSM_ALGOCLASS_MAC, 256, NULL_PTR },
+        .asynchronous = FALSE,
+        .callbackId = 0
+    },
+    {
+        .jobId = CSM_JOB_ID_MAC_VERIFY_DEFAULT,
+        .serviceType = CSM_SERVICE_MAC_VERIFY,
+        .priority = CSM_JOB_PRIORITY_HIGH,
+        .keyId = CSM_KEY_ID_MASTER,
+        .algorithm = { CSM_ALGOFAM_HMAC, CSM_ALGOMODE_NOT_SET, CSM_ALGOCLASS_MAC, 256, NULL_PTR },
+        .asynchronous = FALSE,
+        .callbackId = 0
+    }
+};
+
+/**
+ * @brief 默认配置
+ */
+const Csm_ConfigType Csm_Config =
+{
+    .keys = Csm_DefaultKeys,
+    .numKeys = 2,
+    .jobs = Csm_DefaultJobs,
+    .numJobs = 5,
+    .useAsyncMode = FALSE,
+    .queueProcessingPeriod = CSM_CFG_MAIN_FUNCTION_PERIOD_MS,
+    .devErrorDetect = CSM_CFG_DEV_ERROR_DETECT
+};
+
+#define CSM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include "Csm_MemMap.h"

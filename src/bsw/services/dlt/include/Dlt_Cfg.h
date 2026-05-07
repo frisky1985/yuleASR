@@ -1,196 +1,175 @@
 /**
  * @file Dlt_Cfg.h
- * @brief Diagnostic Log and Trace module configuration
+ * @brief DLT 模块配置模板
+ * 
+ * 此文件由配置工具生成或手动配置
+ * 
+ * @company 上海予乐电子科技有限公司
+ * @author YuleTech Team
+ * @date 2026-04-27
  * @version 1.0.0
- * @date 2026-04-30
- * @author Shanghai Yule Electronics Technology Co., Ltd.
- * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
- *
- * AutoSAR Standard: DLT Configuration
  */
 
 #ifndef DLT_CFG_H
 #define DLT_CFG_H
 
-/*==================================================================================================
-*                                          INCLUDE FILES
-==================================================================================================*/
-#include "Std_Types.h"
+/* ========================================================================== */
+/*                          开发错误检测开关                                    */
+/* ========================================================================== */
 
-/*==================================================================================================
-*                                    VERSION INFORMATION
-==================================================================================================*/
-#define DLT_CFG_VENDOR_ID                   (0x01U)
-#define DLT_CFG_MODULE_ID                   (0x4CU)
-#define DLT_CFG_AR_RELEASE_MAJOR_VERSION    (0x04U)
-#define DLT_CFG_AR_RELEASE_MINOR_VERSION    (0x04U)
-#define DLT_CFG_AR_RELEASE_REVISION_VERSION (0x00U)
-#define DLT_CFG_SW_MAJOR_VERSION            (0x01U)
-#define DLT_CFG_SW_MINOR_VERSION            (0x00U)
-#define DLT_CFG_SW_PATCH_VERSION            (0x00U)
+/**
+ * @brief 启用开发错误检测
+ * 
+ * 选项: STD_ON / STD_OFF
+ */
+#define DLT_DEV_ERROR_DETECT  STD_ON
 
-/*==================================================================================================
-*                                    GENERAL CONFIGURATION
-==================================================================================================*/
+/* ========================================================================== */
+/*                          运行时错误报告                                     */
+/* ========================================================================== */
 
-/** @brief Development error detection enabled */
-#define DLT_DEV_ERROR_DETECT                (STD_ON)
+/**
+ * @brief 启用运行时错误报告
+ */
+#define DLT_RUNTIME_ERROR_REPORT  STD_ON
 
-/** @brief Version info API enabled */
-#define DLT_VERSION_INFO_API                (STD_ON)
+/**
+ * @brief 启用消息丢失报告
+ */
+#define DLT_MESSAGE_LOSS_REPORT  STD_ON
 
-/** @brief Timestamp usage enabled */
-#define DLT_USE_TIMESTAMP                   (STD_ON)
+/* ========================================================================== */
+/*                          传输层配置                                         */
+/* ========================================================================== */
 
-/** @brief ECU ID usage enabled */
-#define DLT_USE_ECU_ID                      (STD_ON)
+/**
+ * @brief 传输协议类型
+ * 
+ * 选项: DLT_TRANSPORT_UDP, DLT_TRANSPORT_TCP, DLT_TRANSPORT_SOMEIP
+ */
+#define DLT_TRANSPORT_PROTOCOL  DLT_TRANSPORT_UDP
 
-/** @brief Session ID usage enabled */
-#define DLT_USE_SESSION_ID                  (STD_ON)
+/**
+ * @brief DLT 服务器端口号
+ */
+#define DLT_SERVER_PORT  3490U
 
-/** @brief Extended header enabled */
-#define DLT_USE_EXTENDED_HEADER             (STD_ON)
+/**
+ * @brief 缓冲区大小 (字节)
+ */
+#define DLT_BUFFER_SIZE  4096U
 
-/** @brief Verbose mode (more detailed logs) */
-#define DLT_VERBOSE_MODE                    (STD_OFF)
+/**
+ * @brief 最大消息大小 (字节)
+ */
+#define DLT_MAX_MSG_SIZE  1400U
 
-/** @brief Enable serial output */
-#define DLT_SERIAL_OUTPUT_ENABLED           (STD_ON)
+/* ========================================================================== */
+/*                          消息队列配置                                       */
+/* ========================================================================== */
 
-/** @brief Enable network output */
-#define DLT_NETWORK_OUTPUT_ENABLED          (STD_ON)
+/**
+ * @brief 消息队列大小
+ */
+#define DLT_QUEUE_SIZE  256U
 
-/** @brief Enable buffer output */
-#define DLT_BUFFER_OUTPUT_ENABLED           (STD_ON)
+/**
+ * @brief 最大应用数量
+ */
+#define DLT_MAX_APPS  32U
 
-/** @brief Default log level (DLT_LOG_DEBUG) */
-#define DLT_DEFAULT_LOG_LEVEL               (DLT_LOG_DEBUG)
+/**
+ * @brief 启用优先级队列
+ */
+#define DLT_PRIORITY_QUEUE_ENABLED  STD_ON
 
-/** @brief Default output mode */
-#define DLT_DEFAULT_OUTPUT_MODE             (DLT_OUTPUT_MODE_BOTH)
+/**
+ * @brief 高优先级队列大小
+ */
+#define DLT_HIGH_PRIORITY_QUEUE_SIZE  64U
 
-/*==================================================================================================
-*                                    BUFFER CONFIGURATION
-==================================================================================================*/
+/* ========================================================================== */
+/*                          默认过滤器配置                                     */
+/* ========================================================================== */
 
-/** @brief Ring buffer size (number of entries) */
-#define DLT_RING_BUFFER_SIZE                (128U)
+/**
+ * @brief 默认日志级别
+ */
+#define DLT_DEFAULT_LOG_LEVEL  DLT_LOG_INFO
 
-/** @brief Single buffer entry size in bytes */
-#define DLT_BUFFER_ENTRY_SIZE               (256U)
+/**
+ * @brief 默认启用日志
+ */
+#define DLT_DEFAULT_ENABLED  TRUE
 
-/** @brief Maximum message length */
-#define DLT_MAX_MESSAGE_LENGTH              (240U)
+/* ========================================================================== */
+/*                          时间戳配置                                         */
+/* ========================================================================== */
 
-/** @brief Maximum number of arguments in formatted message */
-#define DLT_MAX_ARGUMENTS                   (16U)
+/**
+ * @brief 启用时间戳
+ */
+#define DLT_TIMESTAMP_ENABLED  STD_ON
 
-/*==================================================================================================
-*                                    CONTEXT CONFIGURATION
-==================================================================================================*/
+/**
+ * @brief 时间戳精度 (微秒)
+ */
+#define DLT_TIMESTAMP_PRECISION_US  100U
 
-/** @brief Maximum number of registered contexts */
-#define DLT_MAX_CONTEXTS                    (32U)
+/* ========================================================================== */
+/*                          会话ID配置                                         */
+/* ========================================================================== */
 
-/** @brief Maximum application ID length (4 chars + null) */
-#define DLT_MAX_APPID_LENGTH                (5U)
+/**
+ * @brief 启用会话ID
+ */
+#define DLT_SESSION_ID_ENABLED  STD_ON
 
-/** @brief Maximum context ID length (4 chars + null) */
-#define DLT_MAX_CONTEXTID_LENGTH            (5U)
+/**
+ * @brief 默认会话ID
+ */
+#define DLT_DEFAULT_SESSION_ID  0x00000001U
 
-/** @brief Maximum description length */
-#define DLT_MAX_DESCRIPTION_LENGTH          (32U)
+/* ========================================================================== */
+/*                          主函数周期配置                                     */
+/* ========================================================================== */
 
-/*==================================================================================================
-*                                    NETWORK CONFIGURATION
-==================================================================================================*/
+/**
+ * @brief Dlt_MainFunction 调用周期 (毫秒)
+ */
+#define DLT_MAIN_FUNCTION_CYCLE  10U
 
-/** @brief Default network port */
-#define DLT_DEFAULT_NETWORK_PORT            (3490U)
+/* ========================================================================== */
+/*                          消息丢失检测                                       */
+/* ========================================================================== */
 
-/** @brief Maximum network packet size */
-#define DLT_MAX_NETWORK_PACKET_SIZE         (1400U)
+/**
+ * @brief 消息丢失计数器阈值
+ */
+#define DLT_MESSAGE_LOSS_THRESHOLD  100U
 
-/** @brief Network connection timeout (ms) */
-#define DLT_NETWORK_TIMEOUT_MS              (5000U)
+/* ========================================================================== */
+/*                          预编译配置参数                                     */
+/* ========================================================================== */
 
-/*==================================================================================================
-*                                    SERIAL CONFIGURATION
-==================================================================================================*/
+/**
+ * @brief 传输配置
+ */
+extern const Dlt_TransportConfigType Dlt_TransportConfig;
 
-/** @brief Default UART baud rate */
-#define DLT_SERIAL_BAUD_RATE                (115200U)
+/**
+ * @brief 过滤器配置数组
+ */
+extern const Dlt_FilterConfigType Dlt_FilterConfigTable[];
 
-/** @brief Serial TX timeout (ms) */
-#define DLT_SERIAL_TIMEOUT_MS               (100U)
+/**
+ * @brief 过滤器数量
+ */
+extern const uint16 Dlt_FilterConfigCount;
 
-/*==================================================================================================
-*                                    TIMING CONFIGURATION
-==================================================================================================*/
-
-/** @brief Main function period (ms) */
-#define DLT_MAIN_FUNCTION_PERIOD_MS         (10U)
-
-/** @brief Buffer flush period (ms) */
-#define DLT_FLUSH_PERIOD_MS                 (100U)
-
-/** @brief Message timestamp resolution (microseconds) */
-#define DLT_TIMESTAMP_RESOLUTION_US         (1000U)
-
-/*==================================================================================================
-*                                    ECU CONFIGURATION
-==================================================================================================*/
-
-/** @brief ECU ID (4 characters) */
-#define DLT_ECU_ID                          {'Y', 'U', 'L', 'E', '\0'}
-
-/** @brief Session ID */
-#define DLT_SESSION_ID                      (0x00000001U)
-
-/*==================================================================================================
-*                                    PUBLISHED INFORMATION
-==================================================================================================*/
-
-/*==================================================================================================
-*                                    CALLBACK CONFIGURATION
-==================================================================================================*/
-
-/** @brief Enable user-defined serial output callback */
-#define DLT_USER_SERIAL_CALLBACK            (STD_OFF)
-
-/** @brief Enable user-defined network output callback */
-#define DLT_USER_NETWORK_CALLBACK           (STD_OFF)
-
-/** @brief Enable user-defined timestamp callback */
-#define DLT_USER_TIMESTAMP_CALLBACK         (STD_OFF)
-
-/*==================================================================================================
-*                                    FEATURE CONFIGURATION
-==================================================================================================*/
-
-/** @brief Enable control messages processing */
-#define DLT_CONTROL_MESSAGES_ENABLED        (STD_ON)
-
-/** @brief Enable non-blocking writes */
-#define DLT_NON_BLOCKING_WRITE              (STD_ON)
-
-/** @brief Enable overflow handling */
-#define DLT_OVERFLOW_HANDLING               (STD_ON)
-
-/** @brief Drop messages on overflow (if STD_OFF, block until space available) */
-#define DLT_DROP_ON_OVERFLOW                (STD_ON)
-
-/*==================================================================================================
-*                                    FILTER CONFIGURATION
-==================================================================================================*/
-
-/** @brief Enable log level filtering */
-#define DLT_LOG_LEVEL_FILTER_ENABLED        (STD_ON)
-
-/** @brief Enable application ID filtering */
-#define DLT_APPID_FILTER_ENABLED            (STD_OFF)
-
-/** @brief Enable context ID filtering */
-#define DLT_CONTEXTID_FILTER_ENABLED        (STD_OFF)
+/**
+ * @brief 模块配置
+ */
+extern const Dlt_ConfigType Dlt_Config;
 
 #endif /* DLT_CFG_H */

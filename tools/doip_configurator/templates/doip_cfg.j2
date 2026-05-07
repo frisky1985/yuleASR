@@ -1,0 +1,71 @@
+/***********************************************************************************************************************
+ * DoIP Configuration
+ * Project: {{ project_name }}
+ * Date: {{ generation_date }}
+ **********************************************************************************************************************/
+
+#ifndef DOIP_CFG_H
+#define DOIP_CFG_H
+
+#define DOIP_NUM_ENTITIES    ({{ entities|length }}U)
+#define DOIP_NUM_ROUTING_ACTIVATIONS    ({{ activations|length }}U)
+
+typedef struct {
+    uint8 EntityId;
+    DoIP_EntityTypeType EntityType;
+    uint16 LogicalAddress;
+    uint8 IpAddress[4];
+    uint16 Port;
+    uint16 TcpInitialTimeout;
+    uint16 NodeDiscoveryTimeout;
+    uint16 VehicleDiscoveryTimeout;
+    uint16 VehicleAnnouncementInterval;
+    uint16 InitialInactivityTimeout;
+    uint16 BroadcastRepeatInterval;
+    uint32 PowersaveTimeout;
+    boolean PowersaveWakeUp;
+} DoIP_EntityConfigType;
+
+static const DoIP_EntityConfigType DoIP_EntityConfig[DOIP_NUM_ENTITIES] = {
+{% for entity in entities %}
+    {
+        {{ entity.id }}U,                                    /* EntityId */
+        DOIP_{{ entity.type }},                             /* EntityType */
+        0x{{ "%04X" | format(entity.logical_addr) }}U,      /* LogicalAddress */
+        {% for octet in entity.ip.split('.') %}{{ octet }}{% if not loop.last %}, {% endif %}{% endfor %},  /* IpAddress */
+        {{ entity.port }}U,                                  /* Port */
+        {{ entity.tcp_initial }}U,                          /* TcpInitialTimeout */
+        {{ entity.node_discovery }}U,                       /* NodeDiscoveryTimeout */
+        {{ entity.vehicle_discovery }}U,                    /* VehicleDiscoveryTimeout */
+        {{ entity.vehicle_announce }}U,                     /* VehicleAnnouncementInterval */
+        {{ entity.initial_inactivity }}U,                   /* InitialInactivityTimeout */
+        {{ entity.broadcast_repeat }}U,                     /* BroadcastRepeatInterval */
+        {{ entity.powersave_timeout }}UL,                   /* PowersaveTimeout */
+        {{ entity.powersave_wake | upper }}                /* PowersaveWakeUp */
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+typedef struct {
+    uint8 ActivationId;
+    uint8 EntityId;
+    DoIP_RoutingActivationTypeType ActivationType;
+    uint8 OemSpecific;
+    boolean RequiresAuthentication;
+    boolean RequiresConfirmation;
+} DoIP_RoutingActivationConfigType;
+
+static const DoIP_RoutingActivationConfigType DoIP_RoutingActivationConfig[DOIP_NUM_ROUTING_ACTIVATIONS] = {
+{% for act in activations %}
+    {
+        {{ act.id }}U,                                     /* ActivationId */
+        {{ act.entity_id }}U,                              /* EntityId */
+        DOIP_ROUTING_{{ act.type }},                      /* ActivationType */
+        0x{{ "%02X" | format(act.oem) }}U,                /* OemSpecific */
+        {{ act.auth | upper }},                           /* RequiresAuthentication */
+        {{ act.confirm | upper }}                         /* RequiresConfirmation */
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+};
+
+#endif

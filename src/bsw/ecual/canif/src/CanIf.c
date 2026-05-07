@@ -1,539 +1,486 @@
-/*
- * CanIf.c
- * CAN Interface Module Implementation
- * AUTOSAR-compliant implementation
+/**
+ * @file CanIf.c
+ * @brief CAN Interface implementation
+ * @version 1.0.0
+ * @date 2026-04-14
+ * @author Shanghai Yule Electronics Technology Co., Ltd.
  */
 
 #include "CanIf.h"
+#include "CanIf_Cfg.h"
+#include "Can.h"
+#include "PduR.h"
 #include "Det.h"
 
-/*=============================================================================
- * Module State
- *=============================================================================*/
+#define CANIF_START_SEC_VAR_CLEARED_UNSPECIFIED
+#include "MemMap.h"
 
-/* Module runtime state - initialized to zeros (UNINIT) */
-CanIf_StateType CanIf_State;
+static boolean CanIf_DriverInitialized = FALSE;
+static CanIf_ControllerModeType CanIf_ControllerMode[CANIF_NUM_CONTROLLERS];
+static CanIf_PduModeType CanIf_PduMode[CANIF_NUM_CONTROLLERS];
+static const CanIf_ConfigType* CanIf_ConfigPtr = NULL_PTR;
 
-/* Tx tracking - maps HTH to current Tx PDU */
-static CanIf_PduIdType CanIf_TxPduInProgress[CANIF_HTH_CNT];
+#define CANIF_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+#include "MemMap.h"
 
-/*=============================================================================
- * Internal Helper Functions
- *=============================================================================*/
+#define CANIF_START_SEC_CODE
+#include "MemMap.h"
 
-/**
- * Validates controller ID
- */
-static inline boolean CanIf_IsValidController(uint8 controllerId)
+void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
 {
-    return (controllerId < CANIF_CONTROLLER_CNT);
-}
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (ConfigPtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_INIT, CANIF_E_PARAM_POINTER);
+        return;
+    }
+    if (CanIf_DriverInitialized == TRUE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_INIT, CANIF_E_ALREADY_INITIALIZED);
+        return;
+    }
+    #endif
 
-/**
- * Validates Tx PDU ID
- */
-static inline boolean CanIf_IsValidTxPdu(CanIf_PduIdType pduId)
-{
-    return (pduId < CANIF_TX_LPDU_CNT);
-}
+    CanIf_ConfigPtr = ConfigPtr;
 
-/**
- * Validates Rx PDU ID
- */
-static inline boolean CanIf_IsValidRxPdu(CanIf_PduIdType pduId)
-{
-    CanIf_PduIdType rxPduBase = CANIF_TX_LPDU_CNT;
-    return ((pduId >= rxPduBase) && (pduId < (rxPduBase + CANIF_RX_LPDU_CNT)));
-}
-
-/**
- * Validates HOH ID
- */
-static inline boolean CanIf_IsValidHoh(CanIf_HohType hoh)
-{
-    return (hoh < CANIF_HOH_CNT);
-}
-
-/**
- * Validates HTH ID
- */
-static inline boolean CanIf_IsValidHth(CanIf_HthType hth)
-{
-    return (hth < CANIF_HTH_CNT);
-}
-
-/**
- * Validates DLC value
- */
-static inline boolean CanIf_IsValidDlc(uint8 dlc)
-{
-    return (dlc <= 8U);
-}
-
-/**
- * Reports development errors
- */
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-static void CanIf_ReportError(uint8 apiId, uint8 errorId)
-{
-    Det_ReportError(CANIF_MODULE_ID, CANIF_INSTANCE_ID, apiId, errorId);
-}
-#define CANIF_REPORT_ERROR(api, err) CanIf_ReportError(api, err)
-#else
-#define CANIF_REPORT_ERROR(api, err) /* No error reporting */
-#endif
-
-/*=============================================================================
- * Initialization and De-initialization
- *=============================================================================*/
-
-void CanIf_Init(const void* configPtr)
-{
-    uint8 i;
-
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    /* Note: configPtr check removed as NULL is valid for link-time config */
-#endif
-
-    /* Initialize controller states */
-    for (i = 0U; i < CANIF_CONTROLLER_CNT; i++)
-    {
-        CanIf_State.controllerState[i].mode = CANIF_CS_STOPPED;
-        CanIf_State.controllerState[i].pduMode = CANIF_OFFLINE;
-        CanIf_State.controllerState[i].initialized = TRUE;
+    for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
+        CanIf_ControllerMode[i] = CANIF_CS_STOPPED;
+        CanIf_PduMode[i] = CANIF_OFFLINE;
     }
 
-    /* Clear Tx tracking */
-    for (i = 0U; i < CANIF_HTH_CNT; i++)
-    {
-        CanIf_TxPduInProgress[i] = CANIF_TX_LPDU_CNT; /* Invalid value */
-    }
-
-    CanIf_State.initialized = TRUE;
+    CanIf_DriverInitialized = TRUE;
 }
 
 void CanIf_DeInit(void)
 {
-    uint8 i;
-
-    if (FALSE == CanIf_State.initialized)
-    {
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_DEINIT, CANIF_E_UNINIT);
         return;
     }
+    #endif
 
-    /* Reset controller states */
-    for (i = 0U; i < CANIF_CONTROLLER_CNT; i++)
-    {
-        CanIf_State.controllerState[i].mode = CANIF_CS_UNINIT;
-        CanIf_State.controllerState[i].pduMode = CANIF_OFFLINE;
-        CanIf_State.controllerState[i].initialized = FALSE;
+    for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
+        CanIf_ControllerMode[i] = CANIF_CS_UNINIT;
+        CanIf_PduMode[i] = CANIF_OFFLINE;
     }
 
-    CanIf_State.initialized = FALSE;
+    CanIf_DriverInitialized = FALSE;
 }
 
-/*=============================================================================
- * Controller Mode Management
- *=============================================================================*/
-
-Std_ReturnType CanIf_SetControllerMode(uint8 controllerId, 
-                                        CanIf_ControllerModeType mode)
+Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeType ControllerMode)
 {
-    Std_ReturnType result = E_NOT_OK;
-    Can_StateTransitionType canMode;
-    Can_ReturnType canResult;
-
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_SETCONTROLLERMODE, CANIF_E_UNINIT);
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETCONTROLLERMODE, CANIF_E_UNINIT);
         return E_NOT_OK;
     }
-
-    if (!CanIf_IsValidController(controllerId))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_SETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
+    if (ControllerId >= CANIF_NUM_CONTROLLERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
+    #endif
 
-    if (FALSE == CanIf_State.controllerState[controllerId].initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_SETCONTROLLERMODE, CANIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-#endif
+    Std_ReturnType status = E_OK;
+    Can_ReturnType canStatus;
 
-    /* Map CanIf mode to Can mode */
-    switch (mode)
-    {
+    switch (ControllerMode) {
         case CANIF_CS_STARTED:
-            canMode = CAN_T_START;
-            break;
-        case CANIF_CS_STOPPED:
-            canMode = CAN_T_STOP;
-            break;
-        case CANIF_CS_SLEEP:
-            canMode = CAN_T_SLEEP;
-            break;
-        default:
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-            CANIF_REPORT_ERROR(CANIF_SID_SETCONTROLLERMODE, CANIF_E_PARAM_CTRLMODE);
-#endif
-            return E_NOT_OK;
-    }
-
-    /* Call CAN driver to set mode */
-    canResult = Can_SetControllerMode(controllerId, canMode);
-
-    if (CAN_OK == canResult)
-    {
-        /* Update internal state */
-        CanIf_State.controllerState[controllerId].mode = mode;
-        result = E_OK;
-    }
-
-    return result;
-}
-
-Std_ReturnType CanIf_GetControllerMode(uint8 controllerId,
-                                        CanIf_ControllerModeType* modePtr)
-{
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CAN_REPORT_ERROR(CANIF_SID_GETCONTROLLERMODE, CANIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-
-    if (!CanIf_IsValidController(controllerId))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
-        return E_NOT_OK;
-    }
-
-    if (NULL_PTR == modePtr)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-
-    if (FALSE == CanIf_State.controllerState[controllerId].initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_GETCONTROLLERMODE, CANIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-#else
-    /* Avoid unused warnings when DET disabled */
-    (void)controllerId;
-#endif
-
-    *modePtr = CanIf_State.controllerState[controllerId].mode;
-    return E_OK;
-}
-
-/*=============================================================================
- * PDU Mode Management
- *=============================================================================*/
-
-Std_ReturnType CanIf_SetPduMode(uint8 controllerId, 
-                                 CanIf_PduModeType pduModeRequest)
-{
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_SETPDUMODE, CANIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-
-    if (!CanIf_IsValidController(controllerId))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_SETPDUMODE, CANIF_E_PARAM_CONTROLLER);
-        return E_NOT_OK;
-    }
-#endif
-
-    CanIf_State.controllerState[controllerId].pduMode = pduModeRequest;
-    return E_OK;
-}
-
-Std_ReturnType CanIf_GetPduMode(uint8 controllerId,
-                                 CanIf_PduModeType* pduModePtr)
-{
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_GETPDUMODE, CANIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-
-    if (!CanIf_IsValidController(controllerId))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_GETPDUMODE, CANIF_E_PARAM_CONTROLLER);
-        return E_NOT_OK;
-    }
-
-    if (NULL_PTR == pduModePtr)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_GETPDUMODE, CANIF_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#else
-    /* Avoid unused warnings when DET disabled */
-    (void)controllerId;
-#endif
-
-    *pduModePtr = CanIf_State.controllerState[controllerId].pduMode;
-    return E_OK;
-}
-
-/*=============================================================================
- * Transmission
- *=============================================================================*/
-
-Std_ReturnType CanIf_Transmit(CanIf_PduIdType txPduId,
-                               const CanIf_PduInfoType* pduInfoPtr)
-{
-    Std_ReturnType result = E_NOT_OK;
-    const CanIf_TxPduCfgType* txPduCfg;
-    Can_PduType canPdu;
-    Can_ReturnType canResult;
-    uint8 controllerId;
-    CanIf_PduModeType pduMode;
-
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-
-    if (!CanIf_IsValidTxPdu(txPduId))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
-        return E_NOT_OK;
-    }
-
-    if (NULL_PTR == pduInfoPtr)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-
-    if (NULL_PTR == pduInfoPtr->sdu)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-
-    if (!CanIf_IsValidDlc(pduInfoPtr->length))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TRANSMIT, CANIF_E_INVALID_DATA_LENGTH);
-        return E_NOT_OK;
-    }
-#endif
-
-    /* Get PDU configuration */
-    txPduCfg = &CanIf_TxPduCfg[txPduId];
-    controllerId = txPduCfg->controllerId;
-    pduMode = CanIf_State.controllerState[controllerId].pduMode;
-
-    /* Check PDU mode allows transmission */
-    if ((pduMode != CANIF_ONLINE) && (pduMode != CANIF_TX_OFFLINE_ACTIVE))
-    {
-        return E_NOT_OK;
-    }
-
-    /* Check controller is started */
-    if (CanIf_State.controllerState[controllerId].mode != CANIF_CS_STARTED)
-    {
-        return E_NOT_OK;
-    }
-
-    /* Prepare CAN PDU */
-    canPdu.swPduHandle = txPduId;
-    canPdu.length = pduInfoPtr->length;
-    canPdu.sdu = pduInfoPtr->sdu;
-    canPdu.id = txPduCfg->canId;
-
-    /* Track PDU for confirmation */
-    CanIf_TxPduInProgress[txPduCfg->hthId] = txPduId;
-
-    /* Call CAN driver write */
-    canResult = Can_Write(CanIf_HohCfg[txPduCfg->hthId].driverObjId, &canPdu);
-
-    if (CAN_OK == canResult)
-    {
-        result = E_OK;
-    }
-    else if (CAN_BUSY == canResult)
-    {
-        /* Transmission pending - still in progress */
-        result = E_OK;
-    }
-    else
-    {
-        /* Transmission failed - clear tracking */
-        CanIf_TxPduInProgress[txPduCfg->hthId] = CANIF_TX_LPDU_CNT;
-        result = E_NOT_OK;
-    }
-
-    return result;
-}
-
-/*=============================================================================
- * Callback Functions
- *=============================================================================*/
-
-void CanIf_RxIndication(CanIf_HohType hoh,
-                         CanIf_CanIdType canId,
-                         uint8 canDlc,
-                         const uint8* canSduPtr)
-{
-    const CanIf_RxPduCfgType* rxPduCfg = NULL_PTR;
-    CanIf_PduInfoType pduInfo;
-    uint8 i;
-    uint8 controllerId;
-
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_RXINDICATION, CANIF_E_UNINIT);
-        return;
-    }
-
-    if (!CanIf_IsValidHoh(hoh))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_RXINDICATION, CANIF_E_PARAM_HOH);
-        return;
-    }
-
-    if (NULL_PTR == canSduPtr)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_RXINDICATION, CANIF_E_PARAM_POINTER);
-        return;
-    }
-
-    if (!CanIf_IsValidDlc(canDlc))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_RXINDICATION, CANIF_E_PARAM_DLC);
-        return;
-    }
-#endif
-
-    /* Get controller from HOH */
-    controllerId = CanIf_HohCfg[hoh].controllerId;
-
-    /* Check Rx is enabled for this controller */
-    if (CanIf_State.controllerState[controllerId].pduMode == CANIF_OFFLINE)
-    {
-        return;
-    }
-
-    /* Find matching Rx PDU by CAN ID */
-    for (i = 0U; i < CANIF_RX_LPDU_CNT; i++)
-    {
-        /* Check if this PDU is mapped to the receiving HOH */
-        if (CanIf_RxPduHohMap[hoh][i] < CANIF_RX_LPDU_CNT)
-        {
-            rxPduCfg = &CanIf_RxPduCfg[CanIf_RxPduHohMap[hoh][i]];
-            
-            /* Check CAN ID match with mask */
-            if ((canId & rxPduCfg->canIdMask) == (rxPduCfg->canId & rxPduCfg->canIdMask))
-            {
-                /* Check DLC */
-                if (canDlc == rxPduCfg->dlc)
-                {
-                    /* Build PDU info */
-                    pduInfo.sdu = (uint8*)canSduPtr;
-                    pduInfo.length = canDlc;
-
-                    /* Call user Rx indication */
-                    CanIf_UserRxIndication(rxPduCfg->pduId, &pduInfo);
-                }
-                return; /* Only one PDU should match */
+            canStatus = Can_SetControllerMode(ControllerId, CAN_CS_STARTED);
+            if (canStatus == CAN_OK) {
+                CanIf_ControllerMode[ControllerId] = CANIF_CS_STARTED;
+            } else {
+                status = E_NOT_OK;
             }
-        }
+            break;
+
+        case CANIF_CS_STOPPED:
+            canStatus = Can_SetControllerMode(ControllerId, CAN_CS_STOPPED);
+            if (canStatus == CAN_OK) {
+                CanIf_ControllerMode[ControllerId] = CANIF_CS_STOPPED;
+            } else {
+                status = E_NOT_OK;
+            }
+            break;
+
+        case CANIF_CS_SLEEP:
+            canStatus = Can_SetControllerMode(ControllerId, CAN_CS_SLEEP);
+            if (canStatus == CAN_OK) {
+                CanIf_ControllerMode[ControllerId] = CANIF_CS_SLEEP;
+            } else {
+                status = E_NOT_OK;
+            }
+            break;
+
+        default:
+            status = E_NOT_OK;
+            break;
     }
 
-    /* No matching PDU found - frame ignored */
+    return status;
 }
 
-void CanIf_TxConfirmation(CanIf_HthType hth)
+Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, CanIf_ControllerModeType* ControllerModePtr)
 {
-    CanIf_PduIdType txPduId;
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (ControllerId >= CANIF_NUM_CONTROLLERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_CONTROLLER);
+        return E_NOT_OK;
+    }
+    if (ControllerModePtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETCONTROLLERMODE, CANIF_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    #endif
 
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (FALSE == CanIf_State.initialized)
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TXCONFIRMATION, CANIF_E_UNINIT);
+    *ControllerModePtr = CanIf_ControllerMode[ControllerId];
+    return E_OK;
+}
+
+Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TxPduId >= CANIF_NUM_TX_PDUS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
+        return E_NOT_OK;
+    }
+    if (PduInfoPtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[TxPduId];
+    uint8 controllerId = txPduConfig->ControllerId;
+
+    if (CanIf_ControllerMode[controllerId] != CANIF_CS_STARTED) {
+        return E_NOT_OK;
+    }
+
+    if (CanIf_PduMode[controllerId] == CANIF_OFFLINE) {
+        return E_NOT_OK;
+    }
+
+    Can_PduType canPdu;
+    canPdu.idType = txPduConfig->CanIdType;
+    canPdu.CanId = txPduConfig->CanId;
+    canPdu.CanDlc = (uint8)PduInfoPtr->SduLength;
+    canPdu.SduPtr = PduInfoPtr->SduDataPtr;
+
+    Can_ReturnType canStatus = Can_Write(txPduConfig->Hth, &canPdu);
+
+    if (canStatus == CAN_OK) {
+        return E_OK;
+    } else if (canStatus == CAN_BUSY) {
+        return E_NOT_OK;
+    }
+
+    return E_NOT_OK;
+}
+
+Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TxPduId >= CANIF_NUM_TX_PDUS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_TRANSMIT, CANIF_E_INVALID_TXPDUID);
+        return E_NOT_OK;
+    }
+    #endif
+
+    /* Cancel transmit is driver dependent */
+    /* For now, return OK as placeholder */
+    (void)TxPduId;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeRequest)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPDUMODE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (ControllerId >= CANIF_NUM_CONTROLLERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETPDUMODE, CANIF_E_PARAM_CONTROLLER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    CanIf_PduMode[ControllerId] = PduModeRequest;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePtr)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (ControllerId >= CANIF_NUM_CONTROLLERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_PARAM_CONTROLLER);
+        return E_NOT_OK;
+    }
+    if (PduModePtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETPDUMODE, CANIF_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    *PduModePtr = CanIf_PduMode[ControllerId];
+    return E_OK;
+}
+
+void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (versioninfo == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETVERSIONINFO, CANIF_E_PARAM_POINTER);
+        return;
+    }
+    #endif
+    versioninfo->vendorID = CANIF_VENDOR_ID;
+    versioninfo->moduleID = CANIF_MODULE_ID;
+    versioninfo->sw_major_version = CANIF_SW_MAJOR_VERSION;
+    versioninfo->sw_minor_version = CANIF_SW_MINOR_VERSION;
+    versioninfo->sw_patch_version = CANIF_SW_PATCH_VERSION;
+}
+
+void CanIf_TxConfirmation(PduIdType CanTxPduId)
+{
+    if (CanIf_DriverInitialized == FALSE) {
         return;
     }
 
-    if (!CanIf_IsValidHth(hth))
-    {
-        CANIF_REPORT_ERROR(CANIF_SID_TXCONFIRMATION, CANIF_E_PARAM_HTH);
-        return;
-    }
-#endif
-
-    /* Get the PDU that was transmitted */
-    txPduId = CanIf_TxPduInProgress[hth];
-
-    if (txPduId < CANIF_TX_LPDU_CNT)
-    {
-        /* Clear tracking */
-        CanIf_TxPduInProgress[hth] = CANIF_TX_LPDU_CNT;
-
-        /* Call user Tx confirmation */
-        CanIf_UserTxConfirmation(txPduId);
-    }
-}
-
-void CanIf_ControllerModeIndication(uint8 controllerId,
-                                     CanIf_ControllerModeType mode)
-{
-    if (CanIf_IsValidController(controllerId))
-    {
-        CanIf_State.controllerState[controllerId].mode = mode;
-
-        /* Notify user if callback exists */
-        if (NULL_PTR != (void*)CanIf_UserControllerModeIndication)
-        {
-            CanIf_UserControllerModeIndication(controllerId, mode);
+    if (CanTxPduId < CANIF_NUM_TX_PDUS) {
+        const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[CanTxPduId];
+        if (txPduConfig->TxConfirmation) {
+            PduR_TxConfirmation(CanTxPduId, E_OK);
         }
     }
 }
 
-void CanIf_ControllerBusOff(uint8 controllerId)
+void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr)
 {
-    if (CanIf_IsValidController(controllerId))
-    {
-        /* Update state to stopped */
-        CanIf_State.controllerState[controllerId].mode = CANIF_CS_STOPPED;
+    if (CanIf_DriverInitialized == FALSE) {
+        return;
+    }
 
-        /* Notify user if callback exists */
-        if (NULL_PTR != (void*)CanIf_UserBusOffIndication)
-        {
-            CanIf_UserBusOffIndication(controllerId);
+    /* Find matching Rx PDU */
+    for (PduIdType i = 0U; i < CANIF_NUM_RX_PDUS; i++) {
+        const CanIf_RxPduConfigType* rxPduConfig = &CanIf_ConfigPtr->RxPdus[i];
+
+        if (rxPduConfig->Hrh == Mailbox->Hoh &&
+            rxPduConfig->CanId == Mailbox->CanId) {
+
+            if (rxPduConfig->RxIndication) {
+                PduInfoType pduInfo;
+                pduInfo.SduDataPtr = PduInfoPtr->SduDataPtr;
+                pduInfo.SduLength = PduInfoPtr->SduLength;
+                pduInfo.MetaDataPtr = NULL_PTR;
+
+                PduR_RxIndication(rxPduConfig->PduId, &pduInfo);
+            }
+            break;
         }
     }
 }
 
-#if (CANIF_VERSION_INFO_API == STD_ON)
-void CanIf_GetVersionInfo(Std_VersionInfoType* versionInfo)
+void CanIf_ControllerBusOff(uint8 ControllerId)
 {
-#if (CANIF_DEV_ERROR_DETECT == STD_ON)
-    if (NULL_PTR == versionInfo)
-    {
-        CANIF_REPORT_ERROR(0x0BU, CANIF_E_PARAM_POINTER);
+    if (CanIf_DriverInitialized == FALSE) {
         return;
     }
-#endif
 
-    versionInfo->vendorID = CANIF_VENDOR_ID;
-    versionInfo->moduleID = CANIF_MODULE_ID;
-    versionInfo->sw_major_version = CANIF_SW_MAJOR_VERSION;
-    versionInfo->sw_minor_version = CANIF_SW_MINOR_VERSION;
-    versionInfo->sw_patch_version = CANIF_SW_PATCH_VERSION;
+    if (ControllerId < CANIF_NUM_CONTROLLERS) {
+        CanIf_ControllerMode[ControllerId] = CANIF_CS_STOPPED;
+
+        /* Notify upper layer */
+        /* CanSM_ControllerBusOff(ControllerId); */
+    }
 }
-#endif
+
+void CanIf_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType ControllerMode)
+{
+    if (CanIf_DriverInitialized == FALSE) {
+        return;
+    }
+
+    if (ControllerId < CANIF_NUM_CONTROLLERS) {
+        CanIf_ControllerMode[ControllerId] = ControllerMode;
+
+        /* Notify upper layer */
+        /* CanSM_ControllerModeIndication(ControllerId, ControllerMode); */
+    }
+}
+
+Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETDYNAMICTXID, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (CanTxPduId >= CANIF_NUM_TX_PDUS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETDYNAMICTXID, CANIF_E_INVALID_TXPDUID);
+        return E_NOT_OK;
+    }
+    #endif
+
+    /* Update dynamic CAN ID */
+    /* Note: In real implementation, this would modify the configuration */
+    (void)CanTxPduId;
+    (void)CanId;
+
+    return E_OK;
+}
+
+Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKWAKEUP, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    #endif
+
+    /* Check all controllers for wakeup */
+    for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
+        if (Can_CheckWakeup(i) == E_OK) {
+            return E_OK;
+        }
+    }
+
+    (void)WakeupSource;
+    return E_NOT_OK;
+}
+
+Std_ReturnType CanIf_SetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType TransceiverMode)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVMODE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVMODE, CANIF_E_PARAM_TRCV);
+        return E_NOT_OK;
+    }
+    #endif
+
+    (void)TransceiverId;
+    (void)TransceiverMode;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_GetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType* TransceiverModePtr)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_PARAM_TRCV);
+        return E_NOT_OK;
+    }
+    if (TransceiverModePtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVMODE, CANIF_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    *TransceiverModePtr = CANIF_TRCV_MODE_NORMAL;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_GetTrcvWakeupReason(uint8 TransceiverId, CanIf_TrcvWakeupReasonType* TrcvWuReasonPtr)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_PARAM_TRCV);
+        return E_NOT_OK;
+    }
+    if (TrcvWuReasonPtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTRCVWAKEUPREASON, CANIF_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    *TrcvWuReasonPtr = CANIF_TRCV_WU_NOT_SUPPORTED;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_SetTrcvWakeupMode(uint8 TransceiverId, CanIf_TrcvWakeupModeType TrcvWakeupMode)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVWAKEUPMODE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (TransceiverId >= CANIF_NUM_TRANSCEIVERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETTRCVWAKEUPMODE, CANIF_E_PARAM_TRCV);
+        return E_NOT_OK;
+    }
+    #endif
+
+    (void)TransceiverId;
+    (void)TrcvWakeupMode;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_SetBaudrate(uint8 ControllerId, uint16 BaudRate)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETBAUDRATE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (ControllerId >= CANIF_NUM_CONTROLLERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_SETBAUDRATE, CANIF_E_PARAM_CONTROLLER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    (void)ControllerId;
+    (void)BaudRate;
+    return E_OK;
+}
+
+Std_ReturnType CanIf_GetBaudrate(uint8 ControllerId, uint16* BaudRatePtr)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (ControllerId >= CANIF_NUM_CONTROLLERS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_PARAM_CONTROLLER);
+        return E_NOT_OK;
+    }
+    if (BaudRatePtr == NULL_PTR) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETBAUDRATE, CANIF_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+    #endif
+
+    *BaudRatePtr = CANIF_DEFAULT_BAUDRATE;
+    return E_OK;
+}
+
+#define CANIF_STOP_SEC_CODE
+#include "MemMap.h"

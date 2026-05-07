@@ -229,8 +229,13 @@ Rte_StatusType Rte_Init(void)
         for (j = 0U; j < RTE_MAX_PORTS_PER_COMPONENT; j++)
         {
             Rte_ComponentStates[i].Ports[j].IsConnected = FALSE;
+            Rte_ComponentStates[i].Ports[j].Direction = 0U;
             Rte_ComponentStates[i].Ports[j].Buffer.IsValid = FALSE;
             Rte_ComponentStates[i].Ports[j].Buffer.Length = 0U;
+            Rte_ComponentStates[i].Ports[j].Buffer.Timestamp = 0U;
+
+            /* Clear buffer data */
+            (void)memset(Rte_ComponentStates[i].Ports[j].Buffer.Data, 0U, RTE_MAX_BUFFER_SIZE);
         }
     }
 
@@ -245,6 +250,77 @@ Rte_StatusType Rte_Init(void)
         Rte_Runnables[i].Function = NULL_PTR;
     }
     Rte_NumRunnables = 0U;
+
+    return result;
+}
+
+/**
+ * @brief   Initialize a component instance
+ */
+Rte_StatusType Rte_InitComponent(uint8 componentId, uint8 numPorts)
+{
+    Rte_StatusType result = RTE_E_OK;
+
+#if (RTE_DEV_ERROR_DETECT == STD_ON)
+    if (!Rte_InternalState.IsInitialized)
+    {
+        RTE_DET_REPORT_ERROR(RTE_SID_INIT, RTE_E_UNINIT);
+        return RTE_E_UNINIT;
+    }
+
+    if (componentId >= RTE_NUM_COMPONENTS)
+    {
+        RTE_DET_REPORT_ERROR(RTE_SID_INIT, RTE_E_OUT_OF_RANGE);
+        return RTE_E_OUT_OF_RANGE;
+    }
+#endif
+
+    if (componentId < RTE_NUM_COMPONENTS)
+    {
+        Rte_ComponentStates[componentId].IsInitialized = TRUE;
+        Rte_ComponentStates[componentId].IsActive = TRUE;
+        Rte_ComponentStates[componentId].NumPorts = (numPorts < RTE_MAX_PORTS_PER_COMPONENT) ?
+                                                     numPorts : RTE_MAX_PORTS_PER_COMPONENT;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Connect a port
+ */
+Rte_StatusType Rte_ConnectPort(Rte_PortHandleType portHandle, uint8 direction, uint16 dataLength)
+{
+    Rte_StatusType result = RTE_E_OK;
+    uint8 componentId = (uint8)(portHandle >> 8);
+    uint8 portId = (uint8)(portHandle & 0xFF);
+
+#if (RTE_DEV_ERROR_DETECT == STD_ON)
+    if (!Rte_InternalState.IsInitialized)
+    {
+        RTE_DET_REPORT_ERROR(RTE_SID_SWITCHAPI, RTE_E_UNINIT);
+        return RTE_E_UNINIT;
+    }
+
+    if (componentId >= RTE_NUM_COMPONENTS)
+    {
+        RTE_DET_REPORT_ERROR(RTE_SID_SWITCHAPI, RTE_E_OUT_OF_RANGE);
+        return RTE_E_OUT_OF_RANGE;
+    }
+
+    if (portId >= RTE_MAX_PORTS_PER_COMPONENT)
+    {
+        RTE_DET_REPORT_ERROR(RTE_SID_SWITCHAPI, RTE_E_OUT_OF_RANGE);
+        return RTE_E_OUT_OF_RANGE;
+    }
+#endif
+
+    if ((componentId < RTE_NUM_COMPONENTS) && (portId < RTE_MAX_PORTS_PER_COMPONENT))
+    {
+        Rte_ComponentStates[componentId].Ports[portId].IsConnected = TRUE;
+        Rte_ComponentStates[componentId].Ports[portId].Direction = direction;
+        Rte_ComponentStates[componentId].Ports[portId].Buffer.Length = dataLength;
+    }
 
     return result;
 }
@@ -414,13 +490,23 @@ Std_ReturnType Rte_Write(Rte_PortHandleType portHandle, const void* data)
     if (Rte_ValidatePortHandle(portHandle) == E_OK)
     {
         Rte_PortStateType* portState = &Rte_ComponentStates[componentId].Ports[portId];
+        uint16 copyLength = portState->Buffer.Length;
+
+        /* Ensure we don't exceed buffer size */
+        if (copyLength > RTE_MAX_BUFFER_SIZE)
+        {
+            copyLength = RTE_MAX_BUFFER_SIZE;
+        }
 
         /* Copy data to buffer */
-        (void)memcpy(portState->Buffer.Data, data, portState->Buffer.Length);
-        portState->Buffer.IsValid = TRUE;
-        portState->Buffer.Timestamp = Rte_InternalState.CycleCounter;
+        if (copyLength > 0U)
+        {
+            (void)memcpy(portState->Buffer.Data, data, copyLength);
+            portState->Buffer.IsValid = TRUE;
+            portState->Buffer.Timestamp = Rte_InternalState.CycleCounter;
 
-        result = E_OK;
+            result = E_OK;
+        }
     }
     else
     {

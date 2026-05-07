@@ -1,54 +1,23 @@
-/*==================================================================================================
- *                                CRYPTO SERVICES MANAGER (Csm)
- *==================================================================================================
- * FILENAME: Csm_MemMap.h
- * AUTOSAR VERSION: R22-11
- *==================================================================================================
- * PROJECT: yuleASR Classic AUTOSAR BSW
- * DESCRIPTION: Memory mapping header file for Crypto Services Manager module
- *==================================================================================================
+/**
+ * @file Csm_MemMap.h
+ * @brief CSM模块内存映射头文件
+ * 
+ * 定义代码段和数据段的内存映射
+ * 
+ * @author yuleASR Team
+ * @version 1.0.0
  */
 
 #ifndef CSM_MEMMAP_H
 #define CSM_MEMMAP_H
 
 /*==================================================================================================
- *                                    MEMORY SECTION MAPPING
- *==================================================================================================*/
-
-#ifdef CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
-    #undef CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
-    #pragma section ".bss.Csm"
-#endif
-
-#ifdef CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
-    #undef CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
-    #pragma section
-#endif
-
-#ifdef CSM_START_SEC_VAR_INIT_UNSPECIFIED
-    #undef CSM_START_SEC_VAR_INIT_UNSPECIFIED
-    #pragma section ".data.Csm"
-#endif
-
-#ifdef CSM_STOP_SEC_VAR_INIT_UNSPECIFIED
-    #undef CSM_STOP_SEC_VAR_INIT_UNSPECIFIED
-    #pragma section
-#endif
-
-#ifdef CSM_START_SEC_CONST_UNSPECIFIED
-    #undef CSM_START_SEC_CONST_UNSPECIFIED
-    #pragma section ".rodata.Csm"
-#endif
-
-#ifdef CSM_STOP_SEC_CONST_UNSPECIFIED
-    #undef CSM_STOP_SEC_CONST_UNSPECIFIED
-    #pragma section
-#endif
+*                                       内存映射定义
+==================================================================================================*/
 
 #ifdef CSM_START_SEC_CODE
     #undef CSM_START_SEC_CODE
-    #pragma section ".text.Csm"
+    #pragma section ".text.Csm" ax
 #endif
 
 #ifdef CSM_STOP_SEC_CODE
@@ -56,9 +25,39 @@
     #pragma section
 #endif
 
+#ifdef CSM_START_SEC_VAR_INIT_UNSPECIFIED
+    #undef CSM_START_SEC_VAR_INIT_UNSPECIFIED
+    #pragma section ".data.Csm" aw
+#endif
+
+#ifdef CSM_STOP_SEC_VAR_INIT_UNSPECIFIED
+    #undef CSM_STOP_SEC_VAR_INIT_UNSPECIFIED
+    #pragma section
+#endif
+
+#ifdef CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
+    #undef CSM_START_SEC_VAR_CLEARED_UNSPECIFIED
+    #pragma section ".bss.Csm" aw
+#endif
+
+#ifdef CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+    #undef CSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+    #pragma section
+#endif
+
+#ifdef CSM_START_SEC_CONST_UNSPECIFIED
+    #undef CSM_START_SEC_CONST_UNSPECIFIED
+    #pragma section ".rodata.Csm" a
+#endif
+
+#ifdef CSM_STOP_SEC_CONST_UNSPECIFIED
+    #undef CSM_STOP_SEC_CONST_UNSPECIFIED
+    #pragma section
+#endif
+
 #ifdef CSM_START_SEC_CONFIG_DATA_UNSPECIFIED
     #undef CSM_START_SEC_CONFIG_DATA_UNSPECIFIED
-    #pragma section ".rodata.Csm.Config"
+    #pragma section ".rodata.Csm.Config" a
 #endif
 
 #ifdef CSM_STOP_SEC_CONFIG_DATA_UNSPECIFIED

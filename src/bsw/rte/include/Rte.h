@@ -97,6 +97,23 @@ extern Rte_StatusType Rte_Stop(void);
  */
 extern void Rte_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/**
+ * @brief Initialize a component instance
+ * @param componentId Component ID
+ * @param numPorts Number of ports
+ * @return RTE status
+ */
+extern Rte_StatusType Rte_InitComponent(uint8 componentId, uint8 numPorts);
+
+/**
+ * @brief Connect a port
+ * @param portHandle Port handle
+ * @param direction Port direction (0=Sender, 1=Receiver)
+ * @param dataLength Data length
+ * @return RTE status
+ */
+extern Rte_StatusType Rte_ConnectPort(Rte_PortHandleType portHandle, uint8 direction, uint16 dataLength);
+
 /*==================================================================================================
 *                                    RTE EXCLUSIVE AREA API
 ==================================================================================================*/

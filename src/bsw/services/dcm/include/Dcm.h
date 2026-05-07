@@ -252,6 +252,10 @@ typedef struct {
     uint8 NumSessions;
     uint8 NumSecurityLevels;
     uint8 NumServices;
+    uint8 NumDIDs;
+    uint8 NumRIDs;
+    const Dcm_DIDConfigType* DIDs;
+    const Dcm_RIDConfigType* RIDs;
     boolean DevErrorDetect;
     boolean VersionInfoApi;
     boolean RespondAllRequest;
