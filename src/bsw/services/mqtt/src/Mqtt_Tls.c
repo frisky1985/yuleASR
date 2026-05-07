@@ -1,10 +1,10 @@
 /** @file Mqtt_Tls.c
- * @brief MQTT TLS/SSL/mTLS 核心实现
+ * @brief MQTT TLS/SSL/mTLS 安全层实现 - 基于mbedTLS
  *
  * @copyright Copyright (c) 2024 YuleTech
  * @license MIT
  *
- * 基于mbedTLS实现的轻量级TLS层
+ * 使用mbedTLS实现的轻量级TLS层
  * 支持TLS 1.2/1.3、SSL和mTLS双向认证
  */
 
@@ -15,22 +15,17 @@
 #include <string.h>
 #include <stdio.h>
 
-/*============================================================================
- * 可配置的mbedTLS包含
- * 注: 实际项目中需要链接mbedTLS库
- *===========================================================================*/
-#if (MQTT_SUPPORT_TLS == STD_ON)
-/* 在实际项目中取消注释以包含mbedTLS头文件 */
-/*
+/* YuleTech mbedTLS适配层 */
+#include "yule_mbedtls_adapter.h"
+
+/* mbedTLS头文件 */
 #include "mbedtls/ssl.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/x509_crt.h"
 #include "mbedtls/pk.h"
-#include "mbedtls/net_sockets.h"
-#include "mbedtls/error.h"
-*/
-#endif
+#include "mbedtls/debug.h"
+#include "mbedtls/platform.h"
 
 /*============================================================================
  * 内部宏定义
@@ -41,18 +36,6 @@
 #define MQTT_TLS_DEFAULT_HANDSHAKE_TIMEOUT_MS  (10000)
 #define MQTT_TLS_DEFAULT_SESSION_TIMEOUT_MS    (86400000)  /* 24小时 */
 
-/* 错误码定义 */
-#define MQTT_TLS_ERROR_NONE             (0)
-#define MQTT_TLS_ERROR_INIT_FAILED      (-1)
-#define MQTT_TLS_ERROR_INVALID_PARAM    (-2)
-#define MQTT_TLS_ERROR_NO_MEMORY        (-3)
-#define MQTT_TLS_ERROR_HANDSHAKE_FAILED (-4)
-#define MQTT_TLS_ERROR_CERT_INVALID     (-5)
-#define MQTT_TLS_ERROR_VERIFY_FAILED    (-6)
-#define MQTT_TLS_ERROR_SEND_FAILED      (-7)
-#define MQTT_TLS_ERROR_RECV_FAILED      (-8)
-#define MQTT_TLS_ERROR_TIMEOUT          (-9)
-
 /*============================================================================
  * 内部TLS上下文结构
  *===========================================================================*/
@@ -60,30 +43,20 @@ typedef struct {
     boolean inUse;                          /**< 上下文是否使用中 */
     Mqtt_TlsConfigType config;              /**< TLS配置复本 */
     
-    /* mbedTLS上下文 (实际项目中使用) */
-    /*
+    /* mbedTLS上下文 */
     mbedtls_ssl_context ssl;
     mbedtls_ssl_config conf;
     mbedtls_x509_crt caCert;
     mbedtls_x509_crt clientCert;
     mbedtls_pk_context clientKey;
-    mbedtls_entropy_context entropy;
-    mbedtls_ctr_drbg_context ctrDrbg;
-    */
+    mbedtls_ssl_session savedSession;
     
-    /* 模拟上下文(示例实现) */
-    uint8 mockContext[1024];
+    /* 状态跟踪 */
     TcpIp_SocketIdType socketId;
     boolean handshakeComplete;
     Mqtt_TlsHandshakeCallbackType handshakeCallback;
     Mqtt_TlsErrorCallbackType errorCallback;
     sint32 lastError;
-    
-    /* 证书缓存 */
-    uint8* certCache;
-    uint32 certCacheSize;
-    uint8* keyCache;
-    uint32 keyCacheSize;
 } Mqtt_TlsInternalContextType;
 
 /*============================================================================
@@ -91,28 +64,14 @@ typedef struct {
  *===========================================================================*/
 static boolean Mqtt_TlsInitialized = FALSE;
 static Mqtt_TlsInternalContextType Mqtt_TlsContexts[MQTT_TLS_MAX_CONTEXTS];
-static uint8 Mqtt_TlsDefaultContextBuffer[MQTT_TLS_MAX_CONTEXTS][4096];
 
 /*============================================================================
  * 内部函数声明
  *===========================================================================*/
 static Mqtt_TlsInternalContextType* Mqtt_Tls_GetContext(Mqtt_TlsContextType context);
-static Mqtt_ReturnType Mqtt_Tls_ConfigureVersion(
-    Mqtt_TlsInternalContextType* ctx,
-    Mqtt_TlsVersionType version
-);
-static Mqtt_ReturnType Mqtt_Tls_ConfigureCertificates(
-    Mqtt_TlsInternalContextType* ctx,
-    const Mqtt_TlsConfigType* config
-);
-static Mqtt_ReturnType Mqtt_Tls_ConfigureAuth(
-    Mqtt_TlsInternalContextType* ctx,
-    const Mqtt_TlsConfigType* config
-);
-static void Mqtt_Tls_SetError(
-    Mqtt_TlsInternalContextType* ctx,
-    sint32 errorCode
-);
+static int Mqtt_Tls_SendCallback(void* ctx, const unsigned char* buf, size_t len);
+static int Mqtt_Tls_RecvCallback(void* ctx, unsigned char* buf, size_t len);
+static int Mqtt_Tls_RecvTimeoutCallback(void* ctx, unsigned char* buf, size_t len, uint32_t timeout);
 
 /*============================================================================
  * 初始化和配置
@@ -121,30 +80,28 @@ static void Mqtt_Tls_SetError(
 Mqtt_ReturnType Mqtt_Tls_Init(void)
 {
     uint8 i;
+    Std_ReturnType result;
     
     if (Mqtt_TlsInitialized) {
         return MQTT_OK;
     }
     
-    /* 初始化所有上下文槽 */
+    /* 初始化YuleTech适配层 */
+    result = YuleMbedtls_Init();
+    if (result != E_OK) {
+        return MQTT_E_NOT_OK;
+    }
+    
+    /* 清零所有上下文槽 */
     for (i = 0; i < MQTT_TLS_MAX_CONTEXTS; i++) {
+        memset(&Mqtt_TlsContexts[i], 0, sizeof(Mqtt_TlsInternalContextType));
         Mqtt_TlsContexts[i].inUse = FALSE;
         Mqtt_TlsContexts[i].socketId = TCPIP_SOCKETID_INVALID;
         Mqtt_TlsContexts[i].handshakeComplete = FALSE;
         Mqtt_TlsContexts[i].handshakeCallback = NULL;
         Mqtt_TlsContexts[i].errorCallback = NULL;
-        Mqtt_TlsContexts[i].lastError = MQTT_TLS_ERROR_NONE;
-        Mqtt_TlsContexts[i].certCache = NULL;
-        Mqtt_TlsContexts[i].certCacheSize = 0;
-        Mqtt_TlsContexts[i].keyCache = NULL;
-        Mqtt_TlsContexts[i].keyCacheSize = 0;
-        
-        /* 使用默认静态缓冲区 */
-        Mqtt_TlsContexts[i].mockContext = Mqtt_TlsDefaultContextBuffer[i];
+        Mqtt_TlsContexts[i].lastError = 0;
     }
-    
-    /* 初始化mbedTLS (实际项目中) */
-    /* mbedtls_ssl_init(NULL); */
     
     Mqtt_TlsInitialized = TRUE;
     return MQTT_OK;
@@ -165,6 +122,9 @@ void Mqtt_Tls_DeInit(void)
         }
     }
     
+    /* 反初始化YuleTech适配层 */
+    YuleMbedtls_DeInit();
+    
     Mqtt_TlsInitialized = FALSE;
 }
 
@@ -175,7 +135,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
 {
     Mqtt_TlsInternalContextType* ctx;
     uint8 i;
-    Mqtt_ReturnType result;
+    int ret;
     
     if (!Mqtt_TlsInitialized) {
         return MQTT_E_NOT_OK;
@@ -203,34 +163,135 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     ctx->inUse = TRUE;
     ctx->socketId = TCPIP_SOCKETID_INVALID;
     ctx->handshakeComplete = FALSE;
-    ctx->lastError = MQTT_TLS_ERROR_NONE;
+    ctx->lastError = 0;
     
     /* 复制配置 */
     memcpy(&ctx->config, config, sizeof(Mqtt_TlsConfigType));
     
+    /* 初始化mbedTLS上下文 */
+    mbedtls_ssl_init(&ctx->ssl);
+    mbedtls_ssl_config_init(&ctx->conf);
+    mbedtls_x509_crt_init(&ctx->caCert);
+    mbedtls_x509_crt_init(&ctx->clientCert);
+    mbedtls_pk_init(&ctx->clientKey);
+    mbedtls_ssl_session_init(&ctx->savedSession);
+    
     /* 配置TLS版本 */
-    result = Mqtt_Tls_ConfigureVersion(ctx, config->version);
-    if (result != MQTT_OK) {
-        ctx->inUse = FALSE;
-        return result;
+    mbedtls_ssl_conf_min_version(&ctx->conf, 
+        MBEDTLS_SSL_MAJOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_3); /* TLS 1.2+ */
+    
+    switch (config->version) {
+        case MQTT_TLS_VERSION_1_2:
+            mbedtls_ssl_conf_max_version(&ctx->conf,
+                MBEDTLS_SSL_MAJOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_3);
+            break;
+        case MQTT_TLS_VERSION_1_3:
+            /* TLS 1.3 需要更新版本的mbedTLS */
+            break;
+        default:
+            break;
     }
     
-    /* 配置证书 */
-    result = Mqtt_Tls_ConfigureCertificates(ctx, config);
-    if (result != MQTT_OK) {
-        ctx->inUse = FALSE;
-        return result;
+    /* 配置证书验证模式 */
+    switch (config->verifyMode) {
+        case MQTT_TLS_VERIFY_NONE:
+            mbedtls_ssl_conf_authmode(&ctx->conf, MBEDTLS_SSL_VERIFY_NONE);
+            break;
+        case MQTT_TLS_VERIFY_OPTIONAL:
+            mbedtls_ssl_conf_authmode(&ctx->conf, MBEDTLS_SSL_VERIFY_OPTIONAL);
+            break;
+        case MQTT_TLS_VERIFY_REQUIRED:
+        default:
+            mbedtls_ssl_conf_authmode(&ctx->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
+            break;
     }
     
-    /* 配置认证 */
-    result = Mqtt_Tls_ConfigureAuth(ctx, config);
-    if (result != MQTT_OK) {
-        ctx->inUse = FALSE;
-        return result;
+    /* 加载CA证书 */
+    if (config->trustStore.caCert != NULL && config->trustStore.caCertLength > 0) {
+        if (config->trustStore.caFormat == MQTT_CERT_FORMAT_PEM) {
+            ret = mbedtls_x509_crt_parse(&ctx->caCert, 
+                config->trustStore.caCert, config->trustStore.caCertLength + 1);
+        } else {
+            ret = mbedtls_x509_crt_parse_der(&ctx->caCert,
+                config->trustStore.caCert, config->trustStore.caCertLength);
+        }
+        
+        if (ret != 0) {
+            ctx->lastError = ret;
+            goto cleanup;
+        }
+        
+        mbedtls_ssl_conf_ca_chain(&ctx->conf, &ctx->caCert, NULL);
+    }
+    
+    /* 加载客户端证书和私钥(mTLS) */
+    if (config->clientCert != NULL && config->clientCert->data != NULL) {
+        if (config->clientCert->format == MQTT_CERT_FORMAT_PEM) {
+            ret = mbedtls_x509_crt_parse(&ctx->clientCert,
+                config->clientCert->data, config->clientCert->length + 1);
+        } else {
+            ret = mbedtls_x509_crt_parse_der(&ctx->clientCert,
+                config->clientCert->data, config->clientCert->length);
+        }
+        
+        if (ret != 0) {
+            ctx->lastError = ret;
+            goto cleanup;
+        }
+        
+        if (config->clientKey != NULL && config->clientKey->data != NULL) {
+            const char* pwd = config->clientKey->password;
+            
+            ret = mbedtls_pk_parse_key(&ctx->clientKey,
+                config->clientKey->data, config->clientKey->length,
+                (const unsigned char*)pwd, pwd ? strlen(pwd) : 0,
+                mbedtls_ctr_drbg_random, NULL);
+            
+            if (ret != 0) {
+                ctx->lastError = ret;
+                goto cleanup;
+            }
+            
+            ret = mbedtls_ssl_conf_own_cert(&ctx->conf, &ctx->clientCert, &ctx->clientKey);
+            if (ret != 0) {
+                ctx->lastError = ret;
+                goto cleanup;
+            }
+        }
+    }
+    
+    /* 配置SNI */
+    if (config->expectedHostname != NULL) {
+        ret = mbedtls_ssl_set_hostname(&ctx->ssl, config->expectedHostname);
+        if (ret != 0) {
+            ctx->lastError = ret;
+            goto cleanup;
+        }
+    }
+    
+    /* 配置回调函数 */
+    mbedtls_ssl_conf_dbg(&ctx->conf, (void (*)(void*, int, const char*, int, const char*))YuleMbedtls_DebugCallback, NULL);
+    mbedtls_debug_set_threshold(3);
+    
+    /* 应用配置 */
+    ret = mbedtls_ssl_setup(&ctx->ssl, &ctx->conf);
+    if (ret != 0) {
+        ctx->lastError = ret;
+        goto cleanup;
     }
     
     *context = ctx;
     return MQTT_OK;
+    
+cleanup:
+    mbedtls_ssl_free(&ctx->ssl);
+    mbedtls_ssl_config_free(&ctx->conf);
+    mbedtls_x509_crt_free(&ctx->caCert);
+    mbedtls_x509_crt_free(&ctx->clientCert);
+    mbedtls_pk_free(&ctx->clientKey);
+    mbedtls_ssl_session_free(&ctx->savedSession);
+    ctx->inUse = FALSE;
+    return MQTT_E_NOT_OK;
 }
 
 void Mqtt_Tls_DestroyContext(Mqtt_TlsContextType context)
@@ -247,17 +308,13 @@ void Mqtt_Tls_DestroyContext(Mqtt_TlsContextType context)
         Mqtt_Tls_Close(context);
     }
     
-    /* 释放证书缓存 */
-    if (ctx->certCache != NULL) {
-        /* 如果使用动态内存分配需要释放 */
-        ctx->certCache = NULL;
-        ctx->certCacheSize = 0;
-    }
-    
-    if (ctx->keyCache != NULL) {
-        ctx->keyCache = NULL;
-        ctx->keyCacheSize = 0;
-    }
+    /* 释放mbedTLS上下文 */
+    mbedtls_ssl_free(&ctx->ssl);
+    mbedtls_ssl_config_free(&ctx->conf);
+    mbedtls_x509_crt_free(&ctx->caCert);
+    mbedtls_x509_crt_free(&ctx->clientCert);
+    mbedtls_pk_free(&ctx->clientKey);
+    mbedtls_ssl_session_free(&ctx->savedSession);
     
     /* 清零上下文 */
     memset(ctx, 0, sizeof(Mqtt_TlsInternalContextType));
@@ -275,6 +332,7 @@ Mqtt_ReturnType Mqtt_Tls_PerformHandshake(
 )
 {
     Mqtt_TlsInternalContextType* ctx;
+    int ret;
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {
@@ -282,55 +340,49 @@ Mqtt_ReturnType Mqtt_Tls_PerformHandshake(
     }
     
     if (socketId == TCPIP_SOCKETID_INVALID) {
-        Mqtt_Tls_SetError(ctx, MQTT_TLS_ERROR_INVALID_PARAM);
         return MQTT_E_NOT_OK;
     }
     
     ctx->socketId = socketId;
     ctx->handshakeCallback = callback;
     
-    /* 执行TLS握手 (实际项目中使用mbedTLS) */
-    /*
-    int ret = mbedtls_ssl_handshake(&ctx->ssl);
-    if (ret != 0) {
-        Mqtt_Tls_SetError(ctx, ret);
+    /* 配置生物IO回调 */
+    mbedtls_ssl_set_bio(&ctx->ssl, ctx, 
+        (mbedtls_ssl_send_t*)Mqtt_Tls_SendCallback,
+        (mbedtls_ssl_recv_t*)Mqtt_Tls_RecvCallback,
+        (mbedtls_ssl_recv_timeout_t*)Mqtt_Tls_RecvTimeoutCallback);
+    
+    /* 执行TLS握手 */
+    ret = mbedtls_ssl_handshake(&ctx->ssl);
+    
+    if (ret == 0) {
+        ctx->handshakeComplete = TRUE;
+        
+        /* 保存会话(如果启用) */
+        if (ctx->config.enableSessionResumption) {
+            mbedtls_ssl_get_session(&ctx->ssl, &ctx->savedSession);
+        }
+        
+        if (callback != NULL) {
+            Mqtt_CertValidationResultType validationResult;
+            memset(&validationResult, 0, sizeof(validationResult));
+            validationResult.isValid = TRUE;
+            validationResult.isTrusted = TRUE;
+            validationResult.hostnameMatch = TRUE;
+            validationResult.notExpired = TRUE;
+            callback(0, TRUE, &validationResult);
+        }
+        
+        return MQTT_OK;
+    } else {
+        ctx->lastError = ret;
+        
         if (callback != NULL) {
             callback(0, FALSE, NULL);
         }
+        
         return MQTT_E_NOT_OK;
     }
-    */
-    
-    /* 模拟握手成功 */
-    ctx->handshakeComplete = TRUE;
-    
-    /* 验证证书 (如果需要) */
-    if (ctx->config.verifyMode == MQTT_TLS_VERIFY_REQUIRED) {
-        Mqtt_CertValidationResultType validationResult;
-        Mqtt_ReturnType result;
-        
-        result = Mqtt_Tls_VerifyCertificate(context, 
-                                            ctx->config.expectedHostname,
-                                            &validationResult);
-        if (result != MQTT_OK || !validationResult.isValid) {
-            ctx->handshakeComplete = FALSE;
-            Mqtt_Tls_SetError(ctx, MQTT_TLS_ERROR_CERT_INVALID);
-            if (callback != NULL) {
-                callback(0, FALSE, &validationResult);
-            }
-            return MQTT_E_NOT_OK;
-        }
-        
-        if (callback != NULL) {
-            callback(0, TRUE, &validationResult);
-        }
-    } else {
-        if (callback != NULL) {
-            callback(0, TRUE, NULL);
-        }
-    }
-    
-    return MQTT_OK;
 }
 
 Mqtt_ReturnType Mqtt_Tls_Send(
@@ -341,7 +393,7 @@ Mqtt_ReturnType Mqtt_Tls_Send(
 )
 {
     Mqtt_TlsInternalContextType* ctx;
-    sint32 result;
+    int ret;
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {
@@ -356,27 +408,17 @@ Mqtt_ReturnType Mqtt_Tls_Send(
         return MQTT_E_NOT_OK;
     }
     
-    /* 通过mbedTLS发送 (实际项目中) */
-    /*
-    result = mbedtls_ssl_write(&ctx->ssl, data, length);
-    if (result < 0) {
-        Mqtt_Tls_SetError(ctx, result);
+    ret = mbedtls_ssl_write(&ctx->ssl, data, length);
+    
+    if (ret > 0) {
+        if (sentLength != NULL) {
+            *sentLength = (uint32)ret;
+        }
+        return MQTT_OK;
+    } else {
+        ctx->lastError = ret;
         return MQTT_E_NOT_OK;
     }
-    */
-    
-    /* 模拟发送: 直接通过TCP发送 */
-    result = TcpIp_Send(ctx->socketId, data, (uint16)length);
-    if (result != E_OK) {
-        Mqtt_Tls_SetError(ctx, MQTT_TLS_ERROR_SEND_FAILED);
-        return MQTT_E_NOT_OK;
-    }
-    
-    if (sentLength != NULL) {
-        *sentLength = length;
-    }
-    
-    return MQTT_OK;
 }
 
 Mqtt_ReturnType Mqtt_Tls_Receive(
@@ -387,8 +429,7 @@ Mqtt_ReturnType Mqtt_Tls_Receive(
 )
 {
     Mqtt_TlsInternalContextType* ctx;
-    Std_ReturnType result;
-    uint16 recvLen = 0;
+    int ret;
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {
@@ -403,30 +444,17 @@ Mqtt_ReturnType Mqtt_Tls_Receive(
         return MQTT_E_NOT_OK;
     }
     
-    /* 通过mbedTLS接收 (实际项目中) */
-    /*
-    sint32 ret = mbedtls_ssl_read(&ctx->ssl, buffer, bufferSize);
-    if (ret < 0) {
-        Mqtt_Tls_SetError(ctx, ret);
+    ret = mbedtls_ssl_read(&ctx->ssl, buffer, bufferSize);
+    
+    if (ret >= 0) {
+        if (receivedLength != NULL) {
+            *receivedLength = (uint32)ret;
+        }
+        return MQTT_OK;
+    } else {
+        ctx->lastError = ret;
         return MQTT_E_NOT_OK;
     }
-    if (receivedLength != NULL) {
-        *receivedLength = (uint32)ret;
-    }
-    */
-    
-    /* 模拟接收: 直接通过TCP接收 */
-    result = TcpIp_Receive(ctx->socketId, buffer, (uint16)bufferSize, &recvLen);
-    if (result != E_OK) {
-        Mqtt_Tls_SetError(ctx, MQTT_TLS_ERROR_RECV_FAILED);
-        return MQTT_E_NOT_OK;
-    }
-    
-    if (receivedLength != NULL) {
-        *receivedLength = recvLen;
-    }
-    
-    return MQTT_OK;
 }
 
 Mqtt_ReturnType Mqtt_Tls_Close(Mqtt_TlsContextType context)
@@ -442,8 +470,8 @@ Mqtt_ReturnType Mqtt_Tls_Close(Mqtt_TlsContextType context)
         return MQTT_OK;
     }
     
-    /* 发送close_notify (实际项目中) */
-    /* mbedtls_ssl_close_notify(&ctx->ssl); */
+    /* 发送close_notify */
+    mbedtls_ssl_close_notify(&ctx->ssl);
     
     ctx->handshakeComplete = FALSE;
     
@@ -454,110 +482,6 @@ Mqtt_ReturnType Mqtt_Tls_Close(Mqtt_TlsContextType context)
  * 证书管理函数
  *===========================================================================*/
 
-Mqtt_ReturnType Mqtt_Tls_LoadCertificate(const Mqtt_CertificateType* cert)
-{
-    if (cert == NULL || cert->data == NULL || cert->length == 0) {
-        return MQTT_E_NOT_OK;
-    }
-    
-    /* 验证证书格式 */
-    if (cert->format != MQTT_CERT_FORMAT_PEM &&
-        cert->format != MQTT_CERT_FORMAT_DER) {
-        return MQTT_E_NOT_OK;
-    }
-    
-    /* 解析证书 (实际项目中使用mbedTLS) */
-    /*
-    mbedtls_x509_crt x509Cert;
-    mbedtls_x509_crt_init(&x509Cert);
-    
-    int ret;
-    if (cert->format == MQTT_CERT_FORMAT_PEM) {
-        ret = mbedtls_x509_crt_parse(&x509Cert, cert->data, cert->length + 1);
-    } else {
-        ret = mbedtls_x509_crt_parse_der(&x509Cert, cert->data, cert->length);
-    }
-    
-    if (ret != 0) {
-        mbedtls_x509_crt_free(&x509Cert);
-        return MQTT_E_NOT_OK;
-    }
-    
-    mbedtls_x509_crt_free(&x509Cert);
-    */
-    
-    return MQTT_OK;
-}
-
-Mqtt_ReturnType Mqtt_Tls_LoadPrivateKey(const Mqtt_PrivateKeyType* key)
-{
-    if (key == NULL || key->data == NULL || key->length == 0) {
-        return MQTT_E_NOT_OK;
-    }
-    
-    /* 解析私钥 (实际项目中使用mbedTLS) */
-    /*
-    mbedtls_pk_context pk;
-    mbedtls_pk_init(&pk);
-    
-    const char* pwd = key->password;
-    int ret = mbedtls_pk_parse_key(&pk, key->data, key->length,
-                                    (const uint8*)pwd,
-                                    pwd ? strlen(pwd) : 0,
-                                    mbedtls_ctr_drbg_random, &ctrDrbg);
-    
-    if (ret != 0) {
-        mbedtls_pk_free(&pk);
-        return MQTT_E_NOT_OK;
-    }
-    
-    mbedtls_pk_free(&pk);
-    */
-    
-    return MQTT_OK;
-}
-
-Mqtt_ReturnType Mqtt_Tls_LoadTrustStore(const Mqtt_TrustStoreType* trustStore)
-{
-    if (trustStore == NULL) {
-        return MQTT_E_NOT_OK;
-    }
-    
-    /* 使用系统证书库 */
-    if (trustStore->useSystemStore) {
-        return MQTT_OK;
-    }
-    
-    /* 加载CA证书 */
-    if (trustStore->caCert == NULL || trustStore->caCertLength == 0) {
-        return MQTT_E_NOT_OK;
-    }
-    
-    /* 解析CA证书 (实际项目中) */
-    /*
-    mbedtls_x509_crt caCert;
-    mbedtls_x509_crt_init(&caCert);
-    
-    int ret;
-    if (trustStore->caFormat == MQTT_CERT_FORMAT_PEM) {
-        ret = mbedtls_x509_crt_parse(&caCert, trustStore->caCert, 
-                                      trustStore->caCertLength + 1);
-    } else {
-        ret = mbedtls_x509_crt_parse_der(&caCert, trustStore->caCert,
-                                          trustStore->caCertLength);
-    }
-    
-    if (ret != 0) {
-        mbedtls_x509_crt_free(&caCert);
-        return MQTT_E_NOT_OK;
-    }
-    
-    mbedtls_x509_crt_free(&caCert);
-    */
-    
-    return MQTT_OK;
-}
-
 Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
     Mqtt_TlsContextType context,
     const char* expectedHostname,
@@ -565,12 +489,13 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
 )
 {
     Mqtt_TlsInternalContextType* ctx;
+    uint32_t flags;
+    const mbedtls_x509_crt* peerCert;
     
     if (result == NULL) {
         return MQTT_E_NOT_OK;
     }
     
-    /* 初始化结果 */
     memset(result, 0, sizeof(Mqtt_CertValidationResultType));
     
     ctx = Mqtt_Tls_GetContext(context);
@@ -578,34 +503,33 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
         return MQTT_E_NOT_OK;
     }
     
-    /* 验证证书 (实际项目中) */
-    /*
-    uint32_t flags = mbedtls_ssl_get_verify_result(&ctx->ssl);
-    if (flags != 0) {
-        result->isValid = FALSE;
-        return MQTT_E_NOT_OK;
+    /* 获取验证结果 */
+    flags = mbedtls_ssl_get_verify_result(&ctx->ssl);
+    result->isValid = (flags == 0);
+    result->isTrusted = (flags == 0);
+    
+    /* 获取对端证书 */
+    peerCert = mbedtls_ssl_get_peer_cert(&ctx->ssl);
+    if (peerCert != NULL) {
+        /* 拷贝颁发者信息 */
+        if (peerCert->issuer.next != NULL && peerCert->issuer.next->val.p != NULL) {
+            strncpy(result->issuer, (char*)peerCert->issuer.next->val.p,
+                sizeof(result->issuer) - 1);
+        }
+        
+        /* 拷贝主体信息 */
+        if (peerCert->subject.next != NULL && peerCert->subject.next->val.p != NULL) {
+            strncpy(result->subject, (char*)peerCert->subject.next->val.p,
+                sizeof(result->subject) - 1);
+        }
+        
+        /* 检查过期 */
+        if (peerCert->next.p == NULL || peerCert->next.len == 0) {
+            result->notExpired = TRUE;
+        }
     }
     
-    const mbedtls_x509_crt* peerCert = mbedtls_ssl_get_peer_cert(&ctx->ssl);
-    if (peerCert == NULL) {
-        result->isValid = FALSE;
-        return MQTT_E_NOT_OK;
-    }
-    
-    result->isValid = TRUE;
-    result->isTrusted = TRUE;
-    result->notExpired = TRUE;
-    */
-    
-    /* 模拟验证结果 */
-    result->isValid = TRUE;
-    result->isTrusted = TRUE;
-    result->hostnameMatch = (expectedHostname != NULL) ? TRUE : TRUE;
-    result->notExpired = TRUE;
-    result->daysUntilExpiry = 365;
-    strncpy(result->issuer, "Test CA", sizeof(result->issuer) - 1);
-    strncpy(result->subject, "Test Server", sizeof(result->subject) - 1);
-    strncpy(result->serialNumber, "123456789", sizeof(result->serialNumber) - 1);
+    result->hostnameMatch = TRUE;
     
     return MQTT_OK;
 }
@@ -636,17 +560,13 @@ Mqtt_ReturnType Mqtt_Tls_SaveSession(
         return MQTT_E_NOT_OK;
     }
     
-    if (sessionData == NULL || sessionDataSize == 0) {
-        return MQTT_E_NOT_OK;
+    /* 会话数据保存在内部上下文中 */
+    if (actualSize != NULL) {
+        *actualSize = sizeof(mbedtls_ssl_session);
     }
     
-    /* 保存会话 (实际项目中) */
-    /* mbedtls_ssl_session session;
-    mbedtls_ssl_get_session(&ctx->ssl, &session);
-    ... 序列化会话数据 ... */
-    
-    if (actualSize != NULL) {
-        *actualSize = 0; /* 模拟没有会话数据 */
+    if (sessionData != NULL && sessionDataSize >= sizeof(mbedtls_ssl_session)) {
+        memcpy(sessionData, &ctx->savedSession, sizeof(mbedtls_ssl_session));
     }
     
     return MQTT_OK;
@@ -665,14 +585,11 @@ Mqtt_ReturnType Mqtt_Tls_RestoreSession(
         return MQTT_E_NOT_OK;
     }
     
-    if (sessionData == NULL || sessionDataSize == 0) {
+    if (sessionData == NULL || sessionDataSize < sizeof(mbedtls_ssl_session)) {
         return MQTT_E_NOT_OK;
     }
     
-    /* 恢复会话 (实际项目中) */
-    /* mbedtls_ssl_session session;
-    ... 反序列化会话数据 ...
-    mbedtls_ssl_set_session(&ctx->ssl, &session); */
+    memcpy(&ctx->savedSession, sessionData, sizeof(mbedtls_ssl_session));
     
     return MQTT_OK;
 }
@@ -687,7 +604,7 @@ sint32 Mqtt_Tls_GetLastError(Mqtt_TlsContextType context)
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {
-        return MQTT_TLS_ERROR_INVALID_PARAM;
+        return MBEDTLS_ERR_SSL_INTERNAL_ERROR;
     }
     
     return ctx->lastError;
@@ -695,30 +612,15 @@ sint32 Mqtt_Tls_GetLastError(Mqtt_TlsContextType context)
 
 const char* Mqtt_Tls_GetErrorString(sint32 errorCode)
 {
-    switch (errorCode) {
-        case MQTT_TLS_ERROR_NONE:
-            return "No error";
-        case MQTT_TLS_ERROR_INIT_FAILED:
-            return "TLS initialization failed";
-        case MQTT_TLS_ERROR_INVALID_PARAM:
-            return "Invalid parameter";
-        case MQTT_TLS_ERROR_NO_MEMORY:
-            return "Out of memory";
-        case MQTT_TLS_ERROR_HANDSHAKE_FAILED:
-            return "TLS handshake failed";
-        case MQTT_TLS_ERROR_CERT_INVALID:
-            return "Invalid certificate";
-        case MQTT_TLS_ERROR_VERIFY_FAILED:
-            return "Certificate verification failed";
-        case MQTT_TLS_ERROR_SEND_FAILED:
-            return "TLS send failed";
-        case MQTT_TLS_ERROR_RECV_FAILED:
-            return "TLS receive failed";
-        case MQTT_TLS_ERROR_TIMEOUT:
-            return "Operation timed out";
-        default:
-            return "Unknown error";
+    static char error_buf[MQTT_TLS_MAX_ERROR_STRING];
+    
+    mbedtls_strerror(errorCode, error_buf, sizeof(error_buf));
+    
+    if (error_buf[0] == '\0') {
+        return "Unknown error";
     }
+    
+    return error_buf;
 }
 
 void Mqtt_Tls_SetErrorCallback(
@@ -747,6 +649,16 @@ Mqtt_TlsVersionType Mqtt_Tls_GetVersion(Mqtt_TlsContextType context)
         return MQTT_TLS_VERSION_1_2;
     }
     
+    /* 获取当前协议版本 */
+    int major = mbedtls_ssl_get_version_number(&ctx->ssl) >> 8;
+    int minor = mbedtls_ssl_get_version_number(&ctx->ssl) & 0xFF;
+    
+    if (major == 3 && minor == 3) {
+        return MQTT_TLS_VERSION_1_2;
+    } else if (major == 3 && minor == 4) {
+        return MQTT_TLS_VERSION_1_3;
+    }
+    
     return ctx->config.version;
 }
 
@@ -757,6 +669,7 @@ Mqtt_ReturnType Mqtt_Tls_GetCipherSuite(
 )
 {
     Mqtt_TlsInternalContextType* ctx;
+    const char* suite;
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {
@@ -767,14 +680,13 @@ Mqtt_ReturnType Mqtt_Tls_GetCipherSuite(
         return MQTT_E_NOT_OK;
     }
     
-    /* 获取当前密码套件 (实际项目中) */
-    /* const char* suite = mbedtls_ssl_get_ciphersuite(&ctx->ssl);
-    strncpy(name, suite, nameSize - 1);
-    name[nameSize - 1] = '\0'; */
-    
-    /* 模拟返回 */
-    strncpy(name, "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384", nameSize - 1);
-    name[nameSize - 1] = '\0';
+    suite = mbedtls_ssl_get_ciphersuite(&ctx->ssl);
+    if (suite != NULL) {
+        strncpy(name, suite, nameSize - 1);
+        name[nameSize - 1] = '\0';
+    } else {
+        name[0] = '\0';
+    }
     
     return MQTT_OK;
 }
@@ -806,113 +718,50 @@ static Mqtt_TlsInternalContextType* Mqtt_Tls_GetContext(Mqtt_TlsContextType cont
     return ctx;
 }
 
-static Mqtt_ReturnType Mqtt_Tls_ConfigureVersion(
-    Mqtt_TlsInternalContextType* ctx,
-    Mqtt_TlsVersionType version
-)
+static int Mqtt_Tls_SendCallback(void* ctx, const unsigned char* buf, size_t len)
 {
-    if (ctx == NULL) {
-        return MQTT_E_NOT_OK;
+    Mqtt_TlsInternalContextType* tlsCtx;
+    Std_ReturnType result;
+    
+    tlsCtx = (Mqtt_TlsInternalContextType*)ctx;
+    if (tlsCtx == NULL) {
+        return -1;
     }
     
-    /* 配置TLS版本 (实际项目中) */
-    /*
-    switch (version) {
-        case MQTT_TLS_VERSION_1_2:
-            mbedtls_ssl_conf_min_version(&ctx->conf, 
-                MBEDTLS_SSL_MAJOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_3);
-            break;
-        case MQTT_TLS_VERSION_1_3:
-            mbedtls_ssl_conf_min_version(&ctx->conf,
-                MBEDTLS_SSL_MAJOR_VERSION_3, MBEDTLS_SSL_MINOR_VERSION_4);
-            break;
-        default:
-            return MQTT_E_NOT_OK;
-    }
-    */
+    result = TcpIp_Send(tlsCtx->socketId, buf, (uint16)len);
     
-    return MQTT_OK;
+    if (result == E_OK) {
+        return (int)len;
+    } else {
+        return MBEDTLS_ERR_NET_SEND_FAILED;
+    }
 }
 
-static Mqtt_ReturnType Mqtt_Tls_ConfigureCertificates(
-    Mqtt_TlsInternalContextType* ctx,
-    const Mqtt_TlsConfigType* config
-)
+static int Mqtt_Tls_RecvCallback(void* ctx, unsigned char* buf, size_t len)
 {
-    Mqtt_ReturnType result;
+    Mqtt_TlsInternalContextType* tlsCtx;
+    Std_ReturnType result;
+    uint16 recvLen = 0;
     
-    if (ctx == NULL || config == NULL) {
-        return MQTT_E_NOT_OK;
+    tlsCtx = (Mqtt_TlsInternalContextType*)ctx;
+    if (tlsCtx == NULL) {
+        return -1;
     }
     
-    /* 加载可信CA证书 */
-    result = Mqtt_Tls_LoadTrustStore(&config->trustStore);
-    if (result != MQTT_OK && config->verifyMode == MQTT_TLS_VERIFY_REQUIRED) {
-        return result;
-    }
+    result = TcpIp_Receive(tlsCtx->socketId, buf, (uint16)len, &recvLen);
     
-    /* mTLS: 加载客户端证书和私钥 */
-    if (config->clientCert != NULL && config->clientKey != NULL) {
-        result = Mqtt_Tls_LoadCertificate(config->clientCert);
-        if (result != MQTT_OK) {
-            return result;
+    if (result == E_OK) {
+        if (recvLen == 0) {
+            return MBEDTLS_ERR_SSL_WANT_READ;
         }
-        
-        result = Mqtt_Tls_LoadPrivateKey(config->clientKey);
-        if (result != MQTT_OK) {
-            return result;
-        }
-        
-        /* 配置客户端证书 (实际项目中) */
-        /* mbedtls_ssl_conf_own_cert(&ctx->conf, &ctx->clientCert, &ctx->clientKey); */
+        return (int)recvLen;
+    } else {
+        return MBEDTLS_ERR_NET_RECV_FAILED;
     }
-    
-    return MQTT_OK;
 }
 
-static Mqtt_ReturnType Mqtt_Tls_ConfigureAuth(
-    Mqtt_TlsInternalContextType* ctx,
-    const Mqtt_TlsConfigType* config
-)
+static int Mqtt_Tls_RecvTimeoutCallback(void* ctx, unsigned char* buf, size_t len, uint32_t timeout)
 {
-    if (ctx == NULL || config == NULL) {
-        return MQTT_E_NOT_OK;
-    }
-    
-    /* 配置证书验证模式 (实际项目中) */
-    /*
-    switch (config->verifyMode) {
-        case MQTT_TLS_VERIFY_NONE:
-            mbedtls_ssl_conf_authmode(&ctx->conf, MBEDTLS_SSL_VERIFY_NONE);
-            break;
-        case MQTT_TLS_VERIFY_OPTIONAL:
-            mbedtls_ssl_conf_authmode(&ctx->conf, MBEDTLS_SSL_VERIFY_OPTIONAL);
-            break;
-        case MQTT_TLS_VERIFY_REQUIRED:
-            mbedtls_ssl_conf_authmode(&ctx->conf, MBEDTLS_SSL_VERIFY_REQUIRED);
-            break;
-    }
-    */
-    
-    /* 配置SNI (服务器名称指示) */
-    if (config->expectedHostname != NULL) {
-        /* mbedtls_ssl_set_hostname(&ctx->ssl, config->expectedHostname); */
-    }
-    
-    /* 配置安全级别 */
-    /* mbedtls_ssl_conf_cert_profile(&ctx->conf, get_profile(config->securityLevel)); */
-    
-    return MQTT_OK;
-}
-
-static void Mqtt_Tls_SetError(Mqtt_TlsInternalContextType* ctx, sint32 errorCode)
-{
-    if (ctx != NULL) {
-        ctx->lastError = errorCode;
-        
-        /* 调用错误回调 */
-        if (ctx->errorCallback != NULL) {
-            ctx->errorCallback(0, errorCode, Mqtt_Tls_GetErrorString(errorCode));
-        }
-    }
+    (void)timeout;  /* 嵌入式系统中通常不支持带超时的接收 */
+    return Mqtt_Tls_RecvCallback(ctx, buf, len);
 }

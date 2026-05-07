@@ -1,0 +1,15 @@
+# 排除mbedTLS子模块内容
+mbedtls/*
+!mbedtls/configs/
+!mbedtls/configs/config-yule-autosar.h
+
+# 保留适配层
+!yule-mbedtls-adapter/
+
+# 常见排除
+*.o
+*.a
+*.so
+*.dll
+build/
+Build/
