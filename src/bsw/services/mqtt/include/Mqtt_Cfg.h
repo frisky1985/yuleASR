@@ -46,7 +46,23 @@
 /**
  * @brief 支持SSL/TLS加密连接
  */
-#define MQTT_SUPPORT_TLS          (STD_OFF)
+#define MQTT_SUPPORT_TLS          (STD_ON)
+
+/**
+ * @brief 支持mTLS双向认证
+ */
+#define MQTT_SUPPORT_MTLS         (STD_ON)
+
+/**
+ * @brief 支持SSL 3.0 (已弃用，仅用于兼容老系统)
+ */
+#define MQTT_SUPPORT_SSL_V30      (STD_OFF)
+
+/**
+ * @brief 默认TLS版本
+ * @options MQTT_TLS_VERSION_1_2, MQTT_TLS_VERSION_1_3
+ */
+#define MQTT_DEFAULT_TLS_VERSION  (MQTT_TLS_VERSION_1_2)
 
 /**
  * @brief 支持自动重连
@@ -112,8 +128,61 @@
 #define MQTT_MAIN_FUNCTION_PERIOD_MS  (10U)
 
 /*============================================================================
- * 默认值配置
+ * TLS/SSL配置
  *===========================================================================*/
+#if (MQTT_SUPPORT_TLS == STD_ON)
+
+/**
+ * @brief TLS发送缓冲区大小(加密后数据更大)
+ */
+#define MQTT_TLS_SEND_BUFFER_SIZE     (4096U)
+
+/**
+ * @brief TLS接收缓冲区大小
+ */
+#define MQTT_TLS_RECV_BUFFER_SIZE     (4096U)
+
+/**
+ * @brief TLS握手超时(毫秒)
+ */
+#define MQTT_TLS_HANDSHAKE_TIMEOUT_MS (10000U)
+
+/**
+ * @brief TLS会话缓存大小
+ */
+#define MQTT_TLS_SESSION_CACHE_SIZE   (1024U)
+
+/**
+ * @brief 最大证书链长度
+ */
+#define MQTT_TLS_MAX_CERT_CHAIN_DEPTH (3U)
+
+/**
+ * @brief 验证证书过期时间
+ */
+#define MQTT_TLS_VERIFY_EXPIRY        (STD_ON)
+
+/**
+ * @brief 验证证书CN/SAN
+ */
+#define MQTT_TLS_VERIFY_HOSTNAME      (STD_ON)
+
+/**
+ * @brief 启用安全重协商
+ */
+#define MQTT_TLS_SECURE_RENEGOTIATION (STD_ON)
+
+/**
+ * @brief 启用会话恢复
+ */
+#define MQTT_TLS_SESSION_RESUMPTION   (STD_ON)
+
+/**
+ * @brief 使用硬件加密加速(如果可用)
+ */
+#define MQTT_TLS_HW_ACCELERATION      (STD_OFF)
+
+#endif /* MQTT_SUPPORT_TLS */
 /**
  * @brief 默认保活时间(秒)
  */
@@ -194,6 +263,10 @@ typedef struct {
  *===========================================================================*/
 #include "ComStack_Types.h"
 #include "TcpIp.h"
+
+#if (MQTT_SUPPORT_TLS == STD_ON)
+#include "Mqtt_Tls.h"
+#endif
 
 #if (MQTT_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"

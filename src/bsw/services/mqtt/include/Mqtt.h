@@ -97,12 +97,17 @@ typedef uint16 Mqtt_SubscriptionIdType;
  * @brief MQTT连接状态
  */
 typedef enum {
-    MQTT_STATE_UNINIT = 0,      /**< 未初始化 */
-    MQTT_STATE_DISCONNECTED,    /**< 已断开 */
-    MQTT_STATE_CONNECTING,      /**< 连接中 */
-    MQTT_STATE_CONNECTED,       /**< 已连接 */
-    MQTT_STATE_DISCONNECTING,   /**< 断开中 */
-    MQTT_STATE_RECONNECTING     /**< 重连中 */
+    MQTT_STATE_UNINIT = 0,              /**< 未初始化 */
+    MQTT_STATE_DISCONNECTED,            /**< 已断开 */
+    MQTT_STATE_CONNECTING,              /**< 初始化连接中 */
+    MQTT_STATE_TCP_CONNECTING,          /**< TCP连接中 */
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    MQTT_STATE_TLS_HANDSHAKING,         /**< TLS握手中 */
+#endif
+    MQTT_STATE_MQTT_CONNECTING,         /**< MQTT协议连接中 */
+    MQTT_STATE_CONNECTED,               /**< 已连接 */
+    MQTT_STATE_DISCONNECTING,           /**< 断开中 */
+    MQTT_STATE_RECONNECTING             /**< 重连中 */
 } Mqtt_ConnectionStateType;
 
 /**
@@ -170,6 +175,10 @@ typedef struct {
     uint16 sendTimeoutMs;                   /**< 发送超时(毫秒) */
     boolean autoReconnect;                  /**< 自动重连 */
     uint16 reconnectIntervalMs;             /**< 重连间隔(毫秒) */
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    boolean useTls;                         /**< 使用TLS加密 */
+    const Mqtt_TlsConfigType* tlsConfig;    /**< TLS配置(使用TLS时必填) */
+#endif
 } Mqtt_ConnectionConfigType;
 
 /**

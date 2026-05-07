@@ -19,6 +19,10 @@
 #include <string.h>
 #include <stdio.h>
 
+#if (MQTT_SUPPORT_TLS == STD_ON)
+#include "Mqtt_Tls.h"
+#endif
+
 /*============================================================================
  * 内部宏定义
  *===========================================================================*/
@@ -95,6 +99,13 @@ typedef struct {
     
     /* TCP连接句柄 */
     TcpIp_SocketIdType socketId;
+    
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    /* TLS上下文 */
+    boolean useTls;
+    Mqtt_TlsContextType tlsContext;
+    Mqtt_TlsConfigType tlsConfig;
+#endif
 } Mqtt_InternalConnectionType;
 
 /*============================================================================
@@ -150,6 +161,11 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
         Mqtt_Connections[i].reconnectAttempts = 0;
         Mqtt_Connections[i].pendingPing = FALSE;
         
+#if (MQTT_SUPPORT_TLS == STD_ON)
+        Mqtt_Connections[i].useTls = FALSE;
+        Mqtt_Connections[i].tlsContext = NULL;
+#endif
+        
         memset(&Mqtt_Connections[i].info, 0, sizeof(Mqtt_ConnectionInfoType));
         memset(&Mqtt_Connections[i].config, 0, sizeof(Mqtt_ConnectionConfigType));
         
@@ -158,6 +174,11 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
             Mqtt_Connections[i].subscriptions[j].callback = NULL;
         }
     }
+    
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    /* 初始化TLS子系统 */
+    Mqtt_Tls_Init();
+#endif
     
     Mqtt_ConfigPtr = config;
     Mqtt_Initialized = TRUE;
@@ -224,9 +245,38 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     /* 保存配置 */
     memcpy(&conn->config, connConfig, sizeof(Mqtt_ConnectionConfigType));
     
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    /* 初始化TLS配置 */
+    conn->useTls = connConfig->useTls;
+    if (conn->useTls) {
+        Mqtt_ReturnType tlsResult;
+        
+        if (connConfig->tlsConfig == NULL) {
+            MQTT_DET_REPORT_ERROR(MQTT_SID_CONNECT, MQTT_E_PARAM_CONFIG);
+            return MQTT_E_NOT_OK;
+        }
+        
+        /* 复制TLS配置 */
+        memcpy(&conn->tlsConfig, connConfig->tlsConfig, sizeof(Mqtt_TlsConfigType));
+        
+        /* 创建TLS上下文 */
+        tlsResult = Mqtt_Tls_CreateContext(&conn->tlsConfig, &conn->tlsContext);
+        if (tlsResult != MQTT_OK) {
+            MQTT_DET_REPORT_ERROR(MQTT_SID_CONNECT, MQTT_E_CONNECTION_FAILED);
+            return MQTT_E_CONNECTION_FAILED;
+        }
+    }
+#endif
+    
     /* 初始化TCP连接 */
     result = TcpIp_SocketCreate(&conn->socketId);
     if (result != E_OK) {
+#if (MQTT_SUPPORT_TLS == STD_ON)
+        if (conn->useTls && conn->tlsContext != NULL) {
+            Mqtt_Tls_DestroyContext(conn->tlsContext);
+            conn->tlsContext = NULL;
+        }
+#endif
         return MQTT_E_CONNECTION_FAILED;
     }
     
@@ -606,19 +656,57 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
             break;
             
         case MQTT_STATE_DISCONNECTING:
-            /* 等待发送完成 */
+            /* 关闭TLS连接 */
+#if (MQTT_SUPPORT_TLS == STD_ON)
+            if (conn->useTls && conn->tlsContext != NULL) {
+                Mqtt_Tls_Close(conn->tlsContext);
+                Mqtt_Tls_DestroyContext(conn->tlsContext);
+                conn->tlsContext = NULL;
+            }
+#endif
+            /* 关闭TCP连接 */
+            if (conn->socketId != TCPIP_SOCKETID_INVALID) {
+                TcpIp_SocketClose(conn->socketId);
+                conn->socketId = TCPIP_SOCKETID_INVALID;
+            }
             Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTED);
             break;
             
-        case MQTT_STATE_RECONNECTING:
-            /* 重连逻辑 */
-            conn->reconnectAttempts++;
-            if (conn->reconnectAttempts > MQTT_MAX_RECONNECT_ATTEMPTS) {
-                Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTED);
-            } else {
-                Mqtt_UpdateState(conn, MQTT_STATE_CONNECTING);
+    case MQTT_STATE_TCP_CONNECTING:
+        /* 检查TCP连接是否完成 */
+        if (TcpIp_IsConnected(conn->socketId)) {
+#if (MQTT_SUPPORT_TLS == STD_ON)
+            if (conn->useTls) {
+                /* 开始TLS握手 */
+                Mqtt_UpdateState(conn, MQTT_STATE_TLS_HANDSHAKING);
+            } else
+#endif
+            {
+                /* 直接发送MQTT CONNECT报文 */
+                Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
             }
-            break;
+        } else if (Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) {
+            Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
+        }
+        break;
+        
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    case MQTT_STATE_TLS_HANDSHAKING:
+        /* 执行TLS握手 */
+        {
+            Mqtt_ReturnType tlsResult;
+            tlsResult = Mqtt_Tls_PerformHandshake(conn->tlsContext, 
+                                                   conn->socketId, 
+                                                   NULL);
+            if (tlsResult == MQTT_OK) {
+                /* TLS握手成功，发送MQTT CONNECT报文 */
+                Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
+            } else if (Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) {
+                Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
+            }
+        }
+        break;
+#endif
             
         default:
             break;
@@ -645,9 +733,20 @@ static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,
         return MQTT_E_NOCONN;
     }
     
-    result = TcpIp_Send(conn->socketId, data, length);
-    
-    return (result == E_OK) ? MQTT_OK : MQTT_E_NOT_OK;
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    if (conn->useTls && conn->tlsContext != NULL) {
+        /* 使用TLS加密发送 */
+        uint32 sentLength = 0;
+        Mqtt_ReturnType tlsResult;
+        tlsResult = Mqtt_Tls_Send(conn->tlsContext, data, length, &sentLength);
+        return tlsResult;
+    } else
+#endif
+    {
+        /* 使用明文TCP发送 */
+        result = TcpIp_Send(conn->socketId, data, length);
+        return (result == E_OK) ? MQTT_OK : MQTT_E_NOT_OK;
+    }
 }
 
 static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
@@ -659,17 +758,34 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
         return MQTT_E_NOCONN;
     }
     
-    result = TcpIp_Receive(conn->socketId, conn->recvBuffer, 
-                           MQTT_RECV_BUFFER_SIZE, &receivedLength);
-    
-    if (result == E_OK && receivedLength > 0) {
-        conn->recvLength = receivedLength;
-        conn->info.bytesReceived += receivedLength;
+#if (MQTT_SUPPORT_TLS == STD_ON)
+    if (conn->useTls && conn->tlsContext != NULL) {
+        /* 使用TLS接收解密 */
+        uint32 recvLen = 0;
+        Mqtt_ReturnType tlsResult;
+        tlsResult = Mqtt_Tls_Receive(conn->tlsContext, conn->recvBuffer,
+                                      MQTT_RECV_BUFFER_SIZE, &recvLen);
+        if (tlsResult == MQTT_OK && recvLen > 0) {
+            conn->recvLength = (uint16)recvLen;
+            conn->info.bytesReceived += recvLen;
+        }
+        return tlsResult;
+    } else
+#endif
+    {
+        /* 使用明文TCP接收 */
+        result = TcpIp_Receive(conn->socketId, conn->recvBuffer, 
+                               MQTT_RECV_BUFFER_SIZE, &receivedLength);
         
-        /* TODO: 解析接收的报文 */
+        if (result == E_OK && receivedLength > 0) {
+            conn->recvLength = receivedLength;
+            conn->info.bytesReceived += receivedLength;
+            
+            /* TODO: 解析接收的报文 */
+        }
+        
+        return (result == E_OK) ? MQTT_OK : MQTT_E_NOT_OK;
     }
-    
-    return (result == E_OK) ? MQTT_OK : MQTT_E_NOT_OK;
 }
 
 /* 编码函数实现示例 - 完整实现需更多细节 */
