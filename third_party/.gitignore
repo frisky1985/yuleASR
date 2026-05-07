@@ -1,9 +1,8 @@
-# 排除mbedTLS子模块内容
-mbedtls/*
+# mbedTLS作为git submodule管理
+# 所有mbedtls目录内容通过submodule管理
+# 这里只保留自定义配置和适配器
 !mbedtls/configs/
 !mbedtls/configs/config-yule-autosar.h
-
-# 保留适配层
 !yule-mbedtls-adapter/
 
 # 常见排除
