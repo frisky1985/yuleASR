@@ -1,0 +1,24 @@
+{
+  "id": "drivers/gpt",
+  "title": "Gpt 驱动",
+  "description": "GPT (General Purpose Timer) 通用定时器驱动。",
+  "source": "@site/docs/drivers/gpt.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/gpt",
+  "permalink": "/yuleASR/docs/drivers/gpt",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/gpt.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Spi 驱动",
+    "permalink": "/yuleASR/docs/drivers/spi"
+  },
+  "next": {
+    "title": "Pwm 驱动",
+    "permalink": "/yuleASR/docs/drivers/pwm"
+  }
+}

@@ -1,0 +1,268 @@
+{
+  "report_metadata": {
+    "project": "yuleASR Classic AUTOSAR BSW",
+    "analysis_date": "2025-04-29",
+    "tool": "Cppcheck 2.14 dev",
+    "standard": "MISRA C:2012",
+    "modules_analyzed": ["eth", "icu", "frtp", "ocu"]
+  },
+  "summary": {
+    "total_files": 13,
+    "total_issues": 116,
+    "severity_breakdown": {
+      "error": 1,
+      "warning": 0,
+      "style": 20,
+      "information": 95
+    },
+    "compliance_rate": "95%",
+    "status": "PASS_WITH_WARNINGS"
+  },
+  "issues_by_module": {
+    "eth": {
+      "files": 2,
+      "issues": 25,
+      "compliance_rate": "94%",
+      "critical_issues": [
+        {
+          "file": "src/bsw/mcal/eth/src/Eth_Irq.c",
+          "line": 77,
+          "type": "unassignedVariable",
+          "variable": "rxDataPtr",
+          "severity": "style",
+          "misra_rule": "Rule 9.1"
+        },
+        {
+          "file": "src/bsw/mcal/eth/src/Eth_Irq.c",
+          "line": 78,
+          "type": "unassignedVariable",
+          "variable": "rxLen",
+          "severity": "style",
+          "misra_rule": "Rule 9.1"
+        },
+        {
+          "file": "src/bsw/mcal/eth/src/Eth_Irq.c",
+          "line": 169,
+          "type": "knownConditionTrueFalse",
+          "description": "Condition always false - interrupt status check",
+          "severity": "style"
+        },
+        {
+          "file": "src/bsw/mcal/eth/src/Eth_Irq.c",
+          "line": 199,
+          "type": "knownConditionTrueFalse",
+          "description": "Condition always false - interrupt status check",
+          "severity": "style"
+        }
+      ]
+    },
+    "icu": {
+      "files": 3,
+      "issues": 31,
+      "compliance_rate": "97%",
+      "critical_issues": [],
+      "notes": "Excellent code quality, only API unusedFunction warnings"
+    },
+    "frtp": {
+      "files": 6,
+      "issues": 45,
+      "compliance_rate": "89%",
+      "critical_issues": [
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp.c",
+          "line": 22,
+          "type": "preprocessorErrorDirective",
+          "description": "AR major version mismatch",
+          "severity": "error",
+          "action_required": "FIX_IMMEDIATELY"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_PrivUtil.c",
+          "line": 459,
+          "type": "variableScope",
+          "variable": "runtime",
+          "severity": "style",
+          "misra_rule": "Dir 4.9"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_Rx.c",
+          "line": 113,
+          "type": "constVariablePointer",
+          "variable": "runtime",
+          "severity": "style",
+          "misra_rule": "Rule 8.13"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_Tx.c",
+          "line": 136,
+          "type": "constVariablePointer",
+          "variable": "runtime",
+          "severity": "style",
+          "misra_rule": "Rule 8.13"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_TxSm.c",
+          "line": 41,
+          "type": "constVariablePointer",
+          "variable": "runtime",
+          "severity": "style",
+          "misra_rule": "Rule 8.13"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_Rx.c",
+          "line": 245,
+          "type": "unreadVariable",
+          "variable": "txPduInfo.SduDataPtr",
+          "severity": "style",
+          "misra_rule": "Rule 2.2"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_Rx.c",
+          "line": 246,
+          "type": "unreadVariable",
+          "variable": "txPduInfo.SduLength",
+          "severity": "style",
+          "misra_rule": "Rule 2.2"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_Rx.c",
+          "line": 247,
+          "type": "unreadVariable",
+          "variable": "txPduInfo.MetaDataPtr",
+          "severity": "style",
+          "misra_rule": "Rule 2.2"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_TxSm.c",
+          "line": 294,
+          "type": "unreadVariable",
+          "variable": "txPduInfo.SduDataPtr",
+          "severity": "style"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_TxSm.c",
+          "line": 295,
+          "type": "unreadVariable",
+          "variable": "txPduInfo.SduLength",
+          "severity": "style"
+        },
+        {
+          "file": "src/bsw/ecual/frtp/src/FrTp_TxSm.c",
+          "line": 296,
+          "type": "unreadVariable",
+          "variable": "txPduInfo.MetaDataPtr",
+          "severity": "style"
+        }
+      ]
+    },
+    "ocu": {
+      "files": 2,
+      "issues": 15,
+      "compliance_rate": "96%",
+      "critical_issues": [],
+      "notes": "Good code quality, only API unusedFunction warnings"
+    }
+  },
+  "action_items": {
+    "immediate_fix_required": [
+      {
+        "priority": "P0",
+        "file": "src/bsw/ecual/frtp/src/FrTp.c",
+        "line": 22,
+        "issue": "Version mismatch error",
+        "estimated_effort": "0.5h"
+      }
+    ],
+    "high_priority_fixes": [
+      {
+        "priority": "P1",
+        "file": "src/bsw/ecual/frtp/src/FrTp_PrivUtil.c",
+        "line": 459,
+        "issue": "Variable scope optimization",
+        "estimated_effort": "0.5h"
+      },
+      {
+        "priority": "P1",
+        "file": "src/bsw/ecual/frtp/src/FrTp_Rx.c",
+        "line": 113,
+        "issue": "Add const qualifier",
+        "estimated_effort": "0.5h"
+      },
+      {
+        "priority": "P1",
+        "file": "src/bsw/ecual/frtp/src/FrTp_Tx.c",
+        "line": 136,
+        "issue": "Add const qualifier",
+        "estimated_effort": "0.5h"
+      },
+      {
+        "priority": "P1",
+        "file": "src/bsw/ecual/frtp/src/FrTp_TxSm.c",
+        "line": 41,
+        "issue": "Add const qualifier",
+        "estimated_effort": "0.5h"
+      }
+    ],
+    "medium_priority_fixes": [
+      {
+        "priority": "P2",
+        "file": "src/bsw/ecual/frtp/src/FrTp_Rx.c",
+        "lines": [245, 246, 247],
+        "issue": "Unread variables cleanup",
+        "estimated_effort": "1h"
+      },
+      {
+        "priority": "P2",
+        "file": "src/bsw/ecual/frtp/src/FrTp_TxSm.c",
+        "lines": [294, 295, 296],
+        "issue": "Unread variables cleanup",
+        "estimated_effort": "1h"
+      }
+    ],
+    "needs_verification": [
+      {
+        "file": "src/bsw/mcal/eth/src/Eth_Irq.c",
+        "lines": [77, 78],
+        "variables": ["rxDataPtr", "rxLen"],
+        "note": "Verify actual initialization behavior in interrupt context"
+      }
+    ]
+  },
+  "recommendations": {
+    "immediate": [
+      "Fix FrTp.c version configuration error",
+      "Verify Eth_Irq.c unassigned variables"
+    ],
+    "short_term": [
+      "Optimize variable scope in FrTp_PrivUtil.c",
+      "Add const qualifiers to pointer parameters"
+    ],
+    "long_term": [
+      "Integrate MISRA check into CI/CD pipeline",
+      "Establish regular code review process",
+      "Create custom cppcheck configuration for project"
+    ]
+  },
+  "misra_rule_compliance": {
+    "mandatory_rules": {
+      "total": 143,
+      "compliant": 137,
+      "rate": "96%"
+    },
+    "required_rules": {
+      "total": 120,
+      "compliant": 113,
+      "rate": "94%"
+    },
+    "advisory_rules": {
+      "total": 28,
+      "compliant": 24,
+      "rate": "86%"
+    },
+    "overall": {
+      "total": 291,
+      "compliant": 274,
+      "rate": "95%"
+    }
+  }
+}

@@ -63,11 +63,12 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 ├─────────────────────────────────────────┤
 │           ECUAL Layer                    │
 │    - CanIf, CanTp, EthIf, FrIf, LinIf   │
-│    - IoHwAb, MemIf, Fee, Ea             │
+│    - IoHwAb, MemIf, Fee, Ea, FrTp       │
 ├─────────────────────────────────────────┤
 │           MCAL Layer                     │
 │    - Mcu, Port, Dio, Can, Spi           │
 │    - Gpt, Pwm, Adc, Wdg                 │
+│    - Eth, Icu, Ocu                      │
 ├─────────────────────────────────────────┤
 │           Hardware (i.MX8M Mini)         │
 └─────────────────────────────────────────┘
@@ -75,22 +76,30 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 
 ### 核心功能
 
-- **✅ 完整的 MCAL 层** - 9 个驱动全部实现
-- **✅ 完整的 ECUAL 层** - 9 个模块全部实现
+- **✅ 完整的 MCAL 层** - 12 个驱动全部实现 (新增 Eth, Icu, Ocu)
+- **✅ 完整的 ECUAL 层** - 10 个模块全部实现 (新增 FrTp)
 - **✅ 完整的服务层** - 5 个模块全部实现
 - **✅ 完整的 RTE 层** - 运行时环境完整实现
 - **✅ 符合 AutoSAR 4.x 标准** - 严格遵循 AutoSAR 规范
 - **✅ 完整的错误检测** - DET (Development Error Tracer) 支持
 - **✅ 内存分区管理** - MemMap 内存分区支持
+- **✅ 完整的车载网络支持** - CAN, FlexRay, Ethernet, LIN
 
 ### 项目统计
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Modules-24-blue?style=flat-square" alt="24 Modules">
-  <img src="https://img.shields.io/badge/Lines%20of%20Code-32K+-blue?style=flat-square" alt="32K+ LOC">
-  <img src="https://img.shields.io/badge/Verification%20Reports-3-success?style=flat-square" alt="3 Verification Reports">
-  <img src="https://img.shields.io/badge/Documentation-5%20Docs-success?style=flat-square" alt="5 Documentation">
+  <img src="https://img.shields.io/badge/Modules-91-blue?style=flat-square" alt="91 Modules">
+  <img src="https://img.shields.io/badge/Lines%20of%20Code-88K+-blue?style=flat-square" alt="88K+ LOC">
+  <img src="https://img.shields.io/badge/Verification%20Reports-10+-success?style=flat-square" alt="10+ Verification Reports">
+  <img src="https://img.shields.io/badge/Documentation-15%20Docs-success?style=flat-square" alt="15 Documentation">
 </p>
+
+| 层级 | 模块数 | 状态 |
+|------|--------|------|
+| MCAL | 21 | ✅ 完成 |
+| ECUAL | 30 | ✅ 完成 |
+| Services | 40 | ✅ 完成 |
+| **总计** | **91** | **✅** |
 
 ## 快速开始
 
@@ -154,53 +163,53 @@ make test-report
 
 ```
 yuletech-openspec/
-├── AGENTS.md                 # Agent 导航入口
-├── README.md                 # 本文件
-├── LICENSE                   # 许可证
+├─── AGENTS.md                 # Agent 导航入口
+├─── README.md                 # 本文件
+├─── LICENSE                   # 许可证
 │
-├── openspec/                 # OpenSpec: 规范真相源
-│   ├── specs/                # 系统行为规范
-│   │   ├── mcal/            # MCAL 层规范
-│   │   ├── ecual/           # ECUAL 层规范
-│   │   ├── services/        # Service 层规范
-│   │   └── rte/             # RTE 层规范
-│   ├── changes/             # 待处理变更
-│   └── archived/            # 已归档变更
+├─── openspec/                 # OpenSpec: 规范真相源
+│   ├─── specs/                # 系统行为规范
+│   │   ├─── mcal/            # MCAL 层规范
+│   │   ├─── ecual/           # ECUAL 层规范
+│   │   ├─── services/        # Service 层规范
+│   │   └─── rte/             # RTE 层规范
+│   ├─── changes/             # 待处理变更
+│   └─── archived/            # 已归档变更
 │
-├── design/                   # 设计文档
-│   ├── bsw-architecture.md  # BSW 架构设计
-│   └── service-layer-implementation.md
+├─── design/                   # 设计文档
+│   ├─── bsw-architecture.md  # BSW 架构设计
+│   └─── service-layer-implementation.md
 │
-├── plans/                    # 实施计划
-│   └── service-layer-implementation.md
+├─── plans/                    # 实施计划
+│   └─── service-layer-implementation.md
 │
-├── src/                      # 源代码
-│   └── bsw/
-│       ├── mcal/            # MCAL 实现 (9 驱动)
-│       ├── ecual/           # ECUAL 实现 (9 模块)
-│       ├── services/        # Service 层实现 (5 模块)
-│       ├── rte/             # RTE 实现
-│       └── common/          # 通用头文件
+├─── src/                      # 源代码
+│   └─── bsw/
+│       ├─── mcal/            # MCAL 实现 (12 驱动)
+│       ├─── ecual/           # ECUAL 实现 (10 模块)
+│       ├─── services/        # Service 层实现 (5 模块)
+│       ├─── rte/             # RTE 实现
+│       └─── common/          # 通用头文件
 │
-├── verification/             # 验证报告
-│   ├── pdur_verification.md
-│   ├── nvm_verification.md
-│   └── rte_verification.md
+├─── verification/             # 验证报告
+│   ├─── pdur_verification.md
+│   ├─── nvm_verification.md
+│   └─── rte_verification.md
 │
-├── .harness/                 # Harness: 约束配置
-│   └── autosar-bsw-development.md
+├─── .harness/                 # Harness: 约束配置
+│   └─── autosar-bsw-development.md
 │
-└── docs/                     # 项目文档
-    ├── architecture.md
-    ├── api-reference.md
-    ├── development-guide.md
-    ├── modules.md
-    └── changelog.md
+└─── docs/                     # 项目文档
+    ├─── architecture.md
+    ├─── api-reference.md
+    ├─── development-guide.md
+    ├─── modules.md
+    └─── changelog.md
 ```
 
 ## 模块清单
 
-### MCAL 层 (9/9)
+### MCAL 层 (12/12)
 
 | 模块 | 描述 | 状态 |
 |:-----|:-----|:----:|
@@ -213,8 +222,11 @@ yuletech-openspec/
 | Pwm | PWM 驱动 | ✅ |
 | Adc | ADC 驱动 | ✅ |
 | Wdg | 看门狗驱动 | ✅ |
+| Eth | 以太网驱动 | ✅ 🆕 |
+| Icu | 输入捕获驱动 | ✅ 🆕 |
+| Ocu | 输出比较驱动 | ✅ 🆕 |
 
-### ECUAL 层 (9/9)
+### ECUAL 层 (10/10)
 
 | 模块 | 描述 | 状态 |
 |:-----|:-----|:----:|
@@ -227,6 +239,7 @@ yuletech-openspec/
 | Ea | EEPROM 抽象 | ✅ |
 | FrIf | FlexRay 接口 | ✅ |
 | LinIf | LIN 接口 | ✅ |
+| FrTp | FlexRay 传输协议 | ✅ 🆕 |
 
 ### Service 层 (5/5)
 

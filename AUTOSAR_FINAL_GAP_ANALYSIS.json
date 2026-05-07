@@ -1,0 +1,276 @@
+{
+  "timestamp": "2026-05-05",
+  "project": "/home/admin/yuleASR",
+  "summary": {
+    "total_modules": 88,
+    "implemented": 54,
+    "missing": 34,
+    "completion_rate": 61.4,
+    "by_layer": {
+      "MCAL": {
+        "total": 23,
+        "implemented": 15,
+        "rate": 65.2
+      },
+      "ECUAL": {
+        "total": 30,
+        "implemented": 12,
+        "rate": 40.0
+      },
+      "SERVICES": {
+        "total": 34,
+        "implemented": 26,
+        "rate": 76.5
+      },
+      "GENERAL": {
+        "total": 1,
+        "implemented": 1,
+        "rate": 100.0
+      }
+    }
+  },
+  "missing_modules": {
+    "MCAL": [
+      "Eep",
+      "EthSwt",
+      "EthTrcv",
+      "FlsLoader",
+      "Fr",
+      "FrArTp",
+      "FrNm",
+      "RamTst"
+    ],
+    "ECUAL": [
+      "CanNm",
+      "CanSm",
+      "CanTrcv",
+      "Dlt",
+      "DoIP",
+      "EthSM",
+      "EthTrcv",
+      "FiM",
+      "FrNm",
+      "IpduM",
+      "LinNm",
+      "LinSM",
+      "LinTp",
+      "LinTrcv",
+      "Sdi",
+      "SomeIpIf",
+      "SomeIpSd",
+      "Xcp"
+    ],
+    "SERVICES": [
+      "Crypto",
+      "EcuC",
+      "EthSM",
+      "IpduM",
+      "LinNm",
+      "SomeIpSd",
+      "Srp",
+      "Swc"
+    ]
+  },
+  "missing_by_priority": {
+    "critical": {
+      "CanNm": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "CAN\u7f51\u7edc\u7ba1\u7406\uff0c\u591a\u8282\u70b9\u901a\u4fe1\u5fc5\u9700"
+      },
+      "CanSm": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "CanIf"
+        ],
+        "reason": "CAN\u72b6\u6001\u7ba1\u7406\uff0c\u7f51\u7edc\u542f\u505c\u63a7\u5236"
+      },
+      "CanTrcv": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "CAN\u6536\u53d1\u5668\u9a71\u52a8"
+      },
+      "EthSM": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "EthIf"
+        ],
+        "reason": "Ethernet\u72b6\u6001\u7ba1\u7406"
+      },
+      "EthTrcv": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "ETH\u6536\u53d1\u5668\u9a71\u52a8"
+      },
+      "IpduM": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "PduR"
+        ],
+        "reason": "IPDU\u591a\u8def\u590d\u7528"
+      },
+      "LinSm": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "LinIf"
+        ],
+        "reason": "LIN\u72b6\u6001\u7ba1\u7406 (\u670d\u52a1\u5c42\u5df2\u6709\u90e8\u5206)"
+      },
+      "LinNm": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "LinIf"
+        ],
+        "reason": "LIN\u7f51\u7edc\u7ba1\u7406"
+      },
+      "LinTp": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "LinIf"
+        ],
+        "reason": "LIN\u4f20\u8f93\u534f\u8bae"
+      },
+      "FiM": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "Function Inhibition Manager - \u529f\u80fd\u7981\u7528\u7ba1\u7406"
+      }
+    },
+    "high": {
+      "EcuC": {
+        "layer": "SERVICES",
+        "depends_on": [],
+        "reason": "ECU\u914d\u7f6e - \u81ea\u52a8\u914d\u7f6e\u57fa\u7840"
+      },
+      "Swc": {
+        "layer": "SERVICES",
+        "depends_on": [
+          "RTE"
+        ],
+        "reason": "SWC\u63cf\u8ff0 - \u8f6f\u4ef6\u7ec4\u4ef6\u5b9a\u4e49"
+      },
+      "Xcp": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "XCP\u6807\u5b9a\u534f\u8bae - \u8c03\u8bd5\u548c\u6821\u51c6"
+      },
+      "Dlt": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "DLT\u65e5\u5fd7\u63a5\u53e3"
+      }
+    },
+    "medium": {
+      "SomeIpIf": {
+        "layer": "ECUAL",
+        "depends_on": [
+          "SomeIp"
+        ],
+        "reason": "SOME/IP\u63a5\u53e3\u5c42"
+      },
+      "SomeIpSd": {
+        "layer": "SERVICES",
+        "depends_on": [
+          "SomeIp"
+        ],
+        "reason": "SOME/IP\u670d\u52a1\u53d1\u73b0"
+      },
+      "Srp": {
+        "layer": "SERVICES",
+        "depends_on": [
+          "EthIf"
+        ],
+        "reason": "Stream Reservation Protocol (AVB)"
+      }
+    },
+    "low": {
+      "Eep": {
+        "layer": "MCAL",
+        "depends_on": [],
+        "reason": "EEPROM\u9a71\u52a8 - \u5982\u679c\u786c\u4ef6\u652f\u6301EEPROM"
+      },
+      "EthSwt": {
+        "layer": "MCAL",
+        "depends_on": [],
+        "reason": "Ethernet\u4ea4\u6362\u673a\u9a71\u52a8"
+      },
+      "FlsLoader": {
+        "layer": "MCAL",
+        "depends_on": [],
+        "reason": "Flash\u52a0\u8f7d\u5668 - OTA\u66f4\u65b0\u9700\u8981"
+      },
+      "Fr": {
+        "layer": "MCAL",
+        "depends_on": [],
+        "reason": "FlexRay\u9a71\u52a8 - \u5982\u679c\u4f7f\u7528FlexRay"
+      },
+      "FrNm": {
+        "layer": "MCAL",
+        "depends_on": [
+          "Fr"
+        ],
+        "reason": "FlexRay\u7f51\u7edc\u7ba1\u7406"
+      },
+      "FrArTp": {
+        "layer": "MCAL",
+        "depends_on": [
+          "Fr"
+        ],
+        "reason": "FlexRay\u81ea\u52a8\u5207\u6362\u534f\u8bae"
+      },
+      "RamTst": {
+        "layer": "MCAL",
+        "depends_on": [],
+        "reason": "RAM\u6d4b\u8bd5 - \u5b89\u5168\u76f8\u5173"
+      },
+      "LinTrcv": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "LIN\u6536\u53d1\u5668\u9a71\u52a8"
+      },
+      "Sdi": {
+        "layer": "ECUAL",
+        "depends_on": [],
+        "reason": "Sensor/Actuator\u63a5\u53e3"
+      }
+    }
+  },
+  "implementation_plan": {
+    "phase1_network": [
+      "CanNm",
+      "CanSm",
+      "CanTrcv",
+      "LinSm",
+      "LinNm",
+      "LinTp"
+    ],
+    "phase2_config": [
+      "EcuC",
+      "Swc",
+      "FiM",
+      "IpduM"
+    ],
+    "phase3_debug": [
+      "Xcp",
+      "Dlt",
+      "EthSM",
+      "EthTrcv"
+    ],
+    "phase4_someip": [
+      "SomeIpIf",
+      "SomeIpSd",
+      "Srp"
+    ],
+    "phase5_optional": [
+      "Eep",
+      "EthSwt",
+      "FlsLoader",
+      "Fr",
+      "FrNm",
+      "FrArTp",
+      "RamTst",
+      "LinTrcv",
+      "Sdi"
+    ]
+  }
+}

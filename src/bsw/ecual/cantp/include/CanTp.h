@@ -179,7 +179,7 @@ typedef struct {
 ==================================================================================================*/
 typedef struct {
     CanTp_PduIdType CanTpRxNPduId;
-    PduIdType CanTpRxNPduId;
+    PduIdType CanTpRxNSduId;
     PduIdType CanTpRxFcNPduConfirmationId;
     uint16 CanTpNar;                /* N_Ar timeout in ms */
     uint16 CanTpNbr;                /* N_Br timeout in ms */

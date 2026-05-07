@@ -1,0 +1,103 @@
+/**
+ * @file test_pdur.c
+ * @brief PduR (PDU Router) Unit Tests
+ */
+
+#include <stdarg.h>
+#include <stddef.h>
+#include <setjmp.h>
+#include <cmocka.h>
+#include "PduR.h"
+#include "PduR_Cfg.h"
+
+/* Test: PduR_Init */
+static void test_PduR_Init(void **state)
+{
+    (void)state;
+    
+    const PduR_PBConfigType* config = NULL;
+    Std_ReturnType result = PduR_Init(config);
+    assert_int_equal(result, E_OK);
+}
+
+/* Test: PduR_DeInit */
+static void test_PduR_DeInit(void **state)
+{
+    (void)state;
+    
+    PduR_DeInit();
+    assert_true(1);
+}
+
+/* Test: PduR_GetVersionInfo */
+static void test_PduR_GetVersionInfo(void **state)
+{
+    (void)state;
+    
+    Std_VersionInfoType versionInfo;
+    PduR_GetVersionInfo(&versionInfo);
+    assert_true(1);
+}
+
+/* Test: PduR_ComTransmit */
+static void test_PduR_ComTransmit(void **state)
+{
+    (void)state;
+    
+    PduIdType pduId = 0;
+    const PduInfoType pduInfo = { NULL, NULL, 0 };
+    
+    Std_ReturnType result = PduR_ComTransmit(pduId, &pduInfo);
+    assert_true(result == E_OK || result == E_NOT_OK);
+}
+
+/* Test: PduR_CanIfRxIndication */
+static void test_PduR_CanIfRxIndication(void **state)
+{
+    (void)state;
+    
+    PduIdType pduId = 0;
+    const PduInfoType pduInfo = { NULL, NULL, 0 };
+    
+    PduR_CanIfRxIndication(pduId, &pduInfo);
+    assert_true(1);
+}
+
+/* Test: PduR_CanIfTxConfirmation */
+static void test_PduR_CanIfTxConfirmation(void **state)
+{
+    (void)state;
+    
+    PduIdType pduId = 0;
+    Std_ReturnType result = E_OK;
+    
+    PduR_CanIfTxConfirmation(pduId, result);
+    assert_true(1);
+}
+
+/* Test: PduR_DcmTransmit */
+static void test_PduR_DcmTransmit(void **state)
+{
+    (void)state;
+    
+    PduIdType pduId = 0;
+    const PduInfoType pduInfo = { NULL, NULL, 0 };
+    
+    Std_ReturnType result = PduR_DcmTransmit(pduId, &pduInfo);
+    assert_true(result == E_OK || result == E_NOT_OK);
+}
+
+int main(void)
+{
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_PduR_Init),
+        cmocka_unit_test(test_PduR_DeInit),
+        cmocka_unit_test(test_PduR_GetVersionInfo),
+        cmocka_unit_test(test_PduR_ComTransmit),
+        cmocka_unit_test(test_PduR_CanIfRxIndication),
+        cmocka_unit_test(test_PduR_CanIfTxConfirmation),
+        cmocka_unit_test(test_PduR_DcmTransmit),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cppcheck>
+    <platform>unix64</platform>
+    <standards>
+        <c>99</c>
+    </standards>
+    <includes>
+        <dir name="src/bsw/general/inc"/>
+        <dir name="src/bsw/mcal/*/include"/>
+        <dir name="src/bsw/ecual/*/include"/>
+        <dir name="src/bsw/services/*/include"/>
+        <dir name="src/bsw/os/include"/>
+        <dir name="src/bsw/rte/include"/>
+    </includes>
+    <exclude>
+        <path>tests/mocks</path>
+        <path>tools</path>
+    </exclude>
+    <suppressions>
+        <id>missingIncludeSystem</id>
+    </suppressions>
+    <checkers>
+        <enable>all</enable>
+        <disable>unusedFunction</disable>
+        <disable>missingInclude</disable>
+    </checkers>
+</cppcheck>

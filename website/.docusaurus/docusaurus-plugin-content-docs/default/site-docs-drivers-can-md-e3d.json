@@ -1,0 +1,24 @@
+{
+  "id": "drivers/can",
+  "title": "Can 驱动",
+  "description": "CAN 总线驱动实现。",
+  "source": "@site/docs/drivers/can.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/can",
+  "permalink": "/yuleASR/docs/drivers/can",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/can.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dio 驱动",
+    "permalink": "/yuleASR/docs/drivers/dio"
+  },
+  "next": {
+    "title": "Spi 驱动",
+    "permalink": "/yuleASR/docs/drivers/spi"
+  }
+}

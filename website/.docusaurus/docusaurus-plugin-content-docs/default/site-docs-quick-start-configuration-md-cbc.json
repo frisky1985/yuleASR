@@ -1,0 +1,27 @@
+{
+  "id": "quick-start/configuration",
+  "title": "配置指南",
+  "description": "学习如何配置 YuleTech AutoSAR BSW Platform。",
+  "source": "@site/docs/quick-start/configuration.md",
+  "sourceDirName": "quick-start",
+  "slug": "/quick-start/configuration",
+  "permalink": "/yuleASR/docs/quick-start/configuration",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/quick-start/configuration.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "创建第一个项目",
+    "permalink": "/yuleASR/docs/quick-start/first-project"
+  },
+  "next": {
+    "title": "什么是 AutoSAR",
+    "permalink": "/yuleASR/docs/concepts/what-is-autosar"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "drivers/pwm",
+  "title": "Pwm 驱动",
+  "description": "PWM 脉冲宽度调制驱动。",
+  "source": "@site/docs/drivers/pwm.md",
+  "sourceDirName": "drivers",
+  "slug": "/drivers/pwm",
+  "permalink": "/yuleASR/docs/drivers/pwm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/pwm.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Gpt 驱动",
+    "permalink": "/yuleASR/docs/drivers/gpt"
+  },
+  "next": {
+    "title": "Adc 驱动",
+    "permalink": "/yuleASR/docs/drivers/adc"
+  }
+}

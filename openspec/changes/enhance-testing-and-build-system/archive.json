@@ -1,0 +1,64 @@
+{
+  "change_name": "enhance-testing-and-build-system",
+  "date": "2026-04-23 15:46:16",
+  "description": "\u4f7f\u7528 superpowers \u6280\u80fd\u589e\u5f3a\u6d4b\u8bd5\u6846\u67b6\u548c\u6784\u5efa\u7cfb\u7edf",
+  "agents_involved": [
+    "Test Architect Agent",
+    "Build Engineer Agent",
+    "Verification Agent"
+  ],
+  "improvements": {
+    "critical_resolved": [
+      "\u521b\u5efa\u5b8c\u6574\u7684\u6d4b\u8bd5\u6846\u67b6 (22\u4e2a\u6587\u4ef6, 130+ \u6d4b\u8bd5\u7528\u4f8b)"
+    ],
+    "high_resolved": [
+      "\u5b8c\u5584 CMake \u914d\u7f6e\u548c\u6784\u5efa\u7cfb\u7edf"
+    ],
+    "medium_resolved": [
+      "\u521b\u5efa\u9a8c\u8bc1\u62a5\u544a (Com, Dcm, Dem)",
+      "\u6dfb\u52a0\u9759\u6001\u4ee3\u7801\u5206\u6790\u914d\u7f6e",
+      "\u66f4\u65b0 CI/CD \u5de5\u4f5c\u6d41"
+    ]
+  },
+  "files_created": [
+    "tests/TEST_FRAMEWORK_SUMMARY.md",
+    "tests/README.md",
+    "tests/FRAMEWORK_GUIDE.md",
+    "tests/CMakeLists.txt",
+    "tests/mocks/mock_ecual.c",
+    "tests/mocks/mock_services.c",
+    "tests/mocks/mock_os.c",
+    "tests/mocks/mock_os.h",
+    "tests/mocks/mock_det.h",
+    "tests/mocks/mock_mcal.c",
+    "tests/mocks/mock_det.c",
+    "tests/mocks/mock_mcal.h",
+    "tests/mocks/mock_services.h",
+    "tests/mocks/mock_ecual.h",
+    "tests/unit/test_mcu.c",
+    "tests/unit/test_framework.h",
+    "tests/unit/mcal/test_port.c",
+    "tests/unit/mcal/test_can.c",
+    "tests/unit/mcal/test_spi.c",
+    "tests/unit/mcal/test_wdg.c",
+    "tests/unit/mcal/test_dio.c",
+    "tests/unit/mcal/test_pwm.c",
+    "tests/unit/mcal/test_gpt.c",
+    "tests/unit/mcal/test_mcu.c",
+    "tests/unit/mcal/test_adc.c",
+    "tests/integration/mcal/test_mcal_integration.c",
+    "tests/tools/run_tests.py",
+    "verification/Com_verification.md",
+    "verification/Dcm_verification.md",
+    "verification/Dem_verification.md",
+    "CMakeLists.txt",
+    "tools/build/CMakeLists.txt",
+    "tools/build/build.py",
+    ".harness/lint-rules/cppcheck.xml",
+    ".harness/lint-rules/.clang-format",
+    ".github/workflows/ci.yml"
+  ],
+  "files_modified": [],
+  "test_coverage_before": "1 \u4e2a\u6d4b\u8bd5\u6587\u4ef6",
+  "test_coverage_after": "22 \u4e2a\u6d4b\u8bd5\u6587\u4ef6, 130+ \u6d4b\u8bd5\u7528\u4f8b"
+}

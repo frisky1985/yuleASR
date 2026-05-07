@@ -1,0 +1,24 @@
+{
+  "id": "concepts/layered-structure",
+  "title": "分层结构",
+  "description": "了解 AutoSAR 的分层架构设计。",
+  "source": "@site/docs/concepts/layered-structure.md",
+  "sourceDirName": "concepts",
+  "slug": "/concepts/layered-structure",
+  "permalink": "/yuleASR/docs/concepts/layered-structure",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/layered-structure.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "BSW 架构",
+    "permalink": "/yuleASR/docs/concepts/bsw-architecture"
+  },
+  "next": {
+    "title": "RTE",
+    "permalink": "/yuleASR/docs/concepts/rte"
+  }
+}

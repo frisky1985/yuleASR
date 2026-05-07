@@ -252,6 +252,60 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  */
 Std_ReturnType PduR_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
 
+/*==================================================================================================
+*                                    FRTP CALLBACKS
+==================================================================================================*/
+/**
+ * @brief FrTp transmit confirmation callback
+ * @param TxPduId PDU that was transmitted
+ * @param result Transmission result
+ */
+void PduR_FrTpTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
+
+/**
+ * @brief FrTp receive indication callback
+ * @param RxPduId PDU that was received
+ * @param result Reception result
+ */
+void PduR_FrTpRxIndication(PduIdType RxPduId, Std_ReturnType result);
+
+/**
+ * @brief FrTp start of reception callback
+ * @param RxPduId PDU to receive
+ * @param PduInfoPtr Pointer to PDU info
+ * @param TpSduLength Total TP SDU length
+ * @param bufferSizePtr Pointer to store available buffer size
+ * @return Buffer request status
+ */
+BufReq_ReturnType PduR_FrTpStartOfReception(PduIdType RxPduId, 
+                                             const PduInfoType* PduInfoPtr,
+                                             PduLengthType TpSduLength,
+                                             PduLengthType* bufferSizePtr);
+
+/**
+ * @brief FrTp copy received data callback
+ * @param RxPduId PDU to copy
+ * @param PduInfoPtr Pointer to PDU info for copying
+ * @param bufferSizePtr Pointer to store remaining buffer size
+ * @return Buffer request status
+ */
+BufReq_ReturnType PduR_FrTpCopyRxData(PduIdType RxPduId,
+                                       const PduInfoType* PduInfoPtr,
+                                       PduLengthType* bufferSizePtr);
+
+/**
+ * @brief FrTp copy transmit data callback
+ * @param TxPduId PDU to copy
+ * @param PduInfoPtr Pointer to PDU info for copying
+ * @param RetryInfoPtr Pointer to retry info
+ * @param AvailableDataPtr Pointer to store available data length
+ * @return Buffer request status
+ */
+BufReq_ReturnType PduR_FrTpCopyTxData(PduIdType TxPduId,
+                                       PduInfoType* PduInfoPtr,
+                                       RetryInfoType* RetryInfoPtr,
+                                       PduLengthType* AvailableDataPtr);
+
 #define PDUR_STOP_SEC_CODE
 #include "MemMap.h"
 

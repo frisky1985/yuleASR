@@ -1,0 +1,24 @@
+{
+  "id": "concepts/bsw-architecture",
+  "title": "BSW 架构",
+  "description": "BSW (Basic Software) 基础软件是 AutoSAR 的核心组成部分。",
+  "source": "@site/docs/concepts/bsw-architecture.md",
+  "sourceDirName": "concepts",
+  "slug": "/concepts/bsw-architecture",
+  "permalink": "/yuleASR/docs/concepts/bsw-architecture",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/bsw-architecture.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "什么是 AutoSAR",
+    "permalink": "/yuleASR/docs/concepts/what-is-autosar"
+  },
+  "next": {
+    "title": "分层结构",
+    "permalink": "/yuleASR/docs/concepts/layered-structure"
+  }
+}

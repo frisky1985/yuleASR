@@ -1,0 +1,24 @@
+{
+  "id": "concepts/what-is-autosar",
+  "title": "什么是 AutoSAR",
+  "description": "AutoSAR (AUTomotive Open System ARchitecture) 是汽车领域的一个开放式系统架构标准。",
+  "source": "@site/docs/concepts/what-is-autosar.md",
+  "sourceDirName": "concepts",
+  "slug": "/concepts/what-is-autosar",
+  "permalink": "/yuleASR/docs/concepts/what-is-autosar",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/what-is-autosar.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "配置指南",
+    "permalink": "/yuleASR/docs/quick-start/configuration"
+  },
+  "next": {
+    "title": "BSW 架构",
+    "permalink": "/yuleASR/docs/concepts/bsw-architecture"
+  }
+}

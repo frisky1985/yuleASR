@@ -1,0 +1,1820 @@
+{
+  "timestamp": "2024-05-05",
+  "total_modules": 130,
+  "complete": 38,
+  "percentage": 29.2,
+  "layers": {
+    "MCAL": {
+      "modules": {
+        "adc": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/adc",
+          "exists": true,
+          "files": {
+            "include": [
+              "Adc.h",
+              "Adc_Cfg.h"
+            ],
+            "src": [
+              "Adc.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "can": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/can",
+          "exists": true,
+          "files": {
+            "include": [
+              "Can_Cfg.h",
+              "Can.h"
+            ],
+            "src": [
+              "Can.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "crc": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/crc",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "crypto": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/crypto",
+          "exists": true,
+          "files": {
+            "include": [
+              "SchM_Crypto.h",
+              "Crypto.h",
+              "Crypto_Cfg.h",
+              "Crypto_MemMap.h"
+            ],
+            "src": [
+              "Crypto.c",
+              "Crypto_Cfg.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "dio": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/dio",
+          "exists": true,
+          "files": {
+            "include": [
+              "Dio.h",
+              "Dio_Cfg.h"
+            ],
+            "src": [
+              "Dio.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "eth": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/eth",
+          "exists": true,
+          "files": {
+            "include": [
+              "Eth_Lcfg.h",
+              "Eth.h",
+              "Eth_Private.h",
+              "Eth_Cfg.h"
+            ],
+            "src": [
+              "Eth_Irq.c",
+              "Eth.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "fee": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/fee",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "flash": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/flash",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "fls": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/fls",
+          "exists": true,
+          "files": {
+            "include": [
+              "Fls_Cfg.h",
+              "Fls_Hw.h",
+              "Fls_MemMap.h",
+              "Fls.h"
+            ],
+            "src": [
+              "Fls_Hw.c",
+              "Fls.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "gpt": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/gpt",
+          "exists": true,
+          "files": {
+            "include": [
+              "Gpt_Cfg.h",
+              "Gpt.h"
+            ],
+            "src": [
+              "Gpt.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "i2c": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/i2c",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "icu": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/icu",
+          "exists": true,
+          "files": {
+            "include": [
+              "Icu_Cfg.h",
+              "Icu_Lcfg.h",
+              "Icu.h",
+              "Icu_Private.h"
+            ],
+            "src": [
+              "Icu_Lcfg.c",
+              "Icu.c",
+              "Icu_Irq.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "lin": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/lin",
+          "exists": true,
+          "files": {
+            "include": [
+              "Lin_Cfg.h",
+              "Lin.h"
+            ],
+            "src": [
+              "Lin.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "mcu": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/mcu",
+          "exists": true,
+          "files": {
+            "include": [
+              "Mcu_Cfg.h",
+              "Mcu.h"
+            ],
+            "src": [
+              "Mcu.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "mip": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/mip",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "port": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/port",
+          "exists": true,
+          "files": {
+            "include": [
+              "Port_Cfg.h",
+              "Port.h"
+            ],
+            "src": [
+              "Port.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "pwm": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/pwm",
+          "exists": true,
+          "files": {
+            "include": [
+              "Pwm_Cfg.h",
+              "Pwm.h"
+            ],
+            "src": [
+              "Pwm.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "spi": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/spi",
+          "exists": true,
+          "files": {
+            "include": [
+              "Spi_Cfg.h",
+              "Spi.h"
+            ],
+            "src": [
+              "Spi.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "wdg": {
+          "path": "/home/admin/yuleASR/src/bsw/mcal/wdg",
+          "exists": true,
+          "files": {
+            "include": [
+              "Wdg_Hw.h",
+              "Wdg_Cfg.h",
+              "Wdg.h"
+            ],
+            "src": [
+              "Wdg_Hw.c",
+              "Wdg.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        }
+      },
+      "complete": 14,
+      "total": 19,
+      "percentage": 73.7
+    },
+    "ECUAL": {
+      "modules": {
+        "canif": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/canif",
+          "exists": true,
+          "files": {
+            "include": [
+              "CanIf_Cfg.h",
+              "CanIf.h"
+            ],
+            "src": [
+              "CanIf.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "cantp": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/cantp",
+          "exists": true,
+          "files": {
+            "include": [
+              "CanTp.h",
+              "CanTp_Cfg.h"
+            ],
+            "src": [
+              "CanTp.c",
+              "CanTp_Lcfg.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "canNm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/cannm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "canSm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/cansm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "canTrcv": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/cantrcv",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "cryif": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/cryif",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "dlt": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/dlt",
+          "exists": true,
+          "files": {
+            "include": [
+              "Dlt.h",
+              "Dlt_Cfg.h"
+            ],
+            "src": [
+              "Dlt.c",
+              "Dlt_Lcfg.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "doIP": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/doip",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "ethif": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/ethif",
+          "exists": true,
+          "files": {
+            "include": [
+              "EthIf.h",
+              "EthIf_Cfg.h"
+            ],
+            "src": [
+              "EthIf.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "ethSm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/ethsm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "ethTrcv": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/ethtrcv",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "fiM": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/fim",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "frNm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/frnm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "frTp": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/frtp",
+          "exists": true,
+          "files": {
+            "include": [
+              "FrTp_Lcfg.h",
+              "FrTp_Cfg.h",
+              "FrTp.h",
+              "FrTp_Private.h"
+            ],
+            "src": [
+              "FrTp_Lcfg.c",
+              "FrTp_PrivUtil.c",
+              "FrTp_Rx.c",
+              "FrTp.c",
+              "FrTp_TxSm.c",
+              "FrTp_Tx.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "ipduM": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/ipdum",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "linIf": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/linif",
+          "exists": true,
+          "files": {
+            "include": [
+              "LinIf.h",
+              "LinIf_Cfg.h"
+            ],
+            "src": [
+              "LinIf.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "linNm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/linnm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "linSm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/linsm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "linTp": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/lintp",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "linTrcv": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/lintrcv",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "oam": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/oam",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "someipif": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/someipif",
+          "exists": true,
+          "files": {
+            "include": [
+              "SomeIpIf_Cfg.h",
+              "SomeIpIf.h"
+            ],
+            "src": [
+              "SomeIpIf_Lcfg.c",
+              "SomeIpIf.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "someipsd": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/someipsd",
+          "exists": true,
+          "files": {
+            "include": [
+              "SomeIpSd_Cfg.h",
+              "SomeIpSd.h"
+            ],
+            "src": [
+              "SomeIpSd_Lcfg.c",
+              "SomeIpSd.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "soad": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/soad",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "srp": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/srp",
+          "exists": true,
+          "files": {
+            "include": [
+              "Srp.h",
+              "Srp_Cfg.h"
+            ],
+            "src": [
+              "Srp_Lcfg.c",
+              "Srp.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "stbM": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/stbm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "tls": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/tls",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "ttcan": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/ttcan",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "udpNm": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/udpnm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "v2x": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/v2x",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "xcp": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/xcp",
+          "exists": true,
+          "files": {
+            "include": [
+              "Xcp.h",
+              "Xcp_Cfg.h"
+            ],
+            "src": [
+              "Xcp_Lcfg.c",
+              "Xcp.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "j1939tp": {
+          "path": "/home/admin/yuleASR/src/bsw/ecual/j1939tp",
+          "exists": true,
+          "files": {
+            "include": [
+              "J1939Tp.h",
+              "J1939Tp_Cfg.h"
+            ],
+            "src": [
+              "J1939Tp.c",
+              "J1939Tp_Lcfg.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        }
+      },
+      "complete": 11,
+      "total": 32,
+      "percentage": 34.4
+    },
+    "SERVICES": {
+      "modules": {
+        "bswm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/bswm",
+          "exists": true,
+          "files": {
+            "include": [
+              "BswM.h",
+              "BswM_Cfg.h"
+            ],
+            "src": [
+              "BswM.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "com": {
+          "path": "/home/admin/yuleASR/src/bsw/services/com",
+          "exists": true,
+          "files": {
+            "include": [
+              "Com.h",
+              "Com_Cfg.h"
+            ],
+            "src": [
+              "Com.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "comM": {
+          "path": "/home/admin/yuleASR/src/bsw/services/comm",
+          "exists": true,
+          "files": {
+            "include": [
+              "ComM.h",
+              "ComM_Cfg.h"
+            ],
+            "src": [
+              "ComM.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "crc": {
+          "path": "/home/admin/yuleASR/src/bsw/services/crc",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "crypto": {
+          "path": "/home/admin/yuleASR/src/bsw/services/crypto",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "cryif": {
+          "path": "/home/admin/yuleASR/src/bsw/services/cryif",
+          "exists": true,
+          "files": {
+            "include": [
+              "CryIf_Cfg.h",
+              "CryIf.h",
+              "CryIf_MemMap.h"
+            ],
+            "src": [
+              "CryIf.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "dcm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/dcm",
+          "exists": true,
+          "files": {
+            "include": [
+              "dcm_transfer.h",
+              "Dcm.h",
+              "Dcm_Obd.h",
+              "Dcm_Cfg.h"
+            ],
+            "src": [
+              "Dcm.c",
+              "dcm_transfer.c",
+              "Dcm_Obd.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "dem": {
+          "path": "/home/admin/yuleASR/src/bsw/services/dem",
+          "exists": true,
+          "files": {
+            "include": [
+              "Dem.h",
+              "Dem_Cfg.h"
+            ],
+            "src": [
+              "Dem.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "det": {
+          "path": "/home/admin/yuleASR/src/bsw/services/det",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticcommcontrol": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticcommcontrol",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticeventmanager": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticeventmanager",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticipowertrain": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticipowertrain",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticmonitor": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticmonitor",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticreadDataByIdentifier": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticreaddatabyidentifier",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticreadDTCInformation": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticreaddtcinformation",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticroutinecontrol": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticroutinecontrol",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticsecurityaccess": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticsecurityaccess",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "diagnosticwriteDataByIdentifier": {
+          "path": "/home/admin/yuleASR/src/bsw/services/diagnosticwritedatabyidentifier",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "dol": {
+          "path": "/home/admin/yuleASR/src/bsw/services/dol",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "dtc": {
+          "path": "/home/admin/yuleASR/src/bsw/services/dtc",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "ecuC": {
+          "path": "/home/admin/yuleASR/src/bsw/services/ecuc",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "e2e": {
+          "path": "/home/admin/yuleASR/src/bsw/services/e2e",
+          "exists": true,
+          "files": {
+            "include": [],
+            "src": [
+              "E2E.c"
+            ]
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": true,
+          "complete": false
+        },
+        "ethtsyn": {
+          "path": "/home/admin/yuleASR/src/bsw/services/ethtsyn",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "evcc": {
+          "path": "/home/admin/yuleASR/src/bsw/services/evcc",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "fiM": {
+          "path": "/home/admin/yuleASR/src/bsw/services/fim",
+          "exists": true,
+          "files": {
+            "include": [
+              "FiM_Cfg.h",
+              "FiM.h"
+            ],
+            "src": [
+              "FiM.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "flashdriver": {
+          "path": "/home/admin/yuleASR/src/bsw/services/flashdriver",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "flexray": {
+          "path": "/home/admin/yuleASR/src/bsw/services/flexray",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "frNm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/frnm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "frSm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/frsm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "frTp": {
+          "path": "/home/admin/yuleASR/src/bsw/services/frtp",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "frXcp": {
+          "path": "/home/admin/yuleASR/src/bsw/services/frxcp",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "fvm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/fvm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "gpt": {
+          "path": "/home/admin/yuleASR/src/bsw/services/gpt",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "hash": {
+          "path": "/home/admin/yuleASR/src/bsw/services/hash",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "hsm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/hsm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "hwtest": {
+          "path": "/home/admin/yuleASR/src/bsw/services/hwtest",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "iap": {
+          "path": "/home/admin/yuleASR/src/bsw/services/iap",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "icucdd": {
+          "path": "/home/admin/yuleASR/src/bsw/services/icucdd",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "j1939dcm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/j1939dcm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "j1939nm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/j1939nm",
+          "exists": true,
+          "files": {
+            "include": [
+              "J1939Nm_Cfg.h",
+              "J1939Nm.h"
+            ],
+            "src": [
+              "J1939Nm.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "j1939tp": {
+          "path": "/home/admin/yuleASR/src/bsw/services/j1939tp",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "keymanager": {
+          "path": "/home/admin/yuleASR/src/bsw/services/keymanager",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "ldcom": {
+          "path": "/home/admin/yuleASR/src/bsw/services/ldcom",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "lld": {
+          "path": "/home/admin/yuleASR/src/bsw/services/lld",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "mac": {
+          "path": "/home/admin/yuleASR/src/bsw/services/mac",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "memif": {
+          "path": "/home/admin/yuleASR/src/bsw/services/memif",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "nm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/nm",
+          "exists": true,
+          "files": {
+            "include": [
+              "Nm_Cfg.h",
+              "Nm.h"
+            ],
+            "src": [
+              "Nm.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "nvm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/nvm",
+          "exists": true,
+          "files": {
+            "include": [
+              "NvM.h",
+              "NvM_Cfg.h"
+            ],
+            "src": [
+              "NvM.c",
+              "NvM_Redundant.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "nvram": {
+          "path": "/home/admin/yuleASR/src/bsw/services/nvram",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "obd": {
+          "path": "/home/admin/yuleASR/src/bsw/services/obd",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "os": {
+          "path": "/home/admin/yuleASR/src/bsw/services/os",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "pfm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/pfm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "pumap": {
+          "path": "/home/admin/yuleASR/src/bsw/services/pumap",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "ramtest": {
+          "path": "/home/admin/yuleASR/src/bsw/services/ramtest",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "res": {
+          "path": "/home/admin/yuleASR/src/bsw/services/res",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "rfc": {
+          "path": "/home/admin/yuleASR/src/bsw/services/rfc",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "rte": {
+          "path": "/home/admin/yuleASR/src/bsw/services/rte",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "sd": {
+          "path": "/home/admin/yuleASR/src/bsw/services/sd",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "secoc": {
+          "path": "/home/admin/yuleASR/src/bsw/services/secoc",
+          "exists": true,
+          "files": {
+            "include": [
+              "SecOC.h",
+              "SecOC_MemMap.h",
+              "SecOC_Cfg.h"
+            ],
+            "src": [
+              "SecOC.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "sfls": {
+          "path": "/home/admin/yuleASR/src/bsw/services/sfls",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "sg": {
+          "path": "/home/admin/yuleASR/src/bsw/services/sg",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "soad": {
+          "path": "/home/admin/yuleASR/src/bsw/services/soad",
+          "exists": true,
+          "files": {
+            "include": [
+              "SoAd.h",
+              "SoAd_Cfg.h",
+              "SoAd_MemMap.h"
+            ],
+            "src": [
+              "SoAd.c",
+              "SoAd_Test.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "sph": {
+          "path": "/home/admin/yuleASR/src/bsw/services/sph",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "startup": {
+          "path": "/home/admin/yuleASR/src/bsw/services/startup",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "swc": {
+          "path": "/home/admin/yuleASR/src/bsw/services/swc",
+          "exists": true,
+          "files": {
+            "include": [
+              "Swc_Cfg.h",
+              "Swc.h"
+            ],
+            "src": [
+              "Swc_Lcfg.c",
+              "Swc.c"
+            ]
+          },
+          "has_api": true,
+          "has_cfg": true,
+          "has_impl": true,
+          "complete": true
+        },
+        "sync": {
+          "path": "/home/admin/yuleASR/src/bsw/services/sync",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "system": {
+          "path": "/home/admin/yuleASR/src/bsw/services/system",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "task": {
+          "path": "/home/admin/yuleASR/src/bsw/services/task",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "tdcp": {
+          "path": "/home/admin/yuleASR/src/bsw/services/tdcp",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "timing": {
+          "path": "/home/admin/yuleASR/src/bsw/services/timing",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "tls": {
+          "path": "/home/admin/yuleASR/src/bsw/services/tls",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "tp": {
+          "path": "/home/admin/yuleASR/src/bsw/services/tp",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "trace": {
+          "path": "/home/admin/yuleASR/src/bsw/services/trace",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "udpNm": {
+          "path": "/home/admin/yuleASR/src/bsw/services/udpnm",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "v2x": {
+          "path": "/home/admin/yuleASR/src/bsw/services/v2x",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "version": {
+          "path": "/home/admin/yuleASR/src/bsw/services/version",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "wdg": {
+          "path": "/home/admin/yuleASR/src/bsw/services/wdg",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "wdgif": {
+          "path": "/home/admin/yuleASR/src/bsw/services/wdgif",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        },
+        "wlptest": {
+          "path": "/home/admin/yuleASR/src/bsw/services/wlptest",
+          "exists": false,
+          "files": {
+            "include": [],
+            "src": []
+          },
+          "has_api": false,
+          "has_cfg": false,
+          "has_impl": false,
+          "complete": false
+        }
+      },
+      "complete": 13,
+      "total": 79,
+      "percentage": 16.5
+    }
+  }
+}

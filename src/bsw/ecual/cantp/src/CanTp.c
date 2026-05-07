@@ -42,6 +42,8 @@ typedef struct {
     uint8 Buffer[64];       /* Temporary buffer for frame data */
     boolean TxConfirmed;
     boolean RxIndicated;
+    const CanTp_TxNsduConfigType* TxNsduConfig;  /* Pointer to Tx NSDU config (for Tx operations) */
+    const CanTp_RxNsduConfigType* RxNsduConfig;  /* Pointer to Rx NSDU config (for Rx operations) */
 } CanTp_ChannelRuntimeType;
 
 static boolean CanTp_Initialized = FALSE;
@@ -65,6 +67,55 @@ static CanTp_ChannelRuntimeType CanTp_ChannelRuntime[CANTP_MAX_CHANNEL_CNT];
 #define CANTP_START_SEC_CODE
 #include "MemMap.h"
 
+/*==================================================================================================
+*                                    CONFIGURATION ACCESS HELPERS
+*==================================================================================================*/
+/**
+ * @brief Get Tx NSDU configuration for a given Tx SDU ID
+ * @param txSduId Tx SDU ID
+ * @return Pointer to Tx NSDU configuration, or NULL if invalid
+ */
+static const CanTp_TxNsduConfigType* CanTp_GetTxNsduConfig(PduIdType txSduId)
+{
+    if (CanTp_ConfigPtr == NULL_PTR) {
+        return NULL_PTR;
+    }
+    
+    /* Search through all channels for the matching Tx NSDU config */
+    for (uint8 ch = 0U; ch < CanTp_ConfigPtr->NumChannels; ch++) {
+        const CanTp_ChannelConfigType* chConfig = &CanTp_ConfigPtr->ChannelConfigs[ch];
+        for (uint8 i = 0U; i < chConfig->NumTxNsdu; i++) {
+            if (chConfig->TxNsduConfigs[i].CanTpTxNPduConfirmationId == txSduId) {
+                return &chConfig->TxNsduConfigs[i];
+            }
+        }
+    }
+    return NULL_PTR;
+}
+
+/**
+ * @brief Get Rx NSDU configuration for a given Rx SDU ID
+ * @param rxSduId Rx SDU ID
+ * @return Pointer to Rx NSDU configuration, or NULL if invalid
+ */
+static const CanTp_RxNsduConfigType* CanTp_GetRxNsduConfig(PduIdType rxSduId)
+{
+    if (CanTp_ConfigPtr == NULL_PTR) {
+        return NULL_PTR;
+    }
+    
+    /* Search through all channels for the matching Rx NSDU config */
+    for (uint8 ch = 0U; ch < CanTp_ConfigPtr->NumChannels; ch++) {
+        const CanTp_ChannelConfigType* chConfig = &CanTp_ConfigPtr->ChannelConfigs[ch];
+        for (uint8 i = 0U; i < chConfig->NumRxNsdu; i++) {
+            if (chConfig->RxNsduConfigs[i].CanTpRxNPduId == rxSduId) {
+                return &chConfig->RxNsduConfigs[i];
+            }
+        }
+    }
+    return NULL_PTR;
+}
+
 static void CanTp_ResetChannel(CanTp_ChannelType Channel)
 {
     if (Channel < CANTP_MAX_CHANNEL_CNT) {
@@ -79,6 +130,8 @@ static void CanTp_ResetChannel(CanTp_ChannelType Channel)
         CanTp_ChannelRuntime[Channel].Timer = 0U;
         CanTp_ChannelRuntime[Channel].TxConfirmed = FALSE;
         CanTp_ChannelRuntime[Channel].RxIndicated = FALSE;
+        CanTp_ChannelRuntime[Channel].TxNsduConfig = NULL_PTR;
+        CanTp_ChannelRuntime[Channel].RxNsduConfig = NULL_PTR;
     }
 }
 
@@ -258,8 +311,15 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
         return E_NOT_OK;  /* No free channel */
     }
 
+    /* Get Tx NSDU configuration for timing parameters */
+    const CanTp_TxNsduConfigType* txNsduConfig = CanTp_GetTxNsduConfig(CanTpTxSduId);
+    if (txNsduConfig == NULL_PTR) {
+        return E_NOT_OK;  /* Invalid configuration */
+    }
+
     CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
     runtime->ActiveNsduId = CanTpTxSduId;
+    runtime->TxNsduConfig = txNsduConfig;  /* Store config pointer for timer access */
     runtime->DataLength = dataLength;
 
     /* Copy data to internal buffer */
@@ -271,13 +331,13 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
         /* Single Frame transmission */
         runtime->State = CANTP_CH_TX_SF;
         CanTp_SendSingleFrame(CanTpTxSduId, runtime->Buffer, (uint8)dataLength);
-        runtime->Timer = CANTP_NAS_DEFAULT;
+        runtime->Timer = txNsduConfig->CanTpNas;  /* N_As from config table */
     } else {
         /* Multi-frame transmission */
         runtime->State = CANTP_CH_TX_FF;
         CanTp_SendFirstFrame(channel, dataLength);
         runtime->State = CANTP_CH_TX_WAIT_FC;
-        runtime->Timer = CANTP_NBS_DEFAULT;
+        runtime->Timer = txNsduConfig->CanTpNbs;  /* N_Bs from config table */
     }
 
     return E_OK;
@@ -467,11 +527,18 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
                 /* Find free channel */
                 CanTp_ChannelType channel = CanTp_FindFreeChannel();
                 if (channel != 0xFFU) {
+                    /* Get Rx NSDU configuration based on RxPduId */
+                    const CanTp_RxNsduConfigType* rxNsduConfig = CanTp_GetRxNsduConfig(RxPduId);
+                    if (rxNsduConfig == NULL_PTR) {
+                        break;  /* Invalid configuration */
+                    }
+
                     CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
                     runtime->State = CANTP_CH_RX_FF;
                     runtime->DataLength = ffDl;
                     runtime->DataIndex = CANTP_MAX_FF_DATA_LEN;
                     runtime->SequenceNumber = 1U;
+                    runtime->RxNsduConfig = rxNsduConfig;  /* Store config pointer */
 
                     /* Copy first 6 bytes */
                     for (uint8 i = 0U; i < CANTP_MAX_FF_DATA_LEN; i++) {
@@ -481,7 +548,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
                     /* Send Flow Control - Continue To Send */
                     CanTp_SendFlowControl(channel, CANTP_FLOWSTATUS_CTS, CANTP_BS_DEFAULT, CANTP_STMIN_DEFAULT);
                     runtime->State = CANTP_CH_RX_CF;
-                    runtime->Timer = CANTP_NCR_DEFAULT;
+                    runtime->Timer = rxNsduConfig->CanTpNcr;  /* N_Cr from config table */
                 }
             }
             break;
@@ -507,7 +574,12 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
                     runtime->DataIndex += bytesToCopy;
                     runtime->SequenceNumber = (runtime->SequenceNumber + 1U) & 0x0FU;
-                    runtime->Timer = CANTP_NCR_DEFAULT;
+                    /* Reset N_Cr timer from config if available, otherwise use default */
+                    if (runtime->RxNsduConfig != NULL_PTR) {
+                        runtime->Timer = runtime->RxNsduConfig->CanTpNcr;
+                    } else {
+                        runtime->Timer = CANTP_NCR_DEFAULT;
+                    }
 
                     /* Check if reception complete */
                     if (runtime->DataIndex >= runtime->DataLength) {
@@ -543,13 +615,23 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
                         runtime->BlockSize = bs;
                         runtime->STmin = stmin;
                         runtime->State = CANTP_CH_TX_CF;
-                        runtime->Timer = CANTP_NCS_DEFAULT;
+                        /* Use N_Cs from config if available */
+                        if (runtime->TxNsduConfig != NULL_PTR) {
+                            runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
+                        } else {
+                            runtime->Timer = CANTP_NCS_DEFAULT;
+                        }
 
                         /* Send first Consecutive Frame */
                         CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
                     } else if (fs == CANTP_FLOWSTATUS_WT) {
                         /* Wait */
-                        runtime->Timer = CANTP_NBS_DEFAULT;
+                        /* Use N_Bs from config if available */
+                        if (runtime->TxNsduConfig != NULL_PTR) {
+                            runtime->Timer = runtime->TxNsduConfig->CanTpNbs;
+                        } else {
+                            runtime->Timer = CANTP_NBS_DEFAULT;
+                        }
                     } else if (fs == CANTP_FLOWSTATUS_OVFLW) {
                         /* Overflow - abort transmission */
                         CanTp_ResetChannel((CanTp_ChannelType)i);
@@ -585,7 +667,12 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
         } else if (runtime->State == CANTP_CH_TX_FF) {
             /* First Frame sent, waiting for FC */
             runtime->State = CANTP_CH_TX_WAIT_FC;
-            runtime->Timer = CANTP_NBS_DEFAULT;
+            /* Use N_Bs from config if available */
+            if (runtime->TxNsduConfig != NULL_PTR) {
+                runtime->Timer = runtime->TxNsduConfig->CanTpNbs;
+            } else {
+                runtime->Timer = CANTP_NBS_DEFAULT;
+            }
         } else if (runtime->State == CANTP_CH_TX_CF) {
             /* Consecutive Frame sent */
             if (runtime->DataIndex >= runtime->DataLength) {
@@ -594,7 +681,12 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
                 CanTp_ResetChannel((CanTp_ChannelType)i);
             } else {
                 /* More frames to send */
-                runtime->Timer = CANTP_NCS_DEFAULT;
+                /* Use N_Cs from config if available */
+                if (runtime->TxNsduConfig != NULL_PTR) {
+                    runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
+                } else {
+                    runtime->Timer = CANTP_NCS_DEFAULT;
+                }
             }
         }
     }
@@ -638,7 +730,12 @@ void CanTp_MainFunction(void)
                 case CANTP_CH_TX_CF:
                     /* N_Cs timeout - send next frame */
                     CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
-                    runtime->Timer = CANTP_NCS_DEFAULT;
+                    /* Use N_Cs from config if available */
+                    if (runtime->TxNsduConfig != NULL_PTR) {
+                        runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
+                    } else {
+                        runtime->Timer = CANTP_NCS_DEFAULT;
+                    }
                     break;
 
                 case CANTP_CH_RX_CF:

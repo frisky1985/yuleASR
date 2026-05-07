@@ -1,83 +1,104 @@
-/**
- * @file Fee.h
- * @brief Flash EEPROM Emulation module following AutoSAR Classic Platform 4.x standard
- * @version 1.0.0
- * @date 2026-04-14
- * @author Shanghai Yule Electronics Technology Co., Ltd.
- * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
- *
- * AutoSAR Standard: Flash EEPROM Emulation (FEE)
- * Layer: ECU Abstraction Layer (ECUAL)
- * Purpose: Emulate EEPROM functionality using Flash memory
+/*==================================================================================================
+ *                                      FEE DRIVER
+ *==================================================================================================
+ * FILENAME: Fee.h
+ * AUTOSAR VERSION: R22-11
+ * DOCUMENT: AUTOSAR_SWS_FlashEEPROMEmulation.pdf
+ *==================================================================================================
+ * PROJECT: yuleASR Classic AUTOSAR BSW
+ * DESCRIPTION: Public header file for Flash EEPROM Emulation module
+ *==================================================================================================
  */
 
 #ifndef FEE_H
 #define FEE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*==================================================================================================
-*                                          INCLUDE FILES
-==================================================================================================*/
+ *                                         INCLUDE FILES
+ *==================================================================================================*/
 #include "Std_Types.h"
 #include "Fee_Cfg.h"
 
 /*==================================================================================================
-*                                    VERSION INFORMATION
-==================================================================================================*/
-#define FEE_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
-#define FEE_MODULE_ID                   (0x30U) /* FEE Module ID */
-#define FEE_AR_RELEASE_MAJOR_VERSION    (0x04U)
-#define FEE_AR_RELEASE_MINOR_VERSION    (0x04U)
-#define FEE_AR_RELEASE_REVISION_VERSION (0x00U)
-#define FEE_SW_MAJOR_VERSION            (0x01U)
-#define FEE_SW_MINOR_VERSION            (0x00U)
-#define FEE_SW_PATCH_VERSION            (0x00U)
+ *                                    VERSION INFORMATION
+ *==================================================================================================*/
+#define FEE_VENDOR_ID                   (100u)
+#define FEE_MODULE_ID                   (30u)
+#define FEE_INSTANCE_ID                 (0u)
+
+#define FEE_AR_RELEASE_MAJOR_VERSION    (4u)
+#define FEE_AR_RELEASE_MINOR_VERSION    (7u)
+#define FEE_AR_RELEASE_REVISION_VERSION (0u)
+
+#define FEE_SW_MAJOR_VERSION            (1u)
+#define FEE_SW_MINOR_VERSION            (0u)
+#define FEE_SW_PATCH_VERSION            (0u)
 
 /*==================================================================================================
-*                                    SERVICE IDs
-==================================================================================================*/
-#define FEE_SID_INIT                    (0x00U)
-#define FEE_SID_SETMODE                 (0x01U)
-#define FEE_SID_READ                    (0x02U)
-#define FEE_SID_WRITE                   (0x03U)
-#define FEE_SID_CANCEL                  (0x04U)
-#define FEE_SID_GETSTATUS               (0x05U)
-#define FEE_SID_GETJOBRESULT            (0x06U)
-#define FEE_SID_INVALIDATEBLOCK         (0x07U)
-#define FEE_SID_ERASEIMMEDIATEBLOCK     (0x08U)
-#define FEE_SID_JOBENDNOTIFICATION      (0x09U)
-#define FEE_SID_JOBERRORNOTIFICATION    (0x0AU)
-#define FEE_SID_GETVERSIONINFO          (0x0BU)
-#define FEE_SID_GETCYCLECOUNT           (0x0CU)
-#define FEE_SID_GETERASECYCLECOUNT      (0x0DU)
-#define FEE_SID_GETWRITE_CYCLECOUNT     (0x0EU)
-#define FEE_SID_GETVENDORINFO           (0x0FU)
-#define FEE_SID_MAINFUNCTION            (0x12U)
+ *                                    FILE VERSION CHECKS
+ *==================================================================================================*/
+#ifndef DISABLE_MCAL_INTERMODULE_ASR_CHECK
+    #if ((FEE_AR_RELEASE_MAJOR_VERSION != STD_TYPES_AR_RELEASE_MAJOR_VERSION) || \
+         (FEE_AR_RELEASE_MINOR_VERSION != STD_TYPES_AR_RELEASE_MINOR_VERSION))
+        #error "AutoSAR Version Numbers of Fee.h and Std_Types.h are different"
+    #endif
+#endif
 
 /*==================================================================================================
-*                                    DET ERROR CODES
-==================================================================================================*/
-#define FEE_E_UNINIT                    (0x01U)
-#define FEE_E_INVALID_BLOCK_NO          (0x02U)
-#define FEE_E_INVALID_BLOCK_OFS         (0x03U)
-#define FEE_E_INVALID_DATA_PTR          (0x04U)
-#define FEE_E_INVALID_BLOCK_LEN         (0x05U)
-#define FEE_E_BUSY                      (0x06U)
-#define FEE_E_BUSY_INTERNAL             (0x07U)
-#define FEE_E_INVALID_CANCEL            (0x08U)
-#define FEE_E_GC_BUSY                   (0x09U)
-#define FEE_E_GC_READ                   (0x0AU)
-#define FEE_E_GC_WRITE                  (0x0BU)
-#define FEE_E_GC_ERASE                  (0x0CU)
-#define FEE_E_INVALID_SUSPEND           (0x0DU)
-#define FEE_E_INVALID_RESUME            (0x0EU)
-#define FEE_E_INVALID_MODE              (0x0FU)
-#define FEE_E_INVALID_CFG               (0x10U)
-#define FEE_E_NOTIFICATION              (0x11U)
-#define FEE_E_INVALID_POLLING           (0x12U)
+ *                                    SERVICE IDs
+ *==================================================================================================*/
+#define FEE_SID_INIT                    (0x00u)
+#define FEE_SID_SETMODE                 (0x01u)
+#define FEE_SID_READ                    (0x02u)
+#define FEE_SID_WRITE                   (0x03u)
+#define FEE_SID_CANCEL                  (0x04u)
+#define FEE_SID_GETSTATUS               (0x05u)
+#define FEE_SID_GETJOBRESULT            (0x06u)
+#define FEE_SID_INVALIDATEBLOCK         (0x07u)
+#define FEE_SID_ERASEIMMEDIATEBLOCK     (0x08u)
+#define FEE_SID_JOBENDNOTIFICATION      (0x09u)
+#define FEE_SID_JOBERRORNOTIFICATION    (0x0Au)
+#define FEE_SID_GETVERSIONINFO          (0x0Bu)
+#define FEE_SID_GETCYCLECOUNT           (0x0Cu)
+#define FEE_SID_GETERASECYCLECOUNT      (0x0Du)
+#define FEE_SID_GETWRITECYCLECOUNT      (0x0Eu)
+#define FEE_SID_GETVENDORINFO           (0x0Fu)
+#define FEE_SID_MAINFUNCTION            (0x12u)
+#define FEE_SID_READIMMEDIATE           (0x13u)
+#define FEE_SID_WRITEIMMEDIATE          (0x14u)
 
 /*==================================================================================================
-*                                    FEE STATUS TYPE
-==================================================================================================*/
+ *                                    DET ERROR CODES
+ *==================================================================================================*/
+/* Development error codes */
+#define FEE_E_UNINIT                    (0x01u)
+#define FEE_E_INVALID_BLOCK_NO          (0x02u)
+#define FEE_E_INVALID_BLOCK_OFS         (0x03u)
+#define FEE_E_INVALID_DATA_PTR          (0x04u)
+#define FEE_E_INVALID_BLOCK_LEN         (0x05u)
+#define FEE_E_BUSY                      (0x06u)
+#define FEE_E_BUSY_INTERNAL             (0x07u)
+#define FEE_E_INVALID_CANCEL            (0x08u)
+#define FEE_E_GC_BUSY                   (0x09u)
+#define FEE_E_GC_READ                   (0x0Au)
+#define FEE_E_GC_WRITE                  (0x0Bu)
+#define FEE_E_GC_ERASE                  (0x0Cu)
+#define FEE_E_INVALID_SUSPEND           (0x0Du)
+#define FEE_E_INVALID_RESUME            (0x0Eu)
+#define FEE_E_INVALID_MODE              (0x0Fu)
+#define FEE_E_INVALID_CFG               (0x10u)
+#define FEE_E_NOTIFICATION              (0x11u)
+#define FEE_E_INVALID_POLLING           (0x12u)
+#define FEE_E_PARAM_POINTER             (0x13u)
+#define FEE_E_PARAM_CONFIG              (0x14u)
+
+/*==================================================================================================
+ *                                    FEE STATUS TYPE
+ *==================================================================================================*/
 typedef enum {
     FEE_IDLE = 0,
     FEE_BUSY,
@@ -86,8 +107,8 @@ typedef enum {
 } Fee_StatusType;
 
 /*==================================================================================================
-*                                    FEE JOB RESULT TYPE
-==================================================================================================*/
+ *                                    FEE JOB RESULT TYPE
+ *==================================================================================================*/
 typedef enum {
     FEE_JOB_OK = 0,
     FEE_JOB_FAILED,
@@ -98,21 +119,31 @@ typedef enum {
 } Fee_JobResultType;
 
 /*==================================================================================================
-*                                    FEE MODE TYPE
-==================================================================================================*/
+ *                                    FEE MODE TYPE
+ *==================================================================================================*/
 typedef enum {
     FEE_MODE_SLOW = 0,
     FEE_MODE_FAST
 } Fee_ModeType;
 
 /*==================================================================================================
-*                                    FEE BLOCK ID TYPE
-==================================================================================================*/
+ *                                    FEE BLOCK ID TYPE
+ *==================================================================================================*/
 typedef uint16 Fee_BlockIdType;
 
 /*==================================================================================================
-*                                    FEE BLOCK CONFIG TYPE
-==================================================================================================*/
+ *                                    FEE ADDRESS TYPE
+ *==================================================================================================*/
+typedef uint32 Fee_AddressType;
+
+/*==================================================================================================
+ *                                    FEE LENGTH TYPE
+ *==================================================================================================*/
+typedef uint32 Fee_LengthType;
+
+/*==================================================================================================
+ *                                    FEE BLOCK CONFIG TYPE
+ *==================================================================================================*/
 typedef struct {
     Fee_BlockIdType BlockId;
     uint16 BlockSize;
@@ -120,18 +151,28 @@ typedef struct {
     uint32 NumberOfWriteCycles;
     boolean BlockCrc;
     boolean BlockCrcType;
-    boolean BlockCrcChecksum;
-    boolean BlockCrcChecksumType;
+    boolean ImmediateDataEnabled;
+    const uint8* RomBlockData;
 } Fee_BlockConfigType;
 
 /*==================================================================================================
-*                                    FEE CONFIG TYPE
-==================================================================================================*/
+ *                                    FEE SECTOR CONFIG TYPE
+ *==================================================================================================*/
+typedef struct {
+    Fee_AddressType SectorStartAddress;
+    Fee_LengthType SectorSize;
+    uint32 SectorEraseCycleCount;
+    boolean SectorIsValid;
+} Fee_SectorConfigType;
+
+/*==================================================================================================
+ *                                    FEE CONFIG TYPE
+ *==================================================================================================*/
 typedef struct {
     const Fee_BlockConfigType* BlockConfig;
+    const Fee_SectorConfigType* SectorConfig;
     uint16 NumBlocks;
-    uint32 FeeSectorSize;
-    uint32 FeeNumberOfSectors;
+    uint8 NumSectors;
     uint32 FeeVirtualPageSize;
     uint32 FeeMaximumBlockingTime;
     uint32 FeeMaxGcCycles;
@@ -147,8 +188,14 @@ typedef struct {
 } Fee_ConfigType;
 
 /*==================================================================================================
-*                                    GLOBAL CONFIG POINTER
-==================================================================================================*/
+ *                                    CALLBACK TYPES
+ *==================================================================================================*/
+typedef void (*Fee_JobEndNotificationType)(void);
+typedef void (*Fee_JobErrorNotificationType)(void);
+
+/*==================================================================================================
+ *                                    GLOBAL CONFIG POINTER
+ *==================================================================================================*/
 #define FEE_START_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"
 
@@ -158,22 +205,30 @@ extern const Fee_ConfigType Fee_Config;
 #include "MemMap.h"
 
 /*==================================================================================================
-*                                    FUNCTION PROTOTYPES
-==================================================================================================*/
+ *                                    FUNCTION PROTOTYPES
+ *==================================================================================================*/
 #define FEE_START_SEC_CODE
 #include "MemMap.h"
 
 /**
  * @brief Initializes the Flash EEPROM Emulation module
  * @param ConfigPtr Pointer to configuration structure
+ * @req SWS_Fee_00153
  */
-void Fee_Init(const Fee_ConfigType* ConfigPtr);
+extern void Fee_Init(const Fee_ConfigType* ConfigPtr);
+
+/**
+ * @brief De-initializes the Flash EEPROM Emulation module
+ * @req SWS_Fee_00154
+ */
+extern void Fee_DeInit(void);
 
 /**
  * @brief Sets the operation mode
  * @param Mode Mode to set (SLOW/FAST)
+ * @req SWS_Fee_00155
  */
-void Fee_SetMode(Fee_ModeType Mode);
+extern void Fee_SetMode(Fee_ModeType Mode);
 
 /**
  * @brief Reads data from a block
@@ -182,91 +237,126 @@ void Fee_SetMode(Fee_ModeType Mode);
  * @param DataBufferPtr Data buffer pointer
  * @param Length Data length
  * @return Result of operation
+ * @req SWS_Fee_00156
  */
-Std_ReturnType Fee_Read(Fee_BlockIdType BlockNumber,
-                         uint16 BlockOffset,
-                         uint8* DataBufferPtr,
-                         uint16 Length);
+extern Std_ReturnType Fee_Read(Fee_BlockIdType BlockNumber,
+                                uint16 BlockOffset,
+                                uint8* DataBufferPtr,
+                                uint16 Length);
 
 /**
  * @brief Writes data to a block
  * @param BlockNumber Block number
  * @param DataBufferPtr Data buffer pointer
  * @return Result of operation
+ * @req SWS_Fee_00157
  */
-Std_ReturnType Fee_Write(Fee_BlockIdType BlockNumber, const uint8* DataBufferPtr);
+extern Std_ReturnType Fee_Write(Fee_BlockIdType BlockNumber, const uint8* DataBufferPtr);
 
 /**
  * @brief Cancels ongoing operation
+ * @req SWS_Fee_00158
  */
-void Fee_Cancel(void);
+extern void Fee_Cancel(void);
 
 /**
  * @brief Gets module status
  * @return Module status
+ * @req SWS_Fee_00159
  */
-Fee_StatusType Fee_GetStatus(void);
+extern Fee_StatusType Fee_GetStatus(void);
 
 /**
  * @brief Gets job result
  * @return Job result
+ * @req SWS_Fee_00160
  */
-Fee_JobResultType Fee_GetJobResult(void);
+extern Fee_JobResultType Fee_GetJobResult(void);
 
 /**
  * @brief Invalidates a block
  * @param BlockNumber Block number
  * @return Result of operation
+ * @req SWS_Fee_00161
  */
-Std_ReturnType Fee_InvalidateBlock(Fee_BlockIdType BlockNumber);
+extern Std_ReturnType Fee_InvalidateBlock(Fee_BlockIdType BlockNumber);
 
 /**
  * @brief Erases immediate block
  * @param BlockNumber Block number
  * @return Result of operation
+ * @req SWS_Fee_00162
  */
-Std_ReturnType Fee_EraseImmediateBlock(Fee_BlockIdType BlockNumber);
+extern Std_ReturnType Fee_EraseImmediateBlock(Fee_BlockIdType BlockNumber);
 
 /**
  * @brief Job end notification callback
+ * @req SWS_Fee_00163
  */
-void Fee_JobEndNotification(void);
+extern void Fee_JobEndNotification(void);
 
 /**
  * @brief Job error notification callback
+ * @req SWS_Fee_00164
  */
-void Fee_JobErrorNotification(void);
+extern void Fee_JobErrorNotification(void);
 
 /**
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
+ * @req SWS_Fee_00165
  */
-void Fee_GetVersionInfo(Std_VersionInfoType* versioninfo);
+#if (FEE_VERSION_INFO_API == STD_ON)
+extern void Fee_GetVersionInfo(Std_VersionInfoType* versioninfo);
+#endif
 
 /**
  * @brief Gets cycle count
  * @return Cycle count
  */
-uint32 Fee_GetCycleCount(void);
+extern uint32 Fee_GetCycleCount(void);
 
 /**
  * @brief Gets erase cycle count
  * @return Erase cycle count
  */
-uint32 Fee_GetEraseCycleCount(void);
+extern uint32 Fee_GetEraseCycleCount(void);
 
 /**
  * @brief Gets write cycle count
  * @return Write cycle count
  */
-uint32 Fee_GetWriteCycleCount(void);
+extern uint32 Fee_GetWriteCycleCount(void);
 
 /**
  * @brief Main function for periodic processing
+ * @req SWS_Fee_00169
  */
-void Fee_MainFunction(void);
+extern void Fee_MainFunction(void);
+
+/**
+ * @brief Internal function to process Fee jobs via Fls
+ * @note This function is called by Fee_MainFunction to execute flash operations
+ */
+extern void Fee_ProcessFlsJob(void);
+
+/**
+ * @brief Callback function for Fls job end notification
+ * @note This function is called by Fls when a job completes successfully
+ */
+extern void Fee_FlsJobEndNotification(void);
+
+/**
+ * @brief Callback function for Fls job error notification
+ * @note This function is called by Fls when a job fails
+ */
+extern void Fee_FlsJobErrorNotification(void);
 
 #define FEE_STOP_SEC_CODE
 #include "MemMap.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FEE_H */

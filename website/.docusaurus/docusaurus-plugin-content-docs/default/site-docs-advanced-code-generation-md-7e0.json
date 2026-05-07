@@ -1,0 +1,24 @@
+{
+  "id": "advanced/code-generation",
+  "title": "代码生成",
+  "description": "使用代码生成器自动生成驱动代码。",
+  "source": "@site/docs/advanced/code-generation.md",
+  "sourceDirName": "advanced",
+  "slug": "/advanced/code-generation",
+  "permalink": "/yuleASR/docs/advanced/code-generation",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/code-generation.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "工具链",
+    "permalink": "/yuleASR/docs/advanced/toolchain"
+  },
+  "next": {
+    "title": "测试",
+    "permalink": "/yuleASR/docs/advanced/testing"
+  }
+}

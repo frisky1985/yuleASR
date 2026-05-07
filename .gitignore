@@ -1,0 +1,38 @@
+# 环境变量和密钥
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# 构建产物
+build/
+dist/
+*.o
+*.a
+*.so
+*.elf
+*.hex
+*.bin
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 依赖
+node_modules/
+__pycache__/
+*.pyc
+.Python
+
+# 日志
+*.log
+logs/
+
+# 临时文件
+tmp/
+temp/
+*.tmp

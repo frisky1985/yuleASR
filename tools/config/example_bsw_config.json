@@ -1,0 +1,99 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "YuleTech BSW Configuration",
+    "target_platform": "STM32F4xx",
+    "compiler": "GCC"
+  },
+  "modules": {
+    "Mcu": {
+      "name": "Mcu",
+      "enabled": true,
+      "version": "1.0.0",
+      "clock_frequency": 168000000,
+      "core_count": 4
+    },
+    "Can": {
+      "name": "Can",
+      "enabled": true,
+      "version": "1.0.0",
+      "baudrate": 500000,
+      "controller_count": 2
+    },
+    "CanIf": {
+      "name": "CanIf",
+      "enabled": true,
+      "version": "1.0.0",
+      "ControllerCount": 2,
+      "TransceiverCount": 2,
+      "HRHCount": 8,
+      "HTHCount": 8,
+      "MultiplexedTransmission": false,
+      "ReadTxPduNotifyStatus": false
+    },
+    "CanTp": {
+      "name": "CanTp",
+      "enabled": true,
+      "version": "1.0.0",
+      "N_As": 1000,
+      "N_Bs": 1000,
+      "N_Ar": 1000,
+      "N_Br": 1000,
+      "N_Cr": 1000,
+      "STmin": 20,
+      "BS": 8,
+      "WFTmax": 4,
+      "AddressingFormat": "STANDARD",
+      "PaddingActivation": true,
+      "ChannelCount": 2
+    },
+    "PduR": {
+      "name": "PduR",
+      "enabled": true,
+      "version": "1.0.0",
+      "ZeroCostOperation": false,
+      "LoTpEnabled": true,
+      "MaxSourceRoutingPaths": 16,
+      "MaxDestinationRoutingPaths": 32,
+      "TpBufferSize": 64,
+      "TpBufferCount": 4
+    },
+    "Com": {
+      "name": "Com",
+      "enabled": true,
+      "version": "1.0.0",
+      "SignalCount": 64,
+      "GroupSignalCount": 8,
+      "IPDUCount": 32,
+      "IPDUGroupCount": 4,
+      "TimeBase": 10
+    },
+    "Dcm": {
+      "name": "Dcm",
+      "enabled": true,
+      "version": "1.0.0",
+      "DSDServiceCount": 16,
+      "DIDCount": 32,
+      "RIDCount": 8,
+      "ProtocolType": "UDS_ON_CAN",
+      "P2Timeout": 50,
+      "P2StarTimeout": 5000,
+      "SecurityLevelCount": 2,
+      "SessionCount": 3
+    },
+    "Dem": {
+      "name": "Dem",
+      "enabled": true,
+      "version": "1.0.0",
+      "EventCount": 64,
+      "EventDestinationCount": 2,
+      "DebounceAlgorithm": "COUNTER_BASED",
+      "DebounceCounterThreshold": 10,
+      "DebounceTimeThreshold": 100,
+      "PrimaryMemorySize": 20,
+      "UserMemorySize": 10,
+      "FreezeFrameEnabled": true,
+      "ExtendedDataEnabled": true
+    }
+  }
+}

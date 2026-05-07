@@ -1,0 +1,24 @@
+{
+  "id": "advanced/performance-optimization",
+  "title": "性能优化",
+  "description": "性能优化技巧和建议。",
+  "source": "@site/docs/advanced/performance-optimization.md",
+  "sourceDirName": "advanced",
+  "slug": "/advanced/performance-optimization",
+  "permalink": "/yuleASR/docs/advanced/performance-optimization",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/performance-optimization.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "测试",
+    "permalink": "/yuleASR/docs/advanced/testing"
+  },
+  "next": {
+    "title": "调试",
+    "permalink": "/yuleASR/docs/advanced/debugging"
+  }
+}
