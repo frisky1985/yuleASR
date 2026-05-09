@@ -292,7 +292,12 @@ def cmd_nvm(args):
     print(f"🔧 生成NvM配置...")
     
     gen = create_nvm_config(args.ecu)
-    gen.add_common_config(crc_type=args.crc)
+    
+    # 解析CRC类型到字节数
+    crc_bytes = {"NVM_CRC8": 1, "NVM_CRC16": 2, "NVM_CRC32": 4, "NVM_CRC_NONE": 0}
+    crc_num_bytes = crc_bytes.get(args.crc, 4)
+    
+    gen.add_common_config(crc_num_bytes=crc_num_bytes)
     
     for i in range(args.blocks):
         gen.add_block_descriptor(
