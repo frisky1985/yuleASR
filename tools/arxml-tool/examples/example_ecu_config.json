@@ -1,0 +1,84 @@
+{
+  "name": "Can",
+  "module_def": "Can",
+  "description": "CAN Driver configuration for ECU",
+  "containers": [
+    {
+      "name": "CanGeneral",
+      "definition": "Can/CanGeneral",
+      "description": "General CAN driver configuration",
+      "parameters": [
+        {
+          "name": "CanDevErrorDetect",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "Can/CanGeneral/CanDevErrorDetect",
+          "description": "Enable development error detection"
+        },
+        {
+          "name": "CanIndex",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "Can/CanGeneral/CanIndex",
+          "description": "CAN driver instance index"
+        },
+        {
+          "name": "CanMainFunctionPeriod",
+          "value": "10",
+          "type": "FLOAT",
+          "definition": "Can/CanGeneral/CanMainFunctionPeriod",
+          "description": "Main function period in ms"
+        },
+        {
+          "name": "CanMultiplexedTransmission",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "Can/CanGeneral/CanMultiplexedTransmission",
+          "description": "Enable multiplexed transmission"
+        }
+      ]
+    },
+    {
+      "name": "CanConfigSet",
+      "definition": "Can/CanConfigSet",
+      "description": "CAN configuration set",
+      "parameters": [
+        {
+          "name": "CanControllerId",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "Can/CanConfigSet/CanController/CanControllerId",
+          "description": "CAN controller identifier"
+        },
+        {
+          "name": "CanBusOffProcessing",
+          "value": "INTERRUPT",
+          "type": "ENUM",
+          "definition": "Can/CanConfigSet/CanController/CanBusOffProcessing",
+          "description": "Bus-off event processing type"
+        },
+        {
+          "name": "CanRxProcessing",
+          "value": "INTERRUPT",
+          "type": "ENUM",
+          "definition": "Can/CanConfigSet/CanController/CanRxProcessing",
+          "description": "Reception processing type"
+        },
+        {
+          "name": "CanTxProcessing",
+          "value": "INTERRUPT",
+          "type": "ENUM",
+          "definition": "Can/CanConfigSet/CanController/CanTxProcessing",
+          "description": "Transmission processing type"
+        },
+        {
+          "name": "CanControllerBaudrate",
+          "value": "500",
+          "type": "INTEGER",
+          "definition": "Can/CanConfigSet/CanController/CanControllerBaudrateConfig/CanControllerBaudRate",
+          "description": "CAN baudrate in kbps"
+        }
+      ]
+    }
+  ]
+}

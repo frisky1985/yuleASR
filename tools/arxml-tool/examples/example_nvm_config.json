@@ -1,0 +1,91 @@
+{
+  "name": "NvM",
+  "module_def": "NvM",
+  "description": "NVRAM Manager configuration",
+  "containers": [
+    {
+      "name": "NvMCommon",
+      "definition": "NvM/NvMCommon",
+      "description": "Common NVRAM manager settings",
+      "parameters": [
+        {
+          "name": "NvMApiConfigClass",
+          "value": "NVM_API_CONFIG_CLASS_3",
+          "type": "ENUM",
+          "definition": "NvM/NvMCommon/NvMApiConfigClass",
+          "description": "API configuration class"
+        },
+        {
+          "name": "NvMCompiledConfigId",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "NvM/NvMCommon/NvMCompiledConfigId",
+          "description": "Compiled configuration ID"
+        },
+        {
+          "name": "NvMCrcNumOfBytes",
+          "value": "4",
+          "type": "INTEGER",
+          "definition": "NvM/NvMCommon/NvMCrcNumOfBytes",
+          "description": "Number of bytes for CRC calculation"
+        },
+        {
+          "name": "NvMDevErrorDetect",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "NvM/NvMCommon/NvMDevErrorDetect",
+          "description": "Enable development error detection"
+        },
+        {
+          "name": "NvMMainFunctionPeriod",
+          "value": "10",
+          "type": "FLOAT",
+          "definition": "NvM/NvMCommon/NvMMainFunctionPeriod",
+          "description": "Main function period in ms"
+        },
+        {
+          "name": "NvMMultiBlockCallback",
+          "value": "NvM_MultiBlockCallback",
+          "type": "FUNCTION-NAME",
+          "definition": "NvM/NvMCommon/NvMMultiBlockCallback",
+          "description": "Multi-block operation callback function"
+        }
+      ]
+    },
+    {
+      "name": "NvMBlockDescriptor",
+      "definition": "NvM/NvMBlockDescriptor",
+      "description": "NVRAM block descriptor",
+      "parameters": [
+        {
+          "name": "NvMBlockCrcType",
+          "value": "NVM_CRC32",
+          "type": "ENUM",
+          "definition": "NvM/NvMBlockDescriptor/NvMBlockCrcType",
+          "description": "CRC type for the block"
+        },
+        {
+          "name": "NvMBlockJobPriority",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "NvM/NvMBlockDescriptor/NvMBlockJobPriority",
+          "description": "Job priority (0=immediate, 1=high, 2=low)"
+        },
+        {
+          "name": "NvMBlockManagementType",
+          "value": "NVM_BLOCK_NATIVE",
+          "type": "ENUM",
+          "definition": "NvM/NvMBlockDescriptor/NvMBlockManagementType",
+          "description": "Block management type"
+        },
+        {
+          "name": "NvMMaxNumOfWriteRetries",
+          "value": "3",
+          "type": "INTEGER",
+          "definition": "NvM/NvMBlockDescriptor/NvMMaxNumOfWriteRetries",
+          "description": "Maximum write retries"
+        }
+      ]
+    }
+  ]
+}

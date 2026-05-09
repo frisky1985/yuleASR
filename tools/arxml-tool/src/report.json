@@ -1,0 +1,128 @@
+{
+  "file_path": "test_invalid.arxml",
+  "analysis_time": "2026-05-09T08:28:42.763937",
+  "mode": "strict",
+  "total_issues": 12,
+  "error_count": 7,
+  "warning_count": 3,
+  "info_count": 2,
+  "issues": [
+    {
+      "severity": "error",
+      "check_type": "structural",
+      "message": "重复的UUID: b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE",
+      "element_uuid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "suggestion": "该UUID已存在于: AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE",
+      "rule_id": "RULE-002"
+    },
+    {
+      "severity": "error",
+      "check_type": "structural",
+      "message": "缺少必需元素: SHORT-NAME",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/P-PORT-PROTOTYPE",
+      "element_uuid": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+      "suggestion": "添加<SHORT-NAME>元素",
+      "rule_id": "RULE-001"
+    },
+    {
+      "severity": "error",
+      "check_type": "structural",
+      "message": "缺少必需元素: PROVIDER-IREF",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/ASSEMBLY-SW-CONNECTOR",
+      "element_uuid": "e5f6a7b8-c9d0-1234-efab-567890123456",
+      "suggestion": "添加<PROVIDER-IREF>元素",
+      "rule_id": "RULE-001"
+    },
+    {
+      "severity": "error",
+      "check_type": "structural",
+      "message": "无法解析的引用: testComp (COMPONENT-REF)",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/ASSEMBLY-SW-CONNECTOR/REQUESTER-IREF/COMPONENT-REF",
+      "element_uuid": null,
+      "suggestion": "检查引用路径或UUID是否正确",
+      "rule_id": "RULE-003"
+    },
+    {
+      "severity": "error",
+      "check_type": "structural",
+      "message": "无法解析的引用: testPort (R-PORT-REF)",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/ASSEMBLY-SW-CONNECTOR/REQUESTER-IREF/R-PORT-REF",
+      "element_uuid": null,
+      "suggestion": "检查引用路径或UUID是否正确",
+      "rule_id": "RULE-003"
+    },
+    {
+      "severity": "error",
+      "check_type": "semantic",
+      "message": "ASSEMBLY-SW-CONNECTOR缺少PROVIDER-IREF",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE[TestPackage]/ELEMENTS/ASSEMBLY-SW-CONNECTOR[IncompleteConnector]",
+      "element_uuid": null,
+      "suggestion": null,
+      "rule_id": "RULE-006"
+    },
+    {
+      "severity": "error",
+      "check_type": "semantic",
+      "message": "引用的接口不存在: /Invalid/Interface",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE[TestPackage]/ELEMENTS/P-PORT-PROTOTYPE",
+      "element_uuid": null,
+      "suggestion": "检查接口定义是否存在",
+      "rule_id": "RULE-007"
+    },
+    {
+      "severity": "warning",
+      "check_type": "semantic",
+      "message": "组件未映射到ECU: CompA",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE[TestPackage]/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE[CompA]",
+      "element_uuid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "suggestion": "添加SWC-TO-ECU-MAPPING配置",
+      "rule_id": "RULE-005"
+    },
+    {
+      "severity": "warning",
+      "check_type": "semantic",
+      "message": "组件未映射到ECU: CompB",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE[TestPackage]/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE[CompB]",
+      "element_uuid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "suggestion": "添加SWC-TO-ECU-MAPPING配置",
+      "rule_id": "RULE-005"
+    },
+    {
+      "severity": "warning",
+      "check_type": "semantic",
+      "message": "组件未映射到ECU: OrphanedComponent",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE[TestPackage]/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE[OrphanedComponent]",
+      "element_uuid": "f6a7b8c9-d0e1-2345-fabc-678901234567",
+      "suggestion": "添加SWC-TO-ECU-MAPPING配置",
+      "rule_id": "RULE-005"
+    },
+    {
+      "severity": "info",
+      "check_type": "semantic",
+      "message": "元素未被引用: CompA (APPLICATION-SW-COMPONENT-TYPE)",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE",
+      "element_uuid": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+      "suggestion": "检查是否需要删除未使用的元素",
+      "rule_id": "RULE-010"
+    },
+    {
+      "severity": "info",
+      "check_type": "semantic",
+      "message": "元素未被引用: OrphanedComponent (APPLICATION-SW-COMPONENT-TYPE)",
+      "element_path": "AUTOSAR/AR-PACKAGES/AR-PACKAGE/ELEMENTS/APPLICATION-SW-COMPONENT-TYPE",
+      "element_uuid": "f6a7b8c9-d0e1-2345-fabc-678901234567",
+      "suggestion": "检查是否需要删除未使用的元素",
+      "rule_id": "RULE-010"
+    }
+  ],
+  "summary": {
+    "structural_issues": 5,
+    "semantic_issues": 7,
+    "custom_issues": 0,
+    "total_elements_analyzed": 6,
+    "total_references_checked": 2,
+    "analysis_mode": "strict",
+    "rules_enabled": 10
+  }
+}

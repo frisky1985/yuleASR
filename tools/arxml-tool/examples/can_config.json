@@ -1,0 +1,203 @@
+{
+  "name": "Can",
+  "module_def": "AUTOSAR/EcucDefs/Can",
+  "description": "CAN Driver Configuration for Engine ECU",
+  "containers": [
+    {
+      "name": "CanGeneral",
+      "definition": "AUTOSAR/EcucDefs/Can/CanGeneral",
+      "description": "General CAN configuration parameters",
+      "parameters": [
+        {
+          "name": "CanDevErrorDetect",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanDevErrorDetect",
+          "description": "Enable development error detection"
+        },
+        {
+          "name": "CanVersionInfoApi",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanVersionInfoApi",
+          "description": "Enable version info API"
+        },
+        {
+          "name": "CanTimeoutDuration",
+          "value": "100",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanTimeoutDuration",
+          "description": "Timeout duration in milliseconds"
+        },
+        {
+          "name": "CanMainFunctionPeriod",
+          "value": "10",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanMainFunctionPeriod",
+          "description": "Main function period in milliseconds"
+        },
+        {
+          "name": "CanIndex",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanIndex",
+          "description": "CAN driver index"
+        }
+      ]
+    },
+    {
+      "name": "CanConfigSet",
+      "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet",
+      "description": "CAN configuration set",
+      "parameters": [
+        {
+          "name": "CanControllerId",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanController/CanControllerId",
+          "description": "CAN controller identifier"
+        },
+        {
+          "name": "CanBusoffProcessing",
+          "value": "INTERRUPT",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanController/CanBusoffProcessing",
+          "description": "Bus-off processing type"
+        },
+        {
+          "name": "CanRxProcessing",
+          "value": "INTERRUPT",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanController/CanRxProcessing",
+          "description": "Reception processing type"
+        },
+        {
+          "name": "CanTxProcessing",
+          "value": "INTERRUPT",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanController/CanTxProcessing",
+          "description": "Transmission processing type"
+        },
+        {
+          "name": "CanControllerLoopback",
+          "value": "false",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanController/CanControllerLoopback",
+          "description": "Enable loopback mode"
+        }
+      ]
+    },
+    {
+      "name": "CanHardwareObject",
+      "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject",
+      "description": "CAN hardware object configuration",
+      "parameters": [
+        {
+          "name": "CanHandleType",
+          "value": "BASIC",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanHandleType",
+          "description": "Handle type (BASIC/FULL)"
+        },
+        {
+          "name": "CanObjectType",
+          "value": "TRANSMIT",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanObjectType",
+          "description": "Object type (TRANSMIT/RECEIVE)"
+        },
+        {
+          "name": "CanObjectId",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanObjectId",
+          "description": "Hardware object ID"
+        },
+        {
+          "name": "CanHwObjectCount",
+          "value": "8",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanHwObjectCount",
+          "description": "Number of hardware objects"
+        },
+        {
+          "name": "CanControllerRef",
+          "value": "CanConfigSet/CanController",
+          "type": "STRING",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanControllerRef",
+          "description": "Reference to CAN controller"
+        }
+      ]
+    },
+    {
+      "name": "CanHardwareObject_Rx",
+      "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject",
+      "description": "CAN receive hardware object configuration",
+      "parameters": [
+        {
+          "name": "CanHandleType",
+          "value": "FULL",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanHandleType",
+          "description": "Handle type (BASIC/FULL)"
+        },
+        {
+          "name": "CanObjectType",
+          "value": "RECEIVE",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanObjectType",
+          "description": "Object type (TRANSMIT/RECEIVE)"
+        },
+        {
+          "name": "CanObjectId",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanObjectId",
+          "description": "Hardware object ID"
+        },
+        {
+          "name": "CanHwFilterCode",
+          "value": "0x000",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanHwFilterCode",
+          "description": "Hardware filter code"
+        },
+        {
+          "name": "CanHwFilterMask",
+          "value": "0x7FF",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/Can/CanConfigSet/CanHardwareObject/CanHwFilterMask",
+          "description": "Hardware filter mask"
+        }
+      ]
+    },
+    {
+      "name": "CanCallbacks",
+      "definition": "AUTOSAR/EcucDefs/Can/CanGeneral",
+      "description": "CAN callback function configurations",
+      "parameters": [
+        {
+          "name": "CanBusOffNotification",
+          "value": "CanIf_ControllerBusOff",
+          "type": "FUNCTION-NAME",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanBusOffNotification",
+          "description": "Bus-off notification callback"
+        },
+        {
+          "name": "CanErrorNotification",
+          "value": "CanIf_ErrorNotification",
+          "type": "FUNCTION-NAME",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanErrorNotification",
+          "description": "Error notification callback"
+        },
+        {
+          "name": "CanWakeupNotification",
+          "value": "EcuM_WakeupNotification",
+          "type": "FUNCTION-NAME",
+          "definition": "AUTOSAR/EcucDefs/Can/CanGeneral/CanWakeupNotification",
+          "description": "Wakeup notification callback"
+        }
+      ]
+    }
+  ]
+}

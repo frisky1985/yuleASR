@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 autosar_4-0-3.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="a1b2c3d4-e5f6-7890-abcd-ef1234567890">
+      <SHORT-NAME>SystemComponents</SHORT-NAME>
+      <ELEMENTS>
+        <!-- 组件定义 -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="b2c3d4e5-f6a7-8901-bcde-f23456789012">
+          <SHORT-NAME>EngineControl</SHORT-NAME>
+          <PORTS>
+            <P-PORT-PROTOTYPE UUID="c3d4e5f6-a7b8-9012-cdef-345678901234">
+              <SHORT-NAME>EngineStatus</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SystemComponents/Interfaces/EngineStatus_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+            <R-PORT-PROTOTYPE UUID="d4e5f6a7-b8c9-0123-defa-456789012345">
+              <SHORT-NAME>ThrottleInput</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SystemComponents/Interfaces/Throttle_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+          </PORTS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <APPLICATION-SW-COMPONENT-TYPE UUID="e5f6a7b8-c9d0-1234-efab-567890123456">
+          <SHORT-NAME>GearboxControl</SHORT-NAME>
+          <PORTS>
+            <R-PORT-PROTOTYPE UUID="f6a7b8c9-d0e1-2345-fabc-678901234567">
+              <SHORT-NAME>EngineStatus_In</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SystemComponents/Interfaces/EngineStatus_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+            <P-PORT-PROTOTYPE UUID="a7b8c9d0-e1f2-3456-abcd-789012345678">
+              <SHORT-NAME>GearStatus</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/SystemComponents/Interfaces/GearStatus_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+          </PORTS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- 复合组件 -->
+        <COMPOSITION-SW-COMPONENT-TYPE UUID="b8c9d0e1-f2a3-4567-bcde-890123456789">
+          <SHORT-NAME>PowertrainSystem</SHORT-NAME>
+          <COMPONENTS>
+            <SW-COMPONENT-PROTOTYPE UUID="c9d0e1f2-a3b4-5678-cdef-901234567890">
+              <SHORT-NAME>engineCtrl</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/SystemComponents/EngineControl</TYPE-TREF>
+            </SW-COMPONENT-PROTOTYPE>
+            <SW-COMPONENT-PROTOTYPE UUID="d0e1f2a3-b4c5-6789-defa-012345678901">
+              <SHORT-NAME>gearboxCtrl</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/SystemComponents/GearboxControl</TYPE-TREF>
+            </SW-COMPONENT-PROTOTYPE>
+          </COMPONENTS>
+          <CONNECTORS>
+            <ASSEMBLY-SW-CONNECTOR UUID="e1f2a3b4-c5d6-7890-efab-123456789012">
+              <SHORT-NAME>EngToGearStatus</SHORT-NAME>
+              <PROVIDER-IREF>
+                <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">engineCtrl</COMPONENT-REF>
+                <P-PORT-REF DEST="P-PORT-PROTOTYPE">EngineStatus</P-PORT-REF>
+              </PROVIDER-IREF>
+              <REQUESTER-IREF>
+                <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">gearboxCtrl</COMPONENT-REF>
+                <R-PORT-REF DEST="R-PORT-PROTOTYPE">EngineStatus_In</R-PORT-REF>
+              </REQUESTER-IREF>
+            </ASSEMBLY-SW-CONNECTOR>
+          </CONNECTORS>
+        </COMPOSITION-SW-COMPONENT-TYPE>
+
+        <!-- 接口定义 -->
+        <SENDER-RECEIVER-INTERFACE UUID="f2a3b4c5-d6e7-8901-fabc-234567890123">
+          <SHORT-NAME>EngineStatus_IF</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <VARIABLE-DATA-PROTOTYPE>
+              <SHORT-NAME>rpm</SHORT-NAME>
+              <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SystemComponents/DataTypes/uint16</TYPE-TREF>
+            </VARIABLE-DATA-PROTOTYPE>
+            <VARIABLE-DATA-PROTOTYPE>
+              <SHORT-NAME>temperature</SHORT-NAME>
+              <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SystemComponents/DataTypes/sint16</TYPE-TREF>
+            </VARIABLE-DATA-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <SENDER-RECEIVER-INTERFACE UUID="a3b4c5d6-e7f8-9012-abcd-345678901234">
+          <SHORT-NAME>Throttle_IF</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <VARIABLE-DATA-PROTOTYPE>
+              <SHORT-NAME>position</SHORT-NAME>
+              <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SystemComponents/DataTypes/uint8</TYPE-TREF>
+            </VARIABLE-DATA-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <SENDER-RECEIVER-INTERFACE UUID="b4c5d6e7-f8a9-0123-bcde-456789012345">
+          <SHORT-NAME>GearStatus_IF</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <VARIABLE-DATA-PROTOTYPE>
+              <SHORT-NAME>currentGear</SHORT-NAME>
+              <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/SystemComponents/DataTypes/uint8</TYPE-TREF>
+            </VARIABLE-DATA-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- 数据类型定义 -->
+        <IMPLEMENTATION-DATA-TYPE UUID="c5d6e7f8-a9b0-1234-cdef-567890123456">
+          <SHORT-NAME>uint8</SHORT-NAME>
+          <BASE-TYPE-REF DEST="SW-BASE-TYPE">/SystemComponents/BaseTypes/uint8</BASE-TYPE-REF>
+        </IMPLEMENTATION-DATA-TYPE>
+
+        <IMPLEMENTATION-DATA-TYPE UUID="d6e7f8a9-b0c1-2345-defa-678901234567">
+          <SHORT-NAME>uint16</SHORT-NAME>
+          <BASE-TYPE-REF DEST="SW-BASE-TYPE">/SystemComponents/BaseTypes/uint16</BASE-TYPE-REF>
+        </IMPLEMENTATION-DATA-TYPE>
+
+        <IMPLEMENTATION-DATA-TYPE UUID="e7f8a9b0-c1d2-3456-efab-789012345678">
+          <SHORT-NAME>sint16</SHORT-NAME>
+          <BASE-TYPE-REF DEST="SW-BASE-TYPE">/SystemComponents/BaseTypes/sint16</BASE-TYPE-REF>
+        </IMPLEMENTATION-DATA-TYPE>
+
+        <!-- ECU定义 -->
+        <ECU UUID="f8a9b0c1-d2e3-4567-fabc-890123456789">
+          <SHORT-NAME>EngineECU</SHORT-NAME>
+          <ECU-CONFIGURATION>
+            <ECU-REF DEST="ECU">EngineECU</ECU-REF>
+            <ECU-EXTRACT-REF DEST="SYSTEM">/SystemComponents/PowertrainSystem</ECU-EXTRACT-REF>
+          </ECU-CONFIGURATION>
+        </ECU>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

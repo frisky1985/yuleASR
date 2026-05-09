@@ -1,0 +1,350 @@
+{
+  "name": "NvM",
+  "module_def": "AUTOSAR/EcucDefs/NvM",
+  "description": "NVRAM Manager Configuration",
+  "containers": [
+    {
+      "name": "NvMCommon",
+      "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon",
+      "description": "Common NVRAM manager configuration",
+      "parameters": [
+        {
+          "name": "NvMDevErrorDetect",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMDevErrorDetect",
+          "description": "Enable development error detection"
+        },
+        {
+          "name": "NvMVersionInfoApi",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMVersionInfoApi",
+          "description": "Enable version info API"
+        },
+        {
+          "name": "NvMMultiBlockCallback",
+          "value": "NvM_MultiBlockCallback",
+          "type": "FUNCTION-NAME",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMMultiBlockCallback",
+          "description": "Multi-block operation callback"
+        },
+        {
+          "name": "NvMJobPrioritization",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMJobPrioritization",
+          "description": "Enable job prioritization"
+        },
+        {
+          "name": "NvMSizeStandardJobQueue",
+          "value": "16",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMSizeStandardJobQueue",
+          "description": "Standard job queue size"
+        },
+        {
+          "name": "NvMSizeImmediateJobQueue",
+          "value": "4",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMSizeImmediateJobQueue",
+          "description": "Immediate job queue size"
+        },
+        {
+          "name": "NvMMainFunctionPeriod",
+          "value": "20",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMMainFunctionPeriod",
+          "description": "Main function period in milliseconds"
+        },
+        {
+          "name": "NvMBswMMultiBlockJobStatusInformation",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMCommon/NvMBswMMultiBlockJobStatusInformation",
+          "description": "Report multi-block job status to BswM"
+        }
+      ]
+    },
+    {
+      "name": "NvMBlockDescriptor_EngineData",
+      "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor",
+      "description": "NVRAM block descriptor for engine data",
+      "parameters": [
+        {
+          "name": "NvMBlockManagementType",
+          "value": "NVM_BLOCK_NATIVE",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockManagementType",
+          "description": "Block management type"
+        },
+        {
+          "name": "NvMNvramBlockIdentifier",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvramBlockIdentifier",
+          "description": "NVRAM block identifier"
+        },
+        {
+          "name": "NvMNvBlockBaseNumber",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvBlockBaseNumber",
+          "description": "NV block base number"
+        },
+        {
+          "name": "NvMNvBlockLength",
+          "value": "64",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvBlockLength",
+          "description": "NV block length in bytes"
+        },
+        {
+          "name": "NvMNvRamBlockNum",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvRamBlockNum",
+          "description": "Number of NV blocks"
+        },
+        {
+          "name": "NvMRomBlockNum",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMRomBlockNum",
+          "description": "Number of ROM blocks"
+        },
+        {
+          "name": "NvMInitBlockCallback",
+          "value": "NvM_InitCallback_EngineData",
+          "type": "FUNCTION-NAME",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMInitBlockCallback",
+          "description": "Block initialization callback"
+        },
+        {
+          "name": "NvMSingleBlockCallback",
+          "value": "NvM_SingleBlockCallback_EngineData",
+          "type": "FUNCTION-NAME",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSingleBlockCallback",
+          "description": "Single block operation callback"
+        },
+        {
+          "name": "NvMBlockUseCrc",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockUseCrc",
+          "description": "Enable CRC for this block"
+        },
+        {
+          "name": "NvMBlockUseSetRamBlockStatus",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockUseSetRamBlockStatus",
+          "description": "Enable SetRamBlockStatus API"
+        },
+        {
+          "name": "NvMBlockWriteProt",
+          "value": "false",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockWriteProt",
+          "description": "Block write protection"
+        },
+        {
+          "name": "NvMResistantToChangedSw",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMResistantToChangedSw",
+          "description": "Resistant to changed software"
+        },
+        {
+          "name": "NvMSelectBlockForReadAll",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSelectBlockForReadAll",
+          "description": "Include in ReadAll operation"
+        },
+        {
+          "name": "NvMSelectBlockForWriteAll",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSelectBlockForWriteAll",
+          "description": "Include in WriteAll operation"
+        }
+      ]
+    },
+    {
+      "name": "NvMBlockDescriptor_VehicleConfig",
+      "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor",
+      "description": "NVRAM block descriptor for vehicle configuration",
+      "parameters": [
+        {
+          "name": "NvMBlockManagementType",
+          "value": "NVM_BLOCK_REDUNDANT",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockManagementType",
+          "description": "Block management type"
+        },
+        {
+          "name": "NvMNvramBlockIdentifier",
+          "value": "2",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvramBlockIdentifier",
+          "description": "NVRAM block identifier"
+        },
+        {
+          "name": "NvMNvBlockBaseNumber",
+          "value": "2",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvBlockBaseNumber",
+          "description": "NV block base number"
+        },
+        {
+          "name": "NvMNvBlockLength",
+          "value": "128",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvBlockLength",
+          "description": "NV block length in bytes"
+        },
+        {
+          "name": "NvMNvRamBlockNum",
+          "value": "2",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvRamBlockNum",
+          "description": "Number of NV blocks (redundant)"
+        },
+        {
+          "name": "NvMRomBlockNum",
+          "value": "1",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMRomBlockNum",
+          "description": "Number of ROM blocks"
+        },
+        {
+          "name": "NvMBlockUseCrc",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockUseCrc",
+          "description": "Enable CRC for this block"
+        },
+        {
+          "name": "NvMCalcRamBlockCrc",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMCalcRamBlockCrc",
+          "description": "Calculate CRC for RAM block"
+        },
+        {
+          "name": "NvMBlockUseSetRamBlockStatus",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockUseSetRamBlockStatus",
+          "description": "Enable SetRamBlockStatus API"
+        },
+        {
+          "name": "NvMSelectBlockForReadAll",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSelectBlockForReadAll",
+          "description": "Include in ReadAll operation"
+        },
+        {
+          "name": "NvMSelectBlockForWriteAll",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSelectBlockForWriteAll",
+          "description": "Include in WriteAll operation"
+        },
+        {
+          "name": "NvMMaxNumOfReadRetries",
+          "value": "3",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMMaxNumOfReadRetries",
+          "description": "Maximum number of read retries"
+        },
+        {
+          "name": "NvMMaxNumOfWriteRetries",
+          "value": "3",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMMaxNumOfWriteRetries",
+          "description": "Maximum number of write retries"
+        }
+      ]
+    },
+    {
+      "name": "NvMBlockDescriptor_DiagnosticData",
+      "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor",
+      "description": "NVRAM block descriptor for diagnostic data (immediate write)",
+      "parameters": [
+        {
+          "name": "NvMBlockManagementType",
+          "value": "NVM_BLOCK_NATIVE",
+          "type": "ENUM",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockManagementType",
+          "description": "Block management type"
+        },
+        {
+          "name": "NvMNvramBlockIdentifier",
+          "value": "3",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvramBlockIdentifier",
+          "description": "NVRAM block identifier"
+        },
+        {
+          "name": "NvMNvBlockBaseNumber",
+          "value": "3",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvBlockBaseNumber",
+          "description": "NV block base number"
+        },
+        {
+          "name": "NvMNvBlockLength",
+          "value": "32",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMNvBlockLength",
+          "description": "NV block length in bytes"
+        },
+        {
+          "name": "NvMBlockJobPriority",
+          "value": "0",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockJobPriority",
+          "description": "Job priority (0 = highest/immediate)"
+        },
+        {
+          "name": "NvMBlockUseCrc",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockUseCrc",
+          "description": "Enable CRC for this block"
+        },
+        {
+          "name": "NvMBlockUseSetRamBlockStatus",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMBlockUseSetRamBlockStatus",
+          "description": "Enable SetRamBlockStatus API"
+        },
+        {
+          "name": "NvMSelectBlockForReadAll",
+          "value": "true",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSelectBlockForReadAll",
+          "description": "Include in ReadAll operation"
+        },
+        {
+          "name": "NvMSelectBlockForWriteAll",
+          "value": "false",
+          "type": "BOOLEAN",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMSelectBlockForWriteAll",
+          "description": "Exclude from WriteAll (immediate write)"
+        },
+        {
+          "name": "NvMMaxNumOfWriteRetries",
+          "value": "5",
+          "type": "INTEGER",
+          "definition": "AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor/NvMMaxNumOfWriteRetries",
+          "description": "Maximum number of write retries (higher for critical data)"
+        }
+      ]
+    }
+  ]
+}

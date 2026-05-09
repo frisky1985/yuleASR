@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaVersion="4.0.0">
+  <ADMIN-DATA>
+    <LANGUAGE>EN</LANGUAGE>
+  </ADMIN-DATA>
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="ecu-package-001">
+      <SHORT-NAME>ECU_Project</SHORT-NAME>
+      <ELEMENTS>
+        <!-- ECU Configuration -->
+        <ECU-CONFIGURATION UUID="ecu-config-001">
+          <SHORT-NAME>EngineECU_Config</SHORT-NAME>
+          <DESC>
+            <L-2>Engine Control Unit Configuration</L-2>
+          </DESC>
+          <ECU>EngineECU</ECU>
+          <ECU-EXTRACT-REF DEST="SYSTEM">/ECU_Project/EngineSystem</ECU-EXTRACT-REF>
+          <MODULE-CONFIGURATIONS>
+            <MODULE-CONFIGURATION UUID="module-can-001">
+              <SHORT-NAME>Can</SHORT-NAME>
+              <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Can</DEFINITION-REF>
+            </MODULE-CONFIGURATION>
+            <MODULE-CONFIGURATION UUID="module-nvm-001">
+              <SHORT-NAME>NvM</SHORT-NAME>
+              <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/NvM</DEFINITION-REF>
+            </MODULE-CONFIGURATION>
+            <MODULE-CONFIGURATION UUID="module-com-001">
+              <SHORT-NAME>Com</SHORT-NAME>
+              <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Com</DEFINITION-REF>
+            </MODULE-CONFIGURATION>
+          </MODULE-CONFIGURATIONS>
+        </ECU-CONFIGURATION>
+
+        <!-- Software Components -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-engine-001">
+          <SHORT-NAME>EngineControl</SHORT-NAME>
+          <DESC>
+            <L-2>Engine Control Application Component</L-2>
+          </DESC>
+          <PORTS>
+            <P-PORT-PROTOTYPE UUID="port-eng-status-001">
+              <SHORT-NAME>EngineStatus_P</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ECU_Project/Interfaces/EngineStatus_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+            <R-PORT-PROTOTYPE UUID="port-throttle-001">
+              <SHORT-NAME>Throttle_R</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ECU_Project/Interfaces/Throttle_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+          </PORTS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-sensor-001">
+          <SHORT-NAME>SensorProcessing</SHORT-NAME>
+          <DESC>
+            <L-2>Sensor Data Processing Component</L-2>
+          </DESC>
+          <PORTS>
+            <P-PORT-PROTOTYPE UUID="port-throttle-p-001">
+              <SHORT-NAME>Throttle_P</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ECU_Project/Interfaces/Throttle_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+            <R-PORT-PROTOTYPE UUID="port-engine-temp-001">
+              <SHORT-NAME>EngineTemp_R</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/ECU_Project/Interfaces/EngineTemp_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+          </PORTS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- Port Interfaces -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-engine-status-001">
+          <SHORT-NAME>EngineStatus_IF</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-rpm-001">
+              <SHORT-NAME>EngineRPM</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/ECU_Project/DataTypes/uint16</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-temp-001">
+              <SHORT-NAME>EngineTemp</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/ECU_Project/DataTypes/sint16</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <SENDER-RECEIVER-INTERFACE UUID="if-throttle-001">
+          <SHORT-NAME>Throttle_IF</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-throttle-pos-001">
+              <SHORT-NAME>ThrottlePosition</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/ECU_Project/DataTypes/uint8</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <SENDER-RECEIVER-INTERFACE UUID="if-eng-temp-001">
+          <SHORT-NAME>EngineTemp_IF</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-coolant-temp-001">
+              <SHORT-NAME>CoolantTemp</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/ECU_Project/DataTypes/sint16</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Data Types -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-uint8-001">
+          <SHORT-NAME>uint8</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-uint16-001">
+          <SHORT-NAME>uint16</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-sint16-001">
+          <SHORT-NAME>sint16</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- System Mapping -->
+        <SYSTEM-MAPPING UUID="mapping-001">
+          <SHORT-NAME>EngineSystemMapping</SHORT-NAME>
+          <MAPPINGS>
+            <SWC-TO-ECU-MAPPING UUID="swc2ecu-001">
+              <SHORT-NAME>EngineControlMapping</SHORT-NAME>
+              <COMPONENT-REF DEST="APPLICATION-SW-COMPONENT-TYPE">/ECU_Project/EngineControl</COMPONENT-REF>
+              <ECU-REF DEST="ECU-CONFIGURATION">/ECU_Project/EngineECU_Config</ECU-REF>
+            </SWC-TO-ECU-MAPPING>
+            <SWC-TO-ECU-MAPPING UUID="swc2ecu-002">
+              <SHORT-NAME>SensorProcessingMapping</SHORT-NAME>
+              <COMPONENT-REF DEST="APPLICATION-SW-COMPONENT-TYPE">/ECU_Project/SensorProcessing</COMPONENT-REF>
+              <ECU-REF DEST="ECU-CONFIGURATION">/ECU_Project/EngineECU_Config</ECU-REF>
+            </SWC-TO-ECU-MAPPING>
+          </MAPPINGS>
+          <CONNECTIONS>
+            <ASSEMBLY-SW-CONNECTOR UUID="conn-001">
+              <SHORT-NAME>ThrottleConnection</SHORT-NAME>
+              <PROVIDER-IREF>
+                <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ECU_Project/SensorProcessing</CONTEXT-COMPONENT-REF>
+                <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/ECU_Project/SensorProcessing/Throttle_P</TARGET-P-PORT-REF>
+              </PROVIDER-IREF>
+              <REQUESTER-IREF>
+                <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/ECU_Project/EngineControl</CONTEXT-COMPONENT-REF>
+                <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/ECU_Project/EngineControl/Throttle_R</TARGET-R-PORT-REF>
+              </REQUESTER-IREF>
+            </ASSEMBLY-SW-CONNECTOR>
+          </CONNECTIONS>
+        </SYSTEM-MAPPING>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>
