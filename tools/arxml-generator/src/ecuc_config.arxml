@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:AUTOSAR xmlns:ns0="http://autosar.org/schema/r4.0" xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://autosar.org/schema/r4.0 autosar_4-2-2.xsd">
+  <ns0:AR-PACKAGES>
+    <ns0:AR-PACKAGE>
+      <ns0:SHORT-NAME>ECUC</ns0:SHORT-NAME>
+      <ns0:ELEMENTS>
+        <ns0:ECUC-MODULE-CONFIGURATION-VALUES>
+          <ns0:SHORT-NAME>Os</ns0:SHORT-NAME>
+          <ns0:DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Os</ns0:DEFINITION-REF>
+          <ns0:IMPLEMENTATION-CONFIG-VARIANT>VARIANT-PRE-COMPILE</ns0:IMPLEMENTATION-CONFIG-VARIANT>
+          <ns0:CONTAINERS>
+            <ns0:ECUC-CONTAINER-VALUE>
+              <ns0:SHORT-NAME>OsCounter_SystemCounter</ns0:SHORT-NAME>
+              <ns0:DEFINITION-REF DEST="ECUC-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsCounter</ns0:DEFINITION-REF>
+              <ns0:PARAMETER-VALUES>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsCounter/OsCounterMaxAllowedValue</ns0:DEFINITION-REF>
+                  <ns0:VALUE>4294967295</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsCounter/OsCounterMinCycle</ns0:DEFINITION-REF>
+                  <ns0:VALUE>1</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsCounter/OsCounterTicksPerBase</ns0:DEFINITION-REF>
+                  <ns0:VALUE>1000</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-TEXTUAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-ENUMERATION-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsCounter/OsCounterType</ns0:DEFINITION-REF>
+                  <ns0:VALUE>HARDWARE</ns0:VALUE>
+                </ns0:ECUC-TEXTUAL-PARAM-VALUE>
+              </ns0:PARAMETER-VALUES>
+            </ns0:ECUC-CONTAINER-VALUE>
+            <ns0:ECUC-CONTAINER-VALUE>
+              <ns0:SHORT-NAME>OsTask_InitTask</ns0:SHORT-NAME>
+              <ns0:DEFINITION-REF DEST="ECUC-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsTask</ns0:DEFINITION-REF>
+              <ns0:PARAMETER-VALUES>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskActivation</ns0:DEFINITION-REF>
+                  <ns0:VALUE>1</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-BOOLEAN-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskAutostart</ns0:DEFINITION-REF>
+                  <ns0:VALUE>true</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskPriority</ns0:DEFINITION-REF>
+                  <ns0:VALUE>1</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-TEXTUAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-ENUMERATION-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskSchedule</ns0:DEFINITION-REF>
+                  <ns0:VALUE>FULL</ns0:VALUE>
+                </ns0:ECUC-TEXTUAL-PARAM-VALUE>
+              </ns0:PARAMETER-VALUES>
+              <ns0:SUB-CONTAINERS>
+                <ns0:ECUC-CONTAINER-VALUE>
+                  <ns0:SHORT-NAME>OsTaskAutostart</ns0:SHORT-NAME>
+                  <ns0:DEFINITION-REF DEST="ECUC-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskAutostartRef</ns0:DEFINITION-REF>
+                  <ns0:REFERENCE-VALUES>
+                    <ns0:ECUC-REFERENCE-VALUE>
+                      <ns0:DEFINITION-REF DEST="ECUC-REFERENCE-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskAutostartRef/OsTaskAppModeRef</ns0:DEFINITION-REF>
+                      <ns0:VALUE-REF DEST="ECUC-CONTAINER-VALUE">/ECUC/Os/OsAppMode/OsAppMode_OS</ns0:VALUE-REF>
+                    </ns0:ECUC-REFERENCE-VALUE>
+                  </ns0:REFERENCE-VALUES>
+                </ns0:ECUC-CONTAINER-VALUE>
+              </ns0:SUB-CONTAINERS>
+            </ns0:ECUC-CONTAINER-VALUE>
+            <ns0:ECUC-CONTAINER-VALUE>
+              <ns0:SHORT-NAME>OsTask_IdleTask</ns0:SHORT-NAME>
+              <ns0:DEFINITION-REF DEST="ECUC-CONTAINER-DEF">/AUTOSAR/EcucDefs/Os/OsTask</ns0:DEFINITION-REF>
+              <ns0:PARAMETER-VALUES>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Os/OsTask/OsTaskPriority</ns0:DEFINITION-REF>
+                  <ns0:VALUE>0</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+              </ns0:PARAMETER-VALUES>
+            </ns0:ECUC-CONTAINER-VALUE>
+          </ns0:CONTAINERS>
+        </ns0:ECUC-MODULE-CONFIGURATION-VALUES>
+        <ns0:ECUC-MODULE-CONFIGURATION-VALUES>
+          <ns0:SHORT-NAME>Com</ns0:SHORT-NAME>
+          <ns0:DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Com</ns0:DEFINITION-REF>
+          <ns0:IMPLEMENTATION-CONFIG-VARIANT>VARIANT-PRE-COMPILE</ns0:IMPLEMENTATION-CONFIG-VARIANT>
+          <ns0:CONTAINERS>
+            <ns0:ECUC-CONTAINER-VALUE>
+              <ns0:SHORT-NAME>ComConfig</ns0:SHORT-NAME>
+              <ns0:DEFINITION-REF DEST="ECUC-CONTAINER-DEF">/AUTOSAR/EcucDefs/Com/ComConfig</ns0:DEFINITION-REF>
+              <ns0:PARAMETER-VALUES>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Com/ComConfig/ComMaxIPduCnt</ns0:DEFINITION-REF>
+                  <ns0:VALUE>32</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-BOOLEAN-PARAM-DEF">/AUTOSAR/EcucDefs/Com/ComGeneral/ComDevErrorDetect</ns0:DEFINITION-REF>
+                  <ns0:VALUE>true</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                  <ns0:DEFINITION-REF DEST="ECUC-BOOLEAN-PARAM-DEF">/AUTOSAR/EcucDefs/Com/ComGeneral/ComVersionInfoApi</ns0:DEFINITION-REF>
+                  <ns0:VALUE>true</ns0:VALUE>
+                </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+              </ns0:PARAMETER-VALUES>
+              <ns0:SUB-CONTAINERS>
+                <ns0:ECUC-CONTAINER-VALUE>
+                  <ns0:SHORT-NAME>ComIPdu_EngineData</ns0:SHORT-NAME>
+                  <ns0:DEFINITION-REF DEST="ECUC-CONTAINER-DEF">/AUTOSAR/EcucDefs/Com/ComConfig/ComIPdu</ns0:DEFINITION-REF>
+                  <ns0:PARAMETER-VALUES>
+                    <ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                      <ns0:DEFINITION-REF DEST="ECUC-INTEGER-PARAM-DEF">/AUTOSAR/EcucDefs/Com/ComConfig/ComIPdu/ComIPduHandleId</ns0:DEFINITION-REF>
+                      <ns0:VALUE>0</ns0:VALUE>
+                    </ns0:ECUC-NUMERICAL-PARAM-VALUE>
+                    <ns0:ECUC-TEXTUAL-PARAM-VALUE>
+                      <ns0:DEFINITION-REF DEST="ECUC-ENUMERATION-PARAM-DEF">/AUTOSAR/EcucDefs/Com/ComConfig/ComIPdu/ComIPduDirection</ns0:DEFINITION-REF>
+                      <ns0:VALUE>SEND</ns0:VALUE>
+                    </ns0:ECUC-TEXTUAL-PARAM-VALUE>
+                    <ns0:ECUC-TEXTUAL-PARAM-VALUE>
+                      <ns0:DEFINITION-REF DEST="ECUC-STRING-PARAM-DEF">/AUTOSAR/EcucDefs/Com/ComConfig/ComIPdu/ComIPduSignalProcessing</ns0:DEFINITION-REF>
+                      <ns0:VALUE>DEFERRED</ns0:VALUE>
+                    </ns0:ECUC-TEXTUAL-PARAM-VALUE>
+                  </ns0:PARAMETER-VALUES>
+                </ns0:ECUC-CONTAINER-VALUE>
+              </ns0:SUB-CONTAINERS>
+            </ns0:ECUC-CONTAINER-VALUE>
+          </ns0:CONTAINERS>
+        </ns0:ECUC-MODULE-CONFIGURATION-VALUES>
+      </ns0:ELEMENTS>
+    </ns0:AR-PACKAGE>
+  </ns0:AR-PACKAGES>
+</ns0:AUTOSAR>

@@ -1,0 +1,15 @@
+# yuleASR ARXML Generator Dependencies
+
+# XML处理
+lxml>=4.9.0
+
+# 数据验证
+pydantic>=2.0.0
+
+# 测试
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# 代码质量
+black>=23.0.0
+mypy>=1.0.0
