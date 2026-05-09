@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>yuleASR ARXML Generator - 可视化配置工具</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 自定义样式 */
+        .sidebar-item {
+            transition: all 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: #374151;
+        }
+        .sidebar-item.active {
+            background-color: #2563eb;
+            border-left: 4px solid #60a5fa;
+        }
+        .config-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .config-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .parameter-row:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .xml-preview {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        /* 滚动条美化 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen overflow-hidden">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-gray-900 text-white h-14 flex items-center px-4 shadow-lg z-50">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-cogs text-blue-400 text-xl"></i>
+            <h1 class="text-lg font-bold">yuleASR <span class="text-blue-400">ARXML Generator</span></h1>
+        </div>
+        <div class="flex-1"></div>
+        <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-400">
+                <i class="fas fa-microchip mr-1"></i>
+                <span id="current-module">未选择模块</span>
+            </span>
+            <button onclick="showHelp()" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-question-circle text-lg"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="flex h-[calc(100vh-3.5rem)]">
+        <!-- 左侧模块选择面板 -->
+        <aside class="w-64 bg-gray-800 text-white flex flex-col">
+            <div class="p-4 border-b border-gray-700">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                    <i class="fas fa-th-large mr-2"></i>模块选择
+                </h2>
+            </div>
+            
+            <!-- MCAL 模块 -->
+            <div class="p-2">
+                <h3 class="text-xs font-semibold text-gray-500 px-3 py-2 uppercase">MCAL 微控制器驱动</h3>
+                <div id="mcal-modules" class="space-y-1">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            
+            <!-- BSW 模块 -->
+            <div class="p-2 border-t border-gray-700">
+                <h3 class="text-xs font-semibold text-gray-500 px-3 py-2 uppercase">BSW 基础软件</h3>
+                <div id="bsw-modules" class="space-y-1">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间配置编辑区 -->
+        <main class="flex-1 flex flex-col bg-white">
+            <!-- 工具栏 -->
+            <div class="h-14 border-b border-gray-200 flex items-center justify-between px-4 bg-gray-50">
+                <div class="flex items-center space-x-3">
+                    <label class="text-sm font-medium text-gray-600">
+                        <i class="fas fa-server mr-1"></i>ECU名称:
+                    </label>
+                    <input type="text" id="ecu-name" value="ECU0" 
+                           class="px-3 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-32">
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="resetConfig()" class="px-4 py-2 text-sm text-gray-600 hover:text-red-600 transition">
+                        <i class="fas fa-undo mr-1"></i>重置
+                    </button>
+                    <button onclick="generateArxml()" 
+                            class="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition flex items-center">
+                        <i class="fas fa-play mr-2"></i>生成ARXML
+                    </button>
+                </div>
+            </div>
+
+            <!-- 配置表单区域 -->
+            <div id="config-area" class="flex-1 overflow-y-auto p-6">
+                <div class="text-center text-gray-400 mt-20">
+                    <i class="fas fa-arrow-left text-4xl mb-4"></i>
+                    <p class="text-lg">请从左侧选择一个模块进行配置</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- 右侧ARXML预览区 -->
+        <aside class="w-96 bg-gray-900 flex flex-col border-l border-gray-700">
+            <div class="h-12 bg-gray-800 flex items-center justify-between px-4 border-b border-gray-700">
+                <h3 class="text-sm font-semibold text-white">
+                    <i class="fas fa-code mr-2 text-blue-400"></i>ARXML 预览
+                </h3>
+                <div class="flex space-x-2">
+                    <button onclick="copyToClipboard()" class="text-gray-400 hover:text-white text-sm" title="复制">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button onclick="downloadArxml()" class="text-gray-400 hover:text-white text-sm" title="下载">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-auto p-4">
+                <pre id="arxml-preview" class="xml-preview text-green-400 whitespace-pre-wrap">
+<!-- 选择模块并配置后，点击"生成ARXML"查看结果 --></pre>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 帮助模态框 -->
+    <div id="help-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden">
+            <div class="bg-gray-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="text-lg font-semibold">
+                    <i class="fas fa-info-circle mr-2 text-blue-400"></i>使用帮助
+                </h3>
+                <button onclick="hideHelp()" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto max-h-[60vh]">
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">🚀 快速开始</h4>
+                        <ol class="list-decimal list-inside text-gray-600 space-y-1 text-sm">
+                            <li>从左侧模块列表选择需要配置的MCAL或BSW模块</li>
+                            <li>在中间配置区填写参数值</li>
+                            <li>点击"生成ARXML"按钮生成配置</li>
+                            <li>在右侧预览区查看生成的ARXML内容</li>
+                            <li>点击下载按钮保存配置文件</li>
+                        </ol>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-2">📋 支持的模块</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div class="bg-blue-50 p-2 rounded">
+                                <strong class="text-blue-700">MCAL:</strong> Mcu, Port, CAN, SPI, GPT, PWM, ADC
+                            </div>
+                            <div class="bg-green-50 p-2 rounded">
+                                <strong class="text-green-700">BSW:</strong> COM, PduR, NvM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-100 px-6 py-4 text-right">
+                <button onclick="hideHelp()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                    知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知提示 -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded shadow-lg transform translate-y-20 transition-transform duration-300 z-50">
+        <span id="toast-message"></span>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

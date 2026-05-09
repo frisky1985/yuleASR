@@ -6,6 +6,13 @@ lxml>=4.9.0
 # 数据验证
 pydantic>=2.0.0
 
+# GUI (Web版)
+flask>=2.3.0
+flask-cors>=4.0.0
+
+# GUI (桌面版) - 可选
+# PyQt6>=6.5.0
+
 # 测试
 pytest>=7.0.0
 pytest-cov>=4.0.0
