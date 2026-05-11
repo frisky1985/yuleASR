@@ -1,0 +1,52 @@
+======================================================================
+ARXML Integrity Check Summary
+======================================================================
+Files checked: 2
+Total errors: 1
+Total warnings: 2
+Total infos: 4
+======================================================================
+============================================================
+ARXML Integrity Check Report
+============================================================
+File: test_sample.arxml
+Errors: 0
+Warnings: 1
+Infos: 2
+------------------------------------------------------------
+
+[WARNINGS]
+[WARNING] Line 0: Potentially undefined data type reference: /TestPackage/MyCompuMethod [Element: COMPU-METHOD-REF]
+    Suggestion: Ensure the data type is defined in this or imported ARXML
+
+[INFOS]
+[INFO] Line 2: Found AUTOSAR namespace: http://autosar.org/schema/r4.0
+[INFO] Line 1: XML syntax validation passed
+------------------------------------------------------------
+Check completed: PASSED
+
+============================================================
+ARXML Integrity Check Report
+============================================================
+File: test_invalid.arxml
+Errors: 1
+Warnings: 1
+Infos: 2
+------------------------------------------------------------
+
+[ERRORS]
+[ERROR] Line 0: SHORT-NAME element cannot be empty [Element: SHORT-NAME]
+    Suggestion: Provide a valid short name for the element
+
+[WARNINGS]
+[WARNING] Line 0: Potentially undefined data type reference: /Undefined/Type [Element: TYPE-TREF]
+    Suggestion: Ensure the data type is defined in this or imported ARXML
+
+[INFOS]
+[INFO] Line 1: Found AUTOSAR namespace: http://autosar.org/schema/r4.0
+[INFO] Line 1: XML syntax validation passed
+------------------------------------------------------------
+Check completed: FAILED
+
+======================================================================
+Overall result: FAILED

@@ -1,0 +1,9 @@
+MessageName,MessageID,DLC,Direction,CycleTime,SignalName,StartBit,BitLength,ByteOrder,ValueType,Factor,Offset,MinValue,MaxValue,Unit,InitValue,Comment
+EngineData,0x100,8,Tx,100,RPM,0,16,Intel,Unsigned,1,0,0,8000,rpm,0,Engine RPM
+EngineData,0x100,8,Tx,100,Temperature,16,8,Intel,Unsigned,0.5,-40,-40,215,degC,0,Engine coolant temperature
+EngineData,0x100,8,Tx,100,Torque,24,16,Intel,Unsigned,0.01,0,0,655.35,Nm,0,Engine torque
+VehicleSpeed,0x200,4,Tx,50,Speed,0,16,Intel,Unsigned,0.01,0,0,655.35,km/h,0,Vehicle speed
+VehicleSpeed,0x200,4,Tx,50,Direction,16,2,Intel,Unsigned,1,0,0,3,,0,Driving direction
+BatteryStatus,0x300,6,Rx,1000,Voltage,0,16,Intel,Unsigned,0.001,0,0,65.535,V,0,Battery voltage
+BatteryStatus,0x300,6,Rx,1000,Current,16,16,Intel,Signed,0.001,0,-32.768,32.767,A,0,Battery current
+BatteryStatus,0x300,6,Rx,1000,SOC,32,8,Intel,Unsigned,0.5,0,0,100,%,0,State of charge

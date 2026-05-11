@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>TestPackage</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="UUID:TYPE-001">
+          <SHORT-NAME>MyUint8</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <COMPU-METHOD-REF DEST="COMPU-METHOD">/TestPackage/MyCompuMethod</COMPU-METHOD-REF>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+        
+        <COMPU-METHOD UUID="UUID:COMP-001">
+          <SHORT-NAME>MyCompuMethod</SHORT-NAME>
+          <CATEGORY>IDENTICAL</CATEGORY>
+        </COMPU-METHOD>
+        
+        <!-- 测试重复UUID -->
+        <UNIT UUID="UUID:UNIT-001">
+          <SHORT-NAME>Celsius</SHORT-NAME>
+        </UNIT>
+        <UNIT UUID="UUID:UNIT-001">
+          <SHORT-NAME>Fahrenheit</SHORT-NAME>
+        </UNIT>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>
