@@ -2,6 +2,27 @@
 
 本目录包含YuleTech AUTOSAR BSW平台所使用的第三方库。
 
+## 目录结构
+
+```
+third_party/
+├── crypto/               # 加密库
+│   ├── mbedtls/       # mbedTLS (AutoSAR适配版)
+│   ├── aes_modes/     # AES模式 (CBC/CTR/GCM/CCM等)
+│   ├── blake2/        # Blake2哈希算法
+│   └── hash/          # SHA系列哈希算法
+├── test_frameworks/    # 测试框架
+│   ├── unity/         # Unity单元测试框架
+│   └── gtest/         # Google Test框架
+├── network/            # 网络协议栈 (预留)
+│   ├── lwip/          # lwIP协议栈
+│   └── tls/           # TLS/SSL协议
+├── rtos/               # 实时操作系统 (预留)
+│   └── freertos/      # FreeRTOS
+├── mbedtls/           # 完整mbedTLS库 (Git Submodule)
+└── yule-mbedtls-adapter/  # YuleTech mbedTLS适配层
+```
+
 ## 快速开始
 
 ```bash
@@ -20,6 +41,93 @@ git commit -m "更新mbedtls版本"
 ```
 
 ## 库列表
+
+### Crypto - 加密库
+
+#### 1. AES Modes (AES模式库)
+
+**位置**: `third_party/crypto/aes_modes/`
+
+**描述**: AES加密模式实现，支持多种工作模式
+
+**文件**:
+- `include/aes_modes.h` - 头文件
+- `src/aes_*.c` - 各种模式实现 (CBC, CTR, GCM, CCM, ECB, CFB, OFB)
+- `src/aes_core.c` - 核心AES实现
+- `src/aes_autosar.c` - AutoSAR适配层
+- `README.md` - 说明文档
+
+**特性**:
+- 支持CBC, CTR, GCM, CCM, ECB, CFB, OFB等模式
+- 符合AutoSAR Crypto模块规范
+- 带有完整单元测试
+
+#### 2. Blake2 (Blake2哈希库)
+
+**位置**: `third_party/crypto/blake2/`
+
+**描述**: Blake2哈希算法实现
+
+**文件**:
+- `include/blake2.h` - 头文件
+- `src/blake2b.c` - Blake2b实现
+- `src/blake2s.c` - Blake2s实现
+- `src/blake2_autosar.c` - AutoSAR适配层
+- `README.md` - 说明文档
+
+**特性**:
+- 支持Blake2b和Blake2s两种变体
+- 高性能哈希算法
+- 符合AutoSAR Crypto模块规范
+
+#### 3. Hash (SHA哈希库)
+
+**位置**: `third_party/crypto/hash/`
+
+**描述**: SHA系列哈希算法实现
+
+**文件**:
+- `include/hash_algos.h` - 头文件
+- `src/sha1.c` - SHA-1实现
+- `src/sha224.c`, `src/sha384.c`, `src/sha512.c` - SHA-2实现
+- `src/sha3_*.c` - SHA-3实现
+- `src/hash_autosar.c` - AutoSAR适配层
+
+**特性**:
+- 支持SHA-1, SHA-224, SHA-256, SHA-384, SHA-512
+- 支持SHA3-224, SHA3-256, SHA3-384, SHA3-512
+- 符合AutoSAR Crypto模块规范
+
+#### 4. mbedTLS (AutoSAR适配版)
+
+**位置**: `third_party/crypto/mbedtls/`
+
+**描述**: 专为AutoSAR优化的轻量级mbedTLS配置
+
+**文件**:
+- `include/mbedtls_config.h` - mbedTLS配置
+- `include/mbedtls_wrapper.h` - 定制包装器
+- `src/mbedtls_wrapper.c` - 实现
+- `src/mbedtls_hardware.c` - 硬件适配
+
+### Test Frameworks - 测试框架
+
+#### 5. Unity (单元测试框架)
+
+**位置**: `third_party/test_frameworks/unity/`
+
+**来源**: `src/micro-dds/tests/unity/`
+
+**描述**: 轻量级C语言单元测试框架
+
+**文件**:
+- `unity.h` - 头文件
+- `unity.c` - 实现
+
+**特性**:
+- 适合嵌入式系统测试
+- 轻量级，代码小
+- 常用于micro-DDS等模块测试
 
 ### mbedTLS (v2.28.8 LTS)
 
@@ -86,12 +194,27 @@ make CFLAGS="-DMBEDTLS_CONFIG_FILE='<config-yule-autosar.h>' \
 
 ## 版本信息
 
-| 库 | 版本 | 说明 |
-|------|-------|-------|
-| mbedTLS | 2.28.8 LTS | 长期支持版本，稳定可靠 |
-| Yule Adapter | 1.0 | 自研适配层 |
+| 库 | 版本 | 说明 | 位置 |
+|:------|:-------:|:-------|:------|
+| AES Modes | 1.0 | AES加密模式库 | third_party/crypto/aes_modes/ |
+| Blake2 | 1.0 | Blake2哈希算法 | third_party/crypto/blake2/ |
+| Hash | 1.0 | SHA系列哈希 | third_party/crypto/hash/ |
+| mbedTLS (适配版) | 定制 | AutoSAR适配版本 | third_party/crypto/mbedtls/ |
+| Unity | 2.x | 单元测试框架 | third_party/test_frameworks/unity/ |
+| mbedTLS | 2.28.8 LTS | 完整库 (Git Submodule) | third_party/mbedtls/ |
+| Yule Adapter | 1.0 | 自研适配层 | third_party/yule-mbedtls-adapter/ |
 
 ## 授权
 
-- **mbedTLS**: Apache-2.0 OR GPL-2.0-or-later
-- **Yule Adapter**: MIT
+| 库 | 授权 |
+|:------|:------|
+| AES Modes | MIT |
+| Blake2 | MIT/CC0 |
+| Hash | MIT |
+| Unity | MIT |
+| mbedTLS | Apache-2.0 OR GPL-2.0-or-later |
+| Yule Adapter | MIT |
+
+---
+
+*YuleTech AutoSAR BSW Platform - Third Party Libraries*

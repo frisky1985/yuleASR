@@ -1,0 +1,16 @@
+{
+  "modules": [
+    "dlt",
+    "doIP",
+    "linSM",
+    "linTrcv",
+    "xcp",
+    "ecuC",
+    "swc",
+    "someipif",
+    "someipsd",
+    "srp"
+  ],
+  "total_files": 40,
+  "total_lines": 10963
+}

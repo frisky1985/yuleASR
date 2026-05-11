@@ -1,7 +1,7 @@
-# YuleTech AutoSAR BSW Platform
+# yuleASR - YuleTech AutoSAR BSW Platform
 
 <p align="center">
-  <strong>基于 AutoSAR Classic Platform 4.x 标准的开源基础软件平台</strong>
+  <strong>基于 AutoSAR Classic Platform 标准的开源汽车基础软件平台</strong>
 </p>
 
 <p align="center">
@@ -12,26 +12,26 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/AutoSAR-4.x-blue?style=flat-square&logo=automotive" alt="AutoSAR 4.x">
+  <img src="https://img.shields.io/badge/AutoSAR-4.x%20%7C%2020-11-blue?style=flat-square&logo=automotive" alt="AutoSAR">
   <img src="https://img.shields.io/badge/C-99-blue?style=flat-square&logo=c" alt="C99">
-  <img src="https://img.shields.io/badge/Platform-i.MX8M%20Mini-orange?style=flat-square&logo=nxp" alt="i.MX8M Mini">
-  <img src="https://img.shields.io/badge/Status-Production%20Ready-success?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/Python-3.8+-blue?style=flat-square&logo=python" alt="Python">
+  <img src="https://img.shields.io/badge/Platform-NXP%20S32K312-orange?style=flat-square&logo=nxp" alt="NXP">
 </p>
 
 <p align="center">
   <a href="#overview">概览</a> •
-  <a href="#features">特性</a> •
+  <a href="#structure">项目结构</a> •
+  <a href="#features">功能特性</a> •
   <a href="#quick-start">快速开始</a> •
-  <a href="#documentation">文档</a> •
-  <a href="#development">开发流程</a> •
-  <a href="#contributing">贡献</a>
+  <a href="#tools">开发工具</a> •
+  <a href="#docs">文档</a>
 </p>
 
 ---
 
-## 概览
+## <a name="overview"></a> 概览
 
-YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开发的开源汽车基础软件平台，为 NXP i.MX8M Mini 处理器提供完整的 AutoSAR Classic Platform 4.x 基础软件栈实现。
+yuleASR 是 **上海予乐电子科技有限公司** 开发的开源汽车基础软件平台，提供完整的 AutoSAR Classic Platform 基础软件栈实现。
 
 ### 项目愿景
 
@@ -39,289 +39,235 @@ YuleTech AutoSAR BSW Platform 是 **上海予乐电子科技有限公司** 开�
 
 ### 支持的硬件平台
 
-- **NXP i.MX8M Mini** (主要目标平台)
-- ARM Cortex-A53 四核处理器
-- 支持 CAN、Ethernet、LIN 等车载网络
+- **NXP S32K312** (主要目标平台) - ARM Cortex-M7 处理器
+- **NXP i.MX8M Mini** - ARM Cortex-A53 四核处理器
+- 支持 CAN、CAN FD、Ethernet、LIN 等车载网络
 
-## 特性
+---
+
+## <a name="structure"></a> 项目结构
+
+```
+yuleASR/
+├── src/                      # 源代码
+│   ├── autosar/             # AUTOSAR BSW 静态代码
+│   │   ├── mcal/           # 微控制器驱动层 (21模块)
+│   │   ├── ecual/          # ECU抽象层 (29模块)
+│   │   ├── services/       # 服务层 (44模块)
+│   │   └── common/         # 通用头文件
+│   ├── application/         # 应用层 (ASW)
+│   ├── middleware/          # 中间件 (DDS, RTE)
+│   ├── platform/            # 平台相关 (S32K312)
+│   └── diagnostics/         # 诊断模块 (DCM/DEM)
+├── config/                 # 配置代码 (117个配置文件)
+├── tests/                  # 测试代码
+├── tools/                  # 工具链
+│   ├── arxml/             # ARXML处理工具
+│   ├── can_config/        # CAN配置工具
+│   ├── dtc_config/        # DTC配置工具
+│   └── code_generators/   # 代码生成器
+├── third_party/            # 第三方代码
+├── docs/                   # 文档 (150+文档)
+└── scripts/                # 构建和测试脚本
+```
+
+详细结构请参阅 [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)
+
+---
+
+## <a name="features"></a> 功能特性
 
 ### 完整的 BSW 分层架构
 
 ```
-┌─────────────────────────────────────────┐
-│           RTE (Runtime Environment)      │
-│    - 组件间通信接口                      │
-│    - 数据类型定义                        │
-│    - 调度器                              │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│    - Com (通信服务)                      │
-│    - PduR (PDU 路由器)                   │
-│    - NvM (NVRAM 管理器)                  │
-│    - Dcm (诊断通信管理器)                │
-│    - Dem (诊断事件管理器)                │
-│    - Dlt (诊断日志和跟踪)                │
-├─────────────────────────────────────────┤
-│           ECUAL Layer                    │
-│    - CanIf, CanTp, EthIf, FrIf, LinIf   │
-│    - IoHwAb, MemIf, Fee, Ea             │
-├─────────────────────────────────────────┤
-│           MCAL Layer                     │
-│    - Mcu, Port, Dio, Can, Spi           │
-│    - Gpt, Pwm, Adc, Wdg                 │
-├─────────────────────────────────────────┤
-│           Hardware (i.MX8M Mini)         │
-└─────────────────────────────────────────┘
+├── RTE (Runtime Environment)
+│   ├── 组件间通信接口
+│   ├── 数据类型定义
+│   └── 调度器
+├── Service Layer (44模块)
+│   ├── Com, PduR, NvM, MemIf
+│   ├── Dcm, Dem, Det, Dlt
+│   ├── Csm, CryIf, KeyM, SecOC
+│   ├── DoIP, SoAd, SomeIP
+│   └── BswM, EcuM, SchM
+├── ECUAL Layer (29模块)
+│   ├── CanIf, CanTp, CanNm, CanSm
+│   ├── EthIf, EthSm, EthTrcv
+│   ├── LinIf, LinNm, LinSM, LinTp
+│   ├── FrIf, FrTp, J1939Tp
+│   └── IoHwAb, MemIf, Fee, Ea
+├── MCAL Layer (21模块)
+│   ├── Mcu, Port, Dio, Gpt, Pwm
+│   ├── Adc, Spi, I2C, Uart, Lin
+│   ├── Can, Eth, Wdg, Icu, Ocu
+│   └── Flash, Fee, Crypto, Crc
+└── Hardware (NXP S32K312)
 ```
 
 ### 核心功能
 
-- **✅ 完整的 MCAL 层** - 9 个驱动全部实现
-- **✅ 完整的 ECUAL 层** - 9 个模块全部实现
-- **✅ 完整的服务层** - 6 个模块全部实现 (新增 Dlt)
-- **✅ 完整的 RTE 层** - 运行时环境完整实现
-- **✅ 符合 AutoSAR 4.x 标准** - 严格遵循 AutoSAR 规范
-- **✅ 完整的错误检测** - DET (Development Error Tracer) 支持
-- **✅ 内存分区管理** - MemMap 内存分区支持
+| 功能 | 说明 | 状态 |
+|------|------|------|
+| **完整的 MCAL** | 21个微控制器驱动 | ✅ 已实现 |
+| **完整的 ECUAL** | 29个ECU抽象模块 | ✅ 已实现 |
+| **完整的 Services** | 44个服务模块 | ✅ 已实现 |
+| **诊断协议栈** | DCM/DEM完整实现 | ✅ 已实现 |
+| **DDS中间件** | OMG DDS v1.4协议 | ✅ 已实现 |
+| **ARXML工具链** | 解析/生成/检查 | ✅ 已实现 |
+| **符合 AutoSAR** | 4.x / R20-11 标准 | ✅ 验证通过 |
+| **完整测试** | 单元测试 + 集成测试 | ✅ 已覆盖 |
 
 ### 项目统计
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Modules-25-blue?style=flat-square" alt="25 Modules">
-  <img src="https://img.shields.io/badge/Lines%20of%20Code-35K+-blue?style=flat-square" alt="35K+ LOC">
-  <img src="https://img.shields.io/badge/Verification%20Reports-3-success?style=flat-square" alt="3 Verification Reports">
-  <img src="https://img.shields.io/badge/Documentation-5%20Docs-success?style=flat-square" alt="5 Documentation">
+  <img src="https://img.shields.io/badge/BSW Modules-94-blue?style=flat-square" alt="94 Modules">
+  <img src="https://img.shields.io/badge/Lines of Code-50K+-blue?style=flat-square" alt="50K+ LOC">
+  <img src="https://img.shields.io/badge/Documentation-150+ Docs-success?style=flat-square" alt="150+ Docs">
+  <img src="https://img.shields.io/badge/Tools-6 Categories-success?style=flat-square" alt="6 Tools">
 </p>
 
-## 快速开始
+---
+
+## <a name="quick-start"></a> 快速开始
 
 ### 环境要求
 
-- **操作系统**: Windows 10/11, Linux (Ubuntu 20.04+), macOS (12+)
-- **编译器**: GCC ARM Embedded 10.3.1+ 或 IAR Embedded Workbench 9.20+
-- **构建工具**: CMake 3.20+
-- **Python**: 3.9+ (用于代码生成工具)
+- **操作系统**: Linux (Ubuntu 20.04+), Windows 10/11 (WSL2), macOS (12+)
+- **编译器**: GCC ARM 10.3+, Clang 12+
+- **Python**: 3.8+ (pip, venv)
+- **CMake**: 3.20+
+- **Git**: 2.30+
+
+### 安装依赖
+
+```bash
+# 安装系统依赖 (Ubuntu/Debian)
+sudo apt-get update
+sudo apt-get install -y build-essential cmake git python3 python3-pip
+
+# 安装 Python 依赖
+pip3 install -r tools/requirements.txt
+```
 
 ### 获取代码
 
 ```bash
-git clone https://github.com/yuletech/autosar-bsw-platform.git
-cd autosar-bsw-platform
+git clone https://github.com/frisky1985/yuleASR.git
+cd yuleASR
+git submodule update --init --recursive
 ```
 
 ### 构建项目
 
 ```bash
 # 创建构建目录
-mkdir build && cd build
+mkdir -p build && cd build
 
 # 配置项目
-cmake .. -DCMAKE_TOOLCHAIN_FILE=../cmake/arm-gcc-toolchain.cmake
+cmake .. -DTARGET_PLATFORM=S32K312
 
-# 构建
+# 构建项目
 make -j$(nproc)
+
+# 运行测试
+make test
 ```
 
-### 运行测试
+### 使用工具链
 
 ```bash
-# 运行单元测试
-make test
+# ARXML处理工具
+./tools/arxml/arxml_tool.py --help
+./tools/arxml/arxml_tool.py parse examples/system.arxml
+./tools/arxml/arxml_tool.py generate config.json -o output/
+./tools/arxml/arxml_tool.py analyze system.arxml -o report.md
 
-# 生成测试报告
-make test-report
+# CAN配置工具
+./tools/can_config/can-config-tool.py --dbc examples/example.dbc --output config/
+
+# DTC配置工具
+./tools/dtc_config/dtc-tool.sh --input dtc_config.csv
 ```
 
-## 文档
+---
 
-### 项目文档
+## <a name="tools"></a> 开发工具
 
-| 文档 | 描述 |
-|:-----|:-----|
-| [架构文档](docs/architecture.md) | 系统架构设计说明 |
-| [API 参考](docs/api-reference.md) | 完整 API 接口文档 |
-| [开发指南](docs/development-guide.md) | 开发规范和指南 |
-| [模块清单](docs/modules.md) | 所有模块详细说明 |
-| [版本历史](docs/changelog.md) | 版本更新记录 |
+### ARXML 工具链
 
-### 模块文档
+完整的 ARXML 处理解决方案：
 
-- [MCAL 驱动文档](docs/mcal/README.md)
-- [ECUAL 模块文档](docs/ecual/README.md)
-- [Service 层文档](docs/services/README.md)
-- [RTE 层文档](docs/rte/README.md)
+| 工具 | 功能 | 状态 |
+|------|------|------|
+| **arxml_parser.py** | ARXML 解析器 (R20-11) | ✅ 完成 |
+| **config_generator.py** | C代码生成器 | ✅ 完成 |
+| **integrity_checker.py** | 完整性检查 | ✅ 完成 |
+| **arxml_tool.py** | 统一CLI入口 | ✅ 完成 |
 
-## 项目结构
+### 配置工具
+
+| 工具 | 功能 | 支持格式 |
+|------|------|----------|
+| **CAN Config Tool** | CAN报文配置 | DBC, CSV, ARXML |
+| **DTC Configurator** | 诊断故障码配置 | JSON, CSV |
+| **Code Generator** | 代码生成 | C/H, ARXML |
+
+---
+
+## <a name="docs"></a> 文档
+
+### 快速链接
+
+- [项目结构说明](PROJECT_STRUCTURE.md) - 完整的目录结构文档
+- [API 参考手册](docs/api/) - 完整的API文档
+- [BSW 模块文档](docs/modules/) - 各模块详细说明
+- [开发指南](docs/guides/) - 开发人员手册
+- [API参考](docs/api-reference.md) - API快速参考
+
+### 文档分类
 
 ```
-yuletech-openspec/
-├── AGENTS.md                 # Agent 导航入口
-├── README.md                 # 本文件
-├── LICENSE                   # 许可证
-│
-├── openspec/                 # OpenSpec: 规范真相源
-│   ├── specs/                # 系统行为规范
-│   │   ├── mcal/            # MCAL 层规范
-│   │   ├── ecual/           # ECUAL 层规范
-│   │   ├── services/        # Service 层规范
-│   │   └── rte/             # RTE 层规范
-│   ├── changes/             # 待处理变更
-│   └── archived/            # 已归档变更
-│
-├── design/                   # 设计文档
-│   ├── bsw-architecture.md  # BSW 架构设计
-│   └── service-layer-implementation.md
-│
-├── plans/                    # 实施计划
-│   └── service-layer-implementation.md
-│
-├── src/                      # 源代码
-│   └── bsw/
-│       ├── mcal/            # MCAL 实现 (9 驱动)
-│       ├── ecual/           # ECUAL 实现 (9 模块)
-│       ├── services/        # Service 层实现 (5 模块)
-│       ├── rte/             # RTE 实现
-│       └── common/          # 通用头文件
-│
-├── verification/             # 验证报告
-│   ├── pdur_verification.md
-│   ├── nvm_verification.md
-│   └── rte_verification.md
-│
-├── .harness/                 # Harness: 约束配置
-│   └── autosar-bsw-development.md
-│
-└── docs/                     # 项目文档
-    ├── architecture.md
-    ├── api-reference.md
-    ├── development-guide.md
-    ├── modules.md
-    └── changelog.md
+docs/
+├── architecture/      # 架构文档
+├── api/              # API参考 (5个文档)
+├── modules/          # 模块文档 (30个文档)
+├── guides/           # 使用指南 (13个文档)
+├── design/           # 设计文档 (9个文档)
+├── specs/            # 规范文档 (8个文档)
+├── reports/          # 项目报告 (61个文档)
+└── external/         # 外部资料
 ```
 
-## 模块清单
+---
 
-### MCAL 层 (9/9)
+## 贡献
 
-| 模块 | 描述 | 状态 |
-|:-----|:-----|:----:|
-| Mcu | 微控制器驱动 | ✅ |
-| Port | 端口驱动 | ✅ |
-| Dio | 数字 I/O 驱动 | ✅ |
-| Can | CAN 驱动 | ✅ |
-| Spi | SPI 驱动 | ✅ |
-| Gpt | 通用定时器驱动 | ✅ |
-| Pwm | PWM 驱动 | ✅ |
-| Adc | ADC 驱动 | ✅ |
-| Wdg | 看门狗驱动 | ✅ |
-
-### ECUAL 层 (9/9)
-
-| 模块 | 描述 | 状态 |
-|:-----|:-----|:----:|
-| CanIf | CAN 接口 | ✅ |
-| IoHwAb | I/O 硬件抽象 | ✅ |
-| CanTp | CAN 传输协议 | ✅ |
-| EthIf | 以太网接口 | ✅ |
-| MemIf | 存储器接口 | ✅ |
-| Fee | Flash EEPROM 仿真 | ✅ |
-| Ea | EEPROM 抽象 | ✅ |
-| FrIf | FlexRay 接口 | ✅ |
-| LinIf | LIN 接口 | ✅ |
-
-### Service 层 (6/6)
-
-| 模块 | 描述 | 状态 |
-|:-----|:-----|:----:|
-| Com | 通信服务 | ✅ |
-| PduR | PDU 路由器 | ✅ |
-| NvM | NVRAM 管理器 | ✅ |
-| Dcm | 诊断通信管理器 | ✅ |
-| Dem | 诊断事件管理器 | ✅ |
-| Dlt | 诊断日志和跟踪 | ✅ |
-
-### RTE 层 (1/1)
-
-| 模块 | 描述 | 状态 |
-|:-----|:-----|:----:|
-| Rte | 运行时环境 | ✅ |
-
-## 开发指南
-
-### 开发流程
-
-我们采用 **OpenSpec + Superpowers + Harness Engineering** 开发方法论：
-
-1. **需求探索** (`/triple-explore`) - 理解需求和约束
-2. **创建变更** (`/triple-new`) - 创建新的变更提案
-3. **开发执行** (`/triple-dev`) - TDD 红-绿-重构
-4. **验证审查** (`/triple-verify`) - 验证实现符合规范
-5. **归档合并** (`/triple-archive`) - 合并到主分支
-
-详细的开发流程文档请参考 [开发流程 Skill](.harness/yuletech-dev-process.md)。
+欢迎提交 Issue 和 Pull Request！请参阅 [CONTRIBUTING.md](CONTRIBUTING.md) 了解详情。
 
 ### 代码规范
 
-- 遵循 AutoSAR 命名规范
-- 使用 MemMap.h 进行内存分区
-- 所有模块支持 DET 错误检测
-- 函数圈复杂度 < 10
-- 代码注释完整
+- 使用 C99 标准
+- 严格遵循 MISRA C:2012 规范
+- 所有代码需要通过静态分析和单元测试
 
-### 贡献指南
+---
 
-1. Fork 项目
-2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
-3. 提交变更 (`git commit -m 'Add amazing feature'`)
-4. 推送分支 (`git push origin feature/amazing-feature`)
-5. 创建 Pull Request
+## 版本历史
 
-## 开发流程
+| 版本 | 日期 | 主要变更 |
+|------|------|---------|
+| v2.0 | 2025-05 | 项目结构重构，添加DDS和ARXML工具 |
+| v1.0 | 2024-04 | 初始版本，完整BSW实现 |
 
-本项目使用 **yuletech-dev-process** Skill 定义的开发流程：
-
-```
-Stage 0: 初始化工程    → /triple-init
-Stage 1: 需求探索      → /triple-explore
-Stage 2: 创建变更      → /triple-new
-Stage 3: 开发执行      → /triple-dev (TDD)
-Stage 4: 验证审查      → /triple-verify
-Stage 5: 归档合并      → /triple-archive
-```
-
-### 快速命令参考
-
-| 命令 | 用途 | 阶段 |
-|:-----|:-----|:-----|
-| `/triple-init` | 初始化工程环境 | Stage 0 |
-| `/triple-explore` | 需求探索分析 | Stage 1 |
-| `/triple-new "描述"` | 创建新变更 | Stage 2 |
-| `/triple-dev` | 开发执行 | Stage 3 |
-| `/triple-verify` | 验证审查 | Stage 4 |
-| `/triple-archive` | 归档合并 | Stage 5 |
-| `/triple-health` | 健康检查 | Stage 6 |
-
-### Skill 文件
-
-开发流程 Skill 保存在 `.harness/yuletech-dev-process.md`，包含完整的开发方法论、代码规范、验证清单和最佳实践。
+---
 
 ## 许可证
 
-本项目采用 **MIT 许可证** - 详见 [LICENSE](LICENSE) 文件
-
-## 联系方式
-
-- **公司**: 上海予乐电子科技有限公司
-- **邮箱**: contact@yuletech.com
-- **网站**: https://www.yuletech.com
-- **GitHub**: https://github.com/yuletech
-
-## 致谢
-
-感谢所有为本项目做出贡献的开发者和社区成员。
+本项目采用 MIT 许可证 - 详情请参阅 [LICENSE](LICENSE)
 
 ---
 
 <p align="center">
-  <sub>Built with ❤️ by Shanghai Yule Electronics Technology Co., Ltd.</sub>
+  <strong>上海予乐电子科技有限公司</strong><br>
+  让每个工程师都能构建可靠的汽车软件
 </p>
