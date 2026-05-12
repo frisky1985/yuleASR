@@ -9,11 +9,16 @@
 ```
 yuleASR/
 ├── src/                      # 源代码
-│   ├── autosar/             # AUTOSAR BSW 静态代码 (94模块)
+│   ├── autosar/             # AUTOSAR BSW 静态代码 (95模块 + OS + RTE)
 │   │   ├── mcal/           # 微控制器驱动层 (21模块)
 │   │   ├── ecual/          # ECU抽象层 (29模块)
-│   │   ├── services/       # 服务层 (44模块)
-│   │   └── common/         # 通用头文件
+│   │   ├── services/       # 服务层 (45模块)
+│   │   ├── os/             # 操作系统层
+│   │   ├── rte/            # 运行时环境
+│   │   ├── classic/        # Classic AUTOSAR 特定实现
+│   │   ├── crypto/         # 加密驱动
+│   │   ├── common/         # 通用头文件
+│   │   └── integration/    # 集成代码
 │   ├── application/        # 应用层 (ASW)
 │   ├── middleware/         # 中间件 (DDS/RTE)
 │   ├── platform/           # 平台代码 (S32K312)
