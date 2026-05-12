@@ -9,7 +9,7 @@
 ```
 yuleASR/
 ├── src/                      # 源代码
-│   ├── autosar/             # AUTOSAR BSW 静态代码 (95模块 + OS + RTE)
+│   ├── autosar/             # BSW (基础软件) (95模块 + OS + RTE)
 │   │   ├── mcal/           # 微控制器驱动层 (21模块)
 │   │   ├── ecual/          # ECU抽象层 (29模块)
 │   │   ├── services/       # 服务层 (45模块)
@@ -75,7 +75,7 @@ yuleASR/
 ### 1. AUTOSAR BSW 模块
 
 ```
-src/autosar/<layer>/<module>/
+src/bsw/<layer>/<module>/
   ├── include/
   │   ├── <Module>.h          # API头文件
   │   ├── <Module>_Cfg.h      # 配置头文件
@@ -184,9 +184,9 @@ docs/<category>/
 
 | 目录 | 状态 | 模块数/文件数 |
 |------|------|--------------|
-| src/autosar/mcal | ✅ | 21模块 |
-| src/autosar/ecual | ✅ | 29模块 |
-| src/autosar/services | ✅ | 44模块 |
+| src/bsw/mcal | ✅ | 21模块 |
+| src/bsw/ecual | ✅ | 29模块 |
+| src/bsw/services | ✅ | 44模块 |
 | config/ | ✅ | 117文件 |
 | tests/ | ✅ | 205文件 |
 | tools/ | ✅ | 178文件 |
