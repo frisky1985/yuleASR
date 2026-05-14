@@ -1,152 +1,157 @@
-/*
- * DoIP_Cfg.h
- * Diagnostic over IP Configuration Header
+/**
+ * @file DoIP_Cfg.h
+ * @brief Diagnostic over IP configuration header - ISO 13400-2 compliant
+ * @version 1.0.0
+ * @date 2026-05-14
+ * @author Shanghai Yule Electronics Technology Co., Ltd.
  */
 
 #ifndef DOIP_CFG_H
 #define DOIP_CFG_H
 
-#include "Std_Types.h"
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+==================================================================================================*/
+#define DOIP_DEV_ERROR_DETECT           (STD_ON)
+#define DOIP_VERSION_INFO_API           (STD_ON)
+#define DOIP_DCM_SUPPORT                (STD_ON)
+#define DOIP_SOAD_SUPPORT               (STD_ON)
 
 /*==================================================================================================
- *                                      VERSION INFORMATION
- *=================================================================================================*/
-#define DOIP_CFG_VENDOR_ID              0x00U
-#define DOIP_CFG_MODULE_ID              0x34U
-#define DOIP_CFG_SW_MAJOR_VERSION       1U
-#define DOIP_CFG_SW_MINOR_VERSION       0U
-#define DOIP_CFG_SW_PATCH_VERSION       0U
+*                                    PROTOCOL CONFIGURATION
+==================================================================================================*/
+#define DOIP_PROTOCOL_VERSION           (0x02U)    /* ISO 13400-2:2019 */
+#define DOIP_PROTOCOL_VERSION_INVERT    (0xFDU)    /* ~0x02 */
+#define DOIP_HEADER_LENGTH              (8U)       /* Generic header length */
+#define DOIP_DIAG_MSG_HEADER_LENGTH     (4U)       /* SA(2) + TA(2) */
+#define DOIP_ROUTING_ACTIVATION_REQ_LEN (7U)       /* SA(2) + ActType(1) + Res(4) */
+#define DOIP_ROUTING_ACTIVATION_RES_LEN (13U)      /* TA(2) + LA(2) + ResCode(1) + Res(4) + OEM(4) */
 
 /*==================================================================================================
- *                                      PRE-COMPILE CONFIGURATION
- *=================================================================================================*/
-/* General Configuration */
-#define DOIP_VERSION_INFO_API           STD_ON
-#define DOIP_DEV_ERROR_DETECT           STD_ON
-
-/* Feature Switches */
-#define DOIP_VEHICLE_ANNOUNCEMENT       STD_ON
-#define DOIP_NODE_TYPE                  0U      /* 0=DoIP Node, 1=DoIP Gateway */
-#define DOIP_ENTITY_STATUS_SUPPORT      STD_ON
-#define DOIP_POWER_MODE_SUPPORT         STD_ON
-
-/* Maximum Configuration */
-#define DOIP_MAX_CONNECTIONS            4U
-#define DOIP_MAX_TESTER_CONNECTIONS     2U
-#define DOIP_MAX_DIAGNOSTIC_MESSAGES    8U
-#define DOIP_MAX_PAYLOAD_LENGTH         4096U
-
-/* Logical Addresses */
-#define DOIP_LOGICAL_ADDRESS            0x0E00U
-#define DOIP_FUNCTIONAL_ADDRESS         0xE000U
-
-/* Vehicle Identification */
-#define DOIP_VIN                        "W0L000051T2123456"
-#define DOIP_EID                        {0x00U, 0x11U, 0x22U, 0x33U, 0x44U, 0x55U}
-#define DOIP_GID                        {0xAAU, 0xBBU, 0xCCU, 0xDDU, 0xEEU, 0xFFU}
-
-/* Further Action Byte */
-#define DOIP_FURTHER_ACTION             0x00U   /* No further action required */
-
-/* Activation Types Supported */
-#define DOIP_DEFAULT_ACTIVATION_TYPE    0xE0U   /* Default OEM */
-#define DOIP_WWH_OBD_ACTIVATION_TYPE    0xE1U   /* WWH-OBD */
-#define DOIP_CENTRAL_SECURITY_TYPE      0xE2U   /* Central Security */
-
-/* Timeout Configuration (in ms) */
-#define DOIP_CFG_ANNOUNCE_WAIT          500U
-#define DOIP_CFG_ANNOUNCE_INTERVAL      500U
-#define DOIP_CFG_ANNOUNCE_NUM           3U
-#define DOIP_CFG_INITIAL_INACTIVITY     2000U
-#define DOIP_CFG_GENERAL_INACTIVITY     300000U
-#define DOIP_CFG_ALIVE_CHECK_TIMEOUT    500U
+*                                    CONNECTION CONFIGURATION
+==================================================================================================*/
+#define DOIP_MAX_CONNECTIONS            (4U)
+#define DOIP_MAX_ROUTING_ACTIVATIONS    (8U)
+#define DOIP_MAX_TESTERS                (4U)
+#define DOIP_MAX_ENTITY                 (1U)
 
 /*==================================================================================================
- *                                      PDU CONFIGURATION
- *=================================================================================================*/
-/* SoAd Socket Connection IDs */
-#define DOIP_SOCON_UDP_DISCOVERY        0U
-#define DOIP_SOCON_UDP_TEST_EQUIP       1U
-#define DOIP_SOCON_TCP_DATA             2U
-#define DOIP_SOCON_TCP_ROUTING          3U
-
-/* PDU IDs */
-#define DOIP_PDU_UDP_RX                 0U
-#define DOIP_PDU_UDP_TX                 1U
-#define DOIP_PDU_TCP_RX                 2U
-#define DOIP_PDU_TCP_TX                 3U
+*                                    BUFFER CONFIGURATION
+==================================================================================================*/
+#define DOIP_MAX_DIAG_REQUEST_LENGTH    (4096U)
+#define DOIP_MAX_DIAG_RESPONSE_LENGTH   (4096U)
+#define DOIP_MAX_VEHICLE_ID_LENGTH      (32U)
+#define DOIP_MAX_ALIVE_CHECK_LENGTH     (8U)
 
 /*==================================================================================================
- *                                      CALLBACK CONFIGURATION
- *=================================================================================================*/
-/* Upper Layer Callbacks */
-#define DOIP_UL_RXINDICATION            Dcm_DoIPRxIndication
-#define DOIP_UL_TXCONFIRMATION          Dcm_DoIPTxConfirmation
-#define DOIP_UL_ACTIVATION_CALLBACK     Dcm_DoIPRoutingActivation
+*                                    TIMEOUT CONFIGURATION (ms)
+==================================================================================================*/
+#define DOIP_MAIN_FUNCTION_PERIOD_MS            (10U)
+#define DOIP_GENERAL_INACTIVITY_TIMEOUT_MS      (180000U)   /* 3 minutes */
+#define DOIP_INITIAL_INACTIVITY_TIMEOUT_MS      (2000U)     /* 2 seconds */
+#define DOIP_ALIVE_CHECK_TIMEOUT_MS             (500U)      /* 500ms */
+#define DOIP_ALIVE_CHECK_RESPONSE_TIMEOUT_MS    (5000U)     /* 5 seconds */
+#define DOIP_VEH_ANNOUNCEMENT_INTERVAL_MS       (500U)      /* 500ms */
+#define DOIP_VEH_ANNOUNCEMENT_INITIAL_DELAY_MS  (500U)      /* 500ms */
 
 /*==================================================================================================
- *                                      ADDRESS VALIDATION
- *=================================================================================================*/
-/* Valid Tester Source Addresses */
-#define DOIP_VALID_TESTER_ADDRESSES     {0x0E00U, 0x0E01U, 0x0E02U, 0x0E03U}
-
-/* Valid Target Addresses */
-#define DOIP_VALID_TARGET_ADDRESSES     {0x0001U, 0x0E00U, 0x0E01U, 0xE000U}
+*                                    VEHICLE ANNOUNCEMENT
+==================================================================================================*/
+#define DOIP_VEHICLE_ANNOUNCEMENT_COUNT         (3U)
+#define DOIP_VEHICLE_ANNOUNCEMENT_INTERVAL      (50U)   /* 500ms in 10ms ticks */
+#define DOIP_VEHICLE_ANNOUNCEMENT_INITIAL_DELAY (50U)   /* 500ms in 10ms ticks */
 
 /*==================================================================================================
- *                                      TYPE DEFINITIONS
- *=================================================================================================*/
-/* DoIP Configuration Structure */
-typedef struct
-{
-    uint16  LogicalAddress;
-    uint8   Vin[17];
-    uint8   Eid[6];
-    uint8   Gid[6];
-    uint8   FurtherAction;
-    uint16  MaxConnections;
-    uint32  GeneralInactivityTime;
-} DoIP_GeneralConfigType;
+*                                    PDU IDs
+==================================================================================================*/
+#define DOIP_DCM_TX_DIAG_REQUEST        ((PduIdType)0U)
+#define DOIP_DCM_RX_DIAG_RESPONSE       ((PduIdType)1U)
+#define DOIP_SOAD_TX_PDU_ID             ((PduIdType)0U)
+#define DOIP_SOAD_RX_PDU_ID             ((PduIdType)1U)
 
-/* Tester Configuration */
-typedef struct
-{
-    uint16  TesterAddress;
-    boolean AuthenticationRequired;
-    boolean ConfirmationRequired;
-    uint8   AllowedActivationTypes;
-} DoIP_TesterConfigType;
+/*==================================================================================================
+*                                    CONNECTION IDs
+==================================================================================================*/
+#define DOIP_CONNECTION_0               (0U)
+#define DOIP_CONNECTION_1               (1U)
+#define DOIP_CONNECTION_2               (2U)
+#define DOIP_CONNECTION_3               (3U)
 
-/* Target Address Configuration */
-typedef struct
-{
-    uint16  TargetAddress;
-    uint8   ProtocolType;       /* CAN, CANFD, LIN, etc. */
-    uint16  LowerLayerPduId;
-} DoIP_TargetConfigType;
+/*==================================================================================================
+*                                    SOCKET CONNECTION IDs
+==================================================================================================*/
+#define DOIP_SOCON_TCP_DATA_0           (0U)
+#define DOIP_SOCON_TCP_DATA_1           (1U)
+#define DOIP_SOCON_TCP_DATA_2           (2U)
+#define DOIP_SOCON_TCP_DATA_3           (3U)
+#define DOIP_SOCON_UDP_DISCOVERY        (4U)
+#define DOIP_SOCON_UDP_TEST_EQUIP       (5U)
 
-/* Socket Connection Configuration */
-typedef struct
-{
-    uint16  SoConId;
-    boolean IsTcp;
-    boolean IsUdp;
-    uint16  LocalPort;
-    uint8*  LocalIpAddress;
-    uint16  RemotePort;
-    uint8*  RemoteIpAddress;
-} DoIP_SoConConfigType;
+/*==================================================================================================
+*                                    LOGICAL ADDRESSES
+==================================================================================================*/
+#define DOIP_LOGICAL_ADDRESS_ECU        (0x0001U)
+#define DOIP_LOGICAL_ADDRESS_TESTER_1   (0x0E00U)
+#define DOIP_LOGICAL_ADDRESS_TESTER_2   (0x0E01U)
+#define DOIP_LOGICAL_ADDRESS_TESTER_3   (0x0E02U)
+#define DOIP_LOGICAL_ADDRESS_TESTER_4   (0x0E03U)
+#define DOIP_LOGICAL_ADDRESS_BROADCAST  (0xFFFFU)
 
-/* Complete DoIP Configuration */
-typedef struct
-{
-    const DoIP_GeneralConfigType*   GeneralConfig;
-    const DoIP_TesterConfigType*    TesterConfig;
-    const DoIP_TargetConfigType*    TargetConfig;
-    const DoIP_SoConConfigType*     SoConConfig;
-    uint8                           NumTesters;
-    uint8                           NumTargets;
-    uint8                           NumSoCons;
-} DoIP_ConfigType;
+/*==================================================================================================
+*                                    ROUTING ACTIVATION IDs
+==================================================================================================*/
+#define DOIP_ROUTING_ACTIVATION_0       (0U)
+#define DOIP_ROUTING_ACTIVATION_1       (1U)
+#define DOIP_ROUTING_ACTIVATION_2       (2U)
+#define DOIP_ROUTING_ACTIVATION_3       (3U)
+
+/*==================================================================================================
+*                                    ROUTING ACTIVATION TYPES (ISO 13400-2)
+==================================================================================================*/
+#define DOIP_ROUTING_ACTIVATION_DEFAULT             (0x00U)
+#define DOIP_ROUTING_ACTIVATION_WWH_OBD             (0x01U)
+#define DOIP_ROUTING_ACTIVATION_CENTRAL_SECURITY    (0xE0U)
+#define DOIP_ROUTING_ACTIVATION_ADSB                (0xE1U)
+
+/*==================================================================================================
+*                                    PORT CONFIGURATION
+==================================================================================================*/
+#define DOIP_PORT_TCP_DATA              (13400U)
+#define DOIP_PORT_UDP_DISCOVERY         (13400U)
+#define DOIP_PORT_UDP_TEST_EQUIP        (13401U)
+
+/*==================================================================================================
+*                                    FURTHER ACTION BYTES
+==================================================================================================*/
+#define DOIP_FURTHER_ACTION_NO_FURTHER  (0x00U)
+#define DOIP_FURTHER_ACTION_CENTRAL_SEC (0x10U)
+
+/*==================================================================================================
+*                                    VIN/GID STATUS
+==================================================================================================*/
+#define DOIP_VIN_GID_STATUS_VIN_INVALID     (0x00U)
+#define DOIP_VIN_GID_STATUS_VIN_VALID       (0x01U)
+#define DOIP_VIN_GID_STATUS_GID_SYNCHRONIZED (0x02U)
+#define DOIP_VIN_GID_STATUS_GID_NOT_SYNC    (0x04U)
+
+/*==================================================================================================
+*                                    FEATURE ENABLES
+==================================================================================================*/
+#define DOIP_VEHICLE_DISCOVERY_ENABLED      (STD_ON)
+#define DOIP_ROUTING_ACTIVATION_ENABLED     (STD_ON)
+#define DOIP_DIAGNOSTIC_MESSAGE_ENABLED     (STD_ON)
+#define DOIP_ALIVE_CHECK_ENABLED            (STD_ON)
+#define DOIP_ENTITY_STATUS_ENABLED          (STD_ON)
+#define DOIP_DIAGNOSTIC_POWER_MODE_ENABLED  (STD_ON)
+#define DOIP_AUTHENTICATION_REQUIRED        (STD_OFF)
+#define DOIP_CONFIRMATION_REQUIRED          (STD_OFF)
+#define DOIP_USE_SECURE_CONNECTIONS         (STD_OFF)
+
+/*==================================================================================================
+*                                    CALLBACK CONFIGURATION
+==================================================================================================*/
+#define DOIP_USER_VEHICLE_ID_RESPONSE_FNC       NULL_PTR
+#define DOIP_USER_ROUTING_ACTIVATION_RESPONSE_FNC NULL_PTR
+#define DOIP_USER_ALIVE_CHECK_RESPONSE_FNC      NULL_PTR
 
 #endif /* DOIP_CFG_H */
