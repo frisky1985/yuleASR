@@ -1,0 +1,87 @@
+{
+  "project_name": "CanTp_Example_Project",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "generation_date": "2024-01-15",
+  "general": {
+    "main_function_period": 10,
+    "use_extended_addressing": false,
+    "use_mixed_addressing": true,
+    "use_can_fd": true
+  },
+  "channels": [
+    {
+      "id": 0,
+      "name": "Channel_Engine",
+      "can_type": "CAN_FD",
+      "tx_pdu_id": 100,
+      "rx_pdu_id": 101,
+      "addressing_mode": "STANDARD",
+      "max_payload": 64
+    },
+    {
+      "id": 1,
+      "name": "Channel_Chassis",
+      "can_type": "CAN_2_0",
+      "tx_pdu_id": 102,
+      "rx_pdu_id": 103,
+      "addressing_mode": "EXTENDED",
+      "max_payload": 8
+    }
+  ],
+  "tx_nsdu": [
+    {
+      "id": 0,
+      "name": "Tx_Engine",
+      "channel_id": 0,
+      "pdu_id": 100,
+      "address": 224,
+      "ta_type": "PHYSICAL",
+      "bs": 8,
+      "stmin": 20,
+      "wftmax": 3,
+      "tx_confirmation": "CanTp_TxConfirmation_Engine"
+    },
+    {
+      "id": 1,
+      "name": "Tx_Chassis",
+      "channel_id": 1,
+      "pdu_id": 102,
+      "address": 192,
+      "ta_type": "PHYSICAL",
+      "bs": 8,
+      "stmin": 20,
+      "wftmax": 3,
+      "tx_confirmation": "CanTp_TxConfirmation_Chassis"
+    }
+  ],
+  "rx_nsdu": [
+    {
+      "id": 10,
+      "name": "Rx_Engine",
+      "channel_id": 0,
+      "pdu_id": 101,
+      "address": 232,
+      "ta_type": "PHYSICAL",
+      "bs": 8,
+      "stmin": 20,
+      "wftmax": 3,
+      "rx_indication": "CanTp_RxIndication_Engine"
+    },
+    {
+      "id": 11,
+      "name": "Rx_Chassis",
+      "channel_id": 1,
+      "pdu_id": 103,
+      "address": 200,
+      "ta_type": "PHYSICAL",
+      "bs": 8,
+      "stmin": 20,
+      "wftmax": 3,
+      "rx_indication": "CanTp_RxIndication_Chassis"
+    }
+  ]
+}

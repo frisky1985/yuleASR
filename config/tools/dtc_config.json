@@ -1,0 +1,83 @@
+{
+  "project_name": "Example_AUTOSAR_Project",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "generation_date": "2024-01-15",
+  "dtcs": [
+    {
+      "code": 65793,
+      "name": "MISFIRE_CYL_1",
+      "description": "Engine Misfire Cylinder 1 Detected",
+      "severity": "HIGH",
+      "functional_unit": 1,
+      "group": "EMISSION_DTCS",
+      "priority": 1,
+      "kind": "EMISSION_REL_DTCS",
+      "immediate_storage": true,
+      "aging_allowed": true,
+      "aging_threshold": 40,
+      "aging_cycle": 0
+    },
+    {
+      "code": 65794,
+      "name": "O2_SENSOR_LOW",
+      "description": "O2 Sensor Circuit Low Voltage",
+      "severity": "MEDIUM",
+      "functional_unit": 1,
+      "group": "EMISSION_DTCS",
+      "priority": 2,
+      "kind": "EMISSION_REL_DTCS",
+      "immediate_storage": false,
+      "aging_allowed": true,
+      "aging_threshold": 40,
+      "aging_cycle": 0
+    }
+  ],
+  "events": [
+    {
+      "id": 0,
+      "name": "Misfire_Cyl_1",
+      "dtc_code": 65793,
+      "debounce_type": "COUNTER",
+      "debounce_failed_thr": 127,
+      "debounce_passed_thr": -128,
+      "immediate_storage": true,
+      "freeze_frame_record": 1,
+      "freeze_frame_count": 1,
+      "freeze_frame_dids": [
+        256,
+        257,
+        261,
+        348
+      ],
+      "extended_data_record": 1,
+      "extended_data_count": 1,
+      "extended_data_size": 4,
+      "extended_data_rule": "UPDATE"
+    }
+  ],
+  "indicators": [
+    {
+      "event_id": 0,
+      "indicator_id": 0,
+      "behavior": "BLINKING",
+      "failure_cycles": 3,
+      "healing_cycles": 3
+    }
+  ],
+  "operation_cycles": [
+    {
+      "id": 0,
+      "type": "IGNITION",
+      "auto_start": true
+    },
+    {
+      "id": 1,
+      "type": "OBD_DCY",
+      "auto_start": true
+    }
+  ]
+}

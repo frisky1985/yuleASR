@@ -117,9 +117,9 @@ config/<layer>/<Module>_Lcfg.c    # 链接配置(可选)
 ```
 
 示例:
-- `config/mcal/Can_Cfg.h` → CAN驱动配置
-- `config/ecual/CanIf_Cfg.h` → CAN接口配置
-- `config/services/Com_Cfg.h` → COM服务配置
+- `config/input/mcal/Can_Cfg.h` → CAN驱动配置
+- `config/input/ecual/CanIf_Cfg.h` → CAN接口配置
+- `config/input/services/Com_Cfg.h` → COM服务配置
 
 ### 3. 测试代码
 
@@ -199,3 +199,19 @@ docs/<category>/
 
 *更新时间: 2026-05-12*
 *版本: v2.0*
+
+## Config Structure
+
+```
+config/
+├── input/              # 手动配置输入
+│   ├── mcal/           # 23个MCAL配置
+│   ├── ecual/          # 29个ECUAL配置
+│   ├── services/       # 51个Services配置
+│   └── arxml/          # ARXML源文件
+├── generated/          # 工具生成（保留目录）
+├── tools/              # 工具配置
+└── templates/          # 配置模板
+```
+
+详见: config/README.md
