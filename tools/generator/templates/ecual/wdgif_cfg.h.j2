@@ -1,0 +1,22 @@
+/*==============================================================================
+ * WdgIf_Cfg.h - Watchdog Interface Configuration
+ * Generated: {{ generation_date }}
+ *============================================================================*/
+#ifndef WDGIF_CFG_H
+#define WDGIF_CFG_H
+
+/* Module version */
+#define WDGIF_AR_RELEASE_MAJOR_VERSION     {{ module.WdgIfMajorVersion | default(4) }}
+#define WDGIF_AR_RELEASE_MINOR_VERSION     {{ module.WdgIfMinorVersion | default(4) }}
+#define WDGIF_AR_RELEASE_REVISION_VERSION  {{ module.WdgIfRevisionVersion | default(0) }}
+
+/* Version info API */
+#define WDGIF_VERSION_INFO_API             {{ 'STD_ON' if module.WdgIfVersionInfoApi | default(False) else 'STD_OFF' }}
+
+/* Development error detection */
+#define WDGIF_DEV_ERROR_DETECT             {{ 'STD_ON' if module.WdgIfDevErrorDetect | default(True) else 'STD_OFF' }}
+
+/* Number of configured watchdog trigger devices */
+#define WDGIF_MAX_CONFIGURED_TRIGGERS       {{ module.WdgIfMaxConfiguredTriggers | default(1) }}
+
+#endif /* WDGIF_CFG_H */
