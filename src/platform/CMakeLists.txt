@@ -29,7 +29,6 @@ target_include_directories(Platform
         ${CMAKE_CURRENT_SOURCE_DIR}/s32k312/include
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/mcal/mcu/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/general/inc
 )
 
 target_compile_definitions(Platform PRIVATE

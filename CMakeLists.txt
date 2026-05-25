@@ -63,17 +63,15 @@ message(STATUS "")
 
 # Global include directories
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/common
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/general/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
 )
 
 # Add subdirectories
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)
 add_subdirectory(src/bsw/ecual)
-add_subdirectory(src/bsw/rte)
+add_subdirectory(src/rte)
 add_subdirectory(src/bsw/os)
-add_subdirectory(src/bsw/integration)
 add_subdirectory(src/platform)
 
 # ASW components (optional for embedded target)
@@ -82,7 +80,7 @@ if(NOT CMAKE_CROSSCOMPILING OR BUILD_EXAMPLES)
 endif()
 
 # Safety components
-if(YULE_ENABLE_SAFETY)
+if(YULE_ENABLE_SAFETY AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/safety/CMakeLists.txt)
     add_subdirectory(src/safety)
 endif()
 
