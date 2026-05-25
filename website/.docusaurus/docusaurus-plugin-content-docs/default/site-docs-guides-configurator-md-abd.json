@@ -1,0 +1,29 @@
+{
+  "id": "guides/configurator",
+  "title": "YuleTech OS Configurator 使用手册",
+  "description": "YuleTech OS Configurator 是专为 AutoSAR OS 配置设计的可视化工具，支持从配置到代码生成的完整工作流。",
+  "source": "@site/docs/guides/configurator.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/configurator",
+  "permalink": "/yuleASR/en/docs/guides/configurator",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/configurator.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 23,
+  "frontMatter": {
+    "title": "YuleTech OS Configurator 使用手册",
+    "description": "YuleTech OS Configurator 是专为 AutoSAR OS 配置设计的可视化工具，支持从配置到代码生成的完整工作流。",
+    "sidebar_position": 23
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "开发指南",
+    "permalink": "/yuleASR/en/docs/guides/development"
+  },
+  "next": {
+    "title": "COM 模块文档",
+    "permalink": "/yuleASR/en/docs/guides/com-guide"
+  }
+}

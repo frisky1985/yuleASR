@@ -1,0 +1,29 @@
+{
+  "id": "guides/dem-design",
+  "title": "Dem (Diagnostic Event Manager) Design Document",
+  "description": "The Diagnostic Event Manager (Dem) is responsible for processing diagnostic events reported by software components (SW-C",
+  "source": "@site/docs/guides/dem-design.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/dem-design",
+  "permalink": "/yuleASR/en/docs/guides/dem-design",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/dem-design.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 24,
+  "frontMatter": {
+    "title": "Dem (Diagnostic Event Manager) Design Document",
+    "description": "The Diagnostic Event Manager (Dem) is responsible for processing diagnostic events reported by software components (SW-C",
+    "sidebar_position": 24
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "COM 模块 故障排除指南",
+    "permalink": "/yuleASR/en/docs/guides/com-troubleshooting"
+  },
+  "next": {
+    "title": "HARA - 危害分析和风险评估",
+    "permalink": "/yuleASR/en/docs/guides/hara-analysis"
+  }
+}

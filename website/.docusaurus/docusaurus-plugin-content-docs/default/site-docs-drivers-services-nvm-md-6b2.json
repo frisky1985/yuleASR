@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/NVM",
+  "title": "NVM",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/NVM.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/NVM",
+  "permalink": "/yuleASR/en/docs/drivers/services/NVM",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/NVM.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 22,
+  "frontMatter": {
+    "title": "NVM",
+    "sidebar_label": "NVM",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 22
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Nm",
+    "permalink": "/yuleASR/en/docs/drivers/services/Nm"
+  },
+  "next": {
+    "title": "PDUR",
+    "permalink": "/yuleASR/en/docs/drivers/services/PDUR"
+  }
+}

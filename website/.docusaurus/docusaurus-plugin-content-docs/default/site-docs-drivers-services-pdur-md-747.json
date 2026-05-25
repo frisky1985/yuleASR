@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/PDUR",
+  "title": "PDUR",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/PDUR.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/PDUR",
+  "permalink": "/yuleASR/en/docs/drivers/services/PDUR",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/PDUR.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 23,
+  "frontMatter": {
+    "title": "PDUR",
+    "sidebar_label": "PDUR",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 23
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "NVM",
+    "permalink": "/yuleASR/en/docs/drivers/services/NVM"
+  },
+  "next": {
+    "title": "ramsafety",
+    "permalink": "/yuleASR/en/docs/drivers/services/ramsafety"
+  }
+}

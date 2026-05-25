@@ -11,14 +11,5 @@
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/spi.md",
   "tags": [],
   "version": "current",
-  "frontMatter": {},
-  "sidebar": "tutorialSidebar",
-  "previous": {
-    "title": "Can 驱动",
-    "permalink": "/yuleASR/docs/drivers/can"
-  },
-  "next": {
-    "title": "Gpt 驱动",
-    "permalink": "/yuleASR/docs/drivers/gpt"
-  }
+  "frontMatter": {}
 }

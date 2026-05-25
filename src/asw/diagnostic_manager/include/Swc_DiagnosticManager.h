@@ -114,6 +114,16 @@ typedef struct {
 extern void Swc_DiagnosticManager_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ */
+extern void Swc_DiagnosticManager_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Diagnostic Manager component
+ */
+extern void Swc_DiagnosticManager_Deinit(void);
+
+/**
  * @brief 50ms cyclic runnable - diagnostic management
  */
 extern void Swc_DiagnosticManager_50ms(void);

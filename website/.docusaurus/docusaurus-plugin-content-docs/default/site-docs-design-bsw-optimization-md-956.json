@@ -1,0 +1,29 @@
+{
+  "id": "design/bsw-optimization",
+  "title": "YuleTech BSW 优化脑力涛涩",
+  "description": "为 YuleTech AutoSAR BSW Platform 评估当前状态，识别优化机会，确定是否可行完成所有静态代码编写。",
+  "source": "@site/docs/design/bsw-optimization.md",
+  "sourceDirName": "design",
+  "slug": "/design/bsw-optimization",
+  "permalink": "/yuleASR/en/docs/design/bsw-optimization",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/bsw-optimization.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 32,
+  "frontMatter": {
+    "title": "YuleTech BSW 优化脑力涛涩",
+    "description": "为 YuleTech AutoSAR BSW Platform 评估当前状态，识别优化机会，确定是否可行完成所有静态代码编写。",
+    "sidebar_position": 32
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "测试策略设计",
+    "permalink": "/yuleASR/en/docs/design/testing-strategy"
+  },
+  "next": {
+    "title": "脑力涛涩",
+    "permalink": "/yuleASR/en/docs/design/next-steps"
+  }
+}

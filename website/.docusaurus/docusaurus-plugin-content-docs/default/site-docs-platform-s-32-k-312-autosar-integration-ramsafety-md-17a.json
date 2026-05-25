@@ -1,0 +1,29 @@
+{
+  "id": "platform/s32k312/autosar-integration/ramsafety",
+  "title": "RamSafety 模块集成指南",
+  "description": "RamSafety模块提供通用RAM安全检查功能，支持:",
+  "source": "@site/docs/platform/s32k312/autosar-integration/ramsafety.md",
+  "sourceDirName": "platform/s32k312/autosar-integration",
+  "slug": "/platform/s32k312/autosar-integration/ramsafety",
+  "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ramsafety",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/platform/s32k312/autosar-integration/ramsafety.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 8,
+  "frontMatter": {
+    "title": "RamSafety 模块集成指南",
+    "description": "RamSafety模块提供通用RAM安全检查功能，支持:",
+    "sidebar_position": 8
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "S32K312 Lockstep 集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/lockstep"
+  },
+  "next": {
+    "title": "WdgM (看门狗管理模块) 集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/wdgm"
+  }
+}

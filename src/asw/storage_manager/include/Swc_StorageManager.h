@@ -110,6 +110,16 @@ typedef struct {
 extern void Swc_StorageManager_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ */
+extern void Swc_StorageManager_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Storage Manager component
+ */
+extern void Swc_StorageManager_Deinit(void);
+
+/**
  * @brief 100ms cyclic runnable - storage management
  */
 extern void Swc_StorageManager_100ms(void);

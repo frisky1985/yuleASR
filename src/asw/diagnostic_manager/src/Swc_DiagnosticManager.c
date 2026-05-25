@@ -681,5 +681,50 @@ Rte_StatusType Swc_DiagnosticManager_GetStatus(Swc_DiagnosticManagerStatusType* 
     return RTE_E_OK;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief DiagnosticManager MainFunction - called periodically by RTE Scheduler
+ * Dispatches 50ms timeout management and processes diagnostic requests.
+ */
+void Swc_DiagnosticManager_MainFunction(void)
+{
+    if (swcDiagManager.status.currentSession == 0) {
+        return; /* Not initialized */
+    }
+
+    /* 50ms timeout management (called every 5th tick at 10ms base) */
+    Swc_DiagnosticManager_UpdateTimeouts();
+    (void)Rte_Write_DiagnosticSession(&swcDiagManager.status.currentSession);
+    (void)Rte_Write_SecurityLevel(&swcDiagManager.status.securityLevel);
+
+    /* Always try to process pending requests */
+    Swc_DiagnosticManager_ProcessRequest();
+}
+
+/**
+ * @brief DiagnosticManager Deinit - deinitializes the component
+ */
+void Swc_DiagnosticManager_Deinit(void)
+{
+    uint8 i;
+
+    if (swcDiagManager.status.currentSession == 0) {
+        return;
+    }
+
+    swcDiagManager.status.currentSession = DIAG_SESSION_DEFAULT;
+    swcDiagManager.status.securityLevel = SECURITY_LOCKED;
+    swcDiagManager.status.communicationEnabled = TRUE;
+
+    for (i = 0; i < DIAG_MAX_DTCS; i++) {
+        swcDiagManager.dtcList[i].dtcCode = 0;
+    }
+    swcDiagManager.numDtcs = 0;
+    swcDiagManager.hasPendingRequest = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"

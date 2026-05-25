@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/doip",
+  "title": "DOIP 模块",
+  "description": "void doip_Init(void);",
+  "source": "@site/docs/drivers/ecual/doip.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/doip",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/doip",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/doip.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 8,
+  "frontMatter": {
+    "title": "DOIP 模块",
+    "sidebar_label": "doip",
+    "description": "void doip_Init(void);",
+    "sidebar_position": 8
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "DLT",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/DLT"
+  },
+  "next": {
+    "title": "ea",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/ea"
+  }
+}

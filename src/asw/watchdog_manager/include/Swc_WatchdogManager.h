@@ -113,6 +113,17 @@ typedef struct {
 extern void Swc_WatchdogManager_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ * 看门狗心跳: Performs entity supervision, timeout checks, and hardware watchdog trigger.
+ */
+extern void Swc_WatchdogManager_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Watchdog Manager component
+ */
+extern void Swc_WatchdogManager_Deinit(void);
+
+/**
  * @brief 10ms cyclic runnable - watchdog supervision
  */
 extern void Swc_WatchdogManager_10ms(void);

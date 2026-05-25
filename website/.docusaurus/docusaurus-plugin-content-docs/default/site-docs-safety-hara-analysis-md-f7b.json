@@ -1,0 +1,29 @@
+{
+  "id": "safety/hara-analysis",
+  "title": "HARA - 危害分析和风险评估",
+  "description": "基于ISO 26262-3进行危害分析和风险评估(HARA)。",
+  "source": "@site/docs/safety/hara-analysis.md",
+  "sourceDirName": "safety",
+  "slug": "/safety/hara-analysis",
+  "permalink": "/yuleASR/en/docs/safety/hara-analysis",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/safety/hara-analysis.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "HARA - 危害分析和风险评估",
+    "description": "基于ISO 26262-3进行危害分析和风险评估(HARA)。",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "WDGM",
+    "permalink": "/yuleASR/en/docs/drivers/services/WDGM"
+  },
+  "next": {
+    "title": "SAFETY MANUAL - ISO 26262 ASIL-D",
+    "permalink": "/yuleASR/en/docs/safety/safety-manual"
+  }
+}

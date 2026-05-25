@@ -1,0 +1,29 @@
+{
+  "id": "safety/verification-report",
+  "title": "验证报告 - ISO 26262-6",
+  "description": "| 模块 | 语句覆盖率 | 分支覆盖率 | MC/DC覆盖率 |",
+  "source": "@site/docs/safety/verification-report.md",
+  "sourceDirName": "safety",
+  "slug": "/safety/verification-report",
+  "permalink": "/yuleASR/en/docs/safety/verification-report",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/safety/verification-report.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "验证报告 - ISO 26262-6",
+    "description": "| 模块 | 语句覆盖率 | 分支覆盖率 | MC/DC覆盖率 |",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "SAFETY MANUAL - ISO 26262 ASIL-D",
+    "permalink": "/yuleASR/en/docs/safety/safety-manual"
+  },
+  "next": {
+    "title": "MISRA C:2012 Compliance Report - COM Module",
+    "permalink": "/yuleASR/en/docs/guides/misra-report"
+  }
+}

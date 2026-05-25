@@ -515,5 +515,67 @@ void Swc_WatchdogManager_HandleExpiration(void)
     (void)Rte_Write_WatchdogStatus(&swcWatchdogManager.status.watchdogStatus);
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief WatchdogManager MainFunction - called periodically by RTE Scheduler
+ * 看门狗心跳机制: Supervises all entities, updates alive counters, checks timeouts,
+ * and triggers hardware watchdog heartbeat every 100ms.
+ */
+void Swc_WatchdogManager_MainFunction(void)
+{
+    STATIC uint32 heartbeatCounter = 0U;
+
+    if (!swcWatchdogManager.isInitialized) {
+        return;
+    }
+
+    /* 10ms: update alive counters and check timeouts */
+    Swc_WatchdogManager_UpdateAliveCounters();
+    Swc_WatchdogManager_CheckTimeouts();
+    (void)Rte_Write_WatchdogStatus(&swcWatchdogManager.status.watchdogStatus);
+
+    /* 100ms: supervise entities and trigger heartbeat */
+    heartbeatCounter++;
+    if ((heartbeatCounter % 10U) == 0U) {
+        Swc_WatchdogManager_SuperviseEntities();
+        swcWatchdogManager.status.globalSupervisionCycle++;
+
+        if (Swc_WatchdogManager_IsGlobalStatusCorrect()) {
+            Swc_WatchdogManager_TriggerHardwareWatchdog();
+        }
+    }
+}
+
+/**
+ * @brief WatchdogManager Deinit - deinitializes the component
+ * Stops all entity supervision and resets to stopped state.
+ */
+void Swc_WatchdogManager_Deinit(void)
+{
+    uint8 i;
+
+    if (!swcWatchdogManager.isInitialized) {
+        return;
+    }
+
+    /* Stop all entities */
+    for (i = 0; i < WDG_MAX_ENTITIES; i++) {
+        swcWatchdogManager.entities[i].isRegistered = FALSE;
+        swcWatchdogManager.entities[i].config.isActive = FALSE;
+        swcWatchdogManager.entities[i].status.state = ALIVE_STATE_DEACTIVATED;
+    }
+
+    swcWatchdogManager.status.watchdogStatus = WDG_STATUS_STOPPED;
+    swcWatchdogManager.status.numSupervisedEntities = 0;
+    swcWatchdogManager.isInitialized = FALSE;
+    swcWatchdogManager.status.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE

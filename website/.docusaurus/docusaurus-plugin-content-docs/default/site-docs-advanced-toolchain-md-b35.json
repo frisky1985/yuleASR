@@ -5,7 +5,7 @@
   "source": "@site/docs/advanced/toolchain.md",
   "sourceDirName": "advanced",
   "slug": "/advanced/toolchain",
-  "permalink": "/yuleASR/docs/advanced/toolchain",
+  "permalink": "/yuleASR/en/docs/advanced/toolchain",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/toolchain.md",
@@ -14,11 +14,11 @@
   "frontMatter": {},
   "sidebar": "tutorialSidebar",
   "previous": {
-    "title": "Wdg 驱动",
-    "permalink": "/yuleASR/docs/drivers/wdg"
+    "title": "验证报告 - ISO 26262-6",
+    "permalink": "/yuleASR/en/docs/guides/safety-verification"
   },
   "next": {
     "title": "代码生成",
-    "permalink": "/yuleASR/docs/advanced/code-generation"
+    "permalink": "/yuleASR/en/docs/advanced/code-generation"
   }
 }

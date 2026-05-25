@@ -119,6 +119,17 @@ typedef struct {
 extern void Swc_ModeManager_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ * Performs mode management, transition execution, and status updates.
+ */
+extern void Swc_ModeManager_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Mode Manager component
+ */
+extern void Swc_ModeManager_Deinit(void);
+
+/**
  * @brief 50ms cyclic runnable - mode management
  */
 extern void Swc_ModeManager_50ms(void);

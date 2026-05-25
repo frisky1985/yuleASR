@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/memif",
+  "title": "MEMIF 模块",
+  "description": "void memif_Init(void);",
+  "source": "@site/docs/drivers/ecual/memif.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/memif",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/memif",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/memif.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 24,
+  "frontMatter": {
+    "title": "MEMIF 模块",
+    "sidebar_label": "memif",
+    "description": "void memif_Init(void);",
+    "sidebar_position": 24
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "lintrcv",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/lintrcv"
+  },
+  "next": {
+    "title": "someipif",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/someipif"
+  }
+}

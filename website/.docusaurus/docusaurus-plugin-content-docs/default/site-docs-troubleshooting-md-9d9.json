@@ -1,0 +1,23 @@
+{
+  "id": "troubleshooting",
+  "title": "故障排除指南",
+  "description": "本指南帮助您诊断和解决 YuleTech 项目中的常见问题。",
+  "source": "@site/docs/troubleshooting.md",
+  "sourceDirName": ".",
+  "slug": "/troubleshooting",
+  "permalink": "/yuleASR/en/docs/troubleshooting",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/troubleshooting.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 101,
+  "frontMatter": {
+    "sidebar_position": 101
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "常见问题",
+    "permalink": "/yuleASR/en/docs/faq"
+  }
+}

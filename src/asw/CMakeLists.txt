@@ -26,10 +26,12 @@ foreach(component ${ASW_COMPONENTS})
             PUBLIC 
                 ${CMAKE_CURRENT_SOURCE_DIR}/${component}/include
             PRIVATE
-                ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/rte/include
+                ${CMAKE_CURRENT_SOURCE_DIR}/../rte/include
+                ${CMAKE_CURRENT_SOURCE_DIR}/../platform/include
                 ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/com/include
                 ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/nvm/include
                 ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/dcm/include
+                ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/det/include
         )
         
         set_target_properties(${component} PROPERTIES

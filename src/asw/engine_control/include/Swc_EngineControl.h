@@ -96,6 +96,16 @@ typedef struct {
 extern void Swc_EngineControl_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ */
+extern void Swc_EngineControl_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Engine Control component
+ */
+extern void Swc_EngineControl_Deinit(void);
+
+/**
  * @brief 10ms cyclic runnable - fast control loop
  */
 extern void Swc_EngineControl_10ms(void);

@@ -1,0 +1,29 @@
+{
+  "id": "guides/misra-deviations",
+  "title": "MISRA C:2012 Deviation Permits - COM Module",
+  "description": "| Property | Value |",
+  "source": "@site/docs/guides/misra-deviations.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/misra-deviations",
+  "permalink": "/yuleASR/en/docs/guides/misra-deviations",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/misra-deviations.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 27,
+  "frontMatter": {
+    "title": "MISRA C:2012 Deviation Permits - COM Module",
+    "description": "| Property | Value |",
+    "sidebar_position": 27
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "MISRA C:2012 Compliance Report - COM Module",
+    "permalink": "/yuleASR/en/docs/guides/misra-report"
+  },
+  "next": {
+    "title": "S32K312 HSM使用指南",
+    "permalink": "/yuleASR/en/docs/guides/s32k312-hsm"
+  }
+}

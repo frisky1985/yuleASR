@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/ramtst",
+  "title": "RAMTST (RAM Test) Module",
+  "description": "The RAMTST module provides RAM testing functionality for the AUTOSAR Basic Software. It implements various RAM test algo",
+  "source": "@site/docs/drivers/mcal/ramtst.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/ramtst",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/ramtst",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/ramtst.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 18,
+  "frontMatter": {
+    "title": "RAMTST (RAM Test) Module",
+    "sidebar_label": "ramtst",
+    "description": "The RAMTST module provides RAM testing functionality for the AUTOSAR Basic Software. It implements various RAM test algo",
+    "sidebar_position": 18
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "pwm",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/pwm"
+  },
+  "next": {
+    "title": "spi",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/spi"
+  }
+}

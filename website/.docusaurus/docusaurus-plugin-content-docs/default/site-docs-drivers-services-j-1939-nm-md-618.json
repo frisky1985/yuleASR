@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/j1939nm",
+  "title": "J1939NM 模块",
+  "description": "void j1939nm_Init(void);",
+  "source": "@site/docs/drivers/services/j1939nm.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/j1939nm",
+  "permalink": "/yuleASR/en/docs/drivers/services/j1939nm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/j1939nm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 15,
+  "frontMatter": {
+    "title": "J1939NM 模块",
+    "sidebar_label": "j1939nm",
+    "description": "void j1939nm_Init(void);",
+    "sidebar_position": 15
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ECUM",
+    "permalink": "/yuleASR/en/docs/drivers/services/ECUM"
+  },
+  "next": {
+    "title": "keym",
+    "permalink": "/yuleASR/en/docs/drivers/services/keym"
+  }
+}

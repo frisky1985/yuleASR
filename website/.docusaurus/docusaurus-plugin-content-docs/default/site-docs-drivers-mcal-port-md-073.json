@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/port",
+  "title": "PORT 模块",
+  "description": "PORT驱动，配置IO引脚的功能和电气特性",
+  "source": "@site/docs/drivers/mcal/port.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/port",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/port",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/port.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 16,
+  "frontMatter": {
+    "title": "PORT 模块",
+    "sidebar_label": "port",
+    "description": "PORT驱动，配置IO引脚的功能和电气特性",
+    "sidebar_position": 16
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ocu",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/ocu"
+  },
+  "next": {
+    "title": "pwm",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/pwm"
+  }
+}

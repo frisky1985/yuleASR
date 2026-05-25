@@ -11,14 +11,5 @@
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/dio.md",
   "tags": [],
   "version": "current",
-  "frontMatter": {},
-  "sidebar": "tutorialSidebar",
-  "previous": {
-    "title": "Port 驱动",
-    "permalink": "/yuleASR/docs/drivers/port"
-  },
-  "next": {
-    "title": "Can 驱动",
-    "permalink": "/yuleASR/docs/drivers/can"
-  }
+  "frontMatter": {}
 }

@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/uart",
+  "title": "UART 模块",
+  "description": "void uart_Init(const uart_ConfigType* ConfigPtr);",
+  "source": "@site/docs/drivers/mcal/uart.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/uart",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/uart",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/uart.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 20,
+  "frontMatter": {
+    "title": "UART 模块",
+    "sidebar_label": "uart",
+    "description": "void uart_Init(const uart_ConfigType* ConfigPtr);",
+    "sidebar_position": 20
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "spi",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/spi"
+  },
+  "next": {
+    "title": "wdg",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/wdg"
+  }
+}

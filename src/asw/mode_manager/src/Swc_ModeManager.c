@@ -558,5 +558,62 @@ Rte_StatusType Swc_ModeManager_ForceModeTransition(Swc_SystemModeType targetMode
     return RTE_E_NOT_OK;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief ModeManager MainFunction - called periodically by RTE Scheduler
+ * 模式切换: Manages system-wide mode transitions and broadcasts to all components.
+ * Processes mode requests continuously and executes transitions every 50ms.
+ */
+void Swc_ModeManager_MainFunction(void)
+{
+    STATIC uint32 slowCounter = 0U;
+
+    if (!swcModeManager.isInitialized) {
+        return;
+    }
+
+    /* 10ms: process mode switch requests continuously */
+    Swc_ModeManager_ProcessModeRequest();
+
+    /* 50ms: execute mode transitions and update status */
+    slowCounter++;
+    if ((slowCounter % 5U) == 0U) {
+        Swc_ModeManager_ExecuteModeTransition();
+        Swc_ModeManager_UpdateModeDuration();
+        (void)Rte_Write_SystemMode(&swcModeManager.status.currentMode);
+        (void)Rte_Write_SystemState(&swcModeManager.status.systemState);
+    }
+}
+
+/**
+ * @brief ModeManager Deinit - deinitializes the component
+ * Forces mode to OFF and resets all component states.
+ */
+void Swc_ModeManager_Deinit(void)
+{
+    uint8 i;
+
+    if (!swcModeManager.isInitialized) {
+        return;
+    }
+
+    /* Force mode to OFF */
+    (void)Swc_ModeManager_ForceModeTransition(SYSTEM_MODE_OFF);
+
+    /* Reset components */
+    for (i = 0; i < MODE_MAX_COMPONENTS; i++) {
+        swcModeManager.components[i].currentMode = SYSTEM_MODE_OFF;
+        swcModeManager.components[i].modeAcknowledged = FALSE;
+        swcModeManager.components[i].modeReady = FALSE;
+    }
+
+    swcModeManager.status.transitionInProgress = FALSE;
+    swcModeManager.hasPendingRequest = FALSE;
+    swcModeManager.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"

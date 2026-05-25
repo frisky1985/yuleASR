@@ -48,6 +48,10 @@
 #define RTE_SID_IOCPWRITE               (0x0CU)
 #define RTE_SID_COMCBK                  (0x0DU)
 #define RTE_SID_MAINFUNCTION            (0x0EU)
+#define RTE_SID_READ                    (0x0FU)
+#define RTE_SID_WRITE                   (0x10U)
+#define RTE_SID_CS_CALL                 (0x11U)
+#define RTE_SID_CS_OPERATION            (0x12U)
 
 /*==================================================================================================
 *                                    RTE DET ERROR CODES
@@ -436,5 +440,49 @@ extern void Rte_ComCbkSwitchAck(Rte_ModeHandleType modeGroup, uint32 mode);
  */
 #define RTE_CALPRM_ADDR(componentName, calPrmName) \
     Rte_CalPrmAddr_##componentName##_##calPrmName()
+
+/*==================================================================================================
+*                                    RTE ASW COMPONENT API DECLARATIONS
+*   Generated API for Rte_Read, Rte_Write, and Rte_Call functions
+*   for the 8 ASW components.
+==================================================================================================*/
+
+/* ---- EngineControl ---- */
+extern Std_ReturnType Rte_Read_EngineControl_Port_RPM(uint16* data);
+extern Std_ReturnType Rte_Read_EngineControl_Port_Speed(uint16* data);
+extern Std_ReturnType Rte_Read_EngineControl_Port_Temperature(uint8* data);
+extern Std_ReturnType Rte_Write_EngineControl_Port_Throttle(const uint16* data);
+extern Std_ReturnType Rte_Write_EngineControl_Port_FuelInjection(const uint16* data);
+
+/* ---- VehicleDynamics ---- */
+extern Std_ReturnType Rte_Read_VehicleDynamics_Port_YawRate(float32* data);
+extern Std_ReturnType Rte_Read_VehicleDynamics_Port_WheelSpeed(uint16* data);
+extern Std_ReturnType Rte_Read_VehicleDynamics_Port_SteeringAngle(uint16* data);
+
+/* ---- DiagnosticManager ---- */
+extern Std_ReturnType Rte_Read_DiagnosticManager_Port_DTCStatus(uint8* data);
+extern Std_ReturnType Rte_Call_DiagnosticManager_Port_ClearDTC(uint32 dtc);
+extern Std_ReturnType Rte_Call_DiagnosticManager_Port_ReadDTC(uint32 dtc, uint8* status);
+
+/* ---- CommunicationManager ---- */
+extern Std_ReturnType Rte_Read_CommunicationManager_Port_VehicleSpeed(uint16* data);
+extern Std_ReturnType Rte_Write_CommunicationManager_Port_Status(const uint8* data);
+
+/* ---- StorageManager ---- */
+extern Std_ReturnType Rte_Read_StorageManager_Port_Data(uint8* data, uint16* length);
+extern Std_ReturnType Rte_Write_StorageManager_Port_Data(const uint8* data, uint16 length);
+
+/* ---- IOControl ---- */
+extern Std_ReturnType Rte_Read_IOControl_Port_Input(uint16* data);
+extern Std_ReturnType Rte_Write_IOControl_Port_Output(const uint16* data);
+
+/* ---- ModeManager ---- */
+extern Std_ReturnType Rte_Read_ModeManager_Port_CurrentMode(uint8* data);
+extern Std_ReturnType Rte_Write_ModeManager_Port_TargetMode(const uint8* data);
+
+/* ---- WatchdogManager ---- */
+extern Std_ReturnType Rte_Read_WatchdogManager_Port_Status(uint8* data);
+extern Std_ReturnType Rte_Call_WatchdogManager_Port_Reset(void);
+extern Std_ReturnType Rte_Call_WatchdogManager_Port_Trigger(void);
 
 #endif /* RTE_H */

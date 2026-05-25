@@ -714,5 +714,63 @@ Rte_StatusType Swc_IOControl_ResetStatistics(void)
     return RTE_E_OK;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief IOControl MainFunction - called periodically by RTE Scheduler
+ * Dispatches 10ms digital IO and 50ms analog/PWM processing.
+ */
+void Swc_IOControl_MainFunction(void)
+{
+    STATIC uint32 slowCounter = 0U;
+
+    if (!swcIOControl.isInitialized) {
+        return;
+    }
+
+    if (swcIOControl.state != IO_STATE_ACTIVE) {
+        return;
+    }
+
+    /* 10ms: process digital inputs */
+    Swc_IOControl_ProcessDigitalInputs();
+
+    /* 50ms: process analog and PWM inputs */
+    slowCounter++;
+    if ((slowCounter % 5U) == 0U) {
+        Swc_IOControl_ProcessAnalogInputs();
+        Swc_IOControl_ProcessPwmInputs();
+        (void)Rte_Write_IOState(&swcIOControl.state);
+    }
+}
+
+/**
+ * @brief IOControl Deinit - deinitializes the component
+ */
+void Swc_IOControl_Deinit(void)
+{
+    uint8 i;
+
+    if (!swcIOControl.isInitialized) {
+        return;
+    }
+
+    swcIOControl.state = IO_STATE_INACTIVE;
+    swcIOControl.numDigitalInputs = 0;
+    swcIOControl.numDigitalOutputs = 0;
+    swcIOControl.numAnalogInputs = 0;
+    swcIOControl.numAnalogOutputs = 0;
+    swcIOControl.numPwmInputs = 0;
+    swcIOControl.numPwmOutputs = 0;
+
+    for (i = 0; i < IO_MAX_DIGITAL_INPUTS; i++) {
+        digitalDebounce[i] = 0;
+    }
+
+    swcIOControl.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"

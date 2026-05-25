@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/SOMEIP",
+  "title": "SOMEIP",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/SOMEIP.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/SOMEIP",
+  "permalink": "/yuleASR/en/docs/drivers/services/SOMEIP",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/SOMEIP.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 28,
+  "frontMatter": {
+    "title": "SOMEIP",
+    "sidebar_label": "SOMEIP",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 28
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "SOAD",
+    "permalink": "/yuleASR/en/docs/drivers/services/SOAD"
+  },
+  "next": {
+    "title": "SOMEIPTP",
+    "permalink": "/yuleASR/en/docs/drivers/services/SOMEIPTP"
+  }
+}

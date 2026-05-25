@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/det",
+  "title": "DET 模块",
+  "description": "void det_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+  "source": "@site/docs/drivers/services/det.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/det",
+  "permalink": "/yuleASR/en/docs/drivers/services/det",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/det.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 10,
+  "frontMatter": {
+    "title": "DET 模块",
+    "sidebar_label": "det",
+    "description": "void det_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+    "sidebar_position": 10
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "DEM",
+    "permalink": "/yuleASR/en/docs/drivers/services/DEM"
+  },
+  "next": {
+    "title": "docan",
+    "permalink": "/yuleASR/en/docs/drivers/services/docan"
+  }
+}

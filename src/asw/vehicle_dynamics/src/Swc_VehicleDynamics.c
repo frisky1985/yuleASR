@@ -483,5 +483,54 @@ sint16 Swc_VehicleDynamics_CalculateBrakeIntervention(sint16 yawRate,
     return (sint16)intervention;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief VehicleDynamics MainFunction - called periodically by RTE Scheduler
+ * Dispatches 10ms fast loop every tick and 20ms calculation every 2nd tick.
+ */
+void Swc_VehicleDynamics_MainFunction(void)
+{
+    STATIC uint32 slowCounter = 0U;
+
+    if (!swcVehicleDynamics.isInitialized) {
+        return;
+    }
+
+    /* 10ms fast dynamics loop - always runs */
+    Swc_VehicleDynamics_UpdateMotionData();
+    Swc_VehicleDynamics_CalculateIntervention();
+    (void)Rte_Write_VdcOutput(&swcVehicleDynamics.output);
+
+    /* 20ms calculation - every 2nd tick */
+    slowCounter++;
+    if ((slowCounter & 0x01U) == 0U) {
+        Swc_VehicleDynamics_CalculateTargetYawRate();
+        Swc_VehicleDynamics_CheckStability();
+        (void)Rte_Write_VdcState(&swcVehicleDynamics.currentState);
+        (void)Rte_Write_VehicleMotion(&swcVehicleDynamics.motionData);
+    }
+}
+
+/**
+ * @brief VehicleDynamics Deinit - deinitializes the component
+ */
+void Swc_VehicleDynamics_Deinit(void)
+{
+    if (!swcVehicleDynamics.isInitialized) {
+        return;
+    }
+
+    swcVehicleDynamics.currentState = VDC_STATE_INACTIVE;
+    swcVehicleDynamics.currentMode = VDC_MODE_NORMAL;
+    swcVehicleDynamics.interventionCounter = 0;
+    swcVehicleDynamics.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE

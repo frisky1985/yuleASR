@@ -1,0 +1,29 @@
+{
+  "id": "guides/com-troubleshooting",
+  "title": "COM 模块 故障排除指南",
+  "description": "> **使用对象**: 软件开发工程师1、系统集成工程师1、支持工程师1",
+  "source": "@site/docs/guides/com-troubleshooting.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/com-troubleshooting",
+  "permalink": "/yuleASR/en/docs/guides/com-troubleshooting",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/com-troubleshooting.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 21,
+  "frontMatter": {
+    "title": "COM 模块 故障排除指南",
+    "description": "> **使用对象**: 软件开发工程师1、系统集成工程师1、支持工程师1",
+    "sidebar_position": 21
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "COM 模块 用户手册",
+    "permalink": "/yuleASR/en/docs/guides/com-user-manual"
+  },
+  "next": {
+    "title": "Dem (Diagnostic Event Manager) Design Document",
+    "permalink": "/yuleASR/en/docs/guides/dem-design"
+  }
+}

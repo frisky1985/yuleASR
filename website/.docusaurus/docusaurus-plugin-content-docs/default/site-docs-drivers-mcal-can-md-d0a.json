@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/CAN",
+  "title": "CAN",
+  "description": "The CAN module provides low-level access to the CAN controller hardware, enabling communication over the Controller Area",
+  "source": "@site/docs/drivers/mcal/CAN.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/CAN",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/CAN",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/CAN.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "CAN",
+    "sidebar_label": "CAN",
+    "description": "The CAN module provides low-level access to the CAN controller hardware, enabling communication over the Controller Area",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ADC",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/ADC"
+  },
+  "next": {
+    "title": "Crypto",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/Crypto"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/xcp",
+  "title": "XCP 模块",
+  "description": "void xcp_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+  "source": "@site/docs/drivers/ecual/xcp.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/xcp",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/xcp",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/xcp.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 29,
+  "frontMatter": {
+    "title": "XCP 模块",
+    "sidebar_label": "xcp",
+    "description": "void xcp_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+    "sidebar_position": 29
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "wdgif",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/wdgif"
+  },
+  "next": {
+    "title": "BSWM",
+    "permalink": "/yuleASR/en/docs/drivers/services/BSWM"
+  }
+}

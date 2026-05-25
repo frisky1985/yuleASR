@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/COMM",
+  "title": "COMM",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/COMM.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/COMM",
+  "permalink": "/yuleASR/en/docs/drivers/services/COMM",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/COMM.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "COMM",
+    "sidebar_label": "COMM",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "COM",
+    "permalink": "/yuleASR/en/docs/drivers/services/COM"
+  },
+  "next": {
+    "title": "crc",
+    "permalink": "/yuleASR/en/docs/drivers/services/crc"
+  }
+}

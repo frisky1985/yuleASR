@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/mem",
+  "title": "MEM 模块",
+  "description": "void mem_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+  "source": "@site/docs/drivers/services/mem.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/mem",
+  "permalink": "/yuleASR/en/docs/drivers/services/mem",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/mem.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 19,
+  "frontMatter": {
+    "title": "MEM 模块",
+    "sidebar_label": "mem",
+    "description": "void mem_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+    "sidebar_position": 19
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "lntm",
+    "permalink": "/yuleASR/en/docs/drivers/services/lntm"
+  },
+  "next": {
+    "title": "mqtt",
+    "permalink": "/yuleASR/en/docs/drivers/services/mqtt"
+  }
+}

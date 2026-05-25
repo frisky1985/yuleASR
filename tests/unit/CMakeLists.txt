@@ -12,6 +12,9 @@ set(UNIT_TEST_MODULES
     WdgM
 )
 
+# Add subdirectory tests (RTE, etc.)
+add_subdirectory(rte)
+
 foreach(module ${UNIT_TEST_MODULES})
     # Check if test file exists
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${module}_test.c)

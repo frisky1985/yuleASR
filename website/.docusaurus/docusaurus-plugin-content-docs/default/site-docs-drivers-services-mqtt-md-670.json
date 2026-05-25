@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/mqtt",
+  "title": "MQTT 模块",
+  "description": "void mqtt_Init(void);",
+  "source": "@site/docs/drivers/services/mqtt.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/mqtt",
+  "permalink": "/yuleASR/en/docs/drivers/services/mqtt",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/mqtt.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 20,
+  "frontMatter": {
+    "title": "MQTT 模块",
+    "sidebar_label": "mqtt",
+    "description": "void mqtt_Init(void);",
+    "sidebar_position": 20
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "mem",
+    "permalink": "/yuleASR/en/docs/drivers/services/mem"
+  },
+  "next": {
+    "title": "Nm",
+    "permalink": "/yuleASR/en/docs/drivers/services/Nm"
+  }
+}

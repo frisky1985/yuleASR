@@ -1,0 +1,29 @@
+{
+  "id": "design/data-flow",
+  "title": "数据流设计",
+  "description": "1. **数据抽象**: 使用 PDU (Protocol Data Unit) 封装数据",
+  "source": "@site/docs/design/data-flow.md",
+  "sourceDirName": "design",
+  "slug": "/design/data-flow",
+  "permalink": "/yuleASR/en/docs/design/data-flow",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/data-flow.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 35,
+  "frontMatter": {
+    "title": "数据流设计",
+    "description": "1. **数据抽象**: 使用 PDU (Protocol Data Unit) 封装数据",
+    "sidebar_position": 35
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "配置系统设计",
+    "permalink": "/yuleASR/en/docs/design/configuration-system"
+  },
+  "next": {
+    "title": "错误处理策略",
+    "permalink": "/yuleASR/en/docs/design/error-handling"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "permalink": "/yuleASR/blog/welcome",
+  "permalink": "/yuleASR/en/blog/welcome",
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/blog/2025-04-23-welcome.md",
   "source": "@site/blog/2025-04-23-welcome.md",
   "title": "欢迎来到 YuleTech AutoSAR 平台",
@@ -9,12 +9,12 @@
     {
       "inline": true,
       "label": "autosar",
-      "permalink": "/yuleASR/blog/tags/autosar"
+      "permalink": "/yuleASR/en/blog/tags/autosar"
     },
     {
       "inline": true,
       "label": "welcome",
-      "permalink": "/yuleASR/blog/tags/welcome"
+      "permalink": "/yuleASR/en/blog/tags/welcome"
     }
   ],
   "readingTime": 0.38,

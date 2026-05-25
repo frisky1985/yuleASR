@@ -1,5 +1,5 @@
 {
-  "blogBasePath": "/yuleASR/blog",
+  "blogBasePath": "/yuleASR/en/blog",
   "blogTitle": "Blog",
-  "authorsListPath": "/yuleASR/blog/authors"
+  "authorsListPath": "/yuleASR/en/blog/authors"
 }

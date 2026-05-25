@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/secoc",
+  "title": "SecOC - Secure Onboard Communication",
+  "description": "SecOC (Secure Onboard Communication) 是AUTOSAR服务层安全通信模块，为车载网络通信提供认证保护。它防止未经授权的消息注入和重放攻击，确保ECU间通信的完整性和真实性。",
+  "source": "@site/docs/drivers/services/secoc.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/secoc",
+  "permalink": "/yuleASR/en/docs/drivers/services/secoc",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/secoc.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 26,
+  "frontMatter": {
+    "title": "SecOC - Secure Onboard Communication",
+    "sidebar_label": "secoc",
+    "description": "SecOC (Secure Onboard Communication) 是AUTOSAR服务层安全通信模块，为车载网络通信提供认证保护。它防止未经授权的消息注入和重放攻击，确保ECU间通信的完整性和真实性。",
+    "sidebar_position": 26
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "schm",
+    "permalink": "/yuleASR/en/docs/drivers/services/schm"
+  },
+  "next": {
+    "title": "SOAD",
+    "permalink": "/yuleASR/en/docs/drivers/services/SOAD"
+  }
+}

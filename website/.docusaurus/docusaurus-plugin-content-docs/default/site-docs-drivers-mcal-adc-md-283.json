@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/ADC",
+  "title": "ADC",
+  "description": "The ADC module provides standardized access to analog-to-digital converter hardware for the AUTOSAR Basic Software. It a",
+  "source": "@site/docs/drivers/mcal/ADC.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/ADC",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/ADC",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/ADC.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "ADC",
+    "sidebar_label": "ADC",
+    "description": "The ADC module provides standardized access to analog-to-digital converter hardware for the AUTOSAR Basic Software. It a",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Service 层",
+    "permalink": "/yuleASR/en/docs/concepts/services"
+  },
+  "next": {
+    "title": "CAN",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/CAN"
+  }
+}

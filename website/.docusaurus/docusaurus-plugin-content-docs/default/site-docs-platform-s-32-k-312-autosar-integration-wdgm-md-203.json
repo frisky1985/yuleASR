@@ -1,0 +1,29 @@
+{
+  "id": "platform/s32k312/autosar-integration/wdgm",
+  "title": "WdgM (看门狗管理模块) 集成指南",
+  "description": "> **AUTOSAR版本**: 4.7.0",
+  "source": "@site/docs/platform/s32k312/autosar-integration/wdgm.md",
+  "sourceDirName": "platform/s32k312/autosar-integration",
+  "slug": "/platform/s32k312/autosar-integration/wdgm",
+  "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/wdgm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/platform/s32k312/autosar-integration/wdgm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 9,
+  "frontMatter": {
+    "title": "WdgM (看门狗管理模块) 集成指南",
+    "description": "> **AUTOSAR版本**: 4.7.0",
+    "sidebar_position": 9
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "RamSafety 模块集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ramsafety"
+  },
+  "next": {
+    "title": "API 参考文档",
+    "permalink": "/yuleASR/en/docs/api/reference"
+  }
+}

@@ -472,5 +472,52 @@ Swc_StorageResultType Swc_StorageManager_SetWriteProtection(uint16 blockId,
     return STORAGE_RESULT_OK;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief StorageManager MainFunction - called periodically by RTE Scheduler
+ * Dispatches 100ms statistics update and 500ms write cycle monitoring.
+ */
+void Swc_StorageManager_MainFunction(void)
+{
+    STATIC uint32 cycleCounter = 0U;
+
+    if (!swcStorageManager.isInitialized) {
+        return;
+    }
+
+    /* 100ms: statistics update and write cycle check */
+    Swc_StorageManager_UpdateStatistics();
+    Swc_StorageManager_CheckWriteCycles();
+
+    /* 500ms: write cycle management */
+    cycleCounter++;
+    if ((cycleCounter % 5U) == 0U) {
+        Swc_StorageManager_WriteCycle();
+    }
+}
+
+/**
+ * @brief StorageManager Deinit - deinitializes the component
+ */
+void Swc_StorageManager_Deinit(void)
+{
+    uint8 i;
+
+    if (!swcStorageManager.isInitialized) {
+        return;
+    }
+
+    for (i = 0; i < STORAGE_MAX_BLOCKS; i++) {
+        swcStorageManager.blocks[i].status.blockId = 0;
+        swcStorageManager.blocks[i].status.state = STORAGE_BLOCK_EMPTY;
+        swcStorageManager.blocks[i].isConfigured = FALSE;
+    }
+    swcStorageManager.numBlocks = 0;
+    swcStorageManager.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"

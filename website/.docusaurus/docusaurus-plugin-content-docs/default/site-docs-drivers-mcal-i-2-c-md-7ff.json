@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/i2c",
+  "title": "I2C 模块",
+  "description": "void i2c_Init(const i2c_ConfigType* ConfigPtr);",
+  "source": "@site/docs/drivers/mcal/i2c.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/i2c",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/i2c",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/i2c.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 11,
+  "frontMatter": {
+    "title": "I2C 模块",
+    "sidebar_label": "i2c",
+    "description": "void i2c_Init(const i2c_ConfigType* ConfigPtr);",
+    "sidebar_position": 11
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "gpt",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/gpt"
+  },
+  "next": {
+    "title": "icu",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/icu"
+  }
+}

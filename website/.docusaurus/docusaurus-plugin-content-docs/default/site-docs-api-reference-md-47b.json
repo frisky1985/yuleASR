@@ -1,0 +1,29 @@
+{
+  "id": "api/reference",
+  "title": "API 参考文档",
+  "description": "本文档提供 YuleTech AutoSAR BSW Platform 的完整 API 接口参考。",
+  "source": "@site/docs/api/reference.md",
+  "sourceDirName": "api",
+  "slug": "/api/reference",
+  "permalink": "/yuleASR/en/docs/api/reference",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/api/reference.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 13,
+  "frontMatter": {
+    "title": "API 参考文档",
+    "description": "本文档提供 YuleTech AutoSAR BSW Platform 的完整 API 接口参考。",
+    "sidebar_position": 13
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "WdgM (看门狗管理模块) 集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/wdgm"
+  },
+  "next": {
+    "title": "COM 模块 API 参考",
+    "permalink": "/yuleASR/en/docs/api/com-api"
+  }
+}

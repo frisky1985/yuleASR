@@ -128,6 +128,16 @@ typedef struct {
 extern void Swc_CommunicationManager_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ */
+extern void Swc_CommunicationManager_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Communication Manager component
+ */
+extern void Swc_CommunicationManager_Deinit(void);
+
+/**
  * @brief 10ms cyclic runnable - communication management
  */
 extern void Swc_CommunicationManager_10ms(void);

@@ -1,0 +1,29 @@
+{
+  "id": "guides/s32k312-hsm",
+  "title": "S32K312 HSM使用指南",
+  "description": "> **文档版本**: v1.0",
+  "source": "@site/docs/guides/s32k312-hsm.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/s32k312-hsm",
+  "permalink": "/yuleASR/en/docs/guides/s32k312-hsm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/s32k312-hsm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 28,
+  "frontMatter": {
+    "title": "S32K312 HSM使用指南",
+    "description": "> **文档版本**: v1.0",
+    "sidebar_position": 28
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "MISRA C:2012 Deviation Permits - COM Module",
+    "permalink": "/yuleASR/en/docs/guides/misra-deviations"
+  },
+  "next": {
+    "title": "S32K312 芯片学习与部署指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/overview"
+  }
+}

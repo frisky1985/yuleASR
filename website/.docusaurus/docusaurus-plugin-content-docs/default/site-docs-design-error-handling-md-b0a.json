@@ -1,0 +1,29 @@
+{
+  "id": "design/error-handling",
+  "title": "错误处理策略",
+  "description": "| 错误类型 | 说明 | 处理策略 |",
+  "source": "@site/docs/design/error-handling.md",
+  "sourceDirName": "design",
+  "slug": "/design/error-handling",
+  "permalink": "/yuleASR/en/docs/design/error-handling",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/error-handling.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 36,
+  "frontMatter": {
+    "title": "错误处理策略",
+    "description": "| 错误类型 | 说明 | 处理策略 |",
+    "sidebar_position": 36
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "数据流设计",
+    "permalink": "/yuleASR/en/docs/design/data-flow"
+  },
+  "next": {
+    "title": "内存管理设计",
+    "permalink": "/yuleASR/en/docs/design/memory-management"
+  }
+}

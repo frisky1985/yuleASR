@@ -5,7 +5,7 @@
   "source": "@site/docs/advanced/performance-optimization.md",
   "sourceDirName": "advanced",
   "slug": "/advanced/performance-optimization",
-  "permalink": "/yuleASR/docs/advanced/performance-optimization",
+  "permalink": "/yuleASR/en/docs/advanced/performance-optimization",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/performance-optimization.md",
@@ -15,10 +15,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "测试",
-    "permalink": "/yuleASR/docs/advanced/testing"
+    "permalink": "/yuleASR/en/docs/advanced/testing"
   },
   "next": {
     "title": "调试",
-    "permalink": "/yuleASR/docs/advanced/debugging"
+    "permalink": "/yuleASR/en/docs/advanced/debugging"
   }
 }

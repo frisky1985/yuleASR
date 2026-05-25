@@ -1,0 +1,29 @@
+{
+  "id": "guides/safety-manual",
+  "title": "SAFETY MANUAL - ISO 26262 ASIL-D",
+  "description": "本项目实现了多个AUTOSAR BSW模块，其中以下模块达到ASIL-D级别:",
+  "source": "@site/docs/guides/safety-manual.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/safety-manual",
+  "permalink": "/yuleASR/en/docs/guides/safety-manual",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/safety-manual.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 29,
+  "frontMatter": {
+    "title": "SAFETY MANUAL - ISO 26262 ASIL-D",
+    "description": "本项目实现了多个AUTOSAR BSW模块，其中以下模块达到ASIL-D级别:",
+    "sidebar_position": 29
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "HARA - 危害分析和风险评估",
+    "permalink": "/yuleASR/en/docs/guides/hara-analysis"
+  },
+  "next": {
+    "title": "验证报告 - ISO 26262-6",
+    "permalink": "/yuleASR/en/docs/guides/safety-verification"
+  }
+}

@@ -535,5 +535,56 @@ uint16 Swc_EngineControl_CalculateIgnitionTiming(uint16 speed, uint16 load, sint
     return (uint16)ignitionAdvance;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief EngineControl MainFunction - called periodically by RTE Scheduler
+ * Dispatches 10ms fast loop every tick and 100ms slow runnables every 10th tick.
+ * Uses a static tick counter for multi-rate dispatch.
+ */
+void Swc_EngineControl_MainFunction(void)
+{
+    STATIC uint32 slowCounter = 0U;
+
+    if (!swcEngineControl.isInitialized) {
+        return;
+    }
+
+    /* 10ms fast control loop - always runs */
+    Swc_EngineControl_UpdateParameters();
+    Swc_EngineControl_HandleFaults();
+    Swc_EngineControl_CalculateOutputs();
+    (void)Rte_Write_EngineControlOutput(&swcEngineControl.output);
+
+    /* 100ms slow loop - every 10th call */
+    slowCounter++;
+    if (slowCounter >= 10U) {
+        slowCounter = 0U;
+        Swc_EngineControl_UpdateStateMachine();
+        (void)Rte_Write_EngineState(&swcEngineControl.currentState);
+        (void)Rte_Write_EngineParameters(&swcEngineControl.parameters);
+        (void)Rte_Switch_EngineMode(swcEngineControl.controlMode);
+    }
+}
+
+/**
+ * @brief EngineControl Deinit - deinitializes the component
+ * Resets internal state so Init can be called again.
+ */
+void Swc_EngineControl_Deinit(void)
+{
+    if (!swcEngineControl.isInitialized) {
+        return;
+    }
+
+    swcEngineControl.currentState = ENGINE_STATE_OFF;
+    swcEngineControl.previousState = ENGINE_STATE_OFF;
+    swcEngineControl.controlMode = ENGINE_MODE_NORMAL;
+    swcEngineControl.faultCounter = 0;
+    swcEngineControl.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"

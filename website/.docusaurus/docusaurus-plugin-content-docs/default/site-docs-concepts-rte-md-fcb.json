@@ -5,7 +5,7 @@
   "source": "@site/docs/concepts/rte.md",
   "sourceDirName": "concepts",
   "slug": "/concepts/rte",
-  "permalink": "/yuleASR/docs/concepts/rte",
+  "permalink": "/yuleASR/en/docs/concepts/rte",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/rte.md",
@@ -15,10 +15,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "分层结构",
-    "permalink": "/yuleASR/docs/concepts/layered-structure"
+    "permalink": "/yuleASR/en/docs/concepts/layered-structure"
   },
   "next": {
     "title": "MCAL",
-    "permalink": "/yuleASR/docs/concepts/mcal"
+    "permalink": "/yuleASR/en/docs/concepts/mcal"
   }
 }

@@ -548,5 +548,59 @@ Rte_StatusType Swc_CommunicationManager_ResetStatistics(void)
     return RTE_E_OK;
 }
 
+/*==================================================================================================
+*                                    MAIN FUNCTION & DEINIT
+==================================================================================================*/
+
+/**
+ * @brief CommunicationManager MainFunction - called periodically by RTE Scheduler
+ * Dispatches 10ms timeout check and RX/TX processing every 2nd tick.
+ */
+void Swc_CommunicationManager_MainFunction(void)
+{
+    STATIC uint32 altCounter = 0U;
+
+    if (!swcCommManager.isInitialized) {
+        return;
+    }
+
+    /* Always run timeout checks */
+    Swc_CommunicationManager_CheckTimeouts();
+    (void)Rte_Write_CommState(&swcCommManager.state);
+
+    /* RX/TX processing every 2nd tick */
+    altCounter++;
+    if ((altCounter & 0x01U) == 0U) {
+        if (swcCommManager.state == COMM_STATE_ACTIVE) {
+            Swc_CommunicationManager_ProcessRxSignals();
+            Swc_CommunicationManager_ProcessTxSignals();
+        }
+    }
+}
+
+/**
+ * @brief CommunicationManager Deinit - deinitializes the component
+ */
+void Swc_CommunicationManager_Deinit(void)
+{
+    uint8 i;
+
+    if (!swcCommManager.isInitialized) {
+        return;
+    }
+
+    swcCommManager.state = COMM_STATE_OFF;
+    swcCommManager.numSignals = 0;
+    swcCommManager.numRxPdus = 0;
+    swcCommManager.numTxPdus = 0;
+
+    for (i = 0; i < COMM_MAX_SIGNALS; i++) {
+        swcCommManager.signals[i].signalId = 0;
+        swcCommManager.signals[i].isValid = FALSE;
+    }
+
+    swcCommManager.isInitialized = FALSE;
+}
+
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"

@@ -5,7 +5,7 @@
   "source": "@site/docs/quick-start/installation.md",
   "sourceDirName": "quick-start",
   "slug": "/quick-start/installation",
-  "permalink": "/yuleASR/docs/quick-start/installation",
+  "permalink": "/yuleASR/en/docs/quick-start/installation",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/quick-start/installation.md",
@@ -18,10 +18,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "简介",
-    "permalink": "/yuleASR/docs/quick-start/intro"
+    "permalink": "/yuleASR/en/docs/quick-start/intro"
   },
   "next": {
     "title": "创建第一个项目",
-    "permalink": "/yuleASR/docs/quick-start/first-project"
+    "permalink": "/yuleASR/en/docs/quick-start/first-project"
   }
 }

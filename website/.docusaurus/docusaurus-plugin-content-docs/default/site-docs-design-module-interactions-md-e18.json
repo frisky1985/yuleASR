@@ -1,0 +1,29 @@
+{
+  "id": "design/module-interactions",
+  "title": "模块交互设计",
+  "description": "1. **层次化调用**: 层次间通过标准接口调用，避免跨层直接访问",
+  "source": "@site/docs/design/module-interactions.md",
+  "sourceDirName": "design",
+  "slug": "/design/module-interactions",
+  "permalink": "/yuleASR/en/docs/design/module-interactions",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/module-interactions.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 38,
+  "frontMatter": {
+    "title": "模块交互设计",
+    "description": "1. **层次化调用**: 层次间通过标准接口调用，避免跨层直接访问",
+    "sidebar_position": 38
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "内存管理设计",
+    "permalink": "/yuleASR/en/docs/design/memory-management"
+  },
+  "next": {
+    "title": "测试策略设计",
+    "permalink": "/yuleASR/en/docs/design/testing-strategy"
+  }
+}

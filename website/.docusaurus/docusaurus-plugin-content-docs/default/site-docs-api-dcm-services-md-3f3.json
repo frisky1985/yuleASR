@@ -1,0 +1,29 @@
+{
+  "id": "api/dcm-services",
+  "title": "DCM Program Transfer Services Implementation",
+  "description": "This document describes the implementation of UDS Program Transfer Services (0x34-0x37) according to ISO 14229-1:2020.",
+  "source": "@site/docs/api/dcm-services.md",
+  "sourceDirName": "api",
+  "slug": "/api/dcm-services",
+  "permalink": "/yuleASR/en/docs/api/dcm-services",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/api/dcm-services.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 17,
+  "frontMatter": {
+    "title": "DCM Program Transfer Services Implementation",
+    "description": "This document describes the implementation of UDS Program Transfer Services (0x34-0x37) according to ISO 14229-1:2020.",
+    "sidebar_position": 17
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Crypto API Quick Start Guide",
+    "permalink": "/yuleASR/en/docs/api/crypto-quickstart"
+  },
+  "next": {
+    "title": "系统架构概览",
+    "permalink": "/yuleASR/en/docs/design/architecture-overview"
+  }
+}

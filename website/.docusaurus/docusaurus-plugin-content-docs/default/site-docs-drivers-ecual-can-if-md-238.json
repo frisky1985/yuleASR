@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/CanIf",
+  "title": "CanIf",
+  "description": "CanIf implements the **AUTOSAR CAN Interface** module, providing a hardware-independent abstraction layer between the CA",
+  "source": "@site/docs/drivers/ecual/CanIf.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/CanIf",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/CanIf",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/CanIf.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "title": "CanIf",
+    "sidebar_label": "CanIf",
+    "description": "CanIf implements the **AUTOSAR CAN Interface** module, providing a hardware-independent abstraction layer between the CA",
+    "sidebar_position": 1
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "wdg",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/wdg"
+  },
+  "next": {
+    "title": "CanTp",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/CanTp"
+  }
+}

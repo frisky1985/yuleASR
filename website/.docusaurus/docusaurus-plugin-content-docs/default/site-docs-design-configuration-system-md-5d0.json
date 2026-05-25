@@ -1,0 +1,29 @@
+{
+  "id": "design/configuration-system",
+  "title": "配置系统设计",
+  "description": "┌──────────────────────────────────────────────┐",
+  "source": "@site/docs/design/configuration-system.md",
+  "sourceDirName": "design",
+  "slug": "/design/configuration-system",
+  "permalink": "/yuleASR/en/docs/design/configuration-system",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/configuration-system.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 34,
+  "frontMatter": {
+    "title": "配置系统设计",
+    "description": "┌──────────────────────────────────────────────┐",
+    "sidebar_position": 34
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "系统架构概览",
+    "permalink": "/yuleASR/en/docs/design/architecture-overview"
+  },
+  "next": {
+    "title": "数据流设计",
+    "permalink": "/yuleASR/en/docs/design/data-flow"
+  }
+}

@@ -5,7 +5,7 @@
   "source": "@site/docs/advanced/code-generation.md",
   "sourceDirName": "advanced",
   "slug": "/advanced/code-generation",
-  "permalink": "/yuleASR/docs/advanced/code-generation",
+  "permalink": "/yuleASR/en/docs/advanced/code-generation",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/code-generation.md",
@@ -15,10 +15,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "工具链",
-    "permalink": "/yuleASR/docs/advanced/toolchain"
+    "permalink": "/yuleASR/en/docs/advanced/toolchain"
   },
   "next": {
     "title": "测试",
-    "permalink": "/yuleASR/docs/advanced/testing"
+    "permalink": "/yuleASR/en/docs/advanced/testing"
   }
 }

@@ -5,7 +5,7 @@
   "source": "@site/docs/advanced/testing.md",
   "sourceDirName": "advanced",
   "slug": "/advanced/testing",
-  "permalink": "/yuleASR/docs/advanced/testing",
+  "permalink": "/yuleASR/en/docs/advanced/testing",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/testing.md",
@@ -15,10 +15,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "代码生成",
-    "permalink": "/yuleASR/docs/advanced/code-generation"
+    "permalink": "/yuleASR/en/docs/advanced/code-generation"
   },
   "next": {
     "title": "性能优化",
-    "permalink": "/yuleASR/docs/advanced/performance-optimization"
+    "permalink": "/yuleASR/en/docs/advanced/performance-optimization"
   }
 }

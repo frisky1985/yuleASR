@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/CANTSYN",
+  "title": "CANTSYN",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/ecual/CANTSYN.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/CANTSYN",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/CANTSYN",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/CANTSYN.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 6,
+  "frontMatter": {
+    "title": "CANTSYN",
+    "sidebar_label": "CANTSYN",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 6
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "cansm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/cansm"
+  },
+  "next": {
+    "title": "cantrcv",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/cantrcv"
+  }
+}

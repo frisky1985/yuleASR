@@ -1,0 +1,27 @@
+{
+  "id": "contributing",
+  "title": "贡献指南",
+  "description": "感谢您对 YuleTech 的关注！我们欢迎各种形式的贡献。",
+  "source": "@site/docs/contributing.md",
+  "sourceDirName": ".",
+  "slug": "/contributing",
+  "permalink": "/yuleASR/en/docs/contributing",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/contributing.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 99,
+  "frontMatter": {
+    "sidebar_position": 99
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "调试",
+    "permalink": "/yuleASR/en/docs/advanced/debugging"
+  },
+  "next": {
+    "title": "常见问题",
+    "permalink": "/yuleASR/en/docs/faq"
+  }
+}

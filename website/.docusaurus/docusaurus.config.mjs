@@ -8,11 +8,10 @@ export default {
   "tagline": "开源基础软件平台 - 基于 AutoSAR 标准",
   "favicon": "img/favicon.ico",
   "url": "https://frisky1985.github.io",
-  "baseUrl": "/yuleASR/",
+  "baseUrl": "/yuleASR/en/",
   "organizationName": "frisky1985",
   "projectName": "yuleASR",
   "onBrokenLinks": "warn",
-  "onBrokenMarkdownLinks": "warn",
   "i18n": {
     "defaultLocale": "zh-Hans",
     "locales": [
@@ -21,12 +20,10 @@ export default {
     ],
     "localeConfigs": {
       "zh-Hans": {
-        "label": "中文",
-        "direction": "ltr"
+        "label": "中文"
       },
       "en": {
-        "label": "English",
-        "direction": "ltr"
+        "label": "English"
       }
     },
     "path": "i18n"
@@ -360,12 +357,19 @@ export default {
     }
   },
   "baseUrlIssueBanner": true,
+  "storage": {
+    "type": "localStorage",
+    "namespace": false
+  },
   "future": {
     "v4": {
       "removeLegacyPostBuildHeadAttribute": false,
-      "useCssCascadeLayers": false
+      "useCssCascadeLayers": false,
+      "siteStorageNamespacing": false,
+      "fasterByDefault": false,
+      "mdx1CompatDisabledByDefault": false
     },
-    "experimental_faster": {
+    "faster": {
       "swcJsLoader": false,
       "swcJsMinimizer": false,
       "swcHtmlMinimizer": false,
@@ -373,12 +377,10 @@ export default {
       "mdxCrossCompilerCache": false,
       "rspackBundler": false,
       "rspackPersistentCache": false,
-      "ssgWorkerThreads": false
+      "ssgWorkerThreads": false,
+      "gitEagerVcs": false
     },
-    "experimental_storage": {
-      "type": "localStorage",
-      "namespace": false
-    },
+    "experimental_vcs": {},
     "experimental_router": "browser"
   },
   "onBrokenAnchors": "warn",
@@ -398,6 +400,7 @@ export default {
   "markdown": {
     "format": "mdx",
     "mermaid": false,
+    "emoji": true,
     "mdx1Compat": {
       "comments": true,
       "admonitions": true,
@@ -405,6 +408,10 @@ export default {
     },
     "anchors": {
       "maintainCase": false
+    },
+    "hooks": {
+      "onBrokenMarkdownLinks": "warn",
+      "onBrokenMarkdownImages": "throw"
     }
   }
 };

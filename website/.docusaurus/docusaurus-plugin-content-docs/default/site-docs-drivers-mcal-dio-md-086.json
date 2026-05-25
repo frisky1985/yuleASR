@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/dio",
+  "title": "DIO (Digital Input/Output) Module",
+  "description": "The DIO module provides standardized access to the microcontroller's General Purpose Input/Output (GPIO) hardware for th",
+  "source": "@site/docs/drivers/mcal/dio.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/dio",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/dio",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/dio.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "DIO (Digital Input/Output) Module",
+    "sidebar_label": "dio",
+    "description": "The DIO module provides standardized access to the microcontroller's General Purpose Input/Output (GPIO) hardware for th",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Crypto",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/Crypto"
+  },
+  "next": {
+    "title": "eep",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/eep"
+  }
+}

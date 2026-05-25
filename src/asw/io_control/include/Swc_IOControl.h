@@ -133,6 +133,16 @@ typedef struct {
 extern void Swc_IOControl_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ */
+extern void Swc_IOControl_MainFunction(void);
+
+/**
+ * @brief Deinitializes the IO Control component
+ */
+extern void Swc_IOControl_Deinit(void);
+
+/**
  * @brief 10ms cyclic runnable - fast IO processing
  */
 extern void Swc_IOControl_10ms(void);

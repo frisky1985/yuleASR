@@ -5,7 +5,7 @@
   "source": "@site/docs/concepts/ecual.md",
   "sourceDirName": "concepts",
   "slug": "/concepts/ecual",
-  "permalink": "/yuleASR/docs/concepts/ecual",
+  "permalink": "/yuleASR/en/docs/concepts/ecual",
   "draft": false,
   "unlisted": false,
   "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/concepts/ecual.md",
@@ -15,10 +15,10 @@
   "sidebar": "tutorialSidebar",
   "previous": {
     "title": "MCAL",
-    "permalink": "/yuleASR/docs/concepts/mcal"
+    "permalink": "/yuleASR/en/docs/concepts/mcal"
   },
   "next": {
     "title": "Service 层",
-    "permalink": "/yuleASR/docs/concepts/services"
+    "permalink": "/yuleASR/en/docs/concepts/services"
   }
 }

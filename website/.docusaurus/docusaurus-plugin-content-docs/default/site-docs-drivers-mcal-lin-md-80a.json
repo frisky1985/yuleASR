@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/LIN",
+  "title": "LIN",
+  "description": "The LIN module provides low-level access to the LIN (Local Interconnect Network) hardware controller, enabling cost-effe",
+  "source": "@site/docs/drivers/mcal/LIN.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/LIN",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/LIN",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/LIN.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 13,
+  "frontMatter": {
+    "title": "LIN",
+    "sidebar_label": "LIN",
+    "description": "The LIN module provides low-level access to the LIN (Local Interconnect Network) hardware controller, enabling cost-effe",
+    "sidebar_position": 13
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "icu",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/icu"
+  },
+  "next": {
+    "title": "mcu",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/mcu"
+  }
+}

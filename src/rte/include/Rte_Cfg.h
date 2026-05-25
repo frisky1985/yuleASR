@@ -143,6 +143,18 @@
 #define RTE_RUNNABLE_ERROR_HANDLER          (7U)
 
 /*==================================================================================================
+*                                    RTE ASW COMPONENT IDs
+==================================================================================================*/
+#define RTE_COMPONENT_ASW_ENGINE_CONTROL            (8U)
+#define RTE_COMPONENT_ASW_VEHICLE_DYNAMICS          (9U)
+#define RTE_COMPONENT_ASW_DIAGNOSTIC_MANAGER        (10U)
+#define RTE_COMPONENT_ASW_COMMUNICATION_MANAGER     (11U)
+#define RTE_COMPONENT_ASW_STORAGE_MANAGER            (12U)
+#define RTE_COMPONENT_ASW_IO_CONTROL                 (13U)
+#define RTE_COMPONENT_ASW_MODE_MANAGER               (14U)
+#define RTE_COMPONENT_ASW_WATCHDOG_MANAGER           (15U)
+
+/*==================================================================================================
 *                                    RTE PORT IDs
 ==================================================================================================*/
 #define RTE_PORT_SR_ENGINE_STATUS           (0U)
@@ -157,6 +169,80 @@
 #define RTE_PORT_MD_DIAGNOSTIC_MODE         (9U)
 #define RTE_PORT_TR_WAKEUP_EVENT            (10U)
 #define RTE_PORT_TR_ERROR_EVENT             (11U)
+
+/*==================================================================================================
+*                                    RTE ASW PORT IDs (per-component port indices)
+==================================================================================================*/
+/* EngineControl ports */
+#define RTE_PORT_EC_RPM                     (0U)
+#define RTE_PORT_EC_SPEED                   (1U)
+#define RTE_PORT_EC_TEMPERATURE             (2U)
+#define RTE_PORT_EC_THROTTLE                (3U)
+#define RTE_PORT_EC_FUEL_INJECTION          (4U)
+
+/* VehicleDynamics ports */
+#define RTE_PORT_VD_YAW_RATE                (0U)
+#define RTE_PORT_VD_WHEEL_SPEED             (1U)
+#define RTE_PORT_VD_STEERING_ANGLE          (2U)
+
+/* DiagnosticManager ports */
+#define RTE_PORT_DM_DTC_STATUS              (0U)
+#define RTE_PORT_DM_CLEAR_DTC               (1U)
+#define RTE_PORT_DM_READ_DTC                (2U)
+
+/* CommunicationManager ports */
+#define RTE_PORT_CM_VEHICLE_SPEED           (0U)
+#define RTE_PORT_CM_STATUS                  (1U)
+
+/* StorageManager ports */
+#define RTE_PORT_SM_DATA_READ               (0U)
+#define RTE_PORT_SM_DATA_WRITE              (1U)
+
+/* IOControl ports */
+#define RTE_PORT_IO_INPUT                   (0U)
+#define RTE_PORT_IO_OUTPUT                  (1U)
+
+/* ModeManager ports */
+#define RTE_PORT_MM_CURRENT_MODE            (0U)
+#define RTE_PORT_MM_TARGET_MODE             (1U)
+
+/* WatchdogManager ports */
+#define RTE_PORT_WM_STATUS                  (0U)
+#define RTE_PORT_WM_RESET                   (1U)
+#define RTE_PORT_WM_TRIGGER                 (2U)
+
+/*==================================================================================================
+*                                    RTE ASW PORT HANDLES
+==================================================================================================*/
+#define RTE_PORT_EC_RPM_H                   ((Rte_PortHandleType)((RTE_COMPONENT_ASW_ENGINE_CONTROL << 8) | RTE_PORT_EC_RPM))
+#define RTE_PORT_EC_SPEED_H                 ((Rte_PortHandleType)((RTE_COMPONENT_ASW_ENGINE_CONTROL << 8) | RTE_PORT_EC_SPEED))
+#define RTE_PORT_EC_TEMPERATURE_H           ((Rte_PortHandleType)((RTE_COMPONENT_ASW_ENGINE_CONTROL << 8) | RTE_PORT_EC_TEMPERATURE))
+#define RTE_PORT_EC_THROTTLE_H              ((Rte_PortHandleType)((RTE_COMPONENT_ASW_ENGINE_CONTROL << 8) | RTE_PORT_EC_THROTTLE))
+#define RTE_PORT_EC_FUEL_INJECTION_H        ((Rte_PortHandleType)((RTE_COMPONENT_ASW_ENGINE_CONTROL << 8) | RTE_PORT_EC_FUEL_INJECTION))
+
+#define RTE_PORT_VD_YAW_RATE_H              ((Rte_PortHandleType)((RTE_COMPONENT_ASW_VEHICLE_DYNAMICS << 8) | RTE_PORT_VD_YAW_RATE))
+#define RTE_PORT_VD_WHEEL_SPEED_H           ((Rte_PortHandleType)((RTE_COMPONENT_ASW_VEHICLE_DYNAMICS << 8) | RTE_PORT_VD_WHEEL_SPEED))
+#define RTE_PORT_VD_STEERING_ANGLE_H        ((Rte_PortHandleType)((RTE_COMPONENT_ASW_VEHICLE_DYNAMICS << 8) | RTE_PORT_VD_STEERING_ANGLE))
+
+#define RTE_PORT_DM_DTC_STATUS_H            ((Rte_PortHandleType)((RTE_COMPONENT_ASW_DIAGNOSTIC_MANAGER << 8) | RTE_PORT_DM_DTC_STATUS))
+#define RTE_PORT_DM_CLEAR_DTC_H             ((Rte_PortHandleType)((RTE_COMPONENT_ASW_DIAGNOSTIC_MANAGER << 8) | RTE_PORT_DM_CLEAR_DTC))
+#define RTE_PORT_DM_READ_DTC_H              ((Rte_PortHandleType)((RTE_COMPONENT_ASW_DIAGNOSTIC_MANAGER << 8) | RTE_PORT_DM_READ_DTC))
+
+#define RTE_PORT_CM_VEHICLE_SPEED_H         ((Rte_PortHandleType)((RTE_COMPONENT_ASW_COMMUNICATION_MANAGER << 8) | RTE_PORT_CM_VEHICLE_SPEED))
+#define RTE_PORT_CM_STATUS_H                ((Rte_PortHandleType)((RTE_COMPONENT_ASW_COMMUNICATION_MANAGER << 8) | RTE_PORT_CM_STATUS))
+
+#define RTE_PORT_SM_DATA_READ_H             ((Rte_PortHandleType)((RTE_COMPONENT_ASW_STORAGE_MANAGER << 8) | RTE_PORT_SM_DATA_READ))
+#define RTE_PORT_SM_DATA_WRITE_H            ((Rte_PortHandleType)((RTE_COMPONENT_ASW_STORAGE_MANAGER << 8) | RTE_PORT_SM_DATA_WRITE))
+
+#define RTE_PORT_IO_INPUT_H                 ((Rte_PortHandleType)((RTE_COMPONENT_ASW_IO_CONTROL << 8) | RTE_PORT_IO_INPUT))
+#define RTE_PORT_IO_OUTPUT_H                ((Rte_PortHandleType)((RTE_COMPONENT_ASW_IO_CONTROL << 8) | RTE_PORT_IO_OUTPUT))
+
+#define RTE_PORT_MM_CURRENT_MODE_H          ((Rte_PortHandleType)((RTE_COMPONENT_ASW_MODE_MANAGER << 8) | RTE_PORT_MM_CURRENT_MODE))
+#define RTE_PORT_MM_TARGET_MODE_H           ((Rte_PortHandleType)((RTE_COMPONENT_ASW_MODE_MANAGER << 8) | RTE_PORT_MM_TARGET_MODE))
+
+#define RTE_PORT_WM_STATUS_H                ((Rte_PortHandleType)((RTE_COMPONENT_ASW_WATCHDOG_MANAGER << 8) | RTE_PORT_WM_STATUS))
+#define RTE_PORT_WM_RESET_H                 ((Rte_PortHandleType)((RTE_COMPONENT_ASW_WATCHDOG_MANAGER << 8) | RTE_PORT_WM_RESET))
+#define RTE_PORT_WM_TRIGGER_H               ((Rte_PortHandleType)((RTE_COMPONENT_ASW_WATCHDOG_MANAGER << 8) | RTE_PORT_WM_TRIGGER))
 
 /*==================================================================================================
 *                                    RTE DATA ELEMENT IDs

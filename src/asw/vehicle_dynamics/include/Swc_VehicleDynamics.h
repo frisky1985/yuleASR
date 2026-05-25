@@ -99,6 +99,16 @@ typedef struct {
 extern void Swc_VehicleDynamics_Init(void);
 
 /**
+ * @brief MainFunction - called periodically by RTE Scheduler
+ */
+extern void Swc_VehicleDynamics_MainFunction(void);
+
+/**
+ * @brief Deinitializes the Vehicle Dynamics component
+ */
+extern void Swc_VehicleDynamics_Deinit(void);
+
+/**
  * @brief 10ms cyclic runnable - fast dynamics loop
  */
 extern void Swc_VehicleDynamics_10ms(void);

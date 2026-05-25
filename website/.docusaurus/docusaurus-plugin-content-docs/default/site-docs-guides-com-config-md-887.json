@@ -1,0 +1,29 @@
+{
+  "id": "guides/com-config",
+  "title": "COM 模块配置指南",
+  "description": "> **更新日期**: 2024年",
+  "source": "@site/docs/guides/com-config.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/com-config",
+  "permalink": "/yuleASR/en/docs/guides/com-config",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/com-config.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 19,
+  "frontMatter": {
+    "title": "COM 模块配置指南",
+    "description": "> **更新日期**: 2024年",
+    "sidebar_position": 19
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "COM 模块文档",
+    "permalink": "/yuleASR/en/docs/guides/com-guide"
+  },
+  "next": {
+    "title": "COM 模块 用户手册",
+    "permalink": "/yuleASR/en/docs/guides/com-user-manual"
+  }
+}

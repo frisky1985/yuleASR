@@ -5,21 +5,27 @@
     "en"
   ],
   "path": "i18n",
-  "currentLocale": "zh-Hans",
+  "currentLocale": "en",
   "localeConfigs": {
     "zh-Hans": {
       "label": "中文",
       "direction": "ltr",
       "htmlLang": "zh-Hans",
       "calendar": "gregory",
-      "path": "zh-Hans"
+      "path": "zh-Hans",
+      "translate": false,
+      "url": "https://frisky1985.github.io",
+      "baseUrl": "/yuleASR/"
     },
     "en": {
       "label": "English",
       "direction": "ltr",
       "htmlLang": "en",
       "calendar": "gregory",
-      "path": "en"
+      "path": "en",
+      "translate": false,
+      "url": "https://frisky1985.github.io",
+      "baseUrl": "/yuleASR/en/"
     }
   }
 }

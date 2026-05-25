@@ -1,0 +1,29 @@
+{
+  "id": "design/architecture-overview",
+  "title": "系统架构概览",
+  "description": "yuleASR 是一个基于 AUTOSAR Classic Platform 的基础软件框架，支持多种嵌入式 MCU 平台。",
+  "source": "@site/docs/design/architecture-overview.md",
+  "sourceDirName": "design",
+  "slug": "/design/architecture-overview",
+  "permalink": "/yuleASR/en/docs/design/architecture-overview",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/architecture-overview.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 31,
+  "frontMatter": {
+    "title": "系统架构概览",
+    "description": "yuleASR 是一个基于 AUTOSAR Classic Platform 的基础软件框架，支持多种嵌入式 MCU 平台。",
+    "sidebar_position": 31
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "DCM Program Transfer Services Implementation",
+    "permalink": "/yuleASR/en/docs/api/dcm-services"
+  },
+  "next": {
+    "title": "配置系统设计",
+    "permalink": "/yuleASR/en/docs/design/configuration-system"
+  }
+}
