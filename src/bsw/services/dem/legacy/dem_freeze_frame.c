@@ -8,6 +8,7 @@
 
 #include "dem_freeze_frame.h"
 #include "dem_dtc.h"
+#include "dem.h"
 #include <string.h>
 
 #ifndef NULL_PTR
@@ -147,7 +148,7 @@ Std_ReturnType Dem_StoreFreezeFrame(
         /* Store freeze frame data */
         entry->dtcCode = dtcCode;
         entry->recordNumber = recordNumber;
-        entry->timestamp = 0U; /* TODO: Get system timestamp */
+        entry->timestamp = Dem_GetCurrentTimestamp();
         entry->dataSize = dataSize;
         (void)memcpy(entry->data, data, dataSize);
         entry->isValid = TRUE;
@@ -386,7 +387,7 @@ Std_ReturnType Dem_StoreExtendedDataRecord(
     if (entry != NULL_PTR) {
         entry->recordNumber = recordNumber;
         entry->dataSize = dataSize;
-        entry->timestamp = 0U; /* TODO: Get system timestamp */
+        entry->timestamp = Dem_GetCurrentTimestamp();
         (void)memcpy(entry->data, data, dataSize);
         entry->recordValid = TRUE;
         result = E_OK;

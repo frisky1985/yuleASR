@@ -21,6 +21,9 @@ static const Dem_ConfigType* s_demConfig = NULL_PTR;
 static boolean s_dtcSettingEnabled = TRUE;
 static boolean s_demInitialized = FALSE;
 
+/* Timestamp tick counter - incremented each Dem_MainFunction cycle */
+static uint32_t s_demTickCount = 0U;
+
 /* Operation cycle states */
 static Dem_OperationCycleStateType s_operationCycleStates[4] = {
     DEM_CYCLE_STATE_END,  /* POWER */
@@ -169,7 +172,10 @@ void Dem_MainFunction(void)
     if (s_demState != DEM_STATE_INIT) {
         return;
     }
-    
+
+    /* Increment timestamp tick counter */
+    s_demTickCount++;
+
     /* Process operation cycles */
     Dem_ProcessOperationCycles();
     
@@ -178,6 +184,15 @@ void Dem_MainFunction(void)
     
     /* Process debounce counters for time-based debouncing */
     /* This would be done for all events with time-based debouncing */
+}
+
+/**
+ * @brief   Get the current DEM timestamp (millisecond tick counter)
+ * @return  Current value of the DEM tick counter
+ */
+uint32_t Dem_GetCurrentTimestamp(void)
+{
+    return s_demTickCount;
 }
 
 void Dem_PreInit(void)

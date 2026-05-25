@@ -1035,5 +1035,11 @@ extern Std_ReturnType Dem_GetNumberOfEventMemoryEntries(
  */
 extern Std_ReturnType Dem_PreTempActive(Dem_EventIdType EventId);
 
+/**
+ * @brief   Get the current system timestamp (milliseconds)
+ * @return  Current timestamp value from the DEM global tick counter
+ * @note    The tick counter is incremented each Dem_MainFunction cycle
+ */
+extern uint32_t Dem_GetCurrentTimestamp(void);
 
 #endif /* DEM_H */

@@ -10,6 +10,7 @@
 #include "dem_event.h"
 #include "dem_dtc.h"
 #include "dem_freeze_frame.h"
+#include "dem.h"
 #include <string.h>
 
 #ifndef NULL_PTR
@@ -319,7 +320,7 @@ Std_ReturnType Dem_NvMRequestWriteEventData(void)
     
     if (state != NULL_PTR) {
         state->dataModified = TRUE;
-        state->lastWriteRequestTime = 0U; /* TODO: Get current time */
+        state->lastWriteRequestTime = Dem_GetCurrentTimestamp();
     }
     
     return result;
@@ -392,25 +393,28 @@ void Dem_NvMMainFunction(void)
             
             /* Check if enough time has passed since last write request */
             /* This implements write delay for performance optimization */
-            /* TODO: Check actual time against DEM_NVM_WRITE_DELAY_MS */
-            
-            /* Initiate write based on block type */
-            switch (s_nvmBlockStates[i].blockId) {
-                case DEM_NVM_BLOCK_ID_EVENT_STATUS:
-                    (void)Dem_NvMWriteEventData();
-                    break;
-                    
-                case DEM_NVM_BLOCK_ID_FREEZE_FRAME:
-                    (void)Dem_NvMWriteFreezeFrameData();
-                    break;
-                    
-                case DEM_NVM_BLOCK_ID_EXTENDED_DATA:
-                    (void)Dem_NvMWriteExtendedData();
-                    break;
-                    
-                default:
-                    /* Unknown block */
-                    break;
+            uint32_t currentTime = Dem_GetCurrentTimestamp();
+            uint32_t elapsedTime = currentTime - s_nvmBlockStates[i].lastWriteRequestTime;
+            if (elapsedTime >= DEM_NVM_WRITE_DELAY_MS)
+            {
+                /* Initiate write based on block type */
+                switch (s_nvmBlockStates[i].blockId) {
+                    case DEM_NVM_BLOCK_ID_EVENT_STATUS:
+                        (void)Dem_NvMWriteEventData();
+                        break;
+
+                    case DEM_NVM_BLOCK_ID_FREEZE_FRAME:
+                        (void)Dem_NvMWriteFreezeFrameData();
+                        break;
+
+                    case DEM_NVM_BLOCK_ID_EXTENDED_DATA:
+                        (void)Dem_NvMWriteExtendedData();
+                        break;
+
+                    default:
+                        /* Unknown block */
+                        break;
+                }
             }
         }
     }

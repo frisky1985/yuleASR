@@ -7,6 +7,7 @@
  */
 
 #include "dem_types.h"
+#include "dem.h"
 #include <string.h>
 
 #ifndef NULL_PTR
@@ -181,7 +182,7 @@ Std_ReturnType Dem_SetEventStatus(
     }
     
     /* Update timestamp */
-    entry->lastReportTimestamp = 0U; /* TODO: Get system timestamp */
+    entry->lastReportTimestamp = Dem_GetCurrentTimestamp();
     
     result = E_OK;
     
