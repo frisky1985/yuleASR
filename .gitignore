@@ -62,9 +62,13 @@ venv/
 dist/
 build/
 
-# Node.js (docs-site)
+# Node.js (docs-site & website)
 docs-site/node_modules/
 docs-site/dist/
+website/node_modules/
+
+# Arms Cache
+arms_cache/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
