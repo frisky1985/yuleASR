@@ -11,11 +11,10 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: docs-site/package-lock.json
-      - run: cd docs-site && npm ci
-      - run: cd docs-site && npm run build
+          cache-dependency-path: website/package-lock.json
+      - run: cd website && npm ci
+      - run: cd website && npm run build
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs-site/dist
-          destination_dir: docs
+          publish_dir: ./website/build
