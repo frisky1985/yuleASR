@@ -19,6 +19,17 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/frisky1985/yuleASR/actions/workflows/ci.yml"><img src="https://github.com/frisky1985/yuleASR/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/frisky1985/yuleASR/actions/workflows/deploy-docs.yml"><img src="https://github.com/frisky1985/yuleASR/actions/workflows/deploy-docs.yml/badge.svg" alt="Docs"></a>
+  <a href="https://github.com/frisky1985/yuleASR/actions/workflows/integration-tests.yml"><img src="https://github.com/frisky1985/yuleASR/actions/workflows/integration-tests.yml/badge.svg" alt="Integration"></a>
+  <a href="https://github.com/frisky1985/yuleASR/actions/workflows/misra-check.yml"><img src="https://github.com/frisky1985/yuleASR/actions/workflows/misra-check.yml/badge.svg" alt="MISRA"></a>
+</p>
+
+<p align="center">
+  📖 <strong>文档站:</strong> <a href="https://frisky1985.github.io/yuleASR/"><code>https://frisky1985.github.io/yuleASR/</code></a>
+</p>
+
+<p align="center">
   <a href="#overview">概览</a> •
   <a href="#structure">项目结构</a> •
   <a href="#features">功能特性</a> •
@@ -119,10 +130,22 @@ yuleASR/
 
 ### 项目统计
 
+### 模块完整性
+
+| 层级 | 模块数 | 状态 | 备注 |
+|:-----|:------:|:----:|:-----|
+| **MCAL** (微控制器抽象层) | 21/21 | ✅ 全部完成 | Adc, Can, Crypto, Dio, Eep, Eth, Fee, Flash, Fls, Gpt, I2c, Icu, Lin, Mcu, Ocu, Port, Pwm, Ramtst, Spi, Uart, Wdg |
+| **ECUAL** (ECU抽象层) | 29/29 | ✅ 全部完成 | CanIf, CanNm, CanSm, CanTp, CanTrcv, Dlt, DoIP, Ea, EthIf, EthSm, EthTrcv, Fee, FiM, FrIf, FrTp, IoHwAb, IpduM, J1939Tp, LinIf, LinNm, LinSM, LinTp, LinTrcv, MemIf, SomeIpIf, SomeIpSd, Srp, WdgIf, Xcp |
+| **Services** (服务层) | 46/46 | ✅ 全部完成 | BswM, CanM, CanSM, CanTSyn, Com, ComM, Crc, CryIf, Csm, Dcm, Dem, Det, Dlt, DoCan, DoIP, E2E, EcuC, EcuM, EthSm, FiM, IpduM, J1939Nm, J1939Tp, KeyM, LinM, LinSM, LnTm, Mem, MemIf, Mqtt, Nm, NvM, PduR, RamSafety, SchM, SecOC, SoAd, SomeIp, SomeIpTp, SomeIpXf, StbM, Swc, UdpNm, WdgM, Xcp |
+| **ASW** (应用层) | 8/8 | ✅ 全部完成 | EngineControl, VehicleDynamics, DiagnosticManager, CommunicationManager, StorageManager, IOControl, ModeManager, WatchdogManager |
+| **RTE** (运行时环境) | — | ✅ 全部完成 | 组件间通信、数据类型定义、调度器 |
+| **OS** (操作系统) | — | ✅ 全部完成 | 基于 FreeRTOS，支持任务/事件/资源/报警/中断管理 |
+
 <p align="center">
-  <img src="https://img.shields.io/badge/BSW Modules-94-blue?style=flat-square" alt="94 Modules">
-  <img src="https://img.shields.io/badge/Lines of Code-50K+-blue?style=flat-square" alt="50K+ LOC">
-  <img src="https://img.shields.io/badge/Documentation-150+ Docs-success?style=flat-square" alt="150+ Docs">
+  <img src="https://img.shields.io/badge/BSW Modules-96-blue?style=flat-square" alt="96 Modules">
+  <img src="https://img.shields.io/badge/C Code-~214K%20lines-blue?style=flat-square" alt="~214K LOC">
+  <img src="https://img.shields.io/badge/单元测试-260%2B-success?style=flat-square" alt="260+ Tests">
+  <img src="https://img.shields.io/badge/Documentation-150%2B Docs-success?style=flat-square" alt="150+ Docs">
   <img src="https://img.shields.io/badge/Tools-6 Categories-success?style=flat-square" alt="6 Tools">
 </p>
 
@@ -143,10 +166,11 @@ yuleASR/
 ```bash
 # 安装系统依赖 (Ubuntu/Debian)
 sudo apt-get update
-sudo apt-get install -y build-essential cmake git python3 python3-pip
+sudo apt-get install -y build-essential cmake git python3 python3-pip python3-venv
 
 # 安装 Python 依赖
-pip3 install -r tools/requirements.txt
+pip3 install -r tools/arxml/requirements.txt
+pip3 install -r tools/arxml-tool/requirements.txt
 ```
 
 ### 获取代码
@@ -160,33 +184,68 @@ git submodule update --init --recursive
 ### 构建项目
 
 ```bash
-# 创建构建目录
+# 使用构建脚本（推荐）
+./build.sh --platform S32K312
+
+# 或手动构建
 mkdir -p build && cd build
-
-# 配置项目
 cmake .. -DTARGET_PLATFORM=S32K312
-
-# 构建项目
 make -j$(nproc)
 
 # 运行测试
 make test
+ctest --output-on-failure
 ```
 
 ### 使用工具链
 
 ```bash
-# ARXML处理工具
-./tools/arxml/arxml_tool.py --help
-./tools/arxml/arxml_tool.py parse examples/system.arxml
-./tools/arxml/arxml_tool.py generate config.json -o output/
-./tools/arxml/arxml_tool.py analyze system.arxml -o report.md
+# ARXML处理工具（统一CLI）
+python3 tools/arxml/arxml_tool.py --help
+python3 tools/arxml/arxml_tool.py parse examples/system.arxml
+python3 tools/arxml/arxml_tool.py generate config.json -o output/
+python3 tools/arxml/arxml_tool.py analyze system.arxml -o report.md
+
+# ARXML工具（独立版）
+python3 tools/arxml-tool/arxml-tool.py --help
 
 # CAN配置工具
-./tools/can_config/can-config-tool.py --dbc examples/example.dbc --output config/
+python3 tools/can_config/can-config-tool.py --dbc examples/example.dbc --output config/
 
 # DTC配置工具
-./tools/dtc_config/dtc-tool.sh --input dtc_config.csv
+bash tools/dtc_config/dtc-tool.sh --input dtc_config.csv
+
+# RTE代码生成器
+python3 tools/rte-generator/rte_generator.py --config config/rte_cfg.json --output src/rte/
+
+# DDS配置工具
+python3 tools/dds-config-tool/ --help
+```
+
+### 项目目录速览
+
+```
+yuleASR/
+├── src/
+│   ├── bsw/                 # AutoSAR BSW 源代码
+│   │   ├── mcal/           # 微控制器驱动层 (21模块)
+│   │   ├── ecual/          # ECU抽象层 (29模块)
+│   │   ├── services/       # 服务层 (46模块)
+│   │   └── os/             # 操作系统 (FreeRTOS)
+│   ├── asw/                # 应用层 (8组件)
+│   ├── rte/                # 运行时环境
+│   └── micro-dds/          # DDS中间件
+├── config/                 # 配置文件
+├── docs/                   # 文档 (150+文档)
+├── docs-site/              # 文档站 (Vite + React)
+├── tests/                  # 单元/集成测试 (260+)
+├── tools/                  # 工具链 (12+工具)
+├── examples/               # 示例代码
+├── scripts/                # 构建/测试脚本
+├── third_party/            # 第三方依赖
+├── website/                # 项目官网
+├── build.sh                # 一键构建脚本
+└── CMakeLists.txt          # CMake构建配置
 ```
 
 ---
@@ -215,6 +274,17 @@ make test
 ---
 
 ## <a name="docs"></a> 文档
+
+### 在线文档站
+
+<p align="center">
+  <a href="https://frisky1985.github.io/yuleASR/">
+    <img src="https://img.shields.io/badge/GitHub%20Pages-文档站-2ea44f?style=for-the-badge&logo=githubpages" alt="GitHub Pages">
+  </a>
+</p>
+
+在线文档站 (GitHub Pages) 托管了完整的项目文档、API参考、模块说明和开发指南：
+👉 **<https://frisky1985.github.io/yuleASR/>**
 
 ### 快速链接
 
