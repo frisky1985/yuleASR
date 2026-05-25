@@ -1,0 +1,32 @@
+{
+  "stats": {
+    "mcal": {
+      "total": 20,
+      "tested": 20,
+      "documented": 20,
+      "test_coverage": 100.0,
+      "doc_coverage": 100.0
+    },
+    "ecual": {
+      "total": 29,
+      "tested": 29,
+      "documented": 29,
+      "test_coverage": 100.0,
+      "doc_coverage": 100.0
+    },
+    "services": {
+      "total": 44,
+      "tested": 40,
+      "documented": 44,
+      "test_coverage": 90.9090909090909,
+      "doc_coverage": 100.0
+    }
+  },
+  "overall": {
+    "total_modules": 93,
+    "tested": 89,
+    "documented": 93,
+    "test_coverage": 95.6989247311828,
+    "doc_coverage": 100.0
+  }
+}
