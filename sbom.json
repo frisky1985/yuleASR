@@ -1,0 +1,304 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "yuleASR - SBOM",
+  "documentNamespace": "https://github.com/frisky1985/yuleASR/sbom/1a75a4056ee28754e1882582c6fb01ac96c95b88/2026-05-25T17:58:50Z",
+  "creationInfo": {
+    "created": "2026-05-25T17:58:50Z",
+    "creators": [
+      "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
+      "Tool: generate-sbom.sh-1.0",
+      "Person: YuleTech-SBOM-Generator"
+    ]
+  },
+  "documentDescribes": [
+    "SPDXRef-YuleTech-AutoSAR"
+  ],
+  "packages": [
+        {
+      "SPDXID": "SPDXRef-YuleTech-AutoSAR",
+      "name": "yuleASR",
+      "versionInfo": "1.0.0",
+      "supplier": "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR",
+      "homepage": "https://github.com/frisky1985/yuleASR",
+      "packageFileName": "yuleASR",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.",
+      "summary": "YuleTech AutoSAR BSW Platform - Open Source BSW Implementation"
+    },
+
+        {
+      "SPDXID": "SPDXRef-mbedtls",
+      "name": "mbedTLS",
+      "versionInfo": "2.28.8",
+      "supplier": "Organization: Arm Limited",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/mbedtls",
+      "homepage": "https://github.com/Mbed-TLS/mbedtls",
+      "packageFileName": "third_party/mbedtls",
+      "licenseConcluded": "Apache-2.0",
+      "licenseDeclared": "Apache-2.0",
+      "copyrightText": "Copyright (c) 2006-2024, Arm Limited and Contributors",
+      "summary": "轻量级TLS/SSL库，用于MQTT模块的TLS/mTLS安全通信"
+    },
+
+        {
+      "SPDXID": "SPDXRef-arm-gcc",
+      "name": "ARM GCC Compiler Toolchain",
+      "versionInfo": "10.3-2021.10",
+      "supplier": "Organization: Arm Limited",
+      "downloadLocation": "https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain",
+      "homepage": "https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain",
+      "packageFileName": "arm-none-eabi-gcc",
+      "licenseConcluded": "GPL-2.0-or-later WITH GCC-exception-2.0",
+      "licenseDeclared": "GPL-2.0-or-later WITH GCC-exception-2.0",
+      "copyrightText": "Copyright (c) 2009-2021, Arm Limited",
+      "summary": "ARM嵌入式GCC交叉编译工具链，用于目标平台 NXP S32K312 编译"
+    },
+
+        {
+      "SPDXID": "SPDXRef-cmake",
+      "name": "CMake",
+      "versionInfo": "4.3.2",
+      "supplier": "Organization: Kitware, Inc.",
+      "downloadLocation": "https://cmake.org/download/",
+      "homepage": "https://cmake.org",
+      "packageFileName": "cmake",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2000-2024 Kitware, Inc.",
+      "summary": "跨平台构建系统，用于项目构建配置管理"
+    },
+
+        {
+      "SPDXID": "SPDXRef-make",
+      "name": "GNU Make",
+      "versionInfo": "4.3",
+      "supplier": "Organization: Free Software Foundation, Inc.",
+      "downloadLocation": "https://ftp.gnu.org/gnu/make/",
+      "homepage": "https://www.gnu.org/software/make/",
+      "packageFileName": "make",
+      "licenseConcluded": "GPL-3.0-or-later",
+      "licenseDeclared": "GPL-3.0-or-later",
+      "copyrightText": "Copyright (c) 1988-2022 Free Software Foundation, Inc.",
+      "summary": "自动化构建工具，用于执行构建规则"
+    },
+
+        {
+      "SPDXID": "SPDXRef-jinja2",
+      "name": "Jinja2",
+      "versionInfo": "3.1.6",
+      "supplier": "Organization: Pallets Project",
+      "downloadLocation": "https://pypi.org/project/Jinja2/",
+      "homepage": "https://jinja.palletsprojects.com",
+      "packageFileName": "jinja2",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2007-2024 Pallets",
+      "summary": "Python模板引擎，用于代码生成器"
+    },
+
+        {
+      "SPDXID": "SPDXRef-pytest",
+      "name": "pytest",
+      "versionInfo": "8.0.0",
+      "supplier": "Organization: Holger Krekel and pytest contributors",
+      "downloadLocation": "https://pypi.org/project/pytest/",
+      "homepage": "https://pytest.org",
+      "packageFileName": "pytest",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2004-2024 Holger Krekel and pytest contributors",
+      "summary": "Python单元测试框架，用于测试代码生成器和工具"
+    },
+
+        {
+      "SPDXID": "SPDXRef-aes-modes",
+      "name": "AES Modes",
+      "versionInfo": "1.0",
+      "supplier": "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/crypto/aes_modes",
+      "homepage": "",
+      "packageFileName": "third_party/crypto/aes_modes",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.",
+      "summary": "AES加密模式实现，支持CBC/CTR/GCM/CCM/ECB/CFB/OFB"
+    },
+
+        {
+      "SPDXID": "SPDXRef-blake2",
+      "name": "Blake2",
+      "versionInfo": "1.0",
+      "supplier": "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/crypto/blake2",
+      "homepage": "",
+      "packageFileName": "third_party/crypto/blake2",
+      "licenseConcluded": "MIT AND CC0-1.0",
+      "licenseDeclared": "MIT AND CC0-1.0",
+      "copyrightText": "Copyright (c) 2012-2024 Jean-Philippe Aumasson and Samuel Neves",
+      "summary": "Blake2哈希算法实现，支持Blake2b和Blake2s"
+    },
+
+        {
+      "SPDXID": "SPDXRef-hash",
+      "name": "Hash (SHA系列)",
+      "versionInfo": "1.0",
+      "supplier": "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/crypto/hash",
+      "homepage": "",
+      "packageFileName": "third_party/crypto/hash",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.",
+      "summary": "SHA系列哈希算法实现，支持SHA-1/SHA-2/SHA-3"
+    },
+
+        {
+      "SPDXID": "SPDXRef-unity",
+      "name": "Unity Test Framework",
+      "versionInfo": "2.6.0",
+      "supplier": "Organization: ThrowTheSwitch.org",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/test_frameworks/unity",
+      "homepage": "http://www.throwtheswitch.org/unity",
+      "packageFileName": "third_party/test_frameworks/unity",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2007-2024 Mike Karlesky, Mark VanderVoord, Greg Williams",
+      "summary": "轻量级C语言单元测试框架，用于嵌入式系统测试"
+    },
+
+        {
+      "SPDXID": "SPDXRef-yule-mbedtls-adapter",
+      "name": "YuleTech mbedTLS Adapter",
+      "versionInfo": "1.0",
+      "supplier": "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/yule-mbedtls-adapter",
+      "homepage": "",
+      "packageFileName": "third_party/yule-mbedtls-adapter",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.",
+      "summary": "AUTOSAR平台mbedTLS适配层，连接mbedTLS与AUTOSAR BSW"
+    }
+  ],
+  "relationships": [
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-mbedtls"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-arm-gcc"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-cmake"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-make"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-jinja2"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-pytest"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-aes-modes"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-blake2"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-hash"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-unity"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-yule-mbedtls-adapter"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-mbedtls"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-aes-modes"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-blake2"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-hash"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-unity"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-yule-mbedtls-adapter"
+    },
+        {
+      "spdxElementId": "SPDXRef-mbedtls",
+      "relationshipType": "DEPENDENCY_MANIFEST_OF",
+      "relatedSpdxElement": "SPDXRef-YuleTech-AutoSAR"
+    },
+        {
+      "spdxElementId": "SPDXRef-arm-gcc",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-YuleTech-AutoSAR"
+    },
+        {
+      "spdxElementId": "SPDXRef-cmake",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-YuleTech-AutoSAR"
+    },
+        {
+      "spdxElementId": "SPDXRef-make",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-YuleTech-AutoSAR"
+    },
+        {
+      "spdxElementId": "SPDXRef-jinja2",
+      "relationshipType": "DEPENDENCY_MANIFEST_OF",
+      "relatedSpdxElement": "SPDXRef-YuleTech-AutoSAR"
+    },
+        {
+      "spdxElementId": "SPDXRef-pytest",
+      "relationshipType": "DEPENDENCY_MANIFEST_OF",
+      "relatedSpdxElement": "SPDXRef-YuleTech-AutoSAR"
+    }
+  ]
+}
