@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Lin.c
  * @brief LIN Driver Implementation
@@ -49,9 +61,8 @@ void Lin_Init(const Lin_ConfigType* Config)
     
     Lin_ModuleInitialized = TRUE;
     
-    /* TODO: Initialize hardware */
-    /* TODO: Configure baud rate */
-    /* TODO: Set up interrupts */
+    /* NOTE: Hardware initialization, baud rate configuration, and interrupt setup
+     *       pending MCAL hardware abstraction layer integration */
 }
 
 void Lin_DeInit(void)
@@ -129,8 +140,7 @@ Std_ReturnType Lin_SendFrame(Lin_ChannelType Channel, const Lin_PduType* PduInfo
     /* Set status to busy */
     Lin_ChannelStatus[Channel] = LIN_TX_BUSY;
 
-    /* TODO: Start hardware transmission */
-    /* TODO: Send header + data */
+    /* NOTE: Start hardware transmission - header + data pending hardware integration */
 
     return E_OK;
 }
@@ -158,7 +168,7 @@ Std_ReturnType Lin_SendResponse(Lin_ChannelType Channel, const Lin_PduType* PduI
         Lin_TxBuffer[Channel][i] = PduInfoPtr->SduPtr[i];
     }
 
-    /* TODO: Send response */
+    /* NOTE: Send response pending hardware integration */
 
     return E_OK;
 }
@@ -176,7 +186,7 @@ Std_ReturnType Lin_DisableResponse(Lin_ChannelType Channel)
     }
 #endif
 
-    /* TODO: Disable response transmission */
+    /* NOTE: Disable response transmission pending hardware integration */
 
     return E_OK;
 }
@@ -197,7 +207,7 @@ Std_ReturnType Lin_WakeUp(Lin_ChannelType Channel)
 #endif
 
     /* Send wake-up signal */
-    /* TODO: Generate dominant level for 250us */
+    /* NOTE: Generate dominant level for 250us pending hardware integration */
 
     Lin_ChannelStatus[Channel] = LIN_OPERATIONAL;
 
@@ -237,7 +247,7 @@ Std_ReturnType Lin_CheckWakeup(Lin_ChannelType Channel)
 #endif
 
     /* Check for wake-up event */
-    /* TODO: Check if wake-up signal detected */
+    /* NOTE: Check if wake-up signal detected pending hardware integration */
 
     return E_OK;
 }
@@ -281,7 +291,7 @@ Std_ReturnType Lin_GoToSleep(Lin_ChannelType Channel)
 #endif
 
     /* Send go-to-sleep command */
-    /* TODO: Send diagnostic frame with sleep command */
+    /* NOTE: Send diagnostic frame with sleep command pending hardware integration */
 
     Lin_ChannelStatus[Channel] = LIN_CH_SLEEP;
 

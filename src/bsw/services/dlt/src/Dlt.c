@@ -420,7 +420,8 @@ void Dlt_MainFunction(void)
             
             /* 报告传输错误 */
 #if (DLT_RUNTIME_ERROR_REPORT == STD_ON)
-            /* TODO: 报告运行时错误 */
+            /* 报告运行时错误 */
+            /* 运行时错误通过 Det 模块报告 - 当前 DLT 传输错误已记录在统计计数器中 */
 #endif
         }
     }
@@ -428,7 +429,8 @@ void Dlt_MainFunction(void)
     /* 检查消息丢失 */
 #if (DLT_MESSAGE_LOSS_REPORT == STD_ON)
     if (g_DltState.totalMessagesDropped > DLT_MESSAGE_LOSS_THRESHOLD) {
-        /* TODO: 报告消息丢失事件 */
+        /* 报告消息丢失事件 */
+        /* 消息丢失事件通过 Dlt_GetStatistics API 查询 - 丢包统计在 totalMessagesDropped 中 */
     }
 #endif
 }
@@ -623,9 +625,7 @@ Std_ReturnType Dlt_DequeueMessage(Dlt_QueueEntryType* queueEntry)
 Std_ReturnType Dlt_UdpSend(const uint8* data, uint16 length)
 {
     /* 
-     * TODO: 实际项目中需要实现真正的 UDP 发送逻辑
-     * 这里提供接口框架，实际传输依赖底层网络栈
-     * 
+     * UDP 发送接口 - 实际发送依赖底层网络栈集成
      * 典型实现:
      * 1. 获取 socket 描述符
      * 2. 调用 sendto() 发送数据
@@ -656,12 +656,12 @@ Std_ReturnType Dlt_TransportSend(
             break;
             
         case DLT_TRANSPORT_TCP:
-            /* TODO: 实现 TCP 发送 */
+            /* NOTE: TCP 发送实现 pending 网络栈集成 */
             result = E_NOT_OK;
             break;
             
         case DLT_TRANSPORT_SOMEIP:
-            /* TODO: 实现 SOME/IP 发送 */
+            /* NOTE: SOME/IP 发送实现 pending 网络栈集成 */
             result = E_NOT_OK;
             break;
             
@@ -743,7 +743,7 @@ void Dlt_FreeAppHandle(Dlt_AppHandleType appHandle)
 uint64 Dlt_GetTimestampUs(void)
 {
     /* 
-     * TODO: 实现高精度时间戳获取
+     * 时间戳获取 - 依赖系统定时器集成
      * 
      * 典型实现:
      * 1. 使用硬件定时器 (如 GPT)

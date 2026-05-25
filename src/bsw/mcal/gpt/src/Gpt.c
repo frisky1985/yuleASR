@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Gpt.c
  * @brief GPT Driver implementation for i.MX8M Mini (GPT)

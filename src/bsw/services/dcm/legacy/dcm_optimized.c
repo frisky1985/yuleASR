@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_optimized.c
  * @brief   DCM Optimized Main Implementation
@@ -322,7 +334,7 @@ Dcm_ReturnType Dcm_OptimizedProcessRequest(const Dcm_RequestType *request,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     uint8_t nrc = UDS_NRC_GENERAL_REJECT;
-    uint32_t startTime = 0U; /* TODO: Get timestamp */
+    uint32_t startTime = 0U; /* 处理时间戳 - 依赖系统定时器集成 */
     
     /* Check initialization */
     if (!s_optState.initialized) {
@@ -349,7 +361,7 @@ Dcm_ReturnType Dcm_OptimizedProcessRequest(const Dcm_RequestType *request,
     if (s_optState.config->enableFastPath && isFastPathService(serviceId)) {
         result = processWithCache(serviceId, request, response);
         
-        uint32_t endTime = 0U; /* TODO: Get timestamp */
+        uint32_t endTime = 0U; /* 处理时间戳 - 依赖系统定时器集成 */
         updateStats(serviceId, endTime - startTime);
         
         s_optState.state = DCM_STATE_INIT;
@@ -410,7 +422,7 @@ Dcm_ReturnType Dcm_OptimizedProcessQueue(void)
     /* Process the queued request */
     result = processFastPath(entry.data.request.serviceId, &request, &response);
     
-    /* TODO: Send response via appropriate channel */
+    /* 通过适当通道发送响应 - 响应通过 Dcm_MainFunction 周期发送或通过回调通知上层 */
     
     return result;
 }

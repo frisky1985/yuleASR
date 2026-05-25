@@ -1,4 +1,16 @@
 /*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
+/*==================================================================================================
 * Project       : YuleASR - AUTOSAR Flash EEPROM Emulation (Fee) Module
 * File          : Fee_Lcfg.c
 * Description   : Fee module link-time configuration providing block/page configs and state tables

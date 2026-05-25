@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /*******************************************************************************
  * @file    E2E_P01.h
  * @brief   E2E Profile 1 - CRC8 + Counter + DataID

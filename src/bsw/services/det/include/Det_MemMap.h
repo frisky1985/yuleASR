@@ -1,4 +1,16 @@
 /*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
+/*==================================================================================================
  *                              DET MEMORY MAPPING HEADER
  *==================================================================================================
  * This is a simplified memory mapping header for Det module.

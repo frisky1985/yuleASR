@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file CanTp.c
  * @brief CAN Transport Protocol implementation (ISO 15765-2)
@@ -39,7 +51,7 @@ typedef struct {
     uint8 STmin;
     uint8 WftCounter;
     uint16 Timer;
-    uint8 Buffer[64];       /* Temporary buffer for frame data */
+    uint8 Buffer[CANTP_CHANNEL_BUFFER_SIZE];       /* Temporary buffer for frame data */
     boolean TxConfirmed;
     boolean RxIndicated;
     const CanTp_TxNsduConfigType* TxNsduConfig;  /* Pointer to Tx NSDU config (for Tx operations) */
@@ -120,7 +132,7 @@ static void CanTp_ResetChannel(CanTp_ChannelType Channel)
 {
     if (Channel < CANTP_MAX_CHANNEL_CNT) {
         CanTp_ChannelRuntime[Channel].State = CANTP_CH_IDLE;
-        CanTp_ChannelRuntime[Channel].ActiveNsduId = 0xFFU;
+        CanTp_ChannelRuntime[Channel].ActiveNsduId = CANTP_INVALID_CHANNEL_ID;
         CanTp_ChannelRuntime[Channel].DataLength = 0U;
         CanTp_ChannelRuntime[Channel].DataIndex = 0U;
         CanTp_ChannelRuntime[Channel].SequenceNumber = 0U;
@@ -142,25 +154,25 @@ static CanTp_ChannelType CanTp_FindFreeChannel(void)
             return (CanTp_ChannelType)i;
         }
     }
-    return 0xFFU;  /* No free channel */
+    return CANTP_INVALID_CHANNEL_ID;  /* No free channel */
 }
 
 static void CanTp_SendFlowControl(CanTp_ChannelType Channel, CanTp_FlowStatusType Fs, uint8 Bs, uint8 Stmin)
 {
-    uint8 fcFrame[8];
+    uint8 fcFrame[CANTP_CAN_FRAME_LENGTH];
 
     fcFrame[0] = (uint8)(CANTP_PCI_TYPE_FC | (uint8)Fs);
     fcFrame[1] = Bs;
     fcFrame[2] = Stmin;
 
     /* Pad remaining bytes */
-    for (uint8 i = 3U; i < 8U; i++) {
+    for (uint8 i = 3U; i < CANTP_CAN_FRAME_LENGTH; i++) {
         fcFrame[i] = CANTP_PADDING_BYTE_VALUE;
     }
 
     PduInfoType pduInfo;
     pduInfo.SduDataPtr = fcFrame;
-    pduInfo.SduLength = 8U;
+    pduInfo.SduLength = CANTP_CAN_FRAME_LENGTH;
     pduInfo.MetaDataPtr = NULL_PTR;
 
     /* Send via CAN Interface */
@@ -169,7 +181,7 @@ static void CanTp_SendFlowControl(CanTp_ChannelType Channel, CanTp_FlowStatusTyp
 
 static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Length)
 {
-    uint8 sfFrame[8];
+    uint8 sfFrame[CANTP_CAN_FRAME_LENGTH];
 
     sfFrame[0] = (uint8)(CANTP_PCI_TYPE_SF | (Length & CANTP_PCI_SF_DL_MASK));
 
@@ -178,13 +190,13 @@ static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Le
     }
 
     /* Pad remaining bytes */
-    for (uint8 i = (Length + 1U); i < 8U; i++) {
+    for (uint8 i = (Length + 1U); i < CANTP_CAN_FRAME_LENGTH; i++) {
         sfFrame[i] = CANTP_PADDING_BYTE_VALUE;
     }
 
     PduInfoType pduInfo;
     pduInfo.SduDataPtr = sfFrame;
-    pduInfo.SduLength = 8U;
+    pduInfo.SduLength = CANTP_CAN_FRAME_LENGTH;
     pduInfo.MetaDataPtr = NULL_PTR;
 
     (void)CanIf_Transmit(CANTP_CANIF_TX_PDU_ID, &pduInfo);
@@ -192,7 +204,7 @@ static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Le
 
 static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength)
 {
-    uint8 ffFrame[8];
+    uint8 ffFrame[CANTP_CAN_FRAME_LENGTH];
 
     ffFrame[0] = (uint8)(CANTP_PCI_TYPE_FF | ((MessageLength >> 8) & CANTP_PCI_FF_DL_MASK));
     ffFrame[1] = (uint8)(MessageLength & 0xFFU);
@@ -206,7 +218,7 @@ static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength
 
     PduInfoType pduInfo;
     pduInfo.SduDataPtr = ffFrame;
-    pduInfo.SduLength = 8U;
+    pduInfo.SduLength = CANTP_CAN_FRAME_LENGTH;
     pduInfo.MetaDataPtr = NULL_PTR;
 
     runtime->DataIndex = CANTP_MAX_FF_DATA_LEN;
@@ -217,7 +229,7 @@ static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength
 
 static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
 {
-    uint8 cfFrame[8];
+    uint8 cfFrame[CANTP_CAN_FRAME_LENGTH];
     CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[Channel];
 
     cfFrame[0] = (uint8)(CANTP_PCI_TYPE_CF | (runtime->SequenceNumber & CANTP_PCI_CF_SN_MASK));
@@ -230,13 +242,13 @@ static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
     }
 
     /* Pad remaining bytes */
-    for (uint8 i = (bytesToSend + 1U); i < 8U; i++) {
+    for (uint8 i = (bytesToSend + 1U); i < CANTP_CAN_FRAME_LENGTH; i++) {
         cfFrame[i] = CANTP_PADDING_BYTE_VALUE;
     }
 
     PduInfoType pduInfo;
     pduInfo.SduDataPtr = cfFrame;
-    pduInfo.SduLength = 8U;
+    pduInfo.SduLength = CANTP_CAN_FRAME_LENGTH;
     pduInfo.MetaDataPtr = NULL_PTR;
 
     runtime->DataIndex += bytesToSend;
@@ -307,7 +319,7 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
 
     /* Find free channel */
     CanTp_ChannelType channel = CanTp_FindFreeChannel();
-    if (channel == 0xFFU) {
+    if (channel == CANTP_INVALID_CHANNEL_ID) {
         return E_NOT_OK;  /* No free channel */
     }
 

@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_dynamic_did.c
  * @brief   DCM Dynamically Define Data Identifier Service (0x2C) Implementation
@@ -412,7 +424,7 @@ Dcm_ReturnType Dcm_DefineDynamicDidByIdentifier(
             definition->sources[0U].source.did.position = position;
             definition->sources[0U].source.did.size = size;
             definition->totalSize = size;
-            definition->definitionTime = 0U;  /* TODO: Get timestamp */
+            definition->definitionTime = 0U;  /* 定义时间依赖系统定时器 - 后续集成 GetTimestamp() */
             
             result = DCM_E_OK;
         } else {
@@ -454,7 +466,7 @@ Dcm_ReturnType Dcm_DefineDynamicDidByMemoryAddress(
             definition->sources[0U].source.mem.memoryAddress = memoryAddress;
             definition->sources[0U].source.mem.memorySize = memorySize;
             definition->totalSize = (uint16_t)memorySize;
-            definition->definitionTime = 0U;  /* TODO: Get timestamp */
+            definition->definitionTime = 0U;  /* 定义时间依赖系统定时器 - 后续集成 GetTimestamp() */
             
             result = DCM_E_OK;
         } else {

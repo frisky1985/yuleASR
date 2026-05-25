@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_session.c
  * @brief   DCM Session Control Service (0x10) Implementation
@@ -138,8 +150,8 @@ static void recordSessionTransition(
     record->fromSession = fromSession;
     record->toSession = toSession;
     record->testerAddress = s_sessionState.testerSourceAddress;
-    record->timestamp = 0;  /* TODO: Get current timestamp */
-    record->securityLevel = 0;  /* TODO: Get current security level */
+    record->timestamp = 0;  /* 时间戳依赖系统定时器集成 - 后续接入 GetSystemTimeMs() */
+    record->securityLevel = 0;  /* 安全等级由 Dcm_Security 模块管理 */
     record->transitionSuccessful = successful;
     
     s_sessionState.auditIndex = 
@@ -156,7 +168,7 @@ static void updateStatisticsOnEntry(Dcm_SessionType session)
         s_sessionState.statistics.sessionEntryCount[idx]++;
     }
     
-    s_sessionState.sessionEntryTime = 0;  /* TODO: Get current timestamp */
+    s_sessionState.sessionEntryTime = 0;  /* 时间戳依赖系统定时器集成 */
     s_sessionState.statistics.lastEntryTime = s_sessionState.sessionEntryTime;
 }
 
@@ -167,7 +179,7 @@ static void updateStatisticsOnExit(Dcm_SessionType session)
 {
     int32_t idx = getSessionConfigIndex(session);
     if (idx >= 0) {
-        uint64_t duration = 0;  /* TODO: Calculate duration */
+        uint64_t duration = 0;  /* 时长计算依赖系统定时器 - 接入后使用 currentTime - sessionEntryTime */
         s_sessionState.statistics.totalTimeInSession[idx] += duration;
     }
 }

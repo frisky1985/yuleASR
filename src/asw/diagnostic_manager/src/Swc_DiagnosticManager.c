@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Swc_DiagnosticManager.c
  * @brief Diagnostic Manager Software Component Implementation
@@ -19,21 +31,7 @@
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_DIAGNOSTICMANAGER_MODULE_ID     0x82
-#define SWC_DIAGNOSTICMANAGER_INSTANCE_ID   0x00
-
-/* Session timeout in ms */
-#define DIAG_SESSION_TIMEOUT_DEFAULT        5000
-#define DIAG_SESSION_TIMEOUT_EXTENDED       5000
-#define DIAG_SESSION_TIMEOUT_PROGRAMMING    5000
-
-/* Security timeout in ms */
-#define DIAG_SECURITY_TIMEOUT               5000
-
-/* Maximum DTCs */
-#define DIAG_MAX_DTCS                       50
-
-/* Service IDs */
+/* Service IDs (UDS) */
 #define SID_DIAGNOSTIC_SESSION_CONTROL      0x10
 #define SID_ECU_RESET                       0x11
 #define SID_SECURITY_ACCESS                 0x27
@@ -45,12 +43,57 @@
 #define SID_READ_DATA_BY_IDENTIFIER         0x22
 #define SID_WRITE_DATA_BY_IDENTIFIER        0x2E
 
+/* UDS protocol constants */
+#define UDS_POSITIVE_RESPONSE_OFFSET        (0x40U)  /* SID + 0x40 = positive response */
+#define UDS_NEGATIVE_RESPONSE_SID           (0x7FU)  /* Negative response service ID */
+#define UDS_NRC_INCORRECT_MESSAGE_LENGTH    (0x13U)  /* Incorrect message length */
+#define UDS_NRC_SUBFUNCTION_NOT_SUPPORTED   (0x12U)  /* Sub-function not supported */
+#define UDS_NRC_REQUEST_OUT_OF_RANGE        (0x31U)  /* Request out of range */
+#define UDS_NRC_SECURITY_ACCESS_DENIED      (0x33U)  /* Security access denied */
+#define UDS_NRC_CONDITIONS_NOT_CORRECT      (0x22U)  /* Conditions not correct */
+#define UDS_NRC_INVALID_KEY                 (0x35U)  /* Invalid key */
+#define UDS_NRC_SERVICE_NOT_SUPPORTED       (0x11U)  /* Service not supported */
+
+/* Security access sub-function masks */
+#define UDS_SECURITY_SUBFUNC_SEED_MASK      (0x01U)  /* LSB indicates request seed (1) or send key (0) */
+#define UDS_SECURITY_SUBFUNC_SEED_FLAG      (0x01U)  /* Request seed flag */
+
+/* Bit masks */
+#define UDS_MASK_LOW_BYTE                   (0xFFU)  /* Low byte mask */
+#define UDS_MASK_HIGH_BYTE                  (0xFF00U) /* High byte mask */
+
+/* Clear all DTCs sentinel */
+#define UDS_CLEAR_ALL_DTCS                  (0xFFFFFFU)
+
+/* DTC sub-function constants */
+#define UDS_DTC_SUBFUNC_REPORT_BY_STATUS    (0x02U)  /* Report DTC by status mask */
+#define UDS_DTC_SUBFUNC_EXTENDED_DATA       (0x06U)  /* Report DTC extended data record */
+#define UDS_AVAILABILITY_MASK_VAL           (0x02U)  /* Availability mask byte */
+#define UDS_EXTENDED_DATA_RECORD_VAL        (0x06U)  /* Extended data record marker */
+
+/* P2/P2* timing defaults (in ms) */
+#define UDS_P2_DEFAULT_HIGH                 (0x00U)  /* P2 high byte */
+#define UDS_P2_DEFAULT_LOW                  (0x32U)  /* P2 low byte (50ms) */
+#define UDS_P2STAR_DEFAULT_HIGH             (0x01U)  /* P2* high byte */
+#define UDS_P2STAR_DEFAULT_LOW              (0xF4U)  /* P2* low byte (500ms) */
+
+/* Security key size */
+#define DIAG_SECURITY_KEY_SIZE              (4U)
+
+/* Default session */
+#define DIAG_SESSION_DEFAULT_VALUE          ((Swc_DiagnosticSessionType)0x01)
+#define DIAG_SESSION_EXTENDED_VALUE         ((Swc_DiagnosticSessionType)0x03)
+#define DIAG_SESSION_PROGRAMMING_VALUE      ((Swc_DiagnosticSessionType)0x02)
+#define DIAG_SESSION_SAFETY_VALUE           ((Swc_DiagnosticSessionType)0x04)
+
+
+
 /*==================================================================================================
 *                                    LOCAL TYPES
 ==================================================================================================*/
 typedef struct {
     Swc_DiagnosticManagerStatusType status;
-    Swc_DtcStatusType dtcList[DIAG_MAX_DTCS];
+    Swc_DtcStatusType dtcList[SWC_DIAG_MAX_DTCS];
     uint8 numDtcs;
     Swc_DiagnosticRequestType pendingRequest;
     boolean hasPendingRequest;
@@ -124,13 +167,13 @@ STATIC void Swc_DiagnosticManager_UpdateTimeouts(void)
             swcDiagManager.status.sessionTimeout) {
             /* Return to default session */
             swcDiagManager.status.currentSession = DIAG_SESSION_DEFAULT;
-            swcDiagManager.status.sessionTimeout = DIAG_SESSION_TIMEOUT_DEFAULT;
+            swcDiagManager.status.sessionTimeout = SWC_DIAG_SESSION_TIMEOUT_DEFAULT;
         }
     }
 
     /* Check security timeout */
     if (swcDiagManager.status.securityLevel != SECURITY_LOCKED) {
-        if ((currentTime - swcDiagManager.lastTesterPresentTime) > DIAG_SECURITY_TIMEOUT) {
+        if ((currentTime - swcDiagManager.lastTesterPresentTime) > SWC_DIAG_SECURITY_TIMEOUT) {
             /* Lock security */
             swcDiagManager.status.securityLevel = SECURITY_LOCKED;
             swcDiagManager.status.securityTimeout = 0;
@@ -147,7 +190,7 @@ STATIC void Swc_DiagnosticManager_ProcessSessionControl(const Swc_DiagnosticRequ
     Swc_DiagnosticSessionType newSession;
 
     if (request->dataLength < 1) {
-        response->negativeResponseCode = 0x13;  /* Incorrect message length */
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
 
@@ -156,48 +199,48 @@ STATIC void Swc_DiagnosticManager_ProcessSessionControl(const Swc_DiagnosticRequ
     switch (newSession) {
         case DIAG_SESSION_DEFAULT:
             swcDiagManager.status.currentSession = DIAG_SESSION_DEFAULT;
-            swcDiagManager.status.sessionTimeout = DIAG_SESSION_TIMEOUT_DEFAULT;
+            swcDiagManager.status.sessionTimeout = SWC_DIAG_SESSION_TIMEOUT_DEFAULT;
             break;
 
         case DIAG_SESSION_EXTENDED:
             swcDiagManager.status.currentSession = DIAG_SESSION_EXTENDED;
-            swcDiagManager.status.sessionTimeout = DIAG_SESSION_TIMEOUT_EXTENDED;
+            swcDiagManager.status.sessionTimeout = SWC_DIAG_SESSION_TIMEOUT_EXTENDED;
             break;
 
         case DIAG_SESSION_PROGRAMMING:
             /* Requires security level 2 or 3 */
             if (swcDiagManager.status.securityLevel < SECURITY_LEVEL_2) {
-                response->negativeResponseCode = 0x31;  /* Request sequence error */
+                response->negativeResponseCode = UDS_NRC_REQUEST_OUT_OF_RANGE;
                 return;
             }
             swcDiagManager.status.currentSession = DIAG_SESSION_PROGRAMMING;
-            swcDiagManager.status.sessionTimeout = DIAG_SESSION_TIMEOUT_PROGRAMMING;
+            swcDiagManager.status.sessionTimeout = SWC_DIAG_SESSION_TIMEOUT_PROGRAMMING;
             break;
 
         case DIAG_SESSION_SAFETY_SYSTEM:
             /* Requires security level 3 */
             if (swcDiagManager.status.securityLevel < SECURITY_LEVEL_3) {
-                response->negativeResponseCode = 0x31;
+                response->negativeResponseCode = UDS_NRC_REQUEST_OUT_OF_RANGE;
                 return;
             }
             swcDiagManager.status.currentSession = DIAG_SESSION_SAFETY_SYSTEM;
             break;
 
         default:
-            response->negativeResponseCode = 0x12;  /* Sub-function not supported */
+            response->negativeResponseCode = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
             return;
     }
 
     /* Build positive response */
-    response->responseId = request->serviceId + 0x40;
+    response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
     response->dataLength = 5;
     response->data[0] = (uint8)newSession;
     /* Session timeout (P2) */
-    response->data[1] = 0x00;
-    response->data[2] = 0x32;  /* 50ms */
+    response->data[1] = UDS_P2_DEFAULT_HIGH;
+    response->data[2] = UDS_P2_DEFAULT_LOW;  /* 50ms */
     /* Enhanced session timeout (P2*) */
-    response->data[3] = 0x01;
-    response->data[4] = 0xF4;  /* 5000ms */
+    response->data[3] = UDS_P2STAR_DEFAULT_HIGH;
+    response->data[4] = UDS_P2STAR_DEFAULT_LOW;  /* 500ms */
 }
 
 /**
@@ -210,50 +253,50 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
     Swc_SecurityLevelType targetLevel;
 
     if (request->dataLength < 1) {
-        response->negativeResponseCode = 0x13;
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
 
     subFunction = request->data[0];
 
-    if ((subFunction & 0x01) == 0x01) {
+    if ((subFunction & UDS_SECURITY_SUBFUNC_SEED_MASK) == UDS_SECURITY_SUBFUNC_SEED_FLAG) {
         /* Request seed */
         targetLevel = (Swc_SecurityLevelType)((subFunction + 1) / 2);
 
         if (targetLevel > SECURITY_LEVEL_3) {
-            response->negativeResponseCode = 0x12;
+            response->negativeResponseCode = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
             return;
         }
 
         /* Build positive response with seed */
-        response->responseId = request->serviceId + 0x40;
-        response->dataLength = 5;
+        response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
+        response->dataLength = DIAG_SECURITY_KEY_SIZE + 1;
         response->data[0] = subFunction;
         /* Generate seed (simplified) */
-        response->data[1] = (uint8)(Rte_GetTime() & 0xFF);
-        response->data[2] = (uint8)((Rte_GetTime() >> 8) & 0xFF);
-        response->data[3] = (uint8)((Rte_GetTime() >> 16) & 0xFF);
-        response->data[4] = (uint8)((Rte_GetTime() >> 24) & 0xFF);
+        response->data[1] = (uint8)(Rte_GetTime() & UDS_MASK_LOW_BYTE);
+        response->data[2] = (uint8)((Rte_GetTime() >> 8) & UDS_MASK_LOW_BYTE);
+        response->data[3] = (uint8)((Rte_GetTime() >> 16) & UDS_MASK_LOW_BYTE);
+        response->data[4] = (uint8)((Rte_GetTime() >> 24) & UDS_MASK_LOW_BYTE);
 
     } else {
         /* Send key */
         targetLevel = (Swc_SecurityLevelType)(subFunction / 2);
 
-        if (request->dataLength < 5) {
-            response->negativeResponseCode = 0x13;
+        if (request->dataLength < DIAG_SECURITY_KEY_SIZE + 1) {
+            response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
             return;
         }
 
         /* Validate key */
         if (Swc_DiagnosticManager_ValidateKey(targetLevel, &request->data[1])) {
             swcDiagManager.status.securityLevel = targetLevel;
-            swcDiagManager.status.securityTimeout = DIAG_SECURITY_TIMEOUT;
+            swcDiagManager.status.securityTimeout = SWC_DIAG_SECURITY_TIMEOUT;
 
-            response->responseId = request->serviceId + 0x40;
+            response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
             response->dataLength = 1;
             response->data[0] = subFunction;
         } else {
-            response->negativeResponseCode = 0x35;  /* Invalid key */
+            response->negativeResponseCode = UDS_NRC_SECURITY_ACCESS_DENIED;
         }
     }
 }
@@ -269,17 +312,17 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
     uint8 dataIndex;
 
     if (request->dataLength < 1) {
-        response->negativeResponseCode = 0x13;
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
 
     subFunction = request->data[0];
 
     switch (subFunction) {
-        case 0x02:  /* Report DTC by status mask */
-            response->responseId = request->serviceId + 0x40;
+        case UDS_DTC_SUBFUNC_REPORT_BY_STATUS:  /* Report DTC by status mask */
+            response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
             response->dataLength = 2 + (swcDiagManager.numDtcs * 4);
-            response->data[0] = 0x02;  /* Availability mask */
+            response->data[0] = UDS_AVAILABILITY_MASK_VAL;
             response->data[1] = swcDiagManager.numDtcs;
 
             dataIndex = 2;
@@ -291,12 +334,12 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
             }
             break;
 
-        case 0x06:  /* Report DTC extended data record */
+        case UDS_DTC_SUBFUNC_EXTENDED_DATA:  /* Report DTC extended data record */
             /* Simplified - return first DTC extended data */
             if (swcDiagManager.numDtcs > 0) {
-                response->responseId = request->serviceId + 0x40;
+                response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
                 response->dataLength = 8;
-                response->data[0] = 0x06;
+                response->data[0] = UDS_EXTENDED_DATA_RECORD_VAL;
                 response->data[1] = (uint8)(swcDiagManager.dtcList[0].dtcCode >> 16);
                 response->data[2] = (uint8)(swcDiagManager.dtcList[0].dtcCode >> 8);
                 response->data[3] = (uint8)(swcDiagManager.dtcList[0].dtcCode);
@@ -305,12 +348,12 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
                 response->data[6] = swcDiagManager.dtcList[0].occurrenceCounter;
                 response->data[7] = (uint8)swcDiagManager.dtcList[0].agingCounter;
             } else {
-                response->negativeResponseCode = 0x31;
+                response->negativeResponseCode = UDS_NRC_REQUEST_OUT_OF_RANGE;
             }
             break;
 
         default:
-            response->negativeResponseCode = 0x12;
+            response->negativeResponseCode = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
             break;
     }
 }
@@ -324,7 +367,7 @@ STATIC void Swc_DiagnosticManager_ProcessClearDtc(const Swc_DiagnosticRequestTyp
     uint32 dtcCode;
 
     if (request->dataLength < 3) {
-        response->negativeResponseCode = 0x13;
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
 
@@ -333,10 +376,10 @@ STATIC void Swc_DiagnosticManager_ProcessClearDtc(const Swc_DiagnosticRequestTyp
               (uint32)request->data[2];
 
     if (Swc_DiagnosticManager_ClearDtc(dtcCode) == RTE_E_OK) {
-        response->responseId = request->serviceId + 0x40;
+        response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
         response->dataLength = 0;
     } else {
-        response->negativeResponseCode = 0x31;
+        response->negativeResponseCode = UDS_NRC_REQUEST_OUT_OF_RANGE;
     }
 }
 
@@ -347,7 +390,7 @@ STATIC void Swc_DiagnosticManager_ProcessTesterPresent(const Swc_DiagnosticReque
                                                         Swc_DiagnosticResponseType* response)
 {
     if (request->dataLength < 1) {
-        response->negativeResponseCode = 0x13;
+        response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
 
@@ -355,7 +398,7 @@ STATIC void Swc_DiagnosticManager_ProcessTesterPresent(const Swc_DiagnosticReque
     swcDiagManager.lastTesterPresentTime = Rte_GetTime();
 
     /* Build response */
-    response->responseId = request->serviceId + 0x40;
+    response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
     response->dataLength = 1;
     response->data[0] = request->data[0];  /* Echo sub-function */
 }
@@ -379,7 +422,7 @@ STATIC boolean Swc_DiagnosticManager_ValidateKey(Swc_SecurityLevelType level, co
             return FALSE;
     }
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < DIAG_SECURITY_KEY_SIZE; i++) {
         if (key[i] != expectedKey[i]) {
             return FALSE;
         }
@@ -429,11 +472,11 @@ void Swc_DiagnosticManager_Init(void)
     swcDiagManager.status.securityLevel = SECURITY_LOCKED;
     swcDiagManager.status.activeProtocol = 0;
     swcDiagManager.status.communicationEnabled = TRUE;
-    swcDiagManager.status.sessionTimeout = DIAG_SESSION_TIMEOUT_DEFAULT;
+    swcDiagManager.status.sessionTimeout = SWC_DIAG_SESSION_TIMEOUT_DEFAULT;
     swcDiagManager.status.securityTimeout = 0;
 
     /* Initialize DTC list */
-    for (i = 0; i < DIAG_MAX_DTCS; i++) {
+    for (i = 0; i < SWC_DIAG_MAX_DTCS; i++) {
         swcDiagManager.dtcList[i].dtcCode = 0;
         swcDiagManager.dtcList[i].statusByte = 0;
         swcDiagManager.dtcList[i].faultDetectionCounter = 0;
@@ -488,13 +531,13 @@ void Swc_DiagnosticManager_ProcessRequest(void)
     swcDiagManager.hasPendingRequest = FALSE;
 
     /* Initialize response */
-    response.responseId = 0x7F;  /* Negative response service */
+    response.responseId = UDS_NEGATIVE_RESPONSE_SID;  /* Negative response service */
     response.dataLength = 0;
     response.negativeResponseCode = 0;
 
     /* Check security access */
     if (!Swc_DiagnosticManager_CheckSecurityAccess(request.serviceId)) {
-        response.negativeResponseCode = 0x31;  /* Request sequence error */
+        response.negativeResponseCode = UDS_NRC_REQUEST_OUT_OF_RANGE;
         (void)Rte_Write_DiagnosticResponse(&response);
         return;
     }
@@ -522,7 +565,7 @@ void Swc_DiagnosticManager_ProcessRequest(void)
             break;
 
         default:
-            response.negativeResponseCode = 0x11;  /* Service not supported */
+            response.negativeResponseCode = UDS_NRC_SERVICE_NOT_SUPPORTED;
             break;
     }
 
@@ -573,7 +616,7 @@ Rte_StatusType Swc_DiagnosticManager_UnlockSecurity(Swc_SecurityLevelType level,
 
     if (Swc_DiagnosticManager_ValidateKey(level, key)) {
         swcDiagManager.status.securityLevel = level;
-        swcDiagManager.status.securityTimeout = DIAG_SECURITY_TIMEOUT;
+        swcDiagManager.status.securityTimeout = SWC_DIAG_SECURITY_TIMEOUT;
         return RTE_E_OK;
     }
 
@@ -641,9 +684,9 @@ Rte_StatusType Swc_DiagnosticManager_ClearDtc(uint32 dtcCode)
     uint8 i;
     uint8 j;
 
-    if (dtcCode == 0xFFFFFF) {
+    if (dtcCode == UDS_CLEAR_ALL_DTCS) {
         /* Clear all DTCs */
-        for (i = 0; i < DIAG_MAX_DTCS; i++) {
+        for (i = 0; i < SWC_DIAG_MAX_DTCS; i++) {
             swcDiagManager.dtcList[i].dtcCode = 0;
             swcDiagManager.dtcList[i].statusByte = 0;
             swcDiagManager.dtcList[i].faultDetectionCounter = 0;

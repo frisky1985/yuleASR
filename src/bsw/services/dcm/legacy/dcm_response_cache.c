@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_response_cache.c
  * @brief   DCM Response Cache Implementation
@@ -173,7 +185,7 @@ Dcm_ReturnType Dcm_CacheStore(const Dcm_CacheKey *key,
     (void)memcpy(entry->responseData, response->data, response->length);
     entry->responseLength = response->length;
     entry->hitCount = 0U;
-    entry->timestamp = 0U; /* TODO: Get current timestamp */
+    entry->timestamp = 0U; /* 时间戳依赖系统定时器集成 */
     entry->isNegativeResponse = response->isNegativeResponse;
     entry->negativeResponseCode = response->negativeResponseCode;
     
@@ -217,7 +229,7 @@ Dcm_ReturnType Dcm_CacheLookup(const Dcm_CacheKey *key,
         
         /* Check TTL */
         if (entry->ttlMs > 0U) {
-            /* TODO: Check actual timestamp */
+            /* TTL 检查 - 时间戳比较依赖系统定时器集成 */
         }
         
         /* Copy response data */

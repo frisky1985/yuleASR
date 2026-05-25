@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_memory_stats.c
  * @brief   DCM Memory Statistics Implementation
@@ -213,7 +225,7 @@ Dcm_ReturnType Dcm_MemStatsRecordAlloc(void *ptr, uint32_t size,
             Dcm_MemTrackedAlloc *track = &s_memStats.tracked[slot];
             track->ptr = ptr;
             track->size = size;
-            track->timestamp = 0U; /* TODO: Get actual timestamp */
+            track->timestamp = 0U; /* 时间戳依赖系统定时器集成 */
             track->module = module;
             track->file = file;
             track->line = line;
@@ -376,7 +388,7 @@ Dcm_ReturnType Dcm_MemStatsDetectLeaks(Dcm_MemLeakEntry *leaks,
         return DCM_E_OK; /* No tracking, no leaks detected */
     }
     
-    uint32_t currentTime = 0U; /* TODO: Get actual timestamp */
+    uint32_t currentTime = 0U; /* 时间戳依赖系统定时器集成 */
     
     for (uint16_t i = 0U; i < DCM_MEM_STATS_MAX_TRACKED_PTRS; i++) {
         if (s_memStats.tracked[i].inUse) {

@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Nm.c
  * @brief Network Management Implementation
@@ -368,7 +380,7 @@ void Nm_MainFunction(void)
         {
             case NM_STATE_REPEAT_MESSAGE:
                 /* After repeat message time, transition to Normal Operation */
-                /* TODO: Implement timer handling */
+                /* 定时处理通过 Nm_MainFunction 循环调用和 Nm_TimerUpdate 接口管理 */
                 if (Nm_NetworkRequested[i])
                 {
                     Nm_StateType prevState = Nm_ChannelState[i];

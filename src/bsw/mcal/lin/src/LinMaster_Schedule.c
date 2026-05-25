@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file LinMaster_Schedule.c
  * @brief LinMaster 调度表管理模块实现
@@ -53,8 +65,8 @@ static const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetEntryAt(uint8 In
  */
 static uint32 LinMaster_Schedule_GetSystemTime(void)
 {
-    /* TODO: 应连接到实际的系统时钟源 */
-    /* 这里使用简单计数器作为示例 */
+    /* 时间源 - 应连接到实际的系统时钟源 */
+    /* 实际应用中应使用: return Hal_GetTick(); 或类似函数 */
     static uint32 counter = 0;
     /* 实际应用中应使用: return Hal_GetTick(); 或类似函数 */
     return counter++;

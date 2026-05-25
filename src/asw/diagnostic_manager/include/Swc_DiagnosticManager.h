@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Swc_DiagnosticManager.h
  * @brief Diagnostic Manager Software Component Header
@@ -21,6 +33,37 @@
 /*==================================================================================================
 *                                    COMPONENT TYPE DEFINITIONS
 ==================================================================================================*/
+
+/*==================================================================================================
+*                              CONFIGURABLE CONSTANTS
+==================================================================================================*/
+/**
+ * @brief Maximum number of DTCs supported
+ */
+#define SWC_DIAG_MAX_DTCS              (50U)
+
+/**
+ * @brief Diagnostic request/response buffer size
+ */
+#define SWC_DIAG_BUFFER_SIZE           (256U)
+
+/**
+ * @brief Session timeout values (ms)
+ */
+#define SWC_DIAG_SESSION_TIMEOUT_DEFAULT      (5000U)
+#define SWC_DIAG_SESSION_TIMEOUT_EXTENDED     (5000U)
+#define SWC_DIAG_SESSION_TIMEOUT_PROGRAMMING  (5000U)
+
+/**
+ * @brief Security timeout (ms)
+ */
+#define SWC_DIAG_SECURITY_TIMEOUT             (5000U)
+
+/**
+ * @brief Module and instance IDs for DET reporting
+ */
+#define SWC_DIAGNOSTICMANAGER_MODULE_ID       (0x82U)
+#define SWC_DIAGNOSTICMANAGER_INSTANCE_ID     (0x00U)
 
 /**
  * @brief Diagnostic session type
@@ -49,7 +92,7 @@ typedef struct {
     uint8 serviceId;
     uint8 subFunction;
     uint8 dataLength;
-    uint8 data[256];
+    uint8 data[SWC_DIAG_BUFFER_SIZE];
 } Swc_DiagnosticRequestType;
 
 /**
@@ -58,7 +101,7 @@ typedef struct {
 typedef struct {
     uint8 responseId;
     uint8 dataLength;
-    uint8 data[256];
+    uint8 data[SWC_DIAG_BUFFER_SIZE];
     uint8 negativeResponseCode;
 } Swc_DiagnosticResponseType;
 

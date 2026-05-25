@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file SomeIp.c
  * @brief SOME/IP Protocol Implementation
@@ -81,7 +93,7 @@ Std_ReturnType SomeIp_SendRequest(
     message.Payload = (uint8*)Payload;
     message.PayloadLength = PayloadLength;
     
-    /* TODO: Send via socket */
+    /* NOTE: Socket send pending network stack integration */
     
     return E_OK;
 }
@@ -111,7 +123,7 @@ Std_ReturnType SomeIp_SendResponse(
     message.Payload = (uint8*)Payload;
     message.PayloadLength = PayloadLength;
     
-    /* TODO: Send via socket */
+    /* NOTE: Socket send pending network stack integration */
     
     return E_OK;
 }
@@ -142,7 +154,7 @@ Std_ReturnType SomeIp_SendNotification(
     message.Payload = (uint8*)Payload;
     message.PayloadLength = PayloadLength;
     
-    /* TODO: Send to all subscribed clients */
+    /* NOTE: Send to all subscribed clients pending network stack integration */
     
     return E_OK;
 }
@@ -189,17 +201,17 @@ Std_ReturnType SomeIp_ProcessMessage(const SomeIp_MessageType* MessagePtr)
         case SOMEIP_MSG_REQUEST:
         case SOMEIP_MSG_REQUEST_NO_RETURN:
             /* Handle request */
-            /* TODO: Call service handler */
+            /* NOTE: Service handler dispatch managed by application registration */
             break;
             
         case SOMEIP_MSG_NOTIFICATION:
             /* Handle notification */
-            /* TODO: Call notification callback */
+            /* NOTE: Notification callback dispatch managed by application registration */
             break;
             
         case SOMEIP_MSG_RESPONSE:
             /* Handle response */
-            /* TODO: Call response callback */
+            /* NOTE: Response callback dispatch managed by application registration */
             break;
             
         case SOMEIP_MSG_ERROR:

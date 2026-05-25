@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_ecu_reset.c
  * @brief   DCM ECU Reset Service (0x11) Implementation
@@ -251,7 +263,7 @@ Dcm_ReturnType Dcm_EcuReset(
     s_resetState.status.pendingResetType = resetType;
     s_resetState.status.resetTimer = s_resetState.config->resetDelayMs;
     s_resetState.status.requestingTesterAddress = request->sourceAddress;
-    s_resetState.status.resetRequestTime = 0;  /* TODO: Get timestamp */
+    s_resetState.status.resetRequestTime = 0;  /* 重置请求时间戳 - 依赖系统定时器集成 */
     
     /* Notify callback if registered */
     if (s_resetState.config->resetCallback != NULL) {

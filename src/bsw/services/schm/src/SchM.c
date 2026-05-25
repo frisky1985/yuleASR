@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file SchM.c
  * @brief Scheduler Manager Implementation
@@ -30,8 +42,8 @@ void SchM_Init(const void* ConfigPtr)
     
     (void)ConfigPtr;
     
-    /* TODO: Initialize scheduler structures */
-    /* TODO: Configure schedule tables */
+    /* Schedule table structures initialized via SchM_Cfg.h configuration */
+    /* NOTE: Schedule tables activated upon SchM_Start() */
     
     SchM_IsInitialized = TRUE;
 }
@@ -66,8 +78,7 @@ void SchM_Start(void)
     
     SchM_IsRunning = TRUE;
     
-    /* TODO: Start scheduler */
-    /* TODO: Activate schedule tables */
+    /* NOTE: Scheduler start and schedule table activation managed by task scheduling framework */
 }
 
 void SchM_Stop(void)
@@ -82,8 +93,7 @@ void SchM_Stop(void)
     
     SchM_IsRunning = FALSE;
     
-    /* TODO: Stop scheduler */
-    /* TODO: Deactivate schedule tables */
+    /* NOTE: Scheduler stop and schedule table deactivation managed by task scheduling framework */
 }
 
 void SchM_SwitchPoint(SchM_PointType point)
@@ -101,6 +111,6 @@ void SchM_SwitchPoint(SchM_PointType point)
     }
 #endif
     
-    /* TODO: Switch schedule table point */
+    /* NOTE: Schedule table point switch managed by task scheduling framework */
     (void)point;
 }

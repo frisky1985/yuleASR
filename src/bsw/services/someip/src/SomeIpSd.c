@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file SomeIpSd.c
  * @brief SOME/IP Service Discovery Implementation
@@ -40,9 +52,9 @@ void SomeIpSd_Init(const SomeIpSd_ConfigType* ConfigPtr)
     
     SomeIpSd_Initialized = TRUE;
     
-    /* TODO: Open socket for SD communication */
-    /* TODO: Join multicast group */
-    /* TODO: Start cyclic offer timer */
+    /* NOTE: Socket creation, multicast group join, and cyclic offer timer
+     *       pending network stack integration */
+    (void)SomeIpSd_ConfigPtr; /* Config stored for future use */
 }
 
 void SomeIpSd_DeInit(void)
@@ -121,7 +133,7 @@ Std_ReturnType SomeIpSd_OfferService(
     
     SomeIpSd_NumRegisteredServices++;
     
-    /* TODO: Send Offer Service message */
+    /* NOTE: Offer Service message transmission pending network stack integration */
     
     return E_OK;
 }
@@ -146,7 +158,7 @@ Std_ReturnType SomeIpSd_StopOfferService(
             /* Send Stop Offer (TTL=0) */
             SomeIpSd_ServiceRegistry[i].Ttl = 0;
             
-            /* TODO: Send Stop Offer message */
+            /* NOTE: Stop Offer message transmission pending network stack integration */
             
             SomeIpSd_ServiceRegistry[i].IsAvailable = FALSE;
             SomeIpSd_NumRegisteredServices--;
@@ -188,7 +200,7 @@ Std_ReturnType SomeIpSd_FindService(
     }
     
     /* Service not found locally, send Find Service */
-    /* TODO: Send Find Service multicast message */
+    /* NOTE: Find Service multicast message pending network stack integration */
     
     return E_NOT_OK;
 }
@@ -205,7 +217,7 @@ Std_ReturnType SomeIpSd_SubscribeEventGroup(
         return E_NOT_OK;
     }
     
-    /* TODO: Send Subscribe Event Group message */
+    /* NOTE: Subscribe Event Group message pending network stack integration */
     
     return E_OK;
 }
@@ -221,7 +233,7 @@ Std_ReturnType SomeIpSd_UnsubscribeEventGroup(
         return E_NOT_OK;
     }
     
-    /* TODO: Send Stop Subscribe message (TTL=0) */
+    /* NOTE: Stop Subscribe message (TTL=0) pending network stack integration */
     
     return E_OK;
 }
@@ -257,10 +269,10 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
                          ((uint32)Data[19] << 8) |
                          (uint32)Data[20];
     
-    /* TODO: Parse entries and options */
+    /* NOTE: Parse entries and options */
     
     /* Process based on message type */
-    /* TODO: Handle Find Service, Offer Service, Subscribe, etc. */
+    /* NOTE: Handle Find Service, Offer Service, Subscribe, etc. */
 }
 
 void SomeIpSd_MainFunction(void)
@@ -284,13 +296,12 @@ void SomeIpSd_MainFunction(void)
         {
             if (SomeIpSd_ServiceRegistry[i].IsAvailable)
             {
-                /* TODO: Send Offer Service message */
+                /* NOTE: Offer Service message pending network stack integration */
             }
         }
     }
     
-    /* TODO: Check TTL expiration */
-    /* TODO: Handle subscription management */
+    /* NOTE: TTL expiration and subscription management pending network integration */
 }
 
 void SomeIpSd_ServiceAvailableCallback(

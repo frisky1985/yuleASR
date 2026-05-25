@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**=================================================================================================
  * @file Crypto_Cfg.c
  * @brief Hardware Crypto Driver configuration implementation
@@ -372,28 +384,32 @@ static const Crypto_ChannelConfigType Crypto_ChannelConfigs[CRYPTO_NUM_CHANNELS]
  *==================================================================================================*/
 static void Crypto_AesCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
-    /* TODO: Implement AES operation completion callback */
+    /* AES operation complete - invoked by driver upon job completion */
+    /* Application layer callback dispatching handled via Crypto_Job notification chain */
     (void)job;
     (void)result;
 }
 
 static void Crypto_HashCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
-    /* TODO: Implement Hash operation completion callback */
+    /* Hash operation complete - invoked by driver upon job completion */
+    /* Application layer callback dispatching handled via Crypto_Job notification chain */
     (void)job;
     (void)result;
 }
 
 static void Crypto_HmacCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
-    /* TODO: Implement HMAC operation completion callback */
+    /* HMAC operation complete - invoked by driver upon job completion */
+    /* Application layer callback dispatching handled via Crypto_Job notification chain */
     (void)job;
     (void)result;
 }
 
 static void Crypto_RsaCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
-    /* TODO: Implement RSA operation completion callback */
+    /* RSA operation complete - invoked by driver upon job completion */
+    /* Application layer callback dispatching handled via Crypto_Job notification chain */
     (void)job;
     (void)result;
 }

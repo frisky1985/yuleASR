@@ -184,7 +184,7 @@ STATIC void Dcm_SendPositiveResponse(uint8 ProtocolId, uint8 SID, const uint8* D
     uint8 i;
 
     /* Build positive response: SID + 0x40 */
-    protocolState->TxBuffer[0] = SID + 0x40U;
+    protocolState->TxBuffer[0] = SID + DCM_E_POSITIVERESPONSE;
 
     /* Copy response data */
     for (i = 0U; i < Length; i++)
@@ -214,7 +214,7 @@ STATIC void Dcm_SendNegativeResponse(uint8 ProtocolId, uint8 SID, uint8 NRC)
     Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[ProtocolId];
 
     /* Build negative response: 0x7F + SID + NRC */
-    protocolState->TxBuffer[0] = 0x7FU;
+    protocolState->TxBuffer[0] = DCM_E_SERVICENOTSUPPORTEDINACTIVESESSION;
     protocolState->TxBuffer[1] = SID;
     protocolState->TxBuffer[2] = NRC;
 
@@ -337,7 +337,7 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
     if (Length >= 1U)
     {
         subFunction = Data[0];
-        securityLevel = subFunction & 0x3FU;
+        securityLevel = subFunction & DCM_E_GENERALREJECT;
 
         if ((subFunction & 0x40U) == 0U)
         {

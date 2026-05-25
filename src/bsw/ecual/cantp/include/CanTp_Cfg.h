@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file CanTp_Cfg.h
  * @brief CAN Transport Protocol configuration header
@@ -77,6 +89,13 @@
 ==================================================================================================*/
 #define CANTP_MAX_MESSAGE_LENGTH        (4095U) /* ISO-TP max */
 #define CANTP_CANFD_MAX_MESSAGE_LENGTH  (4095U)
+
+/*==================================================================================================
+*                                    BUFFER AND FRAME CONFIGURATION
+==================================================================================================*/
+#define CANTP_CHANNEL_BUFFER_SIZE       (64U)   /* Internal channel buffer size */
+#define CANTP_CAN_FRAME_LENGTH          (8U)    /* Standard CAN frame length in bytes */
+#define CANTP_INVALID_CHANNEL_ID        (0xFFU) /* Invalid/No channel sentinel */
 
 /*==================================================================================================
 *                                    MAIN FUNCTION PERIOD

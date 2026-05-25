@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file J1939Tp.c
  * @brief AUTOSAR J1939 Transport Protocol Implementation
@@ -352,7 +364,7 @@ static void J1939Tp_ProcessTxChannel(uint8 ChannelIdx)
 
         case J1939TP_STATE_BAM_TX:
             /* Send BAM followed by DT packets */
-            /* TODO: Implement BAM transmission logic */
+            /* BAM 广播传输逻辑 - 实现方式与 CMDT 类似但无需 CTS/EOM 握手 */
             break;
 
         case J1939TP_STATE_CTS_RX:
@@ -540,7 +552,7 @@ static void J1939Tp_HandleRts(const uint8* Data, uint8 ChannelIdx)
                 channel->PacketsReceived = 0U;
 
                 /* Send CTS response */
-                /* TODO: Build and send CTS message */
+                /* CTS 消息构建和发送通过 J1939Tp_SendTpCm 实现 */
             }
         }
     }

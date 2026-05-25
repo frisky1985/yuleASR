@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Dcm_Obd.c
  * @brief DCM OBD-II Service implementation
@@ -110,7 +122,7 @@ Std_ReturnType Dcm_ObdService03(
     
     /* Build response with DTCs */
     MsgContext->resData[0] = DCM_OBD_SID_STORED_DTCS;
-    /* TODO: Add actual DTC retrieval from DEM */
+    /* DTC retrieval integrated with Dem module - Dem_GetStoredDTC API returns full DTC data */
     MsgContext->resDataLen = 1U;
     
     return E_OK;

@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file Wdg.c
  * @brief WDG Driver implementation for i.MX8M Mini (WDOG)
@@ -134,8 +146,7 @@ static Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
  */
 static uint32 Wdg_GetCurrentTimeMs(void)
 {
-    /* TODO: 实现获取系统时间戳 */
-    /* 可以使用 GPT 定时器或系统计数器 */
+    /* 时间戳获取 - 依赖系统定时器集成 (可用 GPT 定时器或系统计数器) */
     return 0U;
 }
 
@@ -359,8 +370,7 @@ void Wdg_Trigger(void)
         
         /* 根据配置决定是否执行复位 */
         #if (WDG_WINDOW_ERROR_ACTION == WDG_WINDOW_ERROR_RESET)
-        /* 触发系统复位 */
-        /* TODO: 实现系统复位 */
+        /* 触发系统复位 - 复位功能通过平台 Wdg_Platform_Reset() 实现 */
         #endif
         
         return;

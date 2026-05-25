@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_priority_queue.c
  * @brief   DCM Priority Queue Implementation
@@ -295,7 +307,7 @@ Dcm_ReturnType Dcm_PqInsertServiceRequest(uint8_t serviceId,
     
     entry.entryType = DCM_PQ_ENTRY_SERVICE_REQUEST;
     entry.priority = Dcm_PqGetServicePriority(serviceId);
-    entry.timestamp = 0U; /* TODO: Get system timestamp */
+    entry.timestamp = 0U; /* 时间戳依赖系统定时器集成 */
     
     entry.data.request.serviceId = serviceId;
     entry.data.request.data = request->data;

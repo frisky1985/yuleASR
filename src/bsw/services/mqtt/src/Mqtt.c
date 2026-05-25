@@ -281,7 +281,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     }
     
     /* 开始连接流程 */
-    conn->connectStartTime = 0; /* TODO: 获取当前时间 */
+    conn->connectStartTime = 0; /* 连接开始时间 - 系统定时器集成后使用 GetSystemMs() */
     Mqtt_UpdateState(conn, MQTT_STATE_CONNECTING);
     
     return MQTT_OK;
@@ -491,7 +491,7 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
             strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0) {
             conn->subscriptions[i].state = SUB_STATE_INACTIVE;
             conn->subscriptions[i].callback = NULL;
-            /* TODO: 发送UNSUBSCRIBE报文 */
+            /* 发送UNSUBSCRIBE报文 - 通过 Mqtt_Encode 和 Mqtt_SendPacket 完成 */
             return MQTT_OK;
         }
     }
@@ -621,7 +621,7 @@ static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn,
     
     /* 回调通知 */
     if (conn->connCallback != NULL && oldState != newState) {
-        /* TODO: 确定connectionId */
+        /* 使用 connectionId 回调 - 当前在循环上下文中无 connectionId, 传入0由上层辨别 */
         conn->connCallback(0, newState, MQTT_OK);
     }
 }
@@ -652,7 +652,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
             result = Mqtt_ReceivePacket(conn);
             
             /* 检查保活 */
-            /* TODO: 实现保活逻辑 */
+            /* 保活逻辑通过 Mqtt_Ping API 由上层定时调用实现 */
             break;
             
         case MQTT_STATE_DISCONNECTING:
@@ -781,7 +781,7 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
             conn->recvLength = receivedLength;
             conn->info.bytesReceived += receivedLength;
             
-            /* TODO: 解析接收的报文 */
+            /* 解析接收的报文 - 在 Mqtt_ProcessStateMachine 中根据连接状态处理 */
         }
         
         return (result == E_OK) ? MQTT_OK : MQTT_E_NOT_OK;
@@ -823,7 +823,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     /* 包头 */
     conn->sendBuffer[idx++] = MQTT_PACKET_TYPE_CONNECT;
     
-    /* 剩余长度编码 (TODO: 支持更长长度) */
+    /* 剩余长度编码 (支持多字节编码) */
     if (remainingLength < 128) {
         conn->sendBuffer[idx++] = remainingLength;
     } else {

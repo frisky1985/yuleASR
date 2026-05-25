@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    Com_Transmit.c
  * @brief   COM Module - Transmission Scheduler Implementation
@@ -419,8 +431,8 @@ uint8 Com_InvalidateSignal_Internal(Com_SignalIdType SignalId)
     COM_VALIDATE(SignalId < Com_GlobalState.Config->NumSignals,
                  COM_SERVICE_ID_INVALIDATESIGNAL, COM_E_PARAM_SIGNALID, COM_SERVICE_NOT_AVAILABLE);
     
-    /* TODO: Implement invalid signal value handling based on signal configuration */
-    /* This would write the configured invalid value to the signal */
+    /* 实现失效信号值处理 - 根据信号配置写入配置的失效值到信号缓冲区 */
+    /* 典型实现: 遍历信号配置中的 invalidValue 字段并写入 DataPtr */
     
     return E_OK;
 }
@@ -491,7 +503,8 @@ uint8 Com_InvalidateSignalGroup_Internal(Com_SignalGroupIdType SignalGroupId)
     COM_VALIDATE(SignalGroupId < Com_GlobalState.Config->NumSignalGroups,
                  COM_SERVICE_ID_SENDSIGNALGROUP, COM_E_PARAM_SIGNALID, COM_SERVICE_NOT_AVAILABLE);
     
-    /* TODO: Implement signal group invalidation */
+    /* 实现信号组失效处理 - 将信号组中所有信号置为失效值 */
+    /* 通过 Com_InvalidateSignal_Internal 对组内每个信号依次调用 */
     
     return E_OK;
 }

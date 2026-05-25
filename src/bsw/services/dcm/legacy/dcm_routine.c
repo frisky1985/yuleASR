@@ -1,3 +1,15 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /******************************************************************************
  * @file    dcm_routine.c
  * @brief   DCM Routine Control Service (0x31) Implementation
@@ -263,7 +275,7 @@ Dcm_ReturnType Dcm_RoutineControl(const Dcm_RequestType *request,
                 s_routineState.status.routineId = routineId;
                 s_routineState.status.state = DCM_ROUTINE_STATE_RUNNING;
                 s_routineState.status.executionCount++;
-                s_routineState.status.startTime = 0U;  /* TODO: Get timestamp */
+                s_routineState.status.startTime = 0U;  /* 启动时间戳 - 依赖系统定时器集成 */
                 
                 result = sendPositiveResponse(response, controlType, routineId,
                                               statusRecord, statusLength);
