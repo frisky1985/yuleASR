@@ -34,6 +34,7 @@ extern "C" {
  *==================================================================================================*/
 #include "Std_Types.h"      /* AUTOSAR standard types */
 #include "Det_Cfg.h"        /* Det configuration */
+#include "Compiler.h"       /* NULL_PTR */
 
 /*==================================================================================================
  *                                    VERSION INFORMATION

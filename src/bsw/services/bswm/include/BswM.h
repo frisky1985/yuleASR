@@ -102,6 +102,7 @@ void BswM_MainFunction(void);
 
 /* Callbacks */
 void BswM_EcuM_CurrentState(uint8 State);
+void BswM_EcuM_CurrentWakeup(uint32 Sources, uint8 Status);
 void BswM_ComM_CurrentMode(uint8 Network, uint8 Mode);
 void BswM_Dcm_RequestCommunicationMode(uint8 Mode);
 

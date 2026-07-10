@@ -22,6 +22,13 @@
 
 #include "Std_Types.h"
 
+/* Forward declaration of EcuM_ResetType — only if EcuM_Cfg.h hasn't been included yet */
+/* EcuM_ResetType is also defined in EcuM_Cfg.h — use typedef if not already defined */
+#if !defined(ECUM_CFG_H) && !defined(ECUM_RESET_TYPE_DEFINED)
+    #define ECUM_RESET_TYPE_DEFINED
+    typedef uint8 EcuM_ResetType;
+#endif
+
 /* AUTOSAR Version */
 #define ECUM_AR_RELEASE_MAJOR_VERSION       4
 #define ECUM_AR_RELEASE_MINOR_VERSION       0

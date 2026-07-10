@@ -18,7 +18,6 @@
 
 #ifndef ECUM_CFG_H
 #define ECUM_CFG_H
-
 /*******************************************************************************
  *                             General Configuration                           *
  ******************************************************************************/
@@ -49,29 +48,67 @@
  ******************************************************************************/
 
 /* Wakeup Sources Bitmask */
+#ifndef ECUM_WKSOURCE_POWER
 #define ECUM_WKSOURCE_POWER                 0x00000001u
+#endif
+#ifndef ECUM_WKSOURCE_RESET
 #define ECUM_WKSOURCE_RESET                 0x00000002u
+#endif
+#ifndef ECUM_WKSOURCE_INTERNAL_RESET
 #define ECUM_WKSOURCE_INTERNAL_RESET        0x00000004u
+#endif
+#ifndef ECUM_WKSOURCE_INTERNAL_WDG
 #define ECUM_WKSOURCE_INTERNAL_WDG          0x00000008u
+#endif
+#ifndef ECUM_WKSOURCE_EXTERNAL_WDG
 #define ECUM_WKSOURCE_EXTERNAL_WDG          0x00000010u
+#endif
+#ifndef ECUM_WKSOURCE_TIMER
 #define ECUM_WKSOURCE_TIMER                 0x00000020u
+#endif
+#ifndef ECUM_WKSOURCE_CAN
 #define ECUM_WKSOURCE_CAN                   0x00000040u
+#endif
+#ifndef ECUM_WKSOURCE_CAN0
 #define ECUM_WKSOURCE_CAN0                  0x00000040u
+#endif
+#ifndef ECUM_WKSOURCE_CAN1
 #define ECUM_WKSOURCE_CAN1                  0x00000080u
+#endif
+#ifndef ECUM_WKSOURCE_CAN2
 #define ECUM_WKSOURCE_CAN2                  0x00000100u
+#endif
+#ifndef ECUM_WKSOURCE_CAN3
 #define ECUM_WKSOURCE_CAN3                  0x00000200u
+#endif
+#ifndef ECUM_WKSOURCE_LIN
 #define ECUM_WKSOURCE_LIN                   0x00000400u
+#endif
+#ifndef ECUM_WKSOURCE_ETH
 #define ECUM_WKSOURCE_ETH                   0x00000800u
+#endif
+#ifndef ECUM_WKSOURCE_FLEXRAY
 #define ECUM_WKSOURCE_FLEXRAY               0x00001000u
+#endif
+#ifndef ECUM_WKSOURCE_GPIO
 #define ECUM_WKSOURCE_GPIO                  0x00002000u
+#endif
+#ifndef ECUM_WKSOURCE_SPI
 #define ECUM_WKSOURCE_SPI                   0x00004000u
+#endif
+#ifndef ECUM_WKSOURCE_I2C
 #define ECUM_WKSOURCE_I2C                   0x00008000u
+#endif
+#ifndef ECUM_WKSOURCE_ADC
 #define ECUM_WKSOURCE_ADC                   0x00010000u
+#endif
 
 /* Configured Wakeup Sources (OR of enabled sources) */
+#ifndef ECUM_CONFIGURED_WAKEUP_SOURCES
 #define ECUM_CONFIGURED_WAKEUP_SOURCES      \
     (ECUM_WKSOURCE_POWER | ECUM_WKSOURCE_RESET | ECUM_WKSOURCE_TIMER | \
      ECUM_WKSOURCE_CAN | ECUM_WKSOURCE_CAN0 | ECUM_WKSOURCE_GPIO)
+#endif
 
 /*******************************************************************************
  *                          Wakeup Validation Configuration                    *
@@ -144,14 +181,19 @@
  ******************************************************************************/
 
 /* Reset Types */
-typedef uint8 EcuM_ResetType;
+#ifndef ECUM_RESET_TYPE_DEFINED
+    #define ECUM_RESET_TYPE_DEFINED
+    typedef uint8 EcuM_ResetType;
+#endif
 #define ECUM_RESET_MCU                      0x00u
 #define ECUM_RESET_WDG                      0x01u
 #define ECUM_RESET_IO                       0x02u
 #define ECUM_RESET_SW                       0x03u
 
 /* Default Reset Type */
+#ifndef ECUM_DEFAULT_RESET_TYPE
 #define ECUM_DEFAULT_RESET_TYPE             ECUM_RESET_MCU
+#endif
 
 /*******************************************************************************
  *                          Timing Configuration                               *
@@ -193,16 +235,38 @@ typedef uint8 EcuM_ResetType;
  *                          Service IDs for Det                                *
  ******************************************************************************/
 
+#ifndef ECUM_STARTUPONE_SID
 #define ECUM_STARTUPONE_SID                 0x0Fu
+#endif
+#ifndef ECUM_STARTUPTWO_SID
 #define ECUM_STARTUPTWO_SID                 0x10u
+#endif
+#ifndef ECUM_SLEEP_SID
 #define ECUM_SLEEP_SID                      0x11u
+#endif
+#ifndef ECUM_HALT_SID
 #define ECUM_HALT_SID                       0x12u
+#endif
+#ifndef ECUM_POLL_SID
 #define ECUM_POLL_SID                       0x13u
+#endif
+#ifndef ECUM_WAKEUPRESTART_SID
 #define ECUM_WAKEUPRESTART_SID              0x14u
+#endif
+#ifndef ECUM_CLEARWAKEUPEVENT_SID
 #define ECUM_CLEARWAKEUPEVENT_SID           0x15u
+#endif
+#ifndef ECUM_CHECKWAKEUP_SID
 #define ECUM_CHECKWAKEUP_SID                0x16u
+#endif
+#ifndef ECUM_ENABLEWAKEUPSOURCES_SID
 #define ECUM_ENABLEWAKEUPSOURCES_SID        0x17u
+#endif
+#ifndef ECUM_DISABLEWAKEUPSOURCES_SID
 #define ECUM_DISABLEWAKEUPSOURCES_SID       0x18u
+#endif
+#ifndef ECUM_GETSTATUSOFWAKEUPSOURCE_SID
 #define ECUM_GETSTATUSOFWAKEUPSOURCE_SID    0x19u
+#endif
 
 #endif /* ECUM_CFG_H */

@@ -1,5 +1,5 @@
 /*
- * S32K312 Linker Script
+ * S32K312 Linker Script — yuleDKCS BSW Phase 1 (fixed LMA overlap)
  * 
  * Copyright (c) 2024 YuleTech
  * Platform: NXP S32K312 (Cortex-M7)
@@ -143,39 +143,8 @@ SECTIONS
     } > flash_text
     __exidx_end = ABSOLUTE(.);
 
-    /* Copy Table - Data to be copied from Flash to RAM */
-    __copy_table_start = ABSOLUTE(.);
-    .copy.table :
-    {
-        . = ALIGN(4);
-        LONG(LOADADDR(.data))
-        LONG(ADDR(.data))
-        LONG(SIZEOF(.data))
-        
-        LONG(LOADADDR(.ram_safe_data))
-        LONG(ADDR(.ram_safe_data))
-        LONG(SIZEOF(.ram_safe_data))
-    } > flash_text
-    __copy_table_end = ABSOLUTE(.);
-
-    /* Zero Table - BSS sections to be zeroed */
-    __zero_table_start = ABSOLUTE(.);
-    .zero.table :
-    {
-        . = ALIGN(4);
-        LONG(ADDR(.bss))
-        LONG(SIZEOF(.bss))
-        
-        LONG(ADDR(.ram_safe_bss))
-        LONG(SIZEOF(.ram_safe_bss))
-        
-        LONG(ADDR(.os_bss))
-        LONG(SIZEOF(.os_bss))
-    } > flash_text
-    __zero_table_end = ABSOLUTE(.);
-
-    /* Safe RAM Section (ECC Protected) */
-    .ram_safe_data : AT(__rodata_end)
+    /* Safe RAM Section (ECC Protected) — LMA in flash after all flash-only sections */
+    .ram_safe_data : AT(ALIGN(__exidx_end, 4))
     {
         . = ALIGN(8);  /* 8-byte alignment for ECC */
         __safe_data_start = ABSOLUTE(.);
@@ -207,8 +176,8 @@ SECTIONS
         __safe_bss_end = ABSOLUTE(.);
     } > ram_safe
 
-    /* Initialized Data Section */
-    .data : AT(ALIGN(__rodata_end + SIZEOF(.ram_safe_data), 4))
+    /* Initialized Data Section — LMA contiguous after .ram_safe_data LMA */
+    .data : AT(__safe_data_load + SIZEOF(.ram_safe_data))
     {
         . = ALIGN(4);
         __data_start = ABSOLUTE(.);
@@ -310,6 +279,34 @@ SECTIONS
         . = ALIGN(4);
         __lockstep_test_end = ABSOLUTE(.);
     } > ram_safe
+
+    /* Copy Table — LMA at end of .data LMA (avoids LMA overlap) */
+    __copy_table_start = ABSOLUTE(.);
+    .copy.table : AT(__data_load + SIZEOF(.data))
+    {
+        . = ALIGN(4);
+        LONG(LOADADDR(.ram_safe_data))
+        LONG(ADDR(.ram_safe_data))
+        LONG(SIZEOF(.ram_safe_data))
+        LONG(LOADADDR(.data))
+        LONG(ADDR(.data))
+        LONG(SIZEOF(.data))
+    } > flash_text
+    __copy_table_end = ABSOLUTE(.);
+
+    /* Zero Table — LMA after .copy.table */
+    __zero_table_start = ABSOLUTE(.);
+    .zero.table : AT(LOADADDR(.copy.table) + SIZEOF(.copy.table))
+    {
+        . = ALIGN(4);
+        LONG(ADDR(.ram_safe_bss))
+        LONG(SIZEOF(.ram_safe_bss))
+        LONG(ADDR(.bss))
+        LONG(SIZEOF(.bss))
+        LONG(ADDR(.os_bss))
+        LONG(SIZEOF(.os_bss))
+    } > flash_text
+    __zero_table_end = ABSOLUTE(.);
 
     /* MPU Region Alignment Sections */
     __mpu_text_start = ALIGN(__text_start, 32);

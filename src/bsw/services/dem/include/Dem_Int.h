@@ -28,6 +28,7 @@
 *                                          INCLUDE FILES
 ==================================================================================================*/
 #include "Dem_Types.h"
+#include "Dem.h"
 #include "Dem_Cfg.h"
 
 /*==================================================================================================
@@ -77,6 +78,7 @@ typedef struct
     boolean IsAged;
     boolean IsSuppressed;
     boolean IsDeleted;
+    uint32 AgingThreshold;  /* CRITICAL FIX: Added — referenced by Dem.c init */
     uint32 LastOccurrenceTimestamp;
     uint32 FirstOccurrenceTimestamp;
     /* CRITICAL FIX: Added for NvM integration */

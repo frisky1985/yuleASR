@@ -150,7 +150,7 @@ typedef struct {
 /*=============================================================================
  * Function Prototypes - Core API
  *===========================================================================*/
-extern void ComM_Init(const ComM_ConfigType* ConfigPtr);
+extern void ComM_Init(void);
 extern void ComM_DeInit(void);
 extern void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 

@@ -85,6 +85,7 @@ typedef uint8 StatusType;
 #define E_OS_PROTECTION_ARRIVAL         ((StatusType)0x10U)
 #define E_OS_PROTECTION_LOCKED          ((StatusType)0x11U)
 #define E_OS_PROTECTION_EXCEPTION       ((StatusType)0x12U)
+#define E_OS_PARAM_POINTER               ((StatusType)0x0AU)
 
 /*==================================================================================================
 *                                    TASK TYPES

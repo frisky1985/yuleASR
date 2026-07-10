@@ -1,90 +1,67 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
-/**
- * @file task.h
- * @brief FreeRTOS Task API Header Stub
- * @version 10.6.0
- * @date 2026-04-21
- * @author Shanghai Yule Electronics Technology Co., Ltd.
- */
-
+/* FreeRTOS Task API Stub — provided by yuleDKCS port layer */
 #ifndef TASK_H
 #define TASK_H
 
+/* All FreeRTOS types come via FreeRTOS.h → portmacro.h + projdefs.h */
 #include "FreeRTOS.h"
 
-/* Task states */
-#define eRunning                        (0)
-#define eReady                          (1)
-#define eBlocked                        (2)
-#define eSuspended                      (3)
-#define eDeleted                        (4)
+/* Task handle type */
+struct tskTaskControlBlock;
+typedef struct tskTaskControlBlock* TaskHandle_t;
 
+/* Task state enumeration for eTaskGetState() */
 typedef enum {
-    eNoAction = 0,
-    eSetBits,
-    eIncrement,
-    eSetValueWithOverwrite,
-    eSetValueWithoutOverwrite
+    eRunning   = 0,
+    eReady     = 1,
+    eBlocked   = 2,
+    eSuspended = 3,
+    eDeleted   = 4,
+    eInvalid   = 5
+} eTaskState;
+
+/* Notification action type */
+typedef enum {
+    eNoAction                = 0,
+    eSetBits                 = 1,
+    eIncrement               = 2,
+    eSetValueWithOverwrite   = 3,
+    eSetValueWithoutOverwrite = 4
 } eNotifyAction;
 
-/* Task creation */
-BaseType_t xTaskCreate(
-    void (*pvTaskCode)(void*),
-    const char* const pcName,
-    const uint32_t usStackDepth,
-    void* const pvParameters,
-    UBaseType_t uxPriority,
-    TaskHandle_t* const pxCreatedTask);
-
-/* Task deletion */
+/* =========================================================================
+ * Task API
+ * ========================================================================= */
+BaseType_t xTaskCreate(TaskFunction_t pvTaskCode, const char* pcName, unsigned long usStackDepth, void* pvParameters, UBaseType_t uxPriority, TaskHandle_t* pxCreatedTask);
 void vTaskDelete(TaskHandle_t xTask);
-
-/* Task control */
 void vTaskDelay(const TickType_t xTicksToDelay);
-void vTaskDelayUntil(TickType_t* const pxPreviousWakeTime, const TickType_t xTimeIncrement);
+void vTaskDelayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement);
 void vTaskSuspend(TaskHandle_t xTaskToSuspend);
 void vTaskResume(TaskHandle_t xTaskToResume);
 BaseType_t xTaskResumeFromISR(TaskHandle_t xTaskToResume);
-
-/* Task priority */
 UBaseType_t uxTaskPriorityGet(const TaskHandle_t xTask);
 void vTaskPrioritySet(TaskHandle_t xTask, UBaseType_t uxNewPriority);
-
-/* Task yield */
 void taskYIELD(void);
-
-/* Notifications */
-BaseType_t xTaskNotifyWait(uint32_t ulBitsToClearOnEntry, uint32_t ulBitsToClearOnExit, uint32_t* pulNotificationValue, TickType_t xTicksToWait);
-BaseType_t xTaskNotify(TaskHandle_t xTaskToNotify, uint32_t ulValue, eNotifyAction eAction);
-BaseType_t xTaskNotifyFromISR(TaskHandle_t xTaskToNotify, uint32_t ulValue, eNotifyAction eAction, BaseType_t* pxHigherPriorityTaskWoken);
-
-/* Current task handle */
+BaseType_t xTaskNotifyWait(unsigned long ulBitsToClearOnEntry, unsigned long ulBitsToClearOnExit, unsigned long* pulNotificationValue, TickType_t xTicksToWait);
+BaseType_t xTaskNotify(TaskHandle_t xTaskToNotify, unsigned long ulValue, eNotifyAction eAction);
+BaseType_t xTaskNotifyFromISR(TaskHandle_t xTaskToNotify, unsigned long ulValue, eNotifyAction eAction, BaseType_t* pxHigherPriorityTaskWoken);
 TaskHandle_t xTaskGetCurrentTaskHandle(void);
+eTaskState eTaskGetState(TaskHandle_t xTask);
+TickType_t xTaskGetTickCount(void);
 
-/* Task state */
-eNotifyAction eTaskGetState(TaskHandle_t xTask);
+/* =========================================================================
+ * Hooks (weak, provided by application)
+ * ========================================================================= */
+void vApplicationIdleHook(void);
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char* pcTaskName);
+void vApplicationTickHook(void);
+void vApplicationMallocFailedHook(void);
 
-/* Idle hook */
-extern void vApplicationIdleHook(void);
-
-/* Stack overflow hook */
-extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char* pcTaskName);
-
-/* Tick hook */
-extern void vApplicationTickHook(void);
-
-/* Malloc failed hook */
-extern void vApplicationMallocFailedHook(void);
+/* =========================================================================
+ * Scheduler control
+ * ========================================================================= */
+void vTaskStartScheduler(void);
+void vTaskEndScheduler(void);
+void vTaskSuspendAll(void);
+BaseType_t xTaskResumeAll(void);
 
 #endif /* TASK_H */

@@ -47,7 +47,7 @@
 #define OS_START_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
-Os_GlobalStateType Os_GlobalState;
+__attribute__((weak)) Os_GlobalStateType Os_GlobalState;
 
 #define OS_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"

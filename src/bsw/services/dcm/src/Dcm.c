@@ -20,6 +20,9 @@
 #include "Dcm_Cfg.h"
 #include "PduR.h"
 #include "Dem.h"
+/* CRITICAL FIX: Dem_Config extern — demanded by Dcm_ProcessReadDTCInformation */
+extern const Dem_ConfigType Dem_Config;
+
 #include "Det.h"
 #include "MemMap.h"
 #include "string.h"
@@ -239,7 +242,7 @@ STATIC Std_ReturnType Dcm_ProcessDiagnosticSessionControl(uint8 ProtocolId, cons
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 sessionType;
-    uint8 responseData[4];
+    uint8 responseData[5];/* 5 bytes: session + P2 hi + P2 lo + P2* hi + P2* lo */
 
     if (Length >= 1U)
     {
@@ -909,7 +912,7 @@ STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* 
     uint8 addressAndLengthFormatIdentifier;
     uint8 memoryAddressSize;
     uint8 memorySizeSize;
-    uint8 responseData[4];
+    uint8 responseData[5];/* 5 bytes: session + P2 hi + P2 lo + P2* hi + P2* lo */
 
     if (Length >= 3U)
     {
@@ -1402,7 +1405,7 @@ Std_ReturnType Dcm_GetSesCtrlType(uint8* SesCtrlType)
 /**
  * @brief   Reset to default session
  */
-Std_ReturnType Dcm_ResetToDefaultSession(void)
+void Dcm_ResetToDefaultSession(void)
 {
     Std_ReturnType result = E_NOT_OK;
 
@@ -1410,15 +1413,13 @@ Std_ReturnType Dcm_ResetToDefaultSession(void)
     if (Dcm_InternalState.State != DCM_STATE_INIT)
     {
         DCM_DET_REPORT_ERROR(0x2DU, DCM_E_UNINIT);
-        return E_NOT_OK;
+        return;
     }
 #endif
 
     Dcm_InternalState.CurrentSession = DCM_DEFAULT_SESSION;
     Dcm_InternalState.CurrentSecurityLevel = DCM_SEC_LEV_LOCKED;
-    result = E_OK;
-
-    return result;
+    /* void return — matches Dcm.h declaration */
 }
 
 /**
