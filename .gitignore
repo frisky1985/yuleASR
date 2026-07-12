@@ -98,3 +98,7 @@ test_results.xml
 # AutoSAR configuration backups
 *.arxml.bak
 *.cfg.bak
+# Seat control demo build/test dirs
+examples/seat_control/build/
+examples/seat_control/build_tests/
+examples/seat_control/**/Testing/
