@@ -70,6 +70,7 @@ include_directories(
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)
 add_subdirectory(src/bsw/ecual)
+add_subdirectory(src/bsw/boot)
 add_subdirectory(src/rte)
 add_subdirectory(src/bsw/os)
 add_subdirectory(src/platform)
