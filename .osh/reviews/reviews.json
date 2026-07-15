@@ -1,0 +1,43 @@
+{"reviews": [
+    {
+        "review_id": "REV-ARCH-001",
+        "component": "Architecture Review",
+        "date": "2026-07-15",
+        "reviewer": "Architecture Team",
+        "findings": [
+            {"id": "FIND-001", "description": "Security architecture needs key lifecycle detail", "severity": "Low", "status": "Open", "target_closure": "2026-08-01"},
+            {"id": "FIND-002", "description": "RAM safety test concept not confirmed", "severity": "Medium", "status": "Open", "target_closure": "2026-08-15"}
+        ],
+        "conclusion": "Architecture approved with conditions",
+        "files_reviewed": ["docs/architecture.md", "docs/software-requirements.md"]
+    },
+    {
+        "review_id": "REV-DESIGN-001",
+        "component": "CRC Module Design",
+        "date": "2026-07-10",
+        "reviewer": "Design Team",
+        "findings": [],
+        "conclusion": "All design checks passed",
+        "files_reviewed": ["src/bsw/services/crc/"]
+    },
+    {
+        "review_id": "REV-DESIGN-002",
+        "component": "Crypto Module Design",
+        "date": "2026-07-12",
+        "reviewer": "Design + Security Team",
+        "findings": [
+            {"id": "FIND-003", "description": "Key storage policy needs security review", "severity": "Low", "status": "InProgress"}
+        ],
+        "conclusion": "Approved with minor findings",
+        "files_reviewed": ["src/bsw/mcal/crypto/"]
+    },
+    {
+        "review_id": "REV-DESIGN-003",
+        "component": "CAN Stack Design",
+        "date": "2026-07-15",
+        "reviewer": "Communication Team",
+        "findings": [],
+        "conclusion": "All checks passed",
+        "files_reviewed": ["src/bsw/mcal/can/", "src/bsw/ecual/canif/", "src/bsw/ecual/cantp/"]
+    }
+]}

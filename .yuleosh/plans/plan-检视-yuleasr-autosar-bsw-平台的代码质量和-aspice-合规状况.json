@@ -1,0 +1,44 @@
+{
+  "title": "检视 yuleASR AUTOSAR BSW 平台的代码质量和 ASPICE 合规状况",
+  "objective": "检视 yuleASR AUTOSAR BSW 平台的代码质量和 ASPICE 合规状况",
+  "background": "任务: 检视 yuleASR AUTOSAR BSW 平台的代码质量和 ASPICE 合规状况 | 项目模块: asw, bsw, micro-dds, platform, rte",
+  "technical_approach": "按 yuleOSH 标准流水线 (CheckpointEngine 29 步) 执行。 项目已有 1 个源文件，0 个测试文件。",
+  "steps": [
+    {
+      "step_id": "P1",
+      "name": "代码实现",
+      "description": "实现功能代码，含单元测试",
+      "agent": "小克 👨‍💻",
+      "effort_hours": 3.0,
+      "depends_on": [],
+      "verification": "代码编译通过，单元测试通过",
+      "pipeline_step": null
+    },
+    {
+      "step_id": "P2",
+      "name": "代码审查",
+      "description": "审查代码逻辑、风格、安全实践",
+      "agent": "小马 🐴",
+      "effort_hours": 1.0,
+      "depends_on": [],
+      "verification": "审查报告无 blocking 项",
+      "pipeline_step": null
+    },
+    {
+      "step_id": "P3",
+      "name": "最终总结与报告",
+      "description": "汇总所有步骤结果，输出实施报告",
+      "agent": "小明",
+      "effort_hours": 0.5,
+      "depends_on": [],
+      "verification": "报告在 KG 中可追溯",
+      "pipeline_step": null
+    }
+  ],
+  "risks": [
+    "估算基于启发式规则，实际工时可能有 ±30% 偏差"
+  ],
+  "prerequisites": [],
+  "generated_at": "2026-07-15T12:49:56.120055+00:00",
+  "status": "draft"
+}
