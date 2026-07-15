@@ -1,348 +1,472 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Module               : Dlt Unit Tests
-*
-* SW Version           : 1.0.0
-* Build Date           : 2026-04-30
-*
-* (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All Rights Reserved.
-==================================================================================================*/
+/**
+ * @file test_Dlt.c
+ * @brief DLT 模块单元测试
+ * 
+ * @company 上海予乐电子科技有限公司
+ * @author YuleTech Team
+ * @date 2026-04-27
+ */
 
 #include "../test_framework.h"
-#include "Dlt.h"
+#include "../../src/bsw/services/dlt/include/Dlt.h"
+#include "../../src/bsw/services/dlt/include/Dlt_Internal.h"
 
-/*==================================================================================================
-*                                      TEST GLOBALS
-==================================================================================================*/
-static Dlt_ConfigType g_test_config;
+/* ========================================================================== */
+/*                          测试辅助函数和变量                                  */
+/* ========================================================================== */
 
-/*==================================================================================================
-*                                      HELPER FUNCTIONS
-==================================================================================================*/
-static void setup_test_config(void)
+static Dlt_ConfigType g_test_config = {
+    .transportConfig = NULL,
+    .filterConfig = NULL,
+    .filterCount = 0U,
+    .queueSize = DLT_QUEUE_SIZE
+};
+
+static Dlt_AppInfoType g_test_app_info = {
+    .appId = "TEST",
+    .appDescription = "Test Application",
+    .maxLogLevel = DLT_LOG_DEBUG
+};
+
+static Dlt_TransportConfigType g_test_transport_config = {
+    .protocol = DLT_TRANSPORT_UDP,
+    .port = 3490U,
+    .bufferSize = 4096U,
+    .maxMessageSize = 1400U
+};
+
+/* Mock Det_ReportError */
+void Det_ReportError(uint8 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId)
 {
-    g_test_config.outputMode = DLT_OUTPUT_MODE_BUFFER;
-    g_test_config.defaultLogLevel = DLT_LOG_DEBUG;
-    g_test_config.timestampEnabled = TRUE;
-    g_test_config.ecuIdEnabled = TRUE;
-    g_test_config.sessionIdEnabled = TRUE;
-    g_test_config.devErrorDetect = TRUE;
-    g_test_config.versionInfoApi = TRUE;
-    g_test_config.networkPort = 3490;
-    
-    /* Set ECU ID */
-    g_test_config.ecuId[0] = 'E';
-    g_test_config.ecuId[1] = 'C';
-    g_test_config.ecuId[2] = 'U';
-    g_test_config.ecuId[3] = '1';
-    g_test_config.ecuId[4] = '\0';
+    (void)ModuleId;
+    (void)InstanceId;
+    (void)ApiId;
+    (void)ErrorId;
 }
 
-/*==================================================================================================
-*                                      TEST CASES
-==================================================================================================*/
+/* ========================================================================== */
+/*                          初始化/反初始化测试                                 */
+/* ========================================================================== */
 
-/* Test: Dlt_Init with valid config */
-TEST_CASE(dlt_init_valid_config)
+TEST_CASE_DECLARE(Dlt_Init_valid_config)
 {
-    setup_test_config();
-    
     Dlt_Init(&g_test_config);
+    
+    Dlt_ModuleStateType state = Dlt_GetStatus();
+    ASSERT_EQ(DLT_STATE_READY, state);
     
     TEST_PASS();
 }
 
-/* Test: Dlt_Init with NULL config */
-TEST_CASE(dlt_init_null_config)
+TEST_CASE_DECLARE(Dlt_Init_null_config)
 {
-    Dlt_Init(NULL_PTR);
+    /* 测试空指针配置 - 应该通过 DET 检测但不崩溃 */
+    Dlt_Init(NULL);
+    
+    /* 模块应保持未初始化状态 */
+    Dlt_ModuleStateType state = Dlt_GetStatus();
+    ASSERT_EQ(DLT_STATE_UNINIT, state);
     
     TEST_PASS();
 }
 
-/* Test: Dlt_DeInit */
-TEST_CASE(dlt_deinit)
+TEST_CASE_DECLARE(Dlt_DeInit)
 {
-    setup_test_config();
     Dlt_Init(&g_test_config);
-    
     Dlt_DeInit();
     
+    Dlt_ModuleStateType state = Dlt_GetStatus();
+    ASSERT_EQ(DLT_STATE_UNINIT, state);
+    
     TEST_PASS();
 }
 
-/* Test: Dlt_GetVersionInfo */
-TEST_CASE(dlt_get_version_info)
+/* ========================================================================== */
+/*                          版本信息测试                                       */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_GetVersionInfo_valid)
 {
-    Std_VersionInfoType version_info;
+    Std_VersionInfoType versionInfo;
     
-    setup_test_config();
-    Dlt_Init(&g_test_config);
+    Dlt_GetVersionInfo(&versionInfo);
     
-    Dlt_GetVersionInfo(&version_info);
+    ASSERT_EQ(DLT_VENDOR_ID, versionInfo.vendorID);
+    ASSERT_EQ(DLT_MODULE_ID, versionInfo.moduleID);
+    ASSERT_EQ(DLT_SW_MAJOR_VERSION, versionInfo.sw_major_version);
+    ASSERT_EQ(DLT_SW_MINOR_VERSION, versionInfo.sw_minor_version);
+    ASSERT_EQ(DLT_SW_PATCH_VERSION, versionInfo.sw_patch_version);
     
-    ASSERT_EQ(DLT_VENDOR_ID, version_info.vendorID);
-    ASSERT_EQ(DLT_SW_MAJOR_VERSION, version_info.sw_major_version);
-    ASSERT_EQ(DLT_SW_MINOR_VERSION, version_info.sw_minor_version);
     TEST_PASS();
 }
 
-/* Test: Dlt_RegisterContext */
-TEST_CASE(dlt_register_context)
+TEST_CASE_DECLARE(Dlt_GetVersionInfo_null_pointer)
 {
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
+    /* 测试空指针 - 应该通过 DET 检测 */
+    Dlt_GetVersionInfo(NULL);
     
-    setup_test_config();
+    TEST_PASS();
+}
+
+/* ========================================================================== */
+/*                          应用注册测试                                       */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_RegisterApp_valid)
+{
     Dlt_Init(&g_test_config);
     
-    result = Dlt_RegisterContext(app_id, context_id, "Test Context");
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    ASSERT_NEQ(DLT_INVALID_APP_HANDLE, handle);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_RegisterApp_null_pointer)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(NULL);
+    
+    ASSERT_EQ(DLT_INVALID_APP_HANDLE, handle);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_RegisterApp_uninit)
+{
+    /* 在未初始化状态下注册 */
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    ASSERT_EQ(DLT_INVALID_APP_HANDLE, handle);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_UnregisterApp_valid)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    Std_ReturnType result = Dlt_UnregisterApp(handle);
     
     ASSERT_EQ(E_OK, result);
+    
     TEST_PASS();
 }
 
-/* Test: Dlt_UnregisterContext */
-TEST_CASE(dlt_unregister_context)
+TEST_CASE_DECLARE(Dlt_UnregisterApp_invalid_handle)
 {
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
-    
-    setup_test_config();
     Dlt_Init(&g_test_config);
-    Dlt_RegisterContext(app_id, context_id, "Test Context");
     
-    result = Dlt_UnregisterContext(app_id, context_id);
+    Std_ReturnType result = Dlt_UnregisterApp(DLT_INVALID_APP_HANDLE);
+    
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
+}
+
+/* ========================================================================== */
+/*                          日志消息测试                                       */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_SendLogMessage_valid)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    uint8 testData[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+    Std_ReturnType result = Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, testData, 8);
     
     ASSERT_EQ(E_OK, result);
+    
     TEST_PASS();
 }
 
-/* Test: Dlt_LogMessage */
-TEST_CASE(dlt_log_message)
+TEST_CASE_DECLARE(Dlt_SendLogMessage_uninit)
 {
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
+    uint8 testData[8] = {0};
+    Std_ReturnType result = Dlt_SendLogMessage(1, DLT_LOG_INFO, 0x0001U, testData, 8);
     
-    setup_test_config();
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_SendLogMessage_invalid_handle)
+{
     Dlt_Init(&g_test_config);
-    Dlt_RegisterContext(app_id, context_id, "Test Context");
     
-    result = Dlt_LogMessage(app_id, context_id, DLT_LOG_INFO, "Test log message");
+    uint8 testData[8] = {0};
+    Std_ReturnType result = Dlt_SendLogMessage(DLT_INVALID_APP_HANDLE, DLT_LOG_INFO, 0x0001U, testData, 8);
+    
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_SendLogMessage_null_data)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    Std_ReturnType result = Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, NULL, 0);
+    
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_SendLogMessage_exceed_max_length)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    uint8 testData[2000]; /* 超过 DLT_MAX_MSG_SIZE (1400) */
+    Std_ReturnType result = Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, testData, 2000);
+    
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
+}
+
+/* ========================================================================== */
+/*                          跟踪消息测试                                       */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_SendTraceMessage_valid)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    uint8 testData[16] = {0};
+    Std_ReturnType result = Dlt_SendTraceMessage(handle, DLT_TRACE_VARIABLE, 0x0001U, testData, 16);
     
     ASSERT_EQ(E_OK, result);
+    
     TEST_PASS();
 }
 
-/* Test: Dlt_SetLogLevel */
-TEST_CASE(dlt_set_log_level)
+TEST_CASE_DECLARE(Dlt_SendTraceMessage_uninit)
 {
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
+    uint8 testData[8] = {0};
+    Std_ReturnType result = Dlt_SendTraceMessage(1, DLT_TRACE_VARIABLE, 0x0001U, testData, 8);
     
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    Dlt_RegisterContext(app_id, context_id, "Test Context");
+    ASSERT_EQ(E_NOT_OK, result);
     
-    result = Dlt_SetLogLevel(app_id, context_id, DLT_LOG_WARN);
-    
-    ASSERT_EQ(E_OK, result);
     TEST_PASS();
 }
 
-/* Test: Dlt_GetLogLevel */
-TEST_CASE(dlt_get_log_level)
+TEST_CASE_DECLARE(Dlt_SendTraceMessage_null_data)
 {
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
-    Dlt_LogLevelType log_level;
-    
-    setup_test_config();
     Dlt_Init(&g_test_config);
-    Dlt_RegisterContext(app_id, context_id, "Test Context");
     
-    result = Dlt_GetLogLevel(app_id, context_id, &log_level);
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    Std_ReturnType result = Dlt_SendTraceMessage(handle, DLT_TRACE_VARIABLE, 0x0001U, NULL, 0);
     
-    ASSERT_EQ(E_OK, result);
+    ASSERT_EQ(E_NOT_OK, result);
+    
     TEST_PASS();
 }
 
-/* Test: Dlt_SetOutputMode */
-TEST_CASE(dlt_set_output_mode)
-{
-    Dlt_ReturnType result;
-    
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    
-    result = Dlt_SetOutputMode(DLT_OUTPUT_MODE_SERIAL);
-    
-    ASSERT_EQ(E_OK, result);
-    TEST_PASS();
-}
+/* ========================================================================== */
+/*                          主函数测试                                         */
+/* ========================================================================== */
 
-/* Test: Dlt_GetOutputMode */
-TEST_CASE(dlt_get_output_mode)
+TEST_CASE_DECLARE(Dlt_MainFunction_uninit)
 {
-    Dlt_ReturnType result;
-    Dlt_OutputModeType output_mode;
-    
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    
-    result = Dlt_GetOutputMode(&output_mode);
-    
-    ASSERT_EQ(E_OK, result);
-    ASSERT_EQ(DLT_OUTPUT_MODE_BUFFER, output_mode);
-    TEST_PASS();
-}
-
-/* Test: Dlt_TracePoint */
-TEST_CASE(dlt_trace_point)
-{
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
-    
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    Dlt_RegisterContext(app_id, context_id, "Test Context");
-    
-    result = Dlt_TracePoint(app_id, context_id, DLT_TRACE_TYPE_FUNCTION_IN, 0);
-    
-    ASSERT_EQ(E_OK, result);
-    TEST_PASS();
-}
-
-/* Test: Dlt_TraceVariable */
-TEST_CASE(dlt_trace_variable)
-{
-    Dlt_ReturnType result;
-    Dlt_ApplicationIdType app_id = {'T', 'E', 'S', 'T', '\0'};
-    Dlt_ContextIdType context_id = {'C', 'T', 'X', '1', '\0'};
-    
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    Dlt_RegisterContext(app_id, context_id, "Test Context");
-    
-    result = Dlt_TraceVariable(app_id, context_id, "test_var", 42);
-    
-    ASSERT_EQ(E_OK, result);
-    TEST_PASS();
-}
-
-/* Test: Dlt_FlushBuffer */
-TEST_CASE(dlt_flush_buffer)
-{
-    Dlt_ReturnType result;
-    
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    
-    result = Dlt_FlushBuffer();
-    
-    ASSERT_EQ(E_OK, result);
-    TEST_PASS();
-}
-
-/* Test: Dlt_GetBufferStatus */
-TEST_CASE(dlt_get_buffer_status)
-{
-    Dlt_ReturnType result;
-    uint16 used_entries;
-    uint16 free_entries;
-    
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    
-    result = Dlt_GetBufferStatus(&used_entries, &free_entries);
-    
-    ASSERT_EQ(E_OK, result);
-    TEST_PASS();
-}
-
-/* Test: Dlt_MainFunction */
-TEST_CASE(dlt_main_function)
-{
-    setup_test_config();
-    Dlt_Init(&g_test_config);
-    
+    /* 在未初始化状态下调用 MainFunction - 应该安全返回 */
     Dlt_MainFunction();
     
     TEST_PASS();
 }
 
-/* Test: Dlt_TxConfirmation */
-TEST_CASE(dlt_tx_confirmation)
+TEST_CASE_DECLARE(Dlt_MainFunction_ready)
 {
-    setup_test_config();
     Dlt_Init(&g_test_config);
     
-    Dlt_TxConfirmation(0, E_OK);
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    uint8 testData[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
+    Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, testData, 8);
+    
+    /* 调用 MainFunction 处理队列 */
+    Dlt_MainFunction();
     
     TEST_PASS();
 }
 
-/* Test: Dlt_RxIndication */
-TEST_CASE(dlt_rx_indication)
+/* ========================================================================== */
+/*                          过滤器测试                                         */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_SetFilter_valid)
 {
-    PduInfoType pdu_info;
-    uint8 pdu_data[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-    
-    setup_test_config();
     Dlt_Init(&g_test_config);
     
-    pdu_info.SduDataPtr = pdu_data;
-    pdu_info.SduLength = 8;
-    pdu_info.MetaDataPtr = NULL_PTR;
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    Std_ReturnType result = Dlt_SetFilter(handle, DLT_LOG_DEBUG, TRUE);
     
-    Dlt_RxIndication(0, &pdu_info);
+    ASSERT_EQ(E_OK, result);
     
     TEST_PASS();
 }
 
-/*==================================================================================================
-*                                      TEST SUITE
-==================================================================================================*/
-TEST_SUITE_SETUP(dlt)
+TEST_CASE_DECLARE(Dlt_SetFilter_invalid_handle)
 {
+    Dlt_Init(&g_test_config);
+    
+    Std_ReturnType result = Dlt_SetFilter(DLT_INVALID_APP_HANDLE, DLT_LOG_DEBUG, TRUE);
+    
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
 }
 
-TEST_SUITE_TEARDOWN(dlt)
+/* ========================================================================== */
+/*                          队列操作测试                                       */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_FlushQueue)
 {
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    /* 添加一些消息到队列 */
+    uint8 testData[8] = {0};
+    Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, testData, 8);
+    Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0002U, testData, 8);
+    
+    /* 清空队列 */
+    Std_ReturnType result = Dlt_FlushQueue();
+    
+    ASSERT_EQ(E_OK, result);
+    
+    TEST_PASS();
 }
 
-TEST_SUITE(dlt)
+TEST_CASE_DECLARE(Dlt_FlushQueue_uninit)
 {
-    RUN_TEST(dlt_init_valid_config);
-    RUN_TEST(dlt_init_null_config);
-    RUN_TEST(dlt_deinit);
-    RUN_TEST(dlt_get_version_info);
-    RUN_TEST(dlt_register_context);
-    RUN_TEST(dlt_unregister_context);
-    RUN_TEST(dlt_log_message);
-    RUN_TEST(dlt_set_log_level);
-    RUN_TEST(dlt_get_log_level);
-    RUN_TEST(dlt_set_output_mode);
-    RUN_TEST(dlt_get_output_mode);
-    RUN_TEST(dlt_trace_point);
-    RUN_TEST(dlt_trace_variable);
-    RUN_TEST(dlt_flush_buffer);
-    RUN_TEST(dlt_get_buffer_status);
-    RUN_TEST(dlt_main_function);
-    RUN_TEST(dlt_tx_confirmation);
-    RUN_TEST(dlt_rx_indication);
+    Std_ReturnType result = Dlt_FlushQueue();
+    
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
 }
 
-/*==================================================================================================
-*                                      MAIN
-==================================================================================================*/
+/* ========================================================================== */
+/*                          多消息测试                                         */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_MultipleMessages)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    /* 发送多条消息 */
+    for (uint8 i = 0; i < 10; i++) {
+        uint8 testData[8] = {i, i+1, i+2, i+3, i+4, i+5, i+6, i+7};
+        Std_ReturnType result = Dlt_SendLogMessage(handle, DLT_LOG_INFO, i, testData, 8);
+        ASSERT_EQ(E_OK, result);
+    }
+    
+    /* 处理队列 */
+    Dlt_MainFunction();
+    
+    TEST_PASS();
+}
+
+/* ========================================================================== */
+/*                          边界条件测试                                       */
+/* ========================================================================== */
+
+TEST_CASE_DECLARE(Dlt_EmptyMessage)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    /* 发送空消息 (长度为0) */
+    Std_ReturnType result = Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, NULL, 0);
+    
+    /* 由于 NULL 指针检查，应该失败 */
+    ASSERT_EQ(E_NOT_OK, result);
+    
+    TEST_PASS();
+}
+
+TEST_CASE_DECLARE(Dlt_MaxLengthMessage)
+{
+    Dlt_Init(&g_test_config);
+    
+    Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
+    
+    /* 发送最大长度的消息 */
+    uint8 testData[1400]; /* DLT_MAX_MSG_SIZE */
+    Std_ReturnType result = Dlt_SendLogMessage(handle, DLT_LOG_INFO, 0x0001U, testData, 1400);
+    
+    ASSERT_EQ(E_OK, result);
+    
+    TEST_PASS();
+}
+
+/* ========================================================================== */
+/*                          测试主函数                                         */
+/* ========================================================================== */
+
 TEST_MAIN_BEGIN()
-    RUN_TEST_SUITE(dlt);
+{
+    /* 初始化/反初始化测试 */
+    RUN_TEST(Dlt_Init_valid_config);
+    RUN_TEST(Dlt_Init_null_config);
+    RUN_TEST(Dlt_DeInit);
+    
+    /* 版本信息测试 */
+    RUN_TEST(Dlt_GetVersionInfo_valid);
+    RUN_TEST(Dlt_GetVersionInfo_null_pointer);
+    
+    /* 应用注册测试 */
+    RUN_TEST(Dlt_RegisterApp_valid);
+    RUN_TEST(Dlt_RegisterApp_null_pointer);
+    RUN_TEST(Dlt_RegisterApp_uninit);
+    RUN_TEST(Dlt_UnregisterApp_valid);
+    RUN_TEST(Dlt_UnregisterApp_invalid_handle);
+    
+    /* 日志消息测试 */
+    RUN_TEST(Dlt_SendLogMessage_valid);
+    RUN_TEST(Dlt_SendLogMessage_uninit);
+    RUN_TEST(Dlt_SendLogMessage_invalid_handle);
+    RUN_TEST(Dlt_SendLogMessage_null_data);
+    RUN_TEST(Dlt_SendLogMessage_exceed_max_length);
+    
+    /* 跟踪消息测试 */
+    RUN_TEST(Dlt_SendTraceMessage_valid);
+    RUN_TEST(Dlt_SendTraceMessage_uninit);
+    RUN_TEST(Dlt_SendTraceMessage_null_data);
+    
+    /* 主函数测试 */
+    RUN_TEST(Dlt_MainFunction_uninit);
+    RUN_TEST(Dlt_MainFunction_ready);
+    
+    /* 过滤器测试 */
+    RUN_TEST(Dlt_SetFilter_valid);
+    RUN_TEST(Dlt_SetFilter_invalid_handle);
+    
+    /* 队列操作测试 */
+    RUN_TEST(Dlt_FlushQueue);
+    RUN_TEST(Dlt_FlushQueue_uninit);
+    
+    /* 多消息测试 */
+    RUN_TEST(Dlt_MultipleMessages);
+    
+    /* 边界条件测试 */
+    RUN_TEST(Dlt_EmptyMessage);
+    RUN_TEST(Dlt_MaxLengthMessage);
+}
 TEST_MAIN_END()

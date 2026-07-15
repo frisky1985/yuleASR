@@ -1,37 +1,63 @@
-# FIM 模块
+# Function Inhibition Manager (FIM)
 
-## 概述
+## 模块概述
 
-FIM 模块实现。
+功能抑制管理
 
-## API接口
+## AUTOSAR 版本
 
-### 初始化
+- AUTOSAR Classic Platform 4.4.0
 
-```c
-void fim_Init(void);
-```
+## 主要功能
 
-### 版本信息
+- 初始化和反初始化
+- 核心功能处理
+- 事件管理
 
-```c
-void fim_GetVersionInfo(Std_VersionInfoType* versioninfo);
-```
+## 主要 API
+
+| API 名称 | 功能 |
+|---------|------|
+| Fim_Init() | 模块初始化 |
+| Fim_DeInit() | 模块反初始化 |
+| Fim_MainFunction() | 主函数 |
 
 ## 配置参数
 
-| 参数 | 说明 |
-|:-----|:-----|
-| - | - |
+### 编译时配置
+
+- 模块使能/禁用
+- 功能开关
+
+### 链接时配置
+
+- 配置表参数
+- 回调函数指针
+
+## 依赖关系
+
+- DET (可选)
+- DEM (可选)
 
 ## 使用示例
 
 ```c
-fim_Init();
+#include "Fim.h"
+
+void example(void)
+{
+    /* 初始化 */
+    Fim_Init(NULL);
+    
+    /* 主函数 */
+    Fim_MainFunction();
+}
 ```
 
-## 版本历史
+## 源代码路径
 
-| 版本 | 日期 | 描述 |
-|:-----|:-----|:-----|
-| 1.0 | 2026-01-09 | 初始版本 |
+- `src/bsw/services/fim/`
+
+## 测试
+
+- 单元测试: `tests/unit/fim/`

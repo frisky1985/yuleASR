@@ -1,158 +1,225 @@
-/**
- * @file DoIp_Lcfg.c
- * @brief Diagnostic over IP Link-Time Configuration
- * @version 1.0.0
- * @date 2026-04-24
- * @author Shanghai Yule Electronics Technology Co., Ltd.
- * @copyright Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
- *
- * AutoSAR Standard: Diagnostic over IP (DoIP)
- * Layer: Service Layer
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
+/*
+ * DoIP_Lcfg.c
+ * Diagnostic over IP Link-Time Configuration
  */
 
-/*==================================================================================================
-*                                             INCLUDES
-==================================================================================================*/
-#include "DoIp.h"
-#include "DoIp_Cfg.h"
+#include "DoIP.h"
+#include "DoIP_Cfg.h"
 
 /*==================================================================================================
-*                                  GLOBAL CONSTANT DEFINITIONS
-==================================================================================================*/
-#define DOIP_START_SEC_CONFIG_DATA_UNSPECIFIED
-#include "MemMap.h"
+ *                                      VEHICLE IDENTIFICATION
+ *=================================================================================================*/
+/* VIN (Vehicle Identification Number) - 17 characters */
+const uint8 DoIP_Vin[DOIP_VIN_LENGTH] = DOIP_VIN;
 
-/*--- Connection configurations ---*/
-static const DoIp_ConnectionConfigType DoIp_Connections[DOIP_MAX_CONNECTIONS] = {
+/* EID (Entity ID) - MAC address format */
+const uint8 DoIP_Eid[DOIP_EID_LENGTH] = DOIP_EID;
+
+/* GID (Group ID) - For vehicle identification */
+const uint8 DoIP_Gid[DOIP_GID_LENGTH] = DOIP_GID;
+
+/* Entity Logical Address */
+const uint16 DoIP_EntityLogicalAddress = DOIP_LOGICAL_ADDRESS;
+
+/*==================================================================================================
+ *                                      GENERAL CONFIGURATION
+ *=================================================================================================*/
+const DoIP_GeneralConfigType DoIP_GeneralConfig =
+{
+    .LogicalAddress = DOIP_LOGICAL_ADDRESS,
+    .Vin = DOIP_VIN,
+    .Eid = DOIP_EID,
+    .Gid = DOIP_GID,
+    .FurtherAction = DOIP_FURTHER_ACTION,
+    .MaxConnections = DOIP_MAX_CONNECTIONS,
+    .GeneralInactivityTime = DOIP_CFG_GENERAL_INACTIVITY
+};
+
+/*==================================================================================================
+ *                                      TESTER CONFIGURATION
+ *=================================================================================================*/
+static const DoIP_TesterConfigType DoIP_Testers[] =
+{
     {
-        .ConnectionId = DOIP_CONNECTION_0,
-        .SourceAddress = DOIP_LOGICAL_ADDRESS_ECU,
-        .TargetAddress = DOIP_LOGICAL_ADDRESS_TESTER,
-        .TesterLogicalAddress = DOIP_LOGICAL_ADDRESS_TESTER,
-        .AliveCheckTimeoutMs = 500U,
-        .GeneralInactivityTimeoutMs = 5000U,
-        .AliveCheckEnabled = TRUE
+        .TesterAddress = 0x0E00U,
+        .AuthenticationRequired = FALSE,
+        .ConfirmationRequired = FALSE,
+        .AllowedActivationTypes = DOIP_DEFAULT_ACTIVATION_TYPE
     },
     {
-        .ConnectionId = DOIP_CONNECTION_1,
-        .SourceAddress = DOIP_LOGICAL_ADDRESS_ECU,
-        .TargetAddress = 0x0E01U,
-        .TesterLogicalAddress = 0x0E01U,
-        .AliveCheckTimeoutMs = 500U,
-        .GeneralInactivityTimeoutMs = 5000U,
-        .AliveCheckEnabled = TRUE
+        .TesterAddress = 0x0E01U,
+        .AuthenticationRequired = FALSE,
+        .ConfirmationRequired = FALSE,
+        .AllowedActivationTypes = DOIP_DEFAULT_ACTIVATION_TYPE | DOIP_WWH_OBD_ACTIVATION_TYPE
     },
     {
-        .ConnectionId = DOIP_CONNECTION_2,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .TesterLogicalAddress = 0x0000U,
-        .AliveCheckTimeoutMs = 0U,
-        .GeneralInactivityTimeoutMs = 0U,
-        .AliveCheckEnabled = FALSE
+        .TesterAddress = 0x0E02U,
+        .AuthenticationRequired = TRUE,
+        .ConfirmationRequired = TRUE,
+        .AllowedActivationTypes = DOIP_CENTRAL_SECURITY_TYPE
     },
     {
-        .ConnectionId = DOIP_CONNECTION_3,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .TesterLogicalAddress = 0x0000U,
-        .AliveCheckTimeoutMs = 0U,
-        .GeneralInactivityTimeoutMs = 0U,
-        .AliveCheckEnabled = FALSE
+        .TesterAddress = 0x0E03U,
+        .AuthenticationRequired = FALSE,
+        .ConfirmationRequired = FALSE,
+        .AllowedActivationTypes = DOIP_DEFAULT_ACTIVATION_TYPE
     }
 };
 
-/*--- Routing activation configurations ---*/
-static const DoIp_RoutingActivationConfigType DoIp_RoutingActivations[DOIP_MAX_ROUTING_ACTIVATIONS] = {
+#define DOIP_NUM_TESTERS    (sizeof(DoIP_Testers) / sizeof(DoIP_Testers[0]))
+
+/*==================================================================================================
+ *                                      TARGET CONFIGURATION
+ *=================================================================================================*/
+static const DoIP_TargetConfigType DoIP_Targets[] =
+{
     {
-        .ActivationType = DOIP_ROUTING_ACTIVATION_DEFAULT,
-        .SourceAddress = DOIP_LOGICAL_ADDRESS_TESTER,
-        .TargetAddress = DOIP_LOGICAL_ADDRESS_ECU,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
+        .TargetAddress = 0x0001U,       /* ECU 1 */
+        .ProtocolType = 0x01U,          /* CAN */
+        .LowerLayerPduId = 0x00U
     },
     {
-        .ActivationType = DOIP_ROUTING_ACTIVATION_WWH_OBD,
-        .SourceAddress = DOIP_LOGICAL_ADDRESS_TESTER,
-        .TargetAddress = DOIP_LOGICAL_ADDRESS_ECU,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
+        .TargetAddress = 0x0E00U,       /* Diagnostic target */
+        .ProtocolType = 0x01U,          /* CAN */
+        .LowerLayerPduId = 0x01U
     },
     {
-        .ActivationType = 0x02U,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
+        .TargetAddress = 0x0E01U,       /* Diagnostic target */
+        .ProtocolType = 0x02U,          /* CAN FD */
+        .LowerLayerPduId = 0x02U
     },
     {
-        .ActivationType = 0x03U,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
-    },
-    {
-        .ActivationType = 0x04U,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
-    },
-    {
-        .ActivationType = 0x05U,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
-    },
-    {
-        .ActivationType = 0x06U,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
-    },
-    {
-        .ActivationType = DOIP_ROUTING_ACTIVATION_CENTRAL_SECURITY,
-        .SourceAddress = 0x0000U,
-        .TargetAddress = 0x0000U,
-        .NumAuthReqBytes = 0U,
-        .NumConfirmReqBytes = 0U,
-        .AuthenticationRequired = FALSE,
-        .ConfirmationRequired = FALSE
+        .TargetAddress = 0xE000U,       /* Functional address */
+        .ProtocolType = 0x01U,          /* CAN */
+        .LowerLayerPduId = 0x03U
     }
 };
 
-/*--- Global DoIp configuration ---*/
-const DoIp_ConfigType DoIp_Config = {
-    .Connections = DoIp_Connections,
-    .NumConnections = 4U,
-    .RoutingActivations = DoIp_RoutingActivations,
-    .NumRoutingActivations = 8U,
-    .DevErrorDetect = TRUE,
-    .VersionInfoApi = TRUE,
-    .DoIpVehicleAnnouncementCount = 3U,
-    .DoIpVehicleAnnouncementInterval = 500U
-};
-
-#define DOIP_STOP_SEC_CONFIG_DATA_UNSPECIFIED
-#include "MemMap.h"
+#define DOIP_NUM_TARGETS    (sizeof(DoIP_Targets) / sizeof(DoIP_Targets[0]))
 
 /*==================================================================================================
-*                                       END OF FILE
-==================================================================================================*/
+ *                                      SOCKET CONNECTION CONFIGURATION
+ *=================================================================================================*/
+static const DoIP_SoConConfigType DoIP_SoConConfigs[] =
+{
+    {
+        /* UDP Discovery socket */
+        .SoConId = DOIP_SOCON_UDP_DISCOVERY,
+        .IsTcp = FALSE,
+        .IsUdp = TRUE,
+        .LocalPort = 13400U,
+        .LocalIpAddress = NULL,         /* Any */
+        .RemotePort = 0U,
+        .RemoteIpAddress = NULL         /* Any */
+    },
+    {
+        /* UDP Test Equipment socket */
+        .SoConId = DOIP_SOCON_UDP_TEST_EQUIP,
+        .IsTcp = FALSE,
+        .IsUdp = TRUE,
+        .LocalPort = 13401U,
+        .LocalIpAddress = NULL,
+        .RemotePort = 0U,
+        .RemoteIpAddress = NULL
+    },
+    {
+        /* TCP Data socket */
+        .SoConId = DOIP_SOCON_TCP_DATA,
+        .IsTcp = TRUE,
+        .IsUdp = FALSE,
+        .LocalPort = 13400U,
+        .LocalIpAddress = NULL,
+        .RemotePort = 0U,
+        .RemoteIpAddress = NULL
+    },
+    {
+        /* TCP Routing socket */
+        .SoConId = DOIP_SOCON_TCP_ROUTING,
+        .IsTcp = TRUE,
+        .IsUdp = FALSE,
+        .LocalPort = 13401U,
+        .LocalIpAddress = NULL,
+        .RemotePort = 0U,
+        .RemoteIpAddress = NULL
+    }
+};
+
+#define DOIP_NUM_SOCONS     (sizeof(DoIP_SoConConfigs) / sizeof(DoIP_SoConConfigs[0]))
+
+/*==================================================================================================
+ *                                      COMPLETE CONFIGURATION
+ *=================================================================================================*/
+const DoIP_ConfigType DoIP_Config =
+{
+    .GeneralConfig = &DoIP_GeneralConfig,
+    .TesterConfig = DoIP_Testers,
+    .TargetConfig = DoIP_Targets,
+    .SoConConfig = DoIP_SoConConfigs,
+    .NumTesters = DOIP_NUM_TESTERS,
+    .NumTargets = DOIP_NUM_TARGETS,
+    .NumSoCons = DOIP_NUM_SOCONS
+};
+
+/*==================================================================================================
+ *                                      STATE VARIABLE
+ *=================================================================================================*/
+DoIP_StateType DoIP_State = DOIP_STATE_UNINIT;
+
+/*==================================================================================================
+ *                                      CALLBACK FUNCTIONS
+ *=================================================================================================*/
+/**
+ * @brief Rx Indication callback for upper layer (DCM)
+ * @param SoConId Socket connection ID
+ * @param Data Pointer to received data
+ * @param Length Data length
+ */
+void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length)
+{
+    (void)SoConId;
+    (void)Data;
+    (void)Length;
+    
+    /* Forward to DCM for UDS processing */
+    /* Dcm_ProcessDoIPMessage(Data, Length); */
+}
+
+/**
+ * @brief Tx Confirmation callback for upper layer (DCM)
+ * @param SoConId Socket connection ID
+ * @param Result Transmission result
+ */
+void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result)
+{
+    (void)SoConId;
+    (void)Result;
+    
+    /* Notify DCM about transmission completion */
+}
+
+/**
+ * @brief Routing activation callback for upper layer (DCM)
+ * @param SoConId Socket connection ID
+ * @param SourceAddress Tester source address
+ * @param Result Activation result
+ */
+void Dcm_DoIPRoutingActivation(uint16 SoConId, uint16 SourceAddress, Std_ReturnType Result)
+{
+    (void)SoConId;
+    (void)SourceAddress;
+    (void)Result;
+    
+    /* Notify DCM about routing activation */
+}
