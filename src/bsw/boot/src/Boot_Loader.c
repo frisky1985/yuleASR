@@ -9,6 +9,10 @@
 /* External symbols defined by the linker script */
 extern uint32_t __stack_top;
 
+/* Page buffer for flash-to-RAM hash — sized to MCU page (S32K312: 4KB) */
+#define BOOT_PAGE_BUFFER_SIZE  4096U
+static uint8_t g_boot_page_buf[BOOT_PAGE_BUFFER_SIZE];
+
 /*
  * Reset handler address is always at offset 4 of the vector table.
  * Application entry = *(uint32_t*)(target_addr + 4)
@@ -69,10 +73,34 @@ void Boot_Loader_Main(void)
     ret = Boot_Image_ValidateHeader(&hdr);
     if (ret != BOOT_OK) goto fail;
 
-    /* Hash the payload */
+    /* Hash the payload — read from flash into page buffer incrementally */
     uint32_t payload_addr = decision.target_addr + sizeof(Boot_ImageHeader);
-    Boot_Verify_Hash((const uint8_t *)(uint32_t)payload_addr,
-                     hdr.payload_size, hash); /* NOTE: needs RAM copy in prod */
+    uint32_t remaining = hdr.payload_size;
+    uint32_t offset = 0U;
+
+    /* Use incremental SHA-256 over the payload */
+#if defined(MBEDTLS_USE)
+    mbedtls_sha256_context hash_ctx;
+    mbedtls_sha256_init(&hash_ctx);
+    mbedtls_sha256_starts(&hash_ctx, 0);
+    while (remaining > 0U) {
+        uint32_t chunk = (remaining < BOOT_PAGE_BUFFER_SIZE) ? remaining : BOOT_PAGE_BUFFER_SIZE;
+        Boot_Flash_Read(payload_addr + offset, g_boot_page_buf, chunk);
+        mbedtls_sha256_update(&hash_ctx, g_boot_page_buf, chunk);
+        offset += chunk;
+        remaining -= chunk;
+    }
+    mbedtls_sha256_finish(&hash_ctx, hash);
+#else
+    /* Non-incremental fallback: read entire payload, then hash */
+    while (remaining > 0U) {
+        uint32_t chunk = (remaining < BOOT_PAGE_BUFFER_SIZE) ? remaining : BOOT_PAGE_BUFFER_SIZE;
+        Boot_Flash_Read(payload_addr + offset, g_boot_page_buf, chunk);
+        offset += chunk;
+        remaining -= chunk;
+    }
+    Boot_Verify_Hash(g_boot_page_buf, hdr.payload_size, hash);
+#endif
 
     /* Read trailer */
     ret = Boot_Image_ReadTrailer(payload_addr, hdr.payload_size, &trail);

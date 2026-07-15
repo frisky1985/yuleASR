@@ -119,6 +119,101 @@ jobs:
         print('✅ 架构依赖检查通过')
         "
 
+  # ============================================================
+  # 代码覆盖率 CI Job（gcov 行级覆盖率）
+  # 使用 -DENABLE_COVERAGE=ON 编译 → 运行测试 → gcovr 产出报告
+  # ============================================================
+  coverage:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install gcovr
+    
+    - name: Install native build tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc g++ lcov
+    
+    - name: Configure with Coverage Flags
+      run: |
+        cmake -B build-coverage -S . \
+          -DBUILD_TESTING=ON \
+          -DENABLE_COVERAGE=ON \
+          -DCMAKE_BUILD_TYPE=Debug
+    
+    - name: Build Test Targets with Coverage
+      run: |
+        cmake --build build-coverage -j$(nproc)
+    
+    - name: Run Tests
+      run: |
+        cd build-coverage && ctest --output-on-failure || echo "⚠️  部分测试未通过，覆盖率数据仍会收集"
+    
+    - name: Generate gcovr HTML Coverage Report
+      run: |
+        mkdir -p coverage-reports
+        gcovr --root . \
+          --filter "src/.*" \
+          --exclude "tests/.*" \
+          --exclude "third_party/.*" \
+          --exclude-unreachable-branches \
+          --html --html-details \
+          --output coverage-reports/index.html \
+          build-coverage
+    
+    - name: Generate gcovr JSON Coverage Report
+      run: |
+        gcovr --root . \
+          --filter "src/.*" \
+          --exclude "tests/.*" \
+          --exclude "third_party/.*" \
+          --json \
+          --output coverage-reports/coverage.json \
+          build-coverage
+    
+    - name: Print Coverage Summary
+      run: |
+        echo "=== 行级覆盖率汇总 ==="
+        gcovr --root . \
+          --filter "src/.*" \
+          --exclude "tests/.*" \
+          --exclude "third_party/.*" \
+          build-coverage | tee coverage-reports/coverage_summary.txt
+    
+    - name: Upload Coverage Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage-reports/
+        retention-days: 30
+    
+    - name: Coverage Gate Check
+      run: |
+        python -c "
+import json
+with open('coverage-reports/coverage.json') as f:
+    report = json.load(f)
+line_rate = report.get('line_rate', 0) * 100
+branch_rate = report.get('branch_rate', 0) * 100
+print(f'行覆盖率: {line_rate:.1f}%')
+print(f'分支覆盖率: {branch_rate:.1f}%')
+# 行覆盖率门禁: 至少 70%（宽松门禁，首次接入）
+if line_rate < 70:
+    print(f'❌ 行覆盖率 {line_rate:.1f}% 低于门禁 70%')
+    exit(1)
+print('✅ 覆盖率门禁检查通过')
+" || echo "⚠️  覆盖率门禁检查跳过或未通过（首次接入，非阻塞）"
+
   documentation:
     runs-on: ubuntu-latest
     

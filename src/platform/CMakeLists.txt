@@ -3,6 +3,12 @@
 
 cmake_minimum_required(VERSION 3.16)
 
+# Global includes for Std_Types.h, etc.
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/det/include
+)
+
 option(PLATFORM_S32K312 "Enable S32K312 platform support" ON)
 
 if(NOT PLATFORM_S32K312)

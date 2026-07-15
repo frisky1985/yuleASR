@@ -5,6 +5,13 @@
 
 cmake_minimum_required(VERSION 3.16)
 
+# Global include directories for all MCAL modules (Std_Types.h, Det.h, MemMap.h, etc.)
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../services/det/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../rte/include
+)
+
 # Get all submodule directories
 file(GLOB MCAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
 

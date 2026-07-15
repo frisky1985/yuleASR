@@ -5,6 +5,13 @@
 
 cmake_minimum_required(VERSION 3.16)
 
+# Global includes for Std_Types.h, etc.
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../services/det/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../rte/include
+)
+
 # Get all submodule directories
 file(GLOB ECUAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
 

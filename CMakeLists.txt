@@ -85,6 +85,92 @@ if(YULE_ENABLE_SAFETY AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/safety/CMakeLis
     add_subdirectory(src/safety)
 endif()
 
+# Code coverage configuration
+if(ENABLE_COVERAGE)
+    message(STATUS "Code coverage: ENABLED")
+    
+    # Add coverage compile/link flags globally when not cross-compiling
+    if(NOT CMAKE_CROSSCOMPILING)
+        # Use --coverage (equivalent to -fprofile-arcs -ftest-coverage for GCC/Clang)
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage")
+    endif()
+    
+    # Find gcovr for report generation
+    find_program(GCOVR_PATH gcovr)
+    if(GCOVR_PATH)
+        message(STATUS "gcovr found: ${GCOVR_PATH}")
+        
+        # Coverage report targets (only if BUILD_TESTING is also ON)
+        if(BUILD_TESTING)
+            add_custom_target(coverage-run
+                COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Running tests for coverage data collection..."
+            )
+            
+            add_custom_target(coverage-html
+                COMMAND ${CMAKE_COMMAND} -E echo "Generating HTML coverage report..."
+                COMMAND ${GCOVR_PATH} --root ${CMAKE_SOURCE_DIR}
+                        --filter "src/.*"
+                        --exclude "tests/.*"
+                        --exclude "third_party/.*"
+                        --exclude-unreachable-branches
+                        --html --html-details
+                        --output ${CMAKE_BINARY_DIR}/coverage/index.html
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Generating HTML coverage report (gcovr)"
+            )
+            
+            add_custom_target(coverage-json
+                COMMAND ${CMAKE_COMMAND} -E echo "Generating JSON coverage report..."
+                COMMAND ${GCOVR_PATH} --root ${CMAKE_SOURCE_DIR}
+                        --filter "src/.*"
+                        --exclude "tests/.*"
+                        --exclude "third_party/.*"
+                        --json
+                        --output ${CMAKE_BINARY_DIR}/coverage/coverage.json
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Generating JSON coverage report (gcovr)"
+            )
+            
+            add_custom_target(coverage
+                COMMAND ${CMAKE_COMMAND} -E echo "=== Generating all coverage reports ==="
+                COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage
+                COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+                COMMAND ${GCOVR_PATH} --root ${CMAKE_SOURCE_DIR}
+                        --filter "src/.*"
+                        --exclude "tests/.*"
+                        --exclude "third_party/.*"
+                        --exclude-unreachable-branches
+                        --html --html-details
+                        --output ${CMAKE_BINARY_DIR}/coverage/index.html
+                COMMAND ${GCOVR_PATH} --root ${CMAKE_SOURCE_DIR}
+                        --filter "src/.*"
+                        --exclude "tests/.*"
+                        --exclude "third_party/.*"
+                        --json
+                        --output ${CMAKE_BINARY_DIR}/coverage/coverage.json
+                WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+                COMMENT "Running tests and generating coverage reports (gcovr)"
+            )
+            
+            # Note: coverage-run is run as part of the 'coverage' target chain
+        endif()
+    else()
+        message(WARNING "gcovr not found; coverage reports will not be generated. Install with: pip install gcovr")
+        if(BUILD_TESTING)
+            # Fallback: just ensure .gcda files are produced, manual gcov can be used
+            add_custom_target(coverage
+                COMMAND ${CMAKE_COMMAND} -E echo "gcovr not available. Run 'gcov' manually on .gcda files in ${CMAKE_BINARY_DIR}"
+                COMMENT "gcovr not found — install with 'pip install gcovr' for automated reports"
+            )
+        endif()
+    endif()
+endif()
+
 # Testing
 if(BUILD_TESTING)
     enable_testing()

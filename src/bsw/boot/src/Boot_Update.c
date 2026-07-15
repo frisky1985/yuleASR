@@ -4,11 +4,18 @@
 #include "Boot_Verify.h"
 #include <string.h>
 
+#if defined(MBEDTLS_USE)
+#include "mbedtls/sha256.h"
+#endif
+
 /* Internal update context */
 typedef struct {
     uint32_t       slot_addr;
     Boot_ImageType image_type;
-    uint8_t        running_hash[32];  /* SHA-256 over all written data */
+#if defined(MBEDTLS_USE)
+    mbedtls_sha256_context hash_ctx;
+    boolean        hash_active;
+#endif
     uint32_t       bytes_written;
     boolean        active;
 } UpdateContext;
@@ -32,6 +39,12 @@ Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
     g_ctx.image_type   = image_type;
     g_ctx.active       = TRUE;
 
+#if defined(MBEDTLS_USE)
+    mbedtls_sha256_init(&g_ctx.hash_ctx);
+    mbedtls_sha256_starts(&g_ctx.hash_ctx, 0);
+    g_ctx.hash_active = TRUE;
+#endif
+
     Boot_Result ret = Boot_Flash_Erase(slot_addr, BOOT_APP_SLOT_A_SIZE);
     if (ret != BOOT_OK) {
         g_ctx_valid = FALSE;
@@ -52,10 +65,14 @@ Boot_Result Boot_Update_WriteBlock(const uint8_t *data,
 
     uint32_t write_addr = g_ctx.slot_addr + offset;
 
-    /* Update running hash */
-    Boot_Verify_Hash(data, length, g_ctx.running_hash);
-    /* NOTE: In production, use incremental SHA-256. For stub, recompute
-       from scratch each time. Swap to mbedtls_sha256_update() when available. */
+    /* Update running hash incrementally */
+#if defined(MBEDTLS_USE)
+    if (g_ctx.hash_active) {
+        mbedtls_sha256_update(&g_ctx.hash_ctx, data, length);
+    }
+#else
+    /* Without mbedTLS, hash the entire payload at Finalize time */
+#endif
 
     Boot_Result ret = Boot_Flash_Write(write_addr, data, length);
     if (ret == BOOT_OK) {
@@ -77,7 +94,32 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     hdr.image_type   = (uint32_t)image_type;
     hdr.version      = version;
     hdr.payload_size = g_ctx.bytes_written;
-    memcpy(hdr.hash, g_ctx.running_hash, 32);
+
+    /* Obtain the complete payload hash */
+#if defined(MBEDTLS_USE)
+    if (g_ctx.hash_active) {
+        mbedtls_sha256_finish(&g_ctx.hash_ctx, hdr.hash);
+        mbedtls_sha256_free(&g_ctx.hash_ctx);
+        g_ctx.hash_active = FALSE;
+    }
+#else
+    {
+        /* Without incremental hash, read entire payload and hash once */
+        uint8_t page_buf[256];
+        uint32_t remaining = g_ctx.bytes_written;
+        uint32_t off = 0U;
+        uint32_t total = 0U;
+        while (remaining > 0U) {
+            uint32_t chunk = (remaining < sizeof(page_buf)) ? remaining : sizeof(page_buf);
+            Boot_Flash_Read(g_ctx.slot_addr + sizeof(Boot_ImageHeader) + off, page_buf, chunk);
+            off += chunk;
+            remaining -= chunk;
+            total += chunk;
+        }
+        Boot_Verify_Hash(page_buf, total, hdr.hash);
+    }
+#endif
+
     hdr.header_crc   = Boot_Image_CalcHeaderCrc(&hdr);
 
     Boot_Result ret = Boot_Flash_Write(g_ctx.slot_addr,

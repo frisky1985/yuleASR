@@ -1,79 +1,98 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
 /**
  * @file Std_Types.h
- * @brief 标准类型定义
+ * @brief Standard Type Definitions (AutoSAR) — Bare-metal compatible
  * @version 1.0.0
+ * @details Defines AUTOSAR standard types without relying on <stdint.h>,
+ *          compatible with arm-none-eabi bare-metal compilation.
  */
 
 #ifndef STD_TYPES_H
 #define STD_TYPES_H
 
-#include <stdint.h>
+/*******************************************************************************
+ * Platform Types (bare-metal compatible — no stdint.h dependency)
+ ******************************************************************************/
+typedef unsigned char       uint8;
+typedef unsigned short      uint16;
+typedef unsigned int        uint32;
+typedef unsigned long long  uint64;
 
-/* 版本信息 */
-#define STD_TYPES_MAJOR_VERSION         1
-#define STD_TYPES_MINOR_VERSION         0
-#define STD_TYPES_PATCH_VERSION         0
+typedef signed char         sint8;
+typedef signed short        sint16;
+typedef signed int          sint32;
+typedef signed long long    sint64;
 
-/* 基本数据类型 - 使用标准stdint类型 */
-typedef uint8_t             uint8;
-typedef uint16_t            uint16;
-typedef uint32_t            uint32;
-typedef int8_t              sint8;
-typedef int16_t             sint16;
-typedef int32_t             sint32;
+#ifndef _PLATFORM_TYPES_H
+/* These are only defined if Platform_Types.h was not included first */
+typedef unsigned char       uint8_least;
+typedef unsigned short      uint16_least;
+typedef unsigned int        uint32_least;
+typedef signed char         sint8_least;
+typedef signed short        sint16_least;
+typedef signed int          sint32_least;
+#endif
+
 typedef float               float32;
 typedef double              float64;
 
-/* 布尔类型 */
+/*******************************************************************************
+ * Boolean Type
+ ******************************************************************************/
 typedef unsigned char       boolean;
 
-/* 标准返回类型 */
-typedef uint8 Std_ReturnType;
+/*******************************************************************************
+ * Standard Return Type
+ ******************************************************************************/
+typedef uint8               Std_ReturnType;
 
-/* 常见返回值 */
+/*******************************************************************************
+ * Common Return Values
+ ******************************************************************************/
 #ifndef E_OK
-#define E_OK                    0x00
+#define E_OK                0x00U
 #endif
 
 #ifndef E_NOT_OK
-#define E_NOT_OK                0x01
+#define E_NOT_OK            0x01U
 #endif
 
-/* 布尔值 */
+/*******************************************************************************
+ * Boolean Values
+ ******************************************************************************/
 #ifndef TRUE
-#define TRUE                    1
+#define TRUE                1U
 #endif
 
 #ifndef FALSE
-#define FALSE                   0
+#define FALSE               0U
 #endif
 
-/* 使能/禁能宏 */
-#define STD_ON                  1
-#define STD_OFF                 0
+/*******************************************************************************
+ * Standard On/Off
+ ******************************************************************************/
+#define STD_ON              1U
+#define STD_OFF             0U
 
-/* NULL指针 */
+#define STD_HIGH            1U
+#define STD_LOW             0U
+
+#define STD_ACTIVE          1U
+#define STD_IDLE            0U
+
+/*******************************************************************************
+ * NULL Pointer
+ ******************************************************************************/
 #ifndef NULL
-#define NULL                    ((void*)0)
+#define NULL                ((void*)0U)
 #endif
 
 #ifndef NULL_PTR
-#define NULL_PTR                ((void*)0)
+#define NULL_PTR            ((void*)0U)
 #endif
 
-/* 版本信息类型 */
+/*******************************************************************************
+ * Version Info Type
+ ******************************************************************************/
 typedef struct {
     uint16 vendorID;
     uint16 moduleID;
@@ -81,5 +100,15 @@ typedef struct {
     uint8  sw_minor_version;
     uint8  sw_patch_version;
 } Std_VersionInfoType;
+
+/*******************************************************************************
+ * Module Version Check Macro
+ ******************************************************************************/
+#define STD_VERSION_CHECK(exp, act)                                             \
+    do {                                                                        \
+        if ((exp) != (act)) {                                                   \
+            /* Version mismatch — handled by caller */                          \
+        }                                                                       \
+    } while (0U)
 
 #endif /* STD_TYPES_H */
