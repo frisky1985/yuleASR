@@ -117,3 +117,6 @@ __pycache__/
 *.pyc
 # DCM memory dump files
 src/bsw/services/dcm/legacy/*.dump
+build*/
+.build/
+*.elf
