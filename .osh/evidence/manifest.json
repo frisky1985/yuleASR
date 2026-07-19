@@ -1,0 +1,64 @@
+{
+  "manifest_version": "1.0",
+  "generated_at": "2026-07-19T20:55:42",
+  "project_dir": ".",
+  "total_files": 8,
+  "files": [
+    {
+      "path": "acceptance-matrix.md",
+      "sha256": "4a0f78b26f314a95b7f439fcb2cdf764e67a8591e45817ec53523ddba3e3cbb9",
+      "size_bytes": 16341,
+      "mtime": 1784465742.5754545,
+      "mtime_iso": "2026-07-19T20:55:42"
+    },
+    {
+      "path": "aspice-gap-report.md",
+      "sha256": "a967e1e9f4479eb71c7b5af4f00ccaaad2fcfa3edc3b6bbb40fd2cdb24981610",
+      "size_bytes": 3119,
+      "mtime": 1784123282.643327,
+      "mtime_iso": "2026-07-15T21:48:02"
+    },
+    {
+      "path": "code-coverage-report.md",
+      "sha256": "e0d0a576fa56c78b0c2a30c5ee68e7755667342c11d0be53f408daa9bdee1460",
+      "size_bytes": 225,
+      "mtime": 1784465742.5752397,
+      "mtime_iso": "2026-07-19T20:55:42"
+    },
+    {
+      "path": "requirement-coverage.md",
+      "sha256": "b7d31282ce66f543af7b0f393055432ae050d8fd9a760ec7c76d35561c862cba",
+      "size_bytes": 4031,
+      "mtime": 1784465742.5751228,
+      "mtime_iso": "2026-07-19T20:55:42"
+    },
+    {
+      "path": "review-log-summary.md",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "mtime": 1784465742.5755675,
+      "mtime_iso": "2026-07-19T20:55:42"
+    },
+    {
+      "path": "review-log.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "size_bytes": 2,
+      "mtime": 1784465742.5756493,
+      "mtime_iso": "2026-07-19T20:55:42"
+    },
+    {
+      "path": "traceability-matrix.json",
+      "sha256": "23e2a065a641e20c2a2d8cbe27bbf4d42fe1c0edc165f54b189ab63f280641e6",
+      "size_bytes": 29664,
+      "mtime": 1784465742.5748994,
+      "mtime_iso": "2026-07-19T20:55:42"
+    },
+    {
+      "path": "traceability-matrix.md",
+      "sha256": "024b650dc3dda6fc08b1f0515bc030c68880672b22968bc0cf70502fed04b1b5",
+      "size_bytes": 29822,
+      "mtime": 1784465742.5744655,
+      "mtime_iso": "2026-07-19T20:55:42"
+    }
+  ]
+}

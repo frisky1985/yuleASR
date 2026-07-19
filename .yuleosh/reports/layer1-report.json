@@ -1,17 +1,17 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-19T10:13:13.953861",
+  "generated_at": "2026-07-19T21:06:58.710751",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
       "status": "passed",
-      "commit": "a325c48",
-      "started_at": "2026-07-19T10:13:03.719741",
-      "completed_at": "2026-07-19T10:13:13.952603",
+      "commit": "81ca88c",
+      "started_at": "2026-07-19T21:06:43.854380",
+      "completed_at": "2026-07-19T21:06:58.709087",
       "stages_summary": {
-        "total": 24,
-        "passed": 20,
+        "total": 26,
+        "passed": 21,
         "failed": 0,
         "skipped": 3
       },
@@ -34,7 +34,7 @@
         {
           "name": "requirements-trace",
           "status": "passed",
-          "detail": "111 reqs, 0 modules, 2 tests (ratio 200.0%)"
+          "detail": "206 reqs, 0 modules, 4 tests (ratio 400.0%)"
         },
         {
           "name": "plan-lint",
@@ -53,8 +53,18 @@
         },
         {
           "name": "misra-check",
+          "status": "skipped",
+          "detail": "No C/C++ source files found"
+        },
+        {
+          "name": "unit-tests",
           "status": "passed",
-          "detail": "342 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "unit-tests",
@@ -128,8 +138,8 @@
         },
         {
           "name": "c-coverage",
-          "status": "skipped",
-          "detail": "No build directory with coverage data found"
+          "status": "warning",
+          "detail": "lcov/gcov may not be installed"
         },
         {
           "name": "c-coverage-gate",

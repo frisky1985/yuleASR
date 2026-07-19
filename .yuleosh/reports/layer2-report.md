@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-07-19T10:12:24.496256
+> Generated: 2026-07-19T21:07:00.307380
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -10,7 +10,7 @@
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L2 | ✅ passed | 2 | 0 | 3 | — |
+| L2 | ✅ passed | 3 | 0 | 2 | — |
 
 ### Layer L2 — Stage Details
 
@@ -18,7 +18,7 @@
 |:------|:-------|:-------|
 | cross-compile | ⏭️ | No src/cross/hello.c |
 | static-analysis | ✅ |  |
-| sil-tests | ⏭️ | No prebuilt .elf found in tests/fixtures/prebuilt/. Compile with: cd tests/fixtures/hello-arm && make |
+| sil-tests | ✅ | 1 test(s) passed |
 | integration-tests | ✅ |  |
 | memory-safety | ⏭️ | No ASan tests |
 

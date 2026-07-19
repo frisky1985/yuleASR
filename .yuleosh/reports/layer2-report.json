@@ -1,19 +1,19 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-19T10:12:24.496038",
+  "generated_at": "2026-07-19T21:07:00.307116",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 2,
       "status": "passed",
-      "commit": "a325c48",
-      "started_at": "2026-07-19T10:12:23.319470",
-      "completed_at": "2026-07-19T10:12:24.494693",
+      "commit": "81ca88c",
+      "started_at": "2026-07-19T21:06:59.043984",
+      "completed_at": "2026-07-19T21:07:00.305423",
       "stages_summary": {
         "total": 5,
-        "passed": 2,
+        "passed": 3,
         "failed": 0,
-        "skipped": 3
+        "skipped": 2
       },
       "stages": [
         {
@@ -28,8 +28,8 @@
         },
         {
           "name": "sil-tests",
-          "status": "skipped",
-          "detail": "No prebuilt .elf found in tests/fixtures/prebuilt/. Compile with: cd tests/fixtures/hello-arm && make"
+          "status": "passed",
+          "detail": "1 test(s) passed"
         },
         {
           "name": "integration-tests",

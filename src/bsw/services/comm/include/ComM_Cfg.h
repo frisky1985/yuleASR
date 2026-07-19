@@ -95,13 +95,13 @@
 #define COMM_CHANNEL_PASSIVE_WAKEUP         STD_ON
 
 /*=============================================================================
- * Data Types
+ * Data Types (using uint8 as base type; actual ComM typedefs in ComM.h)
  *===========================================================================*/
 
 /* Channel Configuration Structure */
 typedef struct {
-    ComM_ChannelHandleType ChannelId;
-    ComM_BusTypeType BusType;
+    uint8 ChannelId;
+    uint8 BusType;
     boolean WakeUpSupport;
     boolean DcmSupport;
     boolean PassiveWakeUp;
@@ -113,22 +113,22 @@ typedef struct {
 
 /* User Configuration Structure */
 typedef struct {
-    ComM_UserHandleType UserId;
-    const ComM_ChannelHandleType* ChannelMap;
+    uint8 UserId;
+    const uint8* ChannelMap;
     uint8 NumChannels;
-    const ComM_PncHandleType* PncMap;
+    const uint8* PncMap;
     uint8 NumPncs;
 } ComM_UserConfigType;
 
 /* PNC Channel Mapping */
 typedef struct {
-    ComM_ChannelHandleType ChannelId;
+    uint8 ChannelId;
     boolean IsRequester;
 } ComM_PncChannelMappingType;
 
 /* PNC Configuration Structure */
 typedef struct {
-    ComM_PncHandleType PncId;
+    uint8 PncId;
     const ComM_PncChannelMappingType* ChannelMap;
     uint8 NumChannels;
     uint16 PrepareSleepTimeout;
@@ -138,15 +138,15 @@ typedef struct {
 
 /* Request Manager Entry */
 typedef struct {
-    ComM_ModeType RequestedMode;
+    uint8 RequestedMode;
     boolean Active;
 } ComM_UserRequestType;
 
 /* Channel State Structure */
 typedef struct {
-    ComM_ChannelStateType State;
-    ComM_ModeType CurrentMode;
-    ComM_ModeType RequestedMode;
+    uint8 State;
+    uint8 CurrentMode;
+    uint8 RequestedMode;
     boolean CommunicationAllowed;
     boolean WakeUpInhibition;
     boolean LimitToNoCom;
@@ -159,7 +159,7 @@ typedef struct {
 
 /* PNC State Structure */
 typedef struct {
-    ComM_PncModeType Mode;
+    uint8 Mode;
     boolean RequestActive;
     uint32 TimeoutCounter;
     uint8 ActiveRequestCount;
@@ -173,24 +173,24 @@ extern const ComM_UserConfigType ComM_UserConfig[COMM_NUM_USERS];
 extern const ComM_PncConfigType ComM_PncConfig[COMM_NUM_PNCS];
 
 /* Channel Mappings for Users */
-extern const ComM_ChannelHandleType ComM_User0_Channels[];
-extern const ComM_ChannelHandleType ComM_User1_Channels[];
-extern const ComM_ChannelHandleType ComM_User2_Channels[];
-extern const ComM_ChannelHandleType ComM_User3_Channels[];
-extern const ComM_ChannelHandleType ComM_User4_Channels[];
-extern const ComM_ChannelHandleType ComM_User5_Channels[];
-extern const ComM_ChannelHandleType ComM_User6_Channels[];
-extern const ComM_ChannelHandleType ComM_User7_Channels[];
+extern const uint8 ComM_User0_Channels[];
+extern const uint8 ComM_User1_Channels[];
+extern const uint8 ComM_User2_Channels[];
+extern const uint8 ComM_User3_Channels[];
+extern const uint8 ComM_User4_Channels[];
+extern const uint8 ComM_User5_Channels[];
+extern const uint8 ComM_User6_Channels[];
+extern const uint8 ComM_User7_Channels[];
 
 /* PNC Mappings for Users */
-extern const ComM_PncHandleType ComM_User0_Pncs[];
-extern const ComM_PncHandleType ComM_User1_Pncs[];
-extern const ComM_PncHandleType ComM_User2_Pncs[];
-extern const ComM_PncHandleType ComM_User3_Pncs[];
-extern const ComM_PncHandleType ComM_User4_Pncs[];
-extern const ComM_PncHandleType ComM_User5_Pncs[];
-extern const ComM_PncHandleType ComM_User6_Pncs[];
-extern const ComM_PncHandleType ComM_User7_Pncs[];
+extern const uint8 ComM_User0_Pncs[];
+extern const uint8 ComM_User1_Pncs[];
+extern const uint8 ComM_User2_Pncs[];
+extern const uint8 ComM_User3_Pncs[];
+extern const uint8 ComM_User4_Pncs[];
+extern const uint8 ComM_User5_Pncs[];
+extern const uint8 ComM_User6_Pncs[];
+extern const uint8 ComM_User7_Pncs[];
 
 /* PNC Channel Mappings */
 extern const ComM_PncChannelMappingType ComM_Pnc0_Channels[];

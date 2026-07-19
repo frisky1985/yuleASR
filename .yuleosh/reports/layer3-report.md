@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-07-19T10:12:30.824144
+> Generated: 2026-07-19T21:07:07.310205
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -10,13 +10,13 @@
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L3 | ✅ passed | 1 | 0 | 2 | — |
+| L3 | ✅ passed | 2 | 0 | 1 | — |
 
 ### Layer L3 — Stage Details
 
 | Stage | Status | Detail |
 |:------|:-------|:-------|
-| e2e-tests | ⏭️ | No E2E tests |
+| e2e-tests | ✅ |  |
 | version-check | ⏭️ | No pyproject.toml |
 | evidence-pack | ✅ | Compliance pack generated |
 

@@ -66,6 +66,11 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
 )
 
+# AUTOSAR stub headers for native builds
+if(NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
+endif()
+
 # Add subdirectories
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)

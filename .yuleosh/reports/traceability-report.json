@@ -1,0 +1,5217 @@
+{
+  "lrm": {
+    "requirements": [
+      {
+        "id": "MCAL-SHALL-001",
+        "req_id": "MCAL-SHALL-001",
+        "statement": "MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)",
+        "section": "3.1 MCAL 模块",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "MCAL-SHALL-002",
+        "req_id": "MCAL-SHALL-002",
+        "statement": "所有 MCAL 模块 SHALL 支持同步和中断两种操作模式",
+        "section": "3.1 MCAL 模块",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "MCAL-SHALL-003",
+        "req_id": "MCAL-SHALL-003",
+        "statement": "MCAL SHALL 使用 MISRA C:2023 合规编码风格",
+        "section": "3.1 MCAL 模块",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "ECUAL-SHALL-001",
+        "req_id": "ECUAL-SHALL-001",
+        "statement": "ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器",
+        "section": "3.2 ECUAL 模块",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "ECUAL-SHALL-002",
+        "req_id": "ECUAL-SHALL-002",
+        "statement": "看门狗管理器 SHALL 在超时前刷新",
+        "section": "3.2 ECUAL 模块",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SVC-SHALL-001",
+        "req_id": "SVC-SHALL-001",
+        "statement": "OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务",
+        "section": "3.3 Services 层",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SVC-SHALL-002",
+        "req_id": "SVC-SHALL-002",
+        "statement": "通信栈 (CAN/以太网) SHALL 实现 PDU 路由",
+        "section": "3.3 Services 层",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SVC-SHALL-003",
+        "req_id": "SVC-SHALL-003",
+        "statement": "诊断事件管理器 (Dem) SHALL 记录并上报 DTC",
+        "section": "3.3 Services 层",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "NFR-SHALL-001",
+        "req_id": "NFR-SHALL-001",
+        "statement": "代码 MISRA C:2023 合规",
+        "section": "4. 非功能需求",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "NFR-SHALL-002",
+        "req_id": "NFR-SHALL-002",
+        "statement": "单元测试行覆盖率",
+        "section": "4. 非功能需求",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "NFR-SHALL-003",
+        "req_id": "NFR-SHALL-003",
+        "statement": "条件覆盖率",
+        "section": "4. 非功能需求",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "NFR-SHALL-004",
+        "req_id": "NFR-SHALL-004",
+        "statement": "静态分析 (cppcheck)",
+        "section": "4. 非功能需求",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-13",
+        "req_id": null,
+        "statement": "SHALL 使用 MISRA C:2023 `safety` 配置",
+        "section": "7. MISRA 合规策略",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-1",
+        "req_id": null,
+        "statement": "The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1.",
+        "section": "DCM (Diagnostic Communication Manager)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-2",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 4 concurrent diagnostic sessions.",
+        "section": "DCM (Diagnostic Communication Manager)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-3",
+        "req_id": null,
+        "statement": "The system SHALL enforce P2 timeout of 50ms for diagnostic responses.",
+        "section": "DCM (Diagnostic Communication Manager)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-4",
+        "req_id": null,
+        "statement": "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses.",
+        "section": "DCM (Diagnostic Communication Manager)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-5",
+        "req_id": null,
+        "statement": "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs).",
+        "section": "DEM (Diagnostic Event Manager)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-6",
+        "req_id": null,
+        "statement": "The system SHALL support 3 event priority levels: Low, Medium, High.",
+        "section": "DEM (Diagnostic Event Manager)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-7",
+        "req_id": null,
+        "statement": "The system SHALL store diagnostic events with primary and secondary (freeze frame) data.",
+        "section": "DEM (Diagnostic Event Manager)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-8",
+        "req_id": null,
+        "statement": "The system SHALL provide a configurable aging counter with default 40 cycles.",
+        "section": "DEM (Diagnostic Event Manager)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-9",
+        "req_id": null,
+        "statement": "The system SHALL support a configurable signal count with default of 1024 signals.",
+        "section": "COM",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-10",
+        "req_id": null,
+        "statement": "The system SHALL support signal group communication.",
+        "section": "COM",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-11",
+        "req_id": null,
+        "statement": "The system SHALL support I-PDU send and receive directions.",
+        "section": "COM",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-12",
+        "req_id": null,
+        "statement": "The system SHALL support deadline monitoring for signal transmission.",
+        "section": "COM",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-13",
+        "req_id": null,
+        "statement": "The system SHALL maintain a static routing table generated at build time.",
+        "section": "PduR",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-14",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 512 routing paths.",
+        "section": "PduR",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-15",
+        "req_id": null,
+        "statement": "The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet.",
+        "section": "PduR",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-16",
+        "req_id": null,
+        "statement": "The system SHALL support native, redundant, and dataset NVM block management.",
+        "section": "NvM",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-17",
+        "req_id": null,
+        "statement": "The system SHALL use CRC-32 for write verification.",
+        "section": "NvM",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-18",
+        "req_id": null,
+        "statement": "The system SHALL support block sizes from 1 to 65536 bytes.",
+        "section": "NvM",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-19",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 512 NVM blocks.",
+        "section": "NvM",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-20",
+        "req_id": null,
+        "statement": "The system SHALL support 4 job priority levels.",
+        "section": "NvM",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-21",
+        "req_id": null,
+        "statement": "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO.",
+        "section": "EcuM",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-22",
+        "req_id": null,
+        "statement": "The system SHALL support shutdown targets OFF, RESET, and SLEEP.",
+        "section": "EcuM",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-23",
+        "req_id": null,
+        "statement": "The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer.",
+        "section": "EcuM",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-24",
+        "req_id": null,
+        "statement": "The system SHALL provide fixed cyclic schedule tables.",
+        "section": "OS (AUTOSAR SC4)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-25",
+        "req_id": null,
+        "statement": "The system SHALL support BCC2 and ECC2 task conformance classes.",
+        "section": "OS (AUTOSAR SC4)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-26",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 64 tasks.",
+        "section": "OS (AUTOSAR SC4)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-27",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 32 alarms.",
+        "section": "OS (AUTOSAR SC4)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-28",
+        "req_id": null,
+        "statement": "The system SHALL implement the priority ceiling protocol for resource management.",
+        "section": "OS (AUTOSAR SC4)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-1",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1).",
+        "section": "CanIf (CAN Interface)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-2",
+        "req_id": null,
+        "statement": "The system SHALL support up to 512 PDU IDs.",
+        "section": "CanIf (CAN Interface)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-3",
+        "req_id": null,
+        "statement": "The system SHALL support transmit and receive PDU modes.",
+        "section": "CanIf (CAN Interface)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-4",
+        "req_id": null,
+        "statement": "The system SHALL support sleep and wakeup functionality.",
+        "section": "CanIf (CAN Interface)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-5",
+        "req_id": null,
+        "statement": "The system SHALL implement the ISO 15765-2 CAN transport protocol.",
+        "section": "CanTp (CAN Transport Protocol)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-6",
+        "req_id": null,
+        "statement": "The system SHALL support message segmentation up to 4095 bytes per message.",
+        "section": "CanTp (CAN Transport Protocol)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-7",
+        "req_id": null,
+        "statement": "The system SHALL support Continuous and Wait flow control modes.",
+        "section": "CanTp (CAN Transport Protocol)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-8",
+        "req_id": null,
+        "statement": "The system SHALL support Physical and Functional addressing.",
+        "section": "CanTp (CAN Transport Protocol)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-9",
+        "req_id": null,
+        "statement": "The system SHALL implement AUTOSAR CAN Network Management protocol.",
+        "section": "CanNm (CAN Network Management)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-10",
+        "req_id": null,
+        "statement": "The system SHALL support a configurable 8-bit node ID.",
+        "section": "CanNm (CAN Network Management)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-11",
+        "req_id": null,
+        "statement": "The system SHALL support configurable message cycle time with default of 100ms.",
+        "section": "CanNm (CAN Network Management)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-12",
+        "req_id": null,
+        "statement": "The system SHALL support configurable repeat message timer with default of 1000ms.",
+        "section": "CanNm (CAN Network Management)",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-13",
+        "req_id": null,
+        "statement": "The system SHALL support bus synchronization.",
+        "section": "CanNm (CAN Network Management)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-14",
+        "req_id": null,
+        "statement": "The system SHALL support a maximum of 32 sockets.",
+        "section": "SoAd (Socket Adaptor)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-15",
+        "req_id": null,
+        "statement": "The system SHALL support TCP and UDP protocols.",
+        "section": "SoAd (Socket Adaptor)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-16",
+        "req_id": null,
+        "statement": "The system SHALL support Server and Client connection types.",
+        "section": "SoAd (Socket Adaptor)",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-17",
+        "req_id": null,
+        "statement": "The system SHALL support SOME/IP protocol communication.",
+        "section": "SoAd (Socket Adaptor)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-18",
+        "req_id": null,
+        "statement": "The system SHALL support an offer cycle of 1000ms for service discovery.",
+        "section": "SomeIpSd (SOME/IP Service Discovery)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-19",
+        "req_id": null,
+        "statement": "The system SHALL support a request cycle of 2000ms for service discovery.",
+        "section": "SomeIpSd (SOME/IP Service Discovery)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-20",
+        "req_id": null,
+        "statement": "The system SHALL support TTL multiplier of 3 for service entries.",
+        "section": "SomeIpSd (SOME/IP Service Discovery)",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-21",
+        "req_id": null,
+        "statement": "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose.",
+        "section": "DLT",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-22",
+        "req_id": null,
+        "statement": "The system SHALL support TCP and Serial transport for DLT messages.",
+        "section": "DLT",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-23",
+        "req_id": null,
+        "statement": "The system SHALL support Application ID filtering.",
+        "section": "DLT",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-24",
+        "req_id": null,
+        "statement": "The system SHALL support CAN and Ethernet transport layers for XCP.",
+        "section": "XCP",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-25",
+        "req_id": null,
+        "statement": "The system SHALL implement XCP protocol version 1.5.",
+        "section": "XCP",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-26",
+        "req_id": null,
+        "statement": "The system SHALL support XCP slave functionality.",
+        "section": "XCP",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-27",
+        "req_id": null,
+        "statement": "The system SHALL support calibration page switching.",
+        "section": "XCP",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-28",
+        "req_id": null,
+        "statement": "The system SHALL support up to 8 DAQ lists.",
+        "section": "XCP",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-1",
+        "req_id": null,
+        "statement": "The system SHALL support 10-bit and 12-bit configurable ADC resolution.",
+        "section": "ADC Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-2",
+        "req_id": null,
+        "statement": "The system SHALL support Single, Continuous, and Scan conversion modes.",
+        "section": "ADC Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-3",
+        "req_id": null,
+        "statement": "The system SHALL support up to 16 channels per ADC instance.",
+        "section": "ADC Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-4",
+        "req_id": null,
+        "statement": "The system SHALL support left and right result alignment.",
+        "section": "ADC Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-5",
+        "req_id": null,
+        "statement": "The system SHALL support interrupt-based and polling notification modes.",
+        "section": "ADC Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-6",
+        "req_id": null,
+        "statement": "The system SHALL support Classical CAN (2.0B) and CAN FD protocols.",
+        "section": "CAN Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-7",
+        "req_id": null,
+        "statement": "The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD.",
+        "section": "CAN Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-8",
+        "req_id": null,
+        "statement": "The system SHALL provide 64 mailboxes for CAN message buffering.",
+        "section": "CAN Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-9",
+        "req_id": null,
+        "statement": "The system SHALL support FIFO mode for CAN message reception.",
+        "section": "CAN Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-10",
+        "req_id": null,
+        "statement": "The system SHALL support loopback mode for self-test.",
+        "section": "CAN Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-11",
+        "req_id": null,
+        "statement": "The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification.",
+        "section": "CAN Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-12",
+        "req_id": null,
+        "statement": "The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes.",
+        "section": "Crypto Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-13",
+        "req_id": null,
+        "statement": "The system SHALL support SHA-256 hashing.",
+        "section": "Crypto Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-14",
+        "req_id": null,
+        "statement": "The system SHALL support ECC P-256 elliptic curve cryptography.",
+        "section": "Crypto Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-15",
+        "req_id": null,
+        "statement": "The system SHALL accelerate cryptographic operations using S32K312 HSM.",
+        "section": "Crypto Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-16",
+        "req_id": null,
+        "statement": "The system SHALL store cryptographic keys in HSM secure NVM.",
+        "section": "Crypto Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-17",
+        "req_id": null,
+        "statement": "The system SHALL provide integrated hardware TRNG.",
+        "section": "Crypto Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-18",
+        "req_id": null,
+        "statement": "The system SHALL provide MbedTLS fallback for SIL simulation.",
+        "section": "Crypto Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-19",
+        "req_id": null,
+        "statement": "The system SHALL support 8 ports with 32 pins each for digital I/O.",
+        "section": "DIO Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-20",
+        "req_id": null,
+        "statement": "The system SHALL support configurable pin direction per pin.",
+        "section": "DIO Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-21",
+        "req_id": null,
+        "statement": "The system SHALL support HIGH and LEVEL output levels.",
+        "section": "DIO Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-22",
+        "req_id": null,
+        "statement": "The system SHALL support edge-triggered interrupt on rising, falling, and both edges.",
+        "section": "DIO Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-23",
+        "req_id": null,
+        "statement": "The system SHALL support pin mux configuration for approximately 100 pins.",
+        "section": "PORT Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-24",
+        "req_id": null,
+        "statement": "The system SHALL support ALT0 through ALT7 mux modes.",
+        "section": "PORT Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-25",
+        "req_id": null,
+        "statement": "The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength.",
+        "section": "PORT Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-26",
+        "req_id": null,
+        "statement": "The system SHALL provide 8 hardware timer channels.",
+        "section": "GPT Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-27",
+        "req_id": null,
+        "statement": "The system SHALL provide 32-bit timer resolution.",
+        "section": "GPT Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-28",
+        "req_id": null,
+        "statement": "The system SHALL support prescaler values from 1 to 65536.",
+        "section": "GPT Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-29",
+        "req_id": null,
+        "statement": "The system SHALL support one-shot and continuous timer modes.",
+        "section": "GPT Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-30",
+        "req_id": null,
+        "statement": "The system SHALL support up to 8 input capture channels.",
+        "section": "ICU Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-31",
+        "req_id": null,
+        "statement": "The system SHALL support signal period, duty cycle, and pulse width measurement.",
+        "section": "ICU Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-32",
+        "req_id": null,
+        "statement": "The system SHALL support rising, falling, and both edge detection.",
+        "section": "ICU Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-33",
+        "req_id": null,
+        "statement": "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL.",
+        "section": "MCU Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-34",
+        "req_id": null,
+        "statement": "The system SHALL support 4 RAM section banks.",
+        "section": "MCU Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-35",
+        "req_id": null,
+        "statement": "The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes.",
+        "section": "MCU Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-36",
+        "req_id": null,
+        "statement": "The system SHALL support POR, WDG, SW, and External reset sources.",
+        "section": "MCU Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-37",
+        "req_id": null,
+        "statement": "The system SHALL provide configurable watchdog timeout from milliseconds to seconds.",
+        "section": "WDG Driver",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-38",
+        "req_id": null,
+        "statement": "The system SHALL support window mode watchdog operation.",
+        "section": "WDG Driver",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "SHALL-39",
+        "req_id": null,
+        "statement": "The system SHALL support test mode for diagnostic testing.",
+        "section": "WDG Driver",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "DCM-REQ-01",
+        "req_id": "DCM-REQ-01",
+        "statement": "SHALL support ISO 14229-1 UDS diagnostic services",
+        "section": "Diagnostic Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "DCM-REQ-02",
+        "req_id": "DCM-REQ-02",
+        "statement": "SHALL support session management (default, programming, extended)",
+        "section": "Diagnostic Services",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "DEM-REQ-01",
+        "req_id": "DEM-REQ-01",
+        "statement": "SHALL support DTC storage and retrieval",
+        "section": "Diagnostic Services",
+        "code_files": [],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": false,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "DET-REQ-01",
+        "req_id": "DET-REQ-01",
+        "statement": "SHALL report development errors with module ID and error code",
+        "section": "Diagnostic Services",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "DOIP-REQ-01",
+        "req_id": "DOIP-REQ-01",
+        "statement": "SHALL support DoIP vehicle discovery",
+        "section": "Diagnostic Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "COM-REQ-01",
+        "req_id": "COM-REQ-01",
+        "statement": "SHALL support signal-based I-PDU communication",
+        "section": "Communication Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "PDUR-REQ-01",
+        "req_id": "PDUR-REQ-01",
+        "statement": "SHALL route I-PDUs between COM and transport layers",
+        "section": "Communication Services",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "CANSM-REQ-01",
+        "req_id": "CANSM-REQ-01",
+        "statement": "SHALL manage CAN network state machine",
+        "section": "Communication Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "LIN-REQ-01",
+        "req_id": "LIN-REQ-01",
+        "statement": "SHALL support LIN master/slave communication",
+        "section": "Communication Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "NVM-REQ-01",
+        "req_id": "NVM-REQ-01",
+        "statement": "SHALL support NV block read/write with redundancy",
+        "section": "Memory Services",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "FEE-REQ-01",
+        "req_id": "FEE-REQ-01",
+        "statement": "SHALL emulate EEPROM over flash with wear leveling",
+        "section": "Memory Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "MEMIF-REQ-01",
+        "req_id": "MEMIF-REQ-01",
+        "statement": "SHALL abstract NvM from Fee/EEP driver",
+        "section": "Memory Services",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "ECUM-REQ-01",
+        "req_id": "ECUM-REQ-01",
+        "statement": "SHALL manage ECU startup/shutdown/wakeup sequences",
+        "section": "System Services",
+        "code_files": [
+          "src/micro-dds/tests/integration/test_integration.py",
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "BSWM-REQ-01",
+        "req_id": "BSWM-REQ-01",
+        "statement": "SHALL implement mode-based BSW scheduling",
+        "section": "System Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "WDGM-REQ-01",
+        "req_id": "WDGM-REQ-01",
+        "statement": "SHALL monitor alive and deadline supervision",
+        "section": "System Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "OS-REQ-01",
+        "req_id": "OS-REQ-01",
+        "statement": "SHALL provide AUTOSAR OS SC4 compliant scheduling",
+        "section": "System Services",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "E2E-REQ-01",
+        "req_id": "E2E-REQ-01",
+        "statement": "SHALL protect safety-critical signals with CRC and sequence counter",
+        "section": "Safety & Security",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "CSM-REQ-01",
+        "req_id": "CSM-REQ-01",
+        "statement": "SHALL provide cryptographic service management",
+        "section": "Safety & Security",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      },
+      {
+        "id": "KEYM-REQ-01",
+        "req_id": "KEYM-REQ-01",
+        "statement": "SHALL manage cryptographic keys",
+        "section": "Safety & Security",
+        "code_files": [
+          "src/yuleasr_monitor.py"
+        ],
+        "test_reports": [],
+        "reviews": [],
+        "has_code": true,
+        "has_test": false,
+        "has_review": false,
+        "step_handlers": []
+      }
+    ],
+    "summary": {
+      "total": 127,
+      "with_code": 85,
+      "without_code": 42,
+      "with_test": 0,
+      "without_test": 127,
+      "with_review": 0,
+      "without_review": 127,
+      "coverage_pct": 0.0
+    },
+    "generated_at": "2026-07-19T20:55:52.728717"
+  },
+  "lrt": {
+    "lrm": {
+      "requirements": [
+        {
+          "id": "MCAL-SHALL-001",
+          "req_id": "MCAL-SHALL-001",
+          "statement": "MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)",
+          "section": "3.1 MCAL 模块",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "MCAL-SHALL-002",
+          "req_id": "MCAL-SHALL-002",
+          "statement": "所有 MCAL 模块 SHALL 支持同步和中断两种操作模式",
+          "section": "3.1 MCAL 模块",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "MCAL-SHALL-003",
+          "req_id": "MCAL-SHALL-003",
+          "statement": "MCAL SHALL 使用 MISRA C:2023 合规编码风格",
+          "section": "3.1 MCAL 模块",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "ECUAL-SHALL-001",
+          "req_id": "ECUAL-SHALL-001",
+          "statement": "ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器",
+          "section": "3.2 ECUAL 模块",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "ECUAL-SHALL-002",
+          "req_id": "ECUAL-SHALL-002",
+          "statement": "看门狗管理器 SHALL 在超时前刷新",
+          "section": "3.2 ECUAL 模块",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SVC-SHALL-001",
+          "req_id": "SVC-SHALL-001",
+          "statement": "OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务",
+          "section": "3.3 Services 层",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SVC-SHALL-002",
+          "req_id": "SVC-SHALL-002",
+          "statement": "通信栈 (CAN/以太网) SHALL 实现 PDU 路由",
+          "section": "3.3 Services 层",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SVC-SHALL-003",
+          "req_id": "SVC-SHALL-003",
+          "statement": "诊断事件管理器 (Dem) SHALL 记录并上报 DTC",
+          "section": "3.3 Services 层",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "NFR-SHALL-001",
+          "req_id": "NFR-SHALL-001",
+          "statement": "代码 MISRA C:2023 合规",
+          "section": "4. 非功能需求",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "NFR-SHALL-002",
+          "req_id": "NFR-SHALL-002",
+          "statement": "单元测试行覆盖率",
+          "section": "4. 非功能需求",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "NFR-SHALL-003",
+          "req_id": "NFR-SHALL-003",
+          "statement": "条件覆盖率",
+          "section": "4. 非功能需求",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "NFR-SHALL-004",
+          "req_id": "NFR-SHALL-004",
+          "statement": "静态分析 (cppcheck)",
+          "section": "4. 非功能需求",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-13",
+          "req_id": null,
+          "statement": "SHALL 使用 MISRA C:2023 `safety` 配置",
+          "section": "7. MISRA 合规策略",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-1",
+          "req_id": null,
+          "statement": "The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1.",
+          "section": "DCM (Diagnostic Communication Manager)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-2",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 4 concurrent diagnostic sessions.",
+          "section": "DCM (Diagnostic Communication Manager)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-3",
+          "req_id": null,
+          "statement": "The system SHALL enforce P2 timeout of 50ms for diagnostic responses.",
+          "section": "DCM (Diagnostic Communication Manager)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-4",
+          "req_id": null,
+          "statement": "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses.",
+          "section": "DCM (Diagnostic Communication Manager)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-5",
+          "req_id": null,
+          "statement": "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs).",
+          "section": "DEM (Diagnostic Event Manager)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-6",
+          "req_id": null,
+          "statement": "The system SHALL support 3 event priority levels: Low, Medium, High.",
+          "section": "DEM (Diagnostic Event Manager)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-7",
+          "req_id": null,
+          "statement": "The system SHALL store diagnostic events with primary and secondary (freeze frame) data.",
+          "section": "DEM (Diagnostic Event Manager)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-8",
+          "req_id": null,
+          "statement": "The system SHALL provide a configurable aging counter with default 40 cycles.",
+          "section": "DEM (Diagnostic Event Manager)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-9",
+          "req_id": null,
+          "statement": "The system SHALL support a configurable signal count with default of 1024 signals.",
+          "section": "COM",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-10",
+          "req_id": null,
+          "statement": "The system SHALL support signal group communication.",
+          "section": "COM",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-11",
+          "req_id": null,
+          "statement": "The system SHALL support I-PDU send and receive directions.",
+          "section": "COM",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-12",
+          "req_id": null,
+          "statement": "The system SHALL support deadline monitoring for signal transmission.",
+          "section": "COM",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-13",
+          "req_id": null,
+          "statement": "The system SHALL maintain a static routing table generated at build time.",
+          "section": "PduR",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-14",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 512 routing paths.",
+          "section": "PduR",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-15",
+          "req_id": null,
+          "statement": "The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet.",
+          "section": "PduR",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-16",
+          "req_id": null,
+          "statement": "The system SHALL support native, redundant, and dataset NVM block management.",
+          "section": "NvM",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-17",
+          "req_id": null,
+          "statement": "The system SHALL use CRC-32 for write verification.",
+          "section": "NvM",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-18",
+          "req_id": null,
+          "statement": "The system SHALL support block sizes from 1 to 65536 bytes.",
+          "section": "NvM",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-19",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 512 NVM blocks.",
+          "section": "NvM",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-20",
+          "req_id": null,
+          "statement": "The system SHALL support 4 job priority levels.",
+          "section": "NvM",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-21",
+          "req_id": null,
+          "statement": "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO.",
+          "section": "EcuM",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-22",
+          "req_id": null,
+          "statement": "The system SHALL support shutdown targets OFF, RESET, and SLEEP.",
+          "section": "EcuM",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-23",
+          "req_id": null,
+          "statement": "The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer.",
+          "section": "EcuM",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-24",
+          "req_id": null,
+          "statement": "The system SHALL provide fixed cyclic schedule tables.",
+          "section": "OS (AUTOSAR SC4)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-25",
+          "req_id": null,
+          "statement": "The system SHALL support BCC2 and ECC2 task conformance classes.",
+          "section": "OS (AUTOSAR SC4)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-26",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 64 tasks.",
+          "section": "OS (AUTOSAR SC4)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-27",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 32 alarms.",
+          "section": "OS (AUTOSAR SC4)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-28",
+          "req_id": null,
+          "statement": "The system SHALL implement the priority ceiling protocol for resource management.",
+          "section": "OS (AUTOSAR SC4)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-1",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1).",
+          "section": "CanIf (CAN Interface)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-2",
+          "req_id": null,
+          "statement": "The system SHALL support up to 512 PDU IDs.",
+          "section": "CanIf (CAN Interface)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-3",
+          "req_id": null,
+          "statement": "The system SHALL support transmit and receive PDU modes.",
+          "section": "CanIf (CAN Interface)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-4",
+          "req_id": null,
+          "statement": "The system SHALL support sleep and wakeup functionality.",
+          "section": "CanIf (CAN Interface)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-5",
+          "req_id": null,
+          "statement": "The system SHALL implement the ISO 15765-2 CAN transport protocol.",
+          "section": "CanTp (CAN Transport Protocol)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-6",
+          "req_id": null,
+          "statement": "The system SHALL support message segmentation up to 4095 bytes per message.",
+          "section": "CanTp (CAN Transport Protocol)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-7",
+          "req_id": null,
+          "statement": "The system SHALL support Continuous and Wait flow control modes.",
+          "section": "CanTp (CAN Transport Protocol)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-8",
+          "req_id": null,
+          "statement": "The system SHALL support Physical and Functional addressing.",
+          "section": "CanTp (CAN Transport Protocol)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-9",
+          "req_id": null,
+          "statement": "The system SHALL implement AUTOSAR CAN Network Management protocol.",
+          "section": "CanNm (CAN Network Management)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-10",
+          "req_id": null,
+          "statement": "The system SHALL support a configurable 8-bit node ID.",
+          "section": "CanNm (CAN Network Management)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-11",
+          "req_id": null,
+          "statement": "The system SHALL support configurable message cycle time with default of 100ms.",
+          "section": "CanNm (CAN Network Management)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-12",
+          "req_id": null,
+          "statement": "The system SHALL support configurable repeat message timer with default of 1000ms.",
+          "section": "CanNm (CAN Network Management)",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-13",
+          "req_id": null,
+          "statement": "The system SHALL support bus synchronization.",
+          "section": "CanNm (CAN Network Management)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-14",
+          "req_id": null,
+          "statement": "The system SHALL support a maximum of 32 sockets.",
+          "section": "SoAd (Socket Adaptor)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-15",
+          "req_id": null,
+          "statement": "The system SHALL support TCP and UDP protocols.",
+          "section": "SoAd (Socket Adaptor)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-16",
+          "req_id": null,
+          "statement": "The system SHALL support Server and Client connection types.",
+          "section": "SoAd (Socket Adaptor)",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-17",
+          "req_id": null,
+          "statement": "The system SHALL support SOME/IP protocol communication.",
+          "section": "SoAd (Socket Adaptor)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-18",
+          "req_id": null,
+          "statement": "The system SHALL support an offer cycle of 1000ms for service discovery.",
+          "section": "SomeIpSd (SOME/IP Service Discovery)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-19",
+          "req_id": null,
+          "statement": "The system SHALL support a request cycle of 2000ms for service discovery.",
+          "section": "SomeIpSd (SOME/IP Service Discovery)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-20",
+          "req_id": null,
+          "statement": "The system SHALL support TTL multiplier of 3 for service entries.",
+          "section": "SomeIpSd (SOME/IP Service Discovery)",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-21",
+          "req_id": null,
+          "statement": "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose.",
+          "section": "DLT",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-22",
+          "req_id": null,
+          "statement": "The system SHALL support TCP and Serial transport for DLT messages.",
+          "section": "DLT",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-23",
+          "req_id": null,
+          "statement": "The system SHALL support Application ID filtering.",
+          "section": "DLT",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-24",
+          "req_id": null,
+          "statement": "The system SHALL support CAN and Ethernet transport layers for XCP.",
+          "section": "XCP",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-25",
+          "req_id": null,
+          "statement": "The system SHALL implement XCP protocol version 1.5.",
+          "section": "XCP",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-26",
+          "req_id": null,
+          "statement": "The system SHALL support XCP slave functionality.",
+          "section": "XCP",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-27",
+          "req_id": null,
+          "statement": "The system SHALL support calibration page switching.",
+          "section": "XCP",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-28",
+          "req_id": null,
+          "statement": "The system SHALL support up to 8 DAQ lists.",
+          "section": "XCP",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-1",
+          "req_id": null,
+          "statement": "The system SHALL support 10-bit and 12-bit configurable ADC resolution.",
+          "section": "ADC Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-2",
+          "req_id": null,
+          "statement": "The system SHALL support Single, Continuous, and Scan conversion modes.",
+          "section": "ADC Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-3",
+          "req_id": null,
+          "statement": "The system SHALL support up to 16 channels per ADC instance.",
+          "section": "ADC Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-4",
+          "req_id": null,
+          "statement": "The system SHALL support left and right result alignment.",
+          "section": "ADC Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-5",
+          "req_id": null,
+          "statement": "The system SHALL support interrupt-based and polling notification modes.",
+          "section": "ADC Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-6",
+          "req_id": null,
+          "statement": "The system SHALL support Classical CAN (2.0B) and CAN FD protocols.",
+          "section": "CAN Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-7",
+          "req_id": null,
+          "statement": "The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD.",
+          "section": "CAN Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-8",
+          "req_id": null,
+          "statement": "The system SHALL provide 64 mailboxes for CAN message buffering.",
+          "section": "CAN Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-9",
+          "req_id": null,
+          "statement": "The system SHALL support FIFO mode for CAN message reception.",
+          "section": "CAN Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-10",
+          "req_id": null,
+          "statement": "The system SHALL support loopback mode for self-test.",
+          "section": "CAN Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-11",
+          "req_id": null,
+          "statement": "The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification.",
+          "section": "CAN Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-12",
+          "req_id": null,
+          "statement": "The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes.",
+          "section": "Crypto Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-13",
+          "req_id": null,
+          "statement": "The system SHALL support SHA-256 hashing.",
+          "section": "Crypto Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-14",
+          "req_id": null,
+          "statement": "The system SHALL support ECC P-256 elliptic curve cryptography.",
+          "section": "Crypto Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-15",
+          "req_id": null,
+          "statement": "The system SHALL accelerate cryptographic operations using S32K312 HSM.",
+          "section": "Crypto Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-16",
+          "req_id": null,
+          "statement": "The system SHALL store cryptographic keys in HSM secure NVM.",
+          "section": "Crypto Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-17",
+          "req_id": null,
+          "statement": "The system SHALL provide integrated hardware TRNG.",
+          "section": "Crypto Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-18",
+          "req_id": null,
+          "statement": "The system SHALL provide MbedTLS fallback for SIL simulation.",
+          "section": "Crypto Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-19",
+          "req_id": null,
+          "statement": "The system SHALL support 8 ports with 32 pins each for digital I/O.",
+          "section": "DIO Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-20",
+          "req_id": null,
+          "statement": "The system SHALL support configurable pin direction per pin.",
+          "section": "DIO Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-21",
+          "req_id": null,
+          "statement": "The system SHALL support HIGH and LEVEL output levels.",
+          "section": "DIO Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-22",
+          "req_id": null,
+          "statement": "The system SHALL support edge-triggered interrupt on rising, falling, and both edges.",
+          "section": "DIO Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-23",
+          "req_id": null,
+          "statement": "The system SHALL support pin mux configuration for approximately 100 pins.",
+          "section": "PORT Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-24",
+          "req_id": null,
+          "statement": "The system SHALL support ALT0 through ALT7 mux modes.",
+          "section": "PORT Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-25",
+          "req_id": null,
+          "statement": "The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength.",
+          "section": "PORT Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-26",
+          "req_id": null,
+          "statement": "The system SHALL provide 8 hardware timer channels.",
+          "section": "GPT Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-27",
+          "req_id": null,
+          "statement": "The system SHALL provide 32-bit timer resolution.",
+          "section": "GPT Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-28",
+          "req_id": null,
+          "statement": "The system SHALL support prescaler values from 1 to 65536.",
+          "section": "GPT Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-29",
+          "req_id": null,
+          "statement": "The system SHALL support one-shot and continuous timer modes.",
+          "section": "GPT Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-30",
+          "req_id": null,
+          "statement": "The system SHALL support up to 8 input capture channels.",
+          "section": "ICU Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-31",
+          "req_id": null,
+          "statement": "The system SHALL support signal period, duty cycle, and pulse width measurement.",
+          "section": "ICU Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-32",
+          "req_id": null,
+          "statement": "The system SHALL support rising, falling, and both edge detection.",
+          "section": "ICU Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-33",
+          "req_id": null,
+          "statement": "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL.",
+          "section": "MCU Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-34",
+          "req_id": null,
+          "statement": "The system SHALL support 4 RAM section banks.",
+          "section": "MCU Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-35",
+          "req_id": null,
+          "statement": "The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes.",
+          "section": "MCU Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-36",
+          "req_id": null,
+          "statement": "The system SHALL support POR, WDG, SW, and External reset sources.",
+          "section": "MCU Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-37",
+          "req_id": null,
+          "statement": "The system SHALL provide configurable watchdog timeout from milliseconds to seconds.",
+          "section": "WDG Driver",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-38",
+          "req_id": null,
+          "statement": "The system SHALL support window mode watchdog operation.",
+          "section": "WDG Driver",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "SHALL-39",
+          "req_id": null,
+          "statement": "The system SHALL support test mode for diagnostic testing.",
+          "section": "WDG Driver",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "DCM-REQ-01",
+          "req_id": "DCM-REQ-01",
+          "statement": "SHALL support ISO 14229-1 UDS diagnostic services",
+          "section": "Diagnostic Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "DCM-REQ-02",
+          "req_id": "DCM-REQ-02",
+          "statement": "SHALL support session management (default, programming, extended)",
+          "section": "Diagnostic Services",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "DEM-REQ-01",
+          "req_id": "DEM-REQ-01",
+          "statement": "SHALL support DTC storage and retrieval",
+          "section": "Diagnostic Services",
+          "code_files": [],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": false,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "DET-REQ-01",
+          "req_id": "DET-REQ-01",
+          "statement": "SHALL report development errors with module ID and error code",
+          "section": "Diagnostic Services",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "DOIP-REQ-01",
+          "req_id": "DOIP-REQ-01",
+          "statement": "SHALL support DoIP vehicle discovery",
+          "section": "Diagnostic Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "COM-REQ-01",
+          "req_id": "COM-REQ-01",
+          "statement": "SHALL support signal-based I-PDU communication",
+          "section": "Communication Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "PDUR-REQ-01",
+          "req_id": "PDUR-REQ-01",
+          "statement": "SHALL route I-PDUs between COM and transport layers",
+          "section": "Communication Services",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "CANSM-REQ-01",
+          "req_id": "CANSM-REQ-01",
+          "statement": "SHALL manage CAN network state machine",
+          "section": "Communication Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "LIN-REQ-01",
+          "req_id": "LIN-REQ-01",
+          "statement": "SHALL support LIN master/slave communication",
+          "section": "Communication Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "NVM-REQ-01",
+          "req_id": "NVM-REQ-01",
+          "statement": "SHALL support NV block read/write with redundancy",
+          "section": "Memory Services",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "FEE-REQ-01",
+          "req_id": "FEE-REQ-01",
+          "statement": "SHALL emulate EEPROM over flash with wear leveling",
+          "section": "Memory Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "MEMIF-REQ-01",
+          "req_id": "MEMIF-REQ-01",
+          "statement": "SHALL abstract NvM from Fee/EEP driver",
+          "section": "Memory Services",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "ECUM-REQ-01",
+          "req_id": "ECUM-REQ-01",
+          "statement": "SHALL manage ECU startup/shutdown/wakeup sequences",
+          "section": "System Services",
+          "code_files": [
+            "src/micro-dds/tests/integration/test_integration.py",
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "BSWM-REQ-01",
+          "req_id": "BSWM-REQ-01",
+          "statement": "SHALL implement mode-based BSW scheduling",
+          "section": "System Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "WDGM-REQ-01",
+          "req_id": "WDGM-REQ-01",
+          "statement": "SHALL monitor alive and deadline supervision",
+          "section": "System Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "OS-REQ-01",
+          "req_id": "OS-REQ-01",
+          "statement": "SHALL provide AUTOSAR OS SC4 compliant scheduling",
+          "section": "System Services",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "E2E-REQ-01",
+          "req_id": "E2E-REQ-01",
+          "statement": "SHALL protect safety-critical signals with CRC and sequence counter",
+          "section": "Safety & Security",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "CSM-REQ-01",
+          "req_id": "CSM-REQ-01",
+          "statement": "SHALL provide cryptographic service management",
+          "section": "Safety & Security",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        },
+        {
+          "id": "KEYM-REQ-01",
+          "req_id": "KEYM-REQ-01",
+          "statement": "SHALL manage cryptographic keys",
+          "section": "Safety & Security",
+          "code_files": [
+            "src/yuleasr_monitor.py"
+          ],
+          "test_reports": [],
+          "reviews": [],
+          "has_code": true,
+          "has_test": false,
+          "has_review": false,
+          "step_handlers": []
+        }
+      ],
+      "summary": {
+        "total": 127,
+        "with_code": 85,
+        "without_code": 42,
+        "with_test": 0,
+        "without_test": 127,
+        "with_review": 0,
+        "without_review": 127,
+        "coverage_pct": 0.0
+      },
+      "generated_at": "2026-07-19T20:55:52.728717"
+    },
+    "reviews_available": 0,
+    "test_reports_available": 0,
+    "ci_results_available": 5,
+    "orphaned_test_files": [],
+    "gap_analysis": {
+      "total_gaps": 296,
+      "gaps": [
+        {
+          "type": "no_test",
+          "req_id": "MCAL-SHALL-001",
+          "statement": "MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)"
+        },
+        {
+          "type": "no_review",
+          "req_id": "MCAL-SHALL-001",
+          "statement": "MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)"
+        },
+        {
+          "type": "no_test",
+          "req_id": "MCAL-SHALL-002",
+          "statement": "所有 MCAL 模块 SHALL 支持同步和中断两种操作模式"
+        },
+        {
+          "type": "no_review",
+          "req_id": "MCAL-SHALL-002",
+          "statement": "所有 MCAL 模块 SHALL 支持同步和中断两种操作模式"
+        },
+        {
+          "type": "no_test",
+          "req_id": "MCAL-SHALL-003",
+          "statement": "MCAL SHALL 使用 MISRA C:2023 合规编码风格"
+        },
+        {
+          "type": "no_review",
+          "req_id": "MCAL-SHALL-003",
+          "statement": "MCAL SHALL 使用 MISRA C:2023 合规编码风格"
+        },
+        {
+          "type": "no_test",
+          "req_id": "ECUAL-SHALL-001",
+          "statement": "ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器"
+        },
+        {
+          "type": "no_review",
+          "req_id": "ECUAL-SHALL-001",
+          "statement": "ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器"
+        },
+        {
+          "type": "no_code",
+          "req_id": "ECUAL-SHALL-002",
+          "statement": "看门狗管理器 SHALL 在超时前刷新"
+        },
+        {
+          "type": "no_test",
+          "req_id": "ECUAL-SHALL-002",
+          "statement": "看门狗管理器 SHALL 在超时前刷新"
+        },
+        {
+          "type": "no_review",
+          "req_id": "ECUAL-SHALL-002",
+          "statement": "看门狗管理器 SHALL 在超时前刷新"
+        },
+        {
+          "type": "no_test",
+          "req_id": "SVC-SHALL-001",
+          "statement": "OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务"
+        },
+        {
+          "type": "no_review",
+          "req_id": "SVC-SHALL-001",
+          "statement": "OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务"
+        },
+        {
+          "type": "no_test",
+          "req_id": "SVC-SHALL-002",
+          "statement": "通信栈 (CAN/以太网) SHALL 实现 PDU 路由"
+        },
+        {
+          "type": "no_review",
+          "req_id": "SVC-SHALL-002",
+          "statement": "通信栈 (CAN/以太网) SHALL 实现 PDU 路由"
+        },
+        {
+          "type": "no_test",
+          "req_id": "SVC-SHALL-003",
+          "statement": "诊断事件管理器 (Dem) SHALL 记录并上报 DTC"
+        },
+        {
+          "type": "no_review",
+          "req_id": "SVC-SHALL-003",
+          "statement": "诊断事件管理器 (Dem) SHALL 记录并上报 DTC"
+        },
+        {
+          "type": "no_code",
+          "req_id": "NFR-SHALL-001",
+          "statement": "代码 MISRA C:2023 合规"
+        },
+        {
+          "type": "no_test",
+          "req_id": "NFR-SHALL-001",
+          "statement": "代码 MISRA C:2023 合规"
+        },
+        {
+          "type": "no_review",
+          "req_id": "NFR-SHALL-001",
+          "statement": "代码 MISRA C:2023 合规"
+        },
+        {
+          "type": "no_code",
+          "req_id": "NFR-SHALL-002",
+          "statement": "单元测试行覆盖率"
+        },
+        {
+          "type": "no_test",
+          "req_id": "NFR-SHALL-002",
+          "statement": "单元测试行覆盖率"
+        },
+        {
+          "type": "no_review",
+          "req_id": "NFR-SHALL-002",
+          "statement": "单元测试行覆盖率"
+        },
+        {
+          "type": "no_code",
+          "req_id": "NFR-SHALL-003",
+          "statement": "条件覆盖率"
+        },
+        {
+          "type": "no_test",
+          "req_id": "NFR-SHALL-003",
+          "statement": "条件覆盖率"
+        },
+        {
+          "type": "no_review",
+          "req_id": "NFR-SHALL-003",
+          "statement": "条件覆盖率"
+        },
+        {
+          "type": "no_code",
+          "req_id": "NFR-SHALL-004",
+          "statement": "静态分析 (cppcheck)"
+        },
+        {
+          "type": "no_test",
+          "req_id": "NFR-SHALL-004",
+          "statement": "静态分析 (cppcheck)"
+        },
+        {
+          "type": "no_review",
+          "req_id": "NFR-SHALL-004",
+          "statement": "静态分析 (cppcheck)"
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-13",
+          "statement": "SHALL 使用 MISRA C:2023 `safety` 配置"
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-13",
+          "statement": "SHALL 使用 MISRA C:2023 `safety` 配置"
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-1",
+          "statement": "The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-1",
+          "statement": "The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support a maximum of 4 concurrent diagnostic sessions."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support a maximum of 4 concurrent diagnostic sessions."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support a maximum of 4 concurrent diagnostic sessions."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL enforce P2 timeout of 50ms for diagnostic responses."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL enforce P2 timeout of 50ms for diagnostic responses."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL enforce P2 timeout of 50ms for diagnostic responses."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs)."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs)."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs)."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-6",
+          "statement": "The system SHALL support 3 event priority levels: Low, Medium, High."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-6",
+          "statement": "The system SHALL support 3 event priority levels: Low, Medium, High."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL store diagnostic events with primary and secondary (freeze frame) data."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL store diagnostic events with primary and secondary (freeze frame) data."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL store diagnostic events with primary and secondary (freeze frame) data."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL provide a configurable aging counter with default 40 cycles."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL provide a configurable aging counter with default 40 cycles."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-9",
+          "statement": "The system SHALL support a configurable signal count with default of 1024 signals."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-9",
+          "statement": "The system SHALL support a configurable signal count with default of 1024 signals."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-10",
+          "statement": "The system SHALL support signal group communication."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-10",
+          "statement": "The system SHALL support signal group communication."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-11",
+          "statement": "The system SHALL support I-PDU send and receive directions."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-11",
+          "statement": "The system SHALL support I-PDU send and receive directions."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support deadline monitoring for signal transmission."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support deadline monitoring for signal transmission."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL maintain a static routing table generated at build time."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL maintain a static routing table generated at build time."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support a maximum of 512 routing paths."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support a maximum of 512 routing paths."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support a maximum of 512 routing paths."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-15",
+          "statement": "The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-15",
+          "statement": "The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL support native, redundant, and dataset NVM block management."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL support native, redundant, and dataset NVM block management."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL use CRC-32 for write verification."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL use CRC-32 for write verification."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL support block sizes from 1 to 65536 bytes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL support block sizes from 1 to 65536 bytes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support a maximum of 512 NVM blocks."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support a maximum of 512 NVM blocks."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-20",
+          "statement": "The system SHALL support 4 job priority levels."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-20",
+          "statement": "The system SHALL support 4 job priority levels."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support shutdown targets OFF, RESET, and SLEEP."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support shutdown targets OFF, RESET, and SLEEP."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support shutdown targets OFF, RESET, and SLEEP."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL provide fixed cyclic schedule tables."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL provide fixed cyclic schedule tables."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL provide fixed cyclic schedule tables."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL support BCC2 and ECC2 task conformance classes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL support BCC2 and ECC2 task conformance classes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL support BCC2 and ECC2 task conformance classes."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL support a maximum of 64 tasks."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL support a maximum of 64 tasks."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL support a maximum of 64 tasks."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL support a maximum of 32 alarms."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL support a maximum of 32 alarms."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL support a maximum of 32 alarms."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL implement the priority ceiling protocol for resource management."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL implement the priority ceiling protocol for resource management."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-1",
+          "statement": "The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1)."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-1",
+          "statement": "The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1)."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support up to 512 PDU IDs."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support up to 512 PDU IDs."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL support transmit and receive PDU modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL support transmit and receive PDU modes."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL support sleep and wakeup functionality."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL support sleep and wakeup functionality."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL support sleep and wakeup functionality."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL implement the ISO 15765-2 CAN transport protocol."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL implement the ISO 15765-2 CAN transport protocol."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-6",
+          "statement": "The system SHALL support message segmentation up to 4095 bytes per message."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-6",
+          "statement": "The system SHALL support message segmentation up to 4095 bytes per message."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL support Continuous and Wait flow control modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL support Continuous and Wait flow control modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL support Continuous and Wait flow control modes."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL support Physical and Functional addressing."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL support Physical and Functional addressing."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL support Physical and Functional addressing."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-9",
+          "statement": "The system SHALL implement AUTOSAR CAN Network Management protocol."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-9",
+          "statement": "The system SHALL implement AUTOSAR CAN Network Management protocol."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-10",
+          "statement": "The system SHALL support a configurable 8-bit node ID."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-10",
+          "statement": "The system SHALL support a configurable 8-bit node ID."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-11",
+          "statement": "The system SHALL support configurable message cycle time with default of 100ms."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-11",
+          "statement": "The system SHALL support configurable message cycle time with default of 100ms."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support configurable repeat message timer with default of 1000ms."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support configurable repeat message timer with default of 1000ms."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL support bus synchronization."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL support bus synchronization."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL support bus synchronization."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support a maximum of 32 sockets."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support a maximum of 32 sockets."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support a maximum of 32 sockets."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-15",
+          "statement": "The system SHALL support TCP and UDP protocols."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-15",
+          "statement": "The system SHALL support TCP and UDP protocols."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL support Server and Client connection types."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL support Server and Client connection types."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL support Server and Client connection types."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL support SOME/IP protocol communication."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL support SOME/IP protocol communication."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL support an offer cycle of 1000ms for service discovery."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL support an offer cycle of 1000ms for service discovery."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support a request cycle of 2000ms for service discovery."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support a request cycle of 2000ms for service discovery."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-20",
+          "statement": "The system SHALL support TTL multiplier of 3 for service entries."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-20",
+          "statement": "The system SHALL support TTL multiplier of 3 for service entries."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support TCP and Serial transport for DLT messages."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support TCP and Serial transport for DLT messages."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support Application ID filtering."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support Application ID filtering."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support Application ID filtering."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL support CAN and Ethernet transport layers for XCP."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL support CAN and Ethernet transport layers for XCP."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL implement XCP protocol version 1.5."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL implement XCP protocol version 1.5."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL support XCP slave functionality."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL support XCP slave functionality."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL support calibration page switching."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL support calibration page switching."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL support calibration page switching."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL support up to 8 DAQ lists."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL support up to 8 DAQ lists."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL support up to 8 DAQ lists."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-1",
+          "statement": "The system SHALL support 10-bit and 12-bit configurable ADC resolution."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-1",
+          "statement": "The system SHALL support 10-bit and 12-bit configurable ADC resolution."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support Single, Continuous, and Scan conversion modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support Single, Continuous, and Scan conversion modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-2",
+          "statement": "The system SHALL support Single, Continuous, and Scan conversion modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL support up to 16 channels per ADC instance."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-3",
+          "statement": "The system SHALL support up to 16 channels per ADC instance."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL support left and right result alignment."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-4",
+          "statement": "The system SHALL support left and right result alignment."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL support interrupt-based and polling notification modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-5",
+          "statement": "The system SHALL support interrupt-based and polling notification modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-6",
+          "statement": "The system SHALL support Classical CAN (2.0B) and CAN FD protocols."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-6",
+          "statement": "The system SHALL support Classical CAN (2.0B) and CAN FD protocols."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-7",
+          "statement": "The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL provide 64 mailboxes for CAN message buffering."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-8",
+          "statement": "The system SHALL provide 64 mailboxes for CAN message buffering."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-9",
+          "statement": "The system SHALL support FIFO mode for CAN message reception."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-9",
+          "statement": "The system SHALL support FIFO mode for CAN message reception."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-10",
+          "statement": "The system SHALL support loopback mode for self-test."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-10",
+          "statement": "The system SHALL support loopback mode for self-test."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-11",
+          "statement": "The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-11",
+          "statement": "The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-12",
+          "statement": "The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL support SHA-256 hashing."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-13",
+          "statement": "The system SHALL support SHA-256 hashing."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support ECC P-256 elliptic curve cryptography."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support ECC P-256 elliptic curve cryptography."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-14",
+          "statement": "The system SHALL support ECC P-256 elliptic curve cryptography."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-15",
+          "statement": "The system SHALL accelerate cryptographic operations using S32K312 HSM."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-15",
+          "statement": "The system SHALL accelerate cryptographic operations using S32K312 HSM."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL store cryptographic keys in HSM secure NVM."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-16",
+          "statement": "The system SHALL store cryptographic keys in HSM secure NVM."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL provide integrated hardware TRNG."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL provide integrated hardware TRNG."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-17",
+          "statement": "The system SHALL provide integrated hardware TRNG."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL provide MbedTLS fallback for SIL simulation."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL provide MbedTLS fallback for SIL simulation."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-18",
+          "statement": "The system SHALL provide MbedTLS fallback for SIL simulation."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support 8 ports with 32 pins each for digital I/O."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support 8 ports with 32 pins each for digital I/O."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-19",
+          "statement": "The system SHALL support 8 ports with 32 pins each for digital I/O."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-20",
+          "statement": "The system SHALL support configurable pin direction per pin."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-20",
+          "statement": "The system SHALL support configurable pin direction per pin."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support HIGH and LEVEL output levels."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-21",
+          "statement": "The system SHALL support HIGH and LEVEL output levels."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support edge-triggered interrupt on rising, falling, and both edges."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-22",
+          "statement": "The system SHALL support edge-triggered interrupt on rising, falling, and both edges."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support pin mux configuration for approximately 100 pins."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support pin mux configuration for approximately 100 pins."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-23",
+          "statement": "The system SHALL support pin mux configuration for approximately 100 pins."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL support ALT0 through ALT7 mux modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL support ALT0 through ALT7 mux modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-24",
+          "statement": "The system SHALL support ALT0 through ALT7 mux modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-25",
+          "statement": "The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL provide 8 hardware timer channels."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL provide 8 hardware timer channels."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-26",
+          "statement": "The system SHALL provide 8 hardware timer channels."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL provide 32-bit timer resolution."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL provide 32-bit timer resolution."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-27",
+          "statement": "The system SHALL provide 32-bit timer resolution."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL support prescaler values from 1 to 65536."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL support prescaler values from 1 to 65536."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-28",
+          "statement": "The system SHALL support prescaler values from 1 to 65536."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-29",
+          "statement": "The system SHALL support one-shot and continuous timer modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-29",
+          "statement": "The system SHALL support one-shot and continuous timer modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-30",
+          "statement": "The system SHALL support up to 8 input capture channels."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-30",
+          "statement": "The system SHALL support up to 8 input capture channels."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-31",
+          "statement": "The system SHALL support signal period, duty cycle, and pulse width measurement."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-31",
+          "statement": "The system SHALL support signal period, duty cycle, and pulse width measurement."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-31",
+          "statement": "The system SHALL support signal period, duty cycle, and pulse width measurement."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-32",
+          "statement": "The system SHALL support rising, falling, and both edge detection."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-32",
+          "statement": "The system SHALL support rising, falling, and both edge detection."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-33",
+          "statement": "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-33",
+          "statement": "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-33",
+          "statement": "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-34",
+          "statement": "The system SHALL support 4 RAM section banks."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-34",
+          "statement": "The system SHALL support 4 RAM section banks."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-35",
+          "statement": "The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-35",
+          "statement": "The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-36",
+          "statement": "The system SHALL support POR, WDG, SW, and External reset sources."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-36",
+          "statement": "The system SHALL support POR, WDG, SW, and External reset sources."
+        },
+        {
+          "type": "no_code",
+          "req_id": "SHALL-37",
+          "statement": "The system SHALL provide configurable watchdog timeout from milliseconds to seconds."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-37",
+          "statement": "The system SHALL provide configurable watchdog timeout from milliseconds to seconds."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-37",
+          "statement": "The system SHALL provide configurable watchdog timeout from milliseconds to seconds."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-38",
+          "statement": "The system SHALL support window mode watchdog operation."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-38",
+          "statement": "The system SHALL support window mode watchdog operation."
+        },
+        {
+          "type": "no_test",
+          "req_id": "SHALL-39",
+          "statement": "The system SHALL support test mode for diagnostic testing."
+        },
+        {
+          "type": "no_review",
+          "req_id": "SHALL-39",
+          "statement": "The system SHALL support test mode for diagnostic testing."
+        },
+        {
+          "type": "no_test",
+          "req_id": "DCM-REQ-01",
+          "statement": "SHALL support ISO 14229-1 UDS diagnostic services"
+        },
+        {
+          "type": "no_review",
+          "req_id": "DCM-REQ-01",
+          "statement": "SHALL support ISO 14229-1 UDS diagnostic services"
+        },
+        {
+          "type": "no_test",
+          "req_id": "DCM-REQ-02",
+          "statement": "SHALL support session management (default, programming, extended)"
+        },
+        {
+          "type": "no_review",
+          "req_id": "DCM-REQ-02",
+          "statement": "SHALL support session management (default, programming, extended)"
+        },
+        {
+          "type": "no_code",
+          "req_id": "DEM-REQ-01",
+          "statement": "SHALL support DTC storage and retrieval"
+        },
+        {
+          "type": "no_test",
+          "req_id": "DEM-REQ-01",
+          "statement": "SHALL support DTC storage and retrieval"
+        },
+        {
+          "type": "no_review",
+          "req_id": "DEM-REQ-01",
+          "statement": "SHALL support DTC storage and retrieval"
+        },
+        {
+          "type": "no_test",
+          "req_id": "DET-REQ-01",
+          "statement": "SHALL report development errors with module ID and error code"
+        },
+        {
+          "type": "no_review",
+          "req_id": "DET-REQ-01",
+          "statement": "SHALL report development errors with module ID and error code"
+        },
+        {
+          "type": "no_test",
+          "req_id": "DOIP-REQ-01",
+          "statement": "SHALL support DoIP vehicle discovery"
+        },
+        {
+          "type": "no_review",
+          "req_id": "DOIP-REQ-01",
+          "statement": "SHALL support DoIP vehicle discovery"
+        },
+        {
+          "type": "no_test",
+          "req_id": "COM-REQ-01",
+          "statement": "SHALL support signal-based I-PDU communication"
+        },
+        {
+          "type": "no_review",
+          "req_id": "COM-REQ-01",
+          "statement": "SHALL support signal-based I-PDU communication"
+        },
+        {
+          "type": "no_test",
+          "req_id": "PDUR-REQ-01",
+          "statement": "SHALL route I-PDUs between COM and transport layers"
+        },
+        {
+          "type": "no_review",
+          "req_id": "PDUR-REQ-01",
+          "statement": "SHALL route I-PDUs between COM and transport layers"
+        },
+        {
+          "type": "no_test",
+          "req_id": "CANSM-REQ-01",
+          "statement": "SHALL manage CAN network state machine"
+        },
+        {
+          "type": "no_review",
+          "req_id": "CANSM-REQ-01",
+          "statement": "SHALL manage CAN network state machine"
+        },
+        {
+          "type": "no_test",
+          "req_id": "LIN-REQ-01",
+          "statement": "SHALL support LIN master/slave communication"
+        },
+        {
+          "type": "no_review",
+          "req_id": "LIN-REQ-01",
+          "statement": "SHALL support LIN master/slave communication"
+        },
+        {
+          "type": "no_test",
+          "req_id": "NVM-REQ-01",
+          "statement": "SHALL support NV block read/write with redundancy"
+        },
+        {
+          "type": "no_review",
+          "req_id": "NVM-REQ-01",
+          "statement": "SHALL support NV block read/write with redundancy"
+        },
+        {
+          "type": "no_test",
+          "req_id": "FEE-REQ-01",
+          "statement": "SHALL emulate EEPROM over flash with wear leveling"
+        },
+        {
+          "type": "no_review",
+          "req_id": "FEE-REQ-01",
+          "statement": "SHALL emulate EEPROM over flash with wear leveling"
+        },
+        {
+          "type": "no_test",
+          "req_id": "MEMIF-REQ-01",
+          "statement": "SHALL abstract NvM from Fee/EEP driver"
+        },
+        {
+          "type": "no_review",
+          "req_id": "MEMIF-REQ-01",
+          "statement": "SHALL abstract NvM from Fee/EEP driver"
+        },
+        {
+          "type": "no_test",
+          "req_id": "ECUM-REQ-01",
+          "statement": "SHALL manage ECU startup/shutdown/wakeup sequences"
+        },
+        {
+          "type": "no_review",
+          "req_id": "ECUM-REQ-01",
+          "statement": "SHALL manage ECU startup/shutdown/wakeup sequences"
+        },
+        {
+          "type": "no_test",
+          "req_id": "BSWM-REQ-01",
+          "statement": "SHALL implement mode-based BSW scheduling"
+        },
+        {
+          "type": "no_review",
+          "req_id": "BSWM-REQ-01",
+          "statement": "SHALL implement mode-based BSW scheduling"
+        },
+        {
+          "type": "no_test",
+          "req_id": "WDGM-REQ-01",
+          "statement": "SHALL monitor alive and deadline supervision"
+        },
+        {
+          "type": "no_review",
+          "req_id": "WDGM-REQ-01",
+          "statement": "SHALL monitor alive and deadline supervision"
+        },
+        {
+          "type": "no_test",
+          "req_id": "OS-REQ-01",
+          "statement": "SHALL provide AUTOSAR OS SC4 compliant scheduling"
+        },
+        {
+          "type": "no_review",
+          "req_id": "OS-REQ-01",
+          "statement": "SHALL provide AUTOSAR OS SC4 compliant scheduling"
+        },
+        {
+          "type": "no_test",
+          "req_id": "E2E-REQ-01",
+          "statement": "SHALL protect safety-critical signals with CRC and sequence counter"
+        },
+        {
+          "type": "no_review",
+          "req_id": "E2E-REQ-01",
+          "statement": "SHALL protect safety-critical signals with CRC and sequence counter"
+        },
+        {
+          "type": "no_test",
+          "req_id": "CSM-REQ-01",
+          "statement": "SHALL provide cryptographic service management"
+        },
+        {
+          "type": "no_review",
+          "req_id": "CSM-REQ-01",
+          "statement": "SHALL provide cryptographic service management"
+        },
+        {
+          "type": "no_test",
+          "req_id": "KEYM-REQ-01",
+          "statement": "SHALL manage cryptographic keys"
+        },
+        {
+          "type": "no_review",
+          "req_id": "KEYM-REQ-01",
+          "statement": "SHALL manage cryptographic keys"
+        }
+      ],
+      "missing_code_count": 42,
+      "missing_test_count": 127,
+      "missing_review_count": 127
+    },
+    "generated_at": "2026-07-19T20:55:52.729542"
+  },
+  "coverage_summary": {
+    "requirements_total": 127,
+    "test_coverage_pct": 0.0,
+    "code_coverage": "85/127",
+    "review_coverage": "0/127",
+    "total_gaps": 296,
+    "orphaned_tests": 0
+  },
+  "recommendations": [
+    "⚠️ 超过 30% 的需求缺少代码实现映射 — 建议在注释中添加 'REQ-ID: SHALL-N' 标记",
+    "⚠️ 超过 20% 的需求缺少测试覆盖 — 建议补充对应测试用例",
+    "🔴 测试覆盖率低于 60% — 可能影响 ASPICE CL1 审计通过"
+  ],
+  "generated_at": "2026-07-19T20:55:52.729552"
+}

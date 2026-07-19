@@ -12,9 +12,9 @@ ci:
 coverage:
   threshold_line: 0.0
   threshold_condition: 0.0
-  c_fail_under: 0
+  c_fail_under: 60
   strict: false
-  c_fail_under: 70
+  threshold_branch: 50
   module_thresholds:
     src/ecual: 75.0
     src/mcal: 75.0

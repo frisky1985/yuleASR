@@ -99,6 +99,10 @@ paths =
     include
     include/autosar/classic/com
     include/autosar/standard
+    src/bsw
+    src/asw
+    src/platform
+    src/rte
 
 [exclude]
 # Excluded files/directories

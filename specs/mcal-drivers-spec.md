@@ -1,57 +1,67 @@
 # yuleASR — MCAL Drivers Specification
 
 ## ADC Driver
-- Resolution: 10-bit, 12-bit configurable
-- Conversion modes: Single, Continuous, Scan
-- Max channels: 16 per ADC instance
-- Result alignment: Left/Right
-- Notification: Interrupt-based, polling
+
+- The system SHALL support 10-bit and 12-bit configurable ADC resolution.
+- The system SHALL support Single, Continuous, and Scan conversion modes.
+- The system SHALL support up to 16 channels per ADC instance.
+- The system SHALL support left and right result alignment.
+- The system SHALL support interrupt-based and polling notification modes.
 
 ## CAN Driver
-- Protocol: Classical CAN (2.0B) + CAN FD
-- Bit rates: 125kbps to 1Mbps (CAN), up to 8Mbps (CAN FD)
-- Mailboxes: 64
-- FIFO support: Yes
-- Loopback mode: Yes
-- Bus-off recovery: Automatic (AUTOSAR compliant)
+
+- The system SHALL support Classical CAN (2.0B) and CAN FD protocols.
+- The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD.
+- The system SHALL provide 64 mailboxes for CAN message buffering.
+- The system SHALL support FIFO mode for CAN message reception.
+- The system SHALL support loopback mode for self-test.
+- The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification.
 
 ## Crypto Driver
-- Algorithms: AES-128/256 (ECB, CBC, CTR), SHA-256, ECC P-256
-- HSM acceleration: Yes, S32K312 HSM
-- Key storage: HSM secure NVM
-- TRNG: Integrated hardware TRNG
-- MbedTLS fallback: Yes (for SIL simulation)
+
+- The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes.
+- The system SHALL support SHA-256 hashing.
+- The system SHALL support ECC P-256 elliptic curve cryptography.
+- The system SHALL accelerate cryptographic operations using S32K312 HSM.
+- The system SHALL store cryptographic keys in HSM secure NVM.
+- The system SHALL provide integrated hardware TRNG.
+- The system SHALL provide MbedTLS fallback for SIL simulation.
 
 ## DIO Driver
-- Ports/Channels: 8 ports × 32 pins
-- Direction: Configurable per pin
-- Level: HIGH/LOW
-- Interrupt support: Edge-triggered (rising, falling, both)
+
+- The system SHALL support 8 ports with 32 pins each for digital I/O.
+- The system SHALL support configurable pin direction per pin.
+- The system SHALL support HIGH and LEVEL output levels.
+- The system SHALL support edge-triggered interrupt on rising, falling, and both edges.
 
 ## PORT Driver
-- Pin configurations: ~100 pins
-- Mux modes: ALT0-ALT7
-- Pad properties: Pull-up/down, slew rate, drive strength
+
+- The system SHALL support pin mux configuration for approximately 100 pins.
+- The system SHALL support ALT0 through ALT7 mux modes.
+- The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength.
 
 ## GPT Driver
-- Timers: 8 hardware channels
-- Resolution: 32-bit
-- Prescaler: 1-65536
-- Mode: One-shot, Continuous
+
+- The system SHALL provide 8 hardware timer channels.
+- The system SHALL provide 32-bit timer resolution.
+- The system SHALL support prescaler values from 1 to 65536.
+- The system SHALL support one-shot and continuous timer modes.
 
 ## ICU Driver
-- Input capture: Up to 8 channels
-- Signal measurement: Period, duty cycle, pulse width
-- Edge detection: Rising, Falling, Both
+
+- The system SHALL support up to 8 input capture channels.
+- The system SHALL support signal period, duty cycle, and pulse width measurement.
+- The system SHALL support rising, falling, and both edge detection.
 
 ## MCU Driver
-- Clock sources: SOSC, SIRC, FIRC, PLL, SPLL
-- RAM sections: 4 banks
-- Power modes: RUN, SLEEP, STOP, STANDBY
-- Reset sources: POR, WDG, SW, External
+
+- The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL.
+- The system SHALL support 4 RAM section banks.
+- The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes.
+- The system SHALL support POR, WDG, SW, and External reset sources.
 
 ## WDG Driver
-- Watchdog type: Internal watchdog (WDOG)
-- Timeout range: Configurable (ms to seconds)
-- Window mode: Yes
-- Test mode: Yes (for diagnostic testing)
+
+- The system SHALL provide configurable watchdog timeout from milliseconds to seconds.
+- The system SHALL support window mode watchdog operation.
+- The system SHALL support test mode for diagnostic testing.

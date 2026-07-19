@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-07-19T10:13:13.954092
+> Generated: 2026-07-19T21:06:58.711025
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -10,7 +10,7 @@
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ✅ passed | 20 | 0 | 3 | — |
+| L1 | ✅ passed | 21 | 0 | 3 | — |
 
 ### Layer L1 — Stage Details
 
@@ -19,11 +19,13 @@
 | yaml-validation | ✅ |  |
 | spec-validation | ✅ | 0 missing, 3 req keywords found |
 | architecture-review | ✅ | 0 modules:  |
-| requirements-trace | ✅ | 111 reqs, 0 modules, 2 tests (ratio 200.0%) |
+| requirements-trace | ✅ | 206 reqs, 0 modules, 4 tests (ratio 400.0%) |
 | plan-lint | ⏭️ | No task/plan files found |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ✅ | 342 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ⏭️ | No C/C++ source files found |
+| unit-tests | ✅ |  |
+| unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -38,7 +40,7 @@
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | coverage | ✅ | line=0.0%, cond=0.0% |
-| c-coverage | ⏭️ | No build directory with coverage data found |
+| c-coverage | ⚠️ | lcov/gcov may not be installed |
 | c-coverage-gate | ⏭️ | No C coverage report at .yuleosh/reports/c-coverage.json |
 
 ### Layer L1 — Code Coverage
