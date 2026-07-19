@@ -121,3 +121,6 @@ build*/
 .build/
 *.elf
 coverage.info
+*.db
+*.info
+tools/deepen_*.py
