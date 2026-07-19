@@ -13,6 +13,7 @@
 /**
  * @file Eep.c
  * @brief EEPROM Driver Implementation - Flash-backed EEPROM Emulation
+ * @req SHALL_EEP - EEPROM Driver Implementation - Flash-backed EEPROM Emulation
  * @version 2.0.0
  *
  * @details Implements AUTOSAR EEPROM module with:
@@ -141,6 +142,7 @@ static uint32 Eep_GetTick(void);
 
 /**
  * @brief Resets internal state to defaults
+ * @req SHALL_EEP - Resets internal state to defaults
  */
 static void Eep_ResetInternalState(void)
 {
@@ -164,6 +166,7 @@ static void Eep_ResetInternalState(void)
 
 /**
  * @brief Validates address and length parameters
+ * @req SHALL_EEP - Validates address and length parameters
  * @param Address Target address
  * @param Length Length of operation
  * @return TRUE if valid, FALSE otherwise
@@ -184,6 +187,7 @@ static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Lengt
 
 /**
  * @brief Executes memory read operation from backing store
+ * @req SHALL_EEP - Executes memory read operation from backing store
  */
 static void Eep_ProcessRead(void)
 {
@@ -205,6 +209,7 @@ static void Eep_ProcessRead(void)
 
 /**
  * @brief Executes memory write operation to backing store
+ * @req SHALL_EEP - Executes memory write operation to backing store
  */
 static void Eep_ProcessWrite(void)
 {
@@ -226,6 +231,7 @@ static void Eep_ProcessWrite(void)
 
 /**
  * @brief Executes memory erase operation (fill with 0xFF)
+ * @req SHALL_EEP - Executes memory erase operation (fill with 0xFF)
  */
 static void Eep_ProcessErase(void)
 {
@@ -246,6 +252,7 @@ static void Eep_ProcessErase(void)
 
 /**
  * @brief Gets current system tick
+ * @req SHALL_EEP - Gets current system tick
  */
 static uint32 Eep_GetTick(void)
 {
@@ -261,6 +268,7 @@ static uint32 Eep_GetTick(void)
 
 /**
  * @brief Initializes the EEPROM Driver module
+ * @req SHALL_EEP - Initializes the EEPROM Driver module
  * @param ConfigPtr Pointer to configuration structure
  * @requirement Eep-100: Initialize to IDLE
  */
@@ -292,6 +300,7 @@ void Eep_Init(const Eep_ConfigType* ConfigPtr)
 
 /**
  * @brief De-initializes the EEPROM module
+ * @req SHALL_EEP - De-initializes the EEPROM module
  * @requirement Eep-200: Reset to UNINIT
  */
 void Eep_DeInit(void)
@@ -301,6 +310,7 @@ void Eep_DeInit(void)
 
 /**
  * @brief Reads data from EEPROM (asynchronous)
+ * @req SHALL_EEP - Reads data from EEPROM (asynchronous)
  * @param Address Start address
  * @param DataPtr Pointer to data buffer
  * @param Length Number of bytes to read
@@ -354,6 +364,7 @@ Std_ReturnType Eep_Read(Eep_AddressType Address, uint8* DataPtr, Eep_LengthType 
 
 /**
  * @brief Writes data to EEPROM (asynchronous)
+ * @req SHALL_EEP - Writes data to EEPROM (asynchronous)
  * @param Address Start address
  * @param DataPtr Pointer to data buffer
  * @param Length Number of bytes to write
@@ -407,6 +418,7 @@ Std_ReturnType Eep_Write(Eep_AddressType Address, const uint8* DataPtr, Eep_Leng
 
 /**
  * @brief Erases EEPROM region (asynchronous)
+ * @req SHALL_EEP - Erases EEPROM region (asynchronous)
  * @param Address Start address
  * @param Length Number of bytes to erase
  * @return E_OK if accepted
@@ -450,6 +462,7 @@ Std_ReturnType Eep_Erase(Eep_AddressType Address, Eep_LengthType Length)
 
 /**
  * @brief Cancels current operation
+ * @req SHALL_EEP - Cancels current operation
  * @requirement Eep-600: Cancel
  */
 #if (EEP_CANCEL_API == STD_ON)
@@ -465,6 +478,7 @@ void Eep_Cancel(void)
 
 /**
  * @brief Gets module status
+ * @req SHALL_EEP - Gets module status
  * @return Current status
  * @requirement Eep-700: Get status
  */
@@ -481,6 +495,7 @@ Eep_StatusType Eep_GetStatus(void)
 
 /**
  * @brief Gets last job result
+ * @req SHALL_EEP - Gets last job result
  * @return Last job result
  * @requirement Eep-800: Get job result
  */
@@ -491,6 +506,7 @@ Eep_JobResultType Eep_GetJobResult(void)
 
 /**
  * @brief Main function called periodically
+ * @req SHALL_EEP - Main function called periodically
  * @requirement Eep-900: Process pending operations
  */
 void Eep_MainFunction(void)
@@ -521,6 +537,7 @@ void Eep_MainFunction(void)
 
 /**
  * @brief Gets version information
+ * @req SHALL_EEP - Gets version information
  * @param versioninfo Pointer to version info structure
  * @requirement Eep-1000: Version info
  */
@@ -543,3 +560,11 @@ void Eep_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 #define EEP_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(EEP_AR_RELEASE_MAJOR_VERSION) && (EEP_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Eep: AR major mismatch"
+#endif
+#if defined(EEP_AR_RELEASE_MINOR_VERSION) && (EEP_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Eep: AR minor mismatch"
+#endif

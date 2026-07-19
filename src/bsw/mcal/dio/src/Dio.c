@@ -13,6 +13,7 @@
 /**
  * @file Dio.c
  * @brief DIO Driver implementation for i.MX8M Mini
+ * @req SHALL_DIO - DIO Driver implementation for i.MX8M Mini
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -275,3 +276,11 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
 
 #define DIO_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(DIO_AR_RELEASE_MAJOR_VERSION) && (DIO_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Dio: AR major mismatch"
+#endif
+#if defined(DIO_AR_RELEASE_MINOR_VERSION) && (DIO_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Dio: AR minor mismatch"
+#endif

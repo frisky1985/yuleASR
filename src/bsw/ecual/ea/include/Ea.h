@@ -24,6 +24,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define EA_VENDOR_ID                    (0x01U) /* YuleTech Vendor ID */
+#define EA_INSTANCE_ID           0U
 #define EA_MODULE_ID                    (0x31U) /* EA Module ID */
 #define EA_AR_RELEASE_MAJOR_VERSION     (0x04U)
 #define EA_AR_RELEASE_MINOR_VERSION     (0x04U)

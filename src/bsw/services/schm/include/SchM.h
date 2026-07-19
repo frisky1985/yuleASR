@@ -16,6 +16,12 @@
 
 #include "Std_Types.h"
 
+#define SCHM_AR_RELEASE_MAJOR_VERSION   4U
+#define SCHM_AR_RELEASE_MINOR_VERSION   4U
+#define SCHM_AR_RELEASE_REVISION_VERSION 0U
+#define SCHM_SW_MAJOR_VERSION           1U
+#define SCHM_SW_MINOR_VERSION           0U
+#define SCHM_SW_PATCH_VERSION           0U
 #define SCHM_MODULE_ID              0x3AU
 #define SCHM_VENDOR_ID              0x0055U
 

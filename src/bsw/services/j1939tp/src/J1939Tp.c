@@ -13,6 +13,7 @@
 /**
  * @file J1939Tp.c
  * @brief AUTOSAR J1939 Transport Protocol Implementation
+ * @req SHALL_J1939TP - AUTOSAR J1939 Transport Protocol Implementation
  *
  * Implements SAE J1939-21 Transport Protocol:
  * - BAM (Broadcast Announce Message) - connectionless broadcast
@@ -56,6 +57,14 @@ static uint8 J1939Tp_TxBuffer[J1939TP_MAX_TP_SIZE];
 
 #define J1939TP_STOP_SEC_VAR_NO_INIT_UNSPECIFIED
 #include "MemMap.h"
+
+/* Version check */
+#if defined(J1939TP_AR_RELEASE_MAJOR_VERSION) && (J1939TP_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "J1939Tp: AR major mismatch"
+#endif
+#if defined(J1939TP_AR_RELEASE_MINOR_VERSION) && (J1939TP_AR_RELEASE_MINOR_VERSION != 4u)
+#error "J1939Tp: AR minor mismatch"
+#endif
 
 /*==================================================================================================
  *                               Local Function Prototypes

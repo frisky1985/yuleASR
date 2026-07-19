@@ -8,6 +8,14 @@
 #include "IpduM.h"
 #include "Det.h"
 
+/* Version check */
+#if defined(IPDUM_AR_RELEASE_MAJOR_VERSION) && (IPDUM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "IpduM: AR major mismatch"
+#endif
+#if defined(IPDUM_AR_RELEASE_MINOR_VERSION) && (IPDUM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "IpduM: AR minor mismatch"
+#endif
+
 #define IPDUM_SID_INIT              0x00U
 #define IPDUM_SID_DEINIT            0x01U
 #define IPDUM_SID_SET_IPDU_MODE     0x02U

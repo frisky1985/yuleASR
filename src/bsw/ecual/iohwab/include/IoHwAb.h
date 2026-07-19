@@ -14,6 +14,12 @@
 #include "Std_Types.h"
 #include "IoHwAb_Cfg.h"
 
+#define IOHWAB_AR_RELEASE_MAJOR_VERSION   4U
+#define IOHWAB_AR_RELEASE_MINOR_VERSION   4U
+#define IOHWAB_AR_RELEASE_REVISION_VERSION 0U
+#define IOHWAB_SW_MAJOR_VERSION           1U
+#define IOHWAB_SW_MINOR_VERSION           0U
+#define IOHWAB_SW_PATCH_VERSION           0U
 #define IOHWAB_MODULE_ID                0x7AU
 #define IOHWAB_VENDOR_ID                0x0055U
 

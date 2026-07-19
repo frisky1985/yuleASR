@@ -1,6 +1,7 @@
 /**
  * @file LinSM.c
  * @brief LIN State Manager implementation
+ * @req SHALL_LINSM - LIN State Manager implementation
  * @version 1.0.0
  * @date 2026-04-28
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -27,6 +28,7 @@
 ==================================================================================================*/
 /**
  * @brief LinSM Channel State structure
+ * @req SHALL_LINSM - LinSM Channel State structure
  */
 typedef struct {
     LinSM_StateType State;                  /*!< Current state */
@@ -61,6 +63,14 @@ STATIC LinSM_ChannelStateType LinSM_ChannelStates[LINSM_NUMBER_OF_CHANNELS];
 #define LINSM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/* Version check */
+#if defined(LINSM_AR_RELEASE_MAJOR_VERSION) && (LINSM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "LinSM: AR major mismatch"
+#endif
+#if defined(LINSM_AR_RELEASE_MINOR_VERSION) && (LINSM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "LinSM: AR minor mismatch"
+#endif
+
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
@@ -74,6 +84,7 @@ STATIC void LinSM_HandleModeRequest(LinSM_ChannelType Channel);
 ==================================================================================================*/
 /**
  * @brief Validates the channel ID
+ * @req SHALL_LINSM - Validates the channel ID
  */
 STATIC Std_ReturnType LinSM_ValidateChannel(LinSM_ChannelType Channel)
 {
@@ -88,6 +99,7 @@ STATIC Std_ReturnType LinSM_ValidateChannel(LinSM_ChannelType Channel)
 
 /**
  * @brief Handles schedule request
+ * @req SHALL_LINSM - Handles schedule request
  */
 STATIC void LinSM_HandleScheduleRequest(LinSM_ChannelType Channel)
 {
@@ -107,6 +119,7 @@ STATIC void LinSM_HandleScheduleRequest(LinSM_ChannelType Channel)
 
 /**
  * @brief Handles mode request
+ * @req SHALL_LINSM - Handles mode request
  */
 STATIC void LinSM_HandleModeRequest(LinSM_ChannelType Channel)
 {
@@ -131,6 +144,7 @@ STATIC void LinSM_HandleModeRequest(LinSM_ChannelType Channel)
 
 /**
  * @brief Processes the state machine
+ * @req SHALL_LINSM - Processes the state machine
  */
 STATIC void LinSM_ProcessStateMachine(LinSM_ChannelType Channel)
 {
@@ -175,6 +189,7 @@ STATIC void LinSM_ProcessStateMachine(LinSM_ChannelType Channel)
 ==================================================================================================*/
 /**
  * @brief Initializes the LIN State Manager module
+ * @req SHALL_LINSM - Initializes the LIN State Manager module
  */
 void LinSM_Init(const LinSM_ConfigType* ConfigPtr)
 {
@@ -211,6 +226,7 @@ void LinSM_Init(const LinSM_ConfigType* ConfigPtr)
 
 /**
  * @brief Deinitializes the LIN State Manager module
+ * @req SHALL_LINSM - Deinitializes the LIN State Manager module
  */
 void LinSM_DeInit(void)
 {
@@ -236,6 +252,7 @@ void LinSM_DeInit(void)
 
 /**
  * @brief Gets version information
+ * @req SHALL_LINSM - Gets version information
  */
 #if (LINSM_VERSION_INFO_API == STD_ON)
 void LinSM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
@@ -257,6 +274,7 @@ void LinSM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 
 /**
  * @brief Requests schedule change
+ * @req SHALL_LINSM - Requests schedule change
  */
 Std_ReturnType LinSM_ScheduleRequest(LinSM_ChannelType Channel, LinSM_ScheduleType Schedule)
 {
@@ -294,6 +312,7 @@ Std_ReturnType LinSM_ScheduleRequest(LinSM_ChannelType Channel, LinSM_ScheduleTy
 
 /**
  * @brief Gets the current schedule for a channel
+ * @req SHALL_LINSM - Gets the current schedule for a channel
  */
 Std_ReturnType LinSM_GetCurrentSchedule(LinSM_ChannelType Channel, LinSM_ScheduleType* Schedule)
 {
@@ -324,6 +343,7 @@ Std_ReturnType LinSM_GetCurrentSchedule(LinSM_ChannelType Channel, LinSM_Schedul
 
 /**
  * @brief Requests communication mode change
+ * @req SHALL_LINSM - Requests communication mode change
  */
 Std_ReturnType LinSM_RequestComMode(LinSM_ChannelType Channel, LinSM_ModeType Mode)
 {
@@ -370,6 +390,7 @@ Std_ReturnType LinSM_RequestComMode(LinSM_ChannelType Channel, LinSM_ModeType Mo
 
 /**
  * @brief Gets the current communication mode for a channel
+ * @req SHALL_LINSM - Gets the current communication mode for a channel
  */
 Std_ReturnType LinSM_GetCurrentComMode(LinSM_ChannelType Channel, LinSM_ModeType* Mode)
 {
@@ -400,6 +421,7 @@ Std_ReturnType LinSM_GetCurrentComMode(LinSM_ChannelType Channel, LinSM_ModeType
 
 /**
  * @brief Main function for LinSM (to be called periodically)
+ * @req SHALL_LINSM - Main function for LinSM (to be called periodically)
  */
 void LinSM_MainFunction(void)
 {
@@ -416,6 +438,7 @@ void LinSM_MainFunction(void)
 
 /**
  * @brief Schedule confirmation callback from LinM
+ * @req SHALL_LINSM - Schedule confirmation callback from LinM
  */
 void LinSM_ScheduleConfirmation(LinSM_ChannelType Channel, LinSM_ScheduleType Schedule)
 {
@@ -428,6 +451,7 @@ void LinSM_ScheduleConfirmation(LinSM_ChannelType Channel, LinSM_ScheduleType Sc
 
 /**
  * @brief Wakeup confirmation callback from LinM
+ * @req SHALL_LINSM - Wakeup confirmation callback from LinM
  */
 void LinSM_WakeUpConfirmation(LinSM_ChannelType Channel, boolean Success)
 {
@@ -445,6 +469,7 @@ void LinSM_WakeUpConfirmation(LinSM_ChannelType Channel, boolean Success)
 
 /**
  * @brief Go-to-sleep confirmation callback from LinM
+ * @req SHALL_LINSM - Go-to-sleep confirmation callback from LinM
  */
 void LinSM_GotoSleepConfirmation(LinSM_ChannelType Channel, boolean Success)
 {

@@ -1,6 +1,7 @@
 /**
  * @file Mcu.c
  * @brief MCU Driver implementation for i.MX8M Mini
+ * @req SHALL_MCU - MCU Driver implementation for i.MX8M Mini
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -88,6 +89,7 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void);
 
 /**
  * @brief Configures the system clock
+ * @req SHALL_MCU - Configures the system clock
  */
 static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
 {
@@ -125,6 +127,7 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
 
 /**
  * @brief Configures a PLL
+ * @req SHALL_MCU - Configures a PLL
  */
 static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigType* pllConfig)
 {
@@ -166,6 +169,7 @@ static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigTy
 
 /**
  * @brief Waits for PLL to lock
+ * @req SHALL_MCU - Waits for PLL to lock
  */
 static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
 {
@@ -187,6 +191,7 @@ static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
 
 /**
  * @brief Sets clock dividers
+ * @req SHALL_MCU - Sets clock dividers
  */
 static void Mcu_SetClockDividers(const Mcu_ClockConfigType* clockConfig)
 {
@@ -213,6 +218,7 @@ static void Mcu_SetClockDividers(const Mcu_ClockConfigType* clockConfig)
 
 /**
  * @brief Gets reset reason from hardware register
+ * @req SHALL_MCU - Gets reset reason from hardware register
  */
 static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
 {
@@ -248,6 +254,7 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
 
 /**
  * @brief Initializes the MCU driver
+ * @req SHALL_MCU - Initializes the MCU driver
  */
 void Mcu_Init(const Mcu_ConfigType* ConfigPtr)
 {
@@ -281,6 +288,7 @@ void Mcu_Init(const Mcu_ConfigType* ConfigPtr)
 
 /**
  * @brief Initializes the MCU clock
+ * @req SHALL_MCU - Initializes the MCU clock
  */
 Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
 {
@@ -311,6 +319,7 @@ Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
 
 /**
  * @brief Distributes the PLL clock
+ * @req SHALL_MCU - Distributes the PLL clock
  */
 void Mcu_DistributePllClock(void)
 {
@@ -334,6 +343,7 @@ void Mcu_DistributePllClock(void)
 
 /**
  * @brief Gets PLL lock status
+ * @req SHALL_MCU - Gets PLL lock status
  */
 Mcu_PllStatusType Mcu_GetPllStatus(void)
 {
@@ -363,6 +373,7 @@ Mcu_PllStatusType Mcu_GetPllStatus(void)
 
 /**
  * @brief Sets MCU mode
+ * @req SHALL_MCU - Sets MCU mode
  */
 void Mcu_SetMode(Mcu_ModeType McuMode)
 {
@@ -407,6 +418,7 @@ void Mcu_SetMode(Mcu_ModeType McuMode)
 
 /**
  * @brief Gets reset reason
+ * @req SHALL_MCU - Gets reset reason
  */
 Mcu_ResetType Mcu_GetResetReason(void)
 {
@@ -426,6 +438,7 @@ Mcu_ResetType Mcu_GetResetReason(void)
 
 /**
  * @brief Gets reset raw value
+ * @req SHALL_MCU - Gets reset raw value
  */
 Mcu_RawResetType Mcu_GetResetRawValue(void)
 {
@@ -445,6 +458,7 @@ Mcu_RawResetType Mcu_GetResetRawValue(void)
 
 /**
  * @brief Performs MCU reset
+ * @req SHALL_MCU - Performs MCU reset
  */
 void Mcu_PerformReset(void)
 {
@@ -468,6 +482,7 @@ void Mcu_PerformReset(void)
 
 /**
  * @brief Gets version information
+ * @req SHALL_MCU - Gets version information
  */
 void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
@@ -489,6 +504,7 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief Initializes RAM section
+ * @req SHALL_MCU - Initializes RAM section
  */
 Std_ReturnType Mcu_InitRamSection(Mcu_RamSectionType RamSection)
 {
@@ -520,6 +536,7 @@ Std_ReturnType Mcu_InitRamSection(Mcu_RamSectionType RamSection)
 
 /**
  * @brief Gets RAM state
+ * @req SHALL_MCU - Gets RAM state
  */
 Mcu_RamStateType Mcu_GetRamState(void)
 {
@@ -544,3 +561,11 @@ Mcu_RamStateType Mcu_GetRamState(void)
 
 #define MCU_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(MCU_AR_RELEASE_MAJOR_VERSION) && (MCU_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Mcu: AR major mismatch"
+#endif
+#if defined(MCU_AR_RELEASE_MINOR_VERSION) && (MCU_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Mcu: AR minor mismatch"
+#endif

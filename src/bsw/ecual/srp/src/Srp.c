@@ -10,6 +10,14 @@
 #include "Det.h"
 #include <string.h>
 
+/* Version check */
+#if defined(SRP_AR_RELEASE_MAJOR_VERSION) && (SRP_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Srp: AR major mismatch"
+#endif
+#if defined(SRP_AR_RELEASE_MINOR_VERSION) && (SRP_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Srp: AR minor mismatch"
+#endif
+
 #define SRP_SID_INIT                0x00U
 #define SRP_SID_DEINIT              0x01U
 #define SRP_SID_REGISTER_TALKER     0x02U

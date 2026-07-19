@@ -13,6 +13,7 @@
 /*
  * @file Spi.c
  * @brief SPI驱动实现 - i.MX8M Mini ECSPI
+ * @req SHALL_SPI - SPI驱动实现 - i.MX8M Mini ECSPI
  * 
  * 支持DMA、中断、主机模式
  */
@@ -22,6 +23,14 @@
 
 #if (SPI_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"
+
+/* Version check */
+#if defined(SPI_AR_RELEASE_MAJOR_VERSION) && (SPI_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Spi: AR major mismatch"
+#endif
+#if defined(SPI_AR_RELEASE_MINOR_VERSION) && (SPI_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Spi: AR minor mismatch"
+#endif
 #endif
 
 /* i.MX8M Mini ECSPI寄存器 */
@@ -108,6 +117,7 @@ static Spi_ChannelStateType Spi_ChannelState[SPI_CHANNEL_COUNT];
 
 /**
  * @brief SPI初始化
+ * @req SHALL_SPI - SPI初始化
  */
 void Spi_Init(const Spi_ConfigType* Config)
 {
@@ -173,6 +183,7 @@ void Spi_Init(const Spi_ConfigType* Config)
 
 /**
  * @brief 内部波特率设置
+ * @req SHALL_SPI - 内部波特率设置
  */
 static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
 {
@@ -201,6 +212,7 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
 
 /**
  * @brief SPI反初始化
+ * @req SHALL_SPI - SPI反初始化
  */
 void Spi_DeInit(void)
 {
@@ -220,6 +232,7 @@ void Spi_DeInit(void)
 
 /**
  * @brief 同步传输
+ * @req SHALL_SPI - 同步传输
  */
 Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxData, uint32 Length)
 {
@@ -301,6 +314,7 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
 
 /**
  * @brief 异步传输
+ * @req SHALL_SPI - 异步传输
  */
 Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxData, uint32 Length)
 {
@@ -381,6 +395,7 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
 
 /**
  * @brief 获取状态
+ * @req SHALL_SPI - 获取状态
  */
 Spi_StatusType Spi_GetStatus(void)
 {
@@ -389,6 +404,7 @@ Spi_StatusType Spi_GetStatus(void)
 
 /**
  * @brief 获取任务结果
+ * @req SHALL_SPI - 获取任务结果
  */
 Spi_JobResultType Spi_GetJobResult(void)
 {
@@ -407,6 +423,7 @@ Spi_JobResultType Spi_GetJobResult(void)
 
 /**
  * @brief 中断处理
+ * @req SHALL_SPI - 中断处理
  */
 void Spi_IsrHandler(uint8 Channel)
 {
@@ -452,6 +469,7 @@ void Spi_IsrHandler(uint8 Channel)
 
 /**
  * @brief 主函数
+ * @req SHALL_SPI - 主函数
  */
 void Spi_MainFunction(void)
 {
@@ -492,3 +510,20 @@ static uint32 Spi_GetElapsedTime(uint32 StartTime)
     return (current >= StartTime) ? (current - StartTime) : 
            ((0xFFFFFFFF - StartTime) + current);
 }
+
+#if (SPI_VERSION_INFO_API == STD_ON)
+void Spi_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+#if (SPI_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == versioninfo) {
+        Det_ReportError(SPI_MODULE_ID, SPI_INSTANCE_ID, 0x02U, SPI_E_PARAM_POINTER);
+        return;
+    }
+#endif
+    versioninfo->vendorID = SPI_VENDOR_ID;
+    versioninfo->moduleID = SPI_MODULE_ID;
+    versioninfo->sw_major_version = SPI_SW_MAJOR_VERSION;
+    versioninfo->sw_minor_version = SPI_SW_MINOR_VERSION;
+    versioninfo->sw_patch_version = SPI_SW_PATCH_VERSION;
+}
+#endif

@@ -14,6 +14,12 @@
 #include "Std_Types.h"
 #include "EthSM_Cfg.h"
 
+#define ETHSM_AR_RELEASE_MAJOR_VERSION   4U
+#define ETHSM_AR_RELEASE_MINOR_VERSION   4U
+#define ETHSM_AR_RELEASE_REVISION_VERSION 0U
+#define ETHSM_SW_MAJOR_VERSION           1U
+#define ETHSM_SW_MINOR_VERSION           0U
+#define ETHSM_SW_PATCH_VERSION           0U
 #define ETHSM_MODULE_ID             0x8AU
 #define ETHSM_VENDOR_ID             0x0055U
 

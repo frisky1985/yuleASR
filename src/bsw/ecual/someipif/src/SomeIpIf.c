@@ -10,6 +10,14 @@
 #include "Det.h"
 #include <string.h>
 
+/* Version check */
+#if defined(SOMEIPIF_AR_RELEASE_MAJOR_VERSION) && (SOMEIPIF_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "SomeIpIf: AR major mismatch"
+#endif
+#if defined(SOMEIPIF_AR_RELEASE_MINOR_VERSION) && (SOMEIPIF_AR_RELEASE_MINOR_VERSION != 4u)
+#error "SomeIpIf: AR minor mismatch"
+#endif
+
 #define SOMEIPIF_SID_INIT               0x00U
 #define SOMEIPIF_SID_DEINIT             0x01U
 #define SOMEIPIF_SID_TRANSMIT           0x02U

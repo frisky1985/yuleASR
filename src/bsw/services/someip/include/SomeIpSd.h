@@ -25,6 +25,12 @@
 #include "SomeIp.h"
 
 /* Module ID */
+#define SOMEIPSD_AR_RELEASE_MAJOR_VERSION   4U
+#define SOMEIPSD_AR_RELEASE_MINOR_VERSION   4U
+#define SOMEIPSD_AR_RELEASE_REVISION_VERSION 0U
+#define SOMEIPSD_SW_MAJOR_VERSION           1U
+#define SOMEIPSD_SW_MINOR_VERSION           0U
+#define SOMEIPSD_SW_PATCH_VERSION           0U
 #define SOMEIPSD_MODULE_ID                 0x71
 
 /* Service IDs */

@@ -13,6 +13,7 @@
 /**
  * @file Pwm.c
  * @brief PWM Driver implementation for i.MX8M Mini (PWM)
+ * @req SHALL_PWM - PWM Driver implementation for i.MX8M Mini (PWM)
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -392,3 +393,11 @@ void Pwm_PreparePowerState(Pwm_PowerStateType PowerState, Pwm_PowerStateRequestR
 
 #define PWM_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(PWM_AR_RELEASE_MAJOR_VERSION) && (PWM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Pwm: AR major mismatch"
+#endif
+#if defined(PWM_AR_RELEASE_MINOR_VERSION) && (PWM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Pwm: AR minor mismatch"
+#endif

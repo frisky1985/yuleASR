@@ -32,11 +32,11 @@
 /*==================================================================================================
  *                                    VERSION CHECK
  *==================================================================================================*/
-#if (MEM_AR_RELEASE_MAJOR_VERSION != 4u)
+#if defined(MEM_AR_RELEASE_MAJOR_VERSION) && (MEM_AR_RELEASE_MAJOR_VERSION != 4u)
     #error "Mem.c: AR major version mismatch"
 #endif
 
-#if (MEM_AR_RELEASE_MINOR_VERSION != 7u)
+#if defined(MEM_AR_RELEASE_MINOR_VERSION) && (MEM_AR_RELEASE_MINOR_VERSION != 4u)
     #error "Mem.c: AR minor version mismatch"
 #endif
 

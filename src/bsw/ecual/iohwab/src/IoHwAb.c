@@ -9,6 +9,14 @@
 #include "IoHwAb_Cfg.h"
 #include "Det.h"
 
+/* Version check */
+#if defined(IOHWAB_AR_RELEASE_MAJOR_VERSION) && (IOHWAB_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "IoHwAb: AR major mismatch"
+#endif
+#if defined(IOHWAB_AR_RELEASE_MINOR_VERSION) && (IOHWAB_AR_RELEASE_MINOR_VERSION != 4u)
+#error "IoHwAb: AR minor mismatch"
+#endif
+
 #define IOHWAB_MAX_CHANNELS             64U
 
 typedef enum {

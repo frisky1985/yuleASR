@@ -8,6 +8,14 @@
 #include "SchM.h"
 #include "Det.h"
 
+/* Version check */
+#if defined(SCHM_AR_RELEASE_MAJOR_VERSION) && (SCHM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "SchM: AR major mismatch"
+#endif
+#if defined(SCHM_AR_RELEASE_MINOR_VERSION) && (SCHM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "SchM: AR minor mismatch"
+#endif
+
 #define SCHM_SID_INIT               0x00U
 #define SCHM_SID_DEINIT             0x01U
 #define SCHM_SID_START              0x02U

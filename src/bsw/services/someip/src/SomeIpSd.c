@@ -13,10 +13,19 @@
 /**
  * @file SomeIpSd.c
  * @brief SOME/IP Service Discovery Implementation
+ * @req SHALL_SOMEIPSD - SOME/IP Service Discovery Implementation
  */
 
 #include "SomeIpSd.h"
 #include "Det.h"
+
+/* Version check */
+#if defined(SOMEIPSD_AR_RELEASE_MAJOR_VERSION) && (SOMEIPSD_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "SomeIpSd: AR major mismatch"
+#endif
+#if defined(SOMEIPSD_AR_RELEASE_MINOR_VERSION) && (SOMEIPSD_AR_RELEASE_MINOR_VERSION != 4u)
+#error "SomeIpSd: AR minor mismatch"
+#endif
 
 /* Internal State */
 static boolean SomeIpSd_Initialized = FALSE;
@@ -329,3 +338,20 @@ void SomeIpSd_EventSubscriptionCallback(
     (void)EventGroupId;
     (void)IsSubscribed;
 }
+
+#if (SOMEIPSD_VERSION_INFO_API == STD_ON)
+void SomeIpSd_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+#if (SOMEIPSD_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == versioninfo) {
+        Det_ReportError(SOMEIPSD_MODULE_ID, SOMEIPSD_INSTANCE_ID, 0x02U, SOMEIPSD_E_PARAM_POINTER);
+        return;
+    }
+#endif
+    versioninfo->vendorID = SOMEIPSD_VENDOR_ID;
+    versioninfo->moduleID = SOMEIPSD_MODULE_ID;
+    versioninfo->sw_major_version = SOMEIPSD_SW_MAJOR_VERSION;
+    versioninfo->sw_minor_version = SOMEIPSD_SW_MINOR_VERSION;
+    versioninfo->sw_patch_version = SOMEIPSD_SW_PATCH_VERSION;
+}
+#endif

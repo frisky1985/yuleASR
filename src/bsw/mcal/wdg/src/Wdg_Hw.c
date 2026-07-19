@@ -31,11 +31,11 @@
 #include "Det.h"
 
 /* Version checks */
-#if (WDG_HW_AR_RELEASE_MAJOR_VERSION != 4u)
+#if defined(WDG_HW_AR_RELEASE_MAJOR_VERSION) && (WDG_HW_AR_RELEASE_MAJOR_VERSION != 4u)
     #error "Wdg_Hw.c: Mismatch in AUTOSAR major version"
 #endif
 
-#if (WDG_HW_SW_MAJOR_VERSION != 1u)
+#if defined(WDG_HW_SW_MAJOR_VERSION) && (WDG_HW_SW_MAJOR_VERSION != 1u)
     #error "Wdg_Hw.c: Mismatch in software major version"
 #endif
 

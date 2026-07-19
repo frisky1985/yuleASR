@@ -23,6 +23,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define CAN_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
+#define CAN_INSTANCE_ID           0U
 #define CAN_MODULE_ID                   (0x50U) /* CAN Driver Module ID */
 #define CAN_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define CAN_AR_RELEASE_MINOR_VERSION    (0x04U)

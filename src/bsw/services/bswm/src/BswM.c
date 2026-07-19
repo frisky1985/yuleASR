@@ -8,6 +8,14 @@
 #include "BswM.h"
 #include "Det.h"
 
+/* Version check */
+#if defined(BSWM_AR_RELEASE_MAJOR_VERSION) && (BSWM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "BswM: AR major mismatch"
+#endif
+#if defined(BSWM_AR_RELEASE_MINOR_VERSION) && (BSWM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "BswM: AR minor mismatch"
+#endif
+
 #define BSWM_SID_INIT               0x00U
 #define BSWM_SID_DEINIT             0x01U
 #define BSWM_SID_MAINFUNCTION       0x02U

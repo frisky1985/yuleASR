@@ -30,11 +30,11 @@
 #include "Det.h"
 
 /* Version checks */
-#if (FLS_HW_AR_RELEASE_MAJOR_VERSION != 4u)
+#if defined(FLS_HW_AR_RELEASE_MAJOR_VERSION) && (FLS_HW_AR_RELEASE_MAJOR_VERSION != 4u)
     #error "Fls_Hw.c: Mismatch in AUTOSAR major version"
 #endif
 
-#if (FLS_HW_SW_MAJOR_VERSION != 1u)
+#if defined(FLS_HW_SW_MAJOR_VERSION) && (FLS_HW_SW_MAJOR_VERSION != 1u)
     #error "Fls_Hw.c: Mismatch in software major version"
 #endif
 

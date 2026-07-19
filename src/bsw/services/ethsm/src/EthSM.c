@@ -8,6 +8,14 @@
 #include "EthSM.h"
 #include "Det.h"
 
+/* Version check */
+#if defined(ETHSM_AR_RELEASE_MAJOR_VERSION) && (ETHSM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "EthSM: AR major mismatch"
+#endif
+#if defined(ETHSM_AR_RELEASE_MINOR_VERSION) && (ETHSM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "EthSM: AR minor mismatch"
+#endif
+
 #define ETHSM_SID_INIT              0x00U
 #define ETHSM_SID_DEINIT            0x01U
 #define ETHSM_SID_START            0x02U

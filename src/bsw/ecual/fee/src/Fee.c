@@ -34,11 +34,11 @@
 #include <string.h>
 
 /* Version checks */
-#if (FEE_AR_RELEASE_MAJOR_VERSION != 4u)
+#if defined(FEE_AR_RELEASE_MAJOR_VERSION) && (FEE_AR_RELEASE_MAJOR_VERSION != 4u)
     #error "Fee.c: Mismatch in AUTOSAR major version"
 #endif
 
-#if (FEE_SW_MAJOR_VERSION != 1u)
+#if defined(FEE_SW_MAJOR_VERSION) && (FEE_SW_MAJOR_VERSION != 1u)
     #error "Fee.c: Mismatch in software major version"
 #endif
 

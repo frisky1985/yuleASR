@@ -23,6 +23,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define GPT_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
+#define GPT_INSTANCE_ID           0U
 #define GPT_MODULE_ID                   (0x0EU) /* GPT Driver Module ID */
 #define GPT_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define GPT_AR_RELEASE_MINOR_VERSION    (0x04U)

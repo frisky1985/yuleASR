@@ -26,6 +26,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define LINM_VENDOR_ID                      (0x01U) /* YuleTech Vendor ID */
+#define LINM_INSTANCE_ID           0U
 #define LINM_MODULE_ID                      (0x8EU) /* LinM Module ID */
 #define LINM_AR_RELEASE_MAJOR_VERSION       (0x04U)
 #define LINM_AR_RELEASE_MINOR_VERSION       (0x04U)

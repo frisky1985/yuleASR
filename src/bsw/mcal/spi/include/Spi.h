@@ -25,10 +25,13 @@
 
 /* 版本 */
 #define SPI_VENDOR_ID               0x01u
+#define SPI_AR_RELEASE_MAJOR_VERSION   4U
+#define SPI_AR_RELEASE_MINOR_VERSION   4U
+#define SPI_AR_RELEASE_REVISION_VERSION 0U
+#define SPI_SW_MAJOR_VERSION           1U
+#define SPI_SW_MINOR_VERSION           0U
+#define SPI_SW_PATCH_VERSION           0U
 #define SPI_MODULE_ID               0x21u
-#define SPI_SW_MAJOR_VERSION        1u
-#define SPI_SW_MINOR_VERSION        0u
-#define SPI_SW_PATCH_VERSION        0u
 
 /* 错误码 */
 #define SPI_E_PARAM_CHANNEL         0x0Au

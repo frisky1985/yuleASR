@@ -13,6 +13,7 @@
 /**
  * @file Ea.c
  * @brief EEPROM Abstraction implementation
+ * @req SHALL_EA - EEPROM Abstraction implementation
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -513,3 +514,11 @@ static uint32 Ea_CalculateBlockAddress(Ea_BlockIdType BlockNumber)
 
 #define EA_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(EA_AR_RELEASE_MAJOR_VERSION) && (EA_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Ea: AR major mismatch"
+#endif
+#if defined(EA_AR_RELEASE_MINOR_VERSION) && (EA_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Ea: AR minor mismatch"
+#endif

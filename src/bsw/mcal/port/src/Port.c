@@ -1,6 +1,7 @@
 /**
  * @file Port.c
  * @brief PORT Driver implementation for i.MX8M Mini
+ * @req SHALL_PORT - PORT Driver implementation for i.MX8M Mini
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -99,6 +100,7 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
 
 /**
  * @brief Gets GPIO base address for a port
+ * @req SHALL_PORT - Gets GPIO base address for a port
  */
 static uint32 Port_GetGpioBaseAddr(uint8 port)
 {
@@ -130,6 +132,7 @@ static uint32 Port_GetGpioBaseAddr(uint8 port)
 
 /**
  * @brief Gets IOMUXC mux register address for a pin
+ * @req SHALL_PORT - Gets IOMUXC mux register address for a pin
  */
 static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
 {
@@ -145,6 +148,7 @@ static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
 
 /**
  * @brief Gets IOMUXC pad register address for a pin
+ * @req SHALL_PORT - Gets IOMUXC pad register address for a pin
  */
 static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
 {
@@ -160,6 +164,7 @@ static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
 
 /**
  * @brief Configures pin mux mode
+ * @req SHALL_PORT - Configures pin mux mode
  */
 static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
 {
@@ -204,6 +209,7 @@ static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
 
 /**
  * @brief Configures pin pad settings
+ * @req SHALL_PORT - Configures pin pad settings
  */
 static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* config)
 {
@@ -248,6 +254,7 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
 
 /**
  * @brief Initializes the PORT driver
+ * @req SHALL_PORT - Initializes the PORT driver
  */
 void Port_Init(const Port_ConfigType* ConfigPtr)
 {
@@ -307,6 +314,7 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
 
 /**
  * @brief Sets pin direction
+ * @req SHALL_PORT - Sets pin direction
  */
 #if (PORT_SET_PIN_DIRECTION_API == STD_ON)
 void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
@@ -358,6 +366,7 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
 
 /**
  * @brief Refreshes port direction
+ * @req SHALL_PORT - Refreshes port direction
  */
 void Port_RefreshPortDirection(void)
 {
@@ -393,6 +402,7 @@ void Port_RefreshPortDirection(void)
 
 /**
  * @brief Gets version information
+ * @req SHALL_PORT - Gets version information
  */
 #if (PORT_VERSION_INFO_API == STD_ON)
 void Port_GetVersionInfo(Std_VersionInfoType* versioninfo)
@@ -414,6 +424,7 @@ void Port_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief Sets pin mode
+ * @req SHALL_PORT - Sets pin mode
  */
 #if (PORT_SET_PIN_MODE_API == STD_ON)
 void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
@@ -458,3 +469,11 @@ void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
 
 #define PORT_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(PORT_AR_RELEASE_MAJOR_VERSION) && (PORT_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Port: AR major mismatch"
+#endif
+#if defined(PORT_AR_RELEASE_MINOR_VERSION) && (PORT_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Port: AR minor mismatch"
+#endif

@@ -14,6 +14,12 @@
 #include "Std_Types.h"
 #include "BswM_Cfg.h"
 
+#define BSWM_AR_RELEASE_MAJOR_VERSION   4U
+#define BSWM_AR_RELEASE_MINOR_VERSION   4U
+#define BSWM_AR_RELEASE_REVISION_VERSION 0U
+#define BSWM_SW_MAJOR_VERSION           1U
+#define BSWM_SW_MINOR_VERSION           0U
+#define BSWM_SW_PATCH_VERSION           0U
 #define BSWM_MODULE_ID              0x12U
 #define BSWM_VENDOR_ID              0x0055U
 

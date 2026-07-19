@@ -12,9 +12,14 @@
 #include "ComStack_Types.h"
 #include "IpduM_Cfg.h"
 
+#define IPDUM_AR_RELEASE_MAJOR_VERSION   4U
+#define IPDUM_AR_RELEASE_MINOR_VERSION   4U
+#define IPDUM_AR_RELEASE_REVISION_VERSION 0U
+#define IPDUM_SW_MAJOR_VERSION           1U
+#define IPDUM_SW_MINOR_VERSION           0U
+#define IPDUM_SW_PATCH_VERSION           0U
 #define IPDUM_MODULE_ID             0x38U
 #define IPDUM_VENDOR_ID             0x0055U
-#define IPDUM_MAX_STATIC_PARTS      8U
 
 typedef enum {
     IPDUM_IPDU_MODE_OFF = 0,

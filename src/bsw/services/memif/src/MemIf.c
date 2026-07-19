@@ -133,6 +133,7 @@ static const MemIf_ConfigType MemIf_DefaultConfig = {
  *==================================================================================================*/
 /**
  * @brief Validates device index
+ * @req SHALL_MEMIF - Validates device index
  * @param DeviceIndex Device index to validate
  * @return TRUE if valid, FALSE otherwise
  */
@@ -143,6 +144,7 @@ static boolean MemIf_IsDeviceIndexValid(uint8 DeviceIndex)
 
 /**
  * @brief Validates block number for a device
+ * @req SHALL_MEMIF - Validates block number for a device
  * @param DeviceIndex Device index
  * @param BlockNumber Block number to validate
  * @return TRUE if valid, FALSE otherwise
@@ -168,6 +170,7 @@ static boolean MemIf_IsBlockNumberValid(uint8 DeviceIndex, uint16 BlockNumber)
 
 /**
  * @brief Initializes the Memory Interface module
+ * @req SHALL_MEMIF - Initializes the Memory Interface module
  * @param ConfigPtr Pointer to configuration structure
  * @return None
  */
@@ -199,6 +202,7 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
 
 /**
  * @brief Deinitializes the Memory Interface module
+ * @req SHALL_MEMIF - Deinitializes the Memory Interface module
  * @return None
  */
 void MemIf_DeInit(void)
@@ -220,6 +224,7 @@ void MemIf_DeInit(void)
 
 /**
  * @brief Gets version information
+ * @req SHALL_MEMIF - Gets version information
  * @param versioninfo Pointer to version info structure
  * @return None
  */
@@ -243,6 +248,7 @@ void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief Reads data from a block
+ * @req SHALL_MEMIF - Reads data from a block
  * @param DeviceIndex Index of the device (Fee or Ea)
  * @param BlockNumber Number of the block to read
  * @param DataBufferPtr Pointer to data buffer
@@ -287,6 +293,7 @@ Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint8* DataBuff
 
 /**
  * @brief Writes data to a block
+ * @req SHALL_MEMIF - Writes data to a block
  * @param DeviceIndex Index of the device (Fee or Ea)
  * @param BlockNumber Number of the block to write
  * @param DataBufferPtr Pointer to data buffer
@@ -330,6 +337,7 @@ Std_ReturnType MemIf_Write(uint8 DeviceIndex, uint16 BlockNumber, const uint8* D
 
 /**
  * @brief Cancels ongoing job
+ * @req SHALL_MEMIF - Cancels ongoing job
  * @param DeviceIndex Index of the device
  * @return None
  */
@@ -357,6 +365,7 @@ void MemIf_Cancel(uint8 DeviceIndex)
 
 /**
  * @brief Gets the status of the device
+ * @req SHALL_MEMIF - Gets the status of the device
  * @param DeviceIndex Index of the device
  * @return Status of the device
  */
@@ -394,6 +403,7 @@ MemIf_StatusType MemIf_GetStatus(uint8 DeviceIndex)
 
 /**
  * @brief Gets the result of the last job
+ * @req SHALL_MEMIF - Gets the result of the last job
  * @param DeviceIndex Index of the device
  * @return Job result
  */
@@ -424,6 +434,7 @@ MemIf_JobResultType MemIf_GetJobResult(uint8 DeviceIndex)
 
 /**
  * @brief Invalidates a block
+ * @req SHALL_MEMIF - Invalidates a block
  * @param DeviceIndex Index of the device
  * @param BlockNumber Number of the block to invalidate
  * @return E_OK if request accepted, E_NOT_OK if rejected
@@ -465,6 +476,7 @@ Std_ReturnType MemIf_InvalidateBlock(uint8 DeviceIndex, uint16 BlockNumber)
 
 /**
  * @brief Erases a block
+ * @req SHALL_MEMIF - Erases a block
  * @param DeviceIndex Index of the device
  * @param BlockNumber Number of the block to erase
  * @return E_OK if request accepted, E_NOT_OK if rejected
@@ -506,6 +518,7 @@ Std_ReturnType MemIf_EraseBlock(uint8 DeviceIndex, uint16 BlockNumber)
 
 /**
  * @brief Main function for periodic processing
+ * @req SHALL_MEMIF - Main function for periodic processing
  * @param DeviceIndex Index of the device
  * @return None
  */
@@ -539,6 +552,7 @@ void MemIf_MainFunction(uint8 DeviceIndex)
 
 /**
  * @brief Sets the device mode
+ * @req SHALL_MEMIF - Sets the device mode
  * @param DeviceIndex Index of the device
  * @param Mode Mode to set (slow/fast)
  * @return None
@@ -564,6 +578,7 @@ void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode)
 
 /**
  * @brief Gets the number of devices
+ * @req SHALL_MEMIF - Gets the number of devices
  * @return Number of configured devices
  */
 uint8 MemIf_GetNumberOfDevices(void)
@@ -577,3 +592,11 @@ uint8 MemIf_GetNumberOfDevices(void)
 
 #define MEMIF_STOP_SEC_CODE
 #include "MemIf_MemMap.h"
+
+/* Version check */
+#if defined(MEMIF_AR_RELEASE_MAJOR_VERSION) && (MEMIF_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "MemIf: AR major mismatch"
+#endif
+#if defined(MEMIF_AR_RELEASE_MINOR_VERSION) && (MEMIF_AR_RELEASE_MINOR_VERSION != 4u)
+#error "MemIf: AR minor mismatch"
+#endif

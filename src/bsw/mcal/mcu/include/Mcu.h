@@ -26,6 +26,12 @@
 #define MCU_VENDOR_ID                           0x0055U  /* YuleTech */
 
 /** @brief MCU 模块 ID */
+#define MCU_AR_RELEASE_MAJOR_VERSION   4U
+#define MCU_AR_RELEASE_MINOR_VERSION   4U
+#define MCU_AR_RELEASE_REVISION_VERSION 0U
+#define MCU_SW_MAJOR_VERSION           1U
+#define MCU_SW_MINOR_VERSION           0U
+#define MCU_SW_PATCH_VERSION           0U
 #define MCU_MODULE_ID                           0x0064U
 
 /** @brief MCU 实例 ID */

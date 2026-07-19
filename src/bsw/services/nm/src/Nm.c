@@ -13,11 +13,20 @@
 /**
  * @file Nm.c
  * @brief Network Management Implementation
+ * @req SHALL_NM - Network Management Implementation
  */
 
 #include "Nm.h"
 #include "Nm_Cfg.h"
 #include "Det.h"
+
+/* Version check */
+#if defined(NM_AR_RELEASE_MAJOR_VERSION) && (NM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Nm: AR major mismatch"
+#endif
+#if defined(NM_AR_RELEASE_MINOR_VERSION) && (NM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Nm: AR minor mismatch"
+#endif
 
 /* Internal State */
 static Nm_StateType Nm_ChannelState[NM_MAX_CHANNELS];

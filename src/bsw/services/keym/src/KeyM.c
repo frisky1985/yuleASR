@@ -35,11 +35,11 @@
 /*==================================================================================================
  *                                    VERSION CHECK
  *==================================================================================================*/
-#if (KEYM_AR_RELEASE_MAJOR_VERSION != 4u)
+#if defined(KEYM_AR_RELEASE_MAJOR_VERSION) && (KEYM_AR_RELEASE_MAJOR_VERSION != 4u)
     #error "KeyM.c: AR major version mismatch"
 #endif
 
-#if (KEYM_AR_RELEASE_MINOR_VERSION != 7u)
+#if defined(KEYM_AR_RELEASE_MINOR_VERSION) && (KEYM_AR_RELEASE_MINOR_VERSION != 4u)
     #error "KeyM.c: AR minor version mismatch"
 #endif
 

@@ -33,12 +33,15 @@
 /*==================================================================================================
  *                                    Macro Definitions
  *================================================================================================*/
+#define J1939TP_AR_RELEASE_MAJOR_VERSION   4U
+#define J1939TP_AR_RELEASE_MINOR_VERSION   4U
+#define J1939TP_AR_RELEASE_REVISION_VERSION 0U
+#define J1939TP_SW_MAJOR_VERSION           1U
+#define J1939TP_SW_MINOR_VERSION           0U
+#define J1939TP_SW_PATCH_VERSION           0U
 #define J1939TP_MODULE_ID               ((uint16)79U)
 #define J1939TP_VENDOR_ID               ((uint16)1U)
 
-#define J1939TP_SW_MAJOR_VERSION        ((uint8)1U)
-#define J1939TP_SW_MINOR_VERSION        ((uint8)0U)
-#define J1939TP_SW_PATCH_VERSION        ((uint8)0U)
 
 /* Service IDs for DET */
 #define J1939TP_SID_INIT                ((uint8)0x01U)

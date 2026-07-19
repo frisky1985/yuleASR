@@ -15,6 +15,12 @@
 #include "ComStack_Types.h"
 #include "LinIf_Cfg.h"
 
+#define LINIF_AR_RELEASE_MAJOR_VERSION   4U
+#define LINIF_AR_RELEASE_MINOR_VERSION   4U
+#define LINIF_AR_RELEASE_REVISION_VERSION 0U
+#define LINIF_SW_MAJOR_VERSION           1U
+#define LINIF_SW_MINOR_VERSION           0U
+#define LINIF_SW_PATCH_VERSION           0U
 #define LINIF_MODULE_ID             0x27U
 #define LINIF_VENDOR_ID             0x0055U
 

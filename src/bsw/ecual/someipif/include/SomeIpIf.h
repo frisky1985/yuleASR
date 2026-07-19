@@ -14,6 +14,12 @@
 #include "Std_Types.h"
 #include "ComStack_Types.h"
 
+#define SOMEIPIF_AR_RELEASE_MAJOR_VERSION   4U
+#define SOMEIPIF_AR_RELEASE_MINOR_VERSION   4U
+#define SOMEIPIF_AR_RELEASE_REVISION_VERSION 0U
+#define SOMEIPIF_SW_MAJOR_VERSION           1U
+#define SOMEIPIF_SW_MINOR_VERSION           0U
+#define SOMEIPIF_SW_PATCH_VERSION           0U
 #define SOMEIPIF_MODULE_ID          0x82U
 #define SOMEIPIF_VENDOR_ID          0x0055U
 

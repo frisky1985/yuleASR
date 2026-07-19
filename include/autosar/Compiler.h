@@ -3,31 +3,61 @@
  * @brief AUTOSAR Compiler Abstraction (Native Stub)
  *
  * Minimal stub for native (x86_64/Darwin) compilation.
+ * All macros guarded with #ifndef to avoid Std_Types.h conflicts.
  */
 #ifndef COMPILER_H
 #define COMPILER_H
 
-/* NULL_PTR */
 #ifndef NULL_PTR
 #define NULL_PTR ((void *)0)
 #endif
 
-/* AUTOSAR compiler keywords (no-ops for GCC/Clang) */
+#ifndef AUTOMATIC
 #define AUTOMATIC
+#endif
+
+#ifndef TYPEDEF
 #define TYPEDEF
+#endif
+
+#ifndef FUNC
 #define FUNC(ret, memclass) ret
+#endif
+
+#ifndef P2VAR
 #define P2VAR(ptr, memclass, ptrclass) ptr *
+#endif
+
+#ifndef P2CONST
 #define P2CONST(ptr, memclass, ptrclass) const ptr *
+#endif
+
+#ifndef CONST
 #define CONST(consttype, memclass) const consttype
+#endif
+
+#ifndef VAR
 #define VAR(vartype, memclass) vartype
+#endif
+
+#ifndef STATIC
 #define STATIC static
+#endif
+
+#ifndef INLINE
 #define INLINE inline
+#endif
+
+#ifndef LOCAL_INLINE
 #define LOCAL_INLINE static inline
+#endif
 
-/* Memory mapping macros (no-ops for native) */
+#ifndef MEMMAP_ERROR
 #define MEMMAP_ERROR
+#endif
 
-/* Module ID types */
+#ifndef MODULE_ID
 #define MODULE_ID 0
+#endif
 
 #endif /* COMPILER_H */

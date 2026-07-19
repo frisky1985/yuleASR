@@ -30,12 +30,15 @@
 #define EEP_VENDOR_ID                       0x0055U
 
 /** @brief Eep Module ID */
+#define EEP_AR_RELEASE_MAJOR_VERSION   4U
+#define EEP_AR_RELEASE_MINOR_VERSION   4U
+#define EEP_AR_RELEASE_REVISION_VERSION 0U
+#define EEP_SW_MAJOR_VERSION           1U
+#define EEP_SW_MINOR_VERSION           0U
+#define EEP_SW_PATCH_VERSION           0U
 #define EEP_MODULE_ID                       0x5FU
 
 /** @brief Eep Software Version */
-#define EEP_SW_MAJOR_VERSION                2U
-#define EEP_SW_MINOR_VERSION                0U
-#define EEP_SW_PATCH_VERSION                0U
 
 /*==================================================================================================
  *                                      SERVICE IDs

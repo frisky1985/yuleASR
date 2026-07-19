@@ -1,6 +1,7 @@
 /**
  * @file CanSm.c
  * @brief CAN State Manager
+ * @req SHALL_CANSM - CAN State Manager
  * @copyright Copyright (c) 2025 yuleASR Project
  * @license MIT License
  * 
@@ -11,6 +12,7 @@
 /**
  * @file CanSm.c
  * @brief CAN State Management module implementation following AutoSAR Classic Platform 4.x standard
+ * @req SHALL_CANSM - CAN State Management module implementation following AutoSAR Classic Platform 4.x standard
  * @version 1.0.0
  * @date 2026-04-30
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -26,22 +28,33 @@
 #include "CanSm.h"
 #include "Det.h"
 
+/* Version check */
+#if defined(CANSM_AR_RELEASE_MAJOR_VERSION) && (CANSM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "CanSm: AR major mismatch"
+#endif
+#if defined(CANSM_AR_RELEASE_MINOR_VERSION) && (CANSM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "CanSm: AR minor mismatch"
+#endif
+
 /*==================================================================================================
 *                                    LOCAL DEFINES
 ==================================================================================================*/
 /**
  * @brief Local defines for state machine processing
+ * @req SHALL_CANSM - Local defines for state machine processing
  */
 #define CANSM_UNINIT                            (0U)
 #define CANSM_INIT                              (1U)
 
 /**
  * @brief Mode transition timeouts (in main function ticks)
+ * @req SHALL_CANSM - Mode transition timeouts (in main function ticks)
  */
 #define CANSM_NO_TRANSITION_TIMEOUT             (0xFFFFU)
 
 /**
  * @brief Invalid network handle
+ * @req SHALL_CANSM - Invalid network handle
  */
 #define CANSM_INVALID_NETWORK_HANDLE            (0xFFU)
 
@@ -50,6 +63,7 @@
 ==================================================================================================*/
 /**
  * @brief Internal state tracking for each network
+ * @req SHALL_CANSM - Internal state tracking for each network
  */
 typedef struct {
     CanSm_BsmStateType BsmState;           /**< Current BSM state */
@@ -70,6 +84,7 @@ typedef struct {
 
 /**
  * @brief Module global state
+ * @req SHALL_CANSM - Module global state
  */
 typedef struct {
     uint8 InitStatus;                       /**< Module initialization status */
@@ -83,6 +98,7 @@ typedef struct {
 ==================================================================================================*/
 /**
  * @brief Baudrate configurations for each network
+ * @req SHALL_CANSM - Baudrate configurations for each network
  */
 static const CanSm_BaudrateConfigType CanSm_BaudrateConfigs_Network0[] = {
     { CANSM_BAUDRATE_125K,  0x0001U },
@@ -103,11 +119,13 @@ static const CanSm_BaudrateConfigType CanSm_BaudrateConfigs_Network1[] = {
 ==================================================================================================*/
 /**
  * @brief Module global state
+ * @req SHALL_CANSM - Module global state
  */
 static CanSm_GlobalStateType CanSm_Global;
 
 /**
  * @brief Network configurations
+ * @req SHALL_CANSM - Network configurations
  */
 static const CanSm_NetworkConfigType CanSm_NetworkConfigs[CANSM_NUM_NETWORKS] = {
     {   /* Network 0 - CAN0 */
@@ -162,6 +180,7 @@ static boolean CanSm_IsTimerExpired(uint8 NetworkIndex);
 
 /**
  * @brief Checks if network handle is valid
+ * @req SHALL_CANSM - Checks if network handle is valid
  */
 static boolean CanSm_IsNetworkValid(ComM_UserHandleType Network)
 {
@@ -170,6 +189,7 @@ static boolean CanSm_IsNetworkValid(ComM_UserHandleType Network)
 
 /**
  * @brief Gets network index from network handle
+ * @req SHALL_CANSM - Gets network index from network handle
  */
 static uint8 CanSm_GetNetworkIndex(ComM_UserHandleType Network)
 {
@@ -178,6 +198,7 @@ static uint8 CanSm_GetNetworkIndex(ComM_UserHandleType Network)
 
 /**
  * @brief Starts a timer for mode transition timeout
+ * @req SHALL_CANSM - Starts a timer for mode transition timeout
  */
 static void CanSm_StartTimer(uint8 NetworkIndex, uint16 TimeoutMs)
 {
@@ -194,6 +215,7 @@ static void CanSm_StartTimer(uint8 NetworkIndex, uint16 TimeoutMs)
 
 /**
  * @brief Checks if timer has expired
+ * @req SHALL_CANSM - Checks if timer has expired
  */
 static boolean CanSm_IsTimerExpired(uint8 NetworkIndex)
 {
@@ -211,6 +233,7 @@ static boolean CanSm_IsTimerExpired(uint8 NetworkIndex)
 
 /**
  * @brief Requests controller mode from CanIf
+ * @req SHALL_CANSM - Requests controller mode from CanIf
  */
 static Std_ReturnType CanSm_RequestControllerMode(uint8 NetworkIndex, CanIf_ControllerModeType Mode)
 {
@@ -232,6 +255,7 @@ static Std_ReturnType CanSm_RequestControllerMode(uint8 NetworkIndex, CanIf_Cont
 
 /**
  * @brief Handles mode confirmation from CanIf
+ * @req SHALL_CANSM - Handles mode confirmation from CanIf
  */
 static void CanSm_HandleModeConfirmation(uint8 NetworkIndex, CanIf_ControllerModeType Mode)
 {
@@ -270,6 +294,7 @@ static void CanSm_HandleModeConfirmation(uint8 NetworkIndex, CanIf_ControllerMod
 
 /**
  * @brief Handles BusOff recovery
+ * @req SHALL_CANSM - Handles BusOff recovery
  */
 static void CanSm_HandleBusOffRecovery(uint8 NetworkIndex)
 {
@@ -305,6 +330,7 @@ static void CanSm_HandleBusOffRecovery(uint8 NetworkIndex)
 
 /**
  * @brief Transitions network to NOCOM state
+ * @req SHALL_CANSM - Transitions network to NOCOM state
  */
 static Std_ReturnType CanSm_TransitionToNoCom(uint8 NetworkIndex)
 {
@@ -334,6 +360,7 @@ static Std_ReturnType CanSm_TransitionToNoCom(uint8 NetworkIndex)
 
 /**
  * @brief Transitions network to SILENTCOM state
+ * @req SHALL_CANSM - Transitions network to SILENTCOM state
  */
 static Std_ReturnType CanSm_TransitionToSilentCom(uint8 NetworkIndex)
 {
@@ -359,6 +386,7 @@ static Std_ReturnType CanSm_TransitionToSilentCom(uint8 NetworkIndex)
 
 /**
  * @brief Transitions network to FULLCOM state
+ * @req SHALL_CANSM - Transitions network to FULLCOM state
  */
 static Std_ReturnType CanSm_TransitionToFullCom(uint8 NetworkIndex)
 {
@@ -387,6 +415,7 @@ static Std_ReturnType CanSm_TransitionToFullCom(uint8 NetworkIndex)
 
 /**
  * @brief Process NOCOM state
+ * @req SHALL_CANSM - Process NOCOM state
  */
 static Std_ReturnType CanSm_ProcessNoComState(uint8 NetworkIndex)
 {
@@ -441,6 +470,7 @@ static Std_ReturnType CanSm_ProcessNoComState(uint8 NetworkIndex)
 
 /**
  * @brief Process SILENTCOM state
+ * @req SHALL_CANSM - Process SILENTCOM state
  */
 static Std_ReturnType CanSm_ProcessSilentComState(uint8 NetworkIndex)
 {
@@ -476,6 +506,7 @@ static Std_ReturnType CanSm_ProcessSilentComState(uint8 NetworkIndex)
 
 /**
  * @brief Process FULLCOM state
+ * @req SHALL_CANSM - Process FULLCOM state
  */
 static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
 {
@@ -508,3 +539,20 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
             }
             break;
             
+
+#if (CANSM_VERSION_INFO_API == STD_ON)
+void CanSm_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == versioninfo) {
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID, 0x02U, CANSM_E_PARAM_POINTER);
+        return;
+    }
+#endif
+    versioninfo->vendorID = CANSM_VENDOR_ID;
+    versioninfo->moduleID = CANSM_MODULE_ID;
+    versioninfo->sw_major_version = CANSM_SW_MAJOR_VERSION;
+    versioninfo->sw_minor_version = CANSM_SW_MINOR_VERSION;
+    versioninfo->sw_patch_version = CANSM_SW_PATCH_VERSION;
+}
+#endif

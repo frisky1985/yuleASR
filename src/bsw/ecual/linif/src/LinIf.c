@@ -10,6 +10,14 @@
 #include "Det.h"
 #include <string.h>
 
+/* Version check */
+#if defined(LINIF_AR_RELEASE_MAJOR_VERSION) && (LINIF_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "LinIf: AR major mismatch"
+#endif
+#if defined(LINIF_AR_RELEASE_MINOR_VERSION) && (LINIF_AR_RELEASE_MINOR_VERSION != 4u)
+#error "LinIf: AR minor mismatch"
+#endif
+
 #define LINIF_SID_INIT              0x00U
 #define LINIF_SID_DEINIT            0x01U
 #define LINIF_SID_TRANSMIT          0x02U

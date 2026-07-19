@@ -15,6 +15,12 @@
 #include "ComStack_Types.h"
 #include "EthIf_Cfg.h"
 
+#define ETHIF_AR_RELEASE_MAJOR_VERSION   4U
+#define ETHIF_AR_RELEASE_MINOR_VERSION   4U
+#define ETHIF_AR_RELEASE_REVISION_VERSION 0U
+#define ETHIF_SW_MAJOR_VERSION           1U
+#define ETHIF_SW_MINOR_VERSION           0U
+#define ETHIF_SW_PATCH_VERSION           0U
 #define ETHIF_MODULE_ID             0x70U
 #define ETHIF_VENDOR_ID             0x0055U
 #define ETHIF_MAX_CONTROLLERS       4U

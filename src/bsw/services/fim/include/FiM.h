@@ -24,6 +24,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define FIM_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
+#define FIM_INSTANCE_ID           0U
 #define FIM_MODULE_ID                   (0x55U) /* FiM Module ID */
 #define FIM_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define FIM_AR_RELEASE_MINOR_VERSION    (0x04U)

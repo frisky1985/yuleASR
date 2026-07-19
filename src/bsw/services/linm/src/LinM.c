@@ -1,6 +1,7 @@
 /**
  * @file LinM.c
  * @brief LIN Master Management module implementation
+ * @req SHALL_LINM - LIN Master Management module implementation
  * @version 1.0.0
  * @date 2026-04-28
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -28,6 +29,7 @@
 ==================================================================================================*/
 /**
  * @brief LIN Master Channel State structure
+ * @req SHALL_LINM - LIN Master Channel State structure
  */
 typedef struct {
     LinM_ScheduleStatusType ScheduleStatus;     /*!< Schedule status */
@@ -61,6 +63,14 @@ STATIC LinM_ChannelStateType LinM_ChannelStates[LINM_NUMBER_OF_CHANNELS];
 #define LINM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/* Version check */
+#if defined(LINM_AR_RELEASE_MAJOR_VERSION) && (LINM_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "LinM: AR major mismatch"
+#endif
+#if defined(LINM_AR_RELEASE_MINOR_VERSION) && (LINM_AR_RELEASE_MINOR_VERSION != 4u)
+#error "LinM: AR minor mismatch"
+#endif
+
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
@@ -76,6 +86,7 @@ STATIC void LinM_ExecuteEntry(LinM_ChannelType Channel, const LinM_ScheduleEntry
 ==================================================================================================*/
 /**
  * @brief Validates the channel ID
+ * @req SHALL_LINM - Validates the channel ID
  */
 STATIC Std_ReturnType LinM_ValidateChannel(LinM_ChannelType Channel)
 {
@@ -90,6 +101,7 @@ STATIC Std_ReturnType LinM_ValidateChannel(LinM_ChannelType Channel)
 
 /**
  * @brief Validates the schedule ID
+ * @req SHALL_LINM - Validates the schedule ID
  */
 STATIC Std_ReturnType LinM_ValidateSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule)
 {
@@ -105,6 +117,7 @@ STATIC Std_ReturnType LinM_ValidateSchedule(LinM_ChannelType Channel, LinM_Sched
 
 /**
  * @brief Sends frame header on LIN bus
+ * @req SHALL_LINM - Sends frame header on LIN bus
  */
 STATIC Std_ReturnType LinM_SendFrameHeader(LinM_ChannelType Channel, uint8 FrameIndex)
 {
@@ -119,6 +132,7 @@ STATIC Std_ReturnType LinM_SendFrameHeader(LinM_ChannelType Channel, uint8 Frame
 
 /**
  * @brief Executes a schedule entry
+ * @req SHALL_LINM - Executes a schedule entry
  */
 STATIC void LinM_ExecuteEntry(LinM_ChannelType Channel, const LinM_ScheduleEntryConfigType* Entry)
 {
@@ -160,6 +174,7 @@ STATIC void LinM_ExecuteEntry(LinM_ChannelType Channel, const LinM_ScheduleEntry
 
 /**
  * @brief Processes the current entry in a schedule
+ * @req SHALL_LINM - Processes the current entry in a schedule
  */
 STATIC void LinM_ProcessEntry(LinM_ChannelType Channel)
 {
@@ -181,6 +196,7 @@ STATIC void LinM_ProcessEntry(LinM_ChannelType Channel)
 
 /**
  * @brief Processes schedule execution
+ * @req SHALL_LINM - Processes schedule execution
  */
 STATIC void LinM_ProcessSchedule(LinM_ChannelType Channel)
 {
@@ -228,6 +244,7 @@ STATIC void LinM_ProcessSchedule(LinM_ChannelType Channel)
 ==================================================================================================*/
 /**
  * @brief Initializes the LIN Master Management module
+ * @req SHALL_LINM - Initializes the LIN Master Management module
  */
 void LinM_Init(const LinM_ConfigType* ConfigPtr)
 {
@@ -260,6 +277,7 @@ void LinM_Init(const LinM_ConfigType* ConfigPtr)
 
 /**
  * @brief Deinitializes the LIN Master Management module
+ * @req SHALL_LINM - Deinitializes the LIN Master Management module
  */
 void LinM_DeInit(void)
 {
@@ -287,6 +305,7 @@ void LinM_DeInit(void)
 
 /**
  * @brief Gets version information
+ * @req SHALL_LINM - Gets version information
  */
 #if (LINM_VERSION_INFO_API == STD_ON)
 void LinM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
@@ -308,6 +327,7 @@ void LinM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 
 /**
  * @brief Initializes a schedule for a channel
+ * @req SHALL_LINM - Initializes a schedule for a channel
  */
 Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule)
 {
@@ -342,6 +362,7 @@ Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleType Sch
 
 /**
  * @brief Starts a schedule for a channel
+ * @req SHALL_LINM - Starts a schedule for a channel
  */
 Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule)
 {
@@ -381,6 +402,7 @@ Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_ScheduleType Sc
 
 /**
  * @brief Stops a schedule for a channel
+ * @req SHALL_LINM - Stops a schedule for a channel
  */
 Std_ReturnType LinM_StopSchedule(LinM_ChannelType Channel)
 {
@@ -409,6 +431,7 @@ Std_ReturnType LinM_StopSchedule(LinM_ChannelType Channel)
 
 /**
  * @brief Sets schedule mode for a channel
+ * @req SHALL_LINM - Sets schedule mode for a channel
  */
 Std_ReturnType LinM_SetScheduleMode(LinM_ChannelType Channel, LinM_ScheduleModeType Mode)
 {
@@ -442,6 +465,7 @@ Std_ReturnType LinM_SetScheduleMode(LinM_ChannelType Channel, LinM_ScheduleModeT
 
 /**
  * @brief Gets schedule status for a channel
+ * @req SHALL_LINM - Gets schedule status for a channel
  */
 Std_ReturnType LinM_GetScheduleStatus(LinM_ChannelType Channel, LinM_ScheduleStatusType* Status)
 {
@@ -472,6 +496,7 @@ Std_ReturnType LinM_GetScheduleStatus(LinM_ChannelType Channel, LinM_ScheduleSta
 
 /**
  * @brief Main function for LinM (to be called periodically)
+ * @req SHALL_LINM - Main function for LinM (to be called periodically)
  */
 void LinM_MainFunction(void)
 {
@@ -488,6 +513,7 @@ void LinM_MainFunction(void)
 
 /**
  * @brief Sends wakeup signal on LIN bus
+ * @req SHALL_LINM - Sends wakeup signal on LIN bus
  */
 Std_ReturnType LinM_WakeUp(LinM_ChannelType Channel)
 {
@@ -516,6 +542,7 @@ Std_ReturnType LinM_WakeUp(LinM_ChannelType Channel)
 
 /**
  * @brief Sends go-to-sleep command on LIN bus
+ * @req SHALL_LINM - Sends go-to-sleep command on LIN bus
  */
 Std_ReturnType LinM_GotoSleep(LinM_ChannelType Channel)
 {
@@ -544,6 +571,7 @@ Std_ReturnType LinM_GotoSleep(LinM_ChannelType Channel)
 
 /**
  * @brief Gets slave response status
+ * @req SHALL_LINM - Gets slave response status
  */
 Std_ReturnType LinM_GetSlaveResponse(LinM_ChannelType Channel, LinM_SlaveResponseStatusType* Status)
 {

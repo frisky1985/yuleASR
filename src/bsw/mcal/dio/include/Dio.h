@@ -27,6 +27,12 @@
 #define DIO_VENDOR_ID                           0x0055U  /* YuleTech */
 
 /** @brief DIO Module ID */
+#define DIO_AR_RELEASE_MAJOR_VERSION   4U
+#define DIO_AR_RELEASE_MINOR_VERSION   4U
+#define DIO_AR_RELEASE_REVISION_VERSION 0U
+#define DIO_SW_MAJOR_VERSION           1U
+#define DIO_SW_MINOR_VERSION           0U
+#define DIO_SW_PATCH_VERSION           0U
 #define DIO_MODULE_ID                           0x0020U
 
 /** @brief DIO Instance ID */

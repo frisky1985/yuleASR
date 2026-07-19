@@ -28,6 +28,12 @@
 #define PORT_VENDOR_ID                          0x0055U  /* YuleTech */
 
 /** @brief Port Module ID */
+#define PORT_AR_RELEASE_MAJOR_VERSION   4U
+#define PORT_AR_RELEASE_MINOR_VERSION   4U
+#define PORT_AR_RELEASE_REVISION_VERSION 0U
+#define PORT_SW_MAJOR_VERSION           1U
+#define PORT_SW_MINOR_VERSION           0U
+#define PORT_SW_PATCH_VERSION           0U
 #define PORT_MODULE_ID                          0x0074U
 
 /** @brief Port Instance ID */

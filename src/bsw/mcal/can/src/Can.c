@@ -13,6 +13,7 @@
 /**
  * @file Can.c
  * @brief CAN Driver implementation for i.MX8M Mini (FlexCAN)
+ * @req SHALL_CAN - CAN Driver implementation for i.MX8M Mini (FlexCAN)
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -410,7 +411,7 @@ void Can_MainFunction_Read(void)
 
         for (uint8 i = (CAN_NUM_HOH / CAN_NUM_CONTROLLERS); i < CAN_NUM_HOH; i++) {
             if ((iflagValue & (1U << i)) != 0U) {
-                uint32 mbAddr = baseAddr + CAN_MB_BASE + (i * 16U);
+                uint32 mbAddr = baseAddr + CAN_MB_BASE + (i * 16U); (void)mbAddr;
                 /* Read message and notify upper layer */
                 /* CanIf_RxIndication(...); */
                 /* Clear flag */
@@ -472,3 +473,11 @@ Std_ReturnType Can_CheckWakeup(uint8 Controller)
 
 #define CAN_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(CAN_AR_RELEASE_MAJOR_VERSION) && (CAN_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Can: AR major mismatch"
+#endif
+#if defined(CAN_AR_RELEASE_MINOR_VERSION) && (CAN_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Can: AR minor mismatch"
+#endif

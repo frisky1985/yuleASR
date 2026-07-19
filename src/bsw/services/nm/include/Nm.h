@@ -35,6 +35,7 @@
 #define NM_SW_PATCH_VERSION               0
 
 /* Module ID */
+#define NM_INSTANCE_ID           0U
 #define NM_MODULE_ID                      0x1D
 
 /* Service IDs */

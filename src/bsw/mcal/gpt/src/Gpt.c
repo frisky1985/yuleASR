@@ -13,6 +13,7 @@
 /**
  * @file Gpt.c
  * @brief GPT Driver implementation for i.MX8M Mini (GPT)
+ * @req SHALL_GPT - GPT Driver implementation for i.MX8M Mini (GPT)
  * @version 1.0.0
  * @date 2026-04-14
  * @author Shanghai Yule Electronics Technology Co., Ltd.
@@ -482,3 +483,11 @@ Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* 
 
 #define GPT_STOP_SEC_CODE
 #include "MemMap.h"
+
+/* Version check */
+#if defined(GPT_AR_RELEASE_MAJOR_VERSION) && (GPT_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "Gpt: AR major mismatch"
+#endif
+#if defined(GPT_AR_RELEASE_MINOR_VERSION) && (GPT_AR_RELEASE_MINOR_VERSION != 4u)
+#error "Gpt: AR minor mismatch"
+#endif

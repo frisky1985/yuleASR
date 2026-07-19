@@ -14,6 +14,12 @@
 #include "Std_Types.h"
 #include "ComStack_Types.h"
 
+#define SRP_AR_RELEASE_MAJOR_VERSION   4U
+#define SRP_AR_RELEASE_MINOR_VERSION   4U
+#define SRP_AR_RELEASE_REVISION_VERSION 0U
+#define SRP_SW_MAJOR_VERSION           1U
+#define SRP_SW_MINOR_VERSION           0U
+#define SRP_SW_PATCH_VERSION           0U
 #define SRP_MODULE_ID               0x90U
 #define SRP_VENDOR_ID               0x0055U
 #define SRP_STREAM_ID_SIZE          8U

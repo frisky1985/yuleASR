@@ -10,6 +10,14 @@
 #include "Det.h"
 #include <string.h>
 
+/* Version check */
+#if defined(ETHIF_AR_RELEASE_MAJOR_VERSION) && (ETHIF_AR_RELEASE_MAJOR_VERSION != 4u)
+#error "EthIf: AR major mismatch"
+#endif
+#if defined(ETHIF_AR_RELEASE_MINOR_VERSION) && (ETHIF_AR_RELEASE_MINOR_VERSION != 4u)
+#error "EthIf: AR minor mismatch"
+#endif
+
 #define ETHIF_SID_INIT              0x00U
 #define ETHIF_SID_DEINIT            0x01U
 #define ETHIF_SID_TRANSMIT          0x02U

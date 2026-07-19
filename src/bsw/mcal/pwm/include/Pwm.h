@@ -23,6 +23,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define PWM_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
+#define PWM_INSTANCE_ID           0U
 #define PWM_MODULE_ID                   (0x11U) /* PWM Driver Module ID */
 #define PWM_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define PWM_AR_RELEASE_MINOR_VERSION    (0x04U)
