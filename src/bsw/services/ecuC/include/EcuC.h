@@ -1,108 +1,85 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
 /**
  * @file EcuC.h
- * @brief EcuC - ECU Configuration Module
- * @version 1.0.0
- * @date 2024-05-05
+ * @brief ECU Configuration - AUTOSAR Services Module
+ * @version 2.0.0
+ * @date 2026-07-19
+ * @author YuleTech
+ *
+ * @implements AUTOSAR_SWS_ECUConfiguration.pdf
  */
 
 #ifndef ECUC_H
 #define ECUC_H
 
-/*==================[Includes]==============================================*/
 #include "Std_Types.h"
+#include "EcuC_Cfg.h"
 #include "ComStack_Types.h"
 
-/*==================[Macros]================================================*/
-#define ECUC_MODULE_ID                     150U
-#define ECUC_VENDOR_ID                     0x0001U
+#define ECUC_MODULE_ID              0x13U
+#define ECUC_VENDOR_ID              0x0055U
 
-#define ECUC_SW_MAJOR_VERSION              1U
-#define ECUC_SW_MINOR_VERSION              0U
-#define ECUC_SW_PATCH_VERSION              0U
+#define ECUC_CONFIG_ID_CORE_FREQ    0x01U
+#define ECUC_CONFIG_ID_BUS_FREQ     0x02U
+#define ECUC_CONFIG_ID_RAM_SIZE     0x03U
+#define ECUC_CONFIG_ID_FLASH_SIZE   0x04U
+#define ECUC_CONFIG_ID_EEPROM_SIZE  0x05U
+#define ECUC_CONFIG_ID_CAN_BAUD     0x06U
+#define ECUC_CONFIG_ID_LIN_BAUD     0x07U
 
-/* Error Codes */
-#define ECUC_E_NO_ERROR                    0x00U
-#define ECUC_E_PARAM_POINTER               0x01U
-#define ECUC_E_PARAM_CONFIG                0x02U
-#define ECUC_E_UNINIT                      0x03U
-#define ECUC_E_INIT_FAILED                 0x04U
-#define ECUC_E_INVALID_PDU_ID              0x05U
-#define ECUC_E_INVALID_SIGNAL_ID           0x06U
-
-/* Service IDs */
-#define ECUC_SID_INIT                      0x01U
-#define ECUC_SID_DEINIT                    0x02U
-#define ECUC_SID_GET_VERSION_INFO          0x03U
-#define ECUC_SID_TRANSMIT_SIGNAL           0x04U
-#define ECUC_SID_RECEIVE_SIGNAL            0x05U
-#define ECUC_SID_UPDATE_SHADOW_SIGNAL      0x06U
-#define ECUC_SID_RECEIVE_SHADOW_SIGNAL     0x07U
-#define ECUC_SID_SEND_SIGNAL               0x08U
-#define ECUC_SID_SEND_SHADOW_SIGNAL        0x09U
-
-/*==================[Type Definitions]======================================*/
-
-/* EcuC Initialization Status */
-typedef enum {
-    ECUC_STATE_UNINIT = 0,
-    ECUC_STATE_INIT
-} EcuC_StateType;
-
-/* Signal Transfer Property */
-typedef enum {
-    ECUC_SIGNAL_PENDING = 0,
-    ECUC_SIGNAL_TRIGGERED,
-    ECUC_SIGNAL_TRIGGERED_ON_CHANGE,
-    ECUC_SIGNAL_TRIGGERED_ON_CHANGE_WITHOUT_REPETITION
-} EcuC_SignalTransferPropertyType;
+/* Signal Transfer Properties */
+#define ECUC_SIGNAL_TRIGGERED               0x01U
+#define ECUC_SIGNAL_TRIGGERED_ON_CHANGE     0x02U
 
 /* Signal Direction */
-typedef enum {
-    ECUC_SEND = 0,
-    ECUC_RECEIVE
-} EcuC_SignalDirectionType;
+#define ECUC_SEND                   0x01U
+#define ECUC_RECEIVE                0x02U
 
-/* Signal Configuration */
+/* Container Types */
+#define ECUC_CONTAINER_ECU          0x01U
+#define ECUC_CONTAINER_PDU          0x02U
+#define ECUC_CONTAINER_SIGNAL       0x03U
+
 typedef struct {
     uint16 SignalId;
     uint16 SignalSize;
     uint16 SignalStartBit;
-    uint16 SignalBitOrder;
-    EcuC_SignalTransferPropertyType TransferProperty;
-    EcuC_SignalDirectionType Direction;
-    PduIdType RelatedPduId;
+    uint8  SignalBitOrder;
+    uint8  TransferProperty;
+    uint8  Direction;
+    uint16 RelatedPduId;
 } EcuC_SignalConfigType;
 
-/* PDU Configuration */
 typedef struct {
-    PduIdType PduId;
+    uint16 PduId;
     uint16 PduLength;
     uint16 SignalCount;
     const EcuC_SignalConfigType* Signals;
 } EcuC_PduConfigType;
 
-/* Gateway Routing Configuration */
 typedef struct {
-    PduIdType SourcePduId;
-    PduIdType DestinationPduId;
-    uint16 SignalCount;
+    uint16 ContainerId;
+    uint8  ContainerType;
+    uint16 NumPdus;
+    const uint16* PduRefs;
+} EcuC_ContainerType;
+
+typedef struct {
+    uint16 SourcePduId;
+    uint16 DestinationPduId;
+    uint8  SignalCount;
     const uint16* SignalMapping;
 } EcuC_RoutingPathType;
 
-/* EcuC Configuration */
 typedef struct {
+    uint32 CoreFrequency;
+    uint32 BusFrequency;
+    uint32 RamSize;
+    uint32 FlashSize;
+    uint32 EepromSize;
+    uint32 CanBaudrate;
+    uint32 LinBaudrate;
+    uint32 SpiFrequency;
+    /* Extended config for Lcfg */
     uint16 PduCount;
     uint16 SignalCount;
     uint16 RoutingPathCount;
@@ -111,30 +88,10 @@ typedef struct {
     const EcuC_RoutingPathType* RoutingPaths;
 } EcuC_ConfigType;
 
-/*==================[Function Prototypes]===================================*/
 void EcuC_Init(const EcuC_ConfigType* ConfigPtr);
 void EcuC_DeInit(void);
-#if (ECUC_VERSION_INFO_API == STD_ON)
-void EcuC_GetVersionInfo(Std_VersionInfoType* VersionInfo);
-#endif
-
-Std_ReturnType EcuC_TransmitSignal(uint16 SignalId, const void* SignalDataPtr);
-Std_ReturnType EcuC_ReceiveSignal(uint16 SignalId, void* SignalDataPtr);
-Std_ReturnType EcuC_UpdateShadowSignal(uint16 SignalId, const void* SignalDataPtr);
-Std_ReturnType EcuC_ReceiveShadowSignal(uint16 SignalId, void* SignalDataPtr);
-Std_ReturnType EcuC_SendSignal(uint16 SignalId, const void* SignalDataPtr);
-Std_ReturnType EcuC_SendShadowSignal(uint16 SignalId);
-
-/* Rx/Tx Confirmation Callbacks */
-void EcuC_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
-void EcuC_TxConfirmation(PduIdType TxPduId, Std_ReturnType Result);
-void EcuC_TpRxIndication(PduIdType RxPduId, Std_ReturnType Result);
-void EcuC_TpTxConfirmation(PduIdType TxPduId, Std_ReturnType Result);
-
-/* Main Function */
-void EcuC_MainFunction(void);
-
-/*==================[External Declarations]=================================*/
-extern const EcuC_ConfigType EcuC_Config;
+Std_ReturnType EcuC_GetConfigValue(uint16 ConfigId, uint32* Value);
+Std_ReturnType EcuC_SetConfigValue(uint16 ConfigId, uint32 Value);
+void EcuC_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* ECUC_H */

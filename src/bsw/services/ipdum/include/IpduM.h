@@ -1,19 +1,8 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
 /**
  * @file IpduM.h
- * @brief IPDU Multiplexer (Services Layer)
+ * @brief I-PDU Multiplexer - AUTOSAR Services Module
  * @version 1.0.0
+ * @date 2026-07-19
  */
 
 #ifndef IPDUM_H
@@ -21,43 +10,43 @@
 
 #include "Std_Types.h"
 #include "ComStack_Types.h"
+#include "IpduM_Cfg.h"
 
-#define IPDUM_MODULE_ID         0x51U
-#define IPDUM_VENDOR_ID         0x0001U
+#define IPDUM_MODULE_ID             0x38U
+#define IPDUM_VENDOR_ID             0x0055U
+#define IPDUM_MAX_STATIC_PARTS      8U
 
-/* Error Codes */
-#define IPDUM_E_NO_ERROR        0x00U
-#define IPDUM_E_PARAM_POINTER   0x01U
-#define IPDUM_E_UNINIT          0x02U
-#define IPDUM_E_PARAM_INVALID   0x03U
-
-/* Service IDs */
-#define IPDUM_SID_INIT          0x01U
-#define IPDUM_SID_DEINIT        0x02U
-#define IPDUM_SID_TRANSMIT      0x03U
-#define IPDUM_SID_RX_INDICATION 0x04U
-#define IPDUM_SID_MAIN_FUNCTION 0x05U
-
-/* Selector Field Types */
-typedef uint8 IpduM_SelType;
+typedef enum {
+    IPDUM_IPDU_MODE_OFF = 0,
+    IPDUM_IPDU_MODE_ON,
+    IPDUM_IPDU_MODE_ALTERNATE
+} IpduM_IpduModeType;
 
 typedef struct {
-    PduIdType TxPduId;
-    PduIdType RxPduId;
-    IpduM_SelType SelectorValue;
+    uint16 SourcePduId;
+    uint16 DestPduId;
+    uint8  SelectorPosition;
 } IpduM_StaticPartType;
 
 typedef struct {
-    uint8 NumStaticParts;
+    uint16 IpduId;
+    PduIdType SourcePduId;
+    PduIdType DestPduId;
+    void (*RoutingCallback)(PduIdType SourceId, PduIdType DestId);
+} IpduM_IpduMappingType;
+
+typedef struct {
+    uint16 NumStaticParts;
     const IpduM_StaticPartType* StaticParts;
+    uint16 NumIpduMappings;
+    const IpduM_IpduMappingType* IpduMapping;
 } IpduM_ConfigType;
 
-/* Functions */
 void IpduM_Init(const IpduM_ConfigType* ConfigPtr);
 void IpduM_DeInit(void);
-Std_ReturnType IpduM_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
-void IpduM_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
-void IpduM_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
+Std_ReturnType IpduM_SetIpduMode(uint16 IpduId, IpduM_IpduModeType Mode);
+IpduM_IpduModeType IpduM_GetIpduMode(uint16 IpduId);
 void IpduM_MainFunction(void);
+void IpduM_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
-#endif
+#endif /* IPDUM_H */

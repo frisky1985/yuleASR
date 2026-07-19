@@ -1,44 +1,25 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
 /**
  * @file SomeIpSd.h
- * @brief SOME/IP Service Discovery Module
- * @version 1.0.0
+ * @brief SOME/IP Service Discovery - AUTOSAR ECUAL Module
+ * @version 2.0.0
+ * @date 2026-07-19
+ * @author YuleTech
+ *
+ * @implements AUTOSAR_PRS_SOMEIPServiceDiscoveryProtocol.pdf
  */
 
 #ifndef SOMEIPSD_H
 #define SOMEIPSD_H
 
 #include "Std_Types.h"
-#include "SoAd.h"
+#include "ComStack_Types.h"
+#include "ComStack_Types.h"
 
 #define SOMEIPSD_MODULE_ID          0x81U
-#define SOMEIPSD_VENDOR_ID          0x0001U
+#define SOMEIPSD_VENDOR_ID          0x0055U
+#define SOMEIPSD_PROTOCOL_VERSION   0x01U
+#define SOMEIPSD_INTERFACE_VERSION  0x01U
 
-/* Error Codes */
-#define SOMEIPSD_E_NO_ERROR         0x00U
-#define SOMEIPSD_E_PARAM_POINTER    0x01U
-#define SOMEIPSD_E_UNINIT           0x02U
-
-/* SD Message Types */
-#define SOMEIPSD_FIND_SERVICE       0x00U
-#define SOMEIPSD_OFFER_SERVICE      0x01U
-#define SOMEIPSD_STOP_OFFER_SERVICE 0x02U
-#define SOMEIPSD_SUBSCRIBE_EVENTGROUP 0x06U
-#define SOMEIPSD_SUBSCRIBE_ACK      0x07U
-#define SOMEIPSD_SUBSCRIBE_NACK     0x08U
-
-/* SD Entry Types */
 typedef enum {
     SD_ENTRY_FIND_SERVICE = 0x00,
     SD_ENTRY_OFFER_SERVICE = 0x01,
@@ -46,7 +27,6 @@ typedef enum {
     SD_ENTRY_SUBSCRIBE_ACK = 0x07
 } SomeIpSd_EntryTypeType;
 
-/* SD Entry Structure */
 typedef struct {
     SomeIpSd_EntryTypeType Type;
     uint16 ServiceId;
@@ -56,14 +36,12 @@ typedef struct {
     uint32 TTL;
 } SomeIpSd_EntryType;
 
-/* Service Discovery State */
 typedef enum {
     SD_STATE_DOWN = 0,
     SD_STATE_AVAILABLE,
     SD_STATE_NOT_AVAILABLE
 } SomeIpSd_ServiceStateType;
 
-/* Subscription State */
 typedef enum {
     SD_SUBSCRIPTION_NOT_REQUESTED = 0,
     SD_SUBSCRIPTION_PENDING,
@@ -71,7 +49,6 @@ typedef enum {
     SD_SUBSCRIPTION_REJECTED
 } SomeIpSd_SubscriptionStateType;
 
-/* Configuration */
 typedef struct {
     uint16 ServiceId;
     uint16 InstanceId;
@@ -79,9 +56,15 @@ typedef struct {
     boolean IsServer;
     uint16 EndpointTcp;
     uint16 EndpointUdp;
+    uint8  MajorVersion;
+    uint32 MinorVersion;
 } SomeIpSd_ServiceConfigType;
 
-/* Functions */
+typedef struct {
+    uint8 NumServices;
+    const SomeIpSd_ServiceConfigType* Services;
+} SomeIpSd_ConfigType;
+
 void SomeIpSd_Init(const void* ConfigPtr);
 void SomeIpSd_DeInit(void);
 void SomeIpSd_MainFunction(void);
@@ -89,6 +72,8 @@ Std_ReturnType SomeIpSd_FindService(uint16 ServiceId, uint16 InstanceId);
 Std_ReturnType SomeIpSd_OfferService(uint16 ServiceId, uint16 InstanceId);
 Std_ReturnType SomeIpSd_StopOffer(uint16 ServiceId, uint16 InstanceId);
 Std_ReturnType SomeIpSd_SubscribeEventGroup(uint16 ServiceId, uint16 EventGroupId);
+SomeIpSd_ServiceStateType SomeIpSd_GetServiceState(uint16 ServiceId, uint16 InstanceId);
 void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+void SomeIpSd_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
-#endif
+#endif /* SOMEIPSD_H */

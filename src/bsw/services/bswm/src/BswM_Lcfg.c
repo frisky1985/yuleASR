@@ -1,15 +1,3 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
 /**
  * @file BswM_Lcfg.c
  * @brief BswM Configuration Tables
@@ -20,15 +8,15 @@
 
 /* Mode Request Ports */
 static BswM_ModeRequestPortType BswM_ModeRequestPorts[BSWM_MAX_MODE_REQUEST_PORTS] = {
-    { 0U, BSWM_ECUM_REQUEST, BSWM_MODE_STARTUP, TRUE },
-    { 1U, BSWM_COMM_REQUEST, BSWM_MODE_RUN, TRUE },
-    { 2U, BSWM_DCM_REQUEST, BSWM_MODE_RUN, FALSE }
+    { 0U, BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_STARTUP, TRUE },
+    { 1U, BSWM_COMM_REQUEST, BSWM_MODE_VALUE_RUN, TRUE },
+    { 2U, BSWM_DCM_REQUEST, BSWM_MODE_VALUE_RUN, FALSE }
 };
 
 /* Rules */
 static const BswM_RuleType BswM_Rules[BSWM_MAX_RULES] = {
-    { 0U, 0U, BSWM_MODE_RUN, 0U, TRUE },
-    { 1U, 1U, BSWM_MODE_SHUTDOWN, 1U, FALSE }
+    { 0U, 0U, BSWM_MODE_VALUE_RUN, 0U, TRUE },
+    { 1U, 1U, BSWM_MODE_VALUE_SHUTDOWN, 1U, FALSE }
 };
 
 /* Configuration */

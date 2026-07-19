@@ -1,19 +1,11 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
 /**
  * @file LinIf.h
- * @brief LIN Interface Module
- * @version 1.0.0
+ * @brief LIN Interface - AUTOSAR ECUAL Module
+ * @version 2.0.0
+ * @date 2026-07-19
+ * @author YuleTech
+ *
+ * @implements AUTOSAR_SWS_LINInterface.pdf
  */
 
 #ifndef LINIF_H
@@ -21,103 +13,72 @@
 
 #include "Std_Types.h"
 #include "ComStack_Types.h"
+#include "LinIf_Cfg.h"
 
-#define LINIF_MODULE_ID         62U
-#define LINIF_VENDOR_ID         0x0001U
+#define LINIF_MODULE_ID             0x27U
+#define LINIF_VENDOR_ID             0x0055U
 
-/* Error Codes */
-#define LINIF_E_NO_ERROR        0x00U
-#define LINIF_E_PARAM_POINTER   0x01U
-#define LINIF_E_UNINIT          0x02U
-#define LINIF_E_INVALID_CHANNEL 0x03U
-#define LINIF_E_INVALID_PDU     0x04U
+#define LINIF_UNCONDITIONAL_FRAME   0x00U
+#define LINIF_EVENT_TRIGGERED_FRAME 0x01U
+#define LINIF_SPORADIC_FRAME        0x02U
+#define LINIF_DIAGNOSTIC_FRAME      0x03U
 
-/* Service IDs */
-#define LINIF_SID_INIT                  0x01U
-#define LINIF_SID_DEINIT                0x02U
-#define LINIF_SID_GET_VERSION_INFO      0x03U
-#define LINIF_SID_TRANSMIT              0x04U
-#define LINIF_SID_SCHEDULE_REQUEST      0x05U
-#define LINIF_SID_WAKEUP                0x06U
-#define LINIF_SID_GOTOSLEEP             0x07U
-#define LINIF_SID_MAIN_FUNCTION         0x08U
-
-/* Schedule Types */
-typedef enum {
-    LINIF_RUN_CONTINUOUS = 0,
-    LINIF_RUN_ONCE
-} LinIf_ScheduleRunModeType;
-
-typedef enum {
-    LINIF_NULL_SCHEDULE = 0,
-    LINIF_DIAGRequest,
-    LINIF_DIAGResponse,
-    LINIF_MASTERReqSchedule,
-    LINIF_SlaveRespSchedule,
-    LINIF_Normal,
-    LINIF_Master,
-    LINIF_Sporadic
-} LinIf_ScheduleTableType;
+#define LINIF_NULL_SCHEDULE         0x00U
+#define LINIF_Normal                0x01U
 
 /* Frame Type */
-typedef enum {
-    LINIF_UNCONDITIONAL_FRAME = 0,
-    LINIF_EVENT_TRIGGERED_FRAME,
-    LINIF_SPORADIC_FRAME
-} LinIf_FrameType;
-
-/* Frame Configuration */
 typedef struct {
-    uint16 FrameIdx;
-    uint8 Pid;
-    uint8 Dlc;
-    LinIf_FrameType FrameType;
-    boolean IsPublish;
+    uint8    FrameIdx;
+    uint8    Pid;
+    uint8    Dlc;
+    uint8    FrameType;
+    boolean  IsPublish;
 } LinIf_FrameConfigType;
 
 /* Schedule Entry */
 typedef struct {
-    uint16 Delay;
-    uint16 FrameIdx;
+    uint16   DelayMs;
+    uint8    FrameIdx;
 } LinIf_ScheduleEntryType;
 
-/* Schedule Table */
+/* Schedule Table Config */
 typedef struct {
-    LinIf_ScheduleTableType Schedule;
-    uint8 EntryCount;
+    uint8    Schedule;
+    uint8    EntryCount;
     const LinIf_ScheduleEntryType* Entries;
 } LinIf_ScheduleTableConfigType;
 
-/* Channel Configuration */
+/* Channel Config */
 typedef struct {
-    uint8 ChannelId;
-    uint8 NumFrames;
-    uint8 NumSchedules;
+    uint8    ChannelId;
+    uint8    NumFrames;
+    uint8    NumSchedules;
     const LinIf_FrameConfigType* Frames;
     const LinIf_ScheduleTableConfigType* Schedules;
 } LinIf_ChannelConfigType;
 
-/* Configuration */
+/* PDU Type */
 typedef struct {
-    uint8 NumChannels;
+    uint8 Id;
+    uint8 Dlc;
+    const uint8* DataPtr;
+} LinIf_PduType;
+
+/* Callbacks */
+typedef void (*LinIf_TransmitCallback)(PduIdType PduId);
+
+/* Top Config */
+typedef struct {
+    uint8    NumChannels;
     const LinIf_ChannelConfigType* Channels;
 } LinIf_ConfigType;
 
-/* Functions */
 void LinIf_Init(const LinIf_ConfigType* ConfigPtr);
 void LinIf_DeInit(void);
-#if (LINIF_VERSION_INFO_API == STD_ON)
-void LinIf_GetVersionInfo(Std_VersionInfoType* VersionInfo);
-#endif
 Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
-Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, LinIf_ScheduleTableType Schedule);
-Std_ReturnType LinIf_WakeUp(uint8 Channel);
-Std_ReturnType LinIf_GotoSleep(uint8 Channel);
+Std_ReturnType LinIf_SetSchedule(uint8 ScheduleTableId);
+void LinIf_RxIndication(uint8 LinChannel, const LinIf_PduType* PduInfoPtr);
 void LinIf_MainFunction(void);
+void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
-/* Callbacks */
-void LinIf_RxIndication(uint8 Channel, uint8* Data, uint8 Length);
-void LinIf_TxConfirmation(uint8 Channel, Std_ReturnType Result);
-void LinIf_WakeUpConfirmation(uint8 Channel, boolean Success);
-
-#endif
+#endif /* LINIF_H */

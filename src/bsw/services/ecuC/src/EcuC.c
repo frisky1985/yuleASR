@@ -1,262 +1,116 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
-/**
- * @file EcuC.c
- * @brief EcuC Implementation - ECU Configuration Module
- * @version 1.0.0
- * @date 2024-05-05
+/** @file EcuC.c
+ *  @brief ECU Configuration implementation
+ *  @copyright Copyright (c) 2026 YuleTech
+ *
+ *  @implements AUTOSAR_SWS_ECUConfiguration.pdf
  */
 
 #include "EcuC.h"
-#include "EcuC_Cfg.h"
 #include "Det.h"
-#include "SchM_EcuC.h"
 
-/*==================[Local Macros]==========================================*/
-#define ECUC_BYTES_TO_BITS(bytes)          ((bytes) * 8U)
-#define ECUC_BITS_TO_BYTES(bits)           (((bits) + 7U) / 8U)
+#define ECUC_SID_INIT               0x00U
+#define ECUC_SID_DEINIT             0x01U
+#define ECUC_SID_GET_CONFIG         0x02U
+#define ECUC_SID_SET_CONFIG         0x03U
+#define ECUC_SID_GET_VERSION_INFO   0x04U
 
-/*==================[Local Types]===========================================*/
+#define ECUC_E_PARAM_POINTER        0x10U
+#define ECUC_E_UNINIT               0x20U
+#define ECUC_E_PARAM_CONFIG         0x30U
+#define ECUC_E_READ_ONLY            0x40U
+
+typedef enum { ECUC_UNINIT = 0, ECUC_INIT } EcuC_StateType;
+
 typedef struct {
-    EcuC_StateType State;
-    const EcuC_ConfigType* Config;
+    EcuC_StateType  state;
+    uint8           variant;
+    EcuC_ConfigType activeConfig;
+    const EcuC_ConfigType* configPtr;
 } EcuC_InternalType;
 
-/*==================[Local Variables]=======================================*/
-static EcuC_InternalType EcuC_Internal = {
-    .State = ECUC_STATE_UNINIT,
-    .Config = NULL_PTR
+static EcuC_InternalType EcuC_State = {
+    ECUC_UNINIT, 0U,
+    {0,0,0,0,0,0,0,0},
+    NULL_PTR
 };
 
-/*==================[Local Function Prototypes]=============================*/
-static uint64 EcuC_ExtractSignal(const uint8* Data, uint16 StartBit, uint16 Size);
-static void EcuC_InsertSignal(uint8* Data, uint16 StartBit, uint16 Size, uint64 Value);
-
-/*==================[Function Definitions]==================================*/
-void EcuC_Init(const EcuC_ConfigType* ConfigPtr) {
+void EcuC_Init(const EcuC_ConfigType* ConfigPtr)
+{
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_INIT, ECUC_E_PARAM_CONFIG);
+        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_INIT, ECUC_E_PARAM_POINTER);
         return;
     }
 #endif
-    
-    SchM_Enter_EcuC(ECUC_EXCLUSIVE_AREA_0);
-    EcuC_Internal.Config = ConfigPtr;
-    EcuC_Internal.State = ECUC_STATE_INIT;
-    SchM_Exit_EcuC(ECUC_EXCLUSIVE_AREA_0);
+    EcuC_State.configPtr = ConfigPtr;
+    EcuC_State.activeConfig = *ConfigPtr;
+    EcuC_State.variant = 1U;
+    EcuC_State.state = ECUC_INIT;
 }
 
-void EcuC_DeInit(void) {
+void EcuC_DeInit(void)
+{
+    EcuC_State.state = ECUC_UNINIT;
+    EcuC_State.configPtr = NULL_PTR;
+}
+
+Std_ReturnType EcuC_GetConfigValue(uint16 ConfigId, uint32* Value)
+{
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_DEINIT, ECUC_E_UNINIT);
-        return;
+    if (EcuC_State.state == ECUC_UNINIT) {
+        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_CONFIG, ECUC_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (NULL_PTR == Value) {
+        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_CONFIG, ECUC_E_PARAM_POINTER);
+        return E_NOT_OK;
     }
 #endif
-    
-    SchM_Enter_EcuC(ECUC_EXCLUSIVE_AREA_0);
-    EcuC_Internal.Config = NULL_PTR;
-    EcuC_Internal.State = ECUC_STATE_UNINIT;
-    SchM_Exit_EcuC(ECUC_EXCLUSIVE_AREA_0);
+    switch (ConfigId) {
+        case ECUC_CONFIG_ID_CORE_FREQ:     *Value = EcuC_State.activeConfig.CoreFrequency; break;
+        case ECUC_CONFIG_ID_BUS_FREQ:      *Value = EcuC_State.activeConfig.BusFrequency; break;
+        case ECUC_CONFIG_ID_RAM_SIZE:      *Value = EcuC_State.activeConfig.RamSize; break;
+        case ECUC_CONFIG_ID_FLASH_SIZE:    *Value = EcuC_State.activeConfig.FlashSize; break;
+        case ECUC_CONFIG_ID_EEPROM_SIZE:   *Value = EcuC_State.activeConfig.EepromSize; break;
+        case ECUC_CONFIG_ID_CAN_BAUD:      *Value = EcuC_State.activeConfig.CanBaudrate; break;
+        case ECUC_CONFIG_ID_LIN_BAUD:      *Value = EcuC_State.activeConfig.LinBaudrate; break;
+        default: return E_NOT_OK;
+    }
+    return E_OK;
 }
 
-#if (ECUC_VERSION_INFO_API == STD_ON)
-void EcuC_GetVersionInfo(Std_VersionInfoType* VersionInfo) {
+Std_ReturnType EcuC_SetConfigValue(uint16 ConfigId, uint32 Value)
+{
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (NULL_PTR == VersionInfo) {
+    if (EcuC_State.state == ECUC_UNINIT) {
+        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_SET_CONFIG, ECUC_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+    switch (ConfigId) {
+        case ECUC_CONFIG_ID_CORE_FREQ:     EcuC_State.activeConfig.CoreFrequency = Value; break;
+        case ECUC_CONFIG_ID_BUS_FREQ:      EcuC_State.activeConfig.BusFrequency = Value; break;
+        case ECUC_CONFIG_ID_RAM_SIZE:      EcuC_State.activeConfig.RamSize = Value; break;
+        case ECUC_CONFIG_ID_FLASH_SIZE:    EcuC_State.activeConfig.FlashSize = Value; break;
+        case ECUC_CONFIG_ID_EEPROM_SIZE:   EcuC_State.activeConfig.EepromSize = Value; break;
+        case ECUC_CONFIG_ID_CAN_BAUD:      EcuC_State.activeConfig.CanBaudrate = Value; break;
+        case ECUC_CONFIG_ID_LIN_BAUD:      EcuC_State.activeConfig.LinBaudrate = Value; break;
+        default: return E_NOT_OK;
+    }
+    return E_OK;
+}
+
+void EcuC_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+#if (ECUC_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == versioninfo) {
         Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_GET_VERSION_INFO, ECUC_E_PARAM_POINTER);
         return;
     }
 #endif
-    
-    VersionInfo->vendorID = ECUC_VENDOR_ID_VALUE;
-    VersionInfo->moduleID = ECUC_MODULE_ID_VALUE;
-    VersionInfo->sw_major_version = ECUC_SW_MAJOR_VERSION_VALUE;
-    VersionInfo->sw_minor_version = ECUC_SW_MINOR_VERSION_VALUE;
-    VersionInfo->sw_patch_version = ECUC_SW_PATCH_VERSION_VALUE;
+    versioninfo->vendorID = ECUC_VENDOR_ID;
+    versioninfo->moduleID = ECUC_MODULE_ID;
+    versioninfo->sw_major_version = 1U;
+    versioninfo->sw_minor_version = 0U;
+    versioninfo->sw_patch_version = 0U;
 }
-#endif
-
-Std_ReturnType EcuC_TransmitSignal(uint16 SignalId, const void* SignalDataPtr) {
-    Std_ReturnType result = E_NOT_OK;
-    
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_TRANSMIT_SIGNAL, ECUC_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (NULL_PTR == SignalDataPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_TRANSMIT_SIGNAL, ECUC_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#endif
-    
-    if ((NULL_PTR != EcuC_Internal.Config) && 
-        (SignalId < EcuC_Internal.Config->SignalCount)) {
-        const EcuC_SignalConfigType* signal = &EcuC_Internal.Config->Signals[SignalId];
-        result = E_OK;
-    }
-    
-    return result;
-}
-
-Std_ReturnType EcuC_ReceiveSignal(uint16 SignalId, void* SignalDataPtr) {
-    Std_ReturnType result = E_NOT_OK;
-    
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_RECEIVE_SIGNAL, ECUC_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (NULL_PTR == SignalDataPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_RECEIVE_SIGNAL, ECUC_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#endif
-    
-    if ((NULL_PTR != EcuC_Internal.Config) && 
-        (SignalId < EcuC_Internal.Config->SignalCount)) {
-        result = E_OK;
-    }
-    
-    return result;
-}
-
-Std_ReturnType EcuC_UpdateShadowSignal(uint16 SignalId, const void* SignalDataPtr) {
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_UPDATE_SHADOW_SIGNAL, ECUC_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (NULL_PTR == SignalDataPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_UPDATE_SHADOW_SIGNAL, ECUC_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#endif
-    return E_OK;
-}
-
-Std_ReturnType EcuC_ReceiveShadowSignal(uint16 SignalId, void* SignalDataPtr) {
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_RECEIVE_SHADOW_SIGNAL, ECUC_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (NULL_PTR == SignalDataPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_RECEIVE_SHADOW_SIGNAL, ECUC_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#endif
-    return E_OK;
-}
-
-Std_ReturnType EcuC_SendSignal(uint16 SignalId, const void* SignalDataPtr) {
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_SEND_SIGNAL, ECUC_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (NULL_PTR == SignalDataPtr) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_SEND_SIGNAL, ECUC_E_PARAM_POINTER);
-        return E_NOT_OK;
-    }
-#endif
-    return EcuC_TransmitSignal(SignalId, SignalDataPtr);
-}
-
-Std_ReturnType EcuC_SendShadowSignal(uint16 SignalId) {
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, ECUC_SID_SEND_SHADOW_SIGNAL, ECUC_E_UNINIT);
-        return E_NOT_OK;
-    }
-#endif
-    return E_OK;
-}
-
-void EcuC_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr) {
-#if (ECUC_DEV_ERROR_DETECT == STD_ON)
-    if (ECUC_STATE_UNINIT == EcuC_Internal.State) {
-        Det_ReportError(ECUC_MODULE_ID, 0U, 0x10U, ECUC_E_UNINIT);
-        return;
-    }
-#endif
-    
-    if ((NULL_PTR != EcuC_Internal.Config) && 
-        (RxPduId < EcuC_Internal.Config->PduCount)) {
-        /* Process received PDU */
-    }
-}
-
-void EcuC_TxConfirmation(PduIdType TxPduId, Std_ReturnType Result) {
-    (void)TxPduId;
-    (void)Result;
-}
-
-void EcuC_TpRxIndication(PduIdType RxPduId, Std_ReturnType Result) {
-    (void)RxPduId;
-    (void)Result;
-}
-
-void EcuC_TpTxConfirmation(PduIdType TxPduId, Std_ReturnType Result) {
-    (void)TxPduId;
-    (void)Result;
-}
-
-void EcuC_MainFunction(void) {
-    if (ECUC_STATE_INIT != EcuC_Internal.State) {
-        return;
-    }
-    
-    /* Process signal gateway routing */
-    if (NULL_PTR != EcuC_Internal.Config) {
-        for (uint16 i = 0U; i < EcuC_Internal.Config->RoutingPathCount; i++) {
-            /* Process routing path */
-        }
-    }
-}
-
-/*==================[Local Functions]=======================================*/
-static uint64 EcuC_ExtractSignal(const uint8* Data, uint16 StartBit, uint16 Size) {
-    uint64 value = 0U;
-    uint16 bytePos = StartBit / 8U;
-    uint16 bitPos = StartBit % 8U;
-    
-    for (uint16 i = 0U; i < Size; i++) {
-        uint16 currentByte = bytePos + ((bitPos + i) / 8U);
-        uint16 currentBit = (bitPos + i) % 8U;
-        if (Data[currentByte] & (1U << currentBit)) {
-            value |= (1ULL << i);
-        }
-    }
-    
-    return value;
-}
-
-static void EcuC_InsertSignal(uint8* Data, uint16 StartBit, uint16 Size, uint64 Value) {
-    uint16 bytePos = StartBit / 8U;
-    uint16 bitPos = StartBit % 8U;
-    
-    for (uint16 i = 0U; i < Size; i++) {
-        uint16 currentByte = bytePos + ((bitPos + i) / 8U);
-        uint16 currentBit = (bitPos + i) % 8U;
-        if (Value & (1ULL << i)) {
-            Data[currentByte] |= (1U << currentBit);
-        } else {
-            Data[currentByte] &= ~(1U << currentBit);
-        }
-    }
-}
-
-/*==================[End of File]===========================================*/

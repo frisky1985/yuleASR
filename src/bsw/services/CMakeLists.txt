@@ -1,37 +1,53 @@
 # Services Layer CMakeLists.txt
 # Collects all service-layer submodules using file(GLOB)
 # Libraries are prefixed with "service_" to avoid name conflicts
-# across BSW layers (services, mcal, ecual may share module names)
 
 cmake_minimum_required(VERSION 3.16)
 
-# Global includes for Std_Types.h, etc.
+# Global includes for Std_Types.h, Det.h, etc.
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../os/include
     ${CMAKE_CURRENT_SOURCE_DIR}/det/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../rte/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/eth/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/dio/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/can/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/lin/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ethif/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/canif/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/linif/include
 )
 
-# Get all submodule directories
+# Collect all service include directories for cross-module dependencies
 file(GLOB SERVICES_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
+
+set(SERVICE_INCLUDE_DIRS "")
+foreach(subdir ${SERVICES_SUBDIRS})
+    if(IS_DIRECTORY ${subdir}/include)
+        list(APPEND SERVICE_INCLUDE_DIRS ${subdir}/include)
+    endif()
+endforeach()
 
 foreach(subdir ${SERVICES_SUBDIRS})
     get_filename_component(module_name ${subdir} NAME)
     
-    # Collect source files
     file(GLOB_RECURSE module_sources ${subdir}/src/*.c)
     
     if(module_sources)
-        # Create library with service_ prefix to avoid name conflicts
         set(target_name "service_${module_name}")
         add_library(${target_name} STATIC ${module_sources})
         
-        # Add include directory
         if(IS_DIRECTORY ${subdir}/include)
             target_include_directories(${target_name}
                 PUBLIC ${subdir}/include
             )
         endif()
+        
+        # Cross-module include directories for dependencies
+        target_include_directories(${target_name}
+            PUBLIC ${SERVICE_INCLUDE_DIRS}
+        )
         
         set_target_properties(${target_name} PROPERTIES
             C_STANDARD 99

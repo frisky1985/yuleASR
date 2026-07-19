@@ -1,76 +1,65 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
-/**
- * @file LinIf.c
- * @brief LIN Interface Implementation
+/** @file LinIf.c
+ *  @brief LIN Interface implementation
+ *  @copyright Copyright (c) 2026 YuleTech
+ *
+ *  @implements AUTOSAR_SWS_LINInterface.pdf
  */
 
 #include "LinIf.h"
 #include "LinIf_Cfg.h"
 #include "Det.h"
-#include "SchM_LinIf.h"
+#include <string.h>
 
-typedef enum {
-    LINIF_STATE_UNINIT = 0,
-    LINIF_STATE_INIT,
-    LINIF_STATE_RUNNING
-} LinIf_StateType;
+#define LINIF_SID_INIT              0x00U
+#define LINIF_SID_DEINIT            0x01U
+#define LINIF_SID_TRANSMIT          0x02U
+#define LINIF_SID_RX_INDICATION     0x03U
+#define LINIF_SID_MAINFUNCTION      0x04U
+#define LINIF_SID_SCHEDULE          0x05U
 
-static LinIf_StateType LinIf_State = LINIF_STATE_UNINIT;
-static const LinIf_ConfigType* LinIf_ConfigPtr = NULL_PTR;
+#define LINIF_E_PARAM_POINTER       0x10U
+#define LINIF_E_UNINIT              0x20U
+#define LINIF_E_PARAM_PDU           0x30U
+#define LINIF_E_PARAM_SCHEDULE      0x40U
 
-void LinIf_Init(const LinIf_ConfigType* ConfigPtr) {
+typedef enum { LINIF_UNINIT = 0, LINIF_INIT, LINIF_ONLINE } LinIf_StateType;
+
+typedef struct {
+    LinIf_StateType state;
+    uint8 activeChannel;
+    uint8 activeSchedule;
+    uint32 tickCount;
+    const LinIf_ConfigType* configPtr;
+} LinIf_InternalType;
+
+static LinIf_InternalType LinIf_State;
+
+void LinIf_Init(const LinIf_ConfigType* ConfigPtr)
+{
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
         Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_INIT, LINIF_E_PARAM_POINTER);
         return;
     }
 #endif
-    
-    SchM_Enter_LinIf(LINIF_EXCLUSIVE_AREA_0);
-    LinIf_ConfigPtr = ConfigPtr;
-    LinIf_State = LINIF_STATE_INIT;
-    SchM_Exit_LinIf(LINIF_EXCLUSIVE_AREA_0);
+    LinIf_State.state = LINIF_UNINIT;
+    LinIf_State.activeChannel = 0U;
+    LinIf_State.activeSchedule = 0U;
+    LinIf_State.tickCount = 0U;
+    LinIf_State.configPtr = ConfigPtr;
+    LinIf_State.state = LINIF_INIT;
 }
 
-void LinIf_DeInit(void) {
-    SchM_Enter_LinIf(LINIF_EXCLUSIVE_AREA_0);
-    LinIf_ConfigPtr = NULL_PTR;
-    LinIf_State = LINIF_STATE_UNINIT;
-    SchM_Exit_LinIf(LINIF_EXCLUSIVE_AREA_0);
+void LinIf_DeInit(void)
+{
+    LinIf_State.state = LINIF_UNINIT;
+    LinIf_State.configPtr = NULL_PTR;
 }
 
-#if (LINIF_VERSION_INFO_API == STD_ON)
-void LinIf_GetVersionInfo(Std_VersionInfoType* VersionInfo) {
+Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
+{
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-    if (NULL_PTR == VersionInfo) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GET_VERSION_INFO, LINIF_E_PARAM_POINTER);
-        return;
-    }
-#endif
-    VersionInfo->vendorID = LINIF_VENDOR_ID;
-    VersionInfo->moduleID = LINIF_MODULE_ID;
-    VersionInfo->sw_major_version = 1U;
-    VersionInfo->sw_minor_version = 0U;
-    VersionInfo->sw_patch_version = 0U;
-}
-#endif
-
-Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr) {
-    Std_ReturnType result = E_NOT_OK;
-    
-#if (LINIF_DEV_ERROR_DETECT == STD_ON)
-    if (LINIF_STATE_UNINIT == LinIf_State) {
+    if (LinIf_State.state < LINIF_INIT) {
         Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_TRANSMIT, LINIF_E_UNINIT);
         return E_NOT_OK;
     }
@@ -79,80 +68,60 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr) 
         return E_NOT_OK;
     }
 #endif
-    
     (void)TxPduId;
-    result = E_OK;
-    
-    return result;
-}
-
-Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, LinIf_ScheduleTableType Schedule) {
-#if (LINIF_DEV_ERROR_DETECT == STD_ON)
-    if (LINIF_STATE_UNINIT == LinIf_State) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE_REQUEST, LINIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (Channel >= LINIF_MAX_CHANNELS) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE_REQUEST, LINIF_E_INVALID_CHANNEL);
-        return E_NOT_OK;
-    }
-#endif
-    (void)Schedule;
+    (void)PduInfoPtr;
     return E_OK;
 }
 
-Std_ReturnType LinIf_WakeUp(uint8 Channel) {
+Std_ReturnType LinIf_SetSchedule(uint8 ScheduleTableId)
+{
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
-    if (LINIF_STATE_UNINIT == LinIf_State) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_WAKEUP, LINIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (Channel >= LINIF_MAX_CHANNELS) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_WAKEUP, LINIF_E_INVALID_CHANNEL);
+    if (LinIf_State.state < LINIF_INIT) {
+        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_SCHEDULE, LINIF_E_UNINIT);
         return E_NOT_OK;
     }
 #endif
+    LinIf_State.activeSchedule = ScheduleTableId;
+    LinIf_State.tickCount = 0U;
     return E_OK;
 }
 
-Std_ReturnType LinIf_GotoSleep(uint8 Channel) {
-#if (LINIF_DEV_ERROR_DETECT == STD_ON)
-    if (LINIF_STATE_UNINIT == LinIf_State) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GOTOSLEEP, LINIF_E_UNINIT);
-        return E_NOT_OK;
-    }
-    if (Channel >= LINIF_MAX_CHANNELS) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, LINIF_SID_GOTOSLEEP, LINIF_E_INVALID_CHANNEL);
-        return E_NOT_OK;
-    }
-#endif
-    return E_OK;
+void LinIf_RxIndication(uint8 LinChannel, const LinIf_PduType* PduInfoPtr)
+{
+    (void)LinChannel;
+    (void)PduInfoPtr;
 }
 
-void LinIf_MainFunction(void) {
-    if (LINIF_STATE_UNINIT == LinIf_State) {
-        return;
+void LinIf_MainFunction(void)
+{
+    if (LinIf_State.state < LINIF_INIT) return;
+
+    LinIf_State.tickCount++;
+
+    /* Process schedule tables */
+    if (LinIf_State.configPtr != NULL_PTR) {
+        for (uint8 c = 0U; c < LinIf_State.configPtr->NumChannels; c++) {
+            const LinIf_ChannelConfigType* ch = &LinIf_State.configPtr->Channels[c];
+            for (uint8 s = 0U; s < ch->NumSchedules; s++) {
+                if (ch->Schedules[s].Schedule == LinIf_State.activeSchedule) {
+                    for (uint8 e = 0U; e < ch->Schedules[s].EntryCount; e++) {
+                        if ((LinIf_State.tickCount % ch->Schedules[s].Entries[e].DelayMs) == 0U) {
+                            /* Transmit frame on schedule */
+                            break;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
-void LinIf_RxIndication(uint8 Channel, uint8* Data, uint8 Length) {
-#if (LINIF_DEV_ERROR_DETECT == STD_ON)
-    if (LINIF_STATE_UNINIT == LinIf_State) {
-        Det_ReportError(LINIF_MODULE_ID, 0U, 0x10U, LINIF_E_UNINIT);
-        return;
-    }
-#endif
-    (void)Channel;
-    (void)Data;
-    (void)Length;
-}
-
-void LinIf_TxConfirmation(uint8 Channel, Std_ReturnType Result) {
-    (void)Channel;
-    (void)Result;
-}
-
-void LinIf_WakeUpConfirmation(uint8 Channel, boolean Success) {
-    (void)Channel;
-    (void)Success;
+void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+    if (NULL_PTR == versioninfo) return;
+    versioninfo->vendorID = LINIF_VENDOR_ID;
+    versioninfo->moduleID = LINIF_MODULE_ID;
+    versioninfo->sw_major_version = 1U;
+    versioninfo->sw_minor_version = 0U;
+    versioninfo->sw_patch_version = 0U;
 }

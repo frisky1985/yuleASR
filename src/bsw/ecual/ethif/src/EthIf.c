@@ -1,127 +1,156 @@
-/*==================================================================================================
-* Project              : YuleTech AutoSAR BSW
-* Platform             : NXP i.MX8M Mini
-* Dependencies         : ...
-*
-* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
-* All rights reserved.
-*
-* SPDX-License-Identifier: MIT
-*
-*================================================================================================*/
-
-/**
- * @file EthIf.c
- * @brief Ethernet Interface Implementation
+/** @file EthIf.c
+ *  @brief Ethernet Interface implementation
+ *  @copyright Copyright (c) 2026 YuleTech
+ *
+ *  @implements AUTOSAR_SWS_EthernetInterface.pdf
  */
 
 #include "EthIf.h"
 #include "EthIf_Cfg.h"
 #include "Det.h"
-#include "SchM_EthIf.h"
+#include <string.h>
 
-typedef enum {
-    ETHIF_STATE_UNINIT = 0,
-    ETHIF_STATE_INIT
-} EthIf_StateType;
+#define ETHIF_SID_INIT              0x00U
+#define ETHIF_SID_DEINIT            0x01U
+#define ETHIF_SID_TRANSMIT          0x02U
+#define ETHIF_SID_RX_INDICATION     0x03U
+#define ETHIF_SID_MAINFUNCTION      0x04U
+#define ETHIF_SID_SET_CONTROLLER_MODE 0x05U
+#define ETHIF_SID_GET_CONTROLLER_MODE 0x06U
 
-static EthIf_StateType EthIf_State = ETHIF_STATE_UNINIT;
-static const EthIf_ConfigType* EthIf_ConfigPtr = NULL_PTR;
+#define ETHIF_E_PARAM_POINTER       0x10U
+#define ETHIF_E_UNINIT              0x20U
+#define ETHIF_E_PARAM_CONTROLLER    0x30U
+#define ETHIF_E_TRANSMIT_FAILED     0x40U
 
-void EthIf_Init(const EthIf_ConfigType* ConfigPtr) {
+#define ETHIF_MAX_CONTROLLERS       4U
+#define ETHIF_MAX_FILTERS           32U
+
+typedef enum { ETHIF_UNINIT = 0, ETHIF_INIT, ETHIF_ONLINE } EthIf_StateType;
+
+typedef struct {
+    EthIf_StateType      state;
+    EthIf_ControllerMode controllerModes[ETHIF_MAX_CONTROLLERS];
+    uint8                activeControllerCount;
+    const EthIf_ConfigType* configPtr;
+} EthIf_InternalType;
+
+static EthIf_InternalType EthIf_State;
+
+void EthIf_Init(const EthIf_ConfigType* ConfigPtr)
+{
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == ConfigPtr) {
         Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_INIT, ETHIF_E_PARAM_POINTER);
         return;
     }
 #endif
-    
-    SchM_Enter_EthIf(ETHIF_EXCLUSIVE_AREA_0);
-    EthIf_ConfigPtr = ConfigPtr;
-    EthIf_State = ETHIF_STATE_INIT;
-    SchM_Exit_EthIf(ETHIF_EXCLUSIVE_AREA_0);
-}
+    EthIf_State.state = ETHIF_UNINIT;
+    EthIf_State.activeControllerCount = 0U;
+    EthIf_State.configPtr = ConfigPtr;
+    memset(EthIf_State.controllerModes, 0, sizeof(EthIf_State.controllerModes));
 
-void EthIf_DeInit(void) {
-    SchM_Enter_EthIf(ETHIF_EXCLUSIVE_AREA_0);
-    EthIf_ConfigPtr = NULL_PTR;
-    EthIf_State = ETHIF_STATE_UNINIT;
-    SchM_Exit_EthIf(ETHIF_EXCLUSIVE_AREA_0);
-}
-
-#if (ETHIF_VERSION_INFO_API == STD_ON)
-void EthIf_GetVersionInfo(Std_VersionInfoType* VersionInfo) {
-#if (ETHIF_DEV_ERROR_DETECT == STD_ON)
-    if (NULL_PTR == VersionInfo) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_GET_VERSION_INFO, ETHIF_E_PARAM_POINTER);
-        return;
+    if (ConfigPtr->NumControllers > ETHIF_MAX_CONTROLLERS) return;
+    EthIf_State.activeControllerCount = ConfigPtr->NumControllers;
+    for (uint8 i = 0U; i < ConfigPtr->NumControllers; i++) {
+        EthIf_State.controllerModes[i] = ETHIF_CS_STOPPED;
     }
-#endif
-    VersionInfo->vendorID = ETHIF_VENDOR_ID;
-    VersionInfo->moduleID = ETHIF_MODULE_ID;
-    VersionInfo->sw_major_version = 1U;
-    VersionInfo->sw_minor_version = 0U;
-    VersionInfo->sw_patch_version = 0U;
+    EthIf_State.state = ETHIF_INIT;
 }
-#endif
 
-Std_ReturnType EthIf_Transmit(EthIf_FrameType FrameType, uint8* Data, uint16 Length) {
-    Std_ReturnType result = E_NOT_OK;
-    
+void EthIf_DeInit(void)
+{
+    EthIf_State.state = ETHIF_UNINIT;
+    EthIf_State.activeControllerCount = 0U;
+}
+
+Std_ReturnType EthIf_Transmit(uint8 ControllerId, uint32 BufferHandle, const EthIf_PduType* PduInfoPtr)
+{
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
-    if (ETHIF_STATE_UNINIT == EthIf_State) {
+    if (EthIf_State.state < ETHIF_INIT) {
         Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_UNINIT);
         return E_NOT_OK;
     }
-    if (NULL_PTR == Data) {
+    if (NULL_PTR == PduInfoPtr) {
         Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }
-    if ((Length < 14U) || (Length > 1518U)) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_LENGTH);
+    if (ControllerId >= EthIf_State.activeControllerCount) {
+        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_TRANSMIT, ETHIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
 #endif
-    
-    /* Transmit frame via Eth driver */
-    result = E_OK;
-    
-    return result;
+    (void)BufferHandle;
+    if (EthIf_State.controllerModes[ControllerId] == ETHIF_CS_STARTED) {
+        return E_OK;
+    }
+    return E_NOT_OK;
 }
 
-Std_ReturnType EthIf_Receive(uint8* Data, uint16* Length) {
-    Std_ReturnType result = E_NOT_OK;
-    
+Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode Mode)
+{
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
-    if (ETHIF_STATE_UNINIT == EthIf_State) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_RECEIVE, ETHIF_E_UNINIT);
+    if (EthIf_State.state < ETHIF_INIT) {
+        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_SET_CONTROLLER_MODE, ETHIF_E_UNINIT);
         return E_NOT_OK;
     }
-    if (NULL_PTR == Data || NULL_PTR == Length) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_RECEIVE, ETHIF_E_PARAM_POINTER);
+    if (ControllerId >= EthIf_State.activeControllerCount) {
+        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_SET_CONTROLLER_MODE, ETHIF_E_PARAM_CONTROLLER);
         return E_NOT_OK;
     }
 #endif
-    
-    return result;
+    EthIf_State.controllerModes[ControllerId] = Mode;
+    return E_OK;
 }
 
-void EthIf_RxIndication(uint8 CtrlIdx, Eth_FrameType FrameType, boolean IsBroadcast, uint8* Data, uint16 Length) {
-#if (ETHIF_DEV_ERROR_DETECT == STD_ON)
-    if (ETHIF_STATE_UNINIT == EthIf_State) {
-        Det_ReportError(ETHIF_MODULE_ID, 0U, ETHIF_SID_RX_INDICATION, ETHIF_E_UNINIT);
-        return;
-    }
-#endif
-    (void)CtrlIdx;
-    (void)FrameType;
-    (void)IsBroadcast;
-    (void)Data;
-    (void)Length;
+EthIf_ControllerMode EthIf_GetControllerMode(uint8 ControllerId)
+{
+    if (ControllerId >= EthIf_State.activeControllerCount) return ETHIF_CS_STOPPED;
+    return EthIf_State.controllerModes[ControllerId];
 }
 
-void EthIf_MainFunction(void) {
-    if (ETHIF_STATE_UNINIT == EthIf_State) {
-        return;
+void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr)
+{
+    if (NULL_PTR == PduInfoPtr) return;
+    if (ControllerId >= EthIf_State.activeControllerCount) return;
+    (void)ControllerId;
+
+    /* Apply RX filtering */
+    if (EthIf_State.configPtr != NULL_PTR) {
+        for (uint8 i = 0U; i < EthIf_State.configPtr->NumRxFilters; i++) {
+            const EthIf_RxFilterType* filter = &EthIf_State.configPtr->RxFilters[i];
+            if (filter->ControllerId == ControllerId) {
+                boolean match = FALSE;
+                if (filter->FilterType == ETHIF_FILTER_MAC) {
+                    match = (memcmp(filter->MacAddress, PduInfoPtr->MacAddress, 6) == 0);
+                } else if (filter->FilterType == ETHIF_FILTER_ETHERTYPE) {
+                    match = (filter->EtherType == PduInfoPtr->EtherType);
+                }
+                if (match && filter->RxCallback != NULL_PTR) {
+                    filter->RxCallback(ControllerId, PduInfoPtr);
+                }
+            }
+        }
     }
+}
+
+void EthIf_TxConfirmation(uint8 ControllerId, uint32 BufferHandle)
+{
+    (void)ControllerId;
+    (void)BufferHandle;
+}
+
+void EthIf_MainFunction(void)
+{
+    if (EthIf_State.state < ETHIF_INIT) return;
+}
+
+void EthIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+    if (NULL_PTR == versioninfo) return;
+    versioninfo->vendorID = ETHIF_VENDOR_ID;
+    versioninfo->moduleID = ETHIF_MODULE_ID;
+    versioninfo->sw_major_version = 1U;
+    versioninfo->sw_minor_version = 0U;
+    versioninfo->sw_patch_version = 0U;
 }
