@@ -28,6 +28,11 @@
 #include "CanTSyn.h"
 #include "CanTSyn_Cfg.h"
 #include "CanIf.h"
+#include "Det.h"
+
+/* Link-time configuration reference (defined in CanTSyn_Lcfg.c) */
+extern const CanTSyn_TimeBaseConfigType CanTSyn_TimeDomainConfig[];
+
 #include "StbM.h"
 #include "Os.h"
 
@@ -166,8 +171,8 @@ static void CanTSyn_ProcessOfsMessage(
  * @brief Get current synchronized time
  * @return Current synchronized timestamp in microseconds
  */
-static Std_ReturnType CanTSyn_GetCurrentTime(
-    StbM_SynchronizedTimeBaseType TimeBaseId,
+Std_ReturnType CanTSyn_GetCurrentTime(
+    uint8 timeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr);
 
@@ -501,21 +506,21 @@ static void CanTSyn_ProcessOfsMessage(
  * @brief Get current synchronized time
  * @return Current synchronized timestamp in microseconds
  */
-static Std_ReturnType CanTSyn_GetCurrentTime(
-    StbM_SynchronizedTimeBaseType TimeBaseId,
+Std_ReturnType CanTSyn_GetCurrentTime(
+    uint8 timeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr)
 {
     Std_ReturnType RetVal;
     
-    RetVal = StbM_GetCurrentTime(TimeBaseId, TimeStampPtr, UserDataPtr);
+    RetVal = StbM_GetCurrentTime(timeBaseId, TimeStampPtr, UserDataPtr);
     
     if (RetVal == E_OK)
     {
         /* Update local user data cache */
-        CanTSyn_TimeDomains[TimeBaseId].UserData[0] = UserDataPtr->userData[0];
-        CanTSyn_TimeDomains[TimeBaseId].UserData[1] = UserDataPtr->userData[1];
-        CanTSyn_TimeDomains[TimeBaseId].UserData[2] = UserDataPtr->userByteCount;
+        CanTSyn_TimeDomains[timeBaseId].UserData[0] = UserDataPtr->userData[0];
+        CanTSyn_TimeDomains[timeBaseId].UserData[1] = UserDataPtr->userData[1];
+        CanTSyn_TimeDomains[timeBaseId].UserData[2] = UserDataPtr->userByteCount;
     }
     
     return RetVal;

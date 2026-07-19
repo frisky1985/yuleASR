@@ -19,7 +19,7 @@
 #include "SecOc_Cfg.h"
 
 /* Security Profiles */
-static const SecOc_SecurityProfileType SecOc_Profiles[] = {
+static const SecOC_SecurityProfileType SecOc_Profiles[] = {
     {
         .ProfileId = 0U,
         .AuthenticatorLength = SECOC_AUTH_LENGTH_4,
@@ -35,7 +35,7 @@ static const SecOc_SecurityProfileType SecOc_Profiles[] = {
 };
 
 /* PDU Configurations */
-static const SecOc_PduConfigType SecOc_Pdus[SECOC_MAX_PDUS] = {
+static const SecOC_PduConfigType SecOc_Pdus[SECOC_MAX_PDUS] = {
     {
         .PduId = 0U,
         .DataId = 0x0001U,
@@ -51,7 +51,7 @@ static const SecOc_PduConfigType SecOc_Pdus[SECOC_MAX_PDUS] = {
 };
 
 /* Configuration */
-const SecOc_ConfigType SecOc_Config = {
+const SecOC_ConfigType SecOc_Config = {
     .NumPdus = 2U,
     .Pdus = SecOc_Pdus
 };

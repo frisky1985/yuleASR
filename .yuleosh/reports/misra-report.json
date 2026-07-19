@@ -1,8 +1,8 @@
 {
   "schema_version": "misra-report-v2",
-  "generated_at": "2026-07-19T10:13:05.478106",
+  "generated_at": "2026-07-19T23:23:07.411989",
   "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
-  "ruleset_version": "2023-preview",
+  "ruleset_version": "2023",
   "ci_environ": {
     "build_id": "",
     "commit_sha": "",
@@ -10,28 +10,35 @@
     "job_name": "",
     "workspace": ""
   },
-  "total_violations": 452,
-  "unique_rules": 452,
-  "affected_files": 7,
-  "total_source_lines": 3584,
+  "total_violations": 4800,
+  "unique_rules": 4800,
+  "affected_files": 62,
+  "total_source_lines": 26339,
   "by_severity": {
-    "information": 27,
-    "style": 302,
-    "error": 117,
-    "note": 6
+    "information": 280,
+    "style": 3248,
+    "error": 1261,
+    "note": 10,
+    "warning": 1
   },
   "by_rule_type": {
-    "unknown": 225,
-    "advisory": 66,
-    "required": 161
+    "unknown": 2033,
+    "advisory": 559,
+    "required": 2208
   },
-  "density_per_kloc": 126.12,
+  "density_per_kloc": 182.24,
   "category_breakdown": {
-    "unknown": 225,
-    "声明 (Declarations)": 66,
-    "控制流 (Control Flow)": 68,
-    "预处理器 (Preprocessing)": 67,
-    "未分类 (Uncategorized)": 26
+    "unknown": 2033,
+    "声明 (Declarations)": 516,
+    "控制流 (Control Flow)": 939,
+    "预处理器 (Preprocessing)": 636,
+    "表达式 (Expressions)": 102,
+    "函数行为": 43,
+    "未分类 (Uncategorized)": 409,
+    "函数 (Functions)": 13,
+    "基本类型 (Essential Types)": 19,
+    "副作用 (Side Effects)": 26,
+    "标识符 (Identifiers)": 64
   },
   "groups": {},
   "deviations": [],

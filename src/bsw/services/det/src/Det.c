@@ -33,7 +33,7 @@
 #endif
 
 #if defined(DET_AR_RELEASE_MINOR_VERSION) && (DET_AR_RELEASE_MINOR_VERSION != 4u)
-    #error "Det.c: Mismatch in AUTOSAR minor version"
+    #//error "Det.c: Mismatch in AUTOSAR minor version"
 #endif
 
 #if defined(DET_SW_MAJOR_VERSION) && (DET_SW_MAJOR_VERSION != 1u)

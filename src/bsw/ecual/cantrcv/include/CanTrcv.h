@@ -32,6 +32,7 @@
 #include "Std_Types.h"
 #include "CanTrcv_Cfg.h"
 #include "ComStack_Types.h"
+#include "Dio.h"
 
 #if (CANTRCV_WAKEUP_BY_BUS_USED == STD_ON)
 #include "EcuM.h"
@@ -297,6 +298,11 @@ typedef struct
     /** @brief Flag indicating if DIO interface is used */
     boolean dioUsed;
 } CanTrcv_TrcvConfigType;
+
+/* Compatibility aliases for link-time configuration */
+typedef CanTrcv_TrcvConfigType CanTrcv_ChannelConfigType;
+typedef CanTrcv_ConfigType CanTrcv_GeneralConfigType;
+
 
 /**
  * @brief CAN Transceiver driver configuration structure

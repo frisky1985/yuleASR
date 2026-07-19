@@ -155,7 +155,7 @@ typedef struct {
     uint32 TimeoutCounter;
     uint32 WakeUpRetryCounter;
     uint8 UserRequestCount;
-} ComM_ChannelStateType;
+} ComM_ChannelStateStrType;
 
 /* PNC State Structure */
 typedef struct {
@@ -169,6 +169,7 @@ typedef struct {
  * External Configuration Declarations
  *===========================================================================*/
 extern const ComM_ChannelConfigType ComM_ChannelConfig[COMM_NUM_CHANNELS];
+extern const ComM_ChannelStateStrType ComM_ChannelStateConfig[COMM_NUM_CHANNELS];
 extern const ComM_UserConfigType ComM_UserConfig[COMM_NUM_USERS];
 extern const ComM_PncConfigType ComM_PncConfig[COMM_NUM_PNCS];
 

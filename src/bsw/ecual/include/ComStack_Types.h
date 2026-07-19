@@ -6,6 +6,8 @@
  * @author YuleTech
  *
  * @implements AUTOSAR_SWS_CommunicationStackTypes.pdf
+ * Contains all common type definitions for the AUTOSAR Communication Stack.
+ * This includes buffer request types, TP parameter types, and retry info.
  */
 
 #ifndef COMSTACK_TYPES_H
@@ -60,6 +62,37 @@ typedef enum {
     COMM_BUS_TYPE_FLEXRAY  = 0x02U,
     COMM_BUS_TYPE_ETH      = 0x03U
 } ComBusTypeType;
+
+/*==================================================================================================
+ *                                    BUFREQ RETURN TYPE
+ *==================================================================================================*/
+#ifndef BUFREQ_RETURNTYPE_DEFINED
+#define BUFREQ_RETURNTYPE_DEFINED
+typedef enum {
+    BUFREQ_E_OK     = 0U,  /**< Buffer request succeeded */
+    BUFREQ_E_NOT_OK = 1U,  /**< Buffer request failed */
+    BUFREQ_E_BUSY   = 2U   /**< Buffer request busy */
+} BufReq_ReturnType;
+#endif
+
+/*==================================================================================================
+ *                                    TP PARAMETER TYPE
+ *==================================================================================================*/
+#ifndef TPPARAMETERTYPE_DEFINED
+#define TPPARAMETERTYPE_DEFINED
+typedef uint8 TPParameterType;
+#endif
+
+/*==================================================================================================
+ *                                    RETRY INFO TYPE
+ *==================================================================================================*/
+#ifndef RETRYINFOTYPE_DEFINED
+#define RETRYINFOTYPE_DEFINED
+typedef struct {
+    uint16      RetryCounter;   /**< Number of retries attempted */
+    TPParameterType TpParameter; /**< TP parameter for retry */
+} RetryInfoType;
+#endif
 
 /*==================================================================================================
  *                                    NETWORK MANAGEMENT TYPE

@@ -46,6 +46,13 @@
 #define PORT_API_ID_GET_VERSION_INFO            0x03U
 #define PORT_API_ID_SET_PIN_MODE                0x04U
 
+/* Service ID aliases (used in DET reporting) */
+#define PORT_SID_INIT                        PORT_API_ID_INIT
+#define PORT_SID_SET_PIN_DIRECTION           PORT_API_ID_SET_PIN_DIRECTION
+#define PORT_SID_REFRESH_PORT_DIRECTION      PORT_API_ID_REFRESH_PORT_DIRECTION
+#define PORT_SID_GET_VERSION_INFO            PORT_API_ID_GET_VERSION_INFO
+#define PORT_SID_SET_PIN_MODE                PORT_API_ID_SET_PIN_MODE
+
 /* Error Codes */
 #define PORT_E_PARAM_PIN                        0x0AU
 #define PORT_E_DIRECTION_UNCHANGEABLE           0x0BU

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-19T21:07:07.275297",
+  "generated": "2026-07-19T23:23:49.665249",
   "version": "0.1.0",
   "build_id": "",
   "commit_sha": "",
@@ -11,7 +11,7 @@
     "uncovered_shalls": 127,
     "total_scenarios": 0,
     "total_reviews": 0,
-    "total_ci_runs": 8
+    "total_ci_runs": 10
   },
   "requirements": [
     {

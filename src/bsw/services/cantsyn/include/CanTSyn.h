@@ -151,14 +151,16 @@ typedef struct {
     uint8 timeBaseId;                       /**< Time base ID */
     uint8 domainId;                         /**< Time domain ID */
     uint8 masterConfig;                     /**< Master configuration (0: None, 1: Slave, 2: Master) */
+    boolean IsTimeMaster;                   /**< TRUE if this time domain acts as master */
+    PduIdType TxPduId;                      /**< TX PDU ID for SYNC messages */
     uint32 syncPeriodMs;                    /**< SYNC message period in ms */
     uint32 debounceTimeMs;                  /**< Debounce time in ms */
     uint32 syncTimeoutMs;                   /**< Sync timeout in ms */
     boolean crcSecured;                     /**< CRC secured mode */
     boolean useImmediateTransmission;       /**< Use immediate transmission mode */
-    Can_IdType syncCanId;                   /**< CAN ID for SYNC messages */
-    Can_IdType fupCanId;                    /**< CAN ID for FUP messages */
-    Can_IdType ocsCanId;                    /**< CAN ID for OCS messages */
+    uint32 syncCanId;                   /**< CAN ID for SYNC messages */
+    uint32 fupCanId;                    /**< CAN ID for FUP messages */
+    uint32 ocsCanId;                    /**< CAN ID for OCS messages */
     PduIdType syncTxPduId;                  /**< Tx PDU ID for SYNC */
     PduIdType fupTxPduId;                   /**< Tx PDU ID for FUP */
     PduIdType ocsTxPduId;                   /**< Tx PDU ID for OCS */

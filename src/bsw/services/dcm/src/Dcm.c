@@ -980,7 +980,7 @@ STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Dat
 
     if (!Dcm_InternalState.TransferActive)
     {
-        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_TRANSFER_DATA, DCM_E_REQUEST_SEQUENCE_ERROR);
+        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_TRANSFER_DATA, DCM_E_REQUESTSEQUENCEERROR);
         return result;
     }
 
@@ -1025,7 +1025,7 @@ STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uin
 
     if (!Dcm_InternalState.TransferActive)
     {
-        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_REQUEST_TRANSFER_EXIT, DCM_E_REQUEST_SEQUENCE_ERROR);
+        Dcm_SendNegativeResponse(ProtocolId, DCM_UDS_SID_REQUEST_TRANSFER_EXIT, DCM_E_REQUESTSEQUENCEERROR);
         return result;
     }
 

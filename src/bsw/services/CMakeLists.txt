@@ -32,7 +32,11 @@ endforeach()
 foreach(subdir ${SERVICES_SUBDIRS})
     get_filename_component(module_name ${subdir} NAME)
     
+    # Collect source files excluding test files
     file(GLOB_RECURSE module_sources ${subdir}/src/*.c)
+    
+    # Filter out test files (_test.c, _Test.c)
+    list(FILTER module_sources EXCLUDE REGEX ".*[_Tt]est\\.c$")
     
     if(module_sources)
         set(target_name "service_${module_name}")
@@ -48,6 +52,10 @@ foreach(subdir ${SERVICES_SUBDIRS})
         target_include_directories(${target_name}
             PUBLIC ${SERVICE_INCLUDE_DIRS}
         )
+        
+        if(EXISTS ${subdir}/src/CMakeLists.txt)
+            add_subdirectory(${subdir}/src)
+        endif()
         
         set_target_properties(${target_name} PROPERTIES
             C_STANDARD 99

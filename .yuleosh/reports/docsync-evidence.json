@@ -5,7 +5,7 @@
     "rule_results": [],
     "changed_files": [],
     "summary": "No sync gate rules defined (docs/.sync-gate.yaml not found or empty)",
-    "generated_at": "2026-07-19T21:06:43.946017"
+    "generated_at": "2026-07-19T23:22:54.219692"
   },
   "schema_results": [
     {
@@ -25,5 +25,5 @@
     }
   ],
   "summary": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
-  "generated_at": "2026-07-19T21:06:43.946014"
+  "generated_at": "2026-07-19T23:22:54.219689"
 }

@@ -20,6 +20,9 @@
 #include "CanIf_Cfg.h"
 #include "ComStack_Types.h"
 
+/* Forward declarations */
+typedef uint32 EcuM_WakeupSourceType;
+
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
@@ -111,24 +114,20 @@ typedef enum {
 } CanIf_NotifStatusType;
 
 /*==================================================================================================
-*                                    CANIF PDU MODE TYPE
-==================================================================================================*/
-typedef enum {
-    CANIF_OFFLINE = 0,
-    CANIF_TX_OFFLINE,
-    CANIF_TX_OFFLINE_ACTIVE,
-    CANIF_ONLINE
-} CanIf_PduModeType;
+*                                    CANIF PDU MODE TYPE (enum values)
+*==================================================================================================*/
+#define CANIF_OFFLINE                   0
+#define CANIF_TX_OFFLINE                1
+#define CANIF_TX_OFFLINE_ACTIVE         2
+#define CANIF_ONLINE                    3
 
 /*==================================================================================================
-*                                    CANIF CONTROLLER MODE TYPE
-==================================================================================================*/
-typedef enum {
-    CANIF_CS_UNINIT = 0,
-    CANIF_CS_SLEEP,
-    CANIF_CS_STARTED,
-    CANIF_CS_STOPPED
-} CanIf_ControllerModeType;
+*                                    CANIF CONTROLLER MODE TYPE (enum values)
+*==================================================================================================*/
+#define CANIF_CS_UNINIT                 0
+#define CANIF_CS_SLEEP                  1
+#define CANIF_CS_STARTED                2
+#define CANIF_CS_STOPPED                3
 
 /*==================================================================================================
 *                                    CANIF TRANSCEIVER MODE TYPE
@@ -167,9 +166,9 @@ typedef enum {
 ==================================================================================================*/
 typedef struct {
     PduIdType PduId;
-    Can_IdType CanId;
+    CanIf_CanIdType CanId;
     CanIf_CanIdTypeType CanIdType;
-    Can_HwHandleType Hth;
+    CanIf_HohType Hth;
     uint8 ControllerId;
     uint8 Length;
     boolean TxConfirmation;
@@ -181,10 +180,10 @@ typedef struct {
 ==================================================================================================*/
 typedef struct {
     PduIdType PduId;
-    Can_IdType CanId;
-    Can_IdType CanIdMask;
+    CanIf_CanIdType CanId;
+    CanIf_CanIdType CanIdMask;
     CanIf_CanIdTypeType CanIdType;
-    Can_HwHandleType Hrh;
+    CanIf_HohType Hrh;
     uint8 ControllerId;
     uint8 Length;
     boolean RxIndication;
@@ -194,7 +193,7 @@ typedef struct {
 *                                    CANIF HRH CONFIG TYPE
 ==================================================================================================*/
 typedef struct {
-    Can_HwHandleType Hrh;
+    CanIf_HohType Hrh;
     uint8 ControllerId;
     boolean SoftwareFiltering;
 } CanIf_HrhConfigType;
@@ -203,7 +202,7 @@ typedef struct {
 *                                    CANIF HTH CONFIG TYPE
 ==================================================================================================*/
 typedef struct {
-    Can_HwHandleType Hth;
+    CanIf_HohType Hth;
     uint8 ControllerId;
 } CanIf_HthConfigType;
 
@@ -339,7 +338,7 @@ void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @param CanId CAN ID to set
  * @return Result of operation
  */
-Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId);
+Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, CanIf_CanIdType CanId);
 
 /**
  * @brief Checks for wakeup events

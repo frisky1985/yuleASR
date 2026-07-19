@@ -38,4 +38,13 @@
 #define COM_LITTLE_ENDIAN               0x00U
 #define COM_BIG_ENDIAN                  0x01U
 
+/* Runtime Count Aliases (matching actual usage) */
+#define COM_NUM_OF_IPDUS                COM_MAX_IPDUS
+#define COM_NUM_OF_SIGNALS              COM_MAX_SIGNALS
+#define COM_NUM_OF_IPDU_GROUPS          COM_MAX_GROUPS
+#define COM_NUM_IPDU_GROUPS             COM_NUM_OF_IPDU_GROUPS
+#define COM_NUM_OF_SIGNAL_GROUPS        COM_MAX_GROUPS
+#define COM_MAX_IPDU_BUFFER_SIZE        128U
+#define COM_MAX_IPDU_LENGTH             64U
+
 #endif

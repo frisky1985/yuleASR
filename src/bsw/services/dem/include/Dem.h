@@ -24,6 +24,9 @@
 *                                          INCLUDE FILES
 ==================================================================================================*/
 #include "Std_Types.h"
+#ifndef STATIC
+#define STATIC  static
+#endif
 #include "Dem_Types.h"
 #include "Dem_Cfg.h"
 
@@ -431,3 +434,8 @@ extern void Dem_MainFunction(void);
 #include "MemMap.h"
 
 #endif /* DEM_H */
+extern uint32 Dem_EventParameters[1];
+extern uint32 Dem_DtcParameters[1];
+extern uint32 Dem_FreezeFrameRecords[1];
+extern uint32 Dem_ExtendedDataRecords[1];
+extern uint32 Dem_Indicators[1];

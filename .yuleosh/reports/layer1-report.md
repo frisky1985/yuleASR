@@ -1,16 +1,16 @@
 # CI Report Summary
 
-> Generated: 2026-07-19T21:06:58.711025
+> Generated: 2026-07-19T23:23:23.869123
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ✅ ALL PASSED
+## Overall: ❌ FAILED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ✅ passed | 21 | 0 | 3 | — |
+| L1 | ❌ failed | 17 | 3 | 2 | ⚠️ |
 
 ### Layer L1 — Stage Details
 
@@ -23,7 +23,7 @@
 | plan-lint | ⏭️ | No task/plan files found |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ⏭️ | No C/C++ source files found |
+| misra-check | ❌ | 4800 business-code violation(s) >= threshold 2000 |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -36,19 +36,13 @@
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
-| unit-tests | ✅ |  |
-| unit-tests | ✅ |  |
-| unit-tests | ✅ |  |
-| coverage | ✅ | line=0.0%, cond=0.0% |
+| unit-tests | ❌ | tests/e2e/test_e2e.py: .F
+=================================== FAILURES ===================================
+________________________________ test_crc_real _________________________________
+tests/e2e/test_e2e.py:45: in test_f |
+| coverage | ❌ | coverage run returned non-zero (1): /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/coverage/control.py:956: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.i |
 | c-coverage | ⚠️ | lcov/gcov may not be installed |
 | c-coverage-gate | ⏭️ | No C coverage report at .yuleosh/reports/c-coverage.json |
-
-### Layer L1 — Code Coverage
-
-| Metric | Value | Threshold | Status |
-|:-------|------:|---------:|:-------|
-| Line Coverage | 0.0% | 85% | ✅ |
-| Condition Coverage | 0.0% | 80% | ✅ |
 
 ## MISRA C:2023
 

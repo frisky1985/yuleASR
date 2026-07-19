@@ -1,19 +1,19 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-19T21:06:58.710751",
+  "generated_at": "2026-07-19T23:23:23.868864",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "passed",
-      "commit": "81ca88c",
-      "started_at": "2026-07-19T21:06:43.854380",
-      "completed_at": "2026-07-19T21:06:58.709087",
+      "status": "failed",
+      "commit": "6b1bf25",
+      "started_at": "2026-07-19T23:22:54.102777",
+      "completed_at": "2026-07-19T23:23:23.866808",
       "stages_summary": {
-        "total": 26,
-        "passed": 21,
-        "failed": 0,
-        "skipped": 3
+        "total": 24,
+        "passed": 17,
+        "failed": 3,
+        "skipped": 2
       },
       "stages": [
         {
@@ -53,8 +53,8 @@
         },
         {
           "name": "misra-check",
-          "status": "skipped",
-          "detail": "No C/C++ source files found"
+          "status": "failed",
+          "detail": "4800 business-code violation(s) >= threshold 2000"
         },
         {
           "name": "unit-tests",
@@ -118,23 +118,13 @@
         },
         {
           "name": "unit-tests",
-          "status": "passed",
-          "detail": ""
-        },
-        {
-          "name": "unit-tests",
-          "status": "passed",
-          "detail": ""
-        },
-        {
-          "name": "unit-tests",
-          "status": "passed",
-          "detail": ""
+          "status": "failed",
+          "detail": "tests/e2e/test_e2e.py: .F\n=================================== FAILURES ===================================\n________________________________ test_crc_real _________________________________\ntests/e2e/test_e2e.py:45: in test_f"
         },
         {
           "name": "coverage",
-          "status": "passed",
-          "detail": "line=0.0%, cond=0.0%"
+          "status": "failed",
+          "detail": "coverage run returned non-zero (1): /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/coverage/control.py:956: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.i"
         },
         {
           "name": "c-coverage",
@@ -147,13 +137,12 @@
           "detail": "No C coverage report at .yuleosh/reports/c-coverage.json"
         }
       ],
-      "coverage": {
-        "line": 0.0,
-        "condition": 0.0,
-        "line_pass": true,
-        "condition_pass": true
-      },
-      "errors": []
+      "coverage": null,
+      "errors": [
+        "misra-check failed",
+        "unit-tests failed",
+        "coverage failed"
+      ]
     }
   ],
   "misra": {

@@ -52,6 +52,37 @@ typedef enum {
 } BuiltInFlagType;
 
 /*==================================================================================================
+ *                                    BUFREQ RETURN TYPE
+ *==================================================================================================*/
+#ifndef BUFREQ_RETURNTYPE_DEFINED
+#define BUFREQ_RETURNTYPE_DEFINED
+typedef enum {
+    BUFREQ_E_OK     = 0U,
+    BUFREQ_E_NOT_OK = 1U,
+    BUFREQ_E_BUSY   = 2U
+} BufReq_ReturnType;
+#endif
+
+/*==================================================================================================
+ *                                    TP PARAMETER TYPE
+ *==================================================================================================*/
+#ifndef TPPARAMETERTYPE_DEFINED
+#define TPPARAMETERTYPE_DEFINED
+typedef uint8 TPParameterType;
+#endif
+
+/*==================================================================================================
+ *                                    RETRY INFO TYPE
+ *==================================================================================================*/
+#ifndef RETRYINFOTYPE_DEFINED
+#define RETRYINFOTYPE_DEFINED
+typedef struct {
+    uint16      RetryCounter;
+    TPParameterType TpParameter;
+} RetryInfoType;
+#endif
+
+/*==================================================================================================
  *                                    NETWORK MANAGEMENT TYPE
  *==================================================================================================*/
 typedef uint8 Nm_PduIdType;

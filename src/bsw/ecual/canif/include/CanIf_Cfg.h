@@ -104,38 +104,19 @@
  * PDU Mode Types
  *=============================================================================*/
 
-typedef enum
-{
-    CANIF_OFFLINE           = 0x00U,  /* Tx/Rx disabled */
-    CANIF_TX_OFFLINE        = 0x01U,  /* Tx disabled, Rx enabled */
-    CANIF_TX_OFFLINE_ACTIVE = 0x02U,  /* Tx pass-through, Rx enabled */
-    CANIF_ONLINE            = 0x03U   /* Tx/Rx enabled */
-} CanIf_PduModeType;
-
-/*=============================================================================
- * Controller Mode Types
- *=============================================================================*/
-
-typedef enum
-{
-    CANIF_CS_UNINIT         = 0x00U,  /* Controller uninitialised */
-    CANIF_CS_STARTED        = 0x01U,  /* Controller started */
-    CANIF_CS_STOPPED        = 0x02U,  /* Controller stopped */
-    CANIF_CS_SLEEP          = 0x03U   /* Controller sleep mode */
-} CanIf_ControllerModeType;
-
 /*=============================================================================
  * Configuration Structures (Link-time configuration)
  *=============================================================================*/
+
+/* CAN ID type */
+typedef uint32 CanIf_CanIdType;
+typedef uint32 CanIf_CanIdTypeType;
 
 /* Hardware Object Handle type */
 typedef uint8 CanIf_HohType;
 
 /* Hardware Transmit Handle type */
 typedef uint8 CanIf_HthType;
-
-/* CAN Identifier type */
-typedef uint32 CanIf_CanIdType;
 
 /* L-PDU ID type */
 typedef uint16 CanIf_PduIdType;
@@ -169,6 +150,10 @@ typedef struct
     uint8 dlc;                       /* Data Length Code (0-8) */
 } CanIf_RxPduCfgType;
 
+/* Controller Mode type (redefined as enum in CanIf.h) */
+typedef uint8 CanIf_ControllerModeType;
+typedef uint8 CanIf_PduModeType;
+
 /* Controller configuration type */
 typedef struct
 {
@@ -194,29 +179,5 @@ extern const CanIf_PduIdType CanIf_RxPduHohMap[CANIF_HOH_CNT][CANIF_RX_LPDU_CNT]
 
 #define CANIF_E_PARAM_CANID         0x01U
 #define CANIF_E_PARAM_DLC           0x02U
-#define CANIF_E_PARAM_HOH           0x03U
-#define CANIF_E_PARAM_HTH           0x04U
-#define CANIF_E_PARAM_CONTROLLER    0x05U
-#define CANIF_E_PARAM_POINTER       0x06U
-#define CANIF_E_UNINIT              0x07U
-#define CANIF_E_INVALID_TXPDUID     0x08U
-#define CANIF_E_INVALID_RXPDUID     0x09U
-#define CANIF_E_INIT_FAILED         0x0AU
-#define CANIF_E_PARAM_TRCV          0x0BU
-#define CANIF_E_PARAM_TRCVMODE      0x0CU
-#define CANIF_E_PARAM_WAKEUPSOURCE  0x0DU
-#define CANIF_E_PARAM_CTRLMODE      0x0EU
-#define CANIF_E_PARAM_PDUMODE       0x0FU
-#define CANIF_E_INVALID_DATA_LENGTH 0x10U
-
-/* Service IDs for error reporting */
-#define CANIF_SID_INIT              0x01U
-#define CANIF_SID_SETCONTROLLERMODE 0x03U
-#define CANIF_SID_GETCONTROLLERMODE 0x04U
-#define CANIF_SID_TRANSMIT          0x09U
-#define CANIF_SID_RXINDICATION      0x14U
-#define CANIF_SID_TXCONFIRMATION    0x15U
-#define CANIF_SID_SETPDUMODE        0x1AU
-#define CANIF_SID_GETPDUMODE        0x1BU
 
 #endif /* CANIF_CFG_H */

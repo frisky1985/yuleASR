@@ -435,12 +435,12 @@ static Std_ReturnType CanSm_ProcessNoComState(uint8 NetworkIndex)
                 /* Need to go through controller start sequence */
                 result = CanSm_RequestControllerMode(NetworkIndex, CANIF_CS_STARTED);
                 if (result == E_OK) {
-                    netState->SubState = CANSM_S_CC_START_WAIT;
+                    netState->SubState = CANSM_S_FC_CC_START_WAIT;
                 }
             }
             break;
             
-        case CANSM_S_CC_START_WAIT:
+        case CANSM_S_FC_CC_START_WAIT:
             /* Waiting for controller mode confirmation */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
                 /* Timeout - retry or error */
@@ -528,7 +528,7 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
             /* Stay in FULLCOM otherwise */
             break;
             
-        case CANSM_S_CC_START_WAIT:
+        case CANSM_S_FC_CC_START_WAIT:
             /* Waiting for controller mode confirmation */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
@@ -538,7 +538,10 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
                 result = E_NOT_OK;
             }
             break;
-            
+    }
+    
+    return result;
+}
 
 #if (CANSM_VERSION_INFO_API == STD_ON)
 void CanSm_GetVersionInfo(Std_VersionInfoType* versioninfo)

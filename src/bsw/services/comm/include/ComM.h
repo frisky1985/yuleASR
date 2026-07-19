@@ -103,11 +103,13 @@ typedef uint8 ComM_ChannelStateType;
 
 /* Bus Types */
 typedef uint8 ComM_BusTypeType;
+#ifndef COMM_BUS_TYPE_CAN
 #define COMM_BUS_TYPE_CAN                   0x00
 #define COMM_BUS_TYPE_ETH                   0x01
 #define COMM_BUS_TYPE_LIN                   0x02
 #define COMM_BUS_TYPE_FR                    0x03
 #define COMM_BUS_TYPE_INTERNAL              0x04
+#endif
 
 /* Handle Types */
 typedef uint8 ComM_UserHandleType;

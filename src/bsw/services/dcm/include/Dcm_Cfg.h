@@ -133,6 +133,7 @@
 #define DCM_SEED_SIZE                   (4U)
 #define DCM_KEY_SIZE                    (4U)
 #define DCM_MAX_SECURITY_ATTEMPTS       DCM_SECURITY_MAX_ATTEMPTS
+#define DCM_SECURITY_DELAY_TIME         DCM_SECURITY_DELAY_TIME_MS
 #define DCM_SEC_LEV_LOCKED              DCM_SEC_LEVEL_LOCKED
 
 /*==================================================================================================

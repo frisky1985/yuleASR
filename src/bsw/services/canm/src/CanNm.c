@@ -508,7 +508,8 @@ void CanNm_Init(const CanNm_ConfigType *ConfigPtr)
         
         /* Initialize PDU data */
         for (uint8 i = 0; i < CANNM_PDU_LENGTH; i++) {
-    CanNm_Channels[channel].PduData[i] = 0U;
+            CanNm_Channels[channel].TxPduData[i] = 0U;
+            CanNm_Channels[channel].RxPduData[i] = 0U;
         }
     }
 }

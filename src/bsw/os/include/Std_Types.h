@@ -87,6 +87,8 @@ typedef uint8 Std_ReturnType;
 /*******************************************************************************
  * Standard Version Info Type
  ******************************************************************************/
+#ifndef STD_VERSIONINFO_TYPE_DEFINED
+#define STD_VERSIONINFO_TYPE_DEFINED
 typedef struct
 {
     uint16 vendorID;
@@ -95,6 +97,7 @@ typedef struct
     uint8  sw_minor_version;
     uint8  sw_patch_version;
 } Std_VersionInfoType;
+#endif
 
 /*******************************************************************************
  * Standard Macros

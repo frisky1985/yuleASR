@@ -201,6 +201,9 @@
  */
 #define CANTRCV_MAIN_FUNCTION_PERIOD_MS     (10u)
 
+/* Compatibility alias */
+#define CANTRCV_MAX_CHANNELS              CANTRCV_MAX_TRANSCEIVERS
+
 /*==================================================================================================
  * DIO CHANNEL CONFIGURATION
  ==================================================================================================*/

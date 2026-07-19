@@ -103,6 +103,7 @@ typedef struct {
     uint32 nanoseconds;
     uint32 seconds;
     uint16 secondsHi;
+    uint8  timeBaseStatus;      /* Time base status flags */
 } StbM_TimeStampType;
 
 /*==================================================================================================
@@ -112,6 +113,8 @@ typedef struct {
     uint8 userByte0;
     uint8 userByte1;
     uint8 userByte2;
+    uint8 userData[8];          /* User data bytes */
+    uint8 userByteCount;        /* Number of valid user bytes */
 } StbM_UserDataType;
 
 /*==================================================================================================

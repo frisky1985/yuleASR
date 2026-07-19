@@ -214,4 +214,15 @@
 /** @brief Time Base ID for Local Time */
 #define CANTSYN_TIMEBASE_LOCAL_ID               (2U)
 
+/*==================================================================================================
+*                                    COMPATIBILITY ALIASES
+*==================================================================================================*/
+/* Code uses NUMBER_OF naming; config uses NUM naming */
+#define CANTSYN_NUMBER_OF_TIME_DOMAINS          CANTSYN_NUM_TIME_DOMAINS
+#define CANTSYN_NUMBER_OF_PDUS                  CANTSYN_NUM_TIME_DOMAINS
+#define CANTSYN_NUMBER_OF_TIME_BASES            CANTSYN_MAX_TIME_BASES
+
+/* Error codes used in CanTSyn.c */
+#define CANTSYN_E_INVALID_PDU_SDU_ID            (0x01U)
+
 #endif /* CANTSYN_CFG_H */

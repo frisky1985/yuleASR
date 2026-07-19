@@ -1,22 +1,27 @@
 # CI Report Summary
 
-> Generated: 2026-07-19T21:07:07.310205
+> Generated: 2026-07-19T23:23:49.693268
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ✅ ALL PASSED
+## Overall: ❌ FAILED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L3 | ✅ passed | 2 | 0 | 1 | — |
+| L3 | ❌ failed | 1 | 1 | 1 | — |
 
 ### Layer L3 — Stage Details
 
 | Stage | Status | Detail |
 |:------|:-------|:-------|
-| e2e-tests | ✅ |  |
+| e2e-tests | ❌ | .F
+=================================== FAILURES ===================================
+________________________________ test_crc_real _________________________________
+
+    def test_func():
+        build |
 | version-check | ⏭️ | No pyproject.toml |
 | evidence-pack | ✅ | Compliance pack generated |
 

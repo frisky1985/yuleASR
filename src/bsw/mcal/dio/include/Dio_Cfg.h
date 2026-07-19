@@ -95,4 +95,44 @@
 #define DIO_CHANNEL_D6                  ((Dio_ChannelType)0x0306U)
 #define DIO_CHANNEL_D7                  ((Dio_ChannelType)0x0307U)
 
+/*==================================================================================================
+*                                    EXTENDED CHANNEL DEFINITIONS
+*==================================================================================================*/
+#define DIO_CHANNEL_E0                  ((Dio_ChannelType)0x0400U)
+#define DIO_CHANNEL_E1                  ((Dio_ChannelType)0x0401U)
+#define DIO_CHANNEL_E2                  ((Dio_ChannelType)0x0402U)
+#define DIO_CHANNEL_E3                  ((Dio_ChannelType)0x0403U)
+#define DIO_CHANNEL_E4                  ((Dio_ChannelType)0x0404U)
+#define DIO_CHANNEL_E5                  ((Dio_ChannelType)0x0405U)
+#define DIO_CHANNEL_E6                  ((Dio_ChannelType)0x0406U)
+#define DIO_CHANNEL_E7                  ((Dio_ChannelType)0x0407U)
+
+/*==================================================================================================
+*                                    CAN TRANSCEIVER CHANNELS
+*==================================================================================================*/
+#define DIO_CHANNEL_10                    ((Dio_ChannelType)0x0500U)
+#define DIO_CHANNEL_11                    ((Dio_ChannelType)0x0501U)
+#define DIO_CHANNEL_12                    ((Dio_ChannelType)0x0502U)
+#define DIO_CHANNEL_13                    ((Dio_ChannelType)0x0503U)
+#define DIO_CHANNEL_20                    ((Dio_ChannelType)0x0504U)
+#define DIO_CHANNEL_21                    ((Dio_ChannelType)0x0505U)
+#define DIO_CHANNEL_22                    ((Dio_ChannelType)0x0506U)
+#define DIO_CHANNEL_23                    ((Dio_ChannelType)0x0507U)
+#define DIO_CHANNEL_30                    ((Dio_ChannelType)0x0508U)
+#define DIO_CHANNEL_32                    ((Dio_ChannelType)0x0509U)
+
+#define DIO_CHANNEL_CAN0_STB              DIO_CHANNEL_10
+#define DIO_CHANNEL_CAN0_EN               DIO_CHANNEL_11
+#define DIO_CHANNEL_CAN0_ERR              DIO_CHANNEL_12
+#define DIO_CHANNEL_CAN0_WAK              DIO_CHANNEL_13
+#define DIO_CHANNEL_CAN1_STB              DIO_CHANNEL_20
+#define DIO_CHANNEL_CAN1_EN               DIO_CHANNEL_21
+#define DIO_CHANNEL_CAN1_ERR              DIO_CHANNEL_22
+#define DIO_CHANNEL_CAN1_WAK              DIO_CHANNEL_23
+#define DIO_CHANNEL_CAN2_STB              DIO_CHANNEL_30
+#define DIO_CHANNEL_CAN2_ERR              DIO_CHANNEL_32
+
+/* Invalid/Unused channel */
+#define DIO_INVALID_CHANNEL               ((Dio_ChannelType)0xFFFFU)
+
 #endif /* DIO_CFG_H */

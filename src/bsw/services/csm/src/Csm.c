@@ -29,7 +29,15 @@
 #include "Csm.h"
 #include "Csm_Cfg.h"
 #include "Det.h"
-#include "Mcal.h"
+/* Provide Mcal_MemCopy macro (Mcal.h not available) */
+#ifndef Mcal_MemCopy
+#include <string.h>
+#define Mcal_MemCopy(dst, src, len)  memcpy((dst), (src), (len))
+#ifndef Mcal_MemCompare
+#define Mcal_MemCompare(a, b, len)  memcmp((a), (b), (len))
+#endif
+#endif
+
 #include "CryIf.h"
 
 #if (CSM_CFG_DEM_INTEGRATION == STD_ON)
@@ -448,7 +456,7 @@ STATIC Std_ReturnType Csm_ExecuteJob(uint8 jobIdx)
         job->state = CSM_JOB_STATE_RESULT_READY;
         Csm_NotifyEvent(job->jobId, E_OK);
     }
-    else if (result == E_BUSY)
+    else if (result == ((Std_ReturnType)1))
     {
         /* 硬件忙碌，保持PROCESSING状态，下次继续 */
     }
