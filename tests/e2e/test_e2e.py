@@ -9,12 +9,54 @@ from pathlib import Path
 
 
 E2E_DIR = Path(__file__).parent
+# Project root: traverse up from tests/e2e/ to project root (two levels)
+PROJECT_DIR = E2E_DIR.parent.parent  # tests/e2e/ -> tests/ -> ./
+SOURCES_DIR = PROJECT_DIR / "src"
+
+# Include paths — core + key module include dirs for AUTOSAR header resolution
+INCLUDE_DIRS = [
+    str(PROJECT_DIR / "include"),
+    str(PROJECT_DIR / "include" / "autosar"),
+    str(PROJECT_DIR / "src"),
+    str(PROJECT_DIR / "src" / "bsw" / "os" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "det" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "crc" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "com" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "dcm" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "dem" / "include"),
+    str(PROJECT_DIR / "src" / "rte" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "mcal" / "lin" / "include"),
+]
+
+# Source files needed by real AUTOSAR C API tests (for linking)
+REAL_TEST_SOURCES = {
+    "test_e2e_det_real": [
+        str(SOURCES_DIR / "bsw" / "services" / "det" / "src" / "Det.c"),
+    ],
+    "test_e2e_crc_real": [
+        str(SOURCES_DIR / "bsw" / "services" / "crc" / "src" / "Crc.c"),
+        str(SOURCES_DIR / "bsw" / "services" / "crc" / "src" / "Crc_Lcfg.c"),
+    ],
+}
 
 
 def _compile_test(source_path, output_path):
-    """Compile a single C E2E test."""
+    """Compile a single C E2E test with project include paths and link deps."""
+    cmd = ["gcc", "-Wall", "-Wextra", "-o", str(output_path), str(source_path)]
+    # Add module source files for real API tests that need linking
+    stem = source_path.stem
+    if stem in REAL_TEST_SOURCES:
+        for src_file in REAL_TEST_SOURCES[stem]:
+            if Path(src_file).exists():
+                cmd.append(src_file)
+    for inc in INCLUDE_DIRS:
+        cmd.extend(["-I", inc])
+    # Force-include Compiler.h for NULL_PTR on native builds
+    compiler_h = str(PROJECT_DIR / "include" / "autosar" / "Compiler.h")
+    if Path(compiler_h).exists():
+        cmd.extend(["-include", compiler_h])
     result = subprocess.run(
-        ["gcc", "-Wall", "-Wextra", "-o", str(output_path), str(source_path)],
+        cmd,
         capture_output=True, text=True, timeout=30,
     )
     if result.returncode != 0:
