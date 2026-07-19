@@ -118,24 +118,54 @@ static CanTSyn_TimeDomainInfoType CanTSyn_TimeDomains[CANTSYN_NUMBER_OF_TIME_DOM
 /*******************************************************************************
  * Local Function Prototypes
  ******************************************************************************/
+/**
+ * @brief Prepare a synchronization message for transmission
+ * @param buffer Pointer to buffer to fill with sync message data
+ * @param length Pointer to output length
+ * @return E_OK if successful, E_NOT_OK otherwise
+ */
 static void CanTSyn_PrepareSyncMessage(
     uint8 TimeDomainId,
     PduInfoType* PduInfoPtr,
     StbM_TimeStampType* TimeStampPtr);
 
+/**
+ * @brief Prepare an offset message for transmission
+ * @param buffer Pointer to buffer to fill with offset message data
+ * @param length Pointer to output length
+ * @return E_OK if successful, E_NOT_OK otherwise
+ */
 static void CanTSyn_PrepareOfsMessage(
     uint8 TimeDomainId,
     PduInfoType* PduInfoPtr,
     StbM_TimeStampType* TimeStampPtr);
 
+/**
+ * @brief Process a received synchronization message
+ * @param buffer Pointer to received sync message data
+ * @param length Length of received data
+ * @param rxLocalTime Local time when message was received
+ * @return None
+ */
 static void CanTSyn_ProcessSyncMessage(
     uint8 TimeDomainId,
     const PduInfoType* PduInfoPtr);
 
+/**
+ * @brief Process a received offset message
+ * @param buffer Pointer to received offset message data
+ * @param length Length of received data
+ * @param rxLocalTime Local time when message was received
+ * @return None
+ */
 static void CanTSyn_ProcessOfsMessage(
     uint8 TimeDomainId,
     const PduInfoType* PduInfoPtr);
 
+/**
+ * @brief Get current synchronized time
+ * @return Current synchronized timestamp in microseconds
+ */
 static Std_ReturnType CanTSyn_GetCurrentTime(
     StbM_SynchronizedTimeBaseType TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
@@ -293,6 +323,12 @@ void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
  * Local Functions
  ******************************************************************************/
 
+/**
+ * @brief Prepare a synchronization message for transmission
+ * @param buffer Pointer to buffer to fill with sync message data
+ * @param length Pointer to output length
+ * @return E_OK if successful, E_NOT_OK otherwise
+ */
 static void CanTSyn_PrepareSyncMessage(
     uint8 TimeDomainId,
     PduInfoType* PduInfoPtr,
@@ -335,6 +371,12 @@ static void CanTSyn_PrepareSyncMessage(
     PduInfoPtr->SduLength = CANTSYN_SYNC_MSG_LENGTH;
 }
 
+/**
+ * @brief Prepare an offset message for transmission
+ * @param buffer Pointer to buffer to fill with offset message data
+ * @param length Pointer to output length
+ * @return E_OK if successful, E_NOT_OK otherwise
+ */
 static void CanTSyn_PrepareOfsMessage(
     uint8 TimeDomainId,
     PduInfoType* PduInfoPtr,
@@ -370,6 +412,13 @@ static void CanTSyn_PrepareOfsMessage(
     PduInfoPtr->SduLength = CANTSYN_OFS_MSG_LENGTH;
 }
 
+/**
+ * @brief Process a received synchronization message
+ * @param buffer Pointer to received sync message data
+ * @param length Length of received data
+ * @param rxLocalTime Local time when message was received
+ * @return None
+ */
 static void CanTSyn_ProcessSyncMessage(
     uint8 TimeDomainId,
     const PduInfoType* PduInfoPtr)
@@ -406,6 +455,13 @@ static void CanTSyn_ProcessSyncMessage(
     #endif
 }
 
+/**
+ * @brief Process a received offset message
+ * @param buffer Pointer to received offset message data
+ * @param length Length of received data
+ * @param rxLocalTime Local time when message was received
+ * @return None
+ */
 static void CanTSyn_ProcessOfsMessage(
     uint8 TimeDomainId,
     const PduInfoType* PduInfoPtr)
@@ -441,6 +497,10 @@ static void CanTSyn_ProcessOfsMessage(
     #endif
 }
 
+/**
+ * @brief Get current synchronized time
+ * @return Current synchronized timestamp in microseconds
+ */
 static Std_ReturnType CanTSyn_GetCurrentTime(
     StbM_SynchronizedTimeBaseType TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
@@ -465,6 +525,11 @@ static Std_ReturnType CanTSyn_GetCurrentTime(
  * Main Function
  ******************************************************************************/
 
+/**
+ * @brief Main function for periodic processing of time synchronization
+ * @details Updates time bases, processes sync messages, manages timeouts
+ * @return None
+ */
 void CanTSyn_MainFunction(void)
 {
     uint8 i;

@@ -97,12 +97,87 @@ suppressions-list = tools/misra/cppcheck_suppressions.xml
 # Include directories
 paths = 
     include
+    include/autosar
     include/autosar/classic/com
-    include/autosar/standard
+    include/autosar/classic/crypto
     src/bsw
+    src/bsw/os/include
+    src/bsw/services/det/include
+    src/bsw/services/dcm/include
+    src/bsw/services/com/include
+    src/bsw/services/crc/include
+    src/bsw/services/nvm/include
+    src/bsw/services/pdur/include
+    src/bsw/services/e2e/include
+    src/bsw/services/canm/include
+    src/bsw/services/dem/include
+    src/bsw/services/ecum/include
+    src/bsw/services/bswm/include
+    src/bsw/services/wdgm/include
+    src/bsw/services/cryif/include
+    src/bsw/services/csm/include
+    src/bsw/services/keym/include
+    src/bsw/services/mem/include
+    src/bsw/services/memif/include
+    src/bsw/services/secoc/include
+    src/bsw/services/soad/include
+    src/bsw/services/someip/include
+    src/bsw/services/someiptp/include
+    src/bsw/services/someipxf/include
+    src/bsw/services/stbm/include
+    src/bsw/services/xcp/include
+    src/bsw/mcal/adc/include
+    src/bsw/mcal/can/include
+    src/bsw/mcal/crypto/include
+    src/bsw/mcal/dio/include
+    src/bsw/mcal/eep/include
+    src/bsw/mcal/eth/include
+    src/bsw/mcal/flash/include
+    src/bsw/mcal/fls/include
+    src/bsw/mcal/gpt/include
+    src/bsw/mcal/i2c/include
+    src/bsw/mcal/icu/include
+    src/bsw/mcal/lin/include
+    src/bsw/mcal/mcu/include
+    src/bsw/mcal/ocu/include
+    src/bsw/mcal/port/include
+    src/bsw/mcal/pwm/include
+    src/bsw/mcal/ramtst/include
+    src/bsw/mcal/spi/include
+    src/bsw/mcal/uart/include
+    src/bsw/mcal/wdg/include
+    src/bsw/ecual/canif/include
+    src/bsw/ecual/cantp/include
+    src/bsw/ecual/cantrcv/include
+    src/bsw/ecual/dlt/include
+    src/bsw/ecual/doIP/include
+    src/bsw/ecual/ea/include
+    src/bsw/ecual/ethSm/include
+    src/bsw/ecual/ethif/include
+    src/bsw/ecual/ethtrcv/include
+    src/bsw/ecual/fee/include
+    src/bsw/ecual/fim/include
+    src/bsw/ecual/frif/include
+    src/bsw/ecual/frtp/include
+    src/bsw/ecual/include
+    src/bsw/ecual/iohwab/include
+    src/bsw/ecual/ipdum/include
+    src/bsw/ecual/j1939tp/include
+    src/bsw/ecual/linNm/include
+    src/bsw/ecual/linSM/include
+    src/bsw/ecual/linTp/include
+    src/bsw/ecual/linif/include
+    src/bsw/ecual/lintrcv/include
+    src/bsw/ecual/memif/include
+    src/bsw/ecual/someipif/include
+    src/bsw/ecual/someipsd/include
+    src/bsw/ecual/srp/include
+    src/bsw/ecual/wdgif/include
+    src/bsw/ecual/xcp/include
     src/asw
     src/platform
     src/rte
+    src/rte/include
 
 [exclude]
 # Excluded files/directories
@@ -140,14 +215,14 @@ misra-rules-file = tools/misra/misra_rules.json
 [module.com]
 # COM module source files
 source-files = 
-    src/autosar/classic/com/Com.c
-    src/autosar/classic/com/Com_Main.c
-    src/autosar/classic/com/Com_Transmit.c
-    src/autosar/classic/com/Com_Confirmation.c
-    src/autosar/classic/com/Com_Signal.c
-    src/autosar/classic/com/Com_TxMode.c
-    src/autosar/classic/com/Com_DeadlineMon.c
-    src/autosar/classic/com/Com_ErrorHandling.c
+    src/bsw/classic/com/Com.c
+    src/bsw/classic/com/Com_Main.c
+    src/bsw/classic/com/Com_Transmit.c
+    src/bsw/classic/com/Com_Confirmation.c
+    src/bsw/classic/com/Com_Signal.c
+    src/bsw/classic/com/Com_TxMode.c
+    src/bsw/classic/com/Com_DeadlineMon.c
+    src/bsw/classic/com/Com_ErrorHandling.c
 
 # COM module header files
 header-files = 
@@ -155,11 +230,11 @@ header-files =
     include/autosar/classic/com/Com_Cfg.h
     include/autosar/classic/com/Com_Types.h
     include/autosar/classic/com/Com_Confirmation.h
-    src/autosar/classic/com/Com_Private.h
-    src/autosar/classic/com/Com_Transmit.h
-    src/autosar/classic/com/Com_TxMode.h
-    src/autosar/classic/com/Com_DeadlineMon.h
-    src/autosar/classic/com/Com_ErrorHandling.h
+    src/bsw/classic/com/Com_Private.h
+    src/bsw/classic/com/Com_Transmit.h
+    src/bsw/classic/com/Com_TxMode.h
+    src/bsw/classic/com/Com_DeadlineMon.h
+    src/bsw/classic/com/Com_ErrorHandling.h
 
 # Module-specific suppressions
 module-suppressions = 

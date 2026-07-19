@@ -128,6 +128,11 @@ static const CanTp_RxNsduConfigType* CanTp_GetRxNsduConfig(PduIdType rxSduId)
     return NULL_PTR;
 }
 
+/**
+ * @brief CanTp_ResetChannel - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_ResetChannel function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 static void CanTp_ResetChannel(CanTp_ChannelType Channel)
 {
     if (Channel < CANTP_MAX_CHANNEL_CNT) {
@@ -157,6 +162,11 @@ static CanTp_ChannelType CanTp_FindFreeChannel(void)
     return CANTP_INVALID_CHANNEL_ID;  /* No free channel */
 }
 
+/**
+ * @brief CanTp_SendFlowControl - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_SendFlowControl function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 static void CanTp_SendFlowControl(CanTp_ChannelType Channel, CanTp_FlowStatusType Fs, uint8 Bs, uint8 Stmin)
 {
     uint8 fcFrame[CANTP_CAN_FRAME_LENGTH];
@@ -179,6 +189,11 @@ static void CanTp_SendFlowControl(CanTp_ChannelType Channel, CanTp_FlowStatusTyp
     (void)CanIf_Transmit(CANTP_CANIF_FC_TX_PDU_ID, &pduInfo);
 }
 
+/**
+ * @brief CanTp_SendSingleFrame - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_SendSingleFrame function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Length)
 {
     uint8 sfFrame[CANTP_CAN_FRAME_LENGTH];
@@ -202,6 +217,11 @@ static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Le
     (void)CanIf_Transmit(CANTP_CANIF_TX_PDU_ID, &pduInfo);
 }
 
+/**
+ * @brief CanTp_SendFirstFrame - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_SendFirstFrame function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength)
 {
     uint8 ffFrame[CANTP_CAN_FRAME_LENGTH];
@@ -227,6 +247,11 @@ static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength
     (void)CanIf_Transmit(CANTP_CANIF_TX_PDU_ID, &pduInfo);
 }
 
+/**
+ * @brief CanTp_SendConsecutiveFrame - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_SendConsecutiveFrame function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
 {
     uint8 cfFrame[CANTP_CAN_FRAME_LENGTH];
@@ -257,6 +282,11 @@ static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
     (void)CanIf_Transmit(CANTP_CANIF_TX_PDU_ID, &pduInfo);
 }
 
+/**
+ * @brief CanTp_Init - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_Init function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanTp_Init(const CanTp_ConfigType* CfgPtr)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -276,6 +306,11 @@ void CanTp_Init(const CanTp_ConfigType* CfgPtr)
     CanTp_Initialized = TRUE;
 }
 
+/**
+ * @brief CanTp_Shutdown - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_Shutdown function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanTp_Shutdown(void)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -294,6 +329,11 @@ void CanTp_Shutdown(void)
     CanTp_Initialized = FALSE;
 }
 
+/**
+ * @brief CanTp_Transmit - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_Transmit function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTxInfoPtr)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -355,6 +395,11 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
     return E_OK;
 }
 
+/**
+ * @brief CanTp_CancelTransmit - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_CancelTransmit function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanTp_CancelTransmit(PduIdType CanTpTxSduId)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -380,6 +425,11 @@ Std_ReturnType CanTp_CancelTransmit(PduIdType CanTpTxSduId)
     return E_NOT_OK;
 }
 
+/**
+ * @brief CanTp_CancelReceive - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_CancelReceive function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanTp_CancelReceive(PduIdType CanTpRxSduId)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -404,6 +454,11 @@ Std_ReturnType CanTp_CancelReceive(PduIdType CanTpRxSduId)
     return E_NOT_OK;
 }
 
+/**
+ * @brief CanTp_ChangeParameter - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_ChangeParameter function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -435,6 +490,11 @@ Std_ReturnType CanTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
     return E_NOT_OK;
 }
 
+/**
+ * @brief CanTp_ReadParameter - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_ReadParameter function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanTp_ReadParameter(PduIdType id, TPParameterType parameter, uint16* value)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -470,6 +530,11 @@ Std_ReturnType CanTp_ReadParameter(PduIdType id, TPParameterType parameter, uint
     return E_NOT_OK;
 }
 
+/**
+ * @brief CanTp_GetVersionInfo - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_GetVersionInfo function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -486,6 +551,11 @@ void CanTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = CANTP_SW_PATCH_VERSION;
 }
 
+/**
+ * @brief CanTp_RxIndication - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_RxIndication function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     if (CanTp_Initialized == FALSE) {
@@ -662,6 +732,11 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     (void)RxPduId;
 }
 
+/**
+ * @brief CanTp_TxConfirmation - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_TxConfirmation function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanTp_TxConfirmation(PduIdType TxPduId)
 {
     if (CanTp_Initialized == FALSE) {
@@ -706,6 +781,11 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
     (void)TxPduId;
 }
 
+/**
+ * @brief CanTp_MainFunction - AUTOSAR CAN Transport Layer API
+ * @details Implements the AUTOSAR CanTp_MainFunction function for CAN TP segmentation/reassembly
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanTp_MainFunction(void)
 {
     if (CanTp_Initialized == FALSE) {

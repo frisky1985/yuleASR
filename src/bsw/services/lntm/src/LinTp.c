@@ -590,6 +590,14 @@ Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
  */
 Std_ReturnType LinTp_ResetToDefaultParameters(PduIdType id, TPParameterType parameter)
 {
+
+    #if (LINTM_DEV_ERROR_DETECT == STD_ON)
+    if (LinTp_InternalState.State != LINTM_STATE_INIT)
+    {
+        (void)Det_ReportError(LINTM_MODULE_ID, LINTM_INSTANCE_ID, LINTM_SID_RESETTODEFAULTPARAMETERS, LINTM_E_UNINIT);
+        return;
+    }
+    #endif
     Std_ReturnType result = E_NOT_OK;
     
     if (LinTp_Initialized) {
@@ -607,6 +615,14 @@ Std_ReturnType LinTp_ResetToDefaultParameters(PduIdType id, TPParameterType para
  */
 void LinTp_MainFunction(void)
 {
+
+    #if (LINTM_DEV_ERROR_DETECT == STD_ON)
+    if (LinTp_InternalState.State != LINTM_STATE_INIT)
+    {
+        (void)Det_ReportError(LINTM_MODULE_ID, LINTM_INSTANCE_ID, LINTM_SID_MAINFUNCTION, LINTM_E_UNINIT);
+        return;
+    }
+    #endif
     LinTp_ChannelType ch;
     LinTp_ConnectionType conn;
     
@@ -631,6 +647,14 @@ void LinTp_MainFunction(void)
  */
 void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
+
+    #if (LINTM_DEV_ERROR_DETECT == STD_ON)
+    if (LinTp_InternalState.State != LINTM_STATE_INIT)
+    {
+        (void)Det_ReportError(LINTM_MODULE_ID, LINTM_INSTANCE_ID, LINTM_SID_RXINDICATION, LINTM_E_UNINIT);
+        return;
+    }
+    #endif
     uint8 pci;
     uint8 pciType;
     
@@ -668,6 +692,14 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
  */
 void LinTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
+
+    #if (LINTM_DEV_ERROR_DETECT == STD_ON)
+    if (LinTp_InternalState.State != LINTM_STATE_INIT)
+    {
+        (void)Det_ReportError(LINTM_MODULE_ID, LINTM_INSTANCE_ID, LINTM_SID_TXCONFIRMATION, LINTM_E_UNINIT);
+        return;
+    }
+    #endif
     LinTp_ChannelType ch;
     LinTp_ConnectionType conn;
     LinTp_ConnectionStateType* connState;

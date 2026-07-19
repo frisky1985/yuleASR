@@ -38,6 +38,11 @@ static const CanIf_ConfigType* CanIf_ConfigPtr = NULL_PTR;
 #define CANIF_START_SEC_CODE
 #include "MemMap.h"
 
+/**
+ * @brief CanIf_Init - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_Init function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -61,6 +66,11 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
     CanIf_DriverInitialized = TRUE;
 }
 
+/**
+ * @brief CanIf_DeInit - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_DeInit function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_DeInit(void)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -78,6 +88,11 @@ void CanIf_DeInit(void)
     CanIf_DriverInitialized = FALSE;
 }
 
+/**
+ * @brief CanIf_SetControllerMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_SetControllerMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeType ControllerMode)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -130,6 +145,11 @@ Std_ReturnType CanIf_SetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
     return status;
 }
 
+/**
+ * @brief CanIf_GetControllerMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetControllerMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, CanIf_ControllerModeType* ControllerModePtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -151,6 +171,11 @@ Std_ReturnType CanIf_GetControllerMode(uint8 ControllerId, CanIf_ControllerModeT
     return E_OK;
 }
 
+/**
+ * @brief CanIf_Transmit - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_Transmit function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -196,6 +221,11 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return E_NOT_OK;
 }
 
+/**
+ * @brief CanIf_CancelTransmit - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_CancelTransmit function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -215,6 +245,11 @@ Std_ReturnType CanIf_CancelTransmit(PduIdType TxPduId)
     return E_OK;
 }
 
+/**
+ * @brief CanIf_SetPduMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_SetPduMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeRequest)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -232,6 +267,11 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeReq
     return E_OK;
 }
 
+/**
+ * @brief CanIf_GetPduMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetPduMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -253,6 +293,11 @@ Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePt
     return E_OK;
 }
 
+/**
+ * @brief CanIf_GetVersionInfo - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetVersionInfo function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -268,6 +313,11 @@ void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = CANIF_SW_PATCH_VERSION;
 }
 
+/**
+ * @brief CanIf_TxConfirmation - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_TxConfirmation function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_TxConfirmation(PduIdType CanTxPduId)
 {
     if (CanIf_DriverInitialized == FALSE) {
@@ -282,6 +332,11 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
     }
 }
 
+/**
+ * @brief CanIf_RxIndication - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_RxIndication function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr)
 {
     if (CanIf_DriverInitialized == FALSE) {
@@ -308,6 +363,11 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr
     }
 }
 
+/**
+ * @brief CanIf_ControllerBusOff - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_ControllerBusOff function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_ControllerBusOff(uint8 ControllerId)
 {
     if (CanIf_DriverInitialized == FALSE) {
@@ -322,6 +382,11 @@ void CanIf_ControllerBusOff(uint8 ControllerId)
     }
 }
 
+/**
+ * @brief CanIf_ControllerModeIndication - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_ControllerModeIndication function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 void CanIf_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType ControllerMode)
 {
     if (CanIf_DriverInitialized == FALSE) {
@@ -336,6 +401,11 @@ void CanIf_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType
     }
 }
 
+/**
+ * @brief CanIf_SetDynamicTxId - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_SetDynamicTxId function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -357,6 +427,11 @@ Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId)
     return E_OK;
 }
 
+/**
+ * @brief CanIf_CheckWakeup - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_CheckWakeup function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -377,6 +452,11 @@ Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
     return E_NOT_OK;
 }
 
+/**
+ * @brief CanIf_SetTrcvMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_SetTrcvMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_SetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType TransceiverMode)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -395,6 +475,11 @@ Std_ReturnType CanIf_SetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType 
     return E_OK;
 }
 
+/**
+ * @brief CanIf_GetTrcvMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetTrcvMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_GetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType* TransceiverModePtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -416,6 +501,11 @@ Std_ReturnType CanIf_GetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType*
     return E_OK;
 }
 
+/**
+ * @brief CanIf_GetTrcvWakeupReason - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetTrcvWakeupReason function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_GetTrcvWakeupReason(uint8 TransceiverId, CanIf_TrcvWakeupReasonType* TrcvWuReasonPtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -437,6 +527,11 @@ Std_ReturnType CanIf_GetTrcvWakeupReason(uint8 TransceiverId, CanIf_TrcvWakeupRe
     return E_OK;
 }
 
+/**
+ * @brief CanIf_SetTrcvWakeupMode - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_SetTrcvWakeupMode function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_SetTrcvWakeupMode(uint8 TransceiverId, CanIf_TrcvWakeupModeType TrcvWakeupMode)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -455,6 +550,11 @@ Std_ReturnType CanIf_SetTrcvWakeupMode(uint8 TransceiverId, CanIf_TrcvWakeupMode
     return E_OK;
 }
 
+/**
+ * @brief CanIf_SetBaudrate - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_SetBaudrate function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_SetBaudrate(uint8 ControllerId, uint16 BaudRate)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
@@ -473,6 +573,11 @@ Std_ReturnType CanIf_SetBaudrate(uint8 ControllerId, uint16 BaudRate)
     return E_OK;
 }
 
+/**
+ * @brief CanIf_GetBaudrate - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetBaudrate function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
 Std_ReturnType CanIf_GetBaudrate(uint8 ControllerId, uint16* BaudRatePtr)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
