@@ -1,0 +1,74 @@
+# yuleASR CI Configuration
+# ─────────────────────────────────────
+# AUTOSAR BSW 平台 CI 流水线配置
+
+ci:
+  layers: [1, 2, 3]
+  layer_dependencies:
+    1: []
+    2: [1]
+    3: [1, 2]
+
+coverage:
+  threshold_line: 0.0
+  threshold_condition: 0.0
+  c_fail_under: 0
+  strict: false
+  c_fail_under: 70
+  module_thresholds:
+    src/ecual: 75.0
+    src/mcal: 75.0
+    src/services: 80.0
+
+misra:
+  enabled: true
+  addon: "misra"
+  active_profile: "safety"
+  fail_on_required: true
+  fail_on_advisory: false
+  fail_threshold: 2000
+  violations_per_kloc: 200.0
+  cppcheck_std: "c11"
+  exclude_paths:
+    - "tests/**"
+    - "third_party/**"
+    - "build/**"
+    - "Drivers/**"
+    - "Middlewares/**"
+    - "CMSIS/**"
+  code_categories:
+    template:
+      paths: ["src/yuleosh/templates/**", "test-dogfood/**"]
+      action: exclude
+      block_on: false
+    third_party:
+      paths: ["third_party/**", "Drivers/**", "Middlewares/**", "CMSIS/**", "vendor/**", "lib/**"]
+      action: alert
+      block_on: false
+    business:
+      paths: ["src/**"]
+      action: enforce
+      block_on: false
+  profiles:
+    safety:
+      name: "safety"
+      rule_overrides: []
+      deviations: []
+    testing:
+      name: "testing"
+      rule_overrides:
+        - rule: "misra-c2023-21.3"
+          enabled: false
+      deviations: []
+
+hardware_test:
+  enabled: false
+  mock: true
+  firmware: "build-native/firmware.elf"
+  boot_pattern: "Boot Complete"
+  flash_tool: "auto"
+  serial_port: ""
+  baud: 115200
+  test_timeout: 30
+  boot_delay: 2.0
+  test_scripts_dir: "tests/hil"

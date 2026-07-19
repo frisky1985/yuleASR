@@ -3,7 +3,7 @@ DDS配置验证器
 验证配置文件的合法性
 """
 
-from typing import List, Optional, Set, Tuple
+from typing import List, Optional, Set, Tuple, Union
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -297,5 +297,3 @@ class DDSConfigValidator:
             return False, self.errors
 
 
-# 导入Union类型
-from typing import Union

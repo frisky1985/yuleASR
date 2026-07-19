@@ -1,0 +1,37 @@
+# yuleASR MISRA C:2023 Rules Definition
+# ───────────────────────────────────────────
+# Rule definitions for MISRA C:2023 analysis.
+# Config-level settings (profiles, overrides) are in ci-config.yaml.
+
+meta:
+  standard: MISRA C
+  version: '2023-preview'
+  ruleset_version: '2023.1'
+  description: MISRA C:2023 Guidelines — yuleASR AUTOSAR BSW project ruleset
+  source: MISRA Consortium / yuleTech
+  backward_compat:
+    description: MISRA C:2012 → C:2023 backward compatibility mapping
+    mapping:
+      Rule 1.1: { c2023_id: misra-c2023-1.1, change: modified }
+      Rule 2.1: { c2023_id: misra-c2023-2.1, change: unchanged }
+      Rule 2.2: { c2023_id: misra-c2023-2.2, change: modified }
+      Rule 2.7: { c2023_id: misra-c2023-2.7, change: unchanged }
+      Rule 8.1: { c2023_id: misra-c2023-8.1, change: unchanged }
+      Rule 8.2: { c2023_id: misra-c2023-8.2, change: unchanged }
+      Rule 8.4: { c2023_id: misra-c2023-8.4, change: unchanged }
+      Rule 9.1: { c2023_id: misra-c2023-9.1, change: unchanged }
+      Rule 10.1: { c2023_id: misra-c2023-10.1, change: modified }
+      Rule 11.1: { c2023_id: misra-c2023-11.1, change: unchanged }
+      Rule 12.1: { c2023_id: misra-c2023-12.1, change: unchanged }
+      Rule 14.1: { c2023_id: misra-c2023-14.1, change: unchanged }
+      Rule 14.2: { c2023_id: misra-c2023-14.2, change: unchanged }
+      Rule 14.3: { c2023_id: misra-c2023-14.3, change: unchanged }
+      Rule 15.1: { c2023_id: misra-c2023-15.1, change: unchanged }
+      Rule 16.1: { c2023_id: misra-c2023-16.1, change: unchanged }
+      Rule 17.1: { c2023_id: misra-c2023-17.1, change: unchanged }
+      Rule 18.1: { c2023_id: misra-c2023-18.1, change: unchanged }
+      Rule 20.1: { c2023_id: misra-c2023-20.1, change: unchanged }
+      Rule 21.1: { c2023_id: misra-c2023-21.1, change: unchanged }
+      Rule 22.1: { c2023_id: misra-c2023-22.1, change: modified }
+      Dir 4.1: { c2023_id: misra-c2023-dir-4.1, change: unchanged }
+    total_c2012_rules: 143

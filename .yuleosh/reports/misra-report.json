@@ -1,0 +1,40 @@
+{
+  "schema_version": "misra-report-v2",
+  "generated_at": "2026-07-19T10:13:05.478106",
+  "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
+  "ruleset_version": "2023-preview",
+  "ci_environ": {
+    "build_id": "",
+    "commit_sha": "",
+    "branch": "",
+    "job_name": "",
+    "workspace": ""
+  },
+  "total_violations": 452,
+  "unique_rules": 452,
+  "affected_files": 7,
+  "total_source_lines": 3584,
+  "by_severity": {
+    "information": 27,
+    "style": 302,
+    "error": 117,
+    "note": 6
+  },
+  "by_rule_type": {
+    "unknown": 225,
+    "advisory": 66,
+    "required": 161
+  },
+  "density_per_kloc": 126.12,
+  "category_breakdown": {
+    "unknown": 225,
+    "声明 (Declarations)": 66,
+    "控制流 (Control Flow)": 68,
+    "预处理器 (Preprocessing)": 67,
+    "未分类 (Uncategorized)": 26
+  },
+  "groups": {},
+  "deviations": [],
+  "excluded_rules": [],
+  "excluded_files": []
+}

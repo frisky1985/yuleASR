@@ -1,0 +1,1354 @@
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:28:0: information: Include file: "CanTSyn.h" not found. [missingInclude]
+#include "CanTSyn.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:29:0: information: Include file: "CanTSyn_Cfg.h" not found. [missingInclude]
+#include "CanTSyn_Cfg.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:30:0: information: Include file: "CanIf.h" not found. [missingInclude]
+#include "CanIf.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:31:0: information: Include file: "StbM.h" not found. [missingInclude]
+#include "StbM.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:32:0: information: Include file: "Os.h" not found. [missingInclude]
+#include "Os.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
+
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:301:11: style: Unused variable: i [unusedVariable]
+    uint8 i;
+          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:151:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void CanTSyn_Init(const CanTSyn_ConfigType* ConfigPtr)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:192:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void CanTSyn_GetVersionInfo(Std_VersionInfoType* VersionInfo)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:214:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void CanTSyn_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:242:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:468:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void CanTSyn_MainFunction(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:160:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:167:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:199:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:221:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:228:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:252:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:259:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:266:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:278:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return; /* Invalid time domain */
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:482:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:289:5: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7]
+    }
+    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:116:54: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CANTSYN_NUMBER_OF_TIME_DOMAINS, please review configuration [misra-config]
+static CanTSyn_TimeDomainInfoType CanTSyn_TimeDomains[CANTSYN_NUMBER_OF_TIME_DOMAINS];
+                                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:163:22: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (ConfigPtr == NULL_PTR)
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:195:24: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (VersionInfo == NULL_PTR)
+                       ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:224:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CANTSYN_NUMBER_OF_PDUS' is unknown [misra-config]
+    if (TxPduId >= CANTSYN_NUMBER_OF_PDUS)
+                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:232:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (result == E_OK)
+                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:255:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CANTSYN_NUMBER_OF_PDUS' is unknown [misra-config]
+    if (RxPduId >= CANTSYN_NUMBER_OF_PDUS)
+                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:262:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (PduInfoPtr == NULL_PTR)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:276:25: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CANTSYN_NUMBER_OF_TIME_DOMAINS' is unknown [misra-config]
+    if (TimeDomainId >= CANTSYN_NUMBER_OF_TIME_DOMAINS)
+                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:453:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (RetVal == E_OK)
+                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:493:13: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CanTSyn_TimeDomainConfig' is unknown [misra-config]
+        if (CanTSyn_TimeDomainConfig[i].IsTimeMaster == TRUE)
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:493:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'IsTimeMaster' is unknown [misra-config]
+        if (CanTSyn_TimeDomainConfig[i].IsTimeMaster == TRUE)
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:493:57: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'TRUE' is unknown [misra-config]
+        if (CanTSyn_TimeDomainConfig[i].IsTimeMaster == TRUE)
+                                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:498:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+            if (RetVal == E_OK)
+                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:508:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+                    if (RetVal == E_OK)
+                                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:155:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:191:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (CANTSYN_VERSION_INFO_API == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:194:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:216:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:247:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:404:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_TIME_MASTER_SUPPORT == STD_OFF)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:439:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_TIME_MASTER_SUPPORT == STD_OFF)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:477:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+    #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:491:10: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+        #if (CANTSYN_TIME_MASTER_SUPPORT == STD_ON)
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:28:0: information: Include file: "ComM.h" not found. [missingInclude]
+#include "ComM.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:29:0: information: Include file: "ComM_Cfg.h" not found. [missingInclude]
+#include "ComM_Cfg.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:30:0: information: Include file: "Det.h" not found. [missingInclude]
+#include "Det.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:734:49: style: The statement 'if (ComM_ChannelStates[Channel].CurrentMode!=newMode) ComM_ChannelStates[Channel].CurrentMode=newMode' is logically equivalent to 'ComM_ChannelStates[Channel].CurrentMode=newMode'. [duplicateConditionalAssign]
+    if (ComM_ChannelStates[Channel].CurrentMode != newMode) {
+                                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:735:49: note: Assignment 'ComM_ChannelStates[Channel].CurrentMode=newMode'
+        ComM_ChannelStates[Channel].CurrentMode = newMode;
+                                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:734:49: note: Condition 'ComM_ChannelStates[Channel].CurrentMode!=newMode' is redundant
+    if (ComM_ChannelStates[Channel].CurrentMode != newMode) {
+                                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:90:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_Init(const ComM_ConfigType* ConfigPtr)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:143:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_DeInit(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:165:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:188:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_RequestComMode(ComM_UserHandleType User, ComM_ModeType ComMode)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:215:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:238:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_GetRequestedComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:243:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:283:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:300:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_MainFunction(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:325:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_MainFunctionPnc(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:334:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_RequestPncMode(ComM_PncHandleType Pnc, ComM_PncModeType PncMode)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:352:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_GetPncMode(ComM_PncHandleType Pnc, ComM_PncModeType* PncModePtr)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:373:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:395:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:410:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_EcuM_RunRequestIndication(boolean Requested)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:420:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_BusSM_ModeIndication(ComM_ChannelHandleType Channel, ComM_ModeType Mode)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:447:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_BusSM_BusSleepMode(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:452:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_BusSM_NetworkMode(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:457:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_BusSM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:466:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_DCM_ActiveDiagnostic(ComM_ChannelHandleType Channel)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:483:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_DCM_InactiveDiagnostic(ComM_ChannelHandleType Channel)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:497:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolean Active)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:521:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_ECNM_NetworkMode(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:526:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_ECNM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:531:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_ECNM_BusSleepMode(ComM_ChannelHandleType Channel)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:540:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_Nvm_StartUpError(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:545:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_Nvm_StoreInhibitionStatus(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:554:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, ComM_InhibitionStatusType* StatusPtr)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:575:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:591:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_LimitECUToNoComMode(boolean Status)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:611:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:102:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:150:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:170:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:193:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:198:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:205:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:220:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:225:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:230:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:252:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:257:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:262:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:288:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:293:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:307:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:338:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:342:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:356:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:360:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:379:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:399:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:424:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:470:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:487:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:501:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:558:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:579:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:597:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:615:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:682:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7]
+            }
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:695:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7]
+            }
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:54:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant COMM_NUM_CHANNELS, please review configuration [misra-config]
+static ComM_ChannelStateType ComM_ChannelStates[COMM_NUM_CHANNELS];
+                                               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:57:46: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant COMM_NUM_USERS, please review configuration [misra-config]
+static ComM_UserRequestType ComM_UserRequests[COMM_NUM_USERS];
+                                             ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:61:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant COMM_NUM_PNCS, please review configuration [misra-config]
+static ComM_PncStateType ComM_PncStates[COMM_NUM_PNCS];
+                                       ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:100:22: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (ConfigPtr == NULL_PTR) {
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:168:24: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (VersionInfo == NULL_PTR) {
+                       ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:196:10: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_USERS' is unknown [misra-config]
+    if (!COMM_VALIDATE_USER(User)) {
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:201:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NO_COMMUNICATION' is unknown [misra-config]
+    if ((ComMode != COMM_NO_COMMUNICATION) &&
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:202:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_SILENT_COMMUNICATION' is unknown [misra-config]
+        (ComMode != COMM_SILENT_COMMUNICATION) &&
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:203:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_FULL_COMMUNICATION' is unknown [misra-config]
+        (ComMode != COMM_FULL_COMMUNICATION)) {
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:223:10: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_USERS' is unknown [misra-config]
+    if (!COMM_VALIDATE_USER(User)) {
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:228:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (ComModePtr == NULL_PTR) {
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:255:10: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_USERS' is unknown [misra-config]
+    if (!COMM_VALIDATE_USER(User)) {
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:260:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (ComModePtr == NULL_PTR) {
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:271:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CurrentMode' is unknown [misra-config]
+        if (ComM_ChannelStates[channel].CurrentMode > highestMode) {
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:291:10: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_VALIDATE_CHANNEL(Channel)) {
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:341:10: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_PNCS' is unknown [misra-config]
+    if (!COMM_VALIDATE_PNC(Pnc)) {
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:355:50: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || (PncModePtr == NULL_PTR)) {
+                                                 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:359:10: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_PNCS' is unknown [misra-config]
+    if (!COMM_VALIDATE_PNC(Pnc)) {
+         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:387:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WakeUpSupport' is unknown [misra-config]
+        if (ComM_ConfigPtr->ChannelConfigs[ch].WakeUpSupport) {
+                                               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:388:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WakeUpInhibition' is unknown [misra-config]
+            if (!ComM_ChannelStates[ch].WakeUpInhibition) {
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:398:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:403:49: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WakeUpSupport' is unknown [misra-config]
+    if (ComM_ConfigPtr->ChannelConfigs[Channel].WakeUpSupport) {
+                                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:404:42: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WakeUpInhibition' is unknown [misra-config]
+        if (!ComM_ChannelStates[Channel].WakeUpInhibition) {
+                                         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:423:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:469:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:486:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:500:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:509:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'RequestedMode' is unknown [misra-config]
+        if (ComM_ChannelStates[Channel].RequestedMode < COMM_SILENT_COMMUNICATION) {
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:509:57: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_SILENT_COMMUNICATION' is unknown [misra-config]
+        if (ComM_ChannelStates[Channel].RequestedMode < COMM_SILENT_COMMUNICATION) {
+                                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:557:49: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || (StatusPtr == NULL_PTR) || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:557:63: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || (StatusPtr == NULL_PTR) || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:564:37: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WakeUpInhibition' is unknown [misra-config]
+    if (ComM_ChannelStates[Channel].WakeUpInhibition) {
+                                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:568:37: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'LimitToNoCom' is unknown [misra-config]
+    if (ComM_ChannelStates[Channel].LimitToNoCom || ComM_EcuLimitToNoCom) {
+                                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:578:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:614:36: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NUM_CHANNELS' is unknown [misra-config]
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:634:61: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'LimitToNoCom' is unknown [misra-config]
+    if (ComM_EcuLimitToNoCom || ComM_ChannelStates[Channel].LimitToNoCom) {
+                                                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:635:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NO_COMMUNICATION' is unknown [misra-config]
+        if (requestedMode > COMM_NO_COMMUNICATION) {
+                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:641:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CommunicationAllowed' is unknown [misra-config]
+    if (!ComM_ChannelStates[Channel].CommunicationAllowed) {
+                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:642:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NO_COMMUNICATION' is unknown [misra-config]
+        if (requestedMode > COMM_NO_COMMUNICATION) {
+                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:652:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_FULL_COMMUNICATION' is unknown [misra-config]
+            if (requestedMode == COMM_FULL_COMMUNICATION) {
+                                 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:660:45: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'TimeoutCounter' is unknown [misra-config]
+            if (ComM_ChannelStates[Channel].TimeoutCounter > 0U) {
+                                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:668:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NO_COMMUNICATION' is unknown [misra-config]
+            if (requestedMode == COMM_NO_COMMUNICATION) {
+                                 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:674:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NO_COMMUNICATION' is unknown [misra-config]
+            if (requestedMode == COMM_NO_COMMUNICATION) {
+                                 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:678:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_SILENT_COMMUNICATION' is unknown [misra-config]
+            } else if (requestedMode == COMM_SILENT_COMMUNICATION) {
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:686:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_FULL_COMMUNICATION' is unknown [misra-config]
+            if (requestedMode == COMM_FULL_COMMUNICATION) {
+                                 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:688:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_NO_COMMUNICATION' is unknown [misra-config]
+            } else if (requestedMode == COMM_NO_COMMUNICATION) {
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:689:49: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'TimeoutCounter' is unknown [misra-config]
+                if (ComM_ChannelStates[Channel].TimeoutCounter > 0U) {
+                                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:734:37: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CurrentMode' is unknown [misra-config]
+    if (ComM_ChannelStates[Channel].CurrentMode != newMode) {
+                                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:753:45: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'RequestedMode' is unknown [misra-config]
+                if (ComM_UserRequests[user].RequestedMode > highestMode) {
+                                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:763:37: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DcmActive' is unknown [misra-config]
+    if (ComM_ChannelStates[Channel].DcmActive) {
+                                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:764:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_FULL_COMMUNICATION' is unknown [misra-config]
+        if (highestMode < COMM_FULL_COMMUNICATION) {
+                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:769:37: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'PassiveDiagnostic' is unknown [misra-config]
+    if (ComM_ChannelStates[Channel].PassiveDiagnostic) {
+                                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:770:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_SILENT_COMMUNICATION' is unknown [misra-config]
+        if (highestMode < COMM_SILENT_COMMUNICATION) {
+                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:860:45: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Active' is unknown [misra-config]
+                if (ComM_UserRequests[user].Active) {
+                                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:884:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'IsRequester' is unknown [misra-config]
+        if (pncConfig->ChannelMap[i].IsRequester) {
+                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:885:45: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'RequestedMode' is unknown [misra-config]
+            if (ComM_ChannelStates[channel].RequestedMode < COMM_FULL_COMMUNICATION) {
+                                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:885:61: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'COMM_FULL_COMMUNICATION' is unknown [misra-config]
+            if (ComM_ChannelStates[channel].RequestedMode < COMM_FULL_COMMUNICATION) {
+                                                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:60:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:77:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:83:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DCM_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:95:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:99:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:129:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:147:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:167:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:174:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_VERSION_INFO_API == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:190:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:217:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:249:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:285:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:304:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:316:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:324:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:336:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:354:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:372:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_ECUM_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:377:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:397:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:422:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:465:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DCM_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:468:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:485:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:499:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:539:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_NVM_STORAGE_ENABLED == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:556:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:577:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:595:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:613:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:761:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_DCM_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:796:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (COMM_PNC_SUPPORT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp.c:509:12: error: Unmatched '{'. Configuration: ''. [syntaxError]
+   499|    {
+           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:18:0: information: Include file: "DoIP.h" not found. [missingInclude]
+#include "DoIP.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:19:0: information: Include file: "DoIP_Cfg.h" not found. [missingInclude]
+#include "DoIP_Cfg.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:189:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:204:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:218:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void Dcm_DoIPRoutingActivation(uint16 SoConId, uint16 SourceAddress, Std_ReturnType Result)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:178:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+DoIP_StateType DoIP_State = DOIP_STATE_UNINIT;
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:25:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+const uint8 DoIP_Vin[DOIP_VIN_LENGTH] = DOIP_VIN;
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:28:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+const uint8 DoIP_Eid[DOIP_EID_LENGTH] = DOIP_EID;
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:31:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+const uint8 DoIP_Gid[DOIP_GID_LENGTH] = DOIP_GID;
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:34:14: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+const uint16 DoIP_EntityLogicalAddress = DOIP_LOGICAL_ADDRESS;
+             ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:39:30: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+const DoIP_GeneralConfigType DoIP_GeneralConfig =
+                             ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:164:23: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+const DoIP_ConfigType DoIP_Config =
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:25:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_VIN_LENGTH, please review configuration [misra-config]
+const uint8 DoIP_Vin[DOIP_VIN_LENGTH] = DOIP_VIN;
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:28:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_EID_LENGTH, please review configuration [misra-config]
+const uint8 DoIP_Eid[DOIP_EID_LENGTH] = DOIP_EID;
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:31:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_GID_LENGTH, please review configuration [misra-config]
+const uint8 DoIP_Gid[DOIP_GID_LENGTH] = DOIP_GID;
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/secoc/src/SecOc.c:509:44: error: Unmatched '{'. Configuration: ''. [syntaxError]
+   499|    if (SecOC_TxBuffers[idx].inUse) {
+                                           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:29:0: information: Include file: "WdgM.h" not found. [missingInclude]
+#include "WdgM.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:30:0: information: Include file: "WdgM_Cfg.h" not found. [missingInclude]
+#include "WdgM_Cfg.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:31:0: information: Include file: "Det.h" not found. [missingInclude]
+#include "Det.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:32:0: information: Include file: "Mcal.h" not found. [missingInclude]
+#include "Mcal.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:35:0: information: Include file: "Lockstep.h" not found. [missingInclude]
+#include "Lockstep.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:39:0: information: Include file: "RamSafety.h" not found. [missingInclude]
+#include "RamSafety.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:43:0: information: Include file: "Dem.h" not found. [missingInclude]
+#include "Dem.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:94:0: information: Include file: "WdgM_MemMap.h" not found. [missingInclude]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:117:0: information: Include file: "WdgM_MemMap.h" not found. [missingInclude]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:120:0: information: Include file: "WdgM_MemMap.h" not found. [missingInclude]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:164:0: information: Include file: "WdgM_MemMap.h" not found. [missingInclude]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:184:0: information: Include file: "WdgM_MemMap.h" not found. [missingInclude]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:918:0: information: Include file: "WdgM_MemMap.h" not found. [missingInclude]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
+
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:271:16: style: Variable 'WdgM_State' is reassigned a value before the old one has been used. [redundantAssignment]
+    WdgM_State = WDGM_STATE_ACTIVE;
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:221:16: note: WdgM_State is assigned
+    WdgM_State = WDGM_STATE_INIT;
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:271:16: note: WdgM_State is overwritten
+    WdgM_State = WDGM_STATE_ACTIVE;
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:272:22: style: Variable 'WdgM_SafetyMagic' is reassigned a value before the old one has been used. [redundantAssignment]
+    WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_ACTIVE;
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:270:22: note: WdgM_SafetyMagic is assigned
+    WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_INIT;
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:272:22: note: WdgM_SafetyMagic is overwritten
+    WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_ACTIVE;
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:190:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:286:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_DeInit(void)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:329:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+WdgM_StateType WdgM_GetState(void)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:338:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_SetMode(uint8 mode)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:385:7: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+uint8 WdgM_GetMode(void)
+      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:393:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+boolean WdgM_IsDisableAllowed(void)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:402:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_CheckpointReached(uint16 seId)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:449:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_UpdateAliveIndication(uint16 seId)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:457:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_GetSEState(uint16 seId, WdgM_SEStateType* state)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:487:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_DeactivateSupervisionEntity(uint16 seId)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:513:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_ActivateSupervisionEntity(uint16 seId)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:541:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_GetGlobalStatus(WdgM_GlobalStatusType* status)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:570:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void WdgM_MainFunction(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:617:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void WdgM_TriggerWatchdog(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:638:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void WdgM_PerformReset(void)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:655:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_GetFirstExpiredSEID(uint16* seId)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:677:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void WdgM_HandleLockstepError(uint32 errorCode)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:705:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void WdgM_HandleRamSafetyError(uint32 errorCode)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:732:16: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+Std_ReturnType WdgM_RegisterSafetyCallback(
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:745:6: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4]
+void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo)
+     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:200:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:206:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:214:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:294:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:306:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:346:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:352:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:360:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:411:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:465:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:470:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:495:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:521:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:546:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:551:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:574:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:581:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:624:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+            return;
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:660:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:667:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:683:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:711:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:790:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:795:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:800:9: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+        return E_NOT_OK;
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:878:13: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.5]
+            return E_OK;
+            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:197:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (NULL_PTR == config)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:203:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State != WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:211:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (E_OK != WdgM_ValidateConfig(config))
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:239:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (config->entities != NULL_PTR)
+                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:243:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_CFG_MAX_SUPERVISED_ENTITIES' is unknown [misra-config]
+            if (i < WDGM_CFG_MAX_SUPERVISED_ENTITIES)
+                    ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:247:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'enabled' is unknown [misra-config]
+                if (config->entities[i].enabled)
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:291:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:343:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:349:16: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_WATCHDOG_MODE_FAST' is unknown [misra-config]
+    if (mode > WDGM_WATCHDOG_MODE_FAST)
+               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:357:18: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_WATCHDOG_MODE_OFF' is unknown [misra-config]
+    if ((mode == WDGM_WATCHDOG_MODE_OFF) && (!WdgM_IsDisableAllowed()))
+                 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:372:17: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_WATCHDOG_MODE_OFF' is unknown [misra-config]
+    if (mode == WDGM_WATCHDOG_MODE_OFF)
+                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:408:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:418:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (E_OK == result)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:424:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'aliveCounter' is unknown [misra-config]
+        if (WdgM_SupervisedEntities[entityIdx].aliveCounter < 0xFFFFU)
+                                               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:433:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'state' is unknown [misra-config]
+        if (WdgM_SupervisedEntities[entityIdx].state != WDGM_SE_STATE_DEACTIVATED)
+                                               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:433:57: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_SE_STATE_DEACTIVATED' is unknown [misra-config]
+        if (WdgM_SupervisedEntities[entityIdx].state != WDGM_SE_STATE_DEACTIVATED)
+                                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:463:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:468:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (NULL_PTR == state)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:476:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (E_OK == result)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:493:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:501:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (E_OK == result)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:519:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:527:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'E_OK' is unknown [misra-config]
+    if (E_OK == result)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:544:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (NULL_PTR == status)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:549:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:572:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:592:31: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (WdgM_CurrentConfig != NULL_PTR)
+                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:599:31: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_ACTIVE' is unknown [misra-config]
+            if (WdgM_State == WDGM_STATE_ACTIVE)
+                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:619:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_ACTIVE' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_ACTIVE)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:658:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (NULL_PTR == seId)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:680:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:708:23: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_STATE_UNINIT' is unknown [misra-config]
+    if (WdgM_State == WDGM_STATE_UNINIT)
+                      ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:747:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (NULL_PTR != versioninfo)
+        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:777:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (WdgM_SafetyCallback != NULL_PTR)
+                               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:788:31: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_CFG_MAX_SUPERVISED_ENTITIES' is unknown [misra-config]
+    if (config->numEntities > WDGM_CFG_MAX_SUPERVISED_ENTITIES)
+                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:815:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'deactivated' is unknown [misra-config]
+        if (!WdgM_SupervisedEntities[i].deactivated &&
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:816:41: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'seId' is unknown [misra-config]
+            (WdgM_SupervisedEntities[i].seId != 0U))
+                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:831:31: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'NULL_PTR' is unknown [misra-config]
+    if (WdgM_CurrentConfig != NULL_PTR)
+                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:838:52: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'consecutiveErrors' is unknown [misra-config]
+            if (WdgM_SupervisedEntities[entityIdx].consecutiveErrors >= WDGM_CFG_FAILURE_THRESHOLD)
+                                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:838:73: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'WDGM_CFG_FAILURE_THRESHOLD' is unknown [misra-config]
+            if (WdgM_SupervisedEntities[entityIdx].consecutiveErrors >= WDGM_CFG_FAILURE_THRESHOLD)
+                                                                        ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:875:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'seId' is unknown [misra-config]
+        if (WdgM_SupervisedEntities[i].seId == seId)
+                                       ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:117:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:120:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:164:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:184:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:918:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.1]
+#include "WdgM_MemMap.h"
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:34:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_LOCKSTEP_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:38:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_RAMSAFETY_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:42:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:196:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:290:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:342:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:371:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:407:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:462:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:492:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:518:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:543:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:657:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:679:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:693:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:707:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:721:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:741:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_VERSION_INFO_API == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:767:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:861:2: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-20.9]
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+ ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:151:0: style: The function 'CanTSyn_Init' is never used. [unusedFunction]
+void CanTSyn_Init(const CanTSyn_ConfigType* ConfigPtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:192:0: style: The function 'CanTSyn_GetVersionInfo' is never used. [unusedFunction]
+void CanTSyn_GetVersionInfo(Std_VersionInfoType* VersionInfo)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:214:0: style: The function 'CanTSyn_TxConfirmation' is never used. [unusedFunction]
+void CanTSyn_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:242:0: style: The function 'CanTSyn_RxIndication' is never used. [unusedFunction]
+void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:338:0: style: The function 'CanTSyn_PrepareOfsMessage' is never used. [unusedFunction]
+static void CanTSyn_PrepareOfsMessage(
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:468:0: style: The function 'CanTSyn_MainFunction' is never used. [unusedFunction]
+void CanTSyn_MainFunction(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:90:0: style: The function 'ComM_Init' is never used. [unusedFunction]
+void ComM_Init(const ComM_ConfigType* ConfigPtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:143:0: style: The function 'ComM_DeInit' is never used. [unusedFunction]
+void ComM_DeInit(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:165:0: style: The function 'ComM_GetVersionInfo' is never used. [unusedFunction]
+void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:188:0: style: The function 'ComM_RequestComMode' is never used. [unusedFunction]
+Std_ReturnType ComM_RequestComMode(ComM_UserHandleType User, ComM_ModeType ComMode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:238:0: style: The function 'ComM_GetRequestedComMode' is never used. [unusedFunction]
+Std_ReturnType ComM_GetRequestedComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:243:0: style: The function 'ComM_GetCurrentComMode' is never used. [unusedFunction]
+Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:283:0: style: The function 'ComM_CommunicationAllowed' is never used. [unusedFunction]
+void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:300:0: style: The function 'ComM_MainFunction' is never used. [unusedFunction]
+void ComM_MainFunction(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:334:0: style: The function 'ComM_RequestPncMode' is never used. [unusedFunction]
+Std_ReturnType ComM_RequestPncMode(ComM_PncHandleType Pnc, ComM_PncModeType PncMode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:352:0: style: The function 'ComM_GetPncMode' is never used. [unusedFunction]
+Std_ReturnType ComM_GetPncMode(ComM_PncHandleType Pnc, ComM_PncModeType* PncModePtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:373:0: style: The function 'ComM_EcuM_WakeUpIndication' is never used. [unusedFunction]
+void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:395:0: style: The function 'ComM_EcuM_BusWakeUpIndication' is never used. [unusedFunction]
+void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:410:0: style: The function 'ComM_EcuM_RunRequestIndication' is never used. [unusedFunction]
+void ComM_EcuM_RunRequestIndication(boolean Requested)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:466:0: style: The function 'ComM_DCM_ActiveDiagnostic' is never used. [unusedFunction]
+Std_ReturnType ComM_DCM_ActiveDiagnostic(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:483:0: style: The function 'ComM_DCM_InactiveDiagnostic' is never used. [unusedFunction]
+Std_ReturnType ComM_DCM_InactiveDiagnostic(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:497:0: style: The function 'ComM_DCM_PassiveDiagnostic' is never used. [unusedFunction]
+Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolean Active)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:521:0: style: The function 'ComM_ECNM_NetworkMode' is never used. [unusedFunction]
+void ComM_ECNM_NetworkMode(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:526:0: style: The function 'ComM_ECNM_PrepareBusSleepMode' is never used. [unusedFunction]
+void ComM_ECNM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:531:0: style: The function 'ComM_ECNM_BusSleepMode' is never used. [unusedFunction]
+void ComM_ECNM_BusSleepMode(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:540:0: style: The function 'ComM_Nvm_StartUpError' is never used. [unusedFunction]
+void ComM_Nvm_StartUpError(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:545:0: style: The function 'ComM_Nvm_StoreInhibitionStatus' is never used. [unusedFunction]
+void ComM_Nvm_StoreInhibitionStatus(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:554:0: style: The function 'ComM_GetInhibitionStatus' is never used. [unusedFunction]
+Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, ComM_InhibitionStatusType* StatusPtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:575:0: style: The function 'ComM_LimitChannelToNoComMode' is never used. [unusedFunction]
+void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:591:0: style: The function 'ComM_LimitECUToNoComMode' is never used. [unusedFunction]
+void ComM_LimitECUToNoComMode(boolean Status)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:611:0: style: The function 'ComM_PreventWakeUp' is never used. [unusedFunction]
+void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:707:0: style: The function 'ComM_ProcessChannelTransitions' is never used. [unusedFunction]
+static void ComM_ProcessChannelTransitions(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:189:0: style: The function 'Dcm_DoIPRxIndication' is never used. [unusedFunction]
+void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:204:0: style: The function 'Dcm_DoIPTxConfirmation' is never used. [unusedFunction]
+void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:218:0: style: The function 'Dcm_DoIPRoutingActivation' is never used. [unusedFunction]
+void Dcm_DoIPRoutingActivation(uint16 SoConId, uint16 SourceAddress, Std_ReturnType Result)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:190:0: style: The function 'WdgM_Init' is never used. [unusedFunction]
+Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:286:0: style: The function 'WdgM_DeInit' is never used. [unusedFunction]
+Std_ReturnType WdgM_DeInit(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:329:0: style: The function 'WdgM_GetState' is never used. [unusedFunction]
+WdgM_StateType WdgM_GetState(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:338:0: style: The function 'WdgM_SetMode' is never used. [unusedFunction]
+Std_ReturnType WdgM_SetMode(uint8 mode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:385:0: style: The function 'WdgM_GetMode' is never used. [unusedFunction]
+uint8 WdgM_GetMode(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:449:0: style: The function 'WdgM_UpdateAliveIndication' is never used. [unusedFunction]
+Std_ReturnType WdgM_UpdateAliveIndication(uint16 seId)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:457:0: style: The function 'WdgM_GetSEState' is never used. [unusedFunction]
+Std_ReturnType WdgM_GetSEState(uint16 seId, WdgM_SEStateType* state)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:487:0: style: The function 'WdgM_DeactivateSupervisionEntity' is never used. [unusedFunction]
+Std_ReturnType WdgM_DeactivateSupervisionEntity(uint16 seId)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:513:0: style: The function 'WdgM_ActivateSupervisionEntity' is never used. [unusedFunction]
+Std_ReturnType WdgM_ActivateSupervisionEntity(uint16 seId)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:541:0: style: The function 'WdgM_GetGlobalStatus' is never used. [unusedFunction]
+Std_ReturnType WdgM_GetGlobalStatus(WdgM_GlobalStatusType* status)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:570:0: style: The function 'WdgM_MainFunction' is never used. [unusedFunction]
+void WdgM_MainFunction(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:655:0: style: The function 'WdgM_GetFirstExpiredSEID' is never used. [unusedFunction]
+Std_ReturnType WdgM_GetFirstExpiredSEID(uint16* seId)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:677:0: style: The function 'WdgM_HandleLockstepError' is never used. [unusedFunction]
+void WdgM_HandleLockstepError(uint32 errorCode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:705:0: style: The function 'WdgM_HandleRamSafetyError' is never used. [unusedFunction]
+void WdgM_HandleRamSafetyError(uint32 errorCode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:732:0: style: The function 'WdgM_RegisterSafetyCallback' is never used. [unusedFunction]
+Std_ReturnType WdgM_RegisterSafetyCallback(
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:745:0: style: The function 'WdgM_GetVersionInfo' is never used. [unusedFunction]
+void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:215:0: style: The function 'ComM_GetMaxComMode' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:325:0: style: The function 'ComM_MainFunctionPnc' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void ComM_MainFunctionPnc(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:420:0: style: The function 'ComM_BusSM_ModeIndication' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void ComM_BusSM_ModeIndication(ComM_ChannelHandleType Channel, ComM_ModeType Mode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:447:0: style: The function 'ComM_BusSM_BusSleepMode' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void ComM_BusSM_BusSleepMode(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:452:0: style: The function 'ComM_BusSM_NetworkMode' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void ComM_BusSM_NetworkMode(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comm/src/ComM.c:457:0: style: The function 'ComM_BusSM_PrepareBusSleepMode' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void ComM_BusSM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:393:0: style: The function 'WdgM_IsDisableAllowed' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+boolean WdgM_IsDisableAllowed(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:402:0: style: The function 'WdgM_CheckpointReached' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+Std_ReturnType WdgM_CheckpointReached(uint16 seId)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:617:0: style: The function 'WdgM_TriggerWatchdog' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void WdgM_TriggerWatchdog(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:638:0: style: The function 'WdgM_PerformReset' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+void WdgM_PerformReset(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:765:0: style: The function 'WdgM_ReportError' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_ReportError(uint8 apiId, uint8 errorId)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:775:0: style: The function 'WdgM_NotifyEvent' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_NotifyEvent(uint8 eventType, uint32 errorCode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:786:0: style: The function 'WdgM_ValidateConfig' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC Std_ReturnType WdgM_ValidateConfig(const WdgM_ConfigType* config)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:809:0: style: The function 'WdgM_UpdateSupervision' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_UpdateSupervision(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:826:0: style: The function 'WdgM_CheckEntityAlive' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_CheckEntityAlive(uint8 entityIdx)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:849:0: style: The function 'WdgM_HandleExpiredSupervision' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_HandleExpiredSupervision(uint8 entityIdx)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:869:0: style: The function 'WdgM_FindEntityIndex' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC Std_ReturnType WdgM_FindEntityIndex(uint16 seId, uint8* index)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:888:0: style: The function 'WdgM_PlatformTrigger' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_PlatformTrigger(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:897:0: style: The function 'WdgM_PlatformSetMode' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_PlatformSetMode(uint8 mode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:906:0: style: The function 'WdgM_PerformSafetyAction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void WdgM_PerformSafetyAction(uint32 errorCode)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:43:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_SID_TRANSMIT                (0x03U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:53:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_TIME_DOMAIN_0               (0x00U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:54:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_TIME_DOMAIN_1               (0x01U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:55:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_TIME_DOMAIN_2               (0x02U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:56:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_TIME_DOMAIN_3               (0x03U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:63:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_SYNC_USER_BYTES             (3U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:64:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_OFS_USER_BYTES              (2U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:67:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_NS_TO_US(ns)                ((ns) / 1000U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c:68:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define CANTSYN_US_TO_NS(us)                ((us) * 1000U)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:59:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_GET_STATE                      0x02U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:61:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_GET_MODE                       0x04U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:63:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_UPDATE_ALIVE                   0x11U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:64:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_GET_SE_STATE                   0x0CU
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:65:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_DEACTIVATE_SE                  0x12U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:66:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_ACTIVATE_SE                    0x13U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:67:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_GET_GLOBAL_STATUS              0x14U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:68:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_MAIN_FUNCTION                  0x08U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:69:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_TRIGGER_WATCHDOG               0x09U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:70:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_IS_DISABLE_ALLOWED             0x15U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:71:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_API_PERFORM_RESET                  0x16U
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:93:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_START_SEC_VAR_INIT_UNSPECIFIED
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:116:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_STOP_SEC_VAR_INIT_UNSPECIFIED
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:119:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_START_SEC_VAR_CLEARED_UNSPECIFIED
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:163:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:183:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_START_SEC_CODE
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c:917:0: style: misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.5]
+#define WDGM_STOP_SEC_CODE
+^
+nofile:0:0: information: Unmatched suppression: missingIncludeSystem [unmatchedSuppression]
+
+nofile:0:0: information: Active checkers: There was critical errors (use --checkers-report=<filename> to see details) [checkersReport]
+

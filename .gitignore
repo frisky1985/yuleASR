@@ -102,3 +102,18 @@ test_results.xml
 examples/seat_control/build/
 examples/seat_control/build_tests/
 examples/seat_control/**/Testing/
+
+# yuleOSH pipeline generated artifacts
+.yuleosh/knowledge_graph.db
+.yuleosh/store.db
+.yuleosh/audit-evidence-*.zip
+.yuleosh/audit/
+.osh/store.db
+.osh/evidence/compliance-pack.zip
+.osh/ci/layer*.json
+.coverage
+coverage.json
+__pycache__/
+*.pyc
+# DCM memory dump files
+src/bsw/services/dcm/legacy/*.dump
