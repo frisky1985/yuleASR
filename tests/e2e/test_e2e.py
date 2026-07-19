@@ -42,7 +42,7 @@ REAL_TEST_SOURCES = {
 
 def _compile_test(source_path, output_path):
     """Compile a single C E2E test with project include paths and link deps."""
-    cmd = ["gcc", "-Wall", "-Wextra", "-o", str(output_path), str(source_path)]
+    cmd = ["gcc", "-Wall", "-Wextra", "--coverage", "-o", str(output_path), str(source_path)]
     # Add module source files for real API tests that need linking
     stem = source_path.stem
     if stem in REAL_TEST_SOURCES:
