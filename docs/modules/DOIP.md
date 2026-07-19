@@ -1,63 +1,97 @@
-# Diagnostic over IP (DOIP)
+# DoIP - Diagnostic over IP Module
 
-## 模块概述
+## Overview
 
-IP 诊断
+DoIP implements ISO 13400-2 diagnostic communication over IP for modern vehicles equipped with Ethernet-based diagnostic interfaces.
 
-## AUTOSAR 版本
+## Standards
 
-- AUTOSAR Classic Platform 4.4.0
+- ISO 13400-2:2019 - Diagnostic communication over Internet Protocol
+- AUTOSAR SWS Diagnostic over IP
 
-## 主要功能
+## Features
 
-- 初始化和反初始化
-- 核心功能处理
-- 事件管理
+### Vehicle Discovery
+- Vehicle identification request/response
+- Vehicle announcement message
+- Entity status request/response
 
-## 主要 API
+### Connection Management
+- Routing activation (0x0005)
+- Alive check (0x0007)
+- Diagnostic power mode (0x0040)
 
-| API 名称 | 功能 |
-|---------|------|
-| Doip_Init() | 模块初始化 |
-| Doip_DeInit() | 模块反初始化 |
-| Doip_MainFunction() | 主函数 |
+### Diagnostic Communication
+- Diagnostic message (0x8001)
+- Diagnostic message positive/negative acknowledge
 
-## 配置参数
+## Payload Types
 
-### 编译时配置
+| Type | Value | Description |
+|------|-------|-------------|
+| Vehicle Identification Request | 0x0001 | Request vehicle ID |
+| Vehicle Identification Response | 0x0004 | Vehicle ID info |
+| Routing Activation Request | 0x0005 | Request routing activation |
+| Routing Activation Response | 0x0006 | Routing activation response |
+| Alive Check Request | 0x0007 | Check connection alive |
+| Alive Check Response | 0x0008 | Alive check response |
+| Diagnostic Message | 0x8001 | UDS diagnostic message |
+| Diagnostic Message ACK | 0x8002 | Positive acknowledge |
+| Diagnostic Message NACK | 0x8003 | Negative acknowledge |
 
-- 模块使能/禁用
-- 功能开关
+## APIs
 
-### 链接时配置
+| API | Function |
+|-----|----------|
+| `DoIP_Init()` | Initialize DoIP module |
+| `DoIP_DeInit()` | Deinitialize DoIP module |
+| `DoIP_GetVersionInfo()` | Get version info |
+| `DoIP_MainFunction()` | Periodic processing |
+| `DoIP_IfTransmit()` | Transmit callback |
+| `DoIP_IfRxIndication()` | Reception callback |
 
-- 配置表参数
-- 回调函数指针
+## Configuration
 
-## 依赖关系
+### Pre-compile
+- `DOIP_VERSION_INFO_API` - Enable version info
+- `DOIP_DEV_ERROR_DETECT` - Enable error detection
+- `DOIP_VEHICLE_ANNOUNCEMENT_INTERVAL` - Announcement interval in ms
 
-- DET (可选)
-- DEM (可选)
+### Link-time
+- Connection configurations
+- Routing activation types
+- UDS buffer configurations
 
-## 使用示例
+## Dependencies
+
+- SoAd (Socket Adapter)
+- PduR (PDU Router)
+- DCM (Diagnostic Communication Manager)
+- DET (Development Error Tracer)
+
+## Usage Example
 
 ```c
-#include "Doip.h"
+#include "DoIP.h"
 
-void example(void)
+void DoIP_Example(void)
 {
-    /* 初始化 */
-    Doip_Init(NULL);
-    
-    /* 主函数 */
-    Doip_MainFunction();
+    /* Initialize DoIP */
+    DoIP_Init(&DoIP_Config);
+
+    /* Main processing loop */
+    while (1) {
+        DoIP_MainFunction();
+        /* Handle routing activation requests */
+        /* Process diagnostic messages */
+    }
 }
 ```
 
-## 源代码路径
+## Source Code
 
-- `src/bsw/services/doip/`
+- `/home/admin/yuleASR/src/bsw/services/doip/`
 
-## 测试
+## Tests
 
-- 单元测试: `tests/unit/doip/`
+- `/home/admin/yuleASR/tests/unit/autosar/services/DoIP/`
