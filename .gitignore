@@ -120,3 +120,4 @@ src/bsw/services/dcm/legacy/*.dump
 build*/
 .build/
 *.elf
+coverage.info
