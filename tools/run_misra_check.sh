@@ -27,6 +27,16 @@ REPORTS_DIR="${PROJECT_ROOT}/reports"
 MISRA_CONFIG="${PROJECT_ROOT}/.misra_config"
 SUPPRESSIONS_FILE="${PROJECT_ROOT}/tools/misra/cppcheck_suppressions.xml"
 
+# Dynamically detect include paths via yuleOSH (single source of truth)
+INCLUDE_PATHS=$(python3 -c "
+import sys, os
+sys.path.insert(0, os.path.expanduser('~/.openclaw/workspace/tasks/yuleOSH/src'))
+from yuleosh.ci.stages.review import _detect_include_paths
+paths = _detect_include_paths('${PROJECT_ROOT}')
+for p in sorted(paths):
+    print('-I ' + p)
+" 2>/dev/null)
+
 # Output files
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 REPORT_XML="${REPORTS_DIR}/misra_com_check_${TIMESTAMP}.xml"
@@ -101,13 +111,12 @@ run_cppcheck() {
     
     echo -e "${BLUE}Running cppcheck MISRA analysis...${NC}"
     
-    cppcheck \
+    eval cppcheck \
         --enable=all \
         --std=c11 \
         --language=c \
         --platform=unix64 \
-        -I "${PROJECT_ROOT}/include" \
-        -I "${PROJECT_ROOT}/include/autosar/classic/com" \
+        ${INCLUDE_PATHS} \
         --suppress=missingIncludeSystem \
         --suppress=unusedFunction \
         --suppress=unmatchedSuppression \
