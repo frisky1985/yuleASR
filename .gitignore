@@ -129,3 +129,10 @@ tools/deepen_*.py
 # Cppcheck dump files (分析临时文件)
 *.dump
 *.ctu-info
+
+# dSYM debug info
+dSYM/
+*.dSYM
+
+# Coverage run artifacts
+coverage_run/bin/
