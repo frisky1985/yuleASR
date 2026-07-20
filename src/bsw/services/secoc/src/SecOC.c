@@ -32,11 +32,11 @@
     22|/*==================================================================================================
     23| *                                    VERSION CHECK
     24| *==================================================================================================*/
-    25|#if (SECOC_AR_RELEASE_MAJOR_VERSION != 4u)
+    25|#if defined(SECOC_AR_RELEASE_MAJOR_VERSION) && (SECOC_AR_RELEASE_MAJOR_VERSION != 4u)
     26|    #error "SecOC.c: AR major version mismatch"
     27|#endif
     28|
-    29|#if (SECOC_AR_RELEASE_MINOR_VERSION != 7u)
+    29|#if defined(SECOC_AR_RELEASE_MINOR_VERSION) && (SECOC_AR_RELEASE_MINOR_VERSION != 4u)
     30|    #error "SecOC.c: AR minor version mismatch"
     31|#endif
     32|

@@ -51,7 +51,7 @@ static uint8 ComM_ModuleState = COMM_UNINITIALIZED;
 static const ComM_ConfigType* ComM_ConfigPtr = NULL;
 
 /* Channel States */
-static ComM_ChannelStateType ComM_ChannelStates[COMM_NUM_CHANNELS];
+static ComM_ChannelStateStrType ComM_ChannelStates[COMM_NUM_CHANNELS];
 
 /* User Requests */
 static ComM_UserRequestType ComM_UserRequests[COMM_NUM_USERS];
