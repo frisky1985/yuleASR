@@ -132,7 +132,7 @@ const char* DDS_Topic_get_name(DDS_Topic topic) {
         return NULL;
     }
 
-    Topic_State* state = (Topic_State*)topic;
+    const Topic_State* state = (Topic_State*)topic;
 
     if (!state->is_valid) {
         return NULL;
@@ -146,7 +146,7 @@ const char* DDS_Topic_get_type_name(DDS_Topic topic) {
         return NULL;
     }
 
-    Topic_State* state = (Topic_State*)topic;
+    const Topic_State* state = (Topic_State*)topic;
 
     if (!state->is_valid) {
         return NULL;

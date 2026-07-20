@@ -528,7 +528,7 @@ void Swc_DiagnosticManager_ProcessRequest(void)
 
     /* Process the request */
     request = swcDiagManager.pendingRequest;
-    swcDiagManager.hasPendingRequest = FALSE;
+/* [MISRA Advisory] Redundant:     swcDiagManager.hasPendingRequest = FALSE; */
 
     /* Initialize response */
     response.responseId = UDS_NEGATIVE_RESPONSE_SID;  /* Negative response service */

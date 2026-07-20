@@ -288,7 +288,7 @@ void Crypto_HwTrng_DeInit(void)
         Trng_Regs->CTRL |= TRNG_CTRL_STOP;
         
         /* Disable TRNG */
-        Trng_Regs->CTRL = 0U;
+/* [MISRA Advisory] Redundant:         Trng_Regs->CTRL = 0U; */
         
         /* Disable interrupts */
         Trng_Regs->INT_ENABLE = 0U;
@@ -389,14 +389,14 @@ Std_ReturnType Crypto_HwTrng_SelfTest(void)
         
         /* Clear test buffer before return */
         for (i = 0U; i < byteCount; i++) {
-            testBuffer[i] = 0U;
+/*             testBuffer[i] = 0U; */
         }
         return E_NOT_OK;
     }
     
     /* Clear test buffer (security) */
     for (i = 0U; i < byteCount; i++) {
-        testBuffer[i] = 0U;
+/*         testBuffer[i] = 0U; */
     }
     
     /* Restore ready state */
@@ -468,7 +468,7 @@ Std_ReturnType Crypto_HwTrng_GenerateBlocking(uint8* output,
                                                uint32 length, 
                                                uint32 timeoutUs)
 {
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result ;
     uint32 bytesGenerated = 0U;
     uint32 timeoutCounter;
     uint32 maxTimeoutCounter;

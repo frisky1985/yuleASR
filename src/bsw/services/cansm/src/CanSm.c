@@ -510,7 +510,7 @@ static Std_ReturnType CanSm_ProcessSilentComState(uint8 NetworkIndex)
 static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
 {
     Std_ReturnType result = E_OK;
-    CanSm_NetworkStateType* netState;
+    const CanSm_NetworkStateType* netState;
     ComM_ModeType requestedMode;
     
     netState = &CanSm_Global.Networks[NetworkIndex];

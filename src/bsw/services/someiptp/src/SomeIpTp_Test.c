@@ -156,9 +156,9 @@ void Test_SomeIpTp_TpHeader(void)
     Std_ReturnType result;
     uint8 buffer[4];
     uint32 offsetIn = 0x1234567UL;
-    uint32 offsetOut = 0U;
+    uint32 offsetOut ;
     boolean moreIn = TRUE;
-    boolean moreOut = FALSE;
+    boolean moreOut ;
     
     (void)printf("\n[Test] SomeIpTp_BuildTpHeader and ParseTpHeader\n");
     

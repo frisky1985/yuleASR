@@ -444,7 +444,7 @@ Std_ReturnType Rte_Read(Rte_PortHandleType portHandle, void* data)
 
     if (Rte_ValidatePortHandle(portHandle) == E_OK)
     {
-        Rte_PortStateType* portState = &Rte_ComponentStates[componentId].Ports[portId];
+        const Rte_PortStateType* portState = &Rte_ComponentStates[componentId].Ports[portId];
 
         if (portState->Buffer.IsValid)
         {

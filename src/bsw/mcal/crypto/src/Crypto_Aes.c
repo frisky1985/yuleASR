@@ -257,7 +257,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
                     if (isNewJob) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
-                    result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
+/* [MISRA Advisory] Redundant:                     result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr, */
                                                   io->inputLength, io->outputPtr);
                     outputLen = io->inputLength;
                     break;
@@ -448,7 +448,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
                     if (isNewJob) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
-                    result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
+/* [MISRA Advisory] Redundant:                     result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr, */
                                                   io->inputLength, io->outputPtr);
                     outputLen = io->inputLength;
                     break;

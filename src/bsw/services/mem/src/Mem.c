@@ -500,7 +500,7 @@ Mem_HandleType Mem_Reallocate(Mem_HandleType Handle, uint32 NewSize)
 {
     Mem_HandleType newHandle = MEM_INVALID_HANDLE;
     void* oldPtr = NULL_PTR;
-    void* newPtr = NULL_PTR;
+    void* newPtr ;
     uint32 oldSize = 0u;
     uint8 poolIndex;
     Mem_BlockType* block;
@@ -558,7 +558,7 @@ Mem_HandleType Mem_Reallocate(Mem_HandleType Handle, uint32 NewSize)
         /* Copy data */
         if (oldSize > 0u) {
             uint32 copySize = (oldSize < NewSize) ? oldSize : NewSize;
-            uint8* src = (uint8*)oldPtr;
+            const uint8* src = (uint8*)oldPtr;
             uint8* dst = (uint8*)newPtr;
             uint32 i;
             
@@ -632,7 +632,7 @@ Mem_StatusType Mem_GetStatus(void)
  */
 Std_ReturnType Mem_GetMemInfo(uint8 PoolIndex, Mem_InfoType* InfoPtr)
 {
-    Mem_BlockType* block;
+    const Mem_BlockType* block;
     uint32 freeSize = 0u;
     uint32 maxFreeBlock = 0u;
     uint32 numFragments = 0u;
@@ -721,7 +721,7 @@ void Mem_MainFunction(void)
 Std_ReturnType Mem_CheckIntegrity(void)
 {
     uint8 poolIndex;
-    Mem_BlockType* block;
+    const Mem_BlockType* block;
     Std_ReturnType result = E_OK;
     
 #if (MEM_DEV_ERROR_DETECT == STD_ON)

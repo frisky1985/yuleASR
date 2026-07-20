@@ -74,7 +74,7 @@ static void Eth_ProcessTxInterrupt(Eth_ControllerType CtrlIdx)
 static void Eth_ProcessRxInterrupt(Eth_ControllerType CtrlIdx)
 {
     uint8 bufIdx;
-    uint8* rxDataPtr;
+    uint8* rxDataPtr = NULL_PTR;
     uint16 rxLen;
     
     /* Process all received frames */

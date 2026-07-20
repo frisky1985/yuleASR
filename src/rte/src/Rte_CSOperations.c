@@ -446,7 +446,7 @@ Std_ReturnType Rte_Write_CommunicationManager_Port_Status(const uint8* data)
 Std_ReturnType Rte_Read_StorageManager_Port_Data(uint8* data, uint16* length)
 {
     Std_ReturnType result = E_NOT_OK;
-    uint16 tempLength = 0U;
+    uint16 tempLength ;
 
 #if (RTE_DEV_ERROR_DETECT == STD_ON)
     if ((data == NULL_PTR) || (length == NULL_PTR))

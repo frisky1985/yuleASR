@@ -167,7 +167,7 @@ STATIC Std_ReturnType LinTp_SendSingleFrame(LinTp_ChannelType Channel, LinTp_Con
         
         /* Pad with 0xFF */
         for (i = (uint8)(PduInfoPtr->SduLength + 1U); i < LINTP_FRAME_SIZE; i++) {
-            frameData[i] = 0xFFU;
+/*             frameData[i] = 0xFFU; */
         }
         
         /* Start N_As timer */
@@ -298,7 +298,7 @@ STATIC void LinTp_ProcessTimers(LinTp_ChannelType Channel)
  */
 STATIC void LinTp_ProcessTxState(LinTp_ChannelType Channel, LinTp_ConnectionType Connection)
 {
-    LinTp_ConnectionStateType* connState = &LinTp_ChannelStates[Channel].Connections[Connection];
+    const LinTp_ConnectionStateType* connState = &LinTp_ChannelStates[Channel].Connections[Connection];
     
     switch (connState->State) {
         case LINTP_STATE_TX_READY:

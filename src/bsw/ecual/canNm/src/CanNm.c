@@ -350,7 +350,7 @@ static void CanNm_EnterNormalOperationState(uint8 ChannelIndex)
 static void CanNm_EnterReadySleepState(uint8 ChannelIndex)
 {
     CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
-    const CanNm_ChannelConfigType* ChCfg = &CanNm_ConfigPtr->ChannelConfig[ChannelIndex];
+    const CanNm_ChannelConfigType* ChCfg ;
 
     ChState->State = CANNM_STATE_READY_SLEEP_MODE;
     ChState->MsgTxEnabled = FALSE;
@@ -530,7 +530,7 @@ static void CanNm_ProcessRemoteSleepIndication(uint8 ChannelIndex)
  */
 static void CanNm_ProcessStateMachine(uint8 ChannelIndex)
 {
-    CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
+    const CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
 
     switch (ChState->State)
     {
@@ -1033,7 +1033,7 @@ Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
     {
         if (CanNm_ConfigPtr->ChannelConfig[ChannelIndex].TxPduId == TxPduId)
         {
-            CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
+            const CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
             
             if ((PduInfoPtr->SduDataPtr != NULL) && (PduInfoPtr->SduLength >= CANNM_PDU_LENGTH))
             {
@@ -1105,7 +1105,7 @@ Std_ReturnType CanNm_GetState(NetworkHandleType nmChannelHandle,
     
     if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_GET_STATE))
     {
-        CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
+        const CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
 
         /* Map internal state to Nm_StateType */
         switch (ChState->State)

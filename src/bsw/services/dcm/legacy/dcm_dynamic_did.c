@@ -521,7 +521,7 @@ bool Dcm_IsDynamicDidDefined(uint16_t dynamicDid)
     bool defined = false;
     
     if (s_dynDidState.initialized) {
-        Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
+        const Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
         defined = (definition != NULL) && definition->defined;
     }
     
@@ -556,7 +556,7 @@ Dcm_ReturnType Dcm_ReadDynamicDidData(
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
     if ((dataBuffer != NULL) && (dataLength != NULL) && s_dynDidState.initialized) {
-        Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
+        const Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
         
         if ((definition != NULL) && definition->defined) {
             if (bufferSize >= definition->totalSize) {

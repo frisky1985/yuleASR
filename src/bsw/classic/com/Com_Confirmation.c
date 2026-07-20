@@ -545,7 +545,7 @@ void Com_HandleModeSwitchConfirmation(Com_IPduIdType PduId,
         return;
     }
     
-    Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
+    const Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
     
     /* Check if confirmation is pending during mode switch */
     if (ipduRuntime->TxStatus == COM_TX_PENDING ||
@@ -572,7 +572,7 @@ boolean Com_CanSwitchModeDuringPending(Com_IPduIdType PduId)
         return FALSE;
     }
     
-    Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
+    const Com_IPduRunTimeType* ipduRuntime ;
     
     /* Mode switch is generally allowed, but we track the state */
     /* The actual handling is done in Com_HandleModeSwitchConfirmation */

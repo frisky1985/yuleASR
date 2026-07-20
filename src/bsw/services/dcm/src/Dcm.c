@@ -1330,7 +1330,7 @@ Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 
     if ((TxPduId < DCM_NUM_PROTOCOLS) && (PduInfoPtr != NULL_PTR))
     {
-        Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[TxPduId];
+        const Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[TxPduId];
 
         /* Provide TX data */
         PduInfoPtr->SduDataPtr = protocolState->TxBuffer;
@@ -1407,7 +1407,7 @@ Std_ReturnType Dcm_GetSesCtrlType(uint8* SesCtrlType)
  */
 void Dcm_ResetToDefaultSession(void)
 {
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result ;
 
 #if (DCM_DEV_ERROR_DETECT == STD_ON)
     if (Dcm_InternalState.State != DCM_STATE_INIT)

@@ -672,7 +672,7 @@ void Dem_IntClearAllDTCs(void)
 void Dem_IntUpdateDTCStatusFromDebounce(Dem_EventIdType EventId, boolean DebounceResult)
 {
     const Dem_EventParameterType* eventConfig;
-    Dem_EventStateType* eventState;
+    const Dem_EventStateType* eventState;
     uint8 dtcIndex;
 
     eventConfig = Dem_IntFindEventConfig(EventId);

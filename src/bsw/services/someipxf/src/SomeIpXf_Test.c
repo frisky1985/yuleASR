@@ -171,7 +171,7 @@ void Test_SomeIpXf_Uint8(void)
 {
     uint8 buffer[4];
     uint8 valueIn = 0xABU;
-    uint8 valueOut = 0U;
+    uint8 valueOut ;
     uint16 bits;
     
     (void)printf("\n[Test] SomeIpXf_SerializeUint8 and DeserializeUint8\n");
@@ -193,7 +193,7 @@ void Test_SomeIpXf_Uint16(void)
 {
     uint8 buffer[4];
     uint16 valueIn = 0x1234U;
-    uint16 valueOut = 0U;
+    uint16 valueOut ;
     uint16 bits;
     
     (void)printf("\n[Test] SomeIpXf_SerializeUint16 and DeserializeUint16\n");
@@ -216,7 +216,7 @@ void Test_SomeIpXf_Uint32(void)
 {
     uint8 buffer[8];
     uint32 valueIn = 0x12345678UL;
-    uint32 valueOut = 0UL;
+    uint32 valueOut ;
     uint16 bits;
     
     (void)printf("\n[Test] SomeIpXf_SerializeUint32 and DeserializeUint32\n");
@@ -241,7 +241,7 @@ void Test_SomeIpXf_Boolean(void)
 {
     uint8 buffer[4];
     boolean valueIn = TRUE;
-    boolean valueOut = FALSE;
+    boolean valueOut ;
     uint16 bits;
     
     (void)printf("\n[Test] SomeIpXf_SerializeBoolean and DeserializeBoolean\n");
@@ -264,7 +264,7 @@ void Test_SomeIpXf_String(void)
     uint8 buffer[64];
     uint8 strIn[] = "Hello";
     uint8 strOut[32];
-    uint32 lenOut = sizeof(strOut);
+    uint32 (void)sizeof(strOut);
     uint32 bytes;
     SomeIpXf_DataElementConfigType config;
     
@@ -296,7 +296,7 @@ void Test_SomeIpXf_Array(void)
     uint8 buffer[64];
     uint8 arrIn[] = {0x01, 0x02, 0x03, 0x04};
     uint8 arrOut[8];
-    uint32 lenOut = 4U;
+    uint32 lenOut ;
     uint32 bytes;
     SomeIpXf_DataElementConfigType config;
     
@@ -329,7 +329,7 @@ void Test_SomeIpXf_Transform(void)
     uint8 outData[4];
     SomeIpXf_BufferType srcBuf = {srcData, 4U, 4U};
     SomeIpXf_BufferType tgtBuf = {tgtData, 0U, 64U};
-    SomeIpXf_BufferType outBuf = {outData, 0U, 4U};
+    SomeIpXf_BufferType outBuf ;
     
     (void)printf("\n[Test] SomeIpXf_Transform and Detransform\n");
     

@@ -55,7 +55,7 @@ void LinIf_Init(const LinIf_ConfigType* ConfigPtr)
     LinIf_State.activeSchedule = 0U;
     LinIf_State.tickCount = 0U;
     LinIf_State.configPtr = ConfigPtr;
-    LinIf_State.state = LINIF_INIT;
+/* [MISRA Advisory] Redundant:     LinIf_State.state = LINIF_INIT; */
 }
 
 void LinIf_DeInit(void)

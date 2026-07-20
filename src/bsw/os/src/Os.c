@@ -971,7 +971,7 @@ StatusType GetAlarm(AlarmType AlarmID, TickRefType Tick)
  */
 StatusType Os_Internal_GetAlarm(AlarmType AlarmID, TickRefType Tick)
 {
-    Os_AlarmConfigType* alarm;
+    const Os_AlarmConfigType* alarm;
 
     alarm = &Os_GlobalState.Alarms[AlarmID];
 

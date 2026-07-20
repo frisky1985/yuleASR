@@ -1257,7 +1257,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
     {
         uint8 counter = 0x01U;
         uint32 srcLen = Csm_Keys[srcKeyIdx].elements[0].length;
-        uint8* srcData = Csm_Keys[srcKeyIdx].elements[0].data;
+        const uint8* srcData = Csm_Keys[srcKeyIdx].elements[0].data;
         uint32 offset = 0U;
         uint8 targetDeriveBuf[CSM_MAX_KEY_LENGTH];
         uint32 bytesRemaining;
@@ -1347,7 +1347,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                     
                 if (hashResult == E_OK && hwHashLen > 0U)
                 {
-                    hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH;
+/* [MISRA Advisory] Redundant:                     hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH; */
 (void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
                 }
                 else
@@ -1556,7 +1556,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
         uint8 pubValBuf[CSM_MAX_KEY_LENGTH];
         uint32 pubValLen;
         uint32 privKeyLen = Csm_Keys[keyIdx].elements[0].length;
-        uint8* privKeyData = Csm_Keys[keyIdx].elements[0].data;
+        const uint8* privKeyData = Csm_Keys[keyIdx].elements[0].data;
         
         /* 确定输出长度 */
         pubValLen = *publicValueLengthPtr;
@@ -1839,7 +1839,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
     /* 软件回退: 使用KDF从私钥和对方公钥计算共享秘密 */
     {
         uint32 privKeyLen = Csm_Keys[keyIdx].elements[0].length;
-        uint8* privKeyData = Csm_Keys[keyIdx].elements[0].data;
+        const uint8* privKeyData = Csm_Keys[keyIdx].elements[0].data;
         uint8 sharedSecretBuf[CSM_MAX_KEY_LENGTH];
         uint32 sharedSecretLen;
         

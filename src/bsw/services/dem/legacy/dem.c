@@ -356,7 +356,7 @@ Std_ReturnType Dem_GetFaultDetectionCounter(
         return E_NOT_OK;
     }
     
-    Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
+    const Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
     
     if (entry != NULL_PTR) {
         *faultDetectionCounter = entry->debounceCounter;

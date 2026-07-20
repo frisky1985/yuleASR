@@ -142,7 +142,7 @@ Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId)
 Std_ReturnType Srp_GetStreamStatus(const Srp_StreamIdType StreamId, Srp_ReservationStateType* Status)
 {
     if (NULL_PTR == Status) return E_NOT_OK;
-    Srp_StreamEntryType* entry = Srp_FindStream(StreamId);
+    const Srp_StreamEntryType* entry = Srp_FindStream(StreamId);
     if (entry == NULL_PTR) return E_NOT_OK;
     *Status = entry->State;
     return E_OK;

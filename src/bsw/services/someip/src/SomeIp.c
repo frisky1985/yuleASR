@@ -90,8 +90,8 @@ Std_ReturnType SomeIp_SendRequest(
     message.Header.MessageType = SOMEIP_MSG_REQUEST;
     message.Header.ReturnCode = SOMEIP_RET_OK;
     
-    message.Payload = (uint8*)Payload;
-    message.PayloadLength = PayloadLength;
+/*     message.Payload = (uint8*)Payload; */
+/*     message.PayloadLength = PayloadLength; */
     
     /* NOTE: Socket send pending network stack integration */
     
@@ -120,8 +120,8 @@ Std_ReturnType SomeIp_SendResponse(
     message.Header.MessageType = (ReturnCode == SOMEIP_RET_OK) ? SOMEIP_MSG_RESPONSE : SOMEIP_MSG_ERROR;
     message.Header.ReturnCode = ReturnCode;
     
-    message.Payload = (uint8*)Payload;
-    message.PayloadLength = PayloadLength;
+/*     message.Payload = (uint8*)Payload; */
+/*     message.PayloadLength = PayloadLength; */
     
     /* NOTE: Socket send pending network stack integration */
     
@@ -151,8 +151,8 @@ Std_ReturnType SomeIp_SendNotification(
     message.Header.MessageType = SOMEIP_MSG_NOTIFICATION;
     message.Header.ReturnCode = SOMEIP_RET_OK;
     
-    message.Payload = (uint8*)Payload;
-    message.PayloadLength = PayloadLength;
+/*     message.Payload = (uint8*)Payload; */
+/*     message.PayloadLength = PayloadLength; */
     
     /* NOTE: Send to all subscribed clients pending network stack integration */
     

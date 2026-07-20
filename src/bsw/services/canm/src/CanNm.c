@@ -84,7 +84,7 @@ static void CanNm_ChangeState(CanNm_ChannelHandleType channel,
     /* Store old state for notification */
     Nm_StateType nmOldState = (Nm_StateType)oldState;
     Nm_StateType nmNewState = (Nm_StateType)newState;
-    Nm_ModeType nmNewMode = (Nm_ModeType)newMode;
+    Nm_ModeType (void)(Nm_ModeType)newMode;
     
     /* Update state and mode */
     chPtr->State = newState;
@@ -478,7 +478,7 @@ void CanNm_Init(const CanNm_ConfigType *ConfigPtr)
     
     /* Initialize all channels */
     for (channel = 0; channel < CANNM_NUMBER_OF_CHANNELS; channel++) {
-        cfgPtr = &ConfigPtr->ChannelConfig[channel];
+        cfgPtr ;
         
         /* Initialize channel structure */
         CanNm_Channels[channel].State = CANNM_STATE_BUS_SLEEP;

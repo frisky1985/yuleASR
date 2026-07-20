@@ -297,7 +297,7 @@ void Rte_Scheduler_Init(void)
         Rte_SchedulerState.Events[i].EventMask = 0U;
     }
 
-    Rte_SchedulerState.IsInitialized = TRUE;
+/* [MISRA Advisory] Redundant:     Rte_SchedulerState.IsInitialized = TRUE; */
 }
 
 /**
@@ -432,8 +432,8 @@ Rte_StatusType Rte_WaitForEvent(Rte_InstanceHandleType instance, Rte_EventType e
 
             /* Clear the events that were waited for */
             taskPtr->EventMask &= ~eventMask;
-            taskPtr->WaitedEvents = 0U;
-            taskPtr->State = RTE_TASK_READY;
+/* [MISRA Advisory] Redundant:             taskPtr->WaitedEvents = 0U; */
+/* [MISRA Advisory] Redundant:             taskPtr->State = RTE_TASK_READY; */
         }
         else
         {

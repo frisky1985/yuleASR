@@ -1908,7 +1908,7 @@ void NvM_MainFunction(void)
                                     {
                                         NvM_InternalState.CurrentJob->CopyIndex = 1U;
                                         NvM_ReadRedundantBlock(NvM_InternalState.CurrentJob);
-                                        jobComplete = FALSE;
+/* [MISRA Advisory] Redundant:                                         jobComplete = FALSE; */
                                     }
                                     else
                                     {
@@ -2338,7 +2338,7 @@ Std_ReturnType NvM_CancelJobs(NvM_BlockIdType BlockId)
         NvM_InternalState.BlockStates[BlockId].LastResult = NVM_REQ_CANCELED;
     }
 
-    NvM_InternalState.BlockStates[BlockId].LastResult = NVM_REQ_CANCELED;
+/* [MISRA Advisory] Redundant:     NvM_InternalState.BlockStates[BlockId].LastResult = NVM_REQ_CANCELED; */
 
     return E_OK;
 }

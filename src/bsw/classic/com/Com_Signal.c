@@ -216,7 +216,7 @@ static void Com_TriggerIPduTransmission(Com_IPduIdType PduId)
     }
     
     Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
-    const Com_IPduConfigType* ipduConfig = &Com_GlobalState.Config->IPdus[PduId];
+    const Com_IPduConfigType* ipduConfig ;
     
     /* Check if IPdu is started */
     if (ipduRuntime->GroupStatus != COM_IPDU_GROUP_STARTED) {

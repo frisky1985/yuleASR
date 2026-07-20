@@ -295,7 +295,7 @@ void Swc_CommunicationManager_Init(void)
     swcCommManager.statistics.timeouts = 0;
 
     swcCommManager.isInitialized = TRUE;
-    swcCommManager.state = COMM_STATE_READY;
+/* [MISRA Advisory] Redundant:     swcCommManager.state = COMM_STATE_READY; */
 
     Det_ReportError(SWC_COMMUNICATIONMANAGER_MODULE_ID, SWC_COMMUNICATIONMANAGER_INSTANCE_ID,
                     0x01, RTE_E_OK);

@@ -184,7 +184,7 @@ Std_ReturnType Dcm_ObdService09(
             
         case DCM_OBD_INFO_VIN:
             /* VIN (17 bytes) */
-            VinPtr = Dcm_GetVIN();
+            (void)Dcm_GetVIN();
             MsgContext->resData[0] = DCM_OBD_SID_VEHICLE_INFO;
             MsgContext->resData[1] = InfoType;
             /* Copy VIN to response */

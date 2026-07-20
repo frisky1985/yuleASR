@@ -624,7 +624,7 @@ uint32_t Dcm_PoolGetBlockSize(const void *ptr)
         return 0U;
     }
     
-    Dcm_Pool *pool = findPoolForPtr(ptr);
+    const Dcm_Pool *pool = findPoolForPtr(ptr);
     if (pool != NULL) {
         size = pool->blockSize;
     }
@@ -661,7 +661,7 @@ Dcm_ReturnType Dcm_PoolValidate(uint8_t poolId)
             uint32_t freeCount = 0U;
             
             while (current != NULL) {
-                Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)current;
+                const Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)current;
                 
                 if (!validateHeader(header)) {
                     pool->stats.corruptionCount++;

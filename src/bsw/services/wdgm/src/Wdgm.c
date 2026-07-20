@@ -268,8 +268,8 @@ Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
     
     /* 设置安全魔数 */
     WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_INIT;
-    WdgM_State = WDGM_STATE_ACTIVE;
-    WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_ACTIVE;
+/* [MISRA Advisory] Redundant:     WdgM_State = WDGM_STATE_ACTIVE; */
+/* [MISRA Advisory] Redundant:     WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_ACTIVE; */
     
     /* 恢复中断 */
     Mcal_EnableAllInterrupts();

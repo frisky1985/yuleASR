@@ -493,7 +493,7 @@ static Std_ReturnType Wdg_Hw_TriggerWWDG(void)
 static uint32 Wdg_Hw_GetResetReasonSTM32(void)
 {
     /* Read RCC_CSR register */
-    volatile uint32* rcc_csr = (volatile uint32*)(0x40023800u + 0x74u);
+    volatile const uint32* rcc_csr = (volatile uint32*)(0x40023800u + 0x74u);
     uint32 csr = *rcc_csr;
 
     if (csr & 0x40000000u) {  /* WWDGRSTF */

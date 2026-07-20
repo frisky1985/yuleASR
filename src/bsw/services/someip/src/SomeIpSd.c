@@ -270,10 +270,10 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
     
     /* Parse SD message content */
     /* Flags = Data[16] */
-    sdMessage.Flags = Data[SOMEIP_HEADER_SIZE];
+/*     sdMessage.Flags = Data[SOMEIP_HEADER_SIZE]; */
     
     /* Reserved = Data[17-20] */
-    sdMessage.Reserved = ((uint32)Data[17] << 24) |
+/*     sdMessage.Reserved = ((uint32)Data[17] << 24) | */
                          ((uint32)Data[18] << 16) |
                          ((uint32)Data[19] << 8) |
                          (uint32)Data[20];

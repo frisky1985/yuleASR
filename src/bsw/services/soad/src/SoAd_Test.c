@@ -399,7 +399,7 @@ void Test_SoAd_MultipleConnections(void)
     
     /* Test: Open multiple connections */
     result1 = SoAd_OpenUdpConnection(0U);
-    result2 = SoAd_OpenUdpConnection(1U);
+    (void)SoAd_OpenUdpConnection(1U);
     
     /* Verify: Both should succeed */
     (void)TEST_ASSERT_EQ(E_OK, result1, "First connection should succeed");

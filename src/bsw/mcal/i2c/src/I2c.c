@@ -236,7 +236,7 @@ static Std_ReturnType I2c_WaitForTransferComplete(uint32 baseAddr, uint32 timeou
 static void I2c_SetFrequency(uint32 baseAddr, uint32 freq)
 {
     uint32 periphClk = I2C_PERIPHERAL_CLOCK_FREQ;
-    uint32 bestDivider = 0U;
+    uint32 bestDivider ;
     uint32 minDiff = 0xFFFFFFFFU;
     uint8 bestIndex = 0U;
     
@@ -247,7 +247,7 @@ static void I2c_SetFrequency(uint32 baseAddr, uint32 freq)
         
         if (diff < minDiff) {
             minDiff = diff;
-            bestDivider = divider;
+            bestDivider ;
             bestIndex = i;
         }
         
@@ -824,7 +824,7 @@ Std_ReturnType I2c_WriteBytes(I2c_ChannelType Channel,
     #endif
     
     I2c_ChannelInfoType* chInfo = &I2c_ChannelInfo[Channel];
-    const I2c_ChannelConfigType* chConfig = &I2c_ConfigPtr->Channels[Channel];
+    const I2c_ChannelConfigType* chConfig ;
     
     /* Check if channel is busy */
     if (chInfo->State != I2C_STATE_IDLE) {

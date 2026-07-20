@@ -175,7 +175,7 @@ Std_ReturnType Dem_GetStatusOfDTC(
         return E_NOT_OK;
     }
     
-    Dem_DtcEntryType* entry = Dem_FindDtcEntry(DTC);
+    const Dem_DtcEntryType* entry = Dem_FindDtcEntry(DTC);
     
     if ((entry != NULL_PTR) && (entry->dtcOrigin == DTCOrigin)) {
         *DTCStatus = entry->dtcStatus;
@@ -199,7 +199,7 @@ Std_ReturnType Dem_GetSeverityOfDTC(
         return E_NOT_OK;
     }
     
-    Dem_DtcEntryType* entry = Dem_FindDtcEntry(DTC);
+    const Dem_DtcEntryType* entry = Dem_FindDtcEntry(DTC);
     
     if ((entry != NULL_PTR) && (entry->dtcOrigin == DTCOrigin)) {
         *DTCSeverity = entry->dtcSeverity;
@@ -308,7 +308,7 @@ Std_ReturnType Dem_GetNextFilteredDTC(
     
     /* Search for next matching DTC */
     while (s_dtcFilter.currentIndex < DEM_MAX_DTCS) {
-        Dem_DtcEntryType* entry = &s_dtcEntries[s_dtcFilter.currentIndex];
+        const Dem_DtcEntryType* entry = &s_dtcEntries[s_dtcFilter.currentIndex];
         s_dtcFilter.currentIndex++;
         
         if (Dem_DtcMatchesFilter(entry) == TRUE) {
@@ -331,7 +331,7 @@ Std_ReturnType Dem_GetNextFilteredDTCAndSeverity(
     Std_ReturnType result = Dem_GetNextFilteredDTC(DTC, DTCStatus);
     
     if (result == E_OK) {
-        Dem_DtcEntryType* entry = Dem_FindDtcEntry(*DTC);
+        const Dem_DtcEntryType* entry = Dem_FindDtcEntry(*DTC);
         
         if (entry != NULL_PTR) {
             if (DTCSeverity != NULL_PTR) {

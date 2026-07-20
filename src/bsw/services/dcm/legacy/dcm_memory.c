@@ -242,7 +242,7 @@ Dcm_ReturnType Dcm_WriteMemoryByAddress(const Dcm_RequestType *request,
                                         Dcm_ResponseType *response)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
-    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
+    uint8_t nrc ;
     
     if (!s_memoryState.initialized) {
         nrc = UDS_NRC_CONDITIONS_NOT_CORRECT;
@@ -593,7 +593,7 @@ Dcm_ReturnType Dcm_ReadMemoryByAddress(const Dcm_RequestType *request,
                                        Dcm_ResponseType *response)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
-    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
+    uint8_t nrc ;
     
     if (!s_memoryState.initialized) {
         nrc = UDS_NRC_CONDITIONS_NOT_CORRECT;

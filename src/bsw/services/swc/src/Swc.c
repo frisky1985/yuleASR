@@ -167,7 +167,7 @@ static void Swc_ProcessQueuedEvents(void)
 {
     while (Swc_InternalData.eventQueueCount > 0U)
     {
-        Swc_EventQueueEntryType* entry = &Swc_InternalData.eventQueue[Swc_InternalData.eventQueueHead];
+        const Swc_EventQueueEntryType* entry ;
         
         /* Process the event - trigger associated runnable */
         /* In a real implementation, this would look up the event and trigger the runnable */

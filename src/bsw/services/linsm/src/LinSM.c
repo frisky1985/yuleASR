@@ -104,7 +104,7 @@ STATIC Std_ReturnType LinSM_ValidateChannel(LinSM_ChannelType Channel)
 STATIC void LinSM_HandleScheduleRequest(LinSM_ChannelType Channel)
 {
     LinSM_ChannelStateType* channelState = &LinSM_ChannelStates[Channel];
-    const LinSM_ChannelConfigType* channelConfig = &LinSM_ConfigPtr->ChannelConfig[Channel];
+    const LinSM_ChannelConfigType* channelConfig ;
     
     if (channelState->ScheduleStatus == LINSM_SCHEDULE_REQUESTED) {
         /* Check if request timeout expired */

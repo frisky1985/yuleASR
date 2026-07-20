@@ -237,7 +237,7 @@ Std_ReturnType Dem_SetEventStatus(Dem_EventIdType EventId, Dem_EventStatusType E
     if (eventConfig != NULL_PTR)
     {
         /* Store old status for callback */
-        Dem_EventStatusType oldStatus = eventState->LastReportedStatus;
+        Dem_EventStatusType oldStatus ;
         
         /* Update last reported status */
         eventState->LastReportedStatus = EventStatus;

@@ -215,7 +215,7 @@ Std_ReturnType Dem_GetEventStatus(
         return E_NOT_OK;
     }
     
-    Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
+    const Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
     
     if (entry != NULL_PTR) {
         *EventStatusExtended = entry->dtcStatus;
@@ -268,7 +268,7 @@ Std_ReturnType Dem_GetEventDebouncingStatus(
         return E_NOT_OK;
     }
     
-    Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
+    const Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
     
     if (entry != NULL_PTR) {
         /* Map debounce counter to status */
@@ -303,7 +303,7 @@ Std_ReturnType Dem_GetEventFailed(
         return E_NOT_OK;
     }
     
-    Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
+    const Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
     
     if (entry != NULL_PTR) {
         *EventFailed = (boolean)((entry->dtcStatus & DEM_UDS_STATUS_TF) != 0U);
@@ -323,7 +323,7 @@ Std_ReturnType Dem_GetEventTested(
         return E_NOT_OK;
     }
     
-    Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
+    const Dem_EventEntryType* entry = Dem_FindEventEntry(EventId);
     
     if (entry != NULL_PTR) {
         /* Event is tested if TNCTOC bit is 0 */

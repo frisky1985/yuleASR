@@ -453,8 +453,8 @@ void Xcp_SendResponse(uint8 ChannelId, const uint8* Data, uint8 Length)
         memcpy(&Xcp_TxBuffer[ChannelId][1], Data, Length);
     }
 
-    pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId];
-    pduInfo.SduLength = (Length > 0U) ? (Length + 1U) : 1U;
+/*     pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId]; */
+/*     pduInfo.SduLength = (Length > 0U) ? (Length + 1U) : 1U; */
 
     /* Send via transport layer - would call CanIf_Transmit, SoAd_Transmit, etc. */
     /* This is simplified - actual implementation depends on transport layer */
@@ -479,8 +479,8 @@ void Xcp_SendError(uint8 ChannelId, uint8 ErrorCode, uint8 ErrorInfo)
 
     /* Send error response */
     PduInfoType pduInfo;
-    pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId];
-    pduInfo.SduLength = 3U;
+/*     pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId]; */
+/*     pduInfo.SduLength = 3U; */
 }
 
 /**
@@ -499,8 +499,8 @@ void Xcp_SendEvent(uint8 ChannelId, uint8 EventCode, const uint8* Data, uint8 Le
     }
 
     PduInfoType pduInfo;
-    pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId];
-    pduInfo.SduLength = Length + 2U;
+/*     pduInfo.SduDataPtr = Xcp_TxBuffer[ChannelId]; */
+/*     pduInfo.SduLength = Length + 2U; */
 }
 
 /*==================================================================================================
@@ -1625,8 +1625,8 @@ void Xcp_DaqTransmit(uint16 DaqListIdx, uint8 OdtIdx)
         return;
     }
 
-    pduInfo.SduDataPtr = Xcp_DaqBuffer[DaqListIdx];
-    pduInfo.SduLength = XCP_MAX_DTO_SIZE;
+/*     pduInfo.SduDataPtr = Xcp_DaqBuffer[DaqListIdx]; */
+/*     pduInfo.SduLength = XCP_MAX_DTO_SIZE; */
 
     /* Send via transport layer */
     /* In real implementation: CanIf_Transmit, SoAd_Transmit, etc. */
@@ -1661,7 +1661,7 @@ void Xcp_StimProcessor(uint8 ChannelId, const uint8* Data, uint8 Length)
 Std_ReturnType Xcp_ReadMemory(uint32 Addr, uint8 Ext, uint8* Data, uint32 Length)
 {
     uint32 i;
-    volatile uint8* memPtr;
+    volatile const uint8* memPtr;
 
     XCP_UNUSED(Ext);
 

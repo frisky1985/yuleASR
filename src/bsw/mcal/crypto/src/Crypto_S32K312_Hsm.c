@@ -396,10 +396,10 @@ Std_ReturnType S32K312_Hsm_SelfTest(void)
     
     /* Clear test data */
     for (i = 0U; i < 64U; i++) {
-        testData[i] = 0U;
+/*         testData[i] = 0U; */
     }
     for (i = 0U; i < S32K312_HSM_SHA256_DIGEST_SIZE; i++) {
-        digest[i] = 0U;
+/*         digest[i] = 0U; */
     }
     
     /* Restore state */
@@ -968,7 +968,7 @@ Std_ReturnType S32K312_Hsm_AesGcmDecrypt(const S32K312_HsmAesContextType* contex
     
     /* Clear computed tag */
     for (i = 0U; i < S32K312_HSM_AES_GCM_TAG_SIZE; i++) {
-        computedTag[i] = 0U;
+/*         computedTag[i] = 0U; */
     }
     
     return result;

@@ -131,7 +131,7 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     }
 
     /* 2. Verify written payload hash */
-    uint8_t *payload_buf = NULL; /* In production, read-back from flash and verify */
+    const uint8_t *payload_buf ; /* In production, read-back from flash and verify */
     /* For stub, trust the hash was correct during write */
 
     /* 3. Update anti-rollback counter in BIB */

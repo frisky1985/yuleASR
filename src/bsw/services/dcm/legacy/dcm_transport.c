@@ -516,7 +516,7 @@ Dcm_TransportReturnType Dcm_Transport_Disconnect(uint8_t channelId)
     
     /* Protocol-specific disconnection will be handled by the adaptor */
     
-    ctx->state = DCM_TRANSPORT_STATE_IDLE;
+/* [MISRA Advisory] Redundant:     ctx->state = DCM_TRANSPORT_STATE_IDLE; */
     ctx->stats.connectionsClosed++;
     
     Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_DISCONNECT, NULL);

@@ -305,7 +305,7 @@ Dcm_ReturnType Dcm_CommunicationControl(
 )
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
-    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
+    uint8_t nrc ;
     
     /* Check initialization */
     if (!s_commState.initialized) {
@@ -473,7 +473,7 @@ Dcm_ReturnType Dcm_GetCommunicationState(
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
     if ((state != NULL) && s_commState.initialized) {
-        Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
+        const Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
         
         if (subnet != NULL) {
             *state = subnet->state;
@@ -489,7 +489,7 @@ bool Dcm_IsNormalCommunicationEnabled(uint8_t subnetId)
     bool enabled = false;
     
     if (s_commState.initialized) {
-        Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
+        const Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
         
         if (subnet != NULL) {
             enabled = (subnet->normalRxEnabled && subnet->normalTxEnabled);
@@ -504,7 +504,7 @@ bool Dcm_IsNmCommunicationEnabled(uint8_t subnetId)
     bool enabled = false;
     
     if (s_commState.initialized) {
-        Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
+        const Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
         
         if (subnet != NULL) {
             enabled = (subnet->nmRxEnabled && subnet->nmTxEnabled);

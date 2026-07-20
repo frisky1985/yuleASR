@@ -50,7 +50,7 @@ static void FrTp_TxSm_StateWaitConfirm(FrTp_ConnectionIdxType connIdx);
  */
 void FrTp_TxStateMachine(FrTp_ConnectionIdxType connIdx)
 {
-    FrTp_ConnectionRuntimeType* runtime;
+    const FrTp_ConnectionRuntimeType* runtime;
 
     if (connIdx >= FRTP_MAX_CONNECTIONS)
     {
@@ -303,9 +303,9 @@ static void FrTp_TxSm_StateSendingCf(FrTp_ConnectionIdxType connIdx)
         }
 
         /* Setup TX PDU info */
-        txPduInfo.SduDataPtr = txBuffer;
-        txPduInfo.SduLength = pciLength + (uint16)cfDataLength;
-        txPduInfo.MetaDataPtr = NULL_PTR;
+/*         txPduInfo.SduDataPtr = txBuffer; */
+/*         txPduInfo.SduLength = pciLength + (uint16)cfDataLength; */
+/*         txPduInfo.MetaDataPtr = NULL_PTR; */
 
         /* Update counters */
         runtime->bytesTransferred += cfDataLength;

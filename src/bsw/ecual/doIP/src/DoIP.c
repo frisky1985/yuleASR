@@ -177,7 +177,7 @@ void DoIP_Init(const DoIP_ConfigType* ConfigPtr)
         DoIP_VehicleAnnouncement.syncStatus = vaConfig->syncStatus;
         DoIP_VehicleAnnouncement.announcementInterval = vaConfig->announcementInterval;
         DoIP_VehicleAnnouncement.announcementCount = vaConfig->announcementCount;
-        DoIP_VehicleAnnouncement.announcementCount = 0;
+/* [MISRA Advisory] Redundant:         DoIP_VehicleAnnouncement.announcementCount = 0; */
     }
 
     /* Reset timers and state */

@@ -138,7 +138,7 @@ Std_ReturnType Dem_StoreFreezeFrame(
     }
     
     /* Check if DTC exists */
-    Dem_DtcEntryType* dtcEntry = Dem_FindDtcEntry(dtcCode);
+    const Dem_DtcEntryType* dtcEntry = Dem_FindDtcEntry(dtcCode);
     if (dtcEntry == NULL_PTR) {
         return E_NOT_OK;
     }
@@ -190,7 +190,7 @@ Std_ReturnType Dem_GetFreezeFrameDataByDTC(
     
     (void)DTCOrigin; /* Unused in this implementation */
     
-    Dem_FreezeFrameEntryType* entry = Dem_FindFreezeFrameEntry(DTC, RecordNumber);
+    const Dem_FreezeFrameEntryType* entry = Dem_FindFreezeFrameEntry(DTC, RecordNumber);
     
     if ((entry != NULL_PTR) && (entry->isValid == TRUE)) {
         uint16_t copySize = entry->dataSize;
@@ -224,7 +224,7 @@ Std_ReturnType Dem_GetSizeOfFreezeFrameSelection(
     
     (void)DTCOrigin; /* Unused parameter */
     
-    Dem_FreezeFrameEntryType* entry = Dem_FindFreezeFrameEntry(DTC, RecordNumber);
+    const Dem_FreezeFrameEntryType* entry = Dem_FindFreezeFrameEntry(DTC, RecordNumber);
     
     if ((entry != NULL_PTR) && (entry->isValid == TRUE)) {
         *SizeOfFreezeFrame = entry->dataSize;
@@ -424,7 +424,7 @@ Std_ReturnType Dem_GetExtendedDataRecordByDTC(
     (void)DTC;        /* Would be used to find DTC-specific extended data */
     (void)DTCOrigin;  /* Unused parameter */
     
-    Dem_ExtendedDataRecordType* entry = NULL_PTR;
+    const Dem_ExtendedDataRecordType* entry = NULL_PTR;
     
     /* Find extended data record by number */
     for (uint8_t i = 0U; i < DEM_MAX_FREEZE_FRAME_RECORDS; i++) {
@@ -468,7 +468,7 @@ Std_ReturnType Dem_GetSizeOfExtendedDataRecordSelection(
     (void)DTC;
     (void)DTCOrigin;
     
-    Dem_ExtendedDataRecordType* entry = NULL_PTR;
+    const Dem_ExtendedDataRecordType* entry = NULL_PTR;
     
     for (uint8_t i = 0U; i < DEM_MAX_FREEZE_FRAME_RECORDS; i++) {
         if ((s_extendedDataEntries[i].recordValid == TRUE) &&

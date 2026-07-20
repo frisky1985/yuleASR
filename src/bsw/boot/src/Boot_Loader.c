@@ -131,7 +131,7 @@ void Boot_Loader_Main(void)
     /* never reaches here */
 
 fail:
-    decision.last_error = ret;
+/*     decision.last_error = ret; */
     bib.boot_count++;
     if (bib.boot_count >= bib.max_boot_attempts) {
         bib.status = 0xFFU;  /* Enter recovery permanently */

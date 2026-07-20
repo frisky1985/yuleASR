@@ -288,7 +288,7 @@ Dcm_ReturnType Dcm_SecurityAccess(
 )
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
-    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
+    uint8_t nrc ;
     
     /* Check initialization */
     if (!s_securityState.initialized) {

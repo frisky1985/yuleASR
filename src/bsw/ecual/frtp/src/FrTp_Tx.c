@@ -145,7 +145,7 @@ Std_ReturnType FrTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 Std_ReturnType FrTp_CancelTransmit(PduIdType TxPduId)
 {
     FrTp_ConnectionIdxType connIdx;
-    FrTp_ConnectionRuntimeType* runtime;
+    const FrTp_ConnectionRuntimeType* runtime;
     Std_ReturnType result = E_NOT_OK;
 
 #if (FRTP_DEV_ERROR_DETECT == STD_ON)

@@ -145,7 +145,7 @@ DDS_ReturnCode_t DDS_DomainParticipant_get_qos(
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
-    DomainParticipant_State* state = (DomainParticipant_State*)participant;
+    const DomainParticipant_State* state = (DomainParticipant_State*)participant;
     
     if (!state->is_valid) {
         return DDS_RETCODE_ALREADY_DELETED;

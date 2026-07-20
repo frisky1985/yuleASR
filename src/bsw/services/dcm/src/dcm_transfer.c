@@ -236,7 +236,7 @@ STATIC Std_ReturnType Dcm_TransferSendPositiveResponse(
 {
     Std_ReturnType result = E_NOT_OK;
     uint8 txBuffer[DCM_TX_BUFFER_SIZE];
-    uint16 txLength = 0U;
+    uint16 txLength ;
     uint8 i;
 
     if (Length < (DCM_TX_BUFFER_SIZE - 1U))

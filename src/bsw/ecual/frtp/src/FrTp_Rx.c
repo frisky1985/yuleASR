@@ -122,7 +122,7 @@ void FrTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 Std_ReturnType FrTp_CancelReceive(PduIdType RxPduId)
 {
     FrTp_ConnectionIdxType connIdx;
-    FrTp_ConnectionRuntimeType* runtime;
+    const FrTp_ConnectionRuntimeType* runtime;
     Std_ReturnType result = E_NOT_OK;
 
 #if (FRTP_DEV_ERROR_DETECT == STD_ON)
@@ -254,9 +254,9 @@ void FrTp_SendFlowControl(FrTp_ConnectionIdxType connIdx, uint8 flowStatus)
     (void)FrTp_EncodeFcPdu(txBuffer, flowStatus, blockSize, stMin, &pciLength);
 
     /* Setup TX PDU info */
-    txPduInfo.SduDataPtr = txBuffer;
-    txPduInfo.SduLength = pciLength;
-    txPduInfo.MetaDataPtr = NULL_PTR;
+/*     txPduInfo.SduDataPtr = txBuffer; */
+/*     txPduInfo.SduLength = pciLength; */
+/*     txPduInfo.MetaDataPtr = NULL_PTR; */
 
     /* Send via FrIf (placeholder - actual call depends on FrIf API) */
     /* FrIf_Transmit(config->txPduId, &txPduInfo); */

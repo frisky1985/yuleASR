@@ -553,7 +553,7 @@ Mqtt_ReturnType Mqtt_Tls_SaveSession(
     uint32* actualSize
 )
 {
-    Mqtt_TlsInternalContextType* ctx;
+    const Mqtt_TlsInternalContextType* ctx;
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {
@@ -600,7 +600,7 @@ Mqtt_ReturnType Mqtt_Tls_RestoreSession(
 
 sint32 Mqtt_Tls_GetLastError(Mqtt_TlsContextType context)
 {
-    Mqtt_TlsInternalContextType* ctx;
+    const Mqtt_TlsInternalContextType* ctx;
     
     ctx = Mqtt_Tls_GetContext(context);
     if (ctx == NULL) {

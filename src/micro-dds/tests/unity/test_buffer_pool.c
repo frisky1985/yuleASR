@@ -53,7 +53,7 @@ void test_buffer_pool_alloc_exhaustion(void) {
     }
     
     /* 此时应该无法再分配 */
-    void* extra = MicroDDS_BufferPool_Alloc();
+    const void* extra = MicroDDS_BufferPool_Alloc();
     TEST_ASSERT_NULL(extra);
     
     /* 释放所有缓冲区 */

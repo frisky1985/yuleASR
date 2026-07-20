@@ -247,7 +247,7 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
 {
     uint8 channelIdx;
-    LinTp_ChannelRuntimeType *channelPtr;
+    const LinTp_ChannelRuntimeType *channelPtr;
 
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
@@ -298,7 +298,7 @@ Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
 Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId)
 {
     uint8 channelIdx;
-    LinTp_ChannelRuntimeType *channelPtr;
+    const LinTp_ChannelRuntimeType *channelPtr;
 
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
@@ -490,7 +490,7 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
     uint8 nsduIdx;
     uint8 pciByte;
     uint8 pciType;
-    LinTp_ChannelRuntimeType *channelPtr;
+    const LinTp_ChannelRuntimeType *channelPtr;
 
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
     if (LinTp_Internal.ModuleState != LINTP_STATE_INIT)
@@ -823,7 +823,7 @@ static void LinTp_ResetChannel(uint8 ChannelIdx)
  *================================================================================================*/
 static void LinTp_ProcessTxStateMachine(uint8 ChannelIdx)
 {
-    LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
+    const LinTp_ChannelRuntimeType *channelPtr = &LinTp_Internal.ChannelRuntime[ChannelIdx];
 
     switch (channelPtr->TxState)
     {

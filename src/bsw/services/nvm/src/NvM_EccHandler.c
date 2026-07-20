@@ -287,7 +287,7 @@ Std_ReturnType NvM_EccHandler_HandleWriteVerifyFailure(
 {
     const NvM_EccBlockConfigType* blockConfig;
     uint8 retryCount = 0U;
-    Std_ReturnType result = E_NOT_OK;
+    Std_ReturnType result ;
     
     if (NvM_EccHandler_Initialized == 0U)
     {

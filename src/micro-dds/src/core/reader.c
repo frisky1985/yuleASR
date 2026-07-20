@@ -130,7 +130,7 @@ int32_t DDS_DataReader_read(
         return 0;
     }
 
-    DataReader_State* state = (DataReader_State*)reader;
+    const DataReader_State* state = (DataReader_State*)reader;
 
     if (!state->is_valid) {
         return 0;

@@ -192,7 +192,7 @@ static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Lengt
 static void Eep_ProcessRead(void)
 {
     uint32 i;
-    uint8* srcPtr;
+    const uint8* srcPtr;
 
     /* Read from backing memory */
     srcPtr = (uint8*)(Eep_State.BaseAddress + Eep_State.CurrentAddress);

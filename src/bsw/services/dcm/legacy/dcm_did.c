@@ -342,7 +342,7 @@ Dcm_ReturnType Dcm_ReadDataByIdentifier(
     const Dcm_RequestType *request,
     Dcm_ResponseType *response)
 {
-    Dcm_ReturnType result = DCM_E_NOT_OK;
+    Dcm_ReturnType result ;
     uint8_t nrc = UDS_NRC_GENERAL_REJECT;
     uint32_t reqIndex;
     uint8_t numDids;

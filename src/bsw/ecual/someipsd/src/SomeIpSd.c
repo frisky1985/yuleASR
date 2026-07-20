@@ -212,7 +212,7 @@ void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     if (PduInfoPtr->SduLength < (SD_SOMEIP_HEADER_LEN + SD_ENTRY_LEN)) return;
 
     (void)RxPduId;
-    uint8* data = PduInfoPtr->SduDataPtr;
+    const uint8* data = PduInfoPtr->SduDataPtr;
     uint8 msgType = data[14];
     uint8 entryType = data[16];
     uint16 serviceId = (uint16)(data[20] << 8) | data[21];
