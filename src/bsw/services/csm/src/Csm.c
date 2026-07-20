@@ -9,21 +9,6 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
-/* MISRA-C:2023 Rule-17.7: compliant by design — return value intentionally ignored — non-critical, does not affect safety */
-
-/* MISRA-C:2023 Rule-17.3: compliant by design — function pointer call — prototype in header, no implicit declaration */
-
-/* MISRA-C:2023 Rule-13.3: compliant by design — sizeof operand has no runtime side effects */
-
-/* MISRA-C:2023 Rule-12.3: compliant by design — comma operator in macro expansion */
-
-/* MISRA-C:2023 Rule-12.1: compliant by design — operator precedence — well-defined per C standard, parentheses for clarity */
-
-/* MISRA-C:2023 Rule-8.7: compliant by design — STATIC function — internal use via function pointer table */
-
-/* MISRA-C:2023 Rule-2.7: compliant by design — unused parameter — AUTOSAR API compatibility contract */
-
-
 /**
  * @file Csm.c
  * @brief CSM (Crypto Services Manager) 核心实现
@@ -785,7 +770,7 @@ Std_ReturnType Csm_KeyElementSet(
     }
     
     /* 复制数据 */
-    Mcal_MemCopy(Csm_Keys[keyIdx].elements[elemIdx].data, keyPtr, keyLength);
+(void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[elemIdx].data, keyPtr, keyLength);
     Csm_Keys[keyIdx].elements[elemIdx].length = keyLength;
     Csm_Keys[keyIdx].elements[elemIdx].valid = TRUE;
     
@@ -873,7 +858,7 @@ Std_ReturnType Csm_KeyElementGet(
         return E_NOT_OK;
     }
     
-    Mcal_MemCopy(keyPtr, Csm_Keys[keyIdx].elements[elemIdx].data, 
+(void)Mcal_MemCopy(keyPtr, Csm_Keys[keyIdx].elements[elemIdx].data, 
                  Csm_Keys[keyIdx].elements[elemIdx].length);
     *keyLengthPtr = Csm_Keys[keyIdx].elements[elemIdx].length;
     
@@ -1049,7 +1034,7 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
                         {
                             /* 将生成的密钥材料存入密钥元素 */
                             Csm_Keys[keyIdx].elements[0].length = Csm_Jobs[jobIdx].resultLength;
-                            Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data,
+(void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data,
                                         Csm_Jobs[jobIdx].outputData,
                                         Csm_Jobs[jobIdx].resultLength);
                             Csm_Keys[keyIdx].elements[0].valid = TRUE;
@@ -1102,7 +1087,7 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
     }
     
     /* 存入密钥元素 */
-    Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data, keyBuf, keyLength);
+(void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data, keyBuf, keyLength);
     Csm_Keys[keyIdx].elements[0].length = keyLength;
     Csm_Keys[keyIdx].elements[0].valid = TRUE;
     if (Csm_Keys[keyIdx].numElements == 0U)
@@ -1209,7 +1194,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                         {
                             copyLen = CSM_MAX_DATA_LENGTH;
                         }
-                        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData,
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData,
                                     Csm_Keys[srcKeyIdx].elements[0].data,
                                     copyLen);
                         Csm_Jobs[jobIdx].inputLength = copyLen;
@@ -1240,7 +1225,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                         if (hwResult == E_OK && Csm_Jobs[jobIdx].resultLength > 0U)
                         {
                             Csm_Keys[targetKeyIdx].elements[0].length = Csm_Jobs[jobIdx].resultLength;
-                            Mcal_MemCopy(Csm_Keys[targetKeyIdx].elements[0].data,
+(void)Mcal_MemCopy(Csm_Keys[targetKeyIdx].elements[0].data,
                                         Csm_Jobs[jobIdx].outputData,
                                         Csm_Jobs[jobIdx].resultLength);
                             Csm_Keys[targetKeyIdx].elements[0].valid = TRUE;
@@ -1317,7 +1302,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
             {
                 srcLen = sizeof(deriveBuf) - hashInputLen;
             }
-            Mcal_MemCopy(&deriveBuf[hashInputLen], srcData, srcLen);
+(void)Mcal_MemCopy(&deriveBuf[hashInputLen], srcData, srcLen);
             hashInputLen += srcLen;
             
             /* 追加目标密钥ID (大端) */
@@ -1363,7 +1348,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                 if (hashResult == E_OK && hwHashLen > 0U)
                 {
                     hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH;
-                    Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
+(void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
                 }
                 else
                 {
@@ -1386,7 +1371,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                 }
                 if (offset + copyBytes <= sizeof(targetDeriveBuf))
                 {
-                    Mcal_MemCopy(&targetDeriveBuf[offset], hashOut, copyBytes);
+(void)Mcal_MemCopy(&targetDeriveBuf[offset], hashOut, copyBytes);
                 }
                 offset += copyBytes;
                 bytesRemaining -= copyBytes;
@@ -1402,7 +1387,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
         /* 将派生密钥存入目标密钥 */
         if (offset > 0U && offset <= sizeof(targetDeriveBuf))
         {
-            Mcal_MemCopy(Csm_Keys[targetKeyIdx].elements[0].data,
+(void)Mcal_MemCopy(Csm_Keys[targetKeyIdx].elements[0].data,
                         targetDeriveBuf, offset);
             Csm_Keys[targetKeyIdx].elements[0].length = offset;
             Csm_Keys[targetKeyIdx].elements[0].valid = TRUE;
@@ -1513,7 +1498,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                         {
                             copyLen = CSM_MAX_DATA_LENGTH;
                         }
-                        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData,
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData,
                                     Csm_Keys[keyIdx].elements[0].data,
                                     copyLen);
                         Csm_Jobs[jobIdx].inputLength = copyLen;
@@ -1545,7 +1530,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                         {
                             if (*publicValueLengthPtr >= Csm_Jobs[jobIdx].resultLength)
                             {
-                                Mcal_MemCopy(publicValuePtr, Csm_Jobs[jobIdx].outputData,
+(void)Mcal_MemCopy(publicValuePtr, Csm_Jobs[jobIdx].outputData,
                                             Csm_Jobs[jobIdx].resultLength);
                                 *publicValueLengthPtr = Csm_Jobs[jobIdx].resultLength;
                                 Csm_ResetJob(jobIdx);
@@ -1607,7 +1592,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                 {
                     copyLen = sizeof(kdfInput) - kdfInputLen;
                 }
-                Mcal_MemCopy(&kdfInput[kdfInputLen], privKeyData, copyLen);
+(void)Mcal_MemCopy(&kdfInput[kdfInputLen], privKeyData, copyLen);
                 kdfInputLen += copyLen;
             }
             
@@ -1637,7 +1622,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                 if (hashResult == E_OK && hwHashLen > 0U)
                 {
                     hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH;
-                    Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
+(void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
                 }
                 else
                 {
@@ -1665,10 +1650,10 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                 {
                     copyLen = pubValLen;
                 }
-                Mcal_MemCopy(pubValBuf, hashOut, copyLen);
+(void)Mcal_MemCopy(pubValBuf, hashOut, copyLen);
             }
             
-            Mcal_MemCopy(publicValuePtr, pubValBuf, pubValLen);
+(void)Mcal_MemCopy(publicValuePtr, pubValBuf, pubValLen);
             *publicValueLengthPtr = pubValLen;
         }
         
@@ -1677,7 +1662,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
         {
             uint8 pubElemIdx = Csm_Keys[keyIdx].numElements;
             Csm_Keys[keyIdx].elements[pubElemIdx].length = pubValLen;
-            Mcal_MemCopy(Csm_Keys[keyIdx].elements[pubElemIdx].data,
+(void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[pubElemIdx].data,
                         pubValBuf, pubValLen);
             Csm_Keys[keyIdx].elements[pubElemIdx].valid = TRUE;
             Csm_Keys[keyIdx].numElements++;
@@ -1790,7 +1775,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                         {
                             copyLen = CSM_MAX_DATA_LENGTH / 2U;
                         }
-                        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData,
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData,
                                     Csm_Keys[keyIdx].elements[0].data,
                                     copyLen);
                         offset += copyLen;
@@ -1801,7 +1786,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                         {
                             copyLen = CSM_MAX_DATA_LENGTH - offset;
                         }
-                        Mcal_MemCopy(&Csm_Jobs[jobIdx].inputData[offset],
+(void)Mcal_MemCopy(&Csm_Jobs[jobIdx].inputData[offset],
                                     partnerPublicValuePtr,
                                     copyLen);
                         offset += copyLen;
@@ -1835,7 +1820,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                         {
                             /* 将共享秘密存入密钥元素 (PUBLIC或私钥元素) */
                             Csm_Keys[keyIdx].elements[0].length = Csm_Jobs[jobIdx].resultLength;
-                            Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data,
+(void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data,
                                         Csm_Jobs[jobIdx].outputData,
                                         Csm_Jobs[jobIdx].resultLength);
                             Csm_Keys[keyIdx].elements[0].valid = TRUE;
@@ -1889,7 +1874,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                 {
                     copyLen = sizeof(kdfInput) - kdfInputLen;
                 }
-                Mcal_MemCopy(&kdfInput[kdfInputLen], privKeyData, copyLen);
+(void)Mcal_MemCopy(&kdfInput[kdfInputLen], privKeyData, copyLen);
                 kdfInputLen += copyLen;
             }
             
@@ -1900,7 +1885,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                 {
                     copyLen = sizeof(kdfInput) - kdfInputLen;
                 }
-                Mcal_MemCopy(&kdfInput[kdfInputLen], partnerPublicValuePtr, copyLen);
+(void)Mcal_MemCopy(&kdfInput[kdfInputLen], partnerPublicValuePtr, copyLen);
                 kdfInputLen += copyLen;
             }
             
@@ -1930,7 +1915,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                 if (hashResult == E_OK && hwHashLen > 0U)
                 {
                     hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH;
-                    Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
+(void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
                 }
                 else
                 {
@@ -1958,13 +1943,13 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                 {
                     copyLen = sharedSecretLen;
                 }
-                Mcal_MemCopy(sharedSecretBuf, hashOut, copyLen);
+(void)Mcal_MemCopy(sharedSecretBuf, hashOut, copyLen);
             }
         }
         
         /* 将共享秘密覆盖存储到密钥的第一个元素 */
         Csm_Keys[keyIdx].elements[0].length = sharedSecretLen;
-        Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data,
+(void)Mcal_MemCopy(Csm_Keys[keyIdx].elements[0].data,
                     sharedSecretBuf, sharedSecretLen);
         Csm_Keys[keyIdx].elements[0].valid = TRUE;
         
@@ -2011,7 +1996,7 @@ Std_ReturnType Csm_Hash(
     
     if (dataPtr != NULL_PTR && dataLength > 0)
     {
-        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
         Csm_Jobs[jobIdx].inputLength = dataLength;
     }
     
@@ -2032,7 +2017,7 @@ Std_ReturnType Csm_Hash(
             {
                 if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
                 {
-                    Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData, 
+(void)Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData, 
                                 Csm_Jobs[jobIdx].resultLength);
                     *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
                 }
@@ -2092,7 +2077,7 @@ Std_ReturnType Csm_MacGenerate(
         return E_NOT_OK;
     }
     
-    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
     if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
@@ -2110,7 +2095,7 @@ Std_ReturnType Csm_MacGenerate(
         {
             if (*macLengthPtr >= Csm_Jobs[jobIdx].resultLength)
             {
-                Mcal_MemCopy(macPtr, Csm_Jobs[jobIdx].outputData, 
+(void)Mcal_MemCopy(macPtr, Csm_Jobs[jobIdx].outputData, 
                             Csm_Jobs[jobIdx].resultLength);
                 *macLengthPtr = Csm_Jobs[jobIdx].resultLength;
             }
@@ -2224,7 +2209,7 @@ Std_ReturnType Csm_Encrypt(
         return E_NOT_OK;
     }
     
-    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
     if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
@@ -2242,7 +2227,7 @@ Std_ReturnType Csm_Encrypt(
         {
             if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
             {
-                Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
+(void)Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
                             Csm_Jobs[jobIdx].resultLength);
                 *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
             }
@@ -2300,7 +2285,7 @@ Std_ReturnType Csm_Decrypt(
         return E_NOT_OK;
     }
     
-    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
     if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
@@ -2318,7 +2303,7 @@ Std_ReturnType Csm_Decrypt(
         {
             if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
             {
-                Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
+(void)Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
                             Csm_Jobs[jobIdx].resultLength);
                 *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
             }
@@ -2376,7 +2361,7 @@ Std_ReturnType Csm_SignatureGenerate(
         return E_NOT_OK;
     }
     
-    Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
     if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
@@ -2394,7 +2379,7 @@ Std_ReturnType Csm_SignatureGenerate(
         {
             if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
             {
-                Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
+(void)Mcal_MemCopy(resultPtr, Csm_Jobs[jobIdx].outputData,
                             Csm_Jobs[jobIdx].resultLength);
                 *resultLengthPtr = Csm_Jobs[jobIdx].resultLength;
             }
@@ -2454,7 +2439,7 @@ Std_ReturnType Csm_SignatureVerify(
         {
             return E_NOT_OK;
         }
-        Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
         Csm_Jobs[jobIdx].inputLength = dataLength;
     }
     
@@ -2465,7 +2450,7 @@ Std_ReturnType Csm_SignatureVerify(
         {
             return E_NOT_OK;
         }
-        Mcal_MemCopy(Csm_Jobs[jobIdx].outputData, signaturePtr, signatureLength);
+(void)Mcal_MemCopy(Csm_Jobs[jobIdx].outputData, signaturePtr, signatureLength);
         Csm_Jobs[jobIdx].outputLength = signatureLength;
         
         result = Csm_Cfg_HwService(

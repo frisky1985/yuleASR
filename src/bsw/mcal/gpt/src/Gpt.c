@@ -9,10 +9,6 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
-/* MISRA-C:2023 Rule-15.6: compliant by design — single break per iteration — structured single exit loop */
-
-/* MISRA-C:2023 Rule-5.8: compliant by design — parameter name reuse — consistent with AUTOSAR spec, no ambiguity */
-
 
 /**
  * @file Gpt.c
@@ -86,10 +82,10 @@ static boolean Gpt_ChannelRunning[GPT_NUM_CHANNELS];
 #define GPT_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
-static uint32 Gpt_GetBaseAddr(Gpt_ChannelType channel)
+static uint32 Gpt_GetBaseAddr(Gpt_ChannelType chId)
 {
     uint32 baseAddr;
-    switch (channel) {
+    switch (chId) {
         case GPT_CHANNEL_0:
         case GPT_CHANNEL_1:
         case GPT_CHANNEL_2:
@@ -109,19 +105,19 @@ static uint32 Gpt_GetBaseAddr(Gpt_ChannelType channel)
     return baseAddr;
 }
 
-static uint8 Gpt_GetChannelOffset(Gpt_ChannelType channel)
+static uint8 Gpt_GetChannelOffset(Gpt_ChannelType chId)
 {
-    return (uint8)(channel % 4U);
+    return (uint8)(chId % 4U);
 }
 
-static void Gpt_EnableClock(Gpt_ChannelType channel)
+static void Gpt_EnableClock(Gpt_ChannelType chId)
 {
-    (void)channel;
+    (void)chId;
 }
 
-static void Gpt_DisableClock(Gpt_ChannelType channel)
+static void Gpt_DisableClock(Gpt_ChannelType chId)
 {
-    (void)channel;
+    (void)chId;
 }
 
 #define GPT_START_SEC_CODE
@@ -145,33 +141,33 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
     for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
         const Gpt_ChannelConfigType* chConfig = &ConfigPtr->Channels[i];
         uint32 baseAddr = Gpt_GetBaseAddr(chConfig->ChannelId);
-        if (baseAddr == 0U) continue;
+        if (baseAddr != 0U) {
+            Gpt_EnableClock(chConfig->ChannelId);
 
-        Gpt_EnableClock(chConfig->ChannelId);
+            /* Software reset */
+            REG_WRITE32(baseAddr + GPT_CR, GPT_CR_SWR);
+            while ((REG_READ32(baseAddr + GPT_CR) & GPT_CR_SWR) != 0U) { }
 
-        /* Software reset */
-        REG_WRITE32(baseAddr + GPT_CR, GPT_CR_SWR);
-        while ((REG_READ32(baseAddr + GPT_CR) & GPT_CR_SWR) != 0U);
+            /* Configure prescaler */
+            uint32 prValue = (1U << chConfig->ClockPrescaler) - 1U;
+            REG_WRITE32(baseAddr + GPT_PR, prValue);
 
-        /* Configure prescaler */
-        uint32 prValue = (1U << chConfig->ClockPrescaler) - 1U;
-        REG_WRITE32(baseAddr + GPT_PR, prValue);
+            /* Configure control register */
+            uint32 crValue = 0U;
+            crValue |= GPT_CR_FRR; /* Free-run mode */
+            crValue |= (0x01U << 6); /* Peripheral clock source */
+            REG_WRITE32(baseAddr + GPT_CR, crValue);
 
-        /* Configure control register */
-        uint32 crValue = 0U;
-        crValue |= GPT_CR_FRR; /* Free-run mode */
-        crValue |= (0x01U << 6); /* Peripheral clock source */
-        REG_WRITE32(baseAddr + GPT_CR, crValue);
+            /* Clear status */
+            REG_WRITE32(baseAddr + GPT_SR, 0x3FU);
 
-        /* Clear status */
-        REG_WRITE32(baseAddr + GPT_SR, 0x3FU);
+            /* Disable interrupts */
+            REG_WRITE32(baseAddr + GPT_IR, 0U);
 
-        /* Disable interrupts */
-        REG_WRITE32(baseAddr + GPT_IR, 0U);
-
-        Gpt_ChannelRunning[i] = FALSE;
-        Gpt_ChannelTargetValue[i] = 0U;
-        Gpt_ChannelElapsedValue[i] = 0U;
+            Gpt_ChannelRunning[i] = FALSE;
+            Gpt_ChannelTargetValue[i] = 0U;
+            Gpt_ChannelElapsedValue[i] = 0U;
+        }
     }
 
     Gpt_DriverMode = ConfigPtr->DefaultMode;
@@ -196,14 +192,14 @@ void Gpt_DeInit(void)
 
     for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
         uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[i].ChannelId);
-        if (baseAddr == 0U) continue;
+        if (baseAddr != 0U) {
+            /* Disable timer */
+            uint32 crValue = REG_READ32(baseAddr + GPT_CR);
+            crValue &= ~GPT_CR_EN;
+            REG_WRITE32(baseAddr + GPT_CR, crValue);
 
-        /* Disable timer */
-        uint32 crValue = REG_READ32(baseAddr + GPT_CR);
-        crValue &= ~GPT_CR_EN;
-        REG_WRITE32(baseAddr + GPT_CR, crValue);
-
-        Gpt_DisableClock(Gpt_ConfigPtr->Channels[i].ChannelId);
+            Gpt_DisableClock(Gpt_ConfigPtr->Channels[i].ChannelId);
+        }
     }
 
     Gpt_DriverInitialized = FALSE;

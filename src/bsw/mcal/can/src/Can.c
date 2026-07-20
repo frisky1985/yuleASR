@@ -9,12 +9,6 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
-/* MISRA-C:2023 Rule-15.6: compliant by design — single break per iteration — structured single exit loop */
-
-/* MISRA-C:2023 Rule-5.8: compliant by design — parameter name reuse — consistent with AUTOSAR spec, no ambiguity */
-
-/* MISRA-C:2023 Rule-2.2: compliant by design — dead code mitigation — register write macros in HW init sequence */
-
 
 /**
  * @file Can.c
@@ -98,10 +92,10 @@ static const Can_ConfigType* Can_ConfigPtr = NULL_PTR;
 #define CAN_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
-static uint32 Can_GetBaseAddr(uint8 controller)
+static uint32 Can_GetBaseAddr(uint8 ctrlIdx)
 {
     uint32 baseAddr;
-    switch (controller) {
+    switch (ctrlIdx) {
         case CAN_CONTROLLER_0: baseAddr = CAN_FLEXCAN1_BASE_ADDR; break;
         case CAN_CONTROLLER_1: baseAddr = CAN_FLEXCAN2_BASE_ADDR; break;
         default: baseAddr = 0U; break;
@@ -109,14 +103,14 @@ static uint32 Can_GetBaseAddr(uint8 controller)
     return baseAddr;
 }
 
-static void Can_EnableClock(uint8 controller)
+static void Can_EnableClock(uint8 ctrlIdx)
 {
-    (void)controller;
+    (void)ctrlIdx;
 }
 
-static void Can_DisableClock(uint8 controller)
+static void Can_DisableClock(uint8 ctrlIdx)
 {
-    (void)controller;
+    (void)ctrlIdx;
 }
 
 static Std_ReturnType Can_WaitForFreezeAck(uint32 baseAddr)
@@ -161,58 +155,56 @@ void Can_Init(const Can_ConfigType* Config)
         Can_ControllerState[i] = CAN_CS_UNINIT;
 
         uint32 baseAddr = Can_GetBaseAddr(i);
-        if (baseAddr == 0U) continue;
+        if (baseAddr != 0U) {
+            Can_EnableClock(i);
 
-        Can_EnableClock(i);
+            /* Enable module */
+            REG_WRITE32(baseAddr + CAN_MCR, 0U);
 
-        /* Enable module */
-        REG_WRITE32(baseAddr + CAN_MCR, 0U);
+            /* Enter freeze mode */
+            uint32 mcrValue = REG_READ32(baseAddr + CAN_MCR);
+            mcrValue |= CAN_MCR_HALT | CAN_MCR_FRZ;
+            REG_WRITE32(baseAddr + CAN_MCR, mcrValue);
 
-        /* Enter freeze mode */
-        uint32 mcrValue = REG_READ32(baseAddr + CAN_MCR);
-        mcrValue |= CAN_MCR_HALT | CAN_MCR_FRZ;
-        REG_WRITE32(baseAddr + CAN_MCR, mcrValue);
+            if (Can_WaitForFreezeAck(baseAddr) == E_OK) {
+                /* Configure maximum message buffers */
+                mcrValue = REG_READ32(baseAddr + CAN_MCR);
+                mcrValue &= ~CAN_MCR_MAXMB_MASK;
+                mcrValue |= (CAN_NUM_HOH - 1U) & CAN_MCR_MAXMB_MASK;
+                REG_WRITE32(baseAddr + CAN_MCR, mcrValue);
 
-        if (Can_WaitForFreezeAck(baseAddr) != E_OK) {
-            continue;
-        }
+                /* Configure bit timing */
+                const Can_BaudrateConfigType* baudrate = &Config->Controllers[i].BaudrateConfigs[0];
+                uint32 ctrl1Value = 0U;
+                ctrl1Value |= ((baudrate->Prescaler - 1U) << 24) & CAN_CTRL1_PRESDIV_MASK;
+                ctrl1Value |= ((baudrate->SyncJumpWidth - 1U) << 22) & CAN_CTRL1_RJW_MASK;
+                ctrl1Value |= ((baudrate->PhaseSeg1 - 1U) << 19) & CAN_CTRL1_PSEG1_MASK;
+                ctrl1Value |= ((baudrate->PhaseSeg2 - 1U) << 16) & CAN_CTRL1_PSEG2_MASK;
+                ctrl1Value |= ((baudrate->PropSeg - 1U) << 0) & CAN_CTRL1_PROPSEG_MASK;
+                REG_WRITE32(baseAddr + CAN_CTRL1, ctrl1Value);
 
-        /* Configure maximum message buffers */
-        mcrValue = REG_READ32(baseAddr + CAN_MCR);
-        mcrValue &= ~CAN_MCR_MAXMB_MASK;
-        mcrValue |= (CAN_NUM_HOH - 1U) & CAN_MCR_MAXMB_MASK;
-        REG_WRITE32(baseAddr + CAN_MCR, mcrValue);
+                /* Configure message buffers */
+                for (uint8 j = 0U; j < CAN_NUM_HOH; j++) {
+                    uint32 mbAddr = baseAddr + CAN_MB_BASE + (j * 16U);
+                    REG_WRITE32(mbAddr + 0, CAN_MB_CODE_TX_INACTIVE);
+                    REG_WRITE32(mbAddr + 4, 0U);
+                    REG_WRITE32(mbAddr + 8, 0U);
+                    REG_WRITE32(mbAddr + 12, 0U);
+                }
 
-        /* Configure bit timing */
-        const Can_BaudrateConfigType* baudrate = &Config->Controllers[i].BaudrateConfigs[0];
-        uint32 ctrl1Value = 0U;
-        ctrl1Value |= ((baudrate->Prescaler - 1U) << 24) & CAN_CTRL1_PRESDIV_MASK;
-        ctrl1Value |= ((baudrate->SyncJumpWidth - 1U) << 22) & CAN_CTRL1_RJW_MASK;
-        ctrl1Value |= ((baudrate->PhaseSeg1 - 1U) << 19) & CAN_CTRL1_PSEG1_MASK;
-        ctrl1Value |= ((baudrate->PhaseSeg2 - 1U) << 16) & CAN_CTRL1_PSEG2_MASK;
-        ctrl1Value |= ((baudrate->PropSeg - 1U) << 0) & CAN_CTRL1_PROPSEG_MASK;
-        REG_WRITE32(baseAddr + CAN_CTRL1, ctrl1Value);
+                /* Enable interrupts if needed */
+                if (Config->Controllers[i].BusOffProcessing ||
+                    Config->Controllers[i].WakeupProcessing) {
+                    uint32 imaskValue = 0U;
+                    if (Config->Controllers[i].BusOffProcessing) {
+                        imaskValue |= CAN_ESR1_BOFFINT;
+                    }
+                    REG_WRITE32(baseAddr + CAN_IMASK1, imaskValue);
+                }
 
-        /* Configure message buffers */
-        for (uint8 j = 0U; j < CAN_NUM_HOH; j++) {
-            uint32 mbAddr = baseAddr + CAN_MB_BASE + (j * 16U);
-            REG_WRITE32(mbAddr + 0, CAN_MB_CODE_TX_INACTIVE);
-            REG_WRITE32(mbAddr + 4, 0U);
-            REG_WRITE32(mbAddr + 8, 0U);
-            REG_WRITE32(mbAddr + 12, 0U);
-        }
-
-        /* Enable interrupts if needed */
-        if (Config->Controllers[i].BusOffProcessing ||
-            Config->Controllers[i].WakeupProcessing) {
-            uint32 imaskValue = 0U;
-            if (Config->Controllers[i].BusOffProcessing) {
-                imaskValue |= CAN_ESR1_BOFFINT;
+                Can_ControllerState[i] = CAN_CS_STOPPED;
             }
-            REG_WRITE32(baseAddr + CAN_IMASK1, imaskValue);
         }
-
-        Can_ControllerState[i] = CAN_CS_STOPPED;
     }
 
     Can_DriverInitialized = TRUE;
@@ -389,18 +381,18 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 void Can_MainFunction_Write(void)
 {
     /* Polling mode implementation - check TX completion */
-    for (uint8 controller = 0U; controller < CAN_NUM_CONTROLLERS; controller++) {
-        if (Can_ControllerState[controller] != CAN_CS_STARTED) continue;
+    for (uint8 ctrlIdx = 0U; ctrlIdx < CAN_NUM_CONTROLLERS; ctrlIdx++) {
+        if (Can_ControllerState[ctrlIdx] == CAN_CS_STARTED) {
+            uint32 baseAddr = Can_GetBaseAddr(ctrlIdx);
+            uint32 iflagValue = REG_READ32(baseAddr + CAN_IFLAG1);
 
-        uint32 baseAddr = Can_GetBaseAddr(controller);
-        uint32 iflagValue = REG_READ32(baseAddr + CAN_IFLAG1);
-
-        for (uint8 i = 0U; i < (CAN_NUM_HOH / CAN_NUM_CONTROLLERS); i++) {
-            if ((iflagValue & (1U << i)) != 0U) {
-                /* Clear flag */
-                REG_WRITE32(baseAddr + CAN_IFLAG1, (1U << i));
-                /* Notify upper layer */
-                /* CanIf_TxConfirmation(...); */
+            for (uint8 i = 0U; i < (CAN_NUM_HOH / CAN_NUM_CONTROLLERS); i++) {
+                if ((iflagValue & (1U << i)) != 0U) {
+                    /* Clear flag */
+                    REG_WRITE32(baseAddr + CAN_IFLAG1, (1U << i));
+                    /* Notify upper layer */
+                    /* CanIf_TxConfirmation(...); */
+                }
             }
         }
     }
@@ -409,19 +401,19 @@ void Can_MainFunction_Write(void)
 void Can_MainFunction_Read(void)
 {
     /* Polling mode implementation - check RX reception */
-    for (uint8 controller = 0U; controller < CAN_NUM_CONTROLLERS; controller++) {
-        if (Can_ControllerState[controller] != CAN_CS_STARTED) continue;
+    for (uint8 ctrlIdx = 0U; ctrlIdx < CAN_NUM_CONTROLLERS; ctrlIdx++) {
+        if (Can_ControllerState[ctrlIdx] == CAN_CS_STARTED) {
+            uint32 baseAddr = Can_GetBaseAddr(ctrlIdx);
+            uint32 iflagValue = REG_READ32(baseAddr + CAN_IFLAG1);
 
-        uint32 baseAddr = Can_GetBaseAddr(controller);
-        uint32 iflagValue = REG_READ32(baseAddr + CAN_IFLAG1);
-
-        for (uint8 i = (CAN_NUM_HOH / CAN_NUM_CONTROLLERS); i < CAN_NUM_HOH; i++) {
-            if ((iflagValue & (1U << i)) != 0U) {
-                uint32 mbAddr = baseAddr + CAN_MB_BASE + (i * 16U); (void)mbAddr;
-                /* Read message and notify upper layer */
-                /* CanIf_RxIndication(...); */
-                /* Clear flag */
-                REG_WRITE32(baseAddr + CAN_IFLAG1, (1U << i));
+            for (uint8 i = (CAN_NUM_HOH / CAN_NUM_CONTROLLERS); i < CAN_NUM_HOH; i++) {
+                if ((iflagValue & (1U << i)) != 0U) {
+                    uint32 mbAddr = baseAddr + CAN_MB_BASE + (i * 16U); (void)mbAddr;
+                    /* Read message and notify upper layer */
+                    /* CanIf_RxIndication(...); */
+                    /* Clear flag */
+                    REG_WRITE32(baseAddr + CAN_IFLAG1, (1U << i));
+                }
             }
         }
     }
@@ -429,17 +421,17 @@ void Can_MainFunction_Read(void)
 
 void Can_MainFunction_BusOff(void)
 {
-    for (uint8 controller = 0U; controller < CAN_NUM_CONTROLLERS; controller++) {
-        if (Can_ControllerState[controller] != CAN_CS_STARTED) continue;
+    for (uint8 ctrlIdx = 0U; ctrlIdx < CAN_NUM_CONTROLLERS; ctrlIdx++) {
+        if (Can_ControllerState[ctrlIdx] == CAN_CS_STARTED) {
+            uint32 baseAddr = Can_GetBaseAddr(ctrlIdx);
+            uint32 esrValue = REG_READ32(baseAddr + CAN_ESR1);
 
-        uint32 baseAddr = Can_GetBaseAddr(controller);
-        uint32 esrValue = REG_READ32(baseAddr + CAN_ESR1);
-
-        if ((esrValue & CAN_ESR1_BOFFINT) != 0U) {
-            /* Bus-off detected */
-            /* CanIf_ControllerBusOff(controller); */
-            /* Clear flag */
-            REG_WRITE32(baseAddr + CAN_ESR1, CAN_ESR1_BOFFINT);
+            if ((esrValue & CAN_ESR1_BOFFINT) != 0U) {
+                /* Bus-off detected */
+                /* CanIf_ControllerBusOff(ctrlIdx); */
+                /* Clear flag */
+                REG_WRITE32(baseAddr + CAN_ESR1, CAN_ESR1_BOFFINT);
+            }
         }
     }
 }

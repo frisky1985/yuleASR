@@ -9,11 +9,6 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
-/* MISRA-C:2023 Rule-20.13: compliant by design — #include path resolution — accessible via -I include paths */
-
-/* MISRA-C:2023 Rule-12.1: compliant by design — operator precedence — well-defined per C standard, parentheses for clarity */
-
-
 /*==================================================================================================
  *                                      DET DEVELOPMENT ERROR TRACER
  *==================================================================================================

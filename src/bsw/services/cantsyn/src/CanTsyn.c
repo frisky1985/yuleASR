@@ -54,23 +54,23 @@ extern const CanTSyn_TimeBaseConfigType CanTSyn_TimeDomainConfig[];
 #define CANTSYN_SYNC_MSG_TYPE               (0x10U)
 #define CANTSYN_OFS_MSG_TYPE                (0x20U)
 
-/* Time Domain IDs */
-#define CANTSYN_TIME_DOMAIN_0               (0x00U)
-#define CANTSYN_TIME_DOMAIN_1               (0x01U)
-#define CANTSYN_TIME_DOMAIN_2               (0x02U)
-#define CANTSYN_TIME_DOMAIN_3               (0x03U)
+/* Time Domain IDs (reserved for future use) */
+/* #define CANTSYN_TIME_DOMAIN_0               (0x00U) */
+/* #define CANTSYN_TIME_DOMAIN_1               (0x01U) */
+/* #define CANTSYN_TIME_DOMAIN_2               (0x02U) */
+/* #define CANTSYN_TIME_DOMAIN_3               (0x03U) */
 
 /* Message Lengths */
 #define CANTSYN_SYNC_MSG_LENGTH             (16U)
 #define CANTSYN_OFS_MSG_LENGTH              (12U)
 
-/* User Bytes Count */
-#define CANTSYN_SYNC_USER_BYTES             (3U)
-#define CANTSYN_OFS_USER_BYTES              (2U)
+/* User Bytes Count (reserved for future use) */
+/* #define CANTSYN_SYNC_USER_BYTES             (3U) */
+/* #define CANTSYN_OFS_USER_BYTES              (2U) */
 
-/* Nanoseconds to microseconds conversion */
-#define CANTSYN_NS_TO_US(ns)                ((ns) / 1000U)
-#define CANTSYN_US_TO_NS(us)                ((us) * 1000U)
+/* Nanoseconds to microseconds conversion (reserved for future use) */
+/* #define CANTSYN_NS_TO_US(ns)                ((ns) / 1000U) */
+/* #define CANTSYN_US_TO_NS(us)                ((us) * 1000U) */
 
 /*******************************************************************************
  * Local Type Definitions

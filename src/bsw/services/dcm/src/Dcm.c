@@ -1,11 +1,3 @@
-
-/* MISRA-C:2023 Rule-2.3: compliant by design — typedef struct — type definition, not void statement */
-/* MISRA-C:2023 Rule-17.3: compliant by design — function pointer call — prototype in header, no implicit declaration */
-
-/* MISRA-C:2023 Rule-13.3: compliant by design — sizeof operand has no runtime side effects */
-
-/* MISRA-C:2023 Rule-2.7: compliant by design — unused parameter — AUTOSAR API compatibility contract */
-
 /*==================================================================================================
 * Project              : YuleTech AutoSAR BSW
 * Platform             : NXP i.MX8M Mini

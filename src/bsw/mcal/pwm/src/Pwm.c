@@ -9,10 +9,6 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
-/* MISRA-C:2023 Rule-15.6: compliant by design — single break per iteration — structured single exit loop */
-
-/* MISRA-C:2023 Rule-5.8: compliant by design — parameter name reuse — consistent with AUTOSAR spec, no ambiguity */
-
 
 /**
  * @file Pwm.c
@@ -72,10 +68,10 @@ static uint16 Pwm_ChannelDutyCycle[PWM_NUM_CHANNELS];
 #define PWM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
-static uint32 Pwm_GetBaseAddr(Pwm_ChannelType channel)
+static uint32 Pwm_GetBaseAddr(Pwm_ChannelType chId)
 {
     uint32 baseAddr;
-    switch (channel) {
+    switch (chId) {
         case PWM_CHANNEL_0: baseAddr = PWM1_BASE_ADDR; break;
         case PWM_CHANNEL_1: baseAddr = PWM2_BASE_ADDR; break;
         case PWM_CHANNEL_2: baseAddr = PWM3_BASE_ADDR; break;
@@ -85,14 +81,14 @@ static uint32 Pwm_GetBaseAddr(Pwm_ChannelType channel)
     return baseAddr;
 }
 
-static void Pwm_EnableClock(Pwm_ChannelType channel)
+static void Pwm_EnableClock(Pwm_ChannelType chId)
 {
-    (void)channel;
+    (void)chId;
 }
 
-static void Pwm_DisableClock(Pwm_ChannelType channel)
+static void Pwm_DisableClock(Pwm_ChannelType chId)
 {
-    (void)channel;
+    (void)chId;
 }
 
 #define PWM_START_SEC_CODE
@@ -116,28 +112,28 @@ void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
     for (uint8 i = 0U; i < PWM_NUM_CHANNELS; i++) {
         const Pwm_ChannelConfigType* chConfig = &ConfigPtr->Channels[i];
         uint32 baseAddr = Pwm_GetBaseAddr(chConfig->ChannelId);
-        if (baseAddr == 0U) continue;
+        if (baseAddr != 0U) {
+            Pwm_EnableClock(chConfig->ChannelId);
 
-        Pwm_EnableClock(chConfig->ChannelId);
+            /* Software reset */
+            REG_WRITE32(baseAddr + PWM_CR, PWM_CR_SWR);
+            while ((REG_READ32(baseAddr + PWM_CR) & PWM_CR_SWR) != 0U) { }
 
-        /* Software reset */
-        REG_WRITE32(baseAddr + PWM_CR, PWM_CR_SWR);
-        while ((REG_READ32(baseAddr + PWM_CR) & PWM_CR_SWR) != 0U);
+            /* Configure period */
+            REG_WRITE32(baseAddr + PWM_PR, chConfig->DefaultPeriod);
 
-        /* Configure period */
-        REG_WRITE32(baseAddr + PWM_PR, chConfig->DefaultPeriod);
+            /* Configure sample (duty cycle) */
+            uint32 sample = (chConfig->DefaultDutyCycle * chConfig->DefaultPeriod) / PWM_DUTY_CYCLE_RESOLUTION;
+            REG_WRITE32(baseAddr + PWM_SAR, sample);
 
-        /* Configure sample (duty cycle) */
-        uint32 sample = (chConfig->DefaultDutyCycle * chConfig->DefaultPeriod) / PWM_DUTY_CYCLE_RESOLUTION;
-        REG_WRITE32(baseAddr + PWM_SAR, sample);
+            /* Configure control register */
+            uint32 crValue = 0U;
+            crValue |= ((uint32)chConfig->ClockPrescaler << 4) & PWM_CR_PRESCALER_MASK;
+            crValue |= PWM_CR_EN;
+            REG_WRITE32(baseAddr + PWM_CR, crValue);
 
-        /* Configure control register */
-        uint32 crValue = 0U;
-        crValue |= ((uint32)chConfig->ClockPrescaler << 4) & PWM_CR_PRESCALER_MASK;
-        crValue |= PWM_CR_EN;
-        REG_WRITE32(baseAddr + PWM_CR, crValue);
-
-        Pwm_ChannelDutyCycle[i] = chConfig->DefaultDutyCycle;
+            Pwm_ChannelDutyCycle[i] = chConfig->DefaultDutyCycle;
+        }
     }
 
     Pwm_DriverInitialized = TRUE;
@@ -155,12 +151,12 @@ void Pwm_DeInit(void)
 
     for (uint8 i = 0U; i < PWM_NUM_CHANNELS; i++) {
         uint32 baseAddr = Pwm_GetBaseAddr(Pwm_ConfigPtr->Channels[i].ChannelId);
-        if (baseAddr == 0U) continue;
+        if (baseAddr != 0U) {
+            /* Disable PWM */
+            REG_WRITE32(baseAddr + PWM_CR, 0U);
 
-        /* Disable PWM */
-        REG_WRITE32(baseAddr + PWM_CR, 0U);
-
-        Pwm_DisableClock(Pwm_ConfigPtr->Channels[i].ChannelId);
+            Pwm_DisableClock(Pwm_ConfigPtr->Channels[i].ChannelId);
+        }
     }
 
     Pwm_DriverInitialized = FALSE;

@@ -1,19 +1,5 @@
 /**
  * @file CanNm.c
- * @brief CAN Network Management
- * @copyright Copyright (c) 2025 yuleASR Project
- * @license MIT License
- * 
- * AUTOSAR Classic Platform - BSW Module
- * This file is part of the yuleASR AUTOSAR implementation.
- */
-/* MISRA-C:2023 Rule-12.1: compliant by design — operator precedence — well-defined per C standard, parentheses for clarity */
-
-/* MISRA-C:2023 Rule-8.9: compliant by design — static variable guaranteed by design pattern */
-
-
-/**
- * @file CanNm.c
  * @brief CAN Network Management Module Implementation
  * @version 1.0.0
  * @date 2026-04-29

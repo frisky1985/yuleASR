@@ -8,9 +8,6 @@
  * AUTOSAR Classic Platform - BSW Module
  * This file is part of the yuleASR AUTOSAR implementation.
  */
-/* MISRA-C:2023 Rule-16.4: compliant by design — function call in switch case — return value checked */
-
-
 /**
  * @file CanSm.c
  * @brief CAN State Management module implementation following AutoSAR Classic Platform 4.x standard
