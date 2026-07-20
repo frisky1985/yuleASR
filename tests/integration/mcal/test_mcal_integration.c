@@ -55,7 +55,6 @@ TEST_CASE(integration_mcu_port_init)
     /* Verify both are initialized */
     ASSERT_EQ(MCU_CLOCK_INITIALIZED, Mcu_MockState);
     ASSERT_TRUE(Port_MockPinStates[0].Initialized);
-    TEST_PASS();
 }
 
 /* Test: Port -> DIO interaction */
@@ -88,7 +87,6 @@ TEST_CASE(integration_port_dio)
     
     ASSERT_EQ(STD_HIGH, level);
     ASSERT_EQ(PORT_PIN_OUT, Port_MockPinStates[0].Direction);
-    TEST_PASS();
 }
 
 /* Test: MCU clock change affects other drivers */
@@ -116,7 +114,6 @@ TEST_CASE(integration_mcu_clock_change)
     
     freq_after = Mcu_GetClockFrequency(0);
     ASSERT_EQ(32000000, freq_after);
-    TEST_PASS();
 }
 
 /*==================================================================================================

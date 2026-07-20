@@ -40,7 +40,6 @@ TEST_CASE(ecum_startup_initializes_bswm)
     /* Request mode through BswM */
     BswM_RequestMode(0, 1);
     
-    TEST_PASS();
 }
 
 /* Test: Mode switch during runtime */
@@ -64,7 +63,6 @@ TEST_CASE(mode_switch_during_runtime)
     /* Release RUN */
     EcuM_ReleaseRUN(0);
     
-    TEST_PASS();
 }
 
 /* Test: Shutdown sequence */

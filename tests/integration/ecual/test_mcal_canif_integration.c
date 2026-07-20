@@ -58,7 +58,6 @@ TEST_CASE(canif_transmit_calls_can_write)
     
     /* Should succeed or be queued */
     ASSERT_TRUE(result == E_OK || result == CAN_BUSY);
-    TEST_PASS();
 }
 
 /* Test: RX indication path */
@@ -96,7 +95,6 @@ TEST_CASE(controller_mode_change_propagates)
     /* Verify CanIf reports correct mode */
     result = CanIf_GetControllerMode(TEST_CONTROLLER, &mode);
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /*==================================================================================================

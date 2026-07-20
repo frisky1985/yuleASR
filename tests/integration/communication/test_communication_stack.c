@@ -56,7 +56,6 @@ TEST_CASE(network_startup_sequence)
     Nm_GetState(0, &nmState);
     ASSERT_EQ(NM_STATE_REPEAT_MESSAGE, nmState);
     
-    TEST_PASS();
 }
 
 /* Test: Network release and shutdown sequence */
@@ -85,7 +84,6 @@ TEST_CASE(network_shutdown_sequence)
     result = ComM_RequestComMode(0, COMM_NO_COMMUNICATION);
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /* Test: Diagnostic session over communication stack */
@@ -111,7 +109,6 @@ TEST_CASE(diagnostic_session_active)
     result = ComM_DCM_InactiveDiagnostic(0);
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

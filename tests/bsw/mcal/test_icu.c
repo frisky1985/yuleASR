@@ -128,7 +128,6 @@ TEST_CASE(icu_init_valid)
     ASSERT_TRUE(Icu_DriverState.Initialized);
     ASSERT_EQ(ICU_MODE_NORMAL, Icu_DriverState.CurrentMode);
     ASSERT_EQ(ICU_NUM_CHANNELS, Icu_DriverState.ConfigPtr->NumChannels);
-    TEST_PASS();
 }
 
 /* Test: Icu_Init with NULL configuration pointer */
@@ -141,7 +140,6 @@ TEST_CASE(icu_init_null_config)
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_POINTER, Det_MockData.ErrorId);
     ASSERT_FALSE(Icu_DriverState.Initialized);
-    TEST_PASS();
 }
 
 /* Test: Icu_Init when already initialized */
@@ -155,7 +153,6 @@ TEST_CASE(icu_init_already_initialized)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_DeInit with valid initialization */
@@ -167,7 +164,6 @@ TEST_CASE(icu_deinit_valid)
     Icu_DeInit();
     
     ASSERT_FALSE(Icu_DriverState.Initialized);
-    TEST_PASS();
 }
 
 /* Test: Icu_DeInit when not initialized */
@@ -180,7 +176,6 @@ TEST_CASE(icu_deinit_not_initialized)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_DeInit when channel is running */
@@ -196,7 +191,6 @@ TEST_CASE(icu_deinit_channel_running)
     
     /* State should still be initialized since channel is running */
     ASSERT_TRUE(Icu_DriverState.Initialized);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -212,7 +206,6 @@ TEST_CASE(icu_set_mode_normal)
     Icu_SetMode(ICU_MODE_NORMAL);
     
     ASSERT_EQ(ICU_MODE_NORMAL, Icu_DriverState.CurrentMode);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetMode to SLEEP */
@@ -224,7 +217,6 @@ TEST_CASE(icu_set_mode_sleep)
     Icu_SetMode(ICU_MODE_SLEEP);
     
     ASSERT_EQ(ICU_MODE_SLEEP, Icu_DriverState.CurrentMode);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetMode when not initialized */
@@ -237,7 +229,6 @@ TEST_CASE(icu_set_mode_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetMode with invalid mode */
@@ -251,7 +242,6 @@ TEST_CASE(icu_set_mode_invalid)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_MODE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -268,7 +258,6 @@ TEST_CASE(icu_enable_wakeup_valid)
     Icu_EnableWakeup(0u);
     
     ASSERT_TRUE(Icu_ChannelState[0u].WakeupEnabled);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableWakeup when not initialized */
@@ -281,7 +270,6 @@ TEST_CASE(icu_enable_wakeup_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableWakeup with invalid channel */
@@ -295,7 +283,6 @@ TEST_CASE(icu_enable_wakeup_invalid_channel)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableWakeup without wakeup support */
@@ -310,7 +297,6 @@ TEST_CASE(icu_enable_wakeup_no_support)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_WAKEUP_CANNOT_BE_ENABLED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_DisableWakeup with valid channel */
@@ -324,7 +310,6 @@ TEST_CASE(icu_disable_wakeup_valid)
     Icu_DisableWakeup(0u);
     
     ASSERT_FALSE(Icu_ChannelState[0u].WakeupEnabled);
-    TEST_PASS();
 }
 
 /* Test: Icu_DisableWakeup when not initialized */
@@ -337,7 +322,6 @@ TEST_CASE(icu_disable_wakeup_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_CheckWakeup with valid channel */
@@ -352,7 +336,6 @@ TEST_CASE(icu_check_wakeup_valid)
     
     /* Result depends on implementation */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -368,7 +351,6 @@ TEST_CASE(icu_set_activation_rising)
     Icu_SetActivationCondition(0u, ICU_RISING_EDGE);
     
     ASSERT_EQ(ICU_RISING_EDGE, Icu_ChannelState[0u].CurrentEdge);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetActivationCondition with falling edge */
@@ -380,7 +362,6 @@ TEST_CASE(icu_set_activation_falling)
     Icu_SetActivationCondition(0u, ICU_FALLING_EDGE);
     
     ASSERT_EQ(ICU_FALLING_EDGE, Icu_ChannelState[0u].CurrentEdge);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetActivationCondition with both edges */
@@ -392,7 +373,6 @@ TEST_CASE(icu_set_activation_both)
     Icu_SetActivationCondition(0u, ICU_BOTH_EDGES);
     
     ASSERT_EQ(ICU_BOTH_EDGES, Icu_ChannelState[0u].CurrentEdge);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetActivationCondition when not initialized */
@@ -405,7 +385,6 @@ TEST_CASE(icu_set_activation_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetActivationCondition with invalid channel */
@@ -419,7 +398,6 @@ TEST_CASE(icu_set_activation_invalid_channel)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_SetActivationCondition with invalid edge */
@@ -433,7 +411,6 @@ TEST_CASE(icu_set_activation_invalid_edge)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_ACTIVATION, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -449,7 +426,6 @@ TEST_CASE(icu_enable_notification_valid)
     Icu_EnableNotification(0u);
     
     ASSERT_TRUE(Icu_ChannelState[0u].NotificationEnabled);
-    TEST_PASS();
 }
 
 /* Test: Icu_DisableNotification with valid channel */
@@ -462,7 +438,6 @@ TEST_CASE(icu_disable_notification_valid)
     Icu_DisableNotification(0u);
     
     ASSERT_FALSE(Icu_ChannelState[0u].NotificationEnabled);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableNotification when not initialized */
@@ -475,7 +450,6 @@ TEST_CASE(icu_enable_notification_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableNotification with invalid channel */
@@ -489,7 +463,6 @@ TEST_CASE(icu_enable_notification_invalid_channel)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -508,7 +481,6 @@ TEST_CASE(icu_get_input_state_valid)
     
     /* Should return IDLE initially */
     ASSERT_EQ(ICU_IDLE, state);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetInputState when not initialized */
@@ -524,7 +496,6 @@ TEST_CASE(icu_get_input_state_uninit)
     ASSERT_EQ(ICU_IDLE, state);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetInputState with invalid channel */
@@ -541,7 +512,6 @@ TEST_CASE(icu_get_input_state_invalid_channel)
     ASSERT_EQ(ICU_IDLE, state);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -558,7 +528,6 @@ TEST_CASE(icu_start_signal_measurement_valid)
     Icu_StartSignalMeasurement(0u);
     
     ASSERT_TRUE(Icu_ChannelState[0u].IsRunning);
-    TEST_PASS();
 }
 
 /* Test: Icu_StopSignalMeasurement with valid channel */
@@ -572,7 +541,6 @@ TEST_CASE(icu_stop_signal_measurement_valid)
     Icu_StopSignalMeasurement(0u);
     
     ASSERT_FALSE(Icu_ChannelState[0u].IsRunning);
-    TEST_PASS();
 }
 
 /* Test: Icu_StartSignalMeasurement when not initialized */
@@ -585,7 +553,6 @@ TEST_CASE(icu_start_signal_measurement_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_StartSignalMeasurement with invalid channel */
@@ -599,7 +566,6 @@ TEST_CASE(icu_start_signal_measurement_invalid_channel)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetTimeElapsed with valid channel */
@@ -616,7 +582,6 @@ TEST_CASE(icu_get_time_elapsed_valid)
     
     /* Initial value should be 0 */
     ASSERT_TRUE(elapsed == 0u || elapsed > 0u);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetTimeElapsed when not running */
@@ -631,7 +596,6 @@ TEST_CASE(icu_get_time_elapsed_not_running)
     elapsed = Icu_GetTimeElapsed(0u);
     
     ASSERT_EQ(0u, elapsed);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetDutyCycleValues with valid channel */
@@ -650,7 +614,6 @@ TEST_CASE(icu_get_duty_cycle_valid)
     /* Initial values should be 0 */
     ASSERT_EQ(0u, duty_cycle.ActiveTime);
     ASSERT_EQ(0u, duty_cycle.PeriodTime);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetDutyCycleValues with NULL pointer */
@@ -664,7 +627,6 @@ TEST_CASE(icu_get_duty_cycle_null)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -683,7 +645,6 @@ TEST_CASE(icu_start_timestamp_valid)
     ASSERT_TRUE(Icu_ChannelState[0u].IsRunning);
     ASSERT_EQ(16u, Icu_ChannelState[0u].BufferSize);
     ASSERT_NOT_NULL(Icu_ChannelState[0u].TimestampBuffer);
-    TEST_PASS();
 }
 
 /* Test: Icu_StopTimestamp with valid channel */
@@ -697,7 +658,6 @@ TEST_CASE(icu_stop_timestamp_valid)
     Icu_StopTimestamp(0u);
     
     ASSERT_FALSE(Icu_ChannelState[0u].IsRunning);
-    TEST_PASS();
 }
 
 /* Test: Icu_StartTimestamp when not initialized */
@@ -710,7 +670,6 @@ TEST_CASE(icu_start_timestamp_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_StartTimestamp with invalid channel */
@@ -724,7 +683,6 @@ TEST_CASE(icu_start_timestamp_invalid_channel)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_StartTimestamp with NULL buffer */
@@ -738,7 +696,6 @@ TEST_CASE(icu_start_timestamp_null_buffer)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_StartTimestamp with invalid buffer size */
@@ -752,7 +709,6 @@ TEST_CASE(icu_start_timestamp_invalid_size)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_BUFFER_SIZE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetTimestampIndex with valid channel */
@@ -769,7 +725,6 @@ TEST_CASE(icu_get_timestamp_index_valid)
     
     /* Initial index should be 0 */
     ASSERT_EQ(0u, index);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetTimestampIndex when not running */
@@ -784,7 +739,6 @@ TEST_CASE(icu_get_timestamp_index_not_running)
     index = Icu_GetTimestampIndex(0u);
     
     ASSERT_EQ(0u, index);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -802,7 +756,6 @@ TEST_CASE(icu_enable_edge_count_valid)
     
     ASSERT_TRUE(Icu_ChannelState[0u].IsRunning);
     ASSERT_EQ(0u, Icu_ChannelState[0u].EdgeCount);
-    TEST_PASS();
 }
 
 /* Test: Icu_DisableEdgeCount with valid channel */
@@ -816,7 +769,6 @@ TEST_CASE(icu_disable_edge_count_valid)
     Icu_DisableEdgeCount(0u);
     
     ASSERT_FALSE(Icu_ChannelState[0u].IsRunning);
-    TEST_PASS();
 }
 
 /* Test: Icu_ResetEdgeCount with valid channel */
@@ -831,7 +783,6 @@ TEST_CASE(icu_reset_edge_count_valid)
     Icu_ResetEdgeCount(0u);
     
     ASSERT_EQ(0u, Icu_ChannelState[0u].EdgeCount);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetEdgeNumbers with valid channel */
@@ -848,7 +799,6 @@ TEST_CASE(icu_get_edge_numbers_valid)
     
     /* Initial count should be 0 */
     ASSERT_EQ(0u, count);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableEdgeCount when not initialized */
@@ -861,7 +811,6 @@ TEST_CASE(icu_enable_edge_count_uninit)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Icu_EnableEdgeCount with invalid channel */
@@ -875,7 +824,6 @@ TEST_CASE(icu_enable_edge_count_invalid_channel)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_CHANNEL, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -893,7 +841,6 @@ TEST_CASE(icu_get_version_info_valid)
     ASSERT_EQ(ICU_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(ICU_SW_MINOR_VERSION, version_info.sw_minor_version);
     ASSERT_EQ(ICU_SW_PATCH_VERSION, version_info.sw_patch_version);
-    TEST_PASS();
 }
 
 /* Test: Icu_GetVersionInfo with NULL pointer */
@@ -905,7 +852,6 @@ TEST_CASE(icu_get_version_info_null)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ICU_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================

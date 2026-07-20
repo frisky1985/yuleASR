@@ -120,7 +120,6 @@ TEST_CASE(j1939tp_init_valid_config)
     /* Module should be initialized */
         /* Module should be initialized */
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: J1939Tp_Init with NULL config */
@@ -132,7 +131,6 @@ TEST_CASE(j1939tp_init_null_config)
     
     /* Should report DET error */
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: J1939Tp_Shutdown */
@@ -143,7 +141,6 @@ TEST_CASE(j1939tp_shutdown)
     J1939Tp_Shutdown();
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: BAM Transmission - Broadcast Announce Message */
@@ -161,7 +158,6 @@ TEST_CASE(j1939tp_bam_transmit)
     result = J1939Tp_Transmit(0, &pdu_info);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: BAM with maximum message size */
@@ -179,7 +175,6 @@ TEST_CASE(j1939tp_bam_max_size)
     result = J1939Tp_Transmit(0, &pdu_info);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: BAM with zero length */
@@ -197,7 +192,6 @@ TEST_CASE(j1939tp_bam_zero_length)
     result = J1939Tp_Transmit(0, &pdu_info);
     
     ASSERT_EQ(E_NOT_OK, result);
-    TEST_PASS();
 }
 
 /* Test: RTS/CTS Handshake - Request To Send */
@@ -220,7 +214,6 @@ TEST_CASE(j1939tp_rts_cts_handshake)
     result = J1939Tp_Transmit(0, &pdu_info);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Data Fragmentation */
@@ -239,7 +232,6 @@ TEST_CASE(j1939tp_data_fragmentation)
     num_packets = (message_size + J1939TP_DT_MAX_DATA_LEN - 1) / J1939TP_DT_MAX_DATA_LEN;
     
     ASSERT_EQ(255, num_packets);
-    TEST_PASS();
 }
 
 /* Test: Data Reassembly */
@@ -264,7 +256,6 @@ TEST_CASE(j1939tp_data_reassembly)
     }
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: TP.CM Message Parsing - BAM */
@@ -292,7 +283,6 @@ TEST_CASE(j1939tp_cm_bam_parse)
     J1939Tp_RxIndication(1, &pdu_info);
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: TP.CM Message Parsing - RTS */
@@ -320,7 +310,6 @@ TEST_CASE(j1939tp_cm_rts_parse)
     J1939Tp_RxIndication(1, &pdu_info);
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: TP.CM CTS Message Parsing */
@@ -349,7 +338,6 @@ TEST_CASE(j1939tp_cm_cts_parse)
     J1939Tp_RxIndication(1, &pdu_info);
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: Cancel Transmit */
@@ -362,7 +350,6 @@ TEST_CASE(j1939tp_cancel_transmit)
     result = J1939Tp_CancelTransmit(0);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Cancel Receive */
@@ -375,7 +362,6 @@ TEST_CASE(j1939tp_cancel_receive)
     result = J1939Tp_CancelReceive(1);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Change Parameter */
@@ -388,7 +374,6 @@ TEST_CASE(j1939tp_change_parameter)
     result = J1939Tp_ChangeParameter(0, TP_STMIN, 50);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Get Version Info */
@@ -402,7 +387,6 @@ TEST_CASE(j1939tp_get_version_info)
     
     ASSERT_EQ(J1939TP_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(J1939TP_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 /* Test: Main Function */
@@ -414,7 +398,6 @@ TEST_CASE(j1939tp_main_function)
     J1939Tp_MainFunction();
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: Tx Confirmation */
@@ -425,7 +408,6 @@ TEST_CASE(j1939tp_tx_confirmation)
     J1939Tp_TxConfirmation(0);
     
         TEST_ASSERT_TRUE(1U == 1U);
-        TEST_PASS();
 }
 
 /* Test: Sequence Number Validation */
@@ -438,7 +420,6 @@ TEST_CASE(j1939tp_sequence_number_validation)
         ASSERT_TRUE(sn >= 1 && sn <= J1939TP_MAX_DT_PACKETS);
     }
     
-    TEST_PASS();
 }
 
 /* Test: PGN Validation */
@@ -453,7 +434,6 @@ TEST_CASE(j1939tp_pgn_validation)
     pgn = 0x00FEEE;  /* Engine Temperature */
     ASSERT_TRUE(pgn <= 0xFFFFFF);
     
-    TEST_PASS();
 }
 
 /* Test: Connection State Management */
@@ -471,7 +451,6 @@ TEST_CASE(j1939tp_connection_state)
     state = J1939TP_CONN_COMPLETE;
     ASSERT_EQ(8, state);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

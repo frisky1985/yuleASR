@@ -359,7 +359,6 @@ TEST_CASE(storage_stack_initialization)
     ASSERT_EQ(FEE_IDLE, Fee_GetStatus());
     ASSERT_EQ(FEE_JOB_OK, Fee_GetJobResult());
     
-    TEST_PASS();
 }
 
 /**
@@ -404,7 +403,6 @@ TEST_CASE(storage_write_read_cycle)
     
     TestStats.readOps++;
     
-    TEST_PASS();
 }
 
 /**
@@ -459,7 +457,6 @@ TEST_CASE(storage_write_retry)
     
     ASSERT_EQ(FEE_IDLE, Fee_GetStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -484,7 +481,6 @@ TEST_CASE(storage_garbage_collection)
     
     ASSERT_EQ(FEE_IDLE, Fee_GetStatus());
     
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -508,7 +504,6 @@ TEST_CASE(watchdog_chain_initialization)
     ASSERT_EQ(WDGIF_SLOW_MODE, Wdgm_GetMode());
     ASSERT_EQ(WDGM_GLOBAL_STATUS_OK, Wdgm_GetGlobalStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -540,7 +535,6 @@ TEST_CASE(watchdog_normal_trigger)
     ASSERT_EQ(5u, TestStats.wdgTriggers);
     ASSERT_EQ(WDGM_GLOBAL_STATUS_OK, Wdgm_GetGlobalStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -569,7 +563,6 @@ TEST_CASE(watchdog_timeout_detection)
     Wdgm_LocalStatusType status = Wdgm_GetLocalStatus(0u);
     /* Status may change based on implementation */
     TEST_ASSERT_TRUE(status == WDGM_STATUS_OK || status == WDGM_STATUS_FAILED);
-    TEST_PASS();
 }
 
 /**
@@ -594,7 +587,6 @@ TEST_CASE(watchdog_reset_recovery)
     
     ASSERT_EQ(WDGM_GLOBAL_STATUS_OK, Wdgm_GetGlobalStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -625,7 +617,6 @@ TEST_CASE(watchdog_checkpoint_supervision)
     ASSERT_TRUE((localStatus == WDGM_LOCAL_STATUS_OK) || 
                 (localStatus == WDGM_LOCAL_STATUS_DEACTIVATED));
     
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -646,7 +637,6 @@ TEST_CASE(security_stack_initialization)
     /* Verify initialization */
     ASSERT_TRUE(Csm_Initialized);
     
-    TEST_PASS();
 }
 
 /**
@@ -673,7 +663,6 @@ TEST_CASE(security_mac_operations)
     
     TestStats.cryptoOps++;
     
-    TEST_PASS();
 }
 
 /**
@@ -707,7 +696,6 @@ TEST_CASE(security_pdu_authentication)
     
     TestStats.cryptoOps++;
     
-    TEST_PASS();
 }
 
 /**
@@ -740,7 +728,6 @@ TEST_CASE(security_mac_verify_failure)
     /* Should detect tampering */
     ASSERT_EQ(CSM_E_VER_NOT_OK, verifyResult);
     
-    TEST_PASS();
 }
 
 /**
@@ -769,7 +756,6 @@ TEST_CASE(security_freshness_sync)
     ASSERT_TRUE(freshnessRx > freshnessTx);
     ASSERT_TRUE((freshnessRx - freshnessTx) < 10u);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -799,7 +785,6 @@ TEST_CASE(bsw_ecum_wdgm_integration)
     
     ASSERT_EQ(WDGM_GLOBAL_STATUS_OK, Wdgm_GetGlobalStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -823,7 +808,6 @@ TEST_CASE(bsw_bswm_mem_integration)
     /* Verify modules operational */
     ASSERT_EQ(FEE_IDLE, Fee_GetStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -875,7 +859,6 @@ TEST_CASE(bsw_mode_switch_wdgm)
     
     ASSERT_EQ(WDGIF_FAST_MODE, Wdgm_GetMode());
     
-    TEST_PASS();
 }
 
 /**
@@ -925,7 +908,6 @@ TEST_CASE(error_det_reporting)
     /* Error should be recorded */
     ASSERT_TRUE(TRUE);  /* Det recording is mocked */
     
-    TEST_PASS();
 }
 
 /**
@@ -946,7 +928,6 @@ TEST_CASE(error_propagation_chain)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -967,7 +948,6 @@ TEST_CASE(error_multiple_sources)
     
     ASSERT_EQ(3, TestStats.errorsReported);
     
-    TEST_PASS();
 }
 
 /**
@@ -990,7 +970,6 @@ TEST_CASE(error_recovery)
     
     ASSERT_EQ(FEE_IDLE, Fee_GetStatus());
     
-    TEST_PASS();
 }
 
 /**
@@ -1009,7 +988,6 @@ TEST_CASE(error_dem_recording)
     
     ASSERT_TRUE(TRUE);  /* Placeholder */
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

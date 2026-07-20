@@ -365,7 +365,6 @@ void test_storage_stack_init(void) {
     MockStorage_Init();
     TEST_ASSERT_EQ(FEE_IDLE, FeeStatus, "Fee should be IDLE after init");
     TEST_ASSERT_EQ(0u, FlashWriteCount, "No writes after init");
-    TEST_PASS();
 }
 
 void test_storage_write_read(void) {
@@ -388,7 +387,6 @@ void test_storage_write_read(void) {
     memset(readData, 0, sizeof(readData));
     TEST_ASSERT_EQ(E_OK, MockFee_Read(1, readData), "Read should succeed");
     TEST_ASSERT_EQ(0, memcmp(writeData, readData, MOCK_BLOCK_SIZE), "Data should match");
-    TEST_PASS();
 }
 
 void test_storage_write_retry(void) {
@@ -408,7 +406,6 @@ void test_storage_write_retry(void) {
     TEST_ASSERT(FlashWriteCount > 0, "Multiple write attempts");
     
     FaultInjection_Clear();
-    TEST_PASS();
 }
 
 void test_storage_gc_trigger(void) {
@@ -425,7 +422,6 @@ void test_storage_gc_trigger(void) {
     }
     
     TEST_ASSERT(FlashWriteCount >= 10, "Multiple blocks written");
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -436,7 +432,6 @@ void test_watchdog_chain_init(void) {
     MockWdg_Init();
     TEST_ASSERT_EQ(WDGM_STATUS_OK, WdgmStatus, "Wdgm should be OK after init");
     TEST_ASSERT_EQ(WDGIF_SLOW_MODE, WdgCurrentMode, "Default mode should be SLOW");
-    TEST_PASS();
 }
 
 void test_watchdog_normal_trigger(void) {
@@ -448,7 +443,6 @@ void test_watchdog_normal_trigger(void) {
     }
     
     TEST_ASSERT_EQ(5u, WdgTriggerCount, "Trigger count should be 5");
-    TEST_PASS();
 }
 
 void test_watchdog_checkpoint_supervision(void) {
@@ -462,7 +456,6 @@ void test_watchdog_checkpoint_supervision(void) {
     
     TEST_ASSERT_EQ(5u, CheckpointCount, "Checkpoint count should be 5");
     TEST_ASSERT_EQ(5u, WdgTriggerCount, "Watchdog should be triggered 5 times");
-    TEST_PASS();
 }
 
 void test_watchdog_timeout_detection(void) {
@@ -476,7 +469,6 @@ void test_watchdog_timeout_detection(void) {
     TEST_ASSERT_EQ(WDGM_STATUS_EXPIRED, WdgmStatus, "Status should be EXPIRED");
     
     FaultInjection_Clear();
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -491,7 +483,6 @@ void test_security_mac_generate(void) {
     TEST_ASSERT_EQ(E_OK, MockCsm_MacGenerate(data, sizeof(data), mac), 
                   "MAC generation should succeed");
     TEST_ASSERT_EQ(1u, CryptoOpCount, "One crypto operation");
-    TEST_PASS();
 }
 
 void test_security_mac_verify_success(void) {
@@ -505,7 +496,6 @@ void test_security_mac_verify_success(void) {
     TEST_ASSERT_EQ(E_OK, MockCsm_MacVerify(data, sizeof(data), mac, &result),
                   "MAC verify should succeed");
     TEST_ASSERT_EQ(CSM_VER_OK, result, "Verification should pass");
-    TEST_PASS();
 }
 
 void test_security_mac_verify_failure(void) {
@@ -523,7 +513,6 @@ void test_security_mac_verify_failure(void) {
     TEST_ASSERT_EQ(E_OK, MockCsm_MacVerify(data, sizeof(data), mac, &result),
                   "MAC verify call should succeed");
     TEST_ASSERT_EQ(CSM_VER_NOT_OK, result, "Verification should fail for tampered data");
-    TEST_PASS();
 }
 
 void test_security_pdu_integrity(void) {
@@ -541,7 +530,6 @@ void test_security_pdu_integrity(void) {
     TEST_ASSERT_EQ(E_OK, MockCsm_MacVerify(pdu, sizeof(pdu), mac, &result),
                   "Receiver MAC verify should succeed");
     TEST_ASSERT_EQ(CSM_VER_OK, result, "PDU integrity verified");
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -557,7 +545,6 @@ void test_error_reporting(void) {
     TEST_ASSERT_EQ(2u, ErrorCount, "Two errors should be logged");
     TEST_ASSERT_EQ(1u, ErrorLog[0].moduleId, "First error from module 1");
     TEST_ASSERT_EQ(2u, ErrorLog[1].moduleId, "Second error from module 2");
-    TEST_PASS();
 }
 
 void test_error_propagation(void) {
@@ -571,7 +558,6 @@ void test_error_propagation(void) {
     Std_ReturnType result = MockFee_Write(MOCK_NUM_BLOCKS + 1, data);
     
     TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid operation should fail");
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -588,7 +574,6 @@ void test_bsw_init_sequence(void) {
     TEST_ASSERT_EQ(FEE_IDLE, FeeStatus, "Fee initialized");
     TEST_ASSERT_EQ(WDGM_STATUS_OK, WdgmStatus, "Wdgm initialized");
     TEST_ASSERT_EQ(0u, ErrorCount, "No errors during init");
-    TEST_PASS();
 }
 
 void test_bsw_shutdown_sequence(void) {
@@ -601,7 +586,6 @@ void test_bsw_shutdown_sequence(void) {
     WdgEnabled = FALSE;
     
     TEST_ASSERT_EQ(FALSE, WdgEnabled, "Watchdog disabled");
-    TEST_PASS();
 }
 
 void test_bsw_schm_scheduling(void) {
@@ -622,7 +606,6 @@ void test_bsw_schm_scheduling(void) {
     }
     
     TEST_ASSERT_EQ(5u, CheckpointCount, "All cycles executed");
-    TEST_PASS();
 }
 
 /*==================================================================================================

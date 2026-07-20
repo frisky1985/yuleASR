@@ -1032,7 +1032,6 @@ void test_can_signal_end_to_end(void)
     ASSERT_EQ((uint8)RTE_E_OK, (uint8)rteResult);
     ASSERT_EQ(500U, engineSpeedValue);
 
-    TEST_PASS();
 }
 
 /* Test 2: NV data recovery */
@@ -1091,7 +1090,6 @@ void test_nvm_startup_recovery(void)
     ASSERT_EQ(6000U, readConfig.maxRpm);
     ASSERT_EQ(800U, readConfig.idleSpeed);
 
-    TEST_PASS();
 }
 
 /* Test 3: Diagnostic request end-to-end */
@@ -1149,7 +1147,6 @@ void test_diagnostic_request_end_to_end(void)
     }
     ASSERT_EQ(1U, responseFound);
 
-    TEST_PASS();
 }
 
 /* Test 4: Mode switch BswM -> EcuM */
@@ -1184,7 +1181,6 @@ void test_mode_switch_bswm_ecum(void)
     EcuM_MainFunction();
     ASSERT_EQ(ECUM_STATE_SHUTDOWN, EcuM_GetState());
 
-    TEST_PASS();
 }
 
 /* Test 5: OS Alarm cyclic scheduling */
@@ -1220,7 +1216,6 @@ void test_os_alarm_cyclic_scheduling(void)
     /* Verify no DET errors occurred during alarm callbacks */
     ASSERT_EQ(0U, mock_det_report_error_called);
 
-    TEST_PASS();
 }
 
 /*==================================================================================================

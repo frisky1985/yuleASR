@@ -40,7 +40,6 @@ TEST_CASE_DECLARE(<Module>_Init_valid_config)
     /* Verify - 验证结果 */
     /* ASSERT_EQ(EXPECTED_STATE, g_test_state); */
     
-    TEST_PASS();
 }
 
 /**
@@ -52,7 +51,6 @@ TEST_CASE_DECLARE(<Module>_Init_null_config)
     /* <Module>_Init(NULL); */
     
     /* Verify - 应该报告错误但不崩溃 */
-    TEST_PASS();
 }
 
 /**
@@ -69,7 +67,6 @@ TEST_CASE_DECLARE(<Module>_DeInit)
     /* Verify */
     /* ASSERT_EQ(UNINIT_STATE, g_test_state); */
     
-    TEST_PASS();
 }
 
 /**
@@ -98,7 +95,6 @@ TEST_CASE_DECLARE(<Module>_Boundary_condition)
     
     /* Verify */
     
-    TEST_PASS();
 }
 
 /**

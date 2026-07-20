@@ -55,7 +55,6 @@ TEST_CASE_DECLARE(Dlt_Init_valid_config)
     Dlt_ModuleStateType state = Dlt_GetStatus();
     ASSERT_EQ(DLT_STATE_READY, state);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_Init_null_config)
@@ -67,7 +66,6 @@ TEST_CASE_DECLARE(Dlt_Init_null_config)
     Dlt_ModuleStateType state = Dlt_GetStatus();
     ASSERT_EQ(DLT_STATE_UNINIT, state);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_DeInit)
@@ -78,7 +76,6 @@ TEST_CASE_DECLARE(Dlt_DeInit)
     Dlt_ModuleStateType state = Dlt_GetStatus();
     ASSERT_EQ(DLT_STATE_UNINIT, state);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -97,7 +94,6 @@ TEST_CASE_DECLARE(Dlt_GetVersionInfo_valid)
     ASSERT_EQ(DLT_SW_MINOR_VERSION, versionInfo.sw_minor_version);
     ASSERT_EQ(DLT_SW_PATCH_VERSION, versionInfo.sw_patch_version);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_GetVersionInfo_null_pointer)
@@ -105,7 +101,6 @@ TEST_CASE_DECLARE(Dlt_GetVersionInfo_null_pointer)
     /* 测试空指针 - 应该通过 DET 检测 */
     Dlt_GetVersionInfo(NULL);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -120,7 +115,6 @@ TEST_CASE_DECLARE(Dlt_RegisterApp_valid)
     
     ASSERT_NEQ(DLT_INVALID_APP_HANDLE, handle);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_RegisterApp_null_pointer)
@@ -131,7 +125,6 @@ TEST_CASE_DECLARE(Dlt_RegisterApp_null_pointer)
     
     ASSERT_EQ(DLT_INVALID_APP_HANDLE, handle);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_RegisterApp_uninit)
@@ -141,7 +134,6 @@ TEST_CASE_DECLARE(Dlt_RegisterApp_uninit)
     
     ASSERT_EQ(DLT_INVALID_APP_HANDLE, handle);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_UnregisterApp_valid)
@@ -153,7 +145,6 @@ TEST_CASE_DECLARE(Dlt_UnregisterApp_valid)
     
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_UnregisterApp_invalid_handle)
@@ -164,7 +155,6 @@ TEST_CASE_DECLARE(Dlt_UnregisterApp_invalid_handle)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -182,7 +172,6 @@ TEST_CASE_DECLARE(Dlt_SendLogMessage_valid)
     
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SendLogMessage_uninit)
@@ -192,7 +181,6 @@ TEST_CASE_DECLARE(Dlt_SendLogMessage_uninit)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SendLogMessage_invalid_handle)
@@ -204,7 +192,6 @@ TEST_CASE_DECLARE(Dlt_SendLogMessage_invalid_handle)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SendLogMessage_null_data)
@@ -216,7 +203,6 @@ TEST_CASE_DECLARE(Dlt_SendLogMessage_null_data)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SendLogMessage_exceed_max_length)
@@ -230,7 +216,6 @@ TEST_CASE_DECLARE(Dlt_SendLogMessage_exceed_max_length)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -248,7 +233,6 @@ TEST_CASE_DECLARE(Dlt_SendTraceMessage_valid)
     
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SendTraceMessage_uninit)
@@ -258,7 +242,6 @@ TEST_CASE_DECLARE(Dlt_SendTraceMessage_uninit)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SendTraceMessage_null_data)
@@ -270,7 +253,6 @@ TEST_CASE_DECLARE(Dlt_SendTraceMessage_null_data)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -282,7 +264,6 @@ TEST_CASE_DECLARE(Dlt_MainFunction_uninit)
     /* 在未初始化状态下调用 MainFunction - 应该安全返回 */
     Dlt_MainFunction();
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_MainFunction_ready)
@@ -297,7 +278,6 @@ TEST_CASE_DECLARE(Dlt_MainFunction_ready)
     /* 调用 MainFunction 处理队列 */
     Dlt_MainFunction();
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -313,7 +293,6 @@ TEST_CASE_DECLARE(Dlt_SetFilter_valid)
     
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_SetFilter_invalid_handle)
@@ -324,7 +303,6 @@ TEST_CASE_DECLARE(Dlt_SetFilter_invalid_handle)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -347,7 +325,6 @@ TEST_CASE_DECLARE(Dlt_FlushQueue)
     
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_FlushQueue_uninit)
@@ -356,7 +333,6 @@ TEST_CASE_DECLARE(Dlt_FlushQueue_uninit)
     
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -379,7 +355,6 @@ TEST_CASE_DECLARE(Dlt_MultipleMessages)
     /* 处理队列 */
     Dlt_MainFunction();
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */
@@ -398,7 +373,6 @@ TEST_CASE_DECLARE(Dlt_EmptyMessage)
     /* 由于 NULL 指针检查，应该失败 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 TEST_CASE_DECLARE(Dlt_MaxLengthMessage)
@@ -413,7 +387,6 @@ TEST_CASE_DECLARE(Dlt_MaxLengthMessage)
     
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /* ========================================================================== */

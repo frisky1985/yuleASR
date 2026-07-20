@@ -51,7 +51,6 @@ TEST_CASE(canif_init_valid_config)
     CanIf_Init(&g_test_config);
     
     ASSERT_EQ(CANIF_INITIALIZED, CanIf_GetStatus());
-    TEST_PASS();
 }
 
 /* Test: CanIf_Init with NULL config (should trigger DET) */
@@ -63,7 +62,6 @@ TEST_CASE(canif_init_null_config)
     CanIf_Init(NULL_PTR);
     
     ASSERT_EQ(CANIF_UNINITIALIZED, CanIf_GetStatus());
-    TEST_PASS();
 }
 
 /* Test: CanIf_Transmit when not initialized */
@@ -79,7 +77,6 @@ TEST_CASE(canif_transmit_not_initialized)
     result = CanIf_Transmit(0, &pdu);
     
     ASSERT_EQ(E_NOT_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanIf_Transmit with valid PDU */
@@ -96,7 +93,6 @@ TEST_CASE(canif_transmit_valid_pdu)
     result = CanIf_Transmit(0, &pdu);
     
     ASSERT_TRUE(result == E_OK || result == CAN_BUSY);
-    TEST_PASS();
 }
 
 /* Test: CanIf_Transmit with NULL PDU */
@@ -110,7 +106,6 @@ TEST_CASE(canif_transmit_null_pdu)
     result = CanIf_Transmit(0, NULL_PTR);
     
     ASSERT_EQ(E_NOT_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanIf_SetControllerMode */
@@ -124,7 +119,6 @@ TEST_CASE(canif_set_controller_mode)
     result = CanIf_SetControllerMode(0, CAN_CS_STARTED);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanIf_GetControllerMode */
@@ -140,7 +134,6 @@ TEST_CASE(canif_get_controller_mode)
     result = CanIf_GetControllerMode(0, &mode);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /*==================================================================================================
