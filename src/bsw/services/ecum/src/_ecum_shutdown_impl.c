@@ -1,34 +1,9 @@
-/*******************************************************************************
- * EcuM 关机阶段实现
+/*==================================================================================================
+ * ECU State Manager — 关闭阶段实现
  * 自动拆分自 EcuM.c
- ******************************************************************************/
-#define ECUM_START_SEC_CODE
-#include "BswM.h"
-#include "SchM.h"
-#include "MemMap.h"
+ *================================================================================================*/
 
-void EcuM_Shutdown(void)
-{
-#if (ECUM_DEV_ERROR_DETECT == STD_ON)
-    if (EcuM_IsInitialized == 0U)     {
-        Det_ReportError(ECUM_MODULE_ID, ECUM_INSTANCE_ID, ECUM_SHUTDOWN_SID, ECUM_E_NOT_INITIALIZED);
-        return;
-    }
-#endif
-    
-    /* Start shutdown sequence */
-    EcuM_CurrentState = ECUM_STATE_SHUTDOWN;
-    EcuM_UpdateSubState(ECUM_SUBSTATE_GO_OFF_ONE);
-    
-    /* Process GoOffOne */
-    EcuM_ProcessGoOffOne();
-}
-
-/**
- * @brief Process GoOffOne state
- * @details Write NV data, deinit BSW modules
- */
-void EcuM_ProcessGoOffOne(void)
+static void EcuM_ProcessGoOffOne(void)
 {
     EcuM_UpdateSubState(ECUM_SUBSTATE_GO_OFF_ONE);
     
@@ -72,7 +47,7 @@ void EcuM_ProcessGoOffOne(void)
  * @brief Process GoOffTwo state
  * @details Shutdown OS and perform final actions
  */
-void EcuM_ProcessGoOffTwo(void)
+static void EcuM_ProcessGoOffTwo(void)
 {
     EcuM_UpdateSubState(ECUM_SUBSTATE_GO_OFF_TWO);
     
@@ -107,7 +82,7 @@ void EcuM_ProcessGoOffTwo(void)
 /**
  * @brief Perform Shutdown (Power Off)
  */
-void EcuM_PerformShutdown(void)
+static void EcuM_PerformShutdown(void)
 {
     /* Call shutdown hook */
     EcuM_AL_SwitchOff();
@@ -127,7 +102,7 @@ void EcuM_PerformShutdown(void)
 /**
  * @brief Perform Reset
  */
-void EcuM_PerformReset(void)
+static void EcuM_PerformReset(void)
 {
     /* Reset callout */
     EcuM_AL_Reset(ECUM_DEFAULT_RESET_TYPE);
@@ -145,7 +120,7 @@ void EcuM_PerformReset(void)
 /**
  * @brief Perform Sleep Entry
  */
-void EcuM_PerformSleep(void)
+static void EcuM_PerformSleep(void)
 {
     /* Disable interrupts temporarily */
     EcuM_DisableInterrupts();
@@ -175,5 +150,4 @@ void EcuM_PerformSleep(void)
  * @param user User requesting RUN mode
  * @return E_OK if successful, E_NOT_OK otherwise
  */
-#define ECUM_STOP_SEC_CODE
-#include "MemMap.h"
+
