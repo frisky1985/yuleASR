@@ -221,11 +221,11 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
     /* 获取IV */
     if (isNewJob) {
         if (io->secondaryInputPtr != NULL_PTR && io->secondaryInputLength == AES_BLOCK_SIZE) {
-            memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
+            (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
         } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
             /* IV从密钥元素获取 */
         } else {
-            memset(iv, 0, AES_BLOCK_SIZE);  /* 零IV作为后备 */
+            (void)memset(iv, 0, AES_BLOCK_SIZE);  /* 零IV作为后备 */
         }
     }
 
@@ -413,11 +413,11 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
     /* 获取IV */
     if (isNewJob) {
         if (io->secondaryInputPtr != NULL_PTR && io->secondaryInputLength == AES_BLOCK_SIZE) {
-            memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
+            (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
         } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
             /* IV从密钥元素获取 */
         } else {
-            memset(iv, 0, AES_BLOCK_SIZE);
+            (void)memset(iv, 0, AES_BLOCK_SIZE);
         }
     }
 
@@ -596,9 +596,9 @@ Std_ReturnType Crypto_AesStreamStart(Crypto_JobType* job)
 
     /* 获取IV */
     if (io->secondaryInputPtr != NULL_PTR && io->secondaryInputLength == AES_BLOCK_SIZE) {
-        memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
+        (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
     } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) != E_OK) {
-        memset(iv, 0, AES_BLOCK_SIZE);
+        (void)memset(iv, 0, AES_BLOCK_SIZE);
     }
 
     /* 根据模式启动流式操作 */

@@ -55,7 +55,7 @@ LinSlave_StatusType LinSlave_CfgTable_Init(const LinSlave_ConfigTableType* Confi
                 (LinSlave_UnconditionalFrameConfigType*)&ConfigTable->UnconditionalFrames[i];
             frame->Status = LINSLAVE_FRAME_STATUS_IDLE;
             frame->UpdateFlag = 0;
-            memset(frame->LastData, 0, 8);
+            (void)memset(frame->LastData, 0, 8);
         }
     }
     
@@ -291,7 +291,7 @@ void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint
     frame = (LinSlave_UnconditionalFrameConfigType*)&CfgTablePtr->UnconditionalFrames[FrameIndex];
     
     copyLen = (Length > 8) ? 8 : Length;
-    memcpy(frame->LastData, DataPtr, copyLen);
+    (void)memcpy(frame->LastData, DataPtr, copyLen);
     frame->UpdateFlag = 1;
     frame->Status = LINSLAVE_FRAME_STATUS_UPDATED;
 }

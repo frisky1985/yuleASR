@@ -123,7 +123,7 @@ static const LinSM_WakeupSourceConfigType LinSM_WakeupSources[LINSM_WAKEUP_SOURC
  *
  * This is the main configuration structure used by LinSM_Init().
  */
-const LinSM_ConfigType LinSM_Config =
+static const LinSM_ConfigType LinSM_Config =
 {
     .ChannelCount = LINSM_CHANNEL_COUNT,                /* 2 channels */
     .ChannelConfig = LinSM_ChannelConfig,               /* Channel configuration */
@@ -233,7 +233,7 @@ static const LinSM_ScheduleTimingType LinSM_Channel1_Timing[LINSM_SCHEDULE_COUNT
  *
  * Supports post-build configuration selection
  */
-const LinSM_ConfigType * const LinSM_ConfigPtrs[1] =
+static const LinSM_ConfigType * const LinSM_ConfigPtrs[1] =
 {
     &LinSM_Config
 };
@@ -278,7 +278,7 @@ static const Std_VersionInfoType LinSM_VersionInfo =
  * @brief Get module version information
  * @return Pointer to version info structure
  */
-const Std_VersionInfoType * LinSM_GetCompiledVersionInfo(void)
+static const Std_VersionInfoType * LinSM_GetCompiledVersionInfo(void)
 {
     return &LinSM_VersionInfo;
 }

@@ -40,9 +40,9 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
  */
 LinMaster_Diag_StatusType LinMaster_Diag_Init(void)
 {
-    memset(&DiagRuntime, 0, sizeof(LinMaster_Diag_RuntimeType));
-    memset(TxBuffer, 0, sizeof(TxBuffer));
-    memset(RxBuffer, 0, sizeof(RxBuffer));
+    (void)memset(&DiagRuntime, 0, sizeof(LinMaster_Diag_RuntimeType));
+    (void)memset(TxBuffer, 0, sizeof(TxBuffer));
+    (void)memset(RxBuffer, 0, sizeof(RxBuffer));
     
     DiagRuntime.State = LINMASTER_DIAG_STATE_IDLE;
     DiagRuntime.CurrentSession = LINMASTER_DIAG_SESSION_DEFAULT;
@@ -85,7 +85,7 @@ static void LinMaster_Diag_TpRxCallback(uint8 ChannelId, const uint8* DataPtr, u
     }
     
     /* 复制接收数据 */
-    memcpy(RxBuffer, DataPtr, Length);
+    (void)memcpy(RxBuffer, DataPtr, Length);
     RxLength = Length;
     RxDataPending = TRUE;
 }
@@ -131,7 +131,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
     }
     
     /* 保存请求信息 */
-    memcpy(&DiagRuntime.PendingRequest, RequestPtr, sizeof(LinMaster_Diag_RequestType));
+    (void)memcpy(&DiagRuntime.PendingRequest, RequestPtr, sizeof(LinMaster_Diag_RequestType));
 }
 
 /**
@@ -143,7 +143,7 @@ static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* Dat
         return LINMASTER_DIAG_E_NOT_OK;
     }
     
-    memset(&DiagRuntime.PendingResponse, 0, sizeof(LinMaster_Diag_ResponseType));
+    (void)memset(&DiagRuntime.PendingResponse, 0, sizeof(LinMaster_Diag_ResponseType));
     
     /* 检查是否为负响应 (0x7F) */
     if (DataPtr[0] == 0x7F) {
@@ -168,7 +168,7 @@ static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* Dat
         if (dataLen > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
             dataLen = LINMASTER_DIAG_MAX_BUFFER_SIZE;
         }
-        memcpy(DiagRuntime.PendingResponse.Data, &DataPtr[1], dataLen);
+        (void)memcpy(DiagRuntime.PendingResponse.Data, &DataPtr[1], dataLen);
         DiagRuntime.PendingResponse.Length = dataLen;
     } else {
         DiagRuntime.PendingResponse.Length = 0;
@@ -243,7 +243,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetResponse(
     }
     
     /* 复制响应数据 */
-    memcpy(ResponsePtr, &DiagRuntime.PendingResponse, sizeof(LinMaster_Diag_ResponseType));
+    (void)memcpy(ResponsePtr, &DiagRuntime.PendingResponse, sizeof(LinMaster_Diag_ResponseType));
     
     /* 重置状态 */
     DiagRuntime.State = LINMASTER_DIAG_STATE_IDLE;
@@ -425,7 +425,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SessionControl(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_DIAGNOSTIC_SESSION_CONTROL;
     request.SubFunction = SessionType & 0x7F;
     request.Length = 0;
@@ -447,7 +447,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_EcuReset(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_ECU_RESET;
     request.SubFunction = ResetType & 0x7F;
     request.Length = 0;
@@ -469,7 +469,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDataById(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_READ_DATA_BY_IDENTIFIER;
     request.SubFunction = 0; /* 此服务没有子功能 */
     
@@ -502,7 +502,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_WRITE_DATA_BY_IDENTIFIER;
     request.SubFunction = 0;
     
@@ -536,7 +536,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_SECURITY_ACCESS;
     request.SubFunction = SubFunc & 0x7F;
     
@@ -576,7 +576,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_ROUTINE_CONTROL;
     request.SubFunction = SubFunc & 0x7F;
     
@@ -612,7 +612,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ClearDiagnosticInformation(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_CLEAR_DIAGNOSTIC_INFORMATION;
     request.SubFunction = 0;
     
@@ -640,7 +640,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDTCInformation(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_READ_DTC_INFORMATION;
     request.SubFunction = SubFunc & 0x7F;
     
@@ -665,7 +665,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_TesterPresent(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_TESTER_PRESENT;
     request.SubFunction = SubFunc & 0x7F;
     request.Length = 0;
@@ -688,7 +688,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_CommunicationControl(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    memset(&request, 0, sizeof(request));
+    (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_COMMUNICATION_CONTROL;
     request.SubFunction = SubFunc & 0x7F;
     

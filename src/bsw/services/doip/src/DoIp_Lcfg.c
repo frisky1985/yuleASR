@@ -36,7 +36,7 @@ const uint16 DoIP_EntityLogicalAddress = DOIP_LOGICAL_ADDRESS;
 /*==================================================================================================
  *                                      GENERAL CONFIGURATION
  *=================================================================================================*/
-const DoIP_GeneralConfigType DoIP_GeneralConfig =
+static const DoIP_GeneralConfigType DoIP_GeneralConfig =
 {
     .LogicalAddress = DOIP_LOGICAL_ADDRESS,
     .Vin = DOIP_VIN,
@@ -186,7 +186,7 @@ DoIP_StateType DoIP_State = DOIP_STATE_UNINIT;
  * @param Data Pointer to received data
  * @param Length Data length
  */
-void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length)
+static void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length)
 {
     (void)SoConId;
     (void)Data;
@@ -201,7 +201,7 @@ void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length)
  * @param SoConId Socket connection ID
  * @param Result Transmission result
  */
-void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result)
+static void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result)
 {
     (void)SoConId;
     (void)Result;
@@ -215,7 +215,7 @@ void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result)
  * @param SourceAddress Tester source address
  * @param Result Activation result
  */
-void Dcm_DoIPRoutingActivation(uint16 SoConId, uint16 SourceAddress, Std_ReturnType Result)
+static void Dcm_DoIPRoutingActivation(uint16 SoConId, uint16 SourceAddress, Std_ReturnType Result)
 {
     (void)SoConId;
     (void)SourceAddress;

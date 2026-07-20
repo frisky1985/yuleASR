@@ -108,8 +108,8 @@ LinMaster_StatusType LinMaster_Init(const LinMaster_ConfigType* ConfigPtr)
     }
     
     /* 清零缓冲区 */
-    memset(LinMaster_TxBuffer, 0, sizeof(LinMaster_TxBuffer));
-    memset(LinMaster_RxBuffer, 0, sizeof(LinMaster_RxBuffer));
+    (void)memset(LinMaster_TxBuffer, 0, sizeof(LinMaster_TxBuffer));
+    (void)memset(LinMaster_RxBuffer, 0, sizeof(LinMaster_RxBuffer));
     LinMaster_TxLength = 0;
     LinMaster_TxIndex = 0;
     LinMaster_RxIndex = 0;
@@ -146,8 +146,8 @@ void LinMaster_DeInit(void)
     LinMaster_Hal_DisableTxInterrupt();
     
     /* 清零缓冲区 */
-    memset(LinMaster_TxBuffer, 0, sizeof(LinMaster_TxBuffer));
-    memset(LinMaster_RxBuffer, 0, sizeof(LinMaster_RxBuffer));
+    (void)memset(LinMaster_TxBuffer, 0, sizeof(LinMaster_TxBuffer));
+    (void)memset(LinMaster_RxBuffer, 0, sizeof(LinMaster_RxBuffer));
     
     /* 重置状态 */
     LinMaster_ConfigPtr = NULL_PTR;
@@ -296,7 +296,7 @@ LinMaster_StatusType LinMaster_SendFrame(
 #endif
     
     /* 保存数据到发送缓冲区 */
-    memcpy(LinMaster_TxBuffer, DataPtr, Length);
+    (void)memcpy(LinMaster_TxBuffer, DataPtr, Length);
     LinMaster_TxLength = Length;
     LinMaster_CurrentChecksumType = ChecksumType;
     LinMaster_CurrentDirection = LINMASTER_FRAME_DIR_TX;
@@ -617,7 +617,7 @@ static void LinMaster_CalculateAndSendChecksum(void)
     }
     
     /* 发送校验和 */
-    LinMaster_Hal_SendByte(checksum);
+    (void)LinMaster_Hal_SendByte(checksum);
 }
 
 /**
@@ -764,7 +764,7 @@ LinMaster_StatusType LinMaster_SendWakeup(void)
     
     /* 发送0x80 (最小4位显性电平，通常使用0xF0或特定的唤醒帧) */
     /* 此处发送一个特殊的唤醒字节 */
-    LinMaster_Hal_SendByte(0xF0);
+    (void)LinMaster_Hal_SendByte(0xF0);
     
     return LINMASTER_OK;
 }
@@ -784,7 +784,7 @@ LinMaster_StatusType LinMaster_GoToSleep(void)
     
     /* 发送睡眠命令 (0x00 表示睡眠) */
     /* 通常发送13位显性电平表示睡眠 */
-    LinMaster_Hal_SendBreak();
+    (void)LinMaster_Hal_SendBreak();
     
     return LINMASTER_OK;
 }

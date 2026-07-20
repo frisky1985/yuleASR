@@ -308,7 +308,7 @@ const ComM_PncConfigType ComM_PncConfig[COMM_NUM_PNCS] = {
 /*=============================================================================
  * Module Configuration Instance
  *===========================================================================*/
-const ComM_ConfigType ComM_Config = {
+static const ComM_ConfigType ComM_Config = {
     ComM_ChannelConfig,                 /* ChannelConfigs */
     ComM_UserConfig,                    /* UserConfigs */
 #if (COMM_PNC_SUPPORT == STD_ON)

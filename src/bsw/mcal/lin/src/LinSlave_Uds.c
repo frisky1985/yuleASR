@@ -37,8 +37,8 @@ static boolean LinSlave_Uds_CheckSecurity(LinSlave_Uds_ServiceConfigType* Servic
  */
 LinSlave_Uds_StatusType LinSlave_Uds_Init(void)
 {
-    memset(&UdsRuntime, 0, sizeof(LinSlave_Uds_RuntimeType));
-    memset(UdsServiceTable, 0, sizeof(UdsServiceTable));
+    (void)memset(&UdsRuntime, 0, sizeof(LinSlave_Uds_RuntimeType));
+    (void)memset(UdsServiceTable, 0, sizeof(UdsServiceTable));
     
     UdsRuntime.State = LINSLAVE_UDS_STATE_IDLE;
     UdsRuntime.CurrentSession = LINSLAVE_UDS_SESSION_DEFAULT;
@@ -133,24 +133,24 @@ LinSlave_Uds_StatusType LinSlave_Uds_ProcessRequest(const uint8* DataPtr, uint16
     
     if (Service == NULL) {
         /* 服务不支持 */
-        LinSlave_Uds_SendNegativeResponse(Request.Sid, LINSLAVE_UDS_NRC_SERVICE_NOT_SUPPORTED);
+        (void)LinSlave_Uds_SendNegativeResponse(Request.Sid, LINSLAVE_UDS_NRC_SERVICE_NOT_SUPPORTED);
         return LINSLAVE_UDS_E_INVALID_SID;
     }
     
     /* 检查会话 */
     if (!LinSlave_Uds_CheckSession(Service)) {
-        LinSlave_Uds_SendNegativeResponse(Request.Sid, LINSLAVE_UDS_NRC_SERVICE_NOT_SUPPORTED);
+        (void)LinSlave_Uds_SendNegativeResponse(Request.Sid, LINSLAVE_UDS_NRC_SERVICE_NOT_SUPPORTED);
         return LINSLAVE_UDS_E_SESSION_NOT_SUPPORTED;
     }
     
     /* 检查安全 */
     if (!LinSlave_Uds_CheckSecurity(Service)) {
-        LinSlave_Uds_SendNegativeResponse(Request.Sid, LINSLAVE_UDS_NRC_SECURITY_ACCESS_DENIED);
+        (void)LinSlave_Uds_SendNegativeResponse(Request.Sid, LINSLAVE_UDS_NRC_SECURITY_ACCESS_DENIED);
         return LINSLAVE_UDS_E_SECURITY_DENIED;
     }
     
     /* 准备响应 */
-    memset(&Response, 0, sizeof(Response));
+    (void)memset(&Response, 0, sizeof(Response));
     Response.DataPtr = UdsRuntime.ResponseBuffer;
     Response.DataLength = 0;
     Response.IsNegative = FALSE;
@@ -181,14 +181,14 @@ LinSlave_Uds_StatusType LinSlave_Uds_SendPositiveResponse(const LinSlave_Uds_Res
     ResponseBuffer[0] = ResponsePtr->Sid + 0x40;  /* 正响响应: SID + 0x40 */
     
     if (ResponsePtr->DataLength > 0 && ResponsePtr->DataPtr != NULL) {
-        memcpy(&ResponseBuffer[1], ResponsePtr->DataPtr, ResponsePtr->DataLength);
+        (void)memcpy(&ResponseBuffer[1], ResponsePtr->DataPtr, ResponsePtr->DataLength);
         ResponseLength = ResponsePtr->DataLength + 1;
     } else {
         ResponseLength = 1;
     }
     
     /* 通过TP层发送 */
-    LinSlave_Tp_Transmit(0, ResponseBuffer, ResponseLength);
+    (void)LinSlave_Tp_Transmit(0, ResponseBuffer, ResponseLength);
     
     return LINSLAVE_UDS_OK;
 }
@@ -210,7 +210,7 @@ LinSlave_Uds_StatusType LinSlave_Uds_SendNegativeResponse(uint8 Sid, uint8 Nrc)
     ResponseBuffer[2] = Nrc;    /* 负响响应码 */
     
     /* 通过TP层发送 */
-    LinSlave_Tp_Transmit(0, ResponseBuffer, 3);
+    (void)LinSlave_Tp_Transmit(0, ResponseBuffer, 3);
     
     return LINSLAVE_UDS_OK;
 }
@@ -237,7 +237,7 @@ LinSlave_Uds_StatusType LinSlave_Uds_RegisterService(const LinSlave_Uds_ServiceC
         return LINSLAVE_UDS_E_NOT_OK;  /* 服务已存在 */
     }
     
-    memcpy(&UdsServiceTable[UdsServiceCount], ServiceConfig, sizeof(LinSlave_Uds_ServiceConfigType));
+    (void)memcpy(&UdsServiceTable[UdsServiceCount], ServiceConfig, sizeof(LinSlave_Uds_ServiceConfigType));
     UdsServiceCount++;
     
     return LINSLAVE_UDS_OK;
@@ -331,7 +331,7 @@ static LinSlave_Uds_StatusType Uds_SessionControl(
     Response->DataLength = 5;
     Response->IsNegative = FALSE;
     
-    LinSlave_Uds_SendPositiveResponse(Response);
+    (void)LinSlave_Uds_SendPositiveResponse(Response);
     return LINSLAVE_UDS_OK;
 }
 
@@ -352,7 +352,7 @@ static LinSlave_Uds_StatusType Uds_EcuReset(
     Response->DataLength = 1;
     Response->IsNegative = FALSE;
     
-    LinSlave_Uds_SendPositiveResponse(Response);
+    (void)LinSlave_Uds_SendPositiveResponse(Response);
     return LINSLAVE_UDS_OK;
 }
 
@@ -376,7 +376,7 @@ static LinSlave_Uds_StatusType Uds_TesterPresent(
         Response->DataPtr[0] = SubFunction;
         Response->DataLength = 1;
         Response->IsNegative = FALSE;
-        LinSlave_Uds_SendPositiveResponse(Response);
+        (void)LinSlave_Uds_SendPositiveResponse(Response);
     }
     
     return LINSLAVE_UDS_OK;
@@ -396,7 +396,7 @@ void LinSlave_Uds_RegisterDefaultServices(void)
     Service.NeedsSession = FALSE;
     Service.MinSession = LINSLAVE_UDS_SESSION_DEFAULT;
     Service.MinSecurityLevel = LINSLAVE_UDS_SECURITY_LOCKED;
-    LinSlave_Uds_RegisterService(&Service);
+    (void)LinSlave_Uds_RegisterService(&Service);
     
     /* 注册ECU复位 */
     Service.Sid = LINSLAVE_UDS_SID_ECU_RESET;
@@ -405,7 +405,7 @@ void LinSlave_Uds_RegisterDefaultServices(void)
     Service.NeedsSession = TRUE;
     Service.MinSession = LINSLAVE_UDS_SESSION_EXTENDED;
     Service.MinSecurityLevel = LINSLAVE_UDS_SECURITY_LOCKED;
-    LinSlave_Uds_RegisterService(&Service);
+    (void)LinSlave_Uds_RegisterService(&Service);
     
     /* 注册TesterPresent */
     Service.Sid = LINSLAVE_UDS_SID_TESTER_PRESENT;
@@ -414,5 +414,5 @@ void LinSlave_Uds_RegisterDefaultServices(void)
     Service.NeedsSession = FALSE;
     Service.MinSession = LINSLAVE_UDS_SESSION_DEFAULT;
     Service.MinSecurityLevel = LINSLAVE_UDS_SECURITY_LOCKED;
-    LinSlave_Uds_RegisterService(&Service);
+    (void)LinSlave_Uds_RegisterService(&Service);
 }

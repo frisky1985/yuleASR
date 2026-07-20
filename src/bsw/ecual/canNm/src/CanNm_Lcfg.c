@@ -99,7 +99,7 @@ static const CanNm_ChannelConfigType CanNm_Channel1_Config =
  * @brief Channel configuration array
  * This array contains all configured CAN NM channels
  */
-const CanNm_ChannelConfigType CanNm_ChannelConfig[CANNM_NUMBER_OF_CHANNELS] =
+static const CanNm_ChannelConfigType CanNm_ChannelConfig[CANNM_NUMBER_OF_CHANNELS] =
 {
     CanNm_Channel0_Config,
     CanNm_Channel1_Config
@@ -127,7 +127,7 @@ const CanNm_ConfigType CanNm_Config =
  * @brief TX PDU configuration table for CanIf integration
  * Maps CanNm Tx PDUs to CanIf PDU handles
  */
-const PduIdType CanNmTxPdu[CANNM_NUMBER_OF_CHANNELS] =
+static const PduIdType CanNmTxPdu[CANNM_NUMBER_OF_CHANNELS] =
 {
     CANNM_CHANNEL_0_TX_PDUID,
     CANNM_CHANNEL_1_TX_PDUID
@@ -141,7 +141,7 @@ const PduIdType CanNmTxPdu[CANNM_NUMBER_OF_CHANNELS] =
  * @brief RX PDU configuration table
  * Maps CanNm Rx PDUs to incoming PDU handles
  */
-const PduIdType CanNmRxPdu[CANNM_NUMBER_OF_CHANNELS] =
+static const PduIdType CanNmRxPdu[CANNM_NUMBER_OF_CHANNELS] =
 {
     CANNM_CHANNEL_0_RX_PDUID,
     CANNM_CHANNEL_1_RX_PDUID
@@ -155,7 +155,7 @@ const PduIdType CanNmRxPdu[CANNM_NUMBER_OF_CHANNELS] =
  * @brief ComM channel handle to CanNm channel index mapping
  * Used to convert ComM channel handles to CanNm internal indices
  */
-const NetworkHandleType CanNm_ComMChannelMapping[CANNM_NUMBER_OF_CHANNELS] =
+static const NetworkHandleType CanNm_ComMChannelMapping[CANNM_NUMBER_OF_CHANNELS] =
 {
     CANNM_CHANNEL_0,
     CANNM_CHANNEL_1
@@ -168,7 +168,7 @@ const NetworkHandleType CanNm_ComMChannelMapping[CANNM_NUMBER_OF_CHANNELS] =
 /**
  * @brief Module version information (link-time constant)
  */
-const Std_VersionInfoType CanNm_VersionInfo =
+static const Std_VersionInfoType CanNm_VersionInfo =
 {
     /* vendorID */                  CANNM_VENDOR_ID,
     /* moduleID */                  CANNM_MODULE_ID,

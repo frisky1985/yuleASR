@@ -47,7 +47,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Init(void)
     uint8 i;
     
     for (i = 0; i < LINSLAVE_TP_MAX_PDUs; i++) {
-        memset(&TpChannels[i], 0, sizeof(LinSlave_Tp_ChannelType));
+        (void)memset(&TpChannels[i], 0, sizeof(LinSlave_Tp_ChannelType));
         TpChannels[i].State = LINSLAVE_TP_STATE_IDLE;
         TpChannels[i].ChannelId = i;
     }
@@ -79,7 +79,7 @@ static void LinSlave_Tp_ResetChannel(uint8 ChannelId)
         return;
     }
     
-    memset(&TpChannels[ChannelId], 0, sizeof(LinSlave_Tp_ChannelType));
+    (void)memset(&TpChannels[ChannelId], 0, sizeof(LinSlave_Tp_ChannelType));
     TpChannels[ChannelId].State = LINSLAVE_TP_STATE_IDLE;
     TpChannels[ChannelId].ChannelId = ChannelId;
 }
@@ -101,7 +101,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessSF(uint8 ChannelId, uint8 Pci, 
     }
     
     /* 复制数据到接收缓冲区 */
-    memcpy(Channel->RxBuffer, DataPtr, DataLen);
+    (void)memcpy(Channel->RxBuffer, DataPtr, DataLen);
     Channel->RxLength = DataLen;
     Channel->RxTotalLength = DataLen;
     
@@ -138,7 +138,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessFF(uint8 ChannelId, uint8 Pci, 
     
     /* 复制第一批数据 (FF中剩余的数据) */
     if (Channel->RxLength > 0) {
-        memcpy(Channel->RxBuffer, &DataPtr[1], Channel->RxLength);
+        (void)memcpy(Channel->RxBuffer, &DataPtr[1], Channel->RxLength);
     }
     
     /* 发送流控帧 */
@@ -177,7 +177,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessCF(uint8 ChannelId, uint8 Pci, 
     CopyLength = (Length < RemainingBytes) ? Length : RemainingBytes;
     
     /* 复制数据 */
-    memcpy(&Channel->RxBuffer[Channel->RxLength], DataPtr, CopyLength);
+    (void)memcpy(&Channel->RxBuffer[Channel->RxLength], DataPtr, CopyLength);
     Channel->RxLength += CopyLength;
     
     /* 检查是否完成 */
@@ -305,7 +305,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
     if (Length <= 6) {
         /* 发送单帧 (SF) */
         FirstFrame[0] = LINSLAVE_TP_PCI_SF | (Length & 0x0F);
-        memcpy(&FirstFrame[1], DataPtr, Length);
+        (void)memcpy(&FirstFrame[1], DataPtr, Length);
         LinSlave_Hal_UartSendBuffer(FirstFrame, Length + 1);
         
         /* 发送完成 */
@@ -317,7 +317,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         /* 发送首帧 (FF) */
         FirstFrame[0] = LINSLAVE_TP_PCI_FF | ((Length >> 8) & 0x0F);
         FirstFrame[1] = Length & 0xFF;
-        memcpy(&FirstFrame[2], DataPtr, 5);  /* FF中携带的数据 */
+        (void)memcpy(&FirstFrame[2], DataPtr, 5);  /* FF中携带的数据 */
         LinSlave_Hal_UartSendBuffer(FirstFrame, 7);
         
         Channel->TxOffset = 5;

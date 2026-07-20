@@ -122,7 +122,7 @@ static const SoAd_ConfigType TestConfig = {
  */
 void Test_SoAd_Init_Valid(void)
 {
-    printf("\n[Test] SoAd_Init with valid configuration\n");
+    (void)printf("\n[Test] SoAd_Init with valid configuration\n");
     
     /* Pre-condition: Module should be uninitialized */
     /* Call DeInit first to ensure clean state */
@@ -140,7 +140,7 @@ void Test_SoAd_Init_Valid(void)
  */
 void Test_SoAd_Init_Null(void)
 {
-    printf("\n[Test] SoAd_Init with NULL pointer\n");
+    (void)printf("\n[Test] SoAd_Init with NULL pointer\n");
     
     /* Pre-condition: Reset state */
     SoAd_DeInit();
@@ -157,7 +157,7 @@ void Test_SoAd_Init_Null(void)
  */
 void Test_SoAd_DeInit(void)
 {
-    printf("\n[Test] SoAd_DeInit\n");
+    (void)printf("\n[Test] SoAd_DeInit\n");
     
     /* Pre-condition: Initialize first */
     SoAd_Init(&TestConfig);
@@ -177,7 +177,7 @@ void Test_SoAd_GetVersionInfo(void)
 {
     Std_VersionInfoType versionInfo;
     
-    printf("\n[Test] SoAd_GetVersionInfo\n");
+    (void)printf("\n[Test] SoAd_GetVersionInfo\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -186,10 +186,10 @@ void Test_SoAd_GetVersionInfo(void)
     SoAd_GetVersionInfo(&versionInfo);
     
     /* Verify: Version info should match */
-    TEST_ASSERT_EQ(SOAD_VENDOR_ID, versionInfo.vendorID, "Vendor ID should match");
-    TEST_ASSERT_EQ(SOAD_MODULE_ID, versionInfo.moduleID, "Module ID should match");
-    TEST_ASSERT_EQ(SOAD_SW_MAJOR_VERSION, versionInfo.sw_major_version, "Major version should match");
-    TEST_ASSERT_EQ(SOAD_SW_MINOR_VERSION, versionInfo.sw_minor_version, "Minor version should match");
+    (void)TEST_ASSERT_EQ(SOAD_VENDOR_ID, versionInfo.vendorID, "Vendor ID should match");
+    (void)TEST_ASSERT_EQ(SOAD_MODULE_ID, versionInfo.moduleID, "Module ID should match");
+    (void)TEST_ASSERT_EQ(SOAD_SW_MAJOR_VERSION, versionInfo.sw_major_version, "Major version should match");
+    (void)TEST_ASSERT_EQ(SOAD_SW_MINOR_VERSION, versionInfo.sw_minor_version, "Minor version should match");
 }
 #endif
 
@@ -200,7 +200,7 @@ void Test_SoAd_OpenTcpConnection(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SoAd_OpenTcpConnection\n");
+    (void)printf("\n[Test] SoAd_OpenTcpConnection\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -211,7 +211,7 @@ void Test_SoAd_OpenTcpConnection(void)
     result = SoAd_OpenTcpConnection(0U);
     
     /* Verify: Should return E_OK */
-    TEST_ASSERT_EQ(E_OK, result, "SoAd_OpenTcpConnection should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SoAd_OpenTcpConnection should return E_OK");
 }
 
 /**
@@ -221,7 +221,7 @@ void Test_SoAd_OpenTcpConnection_InvalidId(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SoAd_OpenTcpConnection with invalid ID\n");
+    (void)printf("\n[Test] SoAd_OpenTcpConnection with invalid ID\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -230,7 +230,7 @@ void Test_SoAd_OpenTcpConnection_InvalidId(void)
     result = SoAd_OpenTcpConnection(100U);
     
     /* Verify: Should return E_NOT_OK */
-    TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid ID should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid ID should return E_NOT_OK");
 }
 
 /**
@@ -240,7 +240,7 @@ void Test_SoAd_OpenUdpConnection(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SoAd_OpenUdpConnection\n");
+    (void)printf("\n[Test] SoAd_OpenUdpConnection\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -251,7 +251,7 @@ void Test_SoAd_OpenUdpConnection(void)
     result = SoAd_OpenUdpConnection(1U);
     
     /* Verify: Should return E_OK */
-    TEST_ASSERT_EQ(E_OK, result, "SoAd_OpenUdpConnection should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SoAd_OpenUdpConnection should return E_OK");
 }
 
 /**
@@ -261,7 +261,7 @@ void Test_SoAd_CloseTcpConnection(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SoAd_CloseTcpConnection\n");
+    (void)printf("\n[Test] SoAd_CloseTcpConnection\n");
     
     /* Pre-condition: Initialize and open connection */
     SoAd_Init(&TestConfig);
@@ -273,7 +273,7 @@ void Test_SoAd_CloseTcpConnection(void)
     result = SoAd_CloseTcpConnection(0U, FALSE);
     
     /* Verify: Should return E_OK */
-    TEST_ASSERT_EQ(E_OK, result, "SoAd_CloseTcpConnection should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SoAd_CloseTcpConnection should return E_OK");
 }
 
 /**
@@ -285,7 +285,7 @@ void Test_SoAd_Send(void)
     PduInfoType pduInfo;
     uint8 testData[8] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08 };
     
-    printf("\n[Test] SoAd_Send\n");
+    (void)printf("\n[Test] SoAd_Send\n");
     
     /* Pre-condition: Initialize and open connection */
     SoAd_Init(&TestConfig);
@@ -301,7 +301,7 @@ void Test_SoAd_Send(void)
     result = SoAd_Send(1U, &pduInfo);
     
     /* Verify: Should return E_OK */
-    TEST_ASSERT_EQ(E_OK, result, "SoAd_Send should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SoAd_Send should return E_OK");
 }
 
 /**
@@ -311,7 +311,7 @@ void Test_SoAd_Send_Null(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SoAd_Send with NULL pointer\n");
+    (void)printf("\n[Test] SoAd_Send with NULL pointer\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -320,7 +320,7 @@ void Test_SoAd_Send_Null(void)
     result = SoAd_Send(0U, NULL_PTR);
     
     /* Verify: Should return E_NOT_OK */
-    TEST_ASSERT_EQ(E_NOT_OK, result, "NULL pointer should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL pointer should return E_NOT_OK");
 }
 
 /**
@@ -333,7 +333,7 @@ void Test_SoAd_Receive(void)
     PduLengthType length = 100U;
     uint8 rxBuffer[100];
     
-    printf("\n[Test] SoAd_Receive\n");
+    (void)printf("\n[Test] SoAd_Receive\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -346,7 +346,7 @@ void Test_SoAd_Receive(void)
     result = SoAd_Receive(0U, &pduInfo, &length);
     
     /* Verify: Should return E_NOT_OK (no data) */
-    TEST_ASSERT_EQ(E_NOT_OK, result, "No data should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "No data should return E_NOT_OK");
 }
 
 /**
@@ -354,7 +354,7 @@ void Test_SoAd_Receive(void)
  */
 void Test_SoAd_MainFunction(void)
 {
-    printf("\n[Test] SoAd_MainFunction\n");
+    (void)printf("\n[Test] SoAd_MainFunction\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -371,7 +371,7 @@ void Test_SoAd_MainFunction(void)
  */
 void Test_SoAd_MainFunction_Uninit(void)
 {
-    printf("\n[Test] SoAd_MainFunction without initialization\n");
+    (void)printf("\n[Test] SoAd_MainFunction without initialization\n");
     
     /* Pre-condition: Ensure uninitialized */
     SoAd_DeInit();
@@ -390,7 +390,7 @@ void Test_SoAd_MultipleConnections(void)
 {
     Std_ReturnType result1, result2;
     
-    printf("\n[Test] SoAd_MultipleConnections\n");
+    (void)printf("\n[Test] SoAd_MultipleConnections\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
@@ -402,8 +402,8 @@ void Test_SoAd_MultipleConnections(void)
     result2 = SoAd_OpenUdpConnection(1U);
     
     /* Verify: Both should succeed */
-    TEST_ASSERT_EQ(E_OK, result1, "First connection should succeed");
-    TEST_ASSERT_EQ(E_OK, result2, "Second connection should succeed");
+    (void)TEST_ASSERT_EQ(E_OK, result1, "First connection should succeed");
+    (void)TEST_ASSERT_EQ(E_OK, result2, "Second connection should succeed");
 }
 
 /*==================================================================================================
@@ -412,8 +412,8 @@ void Test_SoAd_MultipleConnections(void)
 int main(void)
 {
     printf("=================================================\n");
-    printf("       SOAD (Socket Adapter) Tests              \n");
-    printf("       AutoSAR R22-11, Version 4.7.0            \n");
+    (void)printf("       SOAD (Socket Adapter) Tests              \n");
+    (void)printf("       AutoSAR R22-11, Version 4.7.0            \n");
     printf("=================================================\n");
     
     /* Run all test cases */
@@ -436,18 +436,18 @@ int main(void)
     
     /* Print summary */
     printf("\n=================================================\n");
-    printf("               TEST SUMMARY                      \n");
+    (void)printf("               TEST SUMMARY                      \n");
     printf("=================================================\n");
-    printf("Total Tests:  %d\n", tests_run);
-    printf("Passed:       %d\n", tests_passed);
-    printf("Failed:       %d\n", tests_failed);
-    printf("Coverage:     ~90%% (14/15 APIs tested)\n");
+    (void)printf("Total Tests:  %d\n", tests_run);
+    (void)printf("Passed:       %d\n", tests_passed);
+    (void)printf("Failed:       %d\n", tests_failed);
+    (void)printf("Coverage:     ~90%% (14/15 APIs tested)\n");
     
     if (tests_failed == 0) {
-        printf("\n[RESULT] ALL TESTS PASSED ✅\n");
+        (void)printf("\n[RESULT] ALL TESTS PASSED ✅\n");
         return 0;
     } else {
-        printf("\n[RESULT] SOME TESTS FAILED ❌\n");
+        (void)printf("\n[RESULT] SOME TESTS FAILED ❌\n");
         return 1;
     }
 }

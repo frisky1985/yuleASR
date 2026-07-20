@@ -132,7 +132,7 @@ static const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetEntryAt(uint8 In
 Std_ReturnType LinMaster_Schedule_Init(const LinMaster_ScheduleTableType* ScheduleTable)
 {
     /* 重置控制块 */
-    memset(&g_ScheduleCtrl, 0, sizeof(g_ScheduleCtrl));
+    (void)memset(&g_ScheduleCtrl, 0, sizeof(g_ScheduleCtrl));
     
     g_ScheduleCtrl.State = LINMASTER_SCHEDULE_STATE_IDLE;
     g_ScheduleCtrl.Initialized = TRUE;
@@ -143,7 +143,7 @@ Std_ReturnType LinMaster_Schedule_Init(const LinMaster_ScheduleTableType* Schedu
         if (ScheduleTable->Entries != NULL && ScheduleTable->EntryCount > 0) {
             /* 检查条目数是否超出限制 */
             if (ScheduleTable->EntryCount <= LINMASTER_SCHEDULE_MAX_ENTRIES) {
-                memcpy(g_ScheduleCtrl.RuntimeEntries, 
+                (void)memcpy(g_ScheduleCtrl.RuntimeEntries,
                        ScheduleTable->Entries,
                        ScheduleTable->EntryCount * sizeof(LinMaster_ScheduleEntryType));
                 g_ScheduleCtrl.RuntimeEntryCount = ScheduleTable->EntryCount;
@@ -172,7 +172,7 @@ void LinMaster_Schedule_DeInit(void)
     }
     
     /* 重置控制块 */
-    memset(&g_ScheduleCtrl, 0, sizeof(g_ScheduleCtrl));
+    (void)memset(&g_ScheduleCtrl, 0, sizeof(g_ScheduleCtrl));
 }
 
 /**
@@ -353,7 +353,7 @@ Std_ReturnType LinMaster_Schedule_AddEntry(const LinMaster_ScheduleEntryType* En
     }
     
     /* 复制条目到运行时缓存 */
-    memcpy(&g_ScheduleCtrl.RuntimeEntries[g_ScheduleCtrl.RuntimeEntryCount],
+    (void)memcpy(&g_ScheduleCtrl.RuntimeEntries[g_ScheduleCtrl.RuntimeEntryCount],
            Entry, sizeof(LinMaster_ScheduleEntryType));
     g_ScheduleCtrl.RuntimeEntryCount++;
     
@@ -407,7 +407,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     /* 复制条目到运行时缓存(如果是静态表) */
     if (NewTable->Entries != NULL && NewTable->EntryCount > 0) {
         if (NewTable->EntryCount <= LINMASTER_SCHEDULE_MAX_ENTRIES) {
-            memcpy(g_ScheduleCtrl.RuntimeEntries,
+            (void)memcpy(g_ScheduleCtrl.RuntimeEntries,
                    NewTable->Entries,
                    NewTable->EntryCount * sizeof(LinMaster_ScheduleEntryType));
             g_ScheduleCtrl.RuntimeEntryCount = NewTable->EntryCount;
@@ -434,7 +434,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     /* 自动启动新调度表 */
     g_ScheduleCtrl.State = LINMASTER_SCHEDULE_STATE_IDLE;
     g_ScheduleCtrl.CurrentEntryStartTime = LinMaster_Schedule_GetSystemTime();
-    LinMaster_Schedule_Start();
+    (void)LinMaster_Schedule_Start();
     
     return E_OK;
 }

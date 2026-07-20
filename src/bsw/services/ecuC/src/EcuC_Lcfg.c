@@ -149,7 +149,7 @@ static const EcuC_RoutingPathType EcuC_RoutingPaths[] = {
 
 /*==================[Module Configuration]==================================*/
 
-const EcuC_ConfigType EcuC_Config = {
+static const EcuC_ConfigType EcuC_Config = {
     .PduCount = 3U,
     .SignalCount = 6U,
     .RoutingPathCount = 2U,

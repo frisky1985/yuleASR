@@ -31,10 +31,10 @@ static uint32_t    bib_calc_crc(const Boot_InfoBlock *bib);
 Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
 {
     if (g_ctx_valid) {
-        Boot_Update_Abort();
+        (void)Boot_Update_Abort();
     }
 
-    memset(&g_ctx, 0, sizeof(g_ctx));
+    (void)memset(&g_ctx, 0, sizeof(g_ctx));
     g_ctx.slot_addr    = slot_addr;
     g_ctx.image_type   = image_type;
     g_ctx.active       = TRUE;
@@ -89,7 +89,7 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 
     /* 1. Build and write image header */
     Boot_ImageHeader hdr;
-    memset(&hdr, 0, sizeof(hdr));
+    (void)memset(&hdr, 0, sizeof(hdr));
     hdr.magic        = BOOT_IMAGE_MAGIC;
     hdr.image_type   = (uint32_t)image_type;
     hdr.version      = version;
@@ -111,7 +111,7 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
         uint32_t total = 0U;
         while (remaining > 0U) {
             uint32_t chunk = (remaining < sizeof(page_buf)) ? remaining : sizeof(page_buf);
-            Boot_Flash_Read(g_ctx.slot_addr + sizeof(Boot_ImageHeader) + off, page_buf, chunk);
+            (void)Boot_Flash_Read(g_ctx.slot_addr + sizeof(Boot_ImageHeader) + off, page_buf, chunk);
             off += chunk;
             remaining -= chunk;
             total += chunk;
@@ -161,7 +161,7 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 
 Boot_Result Boot_Update_Abort(void)
 {
-    memset(&g_ctx, 0, sizeof(g_ctx));
+    (void)memset(&g_ctx, 0, sizeof(g_ctx));
     g_ctx_valid = FALSE;
     return BOOT_OK;
 }

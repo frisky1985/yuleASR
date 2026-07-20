@@ -207,7 +207,7 @@ Std_ReturnType E2E_P07Check(
     if (Length > 256U) {
         return E2E_E_INPUTERR_WRONG;
     }
-    memcpy(tempData, Data, Length);
+    (void)memcpy(tempData, Data, Length);
     E2E_P07_WriteCRC(tempData, Config->CRCOffset, 0U);
 
     /* Calculate expected CRC */

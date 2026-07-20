@@ -303,7 +303,7 @@ const Fls_ConfigType Fls_Config =
  ************************************************************************************/
 
 /* Get Sector Configuration by Index */
-const Fls_SectorConfigType* Fls_GetSectorConfig(uint32 SectorIndex)
+static const Fls_SectorConfigType* Fls_GetSectorConfig(uint32 SectorIndex)
 {
     const Fls_SectorConfigType* SectorConfigPtr = NULL_PTR;
     
@@ -316,7 +316,7 @@ const Fls_SectorConfigType* Fls_GetSectorConfig(uint32 SectorIndex)
 }
 
 /* Get Sector Index by Address */
-sint32 Fls_GetSectorIndexByAddress(uint32 Address)
+static sint32 Fls_GetSectorIndexByAddress(uint32 Address)
 {
     sint32 SectorIndex = -1;
     uint32 i;
@@ -335,7 +335,7 @@ sint32 Fls_GetSectorIndexByAddress(uint32 Address)
 }
 
 /* Get Sector Size by Index */
-uint32 Fls_GetSectorSize(uint32 SectorIndex)
+static uint32 Fls_GetSectorSize(uint32 SectorIndex)
 {
     uint32 SectorSize = 0U;
     

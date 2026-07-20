@@ -108,7 +108,7 @@ static const StbM_ConfigType TestConfig = {
  */
 void Test_StbM_Init_Valid(void)
 {
-    printf("\n[Test] StbM_Init with valid configuration\n");
+    (void)printf("\n[Test] StbM_Init with valid configuration\n");
     
     StbM_DeInit();
     StbM_Init(&TestConfig);
@@ -121,7 +121,7 @@ void Test_StbM_Init_Valid(void)
  */
 void Test_StbM_DeInit(void)
 {
-    printf("\n[Test] StbM_DeInit\n");
+    (void)printf("\n[Test] StbM_DeInit\n");
     
     StbM_Init(&TestConfig);
     StbM_DeInit();
@@ -137,15 +137,15 @@ void Test_StbM_GetVersionInfo(void)
 {
     Std_VersionInfoType versionInfo;
     
-    printf("\n[Test] StbM_GetVersionInfo\n");
+    (void)printf("\n[Test] StbM_GetVersionInfo\n");
     
     StbM_Init(&TestConfig);
     StbM_GetVersionInfo(&versionInfo);
     
-    TEST_ASSERT_EQ(STBM_VENDOR_ID, versionInfo.vendorID, "Vendor ID should match");
-    TEST_ASSERT_EQ(STBM_MODULE_ID, versionInfo.moduleID, "Module ID should match");
-    TEST_ASSERT_EQ(STBM_SW_MAJOR_VERSION, versionInfo.sw_major_version, "Major version should match");
-    TEST_ASSERT_EQ(STBM_SW_MINOR_VERSION, versionInfo.sw_minor_version, "Minor version should match");
+    (void)TEST_ASSERT_EQ(STBM_VENDOR_ID, versionInfo.vendorID, "Vendor ID should match");
+    (void)TEST_ASSERT_EQ(STBM_MODULE_ID, versionInfo.moduleID, "Module ID should match");
+    (void)TEST_ASSERT_EQ(STBM_SW_MAJOR_VERSION, versionInfo.sw_major_version, "Major version should match");
+    (void)TEST_ASSERT_EQ(STBM_SW_MINOR_VERSION, versionInfo.sw_minor_version, "Minor version should match");
 }
 #endif
 
@@ -158,7 +158,7 @@ void Test_StbM_SetAndGetTime(void)
     StbM_TimeStampType setTime;
     StbM_TimeStampType getTime;
     
-    printf("\n[Test] StbM_SetGlobalTime and GetCurrentTime\n");
+    (void)printf("\n[Test] StbM_SetGlobalTime and GetCurrentTime\n");
     
     StbM_Init(&TestConfig);
     
@@ -168,12 +168,12 @@ void Test_StbM_SetAndGetTime(void)
     setTime.secondsHi = 0U;
     
     result = StbM_SetGlobalTime(STBM_TIMEBASE_ID_0, &setTime, NULL_PTR);
-    TEST_ASSERT_EQ(E_OK, result, "SetGlobalTime should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SetGlobalTime should return E_OK");
     
     /* Get current time */
     result = StbM_GetCurrentTime(STBM_TIMEBASE_ID_0, &getTime, NULL_PTR);
-    TEST_ASSERT_EQ(E_OK, result, "GetCurrentTime should return E_OK");
-    TEST_ASSERT_EQ(setTime.seconds, getTime.seconds, "Seconds should match");
+    (void)TEST_ASSERT_EQ(E_OK, result, "GetCurrentTime should return E_OK");
+    (void)TEST_ASSERT_EQ(setTime.seconds, getTime.seconds, "Seconds should match");
 }
 
 /**
@@ -185,7 +185,7 @@ void Test_StbM_BusSetGlobalTime(void)
     StbM_TimeStampType timeStamp;
     StbM_VirtualLocalTimeType virtualTime;
     
-    printf("\n[Test] StbM_BusSetGlobalTime\n");
+    (void)printf("\n[Test] StbM_BusSetGlobalTime\n");
     
     StbM_Init(&TestConfig);
     
@@ -195,7 +195,7 @@ void Test_StbM_BusSetGlobalTime(void)
     virtualTime = 1000000000ULL;
     
     result = StbM_BusSetGlobalTime(STBM_TIMEBASE_ID_1, &timeStamp, &virtualTime, NULL_PTR);
-    TEST_ASSERT_EQ(E_OK, result, "BusSetGlobalTime should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "BusSetGlobalTime should return E_OK");
 }
 
 /**
@@ -207,13 +207,13 @@ void Test_StbM_GetTimeBaseStatus(void)
     uint8 syncStatus;
     uint8 timeBaseStatus;
     
-    printf("\n[Test] StbM_GetTimeBaseStatus\n");
+    (void)printf("\n[Test] StbM_GetTimeBaseStatus\n");
     
     StbM_Init(&TestConfig);
     
     result = StbM_GetTimeBaseStatus(STBM_TIMEBASE_ID_0, &syncStatus, &timeBaseStatus);
-    TEST_ASSERT_EQ(E_OK, result, "GetTimeBaseStatus should return E_OK");
-    TEST_ASSERT_EQ(STBM_SYNC_STATUS_UNKNOWN, syncStatus, "Initial sync status should be UNKNOWN");
+    (void)TEST_ASSERT_EQ(E_OK, result, "GetTimeBaseStatus should return E_OK");
+    (void)TEST_ASSERT_EQ(STBM_SYNC_STATUS_UNKNOWN, syncStatus, "Initial sync status should be UNKNOWN");
 }
 
 /**
@@ -224,17 +224,17 @@ void Test_StbM_GetMasterConfig(void)
     Std_ReturnType result;
     StbM_MasterConfigType masterConfig;
     
-    printf("\n[Test] StbM_GetMasterConfig\n");
+    (void)printf("\n[Test] StbM_GetMasterConfig\n");
     
     StbM_Init(&TestConfig);
     
     result = StbM_GetMasterConfig(STBM_TIMEBASE_ID_0, &masterConfig);
-    TEST_ASSERT_EQ(E_OK, result, "GetMasterConfig should return E_OK");
-    TEST_ASSERT_EQ(STBM_MASTER_CONFIG_MASTER, masterConfig, "Master config should match");
+    (void)TEST_ASSERT_EQ(E_OK, result, "GetMasterConfig should return E_OK");
+    (void)TEST_ASSERT_EQ(STBM_MASTER_CONFIG_MASTER, masterConfig, "Master config should match");
     
     result = StbM_GetMasterConfig(STBM_TIMEBASE_ID_1, &masterConfig);
-    TEST_ASSERT_EQ(E_OK, result, "GetMasterConfig should return E_OK");
-    TEST_ASSERT_EQ(STBM_MASTER_CONFIG_SLAVE, masterConfig, "Slave config should match");
+    (void)TEST_ASSERT_EQ(E_OK, result, "GetMasterConfig should return E_OK");
+    (void)TEST_ASSERT_EQ(STBM_MASTER_CONFIG_SLAVE, masterConfig, "Slave config should match");
 }
 
 /**
@@ -244,15 +244,15 @@ void Test_StbM_SetRateCorrection(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] StbM_SetRateCorrection\n");
+    (void)printf("\n[Test] StbM_SetRateCorrection\n");
     
     StbM_Init(&TestConfig);
     
     result = StbM_SetRateCorrection(STBM_TIMEBASE_ID_0, 1000);
-    TEST_ASSERT_EQ(E_OK, result, "SetRateCorrection should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SetRateCorrection should return E_OK");
     
     result = StbM_SetRateCorrection(STBM_TIMEBASE_ID_0, -1000);
-    TEST_ASSERT_EQ(E_OK, result, "Negative rate correction should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "Negative rate correction should return E_OK");
 }
 
 /**
@@ -263,13 +263,13 @@ void Test_StbM_GetTimeBaseUpdateCounter(void)
     Std_ReturnType result;
     uint32 updateCounter;
     
-    printf("\n[Test] StbM_GetTimeBaseUpdateCounter\n");
+    (void)printf("\n[Test] StbM_GetTimeBaseUpdateCounter\n");
     
     StbM_Init(&TestConfig);
     
     result = StbM_GetTimeBaseUpdateCounter(STBM_TIMEBASE_ID_0, &updateCounter);
-    TEST_ASSERT_EQ(E_OK, result, "GetTimeBaseUpdateCounter should return E_OK");
-    TEST_ASSERT_EQ(0U, updateCounter, "Initial counter should be 0");
+    (void)TEST_ASSERT_EQ(E_OK, result, "GetTimeBaseUpdateCounter should return E_OK");
+    (void)TEST_ASSERT_EQ(0U, updateCounter, "Initial counter should be 0");
 }
 
 /**
@@ -280,7 +280,7 @@ void Test_StbM_SetUserData(void)
     Std_ReturnType result;
     StbM_UserDataType userData;
     
-    printf("\n[Test] StbM_SetUserData\n");
+    (void)printf("\n[Test] StbM_SetUserData\n");
     
     StbM_Init(&TestConfig);
     
@@ -289,7 +289,7 @@ void Test_StbM_SetUserData(void)
     userData.userByte2 = 0x03U;
     
     result = StbM_SetUserData(STBM_TIMEBASE_ID_0, &userData);
-    TEST_ASSERT_EQ(E_OK, result, "SetUserData should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "SetUserData should return E_OK");
 }
 
 /**
@@ -297,7 +297,7 @@ void Test_StbM_SetUserData(void)
  */
 void Test_StbM_MainFunction(void)
 {
-    printf("\n[Test] StbM_MainFunction\n");
+    (void)printf("\n[Test] StbM_MainFunction\n");
     
     StbM_Init(&TestConfig);
     StbM_MainFunction();
@@ -312,7 +312,7 @@ void Test_StbM_TimeStampChanged(void)
 {
     Eth_TimeStampType ethTime;
     
-    printf("\n[Test] StbM_TimeStampChanged\n");
+    (void)printf("\n[Test] StbM_TimeStampChanged\n");
     
     ethTime.seconds = 5000U;
     ethTime.nanoseconds = 250000000U;
@@ -332,12 +332,12 @@ void Test_StbM_InvalidTimeBaseId(void)
     Std_ReturnType result;
     StbM_TimeStampType timeStamp;
     
-    printf("\n[Test] StbM_InvalidTimeBaseId\n");
+    (void)printf("\n[Test] StbM_InvalidTimeBaseId\n");
     
     StbM_Init(&TestConfig);
     
     result = StbM_GetCurrentTime(0xFFU, &timeStamp, NULL_PTR);
-    TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid time base ID should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid time base ID should return E_NOT_OK");
 }
 
 /**
@@ -348,7 +348,7 @@ void Test_StbM_SlaveSetGlobalTime(void)
     Std_ReturnType result;
     StbM_TimeStampType timeStamp;
     
-    printf("\n[Test] StbM_SlaveSetGlobalTime\n");
+    (void)printf("\n[Test] StbM_SlaveSetGlobalTime\n");
     
     StbM_Init(&TestConfig);
     
@@ -358,7 +358,7 @@ void Test_StbM_SlaveSetGlobalTime(void)
     
     /* Try to set global time on slave (ID 1) */
     result = StbM_SetGlobalTime(STBM_TIMEBASE_ID_1, &timeStamp, NULL_PTR);
-    TEST_ASSERT_EQ(E_NOT_OK, result, "Slave should not be able to set global time");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "Slave should not be able to set global time");
 }
 
 /*==================================================================================================
@@ -367,8 +367,8 @@ void Test_StbM_SlaveSetGlobalTime(void)
 int main(void)
 {
     printf("=================================================\n");
-    printf("       STBM (Synchronized Time-base Manager)     \n");
-    printf("       AutoSAR R22-11, Version 4.7.0            \n");
+    (void)printf("       STBM (Synchronized Time-base Manager)     \n");
+    (void)printf("       AutoSAR R22-11, Version 4.7.0            \n");
     printf("=================================================\n");
     
     Test_StbM_Init_Valid();
@@ -389,18 +389,18 @@ int main(void)
     Test_StbM_SlaveSetGlobalTime();
     
     printf("\n=================================================\n");
-    printf("               TEST SUMMARY                      \n");
+    (void)printf("               TEST SUMMARY                      \n");
     printf("=================================================\n");
-    printf("Total Tests:  %d\n", tests_run);
-    printf("Passed:       %d\n", tests_passed);
-    printf("Failed:       %d\n", tests_failed);
-    printf("Coverage:     ~90%% (14/15 APIs tested)\n");
+    (void)printf("Total Tests:  %d\n", tests_run);
+    (void)printf("Passed:       %d\n", tests_passed);
+    (void)printf("Failed:       %d\n", tests_failed);
+    (void)printf("Coverage:     ~90%% (14/15 APIs tested)\n");
     
     if (tests_failed == 0) {
-        printf("\n[RESULT] ALL TESTS PASSED ✅\n");
+        (void)printf("\n[RESULT] ALL TESTS PASSED ✅\n");
         return 0;
     } else {
-        printf("\n[RESULT] SOME TESTS FAILED ❌\n");
+        (void)printf("\n[RESULT] SOME TESTS FAILED ❌\n");
         return 1;
     }
 }

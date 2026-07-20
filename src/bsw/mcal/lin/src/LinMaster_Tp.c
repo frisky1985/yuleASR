@@ -53,7 +53,7 @@ static void LinMaster_Tp_SetPendingTx(uint16 Length, const uint8* DataPtr);
  */
 LinMaster_Tp_StatusType LinMaster_Tp_Init(void)
 {
-    memset(&TpChannel, 0, sizeof(LinMaster_Tp_ChannelType));
+    (void)memset(&TpChannel, 0, sizeof(LinMaster_Tp_ChannelType));
     TpChannel.State = LINMASTER_TP_STATE_IDLE;
     TpChannel.ChannelId = 0;
     TpChannel.BlockSize = LINMASTER_TP_BS_DEFAULT;
@@ -77,7 +77,7 @@ void LinMaster_Tp_DeInit(void)
  */
 static void LinMaster_Tp_ResetChannel(void)
 {
-    memset(&TpChannel, 0, sizeof(LinMaster_Tp_ChannelType));
+    (void)memset(&TpChannel, 0, sizeof(LinMaster_Tp_ChannelType));
     TpChannel.State = LINMASTER_TP_STATE_IDLE;
     TpChannel.ChannelId = 0;
     TpChannel.BlockSize = LINMASTER_TP_BS_DEFAULT;
@@ -127,7 +127,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendFirstFrame(uint16 Length, const 
     uint8 i;
     
     /* 保存发送数据到通道缓冲区 */
-    memcpy(TpChannel.TxBuffer, DataPtr, Length);
+    (void)memcpy(TpChannel.TxBuffer, DataPtr, Length);
     TpChannel.TxLength = Length;
     TpChannel.TxOffset = 0;
     
@@ -409,9 +409,9 @@ void LinMaster_Tp_MainFunction(void)
             /* 检查STmin时间是否到达，发送下一帧 */
             if (TpChannel.STmin == 0) {
                 /* STmin=0表示立即发送 */
-                LinMaster_Tp_SendConsecutiveFrame();
+                (void)LinMaster_Tp_SendConsecutiveFrame();
             } else if (TpChannel.Timer >= (uint32)(TpChannel.STmin)) {
-                LinMaster_Tp_SendConsecutiveFrame();
+                (void)LinMaster_Tp_SendConsecutiveFrame();
                 TpChannel.Timer = 0;
             }
             break;

@@ -98,8 +98,8 @@ LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
     }
     
     /* 清零缓冲区 */
-    memset(LinSlave_RxBuffer, 0, sizeof(LinSlave_RxBuffer));
-    memset(LinSlave_TxBuffer, 0, sizeof(LinSlave_TxBuffer));
+    (void)memset(LinSlave_RxBuffer, 0, sizeof(LinSlave_RxBuffer));
+    (void)memset(LinSlave_TxBuffer, 0, sizeof(LinSlave_TxBuffer));
     LinSlave_RxIndex = 0;
     LinSlave_TxLength = 0;
     LinSlave_TxIndex = 0;
@@ -117,8 +117,8 @@ LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
     LinSlave_LastError = LINSLAVE_ERROR_NONE;
     
     /* v2.0: 初始化TP和UDS层 */
-    LinSlave_Tp_Init();
-    LinSlave_Uds_Init();
+    (void)LinSlave_Tp_Init();
+    (void)LinSlave_Uds_Init();
     LinSlave_Uds_RegisterDefaultServices();
     
     return LINSLAVE_OK;
@@ -149,8 +149,8 @@ LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType*
     LinSlave_Hal_UartInit(ConfigTable->BaudRate);
     
     /* 清零缓冲区 */
-    memset(LinSlave_RxBuffer, 0, sizeof(LinSlave_RxBuffer));
-    memset(LinSlave_TxBuffer, 0, sizeof(LinSlave_TxBuffer));
+    (void)memset(LinSlave_RxBuffer, 0, sizeof(LinSlave_RxBuffer));
+    (void)memset(LinSlave_TxBuffer, 0, sizeof(LinSlave_TxBuffer));
     LinSlave_RxIndex = 0;
     LinSlave_TxLength = 0;
     LinSlave_TxIndex = 0;
@@ -169,8 +169,8 @@ LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType*
     
     /* 初始化TP和UDS层 (如果使用诊断) */
     if (ConfigTable->UseDiagnostic) {
-        LinSlave_Tp_Init();
-        LinSlave_Uds_Init();
+        (void)LinSlave_Tp_Init();
+        (void)LinSlave_Uds_Init();
         LinSlave_Uds_RegisterDefaultServices();
     }
     
@@ -191,8 +191,8 @@ void LinSlave_DeInit(void)
     LinSlave_Hal_DisableBreakDetection();
     
     /* 清零缓冲区 */
-    memset(LinSlave_RxBuffer, 0, sizeof(LinSlave_RxBuffer));
-    memset(LinSlave_TxBuffer, 0, sizeof(LinSlave_TxBuffer));
+    (void)memset(LinSlave_RxBuffer, 0, sizeof(LinSlave_RxBuffer));
+    (void)memset(LinSlave_TxBuffer, 0, sizeof(LinSlave_TxBuffer));
     
     /* 重置状态 */
     LinSlave_ConfigPtr = NULL_PTR;
@@ -565,7 +565,7 @@ LinSlave_StatusType LinSlave_SetResponseData(const uint8* DataPtr, uint8 Length)
 #endif
     
     /* 复制数据到发送缓冲区 */
-    memcpy(LinSlave_TxBuffer, DataPtr, Length);
+    (void)memcpy(LinSlave_TxBuffer, DataPtr, Length);
     LinSlave_TxLength = Length;
     
     return LINSLAVE_OK;

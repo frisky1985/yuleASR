@@ -148,7 +148,7 @@ const LinTp_ConfigType LinTp_Config =
 #define LINTP_START_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"
 
-const LinTp_ConfigType LinTp_Config_Variant_1 =
+static const LinTp_ConfigType LinTp_Config_Variant_1 =
 {
     LinTp_ChannelConfig,
     LinTp_NsduConfig,
@@ -199,7 +199,7 @@ static const LinTp_ChannelConfigType LinTp_ChannelConfig_Extended[LINTP_MAX_CHAN
 #define LINTP_START_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"
 
-const LinTp_ConfigType LinTp_Config_Variant_2 =
+static const LinTp_ConfigType LinTp_Config_Variant_2 =
 {
     LinTp_ChannelConfig_Extended,
     LinTp_NsduConfig,
@@ -219,12 +219,12 @@ const LinTp_ConfigType LinTp_Config_Variant_2 =
 #define LINTP_START_SEC_CONST_UNSPECIFIED
 #include "MemMap.h"
 
-const LinTp_ChannelConfigType* LinTp_GetChannelConfigPtr(void)
+static const LinTp_ChannelConfigType* LinTp_GetChannelConfigPtr(void)
 {
     return LinTp_ChannelConfig;
 }
 
-const LinTp_NsduConfigType* LinTp_GetNsduConfigPtr(void)
+static const LinTp_NsduConfigType* LinTp_GetNsduConfigPtr(void)
 {
     return LinTp_NsduConfig;
 }

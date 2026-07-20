@@ -254,7 +254,7 @@ Std_ReturnType E2E_P05Check(
     }
     
     /* Copy data to temporary buffer to clear CRC field */
-    memcpy(tempData, Data, Config->DataLength);
+    (void)memcpy(tempData, Data, Config->DataLength);
     E2E_P05_WriteCRC(tempData, Config->CRCOffset, 0ULL);
     
     /* Read received CRC */

@@ -67,7 +67,7 @@ static MemIf_JobResultType MemIf_Ea_GetJobResultWrapper(void);
  ******************************************************************************/
 
 /** @brief Device abstraction table - mapped to actual drivers */
-const MemIf_DeviceAbstractionType MemIf_Devices[MEMIF_NUMBER_OF_DEVICES] = {
+static const MemIf_DeviceAbstractionType MemIf_Devices[MEMIF_NUMBER_OF_DEVICES] = {
     /* Device 0: Fee (Flash EEPROM Emulation) */
     {
         .DeviceIndex = MEMIF_FEE_DEVICE_INDEX,
@@ -280,7 +280,7 @@ typedef struct {
 } MemIf_HardwareMappingType;
 
 /** @brief Hardware mapping configuration */
-const MemIf_HardwareMappingType MemIf_HardwareMap[MEMIF_NUMBER_OF_DEVICES] = {
+static const MemIf_HardwareMappingType MemIf_HardwareMap[MEMIF_NUMBER_OF_DEVICES] = {
     /* Fee Device - Flash EEPROM Emulation */
     {
         .DeviceIndex = MEMIF_FEE_DEVICE_INDEX,
@@ -354,7 +354,7 @@ typedef struct {
 } MemIf_RuntimeConfigType;
 
 /** @brief Runtime configuration instance */
-const MemIf_RuntimeConfigType MemIf_RuntimeConfig = {
+static const MemIf_RuntimeConfigType MemIf_RuntimeConfig = {
     .NumberOfDevices = MEMIF_NUMBER_OF_DEVICES,
     .NumberOfFeeDevices = MEMIF_NUMBER_OF_FEE_DEVICES,
     .NumberOfEaDevices = MEMIF_NUMBER_OF_EA_DEVICES,
@@ -377,7 +377,7 @@ typedef struct {
     uint8 PatchVersion;
 } MemIf_VersionCheckType;
 
-const MemIf_VersionCheckType MemIf_LcfgVersion = {
+static const MemIf_VersionCheckType MemIf_LcfgVersion = {
     .VendorID = MEMIF_VENDOR_ID,
     .ModuleID = MEMIF_MODULE_ID,
     .MajorVersion = MEMIF_SW_MAJOR_VERSION,

@@ -24,7 +24,7 @@
  * Table generated using standard byte-oriented CRC algorithm
  ==================================================================================================*/
 #if (CRC_8_MODE == STD_ON) && (CRC_8_TABLE_MODE == STD_ON)
-const uint8 Crc_8_Table[CRC_8_TABLE_SIZE] = {
+static const uint8 Crc_8_Table[CRC_8_TABLE_SIZE] = {
     0x00, 0x1D, 0x3A, 0x27, 0x74, 0x69, 0x4E, 0x53,
     0xE8, 0xF5, 0xD2, 0xCF, 0x9C, 0x81, 0xA6, 0xBB,
     0xCD, 0xD0, 0xF7, 0xEA, 0xB9, 0xA4, 0x83, 0x9E,
@@ -66,7 +66,7 @@ const uint8 Crc_8_Table[CRC_8_TABLE_SIZE] = {
  * Table format: crc = (crc << 8) ^ table[((crc >> 8) ^ data) & 0xFF]
  ==================================================================================================*/
 #if (CRC_16_MODE == STD_ON) && (CRC_16_TABLE_MODE == STD_ON)
-const uint16 Crc_16_Table[CRC_16_TABLE_SIZE] = {
+static const uint16 Crc_16_Table[CRC_16_TABLE_SIZE] = {
     0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50A5, 0x60C6, 0x70E7,
     0x8108, 0x9129, 0xA14A, 0xB16B, 0xC18C, 0xD1AD, 0xE1CE, 0xF1EF,
     0x1231, 0x0210, 0x3273, 0x2252, 0x52B5, 0x4294, 0x72F7, 0x62D6,
@@ -108,7 +108,7 @@ const uint16 Crc_16_Table[CRC_16_TABLE_SIZE] = {
  * Table format: crc = (crc << 8) ^ table[((crc >> 24) ^ data) & 0xFF]
  ==================================================================================================*/
 #if (CRC_32_MODE == STD_ON) && (CRC_32_TABLE_MODE == STD_ON)
-const uint32 Crc_32_Table[CRC_32_TABLE_SIZE] = {
+static const uint32 Crc_32_Table[CRC_32_TABLE_SIZE] = {
     0x00000000, 0x04C11DB7, 0x09823B6E, 0x0D4326D9,
     0x130476DC, 0x17C56B6B, 0x1A864DB2, 0x1E475005,
     0x2608EDB8, 0x22C9F00F, 0x2F8AD6D6, 0x2B4BCB61,

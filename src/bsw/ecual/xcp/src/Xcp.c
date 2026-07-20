@@ -79,11 +79,11 @@ void Xcp_Init(const void *config)
     Xcp_CommandCounter = 0;
 
     /* Clear response buffer */
-    memset(Xcp_ResBuffer, 0, sizeof(Xcp_ResBuffer));
+    (void)memset(Xcp_ResBuffer, 0, sizeof(Xcp_ResBuffer));
     Xcp_ResLen = 0;
 
     /* Clear DAQ lists */
-    memset(Xcp_DaqListsRuntime, 0, sizeof(Xcp_DaqListsRuntime));
+    (void)memset(Xcp_DaqListsRuntime, 0, sizeof(Xcp_DaqListsRuntime));
     for (uint8 i = 0; i < XCP_MAX_DAQ_LISTS; i++) {
         Xcp_DaqListsRuntime[i].state = XCP_DAQ_STATE_STOPPED;
         Xcp_DaqListsRuntime[i].selected = FALSE;
@@ -260,7 +260,7 @@ void Xcp_CmdConnect(const uint8 *cmd)
     (void)mode;
 
     /* Build positive response */
-    memset(Xcp_ResBuffer, 0, XCP_CTO_SIZE);
+    (void)memset(Xcp_ResBuffer, 0, XCP_CTO_SIZE);
     Xcp_ResBuffer[0] = 0xFF; /* PID = OK */
     Xcp_ResBuffer[1] = XCP_RESOURCE_CAL_PAG | XCP_RESOURCE_DAQ; /* Resource */
     Xcp_ResBuffer[2] = XCP_CTO_SIZE; /* Comm mode basic */
@@ -937,7 +937,7 @@ static void Xcp_SendPacket(const uint8 *data, uint8 len)
 {
     /* Copy to TX buffer */
     if ((data != NULL) && (len <= XCP_CTO_SIZE)) {
-        memcpy(Xcp_TxBuffer, data, len);
+        (void)memcpy(Xcp_TxBuffer, data, len);
         /* In a full implementation, call transport layer TX function */
         /* e.g., CanIf_Transmit() for XCP on CAN */
         (void)Xcp_TxConfirmation;

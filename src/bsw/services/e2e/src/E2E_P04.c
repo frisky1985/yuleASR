@@ -206,7 +206,7 @@ Std_ReturnType E2E_P04Check(
     
     /* Temporarily clear CRC for calculation */
     uint8 tempData[E2E_MAX_DATA_LENGTH_P04];
-    memcpy(tempData, Data, Config->DataLength);
+    (void)memcpy(tempData, Data, Config->DataLength);
     tempData[Config->CRCOffset] = 0U;
     tempData[Config->CRCOffset + 1U] = 0U;
     tempData[Config->CRCOffset + 2U] = 0U;

@@ -18,7 +18,7 @@
 /* Context Configuration Table */
 /* Pre-configured contexts for the DLT module */
 
-const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
+static const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
     /* Context 0: Default/Application Context */
     {
         .appId = 0x44454641,        /* "DEFA" - Default Application */
@@ -313,7 +313,7 @@ const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
 Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
 
 /* Buffer Configuration */
-Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
+static Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
     /* Buffer 0: High Priority */
     {
         .data = {0},
@@ -351,7 +351,7 @@ Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
 /* Log Level Configuration Table */
 /* Default log levels for different system states */
 
-const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
+static const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
     DLT_LOG_OFF,        /* State 0: Production - No logging */
     DLT_LOG_FATAL,      /* State 1: Fatal errors only */
     DLT_LOG_ERROR,      /* State 2: Errors only */
@@ -365,7 +365,7 @@ const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
 /* Trace Configuration Table */
 /* Default trace status for different system states */
 
-const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8] = {
+static const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8] = {
     DLT_TRACE_STATUS_OFF,   /* State 0: Production - Tracing off */
     DLT_TRACE_STATUS_OFF,   /* State 1: Tracing off */
     DLT_TRACE_STATUS_OFF,   /* State 2: Tracing off */
@@ -387,7 +387,7 @@ const uint8 Dlt_ProtocolVersionMajor = DLT_PROTOCOL_VERSION_MAJOR;
 const uint8 Dlt_ProtocolVersionMinor = DLT_PROTOCOL_VERSION_MINOR;
 
 /* Buffer Size Configuration */
-const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
+static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
     DLT_BUFFER_SIZE,    /* Buffer 0 */
     DLT_BUFFER_SIZE,    /* Buffer 1 */
     DLT_BUFFER_SIZE,    /* Buffer 2 */
@@ -395,7 +395,7 @@ const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
 };
 
 /* Buffer Priority Configuration */
-const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
+static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
     0,  /* Buffer 0: Highest */
     1,  /* Buffer 1: High */
     2,  /* Buffer 2: Normal */
@@ -411,7 +411,7 @@ typedef struct {
     uint16 contextCount;
 } Dlt_ContextGroupType;
 
-const Dlt_ContextGroupType Dlt_ContextGroups[] = {
+static const Dlt_ContextGroupType Dlt_ContextGroups[] = {
     {0x44454641, 0, 1},     /* DEFA group */
     {0x4543554D, 1, 1},     /* ECUM group */
     {0x4F535F5F, 2, 1},     /* OS__ group */
@@ -463,7 +463,7 @@ typedef struct {
     boolean enabled;
 } Dlt_LogFilterType;
 
-Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
+static Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
     {0x44454641, 0x434D444C, DLT_LOG_INFO, TRUE},
     {0x4543554D, 0x4D41494E, DLT_LOG_DEBUG, TRUE},
     {0x4F535F5F, 0x4B45524E, DLT_LOG_WARN, TRUE},

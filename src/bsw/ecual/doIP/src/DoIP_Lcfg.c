@@ -242,7 +242,7 @@ const DoIP_ConfigType DoIP_Config =
 ================================================================================*/
 
 /* Logical address mapping table for diagnostic message routing */
-const uint16 DoIP_LogicalAddressTable[] =
+static const uint16 DoIP_LogicalAddressTable[] =
 {
     DOIP_LOCAL_LOGICAL_ADDRESS,    /* Local ECU */
     0x0002,                        /* Example ECU 2 */
@@ -258,7 +258,7 @@ const uint16 DoIP_LogicalAddressTable[] =
 ================================================================================*/
 
 /* PDU routing configuration for DoIP <-> PduR interface */
-const PduIdType DoIP_PduRRoutingTable[] =
+static const PduIdType DoIP_PduRRoutingTable[] =
 {
     /* RX PDUs - Incoming diagnostic messages to PduR */
     DOIP_PDUR_RX_PDU_ID_BASE + 0,  /* Tester 0 diagnostic requests */
@@ -281,7 +281,7 @@ const PduIdType DoIP_PduRRoutingTable[] =
 ================================================================================*/
 
 /* Connection timeout values (in milliseconds) */
-const uint16 DoIP_ConnectionTimeouts[] =
+static const uint16 DoIP_ConnectionTimeouts[] =
 {
     DOIP_GENERAL_INACTIVITY_TIMEOUT,  /* General inactivity timeout */
     DOIP_ALIVE_CHECK_RESPONSE_TIMEOUT, /* Alive check response timeout */

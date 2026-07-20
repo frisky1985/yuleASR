@@ -107,7 +107,7 @@ static const SomeIpTp_ConfigType TestConfig = {
  */
 void Test_SomeIpTp_Init_Valid(void)
 {
-    printf("\n[Test] SomeIpTp_Init with valid configuration\n");
+    (void)printf("\n[Test] SomeIpTp_Init with valid configuration\n");
     
     SomeIpTp_DeInit();
     SomeIpTp_Init(&TestConfig);
@@ -120,7 +120,7 @@ void Test_SomeIpTp_Init_Valid(void)
  */
 void Test_SomeIpTp_DeInit(void)
 {
-    printf("\n[Test] SomeIpTp_DeInit\n");
+    (void)printf("\n[Test] SomeIpTp_DeInit\n");
     
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_DeInit();
@@ -136,15 +136,15 @@ void Test_SomeIpTp_GetVersionInfo(void)
 {
     Std_VersionInfoType versionInfo;
     
-    printf("\n[Test] SomeIpTp_GetVersionInfo\n");
+    (void)printf("\n[Test] SomeIpTp_GetVersionInfo\n");
     
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_GetVersionInfo(&versionInfo);
     
-    TEST_ASSERT_EQ(SOMEIPTP_VENDOR_ID, versionInfo.vendorID, "Vendor ID should match");
-    TEST_ASSERT_EQ(SOMEIPTP_MODULE_ID, versionInfo.moduleID, "Module ID should match");
-    TEST_ASSERT_EQ(SOMEIPTP_SW_MAJOR_VERSION, versionInfo.sw_major_version, "Major version should match");
-    TEST_ASSERT_EQ(SOMEIPTP_SW_MINOR_VERSION, versionInfo.sw_minor_version, "Minor version should match");
+    (void)TEST_ASSERT_EQ(SOMEIPTP_VENDOR_ID, versionInfo.vendorID, "Vendor ID should match");
+    (void)TEST_ASSERT_EQ(SOMEIPTP_MODULE_ID, versionInfo.moduleID, "Module ID should match");
+    (void)TEST_ASSERT_EQ(SOMEIPTP_SW_MAJOR_VERSION, versionInfo.sw_major_version, "Major version should match");
+    (void)TEST_ASSERT_EQ(SOMEIPTP_SW_MINOR_VERSION, versionInfo.sw_minor_version, "Minor version should match");
 }
 #endif
 
@@ -160,15 +160,15 @@ void Test_SomeIpTp_TpHeader(void)
     boolean moreIn = TRUE;
     boolean moreOut = FALSE;
     
-    printf("\n[Test] SomeIpTp_BuildTpHeader and ParseTpHeader\n");
+    (void)printf("\n[Test] SomeIpTp_BuildTpHeader and ParseTpHeader\n");
     
     result = SomeIpTp_BuildTpHeader(offsetIn, moreIn, buffer);
-    TEST_ASSERT_EQ(E_OK, result, "BuildTpHeader should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "BuildTpHeader should return E_OK");
     
     result = SomeIpTp_ParseTpHeader(buffer, &offsetOut, &moreOut);
-    TEST_ASSERT_EQ(E_OK, result, "ParseTpHeader should return E_OK");
-    TEST_ASSERT_EQ(offsetIn, offsetOut, "Offset should match");
-    TEST_ASSERT_EQ(moreIn, moreOut, "MoreSegments flag should match");
+    (void)TEST_ASSERT_EQ(E_OK, result, "ParseTpHeader should return E_OK");
+    (void)TEST_ASSERT_EQ(offsetIn, offsetOut, "Offset should match");
+    (void)TEST_ASSERT_EQ(moreIn, moreOut, "MoreSegments flag should match");
 }
 
 /**
@@ -180,7 +180,7 @@ void Test_SomeIpTp_Transmit(void)
     uint8 testData[200];
     PduInfoType pduInfo;
     
-    printf("\n[Test] SomeIpTp_Transmit\n");
+    (void)printf("\n[Test] SomeIpTp_Transmit\n");
     
     memset(testData, 0xAB, sizeof(testData));
     pduInfo.SduDataPtr = testData;
@@ -192,8 +192,8 @@ void Test_SomeIpTp_Transmit(void)
     
     result = SomeIpTp_Transmit(SOMEIPTP_PDU_ID_CHANNEL_0_TX, &pduInfo, NULL_PTR, NULL_PTR);
     
-    TEST_ASSERT_EQ(E_OK, result, "Transmit should return E_OK");
-    TEST_ASSERT_EQ(TRUE, transmit_called, "SoAd_Transmit should be called");
+    (void)TEST_ASSERT_EQ(E_OK, result, "Transmit should return E_OK");
+    (void)TEST_ASSERT_EQ(TRUE, transmit_called, "SoAd_Transmit should be called");
 }
 
 /**
@@ -203,13 +203,13 @@ void Test_SomeIpTp_Transmit_Null(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SomeIpTp_Transmit with NULL pointer\n");
+    (void)printf("\n[Test] SomeIpTp_Transmit with NULL pointer\n");
     
     SomeIpTp_Init(&TestConfig);
     
     result = SomeIpTp_Transmit(SOMEIPTP_PDU_ID_CHANNEL_0_TX, NULL_PTR, NULL_PTR, NULL_PTR);
     
-    TEST_ASSERT_EQ(E_NOT_OK, result, "NULL pointer should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL pointer should return E_NOT_OK");
 }
 
 /**
@@ -219,13 +219,13 @@ void Test_SomeIpTp_CancelTransmit(void)
 {
     Std_ReturnType result;
     
-    printf("\n[Test] SomeIpTp_CancelTransmit\n");
+    (void)printf("\n[Test] SomeIpTp_CancelTransmit\n");
     
     SomeIpTp_Init(&TestConfig);
     
     result = SomeIpTp_CancelTransmit(SOMEIPTP_PDU_ID_CHANNEL_0_TX);
     
-    TEST_ASSERT_EQ(E_OK, result, "CancelTransmit should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "CancelTransmit should return E_OK");
 }
 
 /**
@@ -236,7 +236,7 @@ void Test_SomeIpTp_RxIndication(void)
     uint8 segmentData[104]; /* 4 bytes header + 100 bytes payload */
     PduInfoType pduInfo;
     
-    printf("\n[Test] SomeIpTp_RxIndication\n");
+    (void)printf("\n[Test] SomeIpTp_RxIndication\n");
     
     /* Build first segment */
     segmentData[0] = 0x40; /* More segments = 1 */
@@ -263,7 +263,7 @@ void Test_SomeIpTp_TxConfirmation(void)
     uint8 testData[200];
     PduInfoType pduInfo;
     
-    printf("\n[Test] SomeIpTp_TxConfirmation\n");
+    (void)printf("\n[Test] SomeIpTp_TxConfirmation\n");
     
     memset(testData, 0xAB, sizeof(testData));
     pduInfo.SduDataPtr = testData;
@@ -275,7 +275,7 @@ void Test_SomeIpTp_TxConfirmation(void)
     
     /* Start transmission */
     (void)SomeIpTp_Transmit(SOMEIPTP_PDU_ID_CHANNEL_0_TX, &pduInfo, NULL_PTR, NULL_PTR);
-    TEST_ASSERT_EQ(TRUE, transmit_called, "First segment should be sent");
+    (void)TEST_ASSERT_EQ(TRUE, transmit_called, "First segment should be sent");
     
     /* Confirm first segment */
     transmit_called = FALSE;
@@ -289,7 +289,7 @@ void Test_SomeIpTp_TxConfirmation(void)
  */
 void Test_SomeIpTp_MainFunction(void)
 {
-    printf("\n[Test] SomeIpTp_MainFunction\n");
+    (void)printf("\n[Test] SomeIpTp_MainFunction\n");
     
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_MainFunction();
@@ -305,12 +305,12 @@ void Test_SomeIpTp_GetRxBufferStatus(void)
     Std_ReturnType result;
     PduLengthType bufferSize;
     
-    printf("\n[Test] SomeIpTp_GetRxBufferStatus\n");
+    (void)printf("\n[Test] SomeIpTp_GetRxBufferStatus\n");
     
     SomeIpTp_Init(&TestConfig);
     result = SomeIpTp_GetRxBufferStatus(SOMEIPTP_PDU_ID_CHANNEL_0_RX, &bufferSize);
     
-    TEST_ASSERT_EQ(E_OK, result, "GetRxBufferStatus should return E_OK");
+    (void)TEST_ASSERT_EQ(E_OK, result, "GetRxBufferStatus should return E_OK");
     TEST_ASSERT(bufferSize > 0, "Buffer size should be greater than 0");
 }
 
@@ -322,7 +322,7 @@ void Test_SomeIpTp_CompleteReassembly(void)
     uint8 segmentData[54]; /* 4 bytes header + 50 bytes payload */
     PduInfoType pduInfo;
     
-    printf("\n[Test] SomeIpTp_CompleteReassembly\n");
+    (void)printf("\n[Test] SomeIpTp_CompleteReassembly\n");
     
     /* Build complete segment (single, no more segments) */
     segmentData[0] = 0x00; /* More segments = 0 */
@@ -350,7 +350,7 @@ void Test_SomeIpTp_InvalidPduId(void)
     uint8 testData[100];
     PduInfoType pduInfo;
     
-    printf("\n[Test] SomeIpTp_InvalidPduId\n");
+    (void)printf("\n[Test] SomeIpTp_InvalidPduId\n");
     
     pduInfo.SduDataPtr = testData;
     pduInfo.SduLength = 100U;
@@ -359,7 +359,7 @@ void Test_SomeIpTp_InvalidPduId(void)
     SomeIpTp_Init(&TestConfig);
     
     result = SomeIpTp_Transmit(0xFFFFU, &pduInfo, NULL_PTR, NULL_PTR);
-    TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid TxPduId should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "Invalid TxPduId should return E_NOT_OK");
 }
 
 /*==================================================================================================
@@ -368,8 +368,8 @@ void Test_SomeIpTp_InvalidPduId(void)
 int main(void)
 {
     printf("=================================================\n");
-    printf("       SOMEIPTP (SOME/IP Transport Protocol)     \n");
-    printf("       AutoSAR R22-11, Version 4.7.0            \n");
+    (void)printf("       SOMEIPTP (SOME/IP Transport Protocol)     \n");
+    (void)printf("       AutoSAR R22-11, Version 4.7.0            \n");
     printf("=================================================\n");
     
     Test_SomeIpTp_Init_Valid();
@@ -389,18 +389,18 @@ int main(void)
     Test_SomeIpTp_InvalidPduId();
     
     printf("\n=================================================\n");
-    printf("               TEST SUMMARY                      \n");
+    (void)printf("               TEST SUMMARY                      \n");
     printf("=================================================\n");
-    printf("Total Tests:  %d\n", tests_run);
-    printf("Passed:       %d\n", tests_passed);
-    printf("Failed:       %d\n", tests_failed);
-    printf("Coverage:     ~90%% (12/13 APIs tested)\n");
+    (void)printf("Total Tests:  %d\n", tests_run);
+    (void)printf("Passed:       %d\n", tests_passed);
+    (void)printf("Failed:       %d\n", tests_failed);
+    (void)printf("Coverage:     ~90%% (12/13 APIs tested)\n");
     
     if (tests_failed == 0) {
-        printf("\n[RESULT] ALL TESTS PASSED ✅\n");
+        (void)printf("\n[RESULT] ALL TESTS PASSED ✅\n");
         return 0;
     } else {
-        printf("\n[RESULT] SOME TESTS FAILED ❌\n");
+        (void)printf("\n[RESULT] SOME TESTS FAILED ❌\n");
         return 1;
     }
 }

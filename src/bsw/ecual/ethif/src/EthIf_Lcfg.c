@@ -45,7 +45,7 @@ static const EthIf_VlanConfigType EthIf_Vlans[ETHIF_MAX_VLANS] = {
 };
 
 /* Configuration */
-const EthIf_ConfigType EthIf_Config = {
+static const EthIf_ConfigType EthIf_Config = {
     .Controllers = EthIf_Controllers,
     .NumControllers = 2U,
     .Vlans = EthIf_Vlans,

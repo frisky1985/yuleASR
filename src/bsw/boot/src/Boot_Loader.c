@@ -32,14 +32,14 @@ void Boot_Loader_Main(void)
     Boot_Result ret;
 
     /* Phase 1: Init hardware minimally */
-    Boot_Flash_Init();
+    (void)Boot_Flash_Init();
 
     /* Phase 2: Load boot info block */
     Boot_InfoBlock bib;
     ret = load_bib(&bib);
     if (ret != BOOT_OK) {
         /* First boot or corrupted BIB → init fresh */
-        memset(&bib, 0, sizeof(bib));
+        (void)memset(&bib, 0, sizeof(bib));
         bib.magic               = 0x30424942U;  /* 'BIB0' */
         bib.max_boot_attempts   = BOOT_MAX_BOOT_ATTEMPTS;
         bib.status              = 0x01U;
@@ -85,7 +85,7 @@ void Boot_Loader_Main(void)
     mbedtls_sha256_starts(&hash_ctx, 0);
     while (remaining > 0U) {
         uint32_t chunk = (remaining < BOOT_PAGE_BUFFER_SIZE) ? remaining : BOOT_PAGE_BUFFER_SIZE;
-        Boot_Flash_Read(payload_addr + offset, g_boot_page_buf, chunk);
+        (void)Boot_Flash_Read(payload_addr + offset, g_boot_page_buf, chunk);
         mbedtls_sha256_update(&hash_ctx, g_boot_page_buf, chunk);
         offset += chunk;
         remaining -= chunk;
@@ -95,7 +95,7 @@ void Boot_Loader_Main(void)
     /* Non-incremental fallback: read entire payload, then hash */
     while (remaining > 0U) {
         uint32_t chunk = (remaining < BOOT_PAGE_BUFFER_SIZE) ? remaining : BOOT_PAGE_BUFFER_SIZE;
-        Boot_Flash_Read(payload_addr + offset, g_boot_page_buf, chunk);
+        (void)Boot_Flash_Read(payload_addr + offset, g_boot_page_buf, chunk);
         offset += chunk;
         remaining -= chunk;
     }
@@ -146,7 +146,7 @@ fail:
 Boot_Decision Boot_Loader_ResolveBootTarget(void)
 {
     Boot_Decision dec;
-    memset(&dec, 0, sizeof(dec));
+    (void)memset(&dec, 0, sizeof(dec));
 
     Boot_InfoBlock bib;
     if (load_bib(&bib) != BOOT_OK) {

@@ -57,7 +57,7 @@ static const Com_IPduConfigType Com_IPdus[COM_MAX_IPDUS] = {
 };
 
 /* Configuration */
-const Com_ConfigType Com_Config = {
+static const Com_ConfigType Com_Config = {
     .Signals = Com_Signals,
     .NumSignals = 2U,
     .IPdus = Com_IPdus,

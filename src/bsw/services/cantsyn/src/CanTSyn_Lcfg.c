@@ -17,7 +17,7 @@
 /* Compatibility alias */
 typedef CanTSyn_TimeBaseConfigType CanTSyn_TimeDomainConfigType;
 
-const CanTSyn_TimeDomainConfigType CanTSyn_TimeDomainConfig[CANTSYN_NUMBER_OF_TIME_DOMAINS] = {
+static const CanTSyn_TimeDomainConfigType CanTSyn_TimeDomainConfig[CANTSYN_NUMBER_OF_TIME_DOMAINS] = {
     {
         .timeBaseId = 0U,
         .domainId = 0U,

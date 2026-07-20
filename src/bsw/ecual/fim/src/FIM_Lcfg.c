@@ -41,7 +41,7 @@ FIM_CFG_CONST uint16 FiM_NumEvents = FIM_CFG_NUMBER_OF_EVENTS;
  * 
  * Defines each FID's default behavior and availability settings
  *===========================================================================*/
-FIM_CFG_CONST FiM_FidConfigType FiM_FidConfigTable[FIM_CFG_NUMBER_OF_FIDS] = {
+static FIM_CFG_CONST FiM_FidConfigType FiM_FidConfigTable[FIM_CFG_NUMBER_OF_FIDS] = {
     /* FID 0: Power Limit - Inhibited by catalyst or fuel system faults */
     {
         /* Fid */               FIM_FID_POWER_LIMIT,
@@ -153,7 +153,7 @@ FIM_CFG_CONST FiM_FidConfigType FiM_FidConfigTable[FIM_CFG_NUMBER_OF_FIDS] = {
  * 
  * Maps configured Dem Event IDs to FiM internal handling
  *===========================================================================*/
-FIM_CFG_CONST FiM_EventConfigType FiM_EventConfigTable[FIM_CFG_NUMBER_OF_EVENTS] = {
+static FIM_CFG_CONST FiM_EventConfigType FiM_EventConfigTable[FIM_CFG_NUMBER_OF_EVENTS] = {
     /* Event 0: Catalyst Damage */
     {
         /* EventId */       FIM_EVENT_CATALYST_DAMAGE,
@@ -229,7 +229,7 @@ FIM_CFG_CONST FiM_EventConfigType FiM_EventConfigTable[FIM_CFG_NUMBER_OF_EVENTS]
  *===========================================================================*/
 FIM_CFG_CONST uint16 FiM_NumInhibitionConfigs = 20u;
 
-FIM_CFG_CONST FiM_InhibitionConfigType FiM_InhibitionConfigTable[20] = {
+static FIM_CFG_CONST FiM_InhibitionConfigType FiM_InhibitionConfigTable[20] = {
     /* Power Limit (FID 0) - Inhibited by catalyst damage, fuel system, or O2 sensor */
     {
         /* Fid */               FIM_FID_POWER_LIMIT,
@@ -362,7 +362,7 @@ FIM_CFG_CONST FiM_InhibitionConfigType FiM_InhibitionConfigTable[20] = {
  *===========================================================================*/
 FIM_CFG_CONST uint16 FiM_NumEventFidMappings = 24u;
 
-FIM_CFG_CONST FiM_EventFidMappingType FiM_EventFidMapTable[24] = {
+static FIM_CFG_CONST FiM_EventFidMappingType FiM_EventFidMapTable[24] = {
     /* Catalyst Damage Event affects FIDs */
     { FIM_EVENT_CATALYST_DAMAGE,    FIM_FID_POWER_LIMIT,        FIM_LAST_FAILED },
     { FIM_EVENT_CATALYST_DAMAGE,    FIM_FID_EMISSION_CONTROL,   FIM_LAST_FAILED },

@@ -318,7 +318,7 @@ typedef struct {
  * @brief EthSM Global Configuration
  * @details Main configuration structure passed to EthSM_Init
  */
-const EthSM_GlobalConfigType EthSM_GlobalConfig =
+static const EthSM_GlobalConfigType EthSM_GlobalConfig =
 {
     /* networkConfig */   EthSM_NetworkConfig,
     /* ctrlConfig */      EthSM_CtrlConfig,
@@ -346,7 +346,7 @@ const EthSM_ConfigType* const EthSM_Config = (const EthSM_ConfigType*)&EthSM_Glo
  * @param networkHandle EthSM network handle
  * @return Pointer to network configuration, or NULL if invalid handle
  */
-const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkHandleType networkHandle)
+static const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkHandleType networkHandle)
 {
     const EthSM_NetworkConfigType* config = NULL_PTR;
 
@@ -363,7 +363,7 @@ const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkHandleTy
  * @param ctrlIdx Controller index
  * @return Pointer to controller configuration, or NULL if invalid index
  */
-const EthSM_CtrlConfigType* EthSM_Lcfg_GetCtrlConfig(uint8 ctrlIdx)
+static const EthSM_CtrlConfigType* EthSM_Lcfg_GetCtrlConfig(uint8 ctrlIdx)
 {
     const EthSM_CtrlConfigType* config = NULL_PTR;
 
@@ -380,7 +380,7 @@ const EthSM_CtrlConfigType* EthSM_Lcfg_GetCtrlConfig(uint8 ctrlIdx)
  * @param trcvIdx Transceiver index
  * @return Pointer to transceiver configuration, or NULL if invalid index
  */
-const EthSM_TrcvConfigType* EthSM_Lcfg_GetTrcvConfig(uint8 trcvIdx)
+static const EthSM_TrcvConfigType* EthSM_Lcfg_GetTrcvConfig(uint8 trcvIdx)
 {
     const EthSM_TrcvConfigType* config = NULL_PTR;
 
@@ -397,7 +397,7 @@ const EthSM_TrcvConfigType* EthSM_Lcfg_GetTrcvConfig(uint8 trcvIdx)
  * @param networkHandle EthSM network handle
  * @return Pointer to TcpIp mapping, or NULL if invalid handle
  */
-const EthSM_TcpIpMappingType* EthSM_Lcfg_GetTcpIpMapping(EthSM_NetworkHandleType networkHandle)
+static const EthSM_TcpIpMappingType* EthSM_Lcfg_GetTcpIpMapping(EthSM_NetworkHandleType networkHandle)
 {
     const EthSM_TcpIpMappingType* mapping = NULL_PTR;
 

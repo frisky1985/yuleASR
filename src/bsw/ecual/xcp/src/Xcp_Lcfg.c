@@ -23,7 +23,7 @@
 /*==================[Global Constants]======================================*/
 
 /* Event Channel Configurations */
-const Xcp_EventChannelType Xcp_EventChannels[XCP_MAX_EVENT_CHANNELS] = {
+static const Xcp_EventChannelType Xcp_EventChannels[XCP_MAX_EVENT_CHANNELS] = {
     {
         .EventChannelName = "ECU_Cyclic_10ms",
         .EventChannelTimeCycle = 10,
@@ -72,7 +72,7 @@ Xcp_DaqListType Xcp_DaqLists[XCP_MAX_DAQ] = {
 };
 
 /* ODT Configurations */
-Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
+static Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
     { .OdtNumber = 0, .Entries = {{0}}, .EntryCount = 0 },
     { .OdtNumber = 1, .Entries = {{0}}, .EntryCount = 0 },
     { .OdtNumber = 2, .Entries = {{0}}, .EntryCount = 0 },
@@ -80,7 +80,7 @@ Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
 };
 
 /* STIM List Configurations */
-Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
+static Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
     {
         .StimListNumber = 0,
         .Mode = XCP_STIM_MODE_ALTERNATING,
@@ -92,7 +92,7 @@ Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
 };
 
 /* Calibration Segment Configuration */
-const Xcp_SegmentType Xcp_Segments[XCP_MAX_SEGMENTS] = {
+static const Xcp_SegmentType Xcp_Segments[XCP_MAX_SEGMENTS] = {
     {
         .SegmentName = "CalRAM",
         .SegmentNumber = 0,
@@ -121,7 +121,7 @@ const Xcp_SegmentType Xcp_Segments[XCP_MAX_SEGMENTS] = {
 };
 
 /* Session Configuration */
-const Xcp_SessionType Xcp_SessionConfig = {
+static const Xcp_SessionType Xcp_SessionConfig = {
     .SessionConfigurationId = 0x0001,
     .MaxCto = XCP_MAX_CTO,
     .MaxDto = XCP_MAX_DTO,
@@ -143,7 +143,7 @@ const uint8 Xcp_Seed[XCP_MAX_SEED_SIZE] = {0x01, 0x02, 0x03, 0x04};
 const uint8 Xcp_Key[XCP_MAX_KEY_SIZE] = {0xAB, 0xCD, 0xEF, 0x12};
 
 /* Resource Protection */
-const Xcp_ResourceProtectionType Xcp_ResourceProtection = {
+static const Xcp_ResourceProtectionType Xcp_ResourceProtection = {
     .CalPag = XCP_PROTECT_NONE,
     .Daq = XCP_PROTECT_NONE,
     .Stim = XCP_PROTECT_NONE,
@@ -151,7 +151,7 @@ const Xcp_ResourceProtectionType Xcp_ResourceProtection = {
 };
 
 /* Transport Layer Configuration */
-const Xcp_TransportLayerType Xcp_TransportConfig = {
+static const Xcp_TransportLayerType Xcp_TransportConfig = {
     .TransportLayerType = XCP_TRANSPORT_CAN,
     .Can = {
         .CanIdRequest = 0x500,
@@ -162,7 +162,7 @@ const Xcp_TransportLayerType Xcp_TransportConfig = {
 };
 
 /* Module Configuration */
-const Xcp_ConfigType Xcp_Config = {
+static const Xcp_ConfigType Xcp_Config = {
     .General = {
         .MaxCto = XCP_MAX_CTO,
         .MaxDto = XCP_MAX_DTO,
@@ -191,7 +191,7 @@ const Xcp_ConfigType Xcp_Config = {
 };
 
 /* Version Info */
-const Xcp_VersionInfoType Xcp_VersionInfo = {
+static const Xcp_VersionInfoType Xcp_VersionInfo = {
     .VendorID = XCP_VENDOR_ID,
     .ModuleID = XCP_MODULE_ID,
     .SwMajorVersion = XCP_SW_MAJOR_VERSION,

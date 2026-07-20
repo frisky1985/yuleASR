@@ -68,7 +68,7 @@ static const LinIf_ChannelConfigType LinIf_Channels[LINIF_MAX_CHANNELS] = {
 };
 
 /* Configuration */
-const LinIf_ConfigType LinIf_Config = {
+static const LinIf_ConfigType LinIf_Config = {
     .NumChannels = 1U,
     .Channels = LinIf_Channels
 };

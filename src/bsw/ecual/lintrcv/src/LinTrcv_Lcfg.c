@@ -216,7 +216,7 @@ static const LinTrcv_ChannelConfigType *const LinTrcv_ChannelConfig[LINTRCV_NUM_
 /*******************************************************************************
  * Global LIN Transceiver Configuration
  ******************************************************************************/
-const LinTrcv_ConfigType LinTrcv_Config =
+static const LinTrcv_ConfigType LinTrcv_Config =
 {
     LINTRCV_NUM_CHANNELS,               /* NumChannels: Number of configured channels */
     &LinTrcv_ChannelConfig[0],          /* ChannelCfg: Channel configuration array */
@@ -271,7 +271,7 @@ const LinTrcv_ConfigType LinTrcv_Config =
  * Function Name : Dio_LinTrcv_WakeUpNotification_Channel0
  * Description   : DIO notification for Channel 0 NWake pin (wake-up detection)
  ******************************************************************************/
-void Dio_LinTrcv_WakeUpNotification_Channel0(void)
+static void Dio_LinTrcv_WakeUpNotification_Channel0(void)
 {
     /* Notify LinTrcv about wake-up by pin */
     LinTrcv_Cbk_WakeupByBus(0U);
@@ -282,7 +282,7 @@ void Dio_LinTrcv_WakeUpNotification_Channel0(void)
  * Function Name : Dio_LinTrcv_WakeUpNotification_Channel1
  * Description   : DIO notification for Channel 1 NWake pin (wake-up detection)
  ******************************************************************************/
-void Dio_LinTrcv_WakeUpNotification_Channel1(void)
+static void Dio_LinTrcv_WakeUpNotification_Channel1(void)
 {
     LinTrcv_Cbk_WakeupByBus(1U);
 }
