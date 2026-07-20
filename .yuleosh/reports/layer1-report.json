@@ -1,19 +1,19 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-19T23:23:23.868864",
+  "generated_at": "2026-07-20T00:35:23.066617",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "failed",
-      "commit": "6b1bf25",
-      "started_at": "2026-07-19T23:22:54.102777",
-      "completed_at": "2026-07-19T23:23:23.866808",
+      "status": "passed",
+      "commit": "c7323fc",
+      "started_at": "2026-07-20T00:35:05.236846",
+      "completed_at": "2026-07-20T00:35:23.065157",
       "stages_summary": {
-        "total": 24,
-        "passed": 17,
-        "failed": 3,
-        "skipped": 2
+        "total": 26,
+        "passed": 24,
+        "failed": 0,
+        "skipped": 1
       },
       "stages": [
         {
@@ -53,8 +53,8 @@
         },
         {
           "name": "misra-check",
-          "status": "failed",
-          "detail": "4800 business-code violation(s) >= threshold 2000"
+          "status": "passed",
+          "detail": "258 MISRA violation(s) (96 required, 36 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -118,39 +118,54 @@
         },
         {
           "name": "unit-tests",
-          "status": "failed",
-          "detail": "tests/e2e/test_e2e.py: .F\n=================================== FAILURES ===================================\n________________________________ test_crc_real _________________________________\ntests/e2e/test_e2e.py:45: in test_f"
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "coverage",
-          "status": "failed",
-          "detail": "coverage run returned non-zero (1): /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/coverage/control.py:956: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.i"
+          "status": "passed",
+          "detail": "line=0.0%, cond=0.0%"
         },
         {
           "name": "c-coverage",
-          "status": "warning",
-          "detail": "lcov/gcov may not be installed"
+          "status": "passed",
+          "detail": "line=83.33%, branch=0.0%, 2 file(s)"
         },
         {
           "name": "c-coverage-gate",
-          "status": "skipped",
-          "detail": "No C coverage report at .yuleosh/reports/c-coverage.json"
+          "status": "passed",
+          "detail": "line_rate=83.3% >= 60%"
         }
       ],
-      "coverage": null,
-      "errors": [
-        "misra-check failed",
-        "unit-tests failed",
-        "coverage failed"
-      ]
+      "coverage": {
+        "line": 0.0,
+        "condition": 0.0,
+        "line_pass": true,
+        "condition_pass": true
+      },
+      "errors": []
     }
   ],
   "misra": {
-    "total_violations": 0,
-    "required": 0,
-    "advisory": 0,
-    "violations_per_kloc": 0,
-    "rules_violated": 0,
-    "files_affected": 0
+    "total_violations": 258,
+    "required": 96,
+    "advisory": 36,
+    "violations_per_kloc": 129.0,
+    "rules_violated": 258,
+    "files_affected": 4
+  },
+  "c_coverage": {
+    "line_rate": 83.33,
+    "branch_rate": 0.0
   }
 }

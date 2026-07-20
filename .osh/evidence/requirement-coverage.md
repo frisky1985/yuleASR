@@ -1,138 +1,139 @@
 # Requirements Coverage Report
 
-> Generated: 2026-07-19T23:23:49.665249
+> Generated: 2026-07-20T10:43:00
 
-| Requirement | SHALLs | Status |
-|:-----------|:------:|:------:|
-| MCAL-SHALL-001 | 1 | ✅ |
-| MCAL-SHALL-002 | 1 | ✅ |
-| MCAL-SHALL-003 | 1 | ✅ |
-| ECUAL-SHALL-001 | 1 | ✅ |
-| ECUAL-SHALL-002 | 1 | ✅ |
-| SVC-SHALL-001 | 1 | ✅ |
-| SVC-SHALL-002 | 1 | ✅ |
-| SVC-SHALL-003 | 1 | ✅ |
-| NFR-SHALL-001 | 1 | ✅ |
-| NFR-SHALL-002 | 1 | ✅ |
-| NFR-SHALL-003 | 1 | ✅ |
-| NFR-SHALL-004 | 1 | ✅ |
-| 7MISRA-SHALL-13 | 1 | ✅ |
-| DCMDIAGN-SHALL-1 | 1 | ✅ |
-| DCMDIAGN-SHALL-2 | 1 | ✅ |
-| DCMDIAGN-SHALL-3 | 1 | ✅ |
-| DCMDIAGN-SHALL-4 | 1 | ✅ |
-| DEMDIAGN-SHALL-5 | 1 | ✅ |
-| DEMDIAGN-SHALL-6 | 1 | ✅ |
-| DEMDIAGN-SHALL-7 | 1 | ✅ |
-| DEMDIAGN-SHALL-8 | 1 | ✅ |
-| COM-SHALL-9 | 1 | ✅ |
-| COM-SHALL-10 | 1 | ✅ |
-| COM-SHALL-11 | 1 | ✅ |
-| COM-SHALL-12 | 1 | ✅ |
-| PDUR-SHALL-13 | 1 | ✅ |
-| PDUR-SHALL-14 | 1 | ✅ |
-| PDUR-SHALL-15 | 1 | ✅ |
-| NVM-SHALL-16 | 1 | ✅ |
-| NVM-SHALL-17 | 1 | ✅ |
-| NVM-SHALL-18 | 1 | ✅ |
-| NVM-SHALL-19 | 1 | ✅ |
-| NVM-SHALL-20 | 1 | ✅ |
-| ECUM-SHALL-21 | 1 | ✅ |
-| ECUM-SHALL-22 | 1 | ✅ |
-| ECUM-SHALL-23 | 1 | ✅ |
-| OSAUTOSA-SHALL-24 | 1 | ✅ |
-| OSAUTOSA-SHALL-25 | 1 | ✅ |
-| OSAUTOSA-SHALL-26 | 1 | ✅ |
-| OSAUTOSA-SHALL-27 | 1 | ✅ |
-| OSAUTOSA-SHALL-28 | 1 | ✅ |
-| CANIFCAN-SHALL-1 | 1 | ✅ |
-| CANIFCAN-SHALL-2 | 1 | ✅ |
-| CANIFCAN-SHALL-3 | 1 | ✅ |
-| CANIFCAN-SHALL-4 | 1 | ✅ |
-| CANTPCAN-SHALL-5 | 1 | ✅ |
-| CANTPCAN-SHALL-6 | 1 | ✅ |
-| CANTPCAN-SHALL-7 | 1 | ✅ |
-| CANTPCAN-SHALL-8 | 1 | ✅ |
-| CANNMCAN-SHALL-9 | 1 | ✅ |
-| CANNMCAN-SHALL-10 | 1 | ✅ |
-| CANNMCAN-SHALL-11 | 1 | ✅ |
-| CANNMCAN-SHALL-12 | 1 | ✅ |
-| CANNMCAN-SHALL-13 | 1 | ✅ |
-| SOADSOCK-SHALL-14 | 1 | ✅ |
-| SOADSOCK-SHALL-15 | 1 | ✅ |
-| SOADSOCK-SHALL-16 | 1 | ✅ |
-| SOADSOCK-SHALL-17 | 1 | ✅ |
-| SOMEIPSD-SHALL-18 | 1 | ✅ |
-| SOMEIPSD-SHALL-19 | 1 | ✅ |
-| SOMEIPSD-SHALL-20 | 1 | ✅ |
-| DLT-SHALL-21 | 1 | ✅ |
-| DLT-SHALL-22 | 1 | ✅ |
-| DLT-SHALL-23 | 1 | ✅ |
-| XCP-SHALL-24 | 1 | ✅ |
-| XCP-SHALL-25 | 1 | ✅ |
-| XCP-SHALL-26 | 1 | ✅ |
-| XCP-SHALL-27 | 1 | ✅ |
-| XCP-SHALL-28 | 1 | ✅ |
-| ADCDRIVE-SHALL-1 | 1 | ✅ |
-| ADCDRIVE-SHALL-2 | 1 | ✅ |
-| ADCDRIVE-SHALL-3 | 1 | ✅ |
-| ADCDRIVE-SHALL-4 | 1 | ✅ |
-| ADCDRIVE-SHALL-5 | 1 | ✅ |
-| CANDRIVE-SHALL-6 | 1 | ✅ |
-| CANDRIVE-SHALL-7 | 1 | ✅ |
-| CANDRIVE-SHALL-8 | 1 | ✅ |
-| CANDRIVE-SHALL-9 | 1 | ✅ |
-| CANDRIVE-SHALL-10 | 1 | ✅ |
-| CANDRIVE-SHALL-11 | 1 | ✅ |
-| CRYPTODR-SHALL-12 | 1 | ✅ |
-| CRYPTODR-SHALL-13 | 1 | ✅ |
-| CRYPTODR-SHALL-14 | 1 | ✅ |
-| CRYPTODR-SHALL-15 | 1 | ✅ |
-| CRYPTODR-SHALL-16 | 1 | ✅ |
-| CRYPTODR-SHALL-17 | 1 | ✅ |
-| CRYPTODR-SHALL-18 | 1 | ✅ |
-| DIODRIVE-SHALL-19 | 1 | ✅ |
-| DIODRIVE-SHALL-20 | 1 | ✅ |
-| DIODRIVE-SHALL-21 | 1 | ✅ |
-| DIODRIVE-SHALL-22 | 1 | ✅ |
-| PORTDRIV-SHALL-23 | 1 | ✅ |
-| PORTDRIV-SHALL-24 | 1 | ✅ |
-| PORTDRIV-SHALL-25 | 1 | ✅ |
-| GPTDRIVE-SHALL-26 | 1 | ✅ |
-| GPTDRIVE-SHALL-27 | 1 | ✅ |
-| GPTDRIVE-SHALL-28 | 1 | ✅ |
-| GPTDRIVE-SHALL-29 | 1 | ✅ |
-| ICUDRIVE-SHALL-30 | 1 | ✅ |
-| ICUDRIVE-SHALL-31 | 1 | ✅ |
-| ICUDRIVE-SHALL-32 | 1 | ✅ |
-| MCUDRIVE-SHALL-33 | 1 | ✅ |
-| MCUDRIVE-SHALL-34 | 1 | ✅ |
-| MCUDRIVE-SHALL-35 | 1 | ✅ |
-| MCUDRIVE-SHALL-36 | 1 | ✅ |
-| WDGDRIVE-SHALL-37 | 1 | ✅ |
-| WDGDRIVE-SHALL-38 | 1 | ✅ |
-| WDGDRIVE-SHALL-39 | 1 | ✅ |
-| DCM-SHALL-01 | 1 | ✅ |
-| DCM-SHALL-02 | 1 | ✅ |
-| DEM-SHALL-01 | 1 | ✅ |
-| DET-SHALL-01 | 1 | ✅ |
-| DOIP-SHALL-01 | 1 | ✅ |
-| COM-SHALL-01 | 1 | ✅ |
-| PDUR-SHALL-01 | 1 | ✅ |
-| CANSM-SHALL-01 | 1 | ✅ |
-| LIN-SHALL-01 | 1 | ✅ |
-| NVM-SHALL-01 | 1 | ✅ |
-| FEE-SHALL-01 | 1 | ✅ |
-| MEMIF-SHALL-01 | 1 | ✅ |
-| ECUM-SHALL-01 | 1 | ✅ |
-| BSWM-SHALL-01 | 1 | ✅ |
-| WDGM-SHALL-01 | 1 | ✅ |
-| OS-SHALL-01 | 1 | ✅ |
-| E2E-SHALL-01 | 1 | ✅ |
-| CSM-SHALL-01 | 1 | ✅ |
-| KEYM-SHALL-01 | 1 | ✅ |
+| Requirement | SHALLs | Tests | Status |
+|:-----------|:------:|:-----:|:------:|
+| MCAL-SHALL-001 | 1 | 0 | ❌ |
+| MCAL-SHALL-002 | 1 | 0 | ❌ |
+| MCAL-SHALL-003 | 1 | 0 | ❌ |
+| ECUAL-SHALL-001 | 1 | 0 | ❌ |
+| ECUAL-SHALL-002 | 1 | 0 | ❌ |
+| SVC-SHALL-001 | 1 | 0 | ❌ |
+| SVC-SHALL-002 | 1 | 0 | ❌ |
+| SVC-SHALL-003 | 1 | 0 | ❌ |
+| NFR-SHALL-001 | 1 | 0 | ❌ |
+| NFR-SHALL-002 | 1 | 0 | ❌ |
+| NFR-SHALL-003 | 1 | 0 | ❌ |
+| NFR-SHALL-004 | 1 | 0 | ❌ |
+| 7MISRA-SHALL-13 | 1 | 0 | ❌ |
+| DCMDIAGN-SHALL-1 | 1 | 0 | ❌ |
+| DCMDIAGN-SHALL-2 | 1 | 0 | ❌ |
+| DCMDIAGN-SHALL-3 | 1 | 0 | ❌ |
+| DCMDIAGN-SHALL-4 | 1 | 0 | ❌ |
+| DEMDIAGN-SHALL-5 | 1 | 0 | ❌ |
+| DEMDIAGN-SHALL-6 | 1 | 0 | ❌ |
+| DEMDIAGN-SHALL-7 | 1 | 0 | ❌ |
+| DEMDIAGN-SHALL-8 | 1 | 0 | ❌ |
+| COM-SHALL-9 | 1 | 0 | ❌ |
+| COM-SHALL-10 | 1 | 0 | ❌ |
+| COM-SHALL-11 | 1 | 0 | ❌ |
+| COM-SHALL-12 | 1 | 0 | ❌ |
+| PDUR-SHALL-13 | 1 | 0 | ❌ |
+| PDUR-SHALL-14 | 1 | 0 | ❌ |
+| PDUR-SHALL-15 | 1 | 0 | ❌ |
+| NVM-SHALL-16 | 1 | 0 | ❌ |
+| NVM-SHALL-17 | 1 | 0 | ❌ |
+| NVM-SHALL-18 | 1 | 0 | ❌ |
+| NVM-SHALL-19 | 1 | 0 | ❌ |
+| NVM-SHALL-20 | 1 | 0 | ❌ |
+| ECUM-SHALL-21 | 1 | 0 | ❌ |
+| ECUM-SHALL-22 | 1 | 0 | ❌ |
+| ECUM-SHALL-23 | 1 | 0 | ❌ |
+| OSAUTOSA-SHALL-24 | 1 | 0 | ❌ |
+| OSAUTOSA-SHALL-25 | 1 | 0 | ❌ |
+| OSAUTOSA-SHALL-26 | 1 | 0 | ❌ |
+| OSAUTOSA-SHALL-27 | 1 | 0 | ❌ |
+| OSAUTOSA-SHALL-28 | 1 | 0 | ❌ |
+| CANIFCAN-SHALL-1 | 1 | 0 | ❌ |
+| CANIFCAN-SHALL-2 | 1 | 0 | ❌ |
+| CANIFCAN-SHALL-3 | 1 | 0 | ❌ |
+| CANIFCAN-SHALL-4 | 1 | 0 | ❌ |
+| CANTPCAN-SHALL-5 | 1 | 0 | ❌ |
+| CANTPCAN-SHALL-6 | 1 | 0 | ❌ |
+| CANTPCAN-SHALL-7 | 1 | 0 | ❌ |
+| CANTPCAN-SHALL-8 | 1 | 0 | ❌ |
+| CANNMCAN-SHALL-9 | 1 | 0 | ❌ |
+| CANNMCAN-SHALL-10 | 1 | 0 | ❌ |
+| CANNMCAN-SHALL-11 | 1 | 0 | ❌ |
+| CANNMCAN-SHALL-12 | 1 | 0 | ❌ |
+| CANNMCAN-SHALL-13 | 1 | 0 | ❌ |
+| SOADSOCK-SHALL-14 | 1 | 0 | ❌ |
+| SOADSOCK-SHALL-15 | 1 | 0 | ❌ |
+| SOADSOCK-SHALL-16 | 1 | 0 | ❌ |
+| SOADSOCK-SHALL-17 | 1 | 0 | ❌ |
+| SOMEIPSD-SHALL-18 | 1 | 0 | ❌ |
+| SOMEIPSD-SHALL-19 | 1 | 0 | ❌ |
+| SOMEIPSD-SHALL-20 | 1 | 0 | ❌ |
+| DLT-SHALL-21 | 1 | 0 | ❌ |
+| DLT-SHALL-22 | 1 | 0 | ❌ |
+| DLT-SHALL-23 | 1 | 0 | ❌ |
+| XCP-SHALL-24 | 1 | 0 | ❌ |
+| XCP-SHALL-25 | 1 | 0 | ❌ |
+| XCP-SHALL-26 | 1 | 0 | ❌ |
+| XCP-SHALL-27 | 1 | 0 | ❌ |
+| XCP-SHALL-28 | 1 | 0 | ❌ |
+| ADCDRIVE-SHALL-1 | 1 | 0 | ❌ |
+| ADCDRIVE-SHALL-2 | 1 | 0 | ❌ |
+| ADCDRIVE-SHALL-3 | 1 | 0 | ❌ |
+| ADCDRIVE-SHALL-4 | 1 | 0 | ❌ |
+| ADCDRIVE-SHALL-5 | 1 | 0 | ❌ |
+| CANDRIVE-SHALL-6 | 1 | 0 | ❌ |
+| CANDRIVE-SHALL-7 | 1 | 0 | ❌ |
+| CANDRIVE-SHALL-8 | 1 | 0 | ❌ |
+| CANDRIVE-SHALL-9 | 1 | 0 | ❌ |
+| CANDRIVE-SHALL-10 | 1 | 0 | ❌ |
+| CANDRIVE-SHALL-11 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-12 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-13 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-14 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-15 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-16 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-17 | 1 | 0 | ❌ |
+| CRYPTODR-SHALL-18 | 1 | 0 | ❌ |
+| DIODRIVE-SHALL-19 | 1 | 0 | ❌ |
+| DIODRIVE-SHALL-20 | 1 | 0 | ❌ |
+| DIODRIVE-SHALL-21 | 1 | 0 | ❌ |
+| DIODRIVE-SHALL-22 | 1 | 0 | ❌ |
+| PORTDRIV-SHALL-23 | 1 | 0 | ❌ |
+| PORTDRIV-SHALL-24 | 1 | 0 | ❌ |
+| PORTDRIV-SHALL-25 | 1 | 0 | ❌ |
+| GPTDRIVE-SHALL-26 | 1 | 0 | ❌ |
+| GPTDRIVE-SHALL-27 | 1 | 0 | ❌ |
+| GPTDRIVE-SHALL-28 | 1 | 0 | ❌ |
+| GPTDRIVE-SHALL-29 | 1 | 0 | ❌ |
+| ICUDRIVE-SHALL-30 | 1 | 0 | ❌ |
+| ICUDRIVE-SHALL-31 | 1 | 0 | ❌ |
+| ICUDRIVE-SHALL-32 | 1 | 0 | ❌ |
+| MCUDRIVE-SHALL-33 | 1 | 0 | ❌ |
+| MCUDRIVE-SHALL-34 | 1 | 0 | ❌ |
+| MCUDRIVE-SHALL-35 | 1 | 0 | ❌ |
+| MCUDRIVE-SHALL-36 | 1 | 0 | ❌ |
+| WDGDRIVE-SHALL-37 | 1 | 0 | ❌ |
+| WDGDRIVE-SHALL-38 | 1 | 0 | ❌ |
+| WDGDRIVE-SHALL-39 | 1 | 0 | ❌ |
+| DCM-SHALL-01 | 1 | 0 | ❌ |
+| DCM-SHALL-02 | 1 | 0 | ❌ |
+| DEM-SHALL-01 | 1 | 0 | ❌ |
+| DET-SHALL-01 | 1 | 0 | ❌ |
+| DOIP-SHALL-01 | 1 | 0 | ❌ |
+| COM-SHALL-01 | 1 | 0 | ❌ |
+| PDUR-SHALL-01 | 1 | 0 | ❌ |
+| CANSM-SHALL-01 | 1 | 0 | ❌ |
+| LIN-SHALL-01 | 1 | 0 | ❌ |
+| NVM-SHALL-01 | 1 | 0 | ❌ |
+| FEE-SHALL-01 | 1 | 0 | ❌ |
+| MEMIF-SHALL-01 | 1 | 0 | ❌ |
+| ECUM-SHALL-01 | 1 | 0 | ❌ |
+| BSWM-SHALL-01 | 1 | 0 | ❌ |
+| WDGM-SHALL-01 | 1 | 0 | ❌ |
+| OS-SHALL-01 | 1 | 0 | ❌ |
+| E2E-SHALL-01 | 1 | 0 | ❌ |
+| CSM-SHALL-01 | 1 | 0 | ❌ |
+| KEYM-SHALL-01 | 1 | 0 | ❌ |
 
-**Requirement Coverage**: 127/127 (100%)
+**Requirement Coverage**: 0/127 (0%)
+  (Status based on actual test-file mapping, not SHALL presence)
 **Scenarios**: 0
 **Threshold**: 100%
-**Pass**: ✅
+**Pass**: ❌

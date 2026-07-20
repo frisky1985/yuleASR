@@ -1,0 +1,1 @@
+genhtml /Users/stefan/.openclaw/workspace/yuleASR/tests/e2e/coverage-filtered.info --output-directory /Users/stefan/.openclaw/workspace/yuleASR/tests/e2e/coverage-report-html --title 'C/C++ Coverage Report' --legend --frames

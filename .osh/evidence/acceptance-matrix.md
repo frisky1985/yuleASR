@@ -1,6 +1,6 @@
 # Acceptance Matrix
 
-> Generated: 2026-07-19T23:23:49.665249
+> Generated: 2026-07-20T00:36:04.301025
 > Version: 0.1.0
 
 | Req ID | Requirement | SHALL | 验证方法 | 测试文件 | 匹配方式 | 置信度 | 状态 |

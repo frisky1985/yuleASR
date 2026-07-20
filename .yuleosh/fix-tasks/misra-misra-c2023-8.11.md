@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-8.11
 
-> Generated: 2026-07-19T23:23:07.859828
+> Generated: 2026-07-20T00:35:06.906314
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -13,7 +13,6 @@
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 34 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11 |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c` | 34 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11 |
 
 ## Fix Checklist
 

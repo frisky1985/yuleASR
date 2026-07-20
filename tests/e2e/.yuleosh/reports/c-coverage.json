@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "lcov_file": "/Users/stefan/.openclaw/workspace/yuleASR/tests/e2e/coverage-filtered.info",
+  "html_dir": "/Users/stefan/.openclaw/workspace/yuleASR/tests/e2e/coverage-report-html",
+  "totals": {
+    "lines": {
+      "found": 114,
+      "hit": 95
+    },
+    "functions": {
+      "found": 14,
+      "hit": 13
+    },
+    "branches": {
+      "found": 0,
+      "hit": 0
+    }
+  },
+  "line_rate": 83.33,
+  "branch_rate": 0.0,
+  "total_files": 2,
+  "gate_passed": null,
+  "gate_details": null,
+  "files": [
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc.c",
+      "line_rate": 87.5,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 40,
+        "hit": 35
+      },
+      "functions": {
+        "found": 5,
+        "hit": 4
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/src/Det.c",
+      "line_rate": 81.08,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 74,
+        "hit": 60
+      },
+      "functions": {
+        "found": 9,
+        "hit": 9
+      }
+    }
+  ]
+}

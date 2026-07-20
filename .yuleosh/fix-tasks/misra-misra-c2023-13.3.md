@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-13.3
 
-> Generated: 2026-07-19T23:23:07.855040
+> Generated: 2026-07-19T23:56:43.926069
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -37,7 +37,6 @@
 | 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 735 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-13.3 |
 | 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 736 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-13.3 |
 | 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 737 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-13.3 |
-| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mem/src/Mem.c` | 420 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-13.3 |
 
 ## Fix Checklist
 

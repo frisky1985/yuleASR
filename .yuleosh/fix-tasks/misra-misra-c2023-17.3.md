@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-17.3
 
-> Generated: 2026-07-19T23:23:07.857083
+> Generated: 2026-07-19T23:56:43.926723
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -12,19 +12,16 @@
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 119 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 129 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 596 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 1084 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 488 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 558 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 628 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 668 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 729 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 826 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 844 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 862 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
-| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 260 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 596 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 1084 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 488 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 558 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 628 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 668 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 729 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 826 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 844 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 862 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-17.3 |
 
 ## Fix Checklist
 

@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-> Generated: 2026-07-19T23:23:49.665249
+> Generated: 2026-07-20T00:36:04.301025
 > Version: 0.1.0
 
 ## Requirements → Implementation → Tests
@@ -1155,4 +1155,4 @@
 - Uncovered SHALLs: 127
 - Scenarios: 0
 - Reviews: 0
-- CI Runs: 10
+- CI Runs: 16
