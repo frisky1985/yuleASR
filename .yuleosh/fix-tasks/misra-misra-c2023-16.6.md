@@ -11,7 +11,11 @@ switch 语句应包含 default 标签
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:-----|:----|:----|:--------|
+|--:|:
+## Deferred
+- [ ] Source code NOT modified in v1.3.0 Phase 3
+- [ ] Deferred to future phase
+-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/wdg/src/Wdg_Hw.c` | 686 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-16.6 |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/wdg/src/Wdg_Hw.c` | 890 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-16.6 |
 

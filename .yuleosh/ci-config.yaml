@@ -10,9 +10,9 @@ ci:
     3: [1, 2]
 
 coverage:
-  threshold_line: 60.0
-  threshold_condition: 60.0
-  c_fail_under: 60
+  threshold_line: 85.0
+  threshold_condition: 85.0
+  c_fail_under: 85
   strict: false
   threshold_branch: 60.0
   module_thresholds:

@@ -11,7 +11,11 @@ sizeof 操作符不应应用于具有副作用的表达式
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:-----|:----|:----|:--------|
+|--:|:
+## Deferred
+- [ ] Source code NOT modified in v1.3.0 Phase 3
+- [ ] Deferred to future phase
+-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 328 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-12.3 |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 624 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-12.3 |
 

@@ -11,7 +11,11 @@
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:-----|:----|:----|:--------|
+|--:|:
+## Deferred
+- [ ] Source code NOT modified in v1.3.0 Phase 3
+- [ ] Deferred to future phase
+-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 79 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3] |
 
 ## Fix Checklist
