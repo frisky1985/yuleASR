@@ -88,7 +88,6 @@ TEST_CASE_DECLARE(PduR_Init_valid_config)
     /* Verify */
     ASSERT_EQ(PDUR_INIT, g_pdur_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -103,9 +102,8 @@ TEST_CASE_DECLARE(PduR_Init_null_config)
     PduR_Init(NULL);
     
     /* Verify - 应该保持未初始化状态 */
-    /* 实际实现中应该报告错误 */
+    ASSERT_EQ(PDUR_UNINIT, g_pdur_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -123,7 +121,6 @@ TEST_CASE_DECLARE(PduR_DeInit)
     /* Verify */
     ASSERT_EQ(PDUR_UNINIT, g_pdur_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -149,7 +146,6 @@ TEST_CASE_DECLARE(PduR_Transmit_route_to_CanIf)
     ASSERT_EQ(1U, g_canif_transmit_called);
     ASSERT_EQ(0, g_canif_tx_pdu_id);
     
-    TEST_PASS();
 }
 
 /**
@@ -172,7 +168,6 @@ TEST_CASE_DECLARE(PduR_Transmit_uninit)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -189,7 +184,6 @@ TEST_CASE_DECLARE(PduR_Transmit_null_pointer)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -214,7 +208,6 @@ TEST_CASE_DECLARE(PduR_RxIndication_route_to_Com)
     ASSERT_EQ(1U, g_com_rxindication_called);
     ASSERT_EQ(1, g_com_rx_pdu_id);
     
-    TEST_PASS();
 }
 
 /**
@@ -229,7 +222,7 @@ TEST_CASE_DECLARE(PduR_RxIndication_null_pointer)
     PduR_RxIndication(0, NULL);
     
     /* Verify - 不应崩溃 */
-    TEST_PASS();
+    ASSERT_EQ(PDUR_INIT, g_pdur_state);
 }
 
 /**
@@ -244,8 +237,7 @@ TEST_CASE_DECLARE(PduR_TxConfirmation_success)
     PduR_TxConfirmation(0, E_OK);
     
     /* Verify - 不应崩溃 */
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    ASSERT_EQ(PDUR_INIT, g_pdur_state);
 }
 
 /**
@@ -269,7 +261,6 @@ TEST_CASE_DECLARE(PduR_TriggerTransmit_normal)
     /* 根据实际实现验证结果 */
     
 TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /**
@@ -298,7 +289,6 @@ TEST_CASE_DECLARE(PduR_Transmit_max_length)
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(1U, g_canif_transmit_called);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

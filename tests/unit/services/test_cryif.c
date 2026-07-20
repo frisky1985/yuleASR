@@ -67,7 +67,6 @@ TEST_CASE(cryif_init_valid_config)
     CryIf_Init(&g_test_config);
     
     ASSERT_TRUE(CryIf_Initialized == TRUE);
-    TEST_PASS();
 }
 
 /* Test: CryIf_Init with NULL config */
@@ -75,7 +74,6 @@ TEST_CASE(cryif_init_null_config)
 {
     CryIf_Init(NULL_PTR);
     
-    TEST_PASS();
 }
 
 /* Test: CryIf_DeInit */
@@ -87,7 +85,6 @@ TEST_CASE(cryif_deinit)
     CryIf_DeInit();
     
     ASSERT_TRUE(CryIf_Initialized == FALSE);
-    TEST_PASS();
 }
 
 /* Test: CryIf_GetVersionInfo */
@@ -103,7 +100,6 @@ TEST_CASE(cryif_get_version_info)
     ASSERT_EQ(CRYIF_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(CRYIF_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(CRYIF_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: CryIf_CipherInit */
@@ -126,7 +122,6 @@ TEST_CASE(cryif_cipher_init)
     result = CryIf_CipherInit(0, &algorithm, 0, iv, 16);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_Encrypt */
@@ -144,7 +139,6 @@ TEST_CASE(cryif_encrypt)
                            ciphertext, &ciphertext_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_Decrypt */
@@ -163,7 +157,6 @@ TEST_CASE(cryif_decrypt)
                            plaintext, &plaintext_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_MacGenerate */
@@ -181,7 +174,6 @@ TEST_CASE(cryif_mac_generate)
                                mac, &mac_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_MacVerify */
@@ -199,7 +191,6 @@ TEST_CASE(cryif_mac_verify)
                              mac, 16, &verify_result);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_Hash */
@@ -217,7 +208,6 @@ TEST_CASE(cryif_hash)
                         hash, &hash_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_HashStart */
@@ -238,7 +228,6 @@ TEST_CASE(cryif_hash_start)
     result = CryIf_HashStart(1, &algorithm);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_HashUpdate */
@@ -253,7 +242,6 @@ TEST_CASE(cryif_hash_update)
     result = CryIf_HashUpdate(1, data, 16);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_HashFinish */
@@ -269,7 +257,6 @@ TEST_CASE(cryif_hash_finish)
     result = CryIf_HashFinish(1, hash, &hash_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_KeyElementSet */
@@ -285,7 +272,6 @@ TEST_CASE(cryif_key_element_set)
     result = CryIf_KeyElementSet(0, 0, key_data, 16);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CryIf_KeyElementGet */
@@ -301,7 +287,6 @@ TEST_CASE(cryif_key_element_get)
     result = CryIf_KeyElementGet(0, 0, key_data, &key_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /*==================================================================================================

@@ -31,7 +31,6 @@ TEST_CASE(ecum_init_startup_state)
     
     EcuM_GetState(&state);
     ASSERT_EQ(ECUM_STATE_STARTUP, state);
-    TEST_PASS();
 }
 
 /* Test: EcuM_StartupTwo should transition to RUN state */
@@ -44,7 +43,6 @@ TEST_CASE(ecum_startup_two_run_state)
     
     EcuM_GetState(&state);
     ASSERT_EQ(ECUM_STATE_RUN, state);
-    TEST_PASS();
 }
 
 /* Test: EcuM_RequestRUN should keep RUN state */
@@ -58,7 +56,6 @@ TEST_CASE(ecum_request_run)
     EcuM_RequestRUN(0);
     EcuM_GetState(&state);
     ASSERT_EQ(ECUM_STATE_RUN, state);
-    TEST_PASS();
 }
 
 /* Test: EcuM_ReleaseRUN should transition to SHUTDOWN */
@@ -72,7 +69,6 @@ TEST_CASE(ecum_release_run_shutdown)
     EcuM_ReleaseRUN(0);
     EcuM_GetState(&state);
     ASSERT_EQ(ECUM_STATE_SHUTDOWN, state);
-    TEST_PASS();
 }
 
 /* Test: EcuM_SelectShutdownTarget should set target */
@@ -87,7 +83,6 @@ TEST_CASE(ecum_select_shutdown_target)
     
     ASSERT_EQ(ECUM_STATE_SLEEP, target);
     ASSERT_EQ(1, reason);
-    TEST_PASS();
 }
 
 /*==================================================================================================

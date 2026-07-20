@@ -88,7 +88,6 @@ TEST_CASE(test_flash_write_valid)
     /* Verify: Should return E_OK */
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -104,7 +103,6 @@ TEST_CASE(test_flash_write_null_pointer)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -120,7 +118,6 @@ TEST_CASE(test_flash_write_invalid_address)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -136,7 +133,6 @@ TEST_CASE(test_flash_write_zero_length)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -157,7 +153,6 @@ TEST_CASE(test_flash_write_while_busy)
         ASSERT_EQ(E_NOT_OK, result);
     }
     
-    TEST_PASS();
 }
 
 /**
@@ -179,7 +174,6 @@ TEST_CASE(test_flash_write_unaligned_length)
     /* Verify: Result depends on implementation */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -201,7 +195,6 @@ TEST_CASE(test_flash_write_unaligned_address)
     /* Verify: Result depends on implementation */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -223,7 +216,6 @@ TEST_CASE(test_flash_write_at_end)
     /* Verify: Should return E_OK or E_NOT_OK based on boundary check */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -252,7 +244,6 @@ TEST_CASE(test_flash_verify_written_data)
     /* Verify: Should return E_OK */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -281,7 +272,6 @@ TEST_CASE(test_flash_compare)
     /* Verify: Should return E_OK for matching data */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -327,7 +317,6 @@ TEST_CASE(test_flash_write_read_roundtrip)
     /* Verify: Data should match */
     ASSERT_MEM_EQ(writeData, readBuffer, 32);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

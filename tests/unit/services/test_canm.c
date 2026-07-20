@@ -80,7 +80,6 @@ TEST_CASE(canm_init_valid_config)
     CanNm_Init(&g_test_config);
     
     ASSERT_EQ(CANNM_STATE_BUS_SLEEP, CanNm_GetInternalState(0));
-    TEST_PASS();
 }
 
 /* Test: CanNm_Init with NULL config */
@@ -89,7 +88,7 @@ TEST_CASE(canm_init_null_config)
     CanNm_Init(NULL_PTR);
     
     /* Should report error but not crash */
-    TEST_PASS();
+    ASSERT_EQ(CANNM_STATE_UNINIT, CanNm_GetInternalState(0));
 }
 
 /* Test: CanNm_DeInit */
@@ -101,7 +100,6 @@ TEST_CASE(canm_deinit)
     CanNm_DeInit();
     
     ASSERT_EQ(CANNM_STATE_UNINIT, CanNm_GetInternalState(0));
-    TEST_PASS();
 }
 
 /* Test: CanNm_PassiveStartUp */
@@ -115,7 +113,6 @@ TEST_CASE(canm_passive_startup)
     result = CanNm_PassiveStartUp(0);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanNm_NetworkRequest */
@@ -129,7 +126,6 @@ TEST_CASE(canm_network_request)
     result = CanNm_NetworkRequest(0);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanNm_NetworkRelease */
@@ -144,7 +140,6 @@ TEST_CASE(canm_network_release)
     result = CanNm_NetworkRelease(0);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanNm_GetVersionInfo */
@@ -160,7 +155,6 @@ TEST_CASE(canm_get_version_info)
     ASSERT_EQ(CANNM_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(CANNM_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(CANNM_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: CanNm_SetUserData */
@@ -175,7 +169,6 @@ TEST_CASE(canm_set_user_data)
     result = CanNm_SetUserData(0, user_data);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanNm_GetUserData */
@@ -190,7 +183,6 @@ TEST_CASE(canm_get_user_data)
     result = CanNm_GetUserData(0, user_data);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanNm_SetSleepReadyBit */
@@ -204,7 +196,6 @@ TEST_CASE(canm_set_sleep_ready_bit)
     result = CanNm_SetSleepReadyBit(0, TRUE);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanNm_MainFunction */
@@ -216,7 +207,8 @@ TEST_CASE(canm_main_function)
     /* Should not crash */
     CanNm_MainFunction();
     
-    TEST_PASS();
+    ASSERT_TRUE(CanNm_GetInternalState(0) == CANNM_STATE_BUS_SLEEP ||
+                CanNm_GetInternalState(0) == CANNM_STATE_REPEAT_MESSAGE);
 }
 
 /* Test: CanNm_RxIndication */
@@ -234,8 +226,7 @@ TEST_CASE(canm_rx_indication)
     
     CanNm_RxIndication(1, &pdu_info);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* RxIndication processed without crash */
 }
 
 /* Test: CanNm_TxConfirmation */
@@ -246,8 +237,7 @@ TEST_CASE(canm_tx_confirmation)
     
     CanNm_TxConfirmation(0);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* TxConfirmation processed without crash */
 }
 
 /*==================================================================================================

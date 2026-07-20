@@ -18,6 +18,7 @@
 static FiM_ConfigType g_test_config;
 static FiM_FunctionConfigType g_function_configs[2];
 static FiM_EventInhibitionType g_event_inhibitions[2];
+static uint8 g_fim_state = 0U;  /* 0=UNINIT, 1=INIT */
 
 /*==================================================================================================
 *                                      HELPER FUNCTIONS
@@ -67,8 +68,10 @@ TEST_CASE(fim_init_valid_config)
     
     FiM_Init(&g_test_config);
     
-    TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    Std_VersionInfoType versionInfo;
+    FiM_GetVersionInfo(&versionInfo);
+    ASSERT_EQ(FIM_VENDOR_ID, versionInfo.vendorID);
+    ASSERT_EQ(FIM_SW_MAJOR_VERSION, versionInfo.sw_major_version);
 }
 
 /* Test: FiM_Init with NULL config */
@@ -76,8 +79,7 @@ TEST_CASE(fim_init_null_config)
 {
     FiM_Init(NULL_PTR);
     
-    TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* Module should handle NULL gracefully without crash */
 }
 
 /* Test: FiM_DeInit */
@@ -88,8 +90,7 @@ TEST_CASE(fim_deinit)
     
     FiM_DeInit();
     
-    TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* DeInit completed without crash */
 }
 
 /* Test: FiM_GetVersionInfo */
@@ -105,7 +106,6 @@ TEST_CASE(fim_get_version_info)
     ASSERT_EQ(FIM_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(FIM_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(FIM_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: FiM_SetFunctionAvailable - Enable */
@@ -119,7 +119,6 @@ TEST_CASE(fim_set_function_available_enable)
     result = FiM_SetFunctionAvailable(0, TRUE);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: FiM_SetFunctionAvailable - Disable */
@@ -133,7 +132,6 @@ TEST_CASE(fim_set_function_available_disable)
     result = FiM_SetFunctionAvailable(0, FALSE);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: FiM_GetFunctionPermission - Allowed */
@@ -149,7 +147,6 @@ TEST_CASE(fim_get_function_permission_allowed)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(FIM_PERMISSION_ALLOWED, permission);
-    TEST_PASS();
 }
 
 /* Test: FiM_SetFunctionPermission */
@@ -163,7 +160,6 @@ TEST_CASE(fim_set_function_permission)
     result = FiM_SetFunctionPermission(0, FIM_PERMISSION_DENIED);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: FiM_GetInhibitionStatus */
@@ -178,7 +174,6 @@ TEST_CASE(fim_get_inhibition_status)
     result = FiM_GetInhibitionStatus(0, &status);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: FiM_DemTriggerOnMonitorStatus */
@@ -189,7 +184,7 @@ TEST_CASE(fim_dem_trigger_on_monitor_status)
     
     FiM_DemTriggerOnMonitorStatus(0, DEM_EVENT_STATUS_PASSED);
     
-    TEST_PASS();
+    /* Called without crash */
 }
 
 /* Test: FiM_DemTriggerOnEventStatus */
@@ -200,8 +195,7 @@ TEST_CASE(fim_dem_trigger_on_event_status)
     
     FiM_DemTriggerOnEventStatus(0, 0x00, 0x01);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* Called without crash */
 }
 
 /* Test: FiM_MainFunction */
@@ -212,8 +206,7 @@ TEST_CASE(fim_main_function)
     
     FiM_MainFunction();
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* Called without crash */
 }
 
 /* Test: FiM with multiple FIDs */
@@ -233,7 +226,6 @@ TEST_CASE(fim_multiple_fids)
     result = FiM_GetFunctionPermission(1, &permission);
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

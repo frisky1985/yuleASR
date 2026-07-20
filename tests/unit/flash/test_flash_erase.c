@@ -82,7 +82,6 @@ TEST_CASE(test_flash_erase_valid_sector)
     MemIf_StatusType status = Fls_GetStatus();
     ASSERT_TRUE(status == MEMIF_BUSY || status == MEMIF_IDLE);
     
-    TEST_PASS();
 }
 
 /**
@@ -98,7 +97,6 @@ TEST_CASE(test_flash_erase_invalid_address)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -114,7 +112,6 @@ TEST_CASE(test_flash_erase_address_out_of_range)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -130,7 +127,6 @@ TEST_CASE(test_flash_erase_zero_length)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -151,7 +147,6 @@ TEST_CASE(test_flash_erase_while_busy)
         ASSERT_EQ(E_NOT_OK, result);
     }
     
-    TEST_PASS();
 }
 
 /**
@@ -167,7 +162,6 @@ TEST_CASE(test_flash_erase_unaligned_address)
     /* Verify: Result depends on implementation */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -183,7 +177,6 @@ TEST_CASE(test_flash_erase_length_exceeds_sector)
     /* Verify: Should handle gracefully */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -207,7 +200,6 @@ TEST_CASE(test_flash_blank_check_after_erase)
     /* Verify: Should return E_OK for erased sector */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -228,7 +220,6 @@ TEST_CASE(test_flash_cancel_erase)
                 jobResult == MEMIF_JOB_OK ||
                 jobResult == MEMIF_JOB_PENDING);
     
-    TEST_PASS();
 }
 
 /**
@@ -252,7 +243,6 @@ TEST_CASE(test_flash_verify_sector_erased)
     /* Verify: Should return E_OK */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

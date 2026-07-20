@@ -30,7 +30,6 @@ void test_mcu_init_valid_config(void)
     
     /* Verify */
     ASSERT_EQ(MCU_STATE_INIT, g_mcu_state);
-    TEST_PASS();
 }
 
 /* Test: Mcu_Init with NULL config */
@@ -40,7 +39,7 @@ void test_mcu_init_null_config(void)
     Mcu_Init(NULL);
     
     /* Verify - should report error but not crash */
-    TEST_PASS();
+    ASSERT_EQ(MCU_STATE_UNINIT, g_mcu_state);
 }
 
 /* Test: Mcu_DeInit */
@@ -54,7 +53,6 @@ void test_mcu_deinit(void)
     
     /* Verify */
     ASSERT_EQ(MCU_STATE_UNINIT, g_mcu_state);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetVersionInfo */
@@ -69,7 +67,6 @@ void test_mcu_get_version_info(void)
     ASSERT_EQ(MCU_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(MCU_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(MCU_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetVersionInfo with NULL pointer */
@@ -79,7 +76,7 @@ void test_mcu_get_version_info_null(void)
     Mcu_GetVersionInfo(NULL);
     
     /* Verify - should report error but not crash */
-    TEST_PASS();
+    ASSERT_EQ(MCU_STATE_UNINIT, g_mcu_state);
 }
 
 /* Test: Mcu_DistributePllClock when not initialized */
@@ -93,7 +90,6 @@ void test_mcu_distribute_pll_not_init(void)
     
     /* Verify */
     ASSERT_TRUE(g_mcu_pll_state == PLL_STATE_LOCKED || g_mcu_pll_state == PLL_STATE_BYPASS);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetPllStatus when not initialized */
@@ -109,7 +105,6 @@ void test_mcu_get_pll_status_not_init(void)
     
     /* Verify */
     ASSERT_EQ(MCU_PLL_STATUS_UNDEFINED, status);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetResetReason when not initialized */
@@ -125,7 +120,6 @@ void test_mcu_get_reset_reason_not_init(void)
     
     /* Verify */
     ASSERT_EQ(MCU_RESET_UNDEFINED, reset_reason);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetResetRawValue when not initialized */
@@ -141,7 +135,6 @@ void test_mcu_get_reset_raw_not_init(void)
     
     /* Verify */
     ASSERT_EQ(0U, raw_value);
-    TEST_PASS();
 }
 
 /* Test: Mcu_PerformReset when not initialized */
@@ -155,7 +148,6 @@ void test_mcu_perform_reset_not_init(void)
     
     /* Verify */
     ASSERT_TRUE(g_mcu_reset_performed);
-    TEST_PASS();
 }
 
 /* Test: Mcu_SetMode with invalid mode */
@@ -169,7 +161,6 @@ void test_mcu_set_mode_invalid(void)
     
     /* Verify */
     ASSERT_EQ(1, g_det_error_count);  /* Det should report invalid mode */
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetClockFrequency with invalid clock */
@@ -187,7 +178,6 @@ void test_mcu_get_clock_freq_invalid(void)
     
     /* Verify */
     ASSERT_EQ(0U, freq);
-    TEST_PASS();
 }
 
 /* Main test runner */

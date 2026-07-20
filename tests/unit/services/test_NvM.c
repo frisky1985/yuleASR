@@ -139,7 +139,6 @@ TEST_CASE_DECLARE(NvM_Init_valid_config)
     /* Verify */
     ASSERT_EQ(1U, g_nvm_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -156,7 +155,6 @@ TEST_CASE_DECLARE(NvM_Init_null_config)
     /* Verify - 应该保持未初始化状态 */
     ASSERT_EQ(0U, g_nvm_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -175,7 +173,6 @@ TEST_CASE_DECLARE(NvM_GetVersionInfo)
     ASSERT_EQ(NVM_MODULE_ID, version_info.moduleID);
     ASSERT_EQ(NVM_SW_MAJOR_VERSION, version_info.sw_major_version);
     
-    TEST_PASS();
 }
 
 /**
@@ -187,7 +184,6 @@ TEST_CASE_DECLARE(NvM_GetVersionInfo_null)
     NvM_GetVersionInfo(NULL);
     
     /* Verify - 不应崩溃 */
-    TEST_PASS();
 }
 
 /**
@@ -214,7 +210,6 @@ TEST_CASE_DECLARE(NvM_ReadBlock_normal)
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(1U, g_fee_read_called);
     
-    TEST_PASS();
 }
 
 /**
@@ -233,7 +228,6 @@ TEST_CASE_DECLARE(NvM_ReadBlock_null_pointer)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -257,7 +251,6 @@ TEST_CASE_DECLARE(NvM_WriteBlock_normal)
     ASSERT_EQ(1U, g_fee_write_called);
     ASSERT_EQ(1U, g_write_counter);
     
-    TEST_PASS();
 }
 
 /**
@@ -276,7 +269,6 @@ TEST_CASE_DECLARE(NvM_WriteBlock_null_pointer)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -295,7 +287,6 @@ TEST_CASE_DECLARE(NvM_ReadBlock_uninit)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -315,7 +306,6 @@ TEST_CASE_DECLARE(NvM_ReadBlock_invalid_id)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -336,7 +326,6 @@ TEST_CASE_DECLARE(NvM_EraseBlock_normal)
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(1U, g_fee_erase_called);
     
-    TEST_PASS();
 }
 
 /**
@@ -351,9 +340,8 @@ TEST_CASE_DECLARE(NvM_ReadAll_normal)
     Std_ReturnType result = NvM_ReadAll();
     
     /* Verify */
-    /* 根据实际实现验证 */
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -372,7 +360,6 @@ TEST_CASE_DECLARE(NvM_WriteAll_normal)
     /* 根据实际实现验证 */
     
 TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /**
@@ -387,8 +374,7 @@ TEST_CASE_DECLARE(NvM_MainFunction_normal)
     NvM_MainFunction();
     
     /* Verify - 不应崩溃 */
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    ASSERT_EQ(1U, g_nvm_state);
 }
 
 /**
@@ -406,7 +392,6 @@ TEST_CASE_DECLARE(NvM_CancelJobs_normal)
     /* 根据实际实现验证 */
     
 TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /**
@@ -423,10 +408,8 @@ TEST_CASE_DECLARE(NvM_GetErrorStatus_normal)
     NvM_GetErrorStatus(0, &error_status);
     
     /* Verify */
-    /* 根据实际实现验证 */
+    ASSERT_EQ(1U, g_nvm_state);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /**
@@ -441,8 +424,7 @@ TEST_CASE_DECLARE(NvM_GetErrorStatus_null)
     NvM_GetErrorStatus(0, NULL);
     
     /* Verify - 不应崩溃 */
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    ASSERT_EQ(1U, g_nvm_state);
 }
 
 /**
@@ -463,7 +445,6 @@ TEST_CASE_DECLARE(NvM_ReadBlock_max_id)
     /* 根据实际实现验证 */
     
 TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /**
@@ -486,7 +467,6 @@ TEST_CASE_DECLARE(NvM_WriteBlock_counter)
     /* Verify */
     ASSERT_EQ(3U, g_write_counter);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

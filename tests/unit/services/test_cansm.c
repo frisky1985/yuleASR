@@ -52,8 +52,9 @@ TEST_CASE(cansm_init_valid_config)
     
     CanSM_Init(&g_test_config);
     
-    TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    Std_VersionInfoType versionInfo;
+    CanSM_GetVersionInfo(&versionInfo);
+    ASSERT_EQ(CANSM_VENDOR_ID, versionInfo.vendorID);
 }
 
 /* Test: CanSM_Init with NULL config */
@@ -61,8 +62,7 @@ TEST_CASE(cansm_init_null_config)
 {
     CanSM_Init(NULL_PTR);
     
-    TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* Should handle NULL gracefully without crash */
 }
 
 /* Test: CanSM_DeInit */
@@ -73,8 +73,7 @@ TEST_CASE(cansm_deinit)
     
     CanSM_DeInit();
     
-    TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* DeInit completed without crash */
 }
 
 /* Test: CanSM_RequestComMode - Full Communication */
@@ -88,7 +87,6 @@ TEST_CASE(cansm_request_com_mode_full)
     result = CanSM_RequestComMode(0, COMM_FULL_COMMUNICATION);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanSM_RequestComMode - No Communication */
@@ -102,7 +100,6 @@ TEST_CASE(cansm_request_com_mode_no)
     result = CanSM_RequestComMode(0, COMM_NO_COMMUNICATION);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanSM_RequestComMode - Silent Communication */
@@ -116,7 +113,6 @@ TEST_CASE(cansm_request_com_mode_silent)
     result = CanSM_RequestComMode(0, COMM_SILENT_COMMUNICATION);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanSM_GetCurrentComMode */
@@ -131,7 +127,6 @@ TEST_CASE(cansm_get_current_com_mode)
     result = CanSM_GetCurrentComMode(0, &com_mode);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanSM_GetVersionInfo */
@@ -147,7 +142,6 @@ TEST_CASE(cansm_get_version_info)
     ASSERT_EQ(CANSM_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(CANSM_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(CANSM_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: CanSM_SetBaudrate */
@@ -161,7 +155,6 @@ TEST_CASE(cansm_set_baudrate)
     result = CanSM_SetBaudrate(0, 500);
     
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: CanSM_GetBaudrate */
@@ -176,7 +169,6 @@ TEST_CASE(cansm_get_baudrate)
     result = CanSM_GetBaudrate(0, &baudrate);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanSM_GetCurrentInternalState */
@@ -191,7 +183,6 @@ TEST_CASE(cansm_get_current_internal_state)
     result = CanSM_GetCurrentInternalState(0, &state);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: CanSM_ControllerBusOff */
@@ -202,7 +193,7 @@ TEST_CASE(cansm_controller_busoff)
     
     CanSM_ControllerBusOff(0);
     
-    TEST_PASS();
+    /* BusOff notification processed without crash */
 }
 
 /* Test: CanSM_ControllerModeIndication */
@@ -213,8 +204,7 @@ TEST_CASE(cansm_controller_mode_indication)
     
     CanSM_ControllerModeIndication(0, CANIF_CS_STARTED);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* Mode indication processed without crash */
 }
 
 /* Test: CanSM_MainFunction */
@@ -225,8 +215,7 @@ TEST_CASE(cansm_main_function)
     
     CanSM_MainFunction();
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
+    /* MainFunction processed without crash */
 }
 
 /*==================================================================================================

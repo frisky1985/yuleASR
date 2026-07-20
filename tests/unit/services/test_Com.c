@@ -91,7 +91,6 @@ TEST_CASE_DECLARE(Com_Init_valid_config)
     /* Verify */
     ASSERT_EQ(COM_INIT, g_com_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -108,7 +107,6 @@ TEST_CASE_DECLARE(Com_Init_null_config)
     /* Verify - 应该保持未初始化状态 */
     ASSERT_EQ(COM_UNINIT, g_com_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -126,7 +124,6 @@ TEST_CASE_DECLARE(Com_DeInit)
     /* Verify */
     ASSERT_EQ(COM_UNINIT, g_com_state);
     
-    TEST_PASS();
 }
 
 /**
@@ -146,7 +143,6 @@ TEST_CASE_DECLARE(Com_GetVersionInfo)
     ASSERT_EQ(COM_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(COM_SW_MINOR_VERSION, version_info.sw_minor_version);
     
-    TEST_PASS();
 }
 
 /**
@@ -158,7 +154,6 @@ TEST_CASE_DECLARE(Com_GetVersionInfo_null)
     Com_GetVersionInfo(NULL);
     
     /* Verify */
-    TEST_PASS();
 }
 
 /**
@@ -180,7 +175,6 @@ TEST_CASE_DECLARE(Com_SendSignal_8bit)
     ASSERT_EQ(E_OK, result);
     /* 根据实际实现，可能会调用 PduR_Transmit */
     
-    TEST_PASS();
 }
 
 /**
@@ -199,7 +193,6 @@ TEST_CASE_DECLARE(Com_SendSignal_null_pointer)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -219,8 +212,6 @@ TEST_CASE_DECLARE(Com_ReceiveSignal_normal)
     /* Verify */
     /* 根据实际实现验证结果 */
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /**
@@ -239,7 +230,6 @@ TEST_CASE_DECLARE(Com_ReceiveSignal_null_pointer)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(1U, result);  /* 假设 1 表示错误 */
     
-    TEST_PASS();
 }
 
 /**
@@ -254,7 +244,6 @@ TEST_CASE_DECLARE(Com_MainFunctionRx_normal)
     Com_MainFunctionRx();
     
     /* Verify - 不应崩溃 */
-    TEST_PASS();
 }
 
 /**
@@ -272,8 +261,6 @@ TEST_CASE_DECLARE(Com_MainFunctionTx_normal)
     /* Verify */
     /* 如果有待发送的 I-PDU，应该调用 PduR_Transmit */
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /**
@@ -293,7 +280,6 @@ TEST_CASE_DECLARE(Com_SendSignal_uninit)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -313,7 +299,6 @@ TEST_CASE_DECLARE(Com_SendSignal_invalid_id)
     /* Verify - 应该返回错误 */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -330,7 +315,6 @@ TEST_CASE_DECLARE(Com_InvalidateSignal_normal)
     Com_InvalidateSignal(signal_id);
     
     /* Verify - 不应崩溃 */
-    TEST_PASS();
 }
 
 /**
@@ -348,10 +332,8 @@ TEST_CASE_DECLARE(Com_TriggerIPDUSend_normal)
     Std_ReturnType result = Com_TriggerIPDUSend(ipdu_id);
     
     /* Verify */
-    /* 根据实际实现验证 */
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /**
@@ -368,8 +350,6 @@ TEST_CASE_DECLARE(Com_EnableReception_normal)
     Com_EnableReception(signal_id);
     
     /* Verify - 不应崩溃 */
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /**
@@ -386,8 +366,6 @@ TEST_CASE_DECLARE(Com_DisableReception_normal)
     Com_DisableReception(signal_id);
     
     /* Verify - 不应崩溃 */
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /**
@@ -409,10 +387,8 @@ TEST_CASE_DECLARE(Com_SendSignal_max_length)
     Std_ReturnType result = Com_SendSignal(signal_id, max_signal);
     
     /* Verify */
-    /* 根据实际实现验证 */
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-TEST_ASSERT_TRUE(1U == 1U);
-    TEST_PASS();
 }
 
 /*==================================================================================================

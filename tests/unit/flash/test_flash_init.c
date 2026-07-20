@@ -81,7 +81,6 @@ TEST_CASE(test_flash_init_valid)
     MemIf_JobResultType result = Fls_GetJobResult();
     ASSERT_EQ(MEMIF_JOB_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -96,7 +95,6 @@ TEST_CASE(test_flash_init_null)
     MemIf_StatusType status = Fls_GetStatus();
     ASSERT_TRUE(status == MEMIF_IDLE || status == MEMIF_UNINIT);
     
-    TEST_PASS();
 }
 
 /**
@@ -115,7 +113,6 @@ TEST_CASE(test_flash_deinit_after_init)
     MemIf_StatusType status = Fls_GetStatus();
     ASSERT_EQ(MEMIF_UNINIT, status);
     
-    TEST_PASS();
 }
 
 /**
@@ -134,7 +131,6 @@ TEST_CASE(test_flash_init_multiple)
     MemIf_StatusType status = Fls_GetStatus();
     ASSERT_TRUE(status == MEMIF_IDLE || status == MEMIF_BUSY);
     
-    TEST_PASS();
 }
 
 /**
@@ -158,7 +154,6 @@ TEST_CASE(test_flash_get_version_info)
     ASSERT_EQ(FLS_SW_MINOR_VERSION, versionInfo.sw_minor_version);
     ASSERT_EQ(FLS_SW_PATCH_VERSION, versionInfo.sw_patch_version);
     
-    TEST_PASS();
 }
 #endif
 
@@ -176,7 +171,6 @@ TEST_CASE(test_flash_get_status_before_init)
     /* Verify: Should return UNINIT */
     ASSERT_EQ(MEMIF_UNINIT, status);
     
-    TEST_PASS();
 }
 
 /**
@@ -193,7 +187,6 @@ TEST_CASE(test_flash_get_job_result_before_init)
     /* Verify: Should return JOB_FAILED or appropriate status */
     ASSERT_TRUE(result == MEMIF_JOB_FAILED || result == MEMIF_JOB_OK);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================

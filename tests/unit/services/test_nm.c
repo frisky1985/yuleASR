@@ -28,7 +28,6 @@ TEST_CASE(nm_init_valid_config)
     Nm_Init(&g_test_config);
     
     ASSERT_EQ(0, Det_MockData.CallCount);
-    TEST_PASS();
 }
 
 /* Test: Nm_Init with NULL config */
@@ -39,7 +38,6 @@ TEST_CASE(nm_init_null_config)
     Nm_Init(NULL_PTR);
     
     ASSERT_TRUE(Det_MockData.CallCount > 0);
-    TEST_PASS();
 }
 
 /* Test: Nm_DeInit */
@@ -51,7 +49,6 @@ TEST_CASE(nm_deinit)
     Nm_DeInit();
     
     ASSERT_EQ(0, Det_MockData.CallCount);
-    TEST_PASS();
 }
 
 /* Test: Nm_NetworkRequest */
@@ -68,7 +65,6 @@ TEST_CASE(nm_network_request)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(NM_STATE_REPEAT_MESSAGE, state);
-    TEST_PASS();
 }
 
 /* Test: Nm_NetworkRelease */
@@ -86,7 +82,6 @@ TEST_CASE(nm_network_release)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(NM_STATE_READY_SLEEP, state);
-    TEST_PASS();
 }
 
 /* Test: Nm_GetState */
@@ -102,7 +97,6 @@ TEST_CASE(nm_get_state)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(NM_STATE_BUS_SLEEP, state);
-    TEST_PASS();
 }
 
 /* Test: Nm_GetMode */
@@ -118,7 +112,6 @@ TEST_CASE(nm_get_mode)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(NM_MODE_BUS_SLEEP, mode);
-    TEST_PASS();
 }
 
 /* Test: Nm_GetLocalNodeIdentifier */
@@ -134,7 +127,6 @@ TEST_CASE(nm_get_local_node_id)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(NM_NODE_ID, nodeId);
-    TEST_PASS();
 }
 
 /* Test: Nm_EnableCommunication */
@@ -148,7 +140,6 @@ TEST_CASE(nm_enable_communication)
     result = Nm_EnableCommunication(0);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Nm_DisableCommunication */
@@ -162,7 +153,6 @@ TEST_CASE(nm_disable_communication)
     result = Nm_DisableCommunication(0);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Nm_SetUserData and Nm_GetUserData */
@@ -181,7 +171,6 @@ TEST_CASE(nm_user_data)
     result = Nm_GetUserData(0, readData);
     ASSERT_EQ(E_OK, result);
     ASSERT_MEM_EQ(writeData, readData, 8);
-    TEST_PASS();
 }
 
 /* Test: Nm_GetVersionInfo */
@@ -193,7 +182,6 @@ TEST_CASE(nm_get_version_info)
     
     ASSERT_EQ(0x0001, version.vendorID);
     ASSERT_EQ(0x1D, version.moduleID);
-    TEST_PASS();
 }
 
 /*==================================================================================================

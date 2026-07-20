@@ -61,7 +61,6 @@ TEST_CASE(port_init_valid_config)
     /* Verify pins are configured */
     ASSERT_TRUE(Port_MockPinStates[0].Initialized);
     ASSERT_TRUE(Port_MockPinStates[1].Initialized);
-    TEST_PASS();
 }
 
 /* Test: Port_Init with NULL config */
@@ -75,7 +74,6 @@ TEST_CASE(port_init_null_config)
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_MODULE_ID, Det_MockData.ModuleId);
     ASSERT_EQ(PORT_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Port_Init twice without deinit */
@@ -91,7 +89,6 @@ TEST_CASE(port_init_twice)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 #if (PORT_SET_PIN_DIRECTION_API == STD_ON)
@@ -105,7 +102,6 @@ TEST_CASE(port_set_pin_direction_valid)
     Port_SetPinDirection(1, PORT_PIN_OUT);
     
     ASSERT_EQ(PORT_PIN_OUT, Port_MockPinStates[1].Direction);
-    TEST_PASS();
 }
 
 /* Test: Port_SetPinDirection with unchangeable pin */
@@ -120,7 +116,6 @@ TEST_CASE(port_set_pin_direction_unchangeable)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_DIRECTION_UNCHANGEABLE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Port_SetPinDirection with invalid pin */
@@ -134,7 +129,6 @@ TEST_CASE(port_set_pin_direction_invalid)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_PARAM_PIN, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 #endif /* PORT_SET_PIN_DIRECTION_API */
 
@@ -151,7 +145,6 @@ TEST_CASE(port_refresh_port_direction)
     
     /* Direction should be restored to configured value */
     ASSERT_EQ(PORT_PIN_OUT, Port_MockPinStates[0].Direction);
-    TEST_PASS();
 }
 
 /* Test: Port_RefreshPortDirection when not initialized */
@@ -163,7 +156,6 @@ TEST_CASE(port_refresh_port_direction_uninit)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 #if (PORT_VERSION_INFO_API == STD_ON)
@@ -176,7 +168,6 @@ TEST_CASE(port_get_version_info_valid)
     
     ASSERT_EQ(PORT_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(PORT_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 /* Test: Port_GetVersionInfo with NULL pointer */
@@ -188,7 +179,6 @@ TEST_CASE(port_get_version_info_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 #endif /* PORT_VERSION_INFO_API */
 
@@ -203,7 +193,6 @@ TEST_CASE(port_set_pin_mode_valid)
     Port_SetPinMode(1, 2);
     
     ASSERT_EQ(2, Port_MockPinStates[1].Mode);
-    TEST_PASS();
 }
 
 /* Test: Port_SetPinMode with unchangeable mode */
@@ -218,7 +207,6 @@ TEST_CASE(port_set_pin_mode_unchangeable)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_MODE_UNCHANGEABLE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Port_SetPinMode with invalid mode */
@@ -232,7 +220,6 @@ TEST_CASE(port_set_pin_mode_invalid)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PORT_E_PARAM_INVALID_MODE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 #endif /* PORT_SET_PIN_MODE_API */
 

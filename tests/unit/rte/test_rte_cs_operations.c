@@ -288,7 +288,6 @@ TEST_CASE(Rte_Call_EngineControl_SetTargetRPM_normal)
     ASSERT_EQ((int)E_OK, (int)ret);
     ASSERT_EQ(1U, g_stub_setTargetRPM_callCount);
     ASSERT_EQ(setRPM, g_stub_targetRPM);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Call_EngineControl_SetTargetRPM_zero)
@@ -300,7 +299,6 @@ TEST_CASE(Rte_Call_EngineControl_SetTargetRPM_zero)
 
     ASSERT_EQ((int)E_OK, (int)ret);
     ASSERT_EQ(0U, g_stub_targetRPM);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Call_EngineControl_SetTargetRPM_max)
@@ -312,7 +310,6 @@ TEST_CASE(Rte_Call_EngineControl_SetTargetRPM_max)
 
     ASSERT_EQ((int)E_OK, (int)ret);
     ASSERT_EQ(8000U, g_stub_targetRPM);
-    TEST_PASS();
 }
 
 /* ===== 2. Rte_Call_DiagnosticManager_ReadDTC ===== */
@@ -331,7 +328,6 @@ TEST_CASE(Rte_Call_DiagnosticManager_ReadDTC_normal)
     ASSERT_EQ(1U, g_stub_readDTC_callCount);
     ASSERT_EQ(dtcCode, g_stub_readDTC_dtcCode);
     ASSERT_EQ(statusByte, resultByte);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Call_DiagnosticManager_ReadDTC_all_dtc)
@@ -347,7 +343,6 @@ TEST_CASE(Rte_Call_DiagnosticManager_ReadDTC_all_dtc)
     ASSERT_EQ((int)E_OK, (int)ret);
     ASSERT_EQ(0xFFFFFFU, g_stub_readDTC_dtcCode);
     ASSERT_EQ(0x00U, resultByte);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Call_DiagnosticManager_ReadDTC_multi_call)
@@ -370,7 +365,6 @@ TEST_CASE(Rte_Call_DiagnosticManager_ReadDTC_multi_call)
     /* 验证调用计数和最后写入的 DTC 码 */
     ASSERT_EQ(2U, g_stub_readDTC_callCount);
     ASSERT_EQ(0x002U, g_stub_readDTC_dtcCode);
-    TEST_PASS();
 }
 
 /* ===== 3. Rte_Read_EngineControl_RPM ===== */
@@ -387,7 +381,6 @@ TEST_CASE(Rte_Read_EngineControl_RPM_normal)
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ(1U, g_stub_readRPM_callCount);
     ASSERT_EQ(expectedRPM, actualRPM);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Read_EngineControl_RPM_idle)
@@ -400,7 +393,6 @@ TEST_CASE(Rte_Read_EngineControl_RPM_idle)
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ(800U, actualRPM);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Read_EngineControl_RPM_zero)
@@ -411,7 +403,6 @@ TEST_CASE(Rte_Read_EngineControl_RPM_zero)
     Rte_StatusType ret = Rte_Read_EngineControl_RPM(&actualRPM);
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
-    TEST_PASS();
 }
 
 /* ===== 4. Rte_Write_EngineControl_Throttle ===== */
@@ -426,7 +417,6 @@ TEST_CASE(Rte_Write_EngineControl_Throttle_normal)
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ(1U, g_stub_writeThrottle_callCount);
     ASSERT_EQ(throttlePos, g_stub_throttleValue);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Write_EngineControl_Throttle_full_open)
@@ -437,7 +427,6 @@ TEST_CASE(Rte_Write_EngineControl_Throttle_full_open)
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ(100U, g_stub_throttleValue);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Write_EngineControl_Throttle_closed)
@@ -448,7 +437,6 @@ TEST_CASE(Rte_Write_EngineControl_Throttle_closed)
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ(0U, g_stub_throttleValue);
-    TEST_PASS();
 }
 
 /* ===== 5. Rte_Call_WatchdogManager_Reset ===== */
@@ -461,7 +449,6 @@ TEST_CASE(Rte_Call_WatchdogManager_Reset_normal)
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ(1U, g_stub_wdgReset_callCount);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Call_WatchdogManager_Reset_multiple)
@@ -476,7 +463,6 @@ TEST_CASE(Rte_Call_WatchdogManager_Reset_multiple)
     }
 
     ASSERT_EQ(10U, g_stub_wdgReset_callCount);
-    TEST_PASS();
 }
 
 /* ===== 6. 异步调用结果获取 ===== */
@@ -493,7 +479,6 @@ TEST_CASE(Rte_GetAsyncResult_completed)
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ((int)RTE_E_OK, (int)result);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_GetAsyncResult_pending)
@@ -506,7 +491,6 @@ TEST_CASE(Rte_GetAsyncResult_pending)
     Rte_StatusType ret = Rte_GetAsyncResult(2U, &result, 100U);
 
     ASSERT_EQ((int)RTE_E_OK_PENDING, (int)ret);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_GetAsyncResult_completed_with_error)
@@ -521,7 +505,6 @@ TEST_CASE(Rte_GetAsyncResult_completed_with_error)
 
     ASSERT_EQ((int)RTE_E_OK, (int)ret);
     ASSERT_EQ((int)RTE_E_TIMEOUT, (int)result);
-    TEST_PASS();
 }
 
 /* ===== 7. 超时处理 ===== */
@@ -536,7 +519,6 @@ TEST_CASE(Rte_GetAsyncResult_timeout)
     Rte_StatusType ret = Rte_GetAsyncResult(10U, &result, 0U);
 
     ASSERT_EQ((int)RTE_E_OK_PENDING, (int)ret);
-    TEST_PASS();
 }
 
 /* ===== 8. 错误注入测试 ===== */
@@ -553,7 +535,6 @@ TEST_CASE(Rte_GetAsyncResult_invalid_operation_id)
     Rte_StatusType ret = Rte_GetAsyncResult(999U, &result, 100U);
 
     ASSERT_EQ((int)RTE_E_INVALID, (int)ret);
-    TEST_PASS();
 }
 
 /* 8b. 空指针测试 */
@@ -564,7 +545,6 @@ TEST_CASE(Rte_Call_DiagnosticManager_ReadDTC_null_pointer)
     Std_ReturnType ret = Rte_Call_DiagnosticManager_ReadDTC(0x123456U, NULL_PTR);
 
     ASSERT_EQ((int)E_NOT_OK, (int)ret);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Read_EngineControl_RPM_null_pointer)
@@ -574,7 +554,6 @@ TEST_CASE(Rte_Read_EngineControl_RPM_null_pointer)
     Rte_StatusType ret = Rte_Read_EngineControl_RPM(NULL_PTR);
 
     ASSERT_EQ((int)RTE_E_SEG_FAULT, (int)ret);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_GetAsyncResult_null_pointer)
@@ -587,7 +566,6 @@ TEST_CASE(Rte_GetAsyncResult_null_pointer)
     Rte_StatusType ret = Rte_GetAsyncResult(1U, NULL_PTR, 100U);
 
     ASSERT_EQ((int)RTE_E_SEG_FAULT, (int)ret);
-    TEST_PASS();
 }
 
 /* 8c. 服务端返回错误 - 验证错误透传 */
@@ -601,7 +579,6 @@ TEST_CASE(Rte_Call_EngineControl_SetTargetRPM_server_error)
     ASSERT_EQ((int)RTE_E_NOK, (int)ret);
     /* 返回错误时 targetRPM 不应被修改 */
     ASSERT_EQ(0U, g_stub_targetRPM);
-    TEST_PASS();
 }
 
 TEST_CASE(Rte_Call_WatchdogManager_Reset_server_error)
@@ -613,7 +590,6 @@ TEST_CASE(Rte_Call_WatchdogManager_Reset_server_error)
 
     ASSERT_EQ((int)RTE_E_NOK, (int)ret);
     ASSERT_EQ(1U, g_stub_wdgReset_callCount);
-    TEST_PASS();
 }
 
 /* 8d. 组合操作 - 设置目标转速后验证读取值的一致性 */
@@ -634,7 +610,6 @@ TEST_CASE(Rte_Read_EngineControl_RPM_after_SetTargetRPM)
     ASSERT_EQ((int)RTE_E_OK, (int)retRead);
     ASSERT_EQ(3480U, actualRPM);
 
-    TEST_PASS();
 }
 
 /*==================================================================================================

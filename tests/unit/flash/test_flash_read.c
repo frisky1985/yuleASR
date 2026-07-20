@@ -82,7 +82,6 @@ TEST_CASE(test_flash_read_valid)
     /* Verify: Should return E_OK */
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -98,7 +97,6 @@ TEST_CASE(test_flash_read_null_buffer)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -114,7 +112,6 @@ TEST_CASE(test_flash_read_invalid_address)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -130,7 +127,6 @@ TEST_CASE(test_flash_read_address_out_of_range)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -146,7 +142,6 @@ TEST_CASE(test_flash_read_zero_length)
     /* Verify: Should return E_NOT_OK */
     ASSERT_EQ(E_NOT_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -167,7 +162,6 @@ TEST_CASE(test_flash_read_while_busy)
         ASSERT_EQ(E_NOT_OK, result);
     }
     
-    TEST_PASS();
 }
 
 /**
@@ -183,7 +177,6 @@ TEST_CASE(test_flash_read_large_length)
     /* Verify: Should return E_OK */
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -199,7 +192,6 @@ TEST_CASE(test_flash_read_at_end)
     /* Verify: Result depends on boundary handling */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -237,7 +229,6 @@ TEST_CASE(test_flash_read_after_write)
     /* Verify: Data should match */
     ASSERT_MEM_EQ(testPattern, readBuffer, 16);
     
-    TEST_PASS();
 }
 
 /**
@@ -261,7 +252,6 @@ TEST_CASE(test_flash_read_different_modes)
     result = Fls_Read(0x08000000U, readBuffer, 64);
     ASSERT_EQ(E_OK, result);
     
-    TEST_PASS();
 }
 
 /**
@@ -283,7 +273,6 @@ TEST_CASE(test_flash_get_sector_index)
     /* Verify: Should return 1 for second sector */
     ASSERT_EQ(1, sectorIndex);
     
-    TEST_PASS();
 }
 
 /**
@@ -310,7 +299,6 @@ TEST_CASE(test_flash_blank_check_after_read)
     /* Verify: Should return E_OK for erased sector */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /**
@@ -333,7 +321,6 @@ TEST_CASE(test_flash_compare_with_read)
     /* Verify: Should return E_OK */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     
-    TEST_PASS();
 }
 
 /*==================================================================================================
