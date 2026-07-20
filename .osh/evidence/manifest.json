@@ -1,15 +1,15 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-07-20T03:53:25",
+  "generated_at": "2026-07-20T04:05:28",
   "project_dir": ".",
   "total_files": 8,
   "files": [
     {
       "path": "acceptance-matrix.md",
-      "sha256": "9a12ae03a66084bc5548c4d8c545359d5036e257088318f72b990d733945585a",
-      "size_bytes": 15084,
-      "mtime": 1784519605.5613098,
-      "mtime_iso": "2026-07-20T03:53:25"
+      "sha256": "e0f446d577bb5e9c4c0d2533d1b4ab4254b1f92248ebc5fe9838aa6e3fc30d08",
+      "size_bytes": 21632,
+      "mtime": 1784520328.1585248,
+      "mtime_iso": "2026-07-20T04:05:28"
     },
     {
       "path": "aspice-gap-report.md",
@@ -20,17 +20,17 @@
     },
     {
       "path": "code-coverage-report.md",
-      "sha256": "2f7b99c5bb4d3368ed499f383fc2f080e347bd2542b97cf565b819b9a1282b7d",
-      "size_bytes": 464,
-      "mtime": 1784515816.249223,
-      "mtime_iso": "2026-07-20T02:50:16"
+      "sha256": "59b8c1c245941f7c1ad6d2cd41b5f7a933378c7dbb2dcbf7185773203f2e948c",
+      "size_bytes": 673,
+      "mtime": 1784519862.2197578,
+      "mtime_iso": "2026-07-20T03:57:42"
     },
     {
       "path": "requirement-coverage.md",
-      "sha256": "4a06d8541afe22d649b3e5b7838414ff6b53eecd39330145d5190ce876308609",
-      "size_bytes": 3462,
-      "mtime": 1784519605.560968,
-      "mtime_iso": "2026-07-20T03:53:25"
+      "sha256": "e299c1edaa2889f6f5df4c5320e86d6f71a51473bc2485358b265edb575149b7",
+      "size_bytes": 4495,
+      "mtime": 1784520328.1581054,
+      "mtime_iso": "2026-07-20T04:05:28"
     },
     {
       "path": "review-log-summary.md",
@@ -48,17 +48,17 @@
     },
     {
       "path": "traceability-matrix.json",
-      "sha256": "700ee242b48af5ed2bc1faf066cd73471122b1962451441667cd22a97b812a13",
-      "size_bytes": 28021,
-      "mtime": 1784519605.5606604,
-      "mtime_iso": "2026-07-20T03:53:25"
+      "sha256": "534bd8909a4374f74e6f65b52bc7bd038fccbe2090f245c41e8fbc9a32ec9881",
+      "size_bytes": 37618,
+      "mtime": 1784520328.157643,
+      "mtime_iso": "2026-07-20T04:05:28"
     },
     {
       "path": "traceability-matrix.md",
-      "sha256": "54fefe88c6b9533d94273cfa2f9ca3de1e8819ffba2ed8ae4a5f1836a6d1c6ee",
-      "size_bytes": 29122,
-      "mtime": 1784519605.5600798,
-      "mtime_iso": "2026-07-20T03:53:25"
+      "sha256": "cbff7f677940d891887e725ed482c9c237bd7917c0b0857e2f88a727b4603b89",
+      "size_bytes": 33765,
+      "mtime": 1784520328.156779,
+      "mtime_iso": "2026-07-20T04:05:28"
     }
   ]
 }
