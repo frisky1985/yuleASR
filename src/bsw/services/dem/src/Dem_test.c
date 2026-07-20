@@ -450,7 +450,7 @@ void test_dem_extended_data(void)
     Dem_Init(&Dem_Config);
 
     /* Set and confirm DTC multiple times to generate occurrence counter */
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0U; i < 5; i++) {
         (void)Dem_SetEventStatus(1U, DEM_EVENT_STATUS_FAILED);
     }
 
@@ -580,7 +580,7 @@ void test_dem_dtc_aging(void)
     (void)Dem_SetEventStatus(1U, DEM_EVENT_STATUS_PASSED);
 
     /* Simulate aging cycles */
-    for (int i = 0; i < DEM_AGING_CYCLE_THRESHOLD + 5; i++) {
+    for (int i = 0U; i < DEM_AGING_CYCLE_THRESHOLD + 5; i++) {
         Dem_IntProcessAging();
     }
 
@@ -882,7 +882,7 @@ void test_dem_main_function(void)
     Dem_Init(&Dem_Config);
 
     /* Call MainFunction multiple times */
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0U; i < 10; i++) {
         Dem_MainFunction();
     }
 

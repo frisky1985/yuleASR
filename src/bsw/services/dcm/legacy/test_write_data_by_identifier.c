@@ -243,7 +243,7 @@ static int test_security_access_denied(void)
     requestData[2] = 0x90;  /* DID Low */
     
     /* Fill VIN data (17 bytes) */
-    for (int i = 0; i < 17; i++) {
+    for (int i = 0U; i < 17; i++) {
         requestData[3 + i] = (uint8_t)('A' + i);
     }
     

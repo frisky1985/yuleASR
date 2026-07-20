@@ -30,7 +30,7 @@ static uint32_t    bib_calc_crc(const Boot_InfoBlock *bib);
 
 Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
 {
-    if (g_ctx_valid) {
+    if (g_ctx_valid!= 0U) {
         (void)Boot_Update_Abort();
     }
 

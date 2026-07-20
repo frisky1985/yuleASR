@@ -125,3 +125,7 @@ coverage.info
 *.info
 tools/deepen_*.py
 tools/deepen_*.py
+
+# Cppcheck dump files (分析临时文件)
+*.dump
+*.ctu-info

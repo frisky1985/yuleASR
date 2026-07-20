@@ -818,7 +818,7 @@ static void CertMgr_ParseExtensions(const mbedtls_x509_crt* crt,
     /* 提取序列号 */
     if (crt->serial.p != NULL && crt->serial.len > 0U ) {
         ext->serialNumber = 0;
-        for (size_t i = 0; i < crt->serial.len && i < 4; i++) {
+        for (size_t i = 0U; i < crt->serial.len && i < 4; i++) {
             ext->serialNumber = (ext->serialNumber << 8) | crt->serial.p[i];
         }
     }

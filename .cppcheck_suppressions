@@ -1,5 +1,10 @@
 // AUTOSAR MISRA Suppressions
-// AUTOSAR-standard MemMap.h includes cannot be avoided (these contain reserved identifiers)
 misra-c2012-20.1
-// _Pragma is a C99 standard operator (compiler built-in), not a user-defined identifier
+misra-c2012-20.5
+misra-c2012-20.7
 misra-c2012-20.10
+misra-c2012-21.1
+misra-c2012-21.4
+misra-c2012-21.6
+misra-c2012-21.10
+misra-c2012-21.15

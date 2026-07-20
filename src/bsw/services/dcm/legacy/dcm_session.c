@@ -123,7 +123,7 @@ static int32_t getSessionConfigIndex(Dcm_SessionType session)
         return -1;
     }
     
-    for (uint8_t i = 0; i < s_sessionState.config->numSessions; i++) {
+    for (uint8_t i = 0U; i < s_sessionState.config->numSessions; i++) {
         if (s_sessionState.config->sessionConfigs[i].sessionType == session) {
             return (int32_t)i;
         }

@@ -65,14 +65,14 @@ Boot_Result Boot_Flash_Init(void) { return BOOT_OK; }
 
 Boot_Result Boot_Flash_Erase(uint32_t addr, uint32_t size)
 {
-    for (uint32_t i = 0; i < size; i++)
+    for (uint32_t i = 0U; i < size; i++)
         if (addr + i < FLASH_SIZE) g_boot_flash_ram[addr + i] = 0xFF;
     return BOOT_OK;
 }
 
 Boot_Result Boot_Flash_Write(uint32_t dst, const uint8_t *src, uint32_t len)
 {
-    for (uint32_t i = 0; i < len; i++)
+    for (uint32_t i = 0U; i < len; i++)
         if (dst + i < FLASH_SIZE) g_boot_flash_ram[dst + i] = src[i];
     return BOOT_OK;
 }
@@ -271,7 +271,7 @@ static void test_hash_verify(void)
 {
     printf("\n=== Hash Verification ===\n");
     uint8_t payload[256];
-    for (int i = 0; i < 256; i++) payload[i] = (uint8_t)i;
+    for (int i = 0U; i < 256; i++) payload[i] = (uint8_t)i;
 
     Boot_ImageHeader hdr;
     memset(&hdr, 0, sizeof(hdr));
@@ -325,7 +325,7 @@ static void test_end_to_end(void)
 
     /* Create test app payload */
     uint8_t app[4096];
-    for (int i = 0; i < 4096; i++) app[i] = i & 0xFF;
+    for (int i = 0U; i < 4096; i++) app[i] = i & 0xFF;
 
     /* Sign */
     uint8_t sig[64];

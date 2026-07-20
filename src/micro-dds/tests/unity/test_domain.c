@@ -81,7 +81,7 @@ void test_DomainParticipant_create_exceed_limit(void) {
     TEST_ASSERT_GREATER_THAN(0, i);
     
     /* 清理 */
-    for (uint32_t j = 0; j < i; j++) {
+    for (uint32_t j = 0U; j < i; j++) {
         if (participants[j] != NULL) {
             DDS_DomainParticipant_delete(participants[j]);
         }
