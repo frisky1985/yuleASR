@@ -85,7 +85,6 @@ TEST_CASE(adc_init_valid)
     Adc_Init(&g_test_config);
     
     ASSERT_TRUE(Adc_MockGroups[0].Status != 0 || TRUE); /* Initialized */
-    TEST_PASS();
 }
 
 TEST_CASE(adc_init_null)
@@ -96,7 +95,6 @@ TEST_CASE(adc_init_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(ADC_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_init_already_initialized)
@@ -109,7 +107,6 @@ TEST_CASE(adc_init_already_initialized)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(ADC_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_deinit)
@@ -119,7 +116,6 @@ TEST_CASE(adc_deinit)
     
     Adc_DeInit();
     ASSERT_TRUE(Adc_MockGroups[0].Status == ADC_IDLE || Adc_MockGroups[0].Status == ADC_UNINIT);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_start_group_conversion)
@@ -130,7 +126,6 @@ TEST_CASE(adc_start_group_conversion)
     Adc_StartGroupConversion(0);
     
     ASSERT_EQ(ADC_BUSY, Adc_MockGroups[0].Status);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_stop_group_conversion)
@@ -142,7 +137,6 @@ TEST_CASE(adc_stop_group_conversion)
     Adc_StopGroupConversion(0);
     
     ASSERT_EQ(ADC_IDLE, Adc_MockGroups[0].Status);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_read_group)
@@ -162,7 +156,6 @@ TEST_CASE(adc_read_group)
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(1234, buffer[0]);
     ASSERT_EQ(5678, buffer[1]);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_read_group_busy)
@@ -179,7 +172,6 @@ TEST_CASE(adc_read_group_busy)
     
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(ADC_E_BUSY, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_enable_hardware_trigger)
@@ -192,7 +184,6 @@ TEST_CASE(adc_enable_hardware_trigger)
     
     Adc_EnableHardwareTrigger(0);
     ASSERT_EQ(ADC_TRIGG_SRC_HW, g_mock_adc_groups[0].trigger_source);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_disable_hardware_trigger)
@@ -205,7 +196,6 @@ TEST_CASE(adc_disable_hardware_trigger)
     Adc_DisableHardwareTrigger(0);
     
     ASSERT_EQ(ADC_TRIGG_SRC_SW, g_mock_adc_groups[0].trigger_source);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_enable_group_notification)
@@ -216,7 +206,6 @@ TEST_CASE(adc_enable_group_notification)
     Adc_EnableGroupNotification(0);
     
     ASSERT_TRUE(Adc_MockGroups[0].NotificationEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_disable_group_notification)
@@ -228,7 +217,6 @@ TEST_CASE(adc_disable_group_notification)
     Adc_DisableGroupNotification(0);
     
     ASSERT_FALSE(Adc_MockGroups[0].NotificationEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_get_group_status)
@@ -243,7 +231,6 @@ TEST_CASE(adc_get_group_status)
     status = Adc_GetGroupStatus(0);
     
     ASSERT_EQ(ADC_BUSY, status);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_get_version_info)
@@ -254,7 +241,6 @@ TEST_CASE(adc_get_version_info)
     
     ASSERT_EQ(ADC_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(ADC_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 TEST_CASE(adc_setup_result_buffer)
@@ -268,7 +254,6 @@ TEST_CASE(adc_setup_result_buffer)
     result = Adc_SetupResultBuffer(0, buffer);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /*==================================================================================================

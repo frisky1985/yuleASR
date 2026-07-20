@@ -86,7 +86,6 @@ TEST_CASE(can_init_valid)
     
     ASSERT_TRUE(Can_MockControllers[0].Initialized);
     ASSERT_EQ(CAN_CS_STOPPED, Can_Mock_GetControllerState(0));
-    TEST_PASS();
 }
 
 /* Test: Can_Init with NULL config */
@@ -98,7 +97,6 @@ TEST_CASE(can_init_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_Init when already initialized */
@@ -112,7 +110,6 @@ TEST_CASE(can_init_already_initialized)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_INIT_FAILED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_GetVersionInfo */
@@ -126,7 +123,6 @@ TEST_CASE(can_get_version_info)
     ASSERT_EQ(CAN_MODULE_ID, version_info.moduleID);
     ASSERT_EQ(CAN_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(CAN_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: Can_GetVersionInfo with NULL pointer */
@@ -138,7 +134,6 @@ TEST_CASE(can_get_version_info_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_SetControllerMode - Stop -> Start */
@@ -154,7 +149,6 @@ TEST_CASE(can_set_mode_start)
     
     ASSERT_EQ(CAN_OK, result);
     ASSERT_EQ(CAN_CS_STARTED, Can_Mock_GetControllerState(0));
-    TEST_PASS();
 }
 
 /* Test: Can_SetControllerMode with invalid controller */
@@ -171,7 +165,6 @@ TEST_CASE(can_set_mode_invalid_controller)
     ASSERT_EQ(CAN_NOT_OK, result);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_PARAM_CONTROLLER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_SetControllerMode when not initialized */
@@ -186,7 +179,6 @@ TEST_CASE(can_set_mode_uninit)
     ASSERT_EQ(CAN_NOT_OK, result);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_DisableControllerInterrupts */
@@ -198,7 +190,6 @@ TEST_CASE(can_disable_interrupts)
     Can_DisableControllerInterrupts(0);
     
     ASSERT_TRUE(Can_MockControllers[0].InterruptsDisabled);
-    TEST_PASS();
 }
 
 /* Test: Can_DisableControllerInterrupts when not initialized */
@@ -210,7 +201,6 @@ TEST_CASE(can_disable_interrupts_uninit)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_EnableControllerInterrupts */
@@ -222,7 +212,6 @@ TEST_CASE(can_enable_interrupts)
     Can_EnableControllerInterrupts(0);
     
     ASSERT_TRUE(Can_MockControllers[0].InterruptsEnabled);
-    TEST_PASS();
 }
 
 /* Test: Can_EnableControllerInterrupts when not initialized */
@@ -234,7 +223,6 @@ TEST_CASE(can_enable_interrupts_uninit)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_Write with valid PDU */
@@ -257,7 +245,6 @@ TEST_CASE(can_write_valid)
     
     ASSERT_EQ(CAN_OK, result);
     ASSERT_EQ(1, Can_MockControllers[0].TxCount);
-    TEST_PASS();
 }
 
 /* Test: Can_Write when not initialized */
@@ -279,7 +266,6 @@ TEST_CASE(can_write_uninit)
     ASSERT_EQ(CAN_NOT_OK, result);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_Write with controller stopped */
@@ -301,7 +287,6 @@ TEST_CASE(can_write_stopped)
     result = Can_Write(1, &pdu);
     
     ASSERT_EQ(CAN_NOT_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Can_Write with NULL PDU */
@@ -318,7 +303,6 @@ TEST_CASE(can_write_null_pdu)
     ASSERT_EQ(CAN_NOT_OK, result);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(CAN_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Can_MainFunction_Write */
@@ -330,7 +314,6 @@ TEST_CASE(can_main_function_write)
     Can_MainFunction_Write();
     
     ASSERT_TRUE(Can_MockControllers[0].MainFunctionWriteCalled);
-    TEST_PASS();
 }
 
 /* Test: Can_MainFunction_Read */
@@ -342,7 +325,6 @@ TEST_CASE(can_main_function_read)
     Can_MainFunction_Read();
     
     ASSERT_TRUE(Can_MockControllers[0].MainFunctionReadCalled);
-    TEST_PASS();
 }
 
 /* Test: Can_MainFunction_BusOff */
@@ -354,7 +336,6 @@ TEST_CASE(can_main_function_busoff)
     Can_MainFunction_BusOff();
     
     ASSERT_TRUE(Can_MockControllers[0].BusOffHandled);
-    TEST_PASS();
 }
 
 /* Test: Can_CheckWakeup */
@@ -369,7 +350,6 @@ TEST_CASE(can_check_wakeup)
     
     /* Result depends on implementation */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /*==================================================================================================

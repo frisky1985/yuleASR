@@ -108,6 +108,11 @@ static TestStats g_test_stats = {0, 0, 0, 0, NULL, NULL, {0}, 0};
         g_test_stats.jump_ready = 1; \
         if (setjmp(g_test_stats.jump_buffer) == 0) { \
             test_##name(); \
+            /* Auto-pass: normal return means all assertions passed */ \
+            if (g_test_stats.jump_ready) { \
+                printf(TEST_COLOR_GREEN "PASSED" TEST_COLOR_RESET "\n"); \
+                g_test_stats.passed++; \
+            } \
         } \
         g_test_stats.jump_ready = 0; \
     } while(0)

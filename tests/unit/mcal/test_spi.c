@@ -89,7 +89,6 @@ TEST_CASE(spi_init_valid)
     
     status = Spi_GetStatus();
     ASSERT_EQ(SPI_IDLE, status);
-    TEST_PASS();
 }
 
 /* Test: Spi_Init with NULL config */
@@ -101,7 +100,6 @@ TEST_CASE(spi_init_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(SPI_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Spi_DeInit */
@@ -116,7 +114,6 @@ TEST_CASE(spi_deinit_valid)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(SPI_UNINIT, Spi_GetStatus());
-    TEST_PASS();
 }
 
 /* Test: Spi_DeInit when busy */
@@ -134,7 +131,6 @@ TEST_CASE(spi_deinit_busy)
     
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(SPI_E_SEQ_PENDING, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Spi_WriteIB with valid parameters */
@@ -153,7 +149,6 @@ TEST_CASE(spi_write_ib_valid)
     Spi_WriteIB(0, &buffer);
     
     ASSERT_MEM_EQ(data, Spi_MockChannels[0].TxBuffer, 4);
-    TEST_PASS();
 }
 
 /* Test: Spi_WriteIB when not initialized */
@@ -167,7 +162,6 @@ TEST_CASE(spi_write_ib_uninit)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(SPI_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Spi_ReadIB with valid parameters */
@@ -193,7 +187,6 @@ TEST_CASE(spi_read_ib_valid)
     
     ASSERT_EQ(0x11, rx_data[0]);
     ASSERT_EQ(0x22, rx_data[1]);
-    TEST_PASS();
 }
 
 /* Test: Spi_SetupEB with valid parameters */
@@ -219,7 +212,6 @@ TEST_CASE(spi_setup_eb_valid)
     result = Spi_SetupEB(0, &src_buffer, &dest_buffer, 4);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Spi_AsyncTransmit with valid sequence */
@@ -234,7 +226,6 @@ TEST_CASE(spi_async_transmit_valid)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(SPI_BUSY, Spi_GetStatus());
-    TEST_PASS();
 }
 
 /* Test: Spi_AsyncTransmit when busy */
@@ -253,7 +244,6 @@ TEST_CASE(spi_async_transmit_busy)
     
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(SPI_E_SEQ_PENDING, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Spi_SyncTransmit with valid sequence */
@@ -267,7 +257,6 @@ TEST_CASE(spi_sync_transmit_valid)
     result = Spi_SyncTransmit(0);
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Spi_GetStatus when uninitialized */
@@ -278,7 +267,6 @@ TEST_CASE(spi_get_status_uninit)
     status = Spi_GetStatus();
     
     ASSERT_EQ(SPI_UNINIT, status);
-    TEST_PASS();
 }
 
 /* Test: Spi_GetJobResult */
@@ -294,7 +282,6 @@ TEST_CASE(spi_get_job_result)
     result = Spi_GetJobResult(0);
     
     ASSERT_EQ(SPI_JOB_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Spi_GetSequenceResult */
@@ -310,7 +297,6 @@ TEST_CASE(spi_get_sequence_result)
     result = Spi_GetSequenceResult(0);
     
     ASSERT_EQ(SPI_SEQ_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Spi_GetVersionInfo */
@@ -322,7 +308,6 @@ TEST_CASE(spi_get_version_info)
     
     ASSERT_EQ(SPI_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(SPI_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 /* Test: Spi_Cancel */
@@ -338,7 +323,6 @@ TEST_CASE(spi_cancel)
     Spi_Cancel(0);
     
     ASSERT_EQ(SPI_SEQ_CANCELLED, Spi_GetSequenceResult(0));
-    TEST_PASS();
 }
 
 /* Test: Spi_SetAsyncMode */
@@ -350,7 +334,6 @@ TEST_CASE(spi_set_async_mode)
     Spi_SetAsyncMode(SPI_INTERRUPT_MODE);
     
     ASSERT_EQ(SPI_INTERRUPT_MODE, g_mock_spi.async_mode);
-    TEST_PASS();
 }
 
 /*==================================================================================================

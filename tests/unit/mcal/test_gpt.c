@@ -71,7 +71,6 @@ TEST_CASE(gpt_init_valid)
     
     ASSERT_TRUE(Gpt_MockChannels[0].Enabled);
     ASSERT_TRUE(Gpt_MockChannels[1].Enabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_init_null)
@@ -82,7 +81,6 @@ TEST_CASE(gpt_init_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(GPT_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_deinit)
@@ -93,7 +91,6 @@ TEST_CASE(gpt_deinit)
     Gpt_DeInit();
     
     ASSERT_FALSE(Gpt_MockChannels[0].Enabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_get_time_elapsed)
@@ -108,7 +105,6 @@ TEST_CASE(gpt_get_time_elapsed)
     time = Gpt_GetTimeElapsed(0);
     
     ASSERT_EQ(1000, time);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_get_time_remaining)
@@ -123,7 +119,6 @@ TEST_CASE(gpt_get_time_remaining)
     time = Gpt_GetTimeRemaining(0);
     
     ASSERT_EQ(1500, time);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_start_timer)
@@ -135,7 +130,6 @@ TEST_CASE(gpt_start_timer)
     
     ASSERT_EQ(5000, Gpt_MockChannels[0].TargetTime);
     ASSERT_TRUE(Gpt_MockChannels[0].Enabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_stop_timer)
@@ -147,7 +141,6 @@ TEST_CASE(gpt_stop_timer)
     Gpt_StopTimer(0);
     
     ASSERT_FALSE(Gpt_MockChannels[0].Enabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_enable_notification)
@@ -157,8 +150,7 @@ TEST_CASE(gpt_enable_notification)
     
     Gpt_EnableNotification(0);
     
-    /* Notification enabled - implementation dependent */
-    TEST_PASS();
+    /* TODO: verify notification enable effect once mock exposes notification state */
 }
 
 TEST_CASE(gpt_disable_notification)
@@ -170,7 +162,6 @@ TEST_CASE(gpt_disable_notification)
     
     /* Notification disabled - implementation dependent */
 ASSERT_FALSE(Gpt_MockChannels[0].NotificationEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_get_version_info)
@@ -181,7 +172,6 @@ TEST_CASE(gpt_get_version_info)
     
     ASSERT_EQ(GPT_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(GPT_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_set_mode)
@@ -191,8 +181,7 @@ TEST_CASE(gpt_set_mode)
     
     Gpt_SetMode(GPT_MODE_SLEEP);
     
-    /* Mode set - implementation dependent */
-    TEST_PASS();
+    /* TODO: verify mode transition once GPT mode mock state is available */
 }
 
 TEST_CASE(gpt_enable_wakeup)
@@ -203,7 +192,6 @@ TEST_CASE(gpt_enable_wakeup)
     Gpt_EnableWakeup(1);
     
 ASSERT_TRUE(Gpt_MockChannels[1].WakeupEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_disable_wakeup)
@@ -214,7 +202,6 @@ TEST_CASE(gpt_disable_wakeup)
     Gpt_DisableWakeup(1);
     
 ASSERT_FALSE(Gpt_MockChannels[1].WakeupEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(gpt_check_wakeup)
@@ -228,7 +215,6 @@ TEST_CASE(gpt_check_wakeup)
     
     /* Wakeup check result depends on implementation */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /*==================================================================================================

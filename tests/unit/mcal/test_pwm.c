@@ -73,7 +73,6 @@ TEST_CASE(pwm_init_valid)
     
     ASSERT_TRUE(Pwm_MockChannels[0].Initialized);
     ASSERT_TRUE(Pwm_MockChannels[1].Initialized);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_init_null)
@@ -84,7 +83,6 @@ TEST_CASE(pwm_init_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PWM_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_deinit)
@@ -95,7 +93,6 @@ TEST_CASE(pwm_deinit)
     Pwm_DeInit();
     
     ASSERT_FALSE(Pwm_MockChannels[0].Initialized);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_set_duty_cycle)
@@ -106,7 +103,6 @@ TEST_CASE(pwm_set_duty_cycle)
     Pwm_SetDutyCycle(0, 7500); /* 75% */
     
     ASSERT_EQ(7500, Pwm_MockChannels[0].DutyCycle);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_set_period_and_duty)
@@ -119,7 +115,6 @@ TEST_CASE(pwm_set_period_and_duty)
     
     ASSERT_EQ(3000, Pwm_MockChannels[1].Period);
     ASSERT_EQ(4000, Pwm_MockChannels[1].DutyCycle);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_set_output_to_idle)
@@ -130,7 +125,6 @@ TEST_CASE(pwm_set_output_to_idle)
     Pwm_SetOutputToIdle(0);
     
     ASSERT_EQ(PWM_IDLE_LOW, Pwm_MockChannels[0].OutputState);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_get_output_state)
@@ -145,7 +139,6 @@ TEST_CASE(pwm_get_output_state)
     state = Pwm_GetOutputState(0);
     
     ASSERT_EQ(PWM_HIGH, state);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_disable_notification)
@@ -156,7 +149,6 @@ TEST_CASE(pwm_disable_notification)
     Pwm_DisableNotification(0);
     
     ASSERT_FALSE(Pwm_MockChannels[0].NotificationEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_enable_notification)
@@ -167,7 +159,6 @@ TEST_CASE(pwm_enable_notification)
     Pwm_EnableNotification(0, PWM_RISING_EDGE);
     
     ASSERT_TRUE(Pwm_MockChannels[0].NotificationEnabled);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_get_version_info)
@@ -178,7 +169,6 @@ TEST_CASE(pwm_get_version_info)
     
     ASSERT_EQ(PWM_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(PWM_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 TEST_CASE(pwm_set_period_and_duty_fixed)
@@ -192,7 +182,6 @@ TEST_CASE(pwm_set_period_and_duty_fixed)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(PWM_E_PERIOD_UNCHANGEABLE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================

@@ -29,7 +29,6 @@ TEST_CASE(dio_read_channel_valid_high)
     level = Dio_ReadChannel(0);
     
     ASSERT_EQ(STD_HIGH, level);
-    TEST_PASS();
 }
 
 TEST_CASE(dio_read_channel_valid_low)
@@ -42,7 +41,6 @@ TEST_CASE(dio_read_channel_valid_low)
     level = Dio_ReadChannel(1);
     
     ASSERT_EQ(STD_LOW, level);
-    TEST_PASS();
 }
 
 /* Test: Dio_ReadChannel with invalid channel */
@@ -58,7 +56,6 @@ TEST_CASE(dio_read_channel_invalid)
     ASSERT_EQ(STD_LOW, level);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_INVALID_CHANNEL_ID, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Dio_WriteChannel with valid channel */
@@ -67,7 +64,6 @@ TEST_CASE(dio_write_channel_valid_high)
     Dio_WriteChannel(0, STD_HIGH);
     
     ASSERT_EQ(STD_HIGH, Dio_Mock_GetChannelLevel(0));
-    TEST_PASS();
 }
 
 TEST_CASE(dio_write_channel_valid_low)
@@ -75,7 +71,6 @@ TEST_CASE(dio_write_channel_valid_low)
     Dio_WriteChannel(0, STD_LOW);
     
     ASSERT_EQ(STD_LOW, Dio_Mock_GetChannelLevel(0));
-    TEST_PASS();
 }
 
 /* Test: Dio_WriteChannel with invalid channel */
@@ -87,7 +82,6 @@ TEST_CASE(dio_write_channel_invalid)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_INVALID_CHANNEL_ID, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Dio_ReadPort with valid port */
@@ -101,7 +95,6 @@ TEST_CASE(dio_read_port_valid)
     level = Dio_ReadPort(0);
     
     ASSERT_EQ(0xABCD, level);
-    TEST_PASS();
 }
 
 /* Test: Dio_ReadPort with invalid port */
@@ -116,7 +109,6 @@ TEST_CASE(dio_read_port_invalid)
     ASSERT_EQ(0, level);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_INVALID_PORT_ID, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Dio_WritePort with valid port */
@@ -125,7 +117,6 @@ TEST_CASE(dio_write_port_valid)
     Dio_WritePort(0, 0x1234);
     
     ASSERT_EQ(0x1234, Dio_Mock_GetPortLevel(0));
-    TEST_PASS();
 }
 
 /* Test: Dio_WritePort with invalid port */
@@ -137,7 +128,6 @@ TEST_CASE(dio_write_port_invalid)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_INVALID_PORT_ID, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Dio_ReadChannelGroup */
@@ -157,7 +147,6 @@ TEST_CASE(dio_read_channel_group_valid)
     level = Dio_ReadChannelGroup(&group);
     
     ASSERT_EQ(0x0B, level);
-    TEST_PASS();
 }
 
 /* Test: Dio_ReadChannelGroup with NULL pointer */
@@ -172,7 +161,6 @@ TEST_CASE(dio_read_channel_group_null)
     ASSERT_EQ(0, level);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Dio_ReadChannelGroup with invalid group */
@@ -192,7 +180,6 @@ TEST_CASE(dio_read_channel_group_invalid)
     ASSERT_EQ(0, level);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_INVALID_GROUP, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Dio_WriteChannelGroup */
@@ -211,7 +198,6 @@ TEST_CASE(dio_write_channel_group_valid)
     Dio_WriteChannelGroup(&group, 0x05);
     
     ASSERT_EQ(0xF5, Dio_Mock_GetPortLevel(0));
-    TEST_PASS();
 }
 
 /* Test: Dio_WriteChannelGroup with NULL pointer */
@@ -223,7 +209,6 @@ TEST_CASE(dio_write_channel_group_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 #if (DIO_VERSION_INFO_API == STD_ON)
@@ -236,7 +221,6 @@ TEST_CASE(dio_get_version_info_valid)
     
     ASSERT_EQ(DIO_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(DIO_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 /* Test: Dio_GetVersionInfo with NULL pointer */
@@ -248,7 +232,6 @@ TEST_CASE(dio_get_version_info_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 #endif /* DIO_VERSION_INFO_API */
 
@@ -271,7 +254,6 @@ TEST_CASE(dio_flip_channel_valid)
     
     ASSERT_EQ(STD_LOW, level);
     ASSERT_EQ(STD_LOW, Dio_Mock_GetChannelLevel(0));
-    TEST_PASS();
 }
 
 /* Test: Dio_FlipChannel with invalid channel */
@@ -283,7 +265,6 @@ TEST_CASE(dio_flip_channel_invalid)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(DIO_E_PARAM_INVALID_CHANNEL_ID, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 #endif /* DIO_FLIP_CHANNEL_API */
 

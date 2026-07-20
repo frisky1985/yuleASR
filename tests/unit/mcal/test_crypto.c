@@ -101,7 +101,6 @@ TEST_CASE(crypto_init_valid_config)
     Crypto_Init(&g_test_config);
     
     ASSERT_TRUE(MCAL_CryptoIsInitialized() == TRUE);
-    TEST_PASS();
 }
 
 /* Test: Crypto_Init with NULL config */
@@ -110,7 +109,6 @@ TEST_CASE(crypto_init_null_config)
     Crypto_Init(NULL_PTR);
     
     ASSERT_TRUE(MCAL_CryptoIsInitialized() == FALSE);
-    TEST_PASS();
 }
 
 /* Test: Crypto_DeInit */
@@ -122,7 +120,6 @@ TEST_CASE(crypto_deinit)
     Crypto_DeInit();
     
     ASSERT_TRUE(MCAL_CryptoIsInitialized() == FALSE);
-    TEST_PASS();
 }
 
 /* Test: Crypto_GetVersionInfo */
@@ -138,7 +135,6 @@ TEST_CASE(crypto_get_version_info)
     ASSERT_EQ(CRYPTO_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(CRYPTO_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(CRYPTO_SW_MINOR_VERSION, version_info.sw_minor_version);
-    TEST_PASS();
 }
 
 /* Test: Crypto_ProcessJob - Encrypt */
@@ -175,7 +171,6 @@ TEST_CASE(crypto_process_job_encrypt)
     result = Crypto_ProcessJob(0, &job);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
-    TEST_PASS();
 }
 
 /* Test: Crypto_ProcessJob - Decrypt */
@@ -212,7 +207,6 @@ TEST_CASE(crypto_process_job_decrypt)
     result = Crypto_ProcessJob(0, &job);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
-    TEST_PASS();
 }
 
 /* Test: Crypto_ProcessJob - Hash */
@@ -247,7 +241,6 @@ TEST_CASE(crypto_process_job_hash)
     result = Crypto_ProcessJob(1, &job);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
-    TEST_PASS();
 }
 
 /* Test: Crypto_ProcessJob - MAC Generate */
@@ -282,7 +275,6 @@ TEST_CASE(crypto_process_job_mac_generate)
     result = Crypto_ProcessJob(0, &job);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
-    TEST_PASS();
 }
 
 /* Test: Crypto_CancelJob */
@@ -300,7 +292,6 @@ TEST_CASE(crypto_cancel_job)
     result = Crypto_CancelJob(0, &job);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_KeyElementSet */
@@ -316,7 +307,6 @@ TEST_CASE(crypto_key_element_set)
     result = Crypto_KeyElementSet(0, 0, key_data, 16);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_KeyElementGet */
@@ -332,7 +322,6 @@ TEST_CASE(crypto_key_element_get)
     result = Crypto_KeyElementGet(0, 0, key_data, &key_length);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_KeyValidSet */
@@ -346,7 +335,6 @@ TEST_CASE(crypto_key_valid_set)
     result = Crypto_KeyValidSet(0);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_KeyElementCopy */
@@ -360,7 +348,6 @@ TEST_CASE(crypto_key_element_copy)
     result = Crypto_KeyElementCopy(0, 0, 1, 0);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_RandomSeed */
@@ -376,7 +363,6 @@ TEST_CASE(crypto_random_seed)
     result = Crypto_RandomSeed(0, seed, 16);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_KeyGenerate */
@@ -390,7 +376,6 @@ TEST_CASE(crypto_key_generate)
     result = Crypto_KeyGenerate(0);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Crypto_KeyDerive */
@@ -404,7 +389,6 @@ TEST_CASE(crypto_key_derive)
     result = Crypto_KeyDerive(0, 1);
 
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /*==================================================================================================

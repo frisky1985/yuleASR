@@ -58,7 +58,6 @@ TEST_CASE(wdg_init_valid)
     ASSERT_TRUE(Wdg_MockState.Initialized);
     ASSERT_EQ(WDGIF_FAST_MODE, Wdg_MockState.Mode);
     ASSERT_EQ(100, Wdg_MockState.Timeout);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_init_null)
@@ -69,7 +68,6 @@ TEST_CASE(wdg_init_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(WDG_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_init_already_initialized)
@@ -82,7 +80,6 @@ TEST_CASE(wdg_init_already_initialized)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(WDG_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_set_mode_fast)
@@ -97,7 +94,6 @@ TEST_CASE(wdg_set_mode_fast)
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(WDGIF_FAST_MODE, Wdg_MockState.Mode);
     ASSERT_EQ(100, Wdg_MockState.Timeout);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_set_mode_slow)
@@ -112,7 +108,6 @@ TEST_CASE(wdg_set_mode_slow)
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(WDGIF_SLOW_MODE, Wdg_MockState.Mode);
     ASSERT_EQ(500, Wdg_MockState.Timeout);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_set_mode_off_not_allowed)
@@ -128,7 +123,6 @@ TEST_CASE(wdg_set_mode_off_not_allowed)
     
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(WDG_E_DISABLE_NOT_ALLOWED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_set_mode_off_allowed)
@@ -143,7 +137,6 @@ TEST_CASE(wdg_set_mode_off_allowed)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(WDGIF_OFF_MODE, Wdg_MockState.Mode);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_trigger)
@@ -158,7 +151,6 @@ TEST_CASE(wdg_trigger)
     Wdg_Trigger();
     
     ASSERT_EQ(trigger_count_before + 1, Wdg_MockState.TriggerCount);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_trigger_not_initialized)
@@ -169,7 +161,6 @@ TEST_CASE(wdg_trigger_not_initialized)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(WDG_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_set_trigger_condition)
@@ -183,7 +174,6 @@ TEST_CASE(wdg_set_trigger_condition)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(200, Wdg_MockState.Timeout);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_set_trigger_condition_invalid)
@@ -199,7 +189,6 @@ TEST_CASE(wdg_set_trigger_condition_invalid)
     
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(WDG_E_PARAM_TIMEOUT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_get_version_info)
@@ -210,7 +199,6 @@ TEST_CASE(wdg_get_version_info)
     
     ASSERT_EQ(WDG_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(WDG_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_get_version_info_null)
@@ -221,7 +209,6 @@ TEST_CASE(wdg_get_version_info_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(WDG_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 TEST_CASE(wdg_multiple_trigger)
@@ -237,7 +224,6 @@ TEST_CASE(wdg_multiple_trigger)
     }
     
     ASSERT_EQ(10, Wdg_MockState.TriggerCount);
-    TEST_PASS();
 }
 
 /*==================================================================================================

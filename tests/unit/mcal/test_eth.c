@@ -95,7 +95,6 @@ TEST_CASE(eth_init_valid)
     
     ASSERT_EQ(ETH_STATE_INIT, Eth_InternalState.ModuleState);
     ASSERT_TRUE(Eth_InternalState.Initialized);
-    TEST_PASS();
 }
 
 /* Test: Eth_Init with NULL config */
@@ -107,7 +106,6 @@ TEST_CASE(eth_init_null)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_DeInit */
@@ -120,7 +118,6 @@ TEST_CASE(eth_deinit)
     
     ASSERT_EQ(ETH_STATE_UNINIT, Eth_InternalState.ModuleState);
     ASSERT_FALSE(Eth_InternalState.Initialized);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetVersionInfo */
@@ -134,7 +131,6 @@ TEST_CASE(eth_get_version_info)
     ASSERT_EQ(ETH_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(ETH_SW_MINOR_VERSION, version_info.sw_minor_version);
     ASSERT_EQ(ETH_SW_PATCH_VERSION, version_info.sw_patch_version);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetVersionInfo with NULL pointer */
@@ -146,7 +142,6 @@ TEST_CASE(eth_get_version_info_null)
     
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_ControllerInit */
@@ -164,7 +159,6 @@ TEST_CASE(eth_controller_init)
     
     ASSERT_TRUE(Eth_CtrlState[0u].InitDone);
     ASSERT_EQ(ETH_STATE_INIT, Eth_CtrlState[0u].State);
-    TEST_PASS();
 }
 
 /* Test: Eth_SetControllerMode - DOWN -> ACTIVE */
@@ -184,7 +178,6 @@ TEST_CASE(eth_set_mode_active)
     result = Eth_GetControllerMode(0u, &mode);
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(ETH_MODE_ACTIVE, mode);
-    TEST_PASS();
 }
 
 /* Test: Eth_SetControllerMode with invalid controller */
@@ -201,7 +194,6 @@ TEST_CASE(eth_set_mode_invalid_controller)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_CTRL_INDEX, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_SetControllerMode when not initialized */
@@ -217,7 +209,6 @@ TEST_CASE(eth_set_mode_uninit)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_NOT_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetControllerMode */
@@ -234,7 +225,6 @@ TEST_CASE(eth_get_controller_mode)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(ETH_MODE_DOWN, mode);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetControllerMode with NULL pointer */
@@ -251,7 +241,6 @@ TEST_CASE(eth_get_controller_mode_null)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetPhysAddr */
@@ -266,7 +255,6 @@ TEST_CASE(eth_get_phys_addr)
     Eth_GetPhysAddr(0u, mac_addr);
     
     ASSERT_MEM_EQ(g_test_mac_addr, mac_addr, 6u);
-    TEST_PASS();
 }
 
 /* Test: Eth_SetPhysAddr */
@@ -283,7 +271,6 @@ TEST_CASE(eth_set_phys_addr)
     Eth_GetPhysAddr(0u, read_mac);
     
     ASSERT_MEM_EQ(new_mac, read_mac, 6u);
-    TEST_PASS();
 }
 
 /* Test: Eth_ProvideTxBuffer */
@@ -303,7 +290,6 @@ TEST_CASE(eth_provide_tx_buffer)
     ASSERT_EQ(BUFREQ_OK, result);
     ASSERT_NOT_NULL(buf_ptr);
     ASSERT_TRUE(buf_idx < ETH_MAX_TX_BUFS);
-    TEST_PASS();
 }
 
 /* Test: Eth_ProvideTxBuffer with NULL pointer */
@@ -322,7 +308,6 @@ TEST_CASE(eth_provide_tx_buffer_null)
     
     ASSERT_EQ(BUFREQ_E_NOT_OK, result);
     ASSERT_EQ(1u, Det_MockData.CallCount);
-    TEST_PASS();
 }
 
 /* Test: Eth_Transmit */
@@ -349,7 +334,6 @@ TEST_CASE(eth_transmit)
     
     /* Note: In mock mode, this may succeed or fail depending on buffer state */
     ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
-    TEST_PASS();
 }
 
 /* Test: Eth_Transmit when controller not active */
@@ -373,7 +357,6 @@ TEST_CASE(eth_transmit_not_active)
     
     /* Should fail because controller is not in ACTIVE mode */
     ASSERT_EQ(E_NOT_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Eth_Receive */
@@ -391,8 +374,7 @@ TEST_CASE(eth_receive)
     result = Eth_Receive(0u, &rx_status, &buf_idx, &frame_ptr);
     
     /* In mock mode, should return E_NOT_OK as no frame is available */
-    (void)result;
-    TEST_PASS();
+    ASSERT_EQ(E_NOT_OK, result);
 }
 
 /* Test: Eth_Receive with NULL pointer */
@@ -411,7 +393,6 @@ TEST_CASE(eth_receive_null)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_TxConfirmation */
@@ -425,7 +406,7 @@ TEST_CASE(eth_tx_confirmation)
     /* This would require internal access - just verify no crash */
     Eth_TxConfirmation(0u, 0u);
     
-    TEST_PASS();
+    /* TODO: verify buffer state after TX confirmation once mock tracks it */
 }
 
 /* Test: Eth_EnableIrq */
@@ -438,7 +419,6 @@ TEST_CASE(eth_enable_irq)
     Eth_EnableIrq();
     
     ASSERT_TRUE(Eth_CtrlState[0u].InterruptsEnabled);
-    TEST_PASS();
 }
 
 /* Test: Eth_DisableIrq */
@@ -452,7 +432,6 @@ TEST_CASE(eth_disable_irq)
     Eth_DisableIrq();
     
     ASSERT_FALSE(Eth_CtrlState[0u].InterruptsEnabled);
-    TEST_PASS();
 }
 
 /* Test: Eth_InitBuffers */
@@ -483,7 +462,6 @@ TEST_CASE(eth_init_buffers)
     buf_result = Eth_ProvideTxBuffer(0u, 0x0800u, 0u, &buf_idx, &buf_ptr, &len);
     ASSERT_EQ(BUFREQ_E_BUSY, buf_result);
     
-    TEST_PASS();
 }
 
 /* Test: Eth_WriteMii and Eth_ReadMii */
@@ -505,7 +483,6 @@ TEST_CASE(eth_mii_access)
     
     ASSERT_EQ(E_OK, write_result);
     ASSERT_EQ(E_OK, read_result);
-    TEST_PASS();
 }
 
 /* Test: Eth_ReadMii with NULL pointer */
@@ -522,7 +499,6 @@ TEST_CASE(eth_read_mii_null)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetControllerIdx */
@@ -538,7 +514,6 @@ TEST_CASE(eth_get_controller_idx)
     
     /* Should return valid controller index */
     ASSERT_EQ(0u, ctrl_idx);
-    TEST_PASS();
 }
 
 /* Test: Eth_GetControllerIdx with NULL pointer */
@@ -555,7 +530,6 @@ TEST_CASE(eth_get_controller_idx_null)
     ASSERT_EQ(ETH_INVALID_CONTROLLER_INDEX, ctrl_idx);
     ASSERT_EQ(1u, Det_MockData.CallCount);
     ASSERT_EQ(ETH_E_INV_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================

@@ -114,7 +114,6 @@ TEST_CASE(mcu_init_valid_config)
 
     /* Verify driver is initialized */
     ASSERT_TRUE(MockRegisters_Read32(MCU_SRC_SCR) != 0xFFFFFFFFU);
-    TEST_PASS();
 }
 
 /**
@@ -137,7 +136,6 @@ TEST_CASE(mcu_init_clock_valid)
     result = Mcu_InitClock(0);
 
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /**
@@ -158,7 +156,6 @@ TEST_CASE(mcu_distribute_pll_clock_valid)
 
     /* Verify clock distribution enabled */
     ASSERT_TRUE((MockRegisters_Read32(MCU_CCM_CCR) & 0x01U) != 0U);
-    TEST_PASS();
 }
 
 /**
@@ -180,7 +177,6 @@ TEST_CASE(mcu_get_pll_status_locked)
     status = Mcu_GetPllStatus();
 
     ASSERT_EQ(MCU_PLL_STATUS_LOCKED, status);
-    TEST_PASS();
 }
 
 /**
@@ -201,7 +197,6 @@ TEST_CASE(mcu_get_pll_status_unlocked)
     status = Mcu_GetPllStatus();
 
     ASSERT_EQ(MCU_PLL_STATUS_UNLOCKED, status);
-    TEST_PASS();
 }
 
 /**
@@ -219,7 +214,6 @@ TEST_CASE(mcu_set_mode_run)
     Mcu_SetMode(MCU_MODE_RUN);
 
     ASSERT_EQ(0x01U, MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING));
-    TEST_PASS();
 }
 
 /**
@@ -237,7 +231,6 @@ TEST_CASE(mcu_set_mode_sleep)
     Mcu_SetMode(MCU_MODE_SLEEP);
 
     ASSERT_EQ(0x02U, MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING));
-    TEST_PASS();
 }
 
 /**
@@ -255,7 +248,6 @@ TEST_CASE(mcu_set_mode_deep_sleep)
     Mcu_SetMode(MCU_MODE_DEEP_SLEEP);
 
     ASSERT_EQ(0x04U, MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING));
-    TEST_PASS();
 }
 
 /**
@@ -276,7 +268,6 @@ TEST_CASE(mcu_get_reset_reason_power_on)
     reason = Mcu_GetResetReason();
 
     ASSERT_EQ(MCU_RESET_POWER_ON_RESET, reason);
-    TEST_PASS();
 }
 
 /**
@@ -297,7 +288,6 @@ TEST_CASE(mcu_get_reset_reason_watchdog)
     reason = Mcu_GetResetReason();
 
     ASSERT_EQ(MCU_RESET_WATCHDOG_RESET, reason);
-    TEST_PASS();
 }
 
 /**
@@ -318,7 +308,6 @@ TEST_CASE(mcu_get_reset_reason_software)
     reason = Mcu_GetResetReason();
 
     ASSERT_EQ(MCU_RESET_SW_RESET, reason);
-    TEST_PASS();
 }
 
 /**
@@ -339,7 +328,6 @@ TEST_CASE(mcu_get_reset_reason_external)
     reason = Mcu_GetResetReason();
 
     ASSERT_EQ(MCU_RESET_EXTERNAL_RESET, reason);
-    TEST_PASS();
 }
 
 /**
@@ -360,7 +348,6 @@ TEST_CASE(mcu_get_reset_raw_value)
     raw = Mcu_GetResetRawValue();
 
     ASSERT_EQ(0x0FU, raw);
-    TEST_PASS();
 }
 
 /**
@@ -380,7 +367,6 @@ TEST_CASE(mcu_get_version_info_valid)
     ASSERT_EQ(MCU_SW_MAJOR_VERSION, version_info.sw_major_version);
     ASSERT_EQ(MCU_SW_MINOR_VERSION, version_info.sw_minor_version);
     ASSERT_EQ(MCU_SW_PATCH_VERSION, version_info.sw_patch_version);
-    TEST_PASS();
 }
 
 /**
@@ -400,7 +386,6 @@ TEST_CASE(mcu_init_ram_section_valid)
     result = Mcu_InitRamSection(0);
 
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /**
@@ -420,7 +405,6 @@ TEST_CASE(mcu_get_ram_state_valid)
     state = Mcu_GetRamState();
 
     ASSERT_EQ(MCU_RAMSTATE_VALID, state);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -445,7 +429,6 @@ TEST_CASE(mcu_init_null_config)
     ASSERT_EQ(MCU_MODULE_ID, Det_MockData.ModuleId);
     ASSERT_EQ(MCU_API_ID_INIT, Det_MockData.ApiId);
     ASSERT_EQ(MCU_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -465,7 +448,6 @@ TEST_CASE(mcu_init_already_initialized)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -485,7 +467,6 @@ TEST_CASE(mcu_init_clock_not_initialized)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -507,7 +488,6 @@ TEST_CASE(mcu_init_clock_invalid_setting)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PARAM_CLOCK, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -524,7 +504,6 @@ TEST_CASE(mcu_distribute_pll_not_initialized)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -544,7 +523,6 @@ TEST_CASE(mcu_distribute_pll_not_locked)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PLL_NOT_LOCKED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -564,7 +542,6 @@ TEST_CASE(mcu_get_pll_status_not_initialized)
     ASSERT_EQ(MCU_PLL_STATUS_UNDEFINED, status);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -581,7 +558,6 @@ TEST_CASE(mcu_set_mode_not_initialized)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -600,7 +576,6 @@ TEST_CASE(mcu_set_mode_invalid)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PARAM_MODE, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -620,7 +595,6 @@ TEST_CASE(mcu_get_reset_reason_not_initialized)
     ASSERT_EQ(MCU_RESET_UNDEFINED, reason);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -640,7 +614,6 @@ TEST_CASE(mcu_get_reset_raw_value_not_initialized)
     ASSERT_EQ(0U, raw);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -657,7 +630,6 @@ TEST_CASE(mcu_perform_reset_not_initialized)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -672,7 +644,6 @@ TEST_CASE(mcu_get_version_info_null)
 
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -692,7 +663,6 @@ TEST_CASE(mcu_init_ram_section_not_initialized)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -714,7 +684,6 @@ TEST_CASE(mcu_init_ram_section_invalid)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PARAM_RAMSECTION, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -734,7 +703,6 @@ TEST_CASE(mcu_get_ram_state_not_initialized)
     ASSERT_EQ(MCU_RAMSTATE_INVALID, state);
     ASSERT_EQ(1U, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -760,7 +728,6 @@ TEST_CASE(mcu_init_clock_boundary_min)
     result = Mcu_InitClock(0);  /* Minimum valid setting */
 
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /**
@@ -780,7 +747,6 @@ TEST_CASE(mcu_init_ram_section_boundary_min)
     result = Mcu_InitRamSection(0);  /* Minimum valid section */
 
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /**
@@ -799,7 +765,6 @@ TEST_CASE(mcu_set_mode_boundary_min)
 
     /* Verify mode was set */
     ASSERT_TRUE(MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING) != 0xFFFFFFFFU);
-    TEST_PASS();
 }
 
 /*==================================================================================================
@@ -825,7 +790,6 @@ TEST_CASE(mcu_state_transition_init)
     Det_Mock_Reset();
     Mcu_Init(&g_test_config);
     ASSERT_EQ(MCU_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /**
@@ -856,7 +820,6 @@ TEST_CASE(mcu_init_sequence_complete)
 
     /* Verify clock distribution enabled */
     ASSERT_TRUE((MockRegisters_Read32(MCU_CCM_CCR) & 0x01U) != 0U);
-    TEST_PASS();
 }
 
 /*==================================================================================================

@@ -46,7 +46,6 @@ TEST_CASE(mcu_init_valid_config)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(MCU_CLOCK_UNINIT, Mcu_MockState);
-    TEST_PASS();
 }
 
 /* Test: Mcu_Init with NULL config */
@@ -61,7 +60,6 @@ TEST_CASE(mcu_init_null_config)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PARAM_CONFIG, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Mcu_Init when already initialized */
@@ -76,7 +74,6 @@ TEST_CASE(mcu_init_already_initialized)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Mcu_InitClock */
@@ -91,7 +88,6 @@ TEST_CASE(mcu_init_clock)
     
     ASSERT_EQ(E_OK, result);
     ASSERT_EQ(MCU_CLOCK_INITIALIZED, Mcu_MockState);
-    TEST_PASS();
 }
 
 /* Test: Mcu_DistributePllClock */
@@ -106,7 +102,6 @@ TEST_CASE(mcu_distribute_pll_clock)
     result = Mcu_DistributePllClock();
     
     ASSERT_EQ(E_OK, result);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetPllStatus */
@@ -121,7 +116,6 @@ TEST_CASE(mcu_get_pll_status)
     status = Mcu_GetPllStatus();
     
     ASSERT_EQ(MCU_PLL_STATUS_LOCKED, status);
-    TEST_PASS();
 }
 
 /* Test: Mcu_SetMode */
@@ -134,7 +128,6 @@ TEST_CASE(mcu_set_mode)
     Mcu_SetMode(MCU_MODE_NORMAL);
     
     ASSERT_EQ(MCU_MODE_NORMAL, Mcu_MockState);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetResetReason */
@@ -148,7 +141,6 @@ TEST_CASE(mcu_get_reset_reason)
     reason = Mcu_GetResetReason();
     
     ASSERT_EQ(MCU_RESET_POWER_ON, reason);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetResetRawValue */
@@ -162,7 +154,6 @@ TEST_CASE(mcu_get_reset_raw_value)
     raw = Mcu_GetResetRawValue();
     
     ASSERT_EQ(0x01, raw);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetVersionInfo */
@@ -174,7 +165,6 @@ TEST_CASE(mcu_get_version_info)
     
     ASSERT_EQ(MCU_VENDOR_ID, version_info.vendorID);
     ASSERT_EQ(MCU_MODULE_ID, version_info.moduleID);
-    TEST_PASS();
 }
 
 /* Test: Mcu_GetVersionInfo with NULL pointer */
@@ -186,7 +176,6 @@ TEST_CASE(mcu_get_version_info_null)
     
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_PARAM_POINTER, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /* Test: Mcu_DistributePllClock when not initialized */
@@ -202,7 +191,6 @@ TEST_CASE(mcu_distribute_pll_not_init)
     ASSERT_EQ(E_NOT_OK, result);
     ASSERT_EQ(1, Det_MockData.CallCount);
     ASSERT_EQ(MCU_E_UNINIT, Det_MockData.ErrorId);
-    TEST_PASS();
 }
 
 /*==================================================================================================
