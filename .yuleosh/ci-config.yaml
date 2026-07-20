@@ -61,6 +61,24 @@ misra:
           enabled: false
       deviations: []
 
+code_style:
+  file_size_limits:
+    autosar_bsw:
+      max_lines: 5000
+      description: "AUTOSAR BSW模块 (MCAL/ECUAL/Services)"
+    application:
+      max_lines: 2000
+      description: "Application/SWC 代码"
+    default:
+      max_lines: 1000
+      description: "其他/一般代码"
+  enabled: true
+  exclude_paths:
+    - "third_party/**"
+    - "Drivers/**"
+    - "vendor/**"
+    - "*.generated.c"
+
 hardware_test:
   enabled: false
   mock: true
