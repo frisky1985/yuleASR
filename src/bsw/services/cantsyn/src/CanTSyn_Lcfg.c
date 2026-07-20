@@ -17,7 +17,8 @@
 /* Compatibility alias */
 typedef CanTSyn_TimeBaseConfigType CanTSyn_TimeDomainConfigType;
 
-static const CanTSyn_TimeDomainConfigType CanTSyn_TimeDomainConfig[CANTSYN_NUMBER_OF_TIME_DOMAINS] = {
+/* Non-static so it's visible to CanTsyn.c via extern declaration in CanTSyn.h */
+const CanTSyn_TimeDomainConfigType CanTSyn_TimeDomainConfig[CANTSYN_NUMBER_OF_TIME_DOMAINS] = {
     {
         .timeBaseId = 0U,
         .domainId = 0U,

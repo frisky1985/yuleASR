@@ -39,12 +39,7 @@
 #define CANTSYN_VENDOR_ID                   (0x00U)
 #define CANTSYN_INSTANCE_ID                 (0x00U)
 
-#define CANTSYN_SID_INIT                    (0x01U)
-#define CANTSYN_SID_GETVERSIONINFO          (0x02U)
-#define CANTSYN_SID_TRANSMIT                (0x03U)
-#define CANTSYN_SID_RXINDICATION            (0x04U)
-#define CANTSYN_SID_TXCONFIRMATION          (0x05U)
-#define CANTSYN_SID_MAINFUNCTION            (0x06U)
+/* SID definitions are in CanTSyn.h — do not redefine here */
 
 /* SYNC Message Types */
 #define CANTSYN_SYNC_MSG_TYPE               (0x10U)
@@ -137,6 +132,7 @@ static void CanTSyn_ProcessOfsMessage(
     uint8 TimeDomainId,
     const PduInfoType* PduInfoPtr);
 
+/* Forward declaration (defined at line 445) */
 static Std_ReturnType CanTSyn_GetCurrentTime(
     uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,

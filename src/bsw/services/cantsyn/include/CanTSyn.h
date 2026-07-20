@@ -298,18 +298,6 @@ Std_ReturnType CanTSyn_GetTransmissionMode(uint8 timeBaseId, uint8* txModePtr);
 boolean CanTSyn_GetSyncReceived(uint8 timeBaseId);
 
 /**
- * @brief Gets current synchronized time for a time base
- * @param timeBaseId Time base ID
- * @param timeStampPtr Pointer to store time stamp
- * @param userDataPtr Pointer to store user data (can be NULL)
- * @return E_OK: Success, E_NOT_OK: Error
- * @pre CanTSyn module must be initialized
- */
-Std_ReturnType CanTSyn_GetCurrentTime(uint8 timeBaseId, 
-                                      StbM_TimeStampType* timeStampPtr,
-                                      StbM_UserDataType* userDataPtr);
-
-/**
  * @brief Gets current virtual time for a time base
  * @param timeBaseId Time base ID
  * @param virtualTimePtr Pointer to store virtual time
@@ -407,6 +395,12 @@ void CanTSyn_TimeTxConfirmationOCS(PduIdType TxPduId, const StbM_TimeStampType* 
  * @post Periodic processing completed
  */
 void CanTSyn_MainFunction(void);
+
+/*==================================================================================================
+*                                     EXTERN DECLARATIONS
+*==================================================================================================*/
+/** @brief Link-time configuration array (defined in CanTSyn_Lcfg.c) */
+extern const CanTSyn_TimeBaseConfigType CanTSyn_TimeDomainConfig[CANTSYN_NUMBER_OF_TIME_DOMAINS];
 
 #define CANTSYN_STOP_SEC_CODE
 #include "MemMap.h"

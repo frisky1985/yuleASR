@@ -64,11 +64,32 @@ message(STATUS "")
 # Global include directories
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/general/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/det/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/pdur/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/nvm/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/com/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/dcm/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/dem/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/mcu/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/port/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/rte/include
 )
 
 # AUTOSAR stub headers for native builds
 if(NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
+endif()
+
+# Global coverage compile/link flags (unconditional — all C files produce coverage data)
+# --coverage is equivalent to -fprofile-arcs -ftest-coverage for GCC/Clang
+# -O0 -g disable optimizations and enable debugging symbols for accurate coverage
+if(NOT CMAKE_CROSSCOMPILING)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -O0 -g")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -O0 -g")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage -g")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage -g")
 endif()
 
 # Add subdirectories
@@ -93,15 +114,6 @@ endif()
 # Code coverage configuration
 if(ENABLE_COVERAGE)
     message(STATUS "Code coverage: ENABLED")
-    
-    # Add coverage compile/link flags globally when not cross-compiling
-    if(NOT CMAKE_CROSSCOMPILING)
-        # Use --coverage (equivalent to -fprofile-arcs -ftest-coverage for GCC/Clang)
-        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
-        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
-        set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} --coverage")
-    endif()
     
     # Find gcovr for report generation
     find_program(GCOVR_PATH gcovr)
