@@ -58,6 +58,20 @@
 *                                    RTE MEMORY CONFIGURATION
 ==================================================================================================*/
 #define RTE_NUM_IRV                     (64U)
+
+/*==================================================================================================
+*                                    RTE MODE & PORT CONFIGURATION
+==================================================================================================*/
+#define RTE_MAX_PORTS_PER_COMPONENT     (16U)
+#define RTE_NUM_MODE_GROUPS             (8U)
+#define RTE_MAIN_FUNCTION_PERIOD_MS     (10U)
+
+/*==================================================================================================
+*                                    RTE STATE DEFINITIONS
+==================================================================================================*/
+#define RTE_STATE_INIT                  (0U)
+#define RTE_STATE_STARTED               (1U)
+#define RTE_STATE_STOPPED               (2U)
 #define RTE_NUM_PIM                     (32U)
 #define RTE_NUM_CALPRM                  (32U)
 #define RTE_NUM_MEASUREMENT             (64U)

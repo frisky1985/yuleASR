@@ -21,6 +21,19 @@
 #include "MemMap.h"
 
 /*==================================================================================================
+*                                    FORWARD DECLARATIONS
+*  Weak callback hooks referenced by UdpNm_Cfg.h macros before their definitions
+*  Prevent implicit-declaration / conflicting-type errors with --coverage builds.
+==================================================================================================*/
+__attribute__((weak)) void Appl_UdpNm_StateChangeNotification(uint8 channel, UdpNm_StateType prev_state, UdpNm_StateType curr_state);
+__attribute__((weak)) void Appl_UdpNm_RemoteSleepIndication(uint8 channel);
+__attribute__((weak)) void Appl_UdpNm_RemoteSleepCancellation(uint8 channel);
+__attribute__((weak)) void Appl_UdpNm_NetworkStartIndication(uint8 channel);
+__attribute__((weak)) void Appl_UdpNm_NetworkModeEntry(uint8 channel);
+__attribute__((weak)) void Appl_UdpNm_BusSleepModeEntry(uint8 channel);
+__attribute__((weak)) void Appl_UdpNm_PrepareBusSleepModeEntry(uint8 channel);
+
+/*==================================================================================================
 *                                    LOCAL DEFINES
 ==================================================================================================*/
 #define UDPNM_VENDOR_ID                         (0x01U)

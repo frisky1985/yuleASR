@@ -53,13 +53,7 @@ typedef struct
 /*==================================================================================================
 *                                  LOCAL VARIABLE DECLARATIONS
 ==================================================================================================*/
-#define RTE_START_SEC_VAR_CLEARED_UNSPECIFIED
-#include "MemMap.h"
-
-STATIC Rte_ComInterfaceStateType Rte_ComInterfaceState;
-
-#define RTE_STOP_SEC_VAR_CLEARED_UNSPECIFIED
-#include "MemMap.h"
+static Rte_ComInterfaceStateType Rte_ComInterfaceState;
 
 /*==================================================================================================
 *                                  LOCAL FUNCTION PROTOTYPES

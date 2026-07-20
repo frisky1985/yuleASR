@@ -28,6 +28,7 @@
 #include "Rte.h"
 #include "Rte_Cfg.h"
 #include "Rte_Type.h"
+#include "NvM.h"
 #include "Rte_Bsw.h"
 #include "Com.h"
 #include "Det.h"

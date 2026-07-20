@@ -17,6 +17,14 @@ target_include_directories(Rte
         ${CMAKE_CURRENT_SOURCE_DIR}/../services/com/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../services/nvm/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../os/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/communication_manager/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/diagnostic_manager/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/engine_control/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/io_control/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/mode_manager/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/storage_manager/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/vehicle_dynamics/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../asw/watchdog_manager/include
 )
 
 set_target_properties(Rte PROPERTIES

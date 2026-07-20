@@ -28,7 +28,7 @@ foreach(test_src ${RTE_UNIT_TEST_SRCS})
             ${CMAKE_CURRENT_SOURCE_DIR}/..
     )
 
-    # Link with Rte library if available
+    # Link with Rte library
     if(TARGET Rte)
         target_link_libraries(${TEST_TARGET} PRIVATE Rte)
     endif()

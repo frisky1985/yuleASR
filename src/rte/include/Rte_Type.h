@@ -343,9 +343,9 @@ typedef enum {
 *                                    RTE MODE COMMUNICATION TYPE
 ==================================================================================================*/
 typedef enum {
-    RTE_MODE_COMMUNICATION_NONE = 0,
-    RTE_MODE_COMMUNICATION_SYNCHRONOUS,
-    RTE_MODE_COMMUNICATION_ASYNCHRONOUS
+    RTE_MODECOMM_NONE = 0,
+    RTE_MODECOMM_SYNCHRONOUS,
+    RTE_MODECOMM_ASYNCHRONOUS
 } Rte_ModeCommunicationType;
 
 /*==================================================================================================
