@@ -1,15 +1,15 @@
 {
   "manifest_version": "1.0",
-  "generated_at": "2026-07-20T04:09:47",
+  "generated_at": "2026-07-20T14:28:57",
   "project_dir": ".",
   "total_files": 8,
   "files": [
     {
       "path": "acceptance-matrix.md",
-      "sha256": "55a71a60ab16b296dbeb829eabd866b7150a563881fea60e64abb51d36b45051",
+      "sha256": "e715cf37e0fd555bd4dbdf6c24cad80380c8f399d5ed1587eb563f3ff9cdcb86",
       "size_bytes": 21632,
-      "mtime": 1784520587.5183725,
-      "mtime_iso": "2026-07-20T04:09:47"
+      "mtime": 1784557737.6628222,
+      "mtime_iso": "2026-07-20T14:28:57"
     },
     {
       "path": "aspice-gap-report.md",
@@ -27,10 +27,10 @@
     },
     {
       "path": "requirement-coverage.md",
-      "sha256": "d22f25ae013a1f6d02cb3b7a24319c593b05f6d4efe05fa391b459d9e2a5f8aa",
+      "sha256": "b959f6e8c5e6c3a901aaff27e4553296a3d37b37283e1a1ae45f169c9e002cea",
       "size_bytes": 4495,
-      "mtime": 1784520587.518015,
-      "mtime_iso": "2026-07-20T04:09:47"
+      "mtime": 1784557737.662245,
+      "mtime_iso": "2026-07-20T14:28:57"
     },
     {
       "path": "review-log-summary.md",
@@ -48,17 +48,17 @@
     },
     {
       "path": "traceability-matrix.json",
-      "sha256": "9c1e66c30cc1970ccc148f9c30933f2f911ef6fe188274633ceef85304941a26",
+      "sha256": "c959484ecf5a0a454e067729dd4dc57000d78b5df0f2d0650daad4c0552545bd",
       "size_bytes": 37618,
-      "mtime": 1784520587.5177011,
-      "mtime_iso": "2026-07-20T04:09:47"
+      "mtime": 1784557737.6618547,
+      "mtime_iso": "2026-07-20T14:28:57"
     },
     {
       "path": "traceability-matrix.md",
-      "sha256": "12960e0870f301c20ac726c3c55a20c5ff23a4e12c7fdc8524114b89e8206bbd",
+      "sha256": "13647dd608d70a79fc33303a0fb2bd8bfdcc1c4e46028ccdf4d0fce7ababb0c4",
       "size_bytes": 33765,
-      "mtime": 1784520587.5170145,
-      "mtime_iso": "2026-07-20T04:09:47"
+      "mtime": 1784557737.6611352,
+      "mtime_iso": "2026-07-20T14:28:57"
     }
   ]
 }

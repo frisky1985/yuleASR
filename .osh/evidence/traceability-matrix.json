@@ -1,12 +1,12 @@
 {
-  "generated": "2026-07-20T12:54:00",
+  "generated": "2026-07-20T14:28:57",
   "version": "0.1.0",
   "build_id": "",
   "commit_sha": "",
   "branch": "",
   "summary": {
     "total_requirements": 127,
-    "with_implementation": 127,
+    "with_implementation": 85,
     "with_test_coverage": 127,
     "uncovered_shalls": 0,
     "total_scenarios": 0,
@@ -23,22 +23,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/port/src/Port.c",
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/wdg/src/Wdg.c",
-        "src/bsw/mcal/pwm/src/Pwm.c",
-        "src/bsw/mcal/spi/src/Spi.c",
-        "src/bsw/mcal/i2c/src/I2c.c",
-        "src/bsw/mcal/uart/src/Uart.c",
-        "src/bsw/mcal/lin/src/Lin.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MCAL-SHALL-002",
@@ -49,22 +34,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/port/src/Port.c",
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/wdg/src/Wdg.c",
-        "src/bsw/mcal/pwm/src/Pwm.c",
-        "src/bsw/mcal/spi/src/Spi.c",
-        "src/bsw/mcal/i2c/src/I2c.c",
-        "src/bsw/mcal/uart/src/Uart.c",
-        "src/bsw/mcal/lin/src/Lin.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MCAL-SHALL-003",
@@ -75,22 +45,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/port/src/Port.c",
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/wdg/src/Wdg.c",
-        "src/bsw/mcal/pwm/src/Pwm.c",
-        "src/bsw/mcal/spi/src/Spi.c",
-        "src/bsw/mcal/i2c/src/I2c.c",
-        "src/bsw/mcal/uart/src/Uart.c",
-        "src/bsw/mcal/lin/src/Lin.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ECUAL-SHALL-001",
@@ -101,18 +56,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/wdgif/src/WdgIf.c",
-        "src/bsw/ecual/canif/src/CanIf.c",
-        "src/bsw/ecual/cantp/src/CanTp.c",
-        "src/bsw/ecual/dlt/src/Dlt.c",
-        "src/bsw/ecual/fee/src/Fee.c",
-        "src/bsw/ecual/iohwab/src/IoHwAb.c",
-        "src/bsw/ecual/ea/src/Ea.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ECUAL-SHALL-002",
@@ -123,18 +67,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/wdgif/src/WdgIf.c",
-        "src/bsw/ecual/canif/src/CanIf.c",
-        "src/bsw/ecual/cantp/src/CanTp.c",
-        "src/bsw/ecual/dlt/src/Dlt.c",
-        "src/bsw/ecual/fee/src/Fee.c",
-        "src/bsw/ecual/iohwab/src/IoHwAb.c",
-        "src/bsw/ecual/ea/src/Ea.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SVC-SHALL-001",
@@ -145,13 +78,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h",
-        "src/bsw/services/wdgm/src/WdgM.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SVC-SHALL-002",
@@ -162,13 +89,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h",
-        "src/bsw/services/wdgm/src/WdgM.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SVC-SHALL-003",
@@ -179,13 +100,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h",
-        "src/bsw/services/wdgm/src/WdgM.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NFR-SHALL-001",
@@ -196,15 +111,7 @@
       ],
       "matched_tests": [
         "tests/e2e/test_misra_compliance.c"
-      ],
-      "implemented_by": [
-        "src/asw/communication_manager/src/Swc_CommunicationManager.c",
-        "src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c",
-        "src/asw/engine_control/src/Swc_EngineControl.c",
-        "src/asw/io_control/src/Swc_IOControl.c",
-        "src/asw/mode_manager/src/Swc_ModeManager.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NFR-SHALL-002",
@@ -215,15 +122,7 @@
       ],
       "matched_tests": [
         "tests/e2e/test_misra_compliance.c"
-      ],
-      "implemented_by": [
-        "src/asw/communication_manager/src/Swc_CommunicationManager.c",
-        "src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c",
-        "src/asw/engine_control/src/Swc_EngineControl.c",
-        "src/asw/io_control/src/Swc_IOControl.c",
-        "src/asw/mode_manager/src/Swc_ModeManager.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NFR-SHALL-003",
@@ -234,15 +133,7 @@
       ],
       "matched_tests": [
         "tests/e2e/test_misra_compliance.c"
-      ],
-      "implemented_by": [
-        "src/asw/communication_manager/src/Swc_CommunicationManager.c",
-        "src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c",
-        "src/asw/engine_control/src/Swc_EngineControl.c",
-        "src/asw/io_control/src/Swc_IOControl.c",
-        "src/asw/mode_manager/src/Swc_ModeManager.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NFR-SHALL-004",
@@ -253,15 +144,7 @@
       ],
       "matched_tests": [
         "tests/e2e/test_misra_compliance.c"
-      ],
-      "implemented_by": [
-        "src/asw/communication_manager/src/Swc_CommunicationManager.c",
-        "src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c",
-        "src/asw/engine_control/src/Swc_EngineControl.c",
-        "src/asw/io_control/src/Swc_IOControl.c",
-        "src/asw/mode_manager/src/Swc_ModeManager.c"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MISRA-SHALL-001",
@@ -272,11 +155,7 @@
       ],
       "matched_tests": [
         "tests/e2e/test_misra_compliance.c"
-      ],
-      "implemented_by": [
-        "misra-rules.yaml"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DCM-SHALL-001",
@@ -287,12 +166,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dcm/src/Dcm.c",
-        "src/bsw/services/dcm/include/Dcm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DCM-SHALL-002",
@@ -303,12 +177,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dcm/src/Dcm.c",
-        "src/bsw/services/dcm/include/Dcm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DCM-SHALL-003",
@@ -319,12 +188,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dcm/src/Dcm.c",
-        "src/bsw/services/dcm/include/Dcm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DCM-SHALL-004",
@@ -335,12 +199,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dcm/src/Dcm.c",
-        "src/bsw/services/dcm/include/Dcm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DEM-SHALL-001",
@@ -351,12 +210,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dem/src/Dem.c",
-        "src/bsw/services/dem/include/Dem.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DEM-SHALL-002",
@@ -367,12 +221,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dem/src/Dem.c",
-        "src/bsw/services/dem/include/Dem.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DEM-SHALL-003",
@@ -383,12 +232,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dem/src/Dem.c",
-        "src/bsw/services/dem/include/Dem.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DEM-SHALL-004",
@@ -399,12 +243,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dem/src/Dem.c",
-        "src/bsw/services/dem/include/Dem.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "COM-SHALL-001",
@@ -415,12 +254,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/com/src/Com.c",
-        "src/bsw/services/com/include/Com.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "COM-SHALL-002",
@@ -431,12 +265,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/com/src/Com.c",
-        "src/bsw/services/com/include/Com.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "COM-SHALL-003",
@@ -447,12 +276,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/com/src/Com.c",
-        "src/bsw/services/com/include/Com.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "COM-SHALL-004",
@@ -463,12 +287,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/com/src/Com.c",
-        "src/bsw/services/com/include/Com.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PDUR-SHALL-001",
@@ -479,12 +298,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/pdur/src/PduR.c",
-        "src/bsw/services/pdur/include/PduR.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PDUR-SHALL-002",
@@ -495,12 +309,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/pdur/src/PduR.c",
-        "src/bsw/services/pdur/include/PduR.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PDUR-SHALL-003",
@@ -511,12 +320,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/pdur/src/PduR.c",
-        "src/bsw/services/pdur/include/PduR.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NVM-SHALL-001",
@@ -527,12 +331,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/nvm/src/NvM.c",
-        "src/bsw/services/nvm/include/NvM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NVM-SHALL-002",
@@ -543,12 +342,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/nvm/src/NvM.c",
-        "src/bsw/services/nvm/include/NvM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NVM-SHALL-003",
@@ -559,12 +353,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/nvm/src/NvM.c",
-        "src/bsw/services/nvm/include/NvM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NVM-SHALL-004",
@@ -575,12 +364,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/nvm/src/NvM.c",
-        "src/bsw/services/nvm/include/NvM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NVM-SHALL-005",
@@ -591,12 +375,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/nvm/src/NvM.c",
-        "src/bsw/services/nvm/include/NvM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ECUM-SHALL-001",
@@ -607,12 +386,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/ecum/src/EcuM.c",
-        "src/bsw/services/ecum/include/EcuM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ECUM-SHALL-002",
@@ -623,12 +397,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/ecum/src/EcuM.c",
-        "src/bsw/services/ecum/include/EcuM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ECUM-SHALL-003",
@@ -639,12 +408,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/ecum/src/EcuM.c",
-        "src/bsw/services/ecum/include/EcuM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "OSSC4-SHALL-001",
@@ -655,12 +419,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "OSSC4-SHALL-002",
@@ -671,12 +430,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "OSSC4-SHALL-003",
@@ -687,12 +441,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "OSSC4-SHALL-004",
@@ -703,12 +452,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "OSSC4-SHALL-005",
@@ -719,12 +463,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANIF-SHALL-001",
@@ -735,12 +474,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canif/src/CanIf.c",
-        "src/bsw/ecual/canif/include/CanIf.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANIF-SHALL-002",
@@ -751,12 +485,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canif/src/CanIf.c",
-        "src/bsw/ecual/canif/include/CanIf.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANIF-SHALL-003",
@@ -767,12 +496,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canif/src/CanIf.c",
-        "src/bsw/ecual/canif/include/CanIf.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANIF-SHALL-004",
@@ -783,12 +507,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canif/src/CanIf.c",
-        "src/bsw/ecual/canif/include/CanIf.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANTP-SHALL-001",
@@ -799,12 +518,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/cantp/src/CanTp.c",
-        "src/bsw/ecual/cantp/include/CanTp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANTP-SHALL-002",
@@ -815,12 +529,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/cantp/src/CanTp.c",
-        "src/bsw/ecual/cantp/include/CanTp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANTP-SHALL-003",
@@ -831,12 +540,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/cantp/src/CanTp.c",
-        "src/bsw/ecual/cantp/include/CanTp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANTP-SHALL-004",
@@ -847,12 +551,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/cantp/src/CanTp.c",
-        "src/bsw/ecual/cantp/include/CanTp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANNM-SHALL-001",
@@ -863,12 +562,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/canNm/include/CanNm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANNM-SHALL-002",
@@ -879,12 +573,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/canNm/include/CanNm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANNM-SHALL-003",
@@ -895,12 +584,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/canNm/include/CanNm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANNM-SHALL-004",
@@ -911,12 +595,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/canNm/include/CanNm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANNM-SHALL-005",
@@ -927,12 +606,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/canNm/src/CanNm.c",
-        "src/bsw/ecual/canNm/include/CanNm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOAD-SHALL-001",
@@ -943,12 +617,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/soad/src/SoAd.c",
-        "src/bsw/services/soad/include/SoAd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOAD-SHALL-002",
@@ -959,12 +628,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/soad/src/SoAd.c",
-        "src/bsw/services/soad/include/SoAd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOAD-SHALL-003",
@@ -975,12 +639,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/soad/src/SoAd.c",
-        "src/bsw/services/soad/include/SoAd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOAD-SHALL-004",
@@ -991,12 +650,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/soad/src/SoAd.c",
-        "src/bsw/services/soad/include/SoAd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOMEIPSD-SHALL-001",
@@ -1007,12 +661,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/someip/src/SomeIpSd.c",
-        "src/bsw/services/someip/include/SomeIpSd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOMEIPSD-SHALL-002",
@@ -1023,12 +672,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/someip/src/SomeIpSd.c",
-        "src/bsw/services/someip/include/SomeIpSd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "SOMEIPSD-SHALL-003",
@@ -1039,12 +683,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/someip/src/SomeIpSd.c",
-        "src/bsw/services/someip/include/SomeIpSd.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DLT-SHALL-001",
@@ -1055,12 +694,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/dlt/src/Dlt.c",
-        "src/bsw/ecual/dlt/include/Dlt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DLT-SHALL-002",
@@ -1071,12 +705,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/dlt/src/Dlt.c",
-        "src/bsw/ecual/dlt/include/Dlt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DLT-SHALL-003",
@@ -1087,12 +716,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/dlt/src/Dlt.c",
-        "src/bsw/ecual/dlt/include/Dlt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "XCP-SHALL-001",
@@ -1103,12 +727,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/xcp/src/Xcp.c",
-        "src/bsw/services/xcp/include/Xcp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "XCP-SHALL-002",
@@ -1119,12 +738,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/xcp/src/Xcp.c",
-        "src/bsw/services/xcp/include/Xcp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "XCP-SHALL-003",
@@ -1135,12 +749,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/xcp/src/Xcp.c",
-        "src/bsw/services/xcp/include/Xcp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "XCP-SHALL-004",
@@ -1151,12 +760,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/xcp/src/Xcp.c",
-        "src/bsw/services/xcp/include/Xcp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "XCP-SHALL-005",
@@ -1167,12 +771,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/xcp/src/Xcp.c",
-        "src/bsw/services/xcp/include/Xcp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ADC-SHALL-001",
@@ -1183,12 +782,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/adc/include/Adc.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ADC-SHALL-002",
@@ -1199,12 +793,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/adc/include/Adc.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ADC-SHALL-003",
@@ -1215,12 +804,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/adc/include/Adc.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ADC-SHALL-004",
@@ -1231,12 +815,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/adc/include/Adc.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ADC-SHALL-005",
@@ -1247,12 +826,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/adc/src/Adc.c",
-        "src/bsw/mcal/adc/include/Adc.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANDRV-SHALL-001",
@@ -1263,12 +837,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/can/include/Can.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANDRV-SHALL-002",
@@ -1279,12 +848,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/can/include/Can.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANDRV-SHALL-003",
@@ -1295,12 +859,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/can/include/Can.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANDRV-SHALL-004",
@@ -1311,12 +870,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/can/include/Can.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANDRV-SHALL-005",
@@ -1327,12 +881,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/can/include/Can.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANDRV-SHALL-006",
@@ -1343,12 +892,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/can/src/Can.c",
-        "src/bsw/mcal/can/include/Can.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-001",
@@ -1359,12 +903,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-002",
@@ -1375,12 +914,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-003",
@@ -1391,12 +925,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-004",
@@ -1407,12 +936,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-005",
@@ -1423,12 +947,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-006",
@@ -1439,12 +958,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CRYPTO-SHALL-007",
@@ -1455,12 +969,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/crypto/src/Crypto.c",
-        "src/bsw/mcal/crypto/include/Crypto.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DIODRV-SHALL-001",
@@ -1471,12 +980,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/dio/include/Dio.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DIODRV-SHALL-002",
@@ -1487,12 +991,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/dio/include/Dio.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DIODRV-SHALL-003",
@@ -1503,12 +1002,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/dio/include/Dio.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DIODRV-SHALL-004",
@@ -1519,12 +1013,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/dio/src/Dio.c",
-        "src/bsw/mcal/dio/include/Dio.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PORTDRV-SHALL-001",
@@ -1535,12 +1024,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/port/src/Port.c",
-        "src/bsw/mcal/port/include/Port.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PORTDRV-SHALL-002",
@@ -1551,12 +1035,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/port/src/Port.c",
-        "src/bsw/mcal/port/include/Port.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PORTDRV-SHALL-003",
@@ -1567,12 +1046,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/port/src/Port.c",
-        "src/bsw/mcal/port/include/Port.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "GPTDRV-SHALL-001",
@@ -1583,12 +1057,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/gpt/include/Gpt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "GPTDRV-SHALL-002",
@@ -1599,12 +1068,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/gpt/include/Gpt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "GPTDRV-SHALL-003",
@@ -1615,12 +1079,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/gpt/include/Gpt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "GPTDRV-SHALL-004",
@@ -1631,12 +1090,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/gpt/src/Gpt.c",
-        "src/bsw/mcal/gpt/include/Gpt.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ICURV-SHALL-001",
@@ -1647,12 +1101,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/icu/src/Icu.c",
-        "src/bsw/mcal/icu/include/Icu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ICURV-SHALL-002",
@@ -1663,12 +1112,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/icu/src/Icu.c",
-        "src/bsw/mcal/icu/include/Icu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ICURV-SHALL-003",
@@ -1679,12 +1123,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/icu/src/Icu.c",
-        "src/bsw/mcal/icu/include/Icu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MCUDRV-SHALL-001",
@@ -1695,12 +1134,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/mcu/include/Mcu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MCUDRV-SHALL-002",
@@ -1711,12 +1145,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/mcu/include/Mcu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MCUDRV-SHALL-003",
@@ -1727,12 +1156,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/mcu/include/Mcu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MCUDRV-SHALL-004",
@@ -1743,12 +1167,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/mcu/src/Mcu.c",
-        "src/bsw/mcal/mcu/include/Mcu.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "WDGDRV-SHALL-001",
@@ -1759,12 +1178,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/wdg/src/Wdg.c",
-        "src/bsw/mcal/wdg/include/Wdg.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "WDGDRV-SHALL-002",
@@ -1775,12 +1189,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/wdg/src/Wdg.c",
-        "src/bsw/mcal/wdg/include/Wdg.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "WDGDRV-SHALL-003",
@@ -1791,12 +1200,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_mcal_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/mcal/wdg/src/Wdg.c",
-        "src/bsw/mcal/wdg/include/Wdg.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DCM-REQ-01",
@@ -1807,12 +1211,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dcm/src/Dcm.c",
-        "src/bsw/services/dcm/include/Dcm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DCM-REQ-02",
@@ -1823,12 +1222,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dcm/src/Dcm.c",
-        "src/bsw/services/dcm/include/Dcm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DEM-REQ-01",
@@ -1839,12 +1233,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/dem/src/Dem.c",
-        "src/bsw/services/dem/include/Dem.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DET-REQ-01",
@@ -1855,12 +1244,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/det/src/Det.c",
-        "src/bsw/services/det/include/Det.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "DOIP-REQ-01",
@@ -1871,12 +1255,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/doip/src/DoIP.c",
-        "src/bsw/services/doip/include/DoIP.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "COM-REQ-01",
@@ -1887,12 +1266,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/com/src/Com.c",
-        "src/bsw/services/com/include/Com.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "PDUR-REQ-01",
@@ -1903,12 +1277,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/pdur/src/PduR.c",
-        "src/bsw/services/pdur/include/PduR.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CANSM-REQ-01",
@@ -1919,12 +1288,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/cansm/src/CanSm.c",
-        "src/bsw/services/cansm/include/CanSm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "LIN-REQ-01",
@@ -1935,12 +1299,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/lntm/src/LinTp.c",
-        "src/bsw/services/lntm/include/LinTp.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "NVM-REQ-01",
@@ -1951,12 +1310,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/nvm/src/NvM.c",
-        "src/bsw/services/nvm/include/NvM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "FEE-REQ-01",
@@ -1967,12 +1321,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/ecual/fee/src/Fee.c",
-        "src/bsw/ecual/fee/include/Fee.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "MEMIF-REQ-01",
@@ -1983,12 +1332,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/memif/src/MemIf.c",
-        "src/bsw/services/memif/include/MemIf.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "ECUM-REQ-01",
@@ -1999,12 +1343,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/ecum/src/EcuM.c",
-        "src/bsw/services/ecum/include/EcuM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "BSWM-REQ-01",
@@ -2015,12 +1354,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/bswm/src/BswM.c",
-        "src/bsw/services/bswm/include/BswM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "WDGM-REQ-01",
@@ -2031,12 +1365,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/wdgm/src/WdgM.c",
-        "src/bsw/services/wdgm/include/WdgM.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "OS-REQ-01",
@@ -2047,12 +1376,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/os/src/Os.c",
-        "src/bsw/os/include/Os.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "E2E-REQ-01",
@@ -2063,12 +1387,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/e2e/src/E2E.c",
-        "src/bsw/services/e2e/include/E2E.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "CSM-REQ-01",
@@ -2079,12 +1398,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/csm/src/Csm.c",
-        "src/bsw/services/csm/include/Csm.h"
-      ],
-      "has_code": true
+      ]
     },
     {
       "name": "KEYM-REQ-01",
@@ -2095,13 +1409,7 @@
       ],
       "matched_tests": [
         "tests/unit/test_services_api_contracts.c"
-      ],
-      "implemented_by": [
-        "src/bsw/services/keym/src/KeyM.c",
-        "src/bsw/services/keym/include/KeyM.h"
-      ],
-      "has_code": true
+      ]
     }
-  ],
-  "mapping_version": "v2-c-source-mapping"
+  ]
 }

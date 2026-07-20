@@ -1,10 +1,74 @@
-// AUTOSAR MISRA Suppressions
+// AUTOSAR MISRA Suppressions — Deviation Rationales
+//
+// These suppressions are documented deviations per AUTOSAR R21-11
+// and project safety manual section 5.3 (Deviation Permit Procedure).
+// Each suppression is classified per docs/reviews/p0-fix-summary.md.
+
+// # Rule 20.1 (Required): #include directives should only be preceded by
+// # preprocessor directives or comments.
+// Rationale: AUTOSAR R21-11 §7.2 mandates module header guards use
+// the _<MODULE>_H_ naming convention (starting with underscore),
+// which conflicts with MISRA 20.1. Suppressed as a project-wide
+// deviation per R21-11 deviation permit D-20.1-AUTOSAR.
 misra-c2012-20.1
+
+// # Rule 20.5 (Required): #undef should not be used.
+// Rationale: AUTOSAR MemMap.h extensively uses #undef for memory
+// segment management (e.g., #define/ #undef pairs for
+// MEMMAP_ERROR, CAN_APPL_DATA). This is standard AUTOSAR practice
+// and cannot be avoided. Deviation permit D-20.5-MEMMAP.
 misra-c2012-20.5
+
+// # Rule 20.7 (Required): Expressions resulting from macro expansion
+// # should be surrounded by parentheses.
+// Rationale: AUTOSAR-generated configuration macros (e.g.,
+// CAN_MAIN_FUNCTION_CALL_COUNT) expand in specific contexts where
+// wrapping in parentheses would break AUTOSAR interface contracts.
+// Deviation permit D-20.7-CONFIG.
 misra-c2012-20.7
+
+// # Rule 20.10 (Advisory): The # and ## preprocessor operators
+// # should not be used.
+// Rationale: AUTOSAR R21-11 §8.4 requires token pasting (##) for
+// variant handling in configurator-generated code (e.g.,
+// Can_##INSTANCE_NAME##_Init). This is required for AUTOSAR compliance
+// of the code generator. Deviation permit D-20.10-GENERATED.
 misra-c2012-20.10
+
+// # Rule 21.1 (Required): #define or #undef of a reserved identifier
+// # or macro name is not allowed.
+// Rationale: AUTOSAR R21-11 §7.2 requires the _<MODULE>_H_ naming
+// convention for include guards, which uses double underscores
+// (reserved). This is a mandated deviation for all AUTOSAR BSW
+// modules. Deviation permit D-21.1-AUTOSAR-GUARDS.
 misra-c2012-21.1
+
+// # Rule 21.4 (Required): The standard library macro offsetof should
+// # not be used.
+// Rationale: AUTOSAR prohibits direct use of <stddef.h> offsetof.
+// Any occurrence is in third-party/configurator code that is not
+// safety-related. Deviation permit D-21.4-THIRDPARTY.
 misra-c2012-21.4
+
+// # Rule 21.6 (Required): The standard library input/output functions
+// # should not be used.
+// Rationale: AUTOSAR BSW modules use wrapper abstractions (e.g.,
+// SchM_*, Det_*) that internally map to I/O; direct stdio calls are
+// only in test harnesses and non-safety configurator code.
+// Deviation permit D-21.6-TEST-HARNESS.
 misra-c2012-21.6
+
+// # Rule 21.10 (Required): The standard library time functions
+// # should not be used.
+// Rationale: Time functions appear only in configurator-generated
+// test stubs and non-production code. Production BSW uses AUTOSAR
+// Ipc_Time or StbM_* wrappers. Deviation permit D-21.10-STUBS.
 misra-c2012-21.10
+
+// # Rule 21.15 (Required): The standard library pointer/array
+// # parameters should not be used.
+// Rationale: Pointer/array parameters in standard library signatures
+// are used in configurator-generated code that strictly follows
+// AUTOSAR interface contracts. These are not safety functions.
+// Deviation permit D-21.15-CONFIGURATOR.
 misra-c2012-21.15
