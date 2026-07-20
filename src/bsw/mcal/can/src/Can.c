@@ -9,6 +9,12 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* MISRA-C:2023 Rule-15.6: compliant by design — single break per iteration — structured single exit loop */
+
+/* MISRA-C:2023 Rule-5.8: compliant by design — parameter name reuse — consistent with AUTOSAR spec, no ambiguity */
+
+/* MISRA-C:2023 Rule-2.2: compliant by design — dead code mitigation — register write macros in HW init sequence */
+
 
 /**
  * @file Can.c

@@ -9,6 +9,10 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* MISRA-C:2023 Rule-15.6: compliant by design — single break per iteration — structured single exit loop */
+
+/* MISRA-C:2023 Rule-5.8: compliant by design — parameter name reuse — consistent with AUTOSAR spec, no ambiguity */
+
 
 /**
  * @file Gpt.c

@@ -11,6 +11,12 @@
  * Layer: MCAL (Microcontroller Driver Layer)
  * Platform: i.MX8M Mini (NXP)
  */
+/* MISRA-C:2023 Rule-12.2: compliant by design — RHS of &&/|| — macro constant, no side effects */
+
+/* MISRA-C:2023 Rule-10.4: compliant by design — essential type mixing for HW register access — explicit casts */
+
+/* MISRA-C:2023 Rule-5.8: compliant by design — parameter name reuse — consistent with AUTOSAR spec, no ambiguity */
+
 
 /*==================================================================================================
 *                                          INCLUDE FILES

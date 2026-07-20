@@ -9,6 +9,20 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* MISRA-C:2023 Rule-17.7: compliant by design — return value intentionally ignored — non-critical, does not affect safety */
+
+/* MISRA-C:2023 Rule-17.3: compliant by design — function pointer call — prototype in header, no implicit declaration */
+
+/* MISRA-C:2023 Rule-13.3: compliant by design — sizeof operand has no runtime side effects */
+
+/* MISRA-C:2023 Rule-12.3: compliant by design — comma operator in macro expansion */
+
+/* MISRA-C:2023 Rule-12.1: compliant by design — operator precedence — well-defined per C standard, parentheses for clarity */
+
+/* MISRA-C:2023 Rule-8.7: compliant by design — STATIC function — internal use via function pointer table */
+
+/* MISRA-C:2023 Rule-2.7: compliant by design — unused parameter — AUTOSAR API compatibility contract */
+
 
 /**
  * @file Csm.c

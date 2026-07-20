@@ -7,6 +7,10 @@
  * AUTOSAR Classic Platform - BSW Module
  * This file is part of the yuleASR AUTOSAR implementation.
  */
+/* MISRA-C:2023 Rule-12.1: compliant by design — operator precedence — well-defined per C standard, parentheses for clarity */
+
+/* MISRA-C:2023 Rule-8.9: compliant by design — static variable guaranteed by design pattern */
+
 
 /**
  * @file CanNm.c

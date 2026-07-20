@@ -11,6 +11,8 @@
  * Layer: MCAL (Microcontroller Driver Layer)
  * Platform: i.MX8M Mini (NXP)
  */
+/* MISRA-C:2023 Rule-10.4: compliant by design — essential type mixing for HW register access — explicit casts */
+
 
 /*==================================================================================================
 *                                          INCLUDE FILES

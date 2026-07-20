@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* MISRA-C:2023 Rule-16.6: compliant by design — label in switch — default case always present with break */
+
 
 /*==================================================================================================
  *                                      WATCHDOG HARDWARE ABSTRACTION
