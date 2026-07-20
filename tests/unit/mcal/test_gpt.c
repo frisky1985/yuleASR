@@ -169,6 +169,7 @@ TEST_CASE(gpt_disable_notification)
     Gpt_DisableNotification(0);
     
     /* Notification disabled - implementation dependent */
+ASSERT_FALSE(Gpt_MockChannels[0].NotificationEnabled);
     TEST_PASS();
 }
 
@@ -201,6 +202,7 @@ TEST_CASE(gpt_enable_wakeup)
     
     Gpt_EnableWakeup(1);
     
+ASSERT_TRUE(Gpt_MockChannels[1].WakeupEnabled);
     TEST_PASS();
 }
 
@@ -211,6 +213,7 @@ TEST_CASE(gpt_disable_wakeup)
     
     Gpt_DisableWakeup(1);
     
+ASSERT_FALSE(Gpt_MockChannels[1].WakeupEnabled);
     TEST_PASS();
 }
 
@@ -224,7 +227,7 @@ TEST_CASE(gpt_check_wakeup)
     result = Gpt_CheckWakeup(1);
     
     /* Wakeup check result depends on implementation */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 

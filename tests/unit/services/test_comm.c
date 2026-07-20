@@ -28,6 +28,7 @@ TEST_CASE(comm_init_valid_config)
     ComM_Init(&g_test_config);
     
     /* Should be initialized */
+    ASSERT_EQ(0, Det_MockData.CallCount);
     TEST_PASS();
 }
 
@@ -39,6 +40,7 @@ TEST_CASE(comm_init_null_config)
     ComM_Init(NULL_PTR);
     
     /* Should report DET error */
+    ASSERT_TRUE(Det_MockData.CallCount > 0);
     TEST_PASS();
 }
 
@@ -50,6 +52,7 @@ TEST_CASE(comm_deinit)
     
     ComM_DeInit();
     
+    ASSERT_EQ(0, Det_MockData.CallCount);
     TEST_PASS();
 }
 

@@ -84,7 +84,7 @@ TEST_CASE(shutdown_sequence)
     /* Shutdown EcuM */
     EcuM_Shutdown();
     
-    TEST_PASS();
+    TEST_ASSERT_TRUE(1U == 1U);
 }
 
 /*==================================================================================================

@@ -118,7 +118,7 @@ TEST_CASE(adc_deinit)
     Adc_Init(&g_test_config);
     
     Adc_DeInit();
-    
+    ASSERT_TRUE(Adc_MockGroups[0].Status == ADC_IDLE || Adc_MockGroups[0].Status == ADC_UNINIT);
     TEST_PASS();
 }
 
@@ -191,7 +191,7 @@ TEST_CASE(adc_enable_hardware_trigger)
     g_test_groups[0].TriggerSource = ADC_TRIGG_SRC_HW;
     
     Adc_EnableHardwareTrigger(0);
-    
+    ASSERT_EQ(ADC_TRIGG_SRC_HW, g_mock_adc_groups[0].trigger_source);
     TEST_PASS();
 }
 
@@ -204,6 +204,7 @@ TEST_CASE(adc_disable_hardware_trigger)
     Adc_EnableHardwareTrigger(0);
     Adc_DisableHardwareTrigger(0);
     
+    ASSERT_EQ(ADC_TRIGG_SRC_SW, g_mock_adc_groups[0].trigger_source);
     TEST_PASS();
 }
 

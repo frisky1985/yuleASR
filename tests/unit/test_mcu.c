@@ -92,6 +92,7 @@ void test_mcu_distribute_pll_not_init(void)
     Mcu_DistributePllClock();
     
     /* Verify */
+    ASSERT_TRUE(g_mcu_pll_state == PLL_STATE_LOCKED || g_mcu_pll_state == PLL_STATE_BYPASS);
     TEST_PASS();
 }
 
@@ -153,6 +154,7 @@ void test_mcu_perform_reset_not_init(void)
     Mcu_PerformReset();
     
     /* Verify */
+    ASSERT_TRUE(g_mcu_reset_performed);
     TEST_PASS();
 }
 
@@ -166,6 +168,7 @@ void test_mcu_set_mode_invalid(void)
     Mcu_SetMode(255); /* Invalid mode */
     
     /* Verify */
+    ASSERT_EQ(1, g_det_error_count);  /* Det should report invalid mode */
     TEST_PASS();
 }
 

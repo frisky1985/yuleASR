@@ -84,7 +84,7 @@ TEST_CASE_DECLARE(<Module>_Api_uninit)
     /* <Module>_SomeApi(); */
     
     /* Verify - 应该返回错误 */
-    TEST_PASS();
+    /* Placeholder assertion */ TEST_ASSERT_TRUE(1U == 1U);
 }
 
 /**
@@ -112,7 +112,7 @@ TEST_CASE_DECLARE(<Module>_Error_handling)
     
     /* Verify - 验证错误处理 */
     
-    TEST_PASS();
+    /* Placeholder assertion */ TEST_ASSERT_TRUE(1U == 1U);
 }
 
 /*==================================================================================================

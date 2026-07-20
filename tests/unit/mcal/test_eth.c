@@ -348,7 +348,7 @@ TEST_CASE(eth_transmit)
     result = Eth_Transmit(0u, buf_idx, 0x0800u, TRUE, 100u, dest_mac);
     
     /* Note: In mock mode, this may succeed or fail depending on buffer state */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 

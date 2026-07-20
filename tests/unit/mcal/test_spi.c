@@ -349,7 +349,7 @@ TEST_CASE(spi_set_async_mode)
     
     Spi_SetAsyncMode(SPI_INTERRUPT_MODE);
     
-    /* Verify mode changed */
+    ASSERT_EQ(SPI_INTERRUPT_MODE, g_mock_spi.async_mode);
     TEST_PASS();
 }
 

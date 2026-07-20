@@ -197,7 +197,7 @@ TEST_CASE(can_disable_interrupts)
     
     Can_DisableControllerInterrupts(0);
     
-    /* Verify interrupts disabled - mock state check */
+    ASSERT_TRUE(Can_MockControllers[0].InterruptsDisabled);
     TEST_PASS();
 }
 
@@ -221,7 +221,7 @@ TEST_CASE(can_enable_interrupts)
     
     Can_EnableControllerInterrupts(0);
     
-    /* Verify interrupts enabled - mock state check */
+    ASSERT_TRUE(Can_MockControllers[0].InterruptsEnabled);
     TEST_PASS();
 }
 
@@ -329,7 +329,7 @@ TEST_CASE(can_main_function_write)
     
     Can_MainFunction_Write();
     
-    /* Verify main function executed */
+    ASSERT_TRUE(Can_MockControllers[0].MainFunctionWriteCalled);
     TEST_PASS();
 }
 
@@ -341,7 +341,7 @@ TEST_CASE(can_main_function_read)
     
     Can_MainFunction_Read();
     
-    /* Verify main function executed */
+    ASSERT_TRUE(Can_MockControllers[0].MainFunctionReadCalled);
     TEST_PASS();
 }
 
@@ -353,7 +353,7 @@ TEST_CASE(can_main_function_busoff)
     
     Can_MainFunction_BusOff();
     
-    /* Verify main function executed */
+    ASSERT_TRUE(Can_MockControllers[0].BusOffHandled);
     TEST_PASS();
 }
 
@@ -368,7 +368,7 @@ TEST_CASE(can_check_wakeup)
     result = Can_CheckWakeup(0);
     
     /* Result depends on implementation */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 

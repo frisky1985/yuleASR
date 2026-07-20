@@ -100,6 +100,7 @@ TEST_CASE(crypto_init_valid_config)
     
     Crypto_Init(&g_test_config);
     
+    ASSERT_TRUE(MCAL_CryptoIsInitialized() == TRUE);
     TEST_PASS();
 }
 
@@ -108,6 +109,7 @@ TEST_CASE(crypto_init_null_config)
 {
     Crypto_Init(NULL_PTR);
     
+    ASSERT_TRUE(MCAL_CryptoIsInitialized() == FALSE);
     TEST_PASS();
 }
 
@@ -119,6 +121,7 @@ TEST_CASE(crypto_deinit)
     
     Crypto_DeInit();
     
+    ASSERT_TRUE(MCAL_CryptoIsInitialized() == FALSE);
     TEST_PASS();
 }
 

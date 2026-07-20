@@ -798,6 +798,7 @@ TEST_CASE(mcu_set_mode_boundary_min)
     Mcu_SetMode(0);  /* Minimum valid mode */
 
     /* Verify mode was set */
+    ASSERT_TRUE(MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING) != 0xFFFFFFFFU);
     TEST_PASS();
 }
 

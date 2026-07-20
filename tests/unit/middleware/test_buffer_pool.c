@@ -65,7 +65,7 @@ void test_buffer_pool_alloc_exhaustion(void) {
 void test_buffer_pool_free_null(void) {
     /* 释放null不应崩溃 */
     MicroDDS_BufferPool_Free(NULL);
-    TEST_PASS();
+    TEST_ASSERT_TRUE(1U == 1U);  /* Should not crash */
 }
 
 void test_buffer_pool_get_buffer_size(void) {

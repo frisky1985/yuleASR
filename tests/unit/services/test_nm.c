@@ -27,6 +27,7 @@ TEST_CASE(nm_init_valid_config)
     
     Nm_Init(&g_test_config);
     
+    ASSERT_EQ(0, Det_MockData.CallCount);
     TEST_PASS();
 }
 
@@ -37,6 +38,7 @@ TEST_CASE(nm_init_null_config)
     
     Nm_Init(NULL_PTR);
     
+    ASSERT_TRUE(Det_MockData.CallCount > 0);
     TEST_PASS();
 }
 
@@ -48,6 +50,7 @@ TEST_CASE(nm_deinit)
     
     Nm_DeInit();
     
+    ASSERT_EQ(0, Det_MockData.CallCount);
     TEST_PASS();
 }
 

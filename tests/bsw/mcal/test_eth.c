@@ -326,6 +326,7 @@ TEST_CASE(eth_set_phys_addr_null)
     /* This should not crash - implementation dependent */
     Eth_SetPhysAddr(0u, NULL);
     
+    ASSERT_EQ(1u, Det_MockData.CallCount);
     TEST_PASS();
 }
 
@@ -470,7 +471,7 @@ TEST_CASE(eth_transmit_active_controller)
     result = Eth_Transmit(0u, buf_idx, 0x0800u, TRUE, 100u, dest_mac);
     
     /* Result depends on implementation */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 
@@ -512,7 +513,7 @@ TEST_CASE(eth_receive_valid)
     result = Eth_Receive(0u, &rx_status, &buf_idx, &frame_ptr);
     
     /* In mock mode, no frames available */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 
@@ -582,7 +583,7 @@ TEST_CASE(eth_read_mii_null_data)
     result = Eth_ReadMii(0u, 0u, ETH_MII_REG_BMSR, NULL);
     
     /* Implementation dependent - should handle gracefully */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 
@@ -598,7 +599,7 @@ TEST_CASE(eth_write_mii_invalid_phy)
     result = Eth_WriteMii(0u, 0x20u, ETH_MII_REG_BMCR, 0x1000u);
     
     /* Should fail with invalid PHY address */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 
@@ -683,7 +684,7 @@ TEST_CASE(eth_update_filter_add)
     result = Eth_UpdatePhysAddrFilter(0u, mcast_addr, ETH_FILTER_ACTION_ADD);
     
     /* Result depends on implementation */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 
@@ -700,7 +701,7 @@ TEST_CASE(eth_update_filter_remove)
     result = Eth_UpdatePhysAddrFilter(0u, mcast_addr, ETH_FILTER_ACTION_REMOVE);
     
     /* Result depends on implementation */
-    (void)result;
+    ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
     TEST_PASS();
 }
 
@@ -714,6 +715,7 @@ TEST_CASE(eth_update_filter_null_addr)
     /* Should not crash */
     (void)Eth_UpdatePhysAddrFilter(0u, NULL, ETH_FILTER_ACTION_ADD);
     
+    ASSERT_EQ(1u, Det_MockData.CallCount);
     TEST_PASS();
 }
 
