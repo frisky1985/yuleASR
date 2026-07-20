@@ -1,7 +1,11 @@
-/*==================================================================================================
- * ECU State Manager — 启动阶段实现
+/*******************************************************************************
+ * EcuM 启动阶段实现
  * 自动拆分自 EcuM.c
- *================================================================================================*/
+ ******************************************************************************/
+#define ECUM_START_SEC_CODE
+#include "BswM.h"
+#include "SchM.h"
+#include "MemMap.h"
 
 void EcuM_Init(void)
 {
@@ -98,7 +102,7 @@ void EcuM_StartupTwo(void)
  * @brief Process Startup One state
  * @details Initialize MCU, Port, Dio, Gpt, and other pre-OS drivers
  */
-static void EcuM_ProcessStartupOne(void)
+void EcuM_ProcessStartupOne(void)
 {
     EcuM_UpdateSubState(ECUM_SUBSTATE_STARTUP_ONE);
     
@@ -150,7 +154,7 @@ static void EcuM_ProcessStartupOne(void)
  * @brief Process Startup Two state
  * @details Initialize Com, NvM, ComM, BswM and other post-OS modules
  */
-static void EcuM_ProcessStartupTwo(void)
+void EcuM_ProcessStartupTwo(void)
 {
     EcuM_UpdateSubState(ECUM_SUBSTATE_STARTUP_TWO);
     
@@ -223,4 +227,5 @@ static void EcuM_ProcessStartupTwo(void)
  * @brief EcuM Main Function - Cyclic processing
  * @details Called periodically to process state machine
  */
-
+#define ECUM_STOP_SEC_CODE
+#include "MemMap.h"

@@ -1,10 +1,25 @@
 /*==================================================================================================
- * XCP 命令处理实现 — 被 Xcp.c 聚合
+ * XCP DAQ/PGM 命令处理实现
+ * 自动拆分自 Xcp.c
  *================================================================================================*/
+#define XCP_START_SEC_CODE
+#include "MemMap.h"
 
-void Xcp_CmdConnect(uint8 ChannelId, const uint8* Data, uint8 Length)
-{
-    uint8 response[7];
+void Xcp_ProcessDaqCommand(uint8 ChannelId, const uint8* Data, uint8 Length);
+void Xcp_ProcessPgmCommand(uint8 ChannelId, const uint8* Data, uint8 Length);
+void Xcp_ClearDaqList(uint8 DaqListNumber);
+void Xcp_ResetDaqConfiguration(void);
+uint32 Xcp_GetTimestamp(void);
+
+/*==================================================================================================
+*                                    GLOBAL FUNCTIONS
+==================================================================================================*/
+#define XCP_START_SEC_CODE
+#include "MemMap.h"
+
+/**
+ * @brief Initializes the XCP module
+ */
 void Xcp_CmdClearDaqList(uint8 ChannelId, const uint8* Data)
 {
     uint16 daqListNumber;
@@ -455,6 +470,313 @@ void Xcp_CmdAllocOdtEntry(uint8 ChannelId, const uint8* Data)
 /**
  * @brief Handles ProgramStart command
  */
+void Xcp_CmdProgramStart(uint8 ChannelId)
+{
+    uint8 response[7];
+
+    /* Check if PGM is already running */
+    if (Xcp_PgmState != XCP_PGM_STATE_IDLE) {
+        Xcp_SendError(ChannelId, XCP_ERR_PGM_ACTIVE, 0U);
+        return;
+    }
+
+    /* Check resource protection */
+    if (Xcp_IsResourceProtected(XCP_RESOURCE_PGM)) {
+        Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
+        return;
+    }
+
+    Xcp_PgmState = XCP_PGM_STATE_STARTED;
+    Xcp_ChannelState[ChannelId].SessionStatus |= XCP_SESSION_PGM_RUNNING;
+
+    response[0] = 0U;  /* Reserved */
+    response[1] = 0U;  /* Comm mode PGM */
+    response[2] = XCP_MAX_CTO_PGM;  /* Max CTO */
+    response[3] = (uint8)(XCP_MAX_BS_PGM & 0xFFU);  /* Max BS (LSB) */
+    response[4] = (uint8)((XCP_MAX_BS_PGM >> 8) & 0xFFU);  /* Max BS (MSB) */
+    response[5] = XCP_MIN_ST_PGM;  /* Min ST */
+    response[6] = XCP_QUEUE_SIZE_PGM;  /* Queue size */
+
+    Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/**
+ * @brief Handles ProgramClear command
+ */
+void Xcp_CmdProgramClear(uint8 ChannelId, const uint8* Data)
+{
+    uint32 clearRange;
 
+    if (Xcp_PgmState == XCP_PGM_STATE_IDLE) {
+        Xcp_SendError(ChannelId, XCP_ERR_SEQUENCE, 0U);
+        return;
+    }
+
+    clearRange = ((uint32)Data[4]) |
+                 (((uint32)Data[5]) << 8) |
+                 (((uint32)Data[6]) << 16) |
+                 (((uint32)Data[7]) << 24);
+
+    /* In a real implementation, this would erase the flash sector */
+    XCP_UNUSED(clearRange);
+
+    Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
+}
+
+/**
+ * @brief Handles Program command
+ */
+void Xcp_CmdProgram(uint8 ChannelId, const uint8* Data, uint8 Length)
+{
+    uint8 dataLength;
+    uint8 i;
+
+    if (Xcp_PgmState == XCP_PGM_STATE_IDLE) {
+        Xcp_SendError(ChannelId, XCP_ERR_SEQUENCE, 0U);
+        return;
+    }
+
+    dataLength = Data[1];
+    if (dataLength > (Length - 2U)) {
+        Xcp_SendError(ChannelId, XCP_ERR_CMD_SYNTAX, 0U);
+        return;
+    }
+
+    Xcp_PgmState = XCP_PGM_STATE_PROGRAMMING;
+
+    /* Validate memory access */
+    if (!Xcp_ValidateMemoryAccess(Xcp_ChannelState[ChannelId].Mta.Address,
+                                   Xcp_ChannelState[ChannelId].Mta.Extension,
+                                   dataLength, XCP_MEMORY_ACCESS_WRITE)) {
+        Xcp_SendError(ChannelId, XCP_ERR_ACCESS_DENIED, 0U);
+        return;
+    }
+
+    /* Program memory (in real implementation, would call flash driver) */
+    for (i = 0U; i < dataLength; i++) {
+        if (Xcp_WriteMemory(Xcp_ChannelState[ChannelId].Mta.Address + i,
+                            Xcp_ChannelState[ChannelId].Mta.Extension,
+                            &Data[2U + i], 1U) != E_OK) {
+            Xcp_SendError(ChannelId, XCP_ERR_GENERIC, 0U);
+            return;
+        }
+    }
+
+    /* Update MTA */
+    Xcp_ChannelState[ChannelId].Mta.Address += dataLength;
+
+    /* Send response */
+    {
+        uint8 response[5];
+        response[0] = XCP_MAX_BS_PGM;  /* Max BS */
+        response[1] = XCP_MIN_ST_PGM;  /* Min ST */
+        response[2] = XCP_QUEUE_SIZE_PGM;  /* Queue size (LSB) */
+        response[3] = 0U;  /* Queue size */
+        response[4] = 0U;  /* Queue size (MSB) */
+        Xcp_SendResponse(ChannelId, response, 5U);
+    }
+}
+
+/**
+ * @brief Handles ProgramReset command
+ */
+void Xcp_CmdProgramReset(uint8 ChannelId)
+{
+    /* Stop PGM session */
+    Xcp_PgmState = XCP_PGM_STATE_IDLE;
+    Xcp_ChannelState[ChannelId].SessionStatus &= ~XCP_SESSION_PGM_RUNNING;
+
+    Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
+
+    /* In a real implementation, this might trigger ECU reset */
+}
+
+/**
+ * @brief Handles ProgramVerify command
+ */
+void Xcp_CmdProgramVerify(uint8 ChannelId, const uint8* Data)
+{
+    uint16 verifyLength;
+    uint8 verifyType;
+
+    if (Xcp_PgmState == XCP_PGM_STATE_IDLE) {
+        Xcp_SendError(ChannelId, XCP_ERR_SEQUENCE, 0U);
+        return;
+    }
+
+    verifyType = Data[1];
+    verifyLength = (uint16)Data[2] | ((uint16)Data[3] << 8);
+
+    XCP_UNUSED(verifyType);
+    XCP_UNUSED(verifyLength);
+
+    /* In a real implementation, this would verify the programmed data */
+
+    Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
+}
+
+/*==================================================================================================
+*                                    DAQ PROCESSING
+==================================================================================================*/
+
+/**
+ * @brief DAQ processor - called periodically
+ */
+void Xcp_ProcessDaqCommand(uint8 ChannelId, const uint8* Data, uint8 Length)
+{
+    uint8 cmd;
+
+    XCP_UNUSED(Length);
+
+    cmd = Data[0];
+
+    /* Check DAQ resource protection */
+    if (Xcp_IsResourceProtected(XCP_RESOURCE_DAQ)) {
+        Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
+        return;
+    }
+
+    switch (cmd) {
+        case XCP_CMD_CLEAR_DAQ_LIST:
+            Xcp_CmdClearDaqList(ChannelId, Data);
+            break;
+        case XCP_CMD_SET_DAQ_PTR:
+            Xcp_CmdSetDaqPtr(ChannelId, Data);
+            break;
+        case XCP_CMD_WRITE_DAQ:
+            Xcp_CmdWriteDaq(ChannelId, Data);
+            break;
+        case XCP_CMD_SET_DAQ_LIST_MODE:
+            Xcp_CmdSetDaqListMode(ChannelId, Data);
+            break;
+        case XCP_CMD_GET_DAQ_LIST_MODE:
+            Xcp_CmdGetDaqListMode(ChannelId, Data);
+            break;
+        case XCP_CMD_START_STOP_DAQ_LIST:
+            Xcp_CmdStartStopDaqList(ChannelId, Data);
+            break;
+        case XCP_CMD_START_STOP_SYNCH:
+            Xcp_CmdStartStopSynch(ChannelId, Data);
+            break;
+        case XCP_CMD_GET_DAQ_PROCESSOR_INFO:
+            Xcp_CmdGetDaqProcessorInfo(ChannelId);
+            break;
+        case XCP_CMD_GET_DAQ_RESOLUTION_INFO:
+            Xcp_CmdGetDaqResolutionInfo(ChannelId);
+            break;
+        case XCP_CMD_GET_DAQ_LIST_INFO:
+            Xcp_CmdGetDaqListInfo(ChannelId, Data);
+            break;
+        case XCP_CMD_FREE_DAQ:
+            Xcp_CmdFreeDaq(ChannelId);
+            break;
+        case XCP_CMD_ALLOC_DAQ:
+            Xcp_CmdAllocDaq(ChannelId, Data);
+            break;
+        case XCP_CMD_ALLOC_ODT:
+            Xcp_CmdAllocOdt(ChannelId, Data);
+            break;
+        case XCP_CMD_ALLOC_ODT_ENTRY:
+            Xcp_CmdAllocOdtEntry(ChannelId, Data);
+            break;
+        default:
+            Xcp_SendError(ChannelId, XCP_ERR_CMD_UNKNOWN, 0U);
+            break;
+    }
+}
+
+/**
+ * @brief Process PGM commands
+ */
+void Xcp_ProcessPgmCommand(uint8 ChannelId, const uint8* Data, uint8 Length)
+{
+    uint8 cmd;
+
+    cmd = Data[0];
+
+    /* Check PGM resource protection */
+    if (Xcp_IsResourceProtected(XCP_RESOURCE_PGM)) {
+        Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
+        return;
+    }
+
+    switch (cmd) {
+        case XCP_CMD_PROGRAM_START:
+            Xcp_CmdProgramStart(ChannelId);
+            break;
+        case XCP_CMD_PROGRAM_CLEAR:
+            Xcp_CmdProgramClear(ChannelId, Data);
+            break;
+        case XCP_CMD_PROGRAM:
+            Xcp_CmdProgram(ChannelId, Data, Length);
+            break;
+        case XCP_CMD_PROGRAM_RESET:
+            Xcp_CmdProgramReset(ChannelId);
+            break;
+        case XCP_CMD_PROGRAM_VERIFY:
+            Xcp_CmdProgramVerify(ChannelId, Data);
+            break;
+        default:
+            Xcp_SendError(ChannelId, XCP_ERR_CMD_UNKNOWN, 0U);
+            break;
+    }
+}
+
+/**
+ * @brief Calculate checksum
+ */
+void Xcp_ClearDaqList(uint8 DaqListNumber)
+{
+    uint8 odt;
+    uint8 entry;
+
+    if (DaqListNumber >= XCP_MAX_DAQ_LISTS) {
+        return;
+    }
+
+    Xcp_DaqLists[DaqListNumber].State = XCP_DAQ_STATE_STOPPED;
+    Xcp_DaqLists[DaqListNumber].Mode = 0U;
+    Xcp_DaqLists[DaqListNumber].Prescaler = 1U;
+
+    for (odt = 0U; odt < XCP_MAX_ODTS_PER_DAQ; odt++) {
+        Xcp_Odts[DaqListNumber][odt].NumEntries = 0U;
+
+        for (entry = 0U; entry < XCP_MAX_ODT_ENTRIES_PER_ODT; entry++) {
+            Xcp_OdtEntries[DaqListNumber][odt][entry].IsValid = FALSE;
+        }
+    }
+}
+
+/**
+ * @brief Reset DAQ configuration
+ */
+void Xcp_ResetDaqConfiguration(void)
+{
+    uint8 daq;
+
+    for (daq = 0U; daq < XCP_MAX_DAQ_LISTS; daq++) {
+        Xcp_ClearDaqList(daq);
+        Xcp_DaqLists[daq].NumOdts = 0U;
+        Xcp_DaqLists[daq].IsAllocated = FALSE;
+    }
+
+    Xcp_DaqPtr.DaqListNumber = 0U;
+    Xcp_DaqPtr.OdtNumber = 0U;
+    Xcp_DaqPtr.OdtEntryNumber = 0U;
+}
+
+/**
+ * @brief Get timestamp
+ */
+uint32 Xcp_GetTimestamp(void)
+{
+    /* In a real implementation, this would read a hardware timer */
+    /* For now, return a simple counter */
+    static uint32 counter = 0U;
+    return counter++;
+}
+
+#define XCP_STOP_SEC_CODE
+#include "MemMap.h"
+#define XCP_STOP_SEC_CODE
+#include "MemMap.h"

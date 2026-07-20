@@ -1,10 +1,562 @@
 /*==================================================================================================
- * NVM 主函数/批量操作实现
+ * NvM 作业处理实现
  * 自动拆分自 NvM.c
  *================================================================================================*/
 #define NVM_START_SEC_CODE
 #include "MemMap.h"
+#include "MemIf.h"
 
+Std_ReturnType NvM_QueuePush(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, const NvM_JobQueueEntryType* Entry);
+Std_ReturnType NvM_QueuePop(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, NvM_JobQueueEntryType* Entry);
+boolean NvM_QueueIsEmpty(uint8 Count);
+boolean NvM_QueueIsFull(uint8 Count, uint8 MaxSize);
+
+const NvM_BlockDescriptorType* NvM_GetBlockDescriptor(NvM_BlockIdType BlockId);
+void NvM_ProcessReadJob(NvM_JobQueueEntryType* JobPtr);
+void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr);
+void NvM_ProcessRestoreJob(NvM_JobQueueEntryType* JobPtr);
+void NvM_ProcessEraseJob(NvM_JobQueueEntryType* JobPtr);
+void NvM_ProcessInvalidateJob(NvM_JobQueueEntryType* JobPtr);
+
+void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr);
+void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr);
+Std_ReturnType NvM_QueuePush(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, const NvM_JobQueueEntryType* Entry)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if ((Queue != NULL_PTR) && (Head != NULL_PTR) && (Tail != NULL_PTR) && (Count != NULL_PTR) && (Entry != NULL_PTR))
+    {
+        if (*Count < MaxSize)
+        {
+            Queue[*Tail] = *Entry;
+            *Tail = (*Tail + 1U) % MaxSize;
+            (*Count)++;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+/**
+ * @brief   Pop job from queue
+ */
+Std_ReturnType NvM_QueuePop(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, NvM_JobQueueEntryType* Entry)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    if ((Queue != NULL_PTR) && (Head != NULL_PTR) && (Tail != NULL_PTR) && (Count != NULL_PTR) && (Entry != NULL_PTR))
+    {
+        if (*Count > 0U)
+        {
+            *Entry = Queue[*Head];
+            *Head = (*Head + 1U) % MaxSize;
+            (*Count)--;
+            result = E_OK;
+        }
+    }
+
+    return result;
+}
+/**
+ * @brief   Check if queue is empty
+ */
+boolean NvM_QueueIsEmpty(uint8 Count)
+{
+    return (Count == 0U) ? TRUE : FALSE;
+}
+/**
+ * @brief   Check if queue is full
+ */
+boolean NvM_QueueIsFull(uint8 Count, uint8 MaxSize)
+{
+    return (Count >= MaxSize) ? TRUE : FALSE;
+}
+/**
+ * @brief   Get block descriptor for given block ID
+ */
+const NvM_BlockDescriptorType* NvM_GetBlockDescriptor(NvM_BlockIdType BlockId)
+{
+    const NvM_BlockDescriptorType* result = NULL_PTR;
+    uint8 i;
+
+    if (NvM_InternalState.ConfigPtr != NULL_PTR)
+    {
+        for (i = 0U; i < NvM_InternalState.ConfigPtr->NumBlockDescriptors; i++)
+        {
+            if (NvM_InternalState.ConfigPtr->BlockDescriptors[i].BlockId == BlockId)
+            {
+                result = &NvM_InternalState.ConfigPtr->BlockDescriptors[i];
+                break;
+            }
+        }
+    }
+
+    return result;
+}
+/**
+ * @brief   Validate block ID
+ */
+void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr)
+{
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType memIfResult;
+    uint16 blockNumber;
+    uint16 readLength;
+
+    if (JobPtr != NULL_PTR)
+    {
+        blockDesc = NvM_GetBlockDescriptor(JobPtr->BlockId);
+
+        if (blockDesc != NULL_PTR)
+        {
+            blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
+            readLength = blockDesc->NvBlockLength;
+
+            if (blockDesc->BlockUseCrc == TRUE)
+            {
+                readLength += NvM_GetCrcSize(blockDesc->CrcType);
+            }
+
+            /* Call MemIf to read from NV memory */
+            memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U,
+                                     (uint8*)JobPtr->DataPtr, readLength);
+
+            if (memIfResult == E_OK)
+            {
+                JobPtr->JobState = NVM_JOB_STATE_PROCESSING;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 1U;
+            }
+            else
+            {
+                /* Read failed immediately, try next copy or ROM fallback */
+                if (JobPtr->CopyIndex == 0U)
+                {
+                    JobPtr->CopyIndex = 1U;
+                    NvM_ReadRedundantBlock(JobPtr);
+                }
+                else
+                {
+                    NvM_CopyRomDataToRam(JobPtr->BlockId, JobPtr->DataPtr);
+                    JobPtr->Result = NVM_REQ_RESTORED_FROM_ROM;
+                    JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_RESTORED_FROM_ROM;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+                }
+            }
+        }
+    }
+}
+/**
+ * @brief   Process read job
+ */
+void NvM_ProcessReadJob(NvM_JobQueueEntryType* JobPtr)
+{
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType memIfResult;
+    uint16 blockNumber;
+    uint16 readLength;
+
+    if (JobPtr != NULL_PTR)
+    {
+        blockDesc = NvM_GetBlockDescriptor(JobPtr->BlockId);
+
+        if (blockDesc != NULL_PTR)
+        {
+            if (blockDesc->ManagementType == NVM_BLOCK_REDUNDANT)
+            {
+                JobPtr->CopyIndex = 0U;
+                NvM_ReadRedundantBlock(JobPtr);
+            }
+            else
+            {
+                if (blockDesc->ManagementType == NVM_BLOCK_DATASET)
+                {
+                    blockNumber = blockDesc->BlockBaseNumber + NvM_InternalState.BlockStates[JobPtr->BlockId].DataIndex;
+                }
+                else
+                {
+                    blockNumber = blockDesc->BlockBaseNumber;
+                }
+
+                readLength = blockDesc->NvBlockLength;
+                if (blockDesc->BlockUseCrc == TRUE)
+                {
+                    readLength += NvM_GetCrcSize(blockDesc->CrcType);
+                }
+
+                /* Call MemIf to read from NV memory */
+                memIfResult = MemIf_Read(blockDesc->DeviceId, blockNumber, 0U,
+                                         (uint8*)JobPtr->DataPtr, readLength);
+
+                if (memIfResult == E_OK)
+                {
+                    JobPtr->JobState = NVM_JOB_STATE_PROCESSING;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 1U;
+                }
+                else
+                {
+                    /* Read failed immediately, try to restore from ROM */
+                    NvM_CopyRomDataToRam(JobPtr->BlockId, JobPtr->DataPtr);
+                    JobPtr->Result = NVM_REQ_RESTORED_FROM_ROM;
+                    JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_RESTORED_FROM_ROM;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+                }
+            }
+        }
+        else
+        {
+            JobPtr->Result = NVM_REQ_NOT_OK;
+            JobPtr->JobState = NVM_JOB_STATE_IDLE;
+        }
+    }
+}
+/**
+ * @brief   Process redundant block write (first or second copy)
+ */
+void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr)
+{
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType memIfResult;
+    uint16 blockNumber;
+    uint8 crcSize;
+    uint32 calcCrc;
+
+    if (JobPtr != NULL_PTR)
+    {
+        blockDesc = NvM_GetBlockDescriptor(JobPtr->BlockId);
+
+        if (blockDesc != NULL_PTR)
+        {
+            blockNumber = blockDesc->BlockBaseNumber + JobPtr->CopyIndex;
+
+            /* Append CRC if configured */
+            if ((blockDesc->BlockUseCrc == TRUE) && (blockDesc->CrcType != NVM_CRC_NONE))
+            {
+                crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+                calcCrc = NvM_CalculateCrc(JobPtr->DataPtr, blockDesc->NvBlockLength, blockDesc->CrcType);
+
+                if (crcSize == 1U)
+                {
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)calcCrc;
+                }
+                else if (crcSize == 2U)
+                {
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 8U);
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)calcCrc;
+                }
+                else if (crcSize == 4U)
+                {
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 24U);
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)(calcCrc >> 16U);
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 2U] = (uint8)(calcCrc >> 8U);
+                    ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 3U] = (uint8)calcCrc;
+                }
+                else
+                {
+                    /* No action needed */
+                }
+            }
+
+            /* Call MemIf to write to NV memory */
+            memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber,
+                                      (uint8*)JobPtr->DataPtr);
+
+            if (memIfResult == E_OK)
+            {
+                JobPtr->JobState = NVM_JOB_STATE_PROCESSING;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 1U;
+            }
+            else
+            {
+                /* Write failed immediately */
+                if (JobPtr->CopyIndex == 0U)
+                {
+                    JobPtr->CopyIndex = 1U;
+                    NvM_WriteRedundantBlock(JobPtr);
+                }
+                else
+                {
+                    JobPtr->Result = NVM_REQ_NOT_OK;
+                    JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_NOT_OK;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+                }
+            }
+        }
+    }
+}
+/**
+ * @brief   Process write job
+ */
+void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr)
+{
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType memIfResult;
+    uint16 blockNumber;
+    uint8 crcSize;
+    uint32 calcCrc;
+
+    if (JobPtr != NULL_PTR)
+    {
+        blockDesc = NvM_GetBlockDescriptor(JobPtr->BlockId);
+
+        if (blockDesc != NULL_PTR)
+        {
+            if (blockDesc->ManagementType == NVM_BLOCK_REDUNDANT)
+            {
+                JobPtr->CopyIndex = 0U;
+                NvM_WriteRedundantBlock(JobPtr);
+            }
+            else
+            {
+                if (blockDesc->ManagementType == NVM_BLOCK_DATASET)
+                {
+                    blockNumber = blockDesc->BlockBaseNumber + NvM_InternalState.BlockStates[JobPtr->BlockId].DataIndex;
+                }
+                else
+                {
+                    blockNumber = blockDesc->BlockBaseNumber;
+                }
+
+                /* Append CRC if configured */
+                if ((blockDesc->BlockUseCrc == TRUE) && (blockDesc->CrcType != NVM_CRC_NONE))
+                {
+                    crcSize = NvM_GetCrcSize(blockDesc->CrcType);
+                    calcCrc = NvM_CalculateCrc(JobPtr->DataPtr, blockDesc->NvBlockLength, blockDesc->CrcType);
+
+                    if (crcSize == 1U)
+                    {
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)calcCrc;
+                    }
+                    else if (crcSize == 2U)
+                    {
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 8U);
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)calcCrc;
+                    }
+                    else if (crcSize == 4U)
+                    {
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength] = (uint8)(calcCrc >> 24U);
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 1U] = (uint8)(calcCrc >> 16U);
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 2U] = (uint8)(calcCrc >> 8U);
+                        ((uint8*)JobPtr->DataPtr)[blockDesc->NvBlockLength + 3U] = (uint8)calcCrc;
+                    }
+                    else
+                    {
+                        /* No action needed */
+                    }
+                }
+
+                /* Call MemIf to write to NV memory */
+                memIfResult = MemIf_Write(blockDesc->DeviceId, blockNumber,
+                                          (uint8*)JobPtr->DataPtr);
+
+                if (memIfResult == E_OK)
+                {
+                    JobPtr->JobState = NVM_JOB_STATE_PROCESSING;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 1U;
+                }
+                else
+                {
+                    JobPtr->Result = NVM_REQ_NOT_OK;
+                    JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_NOT_OK;
+                    NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+                }
+            }
+        }
+        else
+        {
+            JobPtr->Result = NVM_REQ_NOT_OK;
+            JobPtr->JobState = NVM_JOB_STATE_IDLE;
+        }
+    }
+}
+/**
+ * @brief   Process restore job
+ */
+void NvM_ProcessRestoreJob(NvM_JobQueueEntryType* JobPtr)
+{
+    if (JobPtr != NULL_PTR)
+    {
+        /* Copy ROM data to RAM */
+        NvM_CopyRomDataToRam(JobPtr->BlockId, JobPtr->DataPtr);
+
+        JobPtr->Result = NVM_REQ_OK;
+        JobPtr->JobState = NVM_JOB_STATE_IDLE;
+        NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_OK;
+        NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+    }
+}
+
+/**
+ * @brief   Process erase job
+ */
+void NvM_ProcessEraseJob(NvM_JobQueueEntryType* JobPtr)
+{
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType memIfResult;
+    uint16 blockNumber;
+
+    if (JobPtr != NULL_PTR)
+    {
+        blockDesc = NvM_GetBlockDescriptor(JobPtr->BlockId);
+
+        if (blockDesc != NULL_PTR)
+        {
+            if (blockDesc->ManagementType == NVM_BLOCK_DATASET)
+            {
+                blockNumber = blockDesc->BlockBaseNumber + NvM_InternalState.BlockStates[JobPtr->BlockId].DataIndex;
+            }
+            else
+            {
+                blockNumber = blockDesc->BlockBaseNumber;
+            }
+
+            memIfResult = MemIf_EraseImmediateBlock(blockDesc->DeviceId, blockNumber);
+
+            if (memIfResult == E_OK)
+            {
+                JobPtr->JobState = NVM_JOB_STATE_PROCESSING;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 1U;
+            }
+            else
+            {
+                JobPtr->Result = NVM_REQ_NOT_OK;
+                JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_NOT_OK;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+            }
+        }
+        else
+        {
+            JobPtr->Result = NVM_REQ_NOT_OK;
+            JobPtr->JobState = NVM_JOB_STATE_IDLE;
+        }
+    }
+}
+
+/**
+ * @brief   Process invalidate job
+ */
+void NvM_ProcessInvalidateJob(NvM_JobQueueEntryType* JobPtr)
+{
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType memIfResult;
+    uint16 blockNumber;
+
+    if (JobPtr != NULL_PTR)
+    {
+        blockDesc = NvM_GetBlockDescriptor(JobPtr->BlockId);
+
+        if (blockDesc != NULL_PTR)
+        {
+            if (blockDesc->ManagementType == NVM_BLOCK_DATASET)
+            {
+                blockNumber = blockDesc->BlockBaseNumber + NvM_InternalState.BlockStates[JobPtr->BlockId].DataIndex;
+            }
+            else
+            {
+                blockNumber = blockDesc->BlockBaseNumber;
+            }
+
+            memIfResult = MemIf_InvalidateBlock(blockDesc->DeviceId, blockNumber);
+
+            if (memIfResult == E_OK)
+            {
+                JobPtr->JobState = NVM_JOB_STATE_PROCESSING;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 1U;
+            }
+            else
+            {
+                JobPtr->Result = NVM_REQ_NOT_OK;
+                JobPtr->JobState = NVM_JOB_STATE_IDLE;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].LastResult = NVM_REQ_NOT_OK;
+                NvM_InternalState.BlockStates[JobPtr->BlockId].JobPending = 0U;
+            }
+        }
+        else
+        {
+            JobPtr->Result = NVM_REQ_NOT_OK;
+            JobPtr->JobState = NVM_JOB_STATE_IDLE;
+        }
+    }
+}
+
+/**
+ * @brief   Cancel all jobs for a given BlockId in a queue
+ */
+void NvM_QueueCancelJobs(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, NvM_BlockIdType BlockId)
+{
+    uint8 tempCount;
+    uint8 i;
+    NvM_JobQueueEntryType tempEntries[NVM_SIZE_STANDARD_JOB_QUEUE];
+    boolean canceled = FALSE;
+
+    tempCount = *Count;
+
+    for (i = 0U; i < tempCount; i++)
+    {
+        (void)NvM_QueuePop(Queue, Head, Tail, Count, MaxSize, &tempEntries[i]);
+    }
+
+    for (i = 0U; i < tempCount; i++)
+    {
+        if (tempEntries[i].BlockId == BlockId)
+        {
+            canceled = TRUE;
+        }
+        else
+        {
+            (void)NvM_QueuePush(Queue, Head, Tail, Count, MaxSize, &tempEntries[i]);
+        }
+    }
+
+    if (canceled == TRUE)
+    {
+        NvM_InternalState.BlockStates[BlockId].JobPending = 0U;
+    }
+}
+
+/**
+ * @brief   Update batch operation status after a job completes
+ */
+void NvM_UpdateBatchOperationStatus(uint8 JobType)
+{
+    if ((NvM_InternalState.ReadAllInProgress == TRUE) && (JobType == NVM_JOB_TYPE_READ))
+    {
+        if (NvM_InternalState.ReadAllPendingCount > 0U)
+        {
+            NvM_InternalState.ReadAllPendingCount--;
+        }
+        if (NvM_InternalState.ReadAllPendingCount == 0U)
+        {
+            NvM_InternalState.ReadAllInProgress = FALSE;
+        }
+    }
+
+    if ((NvM_InternalState.WriteAllInProgress == TRUE) && (JobType == NVM_JOB_TYPE_WRITE))
+    {
+        if (NvM_InternalState.WriteAllPendingCount > 0U)
+        {
+            NvM_InternalState.WriteAllPendingCount--;
+        }
+        if (NvM_InternalState.WriteAllPendingCount == 0U)
+        {
+            NvM_InternalState.WriteAllInProgress = FALSE;
+        }
+    }
+}
+
+/*==================================================================================================
+*                                      GLOBAL FUNCTIONS
+==================================================================================================*/
+
+/**
+ * @brief   Initializes the NvM module
+ * @param   ConfigPtr - Pointer to configuration structure
+ * @return  None
+ */
 void NvM_MainFunction(void)
 {
     NvM_JobQueueEntryType jobEntry;
@@ -229,7 +781,7 @@ void NvM_MainFunction(void)
                                     {
                                         NvM_InternalState.CurrentJob->CopyIndex = 1U;
                                         NvM_ReadRedundantBlock(NvM_InternalState.CurrentJob);
-                                        /* REDUNDANT: jobComplete = FALSE; */
+/* [MISRA Advisory] Redundant:                                         jobComplete = FALSE; */
                                     }
                                     else
                                     {
@@ -444,243 +996,5 @@ void NvM_MainFunction(void)
         /* NVM_STATE_UNINIT - do nothing */
     }
 }
-
-/**
- * @brief   Read all permanent RAM blocks from NV memory (startup recovery)
- * @return  E_OK if request accepted, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_ReadAll(void)
-{
-    Std_ReturnType result = E_OK;
-    const NvM_BlockDescriptorType* blockDesc;
-    uint16 i;
-
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_READALL, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-#endif
-
-    if (NvM_InternalState.ReadAllInProgress == TRUE)
-    {
-        return E_NOT_OK;
-    }
-
-    for (i = 0U; i < NvM_InternalState.ConfigPtr->NumBlockDescriptors; i++)
-    {
-        blockDesc = &NvM_InternalState.ConfigPtr->BlockDescriptors[i];
-
-        if (blockDesc->RamBlockData != NULL_PTR)
-        {
-            if (NvM_ReadBlock(blockDesc->BlockId, blockDesc->RamBlockData) == E_OK)
-            {
-                NvM_InternalState.ReadAllPendingCount++;
-            }
-            else
-            {
-                result = E_NOT_OK;
-            }
-        }
-    }
-
-    if (NvM_InternalState.ReadAllPendingCount > 0U)
-    {
-        NvM_InternalState.ReadAllInProgress = TRUE;
-    }
-
-    return result;
-}
-
-/**
- * @brief   Write all dirty permanent RAM blocks to NV memory (shutdown flush)
- * @return  E_OK if request accepted, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_WriteAll(void)
-{
-    Std_ReturnType result = E_OK;
-    const NvM_BlockDescriptorType* blockDesc;
-    uint16 i;
-
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_WRITEALL, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-#endif
-
-    if (NvM_InternalState.WriteAllInProgress == TRUE)
-    {
-        return E_NOT_OK;
-    }
-
-    for (i = 0U; i < NvM_InternalState.ConfigPtr->NumBlockDescriptors; i++)
-    {
-        blockDesc = &NvM_InternalState.ConfigPtr->BlockDescriptors[i];
-
-        if ((blockDesc->RamBlockData != NULL_PTR) &&
-            (NvM_InternalState.BlockStates[blockDesc->BlockId].DataChanged == TRUE))
-        {
-            if (NvM_WriteBlock(blockDesc->BlockId, blockDesc->RamBlockData) == E_OK)
-            {
-                NvM_InternalState.WriteAllPendingCount++;
-            }
-            else
-            {
-                result = E_NOT_OK;
-            }
-        }
-    }
-
-    if (NvM_InternalState.WriteAllPendingCount > 0U)
-    {
-        NvM_InternalState.WriteAllInProgress = TRUE;
-    }
-
-    return result;
-}
-
-/**
- * @brief   Read a permanent RAM block (uses configured RamBlockData)
- * @param   BlockId - Block identifier
- * @return  E_OK if request accepted, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_ReadPRAMBlock(NvM_BlockIdType BlockId)
-{
-    const NvM_BlockDescriptorType* blockDesc;
-
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_READPRAMBLOCK, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-
-    if (NvM_ValidateBlockId(BlockId) != E_OK)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_READPRAMBLOCK, NVM_E_PARAM_BLOCK_ID);
-        return E_NOT_OK;
-    }
-#endif
-
-    blockDesc = NvM_GetBlockDescriptor(BlockId);
-
-    if ((blockDesc == NULL_PTR) || (blockDesc->RamBlockData == NULL_PTR))
-    {
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-        NVM_DET_REPORT_ERROR(NVM_SID_READPRAMBLOCK, NVM_E_BLOCK_CONFIG);
-#endif
-        return E_NOT_OK;
-    }
-
-    return NvM_ReadBlock(BlockId, blockDesc->RamBlockData);
-}
-
-/**
- * @brief   Write a permanent RAM block (uses configured RamBlockData)
- * @param   BlockId - Block identifier
- * @return  E_OK if request accepted, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_WritePRAMBlock(NvM_BlockIdType BlockId)
-{
-    const NvM_BlockDescriptorType* blockDesc;
-
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_WRITEPRAMBLOCK, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-
-    if (NvM_ValidateBlockId(BlockId) != E_OK)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_WRITEPRAMBLOCK, NVM_E_PARAM_BLOCK_ID);
-        return E_NOT_OK;
-    }
-#endif
-
-    blockDesc = NvM_GetBlockDescriptor(BlockId);
-
-    if ((blockDesc == NULL_PTR) || (blockDesc->RamBlockData == NULL_PTR))
-    {
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-        NVM_DET_REPORT_ERROR(NVM_SID_WRITEPRAMBLOCK, NVM_E_BLOCK_CONFIG);
-#endif
-        return E_NOT_OK;
-    }
-
-    return NvM_WriteBlock(BlockId, blockDesc->RamBlockData);
-}
-
-/**
- * @brief   Cancel all pending jobs for a block
- * @param   BlockId - Block identifier
- * @return  E_OK if successful, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_CancelJobs(NvM_BlockIdType BlockId)
-{
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_CANCELJOBS, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-
-    if (NvM_ValidateBlockId(BlockId) != E_OK)
-    {
-        NVM_DET_REPORT_ERROR(NVM_SID_CANCELJOBS, NVM_E_PARAM_BLOCK_ID);
-        return E_NOT_OK;
-    }
-#endif
-
-    /* Cancel pending jobs in standard queue */
-    NvM_QueueCancelJobs(NvM_InternalState.StandardQueue,
-                        &NvM_InternalState.StandardQueueHead,
-                        &NvM_InternalState.StandardQueueTail,
-                        &NvM_InternalState.StandardQueueCount,
-                        NVM_SIZE_STANDARD_JOB_QUEUE,
-                        BlockId);
-
-    /* Cancel pending jobs in immediate queue */
-    NvM_QueueCancelJobs(NvM_InternalState.ImmediateQueue,
-                        &NvM_InternalState.ImmediateQueueHead,
-                        &NvM_InternalState.ImmediateQueueTail,
-                        &NvM_InternalState.ImmediateQueueCount,
-                        NVM_SIZE_IMMEDIATE_JOB_QUEUE,
-                        BlockId);
-
-    /* If current job matches, mark result as canceled */
-    if ((NvM_InternalState.CurrentJob != NULL_PTR) &&
-        (NvM_InternalState.CurrentJob->BlockId == BlockId))
-    {
-        NvM_InternalState.CurrentJob->Result = NVM_REQ_CANCELED;
-        NvM_InternalState.BlockStates[BlockId].LastResult = NVM_REQ_CANCELED;
-    }
-
-    /* REDUNDANT: NvM_InternalState.BlockStates[BlockId].LastResult = NVM_REQ_CANCELED; */
-
-    return E_OK;
-}
-
-/**
- * @brief   Kill WriteAll operation
- */
-void NvM_KillWriteAll(void)
-{
-    NvM_InternalState.KillWriteAllRequested = TRUE;
-}
-
-/**
- * @brief   Kill ReadAll operation
- */
-void NvM_KillReadAll(void)
-{
-    NvM_InternalState.KillReadAllRequested = TRUE;
-}
-
-
-
 #define NVM_STOP_SEC_CODE
 #include "MemMap.h"

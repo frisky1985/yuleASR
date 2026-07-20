@@ -1,7 +1,14 @@
 /*==================================================================================================
- * XCP 命令处理实现 — 被 Xcp.c 聚合
+ * XCP 标准命令处理实现
+ * 自动拆分自 Xcp.c
  *================================================================================================*/
+#define XCP_START_SEC_CODE
+#include "MemMap.h"
 
+void Xcp_ProcessStandardCommand(uint8 ChannelId, const uint8* Data, uint8 Length);
+uint32 Xcp_GetTimestamp(void);
+uint16 Xcp_CalculateChecksum(const uint8* Data, uint32 Length);
+boolean Xcp_ValidateMemoryAccess(uint32 Addr, uint8 Ext, uint32 Length, uint8 AccessType);
 void Xcp_CmdConnect(uint8 ChannelId, const uint8* Data, uint8 Length)
 {
     uint8 response[7];
@@ -410,6 +417,104 @@ void Xcp_CmdUnlock(uint8 ChannelId, const uint8* Data, uint8 Length)
 /**
  * @brief Handles ClearDaqList command
  */
+void Xcp_ProcessStandardCommand(uint8 ChannelId, const uint8* Data, uint8 Length)
+{
+    uint8 cmd;
+
+    cmd = Data[0];
+
+    switch (cmd) {
+        case XCP_CMD_CONNECT:
+            Xcp_CmdConnect(ChannelId, Data, Length);
+            break;
+        case XCP_CMD_DISCONNECT:
+            Xcp_CmdDisconnect(ChannelId);
+            break;
+        case XCP_CMD_GET_STATUS:
+            Xcp_CmdGetStatus(ChannelId);
+            break;
+        case XCP_CMD_GET_COMM_MODE_INFO:
+            Xcp_CmdGetCommModeInfo(ChannelId);
+            break;
+        case XCP_CMD_GET_ID:
+            Xcp_CmdGetId(ChannelId, Data, Length);
+            break;
+        case XCP_CMD_SET_MTA:
+            Xcp_CmdSetMta(ChannelId, Data);
+            break;
+        case XCP_CMD_UPLOAD:
+            Xcp_CmdUpload(ChannelId, Data);
+            break;
+        case XCP_CMD_SHORT_UPLOAD:
+            Xcp_CmdShortUpload(ChannelId, Data);
+            break;
+        case XCP_CMD_DOWNLOAD:
+            Xcp_CmdDownload(ChannelId, Data, Length);
+            break;
+        case XCP_CMD_GET_SEED:
+            Xcp_CmdGetSeed(ChannelId, Data);
+            break;
+        case XCP_CMD_UNLOCK:
+            Xcp_CmdUnlock(ChannelId, Data, Length);
+            break;
+        default:
+            Xcp_SendError(ChannelId, XCP_ERR_CMD_UNKNOWN, 0U);
+            break;
+    }
 }
 
+/**
+ * @brief Process DAQ commands
+ */
+uint16 Xcp_CalculateChecksum(const uint8* Data, uint32 Length)
+{
+    uint32 i;
+    uint16 crc = 0xFFFFU;
+    uint8 j;
 
+    for (i = 0U; i < Length; i++) {
+        crc ^= ((uint16)Data[i] << 8);
+        for (j = 0U; j < 8U; j++) {
+            if (crc & 0x8000U) {
+                crc = (crc << 1) ^ 0x1021U;  /* CRC-16 CCITT polynomial */
+            }
+            else {
+                crc <<= 1;
+            }
+        }
+    }
+
+    return crc;
+}
+
+/**
+ * @brief Validate memory access
+ */
+boolean Xcp_ValidateMemoryAccess(uint32 Addr, uint8 Ext, uint32 Length, uint8 AccessType)
+{
+    uint32 endAddr;
+    uint8 i;
+
+    XCP_UNUSED(Ext);
+
+    endAddr = Addr + Length;
+
+    for (i = 0U; i < XCP_NUMBER_OF_MEMORY_RANGES; i++) {
+        uint32 rangeStart = Xcp_MemoryRanges[i].Address;
+        uint32 rangeEnd = rangeStart + XCP_MAX_PROGRAMMING_SECTOR_SIZE;  /* Simplified */
+
+        if ((Addr >= rangeStart) && (endAddr <= rangeEnd)) {
+            if ((Xcp_MemoryRanges[i].AccessFlags & AccessType) == AccessType) {
+                return TRUE;
+            }
+        }
+    }
+
+    return FALSE;
+}
+
+/**
+ * @brief Clear a DAQ list
+ */
+#define XCP_STOP_SEC_CODE
+#include "MemMap.h"
