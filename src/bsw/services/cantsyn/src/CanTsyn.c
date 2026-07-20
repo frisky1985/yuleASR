@@ -30,6 +30,7 @@
 #include "CanIf.h"
 #include "StbM.h"
 #include "Os.h"
+#include "Det.h"
 
 /*******************************************************************************
  * Local Definitions
@@ -137,7 +138,7 @@ static void CanTSyn_ProcessOfsMessage(
     const PduInfoType* PduInfoPtr);
 
 static Std_ReturnType CanTSyn_GetCurrentTime(
-    StbM_SynchronizedTimeBaseType TimeBaseId,
+    uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr);
 
@@ -442,7 +443,7 @@ static void CanTSyn_ProcessOfsMessage(
 }
 
 static Std_ReturnType CanTSyn_GetCurrentTime(
-    StbM_SynchronizedTimeBaseType TimeBaseId,
+    uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr)
 {

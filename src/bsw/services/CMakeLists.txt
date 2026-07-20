@@ -17,6 +17,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ethif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/canif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/linif/include
+    ${CMAKE_SOURCE_DIR}/config/input/services
 )
 
 # Collect all service include directories for cross-module dependencies
@@ -37,6 +38,9 @@ foreach(subdir ${SERVICES_SUBDIRS})
     
     # Filter out test files (_test.c, _Test.c)
     list(FILTER module_sources EXCLUDE REGEX ".*[_Tt]est\\.c$")
+    
+    # Exclude unity-build _impl.c files (included by parent Csm.c via #include)
+    list(FILTER module_sources EXCLUDE REGEX ".*_impl\\.c$")
     
     if(module_sources)
         set(target_name "service_${module_name}")

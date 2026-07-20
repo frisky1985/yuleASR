@@ -10,6 +10,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../os/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../services/det/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../rte/include
+    ${CMAKE_SOURCE_DIR}/config/input/mcal
 )
 
 # Get all submodule directories
@@ -20,6 +21,9 @@ foreach(subdir ${MCAL_SUBDIRS})
     
     # Collect source files
     file(GLOB_RECURSE module_sources ${subdir}/src/*.c)
+    
+    # Exclude unity-build _impl.c files (included by parent .c via #include)
+    list(FILTER module_sources EXCLUDE REGEX ".*_impl\\.c$")
     
     if(module_sources)
         # Create library with mcal_ prefix to avoid name conflicts

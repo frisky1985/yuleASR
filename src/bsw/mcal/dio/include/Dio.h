@@ -67,10 +67,19 @@ typedef uint8 Dio_PortType;
 typedef uint32 Dio_PortLevelType;
 
 /** @brief Type for the possible levels that a DIO channel can have */
+#ifndef STD_LOW
+#define STD_LOW_VAL 0
+#define STD_HIGH_VAL 1
 typedef enum {
     STD_LOW = 0,                /**< Physical state 0V */
     STD_HIGH = 1                /**< Physical state 5V or 3.3V */
 } Dio_LevelType;
+#else
+/* Std_Types.h already defines STD_LOW/STD_HIGH as macros — use int type instead */
+typedef uint8 Dio_LevelType;
+#define DIO_LOW   ((Dio_LevelType)0U)
+#define DIO_HIGH  ((Dio_LevelType)1U)
+#endif
 
 /** @brief Type for the definition of a channel group */
 typedef struct {

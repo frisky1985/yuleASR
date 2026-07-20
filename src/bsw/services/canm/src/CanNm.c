@@ -84,7 +84,7 @@ static void CanNm_ChangeState(CanNm_ChannelHandleType channel,
     /* Store old state for notification */
     Nm_StateType nmOldState = (Nm_StateType)oldState;
     Nm_StateType nmNewState = (Nm_StateType)newState;
-    Nm_ModeType (void)(Nm_ModeType)newMode;
+    (void)(Nm_ModeType)newMode;
     
     /* Update state and mode */
     chPtr->State = newState;
