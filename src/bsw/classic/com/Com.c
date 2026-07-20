@@ -28,7 +28,7 @@
 #error "Com.c: Major version mismatch"
 #endif
 
-#if (COM_SW_MINOR_VERSION != 0)
+#if (COM_SW_MINOR_VERSION != 0U )
 #error "Com.c: Minor version mismatch"
 #endif
 

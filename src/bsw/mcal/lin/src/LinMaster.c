@@ -137,7 +137,7 @@ LinMaster_StatusType LinMaster_Init(const LinMaster_ConfigType* ConfigPtr)
  */
 void LinMaster_DeInit(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return;
     }
     
@@ -237,7 +237,7 @@ static void LinMaster_ProcessError(LinMaster_ErrorType Error)
  */
 LinMaster_StatusType LinMaster_SendHeader(uint8 Pid)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     
@@ -273,7 +273,7 @@ LinMaster_StatusType LinMaster_SendFrame(
     uint8 Length,
     LinMaster_ChecksumType ChecksumType)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     
@@ -313,7 +313,7 @@ LinMaster_StatusType LinMaster_ReceiveFrame(
     uint8 ExpectedLength,
     LinMaster_ChecksumType ChecksumType)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     
@@ -346,7 +346,7 @@ LinMaster_StatusType LinMaster_ReceiveFrame(
  */
 LinMaster_StatusType LinMaster_SendBreak(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     
@@ -363,7 +363,7 @@ LinMaster_StatusType LinMaster_SendBreak(void)
  */
 LinMaster_StatusType LinMaster_SendSync(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     
@@ -380,7 +380,7 @@ LinMaster_StatusType LinMaster_SendSync(void)
  */
 void LinMaster_RxInterruptHandler(uint8 RxByte)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return;
     }
     
@@ -410,7 +410,7 @@ void LinMaster_RxInterruptHandler(uint8 RxByte)
                 
                 boolean isValid = (RxByte == calculatedChecksum) ? TRUE : FALSE;
                 
-                if (!isValid) {
+                if (isValid == 0U) {
                     LinMaster_ProcessError(LINMASTER_ERROR_CHECKSUM);
                     return;
                 }
@@ -441,7 +441,7 @@ void LinMaster_RxInterruptHandler(uint8 RxByte)
  */
 void LinMaster_TxCompleteInterruptHandler(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return;
     }
     
@@ -629,7 +629,7 @@ static uint8 LinMaster_CalculateChecksumInternal(const uint8* DataPtr, uint8 Len
     uint8 i;
     
     /* 如果有PID，加入增强校验和计算 */
-    if (Pid != 0) {
+    if (Pid != 0U ) {
         sum += Pid;
     }
     
@@ -652,7 +652,7 @@ static uint8 LinMaster_CalculateChecksumInternal(const uint8* DataPtr, uint8 Len
  */
 void LinMaster_MainFunction(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return;
     }
     
@@ -754,7 +754,7 @@ uint8 LinMaster_ExtractId(uint8 Pid)
  */
 LinMaster_StatusType LinMaster_SendWakeup(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     
@@ -774,7 +774,7 @@ LinMaster_StatusType LinMaster_SendWakeup(void)
  */
 LinMaster_StatusType LinMaster_GoToSleep(void)
 {
-    if (!LinMaster_IsInitialized) {
+    if (LinMaster_IsInitialized == 0U) {
         return LINMASTER_NOT_OK;
     }
     

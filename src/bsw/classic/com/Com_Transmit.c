@@ -891,7 +891,7 @@ static void Com_UpdateTxStatistics(boolean Success, boolean IsRetry)
         Com_TxStatistics.SuccessfulTransmissions++;
     } else {
         /* Only count as failure if not a retry attempt */
-        if (!IsRetry) {
+        if (IsRetry == 0U) {
             Com_TxStatistics.FailedTransmissions++;
         }
     }

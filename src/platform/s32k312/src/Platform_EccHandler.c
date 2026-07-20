@@ -194,8 +194,7 @@ Std_ReturnType Platform_EccHandler_Init(const Platform_EccHandlerConfigType* con
  */
 Std_ReturnType Platform_EccHandler_DeInit(void)
 {
-    if (!EccHandler_Initialized)
-    {
+    if (EccHandler_Initialized == 0U)     {
         return E_NOT_OK;
     }
     
@@ -318,8 +317,7 @@ void Platform_EccHandler_Isr(void)
  */
 Std_ReturnType Platform_EccHandler_RegisterCallback(Platform_EccErrorCallbackType callback)
 {
-    if (!EccHandler_Initialized)
-    {
+    if (EccHandler_Initialized == 0U)     {
         return E_NOT_OK;
     }
     
@@ -521,8 +519,7 @@ Std_ReturnType Platform_EccHandler_NotifyNvMDataCorruption(uint16 blockId, uint3
  */
 Std_ReturnType Platform_EccHandler_SetPolicy(uint8 errorType, uint8 policy)
 {
-    if (!EccHandler_Initialized)
-    {
+    if (EccHandler_Initialized == 0U)     {
         return E_NOT_OK;
     }
     

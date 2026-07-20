@@ -342,7 +342,7 @@ void Dio_LinTrcv_WakeUpNotification_Channel3(void)
  * Configuration Validation Checks
  ============================================================================*/
 
-#if (LINTRCV_NUM_CHANNELS == 0)
+#if (LINTRCV_NUM_CHANNELS == 0U )
 #error "At least one LIN transceiver channel must be configured"
 #endif
 

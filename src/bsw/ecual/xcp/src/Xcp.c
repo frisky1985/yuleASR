@@ -135,7 +135,7 @@ void Xcp_MainFunction(void)
  */
 void Xcp_RxIndication(const uint8 *data, uint16 length)
 {
-    if ((data == NULL) || (length == 0) || (length > XCP_CTO_SIZE)) {
+    if ((data == NULL) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
         return;
     }
 
@@ -152,7 +152,7 @@ void Xcp_ProcessCommand(const uint8 *cmd, uint8 len)
 {
     uint8 pid;
 
-    if ((cmd == NULL) || (len == 0)) {
+    if ((cmd == NULL) || (len == 0U )) {
         return;
     }
 
@@ -254,7 +254,7 @@ void Xcp_CmdConnect(const uint8 *cmd)
 {
     uint8 mode;
 
-    if (cmd[1] != 0) { /* Length check */ }
+    if (cmd[1] != 0U ) { /* Length check */ }
 
     mode = cmd[1]; /* Mode: normal or user defined */
     (void)mode;
@@ -911,7 +911,7 @@ uint8 Xcp_CopyCalPage(uint8 srcSeg, uint8 srcPage, uint8 destSeg, uint8 destPage
  */
 void Xcp_SendResponse(const uint8 *data, uint8 len)
 {
-    if ((data != NULL) && (len > 0) && (len <= XCP_CTO_SIZE)) {
+    if ((data != NULL) && (len > 0U ) && (len <= XCP_CTO_SIZE)) {
         Xcp_SendPacket(data, len);
     }
 }

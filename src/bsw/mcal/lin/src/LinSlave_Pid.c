@@ -33,7 +33,7 @@ uint8 LinSlave_CalculatePid(uint8 Id)
     Id = Id & 0x3F;
     
     /* 计算P0 - 奇校验位 */
-    P0 = ((Id >> 0) & 0x01) ^ 
+    P0 = ((Id >> 0U) & 0x01) ^ 
          ((Id >> 1) & 0x01) ^ 
          ((Id >> 2) & 0x01) ^ 
          ((Id >> 4) & 0x01);

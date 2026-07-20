@@ -316,7 +316,7 @@ static uint32_t UDP_Address_from_string(const char* ip_str) {
     
 #if defined(MICRODDS_PLATFORM_POSIX) || defined(MICRODDS_PLATFORM_FREERTOS)
     struct in_addr addr;
-    if (inet_aton(ip_str, &addr) == 0) {
+    if (inet_aton(ip_str, &addr) == 0U ) {
         return 0U;
     }
     return addr.s_addr;
@@ -422,7 +422,7 @@ static bool socket_bind(int sock, uint16_t port) {
     addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = host_to_network_16(port);
     
-    return (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) == 0);
+    return (bind(sock, (struct sockaddr*)&addr, sizeof(addr)) == 0U );
 }
 
 /**
@@ -443,7 +443,7 @@ static bool socket_set_nonblocking(int sock, bool non_blocking) {
         flags &= ~O_NONBLOCK;
     }
     
-    return (fcntl(sock, F_SETFL, flags) == 0);
+    return (fcntl(sock, F_SETFL, flags) == 0U );
 }
 
 /**
@@ -456,7 +456,7 @@ static bool socket_set_recv_timeout(int sock, uint32_t timeout_ms) {
     struct timeval tv;
     tv.tv_sec = (time_t)(timeout_ms / 1000U);
     tv.tv_usec = (suseconds_t)((timeout_ms % 1000U) * 1000U);
-    return (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) == 0);
+    return (setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) == 0U );
 }
 
 /**
@@ -481,7 +481,7 @@ static bool socket_join_multicast(int sock, uint32_t group_addr, uint32_t local_
     mreq.imr_multiaddr.s_addr = group_addr;
     mreq.imr_interface.s_addr = local_addr;
     
-    return (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == 0);
+    return (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) == 0U );
 }
 
 /**
@@ -496,7 +496,7 @@ static bool socket_leave_multicast(int sock, uint32_t group_addr, uint32_t local
     mreq.imr_multiaddr.s_addr = group_addr;
     mreq.imr_interface.s_addr = local_addr;
     
-    return (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq)) == 0);
+    return (setsockopt(sock, IPPROTO_IP, IP_DROP_MEMBERSHIP, &mreq, sizeof(mreq)) == 0U );
 }
 
 /**
@@ -506,7 +506,7 @@ static bool socket_leave_multicast(int sock, uint32_t group_addr, uint32_t local
  * @return true 成功
  */
 static bool socket_set_multicast_ttl(int sock, uint8_t ttl) {
-    return (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl)) == 0);
+    return (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_TTL, &ttl, sizeof(ttl)) == 0U );
 }
 
 /**
@@ -517,7 +517,7 @@ static bool socket_set_multicast_ttl(int sock, uint8_t ttl) {
  */
 static bool socket_set_multicast_loop(int sock, bool enable) {
     uint8_t loop = enable ? 1U : 0U;
-    return (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_LOOP, &loop, sizeof(loop)) == 0);
+    return (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_LOOP, &loop, sizeof(loop)) == 0U );
 }
 
 /**
@@ -559,7 +559,7 @@ static int socket_recvfrom(int sock, uint8_t* buffer, uint16_t buffer_size,
     ssize_t received = recvfrom(sock, buffer, buffer_size, 0,
                                 (struct sockaddr*)&addr, &addr_len);
     
-    if (received > 0) {
+    if (received > 0U ) {
         if (src_addr != NULL) {
             *src_addr = addr.sin_addr.s_addr;
         }
@@ -587,7 +587,7 @@ static bool socket_select_read(int sock, uint32_t timeout_ms) {
     tv.tv_usec = (suseconds_t)((timeout_ms % 1000U) * 1000U);
     
     int result = select(sock + 1, &read_fds, NULL, NULL, &tv);
-    return (result > 0) && FD_ISSET(sock, &read_fds);
+    return (result > 0U ) && FD_ISSET(sock, &read_fds);
 }
 
 #else
@@ -645,7 +645,7 @@ static bool PDP_verify_message(const uint8_t* data, uint16_t length) {
     return (header->magic[0] == 'P' &&
             header->magic[1] == 'D' &&
             header->magic[2] == 'P' &&
-            header->magic[3] == 0 &&
+            header->magic[3] == 0U &&
             header->version == 1);
 }
 
@@ -1055,7 +1055,7 @@ bool MicroDDS_UDP_Send(const uint8_t* data, uint16_t length) {
         int sent = socket_sendto(g_udp_transport.user_socket, data, length,
                                 g_udp_transport.peers[i].address,
                                 network_to_host_16(g_udp_transport.peers[i].port));
-        if (sent > 0) {
+        if (sent > 0U ) {
             any_sent = true;
             g_udp_transport.bytes_sent += (uint32_t)sent;
         }
@@ -1127,7 +1127,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         
         int received = socket_recvfrom(g_udp_transport.user_socket, buffer, buffer_size, &addr, &port);
         
-        if (received > 0) {
+        if (received > 0U ) {
             g_udp_transport.packets_received++;
             g_udp_transport.bytes_received += (uint32_t)received;
             
@@ -1149,7 +1149,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         
         int received = socket_recvfrom(g_udp_transport.discovery_socket, pdp_buffer, sizeof(pdp_buffer), &src_addr, NULL);
         
-        if (received > 0) {
+        if (received > 0U ) {
             /* 处理PDP消息 */
             if (PDP_verify_message(pdp_buffer, (uint16_t)received)) {
                 const PDP_Header* header = (const PDP_Header*)pdp_buffer;

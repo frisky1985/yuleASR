@@ -119,7 +119,7 @@ STATIC void Swc_VehicleDynamics_UpdateMotionData(void)
     swcVehicleDynamics.motionData.vehicleSpeed = Swc_VehicleDynamics_CalculateVehicleSpeed();
 
     /* Calculate lateral acceleration from yaw rate and speed */
-    if (swcVehicleDynamics.motionData.vehicleSpeed > 0) {
+    if (swcVehicleDynamics.motionData.vehicleSpeed > 0U ) {
         swcVehicleDynamics.motionData.lateralAccel =
             (sint16)((swcVehicleDynamics.motionData.yawRate *
                      swcVehicleDynamics.motionData.vehicleSpeed) / 100);
@@ -176,10 +176,10 @@ STATIC void Swc_VehicleDynamics_CheckStability(void)
             }
         } else if (swcVehicleDynamics.currentState == VDC_STATE_INTERVENING) {
             /* Return to active if stable */
-            if (swcVehicleDynamics.interventionCounter > 0) {
+            if (swcVehicleDynamics.interventionCounter > 0U ) {
                 swcVehicleDynamics.interventionCounter--;
             }
-            if (swcVehicleDynamics.interventionCounter == 0) {
+            if (swcVehicleDynamics.interventionCounter == 0U ) {
                 swcVehicleDynamics.currentState = VDC_STATE_ACTIVE;
             }
         }
@@ -223,7 +223,7 @@ STATIC void Swc_VehicleDynamics_CalculateIntervention(void)
     );
 
     /* Apply brake forces based on yaw rate error */
-    if (yawRateError > 0) {
+    if (yawRateError > 0U ) {
         /* Oversteer - brake outer wheels */
         swcVehicleDynamics.output.brakeForceLeft = 0;
         swcVehicleDynamics.output.brakeForceRight = brakeIntervention;
@@ -448,7 +448,7 @@ sint16 Swc_VehicleDynamics_CalculateSlipRatio(uint16 wheelSpeed, uint16 vehicleS
 {
     sint32 slipRatio;
 
-    if (vehicleSpeed == 0) {
+    if (vehicleSpeed == 0U ) {
         return 0;
     }
 

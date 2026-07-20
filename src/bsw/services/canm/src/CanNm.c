@@ -26,7 +26,7 @@
 
 #define CANNM_SET_CBV(pdu, bit)             ((pdu)[CANNM_PDU_BYTE_CBV] |= (bit))
 #define CANNM_CLEAR_CBV(pdu, bit)           ((pdu)[CANNM_PDU_BYTE_CBV] &= ~(bit))
-#define CANNM_IS_CBV_SET(pdu, bit)          (((pdu)[CANNM_PDU_BYTE_CBV] & (bit)) != 0)
+#define CANNM_IS_CBV_SET(pdu, bit)          (((pdu)[CANNM_PDU_BYTE_CBV] & (bit)) != 0U )
 
 /*==================================================================================================
 *                                      LOCAL VARIABLES
@@ -321,7 +321,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
     uint16 period = CANNM_MAIN_FUNCTION_PERIOD;
     
     /* NM Message Timer (TTyp) */
-    if (chPtr->TimerNM > 0) {
+    if (chPtr->TimerNM > 0U ) {
         if (chPtr->TimerNM > period) {
             chPtr->TimerNM -= period;
         } else {
@@ -336,7 +336,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
     
     /* Immediate Transmission Timer (TTx) */
 #if (CANNM_IMMEDIATE_TRANSMISSION_ENABLED == STD_ON)
-    if (chPtr->TimerImmediate > 0 && chPtr->ImmediateTxCounter > 0) {
+    if (chPtr->TimerImmediate > 0U && chPtr->ImmediateTxCounter > 0U ) {
         if (chPtr->TimerImmediate > period) {
             chPtr->TimerImmediate -= period;
         } else {
@@ -349,7 +349,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
 #endif
     
     /* Timeout Timer (TMax/TError) */
-    if (chPtr->TimerTimeout > 0) {
+    if (chPtr->TimerTimeout > 0U ) {
         if (chPtr->TimerTimeout > period) {
             chPtr->TimerTimeout -= period;
         } else {
@@ -363,7 +363,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
     }
     
     /* Repeat Message Timer */
-    if (chPtr->TimerRepeatMessage > 0) {
+    if (chPtr->TimerRepeatMessage > 0U ) {
         if (chPtr->TimerRepeatMessage > period) {
             chPtr->TimerRepeatMessage -= period;
         } else {
@@ -382,7 +382,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
     }
     
     /* Wait Bus Sleep Timer (TWbs) */
-    if (chPtr->TimerWaitBusSleep > 0) {
+    if (chPtr->TimerWaitBusSleep > 0U ) {
         if (chPtr->TimerWaitBusSleep > period) {
             chPtr->TimerWaitBusSleep -= period;
         } else {

@@ -235,7 +235,7 @@ void Swc_StorageManager_WriteCycle(void)
 
     /* Monitor write cycles and perform maintenance if needed */
     for (i = 0; i < swcStorageManager.numBlocks; i++) {
-        if (swcStorageManager.blocks[i].status.writeCycleCounter > 0) {
+        if (swcStorageManager.blocks[i].status.writeCycleCounter > 0U ) {
             /* Log write cycle information */
             /* In real implementation, would trigger wear leveling */
         }
@@ -251,7 +251,7 @@ Swc_StorageResultType Swc_StorageManager_ReadBlock(uint16 blockId,
 {
     sint16 blockIndex;
 
-    if (data == NULL || length == 0) {
+    if (data == NULL || length == 0U ) {
         return STORAGE_RESULT_INVALID_DATA;
     }
 
@@ -296,7 +296,7 @@ Swc_StorageResultType Swc_StorageManager_WriteBlock(uint16 blockId,
     sint16 blockIndex;
     uint16 crc;
 
-    if (data == NULL || length == 0 || length > STORAGE_BLOCK_DATA_SIZE) {
+    if (data == NULL || length == 0U || length > STORAGE_BLOCK_DATA_SIZE) {
         return STORAGE_RESULT_INVALID_DATA;
     }
 

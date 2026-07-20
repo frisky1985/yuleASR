@@ -48,7 +48,7 @@ static uint8 Dem_QueueNextIndex(uint8 Index)
  */
 static uint8 Dem_QueuePrevIndex(uint8 Index)
 {
-    return (Index == 0) ? (DEM_CFG_EVENT_QUEUE_SIZE - 1) : (Index - 1);
+    return (Index == 0U ) ? (DEM_CFG_EVENT_QUEUE_SIZE - 1) : (Index - 1);
 }
 
 /**
@@ -59,7 +59,7 @@ static uint8 Dem_QueueFindInsertPosition(uint8 Priority)
     uint8 pos = Dem_EventQueue.Tail;
     uint8 count = Dem_EventQueue.Count;
     
-    while (count > 0) {
+    while (count > 0U ) {
         uint8 prev = Dem_QueuePrevIndex(pos);
         if (Dem_EventQueue.Entries[prev].Priority <= Priority) {
             break;
@@ -158,7 +158,7 @@ Std_ReturnType Dem_QueueEnqueue(
             uint8 idx = Dem_EventQueue.Head;
             uint8 count = Dem_EventQueue.Count;
             
-            while (count > 0) {
+            while (count > 0U ) {
                 if (Dem_EventQueue.Entries[idx].Priority > lowestPrio) {
                     lowestPrio = Dem_EventQueue.Entries[idx].Priority;
                     lowestPrioIdx = idx;
@@ -195,7 +195,7 @@ Std_ReturnType Dem_QueueDequeue(Dem_QueueEntryType* Entry)
     
     Dem_EnterCritical();
     
-    if (Dem_EventQueue.Count > 0) {
+    if (Dem_EventQueue.Count > 0U ) {
         *Entry = Dem_EventQueue.Entries[Dem_EventQueue.Head];
         Dem_EventQueue.Entries[Dem_EventQueue.Head].Valid = FALSE;
         
@@ -203,7 +203,7 @@ Std_ReturnType Dem_QueueDequeue(Dem_QueueEntryType* Entry)
         Dem_EventQueue.Count--;
         Dem_QueueTotalDequeued++;
         
-        if (Dem_EventQueue.Count == 0) {
+        if (Dem_EventQueue.Count == 0U ) {
             Dem_EventQueue.State = DEM_QUEUE_EMPTY;
         }
         
@@ -268,7 +268,7 @@ Std_ReturnType Dem_QueueRemoveEvent(Dem_EventIdType EventId)
     uint8 idx = Dem_EventQueue.Head;
     uint8 count = Dem_EventQueue.Count;
     
-    while (count > 0) {
+    while (count > 0U ) {
         if (Dem_EventQueue.Entries[idx].EventId == EventId && 
             Dem_EventQueue.Entries[idx].Valid) {
             
@@ -306,7 +306,7 @@ Std_ReturnType Dem_QueuePeek(Dem_QueueEntryType* Entry)
     
     Dem_EnterCritical();
     
-    if (Dem_EventQueue.Count > 0) {
+    if (Dem_EventQueue.Count > 0U ) {
         *Entry = Dem_EventQueue.Entries[Dem_EventQueue.Head];
         if (Entry->Valid) {
             result = E_OK;
@@ -339,7 +339,7 @@ boolean Dem_QueueIsFull(void)
  */
 boolean Dem_QueueIsEmpty(void)
 {
-    return (Dem_EventQueue.Count == 0);
+    return (Dem_EventQueue.Count == 0U );
 }
 
 /**
@@ -366,7 +366,7 @@ void Dem_QueueProcess(void)
     Dem_QueueEntryType entry;
     uint8 maxProcess = 5; /* Limit processing per cycle */
     
-    while (maxProcess > 0 && Dem_QueueDequeue(&entry) == E_OK) {
+    while (maxProcess > 0U && Dem_QueueDequeue(&entry) == E_OK) {
         if (entry.Valid) {
             /* Process the event */
             Dem_ProcessEvent(entry.EventId, entry.EventStatus);

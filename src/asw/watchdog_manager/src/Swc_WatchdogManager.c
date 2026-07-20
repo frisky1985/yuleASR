@@ -412,7 +412,7 @@ Rte_StatusType Swc_WatchdogManager_UnregisterEntity(uint8 entityId)
     swcWatchdogManager.entities[entityIndex].config.isActive = FALSE;
     swcWatchdogManager.entities[entityIndex].status.state = ALIVE_STATE_DEACTIVATED;
 
-    if (swcWatchdogManager.status.numSupervisedEntities > 0) {
+    if (swcWatchdogManager.status.numSupervisedEntities > 0U ) {
         swcWatchdogManager.status.numSupervisedEntities--;
     }
 

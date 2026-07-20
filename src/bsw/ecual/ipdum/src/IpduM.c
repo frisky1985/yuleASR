@@ -288,7 +288,7 @@ Std_ReturnType IpduM_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
      * 2. Copy dynamic part data
      * 3. Insert selector value
      */
-    if (TxMuxPdu->StaticPart.Length > 0)
+    if (TxMuxPdu->StaticPart.Length > 0U )
     {
         /* Copy static part */
         uint8 i;

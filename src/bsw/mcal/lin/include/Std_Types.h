@@ -22,7 +22,7 @@ typedef signed short        sint16;
 typedef signed int          sint32;
 typedef signed long long    sint64;
 
-#ifndef _PLATFORM_TYPES_H
+#ifndef PLATFORM_TYPES_H_INCLUDED
 /* These are only defined if Platform_Types.h was not included first */
 typedef unsigned char       uint8_least;
 typedef unsigned short      uint16_least;

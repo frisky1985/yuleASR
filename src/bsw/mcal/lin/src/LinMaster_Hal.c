@@ -127,7 +127,7 @@ LinMaster_StatusType LinMaster_Hal_SendBlock(const uint8* DataPtr, uint8 Length)
 {
     uint8 i;
     
-    if (DataPtr == NULL_PTR || Length == 0) {
+    if (DataPtr == NULL_PTR || Length == 0U ) {
         return LINMASTER_NOT_OK;
     }
     

@@ -877,7 +877,7 @@ StatusType Os_Internal_ReleaseResource(ResourceType ResID)
 
     resource->NestCount--;
 
-    if (resource->NestCount == 0)
+    if (resource->NestCount == 0U )
     {
         resource->OwnerTask = 0;
     }
@@ -1006,7 +1006,7 @@ StatusType SetRelAlarm(AlarmType AlarmID, TickType Increment, TickType Cycle)
         OS_DET_REPORT_ERROR(OS_SID_SETRELALARM, E_OS_ID);
         return E_OS_ID;
     }
-    if (Increment == 0)
+    if (Increment == 0U )
     {
         OS_DET_REPORT_ERROR(OS_SID_SETRELALARM, E_OS_VALUE);
         return E_OS_VALUE;
@@ -1044,7 +1044,7 @@ StatusType Os_Internal_SetRelAlarm(AlarmType AlarmID, TickType Increment, TickTy
 
     /* Convert ticks to milliseconds for FreeRTOS */
     periodMs = Increment / OS_TICKS_PER_MS;
-    if (periodMs == 0)
+    if (periodMs == 0U )
     {
         periodMs = 1;
     }
@@ -1426,10 +1426,10 @@ void Os_AlarmCallback(TimerHandle_t xTimer)
     }
 
     /* Handle cyclic alarms */
-    if (alarm->Cycle > 0 && alarm->State == OS_ALARM_ACTIVE)
+    if (alarm->Cycle > 0U && alarm->State == OS_ALARM_ACTIVE)
     {
         TickType cycleMs = alarm->Cycle / OS_TICKS_PER_MS;
-        if (cycleMs == 0)
+        if (cycleMs == 0U )
         {
             cycleMs = 1;
         }

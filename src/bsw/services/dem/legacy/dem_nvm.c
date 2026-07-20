@@ -564,7 +564,7 @@ Std_ReturnType Dem_NvmReadEventMemory(
         /* Wait for read completion with timeout */
         uint16 timeout = DEM_CFG_NVM_READ_TIMEOUT_MS / DEM_CFG_MAIN_FUNCTION_PERIOD_MS;
         
-        while (timeout > 0) {
+        while (timeout > 0U ) {
             NvM_GetErrorStatus(blockId, &nvmResult);
             
             if (nvmResult == NVM_REQ_OK) {
@@ -579,7 +579,7 @@ Std_ReturnType Dem_NvmReadEventMemory(
             /* In real implementation, use OS delay */
         }
         
-        if (timeout == 0) {
+        if (timeout == 0U ) {
             result = E_NOT_OK; /* Timeout */
         }
     }

@@ -488,7 +488,7 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
     /* 查找并移除订阅 */
     for (i = 0; i < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; i++) {
         if (conn->subscriptions[i].state != SUB_STATE_INACTIVE &&
-            strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0) {
+            strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0U ) {
             conn->subscriptions[i].state = SUB_STATE_INACTIVE;
             conn->subscriptions[i].callback = NULL;
             /* 发送UNSUBSCRIBE报文 - 通过 Mqtt_Encode 和 Mqtt_SendPacket 完成 */
@@ -718,7 +718,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
 static uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn)
 {
     conn->packetIdCounter++;
-    if (conn->packetIdCounter == 0) {
+    if (conn->packetIdCounter == 0U ) {
         conn->packetIdCounter = 1; /* 包ID不能为0 */
     }
     return conn->packetIdCounter;
@@ -765,7 +765,7 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
         Mqtt_ReturnType tlsResult;
         tlsResult = Mqtt_Tls_Receive(conn->tlsContext, conn->recvBuffer,
                                       MQTT_RECV_BUFFER_SIZE, &recvLen);
-        if (tlsResult == MQTT_OK && recvLen > 0) {
+        if (tlsResult == MQTT_OK && recvLen > 0U ) {
             conn->recvLength = (uint16)recvLen;
             conn->info.bytesReceived += recvLen;
         }
@@ -777,7 +777,7 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
         result = TcpIp_Receive(conn->socketId, conn->recvBuffer, 
                                MQTT_RECV_BUFFER_SIZE, &receivedLength);
         
-        if (result == E_OK && receivedLength > 0) {
+        if (result == E_OK && receivedLength > 0U ) {
             conn->recvLength = receivedLength;
             conn->info.bytesReceived += receivedLength;
             
@@ -911,11 +911,11 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     do {
         uint8 byte = remainingLength & 0x7F;
         remainingLength >>= 7;
-        if (remainingLength > 0) {
+        if (remainingLength > 0U ) {
             byte |= 0x80;
         }
         conn->sendBuffer[idx++] = byte;
-    } while (remainingLength > 0);
+    } while (remainingLength > 0U );
     
     /* 主题 */
     conn->sendBuffer[idx++] = (topicLen >> 8) & 0xFF;
@@ -923,7 +923,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
     idx += topicLen;
     
-    /* 包ID (QoS > 0) */
+    /* 包ID (QoS > 0U ) */
     if (msg->qos > MQTT_QOS_0) {
         conn->sendBuffer[idx++] = (packetId >> 8) & 0xFF;
         conn->sendBuffer[idx++] = packetId & 0xFF;

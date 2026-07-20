@@ -59,7 +59,7 @@ Boot_Result Boot_Update_WriteBlock(const uint8_t *data,
                                    uint32_t       offset,
                                    uint32_t       length)
 {
-    if (!g_ctx_valid) {
+    if (g_ctx_valid == 0U) {
         return BOOT_E_NOT_INIT;
     }
 
@@ -83,7 +83,7 @@ Boot_Result Boot_Update_WriteBlock(const uint8_t *data,
 
 Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 {
-    if (!g_ctx_valid) {
+    if (g_ctx_valid == 0U) {
         return BOOT_E_NOT_INIT;
     }
 

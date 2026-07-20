@@ -50,7 +50,7 @@ LinSlave_StatusType LinSlave_CfgTable_Init(const LinSlave_ConfigTableType* Confi
     /* 初始化所有帧状态 */
     if (ConfigTable->UnconditionalFrames != NULL) {
         uint8 i;
-        for (i = 0; i < ConfigTable->UnconditionalFrameCount; i++) {
+        for (i = 0U; i < ConfigTable->UnconditionalFrameCount; i++) {
             LinSlave_UnconditionalFrameConfigType* frame = 
                 (LinSlave_UnconditionalFrameConfigType*)&ConfigTable->UnconditionalFrames[i];
             frame->Status = LINSLAVE_FRAME_STATUS_IDLE;
@@ -77,7 +77,7 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_FindUnconditional
         return NULL;
     }
     
-    for (i = 0; i < CfgTablePtr->UnconditionalFrameCount; i++) {
+    for (i = 0U; i < CfgTablePtr->UnconditionalFrameCount; i++) {
         if (CfgTablePtr->UnconditionalFrames[i].Pid == Pid) {
             return &CfgTablePtr->UnconditionalFrames[i];
         }
@@ -129,7 +129,7 @@ const LinSlave_EventFrameConfigType* LinSlave_CfgTable_FindEventFrame(uint8 Pid)
         return NULL;
     }
     
-    for (i = 0; i < CfgTablePtr->EventFrameCount; i++) {
+    for (i = 0U; i < CfgTablePtr->EventFrameCount; i++) {
         if (CfgTablePtr->EventFrames[i].Pid == Pid) {
             return &CfgTablePtr->EventFrames[i];
         }
@@ -153,7 +153,7 @@ const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint
         return NULL;
     }
     
-    for (i = 0; i < CfgTablePtr->SporadicFrameCount; i++) {
+    for (i = 0U; i < CfgTablePtr->SporadicFrameCount; i++) {
         if (CfgTablePtr->SporadicFrames[i].Pid == Pid) {
             return &CfgTablePtr->SporadicFrames[i];
         }
@@ -284,7 +284,7 @@ void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint
         return;
     }
     
-    if (DataPtr == NULL || Length == 0) {
+    if (DataPtr == NULL || Length == 0U) {
         return;
     }
     
@@ -326,7 +326,7 @@ uint8 LinSlave_CfgTable_GetIndexByPid(uint8 Pid)
         return 0xFF;
     }
     
-    for (i = 0; i < CfgTablePtr->UnconditionalFrameCount; i++) {
+    for (i = 0U; i < CfgTablePtr->UnconditionalFrameCount; i++) {
         if (CfgTablePtr->UnconditionalFrames[i].Pid == Pid) {
             return i;
         }
@@ -347,14 +347,14 @@ uint8 LinSlave_CfgTable_GetAllUnconditionalPids(uint8* PidList, uint8 MaxCount)
         return 0;
     }
     
-    if (PidList == NULL || MaxCount == 0) {
+    if (PidList == NULL || MaxCount == 0U) {
         return 0;
     }
     
     count = (CfgTablePtr->UnconditionalFrameCount < MaxCount) ? 
             CfgTablePtr->UnconditionalFrameCount : MaxCount;
     
-    for (i = 0; i < count; i++) {
+    for (i = 0U; i < count; i++) {
         PidList[i] = CfgTablePtr->UnconditionalFrames[i].Pid;
     }
     

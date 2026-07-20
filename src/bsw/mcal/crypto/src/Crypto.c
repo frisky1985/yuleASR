@@ -622,7 +622,7 @@ boolean Crypto_HsmIsAvailable(void)
  *********************************************************************************************************************/
 Crypto_HsmStateType Crypto_HsmGetStatus(void)
 {
-    if (!Crypto_HsmAvailable) {
+    if (Crypto_HsmAvailable == 0U) {
         return CRYPTO_HSM_UNINIT;
     }
     return Crypto_Hsm_GetState();
@@ -640,7 +640,7 @@ Std_ReturnType Crypto_HsmLoadKey(Crypto_KeyIdType cryptoKeyId)
     }
     #endif
     
-    if (!Crypto_HsmAvailable) {
+    if (Crypto_HsmAvailable == 0U) {
         return E_NOT_OK;
     }
     
@@ -652,7 +652,7 @@ Std_ReturnType Crypto_HsmLoadKey(Crypto_KeyIdType cryptoKeyId)
  *********************************************************************************************************************/
 Std_ReturnType Crypto_HsmSelfTest(void)
 {
-    if (!Crypto_HsmAvailable) {
+    if (Crypto_HsmAvailable == 0U) {
         return E_NOT_OK;
     }
     return Crypto_Hsm_SelfTest();
@@ -663,7 +663,7 @@ Std_ReturnType Crypto_HsmSelfTest(void)
  *********************************************************************************************************************/
 Std_ReturnType Crypto_HsmGetId(uint8* idPtr, uint32* idLengthPtr)
 {
-    if (!Crypto_HsmAvailable) {
+    if (Crypto_HsmAvailable == 0U) {
         return E_NOT_OK;
     }
     
@@ -834,7 +834,7 @@ Std_ReturnType Crypto_Blake2b_Update(uint32 jobId,
         Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
-    if (!Crypto_Blake2b_ContextInitialized) {
+    if (Crypto_Blake2b_ContextInitialized == 0U) {
         Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA3U, CRYPTO_E_PARAM_STATE);
         return E_NOT_OK;
     }
@@ -866,7 +866,7 @@ Std_ReturnType Crypto_Blake2b_Finish(uint32 jobId,
         Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
-    if (!Crypto_Blake2b_ContextInitialized) {
+    if (Crypto_Blake2b_ContextInitialized == 0U) {
         Det_ReportError(CRYPTO_MODULE_ID, 0U, 0xA4U, CRYPTO_E_PARAM_STATE);
         return E_NOT_OK;
     }

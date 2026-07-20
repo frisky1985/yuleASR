@@ -439,7 +439,7 @@ Dlt_ReturnType Dlt_RegisterContext(
     Dlt_RuntimeContext[freeIndex].registered = TRUE;
     
     /* Copy description */
-    if (descriptionLength > 0)
+    if (descriptionLength > 0U )
     {
         memcpy(Dlt_RuntimeContext[freeIndex].description, description, descriptionLength);
     }
@@ -618,11 +618,11 @@ void Dlt_MainFunction(void)
 #if (DLT_USE_BUFFERING == STD_ON)
     for (i = 0; i < DLT_BUFFER_COUNT; i++)
     {
-        if (Dlt_Buffer[i].count > 0 && !Dlt_Buffer[i].locked)
+        if (Dlt_Buffer[i].count > 0U && !Dlt_Buffer[i].locked)
         {
             /* Transmit buffered messages */
             uint16 length = Dlt_Buffer[i].writeIndex - Dlt_Buffer[i].readIndex;
-            if (length > 0)
+            if (length > 0U )
             {
                 Dlt_TransmitMessage(&Dlt_Buffer[i].data[Dlt_Buffer[i].readIndex], length);
                 Dlt_Buffer[i].readIndex = Dlt_Buffer[i].writeIndex;

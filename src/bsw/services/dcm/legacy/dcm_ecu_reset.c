@@ -193,7 +193,7 @@ Dcm_ReturnType Dcm_EcuReset(
     
     /* Extract subfunction */
     uint8_t subfunction = request->data[1] & DCM_SUBFUNCTION_MASK;
-    bool suppressResponse = (request->data[1] & DCM_SUPPRESS_POS_RESPONSE_MASK) != 0;
+    bool suppressResponse = (request->data[1] & DCM_SUPPRESS_POS_RESPONSE_MASK) != 0U ;
     
     /* Map subfunction to reset type */
     Dcm_ResetType resetType;

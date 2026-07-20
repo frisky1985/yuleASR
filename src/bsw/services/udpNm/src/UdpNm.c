@@ -105,7 +105,7 @@ static void UdpNm_BuildPdu(uint8 ChannelIdx);
 static Std_ReturnType UdpNm_ValidateChannel(Nm_ChannelHandleType nmChannelHandle, uint8 ServiceId)
 {
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, ServiceId, UDPNM_E_UNINIT);
         return E_NOT_OK;
@@ -480,7 +480,7 @@ void UdpNm_Init(const UdpNm_ConfigType *ConfigPtr)
 void UdpNm_DeInit(void)
 {
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_DEINIT, UDPNM_E_UNINIT);
         return;
@@ -615,7 +615,7 @@ Std_ReturnType UdpNm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8 *nm
     Std_ReturnType result = E_OK;
     
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETUSERDATA, UDPNM_E_UNINIT);
         result = E_NOT_OK;
@@ -656,7 +656,7 @@ Std_ReturnType UdpNm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uin
     Std_ReturnType result = E_OK;
     
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_SETUSERDATA, UDPNM_E_UNINIT);
         result = E_NOT_OK;
@@ -697,7 +697,7 @@ Std_ReturnType UdpNm_GetPduData(Nm_ChannelHandleType nmChannelHandle, uint8 *nmP
     Std_ReturnType result = E_OK;
     
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETPDUDATA, UDPNM_E_UNINIT);
         result = E_NOT_OK;
@@ -739,7 +739,7 @@ Std_ReturnType UdpNm_GetState(Nm_ChannelHandleType nmChannelHandle,
     Std_ReturnType result = E_OK;
     
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_GETSTATE, UDPNM_E_UNINIT);
         result = E_NOT_OK;
@@ -845,7 +845,7 @@ Std_ReturnType UdpNm_CheckRemoteSleepIndication(Nm_ChannelHandleType nmChannelHa
     Std_ReturnType result = E_OK;
     
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_CHECKREMOTESLEEPINDICATION, UDPNM_E_UNINIT);
         result = E_NOT_OK;
@@ -900,7 +900,7 @@ Std_ReturnType UdpNm_Transmit(Nm_ChannelHandleType nmChannelHandle,
     Std_ReturnType result = E_OK;
     
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         Det_ReportError(UDPNM_MODULE_ID, UDPNM_INSTANCE_ID, UDPNM_SID_TRANSMIT, UDPNM_E_UNINIT);
         result = E_NOT_OK;
@@ -942,7 +942,7 @@ Std_ReturnType UdpNm_Transmit(Nm_ChannelHandleType nmChannelHandle,
  */
 void UdpNm_MainFunction(void)
 {
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         return;
     }
@@ -968,7 +968,7 @@ void UdpNm_MainFunction(void)
  */
 void UdpNm_TxConfirmation(PduIdType UdpNmTxPduId)
 {
-    if (!UdpNm_ModuleInitialized)
+    if (UdpNm_ModuleInitialized == 0U)
     {
         return;
     }

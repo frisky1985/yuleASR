@@ -15,8 +15,8 @@
 /*******************************************************************************
  * Platform Types (simulated - should come from PlatformTypes.h)
  ******************************************************************************/
-#ifndef _PLATFORM_TYPES_H
-#define _PLATFORM_TYPES_H
+#ifndef PLATFORM_TYPES_H_INCLUDED
+#define PLATFORM_TYPES_H_INCLUDED
 
 typedef unsigned char       uint8;
 typedef unsigned short      uint16;
@@ -55,7 +55,7 @@ typedef double              float64;
     #define FALSE   (0U)
 #endif
 
-#endif /* _PLATFORM_TYPES_H */
+#endif /* PLATFORM_TYPES_H_INCLUDED */
 
 /*******************************************************************************
  * Standard Types

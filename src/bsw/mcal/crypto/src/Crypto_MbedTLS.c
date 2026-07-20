@@ -165,7 +165,7 @@ STATIC int Crypto_MbedTLS_RandomCallback(void* ctx, unsigned char* output, size_
 {
     (void)ctx;
     
-    if (mbedtls_ctr_drbg_random(&Crypto_CtrDrbgCtx, output, len) == 0) {
+    if (mbedtls_ctr_drbg_random(&Crypto_CtrDrbgCtx, output, len) == 0U ) {
         return 0;
     }
     return -1;

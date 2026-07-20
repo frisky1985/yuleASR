@@ -80,7 +80,7 @@ static void LinMaster_Diag_TpRxCallback(uint8 ChannelId, const uint8* DataPtr, u
 {
     (void)ChannelId;
     
-    if (DataPtr == NULL || Length == 0 || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if (DataPtr == NULL || Length == 0U || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
         return;
     }
     
@@ -123,8 +123,8 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
     TxLength++;
     
     /* 数据 */
-    if (RequestPtr->Length > 0 && RequestPtr->Length <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
-        for (i = 0; i < RequestPtr->Length; i++) {
+    if (RequestPtr->Length > 0U && RequestPtr->Length <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+        for (i = 0U; i < RequestPtr->Length; i++) {
             TxBuffer[TxLength + i] = RequestPtr->Data[i];
         }
         TxLength += RequestPtr->Length;
@@ -139,7 +139,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
  */
 static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* DataPtr, uint16 Length)
 {
-    if (DataPtr == NULL || Length == 0) {
+    if (DataPtr == NULL || Length == 0U) {
         return LINMASTER_DIAG_E_NOT_OK;
     }
     
@@ -186,7 +186,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SendRequest(
 {
     LinMaster_Diag_StatusType status;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -207,7 +207,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SendRequest(
     /* 构建请求 */
     LinMaster_Diag_BuildRequest(RequestPtr);
     
-    if (TxLength == 0) {
+    if (TxLength == 0U) {
         return LINMASTER_DIAG_E_NOT_OK;
     }
     
@@ -230,7 +230,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetResponse(
     LinMaster_Diag_ResponseType* ResponsePtr
 )
 {
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -264,7 +264,7 @@ void LinMaster_Diag_RegisterCallback(
     LinMaster_Diag_CallbackFuncType Callback
 )
 {
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return;
     }
     
@@ -276,7 +276,7 @@ void LinMaster_Diag_RegisterCallback(
  */
 boolean LinMaster_Diag_IsRequestComplete(void)
 {
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return TRUE;
     }
     
@@ -298,11 +298,11 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetLastError(void)
  */
 void LinMaster_Diag_SetTimeout(uint32 TimeoutMs)
 {
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return;
     }
     
-    if (TimeoutMs > 0 && TimeoutMs <= LINMASTER_DIAG_P2_MAX_TIMEOUT) {
+    if (TimeoutMs > 0U && TimeoutMs <= LINMASTER_DIAG_P2_MAX_TIMEOUT) {
         DiagRuntime.TimeoutValue = TimeoutMs;
     }
 }
@@ -312,7 +312,7 @@ void LinMaster_Diag_SetTimeout(uint32 TimeoutMs)
  */
 void LinMaster_Diag_CancelRequest(void)
 {
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return;
     }
     
@@ -327,7 +327,7 @@ void LinMaster_Diag_MainFunction(void)
 {
     LinMaster_Diag_StatusType status;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return;
     }
     
@@ -421,7 +421,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SessionControl(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -443,7 +443,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_EcuReset(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -465,7 +465,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDataById(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -494,11 +494,11 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
     LinMaster_Diag_RequestType request;
     uint8 i;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if (DataPtr == NULL || Length == 0 || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
+    if (DataPtr == NULL || Length == 0U || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -511,7 +511,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
     request.Data[1] = (uint8)(Did & 0xFF);
     
     /* 数据 */
-    for (i = 0; i < Length; i++) {
+    for (i = 0U; i < Length; i++) {
         request.Data[2 + i] = DataPtr[i];
     }
     request.Length = 2 + Length;
@@ -532,7 +532,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     LinMaster_Diag_RequestType request;
     uint8 i;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -541,8 +541,8 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     request.SubFunction = SubFunc & 0x7F;
     
     /* 如果是发送密钥，添加密钥数据 */
-    if (KeyPtr != NULL && KeyLen > 0 && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
-        for (i = 0; i < KeyLen; i++) {
+    if (KeyPtr != NULL && KeyLen > 0U && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+        for (i = 0U; i < KeyLen; i++) {
             request.Data[i] = KeyPtr[i];
         }
         request.Length = KeyLen;
@@ -568,7 +568,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     LinMaster_Diag_RequestType request;
     uint8 i;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -585,8 +585,8 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     request.Data[1] = (uint8)(Rid & 0xFF);
     
     /* 可选数据 */
-    if (DataPtr != NULL && Length > 0) {
-        for (i = 0; i < Length; i++) {
+    if (DataPtr != NULL && Length > 0U) {
+        for (i = 0U; i < Length; i++) {
             request.Data[2 + i] = DataPtr[i];
         }
         request.Length = 2 + Length;
@@ -608,7 +608,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ClearDiagnosticInformation(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -636,7 +636,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDTCInformation(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -661,7 +661,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_TesterPresent(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
@@ -684,7 +684,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_CommunicationControl(
 {
     LinMaster_Diag_RequestType request;
     
-    if (!DiagInitialized) {
+    if (DiagInitialized == 0U) {
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     

@@ -143,7 +143,7 @@ Std_ReturnType NvM_EccHandler_DeInit(void)
 {
     uint16 i;
     
-    if (!NvM_EccHandler_Initialized)
+    if (NvM_EccHandler_Initialized == 0U)
     {
         return E_NOT_OK;
     }
@@ -176,7 +176,7 @@ Std_ReturnType NvM_EccHandler_HandleReadError(
     const NvM_EccBlockConfigType* blockConfig;
     NvM_EccErrorInfoType localErrorInfo;
     
-    if (!NvM_EccHandler_Initialized)
+    if (NvM_EccHandler_Initialized == 0U)
     {
         return E_NOT_OK;
     }
@@ -289,7 +289,7 @@ Std_ReturnType NvM_EccHandler_HandleWriteVerifyFailure(
     uint8 retryCount = 0U;
     Std_ReturnType result = E_NOT_OK;
     
-    if (!NvM_EccHandler_Initialized)
+    if (NvM_EccHandler_Initialized == 0U)
     {
         return E_NOT_OK;
     }
@@ -566,7 +566,7 @@ Std_ReturnType NvM_EccHandler_MarkBlockCorrupted(NvM_BlockIdType blockId, uint8 
  */
 Std_ReturnType NvM_EccHandler_RegisterCallback(NvM_EccErrorCallbackType callback)
 {
-    if (!NvM_EccHandler_Initialized)
+    if (NvM_EccHandler_Initialized == 0U)
     {
         return E_NOT_OK;
     }

@@ -413,7 +413,7 @@ void LinTp_DeInit(void)
 {
     LinTp_ChannelType ch;
     
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
         (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_DEINIT, LINTP_E_NOT_INITIALIZED);
 #endif
@@ -461,7 +461,7 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     LinTp_NADType nad;
     
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
         (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_TRANSMIT, LINTP_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -510,7 +510,7 @@ Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId)
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
         (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_RECEIVE, LINTP_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -533,7 +533,7 @@ Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
         (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CANCEL_TRANSMIT, LINTP_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -556,7 +556,7 @@ Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
         (void)Det_ReportError(LINTP_MODULE_ID, 0U, LINTP_SID_CHANGE_PARAMETER, LINTP_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -626,7 +626,7 @@ void LinTp_MainFunction(void)
     LinTp_ChannelType ch;
     LinTp_ConnectionType conn;
     
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
         return;
     }
     
@@ -704,7 +704,7 @@ void LinTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     LinTp_ConnectionType conn;
     LinTp_ConnectionStateType* connState;
     
-    if (!LinTp_Initialized) {
+    if (LinTp_Initialized == 0U) {
         return;
     }
     

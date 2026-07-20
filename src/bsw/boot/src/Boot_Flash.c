@@ -20,7 +20,7 @@ Boot_Result Boot_Flash_Init(void)
 
 Boot_Result Boot_Flash_Erase(uint32_t address, uint32_t size)
 {
-    if (!g_flash_initialized) {
+    if (g_flash_initialized == 0U) {
         return BOOT_E_NOT_INIT;
     }
     /* Align to sector boundary */
@@ -47,7 +47,7 @@ Boot_Result Boot_Flash_Erase(uint32_t address, uint32_t size)
 
 Boot_Result Boot_Flash_Write(uint32_t dst_addr, const uint8_t *src, uint32_t length)
 {
-    if (!g_flash_initialized) {
+    if (g_flash_initialized == 0U) {
         return BOOT_E_NOT_INIT;
     }
     for (uint32_t attempt = 0U; attempt < BOOT_MAX_RETRIES; attempt++) {
@@ -62,7 +62,7 @@ Boot_Result Boot_Flash_Write(uint32_t dst_addr, const uint8_t *src, uint32_t len
                     match = FALSE;
                     break;
                 }
-                if (memcmp(verify_buf, src + off, chunk) != 0) {
+                if (memcmp(verify_buf, src + off, chunk) != 0U ) {
                     match = FALSE;
                     break;
                 }
@@ -77,7 +77,7 @@ Boot_Result Boot_Flash_Write(uint32_t dst_addr, const uint8_t *src, uint32_t len
 
 Boot_Result Boot_Flash_Read(uint32_t src_addr, uint8_t *dst, uint32_t length)
 {
-    if (!g_flash_initialized) {
+    if (g_flash_initialized == 0U) {
         return BOOT_E_NOT_INIT;
     }
     if (Flash_Read(src_addr, dst, length) == E_OK) {

@@ -221,7 +221,7 @@ void Xcp_DeInit(void)
 {
     uint8 ch;
 
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         return;
     }
 
@@ -265,7 +265,7 @@ void Xcp_MainFunction(void)
 {
     uint8 ch;
 
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         return;
     }
 
@@ -284,7 +284,7 @@ void Xcp_MainFunction(void)
 void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType* XcpRxPduPtr)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_NOT_INITIALIZED);
         return;
     }
@@ -312,7 +312,7 @@ void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType*
 void Xcp_TxConfirmation(uint8 XcpChannelId, PduIdType XcpTxPduId)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TXCONFIRMATION, XCP_E_NOT_INITIALIZED);
         return;
     }
@@ -333,7 +333,7 @@ void Xcp_TxConfirmation(uint8 XcpChannelId, PduIdType XcpTxPduId)
 Std_ReturnType Xcp_TriggerTransmit(uint8 XcpChannelId, PduIdType XcpTxPduId, PduInfoType* PduInfoPtr)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_TRIGGERTRANSMIT, XCP_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -361,7 +361,7 @@ Std_ReturnType Xcp_TriggerTransmit(uint8 XcpChannelId, PduIdType XcpTxPduId, Pdu
 void Xcp_SetTransmissionMode(uint8 XcpChannelId, uint8 Mode)
 {
 #if (XCP_DEV_ERROR_DETECT == STD_ON)
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_SETTRANSMISSIONMODE, XCP_E_NOT_INITIALIZED);
         return;
     }
@@ -383,7 +383,7 @@ Xcp_SessionStatusType Xcp_GetSessionStatus(void)
     Xcp_SessionStatusType status = 0U;
     uint8 ch;
 
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         return 0U;
     }
 
@@ -1525,7 +1525,7 @@ void Xcp_DaqProcessor(void)
     uint16 daq;
     uint32 currentTime;
 
-    if (!Xcp_Initialized) {
+    if (Xcp_Initialized == 0U) {
         return;
     }
 

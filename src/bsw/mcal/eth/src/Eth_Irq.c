@@ -267,7 +267,7 @@ void Eth_IsrError(Eth_ControllerType CtrlIdx)
 *                              CONTROLLER-SPECIFIC ISRs
 ==================================================================================================*/
 
-#if (ETH_MAX_CONTROLLERS > 0)
+#if (ETH_MAX_CONTROLLERS > 0U )
 /**
  * @brief Controller 0 common interrupt handler
  */

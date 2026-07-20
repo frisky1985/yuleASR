@@ -67,7 +67,7 @@ static LinSlave_Uds_ServiceConfigType* LinSlave_Uds_FindService(uint8 Sid)
 {
     uint8 i;
     
-    for (i = 0; i < UdsServiceCount; i++) {
+    for (i = 0U; i < UdsServiceCount; i++) {
         if (UdsServiceTable[i].Sid == Sid) {
             return &UdsServiceTable[i];
         }
@@ -110,7 +110,7 @@ LinSlave_Uds_StatusType LinSlave_Uds_ProcessRequest(const uint8* DataPtr, uint16
     LinSlave_Uds_StatusType Status;
     LinSlave_Uds_ServiceConfigType* Service;
     
-    if (!UdsInitialized || DataPtr == NULL || Length == 0) {
+    if (!UdsInitialized || DataPtr == NULL || Length == 0U) {
         return LINSLAVE_UDS_E_NOT_OK;
     }
     
@@ -180,7 +180,7 @@ LinSlave_Uds_StatusType LinSlave_Uds_SendPositiveResponse(const LinSlave_Uds_Res
     /* 构建响应消息 */
     ResponseBuffer[0] = ResponsePtr->Sid + 0x40;  /* 正响响应: SID + 0x40 */
     
-    if (ResponsePtr->DataLength > 0 && ResponsePtr->DataPtr != NULL) {
+    if (ResponsePtr->DataLength > 0U && ResponsePtr->DataPtr != NULL) {
         (void)memcpy(&ResponseBuffer[1], ResponsePtr->DataPtr, ResponsePtr->DataLength);
         ResponseLength = ResponsePtr->DataLength + 1;
     } else {
@@ -200,7 +200,7 @@ LinSlave_Uds_StatusType LinSlave_Uds_SendNegativeResponse(uint8 Sid, uint8 Nrc)
 {
     uint8 ResponseBuffer[3];
     
-    if (!UdsInitialized) {
+    if (UdsInitialized == 0U) {
         return LINSLAVE_UDS_E_NOT_OK;
     }
     
@@ -248,7 +248,7 @@ LinSlave_Uds_StatusType LinSlave_Uds_RegisterService(const LinSlave_Uds_ServiceC
  */
 void LinSlave_Uds_MainFunction(void)
 {
-    if (!UdsInitialized) {
+    if (UdsInitialized == 0U) {
         return;
     }
     

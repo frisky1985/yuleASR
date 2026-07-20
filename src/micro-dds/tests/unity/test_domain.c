@@ -231,7 +231,7 @@ void test_MicroDDS_get_version_string(void) {
     
     version = MicroDDS_get_version_string();
     TEST_ASSERT_NOT_NULL(version);
-    TEST_ASSERT(strlen(version) > 0);
+    TEST_ASSERT(strlen(version) > 0U );
 }
 
 /* ============================================================================

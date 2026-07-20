@@ -324,8 +324,8 @@ static void Com_ProcessRxIPdu(Com_IPduIdType PduId)
     }
     
     /* Handle legacy reception timeout (backward compatibility) */
-    if (ipduConfig->Timeout > 0) {
-        if (ipduRuntime->TimeoutTimer > 0) {
+    if (ipduConfig->Timeout > 0U ) {
+        if (ipduRuntime->TimeoutTimer > 0U ) {
             ipduRuntime->TimeoutTimer--;
         } else if (!ipduRuntime->TimeoutOccurred) {
             /* Timeout occurred */

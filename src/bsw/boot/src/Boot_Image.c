@@ -118,7 +118,7 @@ Boot_Result Boot_Image_VerifyHash(const Boot_ImageHeader *hdr,
 {
     uint8_t computed[32];
     Boot_Verify_Hash(payload, hdr->payload_size, computed);
-    if (Boot_Verify_ConstantCmp(computed, hdr->hash, 32) != 0) {
+    if (Boot_Verify_ConstantCmp(computed, hdr->hash, 32) != 0U ) {
         return BOOT_E_HASH;
     }
     return BOOT_OK;

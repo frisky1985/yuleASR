@@ -212,8 +212,7 @@ Std_ReturnType Platform_Lockstep_SetMode(Lockstep_ModeType mode)
     uint32 regValue;
     Std_ReturnType result = E_NOT_OK;
     
-    if (!Platform_Lockstep_Initialized)
-    {
+    if (Platform_Lockstep_Initialized == 0U)     {
         return E_NOT_OK;
     }
     
@@ -272,8 +271,7 @@ Std_ReturnType Platform_Lockstep_GetStatus(boolean* isActive, boolean* hasError)
         return E_NOT_OK;
     }
     
-    if (!Platform_Lockstep_Initialized)
-    {
+    if (Platform_Lockstep_Initialized == 0U)     {
         *isActive = FALSE;
         *hasError = FALSE;
         return E_NOT_OK;
@@ -299,8 +297,7 @@ Std_ReturnType Platform_Lockstep_CheckStatus(boolean* mismatchDetected)
         return E_NOT_OK;
     }
     
-    if (!Platform_Lockstep_Initialized)
-    {
+    if (Platform_Lockstep_Initialized == 0U)     {
         *mismatchDetected = FALSE;
         return E_NOT_OK;
     }
@@ -338,8 +335,7 @@ Std_ReturnType Platform_Lockstep_RunBist(uint32 timeoutUs)
     Std_ReturnType result = E_NOT_OK;
     uint32 timeout = (timeoutUs == 0U) ? BIST_TIMEOUT_DEFAULT_US : timeoutUs;
     
-    if (!Platform_Lockstep_Initialized)
-    {
+    if (Platform_Lockstep_Initialized == 0U)     {
         return E_NOT_OK;
     }
     
@@ -398,8 +394,7 @@ Std_ReturnType Platform_Lockstep_GetBistResult(uint32* results)
  */
 Std_ReturnType Platform_Lockstep_ClearError(void)
 {
-    if (!Platform_Lockstep_Initialized)
-    {
+    if (Platform_Lockstep_Initialized == 0U)     {
         return E_NOT_OK;
     }
     

@@ -889,8 +889,7 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         }
     }
 
-    if (!ChannelFound)
-    {
+    if (ChannelFound == 0U)     {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_INVALID_PDUID);
 #endif
@@ -988,8 +987,7 @@ void CanNm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
         }
     }
 
-    if (!ChannelFound)
-    {
+    if (ChannelFound == 0U)     {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TX_CONFIRMATION, CANNM_E_INVALID_PDUID);
 #endif

@@ -159,7 +159,7 @@ Boot_Decision Boot_Loader_ResolveBootTarget(void)
     /* Check if we should boot from slot B (after failed A) */
     boolean use_slot_b = (bib.status & 0x02U) != 0U;
 
-    if (!use_slot_b) {
+    if (use_slot_b == 0U) {
         /* Verify SBL first; if SBL is valid, boot it,
            then SBL will verify and jump to App */
         dec.target      = BOOT_IMAGE_SBL;

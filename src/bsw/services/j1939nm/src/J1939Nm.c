@@ -730,7 +730,7 @@ void J1939Nm_HandleAddressConflict(
         /* Our NAME is lower (higher priority), we keep the address */
         /* Re-transmit Address Claimed to assert our claim */
         (void)J1939Nm_TransmitAddressClaimed(Channel);
-    } else if (nameCompare > 0) {
+    } else if (nameCompare > 0U ) {
         /* Our NAME is higher (lower priority), we must release the address */
         channelState->AcState = J1939NM_AC_STATE_CONFLICT;
     } else {

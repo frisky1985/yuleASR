@@ -26,22 +26,22 @@
 #define LIN_WAKEUP_SUPPORT                 STD_ON
 
 /* Number of Channels */
-#define LIN_MAX_CHANNELS                   2
+#define LIN_MAX_CHANNELS                   2U
 
 /* Channel IDs */
 #define LIN_CHANNEL_0                      0x00
 #define LIN_CHANNEL_1                      0x01
 
 /* Baud Rates */
-#define LIN_BAUDRATE_9600                  9600
-#define LIN_BAUDRATE_19200                 19200
+#define LIN_BAUDRATE_9600                  9600U
+#define LIN_BAUDRATE_19200                 19200U
 
 /* Timeouts (in ms) */
-#define LIN_TIMEOUT                        100
-#define LIN_WAKEUP_TIMEOUT                 50
+#define LIN_TIMEOUT                        100U
+#define LIN_WAKEUP_TIMEOUT                 50U
 
 /* Frame Configuration */
-#define LIN_MAX_FRAME_LENGTH               8
+#define LIN_MAX_FRAME_LENGTH               8U
 #define LIN_MAX_PID                        0x3F
 
 /* Channel 0 Configuration */

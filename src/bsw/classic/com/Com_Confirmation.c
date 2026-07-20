@@ -201,7 +201,7 @@ Std_ReturnType Com_StartTxConfirmation(Com_IPduIdType PduId)
     Com_UpdateConfirmationState(PduId, COM_TX_PENDING, COM_TX_RES_NONE);
     
     /* Initialize timeout timer */
-    if (ipduConfig->TxConfirmation.TxTimeout > 0) {
+    if (ipduConfig->TxConfirmation.TxTimeout > 0U ) {
         ipduRuntime->TxConfTimeoutTimer = ipduConfig->TxConfirmation.TxTimeout;
     } else {
         ipduRuntime->TxConfTimeoutTimer = COM_DEFAULT_TX_TIMEOUT;
@@ -371,7 +371,7 @@ void Com_RemoveFromRetryQueue(Com_IPduIdType PduId)
 /*------------------[Com_ProcessRetryQueue]--------------------------------*/
 void Com_ProcessRetryQueue(void)
 {
-    if (Com_RetryQueue.Count == 0) {
+    if (Com_RetryQueue.Count == 0U ) {
         return;
     }
     
@@ -454,7 +454,7 @@ Std_ReturnType Com_PerformRetry(Com_IPduIdType PduId)
     Com_UpdateConfirmationState(PduId, COM_TX_PENDING, COM_TX_RES_NONE);
     
     /* Reset timeout timer */
-    if (ipduConfig->TxConfirmation.TxTimeout > 0) {
+    if (ipduConfig->TxConfirmation.TxTimeout > 0U ) {
         ipduRuntime->TxConfTimeoutTimer = ipduConfig->TxConfirmation.TxTimeout;
     } else {
         ipduRuntime->TxConfTimeoutTimer = COM_DEFAULT_TX_TIMEOUT;
@@ -495,7 +495,7 @@ void Com_ProcessTxTimeouts(void)
         }
         
         /* Check for timeout */
-        if (ipduRuntime->TxConfTimeoutTimer > 0) {
+        if (ipduRuntime->TxConfTimeoutTimer > 0U ) {
             ipduRuntime->TxConfTimeoutTimer--;
         } else {
             /* Timeout occurred */
@@ -517,7 +517,7 @@ void Com_ResetTxTimeout(Com_IPduIdType PduId)
     const Com_IPduConfigType* ipduConfig = &Com_GlobalState.Config->IPdus[PduId];
     Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
     
-    if (ipduConfig->TxConfirmation.TxTimeout > 0) {
+    if (ipduConfig->TxConfirmation.TxTimeout > 0U ) {
         ipduRuntime->TxConfTimeoutTimer = ipduConfig->TxConfirmation.TxTimeout;
     } else {
         ipduRuntime->TxConfTimeoutTimer = COM_DEFAULT_TX_TIMEOUT;
@@ -625,7 +625,7 @@ static void Com_ProcessRetryEntry(Com_RetryQueueEntryType* Entry)
     Com_IPduIdType pduId = Entry->PduId;
     
     /* Check if we still have retries left */
-    if (Entry->RetryCount > 0) {
+    if (Entry->RetryCount > 0U ) {
         /* Perform retry */
         Std_ReturnType result = Com_PerformRetry(pduId);
         
@@ -633,7 +633,7 @@ static void Com_ProcessRetryEntry(Com_RetryQueueEntryType* Entry)
             /* Retry initiated successfully, decrement retry count */
             Entry->RetryCount--;
             
-            if (Entry->RetryCount == 0) {
+            if (Entry->RetryCount == 0U ) {
                 /* No more retries, remove from queue */
                 Entry->Active = FALSE;
                 Com_RetryQueue.Count--;

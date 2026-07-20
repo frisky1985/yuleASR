@@ -126,7 +126,7 @@ STATIC void Swc_EngineControl_UpdateParameters(void)
     swcEngineControl.parameters.engineTemperature = coolantTemp;
 
     /* Calculate engine load based on throttle and speed */
-    if (vehicleSpeed > 0) {
+    if (vehicleSpeed > 0U ) {
         swcEngineControl.parameters.engineLoad = (throttlePos * 100) / vehicleSpeed;
     } else {
         swcEngineControl.parameters.engineLoad = throttlePos;
@@ -195,7 +195,7 @@ STATIC void Swc_EngineControl_UpdateStateMachine(void)
             break;
 
         case ENGINE_STATE_FAULT:
-            if (swcEngineControl.faultCounter == 0) {
+            if (swcEngineControl.faultCounter == 0U ) {
                 nextState = ENGINE_STATE_OFF;
             }
             break;
@@ -280,7 +280,7 @@ STATIC void Swc_EngineControl_HandleFaults(void)
     }
 
     /* Decrement fault counter if conditions are normal */
-    if (swcEngineControl.faultCounter > 0 &&
+    if (swcEngineControl.faultCounter > 0U &&
         swcEngineControl.parameters.engineTemperature < ENG_OVERHEAT_THRESHOLD &&
         swcEngineControl.parameters.throttlePosition <= 100) {
         swcEngineControl.faultCounter--;

@@ -506,7 +506,7 @@ void DoIP_MainFunction(void)
     /* Handle vehicle announcement */
     if (DoIP_AnnouncementActive)
     {
-        if (DoIP_AnnouncementTimer == 0)
+        if (DoIP_AnnouncementTimer == 0U )
         {
             DoIP_SendVehicleAnnouncement();
             DoIP_AnnouncementCounter++;
@@ -616,7 +616,7 @@ Std_ReturnType DoIP_SendVehicleAnnouncement(void)
     dataPtr[idx++] = DoIP_VehicleAnnouncement.furtherActionReq;
 
     /* Sync Status (optional) */
-    if (DoIP_VehicleAnnouncement.syncStatus != 0)
+    if (DoIP_VehicleAnnouncement.syncStatus != 0U )
     {
         dataPtr[idx++] = DoIP_VehicleAnnouncement.syncStatus;
     }

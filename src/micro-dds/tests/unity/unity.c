@@ -76,7 +76,7 @@ int UnityEnd(void) {
     UnityPrintSummary();
     
     /* 返回退出码: 0=成功, 1=失败 */
-    return (Unity.fail_count > 0) ? 1 : 0;
+    return (Unity.fail_count > 0U ) ? 1 : 0;
 }
 
 void UnityRunTest(void (*test_func)(void), const char* test_name, int line) {
@@ -92,7 +92,7 @@ void UnityRunTest(void (*test_func)(void), const char* test_name, int line) {
     UnityPrintTestStart(test_name);
     
     /* 设置跳转点以处理测试失败 */
-    if (setjmp(Unity.env) == 0) {
+    if (setjmp(Unity.env) == 0U ) {
         /* 调用setUp */
         setUp();
         
@@ -134,7 +134,7 @@ void UnityPrintSummary(void) {
     printf("  Ignored: %u\n", ignored);
     printf("----------------------------------------\n");
     
-    if (failed == 0) {
+    if (failed == 0U ) {
         printf("\n*** ALL TESTS PASSED ***\n");
     } else {
         printf("\n*** %u TEST(S) FAILED ***\n", failed);

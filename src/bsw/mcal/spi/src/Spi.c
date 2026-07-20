@@ -288,7 +288,7 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
         *(base + (ECSPI_TXDATA / 4)) = TxData ? TxData[i] : 0xFF;
         
         /* 等待RX数据 */
-        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_RR) == 0) {
+        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_RR) == 0U ) {
             if (Spi_GetElapsedTime(startTime) > SPI_TRANSFER_TIMEOUT_MS) {
                 state->JobResult = SPI_JOB_FAILED;
                 Spi_Status = SPI_IDLE;
@@ -451,7 +451,7 @@ void Spi_IsrHandler(uint8 Channel)
     
     /* TX中断 - 继续填充FIFO */
     if ((stat & STATREG_TE) && state->Transferred < state->Length) {
-        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_TE) == 0 && 
+        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_TE) == 0U && 
                (state->Transferred + (state->Length - state->TxSent)) < SPI_FIFO_DEPTH) {
             *(base + (ECSPI_TXDATA / 4)) = 
                 state->TxBuffer ? state->TxBuffer[state->TxSent] : 0xFF;

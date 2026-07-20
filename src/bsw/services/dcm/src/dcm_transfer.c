@@ -1178,7 +1178,7 @@ Std_ReturnType Dcm_ValidateMemoryRange(
         }
     }
 
-    if (!found)
+    if (found == 0U)
     {
         result = E_NOT_OK;
     }

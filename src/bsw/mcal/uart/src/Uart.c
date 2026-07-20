@@ -422,7 +422,7 @@
    410|    
    411|    for (i = 0; i < Length; i++) {
    412|        /* 等待TX FIFO可用 */
-   413|        while ((*(base + (UART_USR1_OFFSET / 4)) & USR1_TRDY) == 0) {
+   413|        while ((*(base + (UART_USR1_OFFSET / 4)) & USR1_TRDY) == 0U ) {
    414|            if (Uart_GetElapsedTime(startTime) > ChannelConfig->TxTimeout) {
    415|                state->TxBuffer.Result = UART_RESULT_TIMEOUT;
    416|                state->TxStatus = UART_TX_ERROR;
@@ -438,7 +438,7 @@
    426|    }
    427|    
    428|    /* 等待传输完成 */
-   429|    while ((*(base + (UART_USR2_OFFSET / 4)) & USR2_TXDC) == 0) {
+   429|    while ((*(base + (UART_USR2_OFFSET / 4)) & USR2_TXDC) == 0U ) {
    430|        if (Uart_GetElapsedTime(startTime) > ChannelConfig->TxTimeout) {
    431|            state->TxBuffer.Result = UART_RESULT_TIMEOUT;
    432|            state->TxStatus = UART_TX_ERROR;
@@ -613,7 +613,7 @@
    601|    
    602|    for (i = 0; i < Length; i++) {
    603|        /* 等待RX FIFO就绪 */
-   604|        while ((*(base + (UART_USR2_OFFSET / 4)) & USR2_RDR) == 0) {
+   604|        while ((*(base + (UART_USR2_OFFSET / 4)) & USR2_RDR) == 0U ) {
    605|            if (Uart_GetElapsedTime(startTime) > ChannelConfig->RxTimeout) {
    606|                state->RxBuffer.Result = UART_RESULT_TIMEOUT;
    607|                state->RxStatus = UART_RX_ERROR;
@@ -806,7 +806,7 @@ Std_ReturnType Uart_SetBaudRate(Uart_ChannelType Channel, uint32 BaudRate)
     UART_VALIDATE_CHANNEL(Channel, UART_SERVICE_ID_SETBAUDRATE);
     UART_VALIDATE_INITIALIZED(UART_SERVICE_ID_SETBAUDRATE);
     
-    if (BaudRate == 0) {
+    if (BaudRate == 0U ) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_SETBAUDRATE, UART_E_PARAM_BAUDRATE);

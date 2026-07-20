@@ -173,7 +173,7 @@ Mqtt_ReturnType Mqtt_CertMgr_RemoveCert(const char* alias)
     }
     
     /* 清零证书数据(安全清除) */
-    if (CertMgr_Certs[idx].data != NULL && CertMgr_Certs[idx].dataLen > 0) {
+    if (CertMgr_Certs[idx].data != NULL && CertMgr_Certs[idx].dataLen > 0U ) {
         memset(CertMgr_Certs[idx].data, 0, CertMgr_Certs[idx].dataLen);
     }
     
@@ -207,7 +207,7 @@ Mqtt_ReturnType Mqtt_CertMgr_UpdateCert(const char* alias,
 {
     Mqtt_ReturnType result;
     
-    if (!CertMgr_Initialized || alias == NULL || newData == NULL || dataLen == 0) {
+    if (!CertMgr_Initialized || alias == NULL || newData == NULL || dataLen == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -354,7 +354,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCert(const char* alias,
     /* 解析证书 */
     ret = mbedtls_x509_crt_parse(&crt, CertMgr_Certs[idx].data, 
                                   CertMgr_Certs[idx].dataLen + 1);
-    if (ret != 0) {
+    if (ret != 0U ) {
         mbedtls_x509_crt_free(&crt);
         *status = MQTT_CERT_STATUS_INVALID_FORMAT;
         return MQTT_OK;
@@ -378,7 +378,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCert(const char* alias,
     /* 使用mbedTLS验证证书 */
     ret = mbedtls_x509_crt_verify(&crt, &crt, NULL, NULL, &flags, 
                                    NULL, NULL);
-    if (ret != 0) {
+    if (ret != 0U ) {
         if (flags & MBEDTLS_X509_BADCERT_EXPIRED) {
             *status = MQTT_CERT_STATUS_EXPIRED;
         } else if (flags & MBEDTLS_X509_BADCERT_REVOKED) {
@@ -426,7 +426,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCertChain(const char* certAlias,
     /* 解析证书 */
     ret = mbedtls_x509_crt_parse(&cert, CertMgr_Certs[certIdx].data,
                                   CertMgr_Certs[certIdx].dataLen + 1);
-    if (ret != 0) {
+    if (ret != 0U ) {
         mbedtls_x509_crt_free(&cert);
         mbedtls_x509_crt_free(&caCert);
         return MQTT_OK;
@@ -438,7 +438,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCertChain(const char* certAlias,
         if (caIdx >= 0) {
             ret = mbedtls_x509_crt_parse(&caCert, CertMgr_Certs[caIdx].data,
                                           CertMgr_Certs[caIdx].dataLen + 1);
-            if (ret != 0) {
+            if (ret != 0U ) {
                 mbedtls_x509_crt_free(&cert);
                 mbedtls_x509_crt_free(&caCert);
                 return MQTT_OK;
@@ -450,7 +450,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCertChain(const char* certAlias,
     ret = mbedtls_x509_crt_verify(&cert, &caCert, NULL, NULL, &flags,
                                    NULL, NULL);
     
-    *isValid = (ret == 0);
+    *isValid = (ret == 0U );
     
     mbedtls_x509_crt_free(&cert);
     mbedtls_x509_crt_free(&caCert);
@@ -483,7 +483,7 @@ Mqtt_ReturnType Mqtt_CertMgr_CheckExpiry(const char* alias,
     mbedtls_x509_crt_init(&crt);
     ret = mbedtls_x509_crt_parse(&crt, CertMgr_Certs[idx].data,
                                   CertMgr_Certs[idx].dataLen + 1);
-    if (ret != 0) {
+    if (ret != 0U ) {
         mbedtls_x509_crt_free(&crt);
         return MQTT_E_NOT_OK;
     }
@@ -531,7 +531,7 @@ Mqtt_ReturnType Mqtt_CertMgr_GetCertAliasByIndex(uint8 index,
     uint8 i;
     uint8 count = 0;
     
-    if (!CertMgr_Initialized || alias == NULL || aliasSize == 0) {
+    if (!CertMgr_Initialized || alias == NULL || aliasSize == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -555,7 +555,7 @@ Mqtt_ReturnType Mqtt_CertMgr_FindCertByType(Mqtt_CertType type,
 {
     uint8 i;
     
-    if (!CertMgr_Initialized || alias == NULL || aliasSize == 0) {
+    if (!CertMgr_Initialized || alias == NULL || aliasSize == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -654,7 +654,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ExportToPem(const char* alias,
     sint8 idx;
     
     if (!CertMgr_Initialized || alias == NULL || pemBuffer == NULL || 
-        bufferSize == 0 || writtenSize == NULL) {
+        bufferSize == 0U || writtenSize == NULL) {
         return MQTT_E_NOT_OK;
     }
     
@@ -690,7 +690,7 @@ static sint8 CertMgr_FindCertIndex(const char* alias)
     
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
         if (CertMgr_Certs[i].isLoaded &&
-            strcmp(CertMgr_Certs[i].alias, alias) == 0) {
+            strcmp(CertMgr_Certs[i].alias, alias) == 0U ) {
             return (sint8)i;
         }
     }
@@ -705,7 +705,7 @@ static Mqtt_ReturnType CertMgr_ParseCertInfo(const uint8* data,
     mbedtls_x509_crt crt;
     int ret;
     
-    if (data == NULL || dataLen == 0 || entry == NULL) {
+    if (data == NULL || dataLen == 0U || entry == NULL) {
         return MQTT_E_NOT_OK;
     }
     
@@ -714,7 +714,7 @@ static Mqtt_ReturnType CertMgr_ParseCertInfo(const uint8* data,
     
     /* 解析证书 */
     ret = mbedtls_x509_crt_parse(&crt, data, dataLen + 1);
-    if (ret != 0) {
+    if (ret != 0U ) {
         /* 解析失败，使用默认值 */
         mbedtls_x509_crt_free(&crt);
         
@@ -785,19 +785,19 @@ static void CertMgr_ParseSubject(const mbedtls_x509_name* name,
         buf[len] = '\0';
         
         /* 根据OID识别属性类型 */
-        if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid) == 0) {
+        if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid) == 0U ) {
             strncpy(subject->commonName, buf, sizeof(subject->commonName) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid) == 0) {
+        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid) == 0U ) {
             strncpy(subject->organization, buf, sizeof(subject->organization) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid) == 0) {
+        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid) == 0U ) {
             strncpy(subject->organizationalUnit, buf, sizeof(subject->organizationalUnit) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid) == 0) {
+        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid) == 0U ) {
             strncpy(subject->country, buf, sizeof(subject->country) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid) == 0) {
+        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid) == 0U ) {
             strncpy(subject->state, buf, sizeof(subject->state) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid) == 0) {
+        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid) == 0U ) {
             strncpy(subject->locality, buf, sizeof(subject->locality) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid) == 0) {
+        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid) == 0U ) {
             strncpy(subject->email, buf, sizeof(subject->email) - 1);
         }
     }
@@ -816,7 +816,7 @@ static void CertMgr_ParseExtensions(const mbedtls_x509_crt* crt,
     ext->extKeyUsage = 0; /* mbedTLS 2.28中简化处理 */
     
     /* 提取序列号 */
-    if (crt->serial.p != NULL && crt->serial.len > 0) {
+    if (crt->serial.p != NULL && crt->serial.len > 0U ) {
         ext->serialNumber = 0;
         for (size_t i = 0; i < crt->serial.len && i < 4; i++) {
             ext->serialNumber = (ext->serialNumber << 8) | crt->serial.p[i];

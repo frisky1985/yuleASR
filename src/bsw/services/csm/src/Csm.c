@@ -370,7 +370,7 @@ STATIC Std_ReturnType Csm_QueueJob(uint32 jobId, Csm_JobPriorityType priority)
 STATIC Std_ReturnType Csm_DequeueJob(uint32* jobId)
 {
 #if (CSM_CFG_QUEUE_SUPPORT == STD_ON)
-    if (Csm_JobQueue.count == 0)
+    if (Csm_JobQueue.count == 0U )
     {
         return E_NOT_OK;
     }
@@ -406,7 +406,7 @@ STATIC void Csm_ProcessQueue(void)
     }
     
     /* 从队列取出作业并执行 */
-    while ((Csm_JobQueue.count > 0) && (Csm_ActiveJobCount < CSM_CFG_MAX_CONCURRENT_JOBS))
+    while ((Csm_JobQueue.count > 0U ) && (Csm_ActiveJobCount < CSM_CFG_MAX_CONCURRENT_JOBS))
     {
         if (E_OK == Csm_DequeueJob(&jobId))
         {
@@ -463,7 +463,7 @@ STATIC Std_ReturnType Csm_ExecuteJob(uint8 jobIdx)
     {
         job->state = CSM_JOB_STATE_IDLE;
         Csm_NotifyEvent(job->jobId, result);
-        if (Csm_ActiveJobCount > 0)
+        if (Csm_ActiveJobCount > 0U )
         {
             Csm_ActiveJobCount--;
         }
@@ -515,7 +515,7 @@ STATIC Std_ReturnType Csm_ValidateKeyUsage(uint32 keyId, Csm_KeyUsageType requir
         {
             if (Csm_CurrentConfig->keys[i].keyId == keyId)
             {
-                if ((Csm_CurrentConfig->keys[i].allowedUsage & requiredUsage) == 0)
+                if ((Csm_CurrentConfig->keys[i].allowedUsage & requiredUsage) == 0U )
                 {
                     return E_NOT_OK; /* 权限不足 */
                 }
@@ -796,7 +796,7 @@ Std_ReturnType Csm_KeySetValid(uint32 keyId)
     }
     
     /* 检查必需的元素是否已设置 */
-    if (Csm_Keys[keyIdx].numElements == 0)
+    if (Csm_Keys[keyIdx].numElements == 0U )
     {
         return E_NOT_OK;
     }
@@ -1981,7 +1981,7 @@ Std_ReturnType Csm_Hash(
         return E_NOT_OK;
     }
     
-    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    if ((mode & CSM_OPERATION_MODE_START) != 0U )
     {
         Csm_ResetJob(jobIdx);
         Csm_Jobs[jobIdx].service = CSM_SERVICE_HASH;
@@ -1994,13 +1994,13 @@ Std_ReturnType Csm_Hash(
         return E_NOT_OK;
     }
     
-    if (dataPtr != NULL_PTR && dataLength > 0)
+    if (dataPtr != NULL_PTR && dataLength > 0U )
     {
 (void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
         Csm_Jobs[jobIdx].inputLength = dataLength;
     }
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         result = Csm_Cfg_HwService(
             jobId,
@@ -2066,7 +2066,7 @@ Std_ReturnType Csm_MacGenerate(
         return E_NOT_OK;
     }
     
-    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    if ((mode & CSM_OPERATION_MODE_START) != 0U )
     {
         Csm_ResetJob(jobIdx);
         Csm_Jobs[jobIdx].service = CSM_SERVICE_MAC_GENERATE;
@@ -2080,7 +2080,7 @@ Std_ReturnType Csm_MacGenerate(
 (void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         result = Csm_Cfg_HwService(
             jobId,
@@ -2153,11 +2153,11 @@ Std_ReturnType Csm_MacVerify(
         return result;
     }
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         if (calculatedMacLength == macLength)
         {
-            *verifyPtr = (Mcal_MemCompare(calculatedMac, macPtr, macLength) == 0);
+            *verifyPtr = (Mcal_MemCompare(calculatedMac, macPtr, macLength) == 0U );
         }
         else
         {
@@ -2198,7 +2198,7 @@ Std_ReturnType Csm_Encrypt(
         return E_NOT_OK;
     }
     
-    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    if ((mode & CSM_OPERATION_MODE_START) != 0U )
     {
         Csm_ResetJob(jobIdx);
         Csm_Jobs[jobIdx].service = CSM_SERVICE_ENCRYPT;
@@ -2212,7 +2212,7 @@ Std_ReturnType Csm_Encrypt(
 (void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         result = Csm_Cfg_HwService(
             jobId,
@@ -2274,7 +2274,7 @@ Std_ReturnType Csm_Decrypt(
         return E_NOT_OK;
     }
     
-    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    if ((mode & CSM_OPERATION_MODE_START) != 0U )
     {
         Csm_ResetJob(jobIdx);
         Csm_Jobs[jobIdx].service = CSM_SERVICE_DECRYPT;
@@ -2288,7 +2288,7 @@ Std_ReturnType Csm_Decrypt(
 (void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         result = Csm_Cfg_HwService(
             jobId,
@@ -2350,7 +2350,7 @@ Std_ReturnType Csm_SignatureGenerate(
         return E_NOT_OK;
     }
     
-    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    if ((mode & CSM_OPERATION_MODE_START) != 0U )
     {
         Csm_ResetJob(jobIdx);
         Csm_Jobs[jobIdx].service = CSM_SERVICE_SIGNATURE_GENERATE;
@@ -2364,7 +2364,7 @@ Std_ReturnType Csm_SignatureGenerate(
 (void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
     Csm_Jobs[jobIdx].inputLength = dataLength;
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         result = Csm_Cfg_HwService(
             jobId,
@@ -2427,13 +2427,13 @@ Std_ReturnType Csm_SignatureVerify(
         return E_NOT_OK;
     }
     
-    if ((mode & CSM_OPERATION_MODE_START) != 0)
+    if ((mode & CSM_OPERATION_MODE_START) != 0U )
     {
         Csm_ResetJob(jobIdx);
         Csm_Jobs[jobIdx].service = CSM_SERVICE_SIGNATURE_VERIFY;
     }
     
-    if ((mode & CSM_OPERATION_MODE_UPDATE) != 0)
+    if ((mode & CSM_OPERATION_MODE_UPDATE) != 0U )
     {
         if (dataLength > CSM_MAX_DATA_LENGTH)
         {
@@ -2443,7 +2443,7 @@ Std_ReturnType Csm_SignatureVerify(
         Csm_Jobs[jobIdx].inputLength = dataLength;
     }
     
-    if ((mode & CSM_OPERATION_MODE_FINISH) != 0)
+    if ((mode & CSM_OPERATION_MODE_FINISH) != 0U )
     {
         /* 存储签名 */
         if (signatureLength > CSM_MAX_SIGNATURE_LENGTH)
@@ -2548,7 +2548,7 @@ Std_ReturnType Csm_CancelJob(uint32 jobId)
     if (Csm_Jobs[jobIdx].state == CSM_JOB_STATE_PROCESSING)
     {
         Csm_ResetJob(jobIdx);
-        if (Csm_ActiveJobCount > 0)
+        if (Csm_ActiveJobCount > 0U )
         {
             Csm_ActiveJobCount--;
         }

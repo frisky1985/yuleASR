@@ -140,7 +140,7 @@ Std_ReturnType LinMaster_Schedule_Init(const LinMaster_ScheduleTableType* Schedu
     if (ScheduleTable != NULL) {
         g_ScheduleCtrl.CurrentTable = ScheduleTable;
         /* 如果是运行时表，复制条目到运行时缓存 */
-        if (ScheduleTable->Entries != NULL && ScheduleTable->EntryCount > 0) {
+        if (ScheduleTable->Entries != NULL && ScheduleTable->EntryCount > 0U) {
             /* 检查条目数是否超出限制 */
             if (ScheduleTable->EntryCount <= LINMASTER_SCHEDULE_MAX_ENTRIES) {
                 (void)memcpy(g_ScheduleCtrl.RuntimeEntries,
@@ -405,7 +405,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     g_ScheduleCtrl.CurrentTable = NewTable;
     
     /* 复制条目到运行时缓存(如果是静态表) */
-    if (NewTable->Entries != NULL && NewTable->EntryCount > 0) {
+    if (NewTable->Entries != NULL && NewTable->EntryCount > 0U) {
         if (NewTable->EntryCount <= LINMASTER_SCHEDULE_MAX_ENTRIES) {
             (void)memcpy(g_ScheduleCtrl.RuntimeEntries,
                    NewTable->Entries,

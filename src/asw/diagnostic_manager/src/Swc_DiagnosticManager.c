@@ -336,7 +336,7 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
 
         case UDS_DTC_SUBFUNC_EXTENDED_DATA:  /* Report DTC extended data record */
             /* Simplified - return first DTC extended data */
-            if (swcDiagManager.numDtcs > 0) {
+            if (swcDiagManager.numDtcs > 0U ) {
                 response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
                 response->dataLength = 8;
                 response->data[0] = UDS_EXTENDED_DATA_RECORD_VAL;
@@ -462,7 +462,7 @@ void Swc_DiagnosticManager_Init(void)
 {
     uint8 i;
 
-    if (swcDiagManager.status.currentSession != 0) {
+    if (swcDiagManager.status.currentSession != 0U ) {
         /* Already initialized */
         return;
     }
@@ -734,7 +734,7 @@ Rte_StatusType Swc_DiagnosticManager_GetStatus(Swc_DiagnosticManagerStatusType* 
  */
 void Swc_DiagnosticManager_MainFunction(void)
 {
-    if (swcDiagManager.status.currentSession == 0) {
+    if (swcDiagManager.status.currentSession == 0U ) {
         return; /* Not initialized */
     }
 
@@ -754,7 +754,7 @@ void Swc_DiagnosticManager_Deinit(void)
 {
     uint8 i;
 
-    if (swcDiagManager.status.currentSession == 0) {
+    if (swcDiagManager.status.currentSession == 0U ) {
         return;
     }
 

@@ -247,7 +247,7 @@ Dcm_ReturnType Dcm_DiagnosticSessionControl(
     
     /* Extract subfunction */
     uint8_t subfunction = request->data[1] & DCM_SUBFUNCTION_MASK;
-    bool suppressResponse = (request->data[1] & DCM_SUPPRESS_POS_RESPONSE_MASK) != 0;
+    bool suppressResponse = (request->data[1] & DCM_SUPPRESS_POS_RESPONSE_MASK) != 0U ;
     
     /* Validate session type */
     Dcm_SessionType targetSession;
@@ -368,7 +368,7 @@ Dcm_ReturnType Dcm_SetSession(Dcm_SessionType session, uint16_t testerAddress)
         s_sessionState.currentP2StarServerMax = config->timing.p2StarServerMax;
         
         /* Configure session timer */
-        if (config->sessionTimeoutMs > 0) {
+        if (config->sessionTimeoutMs > 0U ) {
             s_sessionState.sessionTimer = config->sessionTimeoutMs;
             s_sessionState.sessionTimerActive = true;
         } else {
@@ -450,7 +450,7 @@ Dcm_ReturnType Dcm_SessionTimerUpdate(uint32_t elapsedTimeMs)
     }
     
     /* Update session timer */
-    if (s_sessionState.sessionTimerActive && s_sessionState.sessionTimer > 0) {
+    if (s_sessionState.sessionTimerActive && s_sessionState.sessionTimer > 0U ) {
         if (s_sessionState.sessionTimer > elapsedTimeMs) {
             s_sessionState.sessionTimer -= elapsedTimeMs;
         } else {
@@ -462,7 +462,7 @@ Dcm_ReturnType Dcm_SessionTimerUpdate(uint32_t elapsedTimeMs)
     }
     
     /* Update S3 timer */
-    if (s_sessionState.s3TimerActive && s_sessionState.s3Timer > 0) {
+    if (s_sessionState.s3TimerActive && s_sessionState.s3Timer > 0U ) {
         if (s_sessionState.s3Timer > elapsedTimeMs) {
             s_sessionState.s3Timer -= elapsedTimeMs;
         } else {
@@ -527,7 +527,7 @@ Dcm_ReturnType Dcm_SetSessionTimingParameters(
     }
     
     /* Validate parameters */
-    if (p2ServerMax == 0 || p2StarServerMax == 0) {
+    if (p2ServerMax == 0U || p2StarServerMax == 0U ) {
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     

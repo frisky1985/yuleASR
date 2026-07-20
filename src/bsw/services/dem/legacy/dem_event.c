@@ -278,7 +278,7 @@ Std_ReturnType Dem_GetEventDebouncingStatus(
         else if (entry->debounceCounter >= DEM_DEBOUNCE_COUNTER_MAX) {
             *DebounceStatus = DEM_DEBOUNCE_STATUS_FAILED;
         }
-        else if (entry->debounceCounter > 0) {
+        else if (entry->debounceCounter > 0U ) {
             *DebounceStatus = DEM_DEBOUNCE_STATUS_PREFAILED;
         }
         else if (entry->debounceCounter < 0) {

@@ -181,7 +181,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
         return E_NOT_OK;
     }
 
-    if (!gCryptoAesInitialized) {
+    if (gCryptoAesInitialized == 0U) {
         return E_NOT_OK;
     }
 
@@ -373,7 +373,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
         return E_NOT_OK;
     }
 
-    if (!gCryptoAesInitialized) {
+    if (gCryptoAesInitialized == 0U) {
         return E_NOT_OK;
     }
 

@@ -207,7 +207,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     }
     
     /* 加载CA证书 */
-    if (config->trustStore.caCert != NULL && config->trustStore.caCertLength > 0) {
+    if (config->trustStore.caCert != NULL && config->trustStore.caCertLength > 0U ) {
         if (config->trustStore.caFormat == MQTT_CERT_FORMAT_PEM) {
             ret = mbedtls_x509_crt_parse(&ctx->caCert, 
                 config->trustStore.caCert, config->trustStore.caCertLength + 1);
@@ -216,7 +216,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
                 config->trustStore.caCert, config->trustStore.caCertLength);
         }
         
-        if (ret != 0) {
+        if (ret != 0U ) {
             ctx->lastError = ret;
             goto cleanup;
         }
@@ -234,7 +234,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
                 config->clientCert->data, config->clientCert->length);
         }
         
-        if (ret != 0) {
+        if (ret != 0U ) {
             ctx->lastError = ret;
             goto cleanup;
         }
@@ -247,13 +247,13 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
                 (const unsigned char*)pwd, pwd ? strlen(pwd) : 0,
                 mbedtls_ctr_drbg_random, NULL);
             
-            if (ret != 0) {
+            if (ret != 0U ) {
                 ctx->lastError = ret;
                 goto cleanup;
             }
             
             ret = mbedtls_ssl_conf_own_cert(&ctx->conf, &ctx->clientCert, &ctx->clientKey);
-            if (ret != 0) {
+            if (ret != 0U ) {
                 ctx->lastError = ret;
                 goto cleanup;
             }
@@ -263,7 +263,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     /* 配置SNI */
     if (config->expectedHostname != NULL) {
         ret = mbedtls_ssl_set_hostname(&ctx->ssl, config->expectedHostname);
-        if (ret != 0) {
+        if (ret != 0U ) {
             ctx->lastError = ret;
             goto cleanup;
         }
@@ -275,7 +275,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     
     /* 应用配置 */
     ret = mbedtls_ssl_setup(&ctx->ssl, &ctx->conf);
-    if (ret != 0) {
+    if (ret != 0U ) {
         ctx->lastError = ret;
         goto cleanup;
     }
@@ -355,7 +355,7 @@ Mqtt_ReturnType Mqtt_Tls_PerformHandshake(
     /* 执行TLS握手 */
     ret = mbedtls_ssl_handshake(&ctx->ssl);
     
-    if (ret == 0) {
+    if (ret == 0U ) {
         ctx->handshakeComplete = TRUE;
         
         /* 保存会话(如果启用) */
@@ -404,13 +404,13 @@ Mqtt_ReturnType Mqtt_Tls_Send(
         return MQTT_E_NOT_OK;
     }
     
-    if (data == NULL || length == 0) {
+    if (data == NULL || length == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
     ret = mbedtls_ssl_write(&ctx->ssl, data, length);
     
-    if (ret > 0) {
+    if (ret > 0U ) {
         if (sentLength != NULL) {
             *sentLength = (uint32)ret;
         }
@@ -440,7 +440,7 @@ Mqtt_ReturnType Mqtt_Tls_Receive(
         return MQTT_E_NOT_OK;
     }
     
-    if (buffer == NULL || bufferSize == 0) {
+    if (buffer == NULL || bufferSize == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -505,8 +505,8 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
     
     /* 获取验证结果 */
     flags = mbedtls_ssl_get_verify_result(&ctx->ssl);
-    result->isValid = (flags == 0);
-    result->isTrusted = (flags == 0);
+    result->isValid = (flags == 0U );
+    result->isTrusted = (flags == 0U );
     
     /* 获取对端证书 */
     peerCert = mbedtls_ssl_get_peer_cert(&ctx->ssl);
@@ -524,7 +524,7 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
         }
         
         /* 检查过期 */
-        if (peerCert->next.p == NULL || peerCert->next.len == 0) {
+        if (peerCert->next.p == NULL || peerCert->next.len == 0U ) {
             result->notExpired = TRUE;
         }
     }
@@ -676,7 +676,7 @@ Mqtt_ReturnType Mqtt_Tls_GetCipherSuite(
         return MQTT_E_NOT_OK;
     }
     
-    if (name == NULL || nameSize == 0) {
+    if (name == NULL || nameSize == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -751,7 +751,7 @@ static int Mqtt_Tls_RecvCallback(void* ctx, unsigned char* buf, size_t len)
     result = TcpIp_Receive(tlsCtx->socketId, buf, (uint16)len, &recvLen);
     
     if (result == E_OK) {
-        if (recvLen == 0) {
+        if (recvLen == 0U ) {
             return MBEDTLS_ERR_SSL_WANT_READ;
         }
         return (int)recvLen;

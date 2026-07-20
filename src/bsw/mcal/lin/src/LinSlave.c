@@ -182,7 +182,7 @@ LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType*
  */
 void LinSlave_DeInit(void)
 {
-    if (!LinSlave_IsInitialized) {
+    if (LinSlave_IsInitialized == 0U) {
         return;
     }
     
@@ -235,7 +235,7 @@ static void LinSlave_ProcessError(LinSlave_ErrorType Error)
  */
 void LinSlave_RxInterruptHandler(uint8 RxByte)
 {
-    if (!LinSlave_IsInitialized) {
+    if (LinSlave_IsInitialized == 0U) {
         return;
     }
     
@@ -393,7 +393,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
                 LinSlave_TxBuffer,
                 LinSlave_TxLength,
                 LinSlave_CurrentPid,
-                (LinSlave_ChecksumType)(UseConfigTable ? 0 : LinSlave_ConfigPtr->ChecksumType)
+                (LinSlave_ChecksumType)(UseConfigTable ? 0U : LinSlave_ConfigPtr->ChecksumType)
             );
             
             if (RxByte == CalculatedCsum) {
@@ -426,7 +426,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
  */
 void LinSlave_BreakDetected(void)
 {
-    if (!LinSlave_IsInitialized) {
+    if (LinSlave_IsInitialized == 0U) {
         return;
     }
     
@@ -462,7 +462,7 @@ static void LinSlave_SendResponse(void)
     LinSlave_Hal_DisableRxInterrupt();
     
     /* 发送数据 */
-    for (i = 0; i < LinSlave_TxLength; i++) {
+    for (i = 0U; i < LinSlave_TxLength; i++) {
         LinSlave_Hal_UartSend(LinSlave_TxBuffer[i]);
     }
     
@@ -520,7 +520,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
         frame->TxCallback(FrameIndex, txData, &txLength, frame->UserData);
     }
     
-    if (txLength == 0 || txLength > 8) {
+    if (txLength == 0U || txLength > 8) {
         return;
     }
     
@@ -528,7 +528,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
     LinSlave_Hal_DisableRxInterrupt();
     
     /* 发送数据 */
-    for (i = 0; i < txLength; i++) {
+    for (i = 0U; i < txLength; i++) {
         LinSlave_Hal_UartSend(txData[i]);
     }
     
@@ -551,7 +551,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
 LinSlave_StatusType LinSlave_SetResponseData(const uint8* DataPtr, uint8 Length)
 {
 #if (LINSLAVE_DEV_ERROR_DETECT == STD_ON)
-    if (!LinSlave_IsInitialized) {
+    if (LinSlave_IsInitialized == 0U) {
         return LINSLAVE_NOT_OK;
     }
     
@@ -618,7 +618,7 @@ const LinSlave_ConfigType LinSlave_DefaultConfig = {
  */
 void LinSlave_MainFunction(void)
 {
-    if (!LinSlave_IsInitialized) {
+    if (LinSlave_IsInitialized == 0U) {
         return;
     }
     

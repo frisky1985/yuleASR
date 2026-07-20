@@ -205,7 +205,7 @@ Std_ReturnType NvM_RedundantCheckConsistency(NvM_BlockIdType BlockId)
     }
     
     /* Compare */
-    if (memcmp(PrimaryBuffer, MirrorBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength) == 0)
+    if (memcmp(PrimaryBuffer, MirrorBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength) == 0U )
     {
         return E_OK;
     }

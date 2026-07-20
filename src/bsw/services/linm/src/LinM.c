@@ -283,7 +283,7 @@ void LinM_DeInit(void)
 {
     uint8 i;
     
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_DEINIT, LINM_E_NOT_INITIALIZED);
 #endif
@@ -334,7 +334,7 @@ Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleType Sch
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_INIT_SCHEDULE, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -369,7 +369,7 @@ Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_ScheduleType Sc
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_START_SCHEDULE, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -409,7 +409,7 @@ Std_ReturnType LinM_StopSchedule(LinM_ChannelType Channel)
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_STOP_SCHEDULE, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -438,7 +438,7 @@ Std_ReturnType LinM_SetScheduleMode(LinM_ChannelType Channel, LinM_ScheduleModeT
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_SET_SCHEDULE_MODE, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -472,7 +472,7 @@ Std_ReturnType LinM_GetScheduleStatus(LinM_ChannelType Channel, LinM_ScheduleSta
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_GET_SCHEDULE_STATUS, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -502,7 +502,7 @@ void LinM_MainFunction(void)
 {
     uint8 i;
     
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         return;
     }
     
@@ -520,7 +520,7 @@ Std_ReturnType LinM_WakeUp(LinM_ChannelType Channel)
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_WAKEUP, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -549,7 +549,7 @@ Std_ReturnType LinM_GotoSleep(LinM_ChannelType Channel)
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_GOTOSLEEP, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
@@ -578,7 +578,7 @@ Std_ReturnType LinM_GetSlaveResponse(LinM_ChannelType Channel, LinM_SlaveRespons
     Std_ReturnType result = E_NOT_OK;
     
 #if (LINM_DEV_ERROR_DETECT == STD_ON)
-    if (!LinM_Initialized) {
+    if (LinM_Initialized == 0U) {
         (void)Det_ReportError(LINM_MODULE_ID, 0U, LINM_SID_GET_SLAVE_RESPONSE, LINM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }

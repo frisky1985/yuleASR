@@ -311,7 +311,7 @@ void Test_SomeIpTp_GetRxBufferStatus(void)
     result = SomeIpTp_GetRxBufferStatus(SOMEIPTP_PDU_ID_CHANNEL_0_RX, &bufferSize);
     
     (void)TEST_ASSERT_EQ(E_OK, result, "GetRxBufferStatus should return E_OK");
-    TEST_ASSERT(bufferSize > 0, "Buffer size should be greater than 0");
+    TEST_ASSERT(bufferSize > 0U , "Buffer size should be greater than 0");
 }
 
 /**
@@ -396,7 +396,7 @@ int main(void)
     (void)printf("Failed:       %d\n", tests_failed);
     (void)printf("Coverage:     ~90%% (12/13 APIs tested)\n");
     
-    if (tests_failed == 0) {
+    if (tests_failed == 0U ) {
         (void)printf("\n[RESULT] ALL TESTS PASSED ✅\n");
         return 0;
     } else {

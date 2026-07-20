@@ -68,8 +68,7 @@ void Lin_Init(const Lin_ConfigType* Config)
 void Lin_DeInit(void)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         Det_ReportError(LIN_MODULE_ID, LIN_INSTANCE_ID, LIN_DEINIT_SID, LIN_E_UNINIT);
         return;
     }
@@ -103,8 +102,7 @@ void Lin_GetVersionInfo(Std_VersionInfoType* versioninfo)
 Std_ReturnType Lin_SendFrame(Lin_ChannelType Channel, const Lin_PduType* PduInfoPtr)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         Det_ReportError(LIN_MODULE_ID, LIN_INSTANCE_ID, LIN_SENDFRAME_SID, LIN_E_UNINIT);
         return E_NOT_OK;
     }
@@ -148,8 +146,7 @@ Std_ReturnType Lin_SendFrame(Lin_ChannelType Channel, const Lin_PduType* PduInfo
 Std_ReturnType Lin_SendResponse(Lin_ChannelType Channel, const Lin_PduType* PduInfoPtr)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         return E_NOT_OK;
     }
     if (Channel >= LIN_MAX_CHANNELS)
@@ -176,8 +173,7 @@ Std_ReturnType Lin_SendResponse(Lin_ChannelType Channel, const Lin_PduType* PduI
 Std_ReturnType Lin_DisableResponse(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         return E_NOT_OK;
     }
     if (Channel >= LIN_MAX_CHANNELS)
@@ -194,8 +190,7 @@ Std_ReturnType Lin_DisableResponse(Lin_ChannelType Channel)
 Std_ReturnType Lin_WakeUp(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         Det_ReportError(LIN_MODULE_ID, LIN_INSTANCE_ID, LIN_WAKEUP_SID, LIN_E_UNINIT);
         return E_NOT_OK;
     }
@@ -217,8 +212,7 @@ Std_ReturnType Lin_WakeUp(Lin_ChannelType Channel)
 Std_ReturnType Lin_WakeUpInternal(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         return E_NOT_OK;
     }
     if (Channel >= LIN_MAX_CHANNELS)
@@ -236,8 +230,7 @@ Std_ReturnType Lin_WakeUpInternal(Lin_ChannelType Channel)
 Std_ReturnType Lin_CheckWakeup(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         return E_NOT_OK;
     }
     if (Channel >= LIN_MAX_CHANNELS)
@@ -255,8 +248,7 @@ Std_ReturnType Lin_CheckWakeup(Lin_ChannelType Channel)
 Lin_StatusType Lin_GetStatus(Lin_ChannelType Channel, uint8** Lin_SduPtr)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         Det_ReportError(LIN_MODULE_ID, LIN_INSTANCE_ID, LIN_GETSTATUS_SID, LIN_E_UNINIT);
         return LIN_NOT_OK;
     }
@@ -278,8 +270,7 @@ Lin_StatusType Lin_GetStatus(Lin_ChannelType Channel, uint8** Lin_SduPtr)
 Std_ReturnType Lin_GoToSleep(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         Det_ReportError(LIN_MODULE_ID, LIN_INSTANCE_ID, LIN_GOTOSLEEP_SID, LIN_E_UNINIT);
         return E_NOT_OK;
     }
@@ -301,8 +292,7 @@ Std_ReturnType Lin_GoToSleep(Lin_ChannelType Channel)
 Std_ReturnType Lin_GoToSleepInternal(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
-    if (!Lin_ModuleInitialized)
-    {
+    if (Lin_ModuleInitialized == 0U) {
         return E_NOT_OK;
     }
     if (Channel >= LIN_MAX_CHANNELS)

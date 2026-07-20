@@ -277,5 +277,5 @@ int main(void) {
     printf("Test Results: %d passed, %d failed\n", tests_passed, tests_failed);
     printf("========================================\n");
     
-    return (tests_failed > 0) ? 1 : 0;
+    return (tests_failed > 0U ) ? 1 : 0;
 }

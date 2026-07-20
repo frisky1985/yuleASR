@@ -31,7 +31,7 @@ Eth_InternalStateType Eth_InternalState;
 Eth_CtrlStateType Eth_CtrlState[ETH_MAX_CONTROLLERS];
 
 /* TX and RX descriptors */
-#if (ETH_MAX_CONTROLLERS > 0)
+#if (ETH_MAX_CONTROLLERS > 0U)
 Eth_TxDescType Eth_TxDesc[ETH_MAX_CONTROLLERS][ETH_MAX_TX_BUFS];
 Eth_RxDescType Eth_RxDesc[ETH_MAX_CONTROLLERS][ETH_MAX_RX_BUFS];
 

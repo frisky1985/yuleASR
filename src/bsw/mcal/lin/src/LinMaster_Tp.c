@@ -96,7 +96,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendSingleFrame(uint16 Length, const
     SfFrame[0] = LINMASTER_TP_PCI_SF | (Length & LINMASTER_TP_PCI_SF_MASK);
     
     /* 复制数据 */
-    for (i = 0; i < Length; i++) {
+    for (i = 0U; i < Length; i++) {
         SfFrame[i + 1] = DataPtr[i];
     }
     
@@ -136,7 +136,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendFirstFrame(uint16 Length, const 
     FfFrame[1] = Length & 0xFF;
     
     /* 复制前5个字节数据 */
-    for (i = 0; i < 5 && i < Length; i++) {
+    for (i = 0U; i < 5 && i < Length; i++) {
         FfFrame[i + 2] = DataPtr[i];
     }
     
@@ -165,7 +165,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
     /* 计算剩余字节 */
     RemainingBytes = TpChannel.TxLength - TpChannel.TxOffset;
     
-    if (RemainingBytes == 0) {
+    if (RemainingBytes == 0U) {
         /* 所有数据已发送完毕 */
         if (TpTxConfirm != NULL_PTR) {
             TpTxConfirm(TpChannel.ChannelId, LINMASTER_TP_OK);
@@ -180,7 +180,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
     /* 构建连续帧: PCI(1字节) + 数据(1-6字节) */
     CfFrame[0] = LINMASTER_TP_PCI_CF | (TpChannel.SeqNumber & LINMASTER_TP_PCI_CF_SN_MASK);
     
-    for (i = 0; i < FrameLength; i++) {
+    for (i = 0U; i < FrameLength; i++) {
         CfFrame[i + 1] = TpChannel.TxBuffer[TpChannel.TxOffset + i];
     }
     
@@ -196,7 +196,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void)
     TpChannel.BS_Counter++;
     
     /* 检查BlockSize */
-    if (TpChannel.BlockSize > 0 && TpChannel.BS_Counter >= TpChannel.BlockSize) {
+    if (TpChannel.BlockSize > 0U && TpChannel.BS_Counter >= TpChannel.BlockSize) {
         /* 需要等待新的流控帧 */
         TpChannel.State = LINMASTER_TP_STATE_WAIT_FC;
         TpChannel.BS_Counter = 0;
@@ -272,11 +272,11 @@ LinMaster_Tp_StatusType LinMaster_Tp_Transmit(
     const uint8* DataPtr
 )
 {
-    if (!TpInitialized) {
+    if (TpInitialized == 0U) {
         return LINMASTER_TP_E_NOT_OK;
     }
     
-    if (DataPtr == NULL_PTR || Length == 0) {
+    if (DataPtr == NULL_PTR || Length == 0U) {
         return LINMASTER_TP_E_INVALID_PARAM;
     }
     
@@ -316,11 +316,11 @@ LinMaster_Tp_StatusType LinMaster_Tp_RxIndication(
     uint8 PciType;
     LinMaster_Tp_StatusType status;
     
-    if (!TpInitialized) {
+    if (TpInitialized == 0U) {
         return LINMASTER_TP_E_NOT_OK;
     }
     
-    if (DataPtr == NULL_PTR || Length == 0) {
+    if (DataPtr == NULL_PTR || Length == 0U) {
         return LINMASTER_TP_E_INVALID_PARAM;
     }
     
@@ -360,7 +360,7 @@ void LinMaster_Tp_MainFunction(void)
     uint32 CurrentTime;
     uint32 ElapsedTime;
     
-    if (!TpInitialized) {
+    if (TpInitialized == 0U) {
         return;
     }
     
@@ -407,7 +407,7 @@ void LinMaster_Tp_MainFunction(void)
             
         case LINMASTER_TP_STATE_TX_CF:
             /* 检查STmin时间是否到达，发送下一帧 */
-            if (TpChannel.STmin == 0) {
+            if (TpChannel.STmin == 0U) {
                 /* STmin=0表示立即发送 */
                 (void)LinMaster_Tp_SendConsecutiveFrame();
             } else if (TpChannel.Timer >= (uint32)(TpChannel.STmin)) {
@@ -447,7 +447,7 @@ void LinMaster_Tp_RegisterTxConfirmCallback(LinMaster_Tp_TxConfirmFuncType Callb
  */
 LinMaster_Tp_StateType LinMaster_Tp_GetState(void)
 {
-    if (!TpInitialized) {
+    if (TpInitialized == 0U) {
         return LINMASTER_TP_STATE_IDLE;
     }
     return TpChannel.State;
@@ -458,7 +458,7 @@ LinMaster_Tp_StateType LinMaster_Tp_GetState(void)
  */
 boolean LinMaster_Tp_IsBusy(void)
 {
-    if (!TpInitialized) {
+    if (TpInitialized == 0U) {
         return FALSE;
     }
     return (TpChannel.State != LINMASTER_TP_STATE_IDLE);

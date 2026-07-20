@@ -38,11 +38,11 @@
     #error "Fee.c: Mismatch in software major version"
 #endif
 
-#if (FEE_SW_MINOR_VERSION != 0)
+#if (FEE_SW_MINOR_VERSION != 0U )
     #error "Fee.c: Mismatch in software minor version"
 #endif
 
-#if (FEE_SW_PATCH_VERSION != 0)
+#if (FEE_SW_PATCH_VERSION != 0U )
     #error "Fee.c: Mismatch in software patch version"
 #endif
 

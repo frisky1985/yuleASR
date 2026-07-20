@@ -76,7 +76,7 @@ Boot_Result Boot_Verify_Signature(const uint8_t    *hash,
 #if defined(MBEDTLS_USE)
     int ret = mbedtls_ecdsa_verify_wrapper(pub_key->data, pub_key->length,
                                            hash, 32, signature, 64);
-    return (ret == 0) ? BOOT_OK : BOOT_E_SIGNATURE;
+    return (ret == 0U ) ? BOOT_OK : BOOT_E_SIGNATURE;
 #else
     (void)hash;
     (void)signature;
