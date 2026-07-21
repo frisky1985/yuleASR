@@ -1,0 +1,7 @@
+{
+  "script": "misra",
+  "python": "python3",
+  "args": [
+    "--rule-texts=/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/misra_texts.txt"
+  ]
+}

@@ -1,158 +1,164 @@
-# MISRA Rule Texts (auto-generated)
-# Format: Rule X.Y Required/Advisory
+MISRA C:2012 Rule Texts
 
-Rule 10.1 Required
-MISRA C rule 10.1
+This file contains MISRA C:2012 rule texts for cppcheck misra addon.
 
-Rule 10.3 Required
-MISRA C:2012 Rule 10.3
-
-Rule 10.4 Required
-MISRA C:2012 Rule 10.4
-
-Rule 10.6 Required
-MISRA C:2012 Rule 10.6
-
-Rule 10.7 Required
-MISRA C:2012 Rule 10.7
-
-Rule 10.8 Required
-MISRA C:2012 Rule 10.8
-
-Rule 11.3 Required
-MISRA C:2012 Rule 11.3
-
-Rule 11.4 Required
-MISRA C:2012 Rule 11.4
-
-Rule 11.5 Required
-MISRA C:2012 Rule 11.5
-
-Rule 11.6 Required
-MISRA C:2012 Rule 11.6
-
-Rule 11.8 Required
-MISRA C:2012 Rule 11.8
-
-Rule 12.1 Required
-MISRA C rule 12.1
-
-Rule 12.3 Required
-MISRA C:2012 Rule 12.3
-
-Rule 13.3 Required
-MISRA C:2012 Rule 13.3
-
-Rule 14.4 Required
-MISRA C:2012 Rule 14.4
-
-Rule 15.1 Required
-MISRA C rule 15.1
-
-Rule 15.4 Required
-MISRA C:2012 Rule 15.4
-
-Rule 15.5 Required
-MISRA C:2012 Rule 15.5
-
-Rule 15.6 Required
-MISRA C:2012 Rule 15.6
-
-Rule 15.7 Required
-MISRA C:2012 Rule 15.7
-
-Rule 16.3 Required
-MISRA C:2012 Rule 16.3
-
-Rule 17.2 Required
-MISRA C:2012 Rule 17.2
-
-Rule 17.3 Required
-MISRA C:2012 Rule 17.3
-
-Rule 17.7 Required
-MISRA C:2012 Rule 17.7
-
-Rule 17.8 Required
-MISRA C:2012 Rule 17.8
-
-Rule 18.4 Required
-MISRA C:2012 Rule 18.4
-
-Rule 19.2 Required
-MISRA C:2012 Rule 19.2
+Appendix A  Summary of guidelines
 
 Rule 2.2 Required
-MISRA C rule 2.2
+Source code shall only use /* ... */ style comments
 
 Rule 2.3 Advisory
-MISRA C:2012 Rule 2.3
+The character sequence /* shall not be used within a comment
 
 Rule 2.4 Advisory
-MISRA C:2012 Rule 2.4
+A section of code shall not be commented out using slash-star
 
 Rule 2.5 Advisory
-MISRA C:2012 Rule 2.5
+A project should not contain unused macro declarations
 
-Rule 2.7 Required
-MISRA C rule 2.7
-
-Rule 20.2 Required
-MISRA C:2012 Rule 20.2
-
-Rule 20.9 Required
-MISRA C:2012 Rule 20.9
-
-Rule 21.3 Required
-MISRA C:2012 Rule 21.3
-
-Rule 21.8 Required
-MISRA C:2012 Rule 21.8
+Rule 2.7 Advisory
+There should be no unused parameters in functions
 
 Rule 5.6 Advisory
-MISRA C:2012 Rule 5.6
+A typedef name shall be a unique identifier
 
 Rule 5.7 Advisory
-MISRA C:2012 Rule 5.7
+A tag name shall be a unique identifier
 
 Rule 5.8 Advisory
-MISRA C:2012 Rule 5.8
+Identifiers that define objects or functions shall have unique names
 
 Rule 5.9 Advisory
-MISRA C:2012 Rule 5.9
+Identifiers that define objects or functions shall be unique before linker stage
 
 Rule 7.2 Required
-MISRA C:2012 Rule 7.2
+A cast should not remove any const or volatile qualification
 
 Rule 7.4 Required
-MISRA C:2012 Rule 7.4
-
-Rule 8.11 Required
-MISRA C:2012 Rule 8.11
+String literal assigned to pointer shall have const-qualified char type
 
 Rule 8.2 Required
-MISRA C rule 8.2
+Function types shall be in prototype form with named parameters
 
 Rule 8.4 Required
-MISRA C rule 8.4
+A compatible declaration shall be visible when an object or function is defined
 
 Rule 8.5 Required
-MISRA C:2012 Rule 8.5
+An external object or function shall be declared once in one file
 
 Rule 8.6 Required
-MISRA C:2012 Rule 8.6
+An identifier with external linkage shall have exactly one external definition
 
 Rule 8.7 Required
-MISRA C:2012 Rule 8.7
+Functions/objects should not have external linkage if referenced in one TU
 
 Rule 8.8 Advisory
-MISRA C:2012 Rule 8.8
+Static storage class shall be used for internal linkage declarations
 
 Rule 8.9 Required
-MISRA C:2012 Rule 8.9
+An identifier with internal linkage shall have exactly one definition
+
+Rule 8.11 Required
+Array with external linkage shall have explicit size
 
 Rule 9.2 Required
-MISRA C:2012 Rule 9.2
+Initializer for aggregate/union shall be enclosed in braces
 
 Rule 9.3 Advisory
-MISRA C:2012 Rule 9.3
+"=" shall not be used to explicitly define enumerator values
+
+Rule 10.1 Required
+Operands shall not be of an inappropriate essential type
+
+Rule 10.3 Required
+Complex expression shall only be assigned to same essential type category
+
+Rule 10.4 Required
+Both operands shall have same essential type category
+
+Rule 10.6 Required
+Composite expression shall not be assigned to wider essential type
+
+Rule 10.7 Required
+Other operand shall not have wider essential type
+
+Rule 10.8 Required
+Composite expression shall not be cast to different essential type
+
+Rule 11.3 Required
+Cast between pointer to different object types shall not be performed
+
+Rule 11.4 Required
+Conversion between pointer to object and integer shall not be performed
+
+Rule 11.5 Required
+Conversion from pointer to void to pointer to object shall not be performed
+
+Rule 11.6 Required
+Cast between pointer to void and arithmetic type shall not be performed
+
+Rule 11.8 Required
+Cast shall not remove const/volatile from pointer qualification
+
+Rule 12.1 Advisory
+Operator precedence within expressions should be made explicit
+
+Rule 12.3 Advisory
+The comma operator should not be used
+
+Rule 13.3 Required
+Increment/decrement expression should have no other side effects
+
+Rule 14.4 Required
+Controlling expression of if shall have essentially Boolean type
+
+Rule 15.1 Advisory
+The goto statement should not be used
+
+Rule 15.4 Advisory
+No unconditional branch to case label in switch
+
+Rule 15.5 Advisory
+A function should have a single point of exit
+
+Rule 15.6 Required
+Body of iteration/selection statement shall be compound
+
+Rule 15.7 Required
+All if-else-if constructs shall be terminated with else clause
+
+Rule 16.3 Required
+Unconditional break shall terminate every non-empty switch clause
+
+Rule 17.2 Required
+A function should not call itself directly or indirectly
+
+Rule 17.3 Required
+A function shall not be declared implicitly
+
+Rule 17.7 Required
+Return value of non-void function shall be used
+
+Rule 17.8 Advisory
+A function parameter should not be modified
+
+Rule 18.4 Required
+Pointer arithmetic operators should not be applied to pointer type
+
+Rule 19.2 Advisory
+The union keyword should not be used
+
+Rule 20.2 Required
+The hash and double-hash preprocessor operators should not be used
+
+Rule 20.9 Required
+Preprocessor identifiers shall be defined before use
+
+Rule 21.3 Required
+Memory allocation functions of stdlib.h shall not be used
+
+Rule 21.8 Required
+The atof, atoi and atol functions of stdlib.h shall not be used
+
+
+Appendix B  References
