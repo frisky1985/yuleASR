@@ -152,14 +152,14 @@ void CanTSyn_Init(const CanTSyn_ConfigType* ConfigPtr)
     #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
     if (CanTSyn_Internal.State == CANTSYN_STATE_INIT)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID, 
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID, 
                         CANTSYN_SID_INIT, CANTSYN_E_ALREADY_INITIALIZED);
         return;
     }
     
     if (ConfigPtr == NULL_PTR)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_INIT, CANTSYN_E_PARAM_POINTER);
         return;
     }
@@ -191,7 +191,7 @@ void CanTSyn_GetVersionInfo(Std_VersionInfoType* VersionInfo)
     #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
     if (VersionInfo == NULL_PTR)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_GETVERSIONINFO, CANTSYN_E_PARAM_POINTER);
         return;
     }
@@ -213,14 +213,14 @@ void CanTSyn_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
     if (CanTSyn_Internal.State != CANTSYN_STATE_INIT)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_TXCONFIRMATION, CANTSYN_E_UNINIT);
         return;
     }
     
     if (TxPduId >= CANTSYN_NUMBER_OF_PDUS)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_TXCONFIRMATION, CANTSYN_E_INVALID_PDU_SDU_ID);
         return;
     }
@@ -244,21 +244,21 @@ void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
     if (CanTSyn_Internal.State != CANTSYN_STATE_INIT)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_RXINDICATION, CANTSYN_E_UNINIT);
         return;
     }
     
     if (RxPduId >= CANTSYN_NUMBER_OF_PDUS)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_RXINDICATION, CANTSYN_E_INVALID_PDU_SDU_ID);
         return;
     }
     
     if (PduInfoPtr == NULL_PTR)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_RXINDICATION, CANTSYN_E_PARAM_POINTER);
         return;
     }
@@ -283,6 +283,10 @@ void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     else if (MsgType == CANTSYN_OFS_MSG_TYPE)
     {
         CanTSyn_ProcessOfsMessage(TimeDomainId, PduInfoPtr);
+    }
+    else
+    {
+        /* No action required for unhandled message types */
     }
 }
 
@@ -474,7 +478,7 @@ void CanTSyn_MainFunction(void)
     #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
     if (CanTSyn_Internal.State != CANTSYN_STATE_INIT)
     {
-        Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
+        (void)Det_ReportError(CANTSYN_MODULE_ID, CANTSYN_INSTANCE_ID,
                         CANTSYN_SID_MAINFUNCTION, CANTSYN_E_UNINIT);
         return;
     }
