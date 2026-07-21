@@ -83,9 +83,14 @@ if(NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/autos
 endif()
 
 # Global coverage compile/link flags (unconditional — all C files produce coverage data)
-# --coverage is equivalent to -fprofile-arcs -ftest-coverage for GCC/Clang
-# -O0 -g disable optimizations and enable debugging symbols for accurate coverage
-if(NOT CMAKE_CROSSCOMPILING)
+# Code coverage compile/link flags: --coverage is equivalent to -fprofile-arcs -ftest-coverage
+# for GCC/Clang.  Only set when ENABLE_COVERAGE is ON to avoid unconditional instrumentation.
+#
+# NOTE (Apple Clang): Static library objects compiled with --coverage produce .gcno note
+# files but do NOT generate .gcda at runtime when linked into an executable on Apple Clang.
+# Use batch10_coverage.sh (or the coverage-batch CI target below) which compiles all
+# sources directly into a single test executable for proper .gcda generation.
+if(NOT CMAKE_CROSSCOMPILING AND ENABLE_COVERAGE)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage -O0 -g")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -O0 -g")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage -g")
@@ -186,6 +191,32 @@ if(ENABLE_COVERAGE)
             )
         endif()
     endif()
+
+    # Coverage target using batch10_coverage.sh (bypasses Apple Clang static-lib .gcda issue)
+    # This compiles test and production sources directly into a single executable,
+    # ensuring all .gcda coverage data is generated.  Run from the project root:
+    #   cmake --build . --target coverage-batch
+    add_custom_target(coverage-batch
+        COMMAND ${CMAKE_COMMAND} -E echo "=== Batch coverage build (batch10_coverage.sh) ==="
+        COMMAND ${CMAKE_COMMAND} -E echo "This compiles all sources directly (bypasses static lib issue on Apple Clang)"
+        COMMAND ${CMAKE_COMMAND} -E echo "Running tests and generating reports..."
+        COMMAND ${CMAKE_COMMAND} -E echo ""
+        COMMAND ${CMAKE_COMMAND} -E env bash ${CMAKE_SOURCE_DIR}/batch10_coverage.sh
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Running batch10_coverage.sh for full coverage data (Apple Clang workaround)"
+    )
+
+    # Meta target: runs batch coverage, then gates on threshold
+    add_custom_target(coverage-ci
+        COMMAND ${CMAKE_COMMAND} -E echo "=== Coverage CI Pipeline ==="
+        COMMAND ${CMAKE_COMMAND} -E echo "Step 1: Run batch coverage (produces .gcda for all production code)"
+        COMMAND ${CMAKE_COMMAND} -E env bash ${CMAKE_SOURCE_DIR}/batch10_coverage.sh
+        COMMAND ${CMAKE_COMMAND} -E echo ""
+        COMMAND ${CMAKE_COMMAND} -E echo "Step 2: Check coverage gate threshold"
+        COMMAND ${CMAKE_COMMAND} -E env python3 ${CMAKE_SOURCE_DIR}/tools/check_coverage_gate.py
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Full CI coverage pipeline: batch build + coverage gate"
+    )
 endif()
 
 # Testing
