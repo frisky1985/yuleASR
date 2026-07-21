@@ -1,0 +1,158 @@
+# MISRA Rule Texts (auto-generated)
+# Format: Rule X.Y Required/Advisory
+
+Rule 10.1 Required
+MISRA C rule 10.1
+
+Rule 10.3 Required
+MISRA C:2012 Rule 10.3
+
+Rule 10.4 Required
+MISRA C:2012 Rule 10.4
+
+Rule 10.6 Required
+MISRA C:2012 Rule 10.6
+
+Rule 10.7 Required
+MISRA C:2012 Rule 10.7
+
+Rule 10.8 Required
+MISRA C:2012 Rule 10.8
+
+Rule 11.3 Required
+MISRA C:2012 Rule 11.3
+
+Rule 11.4 Required
+MISRA C:2012 Rule 11.4
+
+Rule 11.5 Required
+MISRA C:2012 Rule 11.5
+
+Rule 11.6 Required
+MISRA C:2012 Rule 11.6
+
+Rule 11.8 Required
+MISRA C:2012 Rule 11.8
+
+Rule 12.1 Required
+MISRA C rule 12.1
+
+Rule 12.3 Required
+MISRA C:2012 Rule 12.3
+
+Rule 13.3 Required
+MISRA C:2012 Rule 13.3
+
+Rule 14.4 Required
+MISRA C:2012 Rule 14.4
+
+Rule 15.1 Required
+MISRA C rule 15.1
+
+Rule 15.4 Required
+MISRA C:2012 Rule 15.4
+
+Rule 15.5 Required
+MISRA C:2012 Rule 15.5
+
+Rule 15.6 Required
+MISRA C:2012 Rule 15.6
+
+Rule 15.7 Required
+MISRA C:2012 Rule 15.7
+
+Rule 16.3 Required
+MISRA C:2012 Rule 16.3
+
+Rule 17.2 Required
+MISRA C:2012 Rule 17.2
+
+Rule 17.3 Required
+MISRA C:2012 Rule 17.3
+
+Rule 17.7 Required
+MISRA C:2012 Rule 17.7
+
+Rule 17.8 Required
+MISRA C:2012 Rule 17.8
+
+Rule 18.4 Required
+MISRA C:2012 Rule 18.4
+
+Rule 19.2 Required
+MISRA C:2012 Rule 19.2
+
+Rule 2.2 Required
+MISRA C rule 2.2
+
+Rule 2.3 Advisory
+MISRA C:2012 Rule 2.3
+
+Rule 2.4 Advisory
+MISRA C:2012 Rule 2.4
+
+Rule 2.5 Advisory
+MISRA C:2012 Rule 2.5
+
+Rule 2.7 Required
+MISRA C rule 2.7
+
+Rule 20.2 Required
+MISRA C:2012 Rule 20.2
+
+Rule 20.9 Required
+MISRA C:2012 Rule 20.9
+
+Rule 21.3 Required
+MISRA C:2012 Rule 21.3
+
+Rule 21.8 Required
+MISRA C:2012 Rule 21.8
+
+Rule 5.6 Advisory
+MISRA C:2012 Rule 5.6
+
+Rule 5.7 Advisory
+MISRA C:2012 Rule 5.7
+
+Rule 5.8 Advisory
+MISRA C:2012 Rule 5.8
+
+Rule 5.9 Advisory
+MISRA C:2012 Rule 5.9
+
+Rule 7.2 Required
+MISRA C:2012 Rule 7.2
+
+Rule 7.4 Required
+MISRA C:2012 Rule 7.4
+
+Rule 8.11 Required
+MISRA C:2012 Rule 8.11
+
+Rule 8.2 Required
+MISRA C rule 8.2
+
+Rule 8.4 Required
+MISRA C rule 8.4
+
+Rule 8.5 Required
+MISRA C:2012 Rule 8.5
+
+Rule 8.6 Required
+MISRA C:2012 Rule 8.6
+
+Rule 8.7 Required
+MISRA C:2012 Rule 8.7
+
+Rule 8.8 Advisory
+MISRA C:2012 Rule 8.8
+
+Rule 8.9 Required
+MISRA C:2012 Rule 8.9
+
+Rule 9.2 Required
+MISRA C:2012 Rule 9.2
+
+Rule 9.3 Advisory
+MISRA C:2012 Rule 9.3
