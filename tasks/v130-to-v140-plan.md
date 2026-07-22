@@ -1,7 +1,17 @@
+---
+kind: plan
+version: v1.3.0-v1.4.0
+---
+
 # yuleASR v1.3.0 → v1.4.0 推进计划
 
 > 基于老陈专家评审 + yuleASR-Configurator 集成
 > 生成日期: 2026-07-23
+> 类型: 阶段规划
+
+## T00 背景
+
+基于老陈专家评审的 11 条 P1 发现项 + yuleASR-Configurator 集成评估，制定 v1.3.0→v1.4.0 的推进计划。
 
 ---
 
