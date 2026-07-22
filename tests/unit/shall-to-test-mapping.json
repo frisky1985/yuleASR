@@ -1,0 +1,510 @@
+{
+  "MCAL-SHALL-001": {
+    "test_function": "test_MCAL_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "MCAL-SHALL-002": {
+    "test_function": "test_MCAL_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "MCAL-SHALL-003": {
+    "test_function": "test_MCAL_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ECUAL-SHALL-001": {
+    "test_function": "test_ECUAL_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ECUAL-SHALL-002": {
+    "test_function": "test_ECUAL_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "SVC-SHALL-001": {
+    "test_function": "test_SVC_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "SVC-SHALL-002": {
+    "test_function": "test_SVC_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "SVC-SHALL-003": {
+    "test_function": "test_SVC_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "NFR-SHALL-001": {
+    "test_function": "test_NFR_SHALL_001",
+    "file": "test_misra_compliance.c"
+  },
+  "NFR-SHALL-002": {
+    "test_function": "test_NFR_SHALL_002",
+    "file": "test_misra_compliance.c"
+  },
+  "NFR-SHALL-003": {
+    "test_function": "test_NFR_SHALL_003",
+    "file": "test_misra_compliance.c"
+  },
+  "NFR-SHALL-004": {
+    "test_function": "test_NFR_SHALL_004",
+    "file": "test_misra_compliance.c"
+  },
+  "MISRA-SHALL-001": {
+    "test_function": "test_MISRA_SHALL_001",
+    "file": "test_misra_compliance.c"
+  },
+  "DCM-SHALL-001": {
+    "test_function": "test_DCM_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "DCM-SHALL-002": {
+    "test_function": "test_DCM_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "DCM-SHALL-003": {
+    "test_function": "test_DCM_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "DCM-SHALL-004": {
+    "test_function": "test_DCM_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "DEM-SHALL-001": {
+    "test_function": "test_DEM_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "DEM-SHALL-002": {
+    "test_function": "test_DEM_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "DEM-SHALL-003": {
+    "test_function": "test_DEM_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "DEM-SHALL-004": {
+    "test_function": "test_DEM_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "COM-SHALL-001": {
+    "test_function": "test_COM_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "COM-SHALL-002": {
+    "test_function": "test_COM_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "COM-SHALL-003": {
+    "test_function": "test_COM_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "COM-SHALL-004": {
+    "test_function": "test_COM_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "PDUR-SHALL-001": {
+    "test_function": "test_PDUR_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "PDUR-SHALL-002": {
+    "test_function": "test_PDUR_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "PDUR-SHALL-003": {
+    "test_function": "test_PDUR_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "NVM-SHALL-001": {
+    "test_function": "test_NVM_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "NVM-SHALL-002": {
+    "test_function": "test_NVM_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "NVM-SHALL-003": {
+    "test_function": "test_NVM_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "NVM-SHALL-004": {
+    "test_function": "test_NVM_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "NVM-SHALL-005": {
+    "test_function": "test_NVM_SHALL_005",
+    "file": "test_services_api_contracts.c"
+  },
+  "ECUM-SHALL-001": {
+    "test_function": "test_ECUM_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "ECUM-SHALL-002": {
+    "test_function": "test_ECUM_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "ECUM-SHALL-003": {
+    "test_function": "test_ECUM_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "OSSC4-SHALL-001": {
+    "test_function": "test_OSSC4_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "OSSC4-SHALL-002": {
+    "test_function": "test_OSSC4_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "OSSC4-SHALL-003": {
+    "test_function": "test_OSSC4_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "OSSC4-SHALL-004": {
+    "test_function": "test_OSSC4_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "OSSC4-SHALL-005": {
+    "test_function": "test_OSSC4_SHALL_005",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANIF-SHALL-001": {
+    "test_function": "test_CANIF_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANIF-SHALL-002": {
+    "test_function": "test_CANIF_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANIF-SHALL-003": {
+    "test_function": "test_CANIF_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANIF-SHALL-004": {
+    "test_function": "test_CANIF_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANTP-SHALL-001": {
+    "test_function": "test_CANTP_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANTP-SHALL-002": {
+    "test_function": "test_CANTP_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANTP-SHALL-003": {
+    "test_function": "test_CANTP_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANTP-SHALL-004": {
+    "test_function": "test_CANTP_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANNM-SHALL-001": {
+    "test_function": "test_CANNM_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANNM-SHALL-002": {
+    "test_function": "test_CANNM_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANNM-SHALL-003": {
+    "test_function": "test_CANNM_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANNM-SHALL-004": {
+    "test_function": "test_CANNM_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANNM-SHALL-005": {
+    "test_function": "test_CANNM_SHALL_005",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOAD-SHALL-001": {
+    "test_function": "test_SOAD_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOAD-SHALL-002": {
+    "test_function": "test_SOAD_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOAD-SHALL-003": {
+    "test_function": "test_SOAD_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOAD-SHALL-004": {
+    "test_function": "test_SOAD_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOMEIPSD-SHALL-001": {
+    "test_function": "test_SOMEIPSD_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOMEIPSD-SHALL-002": {
+    "test_function": "test_SOMEIPSD_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "SOMEIPSD-SHALL-003": {
+    "test_function": "test_SOMEIPSD_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "DLT-SHALL-001": {
+    "test_function": "test_DLT_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "DLT-SHALL-002": {
+    "test_function": "test_DLT_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "DLT-SHALL-003": {
+    "test_function": "test_DLT_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "XCP-SHALL-001": {
+    "test_function": "test_XCP_SHALL_001",
+    "file": "test_services_api_contracts.c"
+  },
+  "XCP-SHALL-002": {
+    "test_function": "test_XCP_SHALL_002",
+    "file": "test_services_api_contracts.c"
+  },
+  "XCP-SHALL-003": {
+    "test_function": "test_XCP_SHALL_003",
+    "file": "test_services_api_contracts.c"
+  },
+  "XCP-SHALL-004": {
+    "test_function": "test_XCP_SHALL_004",
+    "file": "test_services_api_contracts.c"
+  },
+  "XCP-SHALL-005": {
+    "test_function": "test_XCP_SHALL_005",
+    "file": "test_services_api_contracts.c"
+  },
+  "ADC-SHALL-001": {
+    "test_function": "test_ADC_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ADC-SHALL-002": {
+    "test_function": "test_ADC_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ADC-SHALL-003": {
+    "test_function": "test_ADC_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ADC-SHALL-004": {
+    "test_function": "test_ADC_SHALL_004",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ADC-SHALL-005": {
+    "test_function": "test_ADC_SHALL_005",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CANDRV-SHALL-001": {
+    "test_function": "test_CANDRV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CANDRV-SHALL-002": {
+    "test_function": "test_CANDRV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CANDRV-SHALL-003": {
+    "test_function": "test_CANDRV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CANDRV-SHALL-004": {
+    "test_function": "test_CANDRV_SHALL_004",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CANDRV-SHALL-005": {
+    "test_function": "test_CANDRV_SHALL_005",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CANDRV-SHALL-006": {
+    "test_function": "test_CANDRV_SHALL_006",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-001": {
+    "test_function": "test_CRYPTO_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-002": {
+    "test_function": "test_CRYPTO_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-003": {
+    "test_function": "test_CRYPTO_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-004": {
+    "test_function": "test_CRYPTO_SHALL_004",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-005": {
+    "test_function": "test_CRYPTO_SHALL_005",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-006": {
+    "test_function": "test_CRYPTO_SHALL_006",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "CRYPTO-SHALL-007": {
+    "test_function": "test_CRYPTO_SHALL_007",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "DIODRV-SHALL-001": {
+    "test_function": "test_DIODRV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "DIODRV-SHALL-002": {
+    "test_function": "test_DIODRV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "DIODRV-SHALL-003": {
+    "test_function": "test_DIODRV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "DIODRV-SHALL-004": {
+    "test_function": "test_DIODRV_SHALL_004",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "PORTDRV-SHALL-001": {
+    "test_function": "test_PORTDRV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "PORTDRV-SHALL-002": {
+    "test_function": "test_PORTDRV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "PORTDRV-SHALL-003": {
+    "test_function": "test_PORTDRV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "GPTDRV-SHALL-001": {
+    "test_function": "test_GPTDRV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "GPTDRV-SHALL-002": {
+    "test_function": "test_GPTDRV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "GPTDRV-SHALL-003": {
+    "test_function": "test_GPTDRV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "GPTDRV-SHALL-004": {
+    "test_function": "test_GPTDRV_SHALL_004",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ICURV-SHALL-001": {
+    "test_function": "test_ICURV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ICURV-SHALL-002": {
+    "test_function": "test_ICURV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "ICURV-SHALL-003": {
+    "test_function": "test_ICURV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "MCUDRV-SHALL-001": {
+    "test_function": "test_MCUDRV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "MCUDRV-SHALL-002": {
+    "test_function": "test_MCUDRV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "MCUDRV-SHALL-003": {
+    "test_function": "test_MCUDRV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "MCUDRV-SHALL-004": {
+    "test_function": "test_MCUDRV_SHALL_004",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "WDGDRV-SHALL-001": {
+    "test_function": "test_WDGDRV_SHALL_001",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "WDGDRV-SHALL-002": {
+    "test_function": "test_WDGDRV_SHALL_002",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "WDGDRV-SHALL-003": {
+    "test_function": "test_WDGDRV_SHALL_003",
+    "file": "test_mcal_api_contracts.c"
+  },
+  "DCM-REQ-01": {
+    "test_function": "test_DCM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "DCM-REQ-02": {
+    "test_function": "test_DCM_REQ_02",
+    "file": "test_services_api_contracts.c"
+  },
+  "DEM-REQ-01": {
+    "test_function": "test_DEM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "DET-REQ-01": {
+    "test_function": "test_DET_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "DOIP-REQ-01": {
+    "test_function": "test_DOIP_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "COM-REQ-01": {
+    "test_function": "test_COM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "PDUR-REQ-01": {
+    "test_function": "test_PDUR_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "CANSM-REQ-01": {
+    "test_function": "test_CANSM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "LIN-REQ-01": {
+    "test_function": "test_LIN_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "NVM-REQ-01": {
+    "test_function": "test_NVM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "FEE-REQ-01": {
+    "test_function": "test_FEE_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "MEMIF-REQ-01": {
+    "test_function": "test_MEMIF_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "ECUM-REQ-01": {
+    "test_function": "test_ECUM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "BSWM-REQ-01": {
+    "test_function": "test_BSWM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "WDGM-REQ-01": {
+    "test_function": "test_WDGM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "OS-REQ-01": {
+    "test_function": "test_OS_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "E2E-REQ-01": {
+    "test_function": "test_E2E_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "CSM-REQ-01": {
+    "test_function": "test_CSM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  },
+  "KEYM-REQ-01": {
+    "test_function": "test_KEYM_REQ_01",
+    "file": "test_services_api_contracts.c"
+  }
+}

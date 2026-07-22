@@ -1,18 +1,18 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T12:10:06.300542",
+  "generated_at": "2026-07-22T13:44:42.209462",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "passed",
-      "commit": "22cbced",
-      "started_at": "2026-07-22T12:08:54.217683",
-      "completed_at": "2026-07-22T12:10:06.299057",
+      "status": "failed",
+      "commit": "bdcc3ff",
+      "started_at": "2026-07-22T13:43:31.667523",
+      "completed_at": "2026-07-22T13:44:42.207311",
       "stages_summary": {
         "total": 29,
-        "passed": 27,
-        "failed": 0,
+        "passed": 26,
+        "failed": 1,
         "skipped": 0
       },
       "stages": [
@@ -54,7 +54,7 @@
         {
           "name": "misra-check",
           "status": "passed",
-          "detail": "845 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": "1127 MISRA violation(s) (372 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -148,8 +148,8 @@
         },
         {
           "name": "coverage",
-          "status": "passed",
-          "detail": "line=100.0%, cond=100.0%"
+          "status": "failed",
+          "detail": "Line coverage 21.62162162162162% < 35.0%"
         },
         {
           "name": "c-coverage",
@@ -163,21 +163,23 @@
         }
       ],
       "coverage": {
-        "line": 100.0,
-        "condition": 100.0,
-        "line_pass": true,
+        "line": 21.62162162162162,
+        "condition": 21.62162162162162,
+        "line_pass": false,
         "condition_pass": true
       },
-      "errors": []
+      "errors": [
+        "coverage failed"
+      ]
     }
   ],
   "misra": {
-    "total_violations": 1607,
-    "required": 0,
+    "total_violations": 1127,
+    "required": 372,
     "advisory": 0,
-    "violations_per_kloc": 25.1,
-    "rules_violated": 0,
-    "files_affected": 177
+    "violations_per_kloc": 17.76,
+    "rules_violated": 2,
+    "files_affected": 181
   },
   "c_coverage": {
     "line_rate": 37.1,

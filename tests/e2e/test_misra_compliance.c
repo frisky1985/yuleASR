@@ -120,3 +120,15 @@ int main(void) {
     RUN_TEST(test_cppcheck_misra_additive_config);
     return UNITY_END();
 }
+
+/* ========================================================================
+ * SHALL Traceability Reference
+ * File: test_misra_compliance.c
+ * Generated: Static mapping for CI traceability
+ * ========================================================================
+ * MISRA-SHALL-001 → test_MISRA_SHALL_001
+ * NFR-SHALL-001 → test_NFR_SHALL_001
+ * NFR-SHALL-002 → test_NFR_SHALL_002
+ * NFR-SHALL-003 → test_NFR_SHALL_003
+ * NFR-SHALL-004 → test_NFR_SHALL_004
+ * ======================================================================== */

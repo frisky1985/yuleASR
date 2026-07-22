@@ -1,1 +1,135 @@
-[]
+[
+  {
+    "module": "bootloader",
+    "source_file": "review-bootloader.md",
+    "status": "passed",
+    "findings_count": 3,
+    "content_snippet": "## Bootloader 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 通过\n- 发现: P2 分类\n\n### 审查范围\n- 源文件: `src/bsw/boot/`\n- 测试文件: `src/bsw/boot/test/`\n- 规范引用: AUTOSAR_SWS_BSWGeneral (boot manager 相关)\n\n### 审查..."
+  },
+  {
+    "module": "can",
+    "source_file": "review-can.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# CAN 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:24 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | CAN 栈 (Can MCAL + CanIf ECUAL + CanTp) |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | config/input/mcal, sr..."
+  },
+  {
+    "module": "cannm",
+    "source_file": "review-cannm.md",
+    "status": "passed",
+    "findings_count": 3,
+    "content_snippet": "## CanNm 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 有条件通过\n- 发现: P1 分类\n\n### 审查范围\n- 源文件: `src/bsw/ecual/canNm/`\n- 测试文件: `tests/unit/autosar/ecual/test_canNm.c`, `tests/unit/cannm/test_cannm_in..."
+  },
+  {
+    "module": "com",
+    "source_file": "review-com.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# Com 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:32 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | Com (Communication Service) 模块 |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | src/bsw/classic/com, docs/mod..."
+  },
+  {
+    "module": "cryif-csm",
+    "source_file": "review-cryif-csm.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "## CryIf + CSM — 模块审查\n\n- **审查时间**: 2026-07-21\n- **审查人**: 小马 🐴 (质量架构师)\n- **文件范围**: \n  - CryIf: 1 个 .c (`CryIf.c`), 4 个 .h (`CryIf.h`, `CryIf_Cfg.h`, `CryIf_Types.h`, `CryIf_MemMap.h`)\n  - CSM: 6 个 .c (..."
+  },
+  {
+    "module": "dcm",
+    "source_file": "review-dcm.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# DCM 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:20 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | DCM (Diagnostic Communication Manager) 模块 |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | src/asw/diagnostic..."
+  },
+  {
+    "module": "dem-det-ecum",
+    "source_file": "review-dem-det-ecum.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "## Dem + Det + EcuM — 模块审查\n\n- **审查时间**: 2026-07-21\n- **审查人**: 小马 🐴 (质量架构师)\n- **文件范围**:\n  - Dem: 5 个 .c, 8 个 .h（含 `legacy/` 旧版代码）\n  - Det: 2 个 .c, 3 个 .h\n  - EcuM: 7 个 .c, 2 个 .h\n- **MISRA 合规**: ⚠️ 部分合..."
+  },
+  {
+    "module": "dem",
+    "source_file": "review-dem.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# Dem 模块审查 — Batch C 补充审查证据\n\n> **审查时间**: 2026-07-21T22:25\n> **审查人**: 小马 🐴 (质量架构师)\n> **关联任务**: yuleASR Phase 2 Batch C — B5 修复\n> **范围**: Dem 模块全量（主代码 + legacy 代码）\n\n---\n\n## 1. 模块范围\n\n| 分区 | 文件 | 行数 | 说明 ..."
+  },
+  {
+    "module": "e2e",
+    "source_file": "review-e2e.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# E2E 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:28 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | E2E (End-to-End Protection) 模块 |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | docs/modules/e2e.md, src/bsw/..."
+  },
+  {
+    "module": "ecum",
+    "source_file": "review-ecum.md",
+    "status": "passed",
+    "findings_count": 2,
+    "content_snippet": "## EcuM 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 通过\n- 发现: P2 分类\n\n### 审查范围\n- 源文件: `src/bsw/services/ecum/`\n- 测试文件: `tests/unit/autosar/services/test_ecum.c`, `tests/unit/ecum/test_ecum.c`, ..."
+  },
+  {
+    "module": "j1939nm",
+    "source_file": "review-j1939nm.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "## J1939Nm 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 有条件通过\n- 发现: P1 分类\n\n### 审查范围\n- 源文件: `src/bsw/services/j1939tp/` (J1939Nm 作为 TP 层的一部分)\n- 测试文件: `tests/unit/j1939nm/test_j1939nm.c`, `tests..."
+  },
+  {
+    "module": "lin",
+    "source_file": "review-lin.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# LIN 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:26 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | LIN 栈 (Lin MCAL + LinIf + LinTp + LinSM + LinNm) |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | config/inpu..."
+  },
+  {
+    "module": "linnm",
+    "source_file": "review-linnm.md",
+    "status": "passed",
+    "findings_count": 3,
+    "content_snippet": "## LinNm 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 有条件通过\n- 发现: P1 分类\n\n### 审查范围\n- 源文件: `src/bsw/ecual/linNm/`\n- 测试文件: `tests/unit/autosar/ecual/test_linNm.c`\n- 规范引用: AUTOSAR_SWS_LINNetworkMa..."
+  },
+  {
+    "module": "nvm",
+    "source_file": "review-nvm.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# NvM 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:22 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | NvM (NVRAM Manager) 模块 |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | src/bsw/services/nvm, config/tools/nv..."
+  },
+  {
+    "module": "ramsafety",
+    "source_file": "review-ramsafety.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "## RamSafety — 模块审查\n\n- **审查时间**: 2026-07-21\n- **审查人**: 小马 🐴 (质量架构师)\n- **文件范围**: 2 个 .c (`RamSafety.c`, `RamSafety_Cfg.c`), 2 个 .h (`RamSafety.h`, `RamSafety_Cfg.h`)\n- **MISRA 合规**: ⚠️ 部分合规（需补充偏差许可）\n\n-..."
+  },
+  {
+    "module": "secoc",
+    "source_file": "review-secoc.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "## SecOC — 模块审查\n\n- **审查时间**: 2026-07-21\n- **审查人**: 小马 🐴 (质量架构师)\n- **文件范围**: 2 个 .c (`SecOc.c`, `SecOc_Lcfg.c`), 3 个 .h (`SecOc.h`, `SecOc_Cfg.h`, `SecOC_MemMap.h`)\n- **MISRA 合规**: ⚠️ 部分合规（需补充偏差许可）\n\n##..."
+  },
+  {
+    "module": "tcpip",
+    "source_file": "review-tcpip.md",
+    "status": "passed",
+    "findings_count": 3,
+    "content_snippet": "## TcpIp 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 通过\n- 发现: P2 分类\n\n### 审查范围\n- 源文件: `src/bsw/services/tcpip/`\n- 测试文件: `tests/unit/services/test_tcpip.c`\n- 规范引用: AUTOSAR_SWS_TcpIp\n\n### 审查项\n\n#..."
+  },
+  {
+    "module": "wdgm",
+    "source_file": "review-wdgm.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# WdgM 模块审查证据\n\n| 属性 | 值 |\n|------|-----|\n| 审查时间 | 2026-07-21 08:30 |\n| 审查人 | 小马 🐴 (质量架构师, subagent) |\n| 审查范围 | WdgM (Watchdog Manager) 模块 |\n| 审查类型 | 证据链补充审查 |\n| 相关文件 | src/bsw/services/wdgm, docs/modu..."
+  },
+  {
+    "module": "xcp",
+    "source_file": "review-xcp.md",
+    "status": "passed",
+    "findings_count": 4,
+    "content_snippet": "## Xcp 模块 — 模块审查\n- 审查时间: 2026-07-22\n- 审查人: 小马 (质量架构师)\n- 结论: 有条件通过\n- 发现: P1 分类\n\n### 审查范围\n- 源文件: `src/bsw/services/xcp/`\n- 测试文件: `tests/unit/autosar/services/test_xcp.c`, `tests/unit/xcp/test_xcp.c`\n- 规..."
+  }
+]

@@ -1,16 +1,16 @@
 # CI Report Summary
 
-> Generated: 2026-07-22T12:10:06.300771
+> Generated: 2026-07-22T13:44:42.209669
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ✅ ALL PASSED
+## Overall: ❌ FAILED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ✅ passed | 27 | 0 | 0 | — |
+| L1 | ❌ failed | 26 | 1 | 0 | ⚠️ |
 
 ### Layer L1 — Stage Details
 
@@ -23,7 +23,7 @@
 | plan-lint | ✅ |  |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ✅ | 845 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ✅ | 1127 MISRA violation(s) (372 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -42,7 +42,7 @@
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
-| coverage | ✅ | line=100.0%, cond=100.0% |
+| coverage | ❌ | Line coverage 21.62162162162162% < 35.0% |
 | c-coverage | ⚠️ | lcov/gcov may not be installed |
 | c-coverage-gate | ✅ | line_rate=37.1% >= 35% |
 
@@ -50,19 +50,19 @@
 
 | Metric | Value | Threshold | Status |
 |:-------|------:|---------:|:-------|
-| Line Coverage | 100.0% | 85% | ✅ |
-| Condition Coverage | 100.0% | 80% | ✅ |
+| Line Coverage | 21.6% | 85% | ❌ |
+| Condition Coverage | 21.6% | 80% | ✅ |
 
 ## MISRA C:2023
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 1607 |
-| Required | 0 |
+| Total Violations | 1127 |
+| Required | 372 |
 | Advisory | 0 |
-| Violations / KLOC | 25.1 |
-| Rules Violated | 0 |
-| Files Affected | 177 |
+| Violations / KLOC | 17.76 |
+| Rules Violated | 2 |
+| Files Affected | 181 |
 
 ## C/C++ Coverage
 
