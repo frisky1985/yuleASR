@@ -1,5 +1,5 @@
 [run]
-source = src
+source = src, tools
 omit =
     */tests/*
     */third_party/*
@@ -10,7 +10,6 @@ omit =
     */generated/*
     */config/*
     */specs/*
-    */tools/*
     */website/*
     */docs/*
     */verification/*
@@ -21,6 +20,7 @@ omit =
 [report]
 include =
     src/*
+    tools/*
 exclude_lines =
     pragma: no cover
     if __name__ == '__main__'

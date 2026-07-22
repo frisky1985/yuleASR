@@ -46,6 +46,26 @@
 #define CRC_64  ((uint8)64U)
 #endif
 
+/* ── CRC constants for E2E test compatibility ── */
+#ifndef CRC8_INITIAL_VALUE
+#define CRC8_INITIAL_VALUE              (0xFFU)
+#endif
+#ifndef CRC8_XOR_VALUE
+#define CRC8_XOR_VALUE                  (0xFFU)
+#endif
+#ifndef CRC16_INITIAL_VALUE
+#define CRC16_INITIAL_VALUE             (0xFFFFU)
+#endif
+#ifndef CRC16_XOR_VALUE
+#define CRC16_XOR_VALUE                 (0x0000U)
+#endif
+#ifndef CRC32_INITIAL_VALUE
+#define CRC32_INITIAL_VALUE             (0xFFFFFFFFU)
+#endif
+#ifndef CRC32_XOR_VALUE
+#define CRC32_XOR_VALUE                 (0xFFFFFFFFU)
+#endif
+
 /* ── API declarations ── */
 uint8  Crc_CalculateCRC8(const uint8* data, uint32 len, uint8 crc, boolean first);
 uint16 Crc_CalculateCRC16(const uint8* data, uint32 len, uint16 crc, boolean first);

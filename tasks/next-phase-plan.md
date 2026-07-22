@@ -2,6 +2,8 @@
 
 > 日期: 2026-07-22
 > 当前基线: CI L1/L2/L3 全绿 | MISRA 0R/0A | Coverage CI 就绪 | ASPICE 18/18 BP | 证据链 30 件
+> 
+> **Kind**: feature — 下一阶段推进与量产就绪
 
 ## 老板核心要求（已记住）
 
@@ -71,8 +73,21 @@
 
 ---
 
-## 执行顺序
+## T00: 三阶段推进框架
 
+### RED — 现状与阻塞项
+- CI L1 有 3 项失败（plan-lint / test_misra_ci / coverage run）
+- MISRA report 仍有 1 条 Required 违规未清零
+- 整体覆盖率仅 0.8%，未达到 35% 阈值
+- SHALL 测试断言存在大量恒真条件（127 条无实质验证）
+
+### GREEN — 对本阶段的目标定义
+- CI L1/L2/L3 全绿通过
+- MISRA Required=0
+- 行覆盖率 >= 35%（Det、PduR、Com 模块加入覆盖）
+- SHALL 断言全部实质性验证
+
+### REFACTOR — 执行路径
 ```
 第一波并行:
   └── 小克: Track A (覆盖率实战) — 核心阻断

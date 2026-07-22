@@ -3061,18 +3061,18 @@ STATIC uint8 NvM_EccErrorCount[NVM_CFG_MAX_BLOCK_ID];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
 
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:167:30: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
-        uint8 sharedSecretBuf[CSM_MAX_KEY_LENGTH];
-                             ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:179:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
             uint8 kdfInput[CSM_MAX_KEY_LENGTH * 2 + 8U];
                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:181:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
-            uint8 hashOut[CSM_MAX_HASH_LENGTH];
-                         ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:227:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
                 uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:181:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
+            uint8 hashOut[CSM_MAX_HASH_LENGTH];
+                         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:167:30: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
+        uint8 sharedSecretBuf[CSM_MAX_KEY_LENGTH];
+                             ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:20:70: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CSM_MAX_KEY_LENGTH' is unknown [misra-config]
     if (partnerPublicValueLength == 0U || partnerPublicValueLength > CSM_MAX_KEY_LENGTH)
                                                                      ^
@@ -3199,27 +3199,27 @@ STATIC uint8 NvM_EccErrorCount[NVM_CFG_MAX_BLOCK_ID];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:505:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
                 uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:12:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
+    uint8 deriveBuf[CSM_MAX_KEY_LENGTH * 2];
+                   ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:157:30: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
         uint8 targetDeriveBuf[CSM_MAX_KEY_LENGTH];
                              ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:231:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
                 uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:469:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
+            uint8 hashOut[CSM_MAX_HASH_LENGTH];
+                         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:451:24: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
+        uint8 pubValBuf[CSM_MAX_KEY_LENGTH];
+                       ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:189:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
             uint8 hashOut[CSM_MAX_HASH_LENGTH]; /* SHA-512最大输出 */
                          ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:471:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
             uint8 kdfInput[CSM_MAX_KEY_LENGTH + 8U];
                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:12:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
-    uint8 deriveBuf[CSM_MAX_KEY_LENGTH * 2];
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:451:24: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
-        uint8 pubValBuf[CSM_MAX_KEY_LENGTH];
-                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:469:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
-            uint8 hashOut[CSM_MAX_HASH_LENGTH];
-                         ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:27:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Csm_Keys' is unknown [misra-config]
     if (Csm_Keys[srcKeyIdx].status != CSM_KEY_STATUS_VALID)
         ^
@@ -3715,27 +3715,27 @@ STATIC uint8 NvM_EccErrorCount[NVM_CFG_MAX_BLOCK_ID];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
 
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:738:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-        extern const uint32 Dem_EventDTCMapping[DEM_CFG_MAX_NUMBER_EVENTS];
-                                               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1010:59: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
-static Dem_DTCOriginType Dem_DTCRecordUpdateDisabledOrigin[DEM_MAX_CLIENTS];
-                                                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1012:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
+static boolean Dem_EventTempActive[DEM_CFG_MAX_NUMBER_EVENTS];
+                                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1013:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
+static uint32 Dem_EventDTCMapping[DEM_CFG_MAX_NUMBER_EVENTS] = {
+                                 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1009:45: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
 static uint32 Dem_DTCRecordUpdateDisabledDTC[DEM_MAX_CLIENTS];
                                             ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1008:43: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
 static boolean Dem_DTCRecordUpdateDisabled[DEM_MAX_CLIENTS];
                                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1013:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-static uint32 Dem_EventDTCMapping[DEM_CFG_MAX_NUMBER_EVENTS] = {
-                                 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1011:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_OPERATION_CYCLES, please review configuration [misra-config]
 static boolean Dem_OperationCycleStatus[DEM_CFG_MAX_OPERATION_CYCLES];
                                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1012:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-static boolean Dem_EventTempActive[DEM_CFG_MAX_NUMBER_EVENTS];
-                                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1010:59: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
+static Dem_DTCOriginType Dem_DTCRecordUpdateDisabledOrigin[DEM_MAX_CLIENTS];
+                                                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:738:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
+        extern const uint32 Dem_EventDTCMapping[DEM_CFG_MAX_NUMBER_EVENTS];
+                                               ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:596:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
     if (Dem_State != DEM_STATE_INIT) {
         ^
@@ -4036,24 +4036,27 @@ const uint8 DoIP_Gid[DOIP_GID_LENGTH] = DOIP_GID;
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h:310:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:146:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_SEED_SIZE, please review configuration [misra-config]
+const uint8 Xcp_Seed[XCP_MAX_SEED_SIZE] = {0x01, 0x02, 0x03, 0x04};
+                    ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:147:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_KEY_SIZE, please review configuration [misra-config]
 const uint8 Xcp_Key[XCP_MAX_KEY_SIZE] = {0xAB, 0xCD, 0xEF, 0x12};
                    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:87:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_STIM, please review configuration [misra-config]
-static Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
-                                     ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:79:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_ODT, please review configuration [misra-config]
 static Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
                            ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:48:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_DAQ, please review configuration [misra-config]
 Xcp_DaqListType Xcp_DaqLists[XCP_MAX_DAQ] = {
                             ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:146:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_SEED_SIZE, please review configuration [misra-config]
-const uint8 Xcp_Seed[XCP_MAX_SEED_SIZE] = {0x01, 0x02, 0x03, 0x04};
-                    ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:99:42: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_SEGMENTS, please review configuration [misra-config]
 static const Xcp_SegmentType Xcp_Segments[XCP_MAX_SEGMENTS] = {
                                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:87:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_STIM, please review configuration [misra-config]
+static Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
+                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:53:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_DTO_SIZE, please review configuration [misra-config]
+static uint8 Xcp_DaqBuffer[XCP_DTO_SIZE];
+                          ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:30:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_CTO_SIZE, please review configuration [misra-config]
 static uint8 Xcp_ResBuffer[XCP_CTO_SIZE];
                           ^
@@ -4063,9 +4066,6 @@ static uint8 Xcp_CurrentSeed[XCP_SEED_LENGTH] = {0};
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:52:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_DTO_SIZE, please review configuration [misra-config]
 static uint8 Xcp_TxBuffer[XCP_DTO_SIZE];
                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:53:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_DTO_SIZE, please review configuration [misra-config]
-static uint8 Xcp_DaqBuffer[XCP_DTO_SIZE];
-                          ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:145:56: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'XCP_CTO_SIZE' is unknown [misra-config]
     if ((data == NULL) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
                                                        ^
@@ -4147,27 +4147,27 @@ static uint8 Xcp_DaqBuffer[XCP_DTO_SIZE];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp_Lcfg.c:17:55: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant J1939TP_NUM_NSDUS, please review configuration [misra-config]
 static const J1939Tp_NSduConfigType J1939Tp_NSduConfig[J1939TP_NUM_NSDUS] = {
                                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:471:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
-static Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
-                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:385:22: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_ECU_ID_LENGTH, please review configuration [misra-config]
-const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = DLT_ECU_ID;
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:403:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
-static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
-                                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:318:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
-Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
-                                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:395:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
-static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
-                                  ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:321:33: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
 static Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
                                 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:26:47: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
 static const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
                                               ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:403:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
+static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
+                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:395:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
+static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
+                                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:471:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
+static Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
+                                       ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:385:22: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_ECU_ID_LENGTH, please review configuration [misra-config]
+const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = DLT_ECU_ID;
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:318:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
+Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
+                                  ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c:24:0: information: Include file: "PduR_LinTp.h" not found. [missingInclude]
 #include "PduR_LinTp.h"
 ^
@@ -4357,14 +4357,14 @@ static const IpduM_RxMuxPduType* const IpduM_RxMuxPdus[IPDUM_MAX_RX_MUX_PDUS] =
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ea/include/Ea.h:240:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:42:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_GID_LENGTH, please review configuration [misra-config]
-static const uint8 DoIP_GID[DOIP_GID_LENGTH] =
-                           ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:36:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_EID_LENGTH, please review configuration [misra-config]
 static const uint8 DoIP_EID[DOIP_EID_LENGTH] =
                            ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:29:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_VIN_LENGTH, please review configuration [misra-config]
 static const uint8 DoIP_VIN[DOIP_VIN_LENGTH] =
+                           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:42:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_GID_LENGTH, please review configuration [misra-config]
+static const uint8 DoIP_GID[DOIP_GID_LENGTH] =
                            ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Bsw.h:72:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"

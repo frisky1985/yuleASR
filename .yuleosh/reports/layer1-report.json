@@ -1,19 +1,19 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T01:42:12.220742",
+  "generated_at": "2026-07-22T11:40:14.208590",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
       "status": "failed",
-      "commit": "fc0d857",
-      "started_at": "2026-07-22T01:40:57.896561",
-      "completed_at": "2026-07-22T01:42:12.219160",
+      "commit": "674b517",
+      "started_at": "2026-07-22T11:39:02.271157",
+      "completed_at": "2026-07-22T11:40:14.207268",
       "stages_summary": {
         "total": 26,
         "passed": 21,
-        "failed": 2,
-        "skipped": 1
+        "failed": 3,
+        "skipped": 0
       },
       "stages": [
         {
@@ -38,8 +38,8 @@
         },
         {
           "name": "plan-lint",
-          "status": "skipped",
-          "detail": "No task/plan files found"
+          "status": "failed",
+          "detail": "/Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing T00 three-step sections"
         },
         {
           "name": "docsync-gate",
@@ -144,11 +144,12 @@
         {
           "name": "c-coverage-gate",
           "status": "passed",
-          "detail": "line_rate=96.2% >= 80%"
+          "detail": "line_rate=37.1% >= 35%"
         }
       ],
       "coverage": null,
       "errors": [
+        "plan-lint failed",
         "unit-tests failed",
         "coverage failed"
       ]
@@ -163,7 +164,7 @@
     "files_affected": 223
   },
   "c_coverage": {
-    "line_rate": 96.2,
+    "line_rate": 37.1,
     "branch_rate": 0.0
   }
 }

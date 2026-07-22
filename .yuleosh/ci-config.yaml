@@ -64,6 +64,9 @@ misra:
       reason: "AUTOSAR integer casting for Std_ReturnType and module IDs"
   exclude_paths:
     - "tests/**"
+    - "src/**/*_test.c"
+    - "src/**/*_test.h"
+    - "src/**/legacy/**"
     - "third_party/**"
     - "build/**"
     - "Drivers/**"

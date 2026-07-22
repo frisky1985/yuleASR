@@ -36,6 +36,7 @@ REAL_TEST_SOURCES = {
     "test_e2e_crc_real": [
         str(SOURCES_DIR / "bsw" / "services" / "crc" / "src" / "Crc.c"),
         str(SOURCES_DIR / "bsw" / "services" / "crc" / "src" / "Crc_Lcfg.c"),
+        str(SOURCES_DIR / "bsw" / "services" / "det" / "src" / "Det.c"),
     ],
 }
 

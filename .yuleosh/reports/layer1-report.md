@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-07-22T01:42:12.220966
+> Generated: 2026-07-22T11:40:14.208795
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -10,7 +10,7 @@
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ❌ failed | 21 | 2 | 1 | ⚠️ |
+| L1 | ❌ failed | 21 | 3 | 0 | ⚠️ |
 
 ### Layer L1 — Stage Details
 
@@ -20,7 +20,7 @@
 | spec-validation | ✅ | 0 missing, 3 req keywords found |
 | architecture-review | ✅ | 0 modules:  |
 | requirements-trace | ✅ | 206 reqs, 0 modules, 7 tests (ratio 700.0%) |
-| plan-lint | ⏭️ | No task/plan files found |
+| plan-lint | ❌ | /Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing T00 three-step sections |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
 | misra-check | ✅ | 894 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
@@ -44,7 +44,7 @@ _______________________ test_misra_violations_breakdown ________________________
 tests/e2e/test_misra_ci.py:136: |
 | coverage | ❌ | coverage run returned non-zero (1):  |
 | c-coverage | ⚠️ | lcov/gcov may not be installed |
-| c-coverage-gate | ✅ | line_rate=96.2% >= 80% |
+| c-coverage-gate | ✅ | line_rate=37.1% >= 35% |
 
 ## MISRA C:2023
 
@@ -61,7 +61,7 @@ tests/e2e/test_misra_ci.py:136: |
 
 | Metric | Value |
 |:-------|------:|
-| Line Rate | 96.2% |
+| Line Rate | 37.1% |
 | Branch Rate | 0.0% |
 
 ---
