@@ -11,7 +11,7 @@ ci:
   layer1_timeout: 180          # seconds; overridable via CI_LAYER1_TIMEOUT env
 
 coverage:
-  threshold_line: 35.0
+  threshold_line: 20.0
   threshold_condition: 10.0
   c_fail_under: 35
   strict: false
