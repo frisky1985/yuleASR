@@ -1,1 +1,1 @@
-[]
+[{"id": "review-crc-v1.3.0", "file": "src/bsw/services/crc/src/Crc.c", "coverage": 37.1, "misraRequired": 0, "status": "passed"}, {"id": "review-det-v1.3.0", "file": "src/bsw/services/det/src/Det.c", "coverage": 82.0, "misraRequired": 0, "status": "passed"}, {"id": "review-pdur-v1.3.0", "file": "src/bsw/services/pdur/src/PduR.c", "coverage": 27.8, "misraRequired": 0, "status": "passed"}]
