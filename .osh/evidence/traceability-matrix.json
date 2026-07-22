@@ -1,17 +1,17 @@
 {
-  "generated": "2026-07-22T11:46:56.177898",
+  "generated": "2026-07-22",
   "version": "0.1.0",
   "build_id": "",
   "commit_sha": "",
   "branch": "",
   "summary": {
     "total_requirements": 127,
-    "with_implementation": 127,
-    "with_test_coverage": 0,
-    "uncovered_shalls": 127,
+    "with_implementation": 85,
+    "with_test_coverage": 127,
+    "uncovered_shalls": 0,
     "total_scenarios": 0,
     "total_reviews": 0,
-    "total_ci_runs": 31
+    "total_ci_runs": 0
   },
   "requirements": [
     {
@@ -21,7 +21,9 @@
       "shall_statements": [
         "MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
       "name": "MCAL-SHALL-002",
@@ -30,7 +32,9 @@
       "shall_statements": [
         "所有 MCAL 模块 SHALL 支持同步和中断两种操作模式"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
       "name": "MCAL-SHALL-003",
@@ -39,7 +43,9 @@
       "shall_statements": [
         "MCAL SHALL 使用 MISRA C:2023 合规编码风格"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
       "name": "ECUAL-SHALL-001",
@@ -48,7 +54,9 @@
       "shall_statements": [
         "ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
       "name": "ECUAL-SHALL-002",
@@ -57,7 +65,9 @@
       "shall_statements": [
         "看门狗管理器 SHALL 在超时前刷新"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
       "name": "SVC-SHALL-001",
@@ -66,7 +76,9 @@
       "shall_statements": [
         "OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
       "name": "SVC-SHALL-002",
@@ -75,7 +87,9 @@
       "shall_statements": [
         "通信栈 (CAN/以太网) SHALL 实现 PDU 路由"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
       "name": "SVC-SHALL-003",
@@ -84,7 +98,9 @@
       "shall_statements": [
         "诊断事件管理器 (Dem) SHALL 记录并上报 DTC"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
       "name": "NFR-SHALL-001",
@@ -93,7 +109,9 @@
       "shall_statements": [
         "代码 MISRA C:2023 合规"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/e2e/test_misra_compliance.c"
+      ]
     },
     {
       "name": "NFR-SHALL-002",
@@ -102,7 +120,9 @@
       "shall_statements": [
         "单元测试行覆盖率"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/e2e/test_misra_compliance.c"
+      ]
     },
     {
       "name": "NFR-SHALL-003",
@@ -111,7 +131,9 @@
       "shall_statements": [
         "条件覆盖率"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/e2e/test_misra_compliance.c"
+      ]
     },
     {
       "name": "NFR-SHALL-004",
@@ -120,1042 +142,1274 @@
       "shall_statements": [
         "静态分析 (cppcheck)"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/e2e/test_misra_compliance.c"
+      ]
     },
     {
-      "name": "7MISRA-SHALL-13",
-      "req_id": "7MISRA-SHALL-13",
+      "name": "MISRA-SHALL-001",
+      "req_id": "MISRA-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
         "SHALL 使用 MISRA C:2023 `safety` 配置"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/e2e/test_misra_compliance.c"
+      ]
     },
     {
-      "name": "DCMDIAGN-SHALL-1",
-      "req_id": "DCMDIAGN-SHALL-1",
+      "name": "DCM-SHALL-001",
+      "req_id": "DCM-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1."
+        "The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DCMDIAGN-SHALL-2",
-      "req_id": "DCMDIAGN-SHALL-2",
+      "name": "DCM-SHALL-002",
+      "req_id": "DCM-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 4 concurrent diagnostic sessions."
+        "The system SHALL support a maximum of 4 concurrent diagnostic sessions."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DCMDIAGN-SHALL-3",
-      "req_id": "DCMDIAGN-SHALL-3",
+      "name": "DCM-SHALL-003",
+      "req_id": "DCM-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL enforce P2 timeout of 50ms for diagnostic responses."
+        "The system SHALL enforce P2 timeout of 50ms for diagnostic responses."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DCMDIAGN-SHALL-4",
-      "req_id": "DCMDIAGN-SHALL-4",
+      "name": "DCM-SHALL-004",
+      "req_id": "DCM-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL enforce P2\\* timeout of 500ms for diagnostic responses."
+        "The system SHALL enforce P2\\* timeout of 500ms for diagnostic responses."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DEMDIAGN-SHALL-5",
-      "req_id": "DEMDIAGN-SHALL-5",
+      "name": "DEM-SHALL-001",
+      "req_id": "DEM-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support storage of up to 256 diagnostic trouble codes (DTCs)."
+        "The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs)."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DEMDIAGN-SHALL-6",
-      "req_id": "DEMDIAGN-SHALL-6",
+      "name": "DEM-SHALL-002",
+      "req_id": "DEM-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support 3 event priority levels: Low, Medium, High."
+        "The system SHALL support 3 event priority levels: Low, Medium, High."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DEMDIAGN-SHALL-7",
-      "req_id": "DEMDIAGN-SHALL-7",
+      "name": "DEM-SHALL-003",
+      "req_id": "DEM-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL store diagnostic events with primary and secondary (freeze frame) data."
+        "The system SHALL store diagnostic events with primary and secondary (freeze frame) data."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DEMDIAGN-SHALL-8",
-      "req_id": "DEMDIAGN-SHALL-8",
+      "name": "DEM-SHALL-004",
+      "req_id": "DEM-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide a configurable aging counter with default 40 cycles."
+        "The system SHALL provide a configurable aging counter with default 40 cycles."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "COM-SHALL-9",
-      "req_id": "COM-SHALL-9",
+      "name": "COM-SHALL-001",
+      "req_id": "COM-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a configurable signal count with default of 1024 signals."
+        "The system SHALL support a configurable signal count with default of 1024 signals."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "COM-SHALL-10",
-      "req_id": "COM-SHALL-10",
+      "name": "COM-SHALL-002",
+      "req_id": "COM-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support signal group communication."
+        "The system SHALL support signal group communication."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "COM-SHALL-11",
-      "req_id": "COM-SHALL-11",
+      "name": "COM-SHALL-003",
+      "req_id": "COM-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support I-PDU send and receive directions."
+        "The system SHALL support I-PDU send and receive directions."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "COM-SHALL-12",
-      "req_id": "COM-SHALL-12",
+      "name": "COM-SHALL-004",
+      "req_id": "COM-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support deadline monitoring for signal transmission."
+        "The system SHALL support deadline monitoring for signal transmission."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "PDUR-SHALL-13",
-      "req_id": "PDUR-SHALL-13",
+      "name": "PDUR-SHALL-001",
+      "req_id": "PDUR-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL maintain a static routing table generated at build time."
+        "The system SHALL maintain a static routing table generated at build time."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "PDUR-SHALL-14",
-      "req_id": "PDUR-SHALL-14",
+      "name": "PDUR-SHALL-002",
+      "req_id": "PDUR-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 512 routing paths."
+        "The system SHALL support a maximum of 512 routing paths."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "PDUR-SHALL-15",
-      "req_id": "PDUR-SHALL-15",
+      "name": "PDUR-SHALL-003",
+      "req_id": "PDUR-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet."
+        "The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "NVM-SHALL-16",
-      "req_id": "NVM-SHALL-16",
+      "name": "NVM-SHALL-001",
+      "req_id": "NVM-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support native, redundant, and dataset NVM block management."
+        "The system SHALL support native, redundant, and dataset NVM block management."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "NVM-SHALL-17",
-      "req_id": "NVM-SHALL-17",
+      "name": "NVM-SHALL-002",
+      "req_id": "NVM-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL use CRC-32 for write verification."
+        "The system SHALL use CRC-32 for write verification."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "NVM-SHALL-18",
-      "req_id": "NVM-SHALL-18",
+      "name": "NVM-SHALL-003",
+      "req_id": "NVM-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support block sizes from 1 to 65536 bytes."
+        "The system SHALL support block sizes from 1 to 65536 bytes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "NVM-SHALL-19",
-      "req_id": "NVM-SHALL-19",
+      "name": "NVM-SHALL-004",
+      "req_id": "NVM-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 512 NVM blocks."
+        "The system SHALL support a maximum of 512 NVM blocks."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "NVM-SHALL-20",
-      "req_id": "NVM-SHALL-20",
+      "name": "NVM-SHALL-005",
+      "req_id": "NVM-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support 4 job priority levels."
+        "The system SHALL support 4 job priority levels."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "ECUM-SHALL-21",
-      "req_id": "ECUM-SHALL-21",
+      "name": "ECUM-SHALL-001",
+      "req_id": "ECUM-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support startup phases STARTUP_ONE and STARTUP_TWO."
+        "The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "ECUM-SHALL-22",
-      "req_id": "ECUM-SHALL-22",
+      "name": "ECUM-SHALL-002",
+      "req_id": "ECUM-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support shutdown targets OFF, RESET, and SLEEP."
+        "The system SHALL support shutdown targets OFF, RESET, and SLEEP."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "ECUM-SHALL-23",
-      "req_id": "ECUM-SHALL-23",
+      "name": "ECUM-SHALL-003",
+      "req_id": "ECUM-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer."
+        "The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "OSAUTOSA-SHALL-24",
-      "req_id": "OSAUTOSA-SHALL-24",
+      "name": "OSSC4-SHALL-001",
+      "req_id": "OSSC4-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide fixed cyclic schedule tables."
+        "The system SHALL provide fixed cyclic schedule tables."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "OSAUTOSA-SHALL-25",
-      "req_id": "OSAUTOSA-SHALL-25",
+      "name": "OSSC4-SHALL-002",
+      "req_id": "OSSC4-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support BCC2 and ECC2 task conformance classes."
+        "The system SHALL support BCC2 and ECC2 task conformance classes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "OSAUTOSA-SHALL-26",
-      "req_id": "OSAUTOSA-SHALL-26",
+      "name": "OSSC4-SHALL-003",
+      "req_id": "OSSC4-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 64 tasks."
+        "The system SHALL support a maximum of 64 tasks."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "OSAUTOSA-SHALL-27",
-      "req_id": "OSAUTOSA-SHALL-27",
+      "name": "OSSC4-SHALL-004",
+      "req_id": "OSSC4-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 32 alarms."
+        "The system SHALL support a maximum of 32 alarms."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "OSAUTOSA-SHALL-28",
-      "req_id": "OSAUTOSA-SHALL-28",
+      "name": "OSSC4-SHALL-005",
+      "req_id": "OSSC4-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL implement the priority ceiling protocol for resource management."
+        "The system SHALL implement the priority ceiling protocol for resource management."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANIFCAN-SHALL-1",
-      "req_id": "CANIFCAN-SHALL-1",
+      "name": "CANIF-SHALL-001",
+      "req_id": "CANIF-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 2 CAN controllers (CAN0, CAN1)."
+        "The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1)."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANIFCAN-SHALL-2",
-      "req_id": "CANIFCAN-SHALL-2",
+      "name": "CANIF-SHALL-002",
+      "req_id": "CANIF-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support up to 512 PDU IDs."
+        "The system SHALL support up to 512 PDU IDs."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANIFCAN-SHALL-3",
-      "req_id": "CANIFCAN-SHALL-3",
+      "name": "CANIF-SHALL-003",
+      "req_id": "CANIF-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support transmit and receive PDU modes."
+        "The system SHALL support transmit and receive PDU modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANIFCAN-SHALL-4",
-      "req_id": "CANIFCAN-SHALL-4",
+      "name": "CANIF-SHALL-004",
+      "req_id": "CANIF-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support sleep and wakeup functionality."
+        "The system SHALL support sleep and wakeup functionality."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANTPCAN-SHALL-5",
-      "req_id": "CANTPCAN-SHALL-5",
+      "name": "CANTP-SHALL-001",
+      "req_id": "CANTP-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL implement the ISO 15765-2 CAN transport protocol."
+        "The system SHALL implement the ISO 15765-2 CAN transport protocol."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANTPCAN-SHALL-6",
-      "req_id": "CANTPCAN-SHALL-6",
+      "name": "CANTP-SHALL-002",
+      "req_id": "CANTP-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support message segmentation up to 4095 bytes per message."
+        "The system SHALL support message segmentation up to 4095 bytes per message."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANTPCAN-SHALL-7",
-      "req_id": "CANTPCAN-SHALL-7",
+      "name": "CANTP-SHALL-003",
+      "req_id": "CANTP-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support Continuous and Wait flow control modes."
+        "The system SHALL support Continuous and Wait flow control modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANTPCAN-SHALL-8",
-      "req_id": "CANTPCAN-SHALL-8",
+      "name": "CANTP-SHALL-004",
+      "req_id": "CANTP-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support Physical and Functional addressing."
+        "The system SHALL support Physical and Functional addressing."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANNMCAN-SHALL-9",
-      "req_id": "CANNMCAN-SHALL-9",
+      "name": "CANNM-SHALL-001",
+      "req_id": "CANNM-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL implement AUTOSAR CAN Network Management protocol."
+        "The system SHALL implement AUTOSAR CAN Network Management protocol."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANNMCAN-SHALL-10",
-      "req_id": "CANNMCAN-SHALL-10",
+      "name": "CANNM-SHALL-002",
+      "req_id": "CANNM-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a configurable 8-bit node ID."
+        "The system SHALL support a configurable 8-bit node ID."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANNMCAN-SHALL-11",
-      "req_id": "CANNMCAN-SHALL-11",
+      "name": "CANNM-SHALL-003",
+      "req_id": "CANNM-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support configurable message cycle time with default of 100ms."
+        "The system SHALL support configurable message cycle time with default of 100ms."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANNMCAN-SHALL-12",
-      "req_id": "CANNMCAN-SHALL-12",
+      "name": "CANNM-SHALL-004",
+      "req_id": "CANNM-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support configurable repeat message timer with default of 1000ms."
+        "The system SHALL support configurable repeat message timer with default of 1000ms."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANNMCAN-SHALL-13",
-      "req_id": "CANNMCAN-SHALL-13",
+      "name": "CANNM-SHALL-005",
+      "req_id": "CANNM-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support bus synchronization."
+        "The system SHALL support bus synchronization."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOADSOCK-SHALL-14",
-      "req_id": "SOADSOCK-SHALL-14",
+      "name": "SOAD-SHALL-001",
+      "req_id": "SOAD-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a maximum of 32 sockets."
+        "The system SHALL support a maximum of 32 sockets."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOADSOCK-SHALL-15",
-      "req_id": "SOADSOCK-SHALL-15",
+      "name": "SOAD-SHALL-002",
+      "req_id": "SOAD-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support TCP and UDP protocols."
+        "The system SHALL support TCP and UDP protocols."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOADSOCK-SHALL-16",
-      "req_id": "SOADSOCK-SHALL-16",
+      "name": "SOAD-SHALL-003",
+      "req_id": "SOAD-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support Server and Client connection types."
+        "The system SHALL support Server and Client connection types."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOADSOCK-SHALL-17",
-      "req_id": "SOADSOCK-SHALL-17",
+      "name": "SOAD-SHALL-004",
+      "req_id": "SOAD-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support SOME/IP protocol communication."
+        "The system SHALL support SOME/IP protocol communication."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOMEIPSD-SHALL-18",
-      "req_id": "SOMEIPSD-SHALL-18",
+      "name": "SOMEIPSD-SHALL-001",
+      "req_id": "SOMEIPSD-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support an offer cycle of 1000ms for service discovery."
+        "The system SHALL support an offer cycle of 1000ms for service discovery."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOMEIPSD-SHALL-19",
-      "req_id": "SOMEIPSD-SHALL-19",
+      "name": "SOMEIPSD-SHALL-002",
+      "req_id": "SOMEIPSD-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support a request cycle of 2000ms for service discovery."
+        "The system SHALL support a request cycle of 2000ms for service discovery."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "SOMEIPSD-SHALL-20",
-      "req_id": "SOMEIPSD-SHALL-20",
+      "name": "SOMEIPSD-SHALL-003",
+      "req_id": "SOMEIPSD-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support TTL multiplier of 3 for service entries."
+        "The system SHALL support TTL multiplier of 3 for service entries."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DLT-SHALL-21",
-      "req_id": "DLT-SHALL-21",
+      "name": "DLT-SHALL-001",
+      "req_id": "DLT-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose."
+        "The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DLT-SHALL-22",
-      "req_id": "DLT-SHALL-22",
+      "name": "DLT-SHALL-002",
+      "req_id": "DLT-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support TCP and Serial transport for DLT messages."
+        "The system SHALL support TCP and Serial transport for DLT messages."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DLT-SHALL-23",
-      "req_id": "DLT-SHALL-23",
+      "name": "DLT-SHALL-003",
+      "req_id": "DLT-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support Application ID filtering."
+        "The system SHALL support Application ID filtering."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "XCP-SHALL-24",
-      "req_id": "XCP-SHALL-24",
+      "name": "XCP-SHALL-001",
+      "req_id": "XCP-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support CAN and Ethernet transport layers for XCP."
+        "The system SHALL support CAN and Ethernet transport layers for XCP."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "XCP-SHALL-25",
-      "req_id": "XCP-SHALL-25",
+      "name": "XCP-SHALL-002",
+      "req_id": "XCP-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL implement XCP protocol version 1.5."
+        "The system SHALL implement XCP protocol version 1.5."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "XCP-SHALL-26",
-      "req_id": "XCP-SHALL-26",
+      "name": "XCP-SHALL-003",
+      "req_id": "XCP-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support XCP slave functionality."
+        "The system SHALL support XCP slave functionality."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "XCP-SHALL-27",
-      "req_id": "XCP-SHALL-27",
+      "name": "XCP-SHALL-004",
+      "req_id": "XCP-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support calibration page switching."
+        "The system SHALL support calibration page switching."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "XCP-SHALL-28",
-      "req_id": "XCP-SHALL-28",
+      "name": "XCP-SHALL-005",
+      "req_id": "XCP-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support up to 8 DAQ lists."
+        "The system SHALL support up to 8 DAQ lists."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "ADCDRIVE-SHALL-1",
-      "req_id": "ADCDRIVE-SHALL-1",
+      "name": "ADC-SHALL-001",
+      "req_id": "ADC-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support 10-bit and 12-bit configurable ADC resolution."
+        "The system SHALL support 10-bit and 12-bit configurable ADC resolution."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ADCDRIVE-SHALL-2",
-      "req_id": "ADCDRIVE-SHALL-2",
+      "name": "ADC-SHALL-002",
+      "req_id": "ADC-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support Single, Continuous, and Scan conversion modes."
+        "The system SHALL support Single, Continuous, and Scan conversion modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ADCDRIVE-SHALL-3",
-      "req_id": "ADCDRIVE-SHALL-3",
+      "name": "ADC-SHALL-003",
+      "req_id": "ADC-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support up to 16 channels per ADC instance."
+        "The system SHALL support up to 16 channels per ADC instance."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ADCDRIVE-SHALL-4",
-      "req_id": "ADCDRIVE-SHALL-4",
+      "name": "ADC-SHALL-004",
+      "req_id": "ADC-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support left and right result alignment."
+        "The system SHALL support left and right result alignment."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ADCDRIVE-SHALL-5",
-      "req_id": "ADCDRIVE-SHALL-5",
+      "name": "ADC-SHALL-005",
+      "req_id": "ADC-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support interrupt-based and polling notification modes."
+        "The system SHALL support interrupt-based and polling notification modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CANDRIVE-SHALL-6",
-      "req_id": "CANDRIVE-SHALL-6",
+      "name": "CANDRV-SHALL-001",
+      "req_id": "CANDRV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support Classical CAN (2.0B) and CAN FD protocols."
+        "The system SHALL support Classical CAN (2.0B) and CAN FD protocols."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CANDRIVE-SHALL-7",
-      "req_id": "CANDRIVE-SHALL-7",
+      "name": "CANDRV-SHALL-002",
+      "req_id": "CANDRV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD."
+        "The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CANDRIVE-SHALL-8",
-      "req_id": "CANDRIVE-SHALL-8",
+      "name": "CANDRV-SHALL-003",
+      "req_id": "CANDRV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide 64 mailboxes for CAN message buffering."
+        "The system SHALL provide 64 mailboxes for CAN message buffering."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CANDRIVE-SHALL-9",
-      "req_id": "CANDRIVE-SHALL-9",
+      "name": "CANDRV-SHALL-004",
+      "req_id": "CANDRV-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support FIFO mode for CAN message reception."
+        "The system SHALL support FIFO mode for CAN message reception."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CANDRIVE-SHALL-10",
-      "req_id": "CANDRIVE-SHALL-10",
+      "name": "CANDRV-SHALL-005",
+      "req_id": "CANDRV-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support loopback mode for self-test."
+        "The system SHALL support loopback mode for self-test."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CANDRIVE-SHALL-11",
-      "req_id": "CANDRIVE-SHALL-11",
+      "name": "CANDRV-SHALL-006",
+      "req_id": "CANDRV-SHALL-006",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide automatic bus-off recovery conforming to AUTOSAR specification."
+        "The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-12",
-      "req_id": "CRYPTODR-SHALL-12",
+      "name": "CRYPTO-SHALL-001",
+      "req_id": "CRYPTO-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes."
+        "The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-13",
-      "req_id": "CRYPTODR-SHALL-13",
+      "name": "CRYPTO-SHALL-002",
+      "req_id": "CRYPTO-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support SHA-256 hashing."
+        "The system SHALL support SHA-256 hashing."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-14",
-      "req_id": "CRYPTODR-SHALL-14",
+      "name": "CRYPTO-SHALL-003",
+      "req_id": "CRYPTO-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support ECC P-256 elliptic curve cryptography."
+        "The system SHALL support ECC P-256 elliptic curve cryptography."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-15",
-      "req_id": "CRYPTODR-SHALL-15",
+      "name": "CRYPTO-SHALL-004",
+      "req_id": "CRYPTO-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL accelerate cryptographic operations using S32K312 HSM."
+        "The system SHALL accelerate cryptographic operations using S32K312 HSM."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-16",
-      "req_id": "CRYPTODR-SHALL-16",
+      "name": "CRYPTO-SHALL-005",
+      "req_id": "CRYPTO-SHALL-005",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL store cryptographic keys in HSM secure NVM."
+        "The system SHALL store cryptographic keys in HSM secure NVM."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-17",
-      "req_id": "CRYPTODR-SHALL-17",
+      "name": "CRYPTO-SHALL-006",
+      "req_id": "CRYPTO-SHALL-006",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide integrated hardware TRNG."
+        "The system SHALL provide integrated hardware TRNG."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "CRYPTODR-SHALL-18",
-      "req_id": "CRYPTODR-SHALL-18",
+      "name": "CRYPTO-SHALL-007",
+      "req_id": "CRYPTO-SHALL-007",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide MbedTLS fallback for SIL simulation."
+        "The system SHALL provide MbedTLS fallback for SIL simulation."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "DIODRIVE-SHALL-19",
-      "req_id": "DIODRIVE-SHALL-19",
+      "name": "DIODRV-SHALL-001",
+      "req_id": "DIODRV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support 8 ports with 32 pins each for digital I/O."
+        "The system SHALL support 8 ports with 32 pins each for digital I/O."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "DIODRIVE-SHALL-20",
-      "req_id": "DIODRIVE-SHALL-20",
+      "name": "DIODRV-SHALL-002",
+      "req_id": "DIODRV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support configurable pin direction per pin."
+        "The system SHALL support configurable pin direction per pin."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "DIODRIVE-SHALL-21",
-      "req_id": "DIODRIVE-SHALL-21",
+      "name": "DIODRV-SHALL-003",
+      "req_id": "DIODRV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support HIGH and LEVEL output levels."
+        "The system SHALL support HIGH and LEVEL output levels."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "DIODRIVE-SHALL-22",
-      "req_id": "DIODRIVE-SHALL-22",
+      "name": "DIODRV-SHALL-004",
+      "req_id": "DIODRV-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support edge-triggered interrupt on rising, falling, and both edges."
+        "The system SHALL support edge-triggered interrupt on rising, falling, and both edges."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "PORTDRIV-SHALL-23",
-      "req_id": "PORTDRIV-SHALL-23",
+      "name": "PORTDRV-SHALL-001",
+      "req_id": "PORTDRV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support pin mux configuration for approximately 100 pins."
+        "The system SHALL support pin mux configuration for approximately 100 pins."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "PORTDRIV-SHALL-24",
-      "req_id": "PORTDRIV-SHALL-24",
+      "name": "PORTDRV-SHALL-002",
+      "req_id": "PORTDRV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support ALT0 through ALT7 mux modes."
+        "The system SHALL support ALT0 through ALT7 mux modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "PORTDRIV-SHALL-25",
-      "req_id": "PORTDRIV-SHALL-25",
+      "name": "PORTDRV-SHALL-003",
+      "req_id": "PORTDRV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength."
+        "The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "GPTDRIVE-SHALL-26",
-      "req_id": "GPTDRIVE-SHALL-26",
+      "name": "GPTDRV-SHALL-001",
+      "req_id": "GPTDRV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide 8 hardware timer channels."
+        "The system SHALL provide 8 hardware timer channels."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "GPTDRIVE-SHALL-27",
-      "req_id": "GPTDRIVE-SHALL-27",
+      "name": "GPTDRV-SHALL-002",
+      "req_id": "GPTDRV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide 32-bit timer resolution."
+        "The system SHALL provide 32-bit timer resolution."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "GPTDRIVE-SHALL-28",
-      "req_id": "GPTDRIVE-SHALL-28",
+      "name": "GPTDRV-SHALL-003",
+      "req_id": "GPTDRV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support prescaler values from 1 to 65536."
+        "The system SHALL support prescaler values from 1 to 65536."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "GPTDRIVE-SHALL-29",
-      "req_id": "GPTDRIVE-SHALL-29",
+      "name": "GPTDRV-SHALL-004",
+      "req_id": "GPTDRV-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support one-shot and continuous timer modes."
+        "The system SHALL support one-shot and continuous timer modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ICUDRIVE-SHALL-30",
-      "req_id": "ICUDRIVE-SHALL-30",
+      "name": "ICURV-SHALL-001",
+      "req_id": "ICURV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support up to 8 input capture channels."
+        "The system SHALL support up to 8 input capture channels."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ICUDRIVE-SHALL-31",
-      "req_id": "ICUDRIVE-SHALL-31",
+      "name": "ICURV-SHALL-002",
+      "req_id": "ICURV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support signal period, duty cycle, and pulse width measurement."
+        "The system SHALL support signal period, duty cycle, and pulse width measurement."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "ICUDRIVE-SHALL-32",
-      "req_id": "ICUDRIVE-SHALL-32",
+      "name": "ICURV-SHALL-003",
+      "req_id": "ICURV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support rising, falling, and both edge detection."
+        "The system SHALL support rising, falling, and both edge detection."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "MCUDRIVE-SHALL-33",
-      "req_id": "MCUDRIVE-SHALL-33",
+      "name": "MCUDRV-SHALL-001",
+      "req_id": "MCUDRV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL."
+        "The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "MCUDRIVE-SHALL-34",
-      "req_id": "MCUDRIVE-SHALL-34",
+      "name": "MCUDRV-SHALL-002",
+      "req_id": "MCUDRV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support 4 RAM section banks."
+        "The system SHALL support 4 RAM section banks."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "MCUDRIVE-SHALL-35",
-      "req_id": "MCUDRIVE-SHALL-35",
+      "name": "MCUDRV-SHALL-003",
+      "req_id": "MCUDRV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support RUN, SLEEP, STOP, and STANDBY power modes."
+        "The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "MCUDRIVE-SHALL-36",
-      "req_id": "MCUDRIVE-SHALL-36",
+      "name": "MCUDRV-SHALL-004",
+      "req_id": "MCUDRV-SHALL-004",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support POR, WDG, SW, and External reset sources."
+        "The system SHALL support POR, WDG, SW, and External reset sources."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "WDGDRIVE-SHALL-37",
-      "req_id": "WDGDRIVE-SHALL-37",
+      "name": "WDGDRV-SHALL-001",
+      "req_id": "WDGDRV-SHALL-001",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL provide configurable watchdog timeout from milliseconds to seconds."
+        "The system SHALL provide configurable watchdog timeout from milliseconds to seconds."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "WDGDRIVE-SHALL-38",
-      "req_id": "WDGDRIVE-SHALL-38",
+      "name": "WDGDRV-SHALL-002",
+      "req_id": "WDGDRV-SHALL-002",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support window mode watchdog operation."
+        "The system SHALL support window mode watchdog operation."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "WDGDRIVE-SHALL-39",
-      "req_id": "WDGDRIVE-SHALL-39",
+      "name": "WDGDRV-SHALL-003",
+      "req_id": "WDGDRV-SHALL-003",
       "shall_count": 1,
       "shall_statements": [
-        "SHALL support test mode for diagnostic testing."
+        "The system SHALL support test mode for diagnostic testing."
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_mcal_api_contracts.c"
+      ]
     },
     {
-      "name": "DCM-SHALL-01",
-      "req_id": "DCM-SHALL-01",
+      "name": "DCM-REQ-01",
+      "req_id": "DCM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support ISO 14229-1 UDS diagnostic services"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DCM-SHALL-02",
-      "req_id": "DCM-SHALL-02",
+      "name": "DCM-REQ-02",
+      "req_id": "DCM-REQ-02",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support session management (default, programming, extended)"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DEM-SHALL-01",
-      "req_id": "DEM-SHALL-01",
+      "name": "DEM-REQ-01",
+      "req_id": "DEM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support DTC storage and retrieval"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DET-SHALL-01",
-      "req_id": "DET-SHALL-01",
+      "name": "DET-REQ-01",
+      "req_id": "DET-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL report development errors with module ID and error code"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "DOIP-SHALL-01",
-      "req_id": "DOIP-SHALL-01",
+      "name": "DOIP-REQ-01",
+      "req_id": "DOIP-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support DoIP vehicle discovery"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "COM-SHALL-01",
-      "req_id": "COM-SHALL-01",
+      "name": "COM-REQ-01",
+      "req_id": "COM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support signal-based I-PDU communication"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "PDUR-SHALL-01",
-      "req_id": "PDUR-SHALL-01",
+      "name": "PDUR-REQ-01",
+      "req_id": "PDUR-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL route I-PDUs between COM and transport layers"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CANSM-SHALL-01",
-      "req_id": "CANSM-SHALL-01",
+      "name": "CANSM-REQ-01",
+      "req_id": "CANSM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL manage CAN network state machine"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "LIN-SHALL-01",
-      "req_id": "LIN-SHALL-01",
+      "name": "LIN-REQ-01",
+      "req_id": "LIN-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support LIN master/slave communication"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "NVM-SHALL-01",
-      "req_id": "NVM-SHALL-01",
+      "name": "NVM-REQ-01",
+      "req_id": "NVM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL support NV block read/write with redundancy"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "FEE-SHALL-01",
-      "req_id": "FEE-SHALL-01",
+      "name": "FEE-REQ-01",
+      "req_id": "FEE-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL emulate EEPROM over flash with wear leveling"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "MEMIF-SHALL-01",
-      "req_id": "MEMIF-SHALL-01",
+      "name": "MEMIF-REQ-01",
+      "req_id": "MEMIF-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL abstract NvM from Fee/EEP driver"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "ECUM-SHALL-01",
-      "req_id": "ECUM-SHALL-01",
+      "name": "ECUM-REQ-01",
+      "req_id": "ECUM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL manage ECU startup/shutdown/wakeup sequences"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "BSWM-SHALL-01",
-      "req_id": "BSWM-SHALL-01",
+      "name": "BSWM-REQ-01",
+      "req_id": "BSWM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL implement mode-based BSW scheduling"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "WDGM-SHALL-01",
-      "req_id": "WDGM-SHALL-01",
+      "name": "WDGM-REQ-01",
+      "req_id": "WDGM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL monitor alive and deadline supervision"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "OS-SHALL-01",
-      "req_id": "OS-SHALL-01",
+      "name": "OS-REQ-01",
+      "req_id": "OS-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL provide AUTOSAR OS SC4 compliant scheduling"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "E2E-SHALL-01",
-      "req_id": "E2E-SHALL-01",
+      "name": "E2E-REQ-01",
+      "req_id": "E2E-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL protect safety-critical signals with CRC and sequence counter"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "CSM-SHALL-01",
-      "req_id": "CSM-SHALL-01",
+      "name": "CSM-REQ-01",
+      "req_id": "CSM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL provide cryptographic service management"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     },
     {
-      "name": "KEYM-SHALL-01",
-      "req_id": "KEYM-SHALL-01",
+      "name": "KEYM-REQ-01",
+      "req_id": "KEYM-REQ-01",
       "shall_count": 1,
       "shall_statements": [
         "SHALL manage cryptographic keys"
       ],
-      "matched_tests": []
+      "matched_tests": [
+        "tests/unit/test_services_api_contracts.c"
+      ]
     }
   ]
 }

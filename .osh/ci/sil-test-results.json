@@ -1,13 +1,13 @@
 {
   "layer": 2,
   "stage": "sil-tests",
-  "timestamp": "2026-07-22T11:46:42.821854",
+  "timestamp": "2026-07-22T12:10:37.582309",
   "all_passed": true,
   "results": [
     {
       "elf": "hello.elf",
       "passed": true,
-      "elapsed": 0.048007791861891747,
+      "elapsed": 0.049441833049058914,
       "error": null,
       "assertion_failures": [],
       "log_snippet": "Hello from yuleOSH cross-compilation test!\n\nSIL Test Suite: ALL PASS\n"

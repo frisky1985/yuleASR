@@ -115,7 +115,7 @@ void test_DEM001_DTC(void) {
 }
 void test_DEM002_Pri(void) {
     Dem_EventStatusType s = DEM_EVENT_STATUS_FAILED;
-    TEST_ASSERT_TRUE(s >= 0U && s <= 3U);
+    TEST_ASSERT_TRUE(s <= 3U);
 }
 void test_DEM003_FF(void) {
     Dem_Init(&DemCfg);
@@ -160,7 +160,8 @@ void test_PDUR001_Static(void) {
     Std_VersionInfoType ver;
     memset(&ver, 0, sizeof(ver));
     PduR_GetVersionInfo(&ver);
-    TEST_ASSERT_TRUE(ver.vendorID >= 0U);
+    /* Verify vendor ID is a valid AUTOSAR vendor identifier (non-zero for production) */
+    TEST_ASSERT_TRUE(ver.vendorID > 0U || ver.sw_major_version > 0U || ver.sw_minor_version > 0U);
     PduR_DeInit();
 }
 void test_PDUR002_Max(void) {
@@ -205,7 +206,8 @@ void test_ECUM001_Strt(void) {
     EcuM_Init(); EcuM_StartupOne(); EcuM_StartupTwo();
     EcuM_StateType st = 0U;
     EcuM_GetState(&st);
-    TEST_ASSERT_TRUE(st >= 0U);
+    /* ECU state should be one of the valid AUTOSAR states after startup */
+    TEST_ASSERT_TRUE(st == ECUM_STATE_STARTUP || st == ECUM_STATE_RUN || st == ECUM_STATE_POST_RUN);
 }
 void test_ECUM002_Shdn(void) {
     EcuM_ShutdownTargetType t;
@@ -216,10 +218,11 @@ void test_ECUM002_Shdn(void) {
     EcuM_SelectShutdownTarget(ECUM_SHUTDOWN_TARGET_SLEEP);
 }
 void test_ECUM003_Wake(void) {
-    EcuM_WakeupResultType wr = 0U;
+    EcuM_WakeupResultType wr = 0xFFU;
     EcuM_CheckWakeup(0U);
-    EcuM_GetWakeupStatus(0U, &wr);
-    TEST_ASSERT_TRUE(wr >= 0U);
+    Std_ReturnType w_ret = EcuM_GetWakeupStatus(0U, &wr);
+    /* Verify the API executes without crashing and returns a valid AUTOSAR status */
+    TEST_ASSERT_TRUE(w_ret == E_OK || w_ret == E_NOT_OK);
 }
 
 /* ===== OSSC4-SHALL-001~005 ===== */
@@ -384,7 +387,7 @@ void test_DCM_REQ_01(void) {
     Std_VersionInfoType ver;
     memset(&ver, 0, sizeof(ver));
     Dcm_GetVersionInfo(&ver);
-    TEST_ASSERT_TRUE(ver.vendorID >= 0U);
+    TEST_ASSERT_TRUE(ver.vendorID > 0U);
     Dcm_DeInit();
 }
 void test_DCM_REQ_02(void) {
@@ -452,7 +455,7 @@ void test_ECUM_REQ_01(void) {
     EcuM_Init(); EcuM_StartupOne(); EcuM_StartupTwo();
     EcuM_StateType s = 0U;
     EcuM_GetState(&s);
-    TEST_ASSERT_TRUE(s >= 0U);
+    TEST_ASSERT_TRUE(s <= 10U);
 }
 void test_BSWM_REQ_01(void) {
     BswM_Init(&BswMCfg);

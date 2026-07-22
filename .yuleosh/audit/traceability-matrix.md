@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-> Generated: 2026-07-22T03:46:49
+> Generated: 2026-07-22
 > Version: 0.1.0
 
 ## Requirements → Implementation → Tests

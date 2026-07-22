@@ -1,6 +1,6 @@
 # MISRA Compliance Report
 
-**Generated**: 2026-07-22T11:46:41.870541
+**Generated**: 2026-07-22T12:11:25.034811
 **Tool**: Cppcheck 2.17.1 from cppcheck-wheel 1.5.1
 **Ruleset**: 2023-preview
 

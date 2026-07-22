@@ -97,14 +97,16 @@ void test_ADC001_Resolution(void) {
 }
 void test_ADC002_ConvModes(void) { Adc_StartGroupConversion(0U); Adc_StatusType s=Adc_GetStatus(); TEST_ASSERT_TRUE(s==ADC_IDLE||s==ADC_BUSY); }
 void test_ADC003_MaxCh(void) { TEST_ASSERT_TRUE(ADC_MAX_CHANNELS <= 16U); }
-void test_ADC004_Align(void) { uint8* p=Adc_GetStreamLastPointer(0U); TEST_ASSERT_TRUE(p==NULL||p!=NULL); }
+void test_ADC004_Align(void) { uint8* p=Adc_GetStreamLastPointer(0U); Adc_GetStreamLastPointer(0U); TEST_ASSERT_NOT_NULL(p); }
 void test_ADC005_Notif(void) { Adc_EnableHardwareTrigger(0U); Adc_DisableHardwareTrigger(0U); }
 
 /* ===== CAN DRV SHALLs ===== */
 void test_CANDRV001_CAN_FD(void) { Std_ReturnType can_baud = Can_ControllerBaudrateConfig(0U, 500000UL); TEST_ASSERT_TRUE(can_baud == E_OK || can_baud == E_NOT_OK); }
 void test_CANDRV002_BitRate(void) {
-    TEST_ASSERT_TRUE(125000UL <= 1000000UL);
-    TEST_ASSERT_TRUE(1000000UL <= 8000000UL);
+    Std_ReturnType low_baud = Can_ControllerBaudrateConfig(0U, 125000UL);
+    Std_ReturnType high_baud = Can_ControllerBaudrateConfig(1U, 1000000UL);
+    TEST_ASSERT_TRUE(low_baud == E_OK || low_baud == E_NOT_OK);
+    TEST_ASSERT_TRUE(high_baud == E_OK || high_baud == E_NOT_OK);
 }
 void test_CANDRV003_Mbox(void) { Std_ReturnType can_wr = Can_Write(0U, NULL); TEST_ASSERT_TRUE(can_wr == E_OK || can_wr == E_NOT_OK); }
 void test_CANDRV004_FIFO(void) { Std_ReturnType can_wr2 = Can_Write(0U, NULL); TEST_ASSERT_TRUE(can_wr2 == E_OK || can_wr2 == E_NOT_OK); }
@@ -121,7 +123,7 @@ void test_CRYPTO006_TRNG(void) { Std_ReturnType cr_t = Crypto_HwTrng_GetRandomBy
 void test_CRYPTO007_Mbed(void) { Std_ReturnType cr_m = Crypto_ProcessJob(0U); TEST_ASSERT_TRUE(cr_m == E_OK || cr_m == E_NOT_OK); }
 
 /* ===== DIO SHALLs ===== */
-void test_DIODRV001_Ports(void) { Dio_PortLevelType drp = Dio_ReadPort(TestP); TEST_ASSERT_TRUE(drp == 0U || drp != 0U); }
+void test_DIODRV001_Ports(void) { Dio_WritePort(TestP, 0xA5A5U); Dio_PortLevelType drp = Dio_ReadPort(TestP); TEST_ASSERT_TRUE(drp == 0xA5A5U); }
 void test_DIODRV002_Dir(void) { Dio_WriteChannel(TestCh, STD_HIGH); }
 void test_DIODRV003_Level(void) { Dio_WriteChannel(TestCh, STD_HIGH); Dio_LevelType v2=Dio_ReadChannel(TestCh); TEST_ASSERT_TRUE(v2==STD_HIGH||v2==STD_LOW); }
 void test_DIODRV004_Int(void) { Dio_GetVersionInfo(NULL); }
@@ -132,8 +134,8 @@ void test_PORTDRV002_Alt(void) { Port_SetPinMode(0U, PORT_PIN_MUX_ALT1); }
 void test_PORTDRV003_Pad(void) { Port_Init(&PortCfg); TEST_ASSERT_TRUE(sizeof(PortCfg) > 0U); }
 
 /* ===== GPT SHALLs ===== */
-void test_GPTDRV001_Chan(void) { Gpt_Init(&GptCfg); Gpt_StartTimer(0U, 1000U); Gpt_ValueType gv=Gpt_GetTimeElapsed(0U); TEST_ASSERT_TRUE(gv>=0U); }
-void test_GPTDRV002_Res(void) { Gpt_ValueType gpt2 = Gpt_GetTimeElapsed(0U); TEST_ASSERT_TRUE(gpt2 == 0U || gpt2 > 0U); }
+void test_GPTDRV001_Chan(void) { Gpt_Init(&GptCfg); Gpt_StartTimer(0U, 1000U); Gpt_ValueType gv=Gpt_GetTimeElapsed(0U); TEST_ASSERT_TRUE(gv <= 1000U); }
+void test_GPTDRV002_Res(void) { Gpt_Init(&GptCfg); Gpt_StartTimer(0U, 1000U); Gpt_ValueType gpt2 = Gpt_GetTimeElapsed(0U); TEST_ASSERT_TRUE(gpt2 <= 1000U); }
 void test_GPTDRV003_Pre(void) { Gpt_EnableWakeup(0U); }
 void test_GPTDRV004_Mode(void) { Gpt_SetMode(GPT_MODE_ONESHOT); Gpt_SetMode(GPT_MODE_CONTINUOUS); }
 
@@ -154,7 +156,7 @@ void test_WDGDRV002_Win(void) { Wdg_SetMode(WDGIF_MODE_OFF); Wdg_SetMode(WDGIF_M
 void test_WDGDRV003_Test(void) { Wdg_GetVersionInfo(NULL); }
 
 /* ===== ECUAL SHALLs ===== */
-void test_ECUAL001_MCAL_Use(void) { Dio_WriteChannel(TestCh, STD_HIGH); Dio_WritePort(TestP, 0xFFFFU); Dio_PortLevelType pl=Dio_ReadPort(TestP); TEST_ASSERT_TRUE(pl==0xFFFFU||pl!=0xFFFFU); }
+void test_ECUAL001_MCAL_Use(void) { Dio_WriteChannel(TestCh, STD_HIGH); Dio_WritePort(TestP, 0xFFFFU); Dio_PortLevelType pl=Dio_ReadPort(TestP); TEST_ASSERT_TRUE(pl == 0xFFFFU); }
 void test_ECUAL002_Wdg_Refresh(void) { Wdg_SetTriggerCondition(100U); Wdg_GetVersionInfo(NULL); }
 
 int main(void) {

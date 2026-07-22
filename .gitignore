@@ -138,3 +138,5 @@ dSYM/
 coverage_run/bin/
 # Coverage report output
 coverage_report_focused/
+# Embedded git repos
+third_party/lwip

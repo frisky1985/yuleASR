@@ -44,7 +44,7 @@ def escape_markdown(text):
 
 
 def now_iso():
-    return time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime())
+    return time.strftime("%Y-%m-%d", time.gmtime())
 
 
 def generate_traceability_matrix_md(reqs, summary):

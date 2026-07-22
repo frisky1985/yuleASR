@@ -1,14 +1,14 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T11:46:32.794574",
+  "generated_at": "2026-07-22T12:10:06.300542",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
       "status": "passed",
-      "commit": "545e67d",
-      "started_at": "2026-07-22T11:45:24.784071",
-      "completed_at": "2026-07-22T11:46:32.793283",
+      "commit": "22cbced",
+      "started_at": "2026-07-22T12:08:54.217683",
+      "completed_at": "2026-07-22T12:10:06.299057",
       "stages_summary": {
         "total": 29,
         "passed": 27,

@@ -1,6 +1,6 @@
 # Traceability Matrix
 
-> Generated: 2026-07-22T11:46:56.177898
+> Generated: 2026-07-22
 > Version: 0.1.0
 
 ## Requirements → Implementation → Tests
@@ -10,7 +10,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
   ❌ MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)
 
@@ -19,7 +19,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
   ❌ 所有 MCAL 模块 SHALL 支持同步和中断两种操作模式
 
@@ -28,7 +28,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
   ❌ MCAL SHALL 使用 MISRA C:2023 合规编码风格
 
@@ -37,7 +37,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
   ❌ ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器
 
@@ -46,7 +46,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
   ❌ 看门狗管理器 SHALL 在超时前刷新
 
@@ -55,7 +55,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务
 
@@ -64,7 +64,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ 通信栈 (CAN/以太网) SHALL 实现 PDU 路由
 
@@ -73,7 +73,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ 诊断事件管理器 (Dem) SHALL 记录并上报 DTC
 
@@ -82,7 +82,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/e2e/test_misra_compliance.c
 - SHALL details:
   ❌ 代码 MISRA C:2023 合规
 
@@ -91,7 +91,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/e2e/test_misra_compliance.c
 - SHALL details:
   ❌ 单元测试行覆盖率
 
@@ -100,7 +100,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/e2e/test_misra_compliance.c
 - SHALL details:
   ❌ 条件覆盖率
 
@@ -109,1050 +109,1050 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/e2e/test_misra_compliance.c
 - SHALL details:
   ❌ 静态分析 (cppcheck)
 
-### 7MISRA-SHALL-13
-- Req ID: 7MISRA-SHALL-13
+### MISRA-SHALL-001
+- Req ID: MISRA-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/e2e/test_misra_compliance.c
 - SHALL details:
   ❌ SHALL 使用 MISRA C:2023 `safety` 配置
 
-### DCMDIAGN-SHALL-1
-- Req ID: DCMDIAGN-SHALL-1
+### DCM-SHALL-001
+- Req ID: DCM-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x...
+  ❌ The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1.
 
-### DCMDIAGN-SHALL-2
-- Req ID: DCMDIAGN-SHALL-2
+### DCM-SHALL-002
+- Req ID: DCM-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 4 concurrent diagnostic sessions.
+  ❌ The system SHALL support a maximum of 4 concurrent diagnostic sessions.
 
-### DCMDIAGN-SHALL-3
-- Req ID: DCMDIAGN-SHALL-3
+### DCM-SHALL-003
+- Req ID: DCM-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL enforce P2 timeout of 50ms for diagnostic responses.
+  ❌ The system SHALL enforce P2 timeout of 50ms for diagnostic responses.
 
-### DCMDIAGN-SHALL-4
-- Req ID: DCMDIAGN-SHALL-4
+### DCM-SHALL-004
+- Req ID: DCM-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL enforce P2\* timeout of 500ms for diagnostic responses.
+  ❌ The system SHALL enforce P2\* timeout of 500ms for diagnostic responses.
 
-### DEMDIAGN-SHALL-5
-- Req ID: DEMDIAGN-SHALL-5
+### DEM-SHALL-001
+- Req ID: DEM-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support storage of up to 256 diagnostic trouble codes (DTCs).
+  ❌ The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs).
 
-### DEMDIAGN-SHALL-6
-- Req ID: DEMDIAGN-SHALL-6
+### DEM-SHALL-002
+- Req ID: DEM-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support 3 event priority levels: Low, Medium, High.
+  ❌ The system SHALL support 3 event priority levels: Low, Medium, High.
 
-### DEMDIAGN-SHALL-7
-- Req ID: DEMDIAGN-SHALL-7
+### DEM-SHALL-003
+- Req ID: DEM-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL store diagnostic events with primary and secondary (freeze frame) data.
+  ❌ The system SHALL store diagnostic events with primary and secondary (freeze frame) data.
 
-### DEMDIAGN-SHALL-8
-- Req ID: DEMDIAGN-SHALL-8
+### DEM-SHALL-004
+- Req ID: DEM-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide a configurable aging counter with default 40 cycles.
+  ❌ The system SHALL provide a configurable aging counter with default 40 cycles.
 
-### COM-SHALL-9
-- Req ID: COM-SHALL-9
+### COM-SHALL-001
+- Req ID: COM-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a configurable signal count with default of 1024 signals.
+  ❌ The system SHALL support a configurable signal count with default of 1024 signals.
 
-### COM-SHALL-10
-- Req ID: COM-SHALL-10
+### COM-SHALL-002
+- Req ID: COM-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support signal group communication.
+  ❌ The system SHALL support signal group communication.
 
-### COM-SHALL-11
-- Req ID: COM-SHALL-11
+### COM-SHALL-003
+- Req ID: COM-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support I-PDU send and receive directions.
+  ❌ The system SHALL support I-PDU send and receive directions.
 
-### COM-SHALL-12
-- Req ID: COM-SHALL-12
+### COM-SHALL-004
+- Req ID: COM-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support deadline monitoring for signal transmission.
+  ❌ The system SHALL support deadline monitoring for signal transmission.
 
-### PDUR-SHALL-13
-- Req ID: PDUR-SHALL-13
+### PDUR-SHALL-001
+- Req ID: PDUR-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL maintain a static routing table generated at build time.
+  ❌ The system SHALL maintain a static routing table generated at build time.
 
-### PDUR-SHALL-14
-- Req ID: PDUR-SHALL-14
+### PDUR-SHALL-002
+- Req ID: PDUR-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 512 routing paths.
+  ❌ The system SHALL support a maximum of 512 routing paths.
 
-### PDUR-SHALL-15
-- Req ID: PDUR-SHALL-15
+### PDUR-SHALL-003
+- Req ID: PDUR-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet.
+  ❌ The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet.
 
-### NVM-SHALL-16
-- Req ID: NVM-SHALL-16
+### NVM-SHALL-001
+- Req ID: NVM-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support native, redundant, and dataset NVM block management.
+  ❌ The system SHALL support native, redundant, and dataset NVM block management.
 
-### NVM-SHALL-17
-- Req ID: NVM-SHALL-17
+### NVM-SHALL-002
+- Req ID: NVM-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL use CRC-32 for write verification.
+  ❌ The system SHALL use CRC-32 for write verification.
 
-### NVM-SHALL-18
-- Req ID: NVM-SHALL-18
+### NVM-SHALL-003
+- Req ID: NVM-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support block sizes from 1 to 65536 bytes.
+  ❌ The system SHALL support block sizes from 1 to 65536 bytes.
 
-### NVM-SHALL-19
-- Req ID: NVM-SHALL-19
+### NVM-SHALL-004
+- Req ID: NVM-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 512 NVM blocks.
+  ❌ The system SHALL support a maximum of 512 NVM blocks.
 
-### NVM-SHALL-20
-- Req ID: NVM-SHALL-20
+### NVM-SHALL-005
+- Req ID: NVM-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support 4 job priority levels.
+  ❌ The system SHALL support 4 job priority levels.
 
-### ECUM-SHALL-21
-- Req ID: ECUM-SHALL-21
+### ECUM-SHALL-001
+- Req ID: ECUM-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support startup phases STARTUP_ONE and STARTUP_TWO.
+  ❌ The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO.
 
-### ECUM-SHALL-22
-- Req ID: ECUM-SHALL-22
+### ECUM-SHALL-002
+- Req ID: ECUM-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support shutdown targets OFF, RESET, and SLEEP.
+  ❌ The system SHALL support shutdown targets OFF, RESET, and SLEEP.
 
-### ECUM-SHALL-23
-- Req ID: ECUM-SHALL-23
+### ECUM-SHALL-003
+- Req ID: ECUM-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer.
+  ❌ The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer.
 
-### OSAUTOSA-SHALL-24
-- Req ID: OSAUTOSA-SHALL-24
+### OSSC4-SHALL-001
+- Req ID: OSSC4-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide fixed cyclic schedule tables.
+  ❌ The system SHALL provide fixed cyclic schedule tables.
 
-### OSAUTOSA-SHALL-25
-- Req ID: OSAUTOSA-SHALL-25
+### OSSC4-SHALL-002
+- Req ID: OSSC4-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support BCC2 and ECC2 task conformance classes.
+  ❌ The system SHALL support BCC2 and ECC2 task conformance classes.
 
-### OSAUTOSA-SHALL-26
-- Req ID: OSAUTOSA-SHALL-26
+### OSSC4-SHALL-003
+- Req ID: OSSC4-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 64 tasks.
+  ❌ The system SHALL support a maximum of 64 tasks.
 
-### OSAUTOSA-SHALL-27
-- Req ID: OSAUTOSA-SHALL-27
+### OSSC4-SHALL-004
+- Req ID: OSSC4-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 32 alarms.
+  ❌ The system SHALL support a maximum of 32 alarms.
 
-### OSAUTOSA-SHALL-28
-- Req ID: OSAUTOSA-SHALL-28
+### OSSC4-SHALL-005
+- Req ID: OSSC4-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL implement the priority ceiling protocol for resource management.
+  ❌ The system SHALL implement the priority ceiling protocol for resource management.
 
-### CANIFCAN-SHALL-1
-- Req ID: CANIFCAN-SHALL-1
+### CANIF-SHALL-001
+- Req ID: CANIF-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 2 CAN controllers (CAN0, CAN1).
+  ❌ The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1).
 
-### CANIFCAN-SHALL-2
-- Req ID: CANIFCAN-SHALL-2
+### CANIF-SHALL-002
+- Req ID: CANIF-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support up to 512 PDU IDs.
+  ❌ The system SHALL support up to 512 PDU IDs.
 
-### CANIFCAN-SHALL-3
-- Req ID: CANIFCAN-SHALL-3
+### CANIF-SHALL-003
+- Req ID: CANIF-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support transmit and receive PDU modes.
+  ❌ The system SHALL support transmit and receive PDU modes.
 
-### CANIFCAN-SHALL-4
-- Req ID: CANIFCAN-SHALL-4
+### CANIF-SHALL-004
+- Req ID: CANIF-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support sleep and wakeup functionality.
+  ❌ The system SHALL support sleep and wakeup functionality.
 
-### CANTPCAN-SHALL-5
-- Req ID: CANTPCAN-SHALL-5
+### CANTP-SHALL-001
+- Req ID: CANTP-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL implement the ISO 15765-2 CAN transport protocol.
+  ❌ The system SHALL implement the ISO 15765-2 CAN transport protocol.
 
-### CANTPCAN-SHALL-6
-- Req ID: CANTPCAN-SHALL-6
+### CANTP-SHALL-002
+- Req ID: CANTP-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support message segmentation up to 4095 bytes per message.
+  ❌ The system SHALL support message segmentation up to 4095 bytes per message.
 
-### CANTPCAN-SHALL-7
-- Req ID: CANTPCAN-SHALL-7
+### CANTP-SHALL-003
+- Req ID: CANTP-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support Continuous and Wait flow control modes.
+  ❌ The system SHALL support Continuous and Wait flow control modes.
 
-### CANTPCAN-SHALL-8
-- Req ID: CANTPCAN-SHALL-8
+### CANTP-SHALL-004
+- Req ID: CANTP-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support Physical and Functional addressing.
+  ❌ The system SHALL support Physical and Functional addressing.
 
-### CANNMCAN-SHALL-9
-- Req ID: CANNMCAN-SHALL-9
+### CANNM-SHALL-001
+- Req ID: CANNM-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL implement AUTOSAR CAN Network Management protocol.
+  ❌ The system SHALL implement AUTOSAR CAN Network Management protocol.
 
-### CANNMCAN-SHALL-10
-- Req ID: CANNMCAN-SHALL-10
+### CANNM-SHALL-002
+- Req ID: CANNM-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a configurable 8-bit node ID.
+  ❌ The system SHALL support a configurable 8-bit node ID.
 
-### CANNMCAN-SHALL-11
-- Req ID: CANNMCAN-SHALL-11
+### CANNM-SHALL-003
+- Req ID: CANNM-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support configurable message cycle time with default of 100ms.
+  ❌ The system SHALL support configurable message cycle time with default of 100ms.
 
-### CANNMCAN-SHALL-12
-- Req ID: CANNMCAN-SHALL-12
+### CANNM-SHALL-004
+- Req ID: CANNM-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support configurable repeat message timer with default of 1000ms.
+  ❌ The system SHALL support configurable repeat message timer with default of 1000ms.
 
-### CANNMCAN-SHALL-13
-- Req ID: CANNMCAN-SHALL-13
+### CANNM-SHALL-005
+- Req ID: CANNM-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support bus synchronization.
+  ❌ The system SHALL support bus synchronization.
 
-### SOADSOCK-SHALL-14
-- Req ID: SOADSOCK-SHALL-14
+### SOAD-SHALL-001
+- Req ID: SOAD-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a maximum of 32 sockets.
+  ❌ The system SHALL support a maximum of 32 sockets.
 
-### SOADSOCK-SHALL-15
-- Req ID: SOADSOCK-SHALL-15
+### SOAD-SHALL-002
+- Req ID: SOAD-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support TCP and UDP protocols.
+  ❌ The system SHALL support TCP and UDP protocols.
 
-### SOADSOCK-SHALL-16
-- Req ID: SOADSOCK-SHALL-16
+### SOAD-SHALL-003
+- Req ID: SOAD-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support Server and Client connection types.
+  ❌ The system SHALL support Server and Client connection types.
 
-### SOADSOCK-SHALL-17
-- Req ID: SOADSOCK-SHALL-17
+### SOAD-SHALL-004
+- Req ID: SOAD-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support SOME/IP protocol communication.
+  ❌ The system SHALL support SOME/IP protocol communication.
 
-### SOMEIPSD-SHALL-18
-- Req ID: SOMEIPSD-SHALL-18
+### SOMEIPSD-SHALL-001
+- Req ID: SOMEIPSD-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support an offer cycle of 1000ms for service discovery.
+  ❌ The system SHALL support an offer cycle of 1000ms for service discovery.
 
-### SOMEIPSD-SHALL-19
-- Req ID: SOMEIPSD-SHALL-19
+### SOMEIPSD-SHALL-002
+- Req ID: SOMEIPSD-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support a request cycle of 2000ms for service discovery.
+  ❌ The system SHALL support a request cycle of 2000ms for service discovery.
 
-### SOMEIPSD-SHALL-20
-- Req ID: SOMEIPSD-SHALL-20
+### SOMEIPSD-SHALL-003
+- Req ID: SOMEIPSD-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support TTL multiplier of 3 for service entries.
+  ❌ The system SHALL support TTL multiplier of 3 for service entries.
 
-### DLT-SHALL-21
-- Req ID: DLT-SHALL-21
+### DLT-SHALL-001
+- Req ID: DLT-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose.
+  ❌ The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose.
 
-### DLT-SHALL-22
-- Req ID: DLT-SHALL-22
+### DLT-SHALL-002
+- Req ID: DLT-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support TCP and Serial transport for DLT messages.
+  ❌ The system SHALL support TCP and Serial transport for DLT messages.
 
-### DLT-SHALL-23
-- Req ID: DLT-SHALL-23
+### DLT-SHALL-003
+- Req ID: DLT-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support Application ID filtering.
+  ❌ The system SHALL support Application ID filtering.
 
-### XCP-SHALL-24
-- Req ID: XCP-SHALL-24
+### XCP-SHALL-001
+- Req ID: XCP-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support CAN and Ethernet transport layers for XCP.
+  ❌ The system SHALL support CAN and Ethernet transport layers for XCP.
 
-### XCP-SHALL-25
-- Req ID: XCP-SHALL-25
+### XCP-SHALL-002
+- Req ID: XCP-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL implement XCP protocol version 1.5.
+  ❌ The system SHALL implement XCP protocol version 1.5.
 
-### XCP-SHALL-26
-- Req ID: XCP-SHALL-26
+### XCP-SHALL-003
+- Req ID: XCP-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support XCP slave functionality.
+  ❌ The system SHALL support XCP slave functionality.
 
-### XCP-SHALL-27
-- Req ID: XCP-SHALL-27
+### XCP-SHALL-004
+- Req ID: XCP-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support calibration page switching.
+  ❌ The system SHALL support calibration page switching.
 
-### XCP-SHALL-28
-- Req ID: XCP-SHALL-28
+### XCP-SHALL-005
+- Req ID: XCP-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
-  ❌ SHALL support up to 8 DAQ lists.
+  ❌ The system SHALL support up to 8 DAQ lists.
 
-### ADCDRIVE-SHALL-1
-- Req ID: ADCDRIVE-SHALL-1
+### ADC-SHALL-001
+- Req ID: ADC-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support 10-bit and 12-bit configurable ADC resolution.
+  ❌ The system SHALL support 10-bit and 12-bit configurable ADC resolution.
 
-### ADCDRIVE-SHALL-2
-- Req ID: ADCDRIVE-SHALL-2
+### ADC-SHALL-002
+- Req ID: ADC-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support Single, Continuous, and Scan conversion modes.
+  ❌ The system SHALL support Single, Continuous, and Scan conversion modes.
 
-### ADCDRIVE-SHALL-3
-- Req ID: ADCDRIVE-SHALL-3
+### ADC-SHALL-003
+- Req ID: ADC-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support up to 16 channels per ADC instance.
+  ❌ The system SHALL support up to 16 channels per ADC instance.
 
-### ADCDRIVE-SHALL-4
-- Req ID: ADCDRIVE-SHALL-4
+### ADC-SHALL-004
+- Req ID: ADC-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support left and right result alignment.
+  ❌ The system SHALL support left and right result alignment.
 
-### ADCDRIVE-SHALL-5
-- Req ID: ADCDRIVE-SHALL-5
+### ADC-SHALL-005
+- Req ID: ADC-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support interrupt-based and polling notification modes.
+  ❌ The system SHALL support interrupt-based and polling notification modes.
 
-### CANDRIVE-SHALL-6
-- Req ID: CANDRIVE-SHALL-6
+### CANDRV-SHALL-001
+- Req ID: CANDRV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support Classical CAN (2.0B) and CAN FD protocols.
+  ❌ The system SHALL support Classical CAN (2.0B) and CAN FD protocols.
 
-### CANDRIVE-SHALL-7
-- Req ID: CANDRIVE-SHALL-7
+### CANDRV-SHALL-002
+- Req ID: CANDRV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD...
+  ❌ The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD.
 
-### CANDRIVE-SHALL-8
-- Req ID: CANDRIVE-SHALL-8
+### CANDRV-SHALL-003
+- Req ID: CANDRV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide 64 mailboxes for CAN message buffering.
+  ❌ The system SHALL provide 64 mailboxes for CAN message buffering.
 
-### CANDRIVE-SHALL-9
-- Req ID: CANDRIVE-SHALL-9
+### CANDRV-SHALL-004
+- Req ID: CANDRV-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support FIFO mode for CAN message reception.
+  ❌ The system SHALL support FIFO mode for CAN message reception.
 
-### CANDRIVE-SHALL-10
-- Req ID: CANDRIVE-SHALL-10
+### CANDRV-SHALL-005
+- Req ID: CANDRV-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support loopback mode for self-test.
+  ❌ The system SHALL support loopback mode for self-test.
 
-### CANDRIVE-SHALL-11
-- Req ID: CANDRIVE-SHALL-11
+### CANDRV-SHALL-006
+- Req ID: CANDRV-SHALL-006
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide automatic bus-off recovery conforming to AUTOSAR specification.
+  ❌ The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification.
 
-### CRYPTODR-SHALL-12
-- Req ID: CRYPTODR-SHALL-12
+### CRYPTO-SHALL-001
+- Req ID: CRYPTO-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes.
+  ❌ The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes.
 
-### CRYPTODR-SHALL-13
-- Req ID: CRYPTODR-SHALL-13
+### CRYPTO-SHALL-002
+- Req ID: CRYPTO-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support SHA-256 hashing.
+  ❌ The system SHALL support SHA-256 hashing.
 
-### CRYPTODR-SHALL-14
-- Req ID: CRYPTODR-SHALL-14
+### CRYPTO-SHALL-003
+- Req ID: CRYPTO-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support ECC P-256 elliptic curve cryptography.
+  ❌ The system SHALL support ECC P-256 elliptic curve cryptography.
 
-### CRYPTODR-SHALL-15
-- Req ID: CRYPTODR-SHALL-15
+### CRYPTO-SHALL-004
+- Req ID: CRYPTO-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL accelerate cryptographic operations using S32K312 HSM.
+  ❌ The system SHALL accelerate cryptographic operations using S32K312 HSM.
 
-### CRYPTODR-SHALL-16
-- Req ID: CRYPTODR-SHALL-16
+### CRYPTO-SHALL-005
+- Req ID: CRYPTO-SHALL-005
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL store cryptographic keys in HSM secure NVM.
+  ❌ The system SHALL store cryptographic keys in HSM secure NVM.
 
-### CRYPTODR-SHALL-17
-- Req ID: CRYPTODR-SHALL-17
+### CRYPTO-SHALL-006
+- Req ID: CRYPTO-SHALL-006
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide integrated hardware TRNG.
+  ❌ The system SHALL provide integrated hardware TRNG.
 
-### CRYPTODR-SHALL-18
-- Req ID: CRYPTODR-SHALL-18
+### CRYPTO-SHALL-007
+- Req ID: CRYPTO-SHALL-007
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide MbedTLS fallback for SIL simulation.
+  ❌ The system SHALL provide MbedTLS fallback for SIL simulation.
 
-### DIODRIVE-SHALL-19
-- Req ID: DIODRIVE-SHALL-19
+### DIODRV-SHALL-001
+- Req ID: DIODRV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support 8 ports with 32 pins each for digital I/O.
+  ❌ The system SHALL support 8 ports with 32 pins each for digital I/O.
 
-### DIODRIVE-SHALL-20
-- Req ID: DIODRIVE-SHALL-20
+### DIODRV-SHALL-002
+- Req ID: DIODRV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support configurable pin direction per pin.
+  ❌ The system SHALL support configurable pin direction per pin.
 
-### DIODRIVE-SHALL-21
-- Req ID: DIODRIVE-SHALL-21
+### DIODRV-SHALL-003
+- Req ID: DIODRV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support HIGH and LEVEL output levels.
+  ❌ The system SHALL support HIGH and LEVEL output levels.
 
-### DIODRIVE-SHALL-22
-- Req ID: DIODRIVE-SHALL-22
+### DIODRV-SHALL-004
+- Req ID: DIODRV-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support edge-triggered interrupt on rising, falling, and both edges.
+  ❌ The system SHALL support edge-triggered interrupt on rising, falling, and both edges.
 
-### PORTDRIV-SHALL-23
-- Req ID: PORTDRIV-SHALL-23
+### PORTDRV-SHALL-001
+- Req ID: PORTDRV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support pin mux configuration for approximately 100 pins.
+  ❌ The system SHALL support pin mux configuration for approximately 100 pins.
 
-### PORTDRIV-SHALL-24
-- Req ID: PORTDRIV-SHALL-24
+### PORTDRV-SHALL-002
+- Req ID: PORTDRV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support ALT0 through ALT7 mux modes.
+  ❌ The system SHALL support ALT0 through ALT7 mux modes.
 
-### PORTDRIV-SHALL-25
-- Req ID: PORTDRIV-SHALL-25
+### PORTDRV-SHALL-003
+- Req ID: PORTDRV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support configurable pad properties including pull-up, pull-down, slew rat...
+  ❌ The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength.
 
-### GPTDRIVE-SHALL-26
-- Req ID: GPTDRIVE-SHALL-26
+### GPTDRV-SHALL-001
+- Req ID: GPTDRV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide 8 hardware timer channels.
+  ❌ The system SHALL provide 8 hardware timer channels.
 
-### GPTDRIVE-SHALL-27
-- Req ID: GPTDRIVE-SHALL-27
+### GPTDRV-SHALL-002
+- Req ID: GPTDRV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide 32-bit timer resolution.
+  ❌ The system SHALL provide 32-bit timer resolution.
 
-### GPTDRIVE-SHALL-28
-- Req ID: GPTDRIVE-SHALL-28
+### GPTDRV-SHALL-003
+- Req ID: GPTDRV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support prescaler values from 1 to 65536.
+  ❌ The system SHALL support prescaler values from 1 to 65536.
 
-### GPTDRIVE-SHALL-29
-- Req ID: GPTDRIVE-SHALL-29
+### GPTDRV-SHALL-004
+- Req ID: GPTDRV-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support one-shot and continuous timer modes.
+  ❌ The system SHALL support one-shot and continuous timer modes.
 
-### ICUDRIVE-SHALL-30
-- Req ID: ICUDRIVE-SHALL-30
+### ICURV-SHALL-001
+- Req ID: ICURV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support up to 8 input capture channels.
+  ❌ The system SHALL support up to 8 input capture channels.
 
-### ICUDRIVE-SHALL-31
-- Req ID: ICUDRIVE-SHALL-31
+### ICURV-SHALL-002
+- Req ID: ICURV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support signal period, duty cycle, and pulse width measurement.
+  ❌ The system SHALL support signal period, duty cycle, and pulse width measurement.
 
-### ICUDRIVE-SHALL-32
-- Req ID: ICUDRIVE-SHALL-32
+### ICURV-SHALL-003
+- Req ID: ICURV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support rising, falling, and both edge detection.
+  ❌ The system SHALL support rising, falling, and both edge detection.
 
-### MCUDRIVE-SHALL-33
-- Req ID: MCUDRIVE-SHALL-33
+### MCUDRV-SHALL-001
+- Req ID: MCUDRV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL.
+  ❌ The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL.
 
-### MCUDRIVE-SHALL-34
-- Req ID: MCUDRIVE-SHALL-34
+### MCUDRV-SHALL-002
+- Req ID: MCUDRV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support 4 RAM section banks.
+  ❌ The system SHALL support 4 RAM section banks.
 
-### MCUDRIVE-SHALL-35
-- Req ID: MCUDRIVE-SHALL-35
+### MCUDRV-SHALL-003
+- Req ID: MCUDRV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support RUN, SLEEP, STOP, and STANDBY power modes.
+  ❌ The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes.
 
-### MCUDRIVE-SHALL-36
-- Req ID: MCUDRIVE-SHALL-36
+### MCUDRV-SHALL-004
+- Req ID: MCUDRV-SHALL-004
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support POR, WDG, SW, and External reset sources.
+  ❌ The system SHALL support POR, WDG, SW, and External reset sources.
 
-### WDGDRIVE-SHALL-37
-- Req ID: WDGDRIVE-SHALL-37
+### WDGDRV-SHALL-001
+- Req ID: WDGDRV-SHALL-001
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL provide configurable watchdog timeout from milliseconds to seconds.
+  ❌ The system SHALL provide configurable watchdog timeout from milliseconds to seconds.
 
-### WDGDRIVE-SHALL-38
-- Req ID: WDGDRIVE-SHALL-38
+### WDGDRV-SHALL-002
+- Req ID: WDGDRV-SHALL-002
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support window mode watchdog operation.
+  ❌ The system SHALL support window mode watchdog operation.
 
-### WDGDRIVE-SHALL-39
-- Req ID: WDGDRIVE-SHALL-39
+### WDGDRV-SHALL-003
+- Req ID: WDGDRV-SHALL-003
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_mcal_api_contracts.c
 - SHALL details:
-  ❌ SHALL support test mode for diagnostic testing.
+  ❌ The system SHALL support test mode for diagnostic testing.
 
-### DCM-SHALL-01
-- Req ID: DCM-SHALL-01
+### DCM-REQ-01
+- Req ID: DCM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support ISO 14229-1 UDS diagnostic services
 
-### DCM-SHALL-02
-- Req ID: DCM-SHALL-02
+### DCM-REQ-02
+- Req ID: DCM-REQ-02
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support session management (default, programming, extended)
 
-### DEM-SHALL-01
-- Req ID: DEM-SHALL-01
+### DEM-REQ-01
+- Req ID: DEM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support DTC storage and retrieval
 
-### DET-SHALL-01
-- Req ID: DET-SHALL-01
+### DET-REQ-01
+- Req ID: DET-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL report development errors with module ID and error code
 
-### DOIP-SHALL-01
-- Req ID: DOIP-SHALL-01
+### DOIP-REQ-01
+- Req ID: DOIP-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support DoIP vehicle discovery
 
-### COM-SHALL-01
-- Req ID: COM-SHALL-01
+### COM-REQ-01
+- Req ID: COM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support signal-based I-PDU communication
 
-### PDUR-SHALL-01
-- Req ID: PDUR-SHALL-01
+### PDUR-REQ-01
+- Req ID: PDUR-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL route I-PDUs between COM and transport layers
 
-### CANSM-SHALL-01
-- Req ID: CANSM-SHALL-01
+### CANSM-REQ-01
+- Req ID: CANSM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL manage CAN network state machine
 
-### LIN-SHALL-01
-- Req ID: LIN-SHALL-01
+### LIN-REQ-01
+- Req ID: LIN-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support LIN master/slave communication
 
-### NVM-SHALL-01
-- Req ID: NVM-SHALL-01
+### NVM-REQ-01
+- Req ID: NVM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL support NV block read/write with redundancy
 
-### FEE-SHALL-01
-- Req ID: FEE-SHALL-01
+### FEE-REQ-01
+- Req ID: FEE-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL emulate EEPROM over flash with wear leveling
 
-### MEMIF-SHALL-01
-- Req ID: MEMIF-SHALL-01
+### MEMIF-REQ-01
+- Req ID: MEMIF-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL abstract NvM from Fee/EEP driver
 
-### ECUM-SHALL-01
-- Req ID: ECUM-SHALL-01
+### ECUM-REQ-01
+- Req ID: ECUM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL manage ECU startup/shutdown/wakeup sequences
 
-### BSWM-SHALL-01
-- Req ID: BSWM-SHALL-01
+### BSWM-REQ-01
+- Req ID: BSWM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL implement mode-based BSW scheduling
 
-### WDGM-SHALL-01
-- Req ID: WDGM-SHALL-01
+### WDGM-REQ-01
+- Req ID: WDGM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL monitor alive and deadline supervision
 
-### OS-SHALL-01
-- Req ID: OS-SHALL-01
+### OS-REQ-01
+- Req ID: OS-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL provide AUTOSAR OS SC4 compliant scheduling
 
-### E2E-SHALL-01
-- Req ID: E2E-SHALL-01
+### E2E-REQ-01
+- Req ID: E2E-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL protect safety-critical signals with CRC and sequence counter
 
-### CSM-SHALL-01
-- Req ID: CSM-SHALL-01
+### CSM-REQ-01
+- Req ID: CSM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL provide cryptographic service management
 
-### KEYM-SHALL-01
-- Req ID: KEYM-SHALL-01
+### KEYM-REQ-01
+- Req ID: KEYM-REQ-01
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 0 ❌ Not covered by any test
+- Test files: 1 ✅ Covered: tests/unit/test_services_api_contracts.c
 - SHALL details:
   ❌ SHALL manage cryptographic keys
 
 ## Summary
 - Total Requirements: 127
-- Requirements with implementation: 127 (100%)
-- Requirements with test coverage: 0 (0%)
-- Uncovered SHALLs: 127
+- Requirements with implementation: 85 (66%)
+- Requirements with test coverage: 127 (100%)
+- Uncovered SHALLs: 0
 - Scenarios: 0
 - Reviews: 0
-- CI Runs: 31
+- CI Runs: 0
