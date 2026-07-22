@@ -1,6 +1,6 @@
 {
   "schema_version": "misra-report-v2",
-  "generated_at": "2026-07-22T11:39:59.131919",
+  "generated_at": "2026-07-22T11:46:41.870541",
   "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
   "ruleset_version": "2023-preview",
   "ci_environ": {
@@ -10,26 +10,24 @@
     "job_name": "",
     "workspace": ""
   },
-  "total_violations": 1879,
+  "total_violations": 1607,
   "unique_rules": 0,
-  "affected_files": 223,
-  "total_source_lines": 87048,
+  "affected_files": 177,
+  "total_source_lines": 64021,
   "by_severity": {
-    "information": 470,
-    "error": 927,
-    "style": 436,
+    "information": 427,
+    "style": 309,
+    "error": 859,
     "portability": 2,
-    "warning": 7,
-    "note": 37
+    "warning": 2,
+    "note": 8
   },
   "by_rule_type": {
-    "unknown": 1878,
-    "required": 1
+    "unknown": 1607
   },
-  "density_per_kloc": 21.59,
+  "density_per_kloc": 25.1,
   "category_breakdown": {
-    "unknown": 1878,
-    "required": 1
+    "unknown": 1607
   },
   "groups": {},
   "deviations": [

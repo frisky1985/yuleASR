@@ -1,16 +1,16 @@
 # CI Report Summary
 
-> Generated: 2026-07-22T11:40:14.208795
+> Generated: 2026-07-22T11:46:32.794793
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ❌ FAILED
+## Overall: ✅ ALL PASSED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ❌ failed | 21 | 3 | 0 | ⚠️ |
+| L1 | ✅ passed | 27 | 0 | 0 | — |
 
 ### Layer L1 — Stage Details
 
@@ -20,10 +20,10 @@
 | spec-validation | ✅ | 0 missing, 3 req keywords found |
 | architecture-review | ✅ | 0 modules:  |
 | requirements-trace | ✅ | 206 reqs, 0 modules, 7 tests (ratio 700.0%) |
-| plan-lint | ❌ | /Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing T00 three-step sections |
+| plan-lint | ✅ |  |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ✅ | 894 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ✅ | 845 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -38,24 +38,31 @@
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
-| unit-tests | ❌ | tests/e2e/test_misra_ci.py: .....F
-=================================== FAILURES ===================================
-_______________________ test_misra_violations_breakdown ________________________
-tests/e2e/test_misra_ci.py:136: |
-| coverage | ❌ | coverage run returned non-zero (1):  |
+| unit-tests | ✅ |  |
+| unit-tests | ✅ |  |
+| unit-tests | ✅ |  |
+| unit-tests | ✅ |  |
+| coverage | ✅ | line=100.0%, cond=100.0% |
 | c-coverage | ⚠️ | lcov/gcov may not be installed |
 | c-coverage-gate | ✅ | line_rate=37.1% >= 35% |
+
+### Layer L1 — Code Coverage
+
+| Metric | Value | Threshold | Status |
+|:-------|------:|---------:|:-------|
+| Line Coverage | 100.0% | 85% | ✅ |
+| Condition Coverage | 100.0% | 80% | ✅ |
 
 ## MISRA C:2023
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 1879 |
-| Required | 1 |
+| Total Violations | 1607 |
+| Required | 0 |
 | Advisory | 0 |
-| Violations / KLOC | 21.59 |
+| Violations / KLOC | 25.1 |
 | Rules Violated | 0 |
-| Files Affected | 223 |
+| Files Affected | 177 |
 
 ## C/C++ Coverage
 

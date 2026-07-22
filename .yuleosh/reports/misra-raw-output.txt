@@ -22,9 +22,6 @@
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det.h:37:0: information: Include file: "Compiler.h" not found. [missingInclude]
 #include "Compiler.h"       /* NULL_PTR */
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det.h:60:0: error: #error "AutoSAR Version Numbers of Det.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of Det.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/asw/watchdog_manager/include/Swc_WatchdogManager.h:120:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -634,9 +631,6 @@ static const Crypto_ChannelConfigType Crypto_ChannelConfigs[CRYPTO_NUM_CHANNELS]
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/wdg/include/Wdg_Hw.h:245:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/fee/include/Fee.h:60:0: error: #error "AutoSAR Version Numbers of Fee.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of Fee.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
 
 ^
@@ -748,9 +742,6 @@ static const Crypto_ChannelConfigType Crypto_ChannelConfigs[CRYPTO_NUM_CHANNELS]
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eep/include/Eep.h:213:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/flash/include/Flash_MemMap.h:198:0: error: #error "Flash_MemMap.h: No valid memory section defined" [preprocessorErrorDirective]
-    #error "Flash_MemMap.h: No valid memory section defined"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:126:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -777,9 +768,6 @@ static const Crypto_ChannelConfigType Crypto_ChannelConfigs[CRYPTO_NUM_CHANNELS]
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/fls/include/Fls.h:37:0: information: Include file: "MemIf_Types.h" not found. [missingInclude]
 #include "MemIf_Types.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/fls/include/Fls.h:60:0: error: #error "AutoSAR Version Numbers of Fls.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of Fls.h and Std_Types.h are different"
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/dio/include/Dio.h:117:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
@@ -1795,285 +1783,6 @@ static Os_ResourceTimingMonitorType Os_ResourceMonitors[OS_RESOURCE_COUNT];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM.c:510:12: error: Unmatched '{'. Configuration: 'STD_ON=1;STD_OFF=1;STD_HIGH=1;STD_LOW=1;STD_ACTIVE=1;STD_IDLE=1;NULL_PTR=1;TRUE=1;FALSE=1;E_OK=1;E_NOT_OK=1;NULL=1'. [syntaxError]
    500|    {
            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_types.h:32:0: information: Include file: "../../common/autosar_types.h" not found. [missingInclude]
-#include "../../common/autosar_types.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_types.h:33:0: information: Include file: "../../common/autosar_errors.h" not found. [missingInclude]
-#include "../../common/autosar_errors.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_static_config.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm.h:38:0: information: Include file: "dcm_dem_integration.h" not found. [missingInclude]
-#include "dcm_dem_integration.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm.c:26:0: information: Include file: "dcm_dem_integration.h" not found. [missingInclude]
-#include "dcm_dem_integration.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_communication.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:167:22: style: Expression is always true because 'else if' condition is opposite to previous condition at line 155. [multiCondition]
-        if (didIndex >= 0) {
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:155:18: note: first condition
-    if (didIndex < 0) {
-                 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:167:22: note: else if condition is opposite to first condition
-        if (didIndex >= 0) {
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:779:22: style: Expression is always true because 'else if' condition is opposite to previous condition at line 774. [multiCondition]
-        if (didIndex >= 0) {
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:774:18: note: first condition
-    if (didIndex < 0) {
-                 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:779:22: note: else if condition is opposite to first condition
-        if (didIndex >= 0) {
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:150:21: style: The scope of the variable 'currentSession' can be reduced. [variableScope]
-    Dcm_SessionType currentSession;
-                    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:151:13: style: The scope of the variable 'currentSecurityLevel' can be reduced. [variableScope]
-    uint8_t currentSecurityLevel;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:345:20: style: The scope of the variable 'result' can be reduced. [variableScope]
-    Dcm_ReturnType result ;
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:537:13: style: The scope of the variable 'didIndex' can be reduced. [variableScope]
-    int16_t didIndex;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:561:13: style: The scope of the variable 'didIndex' can be reduced. [variableScope]
-    int16_t didIndex;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:613:13: style: The scope of the variable 'didIndex' can be reduced. [variableScope]
-    int16_t didIndex;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:614:28: style: The scope of the variable 'didInfo' can be reduced. [variableScope]
-    const Dcm_DidInfoType *didInfo = NULL;
-                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:644:13: style: The scope of the variable 'didIndex' can be reduced. [variableScope]
-    int16_t didIndex;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:645:28: style: The scope of the variable 'didInfo' can be reduced. [variableScope]
-    const Dcm_DidInfoType *didInfo = NULL;
-                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:740:13: style: The scope of the variable 'didIndex' can be reduced. [variableScope]
-    int16_t didIndex;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:769:21: style: The scope of the variable 'currentSession' can be reduced. [variableScope]
-    Dcm_SessionType currentSession;
-                    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:770:13: style: The scope of the variable 'currentSecurityLevel' can be reduced. [variableScope]
-    uint8_t currentSecurityLevel;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:1008:14: style: The scope of the variable 'offset' can be reduced. [variableScope]
-    uint32_t offset;
-             ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:1044:21: style: The scope of the variable 'currentSession' can be reduced. [variableScope]
-    Dcm_SessionType currentSession;
-                    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:149:36: style: Variable 'didInfo' is assigned a value that is never used. [unreadVariable]
-    const Dcm_DidInfoType *didInfo = NULL;
-                                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:768:36: style: Variable 'didInfo' is assigned a value that is never used. [unreadVariable]
-    const Dcm_DidInfoType *didInfo = NULL;
-                                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:356:21: style: Variable 'zeroSeed' can be declared as const array [constVariable]
-            uint8_t zeroSeed[DCM_SEC_SEED_LENGTH] = {0U};
-                    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:568:17: style: Variable 'optionRecord' can be declared as const array [constVariable]
-        uint8_t optionRecord[1U] = {testId};
-                ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:430:5: error: Memory leak: block [memleak]
-    }
-    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:139:22: warning: If memory allocation fails, then there is a possible null pointer dereference: buffer [nullPointerOutOfMemory]
-        (void)memset(buffer, 0, totalSize);
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:136:40: note: Assuming allocation function fails
-    uint8_t *buffer = (uint8_t *)malloc(totalSize);
-                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:136:23: note: Assignment 'buffer=(uint8_t*)malloc(totalSize)', assigned value is 0
-    uint8_t *buffer = (uint8_t *)malloc(totalSize);
-                      ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:139:22: note: Null pointer dereference
-        (void)memset(buffer, 0, totalSize);
-                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:416:13: warning: If memory allocation fails, then there is a possible null pointer dereference: header [nullPointerOutOfMemory]
-            header->magic = DCM_POOL_MAGIC_ALLOC;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:43: note: Assuming allocation function fails
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:26: note: Assignment 'block=(uint8_t*)malloc(allocSize)', assigned value is 0
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:415:41: note: header is assigned '(struct Dcm_PoolBlockHeader*)block' here.
-            Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
-                                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:416:13: note: Null pointer dereference
-            header->magic = DCM_POOL_MAGIC_ALLOC;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:417:13: warning: If memory allocation fails, then there is a possible null pointer dereference: header [nullPointerOutOfMemory]
-            header->state = DCM_BLOCK_ALLOCATED;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:43: note: Assuming allocation function fails
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:26: note: Assignment 'block=(uint8_t*)malloc(allocSize)', assigned value is 0
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:415:41: note: header is assigned '(struct Dcm_PoolBlockHeader*)block' here.
-            Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
-                                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:417:13: note: Null pointer dereference
-            header->state = DCM_BLOCK_ALLOCATED;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:418:13: warning: If memory allocation fails, then there is a possible null pointer dereference: header [nullPointerOutOfMemory]
-            header->poolId = 7U; /* Mark as dynamic (max value for 3 bits) */
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:43: note: Assuming allocation function fails
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:26: note: Assignment 'block=(uint8_t*)malloc(allocSize)', assigned value is 0
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:415:41: note: header is assigned '(struct Dcm_PoolBlockHeader*)block' here.
-            Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
-                                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:418:13: note: Null pointer dereference
-            header->poolId = 7U; /* Mark as dynamic (max value for 3 bits) */
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:419:13: warning: If memory allocation fails, then there is a possible null pointer dereference: header [nullPointerOutOfMemory]
-            header->seqNum = s_sequenceNumber++;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:43: note: Assuming allocation function fails
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:26: note: Assignment 'block=(uint8_t*)malloc(allocSize)', assigned value is 0
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:415:41: note: header is assigned '(struct Dcm_PoolBlockHeader*)block' here.
-            Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
-                                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:419:13: note: Null pointer dereference
-            header->seqNum = s_sequenceNumber++;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:421:34: error: If memory allocation fail: pointer addition with NULL pointer. [nullPointerArithmeticOutOfMemory]
-            ptr = (void *)(block + DCM_POOL_HEADER_SIZE);
-                                 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:43: note: Assuming allocation function fails
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:412:26: note: Assignment 'block=(uint8_t*)malloc(allocSize)', assigned value is 0
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:421:34: note: Null pointer addition
-            ptr = (void *)(block + DCM_POOL_HEADER_SIZE);
-                                 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_stats.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:365:40: style: Same expression on both sides of '-' because 'endTime' and 'startTime' represent the same value. [duplicateExpression]
-        updateStats(serviceId, endTime - startTime);
-                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:364:28: note: 'endTime' is assigned value '0U' here.
-        uint32_t endTime = 0U; /* 处理时间戳 - 依赖系统定时器集成 */
-                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:337:26: note: 'startTime' is assigned value '0U' here.
-    uint32_t startTime = 0U; /* 处理时间戳 - 依赖系统定时器集成 */
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:365:40: note: Same expression on both sides of '-' because 'endTime' and 'startTime' represent the same value.
-        updateStats(serviceId, endTime - startTime);
-                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:336:13: style: The scope of the variable 'nrc' can be reduced. [variableScope]
-    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:337:14: style: The scope of the variable 'startTime' can be reduced. [variableScope]
-    uint32_t startTime = 0U; /* 处理时间戳 - 依赖系统定时器集成 */
-             ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:336:17: style: Variable 'nrc' is assigned a value that is never used. [unreadVariable]
-    uint8_t nrc = UDS_NRC_GENERAL_REJECT;
-                ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:30:0: information: Include file: "../doip/doip_core.h" not found. [missingInclude]
-#include "../doip/doip_core.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:31:0: information: Include file: "../docan/docan_core.h" not found. [missingInclude]
-#include "../docan/docan_core.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:32:0: information: Include file: "../isotp/isotp_pdur.h" not found. [missingInclude]
-#include "../isotp/isotp_pdur.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1069:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DOIP_OK' is unknown [misra-config]
-    if (result == DOIP_OK) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1071:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DOIP_BUSY' is unknown [misra-config]
-    } else if (result == DOIP_BUSY) {
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1139:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DOCAN_OK' is unknown [misra-config]
-    if (result == DOCAN_OK) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1141:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DOCAN_E_CONN_BUSY' is unknown [misra-config]
-    } else if (result == DOCAN_E_CONN_BUSY) {
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1165:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DOCAN_OK' is unknown [misra-config]
-    if (result != DOCAN_OK) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1210:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'ISOTP_E_OK' is unknown [misra-config]
-    if (result == ISOTP_E_OK) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1212:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'ISOTP_E_BUSY' is unknown [misra-config]
-    } else if (result == ISOTP_E_BUSY) {
-                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_priority_queue.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_priority_queue.c:117:13: style: The scope of the variable 'minIndex' can be reduced. [variableScope]
-    uint8_t minIndex;
-            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_response_cache.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/include/dcm_transfer.h:209:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -2097,12 +1806,6 @@ static Os_ResourceTimingMonitorType Os_ResourceMonitors[OS_RESOURCE_COUNT];
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/pdur/include/PduR.h:333:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm_test.c:14:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm_test.c:261:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/include/CanTSyn.h:236:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
@@ -2161,9 +1864,6 @@ typedef enum {
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h:59:14: error: syntax error: 0x00 = [syntaxError]
 typedef enum {
              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/keym/include/KeyM.h:59:0: error: #error "AutoSAR Version Numbers of KeyM.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of KeyM.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/canm/include/CanNm.h:187:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -2176,9 +1876,6 @@ typedef enum {
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/canm/include/CanNm.h:342:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/secoc/include/SecOc.h:60:0: error: #error "AutoSAR Version Numbers of SecOC.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of SecOC.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/secoc/src/SecOc.c:509:44: error: Unmatched '{'. Configuration: 'STD_ON=1;STD_OFF=1;STD_HIGH=1;STD_LOW=1;STD_ACTIVE=1;STD_IDLE=1;NULL_PTR=1;TRUE=1;FALSE=1;E_OK=1;E_NOT_OK=1;NULL=1'. [syntaxError]
    499|    if (SecOC_TxBuffers[idx].inUse) {
                                            ^
@@ -2187,12 +1884,6 @@ typedef enum {
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/pdur/src/PduR_Lcfg.c:256:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/pdur/src/PduR_test.c:14:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/pdur/src/PduR_test.c:311:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/udpNm/include/UdpNm.h:202:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
@@ -2251,12 +1942,6 @@ TEST_MAIN_BEGIN()
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c:410:11: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'result2' is unknown [misra-config]
     (void)TEST_ASSERT_EQ(E_OK, result2, "Second connection should succeed");
           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_test.c:14:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_test.c:554:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/include/NvM_EccHandler.h:123:0: information: Include file: "NvM_MemMap.h" not found. [missingInclude]
 #include "NvM_MemMap.h"
 ^
@@ -3061,18 +2746,18 @@ STATIC uint8 NvM_EccErrorCount[NVM_CFG_MAX_BLOCK_ID];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
 
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:179:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
-            uint8 kdfInput[CSM_MAX_KEY_LENGTH * 2 + 8U];
-                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:227:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
-                uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
-                               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:181:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
-            uint8 hashOut[CSM_MAX_HASH_LENGTH];
-                         ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:167:30: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
         uint8 sharedSecretBuf[CSM_MAX_KEY_LENGTH];
                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:179:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
+            uint8 kdfInput[CSM_MAX_KEY_LENGTH * 2 + 8U];
+                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:181:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
+            uint8 hashOut[CSM_MAX_HASH_LENGTH];
+                         ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:227:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
+                uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
+                               ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c:20:70: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CSM_MAX_KEY_LENGTH' is unknown [misra-config]
     if (partnerPublicValueLength == 0U || partnerPublicValueLength > CSM_MAX_KEY_LENGTH)
                                                                      ^
@@ -3196,30 +2881,30 @@ STATIC uint8 NvM_EccErrorCount[NVM_CFG_MAX_BLOCK_ID];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
 
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:505:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
-                uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
-                               ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:12:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
     uint8 deriveBuf[CSM_MAX_KEY_LENGTH * 2];
                    ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:157:30: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
         uint8 targetDeriveBuf[CSM_MAX_KEY_LENGTH];
                              ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:189:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
+            uint8 hashOut[CSM_MAX_HASH_LENGTH]; /* SHA-512最大输出 */
+                         ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:231:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
                 uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
                                ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:469:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
-            uint8 hashOut[CSM_MAX_HASH_LENGTH];
-                         ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:451:24: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
         uint8 pubValBuf[CSM_MAX_KEY_LENGTH];
                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:189:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
-            uint8 hashOut[CSM_MAX_HASH_LENGTH]; /* SHA-512最大输出 */
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:469:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_HASH_LENGTH, please review configuration [misra-config]
+            uint8 hashOut[CSM_MAX_HASH_LENGTH];
                          ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:471:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_KEY_LENGTH, please review configuration [misra-config]
             uint8 kdfInput[CSM_MAX_KEY_LENGTH + 8U];
                           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:505:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant CSM_MAX_DATA_LENGTH, please review configuration [misra-config]
+                uint8 hwHashOut[CSM_MAX_DATA_LENGTH];
+                               ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c:27:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Csm_Keys' is unknown [misra-config]
     if (Csm_Keys[srcKeyIdx].status != CSM_KEY_STATUS_VALID)
         ^
@@ -3697,150 +3382,6 @@ STATIC uint8 NvM_EccErrorCount[NVM_CFG_MAX_BLOCK_ID];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c:532:24: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'CSM_MAX_DATA_LENGTH' is unknown [misra-config]
     if (resultLength > CSM_MAX_DATA_LENGTH)
                        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h:28:0: information: Include file: "../../common/autosar_types.h" not found. [missingInclude]
-#include "../../common/autosar_types.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_event.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h:642:15: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_FREEZEFRAME_SIZE, please review configuration [misra-config]
-    uint8 Data[DEM_CFG_MAX_FREEZEFRAME_SIZE];
-              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h:650:15: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_EXTENDED_DATA_SIZE, please review configuration [misra-config]
-    uint8 Data[DEM_CFG_MAX_EXTENDED_DATA_SIZE];
-              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_freeze_frame.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1012:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-static boolean Dem_EventTempActive[DEM_CFG_MAX_NUMBER_EVENTS];
-                                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1013:34: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-static uint32 Dem_EventDTCMapping[DEM_CFG_MAX_NUMBER_EVENTS] = {
-                                 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1009:45: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
-static uint32 Dem_DTCRecordUpdateDisabledDTC[DEM_MAX_CLIENTS];
-                                            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1008:43: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
-static boolean Dem_DTCRecordUpdateDisabled[DEM_MAX_CLIENTS];
-                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1011:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_OPERATION_CYCLES, please review configuration [misra-config]
-static boolean Dem_OperationCycleStatus[DEM_CFG_MAX_OPERATION_CYCLES];
-                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:1010:59: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_MAX_CLIENTS, please review configuration [misra-config]
-static Dem_DTCOriginType Dem_DTCRecordUpdateDisabledOrigin[DEM_MAX_CLIENTS];
-                                                          ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:738:48: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-        extern const uint32 Dem_EventDTCMapping[DEM_CFG_MAX_NUMBER_EVENTS];
-                                               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:596:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:600:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId >= DEM_CFG_MAX_NUMBER_EVENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:608:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId < DEM_CFG_MAX_NUMBER_EVENTS) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:646:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:650:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId >= DEM_CFG_MAX_NUMBER_EVENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:662:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId < DEM_CFG_MAX_NUMBER_EVENTS && EventStatusExtended != NULL_PTR) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:682:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:686:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId >= DEM_CFG_MAX_NUMBER_EVENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:698:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId < DEM_CFG_MAX_NUMBER_EVENTS && UDSStatusByte != NULL_PTR) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:720:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:724:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId >= DEM_CFG_MAX_NUMBER_EVENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:736:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId < DEM_CFG_MAX_NUMBER_EVENTS && DTCOfEvent != NULL_PTR) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:764:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:773:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_MAX_CLIENTS' is unknown [misra-config]
-    if (ClientId < DEM_MAX_CLIENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:797:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:806:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_MAX_CLIENTS' is unknown [misra-config]
-    if (ClientId < DEM_MAX_CLIENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:829:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:833:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_OPERATION_CYCLES' is unknown [misra-config]
-    if (OperationCycleId >= DEM_CFG_MAX_OPERATION_CYCLES) {
-                            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:841:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_OPERATION_CYCLES' is unknown [misra-config]
-    if (OperationCycleId < DEM_CFG_MAX_OPERATION_CYCLES) {
-                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:878:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:882:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_OPERATION_CYCLES' is unknown [misra-config]
-    if (OperationCycleId >= DEM_CFG_MAX_OPERATION_CYCLES) {
-                            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:894:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_OPERATION_CYCLES' is unknown [misra-config]
-    if (OperationCycleId < DEM_CFG_MAX_OPERATION_CYCLES && CycleState != NULL_PTR) {
-                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:934:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:938:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId >= DEM_CFG_MAX_NUMBER_EVENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:950:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId < DEM_CFG_MAX_NUMBER_EVENTS && DebouncingState != NULL_PTR) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:984:9: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'Dem_State' is unknown [misra-config]
-    if (Dem_State != DEM_STATE_INIT) {
-        ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:988:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId >= DEM_CFG_MAX_NUMBER_EVENTS) {
-                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:996:19: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_MAX_NUMBER_EVENTS' is unknown [misra-config]
-    if (EventId < DEM_CFG_MAX_NUMBER_EVENTS) {
-                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_queue.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
-
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_queue.h:54:31: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_EVENT_QUEUE_SIZE, please review configuration [misra-config]
-    Dem_QueueEntryType Entries[DEM_CFG_EVENT_QUEUE_SIZE];
-                              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_queue.c:133:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_EVENT_QUEUE_SIZE' is unknown [misra-config]
-    if (Dem_EventQueue.Count < DEM_CFG_EVENT_QUEUE_SIZE) {
-                               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_queue.c:231:32: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'DEM_CFG_EVENT_QUEUE_SIZE' is unknown [misra-config]
-    if (Dem_EventQueue.Count < DEM_CFG_EVENT_QUEUE_SIZE) {
-                               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/config/Dem_PBcfg.c:79:70: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DEM_CFG_MAX_NUMBER_EVENTS, please review configuration [misra-config]
-static const Dem_InitMonitorForEventType Dem_InitMonitorForEventTable[DEM_CFG_MAX_NUMBER_EVENTS] = {
-                                                                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/config/Dem_Lcfg.c:197:0: error: failed to evaluate #if condition, division/modulo by zero [preprocessorErrorDirective]
-#if (DEM_CFG_GET_NUM_EVENTS() > DEM_CFG_MAX_NUMBER_EVENTS)
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Int.h:175:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -3880,12 +3421,6 @@ static const Dem_InitMonitorForEventType Dem_InitMonitorForEventTable[DEM_CFG_MA
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/src/Dem_Pbcfg.c:94:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/src/Dem_test.c:24:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/src/Dem_test.c:897:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/src/Dem_Cfg.c:29:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -3924,12 +3459,6 @@ TEST_MAIN_BEGIN()
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/docan/src/DoCan_Lcfg.c:133:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/docan/src/DoCan_test.c:14:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/docan/src/DoCan_test.c:281:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P02.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
 
@@ -3973,33 +3502,9 @@ TEST_MAIN_BEGIN()
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P07.c:85:12: style: The scope of the variable 'byteOffset' can be reduced. [variableScope]
     uint32 byteOffset = Offset / 8U;
            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com_test.c:14:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com_test.c:372:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp.c:509:12: error: Unmatched '{'. Configuration: 'STD_ON=1;STD_OFF=1;STD_HIGH=1;STD_LOW=1;STD_ACTIVE=1;STD_IDLE=1;NULL_PTR=1;TRUE=1;FALSE=1;E_OK=1;E_NOT_OK=1;NULL=1'. [syntaxError]
    499|    {
            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_test.c:14:0: information: Include file: "test_framework.h" not found. [missingInclude]
-#include "test_framework.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIp.h:320:0: information: Include file: "MemMap.h" not found. [missingInclude]
-#include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIp.h:325:0: information: Include file: "MemMap.h" not found. [missingInclude]
-#include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIp.h:331:0: information: Include file: "MemMap.h" not found. [missingInclude]
-#include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIp.h:454:0: information: Include file: "MemMap.h" not found. [missingInclude]
-#include "MemMap.h"
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_test.c:275:1: error: There is an unknown macro here somewhere. Configuration is required. If TEST_MAIN_BEGIN is a macro then please configure it. [unknownMacro]
-TEST_MAIN_BEGIN()
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h:320:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -4021,9 +3526,6 @@ const uint8 DoIP_Eid[DOIP_EID_LENGTH] = DOIP_EID;
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c:37:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_GID_LENGTH, please review configuration [misra-config]
 const uint8 DoIP_Gid[DOIP_GID_LENGTH] = DOIP_GID;
                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mem/include/Mem.h:59:0: error: #error "AutoSAR Version Numbers of Mem.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of Mem.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h:162:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -4036,27 +3538,24 @@ const uint8 DoIP_Gid[DOIP_GID_LENGTH] = DOIP_GID;
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h:310:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:48:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_DAQ, please review configuration [misra-config]
+Xcp_DaqListType Xcp_DaqLists[XCP_MAX_DAQ] = {
+                            ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:79:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_ODT, please review configuration [misra-config]
+static Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
+                           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:87:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_STIM, please review configuration [misra-config]
+static Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
+                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:99:42: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_SEGMENTS, please review configuration [misra-config]
+static const Xcp_SegmentType Xcp_Segments[XCP_MAX_SEGMENTS] = {
+                                         ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:146:21: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_SEED_SIZE, please review configuration [misra-config]
 const uint8 Xcp_Seed[XCP_MAX_SEED_SIZE] = {0x01, 0x02, 0x03, 0x04};
                     ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:147:20: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_KEY_SIZE, please review configuration [misra-config]
 const uint8 Xcp_Key[XCP_MAX_KEY_SIZE] = {0xAB, 0xCD, 0xEF, 0x12};
                    ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:79:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_ODT, please review configuration [misra-config]
-static Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
-                           ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:48:29: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_DAQ, please review configuration [misra-config]
-Xcp_DaqListType Xcp_DaqLists[XCP_MAX_DAQ] = {
-                            ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:99:42: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_SEGMENTS, please review configuration [misra-config]
-static const Xcp_SegmentType Xcp_Segments[XCP_MAX_SEGMENTS] = {
-                                         ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c:87:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_MAX_STIM, please review configuration [misra-config]
-static Xcp_StimListType Xcp_StimLists[XCP_MAX_STIM] = {
-                                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:53:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_DTO_SIZE, please review configuration [misra-config]
-static uint8 Xcp_DaqBuffer[XCP_DTO_SIZE];
-                          ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:30:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_CTO_SIZE, please review configuration [misra-config]
 static uint8 Xcp_ResBuffer[XCP_CTO_SIZE];
                           ^
@@ -4066,6 +3565,9 @@ static uint8 Xcp_CurrentSeed[XCP_SEED_LENGTH] = {0};
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:52:26: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_DTO_SIZE, please review configuration [misra-config]
 static uint8 Xcp_TxBuffer[XCP_DTO_SIZE];
                          ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:53:27: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant XCP_DTO_SIZE, please review configuration [misra-config]
+static uint8 Xcp_DaqBuffer[XCP_DTO_SIZE];
+                          ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:145:56: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'XCP_CTO_SIZE' is unknown [misra-config]
     if ((data == NULL) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
                                                        ^
@@ -4123,9 +3625,6 @@ static uint8 Xcp_TxBuffer[XCP_DTO_SIZE];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:946:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Variable 'XCP_CTO_SIZE' is unknown [misra-config]
     if ((data != NULL) && (len <= XCP_CTO_SIZE)) {
                                   ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fee/include/Fee.h:59:0: error: #error "AutoSAR Version Numbers of Fee.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AutoSAR Version Numbers of Fee.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h:238:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -4147,27 +3646,27 @@ static uint8 Xcp_TxBuffer[XCP_DTO_SIZE];
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp_Lcfg.c:17:55: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant J1939TP_NUM_NSDUS, please review configuration [misra-config]
 static const J1939Tp_NSduConfigType J1939Tp_NSduConfig[J1939TP_NUM_NSDUS] = {
                                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:321:33: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
-static Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
-                                ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:26:47: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
 static const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
                                               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:403:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
-static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
-                                     ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:395:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
-static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
-                                  ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:471:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
-static Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
-                                       ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:385:22: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_ECU_ID_LENGTH, please review configuration [misra-config]
-const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = DLT_ECU_ID;
-                     ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:318:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
 Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:321:33: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
+static Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
+                                ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:385:22: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_ECU_ID_LENGTH, please review configuration [misra-config]
+const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = DLT_ECU_ID;
+                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:395:35: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
+static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
+                                  ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:403:38: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_BUFFER_COUNT, please review configuration [misra-config]
+static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
+                                     ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c:471:40: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DLT_MAX_CONTEXT_COUNT, please review configuration [misra-config]
+static Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
+                                       ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c:24:0: information: Include file: "PduR_LinTp.h" not found. [missingInclude]
 #include "PduR_LinTp.h"
 ^
@@ -4264,9 +3763,6 @@ static const LinTp_NsduConfigType LinTp_NsduConfig[LINTP_NSDU_COUNT] =
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/frtp/src/FrTp_Lcfg.c:135:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/wdgif/include/WdgIf.h:43:0: error: #error "WdgIf: AR major version mismatch with Std_Types.h" [preprocessorErrorDirective]
-    #error "WdgIf: AR major version mismatch with Std_Types.h"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/lintrcv/include/LinTrcv_Cfg.h:237:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -4342,9 +3838,6 @@ static const IpduM_RxMuxPduType* const IpduM_RxMuxPdus[IPDUM_MAX_RX_MUX_PDUS] =
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethtrcv/include/EthTrcv.h:31:0: information: Include file: "Eth_GeneralTypes.h" not found. [missingInclude]
 #include "Eth_GeneralTypes.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethtrcv/include/EthTrcv.h:51:0: error: #error "AUTOSAR Version Numbers of EthTrcv.h and Std_Types.h are different" [preprocessorErrorDirective]
-        #error "AUTOSAR Version Numbers of EthTrcv.h and Std_Types.h are different"
-^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ea/include/Ea.h:135:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -4357,11 +3850,11 @@ static const IpduM_RxMuxPduType* const IpduM_RxMuxPdus[IPDUM_MAX_RX_MUX_PDUS] =
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ea/include/Ea.h:240:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:36:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_EID_LENGTH, please review configuration [misra-config]
-static const uint8 DoIP_EID[DOIP_EID_LENGTH] =
-                           ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:29:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_VIN_LENGTH, please review configuration [misra-config]
 static const uint8 DoIP_VIN[DOIP_VIN_LENGTH] =
+                           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:36:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_EID_LENGTH, please review configuration [misra-config]
+static const uint8 DoIP_EID[DOIP_EID_LENGTH] =
                            ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c:42:28: error: Because of missing configuration, misra checking is incomplete. There can be false negatives! Unknown constant DOIP_GID_LENGTH, please review configuration [misra-config]
 static const uint8 DoIP_GID[DOIP_GID_LENGTH] =
@@ -4746,312 +4239,6 @@ Std_ReturnType Csm_KeyElementGet(
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c:142:0: style: The function 'Csm_KeyElementCopy' should have static linkage since it is not used outside of its translation unit. [staticFunction]
 Std_ReturnType Csm_KeyElementCopy(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_communication.c:549:0: style: The function 'Dcm_IsControlTypeValid' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsControlTypeValid(uint8_t controlType)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_communication.c:563:0: style: The function 'Dcm_IsCommunicationTypeValid' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsCommunicationTypeValid(uint8_t commType)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_communication.c:576:0: style: The function 'Dcm_IsNodeIdentificationValid' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsNodeIdentificationValid(uint8_t nodeId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_compressed_types.c:167:0: style: The function 'Dcm_CompConvertContext' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dcm_CompConvertContext(const Dcm_ContextType *src,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_compressed_types.c:195:0: style: The function 'Dcm_CompExpandContext' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dcm_CompExpandContext(const Dcm_CompContextType *src,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:610:0: style: The function 'Dcm_CheckDidSecurity' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_CheckDidSecurity(uint16_t did, uint8_t currentSecurityLevel)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:641:0: style: The function 'Dcm_CheckDidSession' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_CheckDidSession(uint16_t did, Dcm_SessionType currentSession)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:672:0: style: The function 'Dcm_IsValidDidRange' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsValidDidRange(uint16_t did)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:1024:0: style: The function 'Dcm_ReadDid_VIN' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) Dcm_ReturnType Dcm_ReadDid_VIN(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:1037:0: style: The function 'Dcm_ReadDid_ActiveSession' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) Dcm_ReturnType Dcm_ReadDid_ActiveSession(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c:1058:0: style: The function 'Dcm_ReadDid_SoftwareIdentification' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) Dcm_ReturnType Dcm_ReadDid_SoftwareIdentification(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:395:0: style: The function 'Dcm_DefineDynamicDidByIdentifier' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_DefineDynamicDidByIdentifier(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:439:0: style: The function 'Dcm_DefineDynamicDidByMemoryAddress' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_DefineDynamicDidByMemoryAddress(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:481:0: style: The function 'Dcm_ClearDynamicDid' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_ClearDynamicDid(uint16_t dynamicDid)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:580:0: style: The function 'Dcm_IsValidDynamicDidRange' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsValidDynamicDidRange(uint16_t did)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:620:0: style: The function 'Dcm_IsDefinitionModeSupported' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsDefinitionModeSupported(uint8_t definitionMode)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.c:650:0: style: The function 'Dcm_ParseAddressLengthFormat' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_ParseAddressLengthFormat(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:297:0: style: The function 'Dcm_IsEcuResetSupported' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsEcuResetSupported(Dcm_ResetType resetType)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:306:0: style: The function 'Dcm_CheckResetConditions' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_CheckResetConditions(Dcm_ResetType resetType)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:349:0: style: The function 'Dcm_ExecuteEcuReset' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_ExecuteEcuReset(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:496:0: style: The function 'Dcm_Platform_HardReset' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) void Dcm_Platform_HardReset(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:507:0: style: The function 'Dcm_Platform_SoftReset' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) void Dcm_Platform_SoftReset(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:518:0: style: The function 'Dcm_Platform_KeyOffOnReset' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) void Dcm_Platform_KeyOffOnReset(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.c:527:0: style: The function 'Dcm_Platform_SetRapidShutdown' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-__attribute__((weak)) void Dcm_Platform_SetRapidShutdown(bool enable)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:437:0: style: The function 'Dcm_IoControlReturnToEcu' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoControlReturnToEcu(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:459:0: style: The function 'Dcm_IoControlResetToDefault' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoControlResetToDefault(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:481:0: style: The function 'Dcm_IoControlFreezeCurrentState' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoControlFreezeCurrentState(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:503:0: style: The function 'Dcm_IoControlShortTermAdjustment' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoControlShortTermAdjustment(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:581:0: style: The function 'Dcm_IsIoControlTypeSupported' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsIoControlTypeSupported(uint16_t dataIdentifier, uint8_t controlType)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:613:0: style: The function 'Dcm_IoCtrl_DefaultReturnToEcu' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoCtrl_DefaultReturnToEcu(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:634:0: style: The function 'Dcm_IoCtrl_DefaultResetToDefault' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoCtrl_DefaultResetToDefault(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:657:0: style: The function 'Dcm_IoCtrl_DefaultFreezeState' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoCtrl_DefaultFreezeState(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c:680:0: style: The function 'Dcm_IoCtrl_DefaultShortTermAdjustment' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_IoCtrl_DefaultShortTermAdjustment(uint16_t dataIdentifier,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:348:0: style: The function 'Dcm_WriteMemory' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_WriteMemory(uint32_t memoryAddress, const uint8_t *data, uint32_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:396:0: style: The function 'Dcm_IsMemoryAddressWritable' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsMemoryAddressWritable(uint32_t memoryAddress, uint32_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:440:0: style: The function 'Dcm_IsMemoryProtected' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsMemoryProtected(uint32_t memoryAddress, uint32_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:468:0: style: The function 'Dcm_ParseMemoryFormat' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_ParseMemoryFormat(uint8_t formatId,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:505:0: style: The function 'Dcm_ParseMemoryAddress' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-uint32_t Dcm_ParseMemoryAddress(const uint8_t *data, uint8_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:518:0: style: The function 'Dcm_ParseMemorySize' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-uint32_t Dcm_ParseMemorySize(const uint8_t *data, uint8_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:686:0: style: The function 'Dcm_ReadMemory' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_ReadMemory(uint32_t memoryAddress, uint8_t *data, uint32_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c:714:0: style: The function 'Dcm_IsMemoryAddressReadable' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsMemoryAddressReadable(uint32_t memoryAddress, uint32_t length)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:230:0: style: The function 'Dcm_PoolInit' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:346:0: style: The function 'Dcm_PoolAlloc' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:435:0: style: The function 'Dcm_PoolFree' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_PoolFree(void *ptr)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c:538:0: style: The function 'Dcm_PoolGetStats' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_PoolGetStats(uint8_t poolId, Dcm_PoolStats *stats)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_stats.c:338:0: style: The function 'Dcm_MemStatsGetReport' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_MemStatsGetReport(Dcm_MemReport *report)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_stats.c:438:0: style: The function 'Dcm_MemStatsCheckHealth' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-uint8_t Dcm_MemStatsCheckHealth(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c:389:0: style: The function 'Dcm_OptimizedProcessQueue' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_OptimizedProcessQueue(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_priority_queue.c:161:0: style: The function 'Dcm_PqInsert' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_PqInsert(const Dcm_PqEntry *entry)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_priority_queue.c:269:0: style: The function 'Dcm_PqGetServicePriority' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_PriorityLevel Dcm_PqGetServicePriority(uint8_t serviceId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:368:0: style: The function 'Dcm_StartRoutine' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_StartRoutine(uint16_t routineId,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:409:0: style: The function 'Dcm_StopRoutine' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_StopRoutine(uint16_t routineId,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:434:0: style: The function 'Dcm_RequestRoutineResults' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_RequestRoutineResults(uint16_t routineId,
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:489:0: style: The function 'Dcm_IsRoutineControlTypeValid' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsRoutineControlTypeValid(uint8_t controlType)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c:496:0: style: The function 'Dcm_GetRoutineState' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_RoutineStateType Dcm_GetRoutineState(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:496:0: style: The function 'Dcm_SetSecurityLevel' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_SetSecurityLevel(uint8_t securityLevel)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:526:0: style: The function 'Dcm_IsSecurityLevelSupported' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsSecurityLevelSupported(uint8_t securityLevel)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:549:0: style: The function 'Dcm_GetSecurityLevelFromSubfunction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-uint8_t Dcm_GetSecurityLevelFromSubfunction(uint8_t subfunction)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:564:0: style: The function 'Dcm_IsRequestSeedSubfunction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsRequestSeedSubfunction(uint8_t subfunction)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c:576:0: style: The function 'Dcm_IsSendKeySubfunction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsSendKeySubfunction(uint8_t subfunction)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:337:0: style: The function 'Dcm_SetSession' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_SetSession(Dcm_SessionType session, uint16_t testerAddress)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:396:0: style: The function 'Dcm_IsSessionSupported' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsSessionSupported(Dcm_SessionType session)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:401:0: style: The function 'Dcm_IsSessionTransitionValid' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_IsSessionTransitionValid(Dcm_SessionType fromSession, Dcm_SessionType toSession)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:419:0: style: The function 'Dcm_GetCurrentSessionConfig' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_GetCurrentSessionConfig(const Dcm_SessionConfigType **config)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:428:0: style: The function 'Dcm_GetSessionConfig' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_GetSessionConfig(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:579:0: style: The function 'Dcm_StopSession' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_StopSession(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:589:0: style: The function 'Dcm_SessionTimeoutHandler' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dcm_SessionTimeoutHandler(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.c:607:0: style: The function 'Dcm_ResetS3Timer' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_ReturnType Dcm_ResetS3Timer(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:318:0: style: The function 'Dcm_Transport_Stop' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_Stop(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:425:0: style: The function 'Dcm_Transport_CloseChannel' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_CloseChannel(uint8_t channelId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:469:0: style: The function 'Dcm_Transport_Connect' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_Connect(uint8_t channelId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:499:0: style: The function 'Dcm_Transport_Disconnect' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_Disconnect(uint8_t channelId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:570:0: style: The function 'Dcm_Transport_SendWithPriority' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_SendWithPriority(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:940:0: style: The function 'Dcm_Transport_GetProtocolInterface' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-const Dcm_TransportProtocolInterfaceType* Dcm_Transport_GetProtocolInterface(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:963:0: style: The function 'Dcm_Transport_IsProtocolSupported' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_Transport_IsProtocolSupported(Dcm_TransportProtocolType protocol)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1021:0: style: The function 'Dcm_Transport_ValidateMessage' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-bool Dcm_Transport_ValidateMessage(const Dcm_TransportMessageType *message)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1047:0: style: The function 'Dcm_Transport_DoIp_Send' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_DoIp_Send(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1078:0: style: The function 'Dcm_Transport_DoIp_Receive' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_DoIp_Receive(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1091:0: style: The function 'Dcm_Transport_DoIp_GetStatus' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportStateType Dcm_Transport_DoIp_GetStatus(uint8_t channelId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1110:0: style: The function 'Dcm_Transport_DoIp_MainFunction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dcm_Transport_DoIp_MainFunction(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1120:0: style: The function 'Dcm_Transport_DoCan_Send' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_DoCan_Send(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1148:0: style: The function 'Dcm_Transport_DoCan_Receive' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_DoCan_Receive(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1160:0: style: The function 'Dcm_Transport_DoCan_GetStatus' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportStateType Dcm_Transport_DoCan_GetStatus(uint8_t channelId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1184:0: style: The function 'Dcm_Transport_DoCan_MainFunction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dcm_Transport_DoCan_MainFunction(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1194:0: style: The function 'Dcm_Transport_IsoTp_Send' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_IsoTp_Send(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1219:0: style: The function 'Dcm_Transport_IsoTp_Receive' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportReturnType Dcm_Transport_IsoTp_Receive(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1231:0: style: The function 'Dcm_Transport_IsoTp_GetStatus' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dcm_TransportStateType Dcm_Transport_IsoTp_GetStatus(uint8_t channelId)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_transport.c:1244:0: style: The function 'Dcm_Transport_IsoTp_MainFunction' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dcm_Transport_IsoTp_MainFunction(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:63:0: style: The function 'test_io_control_init' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_init(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:75:0: style: The function 'test_io_control_return_to_ecu' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_return_to_ecu(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:103:0: style: The function 'test_io_control_reset_to_default' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_reset_to_default(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:131:0: style: The function 'test_io_control_freeze_state' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_freeze_state(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:159:0: style: The function 'test_io_control_short_term_adjustment' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_short_term_adjustment(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:188:0: style: The function 'test_io_control_invalid_did' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_invalid_did(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:214:0: style: The function 'test_io_control_invalid_control_type' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_invalid_control_type(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:240:0: style: The function 'test_io_control_type_validation' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_type_validation(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c:251:0: style: The function 'test_io_control_support_check' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void test_io_control_support_check(void) {
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c:822:0: style: The function 'Dem_SetOperationCycleState' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Std_ReturnType Dem_SetOperationCycleState(
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c:72:0: style: The function 'Dem_DtcHashInit' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-void Dem_DtcHashInit(void)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c:124:0: style: The function 'Dem_DtcHashInsert' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Std_ReturnType Dem_DtcHashInsert(uint32_t dtcCode, Dem_EventStatusType status)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c:165:0: style: The function 'Dem_DtcHashFind' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Dem_DtcHashEntryType* Dem_DtcHashFind(uint32_t dtcCode)
-^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c:222:0: style: The function 'Dem_DtcHashUpdateStatus' should have static linkage since it is not used outside of its translation unit. [staticFunction]
-Std_ReturnType Dem_DtcHashUpdateStatus(uint32_t dtcCode, Dem_EventStatusType newStatus)
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c:101:0: style: The function 'EcuM_GoSleep' should have static linkage since it is not used outside of its translation unit. [staticFunction]
 void EcuM_GoSleep(void)
@@ -5629,7 +4816,5 @@ STATIC void Rte_SchedulerTerminateTaskInternal(uint8 taskId)
 /Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c:530:0: style: The function 'Rte_SchedulerTick' should have static linkage since it is not used outside of its translation unit. [staticFunction]
 void Rte_SchedulerTick(void)
 ^
-nofile:0:0: information: Unmatched suppression: misra-c2012-21.15 [unmatchedSuppression]
-
 nofile:0:0: information: Active checkers: There was critical errors (use --checkers-report=<filename> to see details) [checkersReport]
 

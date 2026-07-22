@@ -1,27 +1,22 @@
 # CI Report Summary
 
-> Generated: 2026-07-22T11:35:20.001467
+> Generated: 2026-07-22T11:46:56.266949
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ❌ FAILED
+## Overall: ✅ ALL PASSED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L3 | ❌ failed | 1 | 1 | 1 | — |
+| L3 | ✅ passed | 2 | 0 | 1 | — |
 
 ### Layer L3 — Stage Details
 
 | Stage | Status | Detail |
 |:------|:-------|:-------|
-| e2e-tests | ❌ | .F
-=================================== FAILURES ===================================
-________________________________ test_crc_real _________________________________
-
-    def test_func():
-        build |
+| e2e-tests | ✅ |  |
 | version-check | ⏭️ | No pyproject.toml |
 | evidence-pack | ✅ | Compliance pack generated |
 
@@ -29,12 +24,12 @@ ________________________________ test_crc_real _________________________________
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 1879 |
-| Required | 1 |
+| Total Violations | 1607 |
+| Required | 0 |
 | Advisory | 0 |
-| Violations / KLOC | 21.59 |
+| Violations / KLOC | 25.1 |
 | Rules Violated | 0 |
-| Files Affected | 223 |
+| Files Affected | 177 |
 
 ## C/C++ Coverage
 

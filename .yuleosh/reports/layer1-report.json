@@ -1,18 +1,18 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T11:40:14.208590",
+  "generated_at": "2026-07-22T11:46:32.794574",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "failed",
-      "commit": "674b517",
-      "started_at": "2026-07-22T11:39:02.271157",
-      "completed_at": "2026-07-22T11:40:14.207268",
+      "status": "passed",
+      "commit": "545e67d",
+      "started_at": "2026-07-22T11:45:24.784071",
+      "completed_at": "2026-07-22T11:46:32.793283",
       "stages_summary": {
-        "total": 26,
-        "passed": 21,
-        "failed": 3,
+        "total": 29,
+        "passed": 27,
+        "failed": 0,
         "skipped": 0
       },
       "stages": [
@@ -38,8 +38,8 @@
         },
         {
           "name": "plan-lint",
-          "status": "failed",
-          "detail": "/Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/next-phase-plan.md: Missing T00 three-step sections"
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "docsync-gate",
@@ -54,7 +54,7 @@
         {
           "name": "misra-check",
           "status": "passed",
-          "detail": "894 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": "845 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -128,13 +128,28 @@
         },
         {
           "name": "unit-tests",
-          "status": "failed",
-          "detail": "tests/e2e/test_misra_ci.py: .....F\n=================================== FAILURES ===================================\n_______________________ test_misra_violations_breakdown ________________________\ntests/e2e/test_misra_ci.py:136:"
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "coverage",
-          "status": "failed",
-          "detail": "coverage run returned non-zero (1): "
+          "status": "passed",
+          "detail": "line=100.0%, cond=100.0%"
         },
         {
           "name": "c-coverage",
@@ -147,21 +162,22 @@
           "detail": "line_rate=37.1% >= 35%"
         }
       ],
-      "coverage": null,
-      "errors": [
-        "plan-lint failed",
-        "unit-tests failed",
-        "coverage failed"
-      ]
+      "coverage": {
+        "line": 100.0,
+        "condition": 100.0,
+        "line_pass": true,
+        "condition_pass": true
+      },
+      "errors": []
     }
   ],
   "misra": {
-    "total_violations": 1879,
-    "required": 1,
+    "total_violations": 1607,
+    "required": 0,
     "advisory": 0,
-    "violations_per_kloc": 21.59,
+    "violations_per_kloc": 25.1,
     "rules_violated": 0,
-    "files_affected": 223
+    "files_affected": 177
   },
   "c_coverage": {
     "line_rate": 37.1,

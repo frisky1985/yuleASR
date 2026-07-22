@@ -1,25 +1,25 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T11:35:20.001329",
+  "generated_at": "2026-07-22T11:46:56.266808",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 3,
-      "status": "failed",
-      "commit": "fc0d857",
-      "started_at": "2026-07-22T11:35:16.971709",
-      "completed_at": "2026-07-22T11:35:20.000267",
+      "status": "passed",
+      "commit": "545e67d",
+      "started_at": "2026-07-22T11:46:51.029555",
+      "completed_at": "2026-07-22T11:46:56.265718",
       "stages_summary": {
         "total": 3,
-        "passed": 1,
-        "failed": 1,
+        "passed": 2,
+        "failed": 0,
         "skipped": 1
       },
       "stages": [
         {
           "name": "e2e-tests",
-          "status": "failed",
-          "detail": ".F\n=================================== FAILURES ===================================\n________________________________ test_crc_real _________________________________\n\n    def test_func():\n        build"
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "version-check",
@@ -37,12 +37,12 @@
     }
   ],
   "misra": {
-    "total_violations": 1879,
-    "required": 1,
+    "total_violations": 1607,
+    "required": 0,
     "advisory": 0,
-    "violations_per_kloc": 21.59,
+    "violations_per_kloc": 25.1,
     "rules_violated": 0,
-    "files_affected": 223
+    "files_affected": 177
   },
   "c_coverage": {
     "line_rate": 37.1,
