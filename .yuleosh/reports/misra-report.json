@@ -1,6 +1,6 @@
 {
   "schema_version": "misra-report-v2",
-  "generated_at": "2026-07-22T13:49:57.042229",
+  "generated_at": "2026-07-22T13:51:29.970493",
   "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
   "ruleset_version": "2023",
   "ci_environ": {

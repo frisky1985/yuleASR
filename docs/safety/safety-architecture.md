@@ -45,13 +45,13 @@
 
 ### 2.1 分解策略
 
-基于 yuleASR 的参考平台定位和现有 HARA 分析结果，采用 **ASIL B + QM 混合分解** 策略：
+基于 yuleASR 的参考平台定位和 HARA 分析结果（修订版 v1.1），采用 **ASIL B + QM 混合分解** 策略：
 
 ```
 原始 ASIL 等级 → 分解后分配
 ─────────────────────────────────
-ASIL B (E2E, WdgM)       → ASIL B(B)  + QM(B)
-ASIL A (Com, Dcm)        → QM(A) *保留单点 QM*
+ASIL B (SG-001, SG-002)  → ASIL B(B)  + QM(B)
+ASIL A (SG-003)          → 保留 ASIL A, 不分解
 QM     (Can, Lin, SPI)   → QM (不变)
 ```
 
@@ -89,9 +89,15 @@ QM     (Can, Lin, SPI)   → QM (不变)
 ### 2.3 ASIL 分解合规性检查
 
 ISO 26262-9 §5.4 — ASIL 分解要求：
-- [ ] 分解后的安全要求保持独立性 (freedom from interference)
-- [x] ASIL B(B) + QM(B) 合并不低于原始 ASIL B ✓ (QM(B) 部分通过 E2E 审计补偿)
-- [ ] 相依失效分析 (DFA) 已完成 — **待补充**
+
+| 检查项 | 状态 | 依据 |
+|--------|------|------|
+| 分解后的安全要求保持独立性 (freedom from interference) | ✅ | ASIL B 软件通过 E2E 审计 + WdgM 时间监控实现逻辑隔离；无 MPU 场景下通过消息级保护替代地址空间隔离 |
+| ASIL B(B) + QM(B) 合并不低于原始 ASIL B | ✅ | 原始 ASIL 为 B，B(B)+QM(B) 是 ISO 26262-9 §5.4 允许的有效分解 |
+| QM(B) 部分不承担任何 ASIL B 安全需求 | ✅ | QM 模块（Com, Dcm, PduR, Can, Lin）不承载安全需求；安全数据经 E2E 端到端审计 |
+| 相依失效分析 (DFA) 已完成 | ⚠️ **待补充** | CCF 分析清单见 §6.3 |
+
+> **变更说明**: 本版修正了此前 HARA 中 H001~H004 的 ASIL 计算错误，SG-001/SG-002 原始 ASIL 为 B（非 D）。B(B)+QM(B) 对原始 ASIL B 是合规分解。
 
 ---
 
