@@ -23,67 +23,72 @@
 #include <cmocka.h>
 #include <string.h>
 
-/* AUTOSAR Standard Types */
-#ifndef STD_TYPES_H
-#define STD_TYPES_H
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef signed char sint8;
-typedef signed short sint16;
-typedef signed int sint32;
-typedef uint8 boolean;
-#ifndef TRUE
-#define TRUE 1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#ifndef NULL_PTR
-#define NULL_PTR ((void*)0)
-#endif
-typedef uint8 Std_ReturnType;
-#define E_OK 0
-#define E_NOT_OK 1
-#endif
+/* AUTOSAR Standard Types - from production headers */
+#include "Std_Types.h"
 
-/* Std_VersionInfoType */
+/*==================================================================================================
+ *                                  BswM Types & Constants
+ *==================================================================================================
+ * Type definitions mirror BswM.h (test-internal, not including BswM.h directly
+ * to avoid macro/enum name conflicts with test-internal types).
+ *================================================================================================*/
+
+/* BswM Mode Type */
+typedef uint8 BswM_ModeType;
+
+/* BswM Action Callback Type */
+typedef void (*BswM_ActionCallback)(BswM_ModeType Mode);
+
+/* BswM Mode Request Port Type */
 typedef struct {
-    uint16 vendorID;
-    uint16 moduleID;
-    uint8 sw_major_version;
-    uint8 sw_minor_version;
-    uint8 sw_patch_version;
-} Std_VersionInfoType;
+    uint8  CompositionId;
+    uint8  RequestSourceId;
+    BswM_ModeType RequestedMode;
+    boolean IsActive;
+} BswM_ModeRequestPortType;
 
-/* BswM Types and Constants */
+/* BswM Rule Type */
+typedef struct {
+    uint8 RuleId;
+    uint8 ModeRequestPortIndex;
+    BswM_ModeType TargetMode;
+    uint8 Priority;
+    boolean IsEnabled;
+} BswM_RuleType;
+
+/* BswM Action List Type */
+typedef struct {
+    uint8 ActionListId;
+    uint8 RuleId;
+    uint8 NumActions;
+    BswM_ActionCallback* Actions;
+} BswM_ActionListType;
+
+/* BswM Configuration Type */
+typedef struct {
+    uint8 NumModeRequestPorts;
+    uint8 NumRules;
+    uint8 NumActionLists;
+    const BswM_ModeRequestPortType* ModeRequestPorts;
+    const BswM_RuleType* Rules;
+    const BswM_ActionListType* ActionLists;
+} BswM_ConfigType;
+
+/* BswM Module IDs */
 #define BSWM_MODULE_ID          42U
 #define BSWM_VENDOR_ID          0x0001U
-
-/* Error Codes */
-#define BSWM_E_NO_ERROR         0x00U
-#define BSWM_E_PARAM_POINTER    0x01U
-#define BSWM_E_UNINIT           0x02U
-#define BSWM_E_PARAM_INVALID    0x03U
-
-/* Service IDs */
-#define BSWM_SID_INIT                   0x00U
-#define BSWM_SID_DEINIT                 0x01U
-#define BSWM_SID_GET_VERSION_INFO       0x02U
-#define BSWM_SID_REQUEST_MODE           0x03U
-#define BSWM_SID_MAIN_FUNCTION          0x04U
 
 /* Configuration Switches */
 #define BSWM_DEV_ERROR_DETECT           STD_ON
 #define BSWM_VERSION_INFO_API           STD_ON
 
-/* Maximum counts */
+/* Max counts */
 #define BSWM_MAX_MODE_REQUEST_PORTS     32U
 #define BSWM_MAX_RULES                  64U
 #define BSWM_MAX_ACTIONS                128U
 #define BSWM_MAX_ACTION_LISTS           32U
 
-/* Mode definitions */
+/* Mode values */
 #define BSWM_MODE_STARTUP               0x00U
 #define BSWM_MODE_RUN                   0x01U
 #define BSWM_MODE_SHUTDOWN              0x02U
@@ -96,7 +101,20 @@ typedef struct {
 #define BSWM_ECUM_STATE_SHUTDOWN        0x30U
 #define BSWM_ECUM_STATE_SLEEP           0x40U
 
-/* Mode Request Source Types */
+/* Service IDs (AUTOSAR-specified) */
+#define BSWM_SID_INIT                   0x00U
+#define BSWM_SID_DEINIT                 0x01U
+#define BSWM_SID_GET_VERSION_INFO       0x02U
+#define BSWM_SID_REQUEST_MODE           0x03U
+#define BSWM_SID_MAIN_FUNCTION          0x04U
+
+/* Error Codes (AUTOSAR-specified) */
+#define BSWM_E_NO_ERROR                 0x00U
+#define BSWM_E_PARAM_POINTER            0x01U
+#define BSWM_E_UNINIT                   0x02U
+#define BSWM_E_PARAM_INVALID            0x03U
+
+/* Source types for test tracking (not part of BswM.h) */
 typedef enum {
     BSWM_GENERIC_REQUEST = 0,
     BSWM_ECUM_REQUEST,
@@ -106,53 +124,10 @@ typedef enum {
     BSWM_SWC_REQUEST
 } BswM_ModeRequestSourceType;
 
-/* Mode Type */
-typedef uint8 BswM_ModeType;
-
-/* Mode Request Port */
-typedef struct {
-    uint16 PortId;
-    BswM_ModeRequestSourceType SourceType;
-    BswM_ModeType CurrentMode;
-    boolean IsValid;
-} BswM_ModeRequestPortType;
-
-/* Action Type */
-typedef enum {
-    BSWM_ACTION_SCHEDULE = 0,
-    BSWM_ACTION_SWITCH_MODE,
-    BSWM_ACTION_EXECUTE_ACTION_LIST,
-    BSWM_ACTION_USER_CALL
-} BswM_ActionItemType;
-
-/* Action Structure */
-typedef struct {
-    uint16 ActionId;
-    BswM_ActionItemType ActionType;
-    uint16 TargetId;
-} BswM_ActionType;
-
-/* Rule Structure */
-typedef struct {
-    uint16 RuleId;
-    uint16 ModeRequestPortId;
-    BswM_ModeType ExpectedMode;
-    uint16 ActionListId;
-    boolean IsActive;
-} BswM_RuleType;
-
-/* Configuration */
-typedef struct {
-    uint16 NumModeRequestPorts;
-    uint16 NumRules;
-    uint16 NumActionLists;
-    const BswM_ModeRequestPortType* ModeRequestPorts;
-    const BswM_RuleType* Rules;
-} BswM_ConfigType;
-
 /*==================================================================================================
  *                                  MOCK DET INTERFACE
  *================================================================================================*/
+/* Matches real Det_ReportError signature: Std_ReturnType Det_ReportError(uint16, uint8, uint8, uint8) */
 static uint16 mock_det_moduleId = 0;
 static uint8 mock_det_instanceId = 0;
 static uint8 mock_det_apiId = 0;
@@ -181,7 +156,7 @@ static void mock_det_get_last_error(uint16* moduleId, uint8* instanceId, uint8* 
     if (errorId) *errorId = mock_det_errorId;
 }
 
-static inline Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId)
+static Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId)
 {
     mock_det_moduleId = ModuleId;
     mock_det_instanceId = InstanceId;
@@ -209,18 +184,25 @@ static void mock_schm_reset(void)
 #define SchM_Exit_BswM(area)    mock_schm_exit_count++
 
 /*==================================================================================================
- *                                  BSWM IMPLEMENTATION
+ *                                  BSWM MOCK IMPLEMENTATION
+ *==================================================================================================
+ * This test provides its own BswM implementation to enable isolated unit testing.
+ * Function signatures match BswM.h declarations.
+ * Internal state uses simple arrays for per-port tracking.
  *================================================================================================*/
+
 typedef enum {
     BSWM_UNINIT = 0,
     BSWM_INIT
-} BswM_StateType;
+} BswM_InternalStateType;
 
-static BswM_StateType BswM_State = BSWM_UNINIT;
+static BswM_InternalStateType BswM_State = BSWM_UNINIT;
 static const BswM_ConfigType* BswM_ConfigPtr = NULL_PTR;
-static BswM_ModeRequestPortType BswM_ModeRequestPorts[BSWM_MAX_MODE_REQUEST_PORTS];
-static BswM_ModeType BswM_RequestedModes[BSWM_MAX_MODE_REQUEST_PORTS];
+
+/* Per-port tracking arrays (test-internal, not part of real API) */
+static BswM_ModeType BswM_PortModes[BSWM_MAX_MODE_REQUEST_PORTS];
 static boolean BswM_ModeRequestPending[BSWM_MAX_MODE_REQUEST_PORTS];
+static boolean BswM_PortValid[BSWM_MAX_MODE_REQUEST_PORTS];
 
 void BswM_Init(const BswM_ConfigType* ConfigPtr)
 {
@@ -236,13 +218,10 @@ void BswM_Init(const BswM_ConfigType* ConfigPtr)
     BswM_State = BSWM_INIT;
     
     /* Initialize mode request ports */
-    for (uint16 i = 0; i < BSWM_MAX_MODE_REQUEST_PORTS; i++) {
-        BswM_ModeRequestPorts[i].PortId = i;
-        BswM_ModeRequestPorts[i].SourceType = BSWM_GENERIC_REQUEST;
-        BswM_ModeRequestPorts[i].CurrentMode = BSWM_MODE_STARTUP;
-        BswM_ModeRequestPorts[i].IsValid = FALSE;
-        BswM_RequestedModes[i] = BSWM_MODE_STARTUP;
+    for (uint8 i = 0; i < BSWM_MAX_MODE_REQUEST_PORTS; i++) {
+        BswM_PortModes[i] = BSWM_MODE_STARTUP;
         BswM_ModeRequestPending[i] = FALSE;
+        BswM_PortValid[i] = FALSE;
     }
     
     SchM_Exit_BswM(BSWM_EXCLUSIVE_AREA_0);
@@ -254,9 +233,8 @@ void BswM_DeInit(void)
     BswM_ConfigPtr = NULL_PTR;
     BswM_State = BSWM_UNINIT;
     
-    /* Clear mode request ports */
-    for (uint16 i = 0; i < BSWM_MAX_MODE_REQUEST_PORTS; i++) {
-        BswM_ModeRequestPorts[i].IsValid = FALSE;
+    for (uint8 i = 0; i < BSWM_MAX_MODE_REQUEST_PORTS; i++) {
+        BswM_PortValid[i] = FALSE;
         BswM_ModeRequestPending[i] = FALSE;
     }
     
@@ -280,31 +258,41 @@ void BswM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 }
 #endif
 
-void BswM_RequestMode(uint16 PortId, BswM_ModeType Mode)
+Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
     if (BSWM_UNINIT == BswM_State) {
         Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_REQUEST_MODE, BSWM_E_UNINIT);
-        return;
+        return E_NOT_OK;
     }
     
-    if (PortId >= BSWM_MAX_MODE_REQUEST_PORTS) {
+    if (SwCompositionId >= BSWM_MAX_MODE_REQUEST_PORTS) {
         Det_ReportError(BSWM_MODULE_ID, 0U, BSWM_SID_REQUEST_MODE, BSWM_E_PARAM_INVALID);
-        return;
+        return E_NOT_OK;
     }
 #endif
     
     SchM_Enter_BswM(BSWM_EXCLUSIVE_AREA_0);
     
-    /* Update mode request */
-    if (PortId < BSWM_MAX_MODE_REQUEST_PORTS) {
-        BswM_RequestedModes[PortId] = Mode;
-        BswM_ModeRequestPending[PortId] = TRUE;
-        BswM_ModeRequestPorts[PortId].CurrentMode = Mode;
-        BswM_ModeRequestPorts[PortId].IsValid = TRUE;
+    if (SwCompositionId < BSWM_MAX_MODE_REQUEST_PORTS) {
+        BswM_PortModes[SwCompositionId] = Mode;
+        BswM_ModeRequestPending[SwCompositionId] = TRUE;
+        BswM_PortValid[SwCompositionId] = TRUE;
     }
     
     SchM_Exit_BswM(BSWM_EXCLUSIVE_AREA_0);
+    
+    return E_OK;
+}
+
+BswM_ModeType BswM_GetCurrentMode(void)
+{
+    return BSWM_MODE_STARTUP; /* Default; real impl returns global current mode */
+}
+
+BswM_ModeType BswM_GetRequestedMode(void)
+{
+    return BSWM_MODE_STARTUP; /* Default; real impl returns global requested mode */
 }
 
 void BswM_MainFunction(void)
@@ -317,16 +305,16 @@ void BswM_MainFunction(void)
     
     /* Process rules */
     if (NULL_PTR != BswM_ConfigPtr) {
-        for (uint16 i = 0U; i < BSWM_ConfigPtr->NumRules; i++) {
-            const BswM_RuleType* rule = &BSWM_ConfigPtr->Rules[i];
+        for (uint8 i = 0U; i < BswM_ConfigPtr->NumRules; i++) {
+            const BswM_RuleType* rule = &BswM_ConfigPtr->Rules[i];
             
-            if (rule->IsActive && rule->ModeRequestPortId < BSWM_MAX_MODE_REQUEST_PORTS) {
-                if (BswM_ModeRequestPending[rule->ModeRequestPortId]) {
-                    if (BswM_RequestedModes[rule->ModeRequestPortId] == rule->ExpectedMode) {
+            if (rule->IsEnabled && rule->ModeRequestPortIndex < BSWM_MAX_MODE_REQUEST_PORTS) {
+                if (BswM_ModeRequestPending[rule->ModeRequestPortIndex]) {
+                    if (BswM_PortModes[rule->ModeRequestPortIndex] == rule->TargetMode) {
                         /* Rule condition met - execute action list */
                         /* Action execution would happen here in full implementation */
                     }
-                    BswM_ModeRequestPending[rule->ModeRequestPortId] = FALSE;
+                    BswM_ModeRequestPending[rule->ModeRequestPortIndex] = FALSE;
                 }
             }
         }
@@ -334,6 +322,10 @@ void BswM_MainFunction(void)
     
     SchM_Exit_BswM(BSWM_EXCLUSIVE_AREA_0);
 }
+
+/*==================================================================================================
+ *                                  CALLBACK FUNCTIONS (not part of BswM.h)
+ *================================================================================================*/
 
 void BswM_EcuM_CurrentState(uint8 State)
 {
@@ -354,17 +346,21 @@ void BswM_Dcm_RequestCommunicationMode(uint8 Mode)
     /* Process DCM communication mode request - would typically trigger mode requests */
 }
 
-/* Helper function to check if BswM is initialized */
-boolean BswM_IsInitialized(void)
+/*==================================================================================================
+ *                                  TEST HELPER FUNCTIONS
+ *================================================================================================*/
+
+/* Check if BswM is initialized (test helper, not exported by BswM.h) */
+static boolean BswM_IsInitialized(void)
 {
     return (BswM_State == BSWM_INIT);
 }
 
-/* Helper function to get current mode for a port */
-BswM_ModeType BswM_GetCurrentMode(uint16 PortId)
+/* Get current mode for a specific port (test helper, not exported by BswM.h) */
+static BswM_ModeType BswM_GetPortMode(uint8 PortId)
 {
-    if (PortId < BSWM_MAX_MODE_REQUEST_PORTS && BswM_ModeRequestPorts[PortId].IsValid) {
-        return BswM_ModeRequestPorts[PortId].CurrentMode;
+    if (PortId < BSWM_MAX_MODE_REQUEST_PORTS && BswM_PortValid[PortId]) {
+        return BswM_PortModes[PortId];
     }
     return BSWM_MODE_STARTUP;
 }
@@ -373,18 +369,18 @@ BswM_ModeType BswM_GetCurrentMode(uint16 PortId)
  *                                  TEST FIXTURES
  *================================================================================================*/
 
-/* Test Configuration */
+/* Test configuration using BswM.h types */
 static const BswM_ModeRequestPortType testModeRequestPorts[] = {
-    {0U, BSWM_ECUM_REQUEST, BSWM_MODE_STARTUP, TRUE},
-    {1U, BSWM_COMM_REQUEST, BSWM_MODE_RUN, TRUE},
-    {2U, BSWM_DCM_REQUEST, BSWM_MODE_SHUTDOWN, TRUE},
-    {3U, BSWM_GENERIC_REQUEST, BSWM_MODE_STARTUP, TRUE}
+    {0U, 0U, BSWM_MODE_STARTUP, TRUE},  /* CompositionId 0, request source 0 (ECUM) */
+    {1U, 1U, BSWM_MODE_RUN, TRUE},      /* CompositionId 1, request source 1 (COMM) */
+    {2U, 2U, BSWM_MODE_SHUTDOWN, TRUE}, /* CompositionId 2, request source 2 (DCM) */
+    {3U, 0U, BSWM_MODE_STARTUP, TRUE}   /* CompositionId 3, generic request */
 };
 
 static const BswM_RuleType testRules[] = {
-    {0U, 0U, BSWM_MODE_RUN, 0U, TRUE},
-    {1U, 1U, BSWM_MODE_RUN, 1U, TRUE},
-    {2U, 2U, BSWM_MODE_SHUTDOWN, 2U, FALSE}
+    {0U, 0U, BSWM_MODE_RUN, 0U, TRUE},      /* Rule 0, port 0, target RUN, prio 0, enabled */
+    {1U, 1U, BSWM_MODE_RUN, 1U, TRUE},      /* Rule 1, port 1, target RUN, prio 1, enabled */
+    {2U, 2U, BSWM_MODE_SHUTDOWN, 2U, FALSE} /* Rule 2, port 2, target SHUTDOWN, prio 2, disabled */
 };
 
 static const BswM_ConfigType testConfig = {
@@ -392,7 +388,8 @@ static const BswM_ConfigType testConfig = {
     3U,  /* NumRules */
     0U,  /* NumActionLists */
     testModeRequestPorts,
-    testRules
+    testRules,
+    NULL_PTR  /* ActionLists */
 };
 
 static int test_setup(void **state)
@@ -526,7 +523,7 @@ static void test_BswM_RequestMode_ValidPort(void **state)
     BswM_Init(&testConfig);
     BswM_RequestMode(0U, BSWM_MODE_RUN);
     
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_RUN);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_RUN);
 }
 
 static void test_BswM_RequestMode_MultiplePorts(void **state)
@@ -539,9 +536,9 @@ static void test_BswM_RequestMode_MultiplePorts(void **state)
     BswM_RequestMode(1U, BSWM_MODE_SHUTDOWN);
     BswM_RequestMode(2U, BSWM_MODE_SLEEP);
     
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_RUN);
-    assert_int_equal(BswM_GetCurrentMode(1U), BSWM_MODE_SHUTDOWN);
-    assert_int_equal(BswM_GetCurrentMode(2U), BSWM_MODE_SLEEP);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_RUN);
+    assert_int_equal(BswM_GetPortMode(1U), BSWM_MODE_SHUTDOWN);
+    assert_int_equal(BswM_GetPortMode(2U), BSWM_MODE_SLEEP);
 }
 
 static void test_BswM_RequestMode_Uninitialized(void **state)
@@ -552,8 +549,9 @@ static void test_BswM_RequestMode_Uninitialized(void **state)
     uint8 errorId;
     
     /* Should report error when not initialized */
-    BswM_RequestMode(0U, BSWM_MODE_RUN);
+    Std_ReturnType result = BswM_RequestMode(0U, BSWM_MODE_RUN);
     
+    assert_int_equal(result, E_NOT_OK);
     assert_int_equal(mock_det_get_call_count(), 1);
     mock_det_get_last_error(&moduleId, NULL, &apiId, &errorId);
     assert_int_equal(moduleId, BSWM_MODULE_ID);
@@ -571,8 +569,9 @@ static void test_BswM_RequestMode_InvalidPort(void **state)
     BswM_Init(&testConfig);
     
     /* Request mode for port beyond maximum */
-    BswM_RequestMode(BSWM_MAX_MODE_REQUEST_PORTS, BSWM_MODE_RUN);
+    Std_ReturnType result = BswM_RequestMode(BSWM_MAX_MODE_REQUEST_PORTS, BSWM_MODE_RUN);
     
+    assert_int_equal(result, E_NOT_OK);
     assert_int_equal(mock_det_get_call_count(), 1);
     mock_det_get_last_error(&moduleId, NULL, &apiId, &errorId);
     assert_int_equal(moduleId, BSWM_MODULE_ID);
@@ -588,19 +587,19 @@ static void test_BswM_RequestMode_ModeTransition(void **state)
     
     /* Transition through multiple modes */
     BswM_RequestMode(0U, BSWM_MODE_STARTUP);
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_STARTUP);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_STARTUP);
     
     BswM_RequestMode(0U, BSWM_MODE_RUN);
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_RUN);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_RUN);
     
     BswM_RequestMode(0U, BSWM_MODE_SHUTDOWN);
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_SHUTDOWN);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_SHUTDOWN);
     
     BswM_RequestMode(0U, BSWM_MODE_SLEEP);
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_SLEEP);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_SLEEP);
     
     BswM_RequestMode(0U, BSWM_MODE_WAKEUP);
-    assert_int_equal(BswM_GetCurrentMode(0U), BSWM_MODE_WAKEUP);
+    assert_int_equal(BswM_GetPortMode(0U), BSWM_MODE_WAKEUP);
 }
 
 /*==================================================================================================
@@ -736,7 +735,7 @@ static void test_BswM_IsInitialized_AfterDeinit(void **state)
     assert_false(BswM_IsInitialized());
 }
 
-static void test_BswM_GetCurrentMode_InvalidPort(void **state)
+static void test_BswM_GetPortMode_InvalidPort(void **state)
 {
     (void)state;
     BswM_ModeType mode;
@@ -744,17 +743,17 @@ static void test_BswM_GetCurrentMode_InvalidPort(void **state)
     BswM_Init(&testConfig);
     
     /* Invalid port should return default mode */
-    mode = BswM_GetCurrentMode(BSWM_MAX_MODE_REQUEST_PORTS + 1);
+    mode = BswM_GetPortMode(BSWM_MAX_MODE_REQUEST_PORTS + 1);
     assert_int_equal(mode, BSWM_MODE_STARTUP);
 }
 
-static void test_BswM_GetCurrentMode_InvalidPort_NotInit(void **state)
+static void test_BswM_GetPortMode_NotInit(void **state)
 {
     (void)state;
     BswM_ModeType mode;
     
     /* Without init, should still return default mode */
-    mode = BswM_GetCurrentMode(0U);
+    mode = BswM_GetPortMode(0U);
     assert_int_equal(mode, BSWM_MODE_STARTUP);
 }
 
@@ -774,19 +773,20 @@ static void test_BswM_Config_RuleActiveStatus(void **state)
 {
     (void)state;
     
-    /* Verify active status of rules */
-    assert_true(testRules[0].IsActive);
-    assert_true(testRules[1].IsActive);
-    assert_false(testRules[2].IsActive);
+    /* Verify active status of rules (using IsEnabled field from BswM.h type) */
+    assert_true(testRules[0].IsEnabled);
+    assert_true(testRules[1].IsEnabled);
+    assert_false(testRules[2].IsEnabled);
 }
 
 static void test_BswM_Config_RuleExpectedModes(void **state)
 {
     (void)state;
     
-    assert_int_equal(testRules[0].ExpectedMode, BSWM_MODE_RUN);
-    assert_int_equal(testRules[1].ExpectedMode, BSWM_MODE_RUN);
-    assert_int_equal(testRules[2].ExpectedMode, BSWM_MODE_SHUTDOWN);
+    /* Verify target modes (using TargetMode field from BswM.h type) */
+    assert_int_equal(testRules[0].TargetMode, BSWM_MODE_RUN);
+    assert_int_equal(testRules[1].TargetMode, BSWM_MODE_RUN);
+    assert_int_equal(testRules[2].TargetMode, BSWM_MODE_SHUTDOWN);
 }
 
 /*==================================================================================================
@@ -878,8 +878,8 @@ int main(void)
         cmocka_unit_test_setup_teardown(test_BswM_IsInitialized_Uninit, test_setup, test_teardown),
         cmocka_unit_test_setup_teardown(test_BswM_IsInitialized_AfterInit, test_setup, test_teardown),
         cmocka_unit_test_setup_teardown(test_BswM_IsInitialized_AfterDeinit, test_setup, test_teardown),
-        cmocka_unit_test_setup_teardown(test_BswM_GetCurrentMode_InvalidPort, test_setup, test_teardown),
-        cmocka_unit_test_setup_teardown(test_BswM_GetCurrentMode_InvalidPort_NotInit, test_setup, test_teardown),
+        cmocka_unit_test_setup_teardown(test_BswM_GetPortMode_InvalidPort, test_setup, test_teardown),
+        cmocka_unit_test_setup_teardown(test_BswM_GetPortMode_NotInit, test_setup, test_teardown),
         
         /* Configuration Tests */
         cmocka_unit_test_setup_teardown(test_BswM_Config_NumRules, test_setup, test_teardown),

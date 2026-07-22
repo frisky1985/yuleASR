@@ -1,10 +1,16 @@
 /**
  * @file test_framework.h
- * @brief Minimal test framework stub for Com_test.c compilation
+ * @brief Minimal test framework compatibility stub
+ *
+ * Provides RUN_TEST and basic assertion macros for code that includes this
+ * via the include/autosar/ path. New code should include the canonical
+ * test_framework.h at tests/unit/test_framework.h instead.
+ *
+ * (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
  */
 
-#ifndef TEST_FRAMEWORK_H
-#define TEST_FRAMEWORK_H
+#ifndef AUTOSAR_TEST_FRAMEWORK_H
+#define AUTOSAR_TEST_FRAMEWORK_H
 
 #include <stdio.h>
 #include <string.h>
@@ -39,22 +45,17 @@
         } \
     } while (0U)
 
-/* Test setup macros */
 #define TEST_SETUP()    printf("--- Test: %s ---\n", __func__)
 #define TEST_TEARDOWN() printf("--- End: %s ---\n", __func__)
 
-/* Test runner macro */
 #define RUN_TEST(func)  do { func(); } while (0U)
 
-/* Extended assertion macros used by Com_test.c */
 #define ASSERT_EQ(expected, actual) TEST_ASSERT_EQUAL(expected, actual)
 #define ASSERT_TRUE(cond)           TEST_ASSERT_TRUE(cond)
 #define ASSERT_FALSE(cond)          TEST_ASSERT_FALSE(cond)
 #define TEST_PASS()                 printf("  PASS: %s\n", __func__)
-#define NULL_PTR                    ((void*)0)
 
-/* Test runner main function */
 #define TEST_MAIN_BEGIN()   int main(void)
 #define TEST_MAIN_END()     return 0; }
 
-#endif /* TEST_FRAMEWORK_H */
+#endif /* AUTOSAR_TEST_FRAMEWORK_H */

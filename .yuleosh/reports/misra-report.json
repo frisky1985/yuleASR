@@ -1,6 +1,6 @@
 {
   "schema_version": "misra-report-v2",
-  "generated_at": "2026-07-22T13:51:29.970493",
+  "generated_at": "2026-07-23T01:43:49.299263",
   "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
   "ruleset_version": "2023",
   "ci_environ": {
@@ -10,30 +10,32 @@
     "job_name": "",
     "workspace": ""
   },
-  "total_violations": 1127,
-  "unique_rules": 2,
-  "affected_files": 181,
-  "total_source_lines": 63460,
+  "total_violations": 1141,
+  "unique_rules": 3,
+  "affected_files": 186,
+  "total_source_lines": 65186,
   "by_severity": {
-    "information": 425,
-    "style": 673,
+    "information": 427,
+    "style": 685,
     "error": 17,
     "portability": 2,
     "warning": 2,
     "note": 8
   },
   "by_rule_type": {
-    "unknown": 755,
+    "unknown": 765,
+    "advisory": 4,
     "required": 372
   },
-  "density_per_kloc": 17.76,
+  "density_per_kloc": 17.5,
   "category_breakdown": {
-    "unknown": 755,
+    "unknown": 765,
+    "基本类型 (Essential Types)": 4,
     "指针 (Pointer)": 372
   },
   "groups": {
     "unknown": {
-      "count": 755,
+      "count": 765,
       "violations": [
         {
           "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h",
@@ -736,6 +738,34 @@
           "rule_type": "unknown"
         },
         {
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Boot_1.0.0.c",
+          "line": 0,
+          "column": 0,
+          "severity": "information",
+          "message": "Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]",
+          "rule_id": null,
+          "rule_year": "2012",
+          "code_category": "business",
+          "category": "unknown",
+          "description": "",
+          "severity_category": "unknown",
+          "rule_type": "unknown"
+        },
+        {
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_RamEcc_1.0.0.c",
+          "line": 0,
+          "column": 0,
+          "severity": "information",
+          "message": "Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]",
+          "rule_id": null,
+          "rule_year": "2012",
+          "code_category": "business",
+          "category": "unknown",
+          "description": "",
+          "severity_category": "unknown",
+          "rule_type": "unknown"
+        },
+        {
           "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c",
           "line": 24,
           "column": 0,
@@ -1406,37 +1436,71 @@
           "description": "",
           "severity_category": "unknown",
           "rule_type": "unknown"
-        },
-        {
-          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Lin.h",
-          "line": 155,
-          "column": 0,
-          "severity": "information",
-          "message": "Include file: \"MemMap.h\" not found. [missingInclude]",
-          "rule_id": null,
-          "rule_year": "2012",
-          "code_category": "business",
-          "category": "unknown",
-          "description": "",
-          "severity_category": "unknown",
-          "rule_type": "unknown"
-        },
-        {
-          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c",
-          "line": 0,
-          "column": 0,
-          "severity": "information",
-          "message": "Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]",
-          "rule_id": null,
-          "rule_year": "2012",
-          "code_category": "business",
-          "category": "unknown",
-          "description": "",
-          "severity_category": "unknown",
-          "rule_type": "unknown"
         }
       ],
-      "total": 755
+      "total": 765
+    },
+    "misra-c2023-10.5": {
+      "count": 4,
+      "violations": [
+        {
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Hsm_1.0.0.c",
+          "line": 173,
+          "column": 12,
+          "severity": "style",
+          "message": "misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]",
+          "rule_id": "misra-c2023-10.5",
+          "rule_year": "2012",
+          "code_category": "business",
+          "category": "基本类型 (Essential Types)",
+          "description": "表达式求值不应受优先级和求值顺序影响",
+          "severity_category": "advisory",
+          "rule_type": "advisory"
+        },
+        {
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c",
+          "line": 307,
+          "column": 36,
+          "severity": "style",
+          "message": "misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]",
+          "rule_id": "misra-c2023-10.5",
+          "rule_year": "2012",
+          "code_category": "business",
+          "category": "基本类型 (Essential Types)",
+          "description": "表达式求值不应受优先级和求值顺序影响",
+          "severity_category": "advisory",
+          "rule_type": "advisory"
+        },
+        {
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c",
+          "line": 308,
+          "column": 36,
+          "severity": "style",
+          "message": "misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]",
+          "rule_id": "misra-c2023-10.5",
+          "rule_year": "2012",
+          "code_category": "business",
+          "category": "基本类型 (Essential Types)",
+          "description": "表达式求值不应受优先级和求值顺序影响",
+          "severity_category": "advisory",
+          "rule_type": "advisory"
+        },
+        {
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c",
+          "line": 309,
+          "column": 36,
+          "severity": "style",
+          "message": "misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]",
+          "rule_id": "misra-c2023-10.5",
+          "rule_year": "2012",
+          "code_category": "business",
+          "category": "基本类型 (Essential Types)",
+          "description": "表达式求值不应受优先级和求值顺序影响",
+          "severity_category": "advisory",
+          "rule_type": "advisory"
+        }
+      ],
+      "total": 4
     },
     "misra-c2023-11.9": {
       "count": 372,

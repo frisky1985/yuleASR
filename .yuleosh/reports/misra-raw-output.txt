@@ -148,6 +148,24 @@
 /Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_Lockstep.c:601:0: information: Include file: "Platform_Lockstep_MemMap.h" not found. [missingInclude]
 #include "Platform_Lockstep_MemMap.h"
 ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Boot_1.0.0.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
+
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Hsm_1.0.0.c:173:12: style: misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]
+    return (boolean)((Cdd_Hsm_State == CDD_HSM_STATE_READY) ||
+           ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_RamEcc_1.0.0.c:0:0: information: Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches. [normalCheckLevelMaxBranches]
+
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:307:36: style: misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]
+        status->isActive         = (boolean)((ls & LOCKSTEP_STATUS_ACTIVE) != 0U);
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:308:36: style: misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]
+        status->hasError         = (boolean)((ls & LOCKSTEP_STATUS_ERROR) != 0U);
+                                   ^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:309:36: style: misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-10.5]
+        status->mismatchDetected = (boolean)((ls & LOCKSTEP_STATUS_MISMATCH) != 0U);
+                                   ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c:24:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
@@ -2622,6 +2640,30 @@ Boot_Decision Boot_Loader_ResolveBootTarget(void)
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Update.c:162:0: style: The function 'Boot_Update_Abort' should have static linkage since it is not used outside of its translation unit. [staticFunction]
 Boot_Result Boot_Update_Abort(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Boot_1.0.0.c:106:0: style: The function 'Cdd_Boot_DecodeResetReason' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC Cdd_Boot_ResetReasonType Cdd_Boot_DecodeResetReason(uint32 raw)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Hsm_1.0.0.c:93:0: style: The function 'Cdd_Hsm_HwInit' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC Std_ReturnType Cdd_Hsm_HwInit(const Cdd_Hsm_ConfigType* config)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:121:0: style: The function 'Cdd_Lockstep_DelayUs' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void Cdd_Lockstep_DelayUs(uint32 microseconds)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:133:0: style: The function 'Cdd_Lockstep_WaitBist' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC Std_ReturnType Cdd_Lockstep_WaitBist(uint32 timeoutUs)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_RamEcc_1.0.0.c:123:0: style: The function 'Cdd_RamEcc_LogError' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void Cdd_RamEcc_LogError(const Cdd_RamEcc_ErrorRecordType* record)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_RamEcc_1.0.0.c:138:0: style: The function 'Cdd_RamEcc_ReadAndClearStatus' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC uint32 Cdd_RamEcc_ReadAndClearStatus(void)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:111:0: style: The function 'Cdd_Safety_SetState' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC void Cdd_Safety_SetState(Cdd_Safety_StateType newState)
+^
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:130:0: style: The function 'Cdd_Safety_Crc32' should have static linkage since it is not used outside of its translation unit. [staticFunction]
+STATIC uint32 Cdd_Safety_Crc32(const uint8* data, uint32 length, uint32 seed)
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:158:0: style: The function 'Xcp_ProcessCommand' should have static linkage since it is not used outside of its translation unit. [staticFunction]
 void Xcp_ProcessCommand(const uint8 *cmd, uint8 len)

@@ -1,10 +1,11 @@
 /** @file unity.h
- * @brief Unity测试框架头文件
+ * @brief Unified Test Framework Header (Unity API + CMocka Compatibility)
  *
  * @copyright Copyright (c) 2024 YuleTech
  * @license MIT
  *
- * 轻量级单元测试框架 - 专为嵌入式MCU设计
+ * 统一的单元测试框架。提供 Unity 风格的测试 API (UNITY_BEGIN/RUN_TEST/UNITY_END)
+ * 以及 CMocka 风格的断言别名。所有断言最终都使用 longjmp-based 的 Unity 实现。
  */
 
 #ifndef UNITY_H
@@ -316,6 +317,78 @@ void setUp(void);
 
 /** @brief 在每个测试后调用 (用户可重写) */
 void tearDown(void);
+
+/*============================================================================
+ *  CMocka 兼容断言别名
+ *
+ *  提供 CMocka 风格的宏名作为别名，方便混用 CMocka 和 Unity 风格的测试代码。
+ *  所有别名都委托到上方的 Unity 断言实现。
+ *============================================================================*/
+
+/* 布尔断言 */
+#define assert_true(c)           TEST_ASSERT_TRUE(c)
+#define assert_false(c)          TEST_ASSERT_FALSE(c)
+#define assert_null(ptr)         TEST_ASSERT_NULL(ptr)
+#define assert_non_null(ptr)     TEST_ASSERT_NOT_NULL(ptr)
+
+/* 整数断言 */
+#define assert_int_equal(a, b)          TEST_ASSERT_EQUAL_INT(a, b)
+#define assert_int_not_equal(a, b)      do { \
+    const int _a = (a); const int _b = (b); \
+    TEST_ASSERT(_a != _b); \
+} while(0)
+
+#define assert_uint_equal(a, b)         TEST_ASSERT_EQUAL_UINT(a, b)
+#define assert_int8_equal(a, b)         TEST_ASSERT_EQUAL_INT8(a, b)
+#define assert_uint8_equal(a, b)        TEST_ASSERT_EQUAL_UINT8(a, b)
+#define assert_uint16_equal(a, b)       TEST_ASSERT_EQUAL_UINT16(a, b)
+#define assert_uint32_equal(a, b)       TEST_ASSERT_EQUAL_UINT32(a, b)
+
+/* 字符串断言 */
+#define assert_string_equal(a, b)       TEST_ASSERT_EQUAL_STRING(a, b)
+#define assert_string_not_equal(a, b)   do { \
+    const char* _a = (a); const char* _b = (b); \
+    char _msg[256]; \
+    snprintf(_msg, sizeof(_msg), "Strings should differ: \"%s\" == \"%s\"", \
+             _a ? _a : "(null)", _b ? _b : "(null)"); \
+    UNITY_TEST_ASSERT(strcmp(_a ? _a : "", _b ? _b : "") != 0, _msg, __LINE__, __FILE__); \
+} while(0)
+
+/* 内存断言 */
+#define assert_memory_equal(a, b, len)  TEST_ASSERT_EQUAL_MEMORY(a, b, len)
+
+/* 范围断言 */
+#define assert_in_range(v, min, max)    TEST_ASSERT_IN_RANGE(min, max, v)
+#define assert_not_in_range(v, min, max) do { \
+    TEST_ASSERT((v) < (min) || (v) > (max)); \
+} while(0)
+
+/* 指针断言 */
+#define assert_ptr_equal(a, b)          TEST_ASSERT_EQUAL_PTR(a, b)
+#define assert_ptr_not_equal(a, b)      do { \
+    const void* _a = (const void*)(uintptr_t)(a); \
+    const void* _b = (const void*)(uintptr_t)(b); \
+    TEST_ASSERT(_a != _b); \
+} while(0)
+
+/* 返回码断言 */
+#define assert_return_code(c, r)        do { \
+    int _c = (c); \
+    char _msg[128]; \
+    snprintf(_msg, sizeof(_msg), "Return code %%d not within expected range", _c); \
+    UNITY_TEST_ASSERT(_c >= (r), _msg, __LINE__, __FILE__); \
+} while(0)
+
+/* 显式失败/跳过 */
+#define fail_msg(msg)       TEST_FAIL_MESSAGE(msg)
+#define skip()              TEST_IGNORE_MESSAGE("skipped")
+
+/*============================================================================
+ *  UNITY_BEGIN / UNITY_END 宏别名
+ *  部分旧测试使用全大写的 UNITY_BEGIN() / UNITY_END() 形式。
+ *============================================================================*/
+#define UNITY_BEGIN()       UnityBegin()
+#define UNITY_END()         UnityEnd()
 
 #ifdef __cplusplus
 }

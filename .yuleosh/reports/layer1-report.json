@@ -1,18 +1,18 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T13:51:51.554116",
+  "generated_at": "2026-07-23T01:44:08.159381",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "passed",
-      "commit": "a1412c9",
-      "started_at": "2026-07-22T13:50:40.832524",
-      "completed_at": "2026-07-22T13:51:51.551620",
+      "status": "failed",
+      "commit": "0eabb19",
+      "started_at": "2026-07-23T01:42:59.297245",
+      "completed_at": "2026-07-23T01:44:08.156842",
       "stages_summary": {
         "total": 29,
-        "passed": 27,
-        "failed": 0,
+        "passed": 25,
+        "failed": 1,
         "skipped": 0
       },
       "stages": [
@@ -38,8 +38,8 @@
         },
         {
           "name": "plan-lint",
-          "status": "passed",
-          "detail": ""
+          "status": "failed",
+          "detail": "/Users/stefan/.openclaw/workspace/yuleASR/tasks/v130-to-v140-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/v130-to-v140-plan.md: Missing T00 three-step sections"
         },
         {
           "name": "docsync-gate",
@@ -53,8 +53,8 @@
         },
         {
           "name": "misra-check",
-          "status": "passed",
-          "detail": "1127 MISRA violation(s) (372 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
+          "status": "warning",
+          "detail": "1141 MISRA violation(s) (372 required, 4 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -168,16 +168,18 @@
         "line_pass": true,
         "condition_pass": true
       },
-      "errors": []
+      "errors": [
+        "plan-lint failed"
+      ]
     }
   ],
   "misra": {
-    "total_violations": 1127,
+    "total_violations": 1141,
     "required": 372,
-    "advisory": 0,
-    "violations_per_kloc": 17.76,
-    "rules_violated": 2,
-    "files_affected": 181
+    "advisory": 4,
+    "violations_per_kloc": 17.5,
+    "rules_violated": 3,
+    "files_affected": 186
   },
   "c_coverage": {
     "line_rate": 37.1,
