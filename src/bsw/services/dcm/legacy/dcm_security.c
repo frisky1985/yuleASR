@@ -36,6 +36,8 @@
 #define DCM_IS_ODD(x)                   (((x) & 0x01U) != 0U)
 #define DCM_IS_EVEN(x)                  (((x) & 0x01U) == 0U)
 #define DCM_GET_LEVEL_FROM_SEED_SF(sf)  ((((sf) + 1U) / 2U))
+uint8_t Dcm_GetDefaultSecurityLevelCount(void);
+const Dcm_SecurityLevelConfigType* Dcm_GetDefaultSecurityLevelConfigs(void);
 #define DCM_GET_LEVEL_FROM_KEY_SF(sf)   ((sf) / 2U)
 #define DCM_MIN(a, b)                   (((a) < (b)) ? (a) : (b))
 

@@ -1,14 +1,14 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-20T00:35:58.729131",
+  "generated_at": "2026-07-22T01:34:01.411843",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 2,
       "status": "passed",
-      "commit": "c7323fc",
-      "started_at": "2026-07-20T00:35:57.245345",
-      "completed_at": "2026-07-20T00:35:58.726614",
+      "commit": "fc0d857",
+      "started_at": "2026-07-22T01:33:59.957192",
+      "completed_at": "2026-07-22T01:34:01.409322",
       "stages_summary": {
         "total": 5,
         "passed": 3,
@@ -47,15 +47,15 @@
     }
   ],
   "misra": {
-    "total_violations": 0,
-    "required": 0,
-    "advisory": 0,
-    "violations_per_kloc": 0,
+    "total_violations": 3266,
+    "required": 369,
+    "advisory": 1020,
+    "violations_per_kloc": 31.44,
     "rules_violated": 0,
-    "files_affected": 0
+    "files_affected": 298
   },
   "c_coverage": {
-    "line_rate": 83.33,
+    "line_rate": 96.2,
     "branch_rate": 0.0
   }
 }

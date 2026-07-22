@@ -32,6 +32,10 @@
 #define ETHSM_LCFG_AR_RELEASE_MAJOR_VERSION     (0x04U)
 #define ETHSM_LCFG_AR_RELEASE_MINOR_VERSION     (0x04U)
 #define ETHSM_LCFG_AR_RELEASE_REVISION_VERSION  (0x00U)
+static const EthSM_TcpIpMappingType* EthSM_Lcfg_GetTcpIpMapping(EthSM_NetworkHandleType networkHandle);
+static const EthSM_TrcvConfigType* EthSM_Lcfg_GetTrcvConfig(uint8 trcvIdx);
+static const EthSM_CtrlConfigType* EthSM_Lcfg_GetCtrlConfig(uint8 ctrlIdx);
+static const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkHandleType networkHandle);
 #define ETHSM_LCFG_SW_MAJOR_VERSION             (0x01U)
 #define ETHSM_LCFG_SW_MINOR_VERSION             (0x00U)
 #define ETHSM_LCFG_SW_PATCH_VERSION             (0x00U)

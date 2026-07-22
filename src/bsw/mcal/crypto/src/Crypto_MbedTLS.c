@@ -34,6 +34,13 @@
 #include "mbedtls/hkdf.h"
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/entropy.h"
+
+/*
+ * mbedTLS forward declarations.
+ * Some mbedTLS headers may not be in the cppcheck include path,
+ * so we provide explicit extern declarations for functions used.
+ */
+extern int mbedtls_ctr_drbg_random(void *ctx, unsigned char *output, size_t len);
 #include "mbedtls/bignum.h"
 
 /**********************************************************************************************************************
@@ -820,6 +827,18 @@ STATIC Std_ReturnType Crypto_MbedTLS_ConvertResult(int mbedtls_result)
 
 #define CRYPTO_STOP_SEC_CODE
 #include "MemMap.h"
+Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job);
+Std_ReturnType Crypto_MbedTLS_KeyDerive(Crypto_KeyIdType srcKeyId, Crypto_KeyIdType dstKeyId);
+Std_ReturnType Crypto_MbedTLS_KeyGenerate(Crypto_KeyIdType keyId);
+Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId,                                    const uint8* salt,                                    uint32 saltLen,                                    const uint8* info,                                    uint32 infoLen,                                    uint8* okm,                                    uint32 okmLen);
+Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId,                                    const uint8* data,                                    uint32 dataLen,                                    uint8* mac);
+Std_ReturnType Crypto_MbedTLS_SHA256(const uint8* data, uint32 dataLen, uint8* digest);
+Std_ReturnType Crypto_MbedTLS_AES_GCM_Decrypt(Crypto_KeyIdType keyId,                                               const uint8* ciphertext,                                               uint32 ciphertextLen,                                               const uint8* aad,                                               uint32 aadLen,                                               const uint8* iv,                                               const uint8* tag,                                               uint8* plaintext);
+Std_ReturnType Crypto_MbedTLS_AES_GCM_Encrypt(Crypto_KeyIdType keyId,                                               const uint8* plaintext,                                               uint32 plaintextLen,                                               const uint8* aad,                                               uint32 aadLen,                                               const uint8* iv,                                               uint8* ciphertext,                                               uint8* tag);
+Std_ReturnType Crypto_MbedTLS_ECDH_CalcSecret(Crypto_KeyIdType privKeyId,                                               const uint8* pubKeyPtr,                                               uint32 pubKeyLen);
+Std_ReturnType Crypto_MbedTLS_RandomGenerate(uint8* resultPtr, uint32 resultLength);
+void Crypto_MbedTLS_DeInit(void);
+Std_ReturnType Crypto_MbedTLS_Init(void);
 
 /**********************************************************************************************************************
  * END OF FILE

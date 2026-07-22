@@ -1,6 +1,10 @@
 /**
  * @file test_pdur.c
  * @brief PduR (PDU Router) Unit Tests
+ *
+ * SHALL-PDUR-01: SHALL maintain a static routing table generated at build time
+ * SHALL-PDUR-02: SHALL support a maximum of 512 routing paths
+ * SHALL-PDUR-03: SHALL support gateway routing between CAN <-> LIN and CAN <-> Ethernet
  */
 
 #include <stdarg.h>

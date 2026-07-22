@@ -1,64 +1,45 @@
 # MISRA Fix Task: misra-c2023-15.6
 
-> Generated: 2026-07-19T23:23:07.856334
-> Severity: required
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.340224
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: If-else-if chain shall terminate with else
+## Rule: misra-c2023-15.6
 
-if-else-if 链应以 else 子句终止
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files:
-    - `src/bsw/mcal/can/src/Can.c`
-    - `src/bsw/mcal/gpt/src/Gpt.c`
-    - `src/bsw/mcal/pwm/src/Pwm.c`
-- [x] Fix: single break per iteration — structured single exit loop
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 158 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 387 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 407 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 427 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/gpt/src/Gpt.c` | 144 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/gpt/src/Gpt.c` | 150 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/gpt/src/Gpt.c` | 195 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/pwm/src/Pwm.c` | 115 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/pwm/src/Pwm.c` | 121 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
-| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/pwm/src/Pwm.c` | 154 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.6 |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Tp.c` | 1 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 68 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 69 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 75 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 76 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 117 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 151 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 154 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 190 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 193 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 278 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 332 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Update.c` | 174 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Update.c` | 191 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 71 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 74 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 107 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 179 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 236 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 257 | 0 | Body of iteration/selection statement shall be compound [misra-c2012-15.6] |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — Can.c/Gpt.c/Pwm.c: continue替换为嵌套if，空while体加{}
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-15.6: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

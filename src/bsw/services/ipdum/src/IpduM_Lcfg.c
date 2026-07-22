@@ -18,6 +18,7 @@
 #include "IpduM.h"
 #include "IpduM_Cfg.h"
 
+extern const IpduM_ConfigType IpduM_Config;
 static const IpduM_StaticPartType IpduM_StaticParts[IPDUM_MAX_STATIC_PARTS] = {
     { 0U, 0U, 0U },
     { 1U, 1U, 1U },

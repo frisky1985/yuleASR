@@ -53,6 +53,20 @@
 #define DIO_E_PARAM_INVALID_PORT_ID             0x14U
 #define DIO_E_PARAM_INVALID_GROUP               0x1FU
 #define DIO_E_PARAM_POINTER                     0x20U
+#define DIO_E_PARAM_CONFIG                      0x21U
+#define DIO_E_UNINIT                            0x22U
+
+/* Service IDs (SID) */
+#define DIO_SID_INIT                            0x00U
+#define DIO_SID_READ_CHANNEL                    0x01U
+#define DIO_SID_WRITE_CHANNEL                   0x02U
+#define DIO_SID_READ_PORT                       0x03U
+#define DIO_SID_WRITE_PORT                      0x04U
+#define DIO_SID_READ_CHANNEL_GROUP              0x05U
+#define DIO_SID_WRITE_CHANNEL_GROUP             0x06U
+#define DIO_SID_GET_VERSION_INFO                0x12U
+#define DIO_SID_FLIP_CHANNEL                    0x11U
+#define DIO_SID_MASKED_WRITE_PORT               0x13U
 
 /*==================================================================================================
 *                                          TYPE DEFINITIONS

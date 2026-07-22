@@ -318,17 +318,17 @@
 #include "Std_Types.h"
 
 /* Include DIO header if DIO interface is used */
-#if (CANTRCV_DIO_USED == STD_ON)
+#if defined(CANTRCV_DIO_USED) && (CANTRCV_DIO_USED == STD_ON)
 #include "Dio.h"
 #endif
 
 /* Include SPI header if SPI interface is used */
-#if (CANTRCV_SPI_USED == STD_ON)
+#if defined(CANTRCV_SPI_USED) && (CANTRCV_SPI_USED == STD_ON)
 #include "Spi.h"
 #endif
 
 /* Include EcuM header if wake-up is used */
-#if (CANTRCV_WAKEUP_BY_BUS_USED == STD_ON)
+#if defined(CANTRCV_WAKEUP_BY_BUS_USED) && (CANTRCV_WAKEUP_BY_BUS_USED == STD_ON)
 #include "EcuM.h"
 #endif
 
@@ -336,7 +336,7 @@
  * CALLBACK FUNCTION PROTOTYPES
  ==================================================================================================*/
 
-#if (CANTRCV_WAKEUP_NOTIFICATION_ENABLED == STD_ON)
+#if defined(CANTRCV_WAKEUP_NOTIFICATION_ENABLED) && (CANTRCV_WAKEUP_NOTIFICATION_ENABLED == STD_ON)
 /**
  * @brief Callback function for wake-up notification.
  *
@@ -348,7 +348,7 @@
 extern void CanTrcv_WakeupNotification(uint8 Transceiver);
 #endif
 
-#if (CANTRCV_ERROR_NOTIFICATION_ENABLED == STD_ON)
+#if defined(CANTRCV_ERROR_NOTIFICATION_ENABLED) && (CANTRCV_ERROR_NOTIFICATION_ENABLED == STD_ON)
 /**
  * @brief Callback function for error notification.
  *

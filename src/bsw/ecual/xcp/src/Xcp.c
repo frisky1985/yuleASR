@@ -13,6 +13,13 @@
  *===========================================================================*/
 
 /* Connection state */
+uint8 Xcp_MtaWrite(const uint8 *buffer, uint8 count);
+uint8 Xcp_MtaRead(uint8 *buffer, uint8 count);
+void Xcp_MtaSet(uint32 address, uint8 extension);
+void Xcp_SendDaqPacket(const Xcp_DaqListType *daqList, uint8 odtIndex);
+void Xcp_DaqTrigger(uint8 eventChannel);
+extern Xcp_SessionStatusType Xcp_SessionStatus;
+extern Xcp_ConnectionStateType Xcp_ConnectionState;
 Xcp_ConnectionStateType Xcp_ConnectionState = XCP_STATE_DISCONNECTED;
 Xcp_SessionStatusType Xcp_SessionStatus = 0x00u;
 

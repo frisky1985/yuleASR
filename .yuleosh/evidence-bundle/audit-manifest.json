@@ -1,0 +1,682 @@
+{
+  "bundle": {
+    "generated_at": "2026-07-22T01:21:23.380128",
+    "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
+    "version": "1.0.0",
+    "spec_ref": "G-50 / §22.1~§22.9"
+  },
+  "components": {
+    "ci-results": {
+      "label": "CI Layer Results",
+      "spec_ref": "§22.1",
+      "artifacts": [
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/ci-results.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/ci-results.json",
+          "layer": "?",
+          "status": "unknown",
+          "sha256": "d0ebbbcd51ffed883f410140ac25bb4197429ad3a0eff70ad0b17f355b22b513"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-3c1a631.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-3c1a631.json",
+          "layer": 1,
+          "status": "passed",
+          "sha256": "7fdfa32e2f8e8c90e2da061646e3ffb3b6c80cb427dcc47f6cdd060403da080c"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-6b1bf25.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-6b1bf25.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "ea35fb72a2448dc854597368c35474ef7f6e7c4d30bea262759b609376abe8dd"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-716cb58.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-716cb58.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "2338de53b14a6a50a88f2e764c39552fe55fda9606139102ea1c33f9a67ec628"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-7e65736.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-7e65736.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "6e4ae3ef72f05a083489fa36fad6bd89e683d41ffbc14972b31e9771c8feed9a"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-81ca88c.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-81ca88c.json",
+          "layer": 1,
+          "status": "passed",
+          "sha256": "cde83e59bf7b8219685d9a69c46208e9a8ef5b6f10363bdc7eedb7b38dc7ed7f"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-9f49dc2.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-9f49dc2.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "07983c2bdc04470a8e9291e86f618155cf9524fd18448f7d1d314b8e29c4c11c"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-a325c48.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-a325c48.json",
+          "layer": 1,
+          "status": "passed",
+          "sha256": "147a742b3855ee1046b82560b67c442bb6ded3f662f62e0c002c30b4bc589def"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-ab134a8.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-ab134a8.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "c5cee8c91713abcf471c992c4b5f51047981693c38ca259d97028b234b6a4960"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-b905dec.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-b905dec.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "d26c97fc8da06e21d1d111663f974ec8e4a960d446c839f22c9ed09cce275304"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-c7323fc.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-c7323fc.json",
+          "layer": 1,
+          "status": "passed",
+          "sha256": "66dffb348418738ef691f38dcb22b6e5f7b308c782fb80366b2b32c78b3cf43b"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-f510a71.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-f510a71.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "143d19050e2b947884c8b8e9c57b9ab5bf840fabf2a713646c19b37f52daf94a"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-fc0d857.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-fc0d857.json",
+          "layer": 1,
+          "status": "failed",
+          "sha256": "2fc541b0f92f33a4b0d1799a03f228a16507776706866c41bca07ca489184e77"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-3c1a631.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-3c1a631.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "9f1bc0380683199afd55e6176655ce32e00d3ff5074097c99a34a396b211fe30"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-6b1bf25.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-6b1bf25.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "dcaec71215ea546ee94be06c9e65f2c0ccd9c11a759269ce81d31f1688522209"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-81ca88c.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-81ca88c.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "ef7b92d46461eacb51740a2c59e33db2aed8e5b640a00eaeb35e3cefa6d91b96"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-a325c48.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-a325c48.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "0d3d7e188b8de65f78abd0b77caa6ca62e35096e255188bf2fd3752b98b79060"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-c7323fc.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-c7323fc.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "c723178ba164a364e9300cafed27baec29cf2ab0aa4db55e384184faa47bdcc1"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-f510a71.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-f510a71.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "731ee9c996ca6de2f14e38ba1803439a90a1574433a03788f5e53c35976d74ba"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-fc0d857.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-fc0d857.json",
+          "layer": 2,
+          "status": "passed",
+          "sha256": "c1ed66403e58dfce62cf427b01f4604f335b97ae692395b94711ecd260f8623f"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-3c1a631.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-3c1a631.json",
+          "layer": 3,
+          "status": "passed",
+          "sha256": "3849ed484860aab71575f89327ad23c595ae2b31cdc8242e2e1b2eaed49be0f0"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-6b1bf25.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-6b1bf25.json",
+          "layer": 3,
+          "status": "failed",
+          "sha256": "8c8b243db551574695672f23202b8c73f5884135a8befc7ac7a3d5dcab9f8e1e"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-81ca88c.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-81ca88c.json",
+          "layer": 3,
+          "status": "passed",
+          "sha256": "1cb56fe75085f2a40462dfa266179c933906c733cabb7e8345f093edc7767ad9"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-a325c48.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-a325c48.json",
+          "layer": 3,
+          "status": "passed",
+          "sha256": "6acd03eaecd1408afb10fb253d2591db76256656c34e77900d1e120a2e383f2c"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-c7323fc.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-c7323fc.json",
+          "layer": 3,
+          "status": "passed",
+          "sha256": "31df2689a0f3b2ba8424695e4f2e3b4a9dac89d2a7bec80fd8db325e381d1a66"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-f510a71.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-f510a71.json",
+          "layer": 3,
+          "status": "passed",
+          "sha256": "6501fdaa4528d7ca8823e9d924b1a35886f2746e44a818537e5607da8bfdde63"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-fc0d857.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-fc0d857.json",
+          "layer": 3,
+          "status": "passed",
+          "sha256": "579e4a497b77412b21ca15a198e55186ef1d01712ccc5bf18a7c00519b53b6fc"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/sil-results.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/sil-results.json",
+          "layer": "?",
+          "status": "unknown",
+          "sha256": "f3c3598ac18758939d81f6be9115f7393f1997cd0b7f3c7fdde1c6409ff64013"
+        },
+        {
+          "type": "ci-result",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/sil-test-results.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/sil-test-results.json",
+          "layer": 2,
+          "status": "unknown",
+          "sha256": "740f834d92581f3a27aaa8eb03e219394437b538e420385948e8f1532b435318"
+        }
+      ]
+    },
+    "misra-reports": {
+      "label": "MISRA Analysis Reports",
+      "spec_ref": "§22.2",
+      "artifacts": [
+        {
+          "type": "misra-report",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-report.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-report.json",
+          "sha256": "30137f6af2982bde6dd04891f5b9d0edcc93760c508ed8778e36a4711deffc66"
+        },
+        {
+          "type": "misra-report",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-report.md",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-report.md",
+          "sha256": "feb3215ae1c82545447e46c1bf1458974a37712ffea31aa43e5a8ede4b5ca124"
+        },
+        {
+          "type": "misra-report",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-raw-output.txt",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-raw-output.txt",
+          "sha256": "24b22b383b0145fc5bbd09c25ce5277c3601e0d835203058f2bfe9427a204d9e"
+        },
+        {
+          "type": "misra-report",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-trend.jsonl",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-trend.jsonl",
+          "sha256": "ab2bd0f60701d6dcf6eff50891cc3718cec662649bf4c413c0f9fc510796e51c"
+        }
+      ]
+    },
+    "trend-data": {
+      "label": "KPI/Trend Data",
+      "spec_ref": "§22.3",
+      "artifacts": [
+        {
+          "type": "trend-data",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-trend.jsonl",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/trend-data/misra-trend.jsonl",
+          "sha256": "ab2bd0f60701d6dcf6eff50891cc3718cec662649bf4c413c0f9fc510796e51c"
+        },
+        {
+          "type": "trend-data",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/coverage-trend.jsonl",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/trend-data/coverage-trend.jsonl",
+          "sha256": "c7b5bcd13aad91b7e4bdaccc92732ff93a3f5630693eb2e88468e4d95e9b8df3"
+        }
+      ]
+    },
+    "coverage": {
+      "label": "Test Coverage",
+      "spec_ref": "§22.4",
+      "artifacts": [
+        {
+          "type": "coverage",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/c-coverage.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/coverage/c-coverage.json",
+          "sha256": "be52644858c82334dcc07f12c6c18108bf4f1184ec24aa89398dafae59d5ebbc"
+        },
+        {
+          "type": "coverage",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/coverage-trend.jsonl",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/coverage/coverage-trend.jsonl",
+          "sha256": "c7b5bcd13aad91b7e4bdaccc92732ff93a3f5630693eb2e88468e4d95e9b8df3"
+        }
+      ]
+    },
+    "reviews": {
+      "label": "Review Artifacts",
+      "spec_ref": "§22.5",
+      "artifacts": []
+    },
+    "traceability": {
+      "label": "Traceability Matrices",
+      "spec_ref": "§22.6",
+      "artifacts": [
+        {
+          "type": "traceability",
+          "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/traceability-report.json",
+          "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/traceability/traceability-report.json",
+          "sha256": "8d32e094710b5361e48e17448e0cd90d51ddaebeabaabfebfbdec586efbd8955"
+        }
+      ]
+    }
+  },
+  "integrity": {},
+  "artifacts": [
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/ci-results.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/ci-results.json",
+      "layer": "?",
+      "status": "unknown",
+      "sha256": "d0ebbbcd51ffed883f410140ac25bb4197429ad3a0eff70ad0b17f355b22b513"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-3c1a631.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-3c1a631.json",
+      "layer": 1,
+      "status": "passed",
+      "sha256": "7fdfa32e2f8e8c90e2da061646e3ffb3b6c80cb427dcc47f6cdd060403da080c"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-6b1bf25.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-6b1bf25.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "ea35fb72a2448dc854597368c35474ef7f6e7c4d30bea262759b609376abe8dd"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-716cb58.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-716cb58.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "2338de53b14a6a50a88f2e764c39552fe55fda9606139102ea1c33f9a67ec628"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-7e65736.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-7e65736.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "6e4ae3ef72f05a083489fa36fad6bd89e683d41ffbc14972b31e9771c8feed9a"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-81ca88c.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-81ca88c.json",
+      "layer": 1,
+      "status": "passed",
+      "sha256": "cde83e59bf7b8219685d9a69c46208e9a8ef5b6f10363bdc7eedb7b38dc7ed7f"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-9f49dc2.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-9f49dc2.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "07983c2bdc04470a8e9291e86f618155cf9524fd18448f7d1d314b8e29c4c11c"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-a325c48.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-a325c48.json",
+      "layer": 1,
+      "status": "passed",
+      "sha256": "147a742b3855ee1046b82560b67c442bb6ded3f662f62e0c002c30b4bc589def"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-ab134a8.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-ab134a8.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "c5cee8c91713abcf471c992c4b5f51047981693c38ca259d97028b234b6a4960"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-b905dec.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-b905dec.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "d26c97fc8da06e21d1d111663f974ec8e4a960d446c839f22c9ed09cce275304"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-c7323fc.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-c7323fc.json",
+      "layer": 1,
+      "status": "passed",
+      "sha256": "66dffb348418738ef691f38dcb22b6e5f7b308c782fb80366b2b32c78b3cf43b"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-f510a71.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-f510a71.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "143d19050e2b947884c8b8e9c57b9ab5bf840fabf2a713646c19b37f52daf94a"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer1-fc0d857.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer1-fc0d857.json",
+      "layer": 1,
+      "status": "failed",
+      "sha256": "2fc541b0f92f33a4b0d1799a03f228a16507776706866c41bca07ca489184e77"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-3c1a631.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-3c1a631.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "9f1bc0380683199afd55e6176655ce32e00d3ff5074097c99a34a396b211fe30"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-6b1bf25.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-6b1bf25.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "dcaec71215ea546ee94be06c9e65f2c0ccd9c11a759269ce81d31f1688522209"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-81ca88c.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-81ca88c.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "ef7b92d46461eacb51740a2c59e33db2aed8e5b640a00eaeb35e3cefa6d91b96"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-a325c48.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-a325c48.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "0d3d7e188b8de65f78abd0b77caa6ca62e35096e255188bf2fd3752b98b79060"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-c7323fc.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-c7323fc.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "c723178ba164a364e9300cafed27baec29cf2ab0aa4db55e384184faa47bdcc1"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-f510a71.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-f510a71.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "731ee9c996ca6de2f14e38ba1803439a90a1574433a03788f5e53c35976d74ba"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer2-fc0d857.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer2-fc0d857.json",
+      "layer": 2,
+      "status": "passed",
+      "sha256": "c1ed66403e58dfce62cf427b01f4604f335b97ae692395b94711ecd260f8623f"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-3c1a631.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-3c1a631.json",
+      "layer": 3,
+      "status": "passed",
+      "sha256": "3849ed484860aab71575f89327ad23c595ae2b31cdc8242e2e1b2eaed49be0f0"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-6b1bf25.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-6b1bf25.json",
+      "layer": 3,
+      "status": "failed",
+      "sha256": "8c8b243db551574695672f23202b8c73f5884135a8befc7ac7a3d5dcab9f8e1e"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-81ca88c.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-81ca88c.json",
+      "layer": 3,
+      "status": "passed",
+      "sha256": "1cb56fe75085f2a40462dfa266179c933906c733cabb7e8345f093edc7767ad9"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-a325c48.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-a325c48.json",
+      "layer": 3,
+      "status": "passed",
+      "sha256": "6acd03eaecd1408afb10fb253d2591db76256656c34e77900d1e120a2e383f2c"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-c7323fc.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-c7323fc.json",
+      "layer": 3,
+      "status": "passed",
+      "sha256": "31df2689a0f3b2ba8424695e4f2e3b4a9dac89d2a7bec80fd8db325e381d1a66"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-f510a71.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-f510a71.json",
+      "layer": 3,
+      "status": "passed",
+      "sha256": "6501fdaa4528d7ca8823e9d924b1a35886f2746e44a818537e5607da8bfdde63"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/layer3-fc0d857.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/layer3-fc0d857.json",
+      "layer": 3,
+      "status": "passed",
+      "sha256": "579e4a497b77412b21ca15a198e55186ef1d01712ccc5bf18a7c00519b53b6fc"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/sil-results.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/sil-results.json",
+      "layer": "?",
+      "status": "unknown",
+      "sha256": "f3c3598ac18758939d81f6be9115f7393f1997cd0b7f3c7fdde1c6409ff64013"
+    },
+    {
+      "type": "ci-result",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.osh/ci/sil-test-results.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-results/sil-test-results.json",
+      "layer": 2,
+      "status": "unknown",
+      "sha256": "740f834d92581f3a27aaa8eb03e219394437b538e420385948e8f1532b435318"
+    },
+    {
+      "type": "misra-report",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-report.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-report.json",
+      "sha256": "30137f6af2982bde6dd04891f5b9d0edcc93760c508ed8778e36a4711deffc66"
+    },
+    {
+      "type": "misra-report",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-report.md",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-report.md",
+      "sha256": "feb3215ae1c82545447e46c1bf1458974a37712ffea31aa43e5a8ede4b5ca124"
+    },
+    {
+      "type": "misra-report",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-raw-output.txt",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-raw-output.txt",
+      "sha256": "24b22b383b0145fc5bbd09c25ce5277c3601e0d835203058f2bfe9427a204d9e"
+    },
+    {
+      "type": "misra-report",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-trend.jsonl",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/misra-reports/misra-trend.jsonl",
+      "sha256": "ab2bd0f60701d6dcf6eff50891cc3718cec662649bf4c413c0f9fc510796e51c"
+    },
+    {
+      "type": "trend-data",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/misra-trend.jsonl",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/trend-data/misra-trend.jsonl",
+      "sha256": "ab2bd0f60701d6dcf6eff50891cc3718cec662649bf4c413c0f9fc510796e51c"
+    },
+    {
+      "type": "trend-data",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/coverage-trend.jsonl",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/trend-data/coverage-trend.jsonl",
+      "sha256": "c7b5bcd13aad91b7e4bdaccc92732ff93a3f5630693eb2e88468e4d95e9b8df3"
+    },
+    {
+      "type": "coverage",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/c-coverage.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/coverage/c-coverage.json",
+      "sha256": "be52644858c82334dcc07f12c6c18108bf4f1184ec24aa89398dafae59d5ebbc"
+    },
+    {
+      "type": "coverage",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/coverage-trend.jsonl",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/coverage/coverage-trend.jsonl",
+      "sha256": "c7b5bcd13aad91b7e4bdaccc92732ff93a3f5630693eb2e88468e4d95e9b8df3"
+    },
+    {
+      "type": "traceability",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/reports/traceability-report.json",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/traceability/traceability-report.json",
+      "sha256": "8d32e094710b5361e48e17448e0cd90d51ddaebeabaabfebfbdec586efbd8955"
+    },
+    {
+      "type": "ci-config",
+      "source": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/ci-config.yaml",
+      "dest": "/Users/stefan/.openclaw/workspace/yuleASR/.yuleosh/evidence-bundle/ci-config.yaml",
+      "sha256": "8138d9fd06ebd0817a16db59be42c458e2f4e1db01de67fb3c0ed425e648797d"
+    }
+  ],
+  "swe_status": {
+    "SWE.1": {
+      "name": "SWE.1 软件需求分析",
+      "short": "SWE.1",
+      "color": "#10b981",
+      "description": "Requirements traceability and analysis",
+      "status": "completed",
+      "label": "✅ 完成",
+      "last_updated": "2026-07-22"
+    },
+    "SWE.2": {
+      "name": "SWE.2 软件架构设计",
+      "short": "SWE.2",
+      "color": "#10b981",
+      "description": "Architecture design documentation",
+      "status": "partial",
+      "label": "⚠️ 部分完成",
+      "last_updated": "2026-07-22"
+    },
+    "SWE.3": {
+      "name": "SWE.3 软件详细设计",
+      "short": "SWE.3",
+      "color": "#faad14",
+      "description": "Detailed design and interface definitions",
+      "status": "completed",
+      "label": "✅ 完成",
+      "last_updated": "2026-07-22"
+    },
+    "SWE.4": {
+      "name": "SWE.4 软件单元验证",
+      "short": "SWE.4",
+      "color": "#faad14",
+      "description": "Unit test coverage and static analysis",
+      "status": "completed",
+      "label": "✅ 完成",
+      "last_updated": "2026-07-22"
+    },
+    "SWE.5": {
+      "name": "SWE.5 软件集成与测试",
+      "short": "SWE.5",
+      "color": "#ff4d4f",
+      "description": "Integration testing",
+      "status": "completed",
+      "label": "✅ 完成",
+      "last_updated": "2026-07-22"
+    },
+    "SWE.6": {
+      "name": "SWE.6 软件合格性测试",
+      "short": "SWE.6",
+      "color": "#10b981",
+      "description": "Qualification testing",
+      "status": "completed",
+      "label": "✅ 完成",
+      "last_updated": "2026-07-22"
+    }
+  }
+}

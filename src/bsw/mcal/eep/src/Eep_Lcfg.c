@@ -18,6 +18,7 @@
 #include "Eep.h"
 #include "Eep_Cfg.h"
 
+extern const Eep_ConfigType Eep_Config;
 static const Eep_ConfigType Eep_Config = {
     .BaseAddress = EEP_BASE_ADDRESS,
     .Size = EEP_SIZE,

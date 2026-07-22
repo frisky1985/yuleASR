@@ -1,0 +1,174 @@
+{
+  "layer": 1,
+  "commit": "c7323fc",
+  "status": "passed",
+  "started_at": "2026-07-20T00:35:05.236846",
+  "completed_at": "2026-07-20T00:35:23.065157",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:05.259145"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-20T00:35:05.259881"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-20T00:35:05.259960"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "206 reqs, 0 modules, 4 tests (ratio 400.0%)",
+      "timestamp": "2026-07-20T00:35:05.273171"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-20T00:35:05.354190"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-20T00:35:05.355787"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:05.532760"
+    },
+    {
+      "name": "misra-check",
+      "status": "passed",
+      "detail": "258 MISRA violation(s) (96 required, 36 advisory) \u2014 see .yuleosh/reports/misra-report.json",
+      "timestamp": "2026-07-20T00:35:06.937057"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:07.599207"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:08.075666"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:08.592615"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:09.005112"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:09.423461"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:11.061869"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:11.501332"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:11.916104"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:12.323828"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:12.743421"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:13.126573"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:13.511638"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:15.917028"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:17.499803"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:35:18.157178"
+    },
+    {
+      "name": "coverage",
+      "status": "passed",
+      "detail": "line=0.0%, cond=0.0%",
+      "timestamp": "2026-07-20T00:35:21.788909"
+    },
+    {
+      "name": "c-coverage",
+      "status": "passed",
+      "detail": "line=83.33%, branch=0.0%, 2 file(s)",
+      "timestamp": "2026-07-20T00:35:23.048240"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "passed",
+      "detail": "line_rate=83.3% >= 60%",
+      "timestamp": "2026-07-20T00:35:23.065048"
+    }
+  ],
+  "coverage": {
+    "line_coverage": 0.0,
+    "condition_coverage": 0.0,
+    "threshold_line": 0.0,
+    "threshold_condition": 0.0,
+    "line_pass": true,
+    "condition_pass": true
+  },
+  "errors": []
+}

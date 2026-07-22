@@ -1,6 +1,11 @@
 /**
  * @file test_ADC.c
  * @brief ADC Driver 模块单元测试
+ * SHALL-ADC-01: SHALL support 10-bit and 12-bit configurable ADC resolution
+ * SHALL-ADC-02: SHALL support Single, Continuous, and Scan conversion modes
+ * SHALL-ADC-03: SHALL support up to 16 channels per ADC instance
+ * SHALL-ADC-04: SHALL support left and right result alignment
+ * SHALL-ADC-05: SHALL support interrupt-based and polling notification modes
  * @version 1.0.0
  */
 

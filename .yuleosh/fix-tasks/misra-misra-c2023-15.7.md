@@ -1,53 +1,47 @@
 # MISRA Fix Task: misra-c2023-15.7
 
-> Generated: 2026-07-20T00:35:06.905852
-> Severity: required
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.340325
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: All if-else constructs shall be terminated
+## Rule: misra-c2023-15.7
 
-所有 if-else 结构应有 complete 形式
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files: CanTSyn.c, ComM.c/h, ComM_Cfg.h, SecOC.c
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 324 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7 |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 682 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7 |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 695 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-15.7 |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c` | 358 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c` | 378 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 382 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave.c` | 300 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c` | 432 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 528 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 548 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 573 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 601 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 624 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 657 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 709 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 751 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.c` | 982 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c` | 399 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.h` | 318 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c` | 370 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c` | 406 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_stats.c` | 144 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_stats.c` | 460 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 163 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 428 | 0 | All if-else-if constructs shall be terminated with else clause [misra-c2012-15.7 |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。if-else结构逻辑完整
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-15.7: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

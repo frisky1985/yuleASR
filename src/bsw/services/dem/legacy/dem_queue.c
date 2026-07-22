@@ -24,6 +24,7 @@
 ==================================================================================================*/
 
 /* Event queue instance */
+void Dem_QueueGetStats(uint32* TotalEnqueued, uint32* TotalDequeued, uint32* TotalDropped);
 static Dem_EventQueueType Dem_EventQueue;
 
 /* Queue statistics */

@@ -289,7 +289,7 @@ extern "C" {
  * @brief User data start position
  * User data starts after NID and CBV if enabled
  */
-#if (CANNM_PDU_NID_POSITION == 0U) && (CANNM_PDU_CBV_POSITION == 1U)
+#if defined(CANNM_PDU_CBV_POSITION) && defined(CANNM_PDU_NID_POSITION) && (CANNM_PDU_NID_POSITION == 0U) && (CANNM_PDU_CBV_POSITION == 1U)
     #define CANNM_USER_DATA_POSITION        (uint8)2U
     #define CANNM_USER_DATA_LENGTH          (uint8)6U
 #elif (CANNM_PDU_NID_POSITION == 0U) || (CANNM_PDU_CBV_POSITION == 0U)

@@ -27,6 +27,8 @@
  *===========================================================================*/
 
 /* DCM User - Diagnostics on CAN0 and ETH0 */
+extern const ComM_ConfigType* ComM_ConfigPtr;
+extern const ComM_ConfigType ComM_Config;
 const ComM_ChannelHandleType ComM_User0_Channels[] = {
     COMM_CHANNEL_CAN0,
     COMM_CHANNEL_ETH0

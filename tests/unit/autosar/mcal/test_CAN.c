@@ -2,6 +2,12 @@
  * @file test_CAN.c
  * @brief CAN Driver 模块单元测试
  * @version 1.0.0
+ * SHALL-CAN-01: SHALL support Classical CAN (2.0B) and CAN FD protocols
+ * SHALL-CAN-02: SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD
+ * SHALL-CAN-03: SHALL provide 64 mailboxes for CAN message buffering
+ * SHALL-CAN-04: SHALL support FIFO mode for CAN message reception
+ * SHALL-CAN-05: SHALL support loopback mode for self-test
+ * SHALL-CAN-06: SHALL provide automatic bus-off recovery
  */
 
 #include <stdio.h>

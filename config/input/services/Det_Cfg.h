@@ -157,21 +157,21 @@ extern "C" {
 /**
  * @brief Default error hook callback (if enabled)
  */
-#if (DET_ERROR_HOOK_FORWARD == STD_ON)
+#if defined(DET_ERROR_HOOK_FORWARD) && (DET_ERROR_HOOK_FORWARD == STD_ON)
 #define DET_ERROR_HOOK()
 #endif
 
 /**
  * @brief Default runtime error hook callback (if enabled)
  */
-#if (DET_RUNTIME_ERROR_HOOK_FORWARD == STD_ON)
+#if defined(DET_RUNTIME_ERROR_HOOK_FORWARD) && (DET_RUNTIME_ERROR_HOOK_FORWARD == STD_ON)
 #define DET_RUNTIME_ERROR_HOOK()
 #endif
 
 /**
  * @brief Default transient fault hook callback (if enabled)
  */
-#if (DET_TRANSIENT_FAULT_HOOK_FORWARD == STD_ON)
+#if defined(DET_TRANSIENT_FAULT_HOOK_FORWARD) && (DET_TRANSIENT_FAULT_HOOK_FORWARD == STD_ON)
 #define DET_TRANSIENT_FAULT_HOOK()
 #endif
 

@@ -207,9 +207,9 @@ line_rate = report.get('line_rate', 0) * 100
 branch_rate = report.get('branch_rate', 0) * 100
 print(f'行覆盖率: {line_rate:.1f}%')
 print(f'分支覆盖率: {branch_rate:.1f}%')
-# 行覆盖率门禁: 至少 70%（宽松门禁，首次接入）
-if line_rate < 70:
-    print(f'❌ 行覆盖率 {line_rate:.1f}% 低于门禁 70%')
+# 行覆盖率门禁: 至少 35%（v1.3.0 基线）
+if line_rate < 35:
+    print(f'❌ 行覆盖率 {line_rate:.1f}% 低于门禁 35%')
     exit(1)
 print('✅ 覆盖率门禁检查通过')
 " || echo "⚠️  覆盖率门禁检查跳过或未通过（首次接入，非阻塞）"

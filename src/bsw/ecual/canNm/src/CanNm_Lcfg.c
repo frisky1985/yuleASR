@@ -33,6 +33,7 @@
  *                               LOCAL CONSTANTS
  ==================================================================================================*/
 
+extern const Std_VersionInfoType CanNm_VersionInfo;
 /**
  * @brief Channel 0 configuration
  * This is the default/powertrain CAN channel

@@ -1,0 +1,174 @@
+{
+  "layer": 1,
+  "commit": "81ca88c",
+  "status": "passed",
+  "started_at": "2026-07-19T21:06:43.854380",
+  "completed_at": "2026-07-19T21:06:58.709087",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:43.872729"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-19T21:06:43.873057"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-19T21:06:43.873117"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "206 reqs, 0 modules, 4 tests (ratio 400.0%)",
+      "timestamp": "2026-07-19T21:06:43.885457"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-19T21:06:43.944944"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-19T21:06:43.946975"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:44.106275"
+    },
+    {
+      "name": "misra-check",
+      "status": "skipped",
+      "detail": "No C/C++ source files found",
+      "timestamp": "2026-07-19T21:06:44.136494"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:44.702533"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:45.190922"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:45.723484"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:46.149537"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:46.579655"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:48.284236"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:48.711861"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:49.131962"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:49.557715"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:49.981051"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:50.376544"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:50.786404"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:52.345731"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:53.879545"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:06:54.549526"
+    },
+    {
+      "name": "coverage",
+      "status": "passed",
+      "detail": "line=0.0%, cond=0.0%",
+      "timestamp": "2026-07-19T21:06:57.644833"
+    },
+    {
+      "name": "c-coverage",
+      "status": "warning",
+      "detail": "lcov/gcov may not be installed",
+      "timestamp": "2026-07-19T21:06:58.708839"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "skipped",
+      "detail": "No C coverage report at .yuleosh/reports/c-coverage.json",
+      "timestamp": "2026-07-19T21:06:58.709033"
+    }
+  ],
+  "coverage": {
+    "line_coverage": 0.0,
+    "condition_coverage": 0.0,
+    "threshold_line": 0.0,
+    "threshold_condition": 0.0,
+    "line_pass": true,
+    "condition_pass": true
+  },
+  "errors": []
+}

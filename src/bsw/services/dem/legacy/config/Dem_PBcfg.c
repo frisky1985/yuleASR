@@ -27,6 +27,7 @@
 #define DEM_PBCFG_MAJOR_VERSION     (1U)
 #define DEM_PBCFG_MINOR_VERSION     (0U)
 #define DEM_PBCFG_PATCH_VERSION     (0U)
+extern const Dem_PBConfigRootType* const Dem_PBConfig;
 
 /*==================================================================================================
  *                                      CALLBACK CONFIGURATION

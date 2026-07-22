@@ -25,6 +25,7 @@
 ================================================================================*/
 
 /* Vehicle Identification Number (VIN) - Example: WBA1234567890ABCD */
+extern const DoIP_ConfigType DoIP_Config;
 static const uint8 DoIP_VIN[DOIP_VIN_LENGTH] =
 {
     'W', 'B', 'A', '1', '2', '3', '4', '5', '6', '7',

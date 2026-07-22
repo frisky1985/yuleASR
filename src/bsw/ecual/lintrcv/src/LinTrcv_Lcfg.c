@@ -335,6 +335,9 @@ void Dio_LinTrcv_WakeUpNotification_Channel3(void)
 
 #define LINTRCV_STOP_SEC_CONST_UNSPECIFIED
 #include "MemMap.h"
+static void Dio_LinTrcv_WakeUpNotification_Channel1(void);
+static void Dio_LinTrcv_WakeUpNotification_Channel0(void);
+extern const LinTrcv_ConfigType LinTrcv_Config;
 
 #endif /* LINTRCV_SPI_SUPPORT */
 

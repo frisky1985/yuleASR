@@ -3,6 +3,10 @@
  * @brief GPT (General Purpose Timer) Driver 模块单元测试
  * @version 1.0.0
  * @date 2026-05-15
+ * SHALL-GPT-01: SHALL provide 8 hardware timer channels
+ * SHALL-GPT-02: SHALL provide 32-bit timer resolution
+ * SHALL-GPT-03: SHALL support prescaler values from 1 to 65536
+ * SHALL-GPT-04: SHALL support one-shot and continuous timer modes
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  *
  * @description

@@ -308,6 +308,15 @@ void UnityRunTest(void (*test_func)(void), const char* test_name, int line);
 void UnityPrintSummary(void);
 
 /* ============================================================================
+ * UNITY_BEGIN / UNITY_END macros
+ * ============================================================================ */
+#define UNITY_BEGIN()             0
+#define UNITY_END()               0
+#define RUN_TEST(func)            UnityRunTest(func, #func, 0)
+#define TEST_ASSERT_EQUAL(a,b)    UnityAssertEqual(a,b,__LINE__)
+#define TEST_ASSERT_EQUAL_PTR(a,b) UnityAssertEqual((uintptr_t)(a),(uintptr_t)(b),__LINE__)
+
+/* ============================================================================
  * setUp/tearDown钩子 (可选)
  * ============================================================================ */
 

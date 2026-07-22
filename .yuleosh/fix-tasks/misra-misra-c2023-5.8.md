@@ -1,59 +1,55 @@
 # MISRA Fix Task: misra-c2023-5.8
 
-> Generated: 2026-07-19T23:23:07.859595
-> Severity: required
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.342392
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: Identifiers in external scope shall be distinct
+## Rule: misra-c2023-5.8
 
-外部作用域的标识符应唯一
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files:
-    - `src/bsw/mcal/can/src/Can.c`
-    - `src/bsw/mcal/gpt/src/Gpt.c`
-    - `src/bsw/mcal/mcu/src/Mcu.c`
-    - `src/bsw/mcal/pwm/src/Pwm.c`
-- [x] Fix: parameter name reuse — consistent with AUTOSAR spec, no ambiguity
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 90 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/gpt/src/Gpt.c` | 77 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/src/Mcu.c` | 72 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/pwm/src/Pwm.c` | 65 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.8] |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eep/src/Eep_Lcfg.c` | 22 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eep/src/Eep_Lcfg.c` | 21 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linif/include/LinIf.h` | 52 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Os.h` | 163 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecuC/src/EcuC_Lcfg.c` | 153 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecuC/src/EcuC_Lcfg.c` | 26 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ethsm/src/EthSM_Lcfg.c` | 29 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM_Lcfg.c` | 342 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM_Lcfg.c` | 313 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM_Lcfg.c` | 31 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/bswm/src/BswM_Lcfg.c` | 24 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/bswm/src/BswM_Lcfg.c` | 10 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com_Lcfg.c` | 61 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com_Lcfg.c` | 22 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 198 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 26 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 158 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 27 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 37 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 28 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 128 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 29 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 169 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 372 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethif/src/EthIf_Lcfg.c` | 49 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethif/src/EthIf_Lcfg.c` | 22 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linif/src/LinIf_Lcfg.c` | 72 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linif/src/LinIf_Lcfg.c` | 22 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canNm/src/CanNm_Lcfg.c` | 172 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
+| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canNm/src/CanNm_Lcfg.c` | 36 | 0 | Identifiers that define objects or functions shall have unique names [misra-c201 |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — Can.c/Gpt.c/Pwm.c/Mcu.c: 参数名 controller->ctrlIdx, channel->chId
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-5.8: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

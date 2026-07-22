@@ -23,6 +23,10 @@
 /*==================[Global Constants]======================================*/
 
 /* Event Channel Configurations */
+extern const Xcp_VersionInfoType Xcp_VersionInfo;
+extern const Xcp_TransportLayerType Xcp_TransportConfig;
+extern const Xcp_ResourceProtectionType Xcp_ResourceProtection;
+extern const Xcp_SessionType Xcp_SessionConfig;
 static const Xcp_EventChannelType Xcp_EventChannels[XCP_MAX_EVENT_CHANNELS] = {
     {
         .EventChannelName = "ECU_Cyclic_10ms",

@@ -1,0 +1,29 @@
+{
+  "layer": 3,
+  "commit": "81ca88c",
+  "status": "passed",
+  "started_at": "2026-07-19T21:07:00.595391",
+  "completed_at": "2026-07-19T21:07:07.309190",
+  "stages": [
+    {
+      "name": "e2e-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T21:07:03.260927"
+    },
+    {
+      "name": "version-check",
+      "status": "skipped",
+      "detail": "No pyproject.toml",
+      "timestamp": "2026-07-19T21:07:03.261056"
+    },
+    {
+      "name": "evidence-pack",
+      "status": "passed",
+      "detail": "Compliance pack generated",
+      "timestamp": "2026-07-19T21:07:07.309174"
+    }
+  ],
+  "coverage": null,
+  "errors": []
+}

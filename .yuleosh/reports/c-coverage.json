@@ -1,51 +1,35 @@
 {
-  "metadata": {
-    "batch": "10b",
-    "commit": "10b_coverage_baseline",
-    "timestamp": "2026-07-21T01:20:00+08:00",
-    "compiler": "AppleClang 21.0.0",
-    "gcov": "Apple LLVM gcov",
-    "build_targets": 40,
-    "test_targets": 1,
-    "tests_run": 1,
-    "tests_passed": 1,
-    "note": "Partial coverage: only test sources produce .gcda on Apple Clang with static libs"
-  },
-  "summary": {
-    "source_files": 1,
+  "success": true,
+  "line_rate": 37.1,
+  "branch_rate": 0.0,
+  "total_files": 1,
+  "totals": {
     "lines": {
-      "covered": 327,
-      "total": 327,
-      "rate": 1.0
+      "found": 62,
+      "hit": 23
     },
     "functions": {
-      "covered": 33,
-      "total": 33,
-      "rate": 1.0
+      "found": 5,
+      "hit": 4
     },
     "branches": {
-      "covered": 100,
-      "total": 298,
-      "rate": 0.336
+      "found": 0,
+      "hit": 0
     }
   },
-  "files": {
-    "tests/unit/rte/test_rte_cs_operations.c": {
+  "files": [
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc.c",
+      "line_rate": 37.1,
+      "branch_rate": 0.0,
       "lines": {
-        "covered": 327,
-        "total": 327,
-        "rate": 1.0
+        "found": 62,
+        "hit": 23
       },
       "functions": {
-        "covered": 33,
-        "total": 33,
-        "rate": 1.0
-      },
-      "branches": {
-        "covered": 100,
-        "total": 298,
-        "rate": 0.336
+        "found": 5,
+        "hit": 4
       }
     }
-  }
+  ]
 }

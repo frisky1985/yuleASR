@@ -20,7 +20,7 @@
  *                                      CALLBACK CONFIGURATION
 ==================================================================================================*/
 
-#if (DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED == STD_ON)
 /* Event status changed callback configuration */
 typedef void (*Dem_CallbackOnEventStatusChangedType)(Dem_EventIdType EventId, Dem_EventStatusExtendedType EventStatusOld, Dem_EventStatusExtendedType EventStatusNew);
 
@@ -32,7 +32,7 @@ static const Dem_CallbackOnEventStatusChangedType Dem_CallbackOnEventStatusChang
 };
 #endif
 
-#if (DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED == STD_ON)
 /* DTC status changed callback configuration */
 typedef void (*Dem_CallbackOnDTCStatusChangedType)(uint32 DTC, Dem_DTCStatusMaskType DTCStatusOld, Dem_DTCStatusMaskType DTCStatusNew);
 
@@ -44,7 +44,7 @@ static const Dem_CallbackOnDTCStatusChangedType Dem_CallbackOnDTCStatusChangedTa
 };
 #endif
 
-#if (DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED == STD_ON)
 /* Operation cycle status changed callback configuration */
 typedef void (*Dem_CallbackOnOperationCycleStatusChangedType)(Dem_OperationCycleIdType OperationCycleId, Dem_OperationCycleStateType CycleState);
 
@@ -186,15 +186,15 @@ typedef struct {
     uint16 ConfigMinorVersion;
     uint16 ConfigPatchVersion;
     
-#if (DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED == STD_ON)
     const Dem_CallbackOnEventStatusChangedType* EventStatusChangedCallbacks;
 #endif
     
-#if (DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED == STD_ON)
     const Dem_CallbackOnDTCStatusChangedType* DTCStatusChangedCallbacks;
 #endif
     
-#if (DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED == STD_ON)
     const Dem_CallbackOnOperationCycleStatusChangedType* CycleStatusChangedCallbacks;
 #endif
     
@@ -222,15 +222,15 @@ static const Dem_PBConfigRootType Dem_PBConfigRoot = {
     DEM_PBCFG_MINOR_VERSION,
     DEM_PBCFG_PATCH_VERSION,
     
-#if (DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_EVC_STATUS_CHANGED == STD_ON)
     Dem_CallbackOnEventStatusChangedTable,
 #endif
     
-#if (DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_DTC_STATUS_CHANGED == STD_ON)
     Dem_CallbackOnDTCStatusChangedTable,
 #endif
     
-#if (DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED == STD_ON)
+#if defined(DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED) && (DEM_CFG_CALLBACK_ON_CYCLE_STATUS_CHANGED == STD_ON)
     Dem_CallbackOnOperationCycleStatusChangedTable,
 #endif
     

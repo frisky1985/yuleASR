@@ -1,0 +1,188 @@
+{
+  "layer": 1,
+  "commit": "fc0d857",
+  "status": "failed",
+  "started_at": "2026-07-22T01:14:20.553494",
+  "completed_at": "2026-07-22T01:15:40.024530",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:14:20.582890"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-22T01:14:20.583429"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-22T01:14:20.583906"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "206 reqs, 0 modules, 6 tests (ratio 600.0%)",
+      "timestamp": "2026-07-22T01:14:20.604909"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-22T01:14:20.915608"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-22T01:14:20.917298"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:14:21.096341"
+    },
+    {
+      "name": "misra-check",
+      "status": "warning",
+      "detail": "3266 MISRA violation(s) (369 required, 1020 advisory) \u2014 see .yuleosh/reports/misra-report.json",
+      "timestamp": "2026-07-22T01:15:18.880461"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:19.811163"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:20.302962"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:20.836369"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:21.269385"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:21.717010"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:23.402823"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:23.827526"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:24.260417"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:24.681899"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:25.104393"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:25.492959"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:26.002476"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:26.396830"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:26.798262"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:32.463304"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:34.121427"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:15:34.818367"
+    },
+    {
+      "name": "coverage",
+      "status": "failed",
+      "detail": "Line coverage 0.0% < 85.0%",
+      "timestamp": "2026-07-22T01:15:38.848841"
+    },
+    {
+      "name": "c-coverage",
+      "status": "warning",
+      "detail": "lcov/gcov may not be installed",
+      "timestamp": "2026-07-22T01:15:40.006921"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "passed",
+      "detail": "line_rate=100.0% >= 85%",
+      "timestamp": "2026-07-22T01:15:40.024439"
+    }
+  ],
+  "coverage": {
+    "line_coverage": 0.0,
+    "condition_coverage": 0.0,
+    "threshold_line": 85.0,
+    "threshold_condition": 85.0,
+    "line_pass": false,
+    "condition_pass": false
+  },
+  "errors": [
+    "coverage failed"
+  ]
+}

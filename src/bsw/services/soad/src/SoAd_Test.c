@@ -27,6 +27,10 @@
 /*==================================================================================================
  *                                    TEST FRAMEWORK
  *==================================================================================================*/
+TcpIp_ReturnType TcpIp_Send(TcpIp_SocketIdType SocketId, const uint8* DataPtr, uint16 Length);
+TcpIp_ReturnType TcpIp_Close(TcpIp_SocketIdType SocketId, boolean Abort);
+TcpIp_ReturnType TcpIp_Bind(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* LocalAddrPtr);
+TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType Domain, TcpIp_ProtocolType Protocol, TcpIp_SocketIdType* SocketIdPtr);
 static int tests_run = 0;
 static int tests_passed = 0;
 static int tests_failed = 0;

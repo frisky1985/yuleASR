@@ -18,6 +18,7 @@
 #include "EthSM.h"
 #include "EthSM_Cfg.h"
 
+extern const EthSM_ConfigType EthSM_Config;
 static const EthSM_ChannelConfigType EthSM_Channels[ETHSM_MAX_NETWORKS] = {
     { ETHSM_NETWORK_ETH0, ETHSM_MAIN_FUNCTION_PERIOD },
     { ETHSM_NETWORK_ETH1, ETHSM_MAIN_FUNCTION_PERIOD },

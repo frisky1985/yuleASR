@@ -19,6 +19,16 @@
 /**********************************************************************************************************************
  * 内部类型定义
  *********************************************************************************************************************/
+Std_ReturnType Crypto_AesStreamFinish(Crypto_JobType* job);
+Std_ReturnType Crypto_AesStreamUpdate(Crypto_JobType* job);
+Std_ReturnType Crypto_AesStreamStart(Crypto_JobType* job);
+Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job);
+Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job);
+boolean Crypto_AesIsModeSupported(Crypto_AlgorithmModeType mode);
+void Crypto_AesDeInit(void);
+void Crypto_AesInit(void);
+STATIC Std_ReturnType Crypto_AesGetIvElement(Crypto_KeyIdType keyId,                                              uint8* ivBuffer,                                              uint32* ivLength);
+STATIC Std_ReturnType Crypto_AesGetKeyElement(Crypto_KeyIdType keyId,                                               uint8* keyBuffer,                                               uint32* keyLength);
 typedef struct {
     Aes_ContextType     aesCtx;
     Aes_GcmContextType  gcmCtx;

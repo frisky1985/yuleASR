@@ -1,6 +1,8 @@
 /*
  * test_com_deadline_monitoring.c
  * COM Module Unit Tests - Deadline Monitoring (T012)
+ *
+ * SHALL-COM-04: SHALL support deadline monitoring for signal transmission
  */
 
 #include "unity.h"

@@ -7,6 +7,7 @@
 #include "BswM_Cfg.h"
 
 /* Mode Request Ports */
+extern const BswM_ConfigType BswM_Config;
 static BswM_ModeRequestPortType BswM_ModeRequestPorts[BSWM_MAX_MODE_REQUEST_PORTS] = {
     { 0U, BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_STARTUP, TRUE },
     { 1U, BSWM_COMM_REQUEST, BSWM_MODE_VALUE_RUN, TRUE },

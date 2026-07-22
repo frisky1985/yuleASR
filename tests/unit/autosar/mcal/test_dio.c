@@ -3,6 +3,10 @@
  * @brief DIO Driver 模块单元测试
  * @version 1.0.0
  * @date 2026-05-15
+ * SHALL-DIO-01: SHALL support 8 ports with 32 pins each for digital I/O
+ * SHALL-DIO-02: SHALL support configurable pin direction per pin
+ * SHALL-DIO-03: SHALL support HIGH and LEVEL output levels
+ * SHALL-DIO-04: SHALL support edge-triggered interrupt on rising, falling, and both edges
  */
 
 #include <stdio.h>

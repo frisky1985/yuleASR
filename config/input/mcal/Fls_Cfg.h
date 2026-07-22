@@ -147,11 +147,11 @@ extern "C" {
 /*==================================================================================================
  *                                    CALLBACK DECLARATIONS
  *==================================================================================================*/
-#if (FLS_JOB_END_NOTIFICATION == STD_ON)
+#if defined(FLS_JOB_END_NOTIFICATION) && (FLS_JOB_END_NOTIFICATION == STD_ON)
     extern void Fls_JobEndNotification(void);
 #endif
 
-#if (FLS_JOB_ERROR_NOTIFICATION == STD_ON)
+#if defined(FLS_JOB_ERROR_NOTIFICATION) && (FLS_JOB_ERROR_NOTIFICATION == STD_ON)
     extern void Fls_JobErrorNotification(void);
 #endif
 

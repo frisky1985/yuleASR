@@ -153,7 +153,7 @@
  * Wake-up Source Mapping
  *===============================================================================*/
 
-#if (LINSM_WAKEUP_SUPPORT == STD_ON)
+#if defined(LINSM_WAKEUP_SUPPORT) && (LINSM_WAKEUP_SUPPORT == STD_ON)
 /**
  * @brief Wake-up source for LIN Channel 0
  */

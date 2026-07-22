@@ -1,20 +1,16 @@
 # CI Report Summary
 
-> Generated: 2026-07-20T00:35:23.066835
+> Generated: 2026-07-22T01:42:12.220966
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
 ## Overall: ❌ FAILED
 
-> ⚠️ **评审发现**: MISRA 报告实数有 258 个违规 (96 Required)，但 CI 报告显示为 0。
-> 原因是 delta 模式 (`is_delta: true`) 写入 trend 时数字被归零。
-> 已修复 `exporter.py` 中 misra 数据读取路径 (`misra["summary"]` → 顶层 key)。
-
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ✅ passed | 24 | 0 | 1 | — |
+| L1 | ❌ failed | 21 | 2 | 1 | ⚠️ |
 
 ### Layer L1 — Stage Details
 
@@ -23,11 +19,11 @@
 | yaml-validation | ✅ |  |
 | spec-validation | ✅ | 0 missing, 3 req keywords found |
 | architecture-review | ✅ | 0 modules:  |
-| requirements-trace | ✅ | 206 reqs, 0 modules, 4 tests (ratio 400.0%) |
+| requirements-trace | ✅ | 206 reqs, 0 modules, 7 tests (ratio 700.0%) |
 | plan-lint | ⏭️ | No task/plan files found |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ❌ | 258 MISRA violation(s) (96 required, 36 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ✅ | 894 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -42,34 +38,30 @@
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
-| unit-tests | ✅ |  |
-| coverage | ✅ | line=0.0%, cond=0.0% |
-| c-coverage | ✅ | line=83.33%, branch=0.0%, 2 file(s) |
-| c-coverage-gate | ✅ | line_rate=83.3% >= 60% |
-
-### Layer L1 — Code Coverage
-
-| Metric | Value | Threshold | Status |
-|:-------|------:|---------:|:-------|
-| Line Coverage | 0.0% | 85% | ✅ |
-| Condition Coverage | 0.0% | 80% | ✅ |
+| unit-tests | ❌ | tests/e2e/test_misra_ci.py: .....F
+=================================== FAILURES ===================================
+_______________________ test_misra_violations_breakdown ________________________
+tests/e2e/test_misra_ci.py:136: |
+| coverage | ❌ | coverage run returned non-zero (1):  |
+| c-coverage | ⚠️ | lcov/gcov may not be installed |
+| c-coverage-gate | ✅ | line_rate=96.2% >= 80% |
 
 ## MISRA C:2023
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 258 |
-| Required | 96 |
-| Advisory | 36 |
-| Violations / KLOC | 129.0 |
-| Rules Violated | 258 |
-| Files Affected | 4 |
+| Total Violations | 1879 |
+| Required | 1 |
+| Advisory | 0 |
+| Violations / KLOC | 21.59 |
+| Rules Violated | 0 |
+| Files Affected | 223 |
 
 ## C/C++ Coverage
 
 | Metric | Value |
 |:-------|------:|
-| Line Rate | 83.3% |
+| Line Rate | 96.2% |
 | Branch Rate | 0.0% |
 
 ---

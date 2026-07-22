@@ -1,0 +1,164 @@
+{
+  "layer": 1,
+  "commit": "9f49dc2",
+  "status": "failed",
+  "started_at": "2026-07-21T20:55:59.724789",
+  "completed_at": "2026-07-21T20:56:13.781554",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:55:59.749887"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-21T20:55:59.750225"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-21T20:55:59.750310"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "206 reqs, 0 modules, 6 tests (ratio 600.0%)",
+      "timestamp": "2026-07-21T20:55:59.765222"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-21T20:56:00.016741"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-21T20:56:00.018648"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:00.190890"
+    },
+    {
+      "name": "misra-check",
+      "status": "passed",
+      "detail": "1 MISRA violation(s) (0 required, 0 advisory) \u2014 see .yuleosh/reports/misra-report.json",
+      "timestamp": "2026-07-21T20:56:00.575123"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:01.351883"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:01.858587"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:02.402878"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:02.843962"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:03.294078"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:05.013517"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:05.448718"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:05.875297"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:06.304692"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:06.733637"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:07.147802"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:07.658733"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T20:56:08.068873"
+    },
+    {
+      "name": "unit-tests",
+      "status": "failed",
+      "detail": "tests/e2e/test_misra_ci.py: .F\n=================================== FAILURES ===================================\n____________________________ test_misra_json_report ____________________________\ntests/e2e/test_misra_ci.py:57: in t",
+      "timestamp": "2026-07-21T20:56:08.489551"
+    },
+    {
+      "name": "coverage",
+      "status": "failed",
+      "detail": "coverage run returned non-zero (1): /Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/coverage/control.py:956: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.i",
+      "timestamp": "2026-07-21T20:56:12.659466"
+    },
+    {
+      "name": "c-coverage",
+      "status": "warning",
+      "detail": "lcov/gcov may not be installed",
+      "timestamp": "2026-07-21T20:56:13.760905"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "passed",
+      "detail": "line_rate=100.0% >= 85%",
+      "timestamp": "2026-07-21T20:56:13.781435"
+    }
+  ],
+  "coverage": null,
+  "errors": [
+    "unit-tests failed",
+    "coverage failed"
+  ]
+}

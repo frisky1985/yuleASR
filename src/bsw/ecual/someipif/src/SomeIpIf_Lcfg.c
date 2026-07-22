@@ -19,6 +19,8 @@
 #include "SomeIpIf_Cfg.h"
 
 /* Service Endpoint Configurations */
+extern const uint16 SomeIpIf_EndpointCount;
+extern const uint16 SomeIpIf_ServiceCount;
 static const SomeIpIf_EndpointType SomeIpIf_Endpoints[] = {
     {
         .IpAddress = 0xC0A80001U,  /* 192.168.0.1 */

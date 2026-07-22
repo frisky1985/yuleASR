@@ -1,0 +1,197 @@
+{
+  "layer": 1,
+  "commit": "ab134a8",
+  "status": "failed",
+  "started_at": "2026-07-21T08:33:47.248090",
+  "completed_at": "2026-07-21T08:34:35.851887",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "failed",
+      "detail": "[ci-config] root.code_style: unexpected key",
+      "timestamp": "2026-07-21T08:33:47.270953"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-21T08:33:47.271288"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-21T08:33:47.271355"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "206 reqs, 0 modules, 6 tests (ratio 600.0%)",
+      "timestamp": "2026-07-21T08:33:47.284979"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-21T08:33:47.431529"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-21T08:33:47.433819"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:33:48.583181"
+    },
+    {
+      "name": "misra-check",
+      "status": "skipped",
+      "detail": "cppcheck execution error: CI Layer 1 timed out after 30s \u2014 adjust via CI_LAYER1_TIMEOUT env or timeout parameter",
+      "timestamp": "2026-07-21T08:34:17.249866"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:18.070604"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:18.548455"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:19.081879"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:19.523361"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:20.678571"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:22.378349"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:22.810160"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:23.231052"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:23.663572"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:24.124131"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:24.525864"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:25.060370"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:25.462552"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:25.934577"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:28.536858"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:30.197952"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-21T08:34:30.884789"
+    },
+    {
+      "name": "coverage",
+      "status": "failed",
+      "detail": "Line coverage 0.0% < 85.0%",
+      "timestamp": "2026-07-21T08:34:34.793194"
+    },
+    {
+      "name": "c-coverage",
+      "status": "warning",
+      "detail": "lcov/gcov may not be installed",
+      "timestamp": "2026-07-21T08:34:35.851304"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "failed",
+      "detail": "C line coverage 0.0% < c_fail_under 85%",
+      "timestamp": "2026-07-21T08:34:35.851816"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "error",
+      "detail": "'str' object has no attribute 'get'",
+      "timestamp": "2026-07-21T08:34:35.851827"
+    }
+  ],
+  "coverage": {
+    "line_coverage": 0.0,
+    "condition_coverage": 0.0,
+    "threshold_line": 85.0,
+    "threshold_condition": 85.0,
+    "line_pass": false,
+    "condition_pass": false
+  },
+  "errors": [
+    "yaml-validation failed",
+    "misra-check failed",
+    "coverage failed",
+    "c-coverage-gate: 'str' object has no attribute 'get'"
+  ]
+}

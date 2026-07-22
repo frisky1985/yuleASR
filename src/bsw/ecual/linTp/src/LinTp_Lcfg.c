@@ -231,3 +231,7 @@ static const LinTp_NsduConfigType* LinTp_GetNsduConfigPtr(void)
 
 #define LINTP_STOP_SEC_CONST_UNSPECIFIED
 #include "MemMap.h"
+static const LinTp_NsduConfigType* LinTp_GetNsduConfigPtr(void);
+static const LinTp_ChannelConfigType* LinTp_GetChannelConfigPtr(void);
+extern const LinTp_ConfigType LinTp_Config_Variant_2;
+extern const LinTp_ConfigType LinTp_Config_Variant_1;

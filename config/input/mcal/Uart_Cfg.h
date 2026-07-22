@@ -63,7 +63,7 @@
 /*============================================================================
  * DMA配置
  *===========================================================================*/
-#if (UART_DMA_SUPPORT == STD_ON)
+#if defined(UART_DMA_SUPPORT) && (UART_DMA_SUPPORT == STD_ON)
 /* DMA通道映射 */
 #define UART0_DMA_TX_CHANNEL        0u
 #define UART0_DMA_RX_CHANNEL        1u
@@ -92,7 +92,7 @@
 /*============================================================================
  * FIFO配置
  *===========================================================================*/
-#if (UART_FIFO_SUPPORT == STD_ON)
+#if defined(UART_FIFO_SUPPORT) && (UART_FIFO_SUPPORT == STD_ON)
 /* TX FIFO阈值 */
 #define UART_TX_FIFO_THRESHOLD      8u   /* 小于8字节触发 */
 #define UART_RX_FIFO_THRESHOLD      8u   /* 大于8字节触发 */

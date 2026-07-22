@@ -1,22 +1,27 @@
 # CI Report Summary
 
-> Generated: 2026-07-20T00:36:04.336699
+> Generated: 2026-07-22T11:35:20.001467
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ✅ ALL PASSED
+## Overall: ❌ FAILED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L3 | ✅ passed | 2 | 0 | 1 | — |
+| L3 | ❌ failed | 1 | 1 | 1 | — |
 
 ### Layer L3 — Stage Details
 
 | Stage | Status | Detail |
 |:------|:-------|:-------|
-| e2e-tests | ✅ |  |
+| e2e-tests | ❌ | .F
+=================================== FAILURES ===================================
+________________________________ test_crc_real _________________________________
+
+    def test_func():
+        build |
 | version-check | ⏭️ | No pyproject.toml |
 | evidence-pack | ✅ | Compliance pack generated |
 
@@ -24,18 +29,18 @@
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 0 |
-| Required | 0 |
+| Total Violations | 1879 |
+| Required | 1 |
 | Advisory | 0 |
-| Violations / KLOC | 0 |
+| Violations / KLOC | 21.59 |
 | Rules Violated | 0 |
-| Files Affected | 0 |
+| Files Affected | 223 |
 
 ## C/C++ Coverage
 
 | Metric | Value |
 |:-------|------:|
-| Line Rate | 83.3% |
+| Line Rate | 37.1% |
 | Branch Rate | 0.0% |
 
 ---

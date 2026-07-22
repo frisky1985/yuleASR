@@ -1,56 +1,46 @@
 # MISRA Fix Task: misra-c2023-2.7
 
-> Generated: 2026-07-19T23:56:43.927211
-> Severity: required
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.341519
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: Source code shall not contain functions not called
+## Rule: misra-c2023-2.7
 
-源代码不得包含未被调用的函数
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files:
-    - `src/bsw/services/csm/src/Csm.c`
-    - `src/bsw/services/dcm/src/Dcm.c`
-- [x] Fix: unused parameter — AUTOSAR API compatibility contract
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/Csm.c` | 300 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.7] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 771 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.7] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 1253 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.7] |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 240 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 224 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 201 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 270 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 386 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 109 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 178 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/_xcp_cmd_daq_impl.c` | 5 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c` | 613 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c` | 680 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c` | 536 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c` | 31 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_stats.c` | 291 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_response_cache.c` | 305 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 325 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 417 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_freeze_frame.c` | 367 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 713 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 790 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 791 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 1019 | 0 | There should be no unused parameters in functions [misra-c2012-2.7] |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。需添加(void)cast（待后续迭代）
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-2.7: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

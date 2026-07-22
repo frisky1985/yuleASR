@@ -1266,6 +1266,15 @@ boolean Flash_IsAddressValid(Flash_AddressType Address)
 
 #define FLASH_STOP_SEC_CODE
 #include "Flash_MemMap.h"
+boolean Flash_IsAddressValid(Flash_AddressType Address);
+const Flash_SectorInfoType* Flash_GetSectorInfo(Flash_AddressType Address);
+void Flash_MainFunction(void);
+Flash_JobResultType Flash_GetJobResult(void);
+Flash_StatusType Flash_GetStatus(void);
+Std_ReturnType Flash_Read(Flash_AddressType SourceAddress, uint8* TargetAddressPtr, Flash_LengthType Length);
+Std_ReturnType Flash_Write(Flash_AddressType TargetAddress, const uint8* SourceAddressPtr, Flash_LengthType Length);
+void Flash_DeInit(void);
+void Flash_Init(const Flash_ConfigType* ConfigPtr);
 
 /*==================================================================================================
  *                                      END OF FILE

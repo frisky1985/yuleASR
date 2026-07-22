@@ -1,86 +1,442 @@
 # MISRA Fix Task: misra-c2023-8.4
 
-> Generated: 2026-07-20T00:35:06.906415
-> Severity: required
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.342703
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: Compatible declaration shall be visible
+## Rule: misra-c2023-8.4
 
-兼容声明应对所有 translation units 可见
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files: CanTSyn.c, ComM.c/h, ComM_Cfg.h, SecOC.c
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 186 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 227 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 249 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 277 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 538 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 90 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 143 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 165 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 188 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 215 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 238 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 243 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 283 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 300 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 325 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 334 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 352 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 373 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 395 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 410 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 420 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 447 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 452 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 457 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 466 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 483 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 497 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 521 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 526 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 531 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 31 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 540 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 545 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 554 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 575 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 591 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
-| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM.c` | 611 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.4] |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_ecc_impl.c` | 7 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_ecc_impl.c` | 44 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_ecc_impl.c` | 70 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_ecc_impl.c` | 100 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_ecc_impl.c` | 181 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_ecc_impl.c` | 284 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 7 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 66 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 181 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 293 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 323 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 346 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 476 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 7 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 68 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 85 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 117 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 147 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 166 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 185 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 214 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 237 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 261 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 282 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 303 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 324 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 348 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_key_impl.c` | 368 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 105 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 133 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 31 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 151 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 188 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 267 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 364 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 452 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 496 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 542 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 562 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 594 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 40 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 633 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 665 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c` | 681 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 43 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_sha_impl.c` | 7 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_sha_impl.c` | 29 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 45 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_sha_impl.c` | 63 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_sha_impl.c` | 84 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/dio/src/Dio_Lcfg.c` | 5 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/dio/src/Dio_Lcfg.c` | 4 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 92 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 50 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 93 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 51 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 97 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 52 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 98 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 53 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 85 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 54 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 97 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 55 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 107 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 56 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 129 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 57 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 165 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 58 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 176 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 59 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 186 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 60 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 207 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 61 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 215 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 62 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 222 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 63 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 230 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 64 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 237 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 65 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c` | 310 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 66 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 89 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 67 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 102 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 68 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 116 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 69 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 135 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 70 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 170 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 71 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 192 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 72 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 215 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 73 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 240 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 74 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 262 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 75 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 294 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 76 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 324 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 77 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 353 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 78 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 381 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 79 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_startup_impl.c` | 6 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 80 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_startup_impl.c` | 53 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 81 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_startup_impl.c` | 75 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 82 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 6 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 83 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 39 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 84 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 67 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 85 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 117 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 86 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 141 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 87 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 170 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 88 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 207 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 89 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 242 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 90 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 269 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 91 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 287 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 92 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 314 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 93 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 356 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 94 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 386 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 95 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 409 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 96 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 432 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 97 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 455 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 98 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 486 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 99 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_wakeup_impl.c` | 510 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 100 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 6 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 101 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 32 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 102 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 60 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 103 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 80 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 104 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 109 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 133 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 154 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 164 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 178 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 109 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 247 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 110 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 256 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 111 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 265 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 112 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 274 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 113 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 283 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 114 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 292 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 115 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 301 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 116 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 310 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 117 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 319 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 118 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 327 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 119 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 336 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 120 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 344 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 121 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 352 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 122 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_rest_impl.c` | 360 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 123 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c` | 6 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 124 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c` | 101 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 125 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c` | 123 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 126 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c` | 147 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 127 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c` | 267 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 128 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecum/src/_ecum_run_sleep_impl.c` | 346 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 129 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/_xcp_cmd_daq_impl.c` | 5 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 130 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 56 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 131 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 109 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 132 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 122 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 133 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 136 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 134 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 155 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 135 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 178 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 136 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 203 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 137 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 219 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 138 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 235 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 139 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 262 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 140 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 291 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 141 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 304 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 142 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 321 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 143 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 348 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 144 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 110 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 145 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 123 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 146 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 137 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 147 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 156 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 148 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 183 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 149 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 205 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 150 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 223 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 151 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 244 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 262 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 279 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 299 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 312 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 331 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 347 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c` | 31 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 159 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c` | 240 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 160 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/test_io_control.c` | 251 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 161 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc_Lcfg.c` | 69 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 162 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc_Lcfg.c` | 111 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 163 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc_Lcfg.c` | 27 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 164 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 127 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 165 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 145 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 166 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 162 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 167 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 180 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 168 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 203 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 169 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 224 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 170 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 243 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 171 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 264 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 172 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 286 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 173 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 314 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 174 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 333 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 175 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 359 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 176 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 376 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 177 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 393 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 178 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 179 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 92 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 180 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 156 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 181 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 210 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 182 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 256 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 183 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 289 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 184 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 325 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 185 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 353 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 186 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 385 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 187 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 417 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 188 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 442 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 189 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 460 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 190 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 507 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 191 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 539 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 192 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 597 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 193 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_read_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 194 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 195 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 452 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 196 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 500 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 197 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 550 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 198 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 586 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 199 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 622 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 200 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 670 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 201 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 678 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 202 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 203 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 57 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 204 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 97 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 205 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 142 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 206 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 164 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 207 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 193 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 208 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_keys_impl.c` | 234 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 209 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_exch_secret_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 210 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 211 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_key_ops_impl.c` | 311 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 212 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 8 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 213 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 84 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 214 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 160 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 215 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 216 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 216 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 292 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 217 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 368 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 218 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 444 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 219 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/csm/src/_csm_crypto_ops_impl.c` | 522 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 220 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 822 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 221 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 871 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 222 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 908 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 223 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c` | 72 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 224 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c` | 124 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 225 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c` | 165 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 226 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c` | 188 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 227 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c` | 222 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 228 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_dtc_hash.c` | 238 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 229 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c` | 31 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 230 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c` | 34 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 231 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIp_Lcfg.c` | 37 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 232 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 147 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 233 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 146 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 234 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 48 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 235 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 335 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 236 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 449 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 237 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 478 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 238 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 497 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 239 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 789 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 240 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 864 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 241 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 882 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 242 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 899 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 243 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 27 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 244 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c` | 318 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 245 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c` | 385 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 246 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt_Lcfg.c` | 454 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 247 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM_Lcfg.c` | 342 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 248 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c` | 220 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 249 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c` | 205 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 250 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 118 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 251 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 149 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 252 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 170 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 253 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 196 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 254 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 216 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 255 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 235 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 256 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 250 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 257 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_ComInterface.c` | 261 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 258 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 266 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 259 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 306 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 260 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 317 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 261 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 328 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 262 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 359 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 263 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 367 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 264 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 530 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 265 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 551 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 266 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 563 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 267 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 571 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 268 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 579 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 269 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 219 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 270 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 259 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 271 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 280 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 272 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 301 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 273 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 322 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 274 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 337 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 275 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 361 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 276 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 376 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 277 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 401 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 278 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 43 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 279 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 48 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 280 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 53 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 281 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 58 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 282 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 67 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 283 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 74 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 284 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 17 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 285 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 27 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 286 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 35 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 287 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 42 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 288 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 52 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 289 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 61 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 290 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 73 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 291 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 37 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 292 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 46 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 293 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 59 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 294 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 75 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 295 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 82 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 296 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 89 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 297 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 104 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 298 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 133 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 299 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 144 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 300 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 151 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 301 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 168 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 302 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 182 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 303 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 189 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 304 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 202 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 305 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 216 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 306 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 223 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 307 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 240 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 308 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 260 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 309 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 284 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 310 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 30 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 311 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 39 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 312 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 52 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 313 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 68 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 314 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 95 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 315 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 106 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 316 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 113 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 317 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 130 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 318 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 144 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 319 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 161 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 320 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 183 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 321 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 206 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 322 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 229 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 323 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 241 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 324 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 255 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 325 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 266 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 326 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 43 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 327 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 48 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 328 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 53 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 329 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 58 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 330 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 67 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 331 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 72 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 332 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 78 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 333 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 37 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 334 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 46 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 335 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 59 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 336 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 75 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 337 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 82 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 338 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 109 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 339 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 120 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 340 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 127 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 341 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 144 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 342 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 170 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 343 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 185 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 344 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 213 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 345 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 228 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 346 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 37 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 347 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 46 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 348 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 59 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 349 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 75 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 350 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 82 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 351 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 109 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 352 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 120 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 353 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 127 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 354 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 144 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 355 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 170 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 356 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 185 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 357 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 22 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 358 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 28 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 359 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 34 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 360 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 42 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 361 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 53 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 362 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 64 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 363 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 70 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 364 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 77 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 365 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 82 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 366 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 26 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 367 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 31 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 368 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 42 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 369 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 65 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 370 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 71 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 371 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 76 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 372 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 792 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 373 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 851 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 374 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 877 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 375 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 921 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 376 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 954 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 377 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 985 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 378 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1013 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 379 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1041 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 380 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1078 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 381 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1113 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 382 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1181 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 383 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1189 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 384 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1197 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 385 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1205 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 386 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1223 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 387 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1252 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 388 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1265 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 389 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1288 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 390 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1300 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 391 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 1308 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 392 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 123 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 393 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 137 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 394 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 151 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 395 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 159 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 396 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 167 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 397 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 191 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 398 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 613 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 399 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 641 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 400 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 663 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 401 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 684 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 402 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 708 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 403 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 718 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 404 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 792 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 405 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 807 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 406 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 842 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 407 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 885 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 408 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 894 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 409 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 901 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 410 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 915 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 411 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 921 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 412 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/utils/buffer_pool.c` | 55 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 413 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/utils/buffer_pool.c` | 73 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 414 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/utils/buffer_pool.c` | 89 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 415 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/utils/buffer_pool.c` | 109 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 416 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/utils/buffer_pool.c` | 127 | 0 | A compatible declaration shall be visible when an object or function is defined  |
+| 417 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/utils/buffer_pool.c` | 135 | 0 | A compatible declaration shall be visible when an object or function is defined  |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。CanTSyn/ComM函数原型在头文件中声明
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-8.4: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

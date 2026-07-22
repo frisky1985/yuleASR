@@ -5,6 +5,13 @@
  * @date 2026-04-30
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  *==================================================================================================*/
+ * SHALL-CRYPTO-01: SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes
+ * SHALL-CRYPTO-02: SHALL support SHA-256 hashing
+ * SHALL-CRYPTO-03: SHALL support ECC P-256 elliptic curve cryptography
+ * SHALL-CRYPTO-04: SHALL accelerate using S32K312 HSM
+ * SHALL-CRYPTO-05: SHALL store cryptographic keys in HSM secure NVM
+ * SHALL-CRYPTO-06: SHALL provide integrated hardware TRNG
+ * SHALL-CRYPTO-07: SHALL provide MbedTLS fallback for SIL simulation
 
 #include "Crypto.h"
 #include <stdio.h>

@@ -184,7 +184,7 @@
 *                                    WAKE-UP CONFIGURATION
 ==================================================================================================*/
 
-#if (ETHSM_WAKEUP_SUPPORT == STD_ON)
+#if defined(ETHSM_WAKEUP_SUPPORT) && (ETHSM_WAKEUP_SUPPORT == STD_ON)
 /**
  * @brief Wake-up Source for Network 0
  * @details EcuM wake-up source identifier

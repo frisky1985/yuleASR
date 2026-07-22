@@ -2,6 +2,16 @@
 #include "Flash.h"
 
 /*
+ * Forward declarations for Flash HAL adapter functions.
+ * These are porting-layer wrappers called by Boot_Flash.
+ * Include the actual Flash_Adapter.h header when available.
+ */
+extern uint32    Flash_GetSectorSize(void);
+extern Std_ReturnType Flash_EraseSector(uint32_t address);
+extern Std_ReturnType Flash_Write(uint32_t dst_addr, const uint8_t* src, uint32_t length);
+extern Std_ReturnType Flash_Read(uint32_t src_addr, uint8_t* dst, uint32_t length);
+
+/*
  * PORTING: Replace Flash_* calls with target MCU flash driver.
  * S32K312 uses the MCAL Flash driver already in yuleASR.
  */

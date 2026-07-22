@@ -23,6 +23,7 @@
 #include "dcm_types.h"
 
 /* Mock implementations for dependencies */
+Dcm_SessionType Dcm_GetCurrentSession(void);
 Dcm_SessionType Dcm_GetCurrentSession(void) {
     return DCM_SESSION_EXTENDED;
 }

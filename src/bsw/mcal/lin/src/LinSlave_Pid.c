@@ -30,22 +30,22 @@ uint8 LinSlave_CalculatePid(uint8 Id)
     uint8 Pid;
     
     /* 限制ID范围在0-59 */
-    Id = Id & 0x3F;
+    Id = (uint8)(Id & 0x3FU);
     
     /* 计算P0 - 奇校验位 */
-    P0 = ((Id >> 0U) & 0x01) ^ 
-         ((Id >> 1) & 0x01) ^ 
-         ((Id >> 2) & 0x01) ^ 
-         ((Id >> 4) & 0x01);
+    P0 = (uint8)((Id >> 0U) & 0x01U) ^ 
+         (uint8)((Id >> 1U) & 0x01U) ^ 
+         (uint8)((Id >> 2U) & 0x01U) ^ 
+         (uint8)((Id >> 4U) & 0x01U);
     
     /* 计算P1 - 偶校验位 (取反) */
-    P1 = ~(((Id >> 1) & 0x01) ^ 
-           ((Id >> 3) & 0x01) ^ 
+    P1 = (uint8)(~((uint8)((Id >> 1U) & 0x01U) ^ 
+           (uint8)((Id >> 3U) & 0x01U) ^ 
            ((Id >> 4) & 0x01) ^ 
-           ((Id >> 5) & 0x01)) & 0x01;
+           (uint8)((Id >> 5U) & 0x01U)) & 0x01U);
     
     /* 组合PID */
-    Pid = Id | (P0 << 6) | (P1 << 7);
+    Pid = Id | (uint8)(P0 << 6U) | (uint8)(P1 << 7U);
     
     return Pid;
 }
@@ -60,7 +60,7 @@ boolean LinSlave_ValidatePid(uint8 Pid)
     uint8 CalculatedPid;
     
     /* 提取ID (4-6位) */
-    Id = Pid & 0x3F;
+    Id = (uint8)(Pid & 0x3FU);
     
     /* 检查ID范围 (0-59) */
     if (Id > 59U) {
@@ -79,5 +79,5 @@ boolean LinSlave_ValidatePid(uint8 Pid)
  */
 uint8 LinSlave_ExtractId(uint8 Pid)
 {
-    return (Pid & 0x3F);
+    return (uint8)(Pid & 0x3FU);
 }

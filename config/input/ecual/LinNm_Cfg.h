@@ -366,14 +366,14 @@
 /**
  * @brief Define callbacks based on configuration
  */
-#if (LINNM_STATE_CHANGE_NOTIFICATION == STD_ON)
+#if defined(LINNM_STATE_CHANGE_NOTIFICATION) && (LINNM_STATE_CHANGE_NOTIFICATION == STD_ON)
 #define LINNM_CALL_STATE_CHANGE_NOTIFICATION(networkHandle, state) \
     Nm_StateChangeNotification((networkHandle), (state))
 #else
 #define LINNM_CALL_STATE_CHANGE_NOTIFICATION(networkHandle, state)
 #endif
 
-#if (LINNM_REMOTE_SLEEP_CALLBACK == STD_ON)
+#if defined(LINNM_REMOTE_SLEEP_CALLBACK) && (LINNM_REMOTE_SLEEP_CALLBACK == STD_ON)
 #define LINNM_CALL_REMOTE_SLEEP_INDICATION(networkHandle) \
     Nm_RemoteSleepIndication((networkHandle))
 #define LINNM_CALL_REMOTE_SLEEP_CANCELLATION(networkHandle) \
@@ -383,7 +383,7 @@
 #define LINNM_CALL_REMOTE_SLEEP_CANCELLATION(networkHandle)
 #endif
 
-#if (LINNM_SYNC_POINT_CALLBACK == STD_ON)
+#if defined(LINNM_SYNC_POINT_CALLBACK) && (LINNM_SYNC_POINT_CALLBACK == STD_ON)
 #define LINNM_CALL_SYNC_POINT(networkHandle) \
     Nm_SynchronizationPoint((networkHandle))
 #else

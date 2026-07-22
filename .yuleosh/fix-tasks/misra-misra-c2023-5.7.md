@@ -1,58 +1,39 @@
 # MISRA Fix Task: misra-c2023-5.7
 
-> Generated: 2026-07-19T23:56:43.927859
-> Severity: required
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.342289
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: Identifiers shall not rely on significance of characters
+## Rule: misra-c2023-5.7
 
-标识符不应依赖于区分大小写以外的字符区分
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files: CanTSyn.c, ComM.c/h, ComM_Cfg.h, SecOC.c
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 80 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c` | 80 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 86 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c` | 86 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 92 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c` | 92 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 102 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c` | 102 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-5.7] |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 98 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 93 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/include/Dcm.h` | 148 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_types.h` | 161 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/include/Dcm.h` | 247 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm.h` | 52 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 248 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 228 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 262 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 266 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 315 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 347 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/include/NvM.h` | 81 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_nvm.h` | 33 | 0 | A tag name shall be a unique identifier [misra-c2012-5.7] |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。CanTSyn/ComM标识符大小写需统一
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-5.7: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

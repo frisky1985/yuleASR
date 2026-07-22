@@ -1,0 +1,41 @@
+{
+  "layer": 2,
+  "commit": "fc0d857",
+  "status": "passed",
+  "started_at": "2026-07-22T01:16:16.004788",
+  "completed_at": "2026-07-22T01:16:17.674562",
+  "stages": [
+    {
+      "name": "cross-compile",
+      "status": "skipped",
+      "detail": "No src/cross/hello.c",
+      "timestamp": "2026-07-22T01:16:16.017983"
+    },
+    {
+      "name": "static-analysis",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:16:16.774402"
+    },
+    {
+      "name": "sil-tests",
+      "status": "passed",
+      "detail": "1 test(s) passed",
+      "timestamp": "2026-07-22T01:16:17.080055"
+    },
+    {
+      "name": "integration-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-22T01:16:17.674439"
+    },
+    {
+      "name": "memory-safety",
+      "status": "skipped",
+      "detail": "No ASan tests",
+      "timestamp": "2026-07-22T01:16:17.674531"
+    }
+  ],
+  "coverage": null,
+  "errors": []
+}

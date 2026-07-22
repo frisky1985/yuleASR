@@ -181,7 +181,7 @@
 #endif
 
 /** @brief Debug print macro */
-#if (CRYIF_DEBUG_ENABLED == STD_ON)
+#if defined(CRYIF_DEBUG_ENABLED) && (CRYIF_DEBUG_ENABLED == STD_ON)
     #include <stdio.h>
     #define CRYIF_DBG_PRINT(fmt, ...)           printf("[CRYIF] " fmt "\n", ##__VA_ARGS__)
 #else

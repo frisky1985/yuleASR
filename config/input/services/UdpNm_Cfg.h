@@ -343,15 +343,15 @@
 *                                    COMPILE-TIME CHECKS
 ==================================================================================================*/
 /* Ensure configuration is valid */
-#if (UDPNM_USER_DATA_OFFSET + UDPNM_USER_DATA_LENGTH > UDPNM_PDU_LENGTH)
+#if defined(UDPNM_PDU_LENGTH) && defined(UDPNM_USER_DATA_LENGTH) && defined(UDPNM_USER_DATA_OFFSET) && (UDPNM_USER_DATA_OFFSET + UDPNM_USER_DATA_LENGTH > UDPNM_PDU_LENGTH)
     #error "User data exceeds PDU length"
 #endif
 
-#if (UDPNM_NUMBER_OF_CHANNELS == 0)
+#if defined(UDPNM_NUMBER_OF_CHANNELS) && (UDPNM_NUMBER_OF_CHANNELS == 0)
     #error "At least one channel must be configured"
 #endif
 
-#if (UDPNM_MAIN_FUNCTION_PERIOD == 0)
+#if defined(UDPNM_MAIN_FUNCTION_PERIOD) && (UDPNM_MAIN_FUNCTION_PERIOD == 0)
     #error "Main function period must be greater than 0"
 #endif
 

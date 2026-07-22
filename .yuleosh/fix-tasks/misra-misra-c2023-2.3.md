@@ -1,53 +1,289 @@
 # MISRA Fix Task: misra-c2023-2.3
 
-> Generated: 2026-07-19T23:56:43.926946
-> Severity: advisory
-> Spec Ref: SWE-MISRA-S1
+> Generated: 2026-07-22T01:33:24.340940
+> Severity: unknown
+> Spec Ref: 
 
-## Rule: Source code shall not contain unused type declarations
+## Rule: misra-c2023-2.3
 
-源代码不得包含未使用的类型声明
+
 
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files:
-    - `src/bsw/services/dcm/src/Dcm.c`
-- [x] Fix: typedef struct — type definition, not void statement
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/Dcm.c` | 79 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-2.3] |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 31 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 32 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 30 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 28 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 29 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 27 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/Platform_Lockstep.h` | 180 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 370 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 361 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 232 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 225 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 315 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 189 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 194 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/crypto/blake2/include/blake2.h` | 135 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 159 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 163 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 164 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 169 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h` | 171 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinMaster_Tp.h` | 71 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinMaster_Tp.h` | 42 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinMaster_Diagnostic.h` | 124 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinMaster_Types.h` | 130 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinSlave_Tp.h` | 38 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinSlave_Uds.h` | 156 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinSlave_CfgTable.h` | 87 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinSlave_CfgTable.h` | 47 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/LinSlave_CfgTable.h` | 56 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/ramtst/include/RamTst.h` | 129 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 31 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eep/include/Eep.h` | 113 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/flash/include/Flash.h` | 97 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/flash/include/Flash_Cfg.h` | 202 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/flash/include/Flash_Cfg.h` | 205 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/spi/include/Spi.h` | 125 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/spi/include/Spi.h` | 63 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/spi/include/Spi.h` | 93 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/spi/include/Spi.h` | 86 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/include/Boot_Types.h` | 40 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 40 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/crypto/hash/include/hash_algos.h` | 140 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 44 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 43 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 43 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 320 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 324 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 45 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 328 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 332 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 336 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 340 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 344 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 50 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Os.h` | 115 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 51 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Os.h` | 143 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 52 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 51 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 53 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canif/include/CanIf.h` | 262 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 54 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canif/include/CanIf.h` | 263 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 55 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canif/include/CanIf.h` | 111 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 56 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canif/include/CanIf.h` | 98 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 57 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canif/include/CanIf.h` | 261 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 58 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canif/include/CanIf.h` | 260 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 59 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 59 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 60 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/include/Com.h` | 188 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 61 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/include/Dcm.h` | 148 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 62 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/include/Dcm.h` | 133 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 63 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 281 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 64 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 184 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 65 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 304 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 66 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 310 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 67 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 308 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 68 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 289 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 69 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 42 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 70 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 100 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 71 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 101 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 72 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 107 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 73 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/include/ComStack_Types.h` | 111 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 74 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/include/Com.h` | 167 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 75 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/include/Com.h` | 170 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 76 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/include/Com.h` | 173 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 77 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/include/Com.h` | 179 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 78 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/include/Com.h` | 182 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 79 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/include/Dcm.h` | 143 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 80 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 166 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 81 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 171 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 82 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 344 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 83 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 351 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 84 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 360 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 85 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 366 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 86 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 374 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 87 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 382 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 88 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 387 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 89 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 393 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 90 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/include/Dem_Types.h` | 398 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 91 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ecuC/include/EcuC.h` | 59 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 92 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/include/SomeIpTp.h` | 140 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 93 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/include/SomeIpTp.h` | 76 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 94 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/include/StbM.h` | 123 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 95 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/include/StbM.h` | 141 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 96 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eth/include/Eth.h` | 87 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 97 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_compressed_types.h` | 216 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 98 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_compressed_types.h` | 200 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 99 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_compressed_types.h` | 91 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 100 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_compressed_types.h` | 82 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 101 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_dynamic_did.h` | 119 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 102 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.h` | 153 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 103 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.h` | 69 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 104 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_types.h` | 347 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.h` | 85 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.h` | 73 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_types.h` | 153 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_session.h` | 60 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 109 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.h` | 92 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 110 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_communication.h` | 83 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 111 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_did.h` | 198 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 112 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_ecu_reset.h` | 56 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 113 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.h` | 76 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 114 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.h` | 81 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 115 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_optimized.c` | 73 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 116 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/include/CanTSyn.h` | 184 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 117 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/include/CanTSyn.h` | 175 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 118 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/include/WdgM.h` | 192 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 119 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/include/J1939Tp.h` | 120 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 120 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/include/J1939Tp.h` | 176 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 121 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/include/J1939Tp.h` | 157 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 122 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/pdur/include/PduR.h` | 75 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 123 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 161 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 124 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 140 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 125 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM.h` | 92 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 126 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM.h` | 98 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 127 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM.h` | 105 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 128 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM.h` | 126 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 129 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nm/include/Nm.h` | 100 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 130 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nm/include/Nm.h` | 82 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 131 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/udpNm/include/UdpNm.h` | 84 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 132 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/udpNm/include/UdpNm.h` | 97 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 133 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/udpNm/include/UdpNm.h` | 131 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 134 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/include/SoAd.h` | 83 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 135 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/include/Crc.h` | 75 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 136 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/include/Crc.h` | 76 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 137 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/include/Crc.h` | 77 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 138 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linm/include/LinM.h` | 81 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 139 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/fim/include/FiM.h` | 75 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 140 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 403 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 141 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 394 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 142 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 277 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 143 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 239 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 144 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_nvm.h` | 126 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 145 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_nvm.h` | 115 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 146 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_nvm.h` | 88 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 147 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 427 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 148 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 451 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 149 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 461 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 150 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 468 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 151 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 475 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 520 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 540 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 546 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 551 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 582 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 608 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 615 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 159 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 621 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 160 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 629 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 161 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 637 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 162 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 645 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 163 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem_types.h` | 652 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 164 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/docan/include/DoCan.h` | 75 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 165 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/docan/include/DoCan.h` | 59 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 166 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 50 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 167 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 51 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 168 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 52 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 169 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 54 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 170 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 55 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 171 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 56 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 172 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 58 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 173 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 59 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 174 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 60 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 175 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 62 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 176 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 63 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 177 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 64 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 178 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 66 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 179 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 67 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 180 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 68 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 181 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 70 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 182 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 71 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 183 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/include/E2E.h` | 72 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 184 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 86 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 185 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 120 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 186 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 217 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 187 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 195 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 188 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 167 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 189 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 187 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 190 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 134 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 191 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 99 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 192 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/include/DoIP.h` | 205 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 193 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 380 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 194 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 236 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 195 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 314 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 196 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 306 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 197 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 227 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 198 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/include/Xcp.h` | 381 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 199 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h` | 119 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 200 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h` | 110 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 201 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h` | 100 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 202 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h` | 131 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 203 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h` | 152 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 204 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/include/Dlt_Types.h` | 219 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 205 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/include/Dlt_Types.h` | 229 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 206 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/include/Dlt_Types.h` | 25 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 207 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/include/Dlt_Types.h` | 198 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 208 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/include/LinTp.h` | 102 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 209 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/include/LinTp.h` | 88 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 210 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIpSd.h` | 118 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 211 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIpSd.h` | 125 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 212 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIpSd.h` | 134 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 213 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIpSd.h` | 112 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 214 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIp.h` | 206 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 215 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIp.h` | 193 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 216 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/include/SomeIp.h` | 199 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 217 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linif/include/LinIf.h` | 74 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 218 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/lintrcv/include/LinTrcv.h` | 102 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 219 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/lintrcv/include/LinTrcv.h` | 109 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 220 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/lintrcv/include/LinTrcv.h` | 94 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 221 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/include/CanTrcv.h` | 227 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 222 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/include/CanTrcv.h` | 333 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 223 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/srp/include/Srp.h` | 63 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 224 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/srp/include/Srp.h` | 49 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 225 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/canm/include/CanNm.h` | 147 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 226 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/canm/include/CanNm.h` | 125 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 227 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 104 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 228 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 248 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 229 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 169 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 230 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 257 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 231 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 336 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 232 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 208 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 233 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 291 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 234 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 117 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 235 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 209 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 236 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 278 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 237 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 345 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 238 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 211 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 239 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 210 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 240 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 303 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 241 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 313 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 242 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 324 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 243 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 240 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 244 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 270 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 245 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 80 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 246 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 354 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 247 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 144 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 248 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 159 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 249 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 178 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 250 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 216 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 251 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 221 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 252 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 222 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 253 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 223 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 254 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 224 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 255 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 229 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 256 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 234 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 257 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 235 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 258 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_Scheduler.c` | 81 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 259 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/src/Rte_NvMInterface.c` | 68 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 260 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/qos.h` | 26 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 261 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/types.h` | 144 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 262 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/qos.h` | 303 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 263 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 163 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 264 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 96 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。Dcm_ProtocolStateType 确被使用（误报）
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-2.3: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

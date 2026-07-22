@@ -1,0 +1,35 @@
+{
+  "layer": 3,
+  "commit": "c7323fc",
+  "status": "passed",
+  "started_at": "2026-07-20T00:35:59.071796",
+  "completed_at": "2026-07-20T00:36:04.335149",
+  "stages": [
+    {
+      "name": "e2e-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T00:36:02.284066"
+    },
+    {
+      "name": "version-check",
+      "status": "skipped",
+      "detail": "No pyproject.toml",
+      "timestamp": "2026-07-20T00:36:02.284161"
+    },
+    {
+      "name": "evidence-pack",
+      "status": "passed",
+      "detail": "Compliance pack generated",
+      "timestamp": "2026-07-20T00:36:04.335130"
+    }
+  ],
+  "coverage": null,
+  "errors": [],
+  "misra": {
+    "total_violations": 9758,
+    "required": 0,
+    "advisory": 0,
+    "is_delta": false
+  }
+}

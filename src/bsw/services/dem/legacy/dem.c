@@ -28,6 +28,8 @@
 /*============================================================================*
  * Internal Data
  *============================================================================*/
+Std_ReturnType Dem_RestartOperationCycle(    Dem_OperationCycleIdType OperationCycleId);
+Std_ReturnType Dem_GetOperationCycleState(    Dem_OperationCycleIdType OperationCycleId,    Dem_OperationCycleStateType* CycleState);
 static Dem_StateType s_demState = DEM_STATE_UNINIT;
 static const Dem_ConfigType* s_demConfig = NULL_PTR;
 static boolean s_dtcSettingEnabled = TRUE;

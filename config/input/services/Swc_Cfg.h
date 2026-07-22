@@ -170,7 +170,7 @@ typedef struct
 extern const Swc_ConfigType Swc_Config;
 
 /* Post-build configuration variant (optional) */
-#if (SWC_PB_CONFIG == STD_ON)
+#if defined(SWC_PB_CONFIG) && (SWC_PB_CONFIG == STD_ON)
 extern const Swc_ConfigType* Swc_ConfigPtr;
 #endif
 

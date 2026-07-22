@@ -18,6 +18,11 @@
 /* Context Configuration Table */
 /* Pre-configured contexts for the DLT module */
 
+extern const uint32 Dlt_MainFunctionPeriod;
+extern const uint32 Dlt_BufferTimeout;
+extern const uint8 Dlt_ProtocolVersionMinor;
+extern const uint8 Dlt_ProtocolVersionMajor;
+extern const uint32 Dlt_DefaultSessionId;
 static const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT] = {
     /* Context 0: Default/Application Context */
     {

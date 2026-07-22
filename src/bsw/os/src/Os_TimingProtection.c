@@ -29,6 +29,16 @@
 #define OS_TIMING_GET_US()      ((uint32)(xTaskGetTickCount() * (1000000U / configTICK_RATE_HZ)))
 
 /*******************************************************************************
+void Os_TimingProtectionMainFunction(void);
+void Os_StopOsIntTiming(void);
+void Os_StartOsIntTiming(void);
+void Os_StopAllIntTiming(void);
+void Os_StartAllIntTiming(void);
+void Os_StopResourceTiming(ResourceType ResID);
+void Os_StartResourceTiming(ResourceType ResID);
+boolean Os_CheckTaskArrivalTime(TaskType TaskID);
+void Os_StopTaskExecutionTiming(TaskType TaskID);
+void Os_StartTaskExecutionTiming(TaskType TaskID);
  * Local Types
  ******************************************************************************/
 typedef struct

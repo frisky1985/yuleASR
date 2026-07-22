@@ -3,6 +3,11 @@
  * @brief CanIf Module Unit Tests - CAN Interface Layer
  * @version 1.0.0
  *
+ * SHALL-CANIF-01: SHALL support a maximum of 2 CAN controllers (CAN0, CAN1)
+ * SHALL-CANIF-02: SHALL support up to 512 PDU IDs
+ * SHALL-CANIF-03: SHALL support transmit and receive PDU modes
+ * SHALL-CANIF-04: SHALL support sleep and wakeup functionality
+ *
  * @details
  * This test suite provides comprehensive unit tests for the CAN Interface (CanIf)
  * module covering all public APIs, error handling, and edge cases.

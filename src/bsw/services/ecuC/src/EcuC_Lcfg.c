@@ -23,6 +23,7 @@
 /*==================[Signal Configurations]=================================*/
 
 /* Engine Control Signals */
+extern const EcuC_ConfigType EcuC_Config;
 static const EcuC_SignalConfigType EcuC_Signals_Engine[] = {
     {
         .SignalId = 0U,

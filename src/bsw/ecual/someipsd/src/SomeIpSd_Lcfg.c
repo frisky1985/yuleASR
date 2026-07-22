@@ -19,6 +19,7 @@
 #include "SomeIpSd_Cfg.h"
 
 /* Service Configurations */
+extern const uint16 SomeIpSd_ServiceCount;
 static const SomeIpSd_ServiceConfigType SomeIpSd_Services[] = {
     {
         .ServiceId = 0x1234U,      /* Engine Control */

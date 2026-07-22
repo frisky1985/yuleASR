@@ -98,7 +98,7 @@
 /** @brief Include Fee header if Fee is used */
 #define MEMIF_FEE_USED                      (STD_ON)
 
-#if (MEMIF_FEE_USED == STD_ON)
+#if defined(MEMIF_FEE_USED) && (MEMIF_FEE_USED == STD_ON)
     #include "Fee.h"
 #endif
 
@@ -109,7 +109,7 @@
 /** @brief Include Ea header if Ea is used */
 #define MEMIF_EA_USED                       (STD_ON)
 
-#if (MEMIF_EA_USED == STD_ON)
+#if defined(MEMIF_EA_USED) && (MEMIF_EA_USED == STD_ON)
     #include "Ea.h"
 #endif
 
@@ -149,7 +149,7 @@
 /** @brief Multi-core support enable/disable */
 #define MEMIF_MULTI_CORE_SUPPORT            (STD_OFF)
 
-#if (MEMIF_MULTI_CORE_SUPPORT == STD_ON)
+#if defined(MEMIF_MULTI_CORE_SUPPORT) && (MEMIF_MULTI_CORE_SUPPORT == STD_ON)
     /** @brief Core ID for Fee device */
     #define MEMIF_FEE_CORE_ID               (0u)
     
@@ -190,7 +190,7 @@
  ******************************************************************************/
 
 /* If using Fee, define default Fee device configuration */
-#if (MEMIF_FEE_USED == STD_ON)
+#if defined(MEMIF_FEE_USED) && (MEMIF_FEE_USED == STD_ON)
     #ifndef Fee_Read
         #define Fee_Read(BlockNumber, BlockOffset, DataBufferPtr, Length) \
             Fee_Read(BlockNumber, BlockOffset, DataBufferPtr, Length)
@@ -215,7 +215,7 @@
 #endif
 
 /* If using Ea, define default Ea device configuration */
-#if (MEMIF_EA_USED == STD_ON)
+#if defined(MEMIF_EA_USED) && (MEMIF_EA_USED == STD_ON)
     #ifndef Ea_Read
         #define Ea_Read(BlockNumber, DataBufferPtr) \
             Ea_Read(BlockNumber, DataBufferPtr)

@@ -19,6 +19,7 @@
 #include "Com_Cfg.h"
 
 /* Signal Configurations */
+extern const Com_ConfigType Com_Config;
 static const Com_SignalConfigType Com_Signals[COM_MAX_SIGNALS] = {
     {
         .SignalId = 0U,

@@ -1,0 +1,29 @@
+{
+  "layer": 3,
+  "commit": "6b1bf25",
+  "status": "failed",
+  "started_at": "2026-07-19T23:23:48.943567",
+  "completed_at": "2026-07-19T23:23:49.692205",
+  "stages": [
+    {
+      "name": "e2e-tests",
+      "status": "failed",
+      "detail": ".F\n=================================== FAILURES ===================================\n________________________________ test_crc_real _________________________________\n\n    def test_func():\n        build",
+      "timestamp": "2026-07-19T23:23:49.657235"
+    },
+    {
+      "name": "version-check",
+      "status": "skipped",
+      "detail": "No pyproject.toml",
+      "timestamp": "2026-07-19T23:23:49.657359"
+    },
+    {
+      "name": "evidence-pack",
+      "status": "passed",
+      "detail": "Compliance pack generated",
+      "timestamp": "2026-07-19T23:23:49.692191"
+    }
+  ],
+  "coverage": null,
+  "errors": []
+}

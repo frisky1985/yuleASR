@@ -24,6 +24,7 @@
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+extern const Swc_ConfigType* Swc_ConfigPtr;
 static void AppSensor_Init(void);
 static void AppSensor_Shutdown(void);
 static void AppSensor_ReadData(void);

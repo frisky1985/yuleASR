@@ -1,6 +1,12 @@
 /**
  * @file test_nvm.c
  * @brief NVM Unit Tests
+ *
+ * SHALL-NVM-01: SHALL support native, redundant, and dataset NVM block management
+ * SHALL-NVM-02: SHALL use CRC-32 for write verification
+ * SHALL-NVM-03: SHALL support block sizes from 1 to 65536 bytes
+ * SHALL-NVM-04: SHALL support a maximum of 512 NVM blocks
+ * SHALL-NVM-05: SHALL support 4 job priority levels
  */
 
 #include <stdarg.h>

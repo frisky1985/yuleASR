@@ -136,3 +136,5 @@ dSYM/
 
 # Coverage run artifacts
 coverage_run/bin/
+# Coverage report output
+coverage_report_focused/

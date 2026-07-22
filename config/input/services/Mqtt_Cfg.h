@@ -130,7 +130,7 @@
 /*============================================================================
  * TLS/SSL配置
  *===========================================================================*/
-#if (MQTT_SUPPORT_TLS == STD_ON)
+#if defined(MQTT_SUPPORT_TLS) && (MQTT_SUPPORT_TLS == STD_ON)
 
 /**
  * @brief TLS发送缓冲区大小(加密后数据更大)
@@ -264,11 +264,11 @@ typedef struct {
 #include "ComStack_Types.h"
 #include "TcpIp.h"
 
-#if (MQTT_SUPPORT_TLS == STD_ON)
+#if defined(MQTT_SUPPORT_TLS) && (MQTT_SUPPORT_TLS == STD_ON)
 #include "Mqtt_Tls.h"
 #endif
 
-#if (MQTT_DEV_ERROR_DETECT == STD_ON)
+#if defined(MQTT_DEV_ERROR_DETECT) && (MQTT_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"
 #endif
 

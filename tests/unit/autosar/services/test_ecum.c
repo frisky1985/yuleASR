@@ -4,6 +4,10 @@
  * @version 2.0.0
  * @implements AUTOSAR Classic Platform EcuM SWS R4.0.3
  * 
+ * SHALL-ECUM-01: SHALL support startup phases STARTUP_ONE and STARTUP_TWO
+ * SHALL-ECUM-02: SHALL support shutdown targets OFF, RESET, and SLEEP
+ * SHALL-ECUM-03: SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer
+ *
  * Test Coverage:
  * - Initialization APIs (EcuM_Init, EcuM_StartupOne, EcuM_StartupTwo)
  * - State Management (EcuM_GetState, EcuM_GetSubState)

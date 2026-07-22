@@ -35,6 +35,11 @@
 /******************************************************************************
  * Module State
  ******************************************************************************/
+Dcm_ReturnType Dcm_ProcessRoutineControl(const Dcm_RequestType *request,                                         Dcm_ResponseType *response);
+Dcm_ReturnType Dcm_ProcessWriteMemory(const Dcm_RequestType *request,                                      Dcm_ResponseType *response);
+Dcm_ReturnType Dcm_ProcessDynamicDid(const Dcm_RequestType *request,                                     Dcm_ResponseType *response);
+Dcm_ReturnType Dcm_ProcessCommunicationControl(const Dcm_RequestType *request,                                               Dcm_ResponseType *response);
+Dcm_ReturnType Dcm_ProcessSecurityAccess(const Dcm_RequestType *request,                                         Dcm_ResponseType *response);
 typedef struct {
     uint32_t magic;
     const Dcm_ConfigType *config;

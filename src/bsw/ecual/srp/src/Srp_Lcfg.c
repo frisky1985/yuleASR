@@ -19,6 +19,7 @@
 #include "Srp_Cfg.h"
 
 /* Stream Configurations */
+extern const uint16 Srp_StreamCount;
 static const Srp_StreamConfigType Srp_Streams[] = {
     {
         .StreamId = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07},

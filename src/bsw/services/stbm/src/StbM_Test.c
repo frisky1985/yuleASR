@@ -27,6 +27,7 @@
 /*==================================================================================================
  *                                    TEST FRAMEWORK
  *==================================================================================================*/
+Std_ReturnType Eth_GetCurrentTime(uint8 CtrlIdx, Eth_TimeStampType* timeStampPtr, Eth_RxStatusType* statusPtr);
 static int tests_run = 0;
 static int tests_passed = 0;
 static int tests_failed = 0;

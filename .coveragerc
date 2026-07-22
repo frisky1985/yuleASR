@@ -1,0 +1,32 @@
+[run]
+source = src
+omit =
+    */tests/*
+    */third_party/*
+    */build/*
+    */build-coverage*
+    */coverage_run/*
+    */examples/*
+    */generated/*
+    */config/*
+    */specs/*
+    */tools/*
+    */website/*
+    */docs/*
+    */verification/*
+    */backups/*
+    */design/*
+    */verification/*
+
+[report]
+include =
+    src/*
+exclude_lines =
+    pragma: no cover
+    if __name__ == '__main__'
+
+[html]
+directory = coverage_html
+
+[xml]
+output = coverage.xml

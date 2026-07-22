@@ -1,6 +1,11 @@
 /**
  * @file test_Dem.c
  * @brief Dem (Diagnostic Event Manager) Unit Tests
+ *
+ * SHALL-DEM-01: SHALL support storage of up to 256 DTCs
+ * SHALL-DEM-02: SHALL support 3 event priority levels: Low, Medium, High
+ * SHALL-DEM-03: SHALL store diagnostic events with primary and secondary (freeze frame) data
+ * SHALL-DEM-04: SHALL provide a configurable aging counter with default 40 cycles
  */
 
 #include <stdarg.h>

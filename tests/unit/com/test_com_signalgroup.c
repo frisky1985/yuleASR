@@ -1,6 +1,8 @@
 /*
  * test_com_signalgroup.c
  * COM Module Unit Tests - Signal Group Operations
+ *
+ * SHALL-COM-02: SHALL support signal group communication
  */
 
 #include "unity.h"

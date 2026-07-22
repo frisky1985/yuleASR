@@ -26,6 +26,7 @@
 #define LINMASTER_INSTANCE_ID            0x00
 
 /* 全局变量 */
+void LinMaster_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 static LinMaster_StateType LinMaster_State = LINMASTER_STATE_UNINIT;
 static LinMaster_ErrorType LinMaster_LastError = LINMASTER_ERROR_NONE;
 static boolean LinMaster_IsInitialized = FALSE;

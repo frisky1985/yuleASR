@@ -32,6 +32,8 @@
 #define DEM_DTC_MAX_ENTRIES        100U
 
 /* ============================================================================
+Std_ReturnType Dem_ReportDTCStatus_Optimized(uint32_t dtcCode, Dem_EventStatusType status);
+Std_ReturnType Dem_DtcHashDelete(uint32_t dtcCode);
  * Hash Table Entry
  * ============================================================================ */
 typedef struct {

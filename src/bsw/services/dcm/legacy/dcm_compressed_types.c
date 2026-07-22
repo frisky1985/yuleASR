@@ -31,6 +31,9 @@
  * Protocol Config Conversions
  ******************************************************************************/
 
+void Dcm_CompPrintSavingsReport(void);
+Dcm_ReturnType Dcm_CompExpandContextArray(const Dcm_CompContextType *srcArray,                                           Dcm_ContextType *dstArray,                                           uint8_t count);
+Dcm_ReturnType Dcm_CompConvertContextArray(const Dcm_ContextType *srcArray,                                            Dcm_CompContextType *dstArray,                                            uint8_t count);
 void Dcm_CompConvertProtocolConfig(const Dcm_ProtocolConfigType *src,
                                     Dcm_CompProtocolConfigType *dst)
 {

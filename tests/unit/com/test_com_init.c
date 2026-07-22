@@ -1,6 +1,9 @@
 /*
  * test_com_init.c
  * COM Module Unit Tests - Initialization and General Functions
+ *
+ * SHALL-COM-01: SHALL support a configurable signal count with default of 1024 signals
+ * SHALL-COM-03: SHALL support I-PDU send and receive directions
  */
 
 #include "unity.h"

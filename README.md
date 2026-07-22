@@ -1,14 +1,15 @@
-# yuleASR - YuleTech AutoSAR BSW Platform
+# yuleASR — AUTOSAR Classic BSW Platform
 
 <p align="center">
-  <strong>基于 AutoSAR Classic Platform 标准的开源汽车基础软件平台</strong>
+  <strong>基于 AUTOSAR Classic Platform 标准的开源汽车基础软件平台</strong><br>
+  <em>由上海予乐电子科技开发，社区驱动</em>
 </p>
 
 <p align="center">
   <a href="https://github.com/frisky1985/yuleASR/stargazers"><img src="https://img.shields.io/github/stars/frisky1985/yuleASR?style=flat-square&logo=github&color=yellow" alt="Stars"></a>
   <a href="https://github.com/frisky1985/yuleASR/network/members"><img src="https://img.shields.io/github/forks/frisky1985/yuleASR?style=flat-square&logo=github&color=blue" alt="Forks"></a>
   <a href="https://github.com/frisky1985/yuleASR/issues"><img src="https://img.shields.io/github/issues/frisky1985/yuleASR?style=flat-square&logo=github&color=red" alt="Issues"></a>
-  <a href="https://github.com/frisky1985/yuleASR/blob/master/LICENSE"><img src="https://img.shields.io/github/license/frisky1985/yuleASR?style=flat-square&color=green" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="MIT License"></a>
 </p>
 
 <p align="center">
@@ -148,6 +149,25 @@ yuleASR/
   <img src="https://img.shields.io/badge/Documentation-150%2B Docs-success?style=flat-square" alt="150+ Docs">
   <img src="https://img.shields.io/badge/Tools-6 Categories-success?style=flat-square" alt="6 Tools">
 </p>
+
+---
+
+## <a name="vs-easyxmen"></a> 与 EasyXMen 对比亮点
+
+yuleASR 作为新一代开源 AUTOSAR BSW 平台，与业界知名的 EasyXMen 相比具有以下优势：
+
+| 维度 | yuleASR | EasyXMen |
+|:-----|:--------|:---------|
+| **开源许可** | ✅ MIT，无附加限制 | ⚠️ 需商业许可或社区版受限 |
+| **模块完整性** | ✅ 96 BSW 模块全覆盖（MCAL 21 + ECUAL 29 + Services 46） | 基础模块需额外购买 |
+| **DDS 中间件** | ✅ 内建 OMG DDS v1.4 支持 | ❌ 需第三方集成 |
+| **ARXML 工具链** | ✅ 统一 CLI + 完整解析/生成/检查 | 分离式工具链 |
+| **配置工具** | ✅ 多工具（CAN/DTC/UDS/DoCAN/Signing）集成 | 部分配置依赖 GUI |
+| **目标硬件** | ✅ NXP S32K312 深度适配，持续扩展 | 需定制移植 |
+| **社区贡献** | ✅ 开放 PR + 活跃维护 | 厂商主导 |
+| **持续集成** | ✅ 4 条 CI 流水线（构建/测试/MISRA/部署） | 需自建 |
+
+> **总结**: yuleASR 在开源透明性、模块完整性、工具链集成度上均优于闭源竞品，特别适合希望自主可控的 Tier-1 和 OEM 团队。
 
 ---
 

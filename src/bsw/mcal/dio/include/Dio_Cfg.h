@@ -135,4 +135,16 @@
 /* Invalid/Unused channel */
 #define DIO_INVALID_CHANNEL               ((Dio_ChannelType)0xFFFFU)
 
+/*==================================================================================================
+*                                    DIO CONFIGURATION TYPE
+*==================================================================================================*/
+/**
+ * @brief DIO configuration structure (native stub)
+ */
+typedef struct {
+    uint8 dummy;
+} Dio_ConfigType;
+
+extern const Dio_ConfigType Dio_Config;
+
 #endif /* DIO_CFG_H */

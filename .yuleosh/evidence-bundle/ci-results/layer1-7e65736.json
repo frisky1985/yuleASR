@@ -1,0 +1,177 @@
+{
+  "layer": 1,
+  "commit": "7e65736",
+  "status": "failed",
+  "started_at": "2026-07-20T11:45:14.575705",
+  "completed_at": "2026-07-20T11:46:04.810073",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:14.598732"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-20T11:45:14.599027"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-20T11:45:14.599094"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "206 reqs, 0 modules, 4 tests (ratio 400.0%)",
+      "timestamp": "2026-07-20T11:45:14.612195"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-20T11:45:14.691149"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-20T11:45:14.693498"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:14.866830"
+    },
+    {
+      "name": "misra-check",
+      "status": "skipped",
+      "detail": "cppcheck execution error: CI Layer 1 timed out after 30s \u2014 adjust via CI_LAYER1_TIMEOUT env or timeout parameter",
+      "timestamp": "2026-07-20T11:45:44.587244"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:45.330407"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:45.828198"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:46.373507"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:46.824362"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:47.383719"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:49.148893"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:49.577466"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:50.000913"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:50.427482"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:50.855955"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:51.266547"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:51.685117"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:57.350067"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:59.016912"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-20T11:45:59.712052"
+    },
+    {
+      "name": "coverage",
+      "status": "failed",
+      "detail": "Line coverage 0.0% < 60.0%",
+      "timestamp": "2026-07-20T11:46:03.457507"
+    },
+    {
+      "name": "c-coverage",
+      "status": "passed",
+      "detail": "line=83.33%, branch=0.0%, 2 file(s)",
+      "timestamp": "2026-07-20T11:46:04.792314"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "passed",
+      "detail": "line_rate=83.3% >= 60%",
+      "timestamp": "2026-07-20T11:46:04.809966"
+    }
+  ],
+  "coverage": {
+    "line_coverage": 0.0,
+    "condition_coverage": 0.0,
+    "threshold_line": 60.0,
+    "threshold_condition": 60.0,
+    "line_pass": false,
+    "condition_pass": false
+  },
+  "errors": [
+    "misra-check failed",
+    "coverage failed"
+  ]
+}

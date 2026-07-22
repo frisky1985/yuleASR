@@ -1,6 +1,11 @@
 /**
  * @file test_Dcm.c
  * @brief DCM Unit Tests
+ *
+ * SHALL-DCM-01: SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37
+ * SHALL-DCM-02: SHALL support a maximum of 4 concurrent diagnostic sessions
+ * SHALL-DCM-03: SHALL enforce P2 timeout of 50ms for diagnostic responses
+ * SHALL-DCM-04: SHALL enforce P2* timeout of 500ms for diagnostic responses
  */
 
 #include <stdarg.h>

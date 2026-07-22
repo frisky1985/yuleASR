@@ -105,6 +105,10 @@ boolean Boot_Hsm_IsAvailable(void) { return FALSE; }
 #include <openssl/pem.h>
 #include <openssl/x509.h>
 #include <openssl/err.h>
+boolean Boot_Hsm_IsAvailable(void);
+Boot_Result Boot_Hsm_Random(uint8_t *b, uint32_t l);
+Boot_Result Boot_Hsm_VerifySignature(const uint8_t *h, const uint8_t *s, uint32_t k);
+Boot_Result Boot_Hsm_Init(void);
 
 /* Constant-time compare needed by Boot_Image.c */
 int32_t Boot_Verify_ConstantCmp(const uint8_t *a, const uint8_t *b, uint32_t len)

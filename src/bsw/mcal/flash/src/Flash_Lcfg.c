@@ -23,6 +23,9 @@
  * STM32H743 Flash Memory Map:
  * 
  * Bank 1 (0x0800_0000 - 0x080F_FFFF) - 1MB
+static uint32 Fls_GetSectorSize(uint32 SectorIndex);
+static sint32 Fls_GetSectorIndexByAddress(uint32 Address);
+static const Fls_SectorConfigType* Fls_GetSectorConfig(uint32 SectorIndex);
  *   Sector 0:  0x0800_0000 - 0x0800_3FFF  (16KB)   - Boot sector
  *   Sector 1:  0x0800_4000 - 0x0800_7FFF  (16KB)
  *   Sector 2:  0x0800_8000 - 0x0800_BFFF  (16KB)

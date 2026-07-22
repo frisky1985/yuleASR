@@ -182,15 +182,15 @@ static const Dem_ExtendedDataRecordConfigType Dem_ExtendedDataRecordConfig[DEM_C
 ==================================================================================================*/
 
 /* Static assertions for configuration consistency */
-#if (DEM_CFG_GET_NUM_EVENTS() > DEM_CFG_MAX_NUMBER_EVENTS)
+#if defined(DEM_CFG_GET_NUM_EVENTS) && defined(DEM_CFG_MAX_NUMBER_EVENTS) && (DEM_CFG_GET_NUM_EVENTS() > DEM_CFG_MAX_NUMBER_EVENTS)
     #error "Event configuration exceeds maximum allowed events"
 #endif
 
-#if (DEM_CFG_GET_NUM_DTCS() > DEM_CFG_MAX_NUMBER_DTCS)
+#if defined(DEM_CFG_GET_NUM_DTCS) && defined(DEM_CFG_MAX_NUMBER_DTCS) && (DEM_CFG_GET_NUM_DTCS() > DEM_CFG_MAX_NUMBER_DTCS)
     #error "DTC configuration exceeds maximum allowed DTCs"
 #endif
 
-#if (DEM_DEV_ERROR_DETECT == STD_ON)
+#if defined(DEM_DEV_ERROR_DETECT) && (DEM_DEV_ERROR_DETECT == STD_ON)
 /* Development error checking for configuration */
     #define DEM_VALIDATE_CONFIG_PTR(ptr, apiId) \
         do { \

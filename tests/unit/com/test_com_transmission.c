@@ -2,6 +2,8 @@
  * @file    test_com_transmission.c
  * @brief   COM Module Unit Tests - Transmission Scheduler (T009)
  * 
+ * SHALL-COM-03: SHALL support I-PDU send and receive directions
+ *
  * Test suite for COM transmission scheduler including:
  * - Send request queue management
  * - Com_SendSignal transmission path

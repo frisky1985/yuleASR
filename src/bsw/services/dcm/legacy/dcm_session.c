@@ -32,6 +32,7 @@
 /******************************************************************************
  * Module State
  ******************************************************************************/
+const Dcm_SessionConfigType* Dcm_GetDefaultSessionConfigs(uint8_t *numSessions);
 typedef struct {
     uint32_t magic;                                 /* Initialization marker */
     const Dcm_SessionControlConfigType *config;     /* Configuration pointer */

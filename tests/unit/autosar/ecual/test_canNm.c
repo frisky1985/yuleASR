@@ -3,6 +3,12 @@
  * @brief CanNm Module Unit Tests - CAN Network Management
  * @version 1.0.0
  *
+ * SHALL-CANNM-01: SHALL implement AUTOSAR CAN Network Management protocol
+ * SHALL-CANNM-02: SHALL support a configurable 8-bit node ID
+ * SHALL-CANNM-03: SHALL support configurable message cycle time with default of 100ms
+ * SHALL-CANNM-04: SHALL support configurable repeat message timer with default of 1000ms
+ * SHALL-CANNM-05: SHALL support bus synchronization
+ *
  * Unit tests for AUTOSAR CAN Network Management module following
  * AUTOSAR_SWS_CANNetworkManagement specification version 4.4.0
  */

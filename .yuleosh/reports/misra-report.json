@@ -1,8 +1,8 @@
 {
   "schema_version": "misra-report-v2",
-  "generated_at": "2026-07-21T20:50:44.135660",
+  "generated_at": "2026-07-22T11:38:00.452686",
   "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
-  "ruleset_version": "2023",
+  "ruleset_version": "2023-preview",
   "ci_environ": {
     "build_id": "",
     "commit_sha": "",
@@ -10,45 +10,80 @@
     "job_name": "",
     "workspace": ""
   },
-  "total_violations": 11923,
-  "unique_rules": 11923,
-  "affected_files": 419,
-  "total_source_lines": 124310,
+  "total_violations": 1879,
+  "unique_rules": 0,
+  "affected_files": 223,
+  "total_source_lines": 87048,
   "by_severity": {
-    "information": 469,
-    "error": 928,
-    "style": 10480,
+    "information": 470,
+    "error": 927,
+    "style": 436,
     "portability": 2,
     "warning": 7,
     "note": 37
   },
   "by_rule_type": {
     "unknown": 1878,
-    "advisory": 1252,
-    "required": 8793
+    "required": 1
   },
-  "density_per_kloc": 95.91,
+  "density_per_kloc": 21.59,
   "category_breakdown": {
     "unknown": 1878,
-    "指针类型转换 (Pointer Type Conversions)": 105,
-    "表达式 (Expressions)": 261,
-    "控制流 (Control Flow)": 1453,
-    "基本类型 (Essential Types)": 233,
-    "声明 (Declarations)": 1225,
-    "覆盖存储 (Overlapping Storage)": 29,
-    "预处理器 (Preprocessing)": 139,
-    "函数 (Functions)": 61,
-    "指针与数组 (Pointers & Arrays)": 22,
-    "未分类 (Uncategorized)": 5624,
-    "函数行为": 631,
-    "字面量 (Literals)": 34,
-    "标准库 (Standard Library)": 9,
-    "初始化 (Initialization)": 27,
-    "副作用 (Side Effects)": 32,
-    "标识符 (Identifiers)": 160
+    "required": 1
   },
   "groups": {},
-  "deviations": [],
+  "deviations": [
+    {
+      "rule_id": "('misra-c2012-20.9', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-7.2', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-5.8', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-15.7', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-2.7', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-15.6', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-11.5', 'src/bsw/mcal/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-8.8', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-5.7', 'src/**')",
+      "reason": "",
+      "expires": null
+    },
+    {
+      "rule_id": "('misra-c2012-10.8', 'src/**')",
+      "reason": "",
+      "expires": null
+    }
+  ],
   "excluded_rules": [],
   "excluded_files": []
 }

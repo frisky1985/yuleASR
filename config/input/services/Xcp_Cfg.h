@@ -342,7 +342,7 @@
 /*==================================================================================================
 *                                    CAN CONFIGURATION
 ==================================================================================================*/
-#if (XCP_ON_CAN_ENABLED == STD_ON)
+#if defined(XCP_ON_CAN_ENABLED) && (XCP_ON_CAN_ENABLED == STD_ON)
 
 /**
  * @brief CAN Frame Type (0=STANDARD, 1=EXTENDED)
@@ -369,7 +369,7 @@
 /*==================================================================================================
 *                                    ETHERNET CONFIGURATION
 ==================================================================================================*/
-#if (XCP_ON_ETH_UDP_ENABLED == STD_ON)
+#if defined(XCP_ON_ETH_UDP_ENABLED) && (XCP_ON_ETH_UDP_ENABLED == STD_ON)
 
 /**
  * @brief XCP on Ethernet port number
@@ -386,7 +386,7 @@
 /*==================================================================================================
 *                                    FLEXRAY CONFIGURATION
 ==================================================================================================*/
-#if (XCP_ON_FLEXRAY_ENABLED == STD_ON)
+#if defined(XCP_ON_FLEXRAY_ENABLED) && (XCP_ON_FLEXRAY_ENABLED == STD_ON)
 
 /**
  * @brief XCP on FlexRay slot ID

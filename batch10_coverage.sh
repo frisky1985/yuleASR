@@ -88,14 +88,83 @@ INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/flash/include"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/src/rte/include"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/src/micro-dds/include"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/coverage_run"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/dem/include/dem"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/dcm/include/dcm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/soad/include/soad"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/lin/include"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/can/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/dio/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/gpt/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/pwm/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/adc/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/wdg/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/eth/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/icu/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/ocu/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/fls/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/eep/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/ramtst/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/i2c/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/uart/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/crypto/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/mcal/flash/include/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/canif/include/ecual"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/cantp/include/ecual"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/ethif/include/ecual"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/linif/include/ecual"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/canNm/include"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/canNm/include/ecual"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/ecual/CanTrcv/include"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/can/include/can"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/cannm/include/cannm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/cansm/include/cansm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/comm/include/comm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/com/include/com"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/dcm/include/dcm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/dem/include/dem"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/ecum/include/ecum"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/nvm/include/nvm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/pdur/include/pdur"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/soad/include/soad"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/wdgm/include/wdgm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/lin/include/lin"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/j1939nm/include/j1939nm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/doip/include/doip"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/cryif/include/cryif"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/csm/include/csm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/keym/include/keym"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/mem/include/mem"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/dlt/include/dlt"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/nm/include/nm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/e2e/include/e2e"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/fim/include/fim"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/stbm/include/stbm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/xcp/include/xcp"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/bswm/include/bswm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/linm/include/linm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/linsm/include/linsm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/lintp/include/lintp"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/schm/include/schm"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/secoc/include/secoc"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/src/bsw/services/ramtst/include/ramtst"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/mcal/include"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/autosar/mcal"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/autosar/services"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/det"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/autosar"
 
 # Framework 路径
 INCLUDES="$INCLUDES -I$PROJECT_DIR/third_party/test_frameworks/unity"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/third_party/test_frameworks/unity/src"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/third_party"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/third_party/cmocka"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/middleware"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/framework"
 INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/mocks"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/unit/com"
+INCLUDES="$INCLUDES -I$PROJECT_DIR/tests/stubs"
 
 UNITY_C="$PROJECT_DIR/third_party/test_frameworks/unity/src/unity.c"
 if [ ! -f "$UNITY_C" ]; then
@@ -275,14 +344,14 @@ done
 # COM 模块测试（需要 unity + 生产代码）
 COM_PRODUCTION=""
 for com_src in \
-    src/bsw/services/com/src/Com.c \
-    src/bsw/services/com/src/Com_Main.c \
-    src/bsw/services/com/src/Com_Signal.c \
-    src/bsw/services/com/src/Com_Transmit.c \
-    src/bsw/services/com/src/Com_Confirmation.c \
-    src/bsw/services/com/src/Com_TxMode.c \
-    src/bsw/services/com/src/Com_DeadlineMon.c \
-    src/bsw/services/com/src/Com_ErrorHandling.c \
+    src/bsw/classic/com/Com.c \
+    src/bsw/classic/com/Com_Main.c \
+    src/bsw/classic/com/Com_Signal.c \
+    src/bsw/classic/com/Com_Transmit.c \
+    src/bsw/classic/com/Com_Confirmation.c \
+    src/bsw/classic/com/Com_TxMode.c \
+    src/bsw/classic/com/Com_DeadlineMon.c \
+    src/bsw/classic/com/Com_ErrorHandling.c \
 ; do
     COM_PRODUCTION="$COM_PRODUCTION $com_src"
 done
@@ -344,6 +413,12 @@ if [ -f coverage_raw.info ]; then
     genhtml "$FINAL" --output-directory coverage_report 2>&1 | tail -5
     echo ""
     echo "HTML 报告: coverage_report/index.html"
+    
+    # Generate c-coverage.json for CI gate
+    echo ""
+    echo "=== 生成 CI 覆盖率报告 ==="
+    mkdir -p .yuleosh/reports
+    python3 tools/generate_c_coverage_json.py "$FINAL" .yuleosh/reports/c-coverage.json
 else
     echo "⚠️  无覆盖率数据"
 fi
@@ -352,3 +427,9 @@ echo ""
 echo "=============================================="
 echo "  测试汇总: $PASSED_TESTS/$TOTAL_TESTS 通过"
 echo "=============================================="
+
+# Clean .gcda files after coverage generation so CI lcov capture doesn't double-count
+echo ""
+echo "=== 清理 .gcda 文件 ==="
+find . -name "*.gcda" -delete 2>/dev/null
+echo "  ✅ 已清理 .gcda 文件"

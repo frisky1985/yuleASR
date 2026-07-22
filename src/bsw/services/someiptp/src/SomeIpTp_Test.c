@@ -27,6 +27,7 @@
 /*==================================================================================================
  *                                    TEST FRAMEWORK
  *==================================================================================================*/
+void SomeIpXf_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 static int tests_run = 0;
 static int tests_passed = 0;
 static int tests_failed = 0;

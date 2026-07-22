@@ -274,6 +274,8 @@ const IpduM_ConfigType* IpduM_ConfigPtr = &IpduM_Config;
 
 #define IPDUM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"
+extern const IpduM_ConfigType* IpduM_ConfigPtr;
+extern const IpduM_ConfigType IpduM_Config;
 
 /*==================================================================================================
  *                                       END OF FILE

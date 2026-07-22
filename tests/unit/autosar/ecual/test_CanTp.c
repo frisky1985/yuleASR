@@ -8,6 +8,11 @@
 * (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
 * All Rights Reserved.
 *
+* SHALL-CANTP-01: SHALL implement the ISO 15765-2 CAN transport protocol
+* SHALL-CANTP-02: SHALL support message segmentation up to 4095 bytes per message
+* SHALL-CANTP-03: SHALL support Continuous and Wait flow control modes
+* SHALL-CANTP-04: SHALL support Physical and Functional addressing
+*
 * Description: Comprehensive unit tests for CanTp module following ISO 15765-2 standard.
 * Test coverage targets:
 *   - SF (Single Frame) transmission/reception: 100%
