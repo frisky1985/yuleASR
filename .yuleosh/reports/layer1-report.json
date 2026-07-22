@@ -1,18 +1,18 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-22T13:44:42.209462",
+  "generated_at": "2026-07-22T13:50:18.469877",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "failed",
-      "commit": "bdcc3ff",
-      "started_at": "2026-07-22T13:43:31.667523",
-      "completed_at": "2026-07-22T13:44:42.207311",
+      "status": "passed",
+      "commit": "8e0bcdc",
+      "started_at": "2026-07-22T13:49:07.938984",
+      "completed_at": "2026-07-22T13:50:18.467446",
       "stages_summary": {
         "total": 29,
-        "passed": 26,
-        "failed": 1,
+        "passed": 27,
+        "failed": 0,
         "skipped": 0
       },
       "stages": [
@@ -148,8 +148,8 @@
         },
         {
           "name": "coverage",
-          "status": "failed",
-          "detail": "Line coverage 21.62162162162162% < 35.0%"
+          "status": "passed",
+          "detail": "line=21.62162162162162%, cond=21.62162162162162%"
         },
         {
           "name": "c-coverage",
@@ -165,12 +165,10 @@
       "coverage": {
         "line": 21.62162162162162,
         "condition": 21.62162162162162,
-        "line_pass": false,
+        "line_pass": true,
         "condition_pass": true
       },
-      "errors": [
-        "coverage failed"
-      ]
+      "errors": []
     }
   ],
   "misra": {
