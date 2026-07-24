@@ -30,6 +30,13 @@
 #define SPI_SW_MINOR_VERSION_CFG    0u
 #define SPI_SW_PATCH_VERSION_CFG    0u
 
+/* 基础类型定义 */
+/** @brief SPI 通道标识类型 */
+typedef uint8 Spi_ChannelType;
+
+/** @brief SPI 序列标识类型 */
+typedef uint8 Spi_SequenceType;
+
 /* 开关配置 */
 #define SPI_DEV_ERROR_DETECT        STD_ON
 #define SPI_VERSION_INFO_API        STD_ON

@@ -47,6 +47,21 @@
 #define MCU_API_ID_GET_RESET_RAW_VALUE          0x06U
 #define MCU_API_ID_PERFORM_RESET                0x07U
 #define MCU_API_ID_GET_VERSION_INFO             0x08U
+#define MCU_API_ID_GET_RAM_STATE                0x09U
+#define MCU_API_ID_INIT_RAM_SECTION             0x0AU
+
+/* Service ID aliases (for Det_ReportError) */
+#define MCU_SID_INIT                    MCU_API_ID_INIT
+#define MCU_SID_INIT_CLOCK              MCU_API_ID_INIT_CLOCK
+#define MCU_SID_DISTRIBUTE_PLL_CLOCK    MCU_API_ID_DISTRIBUTE_PLL_CLOCK
+#define MCU_SID_GET_PLL_STATUS          MCU_API_ID_GET_PLL_STATUS
+#define MCU_SID_SET_MODE                MCU_API_ID_SET_MODE
+#define MCU_SID_GET_RESET_REASON        MCU_API_ID_GET_RESET_REASON
+#define MCU_SID_GET_RESET_RAW_VALUE     MCU_API_ID_GET_RESET_RAW_VALUE
+#define MCU_SID_PERFORM_RESET           MCU_API_ID_PERFORM_RESET
+#define MCU_SID_GET_VERSION_INFO        MCU_API_ID_GET_VERSION_INFO
+#define MCU_SID_GET_RAM_STATE           MCU_API_ID_GET_RAM_STATE
+#define MCU_SID_INIT_RAM_SECTION        MCU_API_ID_INIT_RAM_SECTION
 
 /* Error Codes */
 #define MCU_E_PARAM_CONFIG                      0x0AU
@@ -56,6 +71,8 @@
 #define MCU_E_UNINIT                            0x0EU
 #define MCU_E_PARAM_POINTER                     0x0FU
 #define MCU_E_INIT_FAILED                       0x10U
+#define MCU_E_ALREADY_INITIALIZED               0x11U
+#define MCU_E_PARAM_RAMSECTION                  0x12U
 
 /*==================================================================================================
 *                                          TYPE DEFINITIONS
@@ -69,14 +86,22 @@ typedef uint32 Mcu_RawResetType;
 /** @brief MCU 模式类型 */
 typedef uint8 Mcu_ModeType;
 
+/** @brief MCU RAM 状态类型 */
+typedef enum {
+    MCU_RAMSTATE_INVALID = 0,         /**< RAM 状态无效 */
+    MCU_RAMSTATE_VALID = 1,           /**< RAM 状态有效 */
+    MCU_RAMSTATE_INITIALIZED = 2,     /**< RAM 已初始化 */
+    MCU_RAMSTATE_UNINITIALIZED = 3    /**< RAM 未初始化 */
+} Mcu_RamStateType;
+
 /** @brief MCU 状态类型 */
 typedef enum {
-    MCU_UNINIT = 0,                 /**< 未初始化 */
-    MCU_CLOCK_UNINIT,               /**< 时钟未初始化 */
-    MCU_CLOCK_INITIALIZED,          /**< 时钟已初始化 */
-    MCU_MODE_NORMAL,                /**< 正常模式 */
-    MCU_MODE_SLEEP,                 /**< 睡眠模式 */
-    MCU_MODE_DEEP_SLEEP             /**< 深度睡眠模式 */
+    MCU_STATE_UNINIT = 0,                 /**< 未初始化 */
+    MCU_STATE_CLOCK_UNINIT,               /**< 时钟未初始化 */
+    MCU_STATE_CLOCK_INITIALIZED,          /**< 时钟已初始化 */
+    MCU_STATE_NORMAL,                /**< 正常模式 */
+    MCU_STATE_SLEEP,                 /**< 睡眠模式 */
+    MCU_STATE_DEEP_SLEEP             /**< 深度睡眠模式 */
 } Mcu_StateType;
 
 /** @brief PLL 状态类型 */
@@ -88,13 +113,13 @@ typedef enum {
 
 /** @brief 复位原因类型 */
 typedef enum {
-    MCU_RESET_UNDEFINED = 0,        /**< 未定义 */
-    MCU_RESET_POWER_ON,             /**< 上电复位 */
-    MCU_RESET_WATCHDOG,             /**< 看门狗复位 */
-    MCU_RESET_SOFTWARE,             /**< 软件复位 */
-    MCU_RESET_EXTERNAL,             /**< 外部复位 */
-    MCU_RESET_BROWN_OUT,            /**< 欠压复位 */
-    MCU_RESET_LOCKUP                /**< 锁死复位 */
+    MCU_RST_UNDEFINED = 0,        /**< 未定义 */
+    MCU_RST_POWER_ON,             /**< 上电复位 */
+    MCU_RST_WATCHDOG,             /**< 看门狗复位 */
+    MCU_RST_SOFTWARE,             /**< 软件复位 */
+    MCU_RST_EXTERNAL,             /**< 外部复位 */
+    MCU_RST_BROWN_OUT,            /**< 欠压复位 */
+    MCU_RST_LOCKUP                /**< 锁死复位 */
 } Mcu_ResetType;
 
 /** @brief MCU 配置类型 */
@@ -105,15 +130,6 @@ typedef struct {
     uint32 PllDivider;              /**< PLL 分频系数 */
     boolean PllEnabled;             /**< PLL 使能标志 */
 } Mcu_ConfigType;
-
-/** @brief 版本信息类型 */
-typedef struct {
-    uint16 vendorID;                /**< 供应商 ID */
-    uint16 moduleID;                /**< 模块 ID */
-    uint8 sw_major_version;         /**< 软件主版本 */
-    uint8 sw_minor_version;         /**< 软件次版本 */
-    uint8 sw_patch_version;         /**< 软件补丁版本 */
-} Std_VersionInfoType;
 
 /*==================================================================================================
 *                                      GLOBAL CONSTANTS
@@ -145,8 +161,8 @@ extern const Mcu_ConfigType Mcu_Config;
  *         - E_OK: 初始化成功
  *         - E_NOT_OK: 初始化失败
  *
- * @pre 模块处于 MCU_UNINIT 状态
- * @post 模块处于 MCU_CLOCK_UNINIT 状态
+ * @pre 模块处于 MCU_STATE_UNINIT 状态
+ * @post 模块处于 MCU_STATE_CLOCK_UNINIT 状态
  *
  * @note 必须在其他模块初始化之前调用
  * @note 如果 ConfigPtr 为 NULL_PTR，使用默认配置
@@ -233,6 +249,16 @@ void Mcu_PerformReset(void);
  * @note 如果 versioninfo 为 NULL_PTR，报告开发错误
  */
 void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo);
+
+/**
+ * @brief 获取 RAM 状态
+ *
+ * @return Mcu_RamStateType RAM 当前状态
+ *
+ * @pre MCU 模块已初始化
+ * @post 返回 RAM 有效/无效/初始化/未初始化状态
+ */
+Mcu_RamStateType Mcu_GetRamState(void);
 
 #define MCU_STOP_SEC_CODE
 #include "MemMap.h"
