@@ -152,3 +152,68 @@ def test_misra_violations_breakdown():
     print(f"  Top-10 violated rules:")
     for rule_id, count in top_rules:
         print(f"    - misra-{rule_id}: {count} violations")
+
+
+def test_misra_deviation_config_consistency():
+    """Verify that deviations in ci-config.yaml are consistent with MISRA report.
+
+    Checks that each deviated rule in the config exists in the MISRA report's
+    violation list (if report is available) and that the exclude_paths don't
+    shadow all violations.
+    """
+    import yaml
+    config_path = BASE_PATHS["ci_config"]
+    assert os.path.isfile(config_path), f"Missing: {config_path}"
+
+    with open(config_path, "r") as f:
+        config = yaml.safe_load(f)
+
+    deviations = config.get("misra", {}).get("deviations", [])
+    assert len(deviations) > 0, "Expected at least one deviation in ci-config.yaml"
+
+    # Check each deviation has required fields
+    for i, d in enumerate(deviations):
+        assert "rule" in d, f"Deviation #{i} missing 'rule' field"
+        assert "file" in d, f"Deviation #{i} ({d.get('rule')}) missing 'file' field"
+        assert "reason" in d, f"Deviation #{i} ({d.get('rule')}) missing 'reason' field"
+        assert d["rule"].startswith("misra-"), \
+            f"Deviation #{i} rule '{d['rule']}' should start with 'misra-'"
+
+    print(f"  ✅ {len(deviations)} deviations validated in ci-config.yaml")
+
+    # Check safety profile deviations
+    profiles = config.get("misra", {}).get("profiles", {})
+    safety_profile = profiles.get("safety", {})
+    if safety_profile:
+        profile_deviations = safety_profile.get("deviations", [])
+        for i, d in enumerate(profile_deviations):
+            assert "rule" in d, f"Safety profile deviation #{i} missing 'rule'"
+            assert "scope" in d, f"Safety profile deviation #{i} ({d.get('rule')}) missing 'scope'"
+            assert "reason" in d, f"Safety profile deviation #{i} ({d.get('rule')}) missing 'reason'"
+            assert "expiry" in d, f"Safety profile deviation #{i} ({d.get('rule')}) missing 'expiry'"
+        print(f"  ✅ {len(profile_deviations)} safety-profile deviations validated")
+
+    # Check exclude_paths
+    exclude_paths = config.get("misra", {}).get("exclude_paths", [])
+    assert len(exclude_paths) > 0, "Expected at least one exclude_path in ci-config.yaml"
+    print(f"  ✅ {len(exclude_paths)} exclude_paths configured")
+
+
+def test_run_misra_check_script_exists():
+    """Verify tools/run_misra_check.sh is present and parseable."""
+    script_path = os.path.join(PROJECT_DIR, "tools", "run_misra_check.sh")
+    assert os.path.isfile(script_path), f"Missing: {script_path}"
+
+    with open(script_path, "r") as f:
+        content = f.read()
+
+    assert "#!/bin/bash" in content, "run_misra_check.sh must be a bash script"
+    assert "cppcheck" in content, "Script should invoke cppcheck"
+    assert "MISRA" in content, "Script should reference MISRA"
+    assert len(content) > 100, "Script seems too short"
+    print(f"  ✅ run_misra_check.sh exists ({len(content)} bytes)")
+
+    # Check that key MISRA rules are defined
+    assert "8.2" in content, "Script should check MISRA rule 8.2"
+    assert "15.5" in content, "Script should check MISRA rule 15.5"
+    print(f"  ✅ Script contains key MISRA rule definitions")

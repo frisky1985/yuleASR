@@ -41,8 +41,22 @@ C_COVERAGE_REPORT = os.path.join(BASE_DIR, ".yuleosh", "reports", "c-coverage.js
 
 
 def load_json(path):
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+    """Load JSON from file with structured error handling."""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not isinstance(data, (dict, list)):
+            print(f"  ⚠️  JSON data in {path} is unexpected type {type(data).__name__}")
+        return data
+    except FileNotFoundError:
+        print(f"  ⚠️  File not found: {path}")
+        return {}
+    except json.JSONDecodeError as e:
+        print(f"  ⚠️  Invalid JSON in {path}: {e}")
+        return {}
+    except PermissionError:
+        print(f"  ⚠️  Permission denied: {path}")
+        return {}
 
 
 def escape_markdown(text):
@@ -372,8 +386,8 @@ def main():
         try:
             ci_data = load_json(ci_results_path)
             summary["total_ci_runs"] = len(ci_data.get("runs", []))
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"  ⚠️  Failed to load CI results from {ci_results_path}: {e}")
 
     # 1. Generate traceability-matrix.md
     print("\n1. Generating traceability-matrix.md...")
