@@ -22,6 +22,12 @@
  *                                      VEHICLE IDENTIFICATION
  *=================================================================================================*/
 /* VIN (Vehicle Identification Number) - 17 characters */
+void Dcm_DoIPRoutingActivation(uint16 SoConId, uint16 SourceAddress, Std_ReturnType Result);
+void Dcm_DoIPTxConfirmation(uint16 SoConId, Std_ReturnType Result);
+void Dcm_DoIPRxIndication(uint16 SoConId, const uint8* Data, uint32 Length);
+extern DoIP_StateType DoIP_State;
+extern const DoIP_GeneralConfigType DoIP_GeneralConfig;
+extern const uint16 DoIP_EntityLogicalAddress;
 const uint8 DoIP_Vin[DOIP_VIN_LENGTH] = DOIP_VIN;
 
 /* EID (Entity ID) - MAC address format */

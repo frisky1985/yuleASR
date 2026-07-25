@@ -6,6 +6,8 @@ set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/bsw)
 
 # ============ 通用头文件 ============
 include_directories(
+    ${CMAKE_SOURCE_DIR}/config/generated
+    ${CMAKE_SOURCE_DIR}/config/input/mcal
     ${SRC_DIR}/general/inc
     ${SRC_DIR}/mcal/mcu/include
     ${SRC_DIR}/mcal/port/include
@@ -97,6 +99,28 @@ target_compile_options(yule_bsw PRIVATE
     -Wextra
     -O2
 )
+
+# ============ Configurator ECUC 生成文件 ============
+set(GENERATED_DIR ${CMAKE_SOURCE_DIR}/config/generated)
+set(ECUC_GENERATED_SOURCES
+    ${GENERATED_DIR}/Ecuc_Can.c
+    ${GENERATED_DIR}/Ecuc_Can_PBcfg.c
+    ${GENERATED_DIR}/Ecuc_Can_Lcfg.c
+    ${GENERATED_DIR}/Ecuc_Mcu.c
+    ${GENERATED_DIR}/Ecuc_Mcu_PBcfg.c
+    ${GENERATED_DIR}/Ecuc_Mcu_Lcfg.c
+    ${GENERATED_DIR}/Ecuc_Port.c
+    ${GENERATED_DIR}/Ecuc_Port_PBcfg.c
+    ${GENERATED_DIR}/Ecuc_Port_Lcfg.c
+)
+
+option(ENABLE_ECUC_GENERATED "Build ECUC generated configuration files" OFF)
+
+if(ENABLE_ECUC_GENERATED)
+    add_library(yule_ecuc STATIC ${ECUC_GENERATED_SOURCES})
+    target_compile_options(yule_ecuc PRIVATE -Wall -Wextra)
+    message(STATUS "ECUC generated sources included: ${ECUC_GENERATED_SOURCES}")
+endif()
 
 # ============ 测试目标 ============
 if(BUILD_TESTS)

@@ -25,6 +25,7 @@ misra:
   enabled: true
   addon: "misra"
   active_profile: "safety"
+  advisory_violations: 66          # Phase 2: Advisory violations in current baseline
   fail_on_required: false        # Phase 1: 临时关闭，承认基线
   fail_on_advisory: false
   fail_threshold: 13000           # Phase 1: 11923 total (0 R/0 A + 11923 style), set above baseline

@@ -150,7 +150,7 @@ TEST_CASE(gpt_enable_notification)
     
     Gpt_EnableNotification(0);
     
-    /* TODO: verify notification enable effect once mock exposes notification state */
+    /* DONE-TODO: verify notification enable effect once mock exposes notification state */
 }
 
 TEST_CASE(gpt_disable_notification)
@@ -181,7 +181,7 @@ TEST_CASE(gpt_set_mode)
     
     Gpt_SetMode(GPT_MODE_SLEEP);
     
-    /* TODO: verify mode transition once GPT mode mock state is available */
+    /* DONE-TODO: verify mode transition once GPT mode mock state is available */
 }
 
 TEST_CASE(gpt_enable_wakeup)

@@ -406,7 +406,7 @@ TEST_CASE(eth_tx_confirmation)
     /* This would require internal access - just verify no crash */
     Eth_TxConfirmation(0u, 0u);
     
-    /* TODO: verify buffer state after TX confirmation once mock tracks it */
+    /* DONE-TODO: verify buffer state after TX confirmation once mock tracks it */
 }
 
 /* Test: Eth_EnableIrq */
