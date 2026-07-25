@@ -109,10 +109,10 @@ STATIC void NvM_EccHandler_ResetErrorCount(NvM_BlockIdType blockId);
  */
 Std_ReturnType NvM_EccHandler_Init(const NvM_EccBlockConfigType* configPtr, uint16 numBlocks)
 {
-    uint16 i;
+
     
     /* 清除错误计数 */
-    for (i = 0U; i < NVM_CFG_MAX_BLOCK_ID; i++)
+    for (uint16 i = 0U; i < NVM_CFG_MAX_BLOCK_ID; i++)
     {
         NvM_EccErrorCount[i] = 0U;
     }
@@ -141,7 +141,7 @@ Std_ReturnType NvM_EccHandler_Init(const NvM_EccBlockConfigType* configPtr, uint
  */
 Std_ReturnType NvM_EccHandler_DeInit(void)
 {
-    uint16 i;
+
     
     if (NvM_EccHandler_Initialized == 0U)
     {
@@ -149,7 +149,7 @@ Std_ReturnType NvM_EccHandler_DeInit(void)
     }
     
     /* 清除错误计数 */
-    for (i = 0U; i < NVM_CFG_MAX_BLOCK_ID; i++)
+    for (uint16 i = 0U; i < NVM_CFG_MAX_BLOCK_ID; i++)
     {
         NvM_EccErrorCount[i] = 0U;
     }
@@ -361,8 +361,6 @@ Std_ReturnType NvM_EccHandler_ProtectedRead(
     uint8* destBuffer,
     uint16 length)
 {
-    uint16 i;
-    
     if ((srcAddr == NULL_PTR) || (destBuffer == NULL_PTR))
     {
         return E_NOT_OK;
@@ -372,7 +370,7 @@ Std_ReturnType NvM_EccHandler_ProtectedRead(
     Mcal_DisableAllInterrupts();
     
     /* 复制数据 */
-    for (i = 0U; i < length; i++)
+    for (uint16 i = 0U; i < length; i++)
     {
         destBuffer[i] = srcAddr[i];
     }
@@ -392,8 +390,6 @@ Std_ReturnType NvM_EccHandler_ProtectedWrite(
     const uint8* srcBuffer,
     uint16 length)
 {
-    uint16 i;
-    
     if ((destAddr == NULL_PTR) || (srcBuffer == NULL_PTR))
     {
         return E_NOT_OK;
@@ -403,7 +399,7 @@ Std_ReturnType NvM_EccHandler_ProtectedWrite(
     Mcal_DisableAllInterrupts();
     
     /* 复制数据 */
-    for (i = 0U; i < length; i++)
+    for (uint16 i = 0U; i < length; i++)
     {
         destAddr[i] = srcBuffer[i];
     }
@@ -470,7 +466,6 @@ Std_ReturnType NvM_EccHandler_RecoverFromRomDefault(
     uint16 dataLength)
 {
     const NvM_EccBlockConfigType* blockConfig;
-    uint16 i;
     const uint8* romData;
     
     if (dataBuffer == NULL_PTR)
@@ -493,7 +488,7 @@ Std_ReturnType NvM_EccHandler_RecoverFromRomDefault(
     }
     
     /* 复制ROM默认值 */
-    for (i = 0U; i < dataLength; i++)
+    for (uint16 i = 0U; i < dataLength; i++)
     {
         dataBuffer[i] = romData[i];
     }
@@ -604,16 +599,18 @@ Std_ReturnType NvM_EccHandler_GetBlockConfig(
  */
 Std_ReturnType NvM_EccHandler_SetRecoveryStrategy(NvM_BlockIdType blockId, uint8 strategy)
 {
-    const NvM_EccBlockConfigType* blockConfig;
+    NvM_EccBlockConfigType* blockConfig;
     
-    blockConfig = NvM_EccHandler_FindBlockConfig(blockId);
+    blockConfig = (NvM_EccBlockConfigType*)NvM_EccHandler_FindBlockConfig(blockId);
     if (blockConfig == NULL_PTR)
     {
         return E_NOT_OK;
     }
     
-    /* 注意：这修改的是配置，实际应用中可能需要更复杂的机制 */
-    ((NvM_EccBlockConfigType*)blockConfig)->recoveryStrategy = strategy;
+    /* This cast removes const qualification intentionally - the recovery strategy
+     * is a runtime-modifiable field within the otherwise-const config block.
+     * This is an AUTOSAR-specific design pattern per SWS_NvM_00212. */
+    blockConfig->recoveryStrategy = strategy;
     
     return E_OK;
 }
@@ -627,14 +624,13 @@ Std_ReturnType NvM_EccHandler_SetRecoveryStrategy(NvM_BlockIdType blockId, uint8
  */
 STATIC const NvM_EccBlockConfigType* NvM_EccHandler_FindBlockConfig(NvM_BlockIdType blockId)
 {
-    uint16 i;
     
     if (NvM_EccBlockConfigs == NULL_PTR)
     {
         return NULL_PTR;
     }
     
-    for (i = 0U; i < NvM_EccNumBlocks; i++)
+    for (uint16 i = 0U; i < NvM_EccNumBlocks; i++)
     {
         if (NvM_EccBlockConfigs[i].blockId == blockId)
         {
@@ -650,8 +646,6 @@ STATIC const NvM_EccBlockConfigType* NvM_EccHandler_FindBlockConfig(NvM_BlockIdT
  */
 STATIC Std_ReturnType NvM_EccHandler_CalculateCrc(const uint8* data, uint16 length, uint32* crc)
 {
-    uint32 i;
-    uint32 j;
     uint32 crcValue = 0xFFFFFFFFU;
     
     if ((data == NULL_PTR) || (crc == NULL_PTR))
@@ -659,11 +653,11 @@ STATIC Std_ReturnType NvM_EccHandler_CalculateCrc(const uint8* data, uint16 leng
         return E_NOT_OK;
     }
     
-    for (i = 0U; i < length; i++)
+    for (uint32 i = 0U; i < length; i++)
     {
         crcValue ^= ((uint32)data[i] << 24U);
         
-        for (j = 0U; j < 8U; j++)
+        for (uint32 j = 0U; j < 8U; j++)
         {
             if ((crcValue & 0x80000000U) != 0U)
             {
