@@ -670,16 +670,16 @@ static const LinSlave_ConfigTableType* CfgTablePtr = NULL;
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/flash/include/Flash.h:89:1: error: syntax error: 0u = [syntaxError]
 {
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:126:0: information: Include file: "MemMap.h" not found. [missingInclude]
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:142:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:132:0: information: Include file: "MemMap.h" not found. [missingInclude]
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:148:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:138:0: information: Include file: "MemMap.h" not found. [missingInclude]
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:154:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:238:0: information: Include file: "MemMap.h" not found. [missingInclude]
+/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:264:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/adc/include/Adc.h:248:0: information: Include file: "MemMap.h" not found. [missingInclude]
@@ -730,9 +730,6 @@ static const LinSlave_ConfigTableType* CfgTablePtr = NULL;
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/src/Mcu.c:19:0: information: Include file: "Mcu_Reg.h" not found. [missingInclude]
 #include "Mcu_Reg.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h:73:9: error: syntax error [syntaxError]
-typedef enum {
-        ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/uart/src/Uart.c:148:8: error: syntax error: | typedef [syntaxError]
    136|typedef struct {
        ^
@@ -1510,24 +1507,6 @@ typedef enum {
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h:310:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:145:15: style: misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]
-    if ((data == NULL) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
-              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:162:14: style: misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]
-    if ((cmd == NULL) || (len == 0U )) {
-             ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:921:15: style: misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]
-    if ((data != NULL) && (len > 0U ) && (len <= XCP_CTO_SIZE)) {
-              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:946:15: style: misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]
-    if ((data != NULL) && (len <= XCP_CTO_SIZE)) {
-              ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:1035:16: style: misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]
-    if (buffer == NULL) {
-               ^
-/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c:1057:16: style: misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]
-    if (buffer == NULL) {
-               ^
 /Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h:238:0: information: Include file: "MemMap.h" not found. [missingInclude]
 #include "MemMap.h"
 ^

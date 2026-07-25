@@ -1,16 +1,16 @@
 # CI Report Summary
 
-> Generated: 2026-07-23T01:44:08.159858
+> Generated: 2026-07-26T01:53:37.470649
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
-## Overall: ❌ FAILED
+## Overall: ✅ ALL PASSED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ❌ failed | 25 | 1 | 0 | ⚠️ |
+| L1 | ✅ passed | 27 | 0 | 0 | — |
 
 ### Layer L1 — Stage Details
 
@@ -20,10 +20,10 @@
 | spec-validation | ✅ | 0 missing, 3 req keywords found |
 | architecture-review | ✅ | 0 modules:  |
 | requirements-trace | ✅ | 206 reqs, 0 modules, 7 tests (ratio 700.0%) |
-| plan-lint | ❌ | /Users/stefan/.openclaw/workspace/yuleASR/tasks/v130-to-v140-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/v130-to-v140-plan.md: Missing T00 three-step sections |
+| plan-lint | ✅ |  |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ⚠️ | 1141 MISRA violation(s) (372 required, 4 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ⚠️ | 1134 MISRA violation(s) (366 required, 4 advisory) — see .yuleosh/reports/misra-report.json |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -43,6 +43,7 @@
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | coverage | ✅ | line=21.62162162162162%, cond=21.62162162162162% |
+| coverage-regression | ✅ | No regression detected |
 | c-coverage | ⚠️ | lcov/gcov may not be installed |
 | c-coverage-gate | ✅ | line_rate=37.1% >= 35% |
 
@@ -57,10 +58,10 @@
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 1141 |
-| Required | 372 |
+| Total Violations | 1134 |
+| Required | 366 |
 | Advisory | 4 |
-| Violations / KLOC | 17.5 |
+| Violations / KLOC | 17.39 |
 | Rules Violated | 3 |
 | Files Affected | 186 |
 

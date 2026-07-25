@@ -1,18 +1,18 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-23T01:44:08.159381",
+  "generated_at": "2026-07-26T01:53:37.470397",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "failed",
-      "commit": "0eabb19",
-      "started_at": "2026-07-23T01:42:59.297245",
-      "completed_at": "2026-07-23T01:44:08.156842",
+      "status": "passed",
+      "commit": "602cb93",
+      "started_at": "2026-07-26T01:52:27.178073",
+      "completed_at": "2026-07-26T01:53:37.467814",
       "stages_summary": {
-        "total": 29,
-        "passed": 25,
-        "failed": 1,
+        "total": 30,
+        "passed": 27,
+        "failed": 0,
         "skipped": 0
       },
       "stages": [
@@ -38,8 +38,8 @@
         },
         {
           "name": "plan-lint",
-          "status": "failed",
-          "detail": "/Users/stefan/.openclaw/workspace/yuleASR/tasks/v130-to-v140-plan.md: Missing kind classification; /Users/stefan/.openclaw/workspace/yuleASR/tasks/v130-to-v140-plan.md: Missing T00 three-step sections"
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "docsync-gate",
@@ -54,7 +54,7 @@
         {
           "name": "misra-check",
           "status": "warning",
-          "detail": "1141 MISRA violation(s) (372 required, 4 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": "1134 MISRA violation(s) (366 required, 4 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -152,6 +152,11 @@
           "detail": "line=21.62162162162162%, cond=21.62162162162162%"
         },
         {
+          "name": "coverage-regression",
+          "status": "passed",
+          "detail": "No regression detected"
+        },
+        {
           "name": "c-coverage",
           "status": "warning",
           "detail": "lcov/gcov may not be installed"
@@ -168,16 +173,14 @@
         "line_pass": true,
         "condition_pass": true
       },
-      "errors": [
-        "plan-lint failed"
-      ]
+      "errors": []
     }
   ],
   "misra": {
-    "total_violations": 1141,
-    "required": 372,
+    "total_violations": 1134,
+    "required": 366,
     "advisory": 4,
-    "violations_per_kloc": 17.5,
+    "violations_per_kloc": 17.39,
     "rules_violated": 3,
     "files_affected": 186
   },

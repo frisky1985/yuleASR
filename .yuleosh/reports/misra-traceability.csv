@@ -223,10 +223,10 @@ misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eep/include/Eep.h,130,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/eep/include/Eep.h,213,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/flash/include/Flash.h,89,0,error,syntax error: 0u = [syntaxError],,,,,True,unresolved
-,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,126,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
-,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,132,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
-,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,138,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
-,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,238,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
+,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,142,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
+,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,148,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
+,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,154,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
+,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,264,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/adc/include/Adc.h,248,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/adc/include/Adc.h,253,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/adc/include/Adc.h,259,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
@@ -243,7 +243,6 @@ misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/port/include/Port.h,120,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/port/include/Port.h,189,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/src/Mcu.c,19,0,information,"Include file: ""Mcu_Reg.h"" not found. [missingInclude]",,,,,True,unresolved
-,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/mcu/include/Mcu.h,73,0,error,syntax error [syntaxError],,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/uart/src/Uart.c,148,0,error,syntax error: | typedef [syntaxError],,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/icu/include/Icu.h,202,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/icu/include/Icu.h,207,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
@@ -503,12 +502,6 @@ misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h,167,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h,173,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939nm/include/J1939Nm.h,310,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
-misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c,145,0,style,misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9],SWE-MISRA-S1,cppcheck,,cppcheck,True,unresolved
-misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c,162,0,style,misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9],SWE-MISRA-S1,cppcheck,,cppcheck,True,unresolved
-misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c,921,0,style,misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9],SWE-MISRA-S1,cppcheck,,cppcheck,True,unresolved
-misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c,946,0,style,misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9],SWE-MISRA-S1,cppcheck,,cppcheck,True,unresolved
-misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c,1035,0,style,misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9],SWE-MISRA-S1,cppcheck,,cppcheck,True,unresolved
-misra-c2023-11.9,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c,1057,0,style,misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9],SWE-MISRA-S1,cppcheck,,cppcheck,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h,238,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h,243,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved
 ,/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/include/CanTp.h,249,0,information,"Include file: ""MemMap.h"" not found. [missingInclude]",,,,,True,unresolved

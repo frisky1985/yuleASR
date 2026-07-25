@@ -142,7 +142,7 @@ void Xcp_MainFunction(void)
  */
 void Xcp_RxIndication(const uint8 *data, uint16 length)
 {
-    if ((data == NULL) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
+    if ((data == NULL_PTR) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
         return;
     }
 
@@ -159,7 +159,7 @@ void Xcp_ProcessCommand(const uint8 *cmd, uint8 len)
 {
     uint8 pid;
 
-    if ((cmd == NULL) || (len == 0U )) {
+    if ((cmd == NULL_PTR) || (len == 0U )) {
         return;
     }
 
@@ -918,7 +918,7 @@ uint8 Xcp_CopyCalPage(uint8 srcSeg, uint8 srcPage, uint8 destSeg, uint8 destPage
  */
 void Xcp_SendResponse(const uint8 *data, uint8 len)
 {
-    if ((data != NULL) && (len > 0U ) && (len <= XCP_CTO_SIZE)) {
+    if ((data != NULL_PTR) && (len > 0U ) && (len <= XCP_CTO_SIZE)) {
         Xcp_SendPacket(data, len);
     }
 }
@@ -943,7 +943,7 @@ void Xcp_SendError(uint8 errorCode)
 static void Xcp_SendPacket(const uint8 *data, uint8 len)
 {
     /* Copy to TX buffer */
-    if ((data != NULL) && (len <= XCP_CTO_SIZE)) {
+    if ((data != NULL_PTR) && (len <= XCP_CTO_SIZE)) {
         (void)memcpy(Xcp_TxBuffer, data, len);
         /* In a full implementation, call transport layer TX function */
         /* e.g., CanIf_Transmit() for XCP on CAN */
@@ -1032,7 +1032,7 @@ uint8 Xcp_MtaRead(uint8 *buffer, uint8 count)
 {
     uint8 i;
 
-    if (buffer == NULL) {
+    if (buffer == NULL_PTR) {
         return E_ERR_OUT_OF_RANGE;
     }
 
@@ -1054,7 +1054,7 @@ uint8 Xcp_MtaWrite(const uint8 *buffer, uint8 count)
 {
     uint8 i;
 
-    if (buffer == NULL) {
+    if (buffer == NULL_PTR) {
         return E_ERR_OUT_OF_RANGE;
     }
 

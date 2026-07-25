@@ -1,6 +1,6 @@
 {
   "schema_version": "misra-report-v2",
-  "generated_at": "2026-07-23T01:43:49.299263",
+  "generated_at": "2026-07-26T01:53:44.376190",
   "tool_version": "Cppcheck 2.17.1 from cppcheck-wheel 1.5.1",
   "ruleset_version": "2023",
   "ci_environ": {
@@ -10,32 +10,32 @@
     "job_name": "",
     "workspace": ""
   },
-  "total_violations": 1141,
+  "total_violations": 1134,
   "unique_rules": 3,
   "affected_files": 186,
-  "total_source_lines": 65186,
+  "total_source_lines": 65212,
   "by_severity": {
     "information": 427,
-    "style": 685,
-    "error": 17,
+    "style": 679,
+    "error": 16,
     "portability": 2,
     "warning": 2,
     "note": 8
   },
   "by_rule_type": {
-    "unknown": 765,
+    "unknown": 764,
     "advisory": 4,
-    "required": 372
+    "required": 366
   },
-  "density_per_kloc": 17.5,
+  "density_per_kloc": 17.39,
   "category_breakdown": {
-    "unknown": 765,
+    "unknown": 764,
     "基本类型 (Essential Types)": 4,
-    "指针 (Pointer)": 372
+    "指针 (Pointer)": 366
   },
   "groups": {
     "unknown": {
-      "count": 765,
+      "count": 764,
       "violations": [
         {
           "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h",
@@ -1438,7 +1438,7 @@
           "rule_type": "unknown"
         }
       ],
-      "total": 765
+      "total": 764
     },
     "misra-c2023-10.5": {
       "count": 4,
@@ -1503,7 +1503,7 @@
       "total": 4
     },
     "misra-c2023-11.9": {
-      "count": 372,
+      "count": 366,
       "violations": [
         {
           "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c",
@@ -2892,9 +2892,9 @@
           "rule_type": "required"
         },
         {
-          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c",
-          "line": 145,
-          "column": 15,
+          "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c",
+          "line": 11,
+          "column": 44,
           "severity": "style",
           "message": "misra violation 1109 with no text in the supplied rule-texts-file [misra-c2012-11.9]",
           "rule_id": "misra-c2023-11.9",
@@ -2906,7 +2906,7 @@
           "rule_type": "required"
         }
       ],
-      "total": 372
+      "total": 366
     }
   },
   "deviations": [
