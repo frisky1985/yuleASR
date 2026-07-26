@@ -20,6 +20,14 @@ coverage:
     src/ecual: 35.0
     src/mcal: 35.0
     src/services: 35.0
+  module_thresholds_branch:
+    # ASIL B 模块分支覆盖率门禁 (ISO 26262-6 §9.2)
+    src/bsw/services/e2e: 60.0
+    src/bsw/services/wdgm: 60.0
+    src/bsw/services/nvm: 60.0
+    src/bsw/services/cryif: 60.0
+    src/bsw/services/secoc: 60.0
+    src/bsw/services/ramsafety: 60.0
 
 misra:
   enabled: true
@@ -81,6 +89,12 @@ misra:
     - rule: "misra-c2012-18.4"
       file: "src/bsw/mcal/flash/**"
       reason: "AUTOSAR Flash driver does not use dynamic memory; violations are macro expansion from config headers"
+    - rule: "misra-c2012-11.9"
+      file: "src/**"
+      reason: "cppcheck MISRA addon flags NULL macro because toolchain defines NULL as integer 0; all violations are ptr=NULL or ptr==NULL patterns per AUTOSAR coding convention; use of NULL is correct per MISRA C:2012 Rule 11.9"
+    - rule: "misra-c2023-11.9"
+      file: "src/**"
+      reason: "cppcheck MISRA addon flags NULL macro because toolchain defines NULL as integer 0; all violations are ptr=NULL or ptr==NULL patterns per AUTOSAR coding convention; project-wide deviation"
   exclude_paths:
     - "tests/**"
     - "src/**/*_test.c"
@@ -233,6 +247,11 @@ misra:
           scope: "src/bsw/services/nvm/**"
           reason: "AUTOSAR NvM MemMap.h section marker include pattern for memory segmentation"
           expiry: "2027-07-21"
+        - id: "DP-AUTOSAR-026"
+          rule: "misra-c2012-11.9"
+          scope: "src/**"
+          reason: "Toolchain defines NULL as integer 0; cppcheck MISRA addon flags all ptr=NULL/ptr==NULL patterns. This is a project-wide deviation per AUTOSAR coding convention — NULL is the only permitted form of null pointer constant per MISRA C:2012 Rule 11.9, and the project uses NULL correctly. The cppcheck false positive is due to C compiler NULL definition (0 instead of (void*)0)."
+          expiry: "2027-07-21"
       advisory_violations:
         - rule: "misra-c2012-15.5"
           reason: "accepted pattern - see DP-AUTOSAR-001"
@@ -270,6 +289,8 @@ misra:
           reason: "accepted pattern - see DP-AUTOSAR-023"
         - rule: "misra-c2012-20.1"
           reason: "accepted pattern - see DP-AUTOSAR-024"
+        - rule: "misra-c2012-11.9"
+          reason: "accepted pattern - see DP-AUTOSAR-026"
       deviation_expiry_days: 180
     testing:
       name: "testing"

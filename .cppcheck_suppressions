@@ -501,3 +501,9 @@ syntaxError:src/bsw/services/fim/src/FiM.c
 syntaxError:src/bsw/services/doip/src/DoIp.c
 # Clean up old suppressions that don't match any code
 unmatchedSuppression
+
+
+# ----- Test file suppressions: Rule 11.9 (Required) -----
+# micro-dds unity test framework uses TEST_ASSERT_NOT_NULL and TEST_ASSERT_EQUAL
+# macros that internally compare pointers with NULL. These are test-only violations.
+misra-c2012-11.9:src/micro-dds/tests/unity/*

@@ -100,6 +100,9 @@ Cast between pointer to void and arithmetic type shall not be performed
 Rule 11.8 Required
 Cast shall not remove const/volatile from pointer qualification
 
+Rule 11.9 Required
+The macro NULL shall be the only permitted form of integer null pointer constant
+
 Rule 12.1 Advisory
 Operator precedence within expressions should be made explicit
 

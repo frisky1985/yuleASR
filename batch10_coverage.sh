@@ -388,16 +388,18 @@ done
 echo ""
 echo "=== Phase 3: lcov 覆盖率捕获 ==="
 
+LCOV_RC="--rc branch_coverage=1"
+
 # 收集所有 .gcda
-lcov --capture --directory "$BUILD_DIR/bin" --output-file coverage_raw.info 2>&1 || true
+lcov $LCOV_RC --capture --directory "$BUILD_DIR/bin" --output-file coverage_raw.info 2>&1 || true
 
 if [ -f coverage_raw.info ]; then
     # 移除外部/测试代码
-    lcov --remove coverage_raw.info '/usr/*' '*/third_party/*' '*/tests/*' '*/coverage_run/*' \
+    lcov $LCOV_RC --remove coverage_raw.info '/usr/*' '*/third_party/*' '*/tests/*' '*/coverage_run/*' \
          --output-file coverage_filtered.info 2>&1 || cp coverage_raw.info coverage_filtered.info
     
     # 只保留 src/ 目录下的生产代码
-    lcov --extract coverage_filtered.info "$PROJECT_DIR/src/*" \
+    lcov $LCOV_RC --extract coverage_filtered.info "$PROJECT_DIR/src/*" \
          --output-file coverage_src.info 2>&1 || true
     
     FINAL="coverage_filtered.info"
@@ -406,13 +408,13 @@ if [ -f coverage_raw.info ]; then
     fi
     
     echo ""
-    echo "=== 覆盖率摘要 ==="
-    lcov --summary "$FINAL" 2>&1 || true
+    echo "=== 覆盖率摘要 (含分支) ==="
+    lcov $LCOV_RC --summary "$FINAL" 2>&1 || true
     
     echo ""
     echo "=== 生成 HTML 报告 ==="
     mkdir -p coverage_report
-    genhtml "$FINAL" --output-directory coverage_report 2>&1 | tail -5
+    genhtml $LCOV_RC --branch-coverage "$FINAL" --output-directory coverage_report 2>&1 | tail -5
     echo ""
     echo "HTML 报告: coverage_report/index.html"
     
