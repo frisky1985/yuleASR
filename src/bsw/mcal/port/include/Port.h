@@ -12,8 +12,8 @@
  *          the configuration of individual port pins.
  */
 
-#ifndef PORT_H
-#define PORT_H
+#ifndef PORT_HEADER_H
+#define PORT_HEADER_H
 
 /*==================================================================================================
 *                                          INCLUDE FILES
@@ -61,6 +61,7 @@
 #define PORT_E_MODE_UNCHANGEABLE                0x0EU
 #define PORT_E_UNINIT                           0x0FU
 #define PORT_E_PARAM_POINTER                    0x10U
+#define PORT_E_ALREADY_INITIALIZED              0x11U
 
 /*==================================================================================================
 *                                          TYPE DEFINITIONS
@@ -98,7 +99,7 @@ typedef struct {
 /** @brief Port configuration structure */
 typedef struct {
     uint16 NumPins;                             /**< Number of configured pins */
-    const Port_PinConfigType* PinConfig;        /**< Pointer to pin configurations */
+    const Port_PinConfigType* PinConfigs;       /**< Pointer to pin configurations */
 } Port_ConfigType;
 
 /*==================================================================================================
@@ -192,4 +193,4 @@ void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode);
 *                                      INLINE FUNCTIONS
 ==================================================================================================*/
 
-#endif /* PORT_H */
+#endif /* PORT_HEADER_H */

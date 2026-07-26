@@ -22,9 +22,7 @@
 #include "Icu_Cfg.h"
 #include "Det.h"
 
-/* Register access macros */
-#define REG_READ32(address)                     (*(volatile uint32*)(address))
-#define REG_WRITE32(address, value)             ((*(volatile uint32*)(address)) = (value))
+/* REG_MODIFY32 convenience macro - uses global REG_READ32/REG_WRITE32 from Std_Types.h */
 #define REG_MODIFY32(address, mask, value)      (REG_WRITE32((address), (REG_READ32(address) & ~(mask)) | ((value) & (mask))))
 
 /*==================================================================================================
@@ -490,6 +488,11 @@ void Icu_DisableWakeup(Icu_ChannelType Channel)
     
     Icu_ChannelWakeupEnabled[Channel] = FALSE;
 }
+#else
+void Icu_DisableWakeup(Icu_ChannelType Channel)
+{
+    (void)Channel;
+}
 #endif
 
 #if (ICU_ENABLE_WAKEUP_API == STD_ON)
@@ -507,6 +510,11 @@ void Icu_EnableWakeup(Icu_ChannelType Channel)
     #endif
     
     Icu_ChannelWakeupEnabled[Channel] = TRUE;
+}
+#else
+void Icu_EnableWakeup(Icu_ChannelType Channel)
+{
+    (void)Channel;
 }
 #endif
 
@@ -531,6 +539,12 @@ Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
         }
     }
     
+    return E_NOT_OK;
+}
+#else
+Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
+{
+    (void)WakeupSource;
     return E_NOT_OK;
 }
 #endif

@@ -21,6 +21,16 @@
 #include "Spi.h"
 #include "Mcu.h"
 
+/* 外部函数声明 */
+extern uint32 Gpt_GetTimeElapsed(uint8 Channel);
+
+/* 外部DMA函数声明 - 由DMA驱动模块提供 */
+extern void Dma_ConfigTx(uint8 Channel, uint32 SrcAddr, uint32 DstAddr, uint32 Length);
+extern void Dma_ConfigRx(uint8 Channel, uint32 SrcAddr, uint32 DstAddr, uint32 Length);
+extern void Dma_EnableChannel(uint8 Channel);
+extern void Dma_DisableChannel(uint8 Channel);
+
+
 #if (SPI_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"
 
@@ -102,6 +112,7 @@ typedef struct {
     uint8*                  RxBuffer;
     uint32                  Length;
     uint32                  Transferred;
+    uint32                  TxSent;
     boolean                 DmaActive;
     uint32                  StartTime;
 } Spi_ChannelStateType;
@@ -114,6 +125,11 @@ static Spi_ChannelStateType Spi_ChannelState[SPI_CHANNEL_COUNT];
 #else
     #define SPI_VALIDATE_INITIALIZED(ApiId)
 #endif
+
+/* 前向声明 */
+static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate);
+static uint32 Spi_GetCurrentTime(void);
+static uint32 Spi_GetElapsedTime(uint32 StartTime);
 
 /**
  * @brief SPI初始化
@@ -199,7 +215,7 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
     boolean found = FALSE;
     for (preDiv = 0; preDiv < 16 && !found; preDiv++) {
         for (postDiv = 0; postDiv < 16; postDiv++) {
-            if ((1u << preDiv) * (postDiv + 1)) >= tempDiv) {
+            if (((1u << preDiv) * (postDiv + 1)) >= tempDiv) {
                 found = TRUE;
                 break;
             }
@@ -214,7 +230,7 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
  * @brief SPI反初始化
  * @req SHALL_SPI - SPI反初始化
  */
-void Spi_DeInit(void)
+Std_ReturnType Spi_DeInit(void)
 {
     uint8 i;
     
@@ -228,6 +244,8 @@ void Spi_DeInit(void)
     Spi_ConfigPtr = NULL_PTR;
     Spi_Initialized = FALSE;
     Spi_Status = SPI_UNINIT;
+    
+    return E_OK;
 }
 
 /**
@@ -326,6 +344,7 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
     
     const Spi_ExternalDeviceType* dev = &Spi_ConfigPtr->DeviceConfig[DeviceId];
     uint8 channel = dev->ChannelId;
+    volatile uint32* base = Spi_BaseAddr[channel];
     const Spi_ChannelConfigType* chCfg = &Spi_ConfigPtr->ChannelConfig[channel];
     Spi_ChannelStateType* state = &Spi_ChannelState[channel];
     

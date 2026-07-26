@@ -115,9 +115,15 @@ void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
         if (baseAddr != 0U) {
             Pwm_EnableClock(chConfig->ChannelId);
 
-            /* Software reset */
+            /* Software reset with timeout protection */
             REG_WRITE32(baseAddr + PWM_CR, PWM_CR_SWR);
-            while ((REG_READ32(baseAddr + PWM_CR) & PWM_CR_SWR) != 0U) { }
+            {
+                uint32 pwm_swr_timeout = 10000U;
+                while ((REG_READ32(baseAddr + PWM_CR) & PWM_CR_SWR) != 0U) {
+                    if (pwm_swr_timeout == 0U) break;
+                    pwm_swr_timeout--;
+                }
+            }
 
             /* Configure period */
             REG_WRITE32(baseAddr + PWM_PR, chConfig->DefaultPeriod);

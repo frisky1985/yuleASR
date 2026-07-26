@@ -144,9 +144,15 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
         if (baseAddr != 0U) {
             Gpt_EnableClock(chConfig->ChannelId);
 
-            /* Software reset */
+            /* Software reset with timeout protection */
             REG_WRITE32(baseAddr + GPT_CR, GPT_CR_SWR);
-            while ((REG_READ32(baseAddr + GPT_CR) & GPT_CR_SWR) != 0U) { }
+            {
+                uint32 gpt_swr_timeout = 10000U;
+                while ((REG_READ32(baseAddr + GPT_CR) & GPT_CR_SWR) != 0U) {
+                    if (gpt_swr_timeout == 0U) break;
+                    gpt_swr_timeout--;
+                }
+            }
 
             /* Configure prescaler */
             uint32 prValue = (1U << chConfig->ClockPrescaler) - 1U;
@@ -451,6 +457,22 @@ Std_ReturnType Gpt_CheckWakeup(Gpt_ChannelType Channel)
         return E_NOT_OK;
     }
     #endif
+    (void)Channel;
+    return E_NOT_OK;
+}
+#else
+void Gpt_DisableWakeup(Gpt_ChannelType Channel)
+{
+    (void)Channel;
+}
+
+void Gpt_EnableWakeup(Gpt_ChannelType Channel)
+{
+    (void)Channel;
+}
+
+Std_ReturnType Gpt_CheckWakeup(Gpt_ChannelType Channel)
+{
     (void)Channel;
     return E_NOT_OK;
 }

@@ -32,6 +32,7 @@
 #define SPI_SW_MINOR_VERSION           0U
 #define SPI_SW_PATCH_VERSION           0U
 #define SPI_MODULE_ID               0x21u
+#define SPI_INSTANCE_ID             0x00u
 
 /* 错误码 */
 #define SPI_E_PARAM_CHANNEL         0x0Au
@@ -137,7 +138,7 @@ typedef struct {
 
 /* API函数 */
 extern void Spi_Init(const Spi_ConfigType* Config);
-extern void Spi_DeInit(void);
+extern Std_ReturnType Spi_DeInit(void);
 extern Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxData, uint32 Length);
 extern Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxData, uint32 Length);
 extern Spi_StatusType Spi_GetStatus(void);
