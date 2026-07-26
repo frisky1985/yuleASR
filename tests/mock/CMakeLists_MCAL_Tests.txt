@@ -1,0 +1,317 @@
+#===================================================================================================
+# Project              : YuleTech AutoSAR BSW
+# Module               : MCAL Unit Tests (links real production source with MockHAL)
+#
+# (c) Copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
+# All Rights Reserved.
+#
+# @file CMakeLists.txt
+# @brief CMake build for MCAL unit tests that compile real MCAL production source
+#        against MockHAL memory-backed register table.
+#
+# Usage:
+#   mkdir build && cd build
+#   cmake .. -DBUILD_TESTING=ON -DENABLE_COVERAGE=ON
+#   make mcal_dio_test
+#   ./tests/mcal_dio_test
+#===================================================================================================
+
+cmake_minimum_required(VERSION 3.16)
+
+# Only build MCAL tests when testing is enabled and we're not cross-compiling
+if(NOT BUILD_TESTING OR CMAKE_CROSSCOMPILING)
+    return()
+endif()
+
+#----------------------------------------------------------------------
+# Find Unity test framework
+#----------------------------------------------------------------------
+set(UNITY_ROOT "${CMAKE_SOURCE_DIR}/third_party/unity")
+set(UNITY_DIR "${CMAKE_SOURCE_DIR}/tests/unit/framework")
+
+if(EXISTS ${UNITY_ROOT}/src/unity.c)
+    set(UNITY_C ${UNITY_ROOT}/src/unity.c)
+    set(UNITY_H ${UNITY_ROOT}/src/unity.h)
+elseif(EXISTS ${UNITY_DIR}/unity.c)
+    set(UNITY_C ${UNITY_DIR}/unity.c)
+    set(UNITY_H ${UNITY_DIR}/unity.h)
+else()
+    message(WARNING "Unity test framework not found; MCAL tests will not build")
+    return()
+endif()
+
+#----------------------------------------------------------------------
+# Source directories
+#----------------------------------------------------------------------
+set(SRC_MCAL ${CMAKE_SOURCE_DIR}/src/bsw/mcal)
+set(SRC_OS   ${CMAKE_SOURCE_DIR}/src/bsw/os)
+set(SRC_DET  ${CMAKE_SOURCE_DIR}/src/bsw/services/det)
+set(MOCK_DIR ${CMAKE_SOURCE_DIR}/tests/mock)
+
+#----------------------------------------------------------------------
+# Base include directories for all MCAL tests
+#----------------------------------------------------------------------
+set(MCAL_TEST_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/include/autosar
+    ${CMAKE_SOURCE_DIR}/coverage_run            # Contains Det.c stubs, Std_Types.h stub
+    ${SRC_OS}/include
+    ${SRC_DET}/include
+    ${SRC_MCAL}/dio/include
+    ${SRC_MCAL}/can/include
+    ${SRC_MCAL}/pwm/include
+    ${SRC_MCAL}/gpt/include
+    ${SRC_MCAL}/icu/include
+    ${SRC_MCAL}/adc/include
+    ${SRC_MCAL}/spi/include
+    ${SRC_MCAL}/port/include
+    ${SRC_MCAL}/wdg/include
+    ${SRC_MCAL}/mcu/include
+    ${MOCK_DIR}
+)
+
+#----------------------------------------------------------------------
+# Helper function: add_mcal_test
+#
+# Usage:
+#   add_mcal_test(
+#     NAME        <target_name>
+#     TEST_FILE   <path/to/test.c>
+#     MCAL_SRCS   <src1.c> [src2.c ...]   # Real production MCAL sources
+#     MOCK_SRCS   <mock1.c> [mock2.c ...] # Mock/stub sources
+#     DEFINES     <DEF1=VAL1> [DEF2=VAL2] # Compile definitions
+#   )
+#----------------------------------------------------------------------
+function(add_mcal_test)
+    cmake_parse_arguments(ARG "" "NAME;TEST_FILE" "MCAL_SRCS;MOCK_SRCS;DEFINES" ${ARGN})
+
+    set(TEST_TARGET "${ARG_NAME}")
+
+    # Collect sources
+    set(SOURCES
+        ${ARG_TEST_FILE}
+        ${UNITY_C}
+        ${ARG_MCAL_SRCS}
+        ${ARG_MOCK_SRCS}
+    )
+
+    # Add MockHAL library
+    add_executable(${TEST_TARGET} ${SOURCES})
+
+    # Force-include mock_hal.h before all translation units so production
+    # source files (which use REG_READ32/REG_WRITE32) have the mock
+    # function declarations available.
+    target_compile_options(${TEST_TARGET} PRIVATE
+        -include ${MOCK_DIR}/mock_hal.h
+    )
+
+    # Include directories
+    target_include_directories(${TEST_TARGET} PRIVATE
+        ${MCAL_TEST_INCLUDES}
+        ${CMAKE_CURRENT_BINARY_DIR}       # For generated config headers
+    )
+
+    # Compile definitions — redirect REG_READ32/REG_WRITE32 to mock_hal
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        # Redirect register access macros to MockHAL
+        REG_READ32=mock_hal_read32
+        REG_WRITE32=mock_hal_write32
+        REG_READ16=mock_hal_read16
+        REG_WRITE16=mock_hal_write16
+        REG_READ8=mock_hal_read8
+        REG_WRITE8=mock_hal_write8
+        ${ARG_DEFINES}
+    )
+
+    # Compile options
+    target_compile_options(${TEST_TARGET} PRIVATE
+        -Wall
+        -Wextra
+        -Wno-unused-parameter
+        -Wno-unused-variable
+        -Wno-unused-function
+        -Wno-int-conversion
+        -Wno-implicit-int
+        -Wno-implicit-function-declaration
+        -Wno-excess-initializers
+        -g
+        -O0
+    )
+
+    # Link MockHAL
+    target_link_libraries(${TEST_TARGET} PRIVATE MockHAL)
+
+    # Link coverage when enabled
+    if(ENABLE_COVERAGE)
+        target_compile_options(${TEST_TARGET} PRIVATE --coverage)
+        target_link_libraries(${TEST_TARGET} PRIVATE gcov)
+    endif()
+
+    # Register test
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+
+    message(STATUS "  MCAL test: ${TEST_TARGET}")
+endfunction()
+
+#----------------------------------------------------------------------
+# Build MockHAL library first
+#----------------------------------------------------------------------
+add_subdirectory(${MOCK_DIR} ${CMAKE_BINARY_DIR}/mock_hal)
+
+#----------------------------------------------------------------------
+# Test runner source directory
+#----------------------------------------------------------------------
+file(GLOB MCAL_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_*.c)
+list(APPEND MCAL_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_*.c)
+
+#----------------------------------------------------------------------
+# DIO test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_dio.c)
+    add_mcal_test(
+        NAME        mcal_dio_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_dio.c
+        MCAL_SRCS
+            ${SRC_MCAL}/dio/src/Dio.c
+            ${SRC_MCAL}/dio/src/Dio_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# PWM test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_pwm.c)
+    add_mcal_test(
+        NAME        mcal_pwm_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_pwm.c
+        MCAL_SRCS
+            ${SRC_MCAL}/pwm/src/Pwm.c
+            ${SRC_MCAL}/pwm/src/Pwm_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# CAN test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_can.c)
+    add_mcal_test(
+        NAME        mcal_can_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_can.c
+        MCAL_SRCS
+            ${SRC_MCAL}/can/src/Can.c
+            ${SRC_MCAL}/can/src/Can_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# GPT test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_gpt.c)
+    add_mcal_test(
+        NAME        mcal_gpt_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_gpt.c
+        MCAL_SRCS
+            ${SRC_MCAL}/gpt/src/Gpt.c
+            ${SRC_MCAL}/gpt/src/Gpt_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# ICU test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_icu.c)
+    add_mcal_test(
+        NAME        mcal_icu_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_icu.c
+        MCAL_SRCS
+            ${SRC_MCAL}/icu/src/Icu.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# ADC test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_adc.c)
+    add_mcal_test(
+        NAME        mcal_adc_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_adc.c
+        MCAL_SRCS
+            ${SRC_MCAL}/adc/src/Adc.c
+            ${SRC_MCAL}/adc/src/Adc_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# PORT test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_port.c)
+    add_mcal_test(
+        NAME        mcal_port_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_port.c
+        MCAL_SRCS
+            ${SRC_MCAL}/port/src/Port.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# WDG test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_wdg.c)
+    add_mcal_test(
+        NAME        mcal_wdg_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_wdg.c
+        MCAL_SRCS
+            ${SRC_MCAL}/wdg/src/Wdg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# SPI test
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_spi.c)
+    add_mcal_test(
+        NAME        mcal_spi_test
+        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_spi.c
+        MCAL_SRCS
+            ${SRC_MCAL}/spi/src/Spi.c
+            ${SRC_MCAL}/spi/src/Spi_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# Combined test targets
+#----------------------------------------------------------------------
+if(BUILD_TESTING)
+    add_custom_target(mcal-all-tests
+        COMMAND ${CMAKE_CTEST_COMMAND} -R "mcal_" --output-on-failure
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Running all MCAL module tests"
+    )
+
+    add_custom_target(mcal-coverage
+        COMMAND ${CMAKE_CTEST_COMMAND} -R "mcal_" --output-on-failure
+        COMMAND ${CMAKE_COMMAND} -E echo "Coverage data in .gcda files"
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        COMMENT "Run MCAL tests, then run gcov/lcov for coverage"
+    )
+endif()
+
+message(STATUS "MCAL unit tests configured with MockHAL (${MCAL_TEST_SRCS})")
