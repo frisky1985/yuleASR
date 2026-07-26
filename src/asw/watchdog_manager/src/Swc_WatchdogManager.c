@@ -353,7 +353,7 @@ Rte_StatusType Swc_WatchdogManager_RegisterEntity(const Swc_SupervisedEntityConf
 {
     sint16 entityIndex;
 
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -427,7 +427,7 @@ Rte_StatusType Swc_WatchdogManager_GetEntityStatus(uint8 entityId,
 {
     sint16 entityIndex;
 
-    if (status == NULL) {
+    if (status == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -478,7 +478,7 @@ Rte_StatusType Swc_WatchdogManager_SetEntityActive(uint8 entityId, boolean activ
  */
 Rte_StatusType Swc_WatchdogManager_GetStatus(Swc_WatchdogManagerStatusType* status)
 {
-    if (status == NULL) {
+    if (status == NULL_PTR) {
         return RTE_E_INVALID;
     }
 

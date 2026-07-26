@@ -356,7 +356,7 @@ void Swc_CommunicationManager_TxProcess(void)
  */
 Rte_StatusType Swc_CommunicationManager_GetState(Swc_CommStateType* state)
 {
-    if (state == NULL) {
+    if (state == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -429,7 +429,7 @@ Rte_StatusType Swc_CommunicationManager_ReceiveSignal(uint16 signalId, uint64* v
 {
     sint16 signalIndex;
 
-    if (value == NULL) {
+    if (value == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -459,7 +459,7 @@ Rte_StatusType Swc_CommunicationManager_SendPdu(const Swc_PduInfoType* pdu)
 {
     sint16 pduIndex;
 
-    if (pdu == NULL) {
+    if (pdu == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -503,7 +503,7 @@ Rte_StatusType Swc_CommunicationManager_ReceivePdu(uint16 pduId, Swc_PduInfoType
 {
     sint16 pduIndex;
 
-    if (pdu == NULL) {
+    if (pdu == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -528,7 +528,7 @@ Rte_StatusType Swc_CommunicationManager_ReceivePdu(uint16 pduId, Swc_PduInfoType
  */
 Rte_StatusType Swc_CommunicationManager_GetStatistics(Swc_CommStatisticsType* stats)
 {
-    if (stats == NULL) {
+    if (stats == NULL_PTR) {
         return RTE_E_INVALID;
     }
 

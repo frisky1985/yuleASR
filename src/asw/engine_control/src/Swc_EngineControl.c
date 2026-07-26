@@ -423,7 +423,7 @@ void Swc_EngineControl_StateMachine(void)
  */
 Rte_StatusType Swc_EngineControl_GetEngineState(Swc_EngineStateType* state)
 {
-    if (state == NULL) {
+    if (state == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -457,7 +457,7 @@ Rte_StatusType Swc_EngineControl_SetControlMode(Swc_EngineControlModeType mode)
  */
 Rte_StatusType Swc_EngineControl_GetEngineParameters(Swc_EngineParametersType* params)
 {
-    if (params == NULL) {
+    if (params == NULL_PTR) {
         return RTE_E_INVALID;
     }
 

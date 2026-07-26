@@ -387,7 +387,7 @@ void Swc_VehicleDynamics_20ms(void)
  */
 Rte_StatusType Swc_VehicleDynamics_GetVdcState(Swc_VdcStateType* state)
 {
-    if (state == NULL) {
+    if (state == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -429,7 +429,7 @@ Rte_StatusType Swc_VehicleDynamics_SetVdcMode(Swc_VdcModeType mode)
  */
 Rte_StatusType Swc_VehicleDynamics_GetMotionData(Swc_VehicleMotionType* motion)
 {
-    if (motion == NULL) {
+    if (motion == NULL_PTR) {
         return RTE_E_INVALID;
     }
 

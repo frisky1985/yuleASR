@@ -366,7 +366,7 @@ void Swc_ModeManager_ModeSwitch(void)
 Swc_ModeTransitionResultType Swc_ModeManager_RequestModeTransition(
     const Swc_ModeTransitionRequestType* request)
 {
-    if (request == NULL) {
+    if (request == NULL_PTR) {
         return MODE_TRANSITION_REJECTED;
     }
 
@@ -403,7 +403,7 @@ Swc_ModeTransitionResultType Swc_ModeManager_RequestModeTransition(
  */
 Rte_StatusType Swc_ModeManager_GetCurrentMode(Swc_SystemModeType* mode)
 {
-    if (mode == NULL) {
+    if (mode == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -420,7 +420,7 @@ Rte_StatusType Swc_ModeManager_GetCurrentMode(Swc_SystemModeType* mode)
  */
 Rte_StatusType Swc_ModeManager_GetPreviousMode(Swc_SystemModeType* mode)
 {
-    if (mode == NULL) {
+    if (mode == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -437,7 +437,7 @@ Rte_StatusType Swc_ModeManager_GetPreviousMode(Swc_SystemModeType* mode)
  */
 Rte_StatusType Swc_ModeManager_GetSystemState(Swc_SystemStateType* state)
 {
-    if (state == NULL) {
+    if (state == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -454,7 +454,7 @@ Rte_StatusType Swc_ModeManager_GetSystemState(Swc_SystemStateType* state)
  */
 Rte_StatusType Swc_ModeManager_GetStatus(Swc_ModeManagerStatusType* status)
 {
-    if (status == NULL) {
+    if (status == NULL_PTR) {
         return RTE_E_INVALID;
     }
 

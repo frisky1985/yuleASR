@@ -596,7 +596,7 @@ Rte_StatusType Swc_DiagnosticManager_ChangeSession(Swc_DiagnosticSessionType ses
  */
 Rte_StatusType Swc_DiagnosticManager_GetSession(Swc_DiagnosticSessionType* session)
 {
-    if (session == NULL) {
+    if (session == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -610,7 +610,7 @@ Rte_StatusType Swc_DiagnosticManager_GetSession(Swc_DiagnosticSessionType* sessi
 Rte_StatusType Swc_DiagnosticManager_UnlockSecurity(Swc_SecurityLevelType level,
                                                      const uint8* key)
 {
-    if (key == NULL || level > SECURITY_LEVEL_3) {
+    if (key == NULL_PTR || level > SECURITY_LEVEL_3) {
         return RTE_E_INVALID;
     }
 
@@ -628,7 +628,7 @@ Rte_StatusType Swc_DiagnosticManager_UnlockSecurity(Swc_SecurityLevelType level,
  */
 Rte_StatusType Swc_DiagnosticManager_GetSecurityLevel(Swc_SecurityLevelType* level)
 {
-    if (level == NULL) {
+    if (level == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -643,7 +643,7 @@ Rte_StatusType Swc_DiagnosticManager_ProcessDiagnosticRequest(
     const Swc_DiagnosticRequestType* request,
     Swc_DiagnosticResponseType* response)
 {
-    if (request == NULL || response == NULL) {
+    if (request == NULL_PTR || response == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -662,7 +662,7 @@ Rte_StatusType Swc_DiagnosticManager_GetDtcStatus(uint32 dtcCode, Swc_DtcStatusT
 {
     uint8 i;
 
-    if (status == NULL) {
+    if (status == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -716,7 +716,7 @@ Rte_StatusType Swc_DiagnosticManager_ClearDtc(uint32 dtcCode)
  */
 Rte_StatusType Swc_DiagnosticManager_GetStatus(Swc_DiagnosticManagerStatusType* status)
 {
-    if (status == NULL) {
+    if (status == NULL_PTR) {
         return RTE_E_INVALID;
     }
 

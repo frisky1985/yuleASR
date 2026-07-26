@@ -424,7 +424,7 @@ Rte_StatusType Swc_IOControl_ReadDigitalInput(uint16 channelId, boolean* value)
 {
     sint16 channelIndex;
 
-    if (value == NULL) {
+    if (value == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -499,7 +499,7 @@ Rte_StatusType Swc_IOControl_ReadAnalogInput(uint16 channelId, uint16* value)
 {
     sint16 channelIndex;
 
-    if (value == NULL) {
+    if (value == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -577,7 +577,7 @@ Rte_StatusType Swc_IOControl_ReadPwmInput(uint16 channelId,
 {
     sint16 channelIndex;
 
-    if (dutyCycle == NULL || frequency == NULL) {
+    if (dutyCycle == NULL_PTR || frequency == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -677,7 +677,7 @@ Rte_StatusType Swc_IOControl_GetChannelState(uint16 channelId,
 {
     (void)channelId;  /* Unused - global state */
 
-    if (state == NULL) {
+    if (state == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
@@ -694,7 +694,7 @@ Rte_StatusType Swc_IOControl_GetChannelState(uint16 channelId,
  */
 Rte_StatusType Swc_IOControl_GetStatistics(Swc_IOStatisticsType* stats)
 {
-    if (stats == NULL) {
+    if (stats == NULL_PTR) {
         return RTE_E_INVALID;
     }
 
