@@ -227,16 +227,16 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
     srsrValue = REG_READ32(MCU_SRC_SRSR);
 
     if ((srsrValue & 0x01U) != 0U) {
-        resetReason = MCU_POWER_ON_RESET;
+        resetReason = MCU_RESET_POWER_ON;
     }
     else if ((srsrValue & 0x02U) != 0U) {
-        resetReason = MCU_WATCHDOG_RESET;
+        resetReason = MCU_RESET_WATCHDOG;
     }
     else if ((srsrValue & 0x04U) != 0U) {
-        resetReason = MCU_SW_RESET;
+        resetReason = MCU_RESET_SW;
     }
     else if ((srsrValue & 0x08U) != 0U) {
-        resetReason = MCU_EXTERNAL_RESET;
+        resetReason = MCU_RESET_EXT;
     }
     else {
         resetReason = MCU_RESET_UNDEFINED;
@@ -255,17 +255,17 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
  * @brief Initializes the MCU driver
  * @req SHALL_MCU - Initializes the MCU driver
  */
-void Mcu_Init(const Mcu_ConfigType* ConfigPtr)
+Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (ConfigPtr == NULL_PTR) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_PARAM_CONFIG);
-        return;
+        return E_NOT_OK;
     }
 
     if (Mcu_DriverState.initialized == TRUE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_INIT, MCU_E_ALREADY_INITIALIZED);
-        return;
+        return E_NOT_OK;
     }
     #endif
 
@@ -283,6 +283,8 @@ void Mcu_Init(const Mcu_ConfigType* ConfigPtr)
             }
         }
     }
+
+    return E_OK;
 }
 
 /**
