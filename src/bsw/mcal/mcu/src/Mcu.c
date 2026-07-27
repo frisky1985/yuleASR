@@ -227,19 +227,19 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
     srsrValue = REG_READ32(MCU_SRC_SRSR);
 
     if ((srsrValue & 0x01U) != 0U) {
-        resetReason = MCU_RESET_POWER_ON;
+        resetReason = MCU_RST_POWER_ON;
     }
     else if ((srsrValue & 0x02U) != 0U) {
-        resetReason = MCU_RESET_WATCHDOG;
+        resetReason = MCU_RST_WATCHDOG;
     }
     else if ((srsrValue & 0x04U) != 0U) {
-        resetReason = MCU_RESET_SW;
+        resetReason = MCU_RST_SOFTWARE;
     }
     else if ((srsrValue & 0x08U) != 0U) {
-        resetReason = MCU_RESET_EXT;
+        resetReason = MCU_RST_EXTERNAL;
     }
     else {
-        resetReason = MCU_RESET_UNDEFINED;
+        resetReason = MCU_RST_UNDEFINED;
     }
 
     return resetReason;
@@ -428,7 +428,7 @@ Mcu_ResetType Mcu_GetResetReason(void)
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
     if (Mcu_DriverState.initialized == FALSE) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_GET_RESET_REASON, MCU_E_UNINIT);
-        return MCU_RESET_UNDEFINED;
+        return MCU_RST_UNDEFINED;
     }
     #endif
 
