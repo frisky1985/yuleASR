@@ -20,4 +20,12 @@
 #define Mcal_MemCopy(dst, src, len)  memcpy((dst), (src), (len))
 #endif
 
+/* Memory-mapped register access macros (native stub) */
+#ifndef REG_READ32
+#define REG_READ32(addr)                0U
+#endif
+#ifndef REG_WRITE32
+#define REG_WRITE32(addr, val)          ((void)(val))
+#endif
+
 #endif /* MCAL_H */

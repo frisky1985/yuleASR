@@ -17,6 +17,7 @@
 *                                          INCLUDE FILES
 ==================================================================================================*/
 #include "Std_Types.h"
+#include "Compiler.h"
 #include "Mcu_Cfg.h"
 
 /*==================================================================================================
@@ -122,6 +123,39 @@ typedef enum {
     MCU_RST_LOCKUP                /**< 锁死复位 */
 } Mcu_ResetType;
 
+/** @brief PLL 配置类型 */
+typedef struct {
+    uint32 PllBaseAddr;             /**< PLL 基地址 */
+    uint32 Prediv;                  /**< 预分频器 */
+    uint32 Multiplier;              /**< 倍频系数 */
+    uint32 Postdiv1;                /**< 后分频器 1 */
+    uint32 Postdiv2;                /**< 后分频器 2 */
+    boolean Enable;                 /**< PLL 使能 */
+} Mcu_PllConfigType;
+
+/** @brief RAM 段配置类型 */
+typedef struct {
+    uint32 RamBaseAddr;             /**< RAM 段基地址 */
+    uint32 RamSize;                 /**< RAM 段大小 (bytes) */
+    uint8  RamDefaultValue;         /**< RAM 默认填充值 */
+} Mcu_RamSectionType;
+
+/** @brief MCU 模式配置类型 */
+typedef struct {
+    Mcu_ModeType Mode;              /**< 模式值 */
+} Mcu_ModeConfigType;
+
+/** @brief 时钟配置类型 */
+typedef struct {
+    uint32 PllBaseAddr;             /**< PLL 基地址 */
+    const Mcu_PllConfigType* PllConfigs;  /**< PLL 配置数组 */
+    uint8 NumPllConfigs;            /**< PLL 配置数量 */
+    uint8 ClockSource;              /**< 时钟源选择 */
+    uint32 ArmDiv;                  /**< ARM 时钟分频系数 */
+    uint32 AxiDiv;                  /**< AXI 时钟分频系数 */
+    uint32 AhbDiv;                  /**< AHB 时钟分频系数 */
+} Mcu_ClockConfigType;
+
 /** @brief MCU 配置类型 */
 typedef struct {
     Mcu_ClockType ClockSetting;     /**< 时钟配置设置 */
@@ -129,6 +163,12 @@ typedef struct {
     uint32 PllMultiplier;           /**< PLL 倍频系数 */
     uint32 PllDivider;              /**< PLL 分频系数 */
     boolean PllEnabled;             /**< PLL 使能标志 */
+    const Mcu_RamSectionType* RamSections;   /**< RAM 段配置数组 */
+    uint8 NumRamSections;           /**< RAM 段数量 */
+    const Mcu_ClockConfigType* ClockConfigs; /**< 时钟配置数组 */
+    uint8 NumClockConfigs;          /**< 时钟配置数量 */
+    const Mcu_ModeConfigType* ModeConfigs;   /**< 模式配置数组 */
+    uint8 NumModes;                 /**< 模式数量 */
 } Mcu_ConfigType;
 
 /*==================================================================================================
@@ -194,7 +234,7 @@ Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting);
  * @pre PLL 已锁定
  * @post 系统时钟已切换到 PLL
  */
-Std_ReturnType Mcu_DistributePllClock(void);
+void Mcu_DistributePllClock(void);
 
 /**
  * @brief 获取 PLL 状态
@@ -259,6 +299,19 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @post 返回 RAM 有效/无效/初始化/未初始化状态
  */
 Mcu_RamStateType Mcu_GetRamState(void);
+
+/**
+ * @brief 初始化 RAM 段
+ *
+ * @param[in] RamSection RAM 段索引
+ * @return Std_ReturnType
+ *         - E_OK: 初始化成功
+ *         - E_NOT_OK: 初始化失败
+ *
+ * @pre MCU 模块已初始化
+ * @post RAM 段已初始化
+ */
+Std_ReturnType Mcu_InitRamSection(uint8 RamSection);
 
 #define MCU_STOP_SEC_CODE
 #include "MemMap.h"

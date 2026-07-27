@@ -60,4 +60,18 @@
 #define MODULE_ID 0
 #endif
 
+/* Memory-mapped register I/O macros (native stub - real HW access) */
+#ifndef REG_READ32
+#define REG_READ32(addr)                (*((volatile uint32*)(addr)))
+#endif
+#ifndef REG_WRITE32
+#define REG_WRITE32(addr, val)          (*((volatile uint32*)(addr)) = (val))
+#endif
+#ifndef REG_READ8
+#define REG_READ8(addr)                 (*((volatile uint8*)(addr)))
+#endif
+#ifndef REG_WRITE8
+#define REG_WRITE8(addr, val)           (*((volatile uint8*)(addr)) = (val))
+#endif
+
 #endif /* COMPILER_H */

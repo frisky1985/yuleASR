@@ -507,7 +507,7 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @brief Initializes RAM section
  * @req SHALL_MCU - Initializes RAM section
  */
-Std_ReturnType Mcu_InitRamSection(Mcu_RamSectionType RamSection)
+Std_ReturnType Mcu_InitRamSection(uint8 RamSection)
 {
     Std_ReturnType status = E_NOT_OK;
 

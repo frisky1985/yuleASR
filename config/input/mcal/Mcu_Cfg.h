@@ -46,6 +46,7 @@
 *                                    MCU MODE DEFINITIONS
 ==================================================================================================*/
 #define MCU_MODE_NORMAL                 (0U)
+#define MCU_MODE_RUN                    (0U)  /* alias: ECUC integration */
 #define MCU_MODE_SLEEP                  (1U)
 #define MCU_MODE_DEEP_SLEEP             (2U)
 #define MCU_MODE_RESET                  (3U)
