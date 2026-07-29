@@ -21,6 +21,7 @@
 #include "CanIf_Cfg.h"
 #include "ComStack_Types.h"
 #include "Can.h"          /* For Can_HwHandleType, Can_ControllerStateType, etc. */
+#include "EcuM.h"         /* For EcuM_WakeupSourceType */
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
