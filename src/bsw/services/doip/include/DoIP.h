@@ -1,3 +1,4 @@
+typedef uint8 SoAd_ModeType;
 /**
  * @file DoIP.h
  * @brief Diagnostic over IP (DoIP) - ISO 13400-2 compliant header
