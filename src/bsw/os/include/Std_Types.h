@@ -105,6 +105,11 @@ typedef struct
     #define NULL    ((void *)0)
 #endif
 
+/* AUTOSAR NULL_PTR definition */
+#ifndef NULL_PTR
+    #define NULL_PTR    ((void *)0)
+#endif
+
 /* On/Off constants */
 #ifndef STD_ON
     #define STD_ON      (1U)

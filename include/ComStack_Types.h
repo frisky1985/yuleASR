@@ -46,7 +46,9 @@ typedef void (*NotifCallCbk)(void);
 /* PDU Info Type */
 typedef struct {
     PduIdType SduLength;
-    uint8* SduData;
+    uint8* SduDataPtr;    /* AUTOSAR standard name */
+    PduLengthType MetaDataLength;
+    uint8* MetaDataPtr;
 } PduInfoType;
 
 /* PDU MetaData Type */
@@ -57,5 +59,27 @@ typedef struct {
 
 /* Notification callback type */
 typedef void (*Pdu_NotifyCallbackType)(void);
+
+/* TP Parameter Type */
+typedef enum {
+    TP_STMIN = 0,
+    TP_BS,
+    TP_BC
+} TPParameterType;
+
+/* Retry info type */
+typedef struct {
+    uint8 TpDataState;
+    PduLengthType TxTpDataCnt;
+} RetryInfoType;
+
+/* Network handle type */
+typedef uint8 NetworkHandleType;
+
+/* I-PDU group vector */
+typedef uint8 IpduGroupVector;
+
+/* Protocol configuration type */
+typedef uint8 PdulConfigType;
 
 #endif /* COMSTACK_TYPES_H */
