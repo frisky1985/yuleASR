@@ -62,7 +62,9 @@ message(STATUS "========================================")
 message(STATUS "")
 
 # Global include directories - comprehensive set to resolve cross-module dependencies
+# Add project root so relative includes like 'third_party/...' work
 include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/crypto
     ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/com
