@@ -66,8 +66,14 @@ extern "C" {
 
 /* Flash Bank Configuration */
 #define FLS_NUM_OF_FLASH_BANKS          (2U)
+#ifdef S32K312
+#include "S32K312.h"
+#define FLS_BANK1_BASE_ADDRESS          (S32K312_FLASH_BASE_ALIAS)
+#define FLS_BANK2_BASE_ADDRESS          (S32K312_FLASH_BASE_ALIAS + 0x00100000UL)
+#else
 #define FLS_BANK1_BASE_ADDRESS          (0x08000000UL)
 #define FLS_BANK2_BASE_ADDRESS          (0x08100000UL)
+#endif
 
 /* Flash Size Configuration */
 #define FLS_TOTAL_SIZE                  (0x00200000UL)  /* 2MB Total */

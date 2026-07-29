@@ -348,7 +348,7 @@ const EthSM_ConfigType* const EthSM_Config = (const EthSM_ConfigType*)&EthSM_Glo
 /**
  * @brief Gets network configuration for a given network handle
  * @param networkHandle EthSM network handle
- * @return Pointer to network configuration, or NULL if invalid handle
+ * @return Pointer to network configuration, or NULL_PTR if invalid handle
  */
 static const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkHandleType networkHandle)
 {
@@ -365,7 +365,7 @@ static const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkH
 /**
  * @brief Gets controller configuration for a given controller index
  * @param ctrlIdx Controller index
- * @return Pointer to controller configuration, or NULL if invalid index
+ * @return Pointer to controller configuration, or NULL_PTR if invalid index
  */
 static const EthSM_CtrlConfigType* EthSM_Lcfg_GetCtrlConfig(uint8 ctrlIdx)
 {
@@ -382,7 +382,7 @@ static const EthSM_CtrlConfigType* EthSM_Lcfg_GetCtrlConfig(uint8 ctrlIdx)
 /**
  * @brief Gets transceiver configuration for a given transceiver index
  * @param trcvIdx Transceiver index
- * @return Pointer to transceiver configuration, or NULL if invalid index
+ * @return Pointer to transceiver configuration, or NULL_PTR if invalid index
  */
 static const EthSM_TrcvConfigType* EthSM_Lcfg_GetTrcvConfig(uint8 trcvIdx)
 {
@@ -399,7 +399,7 @@ static const EthSM_TrcvConfigType* EthSM_Lcfg_GetTrcvConfig(uint8 trcvIdx)
 /**
  * @brief Gets TcpIp mapping for a given network handle
  * @param networkHandle EthSM network handle
- * @return Pointer to TcpIp mapping, or NULL if invalid handle
+ * @return Pointer to TcpIp mapping, or NULL_PTR if invalid handle
  */
 static const EthSM_TcpIpMappingType* EthSM_Lcfg_GetTcpIpMapping(EthSM_NetworkHandleType networkHandle)
 {

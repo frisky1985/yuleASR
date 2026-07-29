@@ -20,7 +20,7 @@
 #include <string.h>
 
 /* 内部状态 */
-static const LinSlave_ConfigTableType* CfgTablePtr = NULL;
+static const LinSlave_ConfigTableType* CfgTablePtr = NULL_PTR;
 static boolean CfgTableInitialized = FALSE;
 
 /**
@@ -28,7 +28,7 @@ static boolean CfgTableInitialized = FALSE;
  */
 LinSlave_StatusType LinSlave_CfgTable_Init(const LinSlave_ConfigTableType* ConfigTable)
 {
-    if (ConfigTable == NULL) {
+    if (ConfigTable == NULL_PTR) {
         return LINSLAVE_NOT_OK;
     }
     
@@ -48,7 +48,7 @@ LinSlave_StatusType LinSlave_CfgTable_Init(const LinSlave_ConfigTableType* Confi
     CfgTableInitialized = TRUE;
     
     /* 初始化所有帧状态 */
-    if (ConfigTable->UnconditionalFrames != NULL) {
+    if (ConfigTable->UnconditionalFrames != NULL_PTR) {
         uint8 i;
         for (i = 0U; i < ConfigTable->UnconditionalFrameCount; i++) {
             LinSlave_UnconditionalFrameConfigType* frame = 
@@ -69,12 +69,12 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_FindUnconditional
 {
     uint8 i;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
-        return NULL;
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
+        return NULL_PTR;
     }
     
-    if (CfgTablePtr->UnconditionalFrames == NULL) {
-        return NULL;
+    if (CfgTablePtr->UnconditionalFrames == NULL_PTR) {
+        return NULL_PTR;
     }
     
     for (i = 0U; i < CfgTablePtr->UnconditionalFrameCount; i++) {
@@ -83,7 +83,7 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_FindUnconditional
         }
     }
     
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -91,12 +91,12 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_FindUnconditional
  */
 const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_GetUnconditionalEntry(uint8 Index)
 {
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
-        return NULL;
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
+        return NULL_PTR;
     }
     
     if (Index >= CfgTablePtr->UnconditionalFrameCount) {
-        return NULL;
+        return NULL_PTR;
     }
     
     return &CfgTablePtr->UnconditionalFrames[Index];
@@ -107,7 +107,7 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_GetUnconditionalE
  */
 uint8 LinSlave_CfgTable_GetUnconditionalCount(void)
 {
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return 0;
     }
     
@@ -121,12 +121,12 @@ const LinSlave_EventFrameConfigType* LinSlave_CfgTable_FindEventFrame(uint8 Pid)
 {
     uint8 i;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
-        return NULL;
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
+        return NULL_PTR;
     }
     
-    if (CfgTablePtr->EventFrames == NULL) {
-        return NULL;
+    if (CfgTablePtr->EventFrames == NULL_PTR) {
+        return NULL_PTR;
     }
     
     for (i = 0U; i < CfgTablePtr->EventFrameCount; i++) {
@@ -135,7 +135,7 @@ const LinSlave_EventFrameConfigType* LinSlave_CfgTable_FindEventFrame(uint8 Pid)
         }
     }
     
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -145,12 +145,12 @@ const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint
 {
     uint8 i;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
-        return NULL;
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
+        return NULL_PTR;
     }
     
-    if (CfgTablePtr->SporadicFrames == NULL) {
-        return NULL;
+    if (CfgTablePtr->SporadicFrames == NULL_PTR) {
+        return NULL_PTR;
     }
     
     for (i = 0U; i < CfgTablePtr->SporadicFrameCount; i++) {
@@ -159,7 +159,7 @@ const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint
         }
     }
     
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -167,12 +167,12 @@ const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint
  */
 const LinSlave_DiagnosticFrameConfigType* LinSlave_CfgTable_GetDiagnosticConfig(void)
 {
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
-        return NULL;
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
+        return NULL_PTR;
     }
     
     if (!CfgTablePtr->UseDiagnostic) {
-        return NULL;
+        return NULL_PTR;
     }
     
     return CfgTablePtr->DiagnosticFrames;
@@ -187,7 +187,7 @@ const LinSlave_DiagnosticFrameConfigType* LinSlave_CfgTable_GetDiagnosticConfig(
  */
 LinSlave_FrameStatusType LinSlave_CfgTable_GetFrameStatus(uint8 FrameIndex)
 {
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return LINSLAVE_FRAME_STATUS_ERROR;
     }
     
@@ -205,7 +205,7 @@ void LinSlave_CfgTable_SetFrameStatus(uint8 FrameIndex, LinSlave_FrameStatusType
 {
     LinSlave_UnconditionalFrameConfigType* frame;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return;
     }
     
@@ -224,7 +224,7 @@ void LinSlave_CfgTable_ClearUpdateFlag(uint8 FrameIndex)
 {
     LinSlave_UnconditionalFrameConfigType* frame;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return;
     }
     
@@ -241,7 +241,7 @@ void LinSlave_CfgTable_ClearUpdateFlag(uint8 FrameIndex)
  */
 uint8 LinSlave_CfgTable_IsFrameUpdated(uint8 FrameIndex)
 {
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return 0;
     }
     
@@ -257,12 +257,12 @@ uint8 LinSlave_CfgTable_IsFrameUpdated(uint8 FrameIndex)
  */
 const uint8* LinSlave_CfgTable_GetFrameData(uint8 FrameIndex)
 {
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
-        return NULL;
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
+        return NULL_PTR;
     }
     
     if (FrameIndex >= CfgTablePtr->UnconditionalFrameCount) {
-        return NULL;
+        return NULL_PTR;
     }
     
     return CfgTablePtr->UnconditionalFrames[FrameIndex].LastData;
@@ -276,7 +276,7 @@ void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint
     LinSlave_UnconditionalFrameConfigType* frame;
     uint8 copyLen;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return;
     }
     
@@ -284,7 +284,7 @@ void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint
         return;
     }
     
-    if (DataPtr == NULL || Length == 0U) {
+    if (DataPtr == NULL_PTR || Length == 0U) {
         return;
     }
     
@@ -308,7 +308,7 @@ uint8 LinSlave_CfgTable_GetPidByIndex(uint8 Index)
     const LinSlave_UnconditionalFrameConfigType* entry;
     
     entry = LinSlave_CfgTable_GetUnconditionalEntry(Index);
-    if (entry == NULL) {
+    if (entry == NULL_PTR) {
         return 0xFF;
     }
     
@@ -322,7 +322,7 @@ uint8 LinSlave_CfgTable_GetIndexByPid(uint8 Pid)
 {
     uint8 i;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return 0xFF;
     }
     
@@ -343,11 +343,11 @@ uint8 LinSlave_CfgTable_GetAllUnconditionalPids(uint8* PidList, uint8 MaxCount)
     uint8 i;
     uint8 count;
     
-    if (!CfgTableInitialized || CfgTablePtr == NULL) {
+    if (!CfgTableInitialized || CfgTablePtr == NULL_PTR) {
         return 0;
     }
     
-    if (PidList == NULL || MaxCount == 0U) {
+    if (PidList == NULL_PTR || MaxCount == 0U) {
         return 0;
     }
     
@@ -366,7 +366,7 @@ uint8 LinSlave_CfgTable_GetAllUnconditionalPids(uint8* PidList, uint8 MaxCount)
  */
 boolean LinSlave_CfgTable_IsUnconditionalFrame(uint8 Pid)
 {
-    return (LinSlave_CfgTable_FindUnconditionalByPid(Pid) != NULL);
+    return (LinSlave_CfgTable_FindUnconditionalByPid(Pid) != NULL_PTR);
 }
 
 /**
@@ -374,7 +374,7 @@ boolean LinSlave_CfgTable_IsUnconditionalFrame(uint8 Pid)
  */
 boolean LinSlave_CfgTable_IsEventFrame(uint8 Pid)
 {
-    return (LinSlave_CfgTable_FindEventFrame(Pid) != NULL);
+    return (LinSlave_CfgTable_FindEventFrame(Pid) != NULL_PTR);
 }
 
 /**
@@ -382,7 +382,7 @@ boolean LinSlave_CfgTable_IsEventFrame(uint8 Pid)
  */
 boolean LinSlave_CfgTable_IsSporadicFrame(uint8 Pid)
 {
-    return (LinSlave_CfgTable_FindSporadicFrame(Pid) != NULL);
+    return (LinSlave_CfgTable_FindSporadicFrame(Pid) != NULL_PTR);
 }
 
 /**
@@ -393,7 +393,7 @@ boolean LinSlave_CfgTable_IsDiagnosticFrame(uint8 Pid)
     const LinSlave_DiagnosticFrameConfigType* diag;
     
     diag = LinSlave_CfgTable_GetDiagnosticConfig();
-    if (diag == NULL) {
+    if (diag == NULL_PTR) {
         return FALSE;
     }
     

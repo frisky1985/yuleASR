@@ -23,10 +23,19 @@
 #include "Pwm_Cfg.h"
 #include "Det.h"
 
+#ifdef S32K312
+#include "S32K312.h"
+/* S32K312 uses FTM for PWM channels */
+#define PWM1_BASE_ADDR                  (S32K312_FTM0_BASE)
+#define PWM2_BASE_ADDR                  (S32K312_FTM1_BASE)
+#define PWM3_BASE_ADDR                  (S32K312_FTM2_BASE)
+#define PWM4_BASE_ADDR                  (S32K312_FTM3_BASE)
+#else
 #define PWM1_BASE_ADDR                  (0x30660000UL)
 #define PWM2_BASE_ADDR                  (0x30670000UL)
 #define PWM3_BASE_ADDR                  (0x30680000UL)
 #define PWM4_BASE_ADDR                  (0x30690000UL)
+#endif
 
 #define PWM_CR                          (0x00)
 #define PWM_SR                          (0x04)

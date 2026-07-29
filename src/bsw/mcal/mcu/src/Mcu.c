@@ -22,7 +22,20 @@
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
+#ifdef S32K312
+#include "S32K312.h"
+/* S32K312: MCU (SCG+SIM+ME) at 0x402A0000 */
+#define MCU_GPC_BASE_ADDR               (S32K312_MCU_BASE)
+#define MCU_CCM_BASE_ADDR               (S32K312_MCU_BASE + 0x1000U)
+#define MCU_SRC_BASE_ADDR               (S32K312_MCU_BASE + 0x2000U)
+#else
 #define MCU_GPC_BASE_ADDR               (0x303A0000UL)
+#define MCU_CCM_BASE_ADDR               (0x30380000UL)
+#define MCU_SRC_BASE_ADDR               (0x30390000UL)
+#endif
+/* End of S32K312 adaptation */
+
+/* Original defines for i.MX8M Mini */
 #define MCU_CCM_BASE_ADDR               (0x30380000UL)
 #define MCU_SRC_BASE_ADDR               (0x30390000UL)
 

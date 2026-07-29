@@ -235,7 +235,7 @@ STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Sign_Internal(const uint8* privKey, u
     
     /* Generate signature */
     ret = mbedtls_ecdsa_sign(&ctx.grp, &r, &s, &ctx.d, digest, digestLen,
-                             Crypto_MbedTLS_RandomCallback, NULL);
+                             Crypto_MbedTLS_RandomCallback, NULL_PTR);
     if (ret != MBEDTLS_SUCCESS) {
         goto cleanup;
     }
@@ -420,7 +420,7 @@ Std_ReturnType Crypto_MbedTLS_ECDH_CalcSecret(Crypto_KeyIdType privKeyId,
     }
     
     /* Calculate shared secret: z = d * Q */
-    ret = mbedtls_ecp_mul(&grp, &Q, &d, &Q, Crypto_MbedTLS_RandomCallback, NULL);
+    ret = mbedtls_ecp_mul(&grp, &Q, &d, &Q, Crypto_MbedTLS_RandomCallback, NULL_PTR);
     if (ret != MBEDTLS_SUCCESS) {
         goto cleanup;
     }
@@ -575,7 +575,7 @@ Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId,
     }
     
     md_info = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);
-    if (md_info == NULL) {
+    if (md_info == NULL_PTR) {
         return E_NOT_OK;
     }
     
@@ -610,7 +610,7 @@ Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId,
     }
     
     md_info = mbedtls_md_info_from_type(MBEDTLS_MD_SHA256);
-    if (md_info == NULL) {
+    if (md_info == NULL_PTR) {
         return E_NOT_OK;
     }
     
@@ -649,7 +649,7 @@ Std_ReturnType Crypto_MbedTLS_KeyGenerate(Crypto_KeyIdType keyId)
     }
     
     /* Generate key pair */
-    ret = mbedtls_ecp_gen_keypair(&grp, &d, &Q, Crypto_MbedTLS_RandomCallback, NULL);
+    ret = mbedtls_ecp_gen_keypair(&grp, &d, &Q, Crypto_MbedTLS_RandomCallback, NULL_PTR);
     
 cleanup:
     mbedtls_ecp_point_free(&Q);

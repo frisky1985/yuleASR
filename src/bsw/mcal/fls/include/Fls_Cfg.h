@@ -96,7 +96,12 @@ extern "C" {
 /**
  * @brief Flash base address
  */
+#ifdef S32K312
+#include "S32K312.h"
+#define FLS_BASE_ADDRESS                (S32K312_FLASH_BASE_ALIAS)
+#else
 #define FLS_BASE_ADDRESS                (0x08000000u)
+#endif
 
 /**
  * @brief Sector 0 configuration

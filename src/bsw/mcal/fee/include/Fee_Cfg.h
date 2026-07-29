@@ -85,7 +85,12 @@ extern "C" {
 /**
  * @brief Flash base address
  */
+#ifdef S32K312
+#include "S32K312.h"
+#define FEE_FLASH_BASE_ADDR             (S32K312_FLASH_BASE_ALIAS)
+#else
 #define FEE_FLASH_BASE_ADDR             (0x10000000U)
+#endif
 
 /**
  * @brief Flash total size in bytes

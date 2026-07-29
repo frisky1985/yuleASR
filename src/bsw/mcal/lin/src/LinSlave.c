@@ -52,7 +52,7 @@ static LinSlave_RxCallbackFuncType LinSlave_RxCallback = NULL_PTR;
 static LinSlave_ErrorCallbackFuncType LinSlave_ErrorCallback = NULL_PTR;
 
 /* 配置表支持 */
-static const LinSlave_ConfigTableType* CfgTablePtr = NULL;
+static const LinSlave_ConfigTableType* CfgTablePtr = NULL_PTR;
 static boolean UseConfigTable = FALSE;
 
 /* 内部函数声明 */
@@ -129,7 +129,7 @@ LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
  */
 LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType* ConfigTable)
 {
-    if (ConfigTable == NULL) {
+    if (ConfigTable == NULL_PTR) {
         return LINSLAVE_NOT_OK;
     }
     
@@ -280,7 +280,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
                 
                 /* 检查是否是Unconditional Frame */
                 frame = LinSlave_CfgTable_FindUnconditionalByPid(RxByte);
-                if (frame != NULL) {
+                if (frame != NULL_PTR) {
                     /* 获取Frame索引 */
                     frameIndex = LinSlave_CfgTable_GetIndexByPid(RxByte);
                     
@@ -313,7 +313,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
                     /* Event Frame处理 */
                     const LinSlave_EventFrameConfigType* eventFrame = 
                         LinSlave_CfgTable_FindEventFrame(RxByte);
-                    if (eventFrame != NULL) {
+                    if (eventFrame != NULL_PTR) {
                         /* 检查关联的Unconditional Frames是否有数据需要发送 */
                     }
                     LinSlave_State = LINSLAVE_STATE_IDLE;
@@ -483,7 +483,7 @@ static void LinSlave_ProcessUnconditionalRx(uint8 FrameIndex, const uint8* DataP
     const LinSlave_UnconditionalFrameConfigType* frame;
     
     frame = LinSlave_CfgTable_GetUnconditionalEntry(FrameIndex);
-    if (frame == NULL) {
+    if (frame == NULL_PTR) {
         return;
     }
     
@@ -491,7 +491,7 @@ static void LinSlave_ProcessUnconditionalRx(uint8 FrameIndex, const uint8* DataP
     LinSlave_CfgTable_SetFrameData(FrameIndex, DataPtr, Length);
     
     /* 调用用户回调 */
-    if (frame->RxCallback != NULL) {
+    if (frame->RxCallback != NULL_PTR) {
         frame->RxCallback(FrameIndex, DataPtr, Length, frame->UserData);
     }
     
@@ -511,12 +511,12 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
     uint8 i;
     
     frame = LinSlave_CfgTable_GetUnconditionalEntry(FrameIndex);
-    if (frame == NULL) {
+    if (frame == NULL_PTR) {
         return;
     }
     
     /* 调用用户回调获取发送数据 */
-    if (frame->TxCallback != NULL) {
+    if (frame->TxCallback != NULL_PTR) {
         frame->TxCallback(FrameIndex, txData, &txLength, frame->UserData);
     }
     

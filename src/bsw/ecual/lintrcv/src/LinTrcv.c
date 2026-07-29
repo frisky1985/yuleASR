@@ -361,7 +361,7 @@ void LinTrcv_Init(const LinTrcv_ConfigType *ConfigPtr)
     uint8 i;
     
 #if (LINTRCV_DEV_ERROR_DETECT == STD_ON)
-    /* Check for NULL pointer if static config is not used */
+    /* Check for NULL_PTR pointer if static config is not used */
     if (ConfigPtr == NULL_PTR)
     {
         Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_INIT, LINTRCV_E_PARAM_CONFIG);
@@ -512,7 +512,7 @@ Std_ReturnType LinTrcv_GetOpMode(uint8 Channel, LinTrcv_OpmodeType *OpMode)
         return E_NOT_OK;
     }
     
-    /* Check NULL pointer */
+    /* Check NULL_PTR pointer */
     if (OpMode == NULL_PTR)
     {
         Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETOPMODE, LINTRCV_E_PARAM_POINTER);
@@ -567,7 +567,7 @@ Std_ReturnType LinTrcv_GetBusWuReason(uint8 Channel, LinTrcv_WakeupReasonType *W
         return E_NOT_OK;
     }
     
-    /* Check NULL pointer */
+    /* Check NULL_PTR pointer */
     if (WuReason == NULL_PTR)
     {
         Det_ReportError(LINTRCV_MODULE_ID, 0U, LINTRCV_SID_GETBUSWUREASON, LINTRCV_E_PARAM_POINTER);

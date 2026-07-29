@@ -86,7 +86,7 @@ void FrTp_Init(const FrTp_ConfigType* CfgPtr)
 {
     uint8 connIdx;
 
-    /* Check for NULL pointer if development error detection is enabled */
+    /* Check for NULL_PTR pointer if development error detection is enabled */
 #if (FRTP_DEV_ERROR_DETECT == STD_ON)
     if (CfgPtr == NULL_PTR)
     {

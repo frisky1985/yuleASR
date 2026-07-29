@@ -210,8 +210,13 @@
  *==================================================================================================*/
 #elif defined(NXP_S32K)
 
-/* Flash controller base address */
+/* Flash controller base address (from S32K312.h when available) */
+#ifdef S32K312
+#include "S32K312.h"
+#define FLS_HW_FLASH_BASE               (S32K312_FLASH_CTRL_BASE)
+#else
 #define FLS_HW_FLASH_BASE               (0x40020000u)
+#endif
 
 /* Flash registers */
 #define FLS_HW_FLASH_FSTAT              (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x00u))

@@ -22,15 +22,26 @@
 #include "Wdg_Cfg.h"
 #include "Det.h"
 
+#ifdef S32K312
+#include "S32K312.h"
+#define WDG_WDOG1_BASE_ADDR             (S32K312_WDOG_BASE)
+#define WDG_WDOG2_BASE_ADDR             (S32K312_WDOG_BASE)
+#define WDG_WDOG3_BASE_ADDR             (S32K312_WDOG_BASE)
+#define WDG_WCR                         WDOG_CS_OFF
+#define WDG_WSR                         (0x02)
+#define WDG_WRSR                        (0x04)
+#define WDG_WICR                        (0x06)
+#define WDG_WMCR                        (0x08)
+#else
 #define WDG_WDOG1_BASE_ADDR             (0x30280000UL)
 #define WDG_WDOG2_BASE_ADDR             (0x30290000UL)
 #define WDG_WDOG3_BASE_ADDR             (0x302A0000UL)
-
 #define WDG_WCR                         (0x00)
 #define WDG_WSR                         (0x02)
 #define WDG_WRSR                        (0x04)
 #define WDG_WICR                        (0x06)
 #define WDG_WMCR                        (0x08)
+#endif
 
 #define WDG_WCR_WDE                     (0x0004U)
 #define WDG_WCR_WDZST                   (0x0008U)
@@ -156,7 +167,7 @@ static uint32 Wdg_GetCurrentTimeMs(void)
 static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
 {
     if ((Wdg_ConfigPtr != NULL_PTR) && 
-        (Wdg_ConfigPtr->PreWarningCallback != NULL)) {
+        (Wdg_ConfigPtr->PreWarningCallback != NULL_PTR)) {
         Wdg_ConfigPtr->PreWarningCallback(TimeRemainingUs);
     }
 }
@@ -167,7 +178,7 @@ static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
 static void Wdg_InvokeWindowViolationCallback(void)
 {
     if ((Wdg_ConfigPtr != NULL_PTR) && 
-        (Wdg_ConfigPtr->WindowViolationCallback != NULL)) {
+        (Wdg_ConfigPtr->WindowViolationCallback != NULL_PTR)) {
         Wdg_ConfigPtr->WindowViolationCallback();
     }
 }
@@ -208,10 +219,10 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
     } else if (ConfigPtr->InitialMode == WDGIF_SLOW_MODE) {
         modeSettings = &ConfigPtr->SlowModeSettings;
     } else {
-        modeSettings = NULL;  /* OFF mode */
+        modeSettings = NULL_PTR;  /* OFF mode */
     }
     
-    if (modeSettings != NULL) {
+    if (modeSettings != NULL_PTR) {
         timeout = modeSettings->TimeoutPeriod;
         uint16 wtValue = Wdg_CalculateTimeoutValue(timeout);
         wcrValue = REG_READ16(baseAddr + WDG_WCR);
@@ -281,7 +292,7 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
             wcrValue &= ~WDG_WCR_WDE;
             REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
             Wdg_ModuleState = WDG_STATE_IDLE;
-            modeSettings = NULL;
+            modeSettings = NULL_PTR;
             break;
 
         case WDGIF_SLOW_MODE:
@@ -300,7 +311,7 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
     }
     
     /* 配置新的模式 */
-    if (modeSettings != NULL) {
+    if (modeSettings != NULL_PTR) {
         /* Enable watchdog */
         wcrValue |= WDG_WCR_WDE;
         REG_WRITE16(baseAddr + WDG_WCR, wcrValue);

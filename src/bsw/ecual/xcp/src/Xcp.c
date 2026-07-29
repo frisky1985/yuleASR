@@ -71,7 +71,7 @@ static void Xcp_SetResponseByte(uint8 idx, uint8 val);
 
 /**
  * @brief XCP module initialization
- * @param config Pointer to configuration structure (NULL for link-time config)
+ * @param config Pointer to configuration structure (NULL_PTR for link-time config)
  */
 void Xcp_Init(const void *config)
 {

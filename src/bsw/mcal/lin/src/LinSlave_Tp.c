@@ -28,8 +28,8 @@ static uint8 TpChannelCount = 0;
 static boolean TpInitialized = FALSE;
 
 /* 回调函数 */
-static LinSlave_Tp_RxIndicationFuncType TpRxIndication = NULL;
-static LinSlave_Tp_TxConfirmationFuncType TpTxConfirmation = NULL;
+static LinSlave_Tp_RxIndicationFuncType TpRxIndication = NULL_PTR;
+static LinSlave_Tp_TxConfirmationFuncType TpTxConfirmation = NULL_PTR;
 
 /* 前向声明 */
 static void LinSlave_Tp_SendFlowControl(uint8 ChannelId, uint8 BlockSize, uint8 STmin);
@@ -106,7 +106,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessSF(uint8 ChannelId, uint8 Pci, 
     Channel->RxTotalLength = DataLen;
     
     /* 调用接收完成回调 */
-    if (TpRxIndication != NULL) {
+    if (TpRxIndication != NULL_PTR) {
         TpRxIndication(ChannelId, Channel->RxBuffer, Channel->RxLength);
     }
     
@@ -183,7 +183,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessCF(uint8 ChannelId, uint8 Pci, 
     /* 检查是否完成 */
     if (Channel->RxLength >= Channel->RxTotalLength) {
         /* 接收完成 */
-        if (TpRxIndication != NULL) {
+        if (TpRxIndication != NULL_PTR) {
             TpRxIndication(ChannelId, Channel->RxBuffer, Channel->RxLength);
         }
         LinSlave_Tp_ResetChannel(ChannelId);
@@ -286,7 +286,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         return LINSLAVE_TP_E_NOT_OK;
     }
     
-    if (DataPtr == NULL || Length == 0U || Length > LINSLAVE_TP_MAX_FRAME_LEN) {
+    if (DataPtr == NULL_PTR || Length == 0U || Length > LINSLAVE_TP_MAX_FRAME_LEN) {
         return LINSLAVE_TP_E_INVALID_PCI;
     }
     
@@ -309,7 +309,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         LinSlave_Hal_UartSendBuffer(FirstFrame, Length + 1);
         
         /* 发送完成 */
-        if (TpTxConfirmation != NULL) {
+        if (TpTxConfirmation != NULL_PTR) {
             TpTxConfirmation(ChannelId, LINSLAVE_TP_OK);
         }
         LinSlave_Tp_ResetChannel(ChannelId);
@@ -374,7 +374,7 @@ void LinSlave_Tp_MainFunction(void)
         } else if (Channel->State == LINSLAVE_TP_STATE_WAIT_FC) {
             /* 等待FC超时 (N_Bs) */
             if (Channel->Timer > 1000) {
-                if (TpTxConfirmation != NULL) {
+                if (TpTxConfirmation != NULL_PTR) {
                     TpTxConfirmation(i, LINSLAVE_TP_E_TIMEOUT);
                 }
                 LinSlave_Tp_ResetChannel(i);
@@ -411,7 +411,7 @@ boolean LinSlave_Tp_IsBusy(uint8 ChannelId)
 void LinSlave_Tp_Cancel(uint8 ChannelId)
 {
     if (ChannelId < LINSLAVE_TP_MAX_PDUs) {
-        if (TpTxConfirmation != NULL && TpChannels[ChannelId].State != LINSLAVE_TP_STATE_IDLE) {
+        if (TpTxConfirmation != NULL_PTR && TpChannels[ChannelId].State != LINSLAVE_TP_STATE_IDLE) {
             TpTxConfirmation(ChannelId, LINSLAVE_TP_E_NOT_OK);
         }
         LinSlave_Tp_ResetChannel(ChannelId);

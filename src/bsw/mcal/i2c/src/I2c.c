@@ -22,12 +22,21 @@
 
 /*==================================================================================================
 *                                    HARDWARE REGISTER DEFINITIONS
-*                                    (i.MX8M Mini I2C Controller)
+*                                    (i.MX8M Mini I2C / S32K312 LPI2C)
 ==================================================================================================*/
+#ifdef S32K312
+#include "S32K312.h"
+/* S32K312 uses LPI2C (register layout differs from i.MX RT I2C) */
+#define I2C1_BASE_ADDR                  (S32K312_LPI2C0_BASE)
+#define I2C2_BASE_ADDR                  (S32K312_LPI2C1_BASE)
+#define I2C3_BASE_ADDR                  (0x30A40000UL)
+#define I2C4_BASE_ADDR                  (0x30A50000UL)
+#else
 #define I2C1_BASE_ADDR                  (0x30A20000UL)
 #define I2C2_BASE_ADDR                  (0x30A30000UL)
 #define I2C3_BASE_ADDR                  (0x30A40000UL)
 #define I2C4_BASE_ADDR                  (0x30A50000UL)
+#endif
 
 /* I2C Register Offsets */
 #define I2C_IADR                        (0x00U)     /* Address Register */

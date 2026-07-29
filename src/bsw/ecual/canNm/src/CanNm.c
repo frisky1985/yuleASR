@@ -70,7 +70,7 @@ static CanNm_ChannelStateType CanNm_ChannelStates[CANNM_NUMBER_OF_CHANNELS];
 /**
  * @brief Pointer to configuration structure
  */
-static const CanNm_ConfigType* CanNm_ConfigPtr = NULL;
+static const CanNm_ConfigType* CanNm_ConfigPtr = NULL_PTR;
 
 /*==================================================================================================
  *                               LOCAL FUNCTION PROTOTYPES
@@ -206,7 +206,7 @@ static void CanNm_TransmitMessage(uint8 ChannelIndex, boolean Immediate)
     /* Prepare PDU info */
     PduInfo.SduDataPtr = ChState->TxPduBuffer;
     PduInfo.SduLength = ChCfg->PduLength;
-    PduInfo.MetaDataPtr = NULL;
+    PduInfo.MetaDataPtr = NULL_PTR;
 
     /* Transmit via CanIf */
     Status = CanIf_Transmit(ChCfg->TxPduId, &PduInfo);
@@ -587,8 +587,8 @@ void CanNm_Init(const CanNm_ConfigType* ConfigPtr)
         return;
     }
 
-    /* Check NULL pointer if configuration is required */
-    if (ConfigPtr == NULL)
+    /* Check NULL_PTR pointer if configuration is required */
+    if (ConfigPtr == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_INIT, CANNM_E_PARAM_POINTER);
         return;
@@ -645,7 +645,7 @@ void CanNm_DeInit(void)
     }
 
     CanNm_ModuleInitialized = CANNM_MODULE_NOT_INITIALIZED;
-    CanNm_ConfigPtr = NULL;
+    CanNm_ConfigPtr = NULL_PTR;
 }
 
 /**
@@ -837,7 +837,7 @@ Std_ReturnType CanNm_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
         return E_NOT_OK;
     }
 
-    if (PduInfoPtr == NULL)
+    if (PduInfoPtr == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_TRANSMIT, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
@@ -872,7 +872,7 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         return;
     }
 
-    if (PduInfoPtr == NULL)
+    if (PduInfoPtr == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_RX_INDICATION, CANNM_E_PARAM_POINTER);
         return;
@@ -901,7 +901,7 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         const CanNm_ChannelConfigType* ChCfg = &CanNm_ConfigPtr->ChannelConfig[ChannelIndex];
 
         /* Copy received PDU to buffer */
-        if (PduInfoPtr->SduDataPtr != NULL)
+        if (PduInfoPtr->SduDataPtr != NULL_PTR)
         {
             memcpy(ChState->RxPduBuffer, PduInfoPtr->SduDataPtr, 
                    (PduInfoPtr->SduLength < CANNM_PDU_LENGTH) ? PduInfoPtr->SduLength : CANNM_PDU_LENGTH);
@@ -1021,7 +1021,7 @@ Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
         return E_NOT_OK;
     }
 
-    if (PduInfoPtr == NULL)
+    if (PduInfoPtr == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_PDUDATA, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
@@ -1035,7 +1035,7 @@ Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
         {
             const CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
             
-            if ((PduInfoPtr->SduDataPtr != NULL) && (PduInfoPtr->SduLength >= CANNM_PDU_LENGTH))
+            if ((PduInfoPtr->SduDataPtr != NULL_PTR) && (PduInfoPtr->SduLength >= CANNM_PDU_LENGTH))
             {
                 /* Update PDU and copy to output */
                 CanNm_UpdateTxPdu(ChannelIndex);
@@ -1094,7 +1094,7 @@ Std_ReturnType CanNm_GetState(NetworkHandleType nmChannelHandle,
         return E_NOT_OK;
     }
 
-    if ((nmStatePtr == NULL) || (nmModePtr == NULL))
+    if ((nmStatePtr == NULL_PTR) || (nmModePtr == NULL_PTR))
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_STATE, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
@@ -1154,7 +1154,7 @@ Std_ReturnType CanNm_GetState(NetworkHandleType nmChannelHandle,
 void CanNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
-    if (versioninfo == NULL)
+    if (versioninfo == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_VERSION_INFO, CANNM_E_PARAM_POINTER);
         return;
@@ -1184,7 +1184,7 @@ Std_ReturnType CanNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8*
         return E_NOT_OK;
     }
 
-    if (nmUserDataPtr == NULL)
+    if (nmUserDataPtr == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_SET_USER_DATA, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;
@@ -1236,7 +1236,7 @@ Std_ReturnType CanNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUse
         return E_NOT_OK;
     }
 
-    if (nmUserDataPtr == NULL)
+    if (nmUserDataPtr == NULL_PTR)
     {
         Det_ReportError(CANNM_MODULE_ID, 0U, CANNM_SID_GET_USER_DATA, CANNM_E_PARAM_POINTER);
         return E_NOT_OK;

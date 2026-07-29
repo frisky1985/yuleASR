@@ -29,6 +29,9 @@
 #include "Crypto_Types.h"
 #include "Std_Types.h"
 
+/* S32K312.h single-source-of-truth for register map */
+#include "S32K312.h"
+
 /**********************************************************************************************************************
  * GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/
@@ -51,12 +54,12 @@
 #define S32K312_HSM_SID_RNG                 (0x40U)
 
 /* HSM Hardware Register Base Addresses */
-#define S32K312_HSM_BASE_ADDR               (0x40460000UL)
-#define S32K312_HSM_AES_BASE                (0x40461000UL)
-#define S32K312_HSM_ECC_BASE                (0x40462000UL)
-#define S32K312_HSM_SHA_BASE                (0x40463000UL)
-#define S32K312_HSM_TRNG_BASE               (0x40464000UL)
-#define S32K312_HSM_KEYSTORE_BASE           (0x40465000UL)
+#define S32K312_HSM_BASE_ADDR               (S32K312_HSM_BASE)
+#define S32K312_HSM_AES_BASE                (S32K312_HSM_AES_BASE)
+#define S32K312_HSM_ECC_BASE                (S32K312_HSM_ECC_BASE)
+#define S32K312_HSM_SHA_BASE                (S32K312_HSM_SHA_BASE)
+#define S32K312_HSM_TRNG_BASE               (S32K312_HSM_TRNG_BASE)
+#define S32K312_HSM_KEYSTORE_BASE           (S32K312_HSM_KEYSTORE_BASE)
 
 /* HSM Status Codes */
 #define S32K312_HSM_SUCCESS                 (0x00000000UL)

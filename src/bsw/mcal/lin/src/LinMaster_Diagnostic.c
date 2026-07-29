@@ -52,7 +52,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_Init(void)
     DiagRuntime.RequestPending = FALSE;
     DiagRuntime.ResponseReady = FALSE;
     DiagRuntime.LastError = LINMASTER_DIAG_OK;
-    DiagRuntime.Callback = NULL;
+    DiagRuntime.Callback = NULL_PTR;
     
     TxLength = 0;
     RxLength = 0;
@@ -80,7 +80,7 @@ static void LinMaster_Diag_TpRxCallback(uint8 ChannelId, const uint8* DataPtr, u
 {
     (void)ChannelId;
     
-    if (DataPtr == NULL || Length == 0U || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if (DataPtr == NULL_PTR || Length == 0U || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
         return;
     }
     
@@ -110,7 +110,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
 {
     uint16 i;
     
-    if (RequestPtr == NULL) {
+    if (RequestPtr == NULL_PTR) {
         return;
     }
     
@@ -139,7 +139,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
  */
 static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* DataPtr, uint16 Length)
 {
-    if (DataPtr == NULL || Length == 0U) {
+    if (DataPtr == NULL_PTR || Length == 0U) {
         return LINMASTER_DIAG_E_NOT_OK;
     }
     
@@ -190,7 +190,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SendRequest(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if (RequestPtr == NULL) {
+    if (RequestPtr == NULL_PTR) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -234,7 +234,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetResponse(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if (ResponsePtr == NULL) {
+    if (ResponsePtr == NULL_PTR) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -352,8 +352,8 @@ void LinMaster_Diag_MainFunction(void)
                 DiagRuntime.LastError = LINMASTER_DIAG_E_NOT_OK;
                 DiagRuntime.State = LINMASTER_DIAG_STATE_ERROR;
                 
-                if (DiagRuntime.Callback != NULL) {
-                    DiagRuntime.Callback(LINMASTER_DIAG_E_NOT_OK, NULL);
+                if (DiagRuntime.Callback != NULL_PTR) {
+                    DiagRuntime.Callback(LINMASTER_DIAG_E_NOT_OK, NULL_PTR);
                 }
             }
             break;
@@ -368,8 +368,8 @@ void LinMaster_Diag_MainFunction(void)
                 DiagRuntime.State = LINMASTER_DIAG_STATE_ERROR;
                 RxDataPending = FALSE;
                 
-                if (DiagRuntime.Callback != NULL) {
-                    DiagRuntime.Callback(LINMASTER_DIAG_E_TIMEOUT, NULL);
+                if (DiagRuntime.Callback != NULL_PTR) {
+                    DiagRuntime.Callback(LINMASTER_DIAG_E_TIMEOUT, NULL_PTR);
                 }
             } else if (RxDataPending) {
                 /* 收到响应 */
@@ -392,7 +392,7 @@ void LinMaster_Diag_MainFunction(void)
             }
             
             /* 触发回调 */
-            if (DiagRuntime.Callback != NULL) {
+            if (DiagRuntime.Callback != NULL_PTR) {
                 DiagRuntime.Callback(status, &DiagRuntime.PendingResponse);
             }
             break;
@@ -498,7 +498,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if (DataPtr == NULL || Length == 0U || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
+    if (DataPtr == NULL_PTR || Length == 0U || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -541,7 +541,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     request.SubFunction = SubFunc & 0x7F;
     
     /* 如果是发送密钥，添加密钥数据 */
-    if (KeyPtr != NULL && KeyLen > 0U && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if (KeyPtr != NULL_PTR && KeyLen > 0U && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
         for (i = 0U; i < KeyLen; i++) {
             request.Data[i] = KeyPtr[i];
         }
@@ -585,7 +585,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     request.Data[1] = (uint8)(Rid & 0xFF);
     
     /* 可选数据 */
-    if (DataPtr != NULL && Length > 0U) {
+    if (DataPtr != NULL_PTR && Length > 0U) {
         for (i = 0U; i < Length; i++) {
             request.Data[2 + i] = DataPtr[i];
         }

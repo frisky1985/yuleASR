@@ -85,7 +85,7 @@ static CanTp_ChannelRuntimeType CanTp_ChannelRuntime[CANTP_MAX_CHANNEL_CNT];
 /**
  * @brief Get Tx NSDU configuration for a given Tx SDU ID
  * @param txSduId Tx SDU ID
- * @return Pointer to Tx NSDU configuration, or NULL if invalid
+ * @return Pointer to Tx NSDU configuration, or NULL_PTR if invalid
  */
 static const CanTp_TxNsduConfigType* CanTp_GetTxNsduConfig(PduIdType txSduId)
 {
@@ -108,7 +108,7 @@ static const CanTp_TxNsduConfigType* CanTp_GetTxNsduConfig(PduIdType txSduId)
 /**
  * @brief Get Rx NSDU configuration for a given Rx SDU ID
  * @param rxSduId Rx SDU ID
- * @return Pointer to Rx NSDU configuration, or NULL if invalid
+ * @return Pointer to Rx NSDU configuration, or NULL_PTR if invalid
  */
 static const CanTp_RxNsduConfigType* CanTp_GetRxNsduConfig(PduIdType rxSduId)
 {

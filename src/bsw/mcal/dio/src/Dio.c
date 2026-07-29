@@ -23,12 +23,36 @@
 #include "Dio_Cfg.h"
 #include "Det.h"
 
+#ifdef S32K312
+#include "S32K312.h"
+/* S32K312 SIUL2 GPIO register layout per port group (0x1000 stride):
+ *   PDOR (0x000): Port Data Output
+ *   PSOR (0x004): Port Set Output
+ *   PCOR (0x008): Port Clear Output
+ *   PTOR (0x00C): Port Toggle Output
+ *   PDIR (0x010): Port Data Input
+ *   PDDR (0x014): Port Data Direction
+ *   PIDR (0x018): Port Input Disable
+ */
+#define DIO_GPIO1_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 0 * 0x1000)
+#define DIO_GPIO2_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 1 * 0x1000)
+#define DIO_GPIO3_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 2 * 0x1000)
+#define DIO_GPIO4_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 3 * 0x1000)
+#define DIO_GPIO5_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 4 * 0x1000)
+#define DIO_GPIO_DR                     SIUL2_GPIO_PDOR_OFF
+#define DIO_GPIO_GDIR                   SIUL2_GPIO_PDDR_OFF
+#define DIO_GPIO_PSR                    SIUL2_GPIO_PDIR_OFF
+#define DIO_GPIO_ICR1                   (0x0C)  /* No SIUL2 equiv, reserved */
+#define DIO_GPIO_ICR2                   (0x10)
+#define DIO_GPIO_IMR                    (0x14)
+#define DIO_GPIO_ISR                    (0x18)
+#define DIO_GPIO_EDGE_SEL               (0x1C)
+#else
 #define DIO_GPIO1_BASE_ADDR             (0x30200000UL)
 #define DIO_GPIO2_BASE_ADDR             (0x30210000UL)
 #define DIO_GPIO3_BASE_ADDR             (0x30220000UL)
 #define DIO_GPIO4_BASE_ADDR             (0x30230000UL)
 #define DIO_GPIO5_BASE_ADDR             (0x30240000UL)
-
 #define DIO_GPIO_DR                     (0x00)
 #define DIO_GPIO_GDIR                   (0x04)
 #define DIO_GPIO_PSR                    (0x08)
@@ -37,6 +61,7 @@
 #define DIO_GPIO_IMR                    (0x14)
 #define DIO_GPIO_ISR                    (0x18)
 #define DIO_GPIO_EDGE_SEL               (0x1C)
+#endif
 
 #define DIO_GET_PORT(channel)           ((uint8)((channel) >> 8))
 #define DIO_GET_PIN(channel)            ((uint8)((channel) & 0xFF))

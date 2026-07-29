@@ -235,7 +235,12 @@ static void Fls_JobErrorNotification(void)
 const Fls_ConfigType Fls_Config =
 {
     /* Flash Memory Base Address */
+    #ifdef S32K312
+#include "S32K312.h"
+    .BaseAddress            = S32K312_FLASH_BASE_ALIAS,
+#else
     .BaseAddress            = 0x08000000UL,
+#endif
     
     /* Total Flash Size */
     .TotalSize              = FLS_TOTAL_SIZE,

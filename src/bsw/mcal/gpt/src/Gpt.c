@@ -23,8 +23,15 @@
 #include "Gpt_Cfg.h"
 #include "Det.h"
 
+#ifdef S32K312
+#include "S32K312.h"
+/* S32K312 uses PIT as GPT (all channels share S32K312_PIT_BASE) */
+#define GPT1_BASE_ADDR                  (S32K312_PIT_BASE)
+#define GPT2_BASE_ADDR                  (S32K312_PIT_BASE)
+#else
 #define GPT1_BASE_ADDR                  (0x302E0000UL)
 #define GPT2_BASE_ADDR                  (0x302F0000UL)
+#endif
 
 #define GPT_CR                          (0x00)
 #define GPT_PR                          (0x04)

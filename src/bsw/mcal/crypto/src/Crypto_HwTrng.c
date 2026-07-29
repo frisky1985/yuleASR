@@ -27,7 +27,12 @@
  * LOCAL MACROS
  *********************************************************************************************************************/
 /* TRNG Register Base Address */
+#ifdef S32K312
+#include "S32K312.h"
+#define S32K312_TRNG_BASE_ADDR              (S32K312_HSM_TRNG_BASE)
+#else
 #define S32K312_TRNG_BASE_ADDR              (0x40464000UL)
+#endif
 
 /* Magic numbers */
 #define TRNG_MAGIC_INIT                     (0x54524E47U)   /* "TRNG" */

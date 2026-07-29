@@ -23,8 +23,14 @@
 #include "Can_Cfg.h"
 #include "Det.h"
 
+#ifdef S32K312
+#include "S32K312.h"
+#define CAN_FLEXCAN1_BASE_ADDR          (S32K312_CAN0_BASE)
+#define CAN_FLEXCAN2_BASE_ADDR          (S32K312_CAN1_BASE)
+#else
 #define CAN_FLEXCAN1_BASE_ADDR          (0x308C0000UL)
 #define CAN_FLEXCAN2_BASE_ADDR          (0x308D0000UL)
+#endif
 
 #define CAN_MCR                         (0x00)
 #define CAN_CTRL1                       (0x04)

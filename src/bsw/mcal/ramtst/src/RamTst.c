@@ -543,7 +543,7 @@ static void RamTst_ExecuteWalkpath(void)
  * @brief Initializes the RAM Test module
  * @param ConfigPtr Pointer to configuration structure
  * @requirement RamTst-100: Initialize to IDLE state
- * @requirement RamTst-110: NULL pointer check with DET
+ * @requirement RamTst-110: NULL_PTR pointer check with DET
  */
 void RamTst_Init(const RamTst_ConfigType* ConfigPtr)
 {

@@ -22,7 +22,13 @@
 #include "Adc_Cfg.h"
 #include "Det.h"
 
+#ifdef S32K312
+#include "S32K312.h"
+#define ADC1_BASE_ADDR                  (S32K312_ADC0_BASE)
+#define ADC2_BASE_ADDR                  (S32K312_ADC1_BASE)
+#else
 #define ADC1_BASE_ADDR                  (0x30610000UL)
+#endif
 
 #define ADC_HC0                         (0x00)
 #define ADC_HS                          (0x04)

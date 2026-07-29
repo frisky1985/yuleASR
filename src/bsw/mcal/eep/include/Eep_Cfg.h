@@ -32,7 +32,12 @@
  *==================================================================================================*/
 
 /** @brief EEPROM backing store base address (RAM or Flash area) */
+#ifdef S32K312
+#include "S32K312.h"
+#define EEP_BASE_ADDRESS                    (S32K312_FLASH_BASE_ALIAS + 0x80000U)
+#else
 #define EEP_BASE_ADDRESS                    0x08080000U
+#endif
 
 /** @brief Total EEPROM size in bytes (64KB) */
 #define EEP_SIZE                            0x00010000U

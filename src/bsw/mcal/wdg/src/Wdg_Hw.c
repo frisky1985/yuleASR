@@ -152,8 +152,13 @@
  *==================================================================================================*/
 #elif defined(NXP_S32K)
 
-/* WDOG base address */
+/* WDOG base address (from S32K312.h when available) */
+#ifdef S32K312
+#include "S32K312.h"
+#define WDG_HW_WDOG_BASE                (S32K312_WDOG_BASE)
+#else
 #define WDG_HW_WDOG_BASE                (0x40052000u)
+#endif
 
 /* WDOG registers */
 #define WDG_HW_WDOG_CS                  (*(volatile uint32*)(WDG_HW_WDOG_BASE + 0x00u))

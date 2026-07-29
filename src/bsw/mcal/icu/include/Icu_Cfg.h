@@ -73,6 +73,10 @@
 *                                    EMIOS CONFIGURATION
 ==================================================================================================*/
 /* S32K312 eMIOS Module Base Addresses */
+#ifdef S32K312
+#include "S32K312.h"
+#endif
+
 #define ICU_EMIOS_0_BASE_ADDR                   (0x4002C000UL)
 #define ICU_EMIOS_1_BASE_ADDR                   (0x4002D000UL)
 
