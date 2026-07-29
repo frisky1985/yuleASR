@@ -104,6 +104,14 @@ foreach(subdir ${ALL_ECUAL_SUBDIRS})
     endif()
 endforeach()
 
+# ASW component include directories
+file(GLOB ALL_ASW_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/src/asw/*)
+foreach(subdir ${ALL_ASW_SUBDIRS})
+    if(IS_DIRECTORY ${subdir}/include)
+        include_directories(${subdir}/include)
+    endif()
+endforeach()
+
 # Add subdirectories
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)
