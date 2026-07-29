@@ -69,6 +69,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/crypto
     ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/com
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/stubs
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/mocks
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/blake2/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/mbedtls/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/s32k312/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/mcu/include
 )
 
 # Add subdirectories
