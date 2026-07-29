@@ -81,4 +81,19 @@
 #define RUN_TEST_GROUP(name)
 #define RUN_TEST(name)
 
+/* Short-form test macros used by some test files */
+#define ASSERT_EQ(expected, actual)             TEST_ASSERT_EQUAL(expected, actual)
+#define ASSERT_NE(expected, actual)             TEST_ASSERT_NOT_EQUAL(expected, actual)
+#define ASSERT_TRUE(cond)                       TEST_ASSERT_TRUE(cond)
+#define ASSERT_FALSE(cond)                      TEST_ASSERT_FALSE(cond)
+#define ASSERT_NULL(ptr)                        TEST_ASSERT_NULL(ptr)
+#define ASSERT_NOT_NULL(ptr)                    TEST_ASSERT_NOT_NULL(ptr)
+#define ASSERT_STREQ(expected, actual)          TEST_ASSERT_EQUAL_STRING(expected, actual)
+#define ASSERT_STRNE(expected, actual)          do { TEST_ASSERT_TRUE(strcmp((expected),(actual)) != 0); } while(0)
+#define ASSERT_GE(val1, val2)                   TEST_ASSERT_TRUE((val1) >= (val2))
+#define ASSERT_LE(val1, val2)                   TEST_ASSERT_TRUE((val1) <= (val2))
+#define ASSERT_GT(val1, val2)                   TEST_ASSERT_TRUE((val1) > (val2))
+#define ASSERT_LT(val1, val2)                   TEST_ASSERT_TRUE((val1) < (val2))
+#define ASSERT_IN_RANGE(low, high, value)       TEST_ASSERT_RANGE(low, high, value)
+
 #endif /* TEST_FRAMEWORK_H */

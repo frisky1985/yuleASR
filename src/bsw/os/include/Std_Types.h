@@ -61,6 +61,13 @@ typedef double              float64;
  * Standard Types
  ******************************************************************************/
 
+/* Include Compiler.h for AUTOSAR compiler abstractions (STATIC, INLINE, etc.) */
+/* Note: Compiler.h defines 'boolean' - must undef before our typedef */
+#ifdef boolean
+#undef boolean
+#endif
+#include "Compiler.h"
+
 /* Boolean type */
 typedef uint8 boolean;
 
