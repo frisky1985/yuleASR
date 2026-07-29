@@ -21,7 +21,7 @@ static const BswM_RuleType BswM_Rules[BSWM_MAX_RULES] = {
 };
 
 /* Configuration */
-static const BswM_ConfigType BswM_Config = {
+const BswM_ConfigType BswM_Config = {
     .NumModeRequestPorts = 3U,
     .NumRules = 2U,
     .NumActionLists = 1U,

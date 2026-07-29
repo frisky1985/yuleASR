@@ -77,6 +77,7 @@
 #define DEM_SID_GETCYCLECOUNTER         (0x1EU)
 #define DEM_SID_GETDTCOFCHECKWARMUP     (0x1FU)
 #define DEM_SID_GETDTCOFCHECKWARMUPCOUNTER (0x20U)
+#define DEM_SID_GETOPERATIONCYCLESTATE  (0x21U)
 
 /* Service ID aliases used in implementation */
 #define DEM_SERVICE_ID_INIT             DEM_SID_INIT
@@ -231,6 +232,10 @@ extern Std_ReturnType Dem_GetStatusOfDTC(Dem_DtcType DTC,
  * @param DTCStatusMask Pointer to store mask
  * @return Result of operation
  */
+#define Dem_GetDTCStatus(d,o,s) Dem_GetStatusOfDTC(d,o,s)
+
+#define Dem_GetDTCStatus(d,o,s) Dem_GetStatusOfDTC(d,o,s)
+
 extern Std_ReturnType Dem_GetDTCStatusAvailabilityMask(uint8* DTCStatusMask);
 
 /**

@@ -166,4 +166,3 @@
 #define DEM_J1939_NUM_FMI               (32U)
 #define DEM_J1939_NUM_OC                (16U)
 
-#endif /* DEM_CFG_H */

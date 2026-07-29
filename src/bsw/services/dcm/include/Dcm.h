@@ -53,6 +53,7 @@
 #define DCM_SID_TXCONFIRMATION          (0x40U)
 #define DCM_SID_RXINDICATION            (0x42U)
 #define DCM_SID_SVCHANDLER              (0x50U)
+#define DCM_SID_DEINIT                  (0x06U)
 
 /* Service ID aliases used in Dcm.c */
 #define DCM_SERVICE_ID_INIT             DCM_SID_INIT

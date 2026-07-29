@@ -167,3 +167,71 @@
 #define DOIP_USER_ALIVE_CHECK_RESPONSE_FNC      NULL_PTR
 
 #endif /* DOIP_CFG_H */
+
+/* Default configuration values for Lcfg */
+#ifndef DOIP_CFG_GENERAL_INACTIVITY
+#define DOIP_CFG_GENERAL_INACTIVITY            300000U  /* 5 minutes timeout */
+#endif
+#ifndef DOIP_DEFAULT_ACTIVATION_TYPE
+#define DOIP_DEFAULT_ACTIVATION_TYPE           0x01U
+#endif
+#ifndef DOIP_WWH_OBD_ACTIVATION_TYPE
+#define DOIP_WWH_OBD_ACTIVATION_TYPE           0x02U
+#endif
+#ifndef DOIP_CENTRAL_SECURITY_TYPE
+#define DOIP_CENTRAL_SECURITY_TYPE             0x04U
+#endif
+#ifndef DOIP_VIN_LENGTH
+#define DOIP_VIN_LENGTH                        17U
+#endif
+#ifndef DOIP_EID_LENGTH
+#define DOIP_EID_LENGTH                        6U
+#endif
+#ifndef DOIP_GID_LENGTH
+#define DOIP_GID_LENGTH                        6U
+#endif
+#ifndef DOIP_LOGICAL_ADDRESS
+#define DOIP_LOGICAL_ADDRESS                   0x0E00U
+#endif
+#ifndef DOIP_FURTHER_ACTION
+#define DOIP_FURTHER_ACTION                    0x00U
+#endif
+#ifndef DOIP_MAX_CONNECTIONS
+#define DOIP_MAX_CONNECTIONS                   4U
+#endif
+#ifndef DOIP_VIN
+#define DOIP_VIN                               "YULETECHASR000001"
+#endif
+#ifndef DOIP_EID
+#define DOIP_EID                               {0x00, 0x1A, 0x2B, 0x3C, 0x4D, 0x5E}
+#endif
+#ifndef DOIP_GID
+#define DOIP_GID                               {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+#endif
+
+/* Test configuration types */
+#ifndef DOIP_TESTER_CONFIG_TYPE_DEFINED
+#define DOIP_TESTER_CONFIG_TYPE_DEFINED
+typedef struct {
+    uint16 TesterAddress;
+    boolean AuthenticationRequired;
+    boolean ConfirmationRequired;
+    uint8 AllowedActivationTypes;
+} DoIP_TesterConfigType;
+
+typedef struct {
+    uint16 TargetAddress;
+    uint8 ProtocolType;
+    uint16 LowerLayerPduId;
+} DoIP_TargetConfigType;
+
+typedef struct {
+    uint16 LogicalAddress;
+    const uint8* Vin;
+    const uint8* Eid;
+    const uint8* Gid;
+    uint8 FurtherAction;
+    uint8 MaxConnections;
+    uint32 GeneralInactivityTime;
+} DoIP_GeneralConfigType;
+#endif

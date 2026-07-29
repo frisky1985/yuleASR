@@ -422,7 +422,7 @@ void DoCan_MainFunction(void)
     {
         for (i = 0U; i < DOCAN_MAX_CHANNELS; i++)
         {
-            DoCan_ChannelStateType* channelPtr = &DoCan_InternalState.Channels[i];
+            DoCan_ChannelRuntimeType* channelPtr = &DoCan_InternalState.Channels[i];
 
             if (channelPtr->IsActive)
             {

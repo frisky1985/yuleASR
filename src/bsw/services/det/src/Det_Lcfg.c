@@ -33,7 +33,7 @@
  * @details This is the default error handler called when a development error is reported.
  *          Can be customized to log errors to non-volatile memory, serial output, etc.
  */
-LOCAL FUNC(Std_ReturnType, DET_CODE) Det_DefaultErrorHook(
+static Std_ReturnType Det_DefaultErrorHook(
     VAR(uint16, AUTOMATIC) ModuleId,
     VAR(uint8, AUTOMATIC) InstanceId,
     VAR(uint8, AUTOMATIC) ApiId,
@@ -54,7 +54,7 @@ LOCAL FUNC(Std_ReturnType, DET_CODE) Det_DefaultErrorHook(
 /**
  * @brief   Default runtime error hook implementation
  */
-LOCAL FUNC(Std_ReturnType, DET_CODE) Det_DefaultRuntimeErrorHook(
+static Std_ReturnType Det_DefaultRuntimeErrorHook(
     VAR(uint16, AUTOMATIC) ModuleId,
     VAR(uint8, AUTOMATIC) InstanceId,
     VAR(uint8, AUTOMATIC) ApiId,

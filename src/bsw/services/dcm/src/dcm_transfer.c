@@ -1268,7 +1268,7 @@ STATIC const Dcm_MemoryMappingType Dcm_MemoryMappingTable[] = {
 };
 
 /* Export memory mappings */
-const Dcm_MemoryMappingType* Dcm_MemoryMappings = Dcm_MemoryMappingTable;
+const Dcm_MemoryMappingType Dcm_MemoryMappings[] = Dcm_MemoryMappingTable;
 const uint8 Dcm_NumMemoryMappings = 2U;
 
 #define DCM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
