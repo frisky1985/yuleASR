@@ -48,7 +48,7 @@
  * Internal Variables
  *===========================================================================*/
 static uint8 ComM_ModuleState = COMM_UNINITIALIZED;
-static const ComM_ConfigType* ComM_ConfigPtr = NULL;
+static const ComM_ConfigType* ComM_ConfigPtr = NULL_PTR;
 
 /* Channel States */
 static ComM_ChannelStateStrType ComM_ChannelStates[COMM_NUM_CHANNELS];
