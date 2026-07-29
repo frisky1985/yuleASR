@@ -17,6 +17,20 @@ foreach(subdir ${SERVICES_SUBDIRS})
     endif()
 endforeach()
 
+# MCAL layer include directories (for Eth.h, Fee.h, Mcal.h, etc.)
+set(ECUAL_MCAL_INCLUDE_DIRS)
+foreach(_layer mcal ecual)
+    set(_dir ${CMAKE_CURRENT_SOURCE_DIR}/../${_layer})
+    if(IS_DIRECTORY ${_dir})
+        file(GLOB _subdirs LIST_DIRECTORIES true ${_dir}/*)
+        foreach(_subdir ${_subdirs})
+            if(IS_DIRECTORY ${_subdir}/include)
+                list(APPEND ECUAL_MCAL_INCLUDE_DIRS ${_subdir}/include)
+            endif()
+        endforeach()
+    endif()
+endforeach()
+
 foreach(subdir ${SERVICES_SUBDIRS})
     get_filename_component(module_name ${subdir} NAME)
     
@@ -33,7 +47,7 @@ foreach(subdir ${SERVICES_SUBDIRS})
         # - PRIVATE: ALL service include dirs (so any module can include any service header)
         target_include_directories(${target_name}
             PUBLIC ${subdir}/include
-            PRIVATE ${SERVICES_INCLUDE_DIRS}
+            PRIVATE ${SERVICES_INCLUDE_DIRS} ${ECUAL_MCAL_INCLUDE_DIRS}
         )
         
         set_target_properties(${target_name} PROPERTIES
