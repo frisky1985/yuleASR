@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  yuleASR BCM (Body Control Module) Demo ARXML
+  ──────────────────────────────────────────────
+  AUTOSAR R20-11 system description for BCM SWCs:
+    - BCM_Door          : Door lock/unlock control
+    - BCM_Light         : Exterior/interior light control
+    - BCM_Wiper         : Wiper speed control
+    - BCM_Power         : Power mode management
+-->
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="pkg-bcm-types">
+      <SHORT-NAME>BCM_DataTypes</SHORT-NAME>
+      <ELEMENTS>
+        <!-- Door Status type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-door-status">
+          <SHORT-NAME>DoorStatusType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- Lock State type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-lock-state">
+          <SHORT-NAME>LockStateType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- Light Switch type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-light-switch">
+          <SHORT-NAME>LightSwitchType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- Light Output type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-light-output">
+          <SHORT-NAME>LightOutputType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint16</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- Wiper Speed type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-wiper-speed">
+          <SHORT-NAME>WiperSpeedType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- Wiper Control type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-wiper-ctrl">
+          <SHORT-NAME>WiperCtrlType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- Power Mode type -->
+        <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-power-mode">
+          <SHORT-NAME>PowerModeType</SHORT-NAME>
+          <CATEGORY>VALUE</CATEGORY>
+          <SW-DATA-DEF-PROPS>
+            <SW-DATA-DEF-PROPS-VARIANTS>
+              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/BCM_DataTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS-CONDITIONAL>
+            </SW-DATA-DEF-PROPS-VARIANTS>
+          </SW-DATA-DEF-PROPS>
+        </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+        <!-- SW Base Types -->
+        <SW-BASE-TYPE UUID="bt-uint8">
+          <SHORT-NAME>uint8</SHORT-NAME>
+          <BASE-TYPE-SIZE>8</BASE-TYPE-SIZE>
+          <BASE-TYPE-ENCODING>NONE</BASE-TYPE-ENCODING>
+          <NATIVE-DECLARATION>unsigned char</NATIVE-DECLARATION>
+        </SW-BASE-TYPE>
+        <SW-BASE-TYPE UUID="bt-uint16">
+          <SHORT-NAME>uint16</SHORT-NAME>
+          <BASE-TYPE-SIZE>16</BASE-TYPE-SIZE>
+          <BASE-TYPE-ENCODING>NONE</BASE-TYPE-ENCODING>
+          <NATIVE-DECLARATION>unsigned short</NATIVE-DECLARATION>
+        </SW-BASE-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+
+    <!-- ========== Interface Definitions ========== -->
+    <AR-PACKAGE UUID="pkg-bcm-interfaces">
+      <SHORT-NAME>BCM_Interfaces</SHORT-NAME>
+      <ELEMENTS>
+        <!-- Door Status Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-door-status">
+          <SHORT-NAME>DoorStatus_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-door-status">
+              <SHORT-NAME>DoorStatus</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/DoorStatusType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Door Lock Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-door-lock">
+          <SHORT-NAME>DoorLock_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-lock-cmd">
+              <SHORT-NAME>LockCommand</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/LockStateType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Light Switch Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-light-switch">
+          <SHORT-NAME>LightSwitch_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-light-switch">
+              <SHORT-NAME>LightSwitch</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/LightSwitchType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Light Output Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-light-output">
+          <SHORT-NAME>LightOutput_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-light-output">
+              <SHORT-NAME>LightOutput</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/LightOutputType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Wiper Speed Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-wiper-speed">
+          <SHORT-NAME>WiperSpeed_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-wiper-speed">
+              <SHORT-NAME>WiperSpeed</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/WiperSpeedType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Wiper Control Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-wiper-ctrl">
+          <SHORT-NAME>WiperCtrl_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-wiper-ctrl">
+              <SHORT-NAME>WiperControl</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/WiperCtrlType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- Power Mode Interface -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-power-mode">
+          <SHORT-NAME>PowerMode_IF</SHORT-NAME>
+          <IS-SERVICE>false</IS-SERVICE>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-power-mode">
+              <SHORT-NAME>PowerMode</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/BCM_DataTypes/PowerModeType</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+
+    <!-- ========== Door SWC ========== -->
+    <AR-PACKAGE UUID="pkg-bcm-door">
+      <SHORT-NAME>BCM_Door</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-bcm-door">
+          <SHORT-NAME>BCM_Door</SHORT-NAME>
+          <DESC>
+            <L-2>Body Control Module — Door Control SWC</L-2>
+          </DESC>
+          <PORTS>
+            <!-- Read door status from sensor -->
+            <R-PORT-PROTOTYPE UUID="port-door-status">
+              <SHORT-NAME>DoorStatus_R</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/DoorStatus_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+            <!-- Write lock command to actuator -->
+            <P-PORT-PROTOTYPE UUID="port-door-lock">
+              <SHORT-NAME>DoorLock_P</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/DoorLock_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+            <!-- Read light switch for auto-lock integration -->
+            <R-PORT-PROTOTYPE UUID="port-light-switch-door">
+              <SHORT-NAME>LightSwitch_R</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/LightSwitch_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+          </PORTS>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR UUID="ib-bcm-door">
+              <SHORT-NAME>DoorBehavior</SHORT-NAME>
+              <RUNNABLES>
+                <RUNNABLE-ENTITY UUID="rn-door-monitor">
+                  <SHORT-NAME>DoorMonitor_Runnable</SHORT-NAME>
+                  <SYMBOL>BCM_Door_Monitor</SYMBOL>
+                  <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0.05</MINIMUM-START-INTERVAL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY UUID="rn-door-lock">
+                  <SHORT-NAME>DoorLock_Runnable</SHORT-NAME>
+                  <SYMBOL>BCM_Door_ProcessLock</SYMBOL>
+                  <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0.01</MINIMUM-START-INTERVAL>
+                </RUNNABLE-ENTITY>
+              </RUNNABLES>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+
+    <!-- ========== Light SWC ========== -->
+    <AR-PACKAGE UUID="pkg-bcm-light">
+      <SHORT-NAME>BCM_Light</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-bcm-light">
+          <SHORT-NAME>BCM_Light</SHORT-NAME>
+          <DESC>
+            <L-2>Body Control Module — Lighting Control SWC</L-2>
+          </DESC>
+          <PORTS>
+            <!-- Read light switch input -->
+            <R-PORT-PROTOTYPE UUID="port-light-switch">
+              <SHORT-NAME>LightSwitch_R</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/LightSwitch_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+            <!-- Write light output to actuator -->
+            <P-PORT-PROTOTYPE UUID="port-light-output">
+              <SHORT-NAME>LightOutput_P</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/LightOutput_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+          </PORTS>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR UUID="ib-bcm-light">
+              <SHORT-NAME>LightBehavior</SHORT-NAME>
+              <RUNNABLES>
+                <RUNNABLE-ENTITY UUID="rn-light-ctrl">
+                  <SHORT-NAME>LightControl_Runnable</SHORT-NAME>
+                  <SYMBOL>BCM_Light_Control</SYMBOL>
+                  <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0.02</MINIMUM-START-INTERVAL>
+                </RUNNABLE-ENTITY>
+              </RUNNABLES>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+
+    <!-- ========== Wiper SWC ========== -->
+    <AR-PACKAGE UUID="pkg-bcm-wiper">
+      <SHORT-NAME>BCM_Wiper</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-bcm-wiper">
+          <SHORT-NAME>BCM_Wiper</SHORT-NAME>
+          <DESC>
+            <L-2>Body Control Module — Wiper Control SWC</L-2>
+          </DESC>
+          <PORTS>
+            <!-- Read wiper speed setting -->
+            <R-PORT-PROTOTYPE UUID="port-wiper-speed">
+              <SHORT-NAME>WiperSpeed_R</SHORT-NAME>
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/WiperSpeed_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+            <!-- Write wiper control signal -->
+            <P-PORT-PROTOTYPE UUID="port-wiper-ctrl">
+              <SHORT-NAME>WiperCtrl_P</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/WiperCtrl_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+          </PORTS>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR UUID="ib-bcm-wiper">
+              <SHORT-NAME>WiperBehavior</SHORT-NAME>
+              <RUNNABLES>
+                <RUNNABLE-ENTITY UUID="rn-wiper-ctrl">
+                  <SHORT-NAME>WiperControl_Runnable</SHORT-NAME>
+                  <SYMBOL>BCM_Wiper_Control</SYMBOL>
+                  <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0.02</MINIMUM-START-INTERVAL>
+                </RUNNABLE-ENTITY>
+              </RUNNABLES>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+
+    <!-- ========== Power SWC ========== -->
+    <AR-PACKAGE UUID="pkg-bcm-power">
+      <SHORT-NAME>BCM_Power</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-bcm-power">
+          <SHORT-NAME>BCM_Power</SHORT-NAME>
+          <DESC>
+            <L-2>Body Control Module — Power Mode Management SWC</L-2>
+          </DESC>
+          <PORTS>
+            <!-- Provide power mode to other SWCs -->
+            <P-PORT-PROTOTYPE UUID="port-power-mode">
+              <SHORT-NAME>PowerMode_P</SHORT-NAME>
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/BCM_Interfaces/PowerMode_IF</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+          </PORTS>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR UUID="ib-bcm-power">
+              <SHORT-NAME>PowerBehavior</SHORT-NAME>
+              <RUNNABLES>
+                <RUNNABLE-ENTITY UUID="rn-power-mgr">
+                  <SHORT-NAME>PowerManager_Runnable</SHORT-NAME>
+                  <SYMBOL>BCM_Power_Manager</SYMBOL>
+                  <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0.1</MINIMUM-START-INTERVAL>
+                </RUNNABLE-ENTITY>
+              </RUNNABLES>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+
+  </AR-PACKAGES>
+</AUTOSAR>

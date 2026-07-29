@@ -1,0 +1,77 @@
+#=============================================================================
+# docker-compose.yml — yuleASR Cross-Compilation Environment
+#
+# Usage:
+#   docker compose -f docker/docker-compose.yml build   # Build image
+#   docker compose -f docker/docker-compose.yml run cross-compile
+#   docker compose -f docker/docker-compose.yml run qemu-sim
+#=============================================================================
+
+services:
+
+  # Cross-compilation environment
+  cross-compile:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: yuleasr-cross:latest
+    container_name: yuleasr-cross
+    working_dir: /workspace
+    volumes:
+      # Mount the yuleASR project root
+      - ..:/workspace
+      # Preserve build artifacts across runs
+      - yuleasr-build:/workspace/build-qemu
+    command: |
+      bash -c "
+        cmake -B build-qemu \
+          -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-none-eabi.cmake \
+          -DQEMU_BUILD=ON \
+          -S . && \
+        cmake --build build-qemu && \
+        echo '=== Build complete ==='
+      "
+    environment:
+      - CMAKE_BUILD_TYPE=Debug
+
+  # QEMU simulation
+  qemu-sim:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: yuleasr-cross:latest
+    container_name: yuleasr-qemu
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+      - yuleasr-build:/workspace/build-qemu
+    command: |
+      bash -c "
+        cd qemu && \
+        make && \
+        echo '=== Running in QEMU ===' && \
+        qemu-system-arm -M mps2-an500 -cpu cortex-m7 -nographic \
+          -kernel build/yuleasr_qemu.elf
+      "
+    stdin_open: true
+    tty: true
+
+  # Development shell
+  shell:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: yuleasr-cross:latest
+    container_name: yuleasr-shell
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace
+      - yuleasr-build:/workspace/build-qemu
+    environment:
+      - CMAKE_BUILD_TYPE=Debug
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+volumes:
+  yuleasr-build:

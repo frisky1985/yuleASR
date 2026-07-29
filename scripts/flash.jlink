@@ -1,0 +1,24 @@
+#=============================================================================
+# flash.jlink — JLink Commander script for S32K312
+#
+# Usage:
+#   JLinkExe -device S32K312 -if SWD -speed 4000 -autoconnect 1 \
+#     -CommanderScript scripts/flash.jlink
+#
+# Or use scripts/flash.sh which auto-generates this file.
+#=============================================================================
+
+# Halt the CPU
+h
+
+# Erase sectors (optional, uncomment if needed)
+# erase
+
+# Load firmware (change path as needed)
+loadfile build/yuleasr.hex
+
+# Reset and run
+r
+g
+
+exit
