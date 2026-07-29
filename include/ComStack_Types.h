@@ -14,11 +14,15 @@ typedef uint16 PduIdType;
 /* PDU length type */
 typedef uint32 PduLengthType;
 
+/* TP Parameter Type */
+typedef enum {
+    TP_STMIN = 0,
+    TP_BS,
+    TP_BC
+} TPParameterType;
+
 /* Notifcation status type */
 typedef enum {
-    TP_STMIN = 0x00,
-    TP_BS    = 0x01,
-    TP_BC    = 0x02,
     NTFRSLT_OK = 0x00,
     NTFRSLT_E_NOT_OK = 0x01,
     NTFRSLT_E_TIMEOUT_A = 0x02,
@@ -59,13 +63,6 @@ typedef struct {
 
 /* Notification callback type */
 typedef void (*Pdu_NotifyCallbackType)(void);
-
-/* TP Parameter Type */
-typedef enum {
-    TP_STMIN = 0,
-    TP_BS,
-    TP_BC
-} TPParameterType;
 
 /* Retry info type */
 typedef struct {

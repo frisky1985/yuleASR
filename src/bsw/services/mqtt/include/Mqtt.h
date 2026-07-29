@@ -39,6 +39,7 @@
  * 包含文件
  *===========================================================================*/
 #include "Std_Types.h"
+#include "Mqtt_Types.h"
 #include "Mqtt_Cfg.h"
 
 /*============================================================================
@@ -142,21 +143,6 @@ typedef enum {
     MQTT_CLEAN_SESSION_FALSE = 0,
     MQTT_CLEAN_SESSION_TRUE  = 1
 } Mqtt_CleanSessionType;
-
-/**
- * @brief 返回码类型
- */
-typedef enum {
-    MQTT_OK = 0,                /**< 成功 */
-    MQTT_E_NOT_OK,              /**< 通用失败 */
-    MQTT_E_BUSY,                /**< 模块忙 */
-    MQTT_E_TIMEOUT,             /**< 超时 */
-    MQTT_E_NOCONN,              /**< 未连接 */
-    MQTT_E_INVtopic,            /**< 无效主题 */
-    MQTT_E_INVPAYLOAD,          /**< 无效负载 */
-    MQTT_E_BUFFERFULL,          /**< 缓冲区满 */
-    MQTT_E_DISCONNECTED         /**< 已断开 */
-} Mqtt_ReturnType;
 
 /**
  * @brief 连接配置结构
