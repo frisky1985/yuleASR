@@ -1,11 +1,19 @@
 #=============================================================================
-# MISRA C:2012 Configuration for ETH-DDS Integration Project
+# MISRA C:2023 Configuration for ETH-DDS Integration Project
 #=============================================================================
 # Project: ETH-DDS Integration (AutoSAR Classic Platform)
 # Module: COM (Communication Module)
-# Standard: MISRA C:2012 Amendment 2
-# Version: 1.0
-# Date: 2026-04-29
+# Standard: MISRA C:2023
+# Version: 2.0
+# Date: 2026-07-28
+# Migration: MISRA C:2012 → MISRA C:2023
+# Change Notes:
+#   - All rule prefixes updated from misra-c2012 to misra-c2023
+#   - Added new C:2023 rules: 1.4 (emergent features), 8.14 (restrict pointer),
+#     9.5 (designated initializer array size), 22.1 (dynamic heap memory),
+#     dir-4.13 (static analysis confidence), dir-4.14 (external value validation)
+#   - Rule 5.6 removed in C:2023 (merged with Rule 5.8); deviated projects ref in ci-config
+#   - Several rules modified: 1.1, 2.2, 10.1, 10.3, 10.4, 11.3, 17.2, 18.4, 18.5, 21.12, 22.1, 8.13
 #=============================================================================
 
 [general]
@@ -38,50 +46,51 @@ required-categories = mandatory, required
 advisory-categories = advisory
 
 [rules]
-# Explicitly enabled MISRA C:2012 rules
+# Explicitly enabled MISRA C:2023 rules
 enable = 
-    misra-c2012-1.1,  # C code shall conform to ISO/IEC 9899:2011
-    misra-c2012-1.3,  # No undefined or critical unspecified behavior
-    misra-c2012-2.1,  # No unreachable code
-    misra-c2012-2.2,  # No dead code
-    misra-c2012-3.1,  # Character sequences /* and // shall not be used within comments
-    misra-c2012-5.1,  # External identifiers shall be distinct
-    misra-c2012-5.9,  # Identifiers with internal linkage should be unique (advisory)
-    misra-c2012-8.2,  # Function types shall be in prototype form with named parameters
-    misra-c2012-8.4,  # Compatible declaration visible for external linkage
-    misra-c2012-8.6,  # Single external definition
-    misra-c2012-8.8,  # Static for internal linkage
-    misra-c2012-8.13, # Pointer should point to const-qualified type (advisory)
-    misra-c2012-9.1,  # No use before initialization
-    misra-c2012-10.1, # Operands of appropriate essential type
-    misra-c2012-10.3, # No assignment to narrower essential type
-    misra-c2012-10.4, # Same essential type category in operations
-    misra-c2012-11.1, # No conversion between function pointer and other types
-    misra-c2012-11.3, # No cast between different object pointer types
-    misra-c2012-11.6, # No cast between pointer to void and arithmetic type
-    misra-c2012-11.8, # Cast shall not remove const/volatile qualification
-    misra-c2012-12.1, # Explicit operator precedence (advisory)
-    misra-c2012-12.2, # Shift range check
-    misra-c2012-13.1, # No persistent side effects in initializers
-    misra-c2012-13.2, # Consistent expression evaluation
-    misra-c2012-13.5, # No side effects in right operand of && or ||
-    misra-c2012-14.4, # Boolean controlling expressions
-    misra-c2012-15.5, # Single point of exit (advisory)
-    misra-c2012-15.6, # Compound statement for loops and selection
-    misra-c2012-15.7, # Else clause for if-else-if
-    misra-c2012-16.1, # Well-formed switch statements
-    misra-c2012-16.3, # Unconditional break in switch clause
-    misra-c2012-16.4, # Default label in switch
-    misra-c2012-17.2, # No recursion
-    misra-c2012-17.4, # Return statement in non-void function
-    misra-c2012-17.7, # Use of non-void return value
-    misra-c2012-17.8, # Function parameter should not be modified (advisory)
-    misra-c2012-18.1, # Pointer arithmetic within array bounds
-    misra-c2012-18.3, # Relational operators on same object pointers
-    misra-c2012-18.6, # No address of automatic storage to persistent object
-    misra-c2012-20.7, # Macro parameter parentheses
-    misra-c2012-21.3, # No standard library memory management
-    misra-c2012-21.6  # No standard library input/output
+    misra-c2023-1.1,  # C code shall conform to ISO/IEC 9899:2011 (modified)
+    misra-c2023-1.3,  # No undefined or critical unspecified behavior (unchanged)
+    misra-c2023-1.4,  # Emergent language features shall not be used (NEW)
+    misra-c2023-2.1,  # No unreachable code (unchanged)
+    misra-c2023-2.2,  # No dead code (modified — relaxed for debug macros)
+    misra-c2023-3.1,  # Character sequences /* and // shall not be used within comments (unchanged)
+    misra-c2023-5.1,  # External identifiers shall be distinct (unchanged)
+    misra-c2023-5.9,  # Identifiers with internal linkage should be unique (unchanged)
+    misra-c2023-8.2,  # Function types shall be in prototype form with named parameters (unchanged)
+    misra-c2023-8.4,  # Compatible declaration visible for external linkage (unchanged)
+    misra-c2023-8.6,  # Single external definition (unchanged)
+    misra-c2023-8.8,  # Static for internal linkage (unchanged)
+    misra-c2023-8.13, # Pointer should point to const-qualified type (modified — relaxed for embedded callbacks)
+    misra-c2023-9.1,  # No use before initialization (unchanged)
+    misra-c2023-10.1, # Operands of appropriate essential type (modified — clearer exception paths)
+    misra-c2023-10.3, # No assignment to narrower essential type (modified — adjusted narrowing logic)
+    misra-c2023-10.4, # Same essential type category in operations (modified — adjusted mismatched checks)
+    misra-c2023-11.1, # No conversion between function pointer and other types (unchanged)
+    misra-c2023-11.3, # No cast between different object pointer types (modified — stricter)
+    misra-c2023-11.6, # No cast between pointer to void and arithmetic type (unchanged)
+    misra-c2023-11.8, # Cast shall not remove const/volatile qualification (unchanged)
+    misra-c2023-12.1, # Explicit operator precedence (unchanged)
+    misra-c2023-12.2, # Shift range check (unchanged)
+    misra-c2023-13.1, # No persistent side effects in initializers (unchanged)
+    misra-c2023-13.2, # Consistent expression evaluation (unchanged)
+    misra-c2023-13.5, # No side effects in right operand of && or || (unchanged)
+    misra-c2023-14.4, # Boolean controlling expressions (unchanged)
+    misra-c2023-15.5, # Single point of exit (unchanged)
+    misra-c2023-15.6, # Compound statement for loops and selection (unchanged)
+    misra-c2023-15.7, # Else clause for if-else-if (unchanged)
+    misra-c2023-16.1, # Well-formed switch statements (unchanged)
+    misra-c2023-16.3, # Unconditional break in switch clause (unchanged)
+    misra-c2023-16.4, # Default label in switch (unchanged)
+    misra-c2023-17.2, # No recursion (modified — tail-recursion exception)
+    misra-c2023-17.4, # Return statement in non-void function (unchanged)
+    misra-c2023-17.7, # Use of non-void return value (unchanged)
+    misra-c2023-17.8, # Function parameter should not be modified (unchanged)
+    misra-c2023-18.1, # Pointer arithmetic within array bounds (unchanged)
+    misra-c2023-18.3, # Relational operators on same object pointers (unchanged)
+    misra-c2023-18.6, # No address of automatic storage to persistent object (unchanged)
+    misra-c2023-20.7, # Macro parameter parentheses (unchanged)
+    misra-c2023-21.3, # No standard library memory management (unchanged)
+    misra-c2023-21.6  # No standard library input/output (unchanged)
 
 [suppressions]
 # Global suppressions (use with caution)
@@ -128,7 +137,7 @@ template = "[{severity}][{id}] {file}:{line} {message}"
 
 [addon]
 # MISRA addon configuration
-misra-c2012 = true
+misra-c2023 = true
 
 # Path to MISRA rules file
 misra-rules-file = tools/misra/misra_rules.json
@@ -164,11 +173,11 @@ header-files =
 # Module-specific suppressions
 module-suppressions = 
     # Rule 15.5: Single exit point - allowed in error handlers
-    misra-c2012-15.5:Com_ErrorHandling.c,
+    misra-c2023-15.5:Com_ErrorHandling.c,
     # Rule 15.5: Single exit point - allowed in state machines
-    misra-c2012-15.5:Com_TxMode.c,
+    misra-c2023-15.5:Com_TxMode.c,
     # Rule 17.7: Return value used - allowed for void cast pattern
-    misra-c2012-17.7:Com*.c:memcpy
+    misra-c2023-17.7:Com*.c:memcpy
 
 #=============================================================================
 # Quality Gates

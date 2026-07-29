@@ -1,1 +1,1 @@
-genhtml coverage_src.info --output-directory coverage_report
+genhtml --rc branch_coverage=1 --branch-coverage coverage_src.info --output-directory coverage_report

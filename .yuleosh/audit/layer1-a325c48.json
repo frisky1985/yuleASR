@@ -1,0 +1,162 @@
+{
+  "layer": 1,
+  "commit": "a325c48",
+  "status": "passed",
+  "started_at": "2026-07-19T10:12:12.670710",
+  "completed_at": "2026-07-19T10:12:23.087899",
+  "stages": [
+    {
+      "name": "yaml-validation",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:12.694237"
+    },
+    {
+      "name": "spec-validation",
+      "status": "passed",
+      "detail": "0 missing, 3 req keywords found",
+      "timestamp": "2026-07-19T10:12:12.694561"
+    },
+    {
+      "name": "architecture-review",
+      "status": "passed",
+      "detail": "0 modules: ",
+      "timestamp": "2026-07-19T10:12:12.694630"
+    },
+    {
+      "name": "requirements-trace",
+      "status": "passed",
+      "detail": "111 reqs, 0 modules, 2 tests (ratio 200.0%)",
+      "timestamp": "2026-07-19T10:12:12.707053"
+    },
+    {
+      "name": "plan-lint",
+      "status": "skipped",
+      "detail": "No task/plan files found",
+      "timestamp": "2026-07-19T10:12:12.751113"
+    },
+    {
+      "name": "docsync-gate",
+      "status": "warning",
+      "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)",
+      "timestamp": "2026-07-19T10:12:12.752573"
+    },
+    {
+      "name": "clang-tidy",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:12.929751"
+    },
+    {
+      "name": "misra-check",
+      "status": "passed",
+      "detail": "342 MISRA violation(s) (0 required, 0 advisory) \u2014 see .yuleosh/reports/misra-report.json",
+      "timestamp": "2026-07-19T10:12:14.797628"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:15.411500"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:15.914526"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:16.451476"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:16.883316"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:17.317896"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:19.040362"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:19.493561"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:19.911434"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:20.337841"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:20.765993"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:21.171319"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:21.578004"
+    },
+    {
+      "name": "unit-tests",
+      "status": "passed",
+      "detail": "",
+      "timestamp": "2026-07-19T10:12:22.257045"
+    },
+    {
+      "name": "coverage",
+      "status": "passed",
+      "detail": "line=0.0%, cond=0.0%",
+      "timestamp": "2026-07-19T10:12:23.045727"
+    },
+    {
+      "name": "c-coverage",
+      "status": "skipped",
+      "detail": "No build directory with coverage data found",
+      "timestamp": "2026-07-19T10:12:23.087695"
+    },
+    {
+      "name": "c-coverage-gate",
+      "status": "skipped",
+      "detail": "No C coverage report at .yuleosh/reports/c-coverage.json",
+      "timestamp": "2026-07-19T10:12:23.087840"
+    }
+  ],
+  "coverage": {
+    "line_coverage": 0.0,
+    "condition_coverage": 0.0,
+    "threshold_line": 0.0,
+    "threshold_condition": 0.0,
+    "line_pass": true,
+    "condition_pass": true
+  },
+  "errors": []
+}

@@ -1,13 +1,18 @@
 # YuleTech AutoSAR BSW - 构建配置
 cmake_minimum_required(VERSION 3.20)
+project(yule_bsw C CXX)
+
+# 项目根目录 (CMakeLists.txt 位于 tools/build 下，向上两级才是项目根)
+set(PROJECT_ROOT ${CMAKE_CURRENT_LIST_DIR}/../..)
 
 # 源代码目录
-set(SRC_DIR ${CMAKE_SOURCE_DIR}/src/bsw)
+set(SRC_DIR ${PROJECT_ROOT}/src/bsw)
 
 # ============ 通用头文件 ============
 include_directories(
-    ${CMAKE_SOURCE_DIR}/config/generated
-    ${CMAKE_SOURCE_DIR}/config/input/mcal
+    ${PROJECT_ROOT}/config/generated
+    ${PROJECT_ROOT}/config/input/mcal
+    ${PROJECT_ROOT}/include/autosar
     ${SRC_DIR}/general/inc
     ${SRC_DIR}/mcal/mcu/include
     ${SRC_DIR}/mcal/port/include
@@ -88,7 +93,7 @@ set(BSW_SOURCES
     ${SRC_DIR}/os/src/Os.c
     
     # RTE 层
-    ${SRC_DIR}/rte/src/Rte.c
+    # ${SRC_DIR}/rte/src/Rte.c  # 暂不存在，后续添加
 )
 
 # ============ 库目标 ============
@@ -101,7 +106,7 @@ target_compile_options(yule_bsw PRIVATE
 )
 
 # ============ Configurator ECUC 生成文件 ============
-set(GENERATED_DIR ${CMAKE_SOURCE_DIR}/config/generated)
+set(GENERATED_DIR ${PROJECT_ROOT}/config/generated)
 set(ECUC_GENERATED_SOURCES
     ${GENERATED_DIR}/Ecuc_Can.c
     ${GENERATED_DIR}/Ecuc_Can_PBcfg.c

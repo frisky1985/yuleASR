@@ -1,6 +1,6 @@
 # MISRA Fix Task: unknown
 
-> Generated: 2026-07-26T01:53:44.661670
+> Generated: 2026-07-26T13:15:37.456152
 > Severity: unknown
 > Spec Ref: 
 
@@ -345,7 +345,7 @@
 | 331 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_EccHandler.c` | 83 | 0 | Include file: "NvM_MemMap.h" not found. [missingInclude] |
 | 332 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_EccHandler.c` | 91 | 0 | Include file: "NvM_MemMap.h" not found. [missingInclude] |
 | 333 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_EccHandler.c` | 105 | 0 | Include file: "NvM_MemMap.h" not found. [missingInclude] |
-| 334 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_EccHandler.c` | 745 | 0 | Include file: "NvM_MemMap.h" not found. [missingInclude] |
+| 334 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_EccHandler.c` | 739 | 0 | Include file: "NvM_MemMap.h" not found. [missingInclude] |
 | 335 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linm/include/LinM.h` | 23 | 0 | Include file: "Lin_GeneralTypes.h" not found. [missingInclude] |
 | 336 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linm/include/LinM.h` | 160 | 0 | Include file: "MemMap.h" not found. [missingInclude] |
 | 337 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linm/include/LinM.h` | 165 | 0 | Include file: "MemMap.h" not found. [missingInclude] |

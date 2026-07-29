@@ -1,19 +1,19 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-26T01:53:37.470397",
+  "generated_at": "2026-07-26T13:15:52.464019",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "passed",
-      "commit": "602cb93",
-      "started_at": "2026-07-26T01:52:27.178073",
-      "completed_at": "2026-07-26T01:53:37.467814",
+      "status": "failed",
+      "commit": "dd4515b",
+      "started_at": "2026-07-26T13:14:47.318167",
+      "completed_at": "2026-07-26T13:15:52.462354",
       "stages_summary": {
         "total": 30,
-        "passed": 27,
-        "failed": 0,
-        "skipped": 0
+        "passed": 24,
+        "failed": 2,
+        "skipped": 1
       },
       "stages": [
         {
@@ -54,7 +54,7 @@
         {
           "name": "misra-check",
           "status": "warning",
-          "detail": "1134 MISRA violation(s) (366 required, 4 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": "768 MISRA violation(s) (0 required, 4 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -143,13 +143,13 @@
         },
         {
           "name": "unit-tests",
-          "status": "passed",
-          "detail": ""
+          "status": "failed",
+          "detail": "tests/test_manifest.py: ....F\n=================================== FAILURES ===================================\n__________________ TestManifest.test_traceability_established __________________\ntests/test_manifest.py:55: in te"
         },
         {
           "name": "coverage",
-          "status": "passed",
-          "detail": "line=21.62162162162162%, cond=21.62162162162162%"
+          "status": "failed",
+          "detail": "coverage run returned non-zero (1): "
         },
         {
           "name": "coverage-regression",
@@ -163,29 +163,23 @@
         },
         {
           "name": "c-coverage-gate",
-          "status": "passed",
-          "detail": "line_rate=37.1% >= 35%"
+          "status": "skipped",
+          "detail": "No C coverage report at .yuleosh/reports/c-coverage.json"
         }
       ],
-      "coverage": {
-        "line": 21.62162162162162,
-        "condition": 21.62162162162162,
-        "line_pass": true,
-        "condition_pass": true
-      },
-      "errors": []
+      "coverage": null,
+      "errors": [
+        "unit-tests failed",
+        "coverage failed"
+      ]
     }
   ],
   "misra": {
-    "total_violations": 1134,
-    "required": 366,
+    "total_violations": 768,
+    "required": 0,
     "advisory": 4,
-    "violations_per_kloc": 17.39,
-    "rules_violated": 3,
-    "files_affected": 186
-  },
-  "c_coverage": {
-    "line_rate": 37.1,
-    "branch_rate": 0.0
+    "violations_per_kloc": 12.11,
+    "rules_violated": 2,
+    "files_affected": 174
   }
 }

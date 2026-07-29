@@ -92,6 +92,14 @@ function(yule_add_module)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
+    # Coverage flags: yule_add_coverage if ENABLE_COVERAGE is ON
+    # This uses per-target compile/link flags (target_compile_options) instead of
+    # the global CMAKE_C_FLAGS to avoid being overridden by per-target C_STANDARD
+    # or other per-target compile settings.
+    if(ENABLE_COVERAGE AND NOT CMAKE_CROSSCOMPILING)
+        yule_add_coverage(${MODULE_NAME})
+    endif()
+
     message(STATUS "Added module: ${MODULE_NAME}")
 endfunction()
 
@@ -163,6 +171,11 @@ function(yule_add_executable)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
+    # Coverage flags: yule_add_coverage if ENABLE_COVERAGE is ON
+    if(ENABLE_COVERAGE AND NOT CMAKE_CROSSCOMPILING)
+        yule_add_coverage(${EXE_NAME})
+    endif()
+
     message(STATUS "Added executable: ${EXE_NAME}")
 endfunction()
 
@@ -196,6 +209,11 @@ function(yule_add_test)
     # Link dependencies
     if(TEST_DEPENDS)
         target_link_libraries(${TEST_NAME} PRIVATE ${TEST_DEPENDS})
+    endif()
+
+    # Coverage flags for test executables
+    if(ENABLE_COVERAGE AND NOT CMAKE_CROSSCOMPILING)
+        yule_add_coverage(${TEST_NAME})
     endif()
 
     # Register with CTest

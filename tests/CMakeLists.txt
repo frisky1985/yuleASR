@@ -26,4 +26,9 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/integration)
     add_subdirectory(integration)
 endif()
 
+# MCAL mock tests (links real production source with MockHAL)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/mock/CMakeLists_MCAL_Tests.txt)
+    include(${CMAKE_CURRENT_SOURCE_DIR}/mock/CMakeLists_MCAL_Tests.txt)
+endif()
+
 message(STATUS "Tests configured")

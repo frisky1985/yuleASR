@@ -67,6 +67,19 @@ set(MCAL_TEST_INCLUDES
     ${SRC_MCAL}/port/include
     ${SRC_MCAL}/wdg/include
     ${SRC_MCAL}/mcu/include
+    ${SRC_MCAL}/eep/include
+    ${SRC_MCAL}/fee/include
+    ${SRC_MCAL}/flash/include
+    ${SRC_MCAL}/i2c/include
+    ${SRC_MCAL}/lin/include
+    ${SRC_MCAL}/ocu/include
+    ${SRC_MCAL}/ramtst/include
+    ${SRC_MCAL}/uart/include
+    ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
+    ${CMAKE_SOURCE_DIR}/config/input/mcal
+    ${CMAKE_SOURCE_DIR}/config/generated
+    ${CMAKE_SOURCE_DIR}/tests/mock/stubs
+    ${UNITY_DIR}
     ${MOCK_DIR}
 )
 
@@ -161,16 +174,17 @@ add_subdirectory(${MOCK_DIR} ${CMAKE_BINARY_DIR}/mock_hal)
 #----------------------------------------------------------------------
 # Test runner source directory
 #----------------------------------------------------------------------
-file(GLOB MCAL_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_*.c)
-list(APPEND MCAL_TEST_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_*.c)
+set(MCAL_TEST_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mock)
+file(GLOB MCAL_TEST_SRCS ${MCAL_TEST_SRC_DIR}/test_mcal_*.c)
+list(APPEND MCAL_TEST_SRCS ${MCAL_TEST_SRC_DIR}/test_mcal_*.c)
 
 #----------------------------------------------------------------------
 # DIO test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_dio.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_dio.c)
     add_mcal_test(
         NAME        mcal_dio_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_dio.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_dio.c
         MCAL_SRCS
             ${SRC_MCAL}/dio/src/Dio.c
             ${SRC_MCAL}/dio/src/Dio_Lcfg.c
@@ -182,10 +196,10 @@ endif()
 #----------------------------------------------------------------------
 # PWM test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_pwm.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_pwm.c)
     add_mcal_test(
         NAME        mcal_pwm_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_pwm.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_pwm.c
         MCAL_SRCS
             ${SRC_MCAL}/pwm/src/Pwm.c
             ${SRC_MCAL}/pwm/src/Pwm_Lcfg.c
@@ -197,10 +211,10 @@ endif()
 #----------------------------------------------------------------------
 # CAN test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_can.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_can.c)
     add_mcal_test(
         NAME        mcal_can_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_can.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_can.c
         MCAL_SRCS
             ${SRC_MCAL}/can/src/Can.c
             ${SRC_MCAL}/can/src/Can_Lcfg.c
@@ -212,10 +226,10 @@ endif()
 #----------------------------------------------------------------------
 # GPT test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_gpt.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_gpt.c)
     add_mcal_test(
         NAME        mcal_gpt_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_gpt.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_gpt.c
         MCAL_SRCS
             ${SRC_MCAL}/gpt/src/Gpt.c
             ${SRC_MCAL}/gpt/src/Gpt_Lcfg.c
@@ -227,10 +241,10 @@ endif()
 #----------------------------------------------------------------------
 # ICU test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_icu.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_icu.c)
     add_mcal_test(
         NAME        mcal_icu_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_icu.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_icu.c
         MCAL_SRCS
             ${SRC_MCAL}/icu/src/Icu.c
         MOCK_SRCS
@@ -241,13 +255,12 @@ endif()
 #----------------------------------------------------------------------
 # ADC test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_adc.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_adc.c)
     add_mcal_test(
         NAME        mcal_adc_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_adc.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_adc.c
         MCAL_SRCS
             ${SRC_MCAL}/adc/src/Adc.c
-            ${SRC_MCAL}/adc/src/Adc_Lcfg.c
         MOCK_SRCS
             ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
@@ -256,10 +269,10 @@ endif()
 #----------------------------------------------------------------------
 # PORT test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_port.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_port.c)
     add_mcal_test(
         NAME        mcal_port_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_port.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_port.c
         MCAL_SRCS
             ${SRC_MCAL}/port/src/Port.c
         MOCK_SRCS
@@ -270,10 +283,10 @@ endif()
 #----------------------------------------------------------------------
 # WDG test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_wdg.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_wdg.c)
     add_mcal_test(
         NAME        mcal_wdg_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_wdg.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_wdg.c
         MCAL_SRCS
             ${SRC_MCAL}/wdg/src/Wdg.c
         MOCK_SRCS
@@ -284,13 +297,131 @@ endif()
 #----------------------------------------------------------------------
 # SPI test
 #----------------------------------------------------------------------
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_spi.c)
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_spi.c)
     add_mcal_test(
         NAME        mcal_spi_test
-        TEST_FILE   ${CMAKE_CURRENT_SOURCE_DIR}/test_mcal_spi.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_spi.c
         MCAL_SRCS
             ${SRC_MCAL}/spi/src/Spi.c
             ${SRC_MCAL}/spi/src/Spi_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# EEP test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_eep.c)
+    add_mcal_test(
+        NAME        mcal_eep_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_eep.c
+        MCAL_SRCS
+            ${SRC_MCAL}/eep/src/Eep.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# Fee test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_fee.c)
+    add_mcal_test(
+        NAME        mcal_fee_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_fee.c
+        MCAL_SRCS
+            ${SRC_MCAL}/fee/src/Fee.c
+            ${SRC_MCAL}/fee/src/Fee_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# Flash test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_flash.c)
+    add_mcal_test(
+        NAME        mcal_flash_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_flash.c
+        MCAL_SRCS
+            ${SRC_MCAL}/flash/src/Flash.c
+            ${SRC_MCAL}/flash/src/Flash_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# I2C test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_i2c.c)
+    add_mcal_test(
+        NAME        mcal_i2c_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_i2c.c
+        MCAL_SRCS
+            ${SRC_MCAL}/i2c/src/I2c.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# LIN test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_lin.c)
+    add_mcal_test(
+        NAME        mcal_lin_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_lin.c
+        MCAL_SRCS
+            ${SRC_MCAL}/lin/src/Lin.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+        DEFINES
+            DISABLE_MCAL_INTERMODULE_ASR_CHECK=1
+    )
+endif()
+
+#----------------------------------------------------------------------
+# OCU test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_ocu.c)
+    add_mcal_test(
+        NAME        mcal_ocu_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_ocu.c
+        MCAL_SRCS
+            ${SRC_MCAL}/ocu/src/Ocu.c
+            ${SRC_MCAL}/ocu/src/Ocu_Irq.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# RamTst test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_ramtst.c)
+    add_mcal_test(
+        NAME        mcal_ramtst_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_ramtst.c
+        MCAL_SRCS
+            ${SRC_MCAL}/ramtst/src/RamTst.c
+            ${SRC_MCAL}/ramtst/src/RamTst_Lcfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# UART test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c)
+    add_mcal_test(
+        NAME        mcal_uart_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c
+        MCAL_SRCS
+            ${SRC_MCAL}/uart/src/Uart.c
         MOCK_SRCS
             ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
