@@ -61,9 +61,14 @@ message(STATUS "  Code coverage:     ${ENABLE_COVERAGE}")
 message(STATUS "========================================")
 message(STATUS "")
 
-# Global include directories
+# Global include directories - minimal set to resolve cross-module dependencies
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/crypto
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/com
+    ${CMAKE_CURRENT_SOURCE_DIR}/tests/stubs
 )
 
 # Add subdirectories

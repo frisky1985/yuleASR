@@ -1,0 +1,202 @@
+/******************************************************************************
+ * @file MemMap.h
+ * @brief Memory Mapping Abstraction (AutoSAR) - Simulated
+ * @details Provides memory section mapping for AutoSAR modules.
+ *          This is a minimal stub - real implementation would use
+ *          linker sections for memory placement.
+ ******************************************************************************/
+
+#ifndef MEMMAP_H
+#define MEMMAP_H
+
+/*******************************************************************************
+ * Memory Section Abstraction
+ *
+ * These macros define the start and end of memory sections.
+ * In a real implementation, they would map to linker sections.
+ * Here, they are no-ops for compilation.
+ ******************************************************************************/
+
+/* Code sections */
+#define RTE_START_SEC_CODE
+#define RTE_STOP_SEC_CODE
+#define RTE_START_SEC_CONST_UNSPECIFIED
+#define RTE_STOP_SEC_CONST_UNSPECIFIED
+#define RTE_START_SEC_CONST_8BIT
+#define RTE_STOP_SEC_CONST_8BIT
+#define RTE_START_SEC_CONST_16BIT
+#define RTE_STOP_SEC_CONST_16BIT
+#define RTE_START_SEC_CONST_32BIT
+#define RTE_STOP_SEC_CONST_32BIT
+#define RTE_START_SEC_VAR_CLEARED_UNSPECIFIED
+#define RTE_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+#define RTE_START_SEC_VAR_INIT_UNSPECIFIED
+#define RTE_STOP_SEC_VAR_INIT_UNSPECIFIED
+#define RTE_START_SEC_VAR_CLEARED_8BIT
+#define RTE_STOP_SEC_VAR_CLEARED_8BIT
+#define RTE_START_SEC_VAR_CLEARED_16BIT
+#define RTE_STOP_SEC_VAR_CLEARED_16BIT
+#define RTE_START_SEC_VAR_CLEARED_32BIT
+#define RTE_STOP_SEC_VAR_CLEARED_32BIT
+#define RTE_START_SEC_VAR_NOINIT_UNSPECIFIED
+#define RTE_STOP_SEC_VAR_NOINIT_UNSPECIFIED
+
+/* BSW module memory sections */
+#define BSWM_START_SEC_CODE
+#define BSWM_STOP_SEC_CODE
+#define DET_START_SEC_CODE
+#define DET_STOP_SEC_CODE
+#define CAN_START_SEC_CODE
+#define CAN_STOP_SEC_CODE
+#define CANIF_START_SEC_CODE
+#define CANIF_STOP_SEC_CODE
+#define LIN_START_SEC_CODE
+#define LIN_STOP_SEC_CODE
+#define LINIF_START_SEC_CODE
+#define LINIF_STOP_SEC_CODE
+#define MCU_START_SEC_CODE
+#define MCU_STOP_SEC_CODE
+#define PORT_START_SEC_CODE
+#define PORT_STOP_SEC_CODE
+#define DIO_START_SEC_CODE
+#define DIO_STOP_SEC_CODE
+#define ADC_START_SEC_CODE
+#define ADC_STOP_SEC_CODE
+#define PWM_START_SEC_CODE
+#define PWM_STOP_SEC_CODE
+#define ICU_START_SEC_CODE
+#define ICU_STOP_SEC_CODE
+#define OCU_START_SEC_CODE
+#define OCU_STOP_SEC_CODE
+#define GPT_START_SEC_CODE
+#define GPT_STOP_SEC_CODE
+#define SPI_START_SEC_CODE
+#define SPI_STOP_SEC_CODE
+#define I2C_START_SEC_CODE
+#define I2C_STOP_SEC_CODE
+#define UART_START_SEC_CODE
+#define UART_STOP_SEC_CODE
+#define FLS_START_SEC_CODE
+#define FLS_STOP_SEC_CODE
+#define FEE_START_SEC_CODE
+#define FEE_STOP_SEC_CODE
+#define ETH_START_SEC_CODE
+#define ETH_STOP_SEC_CODE
+#define WDG_START_SEC_CODE
+#define WDG_STOP_SEC_CODE
+#define EEP_START_SEC_CODE
+#define EEP_STOP_SEC_CODE
+#define RAMTST_START_SEC_CODE
+#define RAMTST_STOP_SEC_CODE
+#define COM_START_SEC_CODE
+#define COM_STOP_SEC_CODE
+#define COMM_START_SEC_CODE
+#define COMM_STOP_SEC_CODE
+#define NVM_START_SEC_CODE
+#define NVM_STOP_SEC_CODE
+#define DCM_START_SEC_CODE
+#define DCM_STOP_SEC_CODE
+#define DEM_START_SEC_CODE
+#define DEM_STOP_SEC_CODE
+#define ECUM_START_SEC_CODE
+#define ECUM_STOP_SEC_CODE
+#define SCHM_START_SEC_CODE
+#define SCHM_STOP_SEC_CODE
+#define WDGM_START_SEC_CODE
+#define WDGM_STOP_SEC_CODE
+#define CANSM_START_SEC_CODE
+#define CANSM_STOP_SEC_CODE
+#define CANNM_START_SEC_CODE
+#define CANNM_STOP_SEC_CODE
+#define PDUR_START_SEC_CODE
+#define PDUR_STOP_SEC_CODE
+#define DLT_START_SEC_CODE
+#define DLT_STOP_SEC_CODE
+#define CRYIF_START_SEC_CODE
+#define CRYIF_STOP_SEC_CODE
+#define SOMEIP_START_SEC_CODE
+#define SOMEIP_STOP_SEC_CODE
+#define SOAD_START_SEC_CODE
+#define SOAD_STOP_SEC_CODE
+#define XCP_START_SEC_CODE
+#define XCP_STOP_SEC_CODE
+#define DOIP_START_SEC_CODE
+#define DOIP_STOP_SEC_CODE
+#define DOCAN_START_SEC_CODE
+#define DOCAN_STOP_SEC_CODE
+#define STBM_START_SEC_CODE
+#define STBM_STOP_SEC_CODE
+#define SECOC_START_SEC_CODE
+#define SECOC_STOP_SEC_CODE
+#define KEYM_START_SEC_CODE
+#define KEYM_STOP_SEC_CODE
+#define FIM_START_SEC_CODE
+#define FIM_STOP_SEC_CODE
+#define E2E_START_SEC_CODE
+#define E2E_STOP_SEC_CODE
+#define CRC_START_SEC_CODE
+#define CRC_STOP_SEC_CODE
+#define LNGTM_START_SEC_CODE
+#define LNGTM_STOP_SEC_CODE
+#define RAMSAFETY_START_SEC_CODE
+#define RAMSAFETY_STOP_SEC_CODE
+#define CSM_START_SEC_CODE
+#define CSM_STOP_SEC_CODE
+#define MQTT_START_SEC_CODE
+#define MQTT_STOP_SEC_CODE
+#define SOMEIPXF_START_SEC_CODE
+#define SOMEIPXF_STOP_SEC_CODE
+#define SOMEIPTP_START_SEC_CODE
+#define SOMEIPTP_STOP_SEC_CODE
+#define ECUCC_START_SEC_CODE
+#define ECUCC_STOP_SEC_CODE
+#define SWCC_START_SEC_CODE
+#define SWCC_STOP_SEC_CODE
+#define IPDUM_START_SEC_CODE
+#define IPDUM_STOP_SEC_CODE
+#define ETHSM_START_SEC_CODE
+#define ETHSM_STOP_SEC_CODE
+#define J1939NM_START_SEC_CODE
+#define J1939NM_STOP_SEC_CODE
+#define J1939TP_START_SEC_CODE
+#define J1939TP_STOP_SEC_CODE
+#define CANTSYN_START_SEC_CODE
+#define CANTSYN_STOP_SEC_CODE
+#define UDPNM_START_SEC_CODE
+#define UDPNM_STOP_SEC_CODE
+#define LINNM_START_SEC_CODE
+#define LINNM_STOP_SEC_CODE
+#define LINSM_START_SEC_CODE
+#define LINSM_STOP_SEC_CODE
+#define LINTP_START_SEC_CODE
+#define LINTP_STOP_SEC_CODE
+#define LINTRCV_START_SEC_CODE
+#define LINTRCV_STOP_SEC_CODE
+#define FRIF_START_SEC_CODE
+#define FRIF_STOP_SEC_CODE
+#define FRTP_START_SEC_CODE
+#define FRTP_STOP_SEC_CODE
+#define IOHWAB_START_SEC_CODE
+#define IOHWAB_STOP_SEC_CODE
+#define ETHIF_START_SEC_CODE
+#define ETHIF_STOP_SEC_CODE
+#define ETHTRCV_START_SEC_CODE
+#define ETHTRCV_STOP_SEC_CODE
+#define ETHSM_START_SEC_CODE
+#define ETHSM_STOP_SEC_CODE
+#define MEMIF_START_SEC_CODE
+#define MEMIF_STOP_SEC_CODE
+#define SRP_START_SEC_CODE
+#define SRP_STOP_SEC_CODE
+#define WDGIF_START_SEC_CODE
+#define WDGIF_STOP_SEC_CODE
+#define SOMEIPSD_START_SEC_CODE
+#define SOMEIPSD_STOP_SEC_CODE
+#define SOMEIPIF_START_SEC_CODE
+#define SOMEIPIF_STOP_SEC_CODE
+#define LNGTM_START_SEC_CODE
+#define LNGTM_STOP_SEC_CODE
+#define DOCAN_START_SEC_CODE
+#define DOCAN_STOP_SEC_CODE
+
+#endif /* MEMMAP_H */

@@ -12,6 +12,7 @@
 
 #ifndef CANIF_H
 #define CANIF_H
+#pragma once
 
 /*==================================================================================================
 *                                          INCLUDE FILES
@@ -34,25 +35,62 @@
 
 /*==================================================================================================
 *                                    SERVICE IDs
+* @note These are defaults; CanIf_Cfg.h values take precedence when defined
 ==================================================================================================*/
+#ifndef CANIF_SID_INIT
 #define CANIF_SID_INIT                  (0x01U)
+#endif
+#ifndef CANIF_SID_DEINIT
 #define CANIF_SID_DEINIT                (0x02U)
+#endif
+#ifndef CANIF_SID_SETCONTROLLERMODE
 #define CANIF_SID_SETCONTROLLERMODE     (0x03U)
+#endif
+#ifndef CANIF_SID_GETCONTROLLERMODE
 #define CANIF_SID_GETCONTROLLERMODE     (0x04U)
+#endif
+#ifndef CANIF_SID_GETCONTROLLERERRORSTATE
 #define CANIF_SID_GETCONTROLLERERRORSTATE (0x4BU)
+#endif
+#ifndef CANIF_SID_TRANSMIT
 #define CANIF_SID_TRANSMIT              (0x05U)
+#endif
+#ifndef CANIF_SID_READTXPDUDATA
 #define CANIF_SID_READTXPDUDATA         (0x06U)
+#endif
+#ifndef CANIF_SID_READRXPDUDATA
 #define CANIF_SID_READRXPDUDATA         (0x07U)
+#endif
+#ifndef CANIF_SID_SETPDUMODE
 #define CANIF_SID_SETPDUMODE            (0x08U)
+#endif
+#ifndef CANIF_SID_GETPDUMODE
 #define CANIF_SID_GETPDUMODE            (0x09U)
+#endif
+#ifndef CANIF_SID_GETVERSIONINFO
 #define CANIF_SID_GETVERSIONINFO        (0x0BU)
+#endif
+#ifndef CANIF_SID_SETDYNAMICTXID
 #define CANIF_SID_SETDYNAMICTXID        (0x0CU)
+#endif
+#ifndef CANIF_SID_SETTRCVMODE
 #define CANIF_SID_SETTRCVMODE           (0x0DU)
+#endif
+#ifndef CANIF_SID_GETTRCVMODE
 #define CANIF_SID_GETTRCVMODE           (0x0EU)
+#endif
+#ifndef CANIF_SID_GETTRCVWAKEUPREASON
 #define CANIF_SID_GETTRCVWAKEUPREASON   (0x0FU)
+#endif
+#ifndef CANIF_SID_SETTRCVWAKEUPMODE
 #define CANIF_SID_SETTRCVWAKEUPMODE     (0x10U)
+#endif
+#ifndef CANIF_SID_CHECKWAKEUP
 #define CANIF_SID_CHECKWAKEUP           (0x11U)
+#endif
+#ifndef CANIF_SID_SETBAUDRATE
 #define CANIF_SID_SETBAUDRATE           (0x27U)
+#endif
 #define CANIF_SID_GETBAUDRATE           (0x28U)
 #define CANIF_SID_GETCONTROLLERRXERRORCOUNTER (0x4CU)
 #define CANIF_SID_GETCONTROLLERTXERRORCOUNTER (0x4DU)
@@ -60,34 +98,90 @@
 /*==================================================================================================
 *                                    DET ERROR CODES
 ==================================================================================================*/
+#ifndef CANIF_E_PARAM_CANID
 #define CANIF_E_PARAM_CANID             (0x01U)
+#endif
+#ifndef CANIF_E_PARAM_DLC
 #define CANIF_E_PARAM_DLC               (0x02U)
+#endif
+#ifndef CANIF_E_PARAM_CONTROLLER
 #define CANIF_E_PARAM_CONTROLLER        (0x03U)
+#endif
+#ifndef CANIF_E_PARAM_POINTER
 #define CANIF_E_PARAM_POINTER           (0x04U)
+#endif
+#ifndef CANIF_E_PARAM_CONTROLLERMODE
 #define CANIF_E_PARAM_CONTROLLERMODE    (0x05U)
+#endif
+#ifndef CANIF_E_PARAM_TRCVMODE
 #define CANIF_E_PARAM_TRCVMODE          (0x06U)
+#endif
+#ifndef CANIF_E_PARAM_TRCVWAKEUPMODE
 #define CANIF_E_PARAM_TRCVWAKEUPMODE    (0x07U)
+#endif
+#ifndef CANIF_E_PARAM_TRCV
 #define CANIF_E_PARAM_TRCV              (0x08U)
+#endif
+#ifndef CANIF_E_PARAM_PDUMODE
 #define CANIF_E_PARAM_PDUMODE           (0x09U)
+#endif
+#ifndef CANIF_E_PARAM_HTH
 #define CANIF_E_PARAM_HTH               (0x0BU)
+#endif
+#ifndef CANIF_E_PARAM_HRH
 #define CANIF_E_PARAM_HRH               (0x0CU)
+#endif
+#ifndef CANIF_E_PARAM_CANIDTYPE
 #define CANIF_E_PARAM_CANIDTYPE         (0x0DU)
+#endif
+#ifndef CANIF_E_UNINIT
 #define CANIF_E_UNINIT                  (0x14U)
+#endif
+#ifndef CANIF_E_INVALID_TXPDUID
 #define CANIF_E_INVALID_TXPDUID         (0x50U)
+#endif
+#ifndef CANIF_E_INVALID_RXPDUID
 #define CANIF_E_INVALID_RXPDUID         (0x60U)
+#endif
+#ifndef CANIF_E_STOPPED
 #define CANIF_E_STOPPED                 (0x70U)
+#endif
+#ifndef CANIF_E_NOT_SLEEP
 #define CANIF_E_NOT_SLEEP               (0x71U)
+#endif
+#ifndef CANIF_E_PARAM_WAKEUPSOURCE
 #define CANIF_E_PARAM_WAKEUPSOURCE      (0x72U)
+#endif
+#ifndef CANIF_E_INVALID_DATA_LENGTH
 #define CANIF_E_INVALID_DATA_LENGTH     (0x73U)
+#endif
+#ifndef CANIF_E_DATA_LENGTH_MISMATCH
 #define CANIF_E_DATA_LENGTH_MISMATCH    (0x74U)
+#endif
+#ifndef CANIF_E_PARAM_BAUDRATE
 #define CANIF_E_PARAM_BAUDRATE          (0x75U)
+#endif
+#ifndef CANIF_E_INVALID_DLC
 #define CANIF_E_INVALID_DLC             (0x76U)
+#endif
+#ifndef CANIF_E_PARAM_HOH
 #define CANIF_E_PARAM_HOH               (0x77U)
+#endif
+#ifndef CANIF_E_PARAM_LPDU
 #define CANIF_E_PARAM_LPDU              (0x78U)
+#endif
+#ifndef CANIF_E_INVALID_LPDU_DATAPTR
 #define CANIF_E_INVALID_LPDU_DATAPTR    (0x79U)
+#endif
+#ifndef CANIF_E_PARAM_TRCVWAKEUPREASON
 #define CANIF_E_PARAM_TRCVWAKEUPREASON  (0x7AU)
+#endif
+#ifndef CANIF_E_PARAM_TRCVTYPE
 #define CANIF_E_PARAM_TRCVTYPE          (0x7BU)
+#endif
+#ifndef CANIF_E_ALREADY_INITIALIZED
 #define CANIF_E_ALREADY_INITIALIZED     (0x7CU)
+#endif
 
 /*==================================================================================================
 *                                    CANIF RETURN TYPE
@@ -167,7 +261,7 @@ typedef enum {
 ==================================================================================================*/
 typedef struct {
     PduIdType PduId;
-    Can_IdType CanId;
+    CanIf_CanIdType CanId;
     CanIf_CanIdTypeType CanIdType;
     Can_HwHandleType Hth;
     uint8 ControllerId;
@@ -181,8 +275,8 @@ typedef struct {
 ==================================================================================================*/
 typedef struct {
     PduIdType PduId;
-    Can_IdType CanId;
-    Can_IdType CanIdMask;
+    CanIf_CanIdType CanId;
+    CanIf_CanIdType CanIdMask;
     CanIf_CanIdTypeType CanIdType;
     Can_HwHandleType Hrh;
     uint8 ControllerId;
@@ -339,7 +433,7 @@ void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @param CanId CAN ID to set
  * @return Result of operation
  */
-Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId);
+Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, CanIf_CanIdType CanId);
 
 /**
  * @brief Checks for wakeup events
