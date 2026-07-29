@@ -143,7 +143,7 @@ void test_dcm_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test: Dcm_Init with NULL config reports DET error */
+/* Test: Dcm_Init with NULL_PTR config reports DET error */
 void test_dcm_init_null_config(void)
 {
     reset_mocks();

@@ -211,7 +211,7 @@ void CryIf_Init(const CryIf_ConfigType* configPtr)
     
     CRYIF_DBG_PRINT("Initializing CryIf module");
     
-    /* Check for NULL pointer if DEV_ERROR_DETECT is enabled */
+    /* Check for NULL_PTR pointer if DEV_ERROR_DETECT is enabled */
 #if (CRYIF_DEV_ERROR_DETECT == STD_ON)
     if (configPtr == NULL_PTR) {
         CRYIF_REPORT_ERROR(CRYIF_SID_INIT, CRYIF_E_PARAM_POINTER);

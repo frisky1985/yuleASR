@@ -167,7 +167,7 @@
    157|
    158|void DoIP_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
    159|{
-   160|    if ((PduInfoPtr == NULL) || (PduInfoPtr->SduDataPtr == NULL))
+   160|    if ((PduInfoPtr == NULL_PTR) || (PduInfoPtr->SduDataPtr == NULL_PTR))
    161|    {
    162|        return;
    163|    }

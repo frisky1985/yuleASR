@@ -183,7 +183,7 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
     }
 #endif
 
-    /* Use default configuration if NULL pointer passed */
+    /* Use default configuration if NULL_PTR pointer passed */
     if (ConfigPtr == NULL_PTR) {
         MemIf_ConfigPtr = &MemIf_DefaultConfig;
     } else {

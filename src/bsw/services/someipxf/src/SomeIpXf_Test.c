@@ -376,7 +376,7 @@ void Test_SomeIpXf_TransformWithHeader(void)
 }
 
 /**
- * @brief Test NULL pointer handling
+ * @brief Test NULL_PTR pointer handling
  */
 void Test_SomeIpXf_NullPointer(void)
 {
@@ -384,15 +384,15 @@ void Test_SomeIpXf_NullPointer(void)
     uint8 buffer[16];
     SomeIpXf_BufferType buf = {buffer, 0U, 16U};
     
-    (void)printf("\n[Test] SomeIpXf NULL pointer handling\n");
+    (void)printf("\n[Test] SomeIpXf NULL_PTR pointer handling\n");
     
     SomeIpXf_Init(&TestConfig);
     
     result = SomeIpXf_Transform(0U, 0U, NULL_PTR, &buf);
-    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL source should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL_PTR source should return E_NOT_OK");
     
     result = SomeIpXf_Detransform(0U, 0U, &buf, NULL_PTR);
-    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL target should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL_PTR target should return E_NOT_OK");
 }
 
 /*==================================================================================================

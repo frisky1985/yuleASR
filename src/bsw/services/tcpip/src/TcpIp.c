@@ -253,7 +253,7 @@ TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType domain, TcpIp_SockTypeType type, 
     if (type == TCPIP_SOCK_STREAM)
     {
         struct tcp_pcb* pcb = tcp_new();
-        if (pcb == NULL)
+        if (pcb == NULL_PTR)
         {
             entry->InUse = FALSE;
             return TCPIP_E_NOT_OK;
@@ -263,7 +263,7 @@ TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType domain, TcpIp_SockTypeType type, 
     else
     {
         struct udp_pcb* pcb = udp_new();
-        if (pcb == NULL)
+        if (pcb == NULL_PTR)
         {
             entry->InUse = FALSE;
             return TCPIP_E_NOT_OK;
@@ -416,7 +416,7 @@ TcpIp_ReturnType TcpIp_Send(TcpIp_SocketIdType SocketId, const uint8* Data, uint
         else
         {
             struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT, Length, PBUF_POOL);
-            if (p == NULL)
+            if (p == NULL_PTR)
             {
                 return TCPIP_E_NOT_OK;
             }

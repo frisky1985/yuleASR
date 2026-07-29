@@ -84,7 +84,7 @@ void test_dem_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test: Dem_Init with NULL config reports DET error */
+/* Test: Dem_Init with NULL_PTR config reports DET error */
 void test_dem_init_null_config(void)
 {
     reset_mocks();
@@ -749,7 +749,7 @@ void test_dem_invalid_event_id(void)
     TEST_PASS();
 }
 
-/* Test: NULL pointer returns error */
+/* Test: NULL_PTR pointer returns error */
 void test_dem_null_pointer(void)
 {
     Std_ReturnType result;

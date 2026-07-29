@@ -113,7 +113,7 @@ typedef struct {
  *===========================================================================*/
 static boolean Mqtt_Initialized = FALSE;
 static Mqtt_InternalConnectionType Mqtt_Connections[MQTT_MAX_CONNECTIONS];
-static const Mqtt_ConfigType* Mqtt_ConfigPtr = NULL;
+static const Mqtt_ConfigType* Mqtt_ConfigPtr = NULL_PTR;
 
 /*============================================================================
  * 内部函数声明
@@ -148,7 +148,7 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
         return MQTT_E_NOT_OK;
     }
     
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_INIT, MQTT_E_PARAM_CONFIG);
         return MQTT_E_NOT_OK;
     }
@@ -163,7 +163,7 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
         
 #if (MQTT_SUPPORT_TLS == STD_ON)
         Mqtt_Connections[i].useTls = FALSE;
-        Mqtt_Connections[i].tlsContext = NULL;
+        Mqtt_Connections[i].tlsContext = NULL_PTR;
 #endif
         
         memset(&Mqtt_Connections[i].info, 0, sizeof(Mqtt_ConnectionInfoType));
@@ -171,7 +171,7 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
         
         for (j = 0; j < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; j++) {
             Mqtt_Connections[i].subscriptions[j].state = SUB_STATE_INACTIVE;
-            Mqtt_Connections[i].subscriptions[j].callback = NULL;
+            Mqtt_Connections[i].subscriptions[j].callback = NULL_PTR;
         }
     }
     
@@ -202,7 +202,7 @@ Mqtt_ReturnType Mqtt_DeInit(void)
         }
     }
     
-    Mqtt_ConfigPtr = NULL;
+    Mqtt_ConfigPtr = NULL_PTR;
     Mqtt_Initialized = FALSE;
     
     return MQTT_OK;
@@ -224,12 +224,12 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (connConfig == NULL) {
+    if (connConfig == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_CONNECT, MQTT_E_PARAM_CONFIG);
         return MQTT_E_NOT_OK;
     }
     
-    if (connConfig->brokerHost == NULL || connConfig->clientId == NULL) {
+    if (connConfig->brokerHost == NULL_PTR || connConfig->clientId == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_CONNECT, MQTT_E_PARAM_POINTER);
         return MQTT_E_NOT_OK;
     }
@@ -251,7 +251,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     if (conn->useTls) {
         Mqtt_ReturnType tlsResult;
         
-        if (connConfig->tlsConfig == NULL) {
+        if (connConfig->tlsConfig == NULL_PTR) {
             MQTT_DET_REPORT_ERROR(MQTT_SID_CONNECT, MQTT_E_PARAM_CONFIG);
             return MQTT_E_NOT_OK;
         }
@@ -272,9 +272,9 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     result = TcpIp_SocketCreate(&conn->socketId);
     if (result != E_OK) {
 #if (MQTT_SUPPORT_TLS == STD_ON)
-        if (conn->useTls && conn->tlsContext != NULL) {
+        if (conn->useTls && conn->tlsContext != NULL_PTR) {
             Mqtt_Tls_DestroyContext(conn->tlsContext);
-            conn->tlsContext = NULL;
+            conn->tlsContext = NULL_PTR;
         }
 #endif
         return MQTT_E_CONNECTION_FAILED;
@@ -344,12 +344,12 @@ Mqtt_ReturnType Mqtt_Publish(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (message == NULL) {
+    if (message == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_PUBLISH, MQTT_E_PARAM_POINTER);
         return MQTT_E_NOT_OK;
     }
     
-    if (message->topic == NULL) {
+    if (message->topic == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_PUBLISH, MQTT_E_PARAM_TOPIC);
         return MQTT_E_NOT_OK;
     }
@@ -380,7 +380,7 @@ Mqtt_ReturnType Mqtt_Publish(Mqtt_ConnectionIdType connectionId,
     conn->info.bytesSent += message->payloadLength;
     
     /* 回调处理用户 */
-    if (callback != NULL) {
+    if (callback != NULL_PTR) {
         callback(connectionId, 0, MQTT_OK);
     }
     
@@ -407,7 +407,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (subscription == NULL || subscription->topicFilter == NULL) {
+    if (subscription == NULL_PTR || subscription->topicFilter == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_SUBSCRIBE, MQTT_E_PARAM_TOPIC);
         return MQTT_E_NOT_OK;
     }
@@ -419,7 +419,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
     }
     
     /* 查找空闲订阅槽 */
-    internalSub = NULL;
+    internalSub = NULL_PTR;
     for (i = 0; i < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; i++) {
         if (conn->subscriptions[i].state == SUB_STATE_INACTIVE) {
             internalSub = &conn->subscriptions[i];
@@ -427,7 +427,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
         }
     }
     
-    if (internalSub == NULL) {
+    if (internalSub == NULL_PTR) {
         return MQTT_E_NOT_OK; /* 订阅满 */
     }
     
@@ -474,7 +474,7 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (topicFilter == NULL) {
+    if (topicFilter == NULL_PTR) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_UNSUBSCRIBE, MQTT_E_PARAM_TOPIC);
         return MQTT_E_NOT_OK;
     }
@@ -490,7 +490,7 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
         if (conn->subscriptions[i].state != SUB_STATE_INACTIVE &&
             strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0U ) {
             conn->subscriptions[i].state = SUB_STATE_INACTIVE;
-            conn->subscriptions[i].callback = NULL;
+            conn->subscriptions[i].callback = NULL_PTR;
             /* 发送UNSUBSCRIBE报文 - 通过 Mqtt_Encode 和 Mqtt_SendPacket 完成 */
             return MQTT_OK;
         }
@@ -555,7 +555,7 @@ Mqtt_ReturnType Mqtt_GetConnectionInfo(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (info == NULL) {
+    if (info == NULL_PTR) {
         return MQTT_E_NOT_OK;
     }
     
@@ -590,7 +590,7 @@ void Mqtt_MainFunction(void)
 #if (MQTT_VERSION_INFO_API == STD_ON)
 void Mqtt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (versioninfo == NULL) {
+    if (versioninfo == NULL_PTR) {
         return;
     }
     
@@ -620,7 +620,7 @@ static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn,
     }
     
     /* 回调通知 */
-    if (conn->connCallback != NULL && oldState != newState) {
+    if (conn->connCallback != NULL_PTR && oldState != newState) {
         /* 使用 connectionId 回调 - 当前在循环上下文中无 connectionId, 传入0由上层辨别 */
         conn->connCallback(0, newState, MQTT_OK);
     }
@@ -658,10 +658,10 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
         case MQTT_STATE_DISCONNECTING:
             /* 关闭TLS连接 */
 #if (MQTT_SUPPORT_TLS == STD_ON)
-            if (conn->useTls && conn->tlsContext != NULL) {
+            if (conn->useTls && conn->tlsContext != NULL_PTR) {
                 Mqtt_Tls_Close(conn->tlsContext);
                 Mqtt_Tls_DestroyContext(conn->tlsContext);
-                conn->tlsContext = NULL;
+                conn->tlsContext = NULL_PTR;
             }
 #endif
             /* 关闭TCP连接 */
@@ -697,7 +697,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
             Mqtt_ReturnType tlsResult;
             tlsResult = Mqtt_Tls_PerformHandshake(conn->tlsContext, 
                                                    conn->socketId, 
-                                                   NULL);
+                                                   NULL_PTR);
             if (tlsResult == MQTT_OK) {
                 /* TLS握手成功，发送MQTT CONNECT报文 */
                 Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
@@ -734,7 +734,7 @@ static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,
     }
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
-    if (conn->useTls && conn->tlsContext != NULL) {
+    if (conn->useTls && conn->tlsContext != NULL_PTR) {
         /* 使用TLS加密发送 */
         uint32 sentLength = 0;
         Mqtt_ReturnType tlsResult;
@@ -759,7 +759,7 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
     }
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
-    if (conn->useTls && conn->tlsContext != NULL) {
+    if (conn->useTls && conn->tlsContext != NULL_PTR) {
         /* 使用TLS接收解密 */
         uint32 recvLen = 0;
         Mqtt_ReturnType tlsResult;
@@ -801,12 +801,12 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     remainingLength = 10; /* 固定头长度 */
     remainingLength += 2 + clientIdLen; /* 客户端ID */
     
-    if (conn->config.username != NULL) {
+    if (conn->config.username != NULL_PTR) {
         connectFlags |= 0x80; /* 用户名标志 */
         remainingLength += 2 + strlen(conn->config.username);
     }
     
-    if (conn->config.password != NULL) {
+    if (conn->config.password != NULL_PTR) {
         connectFlags |= 0x40; /* 密码标志 */
         remainingLength += 2 + strlen(conn->config.password);
     }
@@ -856,7 +856,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx += clientIdLen;
     
     /* 用户名 */
-    if (conn->config.username != NULL) {
+    if (conn->config.username != NULL_PTR) {
         uint16 usernameLen = strlen(conn->config.username);
         conn->sendBuffer[idx++] = (usernameLen >> 8) & 0xFF;
         conn->sendBuffer[idx++] = usernameLen & 0xFF;
@@ -865,7 +865,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     }
     
     /* 密码 */
-    if (conn->config.password != NULL) {
+    if (conn->config.password != NULL_PTR) {
         uint16 passwordLen = strlen(conn->config.password);
         conn->sendBuffer[idx++] = (passwordLen >> 8) & 0xFF;
         conn->sendBuffer[idx++] = passwordLen & 0xFF;

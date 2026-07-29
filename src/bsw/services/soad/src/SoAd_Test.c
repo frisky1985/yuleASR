@@ -140,20 +140,20 @@ void Test_SoAd_Init_Valid(void)
 }
 
 /**
- * @brief Test SoAd_Init with NULL pointer
+ * @brief Test SoAd_Init with NULL_PTR pointer
  */
 void Test_SoAd_Init_Null(void)
 {
-    (void)printf("\n[Test] SoAd_Init with NULL pointer\n");
+    (void)printf("\n[Test] SoAd_Init with NULL_PTR pointer\n");
     
     /* Pre-condition: Reset state */
     SoAd_DeInit();
     
-    /* Test: Initialize with NULL */
+    /* Test: Initialize with NULL_PTR */
     SoAd_Init(NULL_PTR);
     
-    /* Verify: Should handle NULL gracefully */
-    TEST_ASSERT(TRUE, "SoAd_Init with NULL should not crash");
+    /* Verify: Should handle NULL_PTR gracefully */
+    TEST_ASSERT(TRUE, "SoAd_Init with NULL_PTR should not crash");
 }
 
 /**
@@ -309,22 +309,22 @@ void Test_SoAd_Send(void)
 }
 
 /**
- * @brief Test SoAd_Send with NULL pointer
+ * @brief Test SoAd_Send with NULL_PTR pointer
  */
 void Test_SoAd_Send_Null(void)
 {
     Std_ReturnType result;
     
-    (void)printf("\n[Test] SoAd_Send with NULL pointer\n");
+    (void)printf("\n[Test] SoAd_Send with NULL_PTR pointer\n");
     
     /* Pre-condition: Initialize */
     SoAd_Init(&TestConfig);
     
-    /* Test: Send with NULL pointer */
+    /* Test: Send with NULL_PTR pointer */
     result = SoAd_Send(0U, NULL_PTR);
     
     /* Verify: Should return E_NOT_OK */
-    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL pointer should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL_PTR pointer should return E_NOT_OK");
 }
 
 /**

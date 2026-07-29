@@ -118,7 +118,7 @@ void test_doip_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test: DoIp_Init with NULL config reports DET error */
+/* Test: DoIp_Init with NULL_PTR config reports DET error */
 void test_doip_init_null_config(void)
 {
     reset_mocks();

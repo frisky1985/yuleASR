@@ -164,7 +164,7 @@ Std_ReturnType Dem_DtcHashInsert(uint32_t dtcCode, Dem_EventStatusType status)
  * ============================================================================ */
 Dem_DtcHashEntryType* Dem_DtcHashFind(uint32_t dtcCode)
 {
-    Dem_DtcHashEntryType *entry = NULL;
+    Dem_DtcHashEntryType *entry = NULL_PTR;
     
     if (s_dtcHashTable.initialized) {
         uint16_t hashIndex = Dem_DtcHash(dtcCode);
@@ -224,7 +224,7 @@ Std_ReturnType Dem_DtcHashUpdateStatus(uint32_t dtcCode, Dem_EventStatusType new
     Std_ReturnType result = E_NOT_OK;
     Dem_DtcHashEntryType *entry = Dem_DtcHashFind(dtcCode);
     
-    if (entry != NULL) {
+    if (entry != NULL_PTR) {
         entry->status = newStatus;
         result = E_OK;
     }

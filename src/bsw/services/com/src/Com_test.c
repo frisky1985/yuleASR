@@ -119,7 +119,7 @@ void test_com_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test: Com_Init with NULL config reports DET error */
+/* Test: Com_Init with NULL_PTR config reports DET error */
 void test_com_init_null_config(void)
 {
     reset_mocks();
@@ -181,7 +181,7 @@ void test_com_sendsignal_triggers_pdur(void)
     TEST_PASS();
 }
 
-/* Test: Com_SendSignal with NULL data pointer reports DET error */
+/* Test: Com_SendSignal with NULL_PTR data pointer reports DET error */
 void test_com_sendsignal_null_pointer(void)
 {
     uint8 result;
@@ -287,7 +287,7 @@ void test_com_getversioninfo(void)
     TEST_PASS();
 }
 
-/* Test: Com_GetVersionInfo with NULL pointer reports DET error */
+/* Test: Com_GetVersionInfo with NULL_PTR pointer reports DET error */
 void test_com_getversioninfo_null(void)
 {
     reset_mocks();

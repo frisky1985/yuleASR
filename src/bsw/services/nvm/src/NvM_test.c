@@ -249,7 +249,7 @@ void test_nvm_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test 2: NvM_Init with NULL config reports DET error */
+/* Test 2: NvM_Init with NULL_PTR config reports DET error */
 void test_nvm_init_null_config(void)
 {
     reset_mocks();

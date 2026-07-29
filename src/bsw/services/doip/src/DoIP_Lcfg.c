@@ -126,9 +126,9 @@ static const DoIP_SoConConfigType DoIP_SoConConfigs[] =
         .IsTcp = FALSE,
         .IsUdp = TRUE,
         .LocalPort = 13400U,
-        .LocalIpAddress = NULL,         /* Any */
+        .LocalIpAddress = NULL_PTR,         /* Any */
         .RemotePort = 0U,
-        .RemoteIpAddress = NULL         /* Any */
+        .RemoteIpAddress = NULL_PTR         /* Any */
     },
     {
         /* UDP Test Equipment socket */
@@ -136,9 +136,9 @@ static const DoIP_SoConConfigType DoIP_SoConConfigs[] =
         .IsTcp = FALSE,
         .IsUdp = TRUE,
         .LocalPort = 13401U,
-        .LocalIpAddress = NULL,
+        .LocalIpAddress = NULL_PTR,
         .RemotePort = 0U,
-        .RemoteIpAddress = NULL
+        .RemoteIpAddress = NULL_PTR
     },
     {
         /* TCP Data socket */
@@ -146,9 +146,9 @@ static const DoIP_SoConConfigType DoIP_SoConConfigs[] =
         .IsTcp = TRUE,
         .IsUdp = FALSE,
         .LocalPort = 13400U,
-        .LocalIpAddress = NULL,
+        .LocalIpAddress = NULL_PTR,
         .RemotePort = 0U,
-        .RemoteIpAddress = NULL
+        .RemoteIpAddress = NULL_PTR
     },
     {
         /* TCP Routing socket */
@@ -156,9 +156,9 @@ static const DoIP_SoConConfigType DoIP_SoConConfigs[] =
         .IsTcp = TRUE,
         .IsUdp = FALSE,
         .LocalPort = 13401U,
-        .LocalIpAddress = NULL,
+        .LocalIpAddress = NULL_PTR,
         .RemotePort = 0U,
-        .RemoteIpAddress = NULL
+        .RemoteIpAddress = NULL_PTR
     }
 };
 

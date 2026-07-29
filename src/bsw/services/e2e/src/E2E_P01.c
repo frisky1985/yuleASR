@@ -129,7 +129,7 @@ Std_ReturnType E2E_P01Protect(
     uint8 counterByte;
     
     #if (E2E_DEV_ERROR_DETECT == STD_ON)
-    if ((Config == NULL) || (State == NULL) || (Data == NULL)) {
+    if ((Config == NULL_PTR) || (State == NULL_PTR) || (Data == NULL_PTR)) {
         return E_NOT_OK;
     }
     #endif
@@ -175,7 +175,7 @@ Std_ReturnType E2E_P01Check(
     sint8 delta;
     
     #if (E2E_DEV_ERROR_DETECT == STD_ON)
-    if ((Config == NULL) || (State == NULL) || (Data == NULL)) {
+    if ((Config == NULL_PTR) || (State == NULL_PTR) || (Data == NULL_PTR)) {
         return E_NOT_OK;
     }
     #endif

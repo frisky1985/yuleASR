@@ -198,19 +198,19 @@ void Test_SomeIpTp_Transmit(void)
 }
 
 /**
- * @brief Test SomeIpTp_Transmit with NULL pointer
+ * @brief Test SomeIpTp_Transmit with NULL_PTR pointer
  */
 void Test_SomeIpTp_Transmit_Null(void)
 {
     Std_ReturnType result;
     
-    (void)printf("\n[Test] SomeIpTp_Transmit with NULL pointer\n");
+    (void)printf("\n[Test] SomeIpTp_Transmit with NULL_PTR pointer\n");
     
     SomeIpTp_Init(&TestConfig);
     
     result = SomeIpTp_Transmit(SOMEIPTP_PDU_ID_CHANNEL_0_TX, NULL_PTR, NULL_PTR, NULL_PTR);
     
-    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL pointer should return E_NOT_OK");
+    (void)TEST_ASSERT_EQ(E_NOT_OK, result, "NULL_PTR pointer should return E_NOT_OK");
 }
 
 /**

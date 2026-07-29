@@ -118,7 +118,7 @@ void test_docan_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test: DoCan_Init with NULL config reports DET error */
+/* Test: DoCan_Init with NULL_PTR config reports DET error */
 void test_docan_init_null_config(void)
 {
     reset_mocks();

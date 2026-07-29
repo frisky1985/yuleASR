@@ -66,7 +66,7 @@ extern const uint32 Crc_32_Table[CRC_32_TABLE_SIZE];
 /**
  * @brief Initialize the CRC module
  * @req SHALL_CRC - Initialize the CRC module
- * @param configPtr Pointer to configuration (NULL for pre-compile config)
+ * @param configPtr Pointer to configuration (NULL_PTR for pre-compile config)
  */
 void Crc_Init(const void* configPtr)
 {

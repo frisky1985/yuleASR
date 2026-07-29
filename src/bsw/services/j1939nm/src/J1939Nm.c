@@ -158,7 +158,7 @@ STATIC Std_ReturnType J1939Nm_TransmitCannotClaimAddress(J1939Nm_ChannelType Cha
     if (J1939Nm_ValidateChannel(Channel) == E_OK) {
         J1939Nm_BuildAcPdu(data, J1939Nm_ChannelStates[Channel].Name);
         
-        /* Transmit with NULL address (0xFE) as source */
+        /* Transmit with NULL_PTR address (0xFE) as source */
         result = E_OK;
     }
     
@@ -246,7 +246,7 @@ STATIC void J1939Nm_ProcessAddressClaiming(J1939Nm_ChannelType Channel)
             break;
             
         case J1939NM_AC_STATE_CANNOT_CLAIM:
-            /* Cannot claim address, use NULL address */
+            /* Cannot claim address, use NULL_PTR address */
             channelState->Address = J1939NM_NULL_ADDRESS;
             channelState->AddressClaimed = FALSE;
             break;

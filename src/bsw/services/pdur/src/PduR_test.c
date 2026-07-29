@@ -144,7 +144,7 @@ void test_pdur_init_valid_config(void)
     TEST_PASS();
 }
 
-/* Test: PduR_Init with NULL config reports DET error */
+/* Test: PduR_Init with NULL_PTR config reports DET error */
 void test_pdur_init_null_config(void)
 {
     reset_mocks();
@@ -225,7 +225,7 @@ void test_pdur_canifrxindication_routes_to_com(void)
     TEST_PASS();
 }
 
-/* Test: PduR_CanIfRxIndication with NULL pointer reports DET error */
+/* Test: PduR_CanIfRxIndication with NULL_PTR pointer reports DET error */
 void test_pdur_canifrxindication_null_pointer(void)
 {
     reset_mocks();

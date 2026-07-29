@@ -41,7 +41,7 @@
 #include "MemMap.h"
 
 static uint8 J1939Tp_ModuleState = J1939TP_STATE_UNINITED;
-static const J1939Tp_ConfigType* J1939Tp_ConfigPtr = NULL;
+static const J1939Tp_ConfigType* J1939Tp_ConfigPtr = NULL_PTR;
 
 #define J1939TP_STOP_SEC_VAR_INIT_UNSPECIFIED
 #include "MemMap.h"
@@ -92,7 +92,7 @@ Std_ReturnType J1939Tp_Init(const J1939Tp_ConfigType* ConfigPtr)
     Std_ReturnType result = E_OK;
 
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
-    if (ConfigPtr == NULL) {
+    if (ConfigPtr == NULL_PTR) {
         Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_INIT, J1939TP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -126,7 +126,7 @@ void J1939Tp_DeInit(void)
             J1939Tp_ResetRxChannel(i);
         }
 
-        J1939Tp_ConfigPtr = NULL;
+        J1939Tp_ConfigPtr = NULL_PTR;
         J1939Tp_ModuleState = J1939TP_STATE_UNINITED;
     }
 }
@@ -135,7 +135,7 @@ void J1939Tp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (J1939TP_VERSION_INFO_API == STD_ON)
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
-    if (VersionInfo == NULL) {
+    if (VersionInfo == NULL_PTR) {
         Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_GET_VERSION_INFO, J1939TP_E_PARAM_POINTER);
         return;
     }
@@ -159,13 +159,13 @@ Std_ReturnType J1939Tp_Transmit(PduIdType TxSduId, const PduInfoType* TxInfoPtr)
         return E_NOT_OK;
     }
 
-    if (TxInfoPtr == NULL) {
+    if (TxInfoPtr == NULL_PTR) {
         Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_TRANSMIT, J1939TP_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
 
-    if ((TxSduId < J1939Tp_ConfigPtr->PgCount) && (TxInfoPtr != NULL)) {
+    if ((TxSduId < J1939Tp_ConfigPtr->PgCount) && (TxInfoPtr != NULL_PTR)) {
         const J1939Tp_PgConfigType* pgConfig = &J1939Tp_ConfigPtr->PgConfigs[TxSduId];
 
         if (TxInfoPtr->SduLength <= 8U) {
@@ -278,13 +278,13 @@ void J1939Tp_MainFunction(void)
 void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
-    if (PduInfoPtr == NULL) {
+    if (PduInfoPtr == NULL_PTR) {
         Det_ReportError(J1939TP_MODULE_ID, J1939TP_INSTANCE_ID, J1939TP_SID_RX_INDICATION, J1939TP_E_PARAM_POINTER);
         return;
     }
 #endif
 
-    if (PduInfoPtr->SduDataPtr != NULL) {
+    if (PduInfoPtr->SduDataPtr != NULL_PTR) {
         /* Determine if this is TP.CM or TP.DT */
         uint32 pgn = 0U; /* Extract from CAN ID metadata if available */
 
@@ -475,7 +475,7 @@ static Std_ReturnType J1939Tp_SendTpDt(uint8 ChannelIdx)
 
 static void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx)
 {
-    if ((PduInfoPtr != NULL) && (PduInfoPtr->SduLength >= 8U) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
+    if ((PduInfoPtr != NULL_PTR) && (PduInfoPtr->SduLength >= 8U) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
         uint8 controlByte = PduInfoPtr->SduDataPtr[0];
 
         switch (controlByte) {
@@ -508,7 +508,7 @@ static void J1939Tp_ProcessTpCmRx(const PduInfoType* PduInfoPtr, uint8 ChannelId
 
 static void J1939Tp_ProcessTpDtRx(const PduInfoType* PduInfoPtr, uint8 ChannelIdx)
 {
-    if ((PduInfoPtr != NULL) && (PduInfoPtr->SduLength >= 8U) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
+    if ((PduInfoPtr != NULL_PTR) && (PduInfoPtr->SduLength >= 8U) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
         J1939Tp_RxChannelType* channel = &J1939Tp_RxChannels[ChannelIdx];
 
         if ((channel->State == J1939TP_STATE_DT_RX) || (channel->State == J1939TP_STATE_BAM_RX)) {
@@ -545,7 +545,7 @@ static void J1939Tp_ProcessTpDtRx(const PduInfoType* PduInfoPtr, uint8 ChannelId
 
 static void J1939Tp_HandleRts(const uint8* Data, uint8 ChannelIdx)
 {
-    if ((Data != NULL) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
+    if ((Data != NULL_PTR) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
         J1939Tp_RxChannelType* channel = &J1939Tp_RxChannels[ChannelIdx];
 
         if (channel->State == J1939TP_STATE_IDLE) {
@@ -595,7 +595,7 @@ static void J1939Tp_HandleEomAck(const uint8* Data, uint8 ChannelIdx)
 
 static void J1939Tp_HandleBam(const uint8* Data, uint8 ChannelIdx)
 {
-    if ((Data != NULL) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
+    if ((Data != NULL_PTR) && (ChannelIdx < J1939TP_MAX_RX_CHANNELS)) {
         J1939Tp_RxChannelType* channel = &J1939Tp_RxChannels[ChannelIdx];
 
         /* Parse BAM message */

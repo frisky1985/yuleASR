@@ -25,7 +25,7 @@
  */
 static Dlt_InternalStateType g_DltState = {
     .moduleState = DLT_STATE_UNINIT,
-    .config = NULL,
+    .config = NULL_PTR,
     .appTable = {0},
     .appCount = 0U,
     .queue = {0},
@@ -101,7 +101,7 @@ void Dlt_Init(const Dlt_ConfigType* ConfigPtr)
 {
     /* 检查开发错误 */
 #if (DLT_DEV_ERROR_DETECT == STD_ON)
-    if (ConfigPtr == NULL) {
+    if (ConfigPtr == NULL_PTR) {
         DLT_DETECT_ERROR(DLT_APIID_INIT, DLT_E_PARAM_POINTER);
         return;
     }
@@ -147,7 +147,7 @@ void Dlt_DeInit(void)
 #endif
 
     /* 清空所有状态 */
-    g_DltState.config = NULL;
+    g_DltState.config = NULL_PTR;
     g_DltState.appCount = 0U;
     g_DltState.queueCount = 0U;
     g_DltState.moduleState = DLT_STATE_UNINIT;
@@ -167,7 +167,7 @@ Dlt_AppHandleType Dlt_RegisterApp(const Dlt_AppInfoType* AppInfoPtr)
         return DLT_INVALID_APP_HANDLE;
     }
 
-    if (AppInfoPtr == NULL) {
+    if (AppInfoPtr == NULL_PTR) {
         DLT_DETECT_ERROR(DLT_APIID_REGISTER_APP, DLT_E_PARAM_POINTER);
         return DLT_INVALID_APP_HANDLE;
     }
@@ -219,7 +219,7 @@ Std_ReturnType Dlt_UnregisterApp(Dlt_AppHandleType AppHandle)
 
     /* 查找并删除应用 */
     Dlt_AppEntryType* appEntry = Dlt_FindAppEntry(AppHandle);
-    if (appEntry == NULL) {
+    if (appEntry == NULL_PTR) {
         return E_NOT_OK;
     }
 
@@ -253,7 +253,7 @@ Std_ReturnType Dlt_SendLogMessage(
         return E_NOT_OK;
     }
 
-    if (DataPtr == NULL) {
+    if (DataPtr == NULL_PTR) {
         DLT_DETECT_ERROR(DLT_APIID_SEND_LOG, DLT_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -271,7 +271,7 @@ Std_ReturnType Dlt_SendLogMessage(
 
     /* 查找应用条目 */
     Dlt_AppEntryType* appEntry = Dlt_FindAppEntry(AppHandle);
-    if (appEntry == NULL) {
+    if (appEntry == NULL_PTR) {
         return E_NOT_OK;
     }
 
@@ -329,7 +329,7 @@ Std_ReturnType Dlt_SendTraceMessage(
         return E_NOT_OK;
     }
 
-    if (DataPtr == NULL) {
+    if (DataPtr == NULL_PTR) {
         DLT_DETECT_ERROR(DLT_APIID_SEND_TRACE, DLT_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -342,7 +342,7 @@ Std_ReturnType Dlt_SendTraceMessage(
 
     /* 查找应用条目 */
     Dlt_AppEntryType* appEntry = Dlt_FindAppEntry(AppHandle);
-    if (appEntry == NULL) {
+    if (appEntry == NULL_PTR) {
         return E_NOT_OK;
     }
 
@@ -407,7 +407,7 @@ void Dlt_MainFunction(void)
 
         /* 通过传输层发送 (使用抽象接口) */
         Dlt_TransportProtocolType protocol = DLT_TRANSPORT_UDP;
-        if (g_DltState.config != NULL && g_DltState.config->transportConfig != NULL) {
+        if (g_DltState.config != NULL_PTR && g_DltState.config->transportConfig != NULL_PTR) {
             protocol = g_DltState.config->transportConfig->protocol;
         }
         
@@ -442,13 +442,13 @@ void Dlt_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 {
     /* 检查开发错误 */
 #if (DLT_DEV_ERROR_DETECT == STD_ON)
-    if (VersionInfoPtr == NULL) {
+    if (VersionInfoPtr == NULL_PTR) {
         DLT_DETECT_ERROR(DLT_APIID_GET_VERSION, DLT_E_PARAM_POINTER);
         return;
     }
 #endif
 
-    if (VersionInfoPtr != NULL) {
+    if (VersionInfoPtr != NULL_PTR) {
         VersionInfoPtr->vendorID = DLT_VENDOR_ID;
         VersionInfoPtr->moduleID = DLT_MODULE_ID;
         VersionInfoPtr->sw_major_version = DLT_SW_MAJOR_VERSION;
@@ -480,7 +480,7 @@ Std_ReturnType Dlt_SetFilter(
 
     /* 查找应用条目 */
     Dlt_AppEntryType* appEntry = Dlt_FindAppEntry(AppHandle);
-    if (appEntry == NULL) {
+    if (appEntry == NULL_PTR) {
         return E_NOT_OK;
     }
 
@@ -536,7 +536,7 @@ void Dlt_BuildMessageHeader(
     uint16 messageId,
     uint16 payloadLen)
 {
-    if (header == NULL || appEntry == NULL) {
+    if (header == NULL_PTR || appEntry == NULL_PTR) {
         return;
     }
 
@@ -550,7 +550,7 @@ void Dlt_BuildMessageHeader(
 
     /* 填充应用 ID (安全复制，防止溢出) */
     const char* appId = appEntry->info.appId;
-    if (appId != NULL) {
+    if (appId != NULL_PTR) {
         uint32 appIdLen = strlen(appId);
         if (appIdLen > 4U) {
             appIdLen = 4U;
@@ -680,7 +680,7 @@ boolean Dlt_ApplyFilter(Dlt_AppHandleType appHandle, Dlt_LogLevelType logLevel)
 {
     /* 查找应用条目 */
     Dlt_AppEntryType* appEntry = Dlt_FindAppEntry(appHandle);
-    if (appEntry == NULL) {
+    if (appEntry == NULL_PTR) {
         return FALSE;
     }
 
@@ -709,7 +709,7 @@ Dlt_AppEntryType* Dlt_FindAppEntry(Dlt_AppHandleType appHandle)
         }
     }
     
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -815,22 +815,22 @@ void Dlt_GetStatistics(
         return;
     }
     
-    if ((sentCount == NULL) || (droppedCount == NULL) || (queueCount == NULL)) {
+    if ((sentCount == NULL_PTR) || (droppedCount == NULL_PTR) || (queueCount == NULL_PTR)) {
         DLT_DETECT_ERROR(DLT_APIID_GET_STATISTICS, DLT_E_PARAM_POINTER);
         return;
     }
 #endif
 
     /* 返回统计信息 */
-    if (sentCount != NULL) {
+    if (sentCount != NULL_PTR) {
         *sentCount = g_DltState.totalMessagesSent;
     }
     
-    if (droppedCount != NULL) {
+    if (droppedCount != NULL_PTR) {
         *droppedCount = g_DltState.totalMessagesDropped;
     }
     
-    if (queueCount != NULL) {
+    if (queueCount != NULL_PTR) {
         *queueCount = g_DltState.queueCount;
     }
 }
