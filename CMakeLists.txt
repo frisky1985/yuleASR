@@ -71,6 +71,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rte/include
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/stubs
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/mocks
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/stubs
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/blake2/include
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/include
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/mbedtls/include
