@@ -33,6 +33,8 @@
 #include "CanTSyn_Cfg.h"
 #include "ComStack_Types.h"
 #include "StbM.h"
+#include "Can.h"
+#include "CanIf.h"
 #include "CanIf.h"
 
 /*==================================================================================================

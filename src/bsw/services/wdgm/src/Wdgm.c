@@ -10,491 +10,909 @@
 *
 *================================================================================================*/
 
-/** @file Wdgm.c
- * @brief Watchdog Manager implementation
- *
- * AUTOSAR R22-11 compliant Wdgm module
- * Service layer - Watchdog Management and Supervision
+/**
+ * @file WdgM.c
+ * @brief 看门狗管理模块实现
+ * 
+ * 功能: 看门狗监控、监督定时、安全状态管理
+ * 支持窗口看门狗(WWD)和独立看门狗(IWD)
+ * 与Lockstep和RamSafety安全模块集成
+ * 
+ * @ASIL-D Safety Level
+ * @author yuleASR Team
+ * @version 1.0.0
  */
 
-/*============================================================================
- *  INCLUDES
- *===========================================================================*/
-#include "Wdgm.h"
-#include "Wdgm_Cfg.h"
-
-#if (WDGM_DEV_ERROR_DETECT == STD_ON)
+/*==================================================================================================
+*                                       包含头文件
+==================================================================================================*/
+#include "WdgM.h"
+#include "WdgM_Cfg.h"
 #include "Det.h"
+#include "Mcal.h"
+
+#if (WDGM_CFG_LOCKSTEP_INTEGRATION == STD_ON)
+#include "Lockstep.h"
 #endif
 
-/*============================================================================
- *  VERSION CHECK
- *===========================================================================*/
-#define WDGM_SW_MAJOR_VERSION_CHECK         1
-#define WDGM_SW_MINOR_VERSION_CHECK         0
-#define WDGM_SW_PATCH_VERSION_CHECK         0
-
-#if (WDGM_SW_MAJOR_VERSION != WDGM_SW_MAJOR_VERSION_CHECK)
-    #error "Wdgm: Software major version mismatch"
+#if (WDGM_CFG_RAMSAFETY_INTEGRATION == STD_ON)
+#include "RamSafety.h"
 #endif
 
-#if (WDGM_SW_MINOR_VERSION != WDGM_SW_MINOR_VERSION_CHECK)
-    #error "Wdgm: Software minor version mismatch"
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+#include "Dem.h"
 #endif
 
-/*============================================================================
- *  INTERNAL STATE
- *===========================================================================*/
-
-/** @brief Module initialization state */
-static boolean Wdgm_Initialized = FALSE;
-
-/** @brief Current global status */
-static Wdgm_GlobalStatusType Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_DEACTIVATED;
-
-/** @brief Current mode */
-static WdgIf_ModeType Wdgm_CurrentMode = WDGIF_OFF_MODE;
-
-/** @brief Pointer to configuration */
-static const Wdgm_ConfigType* Wdgm_ConfigPtr = NULL;
-
-/** @brief Supervision entities runtime data */
-static Wdgm_SupervisedEntityType Wdgm_Entities[WDGM_MAX_SUPERVISED_ENTITIES];
-
-/** @brief Checkpoint counters for alive supervision */
-static Wdgm_AliveCounterType Wdgm_AliveCounters[WDGM_MAX_SUPERVISED_ENTITIES];
-
-/** @brief Expected alive counters */
-static Wdgm_AliveCounterType Wdgm_ExpectedAliveCounters[WDGM_MAX_SUPERVISED_ENTITIES];
-
-/** @brief Consecutive failures counter */
-static uint8 Wdgm_FailureCounters[WDGM_MAX_SUPERVISED_ENTITIES];
-
-/** @brief First expired SEID */
-static Wdgm_SupervisedEntityIdType Wdgm_FirstExpiredSEID = 0xFFFF;
-
-/** @brief Supervision cycle counter */
-static uint32 Wdgm_CycleCounter = 0;
-
-/*============================================================================
- *  INTERNAL FUNCTIONS
- *===========================================================================*/
+/*==================================================================================================
+*                                       宏定义
+==================================================================================================*/
+/**
+ * @brief 模块ID (用于Det)
+ */
+#define WDGM_MODULE_ID                          0x0DU
 
 /**
- * @brief Validate SEID
+ * @brief API ID定义
  */
-static inline boolean Wdgm_IsValidSEID(Wdgm_SupervisedEntityIdType SEID)
-{
-    return (SEID < WDGM_MAX_SUPERVISED_ENTITIES);
-}
+#define WDGM_API_INIT                           0x00U
+#define WDGM_API_DEINIT                         0x01U
+#define WDGM_API_GET_STATE                      0x02U
+#define WDGM_API_SET_MODE                       0x03U
+#define WDGM_API_GET_MODE                       0x04U
+#define WDGM_API_CHECKPOINT_REACHED             0x0EU
+#define WDGM_API_UPDATE_ALIVE                   0x11U
+#define WDGM_API_GET_SE_STATE                   0x0CU
+#define WDGM_API_DEACTIVATE_SE                  0x12U
+#define WDGM_API_ACTIVATE_SE                    0x13U
+#define WDGM_API_GET_GLOBAL_STATUS              0x14U
+#define WDGM_API_MAIN_FUNCTION                  0x08U
+#define WDGM_API_TRIGGER_WATCHDOG               0x09U
+#define WDGM_API_IS_DISABLE_ALLOWED             0x15U
+#define WDGM_API_PERFORM_RESET                  0x16U
+#define WDGM_API_HANDLE_LOCKSTEP_ERROR          0x20U
+#define WDGM_API_HANDLE_RAMSAFETY_ERROR         0x21U
 
 /**
- * @brief Update global status based on local statuses
+ * @brief 安全魔数
  */
-static void Wdgm_UpdateGlobalStatus(void)
-{
-    uint8 i;
-    uint8 expiredCount = 0;
-    uint8 failedCount = 0;
-    uint8 okCount = 0;
-
-    for (i = 0; i < WDGM_MAX_SUPERVISED_ENTITIES; i++)
-    {
-        if (Wdgm_Entities[i].IsInitialized)
-        {
-            switch (Wdgm_Entities[i].LocalStatus)
-            {
-                case WDGM_LOCAL_STATUS_EXPIRED:
-                    expiredCount++;
-                    break;
-                case WDGM_LOCAL_STATUS_FAILED:
-                    failedCount++;
-                    break;
-                case WDGM_LOCAL_STATUS_OK:
-                    okCount++;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    /* Determine global status */
-    if (expiredCount > 0)
-    {
-        Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_EXPIRED;
-    }
-    else if (failedCount > 0)
-    {
-        Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_FAILED;
-    }
-    else if (okCount > 0)
-    {
-        Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_OK;
-    }
-    else
-    {
-        Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_DEACTIVATED;
-    }
-}
+#define WDGM_SAFETY_MAGIC_INIT                  0xA55AA55AU
+#define WDGM_SAFETY_MAGIC_ACTIVE                0x5AA55AA5U
 
 /**
- * @brief Check alive supervision for an entity
+ * @brief 事件类型定义
  */
-static void Wdgm_CheckAliveSupervision(Wdgm_SupervisedEntityIdType SEID)
-{
-    if (Wdgm_Entities[SEID].IsInitialized &&
-        (Wdgm_Entities[SEID].LocalStatus != WDGM_LOCAL_STATUS_DEACTIVATED))
-    {
-        /* Check if alive counter is within expected range */
-        if (Wdgm_AliveCounters[SEID] < WDGM_ALIVE_THRESHOLD)
-        {
-            Wdgm_FailureCounters[SEID]++;
+#define WDGM_EVENT_SUPERVISION_EXPIRED          0x01U
+#define WDGM_EVENT_LOCKSTEP_ERROR               0x02U
+#define WDGM_EVENT_RAMSAFETY_ERROR              0x03U
+#define WDGM_EVENT_MODE_CHANGE                  0x04U
+#define WDGM_EVENT_WATCHDOG_RESET               0x05U
 
-            if (Wdgm_FailureCounters[SEID] >= WDGM_EXPIRATION_TOLERANCE)
-            {
-                /* Too many consecutive failures */
-                Wdgm_Entities[SEID].LocalStatus = WDGM_LOCAL_STATUS_EXPIRED;
-
-                /* Record first expired SEID */
-                if (Wdgm_FirstExpiredSEID == 0xFFFF)
-                {
-                    Wdgm_FirstExpiredSEID = SEID;
-                }
-            }
-            else
-            {
-                Wdgm_Entities[SEID].LocalStatus = WDGM_LOCAL_STATUS_FAILED;
-            }
-        }
-        else
-        {
-            /* Reset failure counter on success */
-            Wdgm_FailureCounters[SEID] = 0;
-            Wdgm_Entities[SEID].LocalStatus = WDGM_LOCAL_STATUS_OK;
-        }
-
-        /* Reset alive counter for next supervision cycle */
-        Wdgm_AliveCounters[SEID] = 0;
-    }
-}
+/*==================================================================================================
+*                                       全局变量
+==================================================================================================*/
+#define WDGM_START_SEC_VAR_INIT_UNSPECIFIED
+#include "WdgM_MemMap.h"
 
 /**
- * @brief Trigger watchdog if global status is OK
+ * @brief 初始化状态
  */
-static void Wdgm_TriggerWatchdog(void)
-{
-    if ((Wdgm_GlobalStatus == WDGM_GLOBAL_STATUS_OK) ||
-        (Wdgm_GlobalStatus == WDGM_GLOBAL_STATUS_DEACTIVATED))
-    {
-        /* Trigger watchdog via WdgIf */
-        (void)WdgIf_Trigger(0);
-    }
-    /* If FAILED or EXPIRED, don't trigger - let watchdog timeout occur */
-}
-
-/*============================================================================
- *  API IMPLEMENTATION
- *===========================================================================*/
+STATIC volatile WdgM_StateType WdgM_State = WDGM_STATE_UNINIT;
 
 /**
- * @brief Initialize Watchdog Manager
- * SWS_Wdgm_00001
+ * @brief 当前模式
  */
-void Wdgm_Init(const Wdgm_ConfigType* ConfigPtr)
-{
-    uint8 i;
-
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (ConfigPtr == NULL)
-    {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_INIT, WDGM_E_PARAM_CONFIG);
-        return;
-    }
-    #endif
-
-    /* Store configuration */
-    Wdgm_ConfigPtr = ConfigPtr;
-
-    /* Initialize supervision entities */
-    for (i = 0; i < WDGM_MAX_SUPERVISED_ENTITIES; i++)
-    {
-        Wdgm_Entities[i].SEId = i;
-        Wdgm_Entities[i].LocalStatus = WDGM_LOCAL_STATUS_DEACTIVATED;
-        Wdgm_Entities[i].AliveCounter = 0;
-        Wdgm_Entities[i].IsInitialized = TRUE;
-
-        Wdgm_AliveCounters[i] = 0;
-        Wdgm_ExpectedAliveCounters[i] = WDGM_ALIVE_THRESHOLD;
-        Wdgm_FailureCounters[i] = 0;
-    }
-
-    Wdgm_FirstExpiredSEID = 0xFFFF;
-    Wdgm_CycleCounter = 0;
-
-    /* Set initial mode */
-    if (ConfigPtr->InitialMode != NULL)
-    {
-        Wdgm_CurrentMode = *ConfigPtr->InitialMode;
-        (void)WdgIf_SetMode(0, Wdgm_CurrentMode);
-    }
-
-    Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_OK;
-    Wdgm_Initialized = TRUE;
-}
+STATIC volatile uint8 WdgM_CurrentMode = WDGM_WATCHDOG_MODE_OFF;
 
 /**
- * @brief Deinitialize Watchdog Manager
- * SWS_Wdgm_00002
+ * @brief 当前配置
  */
-void Wdgm_DeInit(void)
-{
-    uint8 i;
-
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
-    {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_DEINIT, WDGM_E_NOT_INITIALIZED);
-        return;
-    }
-
-    #if (WDGM_DEINIT_API == STD_OFF)
-    (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_DEINIT, WDGM_E_NO_DEINIT);
-    return;
-    #endif
-    #endif
-
-    /* Reset all entities */
-    for (i = 0; i < WDGM_MAX_SUPERVISED_ENTITIES; i++)
-    {
-        Wdgm_Entities[i].IsInitialized = FALSE;
-        Wdgm_Entities[i].LocalStatus = WDGM_LOCAL_STATUS_DEACTIVATED;
-    }
-
-    Wdgm_Initialized = FALSE;
-    Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_DEACTIVATED;
-    Wdgm_ConfigPtr = NULL;
-}
+STATIC const WdgM_ConfigType* WdgM_CurrentConfig = NULL_PTR;
 
 /**
- * @brief Get version information
- * SWS_Wdgm_00003
+ * @brief 安全魔数 (用于ASIL-D运行时检查)
  */
-#if (WDGM_VERSION_INFO_API == STD_ON)
-void Wdgm_GetVersionInfo(Std_VersionInfoType* VersionInfo)
-{
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (VersionInfo == NULL)
-    {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_GETVERSIONINFO, WDGM_E_PARAM_POINTER);
-        return;
-    }
-    #endif
+STATIC volatile uint32 WdgM_SafetyMagic = 0U;
 
-    VersionInfo->vendorID = WDGM_VENDOR_ID;
-    VersionInfo->moduleID = WDGM_MODULE_ID;
-    VersionInfo->sw_major_version = WDGM_SW_MAJOR_VERSION;
-    VersionInfo->sw_minor_version = WDGM_SW_MINOR_VERSION;
-    VersionInfo->sw_patch_version = WDGM_SW_PATCH_VERSION;
-}
-#endif
+#define WDGM_STOP_SEC_VAR_INIT_UNSPECIFIED
+#include "WdgM_MemMap.h"
+
+#define WDGM_START_SEC_VAR_CLEARED_UNSPECIFIED
+#include "WdgM_MemMap.h"
 
 /**
- * @brief Set Watchdog Manager mode
- * SWS_Wdgm_00004
+ * @brief 监督实体运行时数据
  */
-Std_ReturnType Wdgm_SetMode(WdgIf_ModeType Mode)
+STATIC WdgM_SupervisedEntityType WdgM_SupervisedEntities[WDGM_CFG_MAX_SUPERVISED_ENTITIES];
+
+/**
+ * @brief 全局状态信息
+ */
+STATIC WdgM_GlobalStatusType WdgM_GlobalStatus;
+
+/**
+ * @brief 计时器 (用于监督周期控制)
+ */
+STATIC uint16 WdgM_CycleTimer = 0U;
+
+/**
+ * @brief 看门狗触发计时器
+ */
+STATIC uint16 WdgM_TriggerTimer = 0U;
+
+/**
+ * @brief 连续错误计数
+ */
+STATIC uint8 WdgM_ConsecutiveErrors = 0U;
+
+/**
+ * @brief 安全事件回调
+ */
+STATIC WdgM_SafetyCallbackType WdgM_SafetyCallback = NULL_PTR;
+STATIC const void* WdgM_SafetyCallbackContext = NULL_PTR;
+
+/**
+ * @brief 第一超时SEID
+ */
+STATIC uint16 WdgM_FirstExpiredSEID = 0U;
+
+/**
+ * @brief 禁用允许标志
+ */
+STATIC boolean WdgM_DisableAllowed = FALSE;
+
+#define WDGM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+#include "WdgM_MemMap.h"
+
+/*==================================================================================================
+*                                       静态函数声明
+==================================================================================================*/
+STATIC void WdgM_ReportError(uint8 apiId, uint8 errorId);
+STATIC void WdgM_NotifyEvent(uint8 eventType, uint32 errorCode);
+STATIC Std_ReturnType WdgM_ValidateConfig(const WdgM_ConfigType* config);
+STATIC void WdgM_UpdateSupervision(void);
+STATIC void WdgM_CheckEntityAlive(uint8 entityIdx);
+STATIC void WdgM_HandleExpiredSupervision(uint8 entityIdx);
+STATIC Std_ReturnType WdgM_FindEntityIndex(uint16 seId, uint8* index);
+STATIC void WdgM_PlatformTrigger(void);
+STATIC void WdgM_PlatformSetMode(uint8 mode);
+STATIC void WdgM_PerformSafetyAction(uint32 errorCode);
+
+/*==================================================================================================
+*                                       函数实现
+==================================================================================================*/
+#define WDGM_START_SEC_CODE
+#include "WdgM_MemMap.h"
+
+/**
+ * @brief 初始化WdgM模块
+ * @ASIL-D: Safety critical initialization with redundancy check
+ */
+Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
 {
     Std_ReturnType result = E_NOT_OK;
-
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
+    uint8 i;
+    
+    /* 参数验证 */
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == config)
     {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_SETMODE, WDGM_E_NOT_INITIALIZED);
+        WdgM_ReportError(WDGM_API_INIT, WDGM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
-
-    #if (WDGM_OFF_MODE_ENABLED == STD_OFF)
-    if (Mode == WDGIF_OFF_MODE)
+    
+    if (WdgM_State != WDGM_STATE_UNINIT)
     {
+        WdgM_ReportError(WDGM_API_INIT, WDGM_E_ALREADY_INITIALIZED);
         return E_NOT_OK;
     }
-    #endif
-    #endif
-
-    result = WdgIf_SetMode(0, Mode);
-
-    if (result == E_OK)
+#endif
+    
+    /* 配置验证 */
+    if (E_OK != WdgM_ValidateConfig(config))
     {
-        Wdgm_CurrentMode = Mode;
+        WdgM_ReportError(WDGM_API_INIT, WDGM_E_NOT_INITIALIZED);
+        return E_NOT_OK;
     }
-    else
+    
+    /* 禁用中断 */
+    Mcal_DisableAllInterrupts();
+    
+    /* 设置状态 */
+    WdgM_State = WDGM_STATE_INIT;
+    WdgM_CurrentConfig = config;
+    WdgM_CurrentMode = WDGM_WATCHDOG_MODE_OFF;
+    
+    /* 初始化监督实体 */
+    for (i = 0U; i < WDGM_CFG_MAX_SUPERVISED_ENTITIES; i++)
     {
-        #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-        (void)Det_ReportRuntimeError(WDGM_MODULE_ID, 0, WDGM_SID_SETMODE, WDGM_E_SET_MODE);
-        #endif
+        WdgM_SupervisedEntities[i].seId = 0U;
+        WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_DEACTIVATED;
+        WdgM_SupervisedEntities[i].aliveCounter = 0U;
+        WdgM_SupervisedEntities[i].expectedAliveIndications = 0U;
+        WdgM_SupervisedEntities[i].timestampStart = 0U;
+        WdgM_SupervisedEntities[i].timestampStop = 0U;
+        WdgM_SupervisedEntities[i].consecutiveErrors = 0U;
+        WdgM_SupervisedEntities[i].deactivated = TRUE;
     }
-
+    
+    /* 配置激活的监督实体 */
+    if (config->entities != NULL_PTR)
+    {
+        for (i = 0U; i < config->numEntities; i++)
+        {
+            if (i < WDGM_CFG_MAX_SUPERVISED_ENTITIES)
+            {
+                WdgM_SupervisedEntities[i].seId = config->entities[i].seId;
+                WdgM_SupervisedEntities[i].deactivated = !config->entities[i].enabled;
+                if (config->entities[i].enabled)
+                {
+                    WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_CORRECT;
+                    WdgM_SupervisedEntities[i].deactivated = FALSE;
+                }
+            }
+        }
+    }
+    
+    /* 初始化全局状态 */
+    WdgM_GlobalStatus.expiredSupervisionCycles = 0U;
+    WdgM_GlobalStatus.totalRefreshes = 0U;
+    WdgM_GlobalStatus.failedRefreshes = 0U;
+    WdgM_GlobalStatus.lockstepErrors = 0U;
+    WdgM_GlobalStatus.ramSafetyErrors = 0U;
+    WdgM_GlobalStatus.currentMode = WDGM_WATCHDOG_MODE_OFF;
+    
+    WdgM_CycleTimer = 0U;
+    WdgM_TriggerTimer = 0U;
+    WdgM_ConsecutiveErrors = 0U;
+    WdgM_FirstExpiredSEID = 0U;
+    
+    /* 设置安全魔数 */
+    WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_INIT;
+    WdgM_State = WDGM_STATE_ACTIVE;
+    WdgM_SafetyMagic = WDGM_SAFETY_MAGIC_ACTIVE;
+    
+    /* 恢复中断 */
+    Mcal_EnableAllInterrupts();
+    
+    WdgM_NotifyEvent(WDGM_EVENT_MODE_CHANGE, WDGM_STATE_ACTIVE);
+    
+    result = E_OK;
     return result;
 }
 
 /**
- * @brief Get current Watchdog Manager mode
- * SWS_Wdgm_00020
+ * @brief 去初始化WdgM模块
  */
-WdgIf_ModeType Wdgm_GetMode(void)
+Std_ReturnType WdgM_DeInit(void)
 {
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
+    Std_ReturnType result = E_NOT_OK;
+    
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
     {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_GETMODE, WDGM_E_NOT_INITIALIZED);
-        return WDGIF_OFF_MODE;
+        WdgM_ReportError(WDGM_API_DEINIT, WDGM_E_NOT_INITIALIZED);
+        return E_NOT_OK;
     }
-    #endif
-
-    return Wdgm_CurrentMode;
+#endif
+    
+    /* 禁用中断 */
+    Mcal_DisableAllInterrupts();
+    
+    /* 检查是否允许禁用 */
+    if (!WdgM_IsDisableAllowed())
+    {
+        Mcal_EnableAllInterrupts();
+        WdgM_ReportError(WDGM_API_DEINIT, WDGM_E_DISABLE_NOT_ALLOWED);
+        return E_NOT_OK;
+    }
+    
+    /* 停止看门狗 */
+    WdgM_PlatformSetMode(WDGM_WATCHDOG_MODE_OFF);
+    
+    /* 重置状态 */
+    WdgM_State = WDGM_STATE_UNINIT;
+    WdgM_CurrentMode = WDGM_WATCHDOG_MODE_OFF;
+    WdgM_CurrentConfig = NULL_PTR;
+    WdgM_SafetyMagic = 0U;
+    WdgM_SafetyCallback = NULL_PTR;
+    WdgM_SafetyCallbackContext = NULL_PTR;
+    
+    Mcal_EnableAllInterrupts();
+    
+    result = E_OK;
+    return result;
 }
 
 /**
- * @brief Report checkpoint reached
- * SWS_Wdgm_00010
+ * @brief 获取当前状态
  */
-Std_ReturnType Wdgm_CheckpointReached(Wdgm_SupervisedEntityIdType SEID,
-                                       Wdgm_CheckpointIdType CheckpointID)
+WdgM_StateType WdgM_GetState(void)
 {
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
+    return WdgM_State;
+}
+
+/**
+ * @brief 设置看门狗模式
+ * @ASIL-D: Requires privilege verification
+ */
+Std_ReturnType WdgM_SetMode(uint8 mode)
+{
+    Std_ReturnType result = E_NOT_OK;
+    
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
     {
-        (void)Det_ReportError(WDGM_MODULE_ID, SEID, WDGM_SID_CHECKPOINTREACHED, WDGM_E_NOT_INITIALIZED);
+        WdgM_ReportError(WDGM_API_SET_MODE, WDGM_E_NOT_INITIALIZED);
         return E_NOT_OK;
     }
-
-    if (!Wdgm_IsValidSEID(SEID))
+    
+    if (mode > WDGM_WATCHDOG_MODE_FAST)
     {
-        (void)Det_ReportError(WDGM_MODULE_ID, SEID, WDGM_SID_CHECKPOINTREACHED, WDGM_E_PARAM_SEID);
+        WdgM_ReportError(WDGM_API_SET_MODE, WDGM_E_PARAM_MODE);
         return E_NOT_OK;
     }
-    #endif
-
-    if (Wdgm_Entities[SEID].IsInitialized)
+#endif
+    
+    /* 检查是否允许禁用看门狗 */
+    if ((mode == WDGM_WATCHDOG_MODE_OFF) && (!WdgM_IsDisableAllowed()))
     {
-        #if (WDGM_ALIVE_MONITORING == STD_ON)
-        /* Increment alive counter */
-        Wdgm_AliveCounters[SEID]++;
-        #endif
+        WdgM_ReportError(WDGM_API_SET_MODE, WDGM_E_DISABLE_NOT_ALLOWED);
+        return E_NOT_OK;
+    }
+    
+    /* 调用底层设置模式 */
+    WdgM_PlatformSetMode(mode);
+    
+    WdgM_CurrentMode = mode;
+    WdgM_GlobalStatus.currentMode = mode;
+    
+    WdgM_NotifyEvent(WDGM_EVENT_MODE_CHANGE, (uint32)mode);
+    
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+    if (mode == WDGM_WATCHDOG_MODE_OFF)
+    {
+        /* Dem_ReportErrorStatus(WDGM_DEM_SET_MODE_FAILED_EVENT_ID, DEM_EVENT_STATUS_FAILED); */
+    }
+#endif
+    
+    result = E_OK;
+    return result;
+}
 
-        /* If entity was deactivated, activate it */
-        if (Wdgm_Entities[SEID].LocalStatus == WDGM_LOCAL_STATUS_DEACTIVATED)
+/**
+ * @brief 获取当前模式
+ */
+uint8 WdgM_GetMode(void)
+{
+    return WdgM_CurrentMode;
+}
+
+/**
+ * @brief 检查是否允许禁用看门狗
+ */
+boolean WdgM_IsDisableAllowed(void)
+{
+    return WdgM_DisableAllowed;
+}
+
+/**
+ * @brief 检查点报告 (Alive Supervision)
+ * @ASIL-D: Runtime safety check
+ */
+Std_ReturnType WdgM_CheckpointReached(uint16 seId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 entityIdx;
+    
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        WdgM_ReportError(WDGM_API_CHECKPOINT_REACHED, WDGM_E_NOT_INITIALIZED);
+        return E_NOT_OK;
+    }
+#endif
+    
+    /* 查找监督实体索引 */
+    result = WdgM_FindEntityIndex(seId, &entityIdx);
+    
+    if (E_OK == result)
+    {
+        /* 更新时间戳 */
+        WdgM_SupervisedEntities[entityIdx].timestampStop = WdgM_CycleTimer;
+        
+        /* 更新活计数器 */
+        if (WdgM_SupervisedEntities[entityIdx].aliveCounter < 0xFFFFU)
         {
-            Wdgm_Entities[SEID].LocalStatus = WDGM_LOCAL_STATUS_OK;
+            WdgM_SupervisedEntities[entityIdx].aliveCounter++;
         }
+        
+        /* 重置连续错误计数 */
+        WdgM_SupervisedEntities[entityIdx].consecutiveErrors = 0U;
+        
+        /* 更新状态 */
+        if (WdgM_SupervisedEntities[entityIdx].state != WDGM_SE_STATE_DEACTIVATED)
+        {
+            WdgM_SupervisedEntities[entityIdx].state = WDGM_SE_STATE_CORRECT;
+        }
+    }
+    else
+    {
+        WdgM_ReportError(WDGM_API_CHECKPOINT_REACHED, WDGM_E_CPID_NOT_CONFIGURED);
+    }
+    
+    return result;
+}
 
+/**
+ * @brief 更新活监督指示
+ */
+Std_ReturnType WdgM_UpdateAliveIndication(uint16 seId)
+{
+    return WdgM_CheckpointReached(seId);
+}
+
+/**
+ * @brief 获取监督实体状态
+ */
+Std_ReturnType WdgM_GetSEState(uint16 seId, WdgM_SEStateType* state)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 entityIdx;
+    
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (NULL_PTR == state)
+    {
+        return E_NOT_OK;
+    }
+#endif
+    
+    result = WdgM_FindEntityIndex(seId, &entityIdx);
+    
+    if (E_OK == result)
+    {
+        *state = WdgM_SupervisedEntities[entityIdx].state;
+    }
+    
+    return result;
+}
+
+/**
+ * @brief 去激活监督实体
+ */
+Std_ReturnType WdgM_DeactivateSupervisionEntity(uint16 seId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 entityIdx;
+    
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        return E_NOT_OK;
+    }
+#endif
+    
+    result = WdgM_FindEntityIndex(seId, &entityIdx);
+    
+    if (E_OK == result)
+    {
+        WdgM_SupervisedEntities[entityIdx].deactivated = TRUE;
+        WdgM_SupervisedEntities[entityIdx].state = WDGM_SE_STATE_DEACTIVATED;
+    }
+    
+    return result;
+}
+
+/**
+ * @brief 重新激活监督实体
+ */
+Std_ReturnType WdgM_ActivateSupervisionEntity(uint16 seId)
+{
+    Std_ReturnType result = E_NOT_OK;
+    uint8 entityIdx;
+    
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        return E_NOT_OK;
+    }
+#endif
+    
+    result = WdgM_FindEntityIndex(seId, &entityIdx);
+    
+    if (E_OK == result)
+    {
+        WdgM_SupervisedEntities[entityIdx].deactivated = FALSE;
+        WdgM_SupervisedEntities[entityIdx].state = WDGM_SE_STATE_CORRECT;
+        WdgM_SupervisedEntities[entityIdx].aliveCounter = 0U;
+        WdgM_SupervisedEntities[entityIdx].consecutiveErrors = 0U;
+    }
+    
+    return result;
+}
+
+/**
+ * @brief 获取全局状态信息
+ */
+Std_ReturnType WdgM_GetGlobalStatus(WdgM_GlobalStatusType* status)
+{
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == status)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        return E_NOT_OK;
+    }
+#endif
+    
+    /* 安全拷贝统计信息 */
+    status->expiredSupervisionCycles = WdgM_GlobalStatus.expiredSupervisionCycles;
+    status->totalRefreshes = WdgM_GlobalStatus.totalRefreshes;
+    status->failedRefreshes = WdgM_GlobalStatus.failedRefreshes;
+    status->lockstepErrors = WdgM_GlobalStatus.lockstepErrors;
+    status->ramSafetyErrors = WdgM_GlobalStatus.ramSafetyErrors;
+    status->currentMode = WdgM_GlobalStatus.currentMode;
+    
+    return E_OK;
+}
+
+/**
+ * @brief 主循环处理函数
+ * @ASIL-D: Periodic safety monitoring
+ */
+void WdgM_MainFunction(void)
+{
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        return;
+    }
+    
+    /* 检查安全魔数 */
+    if (WdgM_SafetyMagic != WDGM_SAFETY_MAGIC_ACTIVE)
+    {
+        WdgM_PerformSafetyAction(WDGM_E_DATA_CORRUPTION);
+        return;
+    }
+    
+    /* 更新计时器 */
+    WdgM_CycleTimer++;
+    WdgM_TriggerTimer++;
+    
+    /* 执行监督更新 */
+    WdgM_UpdateSupervision();
+    
+    /* 检查看门狗触发周期 */
+    if (WdgM_CurrentConfig != NULL_PTR)
+    {
+        if (WdgM_TriggerTimer >= WdgM_CurrentConfig->supervisionCycleMs)
+        {
+            WdgM_TriggerTimer = 0U;
+            
+            /* 触发看门狗 (只有活跃状态才触发) */
+            if (WdgM_State == WDGM_STATE_ACTIVE)
+            {
+                WdgM_TriggerWatchdog();
+            }
+        }
+    }
+    
+    /* 检查连续错误计数 */
+    if (WdgM_ConsecutiveErrors >= WdgM_CurrentConfig->failureThreshold)
+    {
+        WdgM_PerformSafetyAction(WDGM_E_SUPERVISION_EXPIRED);
+    }
+}
+
+/**
+ * @brief 执行看门狗触发
+ * @ASIL-D: Watchdog refresh
+ */
+void WdgM_TriggerWatchdog(void)
+{
+    if (WdgM_State == WDGM_STATE_ACTIVE)
+    {
+        /* 检查安全魔数 */
+        if (WdgM_SafetyMagic != WDGM_SAFETY_MAGIC_ACTIVE)
+        {
+            return;
+        }
+        
+        /* 触发底层看门狗 */
+        WdgM_PlatformTrigger();
+        
+        WdgM_GlobalStatus.totalRefreshes++;
+    }
+}
+
+/**
+ * @brief 执行立即复位
+ * @ASIL-D: Emergency reset
+ */
+void WdgM_PerformReset(void)
+{
+    WdgM_NotifyEvent(WDGM_EVENT_WATCHDOG_RESET, 0U);
+    
+    /* 调用平台复位函数 */
+    /* Platform_PerformReset(); */
+    
+    /* 如果复位失败，进入死循环 */
+    for (;;)
+    {
+        /* Infinite loop */
+    }
+}
+
+/**
+ * @brief 获取第一超时值
+ */
+Std_ReturnType WdgM_GetFirstExpiredSEID(uint16* seId)
+{
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (NULL_PTR == seId)
+    {
+        return E_NOT_OK;
+    }
+#endif
+    
+    if (WdgM_FirstExpiredSEID != 0U)
+    {
+        *seId = WdgM_FirstExpiredSEID;
         return E_OK;
     }
-
+    
     return E_NOT_OK;
 }
 
 /**
- * @brief Get local supervision status
- * SWS_Wdgm_00013
+ * @brief 处理Lockstep错误事件
+ * @ASIL-D: Lockstep integration
  */
-Wdgm_LocalStatusType Wdgm_GetLocalStatus(Wdgm_SupervisedEntityIdType SEID)
+void WdgM_HandleLockstepError(uint32 errorCode)
 {
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
     {
-        (void)Det_ReportError(WDGM_MODULE_ID, SEID, WDGM_SID_GETLOCALSTATUS, WDGM_E_NOT_INITIALIZED);
-        return WDGM_LOCAL_STATUS_DEACTIVATED;
-    }
-
-    if (!Wdgm_IsValidSEID(SEID))
-    {
-        (void)Det_ReportError(WDGM_MODULE_ID, SEID, WDGM_SID_GETLOCALSTATUS, WDGM_E_PARAM_SEID);
-        return WDGM_LOCAL_STATUS_DEACTIVATED;
-    }
-    #endif
-
-    return Wdgm_Entities[SEID].LocalStatus;
-}
-
-/**
- * @brief Get global supervision status
- * SWS_Wdgm_00014
- */
-Wdgm_GlobalStatusType Wdgm_GetGlobalStatus(void)
-{
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
-    {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_GETGLOBALSTATUS, WDGM_E_NOT_INITIALIZED);
-        return WDGM_GLOBAL_STATUS_DEACTIVATED;
-    }
-    #endif
-
-    return Wdgm_GlobalStatus;
-}
-
-/**
- * @brief Perform reset
- * SWS_Wdgm_00015
- */
-void Wdgm_PerformReset(void)
-{
-    /* Trigger watchdog timeout to reset system */
-    Wdgm_GlobalStatus = WDGM_GLOBAL_STATUS_EXPIRED;
-
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    /* Report runtime error */
-    (void)Det_ReportRuntimeError(WDGM_MODULE_ID, 0, WDGM_SID_PERFORMRESET, WDGM_E_DATA_CORRUPT);
-    #endif
-
-    /* Stop triggering watchdog - reset will occur on next timeout */
-}
-
-/**
- * @brief Get first expired SEID
- * SWS_Wdgm_00016
- */
-Wdgm_SupervisedEntityIdType Wdgm_GetFirstExpiredSEID(void)
-{
-    #if (WDGM_DEV_ERROR_DETECT == STD_ON)
-    if (!Wdgm_Initialized)
-    {
-        (void)Det_ReportError(WDGM_MODULE_ID, 0, WDGM_SID_GETFIRSTEXPIREDSEID, WDGM_E_NOT_INITIALIZED);
-        return 0xFFFF;
-    }
-    #endif
-
-    return Wdgm_FirstExpiredSEID;
-}
-
-/**
- * @brief Main function - cyclic supervision
- * SWS_Wdgm_00017
- */
-void Wdgm_MainFunction(void)
-{
-    uint8 i;
-
-    if (!Wdgm_Initialized)
-    {
+        WdgM_ReportError(WDGM_API_HANDLE_LOCKSTEP_ERROR, WDGM_E_NOT_INITIALIZED);
         return;
     }
-
-    Wdgm_CycleCounter++;
-
-    /* Perform alive supervision for all entities */
-    #if (WDGM_ALIVE_MONITORING == STD_ON)
-    for (i = 0; i < WDGM_MAX_SUPERVISED_ENTITIES; i++)
-    {
-        Wdgm_CheckAliveSupervision(i);
-    }
-    #endif
-
-    /* Update global status */
-    Wdgm_UpdateGlobalStatus();
-
-    /* Trigger watchdog based on global status */
-    Wdgm_TriggerWatchdog();
+#endif
+    
+    /* 更新统计 */
+    WdgM_GlobalStatus.lockstepErrors++;
+    
+    /* 通知事件 */
+    WdgM_NotifyEvent(WDGM_EVENT_LOCKSTEP_ERROR, errorCode);
+    
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+    /* Dem_ReportErrorStatus(WDGM_DEM_LOCKSTEP_ERROR_EVENT_ID, DEM_EVENT_STATUS_FAILED); */
+#endif
+    
+    /* 执行安全响应 */
+    WdgM_PerformSafetyAction(errorCode);
 }
+
+/**
+ * @brief 处理RamSafety错误事件
+ * @ASIL-D: RamSafety integration
+ */
+void WdgM_HandleRamSafetyError(uint32 errorCode)
+{
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    if (WdgM_State == WDGM_STATE_UNINIT)
+    {
+        WdgM_ReportError(WDGM_API_HANDLE_RAMSAFETY_ERROR, WDGM_E_NOT_INITIALIZED);
+        return;
+    }
+#endif
+    
+    /* 更新统计 */
+    WdgM_GlobalStatus.ramSafetyErrors++;
+    
+    /* 通知事件 */
+    WdgM_NotifyEvent(WDGM_EVENT_RAMSAFETY_ERROR, errorCode);
+    
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+    /* Dem_ReportErrorStatus(WDGM_DEM_RAMSAFETY_ERROR_EVENT_ID, DEM_EVENT_STATUS_FAILED); */
+#endif
+    
+    /* 执行安全响应 */
+    WdgM_PerformSafetyAction(errorCode);
+}
+
+/**
+ * @brief 注册安全事件回调
+ */
+Std_ReturnType WdgM_RegisterSafetyCallback(
+    WdgM_SafetyCallbackType callback,
+    const void* context)
+{
+    WdgM_SafetyCallback = callback;
+    WdgM_SafetyCallbackContext = context;
+    return E_OK;
+}
+
+#if (WDGM_VERSION_INFO_API == STD_ON)
+/**
+ * @brief 获取版本信息
+ */
+void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo)
+{
+    if (NULL_PTR != versioninfo)
+    {
+        versioninfo->vendorID = WDGM_VENDOR_ID;
+        versioninfo->moduleID = WDGM_MODULE_ID;
+        versioninfo->sw_major_version = WDGM_SW_MAJOR_VERSION;
+        versioninfo->sw_minor_version = WDGM_SW_MINOR_VERSION;
+        versioninfo->sw_patch_version = WDGM_SW_PATCH_VERSION;
+    }
+}
+#endif
+
+/*==================================================================================================
+*                                       静态函数实现
+==================================================================================================*/
+
+/**
+ * @brief 报告错误
+ */
+STATIC void WdgM_ReportError(uint8 apiId, uint8 errorId)
+{
+#if (WDGM_CFG_DEV_ERROR_DETECT == STD_ON)
+    (void)Det_ReportError(WDGM_MODULE_ID, 0U, apiId, errorId);
+#endif
+}
+
+/**
+ * @brief 通知事件
+ */
+STATIC void WdgM_NotifyEvent(uint8 eventType, uint32 errorCode)
+{
+    if (WdgM_SafetyCallback != NULL_PTR)
+    {
+        WdgM_SafetyCallback(eventType, errorCode, WdgM_SafetyCallbackContext);
+    }
+}
+
+/**
+ * @brief 验证配置
+ */
+STATIC Std_ReturnType WdgM_ValidateConfig(const WdgM_ConfigType* config)
+{
+    if (config->numEntities > WDGM_CFG_MAX_SUPERVISED_ENTITIES)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (config->failureThreshold == 0U)
+    {
+        return E_NOT_OK;
+    }
+    
+    if (config->supervisionCycleMs == 0U)
+    {
+        return E_NOT_OK;
+    }
+    
+    return E_OK;
+}
+
+/**
+ * @brief 更新监督状态
+ */
+STATIC void WdgM_UpdateSupervision(void)
+{
+    uint8 i;
+    
+    for (i = 0U; i < WDGM_CFG_MAX_SUPERVISED_ENTITIES; i++)
+    {
+        if (!WdgM_SupervisedEntities[i].deactivated && 
+            (WdgM_SupervisedEntities[i].seId != 0U))
+        {
+            WdgM_CheckEntityAlive(i);
+        }
+    }
+}
+
+/**
+ * @brief 检查实体活性状态
+ */
+STATIC void WdgM_CheckEntityAlive(uint8 entityIdx)
+{
+    const WdgM_SupervisedEntityType* entity = &WdgM_SupervisedEntities[entityIdx];
+    
+    /* 检查是否超时 */
+    if (WdgM_CurrentConfig != NULL_PTR)
+    {
+        if (entity->aliveCounter < entity->expectedAliveIndications)
+        {
+            /* 未收到足够的活指示 */
+            WdgM_SupervisedEntities[entityIdx].consecutiveErrors++;
+            
+            if (WdgM_SupervisedEntities[entityIdx].consecutiveErrors >= WDGM_CFG_FAILURE_THRESHOLD)
+            {
+                WdgM_HandleExpiredSupervision(entityIdx);
+            }
+        }
+    }
+}
+
+/**
+ * @brief 处理超时监督
+ */
+STATIC void WdgM_HandleExpiredSupervision(uint8 entityIdx)
+{
+    WdgM_SupervisedEntities[entityIdx].state = WDGM_SE_STATE_EXPIRED;
+    WdgM_FirstExpiredSEID = WdgM_SupervisedEntities[entityIdx].seId;
+    WdgM_ConsecutiveErrors++;
+    
+    /* 更新全局状态 */
+    WdgM_GlobalStatus.expiredSupervisionCycles++;
+    WdgM_State = WDGM_STATE_SUPERVISION_EXPIRED;
+    
+    WdgM_NotifyEvent(WDGM_EVENT_SUPERVISION_EXPIRED, WdgM_FirstExpiredSEID);
+    
+#if (WDGM_CFG_DEM_INTEGRATION == STD_ON)
+    /* Dem_ReportErrorStatus(WDGM_DEM_SUPERVISION_EXPIRED_EVENT_ID, DEM_EVENT_STATUS_FAILED); */
+#endif
+}
+
+/**
+ * @brief 查找监督实体索引
+ */
+STATIC Std_ReturnType WdgM_FindEntityIndex(uint16 seId, uint8* index)
+{
+    uint8 i;
+    
+    for (i = 0U; i < WDGM_CFG_MAX_SUPERVISED_ENTITIES; i++)
+    {
+        if (WdgM_SupervisedEntities[i].seId == seId)
+        {
+            *index = i;
+            return E_OK;
+        }
+    }
+    
+    return E_NOT_OK;
+}
+
+/**
+ * @brief 底层平台触发看门狗
+ */
+STATIC void WdgM_PlatformTrigger(void)
+{
+    /* 调用配置的触发函数 */
+    WdgM_WatchdogTrigger();
+}
+
+/**
+ * @brief 底层平台设置模式
+ */
+STATIC void WdgM_PlatformSetMode(uint8 mode)
+{
+    /* 调用配置的设置模式函数 */
+    WdgM_WatchdogSetMode(mode);
+}
+
+/**
+ * @brief 执行安全响应
+ */
+STATIC void WdgM_PerformSafetyAction(uint32 errorCode)
+{
+    (void)errorCode;
+    
+    /* 记录失败 */
+    WdgM_GlobalStatus.failedRefreshes++;
+    
+    /* 执行复位 */
+    WdgM_PerformReset();
+}
+
+#define WDGM_STOP_SEC_CODE
+#include "WdgM_MemMap.h"

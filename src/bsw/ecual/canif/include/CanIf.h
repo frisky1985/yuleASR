@@ -18,10 +18,25 @@
 *                                          INCLUDE FILES
 ==================================================================================================*/
 #include "Std_Types.h"
-#include "CanIf_Cfg.h"
 #include "ComStack_Types.h"
 #include "Can.h"          /* For Can_HwHandleType, Can_ControllerStateType, etc. */
 #include "EcuM.h"         /* For EcuM_WakeupSourceType */
+
+/* Types needed by CanIf_Cfg.h - defined before include to avoid circular dependency */
+typedef enum {
+    CANIF_CS_UNINIT = 0,
+    CANIF_CS_SLEEP,
+    CANIF_CS_STARTED,
+    CANIF_CS_STOPPED
+} CanIf_ControllerModeType;
+
+typedef enum {
+    CANIF_TRCV_MODE_NORMAL = 0,
+    CANIF_TRCV_MODE_STANDBY,
+    CANIF_TRCV_MODE_SLEEP
+} CanIf_TransceiverModeType;
+
+#include "CanIf_Cfg.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
@@ -215,25 +230,6 @@ typedef enum {
     CANIF_TX_OFFLINE_ACTIVE,
     CANIF_ONLINE
 } CanIf_PduModeType;
-
-/*==================================================================================================
-*                                    CANIF CONTROLLER MODE TYPE
-==================================================================================================*/
-typedef enum {
-    CANIF_CS_UNINIT = 0,
-    CANIF_CS_SLEEP,
-    CANIF_CS_STARTED,
-    CANIF_CS_STOPPED
-} CanIf_ControllerModeType;
-
-/*==================================================================================================
-*                                    CANIF TRANSCEIVER MODE TYPE
-==================================================================================================*/
-typedef enum {
-    CANIF_TRCV_MODE_NORMAL = 0,
-    CANIF_TRCV_MODE_STANDBY,
-    CANIF_TRCV_MODE_SLEEP
-} CanIf_TransceiverModeType;
 
 /*==================================================================================================
 *                                    CANIF TRANSCEIVER WAKEUP MODE TYPE

@@ -514,12 +514,12 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
             netState->SubState = CANSM_FULLCOM_S_CC_ONLINE;
             break;
 
-        case CANSM_SILENTCOM_S_CC_ONLINE:
+        case CANSM_FULLCOM_S_CC_ONLINE:
             /* Check for mode changes */
             if (requestedMode == COMM_NO_COMMUNICATION) {
                 result = CanSm_TransitionToNoCom(NetworkIndex);
-            } else if (requestedMode == COMM_FULL_COMMUNICATION) {
-                result = CanSm_TransitionToFullCom(NetworkIndex);
+            } else if (requestedMode == COMM_SILENT_COMMUNICATION) {
+                result = CanSm_TransitionToSilentCom(NetworkIndex);
             }
             break;
 

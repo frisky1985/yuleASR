@@ -103,6 +103,11 @@ typedef struct
     uint8  sw_patch_version;
 } Std_VersionInfoType;
 
+/* Set guard so modules that check STD_VERSIONINFO_TYPE_DEFINED don't redefine */
+#ifndef STD_VERSIONINFO_TYPE_DEFINED
+#define STD_VERSIONINFO_TYPE_DEFINED
+#endif
+
 /*******************************************************************************
  * Standard Macros
  ******************************************************************************/
