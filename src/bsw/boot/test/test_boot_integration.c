@@ -139,7 +139,7 @@ static int test_gen_keys(void)
     g_test_pubkey_len = i2d_PUBKEY(pkey, &p);
 
     FILE *f = fopen("/tmp/boot_test_priv.pem", "wb");
-    if (f) { PEM_write_PrivateKey(f, pkey, NULL, NULL, 0, NULL, NULL); fclose(f); }
+    if (f) { PEM_write_PrivateKey(f, pkey, NULL_PTR, NULL_PTR, 0, NULL_PTR, NULL_PTR); fclose(f); }
     EVP_PKEY_free(pkey);
     return (g_test_pubkey_len > 0) ? 0 : -1;
 }
@@ -149,7 +149,7 @@ static int test_sign(const uint8_t *payload, uint32_t len, uint8_t *sig_out)
 {
     FILE *f = fopen("/tmp/boot_test_priv.pem", "rb");
     if (!f) return -1;
-    EVP_PKEY *pkey = PEM_read_PrivateKey(f, NULL, NULL, NULL);
+    EVP_PKEY *pkey = PEM_read_PrivateKey(f, NULL_PTR, NULL_PTR, NULL_PTR);
     fclose(f);
     if (!pkey) return -1;
 
@@ -158,19 +158,19 @@ static int test_sign(const uint8_t *payload, uint32_t len, uint8_t *sig_out)
 
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
     if (!ctx) { EVP_PKEY_free(pkey); return -1; }
-    if (EVP_DigestSignInit(ctx, NULL, EVP_sha256(), NULL, pkey) != 1) {
+    if (EVP_DigestSignInit(ctx, NULL_PTR, EVP_sha256(), NULL_PTR, pkey) != 1) {
         EVP_MD_CTX_free(ctx); EVP_PKEY_free(pkey); return -1;
     }
 
     size_t der_len = 0;
-    EVP_DigestSign(ctx, NULL, &der_len, hash, 32);
+    EVP_DigestSign(ctx, NULL_PTR, &der_len, hash, 32);
     uint8_t *der = malloc(der_len);
     if (EVP_DigestSign(ctx, der, &der_len, hash, 32) != 1) {
         free(der); EVP_MD_CTX_free(ctx); EVP_PKEY_free(pkey); return -1;
     }
 
     const unsigned char *dp = der;
-    ECDSA_SIG *esig = d2i_ECDSA_SIG(NULL, &dp, (long)der_len);
+    ECDSA_SIG *esig = d2i_ECDSA_SIG(NULL_PTR, &dp, (long)der_len);
     if (!esig) { free(der); EVP_MD_CTX_free(ctx); EVP_PKEY_free(pkey); return -1; }
     const BIGNUM *r, *s;
     ECDSA_SIG_get0(esig, &r, &s);
@@ -189,13 +189,13 @@ Boot_Result Boot_Verify_Signature(const uint8_t *hash,
 {
     if (!hash || !signature || !pub_key) return BOOT_E_PARAM;
     const unsigned char *p = pub_key->data;
-    EVP_PKEY *evp_key = d2i_PUBKEY(NULL, &p, (long)pub_key->length);
+    EVP_PKEY *evp_key = d2i_PUBKEY(NULL_PTR, &p, (long)pub_key->length);
     if (!evp_key) return BOOT_E_SIGNATURE;
 
     /* Convert raw r||s to DER for OpenSSL EVP */
     const uint8_t *rp = signature, *sp = signature + 32;
-    BIGNUM *bnr = BN_bin2bn(rp, 32, NULL);
-    BIGNUM *bns = BN_bin2bn(sp, 32, NULL);
+    BIGNUM *bnr = BN_bin2bn(rp, 32, NULL_PTR);
+    BIGNUM *bns = BN_bin2bn(sp, 32, NULL_PTR);
     ECDSA_SIG *esig = ECDSA_SIG_new();
     ECDSA_SIG_set0(esig, bnr, bns);
 
@@ -204,7 +204,7 @@ Boot_Result Boot_Verify_Signature(const uint8_t *hash,
     int der_len = i2d_ECDSA_SIG(esig, &dp);
 
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-    EVP_DigestVerifyInit(ctx, NULL, EVP_sha256(), NULL, evp_key);
+    EVP_DigestVerifyInit(ctx, NULL_PTR, EVP_sha256(), NULL_PTR, evp_key);
     int ret = EVP_DigestVerify(ctx, der_buf, der_len, hash, 32);
 
     ECDSA_SIG_free(esig);

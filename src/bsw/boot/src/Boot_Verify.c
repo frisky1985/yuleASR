@@ -69,7 +69,7 @@ Boot_Result Boot_Verify_Signature(const uint8_t    *hash,
                                   const uint8_t    *signature,
                                   const Boot_PubKey *pub_key)
 {
-    if (hash == NULL || signature == NULL || pub_key == NULL) {
+    if (hash == NULL_PTR || signature == NULL_PTR || pub_key == NULL_PTR) {
         return BOOT_E_PARAM;
     }
 

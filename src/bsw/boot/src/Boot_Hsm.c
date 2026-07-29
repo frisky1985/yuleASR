@@ -68,7 +68,7 @@ Boot_Result Boot_Hsm_VerifySignature(const uint8_t *hash,
     if (!g_hsm_available) {
         return BOOT_E_HSM_INIT;
     }
-    if ((hash == NULL) || (signature == NULL)) {
+    if ((hash == NULL_PTR) || (signature == NULL_PTR)) {
         return BOOT_E_PARAM;
     }
 
@@ -91,7 +91,7 @@ Boot_Result Boot_Hsm_Random(uint8_t *buf, uint32_t len)
             return BOOT_E_HSM_INIT;
         }
     }
-    if ((buf == NULL) || (len == 0U)) {
+    if ((buf == NULL_PTR) || (len == 0U)) {
         return BOOT_E_PARAM;
     }
 

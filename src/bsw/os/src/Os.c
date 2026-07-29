@@ -193,7 +193,7 @@ StatusType Os_Internal_ActivateTask(TaskType TaskID)
 
     task = &Os_GlobalState.Tasks[TaskID];
 
-    if (task->FreeRTOS_Task == NULL)
+    if (task->FreeRTOS_Task == NULL_PTR)
     {
         /* Task not created yet, create it */
         if (xTaskCreate(
@@ -211,10 +211,10 @@ StatusType Os_Internal_ActivateTask(TaskType TaskID)
         if (task->IsExtended)
         {
             task->FreeRTOS_EventGroup = xEventGroupCreate();
-            if (task->FreeRTOS_EventGroup == NULL)
+            if (task->FreeRTOS_EventGroup == NULL_PTR)
             {
                 vTaskDelete(task->FreeRTOS_Task);
-                task->FreeRTOS_Task = NULL;
+                task->FreeRTOS_Task = NULL_PTR;
                 return E_OS_LIMIT;
             }
         }
@@ -277,7 +277,7 @@ StatusType Os_Internal_TerminateTask(void)
     Os_Internal_PostTaskHook();
 
     /* Suspend the task (AutoSAR tasks don't get deleted, they suspend) */
-    vTaskSuspend(NULL);
+    vTaskSuspend(NULL_PTR);
 
     /* This line is never reached */
     return E_OS_OK;
@@ -351,7 +351,7 @@ StatusType GetTaskID(TaskRefType TaskID)
     uint32 i;
 
     #if (OS_DEV_ERROR_DETECT == STD_ON)
-    if (TaskID == NULL)
+    if (TaskID == NULL_PTR)
     {
         OS_DET_REPORT_ERROR(OS_SID_GETTASKID, E_OS_PARAM_POINTER);
         return E_OS_PARAM_POINTER;
@@ -393,7 +393,7 @@ StatusType GetTaskState(TaskType TaskID, TaskStateRefType State)
         OS_DET_REPORT_ERROR(OS_SID_GETTASKSTATE, E_OS_ID);
         return E_OS_ID;
     }
-    if (State == NULL)
+    if (State == NULL_PTR)
     {
         OS_DET_REPORT_ERROR(OS_SID_GETTASKSTATE, E_OS_PARAM_POINTER);
         return E_OS_PARAM_POINTER;
@@ -413,7 +413,7 @@ StatusType Os_Internal_GetTaskState(TaskType TaskID, TaskStateRefType State)
 
     task = &Os_GlobalState.Tasks[TaskID];
 
-    if (task->FreeRTOS_Task == NULL)
+    if (task->FreeRTOS_Task == NULL_PTR)
     {
         *State = SUSPENDED;
         return E_OS_OK;
@@ -547,7 +547,7 @@ StatusType Os_Internal_SetEvent(TaskType TaskID, EventMaskType Mask)
         return E_OS_ACCESS;
     }
 
-    if (task->FreeRTOS_EventGroup == NULL)
+    if (task->FreeRTOS_EventGroup == NULL_PTR)
     {
         return E_OS_STATE;
     }
@@ -601,7 +601,7 @@ StatusType Os_Internal_ClearEvent(EventMaskType Mask)
                 return E_OS_ACCESS;
             }
 
-            if (Os_GlobalState.Tasks[i].FreeRTOS_EventGroup == NULL)
+            if (Os_GlobalState.Tasks[i].FreeRTOS_EventGroup == NULL_PTR)
             {
                 return E_OS_STATE;
             }
@@ -674,7 +674,7 @@ StatusType Os_Internal_WaitEvent(EventMaskType Mask)
                 }
             }
 
-            if (Os_GlobalState.Tasks[i].FreeRTOS_EventGroup == NULL)
+            if (Os_GlobalState.Tasks[i].FreeRTOS_EventGroup == NULL_PTR)
             {
                 return E_OS_STATE;
             }
@@ -717,7 +717,7 @@ StatusType GetEvent(TaskType TaskID, EventMaskRefType Event)
         OS_DET_REPORT_ERROR(OS_SID_GETEVENT, E_OS_ID);
         return E_OS_ID;
     }
-    if (Event == NULL)
+    if (Event == NULL_PTR)
     {
         OS_DET_REPORT_ERROR(OS_SID_GETEVENT, E_OS_PARAM_POINTER);
         return E_OS_PARAM_POINTER;
@@ -748,7 +748,7 @@ StatusType Os_Internal_GetEvent(TaskType TaskID, EventMaskRefType Event)
         return E_OS_ACCESS;
     }
 
-    if (task->FreeRTOS_EventGroup == NULL)
+    if (task->FreeRTOS_EventGroup == NULL_PTR)
     {
         *Event = 0;
         return E_OS_OK;
@@ -804,7 +804,7 @@ StatusType Os_Internal_GetResource(ResourceType ResID)
 
     resource = &Os_GlobalState.Resources[ResID];
 
-    if (resource->FreeRTOS_Mutex == NULL)
+    if (resource->FreeRTOS_Mutex == NULL_PTR)
     {
         return E_OS_ID;
     }
@@ -865,7 +865,7 @@ StatusType Os_Internal_ReleaseResource(ResourceType ResID)
     resource = &Os_GlobalState.Resources[ResID];
     currentTask = xTaskGetCurrentTaskHandle();
 
-    if (resource->FreeRTOS_Mutex == NULL)
+    if (resource->FreeRTOS_Mutex == NULL_PTR)
     {
         return E_OS_ID;
     }
@@ -913,7 +913,7 @@ StatusType GetAlarmBase(AlarmType AlarmID, AlarmBaseRefType Info)
         OS_DET_REPORT_ERROR(OS_SID_GETALARMBASE, E_OS_ID);
         return E_OS_ID;
     }
-    if (Info == NULL)
+    if (Info == NULL_PTR)
     {
         OS_DET_REPORT_ERROR(OS_SID_GETALARMBASE, E_OS_PARAM_POINTER);
         return E_OS_PARAM_POINTER;
@@ -949,7 +949,7 @@ StatusType GetAlarm(AlarmType AlarmID, TickRefType Tick)
         OS_DET_REPORT_ERROR(OS_SID_GETALARM, E_OS_ID);
         return E_OS_ID;
     }
-    if (Tick == NULL)
+    if (Tick == NULL_PTR)
     {
         OS_DET_REPORT_ERROR(OS_SID_GETALARM, E_OS_PARAM_POINTER);
         return E_OS_PARAM_POINTER;
@@ -1033,7 +1033,7 @@ StatusType Os_Internal_SetRelAlarm(AlarmType AlarmID, TickType Increment, TickTy
 
     alarm = &Os_GlobalState.Alarms[AlarmID];
 
-    if (alarm->FreeRTOS_Timer == NULL)
+    if (alarm->FreeRTOS_Timer == NULL_PTR)
     {
         return E_OS_ID;
     }
@@ -1152,7 +1152,7 @@ StatusType Os_Internal_CancelAlarm(AlarmType AlarmID)
 
     alarm = &Os_GlobalState.Alarms[AlarmID];
 
-    if (alarm->FreeRTOS_Timer == NULL)
+    if (alarm->FreeRTOS_Timer == NULL_PTR)
     {
         return E_OS_ID;
     }
@@ -1327,7 +1327,7 @@ OS_WEAK void Appl_ShutdownHook(StatusType Error)
  */
 void Os_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (versioninfo != NULL)
+    if (versioninfo != NULL_PTR)
     {
         versioninfo->vendorID = OS_VENDOR_ID;
         versioninfo->moduleID = OS_MODULE_ID;
@@ -1374,7 +1374,7 @@ static void Os_InitAlarms(void)
 
         alarm->AlarmID = (AlarmType)i;
         alarm->State = OS_ALARM_UNUSED;
-        alarm->Callback = NULL;
+        alarm->Callback = NULL_PTR;
         alarm->FreeRTOS_Timer = xTimerCreate(
             "OsAlarm",
             pdMS_TO_TICKS(1000),
@@ -1397,8 +1397,8 @@ static void Os_InitTasks(AppModeType Mode)
         Os_TaskConfigType* task = &Os_GlobalState.Tasks[i];
 
         task->TaskID = (TaskType)i;
-        task->FreeRTOS_Task = NULL;
-        task->FreeRTOS_EventGroup = NULL;
+        task->FreeRTOS_Task = NULL_PTR;
+        task->FreeRTOS_EventGroup = NULL_PTR;
 
         if (task->IsAutoStart)
         {
@@ -1420,7 +1420,7 @@ void Os_AlarmCallback(TimerHandle_t xTimer)
 
     alarm = (Os_AlarmConfigType*)pvTimerGetTimerID(xTimer);
 
-    if (alarm != NULL && alarm->Callback != NULL)
+    if (alarm != NULL_PTR && alarm->Callback != NULL_PTR)
     {
         alarm->Callback();
     }
@@ -1452,7 +1452,7 @@ void Os_TaskWrapper(void* pvParameters)
     Os_Internal_PreTaskHook();
 
     /* Execute task entry point */
-    if (task->EntryPoint != NULL)
+    if (task->EntryPoint != NULL_PTR)
     {
         task->EntryPoint();
     }

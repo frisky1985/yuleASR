@@ -62,8 +62,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 0: Init Task */
     {
         /* TaskID            */ OsTask_Init,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_CRITICAL,
         /* IsAutoStart       */ TRUE,
         /* IsExtended        */ FALSE,
@@ -73,8 +73,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 1: 10ms Cyclic Task */
     {
         /* TaskID            */ OsTask_10ms,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_HIGH,
         /* IsAutoStart       */ TRUE,
         /* IsExtended        */ FALSE,
@@ -84,8 +84,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 2: 50ms Cyclic Task */
     {
         /* TaskID            */ OsTask_50ms,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_NORMAL,
         /* IsAutoStart       */ TRUE,
         /* IsExtended        */ FALSE,
@@ -95,8 +95,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 3: 100ms Cyclic Task */
     {
         /* TaskID            */ OsTask_100ms,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_LOW,
         /* IsAutoStart       */ TRUE,
         /* IsExtended        */ FALSE,
@@ -106,8 +106,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 4: Background Task */
     {
         /* TaskID            */ OsTask_Background,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_IDLE,
         /* IsAutoStart       */ TRUE,
         /* IsExtended        */ FALSE,
@@ -117,8 +117,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 5: COM MainFunctionRx Task */
     {
         /* TaskID            */ OsTask_ComMainFunctionRx,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_NORMAL,
         /* IsAutoStart       */ FALSE,
         /* IsExtended        */ FALSE,
@@ -128,8 +128,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 6: COM MainFunctionTx Task */
     {
         /* TaskID            */ OsTask_ComMainFunctionTx,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_NORMAL,
         /* IsAutoStart       */ FALSE,
         /* IsExtended        */ FALSE,
@@ -139,8 +139,8 @@ STATIC Os_TaskConfigType Os_TaskConfigs[OS_CFG_NUM_TASKS] =
     /* Task 7: Diagnostic Task */
     {
         /* TaskID            */ OsTask_Diagnostic,
-        /* FreeRTOS_Task     */ NULL,
-        /* FreeRTOS_EventGroup */ NULL,
+        /* FreeRTOS_Task     */ NULL_PTR,
+        /* FreeRTOS_EventGroup */ NULL_PTR,
         /* Priority          */ OS_TASK_PRIORITY_HIGH,
         /* IsAutoStart       */ TRUE,
         /* IsExtended        */ TRUE,
@@ -167,7 +167,7 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_BswM_MainFunction_Callback,
-        /* FreeRTOS_Timer    */ NULL
+        /* FreeRTOS_Timer    */ NULL_PTR
     },
 
     /* Alarm 1: Com_MainFunctionRx/Tx - 10ms */
@@ -178,7 +178,7 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_Com_MainFunction_Callback,
-        /* FreeRTOS_Timer    */ NULL
+        /* FreeRTOS_Timer    */ NULL_PTR
     },
 
     /* Alarm 2: CanIf_MainFunction - 10ms */
@@ -189,7 +189,7 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_CanIf_MainFunction_Callback,
-        /* FreeRTOS_Timer    */ NULL
+        /* FreeRTOS_Timer    */ NULL_PTR
     },
 
     /* Alarm 3: Dcm_MainFunction - 10ms */
@@ -200,7 +200,7 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_Dcm_MainFunction_Callback,
-        /* FreeRTOS_Timer    */ NULL
+        /* FreeRTOS_Timer    */ NULL_PTR
     },
 
     /* Alarm 4: NvM_MainFunction - 100ms */
@@ -211,7 +211,7 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_NvM_MainFunction_Callback,
-        /* FreeRTOS_Timer    */ NULL
+        /* FreeRTOS_Timer    */ NULL_PTR
     },
 
     /* Alarm 5: Dem_MainFunction - 100ms */
@@ -222,7 +222,7 @@ STATIC Os_AlarmConfigType Os_AlarmConfigs[OS_CFG_NUM_ALARMS] =
         /* ExpiryTick        */ 0U,
         /* State             */ OS_ALARM_UNUSED,
         /* Callback          */ OsAlarm_Dem_MainFunction_Callback,
-        /* FreeRTOS_Timer    */ NULL
+        /* FreeRTOS_Timer    */ NULL_PTR
     }
 };
 
@@ -240,7 +240,7 @@ STATIC Os_ResourceConfigType Os_ResourceConfigs[OS_CFG_NUM_RESOURCES] =
     /* Resource 0: CAN Controller */
     {
         /* ResID             */ OsRes_CanController,
-        /* FreeRTOS_Mutex    */ NULL,
+        /* FreeRTOS_Mutex    */ NULL_PTR,
         /* OwnerTask         */ 0U,
         /* NestCount         */ 0U,
         /* IsCeilingPriority */ FALSE,
@@ -250,7 +250,7 @@ STATIC Os_ResourceConfigType Os_ResourceConfigs[OS_CFG_NUM_RESOURCES] =
     /* Resource 1: NvM Block */
     {
         /* ResID             */ OsRes_NvMBlock,
-        /* FreeRTOS_Mutex    */ NULL,
+        /* FreeRTOS_Mutex    */ NULL_PTR,
         /* OwnerTask         */ 0U,
         /* NestCount         */ 0U,
         /* IsCeilingPriority */ FALSE,
@@ -260,7 +260,7 @@ STATIC Os_ResourceConfigType Os_ResourceConfigs[OS_CFG_NUM_RESOURCES] =
     /* Resource 2: COM Buffer */
     {
         /* ResID             */ OsRes_ComBuffer,
-        /* FreeRTOS_Mutex    */ NULL,
+        /* FreeRTOS_Mutex    */ NULL_PTR,
         /* OwnerTask         */ 0U,
         /* NestCount         */ 0U,
         /* IsCeilingPriority */ FALSE,
@@ -270,7 +270,7 @@ STATIC Os_ResourceConfigType Os_ResourceConfigs[OS_CFG_NUM_RESOURCES] =
     /* Resource 3: Diagnostic */
     {
         /* ResID             */ OsRes_Diagnostic,
-        /* FreeRTOS_Mutex    */ NULL,
+        /* FreeRTOS_Mutex    */ NULL_PTR,
         /* OwnerTask         */ 0U,
         /* NestCount         */ 0U,
         /* IsCeilingPriority */ FALSE,

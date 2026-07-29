@@ -96,7 +96,7 @@ uint32_t Boot_Image_CalcHeaderCrc(const Boot_ImageHeader *hdr)
 
 Boot_Result Boot_Image_ValidateHeader(const Boot_ImageHeader *hdr)
 {
-    if (hdr == NULL) {
+    if (hdr == NULL_PTR) {
         return BOOT_E_PARAM;
     }
     if (hdr->magic != BOOT_IMAGE_MAGIC) {
@@ -128,7 +128,7 @@ Boot_Result Boot_Image_ReadTrailer(uint32_t           payload_addr,
                                    uint32_t           payload_size,
                                    Boot_ImageTrailer *out_trailer)
 {
-    if (out_trailer == NULL) {
+    if (out_trailer == NULL_PTR) {
         return BOOT_E_PARAM;
     }
     uint32_t trailer_addr = payload_addr + payload_size;
