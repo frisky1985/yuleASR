@@ -61,21 +61,47 @@ message(STATUS "  Code coverage:     ${ENABLE_COVERAGE}")
 message(STATUS "========================================")
 message(STATUS "")
 
-# Global include directories - minimal set to resolve cross-module dependencies
+# Global include directories - comprehensive set to resolve cross-module dependencies
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/os/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/crypto
     ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar/classic/com
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/rte/include
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/stubs
     ${CMAKE_CURRENT_SOURCE_DIR}/tests/mocks
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/blake2/include
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/include
     ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/mbedtls/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/yule-mbedtls-adapter/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/aes_modes/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/third_party/test_frameworks/unity
     ${CMAKE_CURRENT_SOURCE_DIR}/src/platform/s32k312/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/mcu/include
 )
+
+# Service, MCAL, and ECUAL module include directories (needed by all layers)
+file(GLOB ALL_SERVICE_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/*)
+foreach(subdir ${ALL_SERVICE_SUBDIRS})
+    if(IS_DIRECTORY ${subdir}/include)
+        include_directories(${subdir}/include)
+    endif()
+endforeach()
+
+file(GLOB ALL_MCAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/*)
+foreach(subdir ${ALL_MCAL_SUBDIRS})
+    if(IS_DIRECTORY ${subdir}/include)
+        include_directories(${subdir}/include)
+    endif()
+endforeach()
+
+file(GLOB ALL_ECUAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/ecual/*)
+foreach(subdir ${ALL_ECUAL_SUBDIRS})
+    if(IS_DIRECTORY ${subdir}/include)
+        include_directories(${subdir}/include)
+    endif()
+endforeach()
 
 # Add subdirectories
 add_subdirectory(src/bsw/services)
