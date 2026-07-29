@@ -16,12 +16,12 @@ typedef struct {
 } HelloWorld_Message;
 
 /* 全局状态 */
-static DDS_DomainParticipant g_participant = NULL;
-static DDS_Topic g_topic = NULL;
-static DDS_Publisher g_publisher = NULL;
-static DDS_Subscriber g_subscriber = NULL;
-static DDS_DataWriter g_writer = NULL;
-static DDS_DataReader g_reader = NULL;
+static DDS_DomainParticipant g_participant = NULL_PTR;
+static DDS_Topic g_topic = NULL_PTR;
+static DDS_Publisher g_publisher = NULL_PTR;
+static DDS_Subscriber g_subscriber = NULL_PTR;
+static DDS_DataWriter g_writer = NULL_PTR;
+static DDS_DataReader g_reader = NULL_PTR;
 
 /**
  * @brief 初始化DDS实体
@@ -36,16 +36,16 @@ static bool init_dds(void) {
     printf("√ Micro-DDS初始化成功 (v%s)\n", MicroDDS_get_version_string());
 
     /* 创建域参与者 */
-    g_participant = DDS_DomainParticipant_create(0, NULL);
-    if (g_participant == NULL) {
+    g_participant = DDS_DomainParticipant_create(0, NULL_PTR);
+    if (g_participant == NULL_PTR) {
         printf("错误: 无法创建域参与者\n");
         return false;
     }
     printf("√ 域参与者创建成功 (Domain 0)\n");
 
     /* 创建主题 */
-    g_topic = DDS_Topic_create(g_participant, "HelloWorld", "HelloWorld::Message", NULL);
-    if (g_topic == NULL) {
+    g_topic = DDS_Topic_create(g_participant, "HelloWorld", "HelloWorld::Message", NULL_PTR);
+    if (g_topic == NULL_PTR) {
         printf("错误: 无法创建主题\n");
         return false;
     }
@@ -54,32 +54,32 @@ static bool init_dds(void) {
            DDS_Topic_get_type_name(g_topic));
 
     /* 创建发布者 */
-    g_publisher = DDS_Publisher_create(g_participant, NULL);
-    if (g_publisher == NULL) {
+    g_publisher = DDS_Publisher_create(g_participant, NULL_PTR);
+    if (g_publisher == NULL_PTR) {
         printf("错误: 无法创建发布者\n");
         return false;
     }
     printf("√ 发布者创建成功\n");
 
     /* 创建订阅者 */
-    g_subscriber = DDS_Subscriber_create(g_participant, NULL);
-    if (g_subscriber == NULL) {
+    g_subscriber = DDS_Subscriber_create(g_participant, NULL_PTR);
+    if (g_subscriber == NULL_PTR) {
         printf("错误: 无法创建订阅者\n");
         return false;
     }
     printf("√ 订阅者创建成功\n");
 
     /* 创建数据写入器 */
-    g_writer = DDS_DataWriter_create(g_publisher, g_topic, NULL);
-    if (g_writer == NULL) {
+    g_writer = DDS_DataWriter_create(g_publisher, g_topic, NULL_PTR);
+    if (g_writer == NULL_PTR) {
         printf("错误: 无法创建数据写入器\n");
         return false;
     }
     printf("√ 数据写入器创建成功\n");
 
     /* 创建数据读取器 */
-    g_reader = DDS_DataReader_create(g_subscriber, g_topic, NULL);
-    if (g_reader == NULL) {
+    g_reader = DDS_DataReader_create(g_subscriber, g_topic, NULL_PTR);
+    if (g_reader == NULL_PTR) {
         printf("错误: 无法创建数据读取器\n");
         return false;
     }
@@ -92,32 +92,32 @@ static bool init_dds(void) {
  * @brief 清理DDS实体
  */
 static void cleanup_dds(void) {
-    if (g_reader != NULL) {
+    if (g_reader != NULL_PTR) {
         (void)DDS_DataReader_delete(g_reader);
         printf("√ 数据读取器已删除\n");
     }
 
-    if (g_writer != NULL) {
+    if (g_writer != NULL_PTR) {
         (void)DDS_DataWriter_delete(g_writer);
         printf("√ 数据写入器已删除\n");
     }
 
-    if (g_subscriber != NULL) {
+    if (g_subscriber != NULL_PTR) {
         (void)DDS_Subscriber_delete(g_subscriber);
         printf("√ 订阅者已删除\n");
     }
 
-    if (g_publisher != NULL) {
+    if (g_publisher != NULL_PTR) {
         (void)DDS_Publisher_delete(g_publisher);
         printf("√ 发布者已删除\n");
     }
 
-    if (g_topic != NULL) {
+    if (g_topic != NULL_PTR) {
         (void)DDS_Topic_delete(g_topic);
         printf("√ 主题已删除\n");
     }
 
-    if (g_participant != NULL) {
+    if (g_participant != NULL_PTR) {
         (void)DDS_DomainParticipant_delete(g_participant);
         printf("√ 域参与者已删除\n");
     }

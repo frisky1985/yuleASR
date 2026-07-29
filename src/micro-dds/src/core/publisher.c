@@ -34,21 +34,21 @@ static DDS_Publisher find_free_publisher_slot(void) {
             return (DDS_Publisher)&g_publishers[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static void init_default_publisher_qos(DDS_PublisherQos* qos) {
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         qos->presentation.access_scope = DDS_INSTANCE_PRESENTATION_QOS;
         qos->presentation.coherent_access = false;
         qos->presentation.ordered_access = false;
         qos->partition.name._maximum = 0U;
         qos->partition.name._length = 0U;
-        qos->partition.name._buffer = NULL;
+        qos->partition.name._buffer = NULL_PTR;
         qos->partition.name._release = false;
         qos->group_data.value._maximum = 0U;
         qos->group_data.value._length = 0U;
-        qos->group_data.value._buffer = NULL;
+        qos->group_data.value._buffer = NULL_PTR;
         qos->group_data.value._release = false;
         qos->entity_factory.autoenable_created_entities = true;
     }
@@ -62,20 +62,20 @@ DDS_Publisher DDS_Publisher_create(
     DDS_DomainParticipant participant,
     const DDS_PublisherQos* qos) {
     
-    if (participant == NULL) {
-        return NULL;
+    if (participant == NULL_PTR) {
+        return NULL_PTR;
     }
 
     DDS_Publisher publisher = find_free_publisher_slot();
-    if (publisher == NULL) {
-        return NULL;
+    if (publisher == NULL_PTR) {
+        return NULL_PTR;
     }
 
     Publisher_State* state = (Publisher_State*)publisher;
 
     state->participant = participant;
 
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         (void)memcpy(&state->qos, qos, sizeof(DDS_PublisherQos));
     } else {
         init_default_publisher_qos(&state->qos);
@@ -87,7 +87,7 @@ DDS_Publisher DDS_Publisher_create(
 }
 
 DDS_ReturnCode_t DDS_Publisher_delete(DDS_Publisher publisher) {
-    if (publisher == NULL) {
+    if (publisher == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 

@@ -36,11 +36,11 @@ static DDS_DataWriter find_free_writer_slot(void) {
             return (DDS_DataWriter)&g_writers[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static DDS_ReturnCode_t init_default_writer_qos(DDS_DataWriterQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -65,7 +65,7 @@ static DDS_ReturnCode_t init_default_writer_qos(DDS_DataWriterQos* qos) {
     qos->writer_data_lifecycle.autodispose_unregistered_instances = true;
     qos->user_data.value._maximum = 0U;
     qos->user_data.value._length = 0U;
-    qos->user_data.value._buffer = NULL;
+    qos->user_data.value._buffer = NULL_PTR;
     qos->user_data.value._release = false;
 
     return DDS_RETCODE_OK;
@@ -80,13 +80,13 @@ DDS_DataWriter DDS_DataWriter_create(
     DDS_Topic topic,
     const DDS_DataWriterQos* qos) {
     
-    if ((publisher == NULL) || (topic == NULL)) {
-        return NULL;
+    if ((publisher == NULL_PTR) || (topic == NULL_PTR)) {
+        return NULL_PTR;
     }
 
     DDS_DataWriter writer = find_free_writer_slot();
-    if (writer == NULL) {
-        return NULL;
+    if (writer == NULL_PTR) {
+        return NULL_PTR;
     }
 
     DataWriter_State* state = (DataWriter_State*)writer;
@@ -94,7 +94,7 @@ DDS_DataWriter DDS_DataWriter_create(
     state->publisher = publisher;
     state->topic = topic;
 
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         (void)memcpy(&state->qos, qos, sizeof(DDS_DataWriterQos));
     } else {
         (void)init_default_writer_qos(&state->qos);
@@ -107,7 +107,7 @@ DDS_DataWriter DDS_DataWriter_create(
 }
 
 DDS_ReturnCode_t DDS_DataWriter_delete(DDS_DataWriter writer) {
-    if (writer == NULL) {
+    if (writer == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -129,7 +129,7 @@ DDS_ReturnCode_t DDS_DataWriter_write(
     
     (void)handle;  /* 暂时不使用 */
 
-    if ((writer == NULL) || (data == NULL)) {
+    if ((writer == NULL_PTR) || (data == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 

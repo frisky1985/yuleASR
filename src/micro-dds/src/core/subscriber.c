@@ -34,21 +34,21 @@ static DDS_Subscriber find_free_subscriber_slot(void) {
             return (DDS_Subscriber)&g_subscribers[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static void init_default_subscriber_qos(DDS_SubscriberQos* qos) {
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         qos->presentation.access_scope = DDS_INSTANCE_PRESENTATION_QOS;
         qos->presentation.coherent_access = false;
         qos->presentation.ordered_access = false;
         qos->partition.name._maximum = 0U;
         qos->partition.name._length = 0U;
-        qos->partition.name._buffer = NULL;
+        qos->partition.name._buffer = NULL_PTR;
         qos->partition.name._release = false;
         qos->group_data.value._maximum = 0U;
         qos->group_data.value._length = 0U;
-        qos->group_data.value._buffer = NULL;
+        qos->group_data.value._buffer = NULL_PTR;
         qos->group_data.value._release = false;
         qos->entity_factory.autoenable_created_entities = true;
     }
@@ -62,20 +62,20 @@ DDS_Subscriber DDS_Subscriber_create(
     DDS_DomainParticipant participant,
     const DDS_SubscriberQos* qos) {
     
-    if (participant == NULL) {
-        return NULL;
+    if (participant == NULL_PTR) {
+        return NULL_PTR;
     }
 
     DDS_Subscriber subscriber = find_free_subscriber_slot();
-    if (subscriber == NULL) {
-        return NULL;
+    if (subscriber == NULL_PTR) {
+        return NULL_PTR;
     }
 
     Subscriber_State* state = (Subscriber_State*)subscriber;
 
     state->participant = participant;
 
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         (void)memcpy(&state->qos, qos, sizeof(DDS_SubscriberQos));
     } else {
         init_default_subscriber_qos(&state->qos);
@@ -87,7 +87,7 @@ DDS_Subscriber DDS_Subscriber_create(
 }
 
 DDS_ReturnCode_t DDS_Subscriber_delete(DDS_Subscriber subscriber) {
-    if (subscriber == NULL) {
+    if (subscriber == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 

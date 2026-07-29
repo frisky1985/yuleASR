@@ -13,14 +13,14 @@
  * ============================================================================ */
 
 DDS_ReturnCode_t DDS_TopicQos_init_default(DDS_TopicQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
     /* TopicData */
     qos->topic_data.value._maximum = 0U;
     qos->topic_data.value._length = 0U;
-    qos->topic_data.value._buffer = NULL;
+    qos->topic_data.value._buffer = NULL_PTR;
     qos->topic_data.value._release = false;
 
     /* Durability */
@@ -65,7 +65,7 @@ DDS_ReturnCode_t DDS_TopicQos_init_default(DDS_TopicQos* qos) {
 }
 
 DDS_ReturnCode_t DDS_DataWriterQos_init_default(DDS_DataWriterQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -80,7 +80,7 @@ DDS_ReturnCode_t DDS_DataWriterQos_init_default(DDS_DataWriterQos* qos) {
 }
 
 DDS_ReturnCode_t DDS_DataReaderQos_init_default(DDS_DataReaderQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -96,7 +96,7 @@ DDS_ReturnCode_t DDS_DataReaderQos_init_default(DDS_DataReaderQos* qos) {
 }
 
 DDS_ReturnCode_t DDS_PublisherQos_init_default(DDS_PublisherQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -106,12 +106,12 @@ DDS_ReturnCode_t DDS_PublisherQos_init_default(DDS_PublisherQos* qos) {
 
     qos->partition.name._maximum = 0U;
     qos->partition.name._length = 0U;
-    qos->partition.name._buffer = NULL;
+    qos->partition.name._buffer = NULL_PTR;
     qos->partition.name._release = false;
 
     qos->group_data.value._maximum = 0U;
     qos->group_data.value._length = 0U;
-    qos->group_data.value._buffer = NULL;
+    qos->group_data.value._buffer = NULL_PTR;
     qos->group_data.value._release = false;
 
     qos->entity_factory.autoenable_created_entities = true;
@@ -120,7 +120,7 @@ DDS_ReturnCode_t DDS_PublisherQos_init_default(DDS_PublisherQos* qos) {
 }
 
 DDS_ReturnCode_t DDS_SubscriberQos_init_default(DDS_SubscriberQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -129,13 +129,13 @@ DDS_ReturnCode_t DDS_SubscriberQos_init_default(DDS_SubscriberQos* qos) {
 }
 
 DDS_ReturnCode_t DDS_DomainParticipantQos_init_default(DDS_DomainParticipantQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
     qos->user_data.value._maximum = 0U;
     qos->user_data.value._length = 0U;
-    qos->user_data.value._buffer = NULL;
+    qos->user_data.value._buffer = NULL_PTR;
     qos->user_data.value._release = false;
 
     qos->entity_factory.autoenable_created_entities = true;
@@ -148,7 +148,7 @@ DDS_ReturnCode_t DDS_DomainParticipantQos_init_default(DDS_DomainParticipantQos*
  * ============================================================================ */
 
 DDS_ReturnCode_t DDS_TopicQos_copy(DDS_TopicQos* dst, const DDS_TopicQos* src) {
-    if ((dst == NULL) || (src == NULL)) {
+    if ((dst == NULL_PTR) || (src == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -157,7 +157,7 @@ DDS_ReturnCode_t DDS_TopicQos_copy(DDS_TopicQos* dst, const DDS_TopicQos* src) {
 }
 
 DDS_ReturnCode_t DDS_DataWriterQos_copy(DDS_DataWriterQos* dst, const DDS_DataWriterQos* src) {
-    if ((dst == NULL) || (src == NULL)) {
+    if ((dst == NULL_PTR) || (src == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -166,7 +166,7 @@ DDS_ReturnCode_t DDS_DataWriterQos_copy(DDS_DataWriterQos* dst, const DDS_DataWr
 }
 
 DDS_ReturnCode_t DDS_DataReaderQos_copy(DDS_DataReaderQos* dst, const DDS_DataReaderQos* src) {
-    if ((dst == NULL) || (src == NULL)) {
+    if ((dst == NULL_PTR) || (src == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -179,7 +179,7 @@ DDS_ReturnCode_t DDS_DataReaderQos_copy(DDS_DataReaderQos* dst, const DDS_DataRe
  * ============================================================================ */
 
 bool DDS_TopicQos_is_compatible(const DDS_TopicQos* offered, const DDS_TopicQos* requested) {
-    if ((offered == NULL) || (requested == NULL)) {
+    if ((offered == NULL_PTR) || (requested == NULL_PTR)) {
         return false;
     }
 
@@ -203,7 +203,7 @@ bool DDS_TopicQos_is_compatible(const DDS_TopicQos* offered, const DDS_TopicQos*
 
 bool DDS_DataWriterReaderQos_is_compatible(const DDS_DataWriterQos* writer_qos,
                                            const DDS_DataReaderQos* reader_qos) {
-    if ((writer_qos == NULL) || (reader_qos == NULL)) {
+    if ((writer_qos == NULL_PTR) || (reader_qos == NULL_PTR)) {
         return false;
     }
 

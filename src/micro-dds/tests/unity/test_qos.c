@@ -71,7 +71,7 @@ void test_qos_is_compatible_not_matching(void) {
 }
 
 void test_qos_null_pointer(void) {
-    DDS_ReturnCode_t rc = DDS_TopicQos_init_default(NULL);
+    DDS_ReturnCode_t rc = DDS_TopicQos_init_default(NULL_PTR);
     TEST_ASSERT_EQUAL(DDS_RETCODE_BAD_PARAMETER, rc);
 }
 

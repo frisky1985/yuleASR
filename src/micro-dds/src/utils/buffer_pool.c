@@ -84,11 +84,11 @@ void MicroDDS_BufferPool_Shutdown(void) {
 
 /**
  * @brief 分配缓冲区
- * @return 缓冲区指针，失败返回NULL
+ * @return 缓冲区指针，失败返回NULL_PTR
  */
 void* MicroDDS_BufferPool_Alloc(void) {
     if (!g_buffer_pool.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     for (uint32_t i = 0U; i < MICRODDS_BUFFER_POOL_SIZE; i++) {
@@ -99,7 +99,7 @@ void* MicroDDS_BufferPool_Alloc(void) {
         }
     }
 
-    return NULL;  /* 没有可用缓冲区 */
+    return NULL_PTR;  /* 没有可用缓冲区 */
 }
 
 /**
@@ -107,7 +107,7 @@ void* MicroDDS_BufferPool_Alloc(void) {
  * @param buffer 缓冲区指针
  */
 void MicroDDS_BufferPool_Free(void* buffer) {
-    if (buffer == NULL) {
+    if (buffer == NULL_PTR) {
         return;
     }
 

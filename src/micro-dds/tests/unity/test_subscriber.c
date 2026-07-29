@@ -9,7 +9,7 @@
 #include "microdds/microdds.h"
 
 /* 全局测试资源 */
-static DDS_DomainParticipant g_participant = NULL;
+static DDS_DomainParticipant g_participant = NULL_PTR;
 
 /* ============================================================================
  * 测试前后置处理
@@ -18,14 +18,14 @@ static DDS_DomainParticipant g_participant = NULL;
 void setUp(void) {
     MicroDDS_shutdown();
     MicroDDS_init();
-    g_participant = DDS_DomainParticipant_create(0, NULL);
+    g_participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(g_participant);
 }
 
 void tearDown(void) {
-    if (g_participant != NULL) {
+    if (g_participant != NULL_PTR) {
         DDS_DomainParticipant_delete(g_participant);
-        g_participant = NULL;
+        g_participant = NULL_PTR;
     }
     MicroDDS_shutdown();
 }
@@ -37,7 +37,7 @@ void tearDown(void) {
 void test_Subscriber_create_with_default_qos(void) {
     DDS_Subscriber subscriber;
     
-    subscriber = DDS_Subscriber_create(g_participant, NULL);
+    subscriber = DDS_Subscriber_create(g_participant, NULL_PTR);
     TEST_ASSERT_NOT_NULL(subscriber);
     
     DDS_Subscriber_delete(subscriber);
@@ -59,9 +59,9 @@ void test_Subscriber_create_with_custom_qos(void) {
 void test_Subscriber_create_multiple(void) {
     DDS_Subscriber s1, s2, s3;
     
-    s1 = DDS_Subscriber_create(g_participant, NULL);
-    s2 = DDS_Subscriber_create(g_participant, NULL);
-    s3 = DDS_Subscriber_create(g_participant, NULL);
+    s1 = DDS_Subscriber_create(g_participant, NULL_PTR);
+    s2 = DDS_Subscriber_create(g_participant, NULL_PTR);
+    s3 = DDS_Subscriber_create(g_participant, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(s1);
     TEST_ASSERT_NOT_NULL(s2);
@@ -75,7 +75,7 @@ void test_Subscriber_create_multiple(void) {
 void test_Subscriber_create_null_participant(void) {
     DDS_Subscriber subscriber;
     
-    subscriber = DDS_Subscriber_create(NULL, NULL);
+    subscriber = DDS_Subscriber_create(NULL_PTR, NULL_PTR);
     TEST_ASSERT_NULL(subscriber);
 }
 
@@ -85,8 +85,8 @@ void test_Subscriber_create_exceed_limit(void) {
     
     /* 创建超过限制的订阅者 */
     for (i = 0; i < 16; i++) {
-        subscribers[i] = DDS_Subscriber_create(g_participant, NULL);
-        if (subscribers[i] == NULL) {
+        subscribers[i] = DDS_Subscriber_create(g_participant, NULL_PTR);
+        if (subscribers[i] == NULL_PTR) {
             break;
         }
     }
@@ -96,7 +96,7 @@ void test_Subscriber_create_exceed_limit(void) {
     
     /* 清理 */
     for (uint32_t j = 0U; j < i; j++) {
-        if (subscribers[j] != NULL) {
+        if (subscribers[j] != NULL_PTR) {
             DDS_Subscriber_delete(subscribers[j]);
         }
     }
@@ -110,7 +110,7 @@ void test_Subscriber_delete_valid(void) {
     DDS_Subscriber subscriber;
     DDS_ReturnCode_t ret;
     
-    subscriber = DDS_Subscriber_create(g_participant, NULL);
+    subscriber = DDS_Subscriber_create(g_participant, NULL_PTR);
     TEST_ASSERT_NOT_NULL(subscriber);
     
     ret = DDS_Subscriber_delete(subscriber);
@@ -120,7 +120,7 @@ void test_Subscriber_delete_valid(void) {
 void test_Subscriber_delete_null(void) {
     DDS_ReturnCode_t ret;
     
-    ret = DDS_Subscriber_delete(NULL);
+    ret = DDS_Subscriber_delete(NULL_PTR);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
 }
 
@@ -128,7 +128,7 @@ void test_Subscriber_delete_already_deleted(void) {
     DDS_Subscriber subscriber;
     DDS_ReturnCode_t ret;
     
-    subscriber = DDS_Subscriber_create(g_participant, NULL);
+    subscriber = DDS_Subscriber_create(g_participant, NULL_PTR);
     TEST_ASSERT_NOT_NULL(subscriber);
     
     DDS_Subscriber_delete(subscriber);
@@ -145,13 +145,13 @@ void test_Subscriber_different_participants(void) {
     DDS_DomainParticipant p1, p2;
     DDS_Subscriber sub1, sub2;
     
-    p1 = DDS_DomainParticipant_create(0, NULL);
-    p2 = DDS_DomainParticipant_create(1, NULL);
+    p1 = DDS_DomainParticipant_create(0, NULL_PTR);
+    p2 = DDS_DomainParticipant_create(1, NULL_PTR);
     TEST_ASSERT_NOT_NULL(p1);
     TEST_ASSERT_NOT_NULL(p2);
     
-    sub1 = DDS_Subscriber_create(p1, NULL);
-    sub2 = DDS_Subscriber_create(p2, NULL);
+    sub1 = DDS_Subscriber_create(p1, NULL_PTR);
+    sub2 = DDS_Subscriber_create(p2, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(sub1);
     TEST_ASSERT_NOT_NULL(sub2);
@@ -171,8 +171,8 @@ void test_Publisher_and_Subscriber_same_participant(void) {
     DDS_Publisher publisher;
     DDS_Subscriber subscriber;
     
-    publisher = DDS_Publisher_create(g_participant, NULL);
-    subscriber = DDS_Subscriber_create(g_participant, NULL);
+    publisher = DDS_Publisher_create(g_participant, NULL_PTR);
+    subscriber = DDS_Subscriber_create(g_participant, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(publisher);
     TEST_ASSERT_NOT_NULL(subscriber);
@@ -186,10 +186,10 @@ void test_Multiple_Publishers_Subscribers_same_participant(void) {
     DDS_Publisher p1, p2;
     DDS_Subscriber s1, s2;
     
-    p1 = DDS_Publisher_create(g_participant, NULL);
-    p2 = DDS_Publisher_create(g_participant, NULL);
-    s1 = DDS_Subscriber_create(g_participant, NULL);
-    s2 = DDS_Subscriber_create(g_participant, NULL);
+    p1 = DDS_Publisher_create(g_participant, NULL_PTR);
+    p2 = DDS_Publisher_create(g_participant, NULL_PTR);
+    s1 = DDS_Subscriber_create(g_participant, NULL_PTR);
+    s2 = DDS_Subscriber_create(g_participant, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(p1);
     TEST_ASSERT_NOT_NULL(p2);

@@ -46,7 +46,7 @@ void test_buffer_pool_alloc_exhaustion(void) {
     
     for (int i = 0U; i < 16; i++) {
         buffers[i] = MicroDDS_BufferPool_Alloc();
-        if (buffers[i] == NULL) {
+        if (buffers[i] == NULL_PTR) {
             break;
         }
         count++;
@@ -64,7 +64,7 @@ void test_buffer_pool_alloc_exhaustion(void) {
 
 void test_buffer_pool_free_null(void) {
     /* 释放null不应崩溃 */
-    MicroDDS_BufferPool_Free(NULL);
+    MicroDDS_BufferPool_Free(NULL_PTR);
     TEST_PASS();
 }
 

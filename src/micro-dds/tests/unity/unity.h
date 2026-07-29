@@ -16,6 +16,10 @@
 #include <string.h>
 #include <setjmp.h>
 
+#ifndef NULL_PTR
+#define NULL_PTR ((void*)0)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -107,10 +111,10 @@ extern Unity_Struct Unity;
     TEST_ASSERT((condition) == false)
 
 #define TEST_ASSERT_NULL(pointer) \
-    TEST_ASSERT((pointer) == NULL)
+    TEST_ASSERT((pointer) == NULL_PTR)
 
 #define TEST_ASSERT_NOT_NULL(pointer) \
-    TEST_ASSERT((pointer) != NULL)
+    TEST_ASSERT((pointer) != NULL_PTR)
 
 /* 整数断言 */
 #define TEST_ASSERT_EQUAL(expected, actual) \

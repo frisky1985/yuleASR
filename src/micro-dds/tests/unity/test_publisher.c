@@ -9,7 +9,7 @@
 #include "microdds/microdds.h"
 
 /* 全局测试资源 */
-static DDS_DomainParticipant g_participant = NULL;
+static DDS_DomainParticipant g_participant = NULL_PTR;
 
 /* ============================================================================
  * 测试前后置处理
@@ -18,14 +18,14 @@ static DDS_DomainParticipant g_participant = NULL;
 void setUp(void) {
     MicroDDS_shutdown();
     MicroDDS_init();
-    g_participant = DDS_DomainParticipant_create(0, NULL);
+    g_participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(g_participant);
 }
 
 void tearDown(void) {
-    if (g_participant != NULL) {
+    if (g_participant != NULL_PTR) {
         DDS_DomainParticipant_delete(g_participant);
-        g_participant = NULL;
+        g_participant = NULL_PTR;
     }
     MicroDDS_shutdown();
 }
@@ -37,7 +37,7 @@ void tearDown(void) {
 void test_Publisher_create_with_default_qos(void) {
     DDS_Publisher publisher;
     
-    publisher = DDS_Publisher_create(g_participant, NULL);
+    publisher = DDS_Publisher_create(g_participant, NULL_PTR);
     TEST_ASSERT_NOT_NULL(publisher);
     
     DDS_Publisher_delete(publisher);
@@ -59,9 +59,9 @@ void test_Publisher_create_with_custom_qos(void) {
 void test_Publisher_create_multiple(void) {
     DDS_Publisher p1, p2, p3;
     
-    p1 = DDS_Publisher_create(g_participant, NULL);
-    p2 = DDS_Publisher_create(g_participant, NULL);
-    p3 = DDS_Publisher_create(g_participant, NULL);
+    p1 = DDS_Publisher_create(g_participant, NULL_PTR);
+    p2 = DDS_Publisher_create(g_participant, NULL_PTR);
+    p3 = DDS_Publisher_create(g_participant, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(p1);
     TEST_ASSERT_NOT_NULL(p2);
@@ -75,7 +75,7 @@ void test_Publisher_create_multiple(void) {
 void test_Publisher_create_null_participant(void) {
     DDS_Publisher publisher;
     
-    publisher = DDS_Publisher_create(NULL, NULL);
+    publisher = DDS_Publisher_create(NULL_PTR, NULL_PTR);
     TEST_ASSERT_NULL(publisher);
 }
 
@@ -85,8 +85,8 @@ void test_Publisher_create_exceed_limit(void) {
     
     /* 创建超过限制的发布者 */
     for (i = 0; i < 16; i++) {
-        publishers[i] = DDS_Publisher_create(g_participant, NULL);
-        if (publishers[i] == NULL) {
+        publishers[i] = DDS_Publisher_create(g_participant, NULL_PTR);
+        if (publishers[i] == NULL_PTR) {
             break;
         }
     }
@@ -96,7 +96,7 @@ void test_Publisher_create_exceed_limit(void) {
     
     /* 清理 */
     for (uint32_t j = 0U; j < i; j++) {
-        if (publishers[j] != NULL) {
+        if (publishers[j] != NULL_PTR) {
             DDS_Publisher_delete(publishers[j]);
         }
     }
@@ -110,7 +110,7 @@ void test_Publisher_delete_valid(void) {
     DDS_Publisher publisher;
     DDS_ReturnCode_t ret;
     
-    publisher = DDS_Publisher_create(g_participant, NULL);
+    publisher = DDS_Publisher_create(g_participant, NULL_PTR);
     TEST_ASSERT_NOT_NULL(publisher);
     
     ret = DDS_Publisher_delete(publisher);
@@ -120,7 +120,7 @@ void test_Publisher_delete_valid(void) {
 void test_Publisher_delete_null(void) {
     DDS_ReturnCode_t ret;
     
-    ret = DDS_Publisher_delete(NULL);
+    ret = DDS_Publisher_delete(NULL_PTR);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
 }
 
@@ -128,7 +128,7 @@ void test_Publisher_delete_already_deleted(void) {
     DDS_Publisher publisher;
     DDS_ReturnCode_t ret;
     
-    publisher = DDS_Publisher_create(g_participant, NULL);
+    publisher = DDS_Publisher_create(g_participant, NULL_PTR);
     TEST_ASSERT_NOT_NULL(publisher);
     
     DDS_Publisher_delete(publisher);
@@ -145,13 +145,13 @@ void test_Publisher_different_participants(void) {
     DDS_DomainParticipant p1, p2;
     DDS_Publisher pub1, pub2;
     
-    p1 = DDS_DomainParticipant_create(0, NULL);
-    p2 = DDS_DomainParticipant_create(1, NULL);
+    p1 = DDS_DomainParticipant_create(0, NULL_PTR);
+    p2 = DDS_DomainParticipant_create(1, NULL_PTR);
     TEST_ASSERT_NOT_NULL(p1);
     TEST_ASSERT_NOT_NULL(p2);
     
-    pub1 = DDS_Publisher_create(p1, NULL);
-    pub2 = DDS_Publisher_create(p2, NULL);
+    pub1 = DDS_Publisher_create(p1, NULL_PTR);
+    pub2 = DDS_Publisher_create(p2, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(pub1);
     TEST_ASSERT_NOT_NULL(pub2);

@@ -30,7 +30,7 @@ void tearDown(void) {
 void test_DomainParticipant_create_with_default_qos(void) {
     DDS_DomainParticipant participant;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
     DDS_DomainParticipant_delete(participant);
@@ -52,9 +52,9 @@ void test_DomainParticipant_create_with_custom_qos(void) {
 void test_DomainParticipant_create_multiple(void) {
     DDS_DomainParticipant p1, p2, p3;
     
-    p1 = DDS_DomainParticipant_create(0, NULL);
-    p2 = DDS_DomainParticipant_create(1, NULL);
-    p3 = DDS_DomainParticipant_create(2, NULL);
+    p1 = DDS_DomainParticipant_create(0, NULL_PTR);
+    p2 = DDS_DomainParticipant_create(1, NULL_PTR);
+    p3 = DDS_DomainParticipant_create(2, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(p1);
     TEST_ASSERT_NOT_NULL(p2);
@@ -71,8 +71,8 @@ void test_DomainParticipant_create_exceed_limit(void) {
     
     /* 创建超过限制的域参与者 */
     for (i = 0; i < 8; i++) {
-        participants[i] = DDS_DomainParticipant_create(i, NULL);
-        if (participants[i] == NULL) {
+        participants[i] = DDS_DomainParticipant_create(i, NULL_PTR);
+        if (participants[i] == NULL_PTR) {
             break;
         }
     }
@@ -82,7 +82,7 @@ void test_DomainParticipant_create_exceed_limit(void) {
     
     /* 清理 */
     for (uint32_t j = 0U; j < i; j++) {
-        if (participants[j] != NULL) {
+        if (participants[j] != NULL_PTR) {
             DDS_DomainParticipant_delete(participants[j]);
         }
     }
@@ -96,7 +96,7 @@ void test_DomainParticipant_delete_valid(void) {
     DDS_DomainParticipant participant;
     DDS_ReturnCode_t ret;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
     ret = DDS_DomainParticipant_delete(participant);
@@ -106,7 +106,7 @@ void test_DomainParticipant_delete_valid(void) {
 void test_DomainParticipant_delete_null(void) {
     DDS_ReturnCode_t ret;
     
-    ret = DDS_DomainParticipant_delete(NULL);
+    ret = DDS_DomainParticipant_delete(NULL_PTR);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
 }
 
@@ -114,7 +114,7 @@ void test_DomainParticipant_delete_already_deleted(void) {
     DDS_DomainParticipant participant;
     DDS_ReturnCode_t ret;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
     DDS_DomainParticipant_delete(participant);
@@ -132,7 +132,7 @@ void test_DomainParticipant_get_qos(void) {
     DDS_DomainParticipantQos qos;
     DDS_ReturnCode_t ret;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
     ret = DDS_DomainParticipant_get_qos(participant, &qos);
@@ -146,13 +146,13 @@ void test_DomainParticipant_get_qos_null_params(void) {
     DDS_DomainParticipantQos qos;
     DDS_ReturnCode_t ret;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
-    ret = DDS_DomainParticipant_get_qos(NULL, &qos);
+    ret = DDS_DomainParticipant_get_qos(NULL_PTR, &qos);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
     
-    ret = DDS_DomainParticipant_get_qos(participant, NULL);
+    ret = DDS_DomainParticipant_get_qos(participant, NULL_PTR);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
     
     DDS_DomainParticipant_delete(participant);
@@ -166,7 +166,7 @@ void test_DomainParticipant_set_qos(void) {
     DDS_DomainParticipantQos_init_default(&qos);
     qos.entity_factory.autoenable_created_entities = false;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
     ret = DDS_DomainParticipant_set_qos(participant, &qos);
@@ -185,15 +185,15 @@ void test_DomainParticipant_set_qos_null_params(void) {
     DDS_DomainParticipantQos qos;
     DDS_ReturnCode_t ret;
     
-    participant = DDS_DomainParticipant_create(0, NULL);
+    participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(participant);
     
     DDS_DomainParticipantQos_init_default(&qos);
     
-    ret = DDS_DomainParticipant_set_qos(NULL, &qos);
+    ret = DDS_DomainParticipant_set_qos(NULL_PTR, &qos);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
     
-    ret = DDS_DomainParticipant_set_qos(participant, NULL);
+    ret = DDS_DomainParticipant_set_qos(participant, NULL_PTR);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
     
     DDS_DomainParticipant_delete(participant);
@@ -206,9 +206,9 @@ void test_DomainParticipant_set_qos_null_params(void) {
 void test_DomainParticipant_different_domain_ids(void) {
     DDS_DomainParticipant p0, p1, p99;
     
-    p0 = DDS_DomainParticipant_create(0, NULL);
-    p1 = DDS_DomainParticipant_create(1, NULL);
-    p99 = DDS_DomainParticipant_create(99, NULL);
+    p0 = DDS_DomainParticipant_create(0, NULL_PTR);
+    p1 = DDS_DomainParticipant_create(1, NULL_PTR);
+    p99 = DDS_DomainParticipant_create(99, NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(p0);
     TEST_ASSERT_NOT_NULL(p1);

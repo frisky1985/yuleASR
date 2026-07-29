@@ -36,11 +36,11 @@ static DDS_DataReader find_free_reader_slot(void) {
             return (DDS_DataReader)&g_readers[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static DDS_ReturnCode_t init_default_reader_qos(DDS_DataReaderQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -60,7 +60,7 @@ static DDS_ReturnCode_t init_default_reader_qos(DDS_DataReaderQos* qos) {
     qos->ownership.kind = DDS_SHARED_OWNERSHIP_QOS;
     qos->user_data.value._maximum = 0U;
     qos->user_data.value._length = 0U;
-    qos->user_data.value._buffer = NULL;
+    qos->user_data.value._buffer = NULL_PTR;
     qos->user_data.value._release = false;
     qos->time_based_filter.minimum_separation = DDS_DURATION_ZERO;
     qos->reader_data_lifecycle.autopurge_nowriter_samples_delay = DDS_DURATION_INFINITE;
@@ -78,13 +78,13 @@ DDS_DataReader DDS_DataReader_create(
     DDS_Topic topic,
     const DDS_DataReaderQos* qos) {
     
-    if ((subscriber == NULL) || (topic == NULL)) {
-        return NULL;
+    if ((subscriber == NULL_PTR) || (topic == NULL_PTR)) {
+        return NULL_PTR;
     }
 
     DDS_DataReader reader = find_free_reader_slot();
-    if (reader == NULL) {
-        return NULL;
+    if (reader == NULL_PTR) {
+        return NULL_PTR;
     }
 
     DataReader_State* state = (DataReader_State*)reader;
@@ -92,20 +92,20 @@ DDS_DataReader DDS_DataReader_create(
     state->subscriber = subscriber;
     state->topic = topic;
 
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         (void)memcpy(&state->qos, qos, sizeof(DDS_DataReaderQos));
     } else {
         (void)init_default_reader_qos(&state->qos);
     }
 
-    state->callback = NULL;
+    state->callback = NULL_PTR;
     state->is_valid = true;
 
     return reader;
 }
 
 DDS_ReturnCode_t DDS_DataReader_delete(DDS_DataReader reader) {
-    if (reader == NULL) {
+    if (reader == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -126,7 +126,7 @@ int32_t DDS_DataReader_read(
     DDS_SampleInfo* sample_infos,
     int32_t max_samples) {
     
-    if ((reader == NULL) || (data_samples == NULL) || (sample_infos == NULL)) {
+    if ((reader == NULL_PTR) || (data_samples == NULL_PTR) || (sample_infos == NULL_PTR)) {
         return 0;
     }
 
@@ -163,7 +163,7 @@ DDS_ReturnCode_t DDS_DataReader_set_data_available_callback(
     DDS_DataReader reader,
     DDS_DataAvailableCallback callback) {
     
-    if (reader == NULL) {
+    if (reader == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 

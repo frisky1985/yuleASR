@@ -9,7 +9,7 @@
 #include "microdds/microdds.h"
 
 /* 全局测试资源 */
-static DDS_DomainParticipant g_participant = NULL;
+static DDS_DomainParticipant g_participant = NULL_PTR;
 
 /* ============================================================================
  * 测试前后置处理
@@ -18,14 +18,14 @@ static DDS_DomainParticipant g_participant = NULL;
 void setUp(void) {
     MicroDDS_shutdown();
     MicroDDS_init();
-    g_participant = DDS_DomainParticipant_create(0, NULL);
+    g_participant = DDS_DomainParticipant_create(0, NULL_PTR);
     TEST_ASSERT_NOT_NULL(g_participant);
 }
 
 void tearDown(void) {
-    if (g_participant != NULL) {
+    if (g_participant != NULL_PTR) {
         DDS_DomainParticipant_delete(g_participant);
-        g_participant = NULL;
+        g_participant = NULL_PTR;
     }
     MicroDDS_shutdown();
 }
@@ -37,7 +37,7 @@ void tearDown(void) {
 void test_Topic_create_with_default_qos(void) {
     DDS_Topic topic;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     DDS_Topic_delete(topic);
@@ -59,9 +59,9 @@ void test_Topic_create_with_custom_qos(void) {
 void test_Topic_create_multiple(void) {
     DDS_Topic t1, t2, t3;
     
-    t1 = DDS_Topic_create(g_participant, "Topic1", "Type1", NULL);
-    t2 = DDS_Topic_create(g_participant, "Topic2", "Type2", NULL);
-    t3 = DDS_Topic_create(g_participant, "Topic3", "Type3", NULL);
+    t1 = DDS_Topic_create(g_participant, "Topic1", "Type1", NULL_PTR);
+    t2 = DDS_Topic_create(g_participant, "Topic2", "Type2", NULL_PTR);
+    t3 = DDS_Topic_create(g_participant, "Topic3", "Type3", NULL_PTR);
     
     TEST_ASSERT_NOT_NULL(t1);
     TEST_ASSERT_NOT_NULL(t2);
@@ -75,14 +75,14 @@ void test_Topic_create_multiple(void) {
 void test_Topic_create_null_participant(void) {
     DDS_Topic topic;
     
-    topic = DDS_Topic_create(NULL, "TestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(NULL_PTR, "TestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NULL(topic);
 }
 
 void test_Topic_create_null_name(void) {
     DDS_Topic topic;
     
-    topic = DDS_Topic_create(g_participant, NULL, "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, NULL_PTR, "TestType", NULL_PTR);
     TEST_ASSERT_NULL(topic);
 }
 
@@ -90,7 +90,7 @@ void test_Topic_create_null_type_name(void) {
     DDS_Topic topic;
     const char* type_name;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", NULL, NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", NULL_PTR, NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     /* 检查类型名称应该是空字符串 */
@@ -109,8 +109,8 @@ void test_Topic_create_exceed_limit(void) {
     for (i = 0; i < 16; i++) {
         char name[32];
         snprintf(name, sizeof(name), "Topic%u", i);
-        topics[i] = DDS_Topic_create(g_participant, name, "Type", NULL);
-        if (topics[i] == NULL) {
+        topics[i] = DDS_Topic_create(g_participant, name, "Type", NULL_PTR);
+        if (topics[i] == NULL_PTR) {
             break;
         }
     }
@@ -120,7 +120,7 @@ void test_Topic_create_exceed_limit(void) {
     
     /* 清理 */
     for (uint32_t j = 0U; j < i; j++) {
-        if (topics[j] != NULL) {
+        if (topics[j] != NULL_PTR) {
             DDS_Topic_delete(topics[j]);
         }
     }
@@ -134,7 +134,7 @@ void test_Topic_delete_valid(void) {
     DDS_Topic topic;
     DDS_ReturnCode_t ret;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     ret = DDS_Topic_delete(topic);
@@ -144,7 +144,7 @@ void test_Topic_delete_valid(void) {
 void test_Topic_delete_null(void) {
     DDS_ReturnCode_t ret;
     
-    ret = DDS_Topic_delete(NULL);
+    ret = DDS_Topic_delete(NULL_PTR);
     TEST_ASSERT_EQUAL_INT(DDS_RETCODE_BAD_PARAMETER, ret);
 }
 
@@ -152,7 +152,7 @@ void test_Topic_delete_already_deleted(void) {
     DDS_Topic topic;
     DDS_ReturnCode_t ret;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     DDS_Topic_delete(topic);
@@ -169,7 +169,7 @@ void test_Topic_get_name(void) {
     DDS_Topic topic;
     const char* name;
     
-    topic = DDS_Topic_create(g_participant, "MyTestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, "MyTestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     name = DDS_Topic_get_name(topic);
@@ -182,7 +182,7 @@ void test_Topic_get_name(void) {
 void test_Topic_get_name_null(void) {
     const char* name;
     
-    name = DDS_Topic_get_name(NULL);
+    name = DDS_Topic_get_name(NULL_PTR);
     TEST_ASSERT_NULL(name);
 }
 
@@ -190,7 +190,7 @@ void test_Topic_get_name_deleted(void) {
     DDS_Topic topic;
     const char* name;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     DDS_Topic_delete(topic);
@@ -203,7 +203,7 @@ void test_Topic_get_type_name(void) {
     DDS_Topic topic;
     const char* type_name;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", "MyTestType", NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", "MyTestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     type_name = DDS_Topic_get_type_name(topic);
@@ -216,7 +216,7 @@ void test_Topic_get_type_name(void) {
 void test_Topic_get_type_name_null(void) {
     const char* type_name;
     
-    type_name = DDS_Topic_get_type_name(NULL);
+    type_name = DDS_Topic_get_type_name(NULL_PTR);
     TEST_ASSERT_NULL(type_name);
 }
 
@@ -224,7 +224,7 @@ void test_Topic_get_type_name_deleted(void) {
     DDS_Topic topic;
     const char* type_name;
     
-    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL);
+    topic = DDS_Topic_create(g_participant, "TestTopic", "TestType", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     DDS_Topic_delete(topic);
@@ -246,7 +246,7 @@ void test_Topic_long_name(void) {
     memset(long_name, 'A', sizeof(long_name) - 1);
     long_name[sizeof(long_name) - 1] = '\0';
     
-    topic = DDS_Topic_create(g_participant, long_name, "Type", NULL);
+    topic = DDS_Topic_create(g_participant, long_name, "Type", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     name = DDS_Topic_get_name(topic);
@@ -266,7 +266,7 @@ void test_Topic_long_type_name(void) {
     memset(long_type, 'T', sizeof(long_type) - 1);
     long_type[sizeof(long_type) - 1] = '\0';
     
-    topic = DDS_Topic_create(g_participant, "Topic", long_type, NULL);
+    topic = DDS_Topic_create(g_participant, "Topic", long_type, NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     type_name = DDS_Topic_get_type_name(topic);
@@ -285,7 +285,7 @@ void test_Topic_name_with_special_chars(void) {
     DDS_Topic topic;
     const char* name;
     
-    topic = DDS_Topic_create(g_participant, "Topic_123-Test.Type", "Type", NULL);
+    topic = DDS_Topic_create(g_participant, "Topic_123-Test.Type", "Type", NULL_PTR);
     TEST_ASSERT_NOT_NULL(topic);
     
     name = DDS_Topic_get_name(topic);

@@ -36,14 +36,14 @@ static DDS_DomainParticipant find_free_participant_slot(void) {
             return (DDS_DomainParticipant)&g_participants[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static void init_default_participant_qos(DDS_DomainParticipantQos* qos) {
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         qos->user_data.value._maximum = 0U;
         qos->user_data.value._length = 0U;
-        qos->user_data.value._buffer = NULL;
+        qos->user_data.value._buffer = NULL_PTR;
         qos->user_data.value._release = false;
         qos->entity_factory.autoenable_created_entities = true;
     }
@@ -97,15 +97,15 @@ DDS_DomainParticipant DDS_DomainParticipant_create(
     }
 
     DDS_DomainParticipant participant = find_free_participant_slot();
-    if (participant == NULL) {
-        return NULL;
+    if (participant == NULL_PTR) {
+        return NULL_PTR;
     }
 
     DomainParticipant_State* state = (DomainParticipant_State*)participant;
     
     state->domain_id = domain_id;
     
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         (void)memcpy(&state->qos, qos, sizeof(DDS_DomainParticipantQos));
     } else {
         init_default_participant_qos(&state->qos);
@@ -118,7 +118,7 @@ DDS_DomainParticipant DDS_DomainParticipant_create(
 }
 
 DDS_ReturnCode_t DDS_DomainParticipant_delete(DDS_DomainParticipant participant) {
-    if (participant == NULL) {
+    if (participant == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -141,7 +141,7 @@ DDS_ReturnCode_t DDS_DomainParticipant_get_qos(
     DDS_DomainParticipant participant,
     DDS_DomainParticipantQos* qos) {
     
-    if ((participant == NULL) || (qos == NULL)) {
+    if ((participant == NULL_PTR) || (qos == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -160,7 +160,7 @@ DDS_ReturnCode_t DDS_DomainParticipant_set_qos(
     DDS_DomainParticipant participant,
     const DDS_DomainParticipantQos* qos) {
     
-    if ((participant == NULL) || (qos == NULL)) {
+    if ((participant == NULL_PTR) || (qos == NULL_PTR)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 

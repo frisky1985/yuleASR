@@ -193,8 +193,8 @@ static UDP_Transport g_udp_transport;
 static uint32_t g_system_time_ms = 0U;
 
 /* 平台抽象函数指针 (可在初始化时覆盖) */
-static uint32_t (*platform_get_time_ms)(void) = NULL;
-static void (*platform_sleep_ms)(uint32_t ms) = NULL;
+static uint32_t (*platform_get_time_ms)(void) = NULL_PTR;
+static void (*platform_sleep_ms)(uint32_t ms) = NULL_PTR;
 
 /* ============================================================================
  * 字节序转换函数
@@ -235,7 +235,7 @@ static uint32_t network_to_host_32(uint32_t value) {
 
 static uint32_t posix_get_time_ms(void) {
     struct timeval tv;
-    gettimeofday(&tv, NULL);
+    gettimeofday(&tv, NULL_PTR);
     return (uint32_t)((tv.tv_sec * 1000ULL) + (tv.tv_usec / 1000ULL));
 }
 
@@ -271,7 +271,7 @@ static void generic_sleep_ms(uint32_t ms) {
  * @brief 获取当前时间(毫秒)
  */
 static uint32_t get_time_ms(void) {
-    if (platform_get_time_ms != NULL) {
+    if (platform_get_time_ms != NULL_PTR) {
         return platform_get_time_ms();
     }
 #if defined(MICRODDS_PLATFORM_POSIX)
@@ -287,7 +287,7 @@ static uint32_t get_time_ms(void) {
  * @brief 睡眠指定毫秒
  */
 static void sleep_ms(uint32_t ms) {
-    if (platform_sleep_ms != NULL) {
+    if (platform_sleep_ms != NULL_PTR) {
         platform_sleep_ms(ms);
         return;
     }
@@ -310,7 +310,7 @@ static void sleep_ms(uint32_t ms) {
  * @return 网络字节序的32位地址，失败返回0
  */
 static uint32_t UDP_Address_from_string(const char* ip_str) {
-    if (ip_str == NULL) {
+    if (ip_str == NULL_PTR) {
         return 0U;
     }
     
@@ -351,7 +351,7 @@ static uint32_t UDP_Address_from_string(const char* ip_str) {
  * @return true 成功
  */
 static bool UDP_Address_to_string(uint32_t address, char* buffer, uint32_t buffer_size) {
-    if ((buffer == NULL) || (buffer_size < 16U)) {
+    if ((buffer == NULL_PTR) || (buffer_size < 16U)) {
         return false;
     }
     
@@ -560,10 +560,10 @@ static int socket_recvfrom(int sock, uint8_t* buffer, uint16_t buffer_size,
                                 (struct sockaddr*)&addr, &addr_len);
     
     if (received > 0U ) {
-        if (src_addr != NULL) {
+        if (src_addr != NULL_PTR) {
             *src_addr = addr.sin_addr.s_addr;
         }
-        if (src_port != NULL) {
+        if (src_port != NULL_PTR) {
             *src_port = network_to_host_16(addr.sin_port);
         }
     }
@@ -586,7 +586,7 @@ static bool socket_select_read(int sock, uint32_t timeout_ms) {
     tv.tv_sec = (time_t)(timeout_ms / 1000U);
     tv.tv_usec = (suseconds_t)((timeout_ms % 1000U) * 1000U);
     
-    int result = select(sock + 1, &read_fds, NULL, NULL, &tv);
+    int result = select(sock + 1, &read_fds, NULL_PTR, NULL_PTR, &tv);
     return (result > 0U ) && FD_ISSET(sock, &read_fds);
 }
 
@@ -715,7 +715,7 @@ static void PDP_handle_announce(const uint8_t* data, uint16_t length, uint32_t s
     }
     
     /* 查找或创建参与者条目 */
-    PDP_Participant* participant = NULL;
+    PDP_Participant* participant = NULL_PTR;
     for (uint32_t i = 0U; i < g_udp_transport.participant_count; i++) {
         if (g_udp_transport.discovered_participants[i].participant_id == participant_id) {
             participant = &g_udp_transport.discovered_participants[i];
@@ -724,7 +724,7 @@ static void PDP_handle_announce(const uint8_t* data, uint16_t length, uint32_t s
     }
     
     /* 新参与者 */
-    if (participant == NULL) {
+    if (participant == NULL_PTR) {
         if (g_udp_transport.participant_count >= MICRODDS_MAX_PEERS) {
             return;  /* 参与者表满 */
         }
@@ -875,7 +875,7 @@ void MicroDDS_UDP_Shutdown(void) {
  * @return true 成功
  */
 bool MicroDDS_UDP_JoinMulticast(const char* group_address) {
-    if (!g_udp_transport.initialized || (group_address == NULL)) {
+    if (!g_udp_transport.initialized || (group_address == NULL_PTR)) {
         return false;
     }
     
@@ -919,7 +919,7 @@ bool MicroDDS_UDP_JoinMulticast(const char* group_address) {
  * @return true 成功
  */
 bool MicroDDS_UDP_LeaveMulticast(const char* group_address) {
-    if (!g_udp_transport.initialized || (group_address == NULL)) {
+    if (!g_udp_transport.initialized || (group_address == NULL_PTR)) {
         return false;
     }
     
@@ -1011,7 +1011,7 @@ bool MicroDDS_UDP_RemovePeer(uint32_t address, uint16_t port) {
  * @return true 成功
  */
 bool MicroDDS_UDP_SendTo(const uint8_t* data, uint16_t length, uint32_t dest_address, uint16_t dest_port) {
-    if (!g_udp_transport.initialized || (data == NULL)) {
+    if (!g_udp_transport.initialized || (data == NULL_PTR)) {
         return false;
     }
     
@@ -1039,7 +1039,7 @@ bool MicroDDS_UDP_SendTo(const uint8_t* data, uint16_t length, uint32_t dest_add
  * @return true 成功
  */
 bool MicroDDS_UDP_Send(const uint8_t* data, uint16_t length) {
-    if (!g_udp_transport.initialized || (data == NULL)) {
+    if (!g_udp_transport.initialized || (data == NULL_PTR)) {
         return false;
     }
     
@@ -1076,12 +1076,12 @@ bool MicroDDS_UDP_Send(const uint8_t* data, uint16_t length) {
  * @return true 成功
  */
 bool MicroDDS_UDP_SendMulticast(const uint8_t* data, uint16_t length, const char* group_address) {
-    if (!g_udp_transport.initialized || (data == NULL)) {
+    if (!g_udp_transport.initialized || (data == NULL_PTR)) {
         return false;
     }
     
     uint32_t group_addr = MICRODDS_DEFAULT_MULTICAST_ADDR;
-    if (group_address != NULL) {
+    if (group_address != NULL_PTR) {
         group_addr = UDP_Address_from_string(group_address);
         if (group_addr == 0U) {
             return false;
@@ -1105,15 +1105,15 @@ bool MicroDDS_UDP_SendMulticast(const uint8_t* data, uint16_t length, const char
  * @brief 接收数据包
  * @param buffer 数据缓冲区
  * @param buffer_size 缓冲区大小
- * @param src_address 输出源地址 (网络字节序，可为NULL)
- * @param src_port 输出源端口 (主机字节序，可为NULL)
+ * @param src_address 输出源地址 (网络字节序，可为NULL_PTR)
+ * @param src_port 输出源端口 (主机字节序，可为NULL_PTR)
  * @param timeout_ms 超时时间（毫秒）
  * @return 接收的字节数，失败或超时返回0
  */
 uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
                                uint32_t* src_address, uint16_t* src_port,
                                uint32_t timeout_ms) {
-    if (!g_udp_transport.initialized || (buffer == NULL)) {
+    if (!g_udp_transport.initialized || (buffer == NULL_PTR)) {
         return 0U;
     }
     
@@ -1131,10 +1131,10 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
             g_udp_transport.packets_received++;
             g_udp_transport.bytes_received += (uint32_t)received;
             
-            if (src_address != NULL) {
+            if (src_address != NULL_PTR) {
                 *src_address = addr;
             }
-            if (src_port != NULL) {
+            if (src_port != NULL_PTR) {
                 *src_port = port;
             }
             
@@ -1147,7 +1147,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         uint8_t pdp_buffer[512];
         uint32_t src_addr = 0U;
         
-        int received = socket_recvfrom(g_udp_transport.discovery_socket, pdp_buffer, sizeof(pdp_buffer), &src_addr, NULL);
+        int received = socket_recvfrom(g_udp_transport.discovery_socket, pdp_buffer, sizeof(pdp_buffer), &src_addr, NULL_PTR);
         
         if (received > 0U ) {
             /* 处理PDP消息 */
@@ -1231,13 +1231,13 @@ bool MicroDDS_UDP_GetDiscoveredParticipant(uint32_t index, uint32_t* participant
         return false;
     }
     
-    if (participant_id != NULL) {
+    if (participant_id != NULL_PTR) {
         *participant_id = p->participant_id;
     }
-    if (address != NULL) {
+    if (address != NULL_PTR) {
         *address = p->address;
     }
-    if (port != NULL) {
+    if (port != NULL_PTR) {
         *port = p->user_port;
     }
     
@@ -1265,19 +1265,19 @@ void MicroDDS_UDP_SetPlatformHooks(uint32_t (*get_time_fn)(void), void (*sleep_f
 void MicroDDS_UDP_GetStats(uint32_t* packets_sent, uint32_t* packets_received,
                            uint32_t* packets_dropped, uint32_t* bytes_sent,
                            uint32_t* bytes_received) {
-    if (packets_sent != NULL) {
+    if (packets_sent != NULL_PTR) {
         *packets_sent = g_udp_transport.packets_sent;
     }
-    if (packets_received != NULL) {
+    if (packets_received != NULL_PTR) {
         *packets_received = g_udp_transport.packets_received;
     }
-    if (packets_dropped != NULL) {
+    if (packets_dropped != NULL_PTR) {
         *packets_dropped = g_udp_transport.packets_dropped;
     }
-    if (bytes_sent != NULL) {
+    if (bytes_sent != NULL_PTR) {
         *bytes_sent = g_udp_transport.bytes_sent;
     }
-    if (bytes_received != NULL) {
+    if (bytes_received != NULL_PTR) {
         *bytes_received = g_udp_transport.bytes_received;
     }
 }

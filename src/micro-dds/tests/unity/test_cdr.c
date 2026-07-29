@@ -27,7 +27,7 @@ void test_cdr_init_valid_params(void) {
 
 void test_cdr_init_null_buffer(void) {
     CDR_Buffer buffer;
-    DDS_ReturnCode_t rc = CDR_Buffer_init(&buffer, NULL, sizeof(g_buffer), CDR_ENDIAN_LITTLE);
+    DDS_ReturnCode_t rc = CDR_Buffer_init(&buffer, NULL_PTR, sizeof(g_buffer), CDR_ENDIAN_LITTLE);
     TEST_ASSERT_EQUAL(DDS_RETCODE_BAD_PARAMETER, rc);
 }
 

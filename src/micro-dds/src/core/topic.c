@@ -36,11 +36,11 @@ static DDS_Topic find_free_topic_slot(void) {
             return (DDS_Topic)&g_topics[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static DDS_ReturnCode_t init_default_topic_qos(DDS_TopicQos* qos) {
-    if (qos == NULL) {
+    if (qos == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -75,13 +75,13 @@ DDS_Topic DDS_Topic_create(
     const char* type_name,
     const DDS_TopicQos* qos) {
     
-    if ((participant == NULL) || (name == NULL)) {
-        return NULL;
+    if ((participant == NULL_PTR) || (name == NULL_PTR)) {
+        return NULL_PTR;
     }
 
     DDS_Topic topic = find_free_topic_slot();
-    if (topic == NULL) {
-        return NULL;
+    if (topic == NULL_PTR) {
+        return NULL_PTR;
     }
 
     Topic_State* state = (Topic_State*)topic;
@@ -91,7 +91,7 @@ DDS_Topic DDS_Topic_create(
     state->name[MICRODDS_TOPIC_NAME_MAX - 1U] = '\0';
 
     /* 复制类型名称 */
-    if (type_name != NULL) {
+    if (type_name != NULL_PTR) {
         (void)strncpy(state->type_name, type_name, MICRODDS_TYPE_NAME_MAX - 1U);
         state->type_name[MICRODDS_TYPE_NAME_MAX - 1U] = '\0';
     } else {
@@ -99,7 +99,7 @@ DDS_Topic DDS_Topic_create(
     }
 
     /* 设置QoS */
-    if (qos != NULL) {
+    if (qos != NULL_PTR) {
         (void)memcpy(&state->qos, qos, sizeof(DDS_TopicQos));
     } else {
         (void)init_default_topic_qos(&state->qos);
@@ -112,7 +112,7 @@ DDS_Topic DDS_Topic_create(
 }
 
 DDS_ReturnCode_t DDS_Topic_delete(DDS_Topic topic) {
-    if (topic == NULL) {
+    if (topic == NULL_PTR) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -128,28 +128,28 @@ DDS_ReturnCode_t DDS_Topic_delete(DDS_Topic topic) {
 }
 
 const char* DDS_Topic_get_name(DDS_Topic topic) {
-    if (topic == NULL) {
-        return NULL;
+    if (topic == NULL_PTR) {
+        return NULL_PTR;
     }
 
     const Topic_State* state = (Topic_State*)topic;
 
     if (!state->is_valid) {
-        return NULL;
+        return NULL_PTR;
     }
 
     return state->name;
 }
 
 const char* DDS_Topic_get_type_name(DDS_Topic topic) {
-    if (topic == NULL) {
-        return NULL;
+    if (topic == NULL_PTR) {
+        return NULL_PTR;
     }
 
     const Topic_State* state = (Topic_State*)topic;
 
     if (!state->is_valid) {
-        return NULL;
+        return NULL_PTR;
     }
 
     return state->type_name;
