@@ -60,7 +60,7 @@ static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response,
                                             uint8_t sid, 
                                             uint8_t nrc)
 {
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= 3U)) {
         response->data[0U] = DCM_SID_NEGATIVE_RESPONSE;
         response->data[1U] = sid;
@@ -81,7 +81,7 @@ Dcm_ReturnType Dcm_Init(const Dcm_ConfigType *config)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         /* Clear state */
         (void)memset(&s_dcmState, 0, sizeof(s_dcmState));
         
@@ -90,53 +90,53 @@ Dcm_ReturnType Dcm_Init(const Dcm_ConfigType *config)
         s_dcmState.state = DCM_STATE_INIT;
         
         /* Initialize session control */
-        if (config->sessionConfig != NULL) {
+        if (config->sessionConfig != NULL_PTR) {
             result = Dcm_SessionInit(config->sessionConfig);
         }
         
         /* Initialize ECU reset service */
-        if ((result == DCM_E_OK) && (config->ecuResetConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->ecuResetConfig != NULL_PTR)) {
             result = Dcm_EcuResetInit(config->ecuResetConfig);
         }
         
         /* Initialize security access service */
-        if ((result == DCM_E_OK) && (config->securityConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->securityConfig != NULL_PTR)) {
             result = Dcm_SecurityAccessInit(config->securityConfig);
         }
         
         /* Initialize communication control service */
-        if ((result == DCM_E_OK) && (config->commControlConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->commControlConfig != NULL_PTR)) {
             result = Dcm_CommunicationControlInit(config->commControlConfig);
         }
         
         /* Initialize dynamic DID service */
-        if ((result == DCM_E_OK) && (config->dynamicDidConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->dynamicDidConfig != NULL_PTR)) {
             result = Dcm_DynamicDidInit(config->dynamicDidConfig);
         }
         
         /* Initialize memory write service */
-        if ((result == DCM_E_OK) && (config->memoryWriteConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->memoryWriteConfig != NULL_PTR)) {
             result = Dcm_MemoryWriteInit(config->memoryWriteConfig);
         }
         
         /* Initialize routine control service */
-        if ((result == DCM_E_OK) && (config->routineConfigs != NULL)) {
+        if ((result == DCM_E_OK) && (config->routineConfigs != NULL_PTR)) {
             result = Dcm_RoutineControlInit(config->routineConfigs, 
                                             config->numRoutines);
         }
 
         /* Initialize DCM-DEM integration */
-        if ((result == DCM_E_OK) && (config->demIntegrationConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->demIntegrationConfig != NULL_PTR)) {
             result = Dcm_DemIntegration_Init(config->demIntegrationConfig);
         }
 
         /* Initialize DID service */
-        if ((result == DCM_E_OK) && (config->didConfig != NULL)) {
+        if ((result == DCM_E_OK) && (config->didConfig != NULL_PTR)) {
             result = Dcm_DidInit(config->didConfig);
         }
 
         /* Initialize IO Control service */
-        if ((result == DCM_E_OK) && (config->ioControlConfigs != NULL)) {
+        if ((result == DCM_E_OK) && (config->ioControlConfigs != NULL_PTR)) {
             result = Dcm_IoControlInit(config->ioControlConfigs, config->numIoControls);
         }
         
@@ -160,7 +160,7 @@ Dcm_ReturnType Dcm_DeInit(void)
         s_dcmState.initialized = false;
         s_dcmState.state = DCM_STATE_UNINIT;
         s_dcmState.magic = 0U;
-        s_dcmState.config = NULL;
+        s_dcmState.config = NULL_PTR;
         
         result = DCM_E_OK;
     }
@@ -200,8 +200,8 @@ Dcm_ReturnType Dcm_ProcessRequest(const Dcm_RequestType *request,
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL) || 
-        (request->data == NULL) || (request->length == 0U)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR) || 
+        (request->data == NULL_PTR) || (request->length == 0U)) {
         return DCM_E_NOT_OK;
     }
     
@@ -300,13 +300,13 @@ Dcm_StateType Dcm_GetState(void)
 
 void Dcm_GetVersionInfo(uint8_t *major, uint8_t *minor, uint8_t *patch)
 {
-    if (major != NULL) {
+    if (major != NULL_PTR) {
         *major = DCM_MAJOR_VERSION;
     }
-    if (minor != NULL) {
+    if (minor != NULL_PTR) {
         *minor = DCM_MINOR_VERSION;
     }
-    if (patch != NULL) {
+    if (patch != NULL_PTR) {
         *patch = DCM_PATCH_VERSION;
     }
 }

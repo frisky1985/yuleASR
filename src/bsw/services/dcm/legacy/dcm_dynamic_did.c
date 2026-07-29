@@ -62,7 +62,7 @@ static Dcm_ReturnType sendNegativeResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (response != NULL) {
+    if (response != NULL_PTR) {
         response->isNegativeResponse = true;
         response->negativeResponseCode = nrc;
         response->length = 0U;
@@ -83,7 +83,7 @@ static Dcm_ReturnType sendPositiveResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= DCM_DYN_DID_RESPONSE_MIN_LENGTH)) {
         response->data[0U] = (uint8_t)(UDS_SVC_DYNAMICALLY_DEFINE_DATA_IDENTIFIER + 0x40U);
         response->data[1U] = definitionMode;
@@ -111,7 +111,7 @@ static Dcm_ReturnType sendPositiveResponse(
  */
 static Dcm_DynamicDidDefinitionType* findDynamicDidDefinition(uint16_t dynamicDid)
 {
-    Dcm_DynamicDidDefinitionType *definition = NULL;
+    Dcm_DynamicDidDefinitionType *definition = NULL_PTR;
     
     if (s_dynDidState.initialized) {
         for (uint8_t i = 0U; i < s_dynDidState.numDefinedDids; i++) {
@@ -130,7 +130,7 @@ static Dcm_DynamicDidDefinitionType* findDynamicDidDefinition(uint16_t dynamicDi
  */
 static Dcm_DynamicDidDefinitionType* findFreeDefinitionSlot(void)
 {
-    Dcm_DynamicDidDefinitionType *slot = NULL;
+    Dcm_DynamicDidDefinitionType *slot = NULL_PTR;
     
     if (s_dynDidState.initialized && 
         (s_dynDidState.numDefinedDids < DCM_MAX_DYNAMIC_DIDS)) {
@@ -147,7 +147,7 @@ static bool checkSecurityAccess(void)
 {
     bool allowed = true;
     
-    if ((s_dynDidState.config != NULL) && 
+    if ((s_dynDidState.config != NULL_PTR) && 
         (s_dynDidState.config->requiredSecurityLevel > 0U)) {
         allowed = Dcm_IsSecurityLevelUnlocked(s_dynDidState.config->requiredSecurityLevel);
     }
@@ -162,7 +162,7 @@ static uint32_t parseMemoryAddress(const uint8_t *data, uint8_t length)
 {
     uint32_t address = 0U;
     
-    if (data != NULL) {
+    if (data != NULL_PTR) {
         for (uint8_t i = 0U; i < length; i++) {
             address = (address << 8U) | (uint32_t)data[i];
         }
@@ -178,7 +178,7 @@ static uint32_t parseMemorySize(const uint8_t *data, uint8_t length)
 {
     uint32_t size = 0U;
     
-    if (data != NULL) {
+    if (data != NULL_PTR) {
         for (uint8_t i = 0U; i < length; i++) {
             size = (size << 8U) | (uint32_t)data[i];
         }
@@ -195,7 +195,7 @@ Dcm_ReturnType Dcm_DynamicDidInit(const Dcm_DynamicDidConfigType *config)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         /* Initialize state */
         (void)memset(&s_dynDidState, 0, sizeof(s_dynDidState));
         
@@ -234,7 +234,7 @@ Dcm_ReturnType Dcm_DynamicallyDefineDataIdentifier(
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -405,12 +405,12 @@ Dcm_ReturnType Dcm_DefineDynamicDidByIdentifier(
         /* Check if DID already exists */
         Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
         
-        if (definition == NULL) {
+        if (definition == NULL_PTR) {
             /* Find free slot */
             definition = findFreeDefinitionSlot();
         }
         
-        if (definition != NULL) {
+        if (definition != NULL_PTR) {
             /* Initialize or update definition */
             if (!definition->defined) {
                 s_dynDidState.numDefinedDids++;
@@ -448,12 +448,12 @@ Dcm_ReturnType Dcm_DefineDynamicDidByMemoryAddress(
         /* Check if DID already exists */
         Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
         
-        if (definition == NULL) {
+        if (definition == NULL_PTR) {
             /* Find free slot */
             definition = findFreeDefinitionSlot();
         }
         
-        if (definition != NULL) {
+        if (definition != NULL_PTR) {
             /* Initialize or update definition */
             if (!definition->defined) {
                 s_dynDidState.numDefinedDids++;
@@ -496,7 +496,7 @@ Dcm_ReturnType Dcm_ClearDynamicDid(uint16_t dynamicDid)
             /* Clear specific DID */
             Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
             
-            if (definition != NULL) {
+            if (definition != NULL_PTR) {
                 definition->defined = false;
                 definition->dynamicDid = 0U;
                 definition->numSourceElements = 0U;
@@ -522,7 +522,7 @@ bool Dcm_IsDynamicDidDefined(uint16_t dynamicDid)
     
     if (s_dynDidState.initialized) {
         const Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
-        defined = (definition != NULL) && definition->defined;
+        defined = (definition != NULL_PTR) && definition->defined;
     }
     
     return defined;
@@ -535,10 +535,10 @@ Dcm_ReturnType Dcm_GetDynamicDidDefinition(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((definition != NULL) && s_dynDidState.initialized) {
+    if ((definition != NULL_PTR) && s_dynDidState.initialized) {
         *definition = findDynamicDidDefinition(dynamicDid);
         
-        if ((*definition != NULL) && (*definition)->defined) {
+        if ((*definition != NULL_PTR) && (*definition)->defined) {
             result = DCM_E_OK;
         }
     }
@@ -555,10 +555,10 @@ Dcm_ReturnType Dcm_ReadDynamicDidData(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((dataBuffer != NULL) && (dataLength != NULL) && s_dynDidState.initialized) {
+    if ((dataBuffer != NULL_PTR) && (dataLength != NULL_PTR) && s_dynDidState.initialized) {
         const Dcm_DynamicDidDefinitionType *definition = findDynamicDidDefinition(dynamicDid);
         
-        if ((definition != NULL) && definition->defined) {
+        if ((definition != NULL_PTR) && definition->defined) {
             if (bufferSize >= definition->totalSize) {
                 /* For now, return placeholder data */
                 /* In full implementation, this would read from source DID or memory */
@@ -581,7 +581,7 @@ bool Dcm_IsValidDynamicDidRange(uint16_t did)
 {
     bool valid = false;
     
-    if (s_dynDidState.config != NULL) {
+    if (s_dynDidState.config != NULL_PTR) {
         if ((did >= s_dynDidState.config->minDynamicDid) &&
             (did <= s_dynDidState.config->maxDynamicDid)) {
             valid = true;
@@ -600,7 +600,7 @@ Dcm_ReturnType Dcm_GetDynamicDidStatus(Dcm_DynamicDidStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((status != NULL) && s_dynDidState.initialized) {
+    if ((status != NULL_PTR) && s_dynDidState.initialized) {
         status->numDefinedDids = s_dynDidState.numDefinedDids;
         
         uint8_t index = 0U;
@@ -621,7 +621,7 @@ bool Dcm_IsDefinitionModeSupported(uint8_t definitionMode)
 {
     bool supported = false;
     
-    if (s_dynDidState.config != NULL) {
+    if (s_dynDidState.config != NULL_PTR) {
         switch (definitionMode) {
             case DCM_DYN_DID_DEFINE_BY_IDENTIFIER:
                 supported = s_dynDidState.config->enableDidBasedDefinition;
@@ -655,7 +655,7 @@ Dcm_ReturnType Dcm_ParseAddressLengthFormat(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((addressLength != NULL) && (sizeLength != NULL)) {
+    if ((addressLength != NULL_PTR) && (sizeLength != NULL_PTR)) {
         uint8_t addrLen = (formatId & DCM_DYN_DID_ADDR_LEN_MASK) >> DCM_DYN_DID_ADDR_LEN_SHIFT;
         uint8_t szLen = formatId & DCM_DYN_DID_SIZE_LEN_MASK;
         

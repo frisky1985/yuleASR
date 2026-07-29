@@ -57,9 +57,9 @@ static const Dcm_RoutineConfigType s_defaultRoutines[] = {
         .resultsSupported = true,
         .requiredSecurityLevel = 3U,
         .requiredSession = DCM_SESSION_PROGRAMMING,
-        .startFunc = NULL,
-        .stopFunc = NULL,
-        .resultsFunc = NULL,
+        .startFunc = NULL_PTR,
+        .stopFunc = NULL_PTR,
+        .resultsFunc = NULL_PTR,
         .description = "Erase Memory"
     },
     {
@@ -69,9 +69,9 @@ static const Dcm_RoutineConfigType s_defaultRoutines[] = {
         .resultsSupported = true,
         .requiredSecurityLevel = 1U,
         .requiredSession = DCM_SESSION_EXTENDED,
-        .startFunc = NULL,
-        .stopFunc = NULL,
-        .resultsFunc = NULL,
+        .startFunc = NULL_PTR,
+        .stopFunc = NULL_PTR,
+        .resultsFunc = NULL_PTR,
         .description = "Check Programming Dependencies"
     },
     {
@@ -81,9 +81,9 @@ static const Dcm_RoutineConfigType s_defaultRoutines[] = {
         .resultsSupported = true,
         .requiredSecurityLevel = 1U,
         .requiredSession = DCM_SESSION_EXTENDED,
-        .startFunc = NULL,
-        .stopFunc = NULL,
-        .resultsFunc = NULL,
+        .startFunc = NULL_PTR,
+        .stopFunc = NULL_PTR,
+        .resultsFunc = NULL_PTR,
         .description = "Self Test"
     }
 };
@@ -94,7 +94,7 @@ static const Dcm_RoutineConfigType s_defaultRoutines[] = {
 
 static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response, uint8_t nrc)
 {
-    if (response != NULL) {
+    if (response != NULL_PTR) {
         response->isNegativeResponse = true;
         response->negativeResponseCode = nrc;
         response->length = 0U;
@@ -109,14 +109,14 @@ static Dcm_ReturnType sendPositiveResponse(Dcm_ResponseType *response,
                                            const uint8_t *statusRecord,
                                            uint16_t statusLength)
 {
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= (uint32_t)(4U + statusLength))) {
         response->data[0U] = (uint8_t)(UDS_SVC_ROUTINE_CONTROL + 0x40U);
         response->data[1U] = controlType;
         response->data[2U] = (uint8_t)((routineId >> 8) & 0xFFU);
         response->data[3U] = (uint8_t)(routineId & 0xFFU);
         
-        if ((statusRecord != NULL) && (statusLength > 0U)) {
+        if ((statusRecord != NULL_PTR) && (statusLength > 0U)) {
             (void)memcpy(&response->data[4U], statusRecord, statusLength);
         }
         
@@ -129,19 +129,19 @@ static Dcm_ReturnType sendPositiveResponse(Dcm_ResponseType *response,
 
 static const Dcm_RoutineConfigType* findRoutineConfig(uint16_t routineId)
 {
-    if (s_routineState.initialized && (s_routineState.routines != NULL)) {
+    if (s_routineState.initialized && (s_routineState.routines != NULL_PTR)) {
         for (uint8_t i = 0U; i < s_routineState.numRoutines; i++) {
             if (s_routineState.routines[i].routineId == routineId) {
                 return &s_routineState.routines[i];
             }
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static bool checkRoutineAccess(const Dcm_RoutineConfigType *config)
 {
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return false;
     }
     
@@ -177,7 +177,7 @@ Dcm_ReturnType Dcm_RoutineControlInit(const Dcm_RoutineConfigType *routines,
     s_routineState.initialized = true;
     s_routineState.status.state = DCM_ROUTINE_STATE_IDLE;
     
-    if ((routines != NULL) && (numRoutines > 0U)) {
+    if ((routines != NULL_PTR) && (numRoutines > 0U)) {
         s_routineState.routines = routines;
         s_routineState.numRoutines = numRoutines;
     } else {
@@ -203,7 +203,7 @@ Dcm_ReturnType Dcm_RoutineControl(const Dcm_RequestType *request,
         return result;
     }
     
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -230,7 +230,7 @@ Dcm_ReturnType Dcm_RoutineControl(const Dcm_RequestType *request,
     /* Find routine configuration */
     const Dcm_RoutineConfigType *routineConfig = findRoutineConfig(routineId);
     
-    if (routineConfig == NULL) {
+    if (routineConfig == NULL_PTR) {
         nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
         (void)sendNegativeResponse(response, nrc);
         return result;
@@ -257,7 +257,7 @@ Dcm_ReturnType Dcm_RoutineControl(const Dcm_RequestType *request,
                 break;
             }
             
-            const uint8_t *optionRecord = NULL;
+            const uint8_t *optionRecord = NULL_PTR;
             uint16_t optionLength = 0U;
             
             if (request->length > DCM_ROUTINE_CTRL_MIN_LENGTH) {
@@ -373,11 +373,11 @@ Dcm_ReturnType Dcm_StartRoutine(uint16_t routineId,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL) && s_routineState.initialized) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR) && s_routineState.initialized) {
         const Dcm_RoutineConfigType *config = findRoutineConfig(routineId);
         
-        if ((config != NULL) && config->startSupported) {
-            if (config->startFunc != NULL) {
+        if ((config != NULL_PTR) && config->startSupported) {
+            if (config->startFunc != NULL_PTR) {
                 result = config->startFunc(routineId, optionRecord, optionLength,
                                            statusRecord, statusLength);
             } else {
@@ -412,11 +412,11 @@ Dcm_ReturnType Dcm_StopRoutine(uint16_t routineId,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL) && s_routineState.initialized) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR) && s_routineState.initialized) {
         const Dcm_RoutineConfigType *config = findRoutineConfig(routineId);
         
-        if ((config != NULL) && config->stopSupported) {
-            if (config->stopFunc != NULL) {
+        if ((config != NULL_PTR) && config->stopSupported) {
+            if (config->stopFunc != NULL_PTR) {
                 result = config->stopFunc(routineId, statusRecord, statusLength);
             } else {
                 /* Default implementation */
@@ -439,11 +439,11 @@ Dcm_ReturnType Dcm_RequestRoutineResults(uint16_t routineId,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL) && s_routineState.initialized) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR) && s_routineState.initialized) {
         const Dcm_RoutineConfigType *config = findRoutineConfig(routineId);
         
-        if ((config != NULL) && config->resultsSupported) {
-            if (config->resultsFunc != NULL) {
+        if ((config != NULL_PTR) && config->resultsSupported) {
+            if (config->resultsFunc != NULL_PTR) {
                 result = config->resultsFunc(routineId, statusRecord, statusLength,
                                              dataRecord, dataLength);
             } else {
@@ -451,7 +451,7 @@ Dcm_ReturnType Dcm_RequestRoutineResults(uint16_t routineId,
                 *statusLength = 1U;
                 statusRecord[0U] = (uint8_t)s_routineState.status.state;
                 
-                if (dataRecord != NULL && dataLength != NULL) {
+                if (dataRecord != NULL_PTR && dataLength != NULL_PTR) {
                     *dataLength = 1U;
                     dataRecord[0U] = s_routineState.status.progress;
                 }
@@ -466,7 +466,7 @@ Dcm_ReturnType Dcm_RequestRoutineResults(uint16_t routineId,
 
 bool Dcm_IsRoutineSupported(uint16_t routineId)
 {
-    return (findRoutineConfig(routineId) != NULL);
+    return (findRoutineConfig(routineId) != NULL_PTR);
 }
 
 const Dcm_RoutineConfigType* Dcm_GetRoutineConfig(uint16_t routineId)
@@ -478,7 +478,7 @@ Dcm_ReturnType Dcm_GetRoutineStatus(Dcm_RoutineStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((status != NULL) && s_routineState.initialized) {
+    if ((status != NULL_PTR) && s_routineState.initialized) {
         *status = s_routineState.status;
         result = DCM_E_OK;
     }
@@ -544,11 +544,11 @@ Dcm_ReturnType Dcm_Routine_CheckProgrammingDependencies(bool *result)
 {
     Dcm_ReturnType retVal = DCM_E_NOT_OK;
     
-    if ((result != NULL) && s_routineState.initialized) {
+    if ((result != NULL_PTR) && s_routineState.initialized) {
         uint8_t statusRecord[DCM_MAX_ROUTINE_STATUS_RECORD];
         uint16_t statusLength = 0U;
         
-        retVal = Dcm_StartRoutine(DCM_ROUTINE_ID_CHECK_PROG_DEPENDENCIES, NULL, 0U,
+        retVal = Dcm_StartRoutine(DCM_ROUTINE_ID_CHECK_PROG_DEPENDENCIES, NULL_PTR, 0U,
                                   statusRecord, &statusLength);
         
         if (retVal == DCM_E_OK) {
@@ -564,7 +564,7 @@ Dcm_ReturnType Dcm_Routine_SelfTest(uint8_t testId, bool *result)
     Dcm_ReturnType retVal = DCM_E_NOT_OK;
     (void)testId;  /* Unused in default implementation */
     
-    if ((result != NULL) && s_routineState.initialized) {
+    if ((result != NULL_PTR) && s_routineState.initialized) {
         uint8_t optionRecord[1U] = {testId};
         uint8_t statusRecord[DCM_MAX_ROUTINE_STATUS_RECORD];
         uint16_t statusLength = 0U;

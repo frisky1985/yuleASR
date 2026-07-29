@@ -79,7 +79,7 @@ static Dcm_MemoryStateType s_memoryState;
 
 static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response, uint8_t nrc)
 {
-    if (response != NULL) {
+    if (response != NULL_PTR) {
         response->isNegativeResponse = true;
         response->negativeResponseCode = nrc;
         response->length = 0U;
@@ -95,7 +95,7 @@ static Dcm_ReturnType sendPositiveResponse(Dcm_ResponseType *response,
                                            uint8_t addrLen,
                                            uint8_t sizeLen)
 {
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= (uint32_t)(2U + addrLen + sizeLen))) {
         response->data[0U] = (uint8_t)(UDS_SVC_WRITE_MEMORY_BY_ADDRESS + 0x40U);
         response->data[1U] = formatId;
@@ -117,7 +117,7 @@ static Dcm_ReturnType sendPositiveResponse(Dcm_ResponseType *response,
 
 static const Dcm_MemoryRegionConfigType* findMemoryRegion(uint32_t address)
 {
-    if ((s_memoryState.config != NULL) && (s_memoryState.config->regions != NULL)) {
+    if ((s_memoryState.config != NULL_PTR) && (s_memoryState.config->regions != NULL_PTR)) {
         for (uint8_t i = 0U; i < s_memoryState.config->numRegions; i++) {
             if ((address >= s_memoryState.config->regions[i].startAddress) &&
                 (address <= s_memoryState.config->regions[i].endAddress)) {
@@ -125,12 +125,12 @@ static const Dcm_MemoryRegionConfigType* findMemoryRegion(uint32_t address)
             }
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 static bool checkSecurityAccess(const Dcm_MemoryRegionConfigType *region)
 {
-    if (region == NULL) {
+    if (region == NULL_PTR) {
         return false;
     }
     
@@ -142,7 +142,7 @@ static bool checkSecurityAccess(const Dcm_MemoryRegionConfigType *region)
     }
     
     /* Check global security level */
-    if ((s_memoryState.config != NULL) && 
+    if ((s_memoryState.config != NULL_PTR) && 
         (s_memoryState.config->requiredSecurityLevel > 0U)) {
         if (!Dcm_IsSecurityLevelUnlocked(s_memoryState.config->requiredSecurityLevel)) {
             return false;
@@ -154,7 +154,7 @@ static bool checkSecurityAccess(const Dcm_MemoryRegionConfigType *region)
 
 static bool checkSessionRequirements(void)
 {
-    if ((s_memoryState.config != NULL) && 
+    if ((s_memoryState.config != NULL_PTR) && 
         s_memoryState.config->requireProgrammingSession) {
         Dcm_SessionType session = Dcm_GetCurrentSession();
         if (session != DCM_SESSION_PROGRAMMING) {
@@ -176,7 +176,7 @@ static Dcm_ReturnType validateWriteRequest(uint32_t address, uint32_t length)
     }
     
     /* Check max write size */
-    if ((s_memoryState.config != NULL) && 
+    if ((s_memoryState.config != NULL_PTR) && 
         (length > s_memoryState.config->maxWriteSize)) {
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
@@ -193,7 +193,7 @@ static Dcm_ReturnType validateWriteRequest(uint32_t address, uint32_t length)
     
     /* Check region boundaries */
     const Dcm_MemoryRegionConfigType *region = findMemoryRegion(address);
-    if (region == NULL) {
+    if (region == NULL_PTR) {
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     
@@ -224,7 +224,7 @@ Dcm_ReturnType Dcm_MemoryWriteInit(const Dcm_MemoryWriteConfigType *config)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         (void)memset(&s_memoryState, 0, sizeof(s_memoryState));
         
         s_memoryState.magic = DCM_MEMORY_MAGIC_INIT;
@@ -250,7 +250,7 @@ Dcm_ReturnType Dcm_WriteMemoryByAddress(const Dcm_RequestType *request,
         return result;
     }
     
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -349,13 +349,13 @@ Dcm_ReturnType Dcm_WriteMemory(uint32_t memoryAddress, const uint8_t *data, uint
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((data != NULL) && (length > 0U) && s_memoryState.initialized) {
+    if ((data != NULL_PTR) && (length > 0U) && s_memoryState.initialized) {
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
-        if (region != NULL) {
+        if (region != NULL_PTR) {
             /* Use callback if available */
-            if ((s_memoryState.config != NULL) && 
-                (s_memoryState.config->writeCallback != NULL)) {
+            if ((s_memoryState.config != NULL_PTR) && 
+                (s_memoryState.config->writeCallback != NULL_PTR)) {
                 result = s_memoryState.config->writeCallback(memoryAddress, data, length, 
                                                               region->regionType);
             } else {
@@ -376,11 +376,11 @@ Dcm_ReturnType Dcm_VerifyMemoryWrite(uint32_t memoryAddress,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((expectedData != NULL) && (verifyResult != NULL) && s_memoryState.initialized) {
+    if ((expectedData != NULL_PTR) && (verifyResult != NULL_PTR) && s_memoryState.initialized) {
         *verifyResult = false;
         
-        if ((s_memoryState.config != NULL) && 
-            (s_memoryState.config->verifyCallback != NULL)) {
+        if ((s_memoryState.config != NULL_PTR) && 
+            (s_memoryState.config->verifyCallback != NULL_PTR)) {
             result = s_memoryState.config->verifyCallback(memoryAddress, expectedData, 
                                                            length, verifyResult);
         } else {
@@ -400,7 +400,7 @@ bool Dcm_IsMemoryAddressWritable(uint32_t memoryAddress, uint32_t length)
     if (s_memoryState.initialized && (length > 0U)) {
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
-        if ((region != NULL) && region->writeAllowed) {
+        if ((region != NULL_PTR) && region->writeAllowed) {
             /* Check if entire range is within region - use overflow-safe comparison */
             if ((memoryAddress >= region->startAddress) &&
                 (memoryAddress <= region->endAddress) &&
@@ -426,7 +426,7 @@ bool Dcm_IsAddressRangeValid(uint32_t startAddress, uint32_t length)
         /* Check for overflow */
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(startAddress);
         
-        if (region != NULL) {
+        if (region != NULL_PTR) {
             if ((startAddress >= region->startAddress) &&
                 ((startAddress + length - 1U) <= region->endAddress)) {
                 valid = true;
@@ -445,7 +445,7 @@ bool Dcm_IsMemoryProtected(uint32_t memoryAddress, uint32_t length)
     if (s_memoryState.initialized) {
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
-        if ((region != NULL) && region->writeAllowed) {
+        if ((region != NULL_PTR) && region->writeAllowed) {
             protected = false;
         }
     }
@@ -457,7 +457,7 @@ Dcm_ReturnType Dcm_GetMemoryWriteStatus(Dcm_MemoryWriteStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((status != NULL) && s_memoryState.initialized) {
+    if ((status != NULL_PTR) && s_memoryState.initialized) {
         *status = s_memoryState.status;
         result = DCM_E_OK;
     }
@@ -471,7 +471,7 @@ Dcm_ReturnType Dcm_ParseMemoryFormat(uint8_t formatId,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((addressLength != NULL) && (sizeLength != NULL)) {
+    if ((addressLength != NULL_PTR) && (sizeLength != NULL_PTR)) {
         uint8_t addrLen = (formatId >> 4U) & 0x0FU;
         uint8_t szLen = formatId & 0x0FU;
         
@@ -506,7 +506,7 @@ uint32_t Dcm_ParseMemoryAddress(const uint8_t *data, uint8_t length)
 {
     uint32_t address = 0U;
     
-    if (data != NULL) {
+    if (data != NULL_PTR) {
         for (uint8_t i = 0U; i < length; i++) {
             address = (address << 8U) | (uint32_t)data[i];
         }
@@ -519,7 +519,7 @@ uint32_t Dcm_ParseMemorySize(const uint8_t *data, uint8_t length)
 {
     uint32_t size = 0U;
     
-    if (data != NULL) {
+    if (data != NULL_PTR) {
         for (uint8_t i = 0U; i < length; i++) {
             size = (size << 8U) | (uint32_t)data[i];
         }
@@ -537,7 +537,7 @@ static Dcm_ReturnType sendReadPositiveResponse(Dcm_ResponseType *response,
                                                const uint8_t *data,
                                                uint32_t dataLength)
 {
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= (uint32_t)(1U + dataLength))) {
         response->data[0U] = DCM_READ_MEM_RESPONSE_SID;  /* 0x63 */
         
@@ -571,7 +571,7 @@ static Dcm_ReturnType validateReadRequest(uint32_t address, uint32_t length)
     
     /* Check region boundaries */
     const Dcm_MemoryRegionConfigType *region = findMemoryRegion(address);
-    if (region == NULL) {
+    if (region == NULL_PTR) {
         return DCM_E_REQUEST_OUT_OF_RANGE;
     }
     
@@ -601,7 +601,7 @@ Dcm_ReturnType Dcm_ReadMemoryByAddress(const Dcm_RequestType *request,
         return result;
     }
     
-    if ((request == NULL) || (response == NULL) || (request->data == NULL) || (response->data == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR) || (request->data == NULL_PTR) || (response->data == NULL_PTR)) {
         return result;
     }
     
@@ -687,13 +687,13 @@ Dcm_ReturnType Dcm_ReadMemory(uint32_t memoryAddress, uint8_t *data, uint32_t le
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((data != NULL) && (length > 0U) && s_memoryState.initialized) {
+    if ((data != NULL_PTR) && (length > 0U) && s_memoryState.initialized) {
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
-        if (region != NULL) {
+        if (region != NULL_PTR) {
             /* Use callback if available */
-            if ((s_memoryState.config != NULL) && 
-                (s_memoryState.config->readCallback != NULL)) {
+            if ((s_memoryState.config != NULL_PTR) && 
+                (s_memoryState.config->readCallback != NULL_PTR)) {
                 result = s_memoryState.config->readCallback(memoryAddress, data, length, 
                                                              region->regionType);
             } else {
@@ -718,7 +718,7 @@ bool Dcm_IsMemoryAddressReadable(uint32_t memoryAddress, uint32_t length)
     if (s_memoryState.initialized && (length > 0U)) {
         const Dcm_MemoryRegionConfigType *region = findMemoryRegion(memoryAddress);
         
-        if ((region != NULL) && region->readAllowed) {
+        if ((region != NULL_PTR) && region->readAllowed) {
             /* Check if entire range is within region - use overflow-safe comparison */
             if ((memoryAddress >= region->startAddress) &&
                 (memoryAddress <= region->endAddress) &&

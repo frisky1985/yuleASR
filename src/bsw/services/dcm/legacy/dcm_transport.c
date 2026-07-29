@@ -70,8 +70,8 @@ static Dcm_TransportChannelContextType g_channelContexts[DCM_TRANSPORT_MAX_CHANN
 static Dcm_TransportProtocolRegistryType g_protocolRegistry;
 
 /* Global callbacks */
-static Dcm_TransportRxCallbackType g_rxCallback = NULL;
-static Dcm_TransportTxConfirmationType g_txCallback = NULL;
+static Dcm_TransportRxCallbackType g_rxCallback = NULL_PTR;
+static Dcm_TransportTxConfirmationType g_txCallback = NULL_PTR;
 
 /* Timing */
 static uint32_t g_currentTimeMs = 0U;
@@ -84,10 +84,10 @@ static uint32_t g_currentTimeMs = 0U;
 static const Dcm_TransportProtocolInterfaceType g_DoIpInterface = {
     .protocol = DCM_TRANSPORT_PROTOCOL_DOIP,
     .protocolName = "DoIP",
-    .init = NULL,
-    .deinit = NULL,
-    .connect = NULL,
-    .disconnect = NULL,
+    .init = NULL_PTR,
+    .deinit = NULL_PTR,
+    .connect = NULL_PTR,
+    .disconnect = NULL_PTR,
     .send = Dcm_Transport_DoIp_Send,
     .receive = Dcm_Transport_DoIp_Receive,
     .getStatus = Dcm_Transport_DoIp_GetStatus,
@@ -101,10 +101,10 @@ static const Dcm_TransportProtocolInterfaceType g_DoIpInterface = {
 static const Dcm_TransportProtocolInterfaceType g_DoCanInterface = {
     .protocol = DCM_TRANSPORT_PROTOCOL_DOCAN,
     .protocolName = "DoCAN",
-    .init = NULL,
-    .deinit = NULL,
-    .connect = NULL,
-    .disconnect = NULL,
+    .init = NULL_PTR,
+    .deinit = NULL_PTR,
+    .connect = NULL_PTR,
+    .disconnect = NULL_PTR,
     .send = Dcm_Transport_DoCan_Send,
     .receive = Dcm_Transport_DoCan_Receive,
     .getStatus = Dcm_Transport_DoCan_GetStatus,
@@ -118,10 +118,10 @@ static const Dcm_TransportProtocolInterfaceType g_DoCanInterface = {
 static const Dcm_TransportProtocolInterfaceType g_IsoTpInterface = {
     .protocol = DCM_TRANSPORT_PROTOCOL_ISOTP,
     .protocolName = "IsoTp",
-    .init = NULL,
-    .deinit = NULL,
-    .connect = NULL,
-    .disconnect = NULL,
+    .init = NULL_PTR,
+    .deinit = NULL_PTR,
+    .connect = NULL_PTR,
+    .disconnect = NULL_PTR,
     .send = Dcm_Transport_IsoTp_Send,
     .receive = Dcm_Transport_IsoTp_Receive,
     .getStatus = Dcm_Transport_IsoTp_GetStatus,
@@ -177,7 +177,7 @@ static void Dcm_Transport_NotifyEvent(
 {
     if (Dcm_Transport_IsValidChannel(channelId)) {
         Dcm_TransportEventCallbackType callback = g_channelContexts[channelId].eventCallback;
-        if (callback != NULL) {
+        if (callback != NULL_PTR) {
             callback(channelId, event, eventData);
         }
     }
@@ -195,7 +195,7 @@ static const Dcm_TransportProtocolInterfaceType* Dcm_Transport_FindProtocolInter
             return g_protocolRegistry.interfaces[i];
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -218,7 +218,7 @@ static void Dcm_Transport_InitDefaultProtocols(void)
 
 Dcm_TransportReturnType Dcm_Transport_Init(const Dcm_TransportConfigType *config)
 {
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -241,7 +241,7 @@ Dcm_TransportReturnType Dcm_Transport_Init(const Dcm_TransportConfigType *config
     Dcm_Transport_InitDefaultProtocols();
     
     /* Initialize channels from configuration */
-    if (config->channelConfigs != NULL) {
+    if (config->channelConfigs != NULL_PTR) {
         for (uint8_t i = 0U; i < config->numChannels; i++) {
             if (i < DCM_TRANSPORT_MAX_CHANNELS) {
                 g_channelContexts[i].inUse = true;
@@ -286,8 +286,8 @@ Dcm_TransportReturnType Dcm_Transport_DeInit(void)
     memset(g_channelContexts, 0U, sizeof(g_channelContexts));
     memset(&g_protocolRegistry, 0U, sizeof(g_protocolRegistry));
     
-    g_rxCallback = NULL;
-    g_txCallback = NULL;
+    g_rxCallback = NULL_PTR;
+    g_txCallback = NULL_PTR;
     
     return DCM_TRANSPORT_OK;
 }
@@ -365,7 +365,7 @@ void Dcm_Transport_MainFunction(uint32_t elapsedTimeMs)
             if ((g_currentTimeMs - ctx->connectionStartTime) > timeout) {
                 ctx->state = DCM_TRANSPORT_STATE_ERROR;
                 ctx->stats.timeouts++;
-                Dcm_Transport_NotifyEvent(i, DCM_TRANSPORT_EVT_TIMEOUT, NULL);
+                Dcm_Transport_NotifyEvent(i, DCM_TRANSPORT_EVT_TIMEOUT, NULL_PTR);
             }
         }
         
@@ -393,7 +393,7 @@ Dcm_TransportReturnType Dcm_Transport_OpenChannel(
         return DCM_TRANSPORT_NOT_INITIALIZED;
     }
     
-    if (channelId == NULL) {
+    if (channelId == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -454,7 +454,7 @@ Dcm_TransportReturnType Dcm_Transport_ConfigureChannel(
         return DCM_TRANSPORT_NOT_INITIALIZED;
     }
     
-    if (!Dcm_Transport_IsValidChannel(channelId) || config == NULL) {
+    if (!Dcm_Transport_IsValidChannel(channelId) || config == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -491,7 +491,7 @@ Dcm_TransportReturnType Dcm_Transport_Connect(uint8_t channelId)
     ctx->lastActivityTime = Dcm_Transport_GetCurrentTimeMs();
     ctx->stats.connectionsEstablished++;
     
-    Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_CONNECT, NULL);
+    Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_CONNECT, NULL_PTR);
     
     return DCM_TRANSPORT_OK;
 }
@@ -519,7 +519,7 @@ Dcm_TransportReturnType Dcm_Transport_Disconnect(uint8_t channelId)
 /* [MISRA Advisory] Redundant:     ctx->state = DCM_TRANSPORT_STATE_IDLE; */
     ctx->stats.connectionsClosed++;
     
-    Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_DISCONNECT, NULL);
+    Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_DISCONNECT, NULL_PTR);
     
     return DCM_TRANSPORT_OK;
 }
@@ -577,7 +577,7 @@ Dcm_TransportReturnType Dcm_Transport_SendWithPriority(
         return DCM_TRANSPORT_NOT_INITIALIZED;
     }
     
-    if (!Dcm_Transport_IsValidChannel(channelId) || message == NULL) {
+    if (!Dcm_Transport_IsValidChannel(channelId) || message == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -600,7 +600,7 @@ Dcm_TransportReturnType Dcm_Transport_SendWithPriority(
     const Dcm_TransportProtocolInterfaceType *interface = 
         Dcm_Transport_GetProtocolInterface(ctx->config.protocol);
     
-    if (interface == NULL || interface->send == NULL) {
+    if (interface == NULL_PTR || interface->send == NULL_PTR) {
         return DCM_TRANSPORT_PROTOCOL_ERROR;
     }
     
@@ -626,10 +626,10 @@ Dcm_TransportReturnType Dcm_Transport_SendWithPriority(
         ctx->stats.bytesTransmitted += message->length;
         ctx->lastActivityTime = Dcm_Transport_GetCurrentTimeMs();
         
-        Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_TX_COMPLETE, NULL);
+        Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_TX_COMPLETE, NULL_PTR);
         
         /* Call TX confirmation callback */
-        if (g_txCallback != NULL) {
+        if (g_txCallback != NULL_PTR) {
             g_txCallback(channelId, DCM_TRANSPORT_OK);
         }
     } else {
@@ -652,7 +652,7 @@ Dcm_TransportReturnType Dcm_Transport_Receive(
         return DCM_TRANSPORT_NOT_INITIALIZED;
     }
     
-    if (!Dcm_Transport_IsValidChannel(channelId) || message == NULL) {
+    if (!Dcm_Transport_IsValidChannel(channelId) || message == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -671,7 +671,7 @@ Dcm_TransportReturnType Dcm_Transport_Receive(
     const Dcm_TransportProtocolInterfaceType *interface = 
         Dcm_Transport_GetProtocolInterface(ctx->config.protocol);
     
-    if (interface == NULL || interface->receive == NULL) {
+    if (interface == NULL_PTR || interface->receive == NULL_PTR) {
         return DCM_TRANSPORT_PROTOCOL_ERROR;
     }
     
@@ -687,10 +687,10 @@ Dcm_TransportReturnType Dcm_Transport_Receive(
         ctx->stats.bytesReceived += message->length;
         ctx->lastActivityTime = Dcm_Transport_GetCurrentTimeMs();
         
-        Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_RX_COMPLETE, NULL);
+        Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_RX_COMPLETE, NULL_PTR);
         
         /* Call RX callback */
-        if (g_rxCallback != NULL) {
+        if (g_rxCallback != NULL_PTR) {
             (void)g_rxCallback(channelId, message);
         }
     }
@@ -710,7 +710,7 @@ Dcm_TransportReturnType Dcm_Transport_RegisterRxCallback(
     Dcm_TransportRxCallbackType callback
 )
 {
-    if (callback == NULL) {
+    if (callback == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -722,7 +722,7 @@ Dcm_TransportReturnType Dcm_Transport_RegisterTxCallback(
     Dcm_TransportTxConfirmationType callback
 )
 {
-    if (callback == NULL) {
+    if (callback == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -771,7 +771,7 @@ Dcm_TransportReturnType Dcm_Transport_GetChannelInfo(
     Dcm_TransportChannelInfoType *info
 )
 {
-    if (info == NULL) {
+    if (info == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -802,7 +802,7 @@ Dcm_TransportReturnType Dcm_Transport_GetStatistics(
     Dcm_TransportStatisticsType *stats
 )
 {
-    if (stats == NULL) {
+    if (stats == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -845,7 +845,7 @@ Dcm_TransportReturnType Dcm_Transport_SetPriority(
     
     g_channelContexts[channelId].config.priority = priority;
     
-    Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_PRIORITY_CHANGED, NULL);
+    Dcm_Transport_NotifyEvent(channelId, DCM_TRANSPORT_EVT_PRIORITY_CHANGED, NULL_PTR);
     
     return DCM_TRANSPORT_OK;
 }
@@ -923,7 +923,7 @@ Dcm_TransportReturnType Dcm_Transport_RegisterProtocolInterface(
     const Dcm_TransportProtocolInterfaceType *protocolInterface
 )
 {
-    if (protocolInterface == NULL) {
+    if (protocolInterface == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -949,7 +949,7 @@ const char* Dcm_Transport_GetProtocolName(Dcm_TransportProtocolType protocol)
     const Dcm_TransportProtocolInterfaceType *interface = 
         Dcm_Transport_FindProtocolInterface(protocol);
     
-    if (interface != NULL) {
+    if (interface != NULL_PTR) {
         return interface->protocolName;
     }
     
@@ -962,7 +962,7 @@ const char* Dcm_Transport_GetProtocolName(Dcm_TransportProtocolType protocol)
 
 bool Dcm_Transport_IsProtocolSupported(Dcm_TransportProtocolType protocol)
 {
-    return (Dcm_Transport_FindProtocolInterface(protocol) != NULL);
+    return (Dcm_Transport_FindProtocolInterface(protocol) != NULL_PTR);
 }
 
 uint8_t Dcm_Transport_GetActiveChannelCount(void)
@@ -1020,11 +1020,11 @@ Dcm_ReturnType Dcm_Transport_ConvertReturnType(Dcm_TransportReturnType transport
 
 bool Dcm_Transport_ValidateMessage(const Dcm_TransportMessageType *message)
 {
-    if (message == NULL) {
+    if (message == NULL_PTR) {
         return false;
     }
     
-    if (message->data == NULL && message->length > 0U) {
+    if (message->data == NULL_PTR && message->length > 0U) {
         return false;
     }
     
@@ -1051,7 +1051,7 @@ Dcm_TransportReturnType Dcm_Transport_DoIp_Send(
 {
     (void)channelId;
     
-    if (message == NULL) {
+    if (message == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -1124,7 +1124,7 @@ Dcm_TransportReturnType Dcm_Transport_DoCan_Send(
 {
     (void)channelId;
     
-    if (message == NULL) {
+    if (message == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     
@@ -1196,7 +1196,7 @@ Dcm_TransportReturnType Dcm_Transport_IsoTp_Send(
     const Dcm_TransportMessageType *message
 )
 {
-    if (message == NULL) {
+    if (message == NULL_PTR) {
         return DCM_TRANSPORT_INVALID_PARAMETER;
     }
     

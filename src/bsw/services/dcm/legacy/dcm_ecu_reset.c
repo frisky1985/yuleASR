@@ -57,7 +57,7 @@ static const Dcm_EcuResetConfigType s_defaultResetConfig = {
     .resetDelayMs = 10,                     /* 10ms delay for response transmission */
     .requireProgrammingSession = false,
     .requireExtendedSession = false,
-    .resetCallback = NULL
+    .resetCallback = NULL_PTR
 };
 
 /******************************************************************************
@@ -140,8 +140,8 @@ static void recordResetRequest(Dcm_ResetType resetType)
 
 Dcm_ReturnType Dcm_EcuResetInit(const Dcm_EcuResetConfigType *config)
 {
-    /* Use default config if NULL */
-    if (config == NULL) {
+    /* Use default config if NULL_PTR */
+    if (config == NULL_PTR) {
         config = &s_defaultResetConfig;
     }
     
@@ -173,7 +173,7 @@ Dcm_ReturnType Dcm_EcuReset(
         return DCM_E_NOT_OK;
     }
     
-    if (request == NULL || response == NULL) {
+    if (request == NULL_PTR || response == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -266,7 +266,7 @@ Dcm_ReturnType Dcm_EcuReset(
     s_resetState.status.resetRequestTime = 0;  /* 重置请求时间戳 - 依赖系统定时器集成 */
     
     /* Notify callback if registered */
-    if (s_resetState.config->resetCallback != NULL) {
+    if (s_resetState.config->resetCallback != NULL_PTR) {
         s_resetState.config->resetCallback(resetType);
     }
     
@@ -425,7 +425,7 @@ Dcm_ReturnType Dcm_CancelEcuReset(void)
 
 Dcm_ReturnType Dcm_GetEcuResetStatus(Dcm_EcuResetStatusType *status)
 {
-    if (!s_initialized || status == NULL) {
+    if (!s_initialized || status == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     

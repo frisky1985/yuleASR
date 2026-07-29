@@ -105,7 +105,7 @@ static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response,
                                             uint8_t sid,
                                             uint8_t nrc)
 {
-    if ((response != NULL) && (response->data != NULL) &&
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) &&
         (response->maxLength >= 3U)) {
         response->data[0U] = DCM_SID_NEGATIVE_RESPONSE;
         response->data[1U] = sid;
@@ -150,7 +150,7 @@ static Dcm_ServiceHandlerFunc getServiceHandler(uint8_t serviceId)
         case UDS_SVC_ROUTINE_CONTROL:
             return Dcm_RoutineControl;
         default:
-            return NULL;
+            return NULL_PTR;
     }
 }
 
@@ -163,7 +163,7 @@ static Dcm_ReturnType processFastPath(uint8_t serviceId,
 {
     Dcm_ServiceHandlerFunc handler = getServiceHandler(serviceId);
     
-    if (handler != NULL) {
+    if (handler != NULL_PTR) {
         s_optState.stats.fastPathHits++;
         s_optState.stats.serviceCounts[serviceId & 0x1FU]++;
         return handler(request, response);
@@ -243,7 +243,7 @@ Dcm_ReturnType Dcm_OptimizedInit(const Dcm_OptimizedConfigType *config)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return result;
     }
     
@@ -297,7 +297,7 @@ Dcm_ReturnType Dcm_OptimizedDeInit(void)
         s_optState.initialized = false;
         s_optState.state = DCM_STATE_UNINIT;
         s_optState.magic = 0U;
-        s_optState.config = NULL;
+        s_optState.config = NULL_PTR;
         
         result = Dcm_DeInit();
     }
@@ -342,8 +342,8 @@ Dcm_ReturnType Dcm_OptimizedProcessRequest(const Dcm_RequestType *request,
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL) ||
-        (request->data == NULL) || (request->length == 0U)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR) ||
+        (request->data == NULL_PTR) || (request->length == 0U)) {
         return DCM_E_NOT_OK;
     }
     
@@ -434,7 +434,7 @@ bool Dcm_OptimizedIsInitialized(void)
 
 Dcm_ReturnType Dcm_OptimizedGetStats(Dcm_PerformanceStats *stats)
 {
-    if (!s_optState.initialized || (stats == NULL)) {
+    if (!s_optState.initialized || (stats == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     

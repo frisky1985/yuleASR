@@ -94,7 +94,7 @@ static Dcm_ReturnType sendNegativeResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= 3U)) {
         response->data[0U] = DCM_SID_NEGATIVE_RESPONSE;
         response->data[1U] = sid;
@@ -125,8 +125,8 @@ static int16_t findDidInDatabase(uint16_t did)
     }
     
     /* If not found in runtime, search static configuration */
-    if ((result < 0) && (s_didState.config != NULL) && 
-        (s_didState.config->didTable != NULL)) {
+    if ((result < 0) && (s_didState.config != NULL_PTR) && 
+        (s_didState.config->didTable != NULL_PTR)) {
         for (i = 0U; i < s_didState.config->numDids; i++) {
             if (s_didState.config->didTable[i].did == did) {
                 /* Return index as negative to indicate static table */
@@ -146,7 +146,7 @@ static bool checkDidAccess(uint16_t did, uint8_t *nrc)
 {
     bool accessAllowed = false;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     Dcm_SessionType currentSession;
     uint8_t currentSecurityLevel;
     
@@ -172,7 +172,7 @@ static bool checkDidAccess(uint16_t did, uint8_t *nrc)
             didInfo = s_didState.config->didTable[staticIndex].info;
         }
         
-        if (didInfo != NULL) {
+        if (didInfo != NULL_PTR) {
             /* Check if read is enabled */
             if (!didInfo->readEnabled) {
                 *nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
@@ -212,7 +212,7 @@ static Dcm_ReturnType readSingleDid(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     uint16_t dataLength = 0U;
     
     /* Check access permissions */
@@ -233,7 +233,7 @@ static Dcm_ReturnType readSingleDid(
     } else {
         /* DID not found in database - check for standard DIDs */
         /* This would be handled by default handlers */
-        didInfo = NULL;
+        didInfo = NULL_PTR;
     }
     
     /* Check buffer size for DID + data */
@@ -247,9 +247,9 @@ static Dcm_ReturnType readSingleDid(
     responseData[1U] = (uint8_t)(did & 0xFFU);
     *responseLength = 2U;
     
-    if (didInfo != NULL) {
+    if (didInfo != NULL_PTR) {
         /* Use registered callback */
-        if (didInfo->readCallback != NULL) {
+        if (didInfo->readCallback != NULL_PTR) {
             result = didInfo->readCallback(
                 did,
                 &responseData[2U],
@@ -323,7 +323,7 @@ Dcm_ReturnType Dcm_DidInit(const Dcm_DidConfigType *config)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         /* Clear state */
         (void)memset(&s_didState, 0, sizeof(s_didState));
         
@@ -355,8 +355,8 @@ Dcm_ReturnType Dcm_ReadDataByIdentifier(
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL) || 
-        (request->data == NULL) || (response->data == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR) || 
+        (request->data == NULL_PTR) || (response->data == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     
@@ -381,7 +381,7 @@ Dcm_ReturnType Dcm_ReadDataByIdentifier(
     
     /* Check if multiple DIDs are supported */
     if ((numDids > 1U) && 
-        ((s_didState.config == NULL) || (!s_didState.config->supportMultipleDids))) {
+        ((s_didState.config == NULL_PTR) || (!s_didState.config->supportMultipleDids))) {
         nrc = UDS_NRC_INCORRECT_MESSAGE_LENGTH_OR_FORMAT;
         (void)sendNegativeResponse(response, UDS_SVC_READ_DATA_BY_IDENTIFIER, nrc);
         s_didState.status.readErrorCount++;
@@ -389,7 +389,7 @@ Dcm_ReturnType Dcm_ReadDataByIdentifier(
     }
     
     /* Check max DIDs per request */
-    if ((s_didState.config != NULL) && 
+    if ((s_didState.config != NULL_PTR) && 
         (numDids > s_didState.config->maxDidsPerRequest)) {
         nrc = UDS_NRC_INCORRECT_MESSAGE_LENGTH_OR_FORMAT;
         (void)sendNegativeResponse(response, UDS_SVC_READ_DATA_BY_IDENTIFIER, nrc);
@@ -459,7 +459,7 @@ Dcm_ReturnType Dcm_RegisterDid(uint16_t did, const Dcm_DidInfoType *info)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((!s_didState.initialized) || (info == NULL)) {
+    if ((!s_didState.initialized) || (info == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     
@@ -472,7 +472,7 @@ Dcm_ReturnType Dcm_RegisterDid(uint16_t did, const Dcm_DidInfoType *info)
     if (s_didState.runtimeDbCount < DCM_DID_MAX_DATABASE_SIZE) {
         s_didState.runtimeDatabase[s_didState.runtimeDbCount].did = did;
         s_didState.runtimeDatabase[s_didState.runtimeDbCount].info = info;
-        s_didState.runtimeDatabase[s_didState.runtimeDbCount].context = NULL;
+        s_didState.runtimeDatabase[s_didState.runtimeDbCount].context = NULL_PTR;
         s_didState.runtimeDbCount++;
         result = DCM_E_OK;
     }
@@ -535,7 +535,7 @@ bool Dcm_IsDidReadable(uint16_t did)
 {
     bool readable = false;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
     if (s_didState.initialized) {
         didIndex = findDidInDatabase(did);
@@ -547,7 +547,7 @@ bool Dcm_IsDidReadable(uint16_t did)
             didInfo = s_didState.config->didTable[staticIndex].info;
         }
         
-        if (didInfo != NULL) {
+        if (didInfo != NULL_PTR) {
             readable = didInfo->readEnabled;
         }
     }
@@ -560,7 +560,7 @@ Dcm_ReturnType Dcm_GetDidInfo(uint16_t did, const Dcm_DidInfoType **info)
     Dcm_ReturnType result = DCM_E_NOT_OK;
     int16_t didIndex;
     
-    if ((s_didState.initialized) && (info != NULL)) {
+    if ((s_didState.initialized) && (info != NULL_PTR)) {
         didIndex = findDidInDatabase(did);
         
         if (didIndex >= 0) {
@@ -584,10 +584,10 @@ Dcm_ReturnType Dcm_ReadDidData(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
-    if ((!s_didState.initialized) || (dataBuffer == NULL) || 
-        (dataLength == NULL) || (bufferSize == 0U)) {
+    if ((!s_didState.initialized) || (dataBuffer == NULL_PTR) || 
+        (dataLength == NULL_PTR) || (bufferSize == 0U)) {
         return DCM_E_NOT_OK;
     }
     
@@ -600,7 +600,7 @@ Dcm_ReturnType Dcm_ReadDidData(
         didInfo = s_didState.config->didTable[staticIndex].info;
     }
     
-    if ((didInfo != NULL) && (didInfo->readCallback != NULL)) {
+    if ((didInfo != NULL_PTR) && (didInfo->readCallback != NULL_PTR)) {
         result = didInfo->readCallback(did, dataBuffer, bufferSize, dataLength);
     }
     
@@ -611,7 +611,7 @@ bool Dcm_CheckDidSecurity(uint16_t did, uint8_t currentSecurityLevel)
 {
     bool accessGranted = false;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
     if (s_didState.initialized) {
         didIndex = findDidInDatabase(did);
@@ -623,7 +623,7 @@ bool Dcm_CheckDidSecurity(uint16_t did, uint8_t currentSecurityLevel)
             didInfo = s_didState.config->didTable[staticIndex].info;
         }
         
-        if (didInfo != NULL) {
+        if (didInfo != NULL_PTR) {
             if (didInfo->requiredSecurityLevel == 0U) {
                 accessGranted = true;
             } else {
@@ -642,7 +642,7 @@ bool Dcm_CheckDidSession(uint16_t did, Dcm_SessionType currentSession)
 {
     bool accessGranted = false;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
     (void)did; /* Prevent unused parameter warning when not used */
     
@@ -656,7 +656,7 @@ bool Dcm_CheckDidSession(uint16_t did, Dcm_SessionType currentSession)
             didInfo = s_didState.config->didTable[staticIndex].info;
         }
         
-        if (didInfo != NULL) {
+        if (didInfo != NULL_PTR) {
             /* Check if current session is in supported sessions bitmask */
             uint8_t sessionMask = (uint8_t)(1U << ((uint8_t)currentSession - 1U));
             accessGranted = ((didInfo->supportedSessions & sessionMask) != 0U);
@@ -715,7 +715,7 @@ Dcm_ReturnType Dcm_GetDidStatus(Dcm_DidStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((s_didState.initialized) && (status != NULL)) {
+    if ((s_didState.initialized) && (status != NULL_PTR)) {
         (void)memcpy(status, &s_didState.status, sizeof(Dcm_DidStatusType));
         result = DCM_E_OK;
     }
@@ -727,7 +727,7 @@ bool Dcm_IsMultipleDidSupported(void)
 {
     bool supported = false;
     
-    if ((s_didState.initialized) && (s_didState.config != NULL)) {
+    if ((s_didState.initialized) && (s_didState.config != NULL_PTR)) {
         supported = s_didState.config->supportMultipleDids;
     }
     
@@ -738,7 +738,7 @@ bool Dcm_IsDidWritable(uint16_t did)
 {
     bool writable = false;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
     if (s_didState.initialized) {
         didIndex = findDidInDatabase(did);
@@ -750,7 +750,7 @@ bool Dcm_IsDidWritable(uint16_t did)
             didInfo = s_didState.config->didTable[staticIndex].info;
         }
         
-        if (didInfo != NULL) {
+        if (didInfo != NULL_PTR) {
             writable = didInfo->writeEnabled;
         }
     }
@@ -765,7 +765,7 @@ static bool checkDidWriteAccess(uint16_t did, uint8_t *nrc)
 {
     bool accessAllowed = false;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     Dcm_SessionType currentSession;
     uint8_t currentSecurityLevel;
     
@@ -784,7 +784,7 @@ static bool checkDidWriteAccess(uint16_t did, uint8_t *nrc)
             didInfo = s_didState.config->didTable[staticIndex].info;
         }
         
-        if (didInfo != NULL) {
+        if (didInfo != NULL_PTR) {
             /* Check if write is enabled */
             if (!didInfo->writeEnabled) {
                 *nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
@@ -823,7 +823,7 @@ static Dcm_ReturnType writeSingleDid(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
     /* Check access permissions */
     if (!checkDidWriteAccess(did, nrc)) {
@@ -846,7 +846,7 @@ static Dcm_ReturnType writeSingleDid(
         return DCM_E_NOT_OK;
     }
     
-    if (didInfo != NULL) {
+    if (didInfo != NULL_PTR) {
         /* Check data length */
         if (didInfo->dataLength > 0U) {
             /* Fixed length DID */
@@ -863,7 +863,7 @@ static Dcm_ReturnType writeSingleDid(
         }
         
         /* Use registered callback */
-        if (didInfo->writeCallback != NULL) {
+        if (didInfo->writeCallback != NULL_PTR) {
             result = didInfo->writeCallback(did, writeData, writeDataLength);
             
             if (result != DCM_E_OK) {
@@ -896,8 +896,8 @@ Dcm_ReturnType Dcm_WriteDataByIdentifier(
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL) || 
-        (request->data == NULL) || (response->data == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR) || 
+        (request->data == NULL_PTR) || (response->data == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     
@@ -966,9 +966,9 @@ Dcm_ReturnType Dcm_WriteDidData(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     int16_t didIndex;
-    const Dcm_DidInfoType *didInfo = NULL;
+    const Dcm_DidInfoType *didInfo = NULL_PTR;
     
-    if ((!s_didState.initialized) || (data == NULL) || (dataLength == 0U)) {
+    if ((!s_didState.initialized) || (data == NULL_PTR) || (dataLength == 0U)) {
         return DCM_E_NOT_OK;
     }
     
@@ -981,7 +981,7 @@ Dcm_ReturnType Dcm_WriteDidData(
         didInfo = s_didState.config->didTable[staticIndex].info;
     }
     
-    if ((didInfo != NULL) && (didInfo->writeCallback != NULL) && didInfo->writeEnabled) {
+    if ((didInfo != NULL_PTR) && (didInfo->writeCallback != NULL_PTR) && didInfo->writeEnabled) {
         result = didInfo->writeCallback(did, data, dataLength);
     }
     
@@ -1007,7 +1007,7 @@ Dcm_ReturnType Dcm_ExtractDidFromRequest(
     Dcm_ReturnType result = DCM_E_NOT_OK;
     uint32_t offset;
     
-    if ((requestData != NULL) && (did != NULL)) {
+    if ((requestData != NULL_PTR) && (did != NULL_PTR)) {
         offset = 1U + ((uint32_t)didIndex * DCM_DID_RECORD_SIZE);
         *did = (uint16_t)(((uint16_t)requestData[offset] << 8U) | 
                           (uint16_t)requestData[offset + 1U]);
@@ -1045,7 +1045,7 @@ __attribute__((weak)) Dcm_ReturnType Dcm_ReadDid_ActiveSession(
     
     (void)did;
     
-    if ((dataBuffer != NULL) && (dataLength != NULL) && (bufferSize >= 1U)) {
+    if ((dataBuffer != NULL_PTR) && (dataLength != NULL_PTR) && (bufferSize >= 1U)) {
         currentSession = Dcm_GetCurrentSession();
         dataBuffer[0U] = (uint8_t)currentSession;
         *dataLength = 1U;

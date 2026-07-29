@@ -59,11 +59,11 @@ static const Dcm_IoControlConfigType s_defaultIoControls[] = {
         .controlEnableMaskSupported = false,
         .requiredSecurityLevel = 1U,
         .requiredSession = DCM_SESSION_EXTENDED,
-        .returnToEcuFunc = NULL,
-        .resetToDefaultFunc = NULL,
-        .freezeStateFunc = NULL,
-        .shortTermFunc = NULL,
-        .conditionCheckFunc = NULL,
+        .returnToEcuFunc = NULL_PTR,
+        .resetToDefaultFunc = NULL_PTR,
+        .freezeStateFunc = NULL_PTR,
+        .shortTermFunc = NULL_PTR,
+        .conditionCheckFunc = NULL_PTR,
         .controlStateSize = 2U,
         .description = "ECU Supply Voltage Control"
     },
@@ -76,11 +76,11 @@ static const Dcm_IoControlConfigType s_defaultIoControls[] = {
         .controlEnableMaskSupported = true,
         .requiredSecurityLevel = 1U,
         .requiredSession = DCM_SESSION_EXTENDED,
-        .returnToEcuFunc = NULL,
-        .resetToDefaultFunc = NULL,
-        .freezeStateFunc = NULL,
-        .shortTermFunc = NULL,
-        .conditionCheckFunc = NULL,
+        .returnToEcuFunc = NULL_PTR,
+        .resetToDefaultFunc = NULL_PTR,
+        .freezeStateFunc = NULL_PTR,
+        .shortTermFunc = NULL_PTR,
+        .conditionCheckFunc = NULL_PTR,
         .controlStateSize = 2U,
         .description = "Engine RPM Control"
     },
@@ -93,11 +93,11 @@ static const Dcm_IoControlConfigType s_defaultIoControls[] = {
         .controlEnableMaskSupported = false,
         .requiredSecurityLevel = 1U,
         .requiredSession = DCM_SESSION_EXTENDED,
-        .returnToEcuFunc = NULL,
-        .resetToDefaultFunc = NULL,
-        .freezeStateFunc = NULL,
-        .shortTermFunc = NULL,
-        .conditionCheckFunc = NULL,
+        .returnToEcuFunc = NULL_PTR,
+        .resetToDefaultFunc = NULL_PTR,
+        .freezeStateFunc = NULL_PTR,
+        .shortTermFunc = NULL_PTR,
+        .conditionCheckFunc = NULL_PTR,
         .controlStateSize = 1U,
         .description = "Fuel Pump Control"
     },
@@ -110,11 +110,11 @@ static const Dcm_IoControlConfigType s_defaultIoControls[] = {
         .controlEnableMaskSupported = true,
         .requiredSecurityLevel = 1U,
         .requiredSession = DCM_SESSION_EXTENDED,
-        .returnToEcuFunc = NULL,
-        .resetToDefaultFunc = NULL,
-        .freezeStateFunc = NULL,
-        .shortTermFunc = NULL,
-        .conditionCheckFunc = NULL,
+        .returnToEcuFunc = NULL_PTR,
+        .resetToDefaultFunc = NULL_PTR,
+        .freezeStateFunc = NULL_PTR,
+        .shortTermFunc = NULL_PTR,
+        .conditionCheckFunc = NULL_PTR,
         .controlStateSize = 2U,
         .description = "Throttle Position Control"
     }
@@ -129,7 +129,7 @@ static const Dcm_IoControlConfigType s_defaultIoControls[] = {
  */
 static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response, uint8_t nrc)
 {
-    if (response != NULL) {
+    if (response != NULL_PTR) {
         response->isNegativeResponse = true;
         response->negativeResponseCode = nrc;
         response->length = 0U;
@@ -146,13 +146,13 @@ static Dcm_ReturnType sendPositiveResponse(Dcm_ResponseType *response,
                                            const uint8_t *statusRecord,
                                            uint16_t statusLength)
 {
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= (uint32_t)(3U + statusLength))) {
         response->data[0U] = (uint8_t)(UDS_SVC_INPUT_OUTPUT_CONTROL_BY_IDENTIFIER + 0x40U);
         response->data[1U] = (uint8_t)((dataIdentifier >> 8) & 0xFFU);
         response->data[2U] = (uint8_t)(dataIdentifier & 0xFFU);
         
-        if ((statusRecord != NULL) && (statusLength > 0U)) {
+        if ((statusRecord != NULL_PTR) && (statusLength > 0U)) {
             (void)memcpy(&response->data[3U], statusRecord, statusLength);
         }
         
@@ -168,14 +168,14 @@ static Dcm_ReturnType sendPositiveResponse(Dcm_ResponseType *response,
  */
 static const Dcm_IoControlConfigType* findIoControlConfig(uint16_t dataIdentifier)
 {
-    if (s_ioControlState.initialized && (s_ioControlState.ioControls != NULL)) {
+    if (s_ioControlState.initialized && (s_ioControlState.ioControls != NULL_PTR)) {
         for (uint8_t i = 0U; i < s_ioControlState.numIoControls; i++) {
             if (s_ioControlState.ioControls[i].dataIdentifier == dataIdentifier) {
                 return &s_ioControlState.ioControls[i];
             }
         }
     }
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -183,7 +183,7 @@ static const Dcm_IoControlConfigType* findIoControlConfig(uint16_t dataIdentifie
  */
 static bool checkIoControlAccess(const Dcm_IoControlConfigType *config)
 {
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return false;
     }
     
@@ -211,7 +211,7 @@ static bool checkIoControlConditions(uint16_t dataIdentifier, uint8_t controlTyp
 {
     const Dcm_IoControlConfigType *config = findIoControlConfig(dataIdentifier);
     
-    if ((config != NULL) && (config->conditionCheckFunc != NULL)) {
+    if ((config != NULL_PTR) && (config->conditionCheckFunc != NULL_PTR)) {
         bool conditionsOk = false;
         if (config->conditionCheckFunc(dataIdentifier, controlType, &conditionsOk) == DCM_E_OK) {
             return conditionsOk;
@@ -238,7 +238,7 @@ Dcm_ReturnType Dcm_IoControlInit(const Dcm_IoControlConfigType *ioControls,
     s_ioControlState.status.state = DCM_IO_STATE_ECU_CONTROL;
     s_ioControlState.status.isActive = false;
     
-    if ((ioControls != NULL) && (numIoControls > 0U)) {
+    if ((ioControls != NULL_PTR) && (numIoControls > 0U)) {
         s_ioControlState.ioControls = ioControls;
         s_ioControlState.numIoControls = numIoControls;
     } else {
@@ -264,7 +264,7 @@ Dcm_ReturnType Dcm_InputOutputControlByIdentifier(const Dcm_RequestType *request
         return result;
     }
     
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -284,7 +284,7 @@ Dcm_ReturnType Dcm_InputOutputControlByIdentifier(const Dcm_RequestType *request
     /* Find IO control configuration */
     const Dcm_IoControlConfigType *ioConfig = findIoControlConfig(dataIdentifier);
     
-    if (ioConfig == NULL) {
+    if (ioConfig == NULL_PTR) {
         nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
         (void)sendNegativeResponse(response, nrc);
         return result;
@@ -381,7 +381,7 @@ Dcm_ReturnType Dcm_InputOutputControlByIdentifier(const Dcm_RequestType *request
             }
             
             /* Check for control enable mask */
-            const uint8_t *controlEnableMask = NULL;
+            const uint8_t *controlEnableMask = NULL_PTR;
             uint16_t maskLength = 0U;
             
             if (ioConfig->controlEnableMaskSupported) {
@@ -440,11 +440,11 @@ Dcm_ReturnType Dcm_IoControlReturnToEcu(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((controlStatusRecord != NULL) && (statusLength != NULL) && s_ioControlState.initialized) {
+    if ((controlStatusRecord != NULL_PTR) && (statusLength != NULL_PTR) && s_ioControlState.initialized) {
         const Dcm_IoControlConfigType *config = findIoControlConfig(dataIdentifier);
         
-        if ((config != NULL) && config->returnToEcuSupported) {
-            if (config->returnToEcuFunc != NULL) {
+        if ((config != NULL_PTR) && config->returnToEcuSupported) {
+            if (config->returnToEcuFunc != NULL_PTR) {
                 result = config->returnToEcuFunc(dataIdentifier, controlStatusRecord, statusLength);
             } else {
                 /* Default implementation */
@@ -462,11 +462,11 @@ Dcm_ReturnType Dcm_IoControlResetToDefault(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((controlStatusRecord != NULL) && (statusLength != NULL) && s_ioControlState.initialized) {
+    if ((controlStatusRecord != NULL_PTR) && (statusLength != NULL_PTR) && s_ioControlState.initialized) {
         const Dcm_IoControlConfigType *config = findIoControlConfig(dataIdentifier);
         
-        if ((config != NULL) && config->resetToDefaultSupported) {
-            if (config->resetToDefaultFunc != NULL) {
+        if ((config != NULL_PTR) && config->resetToDefaultSupported) {
+            if (config->resetToDefaultFunc != NULL_PTR) {
                 result = config->resetToDefaultFunc(dataIdentifier, controlStatusRecord, statusLength);
             } else {
                 /* Default implementation */
@@ -484,11 +484,11 @@ Dcm_ReturnType Dcm_IoControlFreezeCurrentState(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((controlStatusRecord != NULL) && (statusLength != NULL) && s_ioControlState.initialized) {
+    if ((controlStatusRecord != NULL_PTR) && (statusLength != NULL_PTR) && s_ioControlState.initialized) {
         const Dcm_IoControlConfigType *config = findIoControlConfig(dataIdentifier);
         
-        if ((config != NULL) && config->freezeStateSupported) {
-            if (config->freezeStateFunc != NULL) {
+        if ((config != NULL_PTR) && config->freezeStateSupported) {
+            if (config->freezeStateFunc != NULL_PTR) {
                 result = config->freezeStateFunc(dataIdentifier, controlStatusRecord, statusLength);
             } else {
                 /* Default implementation */
@@ -510,12 +510,12 @@ Dcm_ReturnType Dcm_IoControlShortTermAdjustment(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((controlStatusRecord != NULL) && (statusLength != NULL) && 
+    if ((controlStatusRecord != NULL_PTR) && (statusLength != NULL_PTR) && 
         s_ioControlState.initialized) {
         const Dcm_IoControlConfigType *config = findIoControlConfig(dataIdentifier);
         
-        if ((config != NULL) && config->shortTermAdjustmentSupported) {
-            if (config->shortTermFunc != NULL) {
+        if ((config != NULL_PTR) && config->shortTermAdjustmentSupported) {
+            if (config->shortTermFunc != NULL_PTR) {
                 result = config->shortTermFunc(dataIdentifier, controlState, controlStateLength,
                                                controlEnableMask, maskLength,
                                                controlStatusRecord, statusLength);
@@ -534,7 +534,7 @@ Dcm_ReturnType Dcm_IoControlShortTermAdjustment(uint16_t dataIdentifier,
 
 bool Dcm_IsIoControlSupported(uint16_t dataIdentifier)
 {
-    return (findIoControlConfig(dataIdentifier) != NULL);
+    return (findIoControlConfig(dataIdentifier) != NULL_PTR);
 }
 
 const Dcm_IoControlConfigType* Dcm_GetIoControlConfig(uint16_t dataIdentifier)
@@ -546,7 +546,7 @@ Dcm_ReturnType Dcm_GetIoControlStatus(Dcm_IoControlStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((status != NULL) && s_ioControlState.initialized) {
+    if ((status != NULL_PTR) && s_ioControlState.initialized) {
         *status = s_ioControlState.status;
         result = DCM_E_OK;
     }
@@ -583,7 +583,7 @@ bool Dcm_IsIoControlTypeSupported(uint16_t dataIdentifier, uint8_t controlType)
     const Dcm_IoControlConfigType *config = findIoControlConfig(dataIdentifier);
     bool supported = false;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         switch (controlType) {
             case DCM_IO_CTRL_RETURN_TO_ECU:
                 supported = config->returnToEcuSupported;
@@ -616,7 +616,7 @@ Dcm_ReturnType Dcm_IoCtrl_DefaultReturnToEcu(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL)) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR)) {
         /* Return control to ECU - status shows ECU is in control */
         *statusLength = 1U;
         statusRecord[0U] = DCM_IO_CTRL_RETURN_TO_ECU;
@@ -637,7 +637,7 @@ Dcm_ReturnType Dcm_IoCtrl_DefaultResetToDefault(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL)) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR)) {
         /* Reset to default value - return current state */
         *statusLength = 3U;
         statusRecord[0U] = DCM_IO_CTRL_RESET_TO_DEFAULT;
@@ -660,7 +660,7 @@ Dcm_ReturnType Dcm_IoCtrl_DefaultFreezeState(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL)) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR)) {
         /* Freeze current state - return frozen state indication */
         *statusLength = 3U;
         statusRecord[0U] = DCM_IO_CTRL_FREEZE_CURRENT_STATE;
@@ -687,8 +687,8 @@ Dcm_ReturnType Dcm_IoCtrl_DefaultShortTermAdjustment(uint16_t dataIdentifier,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((statusRecord != NULL) && (statusLength != NULL) && 
-        (controlState != NULL) && (controlStateLength > 0U)) {
+    if ((statusRecord != NULL_PTR) && (statusLength != NULL_PTR) && 
+        (controlState != NULL_PTR) && (controlStateLength > 0U)) {
         /* Apply control state with optional enable mask */
         *statusLength = (uint16_t)(1U + controlStateLength);
         if (*statusLength > DCM_MAX_CONTROL_STATUS_RECORD) {
@@ -704,7 +704,7 @@ Dcm_ReturnType Dcm_IoCtrl_DefaultShortTermAdjustment(uint16_t dataIdentifier,
         }
         
         /* Apply control enable mask if provided */
-        if ((controlEnableMask != NULL) && (maskLength > 0U)) {
+        if ((controlEnableMask != NULL_PTR) && (maskLength > 0U)) {
             for (uint16_t i = 0U; i < copyLength; i++) {
                 uint8_t mask = (i < maskLength) ? controlEnableMask[i] : 0xFFU;
                 statusRecord[1U + i] = controlState[i] & mask;

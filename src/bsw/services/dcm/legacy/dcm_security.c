@@ -67,8 +67,8 @@ static const Dcm_SecurityLevelConfigType s_defaultLevelConfigs[] = {
         .delayTimeMs = DCM_SEC_REQUIRED_TIME_DELAY_MS,
         .seedLength = DCM_SEC_SEED_LENGTH,
         .keyLength = DCM_SEC_KEY_LENGTH,
-        .seedCallback = NULL,  /* Use default */
-        .keyCallback = NULL,   /* Use default */
+        .seedCallback = NULL_PTR,  /* Use default */
+        .keyCallback = NULL_PTR,   /* Use default */
         .csmKeyDeriveEnabled = false,
         .csmKeyId = 0U
     },
@@ -79,8 +79,8 @@ static const Dcm_SecurityLevelConfigType s_defaultLevelConfigs[] = {
         .delayTimeMs = DCM_SEC_REQUIRED_TIME_DELAY_MS,
         .seedLength = DCM_SEC_SEED_LENGTH,
         .keyLength = DCM_SEC_KEY_LENGTH,
-        .seedCallback = NULL,
-        .keyCallback = NULL,
+        .seedCallback = NULL_PTR,
+        .keyCallback = NULL_PTR,
         .csmKeyDeriveEnabled = false,
         .csmKeyId = 1U
     },
@@ -91,8 +91,8 @@ static const Dcm_SecurityLevelConfigType s_defaultLevelConfigs[] = {
         .delayTimeMs = DCM_SEC_REQUIRED_TIME_DELAY_MS,
         .seedLength = DCM_SEC_SEED_LENGTH,
         .keyLength = DCM_SEC_KEY_LENGTH,
-        .seedCallback = NULL,
-        .keyCallback = NULL,
+        .seedCallback = NULL_PTR,
+        .keyCallback = NULL_PTR,
         .csmKeyDeriveEnabled = true,
         .csmKeyId = 2U
     }
@@ -107,9 +107,9 @@ static const Dcm_SecurityLevelConfigType s_defaultLevelConfigs[] = {
  */
 static const Dcm_SecurityLevelConfigType* getLevelConfig(uint8_t securityLevel)
 {
-    const Dcm_SecurityLevelConfigType *config = NULL;
+    const Dcm_SecurityLevelConfigType *config = NULL_PTR;
     
-    if (s_securityState.config != NULL) {
+    if (s_securityState.config != NULL_PTR) {
         for (uint8_t i = 0U; i < s_securityState.config->numSecurityLevels; i++) {
             if (s_securityState.config->levelConfigs[i].securityLevel == securityLevel) {
                 config = &s_securityState.config->levelConfigs[i];
@@ -150,7 +150,7 @@ static Dcm_ReturnType sendNegativeResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (response != NULL) {
+    if (response != NULL_PTR) {
         response->isNegativeResponse = true;
         response->negativeResponseCode = nrc;
         response->length = 0U;
@@ -172,12 +172,12 @@ static Dcm_ReturnType sendSeedResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= (uint32_t)(2U + seedLength))) {
         response->data[0U] = (uint8_t)(UDS_SVC_SECURITY_ACCESS + 0x40U);  /* Positive response SID */
         response->data[1U] = subfunction;
         
-        if ((seed != NULL) && (seedLength > 0U)) {
+        if ((seed != NULL_PTR) && (seedLength > 0U)) {
             (void)memcpy(&response->data[2U], seed, seedLength);
         }
         
@@ -199,7 +199,7 @@ static Dcm_ReturnType sendKeyResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= 2U)) {
         response->data[0U] = (uint8_t)(UDS_SVC_SECURITY_ACCESS + 0x40U);
         response->data[1U] = subfunction;
@@ -218,7 +218,7 @@ static Dcm_ReturnType generateRandomSeed(uint8_t *seedBuffer, uint8_t seedLength
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((seedBuffer != NULL) && (seedLength > 0U)) {
+    if ((seedBuffer != NULL_PTR) && (seedLength > 0U)) {
         /* Use simple pseudo-random for now - in production use CSM or HW RNG */
         static uint32_t seed = 0x12345678U;
         
@@ -244,7 +244,7 @@ static Dcm_ReturnType calculateKey(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((seed != NULL) && (key != NULL) && (length > 0U)) {
+    if ((seed != NULL_PTR) && (key != NULL_PTR) && (length > 0U)) {
         /* Simple key derivation - XOR seed with level-specific constant */
         /* In production, use proper cryptographic derivation via CSM */
         const uint8_t levelConstant[8U] = {
@@ -268,7 +268,7 @@ Dcm_ReturnType Dcm_SecurityAccessInit(const Dcm_SecurityAccessConfigType *config
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         /* Initialize state */
         (void)memset(&s_securityState, 0, sizeof(s_securityState));
         
@@ -300,7 +300,7 @@ Dcm_ReturnType Dcm_SecurityAccess(
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -338,7 +338,7 @@ Dcm_ReturnType Dcm_SecurityAccess(
         uint8_t requestedLevel = Dcm_GetSecurityLevelFromSubfunction(subfunction);
         const Dcm_SecurityLevelConfigType *levelConfig = getLevelConfig(requestedLevel);
         
-        if (levelConfig == NULL) {
+        if (levelConfig == NULL_PTR) {
             nrc = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
             (void)sendNegativeResponse(response, nrc);
             return result;
@@ -362,7 +362,7 @@ Dcm_ReturnType Dcm_SecurityAccess(
         uint8_t seed[DCM_SEC_SEED_LENGTH];
         (void)memset(seed, 0, sizeof(seed));
         
-        if (levelConfig->seedCallback != NULL) {
+        if (levelConfig->seedCallback != NULL_PTR) {
             result = levelConfig->seedCallback(requestedLevel, seed, levelConfig->seedLength);
         } else {
             result = generateRandomSeed(seed, levelConfig->seedLength);
@@ -386,7 +386,7 @@ Dcm_ReturnType Dcm_SecurityAccess(
         uint8_t requestedLevel = Dcm_GetSecurityLevelFromSubfunction(subfunction);
         const Dcm_SecurityLevelConfigType *levelConfig = getLevelConfig(requestedLevel);
         
-        if (levelConfig == NULL) {
+        if (levelConfig == NULL_PTR) {
             nrc = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
             (void)sendNegativeResponse(response, nrc);
             return result;
@@ -413,7 +413,7 @@ Dcm_ReturnType Dcm_SecurityAccess(
         bool isValid = false;
         
         /* Validate key */
-        if (levelConfig->keyCallback != NULL) {
+        if (levelConfig->keyCallback != NULL_PTR) {
             result = levelConfig->keyCallback(
                 requestedLevel,
                 s_securityState.status.lastSeed,
@@ -452,8 +452,8 @@ Dcm_ReturnType Dcm_SecurityAccess(
             (void)memset(s_securityState.status.lastSeed, 0, DCM_SEC_SEED_LENGTH);
             
             /* Notify callback if registered */
-            if ((s_securityState.config != NULL) && 
-                (s_securityState.config->changeCallback != NULL)) {
+            if ((s_securityState.config != NULL_PTR) && 
+                (s_securityState.config->changeCallback != NULL_PTR)) {
                 s_securityState.config->changeCallback(oldLevel, requestedLevel);
             }
             
@@ -511,8 +511,8 @@ Dcm_ReturnType Dcm_SetSecurityLevel(uint8_t securityLevel)
             }
             
             /* Notify callback if registered */
-            if ((s_securityState.config != NULL) && 
-                (s_securityState.config->changeCallback != NULL)) {
+            if ((s_securityState.config != NULL_PTR) && 
+                (s_securityState.config->changeCallback != NULL_PTR)) {
                 s_securityState.config->changeCallback(oldLevel, securityLevel);
             }
             
@@ -528,7 +528,7 @@ bool Dcm_IsSecurityLevelSupported(uint8_t securityLevel)
     bool supported = false;
     
     if ((securityLevel == DCM_SECURITY_LEVEL_LOCKED) || 
-        (getLevelConfig(securityLevel) != NULL)) {
+        (getLevelConfig(securityLevel) != NULL_PTR)) {
         supported = true;
     }
     
@@ -593,10 +593,10 @@ Dcm_ReturnType Dcm_GenerateSeed(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (s_securityState.initialized && (seedBuffer != NULL) && (seedLength > 0U)) {
+    if (s_securityState.initialized && (seedBuffer != NULL_PTR) && (seedLength > 0U)) {
         const Dcm_SecurityLevelConfigType *config = getLevelConfig(securityLevel);
         
-        if ((config != NULL) && (config->seedCallback != NULL)) {
+        if ((config != NULL_PTR) && (config->seedCallback != NULL_PTR)) {
             result = config->seedCallback(securityLevel, seedBuffer, seedLength);
         } else {
             result = generateRandomSeed(seedBuffer, seedLength);
@@ -616,13 +616,13 @@ Dcm_ReturnType Dcm_ValidateKey(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((isValid != NULL) && s_securityState.initialized && 
-        (seed != NULL) && (key != NULL) && (length > 0U)) {
+    if ((isValid != NULL_PTR) && s_securityState.initialized && 
+        (seed != NULL_PTR) && (key != NULL_PTR) && (length > 0U)) {
         const Dcm_SecurityLevelConfigType *config = getLevelConfig(securityLevel);
         
         *isValid = false;
         
-        if ((config != NULL) && (config->keyCallback != NULL)) {
+        if ((config != NULL_PTR) && (config->keyCallback != NULL_PTR)) {
             result = config->keyCallback(securityLevel, seed, key, length, isValid);
         } else {
             uint8_t expectedKey[DCM_SEC_KEY_LENGTH];
@@ -652,7 +652,7 @@ Dcm_ReturnType Dcm_GetSecurityStatus(Dcm_SecurityStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((status != NULL) && s_securityState.initialized) {
+    if ((status != NULL_PTR) && s_securityState.initialized) {
         *status = s_securityState.status;
         result = DCM_E_OK;
     }
@@ -759,7 +759,7 @@ Dcm_ReturnType Dcm_DefaultKeyValidate(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (isValid != NULL) {
+    if (isValid != NULL_PTR) {
         uint8_t expectedKey[DCM_SEC_KEY_LENGTH];
         result = calculateKey(seed, expectedKey, length, securityLevel);
         

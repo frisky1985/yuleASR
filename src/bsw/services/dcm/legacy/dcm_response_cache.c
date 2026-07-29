@@ -128,7 +128,7 @@ static uint32_t computeHash(const uint8_t *data, uint8_t length)
 
 Dcm_ReturnType Dcm_CacheInit(const Dcm_CacheConfig *config)
 {
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -153,7 +153,7 @@ Dcm_ReturnType Dcm_CacheStore(const Dcm_CacheKey *key,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_cacheState.initialized || (key == NULL) || (response == NULL)) {
+    if (!s_cacheState.initialized || (key == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -218,7 +218,7 @@ Dcm_ReturnType Dcm_CacheLookup(const Dcm_CacheKey *key,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_cacheState.initialized || (key == NULL) || (response == NULL)) {
+    if (!s_cacheState.initialized || (key == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -259,7 +259,7 @@ Dcm_ReturnType Dcm_CacheLookup(const Dcm_CacheKey *key,
 
 Dcm_ReturnType Dcm_CacheInvalidate(const Dcm_CacheKey *key)
 {
-    if (!s_cacheState.initialized || (key == NULL)) {
+    if (!s_cacheState.initialized || (key == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     
@@ -336,7 +336,7 @@ Dcm_ReturnType Dcm_CacheBuildKey(uint8_t serviceId,
                                  const Dcm_RequestType *request,
                                  Dcm_CacheKey *key)
 {
-    if ((request == NULL) || (key == NULL)) {
+    if ((request == NULL_PTR) || (key == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     
@@ -410,7 +410,7 @@ bool Dcm_CacheIsServiceCacheable(uint8_t serviceId)
 
 Dcm_ReturnType Dcm_CacheGetStats(Dcm_CacheStats *stats)
 {
-    if (!s_cacheState.initialized || (stats == NULL)) {
+    if (!s_cacheState.initialized || (stats == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     

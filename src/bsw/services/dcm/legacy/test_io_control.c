@@ -63,7 +63,7 @@ static int tests_failed = 0;
 void test_io_control_init(void) {
     printf("\n=== Test: IO Control Init ===\n");
     
-    Dcm_ReturnType result = Dcm_IoControlInit(NULL, 0);
+    Dcm_ReturnType result = Dcm_IoControlInit(NULL_PTR, 0);
     TEST_ASSERT(result == DCM_E_OK, "Init with defaults should succeed");
     
     Dcm_IoControlStateType state = Dcm_GetIoControlState();

@@ -37,7 +37,7 @@ Dcm_ReturnType Dcm_CompConvertContextArray(const Dcm_ContextType *srcArray,     
 void Dcm_CompConvertProtocolConfig(const Dcm_ProtocolConfigType *src,
                                     Dcm_CompProtocolConfigType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -56,7 +56,7 @@ void Dcm_CompConvertProtocolConfig(const Dcm_ProtocolConfigType *src,
 void Dcm_CompExpandProtocolConfig(const Dcm_CompProtocolConfigType *src,
                                    Dcm_ProtocolConfigType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -79,7 +79,7 @@ void Dcm_CompExpandProtocolConfig(const Dcm_CompProtocolConfigType *src,
 void Dcm_CompConvertSessionConfig(const Dcm_SessionConfigType *src,
                                    Dcm_CompSessionConfigType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -98,7 +98,7 @@ void Dcm_CompConvertSessionConfig(const Dcm_SessionConfigType *src,
 void Dcm_CompExpandSessionConfig(const Dcm_CompSessionConfigType *src,
                                   Dcm_SessionConfigType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -121,7 +121,7 @@ void Dcm_CompExpandSessionConfig(const Dcm_CompSessionConfigType *src,
 void Dcm_CompConvertChannel(const Dcm_ChannelType *src,
                              Dcm_CompChannelType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -142,7 +142,7 @@ void Dcm_CompConvertChannel(const Dcm_ChannelType *src,
 void Dcm_CompExpandChannel(const Dcm_CompChannelType *src,
                             Dcm_ChannelType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -167,7 +167,7 @@ void Dcm_CompExpandChannel(const Dcm_CompChannelType *src,
 void Dcm_CompConvertContext(const Dcm_ContextType *src,
                              Dcm_CompContextType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -195,7 +195,7 @@ void Dcm_CompConvertContext(const Dcm_ContextType *src,
 void Dcm_CompExpandContext(const Dcm_CompContextType *src,
                             Dcm_ContextType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -227,7 +227,7 @@ void Dcm_CompExpandContext(const Dcm_CompContextType *src,
 void Dcm_CompConvertPqEntry(const Dcm_PqEntry *src,
                              Dcm_CompPqEntryType *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -277,7 +277,7 @@ void Dcm_CompConvertPqEntry(const Dcm_PqEntry *src,
 void Dcm_CompExpandPqEntry(const Dcm_CompPqEntryType *src,
                             Dcm_PqEntry *dst)
 {
-    if ((src == NULL) || (dst == NULL)) {
+    if ((src == NULL_PTR) || (dst == NULL_PTR)) {
         return;
     }
     
@@ -330,7 +330,7 @@ Dcm_ReturnType Dcm_CompConvertContextArray(const Dcm_ContextType *srcArray,
                                             Dcm_CompContextType *dstArray,
                                             uint8_t count)
 {
-    if ((srcArray == NULL) || (dstArray == NULL) || (count == 0U)) {
+    if ((srcArray == NULL_PTR) || (dstArray == NULL_PTR) || (count == 0U)) {
         return DCM_E_NOT_OK;
     }
     
@@ -345,7 +345,7 @@ Dcm_ReturnType Dcm_CompExpandContextArray(const Dcm_CompContextType *srcArray,
                                            Dcm_ContextType *dstArray,
                                            uint8_t count)
 {
-    if ((srcArray == NULL) || (dstArray == NULL) || (count == 0U)) {
+    if ((srcArray == NULL_PTR) || (dstArray == NULL_PTR) || (count == 0U)) {
         return DCM_E_NOT_OK;
     }
     

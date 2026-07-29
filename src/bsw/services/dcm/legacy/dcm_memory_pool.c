@@ -62,10 +62,10 @@ static uint8_t s_xlPoolBuffer[DCM_POOL_XL_COUNT *
                                (DCM_POOL_XL_BLOCK_SIZE + DCM_POOL_HEADER_SIZE)];
 #else
 /* Dynamic pool buffers */
-static uint8_t *s_smallPoolBuffer = NULL;
-static uint8_t *s_mediumPoolBuffer = NULL;
-static uint8_t *s_largePoolBuffer = NULL;
-static uint8_t *s_xlPoolBuffer = NULL;
+static uint8_t *s_smallPoolBuffer = NULL_PTR;
+static uint8_t *s_mediumPoolBuffer = NULL_PTR;
+static uint8_t *s_largePoolBuffer = NULL_PTR;
+static uint8_t *s_xlPoolBuffer = NULL_PTR;
 #endif
 
 /******************************************************************************
@@ -87,7 +87,7 @@ static Dcm_ReturnType initPool(Dcm_Pool *pool, uint8_t *buffer,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((pool != NULL) && (buffer != NULL) && (blockSize > 0U) && (blockCount > 0U)) {
+    if ((pool != NULL_PTR) && (buffer != NULL_PTR) && (blockSize > 0U) && (blockCount > 0U)) {
         pool->buffer = buffer;
         pool->blockSize = blockSize;
         pool->blockCount = blockCount;
@@ -112,7 +112,7 @@ static Dcm_ReturnType initPool(Dcm_Pool *pool, uint8_t *buffer,
             if (i < (blockCount - 1U)) {
                 *((uint8_t **)(current + DCM_POOL_HEADER_SIZE)) = current + totalBlockSize;
             } else {
-                *((uint8_t **)(current + DCM_POOL_HEADER_SIZE)) = NULL;
+                *((uint8_t **)(current + DCM_POOL_HEADER_SIZE)) = NULL_PTR;
             }
             
             current += totalBlockSize;
@@ -135,7 +135,7 @@ static uint8_t* allocatePoolBuffer(uint32_t blockSize, uint32_t blockCount)
     uint32_t totalSize = blockCount * (blockSize + DCM_POOL_HEADER_SIZE);
     uint8_t *buffer = (uint8_t *)malloc(totalSize);
     
-    if (buffer != NULL) {
+    if (buffer != NULL_PTR) {
         (void)memset(buffer, 0, totalSize);
     }
     
@@ -147,7 +147,7 @@ static uint8_t* allocatePoolBuffer(uint32_t blockSize, uint32_t blockCount)
  */
 static void freePoolBuffer(uint8_t *buffer)
 {
-    if (buffer != NULL) {
+    if (buffer != NULL_PTR) {
         free(buffer);
     }
 }
@@ -157,8 +157,8 @@ static void freePoolBuffer(uint8_t *buffer)
  */
 static Dcm_Pool* findPoolForPtr(const void *ptr)
 {
-    if (ptr == NULL) {
-        return NULL;
+    if (ptr == NULL_PTR) {
+        return NULL_PTR;
     }
     
     const uint8_t *bytePtr = (const uint8_t *)ptr;
@@ -192,7 +192,7 @@ static Dcm_Pool* findPoolForPtr(const void *ptr)
         return &s_poolManager.xlPool;
     }
     
-    return NULL;
+    return NULL_PTR;
 }
 
 /**
@@ -200,7 +200,7 @@ static Dcm_Pool* findPoolForPtr(const void *ptr)
  */
 static bool validateHeader(const Dcm_PoolBlockHeader *header)
 {
-    if (header == NULL) {
+    if (header == NULL_PTR) {
         return false;
     }
     
@@ -236,10 +236,10 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
     s_sequenceNumber = 0U;
     
     /* Use static buffer if provided, otherwise use internal or allocate */
-    uint8_t *smallBuf = NULL;
-    uint8_t *mediumBuf = NULL;
-    uint8_t *largeBuf = NULL;
-    uint8_t *xlBuf = NULL;
+    uint8_t *smallBuf = NULL_PTR;
+    uint8_t *mediumBuf = NULL_PTR;
+    uint8_t *largeBuf = NULL_PTR;
+    uint8_t *xlBuf = NULL_PTR;
     
     if (useStaticPools) {
 #if defined(DCM_USE_STATIC_POOLS)
@@ -249,7 +249,7 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
         xlBuf = s_xlPoolBuffer;
 #else
         /* Use provided static buffer */
-        if (staticBuffer != NULL) {
+        if (staticBuffer != NULL_PTR) {
             smallBuf = staticBuffer;
             mediumBuf = staticBuffer + (DCM_POOL_SMALL_COUNT * 
                                         (DCM_POOL_SMALL_BLOCK_SIZE + DCM_POOL_HEADER_SIZE));
@@ -262,19 +262,19 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
     } else {
         /* Allocate dynamic buffers */
         smallBuf = allocatePoolBuffer(DCM_POOL_SMALL_BLOCK_SIZE, DCM_POOL_SMALL_COUNT);
-        if (smallBuf != NULL) {
+        if (smallBuf != NULL_PTR) {
             mediumBuf = allocatePoolBuffer(DCM_POOL_MEDIUM_BLOCK_SIZE, DCM_POOL_MEDIUM_COUNT);
         }
-        if (mediumBuf != NULL) {
+        if (mediumBuf != NULL_PTR) {
             largeBuf = allocatePoolBuffer(DCM_POOL_LARGE_BLOCK_SIZE, DCM_POOL_LARGE_COUNT);
         }
-        if (largeBuf != NULL) {
+        if (largeBuf != NULL_PTR) {
             xlBuf = allocatePoolBuffer(DCM_POOL_XL_BLOCK_SIZE, DCM_POOL_XL_COUNT);
         }
     }
     
     /* Initialize pools */
-    if ((smallBuf != NULL) &&
+    if ((smallBuf != NULL_PTR) &&
         (initPool(&s_poolManager.smallPool, smallBuf, 
                   DCM_POOL_SMALL_BLOCK_SIZE, DCM_POOL_SMALL_COUNT,
                   "Small") == DCM_E_OK)) {
@@ -282,7 +282,7 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
         result = DCM_E_OK;
     }
     
-    if ((result == DCM_E_OK) && (mediumBuf != NULL)) {
+    if ((result == DCM_E_OK) && (mediumBuf != NULL_PTR)) {
         if (initPool(&s_poolManager.mediumPool, mediumBuf,
                      DCM_POOL_MEDIUM_BLOCK_SIZE, DCM_POOL_MEDIUM_COUNT,
                      "Medium") != DCM_E_OK) {
@@ -290,7 +290,7 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
         }
     }
     
-    if ((result == DCM_E_OK) && (largeBuf != NULL)) {
+    if ((result == DCM_E_OK) && (largeBuf != NULL_PTR)) {
         if (initPool(&s_poolManager.largePool, largeBuf,
                      DCM_POOL_LARGE_BLOCK_SIZE, DCM_POOL_LARGE_COUNT,
                      "Large") != DCM_E_OK) {
@@ -298,7 +298,7 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
         }
     }
     
-    if ((result == DCM_E_OK) && (xlBuf != NULL)) {
+    if ((result == DCM_E_OK) && (xlBuf != NULL_PTR)) {
         if (initPool(&s_poolManager.xlPool, xlBuf,
                      DCM_POOL_XL_BLOCK_SIZE, DCM_POOL_XL_COUNT,
                      "XL") != DCM_E_OK) {
@@ -345,16 +345,16 @@ Dcm_ReturnType Dcm_PoolDeInit(void)
 
 void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
 {
-    void *ptr = NULL;
-    Dcm_Pool *pool = NULL;
+    void *ptr = NULL_PTR;
+    Dcm_Pool *pool = NULL_PTR;
     
     if (!s_poolManager.initialized || (size == 0U)) {
-        return NULL;
+        return NULL_PTR;
     }
     
     /* Determine allocation mode */
     Dcm_AllocMode mode = DCM_ALLOC_MODE_HYBRID;
-    if (attr != NULL) {
+    if (attr != NULL_PTR) {
         mode = attr->mode;
     }
     
@@ -370,8 +370,8 @@ void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
     }
     
     /* Try pool allocation first (for static and hybrid modes) */
-    if ((pool != NULL) && (mode != DCM_ALLOC_MODE_DYNAMIC)) {
-        if (pool->freeList != NULL) {
+    if ((pool != NULL_PTR) && (mode != DCM_ALLOC_MODE_DYNAMIC)) {
+        if (pool->freeList != NULL_PTR) {
             /* Allocate from free list */
             uint8_t *block = pool->freeList;
             Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
@@ -397,7 +397,7 @@ void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
             
             /* Zero initialize if requested */
             ptr = (void *)(block + DCM_POOL_HEADER_SIZE);
-            if ((attr != NULL) && attr->zeroInit) {
+            if ((attr != NULL_PTR) && attr->zeroInit) {
                 (void)memset(ptr, 0, pool->blockSize);
             }
         } else if (mode == DCM_ALLOC_MODE_STATIC) {
@@ -407,11 +407,11 @@ void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
     }
     
     /* Fallback to dynamic allocation if needed */
-    if ((ptr == NULL) && (mode != DCM_ALLOC_MODE_STATIC)) {
+    if ((ptr == NULL_PTR) && (mode != DCM_ALLOC_MODE_STATIC)) {
         uint32_t allocSize = size + DCM_POOL_HEADER_SIZE;
         uint8_t *block = (uint8_t *)malloc(allocSize);
         
-        if (block != NULL) {
+        if (block != NULL_PTR) {
             Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
             header->magic = DCM_POOL_MAGIC_ALLOC;
             header->state = DCM_BLOCK_ALLOCATED;
@@ -420,7 +420,7 @@ void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
             
             ptr = (void *)(block + DCM_POOL_HEADER_SIZE);
             
-            if ((attr != NULL) && attr->zeroInit) {
+            if ((attr != NULL_PTR) && attr->zeroInit) {
                 (void)memset(ptr, 0, size);
             }
             
@@ -436,8 +436,8 @@ Dcm_ReturnType Dcm_PoolFree(void *ptr)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (ptr == NULL) {
-        return DCM_E_OK; /* Free of NULL is OK per standard */
+    if (ptr == NULL_PTR) {
+        return DCM_E_OK; /* Free of NULL_PTR is OK per standard */
     }
     
     if (!s_poolManager.initialized) {
@@ -467,7 +467,7 @@ Dcm_ReturnType Dcm_PoolFree(void *ptr)
     
     /* Find pool */
     Dcm_Pool *pool = findPoolForPtr(ptr);
-    if (pool == NULL) {
+    if (pool == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -495,7 +495,7 @@ void* Dcm_PoolAllocZero(uint32_t size, const Dcm_MemAttr *attr)
 {
     Dcm_MemAttr localAttr;
     
-    if (attr != NULL) {
+    if (attr != NULL_PTR) {
         localAttr = *attr;
     } else {
         localAttr = (Dcm_MemAttr)DCM_MEM_ATTR_DEFAULT;
@@ -508,22 +508,22 @@ void* Dcm_PoolAllocZero(uint32_t size, const Dcm_MemAttr *attr)
 void* Dcm_PoolRealloc(void *ptr, uint32_t oldSize, uint32_t newSize,
                       const Dcm_MemAttr *attr)
 {
-    void *newPtr = NULL;
+    void *newPtr = NULL_PTR;
     
     if (newSize == 0U) {
         /* Realloc to 0 is equivalent to free */
         (void)Dcm_PoolFree(ptr);
-        return NULL;
+        return NULL_PTR;
     }
     
-    if (ptr == NULL) {
-        /* Realloc of NULL is equivalent to alloc */
+    if (ptr == NULL_PTR) {
+        /* Realloc of NULL_PTR is equivalent to alloc */
         return Dcm_PoolAlloc(newSize, attr);
     }
     
     /* Allocate new block */
     newPtr = Dcm_PoolAlloc(newSize, attr);
-    if (newPtr != NULL) {
+    if (newPtr != NULL_PTR) {
         /* Copy old data */
         uint32_t copySize = (oldSize < newSize) ? oldSize : newSize;
         (void)memcpy(newPtr, ptr, copySize);
@@ -538,9 +538,9 @@ void* Dcm_PoolRealloc(void *ptr, uint32_t oldSize, uint32_t newSize,
 Dcm_ReturnType Dcm_PoolGetStats(uint8_t poolId, Dcm_PoolStats *stats)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
-    const Dcm_Pool *pool = NULL;
+    const Dcm_Pool *pool = NULL_PTR;
     
-    if (!s_poolManager.initialized || (stats == NULL)) {
+    if (!s_poolManager.initialized || (stats == NULL_PTR)) {
         return result;
     }
     
@@ -571,7 +571,7 @@ Dcm_ReturnType Dcm_PoolGetTotalStats(Dcm_PoolStats *stats)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_poolManager.initialized || (stats == NULL)) {
+    if (!s_poolManager.initialized || (stats == NULL_PTR)) {
         return result;
     }
     
@@ -598,18 +598,18 @@ Dcm_ReturnType Dcm_PoolGetTotalStats(Dcm_PoolStats *stats)
 
 bool Dcm_PoolContains(const void *ptr)
 {
-    if (!s_poolManager.initialized || (ptr == NULL)) {
+    if (!s_poolManager.initialized || (ptr == NULL_PTR)) {
         return false;
     }
     
-    return (findPoolForPtr(ptr) != NULL);
+    return (findPoolForPtr(ptr) != NULL_PTR);
 }
 
 uint32_t Dcm_PoolGetBlockSize(const void *ptr)
 {
     uint32_t size = 0U;
     
-    if (!s_poolManager.initialized || (ptr == NULL)) {
+    if (!s_poolManager.initialized || (ptr == NULL_PTR)) {
         return 0U;
     }
     
@@ -625,7 +625,7 @@ uint32_t Dcm_PoolGetBlockSize(const void *ptr)
     }
     
     const Dcm_Pool *pool = findPoolForPtr(ptr);
-    if (pool != NULL) {
+    if (pool != NULL_PTR) {
         size = pool->blockSize;
     }
     
@@ -645,7 +645,7 @@ Dcm_ReturnType Dcm_PoolValidate(uint8_t poolId)
     uint8_t endId = (poolId == 0xFFU) ? 3U : poolId;
     
     for (uint8_t i = startId; i <= endId; i++) {
-        Dcm_Pool *pool = NULL;
+        Dcm_Pool *pool = NULL_PTR;
         
         switch (i) {
             case 0U: pool = &s_poolManager.smallPool; break;
@@ -655,12 +655,12 @@ Dcm_ReturnType Dcm_PoolValidate(uint8_t poolId)
             default: continue;
         }
         
-        if (pool != NULL) {
+        if (pool != NULL_PTR) {
             /* Walk free list and validate */
             uint8_t *current = pool->freeList;
             uint32_t freeCount = 0U;
             
-            while (current != NULL) {
+            while (current != NULL_PTR) {
                 const Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)current;
                 
                 if (!validateHeader(header)) {
@@ -700,7 +700,7 @@ uint8_t Dcm_PoolGetUsage(uint8_t poolId)
         return 0U;
     }
     
-    const Dcm_Pool *pool = NULL;
+    const Dcm_Pool *pool = NULL_PTR;
     
     switch (poolId) {
         case 0U: pool = &s_poolManager.smallPool; break;
@@ -710,7 +710,7 @@ uint8_t Dcm_PoolGetUsage(uint8_t poolId)
         default: return 0U;
     }
     
-    if ((pool != NULL) && (pool->blockCount > 0U)) {
+    if ((pool != NULL_PTR) && (pool->blockCount > 0U)) {
         usage = (uint8_t)((pool->usedCount * 100U) / pool->blockCount);
     }
     
@@ -731,7 +731,7 @@ Dcm_ReturnType Dcm_PoolEmergencyCleanup(void)
     }
     
     /* Reinitialize all pools - effectively frees everything */
-    result = Dcm_PoolInit(s_poolManager.useStaticPools, NULL);
+    result = Dcm_PoolInit(s_poolManager.useStaticPools, NULL_PTR);
     
     return result;
 }

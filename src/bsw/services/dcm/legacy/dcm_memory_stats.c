@@ -37,7 +37,7 @@
  * Module State
  ******************************************************************************/
 static Dcm_MemStatsState s_memStats;
-static Dcm_MemWarningCallback s_warningCallback = NULL;
+static Dcm_MemWarningCallback s_warningCallback = NULL_PTR;
 static uint8_t s_thresholdLow = DCM_MEM_WARN_THRESHOLD_LOW;
 static uint8_t s_thresholdMed = DCM_MEM_WARN_THRESHOLD_MEDIUM;
 static uint8_t s_thresholdHigh = DCM_MEM_WARN_THRESHOLD_HIGH;
@@ -91,7 +91,7 @@ static void addToHistory(const Dcm_MemUsageSnapshot *snapshot)
  */
 static int16_t findTrackedEntry(const void *ptr)
 {
-    if (ptr == NULL) {
+    if (ptr == NULL_PTR) {
         return -1;
     }
     
@@ -123,7 +123,7 @@ static int16_t findFreeTrackedSlot(void)
  */
 static void checkWarnings(Dcm_MemModuleId module)
 {
-    if (s_warningCallback == NULL) {
+    if (s_warningCallback == NULL_PTR) {
         return;
     }
     
@@ -178,7 +178,7 @@ Dcm_ReturnType Dcm_MemStatsDeInit(void)
     
     if (s_memStats.initialized) {
         (void)memset(&s_memStats, 0, sizeof(s_memStats));
-        s_warningCallback = NULL;
+        s_warningCallback = NULL_PTR;
         result = DCM_E_OK;
     }
     
@@ -191,7 +191,7 @@ Dcm_ReturnType Dcm_MemStatsRecordAlloc(void *ptr, uint32_t size,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_memStats.initialized || (ptr == NULL) || (size == 0U)) {
+    if (!s_memStats.initialized || (ptr == NULL_PTR) || (size == 0U)) {
         return result;
     }
     
@@ -247,7 +247,7 @@ Dcm_ReturnType Dcm_MemStatsRecordFree(void *ptr, Dcm_MemModuleId module)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_memStats.initialized || (ptr == NULL)) {
+    if (!s_memStats.initialized || (ptr == NULL_PTR)) {
         return result;
     }
     
@@ -303,7 +303,7 @@ Dcm_ReturnType Dcm_MemStatsRecordFail(uint32_t size, Dcm_MemModuleId module)
     s_memStats.current.failCount++;
     
     /* Trigger high warning on allocation failure */
-    if (s_warningCallback != NULL) {
+    if (s_warningCallback != NULL_PTR) {
         s_warningCallback(3U, 100U, module);
     }
     
@@ -316,7 +316,7 @@ Dcm_ReturnType Dcm_MemStatsGetSnapshot(Dcm_MemUsageSnapshot *snapshot)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_memStats.initialized || (snapshot == NULL)) {
+    if (!s_memStats.initialized || (snapshot == NULL_PTR)) {
         return result;
     }
     
@@ -329,7 +329,7 @@ Dcm_ReturnType Dcm_MemStatsGetSnapshot(Dcm_MemUsageSnapshot *snapshot)
 Dcm_MemModuleStats* Dcm_MemStatsGetModuleStats(Dcm_MemModuleId module)
 {
     if (!s_memStats.initialized || (module >= DCM_MEM_MODULE_COUNT)) {
-        return NULL;
+        return NULL_PTR;
     }
     
     return &s_memStats.moduleStats[module];
@@ -339,7 +339,7 @@ Dcm_ReturnType Dcm_MemStatsGetReport(Dcm_MemReport *report)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_memStats.initialized || (report == NULL)) {
+    if (!s_memStats.initialized || (report == NULL_PTR)) {
         return result;
     }
     
@@ -378,7 +378,7 @@ Dcm_ReturnType Dcm_MemStatsDetectLeaks(Dcm_MemLeakEntry *leaks,
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_memStats.initialized || (leaks == NULL) || (leakCount == NULL)) {
+    if (!s_memStats.initialized || (leaks == NULL_PTR) || (leakCount == NULL_PTR)) {
         return result;
     }
     

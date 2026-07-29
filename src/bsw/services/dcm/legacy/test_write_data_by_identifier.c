@@ -82,9 +82,9 @@ static const Dcm_DidInfoType vinDidInfo = {
     .readEnabled = true,
     .writeEnabled = true,
     .controlEnabled = false,
-    .readCallback = NULL,
+    .readCallback = NULL_PTR,
     .writeCallback = testWriteVIN,
-    .controlCallback = NULL
+    .controlCallback = NULL_PTR
 };
 
 static const Dcm_DidInfoType configDidInfo = {
@@ -96,9 +96,9 @@ static const Dcm_DidInfoType configDidInfo = {
     .readEnabled = true,
     .writeEnabled = true,
     .controlEnabled = false,
-    .readCallback = NULL,
+    .readCallback = NULL_PTR,
     .writeCallback = testWriteConfig,
-    .controlCallback = NULL
+    .controlCallback = NULL_PTR
 };
 
 /******************************************************************************

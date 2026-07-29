@@ -194,10 +194,10 @@ Dcm_ReturnType Dcm_StaticDeInit(void)
 
 DCM_CHANNEL_TYPE_STATIC* Dcm_StaticAllocChannel(void)
 {
-    DCM_CHANNEL_TYPE_STATIC *channel = NULL;
+    DCM_CHANNEL_TYPE_STATIC *channel = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.channelUsed, DCM_STATIC_MAX_CHANNELS);
@@ -223,7 +223,7 @@ DCM_CHANNEL_TYPE_STATIC* Dcm_StaticAllocChannel(void)
 
 void Dcm_StaticFreeChannel(DCM_CHANNEL_TYPE_STATIC *channel)
 {
-    if ((channel == NULL) || (!s_staticState.initialized)) {
+    if ((channel == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -243,10 +243,10 @@ void Dcm_StaticFreeChannel(DCM_CHANNEL_TYPE_STATIC *channel)
 
 DCM_SESSION_TYPE_STATIC* Dcm_StaticAllocSession(void)
 {
-    DCM_SESSION_TYPE_STATIC *session = NULL;
+    DCM_SESSION_TYPE_STATIC *session = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.sessionUsed, DCM_STATIC_MAX_SESSIONS);
@@ -261,7 +261,7 @@ DCM_SESSION_TYPE_STATIC* Dcm_StaticAllocSession(void)
 
 void Dcm_StaticFreeSession(DCM_SESSION_TYPE_STATIC *session)
 {
-    if ((session == NULL) || (!s_staticState.initialized)) {
+    if ((session == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -280,10 +280,10 @@ void Dcm_StaticFreeSession(DCM_SESSION_TYPE_STATIC *session)
 
 Dcm_ServiceConfigType* Dcm_StaticAllocService(void)
 {
-    Dcm_ServiceConfigType *service = NULL;
+    Dcm_ServiceConfigType *service = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.serviceUsed, DCM_STATIC_MAX_SERVICES);
@@ -298,7 +298,7 @@ Dcm_ServiceConfigType* Dcm_StaticAllocService(void)
 
 void Dcm_StaticFreeService(Dcm_ServiceConfigType *service)
 {
-    if ((service == NULL) || (!s_staticState.initialized)) {
+    if ((service == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -317,10 +317,10 @@ void Dcm_StaticFreeService(Dcm_ServiceConfigType *service)
 
 Dcm_SecurityConfigType* Dcm_StaticAllocSecurity(void)
 {
-    Dcm_SecurityConfigType *security = NULL;
+    Dcm_SecurityConfigType *security = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.securityUsed, DCM_STATIC_MAX_SECURITY_LEVELS);
@@ -335,7 +335,7 @@ Dcm_SecurityConfigType* Dcm_StaticAllocSecurity(void)
 
 void Dcm_StaticFreeSecurity(Dcm_SecurityConfigType *security)
 {
-    if ((security == NULL) || (!s_staticState.initialized)) {
+    if ((security == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -354,10 +354,10 @@ void Dcm_StaticFreeSecurity(Dcm_SecurityConfigType *security)
 
 Dcm_RoutineConfigType* Dcm_StaticAllocRoutine(void)
 {
-    Dcm_RoutineConfigType *routine = NULL;
+    Dcm_RoutineConfigType *routine = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.routineUsed, DCM_STATIC_MAX_ROUTINES);
@@ -372,7 +372,7 @@ Dcm_RoutineConfigType* Dcm_StaticAllocRoutine(void)
 
 void Dcm_StaticFreeRoutine(Dcm_RoutineConfigType *routine)
 {
-    if ((routine == NULL) || (!s_staticState.initialized)) {
+    if ((routine == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -391,10 +391,10 @@ void Dcm_StaticFreeRoutine(Dcm_RoutineConfigType *routine)
 
 Dcm_DynamicDidConfigType* Dcm_StaticAllocDynamicDid(void)
 {
-    Dcm_DynamicDidConfigType *did = NULL;
+    Dcm_DynamicDidConfigType *did = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.dynamicDidUsed, DCM_STATIC_MAX_DYNAMIC_DIDS);
@@ -409,7 +409,7 @@ Dcm_DynamicDidConfigType* Dcm_StaticAllocDynamicDid(void)
 
 void Dcm_StaticFreeDynamicDid(Dcm_DynamicDidConfigType *did)
 {
-    if ((did == NULL) || (!s_staticState.initialized)) {
+    if ((did == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -428,10 +428,10 @@ void Dcm_StaticFreeDynamicDid(Dcm_DynamicDidConfigType *did)
 
 Dcm_MemoryRegionConfigType* Dcm_StaticAllocMemoryRegion(void)
 {
-    Dcm_MemoryRegionConfigType *region = NULL;
+    Dcm_MemoryRegionConfigType *region = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.memoryRegionUsed, DCM_STATIC_MAX_MEMORY_REGIONS);
@@ -446,7 +446,7 @@ Dcm_MemoryRegionConfigType* Dcm_StaticAllocMemoryRegion(void)
 
 void Dcm_StaticFreeMemoryRegion(Dcm_MemoryRegionConfigType *region)
 {
-    if ((region == NULL) || (!s_staticState.initialized)) {
+    if ((region == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -465,10 +465,10 @@ void Dcm_StaticFreeMemoryRegion(Dcm_MemoryRegionConfigType *region)
 
 DCM_PQ_ENTRY_TYPE_STATIC* Dcm_StaticAllocPqEntry(void)
 {
-    DCM_PQ_ENTRY_TYPE_STATIC *entry = NULL;
+    DCM_PQ_ENTRY_TYPE_STATIC *entry = NULL_PTR;
 
     if (!s_staticState.initialized) {
-        return NULL;
+        return NULL_PTR;
     }
 
     int16_t slot = findFreeSlot(s_staticState.pqEntryUsed, DCM_STATIC_MAX_PQ_ENTRIES);
@@ -483,7 +483,7 @@ DCM_PQ_ENTRY_TYPE_STATIC* Dcm_StaticAllocPqEntry(void)
 
 void Dcm_StaticFreePqEntry(DCM_PQ_ENTRY_TYPE_STATIC *entry)
 {
-    if ((entry == NULL) || (!s_staticState.initialized)) {
+    if ((entry == NULL_PTR) || (!s_staticState.initialized)) {
         return;
     }
 
@@ -522,7 +522,7 @@ Dcm_ReturnType Dcm_StaticGetUsage(uint32_t *totalBytes, uint32_t *usedBytes)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
 
-    if ((totalBytes == NULL) || (usedBytes == NULL)) {
+    if ((totalBytes == NULL_PTR) || (usedBytes == NULL_PTR)) {
         return result;
     }
 
@@ -553,7 +553,7 @@ Dcm_ReturnType Dcm_StaticGetUsage(uint32_t *totalBytes, uint32_t *usedBytes)
 
 bool Dcm_StaticIsStaticPtr(const void *ptr)
 {
-    if (ptr == NULL) {
+    if (ptr == NULL_PTR) {
         return false;
     }
 

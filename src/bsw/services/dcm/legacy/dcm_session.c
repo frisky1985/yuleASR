@@ -120,7 +120,7 @@ static const Dcm_SessionConfigType s_defaultSessionConfigs[] = {
  */
 static int32_t getSessionConfigIndex(Dcm_SessionType session)
 {
-    if (s_sessionState.config == NULL) {
+    if (s_sessionState.config == NULL_PTR) {
         return -1;
     }
     
@@ -191,7 +191,7 @@ static void updateStatisticsOnExit(Dcm_SessionType session)
 
 Dcm_ReturnType Dcm_SessionInit(const Dcm_SessionControlConfigType *config)
 {
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -235,7 +235,7 @@ Dcm_ReturnType Dcm_DiagnosticSessionControl(
         return DCM_E_NOT_OK;
     }
     
-    if (request == NULL || response == NULL) {
+    if (request == NULL_PTR || response == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -362,8 +362,8 @@ Dcm_ReturnType Dcm_SetSession(Dcm_SessionType session, uint16_t testerAddress)
     updateStatisticsOnEntry(session);
     
     /* Get configuration for new session */
-    const Dcm_SessionConfigType *config = NULL;
-    if (Dcm_GetSessionConfig(session, &config) == DCM_E_OK && config != NULL) {
+    const Dcm_SessionConfigType *config = NULL_PTR;
+    if (Dcm_GetSessionConfig(session, &config) == DCM_E_OK && config != NULL_PTR) {
         /* Update timing parameters */
         s_sessionState.currentP2ServerMax = config->timing.p2ServerMax;
         s_sessionState.currentP2StarServerMax = config->timing.p2StarServerMax;
@@ -386,7 +386,7 @@ Dcm_ReturnType Dcm_SetSession(Dcm_SessionType session, uint16_t testerAddress)
     recordSessionTransition(oldSession, session, true);
     
     /* Notify callback if registered */
-    if (s_sessionState.config->sessionChangeCallback != NULL) {
+    if (s_sessionState.config->sessionChangeCallback != NULL_PTR) {
         s_sessionState.config->sessionChangeCallback(oldSession, session);
     }
     
@@ -418,7 +418,7 @@ bool Dcm_IsSessionTransitionValid(Dcm_SessionType fromSession, Dcm_SessionType t
 
 Dcm_ReturnType Dcm_GetCurrentSessionConfig(const Dcm_SessionConfigType **config)
 {
-    if (!s_initialized || config == NULL) {
+    if (!s_initialized || config == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -430,13 +430,13 @@ Dcm_ReturnType Dcm_GetSessionConfig(
     const Dcm_SessionConfigType **config
 )
 {
-    if (config == NULL) {
+    if (config == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
     int32_t idx = getSessionConfigIndex(session);
     if (idx < 0) {
-        *config = NULL;
+        *config = NULL_PTR;
         return DCM_E_NOT_OK;
     }
     
@@ -490,8 +490,8 @@ Dcm_ReturnType Dcm_ResetSessionTimer(void)
         return DCM_E_NOT_OK;
     }
     
-    const Dcm_SessionConfigType *config = NULL;
-    if (Dcm_GetCurrentSessionConfig(&config) == DCM_E_OK && config != NULL) {
+    const Dcm_SessionConfigType *config = NULL_PTR;
+    if (Dcm_GetCurrentSessionConfig(&config) == DCM_E_OK && config != NULL_PTR) {
         s_sessionState.sessionTimer = config->sessionTimeoutMs;
     }
     
@@ -507,11 +507,11 @@ Dcm_ReturnType Dcm_GetSessionTimingParameters(
         return DCM_E_NOT_OK;
     }
     
-    if (p2ServerMax != NULL) {
+    if (p2ServerMax != NULL_PTR) {
         *p2ServerMax = s_sessionState.currentP2ServerMax;
     }
     
-    if (p2StarServerMax != NULL) {
+    if (p2StarServerMax != NULL_PTR) {
         *p2StarServerMax = s_sessionState.currentP2StarServerMax;
     }
     
@@ -540,7 +540,7 @@ Dcm_ReturnType Dcm_SetSessionTimingParameters(
 
 Dcm_ReturnType Dcm_GetSessionStatistics(Dcm_SessionStatisticsType *stats)
 {
-    if (!s_initialized || stats == NULL) {
+    if (!s_initialized || stats == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -553,7 +553,7 @@ Dcm_ReturnType Dcm_GetSessionTransitionRecord(
     Dcm_SessionTransitionRecordType *record
 )
 {
-    if (!s_initialized || record == NULL) {
+    if (!s_initialized || record == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -646,12 +646,12 @@ Dcm_ReturnType Dcm_TesterPresent(
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     
     /* Validate request buffer */
-    if (request->data == NULL) {
+    if (request->data == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -685,9 +685,9 @@ Dcm_ReturnType Dcm_TesterPresent(
     (void)Dcm_ResetS3Timer();
     
     /* Also reset the session timeout timer if in non-default session */
-    const Dcm_SessionConfigType *sessionConfig = NULL;
+    const Dcm_SessionConfigType *sessionConfig = NULL_PTR;
     if (Dcm_GetCurrentSessionConfig(&sessionConfig) == DCM_E_OK) {
-        if ((sessionConfig != NULL) && (sessionConfig->sessionTimeoutMs > 0U)) {
+        if ((sessionConfig != NULL_PTR) && (sessionConfig->sessionTimeoutMs > 0U)) {
             s_sessionState.sessionTimer = sessionConfig->sessionTimeoutMs;
         }
     }
@@ -695,7 +695,7 @@ Dcm_ReturnType Dcm_TesterPresent(
     /* Build positive response if not suppressed */
     if (!suppressResponse) {
         /* Validate response buffer */
-        if ((response->data == NULL) || (response->maxLength < DCM_TESTER_PRESENT_RESPONSE_SIZE)) {
+        if ((response->data == NULL_PTR) || (response->maxLength < DCM_TESTER_PRESENT_RESPONSE_SIZE)) {
             response->isNegativeResponse = true;
             response->negativeResponseCode = UDS_NRC_GENERAL_REJECT;
             return DCM_E_OK;
@@ -725,7 +725,7 @@ Dcm_ReturnType Dcm_TesterPresent(
  ******************************************************************************/
 const Dcm_SessionConfigType* Dcm_GetDefaultSessionConfigs(uint8_t *numSessions)
 {
-    if (numSessions != NULL) {
+    if (numSessions != NULL_PTR) {
         *numSessions = sizeof(s_defaultSessionConfigs) / sizeof(s_defaultSessionConfigs[0]);
     }
     return s_defaultSessionConfigs;

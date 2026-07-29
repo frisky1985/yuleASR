@@ -162,7 +162,7 @@ Dcm_ReturnType Dcm_PqInsert(const Dcm_PqEntry *entry)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_pqState.initialized || (entry == NULL)) {
+    if (!s_pqState.initialized || (entry == NULL_PTR)) {
         return result;
     }
     
@@ -196,7 +196,7 @@ Dcm_ReturnType Dcm_PqRemove(Dcm_PqEntry *entry)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_pqState.initialized || (entry == NULL)) {
+    if (!s_pqState.initialized || (entry == NULL_PTR)) {
         return result;
     }
     
@@ -232,7 +232,7 @@ Dcm_ReturnType Dcm_PqPeek(Dcm_PqEntry *entry)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (!s_pqState.initialized || (entry == NULL)) {
+    if (!s_pqState.initialized || (entry == NULL_PTR)) {
         return result;
     }
     
@@ -299,7 +299,7 @@ Dcm_ReturnType Dcm_PqInsertServiceRequest(uint8_t serviceId,
 {
     Dcm_PqEntry entry;
     
-    if (request == NULL) {
+    if (request == NULL_PTR) {
         return DCM_E_NOT_OK;
     }
     
@@ -326,7 +326,7 @@ Dcm_ReturnType Dcm_PqInsertServiceRequest(uint8_t serviceId,
 
 Dcm_ReturnType Dcm_PqGetStats(Dcm_PqStats *stats)
 {
-    if (!s_pqState.initialized || (stats == NULL)) {
+    if (!s_pqState.initialized || (stats == NULL_PTR)) {
         return DCM_E_NOT_OK;
     }
     

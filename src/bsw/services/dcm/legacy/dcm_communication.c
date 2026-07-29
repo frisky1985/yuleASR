@@ -62,7 +62,7 @@ static Dcm_ReturnType sendNegativeResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (response != NULL) {
+    if (response != NULL_PTR) {
         response->isNegativeResponse = true;
         response->negativeResponseCode = nrc;
         response->length = 0U;
@@ -82,7 +82,7 @@ static Dcm_ReturnType sendPositiveResponse(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((response != NULL) && (response->data != NULL) && 
+    if ((response != NULL_PTR) && (response->data != NULL_PTR) && 
         (response->maxLength >= DCM_COMM_CTRL_RESPONSE_LENGTH)) {
         response->data[0U] = (uint8_t)(UDS_SVC_COMMUNICATION_CONTROL + 0x40U);
         response->data[1U] = controlType;
@@ -99,7 +99,7 @@ static Dcm_ReturnType sendPositiveResponse(
  */
 static Dcm_SubnetStateType* getSubnetState(uint8_t subnetId)
 {
-    Dcm_SubnetStateType *state = NULL;
+    Dcm_SubnetStateType *state = NULL_PTR;
     
     if (s_commState.initialized) {
         for (uint8_t i = 0U; i < s_commState.status.numSubnets; i++) {
@@ -118,7 +118,7 @@ static Dcm_SubnetStateType* getSubnetState(uint8_t subnetId)
  */
 static void initSubnetState(Dcm_SubnetStateType *subnet, uint8_t subnetId)
 {
-    if (subnet != NULL) {
+    if (subnet != NULL_PTR) {
         subnet->subnetId = subnetId;
         subnet->state = DCM_COMM_STATE_ENABLED;
         subnet->normalRxEnabled = true;
@@ -141,7 +141,7 @@ static Dcm_ReturnType applyControlToSubnet(
     Dcm_ReturnType result = DCM_E_NOT_OK;
     Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
     
-    if (subnet != NULL) {
+    if (subnet != NULL_PTR) {
         bool rxEnable = false;
         bool txEnable = false;
         bool normalAffected = false;
@@ -215,8 +215,8 @@ static Dcm_ReturnType applyControlToSubnet(
         }
         
         /* Notify network callback if registered */
-        if ((s_commState.config != NULL) && 
-            (s_commState.config->networkCallback != NULL)) {
+        if ((s_commState.config != NULL_PTR) && 
+            (s_commState.config->networkCallback != NULL_PTR)) {
             result = s_commState.config->networkCallback(
                 subnetId,
                 (subnet->normalRxEnabled || subnet->nmRxEnabled),
@@ -227,8 +227,8 @@ static Dcm_ReturnType applyControlToSubnet(
         }
         
         /* Notify change callback */
-        if ((result == DCM_E_OK) && (s_commState.config != NULL) &&
-            (s_commState.config->changeCallback != NULL)) {
+        if ((result == DCM_E_OK) && (s_commState.config != NULL_PTR) &&
+            (s_commState.config->changeCallback != NULL_PTR)) {
             Dcm_CommunicationTypeEnum type = DCM_COMM_BOTH_MESSAGES;
             if (normalAffected && !nmAffected) {
                 type = DCM_COMM_NORMAL_MESSAGES;
@@ -258,7 +258,7 @@ static bool checkSessionRequirements(void)
     bool allowed = true;
     Dcm_SessionType currentSession = Dcm_GetCurrentSession();
     
-    if (s_commState.config != NULL) {
+    if (s_commState.config != NULL_PTR) {
         if (s_commState.config->requireExtendedSession && 
             (currentSession != DCM_SESSION_EXTENDED)) {
             allowed = false;
@@ -281,7 +281,7 @@ Dcm_ReturnType Dcm_CommunicationControlInit(const Dcm_CommunicationControlConfig
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (config != NULL) {
+    if (config != NULL_PTR) {
         /* Initialize state */
         (void)memset(&s_commState, 0, sizeof(s_commState));
         
@@ -315,7 +315,7 @@ Dcm_ReturnType Dcm_CommunicationControl(
     }
     
     /* Validate parameters */
-    if ((request == NULL) || (response == NULL)) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return result;
     }
     
@@ -362,14 +362,14 @@ Dcm_ReturnType Dcm_CommunicationControl(
     }
     
     /* Check if communication type is enabled in config */
-    if ((s_commState.config != NULL) && !s_commState.config->enableNormalCommControl &&
+    if ((s_commState.config != NULL_PTR) && !s_commState.config->enableNormalCommControl &&
         ((commType == DCM_COMM_TYPE_NORMAL) || (commType == DCM_COMM_TYPE_NORMAL_AND_NM))) {
         nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
         (void)sendNegativeResponse(response, nrc);
         return result;
     }
     
-    if ((s_commState.config != NULL) && !s_commState.config->enableNmCommControl &&
+    if ((s_commState.config != NULL_PTR) && !s_commState.config->enableNmCommControl &&
         ((commType == DCM_COMM_TYPE_NM) || (commType == DCM_COMM_TYPE_NORMAL_AND_NM))) {
         nrc = UDS_NRC_REQUEST_OUT_OF_RANGE;
         (void)sendNegativeResponse(response, nrc);
@@ -472,10 +472,10 @@ Dcm_ReturnType Dcm_GetCommunicationState(
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((state != NULL) && s_commState.initialized) {
+    if ((state != NULL_PTR) && s_commState.initialized) {
         const Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
         
-        if (subnet != NULL) {
+        if (subnet != NULL_PTR) {
             *state = subnet->state;
             result = DCM_E_OK;
         }
@@ -491,7 +491,7 @@ bool Dcm_IsNormalCommunicationEnabled(uint8_t subnetId)
     if (s_commState.initialized) {
         const Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
         
-        if (subnet != NULL) {
+        if (subnet != NULL_PTR) {
             enabled = (subnet->normalRxEnabled && subnet->normalTxEnabled);
         }
     }
@@ -506,7 +506,7 @@ bool Dcm_IsNmCommunicationEnabled(uint8_t subnetId)
     if (s_commState.initialized) {
         const Dcm_SubnetStateType *subnet = getSubnetState(subnetId);
         
-        if (subnet != NULL) {
+        if (subnet != NULL_PTR) {
             enabled = (subnet->nmRxEnabled && subnet->nmTxEnabled);
         }
     }
@@ -518,7 +518,7 @@ Dcm_ReturnType Dcm_GetCommunicationStatus(Dcm_CommunicationStatusType *status)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if ((status != NULL) && s_commState.initialized) {
+    if ((status != NULL_PTR) && s_commState.initialized) {
         *status = s_commState.status;
         result = DCM_E_OK;
     }
@@ -590,9 +590,9 @@ Dcm_ReturnType Dcm_ControlDdsTopics(bool enable, uint8_t topicMask)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
-    if (s_commState.initialized && (s_commState.config != NULL) &&
+    if (s_commState.initialized && (s_commState.config != NULL_PTR) &&
         s_commState.config->enableDdsControl) {
-        if (s_commState.config->ddsCallback != NULL) {
+        if (s_commState.config->ddsCallback != NULL_PTR) {
             s_commState.config->ddsCallback(enable, topicMask);
         }
         
