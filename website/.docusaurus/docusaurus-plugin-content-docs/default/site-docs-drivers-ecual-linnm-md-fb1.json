@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/linnm",
+  "title": "LINNM 模块",
+  "description": "void linnm_Init(void);",
+  "source": "@site/docs/drivers/ecual/linnm.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/linnm",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/linnm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/linnm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 20,
+  "frontMatter": {
+    "title": "LINNM 模块",
+    "sidebar_label": "linnm",
+    "description": "void linnm_Init(void);",
+    "sidebar_position": 20
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "LinIf",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/LinIf"
+  },
+  "next": {
+    "title": "linsm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/linsm"
+  }
+}

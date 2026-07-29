@@ -1,0 +1,21 @@
+{
+  "version": "1.0.0",
+  "modules": {
+    "Mcu": {
+      "name": "Mcu",
+      "enabled": true,
+      "version": "1.0.0",
+      "parameters": {},
+      "clock_frequency": 800000000,
+      "core_count": 4
+    },
+    "Can": {
+      "name": "Can",
+      "enabled": true,
+      "version": "1.0.0",
+      "parameters": {},
+      "baudrate": 500000,
+      "controller_count": 2
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/srp",
+  "title": "SRP 模块",
+  "description": "void srp_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+  "source": "@site/docs/drivers/ecual/srp.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/srp",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/srp",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/srp.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 27,
+  "frontMatter": {
+    "title": "SRP 模块",
+    "sidebar_label": "srp",
+    "description": "void srp_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+    "sidebar_position": 27
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "someipsd",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/someipsd"
+  },
+  "next": {
+    "title": "wdgif",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/wdgif"
+  }
+}

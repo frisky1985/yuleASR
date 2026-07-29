@@ -1,0 +1,25 @@
+/*==============================================================================
+ * EcuM_Cfg.h - ECU Manager Configuration
+ * Generated: {{ generation_date }}
+ *============================================================================*/
+#ifndef ECUM_CFG_H
+#define ECUM_CFG_H
+
+/* Module version */
+#define ECUM_AR_RELEASE_MAJOR_VERSION       {{ module.EcuMMajorVersion | default(4) }}
+#define ECUM_AR_RELEASE_MINOR_VERSION       {{ module.EcuMMinorVersion | default(4) }}
+#define ECUM_AR_RELEASE_REVISION_VERSION    {{ module.EcuMRevisionVersion | default(0) }}
+
+/* Max wakeup sources */
+#define ECUM_MAX_WAKEUP_SOURCES             {{ module.EcuMMaxWakeupSources | default(4) }}
+
+/* Shutdown target: 0=Off, 1=Reset, 2=Sleep */
+#define ECUM_SHUTDOWN_TARGET                {{ module.EcuMShutdownTarget | default(0) }}
+
+/* Version info API */
+#define ECUM_VERSION_INFO_API               {{ 'STD_ON' if module.EcuMVersionInfoApi | default(False) else 'STD_OFF' }}
+
+/* Development error detection */
+#define ECUM_DEV_ERROR_DETECT               {{ 'STD_ON' if module.EcuMDevErrorDetect | default(True) else 'STD_OFF' }}
+
+#endif /* ECUM_CFG_H */

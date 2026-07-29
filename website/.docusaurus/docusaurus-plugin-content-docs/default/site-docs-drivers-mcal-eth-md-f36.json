@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/ETH",
+  "title": "ETH",
+  "description": "The ETH module provides low-level access to the Ethernet MAC controller hardware, enabling high-speed data communication",
+  "source": "@site/docs/drivers/mcal/ETH.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/ETH",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/ETH",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/ETH.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 6,
+  "frontMatter": {
+    "title": "ETH",
+    "sidebar_label": "ETH",
+    "description": "The ETH module provides low-level access to the Ethernet MAC controller hardware, enabling high-speed data communication",
+    "sidebar_position": 6
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "eep",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/eep"
+  },
+  "next": {
+    "title": "fee",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/fee"
+  }
+}

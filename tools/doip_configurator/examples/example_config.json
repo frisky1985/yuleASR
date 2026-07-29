@@ -1,0 +1,44 @@
+{
+  "project_name": "DoIP_Example",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "generation_date": "2024-01-15",
+  "entities": [
+    {
+      "id": 0,
+      "type": "GATEWAY",
+      "logical_addr": 1,
+      "ip": "192.168.1.1",
+      "port": 13400,
+      "tcp_initial": 2000,
+      "node_discovery": 5000,
+      "vehicle_discovery": 5000,
+      "vehicle_announce": 500,
+      "initial_inactivity": 2000,
+      "broadcast_repeat": 1000,
+      "powersave_timeout": 300000,
+      "powersave_wake": true
+    }
+  ],
+  "activations": [
+    {
+      "id": 0,
+      "entity_id": 0,
+      "type": "DEFAULT",
+      "oem": 0,
+      "auth": false,
+      "confirm": false
+    },
+    {
+      "id": 1,
+      "entity_id": 0,
+      "type": "REGULAR",
+      "oem": 1,
+      "auth": true,
+      "confirm": true
+    }
+  ]
+}

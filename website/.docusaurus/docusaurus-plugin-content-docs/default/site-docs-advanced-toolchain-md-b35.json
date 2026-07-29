@@ -1,0 +1,24 @@
+{
+  "id": "advanced/toolchain",
+  "title": "工具链",
+  "description": "了解 YuleTech 工具链的使用。",
+  "source": "@site/docs/advanced/toolchain.md",
+  "sourceDirName": "advanced",
+  "slug": "/advanced/toolchain",
+  "permalink": "/yuleASR/en/docs/advanced/toolchain",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/toolchain.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "验证报告 - ISO 26262-6",
+    "permalink": "/yuleASR/en/docs/guides/safety-verification"
+  },
+  "next": {
+    "title": "代码生成",
+    "permalink": "/yuleASR/en/docs/advanced/code-generation"
+  }
+}

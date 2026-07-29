@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/linsm",
+  "title": "LINSM 模块",
+  "description": "void linsm_Init(void);",
+  "source": "@site/docs/drivers/ecual/linsm.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/linsm",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/linsm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/linsm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 21,
+  "frontMatter": {
+    "title": "LINSM 模块",
+    "sidebar_label": "linsm",
+    "description": "void linsm_Init(void);",
+    "sidebar_position": 21
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "linnm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/linnm"
+  },
+  "next": {
+    "title": "lintp",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/lintp"
+  }
+}

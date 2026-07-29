@@ -1,0 +1,29 @@
+{
+  "id": "api/com-api",
+  "title": "COM 模块 API 参考",
+  "description": "> **遵循标准**: AUTOSAR SWS COM 4.4.0",
+  "source": "@site/docs/api/com-api.md",
+  "sourceDirName": "api",
+  "slug": "/api/com-api",
+  "permalink": "/yuleASR/en/docs/api/com-api",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/api/com-api.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 14,
+  "frontMatter": {
+    "title": "COM 模块 API 参考",
+    "description": "> **遵循标准**: AUTOSAR SWS COM 4.4.0",
+    "sidebar_position": 14
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "API 参考文档",
+    "permalink": "/yuleASR/en/docs/api/reference"
+  },
+  "next": {
+    "title": "Crypto API Reference Manual",
+    "permalink": "/yuleASR/en/docs/api/crypto-api"
+  }
+}

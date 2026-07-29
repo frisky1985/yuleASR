@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/J1939Tp",
+  "title": "J1939Tp",
+  "description": "J1939Tp implements the SAE J1939-21 Transport Protocol for commercial vehicle multi-frame message transmission over CAN",
+  "source": "@site/docs/drivers/ecual/J1939Tp.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/J1939Tp",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/J1939Tp",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/J1939Tp.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 18,
+  "frontMatter": {
+    "title": "J1939Tp",
+    "sidebar_label": "J1939Tp",
+    "description": "J1939Tp implements the SAE J1939-21 Transport Protocol for commercial vehicle multi-frame message transmission over CAN",
+    "sidebar_position": 18
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ipdum",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/ipdum"
+  },
+  "next": {
+    "title": "LinIf",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/LinIf"
+  }
+}

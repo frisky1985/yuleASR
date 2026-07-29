@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/udpnm",
+  "title": "UDPNM 模块",
+  "description": "void udpnm_Init(void);",
+  "source": "@site/docs/drivers/services/udpnm.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/udpnm",
+  "permalink": "/yuleASR/en/docs/drivers/services/udpnm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/udpnm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 33,
+  "frontMatter": {
+    "title": "UDPNM 模块",
+    "sidebar_label": "udpnm",
+    "description": "void udpnm_Init(void);",
+    "sidebar_position": 33
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "swc",
+    "permalink": "/yuleASR/en/docs/drivers/services/swc"
+  },
+  "next": {
+    "title": "WDGM",
+    "permalink": "/yuleASR/en/docs/drivers/services/WDGM"
+  }
+}

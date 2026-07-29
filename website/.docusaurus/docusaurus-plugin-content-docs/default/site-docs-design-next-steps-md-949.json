@@ -1,0 +1,29 @@
+{
+  "id": "design/next-steps",
+  "title": "脑力涛涩",
+  "description": "YuleTech AutoSAR BSW Platform development brainstorming",
+  "source": "@site/docs/design/next-steps.md",
+  "sourceDirName": "design",
+  "slug": "/design/next-steps",
+  "permalink": "/yuleASR/en/docs/design/next-steps",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/next-steps.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 33,
+  "frontMatter": {
+    "title": "脑力涛涩",
+    "description": "YuleTech AutoSAR BSW Platform development brainstorming",
+    "sidebar_position": 33
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "YuleTech BSW 优化脑力涛涩",
+    "permalink": "/yuleASR/en/docs/design/bsw-optimization"
+  },
+  "next": {
+    "title": "开发指南",
+    "permalink": "/yuleASR/en/docs/guides/development"
+  }
+}

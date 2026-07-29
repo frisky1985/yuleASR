@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/swc",
+  "title": "SWC 模块",
+  "description": "void swc_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+  "source": "@site/docs/drivers/services/swc.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/swc",
+  "permalink": "/yuleASR/en/docs/drivers/services/swc",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/swc.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 32,
+  "frontMatter": {
+    "title": "SWC 模块",
+    "sidebar_label": "swc",
+    "description": "void swc_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+    "sidebar_position": 32
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "stbm",
+    "permalink": "/yuleASR/en/docs/drivers/services/stbm"
+  },
+  "next": {
+    "title": "udpnm",
+    "permalink": "/yuleASR/en/docs/drivers/services/udpnm"
+  }
+}

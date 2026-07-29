@@ -1,0 +1,661 @@
+{
+  "/yuleASR/en/blog-c13": {
+    "__comp": "a6aa9e1f",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "dbfcced2"
+      }
+    ],
+    "__props": "a24e6f36"
+  },
+  "/yuleASR/en/blog/archive-d77": {
+    "__comp": "9e4087bc",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "__props": "13836ec0"
+  },
+  "/yuleASR/en/blog/authors-649": {
+    "__comp": "621db11d",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "__props": "5b512ae0"
+  },
+  "/yuleASR/en/blog/tags-f50": {
+    "__comp": "01a85c17",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "__props": "32c6acbe"
+  },
+  "/yuleASR/en/blog/tags/autosar-918": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "dbfcced2"
+      }
+    ],
+    "__props": "f9503083"
+  },
+  "/yuleASR/en/blog/tags/welcome-540": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "dbfcced2"
+      }
+    ],
+    "__props": "eadd54f0"
+  },
+  "/yuleASR/en/blog/welcome-85c": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "79947f27"
+  },
+  "/yuleASR/en/community-107": {
+    "__comp": "672ba3d6",
+    "__context": {
+      "plugin": "a7456010"
+    },
+    "config": "5e9f5e1a"
+  },
+  "/yuleASR/en/docs-d53": {
+    "__comp": "5e95c892",
+    "__context": {
+      "plugin": "aba21aa0"
+    }
+  },
+  "/yuleASR/en/docs-2af": {
+    "__comp": "a7bd4aaa",
+    "__props": "2d827576"
+  },
+  "/yuleASR/en/docs-634": {
+    "__comp": "a94703ab"
+  },
+  "/yuleASR/en/docs/advanced/code-generation-347": {
+    "__comp": "17896441",
+    "content": "7e0782b1"
+  },
+  "/yuleASR/en/docs/advanced/debugging-424": {
+    "__comp": "17896441",
+    "content": "f6bf9afc"
+  },
+  "/yuleASR/en/docs/advanced/performance-optimization-b4b": {
+    "__comp": "17896441",
+    "content": "0e24bb4f"
+  },
+  "/yuleASR/en/docs/advanced/testing-d6c": {
+    "__comp": "17896441",
+    "content": "01feaeb7"
+  },
+  "/yuleASR/en/docs/advanced/toolchain-8cd": {
+    "__comp": "17896441",
+    "content": "b35d599f"
+  },
+  "/yuleASR/en/docs/api/com-api-97c": {
+    "__comp": "17896441",
+    "content": "9e104215"
+  },
+  "/yuleASR/en/docs/api/crypto-api-189": {
+    "__comp": "17896441",
+    "content": "e48f63ad"
+  },
+  "/yuleASR/en/docs/api/crypto-quickstart-c05": {
+    "__comp": "17896441",
+    "content": "ae39a4ae"
+  },
+  "/yuleASR/en/docs/api/dcm-services-6d8": {
+    "__comp": "17896441",
+    "content": "3f37f398"
+  },
+  "/yuleASR/en/docs/api/reference-411": {
+    "__comp": "17896441",
+    "content": "47b0b88f"
+  },
+  "/yuleASR/en/docs/concepts/bsw-architecture-7ed": {
+    "__comp": "17896441",
+    "content": "0f502cd3"
+  },
+  "/yuleASR/en/docs/concepts/ecual-964": {
+    "__comp": "17896441",
+    "content": "f2fc9872"
+  },
+  "/yuleASR/en/docs/concepts/layered-structure-2e8": {
+    "__comp": "17896441",
+    "content": "441432fe"
+  },
+  "/yuleASR/en/docs/concepts/mcal-6f6": {
+    "__comp": "17896441",
+    "content": "2599bf01"
+  },
+  "/yuleASR/en/docs/concepts/rte-04a": {
+    "__comp": "17896441",
+    "content": "fcbaaec9"
+  },
+  "/yuleASR/en/docs/concepts/services-59a": {
+    "__comp": "17896441",
+    "content": "44549577"
+  },
+  "/yuleASR/en/docs/concepts/what-is-autosar-780": {
+    "__comp": "17896441",
+    "content": "2e66eb7c"
+  },
+  "/yuleASR/en/docs/contributing-0a5": {
+    "__comp": "17896441",
+    "content": "4d54d076"
+  },
+  "/yuleASR/en/docs/design/architecture-overview-b8c": {
+    "__comp": "17896441",
+    "content": "c04fc48a"
+  },
+  "/yuleASR/en/docs/design/bsw-optimization-85e": {
+    "__comp": "17896441",
+    "content": "9564dd3a"
+  },
+  "/yuleASR/en/docs/design/configuration-system-838": {
+    "__comp": "17896441",
+    "content": "5d0adcc3"
+  },
+  "/yuleASR/en/docs/design/data-flow-5c6": {
+    "__comp": "17896441",
+    "content": "ea4df3c9"
+  },
+  "/yuleASR/en/docs/design/error-handling-165": {
+    "__comp": "17896441",
+    "content": "b0a26940"
+  },
+  "/yuleASR/en/docs/design/memory-management-228": {
+    "__comp": "17896441",
+    "content": "be399ca1"
+  },
+  "/yuleASR/en/docs/design/module-interactions-d46": {
+    "__comp": "17896441",
+    "content": "e1826fed"
+  },
+  "/yuleASR/en/docs/design/next-steps-f02": {
+    "__comp": "17896441",
+    "content": "94939a45"
+  },
+  "/yuleASR/en/docs/design/testing-strategy-824": {
+    "__comp": "17896441",
+    "content": "7b73ff20"
+  },
+  "/yuleASR/en/docs/drivers/ecual/CanIf-160": {
+    "__comp": "17896441",
+    "content": "238cb138"
+  },
+  "/yuleASR/en/docs/drivers/ecual/canNm-3a3": {
+    "__comp": "17896441",
+    "content": "c8ab0fed"
+  },
+  "/yuleASR/en/docs/drivers/ecual/cansm-593": {
+    "__comp": "17896441",
+    "content": "8c1a49d6"
+  },
+  "/yuleASR/en/docs/drivers/ecual/CanTp-d5e": {
+    "__comp": "17896441",
+    "content": "11ca67c6"
+  },
+  "/yuleASR/en/docs/drivers/ecual/cantrcv-335": {
+    "__comp": "17896441",
+    "content": "be0c2aea"
+  },
+  "/yuleASR/en/docs/drivers/ecual/CANTSYN-95b": {
+    "__comp": "17896441",
+    "content": "2b958d7f"
+  },
+  "/yuleASR/en/docs/drivers/ecual/DLT-2cf": {
+    "__comp": "17896441",
+    "content": "6cdadb6b"
+  },
+  "/yuleASR/en/docs/drivers/ecual/doip-194": {
+    "__comp": "17896441",
+    "content": "a7078089"
+  },
+  "/yuleASR/en/docs/drivers/ecual/ea-4e9": {
+    "__comp": "17896441",
+    "content": "130d5a9b"
+  },
+  "/yuleASR/en/docs/drivers/ecual/EthIf-808": {
+    "__comp": "17896441",
+    "content": "82be33c2"
+  },
+  "/yuleASR/en/docs/drivers/ecual/ethsm-1bb": {
+    "__comp": "17896441",
+    "content": "6eb4db22"
+  },
+  "/yuleASR/en/docs/drivers/ecual/ethtrcv-91a": {
+    "__comp": "17896441",
+    "content": "858a0c3f"
+  },
+  "/yuleASR/en/docs/drivers/ecual/fim-fb8": {
+    "__comp": "17896441",
+    "content": "ff54896a"
+  },
+  "/yuleASR/en/docs/drivers/ecual/frif-db5": {
+    "__comp": "17896441",
+    "content": "e3d8d36f"
+  },
+  "/yuleASR/en/docs/drivers/ecual/frtp-a61": {
+    "__comp": "17896441",
+    "content": "3ef262e9"
+  },
+  "/yuleASR/en/docs/drivers/ecual/iohwab-3f7": {
+    "__comp": "17896441",
+    "content": "13253687"
+  },
+  "/yuleASR/en/docs/drivers/ecual/ipdum-977": {
+    "__comp": "17896441",
+    "content": "43f43850"
+  },
+  "/yuleASR/en/docs/drivers/ecual/J1939Tp-05a": {
+    "__comp": "17896441",
+    "content": "81bb8ed1"
+  },
+  "/yuleASR/en/docs/drivers/ecual/LinIf-3ba": {
+    "__comp": "17896441",
+    "content": "27b3bfae"
+  },
+  "/yuleASR/en/docs/drivers/ecual/linnm-39f": {
+    "__comp": "17896441",
+    "content": "fb1fcb1f"
+  },
+  "/yuleASR/en/docs/drivers/ecual/linsm-a16": {
+    "__comp": "17896441",
+    "content": "f553ccbf"
+  },
+  "/yuleASR/en/docs/drivers/ecual/lintp-e25": {
+    "__comp": "17896441",
+    "content": "adee8a50"
+  },
+  "/yuleASR/en/docs/drivers/ecual/lintrcv-b6e": {
+    "__comp": "17896441",
+    "content": "c62e0b1e"
+  },
+  "/yuleASR/en/docs/drivers/ecual/memif-791": {
+    "__comp": "17896441",
+    "content": "3091f759"
+  },
+  "/yuleASR/en/docs/drivers/ecual/someipif-132": {
+    "__comp": "17896441",
+    "content": "e1d75689"
+  },
+  "/yuleASR/en/docs/drivers/ecual/someipsd-6ef": {
+    "__comp": "17896441",
+    "content": "d549bd7f"
+  },
+  "/yuleASR/en/docs/drivers/ecual/srp-b3a": {
+    "__comp": "17896441",
+    "content": "1957020d"
+  },
+  "/yuleASR/en/docs/drivers/ecual/wdgif-d79": {
+    "__comp": "17896441",
+    "content": "8d057dc6"
+  },
+  "/yuleASR/en/docs/drivers/ecual/xcp-6fa": {
+    "__comp": "17896441",
+    "content": "58440248"
+  },
+  "/yuleASR/en/docs/drivers/mcal/ADC-f30": {
+    "__comp": "17896441",
+    "content": "283cea43"
+  },
+  "/yuleASR/en/docs/drivers/mcal/CAN-ef1": {
+    "__comp": "17896441",
+    "content": "d0a7dc69"
+  },
+  "/yuleASR/en/docs/drivers/mcal/Crypto-1f3": {
+    "__comp": "17896441",
+    "content": "b6746b4e"
+  },
+  "/yuleASR/en/docs/drivers/mcal/dio-bbe": {
+    "__comp": "17896441",
+    "content": "0862d6db"
+  },
+  "/yuleASR/en/docs/drivers/mcal/eep-71b": {
+    "__comp": "17896441",
+    "content": "a87f29a4"
+  },
+  "/yuleASR/en/docs/drivers/mcal/ETH-2f5": {
+    "__comp": "17896441",
+    "content": "f36d9c92"
+  },
+  "/yuleASR/en/docs/drivers/mcal/fee-810": {
+    "__comp": "17896441",
+    "content": "4047d87e"
+  },
+  "/yuleASR/en/docs/drivers/mcal/flash-239": {
+    "__comp": "17896441",
+    "content": "9e2b51e6"
+  },
+  "/yuleASR/en/docs/drivers/mcal/fls-07c": {
+    "__comp": "17896441",
+    "content": "dfbfe1e1"
+  },
+  "/yuleASR/en/docs/drivers/mcal/gpt-89d": {
+    "__comp": "17896441",
+    "content": "e99a3538"
+  },
+  "/yuleASR/en/docs/drivers/mcal/i2c-5ee": {
+    "__comp": "17896441",
+    "content": "7ff93046"
+  },
+  "/yuleASR/en/docs/drivers/mcal/icu-f9d": {
+    "__comp": "17896441",
+    "content": "ee439276"
+  },
+  "/yuleASR/en/docs/drivers/mcal/LIN-63c": {
+    "__comp": "17896441",
+    "content": "80a369d3"
+  },
+  "/yuleASR/en/docs/drivers/mcal/mcu-7c0": {
+    "__comp": "17896441",
+    "content": "543e3cbe"
+  },
+  "/yuleASR/en/docs/drivers/mcal/ocu-04b": {
+    "__comp": "17896441",
+    "content": "d46ec2fc"
+  },
+  "/yuleASR/en/docs/drivers/mcal/port-4e2": {
+    "__comp": "17896441",
+    "content": "073faf29"
+  },
+  "/yuleASR/en/docs/drivers/mcal/pwm-f45": {
+    "__comp": "17896441",
+    "content": "46b7a99a"
+  },
+  "/yuleASR/en/docs/drivers/mcal/ramtst-4d8": {
+    "__comp": "17896441",
+    "content": "485b72b4"
+  },
+  "/yuleASR/en/docs/drivers/mcal/spi-bc7": {
+    "__comp": "17896441",
+    "content": "94d0cb25"
+  },
+  "/yuleASR/en/docs/drivers/mcal/uart-dd3": {
+    "__comp": "17896441",
+    "content": "87af7c57"
+  },
+  "/yuleASR/en/docs/drivers/mcal/wdg-09d": {
+    "__comp": "17896441",
+    "content": "3ba772fa"
+  },
+  "/yuleASR/en/docs/drivers/services/BSWM-e55": {
+    "__comp": "17896441",
+    "content": "51ffcdc4"
+  },
+  "/yuleASR/en/docs/drivers/services/CANM-376": {
+    "__comp": "17896441",
+    "content": "f6000673"
+  },
+  "/yuleASR/en/docs/drivers/services/COM-572": {
+    "__comp": "17896441",
+    "content": "dd7da222"
+  },
+  "/yuleASR/en/docs/drivers/services/COMM-8a4": {
+    "__comp": "17896441",
+    "content": "1e9d6477"
+  },
+  "/yuleASR/en/docs/drivers/services/crc-0a6": {
+    "__comp": "17896441",
+    "content": "7bf441bc"
+  },
+  "/yuleASR/en/docs/drivers/services/CRYIF-403": {
+    "__comp": "17896441",
+    "content": "da354643"
+  },
+  "/yuleASR/en/docs/drivers/services/CSM-e54": {
+    "__comp": "17896441",
+    "content": "c62dee8c"
+  },
+  "/yuleASR/en/docs/drivers/services/Dcm-c71": {
+    "__comp": "17896441",
+    "content": "5a4f71e4"
+  },
+  "/yuleASR/en/docs/drivers/services/DEM-a8f": {
+    "__comp": "17896441",
+    "content": "c4b66f49"
+  },
+  "/yuleASR/en/docs/drivers/services/det-2d9": {
+    "__comp": "17896441",
+    "content": "9747be0f"
+  },
+  "/yuleASR/en/docs/drivers/services/docan-c8d": {
+    "__comp": "17896441",
+    "content": "3d06a843"
+  },
+  "/yuleASR/en/docs/drivers/services/e2e-ffe": {
+    "__comp": "17896441",
+    "content": "cf8dfb05"
+  },
+  "/yuleASR/en/docs/drivers/services/ecuc-cd1": {
+    "__comp": "17896441",
+    "content": "e98cb41b"
+  },
+  "/yuleASR/en/docs/drivers/services/ECUM-826": {
+    "__comp": "17896441",
+    "content": "8db111cc"
+  },
+  "/yuleASR/en/docs/drivers/services/j1939nm-c51": {
+    "__comp": "17896441",
+    "content": "618a41df"
+  },
+  "/yuleASR/en/docs/drivers/services/keym-416": {
+    "__comp": "17896441",
+    "content": "dd4c61c5"
+  },
+  "/yuleASR/en/docs/drivers/services/linm-388": {
+    "__comp": "17896441",
+    "content": "3ff04139"
+  },
+  "/yuleASR/en/docs/drivers/services/lntm-f9e": {
+    "__comp": "17896441",
+    "content": "26243a62"
+  },
+  "/yuleASR/en/docs/drivers/services/mem-895": {
+    "__comp": "17896441",
+    "content": "0c4d6dd7"
+  },
+  "/yuleASR/en/docs/drivers/services/mqtt-b0b": {
+    "__comp": "17896441",
+    "content": "670528c6"
+  },
+  "/yuleASR/en/docs/drivers/services/Nm-dd0": {
+    "__comp": "17896441",
+    "content": "f3dde40b"
+  },
+  "/yuleASR/en/docs/drivers/services/NVM-e57": {
+    "__comp": "17896441",
+    "content": "6b246195"
+  },
+  "/yuleASR/en/docs/drivers/services/PDUR-42e": {
+    "__comp": "17896441",
+    "content": "7473f182"
+  },
+  "/yuleASR/en/docs/drivers/services/ramsafety-083": {
+    "__comp": "17896441",
+    "content": "f6a41f03"
+  },
+  "/yuleASR/en/docs/drivers/services/schm-32b": {
+    "__comp": "17896441",
+    "content": "95415d37"
+  },
+  "/yuleASR/en/docs/drivers/services/secoc-f0a": {
+    "__comp": "17896441",
+    "content": "cbad181a"
+  },
+  "/yuleASR/en/docs/drivers/services/SOAD-8d2": {
+    "__comp": "17896441",
+    "content": "f4ad7b97"
+  },
+  "/yuleASR/en/docs/drivers/services/SOMEIP-44c": {
+    "__comp": "17896441",
+    "content": "57156ef4"
+  },
+  "/yuleASR/en/docs/drivers/services/SOMEIPTP-6c9": {
+    "__comp": "17896441",
+    "content": "975dcf57"
+  },
+  "/yuleASR/en/docs/drivers/services/SOMEIPXF-631": {
+    "__comp": "17896441",
+    "content": "9ac456a8"
+  },
+  "/yuleASR/en/docs/drivers/services/stbm-897": {
+    "__comp": "17896441",
+    "content": "e9bac841"
+  },
+  "/yuleASR/en/docs/drivers/services/swc-24c": {
+    "__comp": "17896441",
+    "content": "2a271fff"
+  },
+  "/yuleASR/en/docs/drivers/services/udpnm-70d": {
+    "__comp": "17896441",
+    "content": "d958d514"
+  },
+  "/yuleASR/en/docs/drivers/services/WDGM-d40": {
+    "__comp": "17896441",
+    "content": "f7abcf0e"
+  },
+  "/yuleASR/en/docs/faq-8f8": {
+    "__comp": "17896441",
+    "content": "0480b142"
+  },
+  "/yuleASR/en/docs/guides/com-config-708": {
+    "__comp": "17896441",
+    "content": "887997ac"
+  },
+  "/yuleASR/en/docs/guides/com-guide-6a5": {
+    "__comp": "17896441",
+    "content": "80f05b60"
+  },
+  "/yuleASR/en/docs/guides/com-troubleshooting-6c4": {
+    "__comp": "17896441",
+    "content": "d0900173"
+  },
+  "/yuleASR/en/docs/guides/com-user-manual-17c": {
+    "__comp": "17896441",
+    "content": "5fbc369d"
+  },
+  "/yuleASR/en/docs/guides/configurator-342": {
+    "__comp": "17896441",
+    "content": "abd7e7f8"
+  },
+  "/yuleASR/en/docs/guides/dem-design-1f9": {
+    "__comp": "17896441",
+    "content": "84bc4a43"
+  },
+  "/yuleASR/en/docs/guides/development-f07": {
+    "__comp": "17896441",
+    "content": "24f328e1"
+  },
+  "/yuleASR/en/docs/guides/hara-analysis-44e": {
+    "__comp": "17896441",
+    "content": "7e5aa349"
+  },
+  "/yuleASR/en/docs/guides/misra-deviations-a2b": {
+    "__comp": "17896441",
+    "content": "2eecadd2"
+  },
+  "/yuleASR/en/docs/guides/misra-report-693": {
+    "__comp": "17896441",
+    "content": "5226810b"
+  },
+  "/yuleASR/en/docs/guides/s32k312-hsm-97f": {
+    "__comp": "17896441",
+    "content": "91c586cc"
+  },
+  "/yuleASR/en/docs/guides/safety-manual-d77": {
+    "__comp": "17896441",
+    "content": "56b03afe"
+  },
+  "/yuleASR/en/docs/guides/safety-verification-2bc": {
+    "__comp": "17896441",
+    "content": "cb3952dd"
+  },
+  "/yuleASR/en/docs/platform/s32k312/autosar-integration/-6d9": {
+    "__comp": "17896441",
+    "content": "361219f3"
+  },
+  "/yuleASR/en/docs/platform/s32k312/autosar-integration/ecc-handling-ba5": {
+    "__comp": "17896441",
+    "content": "ab1227e1"
+  },
+  "/yuleASR/en/docs/platform/s32k312/autosar-integration/lockstep-d18": {
+    "__comp": "17896441",
+    "content": "8a5eeaec"
+  },
+  "/yuleASR/en/docs/platform/s32k312/autosar-integration/ramsafety-a38": {
+    "__comp": "17896441",
+    "content": "17a84017"
+  },
+  "/yuleASR/en/docs/platform/s32k312/autosar-integration/wdgm-0ed": {
+    "__comp": "17896441",
+    "content": "203d648a"
+  },
+  "/yuleASR/en/docs/platform/s32k312/overview-abc": {
+    "__comp": "17896441",
+    "content": "4d821f96"
+  },
+  "/yuleASR/en/docs/quick-start/configuration-5fa": {
+    "__comp": "17896441",
+    "content": "cbc9dd6d"
+  },
+  "/yuleASR/en/docs/quick-start/first-project-c3a": {
+    "__comp": "17896441",
+    "content": "416f5f92"
+  },
+  "/yuleASR/en/docs/quick-start/installation-c63": {
+    "__comp": "17896441",
+    "content": "4d812e7e"
+  },
+  "/yuleASR/en/docs/quick-start/intro-4e1": {
+    "__comp": "17896441",
+    "content": "2468810a"
+  },
+  "/yuleASR/en/docs/safety/hara-analysis-d65": {
+    "__comp": "17896441",
+    "content": "f7bfdbbd"
+  },
+  "/yuleASR/en/docs/safety/safety-manual-e5a": {
+    "__comp": "17896441",
+    "content": "443aa938"
+  },
+  "/yuleASR/en/docs/safety/verification-report-775": {
+    "__comp": "17896441",
+    "content": "fba7f3cf"
+  },
+  "/yuleASR/en/docs/troubleshooting-384": {
+    "__comp": "17896441",
+    "content": "9d9f8394"
+  },
+  "/yuleASR/en/-b03": {
+    "__comp": "c4f5d8e4",
+    "__context": {
+      "plugin": "a7456010"
+    },
+    "config": "5e9f5e1a"
+  }
+}

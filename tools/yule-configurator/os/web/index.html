@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YuleTech OS Configurator - AutoSAR OS 配置工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            padding: 20px;
+            border-bottom: 2px solid #3b82f6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+            color: #3b82f6;
+        }
+        .header .subtitle {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+        .sidebar {
+            width: 250px;
+            background: #1e293b;
+            border-right: 1px solid #334155;
+            padding: 20px;
+        }
+        .nav-item {
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-item:hover {
+            background: #334155;
+        }
+        .nav-item.active {
+            background: #3b82f6;
+            color: white;
+        }
+        .nav-item .icon {
+            font-size: 18px;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .panel {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #334155;
+        }
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background: #475569;
+        }
+        .btn-secondary:hover {
+            background: #334155;
+        }
+        .btn-success {
+            background: #10b981;
+        }
+        .btn-success:hover {
+            background: #059669;
+        }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #334155;
+        }
+        th {
+            background: #252f47;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+        tr:hover {
+            background: #252f47;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #1e293b;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #334155;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .close-btn:hover {
+            color: #e2e8f0;
+        }
+        .code-preview {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-primary { background: #3b82f6; }
+        .badge-success { background: #10b981; }
+        .badge-warning { background: #f59e0b; }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🚀 YuleTech OS Configurator</h1>
+            <div class="subtitle">AutoSAR OS 配置工具 (FreeRTOS 适配)</div>
+        </div>
+        <div class="toolbar">
+            <button class="btn btn-secondary" onclick="importConfig()">
+                📁 导入</button>
+            <button class="btn btn-secondary" onclick="exportConfig()">
+                💾 保存</button>
+            <button class="btn btn-success" onclick="generateCode()">
+                ⚙️ 生成代码</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <div class="nav-item active" onclick="showPanel('tasks')">
+                <span class="icon">📋</span> 任务配置</div>
+            <div class="nav-item" onclick="showPanel('alarms')">
+                <span class="icon">⏰</span> Alarm 配置</div>
+            <div class="nav-item" onclick="showPanel('resources')">
+                <span class="icon">🔒</span> 资源配置</div>
+            <div class="nav-item" onclick="showPanel('events')">
+                <span class="icon">💡</span> 事件配置</div>
+            <div class="nav-item" onclick="showPanel('schedules')">
+                <span class="icon">📅</span> 调度表</div>
+            <div class="nav-item" onclick="showPanel('preview')">
+                <span class="icon">👁️</span> 代码预览</div>
+        </div>
+
+        <div class="main-content">
+            <!-- Tasks Panel -->
+            <div id="tasks-panel" class="panel">
+                <h2>📋 任务配置</h2>
+                <div class="toolbar">
+                    <button class="btn" onclick="openTaskModal()">+ 添加任务</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>任务名称</th>
+                            <th>优先级</th>
+                            <th>调度策略</th>
+                            <th>自动启动</th>
+                            <th>Activation</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tasks-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Alarms Panel -->
+            <div id="alarms-panel" class="panel hidden">
+                <h2>⏰ Alarm 配置</h2>
+                <div class="toolbar">
+                    <button class="btn" onclick="openAlarmModal()">+ 添加 Alarm</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Alarm 名称</th>
+                            <th>Counter</th>
+                            <th>动作类型</th>
+                            <th>目标任务</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alarms-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Resources Panel -->
+            <div id="resources-panel" class="panel hidden">
+                <h2>🔒 资源配置</h2>
+                <div class="toolbar">
+                    <button class="btn" onclick="openResourceModal()">+ 添加资源</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>资源名称</th>
+                            <th>优先级天花板</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resources-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Events Panel -->
+            <div id="events-panel" class="panel hidden">
+                <h2>💡 事件配置</h2>
+                <div class="toolbar">
+                    <button class="btn" onclick="openEventModal()">+ 添加事件</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>事件名称</th>
+                            <th>Mask (十六进制)</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="events-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Schedule Tables Panel -->
+            <div id="schedules-panel" class="panel hidden">
+                <h2>📅 调度表配置</h2>
+                <div class="toolbar">
+                    <button class="btn" onclick="openScheduleModal()">+ 添加调度表</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>调度表名称</th>
+                            <th>Counter</th>
+                            <th>周期性</th>
+                            <th>Expiry Points</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedules-table">
+                        <!-- 动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Preview Panel -->
+            <div id="preview-panel" class="panel hidden">
+                <h2>👁️ 代码预览</h2>
+                <div class="toolbar">
+                    <button class="btn btn-secondary" onclick="downloadFile('Os_Cfg.h')">下载 Os_Cfg.h</button>
+                    <button class="btn btn-secondary" onclick="downloadFile('Os_Cfg.c')">下载 Os_Cfg.c</button>
+                    <button class="btn btn-secondary" onclick="downloadFile('config.yaml')">下载 YAML 配置</button>
+                </div>
+                <div class="code-preview" id="code-preview">
+// 点击"生成代码"按钮查看预览
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加/编辑任务</h3>
+                <button class="close-btn" onclick="closeModal('task-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>任务名称</label>
+                    <input type="text" id="task-name" placeholder="例如: Task_Main">
+                </div>
+                <div class="form-group">
+                    <label>优先级 (0-255, 数字越大优先级越高)</label>
+                    <input type="number" id="task-priority" min="0" max="255" value="1">
+                </div>
+                <div class="form-group">
+                    <label>调度策略</label>
+                    <select id="task-schedule">
+                        <option value="FULL">FULL (全调度)</option>
+                        <option value="NON">NON (非抢占)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>自动启动</label>
+                    <select id="task-autostart">
+                        <option value="true">是</option>
+                        <option value="false">否</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Activation (激活数量)</label>
+                    <input type="number" id="task-activation" min="1" max="255" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Stack Size (字节)</label>
+                    <input type="number" id="task-stack" min="128" value="1024">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('task-modal')">取消</button>
+                <button class="btn" onclick="saveTask()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-dot"></span>
+            <span>系统就绪</span>
+        </div>
+        <div class="status-item">
+            <span>任务: <span id="task-count">0</span></span>
+            <span>Alarm: <span id="alarm-count">0</span></span>
+            <span>资源: <span id="resource-count">0</span></span>
+            <span>事件: <span id="event-count">0</span></span>
+        </div>
+    </div>
+
+    <script>
+        // 配置数据
+        let config = {
+            tasks: [],
+            alarms: [],
+            resources: [],
+            events: [],
+            schedule_tables: [],
+            counters: [{
+                name: "SystemCounter",
+                type: "HARDWARE",
+                maxallowedvalue: 65535,
+                ticksperbase: 1,
+                mincycle: 1
+            }]
+        };
+
+        let editingIndex = -1;
+        let editingType = '';
+
+        // 显示面板
+        function showPanel(panelName) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(panelName + '-panel').classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // 打开模态框
+        function openTaskModal(index = -1) {
+            editingIndex = index;
+            editingType = 'task';
+            if (index >= 0) {
+                const task = config.tasks[index];
+                document.getElementById('task-name').value = task.name;
+                document.getElementById('task-priority').value = task.priority;
+                document.getElementById('task-schedule').value = task.schedule;
+                document.getElementById('task-autostart').value = task.autostart.toString();
+                document.getElementById('task-activation').value = task.activation;
+                document.getElementById('task-stack').value = task.stack_size || 1024;
+            } else {
+                document.getElementById('task-name').value = '';
+                document.getElementById('task-priority').value = 1;
+                document.getElementById('task-schedule').value = 'FULL';
+                document.getElementById('task-autostart').value = 'false';
+                document.getElementById('task-activation').value = 1;
+                document.getElementById('task-stack').value = 1024;
+            }
+            document.getElementById('task-modal').classList.add('active');
+        }
+
+        // 保存任务
+        function saveTask() {
+            const task = {
+                name: document.getElementById('task-name').value,
+                priority: parseInt(document.getElementById('task-priority').value),
+                schedule: document.getElementById('task-schedule').value,
+                autostart: document.getElementById('task-autostart').value === 'true',
+                activation: parseInt(document.getElementById('task-activation').value),
+                stack_size: parseInt(document.getElementById('task-stack').value)
+            };
+            
+            if (editingIndex >= 0) {
+                config.tasks[editingIndex] = task;
+            } else {
+                config.tasks.push(task);
+            }
+            
+            closeModal('task-modal');
+            renderTasks();
+            updateStatusBar();
+        }
+
+        // 渲染任务列表
+        function renderTasks() {
+            const tbody = document.getElementById('tasks-table');
+            tbody.innerHTML = config.tasks.map((task, index) => `
+                <tr>
+                    <td>${task.name}</td>
+                    <td><span class="badge badge-primary">${task.priority}</span></td>
+                    <td>${task.schedule}</td>
+                    <td>${task.autostart ? '<span class="badge badge-success">是</span>' : '否'}</td>
+                    <td>${task.activation}</td>
+                    <td>
+                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;" onclick="editTask(${index})">编辑</button>
+                        <button class="btn" style="padding: 4px 8px; font-size: 12px; background: #ef4444;" onclick="deleteTask(${index})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editTask(index) {
+            openTaskModal(index);
+        }
+
+        function deleteTask(index) {
+            if (confirm('确定删除该任务?')) {
+                config.tasks.splice(index, 1);
+                renderTasks();
+                updateStatusBar();
+            }
+        }
+
+        // 其他功能函数作为占位符
+        function openAlarmModal() { alert('功能开发中...'); }
+        function openResourceModal() { alert('功能开发中...'); }
+        function openEventModal() { alert('功能开发中...'); }
+        function openScheduleModal() { alert('功能开发中...'); }
+
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // 更新状态栏
+        function updateStatusBar() {
+            document.getElementById('task-count').textContent = config.tasks.length;
+            document.getElementById('alarm-count').textContent = config.alarms.length;
+            document.getElementById('resource-count').textContent = config.resources.length;
+            document.getElementById('event-count').textContent = config.events.length;
+        }
+
+        // 生成代码
+        function generateCode() {
+            const code = generateOsCfgCode(config);
+            document.getElementById('code-preview').textContent = code;
+            showPanel('preview');
+        }
+
+        // 生成 Os_Cfg.c 代码
+        function generateOsCfgCode(cfg) {
+            let code = `/* Auto-generated by YuleTech OS Configurator */
+#ifndef OS_CFG_H
+#define OS_CFG_H
+
+/* Task Definitions */
+`;
+            
+            cfg.tasks.forEach((task, i) => {
+                code += `#define TASK_${task.name.toUpperCase()} ${i}\n`;
+            });
+            
+            code += `\n#define OS_TASK_COUNT ${cfg.tasks.length}\n`;
+            code += `\n#endif /* OS_CFG_H */\n`;
+            
+            return code;
+        }
+
+        // 导出配置
+        function exportConfig() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "os_config.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        // 导入配置
+        function importConfig() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json,.yaml,.yml';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = () => {
+                    try {
+                        config = JSON.parse(reader.result);
+                        renderTasks();
+                        updateStatusBar();
+                        alert('配置导入成功!');
+                    } catch (err) {
+                        alert('配置文件解析失败: ' + err.message);
+                    }
+                };
+            };
+            input.click();
+        }
+
+        // 下载文件
+        function downloadFile(filename) {
+            let content = '';
+            if (filename === 'Os_Cfg.h') {
+                content = generateOsCfgCode(config);
+            } else if (filename === 'config.yaml') {
+                content = JSON.stringify(config, null, 2);
+            } else {
+                content = '// ' + filename + '\n';
+            }
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 初始化
+        renderTasks();
+        updateStatusBar();
+    </script>
+</body>
+</html>

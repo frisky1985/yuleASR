@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/Crypto",
+  "title": "Crypto",
+  "description": "The CRYPTO module provides hardware-accelerated cryptographic operations for the AUTOSAR Basic Software. It abstracts th",
+  "source": "@site/docs/drivers/mcal/Crypto.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/Crypto",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/Crypto",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/Crypto.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "title": "Crypto",
+    "sidebar_label": "Crypto",
+    "description": "The CRYPTO module provides hardware-accelerated cryptographic operations for the AUTOSAR Basic Software. It abstracts th",
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "CAN",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/CAN"
+  },
+  "next": {
+    "title": "dio",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/dio"
+  }
+}

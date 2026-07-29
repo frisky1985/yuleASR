@@ -1,0 +1,28 @@
+/*==============================================================================
+ * WdgM_Cfg.h - Watchdog Manager Configuration
+ * Generated: {{ generation_date }}
+ *============================================================================*/
+#ifndef WDGM_CFG_H
+#define WDGM_CFG_H
+
+/* Module version */
+#define WDGM_AR_RELEASE_MAJOR_VERSION       {{ module.WdgMMajorVersion | default(4) }}
+#define WDGM_AR_RELEASE_MINOR_VERSION       {{ module.WdgMMinorVersion | default(4) }}
+#define WDGM_AR_RELEASE_REVISION_VERSION    {{ module.WdgMRevisionVersion | default(0) }}
+
+/* Max supervised entities */
+#define WDGM_MAX_SUPERVISED_ENTITIES        {{ module.WdgMMaxSupervisedEntities | default(4) }}
+
+/* Max alive supervision cycles */
+#define WDGM_MAX_ALIVE_SUPERVISION_CYCLES   {{ module.WdgMMaxAliveSupervisionCycles | default(8) }}
+
+/* Max deadline supervision cycles */
+#define WDGM_MAX_DEADLINE_SUPERVISION_CYCLES {{ module.WdgMMaxDeadlineSupervisionCycles | default(8) }}
+
+/* Version info API */
+#define WDGM_VERSION_INFO_API               {{ 'STD_ON' if module.WdgMVersionInfoApi | default(False) else 'STD_OFF' }}
+
+/* Development error detection */
+#define WDGM_DEV_ERROR_DETECT               {{ 'STD_ON' if module.WdgMDevErrorDetect | default(True) else 'STD_OFF' }}
+
+#endif /* WDGM_CFG_H */

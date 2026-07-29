@@ -1,0 +1,24 @@
+{
+  "id": "advanced/debugging",
+  "title": "调试",
+  "description": "调试技巧和工具使用。",
+  "source": "@site/docs/advanced/debugging.md",
+  "sourceDirName": "advanced",
+  "slug": "/advanced/debugging",
+  "permalink": "/yuleASR/en/docs/advanced/debugging",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/advanced/debugging.md",
+  "tags": [],
+  "version": "current",
+  "frontMatter": {},
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "性能优化",
+    "permalink": "/yuleASR/en/docs/advanced/performance-optimization"
+  },
+  "next": {
+    "title": "贡献指南",
+    "permalink": "/yuleASR/en/docs/contributing"
+  }
+}

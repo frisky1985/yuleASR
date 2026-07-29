@@ -1,0 +1,29 @@
+{
+  "id": "guides/misra-report",
+  "title": "MISRA C:2012 Compliance Report - COM Module",
+  "description": "| Property | Value |",
+  "source": "@site/docs/guides/misra-report.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/misra-report",
+  "permalink": "/yuleASR/en/docs/guides/misra-report",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/misra-report.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 26,
+  "frontMatter": {
+    "title": "MISRA C:2012 Compliance Report - COM Module",
+    "description": "| Property | Value |",
+    "sidebar_position": 26
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "验证报告 - ISO 26262-6",
+    "permalink": "/yuleASR/en/docs/safety/verification-report"
+  },
+  "next": {
+    "title": "MISRA C:2012 Deviation Permits - COM Module",
+    "permalink": "/yuleASR/en/docs/guides/misra-deviations"
+  }
+}

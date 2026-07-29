@@ -1,0 +1,127 @@
+{
+  "softwareComponents": [
+    {
+      "name": "SwcEngineCtrl",
+      "description": "Engine Control Software Component",
+      "ports": [
+        {
+          "name": "PpEngineSpeed",
+          "direction": "Provided",
+          "interfaceType": "SenderReceiver",
+          "dataElements": [
+            {
+              "name": "EngineSpeed",
+              "type": "uint16",
+              "comSignalId": 100
+            }
+          ]
+        },
+        {
+          "name": "PpThrottlePos",
+          "direction": "Provided",
+          "interfaceType": "SenderReceiver",
+          "dataElements": [
+            {
+              "name": "ThrottlePosition",
+              "type": "uint8",
+              "comSignalId": 101
+            }
+          ]
+        },
+        {
+          "name": "PpNvMEngineConfig",
+          "direction": "Provided",
+          "interfaceType": "NvBlock",
+          "dataElements": [
+            {
+              "name": "EngineConfig",
+              "type": {
+                "kind": "struct",
+                "fields": [
+                  {
+                    "name": "maxRpm",
+                    "type": "uint16"
+                  },
+                  {
+                    "name": "idleSpeed",
+                    "type": "uint8"
+                  }
+                ]
+              },
+              "nvmBlockId": 10
+            }
+          ]
+        },
+        {
+          "name": "PpDiagServices",
+          "direction": "Required",
+          "interfaceType": "ClientServer",
+          "operations": [
+            {
+              "name": "ReadDTC",
+              "arguments": [
+                {
+                  "name": "DTC",
+                  "type": "uint16",
+                  "direction": "in"
+                },
+                {
+                  "name": "Status",
+                  "type": "uint8",
+                  "direction": "out"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SwcDisplay",
+      "description": "Dashboard Display Software Component",
+      "ports": [
+        {
+          "name": "RpEngineSpeed",
+          "direction": "Required",
+          "interfaceType": "SenderReceiver",
+          "dataElements": [
+            {
+              "name": "EngineSpeed",
+              "type": "uint16",
+              "comSignalId": 100
+            }
+          ]
+        },
+        {
+          "name": "RpVehicleSpeed",
+          "direction": "Required",
+          "interfaceType": "SenderReceiver",
+          "dataElements": [
+            {
+              "name": "VehicleSpeed",
+              "type": "uint16",
+              "comSignalId": 200
+            }
+          ]
+        },
+        {
+          "name": "PpDisplayServices",
+          "direction": "Provided",
+          "interfaceType": "ClientServer",
+          "operations": [
+            {
+              "name": "ShowWarning",
+              "arguments": [
+                {
+                  "name": "warningId",
+                  "type": "uint8",
+                  "direction": "in"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/ramsafety",
+  "title": "RAMSAFETY 模块",
+  "description": "void ramsafety_Init(void);",
+  "source": "@site/docs/drivers/services/ramsafety.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/ramsafety",
+  "permalink": "/yuleASR/en/docs/drivers/services/ramsafety",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/ramsafety.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 24,
+  "frontMatter": {
+    "title": "RAMSAFETY 模块",
+    "sidebar_label": "ramsafety",
+    "description": "void ramsafety_Init(void);",
+    "sidebar_position": 24
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "PDUR",
+    "permalink": "/yuleASR/en/docs/drivers/services/PDUR"
+  },
+  "next": {
+    "title": "schm",
+    "permalink": "/yuleASR/en/docs/drivers/services/schm"
+  }
+}

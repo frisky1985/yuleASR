@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/CRYIF",
+  "title": "CRYIF",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/CRYIF.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/CRYIF",
+  "permalink": "/yuleASR/en/docs/drivers/services/CRYIF",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/CRYIF.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 6,
+  "frontMatter": {
+    "title": "CRYIF",
+    "sidebar_label": "CRYIF",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 6
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "crc",
+    "permalink": "/yuleASR/en/docs/drivers/services/crc"
+  },
+  "next": {
+    "title": "CSM",
+    "permalink": "/yuleASR/en/docs/drivers/services/CSM"
+  }
+}

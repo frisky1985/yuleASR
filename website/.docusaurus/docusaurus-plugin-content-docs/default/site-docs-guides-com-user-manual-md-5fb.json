@@ -1,0 +1,29 @@
+{
+  "id": "guides/com-user-manual",
+  "title": "COM 模块 用户手册",
+  "description": "> **使用对象**: 软件开发工程师1、系统集成工程师1",
+  "source": "@site/docs/guides/com-user-manual.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/com-user-manual",
+  "permalink": "/yuleASR/en/docs/guides/com-user-manual",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/com-user-manual.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 22,
+  "frontMatter": {
+    "title": "COM 模块 用户手册",
+    "description": "> **使用对象**: 软件开发工程师1、系统集成工程师1",
+    "sidebar_position": 22
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "COM 模块配置指南",
+    "permalink": "/yuleASR/en/docs/guides/com-config"
+  },
+  "next": {
+    "title": "COM 模块 故障排除指南",
+    "permalink": "/yuleASR/en/docs/guides/com-troubleshooting"
+  }
+}

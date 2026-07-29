@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0">
+  <AR-PACKAGES>
+    <AR-PACKAGE UUID="a1b2c3d4-e5f6-7890-abcd-ef1234567890">
+      <SHORT-NAME>TestPackage</SHORT-NAME>
+      <ELEMENTS>
+        <!-- 重复UUID测试 -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="b2c3d4e5-f6a7-8901-bcde-f23456789012">
+          <SHORT-NAME>CompA</SHORT-NAME>
+        </APPLICATION-SW-COMPONENT-TYPE>
+        
+        <APPLICATION-SW-COMPONENT-TYPE UUID="b2c3d4e5-f6a7-8901-bcde-f23456789012">
+          <SHORT-NAME>CompB</SHORT-NAME>
+        </APPLICATION-SW-COMPONENT-TYPE>
+        
+        <!-- 缺少SHORT-NAME测试 -->
+        <P-PORT-PROTOTYPE UUID="c3d4e5f6-a7b8-9012-cdef-345678901234">
+          <!-- 缺少SHORT-NAME -->
+          <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/Invalid/Interface</PROVIDED-INTERFACE-TREF>
+        </P-PORT-PROTOTYPE>
+        
+        <!-- 无效引用测试 -->
+        <SW-COMPONENT-PROTOTYPE UUID="d4e5f6a7-b8c9-0123-defa-456789012345">
+          <SHORT-NAME>InvalidRefComp</SHORT-NAME>
+          <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/NonExistent/Component</TYPE-TREF>
+        </SW-COMPONENT-PROTOTYPE>
+        
+        <!-- 缺少PROVIDER-IREF的连接器 -->
+        <ASSEMBLY-SW-CONNECTOR UUID="e5f6a7b8-c9d0-1234-efab-567890123456">
+          <SHORT-NAME>IncompleteConnector</SHORT-NAME>
+          <REQUESTER-IREF>
+            <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">testComp</COMPONENT-REF>
+            <R-PORT-REF DEST="R-PORT-PROTOTYPE">testPort</R-PORT-REF>
+          </REQUESTER-IREF>
+        </ASSEMBLY-SW-CONNECTOR>
+        
+        <!-- 未被引用的组件 -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="f6a7b8c9-d0e1-2345-fabc-678901234567">
+          <SHORT-NAME>OrphanedComponent</SHORT-NAME>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

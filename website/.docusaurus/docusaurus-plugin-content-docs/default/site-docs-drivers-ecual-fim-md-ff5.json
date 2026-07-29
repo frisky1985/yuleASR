@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/fim",
+  "title": "FIM 模块",
+  "description": "void fim_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+  "source": "@site/docs/drivers/ecual/fim.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/fim",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/fim",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/fim.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 13,
+  "frontMatter": {
+    "title": "FIM 模块",
+    "sidebar_label": "fim",
+    "description": "void fim_GetVersionInfo(Std_VersionInfoType* versioninfo);",
+    "sidebar_position": 13
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ethtrcv",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/ethtrcv"
+  },
+  "next": {
+    "title": "frif",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/frif"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "id": "platform/s32k312/autosar-integration/ecc-handling",
+  "title": "ECC故障处理完整指南",
+  "description": "本指南描述yuleASR项目中的ECC（错误校验码）故障处理架构，包括：",
+  "source": "@site/docs/platform/s32k312/autosar-integration/ecc-handling.md",
+  "sourceDirName": "platform/s32k312/autosar-integration",
+  "slug": "/platform/s32k312/autosar-integration/ecc-handling",
+  "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ecc-handling",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/platform/s32k312/autosar-integration/ecc-handling.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 6,
+  "frontMatter": {
+    "title": "ECC故障处理完整指南",
+    "description": "本指南描述yuleASR项目中的ECC（错误校验码）故障处理架构，包括：",
+    "sidebar_position": 6
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "S32K312 AUTOSAR 集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/"
+  },
+  "next": {
+    "title": "S32K312 Lockstep 集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/lockstep"
+  }
+}

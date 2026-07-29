@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/frtp",
+  "title": "FRTP 模块",
+  "description": "void frtp_Init(void);",
+  "source": "@site/docs/drivers/ecual/frtp.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/frtp",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/frtp",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/frtp.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 15,
+  "frontMatter": {
+    "title": "FRTP 模块",
+    "sidebar_label": "frtp",
+    "description": "void frtp_Init(void);",
+    "sidebar_position": 15
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "frif",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/frif"
+  },
+  "next": {
+    "title": "iohwab",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/iohwab"
+  }
+}

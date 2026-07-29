@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/SOAD",
+  "title": "SOAD",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/SOAD.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/SOAD",
+  "permalink": "/yuleASR/en/docs/drivers/services/SOAD",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/SOAD.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 27,
+  "frontMatter": {
+    "title": "SOAD",
+    "sidebar_label": "SOAD",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 27
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "secoc",
+    "permalink": "/yuleASR/en/docs/drivers/services/secoc"
+  },
+  "next": {
+    "title": "SOMEIP",
+    "permalink": "/yuleASR/en/docs/drivers/services/SOMEIP"
+  }
+}

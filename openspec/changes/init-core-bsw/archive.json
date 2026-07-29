@@ -1,0 +1,11 @@
+{
+  "change_id": "init-core-bsw",
+  "status": "archived",
+  "archived_at": "2026-05-06",
+  "summary": "Initialize core BSW modules and infrastructure",
+  "completion": {
+    "status": "completed",
+    "modules_created": 15,
+    "notes": "Core BSW modules have been created and extended through continuous improvement rounds"
+  }
+}

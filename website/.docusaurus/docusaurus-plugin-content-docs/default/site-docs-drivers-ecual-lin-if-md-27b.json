@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/LinIf",
+  "title": "LinIf",
+  "description": "LinIf implements the AUTOSAR LIN Interface, providing an abstraction layer between the LIN driver (MCAL) and upper layer",
+  "source": "@site/docs/drivers/ecual/LinIf.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/LinIf",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/LinIf",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/LinIf.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 19,
+  "frontMatter": {
+    "title": "LinIf",
+    "sidebar_label": "LinIf",
+    "description": "LinIf implements the AUTOSAR LIN Interface, providing an abstraction layer between the LIN driver (MCAL) and upper layer",
+    "sidebar_position": 19
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "J1939Tp",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/J1939Tp"
+  },
+  "next": {
+    "title": "linnm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/linnm"
+  }
+}

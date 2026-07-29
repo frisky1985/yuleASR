@@ -1,0 +1,86 @@
+
+===============================================================
+  YuleTech AutoSAR BSW - System Integration Test Suite
+  Version: 1.0.0
+  AutoSAR: R22-11
+===============================================================
+
+  === Storage Link Integration Tests ===
+
+    Running test_storage_stack_init...
+    Test: Storage Stack Initialization
+      [32mPASS[0m
+    Running test_storage_write_read...
+    Test: Storage Write-Read Cycle
+      [32mPASS[0m
+    Running test_storage_write_retry...
+    Test: Storage Write Retry on Failure
+      [FAULT] Injected fault type 1
+      [32mPASS[0m
+    Running test_storage_gc_trigger...
+    Test: Garbage Collection Trigger
+      [32mPASS[0m
+
+  === Watchdog Supervision Chain Tests ===
+
+    Running test_watchdog_chain_init...
+    Test: Watchdog Chain Initialization
+      [32mPASS[0m
+    Running test_watchdog_normal_trigger...
+    Test: Watchdog Normal Triggering
+      [32mPASS[0m
+    Running test_watchdog_checkpoint_supervision...
+    Test: Watchdog Checkpoint Supervision
+      [32mPASS[0m
+    Running test_watchdog_timeout_detection...
+    Test: Watchdog Timeout Detection
+      [FAULT] Injected fault type 4
+      [32mPASS[0m
+
+  === Security Communication Chain Tests ===
+
+    Running test_security_mac_generate...
+    Test: Security MAC Generation
+      [32mPASS[0m
+    Running test_security_mac_verify_success...
+    Test: Security MAC Verify Success
+      [32mPASS[0m
+    Running test_security_mac_verify_failure...
+    Test: Security MAC Verify Failure (Tampering Detection)
+      [32mPASS[0m
+    Running test_security_pdu_integrity...
+    Test: Security PDU Integrity
+      [32mPASS[0m
+
+  === Error Handling Chain Tests ===
+
+    Running test_error_reporting...
+    Test: Error Reporting to DET
+      [32mPASS[0m
+    Running test_error_propagation...
+    Test: Error Propagation Chain
+      [32mPASS[0m
+
+  === BSW Module Interaction Tests ===
+
+    Running test_bsw_init_sequence...
+    Test: BSW Initialization Sequence
+      [32mPASS[0m
+    Running test_bsw_shutdown_sequence...
+    Test: BSW Shutdown Sequence
+      [32mPASS[0m
+    Running test_bsw_schm_scheduling...
+    Test: SchM Module Scheduling Simulation
+      [32mPASS[0m
+
+===============================================================
+  TEST RESULTS SUMMARY
+===============================================================
+  Total Tests:   17
+  [32mPassed:        17[0m
+  [31mFailed:        0[0m
+  Skipped:       0
+===============================================================
+  [32mALL TESTS PASSED![0m
+===============================================================
+

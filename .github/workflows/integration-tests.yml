@@ -1,0 +1,445 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main, develop, 'feature/**' ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'include/**'
+      - 'cmake/**'
+      - 'CMakeLists.txt'
+      - '.github/workflows/integration-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'include/**'
+      - 'cmake/**'
+      - 'CMakeLists.txt'
+
+env:
+  BUILD_TYPE: Release
+  DOCKER_REGISTRY: ghcr.io
+
+jobs:
+  # Build and unit tests
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          libssl-dev \
+          libsqlite3-dev \
+          python3 \
+          python3-pip \
+          gcovr \
+          lcov \
+          valgrind
+
+    - name: Configure CMake
+      run: |
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+          -DENABLE_TESTING=ON \
+          -DENABLE_COVERAGE=ON \
+          -G Ninja
+
+    - name: Build
+      run: cmake --build build --config ${{env.BUILD_TYPE}} -j$(nproc)
+
+    - name: Run Unit Tests
+      working-directory: build
+      run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure -j$(nproc)
+
+    - name: Generate Coverage Report
+      run: |
+        cmake --build build --target coverage
+
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v3
+      with:
+        files: build/coverage.info
+        fail_ci_if_error: false
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifacts
+        path: |
+          build/bin/
+          build/lib/
+          build/test-results/
+
+  # E2E DDS Communication Tests
+  e2e-dds-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build/
+
+    - name: Install test dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          iproute2 \
+          net-tools \
+          tcpdump
+
+    - name: Run E2E DDS Tests
+      run: |
+        chmod +x build/bin/test_e2e_dds
+        ./build/bin/test_e2e_dds 2>&1 | tee test-results-e2e-dds.log
+
+    - name: Run SecOC E2E Tests
+      run: |
+        chmod +x build/bin/test_e2e_secoc
+        ./build/bin/test_e2e_secoc 2>&1 | tee test-results-e2e-secoc.log
+
+    - name: Run E2E Protection Tests
+      run: |
+        chmod +x build/bin/test_e2e_e2e
+        ./build/bin/test_e2e_e2e 2>&1 | tee test-results-e2e-protection.log
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-dds-test-results
+        path: |
+          test-results-*.log
+          *.pcap
+
+  # UDS Diagnostics Tests
+  uds-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build/
+
+    - name: Run UDS E2E Tests
+      run: |
+        chmod +x build/bin/test_e2e_uds
+        ./build/bin/test_e2e_uds 2>&1 | tee test-results-uds.log
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: uds-test-results
+        path: test-results-uds.log
+
+  # OTA Update Tests
+  ota-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build/
+
+    - name: Run OTA E2E Tests
+      run: |
+        chmod +x build/bin/test_e2e_ota
+        ./build/bin/test_e2e_ota 2>&1 | tee test-results-ota.log
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ota-test-results
+        path: test-results-ota.log
+
+  # ROS2 Bridge Tests
+  ros2-bridge-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build/
+
+    - name: Install ROS2 dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          python3-colcon-common-extensions \
+          python3-rosdep \
+          python3-vcstool
+
+    - name: Run RMW Bridge Tests
+      run: |
+        chmod +x build/bin/test_rmw_bridge
+        ./build/bin/test_rmw_bridge 2>&1 | tee test-results-rmw-bridge.log
+
+    - name: Run ROS2 QoS Tests
+      run: |
+        pip3 install pytest pytest-html
+        python3 tests/ros2_bridge/test_ros2_qos.py 2>&1 | tee test-results-ros2-qos.log
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: ros2-bridge-test-results
+        path: |
+          test-results-rmw-bridge.log
+          test-results-ros2-qos.log
+
+  # Multi-ECU Integration Tests (Docker)
+  multi-ecu-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Install Mininet
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mininet
+        sudo modprobe openvswitch
+
+    - name: Run Multi-ECU Discovery Tests
+      run: |
+        pip3 install pytest pytest-html
+        python3 tests/multi_ecu/test_multi_ecu_discovery.py 2>&1 | tee test-results-multi-ecu.log
+
+    - name: Run TSN Sync Tests
+      run: |
+        python3 tests/multi_ecu/test_tsn_sync.py 2>&1 | tee test-results-tsn-sync.log
+
+    - name: Build Docker Images
+      run: |
+        cd tests/multi_ecu/docker
+        docker-compose build --parallel
+
+    - name: Run Docker Compose Tests
+      run: |
+        cd tests/multi_ecu/docker
+        docker-compose up --abort-on-container-exit --timeout 120 2>&1 | tee ../../test-results-docker-compose.log
+        docker-compose down
+
+    - name: Network Fault Injection Tests
+      run: |
+        sudo python3 tests/multi_ecu/docker/network_simulator.py \
+          --scenario automotive_worst_case \
+          --interface lo \
+          --ping-test 127.0.0.1 2>&1 | tee test-results-fault-injection.log
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: multi-ecu-test-results
+        path: |
+          test-results-multi-ecu.log
+          test-results-tsn-sync.log
+          test-results-docker-compose.log
+          test-results-fault-injection.log
+
+  # Performance Tests
+  performance-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build/
+
+    - name: Run Latency Tests
+      run: |
+        chmod +x build/bin/test_latency
+        ./build/bin/test_latency --duration 60 2>&1 | tee test-results-latency.log
+
+    - name: Run Throughput Tests
+      run: |
+        chmod +x build/bin/test_throughput
+        ./build/bin/test_throughput --duration 60 2>&1 | tee test-results-throughput.log
+
+    - name: Run Memory Profiling
+      run: |
+        chmod +x build/bin/test_memory
+        valgrind --tool=memcheck --leak-check=full \
+          --xml=yes --xml-file=valgrind-report.xml \
+          ./build/bin/test_memory 2>&1 | tee test-results-memory.log
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: performance-test-results
+        path: |
+          test-results-latency.log
+          test-results-throughput.log
+          test-results-memory.log
+          valgrind-report.xml
+
+  # Security Tests
+  security-tests:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifacts
+        path: build/
+
+    - name: Run Security Tests
+      run: |
+        chmod +x build/bin/test_security
+        ./build/bin/test_security 2>&1 | tee test-results-security.log
+
+    - name: Run Static Analysis (cppcheck)
+      run: |
+        sudo apt-get install -y cppcheck
+        cppcheck --enable=all --xml --xml-version=2 \
+          --suppress=missingIncludeSystem \
+          -i build \
+          src/ 2> cppcheck-report.xml || true
+
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-test-results
+        path: |
+          test-results-security.log
+          cppcheck-report.xml
+
+  # Test Report Generation
+  generate-report:
+    runs-on: ubuntu-22.04
+    needs: 
+      - e2e-dds-tests
+      - uds-tests
+      - ota-tests
+      - ros2-bridge-tests
+      - multi-ecu-tests
+      - performance-tests
+      - security-tests
+    if: always()
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download All Test Results
+      uses: actions/download-artifact@v4
+      with:
+        path: all-test-results
+        pattern: '*-test-results'
+
+    - name: Generate Test Report
+      run: |
+        python3 scripts/generate_test_report.py \
+          --input all-test-results \
+          --output test-report.html \
+          --format html
+
+    - name: Upload Test Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: integration-test-report
+        path: |
+          test-report.html
+          all-test-results/
+
+  # Docker Image Build and Push
+  docker-build:
+    runs-on: ubuntu-22.04
+    needs: [build, multi-ecu-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Login to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.DOCKER_REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push ECU Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: tests/multi_ecu/docker/Dockerfile.ecu
+        push: true
+        tags: |
+          ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/ecu-simulator:latest
+          ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/ecu-simulator:${{ github.sha }}
+
+    - name: Build and Push OTA Server Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: tests/multi_ecu/docker/Dockerfile.ota
+        push: true
+        tags: |
+          ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/ota-server:latest
+          ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/ota-server:${{ github.sha }}
+
+  # Release on Success
+  release:
+    runs-on: ubuntu-22.04
+    needs: generate-report
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download Test Report
+      uses: actions/download-artifact@v4
+      with:
+        name: integration-test-report
+        path: test-report/
+
+    - name: Create Release Archive
+      run: |
+        tar -czf integration-test-results.tar.gz test-report/
+
+    - name: Upload Release Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: integration-test-results-archive
+        path: integration-test-results.tar.gz

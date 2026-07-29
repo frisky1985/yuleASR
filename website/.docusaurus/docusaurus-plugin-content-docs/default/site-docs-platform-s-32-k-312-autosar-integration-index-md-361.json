@@ -1,0 +1,29 @@
+{
+  "id": "platform/s32k312/autosar-integration/index",
+  "title": "S32K312 AUTOSAR 集成指南",
+  "description": "本目录包含S32K312芯片上AUTOSAR BSW层的集成配置。",
+  "source": "@site/docs/platform/s32k312/autosar-integration/index.md",
+  "sourceDirName": "platform/s32k312/autosar-integration",
+  "slug": "/platform/s32k312/autosar-integration/",
+  "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/platform/s32k312/autosar-integration/index.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "title": "S32K312 AUTOSAR 集成指南",
+    "description": "本目录包含S32K312芯片上AUTOSAR BSW层的集成配置。",
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "S32K312 芯片学习与部署指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/overview"
+  },
+  "next": {
+    "title": "ECC故障处理完整指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ecc-handling"
+  }
+}

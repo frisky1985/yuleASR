@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/icu",
+  "title": "ICU (Input Capture Unit) Module",
+  "description": "The ICU (Input Capture Unit) module provides standardized access to the microcontroller's Input Capture hardware for the",
+  "source": "@site/docs/drivers/mcal/icu.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/icu",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/icu",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/icu.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 12,
+  "frontMatter": {
+    "title": "ICU (Input Capture Unit) Module",
+    "sidebar_label": "icu",
+    "description": "The ICU (Input Capture Unit) module provides standardized access to the microcontroller's Input Capture hardware for the",
+    "sidebar_position": 12
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "i2c",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/i2c"
+  },
+  "next": {
+    "title": "LIN",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/LIN"
+  }
+}

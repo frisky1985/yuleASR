@@ -1,0 +1,28 @@
+/*==============================================================================
+ * Dem_Cfg.h - Diagnostic Event Manager Configuration
+ * Generated: {{ generation_date }}
+ *============================================================================*/
+#ifndef DEM_CFG_H
+#define DEM_CFG_H
+
+/* Module version */
+#define DEM_AR_RELEASE_MAJOR_VERSION        {{ module.DemMajorVersion | default(4) }}
+#define DEM_AR_RELEASE_MINOR_VERSION        {{ module.DemMinorVersion | default(4) }}
+#define DEM_AR_RELEASE_REVISION_VERSION     {{ module.DemRevisionVersion | default(0) }}
+
+/* Max DTC event count */
+#define DEM_MAX_EVENT_COUNT                 {{ module.DemMaxEventCount | default(64) }}
+
+/* Max debounce counters */
+#define DEM_MAX_DEBOUNCE_COUNT              {{ module.DemMaxDebounceCount | default(16) }}
+
+/* Operation cycle count */
+#define DEM_OPERATION_CYCLE_COUNT           {{ module.DemOperationCycleCount | default(4) }}
+
+/* Version info API */
+#define DEM_VERSION_INFO_API                {{ 'STD_ON' if module.DemVersionInfoApi | default(False) else 'STD_OFF' }}
+
+/* Development error detection */
+#define DEM_DEV_ERROR_DETECT                {{ 'STD_ON' if module.DemDevErrorDetect | default(True) else 'STD_OFF' }}
+
+#endif /* DEM_CFG_H */

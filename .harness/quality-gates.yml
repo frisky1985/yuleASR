@@ -1,0 +1,273 @@
+# Harness Quality Gates - YuleTech BSW
+# 质量门禁配置
+
+version: "1.0"
+
+# 静态分析配置
+static_analysis:
+  tool: cppcheck
+  enabled: true
+  fail_on_error: true
+  
+  checks:
+    - name: style
+      enabled: true
+      severity: warning
+    
+    - name: performance
+      enabled: true
+      severity: warning
+    
+    - name: portability
+      enabled: true
+      severity: warning
+    
+    - name: information
+      enabled: false
+      severity: info
+    
+    - name: unusedFunction
+      enabled: true
+      severity: style
+    
+    - name: missingInclude
+      enabled: true
+      severity: error
+  
+  suppressions:
+    - "*AutoSAR*"  # AutoSAR 标准头文件
+    - "*Compiler.h*"  # 编译器抽象
+
+# MISRA C:2012 检查
+misra:
+  enabled: true
+  fail_on_violation: true
+  
+  rules:
+    # 必须遵守的规则 (Required)
+    required:
+      - "Rule 1.1"  # 程序应无编译错误
+      - "Rule 1.3"  # 不应有未定义行为
+      - "Rule 2.1"  # 项目应无不可达代码
+      - "Rule 2.2"  # 不应有死代码
+      - "Rule 5.1"  # 外部标识符应唯一
+      - "Rule 8.2"  # 函数原型应可见
+      - "Rule 8.4"  # 兼容声明应在同一作用域
+      - "Rule 17.2" # 函数不应递归调用
+      - "Rule 17.7" # 函数返回值应使用
+      - "Rule 21.3" # 不应使用内存分配函数
+    
+    # 建议遵守的规则 (Advisory)
+    advisory:
+      - "Rule 2.3"  # 不应声明未使用的类型
+      - "Rule 2.4"  # 不应有未使用的标签
+      - "Rule 2.6"  # 不应声明未使用的宏
+      - "Rule 2.7"  # 不应有未使用的参数
+      - "Rule 5.2"  # 标识符应在不同命名空间唯一
+      - "Rule 5.3"  # 内部标识符应唯一
+      - "Rule 5.4"  # 宏名应唯一
+      - "Rule 5.5"  # 标识符不应重用
+      - "Rule 5.6"  # typedef 名应唯一
+      - "Rule 5.7"  # 标签名应唯一
+      - "Rule 5.8"  # 外部标识符应唯一
+      - "Rule 5.9"  # 内部标识符应唯一
+
+# 代码复杂度检查
+complexity:
+  enabled: true
+  
+  limits:
+    cyclomatic:
+      max: 10
+      warning: 8
+    
+    function_lines:
+      max: 50
+      warning: 40
+    
+    file_lines:
+      max: 500
+      warning: 400
+    
+    parameter_count:
+      max: 5
+      warning: 4
+    
+    nesting_depth:
+      max: 4
+      warning: 3
+
+# 代码风格检查
+code_style:
+  enabled: true
+  
+  naming:
+    macros: "UPPER_CASE_WITH_UNDERSCORE"
+    types: "PascalCase_with_Type_suffix"
+    functions: "Module_ActionName"
+    variables: "camelCase"
+    globals: "g_ModuleName"
+    constants: "kConstantName"
+  
+  formatting:
+    indent_size: 4
+    indent_style: space
+    max_line_length: 120
+    brace_style: "allman"  # 或 "knr"
+    
+  comments:
+    require_function_doc: true
+    require_file_header: true
+    min_comment_ratio: 0.15  # 15%
+
+# 测试覆盖率
+coverage:
+  enabled: true
+  fail_on_uncovered: true
+  
+  thresholds:
+    mcal:
+      statement: 90
+      branch: 85
+      function: 100
+      mc_dc: 100
+    
+    service:
+      statement: 85
+      branch: 80
+      function: 100
+      mc_dc: 100
+    
+    utility:
+      statement: 80
+      branch: 75
+      function: 90
+
+# 安全检查
+security:
+  enabled: true
+  
+  checks:
+    - name: buffer_overflow
+      enabled: true
+      severity: error
+    
+    - name: null_pointer
+      enabled: true
+      severity: error
+    
+    - name: integer_overflow
+      enabled: true
+      severity: warning
+    
+    - name: use_after_free
+      enabled: true
+      severity: error
+    
+    - name: format_string
+      enabled: true
+      severity: error
+
+# 架构检查
+architecture:
+  enabled: true
+  
+  rules:
+    - name: layer_dependency
+      enabled: true
+      description: "检查分层依赖"
+    
+    - name: no_circular_dependency
+      enabled: true
+      description: "禁止循环依赖"
+    
+    - name: interface_usage
+      enabled: true
+      description: "必须使用标准接口"
+    
+    - name: no_hardware_direct_access
+      enabled: true
+      description: "禁止直接硬件访问"
+
+# 文档检查
+documentation:
+  enabled: true
+  
+  requirements:
+    - name: file_header
+      enabled: true
+      pattern: "^/\\*\\*$"
+    
+    - name: function_doc
+      enabled: true
+      public_only: false
+    
+    - name: type_doc
+      enabled: true
+    
+    - name: macro_doc
+      enabled: true
+
+# 提交门禁
+gates:
+  pre_commit:
+    - name: compile
+      enabled: true
+      command: "make clean && make"
+    
+    - name: static_analysis
+      enabled: true
+      command: "cppcheck --enable=all src/"
+    
+    - name: unit_test
+      enabled: true
+      command: "make test"
+    
+    - name: coverage_check
+      enabled: true
+      command: "make coverage && check_coverage.py"
+  
+  pre_push:
+    - name: integration_test
+      enabled: true
+      command: "make integration_test"
+    
+    - name: misra_check
+      enabled: true
+      command: "misra_checker src/"
+    
+    - name: architecture_check
+      enabled: true
+      command: "arch_checker src/"
+
+# 报告配置
+reporting:
+  format: ["html", "json", "xml"]
+  output_dir: "reports/quality"
+  
+  notifications:
+    email:
+      enabled: true
+      recipients: ["dev@yuletech.cn"]
+      on_failure: true
+    
+    slack:
+      enabled: false
+      webhook: ""
+      channel: "#build"
+
+# 忽略模式
+ignore:
+  paths:
+    - "third_party/**"
+    - "generated/**"
+    - "tests/mocks/**"
+  
+  files:
+    - "*_template.c"
+    - "*_template.h"
+  
+  patterns:
+    - "TODO:*"
+    - "FIXME:*"
+    - "AUTOSAR*"

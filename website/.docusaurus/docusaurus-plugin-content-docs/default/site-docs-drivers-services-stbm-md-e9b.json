@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/stbm",
+  "title": "STBM 模块",
+  "description": "void stbm_Init(void);",
+  "source": "@site/docs/drivers/services/stbm.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/stbm",
+  "permalink": "/yuleASR/en/docs/drivers/services/stbm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/stbm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 31,
+  "frontMatter": {
+    "title": "STBM 模块",
+    "sidebar_label": "stbm",
+    "description": "void stbm_Init(void);",
+    "sidebar_position": 31
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "SOMEIPXF",
+    "permalink": "/yuleASR/en/docs/drivers/services/SOMEIPXF"
+  },
+  "next": {
+    "title": "swc",
+    "permalink": "/yuleASR/en/docs/drivers/services/swc"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/lintrcv",
+  "title": "LINTRCV 模块",
+  "description": "void lintrcv_Init(void);",
+  "source": "@site/docs/drivers/ecual/lintrcv.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/lintrcv",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/lintrcv",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/lintrcv.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 23,
+  "frontMatter": {
+    "title": "LINTRCV 模块",
+    "sidebar_label": "lintrcv",
+    "description": "void lintrcv_Init(void);",
+    "sidebar_position": 23
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "lintp",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/lintp"
+  },
+  "next": {
+    "title": "memif",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/memif"
+  }
+}

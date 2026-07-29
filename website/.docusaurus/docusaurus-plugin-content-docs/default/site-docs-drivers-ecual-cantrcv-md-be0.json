@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/cantrcv",
+  "title": "CANTRCV 模块",
+  "description": "void cantrcv_Init(void);",
+  "source": "@site/docs/drivers/ecual/cantrcv.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/cantrcv",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/cantrcv",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/cantrcv.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "title": "CANTRCV 模块",
+    "sidebar_label": "cantrcv",
+    "description": "void cantrcv_Init(void);",
+    "sidebar_position": 5
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "CANTSYN",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/CANTSYN"
+  },
+  "next": {
+    "title": "DLT",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/DLT"
+  }
+}

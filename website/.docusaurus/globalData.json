@@ -1,0 +1,723 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/yuleASR/en/docs",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/yuleASR/en/docs",
+          "mainDocId": "quick-start/intro",
+          "docs": [
+            {
+              "id": "advanced/code-generation",
+              "path": "/yuleASR/en/docs/advanced/code-generation",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/debugging",
+              "path": "/yuleASR/en/docs/advanced/debugging",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/performance-optimization",
+              "path": "/yuleASR/en/docs/advanced/performance-optimization",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/testing",
+              "path": "/yuleASR/en/docs/advanced/testing",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "advanced/toolchain",
+              "path": "/yuleASR/en/docs/advanced/toolchain",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/com-api",
+              "path": "/yuleASR/en/docs/api/com-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/crypto-api",
+              "path": "/yuleASR/en/docs/api/crypto-api",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/crypto-quickstart",
+              "path": "/yuleASR/en/docs/api/crypto-quickstart",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/dcm-services",
+              "path": "/yuleASR/en/docs/api/dcm-services",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "api/reference",
+              "path": "/yuleASR/en/docs/api/reference",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/bsw-architecture",
+              "path": "/yuleASR/en/docs/concepts/bsw-architecture",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/ecual",
+              "path": "/yuleASR/en/docs/concepts/ecual",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/layered-structure",
+              "path": "/yuleASR/en/docs/concepts/layered-structure",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/mcal",
+              "path": "/yuleASR/en/docs/concepts/mcal",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/rte",
+              "path": "/yuleASR/en/docs/concepts/rte",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/services",
+              "path": "/yuleASR/en/docs/concepts/services",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "concepts/what-is-autosar",
+              "path": "/yuleASR/en/docs/concepts/what-is-autosar",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "contributing",
+              "path": "/yuleASR/en/docs/contributing",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/architecture-overview",
+              "path": "/yuleASR/en/docs/design/architecture-overview",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/bsw-optimization",
+              "path": "/yuleASR/en/docs/design/bsw-optimization",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/configuration-system",
+              "path": "/yuleASR/en/docs/design/configuration-system",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/data-flow",
+              "path": "/yuleASR/en/docs/design/data-flow",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/error-handling",
+              "path": "/yuleASR/en/docs/design/error-handling",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/memory-management",
+              "path": "/yuleASR/en/docs/design/memory-management",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/module-interactions",
+              "path": "/yuleASR/en/docs/design/module-interactions",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/next-steps",
+              "path": "/yuleASR/en/docs/design/next-steps",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "design/testing-strategy",
+              "path": "/yuleASR/en/docs/design/testing-strategy",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/CanIf",
+              "path": "/yuleASR/en/docs/drivers/ecual/CanIf",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/canNm",
+              "path": "/yuleASR/en/docs/drivers/ecual/canNm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/cansm",
+              "path": "/yuleASR/en/docs/drivers/ecual/cansm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/CanTp",
+              "path": "/yuleASR/en/docs/drivers/ecual/CanTp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/cantrcv",
+              "path": "/yuleASR/en/docs/drivers/ecual/cantrcv",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/CANTSYN",
+              "path": "/yuleASR/en/docs/drivers/ecual/CANTSYN",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/DLT",
+              "path": "/yuleASR/en/docs/drivers/ecual/DLT",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/doip",
+              "path": "/yuleASR/en/docs/drivers/ecual/doip",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/ea",
+              "path": "/yuleASR/en/docs/drivers/ecual/ea",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/EthIf",
+              "path": "/yuleASR/en/docs/drivers/ecual/EthIf",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/ethsm",
+              "path": "/yuleASR/en/docs/drivers/ecual/ethsm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/ethtrcv",
+              "path": "/yuleASR/en/docs/drivers/ecual/ethtrcv",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/fim",
+              "path": "/yuleASR/en/docs/drivers/ecual/fim",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/frif",
+              "path": "/yuleASR/en/docs/drivers/ecual/frif",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/frtp",
+              "path": "/yuleASR/en/docs/drivers/ecual/frtp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/iohwab",
+              "path": "/yuleASR/en/docs/drivers/ecual/iohwab",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/ipdum",
+              "path": "/yuleASR/en/docs/drivers/ecual/ipdum",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/J1939Tp",
+              "path": "/yuleASR/en/docs/drivers/ecual/J1939Tp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/LinIf",
+              "path": "/yuleASR/en/docs/drivers/ecual/LinIf",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/linnm",
+              "path": "/yuleASR/en/docs/drivers/ecual/linnm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/linsm",
+              "path": "/yuleASR/en/docs/drivers/ecual/linsm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/lintp",
+              "path": "/yuleASR/en/docs/drivers/ecual/lintp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/lintrcv",
+              "path": "/yuleASR/en/docs/drivers/ecual/lintrcv",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/memif",
+              "path": "/yuleASR/en/docs/drivers/ecual/memif",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/someipif",
+              "path": "/yuleASR/en/docs/drivers/ecual/someipif",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/someipsd",
+              "path": "/yuleASR/en/docs/drivers/ecual/someipsd",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/srp",
+              "path": "/yuleASR/en/docs/drivers/ecual/srp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/wdgif",
+              "path": "/yuleASR/en/docs/drivers/ecual/wdgif",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/ecual/xcp",
+              "path": "/yuleASR/en/docs/drivers/ecual/xcp",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/ADC",
+              "path": "/yuleASR/en/docs/drivers/mcal/ADC",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/CAN",
+              "path": "/yuleASR/en/docs/drivers/mcal/CAN",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/Crypto",
+              "path": "/yuleASR/en/docs/drivers/mcal/Crypto",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/dio",
+              "path": "/yuleASR/en/docs/drivers/mcal/dio",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/eep",
+              "path": "/yuleASR/en/docs/drivers/mcal/eep",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/ETH",
+              "path": "/yuleASR/en/docs/drivers/mcal/ETH",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/fee",
+              "path": "/yuleASR/en/docs/drivers/mcal/fee",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/flash",
+              "path": "/yuleASR/en/docs/drivers/mcal/flash",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/fls",
+              "path": "/yuleASR/en/docs/drivers/mcal/fls",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/gpt",
+              "path": "/yuleASR/en/docs/drivers/mcal/gpt",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/i2c",
+              "path": "/yuleASR/en/docs/drivers/mcal/i2c",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/icu",
+              "path": "/yuleASR/en/docs/drivers/mcal/icu",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/LIN",
+              "path": "/yuleASR/en/docs/drivers/mcal/LIN",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/mcu",
+              "path": "/yuleASR/en/docs/drivers/mcal/mcu",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/ocu",
+              "path": "/yuleASR/en/docs/drivers/mcal/ocu",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/port",
+              "path": "/yuleASR/en/docs/drivers/mcal/port",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/pwm",
+              "path": "/yuleASR/en/docs/drivers/mcal/pwm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/ramtst",
+              "path": "/yuleASR/en/docs/drivers/mcal/ramtst",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/spi",
+              "path": "/yuleASR/en/docs/drivers/mcal/spi",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/uart",
+              "path": "/yuleASR/en/docs/drivers/mcal/uart",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/mcal/wdg",
+              "path": "/yuleASR/en/docs/drivers/mcal/wdg",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/BSWM",
+              "path": "/yuleASR/en/docs/drivers/services/BSWM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/CANM",
+              "path": "/yuleASR/en/docs/drivers/services/CANM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/COM",
+              "path": "/yuleASR/en/docs/drivers/services/COM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/COMM",
+              "path": "/yuleASR/en/docs/drivers/services/COMM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/crc",
+              "path": "/yuleASR/en/docs/drivers/services/crc",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/CRYIF",
+              "path": "/yuleASR/en/docs/drivers/services/CRYIF",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/CSM",
+              "path": "/yuleASR/en/docs/drivers/services/CSM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/Dcm",
+              "path": "/yuleASR/en/docs/drivers/services/Dcm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/DEM",
+              "path": "/yuleASR/en/docs/drivers/services/DEM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/det",
+              "path": "/yuleASR/en/docs/drivers/services/det",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/docan",
+              "path": "/yuleASR/en/docs/drivers/services/docan",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/e2e",
+              "path": "/yuleASR/en/docs/drivers/services/e2e",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/ecuc",
+              "path": "/yuleASR/en/docs/drivers/services/ecuc",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/ECUM",
+              "path": "/yuleASR/en/docs/drivers/services/ECUM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/j1939nm",
+              "path": "/yuleASR/en/docs/drivers/services/j1939nm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/keym",
+              "path": "/yuleASR/en/docs/drivers/services/keym",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/linm",
+              "path": "/yuleASR/en/docs/drivers/services/linm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/lntm",
+              "path": "/yuleASR/en/docs/drivers/services/lntm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/mem",
+              "path": "/yuleASR/en/docs/drivers/services/mem",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/mqtt",
+              "path": "/yuleASR/en/docs/drivers/services/mqtt",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/Nm",
+              "path": "/yuleASR/en/docs/drivers/services/Nm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/NVM",
+              "path": "/yuleASR/en/docs/drivers/services/NVM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/PDUR",
+              "path": "/yuleASR/en/docs/drivers/services/PDUR",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/ramsafety",
+              "path": "/yuleASR/en/docs/drivers/services/ramsafety",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/schm",
+              "path": "/yuleASR/en/docs/drivers/services/schm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/secoc",
+              "path": "/yuleASR/en/docs/drivers/services/secoc",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/SOAD",
+              "path": "/yuleASR/en/docs/drivers/services/SOAD",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/SOMEIP",
+              "path": "/yuleASR/en/docs/drivers/services/SOMEIP",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/SOMEIPTP",
+              "path": "/yuleASR/en/docs/drivers/services/SOMEIPTP",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/SOMEIPXF",
+              "path": "/yuleASR/en/docs/drivers/services/SOMEIPXF",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/stbm",
+              "path": "/yuleASR/en/docs/drivers/services/stbm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/swc",
+              "path": "/yuleASR/en/docs/drivers/services/swc",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/udpnm",
+              "path": "/yuleASR/en/docs/drivers/services/udpnm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "drivers/services/WDGM",
+              "path": "/yuleASR/en/docs/drivers/services/WDGM",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "faq",
+              "path": "/yuleASR/en/docs/faq",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/com-config",
+              "path": "/yuleASR/en/docs/guides/com-config",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/com-guide",
+              "path": "/yuleASR/en/docs/guides/com-guide",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/com-troubleshooting",
+              "path": "/yuleASR/en/docs/guides/com-troubleshooting",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/com-user-manual",
+              "path": "/yuleASR/en/docs/guides/com-user-manual",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/configurator",
+              "path": "/yuleASR/en/docs/guides/configurator",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/dem-design",
+              "path": "/yuleASR/en/docs/guides/dem-design",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/development",
+              "path": "/yuleASR/en/docs/guides/development",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/hara-analysis",
+              "path": "/yuleASR/en/docs/guides/hara-analysis",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/misra-deviations",
+              "path": "/yuleASR/en/docs/guides/misra-deviations",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/misra-report",
+              "path": "/yuleASR/en/docs/guides/misra-report",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/s32k312-hsm",
+              "path": "/yuleASR/en/docs/guides/s32k312-hsm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/safety-manual",
+              "path": "/yuleASR/en/docs/guides/safety-manual",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "guides/safety-verification",
+              "path": "/yuleASR/en/docs/guides/safety-verification",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "platform/s32k312/autosar-integration/ecc-handling",
+              "path": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ecc-handling",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "platform/s32k312/autosar-integration/index",
+              "path": "/yuleASR/en/docs/platform/s32k312/autosar-integration/",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "platform/s32k312/autosar-integration/lockstep",
+              "path": "/yuleASR/en/docs/platform/s32k312/autosar-integration/lockstep",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "platform/s32k312/autosar-integration/ramsafety",
+              "path": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ramsafety",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "platform/s32k312/autosar-integration/wdgm",
+              "path": "/yuleASR/en/docs/platform/s32k312/autosar-integration/wdgm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "platform/s32k312/overview",
+              "path": "/yuleASR/en/docs/platform/s32k312/overview",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/configuration",
+              "path": "/yuleASR/en/docs/quick-start/configuration",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/first-project",
+              "path": "/yuleASR/en/docs/quick-start/first-project",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/installation",
+              "path": "/yuleASR/en/docs/quick-start/installation",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "quick-start/intro",
+              "path": "/yuleASR/en/docs/quick-start/intro",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "safety/hara-analysis",
+              "path": "/yuleASR/en/docs/safety/hara-analysis",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "safety/safety-manual",
+              "path": "/yuleASR/en/docs/safety/safety-manual",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "safety/verification-report",
+              "path": "/yuleASR/en/docs/safety/verification-report",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "troubleshooting",
+              "path": "/yuleASR/en/docs/troubleshooting",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/yuleASR/en/docs/quick-start/intro",
+                "label": "quick-start/intro"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

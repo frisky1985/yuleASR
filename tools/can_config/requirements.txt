@@ -1,0 +1,17 @@
+# CAN配置工具依赖
+
+# 解析库
+cantools>=39.4.0
+pandas>=2.0.0
+openpyxl>=3.1.0
+
+# Web GUI依赖
+flask>=3.0.0
+flask-cors>=4.0.0
+
+# 桌面GUI依赖
+PyQt6>=6.6.0
+
+# 工具
+pytest>=8.0.0
+black>=24.0.0

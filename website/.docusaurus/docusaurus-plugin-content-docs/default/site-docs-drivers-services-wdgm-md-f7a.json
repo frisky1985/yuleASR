@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/WDGM",
+  "title": "WDGM",
+  "description": "- AUTOSAR Classic Platform 4.4.0",
+  "source": "@site/docs/drivers/services/WDGM.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/WDGM",
+  "permalink": "/yuleASR/en/docs/drivers/services/WDGM",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/WDGM.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 34,
+  "frontMatter": {
+    "title": "WDGM",
+    "sidebar_label": "WDGM",
+    "description": "- AUTOSAR Classic Platform 4.4.0",
+    "sidebar_position": 34
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "udpnm",
+    "permalink": "/yuleASR/en/docs/drivers/services/udpnm"
+  },
+  "next": {
+    "title": "HARA - 危害分析和风险评估",
+    "permalink": "/yuleASR/en/docs/safety/hara-analysis"
+  }
+}

@@ -1,0 +1,44 @@
+---
+title: STBM 模块
+sidebar_label: stbm
+description: "void stbm_Init(void);"
+sidebar_position: 31
+---
+
+# STBM 模块
+
+## 概述
+
+STBM 模块实现。
+
+## API接口
+
+### 初始化
+
+```c
+void stbm_Init(void);
+```
+
+### 版本信息
+
+```c
+void stbm_GetVersionInfo(Std_VersionInfoType* versioninfo);
+```
+
+## 配置参数
+
+| 参数 | 说明 |
+|:-----|:-----|
+| - | - |
+
+## 使用示例
+
+```c
+stbm_Init();
+```
+
+## 版本历史
+
+| 版本 | 日期 | 描述 |
+|:-----|:-----|:-----|
+| 1.0 | 2026-01-09 | 初始版本 |

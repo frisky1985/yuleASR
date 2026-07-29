@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/EthIf",
+  "title": "EthIf",
+  "description": "EthIf implements the AUTOSAR Ethernet Interface, providing hardware-independent access to Ethernet controllers. It manag",
+  "source": "@site/docs/drivers/ecual/EthIf.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/EthIf",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/EthIf",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/EthIf.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 10,
+  "frontMatter": {
+    "title": "EthIf",
+    "sidebar_label": "EthIf",
+    "description": "EthIf implements the AUTOSAR Ethernet Interface, providing hardware-independent access to Ethernet controllers. It manag",
+    "sidebar_position": 10
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ea",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/ea"
+  },
+  "next": {
+    "title": "ethsm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/ethsm"
+  }
+}

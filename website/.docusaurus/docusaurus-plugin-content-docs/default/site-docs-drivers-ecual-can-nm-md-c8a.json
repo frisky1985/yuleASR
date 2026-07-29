@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/canNm",
+  "title": "CanNm - CAN Network Management",
+  "description": "CanNm implements the AUTOSAR CAN Network Management protocol, providing coordinated management of network communication",
+  "source": "@site/docs/drivers/ecual/canNm.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/canNm",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/canNm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/canNm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "title": "CanNm - CAN Network Management",
+    "sidebar_label": "canNm",
+    "description": "CanNm implements the AUTOSAR CAN Network Management protocol, providing coordinated management of network communication",
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "CanTp",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/CanTp"
+  },
+  "next": {
+    "title": "cansm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/cansm"
+  }
+}

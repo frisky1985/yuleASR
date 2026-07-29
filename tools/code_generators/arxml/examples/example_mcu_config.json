@@ -1,0 +1,35 @@
+{
+  "module_type": "mcu",
+  "ecu": "ECU0",
+  "description": "S32K312 MCU Configuration",
+  "general": {
+    "dev_error_detect": true,
+    "init_clock": true,
+    "version_info_api": false
+  },
+  "clock_settings": [
+    {
+      "name": "McuClockSettingConfig_0",
+      "cpu_clock": 80000000,
+      "peripheral_clock": 40000000,
+      "bus_clock": 40000000
+    }
+  ],
+  "modes": [
+    {
+      "name": "McuModeSettingConf_RUN",
+      "mode": "RUN"
+    },
+    {
+      "name": "McuModeSettingConf_SLEEP",
+      "mode": "SLEEP"
+    }
+  ],
+  "ram_sections": [
+    {
+      "name": "McuRamSectorSettingConf_0",
+      "size": 65536,
+      "address": "0x20000000"
+    }
+  ]
+}

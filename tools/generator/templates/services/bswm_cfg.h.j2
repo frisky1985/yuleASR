@@ -1,0 +1,25 @@
+/*==============================================================================
+ * BswM_Cfg.h - BSW Mode Manager Configuration
+ * Generated: {{ generation_date }}
+ *============================================================================*/
+#ifndef BSWM_CFG_H
+#define BSWM_CFG_H
+
+/* Module version */
+#define BSWM_AR_RELEASE_MAJOR_VERSION       {{ module.BswMMajorVersion | default(4) }}
+#define BSWM_AR_RELEASE_MINOR_VERSION       {{ module.BswMMinorVersion | default(4) }}
+#define BSWM_AR_RELEASE_REVISION_VERSION    {{ module.BswMRevisionVersion | default(0) }}
+
+/* Max BSW modes */
+#define BSWM_MAX_MODE_COUNT                 {{ module.BswMMaxModeCount | default(8) }}
+
+/* Max logic expression count */
+#define BSWM_MAX_LOGIC_EXPRESSION_COUNT     {{ module.BswMMaxLogicExpressionCount | default(16) }}
+
+/* Version info API */
+#define BSWM_VERSION_INFO_API               {{ 'STD_ON' if module.BswMVersionInfoApi | default(False) else 'STD_OFF' }}
+
+/* Development error detection */
+#define BSWM_DEV_ERROR_DETECT               {{ 'STD_ON' if module.BswMDevErrorDetect | default(True) else 'STD_OFF' }}
+
+#endif /* BSWM_CFG_H */

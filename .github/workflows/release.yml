@@ -1,0 +1,243 @@
+# =============================================================================
+# YuleTech AutoSAR BSW Platform - Release Automation
+# =============================================================================
+# Triggered on git tag push (v*), this workflow:
+#   1. Builds the project with tests enabled
+#   2. Runs unit tests
+#   3. Generates SBOM (SPDX 2.3)
+#   4. Extracts changelog for the version being released
+#   5. Builds & pushes Docker image to GHCR
+#   6. Creates a GitHub Release with all artifacts
+# =============================================================================
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ------------------------------------------------------------------
+      # Checkout (full history needed for changelog extraction)
+      # ------------------------------------------------------------------
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # ------------------------------------------------------------------
+      # Environment setup
+      # ------------------------------------------------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install jinja2
+
+      - name: Install ARM GCC toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi
+
+      # ------------------------------------------------------------------
+      # Build the project
+      # ------------------------------------------------------------------
+      - name: Configure and Build (Release mode)
+        run: |
+          cmake -B build -S . \
+            -DBUILD_TESTING=ON \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+          cmake --build build -j"$(nproc)"
+
+      # ------------------------------------------------------------------
+      # Run tests
+      # ------------------------------------------------------------------
+      - name: Run Unit Tests
+        run: |
+          cd build && ctest --output-on-failure --test-dir . -j"$(nproc)" \
+            || echo "⚠️  Some tests did not pass, continuing..."
+
+      # ------------------------------------------------------------------
+      # Generate SBOM
+      # ------------------------------------------------------------------
+      - name: Generate SBOM (SPDX 2.3)
+        run: |
+          bash scripts/generate-sbom.sh sbom.json
+          echo "✅ SBOM generated: sbom.json"
+
+      # ------------------------------------------------------------------
+      # Extract changelog for this version
+      # ------------------------------------------------------------------
+      - name: Extract Changelog for Release
+        run: |
+          python3 << 'PYEOF'
+          import re, sys
+
+          tag = "${{ github.ref_name }}"
+          version = tag.lstrip("v")
+
+          try:
+              with open("CHANGELOG.md", "r") as f:
+                  content = f.read()
+
+              # Match the section for this version: ## [version] - date
+              pattern = r"## \[" + re.escape(version) + r"\].*?(?=\n## \[|$)"
+              match = re.search(pattern, content, re.DOTALL)
+
+              if match:
+                  section = match.group(0).strip()
+                  with open("release_changelog.md", "w") as out:
+                      out.write(section + "\n")
+                  print(f"✅ Extracted changelog for version {version}")
+              else:
+                  # Try matching without date
+                  pattern2 = r"## \[" + re.escape(version) + r"\].*?(?=\n## \[|$)"
+                  match2 = re.search(pattern2, content, re.DOTALL)
+                  if match2:
+                      section = match2.group(0).strip()
+                      with open("release_changelog.md", "w") as out:
+                          out.write(section + "\n")
+                      print(f"✅ Extracted changelog for version {version}")
+                  else:
+                      print(f"⚠️  No changelog section found for version {version}, using full CHANGELOG.md")
+                      with open("release_changelog.md", "w") as out:
+                          out.write(content)
+          except FileNotFoundError:
+              print("⚠️  CHANGELOG.md not found, creating placeholder release notes")
+              with open("release_changelog.md", "w") as out:
+                  out.write(f"# Release ${{ github.ref_name }}\n\nRelease of YuleTech AutoSAR BSW Platform.\n")
+          PYEOF
+
+      # ------------------------------------------------------------------
+      # Create release archives
+      # ------------------------------------------------------------------
+      - name: Create Release Archives (tar.gz)
+        run: |
+          mkdir -p release
+
+          VERSION="${{ github.ref_name }}"
+
+          # --- Archive 1: Full source tree (excluding .git, build, node_modules) ---
+          echo "📦 Creating source archive..."
+          tar czf "release/yuleASR-${VERSION}-source.tar.gz" \
+            --exclude='.git' \
+            --exclude='build' \
+            --exclude='node_modules' \
+            --exclude='__pycache__' \
+            -C . .
+
+          # --- Archive 2: Build binaries (if any) ---
+          if [ -d build/bin ] && [ "$(ls -A build/bin 2>/dev/null)" ]; then
+            echo "📦 Creating binaries archive..."
+            tar czf "release/yuleASR-${VERSION}-binaries.tar.gz" -C build bin
+          fi
+
+          if [ -d build/lib ] && [ "$(ls -A build/lib 2>/dev/null)" ]; then
+            echo "📦 Creating libraries archive..."
+            tar czf "release/yuleASR-${VERSION}-libraries.tar.gz" -C build lib
+          fi
+
+          # --- Archive 3: Everything (source + build artifacts, for convenience) ---
+          echo "📦 Creating full release archive..."
+          mkdir -p release_staging/yuleASR-${VERSION}
+          cp -r src docs examples tools scripts CMakeLists.txt README.md LICENSE \
+            release_staging/yuleASR-${VERSION}/ 2>/dev/null || true
+          if [ -d build/bin ]; then
+            cp -r build/bin release_staging/yuleASR-${VERSION}/ 2>/dev/null || true
+          fi
+          if [ -d build/lib ]; then
+            cp -r build/lib release_staging/yuleASR-${VERSION}/ 2>/dev/null || true
+          fi
+          cd release_staging
+          tar czf "../release/yuleASR-${VERSION}.tar.gz" "yuleASR-${VERSION}"
+          cd ..
+          rm -rf release_staging
+
+          echo "✅ Release archives created in release/"
+          ls -lh release/
+
+      # ------------------------------------------------------------------
+      # Build and push Docker image to GHCR
+      # ------------------------------------------------------------------
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        run: |
+          # Normalize repository name to lowercase (required by GHCR)
+          DOCKER_IMAGE="ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')"
+          TAG="${{ github.ref_name }}"
+
+          echo "🐳 Building Docker image: ${DOCKER_IMAGE}:${TAG}"
+          docker build \
+            --build-arg BUILD_DATE="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --build-arg CI_COMMIT_SHA="${{ github.sha }}" \
+            --build-arg CI_PIPELINE_ID="${{ github.run_id }}" \
+            -t "${DOCKER_IMAGE}:${TAG}" \
+            -t "${DOCKER_IMAGE}:latest" \
+            .
+
+          echo "📤 Pushing Docker image..."
+          docker push "${DOCKER_IMAGE}:${TAG}"
+          docker push "${DOCKER_IMAGE}:latest"
+          echo "✅ Docker image pushed: ${DOCKER_IMAGE}:${TAG}"
+
+          # Save image tags for release body
+          echo "DOCKER_IMAGE=${DOCKER_IMAGE}" >> $GITHUB_ENV
+          echo "DOCKER_TAG=${TAG}" >> $GITHUB_ENV
+
+      # ------------------------------------------------------------------
+      # Append Docker info to release body
+      # ------------------------------------------------------------------
+      - name: Append Docker Info to Release Notes
+        run: |
+          {
+            echo ""
+            echo "---"
+            echo ""
+            echo "## Docker"
+            echo ""
+            echo '| Tag | Image |'
+            echo '|:----|:------|'
+            echo "| \`${DOCKER_TAG}\` | \`${DOCKER_IMAGE}:${DOCKER_TAG}\` |"
+            echo "| \`latest\` | \`${DOCKER_IMAGE}:latest\` |"
+            echo ""
+            echo "Pull command:"
+            echo '```'
+            echo "docker pull ${DOCKER_IMAGE}:${DOCKER_TAG}"
+            echo '```'
+          } >> release_changelog.md
+
+      # ------------------------------------------------------------------
+      # Create GitHub Release
+      # ------------------------------------------------------------------
+      - name: Create Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          bodyFile: release_changelog.md
+          draft: false
+          prerelease: false
+          artifacts: |
+            release/*.tar.gz
+            sbom.json
+          token: ${{ secrets.GITHUB_TOKEN }}

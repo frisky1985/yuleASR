@@ -1,0 +1,27 @@
+{
+  "id": "faq",
+  "title": "常见问题",
+  "description": "一般问题",
+  "source": "@site/docs/faq.md",
+  "sourceDirName": ".",
+  "slug": "/faq",
+  "permalink": "/yuleASR/en/docs/faq",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/faq.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 100,
+  "frontMatter": {
+    "sidebar_position": 100
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "贡献指南",
+    "permalink": "/yuleASR/en/docs/contributing"
+  },
+  "next": {
+    "title": "故障排除指南",
+    "permalink": "/yuleASR/en/docs/troubleshooting"
+  }
+}

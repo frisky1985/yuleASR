@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/gpt",
+  "title": "GPT (General Purpose Timer) 模块文档",
+  "description": "GPT (General Purpose Timer) 模块是AutoSAR MCAL层的通用定时器驱动，提供基于硬件定时器的精确时间服务。该模块支持多通道定时器管理、通知回调、睡眠唤醒等功能。",
+  "source": "@site/docs/drivers/mcal/gpt.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/gpt",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/gpt",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/gpt.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 10,
+  "frontMatter": {
+    "title": "GPT (General Purpose Timer) 模块文档",
+    "sidebar_label": "gpt",
+    "description": "GPT (General Purpose Timer) 模块是AutoSAR MCAL层的通用定时器驱动，提供基于硬件定时器的精确时间服务。该模块支持多通道定时器管理、通知回调、睡眠唤醒等功能。",
+    "sidebar_position": 10
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "fls",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/fls"
+  },
+  "next": {
+    "title": "i2c",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/i2c"
+  }
+}

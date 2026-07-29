@@ -1,0 +1,51 @@
+{
+  "module_type": "can",
+  "ecu": "ECU0",
+  "description": "CAN Driver Configuration",
+  "general": {
+    "dev_error_detect": true,
+    "index": 0,
+    "main_function_period": 10.0,
+    "multiplexed_transmission": true,
+    "timeout_duration": 0.1
+  },
+  "controllers": [
+    {
+      "id": 0,
+      "baudrate": 500000,
+      "prop_seg": 2,
+      "phase_seg1": 6,
+      "phase_seg2": 7,
+      "sync_jump_width": 1,
+      "bus_off_processing": "INTERRUPT",
+      "rx_processing": "INTERRUPT",
+      "tx_processing": "INTERRUPT"
+    }
+  ],
+  "hardware_objects": [
+    {
+      "name": "CanHardwareObject_Tx_0",
+      "type": "TRANSMIT",
+      "controller": 0,
+      "id_type": "STANDARD"
+    },
+    {
+      "name": "CanHardwareObject_Tx_1",
+      "type": "TRANSMIT",
+      "controller": 0,
+      "id_type": "STANDARD"
+    },
+    {
+      "name": "CanHardwareObject_Rx_0",
+      "type": "RECEIVE",
+      "controller": 0,
+      "id_type": "STANDARD"
+    },
+    {
+      "name": "CanHardwareObject_Rx_1",
+      "type": "RECEIVE",
+      "controller": 0,
+      "id_type": "STANDARD"
+    }
+  ]
+}

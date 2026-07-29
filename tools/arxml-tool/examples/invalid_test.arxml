@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 这是一个故意包含错误的ARXML文件，用于测试完整性分析器 -->
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaVersion="4.0.0">
+  <AR-PACKAGES>
+    <!-- 错误1: 缺少SHORT-NAME的AR-PACKAGE -->
+    <AR-PACKAGE UUID="pkg-no-name-001">
+      <DESC>
+        <L-2>Package without short name</L-2>
+      </DESC>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>TestPackage</SHORT-NAME>
+      <ELEMENTS>
+        <!-- 错误2: 重复的UUID -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="duplicate-uuid-001">
+          <SHORT-NAME>ComponentA</SHORT-NAME>
+          <PORTS>
+            <P-PORT-PROTOTYPE UUID="port-001">
+              <SHORT-NAME>PortA_P</SHORT-NAME>
+              <!-- 错误3: 引用不存在的接口 -->
+              <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/NonExistent/Interface</PROVIDED-INTERFACE-TREF>
+            </P-PORT-PROTOTYPE>
+          </PORTS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- 重复UUID -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="duplicate-uuid-001">
+          <SHORT-NAME>ComponentB</SHORT-NAME>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- 错误4: 无效的UUID格式 -->
+        <ECU-CONFIGURATION UUID="not-a-valid-uuid-format">
+          <SHORT-NAME>TestECU</SHORT-NAME>
+          <ECU>TestECU_01</ECU>
+          <!-- 错误5: 缺少必需的ECU-EXTRACT-REF -->
+        </ECU-CONFIGURATION>
+
+        <!-- 错误6: 未映射到ECU的组件 -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="unmapped-swc-001">
+          <SHORT-NAME>UnmappedComponent</SHORT-NAME>
+          <PORTS>
+            <R-PORT-PROTOTYPE UUID="port-002">
+              <SHORT-NAME>PortB_R</SHORT-NAME>
+              <!-- 错误7: 引用不存在的接口 -->
+              <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/TestPackage/NonExistent_IF</REQUIRED-INTERFACE-TREF>
+            </R-PORT-PROTOTYPE>
+          </PORTS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- 错误8: 无效的命名规范 -->
+        <APPLICATION-SW-COMPONENT-TYPE UUID="swc-123-001">
+          <SHORT-NAME>123InvalidName</SHORT-NAME>
+          <DESC>
+            <L-2>Name starting with number</L-2>
+          </DESC>
+        </APPLICATION-SW-COMPONENT-TYPE>
+
+        <!-- 错误9: 不完整的连接器定义 -->
+        <COMPOSITION-SW-COMPONENT-TYPE UUID="comp-001">
+          <SHORT-NAME>TestComposition</SHORT-NAME>
+          <COMPONENTS>
+            <SW-COMPONENT-PROTOTYPE UUID="proto-001">
+              <SHORT-NAME>InstanceA</SHORT-NAME>
+              <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/TestPackage/ComponentA</TYPE-TREF>
+            </SW-COMPONENT-PROTOTYPE>
+          </COMPONENTS>
+          <CONNECTORS>
+            <!-- 错误: 缺少REQUESTER-IREF -->
+            <ASSEMBLY-SW-CONNECTOR UUID="conn-incomplete-001">
+              <SHORT-NAME>IncompleteConnection</SHORT-NAME>
+              <PROVIDER-IREF>
+                <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/TestPackage/TestComposition/InstanceA</CONTEXT-COMPONENT-REF>
+                <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/TestPackage/ComponentA/PortA_P</TARGET-P-PORT-REF>
+              </PROVIDER-IREF>
+            </ASSEMBLY-SW-CONNECTOR>
+          </CONNECTORS>
+        </COMPOSITION-SW-COMPONENT-TYPE>
+
+        <!-- 错误10: 使用了非标准数据类型 -->
+        <SENDER-RECEIVER-INTERFACE UUID="if-001">
+          <SHORT-NAME>TestInterface</SHORT-NAME>
+          <DATA-ELEMENTS>
+            <DATA-ELEMENT-PROTOTYPE UUID="de-001">
+              <SHORT-NAME>CustomData</SHORT-NAME>
+              <!-- 引用了不存在的自定义类型 -->
+              <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/TestPackage/CustomType123</TYPE-TREF>
+            </DATA-ELEMENT-PROTOTYPE>
+          </DATA-ELEMENTS>
+        </SENDER-RECEIVER-INTERFACE>
+
+        <!-- 错误11: 不完整的SWC-TO-ECU-MAPPING -->
+        <SYSTEM-MAPPING UUID="map-001">
+          <SHORT-NAME>TestMapping</SHORT-NAME>
+          <MAPPINGS>
+            <!-- 缺少ECU-REF -->
+            <SWC-TO-ECU-MAPPING UUID="swc2ecu-incomplete-001">
+              <SHORT-NAME>IncompleteMapping</SHORT-NAME>
+              <COMPONENT-REF DEST="APPLICATION-SW-COMPONENT-TYPE">/TestPackage/ComponentA</COMPONENT-REF>
+            </SWC-TO-ECU-MAPPING>
+          </MAPPINGS>
+        </SYSTEM-MAPPING>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

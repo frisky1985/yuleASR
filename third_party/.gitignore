@@ -1,0 +1,14 @@
+# mbedTLS作为git submodule管理
+# 所有mbedtls目录内容通过submodule管理
+# 这里只保留自定义配置和适配器
+!mbedtls/configs/
+!mbedtls/configs/config-yule-autosar.h
+!yule-mbedtls-adapter/
+
+# 常见排除
+*.o
+*.a
+*.so
+*.dll
+build/
+Build/

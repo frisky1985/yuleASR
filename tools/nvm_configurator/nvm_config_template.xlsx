@@ -1,0 +1,8 @@
+NvM Configuration Tool Template
+This is a placeholder for the Excel template. The actual Excel file would be created using openpyxl or xlsxwriter.
+
+Structure:
+Sheet 1: General Configuration
+Sheet 2: Block Descriptors
+Sheet 3: API Configuration
+Sheet 4: Queue Configuration

@@ -1,0 +1,30 @@
+{
+  "id": "drivers/services/Dcm",
+  "title": "Dcm",
+  "description": "DCM implements AUTOSAR Diagnostic Communication Manager with complete UDS (Unified Diagnostic Services) support per ISO",
+  "source": "@site/docs/drivers/services/Dcm.md",
+  "sourceDirName": "drivers/services",
+  "slug": "/drivers/services/Dcm",
+  "permalink": "/yuleASR/en/docs/drivers/services/Dcm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/services/Dcm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 8,
+  "frontMatter": {
+    "title": "Dcm",
+    "sidebar_label": "Dcm",
+    "description": "DCM implements AUTOSAR Diagnostic Communication Manager with complete UDS (Unified Diagnostic Services) support per ISO",
+    "sidebar_position": 8
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "CSM",
+    "permalink": "/yuleASR/en/docs/drivers/services/CSM"
+  },
+  "next": {
+    "title": "DEM",
+    "permalink": "/yuleASR/en/docs/drivers/services/DEM"
+  }
+}

@@ -1,0 +1,502 @@
+{
+  "plan_version": "1.0.0",
+  "created_at": "2026-04-28T23:35:03.408802",
+  "project": "yuleASR Classic AUTOSAR BSW",
+  "orchestrator": "OSH (OpenSpec + Superpowers + Harness)",
+  "overview": {
+    "current_coverage": "68.9%",
+    "target_coverage": "95%+",
+    "total_phases": 4,
+    "estimated_duration": "8-10 周",
+    "parallel_tracks": true
+  },
+  "phases": [
+    {
+      "id": "P1",
+      "name": "基础设施与调试支持",
+      "priority": "🔴 HIGH",
+      "duration": "2-3 周",
+      "modules": [
+        {
+          "name": "Det",
+          "full_name": "Development Error Tracer",
+          "layer": "Libraries",
+          "lines_estimate": 300,
+          "test_coverage_target": "90%",
+          "dependencies": [],
+          "deliverables": [
+            "Det.h - 公共头文件",
+            "Det.c - 核心实现",
+            "Det_Cfg.h - 配置头文件",
+            "Det_LCfg.c - 链接时配置",
+            "tests/Det_Test.c - 单元测试"
+          ],
+          "api_functions": [
+            "Det_Init()",
+            "Det_ReportError()",
+            "Det_Start()",
+            "Det_ReportRuntimeError()",
+            "Det_ReportTransientFault()"
+          ],
+          "acceptance_criteria": [
+            "所有API函数实现完成",
+            "单元测试覆盖率 > 90%",
+            "可通过Dcm/Dem报告错误",
+            "支持回调注册机制"
+          ]
+        },
+        {
+          "name": "Fls",
+          "full_name": "Flash Driver",
+          "layer": "MCAL",
+          "lines_estimate": 800,
+          "test_coverage_target": "85%",
+          "dependencies": [],
+          "deliverables": [
+            "Fls.h",
+            "Fls.c",
+            "Fls_Cfg.h",
+            "Fls_LCfg.c",
+            "Fls_Internal.h",
+            "tests/Fls_Test.c"
+          ],
+          "api_functions": [
+            "Fls_Init()",
+            "Fls_Erase()",
+            "Fls_Write()",
+            "Fls_Read()",
+            "Fls_Compare()",
+            "Fls_SetMode()",
+            "Fls_GetStatus()",
+            "Fls_GetJobResult()",
+            "Fls_Cancel()"
+          ],
+          "acceptance_criteria": [
+            "支持页面操作(erase/write/read)",
+            "支持异步操作模式",
+            "支持中断/轮询机制",
+            "与Fee/NvM集成通过"
+          ]
+        },
+        {
+          "name": "WdgIf + Wdgm",
+          "full_name": "Watchdog Interface + Manager",
+          "layer": "ECUAL + Service",
+          "lines_estimate": 600,
+          "test_coverage_target": "85%",
+          "dependencies": [
+            "Wdg (MCAL) - 已存在"
+          ],
+          "deliverables": [
+            "WdgIf.h, WdgIf.c",
+            "WdgIf_Cfg.h",
+            "Wdgm.h, Wdgm.c",
+            "Wdgm_Cfg.h, Wdgm_LCfg.c",
+            "tests/Wdg_Test.c"
+          ],
+          "api_functions": [
+            "Wdgm_Init()",
+            "Wdgm_SetMode()",
+            "Wdgm_GetMode()",
+            "Wdgm_CheckpointReached()",
+            "Wdgm_GetLocalStatus()",
+            "Wdgm_GetGlobalStatus()",
+            "Wdgm_PerformReset()",
+            "WdgIf_SetTriggerCondition()",
+            "WdgIf_SetMode()"
+          ],
+          "acceptance_criteria": [
+            "支持多个监控实体(SE)",
+            "支持死线检测(deadline monitoring)",
+            "支持活跃监控(alive monitoring)",
+            "支持逻辑监控(logical monitoring)",
+            "与EcuM集成"
+          ]
+        }
+      ],
+      "milestones": [
+        {
+          "id": "M1.1",
+          "name": "Det 实现完成",
+          "duration": "3 天",
+          "exit_criteria": [
+            "所有API实现",
+            "单元测试通过",
+            "文档完整"
+          ]
+        },
+        {
+          "id": "M1.2",
+          "name": "Fls 实现完成",
+          "duration": "1 周",
+          "exit_criteria": [
+            "页面操作正确",
+            "异步模式工作",
+            "与Fee集成验证"
+          ]
+        },
+        {
+          "id": "M1.3",
+          "name": "Wdg 套件完成",
+          "duration": "1 周",
+          "exit_criteria": [
+            "Wdgm实现",
+            "WdgIf实现",
+            "死线监控测试"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "CyberSecurity 安全功能",
+      "priority": "🔴 HIGH",
+      "duration": "3-4 周",
+      "modules": [
+        {
+          "name": "Mem",
+          "full_name": "Memory Services",
+          "layer": "Service",
+          "lines_estimate": 400,
+          "test_coverage_target": "85%",
+          "dependencies": [],
+          "api_functions": [
+            "Mem_Init()",
+            "Mem_Alloc()",
+            "Mem_Free()",
+            "Mem_Realloc()",
+            "Mem_GetStats()"
+          ],
+          "acceptance_criteria": [
+            "支持堆内存分配",
+            "防止内存泄漏",
+            "统计信息可查",
+            "线程安全(如果适用)"
+          ]
+        },
+        {
+          "name": "Csm",
+          "full_name": "Crypto Services Manager",
+          "layer": "Service",
+          "lines_estimate": 1200,
+          "test_coverage_target": "80%",
+          "dependencies": [
+            "Mem"
+          ],
+          "api_functions": [
+            "Csm_Init()",
+            "Csm_Encrypt()",
+            "Csm_Decrypt()",
+            "Csm_MacGenerate()",
+            "Csm_MacVerify()",
+            "Csm_SignatureGenerate()",
+            "Csm_SignatureVerify()",
+            "Csm_Hash()",
+            "Csm_RandomGenerate()",
+            "Csm_KeyManagement()"
+          ],
+          "acceptance_criteria": [
+            "支持AES加解密",
+            "支持HMAC/CMAC",
+            "支持哈希计算",
+            "支持数字签名",
+            "支持密钥管理",
+            "密钥安全存储"
+          ]
+        },
+        {
+          "name": "SecOC",
+          "full_name": "Secure Onboard Communication",
+          "layer": "Service",
+          "lines_estimate": 800,
+          "test_coverage_target": "85%",
+          "dependencies": [
+            "Csm",
+            "PduR",
+            "Com"
+          ],
+          "api_functions": [
+            "SecOC_Init()",
+            "SecOC_DeInit()",
+            "SecOC_Transmit()",
+            "SecOC_IfTransmit()",
+            "SecOC_RxIndication()",
+            "SecOC_TxConfirmation()",
+            "SecOC_MainFunctionRx()",
+            "SecOC_MainFunctionTx()",
+            "SecOC_VerifyStatusOverride()"
+          ],
+          "acceptance_criteria": [
+            "消息认证码(MAC)生成与验证",
+            "重放攻击防护(Freshness Value)",
+            "与PduR集成",
+            "支持同步/异步验证",
+            "可配置的安全等级"
+          ]
+        }
+      ],
+      "milestones": [
+        {
+          "id": "M2.1",
+          "name": "Mem 实现",
+          "duration": "4 天"
+        },
+        {
+          "id": "M2.2",
+          "name": "Csm 核心功能",
+          "duration": "1.5 周"
+        },
+        {
+          "id": "M2.3",
+          "name": "SecOC 实现与集成",
+          "duration": "1.5 周"
+        }
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "网络通信扩展",
+      "priority": "🟡 MEDIUM",
+      "duration": "2-3 周",
+      "modules": [
+        {
+          "name": "SoAd",
+          "full_name": "Socket Adapter",
+          "layer": "Service",
+          "lines_estimate": 1000,
+          "test_coverage_target": "80%",
+          "dependencies": [
+            "EthIf",
+            "TcpIp"
+          ],
+          "api_functions": [
+            "SoAd_Init()",
+            "SoAd_IfTransmit()",
+            "SoAd_TpTransmit()",
+            "SoAd_TpCancelTransmit()",
+            "SoAd_CloseSoCon()",
+            "SoAd_OpenSoCon()",
+            "SoAd_RequestIpAddrAssignment()",
+            "SoAd_ReleaseIpAddrAssignment()",
+            "SoAd_MainFunction()"
+          ],
+          "acceptance_criteria": [
+            "TCP/UDP 套接字支持",
+            "PduR 集成",
+            "DoIP 支持",
+            "Some/IP SD 集成",
+            "连接管理"
+          ]
+        },
+        {
+          "name": "SomeIpXf",
+          "full_name": "SOME/IP Transformer",
+          "layer": "Service",
+          "lines_estimate": 600,
+          "dependencies": [
+            "Com",
+            "PduR"
+          ],
+          "api_functions": [
+            "SomeIpXf_Init()",
+            "SomeIpXf_Transform()",
+            "SomeIpXf_InvTransform()",
+            "SomeIpXf_TransformArray()",
+            "SomeIpXf_InvTransformArray()"
+          ],
+          "acceptance_criteria": [
+            "SOME/IP 序列化",
+            "支持所有数据类型",
+            "大端序处理",
+            "布尔/枚举类型支持"
+          ]
+        },
+        {
+          "name": "SomeIpTp",
+          "full_name": "SOME/IP Transport Protocol",
+          "layer": "Service",
+          "lines_estimate": 500,
+          "dependencies": [
+            "SomeIpXf",
+            "PduR"
+          ],
+          "api_functions": [
+            "SomeIpTp_Init()",
+            "SomeIpTp_Transmit()",
+            "SomeIpTp_RxIndication()",
+            "SomeIpTp_TxConfirmation()"
+          ],
+          "acceptance_criteria": [
+            "分段传输支持",
+            "重组装功能",
+            "超时处理",
+            "与SomeIpXf无缝集成"
+          ]
+        },
+        {
+          "name": "StbM",
+          "full_name": "Synchronized Time Base Manager",
+          "layer": "Service",
+          "lines_estimate": 700,
+          "dependencies": [
+            "Gpt"
+          ],
+          "api_functions": [
+            "StbM_Init()",
+            "StbM_GetCurrentTime()",
+            "StbM_BusGetCurrentTime()",
+            "StbM_SetGlobalTime()",
+            "StbM_UpdateGlobalTime()",
+            "StbM_SetUserData()",
+            "StbM_GetCurrentTimeDiff()"
+          ],
+          "acceptance_criteria": [
+            "gPTP同步支持",
+            "多时间域管理",
+            "时间戳收发",
+            "与EthIf集成"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "可选驱动与优化",
+      "priority": "🟢 LOW",
+      "duration": "1-2 周",
+      "modules": [
+        {
+          "name": "Icu",
+          "full_name": "Input Capture Unit",
+          "layer": "MCAL",
+          "lines_estimate": 400,
+          "dependencies": [
+            "Gpt"
+          ],
+          "api_functions": [
+            "Icu_Init()",
+            "Icu_DeInit()",
+            "Icu_SetMode()",
+            "Icu_DisableWakeup()",
+            "Icu_EnableWakeup()",
+            "Icu_SetActivationCondition()",
+            "Icu_DisableNotification()",
+            "Icu_EnableNotification()",
+            "Icu_GetInputState()",
+            "Icu_StartTimestamp()",
+            "Icu_StopTimestamp()",
+            "Icu_GetTimestampIndex()",
+            "Icu_ResetEdgeCount()",
+            "Icu_EnableEdgeCount()",
+            "Icu_DisableEdgeCount()",
+            "Icu_GetEdgeNumbers()",
+            "Icu_StartSignalMeasurement()",
+            "Icu_StopSignalMeasurement()",
+            "Icu_GetTimeElapsed()",
+            "Icu_GetDutyCycleValues()"
+          ],
+          "acceptance_criteria": [
+            "边沿捕获",
+            "信号测量(占空比/周期)",
+            "时间戳功能",
+            "唤醒支持"
+          ]
+        },
+        {
+          "name": "FrTp",
+          "full_name": "FlexRay Transport Protocol",
+          "layer": "ECUAL",
+          "lines_estimate": 600,
+          "dependencies": [
+            "FrIf",
+            "PduR"
+          ],
+          "api_functions": [
+            "FrTp_Init()",
+            "FrTp_Transmit()",
+            "FrTp_CancelTransmit()",
+            "FrTp_ChangeParameter()",
+            "FrTp_CancelReceive()"
+          ],
+          "acceptance_criteria": [
+            "ISO 10681-2 依从",
+            "多连接支持",
+            "流量控制",
+            "错误检测"
+          ]
+        },
+        {
+          "name": "Eth 完善",
+          "full_name": "Ethernet Driver Enhancement",
+          "layer": "MCAL",
+          "lines_estimate": 800,
+          "current_status": "只有头文件",
+          "api_functions": [
+            "Eth_Init()",
+            "Eth_SetControllerMode()",
+            "Eth_GetControllerMode()",
+            "Eth_GetPhysAddr()",
+            "Eth_SetPhysAddr()",
+            "Eth_ReadMii()",
+            "Eth_WriteMii()",
+            "Eth_Transmit()",
+            "Eth_Receive()",
+            "Eth_TxConfirmation()",
+            "Eth_GetVersionInfo()",
+            "Eth_MainFunction()"
+          ],
+          "acceptance_criteria": [
+            "MAC 控制器初始化",
+            "数据发送/接收",
+            "MDIO 读写",
+            "中断处理",
+            "与EthIf集成"
+          ]
+        }
+      ]
+    }
+  ],
+  "quality_gates": {
+    "gate_1_code_review": {
+      "description": "代码审查门禁",
+      "checks": [
+        "AUTOSAR C++14/C编码规范遵守",
+        "圈复杂度 < 10",
+        "MISRA C:2012 合规",
+        "代码覆盖率 > 80%"
+      ]
+    },
+    "gate_2_integration": {
+      "description": "集成测试门禁",
+      "checks": [
+        "与上下游模块集成测试通过",
+        "OpenSpec 场景测试通过",
+        "无内存泄漏",
+        "无竞态条件"
+      ]
+    },
+    "gate_3_documentation": {
+      "description": "文档门禁",
+      "checks": [
+        "SWS 规范文档完整",
+        "API 文档生成",
+        "配置参数说明",
+        "集成指南"
+      ]
+    }
+  },
+  "risk_mitigation": [
+    {
+      "risk": "Csm 加密算法实现复杂",
+      "mitigation": "使用或集成已有的加密库(如 mbedTLS)"
+    },
+    {
+      "risk": "SecOC 与现有Com/PduR集成",
+      "mitigation": "先实现原型验证接口兼容性"
+    },
+    {
+      "risk": "Fls Flash 操作风险",
+      "mitigation": "充分测试异步操作和错误恢复"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "id": "design/testing-strategy",
+  "title": "测试策略设计",
+  "description": "┌───────────────────────────┐",
+  "source": "@site/docs/design/testing-strategy.md",
+  "sourceDirName": "design",
+  "slug": "/design/testing-strategy",
+  "permalink": "/yuleASR/en/docs/design/testing-strategy",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/design/testing-strategy.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 39,
+  "frontMatter": {
+    "title": "测试策略设计",
+    "description": "┌───────────────────────────┐",
+    "sidebar_position": 39
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "模块交互设计",
+    "permalink": "/yuleASR/en/docs/design/module-interactions"
+  },
+  "next": {
+    "title": "YuleTech BSW 优化脑力涛涩",
+    "permalink": "/yuleASR/en/docs/design/bsw-optimization"
+  }
+}

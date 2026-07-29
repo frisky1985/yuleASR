@@ -1,0 +1,29 @@
+{
+  "id": "api/crypto-api",
+  "title": "Crypto API Reference Manual",
+  "description": "- Version: 1.0.0",
+  "source": "@site/docs/api/crypto-api.md",
+  "sourceDirName": "api",
+  "slug": "/api/crypto-api",
+  "permalink": "/yuleASR/en/docs/api/crypto-api",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/api/crypto-api.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 15,
+  "frontMatter": {
+    "title": "Crypto API Reference Manual",
+    "description": "- Version: 1.0.0",
+    "sidebar_position": 15
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "COM 模块 API 参考",
+    "permalink": "/yuleASR/en/docs/api/com-api"
+  },
+  "next": {
+    "title": "Crypto API Quick Start Guide",
+    "permalink": "/yuleASR/en/docs/api/crypto-quickstart"
+  }
+}

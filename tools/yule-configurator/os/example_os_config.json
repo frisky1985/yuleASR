@@ -1,0 +1,54 @@
+{
+  "os": {
+    "name": "YuleOS",
+    "version": "1.0.0",
+    "status": "STANDARD"
+  },
+  "tasks": [
+    {
+      "name": "Init",
+      "priority": 10,
+      "activation": 1,
+      "autostart": true,
+      "schedule": "FULL"
+    },
+    {
+      "name": "Cyclic10ms",
+      "priority": 5,
+      "activation": 1,
+      "autostart": false,
+      "schedule": "FULL",
+      "events": ["Event10ms"]
+    },
+    {
+      "name": "Background",
+      "priority": 1,
+      "activation": 1,
+      "autostart": false,
+      "schedule": "NON"
+    }
+  ],
+  "alarms": [
+    {
+      "name": "Alarm10ms",
+      "counter": "SystemCounter",
+      "action": "ACTIVATETASK",
+      "task": "Cyclic10ms",
+      "autostart": true,
+      "period": 10
+    }
+  ],
+  "resources": [
+    {
+      "name": "Resource1",
+      "priority_ceiling": 8
+    }
+  ],
+  "events": [
+    {
+      "name": "Event10ms",
+      "mask": 1
+    }
+  ],
+  "schedule_tables": []
+}

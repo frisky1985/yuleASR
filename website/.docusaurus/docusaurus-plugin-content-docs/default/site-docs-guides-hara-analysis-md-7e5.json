@@ -1,0 +1,29 @@
+{
+  "id": "guides/hara-analysis",
+  "title": "HARA - 危害分析和风险评估",
+  "description": "基于ISO 26262-3进行危害分析和风险评估(HARA)。",
+  "source": "@site/docs/guides/hara-analysis.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/hara-analysis",
+  "permalink": "/yuleASR/en/docs/guides/hara-analysis",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/hara-analysis.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 25,
+  "frontMatter": {
+    "title": "HARA - 危害分析和风险评估",
+    "description": "基于ISO 26262-3进行危害分析和风险评估(HARA)。",
+    "sidebar_position": 25
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Dem (Diagnostic Event Manager) Design Document",
+    "permalink": "/yuleASR/en/docs/guides/dem-design"
+  },
+  "next": {
+    "title": "SAFETY MANUAL - ISO 26262 ASIL-D",
+    "permalink": "/yuleASR/en/docs/guides/safety-manual"
+  }
+}

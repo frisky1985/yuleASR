@@ -1,0 +1,29 @@
+{
+  "id": "guides/com-guide",
+  "title": "COM 模块文档",
+  "description": "> **AUTOSAR COM Module Documentation**",
+  "source": "@site/docs/guides/com-guide.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/com-guide",
+  "permalink": "/yuleASR/en/docs/guides/com-guide",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/com-guide.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 20,
+  "frontMatter": {
+    "title": "COM 模块文档",
+    "description": "> **AUTOSAR COM Module Documentation**",
+    "sidebar_position": 20
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "YuleTech OS Configurator 使用手册",
+    "permalink": "/yuleASR/en/docs/guides/configurator"
+  },
+  "next": {
+    "title": "COM 模块配置指南",
+    "permalink": "/yuleASR/en/docs/guides/com-config"
+  }
+}

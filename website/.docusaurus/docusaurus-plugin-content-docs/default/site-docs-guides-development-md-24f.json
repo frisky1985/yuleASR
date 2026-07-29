@@ -1,0 +1,29 @@
+{
+  "id": "guides/development",
+  "title": "开发指南",
+  "description": "本文档提供 YuleTech AutoSAR BSW Platform 的开发规范和最佳实践。",
+  "source": "@site/docs/guides/development.md",
+  "sourceDirName": "guides",
+  "slug": "/guides/development",
+  "permalink": "/yuleASR/en/docs/guides/development",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/guides/development.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 18,
+  "frontMatter": {
+    "title": "开发指南",
+    "description": "本文档提供 YuleTech AutoSAR BSW Platform 的开发规范和最佳实践。",
+    "sidebar_position": 18
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "脑力涛涩",
+    "permalink": "/yuleASR/en/docs/design/next-steps"
+  },
+  "next": {
+    "title": "YuleTech OS Configurator 使用手册",
+    "permalink": "/yuleASR/en/docs/guides/configurator"
+  }
+}

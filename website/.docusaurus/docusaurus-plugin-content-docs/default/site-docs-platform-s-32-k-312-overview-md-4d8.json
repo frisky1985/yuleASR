@@ -1,0 +1,29 @@
+{
+  "id": "platform/s32k312/overview",
+  "title": "S32K312 芯片学习与部署指南",
+  "description": "> **芯片型号**: NXP S32K312",
+  "source": "@site/docs/platform/s32k312/overview.md",
+  "sourceDirName": "platform/s32k312",
+  "slug": "/platform/s32k312/overview",
+  "permalink": "/yuleASR/en/docs/platform/s32k312/overview",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/platform/s32k312/overview.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "S32K312 芯片学习与部署指南",
+    "description": "> **芯片型号**: NXP S32K312",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "S32K312 HSM使用指南",
+    "permalink": "/yuleASR/en/docs/guides/s32k312-hsm"
+  },
+  "next": {
+    "title": "S32K312 AUTOSAR 集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/"
+  }
+}

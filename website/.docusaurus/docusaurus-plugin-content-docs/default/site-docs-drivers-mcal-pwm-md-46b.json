@@ -1,0 +1,30 @@
+{
+  "id": "drivers/mcal/pwm",
+  "title": "PWM (脉宽调制) 模块文档",
+  "description": "PWM (Pulse Width Modulation) 模块是AutoSAR MCAL层的脉宽调制驱动，提供精确的PWM信号生成能力，支持多通道、可变占空比、可变周期等特性，广泛应用于电机控制、LED调光、电源管理等场景。",
+  "source": "@site/docs/drivers/mcal/pwm.md",
+  "sourceDirName": "drivers/mcal",
+  "slug": "/drivers/mcal/pwm",
+  "permalink": "/yuleASR/en/docs/drivers/mcal/pwm",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/mcal/pwm.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 17,
+  "frontMatter": {
+    "title": "PWM (脉宽调制) 模块文档",
+    "sidebar_label": "pwm",
+    "description": "PWM (Pulse Width Modulation) 模块是AutoSAR MCAL层的脉宽调制驱动，提供精确的PWM信号生成能力，支持多通道、可变占空比、可变周期等特性，广泛应用于电机控制、LED调光、电源管理等场景。",
+    "sidebar_position": 17
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "port",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/port"
+  },
+  "next": {
+    "title": "ramtst",
+    "permalink": "/yuleASR/en/docs/drivers/mcal/ramtst"
+  }
+}

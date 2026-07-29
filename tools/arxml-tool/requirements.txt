@@ -1,0 +1,17 @@
+# yuleASR ARXML Tool Requirements
+# Install with: pip install -r requirements.txt
+
+# XML processing with XPath support
+lxml>=4.9.0
+
+# Template engine for code generation
+jinja2>=3.1.0
+
+# Type hints support (Python 3.8+)
+typing-extensions>=4.0.0; python_version < "3.10"
+
+# Development dependencies (optional)
+pytest>=7.0.0; extra == "dev"
+pytest-cov>=4.0.0; extra == "dev"
+black>=22.0.0; extra == "dev"
+mypy>=1.0.0; extra == "dev"

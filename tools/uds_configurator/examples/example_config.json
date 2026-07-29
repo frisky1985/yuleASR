@@ -1,0 +1,93 @@
+{
+  "project_name": "UDS_Example_Project",
+  "version": {
+    "major": 1,
+    "minor": 0,
+    "patch": 0
+  },
+  "generation_date": "2024-01-15",
+  "sessions": [
+    {
+      "id": 1,
+      "name": "Default",
+      "type": "DEFAULT",
+      "timeout": 5000,
+      "p2_max": 50000,
+      "p2_min": 25000
+    },
+    {
+      "id": 3,
+      "name": "Extended",
+      "type": "EXTENDED",
+      "timeout": 5000,
+      "p2_max": 50000,
+      "p2_min": 25000
+    }
+  ],
+  "security_levels": [
+    {
+      "level": 1,
+      "key_size": 4,
+      "seed_size": 4,
+      "timeout": 5000,
+      "delay": 0
+    },
+    {
+      "level": 17,
+      "key_size": 4,
+      "seed_size": 4,
+      "timeout": 5000,
+      "delay": 1000
+    }
+  ],
+  "services": [
+    {
+      "id": 16,
+      "name": "Session_Control",
+      "in_default": true,
+      "in_extended": true,
+      "in_programming": true,
+      "subfunctions": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Read_Data",
+      "in_default": true,
+      "in_extended": true,
+      "in_programming": false,
+      "subfunctions": []
+    }
+  ],
+  "dids": [
+    {
+      "id": 61840,
+      "name": "VIN",
+      "size": 17,
+      "read_sec": 1,
+      "write_sec": 33,
+      "session_mask": 2
+    },
+    {
+      "id": 256,
+      "name": "Engine_Temp",
+      "size": 1,
+      "read_sec": 1,
+      "write_sec": 0,
+      "session_mask": 7
+    }
+  ],
+  "rids": [
+    {
+      "id": 65280,
+      "name": "Check_Memory",
+      "start": 1,
+      "stop": 2,
+      "results": 3,
+      "security": 17
+    }
+  ]
+}

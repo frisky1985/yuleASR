@@ -1,0 +1,117 @@
+{
+  "project": "yuleASR AUTOSAR BSW",
+  "timestamp": "2024-05-05",
+  "summary": {
+    "total_modules": 20,
+    "total_files": 99,
+    "total_lines": 23598
+  },
+  "layers": {
+    "ecual": [
+      {
+        "name": "dlt",
+        "files": 4,
+        "lines": 1563
+      },
+      {
+        "name": "xcp",
+        "files": 4,
+        "lines": 1750
+      },
+      {
+        "name": "someipif",
+        "files": 4,
+        "lines": 301
+      },
+      {
+        "name": "someipsd",
+        "files": 4,
+        "lines": 247
+      },
+      {
+        "name": "srp",
+        "files": 4,
+        "lines": 214
+      },
+      {
+        "name": "canif",
+        "files": 4,
+        "lines": 1100
+      },
+      {
+        "name": "cantp",
+        "files": 4,
+        "lines": 1409
+      },
+      {
+        "name": "ethif",
+        "files": 4,
+        "lines": 613
+      },
+      {
+        "name": "linIf",
+        "files": 3,
+        "lines": 902
+      }
+    ],
+    "services": [
+      {
+        "name": "swc",
+        "files": 4,
+        "lines": 1429
+      },
+      {
+        "name": "det",
+        "files": 4,
+        "lines": 1013
+      },
+      {
+        "name": "crc",
+        "files": 4,
+        "lines": 896
+      },
+      {
+        "name": "e2e",
+        "files": 18,
+        "lines": 3051
+      },
+      {
+        "name": "bswm",
+        "files": 4,
+        "lines": 249
+      },
+      {
+        "name": "secoc",
+        "files": 9,
+        "lines": 1958
+      },
+      {
+        "name": "com",
+        "files": 4,
+        "lines": 325
+      },
+      {
+        "name": "memif",
+        "files": 5,
+        "lines": 1468
+      },
+      {
+        "name": "comM",
+        "files": 3,
+        "lines": 468
+      }
+    ],
+    "mcal": [
+      {
+        "name": "flash",
+        "files": 5,
+        "lines": 2291
+      },
+      {
+        "name": "fee",
+        "files": 4,
+        "lines": 2351
+      }
+    ]
+  }
+}

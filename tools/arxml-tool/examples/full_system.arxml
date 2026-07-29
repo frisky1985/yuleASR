@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaVersion="4.0.0">
+  <ADMIN-DATA>
+    <LANGUAGE>EN</LANGUAGE>
+    <USED-LANGUAGES>
+      <L-10>L-EN</L-10>
+    </USED-LANGUAGES>
+  </ADMIN-DATA>
+  <AR-PACKAGES>
+    <!-- Root Package -->
+    <AR-PACKAGE UUID="root-001">
+      <SHORT-NAME>VehicleProject</SHORT-NAME>
+      <DESC>
+        <L-2>Complete Vehicle Electronic System</L-2>
+      </DESC>
+
+      <SUB-PACKAGES>
+        <!-- ECU Package -->
+        <AR-PACKAGE UUID="ecu-pkg-001">
+          <SHORT-NAME>ECUs</SHORT-NAME>
+          
+          <ELEMENTS>
+            <!-- Engine ECU -->
+            <ECU-CONFIGURATION UUID="ecu-engine-001">
+              <SHORT-NAME>EngineECU</SHORT-NAME>
+              <DESC>
+                <L-2>Engine Control Unit - Primary ECU</L-2>
+              </DESC>
+              <ECU>ENG_ECU_01</ECU>
+              <ECU-EXTRACT-REF DEST="SYSTEM">/VehicleProject/System/EngineSystem</ECU-EXTRACT-REF>
+              <PARTITIONS>
+                <ECU-PARTITION UUID="part-app-001">
+                  <SHORT-NAME>ApplicationPartition</SHORT-NAME>
+                  <ECU-EXTRACT-REF DEST="SYSTEM">/VehicleProject/System/EngineSystem</ECU-EXTRACT-REF>
+                </ECU-PARTITION>
+                <ECU-PARTITION UUID="part-diag-001">
+                  <SHORT-NAME>DiagnosticPartition</SHORT-NAME>
+                  <ECU-EXTRACT-REF DEST="SYSTEM">/VehicleProject/System/DiagnosticSystem</ECU-EXTRACT-REF>
+                </ECU-PARTITION>
+              </PARTITIONS>
+              <MODULE-CONFIGURATIONS>
+                <MODULE-CONFIGURATION UUID="mod-can-001">
+                  <SHORT-NAME>Can</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Can</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-canif-001">
+                  <SHORT-NAME>CanIf</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/CanIf</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-com-001">
+                  <SHORT-NAME>Com</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Com</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-pdur-001">
+                  <SHORT-NAME>PduR</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/PduR</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-nvm-001">
+                  <SHORT-NAME>NvM</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/NvM</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-dcm-001">
+                  <SHORT-NAME>Dcm</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Dcm</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-dem-001">
+                  <SHORT-NAME>Dem</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Dem</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+              </MODULE-CONFIGURATIONS>
+            </ECU-CONFIGURATION>
+
+            <!-- Transmission ECU -->
+            <ECU-CONFIGURATION UUID="ecu-trans-001">
+              <SHORT-NAME>TransmissionECU</SHORT-NAME>
+              <DESC>
+                <L-2>Transmission Control Unit</L-2>
+              </DESC>
+              <ECU>TRANS_ECU_01</ECU>
+              <ECU-EXTRACT-REF DEST="SYSTEM">/VehicleProject/System/TransmissionSystem</ECU-EXTRACT-REF>
+              <MODULE-CONFIGURATIONS>
+                <MODULE-CONFIGURATION UUID="mod-can-trans-001">
+                  <SHORT-NAME>Can</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Can</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-com-trans-001">
+                  <SHORT-NAME>Com</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Com</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+              </MODULE-CONFIGURATIONS>
+            </ECU-CONFIGURATION>
+
+            <!-- Body ECU -->
+            <ECU-CONFIGURATION UUID="ecu-body-001">
+              <SHORT-NAME>BodyECU</SHORT-NAME>
+              <DESC>
+                <L-2>Body Control Module</L-2>
+              </DESC>
+              <ECU>BODY_ECU_01</ECU>
+              <ECU-EXTRACT-REF DEST="SYSTEM">/VehicleProject/System/BodySystem</ECU-EXTRACT-REF>
+              <MODULE-CONFIGURATIONS>
+                <MODULE-CONFIGURATION UUID="mod-lin-001">
+                  <SHORT-NAME>Lin</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Lin</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+                <MODULE-CONFIGURATION UUID="mod-dio-001">
+                  <SHORT-NAME>Dio</SHORT-NAME>
+                  <DEFINITION-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/Dio</DEFINITION-REF>
+                </MODULE-CONFIGURATION>
+              </MODULE-CONFIGURATIONS>
+            </ECU-CONFIGURATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- Software Components Package -->
+        <AR-PACKAGE UUID="swc-pkg-001">
+          <SHORT-NAME>SoftwareComponents</SHORT-NAME>
+          
+          <ELEMENTS>
+            <!-- Engine Control Component -->
+            <APPLICATION-SW-COMPONENT-TYPE UUID="swc-engine-ctrl-001">
+              <SHORT-NAME>EngineControl</SHORT-NAME>
+              <DESC>
+                <L-2>Engine Management Controller</L-2>
+              </DESC>
+              <PORTS>
+                <P-PORT-PROTOTYPE UUID="port-eng-data-001">
+                  <SHORT-NAME>EngineData_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/EngineData_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="port-diag-eng-001">
+                  <SHORT-NAME>DiagService_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/VehicleProject/Interfaces/DiagService_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="port-throttle-001">
+                  <SHORT-NAME>Throttle_R</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/Throttle_IF</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="port-brake-pedal-001">
+                  <SHORT-NAME>BrakePedal_R</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/BrakePedal_IF</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="port-trans-data-001">
+                  <SHORT-NAME>TransmissionData_R</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/TransmissionData_IF</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+              </PORTS>
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR UUID="beh-eng-001">
+                  <SHORT-NAME>EngineControlBehavior</SHORT-NAME>
+                  <EVENTS>
+                    <TIMING-EVENT UUID="evt-timing-001">
+                      <SHORT-NAME>EngineControl_10ms</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/VehicleProject/SoftwareComponents/EngineControl/EngineControlBehavior/EngineControlRunnable</START-ON-EVENT-REF>
+                      <PERIOD>0.01</PERIOD>
+                    </TIMING-EVENT>
+                  </EVENTS>
+                  <RUNNABLES>
+                    <RUNNABLE-ENTITY UUID="run-eng-001">
+                      <SHORT-NAME>EngineControlRunnable</SHORT-NAME>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <RUNS-INSIDE-EXCLUSIVE-AREA-REFS>
+                        <RUNS-INSIDE-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/VehicleProject/SoftwareComponents/EngineControl/EngineControlBehavior/EngineControlArea</RUNS-INSIDE-EXCLUSIVE-AREA-REF>
+                      </RUNS-INSIDE-EXCLUSIVE-AREA-REFS>
+                    </RUNNABLE-ENTITY>
+                  </RUNNABLES>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA UUID="excl-eng-001">
+                      <SHORT-NAME>EngineControlArea</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </APPLICATION-SW-COMPONENT-TYPE>
+
+            <!-- Transmission Control Component -->
+            <APPLICATION-SW-COMPONENT-TYPE UUID="swc-trans-ctrl-001">
+              <SHORT-NAME>TransmissionControl</SHORT-NAME>
+              <DESC>
+                <L-2>Transmission Management Controller</L-2>
+              </DESC>
+              <PORTS>
+                <P-PORT-PROTOTYPE UUID="port-trans-data-p-001">
+                  <SHORT-NAME>TransmissionData_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/TransmissionData_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="port-eng-data-r-001">
+                  <SHORT-NAME>EngineData_R</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/EngineData_IF</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="port-gear-pos-r-001">
+                  <SHORT-NAME>GearPosition_R</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/GearPosition_IF</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+              </PORTS>
+            </APPLICATION-SW-COMPONENT-TYPE>
+
+            <!-- Diagnostic Manager Component -->
+            <SERVICE-SW-COMPONENT-TYPE UUID="swc-diag-001">
+              <SHORT-NAME>DiagnosticManager</SHORT-NAME>
+              <DESC>
+                <L-2>Diagnostic Services Manager</L-2>
+              </DESC>
+              <PORTS>
+                <P-PORT-PROTOTYPE UUID="port-diag-p-001">
+                  <SHORT-NAME>DiagService_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/VehicleProject/Interfaces/DiagService_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <R-PORT-PROTOTYPE UUID="port-dtc-r-001">
+                  <SHORT-NAME>DTC_R</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/DTC_IF</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+              </PORTS>
+            </SERVICE-SW-COMPONENT-TYPE>
+
+            <!-- Sensor Processing Component -->
+            <SENSOR-ACTUATOR-SW-COMPONENT-TYPE UUID="swc-sensor-001">
+              <SHORT-NAME>SensorProcessing</SHORT-NAME>
+              <DESC>
+                <L-2>Sensor Data Acquisition and Processing</L-2>
+              </DESC>
+              <PORTS>
+                <P-PORT-PROTOTYPE UUID="port-throttle-p-001">
+                  <SHORT-NAME>Throttle_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/Throttle_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="port-brake-p-001">
+                  <SHORT-NAME>BrakePedal_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/BrakePedal_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE UUID="port-gear-p-001">
+                  <SHORT-NAME>GearPosition_P</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/VehicleProject/Interfaces/GearPosition_IF</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+              </PORTS>
+            </SENSOR-ACTUATOR-SW-COMPONENT-TYPE>
+
+            <!-- Vehicle Composition -->
+            <COMPOSITION-SW-COMPONENT-TYPE UUID="comp-vehicle-001">
+              <SHORT-NAME>VehicleComposition</SHORT-NAME>
+              <DESC>
+                <L-2>Top Level Vehicle Software Composition</L-2>
+              </DESC>
+              <COMPONENTS>
+                <SW-COMPONENT-PROTOTYPE UUID="proto-eng-001">
+                  <SHORT-NAME>EngineControlInstance</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/VehicleProject/SoftwareComponents/EngineControl</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+                <SW-COMPONENT-PROTOTYPE UUID="proto-trans-001">
+                  <SHORT-NAME>TransmissionControlInstance</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-SW-COMPONENT-TYPE">/VehicleProject/SoftwareComponents/TransmissionControl</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+                <SW-COMPONENT-PROTOTYPE UUID="proto-sensor-001">
+                  <SHORT-NAME>SensorProcessingInstance</SHORT-NAME>
+                  <TYPE-TREF DEST="SENSOR-ACTUATOR-SW-COMPONENT-TYPE">/VehicleProject/SoftwareComponents/SensorProcessing</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+                <SW-COMPONENT-PROTOTYPE UUID="proto-diag-001">
+                  <SHORT-NAME>DiagnosticManagerInstance</SHORT-NAME>
+                  <TYPE-TREF DEST="SERVICE-SW-COMPONENT-TYPE">/VehicleProject/SoftwareComponents/DiagnosticManager</TYPE-TREF>
+                </SW-COMPONENT-PROTOTYPE>
+              </COMPONENTS>
+              <CONNECTORS>
+                <ASSEMBLY-SW-CONNECTOR UUID="conn-throttle-001">
+                  <SHORT-NAME>Throttle_Connection</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/SensorProcessingInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/SensorProcessing/Throttle_P</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/EngineControlInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/EngineControl/Throttle_R</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="conn-brake-001">
+                  <SHORT-NAME>BrakePedal_Connection</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/SensorProcessingInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/SensorProcessing/BrakePedal_P</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/EngineControlInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/EngineControl/BrakePedal_R</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="conn-eng-trans-001">
+                  <SHORT-NAME>EngineTrans_Connection</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/EngineControlInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/EngineControl/EngineData_P</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/TransmissionControlInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/TransmissionControl/EngineData_R</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+                <ASSEMBLY-SW-CONNECTOR UUID="conn-trans-sensor-001">
+                  <SHORT-NAME>TransSensor_Connection</SHORT-NAME>
+                  <PROVIDER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/SensorProcessingInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-P-PORT-REF DEST="P-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/SensorProcessing/GearPosition_P</TARGET-P-PORT-REF>
+                  </PROVIDER-IREF>
+                  <REQUESTER-IREF>
+                    <CONTEXT-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/TransmissionControlInstance</CONTEXT-COMPONENT-REF>
+                    <TARGET-R-PORT-REF DEST="R-PORT-PROTOTYPE">/VehicleProject/SoftwareComponents/TransmissionControl/GearPosition_R</TARGET-R-PORT-REF>
+                  </REQUESTER-IREF>
+                </ASSEMBLY-SW-CONNECTOR>
+              </CONNECTORS>
+            </COMPOSITION-SW-COMPONENT-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- Interfaces Package -->
+        <AR-PACKAGE UUID="if-pkg-001">
+          <SHORT-NAME>Interfaces</SHORT-NAME>
+          
+          <ELEMENTS>
+            <!-- Sender-Receiver Interfaces -->
+            <SENDER-RECEIVER-INTERFACE UUID="if-eng-data-001">
+              <SHORT-NAME>EngineData_IF</SHORT-NAME>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-eng-rpm-001">
+                  <SHORT-NAME>EngineRPM</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint16</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-eng-temp-001">
+                  <SHORT-NAME>EngineTemp</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/sint16</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-eng-load-001">
+                  <SHORT-NAME>EngineLoad</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <SENDER-RECEIVER-INTERFACE UUID="if-throttle-001">
+              <SHORT-NAME>Throttle_IF</SHORT-NAME>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-throttle-pos-001">
+                  <SHORT-NAME>ThrottlePosition</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-throttle-fault-001">
+                  <SHORT-NAME>ThrottleFault</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/boolean</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <SENDER-RECEIVER-INTERFACE UUID="if-brake-001">
+              <SHORT-NAME>BrakePedal_IF</SHORT-NAME>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-brake-pos-001">
+                  <SHORT-NAME>BrakePedalPosition</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-brake-pressed-001">
+                  <SHORT-NAME>BrakePressed</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/boolean</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <SENDER-RECEIVER-INTERFACE UUID="if-trans-data-001">
+              <SHORT-NAME>TransmissionData_IF</SHORT-NAME>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-gear-001">
+                  <SHORT-NAME>CurrentGear</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-trans-temp-001">
+                  <SHORT-NAME>TransmissionTemp</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/sint16</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-torque-001">
+                  <SHORT-NAME>TransmissionTorque</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint16</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <SENDER-RECEIVER-INTERFACE UUID="if-gear-pos-001">
+              <SHORT-NAME>GearPosition_IF</SHORT-NAME>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-gear-sensor-001">
+                  <SHORT-NAME>GearSensorPosition</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <SENDER-RECEIVER-INTERFACE UUID="if-dtc-001">
+              <SHORT-NAME>DTC_IF</SHORT-NAME>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-dtc-code-001">
+                  <SHORT-NAME>DTC_Code</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint32</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+                <DATA-ELEMENT-PROTOTYPE UUID="de-dtc-status-001">
+                  <SHORT-NAME>DTC_Status</SHORT-NAME>
+                  <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <!-- Client-Server Interface -->
+            <CLIENT-SERVER-INTERFACE UUID="if-diag-srv-001">
+              <SHORT-NAME>DiagService_IF</SHORT-NAME>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION UUID="op-read-dtc-001">
+                  <SHORT-NAME>ReadDTC</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE UUID="arg-dtc-id-001">
+                      <SHORT-NAME>DTC_ID</SHORT-NAME>
+                      <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint32</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE UUID="arg-dtc-data-001">
+                      <SHORT-NAME>DTC_Data</SHORT-NAME>
+                      <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                </CLIENT-SERVER-OPERATION>
+                <CLIENT-SERVER-OPERATION UUID="op-clear-dtc-001">
+                  <SHORT-NAME>ClearDTC</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE UUID="arg-clear-result-001">
+                      <SHORT-NAME>ClearResult</SHORT-NAME>
+                      <TYPE-TREF DEST="APPLICATION-PRIMITIVE-DATA-TYPE">/VehicleProject/DataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+            </CLIENT-SERVER-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- Data Types Package -->
+        <AR-PACKAGE UUID="dt-pkg-001">
+          <SHORT-NAME>DataTypes</SHORT-NAME>
+          
+          <ELEMENTS>
+            <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-bool-001">
+              <SHORT-NAME>boolean</SHORT-NAME>
+              <CATEGORY>BOOLEAN</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+            <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-uint8-001">
+              <SHORT-NAME>uint8</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+            <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-uint16-001">
+              <SHORT-NAME>uint16</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+            <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-uint32-001">
+              <SHORT-NAME>uint32</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+            <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-sint8-001">
+              <SHORT-NAME>sint8</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+
+            <APPLICATION-PRIMITIVE-DATA-TYPE UUID="dt-sint16-001">
+              <SHORT-NAME>sint16</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+            </APPLICATION-PRIMITIVE-DATA-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+        <!-- System Package -->
+        <AR-PACKAGE UUID="sys-pkg-001">
+          <SHORT-NAME>System</SHORT-NAME>
+          
+          <ELEMENTS>
+            <SYSTEM-MAPPING UUID="sys-map-001">
+              <SHORT-NAME>VehicleSystemMapping</SHORT-NAME>
+              <MAPPINGS>
+                <SWC-TO-ECU-MAPPING UUID="map-eng-001">
+                  <SHORT-NAME>EngineControlMapping</SHORT-NAME>
+                  <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/EngineControlInstance</COMPONENT-REF>
+                  <ECU-REF DEST="ECU-CONFIGURATION">/VehicleProject/ECUs/EngineECU</ECU-REF>
+                </SWC-TO-ECU-MAPPING>
+                <SWC-TO-ECU-MAPPING UUID="map-trans-001">
+                  <SHORT-NAME>TransmissionControlMapping</SHORT-NAME>
+                  <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/TransmissionControlInstance</COMPONENT-REF>
+                  <ECU-REF DEST="ECU-CONFIGURATION">/VehicleProject/ECUs/TransmissionECU</ECU-REF>
+                </SWC-TO-ECU-MAPPING>
+                <SWC-TO-ECU-MAPPING UUID="map-diag-001">
+                  <SHORT-NAME>DiagnosticManagerMapping</SHORT-NAME>
+                  <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/DiagnosticManagerInstance</COMPONENT-REF>
+                  <ECU-REF DEST="ECU-CONFIGURATION">/VehicleProject/ECUs/EngineECU</ECU-REF>
+                </SWC-TO-ECU-MAPPING>
+                <SWC-TO-ECU-MAPPING UUID="map-sensor-001">
+                  <SHORT-NAME>SensorProcessingMapping</SHORT-NAME>
+                  <COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/VehicleProject/SoftwareComponents/VehicleComposition/SensorProcessingInstance</COMPONENT-REF>
+                  <ECU-REF DEST="ECU-CONFIGURATION">/VehicleProject/ECUs/EngineECU</ECU-REF>
+                </SWC-TO-ECU-MAPPING>
+              </MAPPINGS>
+            </SYSTEM-MAPPING>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

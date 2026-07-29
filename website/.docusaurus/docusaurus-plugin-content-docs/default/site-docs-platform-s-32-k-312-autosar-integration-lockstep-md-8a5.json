@@ -1,0 +1,29 @@
+{
+  "id": "platform/s32k312/autosar-integration/lockstep",
+  "title": "S32K312 Lockstep 集成指南",
+  "description": "本文档描述如何将S32K312的Lockstep（锁步）功能集成到yuleASR项目中。",
+  "source": "@site/docs/platform/s32k312/autosar-integration/lockstep.md",
+  "sourceDirName": "platform/s32k312/autosar-integration",
+  "slug": "/platform/s32k312/autosar-integration/lockstep",
+  "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/lockstep",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/platform/s32k312/autosar-integration/lockstep.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {
+    "title": "S32K312 Lockstep 集成指南",
+    "description": "本文档描述如何将S32K312的Lockstep（锁步）功能集成到yuleASR项目中。",
+    "sidebar_position": 7
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "ECC故障处理完整指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ecc-handling"
+  },
+  "next": {
+    "title": "RamSafety 模块集成指南",
+    "permalink": "/yuleASR/en/docs/platform/s32k312/autosar-integration/ramsafety"
+  }
+}

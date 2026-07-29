@@ -1,0 +1,29 @@
+{
+  "id": "api/crypto-quickstart",
+  "title": "Crypto API Quick Start Guide",
+  "description": "- Version: 1.0.0",
+  "source": "@site/docs/api/crypto-quickstart.md",
+  "sourceDirName": "api",
+  "slug": "/api/crypto-quickstart",
+  "permalink": "/yuleASR/en/docs/api/crypto-quickstart",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/api/crypto-quickstart.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 16,
+  "frontMatter": {
+    "title": "Crypto API Quick Start Guide",
+    "description": "- Version: 1.0.0",
+    "sidebar_position": 16
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Crypto API Reference Manual",
+    "permalink": "/yuleASR/en/docs/api/crypto-api"
+  },
+  "next": {
+    "title": "DCM Program Transfer Services Implementation",
+    "permalink": "/yuleASR/en/docs/api/dcm-services"
+  }
+}

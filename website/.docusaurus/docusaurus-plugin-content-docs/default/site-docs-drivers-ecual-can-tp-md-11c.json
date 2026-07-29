@@ -1,0 +1,30 @@
+{
+  "id": "drivers/ecual/CanTp",
+  "title": "CanTp",
+  "description": "CanTp implements the ISO 15765-2 CAN Transport Protocol for diagnostic and large data transmission over CAN bus. It segm",
+  "source": "@site/docs/drivers/ecual/CanTp.md",
+  "sourceDirName": "drivers/ecual",
+  "slug": "/drivers/ecual/CanTp",
+  "permalink": "/yuleASR/en/docs/drivers/ecual/CanTp",
+  "draft": false,
+  "unlisted": false,
+  "editUrl": "https://github.com/frisky1985/yuleASR/tree/main/website/docs/drivers/ecual/CanTp.md",
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "title": "CanTp",
+    "sidebar_label": "CanTp",
+    "description": "CanTp implements the ISO 15765-2 CAN Transport Protocol for diagnostic and large data transmission over CAN bus. It segm",
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "CanIf",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/CanIf"
+  },
+  "next": {
+    "title": "canNm",
+    "permalink": "/yuleASR/en/docs/drivers/ecual/canNm"
+  }
+}
