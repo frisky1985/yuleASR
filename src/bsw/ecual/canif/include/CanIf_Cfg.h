@@ -101,30 +101,6 @@
 #define CANIF_RX_LPDU_3             7U
 
 /*=============================================================================
- * PDU Mode Types
- *=============================================================================*/
-
-typedef enum
-{
-    CANIF_OFFLINE           = 0x00U,  /* Tx/Rx disabled */
-    CANIF_TX_OFFLINE        = 0x01U,  /* Tx disabled, Rx enabled */
-    CANIF_TX_OFFLINE_ACTIVE = 0x02U,  /* Tx pass-through, Rx enabled */
-    CANIF_ONLINE            = 0x03U   /* Tx/Rx enabled */
-} CanIf_PduModeType;
-
-/*=============================================================================
- * Controller Mode Types
- *=============================================================================*/
-
-typedef enum
-{
-    CANIF_CS_UNINIT         = 0x00U,  /* Controller uninitialised */
-    CANIF_CS_STARTED        = 0x01U,  /* Controller started */
-    CANIF_CS_STOPPED        = 0x02U,  /* Controller stopped */
-    CANIF_CS_SLEEP          = 0x03U   /* Controller sleep mode */
-} CanIf_ControllerModeType;
-
-/*=============================================================================
  * Configuration Structures (Link-time configuration)
  *=============================================================================*/
 
@@ -136,6 +112,12 @@ typedef uint8 CanIf_HthType;
 
 /* CAN Identifier type */
 typedef uint32 CanIf_CanIdType;
+
+/* CAN Identifier Type (standard/extended) */
+typedef enum {
+    CANIF_CANID_TYPE_STANDARD = 0,
+    CANIF_CANID_TYPE_EXTENDED
+} CanIf_CanIdTypeType;
 
 /* L-PDU ID type */
 typedef uint16 CanIf_PduIdType;
