@@ -7,4 +7,8 @@ void SchM_Deinit(void);
 void SchM_Start(void);
 void SchM_Stop(void);
 void SchM_SwitchPoint(SchM_PointType point);
+
+/* Include stub implementations for SchM_Enter/Exit exclusive area functions */
+#include "SchM_Stubs.h"
+
 #endif

@@ -103,15 +103,18 @@ typedef enum {
 /**
  * @brief CANSM Network Sub-states for BSM_S_NOCOM
  */
+/* Note: Each sub-state enum uses unique value names to avoid C enum namespace conflicts
+ * (ARM GCC errors on same enumerator in different enums within the same scope)
+ */
 typedef enum {
     CANSM_S_NOCOM_NOP = 0,
-    CANSM_S_RESTART_CC,
-    CANSM_S_RESTART_CC_WAIT,
-    CANSM_S_CC_STOPPED,
-    CANSM_S_CC_STOPPED_WAIT,
-    CANSM_S_CC_SLEEP,
-    CANSM_S_CC_SLEEP_WAIT,
-    CANSM_S_CC_OFFLINE
+    CANSM_NOCOM_S_RESTART_CC,
+    CANSM_NOCOM_S_RESTART_CC_WAIT,
+    CANSM_NOCOM_S_CC_STOPPED,
+    CANSM_NOCOM_S_CC_STOPPED_WAIT,
+    CANSM_NOCOM_S_CC_SLEEP,
+    CANSM_NOCOM_S_CC_SLEEP_WAIT,
+    CANSM_NOCOM_S_CC_OFFLINE
 } CanSm_NoComSubStateType;
 
 /**
@@ -119,7 +122,7 @@ typedef enum {
  */
 typedef enum {
     CANSM_S_SILENTCOM_NOP = 0,
-    CANSM_S_CC_ONLINE
+    CANSM_SILENTCOM_S_CC_ONLINE
 } CanSm_SilentComSubStateType;
 
 /**
@@ -127,9 +130,9 @@ typedef enum {
  */
 typedef enum {
     CANSM_S_FULLCOM_NOP = 0,
-    CANSM_S_CC_START,
-    CANSM_S_CC_START_WAIT,
-    CANSM_S_CC_ONLINE
+    CANSM_FULLCOM_S_CC_START,
+    CANSM_FULLCOM_S_CC_START_WAIT,
+    CANSM_FULLCOM_S_CC_ONLINE
 } CanSm_FullComSubStateType;
 
 /**
@@ -139,10 +142,10 @@ typedef enum {
     CANSM_S_BUSOFF_CHECK = 0,
     CANSM_S_BUSOFF_RECOVERY_L1,
     CANSM_S_BUSOFF_RECOVERY_L2,
-    CANSM_S_RESTART_CC,
-    CANSM_S_RESTART_CC_WAIT,
-    CANSM_S_CC_STOPPED,
-    CANSM_S_CC_STOPPED_WAIT
+    CANSM_BOR_S_RESTART_CC,
+    CANSM_BOR_S_RESTART_CC_WAIT,
+    CANSM_BOR_S_CC_STOPPED,
+    CANSM_BOR_S_CC_STOPPED_WAIT
 } CanSm_SilentComBorSubStateType;
 
 /**

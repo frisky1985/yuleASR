@@ -1,135 +1,182 @@
+/*==================================================================================================
+* Project              : YuleTech AutoSAR BSW
+* Platform             : NXP i.MX8M Mini
+* Dependencies         : ...
+*
+* Copyright (c) 2026 Shanghai Yule Electronics Technology Co., Ltd.
+* All rights reserved.
+*
+* SPDX-License-Identifier: MIT
+*
+*================================================================================================*/
+
 /**
  * @file ComM.c
- * @brief Communication Manager Implementation
- * @copyright Copyright (c) 2025 yuleASR Project
- * @license MIT License
+ * @brief AUTOSAR Communication Manager Core Implementation
+ * @version 1.0.0
  * 
- * AUTOSAR Classic Platform - BSW Module
- * Implements the full ComM channel state machine including:
- * - 6-state channel state machine (AUTOSAR SWS_ComM)
- * - BusSM notification on mode change
- * - Wake-up handling (ComM_EvaluateWakeup)
- * - DCM diagnostic integration
- * - DET error detection (MISRA C:2012 compliant)
+ * Core implementation of Communication Manager including:
+ * - Communication mode management (NO_COM, SILENT_COM, FULL_COM)
+ * - Channel state machine (NoCom, SilentCom, FullCom, Pending)
+ * - User request management
+ * - Partial Network Cluster (PNC) support
+ * - Bus wake-up handling
+ * - DCM passive mode support
+ * - EcuM integration for wake-up
  */
 
 #include "ComM.h"
+#include "ComM_Cfg.h"
 #include "Det.h"
 
 /*=============================================================================
  * Internal Macros
  *===========================================================================*/
-#define COMM_INITIALIZED                    0x01U
-#define COMM_UNINITIALIZED                  0x00U
+#define COMM_INITIALIZED                    0x01
+#define COMM_UNINITIALIZED                  0x00
 
 #define COMM_IS_INITIALIZED()               (ComM_ModuleState == COMM_INITIALIZED)
-#define COMM_VALIDATE_USER(User)            ((User) < (ComM_UserHandleType)COMM_MAX_USERS)
-#define COMM_VALIDATE_CHANNEL(Channel)      ((Channel) < (ComM_ChannelHandleType)COMM_MAX_CHANNELS)
 
-/* Default timeout values (main function cycles) */
-#define COMM_DEFAULT_WAKEUP_TIMEOUT         10U    /* ~100ms at 10ms main cycle */
-#define COMM_DEFAULT_SILENT_TIMEOUT         100U   /* ~1000ms at 10ms main cycle */
-#define COMM_DEFAULT_READY_SLEEP_TIMEOUT    50U    /* ~500ms at 10ms main cycle */
+#define COMM_VALIDATE_USER(User)            ((User) < COMM_NUM_USERS)
+#define COMM_VALIDATE_CHANNEL(Channel)      ((Channel) < COMM_NUM_CHANNELS)
+#define COMM_VALIDATE_PNC(Pnc)              ((Pnc) < COMM_NUM_PNCS)
+
+#define COMM_SET_CHANNEL_STATE(ch, st)      (ComM_ChannelStates[(ch)].State = (st))
+#define COMM_GET_CHANNEL_STATE(ch)          (ComM_ChannelStates[(ch)].State)
 
 /*=============================================================================
  * Internal Variables
  *===========================================================================*/
-static ComM_StateType ComM_ModuleState = COMM_STATE_UNINIT;
+static uint8 ComM_ModuleState = COMM_UNINITIALIZED;
+static const ComM_ConfigType* ComM_ConfigPtr = NULL;
 
-/* Channel runtime states */
-static ComM_ChannelRuntimeType ComM_ChannelStates[COMM_MAX_CHANNELS];
+/* Channel States */
+static ComM_ChannelStateType ComM_ChannelStates[COMM_NUM_CHANNELS];
 
-/* User requests */
-static ComM_UserRequestType ComM_UserRequests[COMM_MAX_USERS];
+/* User Requests */
+static ComM_UserRequestType ComM_UserRequests[COMM_NUM_USERS];
+
+/* PNC States */
+#if (COMM_PNC_SUPPORT == STD_ON)
+static ComM_PncStateType ComM_PncStates[COMM_NUM_PNCS];
+#endif
+
+/* Inhibition Status */
+static boolean ComM_EcuLimitToNoCom = FALSE;
 
 /*=============================================================================
  * Internal Function Prototypes
  *===========================================================================*/
 static void ComM_ProcessChannelStateMachine(ComM_ChannelHandleType Channel);
+static void ComM_ProcessChannelTransitions(ComM_ChannelHandleType Channel);
+static void ComM_UpdateChannelMode(ComM_ChannelHandleType Channel);
 static ComM_ModeType ComM_GetHighestRequestedMode(ComM_ChannelHandleType Channel);
-static void ComM_NotifyBusSMOfModeChange(ComM_ChannelHandleType Channel, ComM_ModeType NewMode);
-static void ComM_UpdateChannelUserRequests(ComM_ChannelHandleType Channel);
-static void ComM_SetChannelState(ComM_ChannelHandleType Channel, ComM_ChannelStateType NewState);
+static void ComM_ExecuteChannelEntryAction(ComM_ChannelHandleType Channel);
+static void ComM_ExecuteChannelExitAction(ComM_ChannelHandleType Channel);
+
+#if (COMM_PNC_SUPPORT == STD_ON)
+static void ComM_ProcessPncStateMachine(ComM_PncHandleType Pnc);
+static void ComM_UpdatePncRequestStatus(ComM_PncHandleType Pnc);
+static void ComM_HandlePncChannelRequests(ComM_PncHandleType Pnc);
+#endif
+
+#if (COMM_DCM_SUPPORT == STD_ON)
+static void ComM_UpdateDcmChannelRequests(ComM_ChannelHandleType Channel);
+#endif
 
 /*=============================================================================
  * Core API Implementation
  *===========================================================================*/
-
-/**
- * @brief Initialize the ComM module.
- * @param ConfigPtr Pointer to configuration (unused in simplified config).
- */
 void ComM_Init(const ComM_ConfigType* ConfigPtr)
 {
     ComM_ChannelHandleType ch;
     ComM_UserHandleType user;
+    
+#if (COMM_PNC_SUPPORT == STD_ON)
+    ComM_PncHandleType pnc;
+#endif
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (ConfigPtr == NULL_PTR)
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_INIT_SID, COMM_E_PARAM_POINTER);
+    if (ConfigPtr == NULL_PTR) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_INIT_SID, COMM_E_PARAM_POINTER);
         return;
     }
 #endif
 
+    ComM_ConfigPtr = ConfigPtr;
+
     /* Initialize channel states */
-    for (ch = 0U; ch < (ComM_ChannelHandleType)COMM_MAX_CHANNELS; ch++)
-    {
-        ComM_ChannelStates[ch].State = COMM_NO_COM_NO_PENDING_REQUEST;
+    for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
+        ComM_ChannelStates[ch].State = COMM_CHANNEL_STATE_NOCOM;
         ComM_ChannelStates[ch].CurrentMode = COMM_NO_COMMUNICATION;
         ComM_ChannelStates[ch].RequestedMode = COMM_NO_COMMUNICATION;
         ComM_ChannelStates[ch].CommunicationAllowed = TRUE;
-        ComM_ChannelStates[ch].DiagnosticActive = FALSE;
+        ComM_ChannelStates[ch].WakeUpInhibition = FALSE;
+        ComM_ChannelStates[ch].LimitToNoCom = FALSE;
+        ComM_ChannelStates[ch].DcmActive = FALSE;
+        ComM_ChannelStates[ch].PassiveDiagnostic = FALSE;
         ComM_ChannelStates[ch].TimeoutCounter = 0U;
-        ComM_ChannelStates[ch].UserRequestMask = 0U;
+        ComM_ChannelStates[ch].WakeUpRetryCounter = 0U;
+        ComM_ChannelStates[ch].UserRequestCount = 0U;
     }
 
     /* Initialize user requests */
-    for (user = 0U; user < (ComM_UserHandleType)COMM_MAX_USERS; user++)
-    {
+    for (user = 0U; user < COMM_NUM_USERS; user++) {
         ComM_UserRequests[user].RequestedMode = COMM_NO_COMMUNICATION;
         ComM_UserRequests[user].Active = FALSE;
     }
 
+#if (COMM_PNC_SUPPORT == STD_ON)
+    /* Initialize PNC states */
+    for (pnc = 0U; pnc < COMM_NUM_PNCS; pnc++) {
+        ComM_PncStates[pnc].Mode = COMM_PNC_NO_COMMUNICATION;
+        ComM_PncStates[pnc].RequestActive = FALSE;
+        ComM_PncStates[pnc].TimeoutCounter = 0U;
+        ComM_PncStates[pnc].ActiveRequestCount = 0U;
+    }
+#endif
+
+    ComM_EcuLimitToNoCom = FALSE;
     ComM_ModuleState = COMM_INITIALIZED;
 }
 
-/**
- * @brief De-initialize the ComM module.
- */
 void ComM_DeInit(void)
 {
+    ComM_ChannelHandleType ch;
+
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_DEINIT_SID, COMM_E_NOT_INIT);
+    if (!COMM_IS_INITIALIZED()) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_DEINIT_SID, COMM_E_NOT_INIT);
         return;
     }
 #endif
 
+    /* Reset all channels to NoCom */
+    for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
+        ComM_ChannelStates[ch].State = COMM_CHANNEL_STATE_NOCOM;
+        ComM_ChannelStates[ch].CurrentMode = COMM_NO_COMMUNICATION;
+        ComM_ChannelStates[ch].RequestedMode = COMM_NO_COMMUNICATION;
+    }
+
+    ComM_ConfigPtr = NULL_PTR;
     ComM_ModuleState = COMM_UNINITIALIZED;
 }
 
-/**
- * @brief Get version information of the ComM module.
- * @param VersionInfo Pointer to version info structure.
- */
 void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (VersionInfo == NULL_PTR)
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETVERSIONINFO_SID, COMM_E_PARAM_POINTER);
+    if (VersionInfo == NULL_PTR) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETVERSIONINFO_SID, COMM_E_PARAM_POINTER);
         return;
     }
 #endif
 
 #if (COMM_VERSION_INFO_API == STD_ON)
-    VersionInfo->vendorID = 0x0001U;
-    VersionInfo->moduleID = (uint16)COMM_MODULE_ID;
-    VersionInfo->sw_major_version = (uint8)COMM_SW_MAJOR_VERSION;
-    VersionInfo->sw_minor_version = (uint8)COMM_SW_MINOR_VERSION;
-    VersionInfo->sw_patch_version = (uint8)COMM_SW_PATCH_VERSION;
+    VersionInfo->vendorID = 0x00U;
+    VersionInfo->moduleID = COMM_MODULE_ID;
+    VersionInfo->sw_major_version = COMM_SW_MAJOR_VERSION;
+    VersionInfo->sw_minor_version = COMM_SW_MINOR_VERSION;
+    VersionInfo->sw_patch_version = COMM_SW_PATCH_VERSION;
 #else
     (void)VersionInfo;
 #endif
@@ -138,147 +185,111 @@ void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 /*=============================================================================
  * Communication Mode Management
  *===========================================================================*/
-
-/**
- * @brief Request a communication mode for a user.
- * @param User User handle.
- * @param ComMode Requested communication mode.
- * @return E_OK on success, E_NOT_OK on error.
- */
 Std_ReturnType ComM_RequestComMode(ComM_UserHandleType User, ComM_ModeType ComMode)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_REQUESTCOMODE_SID, COMM_E_NOT_INIT);
+    if (!COMM_IS_INITIALIZED()) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_NOT_INIT);
         return E_NOT_OK;
     }
-    if (!COMM_VALIDATE_USER(User))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_REQUESTCOMODE_SID, COMM_E_WRONG_PARAMETERS);
+    
+    if (!COMM_VALIDATE_USER(User)) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_PARAM_USER);
         return E_NOT_OK;
     }
-    if (ComMode > COMM_FULL_COMMUNICATION)
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_REQUESTCOMODE_SID, COMM_E_WRONG_PARAMETERS);
+    
+    if ((ComMode != COMM_NO_COMMUNICATION) && 
+        (ComMode != COMM_SILENT_COMMUNICATION) && 
+        (ComMode != COMM_FULL_COMMUNICATION)) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_REQUESTCOMMODE_SID, COMM_E_WRONG_PARAMETERS);
         return E_NOT_OK;
     }
 #endif
 
-    /* Store the requested mode for this user */
     ComM_UserRequests[User].RequestedMode = ComMode;
     ComM_UserRequests[User].Active = (ComMode != COMM_NO_COMMUNICATION);
 
     return E_OK;
 }
 
-/**
- * @brief Get the maximum (highest) communication mode for a user.
- * @param User User handle.
- * @param ComModePtr Output pointer for the mode.
- * @return E_OK on success, E_NOT_OK on error.
- */
 Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETMAXCOMODE_SID, COMM_E_NOT_INIT);
+    if (!COMM_IS_INITIALIZED()) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_NOT_INIT);
         return E_NOT_OK;
     }
-    if (!COMM_VALIDATE_USER(User))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETMAXCOMODE_SID, COMM_E_WRONG_PARAMETERS);
+    
+    if (!COMM_VALIDATE_USER(User)) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_PARAM_USER);
         return E_NOT_OK;
     }
-    if (ComModePtr == NULL_PTR)
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETMAXCOMODE_SID, COMM_E_PARAM_POINTER);
+    
+    if (ComModePtr == NULL_PTR) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETMAXCOMMODE_SID, COMM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
 
     *ComModePtr = ComM_UserRequests[User].RequestedMode;
-
     return E_OK;
 }
 
-/**
- * @brief Get the requested communication mode for a user.
- * @param User User handle.
- * @param ComModePtr Output pointer for the mode.
- * @return E_OK on success, E_NOT_OK on error.
- */
 Std_ReturnType ComM_GetRequestedComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
 {
     return ComM_GetMaxComMode(User, ComModePtr);
 }
 
-/**
- * @brief Get the current communication mode for a user.
- * @param User User handle.
- * @param ComModePtr Output pointer for the mode.
- * @return E_OK on success, E_NOT_OK on error.
- */
 Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
 {
-    ComM_ModeType highestMode;
-    ComM_ChannelHandleType ch;
+    const ComM_UserConfigType* userConfig;
+    ComM_ModeType highestMode = COMM_NO_COMMUNICATION;
+    uint8 i;
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMODE_SID, COMM_E_NOT_INIT);
+    if (!COMM_IS_INITIALIZED()) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_NOT_INIT);
         return E_NOT_OK;
     }
-    if (!COMM_VALIDATE_USER(User))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMODE_SID, COMM_E_WRONG_PARAMETERS);
+    
+    if (!COMM_VALIDATE_USER(User)) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_PARAM_USER);
         return E_NOT_OK;
     }
-    if (ComModePtr == NULL_PTR)
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMODE_SID, COMM_E_PARAM_POINTER);
+    
+    if (ComModePtr == NULL_PTR) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_GETCURRENTCOMMODE_SID, COMM_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif
 
-    /* Return the highest current mode across all channels */
-    highestMode = COMM_NO_COMMUNICATION;
-
-    for (ch = 0U; ch < (ComM_ChannelHandleType)COMM_MAX_CHANNELS; ch++)
-    {
-        if (ComM_ChannelStates[ch].CurrentMode > highestMode)
-        {
-            highestMode = ComM_ChannelStates[ch].CurrentMode;
+    userConfig = &ComM_UserConfig[User];
+    
+    /* Find the highest mode among user's channels */
+    for (i = 0U; i < userConfig->NumChannels; i++) {
+        ComM_ChannelHandleType channel = userConfig->ChannelMap[i];
+        if (ComM_ChannelStates[channel].CurrentMode > highestMode) {
+            highestMode = ComM_ChannelStates[channel].CurrentMode;
         }
     }
 
     *ComModePtr = highestMode;
-
     return E_OK;
 }
 
 /*=============================================================================
  * Channel Management
  *===========================================================================*/
-
-/**
- * @brief Set the communication allowed flag for a channel.
- * @param Channel Channel handle.
- * @param Allowed TRUE if communication is allowed.
- */
 void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_NOT_INIT);
+    if (!COMM_IS_INITIALIZED()) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_NOT_INIT);
         return;
     }
-    if (!COMM_VALIDATE_CHANNEL(Channel))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_WRONG_PARAMETERS);
+    
+    if (!COMM_VALIDATE_CHANNEL(Channel)) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_COMMUNICATIONALLOWED_SID, COMM_E_PARAM_CHANNEL);
         return;
     }
 #endif
@@ -286,597 +297,595 @@ void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed)
     ComM_ChannelStates[Channel].CommunicationAllowed = Allowed;
 }
 
-/**
- * @brief Main function — processes the channel state machine for all channels.
- *        Called cyclically (e.g., every 10ms via ComM_Cfg.h period).
- */
 void ComM_MainFunction(void)
 {
     ComM_ChannelHandleType ch;
 
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
+    if (!COMM_IS_INITIALIZED()) {
+        Det_ReportError(COMM_MODULE_ID, 0U, COMM_MAINFUNCTION_SID, COMM_E_NOT_INIT);
         return;
     }
 #endif
 
-    /* Process each channel's state machine */
-    for (ch = 0U; ch < (ComM_ChannelHandleType)COMM_MAX_CHANNELS; ch++)
-    {
+    /* Process each channel state machine */
+    for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
         ComM_ProcessChannelStateMachine(ch);
     }
+
+#if (COMM_PNC_SUPPORT == STD_ON)
+    ComM_MainFunctionPnc();
+#endif
 }
 
 /*=============================================================================
- * Wake-up Handling
+ * PNC Management
  *===========================================================================*/
+#if (COMM_PNC_SUPPORT == STD_ON)
+void ComM_MainFunctionPnc(void)
+{
+    ComM_PncHandleType pnc;
 
-/**
- * @brief Evaluate wake-up on a channel.
- *        Called by EcuM or BusSM when a wake-up event occurs on a specific channel.
- *        This triggers the transition from pending to full communication.
- * @param Channel Channel handle.
- */
-void ComM_EvaluateWakeup(ComM_ChannelHandleType Channel)
+    for (pnc = 0U; pnc < COMM_NUM_PNCS; pnc++) {
+        ComM_ProcessPncStateMachine(pnc);
+    }
+}
+
+Std_ReturnType ComM_RequestPncMode(ComM_PncHandleType Pnc, ComM_PncModeType PncMode)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_EVALUATEWAKEUP_SID, COMM_E_NOT_INIT);
-        return;
+    if (!COMM_IS_INITIALIZED()) {
+        return E_NOT_OK;
     }
-    if (!COMM_VALIDATE_CHANNEL(Channel))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_EVALUATEWAKEUP_SID, COMM_E_WRONG_PARAMETERS);
+    
+    if (!COMM_VALIDATE_PNC(Pnc)) {
+        return E_NOT_OK;
+    }
+#endif
+
+    ComM_PncStates[Pnc].Mode = PncMode;
+    ComM_PncStates[Pnc].RequestActive = (PncMode == COMM_PNC_REQUESTED);
+    
+    return E_OK;
+}
+
+Std_ReturnType ComM_GetPncMode(ComM_PncHandleType Pnc, ComM_PncModeType* PncModePtr)
+{
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED() || (PncModePtr == NULL_PTR)) {
+        return E_NOT_OK;
+    }
+    
+    if (!COMM_VALIDATE_PNC(Pnc)) {
+        return E_NOT_OK;
+    }
+#endif
+
+    *PncModePtr = ComM_PncStates[Pnc].Mode;
+    return E_OK;
+}
+#endif /* COMM_PNC_SUPPORT */
+
+/*=============================================================================
+ * ECU State Manager Integration
+ *===========================================================================*/
+#if (COMM_ECUM_SUPPORT == STD_ON)
+void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType)
+{
+    ComM_ChannelHandleType ch;
+
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED()) {
         return;
     }
 #endif
 
-    /* If channel is in pending state and a request is active, complete the wake-up */
-    if (ComM_ChannelStates[Channel].State == COMM_NO_COM_PENDING_REQUEST)
-    {
-        if (ComM_ChannelStates[Channel].RequestedMode == COMM_FULL_COMMUNICATION)
-        {
-            ComM_SetChannelState(Channel, COMM_FULL_COM);
-        }
-        else if (ComM_ChannelStates[Channel].RequestedMode == COMM_SILENT_COMMUNICATION)
-        {
-            ComM_SetChannelState(Channel, COMM_SILENT_COM);
+    (void)WakeupType;
+
+    /* Handle wake-up for all channels with wake-up support */
+    for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
+        if (ComM_ConfigPtr->ChannelConfigs[ch].WakeUpSupport) {
+            if (!ComM_ChannelStates[ch].WakeUpInhibition) {
+                ComM_ChannelStates[ch].RequestedMode = COMM_FULL_COMMUNICATION;
+            }
         }
     }
-    else if (ComM_ChannelStates[Channel].State == COMM_NO_COM_NO_PENDING_REQUEST)
-    {
-        /* Spontaneous wake-up — set pending request and trigger evaluation */
-        if (ComM_ChannelStates[Channel].RequestedMode < COMM_FULL_COMMUNICATION)
-        {
+}
+
+void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel)
+{
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+        return;
+    }
+#endif
+
+    if (ComM_ConfigPtr->ChannelConfigs[Channel].WakeUpSupport) {
+        if (!ComM_ChannelStates[Channel].WakeUpInhibition) {
             ComM_ChannelStates[Channel].RequestedMode = COMM_FULL_COMMUNICATION;
         }
-
-        ComM_ChannelStates[Channel].TimeoutCounter = 0U;
-        ComM_SetChannelState(Channel, COMM_NO_COM_PENDING_REQUEST);
     }
 }
 
-/*=============================================================================
- * ECU Manager Interface
- *===========================================================================*/
-
-/**
- * @brief Wake-up indication from ECU Manager.
- * @return E_OK always.
- */
-Std_ReturnType ComM_EcuM_WakeUpIndication(void)
+void ComM_EcuM_RunRequestIndication(boolean Requested)
 {
-    /* Wake-up received from EcuM; evaluated per-channel in MainFunction */
-    return E_OK;
+    (void)Requested;
+    /* ECU Run request handling - can be used for power management */
 }
-
-/**
- * @brief RUN request indication from ECU Manager.
- * @return E_OK always.
- */
-Std_ReturnType ComM_EcuM_RunRequestIndication(void)
-{
-    /* ECU run request — keep current state; no specific action needed */
-    return E_OK;
-}
+#endif /* COMM_ECUM_SUPPORT */
 
 /*=============================================================================
  * Bus State Manager Interface
  *===========================================================================*/
-
-/**
- * @brief Mode indication from BusSM.
- *        Called by BusSM to inform ComM of the actual bus communication mode.
- * @param Channel Channel handle.
- * @param Mode Actual communication mode from the bus.
- */
 void ComM_BusSM_ModeIndication(ComM_ChannelHandleType Channel, ComM_ModeType Mode)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        return;
-    }
-    if (!COMM_VALIDATE_CHANNEL(Channel))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_BUSSM_MODEINDICATION_SID, COMM_E_WRONG_PARAMETERS);
-        return;
-    }
-    if (Mode > COMM_FULL_COMMUNICATION)
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_BUSSM_MODEINDICATION_SID, COMM_E_WRONG_PARAMETERS);
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
         return;
     }
 #endif
 
     ComM_ChannelStates[Channel].CurrentMode = Mode;
 
-    /* If bus indicates NoCom and we were in pending state, reflect it */
-    if ((Mode == COMM_NO_COMMUNICATION) &&
-        (ComM_ChannelStates[Channel].State == COMM_NO_COM_PENDING_REQUEST))
-    {
-        /* Bus is still sleeping; stay in pending */
+    /* Update state based on mode */
+    switch (Mode) {
+        case COMM_NO_COMMUNICATION:
+            COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_NOCOM);
+            break;
+        case COMM_SILENT_COMMUNICATION:
+            COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_SILENTCOM);
+            break;
+        case COMM_FULL_COMMUNICATION:
+            COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_FULLCOM);
+            break;
+        default:
+            /* Invalid mode - remain in current state */
+            break;
     }
+}
+
+void ComM_BusSM_BusSleepMode(ComM_ChannelHandleType Channel)
+{
+    ComM_BusSM_ModeIndication(Channel, COMM_NO_COMMUNICATION);
+}
+
+void ComM_BusSM_NetworkMode(ComM_ChannelHandleType Channel)
+{
+    ComM_BusSM_ModeIndication(Channel, COMM_FULL_COMMUNICATION);
+}
+
+void ComM_BusSM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
+{
+    ComM_BusSM_ModeIndication(Channel, COMM_SILENT_COMMUNICATION);
 }
 
 /*=============================================================================
- * DCM Interface
+ * DCM Integration
  *===========================================================================*/
-
-/**
- * @brief Activate diagnostic session on a channel.
- * @param Channel Channel handle.
- * @return E_OK on success, E_NOT_OK on error.
- */
+#if (COMM_DCM_SUPPORT == STD_ON)
 Std_ReturnType ComM_DCM_ActiveDiagnostic(ComM_ChannelHandleType Channel)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_DCM_ACTIVEDIAGNOSTIC_SID, COMM_E_NOT_INIT);
-        return E_NOT_OK;
-    }
-    if (!COMM_VALIDATE_CHANNEL(Channel))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_DCM_ACTIVEDIAGNOSTIC_SID, COMM_E_WRONG_PARAMETERS);
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
         return E_NOT_OK;
     }
 #endif
 
-    ComM_ChannelStates[Channel].DiagnosticActive = TRUE;
-
-    /* When diagnostic becomes active, ensure full communication is requested */
-    if (ComM_ChannelStates[Channel].RequestedMode < COMM_FULL_COMMUNICATION)
-    {
-        ComM_ChannelStates[Channel].RequestedMode = COMM_FULL_COMMUNICATION;
-    }
-
+    ComM_ChannelStates[Channel].DcmActive = TRUE;
+    ComM_ChannelStates[Channel].PassiveDiagnostic = FALSE;
+    
+    /* Request full communication for diagnostic */
+    ComM_ChannelStates[Channel].RequestedMode = COMM_FULL_COMMUNICATION;
+    
     return E_OK;
 }
 
-/**
- * @brief Deactivate diagnostic session on a channel.
- * @param Channel Channel handle.
- * @return E_OK on success, E_NOT_OK on error.
- */
 Std_ReturnType ComM_DCM_InactiveDiagnostic(ComM_ChannelHandleType Channel)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
-    if (!COMM_IS_INITIALIZED())
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_DCM_INACTIVEDIAGNOSTIC_SID, COMM_E_NOT_INIT);
-        return E_NOT_OK;
-    }
-    if (!COMM_VALIDATE_CHANNEL(Channel))
-    {
-        Det_ReportError((uint16)COMM_MODULE_ID, 0U, COMM_DCM_INACTIVEDIAGNOSTIC_SID, COMM_E_WRONG_PARAMETERS);
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
         return E_NOT_OK;
     }
 #endif
 
-    ComM_ChannelStates[Channel].DiagnosticActive = FALSE;
-
+    ComM_ChannelStates[Channel].DcmActive = FALSE;
+    ComM_ChannelStates[Channel].PassiveDiagnostic = FALSE;
+    
     return E_OK;
+}
+
+Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolean Active)
+{
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+        return E_NOT_OK;
+    }
+#endif
+
+    ComM_ChannelStates[Channel].PassiveDiagnostic = Active;
+    
+    if (Active) {
+        /* In passive mode, allow silent communication for response */
+        if (ComM_ChannelStates[Channel].RequestedMode < COMM_SILENT_COMMUNICATION) {
+            ComM_ChannelStates[Channel].RequestedMode = COMM_SILENT_COMMUNICATION;
+        }
+    }
+    
+    return E_OK;
+}
+#endif /* COMM_DCM_SUPPORT */
+
+/*=============================================================================
+ * ECNM Integration
+ *===========================================================================*/
+void ComM_ECNM_NetworkMode(ComM_ChannelHandleType Channel)
+{
+    ComM_BusSM_NetworkMode(Channel);
+}
+
+void ComM_ECNM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
+{
+    ComM_BusSM_PrepareBusSleepMode(Channel);
+}
+
+void ComM_ECNM_BusSleepMode(ComM_ChannelHandleType Channel)
+{
+    ComM_BusSM_BusSleepMode(Channel);
+}
+
+/*=============================================================================
+ * NVM Integration
+ *===========================================================================*/
+#if (COMM_NVM_STORAGE_ENABLED == STD_ON)
+void ComM_Nvm_StartUpError(void)
+{
+    /* Handle NVM startup errors - may inhibit certain features */
+}
+
+void ComM_Nvm_StoreInhibitionStatus(void)
+{
+    /* Store inhibition status to NVM */
+}
+#endif
+
+/*=============================================================================
+ * Diagnostic Support
+ *===========================================================================*/
+Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, ComM_InhibitionStatusType* StatusPtr)
+{
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED() || (StatusPtr == NULL_PTR) || !COMM_VALIDATE_CHANNEL(Channel)) {
+        return E_NOT_OK;
+    }
+#endif
+
+    *StatusPtr = COMM_INHIBITION_STATUS_NONE;
+    
+    if (ComM_ChannelStates[Channel].WakeUpInhibition) {
+        *StatusPtr |= COMM_INHIBITION_STATUS_WAKEUP;
+    }
+    
+    if (ComM_ChannelStates[Channel].LimitToNoCom || ComM_EcuLimitToNoCom) {
+        *StatusPtr |= COMM_INHIBITION_STATUS_LIMIT_TO_NO_COM;
+    }
+    
+    return E_OK;
+}
+
+void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status)
+{
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+        return;
+    }
+#endif
+
+    ComM_ChannelStates[Channel].LimitToNoCom = Status;
+    
+    if (Status) {
+        /* Release any full communication requests */
+        ComM_ChannelStates[Channel].RequestedMode = COMM_NO_COMMUNICATION;
+    }
+}
+
+void ComM_LimitECUToNoComMode(boolean Status)
+{
+    ComM_ChannelHandleType ch;
+
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED()) {
+        return;
+    }
+#endif
+
+    ComM_EcuLimitToNoCom = Status;
+    
+    if (Status) {
+        /* Limit all channels to NoCom */
+        for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
+            ComM_ChannelStates[ch].RequestedMode = COMM_NO_COMMUNICATION;
+        }
+    }
+}
+
+void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status)
+{
+#if (COMM_DEV_ERROR_DETECT == STD_ON)
+    if (!COMM_IS_INITIALIZED() || !COMM_VALIDATE_CHANNEL(Channel)) {
+        return;
+    }
+#endif
+
+    ComM_ChannelStates[Channel].WakeUpInhibition = Status;
 }
 
 /*=============================================================================
  * Internal Functions - Channel State Machine
  *===========================================================================*/
-
-/**
- * @brief Process the full 6-state channel state machine.
- * @param Channel Channel handle.
- * 
- * STATE MACHINE DIAGRAM:
- * 
- * NO_COM_NO_PENDING_REQUEST ──[request]──> NO_COM_PENDING_REQUEST ──[wakeup]──> FULL_COM
- *       ^                                                                           │
- *       │                                                                    [no request] + [no NM]
- *       │                                                                           │
- *       │                                                                           ▼
- *       │                                   SILENT_COM <──[timeout]── FULL_COM_READY_SLEEP
- *       │                                       │                                       │
- *       │                                       │                               [new request] ──┐
- *       │                              [no request + timeout]                                 │
- *       │                                       │                                             │
- *       └───────────────────────────────────────┘                                  FULL_COM_NETWORK_REQUESTED
- *                                                                                          │
- *                                                                                   [no request]
- *                                                                                          │
- *                                                                                          ▼
- *                                                                                  FULL_COM_READY_SLEEP
- */
 static void ComM_ProcessChannelStateMachine(ComM_ChannelHandleType Channel)
 {
     ComM_ChannelStateType currentState;
     ComM_ModeType requestedMode;
-
-    currentState = ComM_ChannelStates[Channel].State;
-
-    /* Update user request mask and compute highest requested mode */
-    ComM_UpdateChannelUserRequests(Channel);
+    
+    currentState = COMM_GET_CHANNEL_STATE(Channel);
     requestedMode = ComM_GetHighestRequestedMode(Channel);
-
-    /* Apply communication-allowed constraint */
-    if (!ComM_ChannelStates[Channel].CommunicationAllowed)
-    {
-        if (requestedMode > COMM_NO_COMMUNICATION)
-        {
+    
+    /* Apply ECU-wide limit to NoCom */
+    if (ComM_EcuLimitToNoCom || ComM_ChannelStates[Channel].LimitToNoCom) {
+        if (requestedMode > COMM_NO_COMMUNICATION) {
+            requestedMode = COMM_NO_COMMUNICATION;
+        }
+    }
+    
+    /* Apply communication allowed constraint */
+    if (!ComM_ChannelStates[Channel].CommunicationAllowed) {
+        if (requestedMode > COMM_NO_COMMUNICATION) {
             requestedMode = COMM_NO_COMMUNICATION;
         }
     }
 
-    /* Store the effective requested mode */
     ComM_ChannelStates[Channel].RequestedMode = requestedMode;
 
-    /*========================================================================
-     * State Machine Transitions
-     *======================================================================*/
-    switch (currentState)
-    {
-        /*------------------------------------------------------------------
-         * State: NO_COM_NO_PENDING_REQUEST
-         * No communication; no active requests from any user.
-         *----------------------------------------------------------------*/
-        case COMM_NO_COM_NO_PENDING_REQUEST:
-        {
-            if (requestedMode > COMM_NO_COMMUNICATION)
-            {
-                /* A request has come in — enter pending state to initiate wake-up */
-                ComM_ChannelStates[Channel].TimeoutCounter = COMM_DEFAULT_WAKEUP_TIMEOUT;
-                ComM_SetChannelState(Channel, COMM_NO_COM_PENDING_REQUEST);
+    /* State machine processing */
+    switch (currentState) {
+        case COMM_CHANNEL_STATE_NOCOM:
+            if (requestedMode == COMM_FULL_COMMUNICATION) {
+                COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_PENDING);
+                ComM_ChannelStates[Channel].TimeoutCounter = 
+                    ComM_ConfigPtr->ChannelConfigs[Channel].WakeUpDelay;
             }
             break;
-        }
-
-        /*------------------------------------------------------------------
-         * State: NO_COM_PENDING_REQUEST
-         * No communication; a request is pending (wake-up in progress).
-         * Waiting for bus wake-up or timeout.
-         *----------------------------------------------------------------*/
-        case COMM_NO_COM_PENDING_REQUEST:
-        {
-            if (requestedMode == COMM_NO_COMMUNICATION)
-            {
-                /* Request was withdrawn before wake-up completed */
-                ComM_ChannelStates[Channel].TimeoutCounter = 0U;
-                ComM_SetChannelState(Channel, COMM_NO_COM_NO_PENDING_REQUEST);
-
-            }
-            else if (ComM_ChannelStates[Channel].TimeoutCounter > 0U)
-            {
-                /* Decrement wake-up timeout */
+            
+        case COMM_CHANNEL_STATE_PENDING:
+            if (ComM_ChannelStates[Channel].TimeoutCounter > 0U) {
                 ComM_ChannelStates[Channel].TimeoutCounter--;
+            } else {
+                /* Wake-up complete */
+                ComM_ExecuteChannelEntryAction(Channel);
+                COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_FULLCOM);
             }
-            else
-            {
-                /* Wake-up timeout expired — transition based on requested mode */
-                if (requestedMode == COMM_FULL_COMMUNICATION)
-                {
-                    ComM_SetChannelState(Channel, COMM_FULL_COM);
-    
-                }
-                else if (requestedMode == COMM_SILENT_COMMUNICATION)
-                {
-                    ComM_SetChannelState(Channel, COMM_SILENT_COM);
-    
-                }
+            
+            if (requestedMode == COMM_NO_COMMUNICATION) {
+                COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_NOCOM);
             }
             break;
-        }
-
-        /*------------------------------------------------------------------
-         * State: FULL_COM
-         * Full communication is active (user data flowing).
-         *----------------------------------------------------------------*/
-        case COMM_FULL_COM:
-        {
-            if (requestedMode == COMM_NO_COMMUNICATION)
-            {
-                /* All requests withdrawn — enter ready sleep */
-                ComM_ChannelStates[Channel].TimeoutCounter = COMM_DEFAULT_READY_SLEEP_TIMEOUT;
-                ComM_SetChannelState(Channel, COMM_FULL_COM_READY_SLEEP);
-
-            }
-            else if (requestedMode == COMM_SILENT_COMMUNICATION)
-            {
-                /* Only silent mode requested — transition to silent */
-                ComM_ChannelStates[Channel].TimeoutCounter = COMM_DEFAULT_SILENT_TIMEOUT;
-                ComM_SetChannelState(Channel, COMM_SILENT_COM);
-
-            }
-            /* REMAIN in FULL_COM if full or network request is active */
-            break;
-        }
-
-        /*------------------------------------------------------------------
-         * State: FULL_COM_NETWORK_REQUESTED
-         * Full communication with NM network request active.
-         *----------------------------------------------------------------*/
-        case COMM_FULL_COM_NETWORK_REQUESTED:
-        {
-            if (requestedMode == COMM_NO_COMMUNICATION)
-            {
-                /* No active requests — begin sleep preparation */
-                ComM_ChannelStates[Channel].TimeoutCounter = COMM_DEFAULT_READY_SLEEP_TIMEOUT;
-                ComM_SetChannelState(Channel, COMM_FULL_COM_READY_SLEEP);
-
-            }
-            else
-            {
-                /* Still have requests — remain in full com */
-                /* FULL_COM_NETWORK_REQUESTED stays; if FULL_COM was requested
-                 * the channel already is effectively in full communication,
-                 * so no state change needed */
+            
+        case COMM_CHANNEL_STATE_FULLCOM:
+            if (requestedMode == COMM_NO_COMMUNICATION) {
+                COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_SILENTCOM);
+                ComM_ChannelStates[Channel].TimeoutCounter = 
+                    ComM_ConfigPtr->ChannelConfigs[Channel].SilentTimeout;
+            } else if (requestedMode == COMM_SILENT_COMMUNICATION) {
+                COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_SILENTCOM);
+                ComM_ChannelStates[Channel].TimeoutCounter = 
+                    ComM_ConfigPtr->ChannelConfigs[Channel].SilentTimeout;
             }
             break;
-        }
-
-        /*------------------------------------------------------------------
-         * State: FULL_COM_READY_SLEEP
-         * Full communication still possible, but no active requests.
-         * Waiting for timeout to enter silent com.
-         *----------------------------------------------------------------*/
-        case COMM_FULL_COM_READY_SLEEP:
-        {
-            if (requestedMode >= COMM_FULL_COMMUNICATION)
-            {
-                /* New request came in while waiting to sleep — return to full com */
-                if (requestedMode == COMM_FULL_COMMUNICATION)
-                {
-                    ComM_SetChannelState(Channel, COMM_FULL_COM);
-    
-                }
-            }
-            else if (ComM_ChannelStates[Channel].TimeoutCounter > 0U)
-            {
-                /* Decrement sleep timeout */
-                ComM_ChannelStates[Channel].TimeoutCounter--;
-            }
-            else
-            {
-                /* Timeout expired — transition to silent com */
-                ComM_ChannelStates[Channel].TimeoutCounter = COMM_DEFAULT_SILENT_TIMEOUT;
-                ComM_SetChannelState(Channel, COMM_SILENT_COM);
-
-            }
-            break;
-        }
-
-        /*------------------------------------------------------------------
-         * State: SILENT_COM
-         * Silent communication mode (NM traffic only, no user data).
-         *----------------------------------------------------------------*/
-        case COMM_SILENT_COM:
-        {
-            if (requestedMode == COMM_FULL_COMMUNICATION)
-            {
-                /* New full request — return to full com */
-                ComM_SetChannelState(Channel, COMM_FULL_COM);
-
-            }
-            else if (requestedMode == COMM_NO_COMMUNICATION)
-            {
-                /* No requests — wait for silent timeout then go to NoCom */
-                if (ComM_ChannelStates[Channel].TimeoutCounter > 0U)
-                {
+            
+        case COMM_CHANNEL_STATE_SILENTCOM:
+            if (requestedMode == COMM_FULL_COMMUNICATION) {
+                COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_FULLCOM);
+            } else if (requestedMode == COMM_NO_COMMUNICATION) {
+                if (ComM_ChannelStates[Channel].TimeoutCounter > 0U) {
                     ComM_ChannelStates[Channel].TimeoutCounter--;
-                }
-                else
-                {
-                    /* Silent timeout expired — enter NoCom */
-                    ComM_SetChannelState(Channel, COMM_NO_COM_NO_PENDING_REQUEST);
-    
+                } else {
+                    ComM_ExecuteChannelExitAction(Channel);
+                    COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_NOCOM);
                 }
             }
-            /* If requestedMode == SILENT, stay in SILENT_COM */
             break;
-        }
-
-        /*------------------------------------------------------------------
-         * Default: Invalid state — reset to safe state
-         *----------------------------------------------------------------*/
+            
         default:
-        {
-            ComM_SetChannelState(Channel, COMM_NO_COM_NO_PENDING_REQUEST);
+            /* Invalid state - reset to NoCom */
+            COMM_SET_CHANNEL_STATE(Channel, COMM_CHANNEL_STATE_NOCOM);
             break;
-        }
     }
-
-    /* Update the communication mode based on the new state */
-    {
-        ComM_ModeType newMode;
-
-        switch (ComM_ChannelStates[Channel].State)
-        {
-            case COMM_NO_COM_NO_PENDING_REQUEST:
-            case COMM_NO_COM_PENDING_REQUEST:
-                newMode = COMM_NO_COMMUNICATION;
-                break;
-
-            case COMM_SILENT_COM:
-                newMode = COMM_SILENT_COMMUNICATION;
-                break;
-
-            case COMM_FULL_COM:
-            case COMM_FULL_COM_NETWORK_REQUESTED:
-            case COMM_FULL_COM_READY_SLEEP:
-                newMode = COMM_FULL_COMMUNICATION;
-                break;
-
-            default:
-                newMode = COMM_NO_COMMUNICATION;
-                break;
-        }
-
-        if (ComM_ChannelStates[Channel].CurrentMode != newMode)
-        {
-            ComM_ChannelStates[Channel].CurrentMode = newMode;
-
-            /* Notify BusSM of the mode change */
-            ComM_NotifyBusSMOfModeChange(Channel, newMode);
-        }
-    }
+    
+    ComM_UpdateChannelMode(Channel);
 }
 
-/**
- * @brief Update the user request tracking for a channel.
- *        Collects all user requests that map to this channel into the bitmask.
- * @param Channel Channel handle.
- */
-static void ComM_UpdateChannelUserRequests(ComM_ChannelHandleType Channel)
+static void ComM_ProcessChannelTransitions(ComM_ChannelHandleType Channel)
 {
-    ComM_UserHandleType user;
-    uint32 mask;
-
-    mask = 0U;
-
-    for (user = 0U; user < (ComM_UserHandleType)COMM_MAX_USERS; user++)
-    {
-        if (ComM_UserRequests[user].Active)
-        {
-            /* For simplicity, all users map to all channels.
-             * In a full implementation, this would use a user-to-channel mapping table. */
-            mask |= (1UL << (uint32)user);
-        }
-    }
-
-    ComM_ChannelStates[Channel].UserRequestMask = mask;
+    (void)Channel;
+    /* Handle specific transitions if needed */
 }
 
-/**
- * @brief Compute the highest requested mode for a channel.
- *        Checks all user requests and DCM diagnostic state.
- * @param Channel Channel handle.
- * @return Highest requested communication mode.
- */
+static void ComM_UpdateChannelMode(ComM_ChannelHandleType Channel)
+{
+    ComM_ChannelStateType state = COMM_GET_CHANNEL_STATE(Channel);
+    ComM_ModeType newMode;
+    
+    switch (state) {
+        case COMM_CHANNEL_STATE_NOCOM:
+        case COMM_CHANNEL_STATE_PENDING:
+            newMode = COMM_NO_COMMUNICATION;
+            break;
+        case COMM_CHANNEL_STATE_SILENTCOM:
+            newMode = COMM_SILENT_COMMUNICATION;
+            break;
+        case COMM_CHANNEL_STATE_FULLCOM:
+            newMode = COMM_FULL_COMMUNICATION;
+            break;
+        default:
+            newMode = COMM_NO_COMMUNICATION;
+            break;
+    }
+    
+    if (ComM_ChannelStates[Channel].CurrentMode != newMode) {
+        ComM_ChannelStates[Channel].CurrentMode = newMode;
+        /* Notify BusSM of mode change */
+        /* BusSM_ModeIndication(Channel, newMode); */
+    }
+}
+
 static ComM_ModeType ComM_GetHighestRequestedMode(ComM_ChannelHandleType Channel)
 {
-    ComM_ModeType highestMode;
+    ComM_ModeType highestMode = COMM_NO_COMMUNICATION;
     ComM_UserHandleType user;
-
-    highestMode = COMM_NO_COMMUNICATION;
-
-    /* Scan all user requests */
-    for (user = 0U; user < (ComM_UserHandleType)COMM_MAX_USERS; user++)
-    {
-        if (ComM_UserRequests[user].Active)
-        {
-            if (ComM_UserRequests[user].RequestedMode > highestMode)
-            {
-                highestMode = ComM_UserRequests[user].RequestedMode;
+    
+    /* Check all user requests for this channel */
+    for (user = 0U; user < COMM_NUM_USERS; user++) {
+        const ComM_UserConfigType* userConfig = &ComM_UserConfig[user];
+        uint8 i;
+        
+        for (i = 0U; i < userConfig->NumChannels; i++) {
+            if (userConfig->ChannelMap[i] == Channel) {
+                if (ComM_UserRequests[user].RequestedMode > highestMode) {
+                    highestMode = ComM_UserRequests[user].RequestedMode;
+                }
+                break;
             }
         }
     }
-
-    /* Consider DCM diagnostic request — overrides to full communication */
-    if (ComM_ChannelStates[Channel].DiagnosticActive)
-    {
-        if (highestMode < COMM_FULL_COMMUNICATION)
-        {
+    
+#if (COMM_DCM_SUPPORT == STD_ON)
+    /* Consider DCM requests */
+    if (ComM_ChannelStates[Channel].DcmActive) {
+        if (highestMode < COMM_FULL_COMMUNICATION) {
             highestMode = COMM_FULL_COMMUNICATION;
         }
     }
-
+    
+    if (ComM_ChannelStates[Channel].PassiveDiagnostic) {
+        if (highestMode < COMM_SILENT_COMMUNICATION) {
+            highestMode = COMM_SILENT_COMMUNICATION;
+        }
+    }
+#endif
+    
     return highestMode;
 }
 
-/**
- * @brief Set the channel state and perform exit/entry actions.
- * @param Channel Channel handle.
- * @param NewState New channel state.
- */
-static void ComM_SetChannelState(ComM_ChannelHandleType Channel, ComM_ChannelStateType NewState)
+static void ComM_ExecuteChannelEntryAction(ComM_ChannelHandleType Channel)
 {
-    ComM_ChannelStateType oldState;
+    /* Execute entry actions for FullCom state */
+    (void)Channel;
+    /* Could trigger NM message, enable transceiver, etc. */
+}
 
-    oldState = ComM_ChannelStates[Channel].State;
+static void ComM_ExecuteChannelExitAction(ComM_ChannelHandleType Channel)
+{
+    /* Execute exit actions for leaving FullCom */
+    (void)Channel;
+    /* Could disable transceiver, send NM sleep indication, etc. */
+}
 
-    if (oldState != NewState)
-    {
-        /* Perform state exit actions */
-        switch (oldState)
-        {
-            case COMM_FULL_COM:
-            case COMM_FULL_COM_NETWORK_REQUESTED:
-            {
-                /* Exit full communication — could disable transceiver, etc. */
-                break;
+/*=============================================================================
+ * Internal Functions - PNC State Machine
+ *===========================================================================*/
+#if (COMM_PNC_SUPPORT == STD_ON)
+static void ComM_ProcessPncStateMachine(ComM_PncHandleType Pnc)
+{
+    const ComM_PncConfigType* pncConfig = &ComM_PncConfig[Pnc];
+    ComM_PncStateType* pncState = &ComM_PncStates[Pnc];
+    
+    ComM_UpdatePncRequestStatus(Pnc);
+    
+    switch (pncState->Mode) {
+        case COMM_PNC_NO_COMMUNICATION:
+            if (pncState->RequestActive) {
+                pncState->Mode = COMM_PNC_REQUESTED;
+                ComM_HandlePncChannelRequests(Pnc);
             }
-            default:
-            {
-                /* No specific exit action */
-                break;
+            break;
+            
+        case COMM_PNC_REQUESTED:
+            if (!pncState->RequestActive) {
+                pncState->Mode = COMM_PNC_READY_SLEEP;
             }
-        }
-
-        /* Perform state entry actions */
-        switch (NewState)
-        {
-            case COMM_FULL_COM:
-            case COMM_FULL_COM_NETWORK_REQUESTED:
-            {
-                /* Enter full communication — could enable transceiver, etc. */
-                break;
+            break;
+            
+        case COMM_PNC_READY_SLEEP:
+            if (pncState->RequestActive) {
+                pncState->Mode = COMM_PNC_REQUESTED;
+            } else {
+                /* Wait for all requests to complete */
+                if (pncState->ActiveRequestCount == 0U) {
+                    pncState->Mode = COMM_PNC_PREPARE_SLEEP;
+                    pncState->TimeoutCounter = pncConfig->PrepareSleepTimeout;
+                }
             }
-            case COMM_NO_COM_NO_PENDING_REQUEST:
-            {
-                /* Enter NoCom — bus is sleeping */
-                break;
+            break;
+            
+        case COMM_PNC_PREPARE_SLEEP:
+            if (pncState->RequestActive) {
+                pncState->Mode = COMM_PNC_REQUESTED;
+            } else {
+                if (pncState->TimeoutCounter > 0U) {
+                    pncState->TimeoutCounter--;
+                } else {
+                    pncState->Mode = COMM_PNC_NO_COMMUNICATION;
+                }
             }
-            default:
-            {
-                /* No specific entry action */
-                break;
-            }
-        }
-
-        ComM_ChannelStates[Channel].State = NewState;
+            break;
+            
+        default:
+            pncState->Mode = COMM_PNC_NO_COMMUNICATION;
+            break;
     }
 }
 
-/**
- * @brief Notify BusSM of a communication mode change on a channel.
- *        This informs the Bus State Manager that the requested mode has changed,
- *        allowing it to adjust the bus state accordingly.
- * @param Channel Channel handle.
- * @param NewMode The new communication mode.
- */
-static void ComM_NotifyBusSMOfModeChange(ComM_ChannelHandleType Channel, ComM_ModeType NewMode)
+static void ComM_UpdatePncRequestStatus(ComM_PncHandleType Pnc)
 {
-    (void)Channel;
-    (void)NewMode;
-
-    /* BusSM notification hook.
-     *
-     * In a production AUTOSAR stack, this would call BswM_ComM_CurrentMode()
-     * or directly notify BusSM via a mode request port.
-     *
-     * Example:
-     *   BswM_ComM_CurrentMode((uint8)Channel, (uint8)NewMode);
-     *
-     * This implementation provides the hook for integration.
-     */
+    ComM_UserHandleType user;
+    boolean requestActive = FALSE;
+    
+    /* Check if any user has requested this PNC */
+    for (user = 0U; user < COMM_NUM_USERS; user++) {
+        const ComM_UserConfigType* userConfig = &ComM_UserConfig[user];
+        uint8 i;
+        
+        for (i = 0U; i < userConfig->NumPncs; i++) {
+            if (userConfig->PncMap[i] == Pnc) {
+                if (ComM_UserRequests[user].Active) {
+                    requestActive = TRUE;
+                    break;
+                }
+            }
+        }
+        
+        if (requestActive) {
+            break;
+        }
+    }
+    
+    ComM_PncStates[Pnc].RequestActive = requestActive;
 }
+
+static void ComM_HandlePncChannelRequests(ComM_PncHandleType Pnc)
+{
+    const ComM_PncConfigType* pncConfig = &ComM_PncConfig[Pnc];
+    uint8 i;
+    
+    /* Request appropriate modes on associated channels */
+    for (i = 0U; i < pncConfig->NumChannels; i++) {
+        ComM_ChannelHandleType channel = pncConfig->ChannelMap[i].ChannelId;
+        
+        if (pncConfig->ChannelMap[i].IsRequester) {
+            if (ComM_ChannelStates[channel].RequestedMode < COMM_FULL_COMMUNICATION) {
+                ComM_ChannelStates[channel].RequestedMode = COMM_FULL_COMMUNICATION;
+            }
+        }
+    }
+}
+#endif /* COMM_PNC_SUPPORT */

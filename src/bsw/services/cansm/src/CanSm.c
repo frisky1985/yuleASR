@@ -325,7 +325,7 @@ static Std_ReturnType CanSm_TransitionToNoCom(uint8 NetworkIndex)
     
     if (result == E_OK) {
         netState->BsmState = CANSM_BSM_S_NOCOM;
-        netState->SubState = CANSM_S_CC_SLEEP_WAIT;
+        netState->SubState = CANSM_NOCOM_S_CC_SLEEP_WAIT;
         netState->CurrentComMMode = COMM_NO_COMMUNICATION;
     }
     
@@ -406,12 +406,12 @@ static Std_ReturnType CanSm_ProcessNoComState(uint8 NetworkIndex)
                 /* Need to go through controller start sequence */
                 result = CanSm_RequestControllerMode(NetworkIndex, CANIF_CS_STARTED);
                 if (result == E_OK) {
-                    netState->SubState = CANSM_S_CC_START_WAIT;
+                    netState->SubState = CANSM_FULLCOM_S_CC_START_WAIT;
                 }
             }
             break;
             
-        case CANSM_S_CC_START_WAIT:
+        case CANSM_FULLCOM_S_CC_START_WAIT:
             /* Waiting for controller mode confirmation */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
                 /* Timeout - retry or error */
@@ -423,7 +423,7 @@ static Std_ReturnType CanSm_ProcessNoComState(uint8 NetworkIndex)
             }
             break;
             
-        case CANSM_S_CC_SLEEP_WAIT:
+        case CANSM_NOCOM_S_CC_SLEEP_WAIT:
             /* Waiting for sleep mode confirmation */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
                 /* Timeout - stay in NOCOM */
@@ -462,7 +462,7 @@ static Std_ReturnType CanSm_ProcessSilentComState(uint8 NetworkIndex)
             /* Stay in SILENTCOM otherwise (listen mode) */
             break;
             
-        case CANSM_S_CC_ONLINE:
+        case CANSM_SILENTCOM_S_CC_ONLINE:
             /* Handle any ongoing transitions */
             break;
             
@@ -497,7 +497,7 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
             /* Stay in FULLCOM otherwise */
             break;
             
-        case CANSM_S_CC_START_WAIT:
+        case CANSM_FULLCOM_S_CC_START_WAIT:
             /* Waiting for controller mode confirmation */
             if (CanSm_IsTimerExpired(NetworkIndex)) {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)
