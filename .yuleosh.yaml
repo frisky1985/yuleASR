@@ -1,0 +1,30 @@
+# yuleOSH Project Configuration — yuleASR BSW
+# Auto-detected by yuleOSH on startup
+project:
+  name: yuleASR-BSW
+  type: autosar        # yuleOSH selects autosar template based on this
+  language: c
+  target: s32k312
+
+pipeline:
+  template: autosar
+  ci_layers:
+    L1: [spec-parse, plan-lint, unit-test, misra-check]
+    L2: [cross-compile, qemu-run, static-analysis, c-coverage-gate]
+    L3: [system-verification, compliance-report, evidence-pack]
+
+cross_compile:
+  target: arm-cortex-m7
+  toolchain_prefix: arm-none-eabi-
+  arch_flags: [-mcpu=cortex-m7, -mthumb, -mfpu=fpv5-sp-d16, -mfloat-abi=hard]
+  linker_script: src/platform/s32k312/linker/s32k312.ld
+
+misra:
+  ruleset: c2023
+  fail_on_error: true
+  exclude_paths: [tests/**, third_party/**]
+
+coverage:
+  c_fail_under: 70
+  threshold_line: 20.0
+  threshold_branch: 10.0
