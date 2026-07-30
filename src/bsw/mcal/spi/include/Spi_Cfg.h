@@ -25,7 +25,7 @@
 
 /* 版本 */
 #define SPI_VENDOR_ID_CFG           0x01u
-#define SPI_MODULE_ID_CFG           0x21u
+#define SPI_MODULE_ID_CFG           0x7Au  /* AUTOSAR standard: 122 */
 #define SPI_SW_MAJOR_VERSION_CFG    1u
 #define SPI_SW_MINOR_VERSION_CFG    0u
 #define SPI_SW_PATCH_VERSION_CFG    0u

@@ -31,7 +31,7 @@
 #define SPI_SW_MAJOR_VERSION           1U
 #define SPI_SW_MINOR_VERSION           0U
 #define SPI_SW_PATCH_VERSION           0U
-#define SPI_MODULE_ID               0x21u
+#define SPI_MODULE_ID               0x7Au  /* AUTOSAR standard: 122 */
 #define SPI_INSTANCE_ID             0x00u
 
 /* 错误码 */

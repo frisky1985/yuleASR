@@ -34,7 +34,7 @@
 #define PORT_SW_MAJOR_VERSION           1U
 #define PORT_SW_MINOR_VERSION           0U
 #define PORT_SW_PATCH_VERSION           0U
-#define PORT_MODULE_ID                          0x0074U
+#define PORT_MODULE_ID                          0x002AU  /* AUTOSAR standard: 42 */
 
 /** @brief Port Instance ID */
 #define PORT_INSTANCE_ID                        0x00U

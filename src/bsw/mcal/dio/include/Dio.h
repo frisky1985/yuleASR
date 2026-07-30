@@ -33,7 +33,7 @@
 #define DIO_SW_MAJOR_VERSION           1U
 #define DIO_SW_MINOR_VERSION           0U
 #define DIO_SW_PATCH_VERSION           0U
-#define DIO_MODULE_ID                           0x0020U
+#define DIO_MODULE_ID                           0x0029U  /* AUTOSAR standard */
 
 /** @brief DIO Instance ID */
 #define DIO_INSTANCE_ID                         0x00U

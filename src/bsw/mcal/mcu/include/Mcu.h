@@ -33,7 +33,7 @@
 #define MCU_SW_MAJOR_VERSION           1U
 #define MCU_SW_MINOR_VERSION           0U
 #define MCU_SW_PATCH_VERSION           0U
-#define MCU_MODULE_ID                           0x0064U
+#define MCU_MODULE_ID                           0x002BU  /* AUTOSAR standard: 43 */
 
 /** @brief MCU 实例 ID */
 #define MCU_INSTANCE_ID                         0x00U

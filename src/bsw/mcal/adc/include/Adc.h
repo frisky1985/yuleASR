@@ -23,7 +23,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define ADC_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
-#define ADC_MODULE_ID                   (0x0BU) /* ADC Driver Module ID */
+#define ADC_MODULE_ID                   (0x2CU) /* ADC Driver Module ID (AUTOSAR) */
 #define ADC_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define ADC_AR_RELEASE_MINOR_VERSION    (0x04U)
 #define ADC_AR_RELEASE_REVISION_VERSION (0x00U)
