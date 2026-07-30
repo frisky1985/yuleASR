@@ -86,11 +86,25 @@ typedef enum {
 /**
  * @brief LinSM Schedule Status type
  */
+#undef LINSM_SCHEDULE_NULL
+#undef LINSM_SCHEDULE_REQUESTED
+#undef LINSM_SCHEDULE_RUNNING
 typedef enum {
     LINSM_SCHEDULE_NULL = 0,    /*!< No schedule requested */
     LINSM_SCHEDULE_REQUESTED,   /*!< Schedule change requested */
     LINSM_SCHEDULE_RUNNING      /*!< Schedule change running */
 } LinSM_ScheduleStatusType;
+
+/* Restore Cfg defines after enum */
+#ifndef LINSM_SCHEDULE_NULL
+#define LINSM_SCHEDULE_NULL                 (0U)
+#endif
+#ifndef LINSM_SCHEDULE_REQUESTED
+#define LINSM_SCHEDULE_REQUESTED            (1U)
+#endif
+#ifndef LINSM_SCHEDULE_RUNNING
+#define LINSM_SCHEDULE_RUNNING              (2U)
+#endif
 
 /**
  * @brief LinSM State type

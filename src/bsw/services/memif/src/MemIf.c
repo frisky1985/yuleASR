@@ -229,6 +229,10 @@ void MemIf_DeInit(void)
  * @return None
  */
 #if (MEMIF_VERSION_INFO_API == STD_ON)
+/* The header defines this as a function-like macro; undefine for the actual function */
+#ifdef MemIf_GetVersionInfo
+#undef MemIf_GetVersionInfo
+#endif
 void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (MEMIF_DEV_ERROR_DETECT == STD_ON)

@@ -39,7 +39,7 @@
     #error "KeyM.c: AR major version mismatch"
 #endif
 
-#if defined(KEYM_AR_RELEASE_MINOR_VERSION) && (KEYM_AR_RELEASE_MINOR_VERSION != 4u)
+#if defined(KEYM_AR_RELEASE_MINOR_VERSION) && (KEYM_AR_RELEASE_MINOR_VERSION != 7u)
     #error "KeyM.c: AR minor version mismatch"
 #endif
 

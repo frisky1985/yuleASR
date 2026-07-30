@@ -32,6 +32,9 @@
 *                                    FUNCTION CONFIGURATION
 ==================================================================================================*/
 #define FIM_NUM_FUNCTIONS                       (32U)
+#ifndef FIM_MAX_FUNCTIONS
+#define FIM_MAX_FUNCTIONS                       FIM_NUM_FUNCTIONS
+#endif
 #define FIM_NUM_EVENTS_PER_FUNCTION             (8U)
 #define FIM_NUM_SUMMARY_EVENTS                  (16U)
 

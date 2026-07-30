@@ -68,9 +68,10 @@
 /*==================================================================================================
 *                                    MODE DEFINITIONS
 ==================================================================================================*/
-#define LINSM_MODE_FULL_COM                 (LINSM_FULL_COM)
-#define LINSM_MODE_NO_COM                   (LINSM_NO_COM)
-#define LINSM_MODE_SILENT_COM               (LINSM_SILENT_COM)
+/* Mode aliases — values must match LinSM_ModeType enum */
+#define LINSM_MODE_FULL_COM                 (1U)
+#define LINSM_MODE_NO_COM                   (0U)
+#define LINSM_MODE_SILENT_COM               (2U)
 
 /*==================================================================================================
 *                                    TIMEOUT COUNTERS

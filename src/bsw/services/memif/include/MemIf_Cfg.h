@@ -252,3 +252,32 @@
 #endif
 
 #endif /* MEMIF_CFG_H */
+
+/* Default device configuration for native compilation */
+#ifndef MEMIF_TOTAL_NUM_DEVICES
+#define MEMIF_TOTAL_NUM_DEVICES             (1U)
+#endif
+
+#ifndef MEMIF_INSTANCE_ID
+#define MEMIF_INSTANCE_ID                   (0U)
+#endif
+
+#ifndef MEMIF_SID_INIT
+#define MEMIF_SID_INIT                      (0x01U)
+#endif
+
+#ifndef MEMIF_PATH_FEE
+#define MEMIF_PATH_FEE                      (0U)
+#endif
+
+#ifndef MEMIF_PATH_EA
+#define MEMIF_PATH_EA                       (1U)
+#endif
+
+#ifndef MEMIF_BUSY_INTERNAL
+#define MEMIF_BUSY_INTERNAL                 (0x02U)
+#endif
+
+#ifndef MEMIF_UNINIT
+#define MEMIF_UNINIT                        (0x00U)
+#endif

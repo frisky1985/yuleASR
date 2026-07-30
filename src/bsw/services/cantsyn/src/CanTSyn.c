@@ -29,6 +29,7 @@
 #include "CanTSyn_Cfg.h"
 #include "CanIf.h"
 #include "StbM.h"
+#include "Det.h"
 #include "Os.h"
 
 /*******************************************************************************

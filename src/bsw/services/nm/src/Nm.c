@@ -24,7 +24,7 @@
 #if defined(NM_AR_RELEASE_MAJOR_VERSION) && (NM_AR_RELEASE_MAJOR_VERSION != 4u)
 #error "Nm: AR major mismatch"
 #endif
-#if defined(NM_AR_RELEASE_MINOR_VERSION) && (NM_AR_RELEASE_MINOR_VERSION != 4u)
+#if defined(NM_AR_RELEASE_MINOR_VERSION) && (NM_AR_RELEASE_MINOR_VERSION != 0u)
 #error "Nm: AR minor mismatch"
 #endif
 
@@ -414,6 +414,11 @@ void Nm_MainFunction(void)
         }
     }
 }
+
+/* Forward declarations for weak application callbacks */
+void Appl_Nm_StateChangeNotification(Nm_ChannelHandleType ch, Nm_StateType prev, Nm_StateType curr);
+void Appl_Nm_RemoteSleepIndication(Nm_ChannelHandleType ch);
+void Appl_Nm_RemoteSleepCancellation(Nm_ChannelHandleType ch);
 
 /* Callback Functions */
 void Nm_StateChangeNotification(Nm_ChannelHandleType nmNetworkHandle, Nm_StateType nmPreviousState, Nm_StateType nmCurrentState)

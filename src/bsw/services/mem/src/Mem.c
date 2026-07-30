@@ -28,6 +28,7 @@
 #include "Mem.h"
 #include "Det.h"
 #include "SchM_Mem.h"
+#include <stddef.h>
 
 /*==================================================================================================
  *                                    VERSION CHECK
@@ -36,7 +37,7 @@
     #error "Mem.c: AR major version mismatch"
 #endif
 
-#if defined(MEM_AR_RELEASE_MINOR_VERSION) && (MEM_AR_RELEASE_MINOR_VERSION != 4u)
+#if defined(MEM_AR_RELEASE_MINOR_VERSION) && (MEM_AR_RELEASE_MINOR_VERSION != 7u)
     #error "Mem.c: AR minor version mismatch"
 #endif
 

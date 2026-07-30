@@ -14,10 +14,16 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/dio/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/can/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/lin/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/fee/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ethif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/canif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/linif/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ea/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/tcpip/include
     ${CMAKE_SOURCE_DIR}/config/input/services
+    ${CMAKE_SOURCE_DIR}/include/autosar
+    ${CMAKE_SOURCE_DIR}/include/autosar/classic/com
+    ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
 )
 
 # Collect all service include directories for cross-module dependencies

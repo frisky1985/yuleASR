@@ -84,6 +84,9 @@ static void J1939Tp_HandleEomAck(const uint8* Data, uint8 ChannelIdx);
 static void J1939Tp_HandleBam(const uint8* Data, uint8 ChannelIdx);
 static void J1939Tp_HandleAbort(const uint8* Data, uint8 ChannelIdx);
 
+/* PduR callback forward declaration (defined in this file) */
+void PduR_J1939TpRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+
 /*==================================================================================================
  *                                   API Functions
  *================================================================================================*/

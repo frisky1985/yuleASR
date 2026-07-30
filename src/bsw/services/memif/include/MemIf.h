@@ -73,11 +73,23 @@ typedef enum {
 } MemIf_JobResultType;
 
 /** @brief MemIf status type */
+#undef MEMIF_UNINIT
+#undef MEMIF_IDLE
+#undef MEMIF_BUSY
 typedef enum {
     MEMIF_UNINIT = 0,           /**< Module not initialized */
     MEMIF_IDLE,                 /**< Module initialized and idle */
     MEMIF_BUSY                  /**< Module busy with operation */
 } MemIf_StatusType;
+#ifndef MEMIF_UNINIT
+#define MEMIF_UNINIT                        (0x00U)
+#endif
+#ifndef MEMIF_IDLE
+#define MEMIF_IDLE                          (0x01U)
+#endif
+#ifndef MEMIF_BUSY
+#define MEMIF_BUSY                          (0x02U)
+#endif
 
 /** @brief Device abstraction structure */
 typedef struct {
@@ -90,6 +102,116 @@ typedef struct {
     MemIf_StatusType (*GetStatus)(void);
     MemIf_JobResultType (*GetJobResult)(void);
 } MemIf_DeviceAbstractionType;
+
+/** @brief MemIf device state type (internal tracking) */
+typedef struct {
+    MemIf_StatusType status;
+    MemIf_JobResultType jobResult;
+    boolean isInitialized;
+} MemIf_DeviceStateType;
+
+/** @brief MemIf device configuration type */
+typedef struct {
+    MemIf_DeviceIndexType DeviceId;
+    uint8 DeviceType;      /* 0=FEE, 1=EA */
+    uint32 BlockSize;
+    uint32 NumberOfBlocks;
+    uint32 numBlocks;
+} MemIf_DeviceConfigType;
+
+/** @brief MemIf global configuration type */
+typedef struct {
+    const MemIf_DeviceConfigType* Devices;
+    uint8 NumDevices;
+} MemIf_ConfigType;
+
+/*******************************************************************************
+ *                         Default Configuration
+ ******************************************************************************/
+
+#ifndef MEMIF_NUMBER_OF_DEVICES
+#define MEMIF_NUMBER_OF_DEVICES             (1U)
+#endif
+
+#ifndef MEMIF_TOTAL_NUM_DEVICES
+#define MEMIF_TOTAL_NUM_DEVICES             (1U)
+#endif
+
+#ifndef MEMIF_INSTANCE_ID
+#define MEMIF_INSTANCE_ID                   (0U)
+#endif
+
+#ifndef MEMIF_SID_INIT
+#define MEMIF_SID_INIT                      (0x01U)
+#endif
+
+#ifndef MEMIF_UNINIT
+#define MEMIF_UNINIT                        (0x00U)
+#endif
+
+#ifndef MEMIF_BUSY_INTERNAL
+#define MEMIF_BUSY_INTERNAL                 (0x02U)
+#endif
+
+#ifndef MEMIF_E_UNINIT
+#define MEMIF_E_UNINIT                      (0x03U)
+#endif
+
+#ifndef MEMIF_SID_READ
+#define MEMIF_SID_READ                      (0x03U)
+#endif
+
+#ifndef MEMIF_SID_WRITE
+#define MEMIF_SID_WRITE                     (0x04U)
+#endif
+
+#ifndef MEMIF_MODE_UNINIT
+#define MEMIF_MODE_UNINIT                   (0x00U)
+#endif
+
+#ifndef MEMIF_E_PARAM_DEVICE_INDEX
+#define MEMIF_E_PARAM_DEVICE_INDEX          (0x04U)
+#endif
+
+#ifndef MEMIF_E_ALREADY_INITIALIZED
+#define MEMIF_E_ALREADY_INITIALIZED          (0x05U)
+#endif
+
+#ifndef MEMIF_DEVICE_INDEX_FEE
+#define MEMIF_DEVICE_INDEX_FEE              (0x00U)
+#endif
+
+#ifndef MEMIF_DEVICE_INDEX_EA
+#define MEMIF_DEVICE_INDEX_EA               (0x01U)
+#endif
+
+#ifndef MEMIF_SID_CANCEL
+#define MEMIF_SID_CANCEL                    (0x05U)
+#endif
+
+#ifndef MEMIF_SID_DEINIT
+#define MEMIF_SID_DEINIT                    (0x02U)
+#endif
+
+#ifndef MEMIF_SID_MAINFUNCTION
+#define MEMIF_SID_MAINFUNCTION              (0x06U)
+#endif
+
+#ifndef MEMIF_SID_GETSTATUS
+#define MEMIF_SID_GETSTATUS                 (0x07U)
+#endif
+
+#ifndef MEMIF_SID_GETJOBRESULT
+#define MEMIF_SID_GETJOBRESULT              (0x08U)
+#endif
+
+#ifndef MEMIF_SID_ERASEBLOCK
+#define MEMIF_SID_ERASEBLOCK                (0x09U)
+#endif
+
+#ifndef MEMIF_SID_INVALIDATEBLOCK
+#define MEMIF_SID_INVALIDATEBLOCK           (0x0AU)
+#endif
 
 /*******************************************************************************
  *                         External Declarations
@@ -106,7 +228,7 @@ extern const MemIf_DeviceAbstractionType MemIf_Devices[MEMIF_NUMBER_OF_DEVICES];
  * @brief Initialize MemIf module
  * @return None
  */
-extern void MemIf_Init(void);
+extern void MemIf_Init(const MemIf_ConfigType* ConfigPtr);
 
 /**
  * @brief Cancel ongoing operation for a device

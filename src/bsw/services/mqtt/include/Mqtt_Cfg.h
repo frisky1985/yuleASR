@@ -264,12 +264,18 @@ typedef struct {
 #include "ComStack_Types.h"
 #include "TcpIp.h"
 
-#if (MQTT_SUPPORT_TLS == STD_ON)
-#include "Mqtt_Tls.h"
-#endif
-
 #if (MQTT_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"
 #endif
 
 #endif /* MQTT_CFG_H */
+
+/*============================================================================
+ * TLS版本定义
+ *===========================================================================*/
+#ifndef MQTT_TLS_VERSION_1_2
+#define MQTT_TLS_VERSION_1_2      (0x0303U)
+#endif
+#ifndef MQTT_TLS_VERSION_1_3
+#define MQTT_TLS_VERSION_1_3      (0x0304U)
+#endif

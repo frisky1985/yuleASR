@@ -15,8 +15,8 @@
  * Diagnostic over IP Link-Time Configuration
  */
 
-#include "DoIP.h"
-#include "DoIP_Cfg.h"
+#include "DoIp.h"
+#include "DoIp_Cfg.h"
 
 /*==================================================================================================
  *                                      VEHICLE IDENTIFICATION

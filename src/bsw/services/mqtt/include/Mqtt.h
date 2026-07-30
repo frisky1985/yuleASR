@@ -158,6 +158,9 @@ typedef enum {
     MQTT_E_DISCONNECTED         /**< 已断开 */
 } Mqtt_ReturnType;
 
+/** @brief Include Mqtt TLS header for TLS types */
+#include "Mqtt_Tls.h"
+
 /**
  * @brief 连接配置结构
  */
