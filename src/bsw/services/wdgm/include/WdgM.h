@@ -418,14 +418,14 @@ extern void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #include "WdgM_MemMap.h"
 
 /**
- * @brief 默认配置 (declared in WdgM_Cfg.h)
+ * @brief 默认配置
  */
-/* extern const WdgM_ConfigType WdgM_Config;  -- moved to WdgM_Cfg.h */
+extern const WdgM_ConfigType WdgM_Config;
 
 /**
- * @brief 调试配置 (declared in WdgM_Cfg.h)
+ * @brief 调试配置
  */
-/* extern const WdgM_ConfigType WdgM_ConfigDebug;  -- moved to WdgM_Cfg.h */
+extern const WdgM_ConfigType WdgM_ConfigDebug;
 
 #define WDGM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 #include "WdgM_MemMap.h"
