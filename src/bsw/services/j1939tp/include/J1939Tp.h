@@ -29,6 +29,7 @@
  *================================================================================================*/
 #include "Std_Types.h"
 #include "J1939Tp_Cfg.h"
+#include "ComStack_Types.h"  /* PduIdType, PduInfoType */
 
 /*==================================================================================================
  *                                    Macro Definitions
@@ -40,6 +41,7 @@
 #define J1939TP_SW_MINOR_VERSION           0U
 #define J1939TP_SW_PATCH_VERSION           0U
 #define J1939TP_MODULE_ID               ((uint16)79U)
+#define J1939TP_INSTANCE_ID             ((uint8)0U)
 #define J1939TP_VENDOR_ID               ((uint16)1U)
 
 

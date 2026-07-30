@@ -110,7 +110,7 @@ static CanTSyn_InternalType CanTSyn_Internal = {
     .TxState = CANTSYN_TX_IDLE,
     .TxCounter = 0U,
     .RxCounter = 0U,
-    .TimeBaseRef = 0U
+    .TimeBaseRef = {0}
 };
 
 static CanTSyn_TimeDomainInfoType CanTSyn_TimeDomains[CANTSYN_NUMBER_OF_TIME_DOMAINS];
@@ -137,7 +137,7 @@ static void CanTSyn_ProcessOfsMessage(
     const PduInfoType* PduInfoPtr);
 
 static Std_ReturnType CanTSyn_GetCurrentTime(
-    StbM_SynchronizedTimeBaseType TimeBaseId,
+    uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr);
 
@@ -442,7 +442,7 @@ static void CanTSyn_ProcessOfsMessage(
 }
 
 static Std_ReturnType CanTSyn_GetCurrentTime(
-    StbM_SynchronizedTimeBaseType TimeBaseId,
+    uint8 TimeBaseId,
     StbM_TimeStampType* TimeStampPtr,
     StbM_UserDataType* UserDataPtr)
 {

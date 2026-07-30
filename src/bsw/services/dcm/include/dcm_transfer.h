@@ -210,7 +210,7 @@ typedef struct {
 
 extern const Dcm_TransferConfigType Dcm_TransferConfig;
 extern const Dcm_TransferCallbackType Dcm_TransferCallbacks;
-extern const Dcm_MemoryMappingType Dcm_MemoryMappings[];
+extern const Dcm_MemoryMappingType* Dcm_MemoryMappings;
 extern const uint8 Dcm_NumMemoryMappings;
 
 #define DCM_STOP_SEC_CONFIG_DATA_UNSPECIFIED

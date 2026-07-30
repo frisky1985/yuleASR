@@ -56,14 +56,14 @@ typedef struct
     DoCan_ChannelStateType State;
     uint16 TimeoutTimer;
     boolean IsActive;
-} DoCan_ChannelStateType;
+} DoCan_ChannelRuntimeType;
 
 /* Module internal state */
 typedef struct
 {
     uint8 State;
     const DoCan_ConfigType* ConfigPtr;
-    DoCan_ChannelStateType Channels[DOCAN_MAX_CHANNELS];
+    DoCan_ChannelRuntimeType Channels[DOCAN_MAX_CHANNELS];
 } DoCan_InternalStateType;
 
 /*==================================================================================================

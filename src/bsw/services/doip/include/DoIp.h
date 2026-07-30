@@ -1,4 +1,3 @@
-typedef uint8 SoAd_ModeType;
 /**
  * @file DoIP.h
  * @brief Diagnostic over IP (DoIP) - ISO 13400-2 compliant header
@@ -21,6 +20,12 @@ typedef uint8 SoAd_ModeType;
 #include "Std_Types.h"
 #include "DoIP_Cfg.h"
 #include "ComStack_Types.h"
+
+/* SoAd_ModeType forward declaration for DoIP-SoAd interface */
+#ifndef SOAD_MODETYPE_DEFINED
+#define SOAD_MODETYPE_DEFINED
+typedef uint8 SoAd_ModeType;
+#endif
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
@@ -298,6 +303,15 @@ typedef void (*DoIP_UserAliveCheckResponseFncType)(
 *                                    DOIP CONFIG TYPE
 ==================================================================================================*/
 typedef struct {
+    /* Configuration sub-structures */
+    const DoIP_GeneralConfigType* GeneralConfig;
+    const DoIP_TesterConfigType* TesterConfig;
+    const DoIP_TargetConfigType* TargetConfig;
+    const DoIP_SoConConfigType* SoConConfig;
+    uint8 NumTesters;
+    uint8 NumTargets;
+    uint8 NumSoCons;
+    /* Legacy fields (kept for backward compatibility) */
     const DoIP_EntityConfigType* Entity;
     const DoIP_ConnectionConfigType* Connections;
     uint8 NumConnections;

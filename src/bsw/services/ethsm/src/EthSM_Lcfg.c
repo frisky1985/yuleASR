@@ -26,7 +26,7 @@ static const EthSM_ChannelConfigType EthSM_Channels[ETHSM_MAX_NETWORKS] = {
     { 0xFFU, 0U }   /* Unused */
 };
 
-static const EthSM_ConfigType EthSM_Config = {
+const EthSM_ConfigType EthSM_Config = {
     .NumChannels = 2U,
     .Channels = EthSM_Channels
 };

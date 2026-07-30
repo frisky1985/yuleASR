@@ -15,6 +15,7 @@
 #include "Dlt_Cfg.h"
 #include "Det.h"
 #include <string.h>
+#include <stdint.h>
 
 /* ========================================================================== */
 /*                          全局变量                                           */
@@ -85,7 +86,7 @@ const Dlt_FilterConfigType* Dlt_FilterConfigTable = g_DefaultFilterConfig;
  */
 const Dlt_ConfigType Dlt_Config = {
     .transportConfig = &Dlt_TransportConfig,
-    .filterConfig = Dlt_FilterConfigTable,
+    .filterConfig = g_DefaultFilterConfig,
     .filterCount = Dlt_FilterConfigCount,
     .queueSize = DLT_QUEUE_SIZE
 };

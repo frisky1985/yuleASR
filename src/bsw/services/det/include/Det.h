@@ -113,6 +113,36 @@ typedef void (*Det_TransientFaultCalloutType)(
     uint8 FaultId
 );
 
+/**
+ * @brief Error hook pointer type (returns Std_ReturnType for error hooks)
+ */
+typedef Std_ReturnType (*Det_ErrorHookPtrType)(
+    uint16 ModuleId,
+    uint8 InstanceId,
+    uint8 ApiId,
+    uint8 ErrorId
+);
+
+/**
+ * @brief Runtime error hook pointer type
+ */
+typedef Std_ReturnType (*Det_RuntimeErrorHookPtrType)(
+    uint16 ModuleId,
+    uint8 InstanceId,
+    uint8 ApiId,
+    uint8 ErrorId
+);
+
+/**
+ * @brief Transient fault hook pointer type
+ */
+typedef Std_ReturnType (*Det_TransientFaultHookPtrType)(
+    uint16 ModuleId,
+    uint8 InstanceId,
+    uint8 ApiId,
+    uint8 FaultId
+);
+
 /*==================================================================================================
  *                                    GLOBAL VARIABLES (extern)
  *==================================================================================================*/

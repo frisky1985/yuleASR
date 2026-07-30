@@ -288,7 +288,7 @@ static void EcuM_ProcessStartupTwo(void)
     
     /* Initialize SchM */
 #if (ECUM_SCHM_ENABLED == STD_ON)
-    SchM_Init();
+    SchM_Init(NULL_PTR);
 #endif
     
     /* Initialize BswM first */
@@ -299,12 +299,12 @@ static void EcuM_ProcessStartupTwo(void)
     
     /* Initialize communication stack */
 #if (ECUM_COMM_ENABLED == STD_ON)
-    ComM_Init();
+    ComM_Init(NULL_PTR);
 #endif
     
     /* Initialize NV memory */
 #if (ECUM_NVM_ENABLED == STD_ON)
-    NvM_Init();
+    NvM_Init(NULL_PTR);
     NvM_ReadAll();
 #endif
     
@@ -660,7 +660,7 @@ static void EcuM_ProcessWakeupTwo(void)
     
     /* Re-initialize SchM */
 #if (ECUM_SCHM_ENABLED == STD_ON)
-    SchM_Init();
+    SchM_Init(NULL_PTR);
 #endif
     
     /* Notify BswM */
@@ -671,7 +671,7 @@ static void EcuM_ProcessWakeupTwo(void)
     
     /* Re-initialize communication */
 #if (ECUM_COMM_ENABLED == STD_ON)
-    ComM_Init();
+    ComM_Init(NULL_PTR);
 #endif
     
     /* Re-initialize RTE */

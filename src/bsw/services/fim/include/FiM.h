@@ -19,6 +19,7 @@
 ==================================================================================================*/
 #include "Std_Types.h"
 #include "FiM_Cfg.h"
+#include "Dem_Types.h"  /* For Dem_EventIdType, Dem_EventStatusType, Dem_UdsStatusByteType */
 
 /*==================================================================================================
 *                                    VERSION INFORMATION

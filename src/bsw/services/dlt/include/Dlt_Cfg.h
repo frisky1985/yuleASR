@@ -160,7 +160,7 @@ extern const Dlt_TransportConfigType Dlt_TransportConfig;
 /**
  * @brief 过滤器配置数组
  */
-extern const Dlt_FilterConfigType Dlt_FilterConfigTable[];
+extern const Dlt_FilterConfigType* Dlt_FilterConfigTable;
 
 /**
  * @brief 过滤器数量

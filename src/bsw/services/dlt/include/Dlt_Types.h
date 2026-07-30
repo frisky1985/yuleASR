@@ -55,7 +55,7 @@ typedef enum {
     DLT_MSG_TYPE_TRACE = 1U,    /**< 跟踪消息 */
     DLT_MSG_TYPE_CONTROL = 2U,  /**< 控制消息 */
     DLT_MSG_TYPE_NW_TRACE = 3U  /**< 网络跟踪消息 */
-} Dlt_MessageType;
+} Dlt_MessageCategoryType;
 
 /* ========================================================================== */
 /*                          DLT 日志级别                                       */
@@ -86,6 +86,20 @@ typedef enum {
     DLT_TRACE_STATE = 2U,         /**< 状态跟踪 */
     DLT_TRACE_BUFFER = 3U         /**< 缓冲区跟踪 */
 } Dlt_TraceType;
+
+/* ========================================================================== */
+/*                          DLT 消息优先级                                     */
+/* ========================================================================== */
+
+/**
+ * @brief DLT 消息优先级
+ */
+typedef enum {
+    DLT_PRIORITY_LOW = 0U,      /**< 低优先级 */
+    DLT_PRIORITY_NORMAL = 1U,   /**< 普通优先级 */
+    DLT_PRIORITY_HIGH = 2U,     /**< 高优先级 */
+    DLT_PRIORITY_CRITICAL = 3U  /**< 关键优先级 */
+} Dlt_PriorityType;
 
 /* ========================================================================== */
 /*                          DLT 应用句柄                                       */
@@ -149,7 +163,7 @@ typedef struct {
  */
 typedef struct {
     Dlt_AppHandleType  appHandle;    /**< 应用句柄 */
-    Dlt_MessageType    messageType;  /**< 消息类型 */
+    Dlt_MessageCategoryType    messageType;  /**< 消息类型 */
     Dlt_LogLevelType   minLogLevel;  /**< 最小日志级别 */
     boolean            enabled;      /**< 是否启用 */
 } Dlt_FilterConfigType;
@@ -212,16 +226,6 @@ typedef enum {
     DLT_STATE_ERROR = 4U,     /**< 错误状态 */
     DLT_STATE_STOPPED = 5U    /**< 已停止 */
 } Dlt_ModuleStateType;
-
-/**
- * @brief DLT 消息优先级
- */
-typedef enum {
-    DLT_PRIORITY_LOW = 0U,      /**< 低优先级 */
-    DLT_PRIORITY_NORMAL = 1U,   /**< 普通优先级 */
-    DLT_PRIORITY_HIGH = 2U,     /**< 高优先级 */
-    DLT_PRIORITY_CRITICAL = 3U  /**< 关键优先级 */
-} Dlt_PriorityType;
 
 /**
  * @brief DLT 返回码

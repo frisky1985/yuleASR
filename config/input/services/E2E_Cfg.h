@@ -178,6 +178,19 @@
 #define E2E_PERFORMANCE_COUNTERS        STD_OFF
 
 /******************************************************************************
+ * E2E CHECK RESULT TYPE
+ ******************************************************************************/
+/**
+ * @brief E2E check result type for callbacks
+ * Contains the channel ID and status after an E2E check
+ */
+typedef struct {
+    uint16 ChannelId;
+    uint8  Status;
+    uint8  Counter;
+} E2E_CheckResultType;
+
+/******************************************************************************
  * POST BUILD CONFIGURATION TYPE
  ******************************************************************************/
 typedef struct

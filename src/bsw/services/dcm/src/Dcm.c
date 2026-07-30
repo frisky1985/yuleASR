@@ -1330,7 +1330,7 @@ Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 
     if ((TxPduId < DCM_NUM_PROTOCOLS) && (PduInfoPtr != NULL_PTR))
     {
-        const Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[TxPduId];
+        Dcm_ProtocolStateType* protocolState = &Dcm_InternalState.ProtocolStates[TxPduId];
 
         /* Provide TX data */
         PduInfoPtr->SduDataPtr = protocolState->TxBuffer;

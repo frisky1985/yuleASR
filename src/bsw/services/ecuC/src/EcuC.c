@@ -14,9 +14,8 @@
 #define ECUC_SID_SET_CONFIG         0x03U
 #define ECUC_SID_GET_VERSION_INFO   0x04U
 
-#define ECUC_E_PARAM_POINTER        0x10U
+/* Local error codes (not part of ECUC base spec) */
 #define ECUC_E_UNINIT               0x20U
-#define ECUC_E_PARAM_CONFIG         0x30U
 #define ECUC_E_READ_ONLY            0x40U
 
 typedef enum { ECUC_UNINIT = 0, ECUC_INIT } EcuC_StateType;
@@ -30,7 +29,7 @@ typedef struct {
 
 static EcuC_InternalType EcuC_State = {
     ECUC_UNINIT, 0U,
-    {0,0,0,0,0,0,0,0},
+    {0},
     NULL_PTR
 };
 

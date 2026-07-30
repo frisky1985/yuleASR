@@ -37,7 +37,7 @@ Std_ReturnType EthTSyn_Init(const EthTSyn_ConfigType* Config)
 
     if (EthTSyn_Initialized) {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_REINIT);
+        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_ALREADY_INITIALIZED);
 #endif
         return E_NOT_OK;
     }
@@ -129,7 +129,7 @@ Std_ReturnType EthTSyn_AdjustRate(int32 rateNumerator, int32 rateDenominator)
         return E_NOT_OK;
     }
     if (rateDenominator == 0) {
-        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 3U, DET_E_PARAM_VALUE);
+        Det_ReportError(ETHTSYN_MODULE_ID, 0U, 3U, DET_E_PARAM_POINTER);
         return E_NOT_OK;
     }
 #endif

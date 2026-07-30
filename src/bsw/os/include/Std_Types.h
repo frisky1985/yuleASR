@@ -28,6 +28,12 @@ typedef signed short        sint16;
 typedef signed int          sint32;
 typedef signed long long    sint64;
 
+/* Plain int types for compatibility */
+typedef signed char         int8;
+typedef signed short        int16;
+typedef signed int          int32;
+typedef signed long long    int64;
+
 typedef unsigned int        uint8_least;
 typedef unsigned int        uint16_least;
 typedef unsigned int        uint32_least;
