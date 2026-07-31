@@ -98,6 +98,8 @@
 #define DOIP_SOCON_TCP_DATA_3           (3U)
 #define DOIP_SOCON_UDP_DISCOVERY        (4U)
 #define DOIP_SOCON_UDP_TEST_EQUIP       (5U)
+#define DOIP_SOCON_TCP_DATA             (DOIP_SOCON_TCP_DATA_0)
+#define DOIP_SOCON_TCP_ROUTING          (6U)
 
 /*==================================================================================================
 *                                    LOGICAL ADDRESSES
@@ -234,4 +236,14 @@ typedef struct {
     uint8 MaxConnections;
     uint32 GeneralInactivityTime;
 } DoIP_GeneralConfigType;
+
+typedef struct {
+    uint16 SoConId;
+    boolean IsTcp;
+    boolean IsUdp;
+    uint16 LocalPort;
+    const uint8* LocalIpAddress;
+    uint16 RemotePort;
+    const uint8* RemoteIpAddress;
+} DoIP_SoConConfigType;
 #endif
