@@ -34,6 +34,8 @@ if(NOT BUILD_PBL)
         $<$<CONFIG:Release>:NDEBUG>
     )
 
+    target_link_libraries(${BOOT_TARGET} PRIVATE mbedcrypto)
+
     set_target_properties(${BOOT_TARGET} PROPERTIES
         C_STANDARD 99
         C_EXTENSIONS OFF

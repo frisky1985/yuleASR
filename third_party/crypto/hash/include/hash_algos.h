@@ -40,11 +40,18 @@
  * INCLUDES
  *********************************************************************************************************************/
 #include <stddef.h>
+#include <stdint.h>
 #include "Std_Types.h"
 
-/* 128-bit integer support (GCC/Clang extension) */
-#ifndef uint128
+/* 128-bit integer support */
+#if defined(__SIZEOF_INT128__)
 typedef unsigned __int128 uint128;
+#else
+/* 32-bit targets without __int128: 128-bit value held as two 64-bit halves */
+typedef struct {
+    unsigned long long lo;
+    unsigned long long hi;
+} uint128;
 #endif
 
 /**********************************************************************************************************************

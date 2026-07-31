@@ -21,6 +21,8 @@
  *==================================================================================================
  */
 
+#include "Mcal.h"
+
 #ifndef SCHM_MEM_H
 #define SCHM_MEM_H
 
@@ -33,11 +35,11 @@ extern "C" {
  *==================================================================================================*/
 
 #ifndef SchM_Enter_Mem_MEM_EXCLUSIVE_AREA_0
-#define SchM_Enter_Mem_MEM_EXCLUSIVE_AREA_0()
+#define SchM_Enter_Mem_MEM_EXCLUSIVE_AREA_0()   Mcal_DisableAllInterrupts()
 #endif
 
 #ifndef SchM_Exit_Mem_MEM_EXCLUSIVE_AREA_0
-#define SchM_Exit_Mem_MEM_EXCLUSIVE_AREA_0()
+#define SchM_Exit_Mem_MEM_EXCLUSIVE_AREA_0()   Mcal_EnableAllInterrupts()
 #endif
 
 #ifdef __cplusplus

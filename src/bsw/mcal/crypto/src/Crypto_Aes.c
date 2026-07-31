@@ -198,7 +198,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
     io = job->jobPrimitiveInputOutput;
 
     /* 检查输入输出参数 */
-    if ((io->inputPtr == NULL_PTR) || (io->outputPtr == NULL_PTR) ||
+    if (((const uint8*)io->inputPtr == NULL_PTR) || ((uint8*)io->outputPtr == NULL_PTR) ||
         (io->outputLengthPtr == NULL_PTR)) {
         return E_NOT_OK;
     }
@@ -257,9 +257,9 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
                         result = Aes_CbcEncryptStart(&ctx->aesCtx, iv);
                     }
                     if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
-                        result = Aes_CbcEncryptUpdate(&ctx->aesCtx, io->inputPtr,
+                        result = Aes_CbcEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
                                                       io->inputLength,
-                                                      io->outputPtr, &outputLen);
+                                                      (uint8*)io->outputPtr, &outputLen);
                     }
                     break;
 
@@ -267,8 +267,8 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
                     if (isNewJob) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
-result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
-                                                  io->inputLength, io->outputPtr);
+result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
+                                                  io->inputLength, (uint8*)io->outputPtr);
                     outputLen = io->inputLength;
                     break;
 
@@ -283,28 +283,28 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
             /* 单次调用或完成 */
             switch (ctx->mode) {
                 case AES_MODE_ECB:
-                    result = Aes_EcbEncrypt(&ctx->aesCtx, io->inputPtr, io->inputLength,
-                                           io->outputPtr, &outputLen);
+                    result = Aes_EcbEncrypt(&ctx->aesCtx, (const uint8*)io->inputPtr, io->inputLength,
+                                           (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_CBC:
-                    result = Aes_CbcEncrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr, &outputLen);
+                    result = Aes_CbcEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_CFB:
-                    result = Aes_CfbEncrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr, &outputLen);
+                    result = Aes_CfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_OFB:
-                    result = Aes_OfbEncrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr, &outputLen);
+                    result = Aes_OfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_CTR:
-                    result = Aes_CtrEncrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr);
+                    result = Aes_CtrEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr);
                     outputLen = io->inputLength;
                     break;
 
@@ -316,10 +316,10 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
                             tagLen = *io->secondaryOutputLengthPtr;
                         }
                         result = Aes_GcmEncrypt(&ctx->aesCtx, iv, AES_GCM_IV_SIZE,
-                                               io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               io->inputPtr, io->inputLength,
-                                               io->outputPtr,
-                                               io->secondaryOutputPtr, tagLen);
+                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                               (const uint8*)io->inputPtr, io->inputLength,
+                                               (uint8*)io->outputPtr,
+                                               (uint8*)io->secondaryOutputPtr, tagLen);
                         outputLen = io->inputLength;
                         if (io->secondaryOutputLengthPtr != NULL_PTR) {
                             *io->secondaryOutputLengthPtr = tagLen;
@@ -332,10 +332,10 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
                     {
                         uint32 tagLen = AES_CCM_TAG_SIZE;
                         result = Aes_CcmEncrypt(&ctx->aesCtx, iv, AES_BLOCK_SIZE,
-                                               io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               io->inputPtr, io->inputLength,
-                                               io->outputPtr, tagLen,
-                                               io->secondaryOutputPtr);
+                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                               (const uint8*)io->inputPtr, io->inputLength,
+                                               (uint8*)io->outputPtr, tagLen,
+                                               (uint8*)io->secondaryOutputPtr);
                         outputLen = io->inputLength;
                         if (io->secondaryOutputLengthPtr != NULL_PTR) {
                             *io->secondaryOutputLengthPtr = tagLen;
@@ -390,7 +390,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
     io = job->jobPrimitiveInputOutput;
 
     /* 检查输入输出参数 */
-    if ((io->inputPtr == NULL_PTR) || (io->outputPtr == NULL_PTR) ||
+    if (((const uint8*)io->inputPtr == NULL_PTR) || ((uint8*)io->outputPtr == NULL_PTR) ||
         (io->outputLengthPtr == NULL_PTR)) {
         return E_NOT_OK;
     }
@@ -448,9 +448,9 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
                         result = Aes_CbcDecryptStart(&ctx->aesCtx, iv);
                     }
                     if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
-                        result = Aes_CbcDecryptUpdate(&ctx->aesCtx, io->inputPtr,
+                        result = Aes_CbcDecryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
                                                       io->inputLength,
-                                                      io->outputPtr, &outputLen);
+                                                      (uint8*)io->outputPtr, &outputLen);
                     }
                     break;
 
@@ -458,8 +458,8 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
                     if (isNewJob) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
-result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
-                                                  io->inputLength, io->outputPtr);
+result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
+                                                  io->inputLength, (uint8*)io->outputPtr);
                     outputLen = io->inputLength;
                     break;
 
@@ -473,28 +473,28 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
             /* 单次调用或完成 */
             switch (ctx->mode) {
                 case AES_MODE_ECB:
-                    result = Aes_EcbDecrypt(&ctx->aesCtx, io->inputPtr, io->inputLength,
-                                           io->outputPtr, &outputLen);
+                    result = Aes_EcbDecrypt(&ctx->aesCtx, (const uint8*)io->inputPtr, io->inputLength,
+                                           (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_CBC:
-                    result = Aes_CbcDecrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr, &outputLen);
+                    result = Aes_CbcDecrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_CFB:
-                    result = Aes_CfbDecrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr, &outputLen);
+                    result = Aes_CfbDecrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_OFB:
-                    result = Aes_OfbEncrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr, &outputLen);
+                    result = Aes_OfbEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr, &outputLen);
                     break;
 
                 case AES_MODE_CTR:
-                    result = Aes_CtrEncrypt(&ctx->aesCtx, iv, io->inputPtr,
-                                           io->inputLength, io->outputPtr);
+                    result = Aes_CtrEncrypt(&ctx->aesCtx, iv, (const uint8*)io->inputPtr,
+                                           io->inputLength, (uint8*)io->outputPtr);
                     outputLen = io->inputLength;
                     break;
 
@@ -506,10 +506,10 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
                             tagLen = io->tertiaryInputLength;
                         }
                         result = Aes_GcmDecrypt(&ctx->aesCtx, iv, AES_GCM_IV_SIZE,
-                                               io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               io->inputPtr, io->inputLength,
-                                               io->secondaryInputPtr, tagLen,
-                                               io->outputPtr, &outputLen);
+                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                               (const uint8*)io->inputPtr, io->inputLength,
+                                               (const uint8*)io->secondaryInputPtr, tagLen,
+                                               (uint8*)io->outputPtr, &outputLen);
 
                         /* 验证结果 */
                         if (io->verifyPtr != NULL_PTR) {
@@ -527,10 +527,10 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
                             tagLen = io->tertiaryInputLength;
                         }
                         result = Aes_CcmDecrypt(&ctx->aesCtx, iv, AES_BLOCK_SIZE,
-                                               io->tertiaryInputPtr, io->tertiaryInputLength,
-                                               io->inputPtr, io->inputLength,
-                                               io->secondaryInputPtr, tagLen,
-                                               io->outputPtr, &outputLen);
+                                               (const uint8*)io->tertiaryInputPtr, io->tertiaryInputLength,
+                                               (const uint8*)io->inputPtr, io->inputLength,
+                                               (const uint8*)io->secondaryInputPtr, tagLen,
+                                               (uint8*)io->outputPtr, &outputLen);
 
                         if (io->verifyPtr != NULL_PTR) {
                             *io->verifyPtr = (result == AES_ERR_NONE) ?
@@ -653,14 +653,14 @@ Std_ReturnType Crypto_AesStreamUpdate(Crypto_JobType* job)
 
     switch (ctx->mode) {
         case AES_MODE_CBC:
-            result = Aes_CbcEncryptUpdate(&ctx->aesCtx, io->inputPtr,
+            result = Aes_CbcEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
                                          io->inputLength,
-                                         io->outputPtr, &outputLen);
+                                         (uint8*)io->outputPtr, &outputLen);
             break;
 
         case AES_MODE_CTR:
-            result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
-                                         io->inputLength, io->outputPtr);
+            result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
+                                         io->inputLength, (uint8*)io->outputPtr);
             outputLen = io->inputLength;
             break;
 
@@ -700,9 +700,9 @@ Std_ReturnType Crypto_AesStreamFinish(Crypto_JobType* job)
 
     switch (ctx->mode) {
         case AES_MODE_CBC:
-            result = Aes_CbcEncryptFinish(&ctx->aesCtx, io->inputPtr,
+            result = Aes_CbcEncryptFinish(&ctx->aesCtx, (const uint8*)io->inputPtr,
                                          io->inputLength,
-                                         io->outputPtr, &outputLen);
+                                         (uint8*)io->outputPtr, &outputLen);
             break;
 
         case AES_MODE_CTR:

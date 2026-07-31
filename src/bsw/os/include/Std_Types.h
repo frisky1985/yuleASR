@@ -318,36 +318,8 @@ typedef struct
  * Legacy Support
  ******************************************************************************/
 /* Support legacy naming conventions */
-#ifndef uint8_t
-    typedef uint8   uint8_t;
-#endif
-
-#ifndef uint16_t
-    typedef uint16  uint16_t;
-#endif
-
-#ifndef uint32_t
-    typedef uint32  uint32_t;
-#endif
-
-#ifndef uint64_t
-    typedef uint64  uint64_t;
-#endif
-
-#ifndef int8_t
-    typedef sint8   int8_t;
-#endif
-
-#ifndef int16_t
-    typedef sint16  int16_t;
-#endif
-
-#ifndef int32_t
-    typedef sint32  int32_t;
-#endif
-
-#ifndef int64_t
-    typedef sint64  int64_t;
-#endif
+/* NOTE: int8_t/uint8_t/... are NOT defined here; they are provided by the
+ * standard <stdint.h> (host libc or the freestanding headers used for
+ * bare-metal cross builds).  AUTOSAR code should use sint8/uint8/... */
 
 #endif /* STD_TYPES_H */

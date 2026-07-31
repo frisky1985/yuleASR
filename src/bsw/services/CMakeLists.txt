@@ -25,9 +25,12 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/include/autosar/classic/com
     ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
-    ${CMAKE_SOURCE_DIR}/third_party/crypto/mbedtls/include
+    ${CMAKE_SOURCE_DIR}/third_party/mbedtls/include
     ${CMAKE_SOURCE_DIR}/third_party/yule-mbedtls-adapter/include
 )
+
+# mbedTLS private-field access is required by the crypto/MQTT backends
+add_compile_definitions(MBEDTLS_ALLOW_PRIVATE_ACCESS)
 
 # Collect all service include directories for cross-module dependencies
 file(GLOB SERVICES_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
@@ -58,6 +61,13 @@ foreach(subdir ${SERVICES_SUBDIRS})
         if(IS_DIRECTORY ${subdir}/include)
             target_include_directories(${target_name}
                 PUBLIC ${subdir}/include
+            )
+        endif()
+
+        # MQTT TLS backend links the real mbedTLS library
+        if(module_name STREQUAL "mqtt")
+            target_link_libraries(${target_name}
+                PUBLIC mbedtls mbedx509 mbedcrypto
             )
         endif()
         

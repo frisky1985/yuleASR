@@ -1,4 +1,5 @@
 #include "Boot_Flash.h"
+#include <stdint.h>
 #include "Flash.h"
 #include <string.h>
 

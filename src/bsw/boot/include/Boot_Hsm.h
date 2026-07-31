@@ -2,6 +2,7 @@
 #define BOOT_HSM_H
 
 #include "Boot_Types.h"
+#include <stdint.h>
 
 Boot_Result Boot_Hsm_Init(void);
 Boot_Result Boot_Hsm_VerifySignature(const uint8_t *hash,

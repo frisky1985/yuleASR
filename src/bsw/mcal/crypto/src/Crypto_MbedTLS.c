@@ -223,7 +223,8 @@ STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Sign_Internal(const uint8* privKey, u
     mbedtls_mpi_init(&s);
     
     /* Setup context for secp256r1 */
-    ret = mbedtls_ecdsa_setup(&ctx, MBEDTLS_ECP_DP_SECP256R1);
+    /* mbedTLS 3.x removed mbedtls_ecdsa_setup(); load the group directly */
+    ret = mbedtls_ecp_group_load(&ctx.grp, MBEDTLS_ECP_DP_SECP256R1);
     if (ret != MBEDTLS_SUCCESS) {
         goto cleanup;
     }
@@ -306,7 +307,8 @@ STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Verify_Internal(const uint8* pubKey, 
     mbedtls_mpi_init(&s);
     
     /* Setup context */
-    ret = mbedtls_ecdsa_setup(&ctx, MBEDTLS_ECP_DP_SECP256R1);
+    /* mbedTLS 3.x removed mbedtls_ecdsa_setup(); load the group directly */
+    ret = mbedtls_ecp_group_load(&ctx.grp, MBEDTLS_ECP_DP_SECP256R1);
     if (ret != MBEDTLS_SUCCESS) {
         goto cleanup;
     }
@@ -548,7 +550,7 @@ Std_ReturnType Crypto_MbedTLS_SHA256(const uint8* data, uint32 dataLen, uint8* d
         return E_NOT_OK;
     }
     
-    ret = mbedtls_sha256_ret(data, dataLen, digest, 0);  /* 0 = SHA-256, not SHA-224 */
+    ret = mbedtls_sha256(data, dataLen, digest, 0);  /* 0 = SHA-256, not SHA-224 */
     
     return Crypto_MbedTLS_ConvertResult(ret);
 }
@@ -701,8 +703,8 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                 job->jobPrimitiveInputOutput->tertiaryInputPtr != NULL_PTR ? 
                     (const uint8*)job->jobPrimitiveInputOutput->tertiaryInputPtr : NULL_PTR,
                 job->jobPrimitiveInputOutput->output8Ptr,
-                job->jobPrimitiveInputOutput->secondaryOutputPtr != NULL_PTR ? 
-                    job->jobPrimitiveInputOutput->secondaryOutputPtr : NULL_PTR
+                job->jobPrimitiveInputOutput->secondaryOutputPtr != NULL_PTR ?
+                    (uint8*)job->jobPrimitiveInputOutput->secondaryOutputPtr : NULL_PTR
             );
             break;
             

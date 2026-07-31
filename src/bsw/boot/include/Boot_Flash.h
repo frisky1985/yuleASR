@@ -2,6 +2,7 @@
 #define BOOT_FLASH_H
 
 #include "Boot_Types.h"
+#include <stdint.h>
 
 Boot_Result Boot_Flash_Init(void);
 Boot_Result Boot_Flash_Erase(uint32_t address, uint32_t size);

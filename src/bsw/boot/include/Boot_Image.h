@@ -2,6 +2,7 @@
 #define BOOT_IMAGE_H
 
 #include "Boot_Types.h"
+#include <stdint.h>
 
 Boot_Result Boot_Image_ValidateHeader(const Boot_ImageHeader *hdr);
 Boot_Result Boot_Image_VerifyHash(const Boot_ImageHeader *hdr,

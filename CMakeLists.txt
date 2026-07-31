@@ -82,6 +82,25 @@ if(NOT CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/autos
     include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
 endif()
 
+# Compiler/MemMap/Std_Types stubs are also required for cross builds
+# (arm-none-eabi has no newlib, so the AUTOSAR stub headers fill the gap)
+if(CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/autosar)
+endif()
+
+# Freestanding libc headers for bare-metal cross builds without newlib
+# (real C99 standard declarations; implementation is provided at link time
+#  by newlib/picolibc in production builds)
+if(CMAKE_CROSSCOMPILING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/freestanding-include)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/freestanding-include)
+endif()
+
+# mbedTLS: use the yuleASR configuration (platform entropy/timing policy)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/mbedtls/configs/yuleasr_config.h)
+    add_compile_definitions(MBEDTLS_CONFIG_FILE=<yuleasr_config.h>)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/third_party/mbedtls/configs)
+endif()
+
 # Global coverage compile/link flags (unconditional — all C files produce coverage data)
 # Code coverage compile/link flags: --coverage is equivalent to -fprofile-arcs -ftest-coverage
 # for GCC/Clang.  Only set when ENABLE_COVERAGE is ON to avoid unconditional instrumentation.
@@ -98,6 +117,13 @@ if(NOT CMAKE_CROSSCOMPILING AND ENABLE_COVERAGE)
 endif()
 
 # Add subdirectories
+# ── Real mbedTLS (Mbed-TLS 3.6.2 LTS, vendored) ──────────────────────────
+set(ENABLE_PROGRAMS OFF CACHE BOOL "Build Mbed TLS programs." FORCE)
+set(ENABLE_TESTING OFF CACHE BOOL "Build Mbed TLS tests." FORCE)
+set(MBEDTLS_FATAL_WARNINGS OFF CACHE BOOL "Compiler warnings treated as errors" FORCE)
+set(DISABLE_PACKAGE_CONFIG_AND_INSTALL ON CACHE BOOL "Disable mbedTLS install" FORCE)
+add_subdirectory(third_party/mbedtls)
+
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)
 add_subdirectory(src/bsw/ecual)

@@ -18,8 +18,11 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/third_party/crypto/aes_modes/include
-    ${CMAKE_SOURCE_DIR}/third_party/crypto/mbedtls/include
+    ${CMAKE_SOURCE_DIR}/third_party/mbedtls/include
 )
+
+# mbedTLS private-field access is required by the crypto/MQTT backends
+add_compile_definitions(MBEDTLS_ALLOW_PRIVATE_ACCESS)
 
 # Get all submodule directories
 file(GLOB MCAL_SUBDIRS LIST_DIRECTORIES true ${CMAKE_CURRENT_SOURCE_DIR}/*)
@@ -49,6 +52,13 @@ foreach(subdir ${MCAL_SUBDIRS})
             C_STANDARD 99
             ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib/bsw/mcal
         )
+
+        # Crypto driver links the real mbedTLS library
+        if(module_name STREQUAL "crypto")
+            target_link_libraries(${target_name}
+                PUBLIC mbedtls mbedx509 mbedcrypto
+            )
+        endif()
         
         message(STATUS "  MCAL driver: ${module_name} (target: ${target_name})")
     endif()

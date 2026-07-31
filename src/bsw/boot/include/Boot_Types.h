@@ -2,6 +2,7 @@
 #define BOOT_TYPES_H
 
 #include "Std_Types.h"
+#include <stdint.h>
 #include "Boot_Cfg.h"
 
 #define BOOT_AR_RELEASE_MAJOR_VERSION   4

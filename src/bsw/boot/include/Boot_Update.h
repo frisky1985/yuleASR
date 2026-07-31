@@ -2,6 +2,7 @@
 #define BOOT_UPDATE_H
 
 #include "Boot_Types.h"
+#include <stdint.h>
 
 Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type);
 Boot_Result Boot_Update_WriteBlock(const uint8_t *data,

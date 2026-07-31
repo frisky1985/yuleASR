@@ -18,6 +18,18 @@
 #include "mbedtls/oid.h"
 #include "mbedtls/asn1.h"
 
+/* mbedTLS 3.x removed the MBEDTLS_OID_CMP macro; the OID macros are now
+ * string literals (e.g. "\x55\x04\x03"), so compare against them directly. */
+#define MQTT_OID_CMP(oidStr, oidBuf)     ( (sizeof(oidStr) - 1U) == (oidBuf)->len &&       memcmp(oidStr, (oidBuf)->p, (oidBuf)->len) == 0 )
+
+/* Name aliases for mbedTLS 3.x */
+#ifndef MBEDTLS_OID_AT_ORGANIZATION_NAME
+#define MBEDTLS_OID_AT_ORGANIZATION_NAME    MBEDTLS_OID_AT_ORGANIZATION
+#endif
+#ifndef MBEDTLS_OID_AT_STATE_PROVINCE
+#define MBEDTLS_OID_AT_STATE_PROVINCE       MBEDTLS_OID_AT_STATE
+#endif
+
 /*============================================================================
  * 内部宏定义
  *===========================================================================*/
@@ -785,19 +797,19 @@ static void CertMgr_ParseSubject(const mbedtls_x509_name* name,
         buf[len] = '\0';
         
         /* 根据OID识别属性类型 */
-        if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid) == 0U ) {
+        if (MQTT_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid) == 0U ) {
             strncpy(subject->commonName, buf, sizeof(subject->commonName) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid) == 0U ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid) == 0U ) {
             strncpy(subject->organization, buf, sizeof(subject->organization) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid) == 0U ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid) == 0U ) {
             strncpy(subject->organizationalUnit, buf, sizeof(subject->organizationalUnit) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid) == 0U ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid) == 0U ) {
             strncpy(subject->country, buf, sizeof(subject->country) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid) == 0U ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid) == 0U ) {
             strncpy(subject->state, buf, sizeof(subject->state) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid) == 0U ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid) == 0U ) {
             strncpy(subject->locality, buf, sizeof(subject->locality) - 1);
-        } else if (MBEDTLS_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid) == 0U ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid) == 0U ) {
             strncpy(subject->email, buf, sizeof(subject->email) - 1);
         }
     }

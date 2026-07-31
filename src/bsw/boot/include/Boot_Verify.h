@@ -2,6 +2,7 @@
 #define BOOT_VERIFY_H
 
 #include "Boot_Types.h"
+#include <stdint.h>
 
 Boot_Result Boot_Verify_Signature(const uint8_t    *hash,
                                   const uint8_t    *signature,

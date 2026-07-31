@@ -199,17 +199,17 @@ static const LinTrcv_ChannelConfigType LinTrcv_Channel3Config =
 /*******************************************************************************
  * Channel Configuration Array
  ******************************************************************************/
-static const LinTrcv_ChannelConfigType *const LinTrcv_ChannelConfig[LINTRCV_NUM_CHANNELS] =
+static const LinTrcv_ChannelConfigType LinTrcv_ChannelConfig[LINTRCV_NUM_CHANNELS] =
 {
-    &LinTrcv_Channel0Config,
+    LinTrcv_Channel0Config,
 #if (LINTRCV_NUM_CHANNELS > 1)
-    &LinTrcv_Channel1Config,
+    LinTrcv_Channel1Config,
 #endif
 #if (LINTRCV_NUM_CHANNELS > 2)
-    &LinTrcv_Channel2Config,
+    LinTrcv_Channel2Config,
 #endif
 #if (LINTRCV_NUM_CHANNELS > 3)
-    &LinTrcv_Channel3Config
+    LinTrcv_Channel3Config
 #endif
 };
 

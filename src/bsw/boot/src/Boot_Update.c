@@ -1,4 +1,5 @@
 #include "Boot_Update.h"
+#include <stdint.h>
 #include "Boot_Flash.h"
 #include "Boot_Image.h"
 #include "Boot_Verify.h"

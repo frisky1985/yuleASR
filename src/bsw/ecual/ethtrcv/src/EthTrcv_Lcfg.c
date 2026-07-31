@@ -217,28 +217,22 @@ const EthTrcv_TrcvConfigType EthTrcv_TrcvConfig[ETHTRCV_NUMBER_OF_TRCVS] =
 /**
  * @brief Interface Configuration Table
  */
-static const EthTrcv_InterfaceConfigUnionType EthTrcv_InterfaceConfig[ETHTRCV_NUMBER_OF_TRCVS] =
+static const EthTrcv_InterfaceConfigType EthTrcv_InterfaceConfig[ETHTRCV_NUMBER_OF_TRCVS] =
 {
     /* Transceiver 0 - RMII */
     {
-        .Rmii =
-        {
-            /* RefClockSource */     0U,
-            /* RefClockFreqMHz */    50U,
-            /* CrsDvRemap */         FALSE
-        }
+        .InterfaceType  = ETHTRCV_ACCESS_RMII,
+        .MaxFrameSize   = 1518U,
+        .ClockGating    = FALSE,
+        .ClockDivisor   = 1U
     },
-    
+
     /* Transceiver 1 - RGMII */
     {
-        .Rgmii =
-        {
-            /* TxClockDelayNs */     2U,
-            /* RxClockDelayNs */     2U,
-            /* EnableIdDelay */      TRUE,
-            /* TxClockInvert */      FALSE,
-            /* RxClockInvert */      FALSE
-        }
+        .InterfaceType  = ETHTRCV_ACCESS_RGMII,
+        .MaxFrameSize   = 1518U,
+        .ClockGating    = FALSE,
+        .ClockDivisor   = 1U
     }
 };
 
@@ -306,7 +300,7 @@ const EthTrcv_ConfigType EthTrcv_Config =
 /**
  * @brief Gets the interface configuration for a transceiver
  */
-const EthTrcv_InterfaceConfigUnionType* EthTrcv_GetInterfaceConfig(uint8 TrcvIdx)
+const EthTrcv_InterfaceConfigType* EthTrcv_GetInterfaceConfig(uint8 TrcvIdx)
 {
     if (TrcvIdx < ETHTRCV_NUMBER_OF_TRCVS)
     {

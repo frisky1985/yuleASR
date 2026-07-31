@@ -1,4 +1,5 @@
 #include "Boot_Hsm.h"
+#include <stdint.h>
 
 /*
  * PORTING:

@@ -1,4 +1,5 @@
 #include "Boot_Verify.h"
+#include <stdint.h>
 #include <string.h>
 
 /*
@@ -93,7 +94,7 @@ Boot_Result Boot_Verify_Signature(const uint8_t    *hash,
 
 void Boot_Verify_Hash(const uint8_t *data, uint32_t len, uint8_t *digest)
 {
-    mbedtls_sha256_ret(data, len, digest, 0);  /* 0 = SHA-256 */
+    mbedtls_sha256(data, len, digest, 0);  /* 0 = SHA-256 */
 }
 #else
 #include "hash_algos.h"
