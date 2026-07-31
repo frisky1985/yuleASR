@@ -179,3 +179,22 @@
 #define SECOC_MAX_CRYPTO_OPERATIONS           (4u)
 
 #endif /* SECOC_CFG_H */
+
+/*==================================================================================================
+ *                                    AUTH / FRESHNESS LENGTHS
+ *==================================================================================================*/
+#ifndef SECOC_AUTH_LENGTH_4
+#define SECOC_AUTH_LENGTH_4                   (4u)
+#endif
+#ifndef SECOC_AUTH_LENGTH_8
+#define SECOC_AUTH_LENGTH_8                   (8u)
+#endif
+#ifndef SECOC_FRESHNESS_LENGTH_3
+#define SECOC_FRESHNESS_LENGTH_3              (3u)
+#endif
+#ifndef SECOC_FRESHNESS_LENGTH_4
+#define SECOC_FRESHNESS_LENGTH_4              (4u)
+#endif
+#ifndef SECOC_MAX_PDUS
+#define SECOC_MAX_PDUS                        (SECOC_NUM_TX_PDUS)
+#endif

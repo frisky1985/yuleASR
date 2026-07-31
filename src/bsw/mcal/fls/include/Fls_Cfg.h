@@ -176,4 +176,9 @@ extern "C" {
 }
 #endif
 
+/* Hardware layer error codes */
+#ifndef FLS_HW_E_PARAM_POINTER
+#define FLS_HW_E_PARAM_POINTER              (0x0AU)
+#endif
+
 #endif /* FLS_CFG_H */

@@ -21,6 +21,11 @@
 #include "Std_Types.h"
 #include "FiM_Cfg.h"
 
+/* Module / vendor identification */
+#define FIM_VENDOR_ID               (0x0055U)
+#define FIM_MODULE_ID               (0x71U)
+#define FIM_INSTANCE_ID             (0x00U)
+
 /* AUTOSAR Version Information */
 #define FIM_AR_RELEASE_MAJOR_VERSION    4u
 #define FIM_AR_RELEASE_MINOR_VERSION    4u
@@ -57,18 +62,8 @@ typedef enum {
     FIM_INIT
 } FiM_StateType;
 
-/* Type Definitions */
-typedef uint16 FiM_FunctionIdType;
+/* Type Definitions (FiM_FunctionIdType is defined in FiM_Cfg.h) */
 typedef uint32 FiM_MaskedEventsType;
-
-/* Version Information Type */
-typedef struct {
-    uint16 vendorID;
-    uint16 moduleID;
-    uint8 sw_major_version;
-    uint8 sw_minor_version;
-    uint8 sw_patch_version;
-} Std_VersionInfoType;
 
 /* External declarations for configuration data */
 extern const uint16 FiM_NumFids;

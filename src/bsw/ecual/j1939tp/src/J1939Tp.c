@@ -51,11 +51,19 @@
 #define J1939TP_MAX_DT_PACKETS              (255U)
 #define J1939TP_MAX_MESSAGE_SIZE            (1785U) /* 255 * 7 */
 #define J1939TP_DT_DATA_SIZE                (7U)
+#ifndef J1939TP_PROTOCOL_CMDT
+#define J1939TP_PROTOCOL_CMDT              (0x03U)
+#endif
+#ifndef J1939TP_TIMEOUT_COUNT
+#define J1939TP_TIMEOUT_COUNT              (1000U)
+#endif
 
 /* Connection states */
 typedef enum
 {
-    J1939TP_STATE_IDLE = 0,
+    J1939TP_STATE_UNINIT = 0,
+    J1939TP_STATE_INIT,
+    J1939TP_STATE_IDLE,
     J1939TP_STATE_TX_WAIT_CTS,
     J1939TP_STATE_TX_WAIT_EOMACK,
     J1939TP_STATE_TX_SENDING_BAM,

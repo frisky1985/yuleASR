@@ -28,6 +28,7 @@
 ==================================================================================================*/
 #include "StbM.h"
 #include "StbM_Cfg.h"
+#include "Eth.h"
 #include "Det.h"
 #include "MemMap.h"
 #include <string.h>
@@ -508,3 +509,27 @@ Std_ReturnType StbM_BusSetGlobalTime(uint8 timeBaseId,
 
     if ((timeStampPtr == NULL_PTR) || (virtualLocalTimePtr == NULL_PTR))
     {
+        STBM_DET_REPORT_ERROR(STBM_SID_BUSSETGLOBALTIME, STBM_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+#endif
+
+    tbPtr = &StbM_InternalState.TimeBases[timeBaseId];
+
+    /* Store the received global time and the corresponding local time */
+    tbPtr->globalTime = *timeStampPtr;
+    tbPtr->localTime = *virtualLocalTimePtr;
+    tbPtr->updateCounter++;
+    tbPtr->timeValid = TRUE;
+    tbPtr->syncStatus = STBM_SYNC_STATUS_SYNC;
+
+    result = E_OK;
+    return result;
+}
+
+#define STBM_STOP_SEC_CODE
+#include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE
+==================================================================================================*/

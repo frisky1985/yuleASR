@@ -110,6 +110,14 @@ typedef enum {
 *                                    CAN OBJECT HANDLE TYPE
 ==================================================================================================*/
 typedef uint16 Can_HwHandleType;
+typedef uint32 Can_IdType;
+
+/* Hardware object reference used by CanIf */
+typedef struct {
+    Can_IdType      CanId;
+    Can_HwHandleType Hoh;
+    uint8           ControllerId;
+} Can_HwType;
 
 /*==================================================================================================
 *                                    CAN PDU TYPE

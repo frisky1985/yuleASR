@@ -142,7 +142,25 @@ typedef enum {
 typedef enum {
     J1939TP_CONN_TYPE_UNICAST = 0, /* Point-to-point (RTS/CTS) */
     J1939TP_CONN_TYPE_BROADCAST    /* Broadcast (BAM) */
-} J1939Tp_ConnectionType;
+} J1939Tp_ConnTypeType;
+
+/*==================================================================================================
+*                                    J1939 TP NSDU CONFIG TYPE
+*==================================================================================================*/
+#define J1939TP_NUM_CONNECTIONS                 (2U)
+#define J1939TP_NUM_NSDUS                      (1U)
+#define J1939TP_PROTOCOL_BAM                   (0U)
+#define J1939TP_PROTOCOL_RTSCTS                (1U)
+
+typedef struct {
+    PduIdType NSduId;
+    uint8     ConnectionIdx;
+    uint8     Protocol;
+    PduIdType TxPduId;
+    PduIdType RxPduId;
+} J1939Tp_NSduConfigType;
+
+extern const J1939Tp_NSduConfigType J1939Tp_NSduConfig[J1939TP_NUM_NSDUS];
 
 /*==================================================================================================
 *                                    J1939 TP CHANNEL TYPE
@@ -334,7 +352,7 @@ void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  * @brief Tx confirmation callback from CAN Interface
  * @param TxPduId Transmitted PDU ID
  */
-void J1939Tp_TxConfirmation(PduIdType TxPduId);
+void J1939Tp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
 /**
  * @brief Start reception of a TP message

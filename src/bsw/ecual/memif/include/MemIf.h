@@ -36,13 +36,14 @@
 *                                    SERVICE IDs
 ==================================================================================================*/
 #define MEMIF_SID_READ                  (0x01U)
-#define MEMIF_SID_WRITE                 (0x02U)
-#define MEMIF_SID_CANCEL                (0x03U)
-#define MEMIF_SID_GETSTATUS             (0x04U)
-#define MEMIF_SID_GETJOBRESULT          (0x05U)
-#define MEMIF_SID_INVALIDATEBLOCK       (0x06U)
-#define MEMIF_SID_ERASEIMMEDIATEBLOCK   (0x07U)
-#define MEMIF_SID_GETVERSIONINFO        (0x08U)
+#define MEMIF_SID_INIT                  (0x02U)
+#define MEMIF_SID_WRITE                 (0x03U)
+#define MEMIF_SID_CANCEL                (0x04U)
+#define MEMIF_SID_GETSTATUS             (0x05U)
+#define MEMIF_SID_GETJOBRESULT          (0x06U)
+#define MEMIF_SID_INVALIDATEBLOCK       (0x07U)
+#define MEMIF_SID_ERASEIMMEDIATEBLOCK   (0x08U)
+#define MEMIF_SID_GETVERSIONINFO        (0x09U)
 
 /*==================================================================================================
 *                                    DET ERROR CODES

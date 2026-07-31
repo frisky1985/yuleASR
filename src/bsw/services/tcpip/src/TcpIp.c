@@ -540,6 +540,51 @@ TcpIp_ReturnType TcpIp_CloseSocket(TcpIp_SocketIdType SocketId)
 }
 
 /**
+ * @brief Create a TCP socket (convenience wrapper).
+ */
+Std_ReturnType TcpIp_SocketCreate(TcpIp_SocketIdType* SocketId)
+{
+    TcpIp_ReturnType result;
+
+    if (SocketId == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+
+    result = TcpIp_Create(TCPIP_AF_INET, TCPIP_SOCK_STREAM, SocketId);
+    return (result == TCPIP_OK) ? E_OK : E_NOT_OK;
+}
+
+/**
+ * @brief Close a socket (convenience wrapper).
+ */
+void TcpIp_SocketClose(TcpIp_SocketIdType SocketId)
+{
+    (void)TcpIp_CloseSocket(SocketId);
+}
+
+/**
+ * @brief Check whether a socket is connected (convenience wrapper).
+ */
+boolean TcpIp_IsConnected(TcpIp_SocketIdType SocketId)
+{
+    TcpIp_SocketEntryType* entry;
+
+    if (!TCPIP_IS_VALID_SOCKET(SocketId))
+    {
+        return FALSE;
+    }
+
+    entry = TcpIp_LocalFindSocket(SocketId);
+    if ((entry != NULL_PTR) && entry->InUse && entry->IsConnected)
+    {
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+/**
  * @brief Get the IPv4 address.
  */
 TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr)

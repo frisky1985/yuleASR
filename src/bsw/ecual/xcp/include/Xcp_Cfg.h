@@ -49,6 +49,12 @@
 
 /* DAQ configuration */
 #define XCP_MAX_DAQ_LISTS       (16u)   /* Maximum DAQ lists */
+#define XCP_MAX_DAQ             (16u)   /* Maximum DAQ lists (alias) */
+#define XCP_MAX_CTO             (8u)    /* Maximum CTO length */
+#define XCP_MAX_DTO             (8u)    /* Maximum DTO length */
+#define XCP_MAX_SEED_SIZE       (8u)    /* Maximum seed & key size */
+#define XCP_MAX_KEY_SIZE        (8u)
+#define XCP_MAX_STIM            (4u)    /* Maximum STIM lists */
 #define XCP_MAX_ODT             (8u)    /* Maximum ODTs per DAQ list */
 #define XCP_MAX_ODT_ENTRIES     (7u)    /* Maximum entries per ODT */
 #define XCP_MAX_EVENT_CHANNELS  (8u)    /* Maximum event channels */

@@ -508,3 +508,13 @@ Std_ReturnType SomeIpTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
             result = E_NOT_OK; /* Channel busy */
         }
     }
+
+    return result;
+}
+
+#define SOMEIPTP_STOP_SEC_CODE
+#include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE
+==================================================================================================*/

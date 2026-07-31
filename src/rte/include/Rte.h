@@ -486,4 +486,58 @@ extern Std_ReturnType Rte_Read_WatchdogManager_Port_Status(uint8* data);
 extern Std_ReturnType Rte_Call_WatchdogManager_Port_Reset(void);
 extern Std_ReturnType Rte_Call_WatchdogManager_Port_Trigger(void);
 
+
+/*==================================================================================================
+*                                    CORE RTE OPERATIONS
+*   Implemented in Rte.c / Rte_ComInterface.c / Rte_NvMInterface.c
+==================================================================================================*/
+extern Std_ReturnType Rte_Read(Rte_PortHandleType portHandle, void* data);
+extern Std_ReturnType Rte_Write(Rte_PortHandleType portHandle, const void* data);
+extern Std_ReturnType Rte_ComSendSignal(uint16 comSignalId, const void* signalData);
+extern Std_ReturnType Rte_NvmReadBlock(uint16 blockId, void* dataPtr);
+extern Std_ReturnType Rte_NvmWriteBlock(uint16 blockId, const void* dataPtr);
+extern uint32 Rte_GetTime(void);
+
+/*==================================================================================================
+*                                    GENERATED SWC PORT API
+*   Per-SWC Read/Write/Switch entry points referenced by the SWC interface
+*   macros in each component header. Generic pointer signatures are used so
+*   the declarations stay valid for all port data types.
+==================================================================================================*/
+extern Std_ReturnType Rte_Read_SWC_COMMUNICATIONMANAGER_PORT_PDU_DATA_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_DIAGNOSTICMANAGER_PORT_DIAG_REQUEST_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_ENGINECONTROL_PORT_COOLANT_TEMP_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_ENGINECONTROL_PORT_THROTTLE_POS_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_ENGINECONTROL_PORT_VEHICLE_SPEED_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_IOCONTROL_PORT_ANALOG_INPUT_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_IOCONTROL_PORT_DIGITAL_INPUT_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_IOCONTROL_PORT_PWM_INPUT_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_MODEMANAGER_PORT_MODE_REQUEST_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_VEHICLEDYNAMICS_PORT_ACCEL_DATA_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_VEHICLEDYNAMICS_PORT_STEERING_ANGLE_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_VEHICLEDYNAMICS_PORT_WHEEL_SPEEDS_R(void* data);
+extern Std_ReturnType Rte_Read_SWC_WATCHDOGMANAGER_PORT_ALIVE_INDICATION_R(void* data);
+extern Std_ReturnType Rte_Switch_SWC_ENGINECONTROL_PORT_MODE_P(uint32 data);
+extern Std_ReturnType Rte_Write_SWC_COMMUNICATIONMANAGER_PORT_COMM_STATE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_COMMUNICATIONMANAGER_PORT_PDU_DATA_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_DIAGNOSTICMANAGER_PORT_DIAG_RESPONSE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_DIAGNOSTICMANAGER_PORT_SECURITY_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_DIAGNOSTICMANAGER_PORT_SESSION_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_ENGINECONTROL_PORT_ENGINE_CONTROL_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_ENGINECONTROL_PORT_ENGINE_PARAMS_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_ENGINECONTROL_PORT_ENGINE_STATE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_IOCONTROL_PORT_ANALOG_OUTPUT_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_IOCONTROL_PORT_DIGITAL_OUTPUT_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_IOCONTROL_PORT_IO_STATE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_IOCONTROL_PORT_PWM_OUTPUT_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_MODEMANAGER_PORT_MODE_NOTIFICATION_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_MODEMANAGER_PORT_SYSTEM_MODE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_MODEMANAGER_PORT_SYSTEM_STATE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_STORAGEMANAGER_PORT_BLOCK_STATUS_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_VEHICLEDYNAMICS_PORT_MOTION_DATA_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_VEHICLEDYNAMICS_PORT_VDC_OUTPUT_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_VEHICLEDYNAMICS_PORT_VDC_STATE_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_WATCHDOGMANAGER_PORT_WDG_STATUS_P(const void* data);
+extern Std_ReturnType Rte_Write_SWC_WATCHDOGMANAGER_PORT_WDG_TRIGGER_P(const void* data);
+
 #endif /* RTE_H */

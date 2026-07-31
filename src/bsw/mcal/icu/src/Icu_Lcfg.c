@@ -55,114 +55,122 @@ __attribute__((weak)) void Icu_Channel7_Notification(void) { }
 const Icu_ChannelConfigType Icu_ChannelConfig[ICU_NUM_CHANNELS] = {
     /* Channel 0 - Edge Detection Mode */
     {
-        .Channel = ICU_CHANNEL_0,
-        .BaseAddress = ICU_CH0_BASE_ADDR,
-        .Mode = ICU_CH0_MODE,
-        .Edge = ICU_CH0_EDGE,
-        .Property = ICU_CH0_PROPERTY,
-        .Notification = Icu_Channel0_Notification,
-        .TimestampEnabled = ICU_CH0_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH0_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH0_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH0_PRESCALER
+        .ChannelId = ICU_CHANNEL_0,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_SIGNAL_EDGE_DETECT,
+        .DefaultActivation = ICU_RISING_EDGE,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel0_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 0U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 1 - Signal Measurement Mode */
     {
-        .Channel = ICU_CHANNEL_1,
-        .BaseAddress = ICU_CH1_BASE_ADDR,
-        .Mode = ICU_CH1_MODE,
-        .Edge = ICU_CH1_EDGE,
-        .Property = ICU_CH1_PROPERTY,
-        .Notification = Icu_Channel1_Notification,
-        .TimestampEnabled = ICU_CH1_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH1_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH1_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH1_PRESCALER
+        .ChannelId = ICU_CHANNEL_1,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_SIGNAL_MEASUREMENT,
+        .DefaultActivation = ICU_BOTH_EDGES,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel1_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 0U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 2 - Timestamp Mode */
     {
-        .Channel = ICU_CHANNEL_2,
-        .BaseAddress = ICU_CH2_BASE_ADDR,
-        .Mode = ICU_CH2_MODE,
-        .Edge = ICU_CH2_EDGE,
-        .Property = ICU_CH2_PROPERTY,
-        .Notification = Icu_Channel2_Notification,
-        .TimestampEnabled = ICU_CH2_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH2_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH2_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH2_PRESCALER
+        .ChannelId = ICU_CHANNEL_2,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_TIMESTAMP,
+        .DefaultActivation = ICU_RISING_EDGE,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel2_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 8U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 3 - Edge Counter Mode */
     {
-        .Channel = ICU_CHANNEL_3,
-        .BaseAddress = ICU_CH3_BASE_ADDR,
-        .Mode = ICU_CH3_MODE,
-        .Edge = ICU_CH3_EDGE,
-        .Property = ICU_CH3_PROPERTY,
-        .Notification = Icu_Channel3_Notification,
-        .TimestampEnabled = ICU_CH3_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH3_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH3_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH3_PRESCALER
+        .ChannelId = ICU_CHANNEL_3,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_EDGE_COUNTER,
+        .DefaultActivation = ICU_BOTH_EDGES,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel3_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 0U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 4 - Edge Detection Mode with Wakeup */
     {
-        .Channel = ICU_CHANNEL_4,
-        .BaseAddress = ICU_CH4_BASE_ADDR,
-        .Mode = ICU_CH4_MODE,
-        .Edge = ICU_CH4_EDGE,
-        .Property = ICU_CH4_PROPERTY,
-        .Notification = Icu_Channel4_Notification,
-        .TimestampEnabled = ICU_CH4_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH4_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH4_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH4_PRESCALER
+        .ChannelId = ICU_CHANNEL_4,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_SIGNAL_EDGE_DETECT,
+        .DefaultActivation = ICU_RISING_EDGE,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel4_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 0U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = TRUE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 5 - Signal Measurement Mode */
     {
-        .Channel = ICU_CHANNEL_5,
-        .BaseAddress = ICU_CH5_BASE_ADDR,
-        .Mode = ICU_CH5_MODE,
-        .Edge = ICU_CH5_EDGE,
-        .Property = ICU_CH5_PROPERTY,
-        .Notification = Icu_Channel5_Notification,
-        .TimestampEnabled = ICU_CH5_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH5_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH5_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH5_PRESCALER
+        .ChannelId = ICU_CHANNEL_5,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_SIGNAL_MEASUREMENT,
+        .DefaultActivation = ICU_BOTH_EDGES,
+        .SignalMeasurementProperty = ICU_DUTY_CYCLE,
+        .NotificationFn = Icu_Channel5_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 0U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 6 - Timestamp Mode */
     {
-        .Channel = ICU_CHANNEL_6,
-        .BaseAddress = ICU_CH6_BASE_ADDR,
-        .Mode = ICU_CH6_MODE,
-        .Edge = ICU_CH6_EDGE,
-        .Property = ICU_CH6_PROPERTY,
-        .Notification = Icu_Channel6_Notification,
-        .TimestampEnabled = ICU_CH6_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH6_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH6_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH6_PRESCALER
+        .ChannelId = ICU_CHANNEL_6,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_TIMESTAMP,
+        .DefaultActivation = ICU_RISING_EDGE,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel6_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 8U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     },
-    
+
     /* Channel 7 - Edge Counter Mode */
     {
-        .Channel = ICU_CHANNEL_7,
-        .BaseAddress = ICU_CH7_BASE_ADDR,
-        .Mode = ICU_CH7_MODE,
-        .Edge = ICU_CH7_EDGE,
-        .Property = ICU_CH7_PROPERTY,
-        .Notification = Icu_Channel7_Notification,
-        .TimestampEnabled = ICU_CH7_TIMESTAMP_ENABLED,
-        .TimestampBufferSize = ICU_CH7_BUFFER_SIZE,
-        .WakeupSupport = ICU_CH7_WAKEUP_SUPPORT,
-        .ClockPrescaler = ICU_CH7_PRESCALER
+        .ChannelId = ICU_CHANNEL_7,
+        .BaseAddress = 0U,
+        .MeasurementMode = ICU_MODE_EDGE_COUNTER,
+        .DefaultActivation = ICU_BOTH_EDGES,
+        .SignalMeasurementProperty = ICU_PERIOD_TIME,
+        .NotificationFn = Icu_Channel7_Notification,
+        .NotificationEnabled = TRUE,
+        .BufferSize = 0U,
+        .BufferPtr = NULL_PTR,
+        .WakeupSupport = FALSE,
+        .ClockPrescaler = 1U
     }
 };
 

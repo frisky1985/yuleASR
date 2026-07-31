@@ -54,12 +54,17 @@
 #define FEE_SECTOR_STATE_FULL           (0x02U)
 #define FEE_SECTOR_STATE_ERASING        (0x03U)
 
-#define FEE_JOB_NONE                    (0x00U)
-#define FEE_JOB_READ                    (0x01U)
-#define FEE_JOB_WRITE                   (0x02U)
-#define FEE_JOB_ERASE                   (0x03U)
-#define FEE_JOB_COMPARE                 (0x04U)
+/* Job type constants: READ/WRITE/ERASE_IMMEDIATE/GC_PAGE/NONE come from the
+ * Fee_JobType enum in Fee.h; aliases for the erase/compare/blankcheck jobs. */
+#ifndef FEE_JOB_ERASE
+#define FEE_JOB_ERASE                   FEE_JOB_ERASE_IMMEDIATE
+#endif
+#ifndef FEE_JOB_COMPARE
+#define FEE_JOB_COMPARE                 (0x03U)
+#endif
+#ifndef FEE_JOB_BLANKCHECK
 #define FEE_JOB_BLANKCHECK              (0x05U)
+#endif
 
 #define FEE_FLAG_INITIALIZED            (0x01U)
 #define FEE_FLAG_BUSY                   (0x02U)

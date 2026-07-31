@@ -97,3 +97,27 @@
 #define NVM_MULTI_BLOCK_CALLBACK        (STD_OFF)
 
 #endif /* NVM_CFG_H */
+
+/*==================================================================================================
+*                                    ECC HANDLER SUPPORT
+==================================================================================================*/
+#ifndef NVM_CFG_MAX_BLOCK_ID
+#define NVM_CFG_MAX_BLOCK_ID            (5U)
+#endif
+
+/* Block sizes for ECC handler ROM defaults (bytes) */
+#ifndef NVM_CFG_BLOCK_DEM_ADMIN_SIZE
+#define NVM_CFG_BLOCK_DEM_ADMIN_SIZE    (4U)
+#endif
+#ifndef NVM_CFG_BLOCK_DEM_STATUS_SIZE
+#define NVM_CFG_BLOCK_DEM_STATUS_SIZE   (1U)
+#endif
+#ifndef NVM_CFG_BLOCK_ECUM_CFG_SIZE
+#define NVM_CFG_BLOCK_ECUM_CFG_SIZE     (1U)
+#endif
+#ifndef NVM_CFG_BLOCK_BSWM_CFG_SIZE
+#define NVM_CFG_BLOCK_BSWM_CFG_SIZE     (1U)
+#endif
+#ifndef NVM_CFG_BLOCK_APP_DATA_SIZE
+#define NVM_CFG_BLOCK_APP_DATA_SIZE     (64U)
+#endif

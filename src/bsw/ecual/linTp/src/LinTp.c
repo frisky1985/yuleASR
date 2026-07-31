@@ -953,14 +953,14 @@ static void LinTp_ProcessSingleFrame(uint8 ChannelIdx, const PduInfoType *PduInf
     pduRInfo.SduDataPtr = NULL_PTR;
     bufStatus = PduR_LinTpStartOfReception(channelPtr->CurrentNsduId, &pduRInfo, dataLength, &bufferSize);
 
-    if (bufStatus == BUFREQ_OK)
+    if (bufStatus == BUFREQ_E_OK)
     {
         /* Copy received data to PduR */
         pduRInfo.SduLength = dataLength;
         pduRInfo.SduDataPtr = &PduInfoPtr->SduDataPtr[1];
         bufStatus = PduR_LinTpCopyRxData(channelPtr->CurrentNsduId, &pduRInfo, &bufferSize);
 
-        if (bufStatus == BUFREQ_OK)
+        if (bufStatus == BUFREQ_E_OK)
         {
             /* Reception complete */
             channelPtr->RxState = LINTP_RX_COMPLETED;
@@ -1034,14 +1034,14 @@ static void LinTp_ProcessFirstFrame(uint8 ChannelIdx, const PduInfoType *PduInfo
     pduRInfo.SduDataPtr = channelPtr->RxBuffer;
     bufStatus = PduR_LinTpStartOfReception(channelPtr->CurrentNsduId, &pduRInfo, dataLength, &bufferSize);
 
-    if (bufStatus == BUFREQ_OK)
+    if (bufStatus == BUFREQ_E_OK)
     {
         /* Copy FF data to PduR */
         pduRInfo.SduLength = LINTP_FF_MAX_DATA_LENGTH;
         pduRInfo.SduDataPtr = channelPtr->RxBuffer;
         bufStatus = PduR_LinTpCopyRxData(channelPtr->CurrentNsduId, &pduRInfo, &bufferSize);
 
-        if (bufStatus == BUFREQ_OK)
+        if (bufStatus == BUFREQ_E_OK)
         {
             /* Send FC.CTS to continue reception */
             channelPtr->BufferProvided = TRUE;
@@ -1121,7 +1121,7 @@ static void LinTp_ProcessConsecutiveFrame(uint8 ChannelIdx, const PduInfoType *P
     pduRInfo.SduDataPtr = &channelPtr->RxBuffer[channelPtr->DataIndex - payloadLength];
     bufStatus = PduR_LinTpCopyRxData(channelPtr->CurrentNsduId, &pduRInfo, &bufferSize);
 
-    if (bufStatus != BUFREQ_OK)
+    if (bufStatus != BUFREQ_E_OK)
     {
         /* Buffer error */
         PduR_LinTpRxIndication(channelPtr->CurrentNsduId, E_NOT_OK);

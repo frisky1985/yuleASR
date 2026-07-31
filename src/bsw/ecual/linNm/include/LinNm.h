@@ -20,6 +20,7 @@
 #include "Std_Types.h"
 #include "LinNm_Cfg.h"
 #include "ComStack_Types.h"
+#include "Nm.h"
 #include "ComM.h"
 #include "Det.h"
 
@@ -125,10 +126,8 @@ typedef enum {
 /**
  * @brief LIN NM Com Control Type
  */
-typedef enum {
-    LINNM_COM_CONTROL_ENABLED = 0,      /**< Communication enabled */
-    LINNM_COM_CONTROL_DISABLED          /**< Communication disabled */
-} LinNm_ComControlType;
+/* Values from LinNm_Cfg.h */
+typedef uint8 LinNm_ComControlType;
 
 /**
  * @brief LIN NM Channel Configuration Type
@@ -367,8 +366,9 @@ void LinNm_ComM_NetworkMode(NetworkHandleType Channel);
  * @param nmNetworkHandle Network handle
  * @param nmState New NM state
  */
-void Nm_StateChangeNotification(NetworkHandleType nmNetworkHandle, 
-                                 Nm_StateType nmState);
+void Nm_StateChangeNotification(NetworkHandleType nmNetworkHandle,
+                                 Nm_StateType nmPreviousState,
+                                 Nm_StateType nmCurrentState);
 
 /**
  * @brief Callback function for remote sleep indication.

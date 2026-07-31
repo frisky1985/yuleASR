@@ -107,6 +107,17 @@
 /**
  * @brief RAM区域配置表
  */
+/* RAM region configuration (S32K312 memory map defaults) */
+#define RAMSAFETY_CFG_NUM_REGIONS                   4U
+#define RAMSAFETY_ADDR_DTCM_BASE                    0x20000000U
+#define RAMSAFETY_ADDR_DTCM_SIZE                    0x00020000U
+#define RAMSAFETY_ADDR_SRAM_BASE                    0x20400000U
+#define RAMSAFETY_ADDR_SRAM_SIZE                    0x00040000U
+#define RAMSAFETY_ADDR_FLEXRAM_BASE                 0x14000000U
+#define RAMSAFETY_ADDR_FLEXRAM_SIZE                 0x00080000U
+#define RAMSAFETY_ADDR_STACK_BASE                   0x20020000U
+#define RAMSAFETY_ADDR_STACK_SIZE                   0x00008000U
+
 #define RAMSAFETY_REGION_DTCM                       0U
 #define RAMSAFETY_REGION_SRAM                       1U
 #define RAMSAFETY_REGION_FLEXRAM                    2U

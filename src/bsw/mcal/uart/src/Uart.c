@@ -20,6 +20,8 @@
 
 #include "Uart.h"
 #include "SchM_Uart.h"
+#include "Dma.h"
+#include "Gpt.h"
 
 #if (UART_DEV_ERROR_DETECT == STD_ON)
 #include "Det.h"
@@ -121,6 +123,7 @@
 #define USR2_ORE                    (1u << 1)   /* 溢出错误 */
 #define USR2_BRCD                   (1u << 2)   /* 中断条件检测 */
 #define USR2_TXDC                   (1u << 3)   /* 传输完成 */
+#define USR1_TRDY                   (1u << 13)  /* 发送FIFO就绪 */
 #define USR2_RTSF                   (1u << 4)   /* RTS边沿触发 */
 #define USR2_DCDDELT                (1u << 6)   /* DCD变化 */
 #define USR2_DCDIN                  (1u << 7)   /* DCD输入 */
@@ -182,16 +185,20 @@ static Uart_ErrorNotificationType Uart_ErrorNotification[UART_CHANNEL_COUNT];
     #define UART_VALIDATE_POINTER(Ptr, ApiId)         do {             if ((Ptr) == NULL_PTR) {                 Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, (ApiId), UART_E_PARAM_POINTER);                 return E_NOT_OK;             }         } while(0)
 
     #define UART_VALIDATE_INITIALIZED(ApiId)         do {             if (Uart_Initialized == FALSE) {                 Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, (ApiId), UART_E_UNINIT);                 return E_NOT_OK;             }         } while(0)
+    #define UART_VALIDATE_INITIALIZED_VOID(ApiId)    do {             if (Uart_Initialized == FALSE) {                 Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, (ApiId), UART_E_UNINIT);                 return;             }         } while(0)
 #else
     #define UART_VALIDATE_CHANNEL(Channel, ApiId)
     #define UART_VALIDATE_POINTER(Ptr, ApiId)
     #define UART_VALIDATE_INITIALIZED(ApiId)
+    #define UART_VALIDATE_INITIALIZED_VOID(ApiId)
 #endif
 
 /*============================================================================
  * 内部函数声明
  *===========================================================================*/
 static void Uart_HwInit(Uart_ChannelType Channel);
+static uint32 Uart_GetCurrentTime(void);
+static uint32 Uart_GetElapsedTime(uint32 StartTime);
 static void Uart_HwDeInit(Uart_ChannelType Channel);
 static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate);
 static void Uart_ProcessTxInterrupt(Uart_ChannelType Channel);
@@ -251,7 +258,7 @@ void Uart_DeInit(void)
 {
     uint8 channel;
     
-    UART_VALIDATE_INITIALIZED(UART_SERVICE_ID_DEINIT);
+    UART_VALIDATE_INITIALIZED_VOID(UART_SERVICE_ID_DEINIT);
     
     /* 反初始化所有通道 */
     for (channel = 0; channel < Uart_ConfigPtr->ChannelCount; channel++) {

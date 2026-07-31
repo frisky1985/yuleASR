@@ -82,14 +82,8 @@ typedef enum
     DOIP_STATE_INIT   = 1
 } DoIP_StateType;
 
-/* Routing activation type */
-typedef enum
-{
-    DOIP_ROUTING_ACTIVATION_DEFAULT = 0,
-    DOIP_ROUTING_ACTIVATION_WWH_OBD = 1,
-    DOIP_ROUTING_ACTIVATION_CDS     = 2,
-    DOIP_ROUTING_ACTIVATION_CENTRAL_SECURITY = 3
-} DoIP_RoutingActivationType;
+/* Routing activation type (values from DoIP_Cfg.h) */
+typedef uint8 DoIP_RoutingActivationType;
 
 /* Routing activation response code */
 typedef enum

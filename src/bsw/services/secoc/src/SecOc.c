@@ -28,6 +28,7 @@
 #include "Csm.h"
 #include "Det.h"
 #include "SchM_SecOC.h"
+#include <string.h>
 
 /*==================================================================================================
  *                                    VERSION CHECK
@@ -36,7 +37,7 @@
     #error "SecOC.c: AR major version mismatch"
 #endif
 
-#if defined(SECOC_AR_RELEASE_MINOR_VERSION) && (SECOC_AR_RELEASE_MINOR_VERSION != 4u)
+#if defined(SECOC_AR_RELEASE_MINOR_VERSION) && (SECOC_AR_RELEASE_MINOR_VERSION != 7u)
     #error "SecOC.c: AR minor version mismatch"
 #endif
 
@@ -508,3 +509,23 @@ Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr
     
     if (SecOC_TxBuffers[idx].inUse) {
         return E_NOT_OK;
+    }
+
+    /* Copy PDU data into the TX buffer */
+    if ((PduInfoPtr != NULL_PTR) && (PduInfoPtr->SduDataPtr != NULL_PTR))
+    {
+        SecOC_TxBuffers[idx].length = PduInfoPtr->SduLength;
+        (void)memcpy(SecOC_TxBuffers[idx].data, PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength);
+        SecOC_TxBuffers[idx].inUse = TRUE;
+        SecOC_TxBuffers[idx].pduId = TxPduId;
+    }
+
+    return E_OK;
+}
+
+#define SECOC_STOP_SEC_CODE
+#include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE
+==================================================================================================*/

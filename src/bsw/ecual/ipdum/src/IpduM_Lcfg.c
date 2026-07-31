@@ -263,10 +263,10 @@ static const IpduM_RxMuxPduType* const IpduM_RxMuxPdus[IPDUM_MAX_RX_MUX_PDUS] =
 const IpduM_ConfigType IpduM_Config =
 {
     /* NumTxMuxPdus */ 2U,
-    /* TxMuxPdus */ (const IpduM_TxMuxPduType*)IpduM_TxMuxPdu_0,  /* Pointer to first element */
+    /* TxMuxPdus */ &IpduM_TxMuxPdu_0,
     
     /* NumRxMuxPdus */ 2U,
-    /* RxMuxPdus */ (const IpduM_RxMuxPduType*)IpduM_RxMuxPdu_0
+    /* RxMuxPdus */ &IpduM_RxMuxPdu_0
 };
 
 /* Pointer to active configuration */

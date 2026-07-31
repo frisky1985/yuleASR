@@ -676,7 +676,7 @@ BufReq_ReturnType Eth_ProvideTxBuffer(Eth_ControllerType CtrlIdx, Eth_FrameIdTyp
         {
             *BufIdxPtr = bufIdx;
             *BufPtr = Eth_TxDesc[CtrlIdx][bufIdx].DataPtr;
-            result = BUFREQ_OK;
+            result = BUFREQ_E_OK;
         }
         else
         {

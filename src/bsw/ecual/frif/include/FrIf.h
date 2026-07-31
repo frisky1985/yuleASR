@@ -97,11 +97,8 @@
 /*==================================================================================================
 *                                    FRIF CHANNEL TYPE
 ==================================================================================================*/
-typedef enum {
-    FRIF_CHANNEL_A = 0,
-    FRIF_CHANNEL_B,
-    FRIF_CHANNEL_AB
-} FrIf_ChannelType;
+/* Channel ids come from FrIf_Cfg.h (FRIF_CHANNEL_A/B/AB) */
+typedef uint8 FrIf_ChannelType;
 
 /*==================================================================================================
 *                                    FRIF CTRL MODE TYPE

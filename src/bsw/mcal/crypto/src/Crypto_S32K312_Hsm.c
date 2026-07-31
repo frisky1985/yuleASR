@@ -250,7 +250,7 @@ Std_ReturnType S32K312_Hsm_Init(const S32K312_HsmConfigType* config)
     if (config->enableTrng) {
         Crypto_HwTrngConfigType trngConfig;
         trngConfig.enableHealthTests = TRUE;
-        trngConfig.enable Conditioning = TRUE;
+        trngConfig.enableConditioning = TRUE;
         trngConfig.sampleCount = 0U; /* Use default */
         trngConfig.timeoutUs = config->timeoutUs;
         

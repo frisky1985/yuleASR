@@ -447,4 +447,26 @@ typedef struct
     boolean devErrorDetect;             /* 开发错误检测 */
 } Csm_ConfigType;
 
+
+/*==================================================================================================
+ *                          SECOC COMPATIBILITY DEFINITIONS
+ *================================================================================================*/
+#ifndef CSM_JOB_ID_MAC_GENERATE_1
+#define CSM_JOB_ID_MAC_GENERATE_1               (1U)
+#endif
+#ifndef CSM_JOB_ID_MAC_VERIFY_1
+#define CSM_JOB_ID_MAC_VERIFY_1                 (2U)
+#endif
+#ifndef CSM_OPERATIONMODE_STREAMSTART
+#define CSM_OPERATIONMODE_STREAMSTART           (0x01U)
+#endif
+
+/* MAC verification result */
+typedef uint8 Csm_VerifyResultType;
+#ifndef CSM_E_VER_OK
+#define CSM_E_VER_OK                            (0U)
+#endif
+#ifndef CSM_E_VER_NOT_OK
+#define CSM_E_VER_NOT_OK                        (1U)
+#endif
 #endif /* CSM_TYPES_H */

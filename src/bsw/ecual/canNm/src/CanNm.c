@@ -243,7 +243,7 @@ static void CanNm_NotifyStateChange(uint8 ChannelIndex, Nm_StateType State, Nm_M
 #endif
 
     /* Notify ComM of mode change */
-    ComM_Nm_NetworkMode(CanNm_ConfigPtr->ChannelConfig[ChannelIndex].ChannelId);
+    ComM_ECNM_NetworkMode(CanNm_ConfigPtr->ChannelConfig[ChannelIndex].ChannelId);
 }
 
 /**
@@ -265,7 +265,7 @@ static void CanNm_EnterBusSleepMode(uint8 ChannelIndex)
     ChState->MsgTxEnabled = FALSE;
 
     /* Notify ComM */
-    ComM_Nm_BusSleepMode(ChCfg->ChannelId);
+    ComM_ECNM_BusSleepMode(ChCfg->ChannelId);
 
     /* Notify state change */
     CanNm_NotifyStateChange(ChannelIndex, NM_STATE_BUS_SLEEP, NM_MODE_BUS_SLEEP);
@@ -284,7 +284,7 @@ static void CanNm_EnterPrepareBusSleepMode(uint8 ChannelIndex)
     ChState->MsgTxEnabled = FALSE;
 
     /* Notify ComM */
-    ComM_Nm_PrepareBusSleepMode(ChCfg->ChannelId);
+    ComM_ECNM_PrepareBusSleepMode(ChCfg->ChannelId);
 
     /* Notify state change */
     CanNm_NotifyStateChange(ChannelIndex, NM_STATE_PREPARE_BUS_SLEEP, NM_MODE_PREPARE_BUS_SLEEP);
@@ -322,7 +322,7 @@ static void CanNm_EnterRepeatMessageState(uint8 ChannelIndex, boolean ActiveWake
     }
 
     /* Notify ComM */
-    ComM_Nm_NetworkMode(ChCfg->ChannelId);
+    ComM_ECNM_NetworkMode(ChCfg->ChannelId);
 
     /* Notify state change */
     CanNm_NotifyStateChange(ChannelIndex, NM_STATE_REPEAT_MESSAGE, NM_MODE_NETWORK);

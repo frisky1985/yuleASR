@@ -12,7 +12,16 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/dio/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/adc/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/port/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/can/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/spi/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/fls/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/lin/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/uart/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../services/soad/include
+    ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
+    ${CMAKE_SOURCE_DIR}/include/autosar
+    ${CMAKE_SOURCE_DIR}/config/input/ecual
+    ${CMAKE_SOURCE_DIR}/config/input/services
 )
 
 # Collect all ECUAL + services include directories for cross-module use

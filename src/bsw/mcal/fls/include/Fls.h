@@ -25,6 +25,34 @@
 #ifndef FLS_H
 #define FLS_H
 
+/* MemIf mode type used by Fls */
+#ifndef MEMIF_MODETYPE_DEFINED
+#define MEMIF_MODETYPE_DEFINED
+typedef enum {
+    MEMIF_MODE_SLOW = 0,
+    MEMIF_MODE_FAST
+} MemIf_ModeType;
+#endif
+
+#ifndef MEMIF_BLOCK_INCONSISTENT
+#define MEMIF_BLOCK_INCONSISTENT        (0x00U)
+#define MEMIF_BLOCK_VALID               (0x01U)
+#define MEMIF_BLOCK_INVALID             (0x02U)
+#endif
+
+/* Fls job types (shared with Fee) */
+#ifndef FLS_JOB_NONE
+#define FLS_JOB_NONE                    (0x00U)
+#define FLS_JOB_READ                    (0x01U)
+#define FLS_JOB_WRITE                   (0x02U)
+#define FLS_JOB_ERASE                   (0x03U)
+#define FLS_JOB_SUSPEND                 (0x04U)
+#define FLS_JOB_RESUME                  (0x05U)
+#define FLS_JOB_COMPARE                 (0x06U)
+#define FLS_JOB_BLANK_CHECK             (0x07U)
+#define FLS_JOB_CANCEL                  (0x08U)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

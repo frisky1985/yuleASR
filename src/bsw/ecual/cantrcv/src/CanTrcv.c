@@ -160,7 +160,7 @@ static CanTrcv_TrcvModeType CanTrcv_HwGetMode(uint8 channelIndex)
 /**
  * @brief Check for wake-up event
  */
-static void CanTrcv_CheckWakeup(uint8 channelIndex)
+static void CanTrcv_CheckWakeupInternal(uint8 channelIndex)
 {
     const CanTrcv_ConfigType* Config = CanTrcv_ConfigPtr;
     const CanTrcv_ChannelConfigType* ChCfg = &Config->ChannelConfig[channelIndex];
@@ -404,7 +404,7 @@ void CanTrcv_MainFunction(void)
     for (i = 0; i < CANTRCV_MAX_CHANNELS; i++)
     {
         /* Check for wake-up events */
-        CanTrcv_CheckWakeup(i);
+        CanTrcv_CheckWakeupInternal(i);
         
         /* Update runtime mode from hardware (optional) */
         /* CanTrcv_Runtime[i].CurrentMode = CanTrcv_HwGetMode(i); */
@@ -438,17 +438,17 @@ void CanTrcv_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 /**
  * @brief Check wake-up by transceiver (called by EcuM)
  */
-void CanTrcv_CheckWakeupByTransceiver(CanTrcv_TrcvChnlType Transceiver)
+Std_ReturnType CanTrcv_CheckWakeupByTransceiver(CanTrcv_TrcvChnlType Transceiver)
 {
     uint8 chIdx = CanTrcv_GetChannelIndex(Transceiver);
     
     if (CanTrcv_InitStatus == FALSE)
     {
-        return;
+        return E_OK;
     }
     
     if (chIdx < CANTRCV_MAX_CHANNELS)
     {
-        CanTrcv_CheckWakeup(chIdx);
+        CanTrcv_CheckWakeupInternal(chIdx);
     }
 }

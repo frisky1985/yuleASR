@@ -186,10 +186,25 @@ Boot_Result Boot_Loader_ConfirmBoot(void)
 
 /* ---- Jump to Application ---- */
 
+/* Minimal Cortex-M SysTick/SCB register access (for host builds) */
+#ifndef SYSTICK_DEFINED
+#define SYSTICK_DEFINED
+typedef struct { volatile uint32_t CTRL; volatile uint32_t LOAD; volatile uint32_t VAL; volatile uint32_t CALIB; } SysTick_TypeDef;
+typedef struct { volatile uint32_t ACTLR; volatile uint32_t CPUID; volatile uint32_t ICSR; } SCB_TypeDef;
+static SysTick_TypeDef SysTick_Stub;
+static SCB_TypeDef SCB_Stub;
+#define SysTick    (&SysTick_Stub)
+#define SCB        (&SCB_Stub)
+#endif
+
 void Boot_Loader_Jump(uint32_t target_addr)
 {
     /* Disable interrupts */
+#if defined(__aarch64__)
+    __asm volatile("msr daifset, #2" ::: "memory");
+#else
     __asm volatile("cpsid i");
+#endif
 
     /* Disable SysTick and pending interrupts */
     SysTick->CTRL = 0U;
@@ -203,8 +218,12 @@ void Boot_Loader_Jump(uint32_t target_addr)
     Boot_Flash_Init();  /* flush pending operations */
 
     /* Set main stack pointer */
+#if defined(__aarch64__)
+    __asm volatile("mov sp, %0" : : "r"(msp));
+#else
     __asm volatile("msr msp, %0" : : "r"(msp));
     __asm volatile("msr psp, %0" : : "r"(msp));
+#endif
 
     /* Branch to application */
     typedef void (*AppEntry)(void);

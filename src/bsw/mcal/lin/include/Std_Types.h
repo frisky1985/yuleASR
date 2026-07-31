@@ -32,6 +32,13 @@ typedef signed short        sint16_least;
 typedef signed int          sint32_least;
 #endif
 
+/* AUTOSAR version information (aligned with Det.h) */
+#ifndef STD_TYPES_AR_RELEASE_MAJOR_VERSION
+#define STD_TYPES_AR_RELEASE_MAJOR_VERSION      (4U)
+#define STD_TYPES_AR_RELEASE_MINOR_VERSION      (7U)
+#define STD_TYPES_AR_RELEASE_REVISION_VERSION   (0U)
+#endif
+
 typedef float               float32;
 typedef double              float64;
 

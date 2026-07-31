@@ -87,4 +87,9 @@ void LinIf_RxIndication(uint8 LinChannel, const LinIf_PduType* PduInfoPtr);
 void LinIf_MainFunction(void);
 void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+extern Std_ReturnType LinIf_WakeUp(uint8 Channel);
+extern Std_ReturnType LinIf_GotoSleep(uint8 Channel);
+typedef uint8 LinIf_ScheduleTableType;
+extern Std_ReturnType LinIf_ScheduleRequest(uint8 Channel, LinIf_ScheduleTableType ScheduleTable);
+
 #endif /* LINIF_H */

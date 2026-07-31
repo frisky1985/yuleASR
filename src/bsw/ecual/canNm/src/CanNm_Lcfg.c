@@ -169,7 +169,7 @@ static const NetworkHandleType CanNm_ComMChannelMapping[CANNM_NUMBER_OF_CHANNELS
 /**
  * @brief Module version information (link-time constant)
  */
-static const Std_VersionInfoType CanNm_VersionInfo =
+const Std_VersionInfoType CanNm_VersionInfo =
 {
     /* vendorID */                  CANNM_VENDOR_ID,
     /* moduleID */                  CANNM_MODULE_ID,

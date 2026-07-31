@@ -20,6 +20,7 @@
 #include "NvM_Cfg.h"
 #include "Det.h"
 #include "MemIf.h"
+#include "Mcal.h"
 #include "MemMap.h"
 #include <string.h>
 
@@ -2218,3 +2219,64 @@ Std_ReturnType NvM_WriteAll(void)
     if (NvM_InternalState.WriteAllPendingCount > 0U)
     {
         NvM_InternalState.WriteAllInProgress = TRUE;
+    }
+
+    return result;
+}
+
+/**
+ * @brief   Kill WriteAll operation
+ */
+void NvM_KillWriteAll(void)
+{
+    NvM_InternalState.KillWriteAllRequested = TRUE;
+}
+
+/**
+ * @brief   Kill ReadAll operation
+ */
+void NvM_KillReadAll(void)
+{
+    NvM_InternalState.KillReadAllRequested = TRUE;
+}
+
+/**
+ * @brief   Get the RAM address of a block (used by ECC handler)
+ * @param   BlockId - Block identifier
+ * @return  Pointer to the block RAM data, or NULL_PTR if not found
+ */
+const void* NvM_GetBlockAddress(NvM_BlockIdType BlockId)
+{
+    const NvM_BlockDescriptorType* blockDesc = NvM_GetBlockDescriptor(BlockId);
+
+    if (blockDesc == NULL_PTR)
+    {
+        return NULL_PTR;
+    }
+
+    return blockDesc->RamBlockData;
+}
+
+/**
+ * @brief   Get the redundant (mirror) address of a block
+ * @param   BlockId - Block identifier
+ * @return  Pointer to the mirror block data, or NULL_PTR if not available
+ */
+const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId)
+{
+    const NvM_BlockDescriptorType* blockDesc = NvM_GetBlockDescriptor(BlockId);
+
+    if (blockDesc == NULL_PTR)
+    {
+        return NULL_PTR;
+    }
+
+    return blockDesc->MirrorBlockData;
+}
+
+#define NVM_STOP_SEC_CODE
+#include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE
+==================================================================================================*/

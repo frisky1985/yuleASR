@@ -30,11 +30,23 @@
 #define ETH_MODE_ACTIVE             0x01U
 #define ETH_MODE_SLEEP              0x02U
 
+/* Controller mode aliases used by EthSM */
+#define ETHIF_MODE_DOWN             ETH_MODE_DOWN
+#define ETHIF_MODE_ACTIVE           ETH_MODE_ACTIVE
+#define ETHIF_MODE_SLEEP            ETH_MODE_SLEEP
+
 typedef enum {
     ETHIF_CS_STOPPED = 0,
     ETHIF_CS_STARTED,
     ETHIF_CS_SLEEP
 } EthIf_ControllerMode;
+
+/* Transceiver link state */
+typedef enum {
+    ETHIF_LINK_STATE_DOWN = 0,
+    ETHIF_LINK_STATE_ACTIVE,
+    ETHIF_LINK_STATE_INVALID
+} EthIf_LinkStateType;
 
 typedef struct {
     uint8  MacAddress[6];
@@ -91,5 +103,6 @@ void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr);
 void EthIf_TxConfirmation(uint8 ControllerId, uint32 BufferHandle);
 void EthIf_MainFunction(void);
 void EthIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
+Std_ReturnType EthIf_GetTransceiverLinkState(uint8 TrcvIdx, EthIf_LinkStateType* LinkStatePtr);
 
 #endif /* ETHIF_H */

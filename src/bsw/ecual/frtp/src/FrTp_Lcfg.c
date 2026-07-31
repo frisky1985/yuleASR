@@ -34,7 +34,7 @@
 /**
  * @brief FrTp connection configurations
  */
-static const FrTp_ConnectionConfigType FrTp_ConnectionConfigs[FRTP_MAX_CONNECTIONS] =
+const FrTp_ConnectionConfigType FrTp_ConnectionConfigs[FRTP_MAX_CONNECTIONS] =
 {
     /* Connection 0: Diagnostic */
     {

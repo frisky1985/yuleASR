@@ -29,6 +29,7 @@
 ==================================================================================================*/
 #define FRTP_START_SEC_CODE
 #include "MemMap.h"
+#include <string.h>
 
 /**
  * @brief Finds connection index by Tx PDU ID

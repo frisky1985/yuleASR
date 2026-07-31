@@ -211,7 +211,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
             return E_NOT_OK;
         }
         ctx->jobId = job->jobId;
-        ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm.mode);
+        ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm->mode);
         ctx->inUse = TRUE;
         isNewJob = TRUE;
 
@@ -267,7 +267,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
                     if (isNewJob) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
-/* [MISRA Advisory] Redundant:                     result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr, */
+result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
                                                   io->inputLength, io->outputPtr);
                     outputLen = io->inputLength;
                     break;
@@ -403,7 +403,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
             return E_NOT_OK;
         }
         ctx->jobId = job->jobId;
-        ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm.mode);
+        ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm->mode);
         ctx->inUse = TRUE;
         isNewJob = TRUE;
 
@@ -458,7 +458,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
                     if (isNewJob) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
-/* [MISRA Advisory] Redundant:                     result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr, */
+result = Aes_CtrEncryptUpdate(&ctx->aesCtx, io->inputPtr,
                                                   io->inputLength, io->outputPtr);
                     outputLen = io->inputLength;
                     break;
@@ -589,7 +589,7 @@ Std_ReturnType Crypto_AesStreamStart(Crypto_JobType* job)
     }
 
     ctx->jobId = job->jobId;
-    ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm.mode);
+    ctx->mode = Crypto_AesConvertMode(job->jobPrimitiveInfo->algorithm->mode);
     ctx->inUse = TRUE;
 
     /* 获取密钥 */

@@ -14,7 +14,7 @@
 #include "J1939Tp.h"
 #include "J1939Tp_Cfg.h"
 
-static const J1939Tp_NSduConfigType J1939Tp_NSduConfig[J1939TP_NUM_NSDUS] = {
+const J1939Tp_NSduConfigType J1939Tp_NSduConfig[J1939TP_NUM_NSDUS] = {
     {
         .NSduId = 0,
         .ConnectionIdx = 0,

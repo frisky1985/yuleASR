@@ -113,7 +113,8 @@ typedef struct {
  *===========================================================================*/
 static boolean Mqtt_Initialized = FALSE;
 static Mqtt_InternalConnectionType Mqtt_Connections[MQTT_MAX_CONNECTIONS];
-static const Mqtt_ConfigType* Mqtt_ConfigPtr = NULL_PTR;
+/* Mqtt_ConfigPtr is defined in Mqtt_Lcfg.c (extern declared in Mqtt.h) */
+static uint32 Mqtt_TickCount = 0U;
 
 /*============================================================================
  * 内部函数声明
@@ -134,6 +135,7 @@ static Mqtt_ReturnType Mqtt_EncodeDisconnect(Mqtt_InternalConnectionType* conn);
 static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn, 
                               Mqtt_ConnectionStateType newState);
 static uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn);
+static boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeoutMs);
 
 /*============================================================================
  * 公共API实现
@@ -582,6 +584,10 @@ void Mqtt_MainFunction(void)
         return;
     }
     
+    /* Advance tick counter used by Mqtt_CheckTimeout (1 tick per call).
+     * TODO: replace with a real system time source (e.g. Os_GetTimeMs). */
+    Mqtt_TickCount++;
+    
     for (i = 0; i < MQTT_MAX_CONNECTIONS; i++) {
         Mqtt_ProcessStateMachine(&Mqtt_Connections[i]);
     }
@@ -722,6 +728,21 @@ static uint16 Mqtt_GetNextPacketId(Mqtt_InternalConnectionType* conn)
         conn->packetIdCounter = 1; /* 包ID不能为0 */
     }
     return conn->packetIdCounter;
+}
+
+static boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeoutMs)
+{
+    if (conn == NULL_PTR) {
+        return FALSE;
+    }
+    
+    /* First call after (re)connect: record the start tick. */
+    if (conn->connectStartTime == 0U) {
+        conn->connectStartTime = Mqtt_TickCount;
+        return FALSE;
+    }
+    
+    return ((Mqtt_TickCount - conn->connectStartTime) >= timeoutMs);
 }
 
 static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,

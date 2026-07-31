@@ -12,6 +12,12 @@ add_library(Os STATIC ${OS_SOURCES})
 target_include_directories(Os
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+    PRIVATE
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/bswm/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/com/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/dcm/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/nvm/include
 )
 
 # FreeRTOS configuration

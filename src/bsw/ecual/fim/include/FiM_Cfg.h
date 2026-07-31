@@ -110,6 +110,9 @@
  * Configuration Data Types
  *===========================================================================*/
 
+/* Function ID type (also used by FiM.h) */
+typedef uint16 FiM_FunctionIdType;
+
 typedef uint16 FiM_InhibitionMaskConfigurationType;
 
 typedef struct {
@@ -167,7 +170,7 @@ typedef struct {
 #define FIM_EVENT_BATTERY_VOLTAGE           9u
 
 /* Configuration constant for Lcfg */
-#define FIM_CFG_CONST
-#define FIM_CFG_CONST_ROOT
+#define FIM_CFG_CONST const
+#define FIM_CFG_CONST_ROOT const
 
 #endif /* FIM_CFG_H */

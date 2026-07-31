@@ -159,18 +159,54 @@ static const Fee_PageConfigType Fee_PageConfig[FEE_NUMBER_OF_PAGES] =
 };
 
 /*==================================================================================================
+*                                      SECTOR CONFIGURATION
+==================================================================================================*/
+static const Fee_SectorType Fee_SectorConfig[FEE_NUMBER_OF_SECTORS] =
+{
+    {
+        .sectorStartAddr   = FEE_SECTOR0_START_ADDR,
+        .sectorSize        = FEE_SECTOR0_SIZE,
+        .sectorPageSize    = FEE_VIRTUAL_PAGE_SIZE,
+        .sectorEraseCycles = FEE_SECTOR0_ERASE_CYCLES,
+        .sectorWritable    = FEE_SECTOR0_WRITABLE,
+        .sectorErasable    = FEE_SECTOR0_ERASABLE
+    },
+    {
+        .sectorStartAddr   = FEE_SECTOR1_START_ADDR,
+        .sectorSize        = FEE_SECTOR1_SIZE,
+        .sectorPageSize    = FEE_VIRTUAL_PAGE_SIZE,
+        .sectorEraseCycles = FEE_SECTOR1_ERASE_CYCLES,
+        .sectorWritable    = FEE_SECTOR1_WRITABLE,
+        .sectorErasable    = FEE_SECTOR1_ERASABLE
+    }
+};
+
+/*==================================================================================================
 *                                      GENERAL CONFIGURATION
 ==================================================================================================*/
 static const Fee_ConfigType Fee_GeneralConfig =
 {
-    /* FeePageConfig */                   &Fee_PageConfig[0],
-    /* FeeNumberOfPages */                FEE_NUMBER_OF_PAGES,
-    /* FeeBlockConfig */                  &Fee_BlockConfig[0],
-    /* FeeNumberOfBlocks */               FEE_NUMBER_OF_BLOCKS,
-    /* FeeGarbageCollectThreshold */      FEE_GC_THRESHOLD_PERCENT,
-    /* FeeGcRepetitions */                FEE_GC_REPETITIONS,
-    /* FeeNvmJobEndNotificationEnabled */ TRUE,
-    /* FeeUseEraseSuspend */              FEE_USE_ERASE_SUSPEND
+    /* Core driver configuration */
+    .sectorList                       = Fee_SectorConfig,
+    .blockList                        = NULL_PTR,
+    .sectorCount                      = FEE_NUMBER_OF_SECTORS,
+    .blockCount                       = FEE_NUMBER_OF_BLOCKS,
+    .defaultMode                      = FEE_MODE_NORMAL,
+    .virtualPageSize                  = FEE_VIRTUAL_PAGE_SIZE,
+    .maxReadNormalMode                = FEE_MAX_READ_NORMAL_MODE,
+    .maxReadFastMode                  = FEE_MAX_READ_FAST_MODE,
+    .maxWriteNormalMode               = FEE_MAX_WRITE_NORMAL_MODE,
+    .maxWriteFastMode                 = FEE_MAX_WRITE_FAST_MODE,
+    .eraseSuspendSupport              = FEE_USE_ERASE_SUSPEND,
+    /* Link-time config */
+    .FeePageConfig                    = &Fee_PageConfig[0],
+    .FeeNumberOfPages                 = FEE_NUMBER_OF_PAGES,
+    .FeeBlockConfig                   = &Fee_BlockConfig[0],
+    .FeeNumberOfBlocks                = FEE_NUMBER_OF_BLOCKS,
+    .FeeGarbageCollectThreshold       = FEE_GC_THRESHOLD_PERCENT,
+    .FeeGcRepetitions                 = FEE_GC_REPETITIONS,
+    .FeeNvmJobEndNotificationEnabled  = TRUE,
+    .FeeUseEraseSuspend               = FEE_USE_ERASE_SUSPEND
 };
 
 /*==================================================================================================
@@ -238,14 +274,25 @@ static Fee_WearLevelingType Fee_WearLevelingData[FEE_NUMBER_OF_PAGES] =
 
 const Fee_ConfigType Fee_Config =
 {
-    /* FeePageConfig */                   &Fee_PageConfig[0],
-    /* FeeNumberOfPages */                FEE_NUMBER_OF_PAGES,
-    /* FeeBlockConfig */                  &Fee_BlockConfig[0],
-    /* FeeNumberOfBlocks */               FEE_NUMBER_OF_BLOCKS,
-    /* FeeGarbageCollectThreshold */      FEE_GC_THRESHOLD_PERCENT,
-    /* FeeGcRepetitions */                FEE_GC_REPETITIONS,
-    /* FeeNvmJobEndNotificationEnabled */ TRUE,
-    /* FeeUseEraseSuspend */              FEE_USE_ERASE_SUSPEND
+    .sectorList                       = Fee_SectorConfig,
+    .blockList                        = NULL_PTR,
+    .sectorCount                      = FEE_NUMBER_OF_SECTORS,
+    .blockCount                       = FEE_NUMBER_OF_BLOCKS,
+    .defaultMode                      = FEE_MODE_NORMAL,
+    .virtualPageSize                  = FEE_VIRTUAL_PAGE_SIZE,
+    .maxReadNormalMode                = FEE_MAX_READ_NORMAL_MODE,
+    .maxReadFastMode                  = FEE_MAX_READ_FAST_MODE,
+    .maxWriteNormalMode               = FEE_MAX_WRITE_NORMAL_MODE,
+    .maxWriteFastMode                 = FEE_MAX_WRITE_FAST_MODE,
+    .eraseSuspendSupport              = FEE_USE_ERASE_SUSPEND,
+    .FeePageConfig                    = &Fee_PageConfig[0],
+    .FeeNumberOfPages                 = FEE_NUMBER_OF_PAGES,
+    .FeeBlockConfig                   = &Fee_BlockConfig[0],
+    .FeeNumberOfBlocks                = FEE_NUMBER_OF_BLOCKS,
+    .FeeGarbageCollectThreshold       = FEE_GC_THRESHOLD_PERCENT,
+    .FeeGcRepetitions                 = FEE_GC_REPETITIONS,
+    .FeeNvmJobEndNotificationEnabled  = TRUE,
+    .FeeUseEraseSuspend               = FEE_USE_ERASE_SUSPEND
 };
 
 #define FEE_STOP_SEC_CONFIG_DATA_UNSPECIFIED
@@ -271,122 +318,6 @@ void Fee_NvmJobErrorNotification(void)
     /* This function should be implemented by the NvM module
      * It is called by Fee when a job fails
      */
-}
-
-/*==================================================================================================
-*                                      HELPER FUNCTIONS
-==================================================================================================*/
-
-/* Get state transition for current state and job */
-Fee_StateType Fee_GetNextState(Fee_StateType CurrentState, Fee_JobType JobType)
-{
-    uint8 Index;
-    
-    for (Index = 0U; Index < FEE_STATE_TRANSITION_COUNT; Index++)
-    {
-        if ((Fee_StateTransitions[Index].CurrentState == CurrentState) &&
-            (Fee_StateTransitions[Index].JobType == JobType))
-        {
-            return Fee_StateTransitions[Index].NextState;
-        }
-    }
-    
-    /* No valid transition found - stay in current state */
-    return CurrentState;
-}
-
-/* Check if state transition is valid */
-boolean Fee_IsStateTransitionValid(Fee_StateType CurrentState, Fee_JobType JobType)
-{
-    uint8 Index;
-    
-    for (Index = 0U; Index < FEE_STATE_TRANSITION_COUNT; Index++)
-    {
-        if ((Fee_StateTransitions[Index].CurrentState == CurrentState) &&
-            (Fee_StateTransitions[Index].JobType == JobType))
-        {
-            return TRUE;
-        }
-    }
-    
-    return FALSE;
-}
-
-/* Update wear leveling counters */
-void Fee_UpdateWearLeveling(uint8 PageIndex, uint8 Operation)
-{
-    if (PageIndex < FEE_NUMBER_OF_PAGES)
-    {
-        switch (Operation)
-        {
-            case 0U:  /* Erase operation */
-                Fee_WearLevelingData[PageIndex].EraseCycleCount++;
-                break;
-                
-            case 1U:  /* Write operation */
-                Fee_WearLevelingData[PageIndex].WriteCycleCount++;
-                break;
-                
-            case 2U:  /* GC trigger */
-                Fee_WearLevelingData[PageIndex].GcTriggerCount++;
-                break;
-                
-            default:
-                /* Unknown operation - ignore */
-                break;
-        }
-    }
-}
-
-/* Get page with lowest erase count for wear leveling */
-uint8 Fee_GetPreferredPageForGc(void)
-{
-    uint8 PageIndex;
-    uint8 PreferredPage = 0U;
-    uint32 MinEraseCount = 0xFFFFFFFFU;
-    
-    for (PageIndex = 0U; PageIndex < FEE_NUMBER_OF_PAGES; PageIndex++)
-    {
-        if (Fee_WearLevelingData[PageIndex].EraseCycleCount < MinEraseCount)
-        {
-            MinEraseCount = Fee_WearLevelingData[PageIndex].EraseCycleCount;
-            PreferredPage = PageIndex;
-        }
-    }
-    
-    return PreferredPage;
-}
-
-/* Get block configuration by block number */
-const Fee_BlockConfigType* Fee_GetBlockConfig(uint16 BlockNumber)
-{
-    uint16 Index;
-    
-    for (Index = 0U; Index < FEE_NUMBER_OF_BLOCKS; Index++)
-    {
-        if (Fee_BlockConfig[Index].FeeBlockNumber == BlockNumber)
-        {
-            return &Fee_BlockConfig[Index];
-        }
-    }
-    
-    return NULL_PTR;
-}
-
-/* Get page configuration by page number */
-const Fee_PageConfigType* Fee_GetPageConfig(uint8 PageNumber)
-{
-    uint8 Index;
-    
-    for (Index = 0U; Index < FEE_NUMBER_OF_PAGES; Index++)
-    {
-        if (Fee_PageConfig[Index].PageNumber == PageNumber)
-        {
-            return &Fee_PageConfig[Index];
-        }
-    }
-    
-    return NULL_PTR;
 }
 
 #define FEE_STOP_SEC_CODE

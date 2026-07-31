@@ -20,6 +20,14 @@
 
 #include "Os.h"
 
+/* Fallback counts (Os_Cfg.h may not be included transitively) */
+#ifndef OS_TASK_COUNT
+#define OS_TASK_COUNT                   (8U)
+#endif
+#ifndef OS_RESOURCE_COUNT
+#define OS_RESOURCE_COUNT               (0U)
+#endif
+
 /* Timing Protection Enabled */
 #define OS_TIMING_PROTECTION_ENABLED        STD_ON
 

@@ -25,6 +25,7 @@
 #include "Std_Types.h"
 #include "EthSM_Cfg.h"
 #include "ComStack_Types.h"
+#include "ComM.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
@@ -140,6 +141,52 @@ typedef void (*EthSM_ComMModeIndicationType)(
     EthSM_NetworkHandleType NetworkHandle,
     EthSM_NetworkModeType Mode
 );
+
+/*==================================================================================================
+*                                    CONFIGURATION TYPES
+==================================================================================================*/
+
+/* TcpIp controller mapping */
+typedef struct {
+    EthSM_NetworkHandleType networkHandle;
+    uint8  tcpIpCtrlIdx;
+    boolean dhcpEnabled;
+    uint32 staticIpAddress;
+    uint32 subnetMask;
+    uint32 gatewayAddress;
+} EthSM_TcpIpMappingType;
+
+/* Transceiver configuration */
+typedef struct {
+    uint8 trcvIdx;
+    uint8 wakeUpMode;
+    boolean autoNegotiation;
+    uint8 speed;
+    uint8 duplexMode;
+} EthSM_TrcvConfigType;
+
+/* Controller configuration */
+typedef struct {
+    uint8 ctrlIdx;
+    uint8 macAddress[6];
+    uint16 mtu;
+    boolean vlanSupport;
+    uint16 vlanId;
+} EthSM_CtrlConfigType;
+
+/* Network configuration */
+typedef struct {
+    EthSM_NetworkHandleType networkHandle;
+    uint8 ctrlIdx;
+    uint8 trcvIdx;
+    uint8 tcpIpCtrlIdx;
+    ComM_ChannelHandleType comMChannel;
+    uint16 timeoutWaitTrcvLink;
+    uint16 timeoutWaitOnline;
+    boolean wakeUpSupport;
+    uint8 wakeUpSource;
+    boolean wakeUpByBus;
+} EthSM_NetworkConfigType;
 
 /*==================================================================================================
 *                                    FUNCTION PROTOTYPES

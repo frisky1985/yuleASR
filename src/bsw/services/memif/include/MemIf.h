@@ -209,6 +209,10 @@ typedef struct {
 #define MEMIF_SID_ERASEBLOCK                (0x09U)
 #endif
 
+#ifndef MEMIF_SID_GETVERSIONINFO
+#define MEMIF_SID_GETVERSIONINFO            (0x0AU)
+#endif
+
 #ifndef MEMIF_SID_INVALIDATEBLOCK
 #define MEMIF_SID_INVALIDATEBLOCK           (0x0AU)
 #endif

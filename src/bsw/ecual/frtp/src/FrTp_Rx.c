@@ -43,6 +43,7 @@ static void FrTp_ProcessFlowControlRx(FrTp_ConnectionIdxType connIdx, const PduI
 ==================================================================================================*/
 #define FRTP_START_SEC_CODE
 #include "MemMap.h"
+#include <string.h>
 
 /**
  * @brief Handles reception indication from FrIf
@@ -300,7 +301,7 @@ static void FrTp_ProcessSingleFrame(FrTp_ConnectionIdxType connIdx, const PduInf
 
     /* Request RX buffer from PduR */
     bufStatus = FrTp_RequestRxBuffer(connIdx, sfLength);
-    if (bufStatus != BUFREQ_OK)
+    if (bufStatus != BUFREQ_E_OK)
     {
         /* Buffer not available - SF cannot be received */
         return;
@@ -369,7 +370,7 @@ static void FrTp_ProcessFirstFrame(FrTp_ConnectionIdxType connIdx, const PduInfo
         FrTp_SendFlowControl(connIdx, FRTP_FC_STATUS_OVFLW);
         return;
     }
-    else if (bufStatus != BUFREQ_OK)
+    else if (bufStatus != BUFREQ_E_OK)
     {
         /* Buffer not available - send WAIT FC */
         FrTp_SendFlowControl(connIdx, FRTP_FC_STATUS_WAIT);
@@ -549,7 +550,7 @@ BufReq_ReturnType FrTp_RequestTxBuffer(FrTp_ConnectionIdxType connIdx, PduLength
     /* Placeholder - actual implementation depends on PduR API */
     (void)connIdx;
     (void)len;
-    return BUFREQ_OK;
+    return BUFREQ_E_OK;
 }
 
 /**
@@ -586,7 +587,7 @@ BufReq_ReturnType FrTp_RequestRxBuffer(FrTp_ConnectionIdxType connIdx, PduLength
     /* runtime->rxBuffer = PduR_AllocateBuffer(...); */
     
     (void)pduInfo;
-    return BUFREQ_OK;
+    return BUFREQ_E_OK;
 }
 
 /**

@@ -23,6 +23,7 @@
  *                          ERROR CODES
  *===========================================================================*/
 #define E_OK_OK                ((uint8)0x00u) /* No error */
+#define E_ERR_CMD_SYNCH        ((uint8)0x2Fu) /* Command synchronized */
 #define E_ERR_CMD_UNKNOWN      ((uint8)0x20u) /* Unknown command */
 #define E_ERR_CMD_SYNTAX       ((uint8)0x21u) /* Command syntax error */
 #define E_ERR_OUT_OF_RANGE     ((uint8)0x22u) /* Parameter out of range */
@@ -196,7 +197,8 @@ typedef void (*Xcp_RxIndicationType)(const uint8 *data, uint16 length);
  *===========================================================================*/
 
 /* Initialization */
-extern void Xcp_Init(const void *config);
+extern void Xcp_CmdBuildChecksum(const uint8 *cmd);
+void Xcp_Init(const void *config);
 extern void Xcp_DeInit(void);
 
 /* Main function - cyclic call */
@@ -253,9 +255,176 @@ extern uint8 Xcp_MtaRead(uint8 *buffer, uint8 count);
 extern uint8 Xcp_MtaWrite(const uint8 *buffer, uint8 count);
 
 /*============================================================================
+ *                          CONFIGURATION TYPES
+ *===========================================================================*/
+
+/* Version information */
+typedef struct {
+    uint16 VendorID;
+    uint16 ModuleID;
+    uint8  SwMajorVersion;
+    uint8  SwMinorVersion;
+    uint8  SwPatchVersion;
+} Xcp_VersionInfoType;
+
+/* Time units */
+#define XCP_UNIT_1US            (1u)
+#define XCP_UNIT_1MS            (2u)
+#define XCP_UNIT_1S             (3u)
+
+/* DAQ modes */
+#define XCP_DAQ_MODE_ALTERNATING (0u)
+#define XCP_STIM_MODE_ALTERNATING (0u)
+
+/* Boolean helpers */
+#define XCP_FALSE               (0u)
+#define XCP_TRUE                (1u)
+
+/* Page access */
+#define XCP_PAGE_READ_WRITE     (0u)
+#define XCP_PAGE_READ_ONLY      (1u)
+
+/* Communication modes */
+#define XCP_COMM_MODE_POLLING   (0u)
+#define XCP_COMM_MODE_DAQ       (1u)
+
+/* Resource protection */
+#define XCP_PROTECT_NONE        (0u)
+#define XCP_PROTECT_OPTIONAL    (1u)
+#define XCP_PROTECT_REQUIRED    (2u)
+
+/* Transport layers */
+#define XCP_TRANSPORT_CAN       (0u)
+#define XCP_TRANSPORT_ETHERNET  (1u)
+
+/* Timestamp / identification field */
+#define XCP_TS_4BYTE            (4u)
+#define XCP_TS_UNIT_1US         (1u)
+#define XCP_IDF_ABSOLUTE_ODT    (1u)
+#define XCP_AG_DWORD            (3u)
+
+/* Event channel configuration */
+typedef struct {
+    const char* EventChannelName;
+    uint16 EventChannelTimeCycle;
+    uint8  EventChannelTimeUnit;
+    uint8  EventChannelPriority;
+    uint8  EventChannelMaxDaqList;
+} Xcp_EventChannelType;
+
+/* STIM list configuration */
+typedef struct {
+    uint8   StimListNumber;
+    uint8   Mode;
+    uint8   EventChannel;
+    uint8   FirstOdt;
+    uint8   OdtCount;
+    boolean IsRunning;
+} Xcp_StimListType;
+
+#ifndef XCP_MAX_PAGES
+#define XCP_MAX_PAGES               (2u)
+#endif
+#ifndef XCP_MAX_EVENT_CHANNELS
+#define XCP_MAX_EVENT_CHANNELS      (8u)
+#endif
+
+/* Calibration segment page */
+typedef struct {
+    uint8       PageNumber;
+    const char* PageName;
+    uint32      Address;
+    uint32      Length;
+    uint8       Access;
+    boolean     IsInit;
+} Xcp_SegmentPageType;
+
+/* Calibration segment configuration */
+typedef struct {
+    const char* SegmentName;
+    uint8       SegmentNumber;
+    uint32      Address;
+    uint32      Length;
+    Xcp_SegmentPageType Pages[XCP_MAX_PAGES];
+    uint8       PageCount;
+} Xcp_SegmentType;
+
+/* Session timing */
+typedef struct {
+    uint32 T1;
+    uint32 T2;
+    uint32 T3;
+    uint32 T4;
+    uint32 T5;
+    uint32 T6;
+    uint32 T7;
+} Xcp_TimingType;
+
+/* Session configuration */
+typedef struct {
+    uint16 SessionConfigurationId;
+    uint8  MaxCto;
+    uint8  MaxDto;
+    uint8  MaxWriteDaqMultipleElements;
+    uint8  CommunicationMode;
+    Xcp_TimingType Timing;
+} Xcp_SessionType;
+
+/* Resource protection configuration */
+typedef struct {
+    uint8 CalPag;
+    uint8 Daq;
+    uint8 Stim;
+    uint8 Pgm;
+} Xcp_ResourceProtectionType;
+
+/* Transport layer configuration */
+typedef struct {
+    uint8 TransportLayerType;
+    struct {
+        uint32 CanIdRequest;
+        uint32 CanIdResponse;
+        uint32 CanIdBroadcast;
+        uint32 Baudrate;
+    } Can;
+} Xcp_TransportLayerType;
+
+/* General configuration block */
+typedef struct {
+    uint8  MaxCto;
+    uint8  MaxDto;
+    uint8  MaxEventChannels;
+    uint8  MaxDaq;
+    uint8  MaxOdt;
+    uint8  MaxOdtEntries;
+    uint8  MaxStim;
+    uint8  MaxSegments;
+    uint8  MaxPages;
+    uint8  MaxSeedKeySize;
+    boolean TimestampSupport;
+    uint8  TimestampSize;
+    uint8  TimestampResolution;
+    uint8  IdentificationField;
+    uint8  AddressGranularity;
+} Xcp_GeneralConfigType;
+
+/* Module configuration */
+typedef struct {
+    Xcp_GeneralConfigType         General;
+    const Xcp_EventChannelType*   EventChannels;
+    const Xcp_DaqListType*        DaqLists;
+    const Xcp_OdtType*            Odts;
+    const Xcp_StimListType*       StimLists;
+    const Xcp_SegmentType*        Segments;
+    const Xcp_SessionType*        Session;
+    const Xcp_ResourceProtectionType* ResourceProtection;
+    const Xcp_TransportLayerType* TransportLayer;
+} Xcp_ConfigType;
+
+/*============================================================================
  *                          EXTERN DECLARATIONS
  *===========================================================================*/
-extern const Xcp_DaqListType *Xcp_DaqLists;
+extern Xcp_DaqListType Xcp_DaqLists[];
 extern const uint8 Xcp_MaxDaqLists;
 extern const uint8 Xcp_MaxEvents;
 extern Xcp_ConnectionStateType Xcp_ConnectionState;

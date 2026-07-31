@@ -786,6 +786,18 @@ void Rte_ComCbkSwitchAck(Rte_ModeHandleType modeGroup, uint32 mode)
 #define RTE_STOP_SEC_CODE
 #include "MemMap.h"
 
+/**
+ * @brief   Get the RTE cycle time in milliseconds (tick counter).
+ * @return  Current RTE tick count (incremented every Rte_MainFunction cycle).
+ */
+uint32 Rte_GetTime(void)
+{
+    return Rte_InternalState.CycleCounter;
+}
+
+#define RTE_STOP_SEC_CODE
+#include "MemMap.h"
+
 /*==================================================================================================
 *                                       END OF FILE
 ==================================================================================================*/

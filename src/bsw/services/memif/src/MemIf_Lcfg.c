@@ -67,7 +67,7 @@ static MemIf_JobResultType MemIf_Ea_GetJobResultWrapper(void);
  ******************************************************************************/
 
 /** @brief Device abstraction table - mapped to actual drivers */
-static const MemIf_DeviceAbstractionType MemIf_Devices[MEMIF_NUMBER_OF_DEVICES] = {
+const MemIf_DeviceAbstractionType MemIf_Devices[MEMIF_NUMBER_OF_DEVICES] = {
     /* Device 0: Fee (Flash EEPROM Emulation) */
     {
         .DeviceIndex = MEMIF_FEE_DEVICE_INDEX,

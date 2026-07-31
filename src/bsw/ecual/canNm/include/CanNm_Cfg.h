@@ -180,12 +180,12 @@ extern "C" {
 /**
  * @brief Number of CAN NM channels configured
  */
-#define CANNM_NUMBER_OF_CHANNELS            (uint8)2U
+#define CANNM_NUMBER_OF_CHANNELS            (2U)
 
 /**
  * @brief Maximum number of channels (should match CANNM_NUMBER_OF_CHANNELS)
  */
-#define CANNM_MAX_NUMBER_OF_CHANNELS        (uint8)2U
+#define CANNM_MAX_NUMBER_OF_CHANNELS        (2U)
 
 /*==================================================================================================
  *                                    CHANNEL CONFIGURATION
@@ -287,7 +287,7 @@ extern "C" {
  * Position 1: Second byte
  * Position 0xFF: Node ID not used
  */
-#define CANNM_PDU_NID_POSITION              (uint8)0U
+#define CANNM_PDU_NID_POSITION              (0U)
 
 /**
  * @brief Control Bit Vector (CBV) position in NM PDU
@@ -295,7 +295,7 @@ extern "C" {
  * Position 1: Second byte
  * Position 0xFF: CBV not used
  */
-#define CANNM_PDU_CBV_POSITION              (uint8)1U
+#define CANNM_PDU_CBV_POSITION              (1U)
 
 /**
  * @brief User data start position

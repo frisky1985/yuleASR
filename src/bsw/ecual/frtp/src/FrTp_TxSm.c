@@ -43,6 +43,7 @@ static void FrTp_TxSm_StateWaitConfirm(FrTp_ConnectionIdxType connIdx);
 ==================================================================================================*/
 #define FRTP_START_SEC_CODE
 #include "MemMap.h"
+#include <string.h>
 
 /**
  * @brief Transmit state machine main function

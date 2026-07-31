@@ -43,6 +43,7 @@ static Std_ReturnType FrTp_SendFrame(FrTp_ConnectionIdxType connIdx, const PduIn
 ==================================================================================================*/
 #define FRTP_START_SEC_CODE
 #include "MemMap.h"
+#include <string.h>
 
 /**
  * @brief Requests transmission of data

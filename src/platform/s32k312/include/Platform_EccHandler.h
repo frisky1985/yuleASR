@@ -85,6 +85,8 @@
  * @brief ECC错误信息
  */
 typedef struct
+#ifndef PLATFORM_ECCERRORINFOTYPE_DEFINED
+#define PLATFORM_ECCERRORINFOTYPE_DEFINED
 {
     uint8 errorType;                    /* 错误类型 */
     uint32 errorAddress;                /* 错误地址 */
@@ -94,6 +96,7 @@ typedef struct
     boolean isNvMBlock;                 /* 是否是NvM块 */
     uint16 nvMBlockId;                  /* NvM块ID (如果是NvM块) */
 } Platform_EccErrorInfoType;
+#endif
 
 /**
  * @brief ECC处理策略配置

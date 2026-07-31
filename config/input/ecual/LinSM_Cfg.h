@@ -157,6 +157,14 @@
 /**
  * @brief Wake-up source for LIN Channel 0
  */
+#ifndef ECUM_WKSOURCE_LIN_CH0
+#define ECUM_WKSOURCE_LIN_CH0               (0x20U)
+#define ECUM_WKSOURCE_LIN_CH1               (0x21U)
+#endif
+#ifndef COMM_CHANNEL_LIN1
+#define COMM_CHANNEL_LIN1                   (1U)
+#endif
+
 #define LINSM_WAKEUP_SOURCE_CH0             (ECUM_WKSOURCE_LIN_CH0)
 
 /**

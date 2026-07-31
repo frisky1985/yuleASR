@@ -41,6 +41,14 @@
 ==================================================================================================*/
 #define OS_CFG_NUM_TASKS                (8U)
 
+/* Task/Resource counts for timing protection (must match configuration) */
+#ifndef OS_TASK_COUNT
+#define OS_TASK_COUNT                   OS_CFG_NUM_TASKS
+#endif
+#ifndef OS_RESOURCE_COUNT
+#define OS_RESOURCE_COUNT               (0U)
+#endif
+
 /* Task IDs */
 #define OsTask_Init                     (0U)
 #define OsTask_10ms                     (1U)

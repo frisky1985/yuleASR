@@ -344,6 +344,16 @@ void NvM_KillWriteAll(void);
 void NvM_KillReadAll(void);
 
 /**
+ * @brief Get the RAM address of a block (ECC handler support)
+ */
+const void* NvM_GetBlockAddress(NvM_BlockIdType BlockId);
+
+/**
+ * @brief Get the redundant (mirror) address of a block (ECC handler support)
+ */
+const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId);
+
+/**
  * @brief Main function for periodic processing
  */
 void NvM_MainFunction(void);

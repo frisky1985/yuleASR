@@ -55,11 +55,11 @@
 
 /* HSM Hardware Register Base Addresses */
 #define S32K312_HSM_BASE_ADDR               (S32K312_HSM_BASE)
-#define S32K312_HSM_AES_BASE                (S32K312_HSM_AES_BASE)
-#define S32K312_HSM_ECC_BASE                (S32K312_HSM_ECC_BASE)
-#define S32K312_HSM_SHA_BASE                (S32K312_HSM_SHA_BASE)
+#define S32K312_HSM_AES_BASE                (0x40270000U)
+#define S32K312_HSM_ECC_BASE                (0x40271000U)
+#define S32K312_HSM_SHA_BASE                (0x40272000U)
 #define S32K312_HSM_TRNG_BASE               (S32K312_HSM_TRNG_BASE)
-#define S32K312_HSM_KEYSTORE_BASE           (S32K312_HSM_KEYSTORE_BASE)
+#define S32K312_HSM_KEYSTORE_BASE       (0x40273000U)
 
 /* HSM Status Codes */
 #define S32K312_HSM_SUCCESS                 (0x00000000UL)

@@ -1,166 +1,34 @@
-# remaining-errors.md — yuleASR v1.3.0 未修复的编译器错误
+# remaining-errors.md — yuleASR v1.3.0 编译错误跟踪
 
-> 文档记录经本次修复后仍存在的编译器错误。
-> 修复 commit: `8323821` on `v1.3.0`
+> 本文件记录 yuleASR v1.3.0 分支编译错误的修复进度。
+> 修复 commit: `8323821`、`cb28c1e`（前两轮）+ 本轮（见 git log）。
 
-## 概览
+## 状态：✅ 已全部修复（编译全绿）
 
-本次修复解决了约 60-70% 的编译器错误。
-剩余约 40 条错误行（并行编译统计为 46 条），主要分为以下类别：
+`cmake --build build -j4` 与 `make -C build -j1 -k` 均 **0 error**，全部目标 100% 构建成功。
 
----
+### 本轮修复统计
 
-## 1. TcpIp 套接字函数缺失 (架构级)
+- 修复前（本轮起点）：563 条 error 行 / 474 条唯一错误
+- 修复后：**0 条 error**
 
-**涉及文件:** `Mqtt.c`, `Mqtt_Tls.c`, `Mqtt_CertMgr.c`
+### 修复明细（按类别）
 
-**错误:**
-```
-call to undeclared function 'TcpIp_SocketCreate'
-call to undeclared function 'TcpIp_SocketClose'
-call to undeclared function 'TcpIp_IsConnected'
-```
+| 类别 | 修复内容 |
+|------|----------|
+| CMake 包含路径 | mcal/ecual/services/boot/platform/os 各层补齐缺失 include dir（platform s32k312、mcal can/spi/fls/lin/uart、third_party mbedtls/aes_modes/hash、include/autosar、config/input 等） |
+| 新增存根头文件 | FreeRTOSConfig.h / projdefs.h / portmacro.h、Reg_Macros.h、Lockstep.h、PduR_DoIP.h、PduR_LinTp.h、Eth_GeneralTypes.h、SchM_DoIP/Fee/SecOC/Uart.h、EthTrcv_MemMap.h、Fee_MemMap.h、FiM_MemMap.h、RamSafety_MemMap.h、Platform_Lockstep_MemMap.h、mbedtls/*.h（bignum/ecp/ecdsa/ecdh/aes/gcm/sha256/md/hkdf/ctr_drbg/entropy/x509/x509_crt/oid/asn1/ssl/pk/platform/debug）、CryptoStack_Types.h、Dma.h |
+| 删除遮蔽性 stub | include/autosar 下 SomeIp.h / SomeIpTp.h / SomeIpXf.h / LinTp.h / RamSafety.h 与模块头文件冲突，删除让模块头生效 |
+| 共享类型补全 | ComStack_Types.h（NetworkHandleType、TP_STMIN/BS/BC、BUFREQ_E_OVFL、RetryInfoType 扩展）、Eth_GeneralTypes.h、Crypto_Types.h（消除 typedef 重定义、补 ConfigType 字段） |
+| 截断文件补全 | NvM.c / StbM.c / SecOc.c / SomeIpTp.c / SomeIpXf.c 被先前提交截断（缺函数尾部），已按 API 语义补全 |
+| ARM asm 兼容 | __asm("dsb")/cpsid/msr msp 等在 aarch64 宿主上改用条件编译（dsb sy / daifset 等） |
+| 各模块代码修复 | Mqtt（TcpIp_Socket* 包装、CheckTimeout、枚举/宏冲突、TLS 配置前向声明）、MemIf（签名对齐）、SecOC（配置头宏+Lcfg 重写）、NvM（NVM_CFG_MAX_BLOCK_ID、GetBlockAddress/GetRedundantBlockAddress）、SomeIp/SomeIpTp/SomeIpXf、CanNm/LinNm（NetworkHandleType、ComM_ECNM_*）、CanTp/FrTp、CanTrcv（配置类型重写）、Icu（类型+配置重写）、Fee/Fls/Flash（配置宏+类型）、EthSM/EthIf、DoIP（SoAd 接口）、Xcp（配置类型）、StbM、RamSafety、Platform、RTE/ASW（Rte_Read/Write/端口 API、Rte_GetTime 实现、ABS/memset 等） |
 
-**根本原因:** TcpIp 模块（`src/bsw/services/tcpip/`）存在但不导出这些套接字函数。
-Mqtt 模块依赖 TcpIp 的 TCP 连接API，但该 API 尚未实现/声明。
+### 遗留说明（非编译阻塞）
 
-**修复方式:** 需要实现 TcpIp 的 Socket* API 或创建完整的 TcpIp 存根模块。
-
----
-
-## 2. Mcal 中断控制函数缺失 (架构级)
-
-**涉及文件:** `NvM.c`
-
-**错误:**
-```
-call to undeclared function 'Mcal_EnableAllInterrupts'
-call to undeclared function 'Mcal_DisableAllInterrupts'
-```
-
-**根本原因:** MCAL 层未提供中断控制函数。
-NvM 模块在临界区操作中调用这些函数。
-
-**修复方式:** 在 `Mcal.h` 中添加中断控制函数声明，或在 MCAL 层实现。
-
----
-
-## 3. NVM 配置宏缺失
-
-**涉及文件:** `NvM.c`, `NvM_EccHandler.c`
-
-**错误:**
-```
-use of undeclared identifier 'NVM_CFG_MAX_BLOCK_ID'
-```
-
-**根本原因:** `NVM_CFG_MAX_BLOCK_ID` 宏未在 `NvM_Cfg.h` 或配置文件中定义。
-
-**修复方式:** 在 `config/input/services/NvM_Cfg.h` 或 `NvM_Cfg.h` 中添加 `NVM_CFG_MAX_BLOCK_ID` 定义。
-
----
-
-## 4. SecOC 类型定义缺失
-
-**涉及文件:** `SecOc.c`, `SecOc_Lcfg.c`
-
-**错误:**
-```
-use of undeclared identifier 'SECOC_MAX_PDUS'
-use of undeclared identifier 'SECOC_FRESHNESS_LENGTH_4'
-use of undeclared identifier 'SECOC_FRESHNESS_LENGTH_3'
-use of undeclared identifier 'SECOC_AUTH_LENGTH_8'
-use of undeclared identifier 'SECOC_AUTH_LENGTH_4'
-unknown type name 'SecOC_SecurityProfileType'
-```
-
-**根本原因:** SecOC 模块缺少配置宏和枚举类型定义。
-
-**修复方式:** 在 SecOC 的配置头文件中添加缺少的宏和类型定义。
-
----
-
-## 5. Mqtt 循环依赖未完全解决
-
-**涉及文件:** `Mqtt.c`, `Mqtt.h`, `Mqtt_Tls.h`
-
-**错误:**
-```
-static declaration of 'Mqtt_ConfigPtr' follows non-static declaration
-```
-
-**根本原因:** Mqtt.c 中 `Mqtt_ConfigPtr` 声明与 Mqtt.h 中声明冲突。
-
-**修复方式:** 统一 Mqtt_ConfigPtr 的声明方式（static vs extern）。
-
----
-
-## 6. MemIf 函数签名不匹配
-
-**涉及文件:** `MemIf.c`, `MemIf_Lcfg.c`
-
-**错误:**
-```
-conflicting types for 'MemIf_Read'
-static declaration of 'MemIf_Devices' follows non-static declaration
-```
-
-**根本原因:** MemIf.h 的函数声明与 MemIf.c 的实现签名不完全匹配。
-`MemIf_Devices` 数组的声明方式不一致。
-
-**修复方式:** 对齐 MemIf.h 和 MemIf.c 的函数签名。
-
----
-
-## 7. SomeIp 函数签名不匹配
-
-**涉及文件:** `SomeIp.c`
-
-**错误:**
-```
-conflicting types for 'SomeIp_ExtractIds'
-call to undeclared function 'SomeIp_ExtractIds'
-```
-
-**根本原因:** SomeIp.h 导出了 `SomeIp_CreateMessageId` 等函数，但 SomeIp.c 中调用的 `SomeIp_ExtractIds` 可能签名不同或被当作宏定义。
-
-**修复方式:** 在 SomeIp.h 中声明 `SomeIp_ExtractIds` 或对齐签名。
-
----
-
-## 8. NvM 功能函数缺失
-
-**涉及文件:** `NvM_EccHandler.c`
-
-**错误:**
-```
-call to undeclared function 'NvM_GetRedundantBlockAddress'
-```
-
-**根本原因:** NvM 的冗余块地址功能函数未声明。
-
-**修复方式:** 在 NvM.h 中添加函数声明或提供存根。
-
----
-
-## 相关文件索引
-
-| 模块 | 文件 | 错误类型 |
-|------|------|----------|
-| TcpIp | `Mqtt.c, Mqtt_Tls.c` | 函数未声明 |
-| Mcal | `NvM.c` | 中断控制函数缺失 |
-| NvM | `NvM.c, NvM_EccHandler.c` | 配置宏缺失、函数未声明 |
-| SecOC | `SecOc.c, SecOc_Lcfg.c` | 类型/宏定义缺失 |
-| Mqtt | `Mqtt.c` | 静态声明冲突 |
-| MemIf | `MemIf.c, MemIf_Lcfg.c` | 类型/宏定义缺失 |
-| SomeIp | `SomeIp.c` | 函数签名不匹配 |
-
----
-
-## 下次修复建议
-
-1. **TcpIp 套接字存根** — 为 `TcpIp_SocketCreate/Close/IsConnected` 创建存根实现
-2. **MCAL 中断控制** — 添加 `Mcal_EnableAllInterrupts/DisableAllInterrupts` 声明
-3. **NvM 配置** — 定义 `NVM_CFG_MAX_BLOCK_ID`
-4. **SecOC 类型** — 补充 SecOC 配置头和类型定义
-5. **MemIf/SomeIp 对齐** — 对齐头文件声明与实现签名
+1. **集成测试** `tests/integration/` 失败：`test_evidence_pipeline.py` 等依赖 `.yuleosh/evidence-bundle` 证据文件（CI 流水线产物），本地未生成，与本轮编译修复无关。单元测试 `tests/unit/test_yuleasr_monitor.py` 6/6 通过。
+2. **平台适配 TODO**（已在代码中标注）：
+   - mbedtls 为声明级 stub，运行时需链接真实 mbedTLS 库；
+   - Mcal_EnableAllInterrupts/DisableAllInterrupts/ResetSystem、TcpIp socket 包装、Uart/Dma 时间源、Platform_Fccu_NonFaultyFault、Lockstep_* 等为宿主可用实现/占位，量产需接 MCAL/OS 真实实现；
+   - Flash 寄存器定义为 STM32F4 风格默认值，需按 S32K312 实际寄存器基址调整。
+3. **仓库大小写冲突**：repo 存在 DoIP/DoIp、SecOC/SecOc、CanNm/canNm 等大小写重复路径，在大小写不敏感文件系统（macOS APFS）上工作树表现为"已修改"，实际内容与 HEAD 一致（详见本轮工作区审查结论）。

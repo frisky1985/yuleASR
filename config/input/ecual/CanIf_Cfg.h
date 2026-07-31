@@ -207,4 +207,12 @@ extern const CanIf_PduIdType CanIf_RxPduHohMap[CANIF_HOH_CNT][CANIF_RX_LPDU_CNT]
 #define CANIF_SID_SETPDUMODE        0x1AU
 #define CANIF_SID_GETPDUMODE        0x1BU
 
+/* Controller / PDU counts */
+#define CANIF_NUM_CONTROLLERS              (1U)
+#define CANIF_NUM_TRANSCEIVERS             (1U)
+#define CANIF_NUM_TX_PDUS                  (8U)
+#define CANIF_NUM_RX_PDUS                  (8U)
+
+#define CANIF_DEFAULT_BAUDRATE        (500000U)
+
 #endif /* CANIF_CFG_H */

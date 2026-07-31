@@ -214,6 +214,17 @@ typedef uint32 Fls_ErrorFlagsType;
  *                          Configuration Structures
  ************************************************************************************/
 
+/* Sector size type */
+#ifndef FLS_SECTORSIZETYPE_DEFINED
+#define FLS_SECTORSIZETYPE_DEFINED
+typedef enum {
+    FLS_SECTOR_SIZE_4KB = 0,
+    FLS_SECTOR_SIZE_32KB,
+    FLS_SECTOR_SIZE_64KB,
+    FLS_SECTOR_SIZE_128KB
+} Fls_SectorSizeType;
+#endif
+
 /* Flash Sector Configuration */
 typedef struct
 {
@@ -271,5 +282,188 @@ extern const Fls_GeneralConfigType Fls_GeneralConfig;
 #ifdef __cplusplus
 }
 #endif
+
+
+/*==================================================================================================
+ *                          LEGACY FLASH DRIVER CONFIGURATION
+ *  Types and configuration used by the Flash.c driver implementation
+ *  (distinct from the Fls_* AUTOSAR API also declared in this header).
+ *================================================================================================*/
+
+/* Legacy driver types */
+typedef uint32 Flash_AddressType;
+typedef uint32 Flash_LengthType;
+
+typedef enum {
+    FLASH_MODE_NORMAL = 0,
+    FLASH_MODE_FAST
+} Flash_OpModeType;
+
+typedef enum {
+    FLASH_JOB_OK = 0,
+    FLASH_JOB_PENDING,
+    FLASH_JOB_FAILED,
+    FLASH_JOB_CANCELLED,
+    FLASH_JOB_SUSPENDED
+} Flash_JobResultType;
+
+typedef struct {
+    uint32  sectorStartAddr;
+    uint32  sectorSize;
+    uint32  pageSize;
+    uint8   sectorIndex;
+    uint8   bank;
+    boolean isProtected;
+    boolean isErased;
+    boolean isBlankCheckDone;
+} Flash_SectorInfoType;
+
+typedef struct {
+    const Flash_SectorInfoType* sectorConfig;
+    uint32  numOfSectors;
+    Flash_OpModeType defaultMode;
+    uint32  baseAddress;
+    uint32  endAddress;
+    uint32  maxReadNormalMode;
+    uint32  maxReadFastMode;
+    uint32  maxWriteNormalMode;
+    uint32  maxWriteFastMode;
+    uint32  programUnit;
+    uint32  eraseUnit;
+    void (*jobEndNotification)(void);
+    void (*jobErrorNotification)(void);
+} Flash_ConfigType;
+
+/* Version / module info */
+#define FLASH_VENDOR_ID                     (0x0001U)
+#define FLASH_MODULE_ID                     (0x28U)
+#define FLASH_INSTANCE_ID                   (0x00U)
+#define FLASH_SW_MAJOR_VERSION              (1U)
+#define FLASH_SW_MINOR_VERSION              (0U)
+#define FLASH_SW_PATCH_VERSION              (0U)
+
+/* Feature switches */
+#define FLASH_DEV_ERROR_DETECT              (STD_ON)
+#define FLASH_RUNTIME_ERROR_DETECT          (STD_OFF)
+#define FLASH_VERSION_INFO_API              (STD_ON)
+#define FLASH_SET_MODE_API                  (STD_ON)
+#define FLASH_SUSPEND_RESUME_API            (STD_OFF)
+#define FLASH_CANCEL_API                    (STD_OFF)
+#define FLASH_COMPARE_API                   (STD_OFF)
+#define FLASH_BLANK_CHECK_API               (STD_OFF)
+#define FLASH_JOB_END_NOTIFICATION          (STD_OFF)
+#define FLASH_JOB_ERROR_NOTIFICATION        (STD_OFF)
+#define FLASH_USE_ACCESS_CODE               (STD_OFF)
+
+/* Geometry */
+#define FLASH_NUM_OF_SECTORS                (8U)
+#define FLASH_TOTAL_SIZE                    (0x100000U)
+#define FLASH_BASE_ADDRESS                  (0x08000000U)
+#define FLASH_END_ADDRESS                   (0x08100000U)
+#define FLASH_PROGRAM_UNIT                  (8U)
+#define FLASH_ERASE_UNIT                    (0x2000U)
+#define FLASH_TIMEOUT_MS                    (1000U)
+#define FLASH_MAX_READ_NORMAL_MODE          (100U)
+#define FLASH_MAX_READ_FAST_MODE            (50U)
+#define FLASH_MAX_WRITE_NORMAL_MODE         (500U)
+#define FLASH_MAX_WRITE_FAST_MODE           (200U)
+#define FLASH_MAX_COMPARE_MODE              (200U)
+
+/* Banks */
+#define FLASH_BANK_0                        (0U)
+#define FLASH_BANK_1                        (1U)
+
+/* Sector map (default geometry for a 1 MB flash) */
+#define FLASH_SECTOR_0_START_ADDR           (0x08000000U)
+#define FLASH_SECTOR_0_SIZE                 (0x20000U)
+#define FLASH_SECTOR_0_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_1_START_ADDR           (0x08020000U)
+#define FLASH_SECTOR_1_SIZE                 (0x20000U)
+#define FLASH_SECTOR_1_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_2_START_ADDR           (0x08040000U)
+#define FLASH_SECTOR_2_SIZE                 (0x20000U)
+#define FLASH_SECTOR_2_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_3_START_ADDR           (0x08060000U)
+#define FLASH_SECTOR_3_SIZE                 (0x20000U)
+#define FLASH_SECTOR_3_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_4_START_ADDR           (0x08080000U)
+#define FLASH_SECTOR_4_SIZE                 (0x20000U)
+#define FLASH_SECTOR_4_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_5_START_ADDR           (0x080A0000U)
+#define FLASH_SECTOR_5_SIZE                 (0x20000U)
+#define FLASH_SECTOR_5_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_6_START_ADDR           (0x080C0000U)
+#define FLASH_SECTOR_6_SIZE                 (0x20000U)
+#define FLASH_SECTOR_6_PAGE_SIZE            (0x2000U)
+#define FLASH_SECTOR_7_START_ADDR           (0x080E0000U)
+#define FLASH_SECTOR_7_SIZE                 (0x20000U)
+#define FLASH_SECTOR_7_PAGE_SIZE            (0x2000U)
+
+/* Register definitions (lvalue register access; STM32F4-style default) */
+#define FLASH_CR                            (*((volatile uint32*)0x40023C14U))
+#define FLASH_CR_PG                         (0x00000001U)
+#define FLASH_CR_SER                        (0x00000002U)
+#define FLASH_CR_MER                        (0x00000004U)
+#define FLASH_CR_SNB_P                      (0x00000008U)
+#define FLASH_CR_SNB_Pos                    (3U)
+#define FLASH_CR_STRT                       (0x00010000U)
+#define FLASH_CR_LOCK                       (0x80000000U)
+#define FLASH_SR                            (*((volatile uint32*)0x40023C0CU))
+#define FLASH_SR_BSY                        (0x00000001U)
+#define FLASH_SR_PGERR                      (0x00000004U)
+#define FLASH_SR_WRPERR                     (0x00000010U)
+#define FLASH_SR_PGAERR                     (0x00000020U)
+#define FLASH_SR_PGPERR                     (0x00000040U)
+#define FLASH_SR_PGSERR                     (0x00000080U)
+#define FLASH_SR_OPERR                      (0x00000200U)
+#define FLASH_KEYR                          (*((volatile uint32*)0x40023C04U))
+#define FLASH_KEY_1                         (0x45670123U)
+#define FLASH_KEY_2                         (0xCDEF89ABU)
+
+/* Driver status type */
+typedef enum {
+    FLASH_STATUS_UNINIT = 0,
+    FLASH_STATUS_IDLE,
+    FLASH_STATUS_BUSY,
+    FLASH_STATUS_BUSY_ERASING,
+    FLASH_STATUS_BUSY_WRITING,
+    FLASH_STATUS_BUSY_READING
+} Flash_StatusType;
+
+/* Service IDs */
+#define FLASH_SID_INIT                      (0x01U)
+#define FLASH_SID_DEINIT                    (0x02U)
+#define FLASH_SID_GETVERSIONINFO            (0x03U)
+#define FLASH_SID_ERASE                     (0x04U)
+#define FLASH_SID_WRITE                     (0x05U)
+#define FLASH_SID_READ                      (0x06U)
+#define FLASH_SID_CANCEL                    (0x07U)
+#define FLASH_SID_GETJOBRESULT              (0x08U)
+#define FLASH_SID_SETMODE                   (0x09U)
+#define FLASH_SID_COMPARE                   (0x0AU)
+#define FLASH_SID_BLANKCHECK                (0x0BU)
+#define FLASH_SID_SUSPEND                   (0x0CU)
+#define FLASH_SID_RESUME                    (0x0DU)
+
+/* DET error codes */
+#define FLASH_E_UNINIT                      (0x01U)
+#define FLASH_E_BUSY                        (0x02U)
+#define FLASH_E_ALREADY_INITIALIZED         (0x03U)
+#define FLASH_E_PARAM_POINTER               (0x04U)
+#define FLASH_E_PARAM_CONFIG                (0x05U)
+#define FLASH_E_PARAM_ADDRESS               (0x06U)
+#define FLASH_E_PARAM_LENGTH                (0x07U)
+#define FLASH_E_WRITE_FAILED                (0x08U)
+#define FLASH_E_ERASE_FAILED                (0x09U)
+#define FLASH_E_COMPARE_FAILED              (0x0AU)
+#define FLASH_E_BLANK_CHECK_FAILED          (0x0BU)
+
+/* Runtime state values */
+#define FLASH_UNINIT                        (0x00U)
+#define FLASH_IDLE                          (0x01U)
+#define FLASH_BUSY                          (0x02U)
+#define FLASH_BUSY_ERASING                  (0x03U)
+#define FLASH_BUSY_WRITING                  (0x04U)
+#define FLASH_BUSY_READING                  (0x05U)
 
 #endif /* FLASH_CFG_H */

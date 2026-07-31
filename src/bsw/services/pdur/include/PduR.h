@@ -329,6 +329,13 @@ BufReq_ReturnType PduR_FrTpCopyTxData(PduIdType TxPduId,
                                        RetryInfoType* RetryInfoPtr,
                                        PduLengthType* AvailableDataPtr);
 
+extern Std_ReturnType PduR_SecOCTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
+extern void PduR_SecOCRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+
+extern Std_ReturnType PduR_IpduMTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
+extern void PduR_IpduMRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+extern void PduR_IpduMTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
+
 #define PDUR_STOP_SEC_CODE
 #include "MemMap.h"
 

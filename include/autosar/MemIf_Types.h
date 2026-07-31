@@ -1,6 +1,10 @@
 #ifndef MEMIF_TYPES_H
 #define MEMIF_TYPES_H
 #include "Std_Types.h"
+
+#define MEMIF_TYPES_AR_RELEASE_MAJOR_VERSION    (4u)
+#define MEMIF_TYPES_AR_RELEASE_MINOR_VERSION    (7u)
+#define MEMIF_TYPES_AR_RELEASE_REVISION_VERSION (0u)
 typedef uint8 MemIf_JobResultType;
 typedef uint8 MemIf_StatusType;
 #define MEMIF_JOB_OK        ((MemIf_JobResultType)0U)

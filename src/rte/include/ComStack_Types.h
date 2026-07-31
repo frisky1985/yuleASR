@@ -59,7 +59,8 @@ typedef enum {
 typedef enum {
     BUFREQ_E_OK     = 0U,
     BUFREQ_E_NOT_OK = 1U,
-    BUFREQ_E_BUSY   = 2U
+    BUFREQ_E_BUSY   = 2U,
+    BUFREQ_E_OVFL    = 3U
 } BufReq_ReturnType;
 #endif
 
@@ -69,6 +70,15 @@ typedef enum {
 #ifndef TPPARAMETERTYPE_DEFINED
 #define TPPARAMETERTYPE_DEFINED
 typedef uint8 TPParameterType;
+#ifndef TP_STMIN
+#define TP_STMIN                (0x01U)
+#endif
+#ifndef TP_BS
+#define TP_BS                   (0x02U)
+#endif
+#ifndef TP_BC
+#define TP_BC                   (0x03U)
+#endif
 #endif
 
 /*==================================================================================================
@@ -76,9 +86,21 @@ typedef uint8 TPParameterType;
  *==================================================================================================*/
 #ifndef RETRYINFOTYPE_DEFINED
 #define RETRYINFOTYPE_DEFINED
+/* TP data state */
+#ifndef TP_DATACONF
+#define TP_DATACONF             (0x00U)
+#endif
+#ifndef TP_DATARETRY
+#define TP_DATARETRY            (0x01U)
+#endif
+#ifndef TP_CONFPENDING
+#define TP_CONFPENDING          (0x02U)
+#endif
 typedef struct {
     uint16      RetryCounter;
     TPParameterType TpParameter;
+    uint8       TpDataState;
+    uint16      BufSize;
 } RetryInfoType;
 #endif
 
@@ -87,6 +109,7 @@ typedef struct {
  *==================================================================================================*/
 typedef uint8 Nm_PduIdType;
 typedef uint8 Nm_ChannelIdType;
+typedef uint8 NetworkHandleType;
 
 /*==================================================================================================
  *                                    COMMON TYPES

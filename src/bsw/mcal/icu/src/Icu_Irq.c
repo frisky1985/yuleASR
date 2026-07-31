@@ -55,8 +55,8 @@ static void Icu_ProcessEdgeDetection(Icu_ChannelType Channel)
     
     /* Call notification if enabled */
     if ((Icu_ChannelState[Channel].NotificationEnabled) && 
-        (Icu_DriverState.ConfigPtr->Channels[Channel].Notification != NULL_PTR)) {
-        Icu_DriverState.ConfigPtr->Channels[Channel].Notification();
+        (Icu_DriverState.ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
+        Icu_DriverState.ConfigPtr->Channels[Channel].NotificationFn();
     }
 }
 
@@ -74,7 +74,7 @@ static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
     
     const Icu_ChannelConfigType* config = &Icu_DriverState.ConfigPtr->Channels[Channel];
     
-    if (config->Property == ICU_DUTY_CYCLE) {
+    if (config->SignalMeasurementProperty == ICU_DUTY_CYCLE) {
         /* Two-step measurement for duty cycle */
         static uint8 firstEdge[ICU_NUM_CHANNELS] = {0};
         
@@ -106,7 +106,7 @@ static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
                 /* Store for next calculation */
             }
         }
-    } else if (config->Property == ICU_PERIOD_TIME) {
+    } else if (config->SignalMeasurementProperty == ICU_PERIOD_TIME) {
         /* Period measurement */
         if (Icu_ChannelState[Channel].PreviousValue != 0U) {
             if (currentValue > Icu_ChannelState[Channel].PreviousValue) {
@@ -134,16 +134,17 @@ static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel)
     
     /* Call notification if enabled */
     if ((Icu_ChannelState[Channel].NotificationEnabled) && 
-        (config->Notification != NULL_PTR)) {
-        config->Notification();
+        (config->NotificationFn != NULL_PTR)) {
+        config->NotificationFn();
     }
 }
 
 /**
  * @brief Process timestamp interrupt
  */
-static void Icu_ProcessTimestamp(Icu_ChannelType Channel)
+static void Icu_ProcessTimestamp(Icu_ChannelType Channel, Icu_ValueType CurrentValue)
 {
+    (void)CurrentValue;
     uint32 baseAddr = Icu_GetTpmBaseAddr(Channel);
     uint8 chOffset = Icu_GetTpmChannelOffset(Channel);
     uint32 cnvAddr = baseAddr + ICU_TPM_C0V + (chOffset * ICU_TPM_CH_OFFSET);
@@ -166,8 +167,8 @@ static void Icu_ProcessTimestamp(Icu_ChannelType Channel)
                 
                 /* Call notification if enabled */
                 if ((Icu_ChannelState[Channel].NotificationEnabled) && 
-                    (Icu_DriverState.ConfigPtr->Channels[Channel].Notification != NULL_PTR)) {
-                    Icu_DriverState.ConfigPtr->Channels[Channel].Notification();
+                    (Icu_DriverState.ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
+                    Icu_DriverState.ConfigPtr->Channels[Channel].NotificationFn();
                 }
             }
         }
@@ -192,8 +193,8 @@ static void Icu_ProcessEdgeCount(Icu_ChannelType Channel)
     
     /* Call notification if enabled (optional for edge count mode) */
     if ((Icu_ChannelState[Channel].NotificationEnabled) && 
-        (Icu_DriverState.ConfigPtr->Channels[Channel].Notification != NULL_PTR)) {
-        Icu_DriverState.ConfigPtr->Channels[Channel].Notification();
+        (Icu_DriverState.ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
+        Icu_DriverState.ConfigPtr->Channels[Channel].NotificationFn();
     }
 }
 
@@ -228,7 +229,7 @@ static void Icu_ProcessChannelInterrupt(Icu_ChannelType Channel)
         Icu_ClearInterruptFlag(Channel);
         
         /* Process based on mode */
-        Icu_MeasurementModeType mode = Icu_DriverState.ConfigPtr->Channels[Channel].Mode;
+        Icu_MeasurementModeType mode = Icu_DriverState.ConfigPtr->Channels[Channel].MeasurementMode;
         
         switch (mode) {
             case ICU_MODE_SIGNAL_EDGE_DETECT:
@@ -240,7 +241,7 @@ static void Icu_ProcessChannelInterrupt(Icu_ChannelType Channel)
                 break;
                 
             case ICU_MODE_TIMESTAMP:
-                Icu_ProcessTimestamp(Channel);
+                Icu_ProcessTimestamp(Channel, 0U);
                 break;
                 
             case ICU_MODE_EDGE_COUNTER:

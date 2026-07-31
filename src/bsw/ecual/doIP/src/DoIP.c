@@ -123,7 +123,7 @@ static uint8 DoIP_GetRoutingActivationResponseCode(
     uint16 authLen
 );
 static void DoIP_CloseSocket(uint16 socketId);
-static void DoIP_ResetTesterConnection(uint16 connectionIdx);
+static void DoIP_ResetTesterConnection(uint8 connectionIdx);
 
 /*================================================================================
 **  EXTERNAL FUNCTIONS - LIFECYCLE

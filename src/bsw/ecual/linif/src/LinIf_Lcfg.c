@@ -19,7 +19,6 @@
 #include "LinIf_Cfg.h"
 
 /* Frame Configurations */
-extern const LinIf_ConfigType LinIf_Config;
 static const LinIf_FrameConfigType LinIf_Frames[LINIF_MAX_FRAMES] = {
     {
         .FrameIdx = 0U,

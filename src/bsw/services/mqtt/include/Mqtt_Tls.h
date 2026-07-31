@@ -24,15 +24,11 @@ extern "C" {
 /*============================================================================
  * TLS版本定义
  *===========================================================================*/
-typedef enum {
-    MQTT_TLS_VERSION_1_0 = 0,  /**< TLS 1.0 (不推荐) */
-    MQTT_TLS_VERSION_1_1,      /**< TLS 1.1 (u4e0d推荐) */
-    MQTT_TLS_VERSION_1_2,      /**< TLS 1.2 (推荐) */
-    MQTT_TLS_VERSION_1_3       /**< TLS 1.3 (最佳) */
-} Mqtt_TlsVersionType;
+/* TLS version values are defined as macros in Mqtt_Cfg.h */
+typedef uint8 Mqtt_TlsVersionType;
 
 typedef enum {
-    MQTT_SSL_VERSION_3_0 = 0   /**< SSL 3.0 (已弃用) */
+    MQTT_SSL_VERSION_3_0 = 0,   /**< SSL 3.0 (已弃用) */
 } Mqtt_SslVersionType;
 
 /*============================================================================
@@ -133,7 +129,7 @@ typedef struct {
 /**
  * @brief TLS配置结构
  */
-typedef struct {
+typedef struct Mqtt_TlsConfigType_s {
     /* 协议版本 */
     Mqtt_TlsVersionType version;            /**< TLS版本 */
     boolean allowSslFallback;               /**< 允许SSL回退(不推荐) */

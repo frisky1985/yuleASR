@@ -22,6 +22,11 @@
 #include "Crypto_Cfg.h"
 #include "blake2.h"
 
+/* STATIC keyword fallback (some translation units do not include Compiler.h) */
+#ifndef STATIC
+#define STATIC static
+#endif
+
 /**********************************************************************************************************************
  * GLOBAL CONSTANT MACROS
  *********************************************************************************************************************/

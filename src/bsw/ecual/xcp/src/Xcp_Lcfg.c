@@ -22,11 +22,7 @@
 
 /*==================[Global Constants]======================================*/
 
-/* Event Channel Configurations */
-extern const Xcp_VersionInfoType Xcp_VersionInfo;
-extern const Xcp_TransportLayerType Xcp_TransportConfig;
-extern const Xcp_ResourceProtectionType Xcp_ResourceProtection;
-extern const Xcp_SessionType Xcp_SessionConfig;
+/* Event Channel Configurations (defined below in this file) */
 static const Xcp_EventChannelType Xcp_EventChannels[XCP_MAX_EVENT_CHANNELS] = {
     {
         .EventChannelName = "ECU_Cyclic_10ms",
@@ -44,43 +40,46 @@ static const Xcp_EventChannelType Xcp_EventChannels[XCP_MAX_EVENT_CHANNELS] = {
     }
 };
 
-/* DAQ List Configurations */
-Xcp_DaqListType Xcp_DaqLists[XCP_MAX_DAQ] = {
-    {
-        .DaqListNumber = 0,
-        .Mode = XCP_DAQ_MODE_ALTERNATING,
-        .Prescaler = 1,
-        .EventChannel = 0,
-        .FirstOdt = 0,
-        .OdtCount = 2,
-        .IsRunning = XCP_FALSE
-    },
-    {
-        .DaqListNumber = 1,
-        .Mode = XCP_DAQ_MODE_ALTERNATING,
-        .Prescaler = 1,
-        .EventChannel = 0,
-        .FirstOdt = 2,
-        .OdtCount = 1,
-        .IsRunning = XCP_FALSE
-    },
-    {
-        .DaqListNumber = 2,
-        .Mode = XCP_DAQ_MODE_ALTERNATING,
-        .Prescaler = 10,
-        .EventChannel = 1,
-        .FirstOdt = 3,
-        .OdtCount = 1,
-        .IsRunning = XCP_FALSE
-    }
-};
+/* ODT entry pool (wired into ODTs below) */
+static Xcp_DaqEntryType Xcp_DaqEntryPool[XCP_MAX_ODT * XCP_MAX_ODT_ENTRIES];
 
 /* ODT Configurations */
 static Xcp_OdtType Xcp_Odts[XCP_MAX_ODT] = {
-    { .OdtNumber = 0, .Entries = {{0}}, .EntryCount = 0 },
-    { .OdtNumber = 1, .Entries = {{0}}, .EntryCount = 0 },
-    { .OdtNumber = 2, .Entries = {{0}}, .EntryCount = 0 },
-    { .OdtNumber = 3, .Entries = {{0}}, .EntryCount = 0 }
+    { .entries = &Xcp_DaqEntryPool[0],  .entryCount = 0, .filled = 0 },
+    { .entries = &Xcp_DaqEntryPool[7],  .entryCount = 0, .filled = 0 },
+    { .entries = &Xcp_DaqEntryPool[14], .entryCount = 0, .filled = 0 },
+    { .entries = &Xcp_DaqEntryPool[21], .entryCount = 0, .filled = 0 }
+};
+
+/* DAQ List Configurations */
+Xcp_DaqListType Xcp_DaqLists[XCP_MAX_DAQ] = {
+    {
+        .odts = &Xcp_Odts[0],
+        .odtCount = 2,
+        .eventChannel = 0,
+        .prescaler = 1,
+        .mode = XCP_DAQ_MODE_SELECTED,
+        .state = XCP_DAQ_STATE_STOPPED,
+        .selected = FALSE
+    },
+    {
+        .odts = &Xcp_Odts[2],
+        .odtCount = 1,
+        .eventChannel = 0,
+        .prescaler = 1,
+        .mode = XCP_DAQ_MODE_SELECTED,
+        .state = XCP_DAQ_STATE_STOPPED,
+        .selected = FALSE
+    },
+    {
+        .odts = &Xcp_Odts[3],
+        .odtCount = 1,
+        .eventChannel = 1,
+        .prescaler = 10,
+        .mode = XCP_DAQ_MODE_SELECTED,
+        .state = XCP_DAQ_STATE_STOPPED,
+        .selected = FALSE
+    }
 };
 
 /* STIM List Configurations */

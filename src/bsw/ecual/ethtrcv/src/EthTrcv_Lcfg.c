@@ -37,31 +37,7 @@
  *                                INTERNAL TYPE DEFINITIONS
  *==================================================================================================*/
 
-/**
- * @brief Transceiver Configuration Structure
- */
-typedef struct
-{
-    uint8 TrcvIdx;                      /* Transceiver index */
-    uint8 CtrlIdx;                      /* Associated controller index */
-    uint8 PhyAddress;                   /* SMI/MDIO PHY address */
-    EthTrcv_TypeType TrcvType;          /* Configured transceiver type */
-    EthTrcv_TypeType DetectedType;      /* Detected transceiver type */
-    uint8 InterfaceType;                /* MII/RMII/RGMII interface */
-    uint8 AccessInterface;              /* MII/SPI/I2C access type */
-    EthTrcv_ModeType DefaultMode;       /* Default mode after init */
-    boolean AutoNegotiationEnable;      /* Auto-negotiation enable */
-    EthTrcv_BaudRateType FixedSpeed;    /* Fixed speed (when ANEG off) */
-    EthTrcv_DuplexModeType FixedDuplexMode; /* Fixed duplex mode */
-    boolean WakeupSupport;              /* Wake-up support enable */
-    uint8 WakeupMode;                   /* Wake-up mode (line/frame/both) */
-    uint32 WakeupSource;                /* EcuM wake-up source ID */
-    boolean CableDiagnosticsSupport;    /* Cable diagnostics support */
-    boolean SignalQualitySupport;       /* Signal quality support */
-    uint16 ResetDelayUs;                /* PHY reset delay in microseconds */
-    uint16 LinkUpDelayMs;               /* Link up delay in milliseconds */
-    const void* VendorSpecificConfig;   /* Pointer to vendor-specific config */
-} EthTrcv_TrcvConfigType;
+
 
 /**
  * @brief TJA1100 Vendor-Specific Configuration

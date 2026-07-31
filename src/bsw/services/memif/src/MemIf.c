@@ -259,7 +259,7 @@ void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @param Length Number of bytes to read
  * @return E_OK if request accepted, E_NOT_OK if rejected
  */
-Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint8* DataBufferPtr, uint16 Length)
+Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint16 BlockOffset, uint8* DataBufferPtr, uint16 Length)
 {
     Std_ReturnType result = E_NOT_OK;
 
@@ -278,11 +278,11 @@ Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint8* DataBuff
         /* Route to appropriate underlying driver */
         if (DeviceIndex == MEMIF_DEVICE_INDEX_FEE) {
 #if (MEMIF_FEE_ENABLED == STD_ON)
-            result = Fee_Read(BlockNumber, 0u, DataBufferPtr, Length);
+            result = Fee_Read(BlockNumber, BlockOffset, DataBufferPtr, Length);
 #endif
         } else if (DeviceIndex == MEMIF_DEVICE_INDEX_EA) {
 #if (MEMIF_EA_ENABLED == STD_ON)
-            result = Ea_Read(BlockNumber, 0u, DataBufferPtr, Length);
+            result = Ea_Read(BlockNumber, BlockOffset, DataBufferPtr, Length);
 #endif
         }
         

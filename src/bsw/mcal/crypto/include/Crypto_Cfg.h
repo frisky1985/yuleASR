@@ -192,4 +192,71 @@
 /* External Configuration Structure */
 extern const Crypto_ConfigType Crypto_Config;
 
+
+/*==================================================================================================
+ *                          KEY / CHANNEL / DRIVER OBJECT IDENTIFIERS
+ *================================================================================================*/
+#ifndef CRYPTO_KEY_ID_AES_MASTER
+#define CRYPTO_KEY_ID_AES_MASTER            (0U)
+#define CRYPTO_KEY_ID_AES_SESSION           (1U)
+#define CRYPTO_KEY_ID_HMAC_MASTER           (2U)
+#define CRYPTO_KEY_ID_RSA_PRIVATE           (3U)
+#define CRYPTO_KEY_ID_RSA_PUBLIC            (4U)
+#define CRYPTO_KEY_ID_ECC_PRIVATE           (5U)
+#define CRYPTO_KEY_ID_ECC_PUBLIC            (6U)
+#define CRYPTO_KEY_ID_RNG_SEED              (7U)
+#define CRYPTO_KEY_ID_AES_STORAGE           (8U)
+#define CRYPTO_KEY_ID_HMAC_STORAGE          (9U)
+#define CRYPTO_KEY_ID_DERIVE_BASE           (10U)
+#define CRYPTO_KEY_ID_DERIVED_1             (11U)
+#define CRYPTO_KEY_ID_DERIVED_2             (12U)
+#define CRYPTO_KEY_ID_CERT_ROOT             (13U)
+#define CRYPTO_KEY_ID_CERT_DEVICE           (14U)
+#define CRYPTO_KEY_ID_RESERVED              (15U)
+#define CRYPTO_KEY_ID_CCC_DEVICE_KEY        (14U)
+#define CRYPTO_KEY_ID_EPHEMERAL             (16U)
+#endif
+
+#ifndef CRYPTO_KEY_ELEMENT_AES_KEY
+#define CRYPTO_KEY_ELEMENT_AES_KEY          (0U)
+#define CRYPTO_KEY_ELEMENT_AES_IV           (1U)
+#define CRYPTO_KEY_ELEMENT_HMAC_KEY         (2U)
+#define CRYPTO_KEY_ELEMENT_RSA_MOD_N        (3U)
+#define CRYPTO_KEY_ELEMENT_RSA_PRIV_EXP_D   (4U)
+#define CRYPTO_KEY_ELEMENT_RSA_PUB_EXP_E    (5U)
+#define CRYPTO_KEY_ELEMENT_SEED             (6U)
+#define CRYPTO_KEY_ELEMENT_SALT             (7U)
+#endif
+
+#ifndef CRYPTO_AES_KEY_SIZE_256
+#define CRYPTO_AES_KEY_SIZE_256             (32U)
+#define CRYPTO_AES_IV_SIZE                  (16U)
+#define CRYPTO_HMAC_MAX_KEY_SIZE            (32U)
+#define CRYPTO_RSA_KEY_SIZE_2048            (256U)
+#endif
+
+#ifndef CRYPTO_DRIVER_OBJECT_AES_ID
+#define CRYPTO_DRIVER_OBJECT_AES_ID         (1U)
+#define CRYPTO_DRIVER_OBJECT_HASH_ID        (2U)
+#define CRYPTO_DRIVER_OBJECT_HMAC_ID        (3U)
+#define CRYPTO_DRIVER_OBJECT_RSA_ID         (4U)
+#endif
+
+#ifndef CRYPTO_CHANNEL_AES_0
+#define CRYPTO_CHANNEL_AES_0                (0U)
+#define CRYPTO_CHANNEL_AES_1                (1U)
+#define CRYPTO_CHANNEL_HASH_0               (2U)
+#define CRYPTO_CHANNEL_HMAC_0               (3U)
+#define CRYPTO_CHANNEL_RSA_0                (4U)
+#define CRYPTO_CHANNEL_RNG_0                (5U)
+#define CRYPTO_CHANNEL_GCM_0                (6U)
+#define CRYPTO_CHANNEL_ECC_0                (7U)
+#endif
+
+#ifndef CRYPTO_NUM_KEYS
+#define CRYPTO_NUM_KEYS                     (16U)
+#define CRYPTO_NUM_CHANNELS                 (8U)
+#define CRYPTO_NUM_DRIVER_OBJECTS           (4U)
+#endif
+
 #endif /* CRYPTO_CFG_H */

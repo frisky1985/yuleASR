@@ -47,8 +47,13 @@
  * @brief 时序宏
  */
 #define PLATFORM_LOCKSTEP_NOP()                 __asm__ volatile ("nop")
+#if defined(__aarch64__)
+#define PLATFORM_LOCKSTEP_DSB()                 __asm__ volatile ("dsb sy" ::: "memory")
+#define PLATFORM_LOCKSTEP_ISB()                 __asm__ volatile ("isb sy" ::: "memory")
+#else
 #define PLATFORM_LOCKSTEP_DSB()                 __asm__ volatile ("dsb" ::: "memory")
 #define PLATFORM_LOCKSTEP_ISB()                 __asm__ volatile ("isb" ::: "memory")
+#endif
 
 /**
  * @brief 超时定义

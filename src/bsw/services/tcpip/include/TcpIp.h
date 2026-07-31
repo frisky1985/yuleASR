@@ -197,6 +197,15 @@ TcpIp_ReturnType TcpIp_OpenSocket(TcpIp_ProtocolType Protocol, uint16 Port, TcpI
 /** @brief Close a socket by ID */
 TcpIp_ReturnType TcpIp_CloseSocket(TcpIp_SocketIdType SocketId);
 
+/** @brief Create a TCP socket (convenience wrapper used by MQTT/SoAd) */
+Std_ReturnType TcpIp_SocketCreate(TcpIp_SocketIdType* SocketId);
+
+/** @brief Close a socket (convenience wrapper used by MQTT/SoAd) */
+void TcpIp_SocketClose(TcpIp_SocketIdType SocketId);
+
+/** @brief Check whether a socket is connected (convenience wrapper) */
+boolean TcpIp_IsConnected(TcpIp_SocketIdType SocketId);
+
 /** @brief Get the IPv4 address of the interface */
 TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr);
 

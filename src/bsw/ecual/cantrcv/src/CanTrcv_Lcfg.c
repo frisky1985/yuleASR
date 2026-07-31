@@ -55,21 +55,14 @@ static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig_0 =
     },
     
     /* Spi Configuration - Not used for TJA1043 */
-    {
-        FALSE,  /* UsesSpi */
-        0U,     /* SpiSequence */
-        0U      /* SpiChannel */
-    },
+    FALSE,  /* UsesSpi */
+    0U,     /* SpiSequence */
+    0U,     /* SpiChannel */
     
     /* Wakeup Configuration */
-    {
-        /* Wake-up by bus enabled */
-        TRUE,
-        /* Wake-up by pin enabled */
-        FALSE,
-        /* Wake-up source reference for EcuM */
-        ECUM_WKSOURCE_CAN0
-    },
+    TRUE,   /* Wake-up by bus enabled */
+    FALSE,  /* Wake-up by pin enabled */
+    ECUM_WKSOURCE_CAN0,
     
     /* Timing */
     10U,  /* Mode transition delay in ms */
@@ -100,18 +93,14 @@ static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig_1 =
     },
     
     /* Spi Configuration */
-    {
-        FALSE,
-        0U,
-        0U
-    },
+    FALSE,
+    0U,
+    0U,
     
     /* Wakeup Configuration */
-    {
-        TRUE,
-        FALSE,
-        ECUM_WKSOURCE_CAN1
-    },
+    TRUE,
+    FALSE,
+    ECUM_WKSOURCE_CAN1,
     
     /* Timing */
     10U,
@@ -142,18 +131,14 @@ static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig_2 =
     },
     
     /* Spi Configuration */
-    {
-        FALSE,
-        0U,
-        0U
-    },
+    FALSE,
+    0U,
+    0U,
     
     /* Wakeup Configuration */
-    {
-        TRUE,
-        FALSE,
-        ECUM_WKSOURCE_CAN2
-    },
+    TRUE,
+    FALSE,
+    ECUM_WKSOURCE_CAN2,
     
     /* Timing */
     5U,
@@ -163,11 +148,11 @@ static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig_2 =
 /**
  * @brief Array of all channel configurations
  */
-static const CanTrcv_ChannelConfigType* const CanTrcv_ChannelConfigs[CANTRCV_MAX_CHANNELS] =
+static const CanTrcv_ChannelConfigType CanTrcv_ChannelConfig[CANTRCV_MAX_CHANNELS] =
 {
-    &CanTrcv_ChannelConfig_0,
-    &CanTrcv_ChannelConfig_1,
-    &CanTrcv_ChannelConfig_2
+    CanTrcv_ChannelConfig_0,
+    CanTrcv_ChannelConfig_1,
+    CanTrcv_ChannelConfig_2
 };
 
 /*==================================================================================================
@@ -208,7 +193,7 @@ const CanTrcv_ConfigType CanTrcv_Config =
     &CanTrcv_GeneralConfig,
     
     /* Channel configuration array */
-    CanTrcv_ChannelConfigs,
+    CanTrcv_ChannelConfig,
     
     /* Number of configured channels */
     CANTRCV_MAX_CHANNELS

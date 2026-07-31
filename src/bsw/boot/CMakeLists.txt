@@ -25,6 +25,9 @@ if(NOT BUILD_PBL)
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/flash/include
             ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/crypto/include
+            ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
+            ${CMAKE_SOURCE_DIR}/include/autosar
+            ${CMAKE_SOURCE_DIR}/third_party/crypto/hash/include
     )
 
     target_compile_definitions(${BOOT_TARGET} PRIVATE

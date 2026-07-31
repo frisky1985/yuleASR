@@ -338,7 +338,7 @@ void CanIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @param CanId CAN ID to set
  * @return Result of operation
  */
-Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, CanIf_CanIdType CanId);
+Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, uint32 CanId);
 
 /**
  * @brief Checks for wakeup events

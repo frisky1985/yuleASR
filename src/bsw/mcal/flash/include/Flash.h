@@ -107,14 +107,7 @@ typedef enum
     MEMIF_MODE_FAST
 } MemIf_ModeType;
 
-/* Flash Sector Size Type */
-typedef enum
-{
-    FLS_SECTOR_SIZE_4KB = 0,
-    FLS_SECTOR_SIZE_32KB,
-    FLS_SECTOR_SIZE_64KB,
-    FLS_SECTOR_SIZE_128KB
-} Fls_SectorSizeType;
+/* Fls_SectorSizeType is defined in Flash_Cfg.h */
 
 /* Flash Sector Info */
 typedef struct

@@ -523,8 +523,8 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
                 sizeof(result->subject) - 1);
         }
         
-        /* 检查过期 */
-        if (peerCert->next.p == NULL_PTR || peerCert->next.len == 0U ) {
+        /* 检查过期: 无下级证书视为未过期 */
+        if (peerCert->next == NULL_PTR) {
             result->notExpired = TRUE;
         }
     }

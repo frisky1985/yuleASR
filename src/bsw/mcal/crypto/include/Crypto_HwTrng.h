@@ -82,7 +82,7 @@ typedef enum {
 /* TRNG Configuration Structure */
 typedef struct {
     boolean enableHealthTests;
-    boolean enable Conditioning;
+    boolean enableConditioning;
     uint32  sampleCount;
     uint32  timeoutUs;
 } Crypto_HwTrngConfigType;

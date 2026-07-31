@@ -312,6 +312,16 @@ uint8 Aes_CbcDecrypt(Aes_ContextType* ctx,
                       uint32 ciphertextLen,
                       uint8* plaintext,
                       uint32* plaintextLenPtr);
+uint8 Aes_CbcDecryptStart(Aes_ContextType* ctx, const uint8* iv);
+uint8 Aes_CbcDecryptUpdate(Aes_ContextType* ctx,
+                            const uint8* ciphertext,
+                            uint32 ciphertextLen,
+                            uint8* plaintext,
+                            uint32* plaintextLenPtr);
+uint8 Aes_CbcDecryptFinish(Aes_ContextType* ctx,
+                            const uint8* ciphertext,
+                            uint8* plaintext,
+                            uint32* plaintextLenPtr);
 
 /**
  * @brief CBC模式流式加密 - 开始

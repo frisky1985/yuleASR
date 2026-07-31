@@ -404,8 +404,12 @@ Std_ReturnType NvM_EccHandler_ProtectedWrite(
         destAddr[i] = srcBuffer[i];
     }
     
-    /* 内存屏障 */
-    __asm("dsb");
+    /* 内存屏障 (ARM only; no-op on host builds) */
+#if defined(__aarch64__)
+    __asm volatile ("dsb sy");
+#elif defined(__arm__) || defined(__thumb__)
+    __asm volatile ("dsb");
+#endif
     
     /* 重新启用中断 */
     Mcal_EnableAllInterrupts();
@@ -513,7 +517,7 @@ Std_ReturnType NvM_EccHandler_RecoverFromRedundantCopy(
      */
     
     /* 示例实现 */
-    uint32 redundantAddr;
+    const void* redundantAddr;
     
     (void)blockId;
     

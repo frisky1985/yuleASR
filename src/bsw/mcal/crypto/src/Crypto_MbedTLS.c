@@ -42,6 +42,7 @@
  */
 extern int mbedtls_ctr_drbg_random(void *ctx, unsigned char *output, size_t len);
 #include "mbedtls/bignum.h"
+#include <string.h>
 
 /**********************************************************************************************************************
  * LOCAL MACROS
@@ -772,7 +773,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
             /* Random Generation */
             result = Crypto_MbedTLS_RandomGenerate(
                 job->jobPrimitiveInputOutput->output8Ptr,
-                job->jobPrimitiveInputOutput->outputLength != NULL_PTR ? 
+                job->jobPrimitiveInputOutput->outputLengthPtr != NULL_PTR ?
                     *job->jobPrimitiveInputOutput->outputLengthPtr : 0U
             );
             break;
@@ -797,7 +798,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
                     (const uint8*)job->jobPrimitiveInputOutput->tertiaryInputPtr : NULL_PTR,
                 job->jobPrimitiveInputOutput->tertiaryInputLength,
                 job->jobPrimitiveInputOutput->output8Ptr,
-                job->jobPrimitiveInputOutput->outputLength != NULL_PTR ? 
+                job->jobPrimitiveInputOutput->outputLengthPtr != NULL_PTR ?
                     *job->jobPrimitiveInputOutput->outputLengthPtr : 0U
             );
             break;

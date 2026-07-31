@@ -234,6 +234,7 @@ extern "C" {
 
 /* Number of pages (dual-page scheme) */
 #define FEE_NUMBER_OF_PAGES             (2U)
+#define FEE_NUMBER_OF_SECTORS           (2U)
 
 /* Page size */
 #define FEE_PAGE_SIZE                   (FEE_FLASH_SECTOR_SIZE)
@@ -300,6 +301,11 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
+/* DET error codes */
+#ifndef FEE_E_INVALID_CANCEL
+#define FEE_E_INVALID_CANCEL                (0x0CU)
 #endif
 
 #endif /* FEE_CFG_H */

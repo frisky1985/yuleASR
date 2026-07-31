@@ -76,7 +76,6 @@
 #define MQTT_E_PUBLISH_FAILED             (0x0A)
 #define MQTT_E_SUBSCRIBE_FAILED           (0x0B)
 #define MQTT_E_BUFFER_OVERFLOW            (0x0C)
-#define MQTT_E_TIMEOUT                    (0x0D)
 /** @} */
 
 /*============================================================================
@@ -164,6 +163,9 @@ typedef enum {
 /**
  * @brief 连接配置结构
  */
+/* Forward declaration (defined in Mqtt_Tls.h) */
+typedef struct Mqtt_TlsConfigType_s Mqtt_TlsConfigType;
+
 typedef struct {
     const char* brokerHost;                 /**< 代理地址 */
     uint16 brokerPort;                      /**< 代理端口 */

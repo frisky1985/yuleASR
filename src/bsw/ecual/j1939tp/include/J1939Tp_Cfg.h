@@ -137,7 +137,7 @@
 #define J1939TP_START_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"
 
-extern const J1939Tp_ConfigType J1939Tp_Config;
+/* J1939Tp_Config declared in J1939Tp.h */
 
 #define J1939TP_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"

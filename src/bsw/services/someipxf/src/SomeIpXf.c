@@ -505,6 +505,39 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
                     if (SourceBuffer->Length >= payloadOffset + 4U)
                     {
                         uint32 strLen = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
-                        if ((strLen <= SOMEIPXF_MAX_STRING_LENGTH) && 
+                        if ((strLen <= SOMEIPXF_MAX_STRING_LENGTH) &&
                             (SourceBuffer->Length >= payloadOffset + 4U + strLen) &&
                             (TargetBuffer->MaxLength >= strLen))
+                        {
+                            (void)memcpy(TargetBuffer->Data, &SourceBuffer->Data[payloadOffset + 4U], strLen);
+                            TargetBuffer->Length = strLen;
+                            result = E_OK;
+                        }
+                    }
+                    break;
+
+                case SOMEIPXF_DT_UINT64:
+                case SOMEIPXF_DT_SINT64:
+                case SOMEIPXF_DT_FLOAT32:
+                case SOMEIPXF_DT_FLOAT64:
+                    /* Unsupported on de-transform path for now */
+                    result = E_NOT_OK;
+                    break;
+
+                default:
+                    /* Unsupported data type */
+                    result = E_NOT_OK;
+                    break;
+            }
+        }
+    }
+
+    return result;
+}
+
+#define SOMEIPXF_STOP_SEC_CODE
+#include "MemMap.h"
+
+/*==================================================================================================
+*                                       END OF FILE
+==================================================================================================*/

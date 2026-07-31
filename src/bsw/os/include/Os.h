@@ -210,4 +210,9 @@ void Os_Callback_Alarm(AlarmType AlarmID);
 #define OS_STOP_SEC_CODE
 #include "MemMap.h"
 
+/* Protection / error hooks */
+extern void Os_TerminateTask(void);
+extern void Os_ErrorHook(uint32 ErrorCode);
+extern void Os_ProtectionHook(uint32 ProtectionError);
+
 #endif /* OS_H */

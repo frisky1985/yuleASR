@@ -214,22 +214,35 @@ typedef struct {
 } Xcp_DaqListConfigType;
 
 /* General configuration */
-typedef struct {
-    uint8  maxCto;
-    uint8  maxDto;
-    uint8  protocolLayerVersion;
-    uint8  transportLayerVersion;
-    uint8  byteOrder;           /* 0 = Intel, 1 = Motorola */
-    uint8  addressGranularity;  /* 1, 2, or 4 bytes */
-    uint8  slaveBlockMode;
-} Xcp_GeneralConfigType;
+/* Xcp_GeneralConfigType defined in Xcp.h */
 
 /*============================================================================
  *                          CONFIGURATION EXTERNS
  *===========================================================================*/
-extern const Xcp_GeneralConfigType Xcp_GeneralConfig;
+/* extern Xcp_GeneralConfig: see Xcp_Lcfg.c */
 extern const Xcp_SegmentConfigType Xcp_SegmentConfig[XCP_MAX_SEGMENTS];
 extern const Xcp_EventChannelConfigType Xcp_EventChannelConfig[XCP_MAX_EVENT_CHANNELS];
 extern const Xcp_DaqListConfigType Xcp_DaqListConfig[XCP_MAX_DAQ_LISTS];
+
+
+/* Maximum sizes (kept in sync with module Xcp_Cfg.h) */
+#ifndef XCP_MAX_DAQ
+#define XCP_MAX_DAQ             (16u)
+#endif
+#ifndef XCP_MAX_CTO
+#define XCP_MAX_CTO             (8u)
+#endif
+#ifndef XCP_MAX_DTO
+#define XCP_MAX_DTO             (8u)
+#endif
+#ifndef XCP_MAX_SEED_SIZE
+#define XCP_MAX_SEED_SIZE       (8u)
+#endif
+#ifndef XCP_MAX_KEY_SIZE
+#define XCP_MAX_KEY_SIZE        (8u)
+#endif
+#ifndef XCP_MAX_STIM
+#define XCP_MAX_STIM            (4u)
+#endif
 
 #endif /* XCP_CFG_H */

@@ -27,6 +27,7 @@
 #include "Swc_DiagnosticManager.h"
 #include "Rte.h"
 #include "Det.h"
+#include <string.h>
 
 /*==================================================================================================
 *                                    LOCAL MACROS
@@ -113,7 +114,7 @@ STATIC Swc_DiagnosticManagerInternalType swcDiagManager = {
         .securityLevel = SECURITY_LOCKED,
         .activeProtocol = 0,
         .communicationEnabled = TRUE,
-        .sessionTimeout = DIAG_SESSION_TIMEOUT_DEFAULT,
+        .sessionTimeout = SWC_DIAG_SESSION_TIMEOUT_DEFAULT,
         .securityTimeout = 0
     },
     .dtcList = {{0}},
@@ -651,7 +652,8 @@ Rte_StatusType Swc_DiagnosticManager_ProcessDiagnosticRequest(
     swcDiagManager.hasPendingRequest = TRUE;
     Swc_DiagnosticManager_ProcessRequest();
 
-    *response = swcDiagManager.pendingRequest.data[0];  /* Simplified */
+    (void)memset(response, 0, sizeof(*response));
+    response->responseId = swcDiagManager.pendingRequest.data[0];  /* Simplified */
     return RTE_E_OK;
 }
 
@@ -762,7 +764,7 @@ void Swc_DiagnosticManager_Deinit(void)
     swcDiagManager.status.securityLevel = SECURITY_LOCKED;
     swcDiagManager.status.communicationEnabled = TRUE;
 
-    for (i = 0; i < DIAG_MAX_DTCS; i++) {
+    for (i = 0; i < SWC_DIAG_MAX_DTCS; i++) {
         swcDiagManager.dtcList[i].dtcCode = 0;
     }
     swcDiagManager.numDtcs = 0;

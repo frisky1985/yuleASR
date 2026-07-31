@@ -40,6 +40,7 @@
 ==================================================================================================*/
 #include "Std_Types.h"
 #include "Platform_Types.h"
+#include "RamSafety.h"
 
 /*==================================================================================================
 *                                       宏定义
@@ -90,13 +91,20 @@
 /**
  * @brief ECC错误信息结构
  */
+#ifndef PLATFORM_ECCERRORINFOTYPE_DEFINED
+#define PLATFORM_ECCERRORINFOTYPE_DEFINED
 typedef struct
 {
     uint8 errorType;                    /* 错误类型 */
     uint32 errorAddress;                /* 错误地址 */
     uint32 errorCount;                  /* 错误计数 */
     boolean correctable;                /* 是否可纠正 */
+    uint32 timestamp;                   /* 时间戳 (如果有实时时钟) */
+    uint32 correctedData;               /* 纠正后的数据 (如果可纠正) */
+    boolean isNvMBlock;                 /* 是否是NvM块 */
+    uint16 nvMBlockId;                  /* NvM块ID (如果是NvM块) */
 } Platform_EccErrorInfoType;
+#endif
 
 /**
  * @brief MSCM配置结构

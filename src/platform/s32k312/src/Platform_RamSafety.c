@@ -28,6 +28,17 @@
 #include "Mcal.h"
 #include "Reg_Macros.h"
 
+/* FCCU fault IDs (host stub) */
+#ifndef PLATFORM_FCCU_FAULT_RAM_ECC
+#define PLATFORM_FCCU_FAULT_RAM_ECC          (0x11U)
+#endif
+
+/* FCCU fault injection hook (stub; real impl is MCAL/platform specific) */
+void Platform_Fccu_NonFaultyFault(uint32 faultId)
+{
+    (void)faultId;
+}
+
 /*==================================================================================================
 *                                       宏定义
 ==================================================================================================*/

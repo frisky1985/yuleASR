@@ -289,6 +289,7 @@ STATIC Os_ResourceConfigType Os_ResourceConfigs[OS_CFG_NUM_RESOURCES] =
 
 Os_GlobalStateType Os_GlobalState =
 {
+    /* IsInitialized     */ FALSE,
     /* IsRunning         */ FALSE,
     /* CurrentAppMode    */ OSDEFAULTAPPMODE,
     /* NumTasks          */ OS_CFG_NUM_TASKS,

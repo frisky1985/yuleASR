@@ -30,13 +30,25 @@ extern "C" {
 #include "Std_Types.h"
 #include "Eth_GeneralTypes.h"
 
+/* EcuM wake-up source (used by EthTrcv configuration) */
+#ifndef ECUM_WAKEUPSOURCE_DEFINED
+#define ECUM_WAKEUPSOURCE_DEFINED
+typedef uint8 EcuM_WakeupSourceType;
+#define ECUM_WKSOURCE_INTERNAL                (0x01U)
+#define ECUM_WKSOURCE_RESET                    (0x02U)
+#define ECUM_WKSOURCE_POWER                     (0x03U)
+#define ECUM_WKSOURCE_CAN                        (0x04U)
+#define ECUM_WKSOURCE_LIN                        (0x05U)
+#define ECUM_WKSOURCE_ETH                        (0x06U)
+#endif
+
 /*==================================================================================================
  *                                     VERSION INFORMATION
  *==================================================================================================*/
 #define ETHTRCV_VENDOR_ID                    (30U)
 #define ETHTRCV_MODULE_ID                    (73U)
 #define ETHTRCV_AR_RELEASE_MAJOR_VERSION     (4U)
-#define ETHTRCV_AR_RELEASE_MINOR_VERSION     (4U)
+#define ETHTRCV_AR_RELEASE_MINOR_VERSION     (7U)
 #define ETHTRCV_AR_RELEASE_REVISION_VERSION  (0U)
 #define ETHTRCV_SW_MAJOR_VERSION             (1U)
 #define ETHTRCV_SW_MINOR_VERSION             (0U)
@@ -46,8 +58,8 @@ extern "C" {
  *                                     FILE VERSION CHECKS
  *==================================================================================================*/
 #ifndef DISABLE_MCAL_INTERMODULE_ASR_CHECK
-    #if ((ETHTRCV_AR_RELEASE_MAJOR_VERSION != STD_AR_RELEASE_MAJOR_VERSION) || \
-         (ETHTRCV_AR_RELEASE_MINOR_VERSION != STD_AR_RELEASE_MINOR_VERSION))
+    #if ((ETHTRCV_AR_RELEASE_MAJOR_VERSION != STD_TYPES_AR_RELEASE_MAJOR_VERSION) || \
+         (ETHTRCV_AR_RELEASE_MINOR_VERSION != STD_TYPES_AR_RELEASE_MINOR_VERSION))
         #error "AUTOSAR Version Numbers of EthTrcv.h and Std_Types.h are different"
     #endif
 #endif
@@ -168,8 +180,8 @@ extern "C" {
  *==================================================================================================*/
 
 /* Forward declaration of configuration structure */
-struct EthTrcv_ConfigType_s;
-typedef struct EthTrcv_ConfigType_s EthTrcv_ConfigType;
+/* Transceiver configuration (full definition) */
+
 
 /* Transceiver Mode Type */
 typedef uint8 EthTrcv_ModeType;
@@ -186,8 +198,59 @@ typedef uint8 EthTrcv_DuplexModeType;
 /* Transceiver Index Type */
 typedef uint8 EthTrcv_TrcvIdxType;
 
+
 /* Transceiver Type */
 typedef uint8 EthTrcv_TypeType;
+
+typedef struct EthTrcv_TrcvConfigType_s EthTrcv_TrcvConfigType;
+typedef struct EthTrcv_InterfaceConfigType_s EthTrcv_InterfaceConfigType;
+
+/* Transceiver configuration (full definition) */
+typedef struct EthTrcv_TrcvConfigType_s
+{
+    uint8 TrcvIdx;                      /* Transceiver index */
+    uint8 CtrlIdx;                      /* Associated controller index */
+    uint8 PhyAddress;                   /* SMI/MDIO PHY address */
+    EthTrcv_TypeType TrcvType;          /* Configured transceiver type */
+    EthTrcv_TypeType DetectedType;      /* Detected transceiver type */
+    uint8 InterfaceType;                /* MII/RMII/RGMII interface */
+    uint8 AccessInterface;              /* MII/SPI/I2C access type */
+    EthTrcv_ModeType DefaultMode;       /* Default mode after init */
+    boolean AutoNegotiationEnable;      /* Auto-negotiation enable */
+    EthTrcv_BaudRateType FixedSpeed;    /* Fixed speed (when ANEG off) */
+    EthTrcv_DuplexModeType FixedDuplexMode; /* Fixed duplex mode */
+    boolean WakeupSupport;              /* Wake-up support enable */
+    uint8 WakeupMode;                   /* Wake-up mode (line/frame/both) */
+    uint32 WakeupSource;                /* EcuM wake-up source ID */
+    boolean CableDiagnosticsSupport;    /* Cable diagnostics support */
+    boolean SignalQualitySupport;       /* Signal quality support */
+    uint16 ResetDelayUs;                /* PHY reset delay in microseconds */
+    uint16 LinkUpDelayMs;               /* Link up delay in milliseconds */
+    const void* VendorSpecificConfig;   /* Pointer to vendor-specific config */
+} EthTrcv_TrcvConfigType;
+
+/* Interface configuration */
+typedef struct EthTrcv_InterfaceConfigType_s
+{
+    uint8 InterfaceType;                /* MII/RMII/RGMII */
+    uint16 MaxFrameSize;
+    boolean ClockGating;
+    uint8 ClockDivisor;
+} EthTrcv_InterfaceConfigType;
+
+typedef struct EthTrcv_ConfigType_s {
+    uint8   NumberOfTransceivers;
+    const EthTrcv_TrcvConfigType* TransceiverConfig;
+    const EthTrcv_InterfaceConfigType* InterfaceConfig;
+    uint16  MainFunctionPeriodMs;
+    uint16  PhyAccessTimeoutMs;
+    uint8   LinkDebounceCount;
+    boolean DevErrorDetect;
+    boolean VersionInfoApi;
+    boolean WakeupSupport;
+    boolean CableDiagnosticsSupport;
+    boolean SignalQualitySupport;
+} EthTrcv_ConfigType;
 
 /* Interface Type */
 typedef uint8 EthTrcv_InterfaceType;

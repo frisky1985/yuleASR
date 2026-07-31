@@ -19,7 +19,6 @@
 #include "EthIf_Cfg.h"
 
 /* Controller Configurations */
-extern const EthIf_ConfigType EthIf_Config;
 static const EthIf_ControllerConfigType EthIf_Controllers[ETHIF_MAX_CONTROLLERS] = {
     {
         .CtrlIdx = 0U,

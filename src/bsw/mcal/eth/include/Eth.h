@@ -15,6 +15,7 @@
 
 #include "Std_Types.h"
 #include "ComStack_Types.h"
+#include "Eth_GeneralTypes.h"
 #include <string.h>
 
 #ifdef __cplusplus
@@ -269,5 +270,9 @@ extern void Eth_IsrError(Eth_ControllerType CtrlIdx);
 #ifdef __cplusplus
 }
 #endif
+
+
+/* Ethernet hardware timestamp access (used by StbM) */
+extern Std_ReturnType Eth_GetCurrentTime(uint8 ControllerId, Eth_TimeStampType* TimeStampPtr, Eth_RxStatusType* RxStatusPtr);
 
 #endif /* ETH_H */

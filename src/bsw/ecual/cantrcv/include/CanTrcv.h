@@ -243,6 +243,22 @@ typedef enum
 } CanTrcv_PinType;
 
 /**
+ * @brief CAN transceiver channel number type
+ */
+typedef uint8 CanTrcv_TrcvChnlType;
+
+/**
+ * @brief CAN Transceiver control pin configuration
+ */
+typedef struct
+{
+    Dio_ChannelType StbPin;         /**< STB pin (inverted logic on TJA1043) */
+    Dio_ChannelType EnPin;          /**< EN pin (may be DIO_INVALID_CHANNEL) */
+    Dio_ChannelType ErrPin;         /**< NERR/ERR pin */
+    boolean         StbPinInverted; /**< TRUE if STB is active-low */
+} CanTrcv_PinConfigType;
+
+/**
  * @brief CAN Transceiver configuration structure
  *
  * This structure contains all configuration parameters for a single
@@ -250,59 +266,52 @@ typedef enum
  */
 typedef struct
 {
+    /** @brief Channel ID */
+    uint8 ChannelId;
+
     /** @brief Transceiver hardware type */
-    CanTrcv_HwType hwType;
-    
-    /** @brief DIO channel ID for STB pin (if used) */
-    Dio_ChannelType stbPin;
-    
-    /** @brief DIO channel ID for EN pin (if used) */
-    Dio_ChannelType enPin;
-    
-    /** @brief DIO channel ID for NERR pin (if used) */
-    Dio_ChannelType nerrPin;
-    
-    /** @brief DIO channel ID for WAK pin (if used) */
-    Dio_ChannelType wakPin;
-    
-    /** @brief SPI sequence ID (for SPI-based transceivers) */
-    Spi_SequenceType spiSequence;
-    
-    /** @brief SPI channel ID (for SPI-based transceivers) */
-    Spi_ChannelType spiChannel;
-    
-    /** @brief Initial operation mode after initialization */
-    CanTrcv_TrcvModeType initMode;
-    
-    /** @brief Wake-up enabled at startup (TRUE/FALSE) */
-    boolean wakeupByBusUsed;
-    
-    /** @brief Wake-up by pin enabled */
-    boolean wakeupByPinUsed;
-    
-    /** @brief Transceiver-specific timeout value in microseconds */
-    uint32 modeTransitionTimeout;
-    
-    /** @brief ECUM wake-up source reference (for EcuM integration) */
-    EcuM_WakeupSourceType wakeupSource;
-    
-    /** @brief Unique transceiver identifier */
-    uint8 trcvId;
-    
-    /** @brief CAN controller associated with this transceiver */
-    uint8 controllerId;
-    
-    /** @brief Flag indicating if SPI interface is used */
-    boolean spiUsed;
-    
-    /** @brief Flag indicating if DIO interface is used */
-    boolean dioUsed;
-} CanTrcv_TrcvConfigType;
+    CanTrcv_HwType TransceiverType;
 
-/* Compatibility aliases for link-time configuration */
-typedef CanTrcv_TrcvConfigType CanTrcv_ChannelConfigType;
-typedef CanTrcv_ConfigType CanTrcv_GeneralConfigType;
+    /** @brief Control pin configuration */
+    CanTrcv_PinConfigType PinConfig;
 
+    /** @brief TRUE if SPI-controlled transceiver */
+    boolean UsesSpi;
+
+    /** @brief SPI sequence ID */
+    uint8 SpiSequence;
+
+    /** @brief SPI channel ID */
+    uint8 SpiChannel;
+
+    /** @brief Wake-up by bus activity enabled */
+    boolean WakeupByBus;
+
+    /** @brief Wake-up by pin transition enabled */
+    boolean WakeupByPin;
+
+    /** @brief EcuM wake-up source reference */
+    uint8 WakeupSource;
+
+    /** @brief Mode transition delay in ms */
+    uint16 ModeTransitionDelay;
+
+    /** @brief Debounce count for wake-up */
+    uint8 DebounceCount;
+} CanTrcv_ChannelConfigType;
+
+
+/**
+ * @brief CAN Transceiver general configuration
+ */
+typedef struct
+{
+    uint8   MaxChannels;           /**< Maximum number of transceiver channels */
+    boolean DevErrorDetect;        /**< Development error detection */
+    boolean VersionInfoApi;        /**< Version info API */
+    boolean WakeupByPolling;       /**< Wake-up check by polling (TRUE) or interrupt */
+    uint16  MainFunctionPeriod;    /**< Main function period in ms */
+} CanTrcv_GeneralConfigType;
 
 /**
  * @brief CAN Transceiver driver configuration structure
@@ -312,18 +321,18 @@ typedef CanTrcv_ConfigType CanTrcv_GeneralConfigType;
  */
 typedef struct
 {
-    /** @brief Number of configured transceivers */
-    uint8 numTransceivers;
-    
-    /** @brief Pointer to array of transceiver configurations */
-    const CanTrcv_TrcvConfigType* transceiverConfig;
-    
-    /** @brief Pointer to channel mapping table */
-    const uint8* channelMapping;
-    
-    /** @brief Maximum number of transceivers supported */
-    uint8 maxTransceivers;
+    /** @brief General configuration pointer */
+    const CanTrcv_GeneralConfigType* GeneralConfig;
+
+    /** @brief Channel configuration array */
+    const CanTrcv_ChannelConfigType* ChannelConfig;
+
+    /** @brief Number of configured channels */
+    uint8 numChannels;
 } CanTrcv_ConfigType;
+
+/* Extern configuration pointer (defined in CanTrcv_Lcfg.c) */
+extern const CanTrcv_ConfigType* CanTrcv_ConfigPtr;
 
 /**
  * @brief CAN Transceiver state structure (internal use)
@@ -391,7 +400,7 @@ extern void CanTrcv_Init(const CanTrcv_ConfigType* ConfigPtr);
  *
  * @requirements SWS_CanTrcv_00002
  */
-extern void CanTrcv_DeInit(void);
+extern Std_ReturnType CanTrcv_DeInit(void);
 
 /*================================================================================================*/
 /**

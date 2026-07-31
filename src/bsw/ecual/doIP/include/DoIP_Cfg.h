@@ -268,4 +268,13 @@ extern const DoIP_ConfigType DoIP_Config;
 }
 #endif
 
+
+/* Routing activation types (ISO 13400-2) */
+#ifndef DOIP_ROUTING_ACTIVATION_DEFAULT
+#define DOIP_ROUTING_ACTIVATION_DEFAULT          (0x00U)
+#define DOIP_ROUTING_ACTIVATION_WWH_OBD          (0x01U)
+#define DOIP_ROUTING_ACTIVATION_CDS              (0x02U)
+#define DOIP_ROUTING_ACTIVATION_CENTRAL_SECURITY (0x03U)
+#endif
+
 #endif /* DOIP_CFG_H */

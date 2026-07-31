@@ -96,7 +96,7 @@ void Boot_Verify_Hash(const uint8_t *data, uint32_t len, uint8_t *digest)
     mbedtls_sha256_ret(data, len, digest, 0);  /* 0 = SHA-256 */
 }
 #else
-#include "third_party/crypto/hash/include/hash_algos.h"
+#include "hash_algos.h"
 
 void Boot_Verify_Hash(const uint8_t *data, uint32_t len, uint8_t *digest)
 {

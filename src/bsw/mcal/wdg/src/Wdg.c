@@ -24,6 +24,7 @@
 
 #ifdef S32K312
 #include "S32K312.h"
+#include <stdint.h>
 #define WDG_WDOG1_BASE_ADDR             (S32K312_WDOG_BASE)
 #define WDG_WDOG2_BASE_ADDR             (S32K312_WDOG_BASE)
 #define WDG_WDOG3_BASE_ADDR             (S32K312_WDOG_BASE)

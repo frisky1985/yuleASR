@@ -27,6 +27,7 @@
 #include "Swc_StorageManager.h"
 #include "Rte.h"
 #include "Det.h"
+#include <string.h>
 
 /*==================================================================================================
 *                                    LOCAL MACROS

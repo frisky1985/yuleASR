@@ -56,6 +56,7 @@
 #define CRYPTO_ALGOFAM_DH                   (0x03U)
 
 /* Signature Algorithms */
+#define CRYPTO_ALGOFAM_ECC                  (0x0FU)
 #define CRYPTO_ALGOFAM_ECDSA                (0x10U)
 #define CRYPTO_ALGOFAM_RSA                  (0x11U)
 #define CRYPTO_ALGOFAM_EDDSA                (0x12U)
@@ -65,6 +66,7 @@
 #define CRYPTO_ALGOFAM_CHACHA               (0x21U)
 
 /* Block Cipher Modes */
+#define CRYPTO_ALGOMODE_NOT_SET             (0xFFU)
 #define CRYPTO_ALGOMODE_ECB                 (0x00U)
 #define CRYPTO_ALGOMODE_CBC                 (0x01U)
 #define CRYPTO_ALGOMODE_CFB                 (0x02U)
@@ -83,6 +85,8 @@
 
 /* MAC Algorithms */
 #define CRYPTO_ALGOFAM_HMAC                 (0x40U)
+#define CRYPTO_ALGOFAM_HMAC_SHA256          (0x41U)
+#define CRYPTO_ALGOFAM_NOT_SET              (0x00U)
 #define CRYPTO_ALGOFAM_CMAC                 (0x41U)
 #define CRYPTO_ALGOFAM_GMAC                 (0x42U)
 
@@ -154,6 +158,12 @@
 /**********************************************************************************************************************
  * CRYPTO OBJECT TYPES
  *********************************************************************************************************************/
+
+/* Verification results */
+#ifndef CRYPTO_VERIFY_PASSED
+#define CRYPTO_VERIFY_PASSED                (0x00000001U)
+#define CRYPTO_VERIFY_FAILED                (0x00000002U)
+#endif
 typedef uint32 Crypto_AlgorithmFamilyType;
 typedef uint32 Crypto_AlgorithmModeType;
 typedef uint32 Crypto_OperationModeType;
@@ -161,13 +171,10 @@ typedef uint32 Crypto_ServiceInfoType;
 typedef uint32 Crypto_VerifyResultType;
 
 typedef uint32 Crypto_JobIdType;
-typedef uint32 Crypto_JobPrimitiveInputOutputType;
 typedef uint32 Crypto_JobStateType;
 
 typedef uint32 Crypto_KeyIdType;
 typedef uint32 Crypto_KeyElementIdType;
-typedef uint32 Crypto_KeyType;
-
 typedef uint32 Crypto_HsmStatusType;
 
 /**********************************************************************************************************************
@@ -283,6 +290,7 @@ typedef struct {
 typedef struct {
     uint32*   inputPtr;
     uint32    inputLength;
+    Crypto_OperationModeType mode;
     uint32*   secondaryInputPtr;
     uint32    secondaryInputLength;
     uint32*   tertiaryInputPtr;
@@ -311,6 +319,46 @@ typedef struct {
     uint32                              targetKeyId;
 } Crypto_JobType;
 
+/* Config-time key element definition (read-only, from generated config) */
+typedef struct {
+    Crypto_KeyElementIdType keyElementId;
+    uint32                  keyElementSize;
+    boolean                 allowPartialAccess;
+    boolean                 readAccess;
+    boolean                 writeAccess;
+} Crypto_KeyElementConfigType;
+
+/* Config-time key definition (read-only, from generated config) */
+typedef struct {
+    Crypto_KeyIdType                   keyId;
+    const Crypto_KeyElementConfigType* keyElements;
+    uint32                             numKeyElements;
+    boolean                            keyValid;
+} Crypto_KeyConfigType;
+
+/* Job completion callback (config-time) */
+typedef void (*Crypto_JobCallbackType)(Crypto_JobType* job, Crypto_JobStateType result);
+
+/* Driver object configuration (config-time) */
+typedef struct {
+    uint32                   driverObjectId;
+    uint32                   priority;
+    uint32                   maxJobs;
+    boolean                  asyncMode;
+    Crypto_JobCallbackType   callback;
+} Crypto_DriverObjectConfigType;
+
+/* Channel configuration (config-time) */
+typedef struct {
+    uint32                        channelId;
+    uint32                        driverObjectId;
+    Crypto_AlgorithmFamilyType    algorithmFamily;
+    Crypto_AlgorithmModeType      algorithmMode;
+    boolean                       hwAcceleration;
+    uint32                        maxKeySize;
+} Crypto_ChannelConfigType;
+
+
 /* Queue Element */
 typedef struct Crypto_QueueElementStruct {
     Crypto_JobType*                 job;
@@ -335,6 +383,12 @@ typedef struct {
     Crypto_HsmConfigType    hsmConfig;
     boolean                 cryptoDevErrorDetect;
     boolean                 cryptoVersionInfoApi;
+    /* Config-time structures (from generated config) */
+    const Crypto_DriverObjectConfigType* driverObjects;
+    uint32                              numDriverObjects;
+    const Crypto_ChannelConfigType*     channels;
+    boolean                            hwAccelerationEnabled;
+    uint32                             clockFrequency;
 } Crypto_ConfigType;
 
 /**********************************************************************************************************************

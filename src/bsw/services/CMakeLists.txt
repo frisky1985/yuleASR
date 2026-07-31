@@ -21,9 +21,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ea/include
     ${CMAKE_CURRENT_SOURCE_DIR}/tcpip/include
     ${CMAKE_SOURCE_DIR}/config/input/services
+    ${CMAKE_SOURCE_DIR}/config/input/mcal
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/include/autosar/classic/com
     ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
+    ${CMAKE_SOURCE_DIR}/third_party/crypto/mbedtls/include
+    ${CMAKE_SOURCE_DIR}/third_party/yule-mbedtls-adapter/include
 )
 
 # Collect all service include directories for cross-module dependencies

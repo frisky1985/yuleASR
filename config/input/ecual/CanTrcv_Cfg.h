@@ -361,4 +361,17 @@ extern void CanTrcv_WakeupNotification(uint8 Transceiver);
 extern void CanTrcv_ErrorNotification(uint8 Transceiver, uint8 ErrorCode);
 #endif
 
+#ifndef CANTRCV_INSTANCE_ID
+#define CANTRCV_INSTANCE_ID                 (0x00U)
+#endif
+
+/* DET error codes */
+#ifndef CANTRCV_E_INVALID_CHANNEL
+#define CANTRCV_E_INVALID_CHANNEL               (0x01U)
+#define CANTRCV_E_PARAM_TRCV_OPMODE             (0x02U)
+#define CANTRCV_E_PARAM_POINTER                 (0x03U)
+#define CANTRCV_E_UNINIT                        (0x04U)
+#define CANTRCV_E_PARAM_TRCV_WAKEUP_MODE          (0x05U)
+#endif
+
 #endif /* CANTRCV_CFG_H */

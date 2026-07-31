@@ -214,7 +214,10 @@ void SoAd_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @param SoConId Connection ID
  * @return Result of operation
  */
+typedef uint16 SoAd_SoConIdType;
 Std_ReturnType SoAd_OpenTcpConnection(uint16 SoConId);
+Std_ReturnType SoAd_CloseConnection(SoAd_SoConIdType SoConId);
+Std_ReturnType SoAd_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
 /**
  * @brief Opens a UDP connection

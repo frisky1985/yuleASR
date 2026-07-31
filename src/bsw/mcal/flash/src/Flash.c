@@ -63,7 +63,7 @@ typedef struct {
     Flash_OpModeType opMode;
     Flash_AddressType currentAddr;
     Flash_LengthType remainingLength;
-    const uint8* dataPtr;
+    uint8* dataPtr;
     Flash_JobResultType jobResult;
     uint32 initState;
 } Flash_DriverStateType;

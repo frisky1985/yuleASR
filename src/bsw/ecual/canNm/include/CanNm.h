@@ -32,6 +32,7 @@ extern "C" {
 #include "ComStack_Types.h"
 #include "CanNm_Cfg.h"
 #include "Std_Types.h"
+#include "Nm.h"
 
 /*==================================================================================================
  *                                     VERSION INFORMATION

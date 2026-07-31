@@ -205,7 +205,7 @@ Std_ReturnType Crypto_HwTrng_Init(const Crypto_HwTrngConfigType* config)
     
     Trng_ConfigPtr = config;
     Trng_State.healthTestsEnabled = config->enableHealthTests;
-    Trng_State.conditioningEnabled = config->enable Conditioning;
+    Trng_State.conditioningEnabled = config->enableConditioning;
     
     /* Software reset TRNG */
     if (Trng_Regs != NULL_PTR) {
@@ -244,7 +244,7 @@ Std_ReturnType Crypto_HwTrng_Init(const Crypto_HwTrngConfigType* config)
         
         /* Enable TRNG with conditioning */
         Trng_Regs->CTRL = TRNG_CTRL_ENABLE;
-        if (config->enable Conditioning) {
+        if (config->enableConditioning) {
             Trng_Regs->CTRL |= TRNG_CTRL_CONDITIONING;
         }
         if (config->enableHealthTests) {

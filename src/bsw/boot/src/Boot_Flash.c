@@ -1,11 +1,13 @@
 #include "Boot_Flash.h"
 #include "Flash.h"
+#include <string.h>
 
 /*
  * Forward declarations for Flash HAL adapter functions.
  * These are porting-layer wrappers called by Boot_Flash.
  * Include the actual Flash_Adapter.h header when available.
  */
+extern void Flash_Init(const Flash_ConfigType* ConfigPtr);
 extern uint32    Flash_GetSectorSize(void);
 extern Std_ReturnType Flash_EraseSector(uint32_t address);
 extern Std_ReturnType Flash_Write(uint32_t dst_addr, const uint8_t* src, uint32_t length);
@@ -23,7 +25,7 @@ Boot_Result Boot_Flash_Init(void)
     if (g_flash_initialized) {
         return BOOT_OK;
     }
-    Flash_Init();
+    Flash_Init(NULL_PTR);
     g_flash_initialized = TRUE;
     return BOOT_OK;
 }

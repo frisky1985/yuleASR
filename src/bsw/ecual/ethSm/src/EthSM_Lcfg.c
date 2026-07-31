@@ -48,56 +48,6 @@ static const EthSM_NetworkConfigType* EthSM_Lcfg_GetNetworkConfig(EthSM_NetworkH
  * @brief Ethernet Network Configuration Type
  * @details Configuration for a single Ethernet network managed by EthSM
  */
-typedef struct {
-    EthSM_NetworkHandleType networkHandle;          /**< EthSM network handle */
-    uint8 ctrlIdx;                                  /**< EthIf controller index */
-    uint8 trcvIdx;                                  /**< EthIf transceiver index */
-    uint8 tcpIpCtrlIdx;                             /**< TcpIp controller index */
-    ComM_ChannelHandleType comMChannel;             /**< ComM channel handle */
-    uint16 timeoutWaitTrcvLink;                     /**< Timeout for WAIT_TRCVLINK state (ms) */
-    uint16 timeoutWaitOnline;                       /**< Timeout for WAIT_ONLINE state (ms) */
-    boolean wakeUpSupport;                          /**< Wake-up support enabled */
-    uint8 wakeUpSource;                             /**< EcuM wake-up source identifier */
-    boolean wakeUpByBus;                            /**< Wake-up by bus enabled */
-} EthSM_NetworkConfigType;
-
-/**
- * @brief Controller Configuration Type
- * @details Configuration for Ethernet controller parameters
- */
-typedef struct {
-    uint8 ctrlIdx;                                  /**< Controller index */
-    uint8 macAddress[6];                            /**< Default MAC address */
-    uint16 mtu;                                     /**< Maximum Transmission Unit */
-    boolean vlanSupport;                            /**< VLAN support enabled */
-    uint16 vlanId;                                  /**< VLAN identifier */
-} EthSM_CtrlConfigType;
-
-/**
- * @brief Transceiver Configuration Type
- * @details Configuration for Ethernet transceiver parameters
- */
-typedef struct {
-    uint8 trcvIdx;                                  /**< Transceiver index */
-    uint8 wakeUpMode;                               /**< Wake-up mode configuration */
-    boolean autoNegotiation;                        /**< Auto-negotiation enabled */
-    uint8 speed;                                    /**< Link speed (10/100/1000 Mbps) */
-    uint8 duplexMode;                               /**< Duplex mode (half/full) */
-} EthSM_TrcvConfigType;
-
-/**
- * @brief TcpIp Controller Mapping Type
- * @details Maps EthSM networks to TcpIp controllers
- */
-typedef struct {
-    EthSM_NetworkHandleType networkHandle;          /**< EthSM network handle */
-    uint8 tcpIpCtrlIdx;                             /**< TcpIp controller index */
-    boolean dhcpEnabled;                            /**< DHCP enabled */
-    uint32 staticIpAddress;                         /**< Static IP address */
-    uint32 subnetMask;                              /**< Subnet mask */
-    uint32 gatewayAddress;                          /**< Default gateway */
-} EthSM_TcpIpMappingType;
-
 /*==================================================================================================
 *                                    CONFIGURATION CONSTANTS
 ==================================================================================================*/

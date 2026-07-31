@@ -7,6 +7,11 @@ cmake_minimum_required(VERSION 3.16)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/os/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/det/include
+    ${CMAKE_SOURCE_DIR}/src/bsw/services/ramsafety/include
+    ${CMAKE_SOURCE_DIR}/src/bsw/services/nvm/include
+    ${CMAKE_SOURCE_DIR}/src/bsw/mcal/mcu/include
+    ${CMAKE_SOURCE_DIR}/config/input/services
+    ${CMAKE_SOURCE_DIR}/include/autosar
 )
 
 option(PLATFORM_S32K312 "Enable S32K312 platform support" ON)

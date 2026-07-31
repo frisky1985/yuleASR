@@ -66,6 +66,14 @@ typedef enum {
     RTE_E_OK_DATA_LOST
 } Rte_StatusType;
 
+/* AUTOSAR-compatible aliases used by ASW components */
+#ifndef RTE_E_NOT_OK
+#define RTE_E_NOT_OK        RTE_E_NOK
+#endif
+#ifndef RTE_E_NOT_ACTIVE
+#define RTE_E_NOT_ACTIVE    RTE_E_NOK
+#endif
+
 /*==================================================================================================
 *                                    RTE TRANSMISSION MODE TYPE
 ==================================================================================================*/

@@ -28,4 +28,20 @@
 #define REG_WRITE32(addr, val)          ((void)(val))
 #endif
 
+/* Interrupt control (native stub — no-op on host, real impl on target) */
+#ifndef Mcal_EnableAllInterrupts
+void Mcal_EnableAllInterrupts(void);
+#endif
+#ifndef Mcal_DisableAllInterrupts
+void Mcal_DisableAllInterrupts(void);
+#endif
+#ifndef Mcal_ResetSystem
+void Mcal_ResetSystem(void);
+#endif
+
+/* STATIC keyword fallback for translation units that do not include Compiler.h */
+#ifndef STATIC
+#define STATIC static
+#endif
+
 #endif /* MCAL_H */
