@@ -212,8 +212,8 @@ void Boot_Loader_Jump(uint32_t target_addr)
     SCB->ICSR = SCB->ICSR | (1UL << 25);  /* clear pending systick */
 
     /* Set new vector table */
-    uint32_t msp = *(volatile uint32_t *)target_addr;  /* SP from vector[0] */
-    uint32_t pc  = *(volatile uint32_t *)(target_addr + 4);  /* PC from vector[1] */
+    uint32_t msp = *(volatile uint32_t *)(uintptr_t)target_addr;  /* SP from vector[0] */
+    uint32_t pc  = *(volatile uint32_t *)(uintptr_t)(target_addr + 4);  /* PC from vector[1] */
 
     /* De-init peripherals (minimal) */
     Boot_Flash_Init();  /* flush pending operations */
@@ -228,7 +228,7 @@ void Boot_Loader_Jump(uint32_t target_addr)
 
     /* Branch to application */
     typedef void (*AppEntry)(void);
-    AppEntry entry = (AppEntry)pc;
+    AppEntry entry = (AppEntry)(uintptr_t)pc;
     entry();
 
     /* Should never return */

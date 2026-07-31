@@ -495,7 +495,7 @@ RamSafety_ResultType RamSafety_TriggerTest(
             /* 快速检查: 只检查第一个和最后一个字节 */
             if (NULL_PTR != region)
             {
-                volatile uint8* ptr = (volatile uint8*)region->startAddress;
+                volatile uint8* ptr = (volatile uint8*)(uintptr)region->startAddress;
                 uint8 original = *ptr;
                 *ptr = RAMSAFETY_PATTERN_55;
                 if (*ptr != RAMSAFETY_PATTERN_55)
@@ -558,7 +558,7 @@ Std_ReturnType RamSafety_VerifyRegion(uint8 regionId)
 
     /* 计算CRC */
     calculatedCrc = Platform_RamSafety_CalculateCrc(
-        (const uint8*)region->startAddress,
+        (const uint8*)(uintptr)region->startAddress,
         region->size,
         region->crcSeed
     );
@@ -588,7 +588,7 @@ Std_ReturnType RamSafety_VerifyRange(uint32 startAddr, uint32 size)
 
     for (i = 0U; i < size; i++)
     {
-        ptr = (volatile uint8*)(startAddr + i);
+        ptr = (volatile uint8*)(uintptr)(startAddr + i);
         *ptr = pattern;
         if (*ptr != pattern)
         {
@@ -774,14 +774,14 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
     /* 阶段1: ↑ (w0) - 从低到高写0 */
     for (i = 0U; i < size; i++)
     {
-        ptr = (volatile uint8*)(addr + i);
+        ptr = (volatile uint8*)(uintptr)(addr + i);
         *ptr = RAMSAFETY_PATTERN_0;
     }
 
     /* 阶段2: ↑ (r0,w1,r1) - 从低到高: 读0,写1,读1 */
     for (i = 0U; i < size; i++)
     {
-        ptr = (volatile uint8*)(addr + i);
+        ptr = (volatile uint8*)(uintptr)(addr + i);
         readVal = *ptr;
         if (readVal != RAMSAFETY_PATTERN_0)
         {
@@ -806,7 +806,7 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
     /* 阶段3: ↑ (r1,w0,r0) - 从低到高: 读1,写0,读0 */
     for (i = 0U; i < size; i++)
     {
-        ptr = (volatile uint8*)(addr + i);
+        ptr = (volatile uint8*)(uintptr)(addr + i);
         readVal = *ptr;
         if (readVal != RAMSAFETY_PATTERN_1)
         {
@@ -831,7 +831,7 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
     /* 阶段4: ↓ (r0,w1,r1) - 从高到低: 读0,写1,读1 */
     for (i = size; i > 0U; i--)
     {
-        ptr = (volatile uint8*)(addr + i - 1U);
+        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
         readVal = *ptr;
         if (readVal != RAMSAFETY_PATTERN_0)
         {
@@ -856,7 +856,7 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
     /* 阶段5: ↓ (r1,w0,r0) - 从高到低: 读1,写0,读0 */
     for (i = size; i > 0U; i--)
     {
-        ptr = (volatile uint8*)(addr + i - 1U);
+        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
         readVal = *ptr;
         if (readVal != RAMSAFETY_PATTERN_1)
         {
@@ -881,7 +881,7 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
     /* 阶段6: ↓ (r0) - 从高到低读0 */
     for (i = size; i > 0U; i--)
     {
-        ptr = (volatile uint8*)(addr + i - 1U);
+        ptr = (volatile uint8*)(uintptr)(addr + i - 1U);
         readVal = *ptr;
         if (readVal != RAMSAFETY_PATTERN_0)
         {
@@ -927,13 +927,13 @@ STATIC Std_ReturnType RamSafety_RunWalkPattern(const RamSafety_RegionType* regio
         pattern = patterns[i];
 
         /* 在区域两端写入模式 */
-        ptr = (volatile uint8*)addr;
+        ptr = (volatile uint8*)(uintptr)addr;
         *ptr = pattern;
-        ptr = (volatile uint8*)(addr + size - 1U);
+        ptr = (volatile uint8*)(uintptr)(addr + size - 1U);
         *ptr = pattern;
 
         /* 验证 */
-        ptr = (volatile uint8*)addr;
+        ptr = (volatile uint8*)(uintptr)addr;
         readVal = *ptr;
         if (readVal != pattern)
         {
@@ -944,7 +944,7 @@ STATIC Std_ReturnType RamSafety_RunWalkPattern(const RamSafety_RegionType* regio
             return E_NOT_OK;
         }
 
-        ptr = (volatile uint8*)(addr + size - 1U);
+        ptr = (volatile uint8*)(uintptr)(addr + size - 1U);
         readVal = *ptr;
         if (readVal != pattern)
         {
@@ -982,7 +982,7 @@ STATIC Std_ReturnType RamSafety_RunAddrLineTest(const RamSafety_RegionType* regi
     /* 清除内存 */
     for (i = 0U; i < size; i++)
     {
-        ptr = (volatile uint8*)(addr + i);
+        ptr = (volatile uint8*)(uintptr)(addr + i);
         *ptr = RAMSAFETY_PATTERN_0;
     }
 
@@ -992,7 +992,7 @@ STATIC Std_ReturnType RamSafety_RunAddrLineTest(const RamSafety_RegionType* regi
         testAddr = addr + (1UL << i);
         if (testAddr < (addr + size))
         {
-            ptr = (volatile uint8*)testAddr;
+            ptr = (volatile uint8*)(uintptr)testAddr;
             *ptr = RAMSAFETY_PATTERN_1;
 
             /* 验证只有目标位置被修改 */
@@ -1028,7 +1028,7 @@ STATIC Std_ReturnType RamSafety_RunDataLineTest(const RamSafety_RegionType* regi
     {
         uint8 pattern = (uint8)(1U << i);
 
-        ptr = (volatile uint8*)addr;
+        ptr = (volatile uint8*)(uintptr)addr;
         *ptr = pattern;
         readVal = *ptr;
 

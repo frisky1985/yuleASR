@@ -232,27 +232,27 @@ typedef struct
  * Volatile Access Macro
  ******************************************************************************/
 #ifndef REG_READ32
-    #define REG_READ32(address)         (*(volatile uint32 *)(address))
+    #define REG_READ32(address)         (*(volatile uint32 *)(uintptr)(address))
 #endif
 
 #ifndef REG_WRITE32
-    #define REG_WRITE32(address, value) (*(volatile uint32 *)(address) = (value))
+    #define REG_WRITE32(address, value) (*(volatile uint32 *)(uintptr)(address) = (value))
 #endif
 
 #ifndef REG_READ16
-    #define REG_READ16(address)         (*(volatile uint16 *)(address))
+    #define REG_READ16(address)         (*(volatile uint16 *)(uintptr)(address))
 #endif
 
 #ifndef REG_WRITE16
-    #define REG_WRITE16(address, value) (*(volatile uint16 *)(address) = (value))
+    #define REG_WRITE16(address, value) (*(volatile uint16 *)(uintptr)(address) = (value))
 #endif
 
 #ifndef REG_READ8
-    #define REG_READ8(address)          (*(volatile uint8 *)(address))
+    #define REG_READ8(address)          (*(volatile uint8 *)(uintptr)(address))
 #endif
 
 #ifndef REG_WRITE8
-    #define REG_WRITE8(address, value)  (*(volatile uint8 *)(address) = (value))
+    #define REG_WRITE8(address, value)  (*(volatile uint8 *)(uintptr)(address) = (value))
 #endif
 
 /*******************************************************************************

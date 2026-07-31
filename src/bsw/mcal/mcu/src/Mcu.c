@@ -290,7 +290,7 @@ Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr)
     if (ConfigPtr->RamSections != NULL_PTR) {
         for (uint8 i = 0U; i < ConfigPtr->NumRamSections; i++) {
             /* Initialize RAM section */
-            uint8* ramPtr = (uint8*)ConfigPtr->RamSections[i].RamBaseAddr;
+            uint8* ramPtr = (uint8*)(uintptr)ConfigPtr->RamSections[i].RamBaseAddr;
             for (uint32 j = 0U; j < ConfigPtr->RamSections[i].RamSize; j++) {
                 ramPtr[j] = ConfigPtr->RamSections[i].RamDefaultValue;
             }

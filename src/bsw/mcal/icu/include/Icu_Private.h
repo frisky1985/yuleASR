@@ -42,8 +42,8 @@
 ==================================================================================================*/
 
 /* Register access macros */
-#define ICU_REG_READ32(addr)                (*(volatile uint32*)(addr))
-#define ICU_REG_WRITE32(addr, val)          (*(volatile uint32*)(addr) = (val))
+#define ICU_REG_READ32(addr)                (*(volatile uint32*)(uintptr)(addr))
+#define ICU_REG_WRITE32(addr, val)          (*(volatile uint32*)(uintptr)(addr) = (val))
 #define ICU_REG_READ16(addr)                (*(volatile uint16*)(addr))
 #define ICU_REG_WRITE16(addr, val)          (*(volatile uint16*)(addr) = (val))
 

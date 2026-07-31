@@ -626,7 +626,7 @@ STATIC boolean EccHandler_CorrectSingleBitError(uint32 address, uint8* corrected
     }
     
     /* 读取数据 - 硬件自动纠正 */
-    ptr = (volatile uint8*)address;
+    ptr = (volatile uint8*)(uintptr)address;
     value = *ptr;
     *correctedValue = value;
     

@@ -51,12 +51,12 @@
 #define FLS_HW_FLASH_BASE               (0x40023C00u)
 
 /* Flash registers */
-#define FLS_HW_FLASH_ACR                (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x00u))
-#define FLS_HW_FLASH_KEYR               (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x04u))
-#define FLS_HW_FLASH_OPTKEYR            (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x08u))
-#define FLS_HW_FLASH_SR                 (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x0Cu))
-#define FLS_HW_FLASH_CR                 (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x10u))
-#define FLS_HW_FLASH_OPTCR              (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x14u))
+#define FLS_HW_FLASH_ACR                (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x00u))
+#define FLS_HW_FLASH_KEYR               (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x04u))
+#define FLS_HW_FLASH_OPTKEYR            (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x08u))
+#define FLS_HW_FLASH_SR                 (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x0Cu))
+#define FLS_HW_FLASH_CR                 (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x10u))
+#define FLS_HW_FLASH_OPTCR              (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x14u))
 
 /* Flash control register bits */
 #define FLS_HW_CR_PG                    (0x00000001u)  /* Programming */
@@ -96,16 +96,16 @@
 #define FLS_HW_FLASH_BASE               (0x52002000u)
 
 /* Flash registers */
-#define FLS_HW_FLASH_ACR                (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x00u))
-#define FLS_HW_FLASH_KEYR1              (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x04u))
-#define FLS_HW_FLASH_OPTKEYR            (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x08u))
-#define FLS_HW_FLASH_CR1                (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x0Cu))
-#define FLS_HW_FLASH_SR1                (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x10u))
-#define FLS_HW_FLASH_CCR1               (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x14u))
+#define FLS_HW_FLASH_ACR                (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x00u))
+#define FLS_HW_FLASH_KEYR1              (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x04u))
+#define FLS_HW_FLASH_OPTKEYR            (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x08u))
+#define FLS_HW_FLASH_CR1                (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x0Cu))
+#define FLS_HW_FLASH_SR1                (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x10u))
+#define FLS_HW_FLASH_CCR1               (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x14u))
 
-#define FLS_HW_FLASH_KEYR2              (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x104u))
-#define FLS_HW_FLASH_CR2                (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x10Cu))
-#define FLS_HW_FLASH_SR2                (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x110u))
+#define FLS_HW_FLASH_KEYR2              (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x104u))
+#define FLS_HW_FLASH_CR2                (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x10Cu))
+#define FLS_HW_FLASH_SR2                (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x110u))
 
 /* Flash control register bits */
 #define FLS_HW_CR_PG                    (0x00000001u)
@@ -143,40 +143,40 @@
 #define FLS_HW_FLEXSPI_BASE             (0x400A0000u)
 
 /* FlexSPI registers */
-#define FLS_HW_FLEXSPI_MCR0             (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x00u))
-#define FLS_HW_FLEXSPI_MCR1             (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x04u))
-#define FLS_HW_FLEXSPI_MCR2             (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x08u))
-#define FLS_HW_FLEXSPI_AHBCR            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x0Cu))
-#define FLS_HW_FLEXSPI_INTEN            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x10u))
-#define FLS_HW_FLEXSPI_INTR             (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x14u))
-#define FLS_HW_FLEXSPI_LUTKEY           (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x18u))
-#define FLS_HW_FLEXSPI_LUTCR            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x1Cu))
-#define FLS_HW_FLEXSPI_AHB_RXBUF0       (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x20u))
-#define FLS_HW_FLEXSPI_AHB_RXBUF1       (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x24u))
-#define FLS_HW_FLEXSPI_AHB_RXBUF2       (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x28u))
-#define FLS_HW_FLEXSPI_AHB_RXBUF3       (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x2Cu))
-#define FLS_HW_FLEXSPI_FLSHA1CR0        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x60u))
-#define FLS_HW_FLEXSPI_FLSHA2CR0        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x64u))
-#define FLS_HW_FLEXSPI_FLSHB1CR0        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x68u))
-#define FLS_HW_FLEXSPI_FLSHB2CR0        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x6Cu))
-#define FLS_HW_FLEXSPI_FLSHA1CR1        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x70u))
-#define FLS_HW_FLEXSPI_FLSHA2CR1        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x74u))
-#define FLS_HW_FLEXSPI_FLSHB1CR1        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x78u))
-#define FLS_HW_FLEXSPI_FLSHB2CR1        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x7Cu))
-#define FLS_HW_FLEXSPI_FLSHA1CR2        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x80u))
-#define FLS_HW_FLEXSPI_FLSHA2CR2        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x84u))
-#define FLS_HW_FLEXSPI_FLSHB1CR2        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x88u))
-#define FLS_HW_FLEXSPI_FLSHB2CR2        (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0x8Cu))
-#define FLS_HW_FLEXSPI_IPCR0            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xA0u))
-#define FLS_HW_FLEXSPI_IPCR1            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xA4u))
-#define FLS_HW_FLEXSPI_IPCMD            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xB0u))
-#define FLS_HW_FLEXSPI_IPRXFCR          (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xB8u))
-#define FLS_HW_FLEXSPI_IPTXFCR          (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xBCu))
-#define FLS_HW_FLEXSPI_DLLACR           (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xC0u))
-#define FLS_HW_FLEXSPI_DLLBCR           (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xC4u))
-#define FLS_HW_FLEXSPI_STAT0            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xE0u))
-#define FLS_HW_FLEXSPI_STAT1            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xE4u))
-#define FLS_HW_FLEXSPI_STAT2            (*(volatile uint32*)(FLS_HW_FLEXSPI_BASE + 0xE8u))
+#define FLS_HW_FLEXSPI_MCR0             (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x00u))
+#define FLS_HW_FLEXSPI_MCR1             (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x04u))
+#define FLS_HW_FLEXSPI_MCR2             (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x08u))
+#define FLS_HW_FLEXSPI_AHBCR            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x0Cu))
+#define FLS_HW_FLEXSPI_INTEN            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x10u))
+#define FLS_HW_FLEXSPI_INTR             (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x14u))
+#define FLS_HW_FLEXSPI_LUTKEY           (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x18u))
+#define FLS_HW_FLEXSPI_LUTCR            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x1Cu))
+#define FLS_HW_FLEXSPI_AHB_RXBUF0       (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x20u))
+#define FLS_HW_FLEXSPI_AHB_RXBUF1       (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x24u))
+#define FLS_HW_FLEXSPI_AHB_RXBUF2       (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x28u))
+#define FLS_HW_FLEXSPI_AHB_RXBUF3       (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x2Cu))
+#define FLS_HW_FLEXSPI_FLSHA1CR0        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x60u))
+#define FLS_HW_FLEXSPI_FLSHA2CR0        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x64u))
+#define FLS_HW_FLEXSPI_FLSHB1CR0        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x68u))
+#define FLS_HW_FLEXSPI_FLSHB2CR0        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x6Cu))
+#define FLS_HW_FLEXSPI_FLSHA1CR1        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x70u))
+#define FLS_HW_FLEXSPI_FLSHA2CR1        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x74u))
+#define FLS_HW_FLEXSPI_FLSHB1CR1        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x78u))
+#define FLS_HW_FLEXSPI_FLSHB2CR1        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x7Cu))
+#define FLS_HW_FLEXSPI_FLSHA1CR2        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x80u))
+#define FLS_HW_FLEXSPI_FLSHA2CR2        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x84u))
+#define FLS_HW_FLEXSPI_FLSHB1CR2        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x88u))
+#define FLS_HW_FLEXSPI_FLSHB2CR2        (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0x8Cu))
+#define FLS_HW_FLEXSPI_IPCR0            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xA0u))
+#define FLS_HW_FLEXSPI_IPCR1            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xA4u))
+#define FLS_HW_FLEXSPI_IPCMD            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xB0u))
+#define FLS_HW_FLEXSPI_IPRXFCR          (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xB8u))
+#define FLS_HW_FLEXSPI_IPTXFCR          (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xBCu))
+#define FLS_HW_FLEXSPI_DLLACR           (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xC0u))
+#define FLS_HW_FLEXSPI_DLLBCR           (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xC4u))
+#define FLS_HW_FLEXSPI_STAT0            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xE0u))
+#define FLS_HW_FLEXSPI_STAT1            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xE4u))
+#define FLS_HW_FLEXSPI_STAT2            (*(volatile uint32*)(uintptr)(FLS_HW_FLEXSPI_BASE + 0xE8u))
 
 /* MCR0 bits */
 #define FLS_HW_MCR0_SWRESET             (0x00000001u)
@@ -219,21 +219,21 @@
 #endif
 
 /* Flash registers */
-#define FLS_HW_FLASH_FSTAT              (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x00u))
-#define FLS_HW_FLASH_FCNFG              (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x04u))
-#define FLS_HW_FLASH_FSEC               (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x08u))
-#define FLS_HW_FLASH_FCCOB0             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x0Cu))
-#define FLS_HW_FLASH_FCCOB1             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x10u))
-#define FLS_HW_FLASH_FCCOB2             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x14u))
-#define FLS_HW_FLASH_FCCOB3             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x18u))
-#define FLS_HW_FLASH_FCCOB4             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x1Cu))
-#define FLS_HW_FLASH_FCCOB5             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x20u))
-#define FLS_HW_FLASH_FCCOB6             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x24u))
-#define FLS_HW_FLASH_FCCOB7             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x28u))
-#define FLS_HW_FLASH_FCCOB8             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x2Cu))
-#define FLS_HW_FLASH_FCCOB9             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x30u))
-#define FLS_HW_FLASH_FCCOBA             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x34u))
-#define FLS_HW_FLASH_FCCOBB             (*(volatile uint32*)(FLS_HW_FLASH_BASE + 0x38u))
+#define FLS_HW_FLASH_FSTAT              (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x00u))
+#define FLS_HW_FLASH_FCNFG              (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x04u))
+#define FLS_HW_FLASH_FSEC               (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x08u))
+#define FLS_HW_FLASH_FCCOB0             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x0Cu))
+#define FLS_HW_FLASH_FCCOB1             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x10u))
+#define FLS_HW_FLASH_FCCOB2             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x14u))
+#define FLS_HW_FLASH_FCCOB3             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x18u))
+#define FLS_HW_FLASH_FCCOB4             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x1Cu))
+#define FLS_HW_FLASH_FCCOB5             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x20u))
+#define FLS_HW_FLASH_FCCOB6             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x24u))
+#define FLS_HW_FLASH_FCCOB7             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x28u))
+#define FLS_HW_FLASH_FCCOB8             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x2Cu))
+#define FLS_HW_FLASH_FCCOB9             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x30u))
+#define FLS_HW_FLASH_FCCOBA             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x34u))
+#define FLS_HW_FLASH_FCCOBB             (*(volatile uint32*)(uintptr)(FLS_HW_FLASH_BASE + 0x38u))
 
 /* FSTAT bits */
 #define FLS_HW_FSTAT_MGSTAT0            (0x00000001u)
@@ -542,7 +542,7 @@ static Std_ReturnType Fls_Hw_ProgramWordSTM32(uint32 Address, uint32 Data)
     FLS_HW_FLASH_CR |= FLS_HW_CR_PG;
 
     /* Write data */
-    *(volatile uint32*)Address = Data;
+    *(volatile uint32*)(uintptr)Address = Data;
 
     /* Wait for completion */
     timeout = Fls_Hw_Config.timeoutMs;
@@ -1008,7 +1008,7 @@ Std_ReturnType Fls_Hw_ReadWord(uint32 Address, uint32* DataPtr)
     }
 #endif
 
-    *DataPtr = *(volatile uint32*)Address;
+    *DataPtr = *(volatile uint32*)(uintptr)Address;
 
     return E_OK;
 }
@@ -1035,7 +1035,7 @@ Std_ReturnType Fls_Hw_ReadBuffer(uint32 Address, uint8* DataPtr, uint32 Length)
 #endif
 
     for (i = 0u; i < Length; i++) {
-        DataPtr[i] = ((volatile uint8*)Address)[i];
+        DataPtr[i] = ((volatile uint8*)(uintptr)Address)[i];
     }
 
     return E_OK;
@@ -1158,7 +1158,7 @@ Std_ReturnType Fls_Hw_Verify(uint32 Address, const uint8* DataPtr, uint32 Length
 #endif
 
     for (i = 0u; i < Length; i++) {
-        if (((volatile uint8*)Address)[i] != DataPtr[i]) {
+        if (((volatile uint8*)(uintptr)Address)[i] != DataPtr[i]) {
             return E_NOT_OK;
         }
     }

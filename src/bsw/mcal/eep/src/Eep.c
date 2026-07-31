@@ -195,7 +195,7 @@ static void Eep_ProcessRead(void)
     const uint8* srcPtr;
 
     /* Read from backing memory */
-    srcPtr = (uint8*)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
+    srcPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
 
     for (i = 0U; i < Eep_State.CurrentLength; i++) {
         Eep_State.CurrentDataPtr[i] = srcPtr[i];
@@ -217,7 +217,7 @@ static void Eep_ProcessWrite(void)
     uint8* dstPtr;
 
     /* Write to backing memory */
-    dstPtr = (uint8*)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
+    dstPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
 
     for (i = 0U; i < Eep_State.CurrentLength; i++) {
         dstPtr[i] = Eep_State.CurrentDataPtr[i];
@@ -238,7 +238,7 @@ static void Eep_ProcessErase(void)
     uint32 i;
     uint8* dstPtr;
 
-    dstPtr = (uint8*)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
+    dstPtr = (uint8*)(uintptr)(Eep_State.BaseAddress + Eep_State.CurrentAddress);
 
     for (i = 0U; i < Eep_State.CurrentLength; i++) {
         dstPtr[i] = 0xFFU;

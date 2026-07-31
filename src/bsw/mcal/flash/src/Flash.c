@@ -294,7 +294,7 @@ static Std_ReturnType Flash_ProgramWord(Flash_AddressType address, uint32 data)
         FLASH_CR |= FLASH_CR_PG;
 
         /* Program the word */
-        *(volatile uint32*)address = data;
+        *(volatile uint32*)(uintptr)address = data;
 
         /* Wait for completion */
         if (Flash_WaitForOperation(FLASH_TIMEOUT_MS)) {
@@ -331,8 +331,8 @@ static Std_ReturnType Flash_ProgramDoubleWord(Flash_AddressType address, uint64 
         FLASH_CR |= FLASH_CR_PG;
 
         /* Program the double word (two 32-bit writes) */
-        *(volatile uint32*)address = (uint32)(data & 0xFFFFFFFFU);
-        *(volatile uint32*)(address + 4U) = (uint32)(data >> 32U);
+        *(volatile uint32*)(uintptr)address = (uint32)(data & 0xFFFFFFFFU);
+        *(volatile uint32*)(uintptr)(address + 4U) = (uint32)(data >> 32U);
 
         /* Wait for completion */
         if (Flash_WaitForOperation(FLASH_TIMEOUT_MS)) {
@@ -553,7 +553,7 @@ static void Flash_ProcessReadJob(void)
         uint32 idx;
         for (idx = 0U; idx < bytesToRead; idx++) {
             Flash_DriverState.dataPtr[idx] =
-                ((const uint8*)Flash_DriverState.currentAddr)[idx];
+                ((const uint8*)(uintptr)Flash_DriverState.currentAddr)[idx];
         }
     }
 
@@ -592,7 +592,7 @@ static void Flash_ProcessCompareJob(void)
         uint32 idx;
         for (idx = 0U; idx < bytesToCompare; idx++) {
             if (Flash_DriverState.dataPtr[idx] !=
-                ((const uint8*)Flash_DriverState.currentAddr)[idx]) {
+                ((const uint8*)(uintptr)Flash_DriverState.currentAddr)[idx]) {
                 mismatch = TRUE;
                 break;
             }
@@ -650,7 +650,7 @@ static void Flash_ProcessBlankCheckJob(void)
     {
         uint32 idx;
         for (idx = 0U; idx < bytesToCheck; idx++) {
-            if (((const uint8*)Flash_DriverState.currentAddr)[idx] != 0xFFU) {
+            if (((const uint8*)(uintptr)Flash_DriverState.currentAddr)[idx] != 0xFFU) {
                 notBlank = TRUE;
                 break;
             }

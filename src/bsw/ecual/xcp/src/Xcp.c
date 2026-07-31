@@ -372,7 +372,7 @@ void Xcp_CmdUpload(const uint8 *cmd)
 
     /* Read data from MTA */
     for (i = 0; i < count; i++) {
-        Xcp_ResBuffer[1 + i] = *((uint8 *)(Xcp_Mta.address + i));
+        Xcp_ResBuffer[1 + i] = *((uint8 *)(uintptr)(Xcp_Mta.address + i));
         Xcp_Mta.address++;
     }
 
@@ -404,7 +404,7 @@ void Xcp_CmdShortUpload(const uint8 *cmd)
 
     /* Read data from specified address */
     for (i = 0; i < count; i++) {
-        Xcp_ResBuffer[1 + i] = *((uint8 *)(addr + i));
+        Xcp_ResBuffer[1 + i] = *((uint8 *)(uintptr)(addr + i));
     }
 
     Xcp_ResLen = count + 1;
@@ -432,7 +432,7 @@ void Xcp_CmdDownload(const uint8 *cmd)
 
     /* Write data to MTA */
     for (i = 0; i < count; i++) {
-        *((uint8 *)(Xcp_Mta.address + i)) = cmd[2 + i];
+        *((uint8 *)(uintptr)(Xcp_Mta.address + i)) = cmd[2 + i];
     }
 
     Xcp_Mta.address += count;
@@ -794,7 +794,7 @@ void Xcp_CmdBuildChecksum(const uint8 *cmd)
                   ((uint32)cmd[1]);
     uint16 checksum;
 
-    checksum = Xcp_CalculateChecksum((const uint8 *)Xcp_Mta.address, size);
+    checksum = Xcp_CalculateChecksum((const uint8 *)(uintptr)Xcp_Mta.address, size);
     Xcp_Mta.address += size;
 
     Xcp_ResBuffer[0] = 0xFF;
@@ -1037,7 +1037,7 @@ uint8 Xcp_MtaRead(uint8 *buffer, uint8 count)
     }
 
     for (i = 0; i < count; i++) {
-        buffer[i] = *((uint8 *)(Xcp_Mta.address + i));
+        buffer[i] = *((uint8 *)(uintptr)(Xcp_Mta.address + i));
     }
 
     Xcp_Mta.address += count;
@@ -1059,7 +1059,7 @@ uint8 Xcp_MtaWrite(const uint8 *buffer, uint8 count)
     }
 
     for (i = 0; i < count; i++) {
-        *((uint8 *)(Xcp_Mta.address + i)) = buffer[i];
+        *((uint8 *)(uintptr)(Xcp_Mta.address + i)) = buffer[i];
     }
 
     Xcp_Mta.address += count;

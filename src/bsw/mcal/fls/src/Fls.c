@@ -752,7 +752,7 @@ static void Fls_ReadData(Fls_AddressType address, uint8* data, Fls_LengthType le
     Fls_LengthType i;
     for (i = 0u; i < length; i++)
     {
-        data[i] = ((const uint8*)address)[i];
+        data[i] = ((const uint8*)(uintptr)address)[i];
     }
 }
 

@@ -22,10 +22,10 @@
 
 /* Memory-mapped register access macros (native stub) */
 #ifndef REG_READ32
-#define REG_READ32(addr)                (*((volatile uint32*)(addr)))
+#define REG_READ32(addr)                (*((volatile uint32*)(uintptr)(addr)))
 #endif
 #ifndef REG_WRITE32
-#define REG_WRITE32(addr, val)          (*((volatile uint32*)(addr)) = (uint32)(val))
+#define REG_WRITE32(addr, val)          (*((volatile uint32*)(uintptr)(addr)) = (uint32)(val))
 #endif
 
 /* Interrupt control (native stub — no-op on host, real impl on target) */

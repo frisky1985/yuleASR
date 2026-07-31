@@ -1675,7 +1675,7 @@ Std_ReturnType Xcp_ReadMemory(uint32 Addr, uint8 Ext, uint8* Data, uint32 Length
     }
 
     /* Read data */
-    memPtr = (volatile uint8*)Addr;
+    memPtr = (volatile uint8*)(uintptr)Addr;
     for (i = 0U; i < Length; i++) {
         Data[i] = memPtr[i];
     }
@@ -1703,7 +1703,7 @@ Std_ReturnType Xcp_WriteMemory(uint32 Addr, uint8 Ext, const uint8* Data, uint32
     }
 
     /* Write data */
-    memPtr = (volatile uint8*)Addr;
+    memPtr = (volatile uint8*)(uintptr)Addr;
     for (i = 0U; i < Length; i++) {
         memPtr[i] = Data[i];
     }
