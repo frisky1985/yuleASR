@@ -25,8 +25,8 @@
 #ifndef FLS_H
 #define FLS_H
 
-/* MemIf mode type used by Fls */
-#ifndef MEMIF_MODETYPE_DEFINED
+/* MemIf mode type used by Fls (only when the real MemIf.h is not present) */
+#ifndef MEMIF_H
 #define MEMIF_MODETYPE_DEFINED
 typedef enum {
     MEMIF_MODE_SLOW = 0,
@@ -158,6 +158,9 @@ typedef enum {
  */
 typedef MemIf_JobResultType Fls_JobResultType;
 
+/* Job type (AUTOSAR Fls uses macros FLS_JOB_*); keep a scalar alias for config structs */
+typedef uint8 Fls_JobType;
+
 /**
  * @brief Flash operation mode type
  */
@@ -165,17 +168,6 @@ typedef enum {
     FLS_MODE_NORMAL = 0,    /* Normal operation mode */
     FLS_MODE_FAST           /* Fast operation mode (if supported) */
 } Fls_OpModeType;
-
-/**
- * @brief Flash job type
- */
-typedef enum {
-    FLS_JOB_NONE = 0,
-    FLS_JOB_READ,
-    FLS_JOB_WRITE,
-    FLS_JOB_ERASE,
-    FLS_JOB_COMPARE
-} Fls_JobType;
 
 /**
  * @brief Flash sector type
