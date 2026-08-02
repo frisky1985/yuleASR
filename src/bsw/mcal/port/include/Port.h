@@ -25,7 +25,9 @@
 *                                      DEFINES AND MACROS
 ==================================================================================================*/
 /** @brief Port Module Vendor ID */
+#ifndef PORT_VENDOR_ID
 #define PORT_VENDOR_ID                          0x0055U  /* YuleTech */
+#endif
 
 /** @brief Port Module ID */
 #define PORT_AR_RELEASE_MAJOR_VERSION   4U
@@ -34,7 +36,9 @@
 #define PORT_SW_MAJOR_VERSION           1U
 #define PORT_SW_MINOR_VERSION           0U
 #define PORT_SW_PATCH_VERSION           0U
+#ifndef PORT_MODULE_ID
 #define PORT_MODULE_ID                          0x002AU  /* AUTOSAR standard: 42 */
+#endif
 
 /** @brief Port Instance ID */
 #define PORT_INSTANCE_ID                        0x00U

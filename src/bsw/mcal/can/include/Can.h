@@ -22,9 +22,13 @@
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
+#ifndef CAN_VENDOR_ID
 #define CAN_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
+#endif
 #define CAN_INSTANCE_ID           0U
+#ifndef CAN_MODULE_ID
 #define CAN_MODULE_ID                   (0x50U) /* CAN Driver Module ID */
+#endif
 #define CAN_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define CAN_AR_RELEASE_MINOR_VERSION    (0x04U)
 #define CAN_AR_RELEASE_REVISION_VERSION (0x00U)
@@ -117,6 +121,20 @@ typedef struct {
     Can_IdType      CanId;
     Can_HwHandleType Hoh;
     uint8           ControllerId;
+} Can_HwType;
+
+/*==================================================================================================
+*                                    CAN ID TYPE (AUTOSAR Can_GeneralTypes)
+==================================================================================================*/
+typedef uint32 Can_IdType;
+
+/*==================================================================================================
+*                                    CAN HW TYPE (AUTOSAR Can_GeneralTypes)
+==================================================================================================*/
+typedef struct {
+    Can_IdType CanId;
+    Can_HwHandleType Hoh;
+    uint8 ControllerId;
 } Can_HwType;
 
 /*==================================================================================================

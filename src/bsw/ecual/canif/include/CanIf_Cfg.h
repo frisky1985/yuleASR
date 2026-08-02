@@ -28,6 +28,10 @@
 /* Number of CAN controllers configured */
 #define CANIF_CONTROLLER_CNT        1U
 
+/* Num aliases used by CanIf.c (AUTOSAR naming) */
+#define CANIF_NUM_CONTROLLERS       CANIF_CONTROLLER_CNT
+#define CANIF_NUM_TRANSCEIVERS      CANIF_CONTROLLER_CNT
+
 /* Number of Hardware Object Handles (HOH) */
 #define CANIF_HOH_CNT               4U
 
@@ -39,9 +43,11 @@
 
 /* Number of Tx L-PDUs */
 #define CANIF_TX_LPDU_CNT           4U
+#define CANIF_NUM_TX_PDUS           CANIF_TX_LPDU_CNT
 
 /* Number of Rx L-PDUs */
 #define CANIF_RX_LPDU_CNT           4U
+#define CANIF_NUM_RX_PDUS           CANIF_RX_LPDU_CNT
 
 /*=============================================================================
  * Switches
@@ -71,6 +77,9 @@
 
 /* Controller IDs */
 #define CANIF_CONTROLLER_0          0U
+
+/* Default baudrate (kbps) used by CanIf_GetBaudrate */
+#define CANIF_DEFAULT_BAUDRATE      500U
 
 /*=============================================================================
  * HOH Configuration Indices

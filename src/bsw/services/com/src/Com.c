@@ -20,6 +20,7 @@
 #include "Com_Cfg.h"
 #include "PduR.h"
 #include "Det.h"
+#include "Compiler.h"
 #include "MemMap.h"
 #include "string.h"
 

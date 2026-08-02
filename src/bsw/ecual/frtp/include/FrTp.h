@@ -196,9 +196,16 @@ Std_ReturnType FrTp_CancelReceive(PduIdType RxPduId);
  * @param value New value
  * @return E_OK if changed, E_NOT_OK otherwise
  */
-/* TPParameterType and TP_* constants are defined in ComStack_Types.h */
-
-extern const FrTp_ConnectionConfigType FrTp_ConnectionConfigs[FRTP_MAX_CONNECTIONS];
+/**
+ * @brief TP parameter types
+ */
+#ifndef TPPARAMETERTYPE_DEFINED
+typedef enum {
+    TP_STMIN = 0,
+    TP_BS,
+    TP_BC
+} TPParameterType;
+#endif
 
 Std_ReturnType FrTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
 

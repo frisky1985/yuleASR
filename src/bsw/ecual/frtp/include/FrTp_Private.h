@@ -126,11 +126,11 @@ extern "C" {
 ==================================================================================================*/
 
 /* Connection management */
+extern const FrTp_ConnectionConfigType FrTp_ConnectionConfigs[FRTP_MAX_CONNECTIONS];
 FrTp_ConnectionIdxType FrTp_FindConnectionByTxPdu(PduIdType txPduId);
 FrTp_ConnectionIdxType FrTp_FindConnectionByRxPdu(PduIdType rxPduId);
 FrTp_ConnectionRuntimeType* FrTp_GetConnectionRuntime(FrTp_ConnectionIdxType connIdx);
 const FrTp_ConnectionConfigType* FrTp_GetConnectionConfig(FrTp_ConnectionIdxType connIdx);
-
 /* State management */
 void FrTp_SetConnectionState(FrTp_ConnectionIdxType connIdx, FrTp_ConnectionStateType newState);
 void FrTp_ResetConnection(FrTp_ConnectionIdxType connIdx);

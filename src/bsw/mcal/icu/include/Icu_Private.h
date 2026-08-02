@@ -124,7 +124,7 @@ static void Icu_ConfigureChannel(Icu_ChannelType Channel, const Icu_ChannelConfi
 static void Icu_ResetChannelState(Icu_ChannelType Channel);
 static void Icu_ProcessEdgeDetection(Icu_ChannelType Channel);
 static void Icu_ProcessSignalMeasurement(Icu_ChannelType Channel);
-static void Icu_ProcessTimestamp(Icu_ChannelType Channel, Icu_ValueType CurrentValue);
+static void Icu_ProcessTimestamp(Icu_ChannelType Channel);
 static void Icu_ProcessEdgeCount(Icu_ChannelType Channel);
 
 /* Utility functions */

@@ -23,6 +23,7 @@
 ==================================================================================================*/
 #include "FrTp.h"
 #include "FrTp_Private.h"
+#include <string.h>
 #include "Det.h"
 #include "PduR.h"
 

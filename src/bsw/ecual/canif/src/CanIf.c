@@ -406,7 +406,7 @@ void CanIf_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType
  * @details Implements the AUTOSAR CanIf_SetDynamicTxId function for CAN interface abstraction
  * @return Std_ReturnType or void per AUTOSAR specification
  */
-Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, Can_IdType CanId)
+Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, CanIf_CanIdType CanId)
 {
     #if (CANIF_DEV_ERROR_DETECT == STD_ON)
     if (CanIf_DriverInitialized == FALSE) {

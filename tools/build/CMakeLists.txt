@@ -12,6 +12,7 @@ set(SRC_DIR ${PROJECT_ROOT}/src/bsw)
 include_directories(
     ${PROJECT_ROOT}/config/generated
     ${PROJECT_ROOT}/config/input/mcal
+    ${SRC_DIR}/os/include
     ${PROJECT_ROOT}/include/autosar
     ${SRC_DIR}/general/inc
     ${SRC_DIR}/mcal/mcu/include
@@ -26,6 +27,12 @@ include_directories(
     ${SRC_DIR}/mcal/eth/include
     ${SRC_DIR}/mcal/icu/include
     ${SRC_DIR}/mcal/ocu/include
+    ${SRC_DIR}/mcal/fls/include
+    ${SRC_DIR}/ecual/fee/include
+    ${SRC_DIR}/mcal/fee/include
+    ${SRC_DIR}/mcal/eep/include
+    ${SRC_DIR}/mcal/flash/include
+    ${SRC_DIR}/mcal/ramtst/include
     ${SRC_DIR}/ecual/canif/include
     ${SRC_DIR}/ecual/frtp/include
     ${SRC_DIR}/ecual/cantp/include
@@ -34,13 +41,13 @@ include_directories(
     ${SRC_DIR}/ecual/linif/include
     ${SRC_DIR}/ecual/iohwab/include
     ${SRC_DIR}/ecual/memif/include
-    ${SRC_DIR}/ecual/fee/include
     ${SRC_DIR}/ecual/ea/include
     ${SRC_DIR}/services/com/include
     ${SRC_DIR}/services/pdur/include
     ${SRC_DIR}/services/nvm/include
     ${SRC_DIR}/services/dcm/include
     ${SRC_DIR}/services/dem/include
+    ${SRC_DIR}/services/det/include
     ${SRC_DIR}/os/include
     ${SRC_DIR}/rte/include
 )

@@ -167,6 +167,17 @@ typedef enum {
 } Fls_OpModeType;
 
 /**
+ * @brief Flash job type
+ */
+typedef enum {
+    FLS_JOB_NONE = 0,
+    FLS_JOB_READ,
+    FLS_JOB_WRITE,
+    FLS_JOB_ERASE,
+    FLS_JOB_COMPARE
+} Fls_JobType;
+
+/**
  * @brief Flash sector type
  */
 typedef struct {

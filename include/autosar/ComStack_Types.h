@@ -37,10 +37,30 @@ typedef uint8 NotifResultType;
 #define TP_PARAM_TA        ((uint8)0x02U)
 #define TP_PARAM_AE        ((uint8)0x03U)
 
-/* TP parameter type and values (AUTOSAR TP) */
+/* TPParameterType */
+#ifndef TPPARAMETERTYPE_DEFINED
+#define TPPARAMETERTYPE_DEFINED
 typedef uint8 TPParameterType;
-#define TP_STMIN           ((TPParameterType)0x01U)
-#define TP_BS              ((TPParameterType)0x02U)
-#define TP_BC              ((TPParameterType)0x03U)
+#endif
+
+/* TP parameter values */
+#ifndef TP_STMIN
+#define TP_STMIN ((uint8)0U)
+#endif
+#ifndef TP_BS
+#define TP_BS    ((uint8)1U)
+#endif
+#ifndef TP_BC
+#define TP_BC    ((uint8)2U)
+#endif
+
+/* RetryInfoType */
+#ifndef RETRYINFOTYPE_DEFINED
+#define RETRYINFOTYPE_DEFINED
+typedef struct {
+    uint16 RetryCounter;
+    TPParameterType TpParameter;
+} RetryInfoType;
+#endif
 
 #endif /* COMSTACK_TYPES_H */

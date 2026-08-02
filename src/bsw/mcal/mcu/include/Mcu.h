@@ -24,7 +24,9 @@
 *                                      DEFINES AND MACROS
 ==================================================================================================*/
 /** @brief MCU 模块供应商 ID */
+#ifndef MCU_VENDOR_ID
 #define MCU_VENDOR_ID                           0x0055U  /* YuleTech */
+#endif
 
 /** @brief MCU 模块 ID */
 #define MCU_AR_RELEASE_MAJOR_VERSION   4U
@@ -33,7 +35,9 @@
 #define MCU_SW_MAJOR_VERSION           1U
 #define MCU_SW_MINOR_VERSION           0U
 #define MCU_SW_PATCH_VERSION           0U
+#ifndef MCU_MODULE_ID
 #define MCU_MODULE_ID                           0x002BU  /* AUTOSAR standard: 43 */
+#endif
 
 /** @brief MCU 实例 ID */
 #define MCU_INSTANCE_ID                         0x00U

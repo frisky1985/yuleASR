@@ -29,6 +29,7 @@
  *==================================================================================================*/
 #include "Fee.h"
 #include "Fee_Cfg.h"
+#include "MemIf.h"
 #include "Fls.h"
 #include "Det.h"
 #include <string.h>

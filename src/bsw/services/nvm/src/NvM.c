@@ -19,10 +19,11 @@
 #include "NvM.h"
 #include "NvM_Cfg.h"
 #include "Det.h"
+#include "Compiler.h"
 #include "MemIf.h"
 #include "Mcal.h"
-#include "MemMap.h"
 #include <string.h>
+#include "MemMap.h"
 
 /*==================================================================================================
 *                                  LOCAL CONSTANT DEFINITIONS
@@ -1377,95 +1378,6 @@ Std_ReturnType NvM_SetWriteOnceStatus(NvM_BlockIdType BlockId, boolean WriteOnce
 
     /* Write-once status is typically configuration-time only.
        Runtime modification is not supported in this implementation. */
-    return E_NOT_OK;
-}
-
-/**
- * @brief   Read permanent RAM block
- * @param   BlockId - Block identifier
- * @return  E_OK if request accepted, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_ReadPRAMBlock(NvM_BlockIdType BlockId)
-{
-    const NvM_BlockDescriptorType* blockDesc;
-
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(0x16U, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-
-    if (NvM_ValidateBlockId(BlockId) != E_OK)
-    {
-        NVM_DET_REPORT_ERROR(0x16U, NVM_E_PARAM_BLOCK_ID);
-        return E_NOT_OK;
-    }
-#endif
-
-    blockDesc = NvM_GetBlockDescriptor(BlockId);
-    if ((blockDesc != NULL_PTR) && (blockDesc->RamBlockData != NULL_PTR))
-    {
-        return NvM_ReadBlock(BlockId, blockDesc->RamBlockData);
-    }
-
-    return E_NOT_OK;
-}
-
-/**
- * @brief   Write permanent RAM block
- * @param   BlockId - Block identifier
- * @return  E_OK if request accepted, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_WritePRAMBlock(NvM_BlockIdType BlockId)
-{
-    const NvM_BlockDescriptorType* blockDesc;
-
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(0x17U, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-
-    if (NvM_ValidateBlockId(BlockId) != E_OK)
-    {
-        NVM_DET_REPORT_ERROR(0x17U, NVM_E_PARAM_BLOCK_ID);
-        return E_NOT_OK;
-    }
-#endif
-
-    blockDesc = NvM_GetBlockDescriptor(BlockId);
-    if ((blockDesc != NULL_PTR) && (blockDesc->RamBlockData != NULL_PTR))
-    {
-        return NvM_WriteBlock(BlockId, blockDesc->RamBlockData);
-    }
-
-    return E_NOT_OK;
-}
-
-/**
- * @brief   Cancel jobs for a block
- * @param   BlockId - Block identifier
- * @return  E_OK if successful, E_NOT_OK otherwise
- */
-Std_ReturnType NvM_CancelJobs(NvM_BlockIdType BlockId)
-{
-#if (NVM_DEV_ERROR_DETECT == STD_ON)
-    if (NvM_InternalState.State == NVM_STATE_UNINIT)
-    {
-        NVM_DET_REPORT_ERROR(0x10U, NVM_E_NOT_INITIALIZED);
-        return E_NOT_OK;
-    }
-
-    if (NvM_ValidateBlockId(BlockId) != E_OK)
-    {
-        NVM_DET_REPORT_ERROR(0x10U, NVM_E_PARAM_BLOCK_ID);
-        return E_NOT_OK;
-    }
-#endif
-
-    /* Cancel is not fully implemented in this version */
     return E_NOT_OK;
 }
 

@@ -21,6 +21,7 @@
 #include "Wdg.h"
 #include "Wdg_Cfg.h"
 #include "Det.h"
+#include <stdint.h>
 
 #ifdef S32K312
 #include "S32K312.h"

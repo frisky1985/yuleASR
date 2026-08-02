@@ -20,6 +20,7 @@
 #include "PduR.h"
 #include "PduR_Cfg.h"
 #include "Det.h"
+#include "Compiler.h"
 #include "MemMap.h"
 
 /*==================================================================================================
