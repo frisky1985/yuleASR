@@ -1,0 +1,87 @@
+# ============================================================================
+# smoke-linux.yml - S1: Linux native runtime verification + ARM cross build
+#
+# S0 (能链接、能启动) 验收链缺运行环: FreeRTOS Posix port 官方仅支持 Linux,
+# macOS 上调度器启动即挂死。本 workflow 在 ubuntu-latest 上构建并运行
+# s0_smoke_test (链接 FreeRTOS Posix port + Os + Rte), 断言退出码 0 与
+# 关键输出; 同一 workflow 内补 ARM (S32K312) 交叉编译回归。
+#
+# 触发分支: v1.3.0 + master (独立于 ci.yml 的 master/develop 门禁)
+# ============================================================================
+name: smoke-linux
+
+on:
+  push:
+    branches:
+      - v1.3.0
+      - master
+  workflow_dispatch:
+
+jobs:
+  # ── Job 1: Linux native 运行验证 (核心) ──────────────────────────────
+  native-smoke:
+    name: Native smoke test (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build
+
+      - name: Configure (BUILD_TESTING=ON)
+        run: cmake -B build -S . -DBUILD_TESTING=ON -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build s0_smoke_test
+        run: cmake --build build --target s0_smoke_test -j$(nproc)
+
+      - name: "Run smoke test (expect RESULT: ALL CHECKS PASSED)"
+        run: |
+          set -o pipefail
+          OUTPUT=$(./build/bin/s0_smoke_test 2>&1)
+          echo "$OUTPUT"
+          echo "--- assertions ---"
+          grep -q "RESULT: ALL CHECKS PASSED" <<< "$OUTPUT" && echo "PASS: RESULT marker found"
+          grep -qE "Rte_SchedulerGetTickCount = [1-9][0-9]*" <<< "$OUTPUT" && echo "PASS: tick counter advanced"
+          echo "SMOKE_OK=1" >> "$GITHUB_ENV"
+
+      - name: Assert exit path
+        run: |
+          if [ "${SMOKE_OK:-0}" != "1" ]; then
+            echo "::error::s0_smoke_test did not pass all assertions"
+            exit 1
+          fi
+
+  # ── Job 2: ARM (S32K312) 交叉编译回归 ────────────────────────────────
+  arm-cross:
+    name: ARM cross-compile regression (S32K312)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ARM GCC toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-arm-none-eabi cmake ninja-build
+
+      - name: Configure ARM cross build
+        run: |
+          cmake -B build-arm -S . \
+            -DCMAKE_TOOLCHAIN_FILE=$PWD/cmake/toolchain-arm-none-eabi.cmake \
+            -DBUILD_TESTING=OFF \
+            -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build (ARM)
+        run: cmake --build build-arm -j$(nproc)
+
+      - name: Verify ARM artifacts
+        run: |
+          echo "--- libOs.a FreeRTOS kernel symbols ---"
+          arm-none-eabi-nm build-arm/lib/bsw/os/libOs.a | grep -E " T (xTaskCreate|xEventGroupCreate|vTaskStartScheduler)" || true
+          echo "--- libRte.a Rte symbols ---"
+          arm-none-eabi-nm build-arm/lib/bsw/rte/libRte.a | grep -c " T Rte_" || true

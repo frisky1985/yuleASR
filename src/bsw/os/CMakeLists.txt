@@ -35,6 +35,8 @@ add_library(Os STATIC ${OS_SOURCES} ${FREERTOS_SOURCES} ${FREERTOS_PORT_SOURCES}
 target_include_directories(Os
     PUBLIC 
         ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/third_party/freertos/include
+        ${FREERTOS_PORT_INCLUDE}
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src/bsw/services/bswm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
@@ -42,8 +44,6 @@ target_include_directories(Os
         ${CMAKE_SOURCE_DIR}/src/bsw/services/dcm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/nvm/include
         ${CMAKE_SOURCE_DIR}/src/rte/include
-        ${CMAKE_SOURCE_DIR}/third_party/freertos/include
-        ${FREERTOS_PORT_INCLUDE}
 )
 
 # Posix port needs pthread (native builds)
