@@ -25,6 +25,9 @@
 #include "MemMap.h"
 #include "string.h"
 
+/* Provided by Rte_SwcPortApi.c - connects all configured SWC ports */
+extern void Rte_SwcPortApi_ConnectAllPorts(void);
+
 /*==================================================================================================
 *                                  LOCAL CONSTANT DEFINITIONS
 ==================================================================================================*/
@@ -346,6 +349,11 @@ Rte_StatusType Rte_Start(void)
     }
     else
     {
+        /* Connect all configured SWC ports so Rte_Read/Rte_Write on the
+         * generated per-SWC port API succeed. Without this every port stays
+         * IsConnected = FALSE and all reads/writes return RTE_E_UNCONNECTED. */
+        Rte_SwcPortApi_ConnectAllPorts();
+
         Rte_InternalState.IsStarted = TRUE;
         Rte_InternalState.State = RTE_STATE_STARTED;
     }

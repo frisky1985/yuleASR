@@ -85,8 +85,49 @@ void Os_Internal_StartOS(AppModeType Mode)
 {
     uint32 i;
 
-    memset(&Os_GlobalState, 0, sizeof(Os_GlobalState));
+    /* NOTE: Do NOT memset the whole Os_GlobalState here.
+     * Os_Cfg.c provides a strong definition that initializes the
+     * configuration pointers (Tasks/Alarms/Resources -> *_Configs tables).
+     * Clearing the entire struct would wipe those pointers and make
+     * every subsequent access (Os_InitAlarms/Os_InitTasks/...) operate
+     * on a zeroed table, silently killing the whole OS configuration.
+     * Only the runtime fields are reset below. */
+    Os_GlobalState.IsInitialized = FALSE;
+    Os_GlobalState.IsRunning = FALSE;
     Os_GlobalState.CurrentAppMode = Mode;
+
+    /* Reset runtime task state (keeps configuration pointers intact) */
+    if (Os_GlobalState.Tasks != NULL_PTR)
+    {
+        for (i = 0; i < Os_GlobalState.NumTasks; i++)
+        {
+            Os_GlobalState.Tasks[i].FreeRTOS_Task = NULL_PTR;
+            Os_GlobalState.Tasks[i].FreeRTOS_EventGroup = NULL_PTR;
+        }
+    }
+
+    /* Reset runtime alarm state (keeps configured Callback intact) */
+    if (Os_GlobalState.Alarms != NULL_PTR)
+    {
+        for (i = 0; i < Os_GlobalState.NumAlarms; i++)
+        {
+            Os_GlobalState.Alarms[i].State = OS_ALARM_UNUSED;
+            Os_GlobalState.Alarms[i].FreeRTOS_Timer = NULL_PTR;
+        }
+    }
+
+    /* Reset runtime resource state */
+    if (Os_GlobalState.Resources != NULL_PTR)
+    {
+        for (i = 0; i < Os_GlobalState.NumResources; i++)
+        {
+            Os_GlobalState.Resources[i].OwnerTask = 0;
+            Os_GlobalState.Resources[i].NestCount = 0;
+            Os_GlobalState.Resources[i].IsCeilingPriority = FALSE;
+            Os_GlobalState.Resources[i].CeilingPriority = 0;
+        }
+    }
+
     Os_GlobalState.IsRunning = TRUE;
 
     /* Initialize resources */
@@ -1372,9 +1413,13 @@ static void Os_InitAlarms(void)
     {
         Os_AlarmConfigType* alarm = &Os_GlobalState.Alarms[i];
 
+        /* NOTE: Do NOT overwrite alarm->Callback with NULL_PTR here.
+         * Os_GlobalState.Alarms points directly at the Os_AlarmConfigs[]
+         * table from Os_Cfg.c, whose Callback fields are statically
+         * initialized to the BSW MainFunction dispatchers. Zeroing them
+         * here would permanently disable every alarm. */
         alarm->AlarmID = (AlarmType)i;
         alarm->State = OS_ALARM_UNUSED;
-        alarm->Callback = NULL_PTR;
         alarm->FreeRTOS_Timer = xTimerCreate(
             "OsAlarm",
             pdMS_TO_TICKS(1000),

@@ -1,10 +1,10 @@
 /*==================================================================================================
- * FreeRTOSConfig.h - FreeRTOS configuration for yuleASR (S32K312 / Cortex-M7)
+ * FreeRTOSConfig.h - FreeRTOS configuration for yuleASR
  *
- * Minimal configuration matching the yuleDKCS FreeRTOS port layer used by
- * the yuleASR OS abstraction. Kept small since this repo builds the OS
- * abstraction layer for host/native verification; actual timing values are
- * board-specific and configured per project.
+ * Full configuration for FreeRTOS-Kernel V11.1.0.
+ * - Native/host builds use the Posix port (portable/posix).
+ * - ARM targets (S32K312 / Cortex-M33) use GCC/ARM_CM33.
+ * Tick rate 1000 Hz => 1 tick = 1 ms (matches OS_TICKS_PER_MS in Os_Internal.h).
  *================================================================================================*/
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
@@ -13,8 +13,10 @@
 extern "C" {
 #endif
 
+#include <assert.h>
+
 /*-----------------------------------------------------------
- * Application specific definitions (from FreeRTOS.org template)
+ * Application specific definitions
  *-----------------------------------------------------------*/
 
 #define configUSE_PREEMPTION                    1
@@ -34,10 +36,13 @@ extern "C" {
 #define configUSE_TASK_NOTIFICATIONS            1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 
+/* Event groups are required by the yuleASR OS abstraction (xEventGroupCreate) */
+#define configUSE_EVENT_GROUPS                  1
+
 /* Co-routine related definitions */
 #define configUSE_CO_ROUTINES                   0
 
-/* Software timer definitions */
+/* Software timer definitions (used by Os_InitAlarms / SetRelAlarm) */
 #define configUSE_TIMERS                        1
 #define configTIMER_TASK_PRIORITY               ( 2 )
 #define configTIMER_QUEUE_LENGTH                10
@@ -50,6 +55,24 @@ extern "C" {
 /* Hook function related definitions */
 #define configCHECK_FOR_STACK_OVERFLOW          0
 
+/* Assert (required by Posix port.c) */
+#define configASSERT( x )                       assert( ( x ) )
+
+/* ARMv8-M (Cortex-M33) port requirements - S32K312 */
+#define configENABLE_FPU                        1
+#define configENABLE_MPU                        0
+#define configENABLE_TRUSTZONE                  0
+#define configENABLE_ARM_MPU                    0
+#define configENABLE_ARM_FPU                    1
+#define configRUN_FREERTOS_SECURE_ONLY          1
+
+/* ARMv8-M interrupt priorities - S32K312 NVIC has 8 priority bits */
+#define configPRIO_BITS                         8
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY      0xff
+#define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
+#define configKERNEL_INTERRUPT_PRIORITY         ( configLIBRARY_LOWEST_INTERRUPT_PRIORITY << ( 8 - configPRIO_BITS ) )
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << ( 8 - configPRIO_BITS ) )
+
 /* Optional functions */
 #define INCLUDE_vTaskPrioritySet                1
 #define INCLUDE_uxTaskPriorityGet               1
@@ -59,6 +82,7 @@ extern "C" {
 #define INCLUDE_vTaskDelay                      1
 #define INCLUDE_xTaskGetSchedulerState          1
 #define INCLUDE_xTaskGetCurrentTaskHandle       1
+#define INCLUDE_xTaskGetTickCount               1
 #define INCLUDE_uxTaskGetStackHighWaterMark     0
 #define INCLUDE_xTaskGetIdleTaskHandle          0
 #define INCLUDE_eTaskGetState                   1

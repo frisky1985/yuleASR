@@ -29,6 +29,7 @@
 #include "Det.h"
 #include "BswM.h"
 #include "SchM.h"
+#include "Rte.h"
 
 /*
  * Forward declarations for BswM callbacks invoked by EcuM.
@@ -341,7 +342,7 @@ static void EcuM_ProcessStartupTwo(void)
     
     /* Start RTE */
 #if (ECUM_RTE_ENABLED == STD_ON)
-    /* Rte_Start(); */
+    Rte_Start();
 #endif
     
     /* Call third phase init (SW-C initialization) */
@@ -359,9 +360,9 @@ static void EcuM_ProcessStartupTwo(void)
 #endif
 }
 
-/*******************************************************************************
- *                              Main Function                                  *
- ******************************************************************************/
+/*==================================================================================================
+*                              Main Function                                  *
+*==================================================================================================*/
 
 /**
  * @brief EcuM Main Function - Cyclic processing
@@ -688,7 +689,7 @@ static void EcuM_ProcessWakeupTwo(void)
     
     /* Re-initialize RTE */
 #if (ECUM_RTE_ENABLED == STD_ON)
-    /* Rte_Start(); */
+    Rte_Start();
 #endif
     
     /* Transition back to RUN */
