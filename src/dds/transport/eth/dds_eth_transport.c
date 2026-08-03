@@ -8,8 +8,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "dds_eth_transport.h"
-#include "../../../tcpip/tcpip_socket.h"
-#include "../../../tcpip/tcpip_udp.h"
+#include "dds_tcpip_compat.h"
 #include "../../../ethernet/eth_manager.h"
 
 /* ============================================================================
