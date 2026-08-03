@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "../../../common/types/eth_types.h"
+#include "../../common/types/eth_types.h"
 #include "../../../soad/soad.h"
 #include "../eth/dds_eth_transport.h"
 

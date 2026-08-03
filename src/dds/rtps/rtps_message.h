@@ -16,6 +16,7 @@
 #define RTPS_MESSAGE_H
 
 #include "rtps_discovery.h"
+#include "rtps_state.h"
 #include <stdint.h>
 #include <stdbool.h>
 

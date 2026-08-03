@@ -13,7 +13,7 @@
 #ifndef RTPS_DISCOVERY_H
 #define RTPS_DISCOVERY_H
 
-#include "../../../common/types/eth_types.h"
+#include "../../common/types/eth_types.h"
 #include <stdint.h>
 #include <stdbool.h>
 

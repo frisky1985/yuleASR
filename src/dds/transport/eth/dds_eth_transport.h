@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "../../../common/types/eth_types.h"
+#include "../../common/types/eth_types.h"
 
 #ifdef __cplusplus
 extern "C" {
