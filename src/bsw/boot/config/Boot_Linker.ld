@@ -1,6 +1,6 @@
 /*
  * Boot_Linker.ld — Primary Bootloader (PBL) Linker Script
- * Platform: NXP S32K312 (Cortex-M7)
+ * Platform: NXP S32K312 (Cortex-M33)
  * Memory:   PBL fits in 4KB flash_rsvd1 + flash_vector
  *
  * Included by the main linker script via INCLUDE when building PBL.

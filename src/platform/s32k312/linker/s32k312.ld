@@ -2,7 +2,7 @@
  * S32K312 Linker Script — yuleDKCS BSW Phase 1 (fixed LMA overlap)
  * 
  * Copyright (c) 2024 YuleTech
- * Platform: NXP S32K312 (Cortex-M7)
+ * Platform: NXP S32K312 (Cortex-M33)
  * Features:
  *   - AUTOSAR Memory Partition Support
  *   - MPU Region Configuration

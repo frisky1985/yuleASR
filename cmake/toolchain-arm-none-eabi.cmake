@@ -1,5 +1,5 @@
-# ARM GCC Toolchain for S32K312 (ARM Cortex-M7)
-# Toolchain file for cross-compiling to ARM Cortex-M7
+# ARM GCC Toolchain for S32K312 (ARM Cortex-M33)
+# Toolchain file for cross-compiling to ARM Cortex-M33
 
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
@@ -39,8 +39,10 @@ set(CMAKE_STRIP "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-strip" CACHE FILEPATH "Str
 # Don't run linker on compiler check
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-# ARM Cortex-M7 specific flags for S32K312
-set(ARM_CPU_FLAGS "-mcpu=cortex-m7 -mthumb -mfpu=fpv5-d16 -mfloat-abi=hard")
+# ARM Cortex-M33 specific flags for S32K312
+# S32K312 is a Cortex-M33 (ARMv8-M Main) with optional single-precision FPU.
+# FreeRTOS ARM_CM33 port requires ARMv8-M; softfp ABI keeps interop safe.
+set(ARM_CPU_FLAGS "-mcpu=cortex-m33 -mthumb -mfpu=fpv5-sp-d16 -mfloat-abi=softfp")
 
 # Common flags
 set(CMAKE_C_FLAGS_INIT "${ARM_CPU_FLAGS} -fdata-sections -ffunction-sections -Wall -Wextra")
@@ -60,4 +62,4 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 message(STATUS "ARM GCC Toolchain configured")
 message(STATUS "  C Compiler: ${CMAKE_C_COMPILER}")
 message(STATUS "  Target: ${TARGET_TRIPLE}")
-message(STATUS "  CPU: Cortex-M7 (hard float)")
+message(STATUS "  CPU: Cortex-M33 (softfp, fpv5-sp-d16)")
