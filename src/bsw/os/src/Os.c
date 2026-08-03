@@ -266,9 +266,17 @@ StatusType Os_Internal_ActivateTask(TaskType TaskID)
         vTaskResume(task->FreeRTOS_Task);
     }
 
-    /* Trigger scheduler if preemptive */
+    /* Trigger scheduler if preemptive AND the scheduler is already running.
+     * Calling taskYIELD() before vTaskStartScheduler() sets PendSV pending;
+     * on ARMv8-M the PendSV handler then runs before the first task context
+     * (PSP) exists and takes a Data Abort (reproduced on QEMU mps2-an521,
+     * fault addr 0xffffffd8). AUTOSAR StartOS creates autostart tasks via
+     * this path before the FreeRTOS scheduler starts. */
     #if (configUSE_PREEMPTION == 1)
-    taskYIELD();
+    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
+    {
+        taskYIELD();
+    }
     #endif
 
     return E_OS_OK;

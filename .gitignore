@@ -137,6 +137,8 @@ dSYM/
 # Coverage run artifacts
 coverage_run/bin/
 # Coverage report output
+# NVM configurator generated output
+tools/nvm_configurator/output/
 coverage_report_focused/
 # Embedded git repos
 third_party/lwip
