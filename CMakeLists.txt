@@ -132,6 +132,11 @@ add_subdirectory(src/rte)
 add_subdirectory(src/bsw/os)
 add_subdirectory(src/platform)
 
+# DDS middleware (ETH-DDS integration)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
+    add_subdirectory(src/dds)
+endif()
+
 # ASW components (optional for embedded target)
 if(NOT CMAKE_CROSSCOMPILING OR BUILD_EXAMPLES)
     add_subdirectory(src/asw)

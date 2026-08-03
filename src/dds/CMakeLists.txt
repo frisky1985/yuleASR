@@ -1,5 +1,13 @@
 # src/dds/CMakeLists.txt
 # DDS middleware components
+# 集成主线: 由顶层 add_subdirectory(src/dds) 挂载
+
+cmake_minimum_required(VERSION 3.16)
+
+# 构建选项 (顶层可覆盖)
+option(ENABLE_DDS "Enable DDS middleware" ON)
+option(ENABLE_DDS_SECURITY "Enable DDS Security" ON)
+option(ENABLE_DDS_RUNTIME "Enable DDS Runtime monitoring" ON)
 
 set(DDS_CORE_SOURCES
     core/dds_domain.c
@@ -60,9 +68,25 @@ if(ENABLE_DDS_RUNTIME)
     )
 endif()
 
+# 传输层 (eth/soad/tsn transport + compat)
+file(GLOB DDS_TRANSPORT_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/transport/eth/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/transport/soad/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/transport/tsn/*.c
+)
+
+# 公共依赖 (eth_types, dds_log) — 作为源文件纳入, 避免悬空库
+file(GLOB DDS_COMMON_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/types/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/log/*.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/utils/*.c
+)
+
 # Create DDS library
 add_library(eth_dds_middleware STATIC
     ${DDS_CORE_SOURCES}
+    ${DDS_TRANSPORT_SOURCES}
+    ${DDS_COMMON_SOURCES}
 )
 
 target_include_directories(eth_dds_middleware PUBLIC
@@ -71,12 +95,22 @@ target_include_directories(eth_dds_middleware PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/pubsub
     ${CMAKE_CURRENT_SOURCE_DIR}/security
     ${CMAKE_CURRENT_SOURCE_DIR}/runtime
+    ${CMAKE_CURRENT_SOURCE_DIR}/transport/eth
+    ${CMAKE_CURRENT_SOURCE_DIR}/transport/soad
+    ${CMAKE_CURRENT_SOURCE_DIR}/transport/tsn
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/types
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/log
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../common/utils
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tcpip
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../ethernet
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../soad
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../tsn
 )
 
-target_link_libraries(eth_dds_middleware PUBLIC
-    eth_dds_common
-    eth_dds_transport
-)
+# Security 依赖 mbedTLS (主线 third_party 提供)
+if(ENABLE_DDS_SECURITY)
+    target_link_libraries(eth_dds_middleware PRIVATE mbedtls)
+endif()
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(eth_dds_middleware PRIVATE
