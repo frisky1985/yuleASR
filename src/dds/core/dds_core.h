@@ -72,6 +72,9 @@ typedef dds_EntityHandleType dds_TopicHandleType;
 typedef dds_EntityHandleType dds_DataWriterHandleType;
 typedef dds_EntityHandleType dds_DataReaderHandleType;
 
+/** 样本句柄 (ara::com 适配用) */
+typedef dds_EntityHandleType dds_SampleHandleType;
+
 /* ============================================================================
  * 内部实体结构 (与 dds_runtime.h 中的 struct 定义一致)
  * ============================================================================ */

@@ -44,7 +44,6 @@ static ProcessEntryType* FindFreeEntry(void) {
 }
 
 static void SetProcessState(ProcessEntryType* entry, ProcessStateType newState) {
-    ProcessStateType oldState = entry->info.state;
     entry->info.state = newState;
     
     if (g_globalStateCallback != NULL) {

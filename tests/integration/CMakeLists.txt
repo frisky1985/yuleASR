@@ -23,20 +23,20 @@ add_executable(integration_tests ${TEST_SOURCES})
 
 # 添加头文件路径
 target_include_directories(integration_tests PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Com/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/PduR/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/CanIf/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Can/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Dcm/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/DoIP/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/CanTSyn/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/E2E/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Crc/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Os/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/NvM/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Fee/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Fls/inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../BSW/Ea/inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/com/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/pdur/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/canif/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/can/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/dcm/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/doip/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/cantsyn/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/e2e/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/crc/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/nvm/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/fee/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/fls/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/ea/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../unit/framework
 )
 

@@ -35,7 +35,7 @@ extern "C" {
 /* Some/IP-DDS网关配置 */
 #define SOMEIP_DDS_GATEWAY_ENABLED      1
 #define SOMEIP_MAX_SERVICE_ENTRIES      128
-#define DDS_DOMAIN_ID_SOMEIP_BRIDGE     100
+/* 注: DDS_DOMAIN_ID_SOMEIP_BRIDGE 定义在 dds_core.h (0x80000001U) */
 
 /* E2E保护配置 */
 #define ARA_COM_E2E_MAX_PROFILES        8

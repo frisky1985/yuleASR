@@ -73,18 +73,8 @@ typedef enum {
     RTE_CMP_TERMINATED
 } rte_ComponentStateType;
 
-/* 调用结果 */
-typedef enum {
-    RTE_E_OK = 0,
-    RTE_E_NOK,
-    RTE_E_INVALID,
-    RTE_E_COMMS_ERROR,
-    RTE_E_TIMEOUT,
-    RTE_E_LIMIT,
-    RTE_E_NO_DATA,
-    RTE_E_UNCONNECTED,
-    RTE_E_E2E_ERROR
-} rte_ResultType;
+/* 调用结果 (复用 autosar_errors.h 的 RTE_E_* 宏定义) */
+typedef uint8_t rte_ResultType;
 
 /* 数据过滤器类型 */
 typedef enum {

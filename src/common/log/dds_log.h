@@ -266,6 +266,11 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     dds_log_write(DDS_LOG_LEVEL_DEBUG, DDS_LOG_TYPE_RUNTIME, module, tag, \
                   __FILE__, __LINE__, __VA_ARGS__)
 
+/* 通用日志宏 (level 为 dds_log_level_t 枚举值) */
+#define DDS_LOG(level, module, ...) \
+    dds_log_write((level), DDS_LOG_TYPE_RUNTIME, module, (module), \
+                  __FILE__, __LINE__, __VA_ARGS__)
+
 #define DDS_LOG_INFO(module, tag, ...) \
     dds_log_write(DDS_LOG_LEVEL_INFO, DDS_LOG_TYPE_RUNTIME, module, tag, \
                   __FILE__, __LINE__, __VA_ARGS__)

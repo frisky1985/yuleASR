@@ -63,9 +63,9 @@ static Std_ReturnType PlatformApplyNamespace(SandboxIsolationType isolation) {
     return E_OK;
 }
 
-static Std_ReturnType PlatformApplyNetworkRestriction(bool restrict) {
+static Std_ReturnType PlatformApplyNetworkRestriction(bool restrictNet) {
     /* Platform-specific: Apply network restrictions */
-    (void)restrict;
+    (void)restrictNet;
     return E_OK;
 }
 
@@ -400,9 +400,9 @@ Std_ReturnType Sandbox_ApplyFilesystemIsolation(ProcessIdType pid,
     return E_OK;
 }
 
-Std_ReturnType Sandbox_ApplyNetworkIsolation(ProcessIdType pid, bool restrict) {
+Std_ReturnType Sandbox_ApplyNetworkIsolation(ProcessIdType pid, bool restrictNet) {
     (void)pid;
-    return PlatformApplyNetworkRestriction(restrict);
+    return PlatformApplyNetworkRestriction(restrictNet);
 }
 
 Std_ReturnType Sandbox_ApplySyscallFiltering(ProcessIdType pid, 

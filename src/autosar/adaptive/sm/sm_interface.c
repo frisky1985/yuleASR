@@ -161,7 +161,7 @@ SM_RequestHandle SM_CreateStateRequest(uint32_t clientId, MachineStateType targe
     }
     
     request->handle = g_nextHandle++;
-    request->type = SM_REQUEST_STATE_TRANSITION;
+    request->type = SM_REQUEST_KIND_STATE_TRANSITION;
     request->status = SM_REQUEST_STATUS_PENDING;
     request->clientId = clientId;
     request->requestTime = 0U;  /* Would use actual timestamp */
@@ -189,7 +189,7 @@ SM_RequestHandle SM_CreateFGStateRequest(uint32_t clientId,
     }
     
     request->handle = g_nextHandle++;
-    request->type = SM_REQUEST_FG_STATE_CHANGE;
+    request->type = SM_REQUEST_KIND_FG_STATE_CHANGE;
     request->status = SM_REQUEST_STATUS_PENDING;
     request->clientId = clientId;
     request->requestTime = 0U;
@@ -223,7 +223,7 @@ Std_ReturnType SM_SubmitRequest(SM_RequestHandle handle) {
     
     /* Process the request based on type */
     switch (request->type) {
-        case SM_REQUEST_STATE_TRANSITION: {
+        case SM_REQUEST_KIND_STATE_TRANSITION: {
             StateRequestResultType result = 
                 StateMachine_RequestTransition(request->data.targetState);
             
@@ -237,7 +237,7 @@ Std_ReturnType SM_SubmitRequest(SM_RequestHandle handle) {
             break;
         }
         
-        case SM_REQUEST_FG_STATE_CHANGE: {
+        case SM_REQUEST_KIND_FG_STATE_CHANGE: {
             Std_ReturnType result = StateMachine_SetFGState(
                 request->data.fgRequest.fgName,
                 request->data.fgRequest.fgState);

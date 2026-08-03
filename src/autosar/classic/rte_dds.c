@@ -10,9 +10,11 @@
 #include "rte_dds.h"
 #include "e2e_protection.h"
 #include "autosar_common.h"
-#include "../../../dds/core/dds_core.h"
+#include "../../dds/core/dds_core.h"
+#include "../../dds/runtime/dds_runtime.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 /******************************************************************************
  * Private Definitions
@@ -178,7 +180,7 @@ Std_ReturnType rte_Init(void)
     }
 
     /* 初始化DDS */
-    if (dds_runtime_init() != DDS_RETCODE_OK) {
+    if (dds_runtime_init(NULL) != ETH_OK) {
         return E_NOT_OK;
     }
 
@@ -435,14 +437,10 @@ rte_ResultType rte_Write(
     uint32 protectedLength = dataSize;
     
     memcpy(protectedData, data, dataSize);
+    (void)protectedLength; /* 长度由 writer sample_size 决定 */
 
-    /* 通过DDS发送 */
-    dds_SampleHandleType sample;
-    sample.data = protectedData;
-    sample.length = protectedLength;
-    sample.timestamp = dds_get_time();
-
-    dds_ReturnCode_t ret = dds_write(writer, &sample);
+    /* 通过DDS发送 (DDS 序列化层按 writer sample_size 处理长度) */
+    dds_ReturnCode_t ret = dds_write(writer, protectedData);
     
     dds_delete(writer);
 
@@ -501,11 +499,11 @@ rte_ResultType rte_ReadWithInfo(
         return RTE_E_COMMS_ERROR;
     }
 
-    /* 读取样本 */
-    dds_SampleHandleType sample;
+    /* 读取样本 (DDS 简化实现: 单样本取到 receive_buffer) */
+    uint8_t sampleData[RTE_MAX_BUFFER_SIZE];
     dds_SampleInfoType sampleInfo;
 
-    dds_ReturnCode_t ret = dds_take(reader, &sample, &sampleInfo, 1,
+    dds_ReturnCode_t ret = dds_take(reader, sampleData, &sampleInfo, 1,
                                      DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
 
     dds_delete(reader);
@@ -528,12 +526,12 @@ rte_ResultType rte_ReadWithInfo(
         }
     }
 
-    memcpy(data, sample.data, dataSize);
+    memcpy(data, sampleData, dataSize);
 
     /* 填充信息 */
-    info->timestamp = (rte_TimestampType)sampleInfo.source_timestamp.sec;
+    info->timestamp = (rte_TimestampType)sampleInfo.source_timestamp;
     info->quality = RTE_SIGNAL_GOOD;
-    info->sequenceNumber = sampleInfo.sequence_number.low;
+    info->sequenceNumber = sampleInfo.instance_handle;
     info->e2eStatus = 0;
 
     return RTE_E_OK;
@@ -548,6 +546,7 @@ rte_ResultType rte_Send(
     uint32_t length)
 {
     /* 简化实现：使用默认DataElement */
+    (void)length;
     return rte_Write(port, 0, data);
 }
 
@@ -568,6 +567,8 @@ rte_ResultType rte_Call(
     if (!rte_IsInitialized() || requestData == NULL || responseData == NULL) {
         return RTE_E_INVALID;
     }
+
+    (void)operationId;
 
     /* 查找CS Port配置 */
     rte_CSPortConfigType* portConfig = NULL;
@@ -604,22 +605,17 @@ rte_ResultType rte_Call(
         return RTE_E_COMMS_ERROR;
     }
 
-    /* 发送请求 */
-    dds_SampleHandleType requestSample;
-    requestSample.data = (void*)requestData;
-    requestSample.length = 256; /* 应根据实际数据大小设置 */
-    requestSample.timestamp = dds_get_time();
-
-    dds_ReturnCode_t ret = dds_write(reqWriter, &requestSample);
+    /* 发送请求 (DDS 序列化层按 writer sample_size 处理长度) */
+    dds_ReturnCode_t ret = dds_write(reqWriter, requestData);
     if (ret != DDS_RETCODE_OK) {
         return rte_ConvertDdsResult(ret);
     }
 
     /* 等待响应 */
-    dds_SampleHandleType responseSample;
+    uint8_t responseDataBuf[RTE_MAX_BUFFER_SIZE];
     dds_SampleInfoType sampleInfo;
     
-    ret = dds_take(rspReader, &responseSample, &sampleInfo, 1,
+    ret = dds_take(rspReader, responseDataBuf, &sampleInfo, 1,
                    DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
 
     dds_delete(reqWriter);
@@ -630,9 +626,9 @@ rte_ResultType rte_Call(
     }
 
     /* 复制响应数据 */
-    memcpy(responseData, responseSample.data, responseSample.length);
+    memcpy(responseData, responseDataBuf, sizeof(responseDataBuf));
     if (responseLength != NULL) {
-        *responseLength = responseSample.length;
+        *responseLength = sizeof(responseDataBuf);
     }
 
     return RTE_E_OK;

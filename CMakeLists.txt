@@ -148,6 +148,26 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/telemetry/CMakeLists.txt)
     add_subdirectory(src/telemetry)
 endif()
 
+# Crypto Stack (CSM/CryIf/KeyM/SecOC) — DDS security 依赖链
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_stack/CMakeLists.txt)
+    add_subdirectory(src/crypto_stack)
+endif()
+
+# Bootloader (partition/rollback/secure_boot)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/CMakeLists.txt)
+    add_subdirectory(src/bootloader)
+endif()
+
+# AUTOSAR Adaptive 平台服务 (ara::com DDS + exec/sm)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/adaptive/CMakeLists.txt)
+    add_subdirectory(src/autosar/adaptive)
+endif()
+
+# AUTOSAR Classic RTE DDS 集成 (rte_dds)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/classic/CMakeLists.txt)
+    add_subdirectory(src/autosar/classic)
+endif()
+
 # ASW components (optional for embedded target)
 if(NOT CMAKE_CROSSCOMPILING OR BUILD_EXAMPLES)
     add_subdirectory(src/asw)

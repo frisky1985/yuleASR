@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "bl_secure_boot.h"
 #include "../common/log/dds_log.h"
 #include "../crypto_stack/csm/csm_core.h"
@@ -20,7 +21,7 @@
  * 内部宏和常量
  * ============================================================================ */
 #define BL_SB_MODULE_NAME       "BL_SB"
-#define BL_SB_LOG_LEVEL         DDS_LOG_INFO
+#define BL_SB_LOG_LEVEL         DDS_LOG_LEVEL_INFO
 
 #define FIRMWARE_HEADER_SIZE    sizeof(bl_firmware_header_t)
 
@@ -78,7 +79,7 @@ static void set_error(bl_secure_boot_context_t *ctx, bl_secure_boot_error_t erro
     ctx->last_error = error;
     ctx->failed_verifications++;
     
-    DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+    DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
             "Secure boot error: %d", error);
     
     if (ctx->config.on_verification_complete != NULL) {
@@ -174,14 +175,14 @@ bl_secure_boot_error_t bl_secure_boot_parse_header(
     
     /* 验证魔法 */
     if (header->magic != BL_SB_FIRMWARE_MAGIC) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Invalid firmware magic: 0x%08X", header->magic);
         return BL_SB_ERROR_INVALID_MAGIC;
     }
     
     /* 验证版本 */
     if (header->header_version != BL_SB_HEADER_VERSION) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Unsupported header version: %u", header->header_version);
         return BL_SB_ERROR_PARSE_ERROR;
     }
@@ -206,7 +207,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_header_crc(
     );
     
     if (calculated_crc != header->header_crc32) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Header CRC mismatch: expected 0x%08X, got 0x%08X",
                 header->header_crc32, calculated_crc);
         return BL_SB_ERROR_INVALID_HASH;
@@ -232,7 +233,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
     /* 使用CSM验证签名 */
     csm_context_t *csm = (csm_context_t*)ctx->csm_context;
     if (csm == NULL) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "CSM context not available");
         return BL_SB_ERROR_CRYPTO_FAILURE;
     }
@@ -245,7 +246,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
                                    hash, &(uint32_t){32});
     
     if (status != CSM_OK) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Hash calculation failed: %d", status);
         return BL_SB_ERROR_CRYPTO_FAILURE;
     }
@@ -254,10 +255,10 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
     csm_algorithm_t sign_algo;
     switch (sign_type) {
         case BL_SB_SIGN_ECDSA_P256_SHA256:
-            sign_algo = CSM_ALGO_ECDSA_P256_SHA256;
+            sign_algo = CSM_ALGO_ECDSA_P256_SHA_256;
             break;
         default:
-            DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                     "Unsupported signature type: %d", sign_type);
             return BL_SB_ERROR_INVALID_SIGNATURE;
     }
@@ -276,7 +277,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
         );
         
         if (key_status != KEYM_OK) {
-            DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                     "Failed to get public key: %d", key_status);
             return BL_SB_ERROR_CRYPTO_FAILURE;
         }
@@ -288,7 +289,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
                             hash, 32, signature, 64, &verify_result);
     
     if (status != CSM_OK || !verify_result) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Signature verification failed");
         set_state(ctx, BL_SB_STATE_VERIFICATION_FAILED);
         return BL_SB_ERROR_INVALID_SIGNATURE;
@@ -342,13 +343,13 @@ bl_secure_boot_error_t bl_secure_boot_verify_hash(
                                    calculated_hash, &hash_len);
     
     if (status != CSM_OK) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Hash calculation failed: %d", status);
         return BL_SB_ERROR_CRYPTO_FAILURE;
     }
     
     if (memcmp(calculated_hash, expected_hash, hash_len) != 0) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Hash mismatch");
         return BL_SB_ERROR_INVALID_HASH;
     }
@@ -432,7 +433,7 @@ bl_secure_boot_error_t bl_secure_boot_check_rollback(
     
     /* 检查版本是否回滚 */
     if (new_version < current_version) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Rollback detected: new=0x%08X, current=0x%08X",
                 new_version, current_version);
         ctx->rollback_info.rollback_detected = true;
@@ -442,7 +443,7 @@ bl_secure_boot_error_t bl_secure_boot_check_rollback(
     
     /* 检查是否低于最低允许版本 */
     if (new_version < ctx->rollback_info.min_allowed_version) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Version below minimum allowed: 0x%08X < 0x%08X",
                 new_version, ctx->rollback_info.min_allowed_version);
         return BL_SB_ERROR_VERSION_ROLLBACK;
@@ -451,7 +452,7 @@ bl_secure_boot_error_t bl_secure_boot_check_rollback(
     /* 检查版本是否已锁定 */
     if (ctx->rollback_info.version_locked && 
         new_version < ctx->rollback_info.current_version) {
-        DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Version locked, rollback not allowed");
         return BL_SB_ERROR_VERSION_ROLLBACK;
     }
@@ -516,7 +517,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         if (ctx->config.verify_cert_validity) {
             uint64_t current_time = 0; /* TODO: 获取当前时间 */
             if (current_time < cert->valid_from || current_time > cert->valid_until) {
-                DDS_LOG(DDS_LOG_ERROR, BL_SB_MODULE_NAME,
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                         "Certificate expired or not yet valid");
                 return BL_SB_ERROR_CERT_EXPIRED;
             }
@@ -678,7 +679,7 @@ bl_secure_boot_error_t bl_secure_boot_record_boot_attempt(
                 "Boot successful, attempts reset");
     } else {
         ctx->rollback_info.boot_attempts++;
-        DDS_LOG(DDS_LOG_WARNING, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_WARN, BL_SB_MODULE_NAME,
                 "Boot failed, attempt %u/%u",
                 ctx->rollback_info.boot_attempts,
                 ctx->rollback_info.max_boot_attempts);
@@ -699,7 +700,7 @@ bl_secure_boot_error_t bl_secure_boot_check_need_rollback(
     /* 如果启动尝试次数超过最大值，需要回滚 */
     if (ctx->rollback_info.boot_attempts >= ctx->rollback_info.max_boot_attempts) {
         *need_rollback = true;
-        DDS_LOG(DDS_LOG_WARNING, BL_SB_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_WARN, BL_SB_MODULE_NAME,
                 "Rollback required: max boot attempts exceeded");
     } else {
         *need_rollback = false;
