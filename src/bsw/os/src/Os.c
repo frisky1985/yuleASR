@@ -18,6 +18,7 @@
 ==================================================================================================*/
 #include "Os.h"
 #include "Os_Internal.h"
+#include "Os_Cfg.h"
 #include "Det.h"
 #include "MemMap.h"
 #include "string.h"
@@ -236,11 +237,22 @@ StatusType Os_Internal_ActivateTask(TaskType TaskID)
 
     if (task->FreeRTOS_Task == NULL_PTR)
     {
-        /* Task not created yet, create it */
+        /* Task not created yet, create it.
+         * Use the AUTOSAR-configured task stack size (OS_CFG_TASK_STACK_SIZE
+         * from Os_Cfg.h) instead of a hardcoded multiple of the FreeRTOS
+         * minimal stack. The old configMINIMAL_STACK_SIZE * 2 (=~1KB) blew
+         * the stack on real task entry points that call through Rte/Asw
+         * (stack-overflow assert in prvInitialiseNewTask on QEMU M33). */
+        #if defined(OS_CFG_TASK_STACK_SIZE) && (OS_CFG_TASK_STACK_SIZE > 0U)
+        configSTACK_DEPTH_TYPE taskStackWords = (configSTACK_DEPTH_TYPE)(OS_CFG_TASK_STACK_SIZE / sizeof(StackType_t));
+        #else
+        configSTACK_DEPTH_TYPE taskStackWords = (configSTACK_DEPTH_TYPE)(configMINIMAL_STACK_SIZE * 2U);
+        #endif
+
         if (xTaskCreate(
                 Os_TaskWrapper,
                 "OsTask",
-                configMINIMAL_STACK_SIZE * 2,
+                taskStackWords,
                 (void*)task,
                 task->Priority,
                 &task->FreeRTOS_Task) != pdPASS)

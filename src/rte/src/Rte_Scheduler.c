@@ -297,7 +297,12 @@ void Rte_Scheduler_Init(void)
         Rte_SchedulerState.Events[i].EventMask = 0U;
     }
 
-/* [MISRA Advisory] Redundant:     Rte_SchedulerState.IsInitialized = TRUE; */
+    /* Mark scheduler initialized. Rte_SchedulerCreateTask() rejects all
+     * registrations while IsInitialized == FALSE, so this MUST be set here.
+     * (Previously commented out as "redundant" - it is not; every ASW
+     * component registration silently failed and states stayed INITIALIZED
+     * instead of RUNNING.) */
+    Rte_SchedulerState.IsInitialized = TRUE;
 }
 
 /**

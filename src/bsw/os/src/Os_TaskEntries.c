@@ -76,11 +76,12 @@ void OsTask_Init_Entry(void)
     /* Signal init complete so other tasks waiting on this event may run */
     (void)SetEvent(OsTask_Diagnostic, OS_EVENT_INIT_COMPLETE);
 
-    for (;;)
-    {
-        /* Park: periodic work is done by cyclic tasks + alarm callbacks */
-        (void)Schedule();
-    }
+    /* AUTOSAR basic-task semantics: the Init task must terminate (suspend
+     * itself) once bring-up is done. A previous `for(;;) Schedule()` loop
+     * here held the highest priority forever, starving the Timer service
+     * task and every lower-priority cyclic task (alarms never fired).
+     * Returning hands control back to Os_TaskWrapper, which calls
+     * Os_Internal_TerminateTask() -> vTaskSuspend(NULL). */
 }
 
 /**

@@ -21,9 +21,9 @@
 #define configCPU_CLOCK_HZ                      ( 20000000UL )
 #define configSYSTICK_CLOCK_HZ                  ( configCPU_CLOCK_HZ )
 #define configTICK_RATE_HZ                      ( 1000 )
-#define configMAX_PRIORITIES                    ( 5 )
+#define configMAX_PRIORITIES                    ( 6 )
 #define configMINIMAL_STACK_SIZE                ( 128 )
-#define configTOTAL_HEAP_SIZE                   ( ( size_t ) ( 32 * 1024 ) )
+#define configTOTAL_HEAP_SIZE                   ( ( size_t ) ( 48 * 1024 ) )
 #define configMAX_TASK_NAME_LEN                 ( 16 )
 #define configIDLE_SHOULD_YIELD                 1
 #define configUSE_TASK_NOTIFICATIONS            1
@@ -56,7 +56,11 @@
 /*-----------------------------------------------------------
  * ARMv8-M (Cortex-M33) port configuration (V11 kernel)
  *----------------------------------------------------------*/
-#define configENABLE_FPU                        1
+/* QEMU mps2-an521's cortex-m33 has no FPU (see build_asw.sh note): the
+ * FreeRTOS port must not emit VFP save/restore instructions. The QEMU
+ * verification image is compiled with -mfloat-abi=soft, so ASW float math
+ * goes through __aeabi_* software calls instead. */
+#define configENABLE_FPU                        0
 #define configENABLE_MPU                        0
 #define configENABLE_TRUSTZONE                  0
 /* CPU boots and stays in Secure state (QEMU mps2-an521 Secure ITCM).

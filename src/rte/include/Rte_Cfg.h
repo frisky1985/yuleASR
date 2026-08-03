@@ -32,7 +32,7 @@
 /*==================================================================================================
 *                                    RTE COMPONENT CONFIGURATION
 ==================================================================================================*/
-#define RTE_NUM_COMPONENTS              (16U)
+#define RTE_NUM_COMPONENTS              (8U)
 #define RTE_NUM_INSTANCES               (32U)
 #define RTE_NUM_RUNNABLES               (64U)
 #define RTE_NUM_PORTS                   (128U)
@@ -62,7 +62,7 @@
 /*==================================================================================================
 *                                    RTE MODE & PORT CONFIGURATION
 ==================================================================================================*/
-#define RTE_MAX_PORTS_PER_COMPONENT     (16U)
+#define RTE_MAX_PORTS_PER_COMPONENT     (4U)
 #define RTE_NUM_MODE_GROUPS             (8U)
 #define RTE_MAIN_FUNCTION_PERIOD_MS     (10U)
 
@@ -84,9 +84,9 @@
 /*==================================================================================================
 *                                    RTE BUFFER CONFIGURATION
 ==================================================================================================*/
-#define RTE_MAX_BUFFER_SIZE             (4096U)
+#define RTE_MAX_BUFFER_SIZE             (256U)
 #define RTE_MAX_STRING_LENGTH           (256U)
-#define RTE_MAX_BYTE_ARRAY_LENGTH       (4096U)
+#define RTE_MAX_BYTE_ARRAY_LENGTH       (256U)
 #define RTE_MAX_QUEUE_LENGTH            (16U)
 
 /*==================================================================================================
