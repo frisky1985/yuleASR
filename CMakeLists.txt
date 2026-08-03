@@ -137,6 +137,17 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
     add_subdirectory(src/dds)
 endif()
 
+# ETH-DDS 辅助模块: EthSM / Ethernet driver / Telemetry
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/eth_sm/CMakeLists.txt)
+    add_subdirectory(src/eth_sm)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/ethernet/CMakeLists.txt)
+    add_subdirectory(src/ethernet)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/telemetry/CMakeLists.txt)
+    add_subdirectory(src/telemetry)
+endif()
+
 # ASW components (optional for embedded target)
 if(NOT CMAKE_CROSSCOMPILING OR BUILD_EXAMPLES)
     add_subdirectory(src/asw)

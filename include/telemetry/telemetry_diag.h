@@ -7,6 +7,7 @@
 #define TELEMETRY_DIAG_H
 
 #include "telemetry.h"
+#include "Std_Types.h"  /* Std_ReturnType/E_OK/E_NOT_OK */
 
 /* DID定义 - 诊断数据标识符 */
 #define DID_TEL_STATUS              0xF400  /* 埋点状态 */

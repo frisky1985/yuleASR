@@ -117,6 +117,7 @@ typedef struct {
     uint32_t last_overflow_time;    /* 上次溢出时间 */
     uint16_t current_usage;         /* 当前使用量 */
     uint8_t  avg_event_size;        /* 平均事件大小 */
+    uint16_t overflow_cnt;          /* 溢出计数 */
 } TelStats_t;
 
 /* 全局状态 */
