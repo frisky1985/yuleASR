@@ -182,6 +182,9 @@ struct dds_data_writer {
     void (*write_callback)(void *user_data);
     void *write_callback_user_data;
 
+    /* 样本大小 (由应用设置, dds_write 序列化长度) */
+    uint32_t sample_size;
+
     /* 统计 */
     uint32_t samples_written;
     uint64_t last_write_time;
@@ -374,6 +377,11 @@ dds_ReturnCode_t dds_set_qos(
 dds_ReturnCode_t dds_get_sample_rejected_status(
     dds_DataReaderHandleType reader,
     void *status);
+
+/** 设置 writer 样本大小 (dds_write 序列化长度) */
+dds_ReturnCode_t dds_set_writer_sample_size(
+    dds_DataWriterHandleType writer,
+    uint32_t sample_size);
 
 /* ---- QoS 默认值初始化 ---- */
 
