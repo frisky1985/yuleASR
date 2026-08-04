@@ -21,16 +21,15 @@ endif()
 # Collect test sources
 file(GLOB TEST_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/*.c)
 
-# sha256_compute 实现 (third_party/crypto/hash/src/sha224.c 内含 sha256_compute;
-# 该目录 CMakeLists 引用了不存在的 sha256.c 故库未挂载, 测试直接编译源文件)
-set(BOOT_HASH_SRC ${CMAKE_SOURCE_DIR}/third_party/crypto/hash/src/sha224.c)
+# sha256_compute 实现位于 third_party/crypto/hash/src/sha224.c;
+# boot 测试直接链接 HashAlgos 库 (其 PUBLIC include 已含 hash_algos.h 目录)
 set(BOOT_HASH_INC ${CMAKE_SOURCE_DIR}/third_party/crypto/hash/include)
 
 foreach(test_src ${TEST_SOURCES})
     get_filename_component(test_name ${test_src} NAME_WE)
     
-    add_executable(${test_name} ${test_src} ${BOOT_HASH_SRC})
-    target_link_libraries(${test_name} PRIVATE boot)
+    add_executable(${test_name} ${test_src})
+    target_link_libraries(${test_name} PRIVATE boot HashAlgos)
     target_include_directories(${test_name} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}          # test/ 目录自身: Std_Types.h/boot_platform.h host stub
         ${CMAKE_CURRENT_SOURCE_DIR}/../include

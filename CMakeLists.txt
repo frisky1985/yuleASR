@@ -131,6 +131,11 @@ set(MBEDTLS_FATAL_WARNINGS OFF CACHE BOOL "Compiler warnings treated as errors" 
 set(DISABLE_PACKAGE_CONFIG_AND_INSTALL ON CACHE BOOL "Disable mbedTLS install" FORCE)
 add_subdirectory(third_party/mbedtls)
 
+# Hash 算法库 (sha1/sha224/sha256/sha384/sha512) — 先于 boot 挂载, boot 测试需链接 HashAlgos
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/CMakeLists.txt)
+    add_subdirectory(third_party/crypto/hash)
+endif()
+
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)
 add_subdirectory(src/bsw/ecual)

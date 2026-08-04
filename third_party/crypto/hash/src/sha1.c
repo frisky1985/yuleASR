@@ -110,43 +110,27 @@ static void sha1_process_block(sha1_state_t* ctx, const uint8* block)
  */
 static void sha1_pad_message(sha1_state_t* ctx)
 {
-    uint32 i;
-    uint8 padding[HASH_SHA1_BLOCK_SIZE];
-    uint32 pad_len;
-    uint64 msg_bit_len;
+    uint8 padding[HASH_SHA1_BLOCK_SIZE * 2];
+    uint32 buflen = ctx->buflen;
+    uint64 msg_bit_len = ctx->length;
 
-    /* Calculate message length in bits */
-    msg_bit_len = ctx->length;
+    /* Zero entire padding (incl. second block) to keep uninitialized bytes out of the digest */
+    (void)memset(padding, 0, sizeof(padding));
 
-    /* Calculate padding length */
-    /* Need: 1 byte (0x80) + 0-55 bytes (zeros) + 8 bytes (length) = 64 bytes total */
-    i = (uint32)(ctx->length >> 3) % HASH_SHA1_BLOCK_SIZE;
-    
-    pad_len = (i < 56) ? (56 - i) : (120 - i);
-
-    /* Start with 0x80 */
-    padding[0] = 0x80;
-    
-    /* Fill rest with zeros */
-    for (i = 1; i < pad_len; i++) {
-        padding[i] = 0x00;
+    /* FIPS 180-4: message tail + 0x80 + zeros + 64-bit big-endian length */
+    if (buflen > 0U) {
+        (void)memcpy(padding, ctx->buffer, buflen);
     }
+    padding[buflen] = 0x80;
 
-    /* Append original message length as 64-bit big-endian */
-    padding[pad_len++] = (uint8)(msg_bit_len >> 56);
-    padding[pad_len++] = (uint8)(msg_bit_len >> 48);
-    padding[pad_len++] = (uint8)(msg_bit_len >> 40);
-    padding[pad_len++] = (uint8)(msg_bit_len >> 32);
-    padding[pad_len++] = (uint8)(msg_bit_len >> 24);
-    padding[pad_len++] = (uint8)(msg_bit_len >> 16);
-    padding[pad_len++] = (uint8)(msg_bit_len >> 8);
-    padding[pad_len++] = (uint8)(msg_bit_len);
-
-    /* Process the padding block(s) */
-    sha1_process_block(ctx, padding);
-    
-    /* If we needed 2 blocks (i >= 56), process the second block */
-    if (pad_len > 64) {
+    if (buflen < 56U) {
+        /* Single block: length written at 56..63 */
+        hash_store64_be(&padding[56], msg_bit_len);
+        sha1_process_block(ctx, padding);
+    } else {
+        /* Double block: length written at second block 120..127 */
+        hash_store64_be(&padding[120], msg_bit_len);
+        sha1_process_block(ctx, padding);
         sha1_process_block(ctx, &padding[64]);
     }
 }

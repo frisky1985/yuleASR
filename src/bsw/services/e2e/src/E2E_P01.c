@@ -67,6 +67,8 @@ static uint8 E2E_P01_CalculateCRC(
     uint16 Length,
     uint16 DataID,
     uint8 DataIDMode,
+    uint8 DataIDNibbleOffset,
+    uint8 Counter,
     uint16 CrcOffset
 );
 
@@ -82,6 +84,8 @@ static uint8 E2E_P01_CalculateCRC(
     uint16 Length,
     uint16 DataID,
     uint8 DataIDMode,
+    uint8 DataIDNibbleOffset,
+    uint8 Counter,
     uint16 CrcOffset
 )
 {
@@ -89,6 +93,7 @@ static uint8 E2E_P01_CalculateCRC(
     uint16 i;
     uint8 dataIdLow = (uint8)(DataID & 0xFFU);
     uint8 dataIdHigh = (uint8)((DataID >> 8) & 0xFFU);
+    uint8 dataIdNibble;
     
     /* Calculate CRC over data (excluding CRC byte) */
     for (i = 0U; i < Length; i++) {
@@ -108,9 +113,31 @@ static uint8 E2E_P01_CalculateCRC(
             crc = E2E_P01_CRC8_Table[crc ^ dataIdLow];
             break;
         case E2E_P01_DATAID_ALT:
+            /* Alternate: counter 偶数用低字节, 奇数用高字节 (与 e2e_protection.c 语义一致) */
+            if ((Counter & 0x01U) == 0U) {
+                crc = E2E_P01_CRC8_Table[crc ^ dataIdLow];
+            } else {
+                crc = E2E_P01_CRC8_Table[crc ^ dataIdHigh];
+            }
+            break;
         case E2E_P01_DATAID_NIBBLE:
-            /* Alternate: XOR low nibble of high byte and high nibble of low byte */
-            crc = E2E_P01_CRC8_Table[crc ^ ((dataIdHigh & 0x0FU) | (dataIdLow & 0xF0U))];
+            /* Nibble: 仅使用 DataIDNibbleOffset 指定的 nibble
+             * 0 = 低字节低4位, 1 = 低字节高4位, 2 = 高字节低4位, 3 = 高字节高4位 */
+            switch (DataIDNibbleOffset & 0x03U) {
+                case 0U:
+                    dataIdNibble = (uint8)(dataIdLow & 0x0FU);
+                    break;
+                case 1U:
+                    dataIdNibble = (uint8)((dataIdLow >> 4) & 0x0FU);
+                    break;
+                case 2U:
+                    dataIdNibble = (uint8)(dataIdHigh & 0x0FU);
+                    break;
+                default:
+                    dataIdNibble = (uint8)((dataIdHigh >> 4) & 0x0FU);
+                    break;
+            }
+            crc = E2E_P01_CRC8_Table[crc ^ dataIdNibble];
             break;
         default:
             crc = E2E_P01_CRC8_Table[crc ^ dataIdLow];
@@ -150,6 +177,8 @@ Std_ReturnType E2E_P01Protect(
         Config->DataLength,
         Config->DataID,
         Config->DataIDMode,
+        Config->DataIDNibbleOffset,
+        (uint8)(Data[Config->CounterOffset] & 0x0FU),
         Config->CRCOffset
     );
     
@@ -195,6 +224,8 @@ Std_ReturnType E2E_P01Check(
         Config->DataLength,
         Config->DataID,
         Config->DataIDMode,
+        Config->DataIDNibbleOffset,
+        (uint8)(Data[Config->CounterOffset] & 0x0FU),
         Config->CRCOffset
     );
     

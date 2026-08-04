@@ -63,9 +63,9 @@ typedef struct {
 
 /* DataID Modes */
 #define E2E_P01_DATAID_BOTH     0x00U  /* Both bytes included in CRC */
-#define E2E_P01_DATAID_ALT      0x01U  /* Alternating high/low nibble */
+#define E2E_P01_DATAID_ALT      0x01U  /* Alternate low/high byte by counter parity */
 #define E2E_P01_DATAID_LOW      0x02U  /* Low byte only */
-#define E2E_P01_DATAID_NIBBLE   0x03U  /* Nibble mode */
+#define E2E_P01_DATAID_NIBBLE   0x03U  /* Single nibble selected by DataIDNibbleOffset */
 
 /*=============================================================================*
  * Profile 1 Function Prototypes

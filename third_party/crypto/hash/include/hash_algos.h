@@ -43,16 +43,13 @@
 #include <stdint.h>
 #include "Std_Types.h"
 
-/* 128-bit integer support */
-#if defined(__SIZEOF_INT128__)
-typedef unsigned __int128 uint128;
-#else
-/* 32-bit targets without __int128: 128-bit value held as two 64-bit halves */
+/* 128-bit integer support: always held as two 64-bit halves.
+ * sha384.c/sha512.c access ctx->length.lo/.hi directly; keeping the struct
+ * form on all targets avoids divergence between 32-bit and 64-bit hosts. */
 typedef struct {
     unsigned long long lo;
     unsigned long long hi;
 } uint128;
-#endif
 
 /**********************************************************************************************************************
  * CONSTANT MACROS

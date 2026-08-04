@@ -82,6 +82,71 @@ static int test_profile01_basic(void)
 }
 
 /******************************************************************************
+ * Profile 1 (CRC8) - crcOffset != 0 Tests
+ ******************************************************************************/
+static int test_profile01_crcoffset(void)
+{
+    printf("\n[TEST] Profile 1 CRC8 with crcOffset != 0...\n");
+
+    uint16_t status;
+
+    /* Case 1: CRC in the middle (crcOffset = 3) */
+    E2E_ContextType txCtx, rxCtx;
+    uint8_t data[16] = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
+    uint32_t length = 8;
+
+    TEST_ASSERT(E2E_Init() == E_OK);
+    TEST_ASSERT(E2E_InitContext(&txCtx, E2E_PROFILE_01) == E_OK);
+    txCtx.config.p01.dataId = 0x1234;
+    txCtx.config.p01.dataLength = 8;
+    txCtx.config.p01.crcOffset = 3;
+
+    TEST_ASSERT(E2E_InitContext(&rxCtx, E2E_PROFILE_01) == E_OK);
+    rxCtx.config.p01.dataId = 0x1234;
+    rxCtx.config.p01.dataLength = 8;
+    rxCtx.config.p01.crcOffset = 3;
+
+    /* Protect/check roundtrip - CRC must exclude its own byte at offset 3 */
+    TEST_ASSERT(E2E_P01_Protect(&txCtx, data, &length) == E_OK);
+    TEST_ASSERT(E2E_P01_Check(&rxCtx, data, length, &status) == E_OK);
+    TEST_ASSERT(status == E2E_ERROR_NONE);
+
+    /* Tamper with a data byte - CRC must detect */
+    data[5] ^= 0xFF;
+    TEST_ASSERT(E2E_P01_Check(&rxCtx, data, length, &status) == E_OK);
+    TEST_ASSERT(status == E2E_ERROR_CRC);
+    data[5] ^= 0xFF; /* Restore */
+
+    /* Case 2: CRC at the end (crcOffset = 7) */
+    E2E_ContextType txCtx2, rxCtx2;
+    uint8_t data2[16] = {0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27};
+
+    TEST_ASSERT(E2E_InitContext(&txCtx2, E2E_PROFILE_01) == E_OK);
+    txCtx2.config.p01.dataId = 0x1234;
+    txCtx2.config.p01.dataLength = 8;
+    txCtx2.config.p01.crcOffset = 7;
+
+    TEST_ASSERT(E2E_InitContext(&rxCtx2, E2E_PROFILE_01) == E_OK);
+    rxCtx2.config.p01.dataId = 0x1234;
+    rxCtx2.config.p01.dataLength = 8;
+    rxCtx2.config.p01.crcOffset = 7;
+
+    /* Protect/check roundtrip - CRC at last byte must be skipped */
+    TEST_ASSERT(E2E_P01_Protect(&txCtx2, data2, &length) == E_OK);
+    TEST_ASSERT(E2E_P01_Check(&rxCtx2, data2, length, &status) == E_OK);
+    TEST_ASSERT(status == E2E_ERROR_NONE);
+
+    /* Tamper with a data byte - CRC must detect */
+    data2[0] ^= 0xFF;
+    TEST_ASSERT(E2E_P01_Check(&rxCtx2, data2, length, &status) == E_OK);
+    TEST_ASSERT(status == E2E_ERROR_CRC);
+
+    TEST_PASS();
+    g_tests_passed++;
+    return 0;
+}
+
+/******************************************************************************
  * Profile 2 (CRC8 + Counter) Tests
  ******************************************************************************/
 static int test_profile02_counter(void)
@@ -130,10 +195,61 @@ static int test_profile02_counter(void)
     uint8_t msg2[32] = {0};
     uint32_t len2 = 8;
     E2E_P02_Protect(&txCtx, msg2, &len2); /* Counter = 5 */
-    
-    /* Send same message again - should detect repeated */
+
+    /* First check of this message - new counter value, should be OK */
+    TEST_ASSERT(E2E_P02_Check(&rxCtx, msg2, len2, &status) == E_OK);
+    TEST_ASSERT(status == E2E_ERROR_NONE);
+    TEST_ASSERT(rxCtx.state.p02.status == E2E_P_OK);
+
+    /* Check the same message again - should detect repeated */
     TEST_ASSERT(E2E_P02_Check(&rxCtx, msg2, len2, &status) == E_OK);
     TEST_ASSERT(rxCtx.state.p02.status == E2E_P_REPEATED);
+    TEST_ASSERT(status == E2E_ERROR_COUNTER);
+
+    TEST_PASS();
+    g_tests_passed++;
+    return 0;
+}
+
+/******************************************************************************
+ * Profile 2 (CRC8 + Counter) - crcOffset != 0 Tests
+ ******************************************************************************/
+static int test_profile02_crcoffset(void)
+{
+    printf("\n[TEST] Profile 2 CRC8+Counter with crcOffset != 0...\n");
+
+    E2E_ContextType txCtx, rxCtx;
+    uint8_t data[16] = {0};
+    uint32_t length = 8;
+    uint16_t status;
+
+    /* CRC at offset 5, counter at offset 1 (CRC not at position 0) */
+    TEST_ASSERT(E2E_Init() == E_OK);
+    TEST_ASSERT(E2E_InitContext(&txCtx, E2E_PROFILE_02) == E_OK);
+    txCtx.config.p02.dataId = 0xABCD;
+    txCtx.config.p02.dataLength = 8;
+    txCtx.config.p02.crcOffset = 5;
+    txCtx.config.p02.counterOffset = 1;
+
+    TEST_ASSERT(E2E_InitContext(&rxCtx, E2E_PROFILE_02) == E_OK);
+    rxCtx.config.p02.dataId = 0xABCD;
+    rxCtx.config.p02.dataLength = 8;
+    rxCtx.config.p02.crcOffset = 5;
+    rxCtx.config.p02.counterOffset = 1;
+
+    /* Protect/check roundtrip with counter increment */
+    for (int i = 0; i < 3; i++) {
+        memset(data, 0, sizeof(data));
+        TEST_ASSERT(E2E_P02_Protect(&txCtx, data, &length) == E_OK);
+        TEST_ASSERT(data[1] == (i & 0x0F)); /* Counter at offset 1 */
+        TEST_ASSERT(E2E_P02_Check(&rxCtx, data, length, &status) == E_OK);
+        TEST_ASSERT(status == E2E_ERROR_NONE);
+    }
+
+    /* Tamper with a data byte - CRC must detect (CRC excluded its own byte) */
+    data[2] ^= 0xFF;
+    TEST_ASSERT(E2E_P02_Check(&rxCtx, data, length, &status) == E_OK);
+    TEST_ASSERT(status == E2E_ERROR_CRC);
 
     TEST_PASS();
     g_tests_passed++;
@@ -669,27 +785,29 @@ int main(void)
     printf("=====================================================\n");
 
     /* Profile Tests */
-    test_profile01_basic();
-    test_profile02_counter();
-    test_profile04_crc32();
-    test_profile05_crc16();
-    test_profile06_eth();
-    test_profile07_eth();
-    test_profile11_dynamic();
-    test_profile22_large_data();
+    if (test_profile01_basic() != 0) { g_tests_failed++; }
+    if (test_profile01_crcoffset() != 0) { g_tests_failed++; }
+    if (test_profile02_counter() != 0) { g_tests_failed++; }
+    if (test_profile02_crcoffset() != 0) { g_tests_failed++; }
+    if (test_profile04_crc32() != 0) { g_tests_failed++; }
+    if (test_profile05_crc16() != 0) { g_tests_failed++; }
+    if (test_profile06_eth() != 0) { g_tests_failed++; }
+    if (test_profile07_eth() != 0) { g_tests_failed++; }
+    if (test_profile11_dynamic() != 0) { g_tests_failed++; }
+    if (test_profile22_large_data() != 0) { g_tests_failed++; }
 
     /* State Machine Tests */
-    test_state_machine_basic();
-    test_state_machine_window();
+    if (test_state_machine_basic() != 0) { g_tests_failed++; }
+    if (test_state_machine_window() != 0) { g_tests_failed++; }
 
     /* DDS Integration Tests */
-    test_dds_integration_basic();
-    test_dds_integration_state_machine();
-    test_dds_profile22_dynamic();
+    if (test_dds_integration_basic() != 0) { g_tests_failed++; }
+    if (test_dds_integration_state_machine() != 0) { g_tests_failed++; }
+    if (test_dds_profile22_dynamic() != 0) { g_tests_failed++; }
 
     /* Utility Tests */
-    test_profile_recommendations();
-    test_error_handling();
+    if (test_profile_recommendations() != 0) { g_tests_failed++; }
+    if (test_error_handling() != 0) { g_tests_failed++; }
 
     /* Print summary */
     printf("\n=====================================================\n");
