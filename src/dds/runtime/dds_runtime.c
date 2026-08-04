@@ -361,20 +361,8 @@ eth_status_t dds_runtime_delete_participant(dds_domain_participant_t *participan
         return ETH_INVALID_PARAM;
     }
     
-    /* 删除所有主题 */
-    while (participant->topics != NULL) {
-        dds_delete_topic(participant->topics);
-    }
-    
-    /* 删除所有发布者 */
-    while (participant->publishers != NULL) {
-        dds_delete_publisher(participant->publishers);
-    }
-    
-    /* 删除所有订阅者 */
-    while (participant->subscribers != NULL) {
-        dds_delete_subscriber(participant->subscribers);
-    }
+    /* 子实体 (publishers/subscribers/topics) 由 dds_delete() 统一释放,
+     * 此处仅负责从全局列表移除并释放 participant 本身 */
     
     /* 从全局列表移除 */
     dds_domain_participant_t **current = &g_runtime.participants;
@@ -391,6 +379,18 @@ eth_status_t dds_runtime_delete_participant(dds_domain_participant_t *participan
     g_runtime.stats.participant_count--;
     
     return ETH_OK;
+}
+
+bool dds_runtime_is_participant(const void *ptr)
+{
+    dds_domain_participant_t *p = g_runtime.participants;
+    while (p != NULL) {
+        if (p == ptr) {
+            return true;
+        }
+        p = p->next;
+    }
+    return false;
 }
 
 dds_domain_participant_t* dds_runtime_find_participant(
@@ -563,6 +563,21 @@ uint64_t dds_get_current_time_ms(void)
 uint64_t dds_get_current_time_us(void)
 {
     return platform_get_time_us();
+}
+
+/* DDS 标准 API: dds_get_time (微秒) — 复用平台时钟, 与 dds_get_current_time_us 等价 */
+uint64_t dds_get_time(void)
+{
+    return platform_get_time_us();
+}
+
+/* DDS 标准 API: 事件处理 (轮询模式, AUTOSAR 集成用) */
+eth_status_t dds_process_events(void)
+{
+    if (!g_runtime.initialized) {
+        return ETH_NOT_INIT;
+    }
+    return ETH_OK;
 }
 
 void dds_sleep_ms(uint32_t ms)

@@ -9,7 +9,7 @@
 static dds_security_config_t test_config;
 static dds_security_context_t *sec_ctx = NULL;
 
-void setUp(void)
+void secmgr_setUp(void)
 {
     memset(&test_config, 0, sizeof(test_config));
     test_config.policy_flags = DDS_SEC_POLICY_ALL;
@@ -23,7 +23,7 @@ void setUp(void)
     test_config.key_update_interval_ms = 600000;
 }
 
-void tearDown(void)
+void secmgr_tearDown(void)
 {
     if (sec_ctx) {
         dds_security_manager_deinit(sec_ctx);
@@ -69,7 +69,8 @@ void test_dds_security_register_duplicate_participant(void)
     sec_ctx = dds_security_manager_init(&test_config);
     TEST_ASSERT_NOT_NULL(sec_ctx);
     
-    rtps_guid_t guid = {{0}, 0};
+    rtps_guid_t guid = {{0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                         0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}, 0x10};
     
     dds_security_register_participant(sec_ctx, &guid, NULL);
     dds_security_status_t status = dds_security_register_participant(sec_ctx, &guid, NULL);
@@ -81,7 +82,8 @@ void test_dds_security_unregister_participant(void)
     sec_ctx = dds_security_manager_init(&test_config);
     TEST_ASSERT_NOT_NULL(sec_ctx);
     
-    rtps_guid_t guid = {{0}, 0};
+    rtps_guid_t guid = {{0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
+                         0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C}, 0x10};
     
     dds_security_register_participant(sec_ctx, &guid, NULL);
     dds_security_status_t status = dds_security_unregister_participant(sec_ctx, &guid);

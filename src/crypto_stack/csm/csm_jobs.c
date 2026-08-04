@@ -117,18 +117,36 @@ csm_status_t csm_queue_insert(csm_context_t *ctx, csm_job_t *job,
 csm_status_t csm_queue_remove(csm_context_t *ctx, csm_job_t *job)
 {
     csm_job_t **queue_head = NULL;
+    csm_job_t *current;
     
     if (ctx == NULL || job == NULL) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
-    /* Determine which queue */
-    if (job->priority == CSM_JOB_PRIO_HIGH) {
-        queue_head = &ctx->high_prio_queue;
-    } else if (job->priority == CSM_JOB_PRIO_LOW) {
-        queue_head = &ctx->low_prio_queue;
-    } else {
-        queue_head = &ctx->normal_prio_queue;
+    /* 遍历三个队列找到包含该Job的队列头。
+     * 不能用 job->priority 定位: release 后 job 可能被清零, priority 不再可信 */
+    csm_job_t **queues[3];
+    queues[0] = &ctx->high_prio_queue;
+    queues[1] = &ctx->normal_prio_queue;
+    queues[2] = &ctx->low_prio_queue;
+    
+    for (int q = 0; q < 3; q++) {
+        current = *queues[q];
+        while (current != NULL) {
+            if (current == job) {
+                queue_head = queues[q];
+                break;
+            }
+            current = current->next;
+        }
+        if (queue_head != NULL) {
+            break;
+        }
+    }
+    
+    if (queue_head == NULL) {
+        /* Job 不在任何队列中 */
+        return CSM_ERROR_JOB_NOT_FOUND;
     }
     
     /* Remove from linked list */

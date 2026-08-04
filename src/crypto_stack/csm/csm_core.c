@@ -256,7 +256,16 @@ csm_status_t csm_job_process_sync(csm_context_t *ctx, uint32_t job_id,
         return CSM_ERROR_JOB_NOT_FOUND;
     }
     
+    /* 如果Job已在队列中(QUEUED)，先从队列移除——同步处理立即出队执行 */
+    if (job->state == CSM_JOB_STATE_QUEUED) {
+        csm_queue_remove(ctx, job);
+        if (ctx->stats.current_queue_depth > 0) {
+            ctx->stats.current_queue_depth--;
+        }
+    }
+    
     /* 直接执行Job */
+    job->state = CSM_JOB_STATE_PROCESSING;
     status = csm_process_job(ctx, job);
     
     return status;
@@ -338,11 +347,21 @@ csm_status_t csm_job_release(csm_context_t *ctx, uint32_t job_id)
         return CSM_ERROR_JOB_NOT_FOUND;
     }
     
-    /* 只有终态状态的Job才能释放 */
-    if (job->state != CSM_JOB_STATE_COMPLETED &&
-        job->state != CSM_JOB_STATE_FAILED &&
-        job->state != CSM_JOB_STATE_CANCELLED) {
+    /* 仅拒绝正在处理中的Job (排队/处理中), IDLE 与终态均可释放 */
+    if (job->state == CSM_JOB_STATE_QUEUED ||
+        job->state == CSM_JOB_STATE_PROCESSING) {
         return CSM_ERROR_JOB_BUSY;
+    }
+    
+    /* 防御: 终态 Job 若仍挂在队列中(漏出队), 先摘除再释放 */
+    if (job->next != NULL || job->prev != NULL ||
+        ctx->high_prio_queue == job ||
+        ctx->normal_prio_queue == job ||
+        ctx->low_prio_queue == job) {
+        csm_queue_remove(ctx, job);
+        if (ctx->stats.current_queue_depth > 0) {
+            ctx->stats.current_queue_depth--;
+        }
     }
     
     csm_job_free(ctx, job);
@@ -641,7 +660,8 @@ const char* csm_get_version(void)
 
 static csm_job_t* csm_find_job(csm_context_t *ctx, uint32_t job_id)
 {
-    for (uint32_t i = 0; i < ctx->num_jobs; i++) {
+    /* 遍历全部 slot (job 释放后 slot 不压缩, 不能以 num_jobs 为界) */
+    for (uint32_t i = 0; i < CSM_MAX_JOBS; i++) {
         if (ctx->jobs[i].job_id == job_id) {
             return &ctx->jobs[i];
         }
@@ -697,55 +717,56 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
         /* TODO: 实现具体的加密调用 */
     }
     
-    /* 模拟成功执行 */
-    if (job->output_len != NULL && job->input != NULL) {
-        /* 根据操作类型处理 */
-        switch (job->job_type) {
-            case CSM_JOB_HASH:
-                /* 计算哈希值 */
-                if (job->output != NULL) {
-                    memset(job->output, 0, 32);  /* SHA-256 */
-                    *job->output_len = 32;
+    /* 模拟成功执行 — 各 case 自行检查所需指针
+     * 注意: MAC_VERIFY/SIGNATURE_VERIFY 无 output 缓冲区, 只有 result 指针,
+     * 不能用 output_len != NULL 作为统一守卫, 否则它们永远不会执行 */
+    switch (job->job_type) {
+        case CSM_JOB_HASH:
+            /* 计算哈希值 */
+            if (job->output != NULL && job->output_len != NULL) {
+                memset(job->output, 0, 32);  /* SHA-256 */
+                *job->output_len = 32;
+            }
+            break;
+            
+        case CSM_JOB_MAC_GENERATE:
+            /* 生成MAC */
+            if (job->output != NULL && job->output_len != NULL) {
+                memset(job->output, 0, 16);  /* AES-CMAC-128 */
+                *job->output_len = 16;
+            }
+            break;
+            
+        case CSM_JOB_MAC_VERIFY:
+            /* 验证MAC */
+            if (job->mac_verify_result != NULL) {
+                *job->mac_verify_result = true;  /* 模拟验证成功 */
+            }
+            break;
+            
+        case CSM_JOB_ENCRYPT:
+        case CSM_JOB_DECRYPT:
+            /* 加密/解密 */
+            if (job->output != NULL && job->output_len != NULL && job->input != NULL) {
+                memcpy(job->output, job->input, job->input_len);
+                *job->output_len = job->input_len;
+            }
+            break;
+            
+        case CSM_JOB_RANDOM_GENERATE:
+            /* 生成随机数 — LCG 伪随机, 保持调用间状态, 避免两次输出相同 */
+            if (job->output != NULL && job->output_len != NULL) {
+                static uint32_t lcg_state = 0x9E3779B9u;
+                for (uint32_t i = 0; i < job->output_max_len; i++) {
+                    lcg_state = lcg_state * 1664525u + 1013904223u;
+                    job->output[i] = (uint8_t)(lcg_state >> 24);
                 }
-                break;
-                
-            case CSM_JOB_MAC_GENERATE:
-                /* 生成MAC */
-                if (job->output != NULL) {
-                    memset(job->output, 0, 16);  /* AES-CMAC-128 */
-                    *job->output_len = 16;
-                }
-                break;
-                
-            case CSM_JOB_MAC_VERIFY:
-                /* 验证MAC */
-                if (job->mac_verify_result != NULL) {
-                    *job->mac_verify_result = true;  /* 模拟验证成功 */
-                }
-                break;
-                
-            case CSM_JOB_ENCRYPT:
-            case CSM_JOB_DECRYPT:
-                /* 加密/解密 */
-                if (job->output != NULL && job->input != NULL) {
-                    memcpy(job->output, job->input, job->input_len);
-                    *job->output_len = job->input_len;
-                }
-                break;
-                
-            case CSM_JOB_RANDOM_GENERATE:
-                /* 生成随机数 */
-                if (job->output != NULL) {
-                    for (uint32_t i = 0; i < job->output_max_len; i++) {
-                        job->output[i] = (uint8_t)(i * 17 + 0xAB);
-                    }
-                    *job->output_len = job->output_max_len;
-                }
-                break;
-                
-            default:
-                break;
-        }
+                *job->output_len = job->output_max_len;
+            }
+            break;
+            
+        default:
+            break;
     }
     
     return CSM_OK;

@@ -61,8 +61,31 @@ extern void test_dds_security_get_statistics(void);
 extern void test_dds_security_maintain(void);
 extern void test_dds_security_check_certificate_expiry(void);
 
-void setUp(void) {}
-void tearDown(void) {}
+/* 各测试文件的 setup/teardown (操作各自文件级 static 状态) */
+extern void auth_setUp(void);
+extern void auth_tearDown(void);
+extern void access_setUp(void);
+extern void access_tearDown(void);
+extern void crypto_setUp(void);
+extern void crypto_tearDown(void);
+extern void secmgr_setUp(void);
+extern void secmgr_tearDown(void);
+
+void setUp(void)
+{
+    auth_setUp();
+    access_setUp();
+    crypto_setUp();
+    secmgr_setUp();
+}
+
+void tearDown(void)
+{
+    auth_tearDown();
+    access_tearDown();
+    crypto_tearDown();
+    secmgr_tearDown();
+}
 
 int main(void)
 {

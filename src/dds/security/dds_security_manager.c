@@ -39,12 +39,19 @@ static void guid_to_string(const rtps_guid_t *guid, char *str, size_t str_size)
              guid->prefix[8], guid->prefix[9], guid->prefix[10], guid->prefix[11]);
 }
 
+static bool guid_is_zero(const rtps_guid_t *g)
+{
+    uint8_t zero[RTPS_GUID_SIZE] = {0};
+    return memcmp(g, zero, RTPS_GUID_SIZE) == 0;
+}
+
 static bool guid_equal(const rtps_guid_t *a, const rtps_guid_t *b)
 {
     if (!a || !b) {
         return false;
     }
-    return memcmp(a->prefix, b->prefix, 12) == 0 && a->entity_id == b->entity_id;
+    return memcmp(a->prefix, b->prefix, RTPS_GUID_PREFIX_SIZE) == 0 &&
+           memcmp(a->entity_id, b->entity_id, RTPS_ENTITY_ID_SIZE) == 0;
 }
 
 /* ============================================================================
@@ -215,6 +222,11 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
         return DDS_SECURITY_ERROR_INVALID_PARAM;
     }
 
+    /* 全零 GUID 是空 slot 哨兵, 不能作为参与者标识 */
+    if (guid_is_zero(guid)) {
+        return DDS_SECURITY_ERROR_INVALID_PARAM;
+    }
+
     if (ctx->state != DDS_SECMGR_STATE_READY) {
         return DDS_SECURITY_ERROR_NOT_INITIALIZED;
     }
@@ -225,9 +237,9 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
         return DDS_SECURITY_ERROR_ALREADY_INITIALIZED;
     }
 
-    /* Find available slot */
+    /* Find available slot (空 slot 以 guid 全零标记) */
     for (uint32_t i = 0; i < ctx->max_participants; i++) {
-        if (ctx->participants[i].state == DDS_SEC_PARTICIPANT_UNAUTHENTICATED) {
+        if (guid_is_zero(&ctx->participants[i].guid)) {
             participant = &ctx->participants[i];
             break;
         }
@@ -241,7 +253,6 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
     memcpy(&participant->guid, guid, sizeof(rtps_guid_t));
     participant->state = DDS_SEC_PARTICIPANT_UNAUTHENTICATED;
     participant->created_time = dds_get_current_time_ms();
-    participant->security_context = ctx;
 
     if (subject_name) {
         strncpy(participant->subject_name, subject_name, sizeof(participant->subject_name) - 1);
@@ -294,7 +305,9 @@ dds_sec_participant_t* dds_security_find_participant(dds_security_context_t *ctx
     }
 
     for (uint32_t i = 0; i < ctx->max_participants; i++) {
-        if (ctx->participants[i].state != DDS_SEC_PARTICIPANT_UNAUTHENTICATED &&
+        /* 空 slot (guid 全零) 跳过; 已注册 participant 状态可能是 UNAUTHENTICATED,
+         * 不能以 state 判断占用 */
+        if (!guid_is_zero(&ctx->participants[i].guid) &&
             guid_equal(&ctx->participants[i].guid, guid)) {
             return &ctx->participants[i];
         }
@@ -493,7 +506,7 @@ dds_security_status_t dds_security_unprotect_data(dds_security_context_t *ctx,
         plaintext_len);
 
     if (crypto_status != DDS_CRYPTO_OK) {
-        participant->decrypted_failed++;
+        participant->decrypt_failures++;
         dds_security_trigger_event(ctx, DDS_SEC_EVT_DECRYPTION_ERROR,
                                    DDS_SEC_SEVERITY_ERROR,
                                    participant_guid, "Decryption failed");

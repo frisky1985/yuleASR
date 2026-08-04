@@ -40,7 +40,8 @@ typedef enum {
     DDS_AUTH_ERROR_INVALID_SIGNATURE = -4,
     DDS_AUTH_ERROR_HANDSHAKE_FAILED = -5,
     DDS_AUTH_ERROR_TIMEOUT = -6,
-    DDS_AUTH_ERROR_NO_MEMORY = -7
+    DDS_AUTH_ERROR_NO_MEMORY = -7,
+    DDS_AUTH_ERROR_INVALID_PARAM = -8
 } dds_auth_status_t;
 
 /* ============================================================================

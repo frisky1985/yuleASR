@@ -96,6 +96,7 @@ typedef struct dds_sec_participant {
     uint64_t messages_decrypted;
     uint64_t replay_detected;
     uint64_t auth_failures;
+    uint64_t decrypt_failures;
     
     /* 链表 */
     struct dds_sec_participant *next;

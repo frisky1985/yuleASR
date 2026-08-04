@@ -192,6 +192,13 @@ dds_domain_participant_t* dds_runtime_find_participant(
  */
 uint32_t dds_runtime_get_participant_count(void);
 
+/**
+ * @brief 判断指针是否属于已注册参与者 (精确校验, 用于句柄类型分发)
+ * @param ptr 待判断指针
+ * @return true=是参与者, false=不是
+ */
+bool dds_runtime_is_participant(const void *ptr);
+
 /* ============================================================================
  * 发布/订阅管理API
  * ============================================================================ */

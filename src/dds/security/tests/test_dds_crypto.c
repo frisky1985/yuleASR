@@ -9,14 +9,14 @@
 static dds_security_config_t test_config;
 static dds_crypto_context_t *crypto_ctx = NULL;
 
-void setUp(void)
+void crypto_setUp(void)
 {
     memset(&test_config, 0, sizeof(test_config));
     test_config.crypto_alg = DDS_CRYPTO_ALG_AES_256_GCM;
     test_config.key_update_interval_ms = 600000;
 }
 
-void tearDown(void)
+void crypto_tearDown(void)
 {
     if (crypto_ctx) {
         dds_crypto_deinit(crypto_ctx);
@@ -257,8 +257,8 @@ void test_dds_crypto_get_stats(void)
     dds_crypto_encrypt_aes_gcm(crypto_ctx, key, 32, iv, plaintext, 4, NULL, 0, ciphertext, tag);
     
     /* Perform decryption */
-    uint8_t decrypted[256];
-    dds_crypto_decrypt_aes_gcm(crypto_ctx, key, 32, iv, ciphertext, 4, NULL, 0, tag, decrypted);
+    uint8_t decrypted_buf[256];
+    dds_crypto_decrypt_aes_gcm(crypto_ctx, key, 32, iv, ciphertext, 4, NULL, 0, tag, decrypted_buf);
     
     /* Check stats */
     uint64_t encrypted = 0, decrypted = 0, failed = 0;

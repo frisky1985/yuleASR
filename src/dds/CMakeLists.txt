@@ -124,3 +124,13 @@ install(FILES ${DDS_CORE_HEADERS}
     DESTINATION include/eth_dds/dds
     COMPONENT headers
 )
+
+# 单元测试 (BUILD_TESTING 门控)
+if(BUILD_TESTING)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt)
+        add_subdirectory(tests)
+    endif()
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/security/tests/CMakeLists.txt)
+        add_subdirectory(security/tests)
+    endif()
+endif()

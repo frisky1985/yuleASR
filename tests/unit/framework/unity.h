@@ -113,6 +113,16 @@ extern Unity_Struct Unity;
 #define TEST_ASSERT_NOT_NULL(pointer) \
     TEST_ASSERT((pointer) != NULL)
 
+/* 不等断言 */
+#define TEST_ASSERT_NOT_EQUAL(expected, actual) \
+    do { \
+        const int _expected = (expected); \
+        const int _actual = (actual); \
+        char _msg[128]; \
+        snprintf(_msg, sizeof(_msg), "Expected not equal: %d vs %d", _expected, _actual); \
+        UNITY_TEST_ASSERT((_expected) != (_actual), _msg, __LINE__, __FILE__); \
+    } while (0)
+
 /* 整数断言 */
 #define TEST_ASSERT_EQUAL(expected, actual) \
     do { \
@@ -253,6 +263,17 @@ extern Unity_Struct Unity;
         UNITY_TEST_ASSERT(memcmp(_expected, _actual, _len) == 0, _msg, __LINE__, __FILE__); \
     } while (0)
 
+/* 内存不等断言 */
+#define TEST_ASSERT_NOT_EQUAL_MEMORY(expected, actual, len) \
+    do { \
+        const void* _expected = (expected); \
+        const void* _actual = (actual); \
+        size_t _len = (len); \
+        char _msg[128]; \
+        snprintf(_msg, sizeof(_msg), "Memory unexpectedly equal"); \
+        UNITY_TEST_ASSERT(memcmp(_expected, _actual, _len) != 0, _msg, __LINE__, __FILE__); \
+    } while (0)
+
 /* 范围断言 */
 #define TEST_ASSERT_GREATER_THAN(threshold, actual) \
     do { \
@@ -389,6 +410,7 @@ void tearDown(void);
  *============================================================================*/
 #define UNITY_BEGIN()       UnityBegin()
 #define UNITY_END()         UnityEnd()
+#define RUN_TEST(func)      UnityRunTest(func, #func, 0)
 
 #ifdef __cplusplus
 }

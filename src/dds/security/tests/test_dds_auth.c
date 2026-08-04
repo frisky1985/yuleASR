@@ -6,11 +6,14 @@
 #include "dds_auth.h"
 #include <string.h>
 
+/* 前向声明 (定义在文件后部) */
+static int guid_equal(const rtps_guid_t *a, const rtps_guid_t *b);
+
 /* Test configuration */
 static dds_security_config_t test_config;
 static dds_auth_context_t *auth_ctx = NULL;
 
-void setUp(void)
+void auth_setUp(void)
 {
     memset(&test_config, 0, sizeof(test_config));
     test_config.dh_key_size = 2048;
@@ -18,7 +21,7 @@ void setUp(void)
     test_config.max_handshake_attempts = 3;
 }
 
-void tearDown(void)
+void auth_tearDown(void)
 {
     if (auth_ctx) {
         dds_auth_deinit(auth_ctx);
@@ -266,5 +269,6 @@ void test_dds_auth_handshake_timeout(void)
 /* Test helper function for GUID comparison */
 static int guid_equal(const rtps_guid_t *a, const rtps_guid_t *b)
 {
-    return memcmp(a->prefix, b->prefix, 12) == 0 && a->entity_id == b->entity_id;
+    return memcmp(a->prefix, b->prefix, RTPS_GUID_PREFIX_SIZE) == 0 &&
+           memcmp(a->entity_id, b->entity_id, RTPS_ENTITY_ID_SIZE) == 0;
 }

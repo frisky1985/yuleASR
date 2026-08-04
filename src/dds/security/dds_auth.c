@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include "mbedtls/bignum.h"
 
 /* ============================================================================
  * DH Parameters - RFC 3526 Group 14 (2048-bit)
@@ -444,19 +445,46 @@ dds_auth_status_t dds_auth_generate_dh_keypair(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    /* Generate private key */
-    key_pair->private_key_len = 32; /* Simplified */
-    dds_auth_generate_random(key_pair->private_key, key_pair->private_key_len);
+    mbedtls_mpi p, g, priv, pub;
+    mbedtls_mpi_init(&p);
+    mbedtls_mpi_init(&g);
+    mbedtls_mpi_init(&priv);
+    mbedtls_mpi_init(&pub);
 
-    /* Calculate public key (simplified - in real implementation: g^a mod p) */
-    key_pair->public_key_len = 256;
-    dds_auth_sha256(key_pair->private_key, key_pair->private_key_len, key_pair->public_key);
-    /* Fill rest with pattern */
-    for (int i = 32; i < 256; i++) {
-        key_pair->public_key[i] = key_pair->public_key[i % 32] ^ (i * 7);
+    int rc = mbedtls_mpi_read_binary(&p, dh_p_2048, sizeof(dh_p_2048));
+    if (rc == 0) {
+        rc = mbedtls_mpi_read_binary(&g, dh_g_2048, sizeof(dh_g_2048));
     }
 
-    return DDS_AUTH_OK;
+    /* 私钥: 随机 256-bit (32 字节) */
+    uint8_t priv_bytes[32];
+    if (rc == 0) {
+        dds_auth_generate_random(priv_bytes, sizeof(priv_bytes));
+        rc = mbedtls_mpi_read_binary(&priv, priv_bytes, sizeof(priv_bytes));
+    }
+
+    /* 公钥: pub = g^priv mod p */
+    if (rc == 0) {
+        rc = mbedtls_mpi_exp_mod(&pub, &g, &priv, &p, NULL);
+    }
+
+    if (rc == 0) {
+        rc = mbedtls_mpi_write_binary(&pub, key_pair->public_key, sizeof(key_pair->public_key));
+    }
+
+    if (rc == 0) {
+        memcpy(key_pair->private_key, priv_bytes, sizeof(priv_bytes));
+        key_pair->private_key_len = sizeof(priv_bytes);
+        key_pair->public_key_len = (mbedtls_mpi_size(&pub) < sizeof(key_pair->public_key))
+            ? mbedtls_mpi_size(&pub) : sizeof(key_pair->public_key);
+    }
+
+    mbedtls_mpi_free(&p);
+    mbedtls_mpi_free(&g);
+    mbedtls_mpi_free(&priv);
+    mbedtls_mpi_free(&pub);
+
+    return (rc == 0) ? DDS_AUTH_OK : DDS_AUTH_ERROR_HANDSHAKE_FAILED;
 }
 
 dds_auth_status_t dds_auth_compute_shared_secret(dds_auth_context_t *ctx,
@@ -470,23 +498,36 @@ dds_auth_status_t dds_auth_compute_shared_secret(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    /* Simplified DH computation */
-    /* Real implementation: shared_secret = remote_public^local_private mod p */
+    /* 标准 DH: shared = remote_public^local_private mod p */
+    mbedtls_mpi p, priv, pub, shared;
+    mbedtls_mpi_init(&p);
+    mbedtls_mpi_init(&priv);
+    mbedtls_mpi_init(&pub);
+    mbedtls_mpi_init(&shared);
 
-    uint8_t temp[64];
-    uint32_t temp_len = 0;
-
-    /* Combine private and public */
-    for (uint32_t i = 0; i < 32 && i < remote_public_len; i++) {
-        temp[i] = local_private[i] ^ remote_public[i];
+    int rc = mbedtls_mpi_read_binary(&p, dh_p_2048, sizeof(dh_p_2048));
+    if (rc == 0) {
+        rc = mbedtls_mpi_read_binary(&priv, local_private, 32);
     }
-    temp_len = 32;
+    if (rc == 0) {
+        rc = mbedtls_mpi_read_binary(&pub, remote_public, remote_public_len);
+    }
+    if (rc == 0) {
+        rc = mbedtls_mpi_exp_mod(&shared, &pub, &priv, &p, NULL);
+    }
+    if (rc == 0) {
+        *secret_len = 32;
+        size_t olen = 0;
+        rc = mbedtls_mpi_write_binary(&shared, shared_secret, 32);
+        (void)olen;
+    }
 
-    /* Hash to derive shared secret */
-    *secret_len = 32;
-    dds_auth_sha256(temp, temp_len, shared_secret);
+    mbedtls_mpi_free(&p);
+    mbedtls_mpi_free(&priv);
+    mbedtls_mpi_free(&pub);
+    mbedtls_mpi_free(&shared);
 
-    return DDS_AUTH_OK;
+    return (rc == 0) ? DDS_AUTH_OK : DDS_AUTH_ERROR_HANDSHAKE_FAILED;
 }
 
 dds_auth_status_t dds_auth_derive_key(dds_auth_context_t *ctx,

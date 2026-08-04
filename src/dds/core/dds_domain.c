@@ -87,7 +87,7 @@ dds_PublisherHandleType dds_create_publisher(
 {
     (void)listener;
     dds_domain_participant_t *participant = handle_to_participant(participant_handle);
-    if (participant == NULL || !participant->active) {
+    if (participant == NULL || !dds_runtime_is_participant(participant)) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -117,7 +117,7 @@ dds_SubscriberHandleType dds_create_subscriber(
 {
     (void)listener;
     dds_domain_participant_t *participant = handle_to_participant(participant_handle);
-    if (participant == NULL || !participant->active) {
+    if (participant == NULL || !dds_runtime_is_participant(participant)) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -148,7 +148,7 @@ dds_TopicHandleType dds_create_topic(
 {
     (void)listener;
     dds_domain_participant_t *participant = handle_to_participant(participant_handle);
-    if (participant == NULL || !participant->active ||
+    if (participant == NULL || !dds_runtime_is_participant(participant) ||
         topic_name == NULL || type_name == NULL) {
         return DDS_ENTITY_INVALID;
     }
@@ -348,9 +348,10 @@ dds_ReturnCode_t dds_delete(dds_EntityHandleType entity)
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
-    /* 区分实体类型: 先尝试按 participant 删除 */
+    /* 区分实体类型: 仅当指针确实属于已注册参与者时才走 participant 分支
+     * (不能用结构体字段偏移猜测 — publisher/subscriber 等首字段布局不同) */
     dds_domain_participant_t *participant = handle_to_participant(entity);
-    if (participant != NULL && participant->active) {
+    if (participant != NULL && dds_runtime_is_participant(participant)) {
         /* 释放子实体 */
         dds_publisher_t *pub = participant->publishers;
         while (pub != NULL) {
@@ -405,7 +406,7 @@ dds_ReturnCode_t dds_get_qos(dds_EntityHandleType entity, void *qos)
     }
 
     dds_domain_participant_t *participant = handle_to_participant(entity);
-    if (participant != NULL && participant->active) {
+    if (participant != NULL && dds_runtime_is_participant(participant)) {
         dds_DomainParticipantQosType *dpq = (dds_DomainParticipantQosType*)qos;
         dpq->base = participant->qos;
         return DDS_RETCODE_OK;
@@ -435,7 +436,7 @@ dds_ReturnCode_t dds_set_qos(dds_EntityHandleType entity, const void *qos)
     }
 
     dds_domain_participant_t *participant = handle_to_participant(entity);
-    if (participant != NULL && participant->active) {
+    if (participant != NULL && dds_runtime_is_participant(participant)) {
         const dds_DomainParticipantQosType *dpq = (const dds_DomainParticipantQosType*)qos;
         participant->qos = dpq->base;
         return DDS_RETCODE_OK;

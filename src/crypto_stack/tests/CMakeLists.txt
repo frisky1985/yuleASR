@@ -1,56 +1,42 @@
 # Crypto Stack Tests CMakeLists.txt
+# 集成: 由 src/crypto_stack/CMakeLists.txt 在 BUILD_TESTING 时挂载
+# 测试文件使用 assert 风格 (自带 TEST_ASSERT 宏), 无需 Unity
 
-# Include Unity
-cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH CRYPTO_STACK_DIR)
-cmake_path(GET CRYPTO_STACK_DIR PARENT_PATH SRC_DIR)
-cmake_path(GET SRC_DIR PARENT_PATH PROJECT_ROOT)
+cmake_minimum_required(VERSION 3.16)
 
-set(UNITY_DIR ${PROJECT_ROOT}/tests/unity)
-
-# SecOC Core Tests
-add_executable(test_secoc_core
-    test_secoc_core.c
-    ${UNITY_DIR}/unity.c
+set(CRYPTO_STACK_TESTS
+    test_csm
+    test_cryif
+    test_keym
+    test_secoc_core
+    test_secoc_freshness
 )
 
-target_include_directories(test_secoc_core PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${UNITY_DIR}
-    ${CRYPTO_STACK_DIR}/secoc
-    ${PROJECT_ROOT}/src/dds/security
-    ${PROJECT_ROOT}/src/dds/rtps
-    ${PROJECT_ROOT}/src/common
-)
+foreach(test_name ${CRYPTO_STACK_TESTS})
+    add_executable(${test_name}
+        ${test_name}.c
+    )
 
-target_link_libraries(test_secoc_core PRIVATE
-    secoc
-)
+    target_include_directories(${test_name} PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../csm
+        ${CMAKE_CURRENT_SOURCE_DIR}/../cryif
+        ${CMAKE_CURRENT_SOURCE_DIR}/../keym
+        ${CMAKE_CURRENT_SOURCE_DIR}/../secoc
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/security
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/rtps
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../common
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../common/types
+        ${PROJECT_SOURCE_DIR}/include/autosar
+    )
 
-add_test(NAME test_secoc_core COMMAND test_secoc_core)
+    target_link_libraries(${test_name} PRIVATE crypto_stack)
 
-# SecOC Freshness Tests
-add_executable(test_secoc_freshness
-    test_secoc_freshness.c
-    ${UNITY_DIR}/unity.c
-)
+    add_test(NAME ${test_name} COMMAND ${test_name})
+endforeach()
 
-target_include_directories(test_secoc_freshness PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${UNITY_DIR}
-    ${CRYPTO_STACK_DIR}/secoc
-    ${PROJECT_ROOT}/src/dds/security
-    ${PROJECT_ROOT}/src/dds/rtps
-    ${PROJECT_ROOT}/src/common
-)
-
-target_link_libraries(test_secoc_freshness PRIVATE
-    secoc
-)
-
-add_test(NAME test_secoc_freshness COMMAND test_secoc_freshness)
-
-# Test runner
-add_custom_target(run_secoc_tests
+# Test runner 聚合目标
+add_custom_target(run_crypto_stack_tests
     COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
-    DEPENDS test_secoc_core test_secoc_freshness
+    DEPENDS ${CRYPTO_STACK_TESTS}
 )

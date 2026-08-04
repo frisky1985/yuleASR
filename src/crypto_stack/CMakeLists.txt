@@ -46,28 +46,7 @@ target_compile_options(crypto_stack PRIVATE
     -D_FORTIFY_SOURCE=2
 )
 
-# Tests
-if(BUILD_TESTS)
-    enable_testing()
-    
-    # CSM Tests
-    add_executable(test_csm
-        tests/test_csm.c
-    )
-    target_link_libraries(test_csm PRIVATE crypto_stack)
-    add_test(NAME CSM_Tests COMMAND test_csm)
-    
-    # CryIf Tests
-    add_executable(test_cryif
-        tests/test_cryif.c
-    )
-    target_link_libraries(test_cryif PRIVATE crypto_stack)
-    add_test(NAME CryIf_Tests COMMAND test_cryif)
-    
-    # KeyM Tests
-    add_executable(test_keym
-        tests/test_keym.c
-    )
-    target_link_libraries(test_keym PRIVATE crypto_stack)
-    add_test(NAME KeyM_Tests COMMAND test_keym)
+# Tests (顶层 BUILD_TESTING 门控, 由 tests/CMakeLists.txt 定义)
+if(BUILD_TESTING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt)
+    add_subdirectory(tests)
 endif()

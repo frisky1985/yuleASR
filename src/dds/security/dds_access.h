@@ -41,7 +41,8 @@ typedef enum {
     DDS_ACCESS_ERROR_SUBJECT_NOT_FOUND = -5,
     DDS_ACCESS_ERROR_TOPIC_NOT_FOUND = -6,
     DDS_ACCESS_ERROR_EXPIRED = -7,
-    DDS_ACCESS_ERROR_NO_MEMORY = -8
+    DDS_ACCESS_ERROR_NO_MEMORY = -8,
+    DDS_ACCESS_ERROR_INVALID_PARAM = -9
 } dds_access_status_t;
 
 /* ============================================================================

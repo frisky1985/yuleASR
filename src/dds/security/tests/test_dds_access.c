@@ -9,12 +9,12 @@
 static dds_security_config_t test_config;
 static dds_access_context_t *access_ctx = NULL;
 
-void setUp(void)
+void access_setUp(void)
 {
     memset(&test_config, 0, sizeof(test_config));
 }
 
-void tearDown(void)
+void access_tearDown(void)
 {
     if (access_ctx) {
         dds_access_deinit(access_ctx);

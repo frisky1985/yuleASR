@@ -13,6 +13,9 @@
 #include <stdio.h>
 #include <ctype.h>
 
+/* 由 dds_security_manager.c 提供 (避免重复实现时间源) */
+extern uint64_t dds_get_current_time_ms(void);
+
 /* ============================================================================
  * Initialization
  * ============================================================================ */
@@ -213,15 +216,15 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         char *subject_tag = xml_find_tag(search_pos, "subject", &subject_len);
         if (!subject_tag) break;
 
-        auto& subject = config->subjects[config->subject_count];
+        typeof(config->subjects[0]) *subject = &config->subjects[config->subject_count];
 
         /* Parse subject name */
         uint32_t name_len;
         char *name_tag = xml_find_tag(subject_tag, "subject_name", &name_len);
         if (name_tag) {
             xml_extract_value(name_tag, name_len,
-                              subject.subject_name,
-                              sizeof(subject.subject_name));
+                              subject->subject_name,
+                              sizeof(subject->subject_name));
         }
 
         /* Parse validity */
@@ -234,12 +237,12 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
             if (from_tag) {
                 char from_str[32];
                 xml_extract_value(from_tag, from_len, from_str, sizeof(from_str));
-                strncpy(subject.validity_from, from_str, sizeof(subject.validity_from) - 1);
+                strncpy(subject->validity_from, from_str, sizeof(subject->validity_from) - 1);
             }
             if (to_tag) {
                 char to_str[32];
                 xml_extract_value(to_tag, to_len, to_str, sizeof(to_str));
-                strncpy(subject.validity_until, to_str, sizeof(subject.validity_until) - 1);
+                strncpy(subject->validity_until, to_str, sizeof(subject->validity_until) - 1);
             }
         }
 
@@ -247,7 +250,7 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         const char *domain_search = subject_tag;
         uint32_t domain_len;
 
-        while (subject.domain_count < DDS_ACCESS_MAX_DOMAINS) {
+        while (subject->domain_count < DDS_ACCESS_MAX_DOMAINS) {
             char *domain_tag = xml_find_tag(domain_search, "domain", &domain_len);
             if (!domain_tag) break;
 
@@ -257,14 +260,14 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
             if (id_tag) {
                 char id_str[16];
                 xml_extract_value(id_tag, id_len, id_str, sizeof(id_str));
-                subject.domains[subject.domain_count].domain_id = atoi(id_str);
+                subject->domains[subject->domain_count].domain_id = atoi(id_str);
             }
 
             /* Parse publish permissions */
             const char *pub_search = domain_tag;
             uint32_t pub_len;
 
-            while (subject.domains[subject.domain_count].publish_count < DDS_ACCESS_MAX_TOPICS) {
+            while (subject->domains[subject->domain_count].publish_count < DDS_ACCESS_MAX_TOPICS) {
                 char *pub_tag = xml_find_tag(pub_search, "publish", &pub_len);
                 if (!pub_tag) break;
 
@@ -272,12 +275,12 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
                 char *topic_tag = xml_find_tag(pub_tag, "topic", &topic_len);
                 if (topic_tag) {
                     xml_extract_value(topic_tag, topic_len,
-                                      subject.domains[subject.domain_count].publish[
-                                          subject.domains[subject.domain_count].publish_count].topic_pattern,
+                                      subject->domains[subject->domain_count].publish[
+                                          subject->domains[subject->domain_count].publish_count].topic_pattern,
                                       128);
                 }
 
-                subject.domains[subject.domain_count].publish_count++;
+                subject->domains[subject->domain_count].publish_count++;
                 pub_search = pub_tag + pub_len;
             }
 
@@ -285,7 +288,7 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
             const char *sub_search = domain_tag;
             uint32_t sub_len;
 
-            while (subject.domains[subject.domain_count].subscribe_count < DDS_ACCESS_MAX_TOPICS) {
+            while (subject->domains[subject->domain_count].subscribe_count < DDS_ACCESS_MAX_TOPICS) {
                 char *sub_tag = xml_find_tag(sub_search, "subscribe", &sub_len);
                 if (!sub_tag) break;
 
@@ -293,16 +296,16 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
                 char *topic_tag = xml_find_tag(sub_tag, "topic", &topic_len);
                 if (topic_tag) {
                     xml_extract_value(topic_tag, topic_len,
-                                      subject.domains[subject.domain_count].subscribe[
-                                          subject.domains[subject.domain_count].subscribe_count].topic_pattern,
+                                      subject->domains[subject->domain_count].subscribe[
+                                          subject->domains[subject->domain_count].subscribe_count].topic_pattern,
                                       128);
                 }
 
-                subject.domains[subject.domain_count].subscribe_count++;
+                subject->domains[subject->domain_count].subscribe_count++;
                 sub_search = sub_tag + sub_len;
             }
 
-            subject.domain_count++;
+            subject->domain_count++;
             domain_search = domain_tag + domain_len;
         }
 
@@ -370,7 +373,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         char *domain_tag = xml_find_tag(search_pos, "domain", &domain_len);
         if (!domain_tag) break;
 
-        auto& domain = config->domains[config->domain_count];
+        typeof(config->domains[0]) *domain = &config->domains[config->domain_count];
 
         /* Parse domain ID */
         uint32_t id_len;
@@ -378,7 +381,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         if (id_tag) {
             char id_str[16];
             xml_extract_value(id_tag, id_len, id_str, sizeof(id_str));
-            domain.domain_id = atoi(id_str);
+            domain->domain_id = atoi(id_str);
         }
 
         /* Parse security policies */
@@ -387,7 +390,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         if (policy_tag) {
             char value[16];
             xml_extract_value(policy_tag, policy_len, value, sizeof(value));
-            domain.allow_unauthenticated_participants = (strcmp(value, "true") == 0);
+            domain->allow_unauthenticated_participants = (strcmp(value, "true") == 0);
         }
 
         config->domain_count++;
@@ -622,7 +625,7 @@ dds_access_decision_t dds_access_check_permission(dds_access_context_t *ctx,
     }
 
     /* Check ASIL level requirement */
-    if (request->asil_level < ctx->default_policy.rules ? ctx->default_policy.rules->required_asil : DDS_SECURITY_ASIL_QM) {
+    if (request->asil_level < ctx->default_policy.rules ? ctx->default_policy.rules->min_asil_level : DDS_SECURITY_ASIL_QM) {
         /* ASIL level insufficient - may still be allowed based on policy */
     }
 
@@ -843,6 +846,3 @@ void dds_access_get_stats(dds_access_context_t *ctx,
     if (denied) *denied = ctx->access_denied;
     if (granted) *granted = ctx->access_granted;
 }
-
-/* Get current time in milliseconds (stub) */
-extern uint64_t dds_get_current_time_ms(void);
