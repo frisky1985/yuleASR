@@ -18,8 +18,9 @@ if(NOT UNITY_FOUND)
     set(TEST_FRAMEWORK_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/unit/framework)
     set(TEST_FRAMEWORK_LIB Unity)
 else()
+    # 系统 Unity 包 (ThrowTheSwitch) 提供 imported target Unity::unity
     set(TEST_FRAMEWORK_INCLUDE ${UNITY_INCLUDE_DIRS})
-    set(TEST_FRAMEWORK_LIB Unity)
+    set(TEST_FRAMEWORK_LIB Unity::unity)
 endif()
 
 # Enable testing
