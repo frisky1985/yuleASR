@@ -86,7 +86,6 @@ file(GLOB DDS_COMMON_SOURCES
 add_library(eth_dds_middleware STATIC
     ${DDS_CORE_SOURCES}
     ${DDS_TRANSPORT_SOURCES}
-    ${DDS_COMMON_SOURCES}
 )
 
 target_include_directories(eth_dds_middleware PUBLIC
@@ -111,6 +110,9 @@ target_include_directories(eth_dds_middleware PUBLIC
 if(ENABLE_DDS_SECURITY)
     target_link_libraries(eth_dds_middleware PRIVATE mbedtls)
 endif()
+
+# common 工具库 (dds_log/eth_utils) — 由 src/common 提供, 替代失效的 GLOB 编译
+target_link_libraries(eth_dds_middleware PRIVATE eth_dds_common)
 
 if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
     target_compile_options(eth_dds_middleware PRIVATE

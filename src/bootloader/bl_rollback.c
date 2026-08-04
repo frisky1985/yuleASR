@@ -19,7 +19,7 @@
  * 内部宏和常量
  * ============================================================================ */
 #define BL_ROLLBACK_MODULE_NAME     "BL_RB"
-#define BL_ROLLBACK_LOG_LEVEL       DDS_LOG_INFO
+#define BL_ROLLBACK_LOG_LEVEL       DDS_LOG_LEVEL_INFO
 
 /* ============================================================================
  * 内部辅助函数
@@ -306,7 +306,7 @@ bl_rollback_error_t bl_rollback_record_boot_result(
             mgr->record.max_consecutive_failures = mgr->record.consecutive_failures;
         }
         
-        DDS_LOG(DDS_LOG_WARNING, BL_ROLLBACK_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_WARN, BL_ROLLBACK_MODULE_NAME,
                 "Boot failed (result: %d), consecutive failures: %u",
                 result, mgr->record.consecutive_failures);
         

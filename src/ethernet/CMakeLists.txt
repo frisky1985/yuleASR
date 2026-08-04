@@ -13,3 +13,7 @@ target_include_directories(eth_driver PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../common/types
     ${CMAKE_CURRENT_SOURCE_DIR}/../common/log
 )
+
+if(BUILD_TESTING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt)
+    add_subdirectory(tests)
+endif()

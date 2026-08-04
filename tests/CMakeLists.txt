@@ -6,10 +6,17 @@ cmake_minimum_required(VERSION 3.16)
 find_package(Unity QUIET)
 
 if(NOT UNITY_FOUND)
-    # Use bundled Unity or simple test framework
-    message(STATUS "Unity not found, using simple test framework")
-    set(TEST_FRAMEWORK_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/framework)
-    set(TEST_FRAMEWORK_LIB)
+    # Use bundled Unity (tests/unit/framework/unity.c) — 系统无 Unity 包时
+    # 编译 bundled 实现为 Unity 库, 保证依赖 Unity 断言的测试可链接
+    message(STATUS "Unity not found, using bundled Unity framework")
+    add_library(Unity STATIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/unit/framework/unity.c
+    )
+    target_include_directories(Unity PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/unit/framework
+    )
+    set(TEST_FRAMEWORK_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/unit/framework)
+    set(TEST_FRAMEWORK_LIB Unity)
 else()
     set(TEST_FRAMEWORK_INCLUDE ${UNITY_INCLUDE_DIRS})
     set(TEST_FRAMEWORK_LIB Unity)

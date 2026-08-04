@@ -25,6 +25,13 @@ option(BUILD_EXAMPLES "Build example applications" OFF)
 option(ENABLE_COVERAGE "Enable code coverage" OFF)
 option(ENABLE_LTO "Enable Link Time Optimization" OFF)
 
+# Testing must be enabled BEFORE any add_subdirectory so module-level tests
+# (src/*/tests) register with ctest. enable_testing() is idempotent; the
+# BUILD_TESTING gate at the bottom still adds the top-level tests/ dir.
+if(BUILD_TESTING)
+    enable_testing()
+endif()
+
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
@@ -131,6 +138,11 @@ add_subdirectory(src/bsw/boot)
 add_subdirectory(src/rte)
 add_subdirectory(src/bsw/os)
 add_subdirectory(src/platform)
+
+# Common utilities (eth_dds_common: eth_types/dds_log/eth_utils) — 先于 DDS 挂载
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/common/CMakeLists.txt)
+    add_subdirectory(src/common)
+endif()
 
 # DDS middleware (ETH-DDS integration)
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)

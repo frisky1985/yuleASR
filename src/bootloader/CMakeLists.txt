@@ -40,3 +40,8 @@ install(FILES
     DESTINATION include/eth_dds/bootloader
     COMPONENT headers
 )
+
+# Tests
+if(BUILD_TESTING AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/tests/CMakeLists.txt)
+    add_subdirectory(tests)
+endif()

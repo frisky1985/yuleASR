@@ -13,6 +13,13 @@
 #include "bl_partition.h"
 #include "../common/log/dds_log.h"
 
+/* 前向声明 — bl_partition_calculate_crc 委托给 calculate_crc32 */
+bl_partition_error_t bl_partition_calculate_crc32(
+    bl_partition_manager_t *mgr,
+    const char *partition_name,
+    uint32_t *crc32
+);
+
 /* ============================================================================
  * Static Memory Pool for CRC Buffer (MISRA Rule 21.3 - replace malloc/free)
  * ============================================================================ */
@@ -23,7 +30,7 @@ static volatile bool s_crc_buffer_in_use = false;
  * 内部宏和常量
  * ============================================================================ */
 #define BL_PARTITION_MODULE_NAME    "BL_PART"
-#define BL_PARTITION_LOG_LEVEL      DDS_LOG_INFO
+#define BL_PARTITION_LOG_LEVEL      DDS_LOG_LEVEL_INFO
 
 /* CRC32多项式 */
 #define CRC32_POLYNOMIAL            0xEDB88320
@@ -51,6 +58,29 @@ static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
     }
     
     return ~crc;
+}
+
+/**
+ * @brief 累积更新CRC32 — 分块计算时保持跨块状态
+ * @param crc 上一块的 CRC 状态 (初始 0xFFFFFFFF)
+ * @param data 数据块
+ * @param length 数据块长度
+ * @return 更新后的 CRC 状态 (最终块后取反即得 CRC32)
+ */
+static uint32_t update_crc32(uint32_t crc, const uint8_t *data, uint32_t length)
+{
+    for (uint32_t i = 0; i < length; i++) {
+        crc ^= data[i];
+        for (uint8_t j = 0; j < 8; j++) {
+            if (crc & 1) {
+                crc = (crc >> 1) ^ CRC32_POLYNOMIAL;
+            } else {
+                crc >>= 1;
+            }
+        }
+    }
+    
+    return crc;
 }
 
 /**
@@ -89,25 +119,25 @@ static bl_partition_info_t* find_partition_by_index(
 static bool validate_partition_table(const bl_partition_table_t *table)
 {
     if (table->header.magic != BL_PARTITION_TABLE_MAGIC) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Invalid partition table magic: 0x%08X", table->header.magic);
         return false;
     }
     
     if (table->header.version != BL_PARTITION_TABLE_VERSION) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Unsupported partition table version: %u", table->header.version);
         return false;
     }
     
     if (table->header.num_partitions > BL_MAX_PARTITIONS) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Too many partitions: %u", table->header.num_partitions);
         return false;
     }
     
     if (table->header.entry_size != sizeof(bl_partition_info_t)) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Invalid entry size: %u", table->header.entry_size);
         return false;
     }
@@ -119,7 +149,7 @@ static bool validate_partition_table(const bl_partition_table_t *table)
     );
     
     if (crc != table->header.crc32) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Partition table CRC mismatch: expected 0x%08X, got 0x%08X",
                 table->header.crc32, crc);
         return false;
@@ -168,7 +198,7 @@ bl_partition_error_t bl_partition_init(
         if ((result == BL_OK) && (flash_driver->init != NULL)) {
             int32_t init_result = flash_driver->init();
             if (init_result != 0) {
-                DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                         "Flash driver init failed: %d", init_result);
                 result = BL_ERROR_FLASH_ERROR;
             }
@@ -178,7 +208,7 @@ bl_partition_error_t bl_partition_init(
         if ((result == BL_OK) && (partition_table_addr != 0U)) {
             bl_partition_error_t load_result = bl_partition_table_load(mgr, partition_table_addr);
             if (load_result != BL_OK) {
-                DDS_LOG(DDS_LOG_WARNING, BL_PARTITION_MODULE_NAME,
+                DDS_LOG(DDS_LOG_LEVEL_WARN, BL_PARTITION_MODULE_NAME,
                         "Failed to load partition table, initializing default");
                 
                 /* 获取Flash大小 */
@@ -246,7 +276,7 @@ bl_partition_error_t bl_partition_table_load(
     );
     
     if (result != 0) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Failed to read partition table: %d", result);
         return BL_ERROR_FLASH_ERROR;
     }
@@ -288,7 +318,7 @@ bl_partition_error_t bl_partition_table_save(
     
     int32_t result = mgr->flash_driver->erase(address, sector_size);
     if (result != 0) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Failed to erase partition table sector: %d", result);
         if (mgr->flash_driver->lock != NULL) {
             mgr->flash_driver->lock();
@@ -309,7 +339,7 @@ bl_partition_error_t bl_partition_table_save(
     }
     
     if (result != 0) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "Failed to write partition table: %d", result);
         return BL_ERROR_PROGRAM_FAILED;
     }
@@ -789,6 +819,30 @@ bl_partition_error_t bl_partition_verify_crc(
     return BL_OK;
 }
 
+/* bl_partition_calculate_crc 实现 — 头文件契约: 计算分区数据 CRC32 */
+bl_partition_error_t bl_partition_calculate_crc(
+    bl_partition_manager_t *mgr,
+    const char *partition_name,
+    uint32_t *crc32
+)
+{
+    if (mgr == NULL || partition_name == NULL || crc32 == NULL) {
+        return BL_ERROR_INVALID_PARAM;
+    }
+    
+    if (!mgr->initialized) {
+        return BL_ERROR_NOT_INITIALIZED;
+    }
+    
+    bl_partition_info_t *part = find_partition(mgr, partition_name);
+    if (part == NULL) {
+        return BL_ERROR_PARTITION_NOT_FOUND;
+    }
+    
+    /* 委托给 CRC32 计算实现 */
+    return bl_partition_calculate_crc32(mgr, partition_name, crc32);
+}
+
 bl_partition_error_t bl_partition_calculate_crc32(
     bl_partition_manager_t *mgr,
     const char *partition_name,
@@ -806,7 +860,7 @@ bl_partition_error_t bl_partition_calculate_crc32(
     
     /* 使用静态内存池而非 malloc (MISRA Rule 21.3) */
     if (s_crc_buffer_in_use) {
-        DDS_LOG(DDS_LOG_ERROR, BL_PARTITION_MODULE_NAME,
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
                 "CRC buffer already in use");
         return BL_ERROR_FLASH_ERROR;
     }
@@ -827,7 +881,8 @@ bl_partition_error_t bl_partition_calculate_crc32(
             return BL_ERROR_FLASH_ERROR;
         }
         
-        crc = calculate_crc32(buffer, chunk_size);
+        /* 累积更新 — 保持跨块 CRC 状态, 不能覆盖 */
+        crc = update_crc32(crc, buffer, chunk_size);
         
         address += chunk_size;
         remaining -= chunk_size;
