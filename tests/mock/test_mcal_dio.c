@@ -10,14 +10,16 @@
 #include "mock_hal_config.h"
 #include "Dio.h"
 
-/* DIO register addresses defined in Dio.c */
-static const uint32 DIO_GPIO1_BASE = 0x30200000UL;
-static const uint32 DIO_GPIO2_BASE = 0x30210000UL;
-static const uint32 DIO_GPIO3_BASE = 0x30220000UL;
-static const uint32 DIO_GPIO4_BASE = 0x30230000UL;
-static const uint32 DIO_GPIO5_BASE = 0x30240000UL;
-static const uint32 DIO_GPIO_PSR_OFF = 0x08U;
-static const uint32 DIO_GPIO_DR_OFF  = 0x00U;
+/* DIO register addresses — 与生产 Dio.c 在 -DS32K312 下的布局一致
+ * (S32K312_SIUL2_GPIO_BASE = 0x40810000, stride 0x1000,
+ *  PSR=PDIR 偏移 0x10, DR=PDOR 偏移 0x00) */
+static const uint32 DIO_GPIO1_BASE = 0x40810000UL;
+static const uint32 DIO_GPIO2_BASE = 0x40820000UL;
+static const uint32 DIO_GPIO3_BASE = 0x40830000UL;
+static const uint32 DIO_GPIO4_BASE = 0x40840000UL;
+static const uint32 DIO_GPIO5_BASE = 0x40850000UL;
+static const uint32 DIO_GPIO_PSR_OFF = 0x10U;  /* PDIR (Port Data Input) */
+static const uint32 DIO_GPIO_DR_OFF  = 0x00U;  /* PDOR (Port Data Output) */
 
 /* Forward declarations for production code functions */
 extern void Dio_Init(const Dio_ConfigType* ConfigPtr);
@@ -191,8 +193,8 @@ void test_Dio_GetVersionInfo_Valid(void) {
     Dio_Init(&cfg);
     Std_VersionInfoType vi; memset(&vi, 0, sizeof(vi));
     Dio_GetVersionInfo(&vi);
-    TEST_ASSERT_EQUAL(0x0055U, vi.vendorID);
-    TEST_ASSERT_EQUAL(0x0020U, vi.moduleID);
+    TEST_ASSERT_EQUAL(DIO_VENDOR_ID, vi.vendorID);
+    TEST_ASSERT_EQUAL(DIO_MODULE_ID, vi.moduleID);
 }
 
 void test_Dio_GetVersionInfo_Null(void) {
@@ -251,36 +253,39 @@ void test_Dio_MaskedWritePort_BeforeInit(void) {
 int main(void) {
     UnityBegin();
 
+    /* 注: Dio_DriverInitialized 是生产模块静态变量，跨测试保留、无法在 host 重置。
+     * "未初始化" 分支的用例必须排在所有 Dio_Init 之前执行（进程冷启动状态）。 */
+    UnityRunTest(test_Dio_FlipChannel_BeforeInit, "Flip before init", __LINE__);
+    UnityRunTest(test_Dio_ReadChannel_BeforeInit_ReturnsLow, "Read before init", __LINE__);
+    UnityRunTest(test_Dio_ReadPort_BeforeInit, "Read port before init", __LINE__);
+    UnityRunTest(test_Dio_WriteChannel_BeforeInit, "Write before init", __LINE__);
+    UnityRunTest(test_Dio_ReadChannelGroup_BeforeInit, "Read group before init", __LINE__);
+    UnityRunTest(test_Dio_WriteChannelGroup_BeforeInit, "Write group before init", __LINE__);
+    UnityRunTest(test_Dio_MaskedWritePort_BeforeInit, "Masked write before init", __LINE__);
+
     UnityRunTest(test_Dio_Init_NullConfig, "Init with NULL", __LINE__);
     UnityRunTest(test_Dio_Init_Valid, "Init valid", __LINE__);
-    UnityRunTest(test_Dio_ReadChannel_BeforeInit_ReturnsLow, "Read before init", __LINE__);
     UnityRunTest(test_Dio_ReadChannel_ValidHigh, "Read high", __LINE__);
     UnityRunTest(test_Dio_ReadChannel_ValidLow, "Read low", __LINE__);
     UnityRunTest(test_Dio_ReadChannel_InvalidChannel, "Read invalid", __LINE__);
     UnityRunTest(test_Dio_WriteChannel_ValidHigh, "Write high", __LINE__);
     UnityRunTest(test_Dio_WriteChannel_ValidLow, "Write low", __LINE__);
-    UnityRunTest(test_Dio_WriteChannel_BeforeInit, "Write before init", __LINE__);
     UnityRunTest(test_Dio_WriteChannel_Invalid, "Write invalid", __LINE__);
     UnityRunTest(test_Dio_ReadPort_Valid, "Read port valid", __LINE__);
     UnityRunTest(test_Dio_ReadPort_Invalid, "Read port invalid", __LINE__);
-    UnityRunTest(test_Dio_ReadPort_BeforeInit, "Read port before init", __LINE__);
     UnityRunTest(test_Dio_WritePort_Valid, "Write port valid", __LINE__);
     UnityRunTest(test_Dio_WritePort_Invalid, "Write port invalid", __LINE__);
     UnityRunTest(test_Dio_ReadChannelGroup_Valid, "Read group valid", __LINE__);
     UnityRunTest(test_Dio_ReadChannelGroup_Null, "Read group null", __LINE__);
-    UnityRunTest(test_Dio_ReadChannelGroup_BeforeInit, "Read group before init", __LINE__);
     UnityRunTest(test_Dio_WriteChannelGroup_Valid, "Write group valid", __LINE__);
     UnityRunTest(test_Dio_WriteChannelGroup_Null, "Write group null", __LINE__);
-    UnityRunTest(test_Dio_WriteChannelGroup_BeforeInit, "Write group before init", __LINE__);
     UnityRunTest(test_Dio_GetVersionInfo_Valid, "Version info valid", __LINE__);
     UnityRunTest(test_Dio_GetVersionInfo_Null, "Version info null", __LINE__);
     UnityRunTest(test_Dio_FlipChannel_Valid_HighToLow, "Flip high->low", __LINE__);
     UnityRunTest(test_Dio_FlipChannel_Valid_LowToHigh, "Flip low->high", __LINE__);
     UnityRunTest(test_Dio_FlipChannel_Invalid, "Flip invalid", __LINE__);
-    UnityRunTest(test_Dio_FlipChannel_BeforeInit, "Flip before init", __LINE__);
     UnityRunTest(test_Dio_MaskedWritePort_Valid, "Masked write valid", __LINE__);
     UnityRunTest(test_Dio_MaskedWritePort_Invalid, "Masked write invalid", __LINE__);
-    UnityRunTest(test_Dio_MaskedWritePort_BeforeInit, "Masked write before init", __LINE__);
 
     return UnityEnd();
 }

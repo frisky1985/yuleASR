@@ -236,6 +236,12 @@ Std_ReturnType Spi_DeInit(void)
     
     SPI_VALIDATE_INITIALIZED(SPI_SERVICE_ID_DEINIT);
     
+    /* 防御: SPI_DEV_ERROR_DETECT=OFF 时 SPI_VALIDATE_INITIALIZED 为空宏,
+     * 未初始化调用会直访 Spi_BaseAddr (host 测试/异常路径) 段错误 — 无条件兜底 */
+    if (Spi_Initialized != TRUE) {
+        return E_NOT_OK;
+    }
+    
     for (i = 0; i < SPI_CHANNEL_COUNT; i++) {
         volatile uint32* base = Spi_BaseAddr[i];
         *(base + (ECSPI_CONREG / 4)) = 0;  /* 禁用SPI */

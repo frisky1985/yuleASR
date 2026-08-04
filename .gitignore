@@ -143,3 +143,4 @@ coverage_report_focused/
 # Embedded git repos
 third_party/lwip
 NvM_EccHandler.c.bak2
+src/bsw/boot/test/test_boot_integration

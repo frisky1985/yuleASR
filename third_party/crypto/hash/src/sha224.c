@@ -127,37 +127,27 @@ static void sha256_process_block(sha256_state_t* ctx, const uint8* block)
  */
 static void sha256_pad_message(sha256_state_t* ctx)
 {
-    uint32 i;
-    uint32 pad_len;
-    uint64 msg_bit_len;
     uint8 padding[HASH_SHA256_BLOCK_SIZE * 2];
+    uint32 buflen = ctx->buflen;
+    uint64 msg_bit_len = ctx->length;
 
-    /* Calculate message length in bits */
-    msg_bit_len = ctx->length;
+    /* 清零整个 padding (含第二块), 避免未初始化栈字节进入摘要 */
+    (void)memset(padding, 0, sizeof(padding));
 
-    /* Calculate padding length */
-    i = (uint32)(ctx->length >> 3) % HASH_SHA256_BLOCK_SIZE;
-    
-    /* Need: 1 byte (0x80) + 0-55 bytes (zeros) + 8 bytes (length) = 64 bytes total */
-    pad_len = (i < 56) ? (56 - i) : (120 - i);
-
-    /* Start with 0x80 */
-    padding[0] = 0x80;
-    
-    /* Fill rest with zeros */
-    for (i = 1; i < pad_len; i++) {
-        padding[i] = 0x00;
+    /* FIPS 180-4: 消息尾 + 0x80 + zeros + 64-bit big-endian 长度 */
+    if (buflen > 0U) {
+        (void)memcpy(padding, ctx->buffer, buflen);
     }
+    padding[buflen] = 0x80;
 
-    /* Append original message length as 64-bit big-endian */
-    hash_store64_be(&padding[pad_len], msg_bit_len);
-    pad_len += 8;
-
-    /* Process the padding block(s) */
-    sha256_process_block(ctx, padding);
-    
-    /* If we needed 2 blocks (i >= 56), process the second block */
-    if (pad_len > 64) {
+    if (buflen < 56U) {
+        /* 单块: 长度写在 56..63 */
+        hash_store64_be(&padding[56], msg_bit_len);
+        sha256_process_block(ctx, padding);
+    } else {
+        /* 双块: 长度写在第二块 120..127 */
+        hash_store64_be(&padding[120], msg_bit_len);
+        sha256_process_block(ctx, padding);
         sha256_process_block(ctx, &padding[64]);
     }
 }
@@ -234,13 +224,11 @@ Hash_ReturnType sha224_update(sha256_state_t* ctx, const uint8* data, uint32 len
         return HASH_ERR_STATE_ERROR;
     }
 
-    /* Update message length (in bits) */
-    ctx->length += ((uint64)len << 3);
-
-    /* Check for overflow */
-    if (ctx->length < ((uint64)len << 3)) {
+    /* Update message length (in bits) — 先判溢出再累加 */
+    if (((uint64)len << 3) > (UINT64_MAX - ctx->length)) {
         return HASH_ERR_OVERFLOW;
     }
+    ctx->length += ((uint64)len << 3);
 
     /* Fill the buffer if there's leftover data */
     if (ctx->buflen > 0) {

@@ -66,7 +66,8 @@ static uint8 E2E_P01_CalculateCRC(
     const uint8* Data,
     uint16 Length,
     uint16 DataID,
-    uint8 DataIDMode
+    uint8 DataIDMode,
+    uint16 CrcOffset
 );
 
 /*=============================================================================*
@@ -80,7 +81,8 @@ static uint8 E2E_P01_CalculateCRC(
     const uint8* Data,
     uint16 Length,
     uint16 DataID,
-    uint8 DataIDMode
+    uint8 DataIDMode,
+    uint16 CrcOffset
 )
 {
     uint8 crc = 0xFFU; /* Initial value */
@@ -90,6 +92,9 @@ static uint8 E2E_P01_CalculateCRC(
     
     /* Calculate CRC over data (excluding CRC byte) */
     for (i = 0U; i < Length; i++) {
+        if (i == CrcOffset) {
+            continue;   /* 排除 CRC 字节自身 (E2E Profile 1: CRC 计算范围不含 CRC 字段) */
+        }
         crc = E2E_P01_CRC8_Table[crc ^ Data[i]];
     }
     
@@ -144,7 +149,8 @@ Std_ReturnType E2E_P01Protect(
         Data,
         Config->DataLength,
         Config->DataID,
-        Config->DataIDMode
+        Config->DataIDMode,
+        Config->CRCOffset
     );
     
     /* Write CRC */
@@ -188,7 +194,8 @@ Std_ReturnType E2E_P01Check(
         Data,
         Config->DataLength,
         Config->DataID,
-        Config->DataIDMode
+        Config->DataIDMode,
+        Config->CRCOffset
     );
     
     /* Verify CRC */
