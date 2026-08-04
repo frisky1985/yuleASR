@@ -115,3 +115,20 @@ yuleDKCS (示例应用, v2.0.0)
                ├── MCAL 21 + ECUAL 29 + Services 46
                └── 商用就绪: Docker/SBOM/CI/CD/Release
 ```
+
+---
+
+## 🔧 2026-08-01 评审驱动待办 (multi-expert-review 发现)
+
+> 来源: 存量测试修复的第三方独立评审。P0/critical 已随 db8c1dd 修复，以下为 P1/P2 后续项。
+
+| 优先级 | 事项 | 位置 | 说明 |
+|:------:|:-----|:-----|:-----|
+| P1 | E2E P01/P02 CRC 同源 bug (DDS 路径) | src/autosar/e2e/e2e_protection.c:287-390 | crcOffset!=0 时 CRC 含 CRC 字节; P02 硬编码 CRC 偏移 0; 测试只覆盖 crcOffset==0 |
+| P1 | HashAlgos 库 CMake 引用不存在 sha256.c | third_party/crypto/hash/CMakeLists.txt:9 | 库无法构建 → boot 测试被迫直编 sha224.c; 修 CMake 后恢复 add_subdirectory 挂载 |
+| P1 | E2E DATAID_ALT/NIBBLE 共用分支 | src/bsw/services/e2e/src/E2E_P01.c:110-113 | 规范不符 (NIBBLE 应为 nibble XOR 归并), 跨 ECU 互通风险 |
+| P2 | OpenSSL 探测硬编码路径 | src/bsw/boot/test/CMakeLists.txt:8-19 | 改 find_package(OpenSSL); 仅 test_boot_integration 需要 |
+| P2 | Spi 寄存器直访无法 host 单测 | src/bsw/mcal/spi/src/Spi.c | DeInit/MainFunction 等用 volatile 指针直访 ECSPI 地址, mock_hal 无法拦截; 建议改 REG_READ32/REG_WRITE32 宏 |
+| P2 | integration CMake 死路径 | tests/integration/CMakeLists.txt:13-15 | ../unity 不存在 (实际 ../unit/framework); 三套 Unity 引导待收敛 |
+| P2 | 测试二进制入 git 已清理 | — | test_boot_integration 二进制已 git rm --cached + .gitignore |
+| P2 | Boot_Update MBEDTLS_USE 构建矩阵 | src/bsw/boot | 软件哈希路径 (sha256_compute) 已修复并加 NIST 向量, 建议 CI 同时覆盖两分支 |
