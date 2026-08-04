@@ -5,14 +5,14 @@
 #   integration_comm_tests / integration_diag_tests / integration_safety_tests / integration_mem_tests
 # 独立链接避免多个套件的测试替身 (mock) 重复符号冲突
 #   (如 test_communication_stack.c 与 test_diagnostic_stack.c 各自定义 PduR_Transmit)。
+#
+# Unity 框架引导统一收敛: 由上级 tests/CMakeLists.txt 单一来源提供
+# (find_package(Unity) 或 bundled tests/unit/framework/unity.c → Unity 库 +
+# TEST_FRAMEWORK_LIB/TEST_FRAMEWORK_INCLUDE 变量), 本目录不再自行 add_subdirectory
+# (原 ../unity 死路径, 实际框架位于 ../unit/framework)。
 
 cmake_minimum_required(VERSION 3.14)
 project(autosar_integration_tests C)
-
-# 添加Unity测试框架 (if available)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/../unity/CMakeLists.txt)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../unity unity)
-endif()
 
 # 共用头文件路径
 set(INTEGRATION_INCLUDES
@@ -33,7 +33,7 @@ set(INTEGRATION_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/fls/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/ea/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/platform/s32k312/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../unit/framework
+    ${TEST_FRAMEWORK_INCLUDE}
 )
 
 # 为每个套件创建独立可执行文件
@@ -41,8 +41,8 @@ function(add_integration_suite TARGET_NAME RUN_MACRO)
     add_executable(${TARGET_NAME} ${ARGN} runner_single.c)
     target_include_directories(${TARGET_NAME} PRIVATE ${INTEGRATION_INCLUDES})
     target_compile_definitions(${TARGET_NAME} PRIVATE ${RUN_MACRO})
-    if(TARGET Unity)
-        target_link_libraries(${TARGET_NAME} Unity)
+    if(TEST_FRAMEWORK_LIB)
+        target_link_libraries(${TARGET_NAME} PRIVATE ${TEST_FRAMEWORK_LIB})
     endif()
     add_test(NAME ${TARGET_NAME} COMMAND ${TARGET_NAME})
 endfunction()

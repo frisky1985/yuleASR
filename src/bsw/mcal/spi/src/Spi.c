@@ -98,11 +98,11 @@ static boolean Spi_Initialized = FALSE;
 static const Spi_ConfigType* Spi_ConfigPtr = NULL_PTR;
 static Spi_StatusType Spi_Status = SPI_UNINIT;
 
-static volatile uint32* const Spi_BaseAddr[SPI_CHANNEL_COUNT] = {
-    (volatile uint32*)ECSPI1_BASE,
-    (volatile uint32*)ECSPI2_BASE,
-    (volatile uint32*)ECSPI3_BASE,
-    (volatile uint32*)ECSPI3_BASE
+static const uint32 Spi_BaseAddr[SPI_CHANNEL_COUNT] = {
+    ECSPI1_BASE,
+    ECSPI2_BASE,
+    ECSPI3_BASE,
+    ECSPI3_BASE
 };
 
 typedef struct {
@@ -149,18 +149,17 @@ void Spi_Init(const Spi_ConfigType* Config)
     Spi_ConfigPtr = Config;
     
     for (i = 0; i < Config->ChannelCount && i < SPI_CHANNEL_COUNT; i++) {
-        volatile uint32* base = Spi_BaseAddr[i];
         const Spi_ChannelConfigType* chCfg = &Config->ChannelConfig[i];
         uint32 conreg = 0;
         uint32 cfgreg = 0;
         
         /* 禁用SPI */
-        *(base + (ECSPI_CONREG / 4)) = 0;
+        REG_WRITE32(Spi_BaseAddr[i] + ECSPI_CONREG, 0);
         
         /* 配置控制寄存器 */
         conreg = CONREG_EN | CONREG_MODE;  /* 主机模式 */
         conreg |= (i << CONREG_CHANNEL_SHIFT);
-        *(base + (ECSPI_CONREG / 4)) = conreg;
+        REG_WRITE32(Spi_BaseAddr[i] + ECSPI_CONREG, conreg);
         
         /* 配置时序 */
         cfgreg = (chCfg->ClockMode << 0);
@@ -169,19 +168,19 @@ void Spi_Init(const Spi_ConfigType* Config)
         } else if (chCfg->DataMode == SPI_DATA_MODE_32BIT) {
             cfgreg |= (3u << 4);
         }
-        *(base + (ECSPI_CONFIGREG / 4)) = cfgreg;
+        REG_WRITE32(Spi_BaseAddr[i] + ECSPI_CONFIGREG, cfgreg);
         
         /* 配置DMA */
         if (chCfg->DmaEnabled) {
             uint32 dmareg = DMAREG_RXDEN | DMAREG_TXDEN;
             dmareg |= (SPI_DMA_FIFO_THRESHOLD << DMAREG_RX_THRESHOLD_SHIFT);
             dmareg |= (SPI_DMA_FIFO_THRESHOLD << DMAREG_TX_THRESHOLD_SHIFT);
-            *(base + (ECSPI_DMAREG / 4)) = dmareg;
+            REG_WRITE32(Spi_BaseAddr[i] + ECSPI_DMAREG, dmareg);
         }
         
         /* 配置中断 */
         if (chCfg->InterruptEnabled) {
-            *(base + (ECSPI_INTREG / 4)) = (INTREG_TEEN | INTREG_RREN);
+            REG_WRITE32(Spi_BaseAddr[i] + ECSPI_INTREG, (INTREG_TEEN | INTREG_RREN));
         }
         
         /* 设置波特率 */
@@ -203,7 +202,6 @@ void Spi_Init(const Spi_ConfigType* Config)
  */
 static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
 {
-    volatile uint32* base = Spi_BaseAddr[Channel];
     uint32 refClock = SPI_REF_CLOCK_HZ;
     uint32 preDiv = 0;
     uint32 postDiv = 0;
@@ -223,7 +221,7 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
     }
     
     uint32 periodreg = (preDiv << 0) | (postDiv << 4);
-    *(base + (ECSPI_PERIODREG / 4)) = periodreg;
+    REG_WRITE32(Spi_BaseAddr[Channel] + ECSPI_PERIODREG, periodreg);
 }
 
 /**
@@ -243,8 +241,7 @@ Std_ReturnType Spi_DeInit(void)
     }
     
     for (i = 0; i < SPI_CHANNEL_COUNT; i++) {
-        volatile uint32* base = Spi_BaseAddr[i];
-        *(base + (ECSPI_CONREG / 4)) = 0;  /* 禁用SPI */
+        REG_WRITE32(Spi_BaseAddr[i] + ECSPI_CONREG, 0);  /* 禁用SPI */
     }
     
     Spi_ConfigPtr = NULL_PTR;
@@ -268,7 +265,6 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
     
     const Spi_ExternalDeviceType* dev = &Spi_ConfigPtr->DeviceConfig[DeviceId];
     uint8 channel = dev->ChannelId;
-    volatile uint32* base = Spi_BaseAddr[channel];
     Spi_ChannelStateType* state = &Spi_ChannelState[channel];
     uint32 i;
     uint32 startTime;
@@ -287,10 +283,10 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
     state->JobResult = SPI_JOB_PENDING;
     
     /* 选择从机 */
-    uint32 conreg = *(base + (ECSPI_CONREG / 4));
+    uint32 conreg = REG_READ32(Spi_BaseAddr[channel] + ECSPI_CONREG);
     conreg &= ~(3u << CONREG_CHANNEL_SHIFT);
     conreg |= (dev->ChannelId << CONREG_CHANNEL_SHIFT);
-    *(base + (ECSPI_CONREG / 4)) = conreg;
+    REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_CONREG, conreg);
     
     /* 设置波特率 */
     Spi_SetBaudRateInternal(channel, dev->BaudRate);
@@ -300,7 +296,7 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
     
     for (i = 0; i < Length; i++) {
         /* 等待TX FIFO空 */
-        while (*(base + (ECSPI_STATREG / 4)) & STATREG_TF) {
+        while (REG_READ32(Spi_BaseAddr[channel] + ECSPI_STATREG) & STATREG_TF) {
             if (Spi_GetElapsedTime(startTime) > SPI_TRANSFER_TIMEOUT_MS) {
                 state->JobResult = SPI_JOB_FAILED;
                 Spi_Status = SPI_IDLE;
@@ -309,10 +305,10 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
         }
         
         /* 发送 */
-        *(base + (ECSPI_TXDATA / 4)) = TxData ? TxData[i] : 0xFF;
+        REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_TXDATA, TxData ? TxData[i] : 0xFF);
         
         /* 等待RX数据 */
-        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_RR) == 0U ) {
+        while ((REG_READ32(Spi_BaseAddr[channel] + ECSPI_STATREG) & STATREG_RR) == 0U ) {
             if (Spi_GetElapsedTime(startTime) > SPI_TRANSFER_TIMEOUT_MS) {
                 state->JobResult = SPI_JOB_FAILED;
                 Spi_Status = SPI_IDLE;
@@ -322,9 +318,9 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
         
         /* 接收 */
         if (RxData) {
-            RxData[i] = (uint8)(*(base + (ECSPI_RXDATA / 4)));
+            RxData[i] = (uint8)(REG_READ32(Spi_BaseAddr[channel] + ECSPI_RXDATA));
         } else {
-            (void)*(base + (ECSPI_RXDATA / 4));
+            (void)REG_READ32(Spi_BaseAddr[channel] + ECSPI_RXDATA);
         }
         
         state->Transferred++;
@@ -350,7 +346,6 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
     
     const Spi_ExternalDeviceType* dev = &Spi_ConfigPtr->DeviceConfig[DeviceId];
     uint8 channel = dev->ChannelId;
-    volatile uint32* base = Spi_BaseAddr[channel];
     const Spi_ChannelConfigType* chCfg = &Spi_ConfigPtr->ChannelConfig[channel];
     Spi_ChannelStateType* state = &Spi_ChannelState[channel];
     
@@ -368,10 +363,10 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
     state->JobResult = SPI_JOB_PENDING;
     
     /* 选择从机 */
-    uint32 conreg = *(base + (ECSPI_CONREG / 4));
+    uint32 conreg = REG_READ32(Spi_BaseAddr[channel] + ECSPI_CONREG);
     conreg &= ~(3u << CONREG_CHANNEL_SHIFT);
     conreg |= (dev->ChannelId << CONREG_CHANNEL_SHIFT);
-    *(base + (ECSPI_CONREG / 4)) = conreg;
+    REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_CONREG, conreg);
     
     /* 设置波特率 */
     Spi_SetBaudRateInternal(channel, dev->BaudRate);
@@ -383,13 +378,13 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
         /* 配置TX DMA */
         if (TxData) {
             Dma_ConfigTx(chCfg->DmaTxChannel, (uint32)TxData, 
-                        (uint32)(base + (ECSPI_TXDATA / 4)), Length);
+                        (uint32)(Spi_BaseAddr[channel] + ECSPI_TXDATA), Length);
         }
         
         /* 配置RX DMA */
         if (RxData) {
             Dma_ConfigRx(chCfg->DmaRxChannel, 
-                        (uint32)(base + (ECSPI_RXDATA / 4)), (uint32)RxData, Length);
+                        (uint32)(Spi_BaseAddr[channel] + ECSPI_RXDATA), (uint32)RxData, Length);
         }
         
         /* 启动DMA */
@@ -397,7 +392,8 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
         Dma_EnableChannel(chCfg->DmaRxChannel);
         
         /* 启动传输 */
-        *(base + (ECSPI_CONREG / 4)) |= CONREG_XCH;
+        REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_CONREG,
+                    REG_READ32(Spi_BaseAddr[channel] + ECSPI_CONREG) | CONREG_XCH);
     } else {
         /* 中断传输 */
         state->DmaActive = FALSE;
@@ -405,14 +401,16 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
         /* 填充TX FIFO */
         uint32 fifoFill = (Length < SPI_FIFO_DEPTH) ? Length : SPI_FIFO_DEPTH;
         for (uint32 i = 0; i < fifoFill; i++) {
-            *(base + (ECSPI_TXDATA / 4)) = TxData ? TxData[i] : 0xFF;
+            REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_TXDATA, TxData ? TxData[i] : 0xFF);
         }
         
         /* 使能中断 */
-        *(base + (ECSPI_INTREG / 4)) |= (INTREG_TCEN | INTREG_RREN);
+        REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_INTREG,
+                    REG_READ32(Spi_BaseAddr[channel] + ECSPI_INTREG) | (INTREG_TCEN | INTREG_RREN));
         
         /* 启动传输 */
-        *(base + (ECSPI_CONREG / 4)) |= CONREG_XCH;
+        REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_CONREG,
+                    REG_READ32(Spi_BaseAddr[channel] + ECSPI_CONREG) | CONREG_XCH);
     }
     
     return E_OK;
@@ -456,19 +454,18 @@ void Spi_IsrHandler(uint8 Channel)
         return;
     }
     
-    volatile uint32* base = Spi_BaseAddr[Channel];
     Spi_ChannelStateType* state = &Spi_ChannelState[Channel];
-    uint32 stat = *(base + (ECSPI_STATREG / 4));
+    uint32 stat = REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG);
     
     /* RX中断 */
     if (stat & STATREG_RR) {
-        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_RR) && 
+        while ((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_RR) && 
                state->Transferred < state->Length) {
             if (state->RxBuffer) {
                 state->RxBuffer[state->Transferred] = 
-                    (uint8)(*(base + (ECSPI_RXDATA / 4)));
+                    (uint8)(REG_READ32(Spi_BaseAddr[Channel] + ECSPI_RXDATA));
             } else {
-                (void)*(base + (ECSPI_RXDATA / 4));
+                (void)REG_READ32(Spi_BaseAddr[Channel] + ECSPI_RXDATA);
             }
             state->Transferred++;
         }
@@ -476,10 +473,10 @@ void Spi_IsrHandler(uint8 Channel)
     
     /* TX中断 - 继续填充FIFO */
     if ((stat & STATREG_TE) && state->Transferred < state->Length) {
-        while ((*(base + (ECSPI_STATREG / 4)) & STATREG_TE) == 0U && 
+        while ((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_TE) == 0U && 
                (state->Transferred + (state->Length - state->TxSent)) < SPI_FIFO_DEPTH) {
-            *(base + (ECSPI_TXDATA / 4)) = 
-                state->TxBuffer ? state->TxBuffer[state->TxSent] : 0xFF;
+            REG_WRITE32(Spi_BaseAddr[Channel] + ECSPI_TXDATA, 
+                state->TxBuffer ? state->TxBuffer[state->TxSent] : 0xFF);
             state->TxSent++;
         }
     }
@@ -488,7 +485,7 @@ void Spi_IsrHandler(uint8 Channel)
     if (state->Transferred >= state->Length) {
         state->JobResult = SPI_JOB_OK;
         Spi_Status = SPI_IDLE;
-        *(base + (ECSPI_INTREG / 4)) = 0;  /* 禁用所有中断 */
+        REG_WRITE32(Spi_BaseAddr[Channel] + ECSPI_INTREG, 0);  /* 禁用所有中断 */
     }
 }
 
@@ -513,8 +510,7 @@ void Spi_MainFunction(void)
                 
                 /* 禁用DMA */
                 if (state->DmaActive) {
-                    volatile uint32* base = Spi_BaseAddr[i];
-                    *(base + (ECSPI_DMAREG / 4)) = 0;
+                    REG_WRITE32(Spi_BaseAddr[i] + ECSPI_DMAREG, 0);
                     Dma_DisableChannel(Spi_ConfigPtr->ChannelConfig[i].DmaTxChannel);
                     Dma_DisableChannel(Spi_ConfigPtr->ChannelConfig[i].DmaRxChannel);
                 }

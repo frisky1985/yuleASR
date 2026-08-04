@@ -3,19 +3,13 @@ cmake_minimum_required(VERSION 3.16)
 
 # OpenSSL (host-side signature/hash verification — test_boot_integration 用
 # OpenSSL 模拟签名者/校验哈希; 生产代码用 mbedtls, 测试工具不受限)
-set(BOOT_TEST_OPENSSL_INCLUDE "")
-set(BOOT_TEST_OPENSSL_LIB "")
-if(EXISTS "/opt/homebrew/opt/openssl/include/openssl/sha.h")
-    set(BOOT_TEST_OPENSSL_INCLUDE "/opt/homebrew/opt/openssl/include")
-    set(BOOT_TEST_OPENSSL_LIB crypto)
-elseif(EXISTS "/usr/local/opt/openssl/include/openssl/sha.h")
-    set(BOOT_TEST_OPENSSL_INCLUDE "/usr/local/opt/openssl/include")
-    set(BOOT_TEST_OPENSSL_LIB crypto)
-elseif(EXISTS "/usr/include/openssl/sha.h")
-    set(BOOT_TEST_OPENSSL_INCLUDE "/usr/include")
-    set(BOOT_TEST_OPENSSL_LIB crypto)
+# find_package 自动定位系统/Homebrew (含 keg-only) 安装, 替代硬编码路径探测;
+# 仅 test_boot_integration 链接, 找不到时保持 warning 语义: 该测试编译失败而非静默
+find_package(OpenSSL)
+if(OPENSSL_FOUND)
+    message(STATUS "OpenSSL ${OPENSSL_VERSION} found — test_boot_integration 链接 ${OPENSSL_CRYPTO_LIBRARY}")
 else()
-    message(WARNING "OpenSSL headers not found — test_boot_integration 将编译失败; 安装: brew install openssl")
+    message(WARNING "OpenSSL not found — test_boot_integration 将编译失败; 安装: brew install openssl")
 endif()
 
 # Collect test sources
@@ -34,11 +28,10 @@ foreach(test_src ${TEST_SOURCES})
         ${CMAKE_CURRENT_SOURCE_DIR}          # test/ 目录自身: Std_Types.h/boot_platform.h host stub
         ${CMAKE_CURRENT_SOURCE_DIR}/../include
         ${BOOT_HASH_INC})
-    if(BOOT_TEST_OPENSSL_INCLUDE)
-        target_include_directories(${test_name} PRIVATE ${BOOT_TEST_OPENSSL_INCLUDE})
-        # Homebrew openssl 是 keg-only: 库文件在同级 ../lib 下
-        target_link_directories(${test_name} PRIVATE "${BOOT_TEST_OPENSSL_INCLUDE}/../lib")
-        target_link_libraries(${test_name} PRIVATE ${BOOT_TEST_OPENSSL_LIB})
+    # OpenSSL 仅 test_boot_integration 需要 (模拟签名者/校验哈希);
+    # OpenSSL::Crypto 自带 include 路径, keg-only 安装由 find_package 定位
+    if(OPENSSL_FOUND AND test_name STREQUAL "test_boot_integration")
+        target_link_libraries(${test_name} PRIVATE OpenSSL::Crypto)
     endif()
     
     add_test(NAME ${test_name} COMMAND ${test_name})
