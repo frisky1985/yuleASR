@@ -149,20 +149,24 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/common/CMakeLists.txt)
     add_subdirectory(src/common)
 endif()
 
-# DDS middleware (ETH-DDS integration)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
-    add_subdirectory(src/dds)
-endif()
+# DDS 中间件及以太网辅助模块 (eth_sm/ethernet/telemetry) 均为 POSIX 宿主组件,
+# 依赖 pthread/zlib 等, S32K312 裸机 (Cortex-M33, newlib 无 pthread) 不编译
+if(NOT CMAKE_CROSSCOMPILING)
+    # DDS middleware (ETH-DDS integration)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
+        add_subdirectory(src/dds)
+    endif()
 
-# ETH-DDS 辅助模块: EthSM / Ethernet driver / Telemetry
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/eth_sm/CMakeLists.txt)
-    add_subdirectory(src/eth_sm)
-endif()
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/ethernet/CMakeLists.txt)
-    add_subdirectory(src/ethernet)
-endif()
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/telemetry/CMakeLists.txt)
-    add_subdirectory(src/telemetry)
+    # ETH-DDS 辅助模块: EthSM / Ethernet driver / Telemetry
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/eth_sm/CMakeLists.txt)
+        add_subdirectory(src/eth_sm)
+    endif()
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/ethernet/CMakeLists.txt)
+        add_subdirectory(src/ethernet)
+    endif()
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/telemetry/CMakeLists.txt)
+        add_subdirectory(src/telemetry)
+    endif()
 endif()
 
 # Crypto Stack (CSM/CryIf/KeyM/SecOC) — DDS security 依赖链
