@@ -138,3 +138,5 @@ yuleDKCS (示例应用, v2.0.0)
 | P2 | integration CMake 死路径 | tests/integration/CMakeLists.txt:13-15 | ../unity 不存在 (实际 ../unit/framework); 三套 Unity 引导待收敛 |
 | P2 | 测试二进制入 git 已清理 | — | test_boot_integration 二进制已 git rm --cached + .gitignore |
 | P2 | Boot_Update MBEDTLS_USE 构建矩阵 | src/bsw/boot | 软件哈希路径 (sha256_compute) 已修复并加 NIST 向量, 建议 CI 同时覆盖两分支 |
+| P2 | static_analysis.py 误报 | tools/analysis/static_analysis.py | MISRA-C-8.1 对宏调用误判 (17209 条) + tests/qemu/third_party 未排除 (63% issues)。CI 已 continue-on-error 试点, 待校准后恢复硬门禁 |
+| P2 | Coverage Gate 覆盖率不足 | .github/workflows/ci.yml | 存量测试失败 (8 项) 致覆盖率 <35% 门禁。CI 已 continue-on-error 试点, 待测试修复后恢复 |
