@@ -203,8 +203,10 @@ void Boot_Loader_Jump(uint32_t target_addr)
     /* Disable interrupts */
 #if defined(__aarch64__)
     __asm volatile("msr daifset, #2" ::: "memory");
-#else
+#elif defined(__arm__) || defined(__thumb__)
     __asm volatile("cpsid i");
+#else
+    /* Non-ARM host (x86 CI/单测): no interrupt control in user space */
 #endif
 
     /* Disable SysTick and pending interrupts */
@@ -219,11 +221,13 @@ void Boot_Loader_Jump(uint32_t target_addr)
     Boot_Flash_Init();  /* flush pending operations */
 
     /* Set main stack pointer */
-#if defined(__aarch64__)
+#if defined(__aarch64__) || defined(__x86_64__)
     __asm volatile("mov sp, %0" : : "r"(msp));
-#else
+#elif defined(__arm__) || defined(__thumb__)
     __asm volatile("msr msp, %0" : : "r"(msp));
     __asm volatile("msr psp, %0" : : "r"(msp));
+#else
+    (void)msp;
 #endif
 
     /* Branch to application */
