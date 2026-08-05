@@ -4,7 +4,8 @@
 #include "Boot_Image.h"
 #include "Boot_Verify.h"
 #include <string.h>
-
+#include "mbedtls/sha256.h"
+#include "hash_algos.h"
 #if defined(MBEDTLS_USE)
 #include "mbedtls/sha256.h"
 #endif
@@ -105,19 +106,21 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     }
 #else
     {
-        /* Without incremental hash, read entire payload and hash once */
+        /* 流式哈希: 逐块 update, 避免旧实现 256B 缓冲按整包长度取哈希的越界读 */
         uint8_t page_buf[256];
         uint32_t remaining = g_ctx.bytes_written;
         uint32_t off = 0U;
-        uint32_t total = 0U;
+        sha256_state_t hash_ctx;
+
+        (void)sha256_init(&hash_ctx);
         while (remaining > 0U) {
             uint32_t chunk = (remaining < sizeof(page_buf)) ? remaining : sizeof(page_buf);
             (void)Boot_Flash_Read(g_ctx.slot_addr + sizeof(Boot_ImageHeader) + off, page_buf, chunk);
+            (void)sha256_update(&hash_ctx, page_buf, chunk);
             off += chunk;
             remaining -= chunk;
-            total += chunk;
         }
-        Boot_Verify_Hash(page_buf, total, hdr.hash);
+        (void)sha256_final(&hash_ctx, hdr.hash);
     }
 #endif
 

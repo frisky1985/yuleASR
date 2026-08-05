@@ -25,6 +25,13 @@ option(BUILD_EXAMPLES "Build example applications" OFF)
 option(ENABLE_COVERAGE "Enable code coverage" OFF)
 option(ENABLE_LTO "Enable Link Time Optimization" OFF)
 
+# Testing must be enabled BEFORE any add_subdirectory so module-level tests
+# (src/*/tests) register with ctest. enable_testing() is idempotent; the
+# BUILD_TESTING gate at the bottom still adds the top-level tests/ dir.
+if(BUILD_TESTING)
+    enable_testing()
+endif()
+
 # Set default build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "Build type" FORCE)
@@ -124,6 +131,11 @@ set(MBEDTLS_FATAL_WARNINGS OFF CACHE BOOL "Compiler warnings treated as errors" 
 set(DISABLE_PACKAGE_CONFIG_AND_INSTALL ON CACHE BOOL "Disable mbedTLS install" FORCE)
 add_subdirectory(third_party/mbedtls)
 
+# Hash 算法库 (sha1/sha224/sha256/sha384/sha512) — 先于 boot 挂载, boot 测试需链接 HashAlgos
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/CMakeLists.txt)
+    add_subdirectory(third_party/crypto/hash)
+endif()
+
 add_subdirectory(src/bsw/services)
 add_subdirectory(src/bsw/mcal)
 add_subdirectory(src/bsw/ecual)
@@ -131,6 +143,47 @@ add_subdirectory(src/bsw/boot)
 add_subdirectory(src/rte)
 add_subdirectory(src/bsw/os)
 add_subdirectory(src/platform)
+
+# Common utilities (eth_dds_common: eth_types/dds_log/eth_utils) — 先于 DDS 挂载
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/common/CMakeLists.txt)
+    add_subdirectory(src/common)
+endif()
+
+# DDS middleware (ETH-DDS integration)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
+    add_subdirectory(src/dds)
+endif()
+
+# ETH-DDS 辅助模块: EthSM / Ethernet driver / Telemetry
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/eth_sm/CMakeLists.txt)
+    add_subdirectory(src/eth_sm)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/ethernet/CMakeLists.txt)
+    add_subdirectory(src/ethernet)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/telemetry/CMakeLists.txt)
+    add_subdirectory(src/telemetry)
+endif()
+
+# Crypto Stack (CSM/CryIf/KeyM/SecOC) — DDS security 依赖链
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_stack/CMakeLists.txt)
+    add_subdirectory(src/crypto_stack)
+endif()
+
+# Bootloader (partition/rollback/secure_boot)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/CMakeLists.txt)
+    add_subdirectory(src/bootloader)
+endif()
+
+# AUTOSAR Adaptive 平台服务 (ara::com DDS + exec/sm)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/adaptive/CMakeLists.txt)
+    add_subdirectory(src/autosar/adaptive)
+endif()
+
+# AUTOSAR Classic RTE DDS 集成 (rte_dds)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/classic/CMakeLists.txt)
+    add_subdirectory(src/autosar/classic)
+endif()
 
 # ASW components (optional for embedded target)
 if(NOT CMAKE_CROSSCOMPILING OR BUILD_EXAMPLES)

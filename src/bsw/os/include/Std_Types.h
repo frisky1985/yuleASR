@@ -112,9 +112,10 @@ typedef struct
 /* NULL pointer definition */
 #ifndef NULL
     #define NULL    ((void *)0)
+#endif
+
 #ifndef NULL_PTR
     #define NULL_PTR ((void *)0)
-#endif
 #endif
 
 /* On/Off constants */

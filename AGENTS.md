@@ -141,6 +141,11 @@ yuletech-openspec/
 - 单元测试覆盖率 > 80%
 - 所有公共函数必须有 JSDoc 注释
 
+### Git 分支命名规则
+- **feature 分支一律按 `feat/xxx` 命名**（如 `feat/1.3.0`、`feat/ble-secure-channel`）
+- 禁止用版本号直接命名分支（如 `v1.3.0`）——版本号只用于 tag，避免分支/tag 同名造成 git 命令歧义
+- 其他分支类型参考: `fix/xxx`（修复）、`docs/xxx`（文档）、`chore/xxx`（杂项）、`release/xxx`（发布）
+
 ## 当前活跃变更
 
 查看 `openspec/changes/` 目录获取当前活跃变更列表。

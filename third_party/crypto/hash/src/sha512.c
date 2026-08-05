@@ -179,40 +179,34 @@ static void sha512_process_block(sha512_state_t* ctx, const uint8* block)
  */
 static void sha512_pad_message(sha512_state_t* ctx)
 {
-    uint32 i;
-    uint32 pad_len;
+    uint8 padding[HASH_SHA512_BLOCK_SIZE * 2];
+    uint32 buflen = ctx->buflen;
     uint64 msg_bit_len_lo;
     uint64 msg_bit_len_hi;
-    uint8 padding[HASH_SHA512_BLOCK_SIZE * 2];
 
     /* Calculate message length (128-bit representation) */
     msg_bit_len_lo = ctx->length.lo;
     msg_bit_len_hi = ctx->length.hi;
 
-    /* Calculate padding length */
-    i = (uint32)(ctx->length.lo >> 3) % HASH_SHA512_BLOCK_SIZE;
-    
-    /* Need: 1 byte (0x80) + 0-111 bytes (zeros) + 16 bytes (length) = 128 bytes total */
-    pad_len = (i < 112) ? (112 - i) : (240 - i);
+    /* Zero entire padding (incl. second block) to keep uninitialized bytes out of the digest */
+    (void)memset(padding, 0, sizeof(padding));
 
-    /* Start with 0x80 */
-    padding[0] = 0x80;
-    
-    /* Fill rest with zeros */
-    for (i = 1; i < pad_len; i++) {
-        padding[i] = 0x00;
+    /* FIPS 180-4: message tail + 0x80 + zeros + 128-bit big-endian length */
+    if (buflen > 0U) {
+        (void)memcpy(padding, ctx->buffer, buflen);
     }
+    padding[buflen] = 0x80;
 
-    /* Append original message length as 128-bit big-endian */
-    hash_store64_be(&padding[pad_len], msg_bit_len_hi);
-    hash_store64_be(&padding[pad_len + 8], msg_bit_len_lo);
-    pad_len += 16;
-
-    /* Process the padding block(s) */
-    sha512_process_block(ctx, padding);
-    
-    /* If we needed 2 blocks (i >= 112), process the second block */
-    if (pad_len > 128) {
+    if (buflen < 112U) {
+        /* Single block: length written at 112..127 */
+        hash_store64_be(&padding[112], msg_bit_len_hi);
+        hash_store64_be(&padding[120], msg_bit_len_lo);
+        sha512_process_block(ctx, padding);
+    } else {
+        /* Double block: length written at second block 240..255 */
+        hash_store64_be(&padding[240], msg_bit_len_hi);
+        hash_store64_be(&padding[248], msg_bit_len_lo);
+        sha512_process_block(ctx, padding);
         sha512_process_block(ctx, &padding[128]);
     }
 }

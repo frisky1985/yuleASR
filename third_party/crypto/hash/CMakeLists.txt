@@ -3,13 +3,17 @@
 cmake_minimum_required(VERSION 3.14)
 
 # Library target
+# NOTE: hash_autosar.c 为残缺半成品 — 其引用的 Hash_AutosarContextType /
+# HASH_MAX_CONTEXTS / HASH_STATE_* 等类型与宏在全仓库无定义, 且调用的
+# Sha1_Init/Sha256_Update 等 API 与 hash_algos.h 实际声明 (sha1_init/sha256_update)
+# 命名不符, 无法编译亦无法链接。该文件从未被构建过 (原 sha256.c 缺失致库未挂载),
+# 仓库内亦无任何 target 引用其 Hash_Autosar* 导出符号。暂从源列表排除,
+# 待补齐 AUTOSAR CryIf 适配层后再纳入。
 add_library(HashAlgos STATIC
     src/sha1.c
     src/sha224.c
-    src/sha256.c
     src/sha384.c
     src/sha512.c
-    src/hash_autosar.c
 )
 
 target_include_directories(HashAlgos

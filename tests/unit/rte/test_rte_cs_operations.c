@@ -621,44 +621,44 @@ TEST_MAIN_BEGIN()
     printf("\n--- RTE Client-Server Operations Tests ---\n");
 
     /* 1. Rte_Call_EngineControl_SetTargetRPM */
-    RUN_TEST(Rte_Call_EngineControl_SetTargetRPM_normal);
-    RUN_TEST(Rte_Call_EngineControl_SetTargetRPM_zero);
-    RUN_TEST(Rte_Call_EngineControl_SetTargetRPM_max);
+    RUN_TEST(test_Rte_Call_EngineControl_SetTargetRPM_normal);
+    RUN_TEST(test_Rte_Call_EngineControl_SetTargetRPM_zero);
+    RUN_TEST(test_Rte_Call_EngineControl_SetTargetRPM_max);
 
     /* 2. Rte_Call_DiagnosticManager_ReadDTC */
-    RUN_TEST(Rte_Call_DiagnosticManager_ReadDTC_normal);
-    RUN_TEST(Rte_Call_DiagnosticManager_ReadDTC_all_dtc);
-    RUN_TEST(Rte_Call_DiagnosticManager_ReadDTC_multi_call);
+    RUN_TEST(test_Rte_Call_DiagnosticManager_ReadDTC_normal);
+    RUN_TEST(test_Rte_Call_DiagnosticManager_ReadDTC_all_dtc);
+    RUN_TEST(test_Rte_Call_DiagnosticManager_ReadDTC_multi_call);
 
     /* 3. Rte_Read_EngineControl_RPM */
-    RUN_TEST(Rte_Read_EngineControl_RPM_normal);
-    RUN_TEST(Rte_Read_EngineControl_RPM_idle);
-    RUN_TEST(Rte_Read_EngineControl_RPM_zero);
+    RUN_TEST(test_Rte_Read_EngineControl_RPM_normal);
+    RUN_TEST(test_Rte_Read_EngineControl_RPM_idle);
+    RUN_TEST(test_Rte_Read_EngineControl_RPM_zero);
 
     /* 4. Rte_Write_EngineControl_Throttle */
-    RUN_TEST(Rte_Write_EngineControl_Throttle_normal);
-    RUN_TEST(Rte_Write_EngineControl_Throttle_full_open);
-    RUN_TEST(Rte_Write_EngineControl_Throttle_closed);
+    RUN_TEST(test_Rte_Write_EngineControl_Throttle_normal);
+    RUN_TEST(test_Rte_Write_EngineControl_Throttle_full_open);
+    RUN_TEST(test_Rte_Write_EngineControl_Throttle_closed);
 
     /* 5. Rte_Call_WatchdogManager_Reset */
-    RUN_TEST(Rte_Call_WatchdogManager_Reset_normal);
-    RUN_TEST(Rte_Call_WatchdogManager_Reset_multiple);
+    RUN_TEST(test_Rte_Call_WatchdogManager_Reset_normal);
+    RUN_TEST(test_Rte_Call_WatchdogManager_Reset_multiple);
 
     /* 6. 异步调用结果获取 */
-    RUN_TEST(Rte_GetAsyncResult_completed);
-    RUN_TEST(Rte_GetAsyncResult_pending);
-    RUN_TEST(Rte_GetAsyncResult_completed_with_error);
+    RUN_TEST(test_Rte_GetAsyncResult_completed);
+    RUN_TEST(test_Rte_GetAsyncResult_pending);
+    RUN_TEST(test_Rte_GetAsyncResult_completed_with_error);
 
     /* 7. 超时处理 */
-    RUN_TEST(Rte_GetAsyncResult_timeout);
+    RUN_TEST(test_Rte_GetAsyncResult_timeout);
 
     /* 8. 错误注入测试 */
-    RUN_TEST(Rte_GetAsyncResult_invalid_operation_id);
-    RUN_TEST(Rte_Call_DiagnosticManager_ReadDTC_null_pointer);
-    RUN_TEST(Rte_Read_EngineControl_RPM_null_pointer);
-    RUN_TEST(Rte_GetAsyncResult_null_pointer);
-    RUN_TEST(Rte_Call_EngineControl_SetTargetRPM_server_error);
-    RUN_TEST(Rte_Call_WatchdogManager_Reset_server_error);
-    RUN_TEST(Rte_Read_EngineControl_RPM_after_SetTargetRPM);
+    RUN_TEST(test_Rte_GetAsyncResult_invalid_operation_id);
+    RUN_TEST(test_Rte_Call_DiagnosticManager_ReadDTC_null_pointer);
+    RUN_TEST(test_Rte_Read_EngineControl_RPM_null_pointer);
+    RUN_TEST(test_Rte_GetAsyncResult_null_pointer);
+    RUN_TEST(test_Rte_Call_EngineControl_SetTargetRPM_server_error);
+    RUN_TEST(test_Rte_Call_WatchdogManager_Reset_server_error);
+    RUN_TEST(test_Rte_Read_EngineControl_RPM_after_SetTargetRPM);
 }
 TEST_MAIN_END()

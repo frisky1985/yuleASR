@@ -50,18 +50,18 @@ static const uint8_t sha512_expected[] = {
 
 static int test_sha1(void)
 {
-    Sha1_ContextType ctx;
-    uint8_t digest[SHA1_DIGEST_SIZE];
+    sha1_state_t ctx;
+    uint8_t digest[HASH_SHA1_DIGEST_SIZE];
     int i;
     int passed = 1;
     
     printf("Testing SHA-1...\n");
     
-    Sha1_Init(&ctx);
-    Sha1_Update(&ctx, sha1_test_input, strlen((const char*)sha1_test_input));
-    Sha1_Finish(&ctx, digest);
+    sha1_init(&ctx);
+    sha1_update(&ctx, sha1_test_input, strlen((const char*)sha1_test_input));
+    sha1_final(&ctx, digest);
     
-    for (i = 0; i < SHA1_DIGEST_SIZE; i++)
+    for (i = 0; i < HASH_SHA1_DIGEST_SIZE; i++)
     {
         if (digest[i] != sha1_expected[i])
         {
@@ -76,18 +76,18 @@ static int test_sha1(void)
 
 static int test_sha256(void)
 {
-    Sha256_ContextType ctx;
-    uint8_t digest[SHA256_DIGEST_SIZE];
+    sha256_state_t ctx;
+    uint8_t digest[HASH_SHA256_DIGEST_SIZE];
     int i;
     int passed = 1;
     
     printf("Testing SHA-256...\n");
     
-    Sha256_Init(&ctx);
-    Sha256_Update(&ctx, sha256_test_input, strlen((const char*)sha256_test_input));
-    Sha256_Finish(&ctx, digest);
+    sha256_init(&ctx);
+    sha256_update(&ctx, sha256_test_input, strlen((const char*)sha256_test_input));
+    sha256_final(&ctx, digest);
     
-    for (i = 0; i < SHA256_DIGEST_SIZE; i++)
+    for (i = 0; i < HASH_SHA256_DIGEST_SIZE; i++)
     {
         if (digest[i] != sha256_expected[i])
         {
@@ -102,18 +102,18 @@ static int test_sha256(void)
 
 static int test_sha512(void)
 {
-    Sha512_ContextType ctx;
-    uint8_t digest[SHA512_DIGEST_SIZE];
+    sha512_state_t ctx;
+    uint8_t digest[HASH_SHA512_DIGEST_SIZE];
     int i;
     int passed = 1;
     
     printf("Testing SHA-512...\n");
     
-    Sha512_Init(&ctx);
-    Sha512_Update(&ctx, sha512_test_input, strlen((const char*)sha512_test_input));
-    Sha512_Finish(&ctx, digest);
+    sha512_init(&ctx);
+    sha512_update(&ctx, sha512_test_input, strlen((const char*)sha512_test_input));
+    sha512_final(&ctx, digest);
     
-    for (i = 0; i < SHA512_DIGEST_SIZE; i++)
+    for (i = 0; i < HASH_SHA512_DIGEST_SIZE; i++)
     {
         if (digest[i] != sha512_expected[i])
         {
@@ -128,8 +128,8 @@ static int test_sha512(void)
 
 static int test_sha1_long_message(void)
 {
-    Sha1_ContextType ctx;
-    uint8_t digest[SHA1_DIGEST_SIZE];
+    sha1_state_t ctx;
+    uint8_t digest[HASH_SHA1_DIGEST_SIZE];
     uint8_t message[1000];
     int i;
     int passed = 1;
@@ -139,12 +139,12 @@ static int test_sha1_long_message(void)
     /* Fill with 'a' */
     memset(message, 'a', sizeof(message));
     
-    Sha1_Init(&ctx);
+    sha1_init(&ctx);
     for (i = 0; i < 1000; i++)  /* 1MB total */
     {
-        Sha1_Update(&ctx, message, sizeof(message));
+        sha1_update(&ctx, message, sizeof(message));
     }
-    Sha1_Finish(&ctx, digest);
+    sha1_final(&ctx, digest);
     
     printf("  SHA-1 (1MB): %s\n", passed ? "PASSED" : "FAILED");
     return passed;
