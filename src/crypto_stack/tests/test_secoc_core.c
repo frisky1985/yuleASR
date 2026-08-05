@@ -9,6 +9,7 @@
 #include "secoc_core.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 /* 测试用模拟数据 */
 static secoc_context_t *test_ctx = NULL;

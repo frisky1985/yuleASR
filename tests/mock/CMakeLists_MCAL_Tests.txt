@@ -333,6 +333,7 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_fee.c)
         MCAL_SRCS
             ${SRC_MCAL}/fee/src/Fee.c
             ${SRC_MCAL}/fee/src/Fee_Lcfg.c
+            ${SRC_MCAL}/mcu/src/Mcal.c
         MOCK_SRCS
             ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
@@ -422,8 +423,10 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c)
         TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c
         MCAL_SRCS
             ${SRC_MCAL}/uart/src/Uart.c
+            ${SRC_MCAL}/gpt/src/Gpt.c
         MOCK_SRCS
             ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+            ${MOCK_DIR}/dma_mock.c
     )
 endif()
 

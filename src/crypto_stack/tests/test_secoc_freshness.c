@@ -8,6 +8,7 @@
 #include "unity.h"
 #include "secoc_freshness.h"
 #include <string.h>
+#include <stdlib.h>
 
 static secoc_freshness_manager_t *test_mgr = NULL;
 
@@ -265,7 +266,7 @@ void test_freshness_handle_sync_response_should_succeed(void) {
     };
     /* 设置MAC */
     for (int i = 0; i < 8; i++) {
-        response.mac[i] = (uint8_t)((1000 >> (i * 8)) & 0xFF);
+        response.mac[i] = (uint8_t)((1000ULL >> (i * 8)) & 0xFF);
     }
     
     secoc_status_t status = secoc_freshness_handle_sync_response(

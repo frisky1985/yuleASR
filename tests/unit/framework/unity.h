@@ -208,6 +208,20 @@ extern Unity_Struct Unity;
         UNITY_TEST_ASSERT((_expected) == (_actual), _msg, __LINE__, __FILE__); \
     } while (0)
 
+/* Array assertion (standard Unity API) — compares element-by-element */
+#define TEST_ASSERT_EQUAL_UINT8_ARRAY(expected, actual, num_elements) \
+    do { \
+        const uint8_t* _exp = (const uint8_t*)(expected); \
+        const uint8_t* _act = (const uint8_t*)(actual); \
+        uint32_t _i; \
+        for (_i = 0; _i < (uint32_t)(num_elements); _i++) { \
+            char _msg[128]; \
+            snprintf(_msg, sizeof(_msg), "Array mismatch at index %lu: Expected %u but was %u", \
+                     (unsigned long)_i, (unsigned)_exp[_i], (unsigned)_act[_i]); \
+            UNITY_TEST_ASSERT(_exp[_i] == _act[_i], _msg, __LINE__, __FILE__); \
+        } \
+    } while (0)
+
 #define TEST_ASSERT_EQUAL_HEX16(expected, actual) \
     do { \
         const uint16_t _expected = (expected); \
