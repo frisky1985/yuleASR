@@ -36,12 +36,12 @@
 #define PLATFORM_LOCKSTEP_SW_VERSION            0x010000U
 
 /**
- * @brief 寄存器访问宏
+ * @brief 寄存器访问宏 (REG_READ32/REG_WRITE32 由 Std_Types.h 提供, 含 uintptr 转换)
  */
-#define REG_READ32(address)                     (*(volatile uint32*)(address))
-#define REG_WRITE32(address, value)             ((*(volatile uint32*)(address)) = (value))
+#ifndef REG_RMW32
 #define REG_RMW32(address, mask, value)         \
     REG_WRITE32((address), (REG_READ32(address) & ~(mask)) | ((value) & (mask)))
+#endif
 
 /**
  * @brief 时序宏
@@ -50,9 +50,13 @@
 #if defined(__aarch64__)
 #define PLATFORM_LOCKSTEP_DSB()                 __asm__ volatile ("dsb sy" ::: "memory")
 #define PLATFORM_LOCKSTEP_ISB()                 __asm__ volatile ("isb sy" ::: "memory")
-#else
+#elif defined(__arm__) || defined(__thumb__) || defined(__ARM_ARCH)
 #define PLATFORM_LOCKSTEP_DSB()                 __asm__ volatile ("dsb" ::: "memory")
 #define PLATFORM_LOCKSTEP_ISB()                 __asm__ volatile ("isb" ::: "memory")
+#else
+/* 非 ARM 宿主 (x86 CI/单测): 用编译器屏障代替, 保证可移植编译 */
+#define PLATFORM_LOCKSTEP_DSB()                 __asm__ volatile ("" ::: "memory")
+#define PLATFORM_LOCKSTEP_ISB()                 __asm__ volatile ("" ::: "memory")
 #endif
 
 /**
