@@ -36,6 +36,12 @@
 - ✅ ComM 状态机: 6状态 + 唤醒处理
 - ✅ Csm 密钥: KeyGenerate/Derive/Exchange
 - ✅ Dem 时间戳: 全局tick + 5处TODO替换
+- 🔲 合并主分支后存量测试失败 8 项 (2026-08-05, CI 全红暴露):
+  - mcal_can_test / mcal_gpt_test / mcal_adc_test / mcal_uart_test: SEGFAULT
+  - mcal_fee_test: ILLEGAL (未定义指令)
+  - mcal_port_test: 4 断言失败 (GPIO out dir / RefreshDir / GetVersionInfo / SetPinMode)
+  - mcal_lin_test: Failed
+  - s0_smoke_test: StartOS 后 exit timer 未触发 → 卡死 (FreeRTOS Posix 集成问题)
 
 #### P2 — 工程化
 - ✅ RTE CS Operations: 20 个 API, ASW 调度集成
