@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
     
@@ -38,7 +38,7 @@ jobs:
         python tools/analysis/static_analysis.py --output reports/static_analysis.json
     
     - name: Upload Analysis Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: static-analysis-report
         path: reports/static_analysis.json
@@ -75,10 +75,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
     
@@ -137,10 +137,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.10'
     
@@ -229,7 +229,7 @@ jobs:
           build-coverage | tee coverage-reports/coverage_summary.txt
     
     - name: Upload Coverage Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: coverage-reports/
@@ -301,7 +301,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Generate Documentation
       run: |
@@ -319,7 +319,7 @@ jobs:
         ls src/bsw/services >> docs/modules_summary.md
     
     - name: Upload Documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: documentation
         path: docs/
@@ -334,7 +334,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Create Release Package
       run: |
@@ -349,7 +349,7 @@ jobs:
         tar -czf yuleASR-${GITHUB_SHA::8}.tar.gz yuleASR
     
     - name: Upload Release
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: release-package
         path: release/*.tar.gz
