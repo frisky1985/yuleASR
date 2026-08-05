@@ -144,14 +144,17 @@ add_subdirectory(src/rte)
 add_subdirectory(src/bsw/os)
 add_subdirectory(src/platform)
 
-# Common utilities (eth_dds_common: eth_types/dds_log/eth_utils) — 先于 DDS 挂载
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/common/CMakeLists.txt)
-    add_subdirectory(src/common)
-endif()
-
-# DDS 中间件及以太网辅助模块 (eth_sm/ethernet/telemetry) 均为 POSIX 宿主组件,
-# 依赖 pthread/zlib 等, S32K312 裸机 (Cortex-M33, newlib 无 pthread) 不编译
+# ── POSIX 宿主中间件链 (common/dds/eth_sm/ethernet/telemetry/crypto_stack/
+#    bootloader/adaptive/classic) ─────────────────────────────────────────
+# 依赖 pthread/zlib/dirent 等 POSIX 接口与 DDS 类型, S32K312 裸机
+# (Cortex-M33, newlib 无 pthread) 无法编译。交叉构建时整体排除,
+# 与 src/asw 的 gate 模式一致; 宿主构建 (BUILD_TESTING/CI) 全部保留。
 if(NOT CMAKE_CROSSCOMPILING)
+    # Common utilities (eth_dds_common: eth_types/dds_log/eth_utils)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/common/CMakeLists.txt)
+        add_subdirectory(src/common)
+    endif()
+
     # DDS middleware (ETH-DDS integration)
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
         add_subdirectory(src/dds)
@@ -167,26 +170,26 @@ if(NOT CMAKE_CROSSCOMPILING)
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/telemetry/CMakeLists.txt)
         add_subdirectory(src/telemetry)
     endif()
-endif()
 
-# Crypto Stack (CSM/CryIf/KeyM/SecOC) — DDS security 依赖链
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_stack/CMakeLists.txt)
-    add_subdirectory(src/crypto_stack)
-endif()
+    # Crypto Stack (CSM/CryIf/KeyM/SecOC) — DDS security 依赖链
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/crypto_stack/CMakeLists.txt)
+        add_subdirectory(src/crypto_stack)
+    endif()
 
-# Bootloader (partition/rollback/secure_boot)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/CMakeLists.txt)
-    add_subdirectory(src/bootloader)
-endif()
+    # Bootloader (partition/rollback/secure_boot)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/CMakeLists.txt)
+        add_subdirectory(src/bootloader)
+    endif()
 
-# AUTOSAR Adaptive 平台服务 (ara::com DDS + exec/sm)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/adaptive/CMakeLists.txt)
-    add_subdirectory(src/autosar/adaptive)
-endif()
+    # AUTOSAR Adaptive 平台服务 (ara::com DDS + exec/sm)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/adaptive/CMakeLists.txt)
+        add_subdirectory(src/autosar/adaptive)
+    endif()
 
-# AUTOSAR Classic RTE DDS 集成 (rte_dds)
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/classic/CMakeLists.txt)
-    add_subdirectory(src/autosar/classic)
+    # AUTOSAR Classic RTE DDS 集成 (rte_dds)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/autosar/classic/CMakeLists.txt)
+        add_subdirectory(src/autosar/classic)
+    endif()
 endif()
 
 # ASW components (optional for embedded target)
