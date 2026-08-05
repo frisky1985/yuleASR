@@ -15,7 +15,6 @@
 #include <errno.h>
 #include <dirent.h>
 #include <ctype.h>
-#include <zlib.h>
 
 /*==============================================================================
  * 宏和常量
