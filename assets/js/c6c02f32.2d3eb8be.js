@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkyuleasr_docs=globalThis.webpackChunkyuleasr_docs||[]).push([[1610],{7605(a){a.exports=JSON.parse('{"tags":[{"label":"autosar","permalink":"/yuleASR/blog/tags/autosar","count":1},{"label":"welcome","permalink":"/yuleASR/blog/tags/welcome","count":1}]}')}}]);

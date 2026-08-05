@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkyuleasr_docs=globalThis.webpackChunkyuleasr_docs||[]).push([[2832],{7296(a){a.exports=JSON.parse('{"metadata":{"permalink":"/yuleASR/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);

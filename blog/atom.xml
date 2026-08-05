@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://frisky1985.github.io/yuleASR/blog</id>
+    <title>YuleTech AutoSAR BSW Platform Blog</title>
+    <updated>2025-04-23T00:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://frisky1985.github.io/yuleASR/blog"/>
+    <subtitle>YuleTech AutoSAR BSW Platform Blog</subtitle>
+    <icon>https://frisky1985.github.io/yuleASR/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[欢迎来到 YuleTech AutoSAR 平台]]></title>
+        <id>https://frisky1985.github.io/yuleASR/blog/welcome</id>
+        <link href="https://frisky1985.github.io/yuleASR/blog/welcome"/>
+        <updated>2025-04-23T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[欢迎来到 YuleTech AutoSAR BSW Platform 官方文档站！]]></summary>
+        <content type="html"><![CDATA[<p>欢迎来到 YuleTech AutoSAR BSW Platform 官方文档站！</p>
+<p>这是一个基于 AutoSAR 标准的开源基础软件平台，旨在降低汽车基础软件开发门槛。</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="项目亮点">项目亮点<a href="https://frisky1985.github.io/yuleASR/blog/welcome#%E9%A1%B9%E7%9B%AE%E4%BA%AE%E7%82%B9" class="hash-link" aria-label="项目亮点的直接链接" title="项目亮点的直接链接" translate="no">​</a></h2>
+<ul>
+<li class=""><strong>完整的层级实现</strong>：覆盖 MCAL、ECUAL、Service 层等各个层级</li>
+<li class=""><strong>标准规范</strong>：严格遵循 AutoSAR 规范</li>
+<li class=""><strong>开源免费</strong>：Apache 2.0 授权</li>
+<li class=""><strong>社区支持</strong>：活跃的开源社区和技术支持</li>
+</ul>
+<p>快来加入我们吧！</p>]]></content>
+        <author>
+            <name>YuleTech Team</name>
+            <uri>https://github.com/frisky1985</uri>
+        </author>
+        <category label="autosar" term="autosar"/>
+        <category label="welcome" term="welcome"/>
+    </entry>
+</feed>

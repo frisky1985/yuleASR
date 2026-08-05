@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkyuleasr_docs=globalThis.webpackChunkyuleasr_docs||[]).push([[7472],{5513(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"\u6b22\u8fce\u6765\u5230 YuleTech AutoSAR \u5e73\u53f0","permalink":"/yuleASR/blog/welcome","unlisted":false,"date":"2025-04-23T00:00:00.000Z"}]}')}}]);

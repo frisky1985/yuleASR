@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkyuleasr_docs=globalThis.webpackChunkyuleasr_docs||[]).push([[1903],{1912(s){s.exports=JSON.parse('{"blogBasePath":"/yuleASR/en/blog","blogTitle":"Blog","authorsListPath":"/yuleASR/en/blog/authors"}')}}]);

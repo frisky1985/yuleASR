@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkyuleasr_docs=globalThis.webpackChunkyuleasr_docs||[]).push([[2761],{2723(e){e.exports=JSON.parse('{"authors":[{"name":"YuleTech Team","title":"YuleTech Developer","url":"https://github.com/frisky1985","imageURL":"https://github.com/frisky1985.png","key":"yuletech","page":null,"count":1}]}')}}]);
