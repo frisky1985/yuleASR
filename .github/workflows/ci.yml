@@ -26,7 +26,7 @@ jobs:
     - name: Install ARM GCC
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc-arm-none-eabi
+        sudo apt-get install -y gcc-arm-none-eabi zlib1g-dev
     
     - name: Build BSW (ARM cross-compile)
       run: |
@@ -84,6 +84,8 @@ jobs:
     
     - name: Install dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y zlib1g-dev
         python -m pip install --upgrade pip
         pip install pytest
     
@@ -146,6 +148,8 @@ jobs:
     
     - name: Install dependencies (gcovr)
       run: |
+        sudo apt-get update
+        sudo apt-get install -y zlib1g-dev
         python -m pip install --upgrade pip
         pip install gcovr
     
