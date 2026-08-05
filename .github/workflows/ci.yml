@@ -97,7 +97,7 @@ jobs:
       run: |
         cmake -B build-test -S . -DBUILD_TESTING=ON
         cmake --build build-test -j$(nproc) --target all
-        cd build-test && ctest --output-on-failure || echo "⚠️  部分测试未通过，继续执行后续检查"
+        cd build-test && ctest --output-on-failure --timeout 60 || echo "⚠️  部分测试未通过，继续执行后续检查"
     
     - name: Architecture Validation
       run: |
