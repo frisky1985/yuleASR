@@ -1,19 +1,22 @@
 # MISRA Fix Task: misra-c2023-9.5
 
-> Generated: 2026-07-22T01:33:24.343528
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.051627
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-9.5
+## Rule: Where designated initializers used, array size shall be specified explicitly
 
-
+使用指定初始化器初始化数组对象时，应显式指定数组大小，避免隐式大小导致不可预期的行为
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 79 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 48 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM_Lcfg.c` | 195 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM_Lcfg.c` | 64 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM_Lcfg.c` | 160 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 171 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry.c` | 16 | 0 | misra violation 905 with no text in the supplied rule-texts-file [misra-c2012-9. |
 
 ## Fix Checklist
 

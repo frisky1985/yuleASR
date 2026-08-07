@@ -1,12 +1,12 @@
 # MISRA Fix Task: misra-c2023-20.2
 
-> Generated: 2026-07-22T01:33:24.341632
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.043769
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-20.2
+## Rule: #include directives for standard headers
 
-
+标准头文件的包含
 
 ## Violations
 
@@ -16,6 +16,23 @@
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto.c` | 1 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
 | 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Tp.c` | 1 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
 | 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Uds.c` | 1 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linNm/src/LinNm.c` | 1 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethtrcv/src/EthTrcv.c` | 1 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 43 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 48 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 97 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 109 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 117 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 121 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 125 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 129 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 133 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 137 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 141 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 181 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 209 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 217 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/third_party/FreeRTOS-Kernel/include/deprecated_definitions.h` | 226 | 0 | The hash and double-hash preprocessor operators should not be used [misra-c2012- |
 
 ## Fix Checklist
 

@@ -1,12 +1,12 @@
 # MISRA Fix Task: misra-c2023-9.2
 
-> Generated: 2026-07-22T01:33:24.343336
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.051259
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-9.2
+## Rule: Braces in initializer lists
 
-
+初始化列表中的括号应正确匹配
 
 ## Violations
 
@@ -14,12 +14,10 @@
 |--:|:-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/WdgM_Cfg.c` | 101 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/src/ComM_Lcfg.c` | 92 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 30 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 79 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 169 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c` | 124 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c` | 82 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/src/CanTrcv_Lcfg.c` | 37 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIP_Lcfg.c` | 39 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 168 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp_Lcfg.c` | 26 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/utils/eth_utils.c` | 52 | 0 | Initializer for aggregate/union shall be enclosed in braces [misra-c2012-9.2] |
 
 ## Fix Checklist
 

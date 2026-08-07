@@ -1,19 +1,20 @@
 # MISRA Fix Task: misra-c2023-21.8
 
-> Generated: 2026-07-22T01:33:24.342201
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.046145
+> Severity: advisory
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-21.8
+## Rule: Setjmp and longjmp should not be used
 
-
+不应使用 setjmp/longjmp
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 220 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 225 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 221 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 226 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c` | 720 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
 
 ## Fix Checklist
 

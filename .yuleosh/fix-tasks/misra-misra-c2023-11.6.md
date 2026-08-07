@@ -1,18 +1,20 @@
 # MISRA Fix Task: misra-c2023-11.6
 
-> Generated: 2026-07-22T01:33:24.339419
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.021795
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-11.6
+## Rule: Cast between pointer to object and pointer to function
 
-
+对象指针和函数指针之间不得进行转换
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 211 | 0 | Cast between pointer to void and arithmetic type shall not be performed [misra-c |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/exec/process_manager.c` | 96 | 0 | Cast between pointer to void and arithmetic type shall not be performed [misra-c |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 235 | 0 | Cast between pointer to void and arithmetic type shall not be performed [misra-c |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/core/dds_entity.c` | 24 | 0 | Cast between pointer to void and arithmetic type shall not be performed [misra-c |
 
 ## Fix Checklist
 

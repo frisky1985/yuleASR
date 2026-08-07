@@ -1,20 +1,34 @@
 # MISRA Fix Task: misra-c2023-17.2
 
-> Generated: 2026-07-22T01:33:24.340528
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.031275
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-17.2
+## Rule: Functions shall not call themselves directly
 
-
+函数不应直接递归调用自身
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 467 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 530 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dem/legacy/dem.c` | 540 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 137 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 240 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 567 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 85 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 237 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 247 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 301 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 314 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 328 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 341 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 516 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 517 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 519 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 520 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 522 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 607 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 608 | 0 | A function should not call itself directly or indirectly [misra-c2012-17.2] |
 
 ## Fix Checklist
 

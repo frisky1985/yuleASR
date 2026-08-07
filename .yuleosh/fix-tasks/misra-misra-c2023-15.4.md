@@ -1,21 +1,25 @@
 # MISRA Fix Task: misra-c2023-15.4
 
-> Generated: 2026-07-22T01:33:24.340131
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.025732
+> Severity: advisory
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-15.4
+## Rule: Single point of exit
 
-
+函数应有单一退出点
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 111 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 225 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Flash.c` | 69 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c` | 663 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 557 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 111 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/_crypto_hsm_aes_impl.c` | 225 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/src/dcm_transfer.c` | 1152 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP.c` | 670 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry_dds.c` | 59 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 304 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 331 | 0 | No unconditional branch to case label in switch [misra-c2012-15.4] |
 
 ## Fix Checklist
 

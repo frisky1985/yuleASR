@@ -1,0 +1,51 @@
+{
+  "report_type": "incremental",
+  "generated_at": "2026-08-07T12:39:49.177921",
+  "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
+  "layers": [
+    {
+      "layer": 3,
+      "status": "passed",
+      "commit": "ab0963b9",
+      "started_at": "2026-08-07T12:39:44.747286",
+      "completed_at": "2026-08-07T12:39:49.033610",
+      "stages_summary": {
+        "total": 3,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 1
+      },
+      "stages": [
+        {
+          "name": "e2e-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "version-check",
+          "status": "skipped",
+          "detail": "No pyproject.toml"
+        },
+        {
+          "name": "evidence-pack",
+          "status": "passed",
+          "detail": "Compliance pack generated"
+        }
+      ],
+      "coverage": null,
+      "errors": []
+    }
+  ],
+  "misra": {
+    "total_violations": 36219,
+    "required": 14498,
+    "advisory": 20530,
+    "violations_per_kloc": 119.41,
+    "rules_violated": 87,
+    "files_affected": 758
+  },
+  "c_coverage": {
+    "line_rate": 75.84,
+    "branch_rate": 0.0
+  }
+}

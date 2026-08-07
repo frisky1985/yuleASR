@@ -1,19 +1,33 @@
 # MISRA Fix Task: misra-c2023-7.4
 
-> Generated: 2026-07-22T01:33:24.342615
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.047892
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-7.4
+## Rule: 不应使用字符串字面量作为条件表达式
 
-
+字符串字面量不得用作条件表达式或布尔上下文中的操作数
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 309 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 310 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 265 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_cryif.c` | 310 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 222 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 223 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 332 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 346 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_csm.c` | 125 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_csm.c` | 173 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_csm.c` | 210 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_csm.c` | 245 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 480 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_manager.c` | 710 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/tests/test_dds_auth.c` | 163 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/tests/test_dds_auth.c` | 182 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/tests/test_dds_crypto.c` | 252 | 0 | String literal assigned to pointer shall have const-qualified char type [misra-c |
 
 ## Fix Checklist
 

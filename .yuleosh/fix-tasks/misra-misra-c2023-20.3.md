@@ -1,12 +1,12 @@
 # MISRA Fix Task: misra-c2023-20.3
 
-> Generated: 2026-07-22T01:33:24.341724
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.043899
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-20.3
+## Rule: #include shall not be within comments
 
-
+#include 不应出现在注释内
 
 ## Violations
 
@@ -16,6 +16,8 @@
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto.c` | 1 | 0 | misra violation 2003 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Tp.c` | 1 | 0 | misra violation 2003 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Uds.c` | 1 | 0 | misra violation 2003 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linNm/src/LinNm.c` | 1 | 0 | misra violation 2003 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethtrcv/src/EthTrcv.c` | 1 | 0 | misra violation 2003 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

@@ -1,28 +1,40 @@
 # MISRA Fix Task: misra-c2023-10.8
 
-> Generated: 2026-07-22T01:33:24.339210
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.020889
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-10.8
+## Rule: Casting should not remove const/volatile
 
-
+强制类型转换不应移除 const 或 volatile 限定
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c` | 150 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c` | 159 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_io_control.c` | 379 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c` | 176 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_security.c` | 184 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c` | 99 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory.c` | 111 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c` | 113 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_routine.c` | 123 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 176 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
-| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 200 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c` | 441 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c` | 688 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c` | 788 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c` | 893 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c` | 1031 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c` | 265 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_partition.c` | 627 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/sd/src/Sd.c` | 414 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/sd/src/Sd.c` | 489 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM.c` | 172 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/bswm/src/BswM.c` | 80 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantp/src/CanTp.c` | 606 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_core.c` | 670 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 334 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 340 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 333 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/tests/test_dds_eth_transport.c` | 231 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 459 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 140 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/time_filter.c` | 303 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/cbs/cbs.c` | 197 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 176 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 200 | 0 | Composite expression shall not be cast to different essential type [misra-c2012- |
 
 ## Fix Checklist
 

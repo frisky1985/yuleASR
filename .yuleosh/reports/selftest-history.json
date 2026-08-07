@@ -1,0 +1,57 @@
+[
+  {
+    "generated_at": "2026-08-05T12:34:00.806152",
+    "pass_rate": 0.0,
+    "line_rate": 98.55,
+    "branch_rate": 0.0,
+    "function_rate": 100.0,
+    "mc_dc_rate": null,
+    "total_tests": 0,
+    "total_passed": 0,
+    "total_failed": 0
+  },
+  {
+    "generated_at": "2026-08-05T12:55:29.034234",
+    "pass_rate": 0.0,
+    "line_rate": 98.55,
+    "branch_rate": 0.0,
+    "function_rate": 100.0,
+    "mc_dc_rate": null,
+    "total_tests": 0,
+    "total_passed": 0,
+    "total_failed": 0
+  },
+  {
+    "generated_at": "2026-08-05T12:59:55.290576",
+    "pass_rate": 0.0,
+    "line_rate": 98.55,
+    "branch_rate": 0.0,
+    "function_rate": 100.0,
+    "mc_dc_rate": null,
+    "total_tests": 0,
+    "total_passed": 0,
+    "total_failed": 0
+  },
+  {
+    "generated_at": "2026-08-05T13:17:30.105823",
+    "pass_rate": 0.0,
+    "line_rate": 98.55,
+    "branch_rate": 0.0,
+    "function_rate": 100.0,
+    "mc_dc_rate": null,
+    "total_tests": 0,
+    "total_passed": 0,
+    "total_failed": 0
+  },
+  {
+    "generated_at": "2026-08-05T13:23:33.007664",
+    "pass_rate": 0.0,
+    "line_rate": 98.55,
+    "branch_rate": 0.0,
+    "function_rate": 100.0,
+    "mc_dc_rate": null,
+    "total_tests": 0,
+    "total_passed": 0,
+    "total_failed": 0
+  }
+]

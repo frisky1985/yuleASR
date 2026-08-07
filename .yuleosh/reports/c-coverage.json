@@ -1,0 +1,118 @@
+{
+  "success": true,
+  "lcov_file": "/Users/stefan/.openclaw/workspace/yuleASR/build-coverage-b19/bin/coverage-filtered.info",
+  "html_dir": "/Users/stefan/.openclaw/workspace/yuleASR/build-coverage-b19/bin/coverage-report-html",
+  "totals": {
+    "lines": {
+      "found": 799,
+      "hit": 606
+    },
+    "functions": {
+      "found": 107,
+      "hit": 96
+    },
+    "branches": {
+      "found": 0,
+      "hit": 0
+    }
+  },
+  "line_rate": 75.84,
+  "branch_rate": 0.0,
+  "total_files": 7,
+  "gate_passed": null,
+  "gate_details": null,
+  "files": [
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/coverage_run/Det.c",
+      "line_rate": 64.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 25,
+        "hit": 16
+      },
+      "functions": {
+        "found": 6,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/coverage_run/test_crc_coverage.c",
+      "line_rate": 85.81,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 155,
+        "hit": 133
+      },
+      "functions": {
+        "found": 27,
+        "hit": 27
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/coverage_run/test_mcal_dio.c",
+      "line_rate": 96.53,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 202,
+        "hit": 195
+      },
+      "functions": {
+        "found": 34,
+        "hit": 33
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/coverage_run/test_mcal_wdg.c",
+      "line_rate": 100.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 17,
+        "hit": 17
+      },
+      "functions": {
+        "found": 9,
+        "hit": 9
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/dio/src/Dio.c",
+      "line_rate": 84.56,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 136,
+        "hit": 115
+      },
+      "functions": {
+        "found": 11,
+        "hit": 11
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/wdg/src/Wdg.c",
+      "line_rate": 52.97,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 202,
+        "hit": 107
+      },
+      "functions": {
+        "found": 15,
+        "hit": 10
+      }
+    },
+    {
+      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc.c",
+      "line_rate": 37.1,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 62,
+        "hit": 23
+      },
+      "functions": {
+        "found": 5,
+        "hit": 4
+      }
+    }
+  ],
+  "module_gate_details": []
+}

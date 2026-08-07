@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-10.5
 
-> Generated: 2026-07-26T13:15:37.455968
+> Generated: 2026-08-07T12:39:04.020365
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -16,6 +16,7 @@
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c` | 307 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
 | 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c` | 308 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
 | 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c` | 309 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 399 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
 
 ## Fix Checklist
 

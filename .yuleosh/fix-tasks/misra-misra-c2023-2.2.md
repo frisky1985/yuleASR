@@ -1,21 +1,29 @@
 # MISRA Fix Task: misra-c2023-2.2
 
-> Generated: 2026-07-22T01:33:24.340843
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.035241
+> Severity: required
+> Spec Ref: SWE-MISRA-S1; SWE-MISRA-DEV1
 
-## Rule: misra-c2023-2.2
+## Rule: Source code shall not contain dead code
 
-
+源代码不得包含死代码（无法到达的代码）
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 125 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 126 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 265 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 271 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_partition.c` | 381 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 195 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 354 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/can/src/Can.c` | 382 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 125 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 126 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 265 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 271 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.c` | 201 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 91 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 98 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 125 | 0 | Source code shall only use /* ... */ style comments [misra-c2012-2.2] |
 
 ## Fix Checklist
 

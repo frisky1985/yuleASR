@@ -1,18 +1,19 @@
 # MISRA Fix Task: misra-c2023-16.3
 
-> Generated: 2026-07-22T01:33:24.340441
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.030932
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-16.3
+## Rule: Body of switch shall be a compound statement
 
-
+switch 主体应为复合语句（花括号）
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dcm/legacy/dcm_memory_pool.c` | 656 | 0 | Unconditional break shall terminate every non-empty switch clause [misra-c2012-1 |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/exec/resource_manager.c` | 317 | 0 | Unconditional break shall terminate every non-empty switch clause [misra-c2012-1 |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_manager.c` | 570 | 0 | Unconditional break shall terminate every non-empty switch clause [misra-c2012-1 |
 
 ## Fix Checklist
 

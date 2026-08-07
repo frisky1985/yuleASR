@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-8.6
 
-> Generated: 2026-07-19T23:56:43.928315
+> Generated: 2026-08-07T12:39:04.049069
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -11,42 +11,323 @@
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files: CanTSyn.c, ComM.c/h, ComM_Cfg.h, SecOC.c
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTsyn.c` | 509 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6] |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 509 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.6] |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/tests/test_bootloader.c` | 561 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/tests/test_e2e_full.c` | 780 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c` | 26 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_verify.c` | 103 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 408 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Verify.c` | 102 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 122 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Verify.c` | 110 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 115 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Verify.c` | 69 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 187 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 201 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 218 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Loader.c` | 242 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 223 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Hsm.c` | 108 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 99 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Hsm.c` | 45 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 93 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Hsm.c` | 65 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 94 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Hsm.c` | 85 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 98 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 281 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Signal.c` | 33 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 290 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Signal.c` | 104 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someipxf/src/SomeIpXf_Test.c` | 401 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/_xcp_cmd_daq_impl.c` | 5 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 513 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 31 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp_Test.c` | 369 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/stbm/src/StbM_Test.c` | 368 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ramtst/src/RamTst.c` | 253 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/ramtst/src/RamTst.c` | 548 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ramtst/src/RamTst.c` | 285 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/ramtst/src/RamTst.c` | 578 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ramtst/src/RamTst.c` | 306 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/ramtst/src/RamTst.c` | 755 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ramtst/src/RamTst.c` | 414 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 40 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/ramtst/src/RamTst.c` | 709 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 416 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 550 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 43 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 353 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 586 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 45 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 385 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_main_bulk_impl.c` | 622 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/_nvm_write_impl.c` | 417 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/tcpip/src/TcpIp.c` | 222 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 59 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 50 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/tcpip/src/TcpIp.c` | 286 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 51 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 74 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 52 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/tcpip/src/TcpIp.c` | 327 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 53 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 67 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 54 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/tcpip/src/TcpIp.c` | 382 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 55 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/soad/src/SoAd_Test.c` | 81 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 56 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 406 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 57 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 61 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 58 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 459 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 59 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 111 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 60 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 479 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 61 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 552 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 62 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Signal.c` | 40 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 63 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 596 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 64 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 632 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 65 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Signal.c` | 111 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 66 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 661 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 67 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Signal.c` | 152 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 68 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 767 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 69 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 300 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 70 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 793 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 71 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Confirmation.c` | 68 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 72 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 867 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 73 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Main.c` | 102 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 74 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 899 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 75 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Main.c` | 47 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 76 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 947 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 77 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Main.c` | 128 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 78 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 966 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 79 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 129 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 80 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 974 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 81 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com.c` | 135 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 82 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 108 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 83 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 220 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 84 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 126 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 85 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 264 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 86 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 143 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 87 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 284 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 88 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 158 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 89 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 400 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 90 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 260 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 91 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 289 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 92 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 564 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 93 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 310 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 94 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 584 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 95 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 345 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 96 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 679 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 97 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 362 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 98 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 694 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 99 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 387 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 100 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 732 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 101 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 418 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 102 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 771 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 103 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 524 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 104 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1251 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 547 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1267 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 570 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1295 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 109 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 592 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 110 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1330 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 111 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 616 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 112 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 949 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 113 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 631 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 114 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 969 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 115 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 663 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 116 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1007 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 117 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 692 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 118 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1070 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 119 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 727 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 120 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1113 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 121 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 76 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 122 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 133 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 123 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 768 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 124 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1155 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 125 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 818 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 126 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1523 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 127 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 919 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 128 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 442 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 129 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 930 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 130 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 466 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 131 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/xcp/src/Xcp.c` | 957 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 132 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 312 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 133 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp.c` | 114 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 134 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/src/J1939Tp.c` | 93 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 135 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp.c` | 128 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 136 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/src/J1939Tp.c` | 155 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 137 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp.c` | 181 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 138 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/src/J1939Tp.c` | 281 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 139 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp.c` | 230 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 140 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/src/J1939Tp.c` | 309 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 141 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/j1939tp/src/J1939Tp.c` | 272 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 142 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/j1939tp/src/J1939Tp.c` | 266 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 143 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt.c` | 108 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 144 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/src/Dlt.c` | 140 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 145 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt.c` | 133 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 146 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/src/Dlt.c` | 238 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 147 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt.c` | 260 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 148 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/src/Dlt.c` | 314 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 149 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt.c` | 605 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 150 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/src/Dlt.c` | 385 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 151 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/dlt/src/Dlt.c` | 72 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/src/Dlt.c` | 101 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 131 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 194 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 172 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 231 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 195 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 348 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 159 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 231 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 160 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 395 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 161 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 252 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 162 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 279 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 163 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 294 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 164 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 258 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 165 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 312 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 166 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 426 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 167 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linSM/src/LinSM.c` | 342 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 168 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/linsm/src/LinSM.c` | 456 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 169 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM.c` | 546 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 170 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ethsm/src/EthSM.c` | 49 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 171 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM.c` | 582 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 172 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ethsm/src/EthSM.c` | 65 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 173 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM.c` | 631 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 174 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ethsm/src/EthSM.c` | 145 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 175 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM.c` | 781 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 176 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ethsm/src/EthSM.c` | 129 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 177 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethSm/src/EthSM_Lcfg.c` | 292 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 178 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ethsm/src/EthSM_Lcfg.c` | 29 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 179 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 126 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 180 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 412 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 181 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 152 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 182 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 456 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 183 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 247 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 184 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 531 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 185 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 298 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 186 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 508 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 187 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 343 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 188 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 554 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 189 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 409 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 190 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 436 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 191 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 431 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 192 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 616 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 193 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 487 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 194 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 648 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 195 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 569 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 196 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 693 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 197 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/linTp/src/LinTp.c` | 97 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 198 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/lntm/src/LinTp.c` | 361 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 199 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/frtp/src/FrTp_Lcfg.c` | 132 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 200 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/frtp/src/FrTp.c` | 64 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 201 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 102 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 202 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 43 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 203 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 113 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 204 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 69 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 205 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 119 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 206 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 182 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 207 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 151 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 208 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 92 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 209 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 190 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 210 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 217 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 211 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 209 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 212 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 250 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 213 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/someipsd/src/SomeIpSd.c` | 230 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 214 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someip/src/SomeIpSd.c` | 287 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 215 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 261 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 216 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/fim/src/FiM.c` | 300 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 217 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 317 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 218 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/fim/src/FiM.c` | 353 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 219 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 340 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 220 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/fim/src/FiM.c` | 420 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 221 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 378 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 222 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/fim/src/FiM.c` | 373 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 223 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ipdum/src/IpduM_Lcfg.c` | 263 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 224 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ipdum/src/IpduM_Lcfg.c` | 28 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 225 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ipdum/src/IpduM.c` | 195 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 226 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ipdum/src/IpduM.c` | 39 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 227 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ipdum/src/IpduM.c` | 210 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 228 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ipdum/src/IpduM.c` | 51 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 229 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ipdum/src/IpduM.c` | 226 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 230 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ipdum/src/IpduM.c` | 112 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 231 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ipdum/src/IpduM.c` | 431 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 232 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/ipdum/src/IpduM.c` | 97 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 233 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP.c` | 132 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 234 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIP.c` | 48 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 235 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP.c` | 194 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 236 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIP.c` | 70 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 237 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP.c` | 296 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 238 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIP.c` | 89 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 239 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP.c` | 494 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 240 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIP.c` | 253 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 241 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/doIP/src/DoIP_Lcfg.c` | 230 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 242 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/doip/src/DoIP_Lcfg.c` | 164 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 243 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/canNm/src/CanNm.c` | 578 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 244 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/canm/src/CanNm.c` | 464 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 245 | `/Users/stefan/.openclaw/workspace/yuleASR/src/ethernet/tests/test_eth_manager.c` | 1287 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 246 | `/Users/stefan/.openclaw/workspace/yuleASR/src/eth_sm/tests/test_eth_sm.c` | 794 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 247 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_freshness.c` | 414 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 248 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_cryif.c` | 378 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 249 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 411 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 250 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_csm.c` | 411 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 251 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_core.c` | 22 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 252 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_freshness.c` | 15 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 253 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_core.c` | 28 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 254 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_freshness.c` | 20 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 255 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_core.c` | 348 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 256 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 1028 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 257 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 56 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 258 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry.c` | 34 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 259 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 61 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 260 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry_dds.c` | 27 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 261 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 66 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 262 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry_dds.c` | 21 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 263 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/tests/test_dds_eth_transport.c` | 308 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 264 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/tests/test_runner.c` | 74 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 265 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/tests/test_runner.c` | 82 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 266 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/tests/test_runner.c` | 90 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 267 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/runtime/dds_runtime.c` | 558 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 268 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_manager.c` | 22 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 269 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/tests/test_dds_core.c` | 208 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 270 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/tests/test_dds_core.c` | 35 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 271 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/tests/test_dds_core.c` | 56 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 272 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tests/test_tsn_stack.c` | 471 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 273 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 16 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 274 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 23 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 275 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_reader.c` | 80 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 276 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 11 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 277 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 14 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 278 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_qos.c` | 78 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 279 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 18 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 280 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 25 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 281 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_topic.c` | 301 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 282 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/unity.c` | 18 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 283 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/unity.c` | 22 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 284 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 15 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 285 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 21 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 286 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_domain.c` | 280 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 287 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 16 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 288 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 23 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 289 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_writer.c` | 84 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 290 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 18 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 291 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 245 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 292 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_subscriber.c` | 25 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 293 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 18 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 294 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 202 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 295 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_publisher.c` | 25 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 296 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 14 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 297 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 18 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 298 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_cdr.c` | 87 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 299 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 18 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 300 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 22 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 301 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/test_buffer_pool.c` | 89 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 302 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/examples/hello_world/main.c` | 156 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 303 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_udp.c` | 249 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 304 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_tcpip_compat.c` | 65 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 305 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_udp.c` | 262 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 306 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_tcpip_compat.c` | 71 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 307 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_socket.c` | 183 | 0 | An identifier with external linkage shall have exactly one external definition [ |
+| 308 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_tcpip_compat.c` | 31 | 0 | An identifier with external linkage shall have exactly one external definition [ |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。CanTSyn标识符已定义
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-8.6: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

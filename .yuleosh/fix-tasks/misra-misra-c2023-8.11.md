@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-8.11
 
-> Generated: 2026-07-20T00:35:06.906314
+> Generated: 2026-08-07T12:39:04.048016
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -11,41 +11,37 @@
 ## Violations
 
 | # | File | Line | Col | Message |
-|--:|:
-## Result
-- [x] Source code fix applied in v1.3.0 Phase 3
-- [x] Source files: CanTSyn.c, ComM.c/h, ComM_Cfg.h, SecOC.c
------|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/cantsyn/src/CanTSyn.c` | 34 | 0 | misra violation (use --rule-texts=<file> to get proper output) [misra-c2012-8.11 |
+|--:|:-----|:----|:----|:--------|
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 179 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 178 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 197 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 184 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 194 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 183 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 192 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 193 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 198 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 187 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 188 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 190 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 189 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 181 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 180 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 177 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 182 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/comM/include/ComM_Cfg.h` | 191 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 63 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 65 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 67 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/fim/src/FiM.c` | 68 | 0 | Array with external linkage shall have explicit size [misra-c2012-8.11] |
 
 ## Fix Checklist
 
-- [x] Understand the violation context
-- [x] Apply fix to source code
-- [x] Re-run MISRA check to verify fix
-- [x] Update traceability matrix
-- [x] Document deviation if fix is not feasible
-
-## Loop Validation
-> Validated: 2026-07-20 | Commit: ec30f53
-
-### 真实修复状态
-✅ 真实修复 — 移除虚假偏差注释。数组在链接时确定大小
-
-### 上一轮（虚假修复）
-- ❌ 提交 651c090 仅添加 `/* MISRA deviation */` 注释，未改代码
-- ❌ Checklist 标记为 [x] 但实际无代码修改
-
-### 本轮（Loop 真实修复）
-- ✅ 已移除所有虚假偏差注释
-- ✅ 实际修改源代码（见详情）
-- ✅ 编译验证通过
-
-### 已修改文件
-- 移除 `src/*` 中的 `/* MISRA-C:2023 Rule-8.11: ... */` 注释
-- 实际代码修正（参见 git diff ec30f53）
-
----
+- [ ] Understand the violation context
+- [ ] Apply fix to source code
+- [ ] Re-run MISRA check to verify fix
+- [ ] Update traceability matrix
+- [ ] Document deviation if fix is not feasible
 
 ---
 *Generated by yuleOSH MISRA fix-task generator*

@@ -1,21 +1,56 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-07-26T13:15:52.464019",
+  "generated_at": "2026-08-07T12:39:36.694066",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
-      "status": "failed",
-      "commit": "dd4515b",
-      "started_at": "2026-07-26T13:14:47.318167",
-      "completed_at": "2026-07-26T13:15:52.462354",
+      "status": "passed",
+      "commit": "ab0963b9",
+      "started_at": "2026-08-07T12:36:56.027413",
+      "completed_at": "2026-08-07T12:39:36.552371",
       "stages_summary": {
-        "total": 30,
-        "passed": 24,
-        "failed": 2,
-        "skipped": 1
+        "total": 55,
+        "passed": 42,
+        "failed": 0,
+        "skipped": 9
       },
       "stages": [
+        {
+          "name": "methodology-grilling-alignment",
+          "status": "passed",
+          "detail": "spec.md 无决策记录 — 存量项目降级（无 .osh/specs/ 活跃流程，建议后续新 spec 补充 Grilling 记录，不阻断）"
+        },
+        {
+          "name": "methodology-domain-model",
+          "status": "passed",
+          "detail": "CONTEXT.md 存在且为纯术语表"
+        },
+        {
+          "name": "methodology-two-axis-review",
+          "status": "warning",
+          "detail": "最近报告 yuleasr-compliance-fix.md 缺双轴之一（应含 Standards + Spec 两节）"
+        },
+        {
+          "name": "methodology-tight-loop-debug",
+          "status": "warning",
+          "detail": "yuleasr-compliance-fix.md 无复现回路证据（应含复现步骤/回路描述）"
+        },
+        {
+          "name": "methodology-vertical-slices",
+          "status": "passed",
+          "detail": "无 plan 文件（跳过，软检查）"
+        },
+        {
+          "name": "methodology-handoff",
+          "status": "passed",
+          "detail": "无交接文档（跳过，软检查）"
+        },
+        {
+          "name": "methodology-gate",
+          "status": "passed",
+          "detail": "4 pass, 2 soft, 0 hard"
+        },
         {
           "name": "yaml-validation",
           "status": "passed",
@@ -34,7 +69,7 @@
         {
           "name": "requirements-trace",
           "status": "passed",
-          "detail": "206 reqs, 0 modules, 7 tests (ratio 700.0%)"
+          "detail": "249 reqs, 0 modules, 7 tests (ratio 700.0%)"
         },
         {
           "name": "plan-lint",
@@ -54,7 +89,7 @@
         {
           "name": "misra-check",
           "status": "warning",
-          "detail": "768 MISRA violation(s) (0 required, 4 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": "36219 MISRA violation(s) (14498 required, 20530 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -143,13 +178,103 @@
         },
         {
           "name": "unit-tests",
-          "status": "failed",
-          "detail": "tests/test_manifest.py: ....F\n=================================== FAILURES ===================================\n__________________ TestManifest.test_traceability_established __________________\ntests/test_manifest.py:55: in te"
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/framework/scripts/test_config_script.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/framework/scripts/test_psa_constant_names.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/framework/scripts/test_psa_compliance.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/framework/scripts/mbedtls_framework/test_driver.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/framework/scripts/mbedtls_framework/test_case.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/framework/scripts/mbedtls_framework/test_data_generation.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/tests/scripts/test_config_script.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/tests/scripts/test_psa_constant_names.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "skipped",
+          "detail": "third_party/mbedtls/tests/scripts/test_psa_compliance.py: no tests collected"
+        },
+        {
+          "name": "unit-tests",
+          "status": "passed",
+          "detail": ""
         },
         {
           "name": "coverage",
-          "status": "failed",
-          "detail": "coverage run returned non-zero (1): "
+          "status": "passed",
+          "detail": "line=21.62162162162162%, cond=21.62162162162162%"
         },
         {
           "name": "coverage-regression",
@@ -158,28 +283,34 @@
         },
         {
           "name": "c-coverage",
-          "status": "warning",
-          "detail": "lcov/gcov may not be installed"
+          "status": "passed",
+          "detail": "line=75.84%, branch=0.0%, 7 file(s)"
         },
         {
           "name": "c-coverage-gate",
-          "status": "skipped",
-          "detail": "No C coverage report at .yuleosh/reports/c-coverage.json"
+          "status": "passed",
+          "detail": "line_rate=75.8% >= 35%"
         }
       ],
-      "coverage": null,
-      "errors": [
-        "unit-tests failed",
-        "coverage failed"
-      ]
+      "coverage": {
+        "line": 21.62162162162162,
+        "condition": 21.62162162162162,
+        "line_pass": true,
+        "condition_pass": true
+      },
+      "errors": []
     }
   ],
   "misra": {
-    "total_violations": 768,
-    "required": 0,
-    "advisory": 4,
-    "violations_per_kloc": 12.11,
-    "rules_violated": 2,
-    "files_affected": 174
+    "total_violations": 36219,
+    "required": 14498,
+    "advisory": 20530,
+    "violations_per_kloc": 119.41,
+    "rules_violated": 87,
+    "files_affected": 758
+  },
+  "c_coverage": {
+    "line_rate": 75.84,
+    "branch_rate": 0.0
   }
 }

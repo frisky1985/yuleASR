@@ -1,18 +1,39 @@
 # MISRA Fix Task: misra-c2023-21.15
 
-> Generated: 2026-07-22T01:33:24.342007
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.045175
+> Severity: advisory
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-21.15
+## Rule: Locale should not be set
 
-
+不应设置区域设置
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `nofile` | 0 | 0 | Unmatched suppression: misra-c2012-21.15 [unmatchedSuppression] |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c` | 174 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_Aes.c` | 234 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_Aes.c` | 426 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/src/Crypto_Aes.c` | 609 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_Transmit.c` | 369 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/xcp/src/Xcp.c` | 1574 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/dlt/src/Dlt.c` | 400 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_Tls.c` | 571 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_Tls.c` | 594 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 693 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 736 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 776 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 782 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 821 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 827 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 858 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 863 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 893 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 898 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_manager.c` | 45 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 374 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 425 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

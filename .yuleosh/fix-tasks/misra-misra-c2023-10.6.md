@@ -1,23 +1,31 @@
 # MISRA Fix Task: misra-c2023-10.6
 
-> Generated: 2026-07-22T01:33:24.338960
-> Severity: unknown
-> Spec Ref: 
+> Generated: 2026-08-07T12:39:04.020536
+> Severity: required
+> Spec Ref: SWE-MISRA-S1
 
-## Rule: misra-c2023-10.6
+## Rule: Composite expression used as operand of further operators
 
-
+复合表达式用作运算符的操作数应加括号
 
 ## Violations
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c` | 517 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c` | 592 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Hal.c` | 113 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Hal.c` | 203 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 127 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 136 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/wdg/src/Wdg_Hw.c` | 325 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c` | 517 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Diagnostic.c` | 592 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Hal.c` | 113 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinMaster_Hal.c` | 203 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 127 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c` | 136 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/adc/src/Adc.c` | 218 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/someiptp/src/SomeIpTp.c` | 205 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/frtp/src/FrTp_Tx.c` | 353 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/frtp/src/FrTp_Tx.c` | 419 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 678 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.c` | 665 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.c` | 741 | 0 | Composite expression shall not be assigned to wider essential type [misra-c2012- |
 
 ## Fix Checklist
 
