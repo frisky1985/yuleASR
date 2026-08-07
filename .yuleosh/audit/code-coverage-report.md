@@ -1,8 +1,5 @@
 # Code Coverage Report
 
-> Generated: 2026-07-19T10:12:30.803558
+> Generated: 2026-08-07T08:38:32.282647
 
-| Metric | Value | Threshold | Status |
-|:-------|:-----:|:---------:|:------:|
-| Line Coverage | 0.0% | 0.0% | ✅ |
-| Condition Coverage | 0.0% | 0.0% | ✅ |
+No coverage data available — run CI Layer 1 first.
