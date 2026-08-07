@@ -1004,7 +1004,7 @@ bool rtps_message_validate(const uint8_t *data, uint32_t len)
 uint32_t rtps_message_estimate_size(uint32_t data_len, bool has_inline_qos)
 {
     uint32_t size = RTPS_HEADER_SIZE;
-    (unsigned int)((uint32_t)(size)) += RTPS_SUBMESSAGE_HEADER_SIZE;
+    size += RTPS_SUBMESSAGE_HEADER_SIZE;
     size += 20U;  /* DATA submessage fixed fields */
     if (has_inline_qos) {
         size += 8U;  /* 预估QoS字段 */
