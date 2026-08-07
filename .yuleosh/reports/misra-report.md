@@ -1,15 +1,15 @@
 # MISRA Compliance Report
 
-**Generated**: 2026-08-07T17:21:34.843688
+**Generated**: 2026-08-07T17:25:17.509036
 **Tool**: Cppcheck 2.17.1 from cppcheck-wheel 1.5.1
 **Ruleset**: 2023
 
 ## Summary
 
-- **Total Violations**: 26699
-- **Unique Rules**: 85
-- **Affected Files**: 720
-- **Density**: 94.02 violations/KLOC
+- **Total Violations**: 2530
+- **Unique Rules**: 23
+- **Affected Files**: 207
+- **Density**: 19.94 violations/KLOC
 
 ## By Severity
 
@@ -17,68 +17,39 @@
 |---------|------:|
 | error | 27 |
 | warning | 27 |
-| style | 26544 |
+| style | 2375 |
 | portability | 3 |
 
 ## By Rule Type
 
 | Type | Count |
 |------|------:|
-| required | 219 |
-| advisory | 13047 |
+| required | 30 |
+| advisory | 29 |
 
 ## By Category
 
 | Category | Count |
 |----------|------:|
-| 未分类 (Uncategorized) | 10242 |
-| 控制流 (Control Flow) | 5717 |
-| 声明 (Declarations) | 3129 |
-| 函数行为 | 2294 |
 | 指针 (Pointer) | 1305 |
-| 预处理器 (Preprocessing) | 1184 |
 | unknown | 1135 |
-| 标识符 (Identifiers) | 326 |
-| 指针类型转换 (Pointer Type Conversions) | 302 |
-| 标准库 (Standard Library) | 294 |
-| 基本类型 (Essential Types) | 242 |
-| 函数 (Functions) | 130 |
-| 指针与数组 (Pointers & Arrays) | 112 |
-| 表达式 (Expressions) | 92 |
-| 字面量 (Literals) | 85 |
-| 初始化 (Initialization) | 50 |
-| 覆盖存储 (Overlapping Storage) | 43 |
+| 标准库 (Standard Library) | 33 |
+| 基本类型 (Essential Types) | 12 |
+| 函数 (Functions) | 11 |
 | 字符集 (Character Sets) | 8 |
+| 指针类型转换 (Pointer Type Conversions) | 5 |
 | 资源 (Resources) | 4 |
+| 控制流 (Control Flow) | 3 |
 | 副作用 (Side Effects) | 3 |
+| 标识符 (Identifiers) | 3 |
 | 注释 (Comments) | 2 |
+| 预处理器 (Preprocessing) | 2 |
+| 初始化 (Initialization) | 2 |
+| 指针与数组 (Pointers & Arrays) | 1 |
+| 字面量 (Literals) | 1 |
 
 ## Violations by Rule
 
-- **misra-c2023-2.5** (9636 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:24` — A project should not contain unused macro declarations [misra-c2012-2.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:18` — A project should not contain unused macro declarations [misra-c2012-2.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:19` — A project should not contain unused macro declarations [misra-c2012-2.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:24` — A project should not contain unused macro declarations [misra-c2012-2.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:25` — A project should not contain unused macro declarations [misra-c2012-2.5]
-- **misra-c2023-15.5** (5582 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:61` — A function should have a single point of exit [misra-c2012-15.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:93` — A function should have a single point of exit [misra-c2012-15.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:95` — A function should have a single point of exit [misra-c2012-15.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:97` — A function should have a single point of exit [misra-c2012-15.5]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:99` — A function should have a single point of exit [misra-c2012-15.5]
-- **misra-c2023-17.7** (2294 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:192` — Return value of non-void function shall be used [misra-c2012-17.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:259` — Return value of non-void function shall be used [misra-c2012-17.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:285` — Return value of non-void function shall be used [misra-c2012-17.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:440` — Return value of non-void function shall be used [misra-c2012-17.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:446` — Return value of non-void function shall be used [misra-c2012-17.7]
-- **misra-c2023-8.7** (2236 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:171` — Functions/objects should not have external linkage if referenced in one TU [misr
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:202` — Functions/objects should not have external linkage if referenced in one TU [misr
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:244` — Functions/objects should not have external linkage if referenced in one TU [misr
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:297` — Functions/objects should not have external linkage if referenced in one TU [misr
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:363` — Functions/objects should not have external linkage if referenced in one TU [misr
 - **misra-c2023-11.9** (1305 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:77` — The macro NULL shall be the only permitted form of integer null pointer constant
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:248` — The macro NULL shall be the only permitted form of integer null pointer constant
@@ -91,89 +62,81 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:458` — state->counter is overwritten
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:459` — Variable '*status' is reassigned a value before the old one has been used. [redu
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:453` — *status is assigned
-- **misra-c2023-20.1** (670 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:109` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:133` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:156` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:779` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/include/Swc_DiagnosticManager.h:152` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-- **misra-c2023-8.4** (450 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_RamSafety.c:37` — A compatible declaration shall be visible when an object or function is defined 
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:21` — A compatible declaration shall be visible when an object or function is defined 
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:19` — A compatible declaration shall be visible when an object or function is defined 
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:111` — A compatible declaration shall be visible when an object or function is defined 
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:130` — A compatible declaration shall be visible when an object or function is defined 
-- **misra-c2023-2.3** (325 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:41` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:68` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:122` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:119` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.h:123` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
-- **misra-c2023-20.5** (283 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:26` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:27` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:31` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:32` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:36` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
-- **misra-c2023-8.6** (247 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_verify.c:103` — An identifier with external linkage shall have exactly one external definition [
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:26` — An identifier with external linkage shall have exactly one external definition [
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c:408` — An identifier with external linkage shall have exactly one external definition [
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Verify.c:102` — An identifier with external linkage shall have exactly one external definition [
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c:122` — An identifier with external linkage shall have exactly one external definition [
-- **misra-c2023-2.4** (178 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:41` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:68` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.h:105` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.h:116` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.h:126` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
-- **misra-c2023-21.3** (158 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:241` — Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:254` — Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:288` — Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:296` — Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:387` — Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3]
-- **misra-c2023-5.6** (120 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h:176` — A typedef name shall be a unique identifier [misra-c2012-5.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/third_party/crypto/aes_modes/include/CryptoStack_Types.h:20` — A typedef name shall be a unique identifier [misra-c2012-5.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/crypto/include/Crypto_Types.h:173` — A typedef name shall be a unique identifier [misra-c2012-5.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/third_party/crypto/aes_modes/include/CryptoStack_Types.h:21` — A typedef name shall be a unique identifier [misra-c2012-5.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/spi/include/Spi_Cfg.h:38` — A typedef name shall be a unique identifier [misra-c2012-5.6]
-- **misra-c2023-20.9** (112 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:35` — Preprocessor identifiers shall be defined before use [misra-c2012-20.9]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Boot_1.0.0.c:30` — Preprocessor identifiers shall be defined before use [misra-c2012-20.9]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Hsm_1.0.0.c:31` — Preprocessor identifiers shall be defined before use [misra-c2012-20.9]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_RamEcc_1.0.0.c:36` — Preprocessor identifiers shall be defined before use [misra-c2012-20.9]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd.c:40` — Preprocessor identifiers shall be defined before use [misra-c2012-20.9]
-- **misra-c2023-18.4** (111 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:573` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:574` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:583` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c:593` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c:608` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
-- **misra-c2023-11.5** (109 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:297` — Conversion from pointer to void to pointer to object shall not be performed [mis
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:330` — Conversion from pointer to void to pointer to object shall not be performed [mis
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:379` — Conversion from pointer to void to pointer to object shall not be performed [mis
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:416` — Conversion from pointer to void to pointer to object shall not be performed [mis
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:480` — Conversion from pointer to void to pointer to object shall not be performed [mis
-- **misra-c2023-5.9** (107 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:23` — Identifiers that define objects or functions shall be unique before linker stage
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:22` — Identifiers that define objects or functions shall be unique before linker stage
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:24` — Identifiers that define objects or functions shall be unique before linker stage
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:23` — Identifiers that define objects or functions shall be unique before linker stage
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:40` — Identifiers that define objects or functions shall be unique before linker stage
-- **misra-c2023-2.7** (95 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_rollback.c:585` — There should be no unused parameters in functions [misra-c2012-2.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_rollback.c:610` — There should be no unused parameters in functions [misra-c2012-2.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_partition.c:355` — There should be no unused parameters in functions [misra-c2012-2.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c:240` — There should be no unused parameters in functions [misra-c2012-2.7]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/src/LinSlave_Tp.c:224` — There should be no unused parameters in functions [misra-c2012-2.7]
-- **misra-c2023-10.3** (91 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:23` — Complex expression shall only be assigned to same essential type category [misra
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:125` — Complex expression shall only be assigned to same essential type category [misra
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:135` — Complex expression shall only be assigned to same essential type category [misra
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:24` — Complex expression shall only be assigned to same essential type category [misra
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:192` — Complex expression shall only be assigned to same essential type category [misra
+- **misra-c2023-10.5** (12 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Hsm_1.0.0.c:173` — misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:307` — misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:308` — misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c:309` — misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:800` — misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1
+- **misra-c2023-21.16** (12 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/classic/com/Com_TxMode.c:371` — misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:800` — misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:802` — misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:804` — misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:806` — misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-17.1** (11 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.h:260` — misra violation 1701 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:650` — misra violation 1701 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:729` — misra violation 1701 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:730` — misra violation 1701 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:732` — misra violation 1701 with no text in the supplied rule-texts-file [misra-c2012-1
+- **misra-c2023-21.2** (9 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/include/string.h:9` — misra violation 2102 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/include/string.h:10` — misra violation 2102 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/include/string.h:11` — misra violation 2102 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/include/string.h:12` — misra violation 2102 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/tests/qemu_m33/include/string.h:13` — misra violation 2102 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-4.1** (8 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:27` — misra violation 401 with no text in the supplied rule-texts-file [misra-c2012-4.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:28` — misra violation 401 with no text in the supplied rule-texts-file [misra-c2012-4.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:29` — misra violation 401 with no text in the supplied rule-texts-file [misra-c2012-4.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:30` — misra violation 401 with no text in the supplied rule-texts-file [misra-c2012-4.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:31` — misra violation 401 with no text in the supplied rule-texts-file [misra-c2012-4.
+- **misra-c2023-21.14** (7 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:800` — misra violation 2114 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:802` — misra violation 2114 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:804` — misra violation 2114 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:806` — misra violation 2114 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c:808` — misra violation 2114 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-11.1** (5 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:746` — misra violation 1101 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/exec/process_manager.c:382` — misra violation 1101 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/exec/process_manager.c:411` — misra violation 1101 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:787` — misra violation 1101 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:1020` — misra violation 1101 with no text in the supplied rule-texts-file [misra-c2012-1
+- **misra-c2023-21.7** (4 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c:263` — misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c:384` — misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c:289` — misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c:297` — misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-13.4** (3 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c:995` — misra violation 1304 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/csm/csm_core.c:547` — misra violation 1304 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/csm/csm_core.c:578` — misra violation 1304 with no text in the supplied rule-texts-file [misra-c2012-1
+- **misra-c2023-5.5** (3 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_tcpip_compat.c:33` — misra violation 505 with no text in the supplied rule-texts-file [misra-c2012-5.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_tcpip_compat.c:67` — misra violation 505 with no text in the supplied rule-texts-file [misra-c2012-5.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_tcpip_compat.c:73` — misra violation 505 with no text in the supplied rule-texts-file [misra-c2012-5.
+- **misra-c2023-16.4** (2 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c:327` — misra violation 1604 with no text in the supplied rule-texts-file [misra-c2012-1
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c:385` — misra violation 1604 with no text in the supplied rule-texts-file [misra-c2012-1
+- **misra-c2023-3.1** (2 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:1` — misra violation 301 with no text in the supplied rule-texts-file [misra-c2012-3.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/fee/src/Fee_Lcfg.c:212` — misra violation 301 with no text in the supplied rule-texts-file [misra-c2012-3.
+- **misra-c2023-9.4** (2 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h:479` — misra violation 904 with no text in the supplied rule-texts-file [misra-c2012-9.
+  - `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h:517` — misra violation 904 with no text in the supplied rule-texts-file [misra-c2012-9.
+- **misra-c2023-22.8** (2 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c:184` — misra violation 2208 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c:346` — misra violation 2208 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-22.9** (2 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c:184` — misra violation 2209 with no text in the supplied rule-texts-file [misra-c2012-2
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c:346` — misra violation 2209 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-20.4** (1 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/build_info.h:101` — misra violation 2004 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-20.13** (1 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/src/Det.c:35` — misra violation 2013 with no text in the supplied rule-texts-file [misra-c2012-2
+- **misra-c2023-18.7** (1 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h:254` — misra violation 1807 with no text in the supplied rule-texts-file [misra-c2012-1
 
-... and 65 more rules
+... and 3 more rules
