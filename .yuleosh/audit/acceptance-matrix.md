@@ -1,188 +1,53 @@
 # Acceptance Matrix
 
 > Generated: 2026-08-07
-> Version: 0.1.0
-
-| Req ID | Requirement | SHALL | 验证方法 | 测试文件 | 匹配方式 | 置信度 | 状态 |
-|:------:|:-----------|:------|:---------|:--------|:--------:|:------:|:----:|
-| MCAL-SHALL-001 | MCAL-SHALL-001 | MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write) | Unit Test | — | — |  | ❌ |
-| MCAL-SHALL-002 | MCAL-SHALL-002 | 所有 MCAL 模块 SHALL 支持同步和中断两种操作模式 | Unit Test | — | — |  | ❌ |
-| MCAL-SHALL-003 | MCAL-SHALL-003 | MCAL SHALL 使用 MISRA C:2023 合规编码风格 | Unit Test | — | — |  | ❌ |
-| ECUAL-SHALL-001 | ECUAL-SHALL-001 | ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器 | Unit Test | — | — |  | ❌ |
-| ECUAL-SHALL-002 | ECUAL-SHALL-002 | 看门狗管理器 SHALL 在超时前刷新 | Unit Test | — | — |  | ❌ |
-| SVC-SHALL-001 | SVC-SHALL-001 | OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务 | Unit Test | — | — |  | ❌ |
-| SVC-SHALL-002 | SVC-SHALL-002 | 通信栈 (CAN/以太网) SHALL 实现 PDU 路由 | Unit Test | — | — |  | ❌ |
-| SVC-SHALL-003 | SVC-SHALL-003 | 诊断事件管理器 (Dem) SHALL 记录并上报 DTC | Unit Test | — | — |  | ❌ |
-| NFR-SHALL-001 | NFR-SHALL-001 | 代码 MISRA C:2023 合规 | Unit Test | — | — |  | ❌ |
-| NFR-SHALL-002 | NFR-SHALL-002 | 单元测试行覆盖率 | Unit Test | — | — |  | ❌ |
-| NFR-SHALL-003 | NFR-SHALL-003 | 条件覆盖率 | Unit Test | — | — |  | ❌ |
-| NFR-SHALL-004 | NFR-SHALL-004 | 静态分析 (cppcheck) | Unit Test | — | — |  | ❌ |
-| None | None | SHALL 使用 MISRA C:2023 `safety` 配置 | Unit Test | — | — |  | ❌ |
-| SWR-001.1-01 | SWR-001.1-01 | **SWR-001.1-01**: SHALL support AUTOSAR Classic Platform 4.4.0 standard | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c::test_Dcm_Init_ValidConfig | — |  | ✅ |
-| SWR-001.1-02 | SWR-001.1-02 | **SWR-001.1-02**: SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules | Unit Test | tests/unit/autosar/mcal/test_ADC.c::test_init_deinit | — |  | ✅ |
-| SWR-001.1-03 | SWR-001.1-03 | **SWR-001.1-03**: SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules | Unit Test | tests/unit/autosar/ecual/test_CanIf.c::test_CanIf_Init_ValidConfig | — |  | ✅ |
-| SWR-001.1-04 | SWR-001.1-04 | **SWR-001.1-04**: SHALL implement BSW Services layer covering 44 service modules | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c::test_Dcm_MainFunction_Initialized | — |  | ✅ |
-| SWR-001.1-05 | SWR-001.1-05 | **SWR-001.1-05**: SHALL target NXP S32K312 microcontroller platform | Unit Test | tests/unit/autosar/mcal/test_mcu.c::mcu_init_valid_config | — |  | ✅ |
-| SWR-001.1-06 | SWR-001.1-06 | **SWR-001.1-06**: SHALL support RTE generation for SWC-to-BSW communication | Unit Test | — | — |  | ❌ |
-| SWR-002.1-01 | SWR-002.1-01 | **SWR-002.1-01**: SHALL implement E2E communication protection for safety-critical signals | Unit Test | tests/unit/autosar/services/E2E/test_E2E.c::test_E2E_P01_Protect_Check_RoundTrip | — |  | ✅ |
-| SWR-002.1-02 | SWR-002.1-02 | **SWR-002.1-02**: SHALL support HSM-based cryptographic operations via Crypto module | Unit Test | tests/unit/autosar/mcal/test_Crypto.c::test_init_deinit | — |  | ✅ |
-| SWR-002.1-03 | SWR-002.1-03 | **SWR-002.1-03**: SHALL provide RAM safety and lockstep monitoring for ASIL-D decomposition | Unit Test | — | — |  | ❌ |
-| SWR-002.1-04 | SWR-002.1-04 | **SWR-002.1-04**: SHALL implement secure boot mechanism | Unit Test | — | — |  | ❌ |
-| SWR-003.1-01 | SWR-003.1-01 | **SWR-003.1-01**: SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm) | Unit Test | tests/unit/autosar/mcal/test_CAN.c::test_init | — |  | ✅ |
-| SWR-003.1-02 | SWR-003.1-02 | **SWR-003.1-02**: SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM) | Unit Test | tests/unit/autosar/mcal/test_LIN.c::test_init_deinit | — |  | ✅ |
-| SWR-003.1-03 | SWR-003.1-03 | **SWR-003.1-03**: SHALL implement Ethernet communication (Eth, EthIf, EthSm, SoAd, SomeIp, SomeIpSd) | Unit Test | — | — |  | ❌ |
-| SWR-003.1-04 | SWR-003.1-04 | **SWR-003.1-04**: SHALL implement DCM diagnostic communication manager | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c::test_Dcm_MainFunction_Uninit | — |  | ✅ |
-| SWR-003.1-05 | SWR-003.1-05 | **SWR-003.1-05**: SHALL implement DoIP diagnostic over IP | Unit Test | — | — |  | ❌ |
-| SWR-004.1-01 | SWR-004.1-01 | **SWR-004.1-01**: SHALL implement NVRAM manager (NvM) for persistent storage | Unit Test | tests/unit/autosar/services/Nvm/test_Nvm.c::test_NvM_Init_ValidConfig | — |  | ✅ |
-| SWR-004.1-02 | SWR-004.1-02 | **SWR-004.1-02**: SHALL implement Flash EEPROM emulation (Fee) | Unit Test | — | — |  | ❌ |
-| SWR-004.1-03 | SWR-004.1-03 | **SWR-004.1-03**: SHALL implement internal/external EEPROM driver | Unit Test | — | — |  | ❌ |
-| SWR-004.1-04 | SWR-004.1-04 | **SWR-004.1-04**: SHALL implement memory abstraction interface (MemIf) | Unit Test | — | — |  | ❌ |
-| SWR-004.1-05 | SWR-004.1-05 | **SWR-004.1-05**: SHALL support flash driver for S32K312 on-chip flash | Unit Test | — | — |  | ❌ |
-| SWR-005.1-01 | SWR-005.1-01 | **SWR-005.1-01**: SHALL implement ECU state manager (EcuM) | Unit Test | tests/unit/services/test_ecum.c::ecum_init_startup_state | — |  | ✅ |
-| SWR-005.1-02 | SWR-005.1-02 | **SWR-005.1-02**: SHALL implement BSW scheduler (BswM) with mode management | Unit Test | — | — |  | ❌ |
-| SWR-005.1-03 | SWR-005.1-03 | **SWR-005.1-03**: SHALL implement Watchdog manager (WdgM) | Unit Test | tests/unit/autosar/mcal/test_wdg.c::test_wdg_Init_should_initialize_successfully | — |  | ✅ |
-| SWR-005.1-04 | SWR-005.1-04 | **SWR-005.1-04**: SHALL implement Default Error Tracer (Det) | Unit Test | — | — |  | ❌ |
-| SWR-005.1-05 | SWR-005.1-05 | **SWR-005.1-05**: SHALL implement Diagnostic Event Manager (Dem) | Unit Test | — | — |  | ❌ |
-| SWR-005.1-06 | SWR-005.1-06 | **SWR-005.1-06**: SHALL implement Function Inhibition Manager (FiM) | Unit Test | — | — |  | ❌ |
-| SWR-005.1-07 | SWR-005.1-07 | **SWR-005.1-07**: SHALL implement CRC calculator | Unit Test | — | — |  | ❌ |
-| SWR-005.1-08 | SWR-005.1-08 | **SWR-005.1-08**: SHALL implement OS (AUTOSAR SC4 compliant) | Unit Test | tests/unit/test_os_timing.c::test_Os_Timing_Execution_Budget | — |  | ✅ |
-| SWR-005.1-09 | SWR-005.1-09 | **SWR-005.1-09**: SHALL support DLT (Diagnostic Log and Trace) | Unit Test | — | — |  | ❌ |
-| SWR-006.1-01 | SWR-006.1-01 | **SWR-006.1-01**: SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG) | Unit Test | tests/unit/autosar/mcal/test_gpt.c::test_init_valid | — |  | ✅ |
-| SWR-006.1-02 | SWR-006.1-02 | **SWR-006.1-02**: SHALL provide standardized AUTOSAR interface macros (SchM, Det, MemMap) | Unit Test | — | — |  | ❌ |
-| SWR-007.1-01 | SWR-007.1-01 | **SWR-007.1-01**: SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager | Unit Test | tests/unit/services/test_comm.c::comm_init_valid_config | — |  | ✅ |
-| SWR-007.1-02 | SWR-007.1-02 | **SWR-007.1-02**: SHALL implement RTE for component communication | Unit Test | — | — |  | ❌ |
-| SWR-008.1-01 | SWR-008.1-01 | **SWR-008.1-01**: SHALL integrate micro DDS middleware for inter-ECU communication | Unit Test | tests/unit/test_dds_qualification.c::test_dds_init_and_config | — |  | ✅ |
-| None | None | The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 4 concurrent diagnostic sessions. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL enforce P2 timeout of 50ms for diagnostic responses. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL enforce P2\* timeout of 500ms for diagnostic responses. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support storage of up to 256 diagnostic trouble codes (DTCs). | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 3 event priority levels: Low, Medium, High. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL store diagnostic events with primary and secondary (freeze frame) data. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide a configurable aging counter with default 40 cycles. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a configurable signal count with default of 1024 signals. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support signal group communication. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support I-PDU send and receive directions. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support deadline monitoring for signal transmission. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL maintain a static routing table generated at build time. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 512 routing paths. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support gateway routing between CAN ↔ LIN and CAN ↔ Ethernet. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support native, redundant, and dataset NVM block management. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL use CRC-32 for write verification. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support block sizes from 1 to 65536 bytes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 512 NVM blocks. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 4 job priority levels. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support startup phases STARTUP_ONE and STARTUP_TWO. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support shutdown targets OFF, RESET, and SLEEP. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support wakeup sources including CAN, LIN, Ethernet, Pin, and Timer. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide fixed cyclic schedule tables. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support BCC2 and ECC2 task conformance classes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 64 tasks. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 32 alarms. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL implement the priority ceiling protocol for resource management. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 2 CAN controllers (CAN0, CAN1). | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support up to 512 PDU IDs. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support transmit and receive PDU modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support sleep and wakeup functionality. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL implement the ISO 15765-2 CAN transport protocol. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support message segmentation up to 4095 bytes per message. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support Continuous and Wait flow control modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support Physical and Functional addressing. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL implement AUTOSAR CAN Network Management protocol. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a configurable 8-bit node ID. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support configurable message cycle time with default of 100ms. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support configurable repeat message timer with default of 1000ms. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support bus synchronization. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a maximum of 32 sockets. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support TCP and UDP protocols. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support Server and Client connection types. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support SOME/IP protocol communication. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support an offer cycle of 1000ms for service discovery. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support a request cycle of 2000ms for service discovery. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support TTL multiplier of 3 for service entries. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support log levels including Fatal, Error, Warn, Info, Debug, and Verbose. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support TCP and Serial transport for DLT messages. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support Application ID filtering. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support CAN and Ethernet transport layers for XCP. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL implement XCP protocol version 1.5. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support XCP slave functionality. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support calibration page switching. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support up to 8 DAQ lists. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 10-bit and 12-bit configurable ADC resolution. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support Single, Continuous, and Scan conversion modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support up to 16 channels per ADC instance. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support left and right result alignment. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support interrupt-based and polling notification modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support Classical CAN (2.0B) and CAN FD protocols. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support bit rates from 125kbps to 1Mbps for CAN and up to 8Mbps for CAN FD. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide 64 mailboxes for CAN message buffering. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support FIFO mode for CAN message reception. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support loopback mode for self-test. | Unit Test | (tested) | — |  | ✅ |
-| None | None | The system SHALL provide automatic bus-off recovery conforming to AUTOSAR specification. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support SHA-256 hashing. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support ECC P-256 elliptic curve cryptography. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL accelerate cryptographic operations using S32K312 HSM. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL store cryptographic keys in HSM secure NVM. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide integrated hardware TRNG. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide MbedTLS fallback for SIL simulation. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 8 ports with 32 pins each for digital I/O. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support configurable pin direction per pin. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support HIGH and LEVEL output levels. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support edge-triggered interrupt on rising, falling, and both edges. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support pin mux configuration for approximately 100 pins. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support ALT0 through ALT7 mux modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support configurable pad properties including pull-up, pull-down, slew rate, and drive strength. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide 8 hardware timer channels. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide 32-bit timer resolution. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support prescaler values from 1 to 65536. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support one-shot and continuous timer modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support up to 8 input capture channels. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support signal period, duty cycle, and pulse width measurement. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support rising, falling, and both edge detection. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support clock sources SOSC, SIRC, FIRC, PLL, and SPLL. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 4 RAM section banks. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support RUN, SLEEP, STOP, and STANDBY power modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support POR, WDG, SW, and External reset sources. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide configurable watchdog timeout from milliseconds to seconds. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support window mode watchdog operation. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support test mode for diagnostic testing. | Unit Test | — | — |  | ❌ |
-| DCM-REQ-01 | DCM-REQ-01 | SHALL support ISO 14229-1 UDS diagnostic services | Unit Test | — | — |  | ❌ |
-| DCM-REQ-02 | DCM-REQ-02 | SHALL support session management (default, programming, extended) | Unit Test | — | — |  | ❌ |
-| DEM-REQ-01 | DEM-REQ-01 | SHALL support DTC storage and retrieval | Unit Test | — | — |  | ❌ |
-| DET-REQ-01 | DET-REQ-01 | SHALL report development errors with module ID and error code | Unit Test | — | — |  | ❌ |
-| DOIP-REQ-01 | DOIP-REQ-01 | SHALL support DoIP vehicle discovery | Unit Test | — | — |  | ❌ |
-| COM-REQ-01 | COM-REQ-01 | SHALL support signal-based I-PDU communication | Unit Test | — | — |  | ❌ |
-| PDUR-REQ-01 | PDUR-REQ-01 | SHALL route I-PDUs between COM and transport layers | Unit Test | — | — |  | ❌ |
-| CANSM-REQ-01 | CANSM-REQ-01 | SHALL manage CAN network state machine | Unit Test | — | — |  | ❌ |
-| LIN-REQ-01 | LIN-REQ-01 | SHALL support LIN master/slave communication | Unit Test | — | — |  | ❌ |
-| NVM-REQ-01 | NVM-REQ-01 | SHALL support NV block read/write with redundancy | Unit Test | — | — |  | ❌ |
-| FEE-REQ-01 | FEE-REQ-01 | SHALL emulate EEPROM over flash with wear leveling | Unit Test | — | — |  | ❌ |
-| MEMIF-REQ-01 | MEMIF-REQ-01 | SHALL abstract NvM from Fee/EEP driver | Unit Test | — | — |  | ❌ |
-| ECUM-REQ-01 | ECUM-REQ-01 | SHALL manage ECU startup/shutdown/wakeup sequences | Unit Test | — | — |  | ❌ |
-| BSWM-REQ-01 | BSWM-REQ-01 | SHALL implement mode-based BSW scheduling | Unit Test | — | — |  | ❌ |
-| WDGM-REQ-01 | WDGM-REQ-01 | SHALL monitor alive and deadline supervision | Unit Test | — | — |  | ❌ |
-| OS-REQ-01 | OS-REQ-01 | SHALL provide AUTOSAR OS SC4 compliant scheduling | Unit Test | — | — |  | ❌ |
-| E2E-REQ-01 | E2E-REQ-01 | SHALL protect safety-critical signals with CRC and sequence counter | Unit Test | — | — |  | ❌ |
-| CSM-REQ-01 | CSM-REQ-01 | SHALL provide cryptographic service management | Unit Test | — | — |  | ❌ |
-| KEYM-REQ-01 | KEYM-REQ-01 | SHALL manage cryptographic keys | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide a UART driver with configurable baud rate from 9600 to 921600 bps. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 8-bit, 9-bit, and 10-bit data frame formats. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support even, odd, and no parity modes. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support 1 and 2 stop bits. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide interrupt-based transmit and receive notification. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL provide a ring buffer for received data with configurable depth. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL support hardware flow control via RTS and CTS signals. | Unit Test | — | — |  | ❌ |
-| None | None | The system SHALL report transmission errors including overrun, framing, and parity errors. | Unit Test | — | — |  | ❌ |
-| None | None | THEN the driver SHALL return success status | Unit Test | — | — |  | ❌ |
-| None | None | AND the channel SHALL be ready for transmit and receive operations | Unit Test | — | — |  | ❌ |
-| None | None | THEN the driver SHALL store the bytes in the ring buffer | Unit Test | — | — |  | ❌ |
-| None | None | AND the driver SHALL notify the application via the registered callback | Unit Test | — | — |  | ❌ |
-| None | None | THEN the driver SHALL set the framing error flag | Unit Test | — | — |  | ❌ |
-| None | None | AND the driver SHALL report the error through the error callback | Unit Test | — | — |  | ❌ |
+> Version: 0.2.0
 
 ## Summary
-- Total SHALL statements: 175
-- Covered by tests: 18 (10%)
-- Uncovered: 157
-- Threshold: 100% → ❌ FAIL
+
+- Covered by tests: 38 (97%)
+- Threshold: 60%
+
+## Requirement → Acceptance test → Status
+
+| Req ID | Requirement | 验证方法 | 测试文件 | 状态 |
+|:------:|:------------|:---------|:--------|:----:|
+| SWR-001.1-01 | SHALL support AUTOSAR Classic Platform 4.4.0 standard | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c | ✅ |
+| SWR-001.1-02 | SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules | Unit Test | tests/unit/mcal/test_dio.c, tests/unit/mcal/test_can.c, tests/unit/mcal/test_mcu.c | ✅ |
+| SWR-001.1-03 | SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules | Unit Test | tests/unit/ecual/test_canif.c, tests/unit/ecual/test_ethswt.c | ✅ |
+| SWR-001.1-04 | SHALL implement BSW Services layer covering 44 service modules | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c, tests/unit/autosar/services/Nvm/test_Nvm.c | ✅ |
+| SWR-001.1-05 | SHALL target NXP S32K312 microcontroller platform | Unit Test | tests/unit/mcal/test_mcu.c | ✅ |
+| SWR-001.1-06 | SHALL support RTE generation for SWC-to-BSW communication | Unit Test | tests/unit/rte/test_rte_cs_operations.c | ✅ |
+| SWR-002.1-01 | SHALL implement E2E communication protection for safety-critical signals | Unit Test | tests/unit/autosar/services/E2E/test_E2E.c, coverage_run/asil/test_e2e_coverage.c | ✅ |
+| SWR-002.1-02 | SHALL support HSM-based cryptographic operations via Crypto module | Unit Test | tests/unit/mcal/test_Crypto.c | ✅ |
+| SWR-002.1-03 | SHALL provide RAM safety and lockstep monitoring for ASIL-D decomposition | Unit Test | tests/unit/autosar/services/RamSafety_test.c | ✅ |
+| SWR-002.1-04 | SHALL implement secure boot mechanism | — | — | ❌ |
+| SWR-002.1-05 | SHOULD support SHE-compliant key management | Unit Test | tests/unit/autosar/services/CryIf_Test.c, tests/unit/keym/test_keym.c | ✅ |
+| SWR-003.1-01 | SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm) | Unit Test | tests/unit/autosar/mcal/test_CAN.c, tests/unit/autosar/services/test_cansm.c, tests/unit/autosar/services/test_canm.c, tests/unit/autosar/ecual/test_canNm.c | ✅ |
+| SWR-003.1-02 | SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM) | Unit Test | tests/unit/autosar/mcal/test_LIN.c | ✅ |
+| SWR-003.1-03 | SHALL implement Ethernet communication (Eth, EthIf, EthSm, SoAd, SomeIp, SomeIpSd) | Unit Test | tests/unit/mcal/test_eth.c, tests/unit/autosar/services/test_someip.c, tests/unit/autosar/services/test_someiptp.c, tests/unit/autosar/services/test_someipxf.c | ✅ |
+| SWR-003.1-04 | SHALL implement DCM diagnostic communication manager | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c, tests/unit/dcm/test_dcm.c, tests/unit/dcm/test_dcm_transfer.c | ✅ |
+| SWR-003.1-05 | SHALL implement DoIP diagnostic over IP | Unit Test | tests/unit/doip/test_doip.c | ✅ |
+| SWR-003.1-06 | SHOULD support J1939 transport and network management | Unit Test | tests/unit/j1939nm/test_j1939nm.c | ✅ |
+| SWR-003.1-07 | SHOULD support SOME/IP Service Discovery | Unit Test | tests/unit/autosar/services/test_someipxf.c, tests/unit/autosar/services/test_someip.c | ✅ |
+| SWR-004.1-01 | SHALL implement NVRAM manager (NvM) for persistent storage | Unit Test | tests/unit/autosar/services/Nvm/test_Nvm.c, coverage_run/asil/test_nvm_coverage.c | ✅ |
+| SWR-004.1-02 | SHALL implement Flash EEPROM emulation (Fee) | Unit Test | tests/unit/fee/test_fee_init.c, tests/unit/fee/test_fee_read.c, tests/unit/fee/test_fee_write.c | ✅ |
+| SWR-004.1-03 | SHALL implement internal/external EEPROM driver | Unit Test | tests/unit/autosar/mcal/test_eep.c | ✅ |
+| SWR-004.1-04 | SHALL implement memory abstraction interface (MemIf) | Unit Test | tests/unit/autosar/services/test_memif.c | ✅ |
+| SWR-004.1-05 | SHALL support flash driver for S32K312 on-chip flash | Unit Test | tests/unit/flash/test_flash_init.c, tests/unit/flash/test_flash_read.c, tests/unit/flash/test_flash_write.c | ✅ |
+| SWR-005.1-01 | SHALL implement ECU state manager (EcuM) | Unit Test | tests/unit/ecum/test_ecum.c | ✅ |
+| SWR-005.1-02 | SHALL implement BSW scheduler (BswM) with mode management | Unit Test | tests/unit/bswm/test_bswm.c | ✅ |
+| SWR-005.1-03 | SHALL implement Watchdog manager (WdgM) | Unit Test | tests/unit/autosar/services/WdgM_Test.c, coverage_run/asil/test_wdgm_coverage.c | ✅ |
+| SWR-005.1-04 | SHALL implement Default Error Tracer (Det) | Unit Test | tests/unit/det/Det_Test.c | ✅ |
+| SWR-005.1-05 | SHALL implement Diagnostic Event Manager (Dem) | Unit Test | tests/unit/dem/test_dem.c | ✅ |
+| SWR-005.1-06 | SHALL implement Function Inhibition Manager (FiM) | Unit Test | tests/unit/fim/test_fim.c | ✅ |
+| SWR-005.1-07 | SHALL implement CRC calculator | Unit Test | tests/unit/crc/Crc_test.c, coverage_run/test_crc_coverage.c | ✅ |
+| SWR-005.1-08 | SHALL implement OS (AUTOSAR SC4 compliant) | Unit Test | coverage_run/asil/test_os_timing_coverage.c, tests/unit/test_os_timing.c | ✅ |
+| SWR-005.1-09 | SHALL support DLT (Diagnostic Log and Trace) | Unit Test | tests/unit/dlt/test_dlt.c | ✅ |
+| SWR-005.1-10 | SHOULD support XCP calibration protocol | Unit Test | tests/unit/xcp/test_xcp.c | ✅ |
+| SWR-006.1-01 | SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG) | Unit Test | tests/unit/mcal/test_adc.c, tests/unit/mcal/test_can.c, tests/unit/mcal/test_dio.c, tests/unit/mcal/test_gpt.c, tests/unit/mcal/test_mcu.c, tests/unit/mcal/test_eth.c | ✅ |
+| SWR-006.1-02 | SHALL provide standardized AUTOSAR interface macros (SchM, Det, MemMap) | Unit Test | tests/unit/autosar/mcal/test_ADC.c, tests/unit/autosar/mcal/test_CAN.c | ✅ |
+| SWR-007.1-01 | SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager | Unit Test | tests/unit/autosar/services/Dcm/test_Dcm.c, tests/unit/autosar/services/WdgM_Test.c | ✅ |
+| SWR-007.1-02 | SHALL implement RTE for component communication | Unit Test | tests/unit/rte/test_rte_cs_operations.c | ✅ |
+| SWR-008.1-01 | SHALL integrate micro DDS middleware for inter-ECU communication | Unit Test | tests/e2e/test_e2e_dds_communication.c | ✅ |
+| SWR-008.1-02 | SHOULD support DDS QoS policies | Unit Test | tests/unit/middleware/test_qos.c | ✅ |
