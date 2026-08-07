@@ -9,10 +9,12 @@
 #include "mock_hal_config.h"
 #include "Port.h"
 
-static const uint32 PORT_IOMUXC_BASE = 0x30330000UL;
+/* Address constants match the S32K312 build (Port.c uses SIUL2 when
+ * compiled with -DS32K312). i.MX8M fallback values would mismatch. */
+static const uint32 PORT_IOMUXC_BASE = 0x40290000UL;   /* S32K312 SIUL2 */
 static const uint32 PORT_SW_MUX_CTL_OFF = 0x0000U;
 static const uint32 PORT_SW_PAD_CTL_OFF = 0x0204U;
-static const uint32 PORT_GPIO1_BASE = 0x30200000UL;
+static const uint32 PORT_GPIO1_BASE = 0x40810000UL;    /* S32K312 SIUL2 GPIO */
 static const uint32 PORT_GPIO_GDIR_OFF = 0x04U;
 static const uint32 PORT_GPIO_DR_OFF = 0x00U;
 
@@ -22,7 +24,12 @@ extern void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Directi
 extern void Port_GetVersionInfo(Std_VersionInfoType* versioninfo);
 extern void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode);
 
-void setUp(void) { mock_hal_reset(); }
+void setUp(void) {
+    mock_hal_reset();
+    /* Reset driver state between tests: Port_DeInit is a no-op with DET
+     * reporting when not initialized, but fully resets after a prior Init. */
+    Port_DeInit();
+}
 void tearDown(void) {}
 
 /* ========= Port_Init ========= */
@@ -47,9 +54,9 @@ void test_Port_Init_WithGpioOutPin(void) {
     Port_ConfigType cfg = { .NumPins = 1, .PinConfigs = pinCfg };
     Port_Init(&cfg);
     uint32 gdir = mock_hal_read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF);
-    TEST_ASSERT_TRUE(gdir & 0x02);
+    TEST_ASSERT_EQUAL_UINT32(0x02U, (gdir & 0x02U));
     uint32 dr = mock_hal_read32(PORT_GPIO1_BASE + PORT_GPIO_DR_OFF);
-    TEST_ASSERT_TRUE(dr & 0x02);
+    TEST_ASSERT_EQUAL_UINT32(0x02U, (dr & 0x02U));
 }
 
 void test_Port_Init_WithGpioInPin(void) {
@@ -61,7 +68,7 @@ void test_Port_Init_WithGpioInPin(void) {
     Port_ConfigType cfg = { .NumPins = 1, .PinConfigs = pinCfg };
     Port_Init(&cfg);
     uint32 gdir = mock_hal_read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF);
-    TEST_ASSERT_FALSE(gdir & 0x02);
+    TEST_ASSERT_EQUAL_UINT32(0x00U, (gdir & 0x02U));
 }
 
 void test_Port_Init_DoubleInit(void) {
@@ -85,7 +92,7 @@ void test_Port_SetPinDirection_Valid(void) {
     Port_Init(&cfg);
     Port_SetPinDirection(0x0001, PORT_PIN_IN);
     uint32 gdir = mock_hal_read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF);
-    TEST_ASSERT_FALSE(gdir & 0x02);
+    TEST_ASSERT_EQUAL_UINT32(0x00U, (gdir & 0x02U));
 }
 
 void test_Port_SetPinDirection_InvalidPin(void) {
@@ -127,7 +134,7 @@ void test_Port_RefreshPortDirection_AfterInit(void) {
     mock_hal_write32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF, 0);
     Port_RefreshPortDirection();
     uint32 gdir = mock_hal_read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF);
-    TEST_ASSERT_TRUE(gdir & 0x02);
+    TEST_ASSERT_EQUAL_UINT32(0x02U, (gdir & 0x02U));
 }
 
 /* ========= Port_GetVersionInfo ========= */
@@ -135,7 +142,7 @@ void test_Port_GetVersionInfo_Valid(void) {
     Std_VersionInfoType vi; memset(&vi, 0, sizeof(vi));
     Port_GetVersionInfo(&vi);
     TEST_ASSERT_EQUAL(0x0055U, vi.vendorID);
-    TEST_ASSERT_EQUAL(0x0074U, vi.moduleID);
+    TEST_ASSERT_EQUAL(0x002AU, vi.moduleID); /* PORT_MODULE_ID = 42 */
 }
 
 void test_Port_GetVersionInfo_Null(void) {

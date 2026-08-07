@@ -333,6 +333,25 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
 }
 
 /**
+ * @brief Deinitializes the Port Driver module
+ * @req SHALL_PORT - Deinitializes the Port Driver module
+ */
+#if (PORT_DE_INIT_API == STD_ON)
+void Port_DeInit(void)
+{
+    #if (PORT_DEV_ERROR_DETECT == STD_ON)
+    if (Port_DriverState.initialized == FALSE) {
+        Det_ReportError(PORT_MODULE_ID, 0U, PORT_SID_DEINIT, PORT_E_UNINIT);
+        return;
+    }
+    #endif
+
+    Port_DriverState.configPtr = NULL_PTR;
+    Port_DriverState.initialized = FALSE;
+}
+#endif
+
+/**
  * @brief Sets pin direction
  * @req SHALL_PORT - Sets pin direction
  */

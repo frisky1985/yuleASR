@@ -19,14 +19,16 @@
  *================================================================================================*/
 void Mcal_DisableAllInterrupts(void)
 {
-#if defined(__aarch64__)
-    /* Real interrupt masking on AArch64: set the IRQ mask bit (DAIF.I) */
+#if defined(__aarch64__) && !defined(__APPLE__)
+    /* Real interrupt masking on AArch64: set the IRQ mask bit (DAIF.I)
+     * NOTE: excluded on Apple platforms — macOS user-space forbids DAIF
+     * modification (msr daifset raises SIGILL/EXC_BAD_INSTRUCTION). */
     __asm volatile ("msr daifset, #2" ::: "memory");
 #elif defined(__arm__) || defined(__thumb__)
     /* Cortex-M7: set PRIMASK (disables all maskable interrupts) */
     __asm volatile ("cpsid i" ::: "memory");
 #else
-    /* Non-ARM host: no interrupt control available in user space. */
+    /* Non-ARM host or Apple aarch64: no interrupt control available in user space. */
 #endif
 }
 
@@ -35,14 +37,16 @@ void Mcal_DisableAllInterrupts(void)
  *================================================================================================*/
 void Mcal_EnableAllInterrupts(void)
 {
-#if defined(__aarch64__)
-    /* Real interrupt unmasking on AArch64: clear the IRQ mask bit (DAIF.I) */
+#if defined(__aarch64__) && !defined(__APPLE__)
+    /* Real interrupt unmasking on AArch64: clear the IRQ mask bit (DAIF.I)
+     * NOTE: excluded on Apple platforms — macOS user-space forbids DAIF
+     * modification (msr daifclr raises SIGILL/EXC_BAD_INSTRUCTION). */
     __asm volatile ("msr daifclr, #2" ::: "memory");
 #elif defined(__arm__) || defined(__thumb__)
     /* Cortex-M7: clear PRIMASK (enables maskable interrupts) */
     __asm volatile ("cpsie i" ::: "memory");
 #else
-    /* Non-ARM host: no interrupt control available in user space. */
+    /* Non-ARM host or Apple aarch64: no interrupt control available in user space. */
 #endif
 }
 

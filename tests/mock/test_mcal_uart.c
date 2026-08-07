@@ -13,8 +13,28 @@
 #include "Uart.h"
 
 static Uart_ConfigType g_test_cfg;
+static Uart_ChannelConfigType g_channel_cfg[UART_MAX_CHANNELS];
 
-void setUp(void) { mock_hal_reset(); memset(&g_test_cfg, 0, sizeof(g_test_cfg)); }
+#ifndef UART_MAX_CHANNELS
+#define UART_MAX_CHANNELS 4U
+#endif
+
+/* Reset Uart module state between tests: DeInit fully resets the static
+ * driver state so before-init tests are hermetic. */
+static void uart_reset_module(void)
+{
+    Uart_DeInit();
+}
+
+void setUp(void)
+{
+    mock_hal_reset();
+    memset(&g_test_cfg, 0, sizeof(g_test_cfg));
+    memset(g_channel_cfg, 0, sizeof(g_channel_cfg));
+    g_test_cfg.ChannelCount = 1;
+    g_test_cfg.ChannelConfig = g_channel_cfg;
+    uart_reset_module();
+}
 void tearDown(void) {}
 
 /* ========= Uart_Init ========= */

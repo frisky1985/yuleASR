@@ -49,6 +49,7 @@
 #define PORT_API_ID_REFRESH_PORT_DIRECTION      0x02U
 #define PORT_API_ID_GET_VERSION_INFO            0x03U
 #define PORT_API_ID_SET_PIN_MODE                0x04U
+#define PORT_API_ID_DEINIT                      0x05U
 
 /* Service ID aliases (used in DET reporting) */
 #define PORT_SID_INIT                        PORT_API_ID_INIT
@@ -56,6 +57,7 @@
 #define PORT_SID_REFRESH_PORT_DIRECTION      PORT_API_ID_REFRESH_PORT_DIRECTION
 #define PORT_SID_GET_VERSION_INFO            PORT_API_ID_GET_VERSION_INFO
 #define PORT_SID_SET_PIN_MODE                PORT_API_ID_SET_PIN_MODE
+#define PORT_SID_DEINIT                      PORT_API_ID_DEINIT
 
 /* Error Codes */
 #define PORT_E_PARAM_PIN                        0x0AU
@@ -135,6 +137,18 @@ extern const Port_ConfigType Port_Config;
  * @note This function must be called before any other Port function
  */
 void Port_Init(const Port_ConfigType* ConfigPtr);
+
+/**
+ * @brief Deinitializes the Port Driver module
+ *
+ * @pre Port Driver initialized
+ * @post Port Driver deinitialized
+ *
+ * @note Resets the driver state (used by low-power transitions and tests)
+ */
+#if (PORT_DE_INIT_API == STD_ON)
+void Port_DeInit(void);
+#endif
 
 /**
  * @brief Sets the port pin direction

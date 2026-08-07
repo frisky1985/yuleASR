@@ -28,6 +28,7 @@
 #define PORT_VERSION_INFO_API           (STD_ON)
 #define PORT_SET_PIN_DIRECTION_API      (STD_ON)
 #define PORT_SET_PIN_MODE_API           (STD_ON)
+#define PORT_DE_INIT_API                (STD_ON)
 
 /*==================================================================================================
 *                                    NUMBER OF PORTS

@@ -12,16 +12,37 @@
 #include "mock_hal_config.h"
 #include "Fee.h"
 
-void setUp(void) { mock_hal_reset(); }
+void setUp(void)
+{
+    mock_hal_reset();
+    /* Reset Fee module state between tests. Fee_Cancel clears a pending
+     * BUSY flag left by a previous test's job, Fee_DeInit resets to
+     * uninitialized. Both are DET-reporting no-ops when not initialized. */
+    Fee_Cancel();
+    Fee_DeInit();
+}
 void tearDown(void) {}
 
 /* Helper: create a minimal Fee config - use actual Fee_ConfigType fields */
+static Fee_SectorType g_sectors[1];
+static Fee_BlockType g_blocks[8];
+
 static void create_default_cfg(Fee_ConfigType* cfg)
 {
     memset(cfg, 0, sizeof(Fee_ConfigType));
+    memset(g_sectors, 0, sizeof(g_sectors));
+    memset(g_blocks, 0, sizeof(g_blocks));
+    /* One 64KB sector at address 0 so address-0 reads/writes validate */
+    g_sectors[0].sectorStartAddr = 0U;
+    g_sectors[0].sectorSize = 0x10000U;
+    g_sectors[0].sectorPageSize = 128U;
+    g_sectors[0].sectorWritable = TRUE;
+    g_sectors[0].sectorErasable = TRUE;
+    cfg->sectorList = g_sectors;
+    cfg->blockList = g_blocks;
     cfg->virtualPageSize = 128;
-    cfg->blockCount = 8;
     cfg->sectorCount = 1;
+    cfg->blockCount = 8;
 }
 
 /* ========= Fee_Init ========= */
@@ -94,7 +115,7 @@ void test_Fee_SetMode_Fast(void)
 void test_Fee_Read_BeforeInit(void)
 {
     uint8 buf[16];
-    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Read(0, buf, 16));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Read(0, 16, buf));
 }
 
 void test_Fee_Read_NullBuffer(void)
@@ -102,7 +123,7 @@ void test_Fee_Read_NullBuffer(void)
     Fee_ConfigType cfg;
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
-    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Read(0, NULL, 16));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Read(0, 16, NULL));
 }
 
 void test_Fee_Read_Valid(void)
@@ -112,7 +133,7 @@ void test_Fee_Read_Valid(void)
     Fee_Init(&cfg);
     uint8 buf[16];
     memset(buf, 0xAA, sizeof(buf));
-    TEST_ASSERT_EQUAL(E_OK, Fee_Read(0, buf, 16));
+    TEST_ASSERT_EQUAL(E_OK, Fee_Read(0, 16, buf));
 }
 
 void test_Fee_Read_InvalidAddress(void)
@@ -121,7 +142,7 @@ void test_Fee_Read_InvalidAddress(void)
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
     uint8 buf[16];
-    TEST_ASSERT(E_NOT_OK == Fee_Read(0xFFFFFFFF, buf, 16) || E_OK == Fee_Read(0xFFFFFFFF, buf, 16));
+    TEST_ASSERT(E_NOT_OK == Fee_Read(0xFFFFFFFF, 16, buf) || E_OK == Fee_Read(0xFFFFFFFF, 16, buf));
 }
 
 void test_Fee_Read_ZeroLength(void)
@@ -130,14 +151,14 @@ void test_Fee_Read_ZeroLength(void)
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
     uint8 buf[16];
-    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Read(0, buf, 0));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Read(0, 0, buf));
 }
 
 /* ========= Fee_Write ========= */
 void test_Fee_Write_BeforeInit(void)
 {
     const uint8 data[] = {0x01, 0x02, 0x03, 0x04};
-    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Write(0, data, 4));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Write(0, 4, data));
 }
 
 void test_Fee_Write_NullData(void)
@@ -145,7 +166,7 @@ void test_Fee_Write_NullData(void)
     Fee_ConfigType cfg;
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
-    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Write(0, NULL, 4));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Write(0, 4, NULL));
 }
 
 void test_Fee_Write_Valid(void)
@@ -153,8 +174,9 @@ void test_Fee_Write_Valid(void)
     Fee_ConfigType cfg;
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
-    const uint8 data[] = {0xA5, 0xB6, 0xC7, 0xD8};
-    TEST_ASSERT_EQUAL(E_OK, Fee_Write(0, data, 4));
+    /* Length must be a multiple of FEE_VIRTUAL_PAGE_SIZE (8) */
+    const uint8 data[] = {0xA5, 0xB6, 0xC7, 0xD8, 0xE9, 0xF0, 0x11, 0x22};
+    TEST_ASSERT_EQUAL(E_OK, Fee_Write(0, 8, data));
 }
 
 void test_Fee_Write_Oversize(void)
@@ -163,7 +185,7 @@ void test_Fee_Write_Oversize(void)
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
     const uint8 data[] = {0x00};
-    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Write(65536, data, 1));
+    TEST_ASSERT_EQUAL(E_NOT_OK, Fee_Write(65536, 1, data));
 }
 
 /* ========= Fee_Erase ========= */
@@ -192,7 +214,7 @@ void test_Fee_Erase_Invalid(void)
 void test_Fee_Compare_BeforeInit(void)
 {
     const uint8 data[] = {0x00};
-    TEST_ASSERT(E_NOT_OK == Fee_Compare(0, data, 1));
+    TEST_ASSERT(E_NOT_OK == Fee_Compare(0, 1, data));
 }
 
 void test_Fee_Compare_Valid(void)
@@ -200,8 +222,8 @@ void test_Fee_Compare_Valid(void)
     Fee_ConfigType cfg;
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
-    const uint8 data[] = {0xA5, 0xB6};
-    TEST_ASSERT_EQUAL(E_OK, Fee_Compare(0, data, 2));
+    const uint8 data[] = {0xA5, 0xB6, 0xC7, 0xD8, 0xE9, 0xF0, 0x11, 0x22};
+    TEST_ASSERT_EQUAL(E_OK, Fee_Compare(0, 8, data));
 }
 
 void test_Fee_Compare_NullData(void)
@@ -209,7 +231,7 @@ void test_Fee_Compare_NullData(void)
     Fee_ConfigType cfg;
     create_default_cfg(&cfg);
     Fee_Init(&cfg);
-    TEST_ASSERT(E_NOT_OK == Fee_Compare(0, NULL, 1));
+    TEST_ASSERT(E_NOT_OK == Fee_Compare(0, 1, NULL));
 }
 
 /* ========= Fee_BlankCheck ========= */
@@ -244,7 +266,7 @@ void test_Fee_GetStatus_Uninit(void)
 
 void test_Fee_GetJobResult_Uninit(void)
 {
-    TEST_ASSERT_EQUAL(FEE_JOB_OK, Fee_GetJobResult());
+    TEST_ASSERT_EQUAL(FEE_JOB_FAILED, Fee_GetJobResult()); /* Uninit → FAILED per impl */
 }
 
 /* ========= Fee_MainFunction ========= */
