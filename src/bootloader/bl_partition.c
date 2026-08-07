@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include "bl_partition.h"
+#include "bl_time.h"
 #include "../common/log/dds_log.h"
 
 /* 前向声明 — bl_partition_calculate_crc 委托给 calculate_crc32 */
@@ -664,10 +665,16 @@ bl_partition_error_t bl_partition_commit_switch(bl_partition_manager_t *mgr)
     
     /* 确认切换成功 */
     if (active_part->state == BL_PARTITION_STATE_BOOTABLE) {
+        uint64_t current_time = 0;
+        if (!bl_time_get_ms(&current_time)) {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_PARTITION_MODULE_NAME,
+                    "Current time source unavailable, cannot record last boot time");
+            return BL_ERROR_TIME_UNAVAILABLE;
+        }
         active_part->state = BL_PARTITION_STATE_ACTIVE;
         active_part->attributes |= BL_PARTITION_ATTR_VERIFIED;
         active_part->boot_successful = true;
-        active_part->last_boot_time = 0; /* TODO: Get current time */
+        active_part->last_boot_time = current_time;
         
         DDS_LOG(BL_PARTITION_LOG_LEVEL, BL_PARTITION_MODULE_NAME,
                 "Partition switch committed: '%s'", active_part->name);

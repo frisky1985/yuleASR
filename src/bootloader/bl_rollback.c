@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include "bl_rollback.h"
 #include "bl_partition.h"
+#include "bl_time.h"
 #include "../common/log/dds_log.h"
 
 /* ============================================================================
@@ -45,6 +46,21 @@ static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
     }
     
     return ~crc;
+}
+
+/**
+ * @brief 获取当前时间（真实时间源）
+ * @param out_ms 输出当前时间(ms)
+ * @return BL_ROLLBACK_OK成功；无可用时间源时返回 BL_ROLLBACK_ERROR_TIME_UNAVAILABLE
+ */
+static bl_rollback_error_t get_current_time(uint64_t *out_ms)
+{
+    if (!bl_time_get_ms(out_ms)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Current time source unavailable, timestamp not recorded");
+        return BL_ROLLBACK_ERROR_TIME_UNAVAILABLE;
+    }
+    return BL_ROLLBACK_OK;
 }
 
 /**
@@ -126,7 +142,10 @@ static bl_rollback_error_t add_to_history(
     int32_t existing = find_history_entry(mgr, version);
     if (existing >= 0) {
         /* 更新现有记录 */
-        record->history[existing].install_time = 0; /* TODO: Get current time */
+        bl_rollback_error_t time_result = get_current_time(&record->history[existing].install_time);
+        if (time_result != BL_ROLLBACK_OK) {
+            return time_result;
+        }
         if (hash != NULL) {
             memcpy(record->history[existing].hash, hash, 32);
         }
@@ -154,7 +173,10 @@ static bl_rollback_error_t add_to_history(
     memset(&record->history[slot], 0, sizeof(bl_version_history_entry_t));
     record->history[slot].version = version;
     record->history[slot].partition_id = partition_id;
-    record->history[slot].install_time = 0; /* TODO: Get current time */
+    bl_rollback_error_t time_result = get_current_time(&record->history[slot].install_time);
+    if (time_result != BL_ROLLBACK_OK) {
+        return time_result;
+    }
     record->history[slot].is_valid = true;
     if (hash != NULL) {
         memcpy(record->history[slot].hash, hash, 32);
@@ -293,7 +315,10 @@ bl_rollback_error_t bl_rollback_record_boot_result(
         if (idx >= 0) {
             mgr->record.history[idx].boot_count++;
             mgr->record.history[idx].boot_success_count++;
-            mgr->record.history[idx].last_boot_time = 0; /* TODO: Get current time */
+            bl_rollback_error_t time_result = get_current_time(&mgr->record.history[idx].last_boot_time);
+            if (time_result != BL_ROLLBACK_OK) {
+                return time_result;
+            }
         }
         
         DDS_LOG(BL_ROLLBACK_LOG_LEVEL, BL_ROLLBACK_MODULE_NAME,
@@ -400,6 +425,14 @@ bl_rollback_error_t bl_rollback_execute(bl_rollback_manager_t *mgr, uint8_t reas
         return result;
     }
     
+    /* 记录回滚执行时间（真实时间源，不可用时中止回滚） */
+    uint64_t current_time = 0;
+    result = get_current_time(&current_time);
+    if (result != BL_ROLLBACK_OK) {
+        set_state(mgr, BL_ROLLBACK_STATE_FAILED);
+        return result;
+    }
+    
     /* 填充回滚记录 */
     mgr->record.active = true;
     mgr->record.reason = reason;
@@ -407,7 +440,7 @@ bl_rollback_error_t bl_rollback_execute(bl_rollback_manager_t *mgr, uint8_t reas
     mgr->record.target_version = target_version;
     mgr->record.source_partition = mgr->current_partition;
     mgr->record.target_partition = target_partition;
-    mgr->record.rollback_time = 0; /* TODO: Get current time */
+    mgr->record.rollback_time = current_time;
     mgr->record.verified = false;
     mgr->record.rollback_count++;
     
@@ -592,15 +625,64 @@ bl_rollback_error_t bl_rollback_save_record(
     /* 更新CRC */
     update_record_crc(&mgr->record);
     
-    /* 保存到分区管理器 */
+    /* 通过分区管理器的Flash驱动写入持久存储 */
     bl_partition_manager_t *part_mgr = (bl_partition_manager_t*)mgr->partition_manager;
-    if (part_mgr == NULL) {
+    if ((part_mgr == NULL) || (part_mgr->flash_driver == NULL)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Partition manager or flash driver not available");
         return BL_ROLLBACK_ERROR_STORAGE_ERROR;
     }
     
-    /* TODO: 实现实际的保存逻辑 */
+    const bl_flash_driver_t *flash = part_mgr->flash_driver;
+    
+    /* 解锁写保护 */
+    if (part_mgr->write_protected && (flash->unlock != NULL)) {
+        flash->unlock();
+    }
+    
+    /* 获取扇区大小 */
+    uint32_t sector_size = BL_FLASH_SECTOR_SIZE;
+    if (flash->get_info != NULL) {
+        uint32_t flash_size;
+        flash->get_info(&flash_size, &sector_size);
+    }
+    
+    /* 擦除目标扇区 */
+    int32_t result = flash->erase(address, sector_size);
+    if (result != 0) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Failed to erase rollback record sector at 0x%08X: %d", address, result);
+        if (flash->lock != NULL) {
+            flash->lock();
+        }
+        return BL_ROLLBACK_ERROR_STORAGE_ERROR;
+    }
+    
+    /* 写入回滚记录 */
+    result = flash->program(address,
+                            (const uint8_t*)&mgr->record,
+                            sizeof(bl_rollback_record_t));
+    
+    /* 写回验证 */
+    if ((result == 0) && (flash->verify != NULL)) {
+        result = flash->verify(address,
+                               (const uint8_t*)&mgr->record,
+                               sizeof(bl_rollback_record_t));
+    }
+    
+    /* 锁定写保护 */
+    if (flash->lock != NULL) {
+        flash->lock();
+    }
+    
+    if (result != 0) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Failed to write rollback record at 0x%08X: %d", address, result);
+        return BL_ROLLBACK_ERROR_STORAGE_ERROR;
+    }
+    
     DDS_LOG(BL_ROLLBACK_LOG_LEVEL, BL_ROLLBACK_MODULE_NAME,
-            "Rollback record saved");
+            "Rollback record saved to 0x%08X", address);
     
     return BL_ROLLBACK_OK;
 }
@@ -614,15 +696,38 @@ bl_rollback_error_t bl_rollback_load_record(
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
-    /* TODO: 实现实际的加载逻辑 */
-    /* 从持久存储读取并验证 */
-    
-    if (!validate_record(&mgr->record)) {
+    /* 通过分区管理器的Flash驱动从持久存储读取 */
+    bl_partition_manager_t *part_mgr = (bl_partition_manager_t*)mgr->partition_manager;
+    if ((part_mgr == NULL) || (part_mgr->flash_driver == NULL)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Partition manager or flash driver not available");
         return BL_ROLLBACK_ERROR_STORAGE_ERROR;
     }
     
+    /* 读取到临时缓冲区，避免损坏数据污染管理器状态 */
+    bl_rollback_record_t loaded;
+    memset(&loaded, 0, sizeof(loaded));
+    int32_t result = part_mgr->flash_driver->read(
+        address, (uint8_t*)&loaded, sizeof(bl_rollback_record_t));
+    
+    if (result != 0) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Failed to read rollback record at 0x%08X: %d", address, result);
+        return BL_ROLLBACK_ERROR_STORAGE_ERROR;
+    }
+    
+    /* 验证记录完整性（魔数 + CRC32） */
+    if (!validate_record(&loaded)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_ROLLBACK_MODULE_NAME,
+                "Invalid rollback record at 0x%08X (magic/CRC mismatch)", address);
+        return BL_ROLLBACK_ERROR_STORAGE_ERROR;
+    }
+    
+    /* 加载到管理器 */
+    memcpy(&mgr->record, &loaded, sizeof(bl_rollback_record_t));
+    
     DDS_LOG(BL_ROLLBACK_LOG_LEVEL, BL_ROLLBACK_MODULE_NAME,
-            "Rollback record loaded");
+            "Rollback record loaded from 0x%08X", address);
     
     return BL_ROLLBACK_OK;
 }
