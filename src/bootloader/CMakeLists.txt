@@ -8,6 +8,7 @@ add_library(eth_bootloader STATIC
     bl_partition.c
     bl_rollback.c
     bl_secure_boot.c
+    bl_time.c
 )
 
 target_include_directories(eth_bootloader PUBLIC
@@ -37,6 +38,7 @@ install(FILES
     bl_partition.h
     bl_rollback.h
     bl_secure_boot.h
+    bl_time.h
     DESTINATION include/eth_dds/bootloader
     COMPONENT headers
 )

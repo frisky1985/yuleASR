@@ -57,7 +57,8 @@ typedef enum {
     BL_ROLLBACK_ERROR_ROLLBACK_FAILED = -5,
     BL_ROLLBACK_ERROR_ALREADY_ROLLING_BACK = -6,
     BL_ROLLBACK_ERROR_NO_VALID_PARTITION = -7,
-    BL_ROLLBACK_ERROR_VERSION_NOT_FOUND = -8
+    BL_ROLLBACK_ERROR_VERSION_NOT_FOUND = -8,
+    BL_ROLLBACK_ERROR_TIME_UNAVAILABLE = -9   /* 无可用时间源, 无法记录审计时间戳 */
 } bl_rollback_error_t;
 
 /* ============================================================================

@@ -56,7 +56,8 @@ typedef enum {
     BL_SB_ERROR_INVALID_MAGIC = -14,
     BL_SB_ERROR_PARSE_ERROR = -15,
     BL_SB_ERROR_ROLLBACK_PROTECTION = -16,
-    BL_SB_ERROR_VERSION_MISMATCH = -17
+    BL_SB_ERROR_VERSION_MISMATCH = -17,
+    BL_SB_ERROR_TIME_UNAVAILABLE = -18   /* 无可用时间源, 无法校验有效期/记录时间戳 */
 } bl_secure_boot_error_t;
 
 /* ============================================================================

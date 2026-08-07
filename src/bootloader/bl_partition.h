@@ -56,7 +56,8 @@ typedef enum {
     BL_ERROR_VERIFY_FAILED = -10,
     BL_ERROR_NO_VALID_PARTITION = -11,
     BL_ERROR_ROLLBACK_FAILED = -12,
-    BL_ERROR_VERSION_MISMATCH = -13
+    BL_ERROR_VERSION_MISMATCH = -13,
+    BL_ERROR_TIME_UNAVAILABLE = -14   /* 无可用时间源, 无法记录审计时间戳 */
 } bl_partition_error_t;
 
 /* ============================================================================

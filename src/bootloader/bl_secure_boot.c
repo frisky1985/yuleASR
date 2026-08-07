@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "bl_secure_boot.h"
+#include "bl_time.h"
 #include "../common/log/dds_log.h"
 #include "../crypto_stack/csm/csm_core.h"
 #include "../crypto_stack/keym/keym_core.h"
@@ -509,31 +510,132 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         return BL_SB_ERROR_CRYPTO_FAILURE;
     }
     
-    /* 验证证书链从叶子到根 */
+    /* 验证证书链：逐级验证签名（根→叶子，每张证书由上一级公钥签发）
+     * 根证书使用可信根公钥验证，其余证书使用链中上一级证书的公钥验证 */
     for (int i = chain->num_certs - 1U; i >= 0; i--) {
         const bl_certificate_t *cert = &chain->certs[i];
         
         /* 检查证书有效期 */
         if (ctx->config.verify_cert_validity) {
-            uint64_t current_time = 0; /* TODO: 获取当前时间 */
+            uint64_t current_time = 0;
+            if (!bl_time_get_ms(&current_time)) {
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                        "Current time source unavailable, cannot verify certificate validity");
+                return BL_SB_ERROR_TIME_UNAVAILABLE;
+            }
             if ((current_time < cert->valid_from) || (current_time > cert->valid_until)) {
                 DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
-                        "Certificate expired or not yet valid");
+                        "Certificate expired or not yet valid: now=%llu, from=%llu, until=%llu",
+                        (unsigned long long)current_time,
+                        (unsigned long long)cert->valid_from,
+                        (unsigned long long)cert->valid_until);
                 return BL_SB_ERROR_CERT_EXPIRED;
             }
         }
         
-        /* 验证签名 */
+        /* 确定签名验证公钥 */
         const uint8_t *signing_key = NULL;
+        uint32_t signing_key_len = BL_SB_SIGNATURE_SIZE; /* ECDSA P-256 公钥 */
         if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
             /* 根证书使用可信公钥验证 */
             signing_key = trusted_root_key;
         } else {
-            /* 其他证书使用上一级证书的公钥 */
+            /* 其他证书使用上一级证书的公钥；签发者必须是 CA */
+            if (!chain->certs[i + 1].is_ca) {
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                        "Certificate %d signer is not a CA", i + 1);
+                return BL_SB_ERROR_CERT_INVALID;
+            }
             signing_key = chain->certs[i + 1].public_key;
+            if (chain->certs[i + 1].public_key_len > 0U) {
+                signing_key_len = chain->certs[i + 1].public_key_len;
+            }
         }
         
-        /* TODO: 实现证书签名验证 */
+        if ((cert->data == NULL) || (cert->size == 0U)) {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Certificate %d has no data to verify", i);
+            return BL_SB_ERROR_CERT_INVALID;
+        }
+        
+        /* 计算证书数据哈希（签名覆盖整张证书数据） */
+        uint8_t cert_hash[BL_SB_HASH_SIZE];
+        uint32_t hash_len = BL_SB_HASH_SIZE;
+        csm_status_t status = csm_hash(csm, CSM_ALGO_SHA_256,
+                                       cert->data, cert->size,
+                                       cert_hash, &hash_len);
+        if (status != CSM_OK) {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Certificate %d hash calculation failed: %d", i, status);
+            return BL_SB_ERROR_CRYPTO_FAILURE;
+        }
+        
+        /* 确定签名算法 */
+        csm_algorithm_t sign_algo;
+        switch (cert->sign_type) {
+            case BL_SB_SIGN_ECDSA_P256_SHA256:
+                sign_algo = CSM_ALGO_ECDSA_P256_SHA_256;
+                break;
+            case BL_SB_SIGN_ECDSA_P384_SHA384:
+                sign_algo = CSM_ALGO_ECDSA_P384_SHA_384;
+                break;
+            default:
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                        "Unsupported certificate signature type: %d", cert->sign_type);
+                return BL_SB_ERROR_INVALID_SIGNATURE;
+        }
+        
+        /* 通过KeyM将签名验证公钥导入临时密钥槽 */
+        keym_context_t *keym = (keym_context_t*)ctx->keym_context;
+        uint8_t verify_key_slot = KEYM_SLOT_ID_INVALID;
+        bool temp_slot_in_use = false;
+        
+        if (keym != NULL) {
+            keym_status_t key_status = keym_slot_allocate(
+                keym, &verify_key_slot, "bl_cert_chain", KEYM_TYPE_ECC_P256);
+            if (key_status != KEYM_OK) {
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                        "Failed to allocate verification key slot: %d", key_status);
+                return BL_SB_ERROR_CRYPTO_FAILURE;
+            }
+            key_status = keym_key_import(keym, verify_key_slot,
+                                         signing_key, signing_key_len, 1U);
+            if (key_status != KEYM_OK) {
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                        "Failed to import verification key: %d", key_status);
+                (void)keym_slot_free(keym, verify_key_slot);
+                return BL_SB_ERROR_CRYPTO_FAILURE;
+            }
+            temp_slot_in_use = true;
+        } else if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
+            /* 无KeyM时回退到配置的根CA密钥槽验证根证书 */
+            verify_key_slot = ctx->config.root_ca_key_slot;
+        } else {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "KeyM required to verify intermediate certificate %d", i);
+            return BL_SB_ERROR_CRYPTO_FAILURE;
+        }
+        
+        /* 使用CSM验证证书签名 */
+        bool verify_result = false;
+        status = csm_mac_verify(csm, sign_algo, verify_key_slot,
+                                cert_hash, hash_len,
+                                cert->signature, BL_SB_SIGNATURE_SIZE,
+                                &verify_result);
+        
+        if (temp_slot_in_use && (keym != NULL)) {
+            (void)keym_slot_free(keym, verify_key_slot);
+        }
+        
+        if ((status != CSM_OK) || !verify_result) {
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Certificate %d signature verification failed", i);
+            set_state(ctx, BL_SB_STATE_VERIFICATION_FAILED);
+            return BL_SB_ERROR_INVALID_SIGNATURE;
+        }
+        
+        DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
+                "Certificate %d signature verified", i);
     }
     
     set_state(ctx, BL_SB_STATE_CERT_VALID);
@@ -757,8 +859,15 @@ bl_secure_boot_error_t bl_secure_boot_lock_version(
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
+    uint64_t current_time = 0;
+    if (!bl_time_get_ms(&current_time)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Current time source unavailable, cannot record version lock timestamp");
+        return BL_SB_ERROR_TIME_UNAVAILABLE;
+    }
+    
     ctx->rollback_info.version_locked = true;
-    ctx->rollback_info.version_lock_timestamp = 0; /* TODO: 获取当前时间 */
+    ctx->rollback_info.version_lock_timestamp = current_time;
     
     DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
             "Version locked at 0x%08X", version);
