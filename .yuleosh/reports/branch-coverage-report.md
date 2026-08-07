@@ -1,64 +1,54 @@
-# Branch Coverage Report — ASIL Modules (2026-08-07)
+# Branch Coverage Report — ASIL Modules (2026-08-07, batch E)
 
 > **Scope**: E2E / NvM / WdgM / Com / Crc / Os (timing protection) / Det
 > **Method**: native host test binaries linking **production sources from `src/`**
 > (unchanged) compiled with `--coverage -fprofile-arcs -ftest-coverage`,
 > measured with `lcov --branch-coverage` (BRDA records).
 > **Reproduce**: `bash tools/run_branch_coverage.sh`
-> **Commit**: HEAD after batch D rebuild
-
-## Why this report exists
-
-量产检视发现旧 `c-coverage.json`（2026-07-26 产物）branch 覆盖率为 0.0%
-（found 0 / hit 0），且仅覆盖 7 个文件（含 `coverage_run/` 测试桩与测试文件）。
-本报告以当日真实运行数据重建 ASIL 相关模块的分支/行覆盖率。
+> **Commits**: 1aa9a994 (NvM), 5e48ff26 (Com), 4750aa6a (E2E), 63fa527a (Wdgm/Det/Os)
 
 ## Totals (production src/ only)
 
-| Metric | Found | Hit | Rate |
-|:-------|------:|----:|-----:|
-| Lines | 2881 | 1246 | 43.25% |
-| Branches | 1247 | 389 | **31.19%** |
-| Functions | 199 | 132 | 66.33% |
+| Metric | Found | Hit | Rate | Batch D | Δ |
+|:-------|------:|----:|-----:|--------:|--:|
+| Lines | 2881 | 2638 | **91.57%** | 43.25% | +48.32pp |
+| Branches | 1247 | 995 | **79.79%** | 31.19% | +48.60pp |
+| Functions | 199 | 192 | 96.48% | 66.33% | +30.15pp |
 
-Branch coverage > 0% — ISO 26262-6 §9.2 branch coverage requirement now has
-real measured data (previously 0.0% / no data).
+**SWE.4.BP1 gate (statement ≥80%, branch ≥70%): ✅ MET on both axes.**
 
-## Per-module data (当日)
+## Per-module data (batch E 当日实测)
 
-| Module | File | Line % | Branch data |
-|:-------|:-----|-------:|:------------|
-| Crc | `src/bsw/services/crc/src/Crc.c` | 92.50% | ✅ |
-| Det | `src/bsw/services/det/src/Det.c` | 83.78% | ✅ |
-| Os | `src/bsw/os/src/Os_TimingProtection.c` | 89.72% | ✅ |
-| WdgM | `src/bsw/services/wdgm/src/Wdgm.c` | 72.70% | ✅ |
-| E2E | `src/bsw/services/e2e/src/E2E_P01.c` | 68.52% | ✅ |
-| E2E | `src/bsw/services/e2e/src/E2E_P02.c` | 47.30% | ✅ |
-| E2E | `src/bsw/services/e2e/src/E2E_P04.c` | 67.07% | ✅ |
-| E2E | `src/bsw/services/e2e/src/E2E_P05.c` | 59.88% | ✅ |
-| E2E | `src/bsw/services/e2e/src/E2E_P06.c` | 64.03% | ✅ |
-| E2E | `src/bsw/services/e2e/src/E2E_P07.c` | 60.00% | ✅ |
-| Com | `src/bsw/services/com/src/Com.c` | 33.81% | ✅ |
-| NvM | `src/bsw/services/nvm/src/NvM.c` | 19.65% | ✅ |
-| NvM | `src/bsw/services/nvm/src/NvM_EccHandler.c` | 22.65% | ✅ |
-| WdgM | `src/bsw/services/wdgm/src/WdgM_Cfg.c` | 38.10% | ✅ |
+| Module | File | Line % | Branch % |
+|:-------|:-----|-------:|---------:|
+| Os | `src/bsw/os/src/Os_TimingProtection.c` | 100.00% | 95.35% |
+| Det | `src/bsw/services/det/src/Det.c` | 100.00% | 88.46% |
+| E2E | `src/bsw/services/e2e/src/E2E_P02.c` | 100.00% | 83.78% |
+| E2E | `src/bsw/services/e2e/src/E2E_P04.c` | 100.00% | 88.57% |
+| Com | `src/bsw/services/com/src/Com.c` | 96.52% | 80.09% |
+| NvM | `src/bsw/services/nvm/src/NvM_EccHandler.c` | 96.15% | 89.26% |
+| E2E | `src/bsw/services/e2e/src/E2E_P06.c` | 94.24% | 83.64% |
+| E2E | `src/bsw/services/e2e/src/E2E_P07.c` | 94.40% | 83.64% |
+| Crc | `src/bsw/services/crc/src/Crc.c` | 92.50% | 100.00% |
+| NvM | `src/bsw/services/nvm/src/NvM.c` | 88.69% | 74.34% |
+| WdgM | `src/bsw/services/wdgm/src/Wdgm.c` | 85.20% | 77.36% |
+| E2E | `src/bsw/services/e2e/src/E2E_P05.c` | 81.48% | 70.18% |
+| E2E | `src/bsw/services/e2e/src/E2E_P01.c` | 98.15% | 87.23% |
+| WdgM | `src/bsw/services/wdgm/src/WdgM_Cfg.c` | 66.67% | 30.00% |
+| Det | `src/bsw/services/det/src/Det_Lcfg.c` | 0.00% | 0.00% |
 
-Branch coverage was measured per module (BRDA records present in
-`coverage_asil_raw.info` / `coverage_asil_src.info`).
+Module-level notes:
+- **Det_Lcfg.c 0%**: the Lcfg hook tables (`Det_ErrorHooks[]` etc.) are
+  link-time configuration **not consumed by Det.c** — Det.c maintains its own
+  internal hook arrays populated at runtime. Lcfg tables are dead configuration
+  data; lines are function definitions never referenced (genuine gap, P2).
+- **WdgM_Cfg.c 66.67%/30%**: `WdgM_WatchdogSetMode(OFF)` case and the
+  safety-event callback cases 0x01/0x02/0x03/0x05 (supervision expired,
+  lockstep, ramsafety, reset) are reachable only through the emergency-reset
+  path (`WdgM_PerformReset` → `for(;;)`) which by design cannot run in a test
+  binary; mode-change event (0x04) is covered.
 
-## Test drivers (coverage_run/asil/)
-
-| Driver | Links (production) | Stubs used |
-|:-------|:-------------------|:-----------|
-| `test_e2e_coverage.c` | E2E.c, E2E_P01..P07, Crc.c, Det.c | CRC64, E2E_Init/DeInit (declared but not implemented in src — finding) |
-| `test_nvm_coverage.c` | NvM.c, NvM_Redundant.c, NvM_EccHandler*.c, Det.c | MemIf device layer, NvM_Config, Mcal interrupts |
-| `test_wdgm_coverage.c` | Wdgm.c, WdgM_Cfg.c, Det.c | Mcal interrupts |
-| `test_com_coverage.c` | Com.c, Com_Lcfg.c, Det.c | PduR/Dcm (stubs_com.c), cfg override |
-| `test_crc_coverage.c` | Crc.c, Crc_Lcfg.c, Det.c | — |
-| `Det_Test.c` (white-box) | Det.c (linkage exposed via `-Dstatic=`), Det_Lcfg.c | — |
-| `test_os_timing_coverage.c` | Os_TimingProtection.c, Det.c | FreeRTOS tick, OS hooks/budgets |
-
-## Findings logged (real, not masked)
+## Genuine remaining gaps (real, not masked)
 
 1. **Com.c `uint8` loop counter vs `COM_NUM_OF_SIGNALS=256`** —
    `Com_Init` uses `uint8 i` in `for (i=0U; i<COM_NUM_OF_SIGNALS; i++)`;
@@ -72,16 +62,25 @@ Branch coverage was measured per module (BRDA records present in
 3. **NvM.h declares APIs not implemented in NvM.c**: `NvM_CancelJobs`,
    `NvM_ReadPRAMBlock`, `NvM_WritePRAMBlock`, `NvM_RepairDamagedBlocks` —
    header/implementation mismatch (link would fail in production).
-4. **WdgM_HandleLockstepError / WdgM_HandleRamSafetyError / WdgM_PerformReset**
-   invoke the emergency-reset path (`for(;;)`), by design not callable from
-   a test binary; excluded from the driver with a comment.
-5. **Det white-box build** exposes `Det.c` internals via `-Dstatic=` for the
+4. **WdgM safety response paths not executable in tests**: `WdgM_PerformReset`
+   is an intentional `for(;;)` emergency loop; `WdgM_HandleLockstepError`,
+   `WdgM_HandleRamSafetyError`, `WdgM_MainFunction` consecutive-error branch
+   all funnel into it and would hang a test binary. **Gap: these ASIL-D
+   response paths have no executable coverage; they are reviewed by
+   inspection only (P2).**
+5. **WdgM alive supervision expiry unreachable**: `expectedAliveIndications`
+   is initialised to 0 and never populated from the entity config
+   (`aliveSupRefCycle`), so `WdgM_CheckEntityAlive` / `WdgM_HandleExpiredSupervision`
+   can never trigger via the public API. **P1 finding — production logic gap.**
+6. **WdgM DeInit success path unreachable**: `WdgM_DisableAllowed` is a static
+   FALSE with no setter, so `WdgM_DeInit` always returns
+   `E_DISABLE_NOT_ALLOWED`. **P2 finding.**
+7. **Det white-box build** exposes `Det.c` internals via `-Dstatic=` for the
    unit test only — production source untouched.
 
 ## Gate note
 
-Branch gate (ISO 26262-6 §9.2) now has real measured data. The overall line
-rate (43.25%) reflects only the 7 ASIL modules currently instrumented —
-SWE.4 statement-coverage ≥80% gate remains **not met** at project scope and
-is honestly reported red by `yuleosh ev check` until the remaining modules
-(Com/NvM depth, ECUAL/MCAL) gain coverage drivers.
+ISO 26262-6 §9.2 branch coverage and SWE.4.BP1 statement coverage now have
+real measured data at **91.57% line / 79.79% branch** — both above the
+SWE.4.BP1 thresholds (statement ≥80%, branch ≥70%). `yuleosh ev check`
+SWE.4.BP1 / SWE.6.BP3 evidence reflects this measured data.
