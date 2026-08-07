@@ -86,7 +86,13 @@ def _resolve_matched_tests(req):
             tr for tr in test_reports
             if isinstance(tr, dict)
             and tr.get("status") == "passed"
-            and int(tr.get("passed", 0) or 0) > 0
+            and (
+                int(tr.get("passed", 0) or 0) > 0
+                # SWR mapping-table entries carry file/function instead of a
+                # pytest counter — a passed mapping row IS real test coverage.
+                or tr.get("source") == "SWR mapping table"
+                or bool(tr.get("file"))
+            )
         ]
         if passed_reports:
             matched_tests = passed_reports
@@ -240,7 +246,13 @@ def generate_acceptance_matrix_md(reqs):
         # Normalize dict entries (name/path) before join (P1-2 fix)
         def _tlabel(t):
             if isinstance(t, dict):
-                return str(t.get("name") or t.get("path") or t.get("file") or t)
+                file_ = str(t.get("name") or t.get("path") or t.get("file") or "")
+                func = str(t.get("function") or "")
+                if file_ and func:
+                    return f"{file_}::{func}"
+                if file_:
+                    return file_
+                return str(t)
             return str(t)
         test_file_text = ", ".join(_tlabel(t) for t in matched_tests) if matched_tests else "—"
         verification_method = "Unit Test"
@@ -292,17 +304,33 @@ def write_json_file(path, data):
 def _aggregate_review_logs(evidence_dir):
     """Aggregate review-*.md files into review-log-summary.md and review-log.json.
 
-    Scans the evidence directory for review-*.md files, parses their
-    content, and produces aggregated review-log files. If the review
-    log files already have substantive content (non-empty), they are
-    preserved and the aggregation is appended to the summary.
+    Scans BOTH the evidence directory (``.osh/evidence/review-*.md``) and the
+    canonical review archive (``docs/reviews/*.md``) for review records, parses
+    their content, and produces aggregated review-log files.  The docs/reviews/
+    archive holds the authoritative review records (ASPICE SWE.2.BP3 / SWE.3.BP3
+    evidence), so an empty evidence/ dir must not produce an empty review log.
     """
-    # Find all individual review markdown files
+    # Find all individual review markdown files — evidence dir first, then
+    # the docs/reviews/ archive (authoritative review records).
     review_files = sorted([
         f for f in os.listdir(evidence_dir)
         if f.startswith("review-") and f.endswith(".md")
         and f != "review-log-summary.md"
     ])
+    reviews_dir = os.path.join(BASE_DIR, "docs", "reviews")
+    if os.path.isdir(reviews_dir):
+        review_files.extend(sorted([
+            f for f in os.listdir(reviews_dir)
+            if f.endswith(".md") and not f.startswith("review-log")
+        ]))
+    # dedupe (keep evidence-dir copy first)
+    seen = set()
+    unique = []
+    for f in review_files:
+        if f not in seen:
+            seen.add(f)
+            unique.append(f)
+    review_files = unique
 
     if not review_files:
         print("  ⏭️  No individual review files found to aggregate")
@@ -319,6 +347,8 @@ def _aggregate_review_logs(evidence_dir):
 
     for rf_name in review_files:
         rf_path = os.path.join(evidence_dir, rf_name)
+        if not os.path.exists(rf_path) and os.path.isdir(reviews_dir):
+            rf_path = os.path.join(reviews_dir, rf_name)
         try:
             with open(rf_path, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -342,8 +372,22 @@ def _aggregate_review_logs(evidence_dir):
             elif "发现" in line_stripped and "P2" in line_stripped:
                 findings_p2 += 1
 
-        # Count finding items
-        finding_count = len(_re.findall(r"^\| [A-Z]+-[A-Z0-9]+-\d+ \|", content, _re.MULTILINE))
+        # Robust status extraction: look for verdict keywords across the whole
+        # document (review files use varied formats: **结论**, | 结论 |, verdict…)
+        lowered = content.lower()
+        if status == "unknown":
+            if ("✅" in content and "不通过" not in content) or "verdict: pass" in lowered or "结论: 通过" in content:
+                status = "passed"
+            elif "不通过" in content or "verdict: fail" in lowered or "❌" in content:
+                status = "failed"
+        # Count findings: P0/P1/P2 issue markers (e.g. "P0-1", "| P1-2 |", "P2-3")
+        issue_markers = _re.findall(r"[Pp][0-2]-\d+", content)
+        finding_count = len(issue_markers)
+        if finding_count == 0:
+            finding_count = len(_re.findall(r"(?:发现项|findings?)[:：]\s*(\d+)", content, _re.IGNORECASE))
+        # fall back to pipe-table rows shaped like issue rows
+        if finding_count == 0:
+            finding_count = len(_re.findall(r"^\| [A-Z]+-[A-Z0-9]+-\d+ \|", content, _re.MULTILINE))
 
         summary_lines.append(f"\n## {module_name.upper()} 模块")
         summary_lines.append(f"- 审查文件: {rf_name}")

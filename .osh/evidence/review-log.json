@@ -1,1 +1,121 @@
-[]
+[
+  {
+    "module": "AUTOSAR专家终审-v1.3.0",
+    "source_file": "AUTOSAR专家终审-v1.3.0.md",
+    "status": "failed",
+    "findings_count": 12,
+    "content_snippet": "# yuleASR v1.3.0 — AUTOSAR 专家重新评审（修正版）\n\n> **评审人**: AUTOSAR 领域专家（15 年 AUTOSAR Classic Platform 经验）\n> **评审日期**: 2026-07-20\n> **评审对象**: yuleASR AUTOSAR Classic Platform BSW — commit `1d69197`（最新）\n> **参考基..."
+  },
+  {
+    "module": "autosar-expert-review",
+    "source_file": "autosar-expert-review.md",
+    "status": "failed",
+    "findings_count": 0,
+    "content_snippet": "# yuleASR v1.3.0 — AUTOSAR 领域专家评审报告\n\n> **评审人**: AUTOSAR 领域专家（15 年 AUTOSAR Classic Platform 经验）\n> **评审日期**: 2026-07-20\n> **评审对象**: yuleASR AUTOSAR Classic Platform BSW — commit `651c090`\n> **参考基线**: 老陈..."
+  },
+  {
+    "module": "expert-v1.3.0",
+    "source_file": "expert-review-v1.3.0.md",
+    "status": "failed",
+    "findings_count": 16,
+    "content_snippet": "# yuleASR v1.3.0 — 老陈专家评审报告\n\n> **评审人**: 老陈 👨‍🏫（前博世汽车电子资深架构师，30年嵌入式/汽车电子经验，AUTOSAR / ISO 26262 专家）  \n> **评审日期**: 2026-07-20  \n> **评审对象**: yuleASR AUTOSAR Classic Platform BSW — commit `62bc51c`  \n> **基..."
+  },
+  {
+    "module": "final-validation",
+    "source_file": "final-validation.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "# yuleASR v1.3.0 — 终审全闭环验证报告\n\n> **生成日期**: 2026-07-20  \n> **版本**: v1.3.0 (commit `8c809c3` → Batch 8)  \n> **验证人**: 小克 (子任务)\n\n---\n\n## 闭环条件全检\n\n### ✅ Batch 6 — MISRA Required 清零\n\n| 检查项 | 结果 |\n|:------|:--..."
+  },
+  {
+    "module": "loop-misra-fix-validation",
+    "source_file": "loop-misra-fix-validation.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "# Loop Chaining — MISRA Fix-Task 验证报告\n\n> 日期: 2026-07-20\n> 提交: ec30f53\n> 状态: ✅ 真实代码修复完成\n\n## 概览\n\n修复前状态: **28 条虚假偏差注释**（仅加 `/* MISRA deviation */` 注释，未改代码）\n修复后状态: **0 条偏差注释**，**真实代码修改**在以下文件中：\n\n| 文件 | 规则..."
+  },
+  {
+    "module": "p0-fix-summary",
+    "source_file": "p0-fix-summary.md",
+    "status": "failed",
+    "findings_count": 15,
+    "content_snippet": "# yuleASR v1.3.0 — P0 问题修复总结\n\n> **评审**: 老陈专家评审 (61/100 ❌ 不通过)  \n> **日期**: 2026-07-20  \n> **修复者**: 小克 (子任务)  \n\n---\n\n## P0-1: 证据数据矛盾 ✅ FIXED\n\n### 根因\n`requirement-coverage.md` 的生成逻辑 (`report_builder.py:g..."
+  },
+  {
+    "module": "p0-required-clearance",
+    "source_file": "p0-required-clearance.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# P0 — MISRA Required 违规清零报告\n\n## Batch 1 总结\n\n- **日期**: 2026-07-20\n- **目标**: Required 级违规从 1,930 逐批清零\n- **本次消除**: ~217 Required violations\n\n## 修复策略\n\n### 1. Rule 17.7 — 未使用的返回值 (消除 ~184条)\n在 *_Test.c 和 L..."
+  },
+  {
+    "module": "p1-p2-fix-plan",
+    "source_file": "p1-p2-fix-plan.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "# P1/P2 MISRA Fix Plan — 闭环总结\n\n> Updated: 2026-07-20\n\n## 背景\n\nyuleASR v1.3.0 终审通过后，针对 29 个 MISRA fix-task 进行闭环。\nPhase 3 已闭环 12/29，本轮 Sprint 闭环剩余 17/29 个 fix-task。\n\n## 闭环清单\n\n| # | 规则 | 严重度 | 违规数 | 状态 | ..."
+  },
+  {
+    "module": "phase0-validation",
+    "source_file": "phase0-validation.md",
+    "status": "unknown",
+    "findings_count": 0,
+    "content_snippet": "# Phase 0 — MISRA 扫描范围修复 验证报告\n\n## 诊断发现\n\n### 问题根源\n`.misra_config` 的 `[include]` 段与 yuleOSH 框架的 `_detect_include_paths()` 存在同步问题：\n1. `_detect_include_paths()` 硬编码了约 75 个 include 目录（在 `review.py` 中）\n2. `..."
+  },
+  {
+    "module": "phase1-validation",
+    "source_file": "phase1-validation.md",
+    "status": "passed",
+    "findings_count": 3,
+    "content_snippet": "# Phase 1 Validation — P0 问题全量修复\n\n> 验证日期: 2026-07-20\n> 分支: v1.3.0\n> Commit: e5caf1d\n\n## P0-1: evidence数据矛盾 ✅\n\n### 问题\n`traceability-matrix.md` 全部 127 条需求显示 `✅ Covered`，即使 0 个测试文件。\n\n### 根因\n生成代码使用了 `shal..."
+  },
+  {
+    "module": "phase2-validation",
+    "source_file": "phase2-validation.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "# Phase 2 Validation Report — 验收矩阵 0→60% 攻坚\n\n> **日期**: 2026-07-20  \n> **分支**: v1.3.0  \n> **Commit**: e5caf1d → (Phase 2 commit)  \n> **状态**: ✅ Complete\n\n---\n\n## 目标回顾\n\nPhase 2 目标：将验收矩阵从 **0/127 (0%)** 提..."
+  },
+  {
+    "module": "phase3-validation",
+    "source_file": "phase3-validation.md",
+    "status": "passed",
+    "findings_count": 0,
+    "content_snippet": "# Phase 3 Validation Report — 体系加固\n\n> **日期**: 2026-07-20  \n> **分支**: v1.3.0  \n> **Commit**: `3d91659` → (Phase 3)  \n> **状态**: ✅ Complete\n\n---\n\n## 3.1 证据数据管道端到端集成测试\n\n### 成果\n\n创建了 `tests/integration/test..."
+  },
+  {
+    "module": "复审-小克-v1.3.0",
+    "source_file": "复审-小克-v1.3.0.md",
+    "status": "failed",
+    "findings_count": 0,
+    "content_snippet": "# 复审报告：小克（架构/代码视角）— yuleASR v1.3.0 Sprint\n\n> 审查 commit: `651c090`（vs `8749714`）\n> 审查日期: 2026-07-20\n> 审查人: 小克（架构/代码工程师）\n> 上游: 小王（P1/P2 fix-plan）→ 小马（终审 70/100 ✅ 有条件通过）\n\n---\n\n## 1. 追溯映射质量\n\n### 1.1 基本事实\n..."
+  },
+  {
+    "module": "复审-小马-v1.3.0",
+    "source_file": "复审-小马-v1.3.0.md",
+    "status": "passed",
+    "findings_count": 32,
+    "content_snippet": "# yuleASR v1.3.0 — 多人复审报告（小马 🐴 质量/需求视角）\n\n> **评审人**: 小马 🐴（质量架构师）\n> **评审日期**: 2026-07-20\n> **评审范围**: Sprint commit `651c090` — 追溯映射C模块 + MISRA fix-task闭环\n> **参考基线**: 上一轮小马终审 commit `3d91659`，评分 **70/100..."
+  },
+  {
+    "module": "综合修复计划-v2.0",
+    "source_file": "综合修复计划-v2.0.md",
+    "status": "failed",
+    "findings_count": 0,
+    "content_snippet": "# yuleASR v1.3.0 — 综合评审汇总 & 最终修复计划\n\n> 汇总时间: 2026-07-20 14:00\n> 当前 commit: `651c090`\n\n---\n\n## 1. 五方评审评分汇总\n\n| 评审 | 视角 | 评分 | 判定 |\n|:-----|:-----|:----:|:----:|\n| 老陈初评 | 嵌入式架构师 | 61/100 | ❌ |\n| 老陈复审 | 嵌入..."
+  },
+  {
+    "module": "老陈终审-v1.3.0",
+    "source_file": "老陈终审-v1.3.0.md",
+    "status": "passed",
+    "findings_count": 25,
+    "content_snippet": "# yuleASR v1.3.0 — 老陈终审报告\n\n> **评审人**: 老陈 👨‍🏫（前博世汽车电子资深架构师，30年嵌入式/汽车电子经验）  \n> **评审日期**: 2026-07-20  \n> **评审对象**: yuleASR AUTOSAR Classic Platform BSW — commit `1d69197`（12修复commits后）  \n> **评审基线**: 初评 c..."
+  },
+  {
+    "module": "质量验收-v1.3.0",
+    "source_file": "质量验收-v1.3.0.md",
+    "status": "failed",
+    "findings_count": 22,
+    "content_snippet": "# yuleASR v1.3.0 — 质量验收报告（终审）\n\n> **评审人**: 小马 🐴（质量架构师）  \n> **评审日期**: 2026-07-20  \n> **评审范围**: Phase 0 (MISRA扫描) + Phase 1 (P0修复) + Phase 2 (验收矩阵)  \n> **参考基线**: 老陈专家评审 commit `62bc51c` → 修复后 commit `3d9..."
+  }
+]

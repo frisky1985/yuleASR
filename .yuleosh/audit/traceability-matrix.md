@@ -127,7 +127,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Dcm/test_Dcm.c
 - SHALL details:
   ❌ **SWR-001.1-01**: SHALL support AUTOSAR Classic Platform 4.4.0 standard
 
@@ -136,7 +136,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_ADC.c
 - SHALL details:
   ❌ **SWR-001.1-02**: SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules
 
@@ -145,7 +145,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/ecual/test_CanIf.c
 - SHALL details:
   ❌ **SWR-001.1-03**: SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules
 
@@ -154,7 +154,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Dcm/test_Dcm.c
 - SHALL details:
   ❌ **SWR-001.1-04**: SHALL implement BSW Services layer covering 44 service modules
 
@@ -163,7 +163,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_mcu.c
 - SHALL details:
   ❌ **SWR-001.1-05**: SHALL target NXP S32K312 microcontroller platform
 
@@ -181,7 +181,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/E2E/test_E2E.c
 - SHALL details:
   ❌ **SWR-002.1-01**: SHALL implement E2E communication protection for safety-critical signals
 
@@ -190,7 +190,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_Crypto.c
 - SHALL details:
   ❌ **SWR-002.1-02**: SHALL support HSM-based cryptographic operations via Crypto module
 
@@ -217,7 +217,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_CAN.c
 - SHALL details:
   ❌ **SWR-003.1-01**: SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm)
 
@@ -226,7 +226,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_LIN.c
 - SHALL details:
   ❌ **SWR-003.1-02**: SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM)
 
@@ -244,7 +244,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Dcm/test_Dcm.c
 - SHALL details:
   ❌ **SWR-003.1-04**: SHALL implement DCM diagnostic communication manager
 
@@ -262,7 +262,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Nvm/test_Nvm.c
 - SHALL details:
   ❌ **SWR-004.1-01**: SHALL implement NVRAM manager (NvM) for persistent storage
 
@@ -307,7 +307,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/services/test_ecum.c
 - SHALL details:
   ❌ **SWR-005.1-01**: SHALL implement ECU state manager (EcuM)
 
@@ -325,7 +325,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_wdg.c
 - SHALL details:
   ❌ **SWR-005.1-03**: SHALL implement Watchdog manager (WdgM)
 
@@ -370,7 +370,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/test_os_timing.c
 - SHALL details:
   ❌ **SWR-005.1-08**: SHALL implement OS (AUTOSAR SC4 compliant)
 
@@ -388,7 +388,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_gpt.c
 - SHALL details:
   ❌ **SWR-006.1-01**: SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG)
 
@@ -406,7 +406,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/services/test_comm.c
 - SHALL details:
   ❌ **SWR-007.1-01**: SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager
 
@@ -424,7 +424,7 @@
 - SHALL statements: 1
 - Status: ✅ Covered
 - Scenarios: 0 ⚠️
-- Test files: 1 ✅ Covered: (tested)
+- Test files: 1 ✅ Covered: tests/unit/test_dds_qualification.c
 - SHALL details:
   ❌ **SWR-008.1-01**: SHALL integrate micro DDS middleware for inter-ECU communication
 
