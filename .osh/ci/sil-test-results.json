@@ -1,20 +1,16 @@
 {
   "layer": 2,
   "stage": "sil-tests",
-  "mode": "native-host",
-  "modules": ["Crc", "E2E_P01"],
-  "timestamp": "2026-08-07T12:23:20Z",
+  "timestamp": "2026-08-07T23:35:58.807089",
   "all_passed": true,
   "results": [
     {
-      "elf": "sil_smoke_crc_e2e",
-      "module": "Crc/E2E_P01",
-      "platform": "host-native",
+      "elf": "hello.elf",
       "passed": true,
-      "elapsed": 0,
+      "elapsed": 0.04766204196494073,
       "error": null,
       "assertion_failures": [],
-      "log_snippet": "yuleASR SIL Smoke \u2014 real BSW modules (native host build)\n--------------------------------------------------------\n  [PASS] Crc_Init(NULL) returns without error\n  CRC8=0x76 CRC16=0x4560 CRC32=0x426548B8\n  [PASS] Crc32(\"12345\") == 0x426548B8 (non-reflected IEEE 802.3)\n  [PASS] Crc16(\"12345\") == 0x4560 (CCITT-FALSE)\n  [PASS] Crc8(\"12345\") == 0x76 (SAE J1850)\n  [PASS] E2E_P01Protect() returns E_OK\n  [PASS] E2E_P01Protect() increments counter to 1\n  [PASS] E2E_P01Protect() writes counter 0 into Data[0] low nibble\n  [PASS] E2E_P01Protect() writes CRC into Data[CRCOffset]=Data[1]\n--------------------------------------------------------\nSIL Test Suite: ALL PASS (8 checks)\n"
+      "log_snippet": "Hello from yuleOSH cross-compilation test!\n\nSIL Test Suite: ALL PASS\n"
     }
   ]
 }
