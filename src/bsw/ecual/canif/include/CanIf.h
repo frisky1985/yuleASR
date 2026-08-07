@@ -116,7 +116,7 @@ typedef enum {
 /*==================================================================================================
 *                                    CANIF PDU MODE TYPE (enum values)
 *==================================================================================================*/
-#define CANIF_OFFLINE                   0
+#define CANIF_OFFLINE                   0U
 #define CANIF_TX_OFFLINE                1
 #define CANIF_TX_OFFLINE_ACTIVE         2
 #define CANIF_ONLINE                    3
@@ -126,7 +126,7 @@ typedef enum {
 *==================================================================================================*/
 #define CANIF_CS_UNINIT                 0
 #define CANIF_CS_SLEEP                  1
-#define CANIF_CS_STARTED                2
+#define CANIF_CS_STARTED                2U
 #define CANIF_CS_STOPPED                3
 
 /*==================================================================================================

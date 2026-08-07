@@ -247,7 +247,7 @@ Std_ReturnType E2E_P01Check(
         /* Calculate delta */
         delta = (sint8)((sint8)receivedCounter - (sint8)State->LastValidCounter);
         
-        if (delta == 0U ) {
+        if (delta == 0 ) {
             /* Same counter - repeated message */
             State->Status = E2E_P_REPEATED;
         } else if (delta < 0) {

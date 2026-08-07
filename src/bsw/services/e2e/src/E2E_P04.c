@@ -232,7 +232,7 @@ Std_ReturnType E2E_P04Check(
     } else {
         delta = (sint32)((sint32)receivedCounter - (sint32)State->LastValidCounter);
         
-        if (delta == 0U ) {
+        if (delta == 0 ) {
             State->Status = E2E_P_REPEATED;
         } else if (delta < 0) {
             State->Status = E2E_P_WRONGSEQUENCE;

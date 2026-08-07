@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-20.1
 
-> Generated: 2026-08-07T14:51:08.937820
+> Generated: 2026-08-07T15:31:29.024991
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -21,24 +21,22 @@
 | 7 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/chachapoly.h` | 46 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 8 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/chachapoly.h` | 59 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 9 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/cmac.h` | 72 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/dhm.h` | 116 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ecjpake.h` | 79 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/md5.h` | 47 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/platform.h` | 446 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/poly1305.h` | 48 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ripemd160.h` | 38 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/rsa.h` | 126 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/sha1.h` | 53 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/sha512.h` | 51 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4963 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4968 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4970 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4975 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_builtin_composites.h` | 105 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_builtin_composites.h` | 180 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_builtin_primitives.h` | 88 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h` | 129 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h` | 200 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ecjpake.h` | 79 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/md5.h` | 47 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/poly1305.h` | 48 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ripemd160.h` | 38 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/rsa.h` | 126 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/sha1.h` | 53 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/sha512.h` | 51 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4963 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4968 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4970 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto.h` | 4975 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_builtin_composites.h` | 105 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_builtin_composites.h` | 180 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_builtin_primitives.h` | 88 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h` | 129 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/psa/crypto_struct.h` | 200 | 0 | misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

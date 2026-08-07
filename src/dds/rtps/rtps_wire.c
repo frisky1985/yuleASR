@@ -39,7 +39,7 @@ eth_status_t rtps_wire_send(rtps_wire_context_t *ctx,
                             const uint8_t *data,
                             uint32_t len)
 {
-    if ((ctx == NULL) || !ctx->initialized || data == NULL || len == 0) {
+    if ((ctx == NULL) || !ctx->initialized || data == NULL || len == 0U) {
         return ETH_INVALID_PARAM;
     }
 
@@ -55,7 +55,7 @@ eth_status_t rtps_wire_handle_rx(rtps_wire_context_t *ctx,
                                  const uint8_t *data,
                                  uint32_t len)
 {
-    if ((ctx == NULL) || !ctx->initialized || data == NULL || len == 0) {
+    if ((ctx == NULL) || !ctx->initialized || data == NULL || len == 0U) {
         return ETH_INVALID_PARAM;
     }
 

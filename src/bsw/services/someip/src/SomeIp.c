@@ -83,7 +83,7 @@ Std_ReturnType SomeIp_SendRequest(
     
     /* Build header */
     message.Header.MessageId = SomeIp_CreateMessageId(ServiceId, MethodId);
-    message.Header.Length = 8 + PayloadLength; /* RequestId(4) + Protocol(1) + Interface(1) + MsgType(1) + Return(1) + Payload */
+    message.Header.Length = 8U + PayloadLength; /* RequestId(4) + Protocol(1) + Interface(1) + MsgType(1) + Return(1) + Payload */
     message.Header.RequestId = SomeIp_CreateRequestId(ClientId, ++SomeIp_CurrentSessionId);
     message.Header.ProtocolVersion = SOMEIP_PROTOCOL_VERSION;
     message.Header.InterfaceVersion = SOMEIP_INTERFACE_VERSION;
@@ -113,7 +113,7 @@ Std_ReturnType SomeIp_SendResponse(
     }
     
     /* Build header (MessageId will be filled from original request) */
-    message.Header.Length = 8 + PayloadLength;
+    message.Header.Length = 8U + PayloadLength;
     message.Header.RequestId = RequestId;
     message.Header.ProtocolVersion = SOMEIP_PROTOCOL_VERSION;
     message.Header.InterfaceVersion = SOMEIP_INTERFACE_VERSION;
@@ -144,7 +144,7 @@ Std_ReturnType SomeIp_SendNotification(
     
     /* Build header */
     message.Header.MessageId = SomeIp_CreateMessageId(ServiceId, EventId);
-    message.Header.Length = 8 + PayloadLength;
+    message.Header.Length = 8U + PayloadLength;
     message.Header.RequestId = 0; /* Notifications don't use RequestId */
     message.Header.ProtocolVersion = SOMEIP_PROTOCOL_VERSION;
     message.Header.InterfaceVersion = SOMEIP_INTERFACE_VERSION;
@@ -176,7 +176,7 @@ void SomeIp_RxIndication(const uint8* Data, uint32 Length)
     
     /* Extract payload */
     message.Payload = (uint8*)(Data + SOMEIP_HEADER_SIZE);
-    message.PayloadLength = message.Header.Length - 8;
+    message.PayloadLength = message.Header.Length - 8U;
     
     /* Process message */
     SomeIp_ProcessMessage(&message);
@@ -311,7 +311,7 @@ void SomeIp_ExtractIds(SomeIp_MessageIdType MessageId, SomeIp_ServiceIdType* Ser
     }
     if (MethodId != NULL_PTR)
     {
-        *MethodId = (SomeIp_MethodIdType)(MessageId & 0xFFFF);
+        *MethodId = (SomeIp_MethodIdType)(MessageId & 0xFFFFU);
     }
 }
 

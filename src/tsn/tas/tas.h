@@ -25,7 +25,7 @@ extern "C" {
  * ============================================================================ */
 
 /** 最大队列数量 */
-#define TAS_MAX_QUEUES                  8
+#define TAS_MAX_QUEUES                  8U
 
 /** 最大GCL条目数 */
 #define TAS_MAX_GCL_ENTRIES             1024

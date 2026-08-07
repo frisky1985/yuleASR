@@ -364,19 +364,19 @@ void Xcp_CmdUpload(const uint8 *cmd)
     uint8 count = cmd[1];
     uint8 i;
 
-    if (count > (XCP_CTO_SIZE - 1)) {
-        count = XCP_CTO_SIZE - 1;
+    if (count > (XCP_CTO_SIZE - 1U)) {
+        count = XCP_CTO_SIZE - 1U;
     }
 
     Xcp_ResBuffer[0] = 0xFF;
 
     /* Read data from MTA */
     for (i = 0; i < count; i++) {
-        Xcp_ResBuffer[1 + i] = *((uint8 *)(uintptr)(Xcp_Mta.address + i));
+        Xcp_ResBuffer[1U + i] = *((uint8 *)(uintptr)(Xcp_Mta.address + i));
         Xcp_Mta.address++;
     }
 
-    Xcp_ResLen = count + 1;
+    Xcp_ResLen = count + 1U;
     Xcp_SendPacket(Xcp_ResBuffer, Xcp_ResLen);
 }
 
@@ -386,7 +386,7 @@ void Xcp_CmdUpload(const uint8 *cmd)
  */
 void Xcp_CmdShortUpload(const uint8 *cmd)
 {
-    uint8 count = cmd[1] & 0x07;
+    uint8 count = cmd[1] & 0x07U;
     uint8 ext = cmd[2];
     uint32 addr = ((uint32)cmd[6] << 24) | 
                   ((uint32)cmd[5] << 16) |
@@ -396,18 +396,18 @@ void Xcp_CmdShortUpload(const uint8 *cmd)
 
     (void)ext;
 
-    if (count > (XCP_CTO_SIZE - 1)) {
-        count = XCP_CTO_SIZE - 1;
+    if (count > (XCP_CTO_SIZE - 1U)) {
+        count = XCP_CTO_SIZE - 1U;
     }
 
     Xcp_ResBuffer[0] = 0xFF;
 
     /* Read data from specified address */
     for (i = 0; i < count; i++) {
-        Xcp_ResBuffer[1 + i] = *((uint8 *)(uintptr)(addr + i));
+        Xcp_ResBuffer[1U + i] = *((uint8 *)(uintptr)(addr + i));
     }
 
-    Xcp_ResLen = count + 1;
+    Xcp_ResLen = count + 1U;
     Xcp_SendPacket(Xcp_ResBuffer, Xcp_ResLen);
 }
 
@@ -420,7 +420,7 @@ void Xcp_CmdDownload(const uint8 *cmd)
     uint8 count = cmd[1];
     uint8 i;
 
-    if (count > (XCP_CTO_SIZE - 2)) {
+    if (count > (XCP_CTO_SIZE - 2U)) {
         Xcp_SendError(E_ERR_OUT_OF_RANGE);
         return;
     }
@@ -432,7 +432,7 @@ void Xcp_CmdDownload(const uint8 *cmd)
 
     /* Write data to MTA */
     for (i = 0; i < count; i++) {
-        *((uint8 *)(uintptr)(Xcp_Mta.address + i)) = cmd[2 + i];
+        *((uint8 *)(uintptr)(Xcp_Mta.address + i)) = cmd[2U + i];
     }
 
     Xcp_Mta.address += count;
@@ -1003,9 +1003,9 @@ static uint16 Xcp_CalculateChecksum(const uint8 *data, uint32 size)
     for (i = 0; i < size; i++) {
         crc ^= data[i];
         crc = (crc >> 8) | (crc << 8);
-        crc ^= (crc & 0xFF) >> 4;
+        crc ^= (crc & 0xFFU) >> 4;
         crc ^= (crc << 8) << 4;
-        crc ^= ((crc & 0xFF) << 4) << 1;
+        crc ^= ((crc & 0xFFU) << 4) << 1;
     }
 
     return crc;

@@ -42,7 +42,7 @@ static uint8 LinSlave_RxIndex = 0;
 static uint8 LinSlave_CurrentPid = 0;
 
 /* 响应缓冲区 */
-static uint8 LinSlave_TxBuffer[LINSLAVE_MAX_DATA_LENGTH + 1]; /* 数据 + 校验和 */
+static uint8 LinSlave_TxBuffer[LINSLAVE_MAX_DATA_LENGTH + 1U]; /* 数据 + 校验和 */
 static uint8 LinSlave_TxLength = 0;
 static uint8 LinSlave_TxIndex = 0;
 static uint8 LinSlave_ResponseChecksumType = 0;  /* 响应校验和类型 */
@@ -357,14 +357,14 @@ static void LinSlave_HandleRxData(uint8 RxByte)
             /* 接收数据字节 */
             if (UseConfigTable) {
                 /* 接收数据并存储 */
-                if (LinSlave_RxIndex < 8) {
+                if (LinSlave_RxIndex < 8U) {
                     LinSlave_RxBuffer[LinSlave_RxIndex] = RxByte;
                     LinSlave_RxIndex++;
                     
                     /* 检查是否已接收完数据 */
-                    if (LinSlave_RxIndex >= 8) {
+                    if (LinSlave_RxIndex >= 8U) {
                         uint8 frameIndex = LinSlave_CfgTable_GetIndexByPid(LinSlave_CurrentPid);
-                        if (frameIndex != 0xFF) {
+                        if (frameIndex != 0xFFU) {
                             /* 处理Unconditional Frame接收 */
                             LinSlave_ProcessUnconditionalRx(frameIndex, LinSlave_RxBuffer, 8);
                         }
@@ -520,7 +520,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
         frame->TxCallback(FrameIndex, txData, &txLength, frame->UserData);
     }
     
-    if ((txLength == 0U) || (txLength > 8)) {
+    if ((txLength == 0U) || (txLength > 8U)) {
         return;
     }
     

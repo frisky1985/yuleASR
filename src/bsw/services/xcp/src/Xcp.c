@@ -693,7 +693,7 @@ void Xcp_CmdSetMta(uint8 ChannelId, const uint8* Data)
  */
 void Xcp_CmdUpload(uint8 ChannelId, const uint8* Data)
 {
-    uint8 response[XCP_MAX_CTO_SIZE - 1];
+    uint8 response[XCP_MAX_CTO_SIZE - 1U];
     uint8 length;
     uint8 i;
 
@@ -731,7 +731,7 @@ void Xcp_CmdUpload(uint8 ChannelId, const uint8* Data)
  */
 void Xcp_CmdShortUpload(uint8 ChannelId, const uint8* Data)
 {
-    uint8 response[XCP_MAX_CTO_SIZE - 1];
+    uint8 response[XCP_MAX_CTO_SIZE - 1U];
     uint8 length;
     uint8 addrExt;
     uint32 addr;
@@ -829,7 +829,7 @@ void Xcp_CmdDownload(uint8 ChannelId, const uint8* Data, uint8 Length)
  */
 void Xcp_CmdGetSeed(uint8 ChannelId, const uint8* Data)
 {
-    uint8 response[XCP_MAX_CTO_SIZE - 1];
+    uint8 response[XCP_MAX_CTO_SIZE - 1U];
     uint8 mode;
     uint8 resource;
     uint8 i;

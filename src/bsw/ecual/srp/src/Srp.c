@@ -61,7 +61,7 @@ static const uint8 Srp_HdrLen = 8U; /* SRP frame header length */
 static Srp_StreamEntryType* Srp_FindStream(const Srp_StreamIdType StreamId)
 {
     for (uint8 i = 0U; i < Srp_Internal.streamCount; i++) {
-        if (memcmp(Srp_Internal.streams[i].StreamId, StreamId, SRP_STREAM_ID_SIZE) == 0U ) {
+        if (memcmp(Srp_Internal.streams[i].StreamId, StreamId, SRP_STREAM_ID_SIZE) == 0 ) {
             return &Srp_Internal.streams[i];
         }
     }
@@ -128,7 +128,7 @@ Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId)
 {
     if (Srp_Internal.state != SRP_INTERNAL_INIT) return E_NOT_OK;
     for (uint8 i = 0U; i < Srp_Internal.streamCount; i++) {
-        if (memcmp(Srp_Internal.streams[i].StreamId, StreamId, SRP_STREAM_ID_SIZE) == 0U ) {
+        if (memcmp(Srp_Internal.streams[i].StreamId, StreamId, SRP_STREAM_ID_SIZE) == 0 ) {
             if (i < (Srp_Internal.streamCount - 1U)) {
                 Srp_Internal.streams[i] = Srp_Internal.streams[Srp_Internal.streamCount - 1U];
             }

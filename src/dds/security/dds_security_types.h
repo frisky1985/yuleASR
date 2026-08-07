@@ -52,11 +52,11 @@ extern "C" {
 #define DDS_SECURITY_MAX_TOPIC_COUNT        256
 
 /** 安全日志相关常量 */
-#define DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES  1024
+#define DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES  1024U
 #define DDS_SECURITY_AUDIT_MSG_MAX_LEN      512
 
 /** 重放攻击防护 */
-#define DDS_SECURITY_REPLAY_WINDOW_SIZE     64
+#define DDS_SECURITY_REPLAY_WINDOW_SIZE     64U
 #define DDS_SECURITY_MAX_SEQ_NUMBER_GAP     100
 
 /* ============================================================================

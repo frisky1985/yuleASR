@@ -37,16 +37,16 @@
 /* Engine control constants */
 #define ENG_MIN_IDLE_SPEED                  800
 #define ENG_MAX_IDLE_SPEED                  1200
-#define ENG_NORMAL_IDLE_SPEED               900
+#define ENG_NORMAL_IDLE_SPEED               900U
 #define ENG_MIN_OPERATING_TEMP              (-40)
 #define ENG_MAX_OPERATING_TEMP              120
 #define ENG_OVERHEAT_THRESHOLD              110
 #define ENG_FUEL_CUTOFF_TEMP                125
 
 /* Fuel injection constants */
-#define FUEL_INJ_BASE_TIME_US               2000
-#define FUEL_INJ_MAX_TIME_US                15000
-#define FUEL_INJ_MIN_TIME_US                500
+#define FUEL_INJ_BASE_TIME_US               2000U
+#define FUEL_INJ_MAX_TIME_US                15000U
+#define FUEL_INJ_MIN_TIME_US                500U
 
 /* Ignition timing constants */
 #define IGNITION_ADVANCE_BASE_DEG           10
@@ -127,7 +127,7 @@ STATIC void Swc_EngineControl_UpdateParameters(void)
 
     /* Calculate engine load based on throttle and speed */
     if (vehicleSpeed > 0U ) {
-        swcEngineControl.parameters.engineLoad = (throttlePos * 100) / vehicleSpeed;
+        swcEngineControl.parameters.engineLoad = (throttlePos * 100U) / vehicleSpeed;
     } else {
         swcEngineControl.parameters.engineLoad = throttlePos;
     }
@@ -525,7 +525,7 @@ uint16 Swc_EngineControl_CalculateIgnitionTiming(uint16 speed, uint16 load, sint
     }
 
     /* Load correction */
-    ignitionAdvance += (sint16)(load / 10);
+    ignitionAdvance += (sint16)(load / 10U);
 
     /* Temperature correction */
     if (temp < 0) {

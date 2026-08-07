@@ -19,7 +19,7 @@
  * 常量和宏定义
  * ============================================================================ */
 
-#define SRP_MAX_PORTS                   8
+#define SRP_MAX_PORTS                   8U
 
 /* ============================================================================
  * 内部数据结构
@@ -108,11 +108,11 @@ static srp_port_state_t* get_port(uint16_t port_id) {
 
 static uint32_t calc_bandwidth(const srp_tspec_t *tspec) {
     /* 带宽计算: MaxFrameSize * MaxIntervalFrames / Interval */
-    if (tspec->interval_numerator == 0) {
+    if (tspec->interval_numerator == 0U) {
         return 0;
     }
     
-    uint64_t bits_per_frame = (uint64_t)tspec->max_frame_size * 8;
+    uint64_t bits_per_frame = (uint64_t)tspec->max_frame_size * 8U;
     uint64_t frames_per_sec = ((uint64_t)tspec->max_interval_frames * 
                                tspec->interval_denominator) / tspec->interval_numerator;
     
@@ -128,7 +128,7 @@ static eth_status_t update_reservation_state(srp_stream_reservation_t *stream) {
         new_state = SRP_RESERVATION_STATE_NONE;
     } else if (stream->talker.failed) {
         new_state = SRP_RESERVATION_STATE_FAILED;
-    } else if (stream->listener_count == 0) {
+    } else if (stream->listener_count == 0U) {
         new_state = SRP_RESERVATION_STATE_REGISTERING;
     } else {
         /* 检查所有Listener状态 */
@@ -177,8 +177,8 @@ static eth_status_t check_safety(uint16_t port_id) {
     
     /* 检查带宽限制 */
     uint32_t used_percent = 0;
-    if (port->bandwidth.total_bandwidth_bps > 0) {
-        used_percent = (port->bandwidth.reserved_bandwidth_bps * 100) / 
+    if (port->bandwidth.total_bandwidth_bps > 0U) {
+        used_percent = (port->bandwidth.reserved_bandwidth_bps * 100U) / 
                        port->bandwidth.total_bandwidth_bps;
     }
     
@@ -240,7 +240,7 @@ eth_status_t srp_config_port_bandwidth(uint16_t port_id, uint32_t total_bandwidt
 eth_status_t srp_config_sr_class(uint16_t port_id, uint8_t class_id,
                                   const srp_domain_declaration_t *domain) {
     if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || 
-        (class_id >= 2) || (domain == NULL)) {
+        (class_id >= 2U) || (domain == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -430,11 +430,11 @@ eth_status_t srp_reserve_bandwidth(uint16_t port_id, const srp_stream_id_t strea
     port->bandwidth.reserved_bandwidth_bps += bandwidth_bps;
     
     /* 检查带宽告警 */
-    uint32_t used_percent = (port->bandwidth.reserved_bandwidth_bps * 100) / 
+    uint32_t used_percent = (port->bandwidth.reserved_bandwidth_bps * 100U) / 
                             port->bandwidth.total_bandwidth_bps;
     
-    if (used_percent > ((port->bandwidth.available_bandwidth_bps * 100 / 
-                       port->bandwidth.total_bandwidth_bps) - 10)) {
+    if (used_percent > ((port->bandwidth.available_bandwidth_bps * 100U / 
+                       port->bandwidth.total_bandwidth_bps) - 10U)) {
         if (g_srp_state.bw_alert_cb) {
             g_srp_state.bw_alert_cb(port_id, used_percent, 
                                     g_srp_state.bw_alert_user_data);
@@ -647,7 +647,7 @@ eth_status_t srp_validate_reservation_integrity(const srp_stream_id_t stream_id,
     
     /* 检查预留一致性 */
     *integrity_ok = (stream->talker_registered && 
-                     ((stream->reserved_bandwidth_bps > 0)) &&
+                     ((stream->reserved_bandwidth_bps > 0U)) &&
                      (stream->state != SRP_RESERVATION_STATE_FAILED));
     
     return ETH_OK;
@@ -655,7 +655,7 @@ eth_status_t srp_validate_reservation_integrity(const srp_stream_id_t stream_id,
 
 eth_status_t srp_stream_id_to_string(const srp_stream_id_t stream_id, 
                                       char *buf, size_t buf_size) {
-    if ((stream_id == NULL) || (buf == NULL) || buf_size < 24) {
+    if ((stream_id == NULL) || (buf == NULL) || buf_size < 24U) {
         return ETH_INVALID_PARAM;
     }
     
@@ -678,16 +678,16 @@ eth_status_t srp_create_automotive_stream(const char *stream_name,
     /* 简化实现: 使用字符串哈希 */
     uint32_t hash = 0;
     for (const char *p = stream_name; *p; p++) {
-        hash = (hash * 31) + (*p);
+        hash = (hash * 31U) + (*p);
     }
     
     /* 使用VLAN ID和优先级填充 */
-    stream_id[0] = (hash >> 24) & 0xFF;
-    stream_id[1] = (hash >> 16) & 0xFF;
-    stream_id[2] = (hash >> 8) & 0xFF;
-    stream_id[3] = hash & 0xFF;
-    stream_id[4] = (vlan_id >> 8) & 0xFF;
-    stream_id[5] = vlan_id & 0xFF;
+    stream_id[0] = (hash >> 24) & 0xFFU;
+    stream_id[1] = (hash >> 16) & 0xFFU;
+    stream_id[2] = (hash >> 8) & 0xFFU;
+    stream_id[3] = hash & 0xFFU;
+    stream_id[4] = (vlan_id >> 8) & 0xFFU;
+    stream_id[5] = vlan_id & 0xFFU;
     stream_id[6] = priority;
     stream_id[7] = 0;
     

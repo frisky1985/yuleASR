@@ -25,7 +25,7 @@
 #define ETH_VERSION_INFO_API               STD_ON
 
 /* Number of Controllers */
-#define ETH_MAX_CONTROLLERS                1
+#define ETH_MAX_CONTROLLERS                1U
 
 /* Controller IDs */
 #define ETH_CONTROLLER_0                   0x00
@@ -42,8 +42,8 @@
 #define ETH_CTRL0_TX_CHECKSUM_OFFLOAD      STD_OFF
 
 /* Buffer Configuration */
-#define ETH_MAX_TX_BUFS                    8
-#define ETH_MAX_RX_BUFS                    8
+#define ETH_MAX_TX_BUFS                    8U
+#define ETH_MAX_RX_BUFS                    8U
 #define ETH_CFG_BUF_SIZE                   1536
 
 /* Timeouts */

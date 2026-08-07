@@ -32,25 +32,25 @@
 #define CAN_FLEXCAN2_BASE_ADDR          (0x308D0000UL)
 #endif
 
-#define CAN_MCR                         (0x00)
-#define CAN_CTRL1                       (0x04)
+#define CAN_MCR                         (0x00U)
+#define CAN_CTRL1                       (0x04U)
 #define CAN_TIMER                       (0x08)
 #define CAN_RXMGMASK                    (0x10)
 #define CAN_RX14MASK                    (0x14)
 #define CAN_RX15MASK                    (0x18)
 #define CAN_ECR                         (0x1C)
-#define CAN_ESR1                        (0x20)
-#define CAN_IMASK2                      (0x24)
-#define CAN_IMASK1                      (0x28)
+#define CAN_ESR1                        (0x20U)
+#define CAN_IMASK2                      (0x24U)
+#define CAN_IMASK1                      (0x28U)
 #define CAN_IFLAG2                      (0x2C)
-#define CAN_IFLAG1                      (0x30)
+#define CAN_IFLAG1                      (0x30U)
 #define CAN_CTRL2                       (0x34)
 #define CAN_ESR2                        (0x38)
 #define CAN_CRCR                        (0x44)
 #define CAN_RXFGMASK                    (0x48)
 #define CAN_RXFIR                       (0x4C)
 #define CAN_CBT                         (0x50)
-#define CAN_MB_BASE                     (0x80)
+#define CAN_MB_BASE                     (0x80U)
 
 #define CAN_MCR_MDIS                    (0x80000000U)
 #define CAN_MCR_FRZ                     (0x40000000U)
@@ -192,10 +192,10 @@ void Can_Init(const Can_ConfigType* Config)
                 /* Configure message buffers */
                 for (uint8 j = 0U; j < CAN_NUM_HOH; j++) {
                     uint32 mbAddr = baseAddr + CAN_MB_BASE + (j * 16U);
-                    REG_WRITE32(mbAddr + 0, CAN_MB_CODE_TX_INACTIVE);
-                    REG_WRITE32(mbAddr + 4, 0U);
-                    REG_WRITE32(mbAddr + 8, 0U);
-                    REG_WRITE32(mbAddr + 12, 0U);
+                    REG_WRITE32(mbAddr + 0U, CAN_MB_CODE_TX_INACTIVE);
+                    REG_WRITE32(mbAddr + 4U, 0U);
+                    REG_WRITE32(mbAddr + 8U, 0U);
+                    REG_WRITE32(mbAddr + 12U, 0U);
                 }
 
                 /* Enable interrupts if needed */
@@ -351,7 +351,7 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     uint32 mbAddr = baseAddr + CAN_MB_BASE + (mbIndex * 16U);
 
     /* Check if mailbox is available */
-    uint32 csValue = REG_READ32(mbAddr + 0);
+    uint32 csValue = REG_READ32(mbAddr + 0U);
     if ((csValue & CAN_MB_CODE_MASK) != CAN_MB_CODE_TX_INACTIVE) {
         return CAN_BUSY;
     }
@@ -363,23 +363,23 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     } else {
         idValue = (PduInfo->CanId & 0x7FFU) << 18;
     }
-    REG_WRITE32(mbAddr + 4, idValue);
+    REG_WRITE32(mbAddr + 4U, idValue);
 
     /* Write data */
     uint32 dataWord0 = 0U;
     uint32 dataWord1 = 0U;
     for (uint8 i = 0U; (i < PduInfo->CanDlc) && (i < 4U); i++) {
-        dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8);
+        dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8U);
     }
     for (uint8 i = 4U; (i < PduInfo->CanDlc) && (i < 8U); i++) {
-        dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8);
+        dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8U);
     }
-    REG_WRITE32(mbAddr + 8, dataWord0);
-    REG_WRITE32(mbAddr + 12, dataWord1);
+    REG_WRITE32(mbAddr + 8U, dataWord0);
+    REG_WRITE32(mbAddr + 12U, dataWord1);
 
     /* Write CS (code and DLC) */
     csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)(PduInfo->CanDlc & 0x0FU) << 16);
-    REG_WRITE32(mbAddr + 0, csValue);
+    REG_WRITE32(mbAddr + 0U, csValue);
 
     return CAN_OK;
 }

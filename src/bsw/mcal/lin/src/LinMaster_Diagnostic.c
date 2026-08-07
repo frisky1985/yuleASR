@@ -146,8 +146,8 @@ static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* Dat
     (void)memset(&DiagRuntime.PendingResponse, 0, sizeof(LinMaster_Diag_ResponseType));
     
     /* 检查是否为负响应 (0x7F) */
-    if (DataPtr[0] == 0x7F) {
-        if (Length >= 3) {
+    if (DataPtr[0] == 0x7FU) {
+        if (Length >= 3U) {
             DiagRuntime.PendingResponse.IsNegative = TRUE;
             DiagRuntime.PendingResponse.ResponseSid = DataPtr[1];
             DiagRuntime.PendingResponse.Nrc = DataPtr[2];
@@ -163,8 +163,8 @@ static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* Dat
     DiagRuntime.PendingResponse.ResponseSid = DataPtr[0];
     DiagRuntime.PendingResponse.Nrc = 0;
     
-    if (Length > 1) {
-        uint16 dataLen = Length - 1;
+    if (Length > 1U) {
+        uint16 dataLen = Length - 1U;
         if (dataLen > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
             dataLen = LINMASTER_DIAG_MAX_BUFFER_SIZE;
         }
@@ -427,7 +427,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SessionControl(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_DIAGNOSTIC_SESSION_CONTROL;
-    request.SubFunction = SessionType & 0x7F;
+    request.SubFunction = SessionType & 0x7FU;
     request.Length = 0;
     request.IsFunctional = FALSE;
     
@@ -449,7 +449,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_EcuReset(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_ECU_RESET;
-    request.SubFunction = ResetType & 0x7F;
+    request.SubFunction = ResetType & 0x7FU;
     request.Length = 0;
     request.IsFunctional = FALSE;
     
@@ -475,7 +475,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDataById(
     
     /* DID是高低字节 */
     request.Data[0] = (uint8)(Did >> 8);
-    request.Data[1] = (uint8)(Did & 0xFF);
+    request.Data[1] = (uint8)(Did & 0xFFU);
     request.Length = 2;
     request.IsFunctional = FALSE;
     
@@ -508,13 +508,13 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
     
     /* DID是高低字节 */
     request.Data[0] = (uint8)(Did >> 8);
-    request.Data[1] = (uint8)(Did & 0xFF);
+    request.Data[1] = (uint8)(Did & 0xFFU);
     
     /* 数据 */
     for (i = 0U; i < Length; i++) {
-        request.Data[2 + i] = DataPtr[i];
+        request.Data[2U + i] = DataPtr[i];
     }
-    request.Length = 2 + Length;
+    request.Length = 2U + Length;
     request.IsFunctional = FALSE;
     
     return LinMaster_Diag_SendRequest(&request);
@@ -538,7 +538,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_SECURITY_ACCESS;
-    request.SubFunction = SubFunc & 0x7F;
+    request.SubFunction = SubFunc & 0x7FU;
     
     /* 如果是发送密钥，添加密钥数据 */
     if ((KeyPtr != NULL_PTR) && (KeyLen > 0U) && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
@@ -578,18 +578,18 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_ROUTINE_CONTROL;
-    request.SubFunction = SubFunc & 0x7F;
+    request.SubFunction = SubFunc & 0x7FU;
     
     /* RID是高低字节 */
     request.Data[0] = (uint8)(Rid >> 8);
-    request.Data[1] = (uint8)(Rid & 0xFF);
+    request.Data[1] = (uint8)(Rid & 0xFFU);
     
     /* 可选数据 */
     if ((DataPtr != NULL_PTR) && (Length > 0U)) {
         for (i = 0U; i < Length; i++) {
-            request.Data[2 + i] = DataPtr[i];
+            request.Data[2U + i] = DataPtr[i];
         }
-        request.Length = 2 + Length;
+        request.Length = 2U + Length;
     } else {
         request.Length = 2;
     }
@@ -617,9 +617,9 @@ LinMaster_Diag_StatusType LinMaster_Diag_ClearDiagnosticInformation(
     request.SubFunction = 0;
     
     /* GroupOfDTC是3字节 */
-    request.Data[0] = (uint8)((GroupOfDTC >> 16) & 0xFF);
-    request.Data[1] = (uint8)((GroupOfDTC >> 8) & 0xFF);
-    request.Data[2] = (uint8)(GroupOfDTC & 0xFF);
+    request.Data[0] = (uint8)((GroupOfDTC >> 16) & 0xFFU);
+    request.Data[1] = (uint8)((GroupOfDTC >> 8) & 0xFFU);
+    request.Data[2] = (uint8)(GroupOfDTC & 0xFFU);
     request.Length = 3;
     request.IsFunctional = FALSE;
     
@@ -642,7 +642,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDTCInformation(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_READ_DTC_INFORMATION;
-    request.SubFunction = SubFunc & 0x7F;
+    request.SubFunction = SubFunc & 0x7FU;
     
     /* 根据子功能可能需要DTCStatusMask */
     request.Data[0] = DTCStatusMask;
@@ -667,7 +667,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_TesterPresent(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_TESTER_PRESENT;
-    request.SubFunction = SubFunc & 0x7F;
+    request.SubFunction = SubFunc & 0x7FU;
     request.Length = 0;
     request.IsFunctional = FALSE;
     
@@ -690,7 +690,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_CommunicationControl(
     
     (void)memset(&request, 0, sizeof(request));
     request.Sid = LINMASTER_DIAG_SID_COMMUNICATION_CONTROL;
-    request.SubFunction = SubFunc & 0x7F;
+    request.SubFunction = SubFunc & 0x7FU;
     
     /* 通信类型 */
     request.Data[0] = CommunicationType;

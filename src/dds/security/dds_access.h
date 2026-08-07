@@ -22,9 +22,9 @@ extern "C" {
  * ============================================================================ */
 
 #define DDS_ACCESS_MAX_RULES                128
-#define DDS_ACCESS_MAX_DOMAINS              64
+#define DDS_ACCESS_MAX_DOMAINS              64U
 #define DDS_ACCESS_MAX_TOPICS               256
-#define DDS_ACCESS_MAX_SUBJECTS             64
+#define DDS_ACCESS_MAX_SUBJECTS             64U
 #define DDS_ACCESS_MAX_PARTITIONS           32
 
 /* 权限文件版本 */

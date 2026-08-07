@@ -56,7 +56,7 @@
 /**
  * @brief 最大作业数量
  */
-#define CSM_MAX_JOBS                            16U
+#define CSM_MAX_JOBS                            32U
 
 /**
  * @brief 最大队列深度

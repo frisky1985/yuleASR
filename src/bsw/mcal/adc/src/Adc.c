@@ -30,12 +30,12 @@
 #define ADC1_BASE_ADDR                  (0x30610000UL)
 #endif
 
-#define ADC_HC0                         (0x00)
-#define ADC_HS                          (0x04)
-#define ADC_R0                          (0x08)
-#define ADC_CFG                         (0x0C)
-#define ADC_GC                          (0x10)
-#define ADC_GS                          (0x14)
+#define ADC_HC0                         (0x00U)
+#define ADC_HS                          (0x04U)
+#define ADC_R0                          (0x08U)
+#define ADC_CFG                         (0x0CU)
+#define ADC_GC                          (0x10U)
+#define ADC_GS                          (0x14U)
 #define ADC_CV                          (0x18)
 #define ADC_OFS                         (0x1C)
 #define ADC_CAL                         (0x20)

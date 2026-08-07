@@ -95,12 +95,12 @@ LinMaster_StatusType LinMaster_Hal_SendBreak(void)
      */
     uint16 breakDurationUs;
     
-    if (LinMaster_Hal_CurrentBaudRate == 9600) {
+    if (LinMaster_Hal_CurrentBaudRate == 9600U) {
         breakDurationUs = 1354; /* 13位 @ 9600bps */
-    } else if (LinMaster_Hal_CurrentBaudRate == 19200) {
+    } else if (LinMaster_Hal_CurrentBaudRate == 19200U) {
         breakDurationUs = 677;  /* 13位 @ 19200bps */
     } else {
-        breakDurationUs = (uint16)((13000000UL / LinMaster_Hal_CurrentBaudRate) + 1);
+        breakDurationUs = (uint16)((13000000UL / LinMaster_Hal_CurrentBaudRate) + 1U);
     }
     
     /* 模拟发送Break:
@@ -110,7 +110,7 @@ LinMaster_StatusType LinMaster_Hal_SendBreak(void)
     
     /* 延时等待 ( 实际应用中使用精确延时 ) */
     /* 注意: 在实际应用中不建议使用软件延时，应使用定时器 */
-    volatile uint32 delay = breakDurationUs * 10; /* 模拟延时 */
+    volatile uint32 delay = breakDurationUs * 10U; /* 模拟延时 */
     while (delay--) {
         /* 空循环延时 */
     }
@@ -200,7 +200,7 @@ uint32 LinMaster_Hal_GetCurrentTimeMs(void)
  */
 void LinMaster_Hal_DelayMs(uint16 DelayMs)
 {
-    volatile uint32 delay = DelayMs * 1000;
+    volatile uint32 delay = DelayMs * 1000U;
     while (delay--) {
         /* 空循环延时 */
     }

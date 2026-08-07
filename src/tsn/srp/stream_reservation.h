@@ -26,7 +26,7 @@ extern "C" {
 
 /** 最大流数量 */
 #define SRP_MAX_STREAMS                 256
-#define SRP_MAX_LISTENERS               256
+#define SRP_MAX_LISTENERS               256U
 #define SRP_MAX_TALKERS                 128
 
 /** MSRP EtherType */
@@ -43,12 +43,12 @@ extern "C" {
 #define SRP_SR_CLASS_B                  1
 
 /** 带宽限制 */
-#define SRP_MAX_BANDWIDTH_PERCENT       75
+#define SRP_MAX_BANDWIDTH_PERCENT       75U
 #define SRP_MIN_BANDWIDTH_RESERVATION   100       /* 100 bps */
 
 /** ASIL-D安全相关 */
 #define SRP_SAFETY_BANDWIDTH_MARGIN     10        /* 10% 安全余量 */
-#define SRP_MAX_RESERVATION_LATENCY_US  1000      /* 1ms */
+#define SRP_MAX_RESERVATION_LATENCY_US  1000U      /* 1Ums */
 
 /* ============================================================================
  * MSRP 消息类型

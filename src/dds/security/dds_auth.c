@@ -83,12 +83,12 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64])
 {
     uint32_t a, b, c, d, e, f, g, h, i, j, t1, t2, m[64];
 
-    for (i = 0, j = 0; i < 16; ++i, j += 4) {
-        m[i] = ((uint32_t)data[j] << 24) | ((uint32_t)data[j + 1] << 16) |
-               ((uint32_t)data[j + 2] << 8) | ((uint32_t)data[j + 3]);
+    for (i = 0, j = 0; i < 16U; ++i, j += 4) {
+        m[i] = ((uint32_t)data[j] << 24) | ((uint32_t)data[j + 1U] << 16) |
+               ((uint32_t)data[j + 2U] << 8) | ((uint32_t)data[j + 3]);
     }
-    for (; i < 64; ++i) {
-        m[i] = SIG1(m[i - 2]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
+    for (; i < 64U; ++i) {
+        m[i] = SIG1(m[i - 2U]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
     }
 
     a = state[0];
@@ -100,7 +100,7 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64])
     g = state[6];
     h = state[7];
 
-    for (i = 0; i < 64; ++i) {
+    for (i = 0; i < 64U; ++i) {
         t1 = h + EP1(e) + CH(e, f, g) + sha256_k[i] + m[i];
         t2 = EP0(a) + MAJ(a, b, c);
         h = g;
@@ -141,10 +141,10 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
     uint32_t buffer_len = 0;
 
     /* Process full blocks */
-    while (len >= 64) {
+    while (len >= 64U) {
         sha256_transform(state, data);
         data += 64;
-        len -= 64;
+        len -= 64U;
     }
 
     /* Copy remaining data to buffer */
@@ -155,32 +155,32 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
     buffer[buffer_len] = 0x80;
     buffer_len++;
 
-    if (buffer_len > 56) {
-        memset(buffer + buffer_len, 0, 64 - buffer_len);
+    if (buffer_len > 56U) {
+        memset(buffer + buffer_len, 0, 64U - buffer_len);
         sha256_transform(state, buffer);
         buffer_len = 0;
     }
 
-    memset(buffer + buffer_len, 0, 56 - buffer_len);
+    memset(buffer + buffer_len, 0, 56U - buffer_len);
 
     /* Append length */
-    buffer[56] = (bit_len_high >> 24) & 0xFF;
-    buffer[57] = (bit_len_high >> 16) & 0xFF;
-    buffer[58] = (bit_len_high >> 8) & 0xFF;
-    buffer[59] = bit_len_high & 0xFF;
-    buffer[60] = (bit_len_low >> 24) & 0xFF;
-    buffer[61] = (bit_len_low >> 16) & 0xFF;
-    buffer[62] = (bit_len_low >> 8) & 0xFF;
-    buffer[63] = bit_len_low & 0xFF;
+    buffer[56] = (bit_len_high >> 24) & 0xFFU;
+    buffer[57] = (bit_len_high >> 16) & 0xFFU;
+    buffer[58] = (bit_len_high >> 8) & 0xFFU;
+    buffer[59] = bit_len_high & 0xFFU;
+    buffer[60] = (bit_len_low >> 24) & 0xFFU;
+    buffer[61] = (bit_len_low >> 16) & 0xFFU;
+    buffer[62] = (bit_len_low >> 8) & 0xFFU;
+    buffer[63] = bit_len_low & 0xFFU;
 
     sha256_transform(state, buffer);
 
     /* Output hash */
     for (int i = 0; i < 8; i++) {
-        hash[i * 4] = (state[i] >> 24) & 0xFF;
-        hash[(i * 4) + 1] = (state[i] >> 16) & 0xFF;
-        hash[(i * 4) + 2] = (state[i] >> 8) & 0xFF;
-        hash[(i * 4) + 3] = state[i] & 0xFF;
+        hash[i * 4] = (state[i] >> 24) & 0xFFU;
+        hash[(i * 4) + 1] = (state[i] >> 16) & 0xFFU;
+        hash[(i * 4) + 2] = (state[i] >> 8) & 0xFFU;
+        hash[(i * 4) + 3] = state[i] & 0xFFU;
     }
 
     return DDS_AUTH_OK;
@@ -192,19 +192,19 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
 
 dds_auth_status_t dds_auth_generate_challenge(uint8_t *challenge, uint32_t len)
 {
-    if (!challenge || (len == 0)) {
+    if (!challenge || (len == 0U)) {
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
     /* Use simple random for embedded systems */
     /* In production, use hardware RNG */
     static uint32_t seed = 0;
-    if (seed == 0) {
+    if (seed == 0U) {
         seed = (uint32_t)time(NULL);
     }
 
     for (uint32_t i = 0; i < len; i++) {
-        seed = (seed * 1103515245) + 12345;
+        seed = (seed * 1103515245U) + 12345;
         challenge[i] = (uint8_t)(seed >> 16);
     }
 
@@ -240,8 +240,8 @@ dds_auth_context_t* dds_auth_init(const dds_security_config_t *config)
     }
 
     /* Configure defaults */
-    ctx->handshake_timeout_ms = config->handshake_timeout_ms > 0 ? config->handshake_timeout_ms : DDS_AUTH_DEFAULT_TIMEOUT_MS;
-    ctx->max_retries = config->max_handshake_attempts > 0 ? config->max_handshake_attempts : 3;
+    ctx->handshake_timeout_ms = config->handshake_timeout_ms > 0U ? config->handshake_timeout_ms : DDS_AUTH_DEFAULT_TIMEOUT_MS;
+    ctx->max_retries = config->max_handshake_attempts > 0U ? config->max_handshake_attempts : 3;
     ctx->validate_cert_chain = true;
     ctx->check_crl = false;
     ctx->check_ocsp = false;
@@ -291,7 +291,7 @@ dds_auth_status_t dds_auth_load_certificate(dds_auth_context_t *ctx,
     cert->length = fread(cert->data, 1, DDS_SECURITY_MAX_CERT_SIZE, fp);
     fclose(fp);
 
-    if (cert->length == 0) {
+    if (cert->length == 0U) {
         return DDS_AUTH_ERROR_INVALID_CERT;
     }
 
@@ -301,7 +301,7 @@ dds_auth_status_t dds_auth_load_certificate(dds_auth_context_t *ctx,
     /* Set default validity (should parse from cert in real implementation) */
     cert->valid_from = 0;
     cert->valid_until = 0xFFFFFFFFFFFFFFFF;
-    strncpy(cert->subject_name, "CN=Unknown,O=DDS", sizeof(cert->subject_name) - 1);
+    strncpy(cert->subject_name, "CN=Unknown,O=DDS", sizeof(cert->subject_name) - 1U);
 
     return DDS_AUTH_OK;
 }
@@ -355,7 +355,7 @@ dds_auth_status_t dds_auth_validate_certificate(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if ((cert->length == 0) || (ca_cert->length == 0)) {
+    if ((cert->length == 0U) || (ca_cert->length == 0)) {
         return DDS_AUTH_ERROR_INVALID_CERT;
     }
 
@@ -371,7 +371,7 @@ dds_auth_status_t dds_auth_validate_cert_chain(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (chain->cert_count == 0) {
+    if (chain->cert_count == 0U) {
         return DDS_AUTH_ERROR_INVALID_CERT;
     }
 
@@ -547,27 +547,27 @@ dds_auth_status_t dds_auth_derive_key(dds_auth_context_t *ctx,
     dds_auth_sha256(shared_secret, secret_len, hash);
 
     if (salt) {
-        for (uint32_t i = 0; i < 32; i++) {
-            hash[i] ^= salt[i % 8];
+        for (uint32_t i = 0; i < 32U; i++) {
+            hash[i] ^= salt[i % 8U];
         }
         dds_auth_sha256(hash, 32, hash);
     }
 
-    uint32_t copy_len = (key_len < 32) ? key_len : 32;
+    uint32_t copy_len = (key_len < 32U) ? key_len : 32;
     memcpy(key, hash, copy_len);
 
     /* If need more key material, derive additional blocks */
-    if (key_len > 32) {
+    if (key_len > 32U) {
         uint8_t counter = 1;
         uint8_t additional[32];
         memcpy(additional, hash, 32);
 
-        for (uint32_t offset = 32; offset < key_len; offset += 32) {
+        for (uint32_t offset = 32; offset < key_len; offset += 32U) {
             additional[31] ^= counter++;
             dds_auth_sha256(additional, 32, additional);
 
             uint32_t remaining = key_len - offset;
-            copy_len = (remaining < 32) ? remaining : 32;
+            copy_len = (remaining < 32U) ? remaining : 32;
             memcpy(key + offset, additional, copy_len);
         }
     }
@@ -592,14 +592,14 @@ dds_auth_status_t dds_auth_sign(dds_auth_context_t *ctx,
 
     /* Simplified signature: hash(data || key) */
     uint8_t hash_input[4096];
-    uint32_t hash_len = data_len + 32;
+    uint32_t hash_len = data_len + 32U;
 
     if (hash_len > sizeof(hash_input)) {
         hash_len = sizeof(hash_input);
     }
 
-    memcpy(hash_input, data, hash_len - 32);
-    memcpy(hash_input + hash_len - 32, private_key, 32);
+    memcpy(hash_input, data, hash_len - 32U);
+    memcpy(hash_input + hash_len - 32U, private_key, 32);
 
     *sig_len = 32;
     dds_auth_sha256(hash_input, hash_len, signature);
@@ -773,7 +773,7 @@ dds_auth_status_t dds_auth_process_handshake_request(dds_auth_context_t *ctx,
     memcpy(reply->challenge, (*handshake)->local_challenge, 32);
     memcpy(reply->response, response_data, 32);
 
-    dds_auth_sign(ctx, (uint8_t*)reply, sizeof(dds_auth_handshake_reply_t) - 256,
+    dds_auth_sign(ctx, (uint8_t*)reply, sizeof(dds_auth_handshake_reply_t) - 256U,
                   (*handshake)->identity.key_pair.private_key,
                   reply->signature, &reply->signature_len);
 
@@ -811,7 +811,7 @@ dds_auth_status_t dds_auth_process_handshake_reply(dds_auth_context_t *ctx,
     memcpy(&final->requester_guid, &handshake->local_guid, sizeof(rtps_guid_t));
     memcpy(final->response, reply->challenge, 32);
 
-    dds_auth_sign(ctx, (uint8_t*)final, sizeof(dds_auth_handshake_final_t) - 256,
+    dds_auth_sign(ctx, (uint8_t*)final, sizeof(dds_auth_handshake_final_t) - 256U,
                   handshake->identity.key_pair.private_key,
                   final->signature, &final->signature_len);
 
@@ -885,7 +885,7 @@ dds_auth_status_t dds_auth_get_shared_secret(dds_security_handshake_t *handshake
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (handshake->identity.shared_secret_len == 0) {
+    if (handshake->identity.shared_secret_len == 0U) {
         return DDS_AUTH_ERROR_HANDSHAKE_FAILED;
     }
 

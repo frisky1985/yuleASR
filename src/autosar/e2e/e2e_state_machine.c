@@ -223,7 +223,7 @@ E2E_SM_StateType E2E_SM_ProcessCheckResult(
     state->lastCheckStatus = (uint16_t)checkResult;
 
     /* Check for timeout */
-    if ((config->timeoutMs > 0) && (state->lastValidTimestamp > 0)) {
+    if ((config->timeoutMs > 0U) && (state->lastValidTimestamp > 0)) {
         uint32_t elapsed = timestamp - state->lastValidTimestamp;
         if (elapsed > config->timeoutMs) {
             state->state = E2E_SM_INVALID;
@@ -300,13 +300,13 @@ uint8_t E2E_SM_UpdateWindow(
     if (isOk) {
         state->okCounter++;
         /* Decrement error counter on successful message (sliding window) */
-        if (state->errorCounter > 0) {
+        if (state->errorCounter > 0U) {
             state->errorCounter--;
         }
     } else {
         state->errorCounter++;
         /* Decrement OK counter on error (sliding window) */
-        if (state->okCounter > 0) {
+        if (state->okCounter > 0U) {
             state->okCounter--;
         }
     }

@@ -117,7 +117,7 @@ cryif_status_t cryif_register_driver(cryif_context_t *ctx, cryif_driver_t *drive
     ctx->num_drivers++;
     
     /* Set as default if first driver */
-    if (ctx->num_drivers == 1) {
+    if (ctx->num_drivers == 1U) {
         ctx->default_driver = driver;
     }
     
@@ -139,14 +139,14 @@ cryif_status_t cryif_unregister_driver(cryif_context_t *ctx, cryif_driver_t *dri
             }
             
             /* Shift remaining drivers */
-            for (uint32_t j = i; j < (ctx->num_drivers - 1); j++) {
-                ctx->drivers[j] = ctx->drivers[j + 1];
+            for (uint32_t j = i; j < (ctx->num_drivers - 1U); j++) {
+                ctx->drivers[j] = ctx->drivers[j + 1U];
             }
             ctx->num_drivers--;
             
             /* Update default driver if needed */
             if (ctx->default_driver == driver) {
-                ctx->default_driver = (ctx->num_drivers > 0) ? ctx->drivers[0] : NULL;
+                ctx->default_driver = (ctx->num_drivers > 0U) ? ctx->drivers[0] : NULL;
             }
             
             return CRYIF_OK;
@@ -286,7 +286,7 @@ cryif_status_t cryif_key_import(cryif_context_t *ctx, uint8_t slot_id,
     cryif_driver_t *driver;
     
     if ((ctx == NULL) || !ctx->initialized || slot_id >= CRYIF_MAX_KEY_SLOTS ||
-        (key == NULL) || (key_len == 0)) {
+        (key == NULL) || (key_len == 0U)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -624,7 +624,7 @@ cryif_status_t cryif_random_generate(cryif_context_t *ctx,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || random_data == NULL || random_len == 0) {
+    if ((ctx == NULL) || !ctx->initialized || random_data == NULL || random_len == 0U) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -691,7 +691,7 @@ bool cryif_is_hw_available(cryif_context_t *ctx)
         return false;
     }
     
-    return ((ctx->num_drivers > 0) && (ctx->default_driver != NULL));
+    return ((ctx->num_drivers > 0U) && (ctx->default_driver != NULL));
 }
 
 /* ============================================================================
@@ -754,7 +754,7 @@ static cryif_driver_t* cryif_select_driver(cryif_context_t *ctx,
 static cryif_key_type_t cryif_map_algorithm_to_key_type(uint32_t algorithm)
 {
     /* Map CSM algorithm to CryIf key type */
-    if ((algorithm >= 0x60) && (algorithm < 0x80)) {
+    if ((algorithm >= 0x60U) && (algorithm < 0x80)) {
         /* ECC algorithms */
         switch (algorithm) {
             case 0x60: return CRYIF_KEY_TYPE_ECC_P192;
@@ -764,7 +764,7 @@ static cryif_key_type_t cryif_map_algorithm_to_key_type(uint32_t algorithm)
             case 0x64: return CRYIF_KEY_TYPE_ECC_P521;
             default: return CRYIF_KEY_TYPE_AES_128;
         }
-    } else if ((algorithm >= 0x40) && (algorithm < 0x60)) {
+    } else if ((algorithm >= 0x40U) && (algorithm < 0x60)) {
         /* RSA algorithms */
         switch (algorithm) {
             case 0x41: return CRYIF_KEY_TYPE_RSA_1024;

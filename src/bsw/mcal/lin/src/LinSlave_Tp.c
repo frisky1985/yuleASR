@@ -90,9 +90,9 @@ static void LinSlave_Tp_ResetChannel(uint8 ChannelId)
 static LinSlave_Tp_StatusType LinSlave_Tp_ProcessSF(uint8 ChannelId, uint8 Pci, const uint8* DataPtr, uint8 Length)
 {
     LinSlave_Tp_ChannelType* Channel = &TpChannels[ChannelId];
-    uint8 DataLen = Pci & 0x0F;  /* 从PCI提取长度 (0-7) */
+    uint8 DataLen = Pci & 0x0FU;  /* 从PCI提取长度 (0-7) */
     
-    if ((DataLen == 0U) || (DataLen > 7)) {
+    if ((DataLen == 0U) || (DataLen > 7U)) {
         return LINSLAVE_TP_E_INVALID_PCI;
     }
     
@@ -122,7 +122,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessSF(uint8 ChannelId, uint8 Pci, 
 static LinSlave_Tp_StatusType LinSlave_Tp_ProcessFF(uint8 ChannelId, uint8 Pci, const uint8* DataPtr, uint8 Length)
 {
     LinSlave_Tp_ChannelType* Channel = &TpChannels[ChannelId];
-    uint8 DataLenHigh = (Pci & 0x0F) << 8;
+    uint8 DataLenHigh = (Pci & 0x0FU) << 8;
     uint8 DataLenLow = DataPtr[0];
     uint16 TotalLength = DataLenHigh | DataLenLow;
     
@@ -133,7 +133,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessFF(uint8 ChannelId, uint8 Pci, 
     /* 初始化接收状态 */
     Channel->State = LINSLAVE_TP_STATE_RX_FF;
     Channel->RxTotalLength = TotalLength;
-    Channel->RxLength = Length - 1;  /* 减去长度字节 */
+    Channel->RxLength = Length - 1U;  /* 减去长度字节 */
     Channel->RxSN = 0;
     
     /* 复制第一批数据 (FF中剩余的数据) */
@@ -156,7 +156,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessFF(uint8 ChannelId, uint8 Pci, 
 static LinSlave_Tp_StatusType LinSlave_Tp_ProcessCF(uint8 ChannelId, uint8 Pci, const uint8* DataPtr, uint8 Length)
 {
     LinSlave_Tp_ChannelType* Channel = &TpChannels[ChannelId];
-    uint8 SN = Pci & 0x0F;  /* 序列号 */
+    uint8 SN = Pci & 0x0FU;  /* 序列号 */
     uint16 RemainingBytes;
     uint16 CopyLength;
     
@@ -165,7 +165,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessCF(uint8 ChannelId, uint8 Pci, 
     }
     
     /* 检查序列号 */
-    if (SN != ((Channel->RxSN + 1) & 0x0F)) {
+    if (SN != ((Channel->RxSN + 1U) & 0x0F)) {
         /* 序列号错误，重置传输 */
         LinSlave_Tp_ResetChannel(ChannelId);
         return LINSLAVE_TP_E_NOT_OK;
@@ -225,7 +225,7 @@ static void LinSlave_Tp_SendFlowControl(uint8 ChannelId, uint8 BlockSize, uint8 
 {
     uint8 FcFrame[3];
     
-    FcFrame[0] = LINSLAVE_TP_PCI_FC | 0x00;  /* FC + FlowStatus=0 (ContinueToSend) */
+    FcFrame[0] = LINSLAVE_TP_PCI_FC | 0x00U;  /* FC + FlowStatus=0 (ContinueToSend) */
     FcFrame[1] = BlockSize;
     FcFrame[2] = STmin;
     
@@ -243,7 +243,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_ProcessFrame(
     uint8 Length
 )
 {
-    uint8 PciType = Pci & 0xF0;
+    uint8 PciType = Pci & 0xF0U;
     uint8 ChannelId = 0;  /* 使用PID映射到通道 */
     
     if (TpInitialized == 0U) {
@@ -302,11 +302,11 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
     Channel->TxOffset = 0;
     Channel->TxSN = 0;
     
-    if (Length <= 6) {
+    if (Length <= 6U) {
         /* 发送单帧 (SF) */
-        FirstFrame[0] = LINSLAVE_TP_PCI_SF | (Length & 0x0F);
+        FirstFrame[0] = LINSLAVE_TP_PCI_SF | (Length & 0x0FU);
         (void)memcpy(&FirstFrame[1], DataPtr, Length);
-        LinSlave_Hal_UartSendBuffer(FirstFrame, Length + 1);
+        LinSlave_Hal_UartSendBuffer(FirstFrame, Length + 1U);
         
         /* 发送完成 */
         if (TpTxConfirmation != NULL_PTR) {
@@ -315,8 +315,8 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         LinSlave_Tp_ResetChannel(ChannelId);
     } else {
         /* 发送首帧 (FF) */
-        FirstFrame[0] = LINSLAVE_TP_PCI_FF | ((Length >> 8) & 0x0F);
-        FirstFrame[1] = Length & 0xFF;
+        FirstFrame[0] = LINSLAVE_TP_PCI_FF | ((Length >> 8U) & 0x0F);
+        FirstFrame[1] = Length & 0xFFU;
         (void)memcpy(&FirstFrame[2], DataPtr, 5);  /* FF中携带的数据 */
         LinSlave_Hal_UartSendBuffer(FirstFrame, 7);
         
@@ -368,12 +368,12 @@ void LinSlave_Tp_MainFunction(void)
         
         if (Channel->State == LINSLAVE_TP_STATE_RX_CF) {
             /* 等待CF超时 (N_Cr) */
-            if (Channel->Timer > 1000) {  /* 示例: 1000ms超时 */
+            if (Channel->Timer > 1000U) {  /* 示例: 1000ms超时 */
                 LinSlave_Tp_ResetChannel(i);
             }
         } else if (Channel->State == LINSLAVE_TP_STATE_WAIT_FC) {
             /* 等待FC超时 (N_Bs) */
-            if (Channel->Timer > 1000) {
+            if (Channel->Timer > 1000U) {
                 if (TpTxConfirmation != NULL_PTR) {
                     TpTxConfirmation(i, LINSLAVE_TP_E_TIMEOUT);
                 }

@@ -37,12 +37,12 @@
 #define PWM4_BASE_ADDR                  (0x30690000UL)
 #endif
 
-#define PWM_CR                          (0x00)
+#define PWM_CR                          (0x00U)
 #define PWM_SR                          (0x04)
-#define PWM_IR                          (0x08)
-#define PWM_SAR                         (0x0C)
-#define PWM_PR                          (0x10)
-#define PWM_CNR                         (0x14)
+#define PWM_IR                          (0x08U)
+#define PWM_SAR                         (0x0CU)
+#define PWM_PR                          (0x10U)
+#define PWM_CNR                         (0x14U)
 
 #define PWM_CR_EN                       (0x00000001U)
 #define PWM_CR_REPEAT_MASK              (0x00000006U)

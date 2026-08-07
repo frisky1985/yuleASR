@@ -23,9 +23,9 @@ extern "C" {
  * 配置常量
  * ============================================================================ */
 
-#define SECOC_MAX_PDU_CONFIGS           32
+#define SECOC_MAX_PDU_CONFIGS           32U
 #define SECOC_MAX_FRESHNESS_VALUES      64
-#define SECOC_MAX_KEY_SLOTS             16
+#define SECOC_MAX_KEY_SLOTS             16U
 #define SECOC_MAX_MAC_LENGTH            16
 #define SECOC_MAX_FRESHNESS_LENGTH      8
 #define SECOC_MAX_PDU_LENGTH            256

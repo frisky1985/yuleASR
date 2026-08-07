@@ -23,12 +23,12 @@ uint64_t dds_get_current_time_ms(void)
 {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return ((uint64_t)ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
+    return ((uint64_t)ts.tv_sec * 1000U) + (ts.tv_nsec / 1000000);
 }
 
 static void guid_to_string(const rtps_guid_t *guid, char *str, size_t str_size)
 {
-    if (!guid || !str || (str_size < 37)) {
+    if (!guid || !str || (str_size < 37U)) {
         return;
     }
     
@@ -122,7 +122,7 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
     }
 
     /* Initialize audit log manager */
-    ctx->audit_mgr.max_entries = config->max_audit_entries > 0 ? 
+    ctx->audit_mgr.max_entries = config->max_audit_entries > 0U ? 
                                   config->max_audit_entries : 
                                   DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES;
     ctx->audit_mgr.log_entries = (dds_security_audit_log_t*)calloc(
@@ -255,7 +255,7 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
     participant->created_time = dds_get_current_time_ms();
 
     if (subject_name) {
-        strncpy(participant->subject_name, subject_name, sizeof(participant->subject_name) - 1);
+        strncpy(participant->subject_name, subject_name, sizeof(participant->subject_name) - 1U);
     }
 
     ctx->participant_count++;
@@ -279,7 +279,7 @@ dds_security_status_t dds_security_unregister_participant(dds_security_context_t
     }
 
     /* Close crypto session if exists */
-    if (participant->crypto_session_id != 0) {
+    if (participant->crypto_session_id != 0U) {
         dds_crypto_close_session(ctx->crypto_ctx, participant->crypto_session_id);
     }
 
@@ -443,7 +443,7 @@ dds_security_status_t dds_security_protect_data(dds_security_context_t *ctx,
         return DDS_SECURITY_ERROR_AUTHENTICATION_FAILED;
     }
 
-    if (participant->crypto_session_id == 0) {
+    if (participant->crypto_session_id == 0U) {
         return DDS_SECURITY_ERROR_KEY_EXCHANGE_FAILED;
     }
 
@@ -485,7 +485,7 @@ dds_security_status_t dds_security_unprotect_data(dds_security_context_t *ctx,
         return DDS_SECURITY_ERROR_INVALID_PARAM;
     }
 
-    if (participant->crypto_session_id == 0) {
+    if (participant->crypto_session_id == 0U) {
         return DDS_SECURITY_ERROR_KEY_EXCHANGE_FAILED;
     }
 
@@ -645,9 +645,9 @@ dds_security_status_t dds_security_trigger_event(dds_security_context_t *ctx,
     if (participant_guid) {
         memcpy(&record->participant_guid, participant_guid, sizeof(rtps_guid_t));
     }
-    strncpy(record->description, message, sizeof(record->description) - 1);
+    strncpy(record->description, message, sizeof(record->description) - 1U);
 
-    ctx->event_mgr.write_index = (ctx->event_mgr.write_index + 1) % ctx->event_mgr.max_events;
+    ctx->event_mgr.write_index = (ctx->event_mgr.write_index + 1U) % ctx->event_mgr.max_events;
     if (ctx->event_mgr.event_count < ctx->event_mgr.max_events) {
         ctx->event_mgr.event_count++;
     }
@@ -692,9 +692,9 @@ dds_security_status_t dds_security_log_audit(dds_security_context_t *ctx,
     if (participant_guid) {
         memcpy(&log->participant_guid, participant_guid, sizeof(rtps_guid_t));
     }
-    strncpy(log->message, message, sizeof(log->message) - 1);
+    strncpy(log->message, message, sizeof(log->message) - 1U);
 
-    ctx->audit_mgr.write_index = (ctx->audit_mgr.write_index + 1) % ctx->audit_mgr.max_entries;
+    ctx->audit_mgr.write_index = (ctx->audit_mgr.write_index + 1U) % ctx->audit_mgr.max_entries;
     if (ctx->audit_mgr.entry_count < ctx->audit_mgr.max_entries) {
         ctx->audit_mgr.entry_count++;
     } else {
@@ -739,7 +739,7 @@ dds_security_status_t dds_security_configure_audit(dds_security_context_t *ctx,
 
     if (file_path) {
         strncpy(ctx->audit_mgr.log_file_path, file_path, 
-                sizeof(ctx->audit_mgr.log_file_path) - 1);
+                sizeof(ctx->audit_mgr.log_file_path) - 1U);
     }
 
     return DDS_SECURITY_OK;
@@ -768,7 +768,7 @@ dds_security_status_t dds_security_detect_replay(dds_security_context_t *ctx,
     }
 
     /* Check sequence number */
-    if ((seq_number > 0) && (seq_number <= participant->last_seq_number)) {
+    if ((seq_number > 0U) && (seq_number <= participant->last_seq_number)) {
         /* Check window for exact replay */
         int64_t diff = participant->last_seq_number - seq_number;
         if (diff < DDS_SECURITY_REPLAY_WINDOW_SIZE) {
@@ -804,7 +804,7 @@ void dds_security_update_seq_window(dds_security_context_t *ctx,
 
     /* Update window */
     participant->replay_window.window[participant->replay_window.write_index] = seq_number;
-    participant->replay_window.write_index = (participant->replay_window.write_index + 1) % DDS_SECURITY_REPLAY_WINDOW_SIZE;
+    participant->replay_window.write_index = (participant->replay_window.write_index + 1U) % DDS_SECURITY_REPLAY_WINDOW_SIZE;
     
     if (participant->replay_window.valid_entries < DDS_SECURITY_REPLAY_WINDOW_SIZE) {
         participant->replay_window.valid_entries++;
@@ -855,14 +855,14 @@ dds_security_status_t dds_security_rotate_keys(dds_security_context_t *ctx,
     if (participant_guid) {
         /* Rotate for specific participant */
         dds_sec_participant_t *participant = dds_security_find_participant(ctx, participant_guid);
-        if (participant && (participant->crypto_session_id != 0)) {
+        if (participant && (participant->crypto_session_id != 0U)) {
             dds_crypto_update_session_key(ctx->crypto_ctx, participant->crypto_session_id);
         }
     } else {
         /* Rotate for all participants */
         for (uint32_t i = 0; i < ctx->max_participants; i++) {
             if ((ctx->participants[i].state == DDS_SEC_PARTICIPANT_SECURE_ESTABLISHED) &&
-                (ctx->participants[i].crypto_session_id != 0)) {
+                (ctx->participants[i].crypto_session_id != 0U)) {
                 dds_crypto_update_session_key(ctx->crypto_ctx, 
                                               ctx->participants[i].crypto_session_id);
             }

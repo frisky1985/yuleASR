@@ -28,7 +28,7 @@ extern "C" {
 #define RTE_DDS_PATCH_VERSION           0
 
 /* RTE配置 */
-#define RTE_MAX_SW_COMPONENTS           64
+#define RTE_MAX_SW_COMPONENTS           64U
 #define RTE_MAX_PORTS_PER_COMPONENT     32
 #define RTE_MAX_CONNECTIONS             256
 #define RTE_MAX_DATA_ELEMENTS           512

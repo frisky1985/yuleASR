@@ -91,7 +91,7 @@ uint32_t Boot_Image_CalcHeaderCrc(const Boot_ImageHeader *hdr)
     /* CRC over magic (4), image_type (4), version (4), payload_size (4),
        hash (32), reserved (12) = 60 bytes, skipping header_crc at offset 4 */
     crc = crc32_update(crc, base, 4);                          /* magic */
-    crc = crc32_update(crc, base + 8, sizeof(Boot_ImageHeader) - 8); /* rest after header_crc */
+    crc = crc32_update(crc, base + 8, sizeof(Boot_ImageHeader) - 8U); /* rest after header_crc */
     return crc ^ 0xFFFFFFFFU;
 }
 
@@ -119,7 +119,7 @@ Boot_Result Boot_Image_VerifyHash(const Boot_ImageHeader *hdr,
 {
     uint8_t computed[32];
     Boot_Verify_Hash(payload, hdr->payload_size, computed);
-    if (Boot_Verify_ConstantCmp(computed, hdr->hash, 32) != 0U ) {
+    if (Boot_Verify_ConstantCmp(computed, hdr->hash, 32) != 0 ) {
         return BOOT_E_HASH;
     }
     return BOOT_OK;

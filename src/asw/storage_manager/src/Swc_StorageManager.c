@@ -36,10 +36,10 @@
 #define SWC_STORAGEMANAGER_INSTANCE_ID      0x00
 
 /* Maximum blocks */
-#define STORAGE_MAX_BLOCKS                  32
+#define STORAGE_MAX_BLOCKS                  32U
 
 /* Block data size */
-#define STORAGE_BLOCK_DATA_SIZE             256
+#define STORAGE_BLOCK_DATA_SIZE             256U
 
 /* Write cycle threshold for maintenance */
 #define STORAGE_WRITE_CYCLE_THRESHOLD       100000
@@ -118,9 +118,9 @@ STATIC uint16 Swc_StorageManager_CalculateCrc(const uint8* data, uint16 length)
 
     for (i = 0; i < length; i++) {
         crc ^= (uint16)data[i];
-        for (j = 0; j < 8; j++) {
-            if (crc & 0x0001) {
-                crc = (crc >> 1) ^ 0xA001;
+        for (j = 0; j < 8U; j++) {
+            if ((crc & 0x0001U) != 0U) {
+                crc = (crc >> 1) ^ 0xA001U;
             } else {
                 crc >>= 1;
             }

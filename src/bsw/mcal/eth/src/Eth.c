@@ -526,7 +526,7 @@ uint8 Eth_GetControllerIdx(const uint8* CtrlName)
     #endif
     
     /* Simple implementation - return controller 0 */
-    if (ETH_MAX_CONTROLLERS > 0u)
+    if ((unsigned int)(ETH_MAX_CONTROLLERS) > 0u)
     {
         ctrlIdx = 0u;
     }

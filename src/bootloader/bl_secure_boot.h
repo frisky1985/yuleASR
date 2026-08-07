@@ -136,8 +136,8 @@ typedef struct {
 } bl_firmware_header_t;
 
 /* 安全头部魔法 */
-#define BL_SB_FIRMWARE_MAGIC            0x5342444D  /* "SBDM" */
-#define BL_SB_HEADER_VERSION            1
+#define BL_SB_FIRMWARE_MAGIC            0x5342444DU  /* "SBDM" */
+#define BL_SB_HEADER_VERSION            1U
 
 /* 安全标志 */
 #define BL_SB_FLAG_ENCRYPTION_REQUIRED  0x0001

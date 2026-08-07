@@ -260,7 +260,7 @@ csm_status_t csm_job_process_sync(csm_context_t *ctx, uint32_t job_id,
     /* 如果Job已在队列中(QUEUED)，先从队列移除——同步处理立即出队执行 */
     if (job->state == CSM_JOB_STATE_QUEUED) {
         csm_queue_remove(ctx, job);
-        if (ctx->stats.current_queue_depth > 0) {
+        if (ctx->stats.current_queue_depth > 0U) {
             ctx->stats.current_queue_depth--;
         }
     }
@@ -360,7 +360,7 @@ csm_status_t csm_job_release(csm_context_t *ctx, uint32_t job_id)
         ((ctx->normal_prio_queue == job)) ||
         (ctx->low_prio_queue == job)) {
         csm_queue_remove(ctx, job);
-        if (ctx->stats.current_queue_depth > 0) {
+        if (ctx->stats.current_queue_depth > 0U) {
             ctx->stats.current_queue_depth--;
         }
     }
@@ -544,7 +544,7 @@ uint32_t csm_process_queue(csm_context_t *ctx)
     }
     
     /* 处理高优先级队列 */
-    while (((job = csm_queue_peek(ctx)) != NULL) && (processed < 10)) {
+    while (((job = csm_queue_peek(ctx)) != NULL) && (processed < 10U)) {
         csm_queue_remove(ctx, job);
         ctx->stats.current_queue_depth--;
         
@@ -694,7 +694,7 @@ static csm_status_t csm_process_job(csm_context_t *ctx, csm_job_t *job)
     /* 更新统计 */
     uint64_t processing_time = job->complete_time - job->start_time;
     ctx->stats.total_processing_time_us += processing_time;
-    if (ctx->stats.total_jobs_completed > 0) {
+    if (ctx->stats.total_jobs_completed > 0U) {
         ctx->stats.avg_processing_time_us = ctx->stats.total_processing_time_us / 
                                             ctx->stats.total_jobs_completed;
     }

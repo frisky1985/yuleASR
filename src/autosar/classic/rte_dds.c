@@ -281,7 +281,7 @@ Std_ReturnType rte_DestroyComponent(rte_ComponentHandleType handle)
     rte_StopComponent(handle);
 
     /* 从列表中移除 */
-    if ((uint32)idx < (g_rteContext.numComponents - 1)) {
+    if ((uint32)idx < (g_rteContext.numComponents - 1U)) {
         memmove(&g_rteContext.components[idx],
                 &g_rteContext.components[idx + 1],
                 (g_rteContext.numComponents - idx - 1) * sizeof(rte_ComponentConfigType));
@@ -679,7 +679,7 @@ Std_ReturnType rte_ComSendSignal(
 
     /* 应用E2E保护 */
     uint8 protectedData[RTE_MAX_BUFFER_SIZE];
-    uint32 dataSize = sigConfig->bitSize / 8;
+    uint32 dataSize = sigConfig->bitSize / 8U;
     uint32 protectedLength = dataSize;
 
     memcpy(protectedData, data, dataSize);

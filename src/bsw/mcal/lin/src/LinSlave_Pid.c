@@ -39,10 +39,10 @@ uint8 LinSlave_CalculatePid(uint8 Id)
          (uint8)((Id >> 4U) & 0x01U);
     
     /* 计算P1 - 偶校验位 (取反) */
-    P1 = (uint8)(~((uint8)((Id >> 1U) & 0x01U) ^ 
+    P1 = (uint8)((unsigned int)(~((uint8)((Id >> 1U) & 0x01U) ^ 
            (uint8)((Id >> 3U) & 0x01U) ^ 
-           ((Id >> 4) & 0x01) ^ 
-           (uint8)((Id >> 5U) & 0x01U)) & 0x01U);
+           ((Id >> 4) & 0x01U) ^ 
+           (uint8)((Id >> 5U) & 0x01U))) & 0x01U);
     
     /* 组合PID */
     Pid = Id | (uint8)(P0 << 6U) | (uint8)(P1 << 7U);

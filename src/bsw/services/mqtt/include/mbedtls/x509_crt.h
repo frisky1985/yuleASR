@@ -30,10 +30,10 @@ typedef struct mbedtls_md_info_t mbedtls_md_info_t;
 typedef struct mbedtls_pk_context mbedtls_pk_context;
 
 /* Certificate verification flags */
-#define MBEDTLS_X509_BADCERT_EXPIRED          0x000001
-#define MBEDTLS_X509_BADCERT_REVOKED          0x000002
+#define MBEDTLS_X509_BADCERT_EXPIRED          0x000001U
+#define MBEDTLS_X509_BADCERT_REVOKED          0x000002U
 #define MBEDTLS_X509_BADCERT_CN_MISMATCH      0x000004
-#define MBEDTLS_X509_BADCERT_NOT_TRUSTED       0x000008
+#define MBEDTLS_X509_BADCERT_NOT_TRUSTED       0x000008U
 #define MBEDTLS_X509_BADCERT_BAD_KEY           0x000010
 #define MBEDTLS_X509_BADCERT_BAD_MD            0x000020
 #define MBEDTLS_X509_BADCERT_FUTURE            0x000040

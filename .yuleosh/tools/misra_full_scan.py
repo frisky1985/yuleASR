@@ -12,6 +12,9 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent))
+from ci_includes import detect_includes  # noqa: E402
+
 PROJECT = Path("/Users/stefan/.openclaw/workspace/yuleASR")
 
 
@@ -23,26 +26,6 @@ def find_c_sources():
             if f.endswith((".c", ".cpp")):
                 files.append(os.path.relpath(os.path.join(root, f), PROJECT))
     return files
-
-
-def detect_includes():
-    cands = [".", "src", "include", "inc", "config", "tests", "tests/unity/src",
-             "third_party", "lib", "common"]
-    # all **/include dirs under src/include/tests/third_party
-    for root, dirs, fs in os.walk(PROJECT):
-        dirs[:] = [d for d in dirs if not d.startswith(".") and d not in
-                   ("build", "node_modules", "__pycache__", ".yuleosh", ".osh",
-                    "backups", "CMakeFiles")]
-        if root.endswith(("include", "inc")):
-            cands.append(os.path.relpath(root, PROJECT))
-    found = []
-    seen = set()
-    for c in cands:
-        p = PROJECT / c
-        if p.is_dir() and c not in seen:
-            seen.add(c)
-            found.append(c)
-    return found
 
 
 def run(rules_filter=None, out=None):
@@ -77,9 +60,9 @@ def run(rules_filter=None, out=None):
             if rules_filter and rule not in rules_filter:
                 continue
             counts[rule] += 1
-            fm = re.match(r"([^:]+):(\d+):", line)
+            fm = re.match(r"([^:]+):(\d+):(\d+):", line)
             if fm:
-                detail.setdefault(rule, []).append((fm.group(1), int(fm.group(2))))
+                detail.setdefault(rule, []).append((fm.group(1), int(fm.group(2)), int(fm.group(3))))
     res = {"total": sum(counts.values()), "by_rule": dict(counts), "detail": detail}
     if out:
         with open(out, "w") as f:

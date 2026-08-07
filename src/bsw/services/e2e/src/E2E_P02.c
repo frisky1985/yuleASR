@@ -191,7 +191,7 @@ Std_ReturnType E2E_P02Check(
     } else {
         delta = (sint16)((sint16)receivedCounter - (sint16)State->LastValidCounter);
         
-        if (delta == 0U ) {
+        if (delta == 0 ) {
             State->Status = E2E_P_REPEATED;
         } else if (delta < 0) {
             State->Status = E2E_P_WRONGSEQUENCE;

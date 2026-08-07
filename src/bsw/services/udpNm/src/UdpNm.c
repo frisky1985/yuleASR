@@ -253,7 +253,7 @@ static void UdpNm_BuildPdu(uint8 ChannelIdx)
     
     /* Set Control Bit Vector */
 #if (UDPNM_CONTROL_BIT_VECTOR_ENABLED == STD_ON)
-    if (ChannelConfig->ControlBitVectorPosition < UDPNM_PDU_LENGTH)
+    if ((uint32_t)(ChannelConfig->ControlBitVectorPosition) < UDPNM_PDU_LENGTH)
     {
         uint8 CBV = 0U;
         

@@ -35,7 +35,7 @@
 #define SWC_WATCHDOGMANAGER_INSTANCE_ID     0x00
 
 /* Maximum supervised entities */
-#define WDG_MAX_ENTITIES                    16
+#define WDG_MAX_ENTITIES                    16U
 
 /* Watchdog timeout in ms */
 #define WDG_TIMEOUT_MS                      100
@@ -121,7 +121,7 @@ STATIC void Swc_WatchdogManager_SuperviseEntities(void)
                 /* Timeout - entity missed deadline */
                 status->missedIndications++;
 
-                if (status->missedIndications > 3) {
+                if (status->missedIndications > 3U) {
                     status->state = ALIVE_STATE_EXPIRED;
                     swcWatchdogManager.status.watchdogStatus = WDG_STATUS_EXPIRED;
                 }
@@ -154,7 +154,7 @@ STATIC void Swc_WatchdogManager_UpdateAliveCounters(void)
     uint8 entityId;
 
     /* Read alive indications from RTE */
-    if (Rte_Read_AliveIndication(&entityId) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Read_AliveIndication(&entityId)) == RTE_E_OK) {
         sint16 entityIndex = Swc_WatchdogManager_FindEntity(entityId);
 
         if (entityIndex >= 0) {
@@ -184,7 +184,7 @@ STATIC void Swc_WatchdogManager_CheckTimeouts(void)
     /* Check if watchdog needs to be triggered */
     if ((currentTime - swcWatchdogManager.lastTriggerTime) > WDG_TIMEOUT_MS) {
         /* Check if all entities are correct before triggering */
-        if (Swc_WatchdogManager_IsGlobalStatusCorrect()) {
+        if ((Swc_WatchdogManager_IsGlobalStatusCorrect()) != 0U) {
             Swc_WatchdogManager_TriggerHardwareWatchdog();
         } else {
             /* Don't trigger - allow watchdog to expire */
@@ -313,7 +313,7 @@ void Swc_WatchdogManager_Trigger(void)
     swcWatchdogManager.status.globalSupervisionCycle++;
 
     /* Check if we can trigger watchdog */
-    if (Swc_WatchdogManager_IsGlobalStatusCorrect()) {
+    if ((Swc_WatchdogManager_IsGlobalStatusCorrect()) != 0U) {
         Swc_WatchdogManager_TriggerHardwareWatchdog();
     }
 }
@@ -464,7 +464,7 @@ Rte_StatusType Swc_WatchdogManager_SetEntityActive(uint8 entityId, boolean activ
 
     swcWatchdogManager.entities[entityIndex].config.isActive = active;
 
-    if (active) {
+    if ((active) != 0U) {
         swcWatchdogManager.entities[entityIndex].status.state = ALIVE_STATE_CORRECT;
     } else {
         swcWatchdogManager.entities[entityIndex].status.state = ALIVE_STATE_DEACTIVATED;
@@ -555,7 +555,7 @@ void Swc_WatchdogManager_MainFunction(void)
         Swc_WatchdogManager_SuperviseEntities();
         swcWatchdogManager.status.globalSupervisionCycle++;
 
-        if (Swc_WatchdogManager_IsGlobalStatusCorrect()) {
+        if ((Swc_WatchdogManager_IsGlobalStatusCorrect()) != 0U) {
             Swc_WatchdogManager_TriggerHardwareWatchdog();
         }
     }

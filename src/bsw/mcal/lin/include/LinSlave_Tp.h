@@ -28,8 +28,8 @@
 #define LINSLAVE_TP_PATCH_VERSION       0
 
 /* 协议参数 */
-#define LINSLAVE_TP_MAX_PDUs            2
-#define LINSLAVE_TP_MAX_FRAME_LEN       4095    /* 最大报文长度 */
+#define LINSLAVE_TP_MAX_PDUs            2U
+#define LINSLAVE_TP_MAX_FRAME_LEN       4095U    /* 最大报文长度 */
 #define LINSLAVE_TP_MAX_SEG_LEN         6       /* 每帧最大数据 (6字节) */
 #define LINSLAVE_TP_BS_DEFAULT          5       /* 默认BlockSize */
 #define LINSLAVE_TP_STMIN_DEFAULT       10      /* 默认STmin (ms) */

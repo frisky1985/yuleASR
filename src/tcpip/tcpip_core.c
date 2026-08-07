@@ -608,7 +608,7 @@ tcpip_error_t tcpip_register_raw_handler(tcpip_ip_protocol_t protocol,
 {
     tcpip_error_t result = TCPIP_OK;
 
-    if (protocol < 256u)
+    if ((unsigned int)(protocol) < 256u)
     {
         g_tcpip_ctx.raw_handlers[protocol] = callback;
         g_tcpip_ctx.raw_handlers_data[protocol] = user_data;
@@ -625,7 +625,7 @@ tcpip_error_t tcpip_unregister_raw_handler(tcpip_ip_protocol_t protocol)
 {
     tcpip_error_t result = TCPIP_OK;
 
-    if (protocol < 256u)
+    if ((unsigned int)(protocol) < 256u)
     {
         g_tcpip_ctx.raw_handlers[protocol] = NULL;
         g_tcpip_ctx.raw_handlers_data[protocol] = NULL;

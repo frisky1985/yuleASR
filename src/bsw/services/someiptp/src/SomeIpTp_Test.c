@@ -397,7 +397,7 @@ int main(void)
     (void)printf("Failed:       %d\n", tests_failed);
     (void)printf("Coverage:     ~90%% (12/13 APIs tested)\n");
     
-    if (tests_failed == 0U ) {
+    if (tests_failed == 0 ) {
         (void)printf("\n[RESULT] ALL TESTS PASSED ✅\n");
         return 0;
     } else {

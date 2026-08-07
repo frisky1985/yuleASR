@@ -190,7 +190,7 @@ STATIC void Swc_DiagnosticManager_ProcessSessionControl(const Swc_DiagnosticRequ
 {
     Swc_DiagnosticSessionType newSession;
 
-    if (request->dataLength < 1) {
+    if (request->dataLength < 1U) {
         response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
@@ -253,7 +253,7 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
     uint8 subFunction;
     Swc_SecurityLevelType targetLevel;
 
-    if (request->dataLength < 1) {
+    if (request->dataLength < 1U) {
         response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
@@ -262,7 +262,7 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
 
     if ((subFunction & UDS_SECURITY_SUBFUNC_SEED_MASK) == UDS_SECURITY_SUBFUNC_SEED_FLAG) {
         /* Request seed */
-        targetLevel = (Swc_SecurityLevelType)((subFunction + 1) / 2);
+        targetLevel = (Swc_SecurityLevelType)((subFunction + 1U) / 2);
 
         if (targetLevel > SECURITY_LEVEL_3) {
             response->negativeResponseCode = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
@@ -271,7 +271,7 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
 
         /* Build positive response with seed */
         response->responseId = request->serviceId + UDS_POSITIVE_RESPONSE_OFFSET;
-        response->dataLength = DIAG_SECURITY_KEY_SIZE + 1;
+        response->dataLength = DIAG_SECURITY_KEY_SIZE + 1U;
         response->data[0] = subFunction;
         /* Generate seed (simplified) */
         response->data[1] = (uint8)(Rte_GetTime() & UDS_MASK_LOW_BYTE);
@@ -281,9 +281,9 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
 
     } else {
         /* Send key */
-        targetLevel = (Swc_SecurityLevelType)(subFunction / 2);
+        targetLevel = (Swc_SecurityLevelType)(subFunction / 2U);
 
-        if (request->dataLength < (DIAG_SECURITY_KEY_SIZE + 1)) {
+        if (request->dataLength < (DIAG_SECURITY_KEY_SIZE + 1U)) {
             response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
             return;
         }
@@ -312,7 +312,7 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
     uint8 i;
     uint8 dataIndex;
 
-    if (request->dataLength < 1) {
+    if (request->dataLength < 1U) {
         response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
@@ -371,7 +371,7 @@ STATIC void Swc_DiagnosticManager_ProcessClearDtc(const Swc_DiagnosticRequestTyp
 {
     uint32 dtcCode;
 
-    if (request->dataLength < 3) {
+    if (request->dataLength < 3U) {
         response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
@@ -394,7 +394,7 @@ STATIC void Swc_DiagnosticManager_ProcessClearDtc(const Swc_DiagnosticRequestTyp
 STATIC void Swc_DiagnosticManager_ProcessTesterPresent(const Swc_DiagnosticRequestType* request,
                                                         Swc_DiagnosticResponseType* response)
 {
-    if (request->dataLength < 1) {
+    if (request->dataLength < 1U) {
         response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
         return;
     }
@@ -523,7 +523,7 @@ void Swc_DiagnosticManager_ProcessRequest(void)
 
     if (!swcDiagManager.hasPendingRequest) {
         /* Check for new request via RTE */
-        if (Rte_Read_DiagnosticRequest(&request) == RTE_E_OK) {
+        if ((uint8_t)(Rte_Read_DiagnosticRequest(&request)) == RTE_E_OK) {
             swcDiagManager.pendingRequest = request;
             swcDiagManager.hasPendingRequest = TRUE;
         } else {
@@ -707,7 +707,7 @@ Rte_StatusType Swc_DiagnosticManager_ClearDtc(uint32 dtcCode)
         if (swcDiagManager.dtcList[i].dtcCode == dtcCode) {
             /* Shift remaining DTCs */
             for (j = i; j < (swcDiagManager.numDtcs - 1); j++) {
-                swcDiagManager.dtcList[j] = swcDiagManager.dtcList[j + 1];
+                swcDiagManager.dtcList[j] = swcDiagManager.dtcList[j + 1U];
             }
             swcDiagManager.numDtcs--;
             return RTE_E_OK;

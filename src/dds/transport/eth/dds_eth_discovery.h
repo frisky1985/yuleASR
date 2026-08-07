@@ -37,12 +37,12 @@ extern "C" {
 #define DDS_ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_READER 0x000700C7U
 
 /** 发现参数 */
-#define DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN    256
+#define DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN    256U
 #define DDS_DISCOVERY_DEFAULT_PERIOD_MS     3000    /* 默认发现周期 */
-#define DDS_DISCOVERY_MIN_PERIOD_MS         100     /* 最小发现周期 */
-#define DDS_DISCOVERY_MAX_PERIOD_MS         60000   /* 最大发现周期 */
+#define DDS_DISCOVERY_MIN_PERIOD_MS         100U     /* 最小发现周期 */
+#define DDS_DISCOVERY_MAX_PERIOD_MS         60000U   /* 最大发现周期 */
 #define DDS_DISCOVERY_LEASE_DURATION_MS     10000   /* 默认租约持续时间 */
-#define DDS_DISCOVERY_PARTICIPANT_CLEANUP_MS 20000  /* Participant清理时间 */
+#define DDS_DISCOVERY_PARTICIPANT_CLEANUP_MS 20000U  /* Participant清理时间 */
 
 /* ============================================================================
  * 发现数据类型

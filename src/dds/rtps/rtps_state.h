@@ -28,18 +28,18 @@ extern "C" {
  * ============================================================================ */
 
 /** 心跳超时配置 */
-#define RTPS_HEARTBEAT_PERIOD_MS            100     /* 心跳发送周期 */
-#define RTPS_HEARTBEAT_TIMEOUT_MS           300     /* 心跳超时 */
-#define RTPS_NACK_RESPONSE_DELAY_MS         10      /* NACK响应延迟 */
-#define RTPS_NACK_SUPPRESSION_DURATION_MS   20      /* NACK抑制时间 */
+#define RTPS_HEARTBEAT_PERIOD_MS            100U     /* 心跳发送周期 */
+#define RTPS_HEARTBEAT_TIMEOUT_MS           300U     /* 心跳超时 */
+#define RTPS_NACK_RESPONSE_DELAY_MS         10U      /* NACK响应延迟 */
+#define RTPS_NACK_SUPPRESSION_DURATION_MS   20U      /* NACK抑制时间 */
 #define RTPS_HEARTBEAT_RESPONSE_DELAY_MS    5       /* 心跳响应延迟 */
 #define RTPS_HEARTBEAT_SUPPRESSION_MS       10      /* 心跳抑制时间 */
 
 /** 接收器缓冲区配置 */
-#define RTPS_READER_MAX_CACHED_CHANGES      32      /* 最大缓存变化 */
-#define RTPS_WRITER_MAX_CACHED_CHANGES      64      /* Writer最大缓存 */
-#define RTPS_MAX_MATCHED_READERS            8       /* 最大匹配Reader数量 */
-#define RTPS_MAX_MATCHED_WRITERS            8       /* 最大匹配Writer数量 */
+#define RTPS_READER_MAX_CACHED_CHANGES      32U      /* 最大缓存变化 */
+#define RTPS_WRITER_MAX_CACHED_CHANGES      64U      /* Writer最大缓存 */
+#define RTPS_MAX_MATCHED_READERS            8U       /* 最大匹配Reader数量 */
+#define RTPS_MAX_MATCHED_WRITERS            8U       /* 最大匹配Writer数量 */
 
 /* ============================================================================
  * 状态机状态定义

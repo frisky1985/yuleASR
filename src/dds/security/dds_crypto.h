@@ -24,14 +24,14 @@ extern "C" {
 
 #define DDS_CRYPTO_MAX_SESSIONS             64
 #define DDS_CRYPTO_MAX_KEYS_PER_SESSION     4
-#define DDS_CRYPTO_MAX_KEY_LIFETIME_MS      3600000   /* 1小时 */
-#define DDS_CRYPTO_DEFAULT_KEY_UPDATE_MS    600000    /* 10分钟 */
+#define DDS_CRYPTO_MAX_KEY_LIFETIME_MS      3600000U   /* 1U小时 */
+#define DDS_CRYPTO_DEFAULT_KEY_UPDATE_MS    600000U    /* 10U分钟 */
 
 #define DDS_CRYPTO_AES_BLOCK_SIZE           16
 #define DDS_CRYPTO_AES_128_KEY_SIZE         16
 #define DDS_CRYPTO_AES_256_KEY_SIZE         32
 #define DDS_CRYPTO_GCM_IV_SIZE              12
-#define DDS_CRYPTO_GCM_TAG_SIZE             16
+#define DDS_CRYPTO_GCM_TAG_SIZE             16U
 
 /* 响应码 */
 typedef enum {

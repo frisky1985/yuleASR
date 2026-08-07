@@ -35,8 +35,8 @@ static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
     
     for (uint32_t i = 0; i < length; i++) {
         crc ^= data[i];
-        for (uint8_t j = 0; j < 8; j++) {
-            if (crc & 1) {
+        for (uint8_t j = 0; j < 8U; j++) {
+            if ((crc & 1U) != 0U) {
                 crc = (crc >> 1) ^ polynomial;
             } else {
                 crc >>= 1;
@@ -522,7 +522,7 @@ bl_rollback_error_t bl_rollback_get_previous_version(
         if (mgr->record.history[i].is_valid &&
             (mgr->record.history[i].version != mgr->current_version)) {
             /* 优先选择有成功启动记录的版本 */
-            if (mgr->record.history[i].boot_success_count > 0) {
+            if (mgr->record.history[i].boot_success_count > 0U) {
                 if ((best_idx < 0) || (mgr->record.history[i].last_boot_time > best_time)) {
                     best_idx = i;
                     best_time = mgr->record.history[i].last_boot_time;

@@ -29,8 +29,8 @@ extern "C" {
 /* ============================================================================
  * 配置常量
  * ============================================================================ */
-#define BL_ROLLBACK_MAX_HISTORY         4
-#define BL_ROLLBACK_MAGIC               0x524F4C42  /* "ROLB" */
+#define BL_ROLLBACK_MAX_HISTORY         4U
+#define BL_ROLLBACK_MAGIC               0x524F4C42U  /* "ROLB" */
 
 /* 回滚原因 */
 #define BL_ROLLBACK_REASON_NONE                 0x00

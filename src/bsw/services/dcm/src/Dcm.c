@@ -334,7 +334,7 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
     Std_ReturnType result = E_NOT_OK;
     uint8 subFunction;
     uint8 securityLevel;
-    uint8 responseData[DCM_SEED_SIZE + 1];
+    uint8 responseData[DCM_SEED_SIZE + 1U];
     uint8 i;
 
     if (Length >= 1U)

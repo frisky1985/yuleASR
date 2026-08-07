@@ -77,7 +77,7 @@ static int compare_contenders(const void *a, const void *b) {
 }
 
 static void sort_contenders(own_handle_t *own) {
-    if (own->contender_count > 1) {
+    if (own->contender_count > 1U) {
         qsort(own->contenders, own->contender_count, sizeof(own_contender_t), compare_contenders);
     }
 }
@@ -136,7 +136,7 @@ static void remove_contender(own_handle_t *own, const dds_guid_t *guid) {
 static void determine_owner(own_handle_t *own) {
     sort_contenders(own);
     
-    if ((own->contender_count == 0) || !own->contenders[0].active) {
+    if ((own->contender_count == 0U) || !own->contenders[0].active) {
         // 没有活跃竞争者，当前节点成为所有权主
         if (own->state != OWN_STATE_OWNER) {
             own->state = OWN_STATE_OWNER;
@@ -296,7 +296,7 @@ eth_status_t own_decrease_strength(own_handle_t *own, uint32_t decrement) {
     if (!own) return ETH_INVALID_PARAM;
     
     uint32_t new_strength = (own->current_strength > decrement) ? 
-                            own->current_strength - decrement : 0;
+                            own->current_strength - decrement : 0U;
     return own_set_strength(own, new_strength);
 }
 
@@ -378,7 +378,7 @@ eth_status_t own_accept_transfer(own_handle_t *own, uint32_t new_strength) {
     if (!own) return ETH_INVALID_PARAM;
     
     // 接受转移，设置新强度
-    if (new_strength > 0) {
+    if (new_strength > 0U) {
         own_set_strength(own, new_strength);
     }
     
@@ -421,8 +421,8 @@ eth_status_t own_check_timeout(own_handle_t *own, uint64_t current_time_ms, bool
         memcmp(&own->current_owner.guid, &own->local_guid, sizeof(dds_guid_t)) != 0) {
         
         uint64_t timeout_threshold = own->config.negotiation_timeout_ms;
-        if (own->asil_enabled && (own->asil_level >= 3)) {
-            timeout_threshold = timeout_threshold / 2; // ASIL-C/D更严格
+        if (own->asil_enabled && (own->asil_level >= 3U)) {
+            timeout_threshold = timeout_threshold / 2U; // ASIL-C/D更严格
         }
         
         if ((current_time_ms - own->current_owner.last_heartbeat) > timeout_threshold) {
@@ -477,7 +477,7 @@ eth_status_t own_reset_stats(own_handle_t *own) {
 }
 
 eth_status_t own_enable_asil_mode(own_handle_t *own, uint8_t asil_level) {
-    if (!own || (asil_level > 4)) return ETH_INVALID_PARAM;
+    if (!own || (asil_level > 4U)) return ETH_INVALID_PARAM;
     
     own->asil_enabled = true;
     own->asil_level = asil_level;
@@ -493,7 +493,7 @@ eth_status_t own_get_owner_list(own_handle_t *own,
                                  own_owner_info_t *owners,
                                  uint8_t max_count,
                                  uint8_t *actual_count) {
-    if (!own || !owners || !actual_count || (max_count == 0)) return ETH_INVALID_PARAM;
+    if (!own || !owners || !actual_count || (max_count == 0U)) return ETH_INVALID_PARAM;
     
     sort_contenders(own);
     
@@ -515,7 +515,7 @@ eth_status_t own_force_ownership(own_handle_t *own, uint32_t new_strength) {
     if (!own) return ETH_INVALID_PARAM;
     
     // 管理员强制获取所有权
-    own_set_strength(own, new_strength > 0 ? new_strength : OWN_MAX_STRENGTH);
+    own_set_strength(own, new_strength > 0U ? new_strength : OWN_MAX_STRENGTH);
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "OWN", "Ownership forced (admin command)");
     return ETH_OK;

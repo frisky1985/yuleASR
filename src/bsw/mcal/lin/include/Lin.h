@@ -62,7 +62,7 @@
 typedef uint8 Lin_StatusType;
 #define LIN_NOT_OK                         0x00
 #define LIN_TX_OK                          0x01
-#define LIN_TX_BUSY                        0x02
+#define LIN_TX_BUSY                        0x02U
 #define LIN_TX_HEADER_ERROR                0x03
 #define LIN_TX_ERROR                       0x04
 #define LIN_RX_OK                          0x05

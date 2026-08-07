@@ -696,7 +696,7 @@ Std_ReturnType DoIP_ProcessRoutingActivation(
 
     /* Authentication data */
     authDataPtr = &requestPtr[4];
-    authLen = requestLength - 7; /* Subtract header (7 bytes) */
+    authLen = requestLength - 7U; /* Subtract header (7 bytes) */
 
     /* Find or allocate tester connection */
     for (connectionIdx = 0; connectionIdx < DOIP_MAX_TESTER_CONNECTIONS; connectionIdx++)
@@ -933,7 +933,7 @@ static Std_ReturnType DoIP_ProcessDiagnosticMessage(
             }
         }
 
-        if (taConnectionIdx == 0xFF)
+        if (taConnectionIdx == 0xFFU)
         {
             DoIP_SendDiagnosticAck(
                 socketId,
@@ -956,12 +956,12 @@ static Std_ReturnType DoIP_ProcessDiagnosticMessage(
     );
 
     /* Route message to target */
-    if (taConnectionIdx == 0xFF)
+    if (taConnectionIdx == 0xFFU)
     {
         /* Route to local PduR */
         pduRTargetPduId = DOIP_PDUR_RX_PDU_ID_BASE;
         pduInfo.SduDataPtr = (uint8*)&messagePtr[4]; /* Skip addresses */
-        pduInfo.SduLength = (PduLengthType)(messageLength - 4);
+        pduInfo.SduLength = (PduLengthType)(messageLength - 4U);
         pduInfo.MetaDataPtr = NULL_PTR;
 
         PduR_DoIPRxIndication(pduRTargetPduId, &pduInfo);
@@ -1133,7 +1133,7 @@ static Std_ReturnType DoIP_SendGenericNack(PduIdType TxPduId, uint8 nackCode)
     dataPtr[DOIP_HEADER_LENGTH] = nackCode;
 
     pduInfo.SduDataPtr = dataPtr;
-    pduInfo.SduLength = DOIP_HEADER_LENGTH + 1;
+    pduInfo.SduLength = DOIP_HEADER_LENGTH + 1U;
     pduInfo.MetaDataPtr = NULL_PTR;
 
     return SoAd_IfTransmit(TxPduId, &pduInfo);
@@ -1159,7 +1159,7 @@ static void DoIP_ResetTesterConnection(uint8 connectionIdx)
     DoIP_TesterConnections[connectionIdx].aliveCheckPending = FALSE;
     DoIP_TesterConnections[connectionIdx].aliveCheckTimeout = 0;
 
-    for (i = 0; i < 6; i++)
+    for (i = 0; i < 6U; i++)
     {
         DoIP_TesterConnections[connectionIdx].testerPhysicalAddress[i] = 0;
     }

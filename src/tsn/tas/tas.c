@@ -19,7 +19,7 @@
  * 常量和宏定义
  * ============================================================================ */
 
-#define TAS_MAX_PORTS                   8
+#define TAS_MAX_PORTS                   8U
 #define NS_PER_US                       1000ULL
 #define US_PER_MS                       1000ULL
 
@@ -84,12 +84,12 @@ static uint64_t get_current_time_ns(void) {
  * @brief 验证GCL配置
  */
 static bool validate_gcl_internal(const tas_gcl_config_t *gcl) {
-    if ((gcl == NULL) || (gcl->entry_count == 0) || gcl->entry_count > TAS_MAX_GCL_ENTRIES) {
+    if ((gcl == NULL) || (gcl->entry_count == 0U) || gcl->entry_count > TAS_MAX_GCL_ENTRIES) {
         return false;
     }
     
     /* 检查循环时间 */
-    if ((gcl->cycle_time_us == 0) || (gcl->cycle_time_us > TAS_MAX_CYCLE_TIME_US)) {
+    if ((gcl->cycle_time_us == 0U) || (gcl->cycle_time_us > TAS_MAX_CYCLE_TIME_US)) {
         return false;
     }
     
@@ -99,21 +99,21 @@ static bool validate_gcl_internal(const tas_gcl_config_t *gcl) {
         total_time += gcl->entries[i].time_interval_us;
         
         /* 检查门状态 */
-        if (gcl->entries[i].gate_states > 0xFF) {
+        if (gcl->entries[i].gate_states > 0xFFU) {
             return false;
         }
         
         /* 检查时间间隔 */
-        if (gcl->entries[i].time_interval_us == 0) {
+        if (gcl->entries[i].time_interval_us == 0U) {
             return false;
         }
     }
     
     /* 检查总时间是否等于循环时间 */
-    if ((total_time != gcl->cycle_time_us) && (gcl->cycle_time_extension_us == 0)) {
+    if ((total_time != gcl->cycle_time_us) && (gcl->cycle_time_extension_us == 0U)) {
         /* 可以容忍小差异 */
-        if (total_time > (gcl->cycle_time_us + 10) || 
-            total_time < (gcl->cycle_time_us - 10)) {
+        if (total_time > (gcl->cycle_time_us + 10U) || 
+            total_time < (gcl->cycle_time_us - 10U)) {
             return false;
         }
     }
@@ -203,7 +203,7 @@ static uint32_t calculate_gcl_index(tas_port_runtime_t *port, uint64_t current_t
     }
     
     /* 如果超出范围，返回最后一个条目 */
-    return gcl->entry_count - 1;
+    return gcl->entry_count - 1U;
 }
 
 /* ============================================================================
@@ -368,7 +368,7 @@ eth_status_t tas_start_scheduler(uint16_t port_id) {
     port->current_gcl_index = 0;
     
     /* 设置初始门状态 */
-    if (port->config.gate_enabled && (port->config.gcl_config.entry_count > 0)) {
+    if (port->config.gate_enabled && (port->config.gcl_config.entry_count > 0U)) {
         update_gate_states(port, port->config.gcl_config.entries[0].gate_states);
     } else {
         update_gate_states(port, 0xFF); /* 所有门打开 */
@@ -468,7 +468,7 @@ eth_status_t tas_can_transmit(uint16_t port_id, uint8_t queue_id,
     }
     
     /* 检查门状态 */
-    bool gate_open = (port->gate_status.gate_states & (1 << queue_id)) != 0;
+    bool gate_open = (port->gate_status.gate_states & (1U << queue_id)) != 0;
     
     if (!gate_open) {
         *can_transmit = false;
@@ -648,7 +648,7 @@ eth_status_t tas_check_schedule_integrity(uint16_t port_id, bool *integrity_ok) 
 }
 
 eth_status_t tas_create_automotive_gcl(tas_gcl_config_t *gcl_config, uint32_t cycle_time_ms) {
-    if ((gcl_config == NULL) || (cycle_time_ms == 0) || cycle_time_ms > 1000) {
+    if ((gcl_config == NULL) || (cycle_time_ms == 0U) || cycle_time_ms > 1000) {
         return ETH_INVALID_PARAM;
     }
     
@@ -662,9 +662,9 @@ eth_status_t tas_create_automotive_gcl(tas_gcl_config_t *gcl_config, uint32_t cy
      * 时间槽3: 最佳努力流量 (其他队列)
      */
     
-    uint32_t slot1_time = cycle_time_us / 4;     /* 25% 给严格实时 */
-    uint32_t slot2_time = cycle_time_us / 4;     /* 25% 给实时 */
-    uint32_t slot3_time = cycle_time_us / 2;     /* 50% 给最佳努力 */
+    uint32_t slot1_time = cycle_time_us / 4U;     /* 25% 给严格实时 */
+    uint32_t slot2_time = cycle_time_us / 4U;     /* 25% 给实时 */
+    uint32_t slot3_time = cycle_time_us / 2U;     /* 50% 给最佳努力 */
     
     /* 条目1: 严格实时 - 队列0打开 */
     gcl_config->entries[0].gate_states = 0x01;  /* 队列0打开 */
@@ -688,15 +688,15 @@ eth_status_t tas_create_automotive_gcl(tas_gcl_config_t *gcl_config, uint32_t cy
 }
 
 uint32_t tas_calc_transmission_time(uint32_t frame_size, uint32_t link_speed_mbps) {
-    if (link_speed_mbps == 0) {
+    if (link_speed_mbps == 0U) {
         return 0;
     }
     
     /* 计算传输时间：帧大小(bits) / 链路速率(Mbps) = 微秒 */
     /* 加上前导码和IFS */
-    uint32_t total_bits = (frame_size + 20) * 8;  /* +20 bytes overhead */
+    uint32_t total_bits = (frame_size + 20U) * 8;  /* +20 bytes overhead */
     
-    return (total_bits + link_speed_mbps - 1) / link_speed_mbps;  /* 向上取整 */
+    return (total_bits + link_speed_mbps - 1U) / link_speed_mbps;  /* 向上取整 */
 }
 
 eth_status_t tas_print_status(uint16_t port_id) {
@@ -720,7 +720,7 @@ eth_status_t tas_print_status(uint16_t port_id) {
     
     printf("Queue Stats:\n");
     for (int i = 0; i < TAS_MAX_QUEUES; i++) {
-        if ((port->queue_stats[i].tx_frames > 0) || (port->queue_stats[i].blocked_frames > 0)) {
+        if ((port->queue_stats[i].tx_frames > 0U) || (port->queue_stats[i].blocked_frames > 0)) {
             printf("  Q%d: TX=%lu, Blocked=%lu\n", i,
                    (unsigned long)port->queue_stats[i].tx_frames,
                    (unsigned long)port->queue_stats[i].blocked_frames);

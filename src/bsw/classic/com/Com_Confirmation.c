@@ -389,7 +389,7 @@ void Com_ProcessRetryQueue(void)
             processed++;
         }
         
-        idx = (idx + 1) % COM_MAX_RETRY_QUEUE_SIZE;
+        idx = (idx + 1U) % COM_MAX_RETRY_QUEUE_SIZE;
     }
 }
 

@@ -211,9 +211,9 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
     
     /* 计算预分额和后分额 - 使用标志变量替代goto */
     boolean found = FALSE;
-    for (preDiv = 0; (preDiv < 16) && !found; preDiv++) {
-        for (postDiv = 0; postDiv < 16; postDiv++) {
-            if (((1u << preDiv) * (postDiv + 1)) >= tempDiv) {
+    for (preDiv = 0; (preDiv < 16U) && !found; preDiv++) {
+        for (postDiv = 0; postDiv < 16U; postDiv++) {
+            if (((1u << preDiv) * (postDiv + 1U)) >= tempDiv) {
                 found = TRUE;
                 break;
             }
@@ -305,7 +305,7 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
         }
         
         /* 发送 */
-        REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_TXDATA, TxData ? TxData[i] : 0xFF);
+        REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_TXDATA, TxData ? TxData[i] : 0xFFU);
         
         /* 等待RX数据 */
         while ((REG_READ32(Spi_BaseAddr[channel] + ECSPI_STATREG) & STATREG_RR) == 0U ) {
@@ -401,7 +401,7 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
         /* 填充TX FIFO */
         uint32 fifoFill = (Length < SPI_FIFO_DEPTH) ? Length : SPI_FIFO_DEPTH;
         for (uint32 i = 0; i < fifoFill; i++) {
-            REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_TXDATA, TxData ? TxData[i] : 0xFF);
+            REG_WRITE32(Spi_BaseAddr[channel] + ECSPI_TXDATA, TxData ? TxData[i] : 0xFFU);
         }
         
         /* 使能中断 */
@@ -476,7 +476,7 @@ void Spi_IsrHandler(uint8 Channel)
         while (((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_TE) == 0U) && 
                ((state->Transferred + (state->Length - state->TxSent)) < SPI_FIFO_DEPTH)) {
             REG_WRITE32(Spi_BaseAddr[Channel] + ECSPI_TXDATA, 
-                state->TxBuffer ? state->TxBuffer[state->TxSent] : 0xFF);
+                state->TxBuffer ? state->TxBuffer[state->TxSent] : 0xFFU);
             state->TxSent++;
         }
     }

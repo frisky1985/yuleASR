@@ -48,7 +48,7 @@ void Tel_Dds_SetEnabled(bool enabled) {
 }
 
 uint16_t Tel_Dds_PackEvents(uint8_t *output, uint16_t max_len) {
-    if (!output || (max_len == 0)) {
+    if (!output || (max_len == 0U)) {
         return 0;
     }
     
@@ -62,7 +62,7 @@ uint16_t Tel_Dds_PackEvents(uint8_t *output, uint16_t max_len) {
                                             max_len - total_bytes, 
                                             &actual_len);
         
-        if ((status != TEL_OK) || (actual_len == 0)) {
+        if ((status != TEL_OK) || (actual_len == 0U)) {
             break;
         }
         
@@ -70,7 +70,7 @@ uint16_t Tel_Dds_PackEvents(uint8_t *output, uint16_t max_len) {
         total_events++;
         
         /* 限制单次发送事件数 */
-        if (total_events >= 100) {
+        if (total_events >= 100U) {
             break;
         }
     }
@@ -92,12 +92,12 @@ TelStatus_t Tel_Dds_FlushBuffer(void) {
     uint16_t payload_len = Tel_Dds_PackEvents(s_dds_sample.payload, 
                                                TEL_DDS_MAX_PAYLOAD);
     
-    if (payload_len == 0) {
+    if (payload_len == 0U) {
         return TEL_OK; /* 没有数据需要发送 */
     }
     
     /* 压缩 (如果启用) */
-    if (s_dds_config.compression_enabled && (payload_len > 100)) {
+    if (s_dds_config.compression_enabled && (payload_len > 100U)) {
         uint8_t compressed[TEL_DDS_MAX_PAYLOAD];
         uint16_t compressed_len = Tel_CompressRLE(s_dds_sample.payload, 
                                                    payload_len,

@@ -125,7 +125,7 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
 
         /* Switch to target clock source */
         timeout = MCU_CLOCK_SWITCH_TIMEOUT;
-        while ((REG_READ32(MCU_CCM_CCSR) & 0x01U) != clockConfig->ClockSource) {
+        while (((unsigned int)(REG_READ32(MCU_CCM_CCSR)) & 0x01U) != clockConfig->ClockSource) {
             if (timeout == 0U) {
                 status = E_NOT_OK;
                 break;
@@ -147,33 +147,33 @@ static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigTy
     uint32 regValue;
 
     /* Bypass PLL during configuration */
-    regValue = REG_READ32(pllBaseAddr + 0x00);
+    regValue = REG_READ32(pllBaseAddr + 0x00U);
     regValue |= 0x1000U; /* Set BYPASS bit */
-    REG_WRITE32(pllBaseAddr + 0x00, regValue);
+    REG_WRITE32(pllBaseAddr + 0x00U, regValue);
 
     /* Configure PLL parameters */
     regValue = ((pllConfig->Prediv - 1U) & 0x07U) << 12;
     regValue |= (pllConfig->Multiplier & 0x3FFU) << 0;
-    REG_WRITE32(pllBaseAddr + 0x04, regValue);
+    REG_WRITE32(pllBaseAddr + 0x04U, regValue);
 
     /* Configure post dividers */
     regValue = ((pllConfig->Postdiv1 - 1U) & 0x07U) << 4;
     regValue |= ((pllConfig->Postdiv2 - 1U) & 0x07U) << 0;
-    REG_WRITE32(pllBaseAddr + 0x08, regValue);
+    REG_WRITE32(pllBaseAddr + 0x08U, regValue);
 
     /* Enable PLL */
-    regValue = REG_READ32(pllBaseAddr + 0x00);
+    regValue = REG_READ32(pllBaseAddr + 0x00U);
     regValue |= 0x2000U; /* Set ENABLE bit */
-    REG_WRITE32(pllBaseAddr + 0x00, regValue);
+    REG_WRITE32(pllBaseAddr + 0x00U, regValue);
 
     /* Wait for PLL lock */
     status = Mcu_WaitForPLLLock(pllBaseAddr);
 
     if (status == E_OK) {
         /* Disable bypass */
-        regValue = REG_READ32(pllBaseAddr + 0x00);
+        regValue = REG_READ32(pllBaseAddr + 0x00U);
         regValue &= ~0x1000U; /* Clear BYPASS bit */
-        REG_WRITE32(pllBaseAddr + 0x00, regValue);
+        REG_WRITE32(pllBaseAddr + 0x00U, regValue);
     }
 
     return status;
@@ -190,7 +190,7 @@ static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
     uint32 regValue;
 
     do {
-        regValue = REG_READ32(pllBaseAddr + 0x00);
+        regValue = REG_READ32(pllBaseAddr + 0x00U);
         if ((regValue & 0x80000000U) != 0U) { /* LOCK bit */
             status = E_OK;
             break;

@@ -25,7 +25,7 @@ extern "C" {
  * ============================================================================ */
 
 /** 最小有效时间分隔(1ms) */
-#define TBF_MIN_SEPARATION_US      1000
+#define TBF_MIN_SEPARATION_US      1000U
 /** 默认时间分隔 */
 #define TBF_DEFAULT_SEPARATION_US  10000
 /** 最大压缩缓冲区 */

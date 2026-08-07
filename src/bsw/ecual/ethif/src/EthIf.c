@@ -130,7 +130,7 @@ void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr)
             if (filter->ControllerId == ControllerId) {
                 boolean match = FALSE;
                 if (filter->FilterType == ETHIF_FILTER_MAC) {
-                    match = (memcmp(filter->MacAddress, PduInfoPtr->MacAddress, 6) == 0U );
+                    match = (memcmp(filter->MacAddress, PduInfoPtr->MacAddress, 6) == 0 );
                 } else if (filter->FilterType == ETHIF_FILTER_ETHERTYPE) {
                     match = (filter->EtherType == PduInfoPtr->EtherType);
                 }

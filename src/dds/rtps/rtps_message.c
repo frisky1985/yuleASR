@@ -22,11 +22,11 @@ static inline uint16_t read_u16(const uint8_t *p, bool little_endian) {
 
 static inline void write_u16(uint8_t *p, uint16_t v, bool little_endian) {
     if (little_endian) {
-        p[0] = v & 0xFF;
-        p[1] = (v >> 8) & 0xFF;
+        p[0] = v & 0xFFU;
+        p[1] = (v >> 8) & 0xFFU;
     } else {
-        p[0] = (v >> 8) & 0xFF;
-        p[1] = v & 0xFF;
+        p[0] = (v >> 8) & 0xFFU;
+        p[1] = v & 0xFFU;
     }
 }
 
@@ -41,15 +41,15 @@ static inline uint32_t read_u32(const uint8_t *p, bool little_endian) {
 
 static inline void write_u32(uint8_t *p, uint32_t v, bool little_endian) {
     if (little_endian) {
-        p[0] = v & 0xFF;
-        p[1] = (v >> 8) & 0xFF;
-        p[2] = (v >> 16) & 0xFF;
-        p[3] = (v >> 24) & 0xFF;
+        p[0] = v & 0xFFU;
+        p[1] = (v >> 8) & 0xFFU;
+        p[2] = (v >> 16) & 0xFFU;
+        p[3] = (v >> 24) & 0xFFU;
     } else {
-        p[0] = (v >> 24) & 0xFF;
-        p[1] = (v >> 16) & 0xFF;
-        p[2] = (v >> 8) & 0xFF;
-        p[3] = v & 0xFF;
+        p[0] = (v >> 24) & 0xFFU;
+        p[1] = (v >> 16) & 0xFFU;
+        p[2] = (v >> 8) & 0xFFU;
+        p[3] = v & 0xFFU;
     }
 }
 
@@ -66,12 +66,12 @@ static inline int64_t read_i64(const uint8_t *p, bool little_endian) {
         return ((int64_t)p[7] << 56) | ((int64_t)p[6] << 48) |
                ((int64_t)p[5] << 40) | ((int64_t)p[4] << 32) |
                ((int64_t)p[3] << 24) | ((int64_t)p[2] << 16) |
-               ((int64_t)p[1] << 8) | p[0];
+               ((int64_t)p[1U] << 8) | p[0];
     }
     return ((int64_t)p[0] << 56) | ((int64_t)p[1] << 48) |
            ((int64_t)p[2] << 40) | ((int64_t)p[3] << 32) |
            ((int64_t)p[4] << 24) | ((int64_t)p[5] << 16) |
-           ((int64_t)p[6] << 8) | p[7];
+           ((int64_t)p[6U] << 8) | p[7];
 }
 
 static inline void write_i64(uint8_t *p, int64_t v, bool little_endian) {
@@ -114,8 +114,8 @@ eth_status_t rtps_header_build(rtps_header_t *header,
     header->magic[3] = 'S';
     header->version_major = RTPS_VERSION_MAJOR;
     header->version_minor = RTPS_VERSION_MINOR;
-    header->vendor_id[0] = (vendor_id >> 8) & 0xFF;
-    header->vendor_id[1] = vendor_id & 0xFF;
+    header->vendor_id[0] = (vendor_id >> 8) & 0xFFU;
+    header->vendor_id[1] = vendor_id & 0xFFU;
     memcpy(header->guid_prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE);
     
     return ETH_OK;
@@ -147,11 +147,11 @@ eth_status_t rtps_header_parse(const uint8_t *data,
 
 bool rtps_header_check_magic(const uint8_t *data, uint32_t len)
 {
-    if ((data == NULL) || (len < 4)) {
+    if ((data == NULL) || (len < 4U)) {
         return false;
     }
-    return ((data[0] == 'R') && (data[1] == 'T') && 
-            (data[2] == 'P') && (data[3] == 'S'));
+    return ((data[0U] == 'R') && (data[1] == 'T') && 
+            (data[2U] == 'P') && (data[3] == 'S'));
 }
 
 /* ============================================================================
@@ -210,20 +210,20 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     
     /* 计算所需空间 */
     uint32_t submsg_size = 4;  /* extra_flags + octets_to_inline_qos */
-    submsg_size += 4;  /* reader_id */
-    submsg_size += 4;  /* writer_id */
-    submsg_size += 8;  /* writer_sn */
+    submsg_size += 4U;  /* reader_id */
+    submsg_size += 4U;  /* writer_id */
+    submsg_size += 8U;  /* writer_sn */
     
-    uint32_t octets_to_inline_qos = submsg_size - 4;
+    uint32_t octets_to_inline_qos = submsg_size - 4U;
     
-    if ((inline_qos != NULL) && (inline_qos_len > 0)) {
+    if ((inline_qos != NULL) && (inline_qos_len > 0U)) {
         submsg_size += inline_qos_len;
-        submsg_size = (submsg_size + 3) & ~3;  /* 4字节对齐 */
+        submsg_size = (submsg_size + 3U) & ~3;  /* 4字节对齐 */
     }
     
-    submsg_size += 4;  /* encapsulated data header */
+    submsg_size += 4U;  /* encapsulated data header */
     submsg_size += data_len;
-    submsg_size = (submsg_size + 3) & ~3;
+    submsg_size = (submsg_size + 3U) & ~3;
     
     if ((builder->current_pos + RTPS_SUBMESSAGE_HEADER_SIZE + submsg_size) > builder->max_size) {
         return ETH_ERROR;
@@ -236,44 +236,44 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     pos++;
     uint8_t flags = RTPS_SUBMESSAGE_FLAG_DATA_PRESENT;
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
-    if ((inline_qos != NULL) && (inline_qos_len > 0)) flags |= RTPS_SUBMESSAGE_FLAG_INLINE_QOS;
+    if ((inline_qos != NULL) && (inline_qos_len > 0U)) flags |= RTPS_SUBMESSAGE_FLAG_INLINE_QOS;
     builder->buffer[pos] = flags;
     pos++;
-    write_u16(&builder->buffer[pos], (uint16_t)(submsg_size - 4), builder->little_endian);
-    pos += 2;
+    write_u16(&builder->buffer[pos], (uint16_t)(submsg_size - 4U), builder->little_endian);
+    pos += 2U;
     
     /* extra_flags */
     write_u16(&builder->buffer[pos], 0, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     
     /* octets_to_inline_qos */
     write_u16(&builder->buffer[pos], (uint16_t)octets_to_inline_qos, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     
     /* reader_id */
     memcpy(&builder->buffer[pos], reader_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_id */
     memcpy(&builder->buffer[pos], writer_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_sn */
     write_i32(&builder->buffer[pos], seq_number->high, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     write_u32(&builder->buffer[pos], seq_number->low, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* inline QoS (if present) */
-    if ((inline_qos != NULL) && (inline_qos_len > 0)) {
+    if ((inline_qos != NULL) && (inline_qos_len > 0U)) {
         memcpy(&builder->buffer[pos], inline_qos, inline_qos_len);
         pos += inline_qos_len;
-        while ((pos % 4) != 0) { builder->buffer[pos] = 0; pos++; }
+        while ((pos % 4U) != 0) { builder->buffer[pos] = 0; pos++; }
     }
     
     /* encapsulated data header (CDR_BE) */
     write_u16(&builder->buffer[pos], RTPS_CDR_BE, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     builder->buffer[pos] = 0;
     pos++;
     builder->buffer[pos] = 0;
@@ -282,7 +282,7 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     /* serialized data */
     memcpy(&builder->buffer[pos], data, data_len);
     pos += data_len;
-    while ((pos % 4) != 0) builder->buffer[pos++] = 0;
+    while ((pos % 4U) != 0) builder->buffer[pos++] = 0;
     
     builder->current_pos = pos;
     return ETH_OK;
@@ -317,32 +317,32 @@ eth_status_t rtps_message_add_heartbeat(rtps_message_builder_t *builder,
     if (final) flags |= RTPS_SUBMESSAGE_FLAG_FINAL;
     builder->buffer[pos] = flags;
     pos++;
-    write_u16(&builder->buffer[pos], submsg_size - 4, builder->little_endian);
-    pos += 2;
+    write_u16(&builder->buffer[pos], submsg_size - 4U, builder->little_endian);
+    pos += 2U;
     
     /* reader_id */
     memcpy(&builder->buffer[pos], reader_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_id */
     memcpy(&builder->buffer[pos], writer_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* first_sn */
     write_i32(&builder->buffer[pos], first_sn->high, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     write_u32(&builder->buffer[pos], first_sn->low, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* last_sn */
     write_i32(&builder->buffer[pos], last_sn->high, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     write_u32(&builder->buffer[pos], last_sn->low, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* count */
     write_u32(&builder->buffer[pos], count, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     builder->current_pos = pos;
     return ETH_OK;
@@ -361,15 +361,15 @@ eth_status_t rtps_message_add_acknack(rtps_message_builder_t *builder,
         return ETH_INVALID_PARAM;
     }
     
-    uint32_t num_words = (num_bits + 31) / 32;
-    if (num_words > 8) num_words = 8;  /* 限制最大位数 */
+    uint32_t num_words = (num_bits + 31U) / 32;
+    if (num_words > 8U) num_words = 8;  /* 限制最大位数 */
     
     uint32_t submsg_size = 4;  /* reader_id */
-    submsg_size += 4;  /* writer_id */
-    submsg_size += 8;  /* bitmap_base */
-    submsg_size += 4;  /* num_bits */
-    submsg_size += num_words * 4;  /* bitmap */
-    submsg_size += 4;  /* count */
+    submsg_size += 4U;  /* writer_id */
+    submsg_size += 8U;  /* bitmap_base */
+    submsg_size += 4U;  /* num_bits */
+    submsg_size += num_words * 4U;  /* bitmap */
+    submsg_size += 4U;  /* count */
     
     if ((builder->current_pos + RTPS_SUBMESSAGE_HEADER_SIZE + submsg_size) > builder->max_size) {
         return ETH_ERROR;
@@ -384,36 +384,36 @@ eth_status_t rtps_message_add_acknack(rtps_message_builder_t *builder,
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
     builder->buffer[pos] = flags;
     pos++;
-    write_u16(&builder->buffer[pos], submsg_size - 4, builder->little_endian);
-    pos += 2;
+    write_u16(&builder->buffer[pos], submsg_size - 4U, builder->little_endian);
+    pos += 2U;
     
     /* reader_id */
     memcpy(&builder->buffer[pos], reader_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_id */
     memcpy(&builder->buffer[pos], writer_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* bitmap_base */
     write_i32(&builder->buffer[pos], bitmap_base->high, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     write_u32(&builder->buffer[pos], bitmap_base->low, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* num_bits */
     write_u32(&builder->buffer[pos], num_bits, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* bitmap */
     for (uint32_t i = 0; i < num_words; i++) {
-        write_u32(&builder->buffer[pos], bitmap ? bitmap[i] : 0, builder->little_endian);
-        pos += 4;
+        write_u32(&builder->buffer[pos], bitmap ? bitmap[i] : 0U, builder->little_endian);
+        pos += 4U;
     }
     
     /* count */
     write_u32(&builder->buffer[pos], count, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     builder->current_pos = pos;
     return ETH_OK;
@@ -430,10 +430,10 @@ eth_status_t rtps_message_add_gap(rtps_message_builder_t *builder,
         return ETH_INVALID_PARAM;
     }
     
-    uint32_t num_words = (num_bits + 31) / 32;
-    if (num_words > 8) num_words = 8;
+    uint32_t num_words = (num_bits + 31U) / 32;
+    if (num_words > 8U) num_words = 8;
     
-    uint32_t submsg_size = 4 + 4 + 8 + 4 + (num_words * 4);
+    uint32_t submsg_size = 4 + 4 + 8 + 4U + (num_words * 4);
     
     if ((builder->current_pos + RTPS_SUBMESSAGE_HEADER_SIZE + submsg_size) > builder->max_size) {
         return ETH_ERROR;
@@ -446,25 +446,25 @@ eth_status_t rtps_message_add_gap(rtps_message_builder_t *builder,
     uint8_t flags = builder->little_endian ? RTPS_SUBMESSAGE_FLAG_ENDIANNESS : 0;
     builder->buffer[pos] = flags;
     pos++;
-    write_u16(&builder->buffer[pos], submsg_size - 4, builder->little_endian);
-    pos += 2;
+    write_u16(&builder->buffer[pos], submsg_size - 4U, builder->little_endian);
+    pos += 2U;
     
     memcpy(&builder->buffer[pos], reader_id, 4);
-    pos += 4;
+    pos += 4U;
     memcpy(&builder->buffer[pos], writer_id, 4);
-    pos += 4;
+    pos += 4U;
     
     write_i32(&builder->buffer[pos], gap_start->high, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     write_u32(&builder->buffer[pos], gap_start->low, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     write_u32(&builder->buffer[pos], num_bits, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     for (uint32_t i = 0; i < num_words; i++) {
         write_u32(&builder->buffer[pos], gap_bitmap ? gap_bitmap[i] : 0xFFFFFFFF, builder->little_endian);
-        pos += 4;
+        pos += 4U;
     }
     
     builder->current_pos = pos;
@@ -490,7 +490,7 @@ eth_status_t rtps_message_add_info_dst(rtps_message_builder_t *builder,
     builder->buffer[pos] = flags;
     pos++;
     write_u16(&builder->buffer[pos], 12, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     
     memcpy(&builder->buffer[pos], guid_prefix, RTPS_GUID_PREFIX_SIZE);
     pos += RTPS_GUID_PREFIX_SIZE;
@@ -522,11 +522,11 @@ eth_status_t rtps_message_add_info_ts(rtps_message_builder_t *builder,
     builder->buffer[pos] = flags;
     pos++;
     write_u16(&builder->buffer[pos], (uint16_t)submsg_size, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     
     if (has_timestamp) {
         write_i64(&builder->buffer[pos], timestamp, builder->little_endian);
-        pos += 8;
+        pos += 8U;
     }
     
     builder->current_pos = pos;
@@ -594,11 +594,11 @@ eth_status_t rtps_message_parser_next(rtps_message_parser_t *parser,
     pos++;
     parser->little_endian = (submsg->flags & RTPS_SUBMESSAGE_FLAG_ENDIANNESS) != 0;
     uint16_t length = read_u16(&parser->buffer[pos], parser->little_endian);
-    pos += 2;
+    pos += 2U;
     
     /* 处理特殊长度 */
     uint32_t submsg_length = length;
-    if ((submsg_length == 0) && (parser->current_pos == RTPS_HEADER_SIZE)) {
+    if ((submsg_length == 0U) && (parser->current_pos == RTPS_HEADER_SIZE)) {
         /* 最后一个Submessage可能长度为0 */
         submsg_length = parser->buffer_size - pos;
     }
@@ -613,7 +613,7 @@ eth_status_t rtps_message_parser_next(rtps_message_parser_t *parser,
     parser->current_pos = pos + submsg_length;
     
     /* 4字节对齐 */
-    parser->current_pos = (parser->current_pos + 3) & ~3;
+    parser->current_pos = (parser->current_pos + 3U) & ~3;
     
     return ETH_OK;
 }
@@ -633,49 +633,49 @@ eth_status_t rtps_parse_data_submessage(const uint8_t *data,
         return ETH_INVALID_PARAM;
     }
     
-    if (len < 20) {
+    if (len < 20U) {
         return ETH_ERROR;
     }
     
     uint16_t pos = 0;
     
     /* 跳过 extra_flags 和 octets_to_inline_qos */
-    pos += 4;
+    pos += 4U;
     
     /* reader_id */
     memcpy(out_reader_id, &data[pos], 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_id */
     memcpy(out_writer_id, &data[pos], 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_sn */
     out_seq_number->high = read_i32(&data[pos], little_endian);
-    pos += 4;
+    pos += 4U;
     out_seq_number->low = read_u32(&data[pos], little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* 处理 inline QoS */
     if (flags & RTPS_SUBMESSAGE_FLAG_INLINE_QOS) {
         /* 简化处理：跳过到parameter list sentinel */
-        while ((pos + 4) <= len) {
+        while ((pos + 4U) <= len) {
             uint16_t param_id = read_u16(&data[pos], little_endian);
             if (param_id == RTPS_PARAMETER_ID_SENTINEL) {
-                pos += 4;
+                pos += 4U;
                 break;
             }
-            uint16_t param_len = read_u16(&data[pos + 2], little_endian);
-            pos += 4 + param_len;
-            pos = (pos + 3) & ~3;
+            uint16_t param_len = read_u16(&data[pos + 2U], little_endian);
+            pos += 4U + param_len;
+            pos = (pos + 3U) & ~3;
         }
     }
     
     /* 处理封装数据 */
-    if ((pos + 4) <= len) {
+    if ((pos + 4U) <= len) {
         uint16_t encapsulation = read_u16(&data[pos], little_endian);
         (void)encapsulation;
-        pos += 4;  /* 跳过 encapsulation header */
+        pos += 4U;  /* 跳过 encapsulation header */
         
         *out_payload = &data[pos];
         *out_payload_len = len - pos;
@@ -702,7 +702,7 @@ eth_status_t rtps_parse_heartbeat_submessage(const uint8_t *data,
         return ETH_INVALID_PARAM;
     }
     
-    if (len < 24) {
+    if (len < 24U) {
         return ETH_ERROR;
     }
     
@@ -738,7 +738,7 @@ eth_status_t rtps_parse_acknack_submessage(const uint8_t *data,
         return ETH_INVALID_PARAM;
     }
     
-    if (len < 16) {
+    if (len < 16U) {
         return ETH_ERROR;
     }
     
@@ -753,17 +753,17 @@ eth_status_t rtps_parse_acknack_submessage(const uint8_t *data,
     *out_num_bits = read_u32(&data[16], little_endian);
     
     uint32_t num_words = (*out_num_bits + 31) / 32;
-    if (16 + 4 + (num_words * 4) > len) {
-        num_words = (len - 20) / 4;
+    if (16 + 4U + (num_words * 4) > len) {
+        num_words = (len - 20U) / 4;
     }
     
     if (out_bitmap != NULL) {
-        for (uint32_t i = 0; (i < num_words) && (i < 8); i++) {
-            out_bitmap[i] = read_u32(&data[20 + (i * 4)], little_endian);
+        for (uint32_t i = 0; (i < num_words) && (i < 8U); i++) {
+            out_bitmap[i] = read_u32(&data[20U + (i * 4)], little_endian);
         }
     }
     
-    *out_count = read_u32(&data[20 + (num_words * 4)], little_endian);
+    *out_count = read_u32(&data[20U + (num_words * 4)], little_endian);
     
     return ETH_OK;
 }
@@ -777,7 +777,7 @@ int64_t rtps_seqnum_to_int64(const rtps_sequence_number_t *seq)
     if (seq == NULL) {
         return 0;
     }
-    return ((int64_t)seq->high << 32) | seq->low;
+    return ((int64_t)seq->high << 32U) | seq->low;
 }
 
 void rtps_int64_to_seqnum(int64_t value, rtps_sequence_number_t *seq)
@@ -786,7 +786,7 @@ void rtps_int64_to_seqnum(int64_t value, rtps_sequence_number_t *seq)
         return;
     }
     seq->high = (int32_t)(value >> 32);
-    seq->low = (uint32_t)(value & 0xFFFFFFFF);
+    seq->low = (uint32_t)(value & 0xFFFFFFFFU);
 }
 
 uint32_t rtps_serialize_guid(const rtps_guid_t *guid, 
@@ -841,7 +841,7 @@ eth_status_t rtps_deserialize_entity_id(const uint8_t *buffer,
 
 uint32_t rtps_calculate_checksum(const uint8_t *data, uint32_t len)
 {
-    if ((data == NULL) || (len == 0)) {
+    if ((data == NULL) || (len == 0U)) {
         return 0;
     }
     
@@ -871,11 +871,11 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     
     /* 计算所需空间 - 包含AUTOSAR扩展 */
     uint32_t submsg_size = 4 + 4 + 4 + 8;
-    submsg_size += 4;  /* AUTOSAR extension header */
-    submsg_size += 4;  /* activation_time_us */
-    submsg_size += 4;  /* encapsulated data header */
+    submsg_size += 4U;  /* AUTOSAR extension header */
+    submsg_size += 4U;  /* activation_time_us */
+    submsg_size += 4U;  /* encapsulated data header */
     submsg_size += data_len;
-    submsg_size = (submsg_size + 3) & ~3;
+    submsg_size = (submsg_size + 3U) & ~3;
     
     if ((builder->current_pos + RTPS_SUBMESSAGE_HEADER_SIZE + submsg_size) > builder->max_size) {
         return ETH_ERROR;
@@ -890,48 +890,48 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
     builder->buffer[pos] = flags;
     pos++;
-    write_u16(&builder->buffer[pos], (uint16_t)(submsg_size - 4), builder->little_endian);
-    pos += 2;
+    write_u16(&builder->buffer[pos], (uint16_t)(submsg_size - 4U), builder->little_endian);
+    pos += 2U;
     
     /* extra_flags */
     write_u16(&builder->buffer[pos], 0x0001, builder->little_endian);  /* AUTOSAR flag */
-    pos += 2;
+    pos += 2U;
     
     /* octets_to_inline_qos */
     write_u16(&builder->buffer[pos], 16, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     
     /* reader_id */
     memcpy(&builder->buffer[pos], reader_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_id */
     memcpy(&builder->buffer[pos], writer_id, 4);
-    pos += 4;
+    pos += 4U;
     
     /* writer_sn */
     write_i32(&builder->buffer[pos], seq_number->high, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     write_u32(&builder->buffer[pos], seq_number->low, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* AUTOSAR inline QoS - activation time */
     write_u16(&builder->buffer[pos], 0x8001, builder->little_endian);  /* Vendor-specific parameter ID */
-    pos += 2;
+    pos += 2U;
     write_u16(&builder->buffer[pos], 4, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     write_u32(&builder->buffer[pos], activation_time_us, builder->little_endian);
-    pos += 4;
+    pos += 4U;
     
     /* Sentinel */
     write_u16(&builder->buffer[pos], RTPS_PARAMETER_ID_SENTINEL, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     write_u16(&builder->buffer[pos], 0, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     
     /* encapsulated data */
     write_u16(&builder->buffer[pos], RTPS_CDR_BE, builder->little_endian);
-    pos += 2;
+    pos += 2U;
     builder->buffer[pos] = 0;
     pos++;
     builder->buffer[pos] = 0;
@@ -939,7 +939,7 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     
     memcpy(&builder->buffer[pos], data, data_len);
     pos += data_len;
-    while ((pos % 4) != 0) builder->buffer[pos++] = 0;
+    while ((pos % 4U) != 0) builder->buffer[pos++] = 0;
     
     builder->current_pos = pos;
     return ETH_OK;
@@ -954,24 +954,24 @@ eth_status_t rtps_parse_autosar_extension(const uint8_t *data,
     }
     
     uint32_t pos = 0;
-    while ((pos + 4) <= len) {
-        uint16_t param_id = (data[pos] << 8) | data[pos + 1];
-        uint16_t param_len = (data[pos + 2] << 8) | data[pos + 3];
+    while ((pos + 4U) <= len) {
+        uint16_t param_id = (data[pos] << 8) | data[pos + 1U];
+        uint16_t param_len = (data[pos + 2U] << 8) | data[pos + 3];
         
         if (param_id == RTPS_PARAMETER_ID_SENTINEL) {
             break;
         }
         
-        if ((param_id == 0x8001) && (param_len == 4) && pos + 8 <= len) {
-            *out_activation_time_us = ((uint32_t)data[pos + 4] << 24) |
-                                       ((uint32_t)data[pos + 5] << 16) |
-                                       ((uint32_t)data[pos + 6] << 8) |
-                                       data[pos + 7];
+        if ((param_id == 0x8001UU) && (param_len == 4) && pos + 8 <= len) {
+            *out_activation_time_us = ((uint32_t)data[pos + 4U] << 24) |
+                                       ((uint32_t)data[pos + 5U] << 16) |
+                                       ((uint32_t)data[pos + 6U] << 8) |
+                                       data[pos + 7U];
             return ETH_OK;
         }
         
         pos += 4 + param_len;
-        pos = (pos + 3) & ~3;
+        pos = (pos + 3U) & ~3;
     }
     
     return ETH_ERROR;
@@ -989,7 +989,7 @@ bool rtps_message_validate(const uint8_t *data, uint32_t len)
     }
     
     /* 验证版本 */
-    if (data[4] != 2) {
+    if (data[4] != 2U) {
         return false;
     }
     
@@ -1005,12 +1005,12 @@ uint32_t rtps_message_estimate_size(uint32_t data_len, bool has_inline_qos)
 {
     uint32_t size = RTPS_HEADER_SIZE;
     size += RTPS_SUBMESSAGE_HEADER_SIZE;
-    size += 20;  /* DATA submessage fixed fields */
+    size += 20U;  /* DATA submessage fixed fields */
     if (has_inline_qos) {
-        size += 8;  /* 预估QoS字段 */
+        size += 8U;  /* 预估QoS字段 */
     }
-    size += 4;  /* encapsulation header */
+    size += 4U;  /* encapsulation header */
     size += data_len;
-    size = (size + 3) & ~3;
+    size = (size + 3U) & ~3;
     return size;
 }

@@ -106,7 +106,7 @@ STATIC void LinSM_HandleScheduleRequest(LinSM_ChannelType Channel)
     LinSM_ChannelStateType* channelState = &LinSM_ChannelStates[Channel];
     const LinSM_ChannelConfigType* channelConfig ;
     
-    if (channelState->ScheduleStatus == LINSM_SCHEDULE_REQUESTED) {
+    if ((uint8_t)(channelState->ScheduleStatus) == LINSM_SCHEDULE_REQUESTED) {
         /* Check if request timeout expired */
         if (channelState->RequestTimer == 0U) {
             /* Timeout, schedule request failed */

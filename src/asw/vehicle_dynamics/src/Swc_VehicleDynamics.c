@@ -228,7 +228,7 @@ STATIC void Swc_VehicleDynamics_CalculateIntervention(void)
     );
 
     /* Apply brake forces based on yaw rate error */
-    if (yawRateError > 0U ) {
+    if ((unsigned int)(yawRateError) > 0U ) {
         /* Oversteer - brake outer wheels */
         swcVehicleDynamics.output.brakeForceLeft = 0;
         swcVehicleDynamics.output.brakeForceRight = brakeIntervention;
@@ -261,7 +261,7 @@ STATIC uint16 Swc_VehicleDynamics_CalculateVehicleSpeed(void)
 
     /* Average of non-driven wheels (assuming rear-wheel drive) */
     avgSpeed = ((uint32)swcVehicleDynamics.motionData.wheelSpeedFL +
-                (uint32)swcVehicleDynamics.motionData.wheelSpeedFR) / 2;
+                (uint32)swcVehicleDynamics.motionData.wheelSpeedFR) / 2U;
 
     return (uint16)avgSpeed;
 }
@@ -276,7 +276,7 @@ STATIC boolean Swc_VehicleDynamics_CheckTractionLoss(void)
 
     vehicleSpeed = swcVehicleDynamics.motionData.vehicleSpeed;
 
-    if (vehicleSpeed < 5) {
+    if (vehicleSpeed < 5U) {
         return FALSE;  /* Too slow to determine slip */
     }
 

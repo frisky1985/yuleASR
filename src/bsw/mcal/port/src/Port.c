@@ -52,8 +52,8 @@
 #define PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET   (0x0000)
 #define PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET   (0x0204)
 
-#define PORT_GPIO_DR                    (0x00)
-#define PORT_GPIO_GDIR                  (0x04)
+#define PORT_GPIO_DR                    (0x00U)
+#define PORT_GPIO_GDIR                  (0x04U)
 #define PORT_GPIO_PSR                   (0x08)
 #define PORT_GPIO_ICR1                  (0x0C)
 #define PORT_GPIO_ICR2                  (0x10)
@@ -157,7 +157,7 @@ static uint32 Port_GetGpioBaseAddr(uint8 port)
 static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
 {
     uint8 port = (uint8)(pin >> 8);
-    uint8 pinNum = (uint8)(pin & 0xFF);
+    uint8 pinNum = (uint8)(pin & 0xFFU);
     uint32 regAddr;
 
     regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET +
@@ -173,7 +173,7 @@ static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
 static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
 {
     uint8 port = (uint8)(pin >> 8);
-    uint8 pinNum = (uint8)(pin & 0xFF);
+    uint8 pinNum = (uint8)(pin & 0xFFU);
     uint32 regAddr;
 
     regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET +
@@ -303,7 +303,7 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
         /* Configure GPIO direction if GPIO mode */
         if (pinConfig->Mode == PORT_PIN_MODE_GPIO) {
             uint8 port = (uint8)(pinConfig->Pin >> 8);
-            uint8 pinNum = (uint8)(pinConfig->Pin & 0xFF);
+            uint8 pinNum = (uint8)(pinConfig->Pin & 0xFFU);
             uint32 gpioBase = Port_GetGpioBaseAddr(port);
             uint32 gdirValue;
 
@@ -387,7 +387,7 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
     #endif
 
     uint8 port = (uint8)(Pin >> 8);
-    uint8 pinNum = (uint8)(Pin & 0xFF);
+    uint8 pinNum = (uint8)(Pin & 0xFFU);
     uint32 gpioBase = Port_GetGpioBaseAddr(port);
     uint32 gdirValue;
 
@@ -422,7 +422,7 @@ void Port_RefreshPortDirection(void)
 
         if (pinConfig->Mode == PORT_PIN_MODE_GPIO) {
             uint8 port = (uint8)(pinConfig->Pin >> 8);
-            uint8 pinNum = (uint8)(pinConfig->Pin & 0xFF);
+            uint8 pinNum = (uint8)(pinConfig->Pin & 0xFFU);
             uint32 gpioBase = Port_GetGpioBaseAddr(port);
             uint32 gdirValue;
 

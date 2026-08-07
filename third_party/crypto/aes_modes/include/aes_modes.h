@@ -126,11 +126,11 @@ typedef enum {
 
 /* AES上下文结构体 - 通用 */
 typedef struct {
-    uint8  roundKey[AES_MAX_ROUNDS + 1][16];  /* 轮密钥 */
+    uint8  roundKey[AES_MAX_ROUNDS + 1U][16];  /* 轮密钥 */
     uint8  iv[AES_BLOCK_SIZE];                 /* 初始化向量 */
     uint8  nonce[AES_CCM_NONCE_MAX_SIZE];      /* Nonce (用于CCM/GCM) */
     uint32 nonceLen;                           /* Nonce长度 */
-    uint8  aad[AES_BLOCK_SIZE * 8];            /* 附加认证数据缓存 */
+    uint8  aad[AES_BLOCK_SIZE * 8U];            /* 附加认证数据缓存 */
     uint32 aadLen;                             /* AAD缓存长度 */
     uint32 numRounds;                          /* 轮数 (10/12/14) */
     uint32 keyLength;                          /* 密钥长度 */
@@ -144,8 +144,8 @@ typedef struct {
     uint32 tagLen;                             /* 标签长度 */
     uint64 gcmAadLen;                          /* GCM总AAD长度 */
     uint64 gcmDataLen;                         /* GCM总数据长度 */
-    uint32 H[AES_BLOCK_SIZE / 4];              /* GCM H值 (32位字) */
-    uint32 ghashState[AES_BLOCK_SIZE / 4];     /* GCM GHASH状态 */
+    uint32 H[AES_BLOCK_SIZE / 4U];              /* GCM H值 (32位字) */
+    uint32 ghashState[AES_BLOCK_SIZE / 4U];     /* GCM GHASH状态 */
 } Aes_ContextType;
 
 /* AES流式上下文 */

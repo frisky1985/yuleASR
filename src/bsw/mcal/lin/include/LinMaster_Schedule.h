@@ -46,7 +46,7 @@
 #define LINMASTER_SCHEDULE_E_BUSY               0x15
 
 /* 配置限制 */
-#define LINMASTER_SCHEDULE_MAX_ENTRIES      32  /* 单个调度表最大条目数 */
+#define LINMASTER_SCHEDULE_MAX_ENTRIES      32U  /* 单个调度表最大条目数 */
 #define LINMASTER_SCHEDULE_MAX_TABLES       4   /* 最大调度表数量 */
 
 /* 诊断帧固定PID */

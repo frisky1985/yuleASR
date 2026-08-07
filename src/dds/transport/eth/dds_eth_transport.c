@@ -843,7 +843,7 @@ eth_status_t dds_eth_encapsulate_data(uint8_t *buffer, uint32_t buf_size,
                                        DDS_RTPS_SUBMSG_FLAG_DATA_PRESENT;
             data_submsg->header.submessage_length = (uint16_t)(sizeof(dds_rtps_data_submsg_t) - 
                                                                sizeof(dds_rtps_submsg_header_t) +
-                                                               payload_len - 4);
+                                                               payload_len - 4U);
             
             data_submsg->extra_flags = 0;
             data_submsg->octets_to_inline_qos = 16; /* 到inline QoS的偏移 */
@@ -1139,8 +1139,8 @@ static eth_status_t dds_eth_handle_rtps_packet(const uint8_t *data, uint32_t len
                          submsg_hdr->submessage_length;
                 
                 /* 对齐到4字节边界 */
-                if ((offset % 4) != 0) {
-                    offset += 4 - (offset % 4);
+                if ((offset % 4U) != 0) {
+                    offset += 4U - (offset % 4);
                 }
             }
         }
@@ -1211,8 +1211,8 @@ static void dds_eth_generate_guid_prefix(uint8_t prefix[12], uint16_t domain_id)
     prefix[2] = 0x02; /* Protocol major */
     prefix[3] = 0x05; /* Protocol minor */
     
-    prefix[4] = (uint8_t)((domain_id >> 8) & 0xFF);
-    prefix[5] = (uint8_t)(domain_id & 0xFF);
+    prefix[4] = (uint8_t)((domain_id >> 8) & 0xFFU);
+    prefix[5] = (uint8_t)(domain_id & 0xFFU);
     prefix[6] = 0x00; /* Participant ID high */
     prefix[7] = 0x01; /* Participant ID low */
     

@@ -740,7 +740,7 @@ static void LinMaster_Schedule_NextEntry(void)
             currentIndex = 0;
             
             /* 检查是否单条目循环(避免无限循环占用CPU) */
-            if (table->EntryCount <= 1) {
+            if (table->EntryCount <= 1U) {
                 /* 更新开始时间以确保正确的时间间隔 */
                 g_ScheduleCtrl.CurrentEntryStartTime = LinMaster_Schedule_GetSystemTime();
             }

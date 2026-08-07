@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-12.3
 
-> Generated: 2026-08-07T14:51:08.929022
+> Generated: 2026-08-07T15:31:29.015911
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -33,15 +33,14 @@ sizeof 操作符不应应用于具有副作用的表达式
 | 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/utils/eth_utils.c` | 40 | 0 | The comma operator should not be used [misra-c2012-12.3] |
 | 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_core.c` | 145 | 0 | The comma operator should not be used [misra-c2012-12.3] |
 | 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_core.c` | 146 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry.c` | 323 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 84 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 85 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 218 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 84 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 86 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 449 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 503 | 0 | The comma operator should not be used [misra-c2012-12.3] |
-| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 234 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 84 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 85 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 218 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 84 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 86 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 449 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 503 | 0 | The comma operator should not be used [misra-c2012-12.3] |
+| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 234 | 0 | The comma operator should not be used [misra-c2012-12.3] |
 
 ## Fix Checklist
 

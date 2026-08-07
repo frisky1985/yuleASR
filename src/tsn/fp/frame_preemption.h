@@ -26,8 +26,8 @@ extern "C" {
 
 /** mPacket相关常量 */
 #define FP_MIN_MPACKET_SIZE             64      /* mPacket最小大小 */
-#define FP_MAX_MPACKET_SIZE             1522    /* mPacket最大大小 */
-#define FP_MIN_FRAG_SIZE                64      /* 最小分片大小 */
+#define FP_MAX_MPACKET_SIZE             1522U    /* mPacket最大大小 */
+#define FP_MIN_FRAG_SIZE                64U      /* 最小分片大小 */
 #define FP_MAX_FRAG_SIZE                512     /* 最大分片大小 (512B对齐) */
 
 /** SMD (Start mDelimiter) 值 */

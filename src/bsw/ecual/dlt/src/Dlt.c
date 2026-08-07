@@ -739,10 +739,10 @@ static Dlt_ReturnType Dlt_BuildExtendedHeader(
     header->appId[2] = (uint8)((appId >> 8) & 0xFF);
     header->appId[3] = (uint8)(appId & 0xFF);
     
-    header->contextId[0] = (uint8)((contextId >> 24) & 0xFF);
-    header->contextId[1] = (uint8)((contextId >> 16) & 0xFF);
-    header->contextId[2] = (uint8)((contextId >> 8) & 0xFF);
-    header->contextId[3] = (uint8)(contextId & 0xFF);
+    header->contextId[0] = (uint8)((contextId >> 24) & 0xFFU);
+    header->contextId[1] = (uint8)((contextId >> 16) & 0xFFU);
+    header->contextId[2] = (uint8)((contextId >> 8) & 0xFFU);
+    header->contextId[3] = (uint8)(contextId & 0xFFU);
     
     return DLT_OK;
 }

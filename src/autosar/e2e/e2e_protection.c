@@ -82,7 +82,7 @@ static void E2E_InitCRCTables(void)
     for (uint32 i = 0; i < 256; i++) {
         uint8_t crc = (uint8_t)i;
         for (uint32 j = 0; j < 8; j++) {
-            crc = (crc << 1) ^ ((crc & 0x80) ? E2E_CRC8_POLY : 0);
+            crc = (crc << 1) ^ ((crc & 0x80U) ? E2E_CRC8_POLY : 0);
         }
         g_crc8Table[i] = crc;
     }
@@ -91,7 +91,7 @@ static void E2E_InitCRCTables(void)
     for (uint32 i = 0; i < 256; i++) {
         uint16_t crc = (uint16_t)(i << 8);
         for (uint32 j = 0; j < 8; j++) {
-            crc = (crc << 1) ^ ((crc & 0x8000) ? E2E_CRC16_POLY : 0);
+            crc = (crc << 1) ^ ((crc & 0x8000U) ? E2E_CRC16_POLY : 0);
         }
         g_crc16Table[i] = crc;
     }
@@ -100,7 +100,7 @@ static void E2E_InitCRCTables(void)
     for (uint32 i = 0; i < 256; i++) {
         uint32_t crc = i;
         for (uint32 j = 0; j < 8; j++) {
-            crc = (crc >> 1) ^ ((crc & 1) ? (E2E_CRC32_POLY) : 0);
+            crc = (crc >> 1) ^ ((crc & 1U) ? (E2E_CRC32_POLY) : 0);
         }
         g_crc32Table[i] = crc;
     }
@@ -135,7 +135,7 @@ uint16_t E2E_CalculateCRC16(const uint8_t* data, uint32_t length, uint16_t initi
     uint16_t crc = initialCrc;
 
     for (uint32 i = 0; i < length; i++) {
-        crc = (crc << 8) ^ g_crc16Table[((crc >> 8) ^ data[i]) & 0xFF];
+        crc = (crc << 8) ^ g_crc16Table[((crc >> 8) ^ data[i]) & 0xFFU];
     }
 
     return crc;
@@ -149,7 +149,7 @@ uint32_t E2E_CalculateCRC32(const uint8_t* data, uint32_t length, uint32_t initi
     uint32_t crc = initialCrc;
 
     for (uint32 i = 0; i < length; i++) {
-        crc = (crc >> 8) ^ g_crc32Table[(crc ^ data[i]) & 0xFF];
+        crc = (crc >> 8) ^ g_crc32Table[(crc ^ data[i]) & 0xFFU];
     }
 
     return crc ^ E2E_CRC32_XOR_OUT;
@@ -199,7 +199,7 @@ bool E2E_IsInitialized(void)
  */
 Std_ReturnType E2E_InitContext(E2E_ContextType* context, uint8_t profile)
 {
-    if ((context == NULL) || (profile == 0)) {
+    if ((context == NULL) || (profile == 0U)) {
         return E_NOT_OK;
     }
 
@@ -300,12 +300,12 @@ Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* l
     /* Calculate CRC over data, skipping the CRC byte at crcOffset
      * (two segments: [0, crcOffset) and (crcOffset, dataLength)) */
     uint8_t crc = E2E_CalculateCRC8(dataBytes, config->crcOffset, E2E_CRC8_INIT, NULL);
-    crc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1],
-                            config->dataLength - config->crcOffset - 1,
+    crc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1U],
+                            config->dataLength - config->crcOffset - 1U,
                             crc, NULL);
 
     /* XOR with Data ID */
-    crc ^= (uint8_t)(config->dataId & 0xFF);
+    crc ^= (uint8_t)(config->dataId & 0xFFU);
 
     /* Write CRC to data */
     dataBytes[config->crcOffset] = crc;
@@ -342,10 +342,10 @@ Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_
     /* Calculate CRC over data, skipping the CRC byte at crcOffset
      * (two segments: [0, crcOffset) and (crcOffset, dataLength)) */
     uint8_t calculatedCrc = E2E_CalculateCRC8(dataBytes, config->crcOffset, E2E_CRC8_INIT, NULL);
-    calculatedCrc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1],
-                                      config->dataLength - config->crcOffset - 1,
+    calculatedCrc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1U],
+                                      config->dataLength - config->crcOffset - 1U,
                                       calculatedCrc, NULL);
-    calculatedCrc ^= (uint8_t)(config->dataId & 0xFF);
+    calculatedCrc ^= (uint8_t)(config->dataId & 0xFFU);
 
     /* Verify CRC */
     if (receivedCrc != calculatedCrc) {
@@ -385,16 +385,16 @@ Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* l
     /* Calculate CRC over data, skipping the CRC byte at crcOffset
      * (two segments: [0, crcOffset) and (crcOffset, dataLength)) */
     uint8_t crc = E2E_CalculateCRC8(dataBytes, config->crcOffset, E2E_CRC8_INIT, NULL);
-    crc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1],
-                            config->dataLength - config->crcOffset - 1,
+    crc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1U],
+                            config->dataLength - config->crcOffset - 1U,
                             crc, NULL);
-    crc ^= (uint8_t)(config->dataId & 0xFF);
+    crc ^= (uint8_t)(config->dataId & 0xFFU);
 
     /* Write CRC */
     dataBytes[config->crcOffset] = crc;
 
     /* Increment counter */
-    context->state.p02.counter = (context->state.p02.counter + 1) & 0x0F;
+    context->state.p02.counter = (context->state.p02.counter + 1U) & 0x0F;
 
     *length = config->dataLength;
     return E_OK;
@@ -425,10 +425,10 @@ Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_
     /* Verify CRC */
     uint8_t receivedCrc = dataBytes[config->crcOffset];
     uint8_t calculatedCrc = E2E_CalculateCRC8(dataBytes, config->crcOffset, E2E_CRC8_INIT, NULL);
-    calculatedCrc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1],
-                                      config->dataLength - config->crcOffset - 1,
+    calculatedCrc = E2E_CalculateCRC8(&dataBytes[config->crcOffset + 1U],
+                                      config->dataLength - config->crcOffset - 1U,
                                       calculatedCrc, NULL);
-    calculatedCrc ^= (uint8_t)(config->dataId & 0xFF);
+    calculatedCrc ^= (uint8_t)(config->dataId & 0xFFU);
 
     if (receivedCrc != calculatedCrc) {
         *status = E2E_ERROR_CRC;
@@ -437,7 +437,7 @@ Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_
     }
 
     /* Check counter */
-    uint8_t receivedCounter = dataBytes[config->counterOffset] & 0x0F;
+    uint8_t receivedCounter = dataBytes[config->counterOffset] & 0x0FU;
     int8_t delta = (int8_t)(receivedCounter - state->counter);
 
     if (!state->synced) {
@@ -487,12 +487,12 @@ Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* l
     crc ^= config->dataId;
 
     /* Write CRC to data (big-endian) */
-    dataBytes[config->crcOffset] = (uint8_t)((crc >> 24) & 0xFF);
-    dataBytes[config->crcOffset + 1] = (uint8_t)((crc >> 16) & 0xFF);
-    dataBytes[config->crcOffset + 2] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 3] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset] = (uint8_t)((crc >> 24) & 0xFFU);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)((crc >> 16) & 0xFF);
+    dataBytes[config->crcOffset + 2U] = (uint8_t)((crc >> 8) & 0xFF);
+    dataBytes[config->crcOffset + 3U] = (uint8_t)(crc & 0xFF);
 
-    *length = config->dataLength + 4;
+    *length = config->dataLength + 4U;
     return E_OK;
 }
 
@@ -512,16 +512,16 @@ Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_
     const uint8_t* dataBytes = (const uint8_t*)data;
     E2E_P04ConfigType* config = &context->config.p04;
 
-    if (length < (config->dataLength + 4)) {
+    if (length < (config->dataLength + 4U)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
 
     /* Read CRC from data */
     uint32_t receivedCrc = ((uint32_t)dataBytes[config->crcOffset] << 24) |
-                           ((uint32_t)dataBytes[config->crcOffset + 1] << 16) |
-                           ((uint32_t)dataBytes[config->crcOffset + 2] << 8) |
-                           (uint32_t)dataBytes[config->crcOffset + 3];
+                           ((uint32_t)dataBytes[config->crcOffset + 1U] << 16) |
+                           ((uint32_t)dataBytes[config->crcOffset + 2U] << 8) |
+                           (uint32_t)dataBytes[config->crcOffset + 3U];
 
     /* Calculate CRC */
     uint32_t calculatedCrc = E2E_CalculateCRC32(dataBytes, config->dataLength, E2E_CRC32_INIT);
@@ -564,10 +564,10 @@ Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* l
     crc ^= config->dataId;
 
     /* Write CRC (big-endian) */
-    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 1] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFFU);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFF);
 
-    *length = config->dataLength + 2;
+    *length = config->dataLength + 2U;
     return E_OK;
 }
 
@@ -587,14 +587,14 @@ Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_
     const uint8_t* dataBytes = (const uint8_t*)data;
     E2E_P05ConfigType* config = &context->config.p05;
 
-    if (length < (config->dataLength + 2)) {
+    if (length < (config->dataLength + 2U)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
 
     /* Read CRC */
     uint16_t receivedCrc = ((uint16_t)dataBytes[config->crcOffset] << 8) |
-                           (uint16_t)dataBytes[config->crcOffset + 1];
+                           (uint16_t)dataBytes[config->crcOffset + 1U];
 
     /* Calculate CRC */
     uint16_t calculatedCrc = E2E_CalculateCRC16(dataBytes, config->dataLength, E2E_CRC16_INIT);
@@ -639,13 +639,13 @@ Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* l
     crc ^= config->dataId;
 
     /* Write CRC */
-    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 1] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFFU);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFF);
 
     /* Increment counter */
-    context->state.p06.counter = (context->state.p06.counter + 1) & 0x0F;
+    context->state.p06.counter = (context->state.p06.counter + 1U) & 0x0F;
 
-    *length = config->dataLength + 4;
+    *length = config->dataLength + 4U;
     return E_OK;
 }
 
@@ -666,14 +666,14 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
     E2E_P06ConfigType* config = &context->config.p06;
     E2E_P06CheckStateType* state = &context->state.p06;
 
-    if (length < (config->dataLength + 4)) {
+    if (length < (config->dataLength + 4U)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
 
     /* Verify CRC */
     uint16_t receivedCrc = ((uint16_t)dataBytes[config->crcOffset] << 8) |
-                           (uint16_t)dataBytes[config->crcOffset + 1];
+                           (uint16_t)dataBytes[config->crcOffset + 1U];
     uint16_t calculatedCrc = E2E_CalculateCRC16(dataBytes, config->dataLength, E2E_CRC16_INIT);
     calculatedCrc ^= config->dataId;
 
@@ -684,7 +684,7 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
     }
 
     /* Check counter */
-    uint8_t receivedCounter = dataBytes[config->counterOffset] & 0x0F;
+    uint8_t receivedCounter = dataBytes[config->counterOffset] & 0x0FU;
     int8_t delta = (int8_t)(receivedCounter - state->counter);
 
     if (!state->synced) {
@@ -735,15 +735,15 @@ Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* l
     crc ^= config->dataId;
 
     /* Write CRC */
-    dataBytes[config->crcOffset] = (uint8_t)((crc >> 24) & 0xFF);
-    dataBytes[config->crcOffset + 1] = (uint8_t)((crc >> 16) & 0xFF);
-    dataBytes[config->crcOffset + 2] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 3] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset] = (uint8_t)((crc >> 24) & 0xFFU);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)((crc >> 16) & 0xFF);
+    dataBytes[config->crcOffset + 2U] = (uint8_t)((crc >> 8) & 0xFF);
+    dataBytes[config->crcOffset + 3U] = (uint8_t)(crc & 0xFF);
 
     /* Increment counter */
-    context->state.p07.counter = (context->state.p07.counter + 1) & 0x0F;
+    context->state.p07.counter = (context->state.p07.counter + 1U) & 0x0F;
 
-    *length = config->dataLength + 8;
+    *length = config->dataLength + 8U;
     return E_OK;
 }
 
@@ -764,16 +764,16 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
     E2E_P07ConfigType* config = &context->config.p07;
     E2E_P07CheckStateType* state = &context->state.p07;
 
-    if (length < (config->dataLength + 8)) {
+    if (length < (config->dataLength + 8U)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
 
     /* Verify CRC */
     uint32_t receivedCrc = ((uint32_t)dataBytes[config->crcOffset] << 24) |
-                           ((uint32_t)dataBytes[config->crcOffset + 1] << 16) |
-                           ((uint32_t)dataBytes[config->crcOffset + 2] << 8) |
-                           (uint32_t)dataBytes[config->crcOffset + 3];
+                           ((uint32_t)dataBytes[config->crcOffset + 1U] << 16) |
+                           ((uint32_t)dataBytes[config->crcOffset + 2U] << 8) |
+                           (uint32_t)dataBytes[config->crcOffset + 3U];
     uint32_t calculatedCrc = E2E_CalculateCRC32(dataBytes, config->dataLength, E2E_CRC32_INIT);
     calculatedCrc ^= config->dataId;
 
@@ -784,7 +784,7 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
     }
 
     /* Check counter */
-    uint8_t receivedCounter = dataBytes[config->counterOffset] & 0x0F;
+    uint8_t receivedCounter = dataBytes[config->counterOffset] & 0x0FU;
     int8_t delta = (int8_t)(receivedCounter - state->counter);
 
     if (!state->synced) {
@@ -828,8 +828,8 @@ Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* l
     E2E_P11ConfigType* config = &context->config.p11;
 
     /* Write Data ID */
-    dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFF);
-    dataBytes[config->dataIdOffset + 1] = (uint8_t)((config->dataId >> 8) & 0xFF);
+    dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFFU);
+    dataBytes[config->dataIdOffset + 1U] = (uint8_t)((config->dataId >> 8) & 0xFF);
 
     /* Write counter */
     dataBytes[config->counterOffset] = context->state.p11.counter;
@@ -871,7 +871,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
 
     /* Verify CRC */
     uint8_t receivedCrc = dataBytes[config->crcOffset];
-    uint8_t calculatedCrc = E2E_CalculateCRC8(dataBytes, length - 1, E2E_CRC8_INIT, NULL);
+    uint8_t calculatedCrc = E2E_CalculateCRC8(dataBytes, length - 1U, E2E_CRC8_INIT, NULL);
 
     if (receivedCrc != calculatedCrc) {
         *status = E2E_ERROR_CRC;
@@ -880,7 +880,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
     }
 
     /* Check Data ID */
-    uint16_t receivedDataId = ((uint16_t)dataBytes[config->dataIdOffset + 1] << 8) |
+    uint16_t receivedDataId = ((uint16_t)dataBytes[config->dataIdOffset + 1U] << 8) |
                               (uint16_t)dataBytes[config->dataIdOffset];
     if (receivedDataId != config->dataId) {
         *status = E2E_ERROR_INIT;
@@ -942,26 +942,26 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
     }
 
     /* Write Data ID (2 bytes, little-endian) */
-    dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFF);
-    dataBytes[config->dataIdOffset + 1] = (uint8_t)((config->dataId >> 8) & 0xFF);
+    dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFFU);
+    dataBytes[config->dataIdOffset + 1U] = (uint8_t)((config->dataId >> 8) & 0xFF);
 
     /* Write Length field (2 bytes, little-endian) */
-    dataBytes[config->lengthOffset] = (uint8_t)(config->dataLength & 0xFF);
-    dataBytes[config->lengthOffset + 1] = (uint8_t)((config->dataLength >> 8) & 0xFF);
+    dataBytes[config->lengthOffset] = (uint8_t)(config->dataLength & 0xFFU);
+    dataBytes[config->lengthOffset + 1U] = (uint8_t)((config->dataLength >> 8) & 0xFF);
 
     /* Write counter (2 bytes, big-endian) */
-    dataBytes[config->counterOffset] = (uint8_t)((state->counter >> 8) & 0xFF);
-    dataBytes[config->counterOffset + 1] = (uint8_t)(state->counter & 0xFF);
+    dataBytes[config->counterOffset] = (uint8_t)((state->counter >> 8) & 0xFFU);
+    dataBytes[config->counterOffset + 1U] = (uint8_t)(state->counter & 0xFF);
 
     /* Calculate CRC16 over data including header fields */
     uint16_t crcDataLen = config->includeLengthInCrc ? 
-                          config->dataLength : config->dataLength - 2;
+                          config->dataLength : config->dataLength - 2U;
     uint16_t crc = E2E_CalculateCRC16(dataBytes, crcDataLen, E2E_CRC16_INIT);
     crc ^= config->dataId;  /* XOR with Data ID */
 
     /* Write CRC (big-endian) */
-    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 1] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFFU);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFF);
 
     /* Increment counter (16-bit wraparound) */
     state->counter++;
@@ -995,7 +995,7 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
     }
 
     /* Read Data ID */
-    uint16_t receivedDataId = ((uint16_t)dataBytes[config->dataIdOffset + 1] << 8) |
+    uint16_t receivedDataId = ((uint16_t)dataBytes[config->dataIdOffset + 1U] << 8) |
                               (uint16_t)dataBytes[config->dataIdOffset];
     if (receivedDataId != config->dataId) {
         *status = E2E_ERROR_INIT;
@@ -1004,7 +1004,7 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
     }
 
     /* Read Length field */
-    uint16_t receivedLength = ((uint16_t)dataBytes[config->lengthOffset + 1] << 8) |
+    uint16_t receivedLength = ((uint16_t)dataBytes[config->lengthOffset + 1U] << 8) |
                               (uint16_t)dataBytes[config->lengthOffset];
     if ((receivedLength < config->minDataLength) || (receivedLength > config->maxDataLength)) {
         *status = E2E_ERROR_LENGTH;
@@ -1014,8 +1014,8 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
 
     /* Verify CRC */
     uint16_t receivedCrc = ((uint16_t)dataBytes[config->crcOffset] << 8) |
-                           (uint16_t)dataBytes[config->crcOffset + 1];
-    uint16_t crcDataLen = config->includeLengthInCrc ? receivedLength : receivedLength - 2;
+                           (uint16_t)dataBytes[config->crcOffset + 1U];
+    uint16_t crcDataLen = config->includeLengthInCrc ? receivedLength : receivedLength - 2U;
     uint16_t calculatedCrc = E2E_CalculateCRC16(dataBytes, crcDataLen, E2E_CRC16_INIT);
     calculatedCrc ^= config->dataId;
 
@@ -1027,7 +1027,7 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
 
     /* Read and check counter */
     uint16_t receivedCounter = ((uint16_t)dataBytes[config->counterOffset] << 8) |
-                               (uint16_t)dataBytes[config->counterOffset + 1];
+                               (uint16_t)dataBytes[config->counterOffset + 1U];
     int32_t delta = (int32_t)(receivedCounter - state->counter);
 
     if (!state->synced) {
@@ -1241,7 +1241,7 @@ bool E2E_ValidateDataID(uint32_t dataId, uint8_t profile)
         case E2E_PROFILE_06:
         case E2E_PROFILE_11:
         case E2E_PROFILE_22:
-            return (dataId <= 0xFFFF);
+            return (dataId <= 0xFFFFU);
         case E2E_PROFILE_04:
         case E2E_PROFILE_07:
             return TRUE; /* 32-bit Data ID */
@@ -1255,19 +1255,19 @@ bool E2E_ValidateDataID(uint32_t dataId, uint8_t profile)
  */
 bool E2E_ValidateLength(uint32_t length, uint8_t profile)
 {
-    if ((length == 0) || (length > 4096)) {
+    if ((length == 0U) || (length > 4096)) {
         return FALSE;
     }
 
     switch (profile) {
         case E2E_PROFILE_01:
         case E2E_PROFILE_02:
-            return (length <= 256);
+            return (length <= 256U);
         case E2E_PROFILE_04:
         case E2E_PROFILE_07:
-            return (length <= 4096);
+            return (length <= 4096U);
         case E2E_PROFILE_11:
-            return ((length >= 4) && (length <= 256));
+            return ((length >= 4U) && (length <= 256));
         case E2E_PROFILE_22:
             return ((length >= E2E_P22_MIN_DATA_LENGTH) && (length <= E2E_P22_MAX_DATA_LENGTH));
         default:

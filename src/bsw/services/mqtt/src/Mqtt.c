@@ -435,8 +435,8 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
     
     /* 填充订阅信息 */
     strncpy(internalSub->topicFilter, subscription->topicFilter, 
-            MQTT_MAX_TOPIC_LENGTH - 1);
-    internalSub->topicFilter[MQTT_MAX_TOPIC_LENGTH - 1] = '\0';
+            MQTT_MAX_TOPIC_LENGTH - 1U);
+    internalSub->topicFilter[MQTT_MAX_TOPIC_LENGTH - 1U] = '\0';
     internalSub->maxQoS = subscription->maxQoS;
     internalSub->subscriptionId = subscription->subscriptionId;
     internalSub->callback = msgCallback;
@@ -490,7 +490,7 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
     /* 查找并移除订阅 */
     for (i = 0; i < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; i++) {
         if ((conn->subscriptions[i].state != SUB_STATE_INACTIVE) &&
-            (strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0U) ) {
+            (strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0) ) {
             conn->subscriptions[i].state = SUB_STATE_INACTIVE;
             conn->subscriptions[i].callback = NULL_PTR;
             /* 发送UNSUBSCRIBE报文 - 通过 Mqtt_Encode 和 Mqtt_SendPacket 完成 */
@@ -820,16 +820,16 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     /* 计算剩余长度 */
     clientIdLen = strlen(conn->config.clientId);
     remainingLength = 10; /* 固定头长度 */
-    remainingLength += 2 + clientIdLen; /* 客户端ID */
+    remainingLength += 2U + clientIdLen; /* 客户端ID */
     
     if (conn->config.username != NULL_PTR) {
         connectFlags |= 0x80; /* 用户名标志 */
-        remainingLength += 2 + strlen(conn->config.username);
+        remainingLength += 2U + strlen(conn->config.username);
     }
     
     if (conn->config.password != NULL_PTR) {
         connectFlags |= 0x40; /* 密码标志 */
-        remainingLength += 2 + strlen(conn->config.password);
+        remainingLength += 2U + strlen(conn->config.password);
     }
     
     if (conn->config.cleanSession == MQTT_CLEAN_SESSION_TRUE) {
@@ -837,7 +837,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     }
     
     /* 检查缓冲区空间 */
-    if ((remainingLength + 2) > MQTT_SEND_BUFFER_SIZE) {
+    if ((remainingLength + 2U) > MQTT_SEND_BUFFER_SIZE) {
         return MQTT_E_BUFFER_OVERFLOW;
     }
     
@@ -846,11 +846,11 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx++;
     
     /* 剩余长度编码 (支持多字节编码) */
-    if (remainingLength < 128) {
+    if (remainingLength < 128U) {
         conn->sendBuffer[idx] = remainingLength;
         idx++;
     } else {
-        conn->sendBuffer[idx] = (remainingLength & 0x7F) | 0x80;
+        conn->sendBuffer[idx] = (remainingLength & 0x7FU) | 0x80;
         idx++;
         conn->sendBuffer[idx] = remainingLength >> 7;
         idx++;
@@ -879,15 +879,15 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     idx++;
     
     /* 保活时间 */
-    conn->sendBuffer[idx] = (conn->config.keepAliveSeconds >> 8) & 0xFF;
+    conn->sendBuffer[idx] = (conn->config.keepAliveSeconds >> 8) & 0xFFU;
     idx++;
-    conn->sendBuffer[idx] = conn->config.keepAliveSeconds & 0xFF;
+    conn->sendBuffer[idx] = conn->config.keepAliveSeconds & 0xFFU;
     idx++;
     
     /* 客户端ID */
-    conn->sendBuffer[idx] = (clientIdLen >> 8) & 0xFF;
+    conn->sendBuffer[idx] = (clientIdLen >> 8) & 0xFFU;
     idx++;
-    conn->sendBuffer[idx] = clientIdLen & 0xFF;
+    conn->sendBuffer[idx] = clientIdLen & 0xFFU;
     idx++;
     memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
     idx += clientIdLen;
@@ -895,9 +895,9 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     /* 用户名 */
     if (conn->config.username != NULL_PTR) {
         uint16 usernameLen = strlen(conn->config.username);
-        conn->sendBuffer[idx] = (usernameLen >> 8) & 0xFF;
+        conn->sendBuffer[idx] = (usernameLen >> 8) & 0xFFU;
         idx++;
-        conn->sendBuffer[idx] = usernameLen & 0xFF;
+        conn->sendBuffer[idx] = usernameLen & 0xFFU;
         idx++;
         memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
         idx += usernameLen;
@@ -906,9 +906,9 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     /* 密码 */
     if (conn->config.password != NULL_PTR) {
         uint16 passwordLen = strlen(conn->config.password);
-        conn->sendBuffer[idx] = (passwordLen >> 8) & 0xFF;
+        conn->sendBuffer[idx] = (passwordLen >> 8) & 0xFFU;
         idx++;
-        conn->sendBuffer[idx] = passwordLen & 0xFF;
+        conn->sendBuffer[idx] = passwordLen & 0xFFU;
         idx++;
         memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
         idx += passwordLen;
@@ -929,19 +929,19 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     uint8 fixedHeader = MQTT_PACKET_TYPE_PUBLISH;
     
     /* 设置固定头标志 */
-    fixedHeader |= ((msg->qos & 0x03) << 1);
+    fixedHeader |= ((msg->qos & 0x03U) << 1);
     if (msg->retain == MQTT_RETAIN_TRUE) {
         fixedHeader |= 0x01;
     }
     
     /* 计算剩余长度 */
-    remainingLength = 2 + topicLen; /* 主题 */
+    remainingLength = 2U + topicLen; /* 主题 */
     if (msg->qos > MQTT_QOS_0) {
-        remainingLength += 2; /* 包ID */
+        remainingLength += 2U; /* 包ID */
     }
     remainingLength += msg->payloadLength;
     
-    if ((remainingLength + 5) > MQTT_SEND_BUFFER_SIZE) {
+    if ((remainingLength + 5U) > MQTT_SEND_BUFFER_SIZE) {
         return MQTT_E_BUFFER_OVERFLOW;
     }
     
@@ -951,7 +951,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     
     /* 剩余长度 */
     do {
-        uint8 byte = remainingLength & 0x7F;
+        uint8 byte = remainingLength & 0x7FU;
         remainingLength >>= 7;
         if (remainingLength > 0U ) {
             byte |= 0x80;
@@ -961,18 +961,18 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     } while (remainingLength > 0U );
     
     /* 主题 */
-    conn->sendBuffer[idx] = (topicLen >> 8) & 0xFF;
+    conn->sendBuffer[idx] = (topicLen >> 8) & 0xFFU;
     idx++;
-    conn->sendBuffer[idx] = topicLen & 0xFF;
+    conn->sendBuffer[idx] = topicLen & 0xFFU;
     idx++;
     memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
     idx += topicLen;
     
     /* 包ID (QoS > 0U ) */
     if (msg->qos > MQTT_QOS_0) {
-        conn->sendBuffer[idx] = (packetId >> 8) & 0xFF;
+        conn->sendBuffer[idx] = (packetId >> 8) & 0xFFU;
         idx++;
-        conn->sendBuffer[idx] = packetId & 0xFF;
+        conn->sendBuffer[idx] = packetId & 0xFFU;
         idx++;
     }
     
@@ -994,10 +994,10 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     uint16 topicLen = strlen(sub->topicFilter);
     
     remainingLength = 2; /* 包ID */
-    remainingLength += 2 + topicLen; /* 主题过滤器 */
-    remainingLength += 1; /* QoS */
+    remainingLength += 2U + topicLen; /* 主题过滤器 */
+    remainingLength += 1U; /* QoS */
     
-    if ((remainingLength + 5) > MQTT_SEND_BUFFER_SIZE) {
+    if ((remainingLength + 5U) > MQTT_SEND_BUFFER_SIZE) {
         return MQTT_E_BUFFER_OVERFLOW;
     }
     
@@ -1010,21 +1010,21 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     idx++;
     
     /* 包ID */
-    conn->sendBuffer[idx] = (packetId >> 8) & 0xFF;
+    conn->sendBuffer[idx] = (packetId >> 8) & 0xFFU;
     idx++;
-    conn->sendBuffer[idx] = packetId & 0xFF;
+    conn->sendBuffer[idx] = packetId & 0xFFU;
     idx++;
     
     /* 主题过滤器 */
-    conn->sendBuffer[idx] = (topicLen >> 8) & 0xFF;
+    conn->sendBuffer[idx] = (topicLen >> 8) & 0xFFU;
     idx++;
-    conn->sendBuffer[idx] = topicLen & 0xFF;
+    conn->sendBuffer[idx] = topicLen & 0xFFU;
     idx++;
     memcpy(&conn->sendBuffer[idx], sub->topicFilter, topicLen);
     idx += topicLen;
     
     /* 最大QoS */
-    conn->sendBuffer[idx] = sub->maxQoS & 0x03;
+    conn->sendBuffer[idx] = sub->maxQoS & 0x03U;
     idx++;
     
     conn->sendLength = idx;

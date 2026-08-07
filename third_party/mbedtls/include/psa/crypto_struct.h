@@ -290,7 +290,7 @@ typedef uint16_t psa_key_bits_t;
  * to a whole number of bytes.
  * This is an uncast value so that it can be used in preprocessor
  * conditionals. */
-#define PSA_MAX_KEY_BITS 0xfff8
+#define PSA_MAX_KEY_BITS 0xfff8U
 
 struct psa_key_attributes_s {
 #if defined(MBEDTLS_PSA_CRYPTO_SE_C)

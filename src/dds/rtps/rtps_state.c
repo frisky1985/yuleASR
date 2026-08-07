@@ -85,7 +85,7 @@ static void release_cached_change(rtps_cached_change_t *change)
     }
     
     change->ref_count--;
-    if (change->ref_count == 0) {
+    if (change->ref_count == 0U) {
         if (change->data != NULL) {
             free(change->data);
         }
@@ -152,13 +152,13 @@ static void set_bitmap_bit(rtps_sequence_number_set_t *set, uint32_t bit, bool v
         return;
     }
     
-    uint32_t word_idx = bit / 32;
-    uint32_t bit_idx = bit % 32;
+    uint32_t word_idx = bit / 32U;
+    uint32_t bit_idx = bit % 32U;
     
     if (value) {
-        set->bitmap[word_idx] |= (1U << (31 - bit_idx));
+        set->bitmap[word_idx] |= (1U << (31U - bit_idx));
     } else {
-        set->bitmap[word_idx] &= ~(1U << (31 - bit_idx));
+        set->bitmap[word_idx] &= ~(1U << (31U - bit_idx));
     }
 }
 
@@ -171,10 +171,10 @@ static bool get_bitmap_bit(const rtps_sequence_number_set_t *set, uint32_t bit)
         return false;
     }
     
-    uint32_t word_idx = bit / 32;
-    uint32_t bit_idx = bit % 32;
+    uint32_t word_idx = bit / 32U;
+    uint32_t bit_idx = bit % 32U;
     
-    return (set->bitmap[word_idx] & (1U << (31 - bit_idx))) != 0;
+    return (set->bitmap[word_idx] & (1U << (31U - bit_idx))) != 0;
 }
 
 /**
@@ -183,8 +183,8 @@ static bool get_bitmap_bit(const rtps_sequence_number_set_t *set, uint32_t bit)
 static int64_t seqnum_diff(const rtps_sequence_number_t *seq1,
                            const rtps_sequence_number_t *seq2)
 {
-    int64_t v1 = ((int64_t)seq1->high << 32) | seq1->low;
-    int64_t v2 = ((int64_t)seq2->high << 32) | seq2->low;
+    int64_t v1 = ((int64_t)seq1->high << 32U) | seq1->low;
+    int64_t v2 = ((int64_t)seq2->high << 32U) | seq2->low;
     return v1 - v2;
 }
 
@@ -212,7 +212,7 @@ eth_status_t rtps_writer_sm_init(rtps_writer_state_machine_t *writer,
     writer->max_seq.low = 0;
     
     /* 设置历史缓存 */
-    writer->history_cache_max = ((history_depth > 0) && (history_depth <= RTPS_WRITER_MAX_CACHED_CHANGES)) 
+    writer->history_cache_max = ((history_depth > 0U) && (history_depth <= RTPS_WRITER_MAX_CACHED_CHANGES)) 
                                 ? history_depth : RTPS_WRITER_MAX_CACHED_CHANGES;
     writer->history_cache = NULL;
     writer->history_cache_size = 0;
@@ -299,7 +299,7 @@ eth_status_t rtps_writer_sm_write(rtps_writer_state_machine_t *writer,
                                    uint32_t len,
                                    rtps_sequence_number_t *seq_number)
 {
-    if ((writer == NULL) || (data == NULL) || len == 0) {
+    if ((writer == NULL) || (data == NULL) || len == 0U) {
         return ETH_INVALID_PARAM;
     }
     
@@ -356,7 +356,7 @@ eth_status_t rtps_writer_sm_handle_acknack(rtps_writer_state_machine_t *writer,
     
     /* 检查是否需要重传 */
     bool need_retransmit = false;
-    for (uint32_t i = 0; (i < ack_bitmap->num_bits) && (i < 256); i++) {
+    for (uint32_t i = 0; (i < ack_bitmap->num_bits) && (i < 256U); i++) {
         if (!get_bitmap_bit(ack_bitmap, i)) {
             /* 这个序列号缺失 */
             need_retransmit = true;
@@ -382,7 +382,7 @@ eth_status_t rtps_writer_sm_process(rtps_writer_state_machine_t *writer,
     *need_heartbeat = false;
     
     /* 检查是否需要发送心跳 */
-    if (writer->matched_reader_count > 0) {
+    if (writer->matched_reader_count > 0U) {
         uint64_t time_since_last_hb = current_time_ms - writer->last_heartbeat_send_time;
         
         if (time_since_last_hb >= RTPS_HEARTBEAT_PERIOD_MS) {
@@ -505,7 +505,7 @@ eth_status_t rtps_reader_sm_init(rtps_reader_state_machine_t *reader,
     reader->highest_seq.low = 0;
     
     /* 设置接收队列 */
-    reader->receive_queue_max = ((queue_size > 0) && (queue_size <= RTPS_READER_MAX_CACHED_CHANGES))
+    reader->receive_queue_max = ((queue_size > 0U) && (queue_size <= RTPS_READER_MAX_CACHED_CHANGES))
                                  ? queue_size : RTPS_READER_MAX_CACHED_CHANGES;
     reader->receive_queue = NULL;
     reader->receive_queue_size = 0;
@@ -702,7 +702,7 @@ eth_status_t rtps_reader_sm_handle_heartbeat(rtps_reader_state_machine_t *reader
         /* 更新丢失位图 */
         writer->missing_changes.bitmap_base = reader->next_expected_seq;
         int64_t diff = seqnum_diff(last_sn, &reader->next_expected_seq);
-        writer->missing_changes.num_bits = (diff > 256) ? 256 : (uint32_t)diff;
+        writer->missing_changes.num_bits = (diff > 256) ? 256U : (uint32_t)diff;
     }
     
     return ETH_OK;
@@ -817,7 +817,7 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
         return ETH_INVALID_PARAM;
     }
     
-    if (max_len < 32) {
+    if (max_len < 32U) {
         return ETH_ERROR;
     }
     
@@ -866,8 +866,8 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
     pos++;
     
     /* 位图数据 */
-    uint32_t num_words = (num_bits + 31) / 32;
-    for (uint32_t i = 0; (i < num_words) && (i < 8); i++) {
+    uint32_t num_words = (num_bits + 31U) / 32;
+    for (uint32_t i = 0; (i < num_words) && (i < 8U); i++) {
         buffer[pos] = writer->missing_changes.bitmap[i] >> 24;
         pos++;
         buffer[pos] = writer->missing_changes.bitmap[i] >> 16;
@@ -957,7 +957,7 @@ eth_status_t rtps_network_resume(rtps_network_context_t *net_ctx,
     }
     
     /* 计算挂起时间 */
-    if (net_ctx->suspend_start_time > 0) {
+    if (net_ctx->suspend_start_time > 0U) {
         uint64_t suspend_time = current_time_ms - net_ctx->suspend_start_time;
         net_ctx->total_suspend_time_ms += suspend_time;
     }

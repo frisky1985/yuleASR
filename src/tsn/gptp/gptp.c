@@ -20,8 +20,8 @@
  * 常量和宏定义
  * ============================================================================ */
 
-#define GPTP_MAX_DOMAINS                3
-#define GPTP_MAX_PORTS                  8
+#define GPTP_MAX_DOMAINS                3U
+#define GPTP_MAX_PORTS                  8U
 #define GPTP_MAX_CLOCK_IDENTITY_LEN     8
 
 #define NS_PER_SEC                      1000000000ULL
@@ -117,7 +117,7 @@ static uint64_t get_current_time_ns(void) {
     /* 在实际硬件中，这应该读取硬件时钟 */
     /* 这里使用简单的软件计时器模拟 */
     static uint64_t base_time = 0;
-    if (base_time == 0) {
+    if (base_time == 0U) {
         base_time = (uint64_t)time(NULL) * NS_PER_SEC;
     }
     return base_time;
@@ -194,7 +194,7 @@ static gptp_bmc_result_t compare_priority_vectors(
  */
 static int64_t calc_timestamp_diff(const gptp_timestamp_t *t1,
                                     const gptp_timestamp_t *t2) {
-    int64_t diff_ns = ((int64_t)t1->seconds - (int64_t)t2->seconds) * NS_PER_SEC;
+    int64_t diff_ns = (uint32_t)(((int64_t)t1->seconds - (int64_t)t2->seconds)) * NS_PER_SEC;
     diff_ns += (int64_t)t1->nanoseconds - (int64_t)t2->nanoseconds;
     return diff_ns;
 }
@@ -265,7 +265,7 @@ static void perform_clock_sync(uint8_t domain_index) {
     
     /* 应用时钟调整 */
     clock->slave_offset_ns = offset_ns;
-    clock->rate_ratio_ppb = (adjustment * 1000) / NS_PER_MS;
+    clock->rate_ratio_ppb = (uint32_t)((adjustment * 1000)) / NS_PER_MS;
     
     last_offset = offset_ns;
     
@@ -276,7 +276,7 @@ static void perform_clock_sync(uint8_t domain_index) {
         clock->consecutive_sync_errors = 0;
     } else {
         clock->consecutive_sync_errors++;
-        if (clock->consecutive_sync_errors > 3) {
+        if (clock->consecutive_sync_errors > 3U) {
             clock->synchronized = false;
         }
     }
@@ -761,7 +761,7 @@ eth_status_t gptp_run_safety_checks(uint8_t domain_index) {
     if (!domain->clock_state.synchronized) {
         monitor->sync_timeouts++;
         
-        if (domain->clock_state.consecutive_sync_errors > 3) {
+        if (domain->clock_state.consecutive_sync_errors > 3U) {
             if (g_gptp_state.safety_cb) {
                 g_gptp_state.safety_cb(0x02, "Sync timeout", g_gptp_state.safety_user_data);
             }
@@ -816,7 +816,7 @@ eth_status_t gptp_check_clock_integrity(uint8_t domain_index, bool *integrity_ok
     
     *integrity_ok = monitor->timestamp_integrity_ok && 
                     monitor->bmc_integrity_ok &&
-                    (monitor->drift_violations == 0);
+                    (monitor->drift_violations == 0U);
     
     return ETH_OK;
 }
@@ -844,7 +844,7 @@ void gptp_ns_to_timestamp(uint64_t ns, gptp_timestamp_t *ts) {
 }
 
 const char* gptp_timestamp_to_string(const gptp_timestamp_t *ts, char *buf, size_t buf_size) {
-    if ((buf == NULL) || (buf_size == 0)) {
+    if ((buf == NULL) || (buf_size == 0U)) {
         return NULL;
     }
     

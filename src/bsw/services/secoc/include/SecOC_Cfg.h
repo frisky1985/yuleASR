@@ -76,7 +76,7 @@
 /**
  * @brief Maximum PDU length
  */
-#define SECOC_MAX_PDU_LENGTH                  (64u)
+#define SECOC_MAX_PDU_LENGTH                  256U
 
 /*==================================================================================================
  *                                    TX PDU IDs

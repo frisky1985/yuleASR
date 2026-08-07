@@ -528,13 +528,13 @@ static inline void hash_store64_be(uint8 dst[8], uint64 val)
 /* Rotate right for 32-bit */
 static inline uint32 hash_rotr32(uint32 x, uint32 n)
 {
-    return (x >> n) | (x << (32 - n));
+    return (x >> n) | (x << (32U - n));
 }
 
 /* Rotate right for 64-bit */
 static inline uint64 hash_rotr64(uint64 x, uint64 n)
 {
-    return (x >> n) | (x << (64 - n));
+    return (x >> n) | (x << (64U - n));
 }
 
 /* SHA-256 Ch function */
@@ -636,7 +636,7 @@ static inline uint32 sha1_f4(uint32 b, uint32 c, uint32 d)
 /* SHA-1 circular left shift */
 static inline uint32 sha1_rotl(uint32 x, uint32 n)
 {
-    return (x << n) | (x >> (32 - n));
+    return (x << n) | (x >> (32U - n));
 }
 
 #endif /* HASH_ALGOS_H */

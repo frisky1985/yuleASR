@@ -31,7 +31,7 @@ csm_job_t* csm_job_alloc(csm_context_t *ctx)
     
     /* Find free slot */
     for (int i = 0; i < CSM_MAX_JOBS; i++) {
-        if (ctx->jobs[i].job_id == 0) {
+        if (ctx->jobs[i].job_id == 0U) {
             memset(&ctx->jobs[i], 0, sizeof(csm_job_t));
             return &ctx->jobs[i];
         }
@@ -50,7 +50,7 @@ void csm_job_free(csm_context_t *ctx, csm_job_t *job)
 
 csm_job_t* csm_job_find_by_id(csm_context_t *ctx, uint32_t job_id)
 {
-    if ((ctx == NULL) || (job_id == 0)) return NULL;
+    if ((ctx == NULL) || (job_id == 0U)) return NULL;
     
     for (int i = 0; i < CSM_MAX_JOBS; i++) {
         if (ctx->jobs[i].job_id == job_id) {

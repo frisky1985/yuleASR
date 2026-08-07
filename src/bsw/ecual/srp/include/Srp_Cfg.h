@@ -22,7 +22,7 @@
 #define SRP_VERSION_INFO_API    STD_ON
 
 /* Maximum Streams */
-#define SRP_MAX_STREAMS         32U
+#define SRP_MAX_STREAMS         256U
 
 /* Maximum Domain */
 #define SRP_MAX_DOMAINS         4U

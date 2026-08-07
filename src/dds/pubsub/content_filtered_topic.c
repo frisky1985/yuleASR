@@ -128,7 +128,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     if (isalpha((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_')) {
         while ((lexer->pos < lexer->len) && 
                (isalnum((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_'))) {
-            if (lexer->token_len < sizeof(lexer->token) - 1) {
+            if (lexer->token_len < sizeof(lexer->token) - 1U) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
             }
@@ -141,7 +141,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     // 数字
     if (isdigit((unsigned char)lexer->input[lexer->pos])) {
         while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
-            if (lexer->token_len < sizeof(lexer->token) - 1) {
+            if (lexer->token_len < sizeof(lexer->token) - 1U) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
             }
@@ -152,7 +152,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
             lexer->token[lexer->token_len] = lexer->input[lexer->pos++];
             lexer->token_len++;
             while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
-                if (lexer->token_len < sizeof(lexer->token) - 1) {
+                if (lexer->token_len < sizeof(lexer->token) - 1U) {
                     lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                     lexer->token_len++;
                 }
@@ -167,7 +167,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     if (lexer->input[lexer->pos] == '\'') {
         lexer->pos++;
         while ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] != '\'')) {
-            if (lexer->token_len < sizeof(lexer->token) - 1) {
+            if (lexer->token_len < sizeof(lexer->token) - 1U) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
             }
@@ -268,7 +268,7 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
         free(node);
         return NULL;
     }
-    strncpy(node->data.predicate.field_name, lexer->token, sizeof(node->data.predicate.field_name) - 1);
+    strncpy(node->data.predicate.field_name, lexer->token, sizeof(node->data.predicate.field_name) - 1U);
     
     // 读取操作符
     if (!lexer_read_token(lexer)) {
@@ -289,7 +289,7 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
     } else {
         node->data.predicate.is_param = false;
         strncpy(node->data.predicate.value.str_val, lexer->token, 
-                sizeof(node->data.predicate.value.str_val) - 1);
+                sizeof(node->data.predicate.value.str_val) - 1U);
         // 判断值类型
         if (isdigit((unsigned char)lexer->token[0]) || (lexer->token[0] == '-')) {
             node->data.predicate.value_type = CFT_TYPE_INT32;
@@ -405,7 +405,7 @@ eth_status_t cft_get_field_value(const void *sample,
             break;
         case CFT_TYPE_STRING:
             strncpy((char*)out_value, (const char*)data, accessor->size);
-            ((char*)out_value)[accessor->size - 1] = '\0';
+            ((char*)out_value)[accessor->size - 1U] = '\0';
             break;
         default:
             return ETH_ERROR;
@@ -558,7 +558,7 @@ cft_handle_t* cft_create(dds_topic_t *related_topic,
     
     memset(cft, 0, sizeof(cft_handle_t));
     cft->related_topic = related_topic;
-    strncpy(cft->name, name, sizeof(cft->name) - 1);
+    strncpy(cft->name, name, sizeof(cft->name) - 1U);
     memcpy(&cft->config, config, sizeof(cft_config_t));
     
     if (type_desc) {
@@ -628,7 +628,7 @@ eth_status_t cft_evaluate(cft_handle_t *cft,
     uint64_t start_time = get_time_us();
     
     // 确定性执行限制检查
-    if (cft->asil_enabled && (cft->config.max_exec_time_us > 0)) {
+    if (cft->asil_enabled && (cft->config.max_exec_time_us > 0U)) {
         // ASIL模式下预编译处理
     }
     
@@ -650,13 +650,13 @@ eth_status_t cft_evaluate(cft_handle_t *cft,
     }
     cft->stats.avg_exec_time_us = 
         ((cft->stats.avg_exec_time_us * cft->stats.total_samples) + exec_time) / 
-        (cft->stats.total_samples + 1);
+        (cft->stats.total_samples + 1U);
     if (exec_time > cft->stats.max_exec_time_us) {
         cft->stats.max_exec_time_us = (uint32_t)exec_time;
     }
     
     // 检查超时
-    if ((cft->config.max_exec_time_us > 0) && (exec_time > cft->config.max_exec_time_us)) {
+    if ((cft->config.max_exec_time_us > 0U) && (exec_time > cft->config.max_exec_time_us)) {
         cft->stats.timeout_count++;
         if (cft->asil_enabled) {
             DDS_LOG_WARN(DDS_LOG_MODULE_CORE, "CFT", "Filter execution timeout: %s (%lu us)", cft->name, exec_time);
@@ -671,7 +671,7 @@ eth_status_t cft_evaluate_batch(cft_handle_t *cft,
                                 const uint32_t *sample_sizes,
                                 uint32_t count,
                                 bool *matches) {
-    if (!cft || !samples || !sample_sizes || !matches || (count == 0)) {
+    if (!cft || !samples || !sample_sizes || !matches || (count == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -772,7 +772,7 @@ eth_status_t cft_compile_type_descriptor(cft_type_descriptor_t *type_desc) {
 }
 
 eth_status_t cft_enable_asil_mode(cft_handle_t *cft, uint8_t asil_level) {
-    if (!cft || (asil_level > 4)) {
+    if (!cft || (asil_level > 4U)) {
         return ETH_INVALID_PARAM;
     }
     

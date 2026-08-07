@@ -462,7 +462,7 @@ Std_ReturnType ara_com_SendEvent(
     const void* data,
     uint32_t length)
 {
-    if (!ara_com_IsInitialized() || (handle == NULL) || data == NULL || length == 0) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || data == NULL || length == 0U) {
         return E_NOT_OK;
     }
 
@@ -850,7 +850,7 @@ Std_ReturnType ara_com_SomeIPDDSGateway_UnregisterService(
             (g_gatewayEntries[i].instanceId == instanceId)) {
             g_gatewayEntries[i].isActive = FALSE;
             /* 移动数组元素填充空位 */
-            if (i < (g_gatewayNumEntries - 1)) {
+            if (i < (g_gatewayNumEntries - 1U)) {
                 memmove(&g_gatewayEntries[i], &g_gatewayEntries[i + 1],
                         (g_gatewayNumEntries - i - 1) * sizeof(SomeIP_DDS_GatewayEntryType));
             }

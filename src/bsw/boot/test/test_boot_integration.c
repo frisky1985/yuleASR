@@ -26,7 +26,7 @@ typedef uint16_t uint16;
 typedef uint32_t uint32;
 
 /* ---- Flash emulation ---- */
-#define FLASH_SIZE (2 * 1024 * 1024)
+#define FLASH_SIZE (2U * 1024U * 1024)
 static uint8_t g_boot_flash_ram[FLASH_SIZE];
 
 /* ---- Override boot config for host test ---- */
@@ -142,7 +142,7 @@ static int test_gen_keys(void)
     FILE *f = fopen("/tmp/boot_test_priv.pem", "wb");
     if (f) { PEM_write_PrivateKey(f, pkey, NULL_PTR, NULL_PTR, 0, NULL_PTR, NULL_PTR); fclose(f); }
     EVP_PKEY_free(pkey);
-    return (g_test_pubkey_len > 0) ? 0 : -1;
+    return (g_test_pubkey_len > 0U) ? 0 : -1;
 }
 
 /* Sign a payload, produce 64-byte raw r||s signature */
@@ -244,7 +244,7 @@ static void test_crc(void)
     hdr.version = 0x01030000;
     hdr.payload_size = 4096;
     uint32_t c1 = Boot_Image_CalcHeaderCrc(&hdr);
-    TEST("CRC non-zero", c1 != 0);
+    TEST("CRC non-zero", c1 != 0U);
     uint32_t c2 = Boot_Image_CalcHeaderCrc(&hdr);
     TEST("CRC deterministic", c1 == c2);
     hdr.payload_size = 8192;
@@ -309,8 +309,8 @@ static void test_ecdsa(void)
 
     uint8_t msg[] = "yuleASR Secure Boot v1.3.0";
     uint8_t hash[32], sig[64];
-    SHA256(msg, sizeof(msg)-1, hash);
-    if (test_sign(msg, sizeof(msg)-1, sig) != 0) {
+    SHA256(msg, sizeof(msg)-1U, hash);
+    if (test_sign(msg, sizeof(msg)-1U, sig) != 0) {
         printf("  SKIP: signing\n");
         return;
     }
@@ -399,7 +399,7 @@ static void test_end_to_end(void)
     /* Boot confirm */
     Boot_InfoBlock rbib;
     Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t*)&rbib, sizeof(rbib));
-    TEST("bib boot count zero", rbib.boot_count == 0);
+    TEST("bib boot count zero", rbib.boot_count == 0U);
 
     free(rdata);
     printf("\n  >>> Secure Boot Pipeline: all stages PASS <<<\n");

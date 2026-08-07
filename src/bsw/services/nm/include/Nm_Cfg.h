@@ -25,7 +25,7 @@
 #define NM_VERSION_INFO_API               STD_ON
 
 /* Number of Channels */
-#define NM_MAX_CHANNELS                   8
+#define NM_MAX_CHANNELS                   8U
 
 /* Node Configuration */
 #define NM_NODE_ID                        0x01

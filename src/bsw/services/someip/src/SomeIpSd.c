@@ -296,7 +296,7 @@ void SomeIpSd_MainFunction(void)
     cyclicCounter++;
     
     /* Cyclic offer service (every 3 seconds typically) */
-    if (cyclicCounter >= 300)  /* Assuming 10ms task cycle */
+    if (cyclicCounter >= 300U)  /* Assuming 10ms task cycle */
     {
         cyclicCounter = 0;
         

@@ -30,9 +30,9 @@
 #define LINSLAVE_CFGTABLE_PATCH_VERSION     0
 
 /* 配置限制 */
-#define LINSLAVE_MAX_UNCONDITIONAL_FRAMES   20  /* 最大Unconditional Frame数 */
-#define LINSLAVE_MAX_EVENT_FRAMES           4   /* 最大Event Triggered Frame数 */
-#define LINSLAVE_MAX_SPORADIC_FRAMES        4   /* 最大Sporadic Frame数 */
+#define LINSLAVE_MAX_UNCONDITIONAL_FRAMES   20U  /* 最大Unconditional Frame数 */
+#define LINSLAVE_MAX_EVENT_FRAMES           4U   /* 最大Event Triggered Frame数 */
+#define LINSLAVE_MAX_SPORADIC_FRAMES        4U   /* 最大Sporadic Frame数 */
 #define LINSLAVE_MAX_TP_CHANNELS          2
 
 /* 报文方向定义 */

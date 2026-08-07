@@ -32,7 +32,7 @@ static uint64_t bytes_to_uint64(const uint8_t *data, uint8_t len) {
 
 static void uint64_to_bytes(uint64_t value, uint8_t *data, uint8_t len) {
     for (int i = 0; (i < len) && (i < 8); i++) {
-        data[i] = (uint8_t)((value >> (i * 8)) & 0xFF);
+        data[i] = (uint8_t)((value >> (i * 8)) & 0xFFU);
     }
 }
 
@@ -134,8 +134,8 @@ secoc_status_t secoc_freshness_unregister(secoc_freshness_manager_t *mgr, uint32
     
     for (uint32_t i = 0; i < mgr->num_entries; i++) {
         if (mgr->entries[i].pdu_id == pdu_id) {
-            memmove(&mgr->entries[i], &mgr->entries[i + 1],
-                    (mgr->num_entries - i - 1) * sizeof(secoc_fv_entry_t));
+            memmove(&mgr->entries[i], &mgr->entries[i + 1U],
+                    (mgr->num_entries - i - 1U) * sizeof(secoc_fv_entry_t));
             mgr->num_entries--;
             return SECOC_OK;
         }
@@ -192,9 +192,9 @@ secoc_status_t secoc_freshness_get_tx_counter(secoc_freshness_manager_t *mgr,
     }
     
     *freshness = entry->tx_counter;
-    *freshness_len = (entry->max_counter > 0xFFFFFF) ? 4 :
-                     (entry->max_counter > 0xFFFF) ? 3 :
-                     (entry->max_counter > 0xFF) ? 2 : 1;
+    *freshness_len = (entry->max_counter > 0xFFFFFFU) ? 4 :
+                     (entry->max_counter > 0xFFFFU) ? 3 :
+                     (entry->max_counter > 0xFFU) ? 2 : 1;
     
     entry->tx_count++;
     entry->last_tx_timestamp = mgr->get_timestamp_us();
@@ -243,7 +243,7 @@ secoc_status_t secoc_freshness_verify_counter(secoc_freshness_manager_t *mgr,
     /* 检查同步阈值 (Slave模式需要同步) */
     if (entry->sync_mode == SECOC_SYNC_SLAVE) {
         uint64_t gap = (freshness > entry->rx_counter) ? 
-                       (freshness - entry->rx_counter) : 0;
+                       (freshness - entry->rx_counter) : 0U;
         if (gap > entry->sync_gap) {
             entry->state = SECOC_FV_STATE_SYNC_IN_PROGRESS;
             return SECOC_ERROR_SYNC_FAILED;
@@ -384,7 +384,7 @@ secoc_status_t secoc_freshness_get_tx_trip(secoc_freshness_manager_t *mgr,
     /* 组合行程计数器、复位计数器和同步计数器 */
     *freshness = ((uint64_t)entry->trip_counter << 32) |
                  ((uint64_t)entry->reset_counter << 24) |
-                 (entry->tx_counter & 0xFFFFFF);
+                 (entry->tx_counter & 0xFFFFFFU);
     *freshness_len = 8;
     
     entry->tx_count++;
@@ -415,8 +415,8 @@ secoc_status_t secoc_freshness_verify_trip(secoc_freshness_manager_t *mgr,
     
     /* 解析收到的Freshness值 */
     uint32_t received_trip = (freshness >> 32) & 0xFFFFFFFF;
-    uint32_t received_reset = (freshness >> 24) & 0xFF;
-    uint64_t received_counter = freshness & 0xFFFFFF;
+    uint32_t received_reset = (freshness >> 24) & 0xFFU;
+    uint64_t received_counter = freshness & 0xFFFFFFU;
     
     /* 检查行程计数器 */
     if (received_trip < entry->trip_counter) {
@@ -493,10 +493,10 @@ secoc_status_t secoc_freshness_create_sync_request(secoc_freshness_manager_t *mg
     
     memset(request, 0, sizeof(secoc_sync_request_t));
     request->header.msg_type = SECOC_SYNC_REQ;
-    request->header.pdu_id_high = (pdu_id >> 8) & 0xFF;
-    request->header.pdu_id_low = pdu_id & 0xFF;
+    request->header.pdu_id_high = (pdu_id >> 8) & 0xFFU;
+    request->header.pdu_id_low = pdu_id & 0xFFU;
     request->slave_fv_low = entry->rx_counter & 0xFFFFFFFF;
-    request->timestamp = (uint32_t)(mgr->get_timestamp_us() / 1000);
+    request->timestamp = (uint32_t)(mgr->get_timestamp_us() / 1000U);
     
     entry->state = SECOC_FV_STATE_SYNC_IN_PROGRESS;
     entry->sync_retry_count++;
@@ -529,17 +529,17 @@ secoc_status_t secoc_freshness_handle_sync_request(secoc_freshness_manager_t *mg
     /* 构建响应 */
     memset(response, 0, sizeof(secoc_sync_response_t));
     response->header.msg_type = SECOC_SYNC_RES;
-    response->header.pdu_id_high = (pdu_id >> 8) & 0xFF;
-    response->header.pdu_id_low = pdu_id & 0xFF;
+    response->header.pdu_id_high = (pdu_id >> 8) & 0xFFU;
+    response->header.pdu_id_low = pdu_id & 0xFFU;
     response->master_fv = entry->tx_counter;
     response->trip_counter = entry->trip_counter;
     response->reset_counter = entry->reset_counter;
-    response->master_timestamp = (uint32_t)(mgr->get_timestamp_us() / 1000);
+    response->master_timestamp = (uint32_t)(mgr->get_timestamp_us() / 1000U);
     
     /* 计算MAC (简化版本 - 生产环境应使用HMAC) */
     /* 这里只是为了演示，实际项目中需要完整的MAC计算 */
     for (int i = 0; i < 8; i++) {
-        response->mac[i] = (uint8_t)((response->master_fv >> (i * 8)) & 0xFF);
+        response->mac[i] = (uint8_t)((response->master_fv >> (i * 8)) & 0xFFU);
     }
     
     entry->sync_count++;
@@ -565,16 +565,16 @@ secoc_status_t secoc_freshness_create_sync_broadcast(secoc_freshness_manager_t *
     
     memset(broadcast, 0, sizeof(secoc_sync_response_t));
     broadcast->header.msg_type = SECOC_SYNC_BROADCAST;
-    broadcast->header.pdu_id_high = (pdu_id >> 8) & 0xFF;
-    broadcast->header.pdu_id_low = pdu_id & 0xFF;
+    broadcast->header.pdu_id_high = (pdu_id >> 8) & 0xFFU;
+    broadcast->header.pdu_id_low = pdu_id & 0xFFU;
     broadcast->master_fv = entry->tx_counter;
     broadcast->trip_counter = entry->trip_counter;
     broadcast->reset_counter = entry->reset_counter;
-    broadcast->master_timestamp = (uint32_t)(mgr->get_timestamp_us() / 1000);
+    broadcast->master_timestamp = (uint32_t)(mgr->get_timestamp_us() / 1000U);
     
     /* 计算MAC */
     for (int i = 0; i < 8; i++) {
-        broadcast->mac[i] = (uint8_t)((broadcast->master_fv >> (i * 8)) & 0xFF);
+        broadcast->mac[i] = (uint8_t)((broadcast->master_fv >> (i * 8)) & 0xFFU);
     }
     
     entry->sync_count++;
@@ -608,7 +608,7 @@ secoc_status_t secoc_freshness_handle_sync_response(secoc_freshness_manager_t *m
     /* 验证MAC (简化版本) */
     uint8_t computed_mac[8];
     for (int i = 0; i < 8; i++) {
-        computed_mac[i] = (uint8_t)((response->master_fv >> (i * 8)) & 0xFF);
+        computed_mac[i] = (uint8_t)((response->master_fv >> (i * 8)) & 0xFFU);
     }
     
     if (memcmp(response->mac, computed_mac, 8) != 0) {
@@ -792,8 +792,8 @@ void secoc_freshness_update_window(secoc_fv_entry_t *entry, uint64_t accepted_va
     }
     
     /* 更新窗口起点，确保接受的值在窗口内 */
-    if (accepted_value > (entry->window_size / 2)) {
-        entry->window_start = accepted_value - (entry->window_size / 2);
+    if (accepted_value > (entry->window_size / 2U)) {
+        entry->window_start = accepted_value - (entry->window_size / 2U);
     } else {
         entry->window_start = 0;
     }

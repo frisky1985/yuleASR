@@ -70,13 +70,13 @@ static uint64_t platform_get_time_ms(void)
 {
     /* 实际实现应使用系统时钟 */
     static uint64_t simulated_time = 0;
-    simulated_time += 10;
+    simulated_time += 10U;
     return simulated_time;
 }
 
 static uint64_t platform_get_time_us(void)
 {
-    return platform_get_time_ms() * 1000;
+    return platform_get_time_ms() * 1000U;
 }
 
 static void platform_sleep_ms(uint32_t ms)
@@ -96,10 +96,10 @@ static void generate_guid(rtps_guid_t *guid, const rtps_guid_prefix_t prefix,
                           uint32_t entity_kind, uint32_t entity_id)
 {
     memcpy(guid->prefix, prefix, RTPS_GUID_PREFIX_SIZE);
-    guid->entity_id[0] = (entity_kind >> 24) & 0xFF;
-    guid->entity_id[1] = (entity_kind >> 16) & 0xFF;
-    guid->entity_id[2] = (entity_kind >> 8) & 0xFF;
-    guid->entity_id[3] = entity_id & 0xFF;
+    guid->entity_id[0] = (entity_kind >> 24) & 0xFFU;
+    guid->entity_id[1] = (entity_kind >> 16) & 0xFFU;
+    guid->entity_id[2] = (entity_kind >> 8) & 0xFFU;
+    guid->entity_id[3] = entity_id & 0xFFU;
 }
 
 /**

@@ -66,7 +66,7 @@ static eth_status_t eth_mac_validate_config(const eth_mac_config_t *config)
     /* 验证MAC地址 */
     bool is_zero_addr = true;
     for (int i = 0; i < 6; i++) {
-        if (config->mac_addr[i] != 0) {
+        if (config->mac_addr[i] != 0U) {
             is_zero_addr = false;
             break;
         }
@@ -76,12 +76,12 @@ static eth_status_t eth_mac_validate_config(const eth_mac_config_t *config)
     }
 
     /* 验证帧过滤配置 */
-    if ((config->filter.max_frame_size < 64) || (config->filter.max_frame_size > 9000)) {
+    if ((config->filter.max_frame_size < 64U) || (config->filter.max_frame_size > 9000)) {
         return ETH_INVALID_PARAM;
     }
 
     /* 验证时钟频率 */
-    if (config->clock_freq_hz == 0) {
+    if (config->clock_freq_hz == 0U) {
         return ETH_INVALID_PARAM;
     }
 
@@ -272,7 +272,7 @@ eth_status_t eth_mac_set_address(const eth_mac_addr_t mac_addr)
     /* 验证MAC地址 */
     bool is_zero_addr = true;
     for (int i = 0; i < 6; i++) {
-        if (mac_addr[i] != 0) {
+        if (mac_addr[i] != 0U) {
             is_zero_addr = false;
             break;
         }
@@ -328,7 +328,7 @@ eth_status_t eth_mac_set_filter(const eth_mac_filter_t *filter)
     }
 
     /* 验证帧大小 */
-    if ((filter->max_frame_size < 64) || (filter->max_frame_size > 9000)) {
+    if ((filter->max_frame_size < 64U) || (filter->max_frame_size > 9000)) {
         return ETH_INVALID_PARAM;
     }
 
@@ -432,12 +432,12 @@ eth_status_t eth_mac_transmit(const uint8_t *data, uint32_t len, uint32_t timeou
         return ETH_ERROR;
     }
 
-    if ((data == NULL) || (len == 0)) {
+    if ((data == NULL) || (len == 0U)) {
         return ETH_INVALID_PARAM;
     }
 
     /* 检查帧长度 */
-    if ((len < 14) || (len > g_mac_ctx.config.filter.max_frame_size)) {
+    if ((len < 14U) || (len > g_mac_ctx.config.filter.max_frame_size)) {
         g_mac_ctx.stats.tx_errors++;
         return ETH_INVALID_PARAM;
     }
@@ -459,7 +459,7 @@ eth_status_t eth_mac_receive(uint8_t *buffer, uint32_t max_len,
         return ETH_ERROR;
     }
 
-    if ((buffer == NULL) || (max_len == 0) || received_len == NULL) {
+    if ((buffer == NULL) || (max_len == 0U) || received_len == NULL) {
         return ETH_INVALID_PARAM;
     }
 
@@ -526,7 +526,7 @@ eth_status_t eth_mac_set_clock_divider(uint32_t divider)
         return ETH_NOT_INIT;
     }
 
-    if (divider == 0) {
+    if (divider == 0U) {
         return ETH_INVALID_PARAM;
     }
 

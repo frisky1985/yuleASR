@@ -126,8 +126,8 @@ secoc_status_t secoc_dds_remove_mapping(secoc_dds_context_t *ctx, uint32_t pdu_i
     
     for (uint32_t i = 0; i < ctx->num_mappings; i++) {
         if (ctx->mappings[i].secoc_pdu_id == pdu_id) {
-            memmove(&ctx->mappings[i], &ctx->mappings[i + 1],
-                    (ctx->num_mappings - i - 1) * sizeof(secoc_dds_mapping_t));
+            memmove(&ctx->mappings[i], &ctx->mappings[i + 1U],
+                    (ctx->num_mappings - i - 1U) * sizeof(secoc_dds_mapping_t));
             ctx->num_mappings--;
             return SECOC_OK;
         }
@@ -151,7 +151,7 @@ secoc_status_t secoc_dds_import_shared_key(secoc_dds_context_t *ctx,
         return SECOC_ERROR_INVALID_PARAM;
     }
     
-    if (dds_key_id >= 16) {
+    if (dds_key_id >= 16U) {
         return SECOC_ERROR_INVALID_PARAM;
     }
     
@@ -267,10 +267,10 @@ secoc_status_t secoc_dds_compute_mac(secoc_dds_context_t *ctx,
         /* 调用DDS GMAC */
         uint8_t iv[DDS_CRYPTO_GCM_IV_SIZE] = {0};
         /* 使用pdu_id作为IV的一部分 */
-        iv[0] = (pdu_id >> 24) & 0xFF;
-        iv[1] = (pdu_id >> 16) & 0xFF;
-        iv[2] = (pdu_id >> 8) & 0xFF;
-        iv[3] = pdu_id & 0xFF;
+        iv[0] = (pdu_id >> 24) & 0xFFU;
+        iv[1] = (pdu_id >> 16) & 0xFFU;
+        iv[2] = (pdu_id >> 8) & 0xFFU;
+        iv[3] = pdu_id & 0xFFU;
         
         uint8_t full_mac[DDS_CRYPTO_GCM_TAG_SIZE];
         dds_crypto_status_t dds_status = dds_crypto_compute_gmac(

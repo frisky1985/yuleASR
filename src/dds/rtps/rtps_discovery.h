@@ -32,9 +32,9 @@ extern "C" {
 
 /** 发现端口计算 */
 #define RTPS_DISCOVERY_DOMAIN_ID_DEFAULT    0
-#define RTPS_DISCOVERY_PORT_BASE            7400
-#define RTPS_DISCOVERY_PORT_DOMAIN_GAIN     250
-#define RTPS_DISCOVERY_PORT_PARTICIPANT_GAIN 2
+#define RTPS_DISCOVERY_PORT_BASE            7400U
+#define RTPS_DISCOVERY_PORT_DOMAIN_GAIN     250U
+#define RTPS_DISCOVERY_PORT_PARTICIPANT_GAIN 2U
 
 /** 发现协议超时配置（车载场景优化） */
 #define RTPS_DISCOVERY_ANNOUNCE_PERIOD_MS   20      /* 发现公告周期 */
@@ -44,9 +44,9 @@ extern "C" {
 #define RTPS_DISCOVERY_RELIABLE_PERIOD_MS   50      /* 可靠发现周期 */
 
 /** GUID相关常量 */
-#define RTPS_GUID_PREFIX_SIZE   12
-#define RTPS_ENTITY_ID_SIZE     4
-#define RTPS_GUID_SIZE          16
+#define RTPS_GUID_PREFIX_SIZE   12U
+#define RTPS_ENTITY_ID_SIZE     4U
+#define RTPS_GUID_SIZE          16U
 
 /** 序列号常量 */
 #define RTPS_SEQNUM_UNKNOWN     ((int64_t)-1)

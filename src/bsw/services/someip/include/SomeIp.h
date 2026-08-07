@@ -82,7 +82,7 @@ typedef uint8 SomeIp_MessageTypeType;
 
 /* Return Codes */
 typedef uint8 SomeIp_ReturnCodeType;
-#define SOMEIP_RET_OK                      0x00
+#define SOMEIP_RET_OK                      0x00U
 #define SOMEIP_RET_NOT_OK                  0x01
 #define SOMEIP_RET_UNKNOWN_SERVICE         0x02
 #define SOMEIP_RET_UNKNOWN_METHOD          0x03

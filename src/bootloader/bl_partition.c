@@ -48,8 +48,8 @@ static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
     
     for (uint32_t i = 0; i < length; i++) {
         crc ^= data[i];
-        for (uint8_t j = 0; j < 8; j++) {
-            if (crc & 1) {
+        for (uint8_t j = 0; j < 8U; j++) {
+            if ((crc & 1U) != 0U) {
                 crc = (crc >> 1) ^ CRC32_POLYNOMIAL;
             } else {
                 crc >>= 1;
@@ -71,8 +71,8 @@ static uint32_t update_crc32(uint32_t crc, const uint8_t *data, uint32_t length)
 {
     for (uint32_t i = 0; i < length; i++) {
         crc ^= data[i];
-        for (uint8_t j = 0; j < 8; j++) {
-            if (crc & 1) {
+        for (uint8_t j = 0; j < 8U; j++) {
+            if ((crc & 1U) != 0U) {
                 crc = (crc >> 1) ^ CRC32_POLYNOMIAL;
             } else {
                 crc >>= 1;
@@ -174,7 +174,7 @@ static void update_partition_table_crc(bl_partition_table_t *table)
  */
 static uint32_t align_to_sector(uint32_t address, uint32_t sector_size)
 {
-    return (address + sector_size - 1) & ~(sector_size - 1);
+    return (address + sector_size - 1U) & ~(sector_size - 1);
 }
 
 /* ============================================================================
@@ -387,7 +387,7 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[0].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[0].attributes = BL_PARTITION_ATTR_READ_ONLY;
     mgr->table.partitions[0].start_address = 0x00000000;
-    mgr->table.partitions[0].end_address = bootloader_size - 1;
+    mgr->table.partitions[0].end_address = bootloader_size - 1U;
     mgr->table.partitions[0].size = bootloader_size;
     
     /* Partition 1: Application A */
@@ -396,7 +396,7 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[1].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[1].attributes = BL_PARTITION_ATTR_VERIFIED;
     mgr->table.partitions[1].start_address = align_to_sector(bootloader_size, sector_size);
-    mgr->table.partitions[1].end_address = mgr->table.partitions[1].start_address + app_size - 1;
+    mgr->table.partitions[1].end_address = mgr->table.partitions[1].start_address + app_size - 1U;
     mgr->table.partitions[1].size = app_size;
     mgr->table.partitions[1].max_boot_count = 3; /* 3次启动尝试 */
     
@@ -406,8 +406,8 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[2].state = BL_PARTITION_STATE_INACTIVE;
     mgr->table.partitions[2].attributes = 0;
     mgr->table.partitions[2].start_address = align_to_sector(
-        mgr->table.partitions[1].end_address + 1, sector_size);
-    mgr->table.partitions[2].end_address = mgr->table.partitions[2].start_address + app_size - 1;
+        mgr->table.partitions[1].end_address + 1U, sector_size);
+    mgr->table.partitions[2].end_address = mgr->table.partitions[2].start_address + app_size - 1U;
     mgr->table.partitions[2].size = app_size;
     mgr->table.partitions[2].max_boot_count = 3;
     
@@ -417,8 +417,8 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.partitions[3].state = BL_PARTITION_STATE_ACTIVE;
     mgr->table.partitions[3].attributes = BL_PARTITION_ATTR_READ_ONLY;
     mgr->table.partitions[3].start_address = align_to_sector(
-        mgr->table.partitions[2].end_address + 1, sector_size);
-    mgr->table.partitions[3].end_address = mgr->table.partitions[3].start_address + cal_size - 1;
+        mgr->table.partitions[2].end_address + 1U, sector_size);
+    mgr->table.partitions[3].end_address = mgr->table.partitions[3].start_address + cal_size - 1U;
     mgr->table.partitions[3].size = cal_size;
     
     /* 计算CRC */
@@ -871,7 +871,7 @@ bl_partition_error_t bl_partition_calculate_crc32(
     uint32_t remaining = part->size;
     uint32_t address = part->start_address;
     
-    while (remaining > 0) {
+    while (remaining > 0U) {
         uint32_t chunk_size = (remaining > BL_FLASH_SECTOR_SIZE) ? 
                               BL_FLASH_SECTOR_SIZE : remaining;
         

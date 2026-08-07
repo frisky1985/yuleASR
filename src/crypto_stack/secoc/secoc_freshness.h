@@ -22,10 +22,10 @@ extern "C" {
  * 配置常量
  * ============================================================================ */
 
-#define SECOC_FV_MAX_ENTRIES            64
-#define SECOC_SYNC_MASTER_INTERVAL_MS   100     /* Master发送同步消息间隔 */
+#define SECOC_FV_MAX_ENTRIES            64U
+#define SECOC_SYNC_MASTER_INTERVAL_MS   100U     /* Master发送同步消息间隔 */
 #define SECOC_SYNC_RETRY_COUNT          3       /* 同步重试次数 */
-#define SECOC_FRESHNESS_TOLERANCE       5       /* 允许的Freshness值滞后 */
+#define SECOC_FRESHNESS_TOLERANCE       5U       /* 允许的Freshness值滞后 */
 
 /* 时间戳模式配置 */
 #define SECOC_TS_RESOLUTION_US          1000    /* 时间戳分辨率 (微秒) */
@@ -33,7 +33,7 @@ extern "C" {
 
 /* 行程计数器配置 */
 #define SECOC_TRIP_MAX_VALUE            0xFFFFFFFF
-#define SECOC_RESET_MAX_VALUE           0xFF
+#define SECOC_RESET_MAX_VALUE           0xFFU
 
 /* ============================================================================
  * Freshness值状态

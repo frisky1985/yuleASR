@@ -63,7 +63,7 @@ void Nm_Init(const Nm_ConfigType* ConfigPtr)
         Nm_RemoteSleepInd[i] = FALSE;
         
         /* Clear user data */
-        for (uint8 j = 0; j < 8; j++)
+        for (uint8 j = 0; j < 8U; j++)
         {
             Nm_UserData[i][j] = 0;
         }
@@ -309,7 +309,7 @@ Std_ReturnType Nm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8* nmUse
 #endif
 
     /* Copy user data */
-    for (uint8 i = 0; i < 8; i++)
+    for (uint8 i = 0; i < 8U; i++)
     {
         nmUserDataPtr[i] = Nm_UserData[nmChannelHandle][i];
     }
@@ -338,7 +338,7 @@ Std_ReturnType Nm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uint8*
 #endif
 
     /* Copy user data */
-    for (uint8 i = 0; i < 8; i++)
+    for (uint8 i = 0; i < 8U; i++)
     {
         Nm_UserData[nmChannelHandle][i] = nmUserDataPtr[i];
     }

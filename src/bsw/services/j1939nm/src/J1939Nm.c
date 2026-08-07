@@ -192,7 +192,7 @@ STATIC void J1939Nm_ProcessAddressClaiming(J1939Nm_ChannelType Channel)
         case J1939NM_AC_STATE_IDLE:
             /* Start address claiming process */
             channelState->AcDelayTimer = (uint16)(channelConfig->AcDelayMin + 
-                ((channelState->Name % 100) % (channelConfig->AcDelayMax - channelConfig->AcDelayMin + 1)));
+                ((channelState->Name % 100U) % (channelConfig->AcDelayMax - channelConfig->AcDelayMin + 1)));
             channelState->AcState = J1939NM_AC_STATE_WAITING;
             break;
             
@@ -730,7 +730,7 @@ void J1939Nm_HandleAddressConflict(
         /* Our NAME is lower (higher priority), we keep the address */
         /* Re-transmit Address Claimed to assert our claim */
         (void)J1939Nm_TransmitAddressClaimed(Channel);
-    } else if (nameCompare > 0U ) {
+    } else if ((unsigned int)(nameCompare) > 0U ) {
         /* Our NAME is higher (lower priority), we must release the address */
         channelState->AcState = J1939NM_AC_STATE_CONFLICT;
     } else {

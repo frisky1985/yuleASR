@@ -22,9 +22,9 @@ extern "C" {
  * 配置常量
  * ============================================================================ */
 
-#define CRYIF_MAX_DRIVERS               8
-#define CRYIF_MAX_CHANNELS              16
-#define CRYIF_MAX_KEY_SLOTS             64
+#define CRYIF_MAX_DRIVERS               8U
+#define CRYIF_MAX_CHANNELS              16U
+#define CRYIF_MAX_KEY_SLOTS             64U
 #define CRYIF_MAX_JOB_QUEUE             32
 
 #define CRYIF_CHANNEL_ID_INVALID        0xFF

@@ -35,7 +35,7 @@
 #define SWC_MODEMANAGER_INSTANCE_ID         0x00
 
 /* Maximum components to manage */
-#define MODE_MAX_COMPONENTS                 16
+#define MODE_MAX_COMPONENTS                 16U
 
 /* Mode transition timeout */
 #define MODE_TRANSITION_TIMEOUT_MS          5000
@@ -103,7 +103,7 @@ STATIC void Swc_ModeManager_ProcessModeRequest(void)
     Swc_ModeTransitionRequestType request;
 
     /* Check for new request via RTE */
-    if (Rte_Read_ModeRequest(&request) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Read_ModeRequest(&request)) == RTE_E_OK) {
         /* Store as pending request */
         swcModeManager.pendingRequest = request;
         swcModeManager.hasPendingRequest = TRUE;
@@ -155,7 +155,7 @@ STATIC void Swc_ModeManager_ExecuteModeTransition(void)
     }
 
     /* Check if all components are ready */
-    if (Swc_ModeManager_AreAllComponentsReady()) {
+    if ((Swc_ModeManager_AreAllComponentsReady()) != 0U) {
         /* Complete transition */
         swcModeManager.status.previousMode = swcModeManager.status.currentMode;
         swcModeManager.status.currentMode = swcModeManager.status.requestedMode;

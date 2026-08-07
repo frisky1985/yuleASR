@@ -33,16 +33,16 @@
 #define GPT2_BASE_ADDR                  (0x302F0000UL)
 #endif
 
-#define GPT_CR                          (0x00)
-#define GPT_PR                          (0x04)
-#define GPT_SR                          (0x08)
-#define GPT_IR                          (0x0C)
-#define GPT_OCR1                        (0x10)
+#define GPT_CR                          (0x00U)
+#define GPT_PR                          (0x04U)
+#define GPT_SR                          (0x08U)
+#define GPT_IR                          (0x0CU)
+#define GPT_OCR1                        (0x10U)
 #define GPT_OCR2                        (0x14)
 #define GPT_OCR3                        (0x18)
 #define GPT_ICR1                        (0x1C)
 #define GPT_ICR2                        (0x20)
-#define GPT_CNT                         (0x24)
+#define GPT_CNT                         (0x24U)
 
 #define GPT_CR_EN                       (0x00000001U)
 #define GPT_CR_ENMOD                    (0x00000002U)

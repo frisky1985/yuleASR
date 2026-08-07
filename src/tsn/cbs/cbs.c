@@ -19,7 +19,7 @@
  * 常量和宏定义
  * ============================================================================ */
 
-#define CBS_MAX_PORTS                   8
+#define CBS_MAX_PORTS                   8U
 #define CBS_MAX_QUEUES_PER_PORT         8
 #define NS_PER_US                       1000ULL
 
@@ -366,8 +366,8 @@ eth_status_t cbs_complete_transmission(uint16_t port_id, uint8_t queue_id,
     cbs_decrement_credit(port_id, queue_id, frame_size);
     
     /* 检查传输超时 */
-    uint32_t expected_time_us = (frame_size * 8) / 
-                                (port->config.port_transmit_rate_bps / 1000000);
+    uint32_t expected_time_us = (frame_size * 8U) / 
+                                (port->config.port_transmit_rate_bps / 1000000U);
     uint32_t actual_time_us = (uint32_t)(actual_time_ns / NS_PER_US);
     
     if (actual_time_us > (expected_time_us + config->transmission_overrun_us)) {
@@ -418,7 +418,7 @@ eth_status_t cbs_get_sr_class_latency(cbs_sr_class_type_t class_type, uint32_t *
 eth_status_t cbs_calc_idle_slope(uint32_t port_transmit_rate_bps,
                                   uint32_t bandwidth_percent,
                                   int64_t *idle_slope) {
-    if ((idle_slope == NULL) || (bandwidth_percent > 100)) {
+    if ((idle_slope == NULL) || (bandwidth_percent > 100U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -571,17 +571,17 @@ eth_status_t cbs_check_bandwidth_utilization(uint16_t port_id,
     uint64_t current_time = get_current_time_ns();
     uint64_t elapsed_ns = current_time - port->bandwidth_check_time_ns;
     
-    if (elapsed_ns == 0) {
+    if (elapsed_ns == 0U) {
         *utilization_percent = 0;
         return ETH_OK;
     }
     
     /* 计算带宽利用率 */
-    uint64_t bits_sent = port->total_bytes_transmitted * 8;
+    uint64_t bits_sent = port->total_bytes_transmitted * 8U;
     uint64_t elapsed_us = elapsed_ns / NS_PER_US;
-    uint64_t actual_rate = (bits_sent * 1000000) / elapsed_us;
+    uint64_t actual_rate = (bits_sent * 1000000U) / elapsed_us;
     
-    *utilization_percent = (uint32_t)((actual_rate * 100) / port->config.port_transmit_rate_bps);
+    *utilization_percent = (uint32_t)((actual_rate * 100U) / port->config.port_transmit_rate_bps);
     
     /* 检查阈值 */
     if (*utilization_percent > port->config.bandwidth_alarm_threshold) {
@@ -603,14 +603,14 @@ eth_status_t cbs_check_bandwidth_utilization(uint16_t port_id,
 eth_status_t cbs_create_automotive_config(uint16_t port_id, 
                                            uint32_t port_rate_mbps,
                                            cbs_port_config_t *config) {
-    if ((config == NULL) || (port_rate_mbps == 0)) {
+    if ((config == NULL) || (port_rate_mbps == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
     memset(config, 0, sizeof(cbs_port_config_t));
     
     config->port_id = port_id;
-    config->port_transmit_rate_bps = (uint32_t)port_rate_mbps * 1000000;
+    config->port_transmit_rate_bps = (uint32_t)port_rate_mbps * 1000000U;
     config->sr_class_count = 2;
     config->queue_count = 2;
     config->enable_safety_checks = true;
@@ -634,7 +634,7 @@ eth_status_t cbs_create_automotive_config(uint16_t port_id,
     config->sr_classes[CBS_SR_CLASS_B].priority = 2;
     config->sr_classes[CBS_SR_CLASS_B].vid = 2;
     
-    uint32_t port_rate_bps = port_rate_mbps * 1000000;
+    uint32_t port_rate_bps = port_rate_mbps * 1000000U;
     
     /* Class A 队列配置 - 25% 带宽 */
     config->queue_configs[CBS_SR_CLASS_A].queue_id = 0;

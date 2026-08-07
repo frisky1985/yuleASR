@@ -30,9 +30,9 @@
 #define WDG_WDOG2_BASE_ADDR             (S32K312_WDOG_BASE)
 #define WDG_WDOG3_BASE_ADDR             (S32K312_WDOG_BASE)
 #define WDG_WCR                         WDOG_CS_OFF
-#define WDG_WSR                         (0x02)
+#define WDG_WSR                         (0x02U)
 #define WDG_WRSR                        (0x04)
-#define WDG_WICR                        (0x06)
+#define WDG_WICR                        (0x06U)
 #define WDG_WMCR                        (0x08)
 #else
 #define WDG_WDOG1_BASE_ADDR             (0x30280000UL)

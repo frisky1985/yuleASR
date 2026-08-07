@@ -11,7 +11,7 @@ void Tel_Diag_Init(void) {
 }
 
 Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, uint16_t *actual_len) {
-    if (!data || !actual_len || (max_len == 0)) {
+    if (!data || !actual_len || (max_len == 0U)) {
         return E_NOT_OK;
     }
     
@@ -51,36 +51,36 @@ Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, 
         }
         
         case DID_TEL_BUFFER_USAGE: {
-            if (max_len < 2) {
+            if (max_len < 2U) {
                 return E_NOT_OK;
             }
             uint16_t usage = stats ? stats->current_usage : 0;
-            data[0] = (usage >> 8) & 0xFF;
-            data[1] = usage & 0xFF;
+            data[0] = (usage >> 8) & 0xFFU;
+            data[1] = usage & 0xFFU;
             *actual_len = 2;
             return E_OK;
         }
         
         case DID_TEL_OVERFLOW_COUNT: {
-            if (max_len < 2) {
+            if (max_len < 2U) {
                 return E_NOT_OK;
             }
             uint16_t overflow = stats ? stats->overflow_cnt : 0;
-            data[0] = (overflow >> 8) & 0xFF;
-            data[1] = overflow & 0xFF;
+            data[0] = (overflow >> 8) & 0xFFU;
+            data[1] = overflow & 0xFFU;
             *actual_len = 2;
             return E_OK;
         }
         
         case DID_TEL_EVENT_COUNT: {
-            if (max_len < 4) {
+            if (max_len < 4U) {
                 return E_NOT_OK;
             }
             uint32_t count = stats ? stats->total_events : 0;
-            data[0] = (count >> 24) & 0xFF;
-            data[1] = (count >> 16) & 0xFF;
-            data[2] = (count >> 8) & 0xFF;
-            data[3] = count & 0xFF;
+            data[0] = (count >> 24) & 0xFFU;
+            data[1] = (count >> 16) & 0xFFU;
+            data[2] = (count >> 8) & 0xFFU;
+            data[3] = count & 0xFFU;
             *actual_len = 4;
             return E_OK;
         }
@@ -97,14 +97,14 @@ Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, 
 }
 
 Std_ReturnType Tel_Diag_WriteData(uint16_t did, const uint8_t *data, uint16_t len) {
-    if (!data || (len == 0)) {
+    if (!data || (len == 0U)) {
         return E_NOT_OK;
     }
     
     switch (did) {
         case DID_TEL_CONTROL: {
-            if (len < 1) return E_NOT_OK;
-            bool enable = (data[0] != 0);
+            if (len < 1U) return E_NOT_OK;
+            bool enable = (data[0] != 0U);
             /* 启用/禁用埋点 - 需要调用Tel API */
             (void)enable;
             return E_OK;
@@ -116,7 +116,7 @@ Std_ReturnType Tel_Diag_WriteData(uint16_t did, const uint8_t *data, uint16_t le
         }
         
         case DID_TEL_SET_LEVEL: {
-            if (len < 1) return E_NOT_OK;
+            if (len < 1U) return E_NOT_OK;
             TelLevel_t level = (TelLevel_t)data[0];
             Tel_SetGlobalLevel(level);
             return E_OK;

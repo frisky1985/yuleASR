@@ -2473,7 +2473,7 @@ static inline int mbedtls_svc_key_id_equal(mbedtls_svc_key_id_t id1,
  */
 static inline int mbedtls_svc_key_id_is_null(mbedtls_svc_key_id_t key)
 {
-    return key == 0;
+    return key == 0U;
 }
 
 #else /* MBEDTLS_PSA_CRYPTO_KEY_ID_ENCODES_OWNER */

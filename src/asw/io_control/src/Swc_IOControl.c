@@ -35,12 +35,12 @@
 #define SWC_IOCONTROL_INSTANCE_ID           0x00
 
 /* Maximum channels */
-#define IO_MAX_DIGITAL_INPUTS               16
-#define IO_MAX_DIGITAL_OUTPUTS              16
-#define IO_MAX_ANALOG_INPUTS                8
-#define IO_MAX_ANALOG_OUTPUTS               4
-#define IO_MAX_PWM_INPUTS                   4
-#define IO_MAX_PWM_OUTPUTS                  4
+#define IO_MAX_DIGITAL_INPUTS               16U
+#define IO_MAX_DIGITAL_OUTPUTS              16U
+#define IO_MAX_ANALOG_INPUTS                8U
+#define IO_MAX_ANALOG_OUTPUTS               4U
+#define IO_MAX_PWM_INPUTS                   4U
+#define IO_MAX_PWM_OUTPUTS                  4U
 
 /* Debounce constants */
 #define IO_DEBOUNCE_SAMPLES                 3
@@ -221,7 +221,7 @@ STATIC void Swc_IOControl_ProcessDigitalInputs(void)
 
     for (i = 0; i < swcIOControl.numDigitalInputs; i++) {
         /* Read from RTE */
-        if (Rte_Read_DigitalInput(&inputValue) == RTE_E_OK) {
+        if ((uint8_t)(Rte_Read_DigitalInput(&inputValue)) == RTE_E_OK) {
             if (inputValue.channelId == swcIOControl.inputs[i].channelId) {
                 /* Simple debounce */
                 if (inputValue.value == swcIOControl.inputs[i].value) {
@@ -252,7 +252,7 @@ STATIC void Swc_IOControl_ProcessAnalogInputs(void)
 
     for (i = 0; i < swcIOControl.numAnalogInputs; i++) {
         /* Read from RTE */
-        if (Rte_Read_AnalogInput(&inputValue) == RTE_E_OK) {
+        if ((uint8_t)(Rte_Read_AnalogInput(&inputValue)) == RTE_E_OK) {
             if (inputValue.channelId == swcIOControl.analogInputs[i].channelId) {
                 swcIOControl.analogInputs[i].rawValue = inputValue.rawValue;
                 swcIOControl.analogInputs[i].physicalValue = inputValue.physicalValue;
@@ -273,7 +273,7 @@ STATIC void Swc_IOControl_ProcessPwmInputs(void)
 
     for (i = 0; i < swcIOControl.numPwmInputs; i++) {
         /* Read from RTE */
-        if (Rte_Read_PwmInput(&inputValue) == RTE_E_OK) {
+        if ((uint8_t)(Rte_Read_PwmInput(&inputValue)) == RTE_E_OK) {
             if (inputValue.channelId == swcIOControl.pwmInputs[i].channelId) {
                 swcIOControl.pwmInputs[i].dutyCycle = inputValue.dutyCycle;
                 swcIOControl.pwmInputs[i].frequency = inputValue.frequency;
@@ -483,7 +483,7 @@ Rte_StatusType Swc_IOControl_WriteDigitalOutput(uint16 channelId, boolean value)
 
     /* Write via RTE */
     outputValue = swcIOControl.outputs[channelIndex];
-    if (Rte_Write_DigitalOutput(&outputValue) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Write_DigitalOutput(&outputValue)) == RTE_E_OK) {
         swcIOControl.statistics.digitalWrites++;
         return RTE_E_OK;
     } else {
@@ -559,7 +559,7 @@ Rte_StatusType Swc_IOControl_WriteAnalogOutput(uint16 channelId, uint16 value)
 
     /* Write via RTE */
     outputValue = swcIOControl.analogOutputs[channelIndex];
-    if (Rte_Write_AnalogOutput(&outputValue) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Write_AnalogOutput(&outputValue)) == RTE_E_OK) {
         swcIOControl.statistics.analogWrites++;
         return RTE_E_OK;
     } else {
@@ -640,7 +640,7 @@ Rte_StatusType Swc_IOControl_WritePwmOutput(uint16 channelId,
 
     /* Write via RTE */
     outputValue = swcIOControl.pwmOutputs[channelIndex];
-    if (Rte_Write_PwmOutput(&outputValue) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Write_PwmOutput(&outputValue)) == RTE_E_OK) {
         swcIOControl.statistics.pwmWrites++;
         return RTE_E_OK;
     } else {

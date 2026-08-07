@@ -199,7 +199,7 @@ eth_status_t tsn_stack_get_status(tsn_stack_status_t *status) {
 
 eth_status_t tsn_create_automotive_config(uint32_t port_rate_mbps, 
                                            tsn_stack_config_t *config) {
-    if ((config == NULL) || (port_rate_mbps == 0)) {
+    if ((config == NULL) || (port_rate_mbps == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -301,7 +301,7 @@ eth_status_t tsn_wait_for_sync(uint8_t domain_index, uint32_t timeout_ms) {
         /* 简单延时 */
         struct timespec ts = {0, 1000000};  /* 1ms */
         nanosleep(&ts, NULL);
-        elapsed += 1;
+        elapsed += 1U;
     }
     
     return ETH_TIMEOUT;
@@ -310,7 +310,7 @@ eth_status_t tsn_wait_for_sync(uint8_t domain_index, uint32_t timeout_ms) {
 eth_status_t tsn_transmit_frame(uint16_t port_id, uint8_t queue_id,
                                  const uint8_t *data, uint32_t len,
                                  uint8_t priority) {
-    if (!g_tsn_context.initialized || (data == NULL) || len == 0) {
+    if (!g_tsn_context.initialized || (data == NULL) || len == 0U) {
         return ETH_INVALID_PARAM;
     }
     
@@ -461,7 +461,7 @@ eth_status_t tsn_stack_print_status(void) {
     printf("Version: %s\n", TSN_STACK_VERSION_STRING);
     printf("State: %d\n", g_tsn_context.state);
     printf("\nActive Modules:\n");
-    printf("  gPTP: %s\n", g_tsn_context.config.gptp_config.domain_count > 0 ? "Yes" : "No");
+    printf("  gPTP: %s\n", g_tsn_context.config.gptp_config.domain_count > 0U ? "Yes" : "No");
     printf("  TAS: %s\n", g_tsn_context.config.tas_enabled ? "Yes" : "No");
     printf("  CBS: %s\n", g_tsn_context.config.cbs_enabled ? "Yes" : "No");
     printf("  Frame Preemption: %s\n", g_tsn_context.config.fp_enabled ? "Yes" : "No");

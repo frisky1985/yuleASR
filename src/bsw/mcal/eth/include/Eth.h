@@ -86,7 +86,7 @@ extern "C" {
 *                              CONTROLLER STATE
 ==================================================================================================*/
 typedef uint8 Eth_StateType;
-#define ETH_STATE_UNINIT                   0x00
+#define ETH_STATE_UNINIT                   0x00U
 #define ETH_STATE_INIT                     0x01
 
 /*==================================================================================================

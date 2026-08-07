@@ -41,10 +41,10 @@
 #define PHY_STATUS_100BASE_TX_H 0x2000
 #define PHY_STATUS_10BASE_T_F   0x1000
 #define PHY_STATUS_10BASE_T_H   0x0800
-#define PHY_STATUS_AUTO_NEG_DONE 0x0020
+#define PHY_STATUS_AUTO_NEG_DONE 0x0020U
 #define PHY_STATUS_REMOTE_FAULT 0x0010
 #define PHY_STATUS_AUTO_NEG_CAP 0x0008
-#define PHY_STATUS_LINK_UP      0x0004
+#define PHY_STATUS_LINK_UP      0x0004U
 #define PHY_STATUS_JABBER       0x0002
 #define PHY_STATUS_EXT_CAP      0x0001
 
@@ -117,7 +117,7 @@ static eth_status_t automotive_phy_validate_config(const automotive_phy_config_t
     }
 
     /* 验证MDIO地址 */
-    if (config->phy_addr > 31) {
+    if (config->phy_addr > 31U) {
         return ETH_INVALID_PARAM;
     }
 

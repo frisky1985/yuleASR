@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-19.2
 
-> Generated: 2026-08-07T14:51:08.930419
+> Generated: 2026-08-07T15:31:29.017384
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -57,10 +57,6 @@ union 不应以混淆的方式重叠
 | 43 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/x509.h` | 280 | 0 | The union keyword should not be used [misra-c2012-19.2] |
 | 44 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/x509.h` | 294 | 0 | The union keyword should not be used [misra-c2012-19.2] |
 | 45 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/x509.h` | 298 | 0 | The union keyword should not be used [misra-c2012-19.2] |
-| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ssl.h` | 655 | 0 | The union keyword should not be used [misra-c2012-19.2] |
-| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ssl.h` | 1403 | 0 | The union keyword should not be used [misra-c2012-19.2] |
-| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ssl.h` | 1676 | 0 | The union keyword should not be used [misra-c2012-19.2] |
-| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/ssl.h` | 1950 | 0 | The union keyword should not be used [misra-c2012-19.2] |
 
 ## Fix Checklist
 

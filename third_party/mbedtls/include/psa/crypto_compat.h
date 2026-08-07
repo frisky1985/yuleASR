@@ -182,7 +182,7 @@ static inline psa_status_t MBEDTLS_DEPRECATED psa_set_key_domain_parameters(
     psa_key_type_t type, const uint8_t *data, size_t data_length)
 {
     (void) data;
-    if (data_length != 0) {
+    if (data_length != 0U) {
         return PSA_ERROR_NOT_SUPPORTED;
     }
     psa_set_key_type(attributes, type);

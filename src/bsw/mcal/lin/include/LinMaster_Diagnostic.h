@@ -30,9 +30,9 @@
 #define LINMASTER_DIAG_PATCH_VERSION      0
 
 /* 诊断通信参数 */
-#define LINMASTER_DIAG_MAX_BUFFER_SIZE    4095    /* 最大数据长度 */
+#define LINMASTER_DIAG_MAX_BUFFER_SIZE    4095U    /* 最大数据长度 */
 #define LINMASTER_DIAG_DEFAULT_TIMEOUT    1000    /* 默认响应超时(ms) */
-#define LINMASTER_DIAG_P2_MAX_TIMEOUT     5000    /* P2*最大超时时间(ms) */
+#define LINMASTER_DIAG_P2_MAX_TIMEOUT     5000U    /* P2U*最大超时时间(ms) */
 
 /* LIN诊断帧ID */
 #define LINMASTER_DIAG_REQ_FRAME_ID       0x3C    /* 诊断请求帧ID */

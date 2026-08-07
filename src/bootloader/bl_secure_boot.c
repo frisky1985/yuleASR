@@ -97,8 +97,8 @@ static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
     
     for (uint32_t i = 0; i < length; i++) {
         crc ^= data[i];
-        for (uint8_t j = 0; j < 8; j++) {
-            if (crc & 1) {
+        for (uint8_t j = 0; j < 8U; j++) {
+            if ((crc & 1U) != 0U) {
                 crc = (crc >> 1) ^ polynomial;
             } else {
                 crc >>= 1;
@@ -500,7 +500,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
-    if ((chain->num_certs == 0) || (chain->num_certs > BL_SB_MAX_CERT_CHAIN_DEPTH)) {
+    if ((chain->num_certs == 0U) || (chain->num_certs > BL_SB_MAX_CERT_CHAIN_DEPTH)) {
         return BL_SB_ERROR_CERT_CHAIN_INVALID;
     }
     
@@ -510,7 +510,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     }
     
     /* 验证证书链从叶子到根 */
-    for (int i = chain->num_certs - 1; i >= 0; i--) {
+    for (int i = chain->num_certs - 1U; i >= 0; i--) {
         const bl_certificate_t *cert = &chain->certs[i];
         
         /* 检查证书有效期 */
@@ -525,7 +525,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         
         /* 验证签名 */
         const uint8_t *signing_key = NULL;
-        if (i == (chain->num_certs - 1)) {
+        if (i == (chain->num_certs - 1U)) {
             /* 根证书使用可信公钥验证 */
             signing_key = trusted_root_key;
         } else {
@@ -735,14 +735,14 @@ const char* bl_secure_boot_version_to_string(
     uint32_t buf_size
 )
 {
-    if ((buf == NULL) || (buf_size < 16)) {
+    if ((buf == NULL) || (buf_size < 16U)) {
         return NULL;
     }
     
     /* 版本格式: major(8).minor(8).patch(16) */
-    uint8_t major = (version >> 24) & 0xFF;
-    uint8_t minor = (version >> 16) & 0xFF;
-    uint16_t patch = version & 0xFFFF;
+    uint8_t major = (version >> 24) & 0xFFU;
+    uint8_t minor = (version >> 16) & 0xFFU;
+    uint16_t patch = version & 0xFFFFU;
     
     snprintf(buf, buf_size, "%u.%u.%u", major, minor, patch);
     return buf;

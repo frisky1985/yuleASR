@@ -215,7 +215,7 @@ void Boot_Loader_Jump(uint32_t target_addr)
 
     /* Set new vector table */
     uint32_t msp = *(volatile uint32_t *)(uintptr_t)target_addr;  /* SP from vector[0] */
-    uint32_t pc  = *(volatile uint32_t *)(uintptr_t)(target_addr + 4);  /* PC from vector[1] */
+    uint32_t pc  = *(volatile uint32_t *)(uintptr_t)(target_addr + 4U);  /* PC from vector[1] */
 
     /* De-init peripherals (minimal) */
     Boot_Flash_Init();  /* flush pending operations */

@@ -450,9 +450,9 @@ Std_ReturnType E2E_DDS_Subscribe(
             break;
         case E2E_P_ERROR:
         default:
-            if (e2eStatus & E2E_ERROR_CRC) {
+            if ((e2eStatus & E2E_ERROR_CRC) != 0U) {
                 *result = E2E_DDS_ERROR_CRC;
-            } else if (e2eStatus & E2E_ERROR_LENGTH) {
+            } else if ((e2eStatus & E2E_ERROR_LENGTH) != 0U) {
                 *result = E2E_DDS_ERROR_LENGTH;
             } else {
                 *result = E2E_DDS_ERROR_PROFILE;

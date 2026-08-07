@@ -56,7 +56,7 @@
 
 /* SOME/IP-SD Specific Constants */
 #define SOMEIPSD_SERVICE_ID                0xFFFF
-#define SOMEIPSD_METHOD_ID                 0x8100
+#define SOMEIPSD_METHOD_ID                 0x8100U
 
 /* SD Message Types */
 #define SOMEIPSD_MSG_FIND_SERVICE          0x00

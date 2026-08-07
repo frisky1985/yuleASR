@@ -466,7 +466,7 @@ eth_status_t dds_tsn_send_stream_data(uint32_t stream_handle,
     if (!g_tsn_ctx.initialized) {
         status = ETH_NOT_INIT;
     }
-    else if ((stream_handle >= DDS_TSN_MAX_STREAMS) || (data == NULL) || (len == 0)) {
+    else if ((stream_handle >= DDS_TSN_MAX_STREAMS) || (data == NULL) || (len == 0U)) {
         status = ETH_INVALID_PARAM;
     }
     else if (!g_tsn_ctx.streams[stream_handle].used) {
@@ -625,21 +625,21 @@ eth_status_t dds_tsn_generate_stream_id(const char *topic_name,
          * 前4字节: Domain ID
          * 后4字节: 主题名哈希
          */
-        stream_id->id[0] = (uint8_t)((domain_id >> 24) & 0xFF);
-        stream_id->id[1] = (uint8_t)((domain_id >> 16) & 0xFF);
-        stream_id->id[2] = (uint8_t)((domain_id >> 8) & 0xFF);
-        stream_id->id[3] = (uint8_t)(domain_id & 0xFF);
+        stream_id->id[0] = (uint8_t)((domain_id >> 24) & 0xFFU);
+        stream_id->id[1] = (uint8_t)((domain_id >> 16) & 0xFFU);
+        stream_id->id[2] = (uint8_t)((domain_id >> 8) & 0xFFU);
+        stream_id->id[3] = (uint8_t)(domain_id & 0xFFU);
         
         /* 简单哈希计算 */
         uint32_t hash = 0;
         for (size_t i = 0; i < strlen(topic_name); i++) {
-            hash = (hash * 31) + topic_name[i];
+            hash = (hash * 31U) + topic_name[i];
         }
         
-        stream_id->id[4] = (uint8_t)((hash >> 24) & 0xFF);
-        stream_id->id[5] = (uint8_t)((hash >> 16) & 0xFF);
-        stream_id->id[6] = (uint8_t)((hash >> 8) & 0xFF);
-        stream_id->id[7] = (uint8_t)(hash & 0xFF);
+        stream_id->id[4] = (uint8_t)((hash >> 24) & 0xFFU);
+        stream_id->id[5] = (uint8_t)((hash >> 16) & 0xFFU);
+        stream_id->id[6] = (uint8_t)((hash >> 8) & 0xFFU);
+        stream_id->id[7] = (uint8_t)(hash & 0xFFU);
     }
     
     return status;
@@ -662,7 +662,7 @@ eth_status_t dds_tsn_parse_stream_id(const dds_tsn_stream_id_t *stream_id,
                      (uint32_t)stream_id->id[3];
         
         /* 主题名不能从Stream ID解析，返回空字符串 */
-        if ((topic_name != NULL) && (topic_name_len > 0)) {
+        if ((topic_name != NULL) && (topic_name_len > 0U)) {
             topic_name[0] = '\0';
         }
     }
@@ -680,7 +680,7 @@ eth_status_t dds_tsn_stream_id_to_string(const dds_tsn_stream_id_t *stream_id,
 {
     eth_status_t status = ETH_OK;
     
-    if ((stream_id == NULL) || (str == NULL) || (str_len < 17)) {
+    if ((stream_id == NULL) || (str == NULL) || (str_len < 17U)) {
         status = ETH_INVALID_PARAM;
     }
     else {

@@ -23,13 +23,13 @@ extern "C" {
  * 配置常量
  * ============================================================================ */
 
-#define KEYM_MAX_KEY_SLOTS              64
+#define KEYM_MAX_KEY_SLOTS              64U
 #define KEYM_MAX_KEY_VERSIONS           8
 #define KEYM_MAX_KEY_NAME_LEN           32
-#define KEYM_MAX_CERTIFICATES           32
-#define KEYM_MAX_KEY_MATERIAL_SIZE      512
+#define KEYM_MAX_CERTIFICATES           32U
+#define KEYM_MAX_KEY_MATERIAL_SIZE      512U
 
-#define KEYM_SLOT_ID_INVALID            0xFF
+#define KEYM_SLOT_ID_INVALID            0xFFU
 #define KEYM_CERT_ID_INVALID            0xFF
 
 /* 密钥轮换策略 */

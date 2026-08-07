@@ -14,9 +14,9 @@
  * ============================================================================ */
 
 #define DDS_DISCOVERY_MAGIC_NUMBER      0x44445344U  /* "DDSD" */
-#define DDS_MAX_DISCOVERED_PARTICIPANTS 16
-#define DDS_MAX_DISCOVERED_PUBLICATIONS 32
-#define DDS_MAX_DISCOVERED_SUBSCRIPTIONS 32
+#define DDS_MAX_DISCOVERED_PARTICIPANTS 16U
+#define DDS_MAX_DISCOVERED_PUBLICATIONS 32U
+#define DDS_MAX_DISCOVERED_SUBSCRIPTIONS 32U
 
 /* 内建Endpoints位图 */
 #define DDS_BUILTIN_ENDPOINT_PARTICIPANT_ANNOUNCER  (1U << 0)
@@ -695,14 +695,14 @@ eth_status_t dds_discovery_serialize_participant(
         }
         
         /* 序列化内建Endpoints */
-        if ((offset + 4) <= buf_size) {
-            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 24) & 0xFF);
+        if ((offset + 4U) <= buf_size) {
+            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 24) & 0xFFU);
             offset++;
-            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 16) & 0xFF);
+            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 16) & 0xFFU);
             offset++;
-            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 8) & 0xFF);
+            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 8) & 0xFFU);
             offset++;
-            buffer[offset] = (uint8_t)(proxy->available_builtin_endpoints & 0xFF);
+            buffer[offset] = (uint8_t)(proxy->available_builtin_endpoints & 0xFFU);
             offset++;
         }
         
@@ -711,9 +711,9 @@ eth_status_t dds_discovery_serialize_participant(
         
         /* 序列化域标签 */
         uint32_t tag_len = (uint32_t)strlen(proxy->domain_tag);
-        if ((offset + tag_len + 1) <= buf_size) {
+        if ((offset + tag_len + 1U) <= buf_size) {
             (void)strcpy((char*)&buffer[offset], proxy->domain_tag);
-            offset += tag_len + 1;
+            offset += tag_len + 1U;
         }
         
         *actual_len = offset;
@@ -742,13 +742,13 @@ eth_status_t dds_discovery_deserialize_participant(
         }
         
         /* 反序列化内建Endpoints */
-        if ((offset + 4) <= len) {
+        if ((offset + 4U) <= len) {
             proxy->available_builtin_endpoints = 
                 ((uint32_t)data[offset] << 24) |
-                ((uint32_t)data[offset + 1] << 16) |
-                ((uint32_t)data[offset + 2] << 8) |
-                (uint32_t)data[offset + 3];
-            offset += 4;
+                ((uint32_t)data[offset + 1U] << 16) |
+                ((uint32_t)data[offset + 2U] << 8) |
+                (uint32_t)data[offset + 3U];
+            offset += 4U;
         }
         
         /* 反序列化域标签 */
@@ -789,16 +789,16 @@ eth_status_t dds_discovery_serialize_publication(
         
         /* 序列化主题名 */
         uint32_t topic_len = (uint32_t)strlen(pub->topic_name);
-        if ((offset + topic_len + 1) <= buf_size) {
+        if ((offset + topic_len + 1U) <= buf_size) {
             (void)strcpy((char*)&buffer[offset], pub->topic_name);
-            offset += topic_len + 1;
+            offset += topic_len + 1U;
         }
         
         /* 序列化类型名 */
         uint32_t type_len = (uint32_t)strlen(pub->type_name);
-        if ((offset + type_len + 1) <= buf_size) {
+        if ((offset + type_len + 1U) <= buf_size) {
             (void)strcpy((char*)&buffer[offset], pub->type_name);
-            offset += type_len + 1;
+            offset += type_len + 1U;
         }
         
         *actual_len = offset;
@@ -869,9 +869,9 @@ eth_status_t dds_discovery_serialize_subscription(
         }
         
         uint32_t topic_len = (uint32_t)strlen(sub->topic_name);
-        if ((offset + topic_len + 1) <= buf_size) {
+        if ((offset + topic_len + 1U) <= buf_size) {
             (void)strcpy((char*)&buffer[offset], sub->topic_name);
-            offset += topic_len + 1;
+            offset += topic_len + 1U;
         }
         
         *actual_len = offset;

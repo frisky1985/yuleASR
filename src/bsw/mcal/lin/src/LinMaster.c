@@ -407,7 +407,7 @@ void LinMaster_RxInterruptHandler(uint8 RxByte)
                 uint8 calculatedChecksum = LinMaster_CalculateChecksumInternal(
                     LinMaster_RxBuffer, 
                     LinMaster_RxLength, 
-                    (LinMaster_CurrentChecksumType == LINMASTER_CHECKSUM_ENHANCED) ? LinMaster_CurrentPid : 0);
+                    (LinMaster_CurrentChecksumType == LINMASTER_CHECKSUM_ENHANCED) ? LinMaster_CurrentPid : 0U);
                 
                 boolean isValid = (RxByte == calculatedChecksum) ? TRUE : FALSE;
                 
@@ -639,8 +639,8 @@ static uint8 LinMaster_CalculateChecksumInternal(const uint8* DataPtr, uint8 Len
         sum += DataPtr[i];
         
         /* 处理进位 */
-        if (sum > 0xFF) {
-            sum = (sum & 0xFF) + 1; /* 回绕 */
+        if (sum > 0xFFU) {
+            sum = (sum & 0xFFU) + 1; /* 回绕 */
         }
     }
     
@@ -722,8 +722,8 @@ uint8 LinMaster_CalculateProtectedId(uint8 Id)
     Id &= LINMASTER_PID_MASK;
     
     /* 计算校验位 */
-    p0 = ((Id >> 0) & 0x01) ^ ((Id >> 1) & 0x01) ^ ((Id >> 2) & 0x01) ^ ((Id >> 4) & 0x01);
-    p1 = ~(((Id >> 1) & 0x01) ^ ((Id >> 3) & 0x01) ^ ((Id >> 4) & 0x01) ^ ((Id >> 5) & 0x01)) & 0x01;
+    p0 = ((Id >> 0) & 0x01U) ^ ((Id >> 1) & 0x01) ^ ((Id >> 2) & 0x01) ^ ((Id >> 4) & 0x01);
+    p1 = ~(((Id >> 1) & 0x01U) ^ ((Id >> 3) & 0x01) ^ ((Id >> 4) & 0x01) ^ ((Id >> 5) & 0x01)) & 0x01;
     
     /* 组合PID: P1 P0 ID5 ID4 ID3 ID2 ID1 ID0 */
     pid = (p1 << 7) | (p0 << 6) | Id;

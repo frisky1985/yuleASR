@@ -368,7 +368,7 @@ boolean Com_TxModeUpdateSignalChange(Com_SignalIdType SignalId, const void* Sign
     /* Compare with last value */
     boolean changed = FALSE;
     if (changeTrack->IsValid) {
-        if (memcmp(changeTrack->LastValue, SignalDataPtr, signalSize) != 0U ) {
+        if (memcmp(changeTrack->LastValue, SignalDataPtr, signalSize) != 0 ) {
             changed = TRUE;
         }
     } else {

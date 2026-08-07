@@ -29,13 +29,13 @@ extern "C" {
 /* ============================================================================
  * 配置常量
  * ============================================================================ */
-#define BL_MAX_PARTITIONS               4
+#define BL_MAX_PARTITIONS               4U
 #define BL_MAX_PARTITION_NAME_LEN       16
-#define BL_PARTITION_TABLE_MAGIC        0x50415254  /* "PART" */
-#define BL_PARTITION_TABLE_VERSION      1
+#define BL_PARTITION_TABLE_MAGIC        0x50415254U  /* "PART" */
+#define BL_PARTITION_TABLE_VERSION      1U
 
 /* Flash操作配置 */
-#define BL_FLASH_SECTOR_SIZE            4096
+#define BL_FLASH_SECTOR_SIZE            4096U
 #define BL_FLASH_PAGE_SIZE              256
 #define BL_FLASH_ERASED_BYTE            0xFF
 

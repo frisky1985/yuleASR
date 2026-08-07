@@ -10,7 +10,7 @@
 /* MAC地址转换为字符串 */
 void eth_mac_to_str(const eth_mac_addr_t mac, char *str, size_t len)
 {
-    if (len < 18) return; /* xx:xx:xx:xx:xx:xx\0 */
+    if (len < 18U) return; /* xx:xx:xx:xx:xx:xx\0 */
     snprintf(str, len, "%02X:%02X:%02X:%02X:%02X:%02X",
              mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
@@ -26,12 +26,12 @@ eth_status_t eth_str_to_mac(const char *str, eth_mac_addr_t mac)
 /* IP地址转换为字符串 */
 void eth_ip_to_str(eth_ip_addr_t ip, char *str, size_t len)
 {
-    if (len < 16) return; /* xxx.xxx.xxx.xxx\0 */
+    if (len < 16U) return; /* xxx.xxx.xxx.xxx\0 */
     snprintf(str, len, "%u.%u.%u.%u",
-             (unsigned)((ip >> 24) & 0xFF),
-             (unsigned)((ip >> 16) & 0xFF),
-             (unsigned)((ip >> 8) & 0xFF),
-             (unsigned)(ip & 0xFF));
+             (unsigned)((ip >> 24) & 0xFFU),
+             (unsigned)((ip >> 16) & 0xFFU),
+             (unsigned)((ip >> 8) & 0xFFU),
+             (unsigned)(ip & 0xFFU));
 }
 
 /* 字符串转换为IP地址 */
@@ -39,7 +39,7 @@ eth_status_t eth_str_to_ip(const char *str, eth_ip_addr_t *ip)
 {
     unsigned int a, b, c, d;
     int ret = sscanf(str, "%u.%u.%u.%u", &a, &b, &c, &d);
-    if ((ret != 4) || (a > 255) || b > 255 || c > 255 || d > 255) {
+    if ((ret != 4) || (a > 255U) || b > 255 || c > 255 || d > 255) {
         return ETH_ERROR;
     }
     *ip = (a << 24) | (b << 16) | (c << 8) | d;
@@ -54,7 +54,7 @@ uint32_t eth_crc32(const uint8_t *data, uint32_t len)
     };
     uint32_t crc = 0xFFFFFFFF;
     while (len--) {
-        crc = (crc >> 8) ^ crc_table[(crc ^ *data) & 0xFF];
+        crc = (crc >> 8) ^ crc_table[(crc ^ *data) & 0xFFU];
     data++;
     }
     return crc ^ 0xFFFFFFFF;

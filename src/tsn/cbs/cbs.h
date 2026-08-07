@@ -27,7 +27,7 @@ extern "C" {
 /** SR类型定义 */
 #define CBS_SR_CLASS_A                  0
 #define CBS_SR_CLASS_B                  1
-#define CBS_SR_CLASS_MAX                2
+#define CBS_SR_CLASS_MAX                2U
 
 /** 默认延迟限制 */
 #define CBS_CLASS_A_MAX_LATENCY_US      2000    /* 2ms */
@@ -39,7 +39,7 @@ extern "C" {
 
 /** 传输选择算法参数 */
 #define CBS_TRANSMISSION_OVERRUN_US     100     /* 传输超时 */
-#define CBS_IDLE_SLOPE_MAX_PERCENT      75      /* 最大空闲斜率百分比 */
+#define CBS_IDLE_SLOPE_MAX_PERCENT      75U      /* 最大空闲斜率百分比 */
 
 /** 信用单位 */
 #define CBS_CREDIT_UNIT_BITS            1       /* 信用以位为单位 */

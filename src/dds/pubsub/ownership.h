@@ -28,7 +28,7 @@ extern "C" {
 /** 最大所有权主数量 */
 #define OWN_MAX_OWNERS         16
 /** 最大竞争者数量 */
-#define OWN_MAX_CONTENDERS     8
+#define OWN_MAX_CONTENDERS     8U
 /** 所有权协商超时(ms) */
 #define OWN_NEGOTIATION_TIMEOUT_MS  100
 /** 默认所有权强度 */

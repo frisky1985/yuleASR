@@ -150,7 +150,7 @@ static uint64_t get_timestamp_ns(void) {
 }
 
 static uint32_t get_thread_id(void) {
-    if (thread_id == 0) {
+    if (thread_id == 0U) {
         pthread_mutex_lock(&thread_mutex);
         ++thread_counter;
     thread_id = thread_counter;
@@ -239,7 +239,7 @@ static int queue_push(log_queue_t* queue, const dds_log_entry_t* entry) {
 static int queue_pop(log_queue_t* queue, dds_log_entry_t* entry) {
     pthread_mutex_lock(&queue->mutex);
     
-    while ((queue->size == 0) && !queue->shutdown) {
+    while ((queue->size == 0U) && !queue->shutdown) {
         struct timespec timeout;
         clock_gettime(CLOCK_REALTIME, &timeout);
         timeout.tv_nsec += 100 * 1000000; /* 100ms */
@@ -250,7 +250,7 @@ static int queue_pop(log_queue_t* queue, dds_log_entry_t* entry) {
         pthread_cond_timedwait(&queue->cond_not_empty, &queue->mutex, &timeout);
     }
     
-    if (queue->size == 0) {
+    if (queue->size == 0U) {
         pthread_mutex_unlock(&queue->mutex);
         return -1;
     }
@@ -405,20 +405,20 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
         "%s[%s]%s<%s> ", color, level_str, reset, log_type_to_string(entry->type));
     
     /* ECU ID */
-    if (strlen(entry->ecu_id) > 0) {
+    if (strlen(entry->ecu_id) > 0U) {
         offset += snprintf(buffer + offset, size - offset, "[%s] ", entry->ecu_id);
     }
     
     /* 模块和标签 */
-    if (strlen(entry->module) > 0) {
+    if (strlen(entry->module) > 0U) {
         offset += snprintf(buffer + offset, size - offset, "[%s]", entry->module);
     }
-    if (strlen(entry->tag) > 0) {
+    if (strlen(entry->tag) > 0U) {
         offset += snprintf(buffer + offset, size - offset, "[%s]", entry->tag);
     }
     
     /* 位置信息 */
-    if (g_log_state.config.enable_location && strlen(entry->file) > 0) {
+    if (g_log_state.config.enable_location && strlen(entry->file) > 0U) {
         const char* filename = strrchr(entry->file, '/');
         if (!filename) filename = strrchr(entry->file, '\\');
         if (!filename) filename = entry->file;
@@ -491,7 +491,7 @@ static void* flush_thread_func(void* arg) {
         g_log_state.stats.last_flush_time = get_timestamp_ns();
         pthread_mutex_unlock(&g_log_state.stats_mutex);
         
-        usleep(g_log_state.config.flush_interval_ms * 1000);
+        usleep(g_log_state.config.flush_interval_ms * 1000U);
     }
     
     /* 清空队列 */
@@ -558,7 +558,7 @@ int dds_log_init(const dds_log_config_t* config) {
     }
     
     /* 设置ECU ID */
-    if (strlen(g_log_state.config.ecu_id) == 0) {
+    if (strlen(g_log_state.config.ecu_id) == 0U) {
         snprintf(g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN, "ECU%04X", getpid() & 0xFFFF);
     }
     
@@ -632,7 +632,7 @@ void dds_log_flush(void) {
     
     if (g_log_state.config.enable_async) {
         /* 等待队列清空 */
-        while (g_log_state.queue.size > 0) {
+        while (g_log_state.queue.size > 0U) {
             usleep(1000);
         }
     }
@@ -752,7 +752,7 @@ void dds_log_audit(dds_audit_event_type_t event_type,
     va_list args;
     char message[DDS_LOG_MAX_MESSAGE_LEN];
     va_start(args, fmt);
-    vsnprintf(message, sizeof(message) - 1, fmt, args);
+    vsnprintf(message, sizeof(message) - 1U, fmt, args);
     va_end(args);
     
     /* 发送日志 */
@@ -917,7 +917,7 @@ int dds_log_trigger_ota_upload(const char* session_id, bool compress) {
 }
 
 int dds_log_get_ota_buffer(uint8_t* buffer, uint32_t buffer_size, uint32_t* actual_size) {
-    if (!buffer || !actual_size || (buffer_size == 0)) return -1;
+    if (!buffer || !actual_size || (buffer_size == 0U)) return -1;
     
     /* 简化版本：实际应用需要读取压缩日志数据 */
     *actual_size = 0;
@@ -941,7 +941,7 @@ void dds_log_set_uds_session(const char* session_id) {
 
 void dds_log_clear_uds_session(void) {
     pthread_mutex_lock(&g_log_state.uds_mutex);
-    if (strlen(g_log_state.uds_session) > 0) {
+    if (strlen(g_log_state.uds_session) > 0U) {
         DDS_LOG_INFO("DDS_LOG", "UDS", "UDS session ended: %s", g_log_state.uds_session);
     }
     memset(g_log_state.uds_session, 0, sizeof(g_log_state.uds_session));
@@ -970,21 +970,21 @@ void dds_log_get_stats(dds_log_stats_t* stats) {
 }
 
 int dds_log_get_current_file(char* path, size_t path_size) {
-    if (!path || (path_size == 0)) return -1;
+    if (!path || (path_size == 0U)) return -1;
     
     pthread_mutex_lock(&g_log_state.mutex);
-    if (strlen(g_log_state.current_file) == 0) {
+    if (strlen(g_log_state.current_file) == 0U) {
         pthread_mutex_unlock(&g_log_state.mutex);
         return -1;
     }
-    strncpy(path, g_log_state.current_file, path_size - 1);
+    strncpy(path, g_log_state.current_file, path_size - 1U);
     pthread_mutex_unlock(&g_log_state.mutex);
     
     return 0;
 }
 
 int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_count) {
-    if (!files || !actual_count || (max_files == 0)) return -1;
+    if (!files || !actual_count || (max_files == 0U)) return -1;
     
     *actual_count = 0;
     

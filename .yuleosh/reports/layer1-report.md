@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-08-07T14:51:41.479612
+> Generated: 2026-08-07T15:32:01.697866
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -30,7 +30,7 @@
 | plan-lint | ✅ |  |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ⚠️ | 31433 MISRA violation(s) (11005 required, 19285 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ⚠️ | 28103 MISRA violation(s) (8378 required, 18592 advisory) — see .yuleosh/reports/misra-report.json |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -83,12 +83,12 @@
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 31433 |
-| Required | 11005 |
-| Advisory | 19285 |
-| Violations / KLOC | 107.44 |
+| Total Violations | 28103 |
+| Required | 8378 |
+| Advisory | 18592 |
+| Violations / KLOC | 98.89 |
 | Rules Violated | 86 |
-| Files Affected | 729 |
+| Files Affected | 721 |
 
 ## C/C++ Coverage
 

@@ -173,7 +173,7 @@ STATIC int Crypto_MbedTLS_RandomCallback(void* ctx, unsigned char* output, size_
 {
     (void)ctx;
     
-    if (mbedtls_ctr_drbg_random(&Crypto_CtrDrbgCtx, output, len) == 0U ) {
+    if (mbedtls_ctr_drbg_random(&Crypto_CtrDrbgCtx, output, len) == 0 ) {
         return 0;
     }
     return -1;
@@ -314,7 +314,7 @@ STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Verify_Internal(const uint8* pubKey, 
     }
     
     /* Load public key (uncompressed format: 0x04 || X || Y) */
-    if (pubKey[0] != 0x04) {
+    if (pubKey[0] != 0x04U) {
         ret = -1;
         goto cleanup;
     }
@@ -402,7 +402,7 @@ Std_ReturnType Crypto_MbedTLS_ECDH_CalcSecret(Crypto_KeyIdType privKeyId,
     }
     
     /* Load peer public key */
-    if (pubKeyPtr[0] != 0x04) {
+    if (pubKeyPtr[0] != 0x04U) {
         ret = -1;
         goto cleanup;
     }

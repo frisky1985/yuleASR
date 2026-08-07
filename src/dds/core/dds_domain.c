@@ -162,8 +162,8 @@ dds_TopicHandleType dds_create_topic(
     topic->guid = participant->guid;
     topic->participant = participant;
     topic->qos = (qos != NULL) ? qos->base : participant->qos;
-    strncpy(topic->name, topic_name, sizeof(topic->name) - 1);
-    strncpy(topic->type_name, type_name, sizeof(topic->type_name) - 1);
+    strncpy(topic->name, topic_name, sizeof(topic->name) - 1U);
+    strncpy(topic->type_name, type_name, sizeof(topic->type_name) - 1U);
     topic->active = true;
 
     topic->next = participant->topics;
@@ -205,7 +205,7 @@ dds_DataWriterHandleType dds_create_writer(
 
     /* 初始化 RTPS 状态机 (rtps_state.h 提供) */
     rtps_writer_sm_init(&writer->state_machine, &writer->guid,
-                        writer->qos.history_depth > 0 ? writer->qos.history_depth : 1);
+                        writer->qos.history_depth > 0U ? writer->qos.history_depth : 1);
 
     writer->next = publisher->writers;
     publisher->writers = writer;
@@ -243,7 +243,7 @@ dds_DataReaderHandleType dds_create_reader(
 
     /* 初始化 RTPS 状态机 */
     rtps_reader_sm_init(&reader->state_machine, &reader->guid,
-                        reader->qos.history_depth > 0 ? reader->qos.history_depth : 1);
+                        reader->qos.history_depth > 0U ? reader->qos.history_depth : 1);
 
     /* 默认接收缓冲 */
     reader->receive_buffer_size = 4096;
@@ -271,7 +271,7 @@ dds_ReturnCode_t dds_write(dds_DataWriterHandleType writer_handle, const void *d
     if ((writer == NULL) || !writer->active || data == NULL) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
-    if (writer->sample_size == 0) {
+    if (writer->sample_size == 0U) {
         /* 样本大小未设置: 调用方需先通过 dds_set_writer_sample_size 设置 */
         return DDS_RETCODE_BAD_PARAMETER;
     }
@@ -311,17 +311,17 @@ dds_ReturnCode_t dds_take(
     (void)instance_states;
 
     dds_data_reader_t *reader = handle_to_reader(reader_handle);
-    if ((reader == NULL) || !reader->active || data == NULL || max_samples == 0) {
+    if ((reader == NULL) || !reader->active || data == NULL || max_samples == 0U) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
     /* 从 reader 接收缓冲取样本 (RTPS 数据经 dds_runtime_handle_rtps_data 写入) */
-    if (reader->samples_received == 0) {
+    if (reader->samples_received == 0U) {
         return DDS_RETCODE_NO_DATA;
     }
 
     /* 简化: 单样本取出 (完整实现见 pubsub/dds_reader.c) */
-    memcpy(data, reader->receive_buffer, reader->receive_buffer_size > 0 ? reader->receive_buffer_size : 0);
+    memcpy(data, reader->receive_buffer, reader->receive_buffer_size > 0U ? reader->receive_buffer_size : 0);
 
     if (sample_info != NULL) {
         memset(sample_info, 0, sizeof(*sample_info));
@@ -477,7 +477,7 @@ dds_ReturnCode_t dds_set_writer_sample_size(
     uint32_t sample_size)
 {
     dds_data_writer_t *writer = handle_to_writer(writer_handle);
-    if ((writer == NULL) || !writer->active || sample_size == 0) {
+    if ((writer == NULL) || !writer->active || sample_size == 0U) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
     writer->sample_size = sample_size;

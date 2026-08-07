@@ -71,9 +71,9 @@
 
 /* Communication Modes */
 typedef uint8 ComM_ModeType;
-#define COMM_NO_COMMUNICATION               0x00
-#define COMM_SILENT_COMMUNICATION           0x01
-#define COMM_FULL_COMMUNICATION             0x02
+#define COMM_NO_COMMUNICATION               0x00U
+#define COMM_SILENT_COMMUNICATION           0x01U
+#define COMM_FULL_COMMUNICATION             0x02U
 
 /* Inhibition Status */
 typedef uint8 ComM_InhibitionStatusType;
@@ -83,7 +83,7 @@ typedef uint8 ComM_InhibitionStatusType;
 
 /* PNC Mode Type */
 typedef uint8 ComM_PncModeType;
-#define COMM_PNC_REQUESTED                  0x00
+#define COMM_PNC_REQUESTED                  0x00U
 #define COMM_PNC_READY_SLEEP                0x01
 #define COMM_PNC_PREPARE_SLEEP              0x02
 #define COMM_PNC_NO_COMMUNICATION           0x03

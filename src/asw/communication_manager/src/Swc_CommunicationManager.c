@@ -35,8 +35,8 @@
 #define SWC_COMMUNICATIONMANAGER_INSTANCE_ID 0x00
 
 /* Maximum signals and PDUs */
-#define COMM_MAX_SIGNALS                    100
-#define COMM_MAX_PDUS                       50
+#define COMM_MAX_SIGNALS                    100U
+#define COMM_MAX_PDUS                       50U
 
 /* Signal timeout detection */
 #define COMM_SIGNAL_TIMEOUT_DEFAULT         100
@@ -103,7 +103,7 @@ STATIC void Swc_CommunicationManager_ProcessRxSignals(void)
     Swc_PduInfoType pdu;
 
     /* Read PDU from RTE */
-    if (Rte_Read_PduData(&pdu) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Read_PduData(&pdu)) == RTE_E_OK) {
         /* Find or create PDU entry */
         sint16 pduIndex = Swc_CommunicationManager_FindRxPdu(pdu.pduId);
 
@@ -125,13 +125,13 @@ STATIC void Swc_CommunicationManager_ProcessRxSignals(void)
             /* Extract signals from PDU data */
             /* Simplified - in real implementation, use signal database */
             for (i = 0; i < swcCommManager.numSignals; i++) {
-                if ((swcCommManager.signals[i].signalId >= (pdu.pduId * 10)) &&
-                    (swcCommManager.signals[i].signalId < ((pdu.pduId + 1) * 10))) {
+                if ((swcCommManager.signals[i].signalId >= (pdu.pduId * 10U)) &&
+                    (swcCommManager.signals[i].signalId < ((pdu.pduId + 1U) * 10))) {
                     /* Update signal value from PDU data */
                     swcCommManager.signals[i].value = 0;
-                    for (j = 0; (j < 8) && (j < pdu.length); j++) {
+                    for (j = 0; (j < 8U) && (j < pdu.length); j++) {
                         swcCommManager.signals[i].value |=
-                            ((uint64)pdu.data[j] << (j * 8));
+                            ((uint64)pdu.data[j] << (j * 8U));
                     }
                     swcCommManager.signals[i].timestamp = pdu.timestamp;
                     swcCommManager.signals[i].isValid = TRUE;
@@ -157,14 +157,14 @@ STATIC void Swc_CommunicationManager_ProcessTxSignals(void)
 
         /* Pack signals into PDU data */
         /* Simplified - in real implementation, use signal database */
-        for (j = 0; j < 8; j++) {
+        for (j = 0; j < 8U; j++) {
             pdu->data[j] = (uint8)(pdu->pduId + j);
         }
         pdu->length = 8;
         pdu->timestamp = Rte_GetTime();
 
         /* Send PDU via RTE */
-        if (Rte_Write_PduData(pdu) == RTE_E_OK) {
+        if ((uint8_t)(Rte_Write_PduData(pdu)) == RTE_E_OK) {
             swcCommManager.statistics.txPdus++;
         } else {
             swcCommManager.statistics.txErrors++;
@@ -487,7 +487,7 @@ Rte_StatusType Swc_CommunicationManager_SendPdu(const Swc_PduInfoType* pdu)
     swcCommManager.txPdus[pduIndex] = *pdu;
 
     /* Send immediately via RTE */
-    if (Rte_Write_PduData(pdu) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Write_PduData(pdu)) == RTE_E_OK) {
         swcCommManager.statistics.txPdus++;
         return RTE_E_OK;
     } else {

@@ -24,7 +24,7 @@ typedef int32_t        sint32;
 #define FALSE          0U
 #define E_OK           0U
 #define E_NOT_OK       1U
-#define NULL_PTR       ((void *)0)
+#define NULL_PTR       ((void*)0U)
 
 /* === MCU Register Stubs (for Boot_Loader.c compilation) === */
 typedef struct {

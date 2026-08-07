@@ -46,7 +46,7 @@ Boot_Result Boot_Hsm_Init(void)
 {
     Std_ReturnType result;
 
-    if (g_hsm_available) {
+    if ((g_hsm_available) != 0U) {
         return BOOT_OK;
     }
 

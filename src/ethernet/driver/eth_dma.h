@@ -34,7 +34,7 @@ extern "C" {
 
 /** 默认缓冲区大小 */
 #define ETH_DMA_DEFAULT_BUFFER_SIZE     1536    /* 包含VLAN标签的标准帧 */
-#define ETH_DMA_JUMBO_BUFFER_SIZE       9018    /* 巨型帧支持 */
+#define ETH_DMA_JUMBO_BUFFER_SIZE       9018U    /* 巨型帧支持 */
 
 /** DMA对齐要求 (须为 sizeof(void*) 的倍数, 4 在 64 位平台会导致 aligned_alloc 失败) */
 #define ETH_DMA_ALIGN                   8

@@ -29,11 +29,11 @@ extern "C" {
 /** 最大参数字符串长度 */
 #define CFT_MAX_PARAM_LENGTH       256
 /** 最大并行过滤器数量 */
-#define CFT_MAX_PARALLEL_FILTERS   8
+#define CFT_MAX_PARALLEL_FILTERS   8U
 /** 最大字段深度 */
 #define CFT_MAX_FIELD_DEPTH        8
 /** 最大谓词数量 */
-#define CFT_MAX_PREDICATES         16
+#define CFT_MAX_PREDICATES         16U
 /** 最大表达式复杂度(操作符数量) */
 #define CFT_MAX_EXPRESSION_OPS     32
 

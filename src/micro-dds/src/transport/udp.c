@@ -642,11 +642,11 @@ static bool PDP_verify_message(const uint8_t* data, uint16_t length) {
     }
     
     const PDP_Header* header = (const PDP_Header*)data;
-    return ((header->magic[0] == 'P') &&
-            ((header->magic[1] == 'D')) &&
-            ((header->magic[2] == 'P')) &&
+    return ((header->magic[0U] == 'P') &&
+            ((header->magic[1U] == 'D')) &&
+            ((header->magic[2U] == 'P')) &&
             ((header->magic[3] == 0U)) &&
-            (header->version == 1));
+            (header->version == 1U));
 }
 
 /**
@@ -1055,7 +1055,7 @@ bool MicroDDS_UDP_Send(const uint8_t* data, uint16_t length) {
         int sent = socket_sendto(g_udp_transport.user_socket, data, length,
                                 g_udp_transport.peers[i].address,
                                 network_to_host_16(g_udp_transport.peers[i].port));
-        if (sent > 0U ) {
+        if ((unsigned int)(sent) > 0U ) {
             any_sent = true;
             g_udp_transport.bytes_sent += (uint32_t)sent;
         }
@@ -1127,7 +1127,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         
         int received = socket_recvfrom(g_udp_transport.user_socket, buffer, buffer_size, &addr, &port);
         
-        if (received > 0U ) {
+        if ((unsigned int)(received) > 0U ) {
             g_udp_transport.packets_received++;
             g_udp_transport.bytes_received += (uint32_t)received;
             
@@ -1149,7 +1149,7 @@ uint16_t MicroDDS_UDP_Receive(uint8_t* buffer, uint16_t buffer_size,
         
         int received = socket_recvfrom(g_udp_transport.discovery_socket, pdp_buffer, sizeof(pdp_buffer), &src_addr, NULL_PTR);
         
-        if (received > 0U ) {
+        if ((unsigned int)(received) > 0U ) {
             /* 处理PDP消息 */
             if (PDP_verify_message(pdp_buffer, (uint16_t)received)) {
                 const PDP_Header* header = (const PDP_Header*)pdp_buffer;
