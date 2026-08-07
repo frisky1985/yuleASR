@@ -122,14 +122,17 @@ misra:
       reason: "cppcheck MISRA addon flags NULL macro because toolchain defines NULL as integer 0; all violations are ptr=NULL or ptr==NULL patterns per AUTOSAR coding convention; project-wide deviation"
   exclude_paths:
     - "tests/**"
+    - "**/tests/**"
     - "src/**/*_test.c"
     - "src/**/*_test.h"
     - "src/**/legacy/**"
     - "third_party/**"
+    - "**/third_party/**"
     - "build/**"
     - "Drivers/**"
     - "Middlewares/**"
     - "CMSIS/**"
+    - "src/platform/s32k312/include/**"
   code_categories:
     template:
       paths: ["src/yuleosh/templates/**"]
