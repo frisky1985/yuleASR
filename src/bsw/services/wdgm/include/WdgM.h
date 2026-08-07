@@ -179,7 +179,7 @@ typedef struct
     uint16 seId;                        /* 监督实体ID */
     WdgM_SupervisionType supervisionType; /* 监督类型 */
     boolean enabled;                    /* 使能标志 */
-    union
+    struct
     {
         WdgM_AliveSupervisionType alive;
         WdgM_DeadlineSupervisionType deadline;

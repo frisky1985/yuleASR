@@ -33,12 +33,12 @@ static uint32_t sequence_counter = 1U;
  * 字节序检测与转换
  * ============================================================================ */
 CDR_Endianness CDR_get_native_endian(void) {
-    const union {
-        uint16_t val;
-        uint8_t bytes[2];
-    } test = {0x0102U};
+    uint16_t test_val = 0x0102U;
+    uint8_t test_bytes[2U];
 
-    return (test.bytes[0] == 0x01U) ? CDR_ENDIAN_BIG : CDR_ENDIAN_LITTLE;
+    (void)memcpy(test_bytes, &test_val, sizeof(test_bytes));
+
+    return (test_bytes[0] == 0x01U) ? CDR_ENDIAN_BIG : CDR_ENDIAN_LITTLE;
 }
 
 uint16_t CDR_swap16(uint16_t value) {
@@ -458,47 +458,35 @@ DDS_ReturnCode_t CDR_deserialize_uint64(CDR_Buffer *buffer, uint64_t *value) {
  * 浮点数序列化
  * ============================================================================ */
 DDS_ReturnCode_t CDR_serialize_float(CDR_Buffer *buffer, float value) {
-    union {
-        float f;
-        uint32_t u;
-    } converter;
+    uint32_t u;
 
-    converter.f = value;
-    return CDR_serialize_uint32(buffer, converter.u);
+    (void)memcpy(&u, &value, sizeof(u));
+    return CDR_serialize_uint32(buffer, u);
 }
 
 DDS_ReturnCode_t CDR_deserialize_float(CDR_Buffer *buffer, float *value) {
-    union {
-        float f;
-        uint32_t u;
-    } converter;
+    uint32_t u;
 
-    DDS_ReturnCode_t ret = CDR_deserialize_uint32(buffer, &converter.u);
+    DDS_ReturnCode_t ret = CDR_deserialize_uint32(buffer, &u);
     if (DDS_RETCODE_IS_OK(ret)) {
-        *value = converter.f;
+        (void)memcpy(value, &u, sizeof(u));
     }
     return ret;
 }
 
 DDS_ReturnCode_t CDR_serialize_double(CDR_Buffer *buffer, double value) {
-    union {
-        double d;
-        uint64_t u;
-    } converter;
+    uint64_t u;
 
-    converter.d = value;
-    return CDR_serialize_uint64(buffer, converter.u);
+    (void)memcpy(&u, &value, sizeof(u));
+    return CDR_serialize_uint64(buffer, u);
 }
 
 DDS_ReturnCode_t CDR_deserialize_double(CDR_Buffer *buffer, double *value) {
-    union {
-        double d;
-        uint64_t u;
-    } converter;
+    uint64_t u;
 
-    DDS_ReturnCode_t ret = CDR_deserialize_uint64(buffer, &converter.u);
+    DDS_ReturnCode_t ret = CDR_deserialize_uint64(buffer, &u);
     if (DDS_RETCODE_IS_OK(ret)) {
-        *value = converter.d;
+        (void)memcpy(value, &u, sizeof(u));
     }
     return ret;
 }

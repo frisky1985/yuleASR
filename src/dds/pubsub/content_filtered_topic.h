@@ -80,7 +80,7 @@ typedef struct {
     uint8_t field_depth;              /**< 字段嵌套深度 */
     cft_operator_t op;                /**< 操作符 */
     cft_field_type_t value_type;      /**< 值类型 */
-    union {
+    struct {
         int64_t i64_val;
         uint64_t u64_val;
         double f64_val;
@@ -99,7 +99,7 @@ typedef struct {
 typedef struct cft_ast_node {
     cft_operator_t op;                /**< 节点操作符 */
     bool is_leaf;                     /**< 是否为叶子节点(谓词) */
-    union {
+    struct {
         cft_predicate_t predicate;    /**< 叶子节点: 谓词 */
         struct {
             struct cft_ast_node *left;

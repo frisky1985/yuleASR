@@ -18,7 +18,7 @@ typedef struct {
     dds_tsn_stream_config_t config;
     dds_tsn_stream_state_t state;
     
-    union {
+    struct {
         dds_tsn_talker_status_t talker;
         dds_tsn_listener_status_t listener;
     } status;

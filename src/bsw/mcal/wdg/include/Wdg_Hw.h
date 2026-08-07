@@ -129,7 +129,7 @@ typedef struct {
 
 typedef struct {
     Wdg_Hw_TypeType wdgType;
-    union {
+    struct {
         Wdg_Hw_IwdgConfigType iwdg;
         Wdg_Hw_WwdgConfigType wwdg;
     } config;

@@ -96,9 +96,9 @@ typedef struct
 } EthTrcv_RgmiiConfigType;
 
 /**
- * @brief Interface Configuration Union
+ * @brief Interface Configuration (variant members coexist; MISRA C:2023 19.2)
  */
-typedef union
+typedef struct
 {
     EthTrcv_MiiConfigType Mii;
     EthTrcv_RmiiConfigType Rmii;

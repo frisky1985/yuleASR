@@ -231,7 +231,7 @@ typedef struct {
 /* 通用E2E上下文 */
 typedef struct {
     uint8_t profile;            /* E2E Profile ID */
-    union {
+    struct {
         E2E_P01ConfigType p01;
         E2E_P02ConfigType p02;
         E2E_P04ConfigType p04;
@@ -241,7 +241,7 @@ typedef struct {
         E2E_P11ConfigType p11;
         E2E_P22ConfigType p22;
     } config;
-    union {
+    struct {
         E2E_P01CheckStateType p01;
         E2E_P02CheckStateType p02;
         E2E_P04CheckStateType p04;

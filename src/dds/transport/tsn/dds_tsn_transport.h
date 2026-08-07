@@ -152,7 +152,7 @@ typedef struct {
     dds_tsn_stream_identification_t id;  /* Stream标识 */
     dds_tsn_stream_type_t type;          /* Stream类型 */
     
-    union {
+    struct {
         dds_tsn_talker_endpoint_t talker;
         dds_tsn_listener_endpoint_t listener;
     } endpoint;

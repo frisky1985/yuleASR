@@ -71,7 +71,7 @@ typedef struct {
     tbf_policy_t policy;                 /**< 压缩策略 */
     tbf_timestamp_source_t ts_source;    /**< 时间戳来源 */
     tbf_compression_t compression;       /**< 压缩算法 */
-    union {
+    struct {
         struct {
             uint32_t window_size;        /**< 窗口大小 */
         } fixed_window;

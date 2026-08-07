@@ -61,7 +61,7 @@ typedef struct {
     uint32_t clientId;
     uint32_t requestTime;
     uint32_t timeoutMs;
-    union {
+    struct {
         MachineStateType targetState;
         struct {
             FunctionGroupNameType fgName;
