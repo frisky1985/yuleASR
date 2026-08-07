@@ -144,11 +144,11 @@ static char* xml_find_tag(const char *xml, const char *tag, uint32_t *content_le
 static void xml_extract_value(const char *content, uint32_t content_len,
                               char *output, uint32_t output_size)
 {
-    if (!content || !output || output_size == 0) {
+    if (!content || !output || (output_size == 0)) {
         return;
     }
 
-    uint32_t copy_len = content_len < output_size - 1 ? content_len : output_size - 1;
+    uint32_t copy_len = content_len < (output_size - 1) ? content_len : output_size - 1;
     memcpy(output, content, copy_len);
     output[copy_len] = '\0';
 
@@ -157,7 +157,7 @@ static void xml_extract_value(const char *content, uint32_t content_len,
     while (*start && isspace((unsigned char)*start)) start++;
 
     char *end = output + strlen(output) - 1;
-    while (end > start && isspace((unsigned char)*end)) { *end = '\0'; end--; }
+    while ((end > start) && isspace((unsigned char)*end)) { *end = '\0'; end--; }
 
     if (start != output) {
         memmove(output, start, strlen(start) + 1);
@@ -184,7 +184,7 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
     long file_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (file_size <= 0 || file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE) {
+    if ((file_size <= 0) || (file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE)) {
         fclose(fp);
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
@@ -346,7 +346,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
     long file_size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (file_size <= 0 || file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE) {
+    if ((file_size <= 0) || (file_size > DDS_SECURITY_MAX_PERMISSIONS_SIZE)) {
         fclose(fp);
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
@@ -433,12 +433,12 @@ dds_access_status_t dds_access_load_participant_permissions(dds_access_context_t
     /* Find or allocate permissions entry */
     dds_security_permissions_t *perms = NULL;
     for (uint32_t i = 0; i < ctx->max_subjects; i++) {
-        if (ctx->permissions_db[i].subject_count > 0 &&
-            strcmp(ctx->permissions_db[i].subjects[0].subject_name, subject_name) == 0) {
+        if ((ctx->permissions_db[i].subject_count > 0) &&
+            (strcmp(ctx->permissions_db[i].subjects[0].subject_name, subject_name) == 0)) {
             perms = &ctx->permissions_db[i];
             break;
         }
-        if (ctx->permissions_db[i].subject_count == 0 && !perms) {
+        if ((ctx->permissions_db[i].subject_count == 0) && !perms) {
             perms = &ctx->permissions_db[i];
         }
     }
@@ -487,8 +487,8 @@ dds_access_status_t dds_access_unload_participant_permissions(dds_access_context
     for (uint32_t i = 0; i < ctx->max_subjects; i++) {
         dds_security_permissions_t *perms = &ctx->permissions_db[i];
 
-        if (perms->subject_count > 0 &&
-            strcmp(perms->subjects[0].subject_name, subject_name) == 0) {
+        if ((perms->subject_count > 0) &&
+            (strcmp(perms->subjects[0].subject_name, subject_name) == 0)) {
 
             /* Free permissions */
             if (perms->subjects) {
@@ -585,7 +585,7 @@ static bool match_pattern(const char *pattern, const char *str)
     /* Handle trailing wildcards */
     while (*pattern == '*') pattern++;
 
-    return (*pattern == '\0' && *str == '\0');
+    return ((*pattern == '\0') && (*str == '\0'));
 }
 
 bool dds_access_match_topic_pattern(const char *pattern, const char *topic_name)
@@ -811,7 +811,7 @@ dds_access_status_t dds_access_get_subject_name(const dds_security_cert_t *cert,
                                                 char *subject_name,
                                                 uint32_t max_len)
 {
-    if (!cert || !subject_name || max_len == 0) {
+    if (!cert || !subject_name || (max_len == 0)) {
         return DDS_ACCESS_ERROR_INVALID_PARAM;
     }
 

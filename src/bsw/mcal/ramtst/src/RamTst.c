@@ -200,7 +200,7 @@ static uint32 RamTst_GetPattern(uint32 Address, uint32 Seed)
 {
     /* LFSR-based pattern for good fault coverage */
     uint32 pattern = Address ^ Seed;
-    pattern = (pattern & 0xAAAAAAAAU) >> 1U | (pattern & 0x55555555U) << 1U;
+    pattern = ((pattern & 0xAAAAAAAAU) >> 1U) | ((pattern & 0x55555555U) << 1U);
     pattern ^= 0xDEADBEEFU;
     pattern = (pattern << 7U) | (pattern >> 25U);
     pattern ^= Seed;

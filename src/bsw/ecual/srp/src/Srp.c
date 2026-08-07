@@ -150,7 +150,7 @@ Std_ReturnType Srp_GetStreamStatus(const Srp_StreamIdType StreamId, Srp_Reservat
 
 void Srp_RxIndication(const uint8* DataPtr, uint16 Length)
 {
-    if (NULL_PTR == DataPtr || Length < Srp_HdrLen) return;
+    if ((NULL_PTR == DataPtr) || (Length < Srp_HdrLen)) return;
     /* Parse SRP frame (simplified - checks for Talker Advertise/Listener Ready) */
     uint8 subtype = DataPtr[0] & 0x0FU;
     (void)subtype;

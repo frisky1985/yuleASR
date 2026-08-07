@@ -188,7 +188,7 @@ static eth_status_t eth_monitor_link(void)
     }
 
     /* 通知回调(状态变化时) */
-    if (old_state != g_manager_ctx.state && g_manager_ctx.link_callback != NULL) {
+    if ((old_state != g_manager_ctx.state) && (g_manager_ctx.link_callback != NULL)) {
         eth_link_status_t link_status = status.link_up ? ETH_LINK_UP : ETH_LINK_DOWN;
         g_manager_ctx.link_callback(link_status, g_manager_ctx.link_user_data);
     }
@@ -510,7 +510,7 @@ eth_status_t eth_manager_wait_for_negotiation(uint32_t timeout_ms)
         uint16_t status_reg;
         eth_status_t status = automotive_phy_read_reg(PHY_REG_STATUS, &status_reg);
 
-        if (status == ETH_OK && (status_reg & PHY_STATUS_AUTO_NEG_DONE)) {
+        if ((status == ETH_OK) && (status_reg & PHY_STATUS_AUTO_NEG_DONE)) {
             g_manager_ctx.negotiation_complete = true;
             return ETH_OK;
         }
@@ -767,7 +767,7 @@ eth_status_t eth_manager_validate_config(const eth_manager_config_t *config)
     }
 
     /* 验证DMA配置(确保描述符数量有效) */
-    if (config->dma_config.rx_desc_count == 0 || config->dma_config.tx_desc_count == 0) {
+    if ((config->dma_config.rx_desc_count == 0) || (config->dma_config.tx_desc_count == 0)) {
         return ETH_INVALID_PARAM;
     }
 

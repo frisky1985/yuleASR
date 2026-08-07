@@ -368,10 +368,10 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     /* Write data */
     uint32 dataWord0 = 0U;
     uint32 dataWord1 = 0U;
-    for (uint8 i = 0U; i < PduInfo->CanDlc && i < 4U; i++) {
+    for (uint8 i = 0U; (i < PduInfo->CanDlc) && (i < 4U); i++) {
         dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8);
     }
-    for (uint8 i = 4U; i < PduInfo->CanDlc && i < 8U; i++) {
+    for (uint8 i = 4U; (i < PduInfo->CanDlc) && (i < 8U); i++) {
         dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8);
     }
     REG_WRITE32(mbAddr + 8, dataWord0);

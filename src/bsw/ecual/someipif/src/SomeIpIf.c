@@ -104,7 +104,7 @@ Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
         Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_TRANSMIT, SOMEIPIF_E_UNINIT);
         return E_NOT_OK;
     }
-    if (NULL_PTR == PduInfoPtr || NULL_PTR == PduInfoPtr->SduDataPtr) {
+    if ((NULL_PTR == PduInfoPtr) || (NULL_PTR == PduInfoPtr->SduDataPtr)) {
         Det_ReportError(SOMEIPIF_MODULE_ID, 0U, SOMEIPIF_SID_TRANSMIT, SOMEIPIF_E_PARAM_POINTER);
         return E_NOT_OK;
     }

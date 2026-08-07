@@ -64,9 +64,9 @@ void Xcp_CmdWriteDaq(uint8 ChannelId, const uint8* Data)
     }
 
     /* Check DAQ pointer bounds */
-    if (Xcp_DaqPtr.DaqListNumber >= XCP_MAX_DAQ_LISTS ||
-        Xcp_DaqPtr.OdtNumber >= XCP_MAX_ODTS_PER_DAQ ||
-        Xcp_DaqPtr.OdtEntryNumber >= XCP_MAX_ODT_ENTRIES_PER_ODT) {
+    if ((Xcp_DaqPtr.DaqListNumber >= XCP_MAX_DAQ_LISTS) ||
+        ((Xcp_DaqPtr.OdtNumber >= XCP_MAX_ODTS_PER_DAQ)) ||
+        (Xcp_DaqPtr.OdtEntryNumber >= XCP_MAX_ODT_ENTRIES_PER_ODT)) {
         Xcp_SendError(ChannelId, XCP_ERR_OUT_OF_RANGE, 0U);
         return;
     }

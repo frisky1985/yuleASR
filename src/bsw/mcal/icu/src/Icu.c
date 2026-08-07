@@ -1001,7 +1001,7 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel)
     Icu_ClearChannelFlag(Channel);
     
     /* Process based on measurement mode */
-    if (Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_TIMESTAMP &&
+    if ((Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_TIMESTAMP) &&
         Icu_ChannelRunning[Channel]) {
         /* Store timestamp */
         if (Icu_TimestampBuffer[Channel] != NULL_PTR) {
@@ -1030,14 +1030,14 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel)
             }
         }
     }
-    else if (Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_SIGNAL_MEASUREMENT &&
+    else if ((Icu_ConfigPtr->Channels[Channel].MeasurementMode == ICU_MODE_SIGNAL_MEASUREMENT) &&
              Icu_SignalMeasurementRunning[Channel]) {
         /* Process signal measurement */
         Icu_ProcessSignalMeasurement(Channel, captureValue);
         
         /* Call notification if enabled */
         if (Icu_ChannelNotificationEnabled[Channel] &&
-            Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR) {
+            (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
             Icu_ConfigPtr->Channels[Channel].NotificationFn();
         }
     }
@@ -1047,7 +1047,7 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel)
         
         /* Call notification if enabled */
         if (Icu_ChannelNotificationEnabled[Channel] &&
-            Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR) {
+            (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
             Icu_ConfigPtr->Channels[Channel].NotificationFn();
         }
     }
@@ -1055,7 +1055,7 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel)
         /* Edge counting - increment handled by hardware */
         /* Call notification if enabled */
         if (Icu_ChannelNotificationEnabled[Channel] &&
-            Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR) {
+            (Icu_ConfigPtr->Channels[Channel].NotificationFn != NULL_PTR)) {
             Icu_ConfigPtr->Channels[Channel].NotificationFn();
         }
     }

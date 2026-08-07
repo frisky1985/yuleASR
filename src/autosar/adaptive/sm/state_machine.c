@@ -167,8 +167,8 @@ MachineStateType StateMachine_GetPreviousState(void) {
 
 bool StateMachine_IsTransitionAllowed(MachineStateType fromState, MachineStateType toState) {
     for (uint32_t i = 0U; i < g_numTransitionRules; i++) {
-        if (g_transitionRules[i].fromState == fromState &&
-            g_transitionRules[i].toState == toState) {
+        if ((g_transitionRules[i].fromState == fromState) &&
+            (g_transitionRules[i].toState == toState)) {
             return g_transitionRules[i].allowed;
         }
     }
@@ -187,8 +187,8 @@ Std_ReturnType StateMachine_ConfirmTransition(StateRequestResultType result) {
         NotifyStateChange(oldState, g_context.currentState);
         
         /* Reset function groups based on new state */
-        if (g_context.currentState == MACHINE_STATE_OFF ||
-            g_context.currentState == MACHINE_STATE_SHUTDOWN) {
+        if ((g_context.currentState == MACHINE_STATE_OFF) ||
+            (g_context.currentState == MACHINE_STATE_SHUTDOWN)) {
             for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
                 StateMachine_SetFGState((FunctionGroupNameType)i, FUNCTION_GROUP_STATE_OFF);
             }
@@ -234,7 +234,7 @@ Std_ReturnType StateMachine_SetFGState(FunctionGroupNameType fg, FunctionGroupSt
 }
 
 FunctionGroupStateType StateMachine_GetFGState(FunctionGroupNameType fg) {
-    if (!g_context.isInitialized || fg >= FUNCTION_GROUP_COUNT) {
+    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
         return FUNCTION_GROUP_STATE_OFF;
     }
     
@@ -262,7 +262,7 @@ Std_ReturnType StateMachine_UnregisterCallback(void) {
 Std_ReturnType StateMachine_RegisterFGCallback(FunctionGroupNameType fg,
                                                 void (*callback)(FunctionGroupNameType,
                                                                 FunctionGroupStateType)) {
-    if (!g_context.isInitialized || fg >= FUNCTION_GROUP_COUNT) {
+    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -271,7 +271,7 @@ Std_ReturnType StateMachine_RegisterFGCallback(FunctionGroupNameType fg,
 }
 
 Std_ReturnType StateMachine_UnregisterFGCallback(FunctionGroupNameType fg) {
-    if (!g_context.isInitialized || fg >= FUNCTION_GROUP_COUNT) {
+    if (!g_context.isInitialized || (fg >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -305,7 +305,7 @@ void StateMachine_MainFunction(void) {
         /* Check for timeout */
         uint32_t currentTime = 0U;  /* Would use actual timestamp */
         
-        if (currentTime - g_context.pendingRequest.requestTime > g_context.pendingRequest.timeoutMs) {
+        if ((currentTime - g_context.pendingRequest.requestTime) > g_context.pendingRequest.timeoutMs) {
             /* Request timed out */
             if (g_context.pendingRequest.confirmationCallback != NULL) {
                 g_context.pendingRequest.confirmationCallback(STATE_REQUEST_TIMEOUT);
@@ -327,8 +327,8 @@ void StateMachine_MainFunction(void) {
             }
             
             /* Check if function group has reached stable state */
-            if (fg->state == FUNCTION_GROUP_STATE_STARTING ||
-                fg->state == FUNCTION_GROUP_STATE_STOPPING) {
+            if ((fg->state == FUNCTION_GROUP_STATE_STARTING) ||
+                (fg->state == FUNCTION_GROUP_STATE_STOPPING)) {
                 allFGStable = false;
                 break;
             }

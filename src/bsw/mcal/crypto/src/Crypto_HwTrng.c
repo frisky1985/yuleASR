@@ -371,7 +371,7 @@ Std_ReturnType Crypto_HwTrng_SelfTest(void)
     /* Test 3: Check no consecutive identical bytes (simplified) */
     for (i = 1U; i < byteCount; i++) {
         if ((testBuffer[i] == testBuffer[i - 1U]) &&
-            (i + 1U < byteCount) &&
+            ((i + 1U) < byteCount) &&
             (testBuffer[i] == testBuffer[i + 1U])) {
             /* Found 3 identical consecutive bytes - suspicious but not fatal */
         }

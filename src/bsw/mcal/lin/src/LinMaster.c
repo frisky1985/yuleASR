@@ -287,7 +287,7 @@ LinMaster_StatusType LinMaster_SendFrame(
         return LINMASTER_NOT_OK;
     }
     
-    if (Length == 0U || Length > LINMASTER_MAX_DATA_LENGTH) {
+    if ((Length == 0U) || (Length > LINMASTER_MAX_DATA_LENGTH)) {
         return LINMASTER_NOT_OK;
     }
     
@@ -323,7 +323,7 @@ LinMaster_StatusType LinMaster_ReceiveFrame(
     }
     
 #if (LINMASTER_DEV_ERROR_DETECT == STD_ON)
-    if (ExpectedLength == 0U || ExpectedLength > LINMASTER_MAX_DATA_LENGTH) {
+    if ((ExpectedLength == 0U) || (ExpectedLength > LINMASTER_MAX_DATA_LENGTH)) {
         return LINMASTER_NOT_OK;
     }
     

@@ -411,11 +411,11 @@ Std_ReturnType CanTp_CancelTransmit(PduIdType CanTpTxSduId)
 
     /* Find channel with matching Tx SDU ID */
     for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
-        if (CanTp_ChannelRuntime[i].ActiveNsduId == CanTpTxSduId &&
-            (CanTp_ChannelRuntime[i].State == CANTP_CH_TX_SF ||
-             CanTp_ChannelRuntime[i].State == CANTP_CH_TX_FF ||
-             CanTp_ChannelRuntime[i].State == CANTP_CH_TX_CF ||
-             CanTp_ChannelRuntime[i].State == CANTP_CH_TX_WAIT_FC)) {
+        if ((CanTp_ChannelRuntime[i].ActiveNsduId == CanTpTxSduId) &&
+            ((CanTp_ChannelRuntime[i].State == CANTP_CH_TX_SF) ||
+             ((CanTp_ChannelRuntime[i].State == CANTP_CH_TX_FF)) ||
+             ((CanTp_ChannelRuntime[i].State == CANTP_CH_TX_CF)) ||
+             (CanTp_ChannelRuntime[i].State == CANTP_CH_TX_WAIT_FC))) {
 
             CanTp_ResetChannel((CanTp_ChannelType)i);
             return E_OK;
@@ -441,10 +441,10 @@ Std_ReturnType CanTp_CancelReceive(PduIdType CanTpRxSduId)
 
     /* Find channel with matching Rx SDU ID */
     for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
-        if (CanTp_ChannelRuntime[i].ActiveNsduId == CanTpRxSduId &&
-            (CanTp_ChannelRuntime[i].State == CANTP_CH_RX_SF ||
-             CanTp_ChannelRuntime[i].State == CANTP_CH_RX_FF ||
-             CanTp_ChannelRuntime[i].State == CANTP_CH_RX_CF)) {
+        if ((CanTp_ChannelRuntime[i].ActiveNsduId == CanTpRxSduId) &&
+            ((CanTp_ChannelRuntime[i].State == CANTP_CH_RX_SF) ||
+             ((CanTp_ChannelRuntime[i].State == CANTP_CH_RX_FF)) ||
+             (CanTp_ChannelRuntime[i].State == CANTP_CH_RX_CF))) {
 
             CanTp_ResetChannel((CanTp_ChannelType)i);
             return E_OK;
@@ -562,7 +562,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         return;
     }
 
-    if (PduInfoPtr == NULL_PTR || PduInfoPtr->SduDataPtr == NULL_PTR) {
+    if ((PduInfoPtr == NULL_PTR) || (PduInfoPtr->SduDataPtr == NULL_PTR)) {
         return;
     }
 
@@ -574,7 +574,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             /* Single Frame received */
             uint8 sfDl = pci & CANTP_PCI_SF_DL_MASK;
 
-            if (sfDl > 0U && sfDl <= CANTP_MAX_SF_DATA_LEN) {
+            if ((sfDl > 0U) && (sfDl <= CANTP_MAX_SF_DATA_LEN)) {
                 /* Find free channel */
                 CanTp_ChannelType channel = CanTp_FindFreeChannel();
                 if (channel != 0xFFU) {
@@ -605,7 +605,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             /* First Frame received */
             uint16 ffDl = ((uint16)(pci & CANTP_PCI_FF_DL_MASK) << 8) | PduInfoPtr->SduDataPtr[1];
 
-            if (ffDl > CANTP_MAX_SF_DATA_LEN && ffDl <= CANTP_MAX_MESSAGE_LENGTH) {
+            if ((ffDl > CANTP_MAX_SF_DATA_LEN) && (ffDl <= CANTP_MAX_MESSAGE_LENGTH)) {
                 /* Find free channel */
                 CanTp_ChannelType channel = CanTp_FindFreeChannel();
                 if (channel != 0xFFU) {
@@ -644,7 +644,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             for (uint8 i = 0U; i < CANTP_MAX_CHANNEL_CNT; i++) {
                 CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[i];
 
-                if (runtime->State == CANTP_CH_RX_CF && runtime->SequenceNumber == sn) {
+                if ((runtime->State == CANTP_CH_RX_CF) && (runtime->SequenceNumber == sn)) {
                     uint16 remainingBytes = runtime->DataLength - runtime->DataIndex;
                     uint8 bytesToCopy = (remainingBytes > CANTP_MAX_CF_DATA_LEN) ?
                                         CANTP_MAX_CF_DATA_LEN : (uint8)remainingBytes;
@@ -841,7 +841,7 @@ void CanTp_MainFunction(void)
         }
 
         /* Handle Consecutive Frame transmission with STmin */
-        if (runtime->State == CANTP_CH_TX_CF && runtime->DataIndex < runtime->DataLength) {
+        if ((runtime->State == CANTP_CH_TX_CF) && (runtime->DataIndex < runtime->DataLength)) {
             /* Check if ready to send next CF based on STmin */
             /* In a real implementation, this would use a separate STmin timer */
         }

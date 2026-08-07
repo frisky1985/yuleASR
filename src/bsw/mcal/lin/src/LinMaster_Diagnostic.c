@@ -80,7 +80,7 @@ static void LinMaster_Diag_TpRxCallback(uint8 ChannelId, const uint8* DataPtr, u
 {
     (void)ChannelId;
     
-    if (DataPtr == NULL_PTR || Length == 0U || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
         return;
     }
     
@@ -123,7 +123,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
     TxLength++;
     
     /* 数据 */
-    if (RequestPtr->Length > 0U && RequestPtr->Length <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if ((RequestPtr->Length > 0U) && (RequestPtr->Length <= LINMASTER_DIAG_MAX_BUFFER_SIZE)) {
         for (i = 0U; i < RequestPtr->Length; i++) {
             TxBuffer[TxLength + i] = RequestPtr->Data[i];
         }
@@ -139,7 +139,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
  */
 static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* DataPtr, uint16 Length)
 {
-    if (DataPtr == NULL_PTR || Length == 0U) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U)) {
         return LINMASTER_DIAG_E_NOT_OK;
     }
     
@@ -282,7 +282,7 @@ boolean LinMaster_Diag_IsRequestComplete(void)
     
     return (DiagRuntime.State == LINMASTER_DIAG_STATE_COMPLETE) ||
            (DiagRuntime.State == LINMASTER_DIAG_STATE_ERROR) ||
-           (DiagRuntime.State == LINMASTER_DIAG_STATE_IDLE && !DiagRuntime.RequestPending);
+           ((DiagRuntime.State == LINMASTER_DIAG_STATE_IDLE) && !DiagRuntime.RequestPending);
 }
 
 /**
@@ -302,7 +302,7 @@ void LinMaster_Diag_SetTimeout(uint32 TimeoutMs)
         return;
     }
     
-    if (TimeoutMs > 0U && TimeoutMs <= LINMASTER_DIAG_P2_MAX_TIMEOUT) {
+    if ((TimeoutMs > 0U) && (TimeoutMs <= LINMASTER_DIAG_P2_MAX_TIMEOUT)) {
         DiagRuntime.TimeoutValue = TimeoutMs;
     }
 }
@@ -498,7 +498,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if (DataPtr == NULL_PTR || Length == 0U || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -541,7 +541,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     request.SubFunction = SubFunc & 0x7F;
     
     /* 如果是发送密钥，添加密钥数据 */
-    if (KeyPtr != NULL_PTR && KeyLen > 0U && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if ((KeyPtr != NULL_PTR) && (KeyLen > 0U) && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
         for (i = 0U; i < KeyLen; i++) {
             request.Data[i] = KeyPtr[i];
         }
@@ -585,7 +585,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     request.Data[1] = (uint8)(Rid & 0xFF);
     
     /* 可选数据 */
-    if (DataPtr != NULL_PTR && Length > 0U) {
+    if ((DataPtr != NULL_PTR) && (Length > 0U)) {
         for (i = 0U; i < Length; i++) {
             request.Data[2 + i] = DataPtr[i];
         }

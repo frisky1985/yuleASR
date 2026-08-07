@@ -80,7 +80,7 @@ keym_context_t* keym_init(void *cryif, void *csm)
 
 void keym_deinit(keym_context_t *ctx)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return;
     }
     
@@ -109,7 +109,7 @@ void keym_deinit(keym_context_t *ctx)
 keym_status_t keym_slot_allocate(keym_context_t *ctx, uint8_t *slot_id,
                                  const char *name, keym_key_type_t key_type)
 {
-    if (ctx == NULL || !ctx->initialized || slot_id == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || slot_id == NULL) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -167,8 +167,8 @@ keym_status_t keym_slot_free(keym_context_t *ctx, uint8_t slot_id)
     memset(&ctx->materials[slot_id], 0, sizeof(keym_key_material_t));
     
     /* Free CryIf slot if allocated */
-    if (ctx->slots[slot_id].cryif_slot_id != CRYIF_KEY_SLOT_INVALID &&
-        ctx->cryif != NULL) {
+    if ((ctx->slots[slot_id].cryif_slot_id != CRYIF_KEY_SLOT_INVALID) &&
+        (ctx->cryif != NULL)) {
         /* cryif_key_slot_free(ctx->cryif, ctx->slots[slot_id].cryif_slot_id); */
     }
     
@@ -202,13 +202,13 @@ keym_status_t keym_slot_get_info(keym_context_t *ctx, uint8_t slot_id,
 
 uint8_t keym_slot_find_by_name(keym_context_t *ctx, const char *name)
 {
-    if (ctx == NULL || !ctx->initialized || name == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || name == NULL) {
         return KEYM_SLOT_ID_INVALID;
     }
     
     for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
-        if (ctx->slots[i].state != KEYM_STATE_EMPTY &&
-            strcmp(ctx->slots[i].name, name) == 0) {
+        if ((ctx->slots[i].state != KEYM_STATE_EMPTY) &&
+            (strcmp(ctx->slots[i].name, name) == 0)) {
             return i;
         }
     }
@@ -250,7 +250,7 @@ keym_status_t keym_key_import(keym_context_t *ctx, uint8_t slot_id,
         return status;
     }
     
-    if (key_data == NULL || key_len == 0) {
+    if ((key_data == NULL) || (key_len == 0)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -299,7 +299,7 @@ keym_status_t keym_key_export(keym_context_t *ctx, uint8_t slot_id,
         return status;
     }
     
-    if (key_data == NULL || key_len == NULL) {
+    if ((key_data == NULL) || (key_len == NULL)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -309,7 +309,7 @@ keym_status_t keym_key_export(keym_context_t *ctx, uint8_t slot_id,
     }
     
     material = &ctx->materials[slot_id];
-    if (material->key_data == NULL || material->key_data_len == 0) {
+    if ((material->key_data == NULL) || (material->key_data_len == 0)) {
         return KEYM_ERROR_KEY_NOT_FOUND;
     }
     
@@ -356,7 +356,7 @@ keym_status_t keym_key_generate(keym_context_t *ctx, uint8_t slot_id,
     
     /* For now, fill with pseudo-random pattern */
     for (uint32_t i = 0; i < ctx->slots[slot_id].key_len; i++) {
-        ctx->materials[slot_id].key_data[i] = (uint8_t)(i * 7 + slot_id * 13);
+        ctx->materials[slot_id].key_data[i] = (uint8_t)((i * 7) + (slot_id * 13));
     }
     ctx->materials[slot_id].key_data_len = ctx->slots[slot_id].key_len;
     
@@ -430,7 +430,7 @@ keym_status_t keym_key_derive(keym_context_t *ctx,
     keym_status_t status;
     uint8_t target_slot;
     
-    if (ctx == NULL || !ctx->initialized || params == NULL || derived_slot_id == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || params == NULL || derived_slot_id == NULL) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -518,7 +518,7 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
     
     /* Fill with derived pattern (simplified - should use real HKDF) */
     for (uint32_t i = 0; i < key_len; i++) {
-        ctx->materials[target_slot].key_data[i] = (uint8_t)(i * 3 + target_slot * 11 + 0x5A);
+        ctx->materials[target_slot].key_data[i] = (uint8_t)((i * 3) + (target_slot * 11) + 0x5A);
     }
     ctx->materials[target_slot].key_data_len = key_len;
     
@@ -532,7 +532,7 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
 keym_status_t keym_set_rotation_policy(keym_context_t *ctx,
                                        const keym_rotation_policy_t *policy)
 {
-    if (ctx == NULL || !ctx->initialized || policy == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || policy == NULL) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -555,7 +555,7 @@ keym_status_t keym_rotate_key(keym_context_t *ctx, uint8_t slot_id,
     ctx->slots[slot_id].state = KEYM_STATE_PENDING_ROTATION;
     
     /* Allocate new slot if needed */
-    if (new_slot_id != NULL && *new_slot_id == KEYM_SLOT_ID_INVALID) {
+    if ((new_slot_id != NULL) && (*new_slot_id == KEYM_SLOT_ID_INVALID)) {
         new_slot = KEYM_SLOT_ID_INVALID;
         status = keym_slot_allocate(ctx, &new_slot,
                                     ctx->slots[slot_id].name,
@@ -574,7 +574,7 @@ keym_status_t keym_rotate_key(keym_context_t *ctx, uint8_t slot_id,
     /* Generate new key */
     status = keym_key_generate(ctx, new_slot, ctx->slots[slot_id].key_type);
     if (status != KEYM_OK) {
-        if (new_slot_id != NULL && *new_slot_id != slot_id) {
+        if ((new_slot_id != NULL) && (*new_slot_id != slot_id)) {
             keym_slot_free(ctx, new_slot);
         }
         ctx->slots[slot_id].state = KEYM_STATE_ACTIVE;
@@ -584,7 +584,7 @@ keym_status_t keym_rotate_key(keym_context_t *ctx, uint8_t slot_id,
     /* Activate new key */
     status = keym_key_activate(ctx, new_slot);
     if (status != KEYM_OK) {
-        if (new_slot_id != NULL && *new_slot_id != slot_id) {
+        if ((new_slot_id != NULL) && (*new_slot_id != slot_id)) {
             keym_slot_free(ctx, new_slot);
         }
         ctx->slots[slot_id].state = KEYM_STATE_ACTIVE;
@@ -612,7 +612,7 @@ uint32_t keym_check_and_rotate(keym_context_t *ctx, uint64_t current_time)
 {
     uint32_t rotations = 0;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return 0;
     }
     
@@ -623,8 +623,8 @@ uint32_t keym_check_and_rotate(keym_context_t *ctx, uint64_t current_time)
     for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
         if (ctx->slots[i].state == KEYM_STATE_ACTIVE) {
             /* Check if rotation is needed */
-            if (ctx->slots[i].next_rotation_time <= current_time ||
-                (current_time - ctx->slots[i].activated_time) >= ctx->rotation_policy.max_key_age_ms) {
+            if ((ctx->slots[i].next_rotation_time <= current_time) ||
+                ((current_time - ctx->slots[i].activated_time) >= ctx->rotation_policy.max_key_age_ms)) {
                 
                 uint8_t new_slot = KEYM_SLOT_ID_INVALID;
                 if (keym_rotate_key(ctx, i, &new_slot) == KEYM_OK) {
@@ -649,12 +649,12 @@ keym_status_t keym_get_version_history(keym_context_t *ctx, uint8_t slot_id,
         return status;
     }
     
-    if (history == NULL || num_entries == NULL) {
+    if ((history == NULL) || (num_entries == NULL)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
     uint32_t count = 0;
-    for (int i = 0; i < KEYM_MAX_KEY_VERSIONS && count < max_entries; i++) {
+    for (int i = 0; (i < KEYM_MAX_KEY_VERSIONS) && (count < max_entries); i++) {
         if (ctx->version_history[slot_id][i].version > 0) {
             memcpy(&history[count], &ctx->version_history[slot_id][i],
                    sizeof(keym_version_history_t));
@@ -672,7 +672,7 @@ keym_status_t keym_get_version_history(keym_context_t *ctx, uint8_t slot_id,
 
 keym_status_t keym_integrate_dds_security(keym_context_t *ctx, void *dds_sec)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -704,7 +704,7 @@ keym_status_t keym_register_certificate(keym_context_t *ctx, uint8_t cert_id,
                                         const char *name,
                                         const uint8_t *cert_data, uint32_t cert_len)
 {
-    if (ctx == NULL || !ctx->initialized || cert_data == NULL || cert_len == 0) {
+    if ((ctx == NULL) || !ctx->initialized || cert_data == NULL || cert_len == 0) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -744,7 +744,7 @@ keym_status_t keym_update_certificate(keym_context_t *ctx, uint8_t cert_id,
 
 keym_status_t keym_revoke_certificate(keym_context_t *ctx, uint8_t cert_id)
 {
-    if (ctx == NULL || !ctx->initialized || cert_id >= KEYM_MAX_CERTIFICATES) {
+    if ((ctx == NULL) || !ctx->initialized || cert_id >= KEYM_MAX_CERTIFICATES) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -763,7 +763,7 @@ keym_status_t keym_configure_secoc_key(keym_context_t *ctx, uint32_t secoc_pdu_i
     keym_status_t status;
     uint8_t slot;
     
-    if (ctx == NULL || !ctx->initialized || key_slot == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || key_slot == NULL) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -795,7 +795,7 @@ uint8_t keym_get_secoc_key_slot(keym_context_t *ctx, uint32_t pdu_id)
 {
     char slot_name[KEYM_MAX_KEY_NAME_LEN];
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return KEYM_SLOT_ID_INVALID;
     }
     
@@ -811,7 +811,7 @@ keym_status_t keym_register_rotation_callback(keym_context_t *ctx,
                                                keym_rotation_callback_t callback,
                                                void *user_data)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -825,7 +825,7 @@ keym_status_t keym_register_state_callback(keym_context_t *ctx,
                                             keym_state_callback_t callback,
                                             void *user_data)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -876,7 +876,7 @@ void keym_debug_print_slot(keym_context_t *ctx, uint8_t slot_id)
 {
     keym_slot_info_t *slot;
     
-    if (ctx == NULL || slot_id >= KEYM_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || (slot_id >= KEYM_MAX_KEY_SLOTS)) {
         return;
     }
     
@@ -899,7 +899,7 @@ void keym_debug_print_slot(keym_context_t *ctx, uint8_t slot_id)
 
 static keym_status_t keym_validate_slot(keym_context_t *ctx, uint8_t slot_id)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     

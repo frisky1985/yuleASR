@@ -288,7 +288,7 @@ void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType*
         Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_NOT_INITIALIZED);
         return;
     }
-    if (XcpRxPduPtr == NULL_PTR || XcpRxPduPtr->SduDataPtr == NULL_PTR) {
+    if ((XcpRxPduPtr == NULL_PTR) || (XcpRxPduPtr->SduDataPtr == NULL_PTR)) {
         Det_ReportError(XCP_MODULE_ID, XCP_INSTANCE_ID, XCP_SID_RXINDICATION, XCP_E_PARAM_POINTER);
         return;
     }
@@ -977,9 +977,9 @@ void Xcp_CmdWriteDaq(uint8 ChannelId, const uint8* Data)
     }
 
     /* Check DAQ pointer bounds */
-    if (Xcp_DaqPtr.DaqListNumber >= XCP_MAX_DAQ_LISTS ||
-        Xcp_DaqPtr.OdtNumber >= XCP_MAX_ODTS_PER_DAQ ||
-        Xcp_DaqPtr.OdtEntryNumber >= XCP_MAX_ODT_ENTRIES_PER_ODT) {
+    if ((Xcp_DaqPtr.DaqListNumber >= XCP_MAX_DAQ_LISTS) ||
+        ((Xcp_DaqPtr.OdtNumber >= XCP_MAX_ODTS_PER_DAQ)) ||
+        (Xcp_DaqPtr.OdtEntryNumber >= XCP_MAX_ODT_ENTRIES_PER_ODT)) {
         Xcp_SendError(ChannelId, XCP_ERR_OUT_OF_RANGE, 0U);
         return;
     }
@@ -1588,7 +1588,7 @@ void Xcp_DaqSample(uint16 DaqListIdx)
             eleLength = odtEntry->EleLength;
 
             /* Read data from memory */
-            if (bitOffset == 0U && (eleLength % 8U) == 0U) {
+            if ((bitOffset == 0U) && ((eleLength % 8U) == 0U)) {
                 /* Byte-aligned access */
                 uint32 byteLength = eleLength / 8U;
                 if (byteLength > (XCP_MAX_DTO_SIZE - (bufferPtr - Xcp_DaqBuffer[DaqListIdx]))) {

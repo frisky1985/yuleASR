@@ -109,7 +109,7 @@ static const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetEntryAt(uint8 In
 {
     const LinMaster_ScheduleTableType* table = g_ScheduleCtrl.CurrentTable;
     
-    if (table == NULL_PTR || Index >= table->EntryCount) {
+    if ((table == NULL_PTR) || (Index >= table->EntryCount)) {
         return NULL_PTR;
     }
     
@@ -140,7 +140,7 @@ Std_ReturnType LinMaster_Schedule_Init(const LinMaster_ScheduleTableType* Schedu
     if (ScheduleTable != NULL_PTR) {
         g_ScheduleCtrl.CurrentTable = ScheduleTable;
         /* 如果是运行时表，复制条目到运行时缓存 */
-        if (ScheduleTable->Entries != NULL_PTR && ScheduleTable->EntryCount > 0U) {
+        if ((ScheduleTable->Entries != NULL_PTR) && (ScheduleTable->EntryCount > 0U)) {
             /* 检查条目数是否超出限制 */
             if (ScheduleTable->EntryCount <= LINMASTER_SCHEDULE_MAX_ENTRIES) {
                 (void)memcpy(g_ScheduleCtrl.RuntimeEntries,
@@ -389,7 +389,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     oldTable = g_ScheduleCtrl.CurrentTable;
     
     /* 如果当前正在运行，停止它 */
-    if (g_ScheduleCtrl.State == LINMASTER_SCHEDULE_STATE_RUNNING && oldTable != NULL_PTR) {
+    if ((g_ScheduleCtrl.State == LINMASTER_SCHEDULE_STATE_RUNNING) && (oldTable != NULL_PTR)) {
         ((LinMaster_ScheduleTableType*)oldTable)->IsRunning = FALSE;
     }
     
@@ -405,7 +405,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     g_ScheduleCtrl.CurrentTable = NewTable;
     
     /* 复制条目到运行时缓存(如果是静态表) */
-    if (NewTable->Entries != NULL_PTR && NewTable->EntryCount > 0U) {
+    if ((NewTable->Entries != NULL_PTR) && (NewTable->EntryCount > 0U)) {
         if (NewTable->EntryCount <= LINMASTER_SCHEDULE_MAX_ENTRIES) {
             (void)memcpy(g_ScheduleCtrl.RuntimeEntries,
                    NewTable->Entries,
@@ -534,7 +534,7 @@ uint32 LinMaster_Schedule_GetElapsedTime(void)
 {
     uint32 currentTime;
     
-    if (!g_ScheduleCtrl.Initialized || g_ScheduleCtrl.CurrentTable == NULL_PTR) {
+    if (!g_ScheduleCtrl.Initialized || (g_ScheduleCtrl.CurrentTable == NULL_PTR)) {
         return 0;
     }
     
@@ -551,7 +551,7 @@ uint32 LinMaster_Schedule_GetRemainingTime(void)
     const LinMaster_ScheduleEntryType* entry;
     uint16 requiredDelay;
     
-    if (!g_ScheduleCtrl.Initialized || g_ScheduleCtrl.CurrentTable == NULL_PTR) {
+    if (!g_ScheduleCtrl.Initialized || (g_ScheduleCtrl.CurrentTable == NULL_PTR)) {
         return 0;
     }
     
@@ -722,7 +722,7 @@ static void LinMaster_Schedule_NextEntry(void)
     entry = LinMaster_Schedule_GetCurrentEntry();
     
     /* 调用完成回调(如果注册) */
-    if (entry != NULL_PTR && g_ScheduleCtrl.EntryCallback != NULL_PTR) {
+    if ((entry != NULL_PTR) && (g_ScheduleCtrl.EntryCallback != NULL_PTR)) {
         g_ScheduleCtrl.EntryCallback(
             entry,
             currentIndex,
@@ -770,7 +770,7 @@ static void LinMaster_Schedule_NextEntry(void)
 static void LinMaster_Schedule_TableComplete(void)
 {
     /* 调用完成回调(如果注册) */
-    if (g_ScheduleCtrl.TableCompleteCallback != NULL_PTR && g_ScheduleCtrl.CurrentTable != NULL_PTR) {
+    if ((g_ScheduleCtrl.TableCompleteCallback != NULL_PTR) && (g_ScheduleCtrl.CurrentTable != NULL_PTR)) {
         g_ScheduleCtrl.TableCompleteCallback(g_ScheduleCtrl.CurrentTable);
     }
 }

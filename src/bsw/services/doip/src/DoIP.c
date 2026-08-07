@@ -59,7 +59,7 @@ void DoIP_Init(const DoIP_ConfigType* ConfigPtr)
     DoIP_InternalState = DOIP_STATE_INIT;
 
     /* Open default connections */
-    if (ConfigPtr != NULL_PTR && ConfigPtr->SoConConfig != NULL_PTR)
+    if ((ConfigPtr != NULL_PTR) && (ConfigPtr->SoConConfig != NULL_PTR))
     {
         (void)SoAd_OpenConnection(ConfigPtr->SoConConfig[0].SoConId);
     }
@@ -78,7 +78,7 @@ void DoIP_DeInit(void)
 #endif
 
     /* Close all active connections */
-    if (DoIP_ConfigPtr != NULL_PTR && DoIP_ConfigPtr->SoConConfig != NULL_PTR)
+    if ((DoIP_ConfigPtr != NULL_PTR) && (DoIP_ConfigPtr->SoConConfig != NULL_PTR))
     {
         (void)SoAd_CloseConnection(DoIP_ConfigPtr->SoConConfig[0].SoConId);
     }
@@ -109,7 +109,7 @@ void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo)
 Std_ReturnType DoIP_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (DOIP_DEV_ERROR_DETECT == STD_ON)
-    if (PduInfoPtr == NULL_PTR || PduInfoPtr->SduDataPtr == NULL_PTR)
+    if ((PduInfoPtr == NULL_PTR) || (PduInfoPtr->SduDataPtr == NULL_PTR))
     {
         Det_ReportError(DOIP_MODULE_ID, DOIP_INSTANCE_ID, DOIP_SID_IFTRANSMIT, DOIP_E_PARAM_POINTER);
         return E_NOT_OK;
@@ -131,7 +131,7 @@ Std_ReturnType DoIP_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 void DoIP_IfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (DOIP_DEV_ERROR_DETECT == STD_ON)
-    if (PduInfoPtr == NULL_PTR || PduInfoPtr->SduDataPtr == NULL_PTR)
+    if ((PduInfoPtr == NULL_PTR) || (PduInfoPtr->SduDataPtr == NULL_PTR))
     {
         Det_ReportError(DOIP_MODULE_ID, DOIP_INSTANCE_ID, DOIP_SID_IFRXINDICATION, DOIP_E_PARAM_POINTER);
         return;

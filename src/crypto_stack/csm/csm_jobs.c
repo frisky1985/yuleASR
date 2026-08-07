@@ -25,7 +25,7 @@ void csm_job_pool_init(csm_context_t *ctx)
 
 csm_job_t* csm_job_alloc(csm_context_t *ctx)
 {
-    if (ctx == NULL || ctx->num_jobs >= CSM_MAX_JOBS) {
+    if ((ctx == NULL) || (ctx->num_jobs >= CSM_MAX_JOBS)) {
         return NULL;
     }
     
@@ -42,7 +42,7 @@ csm_job_t* csm_job_alloc(csm_context_t *ctx)
 
 void csm_job_free(csm_context_t *ctx, csm_job_t *job)
 {
-    if (ctx == NULL || job == NULL) return;
+    if ((ctx == NULL) || (job == NULL)) return;
     
     /* Clear job data */
     memset(job, 0, sizeof(csm_job_t));
@@ -50,7 +50,7 @@ void csm_job_free(csm_context_t *ctx, csm_job_t *job)
 
 csm_job_t* csm_job_find_by_id(csm_context_t *ctx, uint32_t job_id)
 {
-    if (ctx == NULL || job_id == 0) return NULL;
+    if ((ctx == NULL) || (job_id == 0)) return NULL;
     
     for (int i = 0; i < CSM_MAX_JOBS; i++) {
         if (ctx->jobs[i].job_id == job_id) {
@@ -71,7 +71,7 @@ csm_status_t csm_queue_insert(csm_context_t *ctx, csm_job_t *job,
     csm_job_t **queue_head;
     csm_job_t *current;
     
-    if (ctx == NULL || job == NULL) {
+    if ((ctx == NULL) || (job == NULL)) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -119,7 +119,7 @@ csm_status_t csm_queue_remove(csm_context_t *ctx, csm_job_t *job)
     csm_job_t **queue_head = NULL;
     csm_job_t *current;
     
-    if (ctx == NULL || job == NULL) {
+    if ((ctx == NULL) || (job == NULL)) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -199,7 +199,7 @@ csm_status_t csm_job_execute(csm_context_t *ctx, csm_job_t *job)
 
 void csm_job_complete(csm_context_t *ctx, csm_job_t *job, csm_status_t result)
 {
-    if (ctx == NULL || job == NULL) return;
+    if ((ctx == NULL) || (job == NULL)) return;
     
     job->result = result;
     
@@ -217,11 +217,11 @@ void csm_job_complete(csm_context_t *ctx, csm_job_t *job, csm_status_t result)
 
 void csm_job_trigger_callbacks(csm_context_t *ctx, csm_job_t *job)
 {
-    if (ctx == NULL || job == NULL) return;
+    if ((ctx == NULL) || (job == NULL)) return;
     
     /* Trigger registered callbacks */
     for (int i = 0; i < CSM_MAX_CALLBACKS; i++) {
-        if (ctx->callbacks[i].active && ctx->callbacks[i].callback != NULL) {
+        if (ctx->callbacks[i].active && (ctx->callbacks[i].callback != NULL)) {
             ctx->callbacks[i].callback(job->job_id, job->result, 
                                        ctx->callbacks[i].user_data);
         }

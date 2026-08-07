@@ -36,7 +36,7 @@ Std_ReturnType Csm_Hash(
         return E_NOT_OK;
     }
     
-    if (dataPtr != NULL_PTR && dataLength > 0U )
+    if ((dataPtr != NULL_PTR) && (dataLength > 0U) )
     {
 (void)Mcal_MemCopy(Csm_Jobs[jobIdx].inputData, dataPtr, dataLength);
         Csm_Jobs[jobIdx].inputLength = dataLength;
@@ -55,7 +55,7 @@ Std_ReturnType Csm_Hash(
         
         if (result == E_OK)
         {
-            if (resultPtr != NULL_PTR && resultLengthPtr != NULL_PTR)
+            if ((resultPtr != NULL_PTR) && (resultLengthPtr != NULL_PTR))
             {
                 if (*resultLengthPtr >= Csm_Jobs[jobIdx].resultLength)
                 {

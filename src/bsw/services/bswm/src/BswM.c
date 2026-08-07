@@ -93,7 +93,7 @@ BswM_ModeType BswM_GetRequestedMode(void)
 
 void BswM_MainFunction(void)
 {
-    if (BswM_State.internalState == BSWM_INTERNAL_UNINIT || BswM_State.configPtr == NULL_PTR) return;
+    if ((BswM_State.internalState == BSWM_INTERNAL_UNINIT) || (BswM_State.configPtr == NULL_PTR)) return;
 
     if (BswM_State.modeRequestMask != 0U) {
         BswM_State.currentMode = BswM_State.requestedMode;

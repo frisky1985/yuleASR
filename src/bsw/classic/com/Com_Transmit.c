@@ -224,7 +224,7 @@ Std_ReturnType Com_TxQueueGetNextRequest(Com_TxRequestEntryType** RequestPtr)
     Com_TxRequestEntryType* entry = &Com_TxRequestQueue.Entries[index];
     
     /* Check if entry is pending */
-    if (entry->State != COM_TXREQ_PENDING && entry->State != COM_TXREQ_RETRY) {
+    if ((entry->State != COM_TXREQ_PENDING) && (entry->State != COM_TXREQ_RETRY)) {
         return E_NOT_OK;
     }
     
@@ -286,9 +286,9 @@ void Com_TxQueueMarkRetry(Com_TxRequestEntryType* RequestPtr)
 void Com_TxQueueClearForPdu(Com_IPduIdType PduId)
 {
     for (uint8 i = 0u; i < COM_MAX_TX_REQUESTS; i++) {
-        if (Com_TxRequestQueue.Entries[i].PduId == PduId &&
-            (Com_TxRequestQueue.Entries[i].State == COM_TXREQ_PENDING ||
-             Com_TxRequestQueue.Entries[i].State == COM_TXREQ_RETRY)) {
+        if ((Com_TxRequestQueue.Entries[i].PduId == PduId) &&
+            ((Com_TxRequestQueue.Entries[i].State == COM_TXREQ_PENDING) ||
+             (Com_TxRequestQueue.Entries[i].State == COM_TXREQ_RETRY))) {
             Com_TxRequestQueue.Entries[i].State = COM_TXREQ_IDLE;
         }
     }
@@ -634,7 +634,7 @@ boolean Com_ShouldTransmitIPdu(Com_IPduIdType PduId)
             }
             
             /* Handle repetitions for mixed mode */
-            if (!shouldTransmit && ipduRuntime->RepetitionCount > 0u) {
+            if (!shouldTransmit && (ipduRuntime->RepetitionCount > 0u)) {
                 if (ipduRuntime->RepetitionTimer == 0u) {
                     shouldTransmit = TRUE;
                     ipduRuntime->RepetitionCount--;
@@ -775,9 +775,9 @@ Std_ReturnType Com_ValidateTxQueueIntegrity(void)
     /* Redundancy check: Count should match actual pending entries */
     uint8 actualCount = 0u;
     for (uint8 i = 0u; i < COM_MAX_TX_REQUESTS; i++) {
-        if (Com_TxRequestQueue.Entries[i].State == COM_TXREQ_PENDING ||
-            Com_TxRequestQueue.Entries[i].State == COM_TXREQ_RETRY ||
-            Com_TxRequestQueue.Entries[i].State == COM_TXREQ_IN_PROGRESS) {
+        if ((Com_TxRequestQueue.Entries[i].State == COM_TXREQ_PENDING) ||
+            ((Com_TxRequestQueue.Entries[i].State == COM_TXREQ_RETRY)) ||
+            (Com_TxRequestQueue.Entries[i].State == COM_TXREQ_IN_PROGRESS)) {
             actualCount++;
         }
     }
@@ -814,7 +814,7 @@ boolean Com_CheckTxTimeout(Com_IPduIdType PduId)
  */
 uint16 Com_CalculateCRC(const uint8* DataPtr, uint8 Length)
 {
-    if (DataPtr == NULL_PTR || Length == 0u) {
+    if ((DataPtr == NULL_PTR) || (Length == 0u)) {
         return 0u;
     }
     
@@ -841,7 +841,7 @@ uint16 Com_CalculateCRC(const uint8* DataPtr, uint8 Length)
  */
 uint32 Com_CalculateDataHash(const uint8* DataPtr, uint8 Length)
 {
-    if (DataPtr == NULL_PTR || Length == 0u) {
+    if ((DataPtr == NULL_PTR) || (Length == 0u)) {
         return 0u;
     }
     
@@ -873,7 +873,7 @@ Std_ReturnType Com_VerifyIPduIntegrity(Com_IPduIdType PduId)
         return E_NOT_OK;
     }
     
-    if (ipduConfig->Length == 0u || ipduConfig->Length > COM_MAX_IPDU_LENGTH) {
+    if ((ipduConfig->Length == 0u) || (ipduConfig->Length > COM_MAX_IPDU_LENGTH)) {
         return E_NOT_OK;
     }
     

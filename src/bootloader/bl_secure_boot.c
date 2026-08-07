@@ -120,7 +120,7 @@ bl_secure_boot_error_t bl_secure_boot_init(
     void *keym_ctx
 )
 {
-    if (ctx == NULL || config == NULL) {
+    if ((ctx == NULL) || (config == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -162,7 +162,7 @@ bl_secure_boot_error_t bl_secure_boot_parse_header(
     bl_firmware_header_t *header
 )
 {
-    if (ctx == NULL || header_data == NULL || header == NULL) {
+    if ((ctx == NULL) || (header_data == NULL) || header == NULL) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -195,7 +195,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_header_crc(
     const bl_firmware_header_t *header
 )
 {
-    if (ctx == NULL || header == NULL) {
+    if ((ctx == NULL) || (header == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -224,7 +224,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
     bl_signature_type_t sign_type
 )
 {
-    if (ctx == NULL || firmware_data == NULL || signature == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || signature == NULL) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -288,7 +288,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
     status = csm_mac_verify(csm, sign_algo, ctx->config.oem_key_slot,
                             hash, 32, signature, 64, &verify_result);
     
-    if (status != CSM_OK || !verify_result) {
+    if ((status != CSM_OK) || !verify_result) {
         DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Signature verification failed");
         set_state(ctx, BL_SB_STATE_VERIFICATION_FAILED);
@@ -311,7 +311,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_hash(
     bl_hash_type_t hash_type
 )
 {
-    if (ctx == NULL || firmware_data == NULL || expected_hash == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || expected_hash == NULL) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -370,7 +370,7 @@ bl_secure_boot_error_t bl_secure_boot_calculate_hash(
     bl_hash_type_t hash_type
 )
 {
-    if (ctx == NULL || firmware_data == NULL || hash == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || hash == NULL) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -451,7 +451,7 @@ bl_secure_boot_error_t bl_secure_boot_check_rollback(
     
     /* 检查版本是否已锁定 */
     if (ctx->rollback_info.version_locked && 
-        new_version < ctx->rollback_info.current_version) {
+        (new_version < ctx->rollback_info.current_version)) {
         DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                 "Version locked, rollback not allowed");
         return BL_SB_ERROR_VERSION_ROLLBACK;
@@ -496,11 +496,11 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     const uint8_t *trusted_root_key
 )
 {
-    if (ctx == NULL || chain == NULL || trusted_root_key == NULL) {
+    if ((ctx == NULL) || (chain == NULL) || trusted_root_key == NULL) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
-    if (chain->num_certs == 0 || chain->num_certs > BL_SB_MAX_CERT_CHAIN_DEPTH) {
+    if ((chain->num_certs == 0) || (chain->num_certs > BL_SB_MAX_CERT_CHAIN_DEPTH)) {
         return BL_SB_ERROR_CERT_CHAIN_INVALID;
     }
     
@@ -516,7 +516,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         /* 检查证书有效期 */
         if (ctx->config.verify_cert_validity) {
             uint64_t current_time = 0; /* TODO: 获取当前时间 */
-            if (current_time < cert->valid_from || current_time > cert->valid_until) {
+            if ((current_time < cert->valid_from) || (current_time > cert->valid_until)) {
                 DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                         "Certificate expired or not yet valid");
                 return BL_SB_ERROR_CERT_EXPIRED;
@@ -525,7 +525,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         
         /* 验证签名 */
         const uint8_t *signing_key = NULL;
-        if (i == chain->num_certs - 1) {
+        if (i == (chain->num_certs - 1)) {
             /* 根证书使用可信公钥验证 */
             signing_key = trusted_root_key;
         } else {
@@ -550,7 +550,7 @@ bl_secure_boot_error_t bl_secure_boot_verify(
     uint32_t firmware_size
 )
 {
-    if (ctx == NULL || firmware_data == NULL || firmware_size < FIRMWARE_HEADER_SIZE) {
+    if ((ctx == NULL) || (firmware_data == NULL) || firmware_size < FIRMWARE_HEADER_SIZE) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -640,8 +640,8 @@ bl_secure_boot_error_t bl_secure_boot_verify_fast(
     const uint8_t *signature
 )
 {
-    if (ctx == NULL || firmware_data == NULL || 
-        expected_hash == NULL || signature == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || 
+        (expected_hash == NULL) || (signature == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -693,7 +693,7 @@ bl_secure_boot_error_t bl_secure_boot_check_need_rollback(
     bool *need_rollback
 )
 {
-    if (ctx == NULL || need_rollback == NULL) {
+    if ((ctx == NULL) || (need_rollback == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -735,7 +735,7 @@ const char* bl_secure_boot_version_to_string(
     uint32_t buf_size
 )
 {
-    if (buf == NULL || buf_size < 16) {
+    if ((buf == NULL) || (buf_size < 16)) {
         return NULL;
     }
     

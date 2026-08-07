@@ -94,7 +94,7 @@ IoHwAb_ReturnType IoHwAb_AnalogRead(IoHwAb_ChannelType Channel, uint16* Value)
     if (NULL_PTR == Value) return IOHWAB_NOT_OK;
 
     IoHwAb_ChannelEntryType* ch = IoHwAb_FindChannel(Channel);
-    if (ch == NULL_PTR || ch->type != IOHWAB_CHANNEL_ANALOG) return IOHWAB_NOT_OK;
+    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_ANALOG)) return IOHWAB_NOT_OK;
 
     *Value = ch->value;
     return IOHWAB_OK;
@@ -106,7 +106,7 @@ IoHwAb_ReturnType IoHwAb_DigitalRead(IoHwAb_ChannelType Channel, uint8* Value)
     if (NULL_PTR == Value) return IOHWAB_NOT_OK;
 
     IoHwAb_ChannelEntryType* ch = IoHwAb_FindChannel(Channel);
-    if (ch == NULL_PTR || ch->type != IOHWAB_CHANNEL_DIGITAL) return IOHWAB_NOT_OK;
+    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_DIGITAL)) return IOHWAB_NOT_OK;
 
     *Value = ch->inverted ? (uint8)(1U - ch->value) : ch->value;
     return IOHWAB_OK;
@@ -117,7 +117,7 @@ IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, uint8 Value)
     if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) return IOHWAB_NOT_OK;
 
     IoHwAb_ChannelEntryType* ch = IoHwAb_FindChannel(Channel);
-    if (ch == NULL_PTR || ch->type != IOHWAB_CHANNEL_DIGITAL) return IOHWAB_NOT_OK;
+    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_DIGITAL)) return IOHWAB_NOT_OK;
 
     ch->value = ch->inverted ? (uint8)(1U - Value) : Value;
     return IOHWAB_OK;

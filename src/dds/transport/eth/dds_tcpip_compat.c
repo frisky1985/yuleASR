@@ -43,7 +43,7 @@ tcpip_error_t tcpip_udp_sendto(tcpip_socket_id_t socket_id,
                                const uint8_t *data,
                                uint16_t len)
 {
-    if (dest == NULL || data == NULL) {
+    if ((dest == NULL) || (data == NULL)) {
         return TCPIP_ERROR;
     }
     return __real_tcpip_udp_send(socket_id, dest->addr, dest->port, data, len);
@@ -56,7 +56,7 @@ tcpip_error_t tcpip_udp_recvfrom(tcpip_socket_id_t socket_id,
                                  uint32_t flags)
 {
     (void)flags; /* 非阻塞: tcpip_udp_recv 内部处理 */
-    if (data == NULL || len == NULL) {
+    if ((data == NULL) || (len == NULL)) {
         return TCPIP_ERROR;
     }
     return __real_tcpip_udp_recv(socket_id, src, data, *len, len);

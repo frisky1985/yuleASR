@@ -39,7 +39,7 @@ eth_status_t eth_str_to_ip(const char *str, eth_ip_addr_t *ip)
 {
     unsigned int a, b, c, d;
     int ret = sscanf(str, "%u.%u.%u.%u", &a, &b, &c, &d);
-    if (ret != 4 || a > 255 || b > 255 || c > 255 || d > 255) {
+    if ((ret != 4) || (a > 255) || b > 255 || c > 255 || d > 255) {
         return ETH_ERROR;
     }
     *ip = (a << 24) | (b << 16) | (c << 8) | d;

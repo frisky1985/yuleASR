@@ -147,8 +147,8 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64]) {
     
     /* 准备消息日志 */
     for (int i = 0; i < 16; i++) {
-        w[i] = ((uint32_t)data[i * 4] << 24) | ((uint32_t)data[i * 4 + 1] << 16) |
-               ((uint32_t)data[i * 4 + 2] << 8) | ((uint32_t)data[i * 4 + 3]);
+        w[i] = ((uint32_t)data[i * 4] << 24) | ((uint32_t)data[(i * 4) + 1] << 16) |
+               ((uint32_t)data[(i * 4) + 2] << 8) | ((uint32_t)data[i * 4 + 3]);
     }
     for (int i = 16; i < 64; i++) {
         w[i] = sha256_sig1(w[i - 2]) + w[i - 7] + sha256_sig0(w[i - 15]) + w[i - 16];
@@ -215,9 +215,9 @@ static void sha256_final(uint32_t state[8], uint8_t *buffer, uint32_t *buf_len, 
     /* 输出 */
     for (i = 0; i < 8; i++) {
         hash[i * 4] = (uint8_t)(state[i] >> 24);
-        hash[i * 4 + 1] = (uint8_t)(state[i] >> 16);
-        hash[i * 4 + 2] = (uint8_t)(state[i] >> 8);
-        hash[i * 4 + 3] = (uint8_t)(state[i]);
+        hash[(i * 4) + 1] = (uint8_t)(state[i] >> 16);
+        hash[(i * 4) + 2] = (uint8_t)(state[i] >> 8);
+        hash[(i * 4) + 3] = (uint8_t)(state[i]);
     }
 }
 
@@ -280,7 +280,7 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     uint8_t y[AES_BLOCK_SIZE] = {0};
     uint8_t m_last[AES_BLOCK_SIZE] = {0};
     int n = (msg_len + AES_BLOCK_SIZE - 1) / AES_BLOCK_SIZE;
-    bool flag = (msg_len == 0) || (msg_len % AES_BLOCK_SIZE != 0);
+    bool flag = (msg_len == 0) || ((msg_len % AES_BLOCK_SIZE) != 0);
     
     generate_subkeys(key, key_len * 8, k1, k2);
     
@@ -292,13 +292,13 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     if (!flag) {
         /* 完整块 */
         for (int j = 0; j < AES_BLOCK_SIZE; j++) {
-            m_last[j] = msg[(n - 1) * AES_BLOCK_SIZE + j] ^ k1[j];
+            m_last[j] = msg[((n - 1) * AES_BLOCK_SIZE) + j] ^ k1[j];
         }
     } else {
         /* 不完整块 */
         for (int j = 0; j < AES_BLOCK_SIZE; j++) {
             if (j < (int)(msg_len % AES_BLOCK_SIZE)) {
-                m_last[j] = msg[(n - 1) * AES_BLOCK_SIZE + j];
+                m_last[j] = msg[((n - 1) * AES_BLOCK_SIZE) + j];
             } else if (j == (int)(msg_len % AES_BLOCK_SIZE)) {
                 m_last[j] = 0x80;
             } else {
@@ -309,9 +309,9 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     }
     
     /* 计算CMAC */
-    for (int i = 0; i < n - 1; i++) {
+    for (int i = 0; i < (n - 1); i++) {
         for (int j = 0; j < AES_BLOCK_SIZE; j++) {
-            y[j] = x[j] ^ msg[i * AES_BLOCK_SIZE + j];
+            y[j] = x[j] ^ msg[(i * AES_BLOCK_SIZE) + j];
         }
         aes_encrypt_block(y, x, key, key_len * 8);
     }
@@ -511,14 +511,14 @@ secoc_status_t secoc_compute_mac(secoc_context_t *ctx, const secoc_pdu_config_t 
     uint32_t auth_len = 0;
     
     /* 添加数据 */
-    if (auth_pdu->data && auth_pdu->data_len > 0) {
+    if (auth_pdu->data && (auth_pdu->data_len > 0)) {
         memcpy(auth_data, auth_pdu->data, auth_pdu->data_len);
         auth_len += auth_pdu->data_len;
     }
     
     /* 添加Freshness值 */
     uint8_t fv_len = config->freshness_value_len / 8;
-    if (fv_len > 0 && fv_len <= SECOC_MAX_FRESHNESS_LENGTH) {
+    if ((fv_len > 0) && (fv_len <= SECOC_MAX_FRESHNESS_LENGTH)) {
         memcpy(&auth_data[auth_len], auth_pdu->freshness_value, fv_len);
         auth_len += fv_len;
     }
@@ -599,7 +599,7 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     static uint64_t tx_counter = 1;
     uint64_t freshness = tx_counter;
     tx_counter++;
-    for (int i = 0; i < (int)auth_pdu->freshness_len && i < 8; i++) {
+    for (int i = 0; (i < (int)auth_pdu->freshness_len) && (i < 8); i++) {
         auth_pdu->freshness_value[i] = (freshness >> (i * 8)) & 0xFF;
     }
     
@@ -632,7 +632,7 @@ secoc_status_t secoc_build_secured_pdu(const secoc_authenticated_pdu_t *auth_pdu
     uint32_t offset = 0;
     
     /* 序列化数据 */
-    if (auth_pdu->data && auth_pdu->data_len > 0) {
+    if (auth_pdu->data && (auth_pdu->data_len > 0)) {
         memcpy(&secured_pdu[offset], auth_pdu->data, auth_pdu->data_len);
         offset += auth_pdu->data_len;
     }
@@ -760,7 +760,7 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     ctx->verify_success_count++;
     
     /* 输出原始数据 */
-    if (auth_pdu.data_len > 0 && auth_pdu.data) {
+    if ((auth_pdu.data_len > 0) && auth_pdu.data) {
         memcpy(original_data, auth_pdu.data, auth_pdu.data_len);
         *original_len = auth_pdu.data_len;
         free(auth_pdu.data);

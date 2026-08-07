@@ -103,12 +103,12 @@ Boot_Result Boot_Image_ValidateHeader(const Boot_ImageHeader *hdr)
     if (hdr->magic != BOOT_IMAGE_MAGIC) {
         return BOOT_E_HEADER_CRC;
     }
-    if (hdr->payload_size == 0U || hdr->payload_size > (1024U * 1024U)) {
+    if ((hdr->payload_size == 0U) || (hdr->payload_size > (1024U * 1024U))) {
         return BOOT_E_PARAM;
     }
     /* Verify header CRC */
     uint32_t expected = hdr->header_crc;
-    if (expected != 0U && expected != Boot_Image_CalcHeaderCrc(hdr)) {
+    if ((expected != 0U) && (expected != Boot_Image_CalcHeaderCrc(hdr))) {
         return BOOT_E_HEADER_CRC;
     }
     return BOOT_OK;

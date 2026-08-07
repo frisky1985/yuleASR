@@ -88,7 +88,7 @@ Std_ReturnType SchM_SetScheduleTable(uint8 ScheduleId)
         return E_NOT_OK;
     }
 #endif
-    if (SchM_State.configPtr != NULL_PTR && ScheduleId < SchM_State.configPtr->NumScheduleTables) {
+    if ((SchM_State.configPtr != NULL_PTR) && (ScheduleId < SchM_State.configPtr->NumScheduleTables)) {
         SchM_State.activeScheduleId = ScheduleId;
         SchM_State.tickCounter = 0U;
         return E_OK;
@@ -106,7 +106,7 @@ uint8 SchM_GetScheduleTable(void)
 
 void SchM_MainFunction(void)
 {
-    if (SchM_State.state != SCHM_RUNNING || SchM_State.configPtr == NULL_PTR) return;
+    if ((SchM_State.state != SCHM_RUNNING) || (SchM_State.configPtr == NULL_PTR)) return;
 
     SchM_State.tickCounter++;
 

@@ -103,7 +103,7 @@ static int32_t find_history_entry(bl_rollback_manager_t *mgr, uint32_t version)
 {
     for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
         if (mgr->record.history[i].is_valid && 
-            mgr->record.history[i].version == version) {
+            (mgr->record.history[i].version == version)) {
             return i;
         }
     }
@@ -188,7 +188,7 @@ bl_rollback_error_t bl_rollback_init(
     void *partition_mgr
 )
 {
-    if (mgr == NULL || config == NULL) {
+    if ((mgr == NULL) || (config == NULL)) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
@@ -230,7 +230,7 @@ bl_rollback_error_t bl_rollback_record_install(
     const uint8_t hash[32]
 )
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -257,7 +257,7 @@ bl_rollback_error_t bl_rollback_record_install(
 
 bl_rollback_error_t bl_rollback_record_boot_attempt(bl_rollback_manager_t *mgr)
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -277,7 +277,7 @@ bl_rollback_error_t bl_rollback_record_boot_result(
     bl_boot_result_t result
 )
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -333,7 +333,7 @@ bl_rollback_error_t bl_rollback_check_needed(
     uint32_t *target_version
 )
 {
-    if (mgr == NULL || !mgr->initialized || need_rollback == NULL) {
+    if ((mgr == NULL) || !mgr->initialized || need_rollback == NULL) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
@@ -364,7 +364,7 @@ bl_rollback_error_t bl_rollback_check_needed(
     }
     
     /* 如果需要回滚，确定目标版本 */
-    if (*need_rollback && target_version != NULL) {
+    if ((*need_rollback) && (target_version != NULL)) {
         bl_rollback_error_t result = bl_rollback_get_previous_version(
             mgr, target_version, NULL);
         if (result != BL_ROLLBACK_OK) {
@@ -378,7 +378,7 @@ bl_rollback_error_t bl_rollback_check_needed(
 
 bl_rollback_error_t bl_rollback_execute(bl_rollback_manager_t *mgr, uint8_t reason)
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -448,7 +448,7 @@ bl_rollback_error_t bl_rollback_execute(bl_rollback_manager_t *mgr, uint8_t reas
 
 bl_rollback_error_t bl_rollback_confirm(bl_rollback_manager_t *mgr)
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -485,7 +485,7 @@ bl_rollback_error_t bl_rollback_confirm(bl_rollback_manager_t *mgr)
 
 bl_rollback_error_t bl_rollback_clear(bl_rollback_manager_t *mgr)
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -510,7 +510,7 @@ bl_rollback_error_t bl_rollback_get_previous_version(
     uint32_t *partition_id
 )
 {
-    if (mgr == NULL || !mgr->initialized || version == NULL) {
+    if ((mgr == NULL) || !mgr->initialized || version == NULL) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
@@ -520,10 +520,10 @@ bl_rollback_error_t bl_rollback_get_previous_version(
     
     for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
         if (mgr->record.history[i].is_valid &&
-            mgr->record.history[i].version != mgr->current_version) {
+            (mgr->record.history[i].version != mgr->current_version)) {
             /* 优先选择有成功启动记录的版本 */
             if (mgr->record.history[i].boot_success_count > 0) {
-                if (best_idx < 0 || mgr->record.history[i].last_boot_time > best_time) {
+                if ((best_idx < 0) || (mgr->record.history[i].last_boot_time > best_time)) {
                     best_idx = i;
                     best_time = mgr->record.history[i].last_boot_time;
                 }
@@ -535,8 +535,8 @@ bl_rollback_error_t bl_rollback_get_previous_version(
         /* 如果没有有成功启动记录的，选择最近安装的 */
         for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
             if (mgr->record.history[i].is_valid &&
-                mgr->record.history[i].version != mgr->current_version) {
-                if (best_idx < 0 || mgr->record.history[i].install_time > best_time) {
+                (mgr->record.history[i].version != mgr->current_version)) {
+                if ((best_idx < 0) || (mgr->record.history[i].install_time > best_time)) {
                     best_idx = i;
                     best_time = mgr->record.history[i].install_time;
                 }
@@ -563,13 +563,13 @@ bl_rollback_error_t bl_rollback_get_history(
     uint32_t *num_entries
 )
 {
-    if (mgr == NULL || history == NULL || num_entries == NULL) {
+    if ((mgr == NULL) || (history == NULL) || num_entries == NULL) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
     *num_entries = 0;
     
-    for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY && *num_entries < max_entries; i++) {
+    for (int32_t i = 0; (i < BL_ROLLBACK_MAX_HISTORY) && (*num_entries < max_entries); i++) {
         if (mgr->record.history[i].is_valid) {
             memcpy(&history[*num_entries], &mgr->record.history[i],
                    sizeof(bl_version_history_entry_t));
@@ -585,7 +585,7 @@ bl_rollback_error_t bl_rollback_save_record(
     uint32_t address
 )
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -610,7 +610,7 @@ bl_rollback_error_t bl_rollback_load_record(
     uint32_t address
 )
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     
@@ -640,7 +640,7 @@ bl_rollback_error_t bl_rollback_get_record(
     bl_rollback_record_t *record
 )
 {
-    if (mgr == NULL || record == NULL) {
+    if ((mgr == NULL) || (record == NULL)) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
@@ -702,7 +702,7 @@ const char* bl_rollback_reason_to_string(uint8_t reason)
 
 bl_rollback_error_t bl_rollback_reset(bl_rollback_manager_t *mgr)
 {
-    if (mgr == NULL || !mgr->initialized) {
+    if ((mgr == NULL) || !mgr->initialized) {
         return BL_ROLLBACK_ERROR_NOT_INITIALIZED;
     }
     

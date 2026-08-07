@@ -169,7 +169,7 @@ Dlt_ReturnType Dlt_SendLogMessage(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered && 
-            Dlt_RuntimeContext[i].contextId == contextId)
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             contextIndex = i;
             appId = Dlt_RuntimeContext[i].appId;
@@ -313,7 +313,7 @@ Dlt_ReturnType Dlt_SendTraceMessage(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered && 
-            Dlt_RuntimeContext[i].contextId == contextId)
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             contextIndex = i;
             appId = Dlt_RuntimeContext[i].appId;
@@ -444,14 +444,14 @@ Dlt_ReturnType Dlt_RegisterContext(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             /* Context already registered */
             return DLT_OK;
         }
         
-        if (!Dlt_RuntimeContext[i].registered && freeIndex == DLT_MAX_CONTEXT_COUNT)
+        if (!Dlt_RuntimeContext[i].registered && (freeIndex == DLT_MAX_CONTEXT_COUNT))
         {
             freeIndex = i;
         }
@@ -500,8 +500,8 @@ Dlt_ReturnType Dlt_UnregisterContext(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             Dlt_RuntimeContext[i].registered = FALSE;
             Dlt_RuntimeContext[i].appId = 0;
@@ -528,8 +528,8 @@ Dlt_ReturnType Dlt_SetLogLevel(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             Dlt_RuntimeContext[i].logLevel = logLevel;
             return DLT_OK;
@@ -555,8 +555,8 @@ Dlt_ReturnType Dlt_GetLogLevel(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             *logLevel = Dlt_RuntimeContext[i].logLevel;
             return DLT_OK;
@@ -577,8 +577,8 @@ Dlt_ReturnType Dlt_SetTraceStatus(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             Dlt_RuntimeContext[i].traceStatus = traceStatus;
             return DLT_OK;
@@ -604,8 +604,8 @@ Dlt_ReturnType Dlt_GetTraceStatus(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             *traceStatus = Dlt_RuntimeContext[i].traceStatus;
             return DLT_OK;
@@ -696,8 +696,8 @@ static Dlt_ReturnType Dlt_FindContext(
     for (i = 0; i < DLT_MAX_CONTEXT_COUNT; i++)
     {
         if (Dlt_RuntimeContext[i].registered &&
-            Dlt_RuntimeContext[i].appId == appId &&
-            Dlt_RuntimeContext[i].contextId == contextId)
+            ((Dlt_RuntimeContext[i].appId == appId)) &&
+            (Dlt_RuntimeContext[i].contextId == contextId))
         {
             *contextIndex = i;
             return DLT_OK;

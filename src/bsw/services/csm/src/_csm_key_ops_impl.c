@@ -38,7 +38,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
     }
     
     /* 检查源密钥是否有派生权限 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->keys != NULL_PTR))
     {
         uint8 i;
         for (i = 0; i < Csm_CurrentConfig->numKeys; i++)
@@ -65,13 +65,13 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
     }
     
     /* 尝试通过硬件服务层执行 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->jobs != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->jobs != NULL_PTR))
     {
         uint8 i;
-        for (i = 0; i < Csm_CurrentConfig->numJobs && i < CSM_MAX_JOBS; i++)
+        for (i = 0; (i < Csm_CurrentConfig->numJobs) && (i < CSM_MAX_JOBS); i++)
         {
-            if (Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_DERIVE &&
-                Csm_CurrentConfig->jobs[i].keyId == keyId)
+            if ((Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_DERIVE) &&
+                (Csm_CurrentConfig->jobs[i].keyId == keyId))
             {
                 if (E_OK == Csm_FindJobIndex(Csm_CurrentConfig->jobs[i].jobId, &jobIdx))
                 {
@@ -80,9 +80,9 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                     Csm_Jobs[jobIdx].keyId = keyId;
                     
                     /* 将源密钥材料作为输入 */
-                    if (Csm_Keys[srcKeyIdx].numElements > 0U &&
+                    if ((Csm_Keys[srcKeyIdx].numElements > 0U) &&
                         Csm_Keys[srcKeyIdx].elements[0].valid &&
-                        Csm_Keys[srcKeyIdx].elements[0].length > 0U)
+                        (Csm_Keys[srcKeyIdx].elements[0].length > 0U))
                     {
                         uint32 copyLen = Csm_Keys[srcKeyIdx].elements[0].length;
                         if (copyLen > CSM_MAX_DATA_LENGTH)
@@ -117,7 +117,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                             &Csm_Jobs[jobIdx].resultLength);
                         Csm_ActiveJobCount--;
                         
-                        if (hwResult == E_OK && Csm_Jobs[jobIdx].resultLength > 0U)
+                        if ((hwResult == E_OK) && (Csm_Jobs[jobIdx].resultLength > 0U))
                         {
                             Csm_Keys[targetKeyIdx].elements[0].length = Csm_Jobs[jobIdx].resultLength;
 (void)Mcal_MemCopy(Csm_Keys[targetKeyIdx].elements[0].data,
@@ -141,9 +141,9 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
     }
     
     /* 软件回退: 基于哈希的密钥派生 (符合NIST SP 800-108 KDF简化版) */
-    if (Csm_Keys[srcKeyIdx].numElements == 0U ||
+    if ((Csm_Keys[srcKeyIdx].numElements == 0U) ||
         !Csm_Keys[srcKeyIdx].elements[0].valid ||
-        Csm_Keys[srcKeyIdx].elements[0].length == 0U)
+        (Csm_Keys[srcKeyIdx].elements[0].length == 0U))
     {
         return E_NOT_OK;
     }
@@ -160,15 +160,15 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
         
         /* 确定派生密钥长度 */
         deriveLength = CSM_MAX_KEY_LENGTH;
-        if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
+        if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->keys != NULL_PTR))
         {
             uint8 i;
             for (i = 0; i < Csm_CurrentConfig->numKeys; i++)
             {
                 if (Csm_CurrentConfig->keys[i].keyId == targetKeyId)
                 {
-                    if (Csm_CurrentConfig->keys[i].elements != NULL_PTR &&
-                        Csm_CurrentConfig->keys[i].numElements > 0U)
+                    if ((Csm_CurrentConfig->keys[i].elements != NULL_PTR) &&
+                        (Csm_CurrentConfig->keys[i].numElements > 0U))
                     {
                         deriveLength = Csm_CurrentConfig->keys[i].elements[0].maxLength;
                         if (deriveLength > CSM_MAX_KEY_LENGTH)
@@ -194,7 +194,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
             deriveBuf[hashInputLen] = counter;
             hashInputLen++;
             
-            if (srcLen + hashInputLen > sizeof(deriveBuf))
+            if ((srcLen + hashInputLen) > sizeof(deriveBuf))
             {
                 srcLen = sizeof(deriveBuf) - hashInputLen;
             }
@@ -202,7 +202,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
             hashInputLen += srcLen;
             
             /* 追加目标密钥ID (大端) */
-            if (hashInputLen + 4U <= sizeof(deriveBuf))
+            if ((hashInputLen + 4U) <= sizeof(deriveBuf))
             {
                 deriveBuf[hashInputLen] = (uint8)((targetKeyId >> 24) & 0xFFU);
                 hashInputLen++;
@@ -246,7 +246,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                     hwHashOut,
                     &hwHashLen);
                     
-                if (hashResult == E_OK && hwHashLen > 0U)
+                if ((hashResult == E_OK) && (hwHashLen > 0U))
                 {
                     /* REDUNDANT: hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH; */
 (void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
@@ -255,7 +255,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                 {
                     /* 哈希服务不可用，回退到简单异或混淆 */
                     uint8 j;
-                    for (j = 0; j < hashInputLen && j < CSM_MAX_HASH_LENGTH; j++)
+                    for (j = 0; (j < hashInputLen) && (j < CSM_MAX_HASH_LENGTH); j++)
                     {
                         hashOut[j] = deriveBuf[j] ^ (uint8)(counter + j);
                     }
@@ -270,7 +270,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
                 {
                     copyBytes = bytesRemaining;
                 }
-                if (offset + copyBytes <= sizeof(targetDeriveBuf))
+                if ((offset + copyBytes) <= sizeof(targetDeriveBuf))
                 {
 (void)Mcal_MemCopy(&targetDeriveBuf[offset], hashOut, copyBytes);
                 }
@@ -286,7 +286,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
         }
         
         /* 将派生密钥存入目标密钥 */
-        if (offset > 0U && offset <= sizeof(targetDeriveBuf))
+        if ((offset > 0U) && (offset <=) sizeof(targetDeriveBuf))
         {
 (void)Mcal_MemCopy(Csm_Keys[targetKeyIdx].elements[0].data,
                         targetDeriveBuf, offset);
@@ -341,16 +341,16 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
     }
     
     /* 必须有私钥元素 */
-    if (Csm_Keys[keyIdx].numElements == 0U ||
+    if ((Csm_Keys[keyIdx].numElements == 0U) ||
         !Csm_Keys[keyIdx].elements[0].valid ||
-        Csm_Keys[keyIdx].elements[0].length == 0U)
+        (Csm_Keys[keyIdx].elements[0].length == 0U))
     {
         Csm_ReportError(CSM_API_KEY_EXCHANGE_CALC_PUB_VAL, CSM_E_KEY_EMPTY);
         return E_NOT_OK;
     }
     
     /* 检查密钥交换权限 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->keys != NULL_PTR))
     {
         uint8 i;
         for (i = 0; i < Csm_CurrentConfig->numKeys; i++)
@@ -378,13 +378,13 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
     }
     
     /* 尝试通过硬件服务层 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->jobs != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->jobs != NULL_PTR))
     {
         uint8 i;
-        for (i = 0; i < Csm_CurrentConfig->numJobs && i < CSM_MAX_JOBS; i++)
+        for (i = 0; (i < Csm_CurrentConfig->numJobs) && (i < CSM_MAX_JOBS); i++)
         {
-            if (Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_EXCHANGE &&
-                Csm_CurrentConfig->jobs[i].keyId == keyId)
+            if ((Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_EXCHANGE) &&
+                (Csm_CurrentConfig->jobs[i].keyId == keyId))
             {
                 if (E_OK == Csm_FindJobIndex(Csm_CurrentConfig->jobs[i].jobId, &jobIdx))
                 {
@@ -427,7 +427,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                             &Csm_Jobs[jobIdx].resultLength);
                         Csm_ActiveJobCount--;
                         
-                        if (hwResult == E_OK && Csm_Jobs[jobIdx].resultLength > 0U)
+                        if ((hwResult == E_OK) && (Csm_Jobs[jobIdx].resultLength > 0U))
                         {
                             if (*publicValueLengthPtr >= Csm_Jobs[jobIdx].resultLength)
                             {
@@ -481,7 +481,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
             {
                 const uint8 label[] = {'E', 'C', 'D', 'H', '-', 'P', 'U', 'B'};
                 uint32 j;
-                for (j = 0; j < sizeof(label) && kdfInputLen < sizeof(kdfInput); j++)
+                for (j = 0; j < sizeof(label) && (kdfInputLen <) sizeof(kdfInput); j++)
                 {
                     kdfInput[kdfInputLen] = label[j];
                     kdfInputLen++;
@@ -499,7 +499,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
             }
             
             /* 追加keyId */
-            if (kdfInputLen + 4U <= sizeof(kdfInput))
+            if ((kdfInputLen + 4U) <= sizeof(kdfInput))
             {
                 kdfInput[kdfInputLen] = (uint8)((keyId >> 24) & 0xFFU);
                 kdfInputLen++;
@@ -525,7 +525,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                     hwHashOut,
                     &hwHashLen);
                     
-                if (hashResult == E_OK && hwHashLen > 0U)
+                if ((hashResult == E_OK) && (hwHashLen > 0U))
                 {
                     hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH;
 (void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
@@ -534,7 +534,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                 {
                     /* 简单混淆回退 */
                     uint32 j;
-                    for (j = 0; j < kdfInputLen && j < CSM_MAX_HASH_LENGTH; j++)
+                    for (j = 0; (j < kdfInputLen) && (j < CSM_MAX_HASH_LENGTH); j++)
                     {
                         hashOut[j] = kdfInput[j] ^ (uint8)(j * 0x37U);
                     }

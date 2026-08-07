@@ -23,13 +23,13 @@ eth_status_t dds_reader_deliver_sample(dds_data_reader_t *reader,
                                        const uint8_t *data,
                                        uint32_t len)
 {
-    if (reader == NULL || !reader->active || data == NULL || len == 0) {
+    if ((reader == NULL) || !reader->active || data == NULL || len == 0) {
         return ETH_INVALID_PARAM;
     }
 
     /* 写入接收缓冲 (环形语义简化: 覆盖式单缓冲) */
-    if (reader->receive_buffer == NULL ||
-        reader->receive_buffer_size < len) {
+    if ((reader->receive_buffer == NULL) ||
+        (reader->receive_buffer_size < len)) {
         return ETH_NO_MEMORY;
     }
 

@@ -502,7 +502,7 @@ void Com_TxModeSwitch(Com_IPduIdType PduId, boolean NewModeIsTrue)
     modeState->RepetitionCounter = 0u;
 
     /* Initialize timer for new mode */
-    if (newMode->Mode == COM_TXMODE_PERIODIC || newMode->Mode == COM_TXMODE_MIXED) {
+    if ((newMode->Mode == COM_TXMODE_PERIODIC) || (newMode->Mode == COM_TXMODE_MIXED)) {
         modeState->CycleTimer = newMode->TimeOffset > 0u ? newMode->TimeOffset : newMode->CycleTime;
     } else {
         modeState->CycleTimer = 0u;
@@ -681,7 +681,7 @@ void Com_TxModeTriggerDirect(Com_IPduIdType PduId)
         return;
     }
 
-    if (txMode->Mode == COM_TXMODE_DIRECT || txMode->Mode == COM_TXMODE_MIXED) {
+    if ((txMode->Mode == COM_TXMODE_DIRECT) || (txMode->Mode == COM_TXMODE_MIXED)) {
         modeState->State = COM_TXMODESTATE_TRIGGERED;
     }
 }

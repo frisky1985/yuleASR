@@ -577,7 +577,7 @@ Rte_StatusType Swc_IOControl_ReadPwmInput(uint16 channelId,
 {
     sint16 channelIndex;
 
-    if (dutyCycle == NULL_PTR || frequency == NULL_PTR) {
+    if ((dutyCycle == NULL_PTR) || (frequency == NULL_PTR)) {
         return RTE_E_INVALID;
     }
 

@@ -196,7 +196,7 @@ eth_status_t rtps_writer_sm_init(rtps_writer_state_machine_t *writer,
                                   const rtps_guid_t *guid,
                                   uint32_t history_depth)
 {
-    if (writer == NULL || guid == NULL) {
+    if ((writer == NULL) || (guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -212,7 +212,7 @@ eth_status_t rtps_writer_sm_init(rtps_writer_state_machine_t *writer,
     writer->max_seq.low = 0;
     
     /* 设置历史缓存 */
-    writer->history_cache_max = (history_depth > 0 && history_depth <= RTPS_WRITER_MAX_CACHED_CHANGES) 
+    writer->history_cache_max = ((history_depth > 0) && (history_depth <= RTPS_WRITER_MAX_CACHED_CHANGES)) 
                                 ? history_depth : RTPS_WRITER_MAX_CACHED_CHANGES;
     writer->history_cache = NULL;
     writer->history_cache_size = 0;
@@ -243,7 +243,7 @@ void rtps_writer_sm_deinit(rtps_writer_state_machine_t *writer)
 eth_status_t rtps_writer_sm_match_reader(rtps_writer_state_machine_t *writer,
                                           const rtps_guid_t *reader_guid)
 {
-    if (writer == NULL || reader_guid == NULL) {
+    if ((writer == NULL) || (reader_guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -278,7 +278,7 @@ eth_status_t rtps_writer_sm_match_reader(rtps_writer_state_machine_t *writer,
 eth_status_t rtps_writer_sm_unmatch_reader(rtps_writer_state_machine_t *writer,
                                             const rtps_guid_t *reader_guid)
 {
-    if (writer == NULL || reader_guid == NULL) {
+    if ((writer == NULL) || (reader_guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -299,7 +299,7 @@ eth_status_t rtps_writer_sm_write(rtps_writer_state_machine_t *writer,
                                    uint32_t len,
                                    rtps_sequence_number_t *seq_number)
 {
-    if (writer == NULL || data == NULL || len == 0) {
+    if ((writer == NULL) || (data == NULL) || len == 0) {
         return ETH_INVALID_PARAM;
     }
     
@@ -337,7 +337,7 @@ eth_status_t rtps_writer_sm_handle_acknack(rtps_writer_state_machine_t *writer,
                                             const rtps_sequence_number_set_t *ack_bitmap,
                                             uint64_t current_time_ms)
 {
-    if (writer == NULL || reader_guid == NULL || ack_bitmap == NULL) {
+    if ((writer == NULL) || (reader_guid == NULL) || ack_bitmap == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -356,7 +356,7 @@ eth_status_t rtps_writer_sm_handle_acknack(rtps_writer_state_machine_t *writer,
     
     /* 检查是否需要重传 */
     bool need_retransmit = false;
-    for (uint32_t i = 0; i < ack_bitmap->num_bits && i < 256; i++) {
+    for (uint32_t i = 0; (i < ack_bitmap->num_bits) && (i < 256); i++) {
         if (!get_bitmap_bit(ack_bitmap, i)) {
             /* 这个序列号缺失 */
             need_retransmit = true;
@@ -375,7 +375,7 @@ eth_status_t rtps_writer_sm_process(rtps_writer_state_machine_t *writer,
                                      uint64_t current_time_ms,
                                      bool *need_heartbeat)
 {
-    if (writer == NULL || need_heartbeat == NULL) {
+    if ((writer == NULL) || (need_heartbeat == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -447,7 +447,7 @@ eth_status_t rtps_writer_sm_get_requested_changes(rtps_writer_state_machine_t *w
                                                     uint32_t max_changes,
                                                     uint32_t *actual_changes)
 {
-    if (writer == NULL || changes == NULL || actual_changes == NULL) {
+    if ((writer == NULL) || (changes == NULL) || actual_changes == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -463,7 +463,7 @@ eth_status_t rtps_writer_sm_get_requested_changes(rtps_writer_state_machine_t *w
     
     /* 遍历历史缓存，查找需要重传的变化 */
     rtps_cached_change_t *current = writer->history_cache;
-    while (current != NULL && *actual_changes < max_changes) {
+    while ((current != NULL) && (*actual_changes < max_changes)) {
         if (reader != NULL) {
             /* 检查Reader是否已ACK这个序列号 */
             if (rtps_seqnum_compare(&current->seq_number, &reader->last_sn) > 0) {
@@ -489,7 +489,7 @@ eth_status_t rtps_reader_sm_init(rtps_reader_state_machine_t *reader,
                                   const rtps_guid_t *guid,
                                   uint32_t queue_size)
 {
-    if (reader == NULL || guid == NULL) {
+    if ((reader == NULL) || (guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -505,7 +505,7 @@ eth_status_t rtps_reader_sm_init(rtps_reader_state_machine_t *reader,
     reader->highest_seq.low = 0;
     
     /* 设置接收队列 */
-    reader->receive_queue_max = (queue_size > 0 && queue_size <= RTPS_READER_MAX_CACHED_CHANGES)
+    reader->receive_queue_max = ((queue_size > 0) && (queue_size <= RTPS_READER_MAX_CACHED_CHANGES))
                                  ? queue_size : RTPS_READER_MAX_CACHED_CHANGES;
     reader->receive_queue = NULL;
     reader->receive_queue_size = 0;
@@ -537,7 +537,7 @@ void rtps_reader_sm_deinit(rtps_reader_state_machine_t *reader)
 eth_status_t rtps_reader_sm_match_writer(rtps_reader_state_machine_t *reader,
                                           const rtps_guid_t *writer_guid)
 {
-    if (reader == NULL || writer_guid == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -574,7 +574,7 @@ eth_status_t rtps_reader_sm_match_writer(rtps_reader_state_machine_t *reader,
 eth_status_t rtps_reader_sm_unmatch_writer(rtps_reader_state_machine_t *reader,
                                             const rtps_guid_t *writer_guid)
 {
-    if (reader == NULL || writer_guid == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -597,7 +597,7 @@ eth_status_t rtps_reader_sm_handle_data(rtps_reader_state_machine_t *reader,
                                          uint64_t current_time_ms,
                                          bool *need_acknack)
 {
-    if (reader == NULL || writer_guid == NULL || seq_number == NULL || data == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL) || seq_number == NULL || data == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -648,7 +648,7 @@ eth_status_t rtps_reader_sm_handle_data(rtps_reader_state_machine_t *reader,
         
         /* 更新丢失变化集 */
         int64_t diff = seqnum_diff(seq_number, &reader->next_expected_seq);
-        if (diff > 0 && diff < 256) {
+        if ((diff > 0) && (diff < 256)) {
             for (int64_t i = 0; i < diff; i++) {
                 set_bitmap_bit(&writer->missing_changes, (uint32_t)i, true);
             }
@@ -670,7 +670,7 @@ eth_status_t rtps_reader_sm_handle_heartbeat(rtps_reader_state_machine_t *reader
                                               uint64_t current_time_ms,
                                               bool *need_acknack)
 {
-    if (reader == NULL || writer_guid == NULL || first_sn == NULL || last_sn == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL) || first_sn == NULL || last_sn == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -712,7 +712,7 @@ eth_status_t rtps_reader_sm_process(rtps_reader_state_machine_t *reader,
                                      uint64_t current_time_ms,
                                      bool *need_acknack)
 {
-    if (reader == NULL || need_acknack == NULL) {
+    if ((reader == NULL) || (need_acknack == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -731,8 +731,8 @@ eth_status_t rtps_reader_sm_process(rtps_reader_state_machine_t *reader,
     }
     
     /* 检查是否需要发送ACKNACK */
-    if (reader->state == RTPS_READER_STATE_REQUESTING ||
-        reader->state == RTPS_READER_STATE_MUST_ACK) {
+    if ((reader->state == RTPS_READER_STATE_REQUESTING) ||
+        (reader->state == RTPS_READER_STATE_MUST_ACK)) {
         
         /* 检查抑制时间 */
         if (!reader->acknack_suppressed) {
@@ -762,7 +762,7 @@ eth_status_t rtps_reader_sm_read(rtps_reader_state_machine_t *reader,
                                   uint32_t *actual_len,
                                   rtps_sequence_number_t *seq_number)
 {
-    if (reader == NULL || data == NULL || actual_len == NULL) {
+    if ((reader == NULL) || (data == NULL) || actual_len == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -774,8 +774,8 @@ eth_status_t rtps_reader_sm_read(rtps_reader_state_machine_t *reader,
     rtps_cached_change_t **found_prev = NULL;
     
     while (*prev != NULL) {
-        if (found == NULL || 
-            rtps_seqnum_compare(&(*prev)->seq_number, &found->seq_number) < 0) {
+        if ((found == NULL) || 
+            (rtps_seqnum_compare(&(*prev)->seq_number, &found->seq_number) < 0)) {
             found = *prev;
             found_prev = prev;
         }
@@ -813,7 +813,7 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
                                            uint32_t max_len,
                                            uint32_t *actual_len)
 {
-    if (reader == NULL || writer_guid == NULL || buffer == NULL || actual_len == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL) || buffer == NULL || actual_len == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -867,7 +867,7 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
     
     /* 位图数据 */
     uint32_t num_words = (num_bits + 31) / 32;
-    for (uint32_t i = 0; i < num_words && i < 8; i++) {
+    for (uint32_t i = 0; (i < num_words) && (i < 8); i++) {
         buffer[pos] = writer->missing_changes.bitmap[i] >> 24;
         pos++;
         buffer[pos] = writer->missing_changes.bitmap[i] >> 16;
@@ -928,8 +928,8 @@ eth_status_t rtps_network_suspend(rtps_network_context_t *net_ctx,
         return ETH_INVALID_PARAM;
     }
     
-    if (net_ctx->state != RTPS_NETWORK_UP && 
-        net_ctx->state != RTPS_NETWORK_RECOVERING) {
+    if ((net_ctx->state != RTPS_NETWORK_UP) && 
+        (net_ctx->state != RTPS_NETWORK_RECOVERING)) {
         return ETH_OK; /* 已经挂起 */
     }
     

@@ -146,7 +146,7 @@ static uint64_t get_timestamp_ns(void);
 static uint64_t get_timestamp_ns(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint64_t)ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+    return ((uint64_t)ts.tv_sec * 1000000000ULL) + ts.tv_nsec;
 }
 
 static uint32_t get_thread_id(void) {
@@ -239,7 +239,7 @@ static int queue_push(log_queue_t* queue, const dds_log_entry_t* entry) {
 static int queue_pop(log_queue_t* queue, dds_log_entry_t* entry) {
     pthread_mutex_lock(&queue->mutex);
     
-    while (queue->size == 0 && !queue->shutdown) {
+    while ((queue->size == 0) && !queue->shutdown) {
         struct timespec timeout;
         clock_gettime(CLOCK_REALTIME, &timeout);
         timeout.tv_nsec += 100 * 1000000; /* 100ms */
@@ -359,7 +359,7 @@ static int write_to_file(const char* buffer) {
     
     /* 检查是否需要轮转 */
     if (g_log_state.config.enable_rotation &&
-        g_log_state.current_file_size + len > g_log_state.config.max_file_size) {
+        ((g_log_state.current_file_size + len) > g_log_state.config.max_file_size)) {
         rotate_log_file();
     }
     
@@ -819,7 +819,7 @@ dds_log_level_t dds_log_get_level(void) {
 }
 
 void dds_log_set_module_level(const char* module, dds_log_level_t level) {
-    if (!module || level >= DDS_LOG_LEVEL_MAX) return;
+    if (!module || (level >= DDS_LOG_LEVEL_MAX)) return;
     
     pthread_rwlock_wrlock(&g_log_state.rwlock);
     
@@ -917,7 +917,7 @@ int dds_log_trigger_ota_upload(const char* session_id, bool compress) {
 }
 
 int dds_log_get_ota_buffer(uint8_t* buffer, uint32_t buffer_size, uint32_t* actual_size) {
-    if (!buffer || !actual_size || buffer_size == 0) return -1;
+    if (!buffer || !actual_size || (buffer_size == 0)) return -1;
     
     /* 简化版本：实际应用需要读取压缩日志数据 */
     *actual_size = 0;
@@ -970,7 +970,7 @@ void dds_log_get_stats(dds_log_stats_t* stats) {
 }
 
 int dds_log_get_current_file(char* path, size_t path_size) {
-    if (!path || path_size == 0) return -1;
+    if (!path || (path_size == 0)) return -1;
     
     pthread_mutex_lock(&g_log_state.mutex);
     if (strlen(g_log_state.current_file) == 0) {
@@ -984,7 +984,7 @@ int dds_log_get_current_file(char* path, size_t path_size) {
 }
 
 int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_count) {
-    if (!files || !actual_count || max_files == 0) return -1;
+    if (!files || !actual_count || (max_files == 0)) return -1;
     
     *actual_count = 0;
     
@@ -992,7 +992,7 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
     if (!dir) return -1;
     
     struct dirent* entry;
-    while ((entry = readdir(dir)) != NULL && *actual_count < max_files) {
+    while (((entry = readdir(dir)) != NULL) && (*actual_count < max_files)) {
         if (strstr(entry->d_name, ".log")) {
             files[*actual_count] = malloc(DDS_LOG_MAX_PATH_LEN);
             if (files[*actual_count]) {

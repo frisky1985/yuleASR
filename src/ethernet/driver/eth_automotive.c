@@ -366,7 +366,7 @@ eth_status_t automotive_phy_wait_for_link(uint32_t timeout_ms)
         automotive_link_status_t status;
         eth_status_t ret = automotive_phy_get_link_status(&status);
 
-        if (ret == ETH_OK && status.link_up) {
+        if ((ret == ETH_OK) && status.link_up) {
             return ETH_OK;
         }
 

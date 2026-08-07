@@ -124,13 +124,13 @@ Std_ReturnType Lin_SendFrame(Lin_ChannelType Channel, const Lin_PduType* PduInfo
 #endif
 
     /* Check if channel is busy */
-    if (Lin_ChannelStatus[Channel] == LIN_TX_BUSY || Lin_ChannelStatus[Channel] == LIN_RX_BUSY)
+    if ((Lin_ChannelStatus[Channel] == LIN_TX_BUSY) || (Lin_ChannelStatus[Channel] == LIN_RX_BUSY))
     {
         return E_NOT_OK;
     }
 
     /* Copy data to TX buffer */
-    for (uint8 i = 0; i < PduInfoPtr->Length && i < LIN_MAX_FRAME_LENGTH; i++)
+    for (uint8 i = 0; (i < PduInfoPtr->Length) && (i < LIN_MAX_FRAME_LENGTH); i++)
     {
         Lin_TxBuffer[Channel][i] = PduInfoPtr->SduPtr[i];
     }
@@ -160,7 +160,7 @@ Std_ReturnType Lin_SendResponse(Lin_ChannelType Channel, const Lin_PduType* PduI
 #endif
 
     /* Copy response data to TX buffer */
-    for (uint8 i = 0; i < PduInfoPtr->Length && i < LIN_MAX_FRAME_LENGTH; i++)
+    for (uint8 i = 0; (i < PduInfoPtr->Length) && (i < LIN_MAX_FRAME_LENGTH); i++)
     {
         Lin_TxBuffer[Channel][i] = PduInfoPtr->SduPtr[i];
     }

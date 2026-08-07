@@ -226,31 +226,31 @@ STATIC boolean Swc_ModeManager_ValidateModeTransition(Swc_SystemModeType current
             return (targetMode == SYSTEM_MODE_INIT);
 
         case SYSTEM_MODE_INIT:
-            return (targetMode == SYSTEM_MODE_STANDBY ||
-                    targetMode == SYSTEM_MODE_OFF);
+            return ((targetMode == SYSTEM_MODE_STANDBY) ||
+                    (targetMode == SYSTEM_MODE_OFF));
 
         case SYSTEM_MODE_STANDBY:
-            return (targetMode == SYSTEM_MODE_NORMAL ||
-                    targetMode == SYSTEM_MODE_DIAGNOSTIC ||
-                    targetMode == SYSTEM_MODE_OFF);
+            return ((targetMode == SYSTEM_MODE_NORMAL) ||
+                    ((targetMode == SYSTEM_MODE_DIAGNOSTIC)) ||
+                    (targetMode == SYSTEM_MODE_OFF));
 
         case SYSTEM_MODE_NORMAL:
-            return (targetMode == SYSTEM_MODE_STANDBY ||
-                    targetMode == SYSTEM_MODE_DIAGNOSTIC ||
-                    targetMode == SYSTEM_MODE_SLEEP ||
-                    targetMode == SYSTEM_MODE_EMERGENCY);
+            return ((targetMode == SYSTEM_MODE_STANDBY) ||
+                    ((targetMode == SYSTEM_MODE_DIAGNOSTIC)) ||
+                    ((targetMode == SYSTEM_MODE_SLEEP)) ||
+                    (targetMode == SYSTEM_MODE_EMERGENCY));
 
         case SYSTEM_MODE_DIAGNOSTIC:
-            return (targetMode == SYSTEM_MODE_NORMAL ||
-                    targetMode == SYSTEM_MODE_STANDBY);
+            return ((targetMode == SYSTEM_MODE_NORMAL) ||
+                    (targetMode == SYSTEM_MODE_STANDBY));
 
         case SYSTEM_MODE_SLEEP:
-            return (targetMode == SYSTEM_MODE_OFF ||
-                    targetMode == SYSTEM_MODE_INIT);
+            return ((targetMode == SYSTEM_MODE_OFF) ||
+                    (targetMode == SYSTEM_MODE_INIT));
 
         case SYSTEM_MODE_EMERGENCY:
-            return (targetMode == SYSTEM_MODE_NORMAL ||
-                    targetMode == SYSTEM_MODE_OFF);
+            return ((targetMode == SYSTEM_MODE_NORMAL) ||
+                    (targetMode == SYSTEM_MODE_OFF));
 
         default:
             return FALSE;
@@ -387,7 +387,7 @@ Swc_ModeTransitionResultType Swc_ModeManager_RequestModeTransition(
     /* Check if forced request or higher priority */
     if (swcModeManager.status.transitionInProgress &&
         !request->isForced &&
-        request->priority <= swcModeManager.pendingRequest.priority) {
+        (request->priority <= swcModeManager.pendingRequest.priority)) {
         return MODE_TRANSITION_REJECTED;
     }
 

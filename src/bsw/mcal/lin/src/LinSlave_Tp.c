@@ -92,7 +92,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessSF(uint8 ChannelId, uint8 Pci, 
     LinSlave_Tp_ChannelType* Channel = &TpChannels[ChannelId];
     uint8 DataLen = Pci & 0x0F;  /* 从PCI提取长度 (0-7) */
     
-    if (DataLen == 0U || DataLen > 7) {
+    if ((DataLen == 0U) || (DataLen > 7)) {
         return LINSLAVE_TP_E_INVALID_PCI;
     }
     
@@ -126,7 +126,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessFF(uint8 ChannelId, uint8 Pci, 
     uint8 DataLenLow = DataPtr[0];
     uint16 TotalLength = DataLenHigh | DataLenLow;
     
-    if (TotalLength == 0U || TotalLength > LINSLAVE_TP_MAX_FRAME_LEN) {
+    if ((TotalLength == 0U) || (TotalLength > LINSLAVE_TP_MAX_FRAME_LEN)) {
         return LINSLAVE_TP_E_OVERSIZE;
     }
     
@@ -282,11 +282,11 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
     uint8 FirstFrame[8];
     uint16 i;
     
-    if (!TpInitialized || ChannelId >= LINSLAVE_TP_MAX_PDUs) {
+    if (!TpInitialized || (ChannelId >= LINSLAVE_TP_MAX_PDUs)) {
         return LINSLAVE_TP_E_NOT_OK;
     }
     
-    if (DataPtr == NULL_PTR || Length == 0U || Length > LINSLAVE_TP_MAX_FRAME_LEN) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > LINSLAVE_TP_MAX_FRAME_LEN) {
         return LINSLAVE_TP_E_INVALID_PCI;
     }
     
@@ -411,7 +411,7 @@ boolean LinSlave_Tp_IsBusy(uint8 ChannelId)
 void LinSlave_Tp_Cancel(uint8 ChannelId)
 {
     if (ChannelId < LINSLAVE_TP_MAX_PDUs) {
-        if (TpTxConfirmation != NULL_PTR && TpChannels[ChannelId].State != LINSLAVE_TP_STATE_IDLE) {
+        if ((TpTxConfirmation != NULL_PTR) && (TpChannels[ChannelId].State != LINSLAVE_TP_STATE_IDLE)) {
             TpTxConfirmation(ChannelId, LINSLAVE_TP_E_NOT_OK);
         }
         LinSlave_Tp_ResetChannel(ChannelId);

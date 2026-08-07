@@ -125,18 +125,18 @@ Std_ReturnType S32K312_Hsm_AesEcbEncrypt(const S32K312_HsmAesContextType* contex
             for (j = 0U; j < wordCount; j++) {
                 S32K312_Hsm_AesRegs->KEY[j] = 
                     ((uint32)context->key[j * 4U] << 24) |
-                    ((uint32)context->key[j * 4U + 1U] << 16) |
-                    ((uint32)context->key[j * 4U + 2U] << 8) |
-                    (uint32)context->key[j * 4U + 3U];
+                    ((uint32)context->key[(j * 4U) + 1U] << 16) |
+                    ((uint32)context->key[(j * 4U) + 2U] << 8) |
+                    (uint32)context->key[(j * 4U) + 3U];
             }
             
             /* Load plaintext data */
             for (j = 0U; j < 4U; j++) {
                 S32K312_Hsm_AesRegs->DATA_IN[j] =
-                    ((uint32)plaintext[blockOffset + j * 4U] << 24) |
-                    ((uint32)plaintext[blockOffset + j * 4U + 1U] << 16) |
-                    ((uint32)plaintext[blockOffset + j * 4U + 2U] << 8) |
-                    (uint32)plaintext[blockOffset + j * 4U + 3U];
+                    ((uint32)plaintext[blockOffset + (j * 4U)] << 24) |
+                    ((uint32)plaintext[blockOffset + (j * 4U) + 1U] << 16) |
+                    ((uint32)plaintext[blockOffset + (j * 4U) + 2U] << 8) |
+                    (uint32)plaintext[blockOffset + (j * 4U) + 3U];
             }
             
             /* Start operation */
@@ -159,10 +159,10 @@ Std_ReturnType S32K312_Hsm_AesEcbEncrypt(const S32K312_HsmAesContextType* contex
             /* Read ciphertext */
             for (j = 0U; j < 4U; j++) {
                 uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[j];
-                ciphertext[blockOffset + j * 4U] = (uint8)(data >> 24);
-                ciphertext[blockOffset + j * 4U + 1U] = (uint8)(data >> 16);
-                ciphertext[blockOffset + j * 4U + 2U] = (uint8)(data >> 8);
-                ciphertext[blockOffset + j * 4U + 3U] = (uint8)(data);
+                ciphertext[blockOffset + (j * 4U)] = (uint8)(data >> 24);
+                ciphertext[blockOffset + (j * 4U) + 1U] = (uint8)(data >> 16);
+                ciphertext[blockOffset + (j * 4U) + 2U] = (uint8)(data >> 8);
+                ciphertext[blockOffset + (j * 4U) + 3U] = (uint8)(data);
             }
         }
     }
@@ -238,18 +238,18 @@ Std_ReturnType S32K312_Hsm_AesEcbDecrypt(const S32K312_HsmAesContextType* contex
             for (j = 0U; j < wordCount; j++) {
                 S32K312_Hsm_AesRegs->KEY[j] = 
                     ((uint32)context->key[j * 4U] << 24) |
-                    ((uint32)context->key[j * 4U + 1U] << 16) |
-                    ((uint32)context->key[j * 4U + 2U] << 8) |
-                    (uint32)context->key[j * 4U + 3U];
+                    ((uint32)context->key[(j * 4U) + 1U] << 16) |
+                    ((uint32)context->key[(j * 4U) + 2U] << 8) |
+                    (uint32)context->key[(j * 4U) + 3U];
             }
             
             /* Load ciphertext */
             for (j = 0U; j < 4U; j++) {
                 S32K312_Hsm_AesRegs->DATA_IN[j] =
-                    ((uint32)ciphertext[blockOffset + j * 4U] << 24) |
-                    ((uint32)ciphertext[blockOffset + j * 4U + 1U] << 16) |
-                    ((uint32)ciphertext[blockOffset + j * 4U + 2U] << 8) |
-                    (uint32)ciphertext[blockOffset + j * 4U + 3U];
+                    ((uint32)ciphertext[blockOffset + (j * 4U)] << 24) |
+                    ((uint32)ciphertext[blockOffset + (j * 4U) + 1U] << 16) |
+                    ((uint32)ciphertext[blockOffset + (j * 4U) + 2U] << 8) |
+                    (uint32)ciphertext[blockOffset + (j * 4U) + 3U];
             }
             
             /* Start operation */
@@ -271,10 +271,10 @@ Std_ReturnType S32K312_Hsm_AesEcbDecrypt(const S32K312_HsmAesContextType* contex
             /* Read plaintext */
             for (j = 0U; j < 4U; j++) {
                 uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[j];
-                plaintext[blockOffset + j * 4U] = (uint8)(data >> 24);
-                plaintext[blockOffset + j * 4U + 1U] = (uint8)(data >> 16);
-                plaintext[blockOffset + j * 4U + 2U] = (uint8)(data >> 8);
-                plaintext[blockOffset + j * 4U + 3U] = (uint8)(data);
+                plaintext[blockOffset + (j * 4U)] = (uint8)(data >> 24);
+                plaintext[blockOffset + (j * 4U) + 1U] = (uint8)(data >> 16);
+                plaintext[blockOffset + (j * 4U) + 2U] = (uint8)(data >> 8);
+                plaintext[blockOffset + (j * 4U) + 3U] = (uint8)(data);
             }
         }
     }
@@ -394,18 +394,18 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
             for (i = 0U; i < wordCount; i++) {
                 S32K312_Hsm_AesRegs->KEY[i] = 
                     ((uint32)context->key[i * 4U] << 24) |
-                    ((uint32)context->key[i * 4U + 1U] << 16) |
-                    ((uint32)context->key[i * 4U + 2U] << 8) |
-                    (uint32)context->key[i * 4U + 3U];
+                    ((uint32)context->key[(i * 4U) + 1U] << 16) |
+                    ((uint32)context->key[(i * 4U) + 2U] << 8) |
+                    (uint32)context->key[(i * 4U) + 3U];
             }
             
             /* Load IV (96 bits for GCM) */
             for (i = 0U; i < 3U; i++) {
                 S32K312_Hsm_AesRegs->IV[i] =
                     ((uint32)iv[i * 4U] << 24) |
-                    ((uint32)iv[i * 4U + 1U] << 16) |
-                    ((uint32)iv[i * 4U + 2U] << 8) |
-                    (uint32)iv[i * 4U + 3U];
+                    ((uint32)iv[(i * 4U) + 1U] << 16) |
+                    ((uint32)iv[(i * 4U) + 2U] << 8) |
+                    (uint32)iv[(i * 4U) + 3U];
             }
             S32K312_Hsm_AesRegs->IV[3] = 0x00000001U; /* Counter initial value */
             
@@ -426,10 +426,10 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
                     
                     for (k = 0U; k < 4U; k++) {
                         S32K312_Hsm_AesRegs->DATA_IN[k] =
-                            ((uint32)plaintext[offset + k * 4U] << 24) |
-                            ((uint32)plaintext[offset + k * 4U + 1U] << 16) |
-                            ((uint32)plaintext[offset + k * 4U + 2U] << 8) |
-                            (uint32)plaintext[offset + k * 4U + 3U];
+                            ((uint32)plaintext[offset + (k * 4U)] << 24) |
+                            ((uint32)plaintext[offset + (k * 4U) + 1U] << 16) |
+                            ((uint32)plaintext[offset + (k * 4U) + 2U] << 8) |
+                            (uint32)plaintext[offset + (k * 4U) + 3U];
                     }
                     
                     S32K312_Hsm_AesRegs->CTRL = ctrlReg | S32K312_HSM_AES_CTRL_START;
@@ -441,10 +441,10 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
                     
                     for (k = 0U; k < 4U; k++) {
                         uint32 data = S32K312_Hsm_AesRegs->DATA_OUT[k];
-                        ciphertext[offset + k * 4U] = (uint8)(data >> 24);
-                        ciphertext[offset + k * 4U + 1U] = (uint8)(data >> 16);
-                        ciphertext[offset + k * 4U + 2U] = (uint8)(data >> 8);
-                        ciphertext[offset + k * 4U + 3U] = (uint8)(data);
+                        ciphertext[offset + (k * 4U)] = (uint8)(data >> 24);
+                        ciphertext[offset + (k * 4U) + 1U] = (uint8)(data >> 16);
+                        ciphertext[offset + (k * 4U) + 2U] = (uint8)(data >> 8);
+                        ciphertext[offset + (k * 4U) + 3U] = (uint8)(data);
                     }
                 }
             }
@@ -454,9 +454,9 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
                 for (i = 0U; i < 4U; i++) {
                     uint32 data = S32K312_Hsm_AesRegs->TAG_OUT[i];
                     tag[i * 4U] = (uint8)(data >> 24);
-                    tag[i * 4U + 1U] = (uint8)(data >> 16);
-                    tag[i * 4U + 2U] = (uint8)(data >> 8);
-                    tag[i * 4U + 3U] = (uint8)(data);
+                    tag[(i * 4U) + 1U] = (uint8)(data >> 16);
+                    tag[(i * 4U) + 2U] = (uint8)(data >> 8);
+                    tag[(i * 4U) + 3U] = (uint8)(data);
                 }
             }
         }

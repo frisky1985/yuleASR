@@ -56,7 +56,7 @@ static inline uint64_t get_time_us(void) {
     #else
         clock_gettime(CLOCK_REALTIME, &ts);
     #endif
-    return (uint64_t)ts.tv_sec * 1000000ULL + ts.tv_nsec / 1000;
+    return ((uint64_t)ts.tv_sec * 1000000ULL) + (ts.tv_nsec / 1000);
 }
 
 /**
@@ -112,7 +112,7 @@ static void lexer_init(cft_lexer_t *lexer, const char *input) {
 }
 
 static void lexer_skip_whitespace(cft_lexer_t *lexer) {
-    while (lexer->pos < lexer->len && isspace((unsigned char)lexer->input[lexer->pos])) {
+    while ((lexer->pos < lexer->len) && isspace((unsigned char)lexer->input[lexer->pos])) {
         lexer->pos++;
     }
 }
@@ -125,9 +125,9 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     lexer->token_len = 0;
     
     // 标识符或关键字
-    if (isalpha((unsigned char)lexer->input[lexer->pos]) || lexer->input[lexer->pos] == '_') {
-        while (lexer->pos < lexer->len && 
-               (isalnum((unsigned char)lexer->input[lexer->pos]) || lexer->input[lexer->pos] == '_')) {
+    if (isalpha((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_')) {
+        while ((lexer->pos < lexer->len) && 
+               (isalnum((unsigned char)lexer->input[lexer->pos]) || (lexer->input[lexer->pos] == '_'))) {
             if (lexer->token_len < sizeof(lexer->token) - 1) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
@@ -140,7 +140,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     
     // 数字
     if (isdigit((unsigned char)lexer->input[lexer->pos])) {
-        while (lexer->pos < lexer->len && isdigit((unsigned char)lexer->input[lexer->pos])) {
+        while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
             if (lexer->token_len < sizeof(lexer->token) - 1) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
@@ -148,10 +148,10 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
             lexer->pos++;
         }
         // 小数点
-        if (lexer->pos < lexer->len && lexer->input[lexer->pos] == '.') {
+        if ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] == '.')) {
             lexer->token[lexer->token_len] = lexer->input[lexer->pos++];
             lexer->token_len++;
-            while (lexer->pos < lexer->len && isdigit((unsigned char)lexer->input[lexer->pos])) {
+            while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
                 if (lexer->token_len < sizeof(lexer->token) - 1) {
                     lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                     lexer->token_len++;
@@ -166,7 +166,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     // 字符串
     if (lexer->input[lexer->pos] == '\'') {
         lexer->pos++;
-        while (lexer->pos < lexer->len && lexer->input[lexer->pos] != '\'') {
+        while ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] != '\'')) {
             if (lexer->token_len < sizeof(lexer->token) - 1) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
                 lexer->token_len++;
@@ -188,10 +188,10 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     // 双字符操作符
     if (lexer->pos < lexer->len) {
         char next = lexer->input[lexer->pos];
-        if ((c == '=' && next == '=') || 
-            (c == '!' && next == '=') ||
-            (c == '<' && next == '=') ||
-            (c == '>' && next == '=')) {
+        if (((c == '=') && (next == '=')) || 
+            ((c == '!') && (next == '=')) ||
+            ((c == '<') && (next == '=')) ||
+            ((c == '>') && (next == '='))) {
             lexer->token[1] = next;
             lexer->token[2] = '\0';
             lexer->token_len = 2;
@@ -203,7 +203,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
 }
 
 static cft_operator_t get_operator(const char *token) {
-    if (strcmp(token, "=") == 0 || strcmp(token, "==") == 0) return CFT_OP_EQ;
+    if ((strcmp(token, "=") == 0) || (strcmp(token, "==") == 0)) return CFT_OP_EQ;
     if (strcmp(token, "!=") == 0) return CFT_OP_NE;
     if (strcmp(token, "<") == 0) return CFT_OP_LT;
     if (strcmp(token, "<=") == 0) return CFT_OP_LE;
@@ -291,7 +291,7 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
         strncpy(node->data.predicate.value.str_val, lexer->token, 
                 sizeof(node->data.predicate.value.str_val) - 1);
         // 判断值类型
-        if (isdigit((unsigned char)lexer->token[0]) || lexer->token[0] == '-') {
+        if (isdigit((unsigned char)lexer->token[0]) || (lexer->token[0] == '-')) {
             node->data.predicate.value_type = CFT_TYPE_INT32;
             node->data.predicate.value.i64_val = atoll(lexer->token);
         } else {
@@ -482,25 +482,25 @@ static bool evaluate_predicate(const cft_predicate_t *pred,
             if (accessor->type == CFT_TYPE_STRING) {
                 return strcmp(field_str, cmp_str) == 0;
             }
-            return field_i64 == cmp_i64 || field_f64 == cmp_f64;
+            return (field_i64 == cmp_i64) || (field_f64 == cmp_f64);
         case CFT_OP_NE:
             if (accessor->type == CFT_TYPE_STRING) {
                 return strcmp(field_str, cmp_str) != 0;
             }
-            return field_i64 != cmp_i64 && field_f64 != cmp_f64;
+            return (field_i64 != cmp_i64) && (field_f64 != cmp_f64);
         case CFT_OP_LT:
-            return field_i64 < cmp_i64 || field_f64 < cmp_f64;
+            return (field_i64 < cmp_i64) || (field_f64 < cmp_f64);
         case CFT_OP_LE:
-            return field_i64 <= cmp_i64 || field_f64 <= cmp_f64;
+            return (field_i64 <= cmp_i64) || (field_f64 <= cmp_f64);
         case CFT_OP_GT:
-            return field_i64 > cmp_i64 || field_f64 > cmp_f64;
+            return (field_i64 > cmp_i64) || (field_f64 > cmp_f64);
         case CFT_OP_GE:
-            return field_i64 >= cmp_i64 || field_f64 >= cmp_f64;
+            return (field_i64 >= cmp_i64) || (field_f64 >= cmp_f64);
         case CFT_OP_LIKE:
             return match_like(field_str, cmp_str);
         case CFT_OP_BETWEEN:
-            return field_i64 >= pred->value.range.min_val && 
-                   field_i64 <= pred->value.range.max_val;
+            return (field_i64 >= pred->value.range.min_val) && 
+                   (field_i64 <= pred->value.range.max_val);
         default:
             return false;
     }
@@ -628,7 +628,7 @@ eth_status_t cft_evaluate(cft_handle_t *cft,
     uint64_t start_time = get_time_us();
     
     // 确定性执行限制检查
-    if (cft->asil_enabled && cft->config.max_exec_time_us > 0) {
+    if (cft->asil_enabled && (cft->config.max_exec_time_us > 0)) {
         // ASIL模式下预编译处理
     }
     
@@ -649,14 +649,14 @@ eth_status_t cft_evaluate(cft_handle_t *cft,
         cft->stats.rejected_samples++;
     }
     cft->stats.avg_exec_time_us = 
-        (cft->stats.avg_exec_time_us * cft->stats.total_samples + exec_time) / 
+        ((cft->stats.avg_exec_time_us * cft->stats.total_samples) + exec_time) / 
         (cft->stats.total_samples + 1);
     if (exec_time > cft->stats.max_exec_time_us) {
         cft->stats.max_exec_time_us = (uint32_t)exec_time;
     }
     
     // 检查超时
-    if (cft->config.max_exec_time_us > 0 && exec_time > cft->config.max_exec_time_us) {
+    if ((cft->config.max_exec_time_us > 0) && (exec_time > cft->config.max_exec_time_us)) {
         cft->stats.timeout_count++;
         if (cft->asil_enabled) {
             DDS_LOG_WARN(DDS_LOG_MODULE_CORE, "CFT", "Filter execution timeout: %s (%lu us)", cft->name, exec_time);
@@ -671,7 +671,7 @@ eth_status_t cft_evaluate_batch(cft_handle_t *cft,
                                 const uint32_t *sample_sizes,
                                 uint32_t count,
                                 bool *matches) {
-    if (!cft || !samples || !sample_sizes || !matches || count == 0) {
+    if (!cft || !samples || !sample_sizes || !matches || (count == 0)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -688,11 +688,11 @@ eth_status_t cft_evaluate_batch(cft_handle_t *cft,
 eth_status_t cft_set_parameters(cft_handle_t *cft, 
                                   const char **params, 
                                   uint8_t param_count) {
-    if (!cft || !params || param_count > CFT_MAX_PREDICATES) {
+    if (!cft || !params || (param_count > CFT_MAX_PREDICATES)) {
         return ETH_INVALID_PARAM;
     }
     
-    for (uint8_t i = 0; i < param_count && i < CFT_MAX_PREDICATES; i++) {
+    for (uint8_t i = 0; (i < param_count) && (i < CFT_MAX_PREDICATES); i++) {
         strncpy(cft->config.expression_params[i], params[i], CFT_MAX_PARAM_LENGTH - 1);
     }
     cft->config.param_count = param_count;
@@ -723,7 +723,7 @@ eth_status_t cft_evaluate_parallel(cft_handle_t **cfts,
                                    const void *sample,
                                    uint32_t sample_size,
                                    bool *match_results) {
-    if (!cfts || !sample || !match_results || cft_count > CFT_MAX_PARALLEL_FILTERS) {
+    if (!cfts || !sample || !match_results || (cft_count > CFT_MAX_PARALLEL_FILTERS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -772,7 +772,7 @@ eth_status_t cft_compile_type_descriptor(cft_type_descriptor_t *type_desc) {
 }
 
 eth_status_t cft_enable_asil_mode(cft_handle_t *cft, uint8_t asil_level) {
-    if (!cft || asil_level > 4) {
+    if (!cft || (asil_level > 4)) {
         return ETH_INVALID_PARAM;
     }
     

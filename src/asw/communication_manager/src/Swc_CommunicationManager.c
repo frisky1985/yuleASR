@@ -125,11 +125,11 @@ STATIC void Swc_CommunicationManager_ProcessRxSignals(void)
             /* Extract signals from PDU data */
             /* Simplified - in real implementation, use signal database */
             for (i = 0; i < swcCommManager.numSignals; i++) {
-                if (swcCommManager.signals[i].signalId >= (pdu.pduId * 10) &&
-                    swcCommManager.signals[i].signalId < ((pdu.pduId + 1) * 10)) {
+                if ((swcCommManager.signals[i].signalId >= (pdu.pduId * 10)) &&
+                    (swcCommManager.signals[i].signalId < ((pdu.pduId + 1) * 10))) {
                     /* Update signal value from PDU data */
                     swcCommManager.signals[i].value = 0;
-                    for (j = 0; j < 8 && j < pdu.length; j++) {
+                    for (j = 0; (j < 8) && (j < pdu.length); j++) {
                         swcCommManager.signals[i].value |=
                             ((uint64)pdu.data[j] << (j * 8));
                     }

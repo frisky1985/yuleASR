@@ -67,14 +67,14 @@ Boot_Result Boot_Flash_Init(void) { return BOOT_OK; }
 Boot_Result Boot_Flash_Erase(uint32_t addr, uint32_t size)
 {
     for (uint32_t i = 0U; i < size; i++)
-        if (addr + i < FLASH_SIZE) g_boot_flash_ram[addr + i] = 0xFF;
+        if ((addr + i) < FLASH_SIZE) g_boot_flash_ram[addr + i] = 0xFF;
     return BOOT_OK;
 }
 
 Boot_Result Boot_Flash_Write(uint32_t dst, const uint8_t *src, uint32_t len)
 {
     for (uint32_t i = 0U; i < len; i++)
-        if (dst + i < FLASH_SIZE) g_boot_flash_ram[dst + i] = src[i];
+        if ((dst + i) < FLASH_SIZE) g_boot_flash_ram[dst + i] = src[i];
     return BOOT_OK;
 }
 

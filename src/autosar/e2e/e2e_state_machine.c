@@ -73,7 +73,7 @@ static E2E_SM_StateType E2E_SM_GetNextState(
                     return E2E_SM_INVALID;
                 }
                 return E2E_SM_SYNC;
-            } else if (checkResult == E2E_P_REPEATED || checkResult == E2E_P_WRONGSEQUENCE) {
+            } else if ((checkResult == E2E_P_REPEATED) || (checkResult == E2E_P_WRONGSEQUENCE)) {
                 return E2E_SM_SYNC;
             }
             return E2E_SM_VALID;
@@ -156,13 +156,13 @@ Std_ReturnType E2E_SM_InitStateMachine(
     const E2E_SM_ConfigType* config,
     E2E_SM_InternalStateType* state)
 {
-    if (!E2E_SM_IsInitialized() || config == NULL || state == NULL) {
+    if (!E2E_SM_IsInitialized() || (config == NULL) || state == NULL) {
         return E_NOT_OK;
     }
 
     /* Validate configuration */
-    if (config->window.windowSize < E2E_SM_WINDOW_SIZE_MIN ||
-        config->window.windowSize > E2E_SM_WINDOW_SIZE_MAX) {
+    if ((config->window.windowSize < E2E_SM_WINDOW_SIZE_MIN) ||
+        (config->window.windowSize > E2E_SM_WINDOW_SIZE_MAX)) {
         return E_NOT_OK;
     }
 
@@ -182,7 +182,7 @@ Std_ReturnType E2E_SM_InitStateMachine(
  */
 Std_ReturnType E2E_SM_Reset(E2E_SM_InternalStateType* state)
 {
-    if (!E2E_SM_IsInitialized() || state == NULL) {
+    if (!E2E_SM_IsInitialized() || (state == NULL)) {
         return E_NOT_OK;
     }
 
@@ -205,7 +205,7 @@ E2E_SM_StateType E2E_SM_ProcessCheckResult(
     E2E_PCheckStatusType checkResult,
     uint32_t timestamp)
 {
-    if (!E2E_SM_IsInitialized() || state == NULL || config == NULL) {
+    if (!E2E_SM_IsInitialized() || (state == NULL) || config == NULL) {
         return E2E_SM_DEINIT;
     }
 
@@ -223,7 +223,7 @@ E2E_SM_StateType E2E_SM_ProcessCheckResult(
     state->lastCheckStatus = (uint16_t)checkResult;
 
     /* Check for timeout */
-    if (config->timeoutMs > 0 && state->lastValidTimestamp > 0) {
+    if ((config->timeoutMs > 0) && (state->lastValidTimestamp > 0)) {
         uint32_t elapsed = timestamp - state->lastValidTimestamp;
         if (elapsed > config->timeoutMs) {
             state->state = E2E_SM_INVALID;
@@ -242,9 +242,9 @@ E2E_SM_StateType E2E_SM_ProcessCheckResult(
     }
 
     /* Update availability flag */
-    state->isAvailable = (nextState == E2E_SM_VALID ||
-                          nextState == E2E_SM_SYNC ||
-                          nextState == E2E_SM_INIT);
+    state->isAvailable = ((nextState == E2E_SM_VALID) ||
+                          ((nextState == E2E_SM_SYNC)) ||
+                          (nextState == E2E_SM_INIT));
 
     state->state = nextState;
     return nextState;
@@ -260,7 +260,7 @@ Std_ReturnType E2E_SM_Check(
     uint32_t timestamp,
     E2E_SM_CheckResultType* result)
 {
-    if (!E2E_SM_IsInitialized() || state == NULL || config == NULL || result == NULL) {
+    if (!E2E_SM_IsInitialized() || (state == NULL) || config == NULL || result == NULL) {
         return E_NOT_OK;
     }
 
@@ -273,7 +273,7 @@ Std_ReturnType E2E_SM_Check(
     result->isValid = E2E_SM_IsDataValid(newState);
     result->isAvailable = state->isAvailable;
     result->errorCounter = state->errorCounter;
-    result->windowFillLevel = (state->okCounter + state->errorCounter > config->window.windowSize) ?
+    result->windowFillLevel = ((state->okCounter + state->errorCounter) > config->window.windowSize) ?
                               config->window.windowSize :
                               (state->okCounter + state->errorCounter);
 
@@ -292,7 +292,7 @@ uint8_t E2E_SM_UpdateWindow(
     const E2E_SM_WindowConfigType* config,
     bool isOk)
 {
-    if (state == NULL || config == NULL) {
+    if ((state == NULL) || (config == NULL)) {
         return 0;
     }
 
@@ -329,7 +329,7 @@ bool E2E_SM_IsWindowErrorThresholdExceeded(
     const E2E_SM_InternalStateType* state,
     const E2E_SM_WindowConfigType* config)
 {
-    if (state == NULL || config == NULL) {
+    if ((state == NULL) || (config == NULL)) {
         return TRUE;
     }
 
@@ -343,7 +343,7 @@ bool E2E_SM_IsWindowOkThresholdMet(
     const E2E_SM_InternalStateType* state,
     const E2E_SM_WindowConfigType* config)
 {
-    if (state == NULL || config == NULL) {
+    if ((state == NULL) || (config == NULL)) {
         return FALSE;
     }
 
@@ -390,9 +390,9 @@ bool E2E_SM_IsDataValid(E2E_SM_StateType state)
  */
 bool E2E_SM_IsDataAvailable(E2E_SM_StateType state)
 {
-    return (state == E2E_SM_VALID ||
-            state == E2E_SM_SYNC ||
-            state == E2E_SM_INIT);
+    return ((state == E2E_SM_VALID) ||
+            ((state == E2E_SM_SYNC)) ||
+            (state == E2E_SM_INIT));
 }
 
 /**

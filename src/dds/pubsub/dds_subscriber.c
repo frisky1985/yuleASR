@@ -9,7 +9,7 @@
 dds_subscriber_t* dds_subscriber_find(dds_domain_participant_t *participant,
                                       const rtps_guid_t *guid)
 {
-    if (participant == NULL || guid == NULL) {
+    if ((participant == NULL) || (guid == NULL)) {
         return NULL;
     }
     dds_subscriber_t *sub = participant->subscribers;

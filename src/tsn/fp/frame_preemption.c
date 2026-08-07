@@ -79,7 +79,7 @@ static fp_global_state_t g_fp_state;
 static uint64_t get_current_time_ns(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint64_t)ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+    return ((uint64_t)ts.tv_sec * 1000000000ULL) + ts.tv_nsec;
 }
 
 static uint8_t get_smd_for_fragment(fp_fragment_type_t frag_type, uint8_t sequence) {
@@ -218,7 +218,7 @@ void fp_deinit(void) {
 }
 
 eth_status_t fp_config_port(uint16_t port_id, const fp_config_t *config) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || config == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -230,7 +230,7 @@ eth_status_t fp_config_port(uint16_t port_id, const fp_config_t *config) {
 }
 
 eth_status_t fp_get_port_config(uint16_t port_id, fp_config_t *config) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || config == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -239,7 +239,7 @@ eth_status_t fp_get_port_config(uint16_t port_id, fp_config_t *config) {
 }
 
 eth_status_t fp_enable_preemption(uint16_t port_id, bool enable) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -263,7 +263,7 @@ eth_status_t fp_enable_preemption(uint16_t port_id, bool enable) {
 eth_status_t fp_set_frame_type_mapping(uint16_t port_id, 
                                         uint8_t express_mask,
                                         uint8_t preemptable_mask) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -274,7 +274,7 @@ eth_status_t fp_set_frame_type_mapping(uint16_t port_id,
 }
 
 eth_status_t fp_send_express_frame(uint16_t port_id, const uint8_t *data, uint32_t len) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || data == NULL || len == 0) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || data == NULL || len == 0) {
         return ETH_INVALID_PARAM;
     }
     
@@ -305,7 +305,7 @@ eth_status_t fp_send_express_frame(uint16_t port_id, const uint8_t *data, uint32
 }
 
 eth_status_t fp_send_preemptable_frame(uint16_t port_id, const uint8_t *data, uint32_t len) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || data == NULL || len == 0) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || data == NULL || len == 0) {
         return ETH_INVALID_PARAM;
     }
     
@@ -337,7 +337,7 @@ eth_status_t fp_send_preemptable_frame(uint16_t port_id, const uint8_t *data, ui
 }
 
 eth_status_t fp_preempt_transmission(uint16_t port_id) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -386,7 +386,7 @@ eth_status_t fp_preempt_transmission(uint16_t port_id) {
 }
 
 eth_status_t fp_resume_transmission(uint16_t port_id) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -454,7 +454,7 @@ eth_status_t fp_resume_transmission(uint16_t port_id) {
 }
 
 eth_status_t fp_can_preempt(uint16_t port_id, bool *can_preempt) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || can_preempt == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || can_preempt == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -469,11 +469,11 @@ eth_status_t fp_can_preempt(uint16_t port_id, bool *can_preempt) {
 eth_status_t fp_fragment_frame(const uint8_t *frame_data, uint32_t frame_len,
                                 uint32_t frag_size,
                                 fp_mpacket_t *mpackets, uint32_t *mpacket_count) {
-    if (frame_data == NULL || mpackets == NULL || mpacket_count == NULL || frag_size == 0) {
+    if ((frame_data == NULL) || (mpackets == NULL) || mpacket_count == NULL || frag_size == 0) {
         return ETH_INVALID_PARAM;
     }
     
-    if (frag_size < FP_MIN_FRAG_SIZE || frag_size > FP_MAX_FRAG_SIZE) {
+    if ((frag_size < FP_MIN_FRAG_SIZE) || (frag_size > FP_MAX_FRAG_SIZE)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -484,15 +484,15 @@ eth_status_t fp_fragment_frame(const uint8_t *frame_data, uint32_t frame_len,
     
     uint32_t offset = 0;
     for (uint32_t i = 0; i < num_frags; i++) {
-        uint32_t this_frag_size = (frame_len - offset < frag_size) ? 
+        uint32_t this_frag_size = ((frame_len - offset) < frag_size) ? 
                                    (frame_len - offset) : frag_size;
         
         fp_fragment_type_t frag_type;
-        if (i == 0 && num_frags == 1) {
+        if ((i == 0) && (num_frags == 1)) {
             frag_type = FP_FRAME_COMPLETE;
         } else if (i == 0) {
             frag_type = FP_FRAME_FIRST_FRAGMENT;
-        } else if (i == num_frags - 1) {
+        } else if (i == (num_frags - 1)) {
             frag_type = FP_FRAME_LAST_FRAGMENT;
         } else {
             frag_type = FP_FRAME_CONTINUE_FRAGMENT;
@@ -516,7 +516,7 @@ eth_status_t fp_fragment_frame(const uint8_t *frame_data, uint32_t frame_len,
 eth_status_t fp_reassemble_mpacket(const fp_mpacket_t *mpacket,
                                     uint8_t *frame_data, uint32_t *frame_len,
                                     bool *is_complete) {
-    if (mpacket == NULL || frame_data == NULL || frame_len == NULL || is_complete == NULL) {
+    if ((mpacket == NULL) || (frame_data == NULL) || frame_len == NULL || is_complete == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -535,14 +535,14 @@ eth_status_t fp_reassemble_mpacket(const fp_mpacket_t *mpacket,
     *frame_len = mpacket->len;
     
     /* 判断是否完整 */
-    *is_complete = (mpacket->frag_type == FP_FRAME_COMPLETE || 
-                   mpacket->frag_type == FP_FRAME_LAST_FRAGMENT);
+    *is_complete = ((mpacket->frag_type == FP_FRAME_COMPLETE) || 
+                   (mpacket->frag_type == FP_FRAME_LAST_FRAGMENT));
     
     return ETH_OK;
 }
 
 eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || mpacket == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || mpacket == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -588,7 +588,7 @@ eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
             }
             
             /* 追加数据 */
-            if (reasm->reassembly_len + mpacket->len > FP_MAX_MPACKET_SIZE) {
+            if ((reasm->reassembly_len + mpacket->len) > FP_MAX_MPACKET_SIZE) {
                 port->stats.reassembly_failures++;
                 reasm->reassembly_active = false;
                 return ETH_ERROR;
@@ -621,7 +621,7 @@ eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
 }
 
 eth_status_t fp_get_state(uint16_t port_id, fp_state_t *state) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || state == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || state == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -630,7 +630,7 @@ eth_status_t fp_get_state(uint16_t port_id, fp_state_t *state) {
 }
 
 eth_status_t fp_get_stats(uint16_t port_id, fp_stats_t *stats) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || stats == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || stats == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -639,7 +639,7 @@ eth_status_t fp_get_stats(uint16_t port_id, fp_stats_t *stats) {
 }
 
 eth_status_t fp_clear_stats(uint16_t port_id) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -649,7 +649,7 @@ eth_status_t fp_clear_stats(uint16_t port_id) {
 
 eth_status_t fp_get_preemptable_state(uint16_t port_id, 
                                        fp_preemptable_frame_state_t *preemptable_state) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || preemptable_state == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || preemptable_state == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -685,7 +685,7 @@ eth_status_t fp_register_safety_alert_callback(fp_safety_alert_callback_t callba
 }
 
 eth_status_t fp_init_safety_monitor(uint16_t port_id) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -698,7 +698,7 @@ eth_status_t fp_init_safety_monitor(uint16_t port_id) {
 }
 
 eth_status_t fp_run_safety_checks(uint16_t port_id) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -706,7 +706,7 @@ eth_status_t fp_run_safety_checks(uint16_t port_id) {
 }
 
 eth_status_t fp_get_safety_monitor(uint16_t port_id, fp_safety_monitor_t *monitor) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || monitor == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || monitor == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -715,7 +715,7 @@ eth_status_t fp_get_safety_monitor(uint16_t port_id, fp_safety_monitor_t *monito
 }
 
 eth_status_t fp_check_frame_integrity(uint16_t port_id, bool *integrity_ok) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS || integrity_ok == NULL) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || integrity_ok == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -737,7 +737,7 @@ uint32_t fp_calc_mpacket_crc(const uint8_t *data, uint32_t len) {
 
 eth_status_t fp_parse_mpacket_header(const uint8_t *data, uint32_t len, 
                                       fp_mpacket_t *mpacket) {
-    if (data == NULL || len < 1 || mpacket == NULL) {
+    if ((data == NULL) || (len < 1) || mpacket == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -756,7 +756,7 @@ eth_status_t fp_parse_mpacket_header(const uint8_t *data, uint32_t len,
 }
 
 eth_status_t fp_print_status(uint16_t port_id) {
-    if (!g_fp_state.initialized || port_id >= FP_MAX_PORTS) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     

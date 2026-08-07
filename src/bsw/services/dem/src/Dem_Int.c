@@ -492,14 +492,14 @@ void Dem_IntStoreExtendedData(uint8 DtcIndex, uint8 RecordNumber)
             switch (RecordNumber)
             {
                 case 1U: /* Occurrence Counter */
-                    for (uint16 j = 0U; j < extData->Length && j < 4U; j++)
+                    for (uint16 j = 0U; (j < extData->Length) && (j < 4U); j++)
                     {
                         extData->Data[j] = (uint8)(Dem_InternalState.DTCEntries[DtcIndex].OccurrenceCounter >> (j * 8));
                     }
                     break;
 
                 case 2U: /* Aging Counter */
-                    for (uint16 j = 0U; j < extData->Length && j < 4U; j++)
+                    for (uint16 j = 0U; (j < extData->Length) && (j < 4U); j++)
                     {
                         extData->Data[j] = (uint8)(Dem_InternalState.DTCEntries[DtcIndex].AgingCounter >> (j * 8));
                     }

@@ -62,9 +62,9 @@ static void CanTrcv_HwSetMode(uint8 channelIndex, CanTrcv_TrcvModeType Mode)
     const CanTrcv_ConfigType* Config = CanTrcv_ConfigPtr;
     const CanTrcv_ChannelConfigType* ChCfg = &Config->ChannelConfig[channelIndex];
     
-    if (ChCfg->TransceiverType == CANTRCV_TJA1043 ||
-        ChCfg->TransceiverType == CANTRCV_TJA1042 ||
-        ChCfg->TransceiverType == CANTRCV_GENERIC)
+    if ((ChCfg->TransceiverType == CANTRCV_TJA1043) ||
+        ((ChCfg->TransceiverType == CANTRCV_TJA1042)) ||
+        (ChCfg->TransceiverType == CANTRCV_GENERIC))
     {
         /* Control via DIO pins */
         switch (Mode)
@@ -132,15 +132,15 @@ static CanTrcv_TrcvModeType CanTrcv_HwGetMode(uint8 channelIndex)
     const CanTrcv_ConfigType* Config = CanTrcv_ConfigPtr;
     const CanTrcv_ChannelConfigType* ChCfg = &Config->ChannelConfig[channelIndex];
     
-    if (ChCfg->TransceiverType == CANTRCV_TJA1043 ||
-        ChCfg->TransceiverType == CANTRCV_TJA1042)
+    if ((ChCfg->TransceiverType == CANTRCV_TJA1043) ||
+        (ChCfg->TransceiverType == CANTRCV_TJA1042))
     {
         /* Read ERR/NERR pin to determine mode */
         Dio_LevelType ErrPinLevel = Dio_ReadChannel(ChCfg->PinConfig.ErrPin);
         Dio_LevelType StbPinLevel = Dio_ReadChannel(ChCfg->PinConfig.StbPin);
         
         /* Simplified mode detection logic */
-        if (ErrPinLevel == STD_HIGH && StbPinLevel == STD_HIGH)
+        if ((ErrPinLevel == STD_HIGH) && (StbPinLevel == STD_HIGH))
         {
             return CANTRCV_TRCVMODE_NORMAL;
         }

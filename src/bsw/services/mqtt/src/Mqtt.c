@@ -231,7 +231,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (connConfig->brokerHost == NULL_PTR || connConfig->clientId == NULL_PTR) {
+    if ((connConfig->brokerHost == NULL_PTR) || (connConfig->clientId == NULL_PTR)) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_CONNECT, MQTT_E_PARAM_POINTER);
         return MQTT_E_NOT_OK;
     }
@@ -239,8 +239,8 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     conn = &Mqtt_Connections[connectionId];
     
     /* 检查当前状态 */
-    if (conn->state != MQTT_STATE_DISCONNECTED && 
-        conn->state != MQTT_STATE_UNINIT) {
+    if ((conn->state != MQTT_STATE_DISCONNECTED) && 
+        (conn->state != MQTT_STATE_UNINIT)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -274,7 +274,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     result = TcpIp_SocketCreate(&conn->socketId);
     if (result != E_OK) {
 #if (MQTT_SUPPORT_TLS == STD_ON)
-        if (conn->useTls && conn->tlsContext != NULL_PTR) {
+        if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
             Mqtt_Tls_DestroyContext(conn->tlsContext);
             conn->tlsContext = NULL_PTR;
         }
@@ -305,8 +305,8 @@ Mqtt_ReturnType Mqtt_Disconnect(Mqtt_ConnectionIdType connectionId)
     
     conn = &Mqtt_Connections[connectionId];
     
-    if (conn->state == MQTT_STATE_DISCONNECTED || 
-        conn->state == MQTT_STATE_UNINIT) {
+    if ((conn->state == MQTT_STATE_DISCONNECTED) || 
+        (conn->state == MQTT_STATE_UNINIT)) {
         return MQTT_OK;
     }
     
@@ -409,7 +409,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
         return MQTT_E_NOT_OK;
     }
     
-    if (subscription == NULL_PTR || subscription->topicFilter == NULL_PTR) {
+    if ((subscription == NULL_PTR) || (subscription->topicFilter == NULL_PTR)) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_SUBSCRIBE, MQTT_E_PARAM_TOPIC);
         return MQTT_E_NOT_OK;
     }
@@ -489,8 +489,8 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
     
     /* 查找并移除订阅 */
     for (i = 0; i < MQTT_MAX_SUBSCRIPTIONS_PER_CONN; i++) {
-        if (conn->subscriptions[i].state != SUB_STATE_INACTIVE &&
-            strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0U ) {
+        if ((conn->subscriptions[i].state != SUB_STATE_INACTIVE) &&
+            (strcmp(conn->subscriptions[i].topicFilter, topicFilter) == 0U) ) {
             conn->subscriptions[i].state = SUB_STATE_INACTIVE;
             conn->subscriptions[i].callback = NULL_PTR;
             /* 发送UNSUBSCRIBE报文 - 通过 Mqtt_Encode 和 Mqtt_SendPacket 完成 */
@@ -626,7 +626,7 @@ static void Mqtt_UpdateState(Mqtt_InternalConnectionType* conn,
     }
     
     /* 回调通知 */
-    if (conn->connCallback != NULL_PTR && oldState != newState) {
+    if ((conn->connCallback != NULL_PTR) && (oldState != newState)) {
         /* 使用 connectionId 回调 - 当前在循环上下文中无 connectionId, 传入0由上层辨别 */
         conn->connCallback(0, newState, MQTT_OK);
     }
@@ -664,7 +664,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
         case MQTT_STATE_DISCONNECTING:
             /* 关闭TLS连接 */
 #if (MQTT_SUPPORT_TLS == STD_ON)
-            if (conn->useTls && conn->tlsContext != NULL_PTR) {
+            if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
                 Mqtt_Tls_Close(conn->tlsContext);
                 Mqtt_Tls_DestroyContext(conn->tlsContext);
                 conn->tlsContext = NULL_PTR;
@@ -755,7 +755,7 @@ static Mqtt_ReturnType Mqtt_SendPacket(Mqtt_InternalConnectionType* conn,
     }
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
-    if (conn->useTls && conn->tlsContext != NULL_PTR) {
+    if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
         /* 使用TLS加密发送 */
         uint32 sentLength = 0;
         Mqtt_ReturnType tlsResult;
@@ -780,13 +780,13 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
     }
     
 #if (MQTT_SUPPORT_TLS == STD_ON)
-    if (conn->useTls && conn->tlsContext != NULL_PTR) {
+    if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
         /* 使用TLS接收解密 */
         uint32 recvLen = 0;
         Mqtt_ReturnType tlsResult;
         tlsResult = Mqtt_Tls_Receive(conn->tlsContext, conn->recvBuffer,
                                       MQTT_RECV_BUFFER_SIZE, &recvLen);
-        if (tlsResult == MQTT_OK && recvLen > 0U ) {
+        if ((tlsResult == MQTT_OK) && (recvLen > 0U) ) {
             conn->recvLength = (uint16)recvLen;
             conn->info.bytesReceived += recvLen;
         }
@@ -798,7 +798,7 @@ static Mqtt_ReturnType Mqtt_ReceivePacket(Mqtt_InternalConnectionType* conn)
         result = TcpIp_Receive(conn->socketId, conn->recvBuffer, 
                                MQTT_RECV_BUFFER_SIZE, &receivedLength);
         
-        if (result == E_OK && receivedLength > 0U ) {
+        if ((result == E_OK) && (receivedLength > 0U) ) {
             conn->recvLength = receivedLength;
             conn->info.bytesReceived += receivedLength;
             
@@ -837,7 +837,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     }
     
     /* 检查缓冲区空间 */
-    if (remainingLength + 2 > MQTT_SEND_BUFFER_SIZE) {
+    if ((remainingLength + 2) > MQTT_SEND_BUFFER_SIZE) {
         return MQTT_E_BUFFER_OVERFLOW;
     }
     
@@ -941,7 +941,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     }
     remainingLength += msg->payloadLength;
     
-    if (remainingLength + 5 > MQTT_SEND_BUFFER_SIZE) {
+    if ((remainingLength + 5) > MQTT_SEND_BUFFER_SIZE) {
         return MQTT_E_BUFFER_OVERFLOW;
     }
     
@@ -997,7 +997,7 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     remainingLength += 2 + topicLen; /* 主题过滤器 */
     remainingLength += 1; /* QoS */
     
-    if (remainingLength + 5 > MQTT_SEND_BUFFER_SIZE) {
+    if ((remainingLength + 5) > MQTT_SEND_BUFFER_SIZE) {
         return MQTT_E_BUFFER_OVERFLOW;
     }
     

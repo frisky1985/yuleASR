@@ -66,7 +66,7 @@ static cbs_global_state_t g_cbs_state;
 static uint64_t get_current_time_ns(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint64_t)ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+    return ((uint64_t)ts.tv_sec * 1000000000ULL) + ts.tv_nsec;
 }
 
 static cbs_port_runtime_t* get_port(uint16_t port_id) {
@@ -129,7 +129,7 @@ void cbs_deinit(void) {
 }
 
 eth_status_t cbs_config_port(uint16_t port_id, const cbs_port_config_t *config) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || config == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -141,7 +141,7 @@ eth_status_t cbs_config_port(uint16_t port_id, const cbs_port_config_t *config) 
 }
 
 eth_status_t cbs_get_port_config(uint16_t port_id, cbs_port_config_t *config) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || config == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -151,8 +151,8 @@ eth_status_t cbs_get_port_config(uint16_t port_id, cbs_port_config_t *config) {
 
 eth_status_t cbs_config_sr_class(uint16_t port_id, uint8_t class_index,
                                   const cbs_sr_class_config_t *sr_config) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
-        class_index >= CBS_SR_CLASS_MAX || sr_config == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
+        (class_index >= CBS_SR_CLASS_MAX) || (sr_config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -164,8 +164,8 @@ eth_status_t cbs_config_sr_class(uint16_t port_id, uint8_t class_index,
 
 eth_status_t cbs_config_queue(uint16_t port_id, uint8_t queue_index,
                                const cbs_queue_config_t *queue_config) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
-        queue_index >= CBS_SR_CLASS_MAX || queue_config == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
+        (queue_index >= CBS_SR_CLASS_MAX) || (queue_config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -177,13 +177,13 @@ eth_status_t cbs_config_queue(uint16_t port_id, uint8_t queue_index,
 
 eth_status_t cbs_update_credit(uint16_t port_id, uint8_t queue_id, 
                                 uint64_t elapsed_time_ns) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
         queue_id >= CBS_SR_CLASS_MAX) {
         return ETH_INVALID_PARAM;
     }
     
     cbs_port_runtime_t *port = get_port(port_id);
-    if (port == NULL || !port->configured) {
+    if ((port == NULL) || !port->configured) {
         return ETH_NOT_INIT;
     }
     
@@ -233,8 +233,8 @@ eth_status_t cbs_update_credit(uint16_t port_id, uint8_t queue_id,
 }
 
 eth_status_t cbs_get_credit(uint16_t port_id, uint8_t queue_id, int64_t *credit) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
-        queue_id >= CBS_SR_CLASS_MAX || credit == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
+        (queue_id >= CBS_SR_CLASS_MAX) || (credit == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -248,7 +248,7 @@ eth_status_t cbs_get_credit(uint16_t port_id, uint8_t queue_id, int64_t *credit)
 }
 
 eth_status_t cbs_set_credit(uint16_t port_id, uint8_t queue_id, int64_t credit) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
         queue_id >= CBS_SR_CLASS_MAX) {
         return ETH_INVALID_PARAM;
     }
@@ -264,7 +264,7 @@ eth_status_t cbs_set_credit(uint16_t port_id, uint8_t queue_id, int64_t credit) 
 
 eth_status_t cbs_decrement_credit(uint16_t port_id, uint8_t queue_id, 
                                    uint32_t frame_size) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
         queue_id >= CBS_SR_CLASS_MAX) {
         return ETH_INVALID_PARAM;
     }
@@ -294,13 +294,13 @@ eth_status_t cbs_decrement_credit(uint16_t port_id, uint8_t queue_id,
 
 eth_status_t cbs_can_transmit(uint16_t port_id, uint8_t queue_id, 
                                uint32_t frame_size, bool *can_transmit) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
-        queue_id >= CBS_SR_CLASS_MAX || can_transmit == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
+        (queue_id >= CBS_SR_CLASS_MAX) || (can_transmit == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
     cbs_port_runtime_t *port = get_port(port_id);
-    if (port == NULL || !port->configured) {
+    if ((port == NULL) || !port->configured) {
         *can_transmit = false;
         return ETH_OK;
     }
@@ -330,7 +330,7 @@ eth_status_t cbs_can_transmit(uint16_t port_id, uint8_t queue_id,
 
 eth_status_t cbs_start_transmission(uint16_t port_id, uint8_t queue_id, 
                                      uint32_t frame_size) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
         queue_id >= CBS_SR_CLASS_MAX) {
         return ETH_INVALID_PARAM;
     }
@@ -350,7 +350,7 @@ eth_status_t cbs_start_transmission(uint16_t port_id, uint8_t queue_id,
 
 eth_status_t cbs_complete_transmission(uint16_t port_id, uint8_t queue_id,
                                         uint32_t frame_size, uint64_t actual_time_ns) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
         queue_id >= CBS_SR_CLASS_MAX) {
         return ETH_INVALID_PARAM;
     }
@@ -370,7 +370,7 @@ eth_status_t cbs_complete_transmission(uint16_t port_id, uint8_t queue_id,
                                 (port->config.port_transmit_rate_bps / 1000000);
     uint32_t actual_time_us = (uint32_t)(actual_time_ns / NS_PER_US);
     
-    if (actual_time_us > expected_time_us + config->transmission_overrun_us) {
+    if (actual_time_us > (expected_time_us + config->transmission_overrun_us)) {
         queue->transmission_overruns++;
     }
     
@@ -418,7 +418,7 @@ eth_status_t cbs_get_sr_class_latency(cbs_sr_class_type_t class_type, uint32_t *
 eth_status_t cbs_calc_idle_slope(uint32_t port_transmit_rate_bps,
                                   uint32_t bandwidth_percent,
                                   int64_t *idle_slope) {
-    if (idle_slope == NULL || bandwidth_percent > 100) {
+    if ((idle_slope == NULL) || (bandwidth_percent > 100)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -446,7 +446,7 @@ eth_status_t cbs_calc_send_slope(uint32_t port_transmit_rate_bps,
 }
 
 eth_status_t cbs_get_stats(uint16_t port_id, cbs_stats_t *stats) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || stats == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || stats == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -465,7 +465,7 @@ eth_status_t cbs_get_stats(uint16_t port_id, cbs_stats_t *stats) {
 }
 
 eth_status_t cbs_clear_stats(uint16_t port_id) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -487,8 +487,8 @@ eth_status_t cbs_clear_stats(uint16_t port_id) {
 
 eth_status_t cbs_get_queue_state(uint16_t port_id, uint8_t queue_id, 
                                   cbs_queue_state_t *state) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
-        queue_id >= CBS_SR_CLASS_MAX || state == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
+        (queue_id >= CBS_SR_CLASS_MAX) || (state == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -527,7 +527,7 @@ eth_status_t cbs_register_safety_alert_callback(cbs_safety_alert_callback_t call
 }
 
 eth_status_t cbs_init_safety_monitor(uint16_t port_id) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -541,7 +541,7 @@ eth_status_t cbs_init_safety_monitor(uint16_t port_id) {
 }
 
 eth_status_t cbs_run_safety_checks(uint16_t port_id) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -549,7 +549,7 @@ eth_status_t cbs_run_safety_checks(uint16_t port_id) {
 }
 
 eth_status_t cbs_get_safety_monitor(uint16_t port_id, cbs_safety_monitor_t *monitor) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || monitor == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || monitor == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -561,7 +561,7 @@ eth_status_t cbs_get_safety_monitor(uint16_t port_id, cbs_safety_monitor_t *moni
 
 eth_status_t cbs_check_bandwidth_utilization(uint16_t port_id, 
                                               uint32_t *utilization_percent) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS || 
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
         utilization_percent == NULL) {
         return ETH_INVALID_PARAM;
     }
@@ -603,7 +603,7 @@ eth_status_t cbs_check_bandwidth_utilization(uint16_t port_id,
 eth_status_t cbs_create_automotive_config(uint16_t port_id, 
                                            uint32_t port_rate_mbps,
                                            cbs_port_config_t *config) {
-    if (config == NULL || port_rate_mbps == 0) {
+    if ((config == NULL) || (port_rate_mbps == 0)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -675,7 +675,7 @@ eth_status_t cbs_calc_required_credit(uint32_t frame_size,
 }
 
 eth_status_t cbs_print_status(uint16_t port_id) {
-    if (!g_cbs_state.initialized || port_id >= CBS_MAX_PORTS) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     

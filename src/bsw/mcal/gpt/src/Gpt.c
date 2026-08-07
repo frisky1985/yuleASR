@@ -279,7 +279,7 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
         Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_CHANNEL);
         return;
     }
-    if (Value == 0U || Value > Gpt_ConfigPtr->Channels[Channel].MaxTickValue) {
+    if ((Value == 0U) || (Value > Gpt_ConfigPtr->Channels[Channel].MaxTickValue)) {
         Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_VALUE);
         return;
     }

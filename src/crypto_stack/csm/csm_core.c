@@ -79,7 +79,7 @@ csm_context_t* csm_init(const csm_config_t *config)
 
 void csm_deinit(csm_context_t *ctx)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return;
     }
     
@@ -99,7 +99,7 @@ uint32_t csm_job_create(csm_context_t *ctx, csm_job_type_t job_type,
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_JOB_ID_INVALID;
     }
     
@@ -145,7 +145,7 @@ csm_status_t csm_job_set_input(csm_context_t *ctx, uint32_t job_id,
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -166,7 +166,7 @@ csm_status_t csm_job_set_output(csm_context_t *ctx, uint32_t job_id,
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -187,7 +187,7 @@ csm_status_t csm_job_set_callback(csm_context_t *ctx, uint32_t job_id,
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -208,7 +208,7 @@ csm_status_t csm_job_submit(csm_context_t *ctx, uint32_t job_id,
     csm_job_t *job;
     csm_status_t status;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -248,7 +248,7 @@ csm_status_t csm_job_process_sync(csm_context_t *ctx, uint32_t job_id,
     csm_job_t *job;
     csm_status_t status;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -284,7 +284,7 @@ csm_status_t csm_job_get_state(csm_context_t *ctx, uint32_t job_id,
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized || state == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || state == NULL) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -301,7 +301,7 @@ csm_status_t csm_job_cancel(csm_context_t *ctx, uint32_t job_id)
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -339,7 +339,7 @@ csm_status_t csm_job_release(csm_context_t *ctx, uint32_t job_id)
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -349,16 +349,16 @@ csm_status_t csm_job_release(csm_context_t *ctx, uint32_t job_id)
     }
     
     /* 仅拒绝正在处理中的Job (排队/处理中), IDLE 与终态均可释放 */
-    if (job->state == CSM_JOB_STATE_QUEUED ||
-        job->state == CSM_JOB_STATE_PROCESSING) {
+    if ((job->state == CSM_JOB_STATE_QUEUED) ||
+        (job->state == CSM_JOB_STATE_PROCESSING)) {
         return CSM_ERROR_JOB_BUSY;
     }
     
     /* 防御: 终态 Job 若仍挂在队列中(漏出队), 先摘除再释放 */
-    if (job->next != NULL || job->prev != NULL ||
-        ctx->high_prio_queue == job ||
-        ctx->normal_prio_queue == job ||
-        ctx->low_prio_queue == job) {
+    if ((job->next != NULL) || (job->prev != NULL) ||
+        (ctx->high_prio_queue == job) ||
+        ((ctx->normal_prio_queue == job)) ||
+        (ctx->low_prio_queue == job)) {
         csm_queue_remove(ctx, job);
         if (ctx->stats.current_queue_depth > 0) {
             ctx->stats.current_queue_depth--;
@@ -539,12 +539,12 @@ uint32_t csm_process_queue(csm_context_t *ctx)
     csm_job_t *job;
     uint32_t processed = 0;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return 0;
     }
     
     /* 处理高优先级队列 */
-    while ((job = csm_queue_peek(ctx)) != NULL && processed < 10) {
+    while (((job = csm_queue_peek(ctx)) != NULL) && (processed < 10)) {
         csm_queue_remove(ctx, job);
         ctx->stats.current_queue_depth--;
         
@@ -558,7 +558,7 @@ uint32_t csm_process_queue(csm_context_t *ctx)
 
 csm_status_t csm_get_queue_stats(csm_context_t *ctx, csm_queue_stats_t *stats)
 {
-    if (ctx == NULL || !ctx->initialized || stats == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || stats == NULL) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -570,7 +570,7 @@ csm_status_t csm_flush_queue(csm_context_t *ctx)
 {
     csm_job_t *job;
     
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -595,7 +595,7 @@ int csm_register_callback(csm_context_t *ctx, csm_job_callback_t callback,
 {
     int i;
     
-    if (ctx == NULL || !ctx->initialized || callback == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || callback == NULL) {
         return -1;
     }
     
@@ -613,11 +613,11 @@ int csm_register_callback(csm_context_t *ctx, csm_job_callback_t callback,
 
 csm_status_t csm_unregister_callback(csm_context_t *ctx, int callback_id)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
-    if (callback_id < 0 || callback_id >= CSM_MAX_CALLBACKS) {
+    if ((callback_id < 0) || (callback_id >= CSM_MAX_CALLBACKS)) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -724,7 +724,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
     switch (job->job_type) {
         case CSM_JOB_HASH:
             /* 计算哈希值 */
-            if (job->output != NULL && job->output_len != NULL) {
+            if ((job->output != NULL) && (job->output_len != NULL)) {
                 memset(job->output, 0, 32);  /* SHA-256 */
                 *job->output_len = 32;
             }
@@ -732,7 +732,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
             
         case CSM_JOB_MAC_GENERATE:
             /* 生成MAC */
-            if (job->output != NULL && job->output_len != NULL) {
+            if ((job->output != NULL) && (job->output_len != NULL)) {
                 memset(job->output, 0, 16);  /* AES-CMAC-128 */
                 *job->output_len = 16;
             }
@@ -748,7 +748,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
         case CSM_JOB_ENCRYPT:
         case CSM_JOB_DECRYPT:
             /* 加密/解密 */
-            if (job->output != NULL && job->output_len != NULL && job->input != NULL) {
+            if ((job->output != NULL) && (job->output_len != NULL) && job->input != NULL) {
                 memcpy(job->output, job->input, job->input_len);
                 *job->output_len = job->input_len;
             }
@@ -756,10 +756,10 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
             
         case CSM_JOB_RANDOM_GENERATE:
             /* 生成随机数 — LCG 伪随机, 保持调用间状态, 避免两次输出相同 */
-            if (job->output != NULL && job->output_len != NULL) {
+            if ((job->output != NULL) && (job->output_len != NULL)) {
                 static uint32_t lcg_state = 0x9E3779B9u;
                 for (uint32_t i = 0; i < job->output_max_len; i++) {
-                    lcg_state = lcg_state * 1664525u + 1013904223u;
+                    lcg_state = (lcg_state * 1664525u) + 1013904223u;
                     job->output[i] = (uint8_t)(lcg_state >> 24);
                 }
                 *job->output_len = job->output_max_len;

@@ -39,7 +39,7 @@ static tsn_stack_context_t g_tsn_context;
 static uint64_t get_current_time_ns(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint64_t)ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+    return ((uint64_t)ts.tv_sec * 1000000000ULL) + ts.tv_nsec;
 }
 
 static eth_status_t init_all_modules(const tsn_stack_config_t *config) {
@@ -199,7 +199,7 @@ eth_status_t tsn_stack_get_status(tsn_stack_status_t *status) {
 
 eth_status_t tsn_create_automotive_config(uint32_t port_rate_mbps, 
                                            tsn_stack_config_t *config) {
-    if (config == NULL || port_rate_mbps == 0) {
+    if ((config == NULL) || (port_rate_mbps == 0)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -225,7 +225,7 @@ eth_status_t tsn_create_automotive_config(uint32_t port_rate_mbps,
 
 eth_status_t tsn_config_automotive_domain(uint8_t domain_index,
                                            const gptp_domain_config_t *domain_config) {
-    if (!g_tsn_context.initialized || domain_config == NULL) {
+    if (!g_tsn_context.initialized || (domain_config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -242,7 +242,7 @@ eth_status_t tsn_config_automotive_scheduler(uint16_t port_id,
     eth_status_t status = ETH_OK;
     
     /* 配置TAS */
-    if (tas_config != NULL && g_tsn_context.config.tas_enabled) {
+    if ((tas_config != NULL) && g_tsn_context.config.tas_enabled) {
         status = tas_config_port(port_id, tas_config);
         if (status != ETH_OK) {
             return status;
@@ -250,7 +250,7 @@ eth_status_t tsn_config_automotive_scheduler(uint16_t port_id,
     }
     
     /* 配置CBS */
-    if (cbs_config != NULL && g_tsn_context.config.cbs_enabled) {
+    if ((cbs_config != NULL) && g_tsn_context.config.cbs_enabled) {
         status = cbs_config_port(port_id, cbs_config);
         if (status != ETH_OK) {
             return status;
@@ -261,7 +261,7 @@ eth_status_t tsn_config_automotive_scheduler(uint16_t port_id,
 }
 
 eth_status_t tsn_stack_run_cycle(void) {
-    if (!g_tsn_context.initialized || g_tsn_context.state != TSN_STATE_RUNNING) {
+    if (!g_tsn_context.initialized || (g_tsn_context.state != TSN_STATE_RUNNING)) {
         return ETH_NOT_INIT;
     }
     
@@ -310,7 +310,7 @@ eth_status_t tsn_wait_for_sync(uint8_t domain_index, uint32_t timeout_ms) {
 eth_status_t tsn_transmit_frame(uint16_t port_id, uint8_t queue_id,
                                  const uint8_t *data, uint32_t len,
                                  uint8_t priority) {
-    if (!g_tsn_context.initialized || data == NULL || len == 0) {
+    if (!g_tsn_context.initialized || (data == NULL) || len == 0) {
         return ETH_INVALID_PARAM;
     }
     

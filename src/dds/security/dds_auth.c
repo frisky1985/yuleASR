@@ -178,9 +178,9 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
     /* Output hash */
     for (int i = 0; i < 8; i++) {
         hash[i * 4] = (state[i] >> 24) & 0xFF;
-        hash[i * 4 + 1] = (state[i] >> 16) & 0xFF;
-        hash[i * 4 + 2] = (state[i] >> 8) & 0xFF;
-        hash[i * 4 + 3] = state[i] & 0xFF;
+        hash[(i * 4) + 1] = (state[i] >> 16) & 0xFF;
+        hash[(i * 4) + 2] = (state[i] >> 8) & 0xFF;
+        hash[(i * 4) + 3] = state[i] & 0xFF;
     }
 
     return DDS_AUTH_OK;
@@ -192,7 +192,7 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
 
 dds_auth_status_t dds_auth_generate_challenge(uint8_t *challenge, uint32_t len)
 {
-    if (!challenge || len == 0) {
+    if (!challenge || (len == 0)) {
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
@@ -204,7 +204,7 @@ dds_auth_status_t dds_auth_generate_challenge(uint8_t *challenge, uint32_t len)
     }
 
     for (uint32_t i = 0; i < len; i++) {
-        seed = seed * 1103515245 + 12345;
+        seed = (seed * 1103515245) + 12345;
         challenge[i] = (uint8_t)(seed >> 16);
     }
 
@@ -355,7 +355,7 @@ dds_auth_status_t dds_auth_validate_certificate(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (cert->length == 0 || ca_cert->length == 0) {
+    if ((cert->length == 0) || (ca_cert->length == 0)) {
         return DDS_AUTH_ERROR_INVALID_CERT;
     }
 
@@ -393,7 +393,7 @@ dds_auth_status_t dds_auth_check_cert_validity(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (current_time < cert->valid_from || current_time > cert->valid_until) {
+    if ((current_time < cert->valid_from) || (current_time > cert->valid_until)) {
         return DDS_AUTH_ERROR_CERT_EXPIRED;
     }
 
@@ -622,7 +622,7 @@ dds_auth_status_t dds_auth_verify(dds_auth_context_t *ctx,
     uint32_t expected_len = 32;
     dds_auth_sign(ctx, data, data_len, public_key, expected_sig, &expected_len);
 
-    if (sig_len != expected_len || memcmp(signature, expected_sig, sig_len) != 0) {
+    if ((sig_len != expected_len) || (memcmp(signature, expected_sig, sig_len) != 0)) {
         return DDS_AUTH_ERROR_INVALID_SIGNATURE;
     }
 
@@ -858,10 +858,10 @@ uint32_t dds_auth_check_handshake_timeouts(dds_auth_context_t *ctx, uint64_t cur
     for (uint32_t i = 0; i < ctx->max_handshakes; i++) {
         dds_security_handshake_t *handshake = &ctx->handshakes[i];
 
-        if (handshake->state != DDS_HANDSHAKE_STATE_NONE &&
-            handshake->state != DDS_HANDSHAKE_STATE_COMPLETED) {
+        if ((handshake->state != DDS_HANDSHAKE_STATE_NONE) &&
+            (handshake->state != DDS_HANDSHAKE_STATE_COMPLETED)) {
 
-            if (current_time > handshake->start_time + handshake->timeout_ms) {
+            if (current_time > (handshake->start_time + handshake->timeout_ms)) {
                 handshake->state = DDS_HANDSHAKE_STATE_FAILED;
                 timeout_count++;
                 ctx->active_handshakes--;

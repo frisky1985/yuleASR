@@ -126,7 +126,7 @@ static void CanNm_ChangeState(CanNm_ChannelHandleType channel,
         Nm_PrepareBusSleepModeEntry(channel);
 #endif
     } else if (newMode == CANNM_MODE_NETWORK) {
-        if (oldState == CANNM_STATE_BUS_SLEEP || oldState == CANNM_STATE_PREPARE_BUS_SLEEP) {
+        if ((oldState == CANNM_STATE_BUS_SLEEP) || (oldState == CANNM_STATE_PREPARE_BUS_SLEEP)) {
 #if (CANNM_NETWORK_MODE_ENTRY_ENABLED == STD_ON)
             Nm_NetworkModeEntry(channel);
 #endif
@@ -290,8 +290,8 @@ static void CanNm_ProcessPduData(CanNm_ChannelHandleType channel, const uint8 *p
     
     /* Check for repeat message request */
     if (CANNM_IS_CBV_SET(pduData, CANNM_CBV_REPEAT_MSG)) {
-        if (chPtr->State == CANNM_STATE_NORMAL_OPERATION || 
-            chPtr->State == CANNM_STATE_READY_SLEEP) {
+        if ((chPtr->State == CANNM_STATE_NORMAL_OPERATION) || 
+            (chPtr->State == CANNM_STATE_READY_SLEEP)) {
             /* Transition to Repeat Message state */
             CanNm_ChangeState(channel, CANNM_STATE_REPEAT_MESSAGE, CANNM_MODE_NETWORK);
         }
@@ -327,8 +327,8 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
         } else {
             chPtr->TimerNM = 0;
             /* Timer expired - transmit NM message */
-            if (chPtr->State == CANNM_STATE_REPEAT_MESSAGE ||
-                chPtr->State == CANNM_STATE_NORMAL_OPERATION) {
+            if ((chPtr->State == CANNM_STATE_REPEAT_MESSAGE) ||
+                (chPtr->State == CANNM_STATE_NORMAL_OPERATION)) {
                 CanNm_TransmitMessage(channel);
             }
         }
@@ -336,7 +336,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
     
     /* Immediate Transmission Timer (TTx) */
 #if (CANNM_IMMEDIATE_TRANSMISSION_ENABLED == STD_ON)
-    if (chPtr->TimerImmediate > 0U && chPtr->ImmediateTxCounter > 0U ) {
+    if ((chPtr->TimerImmediate > 0U) && (chPtr->ImmediateTxCounter > 0U) ) {
         if (chPtr->TimerImmediate > period) {
             chPtr->TimerImmediate -= period;
         } else {

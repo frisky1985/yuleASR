@@ -10,12 +10,12 @@
 dds_topic_t* dds_topic_find(dds_domain_participant_t *participant,
                             const char *topic_name)
 {
-    if (participant == NULL || topic_name == NULL) {
+    if ((participant == NULL) || (topic_name == NULL)) {
         return NULL;
     }
     dds_topic_t *topic = participant->topics;
     while (topic != NULL) {
-        if (strcmp(topic->name, topic_name) == 0 && topic->active) {
+        if ((strcmp(topic->name, topic_name) == 0) && topic->active) {
             return topic;
         }
         topic = topic->next;

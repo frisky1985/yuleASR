@@ -82,7 +82,7 @@ LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
         return LINSLAVE_NOT_OK;
     }
     
-    if (ConfigPtr->ResponseLength == 0U || ConfigPtr->ResponseLength > 8U) {
+    if ((ConfigPtr->ResponseLength == 0U) || (ConfigPtr->ResponseLength > 8U)) {
         return LINSLAVE_NOT_OK;
     }
 #endif
@@ -444,7 +444,7 @@ static void LinSlave_SendResponse(void)
     uint8 Checksum;
     uint8 i;
     
-    if (LinSlave_TxLength == 0U || LinSlave_TxLength > 8U) {
+    if ((LinSlave_TxLength == 0U) || (LinSlave_TxLength > 8U)) {
         return;
     }
     
@@ -520,7 +520,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
         frame->TxCallback(FrameIndex, txData, &txLength, frame->UserData);
     }
     
-    if (txLength == 0U || txLength > 8) {
+    if ((txLength == 0U) || (txLength > 8)) {
         return;
     }
     
@@ -559,7 +559,7 @@ LinSlave_StatusType LinSlave_SetResponseData(const uint8* DataPtr, uint8 Length)
         return LINSLAVE_NOT_OK;
     }
     
-    if (Length == 0U || Length > 8U) {
+    if ((Length == 0U) || (Length > 8U)) {
         return LINSLAVE_NOT_OK;
     }
 #endif

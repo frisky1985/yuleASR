@@ -313,10 +313,10 @@ void Pwm_EnableNotification(Pwm_ChannelType Channel, Pwm_EdgeNotificationType No
     uint32 baseAddr = Pwm_GetBaseAddr(Channel);
     uint32 irValue = 0U;
 
-    if (Notification == PWM_RISING_EDGE || Notification == PWM_BOTH_EDGES) {
+    if ((Notification == PWM_RISING_EDGE) || (Notification == PWM_BOTH_EDGES)) {
         irValue |= PWM_IR_FIE;
     }
-    if (Notification == PWM_FALLING_EDGE || Notification == PWM_BOTH_EDGES) {
+    if ((Notification == PWM_FALLING_EDGE) || (Notification == PWM_BOTH_EDGES)) {
         irValue |= PWM_IR_CIE;
     }
 

@@ -102,7 +102,7 @@ void IpduM_MainFunction(void)
     if (IpduM_State.configPtr != NULL_PTR) {
         for (uint8 i = 0U; i < IpduM_State.configPtr->NumIpduMappings; i++) {
             const IpduM_IpduMappingType* map = &IpduM_State.configPtr->IpduMapping[i];
-            if (map->IpduId == IpduM_State.activeIpduId && map->RoutingCallback != NULL_PTR) {
+            if ((map->IpduId == IpduM_State.activeIpduId) && (map->RoutingCallback != NULL_PTR)) {
                 map->RoutingCallback(map->SourcePduId, map->DestPduId);
             }
         }

@@ -347,8 +347,8 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr
     for (PduIdType i = 0U; i < CANIF_NUM_RX_PDUS; i++) {
         const CanIf_RxPduConfigType* rxPduConfig = &CanIf_ConfigPtr->RxPdus[i];
 
-        if (rxPduConfig->Hrh == Mailbox->Hoh &&
-            rxPduConfig->CanId == Mailbox->CanId) {
+        if ((rxPduConfig->Hrh == Mailbox->Hoh) &&
+            (rxPduConfig->CanId == Mailbox->CanId)) {
 
             if (rxPduConfig->RxIndication) {
                 PduInfoType pduInfo;

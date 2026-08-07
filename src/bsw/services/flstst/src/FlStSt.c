@@ -159,7 +159,7 @@ static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test)
     start = test->Sector->StartAddr + test->CurrentOffset;
     end   = test->Sector->StartAddr + test->Sector->Size;
 
-    while ((start + processed < end) && (processed < FLSTST_BYTES_PER_CYCLE))
+    while (((start + processed) < end) && (processed < FLSTST_BYTES_PER_CYCLE))
     {
         addr = start + processed;
 
@@ -400,7 +400,7 @@ Std_ReturnType FlStSt_VerifyErase(uint16 SectorId, boolean* Result)
 
         for (i = 0U; i < sector->Size; i += FLSTST_VERIFY_CHUNK_SIZE)
         {
-            uint32 chunk = (sector->Size - i < FLSTST_VERIFY_CHUNK_SIZE) ? (sector->Size - i) : FLSTST_VERIFY_CHUNK_SIZE;
+            uint32 chunk = ((sector->Size - i) < FLSTST_VERIFY_CHUNK_SIZE) ? (sector->Size - i) : FLSTST_VERIFY_CHUNK_SIZE;
             uint32 j;
             for (j = 0U; j < chunk; j++)
             {

@@ -163,7 +163,7 @@ void Det_Init(const Det_ConfigType* ConfigPtr)
 {
 #if (DET_ENABLED == STD_ON)
     /* Check if already initialized */
-    if (Det_State == DET_INITIALIZED || Det_State == DET_STARTED)
+    if ((Det_State == DET_INITIALIZED) || (Det_State == DET_STARTED))
     {
         /* Report error - double initialization */
         /* Note: Cannot use Det_ReportError here as we're in Init */

@@ -112,7 +112,7 @@ Std_ReturnType EthSM_SetState(EthSM_StateType State)
             if (State == ETHSM_STATE_ON) { EthSM_State.targetState = State; return E_OK; }
             break;
         case ETHSM_STATE_ON:
-            if (State == ETHSM_STATE_OFF || State == ETHSM_STATE_SLEEP) { EthSM_State.targetState = State; return E_OK; }
+            if ((State == ETHSM_STATE_OFF) || (State == ETHSM_STATE_SLEEP)) { EthSM_State.targetState = State; return E_OK; }
             break;
         case ETHSM_STATE_SLEEP:
             if (State == ETHSM_STATE_ON) { EthSM_State.targetState = State; return E_OK; }
@@ -128,13 +128,13 @@ Std_ReturnType EthSM_SetState(EthSM_StateType State)
 
 void EthSM_MainFunction(void)
 {
-    if (EthSM_State.internalState == ETHSM_INTERNAL_UNINIT || EthSM_State.configPtr == NULL_PTR) return;
+    if ((EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) || (EthSM_State.configPtr == NULL_PTR)) return;
 
     EthSM_State.tickCounter++;
 
     /* Process state transition */
     if (EthSM_State.currentState != EthSM_State.targetState) {
-        if (EthSM_State.transitionTimeout > 0U && EthSM_State.tickCounter >= EthSM_State.transitionTimeout) {
+        if ((EthSM_State.transitionTimeout > 0U) && (EthSM_State.tickCounter >= EthSM_State.transitionTimeout)) {
             /* Transition complete */
             EthSM_State.currentState = EthSM_State.targetState;
             EthSM_State.transitionTimeout = 0U;

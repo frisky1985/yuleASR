@@ -633,7 +633,7 @@ eth_status_t dds_tsn_generate_stream_id(const char *topic_name,
         /* 简单哈希计算 */
         uint32_t hash = 0;
         for (size_t i = 0; i < strlen(topic_name); i++) {
-            hash = hash * 31 + topic_name[i];
+            hash = (hash * 31) + topic_name[i];
         }
         
         stream_id->id[4] = (uint8_t)((hash >> 24) & 0xFF);
@@ -662,7 +662,7 @@ eth_status_t dds_tsn_parse_stream_id(const dds_tsn_stream_id_t *stream_id,
                      (uint32_t)stream_id->id[3];
         
         /* 主题名不能从Stream ID解析，返回空字符串 */
-        if (topic_name != NULL && topic_name_len > 0) {
+        if ((topic_name != NULL) && (topic_name_len > 0)) {
             topic_name[0] = '\0';
         }
     }

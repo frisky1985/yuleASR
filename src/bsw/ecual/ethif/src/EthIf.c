@@ -134,7 +134,7 @@ void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr)
                 } else if (filter->FilterType == ETHIF_FILTER_ETHERTYPE) {
                     match = (filter->EtherType == PduInfoPtr->EtherType);
                 }
-                if (match && filter->RxCallback != NULL_PTR) {
+                if (match && (filter->RxCallback != NULL_PTR)) {
                     filter->RxCallback(ControllerId, PduInfoPtr);
                 }
             }

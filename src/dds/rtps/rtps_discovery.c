@@ -134,16 +134,16 @@ static void rtps_discovery_match_endpoints(rtps_discovery_context_t *ctx,
     rtps_endpoint_proxy_t *iter = ctx->endpoints;
     
     while (iter != NULL) {
-        if (iter != endpoint && 
-            iter->state == RTPS_DISCOVERY_STATE_DISCOVERING) {
+        if ((iter != endpoint) && 
+            (iter->state == RTPS_DISCOVERY_STATE_DISCOVERING)) {
             /* 检查主题和类型是否匹配 */
-            if (strcmp(iter->topic_name, endpoint->topic_name) == 0 &&
-                strcmp(iter->type_name, endpoint->type_name) == 0) {
+            if ((strcmp(iter->topic_name, endpoint->topic_name) == 0) &&
+                (strcmp(iter->type_name, endpoint->type_name) == 0)) {
                 /* 检查读写关系（Writer匹配Reader） */
-                if ((iter->type == RTPS_ENDPOINT_TYPE_WRITER && 
-                     endpoint->type == RTPS_ENDPOINT_TYPE_READER) ||
-                    (iter->type == RTPS_ENDPOINT_TYPE_READER && 
-                     endpoint->type == RTPS_ENDPOINT_TYPE_WRITER)) {
+                if (((iter->type == RTPS_ENDPOINT_TYPE_WRITER) && 
+                     (endpoint->type == RTPS_ENDPOINT_TYPE_READER)) ||
+                    ((iter->type == RTPS_ENDPOINT_TYPE_READER) && 
+                     (endpoint->type == RTPS_ENDPOINT_TYPE_WRITER))) {
                     
                     iter->state = RTPS_DISCOVERY_STATE_MATCHED;
                     endpoint->state = RTPS_DISCOVERY_STATE_MATCHED;
@@ -256,7 +256,7 @@ static uint32_t serialize_participant_data(const rtps_participant_proxy_t *parti
 eth_status_t rtps_discovery_init(rtps_discovery_context_t *ctx, 
                                   const rtps_discovery_config_t *config)
 {
-    if (ctx == NULL || config == NULL) {
+    if ((ctx == NULL) || (config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -290,7 +290,7 @@ eth_status_t rtps_discovery_init(rtps_discovery_context_t *ctx,
 
 void rtps_discovery_deinit(rtps_discovery_context_t *ctx)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return;
     }
     
@@ -314,7 +314,7 @@ void rtps_discovery_deinit(rtps_discovery_context_t *ctx)
 
 eth_status_t rtps_discovery_start(rtps_discovery_context_t *ctx)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return ETH_ERROR;
     }
     
@@ -335,7 +335,7 @@ void rtps_discovery_stop(rtps_discovery_context_t *ctx)
 eth_status_t rtps_discovery_process(rtps_discovery_context_t *ctx, 
                                      uint64_t current_time_ms)
 {
-    if (ctx == NULL || !ctx->initialized) {
+    if ((ctx == NULL) || !ctx->initialized) {
         return ETH_ERROR;
     }
     
@@ -386,15 +386,15 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
                                            uint32_t len,
                                            const void *source_addr)
 {
-    if (ctx == NULL || data == NULL || len < 20) {
+    if ((ctx == NULL) || (data == NULL) || len < 20) {
         return ETH_INVALID_PARAM;
     }
     
     uint32_t pos = 0;
     
     /* 验证RTPS协议头 */
-    if (data[0] != 'R' || data[1] != 'T' || 
-        data[2] != 'P' || data[3] != 'S') {
+    if ((data[0] != 'R') || (data[1] != 'T') || 
+        (data[2] != 'P') || (data[3] != 'S')) {
         return ETH_ERROR;
     }
     pos += 4;
@@ -443,7 +443,7 @@ eth_status_t rtps_discovery_create_participant_data(rtps_discovery_context_t *ct
                                                       uint32_t max_len,
                                                       uint32_t *actual_len)
 {
-    if (ctx == NULL || buffer == NULL || actual_len == NULL) {
+    if ((ctx == NULL) || (buffer == NULL) || actual_len == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -477,7 +477,7 @@ eth_status_t rtps_discovery_create_participant_data(rtps_discovery_context_t *ct
 eth_status_t rtps_discovery_add_local_endpoint(rtps_discovery_context_t *ctx,
                                                  rtps_endpoint_proxy_t *endpoint)
 {
-    if (ctx == NULL || endpoint == NULL) {
+    if ((ctx == NULL) || (endpoint == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -489,8 +489,8 @@ eth_status_t rtps_discovery_add_local_endpoint(rtps_discovery_context_t *ctx,
         iter = iter->next;
     }
     
-    if (ctx->config.max_endpoints_per_participant > 0 &&
-        count >= ctx->config.max_endpoints_per_participant) {
+    if ((ctx->config.max_endpoints_per_participant > 0) &&
+        (count >= ctx->config.max_endpoints_per_participant)) {
         return ETH_ERROR;
     }
     
@@ -514,7 +514,7 @@ eth_status_t rtps_discovery_add_local_endpoint(rtps_discovery_context_t *ctx,
 eth_status_t rtps_discovery_remove_local_endpoint(rtps_discovery_context_t *ctx,
                                                     const rtps_guid_t *guid)
 {
-    if (ctx == NULL || guid == NULL) {
+    if ((ctx == NULL) || (guid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -561,7 +561,7 @@ rtps_endpoint_proxy_t* rtps_discovery_find_endpoint(
     rtps_discovery_context_t *ctx,
     const rtps_guid_t *guid)
 {
-    if (ctx == NULL || guid == NULL) {
+    if ((ctx == NULL) || (guid == NULL)) {
         return NULL;
     }
     
@@ -578,7 +578,7 @@ rtps_endpoint_proxy_t* rtps_discovery_find_endpoint(
 
 bool rtps_discovery_is_complete(rtps_discovery_context_t *ctx)
 {
-    if (ctx == NULL || !ctx->active) {
+    if ((ctx == NULL) || !ctx->active) {
         return false;
     }
     
@@ -650,7 +650,7 @@ eth_status_t rtps_guid_prefix_generate(rtps_guid_prefix_t prefix,
                                         const eth_mac_addr_t mac_addr,
                                         uint32_t domain_id)
 {
-    if (prefix == NULL || mac_addr == NULL) {
+    if ((prefix == NULL) || (mac_addr == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -676,7 +676,7 @@ eth_status_t rtps_guid_prefix_generate(rtps_guid_prefix_t prefix,
 
 bool rtps_guid_equal(const rtps_guid_t *guid1, const rtps_guid_t *guid2)
 {
-    if (guid1 == NULL || guid2 == NULL) {
+    if ((guid1 == NULL) || (guid2 == NULL)) {
         return false;
     }
     
@@ -716,7 +716,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
                                                    uint32_t max_len,
                                                    uint32_t *actual_len)
 {
-    if (ctx == NULL || endpoint == NULL || buffer == NULL || actual_len == NULL) {
+    if ((ctx == NULL) || (endpoint == NULL) || buffer == NULL || actual_len == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -751,7 +751,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     memcpy(&buffer[pos], endpoint->topic_name, topic_len);
     pos += topic_len;
     /* 4字节对齐 */
-    while (pos % 4 != 0) { buffer[pos] = 0; pos++; }
+    while ((pos % 4) != 0) { buffer[pos] = 0; pos++; }
     
     /* 类型名称 */
     uint32_t type_len = strlen(endpoint->type_name);
@@ -765,7 +765,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     pos++;
     memcpy(&buffer[pos], endpoint->type_name, type_len);
     pos += type_len;
-    while (pos % 4 != 0) buffer[pos++] = 0;
+    while ((pos % 4) != 0) buffer[pos++] = 0;
     
     /* 可靠性 */
     buffer[pos] = (endpoint->reliability_kind >> 24) & 0xFF;

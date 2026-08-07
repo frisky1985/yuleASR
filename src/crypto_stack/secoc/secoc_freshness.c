@@ -24,14 +24,14 @@ static uint64_t default_get_timestamp_us(void) {
 
 static uint64_t bytes_to_uint64(const uint8_t *data, uint8_t len) {
     uint64_t value = 0;
-    for (int i = 0; i < len && i < 8; i++) {
+    for (int i = 0; (i < len) && (i < 8); i++) {
         value |= ((uint64_t)data[i] << (i * 8));
     }
     return value;
 }
 
 static void uint64_to_bytes(uint64_t value, uint8_t *data, uint8_t len) {
-    for (int i = 0; i < len && i < 8; i++) {
+    for (int i = 0; (i < len) && (i < 8); i++) {
         data[i] = (uint8_t)((value >> (i * 8)) & 0xFF);
     }
 }
@@ -180,7 +180,7 @@ secoc_status_t secoc_freshness_get_tx_counter(secoc_freshness_manager_t *mgr,
     }
     
     /* 检查是否需要同步 (Slave模式) */
-    if (entry->sync_mode == SECOC_SYNC_SLAVE && !entry->synchronized) {
+    if ((entry->sync_mode == SECOC_SYNC_SLAVE) && !entry->synchronized) {
         entry->state = SECOC_FV_STATE_NOT_SYNC;
         return SECOC_ERROR_SYNC_FAILED;
     }
@@ -234,7 +234,7 @@ secoc_status_t secoc_freshness_verify_counter(secoc_freshness_manager_t *mgr,
     /* 检查Freshness值是否足够新 */
     if (freshness <= entry->last_accepted_value) {
         /* 允许少量重叠 (用于处理消息乱序) */
-        if (entry->last_accepted_value - freshness > SECOC_FRESHNESS_TOLERANCE) {
+        if ((entry->last_accepted_value - freshness) > SECOC_FRESHNESS_TOLERANCE) {
             entry->state = SECOC_FV_STATE_REPLAY_DETECTED;
             return SECOC_ERROR_REPLAY_DETECTED;
         }
@@ -357,7 +357,7 @@ void secoc_freshness_calibrate_clock(secoc_freshness_manager_t *mgr,
     
     /* 简单的低通滤波 */
     int64_t new_drift = (int64_t)remote_timestamp - (int64_t)local_timestamp;
-    mgr->clock_drift_us = (mgr->clock_drift_us * 7 + new_drift) / 8;
+    mgr->clock_drift_us = ((mgr->clock_drift_us * 7) + new_drift) / 8;
 }
 
 /* ============================================================================
@@ -425,14 +425,14 @@ secoc_status_t secoc_freshness_verify_trip(secoc_freshness_manager_t *mgr,
     }
     
     /* 检查复位计数器 (同行程内) */
-    if (received_trip == entry->trip_counter && received_reset < entry->reset_counter) {
+    if ((received_trip == entry->trip_counter) && (received_reset < entry->reset_counter)) {
         entry->state = SECOC_FV_STATE_REPLAY_DETECTED;
         return SECOC_ERROR_REPLAY_DETECTED;
     }
     
     /* 检查同步计数器 */
-    if (received_trip == entry->trip_counter && 
-        received_reset == entry->reset_counter) {
+    if ((received_trip == entry->trip_counter) && 
+        (received_reset == entry->reset_counter)) {
         if (received_counter <= entry->last_accepted_value) {
             entry->state = SECOC_FV_STATE_REPLAY_DETECTED;
             return SECOC_ERROR_REPLAY_DETECTED;
@@ -600,8 +600,8 @@ secoc_status_t secoc_freshness_handle_sync_response(secoc_freshness_manager_t *m
     }
     
     /* 验证消息类型 */
-    if (response->header.msg_type != SECOC_SYNC_RES && 
-        response->header.msg_type != SECOC_SYNC_BROADCAST) {
+    if ((response->header.msg_type != SECOC_SYNC_RES) && 
+        (response->header.msg_type != SECOC_SYNC_BROADCAST)) {
         return SECOC_ERROR_INVALID_PARAM;
     }
     
@@ -648,7 +648,7 @@ bool secoc_freshness_need_sync(secoc_freshness_manager_t *mgr,
     
     /* 检查是否到了发送同步消息的时间 */
     uint64_t elapsed = current_time - entry->last_sync_time;
-    return (elapsed >= SECOC_SYNC_MASTER_INTERVAL_MS * 1000);
+    return (elapsed >= (SECOC_SYNC_MASTER_INTERVAL_MS * 1000));
 }
 
 secoc_status_t secoc_freshness_force_sync(secoc_freshness_manager_t *mgr, uint32_t pdu_id) {
@@ -774,8 +774,8 @@ bool secoc_freshness_check_replay(secoc_fv_entry_t *entry, uint64_t received_val
     }
     
     /* 检查是否已在窗口中 */
-    if (received_value >= entry->window_start &&
-        received_value < entry->window_start + entry->window_size) {
+    if ((received_value >= entry->window_start) &&
+        (received_value < (entry->window_start + entry->window_size))) {
         /* 在窗口内，检查是否已接收过 */
         /* 简化版本: 只检查是否小于等于上次接收的值 */
         if (received_value <= entry->last_accepted_value) {
@@ -792,8 +792,8 @@ void secoc_freshness_update_window(secoc_fv_entry_t *entry, uint64_t accepted_va
     }
     
     /* 更新窗口起点，确保接受的值在窗口内 */
-    if (accepted_value > entry->window_size / 2) {
-        entry->window_start = accepted_value - entry->window_size / 2;
+    if (accepted_value > (entry->window_size / 2)) {
+        entry->window_start = accepted_value - (entry->window_size / 2);
     } else {
         entry->window_start = 0;
     }

@@ -11,7 +11,7 @@ void Tel_Diag_Init(void) {
 }
 
 Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, uint16_t *actual_len) {
-    if (!data || !actual_len || max_len == 0) {
+    if (!data || !actual_len || (max_len == 0)) {
         return E_NOT_OK;
     }
     
@@ -97,7 +97,7 @@ Std_ReturnType Tel_Diag_ReadData(uint16_t did, uint8_t *data, uint16_t max_len, 
 }
 
 Std_ReturnType Tel_Diag_WriteData(uint16_t did, const uint8_t *data, uint16_t len) {
-    if (!data || len == 0) {
+    if (!data || (len == 0)) {
         return E_NOT_OK;
     }
     

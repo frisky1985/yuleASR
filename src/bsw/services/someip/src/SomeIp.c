@@ -163,7 +163,7 @@ void SomeIp_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIp_MessageType message;
     
-    if (!SomeIp_Initialized || Data == NULL_PTR || Length < SOMEIP_HEADER_SIZE)
+    if (!SomeIp_Initialized || (Data == NULL_PTR) || Length < SOMEIP_HEADER_SIZE)
     {
         return;
     }
@@ -227,7 +227,7 @@ Std_ReturnType SomeIp_ProcessMessage(const SomeIp_MessageType* MessagePtr)
 
 Std_ReturnType SomeIp_ParseHeader(const uint8* Data, SomeIp_HeaderType* HeaderPtr)
 {
-    if (Data == NULL_PTR || HeaderPtr == NULL_PTR)
+    if ((Data == NULL_PTR) || (HeaderPtr == NULL_PTR))
     {
         return E_NOT_OK;
     }
@@ -264,7 +264,7 @@ Std_ReturnType SomeIp_ParseHeader(const uint8* Data, SomeIp_HeaderType* HeaderPt
 
 Std_ReturnType SomeIp_SerializeHeader(const SomeIp_HeaderType* HeaderPtr, uint8* Data)
 {
-    if (HeaderPtr == NULL_PTR || Data == NULL_PTR)
+    if ((HeaderPtr == NULL_PTR) || (Data == NULL_PTR))
     {
         return E_NOT_OK;
     }

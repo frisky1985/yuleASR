@@ -27,7 +27,7 @@ static void (*g_globalStateCallback)(ProcessIdType, ProcessStateType) = NULL;
 
 static ProcessEntryType* FindProcessEntry(ProcessIdType pid) {
     for (uint32_t i = 0U; i < EXEC_MAX_PROCESSES; i++) {
-        if (g_processTable[i].isUsed && g_processTable[i].info.pid == pid) {
+        if (g_processTable[i].isUsed && (g_processTable[i].info.pid == pid)) {
             return &g_processTable[i];
         }
     }
@@ -78,7 +78,7 @@ static Std_ReturnType ValidateConfig(const ProcessConfigType* config) {
 }
 
 static void CleanupProcess(ProcessEntryType* entry) {
-    if (entry == NULL || !entry->isUsed) {
+    if ((entry == NULL) || !entry->isUsed) {
         return;
     }
     
@@ -181,7 +181,7 @@ Std_ReturnType ProcessManager_Start(const ProcessConfigType* config, ProcessIdTy
         return E_NOT_OK;
     }
     
-    if (pid == NULL || config == NULL) {
+    if ((pid == NULL) || (config == NULL)) {
         return E_NOT_OK;
     }
     
@@ -238,8 +238,8 @@ Std_ReturnType ProcessManager_Stop(ProcessIdType pid, TerminationTypeType type) 
         return E_NOT_OK;
     }
     
-    if (entry->info.state == PROCESS_STATE_TERMINATED ||
-        entry->info.state == PROCESS_STATE_TERMINATING) {
+    if ((entry->info.state == PROCESS_STATE_TERMINATED) ||
+        (entry->info.state == PROCESS_STATE_TERMINATING)) {
         return E_OK;
     }
     
@@ -325,7 +325,7 @@ ProcessStateType ProcessManager_GetState(ProcessIdType pid) {
 }
 
 Std_ReturnType ProcessManager_GetInfo(ProcessIdType pid, ProcessInfoType* info) {
-    if (!g_initialized || info == NULL) {
+    if (!g_initialized || (info == NULL)) {
         return E_NOT_OK;
     }
     
@@ -353,12 +353,12 @@ bool ProcessManager_IsRunning(ProcessIdType pid) {
 }
 
 uint32_t ProcessManager_GetAllProcesses(ProcessIdType* pids, uint32_t maxCount) {
-    if (!g_initialized || pids == NULL || maxCount == 0U) {
+    if (!g_initialized || (pids == NULL) || maxCount == 0U) {
         return 0U;
     }
     
     uint32_t count = 0U;
-    for (uint32_t i = 0U; i < EXEC_MAX_PROCESSES && count < maxCount; i++) {
+    for (uint32_t i = 0U; (i < EXEC_MAX_PROCESSES) && (count < maxCount); i++) {
         if (g_processTable[i].isUsed) {
             pids[count] = g_processTable[i].info.pid;
             count++;

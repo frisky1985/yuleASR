@@ -17,7 +17,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
     CSM_CHECK_INITIALIZED(CSM_API_KEY_EXCHANGE_CALC_SECRET);
     CSM_CHECK_NULL_POINTER(CSM_API_KEY_EXCHANGE_CALC_SECRET, partnerPublicValuePtr);
     
-    if (partnerPublicValueLength == 0U || partnerPublicValueLength > CSM_MAX_KEY_LENGTH)
+    if ((partnerPublicValueLength == 0U) || (partnerPublicValueLength > CSM_MAX_KEY_LENGTH))
     {
         Csm_ReportError(CSM_API_KEY_EXCHANGE_CALC_SECRET, CSM_E_PARAM_LENGTH);
         return E_NOT_OK;
@@ -37,16 +37,16 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
     }
     
     /* 必须有私钥元素 */
-    if (Csm_Keys[keyIdx].numElements == 0U ||
+    if ((Csm_Keys[keyIdx].numElements == 0U) ||
         !Csm_Keys[keyIdx].elements[0].valid ||
-        Csm_Keys[keyIdx].elements[0].length == 0U)
+        (Csm_Keys[keyIdx].elements[0].length == 0U))
     {
         Csm_ReportError(CSM_API_KEY_EXCHANGE_CALC_SECRET, CSM_E_KEY_EMPTY);
         return E_NOT_OK;
     }
     
     /* 检查密钥交换权限 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->keys != NULL_PTR))
     {
         uint8 i;
         for (i = 0; i < Csm_CurrentConfig->numKeys; i++)
@@ -74,13 +74,13 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
     }
     
     /* 尝试通过硬件服务层 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->jobs != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->jobs != NULL_PTR))
     {
         uint8 i;
-        for (i = 0; i < Csm_CurrentConfig->numJobs && i < CSM_MAX_JOBS; i++)
+        for (i = 0; (i < Csm_CurrentConfig->numJobs) && (i < CSM_MAX_JOBS); i++)
         {
-            if (Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_EXCHANGE &&
-                Csm_CurrentConfig->jobs[i].keyId == keyId)
+            if ((Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_EXCHANGE) &&
+                (Csm_CurrentConfig->jobs[i].keyId == keyId))
             {
                 if (E_OK == Csm_FindJobIndex(Csm_CurrentConfig->jobs[i].jobId, &jobIdx))
                 {
@@ -95,7 +95,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                         
                         /* 私钥部分 */
                         copyLen = Csm_Keys[keyIdx].elements[0].length;
-                        if (copyLen > CSM_MAX_DATA_LENGTH / 2U)
+                        if (copyLen > (CSM_MAX_DATA_LENGTH / 2U))
                         {
                             copyLen = CSM_MAX_DATA_LENGTH / 2U;
                         }
@@ -106,7 +106,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                         
                         /* 对方公钥部分 */
                         copyLen = partnerPublicValueLength;
-                        if (copyLen > CSM_MAX_DATA_LENGTH - offset)
+                        if (copyLen > (CSM_MAX_DATA_LENGTH - offset))
                         {
                             copyLen = CSM_MAX_DATA_LENGTH - offset;
                         }
@@ -140,7 +140,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                             &Csm_Jobs[jobIdx].resultLength);
                         Csm_ActiveJobCount--;
                         
-                        if (hwResult == E_OK && Csm_Jobs[jobIdx].resultLength > 0U)
+                        if ((hwResult == E_OK) && (Csm_Jobs[jobIdx].resultLength > 0U))
                         {
                             /* 将共享秘密存入密钥元素 (PUBLIC或私钥元素) */
                             Csm_Keys[keyIdx].elements[0].length = Csm_Jobs[jobIdx].resultLength;
@@ -176,7 +176,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
         
         /* ECDH共享秘密推导: KDF(private_key || partner_public || keyId) */
         {
-            uint8 kdfInput[CSM_MAX_KEY_LENGTH * 2 + 8U];
+            uint8 kdfInput[(CSM_MAX_KEY_LENGTH * 2) + 8U];
             uint32 kdfInputLen = 0U;
             uint8 hashOut[CSM_MAX_HASH_LENGTH];
             uint32 hashOutLen = CSM_MAX_HASH_LENGTH;
@@ -185,7 +185,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
             {
                 const uint8 label[] = {'E', 'C', 'D', 'H', '-', 'S', 'E', 'C'};
                 uint32 j;
-                for (j = 0; j < sizeof(label) && kdfInputLen < sizeof(kdfInput); j++)
+                for (j = 0; j < sizeof(label) && (kdfInputLen <) sizeof(kdfInput); j++)
                 {
                     kdfInput[kdfInputLen] = label[j];
                     kdfInputLen++;
@@ -215,7 +215,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
             }
             
             /* 追加keyId */
-            if (kdfInputLen + 4U <= sizeof(kdfInput))
+            if ((kdfInputLen + 4U) <= sizeof(kdfInput))
             {
                 kdfInput[kdfInputLen] = (uint8)((keyId >> 24) & 0xFFU);
                 kdfInputLen++;
@@ -241,7 +241,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                     hwHashOut,
                     &hwHashLen);
                     
-                if (hashResult == E_OK && hwHashLen > 0U)
+                if ((hashResult == E_OK) && (hwHashLen > 0U))
                 {
                     hashOutLen = (hwHashLen < CSM_MAX_HASH_LENGTH) ? hwHashLen : CSM_MAX_HASH_LENGTH;
 (void)Mcal_MemCopy(hashOut, hwHashOut, hashOutLen);
@@ -250,7 +250,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                 {
                     /* 回退: XOR混淆 */
                     uint32 j;
-                    for (j = 0; j < kdfInputLen && j < CSM_MAX_HASH_LENGTH; j++)
+                    for (j = 0; (j < kdfInputLen) && (j < CSM_MAX_HASH_LENGTH); j++)
                     {
                         hashOut[j] = kdfInput[j] ^ (uint8)(j * 0x53U);
                     }

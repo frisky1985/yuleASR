@@ -77,19 +77,19 @@ static uint64_t get_current_time_ns(void) {
     /* 在实际硬件中，这应该使用gPTP时间 */
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint64_t)ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+    return ((uint64_t)ts.tv_sec * 1000000000ULL) + ts.tv_nsec;
 }
 
 /**
  * @brief 验证GCL配置
  */
 static bool validate_gcl_internal(const tas_gcl_config_t *gcl) {
-    if (gcl == NULL || gcl->entry_count == 0 || gcl->entry_count > TAS_MAX_GCL_ENTRIES) {
+    if ((gcl == NULL) || (gcl->entry_count == 0) || gcl->entry_count > TAS_MAX_GCL_ENTRIES) {
         return false;
     }
     
     /* 检查循环时间 */
-    if (gcl->cycle_time_us == 0 || gcl->cycle_time_us > TAS_MAX_CYCLE_TIME_US) {
+    if ((gcl->cycle_time_us == 0) || (gcl->cycle_time_us > TAS_MAX_CYCLE_TIME_US)) {
         return false;
     }
     
@@ -110,10 +110,10 @@ static bool validate_gcl_internal(const tas_gcl_config_t *gcl) {
     }
     
     /* 检查总时间是否等于循环时间 */
-    if (total_time != gcl->cycle_time_us && gcl->cycle_time_extension_us == 0) {
+    if ((total_time != gcl->cycle_time_us) && (gcl->cycle_time_extension_us == 0)) {
         /* 可以容忍小差异 */
-        if (total_time > gcl->cycle_time_us + 10 || 
-            total_time < gcl->cycle_time_us - 10) {
+        if (total_time > (gcl->cycle_time_us + 10) || 
+            total_time < (gcl->cycle_time_us - 10)) {
             return false;
         }
     }
@@ -245,7 +245,7 @@ void tas_deinit(void) {
 }
 
 eth_status_t tas_config_port(uint16_t port_id, const tas_port_config_t *config) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || config == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -274,7 +274,7 @@ eth_status_t tas_config_port(uint16_t port_id, const tas_port_config_t *config) 
 }
 
 eth_status_t tas_get_port_config(uint16_t port_id, tas_port_config_t *config) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || config == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -288,7 +288,7 @@ eth_status_t tas_get_port_config(uint16_t port_id, tas_port_config_t *config) {
 }
 
 eth_status_t tas_update_gcl(uint16_t port_id, const tas_gcl_config_t *gcl_config) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || gcl_config == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || gcl_config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -307,7 +307,7 @@ eth_status_t tas_update_gcl(uint16_t port_id, const tas_gcl_config_t *gcl_config
 }
 
 eth_status_t tas_enable_gate_control(uint16_t port_id, bool enable) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -322,7 +322,7 @@ eth_status_t tas_enable_gate_control(uint16_t port_id, bool enable) {
 }
 
 eth_status_t tas_set_queue_gate(uint16_t port_id, uint8_t queue_id, tas_gate_state_t state) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || queue_id >= TAS_MAX_QUEUES) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || queue_id >= TAS_MAX_QUEUES) {
         return ETH_INVALID_PARAM;
     }
     
@@ -341,7 +341,7 @@ eth_status_t tas_set_queue_gate(uint16_t port_id, uint8_t queue_id, tas_gate_sta
 }
 
 eth_status_t tas_start_scheduler(uint16_t port_id) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -368,7 +368,7 @@ eth_status_t tas_start_scheduler(uint16_t port_id) {
     port->current_gcl_index = 0;
     
     /* 设置初始门状态 */
-    if (port->config.gate_enabled && port->config.gcl_config.entry_count > 0) {
+    if (port->config.gate_enabled && (port->config.gcl_config.entry_count > 0)) {
         update_gate_states(port, port->config.gcl_config.entries[0].gate_states);
     } else {
         update_gate_states(port, 0xFF); /* 所有门打开 */
@@ -383,7 +383,7 @@ eth_status_t tas_start_scheduler(uint16_t port_id) {
 }
 
 eth_status_t tas_stop_scheduler(uint16_t port_id) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -402,7 +402,7 @@ eth_status_t tas_stop_scheduler(uint16_t port_id) {
 }
 
 eth_status_t tas_run_schedule_cycle(uint16_t port_id, uint64_t current_time_ns) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -424,7 +424,7 @@ eth_status_t tas_run_schedule_cycle(uint16_t port_id, uint64_t current_time_ns) 
     
     /* 检查是否新循环开始 */
     uint64_t last_cycle_start = port->gate_status.cycle_start_time_ns;
-    if (current_time_ns - last_cycle_start >= cycle_time_ns) {
+    if ((current_time_ns - last_cycle_start) >= cycle_time_ns) {
         port->gate_status.cycle_start_time_ns = current_time_ns;
         port->scheduler_stats.cycles_completed++;
     }
@@ -455,8 +455,8 @@ eth_status_t tas_run_schedule_cycle(uint16_t port_id, uint64_t current_time_ns) 
 
 eth_status_t tas_can_transmit(uint16_t port_id, uint8_t queue_id, 
                                uint32_t frame_size, bool *can_transmit) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || 
-        queue_id >= TAS_MAX_QUEUES || can_transmit == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || 
+        (queue_id >= TAS_MAX_QUEUES) || (can_transmit == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -491,7 +491,7 @@ eth_status_t tas_get_time_window(uint16_t port_id, uint8_t queue_id,
                                   uint32_t *remaining_time_us) {
     (void)queue_id;
     
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || remaining_time_us == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || remaining_time_us == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -520,7 +520,7 @@ eth_status_t tas_get_time_window(uint16_t port_id, uint8_t queue_id,
 }
 
 eth_status_t tas_get_gate_status(uint16_t port_id, tas_gate_status_t *status) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || status == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || status == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -532,8 +532,8 @@ eth_status_t tas_get_gate_status(uint16_t port_id, tas_gate_status_t *status) {
 
 eth_status_t tas_get_queue_stats(uint16_t port_id, uint8_t queue_id, 
                                   tas_queue_stats_t *stats) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || 
-        queue_id >= TAS_MAX_QUEUES || stats == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || 
+        (queue_id >= TAS_MAX_QUEUES) || (stats == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -544,7 +544,7 @@ eth_status_t tas_get_queue_stats(uint16_t port_id, uint8_t queue_id,
 }
 
 eth_status_t tas_get_scheduler_stats(uint16_t port_id, tas_scheduler_stats_t *stats) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || stats == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || stats == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -555,7 +555,7 @@ eth_status_t tas_get_scheduler_stats(uint16_t port_id, tas_scheduler_stats_t *st
 }
 
 eth_status_t tas_get_current_gcl_index(uint16_t port_id, uint32_t *index) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || index == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || index == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -583,7 +583,7 @@ eth_status_t tas_register_safety_alert_callback(tas_safety_alert_callback_t call
 }
 
 eth_status_t tas_init_safety_monitor(uint16_t port_id) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -598,7 +598,7 @@ eth_status_t tas_init_safety_monitor(uint16_t port_id) {
 }
 
 eth_status_t tas_run_safety_checks(uint16_t port_id) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -612,7 +612,7 @@ eth_status_t tas_run_safety_checks(uint16_t port_id) {
 }
 
 eth_status_t tas_get_safety_monitor(uint16_t port_id, tas_safety_monitor_t *monitor) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || monitor == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || monitor == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -623,7 +623,7 @@ eth_status_t tas_get_safety_monitor(uint16_t port_id, tas_safety_monitor_t *moni
 }
 
 eth_status_t tas_validate_gcl(const tas_gcl_config_t *gcl_config, bool *valid) {
-    if (gcl_config == NULL || valid == NULL) {
+    if ((gcl_config == NULL) || (valid == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -633,7 +633,7 @@ eth_status_t tas_validate_gcl(const tas_gcl_config_t *gcl_config, bool *valid) {
 }
 
 eth_status_t tas_check_schedule_integrity(uint16_t port_id, bool *integrity_ok) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS || integrity_ok == NULL) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS) || integrity_ok == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -648,7 +648,7 @@ eth_status_t tas_check_schedule_integrity(uint16_t port_id, bool *integrity_ok) 
 }
 
 eth_status_t tas_create_automotive_gcl(tas_gcl_config_t *gcl_config, uint32_t cycle_time_ms) {
-    if (gcl_config == NULL || cycle_time_ms == 0 || cycle_time_ms > 1000) {
+    if ((gcl_config == NULL) || (cycle_time_ms == 0) || cycle_time_ms > 1000) {
         return ETH_INVALID_PARAM;
     }
     
@@ -700,7 +700,7 @@ uint32_t tas_calc_transmission_time(uint32_t frame_size, uint32_t link_speed_mbp
 }
 
 eth_status_t tas_print_status(uint16_t port_id) {
-    if (!g_tas_state.initialized || port_id >= TAS_MAX_PORTS) {
+    if (!g_tas_state.initialized || (port_id >= TAS_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -720,7 +720,7 @@ eth_status_t tas_print_status(uint16_t port_id) {
     
     printf("Queue Stats:\n");
     for (int i = 0; i < TAS_MAX_QUEUES; i++) {
-        if (port->queue_stats[i].tx_frames > 0 || port->queue_stats[i].blocked_frames > 0) {
+        if ((port->queue_stats[i].tx_frames > 0) || (port->queue_stats[i].blocked_frames > 0)) {
             printf("  Q%d: TX=%lu, Blocked=%lu\n", i,
                    (unsigned long)port->queue_stats[i].tx_frames,
                    (unsigned long)port->queue_stats[i].blocked_frames);

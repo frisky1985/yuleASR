@@ -63,7 +63,7 @@ uint64_t tbf_get_current_time_us(void) {
             break;
     }
     
-    return (uint64_t)ts.tv_sec * 1000000ULL + ts.tv_nsec / 1000;
+    return ((uint64_t)ts.tv_sec * 1000000ULL) + (ts.tv_nsec / 1000);
 }
 
 /**
@@ -77,7 +77,7 @@ static double kalman_update(tbf_state_t *state, double measurement,
     
     // 更新
     double kalman_gain = predicted_error / (predicted_error + measurement_noise);
-    state->kalman_estimate = predicted_estimate + kalman_gain * (measurement - predicted_estimate);
+    state->kalman_estimate = predicted_estimate + (kalman_gain * (measurement - predicted_estimate));
     state->kalman_error = (1 - kalman_gain) * predicted_error;
     
     return state->kalman_estimate;
@@ -127,7 +127,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
             if (value > tbf->state.max_value) {
                 tbf->state.max_value = value;
             }
-            if (value < tbf->state.min_value || tbf->state.samples_in_window == 0) {
+            if ((value < tbf->state.min_value) || (tbf->state.samples_in_window == 0)) {
                 tbf->state.min_value = value;
             }
             break;
@@ -141,7 +141,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
             
         case TBF_POLICY_SAMPLE_FIRST:
             // 只保留第一个
-            if (tbf->state.samples_in_window == 0 && size <= tbf->sample_buffer_size) {
+            if ((tbf->state.samples_in_window == 0) && (size <= tbf->sample_buffer_size)) {
                 memcpy(tbf->sample_buffer, sample, size);
             }
             break;
@@ -151,7 +151,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
     }
     
     // 卡尔曼滤波处理
-    if (tbf->config.compression == TBF_COMPRESS_KALMAN && tbf->state.samples_in_window == 0) {
+    if ((tbf->config.compression == TBF_COMPRESS_KALMAN) && (tbf->state.samples_in_window == 0)) {
         kalman_init(&tbf->state, value);
     } else if (tbf->config.compression == TBF_COMPRESS_KALMAN) {
         kalman_update(&tbf->state, value,
@@ -376,7 +376,7 @@ eth_status_t tbf_get_compressed_sample(tbf_handle_t *tbf,
 }
 
 eth_status_t tbf_set_separation(tbf_handle_t *tbf, uint32_t separation_us) {
-    if (!tbf || separation_us < TBF_MIN_SEPARATION_US) {
+    if (!tbf || (separation_us < TBF_MIN_SEPARATION_US)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -459,7 +459,7 @@ eth_status_t tbf_set_clock_source(tbf_timestamp_source_t source) {
 eth_status_t tbf_configure_multistream(tbf_handle_t *tbf,
                                         bool enable,
                                         uint8_t max_streams) {
-    if (!tbf || max_streams > 8) return ETH_INVALID_PARAM;
+    if (!tbf || (max_streams > 8)) return ETH_INVALID_PARAM;
     
     tbf->multistream.enabled = enable;
     tbf->multistream.max_streams = max_streams;
@@ -473,7 +473,7 @@ eth_status_t tbf_configure_multistream(tbf_handle_t *tbf,
 }
 
 eth_status_t tbf_enable_asil_mode(tbf_handle_t *tbf, uint8_t asil_level) {
-    if (!tbf || asil_level > 4) return ETH_INVALID_PARAM;
+    if (!tbf || (asil_level > 4)) return ETH_INVALID_PARAM;
     
     tbf->asil_enabled = true;
     tbf->asil_level = asil_level;
@@ -513,7 +513,7 @@ eth_status_t tbf_get_next_output_time(tbf_handle_t *tbf, uint64_t *next_output_t
 }
 
 eth_status_t tbf_set_stream_offset(tbf_handle_t *tbf, uint8_t stream_id, int32_t offset_us) {
-    if (!tbf || stream_id >= 8) return ETH_INVALID_PARAM;
+    if (!tbf || (stream_id >= 8)) return ETH_INVALID_PARAM;
     
     if (!tbf->multistream.enabled) {
         return ETH_ERROR;

@@ -327,7 +327,7 @@ static uint32_t UDP_Address_from_string(const char* ip_str) {
     uint32_t shift = 24U;
     
     while (*ip_str != '\0') {
-        if (*ip_str >= '0' && *ip_str <= '9') {
+        if ((*ip_str >= '0') && (*ip_str <= '9')) {
             octet = (octet * 10U) + (uint32_t)(*ip_str - '0');
         } else if (*ip_str == '.') {
             ip |= (octet << shift);
@@ -642,11 +642,11 @@ static bool PDP_verify_message(const uint8_t* data, uint16_t length) {
     }
     
     const PDP_Header* header = (const PDP_Header*)data;
-    return (header->magic[0] == 'P' &&
-            header->magic[1] == 'D' &&
-            header->magic[2] == 'P' &&
-            header->magic[3] == 0U &&
-            header->version == 1);
+    return ((header->magic[0] == 'P') &&
+            ((header->magic[1] == 'D')) &&
+            ((header->magic[2] == 'P')) &&
+            ((header->magic[3] == 0U)) &&
+            (header->version == 1));
 }
 
 /**

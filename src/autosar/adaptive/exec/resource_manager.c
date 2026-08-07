@@ -26,7 +26,7 @@ static uint32_t g_lastMonitorTime = 0U;
 
 static ResourceEntryType* FindResourceEntry(ProcessIdType pid) {
     for (uint32_t i = 0U; i < EXEC_MAX_PROCESSES; i++) {
-        if (g_resourceTable[i].pid == pid && g_resourceTable[i].monitoringEnabled) {
+        if ((g_resourceTable[i].pid == pid) && g_resourceTable[i].monitoringEnabled) {
             return &g_resourceTable[i];
         }
     }
@@ -142,7 +142,7 @@ bool ResourceManager_IsInitialized(void) {
 }
 
 Std_ReturnType ResourceManager_SetLimit(ProcessIdType pid, const ResourceLimitType* limit) {
-    if (!g_initialized || limit == NULL) {
+    if (!g_initialized || (limit == NULL)) {
         return E_NOT_OK;
     }
     
@@ -169,12 +169,12 @@ Std_ReturnType ResourceManager_SetLimit(ProcessIdType pid, const ResourceLimitTy
 
 Std_ReturnType ResourceManager_GetLimit(ProcessIdType pid, ResourceTypeType type,
                                          ResourceLimitType* limit) {
-    if (!g_initialized || limit == NULL) {
+    if (!g_initialized || (limit == NULL)) {
         return E_NOT_OK;
     }
     
     ResourceEntryType* entry = FindResourceEntry(pid);
-    if (entry != NULL && entry->limits[type].enabled) {
+    if ((entry != NULL) && entry->limits[type].enabled) {
         memcpy(limit, &entry->limits[type], sizeof(ResourceLimitType));
         return E_OK;
     }
@@ -188,7 +188,7 @@ Std_ReturnType ResourceManager_GetLimit(ProcessIdType pid, ResourceTypeType type
 }
 
 Std_ReturnType ResourceManager_GetUsage(ProcessIdType pid, ResourceUsageType* usage) {
-    if (!g_initialized || usage == NULL) {
+    if (!g_initialized || (usage == NULL)) {
         return E_NOT_OK;
     }
     
@@ -203,7 +203,7 @@ Std_ReturnType ResourceManager_GetUsage(ProcessIdType pid, ResourceUsageType* us
 }
 
 Std_ReturnType ResourceManager_GetPeakUsage(ProcessIdType pid, ResourceUsageType* usage) {
-    if (!g_initialized || usage == NULL) {
+    if (!g_initialized || (usage == NULL)) {
         return E_NOT_OK;
     }
     
@@ -325,7 +325,7 @@ bool ResourceManager_IsWithinLimits(ProcessIdType pid) {
 }
 
 Std_ReturnType ResourceManager_GetSystemUsage(ResourceUsageType* usage) {
-    if (!g_initialized || usage == NULL) {
+    if (!g_initialized || (usage == NULL)) {
         return E_NOT_OK;
     }
     

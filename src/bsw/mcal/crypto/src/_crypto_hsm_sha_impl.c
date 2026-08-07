@@ -117,9 +117,9 @@ Std_ReturnType S32K312_Hsm_Sha256(const uint8* data,
                 for (i = 0U; i < wordCount; i++) {
                     S32K312_Hsm_ShaRegs->DATA_IN[i] =
                         ((uint32)data[i * 4U] << 24) |
-                        ((uint32)data[i * 4U + 1U] << 16) |
-                        ((uint32)data[i * 4U + 2U] << 8) |
-                        (uint32)data[i * 4U + 3U];
+                        ((uint32)data[(i * 4U) + 1U] << 16) |
+                        ((uint32)data[(i * 4U) + 2U] << 8) |
+                        (uint32)data[(i * 4U) + 3U];
                 }
             }
             
@@ -137,9 +137,9 @@ Std_ReturnType S32K312_Hsm_Sha256(const uint8* data,
                     for (i = 0U; i < 8U; i++) {
                         uint32 data = S32K312_Hsm_ShaRegs->DIGEST[i];
                         digest[i * 4U] = (uint8)(data >> 24);
-                        digest[i * 4U + 1U] = (uint8)(data >> 16);
-                        digest[i * 4U + 2U] = (uint8)(data >> 8);
-                        digest[i * 4U + 3U] = (uint8)(data);
+                        digest[(i * 4U) + 1U] = (uint8)(data >> 16);
+                        digest[(i * 4U) + 2U] = (uint8)(data >> 8);
+                        digest[(i * 4U) + 3U] = (uint8)(data);
                     }
                 }
             }

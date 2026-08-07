@@ -264,7 +264,7 @@ bl_partition_error_t bl_partition_table_load(
     uint32_t address
 )
 {
-    if (mgr == NULL || mgr->flash_driver == NULL) {
+    if ((mgr == NULL) || (mgr->flash_driver == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -297,7 +297,7 @@ bl_partition_error_t bl_partition_table_save(
     uint32_t address
 )
 {
-    if (mgr == NULL || mgr->flash_driver == NULL) {
+    if ((mgr == NULL) || (mgr->flash_driver == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -305,7 +305,7 @@ bl_partition_error_t bl_partition_table_save(
     update_partition_table_crc(&mgr->table);
     
     /* 解锁写保护 */
-    if (mgr->write_protected && mgr->flash_driver->unlock != NULL) {
+    if (mgr->write_protected && (mgr->flash_driver->unlock != NULL)) {
         mgr->flash_driver->unlock();
     }
     
@@ -370,7 +370,7 @@ bl_partition_error_t bl_partition_table_init_default(
     mgr->table.header.active_cal_partition = 3; /* calibration */
     
     uint32_t sector_size = BL_FLASH_SECTOR_SIZE;
-    if (mgr->flash_driver != NULL && mgr->flash_driver->get_info != NULL) {
+    if ((mgr->flash_driver != NULL) && (mgr->flash_driver->get_info != NULL)) {
         uint32_t fs;
         mgr->flash_driver->get_info(&fs, &sector_size);
     }
@@ -436,7 +436,7 @@ bl_partition_error_t bl_partition_get_info(
     bl_partition_info_t *info
 )
 {
-    if (mgr == NULL || partition_name == NULL || info == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || info == NULL) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -455,7 +455,7 @@ bl_partition_error_t bl_partition_get_info_by_index(
     bl_partition_info_t *info
 )
 {
-    if (mgr == NULL || info == NULL) {
+    if ((mgr == NULL) || (info == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -473,7 +473,7 @@ bl_partition_error_t bl_partition_get_active_app(
     bl_partition_info_t *info
 )
 {
-    if (mgr == NULL || info == NULL) {
+    if ((mgr == NULL) || (info == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -496,14 +496,14 @@ bl_partition_error_t bl_partition_get_ota_target(
     bl_partition_info_t *info
 )
 {
-    if (mgr == NULL || info == NULL) {
+    if ((mgr == NULL) || (info == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
     /* 查找标记为OTA目标的分区 */
     for (uint32_t i = 0; i < mgr->table.header.num_partitions; i++) {
         bl_partition_info_t *part = &mgr->table.partitions[i];
-        if (part->type == BL_PARTITION_TYPE_APPLICATION && 
+        if ((part->type == BL_PARTITION_TYPE_APPLICATION) && 
             part->is_ota_target) {
             memcpy(info, part, sizeof(bl_partition_info_t));
             return BL_OK;
@@ -513,8 +513,8 @@ bl_partition_error_t bl_partition_get_ota_target(
     /* 如果没有标记的OTA目标，返回非活动的应用分区 */
     for (uint32_t i = 0; i < mgr->table.header.num_partitions; i++) {
         bl_partition_info_t *part = &mgr->table.partitions[i];
-        if (part->type == BL_PARTITION_TYPE_APPLICATION && 
-            part->state != BL_PARTITION_STATE_ACTIVE) {
+        if ((part->type == BL_PARTITION_TYPE_APPLICATION) && 
+            (part->state != BL_PARTITION_STATE_ACTIVE)) {
             memcpy(info, part, sizeof(bl_partition_info_t));
             return BL_OK;
         }
@@ -529,7 +529,7 @@ bl_partition_error_t bl_partition_set_state(
     bl_partition_state_t state
 )
 {
-    if (mgr == NULL || partition_name == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -552,7 +552,7 @@ bl_partition_error_t bl_partition_set_ota_target(
     bool is_target
 )
 {
-    if (mgr == NULL || partition_name == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -584,7 +584,7 @@ bl_partition_error_t bl_partition_update_version(
     const uint8_t hash[32]
 )
 {
-    if (mgr == NULL || partition_name == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -609,7 +609,7 @@ bl_partition_error_t bl_partition_switch_active(
     const char *new_active_partition
 )
 {
-    if (mgr == NULL || new_active_partition == NULL) {
+    if ((mgr == NULL) || (new_active_partition == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -684,7 +684,7 @@ bl_partition_error_t bl_partition_read(
     uint32_t length
 )
 {
-    if (mgr == NULL || partition_name == NULL || data == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || data == NULL) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -693,7 +693,7 @@ bl_partition_error_t bl_partition_read(
         return BL_ERROR_PARTITION_NOT_FOUND;
     }
     
-    if (offset + length > part->size) {
+    if ((offset + length) > part->size) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -715,7 +715,7 @@ bl_partition_error_t bl_partition_erase(
     const char *partition_name
 )
 {
-    if (mgr == NULL || partition_name == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -725,7 +725,7 @@ bl_partition_error_t bl_partition_erase(
     }
     
     /* 解锁写保护 */
-    if (mgr->write_protected && mgr->flash_driver->unlock != NULL) {
+    if (mgr->write_protected && (mgr->flash_driver->unlock != NULL)) {
         mgr->flash_driver->unlock();
     }
     
@@ -754,7 +754,7 @@ bl_partition_error_t bl_partition_program(
     uint32_t length
 )
 {
-    if (mgr == NULL || partition_name == NULL || data == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || data == NULL) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -763,12 +763,12 @@ bl_partition_error_t bl_partition_program(
         return BL_ERROR_PARTITION_NOT_FOUND;
     }
     
-    if (offset + length > part->size) {
+    if ((offset + length) > part->size) {
         return BL_ERROR_INVALID_PARAM;
     }
     
     /* 解锁写保护 */
-    if (mgr->write_protected && mgr->flash_driver->unlock != NULL) {
+    if (mgr->write_protected && (mgr->flash_driver->unlock != NULL)) {
         mgr->flash_driver->unlock();
     }
     
@@ -796,7 +796,7 @@ bl_partition_error_t bl_partition_verify_crc(
     bool *crc_valid
 )
 {
-    if (mgr == NULL || partition_name == NULL || crc_valid == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || crc_valid == NULL) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -826,7 +826,7 @@ bl_partition_error_t bl_partition_calculate_crc(
     uint32_t *crc32
 )
 {
-    if (mgr == NULL || partition_name == NULL || crc32 == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || crc32 == NULL) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -849,7 +849,7 @@ bl_partition_error_t bl_partition_calculate_crc32(
     uint32_t *crc32
 )
 {
-    if (mgr == NULL || partition_name == NULL || crc32 == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || crc32 == NULL) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -899,7 +899,7 @@ bl_partition_error_t bl_partition_set_rollback_info(
     const bl_rollback_info_t *info
 )
 {
-    if (mgr == NULL || info == NULL) {
+    if ((mgr == NULL) || (info == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -913,7 +913,7 @@ bl_partition_error_t bl_partition_get_rollback_info(
     bl_rollback_info_t *info
 )
 {
-    if (mgr == NULL || info == NULL) {
+    if ((mgr == NULL) || (info == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     

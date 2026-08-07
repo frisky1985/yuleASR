@@ -51,7 +51,7 @@ struct own_handle {
 static inline uint64_t get_time_ms(void) {
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
-    return (uint64_t)ts.tv_sec * 1000ULL + ts.tv_nsec / 1000000;
+    return ((uint64_t)ts.tv_sec * 1000ULL) + (ts.tv_nsec / 1000000);
 }
 
 static inline void notify_event(own_handle_t *own, own_event_t event, const void *data) {
@@ -136,7 +136,7 @@ static void remove_contender(own_handle_t *own, const dds_guid_t *guid) {
 static void determine_owner(own_handle_t *own) {
     sort_contenders(own);
     
-    if (own->contender_count == 0 || !own->contenders[0].active) {
+    if ((own->contender_count == 0) || !own->contenders[0].active) {
         // 没有活跃竞争者，当前节点成为所有权主
         if (own->state != OWN_STATE_OWNER) {
             own->state = OWN_STATE_OWNER;
@@ -421,11 +421,11 @@ eth_status_t own_check_timeout(own_handle_t *own, uint64_t current_time_ms, bool
         memcmp(&own->current_owner.guid, &own->local_guid, sizeof(dds_guid_t)) != 0) {
         
         uint64_t timeout_threshold = own->config.negotiation_timeout_ms;
-        if (own->asil_enabled && own->asil_level >= 3) {
+        if (own->asil_enabled && (own->asil_level >= 3)) {
             timeout_threshold = timeout_threshold / 2; // ASIL-C/D更严格
         }
         
-        if (current_time_ms - own->current_owner.last_heartbeat > timeout_threshold) {
+        if ((current_time_ms - own->current_owner.last_heartbeat) > timeout_threshold) {
             *timed_out = true;
             
             // 移除超时的竞争者
@@ -477,7 +477,7 @@ eth_status_t own_reset_stats(own_handle_t *own) {
 }
 
 eth_status_t own_enable_asil_mode(own_handle_t *own, uint8_t asil_level) {
-    if (!own || asil_level > 4) return ETH_INVALID_PARAM;
+    if (!own || (asil_level > 4)) return ETH_INVALID_PARAM;
     
     own->asil_enabled = true;
     own->asil_level = asil_level;
@@ -493,12 +493,12 @@ eth_status_t own_get_owner_list(own_handle_t *own,
                                  own_owner_info_t *owners,
                                  uint8_t max_count,
                                  uint8_t *actual_count) {
-    if (!own || !owners || !actual_count || max_count == 0) return ETH_INVALID_PARAM;
+    if (!own || !owners || !actual_count || (max_count == 0)) return ETH_INVALID_PARAM;
     
     sort_contenders(own);
     
     *actual_count = 0;
-    for (uint8_t i = 0; i < own->contender_count && *actual_count < max_count; i++) {
+    for (uint8_t i = 0; (i < own->contender_count) && (*actual_count < max_count); i++) {
         if (own->contenders[i].active) {
             memcpy(&owners[*actual_count].guid, &own->contenders[i].guid, sizeof(dds_guid_t));
             owners[*actual_count].strength = own->contenders[i].strength;

@@ -353,7 +353,7 @@ int mbedtls_x509_string_to_names(mbedtls_asn1_named_data **head, const char *nam
 static inline mbedtls_x509_name *mbedtls_x509_dn_get_next(
     mbedtls_x509_name *dn)
 {
-    while (dn->MBEDTLS_PRIVATE(next_merged) && dn->next != NULL) {
+    while (dn->MBEDTLS_PRIVATE(next_merged) && (dn->next != NULL)) {
         dn = dn->next;
     }
     return dn->next;

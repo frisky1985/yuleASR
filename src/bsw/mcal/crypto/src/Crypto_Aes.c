@@ -70,7 +70,7 @@ STATIC Crypto_AesJobContextType* Crypto_AesFindContext(uint32 jobId)
 {
     uint32 i;
     for (i = 0U; i < CRYPTO_MAX_AES_JOBS; i++) {
-        if (gCryptoAesContexts[i].inUse && gCryptoAesContexts[i].jobId == jobId) {
+        if (gCryptoAesContexts[i].inUse && (gCryptoAesContexts[i].jobId == jobId)) {
             return &gCryptoAesContexts[i];
         }
     }
@@ -230,7 +230,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
 
     /* 获取IV */
     if (isNewJob) {
-        if (io->secondaryInputPtr != NULL_PTR && io->secondaryInputLength == AES_BLOCK_SIZE) {
+        if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
             (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
         } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
             /* IV从密钥元素获取 */
@@ -422,7 +422,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
 
     /* 获取IV */
     if (isNewJob) {
-        if (io->secondaryInputPtr != NULL_PTR && io->secondaryInputLength == AES_BLOCK_SIZE) {
+        if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
             (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
         } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
             /* IV从密钥元素获取 */
@@ -605,7 +605,7 @@ Std_ReturnType Crypto_AesStreamStart(Crypto_JobType* job)
     }
 
     /* 获取IV */
-    if (io->secondaryInputPtr != NULL_PTR && io->secondaryInputLength == AES_BLOCK_SIZE) {
+    if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
         (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
     } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) != E_OK) {
         (void)memset(iv, 0, AES_BLOCK_SIZE);

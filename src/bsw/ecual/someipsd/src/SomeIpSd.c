@@ -76,8 +76,8 @@ static Sd_InternalType Sd_State;
 static Sd_ServiceEntryType* Sd_FindService(uint16 ServiceId, uint16 InstanceId)
 {
     for (uint8 i = 0U; i < Sd_State.serviceCount; i++) {
-        if (Sd_State.services[i].ServiceId == ServiceId &&
-            Sd_State.services[i].InstanceId == InstanceId) {
+        if ((Sd_State.services[i].ServiceId == ServiceId) &&
+            (Sd_State.services[i].InstanceId == InstanceId)) {
             return &Sd_State.services[i];
         }
     }
@@ -208,7 +208,7 @@ SomeIpSd_ServiceStateType SomeIpSd_GetServiceState(uint16 ServiceId, uint16 Inst
 
 void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
-    if (NULL_PTR == PduInfoPtr || NULL_PTR == PduInfoPtr->SduDataPtr) return;
+    if ((NULL_PTR == PduInfoPtr) || (NULL_PTR == PduInfoPtr->SduDataPtr)) return;
     if (PduInfoPtr->SduLength < (SD_SOMEIP_HEADER_LEN + SD_ENTRY_LEN)) return;
 
     (void)RxPduId;
@@ -218,7 +218,7 @@ void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     uint16 serviceId = (uint16)(data[20] << 8) | data[21];
     uint16 instanceId = (uint16)(data[22] << 8) | data[23];
 
-    if (msgType == SD_MSG_OFFER_SERVICE && entryType == SD_ENTRY_OFFER) {
+    if ((msgType == SD_MSG_OFFER_SERVICE) && (entryType == SD_ENTRY_OFFER)) {
         Sd_ServiceEntryType* entry = Sd_FindService(serviceId, instanceId);
         if (entry != NULL_PTR) {
             entry->State = SD_STATE_AVAILABLE;
@@ -246,7 +246,7 @@ void SomeIpSd_MainFunction(void)
 
         /* Periodic offer for server services */
         if (Sd_State.services[i].IsServer &&
-            Sd_State.services[i].State == SD_STATE_AVAILABLE &&
+            (Sd_State.services[i].State == SD_STATE_AVAILABLE) &&
             (Sd_State.tickCounter % 100U) == 0U) {
             (void)SomeIpSd_OfferService(
                 Sd_State.services[i].ServiceId,

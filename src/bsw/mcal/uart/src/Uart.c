@@ -413,7 +413,7 @@ Std_ReturnType Uart_Send(
     uint32 startTime;
     
     /* 检查通道状态 */
-    if (state->Status == UART_STATE_TX_BUSY || state->Status == UART_STATE_TX_RX_BUSY) {
+    if ((state->Status == UART_STATE_TX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_SEND, UART_E_TX_BUSY);
@@ -500,7 +500,7 @@ Std_ReturnType Uart_SendDMA(
     }
     
     /* 检查通道状态 */
-    if (state->Status == UART_STATE_TX_BUSY || state->Status == UART_STATE_TX_RX_BUSY) {
+    if ((state->Status == UART_STATE_TX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         return E_NOT_OK;
     }
     
@@ -558,7 +558,7 @@ Std_ReturnType Uart_SendInterrupt(
     volatile uint32* base = Uart_BaseAddr[Channel];
     
     /* 检查通道状态 */
-    if (state->Status == UART_STATE_TX_BUSY || state->Status == UART_STATE_TX_RX_BUSY) {
+    if ((state->Status == UART_STATE_TX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         return E_NOT_OK;
     }
     
@@ -605,7 +605,7 @@ Std_ReturnType Uart_Receive(
     uint32 regVal;
     
     /* 检查通道状态 */
-    if (state->Status == UART_STATE_RX_BUSY || state->Status == UART_STATE_TX_RX_BUSY) {
+    if ((state->Status == UART_STATE_RX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         #if (UART_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID, 
                         UART_SERVICE_ID_RECEIVE, UART_E_RX_BUSY);
@@ -692,7 +692,7 @@ Std_ReturnType Uart_ReceiveDMA(
     }
     
     /* 检查通道状态 */
-    if (state->Status == UART_STATE_RX_BUSY || state->Status == UART_STATE_TX_RX_BUSY) {
+    if ((state->Status == UART_STATE_RX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         return E_NOT_OK;
     }
     
@@ -750,7 +750,7 @@ Std_ReturnType Uart_ReceiveInterrupt(
     volatile uint32* base = Uart_BaseAddr[Channel];
     
     /* 检查通道状态 */
-    if (state->Status == UART_STATE_RX_BUSY || state->Status == UART_STATE_TX_RX_BUSY) {
+    if ((state->Status == UART_STATE_RX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
         return E_NOT_OK;
     }
     
@@ -844,7 +844,7 @@ Std_ReturnType Uart_SetBaudRate(Uart_ChannelType Channel, uint32 BaudRate)
  */
 void Uart_EnableInterrupt(Uart_ChannelType Channel)
 {
-    if (Channel >= UART_CHANNEL_COUNT || Uart_Initialized == FALSE) {
+    if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
         return;
     }
     
@@ -870,7 +870,7 @@ void Uart_DisableInterrupt(Uart_ChannelType Channel)
  */
 void Uart_ClearFIFO(Uart_ChannelType Channel)
 {
-    if (Channel >= UART_CHANNEL_COUNT || Uart_Initialized == FALSE) {
+    if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
         return;
     }
     
@@ -887,7 +887,7 @@ void Uart_ClearFIFO(Uart_ChannelType Channel)
  */
 void Uart_IsrHandler(Uart_ChannelType Channel)
 {
-    if (Channel >= UART_CHANNEL_COUNT || Uart_Initialized == FALSE) {
+    if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
         return;
     }
     
@@ -926,8 +926,8 @@ void Uart_MainFunction(void)
     for (channel = 0; channel < Uart_ConfigPtr->ChannelCount; channel++) {
         state = &Uart_ChannelState[channel];
         
-        if ((state->Status == UART_STATE_TX_BUSY || state->Status == UART_STATE_TX_RX_BUSY)
-            && state->TxStatus == UART_TX_ACTIVE) {
+        if (((state->Status == UART_STATE_TX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY))
+            && (state->TxStatus == UART_TX_ACTIVE)) {
             if (Uart_GetElapsedTime(state->TxStartTime) > 
                 Uart_ConfigPtr->ChannelConfig[channel].TxTimeout) {
                 state->TxBuffer.Result = UART_RESULT_TIMEOUT;
@@ -936,8 +936,8 @@ void Uart_MainFunction(void)
             }
         }
         
-        if ((state->Status == UART_STATE_RX_BUSY || state->Status == UART_STATE_TX_RX_BUSY)
-            && state->RxStatus == UART_RX_ACTIVE) {
+        if (((state->Status == UART_STATE_RX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY))
+            && (state->RxStatus == UART_RX_ACTIVE)) {
             if (Uart_GetElapsedTime(state->RxStartTime) > 
                 Uart_ConfigPtr->ChannelConfig[channel].RxTimeout) {
                 state->RxBuffer.Result = UART_RESULT_TIMEOUT;
@@ -953,7 +953,7 @@ void Uart_MainFunction(void)
  */
 void Uart_Abort(Uart_ChannelType Channel)
 {
-    if (Channel >= UART_CHANNEL_COUNT || Uart_Initialized == FALSE) {
+    if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
         return;
     }
     

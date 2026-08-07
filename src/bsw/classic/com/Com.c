@@ -231,7 +231,7 @@ static void Com_InitSignal(Com_SignalIdType SignalId, boolean initialize)
     signalRuntime->TimeoutTimer = 0;
     
     /* Apply init value if configured */
-    if (initialize && Com_GlobalState.Config->Signals[SignalId].InitValue != NULL_PTR) {
+    if (initialize && (Com_GlobalState.Config->Signals[SignalId].InitValue != NULL_PTR)) {
         /* Copy init value to signal buffer */
         const Com_SignalConfigType* sigConfig = &Com_GlobalState.Config->Signals[SignalId];
         uint64 initVal = *(const uint64*)sigConfig->InitValue;
@@ -256,7 +256,7 @@ static void Com_InitSignalGroup(Com_SignalGroupIdType SignalGroupId, boolean ini
     groupRuntime->ShadowBuffer = groupConfig->ShadowBuffer;
     
     /* Initialize shadow buffer */
-    if (initialize && groupRuntime->ShadowBuffer != NULL_PTR) {
+    if (initialize && (groupRuntime->ShadowBuffer != NULL_PTR)) {
         /* Calculate shadow buffer size from signals */
         uint16 bufferSize = 0;
         for (uint8 i = 0; i < groupConfig->NumSignals; i++) {
@@ -264,7 +264,7 @@ static void Com_InitSignalGroup(Com_SignalGroupIdType SignalGroupId, boolean ini
                 &Com_GlobalState.Config->Signals[groupConfig->SignalRefs[i]];
             bufferSize += (sigConfig->BitSize + 7) / 8;
         }
-        for (uint16 i = 0; i < bufferSize && i < COM_MAX_SHADOW_BUFFER_SIZE; i++) {
+        for (uint16 i = 0; (i < bufferSize) && (i < COM_MAX_SHADOW_BUFFER_SIZE); i++) {
             groupRuntime->ShadowBuffer[i] = 0;
         }
     }

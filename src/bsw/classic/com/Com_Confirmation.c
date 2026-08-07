@@ -97,8 +97,8 @@ void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     }
     
     /* Check if we were waiting for confirmation */
-    if (ipduRuntime->TxStatus != COM_TX_PENDING && 
-        ipduRuntime->TxStatus != COM_TX_RETRY_PENDING) {
+    if ((ipduRuntime->TxStatus != COM_TX_PENDING) && 
+        (ipduRuntime->TxStatus != COM_TX_RETRY_PENDING)) {
         /* Unexpected confirmation, ignore */
         return;
     }
@@ -191,8 +191,8 @@ Std_ReturnType Com_StartTxConfirmation(Com_IPduIdType PduId)
     }
     
     /* Check if already pending */
-    if (ipduRuntime->TxStatus == COM_TX_PENDING ||
-        ipduRuntime->TxStatus == COM_TX_RETRY_PENDING) {
+    if ((ipduRuntime->TxStatus == COM_TX_PENDING) ||
+        (ipduRuntime->TxStatus == COM_TX_RETRY_PENDING)) {
         /* Already waiting for confirmation, this is a duplicate request */
         return E_NOT_OK;
     }
@@ -331,7 +331,7 @@ Std_ReturnType Com_AddToRetryQueue(Com_IPduIdType PduId, uint8 RetryCount)
     /* Check if already in queue */
     for (uint8 i = 0; i < COM_MAX_RETRY_QUEUE_SIZE; i++) {
         if (Com_RetryQueue.Entries[i].Active && 
-            Com_RetryQueue.Entries[i].PduId == PduId) {
+            (Com_RetryQueue.Entries[i].PduId == PduId)) {
             /* Already in queue, update retry count */
             Com_RetryQueue.Entries[i].RetryCount = RetryCount;
             return E_OK;
@@ -360,7 +360,7 @@ void Com_RemoveFromRetryQueue(Com_IPduIdType PduId)
     
     for (uint8 i = 0; i < COM_MAX_RETRY_QUEUE_SIZE; i++) {
         if (Com_RetryQueue.Entries[i].Active && 
-            Com_RetryQueue.Entries[i].PduId == PduId) {
+            (Com_RetryQueue.Entries[i].PduId == PduId)) {
             Com_RetryQueue.Entries[i].Active = FALSE;
             Com_RetryQueue.Count--;
             break;
@@ -378,7 +378,7 @@ void Com_ProcessRetryQueue(void)
     uint8 processed = 0;
     uint8 idx = Com_RetryQueue.Head;
     
-    while (processed < Com_RetryQueue.Count && processed < COM_MAX_RETRY_QUEUE_SIZE) {
+    while ((processed < Com_RetryQueue.Count) && (processed < COM_MAX_RETRY_QUEUE_SIZE)) {
         Com_RetryQueueEntryType* entry = &Com_RetryQueue.Entries[idx];
         
         if (entry->Active) {
@@ -402,7 +402,7 @@ boolean Com_IsInRetryQueue(Com_IPduIdType PduId)
     
     for (uint8 i = 0; i < COM_MAX_RETRY_QUEUE_SIZE; i++) {
         if (Com_RetryQueue.Entries[i].Active && 
-            Com_RetryQueue.Entries[i].PduId == PduId) {
+            (Com_RetryQueue.Entries[i].PduId == PduId)) {
             return TRUE;
         }
     }
@@ -419,7 +419,7 @@ uint8 Com_GetRemainingRetries(Com_IPduIdType PduId)
     
     for (uint8 i = 0; i < COM_MAX_RETRY_QUEUE_SIZE; i++) {
         if (Com_RetryQueue.Entries[i].Active && 
-            Com_RetryQueue.Entries[i].PduId == PduId) {
+            (Com_RetryQueue.Entries[i].PduId == PduId)) {
             return Com_RetryQueue.Entries[i].RetryCount;
         }
     }
@@ -489,8 +489,8 @@ void Com_ProcessTxTimeouts(void)
             continue;
         }
         
-        if (ipduRuntime->TxStatus != COM_TX_PENDING &&
-            ipduRuntime->TxStatus != COM_TX_RETRY_PENDING) {
+        if ((ipduRuntime->TxStatus != COM_TX_PENDING) &&
+            (ipduRuntime->TxStatus != COM_TX_RETRY_PENDING)) {
             continue;
         }
         
@@ -548,8 +548,8 @@ void Com_HandleModeSwitchConfirmation(Com_IPduIdType PduId,
     const Com_IPduRunTimeType* ipduRuntime = &Com_GlobalState.IPduRunTime[PduId];
     
     /* Check if confirmation is pending during mode switch */
-    if (ipduRuntime->TxStatus == COM_TX_PENDING ||
-        ipduRuntime->TxStatus == COM_TX_RETRY_PENDING) {
+    if ((ipduRuntime->TxStatus == COM_TX_PENDING) ||
+        (ipduRuntime->TxStatus == COM_TX_RETRY_PENDING)) {
         
         /* 
          * According to AUTOSAR spec, when transmission mode is switched
@@ -618,7 +618,7 @@ static void Com_InvokeConfirmationCallbacks(Com_IPduIdType PduId,
 /*------------------[Com_ProcessRetryEntry]--------------------------------*/
 static void Com_ProcessRetryEntry(Com_RetryQueueEntryType* Entry)
 {
-    if (!Entry->Active || Entry->PduId >= Com_GlobalState.Config->NumIPdus) {
+    if (!Entry->Active || (Entry->PduId >= Com_GlobalState.Config->NumIPdus)) {
         return;
     }
     

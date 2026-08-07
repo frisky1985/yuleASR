@@ -41,9 +41,9 @@ Std_ReturnType S32K312_Hsm_KeyImport(uint8 slotId,
         for (i = 0U; i < wordCount; i++) {
             S32K312_Hsm_KeyStoreRegs->KEY_DATA[i] =
                 ((uint32)keyData[i * 4U] << 24) |
-                ((uint32)keyData[i * 4U + 1U] << 16) |
-                ((uint32)keyData[i * 4U + 2U] << 8) |
-                (uint32)keyData[i * 4U + 3U];
+                ((uint32)keyData[(i * 4U) + 1U] << 16) |
+                ((uint32)keyData[(i * 4U) + 2U] << 8) |
+                (uint32)keyData[(i * 4U) + 3U];
         }
         
         /* Issue load command */

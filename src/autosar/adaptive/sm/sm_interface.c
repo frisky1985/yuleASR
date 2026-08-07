@@ -44,7 +44,7 @@ static SM_RequestType* FindFreeRequestSlot(void) {
 
 static SM_ClientType* FindClient(uint32_t clientId) {
     for (uint32_t i = 0U; i < SM_INTERFACE_MAX_CLIENTS; i++) {
-        if (g_clients[i].clientId == clientId && g_clients[i].isActive) {
+        if ((g_clients[i].clientId == clientId) && g_clients[i].isActive) {
             return &g_clients[i];
         }
     }
@@ -107,7 +107,7 @@ bool SM_Interface_IsInitialized(void) {
 }
 
 Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {
-    if (!g_initialized || name == NULL || clientId == NULL) {
+    if (!g_initialized || (name == NULL) || clientId == NULL) {
         return E_NOT_OK;
     }
     
@@ -268,15 +268,15 @@ Std_ReturnType SM_CancelRequest(SM_RequestHandle handle) {
         return E_NOT_OK;
     }
     
-    if (request->status == SM_REQUEST_STATUS_COMPLETED ||
-        request->status == SM_REQUEST_STATUS_FAILED ||
-        request->status == SM_REQUEST_STATUS_CANCELLED) {
+    if ((request->status == SM_REQUEST_STATUS_COMPLETED) ||
+        ((request->status == SM_REQUEST_STATUS_FAILED)) ||
+        (request->status == SM_REQUEST_STATUS_CANCELLED)) {
         return E_NOT_OK;  /* Already finished */
     }
     
     /* Update client request count */
     SM_ClientType* client = FindClient(request->clientId);
-    if (client != NULL && client->requestCount > 0U) {
+    if ((client != NULL) && (client->requestCount > 0U)) {
         client->requestCount--;
     }
     
@@ -316,8 +316,8 @@ Std_ReturnType SM_ConfirmRequest(SM_RequestHandle handle) {
         return E_NOT_OK;
     }
     
-    if (request->status != SM_REQUEST_STATUS_ACCEPTED &&
-        request->status != SM_REQUEST_STATUS_EXECUTING) {
+    if ((request->status != SM_REQUEST_STATUS_ACCEPTED) &&
+        (request->status != SM_REQUEST_STATUS_EXECUTING)) {
         return E_NOT_OK;
     }
     
@@ -331,7 +331,7 @@ Std_ReturnType SM_ConfirmRequest(SM_RequestHandle handle) {
     
     /* Update client request count */
     SM_ClientType* client = FindClient(request->clientId);
-    if (client != NULL && client->requestCount > 0U) {
+    if ((client != NULL) && (client->requestCount > 0U)) {
         client->requestCount--;
     }
     
@@ -357,7 +357,7 @@ Std_ReturnType SM_RejectRequest(SM_RequestHandle handle, int32_t errorCode,
     
     /* Update client request count */
     SM_ClientType* client = FindClient(request->clientId);
-    if (client != NULL && client->requestCount > 0U) {
+    if ((client != NULL) && (client->requestCount > 0U)) {
         client->requestCount--;
     }
     
@@ -386,7 +386,7 @@ Std_ReturnType SM_CompleteRequest(SM_RequestHandle handle, bool success) {
     
     /* Update client request count */
     SM_ClientType* client = FindClient(request->clientId);
-    if (client != NULL && client->requestCount > 0U) {
+    if ((client != NULL) && (client->requestCount > 0U)) {
         client->requestCount--;
     }
     
@@ -430,12 +430,12 @@ SM_RequestStatus SM_WaitForCompletion(SM_RequestHandle handle, uint32_t timeoutM
     
     uint32_t startTime = 0U;  /* Would use actual timestamp */
     
-    while (request->status == SM_REQUEST_STATUS_PENDING ||
-           request->status == SM_REQUEST_STATUS_ACCEPTED ||
-           request->status == SM_REQUEST_STATUS_EXECUTING) {
+    while ((request->status == SM_REQUEST_STATUS_PENDING) ||
+           ((request->status == SM_REQUEST_STATUS_ACCEPTED)) ||
+           (request->status == SM_REQUEST_STATUS_EXECUTING)) {
         
         uint32_t currentTime = 0U;
-        if (currentTime - startTime > timeoutMs) {
+        if ((currentTime - startTime) > timeoutMs) {
             request->status = SM_REQUEST_STATUS_TIMEOUT;
             return SM_REQUEST_STATUS_TIMEOUT;
         }
@@ -447,7 +447,7 @@ SM_RequestStatus SM_WaitForCompletion(SM_RequestHandle handle, uint32_t timeoutM
 }
 
 Std_ReturnType SM_GetRequest(SM_RequestHandle handle, SM_RequestType* request) {
-    if (!g_initialized || request == NULL) {
+    if (!g_initialized || (request == NULL)) {
         return E_NOT_OK;
     }
     
@@ -461,7 +461,7 @@ Std_ReturnType SM_GetRequest(SM_RequestHandle handle, SM_RequestType* request) {
 }
 
 Std_ReturnType SM_GetResponse(SM_RequestHandle handle, SM_ResponseType* response) {
-    if (!g_initialized || response == NULL) {
+    if (!g_initialized || (response == NULL)) {
         return E_NOT_OK;
     }
     
@@ -493,19 +493,19 @@ void SM_Interface_MainFunction(void) {
             continue;
         }
         
-        if (request->status != SM_REQUEST_STATUS_PENDING &&
-            request->status != SM_REQUEST_STATUS_ACCEPTED &&
-            request->status != SM_REQUEST_STATUS_EXECUTING) {
+        if ((request->status != SM_REQUEST_STATUS_PENDING) &&
+            ((request->status != SM_REQUEST_STATUS_ACCEPTED)) &&
+            (request->status != SM_REQUEST_STATUS_EXECUTING)) {
             continue;
         }
         
-        if (currentTime - request->requestTime > request->timeoutMs) {
+        if ((currentTime - request->requestTime) > request->timeoutMs) {
             /* Request timed out */
             request->status = SM_REQUEST_STATUS_TIMEOUT;
             
             /* Update client request count */
             SM_ClientType* client = FindClient(request->clientId);
-            if (client != NULL && client->requestCount > 0U) {
+            if ((client != NULL) && (client->requestCount > 0U)) {
                 client->requestCount--;
             }
             
@@ -527,10 +527,10 @@ uint32_t SM_GetActiveRequestCount(void) {
     
     uint32_t count = 0U;
     for (uint32_t i = 0U; i < SM_INTERFACE_MAX_REQUESTS; i++) {
-        if (g_requests[i].handle != 0U &&
-            (g_requests[i].status == SM_REQUEST_STATUS_PENDING ||
-             g_requests[i].status == SM_REQUEST_STATUS_ACCEPTED ||
-             g_requests[i].status == SM_REQUEST_STATUS_EXECUTING)) {
+        if ((g_requests[i].handle != 0U) &&
+            ((g_requests[i].status == SM_REQUEST_STATUS_PENDING) ||
+             ((g_requests[i].status == SM_REQUEST_STATUS_ACCEPTED)) ||
+             (g_requests[i].status == SM_REQUEST_STATUS_EXECUTING))) {
             count++;
         }
     }
@@ -547,7 +547,7 @@ Std_ReturnType SM_CancelClientRequests(uint32_t clientId) {
     }
     
     for (uint32_t i = 0U; i < SM_INTERFACE_MAX_REQUESTS; i++) {
-        if (g_requests[i].handle != 0U && g_requests[i].clientId == clientId) {
+        if ((g_requests[i].handle != 0U) && (g_requests[i].clientId == clientId)) {
             SM_CancelRequest(g_requests[i].handle);
         }
     }

@@ -257,7 +257,7 @@ static void perform_clock_sync(uint8_t domain_index) {
     integral += offset_ns;
     
     /* 计算调整量 */
-    int64_t adjustment = (kp * offset_ns + ki * integral) / 1000;
+    int64_t adjustment = ((kp * offset_ns) + (ki * integral)) / 1000;
     
     /* 限制调整量，避免过冲 */
     if (adjustment > 100000) adjustment = 100000;
@@ -340,7 +340,7 @@ void gptp_deinit(void) {
 }
 
 eth_status_t gptp_start(uint8_t domain_index) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -367,7 +367,7 @@ eth_status_t gptp_start(uint8_t domain_index) {
 }
 
 eth_status_t gptp_stop(uint8_t domain_index) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -380,7 +380,7 @@ eth_status_t gptp_stop(uint8_t domain_index) {
 }
 
 eth_status_t gptp_config_port(uint8_t port_index, const gptp_port_config_t *port_config) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS || port_config == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || port_config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -395,7 +395,7 @@ eth_status_t gptp_config_port(uint8_t port_index, const gptp_port_config_t *port
 }
 
 eth_status_t gptp_config_domain(uint8_t domain_index, const gptp_domain_config_t *domain_config) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || domain_config == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || domain_config == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -405,7 +405,7 @@ eth_status_t gptp_config_domain(uint8_t domain_index, const gptp_domain_config_t
 }
 
 eth_status_t gptp_get_time(uint8_t domain_index, gptp_timestamp_t *timestamp) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || timestamp == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || timestamp == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -417,7 +417,7 @@ eth_status_t gptp_get_time(uint8_t domain_index, gptp_timestamp_t *timestamp) {
 }
 
 eth_status_t gptp_set_time(uint8_t domain_index, const gptp_timestamp_t *timestamp) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || timestamp == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || timestamp == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -426,7 +426,7 @@ eth_status_t gptp_set_time(uint8_t domain_index, const gptp_timestamp_t *timesta
 }
 
 eth_status_t gptp_adjust_rate(uint8_t domain_index, int64_t rate_ratio_ppb) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -437,7 +437,7 @@ eth_status_t gptp_adjust_rate(uint8_t domain_index, int64_t rate_ratio_ppb) {
 }
 
 eth_status_t gptp_adjust_phase(uint8_t domain_index, int64_t offset_ns) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -448,7 +448,7 @@ eth_status_t gptp_adjust_phase(uint8_t domain_index, int64_t offset_ns) {
 }
 
 eth_status_t gptp_capture_timestamp(uint16_t port_id, gptp_timestamp_t *timestamp) {
-    if (timestamp == NULL || port_id >= GPTP_MAX_PORTS) {
+    if ((timestamp == NULL) || (port_id >= GPTP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -456,7 +456,7 @@ eth_status_t gptp_capture_timestamp(uint16_t port_id, gptp_timestamp_t *timestam
 }
 
 eth_status_t gptp_run_bmc(uint8_t domain_index) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -490,7 +490,7 @@ eth_status_t gptp_run_bmc(uint8_t domain_index) {
 }
 
 eth_status_t gptp_get_gm_identity(uint8_t domain_index, gptp_clock_identity_t *gm_identity) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || gm_identity == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || gm_identity == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -501,7 +501,7 @@ eth_status_t gptp_get_gm_identity(uint8_t domain_index, gptp_clock_identity_t *g
 }
 
 eth_status_t gptp_get_port_state(uint8_t port_index, gptp_port_state_t *state) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS || state == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || state == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -511,7 +511,7 @@ eth_status_t gptp_get_port_state(uint8_t port_index, gptp_port_state_t *state) {
 }
 
 eth_status_t gptp_start_pdelay_measurement(uint8_t port_index) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -532,7 +532,7 @@ eth_status_t gptp_start_pdelay_measurement(uint8_t port_index) {
 }
 
 eth_status_t gptp_get_pdelay_result(uint8_t port_index, gptp_pdelay_result_t *result) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS || result == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || result == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -542,7 +542,7 @@ eth_status_t gptp_get_pdelay_result(uint8_t port_index, gptp_pdelay_result_t *re
 }
 
 eth_status_t gptp_handle_pdelay_req(uint8_t port_index, const gptp_timestamp_t *rx_timestamp) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS || rx_timestamp == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || rx_timestamp == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -566,7 +566,7 @@ eth_status_t gptp_handle_pdelay_req(uint8_t port_index, const gptp_timestamp_t *
 eth_status_t gptp_handle_pdelay_resp(uint8_t port_index, const void *resp_data) {
     (void)resp_data; /* 暂未使用 */
     
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -590,7 +590,7 @@ eth_status_t gptp_handle_pdelay_resp(uint8_t port_index, const void *resp_data) 
 eth_status_t gptp_send_sync(uint8_t port_index, uint32_t sync_interval_ms) {
     (void)sync_interval_ms; /* 暂未使用 */
     
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -613,7 +613,7 @@ eth_status_t gptp_send_sync(uint8_t port_index, uint32_t sync_interval_ms) {
 }
 
 eth_status_t gptp_handle_sync(uint8_t port_index, const gptp_sync_data_t *sync_data) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS || sync_data == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || sync_data == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -652,7 +652,7 @@ eth_status_t gptp_handle_sync(uint8_t port_index, const gptp_sync_data_t *sync_d
 eth_status_t gptp_handle_follow_up(uint8_t port_index,
                                     const gptp_timestamp_t *precise_origin_timestamp,
                                     int64_t correction_field_ns) {
-    if (!g_gptp_state.initialized || port_index >= GPTP_MAX_PORTS || precise_origin_timestamp == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || precise_origin_timestamp == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -677,7 +677,7 @@ eth_status_t gptp_handle_follow_up(uint8_t port_index,
 }
 
 eth_status_t gptp_get_clock_state(uint8_t domain_index, gptp_clock_state_t *state) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || state == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || state == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -687,7 +687,7 @@ eth_status_t gptp_get_clock_state(uint8_t domain_index, gptp_clock_state_t *stat
 }
 
 eth_status_t gptp_get_sync_precision(uint8_t domain_index, uint32_t *precision_ns) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || precision_ns == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || precision_ns == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -697,7 +697,7 @@ eth_status_t gptp_get_sync_precision(uint8_t domain_index, uint32_t *precision_n
 }
 
 eth_status_t gptp_is_synchronized(uint8_t domain_index, bool *synchronized) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || synchronized == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || synchronized == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -725,7 +725,7 @@ eth_status_t gptp_register_safety_alert_callback(gptp_safety_alert_callback_t ca
 }
 
 eth_status_t gptp_init_safety_monitor(uint8_t domain_index) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -740,7 +740,7 @@ eth_status_t gptp_init_safety_monitor(uint8_t domain_index) {
 }
 
 eth_status_t gptp_run_safety_checks(uint8_t domain_index) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -772,7 +772,7 @@ eth_status_t gptp_run_safety_checks(uint8_t domain_index) {
 }
 
 eth_status_t gptp_get_safety_monitor(uint8_t domain_index, gptp_safety_monitor_t *monitor) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || monitor == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || monitor == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -783,7 +783,7 @@ eth_status_t gptp_get_safety_monitor(uint8_t domain_index, gptp_safety_monitor_t
 }
 
 eth_status_t gptp_enable_fault_injection(uint8_t domain_index, uint32_t scenario) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -808,7 +808,7 @@ eth_status_t gptp_enable_fault_injection(uint8_t domain_index, uint32_t scenario
 }
 
 eth_status_t gptp_check_clock_integrity(uint8_t domain_index, bool *integrity_ok) {
-    if (!g_gptp_state.initialized || domain_index >= GPTP_MAX_DOMAINS || integrity_ok == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || integrity_ok == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -835,7 +835,7 @@ int64_t gptp_timestamp_subtract(const gptp_timestamp_t *a, const gptp_timestamp_
 }
 
 uint64_t gptp_timestamp_to_ns(const gptp_timestamp_t *ts) {
-    return ts->seconds * NS_PER_SEC + ts->nanoseconds;
+    return (ts->seconds * NS_PER_SEC) + ts->nanoseconds;
 }
 
 void gptp_ns_to_timestamp(uint64_t ns, gptp_timestamp_t *ts) {
@@ -844,7 +844,7 @@ void gptp_ns_to_timestamp(uint64_t ns, gptp_timestamp_t *ts) {
 }
 
 const char* gptp_timestamp_to_string(const gptp_timestamp_t *ts, char *buf, size_t buf_size) {
-    if (buf == NULL || buf_size == 0) {
+    if ((buf == NULL) || (buf_size == 0)) {
         return NULL;
     }
     

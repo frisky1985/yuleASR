@@ -408,7 +408,7 @@ void Dlt_MainFunction(void)
 
         /* 通过传输层发送 (使用抽象接口) */
         Dlt_TransportProtocolType protocol = DLT_TRANSPORT_UDP;
-        if (g_DltState.config != NULL_PTR && g_DltState.config->transportConfig != NULL_PTR) {
+        if ((g_DltState.config != NULL_PTR) && (g_DltState.config->transportConfig != NULL_PTR)) {
             protocol = g_DltState.config->transportConfig->protocol;
         }
         
@@ -537,7 +537,7 @@ void Dlt_BuildMessageHeader(
     uint16 messageId,
     uint16 payloadLen)
 {
-    if (header == NULL_PTR || appEntry == NULL_PTR) {
+    if ((header == NULL_PTR) || (appEntry == NULL_PTR)) {
         return;
     }
 
@@ -704,7 +704,7 @@ boolean Dlt_ApplyFilter(Dlt_AppHandleType appHandle, Dlt_LogLevelType logLevel)
 Dlt_AppEntryType* Dlt_FindAppEntry(Dlt_AppHandleType appHandle)
 {
     for (uint16 i = 0U; i < DLT_MAX_APPS; i++) {
-        if (g_DltState.appTable[i].handle == appHandle &&
+        if ((g_DltState.appTable[i].handle == appHandle) &&
             g_DltState.appTable[i].isActive) {
             return &g_DltState.appTable[i];
         }

@@ -223,19 +223,19 @@ eth_status_t dds_spin_once(uint32_t timeout_ms)
     uint64_t current_time = platform_get_time_ms();
     
     /* 发现处理 */
-    if (current_time - g_runtime.last_discovery_time >= g_runtime.config.discovery_period_ms) {
+    if ((current_time - g_runtime.last_discovery_time) >= g_runtime.config.discovery_period_ms) {
         dds_runtime_schedule_discovery(current_time);
         g_runtime.last_discovery_time = current_time;
     }
     
     /* 心跳处理 */
-    if (current_time - g_runtime.last_heartbeat_time >= g_runtime.config.heartbeat_period_ms) {
+    if ((current_time - g_runtime.last_heartbeat_time) >= g_runtime.config.heartbeat_period_ms) {
         dds_runtime_schedule_heartbeat(current_time);
         g_runtime.last_heartbeat_time = current_time;
     }
     
     /* 资源清理 */
-    if (current_time - g_runtime.last_cleanup_time >= g_runtime.config.cleanup_period_ms) {
+    if ((current_time - g_runtime.last_cleanup_time) >= g_runtime.config.cleanup_period_ms) {
         dds_runtime_cleanup();
         g_runtime.last_cleanup_time = current_time;
     }
@@ -400,8 +400,8 @@ dds_domain_participant_t* dds_runtime_find_participant(
     dds_domain_participant_t *p = g_runtime.participants;
     while (p != NULL) {
         if (p->domain_id == domain_id) {
-            if (guid_prefix == NULL || 
-                memcmp(p->guid.prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE) == 0) {
+            if ((guid_prefix == NULL) || 
+                (memcmp(p->guid.prefix, guid_prefix, RTPS_GUID_PREFIX_SIZE) == 0)) {
                 return p;
             }
         }
@@ -422,7 +422,7 @@ uint32_t dds_runtime_get_participant_count(void)
 eth_status_t dds_runtime_match_endpoints(dds_data_writer_t *writer,
                                           dds_data_reader_t *reader)
 {
-    if (writer == NULL || reader == NULL) {
+    if ((writer == NULL) || (reader == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -447,7 +447,7 @@ eth_status_t dds_runtime_match_endpoints(dds_data_writer_t *writer,
 eth_status_t dds_runtime_unmatch_endpoints(dds_data_writer_t *writer,
                                             dds_data_reader_t *reader)
 {
-    if (writer == NULL || reader == NULL) {
+    if ((writer == NULL) || (reader == NULL)) {
         return ETH_INVALID_PARAM;
     }
     

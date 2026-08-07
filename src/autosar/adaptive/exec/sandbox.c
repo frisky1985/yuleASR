@@ -25,7 +25,7 @@ static SandboxStatusType g_sandboxTable[EXEC_MAX_PROCESSES];
 
 static SandboxStatusType* FindSandboxEntry(ProcessIdType pid) {
     for (uint32_t i = 0U; i < EXEC_MAX_PROCESSES; i++) {
-        if (g_sandboxTable[i].pid == pid && g_sandboxTable[i].isActive) {
+        if ((g_sandboxTable[i].pid == pid) && g_sandboxTable[i].isActive) {
             return &g_sandboxTable[i];
         }
     }
@@ -42,7 +42,7 @@ static SandboxStatusType* FindFreeEntry(void) {
 }
 
 static bool ValidatePath(const char* path) {
-    if (path == NULL || path[0] == '\0') {
+    if ((path == NULL) || (path[0] == '\0')) {
         return false;
     }
     if (strlen(path) >= SANDBOX_MAX_PATH_LENGTH) {
@@ -160,7 +160,7 @@ Std_ReturnType Sandbox_CreateDefaultConfig(SandboxConfigType* config) {
 }
 
 Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config) {
-    if (!g_initialized || config == NULL) {
+    if (!g_initialized || (config == NULL)) {
         return E_NOT_OK;
     }
     
@@ -187,8 +187,8 @@ Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config
     entry->actualRootPath[SANDBOX_MAX_PATH_LENGTH - 1U] = '\0';
     
     /* Apply filesystem isolation */
-    if (config->isolationLevel == SANDBOX_ISOLATION_FILESYSTEM ||
-        config->isolationLevel == SANDBOX_ISOLATION_ALL) {
+    if ((config->isolationLevel == SANDBOX_ISOLATION_FILESYSTEM) ||
+        (config->isolationLevel == SANDBOX_ISOLATION_ALL)) {
         if (Sandbox_ApplyFilesystemIsolation(pid, config) != E_OK) {
             entry->isActive = false;
             return E_NOT_OK;
@@ -196,7 +196,7 @@ Std_ReturnType Sandbox_Enable(ProcessIdType pid, const SandboxConfigType* config
     }
     
     /* Apply network isolation */
-    if (config->networkRestricted || config->isolationLevel == SANDBOX_ISOLATION_ALL) {
+    if (config->networkRestricted || (config->isolationLevel == SANDBOX_ISOLATION_ALL)) {
         if (Sandbox_ApplyNetworkIsolation(pid, config->networkRestricted) != E_OK) {
             entry->isActive = false;
             return E_NOT_OK;
@@ -242,7 +242,7 @@ bool Sandbox_IsActive(ProcessIdType pid) {
 }
 
 Std_ReturnType Sandbox_GetStatus(ProcessIdType pid, SandboxStatusType* status) {
-    if (!g_initialized || status == NULL) {
+    if (!g_initialized || (status == NULL)) {
         return E_NOT_OK;
     }
     
@@ -259,7 +259,7 @@ Std_ReturnType Sandbox_AddMountPoint(SandboxConfigType* config,
                                       const char* source,
                                       const char* target,
                                       bool readOnly) {
-    if (config == NULL || source == NULL || target == NULL) {
+    if ((config == NULL) || (source == NULL) || target == NULL) {
         return E_NOT_OK;
     }
     
@@ -288,7 +288,7 @@ Std_ReturnType Sandbox_AddDeviceAccess(SandboxConfigType* config,
                                         const char* device,
                                         bool readAllowed,
                                         bool writeAllowed) {
-    if (config == NULL || device == NULL) {
+    if ((config == NULL) || (device == NULL)) {
         return E_NOT_OK;
     }
     
@@ -409,7 +409,7 @@ Std_ReturnType Sandbox_ApplySyscallFiltering(ProcessIdType pid,
                                               const SandboxConfigType* config) {
     (void)pid;
     
-    if (config == NULL || config->syscallCount == 0U) {
+    if ((config == NULL) || (config->syscallCount == 0U)) {
         return E_OK;
     }
     

@@ -292,8 +292,8 @@ void Com_Dm_HandleRxIndication(Com_IPduIdType PduId,
     Com_Dm_StartTimer(PduId, timeoutValue);
     
     /* If previously expired, transition back to running */
-    if (Com_DmRunTimeData[PduId].State == COM_DM_STATE_EXPIRED ||
-        Com_DmRunTimeData[PduId].State == COM_DM_STATE_ERROR) {
+    if ((Com_DmRunTimeData[PduId].State == COM_DM_STATE_EXPIRED) ||
+        (Com_DmRunTimeData[PduId].State == COM_DM_STATE_ERROR)) {
         Com_DmRunTimeData[PduId].State = COM_DM_STATE_RUNNING;
         Com_DmRunTimeData[PduId].TimeoutProcessed = FALSE;
     }
@@ -334,8 +334,8 @@ static void Com_Dm_ProcessTimeoutInternal(Com_IPduIdType PduId,
     Com_DmRunTimeData[PduId].TimeoutProcessed = TRUE;
     
     /* Execute configured actions */
-    if (DmConfig->TimeoutAction == COM_DM_ACTION_ERROR_HOOK ||
-        DmConfig->TimeoutAction == COM_DM_ACTION_BOTH) {
+    if ((DmConfig->TimeoutAction == COM_DM_ACTION_ERROR_HOOK) ||
+        (DmConfig->TimeoutAction == COM_DM_ACTION_BOTH)) {
         
         /* Call ComErrorHook if configured */
         if (DmConfig->ComErrorHook != NULL_PTR) {
@@ -347,15 +347,15 @@ static void Com_Dm_ProcessTimeoutInternal(Com_IPduIdType PduId,
         }
     }
     
-    if (DmConfig->TimeoutAction == COM_DM_ACTION_DEFAULT_VALUE ||
-        DmConfig->TimeoutAction == COM_DM_ACTION_BOTH) {
+    if ((DmConfig->TimeoutAction == COM_DM_ACTION_DEFAULT_VALUE) ||
+        (DmConfig->TimeoutAction == COM_DM_ACTION_BOTH)) {
         
         /* Apply default value substitution */
         (void)Com_Dm_ApplyDefaultValue(PduId, DmConfig);
     }
     
     /* ASIL-D: Verify execution counter consistency */
-    if (executionCounter != 0u && executionCounter != 0xFFu) {
+    if ((executionCounter != 0u) && (executionCounter != 0xFFu)) {
         /* Execution anomaly detected */
 #if (COM_DEV_ERROR_DETECT == STD_ON)
         COM_REPORT_ERROR(COM_SERVICE_ID_DM_HANDLE_TIMEOUT, COM_E_DM_RUNTIME_CORRUPTION);
@@ -493,7 +493,7 @@ Std_ReturnType Com_Dm_ValidateIntegrity(void)
         }
         
         /* Verify timer consistency */
-        if (state == COM_DM_STATE_STOPPED && Com_DmRunTimeData[i].Timer != 0u) {
+        if ((state == COM_DM_STATE_STOPPED) && (Com_DmRunTimeData[i].Timer != 0u)) {
             /* Inconsistent state */
             return E_NOT_OK;
         }

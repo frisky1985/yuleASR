@@ -465,7 +465,7 @@ static void I2c_IsrHandler(uint8 channel)
         return;
     }
     
-    if ((i2sr & I2SR_RXAK) != 0U && chInfo->State == I2C_STATE_MASTER_TX) {
+    if (((i2sr & I2SR_RXAK) != 0U) && (chInfo->State == I2C_STATE_MASTER_TX)) {
         chInfo->ErrorFlags |= I2C_E_ACK_ERROR;
         chInfo->State = I2C_STATE_ERROR;
         chInfo->Result = I2C_RESULT_FAILED;
@@ -483,7 +483,7 @@ static void I2c_IsrHandler(uint8 channel)
                 chInfo->TxBuffer.Index++;
             } else {
                 /* Transfer complete */
-                if (chInfo->RxBuffer.Length > 0U && !chInfo->IsRepeatedStart) {
+                if ((chInfo->RxBuffer.Length > 0U) && !chInfo->IsRepeatedStart) {
                     /* Switch to RX mode */
                     chInfo->State = I2C_STATE_MASTER_RX;
                     I2c_SendRepeatedStart(baseAddr, chInfo->CurrentSlaveAddress, 
@@ -504,7 +504,7 @@ static void I2c_IsrHandler(uint8 channel)
             
         case I2C_STATE_MASTER_RX:
             if (chInfo->RxBuffer.Index < chInfo->RxBuffer.Length) {
-                boolean sendAck = (chInfo->RxBuffer.Index < chInfo->RxBuffer.Length - 1U);
+                boolean sendAck = (chInfo->RxBuffer.Index < (chInfo->RxBuffer.Length - 1U));
                 chInfo->RxBuffer.Buffer[chInfo->RxBuffer.Index] = REG_READ8(baseAddr + I2C_I2DR);
                 chInfo->RxBuffer.Index++;
                 
@@ -595,7 +595,7 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
         
         /* Receive data */
         while (chInfo->RxBuffer.Index < chInfo->RxBuffer.Length) {
-            boolean sendAck = (chInfo->RxBuffer.Index < chInfo->RxBuffer.Length - 1U);
+            boolean sendAck = (chInfo->RxBuffer.Index < (chInfo->RxBuffer.Length - 1U));
             result = I2c_ReadByte(baseAddr, &chInfo->RxBuffer.Buffer[chInfo->RxBuffer.Index],
                                   sendAck, I2C_TRANSFER_TIMEOUT_MS);
             if (result != E_OK) {
@@ -729,7 +729,7 @@ void I2c_Init(const I2c_ConfigType* Config)
         REG_WRITE8(baseAddr + I2C_I2CR, 0U);
         
         /* Set slave address (if slave mode) */
-        if (chConfig->OpMode == I2C_MODE_SLAVE && chConfig->SlaveConfig.NumSlaveAddresses > 0U) {
+        if ((chConfig->OpMode == I2C_MODE_SLAVE) && (chConfig->SlaveConfig.NumSlaveAddresses > 0U)) {
             REG_WRITE8(baseAddr + I2C_IADR, 
                       (uint8)(chConfig->SlaveConfig.SlaveAddresses[0].Address << 1));
         }
@@ -822,7 +822,7 @@ Std_ReturnType I2c_WriteBytes(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if (DataBuffer == NULL_PTR && Length > 0U) {
+    if ((DataBuffer == NULL_PTR) && (Length > 0U)) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEBYTES, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -894,7 +894,7 @@ Std_ReturnType I2c_ReadBytes(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if (DataBuffer == NULL_PTR && Length > 0U) {
+    if ((DataBuffer == NULL_PTR) && (Length > 0U)) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_READBYTES, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -967,7 +967,7 @@ Std_ReturnType I2c_WriteRead(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if ((TxBuffer == NULL_PTR && TxLength > 0U) || (RxBuffer == NULL_PTR && RxLength > 0U)) {
+    if (((TxBuffer == NULL_PTR) && (TxLength > 0U)) || (RxBuffer == NULL_PTR && RxLength > 0U)) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -1016,7 +1016,7 @@ Std_ReturnType I2c_WriteRead(I2c_ChannelType Channel,
     
     /* Wait for completion in polling mode */
     if (chInfo->CurrentMode == I2C_TRANSFER_POLLING) {
-        while (chInfo->State != I2C_STATE_IDLE && chInfo->State != I2C_STATE_ERROR) {
+        while ((chInfo->State != I2C_STATE_IDLE) && (chInfo->State != I2C_STATE_ERROR)) {
             /* Wait */
         }
         result = (chInfo->Result == I2C_RESULT_OK) ? E_OK : E_NOT_OK;
@@ -1346,7 +1346,7 @@ Std_ReturnType I2c_PrepareSlaveBuffer(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if (Buffer == NULL_PTR && Length > 0U) {
+    if ((Buffer == NULL_PTR) && (Length > 0U)) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_PREPARESLAVEBUFFER, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -1381,7 +1381,7 @@ Std_ReturnType I2c_SlaveWriteBuffer(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if (Buffer == NULL_PTR && Length > 0U) {
+    if ((Buffer == NULL_PTR) && (Length > 0U)) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEWRITEBUFFER, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -1416,7 +1416,7 @@ Std_ReturnType I2c_SlaveReadBuffer(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if (Buffer == NULL_PTR && Length > 0U) {
+    if ((Buffer == NULL_PTR) && (Length > 0U)) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_SLAVEREADBUFFER, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }
@@ -1425,7 +1425,7 @@ Std_ReturnType I2c_SlaveReadBuffer(I2c_ChannelType Channel,
     I2c_ChannelInfoType* chInfo = &I2c_ChannelInfo[Channel];
     
     /* Copy received data */
-    for (I2c_LengthType i = 0U; i < Length && i < chInfo->RxBuffer.Index; i++) {
+    for (I2c_LengthType i = 0U; (i < Length) && (i < chInfo->RxBuffer.Index); i++) {
         Buffer[i] = chInfo->RxBuffer.Buffer[i];
     }
     
@@ -1450,23 +1450,23 @@ void I2c_MainFunction(void)
         
         /* Handle pending operations in polling mode */
         if (chInfo->CurrentMode == I2C_TRANSFER_POLLING) {
-            if (chInfo->State == I2C_STATE_MASTER_TX || chInfo->State == I2C_STATE_MASTER_RX) {
+            if ((chInfo->State == I2C_STATE_MASTER_TX) || (chInfo->State == I2C_STATE_MASTER_RX)) {
                 /* Polling transfers are handled synchronously, so this shouldn't happen */
                 /* But we can implement timeout handling here */
             }
         }
         
         /* Check for timeout conditions */
-        if (chInfo->State != I2C_STATE_IDLE && chInfo->State != I2C_STATE_UNINIT) {
+        if ((chInfo->State != I2C_STATE_IDLE) && (chInfo->State != I2C_STATE_UNINIT)) {
             /* Timeout logic can be implemented here */
         }
         
         /* Call notification functions if transfer completed */
         if (chInfo->Result == I2C_RESULT_OK) {
-            if (chInfo->TxBuffer.Index > 0U && chConfig->TxNotification != NULL_PTR) {
+            if ((chInfo->TxBuffer.Index > 0U) && (chConfig->TxNotification != NULL_PTR)) {
                 chConfig->TxNotification();
             }
-            if (chInfo->RxBuffer.Index > 0U && chConfig->RxNotification != NULL_PTR) {
+            if ((chInfo->RxBuffer.Index > 0U) && (chConfig->RxNotification != NULL_PTR)) {
                 chConfig->RxNotification();
             }
             chInfo->Result = I2C_RESULT_OK; /* Prevent multiple notifications */

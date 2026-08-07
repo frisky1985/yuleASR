@@ -202,7 +202,7 @@ STATIC sint16 Swc_WatchdogManager_FindEntity(uint8 entityId)
 
     for (i = 0; i < WDG_MAX_ENTITIES; i++) {
         if (swcWatchdogManager.entities[i].isRegistered &&
-            swcWatchdogManager.entities[i].config.entityId == entityId) {
+            (swcWatchdogManager.entities[i].config.entityId == entityId)) {
             return (sint16)i;
         }
     }

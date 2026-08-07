@@ -152,9 +152,9 @@ static void RamTst_LocalRunMarchCStep(RamTst_TestRunType* test)
     processed = 0U;
     wordsPerStep = RAMTST_WORDS_PER_CYCLE;
 
-    while ((baseAddr + processed * 4U < endAddr) && (processed < wordsPerStep))
+    while ((baseAddr + (processed * 4U) < endAddr) && (processed < wordsPerStep))
     {
-        addr   = baseAddr + processed * 4U;
+        addr   = baseAddr + (processed * 4U);
         ramPtr = (volatile uint32*)(uintptr)addr;
 
         switch (test->MarchStep)

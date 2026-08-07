@@ -153,8 +153,8 @@ static Std_ReturnType rte_CreateCSPortDDS(
     /* 创建Response Topic */
     portConfig->ddsResponseTopic = dds_create_topic(participant, NULL, rspTopicName, &topicQos, NULL);
 
-    if (portConfig->ddsRequestTopic == DDS_ENTITY_INVALID ||
-        portConfig->ddsResponseTopic == DDS_ENTITY_INVALID) {
+    if ((portConfig->ddsRequestTopic == DDS_ENTITY_INVALID) ||
+        (portConfig->ddsResponseTopic == DDS_ENTITY_INVALID)) {
         return E_NOT_OK;
     }
 
@@ -245,7 +245,7 @@ Std_ReturnType rte_CreateComponent(
     const rte_ComponentConfigType* config,
     rte_ComponentHandleType* handle)
 {
-    if (!rte_IsInitialized() || config == NULL || handle == NULL) {
+    if (!rte_IsInitialized() || (config == NULL) || handle == NULL) {
         return E_NOT_OK;
     }
 
@@ -281,7 +281,7 @@ Std_ReturnType rte_DestroyComponent(rte_ComponentHandleType handle)
     rte_StopComponent(handle);
 
     /* 从列表中移除 */
-    if ((uint32)idx < g_rteContext.numComponents - 1) {
+    if ((uint32)idx < (g_rteContext.numComponents - 1)) {
         memmove(&g_rteContext.components[idx],
                 &g_rteContext.components[idx + 1],
                 (g_rteContext.numComponents - idx - 1) * sizeof(rte_ComponentConfigType));
@@ -389,7 +389,7 @@ rte_ResultType rte_Write(
     rte_DataElementHandleType dataElement,
     const void* data)
 {
-    if (!rte_IsInitialized() || data == NULL) {
+    if (!rte_IsInitialized() || (data == NULL)) {
         return RTE_E_INVALID;
     }
 
@@ -469,7 +469,7 @@ rte_ResultType rte_ReadWithInfo(
     void* data,
     rte_DataInfoType* info)
 {
-    if (!rte_IsInitialized() || data == NULL || info == NULL) {
+    if (!rte_IsInitialized() || (data == NULL) || info == NULL) {
         return RTE_E_INVALID;
     }
 
@@ -565,7 +565,7 @@ rte_ResultType rte_Call(
     void* responseData,
     uint32_t* responseLength)
 {
-    if (!rte_IsInitialized() || requestData == NULL || responseData == NULL) {
+    if (!rte_IsInitialized() || (requestData == NULL) || responseData == NULL) {
         return RTE_E_INVALID;
     }
 
@@ -602,7 +602,7 @@ rte_ResultType rte_Call(
         g_rteContext.components[0].srPorts[0].ddsSubscriber,
         portConfig->ddsResponseTopic, &readerQos, NULL);
 
-    if (reqWriter == DDS_ENTITY_INVALID || rspReader == DDS_ENTITY_INVALID) {
+    if ((reqWriter == DDS_ENTITY_INVALID) || (rspReader == DDS_ENTITY_INVALID)) {
         return RTE_E_COMMS_ERROR;
     }
 
@@ -622,7 +622,7 @@ rte_ResultType rte_Call(
     dds_delete(reqWriter);
     dds_delete(rspReader);
 
-    if (ret != DDS_RETCODE_OK || !sampleInfo.valid_data) {
+    if ((ret != DDS_RETCODE_OK) || !sampleInfo.valid_data) {
         return RTE_E_TIMEOUT;
     }
 
@@ -670,7 +670,7 @@ Std_ReturnType rte_ComSendSignal(
     rte_ComSignalHandleType signal,
     const void* data)
 {
-    if (!g_comContext.initialized || signal >= g_comContext.numSignals || data == NULL) {
+    if (!g_comContext.initialized || (signal >= g_comContext.numSignals) || data == NULL) {
         return E_NOT_OK;
     }
 
@@ -703,7 +703,7 @@ Std_ReturnType rte_ComReceiveSignal(
     rte_ComSignalHandleType signal,
     void* data)
 {
-    if (!g_comContext.initialized || signal >= g_comContext.numSignals || data == NULL) {
+    if (!g_comContext.initialized || (signal >= g_comContext.numSignals) || data == NULL) {
         return E_NOT_OK;
     }
 
@@ -725,7 +725,7 @@ Std_ReturnType rte_ComSendPdu(
     const void* data,
     uint32_t length)
 {
-    if (!g_comContext.initialized || pdu >= g_comContext.numPdus || data == NULL) {
+    if (!g_comContext.initialized || (pdu >= g_comContext.numPdus) || data == NULL) {
         return E_NOT_OK;
     }
 
@@ -769,7 +769,7 @@ Std_ReturnType rte_E2EProtect(
     void* data,
     uint32_t* length)
 {
-    if (!rte_IsInitialized() || data == NULL || length == NULL) {
+    if (!rte_IsInitialized() || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -792,7 +792,7 @@ Std_ReturnType rte_E2ECheck(
     uint32_t length,
     uint16_t* status)
 {
-    if (!rte_IsInitialized() || data == NULL || status == NULL) {
+    if (!rte_IsInitialized() || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 

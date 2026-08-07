@@ -364,7 +364,7 @@ void Xcp_CmdUpload(const uint8 *cmd)
     uint8 count = cmd[1];
     uint8 i;
 
-    if (count > XCP_CTO_SIZE - 1) {
+    if (count > (XCP_CTO_SIZE - 1)) {
         count = XCP_CTO_SIZE - 1;
     }
 
@@ -396,7 +396,7 @@ void Xcp_CmdShortUpload(const uint8 *cmd)
 
     (void)ext;
 
-    if (count > XCP_CTO_SIZE - 1) {
+    if (count > (XCP_CTO_SIZE - 1)) {
         count = XCP_CTO_SIZE - 1;
     }
 
@@ -420,7 +420,7 @@ void Xcp_CmdDownload(const uint8 *cmd)
     uint8 count = cmd[1];
     uint8 i;
 
-    if (count > XCP_CTO_SIZE - 2) {
+    if (count > (XCP_CTO_SIZE - 2)) {
         Xcp_SendError(E_ERR_OUT_OF_RANGE);
         return;
     }

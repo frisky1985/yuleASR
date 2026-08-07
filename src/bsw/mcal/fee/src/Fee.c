@@ -159,7 +159,7 @@ static void Fee_InitSectors(void)
         Fee_SectorStates[i].writeCount = 0U;
         Fee_SectorStates[i].eraseCount = 0U;
         
-        if (Fee_ConfigPtr != NULL_PTR && Fee_ConfigPtr->sectorList != NULL_PTR) {
+        if ((Fee_ConfigPtr != NULL_PTR) && (Fee_ConfigPtr->sectorList != NULL_PTR)) {
             Fee_SectorStates[i].nextWriteAddr = Fee_ConfigPtr->sectorList[i].sectorStartAddr;
         } else {
             Fee_SectorStates[i].nextWriteAddr = 0U;
@@ -175,7 +175,7 @@ static Std_ReturnType Fee_ValidateAddress(Fee_AddressType Address, Fee_LengthTyp
     Std_ReturnType result = E_NOT_OK;
     Fee_AddressType endAddress;
     
-    if (Fee_ConfigPtr == NULL_PTR || Fee_ConfigPtr->sectorList == NULL_PTR) {
+    if ((Fee_ConfigPtr == NULL_PTR) || (Fee_ConfigPtr->sectorList == NULL_PTR)) {
         return E_NOT_OK;
     }
     
@@ -451,7 +451,7 @@ static uint8 Fee_FindSectorForAddress(Fee_AddressType Address)
 {
     uint8 sectorIdx = FEE_NUM_SECTORS;  /* Invalid sector */
     
-    if (Fee_ConfigPtr != NULL_PTR && Fee_ConfigPtr->sectorList != NULL_PTR) {
+    if ((Fee_ConfigPtr != NULL_PTR) && (Fee_ConfigPtr->sectorList != NULL_PTR)) {
         for (uint8 i = 0U; i < Fee_ConfigPtr->sectorCount; i++) {
             if (Fee_IsAddressInSector(Address, i)) {
                 sectorIdx = i;
@@ -1120,10 +1120,10 @@ boolean Fee_IsStateTransitionValid(Fee_InternalStateType CurrentState, Fee_JobTy
     
     switch (CurrentState) {
         case FEE_STATE_IDLE:
-            valid = (JobType == FEE_JOB_READ || 
-                     JobType == FEE_JOB_WRITE || 
-                     JobType == FEE_JOB_ERASE_IMMEDIATE || 
-                     JobType == FEE_JOB_GC_PAGE);
+            valid = ((JobType == FEE_JOB_READ) || 
+                     ((JobType == FEE_JOB_WRITE)) || 
+                     ((JobType == FEE_JOB_ERASE_IMMEDIATE)) || 
+                     (JobType == FEE_JOB_GC_PAGE));
             break;
         case FEE_STATE_READ_HEADER:
             valid = (JobType == FEE_JOB_READ);
@@ -1179,7 +1179,7 @@ const Fee_BlockConfigType* Fee_GetBlockConfig(uint16 BlockNumber)
 {
     const Fee_BlockConfigType* blockConfig = NULL_PTR;
     
-    if (Fee_ConfigPtr != NULL_PTR && Fee_ConfigPtr->FeeBlockConfig != NULL_PTR) {
+    if ((Fee_ConfigPtr != NULL_PTR) && (Fee_ConfigPtr->FeeBlockConfig != NULL_PTR)) {
         for (uint16 i = 0U; i < Fee_ConfigPtr->FeeNumberOfBlocks; i++) {
             if (Fee_ConfigPtr->FeeBlockConfig[i].FeeBlockNumber == BlockNumber) {
                 blockConfig = &Fee_ConfigPtr->FeeBlockConfig[i];
@@ -1198,7 +1198,7 @@ const Fee_PageConfigType* Fee_GetPageConfig(uint8 PageNumber)
 {
     const Fee_PageConfigType* pageConfig = NULL_PTR;
     
-    if (Fee_ConfigPtr != NULL_PTR && Fee_ConfigPtr->FeePageConfig != NULL_PTR) {
+    if ((Fee_ConfigPtr != NULL_PTR) && (Fee_ConfigPtr->FeePageConfig != NULL_PTR)) {
         for (uint8 i = 0U; i < Fee_ConfigPtr->FeeNumberOfPages; i++) {
             if (Fee_ConfigPtr->FeePageConfig[i].PageNumber == PageNumber) {
                 pageConfig = &Fee_ConfigPtr->FeePageConfig[i];

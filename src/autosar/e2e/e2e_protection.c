@@ -199,7 +199,7 @@ bool E2E_IsInitialized(void)
  */
 Std_ReturnType E2E_InitContext(E2E_ContextType* context, uint8_t profile)
 {
-    if (context == NULL || profile == 0) {
+    if ((context == NULL) || (profile == 0)) {
         return E_NOT_OK;
     }
 
@@ -286,7 +286,7 @@ Std_ReturnType E2E_DeinitContext(E2E_ContextType* context)
  */
 Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -319,7 +319,7 @@ Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -368,7 +368,7 @@ Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -405,7 +405,7 @@ Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -448,7 +448,7 @@ Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_
         state->status = E2E_P_REPEATED;
         *status = E2E_ERROR_COUNTER;
         return E_OK;
-    } else if (delta < 0 || (uint8_t)delta > state->maxDeltaCounter) {
+    } else if ((delta < 0) || ((uint8_t)delta > state->maxDeltaCounter)) {
         state->status = E2E_P_WRONGSEQUENCE;
         *status = E2E_ERROR_SEQUENCE;
     } else {
@@ -469,7 +469,7 @@ Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -501,7 +501,7 @@ Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -512,7 +512,7 @@ Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_
     const uint8_t* dataBytes = (const uint8_t*)data;
     E2E_P04ConfigType* config = &context->config.p04;
 
-    if (length < config->dataLength + 4) {
+    if (length < (config->dataLength + 4)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
@@ -548,7 +548,7 @@ Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -576,7 +576,7 @@ Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -587,7 +587,7 @@ Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_
     const uint8_t* dataBytes = (const uint8_t*)data;
     E2E_P05ConfigType* config = &context->config.p05;
 
-    if (length < config->dataLength + 2) {
+    if (length < (config->dataLength + 2)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
@@ -620,7 +620,7 @@ Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -654,7 +654,7 @@ Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -666,7 +666,7 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
     E2E_P06ConfigType* config = &context->config.p06;
     E2E_P06CheckStateType* state = &context->state.p06;
 
-    if (length < config->dataLength + 4) {
+    if (length < (config->dataLength + 4)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
@@ -695,7 +695,7 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
         state->status = E2E_P_REPEATED;
         *status = E2E_ERROR_COUNTER;
         return E_OK;
-    } else if (delta < 0 || (uint8_t)delta > state->maxDeltaCounter) {
+    } else if ((delta < 0) || ((uint8_t)delta > state->maxDeltaCounter)) {
         state->status = E2E_P_WRONGSEQUENCE;
         *status = E2E_ERROR_SEQUENCE;
     } else {
@@ -716,7 +716,7 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -752,7 +752,7 @@ Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -764,7 +764,7 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
     E2E_P07ConfigType* config = &context->config.p07;
     E2E_P07CheckStateType* state = &context->state.p07;
 
-    if (length < config->dataLength + 8) {
+    if (length < (config->dataLength + 8)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
@@ -795,7 +795,7 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
         state->status = E2E_P_REPEATED;
         *status = E2E_ERROR_COUNTER;
         return E_OK;
-    } else if (delta < 0 || (uint8_t)delta > state->maxDeltaCounter) {
+    } else if ((delta < 0) || ((uint8_t)delta > state->maxDeltaCounter)) {
         state->status = E2E_P_WRONGSEQUENCE;
         *status = E2E_ERROR_SEQUENCE;
     } else {
@@ -816,7 +816,7 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -852,7 +852,7 @@ Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -864,7 +864,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
     E2E_P11ConfigType* config = &context->config.p11;
     E2E_P11CheckStateType* state = &context->state.p11;
 
-    if (length < config->minDataLength || length > config->maxDataLength) {
+    if ((length < config->minDataLength) || (length > config->maxDataLength)) {
         *status = E2E_ERROR_LENGTH;
         return E_OK;
     }
@@ -901,7 +901,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
         state->status = E2E_P_REPEATED;
         *status = E2E_ERROR_COUNTER;
         return E_OK;
-    } else if (delta < 0 || (uint16_t)delta > state->maxDeltaCounter) {
+    } else if ((delta < 0) || ((uint16_t)delta > state->maxDeltaCounter)) {
         state->status = E2E_P_WRONGSEQUENCE;
         *status = E2E_ERROR_SEQUENCE;
     } else {
@@ -923,7 +923,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -936,8 +936,8 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
     E2E_P22CheckStateType* state = &context->state.p22;
 
     /* Validate data length */
-    if (config->dataLength < config->minDataLength ||
-        config->dataLength > config->maxDataLength) {
+    if ((config->dataLength < config->minDataLength) ||
+        (config->dataLength > config->maxDataLength)) {
         return E_NOT_OK;
     }
 
@@ -976,7 +976,7 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -1006,7 +1006,7 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
     /* Read Length field */
     uint16_t receivedLength = ((uint16_t)dataBytes[config->lengthOffset + 1] << 8) |
                               (uint16_t)dataBytes[config->lengthOffset];
-    if (receivedLength < config->minDataLength || receivedLength > config->maxDataLength) {
+    if ((receivedLength < config->minDataLength) || (receivedLength > config->maxDataLength)) {
         *status = E2E_ERROR_LENGTH;
         state->status = E2E_P_ERROR;
         return E_OK;
@@ -1040,7 +1040,7 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
         state->status = E2E_P_REPEATED;
         *status = E2E_ERROR_COUNTER;
         return E_OK;
-    } else if (delta < 0 || (uint16_t)delta > state->maxDeltaCounter) {
+    } else if ((delta < 0) || ((uint16_t)delta > state->maxDeltaCounter)) {
         state->status = E2E_P_WRONGSEQUENCE;
         *status = E2E_ERROR_SEQUENCE;
     } else {
@@ -1059,11 +1059,11 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P22_SetDataLength(E2E_ContextType* context, uint16_t dataLength)
 {
-    if (context == NULL || context->profile != E2E_PROFILE_22) {
+    if ((context == NULL) || (context->profile != E2E_PROFILE_22)) {
         return E_NOT_OK;
     }
 
-    if (dataLength < E2E_P22_MIN_DATA_LENGTH || dataLength > E2E_P22_MAX_DATA_LENGTH) {
+    if ((dataLength < E2E_P22_MIN_DATA_LENGTH) || (dataLength > E2E_P22_MAX_DATA_LENGTH)) {
         return E_NOT_OK;
     }
 
@@ -1080,7 +1080,7 @@ Std_ReturnType E2E_P22_SetDataLength(E2E_ContextType* context, uint16_t dataLeng
  */
 Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* length, uint8_t profile)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -1111,7 +1111,7 @@ Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* lengt
  */
 Std_ReturnType E2E_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status, uint8_t profile)
 {
-    if (!E2E_IsInitialized() || context == NULL || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -1255,7 +1255,7 @@ bool E2E_ValidateDataID(uint32_t dataId, uint8_t profile)
  */
 bool E2E_ValidateLength(uint32_t length, uint8_t profile)
 {
-    if (length == 0 || length > 4096) {
+    if ((length == 0) || (length > 4096)) {
         return FALSE;
     }
 
@@ -1267,9 +1267,9 @@ bool E2E_ValidateLength(uint32_t length, uint8_t profile)
         case E2E_PROFILE_07:
             return (length <= 4096);
         case E2E_PROFILE_11:
-            return (length >= 4 && length <= 256);
+            return ((length >= 4) && (length <= 256));
         case E2E_PROFILE_22:
-            return (length >= E2E_P22_MIN_DATA_LENGTH && length <= E2E_P22_MAX_DATA_LENGTH);
+            return ((length >= E2E_P22_MIN_DATA_LENGTH) && (length <= E2E_P22_MAX_DATA_LENGTH));
         default:
             return TRUE;
     }

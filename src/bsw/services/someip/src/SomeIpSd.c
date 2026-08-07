@@ -108,8 +108,8 @@ Std_ReturnType SomeIpSd_OfferService(
     for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
     {
         if (SomeIpSd_ServiceRegistry[i].IsAvailable &&
-            SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId &&
-            SomeIpSd_ServiceRegistry[i].InstanceId == InstanceId)
+            ((SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId)) &&
+            (SomeIpSd_ServiceRegistry[i].InstanceId == InstanceId))
         {
 #if (STD_ON == SOMEIPSD_DEV_ERROR_DETECT)
             Det_ReportError(SOMEIPSD_MODULE_ID, SOMEIPSD_INSTANCE_ID, SOMEIPSD_OFFERSERVICE_SID, SOMEIPSD_E_ALREADY_OFFERED);
@@ -118,7 +118,7 @@ Std_ReturnType SomeIpSd_OfferService(
         }
         
         /* Find free entry */
-        if (!SomeIpSd_ServiceRegistry[i].IsAvailable && entryPtr == NULL_PTR)
+        if (!SomeIpSd_ServiceRegistry[i].IsAvailable && (entryPtr == NULL_PTR))
         {
             entryPtr = &SomeIpSd_ServiceRegistry[i];
         }
@@ -161,8 +161,8 @@ Std_ReturnType SomeIpSd_StopOfferService(
     for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
     {
         if (SomeIpSd_ServiceRegistry[i].IsAvailable &&
-            SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId &&
-            SomeIpSd_ServiceRegistry[i].InstanceId == InstanceId)
+            ((SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId)) &&
+            (SomeIpSd_ServiceRegistry[i].InstanceId == InstanceId))
         {
             /* Send Stop Offer (TTL=0) */
             SomeIpSd_ServiceRegistry[i].Ttl = 0;
@@ -194,7 +194,7 @@ Std_ReturnType SomeIpSd_FindService(
     for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
     {
         if (SomeIpSd_ServiceRegistry[i].IsAvailable &&
-            SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId)
+            (SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId))
         {
             if (InstanceIdPtr != NULL_PTR)
             {
@@ -251,7 +251,7 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIpSd_MessageType sdMessage;
     
-    if (!SomeIpSd_Initialized || Data == NULL_PTR || Length < SOMEIP_HEADER_SIZE)
+    if (!SomeIpSd_Initialized || (Data == NULL_PTR) || Length < SOMEIP_HEADER_SIZE)
     {
         return;
     }
@@ -263,7 +263,7 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
     }
     
     /* Verify it's an SD message */
-    if (sdMessage.SomeIpHeader.MessageId != ((uint32)SOMEIPSD_SERVICE_ID << 16 | SOMEIPSD_METHOD_ID))
+    if (sdMessage.SomeIpHeader.MessageId != (((uint32)SOMEIPSD_SERVICE_ID << 16) | SOMEIPSD_METHOD_ID))
     {
         return;
     }

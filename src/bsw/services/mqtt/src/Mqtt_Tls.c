@@ -143,7 +143,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
         return MQTT_E_NOT_OK;
     }
     
-    if (config == NULL_PTR || context == NULL_PTR) {
+    if ((config == NULL_PTR) || (context == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -209,7 +209,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     }
     
     /* 加载CA证书 */
-    if (config->trustStore.caCert != NULL_PTR && config->trustStore.caCertLength > 0U ) {
+    if ((config->trustStore.caCert != NULL_PTR) && (config->trustStore.caCertLength > 0U) ) {
         if (config->trustStore.caFormat == MQTT_CERT_FORMAT_PEM) {
             ret = mbedtls_x509_crt_parse(&ctx->caCert, 
                 config->trustStore.caCert, config->trustStore.caCertLength + 1);
@@ -227,7 +227,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     }
     
     /* 加载客户端证书和私钥(mTLS) */
-    if (config->clientCert != NULL_PTR && config->clientCert->data != NULL_PTR) {
+    if ((config->clientCert != NULL_PTR) && (config->clientCert->data != NULL_PTR)) {
         if (config->clientCert->format == MQTT_CERT_FORMAT_PEM) {
             ret = mbedtls_x509_crt_parse(&ctx->clientCert,
                 config->clientCert->data, config->clientCert->length + 1);
@@ -241,7 +241,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
             goto cleanup;
         }
         
-        if (config->clientKey != NULL_PTR && config->clientKey->data != NULL_PTR) {
+        if ((config->clientKey != NULL_PTR) && (config->clientKey->data != NULL_PTR)) {
             const char* pwd = config->clientKey->password;
             
             ret = mbedtls_pk_parse_key(&ctx->clientKey,
@@ -406,7 +406,7 @@ Mqtt_ReturnType Mqtt_Tls_Send(
         return MQTT_E_NOT_OK;
     }
     
-    if (data == NULL_PTR || length == 0U ) {
+    if ((data == NULL_PTR) || (length == 0U) ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -442,7 +442,7 @@ Mqtt_ReturnType Mqtt_Tls_Receive(
         return MQTT_E_NOT_OK;
     }
     
-    if (buffer == NULL_PTR || bufferSize == 0U ) {
+    if ((buffer == NULL_PTR) || (bufferSize == 0U) ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -514,13 +514,13 @@ Mqtt_ReturnType Mqtt_Tls_VerifyCertificate(
     peerCert = mbedtls_ssl_get_peer_cert(&ctx->ssl);
     if (peerCert != NULL_PTR) {
         /* 拷贝颁发者信息 */
-        if (peerCert->issuer.next != NULL_PTR && peerCert->issuer.next->val.p != NULL_PTR) {
+        if ((peerCert->issuer.next != NULL_PTR) && (peerCert->issuer.next->val.p != NULL_PTR)) {
             strncpy(result->issuer, (char*)peerCert->issuer.next->val.p,
                 sizeof(result->issuer) - 1);
         }
         
         /* 拷贝主体信息 */
-        if (peerCert->subject.next != NULL_PTR && peerCert->subject.next->val.p != NULL_PTR) {
+        if ((peerCert->subject.next != NULL_PTR) && (peerCert->subject.next->val.p != NULL_PTR)) {
             strncpy(result->subject, (char*)peerCert->subject.next->val.p,
                 sizeof(result->subject) - 1);
         }
@@ -567,7 +567,7 @@ Mqtt_ReturnType Mqtt_Tls_SaveSession(
         *actualSize = sizeof(mbedtls_ssl_session);
     }
     
-    if (sessionData != NULL_PTR && sessionDataSize >= sizeof(mbedtls_ssl_session)) {
+    if ((sessionData != NULL_PTR) && (sessionDataSize >=) sizeof(mbedtls_ssl_session)) {
         memcpy(sessionData, &ctx->savedSession, sizeof(mbedtls_ssl_session));
     }
     
@@ -587,7 +587,7 @@ Mqtt_ReturnType Mqtt_Tls_RestoreSession(
         return MQTT_E_NOT_OK;
     }
     
-    if (sessionData == NULL_PTR || sessionDataSize < sizeof(mbedtls_ssl_session)) {
+    if ((sessionData == NULL_PTR) || (sessionDataSize <) sizeof(mbedtls_ssl_session)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -655,9 +655,9 @@ Mqtt_TlsVersionType Mqtt_Tls_GetVersion(Mqtt_TlsContextType context)
     int major = mbedtls_ssl_get_version_number(&ctx->ssl) >> 8;
     int minor = mbedtls_ssl_get_version_number(&ctx->ssl) & 0xFF;
     
-    if (major == 3 && minor == 3) {
+    if ((major == 3) && (minor == 3)) {
         return MQTT_TLS_VERSION_1_2;
-    } else if (major == 3 && minor == 4) {
+    } else if ((major == 3) && (minor == 4)) {
         return MQTT_TLS_VERSION_1_3;
     }
     
@@ -678,7 +678,7 @@ Mqtt_ReturnType Mqtt_Tls_GetCipherSuite(
         return MQTT_E_NOT_OK;
     }
     
-    if (name == NULL_PTR || nameSize == 0U ) {
+    if ((name == NULL_PTR) || (nameSize == 0U) ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -708,8 +708,8 @@ static Mqtt_TlsInternalContextType* Mqtt_Tls_GetContext(Mqtt_TlsContextType cont
     ctx = (Mqtt_TlsInternalContextType*)context;
     
     /* 验证上下文是否有效 */
-    if (ctx < &Mqtt_TlsContexts[0] ||
-        ctx >= &Mqtt_TlsContexts[MQTT_TLS_MAX_CONTEXTS]) {
+    if ((ctx < &Mqtt_TlsContexts[0]) ||
+        (ctx >= &Mqtt_TlsContexts[MQTT_TLS_MAX_CONTEXTS])) {
         return NULL_PTR;
     }
     

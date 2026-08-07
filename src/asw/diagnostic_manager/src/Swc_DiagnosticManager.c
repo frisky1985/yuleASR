@@ -283,7 +283,7 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
         /* Send key */
         targetLevel = (Swc_SecurityLevelType)(subFunction / 2);
 
-        if (request->dataLength < DIAG_SECURITY_KEY_SIZE + 1) {
+        if (request->dataLength < (DIAG_SECURITY_KEY_SIZE + 1)) {
             response->negativeResponseCode = UDS_NRC_INCORRECT_MESSAGE_LENGTH;
             return;
         }
@@ -615,7 +615,7 @@ Rte_StatusType Swc_DiagnosticManager_GetSession(Swc_DiagnosticSessionType* sessi
 Rte_StatusType Swc_DiagnosticManager_UnlockSecurity(Swc_SecurityLevelType level,
                                                      const uint8* key)
 {
-    if (key == NULL_PTR || level > SECURITY_LEVEL_3) {
+    if ((key == NULL_PTR) || (level > SECURITY_LEVEL_3)) {
         return RTE_E_INVALID;
     }
 
@@ -648,7 +648,7 @@ Rte_StatusType Swc_DiagnosticManager_ProcessDiagnosticRequest(
     const Swc_DiagnosticRequestType* request,
     Swc_DiagnosticResponseType* response)
 {
-    if (request == NULL_PTR || response == NULL_PTR) {
+    if ((request == NULL_PTR) || (response == NULL_PTR)) {
         return RTE_E_INVALID;
     }
 
@@ -706,7 +706,7 @@ Rte_StatusType Swc_DiagnosticManager_ClearDtc(uint32 dtcCode)
     for (i = 0; i < swcDiagManager.numDtcs; i++) {
         if (swcDiagManager.dtcList[i].dtcCode == dtcCode) {
             /* Shift remaining DTCs */
-            for (j = i; j < swcDiagManager.numDtcs - 1; j++) {
+            for (j = i; j < (swcDiagManager.numDtcs - 1); j++) {
                 swcDiagManager.dtcList[j] = swcDiagManager.dtcList[j + 1];
             }
             swcDiagManager.numDtcs--;

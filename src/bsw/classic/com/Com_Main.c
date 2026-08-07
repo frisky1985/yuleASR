@@ -171,7 +171,7 @@ void PduR_ComRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
     
     /* Copy received data to IPdu buffer */
-    if (PduInfoPtr->SduDataPtr != NULL_PTR && PduInfoPtr->SduLength <= ipduConfig->Length) {
+    if ((PduInfoPtr->SduDataPtr != NULL_PTR) && (PduInfoPtr->SduLength <= ipduConfig->Length)) {
         memcpy(ipduConfig->DataPtr, PduInfoPtr->SduDataPtr, PduInfoPtr->SduLength);
     }
     

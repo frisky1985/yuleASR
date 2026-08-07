@@ -136,8 +136,8 @@ static eth_status_t update_reservation_state(srp_stream_reservation_t *stream) {
         bool any_failed = false;
         
         for (uint32_t i = 0; i < stream->listener_count; i++) {
-            if (stream->listeners[i].state == SRP_LISTENER_STATE_READY_FAILED ||
-                stream->listeners[i].state == SRP_LISTENER_STATE_ASKING_FAILED) {
+            if ((stream->listeners[i].state == SRP_LISTENER_STATE_READY_FAILED) ||
+                (stream->listeners[i].state == SRP_LISTENER_STATE_ASKING_FAILED)) {
                 any_failed = true;
                 break;
             }
@@ -223,7 +223,7 @@ void srp_deinit(void) {
 }
 
 eth_status_t srp_config_port_bandwidth(uint16_t port_id, uint32_t total_bandwidth_bps) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -239,8 +239,8 @@ eth_status_t srp_config_port_bandwidth(uint16_t port_id, uint32_t total_bandwidt
 
 eth_status_t srp_config_sr_class(uint16_t port_id, uint8_t class_id,
                                   const srp_domain_declaration_t *domain) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS || 
-        class_id >= 2 || domain == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || 
+        (class_id >= 2) || (domain == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -252,7 +252,7 @@ eth_status_t srp_config_sr_class(uint16_t port_id, uint8_t class_id,
 
 eth_status_t srp_register_talker(uint16_t port_id, 
                                   const srp_talker_declaration_t *talker) {
-    if (!g_srp_state.initialized || talker == NULL) {
+    if (!g_srp_state.initialized || (talker == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -313,7 +313,7 @@ eth_status_t srp_get_talker(uint16_t port_id, const srp_stream_id_t stream_id,
                              srp_talker_declaration_t *talker) {
     (void)port_id;
     
-    if (!g_srp_state.initialized || talker == NULL) {
+    if (!g_srp_state.initialized || (talker == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -329,7 +329,7 @@ eth_status_t srp_get_talker(uint16_t port_id, const srp_stream_id_t stream_id,
 
 eth_status_t srp_register_listener(uint16_t port_id,
                                     const srp_listener_declaration_t *listener) {
-    if (!g_srp_state.initialized || listener == NULL) {
+    if (!g_srp_state.initialized || (listener == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -409,7 +409,7 @@ eth_status_t srp_update_listener_state(uint16_t port_id, const srp_stream_id_t s
 
 eth_status_t srp_reserve_bandwidth(uint16_t port_id, const srp_stream_id_t stream_id,
                                     uint32_t bandwidth_bps) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -433,8 +433,8 @@ eth_status_t srp_reserve_bandwidth(uint16_t port_id, const srp_stream_id_t strea
     uint32_t used_percent = (port->bandwidth.reserved_bandwidth_bps * 100) / 
                             port->bandwidth.total_bandwidth_bps;
     
-    if (used_percent > port->bandwidth.available_bandwidth_bps * 100 / 
-                       port->bandwidth.total_bandwidth_bps - 10) {
+    if (used_percent > ((port->bandwidth.available_bandwidth_bps * 100 / 
+                       port->bandwidth.total_bandwidth_bps) - 10)) {
         if (g_srp_state.bw_alert_cb) {
             g_srp_state.bw_alert_cb(port_id, used_percent, 
                                     g_srp_state.bw_alert_user_data);
@@ -447,7 +447,7 @@ eth_status_t srp_reserve_bandwidth(uint16_t port_id, const srp_stream_id_t strea
 eth_status_t srp_release_bandwidth(uint16_t port_id, const srp_stream_id_t stream_id) {
     (void)stream_id;
     
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -467,7 +467,7 @@ eth_status_t srp_release_bandwidth(uint16_t port_id, const srp_stream_id_t strea
 
 eth_status_t srp_calculate_path(const srp_stream_id_t stream_id, 
                                  srp_stream_path_t *path) {
-    if (!g_srp_state.initialized || path == NULL) {
+    if (!g_srp_state.initialized || (path == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -483,7 +483,7 @@ eth_status_t srp_calculate_path(const srp_stream_id_t stream_id,
 
 eth_status_t srp_check_feasibility(uint16_t port_id, uint32_t bandwidth_bps,
                                     uint32_t latency_us, bool *feasible) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS || feasible == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || feasible == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -507,7 +507,7 @@ eth_status_t srp_check_feasibility(uint16_t port_id, uint32_t bandwidth_bps,
 }
 
 eth_status_t srp_get_port_bandwidth(uint16_t port_id, srp_port_bandwidth_t *bandwidth) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS || bandwidth == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || bandwidth == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -519,7 +519,7 @@ eth_status_t srp_get_port_bandwidth(uint16_t port_id, srp_port_bandwidth_t *band
 
 eth_status_t srp_get_stream_reservation(const srp_stream_id_t stream_id,
                                          srp_stream_reservation_t *reservation) {
-    if (!g_srp_state.initialized || reservation == NULL) {
+    if (!g_srp_state.initialized || (reservation == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -535,7 +535,7 @@ eth_status_t srp_get_stream_reservation(const srp_stream_id_t stream_id,
 
 eth_status_t srp_get_all_reservations(srp_stream_reservation_t *reservations, 
                                        uint32_t *count) {
-    if (!g_srp_state.initialized || reservations == NULL || count == NULL) {
+    if (!g_srp_state.initialized || (reservations == NULL) || count == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -556,7 +556,7 @@ eth_status_t srp_get_all_reservations(srp_stream_reservation_t *reservations,
 
 eth_status_t srp_calc_bandwidth_requirement(const srp_tspec_t *tspec,
                                              uint32_t *bandwidth_bps) {
-    if (tspec == NULL || bandwidth_bps == NULL) {
+    if ((tspec == NULL) || (bandwidth_bps == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -601,7 +601,7 @@ eth_status_t srp_register_safety_alert_callback(srp_safety_alert_callback_t call
 }
 
 eth_status_t srp_init_safety_monitor(uint16_t port_id) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -613,7 +613,7 @@ eth_status_t srp_init_safety_monitor(uint16_t port_id) {
 }
 
 eth_status_t srp_run_safety_checks(uint16_t port_id) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -621,7 +621,7 @@ eth_status_t srp_run_safety_checks(uint16_t port_id) {
 }
 
 eth_status_t srp_get_safety_monitor(uint16_t port_id, srp_safety_monitor_t *monitor) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS || monitor == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || monitor == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -633,7 +633,7 @@ eth_status_t srp_get_safety_monitor(uint16_t port_id, srp_safety_monitor_t *moni
 
 eth_status_t srp_validate_reservation_integrity(const srp_stream_id_t stream_id,
                                                  bool *integrity_ok) {
-    if (!g_srp_state.initialized || integrity_ok == NULL) {
+    if (!g_srp_state.initialized || (integrity_ok == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -647,15 +647,15 @@ eth_status_t srp_validate_reservation_integrity(const srp_stream_id_t stream_id,
     
     /* 检查预留一致性 */
     *integrity_ok = (stream->talker_registered && 
-                     stream->reserved_bandwidth_bps > 0 &&
-                     stream->state != SRP_RESERVATION_STATE_FAILED);
+                     ((stream->reserved_bandwidth_bps > 0)) &&
+                     (stream->state != SRP_RESERVATION_STATE_FAILED));
     
     return ETH_OK;
 }
 
 eth_status_t srp_stream_id_to_string(const srp_stream_id_t stream_id, 
                                       char *buf, size_t buf_size) {
-    if (stream_id == NULL || buf == NULL || buf_size < 24) {
+    if ((stream_id == NULL) || (buf == NULL) || buf_size < 24) {
         return ETH_INVALID_PARAM;
     }
     
@@ -670,7 +670,7 @@ eth_status_t srp_create_automotive_stream(const char *stream_name,
                                            uint16_t vlan_id,
                                            uint8_t priority,
                                            srp_stream_id_t stream_id) {
-    if (stream_name == NULL || stream_id == NULL) {
+    if ((stream_name == NULL) || (stream_id == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -678,7 +678,7 @@ eth_status_t srp_create_automotive_stream(const char *stream_name,
     /* 简化实现: 使用字符串哈希 */
     uint32_t hash = 0;
     for (const char *p = stream_name; *p; p++) {
-        hash = hash * 31 + *p;
+        hash = (hash * 31) + (*p);
     }
     
     /* 使用VLAN ID和优先级填充 */
@@ -722,7 +722,7 @@ eth_status_t srp_print_reservation(const srp_stream_id_t stream_id) {
 }
 
 eth_status_t srp_print_port_status(uint16_t port_id) {
-    if (!g_srp_state.initialized || port_id >= SRP_MAX_PORTS) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS)) {
         return ETH_INVALID_PARAM;
     }
     

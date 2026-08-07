@@ -109,7 +109,7 @@ static void ara_com_E2EProtectCallback(
     void* userData)
 {
     ara_com_ServiceHandleType* service = (ara_com_ServiceHandleType*)userData;
-    if (service != NULL && service->e2eContext != NULL) {
+    if ((service != NULL) && (service->e2eContext != NULL)) {
         E2E_Protect(service->e2eContext, data, length, E2E_PROFILE_04);
     }
 }
@@ -124,7 +124,7 @@ static void ara_com_E2ECheckCallback(
     void* userData)
 {
     ara_com_ServiceHandleType* service = (ara_com_ServiceHandleType*)userData;
-    if (service != NULL && service->e2eContext != NULL) {
+    if ((service != NULL) && (service->e2eContext != NULL)) {
         E2E_Check(service->e2eContext, data, length, status, E2E_PROFILE_04);
     }
 }
@@ -228,7 +228,7 @@ Std_ReturnType ara_com_CreateServiceInterface(
     const ara_com_ServiceInterfaceConfigType* config,
     ara_com_ServiceHandleType** handle)
 {
-    if (!ara_com_IsInitialized() || config == NULL || handle == NULL) {
+    if (!ara_com_IsInitialized() || (config == NULL) || handle == NULL) {
         return E_NOT_OK;
     }
 
@@ -270,7 +270,7 @@ Std_ReturnType ara_com_CreateServiceInterface(
  */
 Std_ReturnType ara_com_DestroyServiceInterface(ara_com_ServiceHandleType* handle)
 {
-    if (!ara_com_IsInitialized() || handle == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -302,7 +302,7 @@ Std_ReturnType ara_com_DestroyServiceInterface(ara_com_ServiceHandleType* handle
  */
 Std_ReturnType ara_com_OfferService(ara_com_ServiceHandleType* handle)
 {
-    if (!ara_com_IsInitialized() || handle == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -328,7 +328,7 @@ Std_ReturnType ara_com_OfferService(ara_com_ServiceHandleType* handle)
  */
 Std_ReturnType ara_com_StopOfferService(ara_com_ServiceHandleType* handle)
 {
-    if (!ara_com_IsInitialized() || handle == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -350,7 +350,7 @@ Std_ReturnType ara_com_FindService(
     ara_com_ServiceOfferType offerType,
     ara_com_ServiceHandleType** handle)
 {
-    if (!ara_com_IsInitialized() || handle == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -378,7 +378,7 @@ Std_ReturnType ara_com_CreateEvent(
     const ara_com_EventConfigType* config,
     ara_com_EventHandleType** handle)
 {
-    if (!ara_com_IsInitialized() || service == NULL || config == NULL || handle == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || config == NULL || handle == NULL) {
         return E_NOT_OK;
     }
 
@@ -462,7 +462,7 @@ Std_ReturnType ara_com_SendEvent(
     const void* data,
     uint32_t length)
 {
-    if (!ara_com_IsInitialized() || handle == NULL || data == NULL || length == 0) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || data == NULL || length == 0) {
         return E_NOT_OK;
     }
 
@@ -498,7 +498,7 @@ Std_ReturnType ara_com_SubscribeEvent(
     ara_com_EventHandleType* handle,
     uint32_t maxSampleCount)
 {
-    if (!ara_com_IsInitialized() || handle == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -518,7 +518,7 @@ Std_ReturnType ara_com_SubscribeEvent(
  */
 Std_ReturnType ara_com_UnsubscribeEvent(ara_com_EventHandleType* handle)
 {
-    if (!ara_com_IsInitialized() || handle == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -536,7 +536,7 @@ Std_ReturnType ara_com_GetNewSamples(
     uint32_t bufferSize,
     uint32_t* numSamples)
 {
-    if (!ara_com_IsInitialized() || handle == NULL || buffer == NULL || numSamples == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || buffer == NULL || numSamples == NULL) {
         return E_NOT_OK;
     }
 
@@ -566,7 +566,7 @@ Std_ReturnType ara_com_GetNewSamples(
                         /* 复制数据到缓冲区（跳过E2E头） */
                         uint32_t headerSize = E2E_GetHeaderSize(E2E_PROFILE_04);
                         uint32_t payloadLen = (uint32_t)sizeof(sampleData) - headerSize;
-                        if (payloadLen > bufferSize - (validSamples * payloadLen)) {
+                        if (payloadLen > (bufferSize - (validSamples * payloadLen))) {
                             break;
                         }
                         memcpy((uint8_t*)buffer + (validSamples * payloadLen),
@@ -576,7 +576,7 @@ Std_ReturnType ara_com_GetNewSamples(
                     }
                 }
             } else {
-                if (sizeof(sampleData) > bufferSize - (validSamples * sizeof(sampleData))) {
+                if (sizeof(sampleData) > (bufferSize - (validSamples * sizeof(sampleData)))) {
                     break;
                 }
                 memcpy((uint8_t*)buffer + (validSamples * sizeof(sampleData)),
@@ -602,7 +602,7 @@ Std_ReturnType ara_com_CreateMethod(
     const ara_com_MethodConfigType* config,
     ara_com_MethodHandleType** handle)
 {
-    if (!ara_com_IsInitialized() || service == NULL || config == NULL || handle == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || config == NULL || handle == NULL) {
         return E_NOT_OK;
     }
 
@@ -690,8 +690,8 @@ Std_ReturnType ara_com_CallMethod(
     uint32_t* responseLength,
     uint32_t timeoutMs)
 {
-    if (!ara_com_IsInitialized() || handle == NULL || requestData == NULL ||
-        responseData == NULL || responseLength == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || requestData == NULL ||
+        (responseData == NULL) || (responseLength == NULL)) {
         return E_NOT_OK;
     }
 
@@ -709,7 +709,7 @@ Std_ReturnType ara_com_CallMethod(
     dds_ReturnCode_t ret = dds_take(handle->responseReader, responseDataBuf, &info, 1,
                                      DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
 
-    if (ret != DDS_RETCODE_OK || !info.valid_data) {
+    if ((ret != DDS_RETCODE_OK) || !info.valid_data) {
         return E_NOT_OK;
     }
 
@@ -734,7 +734,7 @@ Std_ReturnType ara_com_RegisterMethodHandler(
     Std_ReturnType (*handler)(const void* request, uint32_t reqLength,
                                void* response, uint32_t* respLength))
 {
-    if (!ara_com_IsInitialized() || handle == NULL || handler == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || handler == NULL) {
         return E_NOT_OK;
     }
 
@@ -759,7 +759,7 @@ Std_ReturnType ara_com_E2EProtect(
     uint32_t* length,
     uint8_t profile)
 {
-    if (!ara_com_IsInitialized() || service == NULL || data == NULL || length == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || data == NULL || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -780,7 +780,7 @@ Std_ReturnType ara_com_E2ECheck(
     uint8_t profile,
     uint16_t* status)
 {
-    if (!ara_com_IsInitialized() || service == NULL || data == NULL || status == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || data == NULL || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -846,11 +846,11 @@ Std_ReturnType ara_com_SomeIPDDSGateway_UnregisterService(
     ara_com_ServiceInstanceIdType instanceId)
 {
     for (uint32 i = 0; i < g_gatewayNumEntries; i++) {
-        if (g_gatewayEntries[i].serviceId == serviceId && 
-            g_gatewayEntries[i].instanceId == instanceId) {
+        if ((g_gatewayEntries[i].serviceId == serviceId) && 
+            (g_gatewayEntries[i].instanceId == instanceId)) {
             g_gatewayEntries[i].isActive = FALSE;
             /* 移动数组元素填充空位 */
-            if (i < g_gatewayNumEntries - 1) {
+            if (i < (g_gatewayNumEntries - 1)) {
                 memmove(&g_gatewayEntries[i], &g_gatewayEntries[i + 1],
                         (g_gatewayNumEntries - i - 1) * sizeof(SomeIP_DDS_GatewayEntryType));
             }
@@ -885,7 +885,7 @@ Std_ReturnType ara_com_GetServiceStatus(
     ara_com_ServiceHandleType* handle,
     ara_com_ServiceDiscoveryStateType* state)
 {
-    if (handle == NULL || state == NULL) {
+    if ((handle == NULL) || (state == NULL)) {
         return E_NOT_OK;
     }
 

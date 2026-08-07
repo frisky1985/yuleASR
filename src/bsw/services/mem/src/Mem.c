@@ -180,7 +180,7 @@ static Mem_BlockType* Mem_FindFreeBlock(uint8 poolIndex, uint32 size, Mem_AllocS
     uint32 worstSize = 0u;
     
     while (current != NULL_PTR) {
-        if (current->isFree && current->size >= size) {
+        if (current->isFree && (current->size >= size)) {
             switch (strategy) {
                 case MEM_ALLOC_FIRST_FIT:
                     return current;

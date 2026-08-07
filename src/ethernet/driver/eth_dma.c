@@ -70,10 +70,10 @@ static eth_status_t eth_dma_validate_config(const eth_dma_config_t *config)
     }
 
     /* 验证描述符数量 */
-    if (config->rx_desc_count == 0 || config->rx_desc_count > ETH_DMA_MAX_RX_DESC_COUNT) {
+    if ((config->rx_desc_count == 0) || (config->rx_desc_count > ETH_DMA_MAX_RX_DESC_COUNT)) {
         return ETH_INVALID_PARAM;
     }
-    if (config->tx_desc_count == 0 || config->tx_desc_count > ETH_DMA_MAX_TX_DESC_COUNT) {
+    if ((config->tx_desc_count == 0) || (config->tx_desc_count > ETH_DMA_MAX_TX_DESC_COUNT)) {
         return ETH_INVALID_PARAM;
     }
 
@@ -81,7 +81,7 @@ static eth_status_t eth_dma_validate_config(const eth_dma_config_t *config)
     if (config->buffer_size < 64) {
         return ETH_INVALID_PARAM;
     }
-    if (config->enable_jumbo && config->buffer_size < ETH_DMA_JUMBO_BUFFER_SIZE) {
+    if (config->enable_jumbo && (config->buffer_size < ETH_DMA_JUMBO_BUFFER_SIZE)) {
         return ETH_INVALID_PARAM;
     }
 
@@ -351,8 +351,8 @@ void eth_dma_deinit(void)
 
 eth_status_t eth_dma_start(void)
 {
-    if (g_dma_ctx.state != ETH_DMA_STATE_INIT &&
-        g_dma_ctx.state != ETH_DMA_STATE_STOPPED) {
+    if ((g_dma_ctx.state != ETH_DMA_STATE_INIT) &&
+        (g_dma_ctx.state != ETH_DMA_STATE_STOPPED)) {
         return ETH_ERROR;
     }
 
@@ -378,7 +378,7 @@ eth_status_t eth_dma_reset(void)
 {
     /* 停止DMA */
     eth_status_t status = eth_dma_stop();
-    if (status != ETH_OK && status != ETH_ERROR) {
+    if ((status != ETH_OK) && (status != ETH_ERROR)) {
         return status;
     }
 
@@ -503,7 +503,7 @@ eth_status_t eth_dma_handle_rx_interrupt(void)
             break;  /* 没有更多数据 */
         }
 
-        if (status == ETH_OK && packet.valid) {
+        if ((status == ETH_OK) && packet.valid) {
             /* 调用用户回调 */
             if (g_dma_ctx.rx_callback != NULL) {
                 g_dma_ctx.rx_callback(&packet, g_dma_ctx.rx_user_data);
@@ -555,7 +555,7 @@ eth_status_t eth_dma_tx_queue_packet(const eth_dma_tx_packet_t *packet, uint32_t
         return ETH_ERROR;
     }
 
-    if (packet == NULL || packet->buffer == NULL || packet->length == 0) {
+    if ((packet == NULL) || (packet->buffer == NULL) || packet->length == 0) {
         return ETH_INVALID_PARAM;
     }
 
@@ -681,7 +681,7 @@ eth_status_t eth_dma_handle_tx_interrupt(void)
     g_dma_ctx.tx_desc_head = head;
 
     /* 调用用户回调 */
-    if (completed > 0 && g_dma_ctx.tx_callback != NULL) {
+    if ((completed > 0) && (g_dma_ctx.tx_callback != NULL)) {
         g_dma_ctx.tx_callback(completed, g_dma_ctx.tx_user_data);
     }
 

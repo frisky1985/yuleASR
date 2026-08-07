@@ -76,7 +76,7 @@ static eth_status_t eth_mac_validate_config(const eth_mac_config_t *config)
     }
 
     /* 验证帧过滤配置 */
-    if (config->filter.max_frame_size < 64 || config->filter.max_frame_size > 9000) {
+    if ((config->filter.max_frame_size < 64) || (config->filter.max_frame_size > 9000)) {
         return ETH_INVALID_PARAM;
     }
 
@@ -248,8 +248,8 @@ eth_status_t eth_mac_start(void)
 
 eth_status_t eth_mac_stop(void)
 {
-    if (g_mac_ctx.state != ETH_MAC_STATE_ACTIVE &&
-        g_mac_ctx.state != ETH_MAC_STATE_LOW_POWER) {
+    if ((g_mac_ctx.state != ETH_MAC_STATE_ACTIVE) &&
+        (g_mac_ctx.state != ETH_MAC_STATE_LOW_POWER)) {
         return ETH_ERROR;
     }
 
@@ -300,8 +300,8 @@ eth_status_t eth_mac_get_address(eth_mac_addr_t mac_addr)
 
 eth_status_t eth_mac_set_mode(eth_mac_mode_t mode)
 {
-    if (g_mac_ctx.state != ETH_MAC_STATE_INIT &&
-        g_mac_ctx.state != ETH_MAC_STATE_ACTIVE) {
+    if ((g_mac_ctx.state != ETH_MAC_STATE_INIT) &&
+        (g_mac_ctx.state != ETH_MAC_STATE_ACTIVE)) {
         return ETH_ERROR;
     }
 
@@ -318,8 +318,8 @@ eth_status_t eth_mac_set_mode(eth_mac_mode_t mode)
 
 eth_status_t eth_mac_set_filter(const eth_mac_filter_t *filter)
 {
-    if (g_mac_ctx.state != ETH_MAC_STATE_INIT &&
-        g_mac_ctx.state != ETH_MAC_STATE_ACTIVE) {
+    if ((g_mac_ctx.state != ETH_MAC_STATE_INIT) &&
+        (g_mac_ctx.state != ETH_MAC_STATE_ACTIVE)) {
         return ETH_ERROR;
     }
 
@@ -328,7 +328,7 @@ eth_status_t eth_mac_set_filter(const eth_mac_filter_t *filter)
     }
 
     /* 验证帧大小 */
-    if (filter->max_frame_size < 64 || filter->max_frame_size > 9000) {
+    if ((filter->max_frame_size < 64) || (filter->max_frame_size > 9000)) {
         return ETH_INVALID_PARAM;
     }
 
@@ -432,12 +432,12 @@ eth_status_t eth_mac_transmit(const uint8_t *data, uint32_t len, uint32_t timeou
         return ETH_ERROR;
     }
 
-    if (data == NULL || len == 0) {
+    if ((data == NULL) || (len == 0)) {
         return ETH_INVALID_PARAM;
     }
 
     /* 检查帧长度 */
-    if (len < 14 || len > g_mac_ctx.config.filter.max_frame_size) {
+    if ((len < 14) || (len > g_mac_ctx.config.filter.max_frame_size)) {
         g_mac_ctx.stats.tx_errors++;
         return ETH_INVALID_PARAM;
     }
@@ -459,7 +459,7 @@ eth_status_t eth_mac_receive(uint8_t *buffer, uint32_t max_len,
         return ETH_ERROR;
     }
 
-    if (buffer == NULL || max_len == 0 || received_len == NULL) {
+    if ((buffer == NULL) || (max_len == 0) || received_len == NULL) {
         return ETH_INVALID_PARAM;
     }
 

@@ -88,19 +88,19 @@ static void aes_key_expansion(uint8_t *round_key, const uint8_t *key, int key_bi
     int nr = nk + 6;
 
     for (i = 0; i < nk; i++) {
-        round_key[i * 4 + 0] = key[i * 4 + 0];
-        round_key[i * 4 + 1] = key[i * 4 + 1];
-        round_key[i * 4 + 2] = key[i * 4 + 2];
-        round_key[i * 4 + 3] = key[i * 4 + 3];
+        round_key[(i * 4) + 0] = key[i * 4 + 0];
+        round_key[(i * 4) + 1] = key[i * 4 + 1];
+        round_key[(i * 4) + 2] = key[i * 4 + 2];
+        round_key[(i * 4) + 3] = key[i * 4 + 3];
     }
 
-    for (i = nk; i < 4 * (nr + 1); i++) {
-        temp[0] = round_key[(i - 1) * 4 + 0];
-        temp[1] = round_key[(i - 1) * 4 + 1];
-        temp[2] = round_key[(i - 1) * 4 + 2];
-        temp[3] = round_key[(i - 1) * 4 + 3];
+    for (i = nk; i < (4 * (nr + 1)); i++) {
+        temp[0] = round_key[((i - 1) * 4) + 0];
+        temp[1] = round_key[((i - 1) * 4) + 1];
+        temp[2] = round_key[((i - 1) * 4) + 2];
+        temp[3] = round_key[((i - 1) * 4) + 3];
 
-        if (i % nk == 0) {
+        if ((i % nk) == 0) {
             k = temp[0];
             temp[0] = temp[1];
             temp[1] = temp[2];
@@ -115,17 +115,17 @@ static void aes_key_expansion(uint8_t *round_key, const uint8_t *key, int key_bi
             temp[0] ^= (rcon[i / nk] >> 24) & 0xFF;
         }
 
-        if (nk > 6 && i % nk == 4) {
+        if ((nk > 6) && (i % nk == 4)) {
             temp[0] = sbox[temp[0]];
             temp[1] = sbox[temp[1]];
             temp[2] = sbox[temp[2]];
             temp[3] = sbox[temp[3]];
         }
 
-        round_key[i * 4 + 0] = round_key[(i - nk) * 4 + 0] ^ temp[0];
-        round_key[i * 4 + 1] = round_key[(i - nk) * 4 + 1] ^ temp[1];
-        round_key[i * 4 + 2] = round_key[(i - nk) * 4 + 2] ^ temp[2];
-        round_key[i * 4 + 3] = round_key[(i - nk) * 4 + 3] ^ temp[3];
+        round_key[(i * 4) + 0] = round_key[(i - nk) * 4 + 0] ^ temp[0];
+        round_key[(i * 4) + 1] = round_key[(i - nk) * 4 + 1] ^ temp[1];
+        round_key[(i * 4) + 2] = round_key[(i - nk) * 4 + 2] ^ temp[2];
+        round_key[(i * 4) + 3] = round_key[(i - nk) * 4 + 3] ^ temp[3];
     }
 }
 
@@ -137,7 +137,7 @@ static void add_round_key(uint8_t state[4][4], const uint8_t *round_key, int rou
 {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            state[j][i] ^= round_key[round * 16 + i * 4 + j];
+            state[j][i] ^= round_key[(round * 16) + (i * 4) + j];
         }
     }
 }
@@ -229,10 +229,10 @@ static void mix_columns(uint8_t state[4][4])
 static uint8_t multiply(uint8_t x, uint8_t y)
 {
     return (((y & 1) * x) ^
-            ((y >> 1 & 1) * xtime(x)) ^
-            ((y >> 2 & 1) * xtime(xtime(x))) ^
-            ((y >> 3 & 1) * xtime(xtime(xtime(x)))) ^
-            ((y >> 4 & 1) * xtime(xtime(xtime(xtime(x))))));
+            (((y >> 1) & 1) * xtime(x)) ^
+            (((y >> 2) & 1) * xtime(xtime(x))) ^
+            (((y >> 3) & 1) * xtime(xtime(xtime(x)))) ^
+            (((y >> 4) & 1) * xtime(xtime(xtime(xtime(x))))));
 }
 
 static void inv_mix_columns(uint8_t state[4][4])
@@ -374,12 +374,12 @@ uint64_t dds_crypto_create_session(dds_crypto_context_t *ctx,
 
 void dds_crypto_close_session(dds_crypto_context_t *ctx, uint64_t session_id)
 {
-    if (!ctx || session_id == 0) {
+    if (!ctx || (session_id == 0)) {
         return;
     }
 
     for (uint32_t i = 0; i < ctx->max_sessions; i++) {
-        if (ctx->sessions[i].session_id == session_id && ctx->sessions[i].established) {
+        if ((ctx->sessions[i].session_id == session_id) && ctx->sessions[i].established) {
             memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
             ctx->sessions[i].established = false;
             ctx->active_sessions--;
@@ -411,7 +411,7 @@ dds_crypto_status_t dds_crypto_get_session_keys(dds_crypto_context_t *ctx,
                                                 uint64_t session_id,
                                                 dds_crypto_key_material_msg_t *key_mat)
 {
-    if (!ctx || session_id == 0 || !key_mat) {
+    if (!ctx || (session_id == 0) || !key_mat) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -444,7 +444,7 @@ dds_crypto_status_t dds_crypto_generate_key(dds_crypto_context_t *ctx,
                                             uint8_t *key,
                                             uint32_t key_len)
 {
-    if (!ctx || !key || key_len == 0) {
+    if (!ctx || !key || (key_len == 0)) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -505,9 +505,9 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
 
         /* Simplified hash - use XOR based mixing */
         for (int i = 0; i < 32; i++) {
-            okm[block * 32 + i] = prk[i];
+            okm[(block * 32) + i] = prk[i];
             for (uint32_t j = 0; j < input_len; j++) {
-                okm[block * 32 + i] ^= input[j] ^ (j * 7 + i * 13);
+                okm[(block * 32) + i] ^= input[j] ^ (j * 7 + i * 13);
             }
         }
     }
@@ -522,7 +522,7 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
 dds_crypto_status_t dds_crypto_update_session_key(dds_crypto_context_t *ctx,
                                                    uint64_t session_id)
 {
-    if (!ctx || session_id == 0) {
+    if (!ctx || (session_id == 0)) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -574,7 +574,7 @@ uint32_t dds_crypto_check_key_expiry(dds_crypto_context_t *ctx, uint64_t current
         if (session->established) {
             dds_crypto_key_material_t *km = &session->key_materials[session->active_key_index];
 
-            if (current_time > km->creation_time + DDS_CRYPTO_MAX_KEY_LIFETIME_MS) {
+            if (current_time > (km->creation_time + DDS_CRYPTO_MAX_KEY_LIFETIME_MS)) {
                 dds_crypto_update_session_key(ctx, session->session_id);
                 updated_count++;
             }
@@ -646,7 +646,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
     }
 
     /* Validate key length */
-    if (key_len != 16 && key_len != 24 && key_len != 32) {
+    if ((key_len != 16) && (key_len != 24) && key_len != 32) {
         return DDS_CRYPTO_ERROR_KEY_INVALID;
     }
 
@@ -669,7 +669,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
         /* Load counter into state */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                state[j][i] = counter[i * 4 + j];
+                state[j][i] = counter[(i * 4) + j];
             }
         }
 
@@ -690,12 +690,12 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
         /* Extract keystream */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                keystream[i * 4 + j] = state[j][i];
+                keystream[(i * 4) + j] = state[j][i];
             }
         }
 
         /* XOR with plaintext */
-        for (uint32_t i = 0; i < 16 && (block + i) < plaintext_len; i++) {
+        for (uint32_t i = 0; (i < 16) && ((block + i) < plaintext_len); i++) {
             ciphertext[block + i] = plaintext[block + i] ^ keystream[i];
         }
 
@@ -819,7 +819,7 @@ dds_crypto_status_t dds_crypto_encrypt_rtps_data(dds_crypto_context_t *ctx,
                                                   uint32_t output_size,
                                                   uint32_t *output_len)
 {
-    if (!ctx || session_id == 0 || !plaintext || !output_buffer || !output_len) {
+    if (!ctx || (session_id == 0) || !plaintext || !output_buffer || !output_len) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -895,7 +895,7 @@ dds_crypto_status_t dds_crypto_decrypt_rtps_data(dds_crypto_context_t *ctx,
                                                   uint32_t plaintext_size,
                                                   uint32_t *plaintext_len)
 {
-    if (!ctx || session_id == 0 || !input_buffer || !plaintext || !plaintext_len) {
+    if (!ctx || (session_id == 0) || !input_buffer || !plaintext || !plaintext_len) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -963,7 +963,7 @@ dds_crypto_status_t dds_crypto_compute_message_mac(dds_crypto_context_t *ctx,
                                                     uint32_t header_len,
                                                     uint8_t *mac)
 {
-    if (!ctx || session_id == 0 || !message || !mac) {
+    if (!ctx || (session_id == 0) || !message || !mac) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -1028,7 +1028,7 @@ dds_crypto_status_t dds_crypto_check_replay(dds_crypto_context_t *ctx,
                                             uint64_t session_id,
                                             uint64_t seq_number)
 {
-    if (!ctx || session_id == 0) {
+    if (!ctx || (session_id == 0)) {
         return DDS_CRYPTO_ERROR_INVALID_PARAM;
     }
 
@@ -1040,7 +1040,7 @@ void dds_crypto_update_replay_window(dds_crypto_context_t *ctx,
                                      uint64_t session_id,
                                      uint64_t seq_number)
 {
-    if (!ctx || session_id == 0) {
+    if (!ctx || (session_id == 0)) {
         return;
     }
 

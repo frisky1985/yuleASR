@@ -188,7 +188,7 @@ void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         return;
     }
     
-    if (PduInfoPtr == NULL_PTR || PduInfoPtr->SduDataPtr == NULL_PTR)
+    if ((PduInfoPtr == NULL_PTR) || (PduInfoPtr->SduDataPtr == NULL_PTR))
     {
         return;
     }
@@ -219,7 +219,7 @@ void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             
         default:
             /* DT message (1-255) */
-            if (Command >= 1U && Command <= 255U)
+            if ((Command >= 1U) && (Command <= 255U))
             {
                 /* Handle data transfer */
             }

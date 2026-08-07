@@ -685,7 +685,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
 {
     Std_ReturnType result = E_NOT_OK;
     
-    if (job == NULL_PTR || job->jobPrimitiveInfo == NULL_PTR || 
+    if ((job == NULL_PTR) || (job->jobPrimitiveInfo == NULL_PTR) || 
         job->jobPrimitiveInputOutput == NULL_PTR) {
         return E_NOT_OK;
     }

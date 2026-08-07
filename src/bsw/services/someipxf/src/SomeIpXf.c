@@ -284,7 +284,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
             {
                 case SOMEIPXF_DT_BOOLEAN:
                     if ((SourceBuffer->Length >= 1U) && 
-                        (TargetBuffer->MaxLength >= payloadOffset + 1U))
+                        (TargetBuffer->MaxLength >= (payloadOffset + 1U)))
                     {
                         TargetBuffer->Data[payloadOffset] = SourceBuffer->Data[0] ? 1U : 0U;
                         TargetBuffer->Length = payloadOffset + 1U;
@@ -294,7 +294,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
 
                 case SOMEIPXF_DT_UINT8:
                     if ((SourceBuffer->Length >= 1U) && 
-                        (TargetBuffer->MaxLength >= payloadOffset + 1U))
+                        (TargetBuffer->MaxLength >= (payloadOffset + 1U)))
                     {
                         TargetBuffer->Data[payloadOffset] = SourceBuffer->Data[0];
                         TargetBuffer->Length = payloadOffset + 1U;
@@ -304,7 +304,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
 
                 case SOMEIPXF_DT_UINT16:
                     if ((SourceBuffer->Length >= 2U) && 
-                        (TargetBuffer->MaxLength >= payloadOffset + 2U))
+                        (TargetBuffer->MaxLength >= (payloadOffset + 2U)))
                     {
                         SOMEIPXF_PUT_U16_BE(TargetBuffer->Data, payloadOffset, 
                                            ((uint16)SourceBuffer->Data[0] << 8) | SourceBuffer->Data[1]);
@@ -315,7 +315,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
 
                 case SOMEIPXF_DT_UINT32:
                     if ((SourceBuffer->Length >= 4U) && 
-                        (TargetBuffer->MaxLength >= payloadOffset + 4U))
+                        (TargetBuffer->MaxLength >= (payloadOffset + 4U)))
                     {
                         uint32 value = ((uint32)SourceBuffer->Data[0] << 24) |
                                       ((uint32)SourceBuffer->Data[1] << 16) |
@@ -335,7 +335,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
                             strLen = SOMEIPXF_MAX_STRING_LENGTH;
                         }
                         
-                        if (TargetBuffer->MaxLength >= payloadOffset + strLen + 4U)
+                        if (TargetBuffer->MaxLength >= (payloadOffset + strLen + 4U))
                         {
                             /* Add length field */
                             SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, strLen);
@@ -349,7 +349,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
                     break;
 
                 case SOMEIPXF_DT_ARRAY:
-                    if (TargetBuffer->MaxLength >= payloadOffset + SourceBuffer->Length + 4U)
+                    if (TargetBuffer->MaxLength >= (payloadOffset + SourceBuffer->Length + 4U))
                     {
                         /* Add length field */
                         SOMEIPXF_PUT_U32_BE(TargetBuffer->Data, payloadOffset, 
@@ -456,7 +456,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
             switch (elemPtr->DataType)
             {
                 case SOMEIPXF_DT_BOOLEAN:
-                    if ((SourceBuffer->Length >= payloadOffset + 1U) && 
+                    if ((SourceBuffer->Length >= (payloadOffset + 1U)) && 
                         (TargetBuffer->MaxLength >= 1U))
                     {
                         TargetBuffer->Data[0] = SourceBuffer->Data[payloadOffset] ? 1U : 0U;
@@ -466,7 +466,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
                     break;
 
                 case SOMEIPXF_DT_UINT8:
-                    if ((SourceBuffer->Length >= payloadOffset + 1U) && 
+                    if ((SourceBuffer->Length >= (payloadOffset + 1U)) && 
                         (TargetBuffer->MaxLength >= 1U))
                     {
                         TargetBuffer->Data[0] = SourceBuffer->Data[payloadOffset];
@@ -476,7 +476,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
                     break;
 
                 case SOMEIPXF_DT_UINT16:
-                    if ((SourceBuffer->Length >= payloadOffset + 2U) && 
+                    if ((SourceBuffer->Length >= (payloadOffset + 2U)) && 
                         (TargetBuffer->MaxLength >= 2U))
                     {
                         uint16 value = SOMEIPXF_GET_U16_BE(SourceBuffer->Data, payloadOffset);
@@ -488,7 +488,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
                     break;
 
                 case SOMEIPXF_DT_UINT32:
-                    if ((SourceBuffer->Length >= payloadOffset + 4U) && 
+                    if ((SourceBuffer->Length >= (payloadOffset + 4U)) && 
                         (TargetBuffer->MaxLength >= 4U))
                     {
                         uint32 value = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
@@ -502,11 +502,11 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
                     break;
 
                 case SOMEIPXF_DT_STRING:
-                    if (SourceBuffer->Length >= payloadOffset + 4U)
+                    if (SourceBuffer->Length >= (payloadOffset + 4U))
                     {
                         uint32 strLen = SOMEIPXF_GET_U32_BE(SourceBuffer->Data, payloadOffset);
                         if ((strLen <= SOMEIPXF_MAX_STRING_LENGTH) &&
-                            (SourceBuffer->Length >= payloadOffset + 4U + strLen) &&
+                            (SourceBuffer->Length >= (payloadOffset + 4U + strLen)) &&
                             (TargetBuffer->MaxLength >= strLen))
                         {
                             (void)memcpy(TargetBuffer->Data, &SourceBuffer->Data[payloadOffset + 4U], strLen);

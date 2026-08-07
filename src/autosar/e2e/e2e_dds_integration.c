@@ -43,13 +43,13 @@ static bool E2E_DDS_ValidateConfig(const E2E_DDS_TopicConfigType* config)
     }
 
     /* Validate E2E profile */
-    if (config->e2eProfile < E2E_PROFILE_01 ||
-        (config->e2eProfile > E2E_PROFILE_11 && config->e2eProfile != E2E_PROFILE_22)) {
+    if ((config->e2eProfile < E2E_PROFILE_01) ||
+        ((config->e2eProfile > E2E_PROFILE_11) && (config->e2eProfile != E2E_PROFILE_22))) {
         return FALSE;
     }
 
     /* Validate data length for fixed-length profiles */
-    if (config->e2eProfile != E2E_PROFILE_11 && config->e2eProfile != E2E_PROFILE_22) {
+    if ((config->e2eProfile != E2E_PROFILE_11) && (config->e2eProfile != E2E_PROFILE_22)) {
         if (config->dataLength == 0) {
             return FALSE;
         }
@@ -224,7 +224,7 @@ bool E2E_DDS_IsInitialized(void)
  */
 Std_ReturnType E2E_DDS_RegisterCallbacks(const E2E_DDS_CallbackType* callbacks)
 {
-    if (!E2E_DDS_IsInitialized() || callbacks == NULL) {
+    if (!E2E_DDS_IsInitialized() || (callbacks == NULL)) {
         return E_NOT_OK;
     }
 
@@ -243,7 +243,7 @@ Std_ReturnType E2E_DDS_CreateTopic(
     const E2E_DDS_TopicConfigType* config,
     E2E_DDS_TopicHandleType* handle)
 {
-    if (!E2E_DDS_IsInitialized() || config == NULL || handle == NULL) {
+    if (!E2E_DDS_IsInitialized() || (config == NULL) || handle == NULL) {
         return E_NOT_OK;
     }
 
@@ -275,7 +275,7 @@ Std_ReturnType E2E_DDS_CreateTopic(
  */
 Std_ReturnType E2E_DDS_DestroyTopic(E2E_DDS_TopicHandleType* handle)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -300,7 +300,7 @@ Std_ReturnType E2E_DDS_DestroyTopic(E2E_DDS_TopicHandleType* handle)
  */
 Std_ReturnType E2E_DDS_ResetTopic(E2E_DDS_TopicHandleType* handle)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized) {
         return E_NOT_OK;
     }
 
@@ -364,8 +364,8 @@ Std_ReturnType E2E_DDS_Publish(
     uint8_t* data,
     uint32_t* length)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized ||
-        data == NULL || length == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized ||
+        (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -388,8 +388,8 @@ Std_ReturnType E2E_DDS_Subscribe(
     uint32_t length,
     E2E_DDS_ResultType* result)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized ||
-        data == NULL || result == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized ||
+        (data == NULL) || (result == NULL)) {
         return E_NOT_OK;
     }
 
@@ -464,7 +464,7 @@ Std_ReturnType E2E_DDS_Subscribe(
     handle->lastRxTimestamp = 0; /* TODO: Get actual timestamp */
 
     /* Invoke error callback if set */
-    if (*result != E2E_DDS_OK && g_callbacks.errorCallback != NULL) {
+    if ((*result != E2E_DDS_OK) && (g_callbacks.errorCallback != NULL)) {
         g_callbacks.errorCallback(handle->topicId, *result, e2eStatus);
     }
 
@@ -481,8 +481,8 @@ Std_ReturnType E2E_DDS_Check(
     uint32_t timestamp,
     E2E_DDS_ResultType* result)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized ||
-        data == NULL || result == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized ||
+        (data == NULL) || (result == NULL)) {
         return E_NOT_OK;
     }
 
@@ -549,7 +549,7 @@ Std_ReturnType E2E_DDS_Check(
         }
 
         /* Invoke state change callback */
-        if (g_callbacks.stateCallback != NULL && oldState != smResult.state) {
+        if ((g_callbacks.stateCallback != NULL) && (oldState != smResult.state)) {
             g_callbacks.stateCallback(handle->topicId, oldState, smResult.state);
         }
 
@@ -589,7 +589,7 @@ Std_ReturnType E2E_DDS_Check(
     }
 
     /* Invoke error callback if error */
-    if (*result != E2E_DDS_OK && g_callbacks.errorCallback != NULL) {
+    if ((*result != E2E_DDS_OK) && (g_callbacks.errorCallback != NULL)) {
         g_callbacks.errorCallback(handle->topicId, *result, e2eStatus);
     }
 
@@ -607,7 +607,7 @@ Std_ReturnType E2E_DDS_SetDynamicLength(
     E2E_DDS_TopicHandleType* handle,
     uint16_t dataLength)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized) {
         return E_NOT_OK;
     }
 
@@ -625,7 +625,7 @@ Std_ReturnType E2E_DDS_GetDataLength(
     const E2E_DDS_TopicHandleType* handle,
     uint16_t* dataLength)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized || dataLength == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized || dataLength == NULL) {
         return E_NOT_OK;
     }
 
@@ -653,7 +653,7 @@ Std_ReturnType E2E_DDS_GetStatistics(
     uint32_t* rxCount,
     uint32_t* errorCount)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized) {
         return E_NOT_OK;
     }
 
@@ -677,7 +677,7 @@ Std_ReturnType E2E_DDS_GetState(
     const E2E_DDS_TopicHandleType* handle,
     E2E_SM_StateType* state)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized || state == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized || state == NULL) {
         return E_NOT_OK;
     }
 
@@ -708,7 +708,7 @@ Std_ReturnType E2E_DDS_GetState(
  */
 Std_ReturnType E2E_DDS_ClearStatistics(E2E_DDS_TopicHandleType* handle)
 {
-    if (!E2E_DDS_IsInitialized() || handle == NULL || !handle->initialized) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized) {
         return E_NOT_OK;
     }
 

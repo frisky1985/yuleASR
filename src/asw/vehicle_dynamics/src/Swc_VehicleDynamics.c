@@ -172,8 +172,8 @@ STATIC void Swc_VehicleDynamics_CheckStability(void)
 
     /* Check if intervention is needed */
     if (swcVehicleDynamics.currentMode != VDC_MODE_DISABLED) {
-        if (ABS(yawRateError) > VDC_YAW_RATE_THRESHOLD ||
-            ABS(swcVehicleDynamics.motionData.lateralAccel) > VDC_LAT_ACCEL_THRESHOLD) {
+        if ((ABS(yawRateError) > VDC_YAW_RATE_THRESHOLD) ||
+            (ABS(swcVehicleDynamics.motionData.lateralAccel) > VDC_LAT_ACCEL_THRESHOLD)) {
 
             if (swcVehicleDynamics.currentState != VDC_STATE_FAULT) {
                 swcVehicleDynamics.currentState = VDC_STATE_INTERVENING;
@@ -291,8 +291,8 @@ STATIC boolean Swc_VehicleDynamics_CheckTractionLoss(void)
         swcVehicleDynamics.motionData.wheelSpeedRR, vehicleSpeed);
 
     /* Check if any wheel has excessive slip */
-    if (ABS(slipRL) > VDC_SLIP_THRESHOLD_HIGH ||
-        ABS(slipRR) > VDC_SLIP_THRESHOLD_HIGH) {
+    if ((ABS(slipRL) > VDC_SLIP_THRESHOLD_HIGH) ||
+        (ABS(slipRR) > VDC_SLIP_THRESHOLD_HIGH)) {
         return TRUE;
     }
 

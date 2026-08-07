@@ -51,7 +51,7 @@ static bool AreAllMembersActive(FunctionGroupNameType name) {
     FG_ConfigType* config = FindConfig(name);
     FG_RuntimeType* runtime = FindRuntime(name);
     
-    if (config == NULL || runtime == NULL) {
+    if ((config == NULL) || (runtime == NULL)) {
         return false;
     }
     
@@ -113,7 +113,7 @@ bool FG_IsInitialized(void) {
 }
 
 Std_ReturnType FG_CreateConfig(FunctionGroupNameType name, FG_ConfigType* config) {
-    if (!g_initialized || config == NULL || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (config == NULL) || name >= FUNCTION_GROUP_COUNT) {
         return E_NOT_OK;
     }
     
@@ -122,7 +122,7 @@ Std_ReturnType FG_CreateConfig(FunctionGroupNameType name, FG_ConfigType* config
 }
 
 Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) {
-    if (!g_initialized || config == NULL || member == NULL) {
+    if (!g_initialized || (config == NULL) || member == NULL) {
         return E_NOT_OK;
     }
     
@@ -144,7 +144,7 @@ Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) 
 }
 
 Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
-    if (!g_initialized || config == NULL || memberName == NULL) {
+    if (!g_initialized || (config == NULL) || memberName == NULL) {
         return E_NOT_OK;
     }
     
@@ -161,7 +161,7 @@ Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
     }
     
     /* Shift remaining members */
-    for (uint32_t i = (uint32_t)index; i < config->memberCount - 1U; i++) {
+    for (uint32_t i = (uint32_t)index; i < (config->memberCount - 1U); i++) {
         memcpy(&config->members[i], &config->members[i + 1U], sizeof(FG_MemberType));
     }
     
@@ -173,7 +173,7 @@ Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
 
 Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
                             FG_MemberType* member) {
-    if (!g_initialized || config == NULL || memberName == NULL || member == NULL) {
+    if (!g_initialized || (config == NULL) || memberName == NULL || member == NULL) {
         return E_NOT_OK;
     }
     
@@ -188,13 +188,13 @@ Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
 }
 
 Std_ReturnType FG_Configure(FunctionGroupNameType name, const FG_ConfigType* config) {
-    if (!g_initialized || config == NULL || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (config == NULL) || name >= FUNCTION_GROUP_COUNT) {
         return E_NOT_OK;
     }
     
     /* Cannot configure while transitioning */
     FG_RuntimeType* runtime = FindRuntime(name);
-    if (runtime != NULL && runtime->transitionInProgress) {
+    if ((runtime != NULL) && runtime->transitionInProgress) {
         return E_NOT_OK;
     }
     
@@ -205,7 +205,7 @@ Std_ReturnType FG_Configure(FunctionGroupNameType name, const FG_ConfigType* con
 }
 
 Std_ReturnType FG_Start(FunctionGroupNameType name) {
-    if (!g_initialized || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -233,7 +233,7 @@ Std_ReturnType FG_Start(FunctionGroupNameType name) {
 }
 
 Std_ReturnType FG_Stop(FunctionGroupNameType name) {
-    if (!g_initialized || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -261,7 +261,7 @@ Std_ReturnType FG_Stop(FunctionGroupNameType name) {
 }
 
 Std_ReturnType FG_GetRuntimeState(FunctionGroupNameType name, FG_RuntimeType* runtime) {
-    if (!g_initialized || runtime == NULL || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (runtime == NULL) || name >= FUNCTION_GROUP_COUNT) {
         return E_NOT_OK;
     }
     
@@ -275,7 +275,7 @@ Std_ReturnType FG_GetRuntimeState(FunctionGroupNameType name, FG_RuntimeType* ru
 }
 
 bool FG_IsStable(FunctionGroupNameType name) {
-    if (!g_initialized || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return false;
     }
     
@@ -288,7 +288,7 @@ bool FG_IsStable(FunctionGroupNameType name) {
 }
 
 Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) {
-    if (!g_initialized || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -296,7 +296,7 @@ Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) 
     
     while (!FG_IsStable(name)) {
         uint32_t currentTime = 0U;
-        if (currentTime - startTime > timeoutMs) {
+        if ((currentTime - startTime) > timeoutMs) {
             return E_NOT_OK;  /* Timeout */
         }
         
@@ -308,14 +308,14 @@ Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) 
 
 Std_ReturnType FG_NotifyMemberState(FunctionGroupNameType name, const char* memberName,
                                      bool isActive) {
-    if (!g_initialized || name >= FUNCTION_GROUP_COUNT || memberName == NULL) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT) || memberName == NULL) {
         return E_NOT_OK;
     }
     
     FG_ConfigType* config = FindConfig(name);
     FG_RuntimeType* runtime = FindRuntime(name);
     
-    if (config == NULL || runtime == NULL) {
+    if ((config == NULL) || (runtime == NULL)) {
         return E_NOT_OK;
     }
     
@@ -346,7 +346,7 @@ Std_ReturnType FG_NotifyMemberState(FunctionGroupNameType name, const char* memb
 }
 
 uint32_t FG_GetActiveMemberCount(FunctionGroupNameType name) {
-    if (!g_initialized || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT)) {
         return 0U;
     }
     
@@ -374,7 +374,7 @@ void FG_MainFunction(void) {
         
         /* Check for timeout */
         FG_ConfigType* config = &g_configs[i];
-        if (currentTime - runtime->transitionStartTime > config->transitionTimeoutMs) {
+        if ((currentTime - runtime->transitionStartTime) > config->transitionTimeoutMs) {
             /* Transition timed out - force to target state */
             runtime->currentState = runtime->targetState;
             runtime->transitionInProgress = false;

@@ -47,7 +47,7 @@ __attribute__((weak)) void Tel_Platform_MemoryBarrier(void) {
 
 /* 环形缓冲区实现 */
 TelStatus_t Tel_RB_Init(TelRingBuffer_t *rb, uint8_t *buffer, uint16_t size) {
-    if (!rb || !buffer || size == 0) {
+    if (!rb || !buffer || (size == 0)) {
         return TEL_ERROR_NULL_PTR;
     }
     
@@ -81,11 +81,11 @@ uint16_t Tel_RB_GetFree(const TelRingBuffer_t *rb) {
 }
 
 bool Tel_RB_Write(TelRingBuffer_t *rb, const uint8_t *data, uint8_t len) {
-    if (!rb || !data || len == 0) {
+    if (!rb || !data || (len == 0)) {
         return false;
     }
     
-    if (Tel_RB_GetFree(rb) < len + 1) {
+    if (Tel_RB_GetFree(rb) < (len + 1)) {
         rb->overflow_cnt++;
         return false;
     }
@@ -187,11 +187,11 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
     }
     
     if (!s_module_config[module].enabled || 
-        level > s_module_config[module].min_level) {
+        (level > s_module_config[module].min_level)) {
         return TEL_OK;
     }
     
-    if (len > TEL_MAX_EVENT_SIZE - sizeof(TelEventHeader_t)) {
+    if (len > (TEL_MAX_EVENT_SIZE -) sizeof(TelEventHeader_t)) {
         len = TEL_MAX_EVENT_SIZE - sizeof(TelEventHeader_t);
     }
     
@@ -217,7 +217,7 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
 #endif
     
     uint8_t total_len = sizeof(TelEventHeader_t);
-    if (data && len > 0) {
+    if (data && (len > 0)) {
         memcpy(event.data, data, len);
         total_len += len;
     }
@@ -227,7 +227,7 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
     if (written) {
         s_tel_state.stats.total_events++;
         s_tel_state.stats.avg_event_size = 
-            (s_tel_state.stats.avg_event_size * 7 + total_len) / 8;
+            ((s_tel_state.stats.avg_event_size * 7) + total_len) / 8;
     } else {
         s_tel_state.stats.dropped_events++;
         return TEL_ERROR_BUFFER_FULL;
@@ -271,10 +271,10 @@ TelStatus_t Tel_ReadEvents(uint8_t *data, uint16_t max_len, uint16_t *actual_len
     uint8_t event_data[TEL_MAX_EVENT_SIZE];
     uint8_t event_len;
     
-    while (total_read < max_len - TEL_MAX_EVENT_SIZE) {
+    while (total_read < (max_len - TEL_MAX_EVENT_SIZE)) {
         bool has_more = Tel_RB_Read(&s_tel_state.ring_buffer, event_data, 
                                     TEL_MAX_EVENT_SIZE, &event_len);
-        if (!has_more || event_len == 0) {
+        if (!has_more || (event_len == 0)) {
             break;
         }
         
@@ -316,24 +316,24 @@ void Tel_SetModuleEnabled(TelModuleId_t module, bool enabled) {
 
 uint16_t Tel_CompressRLE(const uint8_t *input, uint16_t input_len, 
                          uint8_t *output, uint16_t output_max) {
-    if (!input || !output || input_len == 0) {
+    if (!input || !output || (input_len == 0)) {
         return 0;
     }
     
     uint16_t in = 0, out = 0;
     
-    while (in < input_len && out < output_max - 2) {
+    while ((in < input_len) && (out < output_max - 2)) {
         uint8_t byte = input[in];
         uint8_t count = 1;
         
-        while (in + count < input_len && 
-               input[in + count] == byte && 
-               count < 255) {
+        while ((in + count) < input_len && 
+               (input[in + count] == byte) && 
+               (count < 255)) {
             count++;
         }
         
         if (count > 2) {
-            if (out + 3 > output_max) break;
+            if ((out + 3) > output_max) break;
             output[out] = 0x00;
             out++;
             output[out] = count;
@@ -341,7 +341,7 @@ uint16_t Tel_CompressRLE(const uint8_t *input, uint16_t input_len,
             output[out] = byte;
             out++;
         } else {
-            for (uint8_t i = 0; i < count && out < output_max; i++) {
+            for (uint8_t i = 0; (i < count) && (out < output_max); i++) {
                 output[out] = byte;
                 out++;
             }

@@ -87,7 +87,7 @@ dds_PublisherHandleType dds_create_publisher(
 {
     (void)listener;
     dds_domain_participant_t *participant = handle_to_participant(participant_handle);
-    if (participant == NULL || !dds_runtime_is_participant(participant)) {
+    if ((participant == NULL) || !dds_runtime_is_participant(participant)) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -117,7 +117,7 @@ dds_SubscriberHandleType dds_create_subscriber(
 {
     (void)listener;
     dds_domain_participant_t *participant = handle_to_participant(participant_handle);
-    if (participant == NULL || !dds_runtime_is_participant(participant)) {
+    if ((participant == NULL) || !dds_runtime_is_participant(participant)) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -148,8 +148,8 @@ dds_TopicHandleType dds_create_topic(
 {
     (void)listener;
     dds_domain_participant_t *participant = handle_to_participant(participant_handle);
-    if (participant == NULL || !dds_runtime_is_participant(participant) ||
-        topic_name == NULL || type_name == NULL) {
+    if ((participant == NULL) || !dds_runtime_is_participant(participant) ||
+        (topic_name == NULL) || (type_name == NULL)) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -186,7 +186,7 @@ dds_DataWriterHandleType dds_create_writer(
     (void)listener;
     dds_publisher_t *publisher = handle_to_publisher(publisher_handle);
     dds_topic_t *topic = handle_to_topic(topic_handle);
-    if (publisher == NULL || !publisher->active ||
+    if ((publisher == NULL) || !publisher->active ||
         topic == NULL || !topic->active) {
         return DDS_ENTITY_INVALID;
     }
@@ -224,7 +224,7 @@ dds_DataReaderHandleType dds_create_reader(
     (void)listener;
     dds_subscriber_t *subscriber = handle_to_subscriber(subscriber_handle);
     dds_topic_t *topic = handle_to_topic(topic_handle);
-    if (subscriber == NULL || !subscriber->active ||
+    if ((subscriber == NULL) || !subscriber->active ||
         topic == NULL || !topic->active) {
         return DDS_ENTITY_INVALID;
     }
@@ -268,7 +268,7 @@ dds_DataReaderHandleType dds_create_reader(
 dds_ReturnCode_t dds_write(dds_DataWriterHandleType writer_handle, const void *data)
 {
     dds_data_writer_t *writer = handle_to_writer(writer_handle);
-    if (writer == NULL || !writer->active || data == NULL) {
+    if ((writer == NULL) || !writer->active || data == NULL) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
     if (writer->sample_size == 0) {
@@ -311,7 +311,7 @@ dds_ReturnCode_t dds_take(
     (void)instance_states;
 
     dds_data_reader_t *reader = handle_to_reader(reader_handle);
-    if (reader == NULL || !reader->active || data == NULL || max_samples == 0) {
+    if ((reader == NULL) || !reader->active || data == NULL || max_samples == 0) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -351,7 +351,7 @@ dds_ReturnCode_t dds_delete(dds_EntityHandleType entity)
     /* 区分实体类型: 仅当指针确实属于已注册参与者时才走 participant 分支
      * (不能用结构体字段偏移猜测 — publisher/subscriber 等首字段布局不同) */
     dds_domain_participant_t *participant = handle_to_participant(entity);
-    if (participant != NULL && dds_runtime_is_participant(participant)) {
+    if ((participant != NULL) && dds_runtime_is_participant(participant)) {
         /* 释放子实体 */
         dds_publisher_t *pub = participant->publishers;
         while (pub != NULL) {
@@ -401,26 +401,26 @@ dds_ReturnCode_t dds_delete(dds_EntityHandleType entity)
 
 dds_ReturnCode_t dds_get_qos(dds_EntityHandleType entity, void *qos)
 {
-    if (entity == DDS_ENTITY_INVALID || qos == NULL) {
+    if ((entity == DDS_ENTITY_INVALID) || (qos == NULL)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
     dds_domain_participant_t *participant = handle_to_participant(entity);
-    if (participant != NULL && dds_runtime_is_participant(participant)) {
+    if ((participant != NULL) && dds_runtime_is_participant(participant)) {
         dds_DomainParticipantQosType *dpq = (dds_DomainParticipantQosType*)qos;
         dpq->base = participant->qos;
         return DDS_RETCODE_OK;
     }
 
     dds_publisher_t *pub = handle_to_publisher(entity);
-    if (pub != NULL && pub->active) {
+    if ((pub != NULL) && pub->active) {
         dds_PublisherQosType *pq = (dds_PublisherQosType*)qos;
         pq->base = pub->qos;
         return DDS_RETCODE_OK;
     }
 
     dds_subscriber_t *sub = handle_to_subscriber(entity);
-    if (sub != NULL && sub->active) {
+    if ((sub != NULL) && sub->active) {
         dds_SubscriberQosType *sq = (dds_SubscriberQosType*)qos;
         sq->base = sub->qos;
         return DDS_RETCODE_OK;
@@ -431,26 +431,26 @@ dds_ReturnCode_t dds_get_qos(dds_EntityHandleType entity, void *qos)
 
 dds_ReturnCode_t dds_set_qos(dds_EntityHandleType entity, const void *qos)
 {
-    if (entity == DDS_ENTITY_INVALID || qos == NULL) {
+    if ((entity == DDS_ENTITY_INVALID) || (qos == NULL)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
     dds_domain_participant_t *participant = handle_to_participant(entity);
-    if (participant != NULL && dds_runtime_is_participant(participant)) {
+    if ((participant != NULL) && dds_runtime_is_participant(participant)) {
         const dds_DomainParticipantQosType *dpq = (const dds_DomainParticipantQosType*)qos;
         participant->qos = dpq->base;
         return DDS_RETCODE_OK;
     }
 
     dds_publisher_t *pub = handle_to_publisher(entity);
-    if (pub != NULL && pub->active) {
+    if ((pub != NULL) && pub->active) {
         const dds_PublisherQosType *pq = (const dds_PublisherQosType*)qos;
         pub->qos = pq->base;
         return DDS_RETCODE_OK;
     }
 
     dds_subscriber_t *sub = handle_to_subscriber(entity);
-    if (sub != NULL && sub->active) {
+    if ((sub != NULL) && sub->active) {
         const dds_SubscriberQosType *sq = (const dds_SubscriberQosType*)qos;
         sub->qos = sq->base;
         return DDS_RETCODE_OK;
@@ -465,7 +465,7 @@ dds_ReturnCode_t dds_get_sample_rejected_status(
 {
     (void)status;
     dds_data_reader_t *reader = handle_to_reader(reader_handle);
-    if (reader == NULL || !reader->active) {
+    if ((reader == NULL) || !reader->active) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
     /* 简化: 返回 OK, 详细状态统计由 pubsub 层维护 */
@@ -477,7 +477,7 @@ dds_ReturnCode_t dds_set_writer_sample_size(
     uint32_t sample_size)
 {
     dds_data_writer_t *writer = handle_to_writer(writer_handle);
-    if (writer == NULL || !writer->active || sample_size == 0) {
+    if ((writer == NULL) || !writer->active || sample_size == 0) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
     writer->sample_size = sample_size;

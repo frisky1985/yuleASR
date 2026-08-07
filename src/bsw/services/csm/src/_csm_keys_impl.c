@@ -264,14 +264,14 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
     }
     
     /* 尝试通过硬件服务层生成 */
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->jobs != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->jobs != NULL_PTR))
     {
         /* 查找关联的作业配置 */
         uint8 i;
-        for (i = 0; i < Csm_CurrentConfig->numJobs && i < CSM_MAX_JOBS; i++)
+        for (i = 0; (i < Csm_CurrentConfig->numJobs) && (i < CSM_MAX_JOBS); i++)
         {
-            if (Csm_CurrentConfig->jobs[i].keyId == keyId &&
-                Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_GENERATE)
+            if ((Csm_CurrentConfig->jobs[i].keyId == keyId) &&
+                (Csm_CurrentConfig->jobs[i].serviceType == CSM_SERVICE_KEY_GENERATE))
             {
                 if (E_OK == Csm_FindJobIndex(Csm_CurrentConfig->jobs[i].jobId, &jobIdx))
                 {
@@ -302,7 +302,7 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
                             &Csm_Jobs[jobIdx].resultLength);
                         Csm_ActiveJobCount--;
                         
-                        if (hwResult == E_OK && Csm_Jobs[jobIdx].resultLength > 0U)
+                        if ((hwResult == E_OK) && (Csm_Jobs[jobIdx].resultLength > 0U))
                         {
                             /* 将生成的密钥材料存入密钥元素 */
                             Csm_Keys[keyIdx].elements[0].length = Csm_Jobs[jobIdx].resultLength;
@@ -329,7 +329,7 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
     /* 软件回退: 使用随机数生成器生成密钥材料 */
     /* 确定密钥长度 (从配置或默认值) */
     keyLength = CSM_MAX_KEY_LENGTH;
-    if (Csm_CurrentConfig != NULL_PTR && Csm_CurrentConfig->keys != NULL_PTR)
+    if ((Csm_CurrentConfig != NULL_PTR) && (Csm_CurrentConfig->keys != NULL_PTR))
     {
         uint8 i;
         for (i = 0; i < Csm_CurrentConfig->numKeys; i++)
@@ -337,8 +337,8 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
             if (Csm_CurrentConfig->keys[i].keyId == keyId)
             {
                 /* 从元素配置中获取密钥长度 */
-                if (Csm_CurrentConfig->keys[i].elements != NULL_PTR &&
-                    Csm_CurrentConfig->keys[i].numElements > 0U)
+                if ((Csm_CurrentConfig->keys[i].elements != NULL_PTR) &&
+                    (Csm_CurrentConfig->keys[i].numElements > 0U))
                 {
                     keyLength = Csm_CurrentConfig->keys[i].elements[0].maxLength;
                     if (keyLength > CSM_MAX_KEY_LENGTH)

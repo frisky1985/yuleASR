@@ -138,9 +138,9 @@ Std_ReturnType S32K312_Hsm_EccPointMultiply(const S32K312_HsmEccContextType* con
             for (i = 0U; i < wordCount; i++) {
                 S32K312_Hsm_EccRegs->SCALAR[i] =
                     ((uint32)context->privateKey[i * 4U] << 24) |
-                    ((uint32)context->privateKey[i * 4U + 1U] << 16) |
-                    ((uint32)context->privateKey[i * 4U + 2U] << 8) |
-                    (uint32)context->privateKey[i * 4U + 3U];
+                    ((uint32)context->privateKey[(i * 4U) + 1U] << 16) |
+                    ((uint32)context->privateKey[(i * 4U) + 2U] << 8) |
+                    (uint32)context->privateKey[(i * 4U) + 3U];
             }
             
             /* Start point multiplication (uses generator point) */
@@ -158,9 +158,9 @@ Std_ReturnType S32K312_Hsm_EccPointMultiply(const S32K312_HsmEccContextType* con
                     for (i = 0U; i < pointWords; i++) {
                         uint32 data = S32K312_Hsm_EccRegs->POINT_OUT[i];
                         resultPoint[i * 4U] = (uint8)(data >> 24);
-                        resultPoint[i * 4U + 1U] = (uint8)(data >> 16);
-                        resultPoint[i * 4U + 2U] = (uint8)(data >> 8);
-                        resultPoint[i * 4U + 3U] = (uint8)(data);
+                        resultPoint[(i * 4U) + 1U] = (uint8)(data >> 16);
+                        resultPoint[(i * 4U) + 2U] = (uint8)(data >> 8);
+                        resultPoint[(i * 4U) + 3U] = (uint8)(data);
                     }
                 }
             }
@@ -227,18 +227,18 @@ Std_ReturnType S32K312_Hsm_EccSign(const S32K312_HsmEccContextType* context,
             for (i = 0U; i < wordCount; i++) {
                 S32K312_Hsm_EccRegs->SCALAR[i] =
                     ((uint32)context->privateKey[i * 4U] << 24) |
-                    ((uint32)context->privateKey[i * 4U + 1U] << 16) |
-                    ((uint32)context->privateKey[i * 4U + 2U] << 8) |
-                    (uint32)context->privateKey[i * 4U + 3U];
+                    ((uint32)context->privateKey[(i * 4U) + 1U] << 16) |
+                    ((uint32)context->privateKey[(i * 4U) + 2U] << 8) |
+                    (uint32)context->privateKey[(i * 4U) + 3U];
             }
             
             /* Load hash */
             for (i = 0U; i < 8U; i++) {
                 S32K312_Hsm_EccRegs->HASH[i] =
                     ((uint32)digest[i * 4U] << 24) |
-                    ((uint32)digest[i * 4U + 1U] << 16) |
-                    ((uint32)digest[i * 4U + 2U] << 8) |
-                    (uint32)digest[i * 4U + 3U];
+                    ((uint32)digest[(i * 4U) + 1U] << 16) |
+                    ((uint32)digest[(i * 4U) + 2U] << 8) |
+                    (uint32)digest[(i * 4U) + 3U];
             }
             
             /* Start signing */
@@ -254,15 +254,15 @@ Std_ReturnType S32K312_Hsm_EccSign(const S32K312_HsmEccContextType* context,
                     for (i = 0U; i < wordCount; i++) {
                         uint32 dataR = S32K312_Hsm_EccRegs->SIG_R[i];
                         signature[i * 4U] = (uint8)(dataR >> 24);
-                        signature[i * 4U + 1U] = (uint8)(dataR >> 16);
-                        signature[i * 4U + 2U] = (uint8)(dataR >> 8);
-                        signature[i * 4U + 3U] = (uint8)(dataR);
+                        signature[(i * 4U) + 1U] = (uint8)(dataR >> 16);
+                        signature[(i * 4U) + 2U] = (uint8)(dataR >> 8);
+                        signature[(i * 4U) + 3U] = (uint8)(dataR);
                         
                         uint32 dataS = S32K312_Hsm_EccRegs->SIG_S[i];
-                        signature[context->keyLength + i * 4U] = (uint8)(dataS >> 24);
-                        signature[context->keyLength + i * 4U + 1U] = (uint8)(dataS >> 16);
-                        signature[context->keyLength + i * 4U + 2U] = (uint8)(dataS >> 8);
-                        signature[context->keyLength + i * 4U + 3U] = (uint8)(dataS);
+                        signature[context->keyLength + (i * 4U)] = (uint8)(dataS >> 24);
+                        signature[context->keyLength + (i * 4U) + 1U] = (uint8)(dataS >> 16);
+                        signature[context->keyLength + (i * 4U) + 2U] = (uint8)(dataS >> 8);
+                        signature[context->keyLength + (i * 4U) + 3U] = (uint8)(dataS);
                     }
                     *signatureLength = context->keyLength * 2U;
                 }
@@ -333,33 +333,33 @@ Std_ReturnType S32K312_Hsm_EccVerify(const S32K312_HsmEccContextType* context,
             for (i = 0U; i < (wordCount * 2U); i++) {
                 S32K312_Hsm_EccRegs->POINT_IN[i] =
                     ((uint32)context->publicKey[i * 4U] << 24) |
-                    ((uint32)context->publicKey[i * 4U + 1U] << 16) |
-                    ((uint32)context->publicKey[i * 4U + 2U] << 8) |
-                    (uint32)context->publicKey[i * 4U + 3U];
+                    ((uint32)context->publicKey[(i * 4U) + 1U] << 16) |
+                    ((uint32)context->publicKey[(i * 4U) + 2U] << 8) |
+                    (uint32)context->publicKey[(i * 4U) + 3U];
             }
             
             /* Load hash */
             for (i = 0U; i < 8U; i++) {
                 S32K312_Hsm_EccRegs->HASH[i] =
                     ((uint32)digest[i * 4U] << 24) |
-                    ((uint32)digest[i * 4U + 1U] << 16) |
-                    ((uint32)digest[i * 4U + 2U] << 8) |
-                    (uint32)digest[i * 4U + 3U];
+                    ((uint32)digest[(i * 4U) + 1U] << 16) |
+                    ((uint32)digest[(i * 4U) + 2U] << 8) |
+                    (uint32)digest[(i * 4U) + 3U];
             }
             
             /* Load signature */
             for (i = 0U; i < wordCount; i++) {
                 S32K312_Hsm_EccRegs->SIG_R[i] =
                     ((uint32)signature[i * 4U] << 24) |
-                    ((uint32)signature[i * 4U + 1U] << 16) |
-                    ((uint32)signature[i * 4U + 2U] << 8) |
-                    (uint32)signature[i * 4U + 3U];
+                    ((uint32)signature[(i * 4U) + 1U] << 16) |
+                    ((uint32)signature[(i * 4U) + 2U] << 8) |
+                    (uint32)signature[(i * 4U) + 3U];
                 
                 S32K312_Hsm_EccRegs->SIG_S[i] =
-                    ((uint32)signature[context->keyLength + i * 4U] << 24) |
-                    ((uint32)signature[context->keyLength + i * 4U + 1U] << 16) |
-                    ((uint32)signature[context->keyLength + i * 4U + 2U] << 8) |
-                    (uint32)signature[context->keyLength + i * 4U + 3U];
+                    ((uint32)signature[context->keyLength + (i * 4U)] << 24) |
+                    ((uint32)signature[context->keyLength + (i * 4U) + 1U] << 16) |
+                    ((uint32)signature[context->keyLength + (i * 4U) + 2U] << 8) |
+                    (uint32)signature[context->keyLength + (i * 4U) + 3U];
             }
             
             /* Start verification */

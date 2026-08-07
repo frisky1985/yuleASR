@@ -280,9 +280,9 @@ STATIC void Swc_EngineControl_HandleFaults(void)
     }
 
     /* Decrement fault counter if conditions are normal */
-    if (swcEngineControl.faultCounter > 0U &&
-        swcEngineControl.parameters.engineTemperature < ENG_OVERHEAT_THRESHOLD &&
-        swcEngineControl.parameters.throttlePosition <= 100) {
+    if ((swcEngineControl.faultCounter > 0U) &&
+        ((swcEngineControl.parameters.engineTemperature < ENG_OVERHEAT_THRESHOLD)) &&
+        (swcEngineControl.parameters.throttlePosition <= 100)) {
         swcEngineControl.faultCounter--;
     }
 }
@@ -293,8 +293,8 @@ STATIC void Swc_EngineControl_HandleFaults(void)
 STATIC boolean Swc_EngineControl_CheckStartConditions(void)
 {
     /* Check coolant temperature within range */
-    if (swcEngineControl.parameters.engineTemperature < ENG_MIN_OPERATING_TEMP ||
-        swcEngineControl.parameters.engineTemperature > ENG_MAX_OPERATING_TEMP) {
+    if ((swcEngineControl.parameters.engineTemperature < ENG_MIN_OPERATING_TEMP) ||
+        (swcEngineControl.parameters.engineTemperature > ENG_MAX_OPERATING_TEMP)) {
         return FALSE;
     }
 
@@ -312,8 +312,8 @@ STATIC boolean Swc_EngineControl_CheckStartConditions(void)
 STATIC boolean Swc_EngineControl_CheckStopConditions(void)
 {
     /* Check if throttle is at idle position and vehicle stopped */
-    if (swcEngineControl.parameters.throttlePosition < 5 &&
-        swcEngineControl.parameters.engineSpeed <= ENG_MIN_IDLE_SPEED) {
+    if ((swcEngineControl.parameters.throttlePosition < 5) &&
+        (swcEngineControl.parameters.engineSpeed <= ENG_MIN_IDLE_SPEED)) {
         return TRUE;
     }
 

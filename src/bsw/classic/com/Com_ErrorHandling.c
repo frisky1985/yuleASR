@@ -278,14 +278,14 @@ Std_ReturnType Com_Eh_DropOldestTxRequest(void)
     Com_TxRequestEntryType* entry = &Com_TxRequestQueue.Entries[headIndex];
 
     /* Verify entry is in a state that can be dropped */
-    if (entry->State != COM_TXREQ_PENDING && entry->State != COM_TXREQ_RETRY) {
+    if ((entry->State != COM_TXREQ_PENDING) && (entry->State != COM_TXREQ_RETRY)) {
         /* Entry is not droppable (might be IN_PROGRESS) */
         /* Try to find next droppable entry */
         boolean found = FALSE;
         for (uint8 i = 1u; i < Com_TxRequestQueue.Count; i++) {
             uint8 checkIndex = (headIndex + i) % COM_MAX_TX_REQUESTS;
-            if (Com_TxRequestQueue.Entries[checkIndex].State == COM_TXREQ_PENDING ||
-                Com_TxRequestQueue.Entries[checkIndex].State == COM_TXREQ_RETRY) {
+            if ((Com_TxRequestQueue.Entries[checkIndex].State == COM_TXREQ_PENDING) ||
+                (Com_TxRequestQueue.Entries[checkIndex].State == COM_TXREQ_RETRY)) {
                 /* Found a droppable entry - use this one instead */
                 entry = &Com_TxRequestQueue.Entries[checkIndex];
                 headIndex = checkIndex;
@@ -339,7 +339,7 @@ Std_ReturnType Com_Eh_DropNewestTxRequest(void)
     Com_TxRequestEntryType* entry = &Com_TxRequestQueue.Entries[newestIndex];
 
     /* Verify entry is in a state that can be dropped */
-    if (entry->State != COM_TXREQ_PENDING && entry->State != COM_TXREQ_RETRY) {
+    if ((entry->State != COM_TXREQ_PENDING) && (entry->State != COM_TXREQ_RETRY)) {
         /* Entry is not droppable */
         return E_NOT_OK;
     }
@@ -455,7 +455,7 @@ void Com_Eh_ResetErrorStats(void)
  */
 Std_ReturnType Com_Eh_GetErrorLogEntry(uint8 Index, Com_ErrorLogEntryType* EntryPtr)
 {
-    if (EntryPtr == NULL_PTR || Index >= COM_MAX_ERROR_LOG_ENTRIES) {
+    if ((EntryPtr == NULL_PTR) || (Index >= COM_MAX_ERROR_LOG_ENTRIES)) {
         return E_NOT_OK;
     }
 

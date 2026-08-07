@@ -148,7 +148,7 @@ void Spi_Init(const Spi_ConfigType* Config)
     
     Spi_ConfigPtr = Config;
     
-    for (i = 0; i < Config->ChannelCount && i < SPI_CHANNEL_COUNT; i++) {
+    for (i = 0; (i < Config->ChannelCount) && (i < SPI_CHANNEL_COUNT); i++) {
         const Spi_ChannelConfigType* chCfg = &Config->ChannelConfig[i];
         uint32 conreg = 0;
         uint32 cfgreg = 0;
@@ -211,7 +211,7 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
     
     /* 计算预分额和后分额 - 使用标志变量替代goto */
     boolean found = FALSE;
-    for (preDiv = 0; preDiv < 16 && !found; preDiv++) {
+    for (preDiv = 0; (preDiv < 16) && !found; preDiv++) {
         for (postDiv = 0; postDiv < 16; postDiv++) {
             if (((1u << preDiv) * (postDiv + 1)) >= tempDiv) {
                 found = TRUE;
@@ -371,7 +371,7 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
     /* 设置波特率 */
     Spi_SetBaudRateInternal(channel, dev->BaudRate);
     
-    if (chCfg->DmaEnabled && Length > SPI_DMA_FIFO_THRESHOLD) {
+    if (chCfg->DmaEnabled && (Length > SPI_DMA_FIFO_THRESHOLD)) {
         /* DMA传输 */
         state->DmaActive = TRUE;
         
@@ -450,7 +450,7 @@ Spi_JobResultType Spi_GetJobResult(void)
  */
 void Spi_IsrHandler(uint8 Channel)
 {
-    if (Channel >= SPI_CHANNEL_COUNT || Spi_Initialized == FALSE) {
+    if ((Channel >= SPI_CHANNEL_COUNT) || (Spi_Initialized == FALSE)) {
         return;
     }
     
@@ -460,7 +460,7 @@ void Spi_IsrHandler(uint8 Channel)
     /* RX中断 */
     if (stat & STATREG_RR) {
         while ((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_RR) && 
-               state->Transferred < state->Length) {
+               (state->Transferred < state->Length)) {
             if (state->RxBuffer) {
                 state->RxBuffer[state->Transferred] = 
                     (uint8)(REG_READ32(Spi_BaseAddr[Channel] + ECSPI_RXDATA));
@@ -472,9 +472,9 @@ void Spi_IsrHandler(uint8 Channel)
     }
     
     /* TX中断 - 继续填充FIFO */
-    if ((stat & STATREG_TE) && state->Transferred < state->Length) {
-        while ((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_TE) == 0U && 
-               (state->Transferred + (state->Length - state->TxSent)) < SPI_FIFO_DEPTH) {
+    if ((stat & STATREG_TE) && (state->Transferred < state->Length)) {
+        while (((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_TE) == 0U) && 
+               ((state->Transferred + (state->Length - state->TxSent)) < SPI_FIFO_DEPTH)) {
             REG_WRITE32(Spi_BaseAddr[Channel] + ECSPI_TXDATA, 
                 state->TxBuffer ? state->TxBuffer[state->TxSent] : 0xFF);
             state->TxSent++;
@@ -495,7 +495,7 @@ void Spi_IsrHandler(uint8 Channel)
  */
 void Spi_MainFunction(void)
 {
-    if (Spi_Initialized == FALSE || Spi_Status != SPI_BUSY) {
+    if ((Spi_Initialized == FALSE) || (Spi_Status != SPI_BUSY)) {
         return;
     }
     
