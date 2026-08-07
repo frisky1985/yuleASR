@@ -1,0 +1,26 @@
+{
+  "swe6_check": {
+    "spec_defined": true,
+    "test_cases": 7,
+    "test_cases_source": "parsed from spec",
+    "test_cases_field": "TC-* headings",
+    "traceability": {
+      "total_requirements": 5,
+      "with_test_coverage": 5,
+      "coverage_pct": 100.0
+    }
+  },
+  "qualification": {
+    "cases_total": 7,
+    "cases_passed": 7,
+    "pass_rate_pct": 100.0,
+    "executed_by": "tests/test_swe6/run_qualification.sh",
+    "coverage": {
+      "line_rate": 43.25,
+      "branch_rate": 31.19
+    },
+    "report": "tests/test_swe6/qualification-report.md",
+    "traceability": "tests/test_swe6/traceability-matrix.md"
+  },
+  "generated_at": "2026-08-07T15:35:31.228671+00:00"
+}
