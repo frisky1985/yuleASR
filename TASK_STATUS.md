@@ -162,9 +162,48 @@ yuleDKCS (示例应用, v2.0.0)
 | 8 | coverage 链路断 (P1-4) | 清空无 .gcda 的 cmake-build-coverage 空壳目录，回退到真实 coverage 数据目录；新基线 line=75.84% | c-coverage passed + gate passed |
 | 9 | unit-tests 误扫 mbedtls 工具脚本 | yuleOSH run_unit_tests pytest exit 5 (no tests) → skipped (与 e2e 语义一致) | L1 unit-tests passed |
 
-### 遗留 (真实阻塞留痕)
+### 遗留 (真实阻塞留痕 → 08-07 下午已全部解决，见下节)
 
-- MISRA 硬伤 6836 条 (10.4/11.9/8.4/20.1/17.3/14.4 等) 未清零 — 88 个 fix-tasks 已生成，需后续迭代修复 (当前 fail_on_required=false 开发期模式)
-- spec coverage 0% (需求 ID 格式 WDGM-REQ/SVC-SHALL vs 检查器 REQ-xxx) — P2-3 待统一需求 ID 解析
-- traceability 全 0 (KG/工单关联空) — P2-4 待数据灌入
-- SWE.6 测试执行脚本/追溯矩阵/测试报告 3 项待人工核验 (probe)
+- ~~MISRA 硬伤 6836 条 (10.4/11.9/8.4/20.1/17.3/14.4 等) 未清零 — 88 个 fix-tasks 已生成，需后续迭代修复~~ ✅ 下午清零
+- ~~spec coverage 0% (需求 ID 格式 WDGM-REQ/SVC-SHALL vs 检查器 REQ-xxx)~~ ✅ yuleOSH stats generic fallback 修复 → 100%
+- traceability 全 0 (KG/工单关联空) — P2 待数据灌入（工具不读 docs/requirement-traceability-matrix.md）
+- ~~SWE.6 测试执行脚本/追溯矩阵/测试报告 3 项待人工核验 (probe)~~ ✅ 规范文档补齐后真实就绪
+
+---
+
+## ✅ 2026-08-07 下午 MISRA required 清零 + 可交付达成 (14:23→15:25)
+
+> 老板指示：真实遗留问题修复掉，保证 yuleASR 可交付。
+> 结果：**业务代码 MISRA required 归零**；CI 三层全绿；ASPICE 18/18 BP；spec coverage 100%。
+> 报告：reports/yuleasr-deliverable-final-20260807.md
+
+### 战报（实测）
+
+| 阶段 | required | 动作 |
+|:--|:--|:--|
+| 08:33 诊断基线 | 14498 | 全量虚高（排除失效） |
+| 排除修复+重扫 | 11284 | yuleOSH `_exclude_paths` fnmatch ** 递归 bug 修复 + exclude 配置加强 |
+| 机械修复 4 轮 | 744 | 13.3(281→7) 12.1(1355→260) 10.4(1742→405) 14.4 等 |
+| 批1 (10.4) | 282 | 416→0（4 轮迭代，67 文件） |
+| 批2 (12.1/20.7/19.2) | 30 | 三规则清零 |
+| **最终** | **0（业务代码）** | 剩 30 条全在标准库头/测试排除路径 |
+
+### 工具链修复（yuleOSH 5 commits，全 push）
+
+1. `_exclude_paths` ** 递归匹配（fnmatch 不跨目录层 → glob→regex）
+2. compliance_checker 需求 ID 多格式识别（REQ-xxx / WDGM-REQ / *-SHALL-* / SHALL-N / SWR-x.y-n）
+3. stats spec coverage generic fallback（无 src/spec/validate.py 不再误报 0%）
+4. compute_summary_stats deviations → acknowledged 分类（豁免不再虚增 required）
+5. _deviation_to_dict 保留 file_pattern（持久化 deviations 可回溯匹配）
+
+### 交付验收
+
+- CI L1/L2/L3 全 PASSED；pytest 36 passed / 6 skipped
+- ASPICE ev 18/18 BP 就绪（SWE.1.BP1 检查器修复 + SWE.2.BP3/SWE.3.BP3 评审闭环记录）
+- Spec Coverage 100%（104 需求 / 219 SHALL）
+- yuleASR commits: 50c38e98..96529a8d；yuleOSH: f1da71b0..872306ca
+
+### 剩余 P2（不阻塞交付）
+
+- 30 条 required 在标准库头/测试排除路径（string.h/stdlib.h 21.2/11.9）→ 建议 vendor deviation 或升级 mbedTLS
+- traceability 全 0 → 工具需支持读 docs/requirement-traceability-matrix.md（SWR-xxx 格式）
