@@ -159,16 +159,11 @@ typedef struct
  * Memory Section Abstraction (compiler specific)
  ******************************************************************************/
 #ifndef MEMMAP_ERROR
-    /* Default memory section macros */
+    /* Default memory section macros
+     * (CONST/pointer-type function-like macros removed: MISRA C:2023 20.7;
+     *  CONST usages rewritten as const-qualified types, pointer macros unused) */
     #define VAR(vartype, memclass)                  vartype
-    #define CONST(consttype, memclass)              const consttype
     #define FUNC(rettype, memclass)                 rettype
-    #define P2VAR(ptrtype, memclass, ptrclass)      ptrtype *
-    #define P2CONST(ptrtype, memclass, ptrclass)    const ptrtype *
-    #define CONSTP2VAR(ptrtype, memclass, ptrclass) ptrtype * const
-    #define CONSTP2CONST(ptrtype, memclass, ptrclass) const ptrtype * const
-    #define P2FUNC(rettype, ptrclass, fctname)      rettype (*fctname)
-    #define CONSTP2FUNC(rettype, ptrclass, fctname) rettype (* const fctname)
 #endif
 
 /*******************************************************************************
@@ -177,23 +172,15 @@ typedef struct
 #ifdef __GNUC__
     #define INLINE              inline
     #define LOCAL_INLINE        static inline
-    #define FUNC_P2CONST(rettype, ptrclass, memclass) const rettype * memclass
-    #define FUNC_P2VAR(rettype, ptrclass, memclass)   rettype * memclass
 #elif defined(__IAR_SYSTEMS_ICC__)
     #define INLINE              inline
     #define LOCAL_INLINE        static inline
-    #define FUNC_P2CONST(rettype, ptrclass, memclass) const rettype * memclass
-    #define FUNC_P2VAR(rettype, ptrclass, memclass)   rettype * memclass
 #elif defined(__TASKING__)
     #define INLINE              inline
     #define LOCAL_INLINE        static inline
-    #define FUNC_P2CONST(rettype, ptrclass, memclass) const rettype * memclass
-    #define FUNC_P2VAR(rettype, ptrclass, memclass)   rettype * memclass
 #else
     #define INLINE
     #define LOCAL_INLINE        static
-    #define FUNC_P2CONST(rettype, ptrclass, memclass) const rettype *
-    #define FUNC_P2VAR(rettype, ptrclass, memclass)   rettype *
 #endif
 
 /*******************************************************************************

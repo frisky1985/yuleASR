@@ -58,22 +58,22 @@
 #include "MemMap.h"
 
 /* External reference to the main DEM configuration */
-extern CONST(Dem_ConfigType, DEM_CONST) Dem_Config;
+extern const Dem_ConfigType Dem_Config;
 
 /* Event parameter configuration */
-extern CONST(Dem_EventParameterType, DEM_CONST) Dem_EventParameters[DEM_NUM_EVENTS];
+extern const Dem_EventParameterType Dem_EventParameters[DEM_NUM_EVENTS];
 
 /* DTC parameter configuration */
-extern CONST(Dem_DtcParameterType, DEM_CONST) Dem_DtcParameters[DEM_NUM_DTCS];
+extern const Dem_DtcParameterType Dem_DtcParameters[DEM_NUM_DTCS];
 
 /* Freeze frame record configuration */
-extern CONST(Dem_FreezeFrameRecordType, DEM_CONST) Dem_FreezeFrameRecords[DEM_NUM_FREEZE_FRAME_RECORDS];
+extern const Dem_FreezeFrameRecordType Dem_FreezeFrameRecords[DEM_NUM_FREEZE_FRAME_RECORDS];
 
 /* Extended data record configuration */
-extern CONST(Dem_ExtendedDataRecordType, DEM_CONST) Dem_ExtendedDataRecords[DEM_NUM_EXTENDED_DATA_RECORDS];
+extern const Dem_ExtendedDataRecordType Dem_ExtendedDataRecords[DEM_NUM_EXTENDED_DATA_RECORDS];
 
 /* Indicator configuration */
-extern CONST(Dem_IndicatorType, DEM_CONST) Dem_Indicators[DEM_NUM_INDICATORS];
+extern const Dem_IndicatorType Dem_Indicators[DEM_NUM_INDICATORS];
 
 #define DEM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"

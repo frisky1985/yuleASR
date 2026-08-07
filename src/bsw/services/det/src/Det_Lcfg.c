@@ -104,7 +104,7 @@ LOCAL FUNC(Std_ReturnType, DET_CODE) Det_DefaultTransientFaultHook(
  * @details Array of function pointers to error hook callbacks.
  *          These hooks are called in sequence when Det_ReportError is invoked.
  */
-CONST(Det_ErrorHookPtrType, DET_CONST) Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS] =
+const Det_ErrorHookPtrType Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS] =
 {
     &Det_DefaultErrorHook
     /* Additional hooks can be added here */
@@ -114,7 +114,7 @@ CONST(Det_ErrorHookPtrType, DET_CONST) Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS]
 /**
  * @brief   Default runtime error hooks table
  */
-CONST(Det_RuntimeErrorHookPtrType, DET_CONST) Det_RuntimeErrorHooks[DET_NUMBER_OF_RUNTIME_ERROR_HOOKS] =
+const Det_RuntimeErrorHookPtrType Det_RuntimeErrorHooks[DET_NUMBER_OF_RUNTIME_ERROR_HOOKS] =
 {
     &Det_DefaultRuntimeErrorHook
 };
@@ -124,7 +124,7 @@ CONST(Det_RuntimeErrorHookPtrType, DET_CONST) Det_RuntimeErrorHooks[DET_NUMBER_O
 /**
  * @brief   Default transient fault hooks table
  */
-CONST(Det_TransientFaultHookPtrType, DET_CONST) Det_TransientFaultHooks[DET_NUMBER_OF_TRANSIENT_FAULT_HOOKS] =
+const Det_TransientFaultHookPtrType Det_TransientFaultHooks[DET_NUMBER_OF_TRANSIENT_FAULT_HOOKS] =
 {
     &Det_DefaultTransientFaultHook
 };
@@ -145,7 +145,7 @@ CONST(Det_TransientFaultHookPtrType, DET_CONST) Det_TransientFaultHooks[DET_NUMB
  * @details This structure contains post-build configurable parameters
  *          that can be modified without recompiling the Det module.
  */
-CONST(Det_ConfigType, DET_CONST) Det_Config =
+const Det_ConfigType Det_Config =
 {
     /* DetEnableFreezeOnError */    (boolean)DET_FREEZE_ON_ERROR,
     /* DetEnableLogging */          (boolean)DET_ERROR_LOGGING_ENABLED,
@@ -172,7 +172,7 @@ CONST(Det_ConfigType, DET_CONST) Det_Config =
  *                                            uint8 ApiId, uint8 ErrorId);
  * 
  * Then add to Det_ErrorHooks array:
- * CONST(Det_ErrorHookPtrType, DET_CONST) Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS] =
+ * const Det_ErrorHookPtrType Det_ErrorHooks[DET_NUMBER_OF_ERROR_HOOKS] =
  * {
  *     &Det_DefaultErrorHook,
  *     &MyCustomErrorHandler

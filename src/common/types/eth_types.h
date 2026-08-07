@@ -128,7 +128,7 @@ typedef void (*dds_data_callback_t)(const void *data, uint32_t size, void *user_
  * 宏定义工具
  * ============================================================================ */
 
-#define ETH_MAC_ADDR(a,b,c,d,e,f) {a,b,c,d,e,f}
+#define ETH_MAC_ADDR(a,b,c,d,e,f) {(a),(b),(c),(d),(e),(f)}
 #define ETH_IP_ADDR(a,b,c,d) ((((uint32_t)(a))<<24) | (((uint32_t)(b))<<16) | \
                               (((uint32_t)(c))<<8)  | ((uint32_t)(d)))
 

@@ -285,21 +285,11 @@ extern Rte_StatusType Swc_DisconnectPorts(Swc_ComponentHandleType sourceComponen
     static const Swc_RunnableConfigType Swc_##componentName##_RunnableConfig_##runnableName = { \
         .runnableId = RTE_RUNNABLE_##runnableName, \
         .runnableFunc = Swc_##componentName##_Runnable_##runnableName, \
-        .eventType = eventType, \
-        .periodMs = periodMs, \
+        .eventType = (eventType), \
+        .periodMs = (periodMs), \
         .canBeInvokedConcurrently = FALSE \
     }; \
     static void Swc_##componentName##_Runnable_##runnableName(void)
-
-/**
- * @brief Macro to declare a sender-receiver port
- */
-#define SWC_DECLARE_SR_PORT(componentName, portName, dataType, direction) \
-    typedef struct { \
-        dataType data; \
-        boolean isUpdated; \
-        uint32 age; \
-    } Swc_##componentName##_Port_##portName##Type
 
 /**
  * @brief Macro to declare a client-server port
@@ -310,16 +300,6 @@ extern Rte_StatusType Swc_DisconnectPorts(Swc_ComponentHandleType sourceComponen
         void* requestData; \
         void* responseData; \
         boolean isPending; \
-    } Swc_##componentName##_Port_##portName##Type
-
-/**
- * @brief Macro to declare a mode switch port
- */
-#define SWC_DECLARE_MODE_PORT(componentName, portName, modeGroupType, direction) \
-    typedef struct { \
-        modeGroupType currentMode; \
-        modeGroupType nextMode; \
-        boolean transitionPending; \
     } Swc_##componentName##_Port_##portName##Type
 
 /**
@@ -336,15 +316,6 @@ extern Rte_StatusType Swc_DisconnectPorts(Swc_ComponentHandleType sourceComponen
  */
 #define SWC_DECLARE_PIM(componentName, pimName, dataType) \
     typedef dataType Swc_##componentName##_Pim_##pimName##Type
-
-/**
- * @brief Macro to declare inter-runnable variable
- */
-#define SWC_DECLARE_IRV(componentName, irvName, dataType) \
-    typedef struct { \
-        dataType data; \
-        boolean isWritten; \
-    } Swc_##componentName##_Irv_##irvName##Type
 
 /**
  * @brief Macro to access PIM

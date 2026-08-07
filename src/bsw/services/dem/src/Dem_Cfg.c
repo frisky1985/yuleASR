@@ -287,7 +287,7 @@ extern void Dem_ClearDTCFinishNotification(void);
  * 
  * This is the main configuration structure used by Dem_Init().
  */
-CONST(Dem_ConfigType, DEM_CONST) Dem_Config = {
+const Dem_ConfigType Dem_Config = {
     Dem_EventParameters,          /* EventParameters */
     5U,                           /* NumEvents - actual configured events */
     Dem_DtcParameters,            /* DtcParameters */

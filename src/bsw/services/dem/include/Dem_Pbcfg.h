@@ -74,7 +74,7 @@ typedef struct {
 #include "MemMap.h"
 
 /* Default post-build configuration */
-extern CONST(Dem_PostBuildConfigType, DEM_CONST) Dem_PostBuildConfig;
+extern const Dem_PostBuildConfigType Dem_PostBuildConfig;
 
 #define DEM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
 #include "MemMap.h"

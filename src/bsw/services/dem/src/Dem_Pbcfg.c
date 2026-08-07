@@ -38,7 +38,7 @@
  * This configuration can be modified at runtime or linked from
  * a different object file for post-build configuration support.
  */
-CONST(Dem_PostBuildConfigType, DEM_CONST) Dem_PostBuildConfig = {
+const Dem_PostBuildConfigType Dem_PostBuildConfig = {
     DEM_NVM_BLOCK_ID_EVENT_STATUS,   /* NvMBlockIdEventStatus */
     DEM_NVM_BLOCK_ID_DTC_DATA,       /* NvMBlockIdDTCData */
     DEM_NVM_BLOCK_ID_FREEZE_FRAME,   /* NvMBlockIdFreezeFrame */
