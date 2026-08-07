@@ -38,7 +38,7 @@ extern "C" {
 
 /** 报文头大小 */
 #define RTPS_HEADER_SIZE                20U
-#define RTPS_SUBMESSAGE_HEADER_SIZE     4
+#define RTPS_SUBMESSAGE_HEADER_SIZE     4U
 
 /** 最大报文大小 */
 #define RTPS_MAX_MESSAGE_SIZE           65535U
@@ -51,7 +51,7 @@ extern "C" {
 #define RTPS_PL_CDR_LE                  0x0003  /* 参数列表小端 */
 
 /* RTPS Parameter ID (参数列表) */
-#define RTPS_PARAMETER_ID_SENTINEL      0x0001  /* 参数列表结束标记 */
+#define RTPS_PARAMETER_ID_SENTINEL      0x0001U  /* 参数列表结束标记 */
 
 /* ============================================================================
  * Submessage类型定义

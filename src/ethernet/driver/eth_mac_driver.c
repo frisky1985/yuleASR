@@ -384,7 +384,7 @@ eth_status_t eth_mac_handle_interrupt(void)
 
     /* 调用用户回调 */
     if (g_mac_ctx.isr_callback != NULL) {
-        for (int i = 0; i < ETH_MAC_INT_COUNT; i++) {
+        for (int i = 0; i < (uint32_t)(ETH_MAC_INT_COUNT); i++) {
             if ((g_mac_ctx.enabled_interrupts & (1U << i)) != 0U) {
                 g_mac_ctx.isr_callback((eth_mac_interrupt_t)i, g_mac_ctx.isr_user_data);
             }

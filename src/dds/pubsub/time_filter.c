@@ -120,7 +120,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
     
     switch (tbf->config.policy) {
         case TBF_POLICY_AVERAGE:
-            tbf->state.accumulator += value;
+            tbf->state.accumulator += (uint32_t)(value);
             break;
             
         case TBF_POLICY_PEAK_HOLD:

@@ -692,7 +692,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
                 CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[i];
 
                 if (runtime->State == CANTP_CH_TX_WAIT_FC) {
-                    if (fs == CANTP_FLOWSTATUS_CTS) {
+                    if (fs == (uint32_t)(CANTP_FLOWSTATUS_CTS)) {
                         /* Continue To Send */
                         runtime->BlockSize = bs;
                         runtime->STmin = stmin;
@@ -706,7 +706,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
                         /* Send first Consecutive Frame */
                         CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
-                    } else if (fs == CANTP_FLOWSTATUS_WT) {
+                    } else if (fs == (uint32_t)(CANTP_FLOWSTATUS_WT)) {
                         /* Wait */
                         /* Use N_Bs from config if available */
                         if (runtime->TxNsduConfig != NULL_PTR) {
@@ -714,7 +714,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
                         } else {
                             runtime->Timer = CANTP_NBS_DEFAULT;
                         }
-                    } else if (fs == CANTP_FLOWSTATUS_OVFLW) {
+                    } else if (fs == (uint32_t)(CANTP_FLOWSTATUS_OVFLW)) {
                         /* Overflow - abort transmission */
                         CanTp_ResetChannel((CanTp_ChannelType)i);
                     }

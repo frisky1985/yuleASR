@@ -154,7 +154,7 @@ STATIC void Swc_WatchdogManager_UpdateAliveCounters(void)
     uint8 entityId;
 
     /* Read alive indications from RTE */
-    if ((uint8_t)((uint8_t)(Rte_Read_AliveIndication(&entityId))) == RTE_E_OK) {
+    if ((uint8_t)((uint8_t)((uint8_t)(Rte_Read_AliveIndication(&entityId)))) == RTE_E_OK) {
         sint16 entityIndex = Swc_WatchdogManager_FindEntity(entityId);
 
         if (entityIndex >= 0) {
@@ -369,13 +369,13 @@ Rte_StatusType Swc_WatchdogManager_RegisterEntity(const Swc_SupervisedEntityConf
     }
 
     /* Find free slot */
-    for (entityIndex = 0; entityIndex < WDG_MAX_ENTITIES; entityIndex++) {
+    for (entityIndex = 0; (unsigned int)((unsigned int)(entityIndex)) < WDG_MAX_ENTITIES; entityIndex++) {
         if (!swcWatchdogManager.entities[entityIndex].isRegistered) {
             break;
         }
     }
 
-    if (entityIndex >= WDG_MAX_ENTITIES) {
+    if ((unsigned int)((unsigned int)(entityIndex)) >= WDG_MAX_ENTITIES) {
         return RTE_E_LIMIT;  /* No free slots */
     }
 

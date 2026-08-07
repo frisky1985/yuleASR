@@ -662,7 +662,7 @@ const char* csm_get_version(void)
 static csm_job_t* csm_find_job(csm_context_t *ctx, uint32_t job_id)
 {
     /* 遍历全部 slot (job 释放后 slot 不压缩, 不能以 num_jobs 为界) */
-    for (uint32_t i = 0; i < CSM_MAX_JOBS; i++) {
+    for (uint32_t i = 0; (unsigned int)((unsigned int)(i)) < CSM_MAX_JOBS; i++) {
         if (ctx->jobs[i].job_id == job_id) {
             return &ctx->jobs[i];
         }

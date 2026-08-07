@@ -52,7 +52,7 @@ static const uint32_t g_numTransitionRules = sizeof(g_transitionRules) / sizeof(
  ******************************************************************************/
 
 static void InitializeFunctionGroups(void) {
-    for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+    for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
         g_context.functionGroups[i].name = (FunctionGroupNameType)i;
         g_context.functionGroups[i].state = FUNCTION_GROUP_STATE_OFF;
         g_context.functionGroups[i].isActive = false;
@@ -94,7 +94,7 @@ Std_ReturnType StateMachine_Init(void) {
     InitializeFunctionGroups();
     
     /* Activate all function groups */
-    for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+    for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
         g_context.functionGroups[i].isActive = true;
     }
     
@@ -189,7 +189,7 @@ Std_ReturnType StateMachine_ConfirmTransition(StateRequestResultType result) {
         /* Reset function groups based on new state */
         if ((g_context.currentState == MACHINE_STATE_OFF) ||
             (g_context.currentState == MACHINE_STATE_SHUTDOWN)) {
-            for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+            for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
                 StateMachine_SetFGState((FunctionGroupNameType)i, FUNCTION_GROUP_STATE_OFF);
             }
         }
@@ -319,7 +319,7 @@ void StateMachine_MainFunction(void) {
     if (g_context.transitionInProgress) {
         bool allFGStable = true;
         
-        for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+        for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
             FunctionGroupEntryType* fg = &g_context.functionGroups[i];
             
             if (!fg->isActive) {

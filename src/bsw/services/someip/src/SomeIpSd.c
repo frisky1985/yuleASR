@@ -32,7 +32,7 @@ static boolean SomeIpSd_Initialized = FALSE;
 static const SomeIpSd_ConfigType* SomeIpSd_ConfigPtr = NULL_PTR;
 
 /* Service Registry */
-#define SOMEIPSD_MAX_SERVICES              32
+#define SOMEIPSD_MAX_SERVICES              32U
 static SomeIpSd_ServiceInfoType SomeIpSd_ServiceRegistry[SOMEIPSD_MAX_SERVICES];
 static uint16 SomeIpSd_NumRegisteredServices = 0;
 
@@ -54,7 +54,7 @@ void SomeIpSd_Init(const SomeIpSd_ConfigType* ConfigPtr)
     SomeIpSd_NumRegisteredServices = 0;
     
     /* Clear service registry */
-    for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
+    for (uint16 i = 0; (unsigned int)(i) < SOMEIPSD_MAX_SERVICES; i++)
     {
         SomeIpSd_ServiceRegistry[i].IsAvailable = FALSE;
     }
@@ -74,7 +74,7 @@ void SomeIpSd_DeInit(void)
     }
 
     /* Stop all service offers */
-    for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
+    for (uint16 i = 0; (unsigned int)(i) < SOMEIPSD_MAX_SERVICES; i++)
     {
         if ((SomeIpSd_ServiceRegistry[i].IsAvailable) != 0U)
         {
@@ -105,7 +105,7 @@ Std_ReturnType SomeIpSd_OfferService(
     }
     
     /* Check if already offered */
-    for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
+    for (uint16 i = 0; (unsigned int)(i) < SOMEIPSD_MAX_SERVICES; i++)
     {
         if (SomeIpSd_ServiceRegistry[i].IsAvailable &&
             ((SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId)) &&
@@ -158,7 +158,7 @@ Std_ReturnType SomeIpSd_StopOfferService(
     }
     
     /* Find service entry */
-    for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
+    for (uint16 i = 0; (unsigned int)(i) < SOMEIPSD_MAX_SERVICES; i++)
     {
         if (SomeIpSd_ServiceRegistry[i].IsAvailable &&
             ((SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId)) &&
@@ -191,7 +191,7 @@ Std_ReturnType SomeIpSd_FindService(
     }
     
     /* Search local registry */
-    for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
+    for (uint16 i = 0; (unsigned int)(i) < SOMEIPSD_MAX_SERVICES; i++)
     {
         if (SomeIpSd_ServiceRegistry[i].IsAvailable &&
             (SomeIpSd_ServiceRegistry[i].ServiceId == ServiceId))
@@ -251,7 +251,7 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIpSd_MessageType sdMessage;
     
-    if (!SomeIpSd_Initialized || (Data == NULL_PTR) || (Length < SOMEIP_HEADER_SIZE))
+    if (!SomeIpSd_Initialized || (Data == NULL_PTR) || ((unsigned int)(Length) < SOMEIP_HEADER_SIZE))
     {
         return;
     }
@@ -301,7 +301,7 @@ void SomeIpSd_MainFunction(void)
         cyclicCounter = 0;
         
         /* Re-offer all active services */
-        for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
+        for (uint16 i = 0; (unsigned int)(i) < SOMEIPSD_MAX_SERVICES; i++)
         {
             if ((SomeIpSd_ServiceRegistry[i].IsAvailable) != 0U)
             {

@@ -40,7 +40,7 @@ keym_context_t* keym_init(void *cryif, void *csm)
     }
     
     /* Initialize key slots */
-    for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         ctx->slots[i].slot_id = i;
         ctx->slots[i].state = KEYM_STATE_EMPTY;
         ctx->slots[i].key_version = 0;
@@ -50,7 +50,7 @@ keym_context_t* keym_init(void *cryif, void *csm)
     }
     
     /* Initialize certificates */
-    for (int i = 0; i < KEYM_MAX_CERTIFICATES; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_CERTIFICATES; i++) {
         ctx->certificates[i].cert_id = i;
         ctx->certificates[i].is_revoked = false;
     }
@@ -85,14 +85,14 @@ void keym_deinit(keym_context_t *ctx)
     }
     
     /* Clear all key slots */
-    for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         if (ctx->slots[i].state != KEYM_STATE_EMPTY) {
             keym_slot_free(ctx, i);
         }
     }
     
     /* Free certificate data */
-    for (int i = 0; i < KEYM_MAX_CERTIFICATES; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_CERTIFICATES; i++) {
         if (ctx->certificates[i].cert_data != NULL) {
             free(ctx->certificates[i].cert_data);
         }
@@ -123,7 +123,7 @@ keym_status_t keym_slot_allocate(keym_context_t *ctx, uint8_t *slot_id,
         }
     } else {
         /* Find free slot */
-        for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
+        for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
             if (ctx->slots[i].state == KEYM_STATE_EMPTY) {
                 *slot_id = i;
                 break;
@@ -206,7 +206,7 @@ uint8_t keym_slot_find_by_name(keym_context_t *ctx, const char *name)
         return KEYM_SLOT_ID_INVALID;
     }
     
-    for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         if ((ctx->slots[i].state != KEYM_STATE_EMPTY) &&
             (strcmp(ctx->slots[i].name, name) == 0)) {
             return i;
@@ -518,7 +518,7 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
     
     /* Fill with derived pattern (simplified - should use real HKDF) */
     for (uint32_t i = 0; i < key_len; i++) {
-        ctx->materials[target_slot].key_data[i] = (uint8_t)((i * 3U) + (target_slot * 11U) + 0x5A);
+        ctx->materials[target_slot].key_data[i] = (uint8_t)(((unsigned int)(i) * 3U) + (unsigned int)((target_slot * 11U)) + 0x5AU);
     }
     ctx->materials[target_slot].key_data_len = key_len;
     
@@ -620,7 +620,7 @@ uint32_t keym_check_and_rotate(keym_context_t *ctx, uint64_t current_time)
         return 0;
     }
     
-    for (int i = 0; i < KEYM_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         if (ctx->slots[i].state == KEYM_STATE_ACTIVE) {
             /* Check if rotation is needed */
             if ((ctx->slots[i].next_rotation_time <= current_time) ||
@@ -993,5 +993,5 @@ static uint32_t keym_get_key_type_size(keym_key_type_t type)
 static bool keym_is_key_usage_allowed(keym_slot_info_t *slot, keym_key_usage_t usage)
 {
     if (slot == NULL) { return false; }
-    return (slot->usage_flags & usage) != 0;
+    return (slot->usage_flags & usage) != 0U;
 }

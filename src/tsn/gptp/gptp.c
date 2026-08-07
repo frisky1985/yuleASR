@@ -305,14 +305,14 @@ eth_status_t gptp_init(const gptp_config_t *config) {
     memcpy(&g_gptp_state.config, config, sizeof(gptp_config_t));
     
     /* 初始化域 */
-    for (int i = 0; i < GPTP_MAX_DOMAINS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_DOMAINS; i++) {
         g_gptp_state.domains[i].state = GPTP_DOMAIN_STATE_INACTIVE;
         g_gptp_state.domains[i].bmc_state = GPTP_BMC_STATE_INIT;
         g_gptp_state.domains[i].config.domain_number = i;
     }
     
     /* 初始化端口 */
-    for (int i = 0; i < GPTP_MAX_PORTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_PORTS; i++) {
         g_gptp_state.ports[i].state = GPTP_PORT_STATE_INITIALIZING;
         g_gptp_state.ports[i].config.port_id = i;
     }
@@ -330,7 +330,7 @@ void gptp_deinit(void) {
     }
     
     /* 停止所有域 */
-    for (int i = 0; i < GPTP_MAX_DOMAINS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_DOMAINS; i++) {
         if (g_gptp_state.domains[i].active) {
             gptp_stop(i);
         }
@@ -623,7 +623,7 @@ eth_status_t gptp_handle_sync(uint8_t port_index, const gptp_sync_data_t *sync_d
     
     /* 计算从时钟偏移 */
     /* slave_offset = ingress_timestamp - origin_timestamp - correction_field */
-    for (int i = 0; i < GPTP_MAX_DOMAINS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_DOMAINS; i++) {
         if (g_gptp_state.domains[i].active) {
             int64_t offset = calc_timestamp_diff(&sync_data->ingress_timestamp,
                                                   &sync_data->origin_timestamp);
@@ -661,7 +661,7 @@ eth_status_t gptp_handle_follow_up(uint8_t port_index,
     port->rx_follow_up_count++;
     
     /* 更新校正域 */
-    for (int i = 0; i < GPTP_MAX_DOMAINS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < GPTP_MAX_DOMAINS; i++) {
         if (g_gptp_state.domains[i].active) {
             g_gptp_state.domains[i].clock_state.master_offset_ns = correction_field_ns;
         }

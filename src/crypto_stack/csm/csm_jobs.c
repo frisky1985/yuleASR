@@ -25,7 +25,7 @@ void csm_job_pool_init(csm_context_t *ctx)
 
 csm_job_t* csm_job_alloc(csm_context_t *ctx)
 {
-    if ((ctx == NULL) || (ctx->num_jobs >= CSM_MAX_JOBS)) {
+    if ((ctx == NULL) || ((unsigned int)(ctx->num_jobs) >= CSM_MAX_JOBS)) {
         return NULL;
     }
     

@@ -218,7 +218,7 @@ eth_status_t tas_init(void) {
     memset(&g_tas_state, 0, sizeof(g_tas_state));
     
     /* 初始化所有端口 */
-    for (int i = 0; i < TAS_MAX_PORTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < TAS_MAX_PORTS; i++) {
         g_tas_state.ports[i].config.port_id = i;
         g_tas_state.ports[i].config.gate_enabled = false;
         g_tas_state.ports[i].gate_status.gate_states = 0xFF; /* 所有门打开 */
@@ -235,7 +235,7 @@ void tas_deinit(void) {
     }
     
     /* 停止所有调度器 */
-    for (int i = 0; i < TAS_MAX_PORTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < TAS_MAX_PORTS; i++) {
         if (g_tas_state.ports[i].running) {
             tas_stop_scheduler(i);
         }
@@ -719,7 +719,7 @@ eth_status_t tas_print_status(uint16_t port_id) {
     printf("Schedule Errors: %u\n", port->scheduler_stats.schedule_errors);
     
     printf("Queue Stats:\n");
-    for (int i = 0; i < TAS_MAX_QUEUES; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < TAS_MAX_QUEUES; i++) {
         if ((port->queue_stats[i].tx_frames > 0U) || (port->queue_stats[i].blocked_frames > 0U)) {
             printf("  Q%d: TX=%lu, Blocked=%lu\n", i,
                    (unsigned long)port->queue_stats[i].tx_frames,

@@ -46,6 +46,8 @@ FLOAT_TYPES = {"float", "double", "float32", "float64", "long double"}
 
 NUM_RE = re.compile(
     r"(?:0[xX][0-9a-fA-F]+|0[bB][01]+|[0-9]+)(?:[eEpP][+-]?[0-9]+)?([uUlLfF]{0,3})")
+# standalone numeric literal: not preceded/followed by identifier chars
+STANDALONE_NUM_RE = re.compile(r"(?<![A-Za-z0-9_])(?:0[xX][0-9a-fA-F]+|0[bB][01]+|[0-9]+)(?:[eEpP][+-]?[0-9]+)?([uUlLfF]{0,3})(?![A-Za-z0-9_])")
 FLOAT_RE = re.compile(r"^(\d*\.\d+|\d+\.\d*|\d+[eE][+-]?\d+|[0-9]+[fF])")
 
 
@@ -96,6 +98,34 @@ def is_float_literal(num):
         return True
     # f/F suffix = float; l/L on decimal without '.'/'e' is long (not float)
     return num.lower().endswith("f")
+
+
+def body_is_unsigned(body):
+    """True if macro body contains a U-suffixed numeric literal (or is all-U)."""
+    if not body:
+        return False
+    nums = NUM_RE.findall(body)
+    if not nums:
+        return False
+    return all("u" in n.lower() for n in NUM_RE.findall(body))
+
+
+# ---------------- enum constant scan ----------------
+ENUM_BLOCK_RE = re.compile(r"\benum\s*(?:\{[^}]*\}|\w+\s*\{[^}]*\})", re.DOTALL)
+ENUM_ITEM_RE = re.compile(r"\b([A-Za-z_]\w*)\s*(?:=\s*[^,}]+)?")
+
+
+def scan_enums(text):
+    """Return set of enum constant names (essential type: signed int)."""
+    names = set()
+    for m in ENUM_BLOCK_RE.finditer(text):
+        block = m.group(0)
+        body = block[block.find('{'):]
+        for im in ENUM_ITEM_RE.finditer(body):
+            nm = im.group(1)
+            if nm and nm not in ("enum",):
+                names.add(nm)
+    return names
 
 
 # ---------------- declaration scan ----------------
@@ -164,12 +194,12 @@ def macro_body_edit(body, define_map=None):
     """
     edits = []
     embedded = []
-    seen_nums = set()
-    for m in NUM_RE.finditer(body):
-        tok = m.group(0)
-        if tok in seen_nums:
+    seen_pos = set()
+    for m in STANDALONE_NUM_RE.finditer(body):
+        if m.start() in seen_pos:
             continue
-        seen_nums.add(tok)
+        seen_pos.add(m.start())
+        tok = m.group(0)
         if FLOAT_RE.match(tok) and "." in tok:
             continue
         if not has_u_suffix(tok):
@@ -234,7 +264,7 @@ def operand_kind(toks, s, e):
     return ("expr", None)
 
 
-def fix_file(path, violations, define_map):
+def fix_file(path, violations, define_map, enum_consts=None):
     """Return (new_text, actions) where actions are dicts describing fixes."""
     text = path.read_text()
     toks = tokenize(text)
@@ -242,6 +272,8 @@ def fix_file(path, violations, define_map):
         return text, []
     decls = scan_decls(text)
     defines = scan_defines(text)
+    if enum_consts is None:
+        enum_consts = scan_enums(text)
     pos_map = {}
     for idx, t in enumerate(toks):
         pos_map.setdefault((t["line"], t["col"]), idx)
@@ -256,12 +288,44 @@ def fix_file(path, violations, define_map):
             return ""
         return text[tok_off(toks[s]): tok_off(toks[e]) + len(toks[e]["text"])]
 
+    def span_first_tok(s, e):
+        """first non-comment/pp token in span"""
+        for kk in range(s, e + 1):
+            if toks[kk]["kind"] not in ("comment", "pp"):
+                return kk
+        return s
+
     for f, line, col in violations:
         if f != str(path):
             continue
         op = find_op_token(toks, line, col)
         if op is None:
-            actions.append(("SKIP-notok", 0, 0, "", f"{line}:{col} no op token"))
+            # position points at a macro id (or macro call arg) whose BODY has the mismatch
+            macro_fix = False
+            # collect macro ids on the same line (function-like calls or object-like ids)
+            line_macros = []
+            for t in toks:
+                if t["line"] == line and t["kind"] == "id":
+                    nm = t["text"]
+                    if nm in defines or nm in define_map:
+                        body = defines.get(nm) or define_map.get(nm)
+                        line_macros.append((nm, body, t["col"]))
+            # prefer macro at/after the flagged col, else any on the line
+            line_macros.sort(key=lambda x: (0 if x[2] >= col - 1 else 1, x[2]))
+            merged_map = dict(define_map)
+            merged_map.update(defines)
+            for nm, body, _ in line_macros:
+                nb, emb = macro_body_edit(body, merged_map)
+                if nb or emb:
+                    emb_s = f" emb={','.join(emb)}" if emb else ""
+                    actions.append(("MACRO", 0, 0, nb or body,
+                                    f"{line}:{col} pos-macro={nm} {body!r}->{nb or body!r}{emb_s}"))
+                    macro_ops.append({"name": nm, "new_body": nb or body, "orig_body": body,
+                                      "embedded": emb, "use_file": str(path)})
+                    macro_fix = True
+                    break
+            if not macro_fix:
+                actions.append(("SKIP-notok", 0, 0, "", f"{line}:{col} no op token"))
             continue
         idx = pos_map.get((op["line"], op["col"]))
         if idx is None:
@@ -302,6 +366,21 @@ def fix_file(path, violations, define_map):
             if is_float_literal(lit_txt):
                 actions.append(("SKIP-float", 0, 0, "", meta))
                 continue
+            # macro call vs literal: cast call to unsigned + U-suffix literal
+            other_s = rs if other_side == "r" else ls
+            other_e = re_ if other_side == "r" else le
+            fs = span_first_tok(other_s, other_e)
+            if (toks[fs]["kind"] == "id" and fs + 1 <= other_e
+                    and toks[fs + 1]["text"] == "("
+                    and (toks[fs]["text"] in defines or toks[fs]["text"] in define_map)):
+                s_off = tok_off(toks[fs])
+                e_off = tok_off(toks[other_e]) + len(toks[other_e]["text"])
+                actions.append(("CAST", s_off, e_off, "uint32_t", f"{meta} macrocall-lit cast-call"))
+                if not has_u_suffix(lit_txt):
+                    num_tok = toks[ls] if le - ls == 0 else toks[le] if toks[le]["kind"] == "num" else toks[ls + 1]
+                    off = tok_off(num_tok) + len(num_tok["text"])
+                    actions.append(("LIT+U", off, off, "U", f"{meta} lit={lit_txt}"))
+                continue
             if not has_u_suffix(lit_txt):
                 # add U at literal end
                 if lit_side == "l":
@@ -331,6 +410,41 @@ def fix_file(path, violations, define_map):
                     else:
                         actions.append(("SKIP-nocast", 0, 0, "", meta))
             continue
+        # ---- special: char literal vs unsigned/signed ----
+        char_side = None
+        for sname, s, e, k, v in [("l", ls, le, lk, lv), ("r", rs, re_, rk, rv)]:
+            if s == e and toks[s]["kind"] == "char":
+                char_side = (sname, s, e, toks[s]["text"])
+                break
+        if char_side:
+            sname, s, e, ctext = char_side
+            fs = span_first_tok(s, e)
+            actions.append(("CAST", tok_off(toks[fs]), tok_off(toks[e]) + len(toks[e]["text"]),
+                            "uint8_t", f"{meta} char={ctext} cast-char-u8"))
+            continue
+        # ---- special: case labels with enum constants ----
+        if optxt == ":" and toks[ls]["kind"] == "id":
+            nm = toks[ls]["text"]
+            if nm in enum_consts:
+                actions.append(("CAST", tok_off(toks[ls]), tok_off(toks[le]) + len(toks[le]["text"]),
+                                "uint32_t", f"{meta} case-enum={nm}"))
+                continue
+        # ---- special: enum constant vs other (cast enum side to unsigned) ----
+        enum_side = None
+        for sname, s, e, k, v in [("l", ls, le, lk, lv), ("r", rs, re_, rk, rv)]:
+            if k == "id" and v in enum_consts:
+                enum_side = (sname, s, e, v)
+                break
+        if enum_side:
+            sname, s, e, nm = enum_side
+            other = "r" if sname == "l" else "l"
+            os_, oe_ = (rs, re_) if other == "r" else (ls, le)
+            # other side unsigned or numeric? cast enum side to unsigned to match
+            ok_, ov_ = (rk, rv) if other == "r" else (lk, lv)
+            if ok_ in ("lit", "expr", "id"):
+                actions.append(("CAST", tok_off(toks[s]), tok_off(toks[e]) + len(toks[e]["text"]),
+                                "uint32_t", f"{meta} enum={nm} cast-enum-u32"))
+                continue
         # ---- case 4/5: identifiers / macros / exprs ----
         sides = [("l", ls, le, lk, lv), ("r", rs, re_, rk, rv)]
         # resolve macro bodies
@@ -349,13 +463,6 @@ def fix_file(path, violations, define_map):
                 resolved[sname] = (k, v, None)
         lm, lv2, lb = resolved["l"]
         rm, rv2, rb = resolved["r"]
-
-        def span_first_tok(s, e):
-            """first non-comment/pp token in span"""
-            for kk in range(s, e + 1):
-                if toks[kk]["kind"] not in ("comment", "pp"):
-                    return kk
-            return s
 
         def cast_action(side_s, side_e, cast, why):
             fs = span_first_tok(side_s, side_e)
@@ -377,8 +484,17 @@ def fix_file(path, violations, define_map):
                 emb_s = f" emb={','.join(emb)}" if emb else ""
                 actions.append(("MACRO", 0, 0, newbody,
                                 f"{meta} macro={mname} body={body!r}->{newbody!r}{emb_s}"))
-                macro_ops.append({"name": mname, "new_body": newbody,
+                macro_ops.append({"name": mname, "new_body": newbody, "orig_body": body,
                                   "embedded": emb, "use_file": str(path)})
+            elif body_is_unsigned(body):
+                # macro already unsigned; other side signed -> cast other side
+                # to the macro literal's width (preserves semantics for int64 too)
+                other_sn = "r" if macro_side == "l" else "l"
+                other_k, other_v, other_b = resolved[other_sn]
+                os_, oe_ = (rs, re_) if other_sn == "r" else (ls, le)
+                lit = next(iter(NUM_RE.findall(body)), "")
+                cast = cast_for_literal(lit) if lit else "uint32_t"
+                cast_action(os_, oe_, cast, f"cast-other-{cast.replace(' ','_')}")
             else:
                 # macro already unsigned; other side is signed -> cast other side
                 other_sn = "r" if macro_side == "l" else "l"
@@ -408,6 +524,19 @@ def fix_file(path, violations, define_map):
                         break
         if macrocall_side:
             sn, s, e, mname, body = macrocall_side
+            other_sn = "r" if sn == "l" else "l"
+            other_k, other_v, other_e2 = (rk, rv, re_) if other_sn == "r" else (lk, lv, le)
+            other_s2 = rs if other_sn == "r" else ls
+            # macro call vs literal: cast call result to unsigned (semantics-safe),
+            # and U-suffix the literal if needed (e.g. MQTT_OID_CMP(...) == 0)
+            if other_k == "lit" and not is_float_literal(other_v):
+                fs = span_first_tok(s, e)
+                cast_action(s, e, "uint32_t", f"cast-macrocall-{mname}")
+                if not has_u_suffix(other_v):
+                    num_tok = toks[other_s2] if other_e2 - other_s2 == 0 else toks[other_e2] if toks[other_e2]["kind"] == "num" else toks[other_s2 + 1]
+                    off = tok_off(num_tok) + len(num_tok["text"])
+                    actions.append(("LIT+U", off, off, "U", f"{meta} macrocall-lit={other_v}"))
+                continue
             newbody, emb = macro_body_edit(body, define_map)
             if newbody:
                 emb_s = f" emb={','.join(emb)}" if emb else ""
@@ -459,6 +588,11 @@ def fix_file(path, violations, define_map):
             cast_action(ls, le, "(uint32_t)", "cast-left")
         elif cr == "s" and cl == "u":
             cast_action(rs, re_, "(uint32_t)", "cast-right")
+        # one side enum (signed), other side unsigned id/expr
+        elif cl == "s" and cr is None and (rk in ("lit", "expr") or (rk == "id" and decls.get(rv) == "u")):
+            cast_action(ls, le, "(uint32_t)", "cast-left-u")
+        elif cr == "s" and cl is None and (lk in ("lit", "expr") or (lk == "id" and decls.get(lv) == "u")):
+            cast_action(rs, re_, "(uint32_t)", "cast-right-u")
         else:
             actions.append(("SKIP-unk", 0, 0, "", meta))
     return text, actions, macro_ops
@@ -521,22 +655,31 @@ def main():
                 if isinstance(v, dict) and v.get("rule_id") == "misra-c2023-10.4"]
     # global define map: name -> body (search src headers once)
     define_map = {}
-    for p in sorted((PROJECT / "src").rglob("*.h")):
-        try:
-            define_map.update(scan_defines(p.read_text()))
-        except Exception:
-            pass
+    enum_consts = set()
+    scan_roots = [(PROJECT / "src"), (PROJECT / "include")]
+    for root in scan_roots:
+        for p in sorted(root.rglob("*.h")):
+            try:
+                define_map.update(scan_defines(p.read_text()))
+                enum_consts |= scan_enums(p.read_text())
+            except Exception:
+                pass
+        for p in sorted(root.rglob("*.c")):
+            try:
+                enum_consts |= scan_enums(p.read_text())
+            except Exception:
+                pass
     by_file = defaultdict(list)
     for f, line, col in viol:
         by_file[f].append((f, line, col))
     total_actions = 0
     report = defaultdict(list)
-    macro_fixes = {}  # name -> {new_body, embedded, use_file}
+    macro_fixes = {}  # name -> {new_body, embedded, use_file, orig_body}
     for f in sorted(by_file):
         p = Path(f)
         if only and p.name not in only and str(p) not in only:
             continue
-        text, actions, macro_ops = fix_file(p, by_file[f], define_map)
+        text, actions, macro_ops = fix_file(p, by_file[f], define_map, enum_consts)
         for a in actions:
             report[a[0]].append(a[4])
         new_text, n_edits = apply_actions(text, actions)
@@ -552,44 +695,70 @@ def main():
         for nm in op["embedded"]:
             if nm not in macro_fixes:
                 body = define_map.get(nm)
+                # embedded macro may be defined in the same use file
+                if body is None:
+                    try:
+                        body = scan_defines(Path(op["use_file"]).read_text()).get(nm)
+                    except Exception:
+                        body = None
                 if body is not None:
                     nb, emb = macro_body_edit(body, define_map)
                     if nb:
-                        macro_fixes[nm] = {"name": nm, "new_body": nb,
+                        macro_fixes[nm] = {"name": nm, "new_body": nb, "orig_body": body,
                                            "embedded": emb, "use_file": op["use_file"]}
                         queue.append(macro_fixes[nm])
     # apply macro fixes in defining files
     applied_macros = 0
     if apply_mode and macro_fixes:
-        defined_in = {}
         search_paths = list((PROJECT / "src").rglob("*.h")) + \
                        list((PROJECT / "src").rglob("*.c")) + \
                        list((PROJECT / "third_party").rglob("*.h"))
-        for p in sorted(search_paths):
-            try:
-                t = p.read_text()
-            except Exception:
-                continue
-            for name in macro_fixes:
-                if re.search(r"#\s*define\s+" + re.escape(name) + r"\b", t):
-                    defined_in.setdefault(name, p)
         for name, op in macro_fixes.items():
             use_file = op["use_file"]
             new_body = op["new_body"]
-            p = defined_in.get(name)
+            orig_body = op.get("orig_body")
+            # prefer file whose define body == orig_body; else use_file; else first match
+            cand = []
+            for p in sorted(search_paths):
+                try:
+                    t = p.read_text()
+                except Exception:
+                    continue
+                m = re.search(r"#\s*define\s+" + re.escape(name) + r"(?:[ \t]*\([^)\n]*\))?[ \t]+(.*)$",
+                              t, re.MULTILINE)
+                if m:
+                    cand.append((p, m))
+            p, m = None, None
+            if orig_body:
+                for cp, cm in cand:
+                    if cm.group(1).strip() == orig_body:
+                        p, m = cp, cm
+                        break
+            if p is None:
+                for cp, cm in cand:
+                    if str(cp) == use_file:
+                        p, m = cp, cm
+                        break
+            if p is None and cand:
+                p, m = cand[0]
             if p is None:
                 print(f"  !! MACRO {name} defining file not found (used in {use_file})")
                 continue
             t = p.read_text()
-            m = re.search(r"(#\s*define\s+" + re.escape(name) + r"(?:[ \t]*\([^)\n]*\))?[ \t]+)(.*)$",
-                          t, re.MULTILINE)
-            if m:
-                new = t[:m.start(2)] + new_body + t[m.end(2):]
-                if new != t:
-                    p.write_text(new)
-                    applied_macros += 1
-            else:
-                print(f"  !! MACRO {name} def line not matched in {p}")
+            # apply to every matching #define line in the file (handles #ifdef/#else variants)
+            new = t
+            hits = 0
+            for m in re.finditer(r"(#\s*define\s+" + re.escape(name) + r"(?:[ \t]*\([^)\n]*\))?[ \t]+)(.*)$",
+                                 new, re.MULTILINE):
+                nb2, _ = macro_body_edit(m.group(2).strip(), define_map)
+                if nb2 and nb2 != m.group(2).strip():
+                    new = new[:m.start(2)] + nb2 + new[m.end(2):]
+                    hits += 1
+            if new != t:
+                p.write_text(new)
+                applied_macros += 1
+            elif hits == 0:
+                print(f"  !! MACRO {name}: no body edit matched in {p}")
     print(f"files={len(by_file)} edit-ops={total_actions} macros={applied_macros}/{len(macro_fixes)}")
     for k in sorted(report):
         print(f"  {k}: {len(report[k])}")

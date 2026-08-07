@@ -65,7 +65,7 @@ static const uint8_t dh_g_2048[1] = { 0x02 };
 #define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
 #define EP0(x) (ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
 #define EP1(x) (ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
-#define SIG0(x) (ROTR(x, 7) ^ ROTR(x, 18) ^ ((x) >> 3))
+#define SIG0(x) (ROTR(x, 7U) ^ ROTR(x, 18U) ^ ((x) >> 3U))
 #define SIG1(x) (ROTR(x, 17) ^ ROTR(x, 19) ^ ((x) >> 10))
 
 static const uint32_t sha256_k[64] = {
@@ -730,7 +730,7 @@ dds_auth_status_t dds_auth_process_handshake_request(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (request->msg_type != DDS_AUTH_MSG_HANDSHAKE_REQUEST) {
+    if (request->msg_type != (uint32_t)(DDS_AUTH_MSG_HANDSHAKE_REQUEST)) {
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
@@ -791,7 +791,7 @@ dds_auth_status_t dds_auth_process_handshake_reply(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (reply->msg_type != DDS_AUTH_MSG_HANDSHAKE_REPLY) {
+    if (reply->msg_type != (uint32_t)(DDS_AUTH_MSG_HANDSHAKE_REPLY)) {
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
@@ -830,7 +830,7 @@ dds_auth_status_t dds_auth_process_handshake_final(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if (final->msg_type != DDS_AUTH_MSG_HANDSHAKE_FINAL) {
+    if (final->msg_type != (uint32_t)(DDS_AUTH_MSG_HANDSHAKE_FINAL)) {
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 

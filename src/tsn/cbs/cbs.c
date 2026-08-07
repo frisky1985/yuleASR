@@ -80,7 +80,7 @@ static eth_status_t check_safety(cbs_port_runtime_t *port) {
     cbs_safety_monitor_t *monitor = &port->safety_monitor;
     
     /* 检查信用限制 */
-    for (int i = 0; i < CBS_SR_CLASS_MAX; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
         cbs_queue_state_t *queue = &port->queue_states[i];
         
         if (queue->current_credit < CBS_MAX_NEGATIVE_CREDIT) {
@@ -109,9 +109,9 @@ eth_status_t cbs_init(void) {
     
     memset(&g_cbs_state, 0, sizeof(g_cbs_state));
     
-    for (int i = 0; i < CBS_MAX_PORTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_MAX_PORTS; i++) {
         g_cbs_state.ports[i].config.port_id = i;
-        for (int j = 0; j < CBS_SR_CLASS_MAX; j++) {
+        for (int j = 0; (unsigned int)((unsigned int)(j)) < CBS_SR_CLASS_MAX; j++) {
             g_cbs_state.ports[i].queue_states[j].current_credit = 0;
         }
     }
@@ -454,7 +454,7 @@ eth_status_t cbs_get_stats(uint16_t port_id, cbs_stats_t *stats) {
     
     memset(stats, 0, sizeof(cbs_stats_t));
     
-    for (int i = 0; i < CBS_SR_CLASS_MAX; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
         memcpy(&stats->queue_states[i], &port->queue_states[i], sizeof(cbs_queue_state_t));
         stats->total_frames_transmitted += port->queue_states[i].frames_transmitted;
         stats->total_bytes_transmitted += port->queue_states[i].bytes_transmitted;
@@ -471,7 +471,7 @@ eth_status_t cbs_clear_stats(uint16_t port_id) {
     
     cbs_port_runtime_t *port = get_port(port_id);
     
-    for (int i = 0; i < CBS_SR_CLASS_MAX; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
         port->queue_states[i].frames_transmitted = 0;
         port->queue_states[i].bytes_transmitted = 0;
         port->queue_states[i].credit_violations = 0;
@@ -686,7 +686,7 @@ eth_status_t cbs_print_status(uint16_t port_id) {
     printf("Port Transmit Rate: %u bps\n", port->config.port_transmit_rate_bps);
     printf("\nQueue States:\n");
     
-    for (int i = 0; i < CBS_SR_CLASS_MAX; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CBS_SR_CLASS_MAX; i++) {
         cbs_queue_state_t *queue = &port->queue_states[i];
         printf("  Queue %d (SR Class %c):\n", i, (i == 0) ? 'A' : 'B');
         printf("    Current Credit: %ld\n", (long)queue->current_credit);

@@ -523,7 +523,7 @@ void Swc_DiagnosticManager_ProcessRequest(void)
 
     if (!swcDiagManager.hasPendingRequest) {
         /* Check for new request via RTE */
-        if ((uint8_t)((uint8_t)(Rte_Read_DiagnosticRequest(&request))) == RTE_E_OK) {
+        if ((uint8_t)((uint8_t)((uint8_t)(Rte_Read_DiagnosticRequest(&(uint32_t)(request))))) == RTE_E_OK) {
             swcDiagManager.pendingRequest = request;
             swcDiagManager.hasPendingRequest = TRUE;
         } else {

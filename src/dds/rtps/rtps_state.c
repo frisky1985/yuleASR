@@ -867,7 +867,7 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
     pos++;
     
     /* 位图数据 */
-    uint32_t num_words = (num_bits + 31U) / 32;
+    uint32_t num_words = (unsigned int)(((unsigned int)(num_bits) + 31U)) / 32U;
     for (uint32_t i = 0; (i < num_words) && (i < 8U); i++) {
         buffer[pos] = writer->missing_changes.bitmap[i] >> 24;
         pos++;

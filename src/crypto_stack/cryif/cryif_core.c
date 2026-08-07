@@ -38,20 +38,20 @@ cryif_context_t* cryif_init(void)
     }
     
     /* Initialize driver table */
-    for (int i = 0; i < CRYIF_MAX_DRIVERS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_DRIVERS; i++) {
         ctx->drivers[i] = NULL;
     }
     ctx->num_drivers = 0;
     
     /* Initialize channels */
-    for (int i = 0; i < CRYIF_MAX_CHANNELS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_CHANNELS; i++) {
         ctx->channels[i].channel_id = CRYIF_CHANNEL_ID_INVALID;
         ctx->channels[i].driver = NULL;
     }
     ctx->num_channels = 0;
     
     /* Initialize key slots */
-    for (int i = 0; i < CRYIF_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_KEY_SLOTS; i++) {
         ctx->key_slots[i].slot_id = i;
         ctx->key_slots[i].driver = NULL;
         ctx->key_slots[i].driver_slot_id = CRYIF_KEY_SLOT_INVALID;
@@ -234,7 +234,7 @@ cryif_status_t cryif_key_slot_allocate(cryif_context_t *ctx, uint8_t *slot_id,
         }
     } else {
         /* Find free slot */
-        for (int i = 0; i < CRYIF_MAX_KEY_SLOTS; i++) {
+        for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_KEY_SLOTS; i++) {
             if (ctx->key_slots[i].state == CRYIF_KEY_STATE_EMPTY) {
                 *slot_id = i;
                 break;

@@ -398,7 +398,7 @@ Std_ReturnType CryIf_ProcessJob(CryIf_ChannelIdType channelId, CryIf_JobType* jo
     /* This would call the actual crypto driver based on configuration */
     /* For now, return success as placeholder */
     
-    if (job->processingType == CRYIF_PROCESSING_SYNC) {
+    if (job->processingType == (uint32_t)(CRYIF_PROCESSING_SYNC)) {
         /* Synchronous processing - complete immediately */
         retVal = E_OK;
         

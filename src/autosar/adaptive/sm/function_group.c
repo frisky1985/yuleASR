@@ -71,7 +71,7 @@ Std_ReturnType FG_Init(void) {
     memset(g_runtimes, 0, sizeof(g_runtimes));
     
     /* Initialize runtime states */
-    for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+    for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
         g_runtimes[i].name = (FunctionGroupNameType)i;
         g_runtimes[i].currentState = FUNCTION_GROUP_STATE_OFF;
         g_runtimes[i].targetState = FUNCTION_GROUP_STATE_OFF;
@@ -97,7 +97,7 @@ Std_ReturnType FG_Deinit(void) {
     }
     
     /* Stop all function groups */
-    for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+    for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
         FG_Stop((FunctionGroupNameType)i);
     }
     
@@ -365,7 +365,7 @@ void FG_MainFunction(void) {
     
     uint32_t currentTime = 0U;  /* Would use actual timestamp */
     
-    for (uint32_t i = 0U; i < FUNCTION_GROUP_COUNT; i++) {
+    for (uint32_t i = 0U; i < (uint32_t)(FUNCTION_GROUP_COUNT); i++) {
         FG_RuntimeType* runtime = &g_runtimes[i];
         
         if (!runtime->transitionInProgress) {

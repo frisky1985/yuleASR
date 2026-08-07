@@ -160,7 +160,7 @@ static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
     uint8 pinNum = (uint8)(pin & 0xFFU);
     uint32 regAddr;
 
-    regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET +
+    regAddr = PORT_IOMUXC_BASE_ADDR + (unsigned int)((unsigned int)(PORT_IOMUXC_SW_MUX_CTL_PAD_OFFSET)) +
               (((port * 32U) + pinNum) * 4U);
 
     return regAddr;
@@ -176,7 +176,7 @@ static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
     uint8 pinNum = (uint8)(pin & 0xFFU);
     uint32 regAddr;
 
-    regAddr = PORT_IOMUXC_BASE_ADDR + PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET +
+    regAddr = PORT_IOMUXC_BASE_ADDR + (unsigned int)((unsigned int)(PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET)) +
               (((port * 32U) + pinNum) * 4U);
 
     return regAddr;

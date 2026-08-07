@@ -45,7 +45,7 @@ static void aes_encrypt_block(const uint8_t *in, uint8_t *out, const uint8_t *ke
     (void)key_bits;
     
     /* 简化处理: XOR with key (insecure, for demo only) */
-    for (int i = 0; i < AES_BLOCK_SIZE; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < AES_BLOCK_SIZE; i++) {
         out[i] = in[i] ^ key[i % 16];
         out[i] = sbox[out[i]];
     }
@@ -73,7 +73,7 @@ static void generate_subkeys(const uint8_t *key, int key_bits, uint8_t *k1, uint
     /* K1 = L << 1 */
     left_shift_one(l, k1);
     if ((l[0] & 0x80U) != 0U) {
-        for (int i = 0; i < AES_BLOCK_SIZE; i++) {
+        for (int i = 0; (unsigned int)((unsigned int)(i)) < AES_BLOCK_SIZE; i++) {
             k1[i] ^= rb[i];
         }
     }
@@ -81,7 +81,7 @@ static void generate_subkeys(const uint8_t *key, int key_bits, uint8_t *k1, uint
     /* K2 = K1 << 1 */
     left_shift_one(k1, k2);
     if ((k1[0] & 0x80U) != 0U) {
-        for (int i = 0; i < AES_BLOCK_SIZE; i++) {
+        for (int i = 0; (unsigned int)((unsigned int)(i)) < AES_BLOCK_SIZE; i++) {
             k2[i] ^= rb[i];
         }
     }
@@ -244,7 +244,7 @@ static void hmac_sha256(const uint8_t *key, uint32_t key_len,
     /* 创建ipad和opad */
     memcpy(k_ipad, key, key_len);
     memcpy(k_opad, key, key_len);
-    for (int i = 0; i < SHA256_BLOCK_SIZE; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < SHA256_BLOCK_SIZE; i++) {
         k_ipad[i] ^= 0x36;
         k_opad[i] ^= 0x5c;
     }
@@ -291,14 +291,14 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     
     if (!flag) {
         /* 完整块 */
-        for (int j = 0; j < AES_BLOCK_SIZE; j++) {
-            m_last[j] = msg[((uint32_t)((n - 1)) * AES_BLOCK_SIZE) + j] ^ k1[j];
+        for (int j = 0; (unsigned int)((unsigned int)(j)) < AES_BLOCK_SIZE; j++) {
+            m_last[j] = msg[((unsigned int)((uint32_t)(((unsigned int)(n) - 1U))) * AES_BLOCK_SIZE) + j] ^ k1[j];
         }
     } else {
         /* 不完整块 */
-        for (int j = 0; j < AES_BLOCK_SIZE; j++) {
+        for (int j = 0; (unsigned int)((unsigned int)(j)) < AES_BLOCK_SIZE; j++) {
             if (j < (int)(msg_len % AES_BLOCK_SIZE)) {
-                m_last[j] = msg[((uint32_t)((n - 1)) * AES_BLOCK_SIZE) + j];
+                m_last[j] = msg[((unsigned int)((uint32_t)(((unsigned int)(n) - 1U))) * AES_BLOCK_SIZE) + j];
             } else if (j == (int)(msg_len % AES_BLOCK_SIZE)) {
                 m_last[j] = 0x80;
             } else {
@@ -310,13 +310,13 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     
     /* 计算CMAC */
     for (int i = 0; i < (n - 1); i++) {
-        for (int j = 0; j < AES_BLOCK_SIZE; j++) {
-            y[j] = x[j] ^ msg[(i * AES_BLOCK_SIZE) + j];
+        for (int j = 0; (unsigned int)((unsigned int)(j)) < AES_BLOCK_SIZE; j++) {
+            y[j] = x[j] ^ msg[((unsigned int)(i) * AES_BLOCK_SIZE) + j];
         }
         aes_encrypt_block(y, x, key, key_len * 8U);
     }
     
-    for (int j = 0; j < AES_BLOCK_SIZE; j++) {
+    for (int j = 0; (unsigned int)((unsigned int)(j)) < AES_BLOCK_SIZE; j++) {
         y[j] = x[j] ^ m_last[j];
     }
     aes_encrypt_block(y, x, key, key_len * 8U);
@@ -338,7 +338,7 @@ secoc_context_t* secoc_init(dds_crypto_context_t *crypto_ctx) {
     ctx->initialized = true;
     
     /* 初始化密钥槽 */
-    for (int i = 0; i < SECOC_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < SECOC_MAX_KEY_SLOTS; i++) {
         ctx->key_slots[i].slot_id = i;
         ctx->key_slots[i].is_valid = false;
     }
@@ -352,7 +352,7 @@ void secoc_deinit(secoc_context_t *ctx) {
     }
     
     /* 清除所有密钥 */
-    for (int i = 0; i < SECOC_MAX_KEY_SLOTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < SECOC_MAX_KEY_SLOTS; i++) {
         memset(ctx->key_slots[i].key, 0, sizeof(ctx->key_slots[i].key));
         ctx->key_slots[i].is_valid = false;
     }
@@ -507,7 +507,7 @@ secoc_status_t secoc_compute_mac(secoc_context_t *ctx, const secoc_pdu_config_t 
     }
     
     /* 构建认证数据: [Data | Freshness Value] */
-    uint8_t auth_data[SECOC_MAX_PDU_LENGTH + SECOC_MAX_FRESHNESS_LENGTH];
+    uint8_t auth_data[SECOC_MAX_PDU_LENGTH + (unsigned int)(SECOC_MAX_FRESHNESS_LENGTH)];
     uint32_t auth_len = 0;
     
     /* 添加数据 */
@@ -579,7 +579,7 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     auth_pdu->pdu_id = pdu_id;
     
     /* 复制数据 */
-    if (data_len > SECOC_MAX_PDU_LENGTH) {
+    if ((unsigned int)(data_len) > SECOC_MAX_PDU_LENGTH) {
         return SECOC_ERROR_PDU_TOO_LARGE;
     }
     auth_pdu->data = (uint8_t*)malloc(data_len);

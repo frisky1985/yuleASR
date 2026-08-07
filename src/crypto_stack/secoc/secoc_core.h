@@ -28,7 +28,7 @@ extern "C" {
 #define SECOC_MAX_KEY_SLOTS             16U
 #define SECOC_MAX_MAC_LENGTH            16
 #define SECOC_MAX_FRESHNESS_LENGTH      8U
-#define SECOC_MAX_PDU_LENGTH            256
+#define SECOC_MAX_PDU_LENGTH            256U
 
 /* 默认超时配置 (毫秒) */
 #define SECOC_DEFAULT_VERIFY_TIMEOUT_MS 100

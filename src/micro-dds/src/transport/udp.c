@@ -642,9 +642,9 @@ static bool PDP_verify_message(const uint8_t* data, uint16_t length) {
     }
     
     const PDP_Header* header = (const PDP_Header*)data;
-    return ((header->magic[0U] == 'P') &&
-            ((header->magic[1U] == 'D')) &&
-            ((header->magic[2U] == 'P')) &&
+    return ((header->magic[0U] == (uint8_t)('P')) &&
+            ((header->magic[1U] == (uint8_t)('D'))) &&
+            ((header->magic[2U] == (uint8_t)('P'))) &&
             ((header->magic[3] == 0U)) &&
             (header->version == 1U));
 }

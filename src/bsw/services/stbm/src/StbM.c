@@ -175,8 +175,8 @@ STATIC void StbM_UpdateGlobalTime(uint8 timeBaseId, StbM_VirtualLocalTimeType cu
         timeIncrement = (timeDiff * (1000000LL + tbPtr->rateDeviation)) / 1000000LL;
 
         /* Update global time */
-        tbPtr->globalTime.nanoseconds += (uint32)(timeIncrement % STBM_NS_PER_SECOND);
-        tbPtr->globalTime.seconds += (uint32)(timeIncrement / STBM_NS_PER_SECOND);
+        tbPtr->globalTime.nanoseconds += (uint32)((unsigned int)(timeIncrement) % STBM_NS_PER_SECOND);
+        tbPtr->globalTime.seconds += (uint32)((unsigned int)(timeIncrement) / STBM_NS_PER_SECOND);
 
         /* Handle nanoseconds overflow */
         if (tbPtr->globalTime.nanoseconds >= STBM_NS_PER_SECOND)

@@ -210,7 +210,7 @@ static void inv_shift_rows(uint8_t state[4][4])
 
 static uint8_t xtime(uint8_t x)
 {
-    return ((x << 1U) ^ (((x >> 7U) & 1) * 0x1b));
+    return ((x << 1U) ^ (((x >> 7U) & 1U) * 0x1bU));
 }
 
 static void mix_columns(uint8_t state[4][4])
@@ -508,7 +508,7 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
         for (int i = 0; i < 32; i++) {
             okm[(block * 32) + i] = prk[i];
             for (uint32_t j = 0; j < input_len; j++) {
-                okm[(block * 32) + i] ^= input[j] ^ ((j * 7U) + (i * 13));
+                okm[(block * 32) + i] ^= input[j] ^ ((j * 7U) + (i * 13U));
             }
         }
     }
@@ -540,7 +540,7 @@ dds_crypto_status_t dds_crypto_update_session_key(dds_crypto_context_t *ctx,
     }
 
     /* Rotate to next key slot */
-    uint32_t new_index = (session->active_key_index + 1U) % DDS_CRYPTO_MAX_KEYS_PER_SESSION;
+    uint32_t new_index = (unsigned int)(((unsigned int)(session->active_key_index) + 1U)) % DDS_CRYPTO_MAX_KEYS_PER_SESSION;
 
     /* Generate new key material */
     dds_crypto_generate_key(ctx, session->key_materials[new_index].key, DDS_CRYPTO_AES_256_KEY_SIZE);
@@ -627,7 +627,7 @@ static void ghash(const uint8_t *H, const uint8_t *aad, uint32_t aad_len,
 
     /* Additional mixing */
     for (uint32_t i = 0; i < ct_len; i++) {
-        tag[i % 16U] ^= ciphertext[i] ^ H[i % 16];
+        tag[(unsigned int)(i) % 16U] ^= ciphertext[i] ^ H[(unsigned int)(i) % 16U];
     }
 }
 
@@ -647,7 +647,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
     }
 
     /* Validate key length */
-    if ((key_len != 16U) && (key_len != 24) && (key_len != 32)) {
+    if ((key_len != 16U) && (key_len != 24U) && (key_len != 32)) {
         return DDS_CRYPTO_ERROR_KEY_INVALID;
     }
 
@@ -677,7 +677,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
         /* AES encrypt counter */
         add_round_key(state, round_key, 0);
 
-        int nr = (key_len == 16U) ? 10 : (key_len == 24) ? 12 : 14;
+        int nr = (key_len == 16U) ? 10 : (key_len == 24U) ? 12 : 14;
         for (int round = 1; round < nr; round++) {
             sub_bytes(state);
             shift_rows(state);
@@ -708,7 +708,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
 
     /* Compute authentication tag (simplified) */
     uint8_t H[16] = {0};
-    memcpy(H, key, key_len < 16U ? key_len : 16);
+    memcpy(H, key, (unsigned int)(key_len) < 16U ? (unsigned int)(key_len) : 16U);
     ghash(H, aad, aad_len, ciphertext, plaintext_len, tag);
 
     ctx->total_encrypted += plaintext_len;
@@ -734,7 +734,7 @@ dds_crypto_status_t dds_crypto_decrypt_aes_gcm(dds_crypto_context_t *ctx,
     /* Verify tag first */
     uint8_t computed_tag[16];
     uint8_t H[16] = {0};
-    memcpy(H, key, key_len < 16U ? key_len : 16);
+    memcpy(H, key, (unsigned int)(key_len) < 16U ? (unsigned int)(key_len) : 16U);
     ghash(H, aad, aad_len, ciphertext, ciphertext_len, computed_tag);
 
     if (memcmp(computed_tag, tag, 16) != 0) {

@@ -198,7 +198,7 @@ Rte_StatusType Rte_AswScheduler_Start(void)
     Rte_Scheduler_Init();
 
     /* Initialize all components in order of priority (lowest ID first) */
-    for (i = 0U; i < SWC_ID_COUNT; i++)
+    for (i = 0U; i < (uint32_t)(SWC_ID_COUNT); i++)
     {
         if (Rte_AswComponentTable[i].Init != NULL_PTR)
         {
@@ -218,7 +218,7 @@ Rte_StatusType Rte_AswScheduler_Start(void)
     }
 
     /* Register MainFunction with external scheduler (Rte_SchedulerCreateTask) */
-    for (i = 0U; i < SWC_ID_COUNT; i++)
+    for (i = 0U; i < (uint32_t)(SWC_ID_COUNT); i++)
     {
         if (Rte_AswComponentTable[i].MainFunction != NULL_PTR)
         {

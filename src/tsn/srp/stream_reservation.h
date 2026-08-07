@@ -25,7 +25,7 @@ extern "C" {
  * ============================================================================ */
 
 /** 最大流数量 */
-#define SRP_MAX_STREAMS                 256
+#define SRP_MAX_STREAMS                 256U
 #define SRP_MAX_LISTENERS               256U
 #define SRP_MAX_TALKERS                 128
 

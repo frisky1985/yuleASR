@@ -220,7 +220,7 @@ static Std_ReturnType Eth_HwSetMode(Eth_ControllerType CtrlIdx, Eth_ModeType Mod
 {
     Std_ReturnType result = E_OK;
     
-    if (Mode == ETH_MODE_ACTIVE)
+    if ((unsigned int)((uint32_t)(Mode)) == ETH_MODE_ACTIVE)
     {
         /* Enable receiver and transmitter */
         Eth_CtrlState[CtrlIdx].Mode = ETH_MODE_ACTIVE;
@@ -456,7 +456,7 @@ Std_ReturnType Eth_SetControllerMode(Eth_ControllerType CtrlIdx, Eth_ModeType Ct
     ETH_CHECK_STATE_INIT(ETH_SETCONTROLLERMODE_SID);
     ETH_CHECK_CONTROLLER_VALID(CtrlIdx, ETH_SETCONTROLLERMODE_SID);
     
-    if ((CtrlMode != ETH_MODE_DOWN) && (CtrlMode != ETH_MODE_ACTIVE))
+    if (((unsigned int)(CtrlMode) != ETH_MODE_DOWN) && (CtrlMode != ETH_MODE_ACTIVE))
     {
         #if (ETH_DEV_ERROR_DETECT == STD_ON)
         ETH_REPORT_ERROR(ETH_SETCONTROLLERMODE_SID, ETH_E_INV_MODE);
@@ -707,7 +707,7 @@ Std_ReturnType Eth_Transmit(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx,
         return E_NOT_OK;
     }
     
-    if (Eth_CtrlState[CtrlIdx].Mode != ETH_MODE_ACTIVE)
+    if ((unsigned int)(Eth_CtrlState[CtrlIdx].Mode) != ETH_MODE_ACTIVE)
     {
         return E_NOT_OK;
     }

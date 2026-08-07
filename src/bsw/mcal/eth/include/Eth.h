@@ -93,8 +93,8 @@ typedef uint8 Eth_StateType;
 *                              CONTROLLER MODE
 ==================================================================================================*/
 typedef uint8 Eth_ModeType;
-#define ETH_MODE_DOWN                      0x00
-#define ETH_MODE_ACTIVE                    0x01
+#define ETH_MODE_DOWN                      0x00U
+#define ETH_MODE_ACTIVE                    0x01U
 
 /*==================================================================================================
 *                              FRAME TYPE IDENTIFIER

@@ -22,7 +22,7 @@
 #include <string.h>
 
 #ifndef NULL_PTR
-#define NULL_PTR ((void*)0)
+#define NULL_PTR ((void*)0U)
 #endif
 
 /*============================================================================*

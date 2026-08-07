@@ -372,7 +372,7 @@ tcpip_error_t tcpip_udp_is_port_in_use(tcpip_port_t port, bool *in_use)
     if (in_use != NULL)
     {
         idx = 0;
-        while (idx < TCPIP_MAX_SOCKETS)
+        while ((unsigned int)((unsigned int)(idx)) < TCPIP_MAX_SOCKETS)
         {
             if (g_udp_endpoints[idx].used && 
                 (g_udp_endpoints[idx].local_port == port))
@@ -381,7 +381,7 @@ tcpip_error_t tcpip_udp_is_port_in_use(tcpip_port_t port, bool *in_use)
             }
             idx++;
         }
-        *in_use = (idx < TCPIP_MAX_SOCKETS);
+        *in_use = ((unsigned int)(idx) < TCPIP_MAX_SOCKETS);
     }
     else
     {

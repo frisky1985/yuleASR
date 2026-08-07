@@ -187,7 +187,7 @@ STATIC void Dcm_SendPositiveResponse(uint8 ProtocolId, uint8 SID, const uint8* D
     uint8 i;
 
     /* Build positive response: SID + 0x40 */
-    protocolState->TxBuffer[0] = SID + DCM_E_POSITIVERESPONSE;
+    protocolState->TxBuffer[0] = SID + (uint32_t)(DCM_E_POSITIVERESPONSE);
 
     /* Copy response data */
     for (i = 0U; i < Length; i++)
@@ -340,7 +340,7 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
     if (Length >= 1U)
     {
         subFunction = Data[0];
-        securityLevel = subFunction & DCM_E_GENERALREJECT;
+        securityLevel = subFunction & (uint32_t)(DCM_E_GENERALREJECT);
 
         if ((subFunction & 0x40U) == 0U)
         {
@@ -479,7 +479,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDataByIdentifier(uint8 ProtocolId, const ui
             if (Dcm_InternalState.CurrentSecurityLevel >= didConfig->SecurityLevel)
             {
                 /* Check session type */
-                if ((didConfig->SessionType == DCM_DEFAULT_SESSION) ||
+                if ((didConfig->SessionType == (uint32_t)(DCM_DEFAULT_SESSION)) ||
                     (Dcm_InternalState.CurrentSession == didConfig->SessionType))
                 {
                     /* Read data */
@@ -549,7 +549,7 @@ STATIC Std_ReturnType Dcm_ProcessWriteDataByIdentifier(uint8 ProtocolId, const u
             if (Dcm_InternalState.CurrentSecurityLevel >= didConfig->SecurityLevel)
             {
                 /* Check session type */
-                if ((didConfig->SessionType == DCM_DEFAULT_SESSION) ||
+                if ((didConfig->SessionType == (uint32_t)(DCM_DEFAULT_SESSION)) ||
                     (Dcm_InternalState.CurrentSession == didConfig->SessionType))
                 {
                     /* Write data */
@@ -822,7 +822,7 @@ STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* D
             if (Dcm_InternalState.CurrentSecurityLevel >= ridConfig->SecurityLevel)
             {
                 /* Check session type */
-                if ((ridConfig->SessionType == DCM_DEFAULT_SESSION) ||
+                if ((ridConfig->SessionType == (uint32_t)(DCM_DEFAULT_SESSION)) ||
                     (Dcm_InternalState.CurrentSession == ridConfig->SessionType))
                 {
                     /* Process routine based on subfunction */

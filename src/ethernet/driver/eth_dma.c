@@ -53,7 +53,7 @@ typedef struct {
 static eth_dma_context_t g_dma_ctx = {0};
 
 /* 对齐宏 */
-#define ETH_ALIGN_UP(x, a)      (((x) + ((a) - 1)) & ~((a) - 1))
+#define ETH_ALIGN_UP(x, a)      (((x) + ((a) - 1U)) & ~((a) - 1U))
 #define ETH_ALIGN_DOWN(x, a)    ((x) & ~((a) - 1))
 
 /* ============================================================================

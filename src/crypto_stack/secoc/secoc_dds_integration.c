@@ -249,7 +249,7 @@ secoc_status_t secoc_dds_compute_mac(secoc_dds_context_t *ctx,
     /* 检查是否使用DDS Crypto */
     if (ctx->dds_available && mapping->use_dds_crypto && ctx->dds_crypto_ctx) {
         /* 使用DDS Crypto的GMAC功能 */
-        uint8_t auth_data[SECOC_MAX_PDU_LENGTH + SECOC_MAX_FRESHNESS_LENGTH];
+        uint8_t auth_data[SECOC_MAX_PDU_LENGTH + (unsigned int)(SECOC_MAX_FRESHNESS_LENGTH)];
         uint32_t auth_len = 0;
         
         /* 构建认证数据 */

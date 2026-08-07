@@ -522,7 +522,7 @@ secoc_status_t secoc_freshness_handle_sync_request(secoc_freshness_manager_t *mg
     }
     
     /* 检查请求类型 */
-    if (request->header.msg_type != SECOC_SYNC_REQ) {
+    if (request->header.msg_type != (uint32_t)(SECOC_SYNC_REQ)) {
         return SECOC_ERROR_INVALID_PARAM;
     }
     
@@ -600,8 +600,8 @@ secoc_status_t secoc_freshness_handle_sync_response(secoc_freshness_manager_t *m
     }
     
     /* 验证消息类型 */
-    if ((response->header.msg_type != SECOC_SYNC_RES) && 
-        (response->header.msg_type != SECOC_SYNC_BROADCAST)) {
+    if ((response->header.msg_type != (uint32_t)(SECOC_SYNC_RES)) && 
+        (response->header.msg_type != (uint32_t)(SECOC_SYNC_BROADCAST))) {
         return SECOC_ERROR_INVALID_PARAM;
     }
     
@@ -819,7 +819,7 @@ void secoc_freshness_get_stats(secoc_fv_entry_t *entry,
 }
 
 const char* secoc_freshness_state_str(secoc_fv_state_t state) {
-    if (state < sizeof(fv_state_strings) / sizeof(fv_state_strings[0])) {
+    if ((uint32_t)(state) < sizeof(fv_state_strings) / sizeof(fv_state_strings[0])) {
         return fv_state_strings[state];
     }
     return "UNKNOWN";

@@ -341,7 +341,7 @@ tcpip_error_t tcpip_arp_process_packet(uint8_t iface_id,
         {
             uint16_t opcode = TCPIP_NTOHS(arp_pkt->opcode);
             
-            if (opcode == TCPIP_ARP_OP_REQUEST)
+            if (opcode == (uint32_t)(TCPIP_ARP_OP_REQUEST))
             {
                 /* 处理ARP请求 */
                 /* 更新发送方的缓存 */
@@ -351,7 +351,7 @@ tcpip_error_t tcpip_arp_process_packet(uint8_t iface_id,
                 g_arp_ctx.request_count++;
                 result = TCPIP_OK;
             }
-            else if (opcode == TCPIP_ARP_OP_REPLY)
+            else if (opcode == (uint32_t)(TCPIP_ARP_OP_REPLY))
             {
                 /* 处理ARP响应 */
                 idx = tcpip_arp_find_entry_by_ip(arp_pkt->sender_ip);
@@ -657,7 +657,7 @@ static tcpip_error_t tcpip_arp_update_entry(int16_t idx,
 {
     tcpip_error_t result = TCPIP_OK;
 
-    if ((idx >= 0) && (idx < TCPIP_ARP_CACHE_SIZE) && (mac_addr != NULL))
+    if ((idx >= 0U) && ((unsigned int)(idx) < TCPIP_ARP_CACHE_SIZE) && (mac_addr != NULL))
     {
         (void)memcpy(g_arp_ctx.entries[idx].mac_addr, mac_addr, 6u);
         g_arp_ctx.entries[idx].iface_id = iface_id;

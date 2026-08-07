@@ -393,8 +393,8 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
     uint32_t pos = 0;
     
     /* 验证RTPS协议头 */
-    if ((data[0U] != 'R') || (data[1] != 'T') || 
-        (data[2U] != 'P') || (data[3] != 'S')) {
+    if ((data[0U] != (uint8_t)('R')) || (data[1] != 'T') || 
+        (data[2U] != (uint8_t)('P')) || (data[3] != 'S')) {
         return ETH_ERROR;
     }
     pos += 4U;

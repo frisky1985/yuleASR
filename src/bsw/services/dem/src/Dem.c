@@ -973,7 +973,7 @@ Std_ReturnType Dem_SetOperationCycleState(Dem_OperationCycleType OperationCycleT
         return E_NOT_OK;
     }
 
-    if (OperationCycleType >= DEM_NUM_OPERATION_CYCLES)
+    if ((unsigned int)((unsigned int)(OperationCycleType)) >= DEM_NUM_OPERATION_CYCLES)
     {
         DEM_DET_REPORT_ERROR(DEM_SID_SETOPERATIONCYCLESTATE, DEM_E_PARAM_DATA);
         return E_NOT_OK;
@@ -1018,7 +1018,7 @@ Std_ReturnType Dem_GetOperationCycleState(Dem_OperationCycleType OperationCycleT
         return E_NOT_OK;
     }
 
-    if (OperationCycleType >= DEM_NUM_OPERATION_CYCLES)
+    if ((unsigned int)((unsigned int)(OperationCycleType)) >= DEM_NUM_OPERATION_CYCLES)
     {
         DEM_DET_REPORT_ERROR(DEM_SID_GETOPERATIONCYCLESTATE, DEM_E_PARAM_DATA);
         return E_NOT_OK;

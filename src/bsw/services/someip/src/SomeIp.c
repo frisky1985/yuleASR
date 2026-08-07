@@ -163,7 +163,7 @@ void SomeIp_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIp_MessageType message;
     
-    if (!SomeIp_Initialized || (Data == NULL_PTR) || (Length < SOMEIP_HEADER_SIZE))
+    if (!SomeIp_Initialized || (Data == NULL_PTR) || ((unsigned int)(Length) < SOMEIP_HEADER_SIZE))
     {
         return;
     }
@@ -254,7 +254,7 @@ Std_ReturnType SomeIp_ParseHeader(const uint8* Data, SomeIp_HeaderType* HeaderPt
     HeaderPtr->ReturnCode = Data[15];
     
     /* Validate protocol version */
-    if (HeaderPtr->ProtocolVersion != SOMEIP_PROTOCOL_VERSION)
+    if ((unsigned int)(HeaderPtr->ProtocolVersion) != SOMEIP_PROTOCOL_VERSION)
     {
         return E_NOT_OK;
     }

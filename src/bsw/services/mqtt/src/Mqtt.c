@@ -272,7 +272,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     
     /* 初始化TCP连接 */
     result = TcpIp_SocketCreate(&conn->socketId);
-    if (result != E_OK) {
+    if ((uint32_t)(result) != (uint32_t)(E_OK)) {
 #if (MQTT_SUPPORT_TLS == STD_ON)
         if (conn->useTls && (conn->tlsContext != NULL_PTR)) {
             Mqtt_Tls_DestroyContext(conn->tlsContext);

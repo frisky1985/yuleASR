@@ -534,7 +534,7 @@ dds_security_status_t dds_security_check_access(dds_security_context_t *ctx,
     }
 
     /* Skip access control if not enabled in policy */
-    if (!(ctx->config.policy_flags & DDS_SEC_POLICY_ACCESS_CONTROL)) {
+    if (!(ctx->config.policy_flags & (uint32_t)(DDS_SEC_POLICY_ACCESS_CONTROL))) {
         return DDS_SECURITY_OK;
     }
 
@@ -758,7 +758,7 @@ dds_security_status_t dds_security_detect_replay(dds_security_context_t *ctx,
     }
 
     /* Skip replay protection if not enabled */
-    if (!(ctx->config.policy_flags & DDS_SEC_POLICY_REPLAY_PROTECTION)) {
+    if (!(ctx->config.policy_flags & (uint32_t)(DDS_SEC_POLICY_REPLAY_PROTECTION))) {
         return DDS_SECURITY_OK;
     }
 
@@ -771,7 +771,7 @@ dds_security_status_t dds_security_detect_replay(dds_security_context_t *ctx,
     if ((seq_number > 0U) && (seq_number <= participant->last_seq_number)) {
         /* Check window for exact replay */
         int64_t diff = participant->last_seq_number - seq_number;
-        if (diff < DDS_SECURITY_REPLAY_WINDOW_SIZE) {
+        if ((unsigned int)((unsigned int)(diff)) < DDS_SECURITY_REPLAY_WINDOW_SIZE) {
             /* Check if this exact sequence number was seen */
             uint32_t idx = (participant->replay_window.write_index - diff - 1 + DDS_SECURITY_REPLAY_WINDOW_SIZE) 
                           % DDS_SECURITY_REPLAY_WINDOW_SIZE;

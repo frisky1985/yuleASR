@@ -199,7 +199,7 @@ eth_status_t fp_init(void) {
     
     memset(&g_fp_state, 0, sizeof(g_fp_state));
     
-    for (int i = 0; i < FP_MAX_PORTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < FP_MAX_PORTS; i++) {
         g_fp_state.ports[i].config.port_id = i;
         g_fp_state.ports[i].state = FP_STATE_INACTIVE;
         g_fp_state.ports[i].config.preemption_enabled = false;

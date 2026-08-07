@@ -32,7 +32,7 @@
 /*=============================================================================
  * Internal Macros
  *===========================================================================*/
-#define COMM_INITIALIZED                    0x01
+#define COMM_INITIALIZED                    0x01U
 #define COMM_UNINITIALIZED                  0x00
 
 #define COMM_IS_INITIALIZED()               (ComM_ModuleState == COMM_INITIALIZED)

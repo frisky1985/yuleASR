@@ -101,7 +101,7 @@ static void report_dtc(bl_rollback_manager_t *mgr, uint32_t dtc_code, uint8_t st
  */
 static int32_t find_history_entry(bl_rollback_manager_t *mgr, uint32_t version)
 {
-    for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
+    for (int32_t i = 0; (unsigned int)((unsigned int)(i)) < BL_ROLLBACK_MAX_HISTORY; i++) {
         if (mgr->record.history[i].is_valid && 
             (mgr->record.history[i].version == version)) {
             return i;
@@ -135,7 +135,7 @@ static bl_rollback_error_t add_to_history(
     
     /* 查找空位置 */
     int32_t slot = -1;
-    for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
+    for (int32_t i = 0; (unsigned int)((unsigned int)(i)) < BL_ROLLBACK_MAX_HISTORY; i++) {
         if (!record->history[i].is_valid) {
             slot = i;
             break;
@@ -424,7 +424,7 @@ bl_rollback_error_t bl_rollback_execute(bl_rollback_manager_t *mgr, uint8_t reas
         bl_partition_info_t target_info;
         result = bl_partition_get_info_by_index(part_mgr, target_partition, &target_info);
         
-        if (result == BL_OK) {
+        if ((uint32_t)(result) == (uint32_t)(BL_OK)) {
             result = bl_partition_switch_active(part_mgr, (char*)target_info.name);
         }
     }
@@ -518,7 +518,7 @@ bl_rollback_error_t bl_rollback_get_previous_version(
     int32_t best_idx = -1;
     uint64_t best_time = 0;
     
-    for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
+    for (int32_t i = 0; (unsigned int)((unsigned int)(i)) < BL_ROLLBACK_MAX_HISTORY; i++) {
         if (mgr->record.history[i].is_valid &&
             (mgr->record.history[i].version != mgr->current_version)) {
             /* 优先选择有成功启动记录的版本 */
@@ -533,7 +533,7 @@ bl_rollback_error_t bl_rollback_get_previous_version(
     
     if (best_idx < 0) {
         /* 如果没有有成功启动记录的，选择最近安装的 */
-        for (int32_t i = 0; i < BL_ROLLBACK_MAX_HISTORY; i++) {
+        for (int32_t i = 0; (unsigned int)((unsigned int)(i)) < BL_ROLLBACK_MAX_HISTORY; i++) {
             if (mgr->record.history[i].is_valid &&
                 (mgr->record.history[i].version != mgr->current_version)) {
                 if ((best_idx < 0) || (mgr->record.history[i].install_time > best_time)) {
@@ -569,7 +569,7 @@ bl_rollback_error_t bl_rollback_get_history(
     
     *num_entries = 0;
     
-    for (int32_t i = 0; (i < BL_ROLLBACK_MAX_HISTORY) && (*num_entries < max_entries); i++) {
+    for (int32_t i = 0; ((unsigned int)((unsigned int)(i)) < BL_ROLLBACK_MAX_HISTORY) && (*num_entries < max_entries); i++) {
         if (mgr->record.history[i].is_valid) {
             memcpy(&history[*num_entries], &mgr->record.history[i],
                    sizeof(bl_version_history_entry_t));

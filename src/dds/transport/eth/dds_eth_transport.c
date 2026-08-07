@@ -884,7 +884,7 @@ eth_status_t dds_eth_decapsulate_data(const uint8_t *data, uint32_t len,
     else {
         const dds_rtps_data_submsg_t *data_submsg = (const dds_rtps_data_submsg_t *)data;
         
-        if (data_submsg->header.submessage_id != DDS_RTPS_SUBMSG_DATA) {
+        if (data_submsg->header.submessage_id != (uint32_t)(DDS_RTPS_SUBMSG_DATA)) {
             status = ETH_ERROR;
         }
         else {

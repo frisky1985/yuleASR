@@ -65,12 +65,12 @@
 #define SOMEIP_E_NOT_READY                 0x10
 
 /* Protocol Constants */
-#define SOMEIP_PROTOCOL_VERSION            0x01
+#define SOMEIP_PROTOCOL_VERSION            0x01U
 #define SOMEIP_INTERFACE_VERSION           0x01
 #define SOMEIP_MAGIC_COOKIE                0xFFFF0000
 
 /* Header Length */
-#define SOMEIP_HEADER_SIZE                 16
+#define SOMEIP_HEADER_SIZE                 16U
 
 /* Message Types */
 typedef uint8 SomeIp_MessageTypeType;

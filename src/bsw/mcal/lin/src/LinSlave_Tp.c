@@ -304,7 +304,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
     
     if (Length <= 6U) {
         /* 发送单帧 (SF) */
-        FirstFrame[0] = LINSLAVE_TP_PCI_SF | (Length & 0x0FU);
+        FirstFrame[0] = (uint32_t)(LINSLAVE_TP_PCI_SF) | (Length & 0x0FU);
         (void)memcpy(&FirstFrame[1], DataPtr, Length);
         LinSlave_Hal_UartSendBuffer(FirstFrame, Length + 1U);
         
@@ -315,7 +315,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         LinSlave_Tp_ResetChannel(ChannelId);
     } else {
         /* 发送首帧 (FF) */
-        FirstFrame[0] = LINSLAVE_TP_PCI_FF | ((Length >> 8U) & 0x0FU);
+        FirstFrame[0] = (uint32_t)(LINSLAVE_TP_PCI_FF) | ((Length >> 8U) & 0x0FU);
         FirstFrame[1] = Length & 0xFFU;
         (void)memcpy(&FirstFrame[2], DataPtr, 5);  /* FF中携带的数据 */
         LinSlave_Hal_UartSendBuffer(FirstFrame, 7);

@@ -84,7 +84,7 @@ static srp_stream_reservation_t* find_or_create_stream(const srp_stream_id_t str
         return &g_srp_state.streams[idx];
     }
     
-    if (g_srp_state.stream_count >= SRP_MAX_STREAMS) {
+    if ((unsigned int)(g_srp_state.stream_count) >= SRP_MAX_STREAMS) {
         return NULL;
     }
     
@@ -206,7 +206,7 @@ eth_status_t srp_init(void) {
     
     memset(&g_srp_state, 0, sizeof(g_srp_state));
     
-    for (int i = 0; i < SRP_MAX_PORTS; i++) {
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < SRP_MAX_PORTS; i++) {
         g_srp_state.ports[i].bandwidth.port_id = i;
     }
     

@@ -722,8 +722,8 @@ uint8 LinMaster_CalculateProtectedId(uint8 Id)
     Id &= LINMASTER_PID_MASK;
     
     /* 计算校验位 */
-    p0 = ((Id >> 0) & 0x01U) ^ ((Id >> 1) & 0x01U) ^ ((Id >> 2) & 0x01) ^ ((Id >> 4) & 0x01);
-    p1 = ~(((Id >> 1) & 0x01U) ^ ((Id >> 3) & 0x01U) ^ ((Id >> 4) & 0x01) ^ ((Id >> 5) & 0x01)) & 0x01;
+    p0 = ((unsigned int)((Id >> 0)) & 0x01U) ^ ((Id >> 1) & 0x01U) ^ ((unsigned int)((Id >> 2)) & 0x01U) ^ ((Id >> 4) & 0x01);
+    p1 = ~(((unsigned int)((Id >> 1)) & 0x01U) ^ ((Id >> 3) & 0x01U) ^ ((unsigned int)((Id >> 4)) & 0x01U) ^ ((Id >> 5) & 0x01)) & 0x01;
     
     /* 组合PID: P1 P0 ID5 ID4 ID3 ID2 ID1 ID0 */
     pid = (p1 << 7) | (p0 << 6) | Id;

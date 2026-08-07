@@ -15,7 +15,7 @@
 /* 导入PHY寄存器定义 - 通常在共享头文件中定义 */
 #ifndef PHY_REG_STATUS
 #define PHY_REG_STATUS          0x01
-#define PHY_STATUS_AUTO_NEG_DONE 0x0020
+#define PHY_STATUS_AUTO_NEG_DONE 0x0020U
 #endif
 
 /* ============================================================================
@@ -510,7 +510,7 @@ eth_status_t eth_manager_wait_for_negotiation(uint32_t timeout_ms)
         uint16_t status_reg;
         eth_status_t status = automotive_phy_read_reg(PHY_REG_STATUS, &status_reg);
 
-        if ((status == ETH_OK) && (status_reg & PHY_STATUS_AUTO_NEG_DONE)) {
+        if ((status == ETH_OK) && ((unsigned int)(status_reg) & PHY_STATUS_AUTO_NEG_DONE)) {
             g_manager_ctx.negotiation_complete = true;
             return ETH_OK;
         }
