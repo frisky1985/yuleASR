@@ -45,7 +45,7 @@
 
 #define MCU_CCM_CCR                     (MCU_CCM_BASE_ADDR + 0x0000U)
 #define MCU_CCM_CSR                     (MCU_CCM_BASE_ADDR + 0x0008U)
-#define MCU_CCM_CCSR                    (MCU_CCM_BASE_ADDR + 0x000C)
+#define MCU_CCM_CCSR                    (MCU_CCM_BASE_ADDR + 0x000CU)
 #define MCU_CCM_CACRR                   (MCU_CCM_BASE_ADDR + 0x0010U)
 #define MCU_CCM_CBCDR                   (MCU_CCM_BASE_ADDR + 0x0014U)
 #define MCU_CCM_CBCMR                   (MCU_CCM_BASE_ADDR + 0x0018U)
@@ -53,7 +53,7 @@
 #define MCU_SRC_SCR                     (MCU_SRC_BASE_ADDR + 0x0000U)
 #define MCU_SRC_SRSR                    (MCU_SRC_BASE_ADDR + 0x0004U)
 #define MCU_SRC_SBMR1                   (MCU_SRC_BASE_ADDR + 0x0008)
-#define MCU_SRC_SBMR2                   (MCU_SRC_BASE_ADDR + 0x001C)
+#define MCU_SRC_SBMR2                   (MCU_SRC_BASE_ADDR + 0x001CU)
 
 #define MCU_PLL_LOCK_TIMEOUT            (10000U)
 #define MCU_CLOCK_SWITCH_TIMEOUT        (10000U)
