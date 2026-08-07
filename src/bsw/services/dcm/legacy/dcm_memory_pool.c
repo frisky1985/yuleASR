@@ -49,8 +49,10 @@
 
 /******************************************************************************
  * Static Memory Pool Storage
+ *
+ * 静态分配（ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存）：
+ * 固定大小池，编译期确定，无 malloc/free。
  ******************************************************************************/
-#if defined(DCM_USE_STATIC_POOLS)
 /* Statically allocated pool memory */
 static uint8_t s_smallPoolBuffer[DCM_POOL_SMALL_COUNT * 
                                   (DCM_POOL_SMALL_BLOCK_SIZE + DCM_POOL_HEADER_SIZE)];
@@ -60,13 +62,6 @@ static uint8_t s_largePoolBuffer[DCM_POOL_LARGE_COUNT *
                                   (DCM_POOL_LARGE_BLOCK_SIZE + DCM_POOL_HEADER_SIZE)];
 static uint8_t s_xlPoolBuffer[DCM_POOL_XL_COUNT * 
                                (DCM_POOL_XL_BLOCK_SIZE + DCM_POOL_HEADER_SIZE)];
-#else
-/* Dynamic pool buffers */
-static uint8_t *s_smallPoolBuffer = NULL_PTR;
-static uint8_t *s_mediumPoolBuffer = NULL_PTR;
-static uint8_t *s_largePoolBuffer = NULL_PTR;
-static uint8_t *s_xlPoolBuffer = NULL_PTR;
-#endif
 
 /******************************************************************************
  * Module State
@@ -125,31 +120,6 @@ static Dcm_ReturnType initPool(Dcm_Pool *pool, uint8_t *buffer,
     }
     
     return result;
-}
-
-/**
- * @brief Allocate dynamic pool buffer
- */
-static uint8_t* allocatePoolBuffer(uint32_t blockSize, uint32_t blockCount)
-{
-    uint32_t totalSize = blockCount * (blockSize + DCM_POOL_HEADER_SIZE);
-    uint8_t *buffer = (uint8_t *)malloc(totalSize);
-    
-    if (buffer != NULL_PTR) {
-        (void)memset(buffer, 0, totalSize);
-    }
-    
-    return buffer;
-}
-
-/**
- * @brief Free dynamic pool buffer
- */
-static void freePoolBuffer(uint8_t *buffer)
-{
-    if (buffer != NULL_PTR) {
-        free(buffer);
-    }
 }
 
 /**
@@ -235,43 +205,14 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
     (void)memset(&s_poolManager, 0, sizeof(s_poolManager));
     s_sequenceNumber = 0U;
     
-    /* Use static buffer if provided, otherwise use internal or allocate */
-    uint8_t *smallBuf = NULL_PTR;
-    uint8_t *mediumBuf = NULL_PTR;
-    uint8_t *largeBuf = NULL_PTR;
-    uint8_t *xlBuf = NULL_PTR;
-    
-    if (useStaticPools) {
-#if defined(DCM_USE_STATIC_POOLS)
-        smallBuf = s_smallPoolBuffer;
-        mediumBuf = s_mediumPoolBuffer;
-        largeBuf = s_largePoolBuffer;
-        xlBuf = s_xlPoolBuffer;
-#else
-        /* Use provided static buffer */
-        if (staticBuffer != NULL_PTR) {
-            smallBuf = staticBuffer;
-            mediumBuf = staticBuffer + (DCM_POOL_SMALL_COUNT * 
-                                        (DCM_POOL_SMALL_BLOCK_SIZE + DCM_POOL_HEADER_SIZE));
-            largeBuf = mediumBuf + (DCM_POOL_MEDIUM_COUNT * 
-                                    (DCM_POOL_MEDIUM_BLOCK_SIZE + DCM_POOL_HEADER_SIZE));
-            xlBuf = largeBuf + (DCM_POOL_LARGE_COUNT * 
-                                (DCM_POOL_LARGE_BLOCK_SIZE + DCM_POOL_HEADER_SIZE));
-        }
-#endif
-    } else {
-        /* Allocate dynamic buffers */
-        smallBuf = allocatePoolBuffer(DCM_POOL_SMALL_BLOCK_SIZE, DCM_POOL_SMALL_COUNT);
-        if (smallBuf != NULL_PTR) {
-            mediumBuf = allocatePoolBuffer(DCM_POOL_MEDIUM_BLOCK_SIZE, DCM_POOL_MEDIUM_COUNT);
-        }
-        if (mediumBuf != NULL_PTR) {
-            largeBuf = allocatePoolBuffer(DCM_POOL_LARGE_BLOCK_SIZE, DCM_POOL_LARGE_COUNT);
-        }
-        if (largeBuf != NULL_PTR) {
-            xlBuf = allocatePoolBuffer(DCM_POOL_XL_BLOCK_SIZE, DCM_POOL_XL_COUNT);
-        }
-    }
+    /* 静态分配: 全部使用编译期数组, 参数 useStaticPools/staticBuffer 保留以兼容 API,
+     * 但内部不再有动态分配路径 (ISO 26262 静态分配要求) */
+    uint8_t *smallBuf = s_smallPoolBuffer;
+    uint8_t *mediumBuf = s_mediumPoolBuffer;
+    uint8_t *largeBuf = s_largePoolBuffer;
+    uint8_t *xlBuf = s_xlPoolBuffer;
+    (void)useStaticPools;
+    (void)staticBuffer;
     
     /* Initialize pools */
     if ((smallBuf != NULL_PTR) &&
@@ -308,15 +249,9 @@ Dcm_ReturnType Dcm_PoolInit(bool useStaticPools, uint8_t *staticBuffer)
     
     if (result == DCM_E_OK) {
         s_poolManager.initialized = true;
-        s_poolManager.useStaticPools = useStaticPools;
+        s_poolManager.useStaticPools = true; /* 恒为静态分配 */
     } else {
-        /* Cleanup on failure */
-        if (!useStaticPools) {
-            freePoolBuffer(smallBuf);
-            freePoolBuffer(mediumBuf);
-            freePoolBuffer(largeBuf);
-            freePoolBuffer(xlBuf);
-        }
+        /* 静态池无需清理 (无动态分配) */
     }
     
     return result;
@@ -327,15 +262,7 @@ Dcm_ReturnType Dcm_PoolDeInit(void)
     Dcm_ReturnType result = DCM_E_NOT_OK;
     
     if (s_poolManager.initialized) {
-        /* Free dynamic buffers if used */
-        if (!s_poolManager.useStaticPools) {
-            freePoolBuffer(s_poolManager.smallPool.buffer);
-            freePoolBuffer(s_poolManager.mediumPool.buffer);
-            freePoolBuffer(s_poolManager.largePool.buffer);
-            freePoolBuffer(s_poolManager.xlPool.buffer);
-        }
-        
-        /* Clear state */
+        /* 静态池无需释放, 直接清状态 */
         (void)memset(&s_poolManager, 0, sizeof(s_poolManager));
         result = DCM_E_OK;
     }
@@ -406,26 +333,11 @@ void* Dcm_PoolAlloc(uint32_t size, const Dcm_MemAttr *attr)
         }
     }
     
-    /* Fallback to dynamic allocation if needed */
-    if ((ptr == NULL_PTR) && (mode != DCM_ALLOC_MODE_STATIC)) {
-        uint32_t allocSize = size + DCM_POOL_HEADER_SIZE;
-        uint8_t *block = (uint8_t *)malloc(allocSize);
-        
-        if (block != NULL_PTR) {
-            Dcm_PoolBlockHeader *header = (Dcm_PoolBlockHeader *)block;
-            header->magic = DCM_POOL_MAGIC_ALLOC;
-            header->state = DCM_BLOCK_ALLOCATED;
-            header->poolId = 7U; /* Mark as dynamic (max value for 3 bits) */
-            header->seqNum = s_sequenceNumber++;
-            
-            ptr = (void *)(block + DCM_POOL_HEADER_SIZE);
-            
-            if ((attr != NULL_PTR) && attr->zeroInit) {
-                (void)memset(ptr, 0, size);
-            }
-            
-            s_poolManager.totalAllocations++;
-            s_poolManager.totalBytesAllocated += size;
+    /* 静态分配模式: 池满或超出 XL 池容量时不再回退堆分配, 直接返回 NULL
+     * (ISO 26262 静态分配 — 编译期固定上限 + 越界检查) */
+    if (ptr == NULL_PTR) {
+        if (pool != NULL_PTR) {
+            pool->stats.failCount++;
         }
     }
     
@@ -457,10 +369,9 @@ Dcm_ReturnType Dcm_PoolFree(void *ptr)
         return DCM_E_NOT_OK; /* Double free */
     }
     
-    /* Handle dynamic allocation - poolId 7 indicates dynamic (outside pool) */
+    /* 静态分配模式: 不存在池外动态块 (poolId==7 路径在静态模式下不可达), 防御处理 */
     if (header->poolId == 7U) {
         header->magic = 0U; /* Clear magic */
-        free(header);
         s_poolManager.totalFrees++;
         return DCM_E_OK;
     }

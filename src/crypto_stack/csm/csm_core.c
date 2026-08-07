@@ -17,6 +17,13 @@
 #define CSM_VERSION "4.4.0-AUTOSAR"
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static csm_context_t s_csm_ctx;
+
+/* ============================================================================
  * 内部函数前向声明
  * ============================================================================ */
 
@@ -31,12 +38,10 @@ static const char* csm_get_algo_name_internal(csm_algorithm_t algo);
 
 csm_context_t* csm_init(const csm_config_t *config)
 {
-    csm_context_t *ctx;
+    csm_context_t *ctx = &s_csm_ctx;
     
-    ctx = (csm_context_t*)calloc(1, sizeof(csm_context_t));
-    if (ctx == NULL) {
-        return NULL;
-    }
+    /* 静态上下文: 清零后重新初始化 (替代 calloc + 失败返回 NULL) */
+    (void)memset(ctx, 0, sizeof(csm_context_t));
     
     /* 复制配置 */
     if (config != NULL) {
@@ -87,7 +92,7 @@ void csm_deinit(csm_context_t *ctx)
     csm_flush_queue(ctx);
     
     ctx->initialized = false;
-    free(ctx);
+    /* 静态上下文: 不再 free(ctx) */
 }
 
 /* ============================================================================

@@ -215,10 +215,8 @@ void test_secoc_authenticate_and_verify_pdu_should_succeed(void) {
     TEST_ASSERT_EQUAL(sizeof(test_data), original_len);
     TEST_ASSERT_EQUAL_UINT8_ARRAY(test_data, original_data, sizeof(test_data));
     
-    /* 清理 */
-    if (auth_pdu.data) {
-        free(auth_pdu.data);
-    }
+    /* 清理: secoc 认证 PDU 数据已改为静态池内存, 无需释放 */
+    auth_pdu.data = NULL;
 }
 
 /* 测试验证失败情况 (篡改数据) */
@@ -265,10 +263,8 @@ void test_secoc_verify_modified_pdu_should_fail(void) {
     TEST_ASSERT_EQUAL(SECOC_OK, status);  /* 操作完成 */
     TEST_ASSERT_EQUAL(SECOC_VERIFY_MAC_FAILED, verify_result);  /* 但验证失败 */
     
-    /* 清理 */
-    if (auth_pdu.data) {
-        free(auth_pdu.data);
-    }
+    /* 清理: secoc 认证 PDU 数据已改为静态池内存, 无需释放 */
+    auth_pdu.data = NULL;
 }
 
 /* 测试统计功能 */
@@ -303,9 +299,8 @@ void test_secoc_stats_should_track_operations(void) {
     secoc_get_stats(test_ctx, &tx_count, &rx_count, &verify_success, &verify_failure);
     TEST_ASSERT_EQUAL(1, tx_count);
     
-    if (auth_pdu.data) {
-        free(auth_pdu.data);
-    }
+    /* 清理: secoc 认证 PDU 数据已改为静态池内存, 无需释放 */
+    auth_pdu.data = NULL;
 }
 
 /* 测试重置统计 */
@@ -339,9 +334,8 @@ void test_secoc_reset_stats_should_clear_counters(void) {
     TEST_ASSERT_EQUAL(0, verify_success);
     TEST_ASSERT_EQUAL(0, verify_failure);
     
-    if (auth_pdu.data) {
-        free(auth_pdu.data);
-    }
+    /* 清理: secoc 认证 PDU 数据已改为静态池内存, 无需释放 */
+    auth_pdu.data = NULL;
 }
 
 /* 主函数 */

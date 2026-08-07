@@ -325,14 +325,23 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
 }
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static secoc_context_t s_secoc_ctx;
+
+/* 认证 PDU 数据暂存: 静态缓冲 (data_len <= SECOC_MAX_PDU_LENGTH 已在上游校验) */
+static uint8_t s_secoc_tx_data[SECOC_MAX_PDU_LENGTH];
+static uint8_t s_secoc_rx_data[SECOC_MAX_PDU_LENGTH];
+
+/* ============================================================================
  * 初始化/反初始化
  * ============================================================================ */
 
 secoc_context_t* secoc_init(dds_crypto_context_t *crypto_ctx) {
-    secoc_context_t *ctx = (secoc_context_t*)calloc(1, sizeof(secoc_context_t));
-    if (!ctx) {
-        return NULL;
-    }
+    secoc_context_t *ctx = &s_secoc_ctx;
+    (void)memset(ctx, 0, sizeof(secoc_context_t));
     
     ctx->crypto_ctx = crypto_ctx;
     ctx->initialized = true;
@@ -358,7 +367,7 @@ void secoc_deinit(secoc_context_t *ctx) {
     }
     
     ctx->initialized = false;
-    free(ctx);
+    /* 静态上下文: 不再 free(ctx) */
 }
 
 /* ============================================================================
@@ -582,10 +591,8 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     if ((unsigned int)(data_len) > SECOC_MAX_PDU_LENGTH) {
         return SECOC_ERROR_PDU_TOO_LARGE;
     }
-    auth_pdu->data = (uint8_t*)malloc(data_len);
-    if (!auth_pdu->data) {
-        return SECOC_ERROR_NO_MEMORY;
-    }
+    /* 复制数据到静态缓冲 (替代 malloc; data_len <= SECOC_MAX_PDU_LENGTH 已校验) */
+    auth_pdu->data = s_secoc_tx_data;
     memcpy(auth_pdu->data, data, data_len);
     auth_pdu->data_len = data_len;
     
@@ -606,7 +613,7 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     /* 计算MAC */
     secoc_status_t status = secoc_compute_mac(ctx, config, auth_pdu, auth_pdu->authenticator);
     if (status != SECOC_OK) {
-        free(auth_pdu->data);
+        /* 静态缓冲无需释放 */
         auth_pdu->data = NULL;
         return status;
     }
@@ -682,12 +689,12 @@ secoc_status_t secoc_parse_secured_pdu(const uint8_t *secured_pdu, uint32_t secu
     auth_pdu->freshness_len = fv_len;
     auth_pdu->auth_len = auth_len;
     
-    /* 解析数据 */
+    /* 解析数据到静态缓冲 (替代 malloc; data_len <= SECOC_MAX_PDU_LENGTH 已校验) */
     if (data_len > 0U) {
-        auth_pdu->data = (uint8_t*)malloc(data_len);
-        if (!auth_pdu->data) {
-            return SECOC_ERROR_NO_MEMORY;
+        if (data_len > SECOC_MAX_PDU_LENGTH) {
+            return SECOC_ERROR_PDU_TOO_LARGE;
         }
+        auth_pdu->data = s_secoc_rx_data;
         memcpy(auth_pdu->data, secured_pdu, data_len);
         auth_pdu->data_len = data_len;
     }
@@ -735,7 +742,6 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     uint8_t computed_mac[SECOC_MAX_MAC_LENGTH];
     status = secoc_compute_mac(ctx, config, &auth_pdu, computed_mac);
     if (status != SECOC_OK) {
-        if ((auth_pdu.data) != 0U) { free(auth_pdu.data); }
         *result = SECOC_VERIFY_KEY_INVALID;
         ctx->verify_failure_count++;
         return status;
@@ -746,7 +752,6 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     if (auth_len == 0U) { auth_len = AES_BLOCK_SIZE; }
     
     if (memcmp(auth_pdu.authenticator, computed_mac, auth_len) != 0) {
-        if ((auth_pdu.data) != 0U) { free(auth_pdu.data); }
         *result = SECOC_VERIFY_MAC_FAILED;
         ctx->verify_failure_count++;
         if ((ctx->on_verify_failure) != 0U) {
@@ -759,11 +764,10 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     *result = SECOC_VERIFY_SUCCESS;
     ctx->verify_success_count++;
     
-    /* 输出原始数据 */
+    /* 输出原始数据 (静态缓冲, 无需释放) */
     if ((auth_pdu.data_len > 0U) && auth_pdu.data) {
         memcpy(original_data, auth_pdu.data, auth_pdu.data_len);
         *original_len = auth_pdu.data_len;
-        free(auth_pdu.data);
     } else {
         *original_len = 0;
     }

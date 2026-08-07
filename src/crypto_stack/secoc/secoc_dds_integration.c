@@ -24,19 +24,23 @@ typedef struct {
 static secoc_dds_stats_t g_stats = {0};
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static secoc_dds_context_t s_secoc_dds_ctx;
+
+/* ============================================================================
  * 初始化/反初始化
  * ============================================================================ */
 
 secoc_dds_context_t* secoc_dds_init(dds_crypto_context_t *dds_crypto_ctx) {
-    secoc_dds_context_t *ctx = (secoc_dds_context_t*)calloc(1, sizeof(secoc_dds_context_t));
-    if (!ctx) {
-        return NULL;
-    }
+    secoc_dds_context_t *ctx = &s_secoc_dds_ctx;
+    (void)memset(ctx, 0, sizeof(secoc_dds_context_t));
     
     /* 初始化SecOC上下文 */
     ctx->secoc_ctx = secoc_init(dds_crypto_ctx);
     if (!ctx->secoc_ctx) {
-        free(ctx);
         return NULL;
     }
     
@@ -65,7 +69,7 @@ void secoc_dds_deinit(secoc_dds_context_t *ctx) {
     }
     
     ctx->initialized = false;
-    free(ctx);
+    /* 静态上下文: 不再 free(ctx) */
 }
 
 bool secoc_dds_is_crypto_available(secoc_dds_context_t *ctx) {

@@ -16,6 +16,13 @@
 #define CRYIF_VERSION "4.4.0-AUTOSAR"
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static cryif_context_t s_cryif_ctx;
+
+/* ============================================================================
  * Internal Function Declarations
  * ============================================================================ */
 
@@ -30,12 +37,10 @@ static cryif_key_type_t cryif_map_algorithm_to_key_type(uint32_t algorithm);
 
 cryif_context_t* cryif_init(void)
 {
-    cryif_context_t *ctx;
+    cryif_context_t *ctx = &s_cryif_ctx;
     
-    ctx = (cryif_context_t*)calloc(1, sizeof(cryif_context_t));
-    if (ctx == NULL) {
-        return NULL;
-    }
+    /* 静态上下文: 清零后重新初始化 (替代 calloc + 失败返回 NULL) */
+    (void)memset(ctx, 0, sizeof(cryif_context_t));
     
     /* Initialize driver table */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_DRIVERS; i++) {
@@ -88,7 +93,7 @@ void cryif_deinit(cryif_context_t *ctx)
     }
     
     ctx->initialized = false;
-    free(ctx);
+    /* 静态上下文: 不再 free(ctx) */
 }
 
 /* ============================================================================

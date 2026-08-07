@@ -46,14 +46,19 @@ static const char* fv_state_strings[] = {
 };
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例管理器: 编译期静态分配, 替代 calloc */
+static secoc_freshness_manager_t s_freshness_mgr;
+
+/* ============================================================================
  * 初始化/反初始化
  * ============================================================================ */
 
 secoc_freshness_manager_t* secoc_freshness_init(void) {
-    secoc_freshness_manager_t *mgr = (secoc_freshness_manager_t*)calloc(1, sizeof(secoc_freshness_manager_t));
-    if (!mgr) {
-        return NULL;
-    }
+    secoc_freshness_manager_t *mgr = &s_freshness_mgr;
+    (void)memset(mgr, 0, sizeof(secoc_freshness_manager_t));
     
     mgr->get_timestamp_us = default_get_timestamp_us;
     mgr->initialized = true;
@@ -68,7 +73,7 @@ void secoc_freshness_deinit(secoc_freshness_manager_t *mgr) {
     }
     
     mgr->initialized = false;
-    free(mgr);
+    /* 静态上下文: 不再 free(mgr) */
 }
 
 void secoc_freshness_set_timer(secoc_freshness_manager_t *mgr,

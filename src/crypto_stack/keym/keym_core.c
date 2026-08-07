@@ -16,6 +16,20 @@
 #define KEYM_VERSION "4.4.0-AUTOSAR"
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static keym_context_t s_keym_ctx;
+
+/* 密钥材料存储: slots x MAX_KEY_MATERIAL_SIZE */
+static uint8_t s_keym_key_storage[KEYM_MAX_KEY_SLOTS][KEYM_MAX_KEY_MATERIAL_SIZE];
+
+/* 证书存储: certificates x MAX_CERT_SIZE (固定上限, 越界检查) */
+#define KEYM_MAX_CERT_SIZE 4096U
+static uint8_t s_keym_cert_storage[KEYM_MAX_CERTIFICATES][KEYM_MAX_CERT_SIZE];
+
+/* ============================================================================
  * Internal Function Declarations
  * ============================================================================ */
 
@@ -32,11 +46,17 @@ static bool keym_is_key_usage_allowed(keym_slot_info_t *slot, keym_key_usage_t u
 
 keym_context_t* keym_init(void *cryif, void *csm)
 {
-    keym_context_t *ctx;
+    keym_context_t *ctx = &s_keym_ctx;
     
-    ctx = (keym_context_t*)calloc(1, sizeof(keym_context_t));
-    if (ctx == NULL) {
-        return NULL;
+    /* 静态上下文: 清零后重新初始化 (替代 calloc + 失败返回 NULL) */
+    (void)memset(ctx, 0, sizeof(keym_context_t));
+    
+    /* 将密钥/证书存储指针指向静态池 (固定大小, 编译期确定) */
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
+        ctx->materials[i].key_data = s_keym_key_storage[i];
+    }
+    for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_CERTIFICATES; i++) {
+        ctx->certificates[i].cert_data = s_keym_cert_storage[i];
     }
     
     /* Initialize key slots */
@@ -91,15 +111,15 @@ void keym_deinit(keym_context_t *ctx)
         }
     }
     
-    /* Free certificate data */
+    /* 静态证书存储无需释放, 只擦除内容 (替代 free) */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_CERTIFICATES; i++) {
         if (ctx->certificates[i].cert_data != NULL) {
-            free(ctx->certificates[i].cert_data);
+            (void)memset(ctx->certificates[i].cert_data, 0, KEYM_MAX_CERT_SIZE);
         }
     }
     
     ctx->initialized = false;
-    free(ctx);
+    /* 静态上下文: 不再 free(ctx) */
 }
 
 /* ============================================================================
@@ -264,13 +284,10 @@ keym_status_t keym_key_import(keym_context_t *ctx, uint8_t slot_id,
         keym_update_version_history(ctx, slot_id);
     }
     
-    /* Store key material */
+    /* Store key material — 静态池已预指向, 直接使用 */
     material = &ctx->materials[slot_id];
     if (material->key_data == NULL) {
-        material->key_data = malloc(KEYM_MAX_KEY_MATERIAL_SIZE);
-        if (material->key_data == NULL) {
-            return KEYM_ERROR_NO_MEMORY;
-        }
+        material->key_data = s_keym_key_storage[slot_id];
     }
     
     memcpy(material->key_data, key_data, key_len);
@@ -340,12 +357,9 @@ keym_status_t keym_key_generate(keym_context_t *ctx, uint8_t slot_id,
         ctx->slots[slot_id].key_len = keym_get_key_type_size(key_type);
     }
     
-    /* Allocate key material buffer */
+    /* Allocate key material buffer — 静态池已预指向 */
     if (ctx->materials[slot_id].key_data == NULL) {
-        ctx->materials[slot_id].key_data = malloc(KEYM_MAX_KEY_MATERIAL_SIZE);
-        if (ctx->materials[slot_id].key_data == NULL) {
-            return KEYM_ERROR_NO_MEMORY;
-        }
+        ctx->materials[slot_id].key_data = s_keym_key_storage[slot_id];
     }
     
     /* Generate random key */
@@ -508,12 +522,9 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
         return KEYM_ERROR_INVALID_PARAM;
     }
     
-    /* Allocate key material for derived key */
+    /* Allocate key material for derived key — 静态池已预指向 */
     if (ctx->materials[target_slot].key_data == NULL) {
-        ctx->materials[target_slot].key_data = malloc(KEYM_MAX_KEY_MATERIAL_SIZE);
-        if (ctx->materials[target_slot].key_data == NULL) {
-            return KEYM_ERROR_NO_MEMORY;
-        }
+        ctx->materials[target_slot].key_data = s_keym_key_storage[target_slot];
     }
     
     /* Fill with derived pattern (simplified - should use real HKDF) */
@@ -712,13 +723,19 @@ keym_status_t keym_register_certificate(keym_context_t *ctx, uint8_t cert_id,
         return KEYM_ERROR_INVALID_PARAM;
     }
     
-    /* Free existing certificate data */
+    /* Free existing certificate data — 静态池: 仅重置内容与长度 */
     if (ctx->certificates[cert_id].cert_data != NULL) {
-        free(ctx->certificates[cert_id].cert_data);
+        (void)memset(ctx->certificates[cert_id].cert_data, 0, KEYM_MAX_CERT_SIZE);
+        ctx->certificates[cert_id].cert_data_len = 0U;
     }
     
-    /* Allocate and copy new certificate */
-    ctx->certificates[cert_id].cert_data = malloc(cert_len);
+    /* 越界检查: 证书大小固定上限 */
+    if (cert_len > KEYM_MAX_CERT_SIZE) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    
+    /* 复制到静态证书存储 (预指向, 无需分配) */
+    ctx->certificates[cert_id].cert_data = s_keym_cert_storage[cert_id];
     if (ctx->certificates[cert_id].cert_data == NULL) {
         return KEYM_ERROR_NO_MEMORY;
     }
