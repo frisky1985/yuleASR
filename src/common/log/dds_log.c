@@ -118,6 +118,27 @@ typedef struct {
 } dds_log_state_t;
 
 /*==============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ *============================================================================*/
+
+/* 异步队列节点静态池: 编译期固定上限 DDS_LOG_QUEUE_SIZE */
+static log_queue_node_t s_queue_node_pool[DDS_LOG_QUEUE_SIZE];
+static uint32_t s_queue_node_used[(DDS_LOG_QUEUE_SIZE + 31U) / 32U];
+
+/* 回调节点静态池: 编译期固定上限 */
+#define DDS_LOG_MAX_CALLBACK_NODES  16U
+static callback_node_t s_cb_node_pool[DDS_LOG_MAX_CALLBACK_NODES];
+static uint32_t s_cb_node_used[(DDS_LOG_MAX_CALLBACK_NODES + 31U) / 32U];
+
+/* 模块级别映射节点静态池: 编译期固定上限 */
+#define DDS_LOG_MAX_MODULE_NODES  32U
+static module_level_node_t s_module_node_pool[DDS_LOG_MAX_MODULE_NODES];
+static uint32_t s_module_node_used[(DDS_LOG_MAX_MODULE_NODES + 31U) / 32U];
+
+/* 文件列表静态缓冲池: 固定上限 DDS_LOG_MAX_FILES */
+static char s_file_list_pool[DDS_LOG_MAX_FILES][DDS_LOG_MAX_PATH_LEN];
+
+/*==============================================================================
  * 全局变量
  *============================================================================*/
 static dds_log_state_t g_log_state = {0};
@@ -213,7 +234,17 @@ static int queue_push(log_queue_t* queue, const dds_log_entry_t* entry) {
         return -1; /* 队列满 */
     }
     
-    log_queue_node_t* node = malloc(sizeof(log_queue_node_t));
+    /* 静态节点池分配 (池满返回 -1, 与旧 malloc 失败语义一致) */
+    log_queue_node_t* node = NULL;
+    for (uint32_t i = 0; i < DDS_LOG_QUEUE_SIZE; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_queue_node_used[word] & (1U << bit)) == 0U) {
+            s_queue_node_used[word] |= (1U << bit);
+            node = &s_queue_node_pool[i];
+            break;
+        }
+    }
     if (!node) {
         pthread_mutex_unlock(&queue->mutex);
         return -1;
@@ -263,7 +294,17 @@ static int queue_pop(log_queue_t* queue, dds_log_entry_t* entry) {
     queue->size--;
     
     memcpy(entry, &node->entry, sizeof(dds_log_entry_t));
-    free(node);
+    /* 静态节点池回收 */
+    {
+        uintptr_t base = (uintptr_t)s_queue_node_pool;
+        uintptr_t p = (uintptr_t)node;
+        if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_QUEUE_SIZE * sizeof(log_queue_node_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(log_queue_node_t));
+            if (idx < DDS_LOG_QUEUE_SIZE) {
+                s_queue_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
+        }
+    }
     
     pthread_cond_signal(&queue->cond_not_full);
     pthread_mutex_unlock(&queue->mutex);
@@ -280,7 +321,17 @@ static void queue_destroy(log_queue_t* queue) {
     while ((queue->head) != 0U) {
         log_queue_node_t* node = queue->head;
         queue->head = node->next;
-        free(node);
+        /* 静态节点池回收 */
+        {
+            uintptr_t base = (uintptr_t)s_queue_node_pool;
+            uintptr_t p = (uintptr_t)node;
+            if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_QUEUE_SIZE * sizeof(log_queue_node_t)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(log_queue_node_t));
+                if (idx < DDS_LOG_QUEUE_SIZE) {
+                    s_queue_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+                }
+            }
+        }
     }
     queue->size = 0;
     pthread_mutex_unlock(&queue->mutex);
@@ -594,23 +645,51 @@ void dds_log_deinit(void) {
     }
     pthread_mutex_unlock(&g_log_state.mutex);
     
-    /* 清理模块级别 */
+    /* 清理模块级别 (静态池回收) */
     while ((g_log_state.module_levels) != 0U) {
         module_level_node_t* node = g_log_state.module_levels;
         g_log_state.module_levels = node->next;
-        free(node);
+        /* 静态池回收 */
+        {
+            uintptr_t base = (uintptr_t)s_module_node_pool;
+            uintptr_t p = (uintptr_t)node;
+            if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_MAX_MODULE_NODES * sizeof(module_level_node_t)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(module_level_node_t));
+                if (idx < DDS_LOG_MAX_MODULE_NODES) {
+                    s_module_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+                }
+            }
+        }
     }
     
-    /* 清理回调 */
+    /* 清理回调 (静态池回收) */
     while ((g_log_state.output_callbacks) != 0U) {
         callback_node_t* node = g_log_state.output_callbacks;
         g_log_state.output_callbacks = node->next;
-        free(node);
+        {
+            uintptr_t base = (uintptr_t)s_cb_node_pool;
+            uintptr_t p = (uintptr_t)node;
+            if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_MAX_CALLBACK_NODES * sizeof(callback_node_t)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(callback_node_t));
+                if (idx < DDS_LOG_MAX_CALLBACK_NODES) {
+                    s_cb_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+                }
+            }
+        }
     }
     while ((g_log_state.audit_callbacks) != 0U) {
         callback_node_t* node = g_log_state.audit_callbacks;
         g_log_state.audit_callbacks = node->next;
-        free(node);
+        {
+            uintptr_t base = (uintptr_t)s_cb_node_pool;
+            uintptr_t p = (uintptr_t)node;
+            if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_MAX_CALLBACK_NODES * sizeof(callback_node_t)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(callback_node_t));
+                if (idx < DDS_LOG_MAX_CALLBACK_NODES) {
+                    s_cb_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+                }
+            }
+        }
     }
     
     /* 销毁同步 */
@@ -781,7 +860,17 @@ void dds_log_audit(dds_audit_event_type_t event_type,
 int dds_log_register_audit_callback(dds_audit_callback_t callback, void* user_data) {
     if (!callback) { return -1; }
     
-    callback_node_t* node = malloc(sizeof(callback_node_t));
+    /* 静态节点池分配 (池满返回 -1, 与旧 malloc 失败语义一致) */
+    callback_node_t* node = NULL;
+    for (uint32_t i = 0; i < DDS_LOG_MAX_CALLBACK_NODES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_cb_node_used[word] & (1U << bit)) == 0U) {
+            s_cb_node_used[word] |= (1U << bit);
+            node = &s_cb_node_pool[i];
+            break;
+        }
+    }
     if (!node) { return -1; }
     
     node->callback = callback;
@@ -798,7 +887,17 @@ void dds_log_unregister_audit_callback(dds_audit_callback_t callback) {
         if ((*current)->callback == callback) {
             callback_node_t* to_delete = *current;
             *current = (*current)->next;
-            free(to_delete);
+            /* 静态节点池回收 */
+            {
+                uintptr_t base = (uintptr_t)s_cb_node_pool;
+                uintptr_t p = (uintptr_t)to_delete;
+                if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_MAX_CALLBACK_NODES * sizeof(callback_node_t)))) {
+                    uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(callback_node_t));
+                    if (idx < DDS_LOG_MAX_CALLBACK_NODES) {
+                        s_cb_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+                    }
+                }
+            }
             return;
         }
         current = &(*current)->next;
@@ -834,8 +933,16 @@ void dds_log_set_module_level(const char* module, dds_log_level_t level) {
         node = node->next;
     }
     
-    /* 创建新节点 */
-    node = malloc(sizeof(module_level_node_t));
+    /* 创建新节点 (静态池分配, 池满则忽略) */
+    for (uint32_t i = 0; i < DDS_LOG_MAX_MODULE_NODES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_module_node_used[word] & (1U << bit)) == 0U) {
+            s_module_node_used[word] |= (1U << bit);
+            node = &s_module_node_pool[i];
+            break;
+        }
+    }
     if ((node) != 0U) {
         strncpy(node->module, module, DDS_LOG_MAX_MODULE_LEN - 1);
         node->level = level;
@@ -992,9 +1099,11 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
     if (!dir) { return -1; }
     
     struct dirent* entry;
-    while (((entry = readdir(dir)) != NULL) && (*actual_count < max_files)) {
+    while (((entry = readdir(dir)) != NULL) && (*actual_count < max_files) &&
+           (*actual_count < DDS_LOG_MAX_FILES)) {
         if ((strstr(entry->d_name, ".log")) != 0U) {
-            files[*actual_count] = malloc(DDS_LOG_MAX_PATH_LEN);
+            /* 静态文件列表缓冲 (固定上限 DDS_LOG_MAX_FILES) */
+            files[*actual_count] = s_file_list_pool[*actual_count];
             if ((files[*actual_count]) != 0U) {
                 snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",
                          g_log_state.config.log_dir, entry->d_name);
@@ -1014,7 +1123,17 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
 int dds_log_register_output_callback(dds_log_output_callback_t callback, void* user_data) {
     if (!callback) { return -1; }
     
-    callback_node_t* node = malloc(sizeof(callback_node_t));
+    /* 静态节点池分配 (池满返回 -1, 与旧 malloc 失败语义一致) */
+    callback_node_t* node = NULL;
+    for (uint32_t i = 0; i < DDS_LOG_MAX_CALLBACK_NODES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_cb_node_used[word] & (1U << bit)) == 0U) {
+            s_cb_node_used[word] |= (1U << bit);
+            node = &s_cb_node_pool[i];
+            break;
+        }
+    }
     if (!node) { return -1; }
     
     node->callback = callback;
@@ -1031,7 +1150,17 @@ void dds_log_unregister_output_callback(dds_log_output_callback_t callback) {
         if ((*current)->callback == callback) {
             callback_node_t* to_delete = *current;
             *current = (*current)->next;
-            free(to_delete);
+            /* 静态节点池回收 */
+            {
+                uintptr_t base = (uintptr_t)s_cb_node_pool;
+                uintptr_t p = (uintptr_t)to_delete;
+                if ((p >= base) && (p < (base + (uintptr_t)DDS_LOG_MAX_CALLBACK_NODES * sizeof(callback_node_t)))) {
+                    uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(callback_node_t));
+                    if (idx < DDS_LOG_MAX_CALLBACK_NODES) {
+                        s_cb_node_used[idx / 32U] &= ~(1U << (idx % 32U));
+                    }
+                }
+            }
             return;
         }
         current = &(*current)->next;

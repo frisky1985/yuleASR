@@ -13,6 +13,14 @@
 #include <time.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 所有权管理器静态池: 编译期固定上限 OWN_MAX_OWNERS */
+static own_handle_t s_own_pool[OWN_MAX_OWNERS];
+static uint32_t s_own_used[(OWN_MAX_OWNERS + 31U) / 32U];
+
+/* ============================================================================
  * 私有数据结构定义
  * ============================================================================ */
 
@@ -193,8 +201,19 @@ void own_deinit(void) {
 own_handle_t* own_create(const own_config_t *config, const dds_guid_t *local_guid) {
     if (!config || !local_guid) { return NULL; }
     
-    own_handle_t *own = (own_handle_t*)calloc(1, sizeof(own_handle_t));
+    /* 静态池分配 (池满返回 NULL, 与旧 calloc 失败语义一致) */
+    own_handle_t *own = NULL;
+    for (uint32_t i = 0; i < OWN_MAX_OWNERS; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_own_used[word] & (1U << bit)) == 0U) {
+            s_own_used[word] |= (1U << bit);
+            own = &s_own_pool[i];
+            break;
+        }
+    }
     if (!own) { return NULL; }
+    (void)memset(own, 0, sizeof(own_handle_t));
     
     memcpy(&own->config, config, sizeof(own_config_t));
     memcpy(&own->local_guid, local_guid, sizeof(dds_guid_t));
@@ -226,7 +245,17 @@ eth_status_t own_delete(own_handle_t *own) {
     }
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "OWN", "Deleted ownership manager");
-    free(own);
+    /* 静态池回收 (越界检查) */
+    {
+        uintptr_t base = (uintptr_t)s_own_pool;
+        uintptr_t p = (uintptr_t)own;
+        if ((p >= base) && (p < (base + (uintptr_t)OWN_MAX_OWNERS * sizeof(own_handle_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(own_handle_t));
+            if (idx < OWN_MAX_OWNERS) {
+                s_own_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
+        }
+    }
     return ETH_OK;
 }
 

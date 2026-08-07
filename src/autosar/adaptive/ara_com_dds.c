@@ -48,6 +48,22 @@ typedef struct {
 static ara_com_ContextType g_araComContext = {0};
 static ara_com_MethodCallContextType g_methodContexts[ARA_COM_MAX_METHODS_PER_SERVICE];
 
+/* ============================================================================
+ * 静态句柄池 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * 编译期固定上限: 服务实例数 x 每服务事件/方法数
+ * ============================================================================ */
+static ara_com_ServiceHandleType s_service_handles[ARA_COM_MAX_SERVICE_INSTANCES];
+static uint32_t s_service_used[(ARA_COM_MAX_SERVICE_INSTANCES + 31U) / 32U];
+
+static ara_com_EventHandleType s_event_handles[ARA_COM_MAX_SERVICE_INSTANCES][ARA_COM_MAX_EVENTS_PER_SERVICE];
+static uint32_t s_event_used[ARA_COM_MAX_SERVICE_INSTANCES][(ARA_COM_MAX_EVENTS_PER_SERVICE + 31U) / 32U];
+
+static ara_com_MethodHandleType s_method_handles[ARA_COM_MAX_SERVICE_INSTANCES][ARA_COM_MAX_METHODS_PER_SERVICE];
+static uint32_t s_method_used[ARA_COM_MAX_SERVICE_INSTANCES][(ARA_COM_MAX_METHODS_PER_SERVICE + 31U) / 32U];
+
+/* E2E 上下文静态池: 每服务一个 (与旧 malloc(sizeof(E2E_ContextType)) 语义一致) */
+static E2E_ContextType s_e2e_ctx_pool[ARA_COM_MAX_SERVICE_INSTANCES];
+
 #if SOMEIP_DDS_GATEWAY_ENABLED
 static SomeIP_DDS_GatewayEntryType g_gatewayEntries[SOMEIP_MAX_SERVICE_ENTRIES];
 static uint32_t g_gatewayNumEntries = 0;
@@ -236,12 +252,23 @@ Std_ReturnType ara_com_CreateServiceInterface(
         return E_NOT_OK;
     }
 
-    /* 分配服务句柄 */
-    ara_com_ServiceHandleType* newHandle = 
-        (ara_com_ServiceHandleType*)malloc(sizeof(ara_com_ServiceHandleType));
+    /* 静态句柄池分配 (池满返回 E_NOT_OK, 与旧 malloc 失败语义一致) */
+    ara_com_ServiceHandleType* newHandle = NULL;
+    uint32_t svc_slot = 0;
+    for (uint32_t i = 0; i < ARA_COM_MAX_SERVICE_INSTANCES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_service_used[word] & (1U << bit)) == 0U) {
+            s_service_used[word] |= (1U << bit);
+            newHandle = &s_service_handles[i];
+            svc_slot = i;
+            break;
+        }
+    }
     if (newHandle == NULL) {
         return E_NOT_OK;
     }
+    (void)memset(newHandle, 0, sizeof(ara_com_ServiceHandleType));
 
     newHandle->serviceId = config->serviceId;
     newHandle->instanceId = config->instanceId;
@@ -249,10 +276,11 @@ Std_ReturnType ara_com_CreateServiceInterface(
     newHandle->ddsHandle = DDS_ENTITY_INVALID;
     newHandle->e2eContext = NULL;
 
-    /* 初始化E2E上下文 */
+    /* 初始化E2E上下文: 静态池 (编译期固定上限) */
     if (config->e2eEnabled) {
-        E2E_ContextType* e2eCtx = (E2E_ContextType*)malloc(sizeof(E2E_ContextType));
+        E2E_ContextType* e2eCtx = &s_e2e_ctx_pool[svc_slot];
         if (e2eCtx != NULL) {
+            (void)memset(e2eCtx, 0, sizeof(E2E_ContextType));
             E2E_InitContext(e2eCtx, config->e2eProfile);
             newHandle->e2eContext = e2eCtx;
         }
@@ -282,10 +310,10 @@ Std_ReturnType ara_com_DestroyServiceInterface(ara_com_ServiceHandleType* handle
     /* 停止服务发现 */
     ara_com_StopOfferService(handle);
 
-    /* 释放E2E上下文 */
+    /* E2E上下文为静态池, 无需释放 */
     if (handle->e2eContext != NULL) {
         E2E_DeinitContext(handle->e2eContext);
-        free(handle->e2eContext);
+        handle->e2eContext = NULL;
     }
 
     /* 从服务表中移除 */
@@ -293,7 +321,17 @@ Std_ReturnType ara_com_DestroyServiceInterface(ara_com_ServiceHandleType* handle
     g_araComContext.services[index] =
         g_araComContext.services[g_araComContext.numServices];
 
-    free(handle);
+    /* 静态句柄池回收 (越界检查) */
+    {
+        uintptr_t base = (uintptr_t)s_service_handles;
+        uintptr_t p = (uintptr_t)handle;
+        if ((p >= base) && (p < (base + (uintptr_t)ARA_COM_MAX_SERVICE_INSTANCES * sizeof(ara_com_ServiceHandleType)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(ara_com_ServiceHandleType));
+            if (idx < ARA_COM_MAX_SERVICE_INSTANCES) {
+                s_service_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
+        }
+    }
 
     return E_OK;
 }
@@ -383,11 +421,31 @@ Std_ReturnType ara_com_CreateEvent(
         return E_NOT_OK;
     }
 
-    ara_com_EventHandleType* newHandle = 
-        (ara_com_EventHandleType*)malloc(sizeof(ara_com_EventHandleType));
+    /* 静态句柄池分配: 定位服务槽并取第一个空闲事件槽 */
+    ara_com_EventHandleType* newHandle = NULL;
+    {
+        uintptr_t base = (uintptr_t)s_service_handles;
+        uintptr_t p = (uintptr_t)service;
+        uint32_t svc_idx = 0;
+        if ((p >= base) && (p < (base + (uintptr_t)ARA_COM_MAX_SERVICE_INSTANCES * sizeof(ara_com_ServiceHandleType)))) {
+            svc_idx = (uint32_t)((p - base) / (uintptr_t)sizeof(ara_com_ServiceHandleType));
+        } else {
+            return E_NOT_OK;
+        }
+        for (uint32_t i = 0; i < ARA_COM_MAX_EVENTS_PER_SERVICE; i++) {
+            uint32_t word = i / 32U;
+            uint32_t bit = i % 32U;
+            if ((s_event_used[svc_idx][word] & (1U << bit)) == 0U) {
+                s_event_used[svc_idx][word] |= (1U << bit);
+                newHandle = &s_event_handles[svc_idx][i];
+                break;
+            }
+        }
+    }
     if (newHandle == NULL) {
         return E_NOT_OK;
     }
+    (void)memset(newHandle, 0, sizeof(ara_com_EventHandleType));
 
     newHandle->service = service;
     newHandle->eventId = config->eventId;
@@ -451,7 +509,21 @@ Std_ReturnType ara_com_DestroyEvent(ara_com_EventHandleType* handle)
         dds_delete(handle->topicHandle);
     }
 
-    free(handle);
+    /* 静态句柄池回收 (越界检查) */
+    {
+        bool released = false;
+        for (uint32_t svc = 0; (svc < ARA_COM_MAX_SERVICE_INSTANCES) && !released; svc++) {
+            uintptr_t base = (uintptr_t)s_event_handles[svc];
+            uintptr_t p = (uintptr_t)handle;
+            if ((p >= base) && (p < (base + (uintptr_t)ARA_COM_MAX_EVENTS_PER_SERVICE * sizeof(ara_com_EventHandleType)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(ara_com_EventHandleType));
+                if (idx < ARA_COM_MAX_EVENTS_PER_SERVICE) {
+                    s_event_used[svc][idx / 32U] &= ~(1U << (idx % 32U));
+                }
+                released = true;
+            }
+        }
+    }
     return E_OK;
 }
 
@@ -607,11 +679,31 @@ Std_ReturnType ara_com_CreateMethod(
         return E_NOT_OK;
     }
 
-    ara_com_MethodHandleType* newHandle = 
-        (ara_com_MethodHandleType*)malloc(sizeof(ara_com_MethodHandleType));
+    /* 静态句柄池分配: 定位服务槽并取第一个空闲方法槽 */
+    ara_com_MethodHandleType* newHandle = NULL;
+    {
+        uintptr_t base = (uintptr_t)s_service_handles;
+        uintptr_t p = (uintptr_t)service;
+        uint32_t svc_idx = 0;
+        if ((p >= base) && (p < (base + (uintptr_t)ARA_COM_MAX_SERVICE_INSTANCES * sizeof(ara_com_ServiceHandleType)))) {
+            svc_idx = (uint32_t)((p - base) / (uintptr_t)sizeof(ara_com_ServiceHandleType));
+        } else {
+            return E_NOT_OK;
+        }
+        for (uint32_t i = 0; i < ARA_COM_MAX_METHODS_PER_SERVICE; i++) {
+            uint32_t word = i / 32U;
+            uint32_t bit = i % 32U;
+            if ((s_method_used[svc_idx][word] & (1U << bit)) == 0U) {
+                s_method_used[svc_idx][word] |= (1U << bit);
+                newHandle = &s_method_handles[svc_idx][i];
+                break;
+            }
+        }
+    }
     if (newHandle == NULL) {
         return E_NOT_OK;
     }
+    (void)memset(newHandle, 0, sizeof(ara_com_MethodHandleType));
 
     newHandle->service = service;
     newHandle->methodId = config->methodId;
@@ -676,7 +768,21 @@ Std_ReturnType ara_com_DestroyMethod(ara_com_MethodHandleType* handle)
     if (handle->responseTopic != DDS_ENTITY_INVALID) { dds_delete(handle->responseTopic); }
     if (handle->requestTopic != DDS_ENTITY_INVALID) { dds_delete(handle->requestTopic); }
 
-    free(handle);
+    /* 静态方法句柄池回收 (越界检查) */
+    {
+        bool released = false;
+        for (uint32_t svc = 0; (svc < ARA_COM_MAX_SERVICE_INSTANCES) && !released; svc++) {
+            uintptr_t base = (uintptr_t)s_method_handles[svc];
+            uintptr_t p = (uintptr_t)handle;
+            if ((p >= base) && (p < (base + (uintptr_t)ARA_COM_MAX_METHODS_PER_SERVICE * sizeof(ara_com_MethodHandleType)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(ara_com_MethodHandleType));
+                if (idx < ARA_COM_MAX_METHODS_PER_SERVICE) {
+                    s_method_used[svc][idx / 32U] &= ~(1U << (idx % 32U));
+                }
+                released = true;
+            }
+        }
+    }
     return E_OK;
 }
 

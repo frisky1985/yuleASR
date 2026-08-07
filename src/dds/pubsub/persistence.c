@@ -17,6 +17,26 @@
 #include <errno.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 持久化服务句柄静态池: 编译期固定上限 */
+#define PER_MAX_HANDLES  8U
+static per_handle_t s_per_handle_pool[PER_MAX_HANDLES];
+static uint32_t s_per_handle_used[(PER_MAX_HANDLES + 31U) / 32U];
+
+/* 记录静态池: 编译期固定上限 (records 链表节点) */
+#define PER_MAX_STATIC_RECORDS  128U
+static per_record_t s_per_record_pool[PER_MAX_STATIC_RECORDS];
+static uint32_t s_per_record_used[(PER_MAX_STATIC_RECORDS + 31U) / 32U];
+
+/* 记录数据静态池: 每记录固定 PER_MAX_RECORD_SIZE 上限 */
+static uint8_t s_per_data_pool[PER_MAX_STATIC_RECORDS][PER_MAX_RECORD_SIZE];
+
+/* 双写缓冲静态池: 每句柄 2 个固定缓冲 (与旧 malloc(PER_MAX_RECORD_SIZE*100) 语义对齐, 编译期固定) */
+static uint8_t s_per_double_buf[PER_MAX_HANDLES][PER_DOUBLE_BUFFER_COUNT][PER_MAX_RECORD_SIZE];
+
+/* ============================================================================
  * CRC32表(用于数据完整性校验)
  * ============================================================================ */
 
@@ -129,17 +149,28 @@ static eth_status_t ensure_directory(const char *path) {
 }
 
 static per_record_t* create_record(uint32_t data_size) {
-    per_record_t *record = (per_record_t*)malloc(sizeof(per_record_t));
+    /* 越界检查: 数据长度固定上限 */
+    if (data_size > PER_MAX_RECORD_SIZE) return NULL;
+    
+    /* 静态池分配 (池满返回 NULL, 与旧 malloc 失败语义一致) */
+    per_record_t *record = NULL;
+    uint32_t slot = 0;
+    for (uint32_t i = 0; i < PER_MAX_STATIC_RECORDS; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_per_record_used[word] & (1U << bit)) == 0U) {
+            s_per_record_used[word] |= (1U << bit);
+            record = &s_per_record_pool[i];
+            slot = i;
+            break;
+        }
+    }
     if (!record) return NULL;
     
     memset(record, 0, sizeof(per_record_t));
     
     if (data_size > 0) {
-        record->data = (uint8_t*)malloc(data_size);
-        if (!record->data) {
-            free(record);
-            return NULL;
-        }
+        record->data = s_per_data_pool[slot];
     }
     
     return record;
@@ -147,10 +178,16 @@ static per_record_t* create_record(uint32_t data_size) {
 
 static void free_record(per_record_t *record) {
     if (record) {
-        if (record->data) {
-            free(record->data);
+        /* 数据为静态池, 无需释放; 回收记录槽 */
+        uintptr_t base = (uintptr_t)s_per_record_pool;
+        uintptr_t p = (uintptr_t)record;
+        if ((p >= base) && (p < (base + (uintptr_t)PER_MAX_STATIC_RECORDS * sizeof(per_record_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(per_record_t));
+            if (idx < PER_MAX_STATIC_RECORDS) {
+                s_per_record_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
         }
-        free(record);
+        record->data = NULL;
     }
 }
 
@@ -291,8 +328,21 @@ void per_deinit(void) {
 per_handle_t* per_create(const char *topic_name, const per_config_t *config) {
     if (!topic_name || !config) return NULL;
     
-    per_handle_t *per = (per_handle_t*)calloc(1, sizeof(per_handle_t));
+    /* 静态池分配 (池满返回 NULL, 与旧 calloc 失败语义一致) */
+    per_handle_t *per = NULL;
+    uint32_t handle_slot = 0;
+    for (uint32_t i = 0; i < PER_MAX_HANDLES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_per_handle_used[word] & (1U << bit)) == 0U) {
+            s_per_handle_used[word] |= (1U << bit);
+            per = &s_per_handle_pool[i];
+            handle_slot = i;
+            break;
+        }
+    }
     if (!per) return NULL;
+    (void)memset(per, 0, sizeof(per_handle_t));
     
     strncpy(per->topic_name, topic_name, sizeof(per->topic_name) - 1);
     memcpy(&per->config, config, sizeof(per_config_t));
@@ -310,13 +360,11 @@ per_handle_t* per_create(const char *topic_name, const per_config_t *config) {
                 sizeof(per->config.storage_path) - 1);
     }
     
-    // 分配双写缓冲区
+    // 双写缓冲区: 静态池 (编译期固定大小)
     if (config->level == PER_LEVEL_TRANSIENT || config->level == PER_LEVEL_TRANSIENT_LOCAL) {
         for (int i = 0; i < PER_DOUBLE_BUFFER_COUNT; i++) {
-            per->double_buffer.buffer[i] = (uint8_t*)malloc(PER_MAX_RECORD_SIZE * 100);
-            if (per->double_buffer.buffer[i]) {
-                per->double_buffer.buffer_size[i] = PER_MAX_RECORD_SIZE * 100;
-            }
+            per->double_buffer.buffer[i] = s_per_double_buf[handle_slot][i];
+            per->double_buffer.buffer_size[i] = PER_MAX_RECORD_SIZE;
         }
         per->double_buffer.enabled = true;
     }
@@ -324,7 +372,15 @@ per_handle_t* per_create(const char *topic_name, const per_config_t *config) {
     // 打开存储文件(如果需要)
     if (config->storage_type == PER_STORAGE_FILE) {
         if (open_storage_files(per) != ETH_OK) {
-            free(per);
+            // 回收静态句柄槽
+            uintptr_t base = (uintptr_t)s_per_handle_pool;
+            uintptr_t p = (uintptr_t)per;
+            if ((p >= base) && (p < (base + (uintptr_t)PER_MAX_HANDLES * sizeof(per_handle_t)))) {
+                uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(per_handle_t));
+                if (idx < PER_MAX_HANDLES) {
+                    s_per_handle_used[idx / 32U] &= ~(1U << (idx % 32U));
+                }
+            }
             return NULL;
         }
     }
@@ -350,18 +406,23 @@ eth_status_t per_delete(per_handle_t *per, bool flush) {
         record = next;
     }
     
-    // 释放双写缓冲区
-    for (int i = 0; i < PER_DOUBLE_BUFFER_COUNT; i++) {
-        if (per->double_buffer.buffer[i]) {
-            free(per->double_buffer.buffer[i]);
-        }
-    }
+    // 双写缓冲区为静态池, 无需释放
     
     // 关闭文件
     close_storage_files(per);
     
     DDS_LOG_INFO("Deleted persistence service: %s", per->topic_name);
-    free(per);
+    // 静态句柄池回收 (越界检查)
+    {
+        uintptr_t base = (uintptr_t)s_per_handle_pool;
+        uintptr_t p = (uintptr_t)per;
+        if ((p >= base) && (p < (base + (uintptr_t)PER_MAX_HANDLES * sizeof(per_handle_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(per_handle_t));
+            if (idx < PER_MAX_HANDLES) {
+                s_per_handle_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
+        }
+    }
     return ETH_OK;
 }
 

@@ -11,6 +11,15 @@
 #include <stdio.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 参与者静态池: 编译期固定上限 (默认配置的 4 倍余量, 越界检查) */
+#define DDS_RUNTIME_MAX_PARTICIPANTS_STATIC  32U
+static dds_domain_participant_t s_participant_pool[DDS_RUNTIME_MAX_PARTICIPANTS_STATIC];
+static uint32_t s_participant_used[(DDS_RUNTIME_MAX_PARTICIPANTS_STATIC + 31U) / 32U];
+
+/* ============================================================================
  * 内部状态和常量
  * ============================================================================ */
 
@@ -152,6 +161,11 @@ eth_status_t dds_runtime_init(const dds_runtime_config_t *config)
         memcpy(&g_runtime.config, config, sizeof(dds_runtime_config_t));
     } else {
         memcpy(&g_runtime.config, &g_default_config, sizeof(dds_runtime_config_t));
+    }
+    
+    /* 越界检查: 参与者静态池上限 (编译期固定) */
+    if (g_runtime.config.max_participants > DDS_RUNTIME_MAX_PARTICIPANTS_STATIC) {
+        g_runtime.config.max_participants = DDS_RUNTIME_MAX_PARTICIPANTS_STATIC;
     }
     
     /* 初始化RTPS发现协议 */
@@ -321,8 +335,17 @@ dds_domain_participant_t* dds_runtime_create_participant(
         return NULL;
     }
     
-    dds_domain_participant_t *participant = (dds_domain_participant_t *)malloc(
-        sizeof(dds_domain_participant_t));
+    /* 静态池分配 (越界检查: 池满返回 NULL, 与旧 malloc 失败语义一致) */
+    dds_domain_participant_t *participant = NULL;
+    for (uint32_t i = 0; i < DDS_RUNTIME_MAX_PARTICIPANTS_STATIC; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_participant_used[word] & (1U << bit)) == 0U) {
+            s_participant_used[word] |= (1U << bit);
+            participant = &s_participant_pool[i];
+            break;
+        }
+    }
     if (participant == NULL) {
         g_runtime.last_error = -2;
         return NULL;
@@ -374,7 +397,15 @@ eth_status_t dds_runtime_delete_participant(dds_domain_participant_t *participan
         current = &(*current)->next;
     }
     
-    free(participant);
+    /* 静态池回收 (越界检查) */
+    uintptr_t base = (uintptr_t)s_participant_pool;
+    uintptr_t p = (uintptr_t)participant;
+    if ((p >= base) && (p < (base + (uintptr_t)DDS_RUNTIME_MAX_PARTICIPANTS_STATIC * sizeof(dds_domain_participant_t)))) {
+        uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(dds_domain_participant_t));
+        if (idx < DDS_RUNTIME_MAX_PARTICIPANTS_STATIC) {
+            s_participant_used[idx / 32U] &= ~(1U << (idx % 32U));
+        }
+    }
     g_runtime.participant_count--;
     g_runtime.stats.participant_count--;
     

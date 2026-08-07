@@ -14,6 +14,19 @@
 #include <time.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* AST 节点静态池: 编译期固定上限 (表达式复杂度受 CFT_MAX_FILTER_LENGTH 约束) */
+#define CFT_MAX_AST_NODES  128U
+static cft_ast_node_t s_cft_ast_pool[CFT_MAX_AST_NODES];
+static uint32_t s_cft_ast_used[(CFT_MAX_AST_NODES + 31U) / 32U];
+
+/* 过滤器句柄静态池: 编译期固定上限 CFT_MAX_PARALLEL_FILTERS */
+static cft_handle_t s_cft_handle_pool[CFT_MAX_PARALLEL_FILTERS];
+static uint32_t s_cft_handle_used[(CFT_MAX_PARALLEL_FILTERS + 31U) / 32U];
+
+/* ============================================================================
  * 私有数据结构定义
  * ============================================================================ */
 
@@ -224,12 +237,35 @@ static cft_operator_t get_operator(const char *token) {
  * ============================================================================ */
 
 static cft_ast_node_t* create_ast_node(void) {
-    cft_ast_node_t *node = (cft_ast_node_t*)malloc(sizeof(cft_ast_node_t));
+    /* 静态池分配 (池满返回 NULL, 与旧 malloc 失败语义一致) */
+    cft_ast_node_t *node = NULL;
+    for (uint32_t i = 0; i < CFT_MAX_AST_NODES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_cft_ast_used[word] & (1U << bit)) == 0U) {
+            s_cft_ast_used[word] |= (1U << bit);
+            node = &s_cft_ast_pool[i];
+            break;
+        }
+    }
     if ((node) != 0U) {
         memset(node, 0, sizeof(cft_ast_node_t));
         node->is_leaf = false;
     }
     return node;
+}
+
+/* 释放 AST 节点回静态池 */
+static void release_ast_node(cft_ast_node_t *node) {
+    if (node == NULL) { return; }
+    uintptr_t base = (uintptr_t)s_cft_ast_pool;
+    uintptr_t p = (uintptr_t)node;
+    if ((p >= base) && (p < (base + (uintptr_t)CFT_MAX_AST_NODES * sizeof(cft_ast_node_t)))) {
+        uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(cft_ast_node_t));
+        if (idx < CFT_MAX_AST_NODES) {
+            s_cft_ast_used[idx / 32U] &= ~(1U << (idx % 32U));
+        }
+    }
 }
 
 static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer);
@@ -266,21 +302,21 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
     
     // 读取字段名
     if (!lexer_read_token(lexer)) {
-        free(node);
+        release_ast_node(node);
         return NULL;
     }
     strncpy(node->data.predicate.field_name, lexer->token, sizeof(node->data.predicate.field_name) - 1U);
     
     // 读取操作符
     if (!lexer_read_token(lexer)) {
-        free(node);
+        release_ast_node(node);
         return NULL;
     }
     node->data.predicate.op = get_operator(lexer->token);
     
     // 读取值或参数
     if (!lexer_read_token(lexer)) {
-        free(node);
+        release_ast_node(node);
         return NULL;
     }
     
@@ -552,7 +588,17 @@ cft_handle_t* cft_create(dds_topic_t *related_topic,
         return NULL;
     }
     
-    cft_handle_t *cft = (cft_handle_t*)malloc(sizeof(cft_handle_t));
+    /* 静态池分配 (池满返回 NULL, 与旧 malloc 失败语义一致) */
+    cft_handle_t *cft = NULL;
+    for (uint32_t i = 0; i < CFT_MAX_PARALLEL_FILTERS; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_cft_handle_used[word] & (1U << bit)) == 0U) {
+            s_cft_handle_used[word] |= (1U << bit);
+            cft = &s_cft_handle_pool[i];
+            break;
+        }
+    }
     if (!cft) {
         return NULL;
     }
@@ -585,7 +631,17 @@ eth_status_t cft_delete(cft_handle_t *cft) {
     }
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "CFT", "Deleted ContentFilteredTopic: %s", cft->name);
-    free(cft);
+    /* 静态句柄池回收 (越界检查) */
+    {
+        uintptr_t base = (uintptr_t)s_cft_handle_pool;
+        uintptr_t p = (uintptr_t)cft;
+        if ((p >= base) && (p < (base + (uintptr_t)CFT_MAX_PARALLEL_FILTERS * sizeof(cft_handle_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(cft_handle_t));
+            if (idx < CFT_MAX_PARALLEL_FILTERS) {
+                s_cft_handle_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
+        }
+    }
     return ETH_OK;
 }
 
@@ -614,7 +670,7 @@ void cft_free_ast(cft_ast_node_t *node) {
         cft_free_ast(node->data.branch.right);
     }
     
-    free(node);
+    release_ast_node(node);
 }
 
 eth_status_t cft_evaluate(cft_handle_t *cft, 

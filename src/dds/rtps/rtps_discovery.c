@@ -14,6 +14,20 @@
 #include <stdlib.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 参与者代理静态池 (编译期固定上限) */
+#define RTPS_MAX_PARTICIPANT_PROXIES  32U
+static rtps_participant_proxy_t s_participant_proxy_pool[RTPS_MAX_PARTICIPANT_PROXIES];
+static uint32_t s_participant_proxy_used[(RTPS_MAX_PARTICIPANT_PROXIES + 31U) / 32U];
+
+/* 端点代理静态池 (编译期固定上限) */
+#define RTPS_MAX_ENDPOINT_PROXIES  128U
+static rtps_endpoint_proxy_t s_endpoint_proxy_pool[RTPS_MAX_ENDPOINT_PROXIES];
+static uint32_t s_endpoint_proxy_used[(RTPS_MAX_ENDPOINT_PROXIES + 31U) / 32U];
+
+/* ============================================================================
  * 内部宏和常量
  * ============================================================================ */
 
@@ -52,6 +66,42 @@
  * ============================================================================ */
 
 /**
+ * @brief 释放参与者代理回静态池 (越界检查)
+ */
+static void rtps_participant_proxy_release(rtps_participant_proxy_t *participant)
+{
+    if (participant == NULL) {
+        return;
+    }
+    uintptr_t base = (uintptr_t)s_participant_proxy_pool;
+    uintptr_t p = (uintptr_t)participant;
+    if ((p >= base) && (p < (base + (uintptr_t)RTPS_MAX_PARTICIPANT_PROXIES * sizeof(rtps_participant_proxy_t)))) {
+        uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(rtps_participant_proxy_t));
+        if (idx < RTPS_MAX_PARTICIPANT_PROXIES) {
+            s_participant_proxy_used[idx / 32U] &= ~(1U << (idx % 32U));
+        }
+    }
+}
+
+/**
+ * @brief 释放端点代理回静态池 (越界检查)
+ */
+static void rtps_endpoint_proxy_release(rtps_endpoint_proxy_t *endpoint)
+{
+    if (endpoint == NULL) {
+        return;
+    }
+    uintptr_t base = (uintptr_t)s_endpoint_proxy_pool;
+    uintptr_t p = (uintptr_t)endpoint;
+    if ((p >= base) && (p < (base + (uintptr_t)RTPS_MAX_ENDPOINT_PROXIES * sizeof(rtps_endpoint_proxy_t)))) {
+        uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(rtps_endpoint_proxy_t));
+        if (idx < RTPS_MAX_ENDPOINT_PROXIES) {
+            s_endpoint_proxy_used[idx / 32U] &= ~(1U << (idx % 32U));
+        }
+    }
+}
+
+/**
  * @brief 清除过期的参与者
  */
 static void rtps_discovery_purge_expired_participants(rtps_discovery_context_t *ctx,
@@ -64,10 +114,10 @@ static void rtps_discovery_purge_expired_participants(rtps_discovery_context_t *
         uint64_t lease_expiry = participant->last_seen_timestamp + participant->lease_duration_ms;
         
         if (current_time_ms > lease_expiry) {
-            /* 移除过期参与者 */
+            /* 移除过期参与者 (静态池回收) */
             *current = participant->next;
             ctx->participants_discovered--;
-            free(participant);
+            rtps_participant_proxy_release(participant);
         } else {
             current = &participant->next;
         }
@@ -82,8 +132,17 @@ static rtps_participant_proxy_t* rtps_participant_create(
     const uint8_t *data,
     uint32_t len)
 {
-    rtps_participant_proxy_t *participant = (rtps_participant_proxy_t *)malloc(
-        sizeof(rtps_participant_proxy_t));
+    /* 静态池分配 (池满返回 NULL, 与旧 malloc 失败语义一致) */
+    rtps_participant_proxy_t *participant = NULL;
+    for (uint32_t i = 0; i < RTPS_MAX_PARTICIPANT_PROXIES; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_participant_proxy_used[word] & (1U << bit)) == 0U) {
+            s_participant_proxy_used[word] |= (1U << bit);
+            participant = &s_participant_proxy_pool[i];
+            break;
+        }
+    }
     if (participant == NULL) {
         return NULL;
     }
@@ -171,9 +230,9 @@ static void rtps_endpoint_cleanup_orphaned(rtps_discovery_context_t *ctx)
         
         /* 检查端点对应的参与者是否仍存在 */
         if (rtps_discovery_find_participant(ctx, endpoint->participant_guid.prefix) == NULL) {
-            /* 移除孤立端点 */
+            /* 移除孤立端点 (静态池回收) */
             *current = endpoint->next;
-            free(endpoint);
+            rtps_endpoint_proxy_release(endpoint);
         } else {
             current = &endpoint->next;
         }
@@ -294,18 +353,18 @@ void rtps_discovery_deinit(rtps_discovery_context_t *ctx)
         return;
     }
     
-    /* 清理参与者链表 */
+    /* 清理参与者链表 (静态池回收) */
     while (ctx->participants != NULL) {
         rtps_participant_proxy_t *temp = ctx->participants;
         ctx->participants = temp->next;
-        free(temp);
+        rtps_participant_proxy_release(temp);
     }
     
-    /* 清理端点链表 */
+    /* 清理端点链表 (静态池回收) */
     while (ctx->endpoints != NULL) {
         rtps_endpoint_proxy_t *temp = ctx->endpoints;
         ctx->endpoints = temp->next;
-        free(temp);
+        rtps_endpoint_proxy_release(temp);
     }
     
     ctx->active = false;
@@ -529,7 +588,7 @@ eth_status_t rtps_discovery_remove_local_endpoint(rtps_discovery_context_t *ctx,
                 ctx->endpoints_matched--;
             }
             
-            free(to_remove);
+            rtps_endpoint_proxy_release(to_remove);
             return ETH_OK;
         }
         current = &(*current)->next;

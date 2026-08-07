@@ -23,6 +23,93 @@
 #include <stdlib.h>
 
 /* ============================================================================
+ * 静态实体池 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * 编译期固定上限: 与 dds_runtime 默认配置一致 (可容纳完整域拓扑)
+ * ============================================================================ */
+
+#define DDS_POOL_PUBLISHERS   (DDS_DEFAULT_MAX_PUBLISHERS)
+#define DDS_POOL_SUBSCRIBERS  (DDS_DEFAULT_MAX_SUBSCRIBERS)
+#define DDS_POOL_TOPICS       (DDS_DEFAULT_MAX_TOPICS)
+#define DDS_POOL_WRITERS      (DDS_DEFAULT_MAX_ENDPOINTS)
+#define DDS_POOL_READERS      (DDS_DEFAULT_MAX_ENDPOINTS)
+
+static dds_publisher_t  s_pub_pool[DDS_POOL_PUBLISHERS];
+static dds_subscriber_t s_sub_pool[DDS_POOL_SUBSCRIBERS];
+static dds_topic_t      s_topic_pool[DDS_POOL_TOPICS];
+static dds_data_writer_t s_writer_pool[DDS_POOL_WRITERS];
+static dds_data_reader_t s_reader_pool[DDS_POOL_READERS];
+
+/* 接收缓冲池: 每个 reader 一个固定 4KB 缓冲 (与旧 malloc(4096) 一致) */
+static uint8_t s_recv_buf_pool[DDS_POOL_READERS][4096];
+
+/* 池空闲位图 */
+static uint32_t s_pub_free[(DDS_POOL_PUBLISHERS + 31U) / 32U];
+static uint32_t s_sub_free[(DDS_POOL_SUBSCRIBERS + 31U) / 32U];
+static uint32_t s_topic_free[(DDS_POOL_TOPICS + 31U) / 32U];
+static uint32_t s_writer_free[(DDS_POOL_WRITERS + 31U) / 32U];
+static uint32_t s_reader_free[(DDS_POOL_READERS + 31U) / 32U];
+
+/**
+ * @brief 从静态池分配一个实体槽 (返回 NULL 表示池满)
+ */
+static void* dds_pool_alloc(void *pool, uint32_t *free_map, uint32_t count, uint32_t elem_size)
+{
+    for (uint32_t i = 0; i < count; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((free_map[word] & (1U << bit)) == 0U) {
+            free_map[word] |= (1U << bit);
+            return (void *)((uint8_t *)pool + ((size_t)i * elem_size));
+        }
+    }
+    return NULL;
+}
+
+/**
+ * @brief 释放实体槽回静态池 (越界检查: 指针必须属于对应池)
+ */
+static void dds_pool_free(void *pool, uint32_t *free_map, uint32_t count, uint32_t elem_size, void *ptr)
+{
+    if (ptr == NULL) {
+        return;
+    }
+    uintptr_t base = (uintptr_t)pool;
+    uintptr_t p = (uintptr_t)ptr;
+    if ((p < base) || (p >= (base + (uintptr_t)count * elem_size))) {
+        return; /* 不属于本池 */
+    }
+    uint32_t idx = (uint32_t)((p - base) / (uintptr_t)elem_size);
+    if (idx < count) {
+        free_map[idx / 32U] &= ~(1U << (idx % 32U));
+    }
+}
+
+/* dds_entity.c 依赖的池回收接口 (按地址范围判定, 非本池指针则无操作) */
+void dds_entity_pool_free_publisher(void *ptr)
+{
+    dds_pool_free(s_pub_pool, s_pub_free, DDS_POOL_PUBLISHERS, sizeof(dds_publisher_t), ptr);
+}
+
+void dds_entity_pool_free_subscriber(void *ptr)
+{
+    dds_pool_free(s_sub_pool, s_sub_free, DDS_POOL_SUBSCRIBERS, sizeof(dds_subscriber_t), ptr);
+}
+
+void dds_entity_pool_free_topic(void *ptr)
+{
+    dds_pool_free(s_topic_pool, s_topic_free, DDS_POOL_TOPICS, sizeof(dds_topic_t), ptr);
+}
+
+void dds_entity_pool_free_writer(void *ptr)
+{
+    dds_pool_free(s_writer_pool, s_writer_free, DDS_POOL_WRITERS, sizeof(dds_data_writer_t), ptr);
+}
+
+void dds_entity_pool_free_reader(void *ptr)
+{
+    dds_pool_free(s_reader_pool, s_reader_free, DDS_POOL_READERS, sizeof(dds_data_reader_t), ptr);
+}
+/* ============================================================================
  * 内部辅助: 句柄 → 实体 转换
  * ============================================================================ */
 
@@ -91,9 +178,9 @@ dds_PublisherHandleType dds_create_publisher(
         return DDS_ENTITY_INVALID;
     }
 
-    dds_publisher_t *pub = (dds_publisher_t*)malloc(sizeof(dds_publisher_t));
+    dds_publisher_t *pub = (dds_publisher_t *)dds_pool_alloc(s_pub_pool, s_pub_free, DDS_POOL_PUBLISHERS, sizeof(dds_publisher_t));
     if (pub == NULL) {
-        return DDS_ENTITY_INVALID;
+        return DDS_ENTITY_INVALID; /* 池满 (编译期固定上限) */
     }
     memset(pub, 0, sizeof(*pub));
 
@@ -121,9 +208,9 @@ dds_SubscriberHandleType dds_create_subscriber(
         return DDS_ENTITY_INVALID;
     }
 
-    dds_subscriber_t *sub = (dds_subscriber_t*)malloc(sizeof(dds_subscriber_t));
+    dds_subscriber_t *sub = (dds_subscriber_t *)dds_pool_alloc(s_sub_pool, s_sub_free, DDS_POOL_SUBSCRIBERS, sizeof(dds_subscriber_t));
     if (sub == NULL) {
-        return DDS_ENTITY_INVALID;
+        return DDS_ENTITY_INVALID; /* 池满 */
     }
     memset(sub, 0, sizeof(*sub));
 
@@ -153,9 +240,9 @@ dds_TopicHandleType dds_create_topic(
         return DDS_ENTITY_INVALID;
     }
 
-    dds_topic_t *topic = (dds_topic_t*)malloc(sizeof(dds_topic_t));
+    dds_topic_t *topic = (dds_topic_t *)dds_pool_alloc(s_topic_pool, s_topic_free, DDS_POOL_TOPICS, sizeof(dds_topic_t));
     if (topic == NULL) {
-        return DDS_ENTITY_INVALID;
+        return DDS_ENTITY_INVALID; /* 池满 */
     }
     memset(topic, 0, sizeof(*topic));
 
@@ -191,9 +278,9 @@ dds_DataWriterHandleType dds_create_writer(
         return DDS_ENTITY_INVALID;
     }
 
-    dds_data_writer_t *writer = (dds_data_writer_t*)malloc(sizeof(dds_data_writer_t));
+    dds_data_writer_t *writer = (dds_data_writer_t *)dds_pool_alloc(s_writer_pool, s_writer_free, DDS_POOL_WRITERS, sizeof(dds_data_writer_t));
     if (writer == NULL) {
-        return DDS_ENTITY_INVALID;
+        return DDS_ENTITY_INVALID; /* 池满 */
     }
     memset(writer, 0, sizeof(*writer));
 
@@ -229,9 +316,9 @@ dds_DataReaderHandleType dds_create_reader(
         return DDS_ENTITY_INVALID;
     }
 
-    dds_data_reader_t *reader = (dds_data_reader_t*)malloc(sizeof(dds_data_reader_t));
+    dds_data_reader_t *reader = (dds_data_reader_t *)dds_pool_alloc(s_reader_pool, s_reader_free, DDS_POOL_READERS, sizeof(dds_data_reader_t));
     if (reader == NULL) {
-        return DDS_ENTITY_INVALID;
+        return DDS_ENTITY_INVALID; /* 池满 */
     }
     memset(reader, 0, sizeof(*reader));
 
@@ -245,12 +332,17 @@ dds_DataReaderHandleType dds_create_reader(
     rtps_reader_sm_init(&reader->state_machine, &reader->guid,
                         (reader->qos.history_depth > 0U) ? reader->qos.history_depth : 1U);
 
-    /* 默认接收缓冲 */
+    /* 默认接收缓冲: 静态池 (每个 reader 槽位一个固定 4KB 缓冲) */
     reader->receive_buffer_size = 4096;
-    reader->receive_buffer = (uint8_t*)malloc(reader->receive_buffer_size);
-    if (reader->receive_buffer == NULL) {
-        free(reader);
-        return DDS_ENTITY_INVALID;
+    {
+        uintptr_t base = (uintptr_t)s_recv_buf_pool;
+        uintptr_t p = (uintptr_t)reader;
+        uint32_t slot = (uint32_t)((p - (uintptr_t)s_reader_pool) / sizeof(dds_data_reader_t));
+        if (slot >= DDS_POOL_READERS) {
+            dds_pool_free(s_reader_pool, s_reader_free, DDS_POOL_READERS, sizeof(dds_data_reader_t), reader);
+            return DDS_ENTITY_INVALID;
+        }
+        reader->receive_buffer = &s_recv_buf_pool[slot][0];
     }
 
     reader->next = subscriber->readers;
@@ -359,10 +451,10 @@ dds_ReturnCode_t dds_delete(dds_EntityHandleType entity)
             dds_data_writer_t *w = pub->writers;
             while (w != NULL) {
                 dds_data_writer_t *wn = w->next;
-                free(w);
+                dds_pool_free(s_writer_pool, s_writer_free, DDS_POOL_WRITERS, sizeof(dds_data_writer_t), w);
                 w = wn;
             }
-            free(pub);
+            dds_pool_free(s_pub_pool, s_pub_free, DDS_POOL_PUBLISHERS, sizeof(dds_publisher_t), pub);
             pub = next;
         }
         dds_subscriber_t *sub = participant->subscribers;
@@ -371,19 +463,17 @@ dds_ReturnCode_t dds_delete(dds_EntityHandleType entity)
             dds_data_reader_t *r = sub->readers;
             while (r != NULL) {
                 dds_data_reader_t *rn = r->next;
-                if (r->receive_buffer != NULL) {
-                    free(r->receive_buffer);
-                }
-                free(r);
+                /* 接收缓冲为静态池, 无需释放 */
+                dds_pool_free(s_reader_pool, s_reader_free, DDS_POOL_READERS, sizeof(dds_data_reader_t), r);
                 r = rn;
             }
-            free(sub);
+            dds_pool_free(s_sub_pool, s_sub_free, DDS_POOL_SUBSCRIBERS, sizeof(dds_subscriber_t), sub);
             sub = next;
         }
         dds_topic_t *topic = participant->topics;
         while (topic != NULL) {
             dds_topic_t *next = topic->next;
-            free(topic);
+            dds_pool_free(s_topic_pool, s_topic_free, DDS_POOL_TOPICS, sizeof(dds_topic_t), topic);
             topic = next;
         }
 

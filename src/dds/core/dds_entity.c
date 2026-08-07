@@ -6,9 +6,19 @@
  *
  * 实现 dds_entity_delete: 对 publisher/subscriber/topic/writer/reader
  * 句柄执行释放 (participant 由 dds_domain.c 的 dds_delete 处理)。
+ *
+ * 静态分配改造 (ISO 26262 / AUTOSAR R21-11):
+ * 实体全部来自 dds_domain.c 的静态实体池, 释放 = 池槽回收。
+ * 此处将句柄归还给对应池 (地址范围判定)。
  */
 #include "dds_entity.h"
-#include <stdlib.h>
+
+/* dds_domain.c 提供的静态池释放接口 (同文件内可见) */
+void dds_entity_pool_free_publisher(void *ptr);
+void dds_entity_pool_free_subscriber(void *ptr);
+void dds_entity_pool_free_topic(void *ptr);
+void dds_entity_pool_free_writer(void *ptr);
+void dds_entity_pool_free_reader(void *ptr);
 
 /* 句柄 → 内部实体转换 (与 dds_domain.c 相同的指针直通约定) */
 
@@ -18,10 +28,14 @@ dds_ReturnCode_t dds_entity_delete(dds_EntityHandleType entity)
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
-    /* 所有非 participant 实体都是 malloc 分配的结构指针。
-     * 通过首字段类型区分 (guid 的 entity_id 部分):
-     * 简化约定: writer/reader/topic/publisher/subscriber 均直接释放。 */
     void *ptr = (void*)(uintptr_t)entity;
-    free(ptr);
+
+    /* 按池回收 (非本池指针则跳过, 与 dds_domain.c 池地址范围判定一致) */
+    dds_entity_pool_free_writer(ptr);
+    dds_entity_pool_free_reader(ptr);
+    dds_entity_pool_free_topic(ptr);
+    dds_entity_pool_free_publisher(ptr);
+    dds_entity_pool_free_subscriber(ptr);
+
     return DDS_RETCODE_OK;
 }

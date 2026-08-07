@@ -13,6 +13,17 @@
 #include <time.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 滤波器静态池: 编译期固定上限 TBF_MAX_COMPRESSION_SLOTS */
+static tbf_handle_t s_tbf_pool[TBF_MAX_COMPRESSION_SLOTS];
+static uint32_t s_tbf_used[(TBF_MAX_COMPRESSION_SLOTS + 31U) / 32U];
+
+/* 样本缓冲静态池: 每滤波器固定 256B (与旧 malloc(256) 一致) */
+static uint8_t s_tbf_sample_pool[TBF_MAX_COMPRESSION_SLOTS][256];
+
+/* ============================================================================
  * 私有数据结构定义
  * ============================================================================ */
 
@@ -241,18 +252,27 @@ tbf_handle_t* tbf_create(const tbf_config_t *config) {
         return NULL;
     }
     
-    tbf_handle_t *tbf = (tbf_handle_t*)calloc(1, sizeof(tbf_handle_t));
+    /* 静态池分配 (池满返回 NULL, 与旧 calloc 失败语义一致) */
+    tbf_handle_t *tbf = NULL;
+    uint32_t slot = 0;
+    for (uint32_t i = 0; i < TBF_MAX_COMPRESSION_SLOTS; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_tbf_used[word] & (1U << bit)) == 0U) {
+            s_tbf_used[word] |= (1U << bit);
+            tbf = &s_tbf_pool[i];
+            slot = i;
+            break;
+        }
+    }
     if (!tbf) { return NULL; }
+    (void)memset(tbf, 0, sizeof(tbf_handle_t));
     
     memcpy(&tbf->config, config, sizeof(tbf_config_t));
     
-    // 分配样本缓冲区
+    // 样本缓冲区: 静态池 (编译期固定 256B)
     tbf->sample_buffer_size = 256; // 默认大小
-    tbf->sample_buffer = (uint8_t*)malloc(tbf->sample_buffer_size);
-    if (!tbf->sample_buffer) {
-        free(tbf);
-        return NULL;
-    }
+    tbf->sample_buffer = s_tbf_sample_pool[slot];
     
     // 初始化状态
     tbf->state.window_start_time = tbf_get_current_time_us();
@@ -267,12 +287,20 @@ tbf_handle_t* tbf_create(const tbf_config_t *config) {
 eth_status_t tbf_delete(tbf_handle_t *tbf) {
     if (!tbf) { return ETH_INVALID_PARAM; }
     
-    if ((tbf->sample_buffer) != 0U) {
-        free(tbf->sample_buffer);
-    }
+    /* 样本缓冲为静态池, 无需释放 */
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "TBF", "Deleted TimeBasedFilter");
-    free(tbf);
+    /* 静态池回收 (越界检查) */
+    {
+        uintptr_t base = (uintptr_t)s_tbf_pool;
+        uintptr_t p = (uintptr_t)tbf;
+        if ((p >= base) && (p < (base + (uintptr_t)TBF_MAX_COMPRESSION_SLOTS * sizeof(tbf_handle_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(tbf_handle_t));
+            if (idx < TBF_MAX_COMPRESSION_SLOTS) {
+                s_tbf_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
+        }
+    }
     return ETH_OK;
 }
 

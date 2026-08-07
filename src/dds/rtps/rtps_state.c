@@ -12,6 +12,19 @@
 #include <stdlib.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 缓存变化静态池: Writer (64) + Reader (32) 上限之和, 编译期固定 */
+#define RTPS_CACHED_CHANGE_POOL_SIZE (RTPS_WRITER_MAX_CACHED_CHANGES + RTPS_READER_MAX_CACHED_CHANGES)
+static rtps_cached_change_t s_change_pool[RTPS_CACHED_CHANGE_POOL_SIZE];
+static uint32_t s_change_used[(RTPS_CACHED_CHANGE_POOL_SIZE + 31U) / 32U];
+
+/* 变化数据静态缓冲池: 每槽固定 RTPS_MAX_CACHED_DATA_SIZE (与 DDS 默认 4KB 接收缓冲一致) */
+#define RTPS_MAX_CACHED_DATA_SIZE 4096U
+static uint8_t s_change_data_pool[RTPS_CACHED_CHANGE_POOL_SIZE][RTPS_MAX_CACHED_DATA_SIZE];
+
+/* ============================================================================
  * 内部辅助函数
  * ============================================================================ */
 
@@ -46,24 +59,34 @@ static rtps_matched_writer_t* find_matched_writer(
 }
 
 /**
- * @brief 创建缓存变化
+ * @brief 创建缓存变化 (静态池, 无动态分配)
  */
 static rtps_cached_change_t* create_cached_change(
     const rtps_sequence_number_t *seq,
     const uint8_t *data,
     uint32_t len)
 {
-    rtps_cached_change_t *change = (rtps_cached_change_t *)malloc(
-        sizeof(rtps_cached_change_t));
-    if (change == NULL) {
+    /* 越界检查: 数据长度固定上限 */
+    if (len > RTPS_MAX_CACHED_DATA_SIZE) {
         return NULL;
     }
     
-    change->data = (uint8_t *)malloc(len);
-    if (change->data == NULL) {
-        free(change);
-        return NULL;
+    rtps_cached_change_t *change = NULL;
+    for (uint32_t i = 0; i < RTPS_CACHED_CHANGE_POOL_SIZE; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_change_used[word] & (1U << bit)) == 0U) {
+            s_change_used[word] |= (1U << bit);
+            change = &s_change_pool[i];
+            break;
+        }
     }
+    if (change == NULL) {
+        return NULL; /* 池满 */
+    }
+    
+    (void)memset(change, 0, sizeof(rtps_cached_change_t));
+    change->data = s_change_data_pool[(uint32_t)(change - s_change_pool)];
     
     change->seq_number = *seq;
     memcpy(change->data, data, len);
@@ -76,7 +99,7 @@ static rtps_cached_change_t* create_cached_change(
 }
 
 /**
- * @brief 释放缓存变化
+ * @brief 释放缓存变化 (静态池回收)
  */
 static void release_cached_change(rtps_cached_change_t *change)
 {
@@ -86,10 +109,16 @@ static void release_cached_change(rtps_cached_change_t *change)
     
     change->ref_count--;
     if (change->ref_count == 0U) {
-        if (change->data != NULL) {
-            free(change->data);
+        /* 静态池回收 (越界检查) */
+        uintptr_t base = (uintptr_t)s_change_pool;
+        uintptr_t p = (uintptr_t)change;
+        if ((p >= base) && (p < (base + (uintptr_t)RTPS_CACHED_CHANGE_POOL_SIZE * sizeof(rtps_cached_change_t)))) {
+            uint32_t idx = (uint32_t)((p - base) / (uintptr_t)sizeof(rtps_cached_change_t));
+            if (idx < RTPS_CACHED_CHANGE_POOL_SIZE) {
+                s_change_used[idx / 32U] &= ~(1U << (idx % 32U));
+            }
         }
-        free(change);
+        change->data = NULL;
     }
 }
 
