@@ -251,6 +251,17 @@ static void inv_mix_columns(uint8_t state[4][4])
 }
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static dds_crypto_context_t s_crypto_ctx;
+
+/* 会话表 + 密钥表: 编译期最大数量固定分配 */
+static dds_crypto_session_t s_sessions[DDS_CRYPTO_MAX_SESSIONS];
+static dds_crypto_session_keys_t s_key_sessions[DDS_CRYPTO_MAX_SESSIONS];
+
+/* ============================================================================
  * Initialization
  * ============================================================================ */
 
@@ -260,10 +271,8 @@ dds_crypto_context_t* dds_crypto_init(const dds_security_config_t *config)
         return NULL;
     }
 
-    dds_crypto_context_t *ctx = (dds_crypto_context_t*)calloc(1, sizeof(dds_crypto_context_t));
-    if (!ctx) {
-        return NULL;
-    }
+    dds_crypto_context_t *ctx = &s_crypto_ctx;
+    (void)memset(ctx, 0, sizeof(dds_crypto_context_t));
 
     /* Configure algorithm */
     ctx->algorithm = DDS_CRYPTO_ALG_AES_256_GCM;
@@ -271,23 +280,15 @@ dds_crypto_context_t* dds_crypto_init(const dds_security_config_t *config)
                                    config->key_update_interval_ms :
                                    DDS_CRYPTO_DEFAULT_KEY_UPDATE_MS;
 
-    /* Allocate session management */
+    /* 静态会话表 (编译期固定上限) */
     ctx->max_sessions = DDS_CRYPTO_MAX_SESSIONS;
-    ctx->sessions = (dds_crypto_session_t*)calloc(ctx->max_sessions, sizeof(dds_crypto_session_t));
-    if (!ctx->sessions) {
-        free(ctx);
-        return NULL;
-    }
+    ctx->sessions = s_sessions;
+    (void)memset(ctx->sessions, 0, sizeof(s_sessions));
 
-    /* Initialize key manager */
+    /* 静态密钥表 */
     ctx->key_manager.max_sessions = DDS_CRYPTO_MAX_SESSIONS;
-    ctx->key_manager.key_sessions = (dds_crypto_session_keys_t*)calloc(
-        ctx->key_manager.max_sessions, sizeof(dds_crypto_session_keys_t));
-    if (!ctx->key_manager.key_sessions) {
-        free(ctx->sessions);
-        free(ctx);
-        return NULL;
-    }
+    ctx->key_manager.key_sessions = s_key_sessions;
+    (void)memset(ctx->key_manager.key_sessions, 0, sizeof(s_key_sessions));
 
     return ctx;
 }
@@ -298,22 +299,20 @@ void dds_crypto_deinit(dds_crypto_context_t *ctx)
         return;
     }
 
-    /* Clear sensitive key data */
+    /* Clear sensitive key data (静态表, 无需 free) */
     if ((ctx->sessions) != 0U) {
         for (uint32_t i = 0; i < ctx->max_sessions; i++) {
             memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
         }
-        free(ctx->sessions);
     }
 
     if ((ctx->key_manager.key_sessions) != 0U) {
         memset(ctx->key_manager.key_sessions, 0,
                sizeof(dds_crypto_session_keys_t) * ctx->key_manager.max_sessions);
-        free(ctx->key_manager.key_sessions);
     }
 
-    memset(ctx, 0, sizeof(dds_crypto_context_t));
-    free(ctx);
+    ctx->sessions = NULL;
+    ctx->key_manager.key_sessions = NULL;
 }
 
 /* ============================================================================

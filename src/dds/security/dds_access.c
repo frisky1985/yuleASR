@@ -17,6 +17,22 @@
 extern uint64_t dds_get_current_time_ms(void);
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static dds_access_context_t s_access_ctx;
+
+/* 权限数据库: 编译期最大主体数固定分配 */
+static dds_security_permissions_t s_permissions_db[DDS_ACCESS_MAX_SUBJECTS];
+
+/* 主体权限槽: 每个权限条目至多一个主体 (与旧 calloc(1,...) 语义一致) */
+static dds_participant_permission_t s_subject_slots[DDS_ACCESS_MAX_SUBJECTS];
+
+/* XML 解析暂存缓冲: 固定上限 DDS_SECURITY_MAX_PERMISSIONS_SIZE */
+static char s_xml_scratch[DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U];
+
+/* ============================================================================
  * Initialization
  * ============================================================================ */
 
@@ -26,10 +42,8 @@ dds_access_context_t* dds_access_init(const dds_security_config_t *config)
         return NULL;
     }
 
-    dds_access_context_t *ctx = (dds_access_context_t*)calloc(1, sizeof(dds_access_context_t));
-    if (!ctx) {
-        return NULL;
-    }
+    dds_access_context_t *ctx = &s_access_ctx;
+    (void)memset(ctx, 0, sizeof(dds_access_context_t));
 
     /* Copy configuration paths */
     if ((uint8_t)config->permissions_ca_cert_path[0] != 0U) {
@@ -45,14 +59,13 @@ dds_access_context_t* dds_access_init(const dds_security_config_t *config)
                 sizeof(ctx->governance_file_path) - 1U);
     }
 
-    /* Allocate permissions database */
+    /* 静态权限数据库 (编译期固定上限) */
     ctx->max_subjects = DDS_ACCESS_MAX_SUBJECTS;
-    ctx->permissions_db = (dds_security_permissions_t*)calloc(
-        ctx->max_subjects, sizeof(dds_security_permissions_t));
-    if (!ctx->permissions_db) {
-        free(ctx);
-        return NULL;
-    }
+    ctx->permissions_db = s_permissions_db;
+    (void)memset(ctx->permissions_db, 0, sizeof(s_permissions_db));
+
+    /* 主体槽初始化为空闲 (subject_count==0 表示空闲) */
+    (void)memset(s_subject_slots, 0, sizeof(s_subject_slots));
 
     /* Initialize default policy */
     ctx->default_policy.default_deny = false;
@@ -78,32 +91,23 @@ void dds_access_deinit(dds_access_context_t *ctx)
         return;
     }
 
-    /* Free all permissions data */
+    /* 静态权限数据库: 清状态即可 (无动态内存) */
     if ((ctx->permissions_db) != 0U) {
         for (uint32_t i = 0; i < ctx->max_subjects; i++) {
             dds_security_permissions_t *perms = &ctx->permissions_db[i];
             if ((perms->subjects) != 0U) {
                 for (uint32_t j = 0; j < perms->subject_count; j++) {
-                    dds_participant_permission_t *subject = &perms->subjects[j];
-                    if ((subject->domain_perms) != 0U) {
-                        free(subject->domain_perms);
-                    }
+                    perms->subjects[j].domain_perms = NULL;
                 }
-                free(perms->subjects);
+                perms->subjects = NULL;
             }
+            perms->subject_count = 0U;
+            perms->validated = false;
         }
-        free(ctx->permissions_db);
     }
 
-    /* Free default policy rules */
-    dds_access_rule_t *rule = ctx->default_policy.rules;
-    while ((rule) != 0U) {
-        dds_access_rule_t *next = rule->next;
-        free(rule);
-        rule = next;
-    }
-
-    free(ctx);
+    /* 静态上下文: 重置状态 */
+    ctx->permissions_db = NULL;
 }
 
 /* ============================================================================
@@ -189,11 +193,9 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
-    char *xml_data = (char*)malloc(file_size + 1);
-    if (!xml_data) {
-        fclose(fp);
-        return DDS_ACCESS_ERROR_NO_MEMORY;
-    }
+    /* 使用静态暂存缓冲 (固定上限 DDS_SECURITY_MAX_PERMISSIONS_SIZE) */
+    char *xml_data = s_xml_scratch;
+    (void)memset(xml_data, 0, DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U);
 
     fread(xml_data, 1, file_size, fp);
     xml_data[file_size] = '\0';
@@ -313,7 +315,7 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         search_pos = subject_tag + subject_len;
     }
 
-    free(xml_data);
+    /* 静态暂存缓冲无需释放 */
 
     if ((ctx->on_permissions_loaded) != 0U) {
         ctx->on_permissions_loaded(config->subjects[0].subject_name,
@@ -351,11 +353,9 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         return DDS_ACCESS_ERROR_INVALID_CONFIG;
     }
 
-    char *xml_data = (char*)malloc(file_size + 1);
-    if (!xml_data) {
-        fclose(fp);
-        return DDS_ACCESS_ERROR_NO_MEMORY;
-    }
+    /* 使用静态暂存缓冲 (固定上限 DDS_SECURITY_MAX_PERMISSIONS_SIZE) */
+    char *xml_data = s_xml_scratch;
+    (void)memset(xml_data, 0, DDS_SECURITY_MAX_PERMISSIONS_SIZE + 1U);
 
     fread(xml_data, 1, file_size, fp);
     xml_data[file_size] = '\0';
@@ -397,7 +397,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         search_pos = domain_tag + domain_len;
     }
 
-    free(xml_data);
+    /* 静态暂存缓冲无需释放 */
     return DDS_ACCESS_OK;
 }
 
@@ -447,21 +447,19 @@ dds_access_status_t dds_access_load_participant_permissions(dds_access_context_t
         return DDS_ACCESS_ERROR_NO_MEMORY;
     }
 
-    /* Clear existing permissions */
-    if ((perms->subjects) != 0U) {
-        for (uint32_t i = 0; i < perms->subject_count; i++) {
-            if ((perms->subjects[i].domain_perms) != 0U) {
-                free(perms->subjects[i].domain_perms);
-            }
+    /* 静态主体槽分配: 每个权限条目至多一个主体 (与旧 calloc(1,...) 语义一致) */
+    uint32_t slot_idx = 0;
+    for (uint32_t i = 0; i < DDS_ACCESS_MAX_SUBJECTS; i++) {
+        if (s_subject_slots[i].subject_name[0] == '\0') {
+            slot_idx = i;
+            break;
         }
-        free(perms->subjects);
+        if (i == (DDS_ACCESS_MAX_SUBJECTS - 1U)) {
+            return DDS_ACCESS_ERROR_NO_MEMORY;
+        }
     }
-
-    /* Allocate and initialize subject permissions */
-    perms->subjects = (dds_participant_permission_t*)calloc(1, sizeof(dds_participant_permission_t));
-    if (!perms->subjects) {
-        return DDS_ACCESS_ERROR_NO_MEMORY;
-    }
+    (void)memset(&s_subject_slots[slot_idx], 0, sizeof(dds_participant_permission_t));
+    perms->subjects = &s_subject_slots[slot_idx];
 
     strncpy(perms->subjects[0].subject_name, subject_name,
             sizeof(perms->subjects[0].subject_name) - 1U);
@@ -490,14 +488,12 @@ dds_access_status_t dds_access_unload_participant_permissions(dds_access_context
         if ((perms->subject_count > 0U) &&
             (strcmp(perms->subjects[0].subject_name, subject_name) == 0)) {
 
-            /* Free permissions */
+            /* 释放权限: 静态槽回收 (subject_name 清空即标记空闲) */
             if ((perms->subjects) != 0U) {
                 for (uint32_t j = 0; j < perms->subject_count; j++) {
-                    if ((perms->subjects[j].domain_perms) != 0U) {
-                        free(perms->subjects[j].domain_perms);
-                    }
+                    perms->subjects[j].domain_perms = NULL;
+                    perms->subjects[j].subject_name[0] = '\0';
                 }
-                free(perms->subjects);
                 perms->subjects = NULL;
             }
 

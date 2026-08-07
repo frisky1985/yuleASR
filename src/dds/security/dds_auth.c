@@ -217,6 +217,16 @@ dds_auth_status_t dds_auth_generate_random(uint8_t *buffer, uint32_t len)
 }
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static dds_auth_context_t s_auth_ctx;
+
+/* 握手表: 编译期最大数量固定分配 */
+static dds_security_handshake_t s_handshakes[DDS_AUTH_MAX_HANDSHAKES];
+
+/* ============================================================================
  * Initialization
  * ============================================================================ */
 
@@ -226,18 +236,13 @@ dds_auth_context_t* dds_auth_init(const dds_security_config_t *config)
         return NULL;
     }
 
-    dds_auth_context_t *ctx = (dds_auth_context_t*)calloc(1, sizeof(dds_auth_context_t));
-    if (!ctx) {
-        return NULL;
-    }
+    dds_auth_context_t *ctx = &s_auth_ctx;
+    (void)memset(ctx, 0, sizeof(dds_auth_context_t));
 
-    /* Allocate handshake management */
+    /* 静态握手表 (编译期固定上限) */
     ctx->max_handshakes = DDS_AUTH_MAX_HANDSHAKES;
-    ctx->handshakes = (dds_security_handshake_t*)calloc(ctx->max_handshakes, sizeof(dds_security_handshake_t));
-    if (!ctx->handshakes) {
-        free(ctx);
-        return NULL;
-    }
+    ctx->handshakes = s_handshakes;
+    (void)memset(ctx->handshakes, 0, sizeof(s_handshakes));
 
     /* Configure defaults */
     ctx->handshake_timeout_ms = (config->handshake_timeout_ms > 0U) ? config->handshake_timeout_ms : DDS_AUTH_DEFAULT_TIMEOUT_MS;
@@ -265,10 +270,10 @@ void dds_auth_deinit(dds_auth_context_t *ctx)
                 memset(ctx->handshakes[i].identity.shared_secret, 0, sizeof(ctx->handshakes[i].identity.shared_secret));
             }
         }
-        free(ctx->handshakes);
+        /* 静态握手表无需 free */
     }
 
-    free(ctx);
+    ctx->handshakes = NULL;
 }
 
 /* ============================================================================

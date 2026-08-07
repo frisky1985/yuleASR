@@ -55,6 +55,22 @@ static bool guid_equal(const rtps_guid_t *a, const rtps_guid_t *b)
 }
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 单例上下文: 编译期静态分配, 替代 calloc */
+static dds_security_context_t s_secmgr_ctx;
+
+/* 参与者表: 编译期最大数量固定分配 */
+static dds_sec_participant_t s_participants[DDS_SECMGR_MAX_PARTICIPANTS];
+
+/* 安全事件记录 */
+static dds_security_event_record_t s_event_records[DDS_SECMGR_MAX_SECURITY_EVENTS];
+
+/* 审计日志 (固定上限 DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES) */
+static dds_security_audit_log_t s_audit_log_entries[DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES];
+
+/* ============================================================================
  * Initialization and Deinitialization
  * ============================================================================ */
 
@@ -64,10 +80,8 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
         return NULL;
     }
 
-    dds_security_context_t *ctx = (dds_security_context_t*)calloc(1, sizeof(dds_security_context_t));
-    if (!ctx) {
-        return NULL;
-    }
+    dds_security_context_t *ctx = &s_secmgr_ctx;
+    (void)memset(ctx, 0, sizeof(dds_security_context_t));
 
     ctx->state = DDS_SECMGR_STATE_INITIALIZING;
     ctx->start_time = dds_get_current_time_ms();
@@ -75,27 +89,20 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
     /* Copy configuration */
     memcpy(&ctx->config, config, sizeof(dds_security_config_t));
 
-    /* Allocate participant management */
+    /* 静态参与者表 (编译期固定上限) */
     ctx->max_participants = DDS_SECMGR_MAX_PARTICIPANTS;
-    ctx->participants = (dds_sec_participant_t*)calloc(ctx->max_participants, sizeof(dds_sec_participant_t));
-    if (!ctx->participants) {
-        free(ctx);
-        return NULL;
-    }
+    ctx->participants = s_participants;
+    (void)memset(ctx->participants, 0, sizeof(s_participants));
 
     /* Initialize sub-modules */
     ctx->auth_ctx = dds_auth_init(config);
     if (!ctx->auth_ctx) {
-        free(ctx->participants);
-        free(ctx);
         return NULL;
     }
 
     ctx->access_ctx = dds_access_init(config);
     if (!ctx->access_ctx) {
         dds_auth_deinit(ctx->auth_ctx);
-        free(ctx->participants);
-        free(ctx);
         return NULL;
     }
 
@@ -103,39 +110,23 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
     if (!ctx->crypto_ctx) {
         dds_access_deinit(ctx->access_ctx);
         dds_auth_deinit(ctx->auth_ctx);
-        free(ctx->participants);
-        free(ctx);
         return NULL;
     }
 
-    /* Initialize event manager */
+    /* 静态事件记录表 */
     ctx->event_mgr.max_events = DDS_SECMGR_MAX_SECURITY_EVENTS;
-    ctx->event_mgr.events = (dds_security_event_record_t*)calloc(
-        ctx->event_mgr.max_events, sizeof(dds_security_event_record_t));
-    if (!ctx->event_mgr.events) {
-        dds_crypto_deinit(ctx->crypto_ctx);
-        dds_access_deinit(ctx->access_ctx);
-        dds_auth_deinit(ctx->auth_ctx);
-        free(ctx->participants);
-        free(ctx);
-        return NULL;
-    }
+    ctx->event_mgr.events = s_event_records;
+    (void)memset(ctx->event_mgr.events, 0, sizeof(s_event_records));
 
-    /* Initialize audit log manager */
-    ctx->audit_mgr.max_entries = (config->max_audit_entries > 0U) ? 
-                                  config->max_audit_entries : 
+    /* 静态审计日志表 (越界检查: 配置请求超过固定上限时截断到上限) */
+    ctx->audit_mgr.max_entries = (config->max_audit_entries > 0U) ?
+                                  config->max_audit_entries :
                                   DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES;
-    ctx->audit_mgr.log_entries = (dds_security_audit_log_t*)calloc(
-        ctx->audit_mgr.max_entries, sizeof(dds_security_audit_log_t));
-    if (!ctx->audit_mgr.log_entries) {
-        free(ctx->event_mgr.events);
-        dds_crypto_deinit(ctx->crypto_ctx);
-        dds_access_deinit(ctx->access_ctx);
-        dds_auth_deinit(ctx->auth_ctx);
-        free(ctx->participants);
-        free(ctx);
-        return NULL;
+    if (ctx->audit_mgr.max_entries > DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES) {
+        ctx->audit_mgr.max_entries = DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES;
     }
+    ctx->audit_mgr.log_entries = s_audit_log_entries;
+    (void)memset(ctx->audit_mgr.log_entries, 0, sizeof(s_audit_log_entries));
 
     /* Initialize default policy */
     ctx->policy_set.default_flags = config->policy_flags;
@@ -174,30 +165,24 @@ void dds_security_manager_deinit(dds_security_context_t *ctx)
         dds_auth_deinit(ctx->auth_ctx);
     }
 
-    /* Free participants */
+    /* 清除参与者敏感数据 (静态表, 无需 free) */
     if ((ctx->participants) != 0U) {
-        /* Clear sensitive data */
         for (uint32_t i = 0; i < ctx->max_participants; i++) {
             if (ctx->participants[i].state != DDS_SEC_PARTICIPANT_UNAUTHENTICATED) {
                 memset(ctx->participants[i].replay_window.window, 0, 
                        sizeof(ctx->participants[i].replay_window.window));
             }
         }
-        free(ctx->participants);
     }
 
-    /* Free event manager */
-    if ((ctx->event_mgr.events) != 0U) {
-        free(ctx->event_mgr.events);
-    }
-
-    /* Free audit log */
-    if ((ctx->audit_mgr.log_entries) != 0U) {
-        free(ctx->audit_mgr.log_entries);
-    }
-
-    memset(ctx, 0, sizeof(dds_security_context_t));
-    free(ctx);
+    /* 静态事件/审计表无需 free, 清上下文状态即可 */
+    ctx->participants = NULL;
+    ctx->event_mgr.events = NULL;
+    ctx->audit_mgr.log_entries = NULL;
+    ctx->auth_ctx = NULL;
+    ctx->access_ctx = NULL;
+    ctx->crypto_ctx = NULL;
+    ctx->state = DDS_SECMGR_STATE_UNINITIALIZED;
 }
 
 bool dds_security_manager_is_initialized(dds_security_context_t *ctx)
