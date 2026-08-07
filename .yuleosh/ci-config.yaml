@@ -16,19 +16,25 @@ ci:
 coverage:
   # ── 门禁阈值 ──────────────────────────────────────────────
   #
-  # Phase 2 目标 (当前):
-  #   threshold_line:   20.0%  整体行覆盖率最低目标
-  #   c_fail_under:     35.0%  硬门禁 — CI pipeline 阻断线
-  #   strict:           false  门禁为 advisory 模式 (开发期)
+  # 2026-08-07 批D校准 (真实数据):
+  #   ASIL 模块重建后当日实测 (tools/run_branch_coverage.sh):
+  #     line 43.25% / branch 31.19% / functions 66.33%
+  #     (15 个生产 src 文件, branch found 1247 / hit 389)
+  #   旧配置 (c_fail_under 35 + strict false) 已失效 — 门禁 advisory 化且
+  #   未消费真实覆盖数据; 本次恢复 strict 硬门禁并按实测校准:
+  #   threshold_line:   40.0%  整体行覆盖率最低目标 (实测 43.25%, 留裕量)
+  #   c_fail_under:     40.0%  硬门禁 — CI pipeline 阻断线 (strict 生效时)
+  #   strict:           true   硬门禁模式 (2026-08-07 恢复)
+  #   threshold_branch: 20.0%  分支覆盖率目标 (实测 31.19%, 留裕量)
   #
   # Phase 3 目标 (未来):
   #   strict: true, c_fail_under: 60%
   #
-  threshold_line: 20.0
+  threshold_line: 40.0
   threshold_condition: 10.0
-  c_fail_under: 35
-  strict: false
-  threshold_branch: 10.0
+  c_fail_under: 40
+  strict: true
+  threshold_branch: 20.0
 
   # ── 模块级门禁阈值 ──────────────────────────────────────────
   #  每个模块的独立行覆盖率门禁

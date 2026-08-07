@@ -244,19 +244,30 @@ jobs:
         retention-days: 30
     
     # ==============================================
-    # Coverage Gate Check (试点阶段: 不阻断 CI)
+    # Coverage Gate Check (硬门禁 — 2026-08-07 批D恢复)
     #
-    # 门禁阈值: 行覆盖率 ≥ 35%（v1.3.0 基线）
-    # Phase 2 目标: 行覆盖率 ≥ 20%
-    # 由 ci-config.yaml 中的 coverage.c_fail_under 控制
-    # 存量测试失败 (8 项, TASK_STATUS P1) 导致覆盖率不足 35%,
-    # 报告照常生成/上传, 暂不阻断 pipeline; 待存量测试修复后恢复硬门禁。
+    # 阈值来源: .yuleosh/ci-config.yaml coverage.c_fail_under
+    #   (2026-08-07 校准: 40%, 依据 ASIL 模块重建后当日实测 line 43.25%)
+    # 2026-08-07 前: continue-on-error + 硬编码 35% — 门禁失效;
+    # 现已恢复为阻断式硬门禁 (strict: true)。
     # ==============================================
     - name: Coverage Gate Check
-      continue-on-error: true
       run: |
         python3 -c "
-        import json, sys
+        import json, sys, re
+
+        # 从 ci-config.yaml 读取阈值 (c_fail_under / threshold_branch)
+        fail_under = 40
+        branch_thr = 20
+        try:
+            with open('.yuleosh/ci-config.yaml') as f:
+                txt = f.read()
+            m = re.search(r'c_fail_under:\s*(\d+)', txt)
+            if m: fail_under = int(m.group(1))
+            m = re.search(r'threshold_branch:\s*([\d.]+)', txt)
+            if m: branch_thr = float(m.group(1))
+        except Exception as e:
+            print(f'⚠️  ci-config.yaml 读取失败, 使用默认阈值: {e}')
 
         with open('coverage-reports/coverage.json') as f:
             report = json.load(f)
@@ -272,11 +283,11 @@ jobs:
         total_branch_found = sum(f.get('branches', {}).get('found', 0) for f in src_files)
         total_branch_hit = sum(f.get('branches', {}).get('hit', 0) for f in src_files)
 
-        print(f'=== Coverage Gate Check ===')
+        print(f'=== Coverage Gate Check (hard gate) ===')
         print(f'Source files measured: {len(src_files)}')
         print(f'Lines: {total_line_hit}/{total_line_found} ({line_rate:.1f}%)')
         print(f'Branches: {total_branch_hit}/{total_branch_found} ({branch_rate:.1f}%)')
-        print(f'Gate threshold: 35% line coverage')
+        print(f'Gate threshold (ci-config c_fail_under): {fail_under}% line')
 
         # 关键检查: 是否有源文件被测到
         if line_rate == 0 and total_line_found > 0:
@@ -290,18 +301,16 @@ jobs:
             print('   Check that --coverage flags are applied and .gcda files exist.')
             sys.exit(1)
 
-        # 门禁检查
-        if line_rate < 35:
-            print(f'❌ FAILED: Line coverage {line_rate:.1f}% < 35% threshold')
+        # 硬门禁检查 (strict: true)
+        if line_rate < fail_under:
+            print(f'❌ FAILED: Line coverage {line_rate:.1f}% < {fail_under}% hard-gate threshold')
             sys.exit(1)
 
-        if branch_rate < 10:
-            print(f'⚠️  Branch coverage {branch_rate:.1f}% < 10% advisory threshold')
-            print('   (Non-blocking — branch coverage improvement deferred to Phase 3)')
-        else:
-            print(f'✅ Branch coverage {branch_rate:.1f}% >= 10%')
+        if branch_rate < branch_thr:
+            print(f'❌ FAILED: Branch coverage {branch_rate:.1f}% < {branch_thr}% threshold')
+            sys.exit(1)
 
-        print(f'✅ PASSED: Line coverage {line_rate:.1f}% >= 35%')
+        print(f'✅ PASSED: Line {line_rate:.1f}% >= {fail_under}%, Branch {branch_rate:.1f}% >= {branch_thr}%')
         " || { echo "❌ Coverage gate check failed — pipeline blocked"; exit 1; }
 
   # ============================================================
