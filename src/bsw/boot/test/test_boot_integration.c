@@ -423,5 +423,5 @@ int main(void)
     printf("\n========================================\n");
     printf("  RESULTS: %d passed, %d failed\n", passed, failed);
     printf("========================================\n");
-    return failed > 0 ? 1 : 0;
+    return (failed > 0) ? 1 : 0;
 }

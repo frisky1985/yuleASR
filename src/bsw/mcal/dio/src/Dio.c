@@ -34,11 +34,11 @@
  *   PDDR (0x014): Port Data Direction
  *   PIDR (0x018): Port Input Disable
  */
-#define DIO_GPIO1_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 0U * 0x1000U)
-#define DIO_GPIO2_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 1U * 0x1000U)
-#define DIO_GPIO3_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 2U * 0x1000U)
-#define DIO_GPIO4_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 3U * 0x1000U)
-#define DIO_GPIO5_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + 4U * 0x1000U)
+#define DIO_GPIO1_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (0U * 0x1000U))
+#define DIO_GPIO2_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (1U * 0x1000U))
+#define DIO_GPIO3_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (2U * 0x1000U))
+#define DIO_GPIO4_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (3U * 0x1000U))
+#define DIO_GPIO5_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (4U * 0x1000U))
 #define DIO_GPIO_DR                     SIUL2_GPIO_PDOR_OFF
 #define DIO_GPIO_GDIR                   SIUL2_GPIO_PDDR_OFF
 #define DIO_GPIO_PSR                    SIUL2_GPIO_PDIR_OFF

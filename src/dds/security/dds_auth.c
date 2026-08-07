@@ -240,8 +240,8 @@ dds_auth_context_t* dds_auth_init(const dds_security_config_t *config)
     }
 
     /* Configure defaults */
-    ctx->handshake_timeout_ms = config->handshake_timeout_ms > 0U ? config->handshake_timeout_ms : DDS_AUTH_DEFAULT_TIMEOUT_MS;
-    ctx->max_retries = config->max_handshake_attempts > 0U ? config->max_handshake_attempts : 3U;
+    ctx->handshake_timeout_ms = (config->handshake_timeout_ms > 0U) ? config->handshake_timeout_ms : DDS_AUTH_DEFAULT_TIMEOUT_MS;
+    ctx->max_retries = (config->max_handshake_attempts > 0U) ? config->max_handshake_attempts : 3U;
     ctx->validate_cert_chain = true;
     ctx->check_crl = false;
     ctx->check_ocsp = false;

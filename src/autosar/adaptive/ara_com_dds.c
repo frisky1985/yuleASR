@@ -379,7 +379,7 @@ Std_ReturnType ara_com_CreateEvent(
     const ara_com_EventConfigType* config,
     ara_com_EventHandleType** handle)
 {
-    if (!ara_com_IsInitialized() || (service == NULL) || (config == NULL) || handle == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || (config == NULL) || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -463,7 +463,7 @@ Std_ReturnType ara_com_SendEvent(
     const void* data,
     uint32_t length)
 {
-    if (!ara_com_IsInitialized() || (handle == NULL) || (data == NULL) || length == 0U) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || (data == NULL) || (length == 0U)) {
         return E_NOT_OK;
     }
 
@@ -537,7 +537,7 @@ Std_ReturnType ara_com_GetNewSamples(
     uint32_t bufferSize,
     uint32_t* numSamples)
 {
-    if (!ara_com_IsInitialized() || (handle == NULL) || (buffer == NULL) || numSamples == NULL) {
+    if (!ara_com_IsInitialized() || (handle == NULL) || (buffer == NULL) || (numSamples == NULL)) {
         return E_NOT_OK;
     }
 
@@ -603,7 +603,7 @@ Std_ReturnType ara_com_CreateMethod(
     const ara_com_MethodConfigType* config,
     ara_com_MethodHandleType** handle)
 {
-    if (!ara_com_IsInitialized() || (service == NULL) || (config == NULL) || handle == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || (config == NULL) || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -760,7 +760,7 @@ Std_ReturnType ara_com_E2EProtect(
     uint32_t* length,
     uint8_t profile)
 {
-    if (!ara_com_IsInitialized() || (service == NULL) || (data == NULL) || length == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -781,7 +781,7 @@ Std_ReturnType ara_com_E2ECheck(
     uint8_t profile,
     uint16_t* status)
 {
-    if (!ara_com_IsInitialized() || (service == NULL) || (data == NULL) || status == NULL) {
+    if (!ara_com_IsInitialized() || (service == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 

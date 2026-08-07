@@ -148,7 +148,7 @@ static void xml_extract_value(const char *content, uint32_t content_len,
         return;
     }
 
-    uint32_t copy_len = content_len < (output_size - 1U) ? content_len : output_size - 1U;
+    uint32_t copy_len = content_len < (output_size - 1U) ? content_len : (output_size - 1U);
     memcpy(output, content, copy_len);
     output[copy_len] = '\0';
 

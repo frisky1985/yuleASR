@@ -461,7 +461,7 @@ eth_status_t tsn_stack_print_status(void) {
     printf("Version: %s\n", TSN_STACK_VERSION_STRING);
     printf("State: %d\n", g_tsn_context.state);
     printf("\nActive Modules:\n");
-    printf("  gPTP: %s\n", g_tsn_context.config.gptp_config.domain_count > 0U ? "Yes" : "No");
+    printf("  gPTP: %s\n", (g_tsn_context.config.gptp_config.domain_count > 0U) ? "Yes" : "No");
     printf("  TAS: %s\n", g_tsn_context.config.tas_enabled ? "Yes" : "No");
     printf("  CBS: %s\n", g_tsn_context.config.cbs_enabled ? "Yes" : "No");
     printf("  Frame Preemption: %s\n", g_tsn_context.config.fp_enabled ? "Yes" : "No");

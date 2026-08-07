@@ -211,7 +211,7 @@ own_handle_t* own_create(const own_config_t *config, const dds_guid_t *local_gui
     determine_owner(own);
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "OWN", "Created ownership manager: type=%s, strength=%u",
-                config->type == OWN_TYPE_EXCLUSIVE ? "EXCLUSIVE" : "SHARED",
+                (config->type == OWN_TYPE_EXCLUSIVE) ? "EXCLUSIVE" : "SHARED",
                 own->current_strength);
     
     return own;
@@ -296,7 +296,7 @@ eth_status_t own_decrease_strength(own_handle_t *own, uint32_t decrement) {
     if (!own) { return ETH_INVALID_PARAM; }
     
     uint32_t new_strength = (own->current_strength > decrement) ? 
-                            own->current_strength - decrement : 0U;
+                            (own->current_strength - decrement) : 0U;
     return own_set_strength(own, new_strength);
 }
 
@@ -515,7 +515,7 @@ eth_status_t own_force_ownership(own_handle_t *own, uint32_t new_strength) {
     if (!own) { return ETH_INVALID_PARAM; }
     
     // 管理员强制获取所有权
-    own_set_strength(own, new_strength > 0U ? new_strength : OWN_MAX_STRENGTH);
+    own_set_strength(own, (new_strength > 0U) ? new_strength : OWN_MAX_STRENGTH);
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "OWN", "Ownership forced (admin command)");
     return ETH_OK;

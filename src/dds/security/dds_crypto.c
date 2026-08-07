@@ -267,7 +267,7 @@ dds_crypto_context_t* dds_crypto_init(const dds_security_config_t *config)
 
     /* Configure algorithm */
     ctx->algorithm = DDS_CRYPTO_ALG_AES_256_GCM;
-    ctx->key_update_interval_ms = config->key_update_interval_ms > 0U ?
+    ctx->key_update_interval_ms = (config->key_update_interval_ms > 0U) ?
                                    config->key_update_interval_ms :
                                    DDS_CRYPTO_DEFAULT_KEY_UPDATE_MS;
 
@@ -708,7 +708,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
 
     /* Compute authentication tag (simplified) */
     uint8_t H[16] = {0};
-    memcpy(H, key, (unsigned int)(key_len) < 16U ? (unsigned int)(key_len) : 16U);
+    memcpy(H, key, ((unsigned int)(key_len) < 16U) ? (unsigned int)(key_len) : 16U);
     ghash(H, aad, aad_len, ciphertext, plaintext_len, tag);
 
     ctx->total_encrypted += plaintext_len;
@@ -734,7 +734,7 @@ dds_crypto_status_t dds_crypto_decrypt_aes_gcm(dds_crypto_context_t *ctx,
     /* Verify tag first */
     uint8_t computed_tag[16];
     uint8_t H[16] = {0};
-    memcpy(H, key, (unsigned int)(key_len) < 16U ? (unsigned int)(key_len) : 16U);
+    memcpy(H, key, ((unsigned int)(key_len) < 16U) ? (unsigned int)(key_len) : 16U);
     ghash(H, aad, aad_len, ciphertext, ciphertext_len, computed_tag);
 
     if (memcmp(computed_tag, tag, 16) != 0) {

@@ -955,7 +955,7 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Calculate CRC16 over data including header fields */
     uint16_t crcDataLen = config->includeLengthInCrc ? 
-                          config->dataLength : config->dataLength - 2U;
+                          config->dataLength : (config->dataLength - 2U);
     uint16_t crc = E2E_CalculateCRC16(dataBytes, crcDataLen, E2E_CRC16_INIT);
     crc ^= config->dataId;  /* XOR with Data ID */
 
@@ -1015,7 +1015,7 @@ Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_
     /* Verify CRC */
     uint16_t receivedCrc = ((uint16_t)dataBytes[config->crcOffset] << 8) |
                            (uint16_t)dataBytes[config->crcOffset + 1U];
-    uint16_t crcDataLen = config->includeLengthInCrc ? receivedLength : receivedLength - 2U;
+    uint16_t crcDataLen = config->includeLengthInCrc ? receivedLength : (receivedLength - 2U);
     uint16_t calculatedCrc = E2E_CalculateCRC16(dataBytes, crcDataLen, E2E_CRC16_INIT);
     calculatedCrc ^= config->dataId;
 

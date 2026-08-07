@@ -205,7 +205,7 @@ dds_DataWriterHandleType dds_create_writer(
 
     /* 初始化 RTPS 状态机 (rtps_state.h 提供) */
     rtps_writer_sm_init(&writer->state_machine, &writer->guid,
-                        writer->qos.history_depth > 0U ? writer->qos.history_depth : 1U);
+                        (writer->qos.history_depth > 0U) ? writer->qos.history_depth : 1U);
 
     writer->next = publisher->writers;
     publisher->writers = writer;
@@ -243,7 +243,7 @@ dds_DataReaderHandleType dds_create_reader(
 
     /* 初始化 RTPS 状态机 */
     rtps_reader_sm_init(&reader->state_machine, &reader->guid,
-                        reader->qos.history_depth > 0U ? reader->qos.history_depth : 1U);
+                        (reader->qos.history_depth > 0U) ? reader->qos.history_depth : 1U);
 
     /* 默认接收缓冲 */
     reader->receive_buffer_size = 4096;
@@ -321,7 +321,7 @@ dds_ReturnCode_t dds_take(
     }
 
     /* 简化: 单样本取出 (完整实现见 pubsub/dds_reader.c) */
-    memcpy(data, reader->receive_buffer, reader->receive_buffer_size > 0U ? reader->receive_buffer_size : 0U);
+    memcpy(data, reader->receive_buffer, (reader->receive_buffer_size > 0U) ? reader->receive_buffer_size : 0U);
 
     if (sample_info != NULL) {
         memset(sample_info, 0, sizeof(*sample_info));

@@ -122,7 +122,7 @@ dds_security_context_t* dds_security_manager_init(const dds_security_config_t *c
     }
 
     /* Initialize audit log manager */
-    ctx->audit_mgr.max_entries = config->max_audit_entries > 0U ? 
+    ctx->audit_mgr.max_entries = (config->max_audit_entries > 0U) ? 
                                   config->max_audit_entries : 
                                   DDS_SECURITY_MAX_AUDIT_LOG_ENTRIES;
     ctx->audit_mgr.log_entries = (dds_security_audit_log_t*)calloc(
@@ -565,8 +565,8 @@ dds_security_status_t dds_security_check_access(dds_security_context_t *ctx,
             break;
             
         default:
-            access_status = dds_access_check_permission(ctx->access_ctx, &request) == 
-                           DDS_ACCESS_DECISION_ALLOW ? DDS_ACCESS_OK : DDS_ACCESS_ERROR_ACCESS_DENIED;
+            access_status = (dds_access_check_permission(ctx->access_ctx, &request) == 
+                           DDS_ACCESS_DECISION_ALLOW) ? DDS_ACCESS_OK : DDS_ACCESS_ERROR_ACCESS_DENIED;
     }
 
     if (access_status != DDS_ACCESS_OK) {

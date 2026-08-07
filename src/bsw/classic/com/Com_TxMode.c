@@ -503,7 +503,7 @@ void Com_TxModeSwitch(Com_IPduIdType PduId, boolean NewModeIsTrue)
 
     /* Initialize timer for new mode */
     if ((newMode->Mode == COM_TXMODE_PERIODIC) || (newMode->Mode == COM_TXMODE_MIXED)) {
-        modeState->CycleTimer = newMode->TimeOffset > 0u ? newMode->TimeOffset : newMode->CycleTime;
+        modeState->CycleTimer = (newMode->TimeOffset > 0u) ? newMode->TimeOffset : newMode->CycleTime;
     } else {
         modeState->CycleTimer = 0u;
     }

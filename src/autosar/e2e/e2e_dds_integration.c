@@ -156,8 +156,8 @@ static Std_ReturnType E2E_DDS_InitStateMachine(
     smConfig.profile = config->e2eProfile;
     smConfig.timeoutMs = config->timeoutMs;
     smConfig.enableWindowCheck = TRUE;
-    smConfig.window.windowSize = config->windowSize > 0U ? config->windowSize : E2E_SM_WINDOW_SIZE_DEFAULT;
-    smConfig.window.maxErrorThreshold = config->maxErrorThreshold > 0U ? 
+    smConfig.window.windowSize = (config->windowSize > 0U) ? config->windowSize : E2E_SM_WINDOW_SIZE_DEFAULT;
+    smConfig.window.maxErrorThreshold = (config->maxErrorThreshold > 0U) ? 
                                         config->maxErrorThreshold : E2E_SM_MAX_ERROR_THRESHOLD;
     smConfig.window.minOkThreshold = E2E_SM_OK_THRESHOLD;
     smConfig.window.syncCounterThreshold = E2E_SM_SYNC_THRESHOLD;

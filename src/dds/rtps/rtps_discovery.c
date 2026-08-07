@@ -610,7 +610,7 @@ eth_status_t rtps_discovery_get_stats(rtps_discovery_context_t *ctx,
         *endpoints_matched = ctx->endpoints_matched;
     }
     if ((time_elapsed_ms) != 0U) {
-        *time_elapsed_ms = (uint32_t)(ctx->start_timestamp > 0U ? 
+        *time_elapsed_ms = (uint32_t)((ctx->start_timestamp > 0U) ? 
             0 : 0); /* 需要实际时间计算 */
     }
     
