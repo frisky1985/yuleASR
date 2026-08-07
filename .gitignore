@@ -169,3 +169,4 @@ src/bsw/boot/test/test_boot_integration
 .yuleosh/fix-tasks/misra-unknown.md
 artifacts/
 tests/hil/reports/
+coverage_report_asil/
