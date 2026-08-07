@@ -49,9 +49,32 @@ class TestManifest(unittest.TestCase):
     def test_traceability_established(self):
         """Verify traceability matrix exists."""
         import os
+        import subprocess
+        import sys
         trace_file = os.path.join(
             os.path.dirname(__file__), "..", ".osh", "evidence", "traceability-matrix.md"
         )
+        if not os.path.isfile(trace_file):
+            # CI order fix (2026-08-07 P1-3): L1 unit-tests run before the
+            # L3 evidence-pack stage. Generate evidence on demand instead of
+            # asserting a file that cannot exist yet.
+            gen_script = os.path.join(
+                os.path.dirname(__file__), "..", "tools", "generate_evidence.py"
+            )
+            self.assertTrue(
+                os.path.isfile(gen_script),
+                f"Evidence generator missing: {gen_script}",
+            )
+            result = subprocess.run(
+                [sys.executable, gen_script],
+                cwd=os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(
+                result.returncode, 0,
+                f"generate_evidence.py exited {result.returncode}: {result.stderr[:500]}",
+            )
         self.assertTrue(os.path.isfile(trace_file), f"Traceability matrix exists: {trace_file}")
 
 

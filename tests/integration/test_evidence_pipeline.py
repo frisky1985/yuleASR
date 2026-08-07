@@ -28,6 +28,26 @@ def _load_json(path):
         return json.load(f)
 
 
+def _resolve_matched_tests(req):
+    """Mirror tools/generate_evidence.py fallback chain so the expected
+    counts match the generator's single source of truth (P1-3 fix)."""
+    matched_tests = req.get("matched_tests", [])
+    if not matched_tests:
+        test_reports = req.get("test_reports", [])
+        passed_reports = [
+            tr for tr in test_reports
+            if isinstance(tr, dict)
+            and tr.get("status") == "passed"
+            and int(tr.get("passed", 0) or 0) > 0
+        ]
+        if passed_reports:
+            matched_tests = passed_reports
+    if not matched_tests:
+        if req.get("has_test", False):
+            matched_tests = ["(tested)"]
+    return matched_tests
+
+
 def _count_covered(text, pattern):
     """Count matches of a coverage pattern in text."""
     return len(re.findall(pattern, text))
@@ -68,7 +88,7 @@ def test_evidence_acceptance_matrix_covered_count():
     # Load the source traceability report for the authoritative count
     trace = _load_json(TRACE_REPORT)
     reqs = trace["lrm"]["requirements"]
-    expected_covered = sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0)
+    expected_covered = sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0)
     total = len(reqs)
 
     # Read acceptance-matrix.md

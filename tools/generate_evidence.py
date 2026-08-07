@@ -68,6 +68,34 @@ def now_iso():
     return time.strftime("%Y-%m-%d", time.gmtime())
 
 
+def _resolve_matched_tests(req):
+    """Resolve effective test mapping for a requirement.
+
+    Entry status in the matrix uses a fallback chain (matched_tests →
+    test_reports → has_test) — the summary counters must use the SAME
+    chain or the file is internally inconsistent (P1-3 consistency fix).
+
+    test_reports entries only count when they represent a PASSED run
+    (status == "passed" and passed > 0); retry/failed/skipped self-test
+    records must not be treated as coverage evidence (P1-3b fix).
+    """
+    matched_tests = req.get("matched_tests", [])
+    if not matched_tests:
+        test_reports = req.get("test_reports", [])
+        passed_reports = [
+            tr for tr in test_reports
+            if isinstance(tr, dict)
+            and tr.get("status") == "passed"
+            and int(tr.get("passed", 0) or 0) > 0
+        ]
+        if passed_reports:
+            matched_tests = passed_reports
+    if not matched_tests:
+        if req.get("has_test", False):
+            matched_tests = ["(tested)"]
+    return matched_tests
+
+
 def generate_traceability_matrix_md(reqs, summary):
     """Generate corrected traceability-matrix.md using matched_tests for status."""
     lines = []
@@ -81,21 +109,21 @@ def generate_traceability_matrix_md(reqs, summary):
         # traceability-report.json stores statement as singular
         statement = req.get("statement", "(no SHALL statement)")
         shall_statements = [statement] if statement else []
-        matched_tests = req.get("matched_tests", [])
-        # Also check test_reports and has_test from source
-        if not matched_tests:
-            test_reports = req.get("test_reports", [])
-            if test_reports:
-                matched_tests = test_reports
-        if not matched_tests:
-            # has_test flag from source
-            if req.get("has_test", False):
-                matched_tests = ["(tested)"]
+        matched_tests = _resolve_matched_tests(req)
         n_tests = len(matched_tests)
         n_scenarios = 0  # no scenarios currently tracked
 
         # Correct status: use has_test/matched_tests, NOT shall_count
         status = "✅ Covered" if n_tests > 0 else "❌ Not Covered"
+
+        # matched_tests entries may be plain strings or dicts (e.g.
+        # {"name": ..., "path": ...}) — normalize before join (P1-2 fix).
+        def _test_label(t):
+            if isinstance(t, dict):
+                return str(t.get("name") or t.get("path") or t.get("file") or t)
+            return str(t)
+
+        matched_labels = [_test_label(t) for t in matched_tests]
 
         lines.append(f"### {req_id}")
         lines.append(f"- Req ID: {req_id}")
@@ -103,7 +131,7 @@ def generate_traceability_matrix_md(reqs, summary):
         lines.append(f"- Status: {status}")
         lines.append(f"- Scenarios: {n_scenarios} {'✅' if n_scenarios > 0 else '⚠️'}")
         if n_tests > 0:
-            lines.append(f"- Test files: {n_tests} ✅ Covered: {', '.join(matched_tests)}")
+            lines.append(f"- Test files: {n_tests} ✅ Covered: {', '.join(matched_labels)}")
         else:
             lines.append(f"- Test files: 0 ❌ Not covered by any test")
         for s in shall_statements:
@@ -114,7 +142,7 @@ def generate_traceability_matrix_md(reqs, summary):
 
     # Summary
     total = len(reqs)
-    covered = sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0)
+    covered = sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0)
     lines.append("## Summary")
     lines.append(f"- Total Requirements: {total}")
     lines.append(f"- Requirements with implementation: {summary.get('with_implementation', 85)} ({summary.get('with_implementation', 85) * 100 // max(total, 1)}%)")
@@ -139,8 +167,8 @@ def generate_traceability_matrix_json(reqs, summary):
         "summary": {
             "total_requirements": len(reqs),
             "with_implementation": summary.get("with_implementation", 85),
-            "with_test_coverage": sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0),
-            "uncovered_shalls": len(reqs) - sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0),
+            "with_test_coverage": sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0),
+            "uncovered_shalls": len(reqs) - sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0),
             "total_scenarios": 0,
             "total_reviews": 0,
             "total_ci_runs": summary.get("total_ci_runs", 0),
@@ -174,7 +202,7 @@ def generate_requirement_coverage_md(reqs):
         req_id = req["req_id"]
         statement = req.get("statement", "")
         n_shalls = 1 if statement else 0
-        matched_tests = req.get("matched_tests", [])
+        matched_tests = _resolve_matched_tests(req)
         n_tests = len(matched_tests)
         status = "✅" if n_tests > 0 else "❌"
         if n_tests > 0:
@@ -206,10 +234,15 @@ def generate_acceptance_matrix_md(reqs):
         req_id = req["req_id"]
         statement = req.get("statement", "(no SHALL statements)")
         shall_statements = [statement]
-        matched_tests = req.get("matched_tests", [])
+        matched_tests = _resolve_matched_tests(req)
         n_tests = len(matched_tests)
         status = "✅" if n_tests > 0 else "❌"
-        test_file_text = ", ".join(matched_tests) if matched_tests else "—"
+        # Normalize dict entries (name/path) before join (P1-2 fix)
+        def _tlabel(t):
+            if isinstance(t, dict):
+                return str(t.get("name") or t.get("path") or t.get("file") or t)
+            return str(t)
+        test_file_text = ", ".join(_tlabel(t) for t in matched_tests) if matched_tests else "—"
         verification_method = "Unit Test"
         match_type = "—"
         confidence = ""
@@ -220,7 +253,7 @@ def generate_acceptance_matrix_md(reqs):
         )
 
     total = len(reqs)
-    covered = sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0)
+    covered = sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0)
     lines.append("")
     lines.append("## Summary")
     lines.append(f"- Total SHALL statements: {total}")
@@ -366,7 +399,7 @@ def main():
     trace = load_json(TRACE_REPORT)
     reqs = trace["lrm"]["requirements"]
     print(f"  Loaded {len(reqs)} requirements from traceability-report.json")
-    covered_count = sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0)
+    covered_count = sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0)
     print(f"  With test coverage: {covered_count}")
 
     # Load summary info from available reports
@@ -484,7 +517,7 @@ def main():
     if am_match:
         print(f"    acceptance-matrix.md: {am_match.group(1)} covered")
 
-    covered_with_tests = sum(1 for r in reqs if len(r.get("matched_tests", [])) > 0)
+    covered_with_tests = sum(1 for r in reqs if len(_resolve_matched_tests(r)) > 0)
     ok = True
     if tm_covered != covered_with_tests:
         print(f"  ⚠️  Coverage count mismatch: traceability-matrix.md={tm_covered}, traceability-report.json={covered_with_tests}")
