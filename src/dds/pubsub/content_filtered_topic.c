@@ -129,7 +129,8 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
         while (lexer->pos < lexer->len && 
                (isalnum((unsigned char)lexer->input[lexer->pos]) || lexer->input[lexer->pos] == '_')) {
             if (lexer->token_len < sizeof(lexer->token) - 1) {
-                lexer->token[lexer->token_len++] = lexer->input[lexer->pos];
+                lexer->token[lexer->token_len] = lexer->input[lexer->pos];
+                lexer->token_len++;
             }
             lexer->pos++;
         }
@@ -141,16 +142,19 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     if (isdigit((unsigned char)lexer->input[lexer->pos])) {
         while (lexer->pos < lexer->len && isdigit((unsigned char)lexer->input[lexer->pos])) {
             if (lexer->token_len < sizeof(lexer->token) - 1) {
-                lexer->token[lexer->token_len++] = lexer->input[lexer->pos];
+                lexer->token[lexer->token_len] = lexer->input[lexer->pos];
+                lexer->token_len++;
             }
             lexer->pos++;
         }
         // 小数点
         if (lexer->pos < lexer->len && lexer->input[lexer->pos] == '.') {
-            lexer->token[lexer->token_len++] = lexer->input[lexer->pos++];
+            lexer->token[lexer->token_len] = lexer->input[lexer->pos++];
+            lexer->token_len++;
             while (lexer->pos < lexer->len && isdigit((unsigned char)lexer->input[lexer->pos])) {
                 if (lexer->token_len < sizeof(lexer->token) - 1) {
-                    lexer->token[lexer->token_len++] = lexer->input[lexer->pos];
+                    lexer->token[lexer->token_len] = lexer->input[lexer->pos];
+                    lexer->token_len++;
                 }
                 lexer->pos++;
             }
@@ -164,7 +168,8 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
         lexer->pos++;
         while (lexer->pos < lexer->len && lexer->input[lexer->pos] != '\'') {
             if (lexer->token_len < sizeof(lexer->token) - 1) {
-                lexer->token[lexer->token_len++] = lexer->input[lexer->pos];
+                lexer->token[lexer->token_len] = lexer->input[lexer->pos];
+                lexer->token_len++;
             }
             lexer->pos++;
         }

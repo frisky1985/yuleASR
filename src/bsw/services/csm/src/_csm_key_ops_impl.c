@@ -191,7 +191,8 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
             
             /* 构造: counter(1) || sourceKey || targetId(4) || 0x00 */
             hashInputLen = 0U;
-            deriveBuf[hashInputLen++] = counter;
+            deriveBuf[hashInputLen] = counter;
+            hashInputLen++;
             
             if (srcLen + hashInputLen > sizeof(deriveBuf))
             {
@@ -203,16 +204,21 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
             /* 追加目标密钥ID (大端) */
             if (hashInputLen + 4U <= sizeof(deriveBuf))
             {
-                deriveBuf[hashInputLen++] = (uint8)((targetKeyId >> 24) & 0xFFU);
-                deriveBuf[hashInputLen++] = (uint8)((targetKeyId >> 16) & 0xFFU);
-                deriveBuf[hashInputLen++] = (uint8)((targetKeyId >> 8) & 0xFFU);
-                deriveBuf[hashInputLen++] = (uint8)(targetKeyId & 0xFFU);
+                deriveBuf[hashInputLen] = (uint8)((targetKeyId >> 24) & 0xFFU);
+                hashInputLen++;
+                deriveBuf[hashInputLen] = (uint8)((targetKeyId >> 16) & 0xFFU);
+                hashInputLen++;
+                deriveBuf[hashInputLen] = (uint8)((targetKeyId >> 8) & 0xFFU);
+                hashInputLen++;
+                deriveBuf[hashInputLen] = (uint8)(targetKeyId & 0xFFU);
+                hashInputLen++;
             }
             
             /* 追加分隔符 */
             if (hashInputLen < sizeof(deriveBuf))
             {
-                deriveBuf[hashInputLen++] = 0x00U;
+                deriveBuf[hashInputLen] = 0x00U;
+                hashInputLen++;
             }
             
             /* 通过硬件或配置的哈希服务 */
@@ -477,7 +483,8 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
                 uint32 j;
                 for (j = 0; j < sizeof(label) && kdfInputLen < sizeof(kdfInput); j++)
                 {
-                    kdfInput[kdfInputLen++] = label[j];
+                    kdfInput[kdfInputLen] = label[j];
+                    kdfInputLen++;
                 }
             }
             
@@ -494,10 +501,14 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
             /* 追加keyId */
             if (kdfInputLen + 4U <= sizeof(kdfInput))
             {
-                kdfInput[kdfInputLen++] = (uint8)((keyId >> 24) & 0xFFU);
-                kdfInput[kdfInputLen++] = (uint8)((keyId >> 16) & 0xFFU);
-                kdfInput[kdfInputLen++] = (uint8)((keyId >> 8) & 0xFFU);
-                kdfInput[kdfInputLen++] = (uint8)(keyId & 0xFFU);
+                kdfInput[kdfInputLen] = (uint8)((keyId >> 24) & 0xFFU);
+                kdfInputLen++;
+                kdfInput[kdfInputLen] = (uint8)((keyId >> 16) & 0xFFU);
+                kdfInputLen++;
+                kdfInput[kdfInputLen] = (uint8)((keyId >> 8) & 0xFFU);
+                kdfInputLen++;
+                kdfInput[kdfInputLen] = (uint8)(keyId & 0xFFU);
+                kdfInputLen++;
             }
             
             /* 通过哈希服务 */

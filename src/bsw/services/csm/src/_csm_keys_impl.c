@@ -37,7 +37,8 @@ Std_ReturnType Csm_KeyElementSet(
         {
             return E_NOT_OK;
         }
-        elemIdx = Csm_Keys[keyIdx].numElements++;
+        elemIdx = Csm_Keys[keyIdx].numElements;
+        Csm_Keys[keyIdx].numElements++;
     }
     
     /* 复制数据 */

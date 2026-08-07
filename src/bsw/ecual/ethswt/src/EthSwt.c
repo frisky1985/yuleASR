@@ -141,7 +141,8 @@ static void EthSwt_LocalInitVlans(const EthSwt_ConfigType* Config)
 
     for (i = 0U; (i < Config->NumVlans) && (EthSwt_InternalState.NumVlans < ETHSWT_MAX_VLANS); i++)
     {
-        EthSwt_InternalState.Vlans[EthSwt_InternalState.NumVlans++] = Config->VlanConfigs[i];
+        EthSwt_InternalState.Vlans[EthSwt_InternalState.NumVlans] = Config->VlanConfigs[i];
+        EthSwt_InternalState.NumVlans++;
     }
 }
 
@@ -340,7 +341,8 @@ Std_ReturnType EthSwt_ConfigVlan(const EthSwt_VlanConfigType* VlanConfig)
         return E_NOT_OK;
     }
 
-    EthSwt_InternalState.Vlans[EthSwt_InternalState.NumVlans++] = *VlanConfig;
+    EthSwt_InternalState.Vlans[EthSwt_InternalState.NumVlans] = *VlanConfig;
+    EthSwt_InternalState.NumVlans++;
     return E_OK;
 }
 

@@ -500,7 +500,8 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
         }
         memcpy(input + input_len, info, sizeof(info) - 1);
         input_len += sizeof(info) - 1;
-        input[input_len++] = counter++;
+        input[input_len] = counter++;
+        input_len++;
 
         /* Simplified hash - use XOR based mixing */
         for (int i = 0; i < 32; i++) {

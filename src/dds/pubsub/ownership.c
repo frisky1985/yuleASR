@@ -102,7 +102,8 @@ static own_contender_t* add_contender(own_handle_t *own, const dds_guid_t *guid,
     
     // 添加新竞争者
     if (own->contender_count < OWN_MAX_CONTENDERS) {
-        own_contender_t *c = &own->contenders[own->contender_count++];
+        own_contender_t *c = &own->contenders[own->contender_count];
+    own->contender_count++;
         memcpy(&c->guid, guid, sizeof(dds_guid_t));
         c->strength = strength;
         c->last_seen = get_time_ms();

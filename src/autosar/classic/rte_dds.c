@@ -254,7 +254,8 @@ Std_ReturnType rte_CreateComponent(
     }
 
     /* 复制配置到全局表 */
-    uint32 idx = g_rteContext.numComponents++;
+    uint32 idx = g_rteContext.numComponents;
+    g_rteContext.numComponents++;
     memcpy(&g_rteContext.components[idx], config, sizeof(rte_ComponentConfigType));
     g_rteContext.components[idx].state = RTE_CMP_STOPPED;
 

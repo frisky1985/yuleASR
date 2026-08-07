@@ -60,7 +60,8 @@ TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType Domain, TcpIp_ProtocolType Protoc
 {
     (void)Domain;
     (void)Protocol;
-    *SocketIdPtr = mock_socket_id++;
+    *SocketIdPtr = mock_socket_id;
+    mock_socket_id++;
     return mock_tcpip_return;
 }
 

@@ -334,12 +334,16 @@ uint16_t Tel_CompressRLE(const uint8_t *input, uint16_t input_len,
         
         if (count > 2) {
             if (out + 3 > output_max) break;
-            output[out++] = 0x00;
-            output[out++] = count;
-            output[out++] = byte;
+            output[out] = 0x00;
+            out++;
+            output[out] = count;
+            out++;
+            output[out] = byte;
+            out++;
         } else {
             for (uint8_t i = 0; i < count && out < output_max; i++) {
-                output[out++] = byte;
+                output[out] = byte;
+                out++;
             }
         }
         

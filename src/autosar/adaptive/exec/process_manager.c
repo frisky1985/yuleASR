@@ -204,7 +204,8 @@ Std_ReturnType ProcessManager_Start(const ProcessConfigType* config, ProcessIdTy
     entry->isUsed = true;
     memcpy(&entry->config, config, sizeof(ProcessConfigType));
     
-    entry->info.pid = g_nextPid++;
+    entry->info.pid = g_nextPid;
+    g_nextPid++;
     entry->info.state = PROCESS_STATE_STARTING;
     entry->info.startTime = 0U;  /* Would use actual timestamp */
     entry->info.restartCount = 0U;
@@ -359,7 +360,8 @@ uint32_t ProcessManager_GetAllProcesses(ProcessIdType* pids, uint32_t maxCount) 
     uint32_t count = 0U;
     for (uint32_t i = 0U; i < EXEC_MAX_PROCESSES && count < maxCount; i++) {
         if (g_processTable[i].isUsed) {
-            pids[count++] = g_processTable[i].info.pid;
+            pids[count] = g_processTable[i].info.pid;
+            count++;
         }
     }
     

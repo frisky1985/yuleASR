@@ -258,7 +258,8 @@ eth_status_t rtps_writer_sm_match_reader(rtps_writer_state_machine_t *writer,
     }
     
     /* 添加新的匹配Reader */
-    rtps_matched_reader_t *reader = &writer->matched_readers[writer->matched_reader_count++];
+    rtps_matched_reader_t *reader = &writer->matched_readers[writer->matched_reader_count];
+    writer->matched_reader_count++;
     memset(reader, 0, sizeof(rtps_matched_reader_t));
     reader->remote_guid = *reader_guid;
     reader->state = RTPS_CONNECTION_MATCHED;
@@ -284,7 +285,8 @@ eth_status_t rtps_writer_sm_unmatch_reader(rtps_writer_state_machine_t *writer,
     for (uint32_t i = 0; i < writer->matched_reader_count; i++) {
         if (rtps_guid_equal(&writer->matched_readers[i].remote_guid, reader_guid)) {
             /* 移除（用最后一个元素填充） */
-            writer->matched_readers[i] = writer->matched_readers[--writer->matched_reader_count];
+            --writer->matched_reader_count;
+    writer->matched_readers[i] = writer->matched_readers[writer->matched_reader_count];
             return ETH_OK;
         }
     }
@@ -465,7 +467,8 @@ eth_status_t rtps_writer_sm_get_requested_changes(rtps_writer_state_machine_t *w
         if (reader != NULL) {
             /* 检查Reader是否已ACK这个序列号 */
             if (rtps_seqnum_compare(&current->seq_number, &reader->last_sn) > 0) {
-                changes[(*actual_changes)++] = current;
+                changes[*actual_changes] = current;
+    (*actual_changes)++;
                 current->ref_count++;
             }
         } else {
@@ -549,7 +552,8 @@ eth_status_t rtps_reader_sm_match_writer(rtps_reader_state_machine_t *reader,
     }
     
     /* 添加新的匹配Writer */
-    rtps_matched_writer_t *writer = &reader->matched_writers[reader->matched_writer_count++];
+    rtps_matched_writer_t *writer = &reader->matched_writers[reader->matched_writer_count];
+    reader->matched_writer_count++;
     memset(writer, 0, sizeof(rtps_matched_writer_t));
     writer->remote_guid = *writer_guid;
     writer->state = RTPS_CONNECTION_MATCHED;
@@ -576,7 +580,8 @@ eth_status_t rtps_reader_sm_unmatch_writer(rtps_reader_state_machine_t *reader,
     
     for (uint32_t i = 0; i < reader->matched_writer_count; i++) {
         if (rtps_guid_equal(&reader->matched_writers[i].remote_guid, writer_guid)) {
-            reader->matched_writers[i] = reader->matched_writers[--reader->matched_writer_count];
+            --reader->matched_writer_count;
+    reader->matched_writers[i] = reader->matched_writers[reader->matched_writer_count];
             return ETH_OK;
         }
     }
@@ -832,36 +837,56 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
     pos += RTPS_ENTITY_ID_SIZE;
     
     /* ACK位图基准序列号 */
-    buffer[pos++] = reader->next_expected_seq.high >> 24;
-    buffer[pos++] = reader->next_expected_seq.high >> 16;
-    buffer[pos++] = reader->next_expected_seq.high >> 8;
-    buffer[pos++] = reader->next_expected_seq.high;
-    buffer[pos++] = reader->next_expected_seq.low >> 24;
-    buffer[pos++] = reader->next_expected_seq.low >> 16;
-    buffer[pos++] = reader->next_expected_seq.low >> 8;
-    buffer[pos++] = reader->next_expected_seq.low;
+    buffer[pos] = reader->next_expected_seq.high >> 24;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.high >> 16;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.high >> 8;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.high;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.low >> 24;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.low >> 16;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.low >> 8;
+    pos++;
+    buffer[pos] = reader->next_expected_seq.low;
+    pos++;
     
     /* 构建位图 */
     uint32_t num_bits = writer->missing_changes.num_bits;
-    buffer[pos++] = num_bits >> 24;
-    buffer[pos++] = num_bits >> 16;
-    buffer[pos++] = num_bits >> 8;
-    buffer[pos++] = num_bits;
+    buffer[pos] = num_bits >> 24;
+    pos++;
+    buffer[pos] = num_bits >> 16;
+    pos++;
+    buffer[pos] = num_bits >> 8;
+    pos++;
+    buffer[pos] = num_bits;
+    pos++;
     
     /* 位图数据 */
     uint32_t num_words = (num_bits + 31) / 32;
     for (uint32_t i = 0; i < num_words && i < 8; i++) {
-        buffer[pos++] = writer->missing_changes.bitmap[i] >> 24;
-        buffer[pos++] = writer->missing_changes.bitmap[i] >> 16;
-        buffer[pos++] = writer->missing_changes.bitmap[i] >> 8;
-        buffer[pos++] = writer->missing_changes.bitmap[i];
+        buffer[pos] = writer->missing_changes.bitmap[i] >> 24;
+        pos++;
+        buffer[pos] = writer->missing_changes.bitmap[i] >> 16;
+        pos++;
+        buffer[pos] = writer->missing_changes.bitmap[i] >> 8;
+        pos++;
+        buffer[pos] = writer->missing_changes.bitmap[i];
+        pos++;
     }
     
     /* ACKNACK计数 */
-    buffer[pos++] = reader->acknack_count >> 24;
-    buffer[pos++] = reader->acknack_count >> 16;
-    buffer[pos++] = reader->acknack_count >> 8;
-    buffer[pos++] = reader->acknack_count;
+    buffer[pos] = reader->acknack_count >> 24;
+    pos++;
+    buffer[pos] = reader->acknack_count >> 16;
+    pos++;
+    buffer[pos] = reader->acknack_count >> 8;
+    pos++;
+    buffer[pos] = reader->acknack_count;
+    pos++;
     
     *actual_len = pos;
     reader->must_send_acknack = false;

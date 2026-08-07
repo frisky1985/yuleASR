@@ -574,51 +574,84 @@ Std_ReturnType DoIP_SendVehicleAnnouncement(void)
     idx = DOIP_HEADER_LENGTH;
 
     /* VIN */
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[0];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[1];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[2];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[3];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[4];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[5];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[6];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[7];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[8];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[9];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[10];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[11];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[12];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[13];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[14];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[15];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.vin[16];
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[0];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[1];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[2];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[3];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[4];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[5];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[6];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[7];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[8];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[9];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[10];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[11];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[12];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[13];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[14];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[15];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.vin[16];
+    idx++;
 
     /* Logical Address */
-    dataPtr[idx++] = (uint8)(DoIP_VehicleAnnouncement.logicalAddress >> 8);
-    dataPtr[idx++] = (uint8)(DoIP_VehicleAnnouncement.logicalAddress);
+    dataPtr[idx] = (uint8)(DoIP_VehicleAnnouncement.logicalAddress >> 8);
+    idx++;
+    dataPtr[idx] = (uint8)(DoIP_VehicleAnnouncement.logicalAddress);
+    idx++;
 
     /* EID */
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.eid[0];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.eid[1];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.eid[2];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.eid[3];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.eid[4];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.eid[5];
+    dataPtr[idx] = DoIP_VehicleAnnouncement.eid[0];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.eid[1];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.eid[2];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.eid[3];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.eid[4];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.eid[5];
+    idx++;
 
     /* GID */
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.gid[0];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.gid[1];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.gid[2];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.gid[3];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.gid[4];
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.gid[5];
+    dataPtr[idx] = DoIP_VehicleAnnouncement.gid[0];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.gid[1];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.gid[2];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.gid[3];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.gid[4];
+    idx++;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.gid[5];
+    idx++;
 
     /* Further Action Required */
-    dataPtr[idx++] = DoIP_VehicleAnnouncement.furtherActionReq;
+    dataPtr[idx] = DoIP_VehicleAnnouncement.furtherActionReq;
+    idx++;
 
     /* Sync Status (optional) */
     if (DoIP_VehicleAnnouncement.syncStatus != 0U )
     {
-        dataPtr[idx++] = DoIP_VehicleAnnouncement.syncStatus;
+        dataPtr[idx] = DoIP_VehicleAnnouncement.syncStatus;
+        idx++;
     }
 
     pduInfo.SduDataPtr = dataPtr;
@@ -748,27 +781,40 @@ static void DoIP_SendRoutingActivationResponse(
     idx = DOIP_HEADER_LENGTH;
 
     /* Logical Address */
-    dataPtr[idx++] = (uint8)(logicalAddress >> 8);
-    dataPtr[idx++] = (uint8)(logicalAddress);
+    dataPtr[idx] = (uint8)(logicalAddress >> 8);
+    idx++;
+    dataPtr[idx] = (uint8)(logicalAddress);
+    idx++;
 
     /* Tester Logical Address */
-    dataPtr[idx++] = (uint8)(testerAddress >> 8);
-    dataPtr[idx++] = (uint8)(testerAddress);
+    dataPtr[idx] = (uint8)(testerAddress >> 8);
+    idx++;
+    dataPtr[idx] = (uint8)(testerAddress);
+    idx++;
 
     /* Response Code */
-    dataPtr[idx++] = responseCode;
+    dataPtr[idx] = responseCode;
+    idx++;
 
     /* Reserved bytes */
-    dataPtr[idx++] = 0;
-    dataPtr[idx++] = 0;
-    dataPtr[idx++] = 0;
-    dataPtr[idx++] = 0;
+    dataPtr[idx] = 0;
+    idx++;
+    dataPtr[idx] = 0;
+    idx++;
+    dataPtr[idx] = 0;
+    idx++;
+    dataPtr[idx] = 0;
+    idx++;
 
     /* OEM data */
-    dataPtr[idx++] = 0;
-    dataPtr[idx++] = 0;
-    dataPtr[idx++] = 0;
-    dataPtr[idx++] = 0;
+    dataPtr[idx] = 0;
+    idx++;
+    dataPtr[idx] = 0;
+    idx++;
+    dataPtr[idx] = 0;
+    idx++;
+    dataPtr[idx] = 0;
+    idx++;
 
     pduInfo.SduDataPtr = dataPtr;
     pduInfo.SduLength = idx;
@@ -967,23 +1013,32 @@ static void DoIP_SendDiagnosticAck(
     idx = DOIP_HEADER_LENGTH;
 
     /* Source Address */
-    dataPtr[idx++] = (uint8)(sourceAddress >> 8);
-    dataPtr[idx++] = (uint8)(sourceAddress);
+    dataPtr[idx] = (uint8)(sourceAddress >> 8);
+    idx++;
+    dataPtr[idx] = (uint8)(sourceAddress);
+    idx++;
 
     /* Target Address */
-    dataPtr[idx++] = (uint8)(targetAddress >> 8);
-    dataPtr[idx++] = (uint8)(targetAddress);
+    dataPtr[idx] = (uint8)(targetAddress >> 8);
+    idx++;
+    dataPtr[idx] = (uint8)(targetAddress);
+    idx++;
 
     /* ACK/NACK Code */
-    dataPtr[idx++] = ackCode;
+    dataPtr[idx] = ackCode;
+    idx++;
 
     /* Previous diagnostic message length (for ACK) */
     if (ackCode == DOIP_DIAG_ACK_CODE_OK)
     {
-        dataPtr[idx++] = (uint8)(previousMsgLength >> 24);
-        dataPtr[idx++] = (uint8)(previousMsgLength >> 16);
-        dataPtr[idx++] = (uint8)(previousMsgLength >> 8);
-        dataPtr[idx++] = (uint8)(previousMsgLength);
+        dataPtr[idx] = (uint8)(previousMsgLength >> 24);
+        idx++;
+        dataPtr[idx] = (uint8)(previousMsgLength >> 16);
+        idx++;
+        dataPtr[idx] = (uint8)(previousMsgLength >> 8);
+        idx++;
+        dataPtr[idx] = (uint8)(previousMsgLength);
+        idx++;
     }
 
     pduInfo.SduDataPtr = dataPtr;

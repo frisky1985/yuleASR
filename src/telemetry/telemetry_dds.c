@@ -84,7 +84,8 @@ TelStatus_t Tel_Dds_FlushBuffer(void) {
     }
     
     /* 准备样本 */
-    s_dds_sample.seq_num = s_seq_num++;
+    s_dds_sample.seq_num = s_seq_num;
+    s_seq_num++;
     s_dds_sample.timestamp = DDS_GetTimestamp();
     
     /* 打包事件 */

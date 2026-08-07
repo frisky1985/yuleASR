@@ -418,7 +418,8 @@ Mem_HandleType Mem_Allocate(uint32 Size, uint8 Alignment)
         
         /* Mark as allocated */
         block->isFree = FALSE;
-        block->handle = Mem_NextHandle++;
+        block->handle = Mem_NextHandle;
+        Mem_NextHandle++;
         Mem_UpdateChecksum(block);
         
         Mem_Pools[poolIndex].usedSize += block->size;

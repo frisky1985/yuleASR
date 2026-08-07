@@ -187,7 +187,8 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
                 uint32 j;
                 for (j = 0; j < sizeof(label) && kdfInputLen < sizeof(kdfInput); j++)
                 {
-                    kdfInput[kdfInputLen++] = label[j];
+                    kdfInput[kdfInputLen] = label[j];
+                    kdfInputLen++;
                 }
             }
             
@@ -216,10 +217,14 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
             /* 追加keyId */
             if (kdfInputLen + 4U <= sizeof(kdfInput))
             {
-                kdfInput[kdfInputLen++] = (uint8)((keyId >> 24) & 0xFFU);
-                kdfInput[kdfInputLen++] = (uint8)((keyId >> 16) & 0xFFU);
-                kdfInput[kdfInputLen++] = (uint8)((keyId >> 8) & 0xFFU);
-                kdfInput[kdfInputLen++] = (uint8)(keyId & 0xFFU);
+                kdfInput[kdfInputLen] = (uint8)((keyId >> 24) & 0xFFU);
+                kdfInputLen++;
+                kdfInput[kdfInputLen] = (uint8)((keyId >> 16) & 0xFFU);
+                kdfInputLen++;
+                kdfInput[kdfInputLen] = (uint8)((keyId >> 8) & 0xFFU);
+                kdfInputLen++;
+                kdfInput[kdfInputLen] = (uint8)(keyId & 0xFFU);
+                kdfInputLen++;
             }
             
             /* 通过硬件哈希服务 */

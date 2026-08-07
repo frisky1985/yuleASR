@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-18.4
 
-> Generated: 2026-08-07T12:39:04.034733
+> Generated: 2026-08-07T14:30:06.018626
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -89,42 +89,41 @@
 | 75 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c` | 439 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
 | 76 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry.c` | 281 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
 | 77 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/telemetry_dds.c` | 61 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 78 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 681 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 79 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.c` | 1117 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 80 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 501 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 81 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 515 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 82 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 516 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 83 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 867 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 84 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 882 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 85 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 939 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 86 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 940 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 87 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 146 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 88 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 158 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 89 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 163 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 90 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 570 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 91 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 601 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 92 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 765 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 93 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 140 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 94 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 159 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 95 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 284 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 96 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 305 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 97 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 309 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 98 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 313 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 99 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 397 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 100 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 283 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 101 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 365 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 102 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 369 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 103 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 370 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 104 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 374 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 420 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 421 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 425 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 501 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 109 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 597 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 110 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 751 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 111 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 662 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 112 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 706 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
-| 113 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_icmp.c` | 384 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 78 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.c` | 1117 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 79 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 501 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 80 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 515 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 81 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 516 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 82 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 867 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 83 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 882 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 84 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 939 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 85 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 940 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 86 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 146 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 87 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 158 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 88 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 163 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 89 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 570 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 90 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 601 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 91 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.c` | 765 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 92 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 140 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 93 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 159 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 94 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 284 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 95 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 305 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 96 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 309 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 97 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 313 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 98 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 397 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 99 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 283 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 100 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 365 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 101 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 369 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 102 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 370 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 103 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 374 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 104 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 420 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 421 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 425 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 501 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 597 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 109 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 751 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 110 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 662 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 111 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 706 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
+| 112 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_icmp.c` | 384 | 0 | Pointer arithmetic operators should not be applied to pointer type [misra-c2012- |
 
 ## Fix Checklist
 

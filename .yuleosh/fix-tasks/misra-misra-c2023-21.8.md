@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-21.8
 
-> Generated: 2026-08-07T12:39:04.046145
+> Generated: 2026-08-07T14:51:08.940092
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -14,7 +14,7 @@
 |--:|:-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 221 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 226 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c` | 720 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c` | 721 | 0 | The atof, atoi and atol functions of stdlib.h shall not be used [misra-c2012-21. |
 
 ## Fix Checklist
 

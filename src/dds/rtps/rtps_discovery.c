@@ -192,13 +192,17 @@ static uint32_t serialize_participant_data(const rtps_participant_proxy_t *parti
     if (max_len < 64) return 0;
     
     /* 协议版本 */
-    buffer[pos++] = RTPS_PROTOCOL_VERSION_MAJOR;
-    buffer[pos++] = RTPS_PROTOCOL_VERSION_MINOR;
+    buffer[pos] = RTPS_PROTOCOL_VERSION_MAJOR;
+    pos++;
+    buffer[pos] = RTPS_PROTOCOL_VERSION_MINOR;
+    pos++;
     pos += 2; /* padding */
     
     /* Vendor ID */
-    buffer[pos++] = (RTPS_VENDOR_ID >> 8) & 0xFF;
-    buffer[pos++] = RTPS_VENDOR_ID & 0xFF;
+    buffer[pos] = (RTPS_VENDOR_ID >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = RTPS_VENDOR_ID & 0xFF;
+    pos++;
     pos += 2; /* padding */
     
     /* GUID Prefix */
@@ -206,27 +210,40 @@ static uint32_t serialize_participant_data(const rtps_participant_proxy_t *parti
     pos += RTPS_GUID_PREFIX_SIZE;
     
     /* Expects Inline QoS */
-    buffer[pos++] = participant->expects_inline_qos ? 1 : 0;
+    buffer[pos] = participant->expects_inline_qos ? 1 : 0;
+    pos++;
     pos += 3; /* padding */
     
     /* Available Builtin Endpoints */
-    buffer[pos++] = (participant->available_builtin_endpoints >> 24) & 0xFF;
-    buffer[pos++] = (participant->available_builtin_endpoints >> 16) & 0xFF;
-    buffer[pos++] = (participant->available_builtin_endpoints >> 8) & 0xFF;
-    buffer[pos++] = participant->available_builtin_endpoints & 0xFF;
+    buffer[pos] = (participant->available_builtin_endpoints >> 24) & 0xFF;
+    pos++;
+    buffer[pos] = (participant->available_builtin_endpoints >> 16) & 0xFF;
+    pos++;
+    buffer[pos] = (participant->available_builtin_endpoints >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = participant->available_builtin_endpoints & 0xFF;
+    pos++;
     
     /* Lease Duration */
-    buffer[pos++] = (participant->lease_duration_ms >> 24) & 0xFF;
-    buffer[pos++] = (participant->lease_duration_ms >> 16) & 0xFF;
-    buffer[pos++] = (participant->lease_duration_ms >> 8) & 0xFF;
-    buffer[pos++] = participant->lease_duration_ms & 0xFF;
+    buffer[pos] = (participant->lease_duration_ms >> 24) & 0xFF;
+    pos++;
+    buffer[pos] = (participant->lease_duration_ms >> 16) & 0xFF;
+    pos++;
+    buffer[pos] = (participant->lease_duration_ms >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = participant->lease_duration_ms & 0xFF;
+    pos++;
     
     /* AUTOSAR扩展 */
     if (participant->autosar_deterministic) {
-        buffer[pos++] = 0x01; /* 确定性标记 */
-        buffer[pos++] = (participant->autosar_startup_time_ms >> 16) & 0xFF;
-        buffer[pos++] = (participant->autosar_startup_time_ms >> 8) & 0xFF;
-        buffer[pos++] = participant->autosar_startup_time_ms & 0xFF;
+        buffer[pos] = 0x01; /* 确定性标记 */
+    pos++;
+        buffer[pos] = (participant->autosar_startup_time_ms >> 16) & 0xFF;
+        pos++;
+        buffer[pos] = (participant->autosar_startup_time_ms >> 8) & 0xFF;
+        pos++;
+        buffer[pos] = participant->autosar_startup_time_ms & 0xFF;
+        pos++;
     }
     
     return pos;
@@ -383,8 +400,10 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
     pos += 4;
     
     /* 协议版本 */
-    uint8_t major = data[pos++];
-    uint8_t minor = data[pos++];
+    uint8_t major = data[pos];
+    pos++;
+    uint8_t minor = data[pos];
+    pos++;
     (void)major;
     (void)minor;
     
@@ -721,36 +740,52 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     
     /* 主题名称 */
     uint32_t topic_len = strlen(endpoint->topic_name);
-    buffer[pos++] = (topic_len >> 24) & 0xFF;
-    buffer[pos++] = (topic_len >> 16) & 0xFF;
-    buffer[pos++] = (topic_len >> 8) & 0xFF;
-    buffer[pos++] = topic_len & 0xFF;
+    buffer[pos] = (topic_len >> 24) & 0xFF;
+    pos++;
+    buffer[pos] = (topic_len >> 16) & 0xFF;
+    pos++;
+    buffer[pos] = (topic_len >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = topic_len & 0xFF;
+    pos++;
     memcpy(&buffer[pos], endpoint->topic_name, topic_len);
     pos += topic_len;
     /* 4字节对齐 */
-    while (pos % 4 != 0) buffer[pos++] = 0;
+    while (pos % 4 != 0) { buffer[pos] = 0; pos++; }
     
     /* 类型名称 */
     uint32_t type_len = strlen(endpoint->type_name);
-    buffer[pos++] = (type_len >> 24) & 0xFF;
-    buffer[pos++] = (type_len >> 16) & 0xFF;
-    buffer[pos++] = (type_len >> 8) & 0xFF;
-    buffer[pos++] = type_len & 0xFF;
+    buffer[pos] = (type_len >> 24) & 0xFF;
+    pos++;
+    buffer[pos] = (type_len >> 16) & 0xFF;
+    pos++;
+    buffer[pos] = (type_len >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = type_len & 0xFF;
+    pos++;
     memcpy(&buffer[pos], endpoint->type_name, type_len);
     pos += type_len;
     while (pos % 4 != 0) buffer[pos++] = 0;
     
     /* 可靠性 */
-    buffer[pos++] = (endpoint->reliability_kind >> 24) & 0xFF;
-    buffer[pos++] = (endpoint->reliability_kind >> 16) & 0xFF;
-    buffer[pos++] = (endpoint->reliability_kind >> 8) & 0xFF;
-    buffer[pos++] = endpoint->reliability_kind & 0xFF;
+    buffer[pos] = (endpoint->reliability_kind >> 24) & 0xFF;
+    pos++;
+    buffer[pos] = (endpoint->reliability_kind >> 16) & 0xFF;
+    pos++;
+    buffer[pos] = (endpoint->reliability_kind >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = endpoint->reliability_kind & 0xFF;
+    pos++;
     
     /* 持久性 */
-    buffer[pos++] = (endpoint->durability_kind >> 24) & 0xFF;
-    buffer[pos++] = (endpoint->durability_kind >> 16) & 0xFF;
-    buffer[pos++] = (endpoint->durability_kind >> 8) & 0xFF;
-    buffer[pos++] = endpoint->durability_kind & 0xFF;
+    buffer[pos] = (endpoint->durability_kind >> 24) & 0xFF;
+    pos++;
+    buffer[pos] = (endpoint->durability_kind >> 16) & 0xFF;
+    pos++;
+    buffer[pos] = (endpoint->durability_kind >> 8) & 0xFF;
+    pos++;
+    buffer[pos] = endpoint->durability_kind & 0xFF;
+    pos++;
     
     *actual_len = pos;
     return ETH_OK;

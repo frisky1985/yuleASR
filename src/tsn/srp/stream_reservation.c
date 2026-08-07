@@ -88,7 +88,8 @@ static srp_stream_reservation_t* find_or_create_stream(const srp_stream_id_t str
         return NULL;
     }
     
-    idx = g_srp_state.stream_count++;
+    idx = g_srp_state.stream_count;
+    g_srp_state.stream_count++;
     srp_stream_reservation_t *stream = &g_srp_state.streams[idx];
     memset(stream, 0, sizeof(srp_stream_reservation_t));
     memcpy(stream->stream_id, stream_id, SRP_STREAM_ID_LEN);
@@ -359,7 +360,8 @@ eth_status_t srp_register_listener(uint16_t port_id,
         return ETH_NO_MEMORY;
     }
     
-    uint32_t idx = stream->listener_count++;
+    uint32_t idx = stream->listener_count;
+    stream->listener_count++;
     memcpy(&stream->listeners[idx], listener, sizeof(srp_listener_declaration_t));
     
     update_reservation_state(stream);

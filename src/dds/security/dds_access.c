@@ -157,7 +157,7 @@ static void xml_extract_value(const char *content, uint32_t content_len,
     while (*start && isspace((unsigned char)*start)) start++;
 
     char *end = output + strlen(output) - 1;
-    while (end > start && isspace((unsigned char)*end)) *end-- = '\0';
+    while (end > start && isspace((unsigned char)*end)) { *end = '\0'; end--; }
 
     if (start != output) {
         memmove(output, start, strlen(start) + 1);

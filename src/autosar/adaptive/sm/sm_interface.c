@@ -119,7 +119,8 @@ Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {
     /* Generate client ID */
     static uint32_t nextClientId = 1U;
     
-    client->clientId = nextClientId++;
+    client->clientId = nextClientId;
+    nextClientId++;
     strncpy(client->name, name, sizeof(client->name) - 1U);
     client->name[sizeof(client->name) - 1U] = '\0';
     client->isActive = true;
@@ -160,7 +161,8 @@ SM_RequestHandle SM_CreateStateRequest(uint32_t clientId, MachineStateType targe
         return 0U;
     }
     
-    request->handle = g_nextHandle++;
+    request->handle = g_nextHandle;
+    g_nextHandle++;
     request->type = SM_REQUEST_KIND_STATE_TRANSITION;
     request->status = SM_REQUEST_STATUS_PENDING;
     request->clientId = clientId;
@@ -188,7 +190,8 @@ SM_RequestHandle SM_CreateFGStateRequest(uint32_t clientId,
         return 0U;
     }
     
-    request->handle = g_nextHandle++;
+    request->handle = g_nextHandle;
+    g_nextHandle++;
     request->type = SM_REQUEST_KIND_FG_STATE_CHANGE;
     request->status = SM_REQUEST_STATUS_PENDING;
     request->clientId = clientId;

@@ -152,7 +152,8 @@ dds_auth_status_t dds_auth_sha256(const uint8_t *data, uint32_t len, uint8_t *ha
     memcpy(buffer, data, buffer_len);
 
     /* Padding */
-    buffer[buffer_len++] = 0x80;
+    buffer[buffer_len] = 0x80;
+    buffer_len++;
 
     if (buffer_len > 56) {
         memset(buffer + buffer_len, 0, 64 - buffer_len);

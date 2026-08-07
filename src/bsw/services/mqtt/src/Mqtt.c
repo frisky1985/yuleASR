@@ -842,45 +842,63 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     }
     
     /* 包头 */
-    conn->sendBuffer[idx++] = MQTT_PACKET_TYPE_CONNECT;
+    conn->sendBuffer[idx] = MQTT_PACKET_TYPE_CONNECT;
+    idx++;
     
     /* 剩余长度编码 (支持多字节编码) */
     if (remainingLength < 128) {
-        conn->sendBuffer[idx++] = remainingLength;
+        conn->sendBuffer[idx] = remainingLength;
+        idx++;
     } else {
-        conn->sendBuffer[idx++] = (remainingLength & 0x7F) | 0x80;
-        conn->sendBuffer[idx++] = remainingLength >> 7;
+        conn->sendBuffer[idx] = (remainingLength & 0x7F) | 0x80;
+        idx++;
+        conn->sendBuffer[idx] = remainingLength >> 7;
+        idx++;
     }
     
     /* 协议名 */
-    conn->sendBuffer[idx++] = 0x00;
-    conn->sendBuffer[idx++] = 0x04;
-    conn->sendBuffer[idx++] = 'M';
-    conn->sendBuffer[idx++] = 'Q';
-    conn->sendBuffer[idx++] = 'T';
-    conn->sendBuffer[idx++] = 'T';
+    conn->sendBuffer[idx] = 0x00;
+    idx++;
+    conn->sendBuffer[idx] = 0x04;
+    idx++;
+    conn->sendBuffer[idx] = 'M';
+    idx++;
+    conn->sendBuffer[idx] = 'Q';
+    idx++;
+    conn->sendBuffer[idx] = 'T';
+    idx++;
+    conn->sendBuffer[idx] = 'T';
+    idx++;
     
     /* 协议级别 */
-    conn->sendBuffer[idx++] = (conn->config.version == MQTT_VERSION_50) ? 5 : 4;
+    conn->sendBuffer[idx] = (conn->config.version == MQTT_VERSION_50) ? 5 : 4;
+    idx++;
     
     /* 连接标志 */
-    conn->sendBuffer[idx++] = connectFlags;
+    conn->sendBuffer[idx] = connectFlags;
+    idx++;
     
     /* 保活时间 */
-    conn->sendBuffer[idx++] = (conn->config.keepAliveSeconds >> 8) & 0xFF;
-    conn->sendBuffer[idx++] = conn->config.keepAliveSeconds & 0xFF;
+    conn->sendBuffer[idx] = (conn->config.keepAliveSeconds >> 8) & 0xFF;
+    idx++;
+    conn->sendBuffer[idx] = conn->config.keepAliveSeconds & 0xFF;
+    idx++;
     
     /* 客户端ID */
-    conn->sendBuffer[idx++] = (clientIdLen >> 8) & 0xFF;
-    conn->sendBuffer[idx++] = clientIdLen & 0xFF;
+    conn->sendBuffer[idx] = (clientIdLen >> 8) & 0xFF;
+    idx++;
+    conn->sendBuffer[idx] = clientIdLen & 0xFF;
+    idx++;
     memcpy(&conn->sendBuffer[idx], conn->config.clientId, clientIdLen);
     idx += clientIdLen;
     
     /* 用户名 */
     if (conn->config.username != NULL_PTR) {
         uint16 usernameLen = strlen(conn->config.username);
-        conn->sendBuffer[idx++] = (usernameLen >> 8) & 0xFF;
-        conn->sendBuffer[idx++] = usernameLen & 0xFF;
+        conn->sendBuffer[idx] = (usernameLen >> 8) & 0xFF;
+        idx++;
+        conn->sendBuffer[idx] = usernameLen & 0xFF;
+        idx++;
         memcpy(&conn->sendBuffer[idx], conn->config.username, usernameLen);
         idx += usernameLen;
     }
@@ -888,8 +906,10 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
     /* 密码 */
     if (conn->config.password != NULL_PTR) {
         uint16 passwordLen = strlen(conn->config.password);
-        conn->sendBuffer[idx++] = (passwordLen >> 8) & 0xFF;
-        conn->sendBuffer[idx++] = passwordLen & 0xFF;
+        conn->sendBuffer[idx] = (passwordLen >> 8) & 0xFF;
+        idx++;
+        conn->sendBuffer[idx] = passwordLen & 0xFF;
+        idx++;
         memcpy(&conn->sendBuffer[idx], conn->config.password, passwordLen);
         idx += passwordLen;
     }
@@ -926,7 +946,8 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     }
     
     /* 包头 */
-    conn->sendBuffer[idx++] = fixedHeader;
+    conn->sendBuffer[idx] = fixedHeader;
+    idx++;
     
     /* 剩余长度 */
     do {
@@ -935,19 +956,24 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
         if (remainingLength > 0U ) {
             byte |= 0x80;
         }
-        conn->sendBuffer[idx++] = byte;
+        conn->sendBuffer[idx] = byte;
+        idx++;
     } while (remainingLength > 0U );
     
     /* 主题 */
-    conn->sendBuffer[idx++] = (topicLen >> 8) & 0xFF;
-    conn->sendBuffer[idx++] = topicLen & 0xFF;
+    conn->sendBuffer[idx] = (topicLen >> 8) & 0xFF;
+    idx++;
+    conn->sendBuffer[idx] = topicLen & 0xFF;
+    idx++;
     memcpy(&conn->sendBuffer[idx], msg->topic, topicLen);
     idx += topicLen;
     
     /* 包ID (QoS > 0U ) */
     if (msg->qos > MQTT_QOS_0) {
-        conn->sendBuffer[idx++] = (packetId >> 8) & 0xFF;
-        conn->sendBuffer[idx++] = packetId & 0xFF;
+        conn->sendBuffer[idx] = (packetId >> 8) & 0xFF;
+        idx++;
+        conn->sendBuffer[idx] = packetId & 0xFF;
+        idx++;
     }
     
     /* 负载 */
@@ -976,23 +1002,30 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     }
     
     /* 包头 */
-    conn->sendBuffer[idx++] = MQTT_PACKET_TYPE_SUBSCRIBE | 0x02;
+    conn->sendBuffer[idx] = MQTT_PACKET_TYPE_SUBSCRIBE | 0x02;
+    idx++;
     
     /* 剩余长度 */
-    conn->sendBuffer[idx++] = remainingLength;
+    conn->sendBuffer[idx] = remainingLength;
+    idx++;
     
     /* 包ID */
-    conn->sendBuffer[idx++] = (packetId >> 8) & 0xFF;
-    conn->sendBuffer[idx++] = packetId & 0xFF;
+    conn->sendBuffer[idx] = (packetId >> 8) & 0xFF;
+    idx++;
+    conn->sendBuffer[idx] = packetId & 0xFF;
+    idx++;
     
     /* 主题过滤器 */
-    conn->sendBuffer[idx++] = (topicLen >> 8) & 0xFF;
-    conn->sendBuffer[idx++] = topicLen & 0xFF;
+    conn->sendBuffer[idx] = (topicLen >> 8) & 0xFF;
+    idx++;
+    conn->sendBuffer[idx] = topicLen & 0xFF;
+    idx++;
     memcpy(&conn->sendBuffer[idx], sub->topicFilter, topicLen);
     idx += topicLen;
     
     /* 最大QoS */
-    conn->sendBuffer[idx++] = sub->maxQoS & 0x03;
+    conn->sendBuffer[idx] = sub->maxQoS & 0x03;
+    idx++;
     
     conn->sendLength = idx;
     

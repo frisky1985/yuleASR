@@ -672,10 +672,14 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                             {
                                 if ((idx + 4U) < DCM_TX_BUFFER_SIZE)
                                 {
-                                    responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 16);
-                                    responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 8);
-                                    responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc);
-                                    responseData[idx++] = dtcStatus;
+                                    responseData[idx] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 16);
+                                    idx++;
+                                    responseData[idx] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 8);
+                                    idx++;
+                                    responseData[idx] = (uint8)(Dem_Config.DtcParameters[i].Dtc);
+                                    idx++;
+                                    responseData[idx] = dtcStatus;
+                                    idx++;
                                 }
                             }
                         }
@@ -731,10 +735,14 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
                         {
                             if ((idx + 4U) < DCM_TX_BUFFER_SIZE)
                             {
-                                responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 16);
-                                responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 8);
-                                responseData[idx++] = (uint8)(Dem_Config.DtcParameters[i].Dtc);
-                                responseData[idx++] = dtcStatus;
+                                responseData[idx] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 16);
+                                idx++;
+                                responseData[idx] = (uint8)(Dem_Config.DtcParameters[i].Dtc >> 8);
+                                idx++;
+                                responseData[idx] = (uint8)(Dem_Config.DtcParameters[i].Dtc);
+                                idx++;
+                                responseData[idx] = dtcStatus;
+                                idx++;
                             }
                         }
                     }

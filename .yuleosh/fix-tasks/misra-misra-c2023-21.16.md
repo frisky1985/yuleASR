@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-21.16
 
-> Generated: 2026-08-07T12:39:04.045307
+> Generated: 2026-08-07T14:51:08.939352
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -20,7 +20,7 @@
 | 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 808 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 810 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 812 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 1014 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.c` | 1018 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 401 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 402 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_manager.c` | 45 | 0 | misra violation 2116 with no text in the supplied rule-texts-file [misra-c2012-2 |

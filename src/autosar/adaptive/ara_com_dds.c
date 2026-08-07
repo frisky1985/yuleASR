@@ -258,7 +258,8 @@ Std_ReturnType ara_com_CreateServiceInterface(
         }
     }
 
-    g_araComContext.services[g_araComContext.numServices++] = newHandle;
+    g_araComContext.services[g_araComContext.numServices] = newHandle;
+    g_araComContext.numServices++;
     *handle = newHandle;
 
     return E_OK;
@@ -826,7 +827,8 @@ Std_ReturnType ara_com_SomeIPDDSGateway_RegisterService(
         return E_NOT_OK;
     }
 
-    SomeIP_DDS_GatewayEntryType* entry = &g_gatewayEntries[g_gatewayNumEntries++];
+    SomeIP_DDS_GatewayEntryType* entry = &g_gatewayEntries[g_gatewayNumEntries];
+    g_gatewayNumEntries++;
     entry->serviceId = serviceId;
     entry->instanceId = instanceId;
     entry->someipInstanceId = someipInstanceId;

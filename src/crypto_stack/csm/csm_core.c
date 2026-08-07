@@ -110,7 +110,8 @@ uint32_t csm_job_create(csm_context_t *ctx, csm_job_type_t job_type,
     }
     
     /* 初始化Job */
-    job->job_id = ctx->next_job_id++;
+    job->job_id = ctx->next_job_id;
+    ctx->next_job_id++;
     job->job_type = job_type;
     job->algorithm = algorithm;
     job->key_id = key_id;

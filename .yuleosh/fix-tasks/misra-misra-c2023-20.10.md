@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-20.10
 
-> Generated: 2026-08-07T12:39:04.043475
+> Generated: 2026-08-07T14:51:08.938161
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -12,54 +12,45 @@
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/tests/test_e2e_full.c` | 24 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 362 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 370 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 376 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 388 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 394 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 400 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 406 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 412 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 418 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 424 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 430 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 436 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 442 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 273 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 283 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 297 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 307 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 318 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 328 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 337 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 343 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 352 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 358 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/tests/test_bootloader.c` | 18 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 701 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 702 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 704 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 705 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/private_access.h` | 15 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 31 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 213 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/ethernet/tests/test_eth_manager.c` | 44 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/eth_sm/tests/test_eth_sm.c` | 37 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_cryif.c` | 14 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 14 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_csm.c` | 14 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/telemetry/tests/test_telemetry.c` | 32 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/tests/unity/unity.h` | 104 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 53 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 40 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 67 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 41 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 71 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 42 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 95 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 43 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 117 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 122 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 45 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 127 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/priv/memp_priv.h` | 86 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/priv/memp_priv.h` | 95 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/priv/memp_std.h` | 23 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 362 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 370 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 376 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 388 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 394 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 400 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 406 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 412 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 418 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 424 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 430 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 436 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte.h` | 442 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 273 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 283 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 297 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 17 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 307 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 318 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 328 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 337 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 343 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 352 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 358 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 701 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 702 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 26 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 704 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 27 | `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/include/S32K312.h` | 705 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 28 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/mbedtls/include/mbedtls/private_access.h` | 15 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/include/Std_Types.h` | 213 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 30 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 53 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 31 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 67 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 71 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 95 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 117 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 122 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/memp.h` | 127 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/priv/memp_priv.h` | 86 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/priv/memp_priv.h` | 95 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/third_party/lwip/src/include/lwip/priv/memp_std.h` | 23 | 0 | misra violation 2010 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

@@ -113,7 +113,8 @@ cryif_status_t cryif_register_driver(cryif_context_t *ctx, cryif_driver_t *drive
         }
     }
     
-    ctx->drivers[ctx->num_drivers++] = driver;
+    ctx->drivers[ctx->num_drivers] = driver;
+    ctx->num_drivers++;
     
     /* Set as default if first driver */
     if (ctx->num_drivers == 1) {

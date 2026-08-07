@@ -177,7 +177,8 @@ static void sha256_init(uint32_t state[8]) {
 
 static void sha256_update(uint32_t state[8], const uint8_t *data, uint32_t len, uint8_t *buffer, uint32_t *buf_len, uint64_t *bit_len) {
     for (uint32_t i = 0; i < len; i++) {
-        buffer[(*buf_len)++] = data[i];
+        buffer[*buf_len] = data[i];
+    (*buf_len)++;
         if (*buf_len == 64) {
             sha256_transform(state, buffer);
             *buf_len = 0;
@@ -190,13 +191,14 @@ static void sha256_final(uint32_t state[8], uint8_t *buffer, uint32_t *buf_len, 
     uint32_t i = *buf_len;
     
     /* 填充 */
-    buffer[i++] = 0x80;
+    buffer[i] = 0x80;
+    i++;
     if (i > 56) {
-        while (i < 64) buffer[i++] = 0;
+        while (i < 64) { buffer[i] = 0; i++; }
         sha256_transform(state, buffer);
         i = 0;
     }
-    while (i < 56) buffer[i++] = 0;
+    while (i < 56) { buffer[i] = 0; i++; }
     
     /* 添加长度 */
     *bit_len += *buf_len * 8;
@@ -595,7 +597,8 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     /* 获取Freshness值 - 这里使用简单的计数器模式 */
     /* 在实际实现中，这里应调用secoc_freshness_get_tx_value() */
     static uint64_t tx_counter = 1;
-    uint64_t freshness = tx_counter++;
+    uint64_t freshness = tx_counter;
+    tx_counter++;
     for (int i = 0; i < (int)auth_pdu->freshness_len && i < 8; i++) {
         auth_pdu->freshness_value[i] = (freshness >> (i * 8)) & 0xFF;
     }

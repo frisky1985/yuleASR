@@ -54,7 +54,8 @@ uint32_t eth_crc32(const uint8_t *data, uint32_t len)
     };
     uint32_t crc = 0xFFFFFFFF;
     while (len--) {
-        crc = (crc >> 8) ^ crc_table[(crc ^ *data++) & 0xFF];
+        crc = (crc >> 8) ^ crc_table[(crc ^ *data) & 0xFF];
+    data++;
     }
     return crc ^ 0xFFFFFFFF;
 }

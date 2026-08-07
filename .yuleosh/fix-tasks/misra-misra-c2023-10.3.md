@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-10.3
 
-> Generated: 2026-08-07T12:39:04.018510
+> Generated: 2026-08-07T14:30:06.003035
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -116,20 +116,10 @@
 | 102 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/keym/keym_core.c` | 559 | 0 | Complex expression shall only be assigned to same essential type category [misra |
 | 103 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/keym/keym_core.c` | 629 | 0 | Complex expression shall only be assigned to same essential type category [misra |
 | 104 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/keym/keym_core.c` | 781 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_freshness.c` | 225 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_freshness.c` | 226 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_cryif.c` | 243 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_cryif.c` | 327 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 109 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 74 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 110 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 127 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 111 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 164 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 112 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 214 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 113 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 293 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 114 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_keym.c` | 304 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 115 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 417 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 116 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 418 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 117 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_discovery.c` | 617 | 0 | Complex expression shall only be assigned to same essential type category [misra |
-| 118 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tas/tas.c` | 657 | 0 | Complex expression shall only be assigned to same essential type category [misra |
+| 105 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 417 | 0 | Complex expression shall only be assigned to same essential type category [misra |
+| 106 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 418 | 0 | Complex expression shall only be assigned to same essential type category [misra |
+| 107 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_discovery.c` | 617 | 0 | Complex expression shall only be assigned to same essential type category [misra |
+| 108 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tas/tas.c` | 657 | 0 | Complex expression shall only be assigned to same essential type category [misra |
 
 ## Fix Checklist
 

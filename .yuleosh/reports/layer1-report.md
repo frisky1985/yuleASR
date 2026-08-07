@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-08-07T12:39:36.694576
+> Generated: 2026-08-07T14:51:41.479612
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -18,8 +18,8 @@
 |:------|:-------|:-------|
 | methodology-grilling-alignment | ✅ | spec.md 无决策记录 — 存量项目降级（无 .osh/specs/ 活跃流程，建议后续新 spec 补充 Grilling 记录，不阻断） |
 | methodology-domain-model | ✅ | CONTEXT.md 存在且为纯术语表 |
-| methodology-two-axis-review | ⚠️ | 最近报告 yuleasr-compliance-fix.md 缺双轴之一（应含 Standards + Spec 两节） |
-| methodology-tight-loop-debug | ⚠️ | yuleasr-compliance-fix.md 无复现回路证据（应含复现步骤/回路描述） |
+| methodology-two-axis-review | ⚠️ | 最近报告 yuleasr-ci-fix-20260807.md 缺双轴之一（应含 Standards + Spec 两节） |
+| methodology-tight-loop-debug | ⚠️ | yuleasr-ci-fix-20260807.md 无复现回路证据（应含复现步骤/回路描述） |
 | methodology-vertical-slices | ✅ | 无 plan 文件（跳过，软检查） |
 | methodology-handoff | ✅ | 无交接文档（跳过，软检查） |
 | methodology-gate | ✅ | 4 pass, 2 soft, 0 hard |
@@ -30,7 +30,7 @@
 | plan-lint | ✅ |  |
 | docsync-gate | ⚠️ | Sync gate: warning | 3 total, 0 error(s), 0 warning(s) |
 | clang-tidy | ✅ |  |
-| misra-check | ⚠️ | 36219 MISRA violation(s) (14498 required, 20530 advisory) — see .yuleosh/reports/misra-report.json |
+| misra-check | ⚠️ | 31433 MISRA violation(s) (11005 required, 19285 advisory) — see .yuleosh/reports/misra-report.json |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -83,12 +83,12 @@
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 36219 |
-| Required | 14498 |
-| Advisory | 20530 |
-| Violations / KLOC | 119.41 |
-| Rules Violated | 87 |
-| Files Affected | 758 |
+| Total Violations | 31433 |
+| Required | 11005 |
+| Advisory | 19285 |
+| Violations / KLOC | 107.44 |
+| Rules Violated | 86 |
+| Files Affected | 729 |
 
 ## C/C++ Coverage
 

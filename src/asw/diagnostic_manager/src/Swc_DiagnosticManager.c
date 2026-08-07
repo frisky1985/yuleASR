@@ -328,10 +328,14 @@ STATIC void Swc_DiagnosticManager_ProcessReadDtc(const Swc_DiagnosticRequestType
 
             dataIndex = 2;
             for (i = 0; i < swcDiagManager.numDtcs; i++) {
-                response->data[dataIndex++] = (uint8)(swcDiagManager.dtcList[i].dtcCode >> 16);
-                response->data[dataIndex++] = (uint8)(swcDiagManager.dtcList[i].dtcCode >> 8);
-                response->data[dataIndex++] = (uint8)(swcDiagManager.dtcList[i].dtcCode);
-                response->data[dataIndex++] = swcDiagManager.dtcList[i].statusByte;
+                response->data[dataIndex] = (uint8)(swcDiagManager.dtcList[i].dtcCode >> 16);
+                dataIndex++;
+                response->data[dataIndex] = (uint8)(swcDiagManager.dtcList[i].dtcCode >> 8);
+                dataIndex++;
+                response->data[dataIndex] = (uint8)(swcDiagManager.dtcList[i].dtcCode);
+                dataIndex++;
+                response->data[dataIndex] = swcDiagManager.dtcList[i].statusByte;
+                dataIndex++;
             }
             break;
 

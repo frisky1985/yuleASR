@@ -152,7 +152,8 @@ static uint64_t get_timestamp_ns(void) {
 static uint32_t get_thread_id(void) {
     if (thread_id == 0) {
         pthread_mutex_lock(&thread_mutex);
-        thread_id = ++thread_counter;
+        ++thread_counter;
+    thread_id = thread_counter;
         pthread_mutex_unlock(&thread_mutex);
     }
     return thread_id;

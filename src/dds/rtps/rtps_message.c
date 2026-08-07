@@ -232,11 +232,13 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     uint32_t pos = builder->current_pos;
     
     /* Submessage header */
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_DATA;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_DATA;
+    pos++;
     uint8_t flags = RTPS_SUBMESSAGE_FLAG_DATA_PRESENT;
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
     if (inline_qos != NULL && inline_qos_len > 0) flags |= RTPS_SUBMESSAGE_FLAG_INLINE_QOS;
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], (uint16_t)(submsg_size - 4), builder->little_endian);
     pos += 2;
     
@@ -266,14 +268,16 @@ eth_status_t rtps_message_add_data(rtps_message_builder_t *builder,
     if (inline_qos != NULL && inline_qos_len > 0) {
         memcpy(&builder->buffer[pos], inline_qos, inline_qos_len);
         pos += inline_qos_len;
-        while (pos % 4 != 0) builder->buffer[pos++] = 0;
+        while (pos % 4 != 0) { builder->buffer[pos] = 0; pos++; }
     }
     
     /* encapsulated data header (CDR_BE) */
     write_u16(&builder->buffer[pos], RTPS_CDR_BE, builder->little_endian);
     pos += 2;
-    builder->buffer[pos++] = 0;
-    builder->buffer[pos++] = 0;
+    builder->buffer[pos] = 0;
+    pos++;
+    builder->buffer[pos] = 0;
+    pos++;
     
     /* serialized data */
     memcpy(&builder->buffer[pos], data, data_len);
@@ -306,11 +310,13 @@ eth_status_t rtps_message_add_heartbeat(rtps_message_builder_t *builder,
     uint32_t pos = builder->current_pos;
     
     /* Submessage header */
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_HEARTBEAT;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_HEARTBEAT;
+    pos++;
     uint8_t flags = 0;
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
     if (final) flags |= RTPS_SUBMESSAGE_FLAG_FINAL;
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], submsg_size - 4, builder->little_endian);
     pos += 2;
     
@@ -372,10 +378,12 @@ eth_status_t rtps_message_add_acknack(rtps_message_builder_t *builder,
     uint32_t pos = builder->current_pos;
     
     /* Submessage header */
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_ACKNACK;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_ACKNACK;
+    pos++;
     uint8_t flags = 0;
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], submsg_size - 4, builder->little_endian);
     pos += 2;
     
@@ -433,9 +441,11 @@ eth_status_t rtps_message_add_gap(rtps_message_builder_t *builder,
     
     uint32_t pos = builder->current_pos;
     
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_GAP;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_GAP;
+    pos++;
     uint8_t flags = builder->little_endian ? RTPS_SUBMESSAGE_FLAG_ENDIANNESS : 0;
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], submsg_size - 4, builder->little_endian);
     pos += 2;
     
@@ -474,9 +484,11 @@ eth_status_t rtps_message_add_info_dst(rtps_message_builder_t *builder,
     
     uint32_t pos = builder->current_pos;
     
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_INFO_DST;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_INFO_DST;
+    pos++;
     uint8_t flags = builder->little_endian ? RTPS_SUBMESSAGE_FLAG_ENDIANNESS : 0;
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], 12, builder->little_endian);
     pos += 2;
     
@@ -503,10 +515,12 @@ eth_status_t rtps_message_add_info_ts(rtps_message_builder_t *builder,
     
     uint32_t pos = builder->current_pos;
     
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_INFO_TS;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_INFO_TS;
+    pos++;
     uint8_t flags = builder->little_endian ? RTPS_SUBMESSAGE_FLAG_ENDIANNESS : 0;
     if (!has_timestamp) flags |= 0x02;  /* Invalidate flag */
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], (uint16_t)submsg_size, builder->little_endian);
     pos += 2;
     
@@ -574,8 +588,10 @@ eth_status_t rtps_message_parser_next(rtps_message_parser_t *parser,
     
     uint32_t pos = parser->current_pos;
     
-    submsg->id = (rtps_submessage_id_t)parser->buffer[pos++];
-    submsg->flags = parser->buffer[pos++];
+    submsg->id = (rtps_submessage_id_t)parser->buffer[pos];
+    pos++;
+    submsg->flags = parser->buffer[pos];
+    pos++;
     parser->little_endian = (submsg->flags & RTPS_SUBMESSAGE_FLAG_ENDIANNESS) != 0;
     uint16_t length = read_u16(&parser->buffer[pos], parser->little_endian);
     pos += 2;
@@ -868,10 +884,12 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     uint32_t pos = builder->current_pos;
     
     /* Submessage header */
-    builder->buffer[pos++] = RTPS_SUBMESSAGE_ID_DATA;
+    builder->buffer[pos] = RTPS_SUBMESSAGE_ID_DATA;
+    pos++;
     uint8_t flags = RTPS_SUBMESSAGE_FLAG_DATA_PRESENT | RTPS_SUBMESSAGE_FLAG_INLINE_QOS;
     if (builder->little_endian) flags |= RTPS_SUBMESSAGE_FLAG_ENDIANNESS;
-    builder->buffer[pos++] = flags;
+    builder->buffer[pos] = flags;
+    pos++;
     write_u16(&builder->buffer[pos], (uint16_t)(submsg_size - 4), builder->little_endian);
     pos += 2;
     
@@ -914,8 +932,10 @@ eth_status_t rtps_message_add_data_autosar(rtps_message_builder_t *builder,
     /* encapsulated data */
     write_u16(&builder->buffer[pos], RTPS_CDR_BE, builder->little_endian);
     pos += 2;
-    builder->buffer[pos++] = 0;
-    builder->buffer[pos++] = 0;
+    builder->buffer[pos] = 0;
+    pos++;
+    builder->buffer[pos] = 0;
+    pos++;
     
     memcpy(&builder->buffer[pos], data, data_len);
     pos += data_len;

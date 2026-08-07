@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-10.7
 
-> Generated: 2026-08-07T12:39:04.020677
+> Generated: 2026-08-07T14:30:06.005136
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -51,17 +51,16 @@
 | 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c` | 233 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
 | 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/keym/keym_core.c` | 359 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
 | 39 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/keym/keym_core.c` | 521 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 40 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/tests/test_secoc_freshness.c` | 269 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_core.c` | 600 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 28 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 43 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 35 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 622 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 45 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 623 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.c` | 953 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 424 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 449 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_core.c` | 665 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
-| 50 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_core.c` | 735 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 40 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_core.c` | 600 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 28 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.c` | 35 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 43 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 622 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.c` | 623 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 45 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.c` | 953 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 46 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 424 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 449 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_core.c` | 665 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
+| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_core.c` | 735 | 0 | Other operand shall not have wider essential type [misra-c2012-10.7] |
 
 ## Fix Checklist
 

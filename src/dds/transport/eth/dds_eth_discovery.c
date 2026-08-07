@@ -696,10 +696,14 @@ eth_status_t dds_discovery_serialize_participant(
         
         /* 序列化内建Endpoints */
         if ((offset + 4) <= buf_size) {
-            buffer[offset++] = (uint8_t)((proxy->available_builtin_endpoints >> 24) & 0xFF);
-            buffer[offset++] = (uint8_t)((proxy->available_builtin_endpoints >> 16) & 0xFF);
-            buffer[offset++] = (uint8_t)((proxy->available_builtin_endpoints >> 8) & 0xFF);
-            buffer[offset++] = (uint8_t)(proxy->available_builtin_endpoints & 0xFF);
+            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 24) & 0xFF);
+            offset++;
+            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 16) & 0xFF);
+            offset++;
+            buffer[offset] = (uint8_t)((proxy->available_builtin_endpoints >> 8) & 0xFF);
+            offset++;
+            buffer[offset] = (uint8_t)(proxy->available_builtin_endpoints & 0xFF);
+            offset++;
         }
         
         /* 序列化定位器 */

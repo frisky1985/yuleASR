@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-21.10
 
-> Generated: 2026-08-07T12:39:04.044935
+> Generated: 2026-08-07T14:51:08.939102
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -24,10 +24,9 @@
 | 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tsn_stack.c` | 15 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/cbs/cbs.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tests/test_tsn_stack.c` | 12 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/gptp/gptp.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/srp/stream_reservation.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 16 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tas/tas.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 13 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/gptp/gptp.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 14 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/srp/stream_reservation.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 15 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/tas/tas.c` | 16 | 0 | misra violation 2110 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

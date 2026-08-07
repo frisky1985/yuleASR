@@ -198,27 +198,40 @@ Dlt_ReturnType Dlt_SendLogMessage(
     }
     
     /* Serialize standard header */
-    messageBuffer[msgOffset++] = stdHeader.headerType;
-    messageBuffer[msgOffset++] = stdHeader.messageCounter;
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.length >> 8);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.length);
+    messageBuffer[msgOffset] = stdHeader.headerType;
+    msgOffset++;
+    messageBuffer[msgOffset] = stdHeader.messageCounter;
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.length >> 8);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.length);
+    msgOffset++;
     
     for (i = 0; i < DLT_ECU_ID_LENGTH; i++)
     {
-        messageBuffer[msgOffset++] = stdHeader.ecuId[i];
+        messageBuffer[msgOffset] = stdHeader.ecuId[i];
+        msgOffset++;
     }
     
     /* Session ID (4 bytes, big endian) */
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId >> 24);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId >> 16);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId >> 8);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId);
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId >> 24);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId >> 16);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId >> 8);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId);
+    msgOffset++;
     
     /* Timestamp (4 bytes, big endian) */
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp >> 24);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp >> 16);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp >> 8);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp);
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp >> 24);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp >> 16);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp >> 8);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp);
+    msgOffset++;
     
     /* Build extended header */
     result = Dlt_BuildExtendedHeader(&extHeader, DLT_TYPE_LOG, (Dlt_MessageInfoType)logLevel, appId, contextId);
@@ -228,17 +241,21 @@ Dlt_ReturnType Dlt_SendLogMessage(
     }
     
     /* Serialize extended header */
-    messageBuffer[msgOffset++] = extHeader.msin;
-    messageBuffer[msgOffset++] = extHeader.argCount;
+    messageBuffer[msgOffset] = extHeader.msin;
+    msgOffset++;
+    messageBuffer[msgOffset] = extHeader.argCount;
+    msgOffset++;
     
     for (i = 0; i < DLT_MAX_APP_ID_LENGTH; i++)
     {
-        messageBuffer[msgOffset++] = extHeader.appId[i];
+        messageBuffer[msgOffset] = extHeader.appId[i];
+        msgOffset++;
     }
     
     for (i = 0; i < DLT_MAX_CONTEXT_ID_LENGTH; i++)
     {
-        messageBuffer[msgOffset++] = extHeader.contextId[i];
+        messageBuffer[msgOffset] = extHeader.contextId[i];
+        msgOffset++;
     }
     
     /* Copy payload */
@@ -325,27 +342,40 @@ Dlt_ReturnType Dlt_SendTraceMessage(
     }
     
     /* Serialize standard header */
-    messageBuffer[msgOffset++] = stdHeader.headerType;
-    messageBuffer[msgOffset++] = stdHeader.messageCounter;
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.length >> 8);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.length);
+    messageBuffer[msgOffset] = stdHeader.headerType;
+    msgOffset++;
+    messageBuffer[msgOffset] = stdHeader.messageCounter;
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.length >> 8);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.length);
+    msgOffset++;
     
     for (i = 0; i < DLT_ECU_ID_LENGTH; i++)
     {
-        messageBuffer[msgOffset++] = stdHeader.ecuId[i];
+        messageBuffer[msgOffset] = stdHeader.ecuId[i];
+        msgOffset++;
     }
     
     /* Session ID */
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId >> 24);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId >> 16);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId >> 8);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.sessionId);
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId >> 24);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId >> 16);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId >> 8);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.sessionId);
+    msgOffset++;
     
     /* Timestamp */
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp >> 24);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp >> 16);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp >> 8);
-    messageBuffer[msgOffset++] = (uint8)(stdHeader.timestamp);
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp >> 24);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp >> 16);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp >> 8);
+    msgOffset++;
+    messageBuffer[msgOffset] = (uint8)(stdHeader.timestamp);
+    msgOffset++;
     
     /* Build extended header */
     result = Dlt_BuildExtendedHeader(&extHeader, DLT_TYPE_APP_TRACE, traceInfo, appId, contextId);
@@ -355,17 +385,21 @@ Dlt_ReturnType Dlt_SendTraceMessage(
     }
     
     /* Serialize extended header */
-    messageBuffer[msgOffset++] = extHeader.msin;
-    messageBuffer[msgOffset++] = extHeader.argCount;
+    messageBuffer[msgOffset] = extHeader.msin;
+    msgOffset++;
+    messageBuffer[msgOffset] = extHeader.argCount;
+    msgOffset++;
     
     for (i = 0; i < DLT_MAX_APP_ID_LENGTH; i++)
     {
-        messageBuffer[msgOffset++] = extHeader.appId[i];
+        messageBuffer[msgOffset] = extHeader.appId[i];
+        msgOffset++;
     }
     
     for (i = 0; i < DLT_MAX_CONTEXT_ID_LENGTH; i++)
     {
-        messageBuffer[msgOffset++] = extHeader.contextId[i];
+        messageBuffer[msgOffset] = extHeader.contextId[i];
+        msgOffset++;
     }
     
     /* Copy payload */
@@ -678,7 +712,8 @@ static Dlt_ReturnType Dlt_BuildStandardHeader(
     uint16 payloadLength)
 {
     header->headerType = 0x3D; /* Use extended header, with ECU ID, Session ID, and Timestamp */
-    header->messageCounter = Dlt_MessageCounter++;
+    header->messageCounter = Dlt_MessageCounter;
+    Dlt_MessageCounter++;
     header->length = sizeof(Dlt_StandardHeaderType) + payloadLength;
     
     memcpy(header->ecuId, DLT_ECU_ID, DLT_ECU_ID_LENGTH);

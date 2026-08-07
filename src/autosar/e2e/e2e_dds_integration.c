@@ -252,7 +252,8 @@ Std_ReturnType E2E_DDS_CreateTopic(
     }
 
     memset(handle, 0, sizeof(E2E_DDS_TopicHandleType));
-    handle->topicId = g_nextTopicId++;
+    handle->topicId = g_nextTopicId;
+    g_nextTopicId++;
     memcpy(&handle->config, config, sizeof(E2E_DDS_TopicConfigType));
 
     /* Initialize E2E context */
