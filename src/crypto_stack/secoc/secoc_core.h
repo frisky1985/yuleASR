@@ -27,7 +27,7 @@ extern "C" {
 #define SECOC_MAX_FRESHNESS_VALUES      64
 #define SECOC_MAX_KEY_SLOTS             16U
 #define SECOC_MAX_MAC_LENGTH            16
-#define SECOC_MAX_FRESHNESS_LENGTH      8
+#define SECOC_MAX_FRESHNESS_LENGTH      8U
 #define SECOC_MAX_PDU_LENGTH            256
 
 /* 默认超时配置 (毫秒) */

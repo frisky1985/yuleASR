@@ -150,13 +150,13 @@ static inline uint64 Com_ExtractSignal(
     
     if (endianness == COM_LITTLE_ENDIAN) {
         /* Little endian extraction */
-        for (uint8 i = 0; i < ((bitSize + 7U) / 8) && (bytePos + i) < COM_MAX_IPDU_LENGTH; i++) {
+        for (uint8 i = 0; i < ((bitSize + 7U) / 8U) && (bytePos + i) < COM_MAX_IPDU_LENGTH; i++) {
             value |= ((uint64)data[bytePos + i]) << (i * 8U);
         }
         value >>= bitOffset;
     } else {
         /* Big endian extraction */
-        uint8 bytesToRead = (bitSize + bitOffset + 7U) / 8;
+        uint8 bytesToRead = (bitSize + bitOffset + 7U) / 8U;
         for (sint8 i = bytesToRead - 1U; i >= 0; i--) {
             value = (value << 8) | data[bytePos + i];
         }
@@ -190,12 +190,12 @@ static inline void Com_InsertSignal(
     if (endianness == COM_LITTLE_ENDIAN) {
         /* Little endian insertion */
         value <<= bitOffset;
-        for (uint8 i = 0; i < ((bitSize + bitOffset + 7U) / 8) && (bytePos + i) < COM_MAX_IPDU_LENGTH; i++) {
-            data[bytePos + i] = (uint8)((value >> (i * 8U)) & 0xFF);
+        for (uint8 i = 0; i < ((bitSize + bitOffset + 7U) / 8U) && (bytePos + i) < COM_MAX_IPDU_LENGTH; i++) {
+            data[bytePos + i] = (uint8)((value >> (i * 8U)) & 0xFFU);
         }
     } else {
         /* Big endian insertion */
-        uint8 bytesToWrite = (bitSize + bitOffset + 7U) / 8;
+        uint8 bytesToWrite = (bitSize + bitOffset + 7U) / 8U;
         uint64 tempValue = value << bitOffset;
         for (sint8 i = bytesToWrite - 1U; i >= 0; i--) {
             data[bytePos + i] = (uint8)((tempValue >> (i * 8)) & 0xFF);

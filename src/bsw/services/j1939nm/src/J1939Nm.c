@@ -192,7 +192,7 @@ STATIC void J1939Nm_ProcessAddressClaiming(J1939Nm_ChannelType Channel)
         case J1939NM_AC_STATE_IDLE:
             /* Start address claiming process */
             channelState->AcDelayTimer = (uint16)(channelConfig->AcDelayMin + 
-                ((channelState->Name % 100U) % (channelConfig->AcDelayMax - channelConfig->AcDelayMin + 1)));
+                ((channelState->Name % 100U) % (channelConfig->AcDelayMax - channelConfig->AcDelayMin + 1U)));
             channelState->AcState = J1939NM_AC_STATE_WAITING;
             break;
             

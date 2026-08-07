@@ -223,7 +223,7 @@ E2E_SM_StateType E2E_SM_ProcessCheckResult(
     state->lastCheckStatus = (uint16_t)checkResult;
 
     /* Check for timeout */
-    if ((config->timeoutMs > 0U) && (state->lastValidTimestamp > 0)) {
+    if ((config->timeoutMs > 0U) && (state->lastValidTimestamp > 0U)) {
         uint32_t elapsed = timestamp - state->lastValidTimestamp;
         if (elapsed > config->timeoutMs) {
             state->state = E2E_SM_INVALID;
@@ -260,7 +260,7 @@ Std_ReturnType E2E_SM_Check(
     uint32_t timestamp,
     E2E_SM_CheckResultType* result)
 {
-    if (!E2E_SM_IsInitialized() || (state == NULL) || (config == NULL) || result == NULL) {
+    if (!E2E_SM_IsInitialized() || (state == NULL) || (config == NULL) || (result == NULL)) {
         return E_NOT_OK;
     }
 

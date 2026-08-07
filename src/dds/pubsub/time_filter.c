@@ -78,7 +78,7 @@ static double kalman_update(tbf_state_t *state, double measurement,
     // 更新
     double kalman_gain = predicted_error / (predicted_error + measurement_noise);
     state->kalman_estimate = predicted_estimate + (kalman_gain * (measurement - predicted_estimate));
-    state->kalman_error = (1U - kalman_gain) * predicted_error;
+    state->kalman_error = (1U - (unsigned int)(kalman_gain)) * predicted_error;
     
     return state->kalman_estimate;
 }

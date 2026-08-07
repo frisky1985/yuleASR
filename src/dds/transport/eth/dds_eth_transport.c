@@ -1139,8 +1139,8 @@ static eth_status_t dds_eth_handle_rtps_packet(const uint8_t *data, uint32_t len
                          submsg_hdr->submessage_length;
                 
                 /* 对齐到4字节边界 */
-                if ((offset % 4U) != 0) {
-                    offset += 4U - (offset % 4);
+                if ((offset % 4U) != 0U) {
+                    offset += 4U - (offset % 4U);
                 }
             }
         }

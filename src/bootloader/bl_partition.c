@@ -174,7 +174,7 @@ static void update_partition_table_crc(bl_partition_table_t *table)
  */
 static uint32_t align_to_sector(uint32_t address, uint32_t sector_size)
 {
-    return (address + sector_size - 1U) & ~(sector_size - 1);
+    return (address + sector_size - 1U) & ~(sector_size - 1U);
 }
 
 /* ============================================================================

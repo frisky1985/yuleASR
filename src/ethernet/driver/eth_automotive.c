@@ -177,7 +177,7 @@ static eth_status_t automotive_phy_update_link_status(void)
     }
 
     /* 检查链路状态变化 */
-    bool link_up = (status_reg & PHY_STATUS_LINK_UP) != 0;
+    bool link_up = (status_reg & PHY_STATUS_LINK_UP) != 0U;
     if (link_up != g_phy_ctx.link_status.link_up) {
         if (link_up) {
             g_phy_ctx.stats.link_up_count++;

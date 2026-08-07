@@ -103,7 +103,7 @@ STATIC void Swc_ModeManager_ProcessModeRequest(void)
     Swc_ModeTransitionRequestType request;
 
     /* Check for new request via RTE */
-    if ((uint8_t)(Rte_Read_ModeRequest(&request)) == RTE_E_OK) {
+    if ((uint8_t)((uint8_t)(Rte_Read_ModeRequest(&request))) == RTE_E_OK) {
         /* Store as pending request */
         swcModeManager.pendingRequest = request;
         swcModeManager.hasPendingRequest = TRUE;

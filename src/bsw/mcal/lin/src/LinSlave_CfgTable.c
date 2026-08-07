@@ -290,7 +290,7 @@ void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint
     
     frame = (LinSlave_UnconditionalFrameConfigType*)&CfgTablePtr->UnconditionalFrames[FrameIndex];
     
-    copyLen = (Length > 8U) ? 8 : Length;
+    copyLen = (Length > 8U) ? 8U : Length;
     (void)memcpy(frame->LastData, DataPtr, copyLen);
     frame->UpdateFlag = 1;
     frame->Status = LINSLAVE_FRAME_STATUS_UPDATED;

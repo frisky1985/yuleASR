@@ -219,7 +219,7 @@ Mqtt_ReturnType Mqtt_CertMgr_UpdateCert(const char* alias,
 {
     Mqtt_ReturnType result;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || (newData == NULL_PTR) || dataLen == 0U ) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (newData == NULL_PTR) || (dataLen == 0U) ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -797,19 +797,19 @@ static void CertMgr_ParseSubject(const mbedtls_x509_name* name,
         buf[len] = '\0';
         
         /* 根据OID识别属性类型 */
-        if (MQTT_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid) == 0 ) {
+        if (MQTT_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid) == 0U ) {
             strncpy(subject->commonName, buf, sizeof(subject->commonName) - 1U);
-        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid) == 0 ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid) == 0U ) {
             strncpy(subject->organization, buf, sizeof(subject->organization) - 1U);
-        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid) == 0 ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid) == 0U ) {
             strncpy(subject->organizationalUnit, buf, sizeof(subject->organizationalUnit) - 1U);
-        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid) == 0 ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid) == 0U ) {
             strncpy(subject->country, buf, sizeof(subject->country) - 1U);
-        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid) == 0 ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid) == 0U ) {
             strncpy(subject->state, buf, sizeof(subject->state) - 1U);
-        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid) == 0 ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid) == 0U ) {
             strncpy(subject->locality, buf, sizeof(subject->locality) - 1U);
-        } else if (MQTT_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid) == 0 ) {
+        } else if (MQTT_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid) == 0U ) {
             strncpy(subject->email, buf, sizeof(subject->email) - 1U);
         }
     }

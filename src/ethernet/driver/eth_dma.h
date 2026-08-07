@@ -29,8 +29,8 @@ extern "C" {
 #define ETH_DMA_DEFAULT_TX_DESC_COUNT   16
 
 /** 最大DMA描述符数量 */
-#define ETH_DMA_MAX_RX_DESC_COUNT       256
-#define ETH_DMA_MAX_TX_DESC_COUNT       256
+#define ETH_DMA_MAX_RX_DESC_COUNT       256U
+#define ETH_DMA_MAX_TX_DESC_COUNT       256U
 
 /** 默认缓冲区大小 */
 #define ETH_DMA_DEFAULT_BUFFER_SIZE     1536    /* 包含VLAN标签的标准帧 */

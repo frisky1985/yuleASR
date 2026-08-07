@@ -210,11 +210,11 @@ static void eth_update_throughput(void)
 
     /* 计算发送吞吐量(Mbps) */
     uint64_t tx_bytes_diff = g_manager_ctx.stats.mac_stats.tx_bytes - g_manager_ctx.last_tx_bytes;
-    g_manager_ctx.stats.tx_throughput_mbps = (uint32_t)((tx_bytes_diff * 8U) / elapsed_ms / 1000);
+    g_manager_ctx.stats.tx_throughput_mbps = (uint32_t)((tx_bytes_diff * 8U) / elapsed_ms / 1000U);
 
     /* 计算接收吞吐量(Mbps) */
     uint64_t rx_bytes_diff = g_manager_ctx.stats.mac_stats.rx_bytes - g_manager_ctx.last_rx_bytes;
-    g_manager_ctx.stats.rx_throughput_mbps = (uint32_t)((rx_bytes_diff * 8U) / elapsed_ms / 1000);
+    g_manager_ctx.stats.rx_throughput_mbps = (uint32_t)((rx_bytes_diff * 8U) / elapsed_ms / 1000U);
 
     /* 更新上次值 */
     g_manager_ctx.last_tx_bytes = g_manager_ctx.stats.mac_stats.tx_bytes;
@@ -767,7 +767,7 @@ eth_status_t eth_manager_validate_config(const eth_manager_config_t *config)
     }
 
     /* 验证DMA配置(确保描述符数量有效) */
-    if ((config->dma_config.rx_desc_count == 0U) || (config->dma_config.tx_desc_count == 0)) {
+    if ((config->dma_config.rx_desc_count == 0U) || (config->dma_config.tx_desc_count == 0U)) {
         return ETH_INVALID_PARAM;
     }
 

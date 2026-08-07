@@ -177,7 +177,7 @@ secoc_status_t secoc_dds_export_key_to_dds(secoc_dds_context_t *ctx,
         return SECOC_ERROR_INVALID_PARAM;
     }
     
-    if ((secoc_slot_id >= SECOC_MAX_KEY_SLOTS) || (dds_key_id >= 16)) {
+    if ((secoc_slot_id >= SECOC_MAX_KEY_SLOTS) || (dds_key_id >= 16U)) {
         return SECOC_ERROR_INVALID_PARAM;
     }
     

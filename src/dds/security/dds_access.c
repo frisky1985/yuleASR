@@ -32,15 +32,15 @@ dds_access_context_t* dds_access_init(const dds_security_config_t *config)
     }
 
     /* Copy configuration paths */
-    if ((config->permissions_ca_cert_path[0]) != 0U) {
+    if ((config->permissions_ca_cert_path[0]) != 0) {
         strncpy(ctx->permissions_ca_cert_path, config->permissions_ca_cert_path,
                 sizeof(ctx->permissions_ca_cert_path) - 1U);
     }
-    if ((config->permissions_xml_path[0]) != 0U) {
+    if ((config->permissions_xml_path[0]) != 0) {
         strncpy(ctx->permissions_file_path, config->permissions_xml_path,
                 sizeof(ctx->permissions_file_path) - 1U);
     }
-    if ((config->governance_xml_path[0]) != 0U) {
+    if ((config->governance_xml_path[0]) != 0) {
         strncpy(ctx->governance_file_path, config->governance_xml_path,
                 sizeof(ctx->governance_file_path) - 1U);
     }
@@ -59,7 +59,7 @@ dds_access_context_t* dds_access_init(const dds_security_config_t *config)
     ctx->default_policy.scope = DDS_PERM_SCOPE_DOMAIN;
 
     /* Load CA certificate if available */
-    if ((ctx->permissions_ca_cert_path[0]) != 0U) {
+    if ((ctx->permissions_ca_cert_path[0]) != 0) {
         /* Load certificate from file */
         FILE *fp = fopen(ctx->permissions_ca_cert_path, "rb");
         if ((fp) != 0U) {
@@ -148,7 +148,7 @@ static void xml_extract_value(const char *content, uint32_t content_len,
         return;
     }
 
-    uint32_t copy_len = content_len < (output_size - 1U) ? content_len : output_size - 1;
+    uint32_t copy_len = content_len < (output_size - 1U) ? content_len : output_size - 1U;
     memcpy(output, content, copy_len);
     output[copy_len] = '\0';
 
@@ -625,7 +625,7 @@ dds_access_decision_t dds_access_check_permission(dds_access_context_t *ctx,
     }
 
     /* Check ASIL level requirement */
-    if ((request->asil_level < ctx->default_policy.rules ? ctx->default_policy.rules->min_asil_level : DDS_SECURITY_ASIL_QM) != 0U) {
+    if ((request->asil_level < ctx->default_policy.rules ? ctx->default_policy.rules->min_asil_level : DDS_SECURITY_ASIL_QM) != 0) {
         /* ASIL level insufficient - may still be allowed based on policy */
     }
 
@@ -725,7 +725,7 @@ dds_access_status_t dds_access_get_domain_governance(dds_access_context_t *ctx,
     }
 
     /* Parse governance file */
-    if ((ctx->governance_file_path[0]) != 0U) {
+    if ((ctx->governance_file_path[0]) != 0) {
         dds_access_parse_governance_xml(ctx, ctx->governance_file_path, governance);
     }
 

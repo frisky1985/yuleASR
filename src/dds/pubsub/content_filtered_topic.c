@@ -139,7 +139,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     }
     
     // 数字
-    if ((isdigit((unsigned char)lexer->input[lexer->pos])) != 0U) {
+    if ((isdigit((unsigned char)lexer->input[lexer->pos])) != 0) {
         while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
             if (lexer->token_len < sizeof(lexer->token) - 1U) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];

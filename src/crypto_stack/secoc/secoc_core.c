@@ -54,7 +54,7 @@ static void aes_encrypt_block(const uint8_t *in, uint8_t *out, const uint8_t *ke
 /* 左移一位 */
 static void left_shift_one(const uint8_t *in, uint8_t *out) {
     uint8_t overflow = 0;
-    for (int i = AES_BLOCK_SIZE - 1; i >= 0; i--) {
+    for (int i = AES_BLOCK_SIZE - 1U; i >= 0; i--) {
         out[i] = (in[i] << 1) | overflow;
         overflow = (in[i] & 0x80U) ? 1 : 0;
     }
@@ -215,9 +215,9 @@ static void sha256_final(uint32_t state[8], uint8_t *buffer, uint32_t *buf_len, 
     /* 输出 */
     for (i = 0; i < 8U; i++) {
         hash[i * 4U] = (uint8_t)(state[i] >> 24);
-        hash[(i * 4U) + 1] = (uint8_t)(state[i] >> 16);
-        hash[(i * 4U) + 2] = (uint8_t)(state[i] >> 8);
-        hash[(i * 4U) + 3] = (uint8_t)(state[i]);
+        hash[(i * 4U) + 1U] = (uint8_t)(state[i] >> 16);
+        hash[(i * 4U) + 2U] = (uint8_t)(state[i] >> 8);
+        hash[(i * 4U) + 3U] = (uint8_t)(state[i]);
     }
 }
 
@@ -279,8 +279,8 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     uint8_t x[AES_BLOCK_SIZE] = {0};
     uint8_t y[AES_BLOCK_SIZE] = {0};
     uint8_t m_last[AES_BLOCK_SIZE] = {0};
-    int n = (msg_len + AES_BLOCK_SIZE - 1) / AES_BLOCK_SIZE;
-    bool flag = (msg_len == 0U) || ((msg_len % AES_BLOCK_SIZE) != 0);
+    int n = (msg_len + AES_BLOCK_SIZE - 1U) / AES_BLOCK_SIZE;
+    bool flag = (msg_len == 0U) || ((msg_len % AES_BLOCK_SIZE) != 0U);
     
     generate_subkeys(key, key_len * 8U, k1, k2);
     
@@ -292,13 +292,13 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     if (!flag) {
         /* 完整块 */
         for (int j = 0; j < AES_BLOCK_SIZE; j++) {
-            m_last[j] = msg[((n - 1) * AES_BLOCK_SIZE) + j] ^ k1[j];
+            m_last[j] = msg[((uint32_t)((n - 1)) * AES_BLOCK_SIZE) + j] ^ k1[j];
         }
     } else {
         /* 不完整块 */
         for (int j = 0; j < AES_BLOCK_SIZE; j++) {
             if (j < (int)(msg_len % AES_BLOCK_SIZE)) {
-                m_last[j] = msg[((n - 1) * AES_BLOCK_SIZE) + j];
+                m_last[j] = msg[((uint32_t)((n - 1)) * AES_BLOCK_SIZE) + j];
             } else if (j == (int)(msg_len % AES_BLOCK_SIZE)) {
                 m_last[j] = 0x80;
             } else {

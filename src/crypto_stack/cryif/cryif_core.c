@@ -205,7 +205,7 @@ cryif_status_t cryif_channel_get_info(cryif_context_t *ctx, uint8_t channel_id,
                                       cryif_channel_t *channel)
 {
     if ((ctx == NULL) || !ctx->initialized || (channel == NULL) ||
-        channel_id >= CRYIF_MAX_CHANNELS) {
+        (channel_id >= CRYIF_MAX_CHANNELS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -362,7 +362,7 @@ cryif_status_t cryif_key_get_info(cryif_context_t *ctx, uint8_t slot_id,
     cryif_driver_t *driver;
     
     if ((ctx == NULL) || !ctx->initialized || (slot_id >= CRYIF_MAX_KEY_SLOTS) ||
-        info == NULL) {
+        (info == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -510,7 +510,7 @@ cryif_status_t cryif_mac_verify(cryif_context_t *ctx, uint8_t key_slot,
     cryif_driver_t *driver;
     
     if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS) ||
-        verify_result == NULL) {
+        (verify_result == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -567,7 +567,7 @@ cryif_status_t cryif_verify(cryif_context_t *ctx, uint8_t key_slot,
     cryif_driver_t *driver;
     
     if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS) ||
-        verify_result == NULL) {
+        (verify_result == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -624,7 +624,7 @@ cryif_status_t cryif_random_generate(cryif_context_t *ctx,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || (random_data == NULL) || random_len == 0U) {
+    if ((ctx == NULL) || !ctx->initialized || (random_data == NULL) || (random_len == 0U)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -754,7 +754,7 @@ static cryif_driver_t* cryif_select_driver(cryif_context_t *ctx,
 static cryif_key_type_t cryif_map_algorithm_to_key_type(uint32_t algorithm)
 {
     /* Map CSM algorithm to CryIf key type */
-    if ((algorithm >= 0x60U) && (algorithm < 0x80)) {
+    if ((algorithm >= 0x60U) && (algorithm < 0x80U)) {
         /* ECC algorithms */
         switch (algorithm) {
             case 0x60: return CRYIF_KEY_TYPE_ECC_P192;
@@ -764,7 +764,7 @@ static cryif_key_type_t cryif_map_algorithm_to_key_type(uint32_t algorithm)
             case 0x64: return CRYIF_KEY_TYPE_ECC_P521;
             default: return CRYIF_KEY_TYPE_AES_128;
         }
-    } else if ((algorithm >= 0x40U) && (algorithm < 0x60)) {
+    } else if ((algorithm >= 0x40U) && (algorithm < 0x60U)) {
         /* RSA algorithms */
         switch (algorithm) {
             case 0x41: return CRYIF_KEY_TYPE_RSA_1024;

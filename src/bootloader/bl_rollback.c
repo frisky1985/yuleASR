@@ -146,8 +146,8 @@ static bl_rollback_error_t add_to_history(
     if (slot < 0) {
         /* 移除最早的记录 */
         memmove(&record->history[0], &record->history[1],
-                (BL_ROLLBACK_MAX_HISTORY - 1) * sizeof(bl_version_history_entry_t));
-        slot = BL_ROLLBACK_MAX_HISTORY - 1;
+                (BL_ROLLBACK_MAX_HISTORY - 1U) * sizeof(bl_version_history_entry_t));
+        slot = BL_ROLLBACK_MAX_HISTORY - 1U;
     }
     
     /* 添加新记录 */

@@ -23,8 +23,8 @@
 /* 内部状态 */
 static LinMaster_Diag_RuntimeType DiagRuntime;
 static boolean DiagInitialized = FALSE;
-static uint8 TxBuffer[LINMASTER_DIAG_MAX_BUFFER_SIZE + 10]; /* 发送缓冲区 */
-static uint8 RxBuffer[LINMASTER_DIAG_MAX_BUFFER_SIZE + 10]; /* 接收缓冲区 */
+static uint8 TxBuffer[LINMASTER_DIAG_MAX_BUFFER_SIZE + 10U]; /* 发送缓冲区 */
+static uint8 RxBuffer[LINMASTER_DIAG_MAX_BUFFER_SIZE + 10U]; /* 接收缓冲区 */
 static uint16 TxLength = 0;
 static uint16 RxLength = 0;
 static boolean RxDataPending = FALSE;  /* 有待处理的接收数据 */
@@ -498,7 +498,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2))) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2U))) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -572,7 +572,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
+    if (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2U)) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     

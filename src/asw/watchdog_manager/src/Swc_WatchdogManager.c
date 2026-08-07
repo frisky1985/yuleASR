@@ -154,7 +154,7 @@ STATIC void Swc_WatchdogManager_UpdateAliveCounters(void)
     uint8 entityId;
 
     /* Read alive indications from RTE */
-    if ((uint8_t)(Rte_Read_AliveIndication(&entityId)) == RTE_E_OK) {
+    if ((uint8_t)((uint8_t)(Rte_Read_AliveIndication(&entityId))) == RTE_E_OK) {
         sint16 entityIndex = Swc_WatchdogManager_FindEntity(entityId);
 
         if (entityIndex >= 0) {

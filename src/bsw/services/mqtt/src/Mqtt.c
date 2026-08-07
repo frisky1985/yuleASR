@@ -850,7 +850,7 @@ static Mqtt_ReturnType Mqtt_EncodeConnect(Mqtt_InternalConnectionType* conn)
         conn->sendBuffer[idx] = remainingLength;
         idx++;
     } else {
-        conn->sendBuffer[idx] = (remainingLength & 0x7FU) | 0x80;
+        conn->sendBuffer[idx] = (remainingLength & 0x7FU) | 0x80U;
         idx++;
         conn->sendBuffer[idx] = remainingLength >> 7;
         idx++;
@@ -929,7 +929,7 @@ static Mqtt_ReturnType Mqtt_EncodePublish(Mqtt_InternalConnectionType* conn,
     uint8 fixedHeader = MQTT_PACKET_TYPE_PUBLISH;
     
     /* 设置固定头标志 */
-    fixedHeader |= ((msg->qos & 0x03U) << 1);
+    fixedHeader |= (((unsigned int)(msg->qos) & 0x03U) << 1);
     if (msg->retain == MQTT_RETAIN_TRUE) {
         fixedHeader |= 0x01;
     }
@@ -1024,7 +1024,7 @@ static Mqtt_ReturnType Mqtt_EncodeSubscribe(Mqtt_InternalConnectionType* conn,
     idx += topicLen;
     
     /* 最大QoS */
-    conn->sendBuffer[idx] = sub->maxQoS & 0x03U;
+    conn->sendBuffer[idx] = (unsigned int)(sub->maxQoS) & 0x03U;
     idx++;
     
     conn->sendLength = idx;

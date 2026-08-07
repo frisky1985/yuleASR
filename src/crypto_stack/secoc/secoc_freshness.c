@@ -648,7 +648,7 @@ bool secoc_freshness_need_sync(secoc_freshness_manager_t *mgr,
     
     /* 检查是否到了发送同步消息的时间 */
     uint64_t elapsed = current_time - entry->last_sync_time;
-    return (elapsed >= (SECOC_SYNC_MASTER_INTERVAL_MS * 1000));
+    return (elapsed >= (SECOC_SYNC_MASTER_INTERVAL_MS * 1000U));
 }
 
 secoc_status_t secoc_freshness_force_sync(secoc_freshness_manager_t *mgr, uint32_t pdu_id) {

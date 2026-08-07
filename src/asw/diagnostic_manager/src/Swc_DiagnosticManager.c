@@ -262,7 +262,7 @@ STATIC void Swc_DiagnosticManager_ProcessSecurityAccess(const Swc_DiagnosticRequ
 
     if ((subFunction & UDS_SECURITY_SUBFUNC_SEED_MASK) == UDS_SECURITY_SUBFUNC_SEED_FLAG) {
         /* Request seed */
-        targetLevel = (Swc_SecurityLevelType)((subFunction + 1U) / 2);
+        targetLevel = (Swc_SecurityLevelType)((subFunction + 1U) / 2U);
 
         if (targetLevel > SECURITY_LEVEL_3) {
             response->negativeResponseCode = UDS_NRC_SUBFUNCTION_NOT_SUPPORTED;
@@ -523,7 +523,7 @@ void Swc_DiagnosticManager_ProcessRequest(void)
 
     if (!swcDiagManager.hasPendingRequest) {
         /* Check for new request via RTE */
-        if ((uint8_t)(Rte_Read_DiagnosticRequest(&request)) == RTE_E_OK) {
+        if ((uint8_t)((uint8_t)(Rte_Read_DiagnosticRequest(&request))) == RTE_E_OK) {
             swcDiagManager.pendingRequest = request;
             swcDiagManager.hasPendingRequest = TRUE;
         } else {

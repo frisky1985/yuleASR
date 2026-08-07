@@ -342,8 +342,8 @@ eth_status_t dds_spdp_get_local_participant(dds_participant_proxy_t *proxy)
         
         /* 域标签 */
         (void)strncpy(proxy->domain_tag, g_discovery.config.domain_tag,
-                     DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1);
-        proxy->domain_tag[DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1] = '\0';
+                     DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U);
+        proxy->domain_tag[DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U] = '\0';
     }
     
     return status;
@@ -754,8 +754,8 @@ eth_status_t dds_discovery_deserialize_participant(
         /* 反序列化域标签 */
         if (offset < len) {
             uint32_t remaining = len - offset;
-            uint32_t copy_len = remaining < (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1) ?
-                                remaining : (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1);
+            uint32_t copy_len = remaining < (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U) ?
+                                remaining : (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U);
             (void)memcpy(proxy->domain_tag, &data[offset], copy_len);
             proxy->domain_tag[copy_len] = '\0';
         }
@@ -835,8 +835,8 @@ eth_status_t dds_discovery_deserialize_publication(
         /* 反序列化主题名和类型名 */
         if (offset < len) {
             uint32_t remaining = len - offset;
-            uint32_t copy_len = remaining < (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1) ?
-                                remaining : (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1);
+            uint32_t copy_len = remaining < (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U) ?
+                                remaining : (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U);
             (void)memcpy(pub->topic_name, &data[offset], copy_len);
             pub->topic_name[copy_len] = '\0';
             /* 注: 简化版本，实际需要解析长度字段 */
@@ -905,8 +905,8 @@ eth_status_t dds_discovery_deserialize_subscription(
         
         if (offset < len) {
             uint32_t remaining = len - offset;
-            uint32_t copy_len = remaining < (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1) ?
-                                remaining : (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1);
+            uint32_t copy_len = remaining < (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U) ?
+                                remaining : (DDS_DISCOVERY_DOMAIN_TAG_MAX_LEN - 1U);
             (void)memcpy(sub->topic_name, &data[offset], copy_len);
             sub->topic_name[copy_len] = '\0';
         }

@@ -34,7 +34,7 @@ extern "C" {
 /** 默认所有权强度 */
 #define OWN_DEFAULT_STRENGTH   0
 /** 最大所有权强度 */
-#define OWN_MAX_STRENGTH       65535
+#define OWN_MAX_STRENGTH       65535U
 /** 所有权确认超时(ms) */
 #define OWN_ACK_TIMEOUT_MS     50
 

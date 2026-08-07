@@ -29,7 +29,7 @@ extern "C" {
 /* ============================================================================
  * 配置常量
  * ============================================================================ */
-#define BL_SB_MAX_CERT_CHAIN_DEPTH      4
+#define BL_SB_MAX_CERT_CHAIN_DEPTH      4U
 #define BL_SB_MAX_CERT_SIZE             2048
 #define BL_SB_SIGNATURE_SIZE            64      /* ECDSA P-256 */
 #define BL_SB_HASH_SIZE                 32      /* SHA-256 */

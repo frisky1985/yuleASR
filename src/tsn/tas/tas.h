@@ -28,10 +28,10 @@ extern "C" {
 #define TAS_MAX_QUEUES                  8U
 
 /** 最大GCL条目数 */
-#define TAS_MAX_GCL_ENTRIES             1024
+#define TAS_MAX_GCL_ENTRIES             1024U
 
 /** 最大循环时间 (微秒) */
-#define TAS_MAX_CYCLE_TIME_US           1000000  /* 1秒 */
+#define TAS_MAX_CYCLE_TIME_US           1000000U  /* 1U秒 */
 
 /** 默认循环时间 (微秒) */
 #define TAS_DEFAULT_CYCLE_TIME_US       1000     /* 1ms */

@@ -76,7 +76,7 @@ typedef enum {
 /* Submessage标志 */
 #define RTPS_SUBMESSAGE_FLAG_ENDIANNESS     0x01U  /* 小端标志 */
 #define RTPS_SUBMESSAGE_FLAG_INLINE_QOS     0x02U  /* 内联QoS */
-#define RTPS_SUBMESSAGE_FLAG_DATA_PRESENT   0x04  /* 数据存在 */
+#define RTPS_SUBMESSAGE_FLAG_DATA_PRESENT   0x04U  /* 数据存在 */
 #define RTPS_SUBMESSAGE_FLAG_KEY_PRESENT    0x08  /* Key存在 */
 #define RTPS_SUBMESSAGE_FLAG_FINAL          0x02  /* 最终HEARTBEAT */
 #define RTPS_SUBMESSAGE_FLAG_LIVELINESS     0x04  /* 活跃性 */

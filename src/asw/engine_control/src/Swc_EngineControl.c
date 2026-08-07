@@ -478,11 +478,11 @@ uint16 Swc_EngineControl_CalculateFuelInjection(uint16 speed, uint16 load, sint1
     sint16 tempCorrection;
 
     /* Base fuel calculation */
-    fuelTime = FUEL_INJ_BASE_TIME_US + ((uint32)load * 100);
+    fuelTime = FUEL_INJ_BASE_TIME_US + ((uint32)load * 100U);
 
     /* Speed correction */
     if (speed > ENG_NORMAL_IDLE_SPEED) {
-        fuelTime += ((speed - ENG_NORMAL_IDLE_SPEED) * 5);
+        fuelTime += ((speed - ENG_NORMAL_IDLE_SPEED) * 5U);
     }
 
     /* Temperature correction (enrichment for cold start) */
@@ -521,7 +521,7 @@ uint16 Swc_EngineControl_CalculateIgnitionTiming(uint16 speed, uint16 load, sint
 
     /* Speed correction */
     if (speed > ENG_NORMAL_IDLE_SPEED) {
-        ignitionAdvance += (sint16)((speed - ENG_NORMAL_IDLE_SPEED) / 100);
+        ignitionAdvance += (sint16)((speed - ENG_NORMAL_IDLE_SPEED) / 100U);
     }
 
     /* Load correction */

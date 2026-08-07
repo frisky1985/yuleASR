@@ -82,7 +82,7 @@ static void E2E_InitCRCTables(void)
     for (uint32 i = 0; i < 256; i++) {
         uint8_t crc = (uint8_t)i;
         for (uint32 j = 0; j < 8; j++) {
-            crc = (crc << 1) ^ ((crc & 0x80U) ? E2E_CRC8_POLY : 0);
+            crc = (crc << 1) ^ ((crc & 0x80U) ? E2E_CRC8_POLY : 0U);
         }
         g_crc8Table[i] = crc;
     }
@@ -91,7 +91,7 @@ static void E2E_InitCRCTables(void)
     for (uint32 i = 0; i < 256; i++) {
         uint16_t crc = (uint16_t)(i << 8);
         for (uint32 j = 0; j < 8; j++) {
-            crc = (crc << 1) ^ ((crc & 0x8000U) ? E2E_CRC16_POLY : 0);
+            crc = (crc << 1) ^ ((crc & 0x8000U) ? E2E_CRC16_POLY : 0U);
         }
         g_crc16Table[i] = crc;
     }
@@ -100,7 +100,7 @@ static void E2E_InitCRCTables(void)
     for (uint32 i = 0; i < 256; i++) {
         uint32_t crc = i;
         for (uint32 j = 0; j < 8; j++) {
-            crc = (crc >> 1) ^ ((crc & 1U) ? (E2E_CRC32_POLY) : 0);
+            crc = (crc >> 1) ^ ((crc & 1U) ? (E2E_CRC32_POLY) : 0U);
         }
         g_crc32Table[i] = crc;
     }
@@ -286,7 +286,7 @@ Std_ReturnType E2E_DeinitContext(E2E_ContextType* context)
  */
 Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -319,7 +319,7 @@ Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -368,7 +368,7 @@ Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -394,7 +394,7 @@ Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* l
     dataBytes[config->crcOffset] = crc;
 
     /* Increment counter */
-    context->state.p02.counter = (context->state.p02.counter + 1U) & 0x0F;
+    context->state.p02.counter = (context->state.p02.counter + 1U) & 0x0FU;
 
     *length = config->dataLength;
     return E_OK;
@@ -405,7 +405,7 @@ Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -469,7 +469,7 @@ Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -488,9 +488,9 @@ Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write CRC to data (big-endian) */
     dataBytes[config->crcOffset] = (uint8_t)((crc >> 24) & 0xFFU);
-    dataBytes[config->crcOffset + 1U] = (uint8_t)((crc >> 16) & 0xFF);
-    dataBytes[config->crcOffset + 2U] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 3U] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)((crc >> 16) & 0xFFU);
+    dataBytes[config->crcOffset + 2U] = (uint8_t)((crc >> 8) & 0xFFU);
+    dataBytes[config->crcOffset + 3U] = (uint8_t)(crc & 0xFFU);
 
     *length = config->dataLength + 4U;
     return E_OK;
@@ -501,7 +501,7 @@ Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -548,7 +548,7 @@ Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -565,7 +565,7 @@ Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write CRC (big-endian) */
     dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFFU);
-    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFFU);
 
     *length = config->dataLength + 2U;
     return E_OK;
@@ -576,7 +576,7 @@ Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -620,7 +620,7 @@ Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -640,10 +640,10 @@ Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write CRC */
     dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFFU);
-    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFFU);
 
     /* Increment counter */
-    context->state.p06.counter = (context->state.p06.counter + 1U) & 0x0F;
+    context->state.p06.counter = (context->state.p06.counter + 1U) & 0x0FU;
 
     *length = config->dataLength + 4U;
     return E_OK;
@@ -654,7 +654,7 @@ Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -716,7 +716,7 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -736,12 +736,12 @@ Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write CRC */
     dataBytes[config->crcOffset] = (uint8_t)((crc >> 24) & 0xFFU);
-    dataBytes[config->crcOffset + 1U] = (uint8_t)((crc >> 16) & 0xFF);
-    dataBytes[config->crcOffset + 2U] = (uint8_t)((crc >> 8) & 0xFF);
-    dataBytes[config->crcOffset + 3U] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)((crc >> 16) & 0xFFU);
+    dataBytes[config->crcOffset + 2U] = (uint8_t)((crc >> 8) & 0xFFU);
+    dataBytes[config->crcOffset + 3U] = (uint8_t)(crc & 0xFFU);
 
     /* Increment counter */
-    context->state.p07.counter = (context->state.p07.counter + 1U) & 0x0F;
+    context->state.p07.counter = (context->state.p07.counter + 1U) & 0x0FU;
 
     *length = config->dataLength + 8U;
     return E_OK;
@@ -752,7 +752,7 @@ Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -816,7 +816,7 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -829,7 +829,7 @@ Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write Data ID */
     dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFFU);
-    dataBytes[config->dataIdOffset + 1U] = (uint8_t)((config->dataId >> 8) & 0xFF);
+    dataBytes[config->dataIdOffset + 1U] = (uint8_t)((config->dataId >> 8) & 0xFFU);
 
     /* Write counter */
     dataBytes[config->counterOffset] = context->state.p11.counter;
@@ -852,7 +852,7 @@ Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -923,7 +923,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -943,15 +943,15 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write Data ID (2 bytes, little-endian) */
     dataBytes[config->dataIdOffset] = (uint8_t)(config->dataId & 0xFFU);
-    dataBytes[config->dataIdOffset + 1U] = (uint8_t)((config->dataId >> 8) & 0xFF);
+    dataBytes[config->dataIdOffset + 1U] = (uint8_t)((config->dataId >> 8) & 0xFFU);
 
     /* Write Length field (2 bytes, little-endian) */
     dataBytes[config->lengthOffset] = (uint8_t)(config->dataLength & 0xFFU);
-    dataBytes[config->lengthOffset + 1U] = (uint8_t)((config->dataLength >> 8) & 0xFF);
+    dataBytes[config->lengthOffset + 1U] = (uint8_t)((config->dataLength >> 8) & 0xFFU);
 
     /* Write counter (2 bytes, big-endian) */
     dataBytes[config->counterOffset] = (uint8_t)((state->counter >> 8) & 0xFFU);
-    dataBytes[config->counterOffset + 1U] = (uint8_t)(state->counter & 0xFF);
+    dataBytes[config->counterOffset + 1U] = (uint8_t)(state->counter & 0xFFU);
 
     /* Calculate CRC16 over data including header fields */
     uint16_t crcDataLen = config->includeLengthInCrc ? 
@@ -961,7 +961,7 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
 
     /* Write CRC (big-endian) */
     dataBytes[config->crcOffset] = (uint8_t)((crc >> 8) & 0xFFU);
-    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFF);
+    dataBytes[config->crcOffset + 1U] = (uint8_t)(crc & 0xFFU);
 
     /* Increment counter (16-bit wraparound) */
     state->counter++;
@@ -976,7 +976,7 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -1080,7 +1080,7 @@ Std_ReturnType E2E_P22_SetDataLength(E2E_ContextType* context, uint16_t dataLeng
  */
 Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* length, uint8_t profile)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -1111,7 +1111,7 @@ Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* lengt
  */
 Std_ReturnType E2E_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status, uint8_t profile)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 
@@ -1255,7 +1255,7 @@ bool E2E_ValidateDataID(uint32_t dataId, uint8_t profile)
  */
 bool E2E_ValidateLength(uint32_t length, uint8_t profile)
 {
-    if ((length == 0U) || (length > 4096)) {
+    if ((length == 0U) || (length > 4096U)) {
         return FALSE;
     }
 
@@ -1267,7 +1267,7 @@ bool E2E_ValidateLength(uint32_t length, uint8_t profile)
         case E2E_PROFILE_07:
             return (length <= 4096U);
         case E2E_PROFILE_11:
-            return ((length >= 4U) && (length <= 256));
+            return ((length >= 4U) && (length <= 256U));
         case E2E_PROFILE_22:
             return ((length >= E2E_P22_MIN_DATA_LENGTH) && (length <= E2E_P22_MAX_DATA_LENGTH));
         default:

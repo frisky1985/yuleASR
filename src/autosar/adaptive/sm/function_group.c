@@ -173,7 +173,7 @@ Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
 
 Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
                             FG_MemberType* member) {
-    if (!g_initialized || (config == NULL) || (memberName == NULL) || member == NULL) {
+    if (!g_initialized || (config == NULL) || (memberName == NULL) || (member == NULL)) {
         return E_NOT_OK;
     }
     

@@ -165,7 +165,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessCF(uint8 ChannelId, uint8 Pci, 
     }
     
     /* 检查序列号 */
-    if (SN != ((Channel->RxSN + 1U) & 0x0F)) {
+    if (SN != ((Channel->RxSN + 1U) & 0x0FU)) {
         /* 序列号错误，重置传输 */
         LinSlave_Tp_ResetChannel(ChannelId);
         return LINSLAVE_TP_E_NOT_OK;
@@ -225,7 +225,7 @@ static void LinSlave_Tp_SendFlowControl(uint8 ChannelId, uint8 BlockSize, uint8 
 {
     uint8 FcFrame[3];
     
-    FcFrame[0] = LINSLAVE_TP_PCI_FC | 0x00U;  /* FC + FlowStatus=0 (ContinueToSend) */
+    FcFrame[0] = (unsigned int)(LINSLAVE_TP_PCI_FC) | 0x00U;  /* FC + FlowStatus=0 (ContinueToSend) */
     FcFrame[1] = BlockSize;
     FcFrame[2] = STmin;
     
@@ -315,7 +315,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         LinSlave_Tp_ResetChannel(ChannelId);
     } else {
         /* 发送首帧 (FF) */
-        FirstFrame[0] = LINSLAVE_TP_PCI_FF | ((Length >> 8U) & 0x0F);
+        FirstFrame[0] = LINSLAVE_TP_PCI_FF | ((Length >> 8U) & 0x0FU);
         FirstFrame[1] = Length & 0xFFU;
         (void)memcpy(&FirstFrame[2], DataPtr, 5);  /* FF中携带的数据 */
         LinSlave_Hal_UartSendBuffer(FirstFrame, 7);

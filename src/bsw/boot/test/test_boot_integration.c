@@ -26,7 +26,7 @@ typedef uint16_t uint16;
 typedef uint32_t uint32;
 
 /* ---- Flash emulation ---- */
-#define FLASH_SIZE (2U * 1024U * 1024)
+#define FLASH_SIZE (2U * 1024U * 1024U)
 static uint8_t g_boot_flash_ram[FLASH_SIZE];
 
 /* ---- Override boot config for host test ---- */

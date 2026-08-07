@@ -174,7 +174,7 @@ static bool get_bitmap_bit(const rtps_sequence_number_set_t *set, uint32_t bit)
     uint32_t word_idx = bit / 32U;
     uint32_t bit_idx = bit % 32U;
     
-    return (set->bitmap[word_idx] & (1U << (31U - bit_idx))) != 0;
+    return (set->bitmap[word_idx] & (1U << (31U - bit_idx))) != 0U;
 }
 
 /**

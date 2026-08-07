@@ -468,7 +468,7 @@ eth_status_t tas_can_transmit(uint16_t port_id, uint8_t queue_id,
     }
     
     /* 检查门状态 */
-    bool gate_open = (port->gate_status.gate_states & (1U << queue_id)) != 0;
+    bool gate_open = (port->gate_status.gate_states & (1U << queue_id)) != 0U;
     
     if (!gate_open) {
         *can_transmit = false;
@@ -648,7 +648,7 @@ eth_status_t tas_check_schedule_integrity(uint16_t port_id, bool *integrity_ok) 
 }
 
 eth_status_t tas_create_automotive_gcl(tas_gcl_config_t *gcl_config, uint32_t cycle_time_ms) {
-    if ((gcl_config == NULL) || (cycle_time_ms == 0U) || (cycle_time_ms > 1000)) {
+    if ((gcl_config == NULL) || (cycle_time_ms == 0U) || (cycle_time_ms > 1000U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -694,7 +694,7 @@ uint32_t tas_calc_transmission_time(uint32_t frame_size, uint32_t link_speed_mbp
     
     /* 计算传输时间：帧大小(bits) / 链路速率(Mbps) = 微秒 */
     /* 加上前导码和IFS */
-    uint32_t total_bits = (frame_size + 20U) * 8;  /* +20 bytes overhead */
+    uint32_t total_bits = (frame_size + 20U) * 8U;  /* +20 bytes overhead */
     
     return (total_bits + link_speed_mbps - 1U) / link_speed_mbps;  /* 向上取整 */
 }
@@ -720,7 +720,7 @@ eth_status_t tas_print_status(uint16_t port_id) {
     
     printf("Queue Stats:\n");
     for (int i = 0; i < TAS_MAX_QUEUES; i++) {
-        if ((port->queue_stats[i].tx_frames > 0U) || (port->queue_stats[i].blocked_frames > 0)) {
+        if ((port->queue_stats[i].tx_frames > 0U) || (port->queue_stats[i].blocked_frames > 0U)) {
             printf("  Q%d: TX=%lu, Blocked=%lu\n", i,
                    (unsigned long)port->queue_stats[i].tx_frames,
                    (unsigned long)port->queue_stats[i].blocked_frames);

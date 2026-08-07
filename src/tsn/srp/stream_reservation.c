@@ -230,7 +230,7 @@ eth_status_t srp_config_port_bandwidth(uint16_t port_id, uint32_t total_bandwidt
     srp_port_state_t *port = get_port(port_id);
     port->bandwidth.total_bandwidth_bps = total_bandwidth_bps;
     port->bandwidth.available_bandwidth_bps = 
-        (total_bandwidth_bps * SRP_MAX_BANDWIDTH_PERCENT) / 100;
+        (total_bandwidth_bps * SRP_MAX_BANDWIDTH_PERCENT) / 100U;
     port->bandwidth.reserved_bandwidth_bps = 0;
     port->configured = true;
     

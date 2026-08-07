@@ -274,7 +274,7 @@ eth_status_t fp_set_frame_type_mapping(uint16_t port_id,
 }
 
 eth_status_t fp_send_express_frame(uint16_t port_id, const uint8_t *data, uint32_t len) {
-    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || (data == NULL) || len == 0) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || (data == NULL) || (len == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -305,7 +305,7 @@ eth_status_t fp_send_express_frame(uint16_t port_id, const uint8_t *data, uint32
 }
 
 eth_status_t fp_send_preemptable_frame(uint16_t port_id, const uint8_t *data, uint32_t len) {
-    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || (data == NULL) || len == 0) {
+    if (!g_fp_state.initialized || (port_id >= FP_MAX_PORTS) || (data == NULL) || (len == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -379,7 +379,7 @@ eth_status_t fp_preempt_transmission(uint16_t port_id) {
     
     port->preemptable_tx.bytes_transmitted += frag_size;
     port->preemptable_tx.frag_count++;
-    port->preemptable_tx.frag_sequence = (port->preemptable_tx.frag_sequence + 1U) & 0x03;
+    port->preemptable_tx.frag_sequence = (port->preemptable_tx.frag_sequence + 1U) & 0x03U;
     port->stats.fragments_tx++;
     
     return ETH_OK;
@@ -430,7 +430,7 @@ eth_status_t fp_resume_transmission(uint16_t port_id) {
         
         port->preemptable_tx.bytes_transmitted += frag_size;
         port->preemptable_tx.frag_count++;
-        port->preemptable_tx.frag_sequence = (port->preemptable_tx.frag_sequence + 1U) & 0x03;
+        port->preemptable_tx.frag_sequence = (port->preemptable_tx.frag_sequence + 1U) & 0x03U;
         port->stats.fragments_tx++;
         
         remaining = port->preemptable_tx.frame_len - port->preemptable_tx.bytes_transmitted;
@@ -469,7 +469,7 @@ eth_status_t fp_can_preempt(uint16_t port_id, bool *can_preempt) {
 eth_status_t fp_fragment_frame(const uint8_t *frame_data, uint32_t frame_len,
                                 uint32_t frag_size,
                                 fp_mpacket_t *mpackets, uint32_t *mpacket_count) {
-    if ((frame_data == NULL) || (mpackets == NULL) || (mpacket_count == NULL) || frag_size == 0U) {
+    if ((frame_data == NULL) || (mpackets == NULL) || (mpacket_count == NULL) || (frag_size == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -488,7 +488,7 @@ eth_status_t fp_fragment_frame(const uint8_t *frame_data, uint32_t frame_len,
                                    (frame_len - offset) : frag_size;
         
         fp_fragment_type_t frag_type;
-        if ((i == 0U) && (num_frags == 1)) {
+        if ((i == 0U) && (num_frags == 1U)) {
             frag_type = FP_FRAME_COMPLETE;
         } else if (i == 0U) {
             frag_type = FP_FRAME_FIRST_FRAGMENT;
@@ -516,7 +516,7 @@ eth_status_t fp_fragment_frame(const uint8_t *frame_data, uint32_t frame_len,
 eth_status_t fp_reassemble_mpacket(const fp_mpacket_t *mpacket,
                                     uint8_t *frame_data, uint32_t *frame_len,
                                     bool *is_complete) {
-    if ((mpacket == NULL) || (frame_data == NULL) || (frame_len == NULL) || is_complete == NULL) {
+    if ((mpacket == NULL) || (frame_data == NULL) || (frame_len == NULL) || (is_complete == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -566,7 +566,7 @@ eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
             memcpy(reasm->reassembly_buffer, mpacket->data, mpacket->len);
             reasm->reassembly_len = mpacket->len;
             reasm->reassembly_active = true;
-            reasm->expected_sequence = (mpacket->frag_sequence + 1U) & 0x03;
+            reasm->expected_sequence = (mpacket->frag_sequence + 1U) & 0x03U;
             reasm->last_frag_time_ns = get_current_time_ns();
             port->state = FP_STATE_REASSEMBLING;
             break;
@@ -597,7 +597,7 @@ eth_status_t fp_rx_mpacket(uint16_t port_id, const fp_mpacket_t *mpacket) {
             memcpy(reasm->reassembly_buffer + reasm->reassembly_len, 
                    mpacket->data, mpacket->len);
             reasm->reassembly_len += mpacket->len;
-            reasm->expected_sequence = (reasm->expected_sequence + 1U) & 0x03;
+            reasm->expected_sequence = (reasm->expected_sequence + 1U) & 0x03U;
             reasm->last_frag_time_ns = get_current_time_ns();
             
             /* 如果是最后一片，完成重组 */
@@ -724,11 +724,11 @@ eth_status_t fp_check_frame_integrity(uint16_t port_id, bool *integrity_ok) {
 }
 
 bool fp_is_express_frame(uint8_t priority, const fp_config_t *config) {
-    return (config->express_priority_mask & (1U << priority)) != 0;
+    return (config->express_priority_mask & (1U << priority)) != 0U;
 }
 
 bool fp_is_preemptable_frame(uint8_t priority, const fp_config_t *config) {
-    return (config->preemptable_priority_mask & (1U << priority)) != 0;
+    return (config->preemptable_priority_mask & (1U << priority)) != 0U;
 }
 
 uint32_t fp_calc_mpacket_crc(const uint8_t *data, uint32_t len) {

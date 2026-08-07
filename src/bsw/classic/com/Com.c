@@ -262,7 +262,7 @@ static void Com_InitSignalGroup(Com_SignalGroupIdType SignalGroupId, boolean ini
         for (uint8 i = 0; i < groupConfig->NumSignals; i++) {
             const Com_SignalConfigType* sigConfig = 
                 &Com_GlobalState.Config->Signals[groupConfig->SignalRefs[i]];
-            bufferSize += (sigConfig->BitSize + 7U) / 8;
+            bufferSize += (sigConfig->BitSize + 7U) / 8U;
         }
         for (uint16 i = 0; (i < bufferSize) && (i < COM_MAX_SHADOW_BUFFER_SIZE); i++) {
             groupRuntime->ShadowBuffer[i] = 0;

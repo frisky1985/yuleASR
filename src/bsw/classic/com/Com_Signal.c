@@ -136,12 +136,12 @@ uint8 Com_ReceiveSignalGroup(Com_SignalGroupIdType SignalGroupId)
         for (uint8 j = 0; j < i; j++) {
             const Com_SignalConfigType* prevSig = 
                 &Com_GlobalState.Config->Signals[groupConfig->SignalRefs[j]];
-            shadowOffset += (prevSig->BitSize + 7U) / 8;
+            shadowOffset += (prevSig->BitSize + 7U) / 8U;
         }
         
         /* Copy to shadow buffer */
-        for (uint8 b = 0; b < (sigConfig->BitSize + 7U) / 8; b++) {
-            groupRuntime->ShadowBuffer[shadowOffset + b] = (uint8)((value >> (b * 8U)) & 0xFF);
+        for (uint8 b = 0; b < (sigConfig->BitSize + 7U) / 8U; b++) {
+            groupRuntime->ShadowBuffer[shadowOffset + b] = (uint8)((value >> (b * 8U)) & 0xFFU);
         }
     }
     
@@ -168,11 +168,11 @@ uint8 Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* SignalDataPt
                 for (uint8 j = 0; j < i; j++) {
                     const Com_SignalConfigType* prevSig = 
                         &Com_GlobalState.Config->Signals[groupConfig->SignalRefs[j]];
-                    shadowOffset += (prevSig->BitSize + 7U) / 8;
+                    shadowOffset += (prevSig->BitSize + 7U) / 8U;
                 }
                 
                 /* Copy data to shadow buffer */
-                uint8 size = (sigConfig->BitSize + 7U) / 8;
+                uint8 size = (sigConfig->BitSize + 7U) / 8U;
                 memcpy(&groupRuntime->ShadowBuffer[shadowOffset], SignalDataPtr, size);
                 
                 return E_OK;

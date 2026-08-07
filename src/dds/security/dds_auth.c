@@ -83,12 +83,12 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64])
 {
     uint32_t a, b, c, d, e, f, g, h, i, j, t1, t2, m[64];
 
-    for (i = 0, j = 0; i < 16U; ++i, j += 4) {
+    for (i = 0, j = 0; i < 16U; ++i, j += 4U) {
         m[i] = ((uint32_t)data[j] << 24) | ((uint32_t)data[j + 1U] << 16) |
-               ((uint32_t)data[j + 2U] << 8) | ((uint32_t)data[j + 3]);
+               ((uint32_t)data[j + 2U] << 8) | ((uint32_t)data[j + 3U]);
     }
     for (; i < 64U; ++i) {
-        m[i] = SIG1(m[i - 2U]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
+        m[i] = SIG1(m[i - 2U]) + m[i - 7U] + SIG0(m[i - 15]) + m[i - 16];
     }
 
     a = state[0];
@@ -204,7 +204,7 @@ dds_auth_status_t dds_auth_generate_challenge(uint8_t *challenge, uint32_t len)
     }
 
     for (uint32_t i = 0; i < len; i++) {
-        seed = (seed * 1103515245U) + 12345;
+        seed = (seed * 1103515245U) + 12345U;
         challenge[i] = (uint8_t)(seed >> 16);
     }
 
@@ -241,7 +241,7 @@ dds_auth_context_t* dds_auth_init(const dds_security_config_t *config)
 
     /* Configure defaults */
     ctx->handshake_timeout_ms = config->handshake_timeout_ms > 0U ? config->handshake_timeout_ms : DDS_AUTH_DEFAULT_TIMEOUT_MS;
-    ctx->max_retries = config->max_handshake_attempts > 0U ? config->max_handshake_attempts : 3;
+    ctx->max_retries = config->max_handshake_attempts > 0U ? config->max_handshake_attempts : 3U;
     ctx->validate_cert_chain = true;
     ctx->check_crl = false;
     ctx->check_ocsp = false;
@@ -355,7 +355,7 @@ dds_auth_status_t dds_auth_validate_certificate(dds_auth_context_t *ctx,
         return DDS_AUTH_ERROR_INVALID_PARAM;
     }
 
-    if ((cert->length == 0U) || (ca_cert->length == 0)) {
+    if ((cert->length == 0U) || (ca_cert->length == 0U)) {
         return DDS_AUTH_ERROR_INVALID_CERT;
     }
 
@@ -553,7 +553,7 @@ dds_auth_status_t dds_auth_derive_key(dds_auth_context_t *ctx,
         dds_auth_sha256(hash, 32, hash);
     }
 
-    uint32_t copy_len = (key_len < 32U) ? key_len : 32;
+    uint32_t copy_len = (key_len < 32U) ? key_len : 32U;
     memcpy(key, hash, copy_len);
 
     /* If need more key material, derive additional blocks */
@@ -567,7 +567,7 @@ dds_auth_status_t dds_auth_derive_key(dds_auth_context_t *ctx,
             dds_auth_sha256(additional, 32, additional);
 
             uint32_t remaining = key_len - offset;
-            copy_len = (remaining < 32U) ? remaining : 32;
+            copy_len = (remaining < 32U) ? remaining : 32U;
             memcpy(key + offset, additional, copy_len);
         }
     }

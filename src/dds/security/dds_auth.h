@@ -22,7 +22,7 @@ extern "C" {
  * ============================================================================ */
 
 #define DDS_AUTH_MAX_HANDSHAKES             32
-#define DDS_AUTH_DEFAULT_TIMEOUT_MS         5000
+#define DDS_AUTH_DEFAULT_TIMEOUT_MS         5000U
 #define DDS_AUTH_MAX_CHALLENGE_SIZE         256
 #define DDS_AUTH_MAX_SIGNATURE_SIZE         512
 

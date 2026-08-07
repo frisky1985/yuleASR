@@ -716,7 +716,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
                                                    uint32_t max_len,
                                                    uint32_t *actual_len)
 {
-    if ((ctx == NULL) || (endpoint == NULL) || (buffer == NULL) || actual_len == NULL) {
+    if ((ctx == NULL) || (endpoint == NULL) || (buffer == NULL) || (actual_len == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -751,7 +751,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     memcpy(&buffer[pos], endpoint->topic_name, topic_len);
     pos += topic_len;
     /* 4字节对齐 */
-    while ((pos % 4U) != 0) { buffer[pos] = 0; pos++; }
+    while ((pos % 4U) != 0U) { buffer[pos] = 0; pos++; }
     
     /* 类型名称 */
     uint32_t type_len = strlen(endpoint->type_name);
@@ -765,7 +765,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     pos++;
     memcpy(&buffer[pos], endpoint->type_name, type_len);
     pos += type_len;
-    while ((pos % 4U) != 0) { buffer[pos] = 0; pos++; }
+    while ((pos % 4U) != 0U) { buffer[pos] = 0; pos++; }
     
     /* 可靠性 */
     buffer[pos] = (endpoint->reliability_kind >> 24) & 0xFFU;

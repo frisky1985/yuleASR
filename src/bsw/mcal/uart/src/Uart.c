@@ -382,7 +382,7 @@ static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate)
     bfDiv = BaudRate - 1U;
     
     /* UBMR = 参考时钟 / (16 * 分额) - 1 */
-    bmDiv = (refClock / div / 16U) - 1;
+    bmDiv = (refClock / div / 16U) - 1U;
     
     *(base + (UART_UBIR_OFFSET / 4U)) = bfDiv;
     *(base + (UART_UBMR_OFFSET / 4U)) = bmDiv;

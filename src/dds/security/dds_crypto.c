@@ -210,7 +210,7 @@ static void inv_shift_rows(uint8_t state[4][4])
 
 static uint8_t xtime(uint8_t x)
 {
-    return ((x << 1U) ^ (((x >> 7) & 1) * 0x1b));
+    return ((x << 1U) ^ (((x >> 7U) & 1) * 0x1b));
 }
 
 static void mix_columns(uint8_t state[4][4])
@@ -491,7 +491,7 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
 
     for (int block = 0; block < 3; block++) {
         /* T(i) = HMAC-SHA256(PRK, T(i-1) | info | counter) */
-        uint8_t input[64U + sizeof(info) + 1];
+        uint8_t input[64U + sizeof(info) + 1U];
         uint32_t input_len = 0;
 
         if (block > 0) {

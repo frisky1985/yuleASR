@@ -76,7 +76,7 @@ static eth_status_t eth_mac_validate_config(const eth_mac_config_t *config)
     }
 
     /* 验证帧过滤配置 */
-    if ((config->filter.max_frame_size < 64U) || (config->filter.max_frame_size > 9000)) {
+    if ((config->filter.max_frame_size < 64U) || (config->filter.max_frame_size > 9000U)) {
         return ETH_INVALID_PARAM;
     }
 
@@ -328,7 +328,7 @@ eth_status_t eth_mac_set_filter(const eth_mac_filter_t *filter)
     }
 
     /* 验证帧大小 */
-    if ((filter->max_frame_size < 64U) || (filter->max_frame_size > 9000)) {
+    if ((filter->max_frame_size < 64U) || (filter->max_frame_size > 9000U)) {
         return ETH_INVALID_PARAM;
     }
 
