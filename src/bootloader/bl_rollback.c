@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include "bl_rollback.h"
 #include "bl_partition.h"
 #include "bl_time.h"
@@ -21,6 +22,9 @@
  * ============================================================================ */
 #define BL_ROLLBACK_MODULE_NAME     "BL_RB"
 #define BL_ROLLBACK_LOG_LEVEL       DDS_LOG_LEVEL_INFO
+
+/* 回滚记录 CRC 覆盖长度（排除 crc32 字段自身，避免自包含） */
+#define BL_ROLLBACK_RECORD_CRC_SIZE   (uint32_t)offsetof(bl_rollback_record_t, crc32)
 
 /* ============================================================================
  * 内部辅助函数
@@ -74,7 +78,7 @@ static bool validate_record(const bl_rollback_record_t *record)
     
     uint32_t calculated_crc = calculate_crc32(
         (const uint8_t*)record,
-        sizeof(bl_rollback_record_t) - sizeof(uint32_t)
+        BL_ROLLBACK_RECORD_CRC_SIZE
     );
     
     return (calculated_crc == record->crc32);
@@ -87,7 +91,7 @@ static void update_record_crc(bl_rollback_record_t *record)
 {
     record->crc32 = calculate_crc32(
         (const uint8_t*)record,
-        sizeof(bl_rollback_record_t) - sizeof(uint32_t)
+        BL_ROLLBACK_RECORD_CRC_SIZE
     );
 }
 

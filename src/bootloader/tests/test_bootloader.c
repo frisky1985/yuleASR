@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include "bl_partition.h"
 #include "bl_rollback.h"
+#include "bl_secure_boot.h"
+#include "bl_time.h"
+#include "../crypto_stack/csm/csm_core.h"
+#include "../crypto_stack/keym/keym_core.h"
 
 /* Test macros (mini framework, 仿 test_csm.c) */
 #define TEST_ASSERT(cond) \
@@ -107,6 +111,17 @@ static const bl_flash_driver_t mock_flash_driver = {
     .unlock = mock_flash_unlock,
     .lock = mock_flash_lock
 };
+
+/* ============================================================================
+ * Mock Time Provider — 可控时间源 (bl_time_get_ms 依赖)
+ * ============================================================================ */
+
+static uint64_t mock_time_ms = 1000;
+
+static uint64_t mock_get_time_ms(void)
+{
+    return mock_time_ms;
+}
 
 /* 回调记录 */
 static int switch_cb_count = 0;
@@ -416,6 +431,10 @@ static int test_rollback_basic(void)
     cfg.auto_rollback_enabled = true;
     cfg.preserve_history = true;
 
+    /* 注册时间源 (record_install/boot_result 依赖真实时间戳) */
+    mock_time_ms = 1000;
+    bl_time_set_provider(mock_get_time_ms);
+
     TEST_ASSERT_EQ(bl_rollback_init(&mgr, &cfg, NULL), BL_ROLLBACK_OK);
     TEST_ASSERT_EQ(bl_rollback_get_state(&mgr), BL_ROLLBACK_STATE_IDLE);
 
@@ -450,6 +469,9 @@ static int test_rollback_trigger(void)
     cfg.max_boot_attempts = 3;
     cfg.max_consecutive_failures = 2;
     cfg.auto_rollback_enabled = true;
+
+    mock_time_ms = 2000;
+    bl_time_set_provider(mock_get_time_ms);
 
     TEST_ASSERT_EQ(bl_rollback_init(&mgr, &cfg, NULL), BL_ROLLBACK_OK);
     uint8_t hash_old[32] = {0x21};
@@ -494,6 +516,9 @@ static int test_rollback_previous_version(void)
     cfg.max_boot_attempts = 3;
     cfg.max_consecutive_failures = 2;
     cfg.auto_rollback_enabled = true;
+
+    mock_time_ms = 3000;
+    bl_time_set_provider(mock_get_time_ms);
 
     TEST_ASSERT_EQ(bl_rollback_init(&mgr, &cfg, NULL), BL_ROLLBACK_OK);
 
@@ -543,6 +568,228 @@ static int test_rollback_error_paths(void)
     return 0;
 }
 
+static int test_rollback_time_unavailable(void)
+{
+    bl_rollback_manager_t mgr;
+    bl_partition_manager_t part_mgr;
+    bl_rollback_config_t cfg;
+    printf("  Testing rollback time-unavailable error paths...\n");
+
+    /* 无时间源：record_install 必须显式报错，不能静默写入 0 时间戳 */
+    bl_time_set_provider(NULL);
+
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.max_boot_attempts = 3;
+    cfg.max_consecutive_failures = 2;
+    cfg.auto_rollback_enabled = true;
+
+    TEST_ASSERT_EQ(bl_rollback_init(&mgr, &cfg, NULL), BL_ROLLBACK_OK);
+    uint8_t hash[32] = {0x61};
+    TEST_ASSERT_EQ(bl_rollback_record_install(&mgr, 0x200, 1, hash), BL_ROLLBACK_ERROR_TIME_UNAVAILABLE);
+
+    /* 分区 commit_switch 无时间源 → 显式报错 */
+    memset(&part_mgr, 0, sizeof(part_mgr));
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(bl_partition_init(&part_mgr, &mock_flash_driver, 0), BL_OK);
+    TEST_ASSERT_EQ(bl_partition_table_init_default(&part_mgr, MOCK_FLASH_SIZE), BL_OK);
+    TEST_ASSERT_EQ(bl_partition_switch_active(&part_mgr, "app_b"), BL_OK);
+    TEST_ASSERT_EQ(bl_partition_commit_switch(&part_mgr), BL_ERROR_TIME_UNAVAILABLE);
+
+    bl_partition_deinit(&part_mgr);
+    bl_rollback_deinit(&mgr);
+
+    /* 恢复时间源，避免影响后续测试 */
+    bl_time_set_provider(mock_get_time_ms);
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_rollback_save_load_record(void)
+{
+    bl_partition_manager_t part_mgr;
+    bl_rollback_manager_t mgr;
+    bl_rollback_config_t cfg;
+    printf("  Testing rollback save/load record persistence...\n");
+
+    memset(&part_mgr, 0, sizeof(part_mgr));
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(bl_partition_init(&part_mgr, &mock_flash_driver, 0), BL_OK);
+    TEST_ASSERT_EQ(bl_partition_table_init_default(&part_mgr, MOCK_FLASH_SIZE), BL_OK);
+
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.max_boot_attempts = 3;
+    cfg.max_consecutive_failures = 2;
+    cfg.auto_rollback_enabled = true;
+
+    mock_time_ms = 4000;
+    bl_time_set_provider(mock_get_time_ms);
+
+    TEST_ASSERT_EQ(bl_rollback_init(&mgr, &cfg, &part_mgr), BL_ROLLBACK_OK);
+
+    uint8_t hash_old[32] = {0x51};
+    uint8_t hash_new[32] = {0x52};
+    TEST_ASSERT_EQ(bl_rollback_record_install(&mgr, 0x100, 0, hash_old), BL_ROLLBACK_OK);
+    TEST_ASSERT_EQ(bl_rollback_record_install(&mgr, 0x200, 1, hash_new), BL_ROLLBACK_OK);
+
+    /* 保存到持久存储地址 */
+    uint32_t record_addr = 0x10000;
+    TEST_ASSERT_EQ(bl_rollback_save_record(&mgr, record_addr), BL_ROLLBACK_OK);
+
+    /* 篡改运行态记录后从持久存储恢复 */
+    memset(&mgr.record, 0, sizeof(mgr.record));
+    TEST_ASSERT_EQ(bl_rollback_load_record(&mgr, record_addr), BL_ROLLBACK_OK);
+    TEST_ASSERT_EQ(mgr.record.magic, BL_ROLLBACK_MAGIC);
+    TEST_ASSERT_EQ(mgr.record.history_count, 2);
+    TEST_ASSERT_EQ(mgr.record.history[0].version, 0x100);
+    TEST_ASSERT_EQ(mgr.record.history[1].version, 0x200);
+    TEST_ASSERT(mgr.record.history[1].install_time > 0);
+
+    /* 损坏持久数据 → 加载必须报错 */
+    mock_flash[record_addr] = 0x00;  /* 破坏魔数 */
+    TEST_ASSERT_EQ(bl_rollback_load_record(&mgr, record_addr), BL_ROLLBACK_ERROR_STORAGE_ERROR);
+
+    /* 重新保存后恢复可用 */
+    TEST_ASSERT_EQ(bl_rollback_save_record(&mgr, record_addr), BL_ROLLBACK_OK);
+    TEST_ASSERT_EQ(bl_rollback_load_record(&mgr, record_addr), BL_ROLLBACK_OK);
+
+    /* 未初始化 */
+    bl_rollback_manager_t bad;
+    memset(&bad, 0, sizeof(bad));
+    TEST_ASSERT_EQ(bl_rollback_save_record(&bad, record_addr), BL_ROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(bl_rollback_load_record(&bad, record_addr), BL_ROLLBACK_ERROR_NOT_INITIALIZED);
+
+    /* 无分区管理器 → STORAGE_ERROR */
+    bl_rollback_manager_t mgr2;
+    TEST_ASSERT_EQ(bl_rollback_init(&mgr2, &cfg, NULL), BL_ROLLBACK_OK);
+    TEST_ASSERT_EQ(bl_rollback_save_record(&mgr2, record_addr), BL_ROLLBACK_ERROR_STORAGE_ERROR);
+    TEST_ASSERT_EQ(bl_rollback_load_record(&mgr2, record_addr), BL_ROLLBACK_ERROR_STORAGE_ERROR);
+
+    /* 注入 flash 失败 */
+    mock_program_fail = 1;
+    TEST_ASSERT_EQ(bl_rollback_save_record(&mgr, record_addr), BL_ROLLBACK_ERROR_STORAGE_ERROR);
+    mock_program_fail = 0;
+    mock_erase_fail = 1;
+    TEST_ASSERT_EQ(bl_rollback_save_record(&mgr, record_addr), BL_ROLLBACK_ERROR_STORAGE_ERROR);
+    mock_erase_fail = 0;
+
+    bl_rollback_deinit(&mgr2);
+    bl_rollback_deinit(&mgr);
+    bl_partition_deinit(&part_mgr);
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_secure_boot_cert_chain(void)
+{
+    printf("  Testing secure boot cert chain verification...\n");
+
+    csm_context_t *csm = csm_init(NULL);
+    keym_context_t *keym = keym_init(NULL, csm);
+    TEST_ASSERT(csm != NULL);
+    TEST_ASSERT(keym != NULL);
+
+    bl_secure_boot_context_t ctx;
+    bl_secure_boot_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.verify_cert_chain = true;
+    cfg.verify_cert_validity = true;
+    cfg.root_ca_key_slot = 0;
+    cfg.oem_key_slot = 1;
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx, &cfg, csm, keym), BL_SB_OK);
+
+    uint8_t root_key[64] = {0xAA};
+
+    bl_cert_chain_t chain;
+    memset(&chain, 0, sizeof(chain));
+    chain.num_certs = 2;
+
+    /* 根证书 (index 1) */
+    chain.certs[1].data = (uint8_t*)"root_cert_data";
+    chain.certs[1].size = 14;
+    chain.certs[1].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    chain.certs[1].valid_from = 0;
+    chain.certs[1].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+    chain.certs[1].is_ca = true;
+    chain.certs[1].public_key_len = 64;
+    memset(chain.certs[1].public_key, 0xBB, 64);
+    memset(chain.certs[1].signature, 0x11, 64);
+
+    /* 叶子证书 (index 0) */
+    chain.certs[0].data = (uint8_t*)"leaf_cert_data";
+    chain.certs[0].size = 14;
+    chain.certs[0].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    chain.certs[0].valid_from = 0;
+    chain.certs[0].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+    chain.certs[0].public_key_len = 64;
+    memset(chain.certs[0].public_key, 0xCC, 64);
+    memset(chain.certs[0].signature, 0x22, 64);
+
+    mock_time_ms = 1000;
+    bl_time_set_provider(mock_get_time_ms);
+
+    /* 正常链验证通过 */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_OK);
+    TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_CERT_VALID);
+
+    /* 证书过期 */
+    chain.certs[0].valid_until = 500;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_EXPIRED);
+    chain.certs[0].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+
+    /* 无时间源 → 显式报错（不能恒真） */
+    bl_time_set_provider(NULL);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_TIME_UNAVAILABLE);
+    bl_time_set_provider(mock_get_time_ms);
+
+    /* 签发者非 CA → CERT_INVALID */
+    chain.certs[1].is_ca = false;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_INVALID);
+    chain.certs[1].is_ca = true;
+
+    /* 证书无数据 → CERT_INVALID */
+    chain.certs[0].data = NULL;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_INVALID);
+    chain.certs[0].data = (uint8_t*)"leaf_cert_data";
+
+    /* 不支持的签名类型 → INVALID_SIGNATURE */
+    chain.certs[0].sign_type = BL_SB_SIGN_RSA_PKCS1_SHA256;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
+    chain.certs[0].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+
+    /* NULL 参数 */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(NULL, &chain, root_key), BL_SB_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, NULL, root_key), BL_SB_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, NULL), BL_SB_ERROR_INVALID_PARAM);
+
+    /* 空链 / 超深链 */
+    chain.num_certs = 0;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_CHAIN_INVALID);
+    chain.num_certs = BL_SB_MAX_CERT_CHAIN_DEPTH + 1;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_CHAIN_INVALID);
+    chain.num_certs = 2;
+
+    /* 无KeyM：根证书回退 root_ca_key_slot；中间证书必须失败 */
+    bl_secure_boot_context_t ctx_nokeym;
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx_nokeym, &cfg, csm, NULL), BL_SB_OK);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx_nokeym, &chain, root_key), BL_SB_ERROR_CRYPTO_FAILURE);
+
+    /* lock_version 无时间源 → 显式报错 */
+    bl_time_set_provider(NULL);
+    TEST_ASSERT_EQ(bl_secure_boot_lock_version(&ctx, 0x100), BL_SB_ERROR_TIME_UNAVAILABLE);
+    bl_time_set_provider(mock_get_time_ms);
+    TEST_ASSERT_EQ(bl_secure_boot_lock_version(&ctx, 0x100), BL_SB_OK);
+    TEST_ASSERT(ctx.rollback_info.version_locked == true);
+    TEST_ASSERT(ctx.rollback_info.version_lock_timestamp > 0);
+
+    bl_secure_boot_deinit(&ctx_nokeym);
+    bl_secure_boot_deinit(&ctx);
+    keym_deinit(keym);
+    csm_deinit(csm);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
 /* ============================================================================
  * Test Runner
  * ============================================================================ */
@@ -576,6 +823,9 @@ int main(void)
     run_test(test_rollback_trigger, "Rollback Trigger");
     run_test(test_rollback_previous_version, "Rollback Previous Version");
     run_test(test_rollback_error_paths, "Rollback Error Paths");
+    run_test(test_rollback_time_unavailable, "Rollback Time Unavailable");
+    run_test(test_rollback_save_load_record, "Rollback Save/Load Record");
+    run_test(test_secure_boot_cert_chain, "Secure Boot Cert Chain");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);
