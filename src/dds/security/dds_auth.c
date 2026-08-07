@@ -60,13 +60,13 @@ static const uint8_t dh_g_2048[1] = { 0x02 };
  * SHA-256 Implementation
  * ============================================================================ */
 
-#define ROTR(x, n) (((x) >> (n)) | ((x) << (32 - (n))))
+#define ROTR(x, n) (((x) >> (n)) | ((x) << (32U - (n))))
 #define CH(x, y, z) (((x) & (y)) ^ (~(x) & (z)))
 #define MAJ(x, y, z) (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
-#define EP0(x) (ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
-#define EP1(x) (ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
+#define EP0(x) (ROTR(x, 2U) ^ ROTR(x, 13U) ^ ROTR(x, 22U))
+#define EP1(x) (ROTR(x, 6U) ^ ROTR(x, 11U) ^ ROTR(x, 25U))
 #define SIG0(x) (ROTR(x, 7U) ^ ROTR(x, 18U) ^ ((x) >> 3U))
-#define SIG1(x) (ROTR(x, 17) ^ ROTR(x, 19) ^ ((x) >> 10))
+#define SIG1(x) (ROTR(x, 17U) ^ ROTR(x, 19U) ^ ((x) >> 10U))
 
 static const uint32_t sha256_k[64] = {
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
@@ -88,7 +88,7 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64])
                ((uint32_t)data[j + 2U] << 8) | ((uint32_t)data[j + 3U]);
     }
     for (; i < 64U; ++i) {
-        m[i] = SIG1(m[i - 2U]) + m[i - 7U] + SIG0(m[i - 15]) + m[i - 16];
+        m[i] = SIG1(m[i - 2U]) + m[i - 7U] + SIG0(m[i - 15U]) + m[i - 16U];
     }
 
     a = state[0];

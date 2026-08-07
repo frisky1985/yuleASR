@@ -427,7 +427,7 @@ eth_status_t cbs_calc_idle_slope(uint32_t port_transmit_rate_bps,
         bandwidth_percent = CBS_IDLE_SLOPE_MAX_PERCENT;
     }
     
-    *idle_slope = (int64_t)port_transmit_rate_bps * bandwidth_percent / 100;
+    *idle_slope = (int64_t)port_transmit_rate_bps * (int64_t)bandwidth_percent / (int64_t)100;
     
     return ETH_OK;
 }

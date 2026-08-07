@@ -158,7 +158,7 @@ static inline uint64 Com_ExtractSignal(
         /* Big endian extraction */
         uint8 bytesToRead = (bitSize + bitOffset + 7U) / 8U;
         for (sint8 i = bytesToRead - 1U; i >= 0; i--) {
-            value = (value << 8) | data[bytePos + i];
+            value = (value << 8U) | data[(uint32_t)bytePos + (uint8_t)i];
         }
         value >>= bitOffset;
     }
@@ -198,7 +198,7 @@ static inline void Com_InsertSignal(
         uint8 bytesToWrite = (bitSize + bitOffset + 7U) / 8U;
         uint64 tempValue = value << bitOffset;
         for (sint8 i = bytesToWrite - 1U; i >= 0; i--) {
-            data[bytePos + i] = (uint8)((tempValue >> (i * 8)) & 0xFF);
+            data[(uint32_t)bytePos + (uint8_t)i] = (uint8)((tempValue >> ((uint8_t)i * 8U)) & 0xFFU);
         }
     }
 }

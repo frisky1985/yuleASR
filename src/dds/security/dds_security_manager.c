@@ -771,10 +771,10 @@ dds_security_status_t dds_security_detect_replay(dds_security_context_t *ctx,
     if ((seq_number > 0U) && (seq_number <= participant->last_seq_number)) {
         /* Check window for exact replay */
         int64_t diff = participant->last_seq_number - seq_number;
-        if ((unsigned int)((unsigned int)(diff)) < DDS_SECURITY_REPLAY_WINDOW_SIZE) {
+        if ((uint64_t)diff < (uint64_t)DDS_SECURITY_REPLAY_WINDOW_SIZE) {
             /* Check if this exact sequence number was seen */
-            uint32_t idx = (participant->replay_window.write_index - diff - 1 + DDS_SECURITY_REPLAY_WINDOW_SIZE) 
-                          % DDS_SECURITY_REPLAY_WINDOW_SIZE;
+            uint32_t idx = (uint32_t)(((uint64_t)participant->replay_window.write_index - (uint64_t)diff - 1U + DDS_SECURITY_REPLAY_WINDOW_SIZE) 
+                          % DDS_SECURITY_REPLAY_WINDOW_SIZE);
             if (participant->replay_window.window[idx] == seq_number) {
                 dds_security_trigger_event(ctx, DDS_SEC_EVT_REPLAY_DETECTED,
                                            DDS_SEC_SEVERITY_CRITICAL,

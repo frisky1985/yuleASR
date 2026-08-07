@@ -24,15 +24,15 @@ static uint64_t default_get_timestamp_us(void) {
 
 static uint64_t bytes_to_uint64(const uint8_t *data, uint8_t len) {
     uint64_t value = 0;
-    for (int i = 0; (i < len) && (i < 8); i++) {
-        value |= ((uint64_t)data[i] << (i * 8));
+    for (uint32_t i = 0U; (i < (uint32_t)len) && (i < 8U); i++) {
+        value |= ((uint64_t)data[i] << (i * 8U));
     }
     return value;
 }
 
 static void uint64_to_bytes(uint64_t value, uint8_t *data, uint8_t len) {
-    for (int i = 0; (i < len) && (i < 8); i++) {
-        data[i] = (uint8_t)((value >> (i * 8)) & 0xFFU);
+    for (uint32_t i = 0U; (i < (uint32_t)len) && (i < 8U); i++) {
+        data[i] = (uint8_t)((value >> (i * 8U)) & 0xFFU);
     }
 }
 

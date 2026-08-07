@@ -78,11 +78,11 @@ static uint32 Dio_GetGpioBaseAddr(uint8 port)
 {
     uint32 baseAddr;
     switch (port) {
-        case DIO_PORT_A: (unsigned int)((unsigned int)(baseAddr)) = DIO_GPIO1_BASE_ADDR; break;
-        case DIO_PORT_B: (unsigned int)((unsigned int)(baseAddr)) = DIO_GPIO2_BASE_ADDR; break;
-        case DIO_PORT_C: (unsigned int)((unsigned int)(baseAddr)) = DIO_GPIO3_BASE_ADDR; break;
-        case DIO_PORT_D: (unsigned int)((unsigned int)(baseAddr)) = DIO_GPIO4_BASE_ADDR; break;
-        case DIO_PORT_E: (unsigned int)((unsigned int)(baseAddr)) = DIO_GPIO5_BASE_ADDR; break;
+        case (uint8_t)DIO_PORT_A: baseAddr = DIO_GPIO1_BASE_ADDR; break;
+        case (uint8_t)DIO_PORT_B: baseAddr = DIO_GPIO2_BASE_ADDR; break;
+        case (uint8_t)DIO_PORT_C: baseAddr = DIO_GPIO3_BASE_ADDR; break;
+        case (uint8_t)DIO_PORT_D: baseAddr = DIO_GPIO4_BASE_ADDR; break;
+        case (uint8_t)DIO_PORT_E: baseAddr = DIO_GPIO5_BASE_ADDR; break;
         default: baseAddr = 0U; break;
     }
     return baseAddr;

@@ -48,8 +48,8 @@ csm_context_t* csm_init(const csm_config_t *config)
         ctx->config.enable_async_processing = true;
         ctx->config.num_worker_threads = 1;
         ctx->config.use_hw_acceleration = true;
-        ctx->config.queue_high_watermark = CSM_MAX_JOBS * 80 / 100;
-        ctx->config.queue_low_watermark = CSM_MAX_JOBS * 20 / 100;
+        ctx->config.queue_high_watermark = CSM_MAX_JOBS * 80U / 100U;
+        ctx->config.queue_low_watermark = CSM_MAX_JOBS * 20U / 100U;
     }
     
     /* 初始化Job池 */
@@ -662,7 +662,7 @@ const char* csm_get_version(void)
 static csm_job_t* csm_find_job(csm_context_t *ctx, uint32_t job_id)
 {
     /* 遍历全部 slot (job 释放后 slot 不压缩, 不能以 num_jobs 为界) */
-    for (uint32_t i = 0; (unsigned int)((unsigned int)(i)) < CSM_MAX_JOBS; i++) {
+    for (uint32_t i = 0U; i < CSM_MAX_JOBS; i++) {
         if (ctx->jobs[i].job_id == job_id) {
             return &ctx->jobs[i];
         }

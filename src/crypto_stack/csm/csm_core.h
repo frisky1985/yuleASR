@@ -22,7 +22,7 @@ extern "C" {
  * 配置常量
  * ============================================================================ */
 
-#define CSM_MAX_JOBS                    32
+#define CSM_MAX_JOBS                    32U
 #define CSM_MAX_CALLBACKS               16
 #define CSM_MAX_KEY_REFERENCES          64
 #define CSM_JOB_ID_INVALID              0xFFFFFFFF

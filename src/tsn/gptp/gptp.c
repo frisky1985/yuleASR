@@ -470,7 +470,7 @@ eth_status_t gptp_run_bmc(uint8_t domain_index) {
         domain->state = GPTP_DOMAIN_STATE_SYNCHRONIZED;
         
         /* 设置所有端口为Master */
-        for (int i = 0; i < g_gptp_state.config.port_count; i++) {
+        for (uint32_t i = 0U; i < (uint32_t)g_gptp_state.config.port_count; i++) {
             g_gptp_state.ports[i].state = GPTP_PORT_STATE_MASTER;
         }
         
@@ -481,7 +481,7 @@ eth_status_t gptp_run_bmc(uint8_t domain_index) {
         domain->bmc_state = GPTP_BMC_STATE_PASSIVE;
         
         /* 设置端口为Slave */
-        for (int i = 0; i < g_gptp_state.config.port_count; i++) {
+        for (uint32_t i = 0U; i < (uint32_t)g_gptp_state.config.port_count; i++) {
             g_gptp_state.ports[i].state = GPTP_PORT_STATE_SLAVE;
         }
     }
@@ -826,7 +826,7 @@ eth_status_t gptp_check_clock_integrity(uint8_t domain_index, bool *integrity_ok
  * ============================================================================ */
 
 void gptp_timestamp_add(const gptp_timestamp_t *a, int64_t b_ns, gptp_timestamp_t *result) {
-    uint64_t total_ns = gptp_timestamp_to_ns(a) + b_ns;
+    uint64_t total_ns = gptp_timestamp_to_ns(a) + (uint64_t)b_ns;
     gptp_ns_to_timestamp(total_ns, result);
 }
 

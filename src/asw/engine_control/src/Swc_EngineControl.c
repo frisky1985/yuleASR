@@ -488,11 +488,11 @@ uint16 Swc_EngineControl_CalculateFuelInjection(uint16 speed, uint16 load, sint1
     /* Temperature correction (enrichment for cold start) */
     if (temp < 20) {
         tempCorrection = (20 - temp) * 50;  /* Extra fuel for cold engine */
-        fuelTime += tempCorrection;
+        fuelTime += (uint32_t)tempCorrection;
     } else if (temp > 90) {
         tempCorrection = (temp - 90) * 10;  /* Slight reduction for hot engine */
         if (fuelTime > (uint32)tempCorrection) {
-            fuelTime -= tempCorrection;
+            fuelTime -= (uint32_t)tempCorrection;
         }
     }
 

@@ -391,11 +391,11 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCert(const char* alias,
     ret = mbedtls_x509_crt_verify(&crt, &crt, NULL_PTR, NULL_PTR, &flags, 
                                    NULL_PTR, NULL_PTR);
     if (ret != 0 ) {
-        if (((unsigned int)((unsigned int)(flags)) & MBEDTLS_X509_BADCERT_EXPIRED) != 0U) {
+        if (((uint32_t)flags & (uint32_t)MBEDTLS_X509_BADCERT_EXPIRED) != 0U) {
             *status = MQTT_CERT_STATUS_EXPIRED;
-        } else if (((unsigned int)((unsigned int)(flags)) & MBEDTLS_X509_BADCERT_REVOKED) != 0U) {
+        } else if (((uint32_t)flags & (uint32_t)MBEDTLS_X509_BADCERT_REVOKED) != 0U) {
             *status = MQTT_CERT_STATUS_REVOKED;
-        } else if (((unsigned int)((unsigned int)(flags)) & MBEDTLS_X509_BADCERT_NOT_TRUSTED) != 0U) {
+        } else if (((uint32_t)flags & (uint32_t)MBEDTLS_X509_BADCERT_NOT_TRUSTED) != 0U) {
             *status = MQTT_CERT_STATUS_UNTRUSTED;
         } else {
             *status = MQTT_CERT_STATUS_SIGNATURE_FAILED;
@@ -797,19 +797,19 @@ static void CertMgr_ParseSubject(const mbedtls_x509_name* name,
         buf[len] = '\0';
         
         /* 根据OID识别属性类型 */
-        if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_AT_CN, &cur->oid)) == 0 ) {
+        if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_CN, &cur->oid)) == 0U ) {
             strncpy(subject->commonName, buf, sizeof(subject->commonName) - 1U);
-        } else if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid)) == 0 ) {
+        } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_ORGANIZATION_NAME, &cur->oid)) == 0U ) {
             strncpy(subject->organization, buf, sizeof(subject->organization) - 1U);
-        } else if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_AT_ORG_UNIT, &cur->oid)) == 0 ) {
+        } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_ORG_UNIT, &cur->oid)) == 0U ) {
             strncpy(subject->organizationalUnit, buf, sizeof(subject->organizationalUnit) - 1U);
-        } else if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_AT_COUNTRY, &cur->oid)) == 0 ) {
+        } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_COUNTRY, &cur->oid)) == 0U ) {
             strncpy(subject->country, buf, sizeof(subject->country) - 1U);
-        } else if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid)) == 0 ) {
+        } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_STATE_PROVINCE, &cur->oid)) == 0U ) {
             strncpy(subject->state, buf, sizeof(subject->state) - 1U);
-        } else if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_AT_LOCALITY, &cur->oid)) == 0 ) {
+        } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_AT_LOCALITY, &cur->oid)) == 0U ) {
             strncpy(subject->locality, buf, sizeof(subject->locality) - 1U);
-        } else if ((uint32_t)(MQTT_OID_CMP(UMBEDTLS_OID_PKCS9_EMAIL, &cur->oid)) == 0 ) {
+        } else if ((uint32_t)(MQTT_OID_CMP(MBEDTLS_OID_PKCS9_EMAIL, &cur->oid)) == 0U ) {
             strncpy(subject->email, buf, sizeof(subject->email) - 1U);
         }
     }

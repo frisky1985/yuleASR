@@ -481,7 +481,7 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
 
     /* Simplified HKDF extract */
     for (int i = 0; i < 32; i++) {
-        prk[i] = (i < secret_len) ? shared_secret[i] : 0;
+        prk[i] = (i < (int32_t)secret_len) ? shared_secret[i] : 0U;
     }
 
     /* Simplified HKDF expand */
@@ -506,9 +506,9 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
 
         /* Simplified hash - use XOR based mixing */
         for (int i = 0; i < 32; i++) {
-            okm[(block * 32) + i] = prk[i];
+            okm[((uint32_t)block * 32U) + (uint32_t)i] = prk[i];
             for (uint32_t j = 0; j < input_len; j++) {
-                okm[(block * 32) + i] ^= input[j] ^ ((j * 7U) + (i * 13U));
+                okm[((uint32_t)block * 32U) + (uint32_t)i] ^= input[j] ^ ((j * 7U) + ((uint32_t)i * 13U));
             }
         }
     }
@@ -647,7 +647,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
     }
 
     /* Validate key length */
-    if ((key_len != 16U) && (key_len != 24U) && (key_len != 32)) {
+    if ((key_len != 16U) && (key_len != 24U) && (key_len != 32U)) {
         return DDS_CRYPTO_ERROR_KEY_INVALID;
     }
 

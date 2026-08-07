@@ -103,7 +103,7 @@ STATIC void Swc_CommunicationManager_ProcessRxSignals(void)
     Swc_PduInfoType pdu;
 
     /* Read PDU from RTE */
-    if ((uint8_t)((uint8_t)((uint8_t)(Rte_Read_PduData(&pdu)))) == RTE_E_OK) {
+    if ((uint8_t)(Rte_Read_PduData(&pdu)) == (uint8_t)RTE_E_OK) {
         /* Find or create PDU entry */
         sint16 pduIndex = Swc_CommunicationManager_FindRxPdu(pdu.pduId);
 
@@ -164,7 +164,7 @@ STATIC void Swc_CommunicationManager_ProcessTxSignals(void)
         pdu->timestamp = Rte_GetTime();
 
         /* Send PDU via RTE */
-        if ((uint8_t)((uint8_t)((uint8_t)(Rte_Write_PduData(pdu)))) == (uint32_t)(RTE_E_OK)) {
+        if ((uint8_t)(Rte_Write_PduData(pdu)) == (uint8_t)RTE_E_OK) {
             swcCommManager.statistics.txPdus++;
         } else {
             swcCommManager.statistics.txErrors++;
@@ -487,7 +487,7 @@ Rte_StatusType Swc_CommunicationManager_SendPdu(const Swc_PduInfoType* pdu)
     swcCommManager.txPdus[pduIndex] = *pdu;
 
     /* Send immediately via RTE */
-    if ((uint8_t)((uint8_t)((uint8_t)(Rte_Write_PduData(pdu)))) == (uint32_t)(RTE_E_OK)) {
+    if ((uint8_t)(Rte_Write_PduData(pdu)) == (uint8_t)RTE_E_OK) {
         swcCommManager.statistics.txPdus++;
         return RTE_E_OK;
     } else {

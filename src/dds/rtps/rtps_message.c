@@ -66,12 +66,12 @@ static inline int64_t read_i64(const uint8_t *p, bool little_endian) {
         return ((int64_t)p[7] << 56) | ((int64_t)p[6] << 48) |
                ((int64_t)p[5] << 40) | ((int64_t)p[4] << 32) |
                ((int64_t)p[3] << 24) | ((int64_t)p[2] << 16) |
-               ((int64_t)p[1U] << 8U) | p[0U];
+               ((int64_t)p[1U] << 8U) | (int64_t)p[0U];
     }
     return ((int64_t)p[0] << 56) | ((int64_t)p[1] << 48) |
            ((int64_t)p[2] << 40) | ((int64_t)p[3] << 32) |
            ((int64_t)p[4] << 24) | ((int64_t)p[5] << 16) |
-           ((int64_t)p[6U] << 8U) | p[7U];
+           ((int64_t)p[6U] << 8U) | (int64_t)p[7U];
 }
 
 static inline void write_i64(uint8_t *p, int64_t v, bool little_endian) {
@@ -150,8 +150,8 @@ bool rtps_header_check_magic(const uint8_t *data, uint32_t len)
     if ((data == NULL) || (len < 4U)) {
         return false;
     }
-    return ((data[0U] == (uint8_t)('R')) && (data[1] == 'T') && 
-            (data[2U] == (uint8_t)('P')) && (data[3] == 'S'));
+    return ((data[0U] == (uint8_t)('R')) && (data[1] == (uint8_t)'T') && 
+            (data[2U] == (uint8_t)('P')) && (data[3] == (uint8_t)'S'));
 }
 
 /* ============================================================================
@@ -433,7 +433,7 @@ eth_status_t rtps_message_add_gap(rtps_message_builder_t *builder,
     uint32_t num_words = (num_bits + 31U) / 32U;
     if (num_words > 8U) { num_words = 8; }
     
-    uint32_t submsg_size = 4U + 4U + 8U + 4U + (num_words * 4);
+    uint32_t submsg_size = 4U + 4U + 8U + 4U + (num_words * 4U);
     
     if (((unsigned int)(builder->current_pos) + RTPS_SUBMESSAGE_HEADER_SIZE + submsg_size) > builder->max_size) {
         return ETH_ERROR;
@@ -478,7 +478,7 @@ eth_status_t rtps_message_add_info_dst(rtps_message_builder_t *builder,
         return ETH_INVALID_PARAM;
     }
     
-    if (((unsigned int)(builder->current_pos) + RTPS_SUBMESSAGE_HEADER_SIZE + 12) > builder->max_size) {
+    if ((builder->current_pos + RTPS_SUBMESSAGE_HEADER_SIZE + 12U) > builder->max_size) {
         return ETH_ERROR;
     }
     
@@ -777,7 +777,7 @@ int64_t rtps_seqnum_to_int64(const rtps_sequence_number_t *seq)
     if (seq == NULL) {
         return 0;
     }
-    return ((int64_t)seq->high << 32U) | seq->low;
+    return ((int64_t)seq->high << 32U) | (int64_t)seq->low;
 }
 
 void rtps_int64_to_seqnum(int64_t value, rtps_sequence_number_t *seq)
@@ -958,11 +958,11 @@ eth_status_t rtps_parse_autosar_extension(const uint8_t *data,
         uint16_t param_id = (data[pos] << 8) | data[pos + 1U];
         uint16_t param_len = (data[pos + 2U] << 8) | data[pos + 3U];
         
-        if ((unsigned int)(param_id) == RTPS_PARAMETER_ID_SENTINEL) {
+        if ((unsigned int)param_id == RTPS_PARAMETER_ID_SENTINEL) {
             break;
         }
         
-        if ((param_id == 0x8001) && (param_len == 4U) && ((unsigned int)(pos) + 8UU <= len)) {
+        if ((param_id == 0x8001U) && (param_len == 4U) && ((pos + 8U) <= len)) {
             *out_activation_time_us = ((uint32_t)data[pos + 4U] << 24U) |
                                        ((uint32_t)data[pos + 5U] << 16U) |
                                        ((uint32_t)data[pos + 6U] << 8) |
@@ -970,7 +970,7 @@ eth_status_t rtps_parse_autosar_extension(const uint8_t *data,
             return ETH_OK;
         }
         
-        pos += 4 + param_len;
+        pos += 4U + param_len;
         pos = (pos + 3U) & ~3U;
     }
     

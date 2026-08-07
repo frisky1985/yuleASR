@@ -125,7 +125,7 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
 
         /* Switch to target clock source */
         timeout = MCU_CLOCK_SWITCH_TIMEOUT;
-        while (((unsigned int)((unsigned int)((unsigned int)((unsigned int)((unsigned int)(REG_READ32(MCU_CCM_CCSR)))))) & 0x01U) != clockConfig->ClockSource) {
+        while ((REG_READ32(MCU_CCM_CCSR) & 0x01U) != (uint8_t)clockConfig->ClockSource) {
             if (timeout == 0U) {
                 status = E_NOT_OK;
                 break;

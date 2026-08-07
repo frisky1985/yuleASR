@@ -78,7 +78,7 @@ static double kalman_update(tbf_state_t *state, double measurement,
     // 更新
     double kalman_gain = predicted_error / (predicted_error + measurement_noise);
     state->kalman_estimate = predicted_estimate + (kalman_gain * (measurement - predicted_estimate));
-    state->kalman_error = (1U - (unsigned int)(kalman_gain)) * predicted_error;
+    state->kalman_error = ((double)(1U - (unsigned int)(kalman_gain))) * predicted_error;
     
     return state->kalman_estimate;
 }
@@ -120,7 +120,7 @@ static eth_status_t process_window_sample(tbf_handle_t *tbf,
     
     switch (tbf->config.policy) {
         case TBF_POLICY_AVERAGE:
-            tbf->state.accumulator += (uint32_t)(value);
+            tbf->state.accumulator += (double)value;
             break;
             
         case TBF_POLICY_PEAK_HOLD:
@@ -174,7 +174,7 @@ static eth_status_t generate_compressed_sample(tbf_handle_t *tbf,
     switch (tbf->config.policy) {
         case TBF_POLICY_AVERAGE:
             if (tbf->state.samples_in_window > 0U) {
-                uint32_t avg_value = (uint32_t)(tbf->state.accumulator / tbf->state.samples_in_window);
+                uint32_t avg_value = (uint32_t)(tbf->state.accumulator / (double)tbf->state.samples_in_window);
                 memcpy(output, &avg_value, sizeof(uint32_t));
                 *output_size = sizeof(uint32_t);
             }
@@ -302,7 +302,7 @@ eth_status_t tbf_process_sample(tbf_handle_t *tbf,
     if (tbf->config.enable_jitter_control) {
         int64_t jitter = (int64_t)current_time - (int64_t)(tbf->state.last_output_time + 
                                                           tbf->config.minimum_separation_us);
-        if (labs(jitter) > tbf->config.max_jitter_us) {
+        if ((uint32_t)labs(jitter) > tbf->config.max_jitter_us) {
             DDS_LOG_WARN(DDS_LOG_MODULE_CORE, "TBF", "Jitter exceeded threshold: %ld us", jitter);
         }
     }

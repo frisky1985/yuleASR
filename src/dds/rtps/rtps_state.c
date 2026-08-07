@@ -183,8 +183,8 @@ static bool get_bitmap_bit(const rtps_sequence_number_set_t *set, uint32_t bit)
 static int64_t seqnum_diff(const rtps_sequence_number_t *seq1,
                            const rtps_sequence_number_t *seq2)
 {
-    int64_t v1 = ((int64_t)seq1->high << 32U) | seq1->low;
-    int64_t v2 = ((int64_t)seq2->high << 32U) | seq2->low;
+    int64_t v1 = ((int64_t)seq1->high << 32U) | (int64_t)seq1->low;
+    int64_t v2 = ((int64_t)seq2->high << 32U) | (int64_t)seq2->low;
     return v1 - v2;
 }
 

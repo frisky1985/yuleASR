@@ -657,7 +657,7 @@ static tcpip_error_t tcpip_arp_update_entry(int16_t idx,
 {
     tcpip_error_t result = TCPIP_OK;
 
-    if ((idx >= 0U) && ((unsigned int)(idx) < TCPIP_ARP_CACHE_SIZE) && (mac_addr != NULL))
+    if ((idx >= 0) && ((uint32_t)idx < (uint32_t)TCPIP_ARP_CACHE_SIZE) && (mac_addr != NULL))
     {
         (void)memcpy(g_arp_ctx.entries[idx].mac_addr, mac_addr, 6u);
         g_arp_ctx.entries[idx].iface_id = iface_id;

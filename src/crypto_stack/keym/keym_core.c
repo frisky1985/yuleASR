@@ -993,5 +993,5 @@ static uint32_t keym_get_key_type_size(keym_key_type_t type)
 static bool keym_is_key_usage_allowed(keym_slot_info_t *slot, keym_key_usage_t usage)
 {
     if (slot == NULL) { return false; }
-    return (slot->usage_flags & usage) != 0U;
+    return ((uint32_t)slot->usage_flags & (uint32_t)usage) != 0U;
 }

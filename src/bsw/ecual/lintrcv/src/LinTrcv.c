@@ -323,7 +323,7 @@ static Std_ReturnType LinTrcv_DetectWakeupReason(uint8 Channel)
         /* Check NWake pin for local wake-up */
         LinTrcv_PinStateType nWakeState = LinTrcv_ReadDioPin(channelCfg->NwadrsPinDio);
         
-        if (nWakeState == LINTRCV_TJA1021_NWAKE_ACTIVE)
+        if ((uint32_t)nWakeState == (uint32_t)LINTRCV_TJA1021_NWAKE_ACTIVE)
         {
             /* NWake is active low - local wake-up detected */
             wakeupReason = LINTRCV_WU_BY_PIN;
@@ -335,7 +335,7 @@ static Std_ReturnType LinTrcv_DetectWakeupReason(uint8 Channel)
     {
         LinTrcv_PinStateType nErrState = LinTrcv_ReadDioPin(channelCfg->NerrPinDio);
         
-        if (nErrState == LINTRCV_TJA1021_NERR_ERROR)
+        if ((uint32_t)nErrState == (uint32_t)LINTRCV_TJA1021_NERR_ERROR)
         {
             /* Error condition detected */
             wakeupReason = LINTRCV_WU_BY_SYSERR;
@@ -758,7 +758,7 @@ void LinTrcv_MainFunction(void)
         {
             LinTrcv_PinStateType nWakeState = LinTrcv_ReadDioPin(channelCfg->NwadrsPinDio);
             
-            if (nWakeState == LINTRCV_TJA1021_NWAKE_ACTIVE)
+            if ((uint32_t)nWakeState == (uint32_t)LINTRCV_TJA1021_NWAKE_ACTIVE)
             {
                 /* Local wake-up detected */
                 LinTrcv_ChannelState[i].WakeupEventPending = TRUE;

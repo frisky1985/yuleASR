@@ -525,7 +525,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
         
         /* 验证签名 */
         const uint8_t *signing_key = NULL;
-        if (i == (chain->num_certs - 1U)) {
+        if ((uint32_t)i == (uint32_t)(chain->num_certs - 1U)) {
             /* 根证书使用可信公钥验证 */
             signing_key = trusted_root_key;
         } else {

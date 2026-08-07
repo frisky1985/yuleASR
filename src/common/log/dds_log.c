@@ -389,7 +389,7 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
     
     /* 时间戳 */
     if (g_log_state.config.enable_timestamp) {
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset,
+        offset += snprintf(buffer + offset, size - (size_t)offset,
             "%s[%s.%03ld]%s ",
             use_color ? COLOR_WHITE : "",
             time_str, entry->timestamp.tv_nsec / 1000000,
@@ -401,20 +401,20 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
     const char* color = use_color ? log_level_to_color(entry->level) : "";
     const char* reset = use_color ? COLOR_RESET : "";
     
-    offset += snprintf(buffer + offset, (uint32_t)(size) - offset,
+    offset += snprintf(buffer + offset, size - (size_t)offset,
         "%s[%s]%s<%s> ", color, level_str, reset, log_type_to_string(entry->type));
     
     /* ECU ID */
     if (strlen(entry->ecu_id) > 0U) {
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset, "[%s] ", entry->ecu_id);
+        offset += snprintf(buffer + offset, size - (size_t)offset, "[%s] ", entry->ecu_id);
     }
     
     /* 模块和标签 */
     if (strlen(entry->module) > 0U) {
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset, "[%s]", entry->module);
+        offset += snprintf(buffer + offset, size - (size_t)offset, "[%s]", entry->module);
     }
     if (strlen(entry->tag) > 0U) {
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset, "[%s]", entry->tag);
+        offset += snprintf(buffer + offset, size - (size_t)offset, "[%s]", entry->tag);
     }
     
     /* 位置信息 */
@@ -423,21 +423,21 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
         if (!filename) { filename = strrchr(entry->file, '\\'); }
         if (!filename) { filename = entry->file; }
         else filename++;
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset, " %s:%d", filename, entry->line);
+        offset += snprintf(buffer + offset, size - (size_t)offset, " %s:%d", filename, entry->line);
     }
     
     /* 线程ID */
     if (g_log_state.config.enable_thread_id) {
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset, " [TID:%u]", entry->thread_id);
+        offset += snprintf(buffer + offset, size - (size_t)offset, " [TID:%u]", entry->thread_id);
     }
     
     /* 序列号（审计日志） */
     if (entry->type == DDS_LOG_TYPE_AUDIT) {
-        offset += snprintf(buffer + offset, (uint32_t)(size) - offset, " [SEQ:%u]", entry->sequence_num);
+        offset += snprintf(buffer + offset, size - (size_t)offset, " [SEQ:%u]", entry->sequence_num);
     }
     
     /* 消息内容 */
-    offset += snprintf(buffer + offset, (uint32_t)(size) - offset, " %s\n", entry->message);
+    offset += snprintf(buffer + offset, size - (size_t)offset, " %s\n", entry->message);
 }
 
 static void output_log(const dds_log_entry_t* entry) {
@@ -744,7 +744,7 @@ void dds_log_audit(dds_audit_event_type_t event_type,
     }
     
     /* 检查审计事件类型 */
-    if (!(g_log_state.audit_mask & event_type)) {
+    if (!(g_log_state.audit_mask & (uint32_t)event_type)) {
         return;
     }
     
