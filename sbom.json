@@ -3,9 +3,9 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "yuleASR - SBOM",
-  "documentNamespace": "https://github.com/frisky1985/yuleASR/sbom/1a75a4056ee28754e1882582c6fb01ac96c95b88/2026-05-25T17:58:50Z",
+  "documentNamespace": "https://github.com/frisky1985/yuleASR/sbom/46a0e7c3c570f85c0071c11ecfaf255cbc28e9d6/2026-08-07T15:36:21Z",
   "creationInfo": {
-    "created": "2026-05-25T17:58:50Z",
+    "created": "2026-08-07T15:36:21Z",
     "creators": [
       "Organization: Shanghai Yule Electronics Technology Co., Ltd.",
       "Tool: generate-sbom.sh-1.0",
@@ -42,6 +42,34 @@
       "licenseDeclared": "Apache-2.0",
       "copyrightText": "Copyright (c) 2006-2024, Arm Limited and Contributors",
       "summary": "轻量级TLS/SSL库，用于MQTT模块的TLS/mTLS安全通信"
+    },
+
+        {
+      "SPDXID": "SPDXRef-freertos",
+      "name": "FreeRTOS Kernel",
+      "versionInfo": "11.1.0",
+      "supplier": "Organization: Amazon.com, Inc.",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/freertos",
+      "homepage": "https://github.com/FreeRTOS/FreeRTOS-Kernel",
+      "packageFileName": "third_party/freertos",
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright (c) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.",
+      "summary": "FreeRTOS实时内核 (OS层依赖, V11.1.0)"
+    },
+
+        {
+      "SPDXID": "SPDXRef-lwip",
+      "name": "lwIP",
+      "versionInfo": "2.2.2",
+      "supplier": "Organization: Swedish Institute of Computer Science",
+      "downloadLocation": "https://github.com/frisky1985/yuleASR/tree/main/third_party/lwip",
+      "homepage": "https://savannah.nongnu.org/projects/lwip/",
+      "packageFileName": "third_party/lwip",
+      "licenseConcluded": "BSD-3-Clause",
+      "licenseDeclared": "BSD-3-Clause",
+      "copyrightText": "Copyright (c) 2001, 2002 Swedish Institute of Computer Science",
+      "summary": "轻量级TCP/IP协议栈 (以太网通信依赖)"
     },
 
         {
@@ -193,6 +221,16 @@
         {
       "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
       "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-freertos"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-lwip"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "DEPENDS_ON",
       "relatedSpdxElement": "SPDXRef-arm-gcc"
     },
         {
@@ -244,6 +282,16 @@
       "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
       "relationshipType": "CONTAINS",
       "relatedSpdxElement": "SPDXRef-mbedtls"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-freertos"
+    },
+        {
+      "spdxElementId": "SPDXRef-YuleTech-AutoSAR",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-lwip"
     },
         {
       "spdxElementId": "SPDXRef-YuleTech-AutoSAR",

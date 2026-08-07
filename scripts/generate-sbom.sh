@@ -129,6 +129,28 @@ cat > "${OUTPUT_FILE}" <<EOF
       "https://github.com/Mbed-TLS/mbedtls" \
       "third_party/mbedtls"),
 
+    $(make_package "freertos" \
+      "FreeRTOS Kernel" \
+      "11.1.0" \
+      "Amazon.com, Inc." \
+      "MIT" \
+      "Copyright (c) 2021 Amazon.com, Inc. or its affiliates. All Rights Reserved." \
+      "FreeRTOS实时内核 (OS层依赖, V11.1.0)" \
+      "${NAMESPACE_BASE}/tree/main/third_party/freertos" \
+      "https://github.com/FreeRTOS/FreeRTOS-Kernel" \
+      "third_party/freertos"),
+
+    $(make_package "lwip" \
+      "lwIP" \
+      "2.2.2" \
+      "Swedish Institute of Computer Science" \
+      "BSD-3-Clause" \
+      "Copyright (c) 2001, 2002 Swedish Institute of Computer Science" \
+      "轻量级TCP/IP协议栈 (以太网通信依赖)" \
+      "${NAMESPACE_BASE}/tree/main/third_party/lwip" \
+      "https://savannah.nongnu.org/projects/lwip/" \
+      "third_party/lwip"),
+
     $(make_package "arm-gcc" \
       "ARM GCC Compiler Toolchain" \
       "10.3-2021.10" \
@@ -241,6 +263,8 @@ cat > "${OUTPUT_FILE}" <<EOF
   ],
   "relationships": [
     $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "mbedtls"),
+    $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "freertos"),
+    $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "lwip"),
     $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "arm-gcc"),
     $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "cmake"),
     $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "make"),
@@ -252,6 +276,8 @@ cat > "${OUTPUT_FILE}" <<EOF
     $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "unity"),
     $(make_relationship "${PROJECT_ID}" "DEPENDS_ON" "yule-mbedtls-adapter"),
     $(make_relationship "${PROJECT_ID}" "CONTAINS" "mbedtls"),
+    $(make_relationship "${PROJECT_ID}" "CONTAINS" "freertos"),
+    $(make_relationship "${PROJECT_ID}" "CONTAINS" "lwip"),
     $(make_relationship "${PROJECT_ID}" "CONTAINS" "aes-modes"),
     $(make_relationship "${PROJECT_ID}" "CONTAINS" "blake2"),
     $(make_relationship "${PROJECT_ID}" "CONTAINS" "hash"),
