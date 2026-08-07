@@ -1,15 +1,15 @@
 # MISRA Compliance Report
 
-**Generated**: 2026-08-07T16:48:16.344440
+**Generated**: 2026-08-07T17:21:34.843688
 **Tool**: Cppcheck 2.17.1 from cppcheck-wheel 1.5.1
 **Ruleset**: 2023
 
 ## Summary
 
-- **Total Violations**: 26798
+- **Total Violations**: 26699
 - **Unique Rules**: 85
-- **Affected Files**: 721
-- **Density**: 94.29 violations/KLOC
+- **Affected Files**: 720
+- **Density**: 94.02 violations/KLOC
 
 ## By Severity
 
@@ -17,37 +17,37 @@
 |---------|------:|
 | error | 27 |
 | warning | 27 |
-| style | 26643 |
+| style | 26544 |
 | portability | 3 |
 
 ## By Rule Type
 
 | Type | Count |
 |------|------:|
-| required | 7051 |
-| advisory | 18612 |
+| required | 219 |
+| advisory | 13047 |
 
 ## By Category
 
 | Category | Count |
 |----------|------:|
-| 未分类 (Uncategorized) | 10253 |
+| 未分类 (Uncategorized) | 10242 |
 | 控制流 (Control Flow) | 5717 |
-| 声明 (Declarations) | 3127 |
+| 声明 (Declarations) | 3129 |
 | 函数行为 | 2294 |
 | 指针 (Pointer) | 1305 |
-| 预处理器 (Preprocessing) | 1207 |
+| 预处理器 (Preprocessing) | 1184 |
 | unknown | 1135 |
 | 标识符 (Identifiers) | 326 |
 | 指针类型转换 (Pointer Type Conversions) | 302 |
-| 标准库 (Standard Library) | 289 |
+| 标准库 (Standard Library) | 294 |
 | 基本类型 (Essential Types) | 242 |
-| 表达式 (Expressions) | 133 |
 | 函数 (Functions) | 130 |
 | 指针与数组 (Pointers & Arrays) | 112 |
+| 表达式 (Expressions) | 92 |
 | 字面量 (Literals) | 85 |
-| 覆盖存储 (Overlapping Storage) | 74 |
 | 初始化 (Initialization) | 50 |
+| 覆盖存储 (Overlapping Storage) | 43 |
 | 字符集 (Character Sets) | 8 |
 | 资源 (Resources) | 4 |
 | 副作用 (Side Effects) | 3 |
@@ -55,7 +55,7 @@
 
 ## Violations by Rule
 
-- **misra-c2023-2.5** (9648 violations)
+- **misra-c2023-2.5** (9636 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:24` — A project should not contain unused macro declarations [misra-c2012-2.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:18` — A project should not contain unused macro declarations [misra-c2012-2.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:19` — A project should not contain unused macro declarations [misra-c2012-2.5]
@@ -73,7 +73,7 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:285` — Return value of non-void function shall be used [misra-c2012-17.7]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:440` — Return value of non-void function shall be used [misra-c2012-17.7]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:446` — Return value of non-void function shall be used [misra-c2012-17.7]
-- **misra-c2023-8.7** (2235 violations)
+- **misra-c2023-8.7** (2236 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:171` — Functions/objects should not have external linkage if referenced in one TU [misr
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:202` — Functions/objects should not have external linkage if referenced in one TU [misr
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:244` — Functions/objects should not have external linkage if referenced in one TU [misr
@@ -97,7 +97,7 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:156` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:779` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/include/Swc_DiagnosticManager.h:152` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-- **misra-c2023-8.4** (449 violations)
+- **misra-c2023-8.4** (450 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_RamSafety.c:37` — A compatible declaration shall be visible when an object or function is defined 
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:21` — A compatible declaration shall be visible when an object or function is defined 
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:19` — A compatible declaration shall be visible when an object or function is defined 
@@ -121,7 +121,7 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c:408` — An identifier with external linkage shall have exactly one external definition [
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/src/Boot_Verify.c:102` — An identifier with external linkage shall have exactly one external definition [
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c:122` — An identifier with external linkage shall have exactly one external definition [
-- **misra-c2023-2.4** (177 violations)
+- **misra-c2023-2.4** (178 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:41` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:68` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/rtps/rtps_message.h:105` — A section of code shall not be commented out using slash-star [misra-c2012-2.4]

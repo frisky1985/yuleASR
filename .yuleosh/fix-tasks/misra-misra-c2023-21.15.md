@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-21.15
 
-> Generated: 2026-08-07T16:48:20.424983
+> Generated: 2026-08-07T17:21:38.629400
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -32,6 +32,11 @@
 | 18 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_manager.c` | 45 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 19 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 374 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 20 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.c` | 425 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 21 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 39 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 22 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 463 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 23 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 472 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 24 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 480 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 25 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/serialization/cdr.c` | 489 | 0 | misra violation 2115 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

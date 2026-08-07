@@ -1,6 +1,6 @@
 # CI Report Summary
 
-> Generated: 2026-08-07T15:42:34.389532
+> Generated: 2026-08-07T16:55:25.419492
 > Project: /Users/stefan/.openclaw/workspace/yuleASR
 > Type: Incremental
 
@@ -26,11 +26,11 @@
 
 | Metric | Value |
 |:-------|------:|
-| Total Violations | 27541 |
-| Required | 744 |
-| Advisory | 13048 |
-| Violations / KLOC | 96.91 |
-| Rules Violated | 86 |
+| Total Violations | 26798 |
+| Required | 282 |
+| Advisory | 13055 |
+| Violations / KLOC | 94.29 |
+| Rules Violated | 85 |
 | Files Affected | 721 |
 
 ## C/C++ Coverage

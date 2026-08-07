@@ -299,7 +299,7 @@ void Cdd_Safety_SystemReset(uint8 resetType)
 
     /* Trigger MC_RGM software reset */
     REG32(CDD_LOCKSTEP_RGM_BASE + 0x10U) = 0x01U;  /* MC_RGM_CTRLfor (;;)* Halt */
-    while (1U)
+    while (1U != 0U)
     {
         /* Wait for reset */
     }

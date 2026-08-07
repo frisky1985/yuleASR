@@ -210,7 +210,7 @@ extern Std_ReturnType Com_Dm_ValidateIntegrity(void);
  */
 #define COM_DM_PROCESS_IN_MAINFUNCTIONRX() \
     do { \
-        if (Com_Dm_IsInitialized()) { \
+        if (Com_Dm_IsInitialized() == TRUE) { \
             Com_Dm_ProcessTimers(); \
         } \
     } while(0)

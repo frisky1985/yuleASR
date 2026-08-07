@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-2.3
 
-> Generated: 2026-08-07T16:48:20.410053
+> Generated: 2026-08-07T17:21:38.620012
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -55,17 +55,17 @@
 | 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 278 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 88 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 43 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 362 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 383 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 44 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 354 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 45 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 154 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 46 | `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c` | 95 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 378 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 368 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 393 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 50 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 398 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 47 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 349 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 48 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 339 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 49 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 364 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 50 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 369 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 51 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 131 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 52 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 388 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 53 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 373 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
-| 54 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 403 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 52 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 359 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 53 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 344 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
+| 54 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 374 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 55 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 31 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 56 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 32 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |
 | 57 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/mcal/lin/include/Std_Types.h` | 30 | 0 | The character sequence /* shall not be used within a comment [misra-c2012-2.3] |

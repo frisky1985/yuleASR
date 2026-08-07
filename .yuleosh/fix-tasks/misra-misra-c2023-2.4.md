@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-2.4
 
-> Generated: 2026-08-07T16:48:20.410405
+> Generated: 2026-08-07T17:21:38.620378
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -43,14 +43,14 @@
 | 29 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Type.h` | 362 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 30 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 131 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 31 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 154 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 368 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 373 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 378 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 383 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 388 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 393 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 398 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 403 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 32 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 339 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 33 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 344 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 34 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 349 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 35 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 354 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 36 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 359 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 37 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 364 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 38 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 369 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 39 | `/Users/stefan/.openclaw/workspace/yuleASR/src/rte/include/Rte_Swc.h` | 374 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 40 | `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/io_control/include/Swc_IOControl.h` | 62 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 41 | `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/storage_manager/include/Swc_StorageManager.h` | 64 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 42 | `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/communication_manager/include/Swc_CommunicationManager.h` | 70 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
@@ -163,32 +163,33 @@
 | 149 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/include/CanTrcv.h` | 228 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 150 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/cantrcv/include/CanTrcv.h` | 343 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 | 151 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethtrcv/include/EthTrcv.h` | 263 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/srp/include/Srp.h` | 49 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/ethernet/driver/eth_automotive.h` | 45 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.h` | 55 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.h` | 59 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.h` | 82 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 51 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 120 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 159 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 157 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 160 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 179 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 161 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.h` | 52 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 162 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.h` | 75 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 163 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.h` | 97 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 164 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.h` | 104 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 165 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/srp/stream_reservation.h` | 57 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 166 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/tsn/dds_tsn_transport.h` | 89 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 167 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_types.h` | 326 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 168 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_types.h` | 414 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 169 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_types.h` | 483 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 170 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.h` | 51 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 171 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.h` | 132 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 172 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.h` | 82 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 173 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/qos.h` | 26 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 174 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/qos.h` | 303 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 175 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 96 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 176 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 163 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
-| 177 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_dhcp.h` | 34 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/ethtrcv/src/EthTrcv_Lcfg.c` | 102 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/ecual/srp/include/Srp.h` | 49 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/ethernet/driver/eth_automotive.h` | 45 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/crypto_stack/secoc/secoc_freshness.h` | 55 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.h` | 59 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_transport.h` | 82 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 51 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 159 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 120 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 160 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 157 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 161 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_types.h` | 179 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 162 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.h` | 52 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 163 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/eth/dds_eth_discovery.h` | 75 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 164 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.h` | 97 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 165 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/fp/frame_preemption.h` | 104 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 166 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tsn/srp/stream_reservation.h` | 57 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 167 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/transport/tsn/dds_tsn_transport.h` | 89 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 168 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_types.h` | 326 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 169 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_types.h` | 414 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 170 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_security_types.h` | 483 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 171 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.h` | 51 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 172 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_crypto.h` | 132 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 173 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_auth.h` | 82 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 174 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/qos.h` | 26 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 175 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/include/microdds/qos.h` | 303 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 176 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 96 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 177 | `/Users/stefan/.openclaw/workspace/yuleASR/src/micro-dds/src/transport/udp.c` | 163 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
+| 178 | `/Users/stefan/.openclaw/workspace/yuleASR/src/tcpip/tcpip_dhcp.h` | 34 | 0 | A section of code shall not be commented out using slash-star [misra-c2012-2.4] |
 
 ## Fix Checklist
 
