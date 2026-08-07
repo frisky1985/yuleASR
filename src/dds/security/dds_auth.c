@@ -258,7 +258,7 @@ void dds_auth_deinit(dds_auth_context_t *ctx)
         return;
     }
 
-    if (ctx->handshakes) {
+    if ((ctx->handshakes) != 0U) {
         /* Clear sensitive data */
         for (uint32_t i = 0; i < ctx->max_handshakes; i++) {
             if (ctx->handshakes[i].state != DDS_HANDSHAKE_STATE_NONE) {
@@ -331,7 +331,7 @@ dds_auth_status_t dds_auth_load_private_key(dds_auth_context_t *ctx,
     }
 
     FILE *fp = fopen(key_path, "rb");
-    if (fp) {
+    if ((fp) != 0U) {
         key->private_key_len = fread(key->private_key, 1, DDS_SECURITY_MAX_KEY_SIZE, fp);
         fclose(fp);
     } else {
@@ -546,7 +546,7 @@ dds_auth_status_t dds_auth_derive_key(dds_auth_context_t *ctx,
     uint8_t hash[32];
     dds_auth_sha256(shared_secret, secret_len, hash);
 
-    if (salt) {
+    if ((salt) != 0U) {
         for (uint32_t i = 0; i < 32U; i++) {
             hash[i] ^= salt[i % 8U];
         }
@@ -714,7 +714,7 @@ dds_auth_status_t dds_auth_begin_handshake_request(dds_auth_context_t *ctx,
     (*handshake)->state = DDS_HANDSHAKE_STATE_REQUEST_SENT;
     ctx->active_handshakes++;
 
-    if (ctx->on_handshake_begin) {
+    if ((ctx->on_handshake_begin) != 0U) {
         ctx->on_handshake_begin((rtps_guid_t*)local_guid, (rtps_guid_t*)local_guid);
     }
 
@@ -840,7 +840,7 @@ dds_auth_status_t dds_auth_process_handshake_final(dds_auth_context_t *ctx,
 
     ctx->active_handshakes--;
 
-    if (ctx->on_handshake_complete) {
+    if ((ctx->on_handshake_complete) != 0U) {
         ctx->on_handshake_complete(&handshake->local_guid, &handshake->remote_guid, true);
     }
 
@@ -866,7 +866,7 @@ uint32_t dds_auth_check_handshake_timeouts(dds_auth_context_t *ctx, uint64_t cur
                 timeout_count++;
                 ctx->active_handshakes--;
 
-                if (ctx->on_handshake_complete) {
+                if ((ctx->on_handshake_complete) != 0U) {
                     ctx->on_handshake_complete(&handshake->local_guid,
                                                &handshake->remote_guid, false);
                 }

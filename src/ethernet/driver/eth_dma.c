@@ -425,7 +425,7 @@ eth_status_t eth_dma_rx_get_packet(eth_dma_rx_packet_t *packet, uint32_t timeout
     uint32_t status = desc->rd0;
 
     /* 检查错误 */
-    if (status & ETH_RX_DESC_ES) {
+    if ((status & ETH_RX_DESC_ES) != 0U) {
         g_dma_ctx.stats.rx_errors++;
         /* 重新设置描述符给DMA */
         desc->rd0 = ETH_RX_DESC_OWN;
@@ -555,7 +555,7 @@ eth_status_t eth_dma_tx_queue_packet(const eth_dma_tx_packet_t *packet, uint32_t
         return ETH_ERROR;
     }
 
-    if ((packet == NULL) || (packet->buffer == NULL) || packet->length == 0U) {
+    if ((packet == NULL) || (packet->buffer == NULL) || (packet->length == 0U)) {
         return ETH_INVALID_PARAM;
     }
 

@@ -76,7 +76,7 @@ void SomeIpSd_DeInit(void)
     /* Stop all service offers */
     for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
     {
-        if (SomeIpSd_ServiceRegistry[i].IsAvailable)
+        if ((SomeIpSd_ServiceRegistry[i].IsAvailable) != 0U)
         {
             SomeIpSd_StopOfferService(
                 SomeIpSd_ServiceRegistry[i].ServiceId,
@@ -251,7 +251,7 @@ void SomeIpSd_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIpSd_MessageType sdMessage;
     
-    if (!SomeIpSd_Initialized || (Data == NULL_PTR) || Length < SOMEIP_HEADER_SIZE)
+    if (!SomeIpSd_Initialized || (Data == NULL_PTR) || (Length < SOMEIP_HEADER_SIZE))
     {
         return;
     }
@@ -303,7 +303,7 @@ void SomeIpSd_MainFunction(void)
         /* Re-offer all active services */
         for (uint16 i = 0; i < SOMEIPSD_MAX_SERVICES; i++)
         {
-            if (SomeIpSd_ServiceRegistry[i].IsAvailable)
+            if ((SomeIpSd_ServiceRegistry[i].IsAvailable) != 0U)
             {
                 /* NOTE: Offer Service message pending network stack integration */
             }

@@ -67,14 +67,14 @@ Boot_Result Boot_Flash_Init(void) { return BOOT_OK; }
 Boot_Result Boot_Flash_Erase(uint32_t addr, uint32_t size)
 {
     for (uint32_t i = 0U; i < size; i++)
-        if ((addr + i) < FLASH_SIZE) g_boot_flash_ram[addr + i] = 0xFF;
+        { if ((addr + i) < FLASH_SIZE) { g_boot_flash_ram[addr + i] = 0xFF; } }
     return BOOT_OK;
 }
 
 Boot_Result Boot_Flash_Write(uint32_t dst, const uint8_t *src, uint32_t len)
 {
     for (uint32_t i = 0U; i < len; i++)
-        if ((dst + i) < FLASH_SIZE) g_boot_flash_ram[dst + i] = src[i];
+        { if ((dst + i) < FLASH_SIZE) { g_boot_flash_ram[dst + i] = src[i]; } }
     return BOOT_OK;
 }
 
@@ -115,7 +115,7 @@ Boot_Result Boot_Hsm_Init(void);
 int32_t Boot_Verify_ConstantCmp(const uint8_t *a, const uint8_t *b, uint32_t len)
 {
     uint8_t diff = 0U;
-    for (uint32_t i = 0U; i < len; i++) diff |= a[i] ^ b[i];
+    for (uint32_t i = 0U; i < len; i++) { diff |= a[i] ^ b[i]; }
     return (int32_t)diff;
 }
 
@@ -140,7 +140,7 @@ static int test_gen_keys(void)
     g_test_pubkey_len = i2d_PUBKEY(pkey, &p);
 
     FILE *f = fopen("/tmp/boot_test_priv.pem", "wb");
-    if (f) { PEM_write_PrivateKey(f, pkey, NULL_PTR, NULL_PTR, 0, NULL_PTR, NULL_PTR); fclose(f); }
+    if ((f) != 0U) { PEM_write_PrivateKey(f, pkey, NULL_PTR, NULL_PTR, 0, NULL_PTR, NULL_PTR); fclose(f); }
     EVP_PKEY_free(pkey);
     return (g_test_pubkey_len > 0U) ? 0 : -1;
 }
@@ -149,10 +149,10 @@ static int test_gen_keys(void)
 static int test_sign(const uint8_t *payload, uint32_t len, uint8_t *sig_out)
 {
     FILE *f = fopen("/tmp/boot_test_priv.pem", "rb");
-    if (!f) return -1;
+    if (!f) { return -1; }
     EVP_PKEY *pkey = PEM_read_PrivateKey(f, NULL_PTR, NULL_PTR, NULL_PTR);
     fclose(f);
-    if (!pkey) return -1;
+    if (!pkey) { return -1; }
 
     uint8_t hash[32];
     SHA256(payload, len, hash);
@@ -188,10 +188,10 @@ Boot_Result Boot_Verify_Signature(const uint8_t *hash,
                                   const uint8_t *signature,
                                   const Boot_PubKey *pub_key)
 {
-    if (!hash || !signature || !pub_key) return BOOT_E_PARAM;
+    if (!hash || !signature || !pub_key) { return BOOT_E_PARAM; }
     const unsigned char *p = pub_key->data;
     EVP_PKEY *evp_key = d2i_PUBKEY(NULL_PTR, &p, (long)pub_key->length);
-    if (!evp_key) return BOOT_E_SIGNATURE;
+    if (!evp_key) { return BOOT_E_SIGNATURE; }
 
     /* Convert raw r||s to DER for OpenSSL EVP */
     const uint8_t *rp = signature, *sp = signature + 32;
@@ -276,7 +276,7 @@ static void test_hash_verify(void)
 {
     printf("\n=== Hash Verification ===\n");
     uint8_t payload[256];
-    for (int i = 0U; i < 256; i++) payload[i] = (uint8_t)i;
+    for (int i = 0U; i < 256; i++) { payload[i] = (uint8_t)i; }
 
     Boot_ImageHeader hdr;
     memset(&hdr, 0, sizeof(hdr));
@@ -330,7 +330,7 @@ static void test_end_to_end(void)
 
     /* Create test app payload */
     uint8_t app[4096];
-    for (int i = 0U; i < 4096; i++) app[i] = i & 0xFF;
+    for (int i = 0U; i < 4096; i++) { app[i] = i & 0xFF; }
 
     /* Sign */
     uint8_t sig[64];

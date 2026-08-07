@@ -589,7 +589,7 @@ Std_ReturnType Dem_GetNextFilteredDTC(Dem_DtcType* DTC, Dem_UdsStatusByteType* D
     /* Find next matching DTC */
     while (Dem_InternalState.CurrentFilteredIndex < DEM_NUM_DTCS)
     {
-        if (Dem_IntMatchDTCFilter(Dem_InternalState.CurrentFilteredIndex))
+        if ((Dem_IntMatchDTCFilter(Dem_InternalState.CurrentFilteredIndex)) != 0U)
         {
             *DTC = Dem_InternalState.DTCEntries[Dem_InternalState.CurrentFilteredIndex].DTC;
             *DTCStatus = Dem_InternalState.DTCEntries[Dem_InternalState.CurrentFilteredIndex].Status;
@@ -741,7 +741,7 @@ Std_ReturnType Dem_DisableDTCRecordUpdate(void)
     }
 #endif
 
-    if (Dem_InternalState.DTCRecordUpdateDisabled)
+    if ((Dem_InternalState.DTCRecordUpdateDisabled) != 0U)
     {
         return DEM_DISABLEDTCRECUP_DISABLED;
     }
@@ -1070,7 +1070,7 @@ Std_ReturnType Dem_GetDTCOfCheckFailed(Dem_DtcType* DTC)
     /* Find first DTC with TestFailed bit set */
     for (uint8 i = 0U; i < DEM_NUM_DTCS; i++)
     {
-        if (Dem_InternalState.DTCEntries[i].Status & DEM_DTC_STATUS_TEST_FAILED)
+        if ((Dem_InternalState.DTCEntries[i].Status & DEM_DTC_STATUS_TEST_FAILED) != 0U)
         {
             *DTC = Dem_InternalState.DTCEntries[i].DTC;
             return E_OK;

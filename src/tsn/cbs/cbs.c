@@ -87,7 +87,7 @@ static eth_status_t check_safety(cbs_port_runtime_t *port) {
             monitor->credit_limit_violated = true;
             queue->credit_violations++;
             
-            if (g_cbs_state.safety_cb) {
+            if ((g_cbs_state.safety_cb) != 0U) {
                 g_cbs_state.safety_cb(port->config.port_id, 0x01,
                                       "Credit limit violated",
                                       g_cbs_state.safety_user_data);
@@ -129,7 +129,7 @@ void cbs_deinit(void) {
 }
 
 eth_status_t cbs_config_port(uint16_t port_id, const cbs_port_config_t *config) {
-    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || config == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || (config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -141,7 +141,7 @@ eth_status_t cbs_config_port(uint16_t port_id, const cbs_port_config_t *config) 
 }
 
 eth_status_t cbs_get_port_config(uint16_t port_id, cbs_port_config_t *config) {
-    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || config == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || (config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -178,7 +178,7 @@ eth_status_t cbs_config_queue(uint16_t port_id, uint8_t queue_index,
 eth_status_t cbs_update_credit(uint16_t port_id, uint8_t queue_id, 
                                 uint64_t elapsed_time_ns) {
     if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
-        queue_id >= CBS_SR_CLASS_MAX) {
+        (queue_id >= CBS_SR_CLASS_MAX)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -224,7 +224,7 @@ eth_status_t cbs_update_credit(uint16_t port_id, uint8_t queue_id,
     }
     
     /* 通知回调 */
-    if (g_cbs_state.credit_cb) {
+    if ((g_cbs_state.credit_cb) != 0U) {
         g_cbs_state.credit_cb(port_id, queue_id, queue->current_credit, 
                               g_cbs_state.credit_user_data);
     }
@@ -249,7 +249,7 @@ eth_status_t cbs_get_credit(uint16_t port_id, uint8_t queue_id, int64_t *credit)
 
 eth_status_t cbs_set_credit(uint16_t port_id, uint8_t queue_id, int64_t credit) {
     if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
-        queue_id >= CBS_SR_CLASS_MAX) {
+        (queue_id >= CBS_SR_CLASS_MAX)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -265,7 +265,7 @@ eth_status_t cbs_set_credit(uint16_t port_id, uint8_t queue_id, int64_t credit) 
 eth_status_t cbs_decrement_credit(uint16_t port_id, uint8_t queue_id, 
                                    uint32_t frame_size) {
     if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
-        queue_id >= CBS_SR_CLASS_MAX) {
+        (queue_id >= CBS_SR_CLASS_MAX)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -320,7 +320,7 @@ eth_status_t cbs_can_transmit(uint16_t port_id, uint8_t queue_id,
     *can_transmit = (queue->current_credit >= required_credit);
     
     /* 通知回调 */
-    if (g_cbs_state.tx_perm_cb) {
+    if ((g_cbs_state.tx_perm_cb) != 0U) {
         g_cbs_state.tx_perm_cb(port_id, queue_id, *can_transmit, required_credit,
                               g_cbs_state.tx_perm_user_data);
     }
@@ -331,7 +331,7 @@ eth_status_t cbs_can_transmit(uint16_t port_id, uint8_t queue_id,
 eth_status_t cbs_start_transmission(uint16_t port_id, uint8_t queue_id, 
                                      uint32_t frame_size) {
     if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
-        queue_id >= CBS_SR_CLASS_MAX) {
+        (queue_id >= CBS_SR_CLASS_MAX)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -351,7 +351,7 @@ eth_status_t cbs_start_transmission(uint16_t port_id, uint8_t queue_id,
 eth_status_t cbs_complete_transmission(uint16_t port_id, uint8_t queue_id,
                                         uint32_t frame_size, uint64_t actual_time_ns) {
     if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
-        queue_id >= CBS_SR_CLASS_MAX) {
+        (queue_id >= CBS_SR_CLASS_MAX)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -446,7 +446,7 @@ eth_status_t cbs_calc_send_slope(uint32_t port_transmit_rate_bps,
 }
 
 eth_status_t cbs_get_stats(uint16_t port_id, cbs_stats_t *stats) {
-    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || stats == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || (stats == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -549,7 +549,7 @@ eth_status_t cbs_run_safety_checks(uint16_t port_id) {
 }
 
 eth_status_t cbs_get_safety_monitor(uint16_t port_id, cbs_safety_monitor_t *monitor) {
-    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || monitor == NULL) {
+    if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || (monitor == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -562,7 +562,7 @@ eth_status_t cbs_get_safety_monitor(uint16_t port_id, cbs_safety_monitor_t *moni
 eth_status_t cbs_check_bandwidth_utilization(uint16_t port_id, 
                                               uint32_t *utilization_percent) {
     if (!g_cbs_state.initialized || (port_id >= CBS_MAX_PORTS) || 
-        utilization_percent == NULL) {
+        (utilization_percent == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -587,7 +587,7 @@ eth_status_t cbs_check_bandwidth_utilization(uint16_t port_id,
     if (*utilization_percent > port->config.bandwidth_alarm_threshold) {
         port->safety_monitor.bandwidth_threshold_exceeded = true;
         
-        if (g_cbs_state.bw_alert_cb) {
+        if ((g_cbs_state.bw_alert_cb) != 0U) {
             g_cbs_state.bw_alert_cb(port_id, *utilization_percent, 
                                     g_cbs_state.bw_alert_user_data);
         }

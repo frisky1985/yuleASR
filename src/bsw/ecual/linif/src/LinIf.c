@@ -102,7 +102,7 @@ void LinIf_RxIndication(uint8 LinChannel, const LinIf_PduType* PduInfoPtr)
 
 void LinIf_MainFunction(void)
 {
-    if (LinIf_State.state < LINIF_INIT) return;
+    if (LinIf_State.state < LINIF_INIT) { return; }
 
     LinIf_State.tickCount++;
 
@@ -126,7 +126,7 @@ void LinIf_MainFunction(void)
 
 void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) return;
+    if (NULL_PTR == versioninfo) { return; }
     versioninfo->vendorID = LINIF_VENDOR_ID;
     versioninfo->moduleID = LINIF_MODULE_ID;
     versioninfo->sw_major_version = 1U;

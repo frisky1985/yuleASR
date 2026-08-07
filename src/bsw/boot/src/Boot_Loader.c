@@ -236,14 +236,14 @@ void Boot_Loader_Jump(uint32_t target_addr)
     entry();
 
     /* Should never return */
-    while (1U) {}
+    for (;;) {}
 }
 
 void Boot_Loader_EnterRecovery(void)
 {
     /* Minimal UDS listener — only 0x10 0x02 (Programming Session) accepted.
        In production, initialize CAN/DoIP, enter diagnostic loop. */
-    while (1U) {
+    whfor (;;)
         /* WDG refresh */
         /* UDS poll */
         /* Recovery */

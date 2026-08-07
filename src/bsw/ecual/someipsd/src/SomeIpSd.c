@@ -118,14 +118,14 @@ void SomeIpSd_DeInit(void)
 
 Std_ReturnType SomeIpSd_FindService(uint16 ServiceId, uint16 InstanceId)
 {
-    if (Sd_State.state != SD_INTERNAL_INIT) return E_NOT_OK;
+    if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
 
     Sd_ServiceEntryType* entry = Sd_FindService(ServiceId, InstanceId);
     if (entry != NULL_PTR) {
         return E_OK; /* Already known */
     }
 
-    if (Sd_State.serviceCount >= SD_MAX_SERVICES) return E_NOT_OK;
+    if (Sd_State.serviceCount >= SD_MAX_SERVICES) { return E_NOT_OK; }
 
     entry = &Sd_State.services[Sd_State.serviceCount];
     entry->ServiceId = ServiceId;
@@ -150,11 +150,11 @@ Std_ReturnType SomeIpSd_FindService(uint16 ServiceId, uint16 InstanceId)
 
 Std_ReturnType SomeIpSd_OfferService(uint16 ServiceId, uint16 InstanceId)
 {
-    if (Sd_State.state != SD_INTERNAL_INIT) return E_NOT_OK;
+    if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
 
     Sd_ServiceEntryType* entry = Sd_FindService(ServiceId, InstanceId);
     if (entry == NULL_PTR) {
-        if (Sd_State.serviceCount >= SD_MAX_SERVICES) return E_NOT_OK;
+        if (Sd_State.serviceCount >= SD_MAX_SERVICES) { return E_NOT_OK; }
         entry = &Sd_State.services[Sd_State.serviceCount];
         entry->ServiceId = ServiceId;
         entry->InstanceId = InstanceId;
@@ -179,9 +179,9 @@ Std_ReturnType SomeIpSd_OfferService(uint16 ServiceId, uint16 InstanceId)
 
 Std_ReturnType SomeIpSd_StopOffer(uint16 ServiceId, uint16 InstanceId)
 {
-    if (Sd_State.state != SD_INTERNAL_INIT) return E_NOT_OK;
+    if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
     Sd_ServiceEntryType* entry = Sd_FindService(ServiceId, InstanceId);
-    if (entry == NULL_PTR) return E_NOT_OK;
+    if (entry == NULL_PTR) { return E_NOT_OK; }
     entry->State = SD_STATE_NOT_AVAILABLE;
     entry->RemainingTTL = 0U;
     return E_OK;
@@ -189,11 +189,11 @@ Std_ReturnType SomeIpSd_StopOffer(uint16 ServiceId, uint16 InstanceId)
 
 Std_ReturnType SomeIpSd_SubscribeEventGroup(uint16 ServiceId, uint16 EventGroupId)
 {
-    if (Sd_State.state != SD_INTERNAL_INIT) return E_NOT_OK;
+    if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
     (void)EventGroupId;
 
     Sd_ServiceEntryType* entry = Sd_FindService(ServiceId, 0U);
-    if (entry == NULL_PTR) return E_NOT_OK;
+    if (entry == NULL_PTR) { return E_NOT_OK; }
 
     entry->SubState = SD_SUBSCRIPTION_PENDING;
     return E_OK;
@@ -202,14 +202,14 @@ Std_ReturnType SomeIpSd_SubscribeEventGroup(uint16 ServiceId, uint16 EventGroupI
 SomeIpSd_ServiceStateType SomeIpSd_GetServiceState(uint16 ServiceId, uint16 InstanceId)
 {
     Sd_ServiceEntryType* entry = Sd_FindService(ServiceId, InstanceId);
-    if (entry == NULL_PTR) return SD_STATE_DOWN;
+    if (entry == NULL_PTR) { return SD_STATE_DOWN; }
     return entry->State;
 }
 
 void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
-    if ((NULL_PTR == PduInfoPtr) || (NULL_PTR == PduInfoPtr->SduDataPtr)) return;
-    if (PduInfoPtr->SduLength < (SD_SOMEIP_HEADER_LEN + SD_ENTRY_LEN)) return;
+    if ((NULL_PTR == PduInfoPtr) || (NULL_PTR == PduInfoPtr->SduDataPtr)) { return; }
+    if (PduInfoPtr->SduLength < (SD_SOMEIP_HEADER_LEN + SD_ENTRY_LEN)) { return; }
 
     (void)RxPduId;
     const uint8* data = PduInfoPtr->SduDataPtr;
@@ -229,7 +229,7 @@ void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
 void SomeIpSd_MainFunction(void)
 {
-    if (Sd_State.state != SD_INTERNAL_INIT) return;
+    if (Sd_State.state != SD_INTERNAL_INIT) { return; }
 
     Sd_State.tickCounter++;
 
@@ -257,7 +257,7 @@ void SomeIpSd_MainFunction(void)
 
 void SomeIpSd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) return;
+    if (NULL_PTR == versioninfo) { return; }
     versioninfo->vendorID = SOMEIPSD_VENDOR_ID;
     versioninfo->moduleID = SOMEIPSD_MODULE_ID;
     versioninfo->sw_major_version = 1U;

@@ -116,7 +116,7 @@ Std_ReturnType E2E_P02Protect(
     #endif
     
     /* Add path ID to nibble if dual path enabled */
-    if (Config->DualPathEnabled) {
+    if ((Config->DualPathEnabled) != 0U) {
         pathNibble = (State->PathId & 0x01U) << 4;
         Data[Config->DataIDNibbleOffset] = (Data[Config->DataIDNibbleOffset] & 0x0FU) | pathNibble;
     }
@@ -134,7 +134,7 @@ Std_ReturnType E2E_P02Protect(
     State->Counter++;
     
     /* Toggle path for next transmission */
-    if (Config->DualPathEnabled) {
+    if ((Config->DualPathEnabled) != 0U) {
         State->PathId = 1U - State->PathId;
     }
     

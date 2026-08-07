@@ -103,7 +103,7 @@ Std_ReturnType Tel_Diag_WriteData(uint16_t did, const uint8_t *data, uint16_t le
     
     switch (did) {
         case DID_TEL_CONTROL: {
-            if (len < 1U) return E_NOT_OK;
+            if (len < 1U) { return E_NOT_OK; }
             bool enable = (data[0] != 0U);
             /* 启用/禁用埋点 - 需要调用Tel API */
             (void)enable;
@@ -116,7 +116,7 @@ Std_ReturnType Tel_Diag_WriteData(uint16_t did, const uint8_t *data, uint16_t le
         }
         
         case DID_TEL_SET_LEVEL: {
-            if (len < 1U) return E_NOT_OK;
+            if (len < 1U) { return E_NOT_OK; }
             TelLevel_t level = (TelLevel_t)data[0];
             Tel_SetGlobalLevel(level);
             return E_OK;

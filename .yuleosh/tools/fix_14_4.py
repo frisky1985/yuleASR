@@ -177,8 +177,8 @@ def fix_file(path, violations, decls, funcs):
 
 def apply_edits(text, edits):
     # 'REPL' entries: (marker, w_off, close_off) — handled separately
-    repls = [e for e in edits if e[0] == "REPL"]
-    simple = [(o, ins) for o, ins in edits if isinstance(o, int)]
+    repls = [e for e in edits if len(e) == 3 and e[0] == "REPL"]
+    simple = [(e[0], e[1]) for e in edits if isinstance(e[0], int)]
     by_off = defaultdict(list)
     for off, ins in simple:
         by_off[off].append(ins)

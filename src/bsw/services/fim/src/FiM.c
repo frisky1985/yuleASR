@@ -149,7 +149,7 @@ STATIC Std_ReturnType FiM_CalculateInhibitionMask(FiM_FunctionIdType FID, uint8*
             const FiM_EventInhibitionType* eventInhibition = &functionConfig->EventInhibitions[i];
             
             /* Check if using summary event */
-            if (eventInhibition->UseSummaryEvent)
+            if ((eventInhibition->UseSummaryEvent) != 0U)
             {
                 /* Use summary event state */
                 if ((eventInhibition->SummaryEventId < FIM_NUM_SUMMARY_EVENTS) &&
@@ -166,7 +166,7 @@ STATIC Std_ReturnType FiM_CalculateInhibitionMask(FiM_FunctionIdType FID, uint8*
                     /* Build a UDS-like status byte from event status */
                     dtcStatus = 0U;
                     
-                    if (eventFailed)
+                    if ((eventFailed) != 0U)
                     {
                         dtcStatus |= DEM_UDS_STATUS_TF;  /* Test Failed */
                         dtcStatus |= DEM_UDS_STATUS_TFTOC; /* Test Failed This Operation Cycle */
@@ -174,7 +174,7 @@ STATIC Std_ReturnType FiM_CalculateInhibitionMask(FiM_FunctionIdType FID, uint8*
                     }
                     
                     /* Check if event inhibits this function */
-                    if (FiM_CheckEventInhibition(eventInhibition, dtcStatus))
+                    if ((FiM_CheckEventInhibition(eventInhibition, dtcStatus)) != 0U)
                     {
                         calculatedMask |= eventInhibition->InhibitionMask;
                     }

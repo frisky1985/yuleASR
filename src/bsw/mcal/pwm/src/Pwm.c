@@ -129,7 +129,7 @@ void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
             {
                 uint32 pwm_swr_timeout = 10000U;
                 while ((REG_READ32(baseAddr + PWM_CR) & PWM_CR_SWR) != 0U) {
-                    if (pwm_swr_timeout == 0U) break;
+                    if (pwm_swr_timeout == 0U) { break; }
                     pwm_swr_timeout--;
                 }
             }

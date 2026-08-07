@@ -149,7 +149,7 @@ static void rtps_discovery_match_endpoints(rtps_discovery_context_t *ctx,
                     endpoint->state = RTPS_DISCOVERY_STATE_MATCHED;
                     ctx->endpoints_matched++;
                     
-                    if (ctx->on_endpoint_matched) {
+                    if ((ctx->on_endpoint_matched) != 0U) {
                         ctx->on_endpoint_matched(endpoint, true);
                     }
                 }
@@ -189,7 +189,7 @@ static uint32_t serialize_participant_data(const rtps_participant_proxy_t *parti
 {
     uint32_t pos = 0;
     
-    if (max_len < 64U) return 0;
+    if (max_len < 64U) { return 0; }
     
     /* 协议版本 */
     buffer[pos] = RTPS_PROTOCOL_VERSION_MAJOR;
@@ -386,7 +386,7 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
                                            uint32_t len,
                                            const void *source_addr)
 {
-    if ((ctx == NULL) || (data == NULL) || len < 20U) {
+    if ((ctx == NULL) || (data == NULL) || (len < 20U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -427,7 +427,7 @@ eth_status_t rtps_discovery_handle_packet(rtps_discovery_context_t *ctx,
         ctx->participants = participant;
         ctx->participants_discovered++;
         
-        if (ctx->on_participant_discovered) {
+        if ((ctx->on_participant_discovered) != 0U) {
             ctx->on_participant_discovered(participant);
         }
     }
@@ -443,7 +443,7 @@ eth_status_t rtps_discovery_create_participant_data(rtps_discovery_context_t *ct
                                                       uint32_t max_len,
                                                       uint32_t *actual_len)
 {
-    if ((ctx == NULL) || (buffer == NULL) || actual_len == NULL) {
+    if ((ctx == NULL) || (buffer == NULL) || (actual_len == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -603,13 +603,13 @@ eth_status_t rtps_discovery_get_stats(rtps_discovery_context_t *ctx,
         return ETH_INVALID_PARAM;
     }
     
-    if (participants_discovered) {
+    if ((participants_discovered) != 0U) {
         *participants_discovered = ctx->participants_discovered;
     }
-    if (endpoints_matched) {
+    if ((endpoints_matched) != 0U) {
         *endpoints_matched = ctx->endpoints_matched;
     }
-    if (time_elapsed_ms) {
+    if ((time_elapsed_ms) != 0U) {
         *time_elapsed_ms = (uint32_t)(ctx->start_timestamp > 0U ? 
             0 : 0); /* 需要实际时间计算 */
     }
@@ -716,7 +716,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
                                                    uint32_t max_len,
                                                    uint32_t *actual_len)
 {
-    if ((ctx == NULL) || (endpoint == NULL) || buffer == NULL || actual_len == NULL) {
+    if ((ctx == NULL) || (endpoint == NULL) || (buffer == NULL) || actual_len == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -765,7 +765,7 @@ eth_status_t rtps_discovery_create_endpoint_data(rtps_discovery_context_t *ctx,
     pos++;
     memcpy(&buffer[pos], endpoint->type_name, type_len);
     pos += type_len;
-    while ((pos % 4U) != 0) buffer[pos++] = 0;
+    while ((pos % 4U) != 0) { buffer[pos] = 0; pos++; }
     
     /* 可靠性 */
     buffer[pos] = (endpoint->reliability_kind >> 24) & 0xFFU;

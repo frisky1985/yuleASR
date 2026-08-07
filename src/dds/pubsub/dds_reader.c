@@ -23,7 +23,7 @@ eth_status_t dds_reader_deliver_sample(dds_data_reader_t *reader,
                                        const uint8_t *data,
                                        uint32_t len)
 {
-    if ((reader == NULL) || !reader->active || data == NULL || len == 0U) {
+    if ((reader == NULL) || !reader->active || (data == NULL) || len == 0U) {
         return ETH_INVALID_PARAM;
     }
 

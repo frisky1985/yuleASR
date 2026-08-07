@@ -966,7 +966,7 @@ void Xcp_TxConfirmation(void)
  */
 static uint8 Xcp_CheckResourceAccess(uint8 resource)
 {
-    if (Xcp_ResourceProtection & resource) {
+    if ((Xcp_ResourceProtection & resource) != 0U) {
         Xcp_SendError(E_ERR_ACCESS_LOCKED);
         return E_ERR_ACCESS_LOCKED;
     }

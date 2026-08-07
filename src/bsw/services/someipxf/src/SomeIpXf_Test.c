@@ -93,7 +93,7 @@ void Test_SomeIpXf_Init_Valid(void)
     SomeIpXf_DeInit();
     SomeIpXf_Init(&TestConfig);
     
-    TEST_ASSERT(TRUE, "SomeIpXf should be initialized");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SomeIpXf should be initialized");
 }
 
 /**
@@ -106,7 +106,7 @@ void Test_SomeIpXf_DeInit(void)
     SomeIpXf_Init(&TestConfig);
     SomeIpXf_DeInit();
     
-    TEST_ASSERT(TRUE, "SomeIpXf_DeInit should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SomeIpXf_DeInit should complete");
 }
 
 /**

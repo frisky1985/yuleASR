@@ -113,7 +113,7 @@ void Test_SomeIpTp_Init_Valid(void)
     SomeIpTp_DeInit();
     SomeIpTp_Init(&TestConfig);
     
-    TEST_ASSERT(TRUE, "SomeIpTp should be initialized");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SomeIpTp should be initialized");
 }
 
 /**
@@ -126,7 +126,7 @@ void Test_SomeIpTp_DeInit(void)
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_DeInit();
     
-    TEST_ASSERT(TRUE, "SomeIpTp_DeInit should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SomeIpTp_DeInit should complete");
 }
 
 /**
@@ -253,7 +253,7 @@ void Test_SomeIpTp_RxIndication(void)
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_RxIndication(SOMEIPTP_PDU_ID_CHANNEL_0_RX, &pduInfo);
     
-    TEST_ASSERT(TRUE, "RxIndication should complete without error");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "RxIndication should complete without error");
 }
 
 /**
@@ -282,7 +282,7 @@ void Test_SomeIpTp_TxConfirmation(void)
     transmit_called = FALSE;
     SomeIpTp_TxConfirmation(SOMEIPTP_PDU_ID_CHANNEL_0_TX, E_OK);
     
-    TEST_ASSERT(TRUE, "TxConfirmation should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "TxConfirmation should complete");
 }
 
 /**
@@ -295,7 +295,7 @@ void Test_SomeIpTp_MainFunction(void)
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_MainFunction();
     
-    TEST_ASSERT(TRUE, "MainFunction should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "MainFunction should complete");
 }
 
 /**
@@ -339,7 +339,7 @@ void Test_SomeIpTp_CompleteReassembly(void)
     SomeIpTp_Init(&TestConfig);
     SomeIpTp_RxIndication(SOMEIPTP_PDU_ID_CHANNEL_0_RX, &pduInfo);
     
-    TEST_ASSERT(TRUE, "Complete reassembly should finish");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "Complete reassembly should finish");
 }
 
 /**

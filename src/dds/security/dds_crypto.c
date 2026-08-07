@@ -88,10 +88,10 @@ static void aes_key_expansion(uint8_t *round_key, const uint8_t *key, int key_bi
     int nr = nk + 6;
 
     for (i = 0; i < nk; i++) {
-        round_key[(i * 4) + 0] = key[i * 4 + 0];
-        round_key[(i * 4) + 1] = key[i * 4 + 1];
-        round_key[(i * 4) + 2] = key[i * 4 + 2];
-        round_key[(i * 4) + 3] = key[i * 4 + 3];
+        round_key[(i * 4) + 0] = key[(i * 4) + 0];
+        round_key[(i * 4) + 1] = key[(i * 4) + 1];
+        round_key[(i * 4) + 2] = key[(i * 4) + 2];
+        round_key[(i * 4) + 3] = key[(i * 4) + 3];
     }
 
     for (i = nk; i < (4 * (nr + 1)); i++) {
@@ -115,17 +115,17 @@ static void aes_key_expansion(uint8_t *round_key, const uint8_t *key, int key_bi
             temp[0] ^= (rcon[i / nk] >> 24) & 0xFFU;
         }
 
-        if ((nk > 6) && (i % nk == 4)) {
+        if ((nk > 6) && ((i % nk) == 4)) {
             temp[0] = sbox[temp[0]];
             temp[1] = sbox[temp[1]];
             temp[2] = sbox[temp[2]];
             temp[3] = sbox[temp[3]];
         }
 
-        round_key[(i * 4) + 0] = round_key[(i - nk) * 4 + 0] ^ temp[0];
-        round_key[(i * 4) + 1] = round_key[(i - nk) * 4 + 1] ^ temp[1];
-        round_key[(i * 4) + 2] = round_key[(i - nk) * 4 + 2] ^ temp[2];
-        round_key[(i * 4) + 3] = round_key[(i - nk) * 4 + 3] ^ temp[3];
+        round_key[(i * 4) + 0] = round_key[((i - nk) * 4) + 0] ^ temp[0];
+        round_key[(i * 4) + 1] = round_key[((i - nk) * 4) + 1] ^ temp[1];
+        round_key[(i * 4) + 2] = round_key[((i - nk) * 4) + 2] ^ temp[2];
+        round_key[(i * 4) + 3] = round_key[((i - nk) * 4) + 3] ^ temp[3];
     }
 }
 
@@ -299,14 +299,14 @@ void dds_crypto_deinit(dds_crypto_context_t *ctx)
     }
 
     /* Clear sensitive key data */
-    if (ctx->sessions) {
+    if ((ctx->sessions) != 0U) {
         for (uint32_t i = 0; i < ctx->max_sessions; i++) {
             memset(ctx->sessions[i].key_materials, 0, sizeof(ctx->sessions[i].key_materials));
         }
         free(ctx->sessions);
     }
 
-    if (ctx->key_manager.key_sessions) {
+    if ((ctx->key_manager.key_sessions) != 0U) {
         memset(ctx->key_manager.key_sessions, 0,
                sizeof(dds_crypto_session_keys_t) * ctx->key_manager.max_sessions);
         free(ctx->key_manager.key_sessions);
@@ -450,7 +450,7 @@ dds_crypto_status_t dds_crypto_generate_key(dds_crypto_context_t *ctx,
 
     /* Generate random key using system entropy */
     FILE *fp = fopen("/dev/urandom", "rb");
-    if (fp) {
+    if ((fp) != 0U) {
         fread(key, 1, key_len, fp);
         fclose(fp);
     } else {
@@ -500,14 +500,15 @@ dds_crypto_status_t dds_crypto_derive_session_keys(dds_crypto_context_t *ctx,
         }
         memcpy(input + input_len, info, sizeof(info) - 1U);
         input_len += sizeof(info) - 1U;
-        input[input_len] = counter++;
+        input[input_len] = counter;
+        counter++;
         input_len++;
 
         /* Simplified hash - use XOR based mixing */
         for (int i = 0; i < 32; i++) {
             okm[(block * 32) + i] = prk[i];
             for (uint32_t j = 0; j < input_len; j++) {
-                okm[(block * 32) + i] ^= input[j] ^ (j * 7U + i * 13);
+                okm[(block * 32) + i] ^= input[j] ^ ((j * 7U) + (i * 13));
             }
         }
     }
@@ -553,7 +554,7 @@ dds_crypto_status_t dds_crypto_update_session_key(dds_crypto_context_t *ctx,
 
     ctx->key_rotations++;
 
-    if (ctx->on_key_rotation) {
+    if ((ctx->on_key_rotation) != 0U) {
         ctx->on_key_rotation(session_id);
     }
 
@@ -646,7 +647,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
     }
 
     /* Validate key length */
-    if ((key_len != 16U) && (key_len != 24) && key_len != 32) {
+    if ((key_len != 16U) && (key_len != 24) && (key_len != 32)) {
         return DDS_CRYPTO_ERROR_KEY_INVALID;
     }
 
@@ -701,7 +702,7 @@ dds_crypto_status_t dds_crypto_encrypt_aes_gcm(dds_crypto_context_t *ctx,
 
         /* Increment counter */
         for (int i = 15; i >= 12; i--) {
-            if (++counter[i] != 0) break;
+            if (++counter[i] != 0) { break; }
         }
     }
 
@@ -1073,7 +1074,7 @@ void dds_crypto_get_stats(dds_crypto_context_t *ctx,
         return;
     }
 
-    if (encrypted) *encrypted = ctx->total_encrypted;
-    if (decrypted) *decrypted = ctx->total_decrypted;
-    if (failed) *failed = ctx->total_failed;
+    if ((encrypted) != 0U) { *encrypted = ctx->total_encrypted; }
+    if ((decrypted) != 0U) { *decrypted = ctx->total_decrypted; }
+    if ((failed) != 0U) { *failed = ctx->total_failed; }
 }

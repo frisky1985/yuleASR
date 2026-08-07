@@ -1103,7 +1103,7 @@ Std_ReturnType CanNm_GetState(NetworkHandleType nmChannelHandle,
 
     ChannelIndex = CanNm_GetChannelIndex(nmChannelHandle);
     
-    if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_GET_STATE))
+    if ((CanNm_ValidateChannel(ChannelIndex, CANNM_SID_GET_STATE)) != 0U)
     {
         const CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
 
@@ -1193,7 +1193,7 @@ Std_ReturnType CanNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8*
 
     ChannelIndex = CanNm_GetChannelIndex(nmChannelHandle);
     
-    if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_SET_USER_DATA))
+    if ((CanNm_ValidateChannel(ChannelIndex, CANNM_SID_SET_USER_DATA)) != 0U)
     {
 #if (CANNM_USER_DATA_ENABLED == STD_ON)
         CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
@@ -1245,7 +1245,7 @@ Std_ReturnType CanNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUse
 
     ChannelIndex = CanNm_GetChannelIndex(nmChannelHandle);
     
-    if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_GET_USER_DATA))
+    if ((CanNm_ValidateChannel(ChannelIndex, CANNM_SID_GET_USER_DATA)) != 0U)
     {
 #if (CANNM_USER_DATA_ENABLED == STD_ON)
         CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
@@ -1291,7 +1291,7 @@ Std_ReturnType CanNm_SetSleepReadyBit(NetworkHandleType nmChannelHandle, boolean
 
     ChannelIndex = CanNm_GetChannelIndex(nmChannelHandle);
     
-    if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_SET_SLEEP_READY_BIT))
+    if ((CanNm_ValidateChannel(ChannelIndex, CANNM_SID_SET_SLEEP_READY_BIT)) != 0U)
     {
         CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
         const CanNm_ChannelConfigType* ChCfg = &CanNm_ConfigPtr->ChannelConfig[ChannelIndex];
@@ -1338,7 +1338,7 @@ Std_ReturnType CanNm_DisableCommunication(NetworkHandleType nmChannelHandle)
 
     ChannelIndex = CanNm_GetChannelIndex(nmChannelHandle);
     
-    if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_DISABLE_COMMUNICATION))
+    if ((CanNm_ValidateChannel(ChannelIndex, CANNM_SID_DISABLE_COMMUNICATION)) != 0U)
     {
         CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
 
@@ -1372,7 +1372,7 @@ Std_ReturnType CanNm_EnableCommunication(NetworkHandleType nmChannelHandle)
 
     ChannelIndex = CanNm_GetChannelIndex(nmChannelHandle);
     
-    if (CanNm_ValidateChannel(ChannelIndex, CANNM_SID_ENABLE_COMMUNICATION))
+    if ((CanNm_ValidateChannel(ChannelIndex, CANNM_SID_ENABLE_COMMUNICATION)) != 0U)
     {
         CanNm_ChannelStateType* ChState = &CanNm_ChannelStates[ChannelIndex];
 

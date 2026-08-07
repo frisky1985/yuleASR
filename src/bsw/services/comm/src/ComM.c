@@ -384,7 +384,7 @@ void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType)
 
     /* Handle wake-up for all channels with wake-up support */
     for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
-        if (ComM_ConfigPtr->ChannelConfigs[ch].WakeUpSupport) {
+        if ((ComM_ConfigPtr->ChannelConfigs[ch].WakeUpSupport) != 0U) {
             if (!ComM_ChannelStates[ch].WakeUpInhibition) {
                 ComM_ChannelStates[ch].RequestedMode = COMM_FULL_COMMUNICATION;
             }
@@ -400,7 +400,7 @@ void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel)
     }
 #endif
 
-    if (ComM_ConfigPtr->ChannelConfigs[Channel].WakeUpSupport) {
+    if ((ComM_ConfigPtr->ChannelConfigs[Channel].WakeUpSupport) != 0U) {
         if (!ComM_ChannelStates[Channel].WakeUpInhibition) {
             ComM_ChannelStates[Channel].RequestedMode = COMM_FULL_COMMUNICATION;
         }
@@ -504,7 +504,7 @@ Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolea
 
     ComM_ChannelStates[Channel].PassiveDiagnostic = Active;
     
-    if (Active) {
+    if ((Active) != 0U) {
         /* In passive mode, allow silent communication for response */
         if (ComM_ChannelStates[Channel].RequestedMode < COMM_SILENT_COMMUNICATION) {
             ComM_ChannelStates[Channel].RequestedMode = COMM_SILENT_COMMUNICATION;
@@ -561,7 +561,7 @@ Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, ComM_Inh
 
     *StatusPtr = COMM_INHIBITION_STATUS_NONE;
     
-    if (ComM_ChannelStates[Channel].WakeUpInhibition) {
+    if ((ComM_ChannelStates[Channel].WakeUpInhibition) != 0U) {
         *StatusPtr |= COMM_INHIBITION_STATUS_WAKEUP;
     }
     
@@ -582,7 +582,7 @@ void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status
 
     ComM_ChannelStates[Channel].LimitToNoCom = Status;
     
-    if (Status) {
+    if ((Status) != 0U) {
         /* Release any full communication requests */
         ComM_ChannelStates[Channel].RequestedMode = COMM_NO_COMMUNICATION;
     }
@@ -600,7 +600,7 @@ void ComM_LimitECUToNoComMode(boolean Status)
 
     ComM_EcuLimitToNoCom = Status;
     
-    if (Status) {
+    if ((Status) != 0U) {
         /* Limit all channels to NoCom */
         for (ch = 0U; ch < COMM_NUM_CHANNELS; ch++) {
             ComM_ChannelStates[ch].RequestedMode = COMM_NO_COMMUNICATION;
@@ -760,13 +760,13 @@ static ComM_ModeType ComM_GetHighestRequestedMode(ComM_ChannelHandleType Channel
     
 #if (COMM_DCM_SUPPORT == STD_ON)
     /* Consider DCM requests */
-    if (ComM_ChannelStates[Channel].DcmActive) {
+    if ((ComM_ChannelStates[Channel].DcmActive) != 0U) {
         if (highestMode < COMM_FULL_COMMUNICATION) {
             highestMode = COMM_FULL_COMMUNICATION;
         }
     }
     
-    if (ComM_ChannelStates[Channel].PassiveDiagnostic) {
+    if ((ComM_ChannelStates[Channel].PassiveDiagnostic) != 0U) {
         if (highestMode < COMM_SILENT_COMMUNICATION) {
             highestMode = COMM_SILENT_COMMUNICATION;
         }
@@ -803,7 +803,7 @@ static void ComM_ProcessPncStateMachine(ComM_PncHandleType Pnc)
     
     switch (pncState->Mode) {
         case COMM_PNC_NO_COMMUNICATION:
-            if (pncState->RequestActive) {
+            if ((pncState->RequestActive) != 0U) {
                 pncState->Mode = COMM_PNC_REQUESTED;
                 ComM_HandlePncChannelRequests(Pnc);
             }
@@ -816,7 +816,7 @@ static void ComM_ProcessPncStateMachine(ComM_PncHandleType Pnc)
             break;
             
         case COMM_PNC_READY_SLEEP:
-            if (pncState->RequestActive) {
+            if ((pncState->RequestActive) != 0U) {
                 pncState->Mode = COMM_PNC_REQUESTED;
             } else {
                 /* Wait for all requests to complete */
@@ -828,7 +828,7 @@ static void ComM_ProcessPncStateMachine(ComM_PncHandleType Pnc)
             break;
             
         case COMM_PNC_PREPARE_SLEEP:
-            if (pncState->RequestActive) {
+            if ((pncState->RequestActive) != 0U) {
                 pncState->Mode = COMM_PNC_REQUESTED;
             } else {
                 if (pncState->TimeoutCounter > 0U) {
@@ -857,14 +857,14 @@ static void ComM_UpdatePncRequestStatus(ComM_PncHandleType Pnc)
         
         for (i = 0U; i < userConfig->NumPncs; i++) {
             if (userConfig->PncMap[i] == Pnc) {
-                if (ComM_UserRequests[user].Active) {
+                if ((ComM_UserRequests[user].Active) != 0U) {
                     requestActive = TRUE;
                     break;
                 }
             }
         }
         
-        if (requestActive) {
+        if ((requestActive) != 0U) {
             break;
         }
     }
@@ -881,7 +881,7 @@ static void ComM_HandlePncChannelRequests(ComM_PncHandleType Pnc)
     for (i = 0U; i < pncConfig->NumChannels; i++) {
         ComM_ChannelHandleType channel = pncConfig->ChannelMap[i].ChannelId;
         
-        if (pncConfig->ChannelMap[i].IsRequester) {
+        if ((pncConfig->ChannelMap[i].IsRequester) != 0U) {
             if (ComM_ChannelStates[channel].RequestedMode < COMM_FULL_COMMUNICATION) {
                 ComM_ChannelStates[channel].RequestedMode = COMM_FULL_COMMUNICATION;
             }

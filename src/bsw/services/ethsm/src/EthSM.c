@@ -83,7 +83,7 @@ Std_ReturnType EthSM_Start(void)
 
 Std_ReturnType EthSM_Stop(void)
 {
-    if (EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) return E_NOT_OK;
+    if (EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) { return E_NOT_OK; }
     EthSM_State.targetState = ETHSM_STATE_OFF;
     EthSM_State.transitionTimeout = 500U;
     return E_OK;
@@ -128,7 +128,7 @@ Std_ReturnType EthSM_SetState(EthSM_StateType State)
 
 void EthSM_MainFunction(void)
 {
-    if ((EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) || (EthSM_State.configPtr == NULL_PTR)) return;
+    if ((EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) || (EthSM_State.configPtr == NULL_PTR)) { return; }
 
     EthSM_State.tickCounter++;
 

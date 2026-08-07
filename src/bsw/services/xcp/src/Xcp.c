@@ -781,13 +781,13 @@ void Xcp_CmdDownload(uint8 ChannelId, const uint8* Data, uint8 Length)
     }
 
     /* Check if DAQ is running - cannot download while DAQ is active */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
 
     /* Check resource protection */
-    if (Xcp_IsResourceProtected(XCP_RESOURCE_CAL_PAG)) {
+    if ((Xcp_IsResourceProtected(XCP_RESOURCE_CAL_PAG)) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
         return;
     }
@@ -889,7 +889,7 @@ void Xcp_CmdUnlock(uint8 ChannelId, const uint8* Data, uint8 Length)
     /* Key should be derived from seed */
     resource = 0U;
     for (i = 0U; i < XCP_MAX_SEEDS; i++) {
-        if (Xcp_ChannelState[ChannelId].ResourcesLocked[i]) {
+        if ((Xcp_ChannelState[ChannelId].ResourcesLocked[i]) != 0U) {
             resource |= (1U << i);
         }
     }
@@ -923,7 +923,7 @@ void Xcp_CmdClearDaqList(uint8 ChannelId, const uint8* Data)
     uint16 daqListNumber;
 
     /* Check if DAQ is running */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
@@ -971,7 +971,7 @@ void Xcp_CmdWriteDaq(uint8 ChannelId, const uint8* Data)
     Xcp_OdtEntryType* entry;
 
     /* Check if DAQ is running */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
@@ -1126,7 +1126,7 @@ void Xcp_CmdStartStopSynch(uint8 ChannelId, const uint8* Data)
             break;
         case 0x01U:  /* Start selected */
             for (daq = 0U; daq < XCP_MAX_DAQ_LISTS; daq++) {
-                if (Xcp_DaqLists[daq].Mode & XCP_DAQ_MODE_SELECTED) {
+                if ((Xcp_DaqLists[daq].Mode & XCP_DAQ_MODE_SELECTED) != 0U) {
                     Xcp_DaqLists[daq].State = XCP_DAQ_STATE_RUNNING;
                     Xcp_DaqLists[daq].Mode &= ~XCP_DAQ_MODE_SELECTED;
                 }
@@ -1135,7 +1135,7 @@ void Xcp_CmdStartStopSynch(uint8 ChannelId, const uint8* Data)
             break;
         case 0x02U:  /* Stop selected */
             for (daq = 0U; daq < XCP_MAX_DAQ_LISTS; daq++) {
-                if (Xcp_DaqLists[daq].Mode & XCP_DAQ_MODE_SELECTED) {
+                if ((Xcp_DaqLists[daq].Mode & XCP_DAQ_MODE_SELECTED) != 0U) {
                     Xcp_DaqLists[daq].State = XCP_DAQ_STATE_STOPPED;
                     Xcp_DaqLists[daq].Mode &= ~XCP_DAQ_MODE_SELECTED;
                 }
@@ -1222,16 +1222,16 @@ void Xcp_CmdGetDaqListInfo(uint8 ChannelId, const uint8* Data)
     }
 
     response[0] = 0U;  /* DAQ list properties */
-    if (Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_STIM) {
+    if ((Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_STIM) != 0U) {
         response[0] |= 0x01U;  /* STIM mode */
     }
-    if (Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_DTO_CTR) {
+    if ((Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_DTO_CTR) != 0U) {
         response[0] |= 0x02U;  /* DTO_CTR mode */
     }
-    if (Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_PID_OFF) {
+    if ((Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_PID_OFF) != 0U) {
         response[0] |= 0x04U;  /* PID_OFF mode */
     }
-    if (Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_TIMESTAMP) {
+    if ((Xcp_DaqLists[daqListNumber].Mode & XCP_DAQ_MODE_TIMESTAMP) != 0U) {
         response[0] |= 0x08U;  /* TIMESTAMP mode */
     }
 
@@ -1251,7 +1251,7 @@ void Xcp_CmdGetDaqListInfo(uint8 ChannelId, const uint8* Data)
 void Xcp_CmdFreeDaq(uint8 ChannelId)
 {
     /* Check if DAQ is running */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
@@ -1269,7 +1269,7 @@ void Xcp_CmdAllocDaq(uint8 ChannelId, const uint8* Data)
     uint16 daqCount;
 
     /* Check if DAQ is running */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
@@ -1298,7 +1298,7 @@ void Xcp_CmdAllocOdt(uint8 ChannelId, const uint8* Data)
     uint8 odtCount;
 
     /* Check if DAQ is running */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
@@ -1334,7 +1334,7 @@ void Xcp_CmdAllocOdtEntry(uint8 ChannelId, const uint8* Data)
     uint8 odtEntryCount;
 
     /* Check if DAQ is running */
-    if (Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) {
+    if ((Xcp_ChannelState[ChannelId].SessionStatus & XCP_SESSION_DAQ_RUNNING) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_DAQ_ACTIVE, 0U);
         return;
     }
@@ -1379,7 +1379,7 @@ void Xcp_CmdProgramStart(uint8 ChannelId)
     }
 
     /* Check resource protection */
-    if (Xcp_IsResourceProtected(XCP_RESOURCE_PGM)) {
+    if ((Xcp_IsResourceProtected(XCP_RESOURCE_PGM)) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
         return;
     }
@@ -1569,7 +1569,7 @@ void Xcp_DaqSample(uint16 DaqListIdx)
         }
 
         /* Add timestamp if enabled */
-        if (Xcp_DaqLists[DaqListIdx].Mode & XCP_DAQ_MODE_TIMESTAMP) {
+        if ((Xcp_DaqLists[DaqListIdx].Mode & XCP_DAQ_MODE_TIMESTAMP) != 0U) {
             uint32 timestamp = Xcp_GetTimestamp();
             memcpy(bufferPtr, &timestamp, XCP_TIMESTAMP_SIZE);
             bufferPtr += XCP_TIMESTAMP_SIZE;
@@ -1723,7 +1723,7 @@ void Xcp_SetResourceProtection(uint8 Resource, boolean Protected)
     uint8 ch;
 
     for (ch = 0U; ch < XCP_NUMBER_OF_CHANNELS; ch++) {
-        if (Protected) {
+        if ((Protected) != 0U) {
             XCP_SET_RESOURCE_PROTECTION(Resource, Xcp_ChannelState[ch].ResourceProtection);
         }
         else {
@@ -1814,7 +1814,7 @@ static void Xcp_ProcessDaqCommand(uint8 ChannelId, const uint8* Data, uint8 Leng
     cmd = Data[0];
 
     /* Check DAQ resource protection */
-    if (Xcp_IsResourceProtected(XCP_RESOURCE_DAQ)) {
+    if ((Xcp_IsResourceProtected(XCP_RESOURCE_DAQ)) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
         return;
     }
@@ -1878,7 +1878,7 @@ static void Xcp_ProcessPgmCommand(uint8 ChannelId, const uint8* Data, uint8 Leng
     cmd = Data[0];
 
     /* Check PGM resource protection */
-    if (Xcp_IsResourceProtected(XCP_RESOURCE_PGM)) {
+    if ((Xcp_IsResourceProtected(XCP_RESOURCE_PGM)) != 0U) {
         Xcp_SendError(ChannelId, XCP_ERR_ACCESS_LOCKED, 0U);
         return;
     }
@@ -1917,7 +1917,7 @@ static uint16 Xcp_CalculateChecksum(const uint8* Data, uint32 Length)
     for (i = 0U; i < Length; i++) {
         crc ^= ((uint16)Data[i] << 8);
         for (j = 0U; j < 8U; j++) {
-            if (crc & 0x8000U) {
+            if ((crc & 0x8000U) != 0U) {
                 crc = (crc << 1) ^ 0x1021U;  /* CRC-16 CCITT polynomial */
             }
             else {

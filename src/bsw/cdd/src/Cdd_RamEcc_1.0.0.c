@@ -167,7 +167,7 @@ Std_ReturnType Cdd_RamEcc_Init(const Cdd_RamEcc_ConfigType* config)
     Cdd_RamEcc_Config = config;
 
     /* Configure ECC interrupt enable */
-    if (config->enableInterrupt)
+    if ((config->enableInterrupt) != 0U)
     {
         CDD_RAMECC_REG_ECC_INT_EN = 0x01U;
     }
@@ -227,7 +227,7 @@ void Cdd_RamEcc_Isr(void)
     record.isNvMBlock = FALSE;
     record.nvMBlockId = 0U;
 
-    if (status & ECC_STATUS_SINGLE_BIT)
+    if ((status & ECC_STATUS_SINGLE_BIT) != 0U)
     {
         Cdd_RamEcc_SingleBitCount++;
         record.errorType = CDD_RAMECC_ERROR_SINGLE_BIT;
@@ -241,7 +241,7 @@ void Cdd_RamEcc_Isr(void)
         Cdd_RamEcc_LogError(&record);
     }
 
-    if (status & ECC_STATUS_DOUBLE_BIT)
+    if ((status & ECC_STATUS_DOUBLE_BIT) != 0U)
     {
         Cdd_RamEcc_DoubleBitCount++;
         record.errorType = CDD_RAMECC_ERROR_DOUBLE_BIT;
@@ -256,13 +256,13 @@ void Cdd_RamEcc_Isr(void)
         }
     }
 
-    if (status & ECC_STATUS_BUS_ERROR)
+    if ((status & ECC_STATUS_BUS_ERROR) != 0U)
     {
         record.errorType = CDD_RAMECC_ERROR_BUS;
         Cdd_RamEcc_LogError(&record);
     }
 
-    if (status & ECC_STATUS_OVERFLOW)
+    if ((status & ECC_STATUS_OVERFLOW) != 0U)
     {
         record.errorType = CDD_RAMECC_ERROR_OVERFLOW;
         Cdd_RamEcc_LogError(&record);

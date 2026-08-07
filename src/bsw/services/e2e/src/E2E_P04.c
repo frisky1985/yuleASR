@@ -124,7 +124,7 @@ static uint32 E2E_P04_CalculateCRC(
     }
     
     /* Include DataID if configured */
-    if (IncludeDataID) {
+    if ((IncludeDataID) != 0U) {
         crc = E2E_P04_CRC32_Table[(crc >> 24) ^ (uint8)(DataID & 0xFFU)] ^ (crc << 8);
         crc = E2E_P04_CRC32_Table[(crc >> 24) ^ (uint8)((DataID >> 8) & 0xFFU)] ^ (crc << 8);
         crc = E2E_P04_CRC32_Table[(crc >> 24) ^ (uint8)((DataID >> 16) & 0xFFU)] ^ (crc << 8);

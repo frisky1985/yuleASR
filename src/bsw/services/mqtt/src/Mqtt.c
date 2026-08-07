@@ -145,7 +145,7 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
 {
     uint8 i, j;
     
-    if (Mqtt_Initialized) {
+    if ((Mqtt_Initialized) != 0U) {
         MQTT_DET_REPORT_ERROR(MQTT_SID_INIT, MQTT_E_ALREADY_INITIALIZED);
         return MQTT_E_NOT_OK;
     }
@@ -250,7 +250,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
 #if (MQTT_SUPPORT_TLS == STD_ON)
     /* 初始化TLS配置 */
     conn->useTls = connConfig->useTls;
-    if (conn->useTls) {
+    if ((conn->useTls) != 0U) {
         Mqtt_ReturnType tlsResult;
         
         if (connConfig->tlsConfig == NULL_PTR) {
@@ -520,7 +520,7 @@ Mqtt_ReturnType Mqtt_Ping(Mqtt_ConnectionIdType connectionId)
         return MQTT_E_NOCONN;
     }
     
-    if (conn->pendingPing) {
+    if ((conn->pendingPing) != 0U) {
         return MQTT_E_BUSY; /* 上次PING未响应 */
     }
     
@@ -680,9 +680,9 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
             
     case MQTT_STATE_TCP_CONNECTING:
         /* 检查TCP连接是否完成 */
-        if (TcpIp_IsConnected(conn->socketId)) {
+        if ((TcpIp_IsConnected(conn->socketId)) != 0U) {
 #if (MQTT_SUPPORT_TLS == STD_ON)
-            if (conn->useTls) {
+            if ((conn->useTls) != 0U) {
                 /* 开始TLS握手 */
                 Mqtt_UpdateState(conn, MQTT_STATE_TLS_HANDSHAKING);
             } else
@@ -691,7 +691,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
                 /* 直接发送MQTT CONNECT报文 */
                 Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
             }
-        } else if (Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) {
+        } else if ((Mqtt_CheckTimeout(conn, conn->config.connectTimeoutMs)) != 0U) {
             Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
         }
         break;
@@ -707,7 +707,7 @@ static Mqtt_ReturnType Mqtt_ProcessStateMachine(Mqtt_InternalConnectionType* con
             if (tlsResult == MQTT_OK) {
                 /* TLS握手成功，发送MQTT CONNECT报文 */
                 Mqtt_UpdateState(conn, MQTT_STATE_MQTT_CONNECTING);
-            } else if (Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) {
+            } else if ((Mqtt_CheckTimeout(conn, MQTT_TLS_HANDSHAKE_TIMEOUT_MS)) != 0U) {
                 Mqtt_UpdateState(conn, MQTT_STATE_DISCONNECTING);
             }
         }

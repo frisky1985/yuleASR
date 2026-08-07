@@ -109,8 +109,8 @@ Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
         return E_NOT_OK;
     }
 #endif
-    if (SomeIpIf_State.state == SOMEIPIF_OFFLINE) return E_NOT_OK;
-    if (SomeIpIf_State.txBufferCount >= SOMEIPIF_MAX_SDUS) return E_NOT_OK;
+    if (SomeIpIf_State.state == SOMEIPIF_OFFLINE) { return E_NOT_OK; }
+    if (SomeIpIf_State.txBufferCount >= SOMEIPIF_MAX_SDUS) { return E_NOT_OK; }
 
     SomeIpIf_TxBufferType* buf = &SomeIpIf_State.txBuffers[SomeIpIf_State.txBufferCount];
     uint16 totalLen = (PduInfoPtr->SduLength < sizeof(buf->data) - SOMEIP_HEADER_LEN)
@@ -162,7 +162,7 @@ void SomeIpIf_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
 void SomeIpIf_MainFunction(void)
 {
-    if (SomeIpIf_State.state < SOMEIPIF_INIT) return;
+    if (SomeIpIf_State.state < SOMEIPIF_INIT) { return; }
 
     /* Process pending TX buffers */
     for (uint8 i = 0U; i < SomeIpIf_State.txBufferCount; i++) {
@@ -181,7 +181,7 @@ Std_ReturnType SomeIpIf_SetState(uint8 ChannelId, boolean Online)
 
 void SomeIpIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) return;
+    if (NULL_PTR == versioninfo) { return; }
     versioninfo->vendorID = SOMEIPIF_VENDOR_ID;
     versioninfo->moduleID = SOMEIPIF_MODULE_ID;
     versioninfo->sw_major_version = 1U;

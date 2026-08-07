@@ -259,7 +259,7 @@ Std_ReturnType Sandbox_AddMountPoint(SandboxConfigType* config,
                                       const char* source,
                                       const char* target,
                                       bool readOnly) {
-    if ((config == NULL) || (source == NULL) || target == NULL) {
+    if ((config == NULL) || (source == NULL) || (target == NULL)) {
         return E_NOT_OK;
     }
     

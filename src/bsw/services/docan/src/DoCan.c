@@ -335,7 +335,7 @@ void DoCan_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
         {
             mappingPtr = &DoCan_InternalState.ConfigPtr->PduMappings[mappingIndex];
 
-            if (mappingPtr->RxIndicationEnabled)
+            if ((mappingPtr->RxIndicationEnabled) != 0U)
             {
                 /* Update channel state */
                 if (DoCan_FindChannelConfig(mappingPtr->DoCanPduId, &channelIndex) == E_OK)
@@ -385,7 +385,7 @@ void DoCan_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
         {
             mappingPtr = &DoCan_InternalState.ConfigPtr->PduMappings[mappingIndex];
 
-            if (mappingPtr->TxConfirmationEnabled)
+            if ((mappingPtr->TxConfirmationEnabled) != 0U)
             {
                 /* Update channel state */
                 if (DoCan_FindChannelConfig(mappingPtr->DoCanPduId, &channelIndex) == E_OK)
@@ -424,7 +424,7 @@ void DoCan_MainFunction(void)
         {
             DoCan_ChannelRuntimeType* channelPtr = &DoCan_InternalState.Channels[i];
 
-            if (channelPtr->IsActive)
+            if ((channelPtr->IsActive) != 0U)
             {
                 /* Increment timeout timer */
                 channelPtr->TimeoutTimer += DOCAN_MAIN_FUNCTION_PERIOD_MS;

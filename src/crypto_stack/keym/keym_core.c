@@ -109,7 +109,7 @@ void keym_deinit(keym_context_t *ctx)
 keym_status_t keym_slot_allocate(keym_context_t *ctx, uint8_t *slot_id,
                                  const char *name, keym_key_type_t key_type)
 {
-    if ((ctx == NULL) || !ctx->initialized || slot_id == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (slot_id == NULL)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -202,7 +202,7 @@ keym_status_t keym_slot_get_info(keym_context_t *ctx, uint8_t slot_id,
 
 uint8_t keym_slot_find_by_name(keym_context_t *ctx, const char *name)
 {
-    if ((ctx == NULL) || !ctx->initialized || name == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (name == NULL)) {
         return KEYM_SLOT_ID_INVALID;
     }
     
@@ -430,7 +430,7 @@ keym_status_t keym_key_derive(keym_context_t *ctx,
     keym_status_t status;
     uint8_t target_slot;
     
-    if ((ctx == NULL) || !ctx->initialized || params == NULL || derived_slot_id == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (params == NULL) || derived_slot_id == NULL) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -532,7 +532,7 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
 keym_status_t keym_set_rotation_policy(keym_context_t *ctx,
                                        const keym_rotation_policy_t *policy)
 {
-    if ((ctx == NULL) || !ctx->initialized || policy == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (policy == NULL)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -704,7 +704,7 @@ keym_status_t keym_register_certificate(keym_context_t *ctx, uint8_t cert_id,
                                         const char *name,
                                         const uint8_t *cert_data, uint32_t cert_len)
 {
-    if ((ctx == NULL) || !ctx->initialized || cert_data == NULL || cert_len == 0U) {
+    if ((ctx == NULL) || !ctx->initialized || (cert_data == NULL) || cert_len == 0U) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -744,7 +744,7 @@ keym_status_t keym_update_certificate(keym_context_t *ctx, uint8_t cert_id,
 
 keym_status_t keym_revoke_certificate(keym_context_t *ctx, uint8_t cert_id)
 {
-    if ((ctx == NULL) || !ctx->initialized || cert_id >= KEYM_MAX_CERTIFICATES) {
+    if ((ctx == NULL) || !ctx->initialized || (cert_id >= KEYM_MAX_CERTIFICATES)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -763,7 +763,7 @@ keym_status_t keym_configure_secoc_key(keym_context_t *ctx, uint32_t secoc_pdu_i
     keym_status_t status;
     uint8_t slot;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (key_slot == NULL)) {
         return KEYM_ERROR_INVALID_PARAM;
     }
     
@@ -992,6 +992,6 @@ static uint32_t keym_get_key_type_size(keym_key_type_t type)
 
 static bool keym_is_key_usage_allowed(keym_slot_info_t *slot, keym_key_usage_t usage)
 {
-    if (slot == NULL) return false;
+    if (slot == NULL) { return false; }
     return (slot->usage_flags & usage) != 0U;
 }

@@ -233,7 +233,7 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
         REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
 
         /* Configure interrupt and window mode if enabled */
-        if (modeSettings->InterruptMode) {
+        if ((modeSettings->InterruptMode) != 0U) {
             uint16 wicrValue = WDG_WICR_WIE;
             wicrValue |= ((uint16)wtValue << 8) & WDG_WICR_WICT_MASK;
             REG_WRITE16(baseAddr + WDG_WICR, wicrValue);

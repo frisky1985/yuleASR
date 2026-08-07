@@ -288,7 +288,7 @@ static void Com_ProcessTxIPdu(Com_IPduIdType PduId)
     Com_TxModeProcessIPdu(PduId);
     
     /* Check if I-PDU should be transmitted based on its mode */
-    if (Com_TxModeShouldTransmit(PduId)) {
+    if ((Com_TxModeShouldTransmit(PduId)) != 0U) {
         /* Execute transmission */
         Std_ReturnType result = Com_TransmitIPdu(PduId);
         

@@ -215,7 +215,7 @@ void Rte_ComCallbackRx(uint16 signalId, const void* data)
  */
 void Rte_ComCallbackTx(uint16 signalId)
 {
-    if (Rte_ComInterfaceState.IsInitialized)
+    if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         sint8 mapIndex = Rte_ComFindSignalMapping(signalId);
 
@@ -236,7 +236,7 @@ Std_ReturnType Rte_ComTriggerIPDUSend(PduIdType pduId)
 {
     Std_ReturnType result = E_NOT_OK;
 
-    if (Rte_ComInterfaceState.IsInitialized)
+    if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         result = Com_TriggerIPDUSend(pduId);
     }
@@ -249,7 +249,7 @@ Std_ReturnType Rte_ComTriggerIPDUSend(PduIdType pduId)
  */
 void Rte_ComSwitchIpduTxMode(PduIdType pduId, boolean mode)
 {
-    if (Rte_ComInterfaceState.IsInitialized)
+    if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         Com_SwitchIpduTxMode(pduId, mode);
     }
@@ -260,7 +260,7 @@ void Rte_ComSwitchIpduTxMode(PduIdType pduId, boolean mode)
  */
 void Rte_ComInterface_MainFunction(void)
 {
-    if (Rte_ComInterfaceState.IsInitialized)
+    if ((Rte_ComInterfaceState.IsInitialized) != 0U)
     {
         /* Process COM main functions */
         Com_MainFunctionRx();

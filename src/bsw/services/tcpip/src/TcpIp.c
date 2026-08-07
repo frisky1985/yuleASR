@@ -180,7 +180,7 @@ void TcpIp_DeInit(void)
         TcpIp_SocketIdType i;
         for (i = 0U; i < TCPIP_MAX_SOCKETS; i++)
         {
-            if (TcpIp_InternalState.Sockets[i].InUse)
+            if ((TcpIp_InternalState.Sockets[i].InUse) != 0U)
             {
                 (void)TcpIp_Close(i, TRUE);
             }

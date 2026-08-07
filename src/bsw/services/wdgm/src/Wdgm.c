@@ -244,7 +244,7 @@ Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
             {
                 WdgM_SupervisedEntities[i].seId = config->entities[i].seId;
                 WdgM_SupervisedEntities[i].deactivated = !config->entities[i].enabled;
-                if (config->entities[i].enabled)
+                if ((config->entities[i].enabled) != 0U)
                 {
                     WdgM_SupervisedEntities[i].state = WDGM_SE_STATE_CORRECT;
                     WdgM_SupervisedEntities[i].deactivated = FALSE;

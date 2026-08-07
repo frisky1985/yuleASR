@@ -222,7 +222,7 @@ static int queue_push(log_queue_t* queue, const dds_log_entry_t* entry) {
     memcpy(&node->entry, entry, sizeof(dds_log_entry_t));
     node->next = NULL;
     
-    if (queue->tail) {
+    if ((queue->tail) != 0U) {
         queue->tail->next = node;
     } else {
         queue->head = node;
@@ -277,7 +277,7 @@ static void queue_destroy(log_queue_t* queue) {
     pthread_cond_broadcast(&queue->cond_not_full);
     
     pthread_mutex_lock(&queue->mutex);
-    while (queue->head) {
+    while ((queue->head) != 0U) {
         log_queue_node_t* node = queue->head;
         queue->head = node->next;
         free(node);
@@ -303,7 +303,7 @@ static int ensure_directory(const char* path) {
 }
 
 static int open_new_log_file(void) {
-    if (g_log_state.log_fp) {
+    if ((g_log_state.log_fp) != 0U) {
         fclose(g_log_state.log_fp);
         g_log_state.log_fp = NULL;
     }
@@ -420,8 +420,8 @@ static void format_log_entry(const dds_log_entry_t* entry, char* buffer, size_t 
     /* 位置信息 */
     if (g_log_state.config.enable_location && strlen(entry->file) > 0U) {
         const char* filename = strrchr(entry->file, '/');
-        if (!filename) filename = strrchr(entry->file, '\\');
-        if (!filename) filename = entry->file;
+        if (!filename) { filename = strrchr(entry->file, '\\'); }
+        if (!filename) { filename = entry->file; }
         else filename++;
         offset += snprintf(buffer + offset, size - offset, " %s:%d", filename, entry->line);
     }
@@ -459,9 +459,9 @@ static void output_log(const dds_log_entry_t* entry) {
     
     /* 回调输出 */
     callback_node_t* node = g_log_state.output_callbacks;
-    while (node) {
+    while ((node) != 0U) {
         dds_log_output_callback_t cb = (dds_log_output_callback_t)node->callback;
-        if (cb) cb(entry, node->user_data);
+        if ((cb) != 0U) { cb(entry, node->user_data); }
         node = node->next;
     }
     
@@ -482,7 +482,7 @@ static void* flush_thread_func(void* arg) {
         
         /* 定期刷新文件 */
         pthread_mutex_lock(&g_log_state.mutex);
-        if (g_log_state.log_fp) {
+        if ((g_log_state.log_fp) != 0U) {
             fflush(g_log_state.log_fp);
         }
         pthread_mutex_unlock(&g_log_state.mutex);
@@ -514,7 +514,7 @@ int dds_log_init(const dds_log_config_t* config) {
     memset(&g_log_state, 0, sizeof(g_log_state));
     
     /* 复制配置 */
-    if (config) {
+    if ((config) != 0U) {
         memcpy(&g_log_state.config, config, sizeof(dds_log_config_t));
     } else {
         /* 默认配置 */
@@ -587,7 +587,7 @@ void dds_log_deinit(void) {
     
     /* 关闭文件 */
     pthread_mutex_lock(&g_log_state.mutex);
-    if (g_log_state.log_fp) {
+    if ((g_log_state.log_fp) != 0U) {
         fflush(g_log_state.log_fp);
         fclose(g_log_state.log_fp);
         g_log_state.log_fp = NULL;
@@ -595,19 +595,19 @@ void dds_log_deinit(void) {
     pthread_mutex_unlock(&g_log_state.mutex);
     
     /* 清理模块级别 */
-    while (g_log_state.module_levels) {
+    while ((g_log_state.module_levels) != 0U) {
         module_level_node_t* node = g_log_state.module_levels;
         g_log_state.module_levels = node->next;
         free(node);
     }
     
     /* 清理回调 */
-    while (g_log_state.output_callbacks) {
+    while ((g_log_state.output_callbacks) != 0U) {
         callback_node_t* node = g_log_state.output_callbacks;
         g_log_state.output_callbacks = node->next;
         free(node);
     }
-    while (g_log_state.audit_callbacks) {
+    while ((g_log_state.audit_callbacks) != 0U) {
         callback_node_t* node = g_log_state.audit_callbacks;
         g_log_state.audit_callbacks = node->next;
         free(node);
@@ -628,7 +628,7 @@ bool dds_log_is_initialized(void) {
 }
 
 void dds_log_flush(void) {
-    if (!g_log_state.initialized) return;
+    if (!g_log_state.initialized) { return; }
     
     if (g_log_state.config.enable_async) {
         /* 等待队列清空 */
@@ -638,7 +638,7 @@ void dds_log_flush(void) {
     }
     
     pthread_mutex_lock(&g_log_state.mutex);
-    if (g_log_state.log_fp) {
+    if ((g_log_state.log_fp) != 0U) {
         fflush(g_log_state.log_fp);
     }
     pthread_mutex_unlock(&g_log_state.mutex);
@@ -660,7 +660,7 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     /* 检查模块级别 */
     pthread_rwlock_rdlock(&g_log_state.rwlock);
     module_level_node_t* mod_node = g_log_state.module_levels;
-    while (mod_node) {
+    while ((mod_node) != 0U) {
         if (strcmp(mod_node->module, module) == 0) {
             if (level > mod_node->level) {
                 pthread_rwlock_unlock(&g_log_state.rwlock);
@@ -683,9 +683,9 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     entry.line = line;
     entry.thread_id = get_thread_id();
     
-    if (module) strncpy(entry.module, module, DDS_LOG_MAX_MODULE_LEN - 1);
-    if (tag) strncpy(entry.tag, tag, DDS_LOG_MAX_TAG_LEN - 1);
-    if (file) strncpy(entry.file, file, DDS_LOG_MAX_FILE_NAME - 1);
+    if ((module) != 0U) { strncpy(entry.module, module, DDS_LOG_MAX_MODULE_LEN - 1); }
+    if ((tag) != 0U) { strncpy(entry.tag, tag, DDS_LOG_MAX_TAG_LEN - 1); }
+    if ((file) != 0U) { strncpy(entry.file, file, DDS_LOG_MAX_FILE_NAME - 1); }
     
     /* 复制ECU ID */
     strncpy(entry.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
@@ -715,7 +715,7 @@ void dds_log_vwrite(dds_log_level_t level, dds_log_type_t type,
     /* 致命错误处理 */
     if (level == DDS_LOG_LEVEL_FATAL) {
         dds_log_flush();
-        if (g_log_state.fatal_handler) {
+        if ((g_log_state.fatal_handler) != 0U) {
             g_log_state.fatal_handler(&entry);
         }
         abort();
@@ -771,18 +771,18 @@ void dds_log_audit(dds_audit_event_type_t event_type,
     event.severity = (event_type & DDS_AUDIT_EVENT_SECURITY_ALERT) ? 2 : 1;
     
     callback_node_t* node = g_log_state.audit_callbacks;
-    while (node) {
+    while ((node) != 0U) {
         dds_audit_callback_t cb = (dds_audit_callback_t)node->callback;
-        if (cb) cb(&event, node->user_data);
+        if ((cb) != 0U) { cb(&event, node->user_data); }
         node = node->next;
     }
 }
 
 int dds_log_register_audit_callback(dds_audit_callback_t callback, void* user_data) {
-    if (!callback) return -1;
+    if (!callback) { return -1; }
     
     callback_node_t* node = malloc(sizeof(callback_node_t));
-    if (!node) return -1;
+    if (!node) { return -1; }
     
     node->callback = callback;
     node->user_data = user_data;
@@ -794,7 +794,7 @@ int dds_log_register_audit_callback(dds_audit_callback_t callback, void* user_da
 
 void dds_log_unregister_audit_callback(dds_audit_callback_t callback) {
     callback_node_t** current = &g_log_state.audit_callbacks;
-    while (*current) {
+    while ((*current) != 0U) {
         if ((*current)->callback == callback) {
             callback_node_t* to_delete = *current;
             *current = (*current)->next;
@@ -810,7 +810,7 @@ void dds_log_unregister_audit_callback(dds_audit_callback_t callback) {
  *============================================================================*/
 
 void dds_log_set_level(dds_log_level_t level) {
-    if (level >= DDS_LOG_LEVEL_MAX) return;
+    if (level >= DDS_LOG_LEVEL_MAX) { return; }
     g_log_state.config.level = level;
 }
 
@@ -819,13 +819,13 @@ dds_log_level_t dds_log_get_level(void) {
 }
 
 void dds_log_set_module_level(const char* module, dds_log_level_t level) {
-    if (!module || (level >= DDS_LOG_LEVEL_MAX)) return;
+    if (!module || (level >= DDS_LOG_LEVEL_MAX)) { return; }
     
     pthread_rwlock_wrlock(&g_log_state.rwlock);
     
     /* 查找现有 */
     module_level_node_t* node = g_log_state.module_levels;
-    while (node) {
+    while ((node) != 0U) {
         if (strcmp(node->module, module) == 0) {
             node->level = level;
             pthread_rwlock_unlock(&g_log_state.rwlock);
@@ -836,7 +836,7 @@ void dds_log_set_module_level(const char* module, dds_log_level_t level) {
     
     /* 创建新节点 */
     node = malloc(sizeof(module_level_node_t));
-    if (node) {
+    if ((node) != 0U) {
         strncpy(node->module, module, DDS_LOG_MAX_MODULE_LEN - 1);
         node->level = level;
         node->next = g_log_state.module_levels;
@@ -847,11 +847,11 @@ void dds_log_set_module_level(const char* module, dds_log_level_t level) {
 }
 
 dds_log_level_t dds_log_get_module_level(const char* module) {
-    if (!module) return g_log_state.config.level;
+    if (!module) { return g_log_state.config.level; }
     
     pthread_rwlock_rdlock(&g_log_state.rwlock);
     module_level_node_t* node = g_log_state.module_levels;
-    while (node) {
+    while ((node) != 0U) {
         if (strcmp(node->module, module) == 0) {
             dds_log_level_t level = node->level;
             pthread_rwlock_unlock(&g_log_state.rwlock);
@@ -882,20 +882,20 @@ void dds_log_set_ota_callback(dds_ota_upload_callback_t callback, void* user_dat
 }
 
 int dds_log_trigger_ota_upload(const char* session_id, bool compress) {
-    if (!g_log_state.initialized) return -1;
+    if (!g_log_state.initialized) { return -1; }
     
     /* 构建OTA日志条目 */
     dds_ota_log_entry_t entry;
     memset(&entry, 0, sizeof(entry));
     entry.timestamp_ns = get_timestamp_ns();
     strncpy(entry.ecu_id, g_log_state.config.ecu_id, DDS_LOG_ECUID_LEN - 1);
-    if (session_id) {
+    if ((session_id) != 0U) {
         strncpy(entry.uds_session, session_id, DDS_LOG_UDS_SESSION_ID_LEN - 1);
     }
     
     /* 读取日志文件 */
     pthread_mutex_lock(&g_log_state.mutex);
-    if (g_log_state.log_fp) {
+    if ((g_log_state.log_fp) != 0U) {
         fflush(g_log_state.log_fp);
     }
     pthread_mutex_unlock(&g_log_state.mutex);
@@ -906,7 +906,7 @@ int dds_log_trigger_ota_upload(const char* session_id, bool compress) {
     entry.log_size = (uint32_t)g_log_state.stats.bytes_written;
     
     /* 触发回调 */
-    if (g_log_state.ota_callback) {
+    if ((g_log_state.ota_callback) != 0U) {
         g_log_state.ota_callback(&entry, true, g_log_state.ota_user_data);
     }
     
@@ -917,7 +917,7 @@ int dds_log_trigger_ota_upload(const char* session_id, bool compress) {
 }
 
 int dds_log_get_ota_buffer(uint8_t* buffer, uint32_t buffer_size, uint32_t* actual_size) {
-    if (!buffer || !actual_size || (buffer_size == 0U)) return -1;
+    if (!buffer || !actual_size || (buffer_size == 0U)) { return -1; }
     
     /* 简化版本：实际应用需要读取压缩日志数据 */
     *actual_size = 0;
@@ -930,7 +930,7 @@ int dds_log_get_ota_buffer(uint8_t* buffer, uint32_t buffer_size, uint32_t* actu
 
 void dds_log_set_uds_session(const char* session_id) {
     pthread_mutex_lock(&g_log_state.uds_mutex);
-    if (session_id) {
+    if ((session_id) != 0U) {
         strncpy(g_log_state.uds_session, session_id, DDS_LOG_UDS_SESSION_ID_LEN - 1);
         DDS_LOG_INFO("DDS_LOG", "UDS", "UDS session started: %s", session_id);
     } else {
@@ -949,7 +949,7 @@ void dds_log_clear_uds_session(void) {
 }
 
 void dds_log_uds_event(uint8_t service_id, uint8_t response_code, const char* description) {
-    if (!g_log_state.config.enable_uds_trace) return;
+    if (!g_log_state.config.enable_uds_trace) { return; }
     
     DDS_LOG_DIAG(DDS_LOG_LEVEL_DEBUG, "UDS_SVC",
                  "SID=0x%02X, RSP=0x%02X, %s",
@@ -961,7 +961,7 @@ void dds_log_uds_event(uint8_t service_id, uint8_t response_code, const char* de
  *============================================================================*/
 
 void dds_log_get_stats(dds_log_stats_t* stats) {
-    if (!stats) return;
+    if (!stats) { return; }
     pthread_mutex_lock(&g_log_state.stats_mutex);
     memcpy(stats, &g_log_state.stats, sizeof(dds_log_stats_t));
     stats->current_queue_size = g_log_state.queue.size;
@@ -970,7 +970,7 @@ void dds_log_get_stats(dds_log_stats_t* stats) {
 }
 
 int dds_log_get_current_file(char* path, size_t path_size) {
-    if (!path || (path_size == 0U)) return -1;
+    if (!path || (path_size == 0U)) { return -1; }
     
     pthread_mutex_lock(&g_log_state.mutex);
     if (strlen(g_log_state.current_file) == 0U) {
@@ -984,18 +984,18 @@ int dds_log_get_current_file(char* path, size_t path_size) {
 }
 
 int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_count) {
-    if (!files || !actual_count || (max_files == 0U)) return -1;
+    if (!files || !actual_count || (max_files == 0U)) { return -1; }
     
     *actual_count = 0;
     
     DIR* dir = opendir(g_log_state.config.log_dir);
-    if (!dir) return -1;
+    if (!dir) { return -1; }
     
     struct dirent* entry;
     while (((entry = readdir(dir)) != NULL) && (*actual_count < max_files)) {
-        if (strstr(entry->d_name, ".log")) {
+        if ((strstr(entry->d_name, ".log")) != 0U) {
             files[*actual_count] = malloc(DDS_LOG_MAX_PATH_LEN);
-            if (files[*actual_count]) {
+            if ((files[*actual_count]) != 0U) {
                 snprintf(files[*actual_count], DDS_LOG_MAX_PATH_LEN, "%s/%s",
                          g_log_state.config.log_dir, entry->d_name);
                 (*actual_count)++;
@@ -1012,10 +1012,10 @@ int dds_log_get_file_list(char** files, uint32_t max_files, uint32_t* actual_cou
  *============================================================================*/
 
 int dds_log_register_output_callback(dds_log_output_callback_t callback, void* user_data) {
-    if (!callback) return -1;
+    if (!callback) { return -1; }
     
     callback_node_t* node = malloc(sizeof(callback_node_t));
-    if (!node) return -1;
+    if (!node) { return -1; }
     
     node->callback = callback;
     node->user_data = user_data;
@@ -1027,7 +1027,7 @@ int dds_log_register_output_callback(dds_log_output_callback_t callback, void* u
 
 void dds_log_unregister_output_callback(dds_log_output_callback_t callback) {
     callback_node_t** current = &g_log_state.output_callbacks;
-    while (*current) {
+    while ((*current) != 0U) {
         if ((*current)->callback == callback) {
             callback_node_t* to_delete = *current;
             *current = (*current)->next;

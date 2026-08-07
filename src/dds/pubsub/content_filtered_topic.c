@@ -66,7 +66,7 @@ static int strcasecmp_cft(const char *s1, const char *s2) {
     while (*s1 && *s2) {
         char c1 = tolower((unsigned char)*s1);
         char c2 = tolower((unsigned char)*s2);
-        if (c1 != c2) return c1 - c2;
+        if (c1 != c2) { return c1 - c2; }
         s1++;
         s2++;
     }
@@ -77,22 +77,22 @@ static int strcasecmp_cft(const char *s1, const char *s2) {
  * @brief 模糊匹配(LIKE操作)
  */
 static bool match_like(const char *str, const char *pattern) {
-    while (*pattern) {
+    while ((*pattern) != 0U) {
         if (*pattern == '%') {
             pattern++;
-            if (!*pattern) return true;
-            while (*str) {
-                if (match_like(str, pattern)) return true;
+            if (!*pattern) { return true; }
+            while ((*str) != 0U) {
+                if (match_like(str, pattern)) { return true; }
                 str++;
             }
             return false;
         } else if (*pattern == '_') {
-            if (!*str) return false;
+            if (!*str) { return false; }
             pattern++;
             str++;
         } else {
             if (tolower((unsigned char)*str) != tolower((unsigned char)*pattern))
-                return false;
+                { return false; }
             pattern++;
             str++;
         }
@@ -120,7 +120,7 @@ static void lexer_skip_whitespace(cft_lexer_t *lexer) {
 static bool lexer_read_token(cft_lexer_t *lexer) {
     lexer_skip_whitespace(lexer);
     
-    if (lexer->pos >= lexer->len) return false;
+    if (lexer->pos >= lexer->len) { return false; }
     
     lexer->token_len = 0;
     
@@ -139,7 +139,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
     }
     
     // 数字
-    if (isdigit((unsigned char)lexer->input[lexer->pos])) {
+    if ((isdigit((unsigned char)lexer->input[lexer->pos])) != 0U) {
         while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
             if (lexer->token_len < sizeof(lexer->token) - 1U) {
                 lexer->token[lexer->token_len] = lexer->input[lexer->pos];
@@ -149,7 +149,8 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
         }
         // 小数点
         if ((lexer->pos < lexer->len) && (lexer->input[lexer->pos] == '.')) {
-            lexer->token[lexer->token_len] = lexer->input[lexer->pos++];
+            lexer->token[lexer->token_len] = lexer->input[lexer->pos];
+            lexer->pos++;
             lexer->token_len++;
             while ((lexer->pos < lexer->len) && isdigit((unsigned char)lexer->input[lexer->pos])) {
                 if (lexer->token_len < sizeof(lexer->token) - 1U) {
@@ -173,7 +174,7 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
             }
             lexer->pos++;
         }
-        if (lexer->pos < lexer->len) lexer->pos++;
+        if (lexer->pos < lexer->len) { lexer->pos++; }
         lexer->token[lexer->token_len] = '\0';
         return true;
     }
@@ -203,18 +204,18 @@ static bool lexer_read_token(cft_lexer_t *lexer) {
 }
 
 static cft_operator_t get_operator(const char *token) {
-    if ((strcmp(token, "=") == 0) || (strcmp(token, "==") == 0)) return CFT_OP_EQ;
-    if (strcmp(token, "!=") == 0) return CFT_OP_NE;
-    if (strcmp(token, "<") == 0) return CFT_OP_LT;
-    if (strcmp(token, "<=") == 0) return CFT_OP_LE;
-    if (strcmp(token, ">") == 0) return CFT_OP_GT;
-    if (strcmp(token, ">=") == 0) return CFT_OP_GE;
-    if (strcasecmp_cft(token, "LIKE") == 0) return CFT_OP_LIKE;
-    if (strcasecmp_cft(token, "BETWEEN") == 0) return CFT_OP_BETWEEN;
-    if (strcasecmp_cft(token, "IN") == 0) return CFT_OP_IN;
-    if (strcasecmp_cft(token, "AND") == 0) return CFT_OP_AND;
-    if (strcasecmp_cft(token, "OR") == 0) return CFT_OP_OR;
-    if (strcasecmp_cft(token, "NOT") == 0) return CFT_OP_NOT;
+    if ((strcmp(token, "=") == 0) || (strcmp(token, "==") == 0)) { return CFT_OP_EQ; }
+    if (strcmp(token, "!=") == 0) { return CFT_OP_NE; }
+    if (strcmp(token, "<") == 0) { return CFT_OP_LT; }
+    if (strcmp(token, "<=") == 0) { return CFT_OP_LE; }
+    if (strcmp(token, ">") == 0) { return CFT_OP_GT; }
+    if (strcmp(token, ">=") == 0) { return CFT_OP_GE; }
+    if (strcasecmp_cft(token, "LIKE") == 0) { return CFT_OP_LIKE; }
+    if (strcasecmp_cft(token, "BETWEEN") == 0) { return CFT_OP_BETWEEN; }
+    if (strcasecmp_cft(token, "IN") == 0) { return CFT_OP_IN; }
+    if (strcasecmp_cft(token, "AND") == 0) { return CFT_OP_AND; }
+    if (strcasecmp_cft(token, "OR") == 0) { return CFT_OP_OR; }
+    if (strcasecmp_cft(token, "NOT") == 0) { return CFT_OP_NOT; }
     return (cft_operator_t)-1;
 }
 
@@ -224,7 +225,7 @@ static cft_operator_t get_operator(const char *token) {
 
 static cft_ast_node_t* create_ast_node(void) {
     cft_ast_node_t *node = (cft_ast_node_t*)malloc(sizeof(cft_ast_node_t));
-    if (node) {
+    if ((node) != 0U) {
         memset(node, 0, sizeof(cft_ast_node_t));
         node->is_leaf = false;
     }
@@ -235,7 +236,7 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer);
 static cft_ast_node_t* parse_expression(cft_lexer_t *lexer);
 
 static cft_ast_node_t* parse_primary(cft_lexer_t *lexer) {
-    if (!lexer_read_token(lexer)) return NULL;
+    if (!lexer_read_token(lexer)) { return NULL; }
     
     // 左括号
     if (strcmp(lexer->token, "(") == 0) {
@@ -304,11 +305,11 @@ static cft_ast_node_t* parse_predicate(cft_lexer_t *lexer) {
 
 static cft_ast_node_t* parse_and(cft_lexer_t *lexer) {
     cft_ast_node_t *left = parse_primary(lexer);
-    if (!left) return NULL;
+    if (!left) { return NULL; }
     
     while (true) {
         uint32_t save_pos = lexer->pos;
-        if (!lexer_read_token(lexer)) break;
+        if (!lexer_read_token(lexer)) { break; }
         
         cft_operator_t op = get_operator(lexer->token);
         if (op != CFT_OP_AND) {
@@ -317,7 +318,7 @@ static cft_ast_node_t* parse_and(cft_lexer_t *lexer) {
         }
         
         cft_ast_node_t *right = parse_primary(lexer);
-        if (!right) break;
+        if (!right) { break; }
         
         cft_ast_node_t *parent = create_ast_node();
         parent->op = CFT_OP_AND;
@@ -331,11 +332,11 @@ static cft_ast_node_t* parse_and(cft_lexer_t *lexer) {
 
 static cft_ast_node_t* parse_expression(cft_lexer_t *lexer) {
     cft_ast_node_t *left = parse_and(lexer);
-    if (!left) return NULL;
+    if (!left) { return NULL; }
     
     while (true) {
         uint32_t save_pos = lexer->pos;
-        if (!lexer_read_token(lexer)) break;
+        if (!lexer_read_token(lexer)) { break; }
         
         cft_operator_t op = get_operator(lexer->token);
         if (op != CFT_OP_OR) {
@@ -344,7 +345,7 @@ static cft_ast_node_t* parse_expression(cft_lexer_t *lexer) {
         }
         
         cft_ast_node_t *right = parse_and(lexer);
-        if (!right) break;
+        if (!right) { break; }
         
         cft_ast_node_t *parent = create_ast_node();
         parent->op = CFT_OP_OR;
@@ -433,7 +434,7 @@ static bool evaluate_predicate(const cft_predicate_t *pred,
                                const cft_type_descriptor_t *type_desc,
                                const char **params) {
     const cft_field_accessor_t *accessor = find_field_accessor(type_desc, pred->field_name);
-    if (!accessor) return false;
+    if (!accessor) { return false; }
     
     // 获取字段值
     int64_t field_i64 = 0;
@@ -510,7 +511,7 @@ static bool evaluate_ast(const cft_ast_node_t *node,
                          const void *sample,
                          const cft_type_descriptor_t *type_desc,
                          const char **params) {
-    if (!node) return true;
+    if (!node) { return true; }
     
     if (node->is_leaf) {
         return evaluate_predicate(&node->data.predicate, sample, type_desc, params);
@@ -561,7 +562,7 @@ cft_handle_t* cft_create(dds_topic_t *related_topic,
     strncpy(cft->name, name, sizeof(cft->name) - 1U);
     memcpy(&cft->config, config, sizeof(cft_config_t));
     
-    if (type_desc) {
+    if ((type_desc) != 0U) {
         memcpy(&cft->type_desc, type_desc, sizeof(cft_type_descriptor_t));
     }
     
@@ -579,7 +580,7 @@ eth_status_t cft_delete(cft_handle_t *cft) {
         return ETH_INVALID_PARAM;
     }
     
-    if (cft->ast_root) {
+    if ((cft->ast_root) != 0U) {
         cft_free_ast(cft->ast_root);
     }
     
@@ -606,7 +607,7 @@ eth_status_t cft_parse_expression(const char *expression, cft_ast_node_t **ast_r
 }
 
 void cft_free_ast(cft_ast_node_t *node) {
-    if (!node) return;
+    if (!node) { return; }
     
     if (!node->is_leaf) {
         cft_free_ast(node->data.branch.left);
@@ -706,7 +707,7 @@ eth_status_t cft_update_expression(cft_handle_t *cft, const char *expression) {
     }
     
     // 释放旧AST
-    if (cft->ast_root) {
+    if ((cft->ast_root) != 0U) {
         cft_free_ast(cft->ast_root);
         cft->ast_root = NULL;
     }
@@ -729,7 +730,7 @@ eth_status_t cft_evaluate_parallel(cft_handle_t **cfts,
     
     // 序列执行(实际系统可用多线程并行)
     for (uint8_t i = 0; i < cft_count; i++) {
-        if (cfts[i]) {
+        if ((cfts[i]) != 0U) {
             cft_evaluate(cfts[i], sample, sample_size, &match_results[i]);
         }
     }

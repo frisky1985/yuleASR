@@ -111,7 +111,7 @@ LinMaster_StatusType LinMaster_Hal_SendBreak(void)
     /* 延时等待 ( 实际应用中使用精确延时 ) */
     /* 注意: 在实际应用中不建议使用软件延时，应使用定时器 */
     volatile uint32 delay = breakDurationUs * 10U; /* 模拟延时 */
-    while (delay--) {
+    while ((delay--) != 0U) {
         /* 空循环延时 */
     }
     
@@ -201,7 +201,7 @@ uint32 LinMaster_Hal_GetCurrentTimeMs(void)
 void LinMaster_Hal_DelayMs(uint16 DelayMs)
 {
     volatile uint32 delay = DelayMs * 1000U;
-    while (delay--) {
+    while ((delay--) != 0U) {
         /* 空循环延时 */
     }
 }

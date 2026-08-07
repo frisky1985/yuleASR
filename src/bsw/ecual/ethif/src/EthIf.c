@@ -58,7 +58,7 @@ void EthIf_Init(const EthIf_ConfigType* ConfigPtr)
     EthIf_State.configPtr = ConfigPtr;
     memset(EthIf_State.controllerModes, 0, sizeof(EthIf_State.controllerModes));
 
-    if (ConfigPtr->NumControllers > ETHIF_MAX_CONTROLLERS) return;
+    if (ConfigPtr->NumControllers > ETHIF_MAX_CONTROLLERS) { return; }
     EthIf_State.activeControllerCount = ConfigPtr->NumControllers;
     for (uint8 i = 0U; i < ConfigPtr->NumControllers; i++) {
         EthIf_State.controllerModes[i] = ETHIF_CS_STOPPED;
@@ -113,14 +113,14 @@ Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode 
 
 EthIf_ControllerMode EthIf_GetControllerMode(uint8 ControllerId)
 {
-    if (ControllerId >= EthIf_State.activeControllerCount) return ETHIF_CS_STOPPED;
+    if (ControllerId >= EthIf_State.activeControllerCount) { return ETHIF_CS_STOPPED; }
     return EthIf_State.controllerModes[ControllerId];
 }
 
 void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr)
 {
-    if (NULL_PTR == PduInfoPtr) return;
-    if (ControllerId >= EthIf_State.activeControllerCount) return;
+    if (NULL_PTR == PduInfoPtr) { return; }
+    if (ControllerId >= EthIf_State.activeControllerCount) { return; }
     (void)ControllerId;
 
     /* Apply RX filtering */
@@ -150,12 +150,12 @@ void EthIf_TxConfirmation(uint8 ControllerId, uint32 BufferHandle)
 
 void EthIf_MainFunction(void)
 {
-    if (EthIf_State.state < ETHIF_INIT) return;
+    if (EthIf_State.state < ETHIF_INIT) { return; }
 }
 
 void EthIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) return;
+    if (NULL_PTR == versioninfo) { return; }
     versioninfo->vendorID = ETHIF_VENDOR_ID;
     versioninfo->moduleID = ETHIF_MODULE_ID;
     versioninfo->sw_major_version = 1U;

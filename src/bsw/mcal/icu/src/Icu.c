@@ -453,7 +453,7 @@ void Icu_SetMode(Icu_ModeType Mode)
         /* Stop all running channels */
         for (uint8 i = 0U; i < Icu_ConfigPtr->NumChannels; i++) {
             Icu_ChannelType channel = Icu_ConfigPtr->Channels[i].ChannelId;
-            if (Icu_ChannelRunning[channel]) {
+            if ((Icu_ChannelRunning[channel]) != 0U) {
                 Icu_DisableChannelInterrupt(channel);
                 Icu_ChannelRunning[channel] = FALSE;
             }
@@ -462,7 +462,7 @@ void Icu_SetMode(Icu_ModeType Mode)
         /* Resume channels if needed */
         for (uint8 i = 0U; i < Icu_ConfigPtr->NumChannels; i++) {
             Icu_ChannelType channel = Icu_ConfigPtr->Channels[i].ChannelId;
-            if (Icu_ChannelNotificationEnabled[channel]) {
+            if ((Icu_ChannelNotificationEnabled[channel]) != 0U) {
                 Icu_EnableChannelInterrupt(channel);
             }
         }
@@ -531,7 +531,7 @@ Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
     /* Check if the wakeup source matches any ICU channel */
     for (uint8 i = 0U; i < Icu_ConfigPtr->NumChannels; i++) {
         Icu_ChannelType channel = Icu_ConfigPtr->Channels[i].ChannelId;
-        if (Icu_ChannelWakeupEnabled[channel]) {
+        if ((Icu_ChannelWakeupEnabled[channel]) != 0U) {
             uint32 flag = Icu_GetChannelFlag(channel);
             if (flag != 0U) {
                 return E_OK;
@@ -677,7 +677,7 @@ void Icu_StartTimestamp(Icu_ChannelType Channel, uint32* BufferPtr, uint16 Buffe
         Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_PARAM_BUFFER_SIZE);
         return;
     }
-    if (Icu_ChannelRunning[Channel]) {
+    if ((Icu_ChannelRunning[Channel]) != 0U) {
         Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTTIMESTAMP, ICU_E_BUSY);
         return;
     }
@@ -699,7 +699,7 @@ void Icu_StartTimestamp(Icu_ChannelType Channel, uint32* BufferPtr, uint16 Buffe
     }
     
     /* Enable interrupt if notification is enabled */
-    if (Icu_ChannelNotificationEnabled[Channel]) {
+    if ((Icu_ChannelNotificationEnabled[Channel]) != 0U) {
         Icu_EnableChannelInterrupt(Channel);
     }
 }
@@ -784,7 +784,7 @@ void Icu_EnableEdgeCount(Icu_ChannelType Channel)
     Icu_EdgeCountEnabled[Channel] = TRUE;
     
     /* Enable interrupt if notification is enabled */
-    if (Icu_ChannelNotificationEnabled[Channel]) {
+    if ((Icu_ChannelNotificationEnabled[Channel]) != 0U) {
         Icu_EnableChannelInterrupt(Channel);
     }
 }
@@ -848,7 +848,7 @@ void Icu_StartSignalMeasurement(Icu_ChannelType Channel, Icu_SignalMeasurementPr
         Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_PARAM_CHANNEL);
         return;
     }
-    if (Icu_SignalMeasurementRunning[Channel]) {
+    if ((Icu_SignalMeasurementRunning[Channel]) != 0U) {
         Det_ReportError(ICU_MODULE_ID, 0U, ICU_SID_STARTSIGNALMEASUREMENT, ICU_E_MEASUREMENT_RUNNING);
         return;
     }
@@ -869,7 +869,7 @@ void Icu_StartSignalMeasurement(Icu_ChannelType Channel, Icu_SignalMeasurementPr
     Icu_SignalMeasurementRunning[Channel] = TRUE;
     
     /* Enable interrupt if notification is enabled */
-    if (Icu_ChannelNotificationEnabled[Channel]) {
+    if ((Icu_ChannelNotificationEnabled[Channel]) != 0U) {
         Icu_EnableChannelInterrupt(Channel);
     }
 }
@@ -1051,7 +1051,7 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel)
             Icu_ConfigPtr->Channels[Channel].NotificationFn();
         }
     }
-    else if (Icu_EdgeCountEnabled[Channel]) {
+    else if ((Icu_EdgeCountEnabled[Channel]) != 0U) {
         /* Edge counting - increment handled by hardware */
         /* Call notification if enabled */
         if (Icu_ChannelNotificationEnabled[Channel] &&

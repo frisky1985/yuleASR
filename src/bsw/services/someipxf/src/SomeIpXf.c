@@ -256,7 +256,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
         transPtr = &SomeIpXf_InternalState.ConfigPtr->TransformerConfigs[TransformerId];
 
         /* Add SOME/IP header if enabled */
-        if (transPtr->HeaderIncluded)
+        if ((transPtr->HeaderIncluded) != 0U)
         {
             if (TargetBuffer->MaxLength >= SOMEIPXF_HDR_SIZE)
             {
@@ -421,7 +421,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
         transPtr = &SomeIpXf_InternalState.ConfigPtr->TransformerConfigs[TransformerId];
 
         /* Parse SOME/IP header if present */
-        if (transPtr->HeaderIncluded)
+        if ((transPtr->HeaderIncluded) != 0U)
         {
             if (SourceBuffer->Length >= SOMEIPXF_HDR_SIZE)
             {

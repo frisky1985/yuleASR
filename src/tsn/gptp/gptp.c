@@ -140,8 +140,8 @@ static int compare_port_identity(const gptp_port_identity_t *a,
     if (cmp != 0) {
         return cmp;
     }
-    if (a->port_number < b->port_number) return -1;
-    if (a->port_number > b->port_number) return 1;
+    if (a->port_number < b->port_number) { return -1; }
+    if (a->port_number > b->port_number) { return 1; }
     return 0;
 }
 
@@ -150,14 +150,14 @@ static int compare_port_identity(const gptp_port_identity_t *a,
  */
 static int compare_clock_quality(const gptp_clock_quality_t *a,
                                   const gptp_clock_quality_t *b) {
-    if (a->clock_class < b->clock_class) return -1;
-    if (a->clock_class > b->clock_class) return 1;
+    if (a->clock_class < b->clock_class) { return -1; }
+    if (a->clock_class > b->clock_class) { return 1; }
     
-    if (a->clock_accuracy < b->clock_accuracy) return -1;
-    if (a->clock_accuracy > b->clock_accuracy) return 1;
+    if (a->clock_accuracy < b->clock_accuracy) { return -1; }
+    if (a->clock_accuracy > b->clock_accuracy) { return 1; }
     
-    if (a->offset_scaled_log_variance < b->offset_scaled_log_variance) return -1;
-    if (a->offset_scaled_log_variance > b->offset_scaled_log_variance) return 1;
+    if (a->offset_scaled_log_variance < b->offset_scaled_log_variance) { return -1; }
+    if (a->offset_scaled_log_variance > b->offset_scaled_log_variance) { return 1; }
     
     return 0;
 }
@@ -174,17 +174,17 @@ static gptp_bmc_result_t compare_priority_vectors(
     /* 比较rootSystemIdentity (priority1 + clockQuality + priority2 + clockIdentity) */
     /* 简化实现：比较GM标识 */
     int cmp = compare_clock_identity(a->root_system_identity, b->root_system_identity);
-    if (cmp < 0) return GPTP_BMC_SUPERIOR;
-    if (cmp > 0) return GPTP_BMC_INFERIOR;
+    if (cmp < 0) { return GPTP_BMC_SUPERIOR; }
+    if (cmp > 0) { return GPTP_BMC_INFERIOR; }
     
     /* 比较stepsRemoved */
-    if (a->steps_removed < b->steps_removed) return GPTP_BMC_SUPERIOR;
-    if (a->steps_removed > b->steps_removed) return GPTP_BMC_INFERIOR;
+    if (a->steps_removed < b->steps_removed) { return GPTP_BMC_SUPERIOR; }
+    if (a->steps_removed > b->steps_removed) { return GPTP_BMC_INFERIOR; }
     
     /* 比较sourcePortIdentity */
     cmp = compare_port_identity(&a->source_port_identity, &b->source_port_identity);
-    if (cmp < 0) return GPTP_BMC_SUPERIOR;
-    if (cmp > 0) return GPTP_BMC_INFERIOR;
+    if (cmp < 0) { return GPTP_BMC_SUPERIOR; }
+    if (cmp > 0) { return GPTP_BMC_INFERIOR; }
     
     return GPTP_BMC_EQUAL;
 }
@@ -260,8 +260,8 @@ static void perform_clock_sync(uint8_t domain_index) {
     int64_t adjustment = ((kp * offset_ns) + (ki * integral)) / 1000;
     
     /* 限制调整量，避免过冲 */
-    if (adjustment > 100000) adjustment = 100000;
-    if (adjustment < -100000) adjustment = -100000;
+    if (adjustment > 100000) { adjustment = 100000; }
+    if (adjustment < -100000) { adjustment = -100000; }
     
     /* 应用时钟调整 */
     clock->slave_offset_ns = offset_ns;
@@ -282,7 +282,7 @@ static void perform_clock_sync(uint8_t domain_index) {
     }
     
     /* 通知回调 */
-    if (g_gptp_state.sync_cb) {
+    if ((g_gptp_state.sync_cb) != 0U) {
         g_gptp_state.sync_cb(clock->synchronized, offset_ns, 
                              clock->rate_ratio_ppb, g_gptp_state.sync_user_data);
     }
@@ -380,7 +380,7 @@ eth_status_t gptp_stop(uint8_t domain_index) {
 }
 
 eth_status_t gptp_config_port(uint8_t port_index, const gptp_port_config_t *port_config) {
-    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || port_config == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || (port_config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -395,7 +395,7 @@ eth_status_t gptp_config_port(uint8_t port_index, const gptp_port_config_t *port
 }
 
 eth_status_t gptp_config_domain(uint8_t domain_index, const gptp_domain_config_t *domain_config) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || domain_config == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (domain_config == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -405,7 +405,7 @@ eth_status_t gptp_config_domain(uint8_t domain_index, const gptp_domain_config_t
 }
 
 eth_status_t gptp_get_time(uint8_t domain_index, gptp_timestamp_t *timestamp) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || timestamp == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (timestamp == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -417,7 +417,7 @@ eth_status_t gptp_get_time(uint8_t domain_index, gptp_timestamp_t *timestamp) {
 }
 
 eth_status_t gptp_set_time(uint8_t domain_index, const gptp_timestamp_t *timestamp) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || timestamp == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (timestamp == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -490,7 +490,7 @@ eth_status_t gptp_run_bmc(uint8_t domain_index) {
 }
 
 eth_status_t gptp_get_gm_identity(uint8_t domain_index, gptp_clock_identity_t *gm_identity) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || gm_identity == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (gm_identity == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -501,7 +501,7 @@ eth_status_t gptp_get_gm_identity(uint8_t domain_index, gptp_clock_identity_t *g
 }
 
 eth_status_t gptp_get_port_state(uint8_t port_index, gptp_port_state_t *state) {
-    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || state == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || (state == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -532,7 +532,7 @@ eth_status_t gptp_start_pdelay_measurement(uint8_t port_index) {
 }
 
 eth_status_t gptp_get_pdelay_result(uint8_t port_index, gptp_pdelay_result_t *result) {
-    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || result == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || (result == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -542,7 +542,7 @@ eth_status_t gptp_get_pdelay_result(uint8_t port_index, gptp_pdelay_result_t *re
 }
 
 eth_status_t gptp_handle_pdelay_req(uint8_t port_index, const gptp_timestamp_t *rx_timestamp) {
-    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || rx_timestamp == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || (rx_timestamp == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -555,7 +555,7 @@ eth_status_t gptp_handle_pdelay_req(uint8_t port_index, const gptp_timestamp_t *
     gptp_capture_timestamp(port->config.port_id, &port->pdelay.t3);
     
     /* 通知时间戳回调 */
-    if (g_gptp_state.timestamp_cb) {
+    if ((g_gptp_state.timestamp_cb) != 0U) {
         g_gptp_state.timestamp_cb(port->config.port_id, GPTP_MSG_TYPE_PDELAY_REQ,
                                   rx_timestamp, g_gptp_state.timestamp_user_data);
     }
@@ -604,7 +604,7 @@ eth_status_t gptp_send_sync(uint8_t port_index, uint32_t sync_interval_ms) {
     g_gptp_state.message_sequence_id++;
     
     /* 通知时间戳回调 */
-    if (g_gptp_state.timestamp_cb) {
+    if ((g_gptp_state.timestamp_cb) != 0U) {
         g_gptp_state.timestamp_cb(port->config.port_id, GPTP_MSG_TYPE_SYNC,
                                   &tx_timestamp, g_gptp_state.timestamp_user_data);
     }
@@ -613,7 +613,7 @@ eth_status_t gptp_send_sync(uint8_t port_index, uint32_t sync_interval_ms) {
 }
 
 eth_status_t gptp_handle_sync(uint8_t port_index, const gptp_sync_data_t *sync_data) {
-    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || sync_data == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || (sync_data == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -641,7 +641,7 @@ eth_status_t gptp_handle_sync(uint8_t port_index, const gptp_sync_data_t *sync_d
     }
     
     /* 通知时间戳回调 */
-    if (g_gptp_state.timestamp_cb) {
+    if ((g_gptp_state.timestamp_cb) != 0U) {
         g_gptp_state.timestamp_cb(port->config.port_id, GPTP_MSG_TYPE_SYNC,
                                   &sync_data->ingress_timestamp, g_gptp_state.timestamp_user_data);
     }
@@ -652,7 +652,7 @@ eth_status_t gptp_handle_sync(uint8_t port_index, const gptp_sync_data_t *sync_d
 eth_status_t gptp_handle_follow_up(uint8_t port_index,
                                     const gptp_timestamp_t *precise_origin_timestamp,
                                     int64_t correction_field_ns) {
-    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || precise_origin_timestamp == NULL) {
+    if (!g_gptp_state.initialized || (port_index >= GPTP_MAX_PORTS) || (precise_origin_timestamp == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -668,7 +668,7 @@ eth_status_t gptp_handle_follow_up(uint8_t port_index,
     }
     
     /* 通知时间戳回调 */
-    if (g_gptp_state.timestamp_cb) {
+    if ((g_gptp_state.timestamp_cb) != 0U) {
         g_gptp_state.timestamp_cb(port->config.port_id, GPTP_MSG_TYPE_FOLLOW_UP,
                                   precise_origin_timestamp, g_gptp_state.timestamp_user_data);
     }
@@ -677,7 +677,7 @@ eth_status_t gptp_handle_follow_up(uint8_t port_index,
 }
 
 eth_status_t gptp_get_clock_state(uint8_t domain_index, gptp_clock_state_t *state) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || state == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (state == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -687,7 +687,7 @@ eth_status_t gptp_get_clock_state(uint8_t domain_index, gptp_clock_state_t *stat
 }
 
 eth_status_t gptp_get_sync_precision(uint8_t domain_index, uint32_t *precision_ns) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || precision_ns == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (precision_ns == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -697,7 +697,7 @@ eth_status_t gptp_get_sync_precision(uint8_t domain_index, uint32_t *precision_n
 }
 
 eth_status_t gptp_is_synchronized(uint8_t domain_index, bool *synchronized) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || synchronized == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (synchronized == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -752,7 +752,7 @@ eth_status_t gptp_run_safety_checks(uint8_t domain_index) {
     if (llabs(monitor->current_drift_ppb) > monitor->max_clock_drift_ppb) {
         monitor->drift_violations++;
         
-        if (g_gptp_state.safety_cb) {
+        if ((g_gptp_state.safety_cb) != 0U) {
             g_gptp_state.safety_cb(0x01, "Clock drift exceeds limit", g_gptp_state.safety_user_data);
         }
     }
@@ -762,7 +762,7 @@ eth_status_t gptp_run_safety_checks(uint8_t domain_index) {
         monitor->sync_timeouts++;
         
         if (domain->clock_state.consecutive_sync_errors > 3U) {
-            if (g_gptp_state.safety_cb) {
+            if ((g_gptp_state.safety_cb) != 0U) {
                 g_gptp_state.safety_cb(0x02, "Sync timeout", g_gptp_state.safety_user_data);
             }
         }
@@ -772,7 +772,7 @@ eth_status_t gptp_run_safety_checks(uint8_t domain_index) {
 }
 
 eth_status_t gptp_get_safety_monitor(uint8_t domain_index, gptp_safety_monitor_t *monitor) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || monitor == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (monitor == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -808,7 +808,7 @@ eth_status_t gptp_enable_fault_injection(uint8_t domain_index, uint32_t scenario
 }
 
 eth_status_t gptp_check_clock_integrity(uint8_t domain_index, bool *integrity_ok) {
-    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || integrity_ok == NULL) {
+    if (!g_gptp_state.initialized || (domain_index >= GPTP_MAX_DOMAINS) || (integrity_ok == NULL)) {
         return ETH_INVALID_PARAM;
     }
     

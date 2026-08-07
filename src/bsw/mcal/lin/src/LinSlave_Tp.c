@@ -286,7 +286,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
         return LINSLAVE_TP_E_NOT_OK;
     }
     
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > LINSLAVE_TP_MAX_FRAME_LEN) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > LINSLAVE_TP_MAX_FRAME_LEN)) {
         return LINSLAVE_TP_E_INVALID_PCI;
     }
     

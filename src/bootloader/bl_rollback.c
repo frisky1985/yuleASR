@@ -333,7 +333,7 @@ bl_rollback_error_t bl_rollback_check_needed(
     uint32_t *target_version
 )
 {
-    if ((mgr == NULL) || !mgr->initialized || need_rollback == NULL) {
+    if ((mgr == NULL) || !mgr->initialized || (need_rollback == NULL)) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
@@ -510,7 +510,7 @@ bl_rollback_error_t bl_rollback_get_previous_version(
     uint32_t *partition_id
 )
 {
-    if ((mgr == NULL) || !mgr->initialized || version == NULL) {
+    if ((mgr == NULL) || !mgr->initialized || (version == NULL)) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     
@@ -563,7 +563,7 @@ bl_rollback_error_t bl_rollback_get_history(
     uint32_t *num_entries
 )
 {
-    if ((mgr == NULL) || (history == NULL) || num_entries == NULL) {
+    if ((mgr == NULL) || (history == NULL) || (num_entries == NULL)) {
         return BL_ROLLBACK_ERROR_INVALID_PARAM;
     }
     

@@ -125,14 +125,14 @@ STATIC void LinSM_HandleModeRequest(LinSM_ChannelType Channel)
 {
     LinSM_ChannelStateType* channelState = &LinSM_ChannelStates[Channel];
     
-    if (channelState->WakeupPending) {
+    if ((channelState->WakeupPending) != 0U) {
         /* Process wakeup */
         if (channelState->State == LINSM_STATE_WAKEUP) {
             /* Wait for wakeup confirmation */
         }
     }
     
-    if (channelState->GotosleepPending) {
+    if ((channelState->GotosleepPending) != 0U) {
         /* Process go-to-sleep */
         if (channelState->State == LINSM_STATE_GOTOSLEEP) {
             /* Wait for go-to-sleep confirmation */
@@ -456,7 +456,7 @@ void LinSM_ScheduleConfirmation(LinSM_ChannelType Channel, LinSM_ScheduleType Sc
 void LinSM_WakeUpConfirmation(LinSM_ChannelType Channel, boolean Success)
 {
     if (LinSM_Initialized && (LinSM_ValidateChannel(Channel) == E_OK)) {
-        if (Success) {
+        if ((Success) != 0U) {
             LinSM_ChannelStates[Channel].ComMode = LINSM_FULL_COM;
             LinSM_ChannelStates[Channel].State = LINSM_STATE_RUN;
         } else {
@@ -474,7 +474,7 @@ void LinSM_WakeUpConfirmation(LinSM_ChannelType Channel, boolean Success)
 void LinSM_GotoSleepConfirmation(LinSM_ChannelType Channel, boolean Success)
 {
     if (LinSM_Initialized && (LinSM_ValidateChannel(Channel) == E_OK)) {
-        if (Success) {
+        if ((Success) != 0U) {
             LinSM_ChannelStates[Channel].ComMode = LINSM_NO_COM;
         } else {
             /* Go-to-sleep failed, return to RUN */

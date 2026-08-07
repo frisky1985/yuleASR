@@ -80,7 +80,7 @@ static void LinMaster_Diag_TpRxCallback(uint8 ChannelId, const uint8* DataPtr, u
 {
     (void)ChannelId;
     
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > LINMASTER_DIAG_MAX_BUFFER_SIZE)) {
         return;
     }
     
@@ -250,7 +250,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetResponse(
     DiagRuntime.ResponseReady = FALSE;
     DiagRuntime.RequestPending = FALSE;
     
-    if (ResponsePtr->IsNegative) {
+    if ((ResponsePtr->IsNegative) != 0U) {
         return LINMASTER_DIAG_E_NEGATIVE_RESPONSE;
     }
     
@@ -334,7 +334,7 @@ void LinMaster_Diag_MainFunction(void)
     switch (DiagRuntime.State) {
         case LINMASTER_DIAG_STATE_IDLE:
             /* 空闲状态，检查是否有待发送请求 */
-            if (DiagRuntime.RequestPending) {
+            if ((DiagRuntime.RequestPending) != 0U) {
                 DiagRuntime.State = LINMASTER_DIAG_STATE_TX_REQUEST;
             }
             break;
@@ -371,7 +371,7 @@ void LinMaster_Diag_MainFunction(void)
                 if (DiagRuntime.Callback != NULL_PTR) {
                     DiagRuntime.Callback(LINMASTER_DIAG_E_TIMEOUT, NULL_PTR);
                 }
-            } else if (RxDataPending) {
+            } else if ((RxDataPending) != 0U) {
                 /* 收到响应 */
                 RxDataPending = FALSE;
                 DiagRuntime.State = LINMASTER_DIAG_STATE_RX_RESPONSE;
@@ -498,7 +498,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
         return LINMASTER_DIAG_E_NOT_INITIALIZED;
     }
     
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2)) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > (LINMASTER_DIAG_MAX_BUFFER_SIZE - 2))) {
         return LINMASTER_DIAG_E_INVALID_PARAM;
     }
     
@@ -541,7 +541,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     request.SubFunction = SubFunc & 0x7FU;
     
     /* 如果是发送密钥，添加密钥数据 */
-    if ((KeyPtr != NULL_PTR) && (KeyLen > 0U) && KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE) {
+    if ((KeyPtr != NULL_PTR) && (KeyLen > 0U) && (KeyLen <= LINMASTER_DIAG_MAX_BUFFER_SIZE)) {
         for (i = 0U; i < KeyLen; i++) {
             request.Data[i] = KeyPtr[i];
         }

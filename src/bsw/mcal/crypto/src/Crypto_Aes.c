@@ -145,7 +145,7 @@ void Crypto_AesDeInit(void)
 {
     uint32 i;
     for (i = 0U; i < CRYPTO_MAX_AES_JOBS; i++) {
-        if (gCryptoAesContexts[i].inUse) {
+        if ((gCryptoAesContexts[i].inUse) != 0U) {
             Aes_Clear(&gCryptoAesContexts[i].aesCtx);
             gCryptoAesContexts[i].inUse = FALSE;
         }
@@ -229,7 +229,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
     }
 
     /* 获取IV */
-    if (isNewJob) {
+    if ((isNewJob) != 0U) {
         if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
             (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
         } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
@@ -253,7 +253,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
             /* 流式更新 - 处理完整块 */
             switch (ctx->mode) {
                 case AES_MODE_CBC:
-                    if (isNewJob) {
+                    if ((isNewJob) != 0U) {
                         result = Aes_CbcEncryptStart(&ctx->aesCtx, iv);
                     }
                     if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
@@ -264,7 +264,7 @@ Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
                     break;
 
                 case AES_MODE_CTR:
-                    if (isNewJob) {
+                    if ((isNewJob) != 0U) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
 result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
@@ -421,7 +421,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
     }
 
     /* 获取IV */
-    if (isNewJob) {
+    if ((isNewJob) != 0U) {
         if ((io->secondaryInputPtr != NULL_PTR) && (io->secondaryInputLength == AES_BLOCK_SIZE)) {
             (void)memcpy(iv, io->secondaryInputPtr, AES_BLOCK_SIZE);
         } else if (Crypto_AesGetIvElement(job->cryptoKeyId, iv, &ivLen) == E_OK) {
@@ -444,7 +444,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
             /* 流式更新 */
             switch (ctx->mode) {
                 case AES_MODE_CBC:
-                    if (isNewJob) {
+                    if ((isNewJob) != 0U) {
                         result = Aes_CbcDecryptStart(&ctx->aesCtx, iv);
                     }
                     if ((io->inputLength % AES_BLOCK_SIZE) == 0U) {
@@ -455,7 +455,7 @@ Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
                     break;
 
                 case AES_MODE_CTR:
-                    if (isNewJob) {
+                    if ((isNewJob) != 0U) {
                         result = Aes_CtrEncryptStart(&ctx->aesCtx, iv);
                     }
 result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,

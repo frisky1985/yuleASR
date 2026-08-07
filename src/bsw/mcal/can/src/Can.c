@@ -123,7 +123,7 @@ static Std_ReturnType Can_WaitForFreezeAck(uint32 baseAddr)
 {
     uint32 timeout = 10000U;
     while ((REG_READ32(baseAddr + CAN_MCR) & CAN_MCR_FRZ) == 0U) {
-        if (timeout == 0U) return E_NOT_OK;
+        if (timeout == 0U) { return E_NOT_OK; }
         timeout--;
     }
     return E_OK;
@@ -133,7 +133,7 @@ static Std_ReturnType Can_WaitForNotReady(uint32 baseAddr)
 {
     uint32 timeout = 10000U;
     while ((REG_READ32(baseAddr + CAN_MCR) & CAN_MCR_NOT_RDY) != 0U) {
-        if (timeout == 0U) return E_NOT_OK;
+        if (timeout == 0U) { return E_NOT_OK; }
         timeout--;
     }
     return E_OK;
@@ -202,7 +202,7 @@ void Can_Init(const Can_ConfigType* Config)
                 if (Config->Controllers[i].BusOffProcessing ||
                     Config->Controllers[i].WakeupProcessing) {
                     uint32 imaskValue = 0U;
-                    if (Config->Controllers[i].BusOffProcessing) {
+                    if ((Config->Controllers[i].BusOffProcessing) != 0U) {
                         imaskValue |= CAN_ESR1_BOFFINT;
                     }
                     REG_WRITE32(baseAddr + CAN_IMASK1, imaskValue);
@@ -321,7 +321,7 @@ void Can_EnableControllerInterrupts(uint8 Controller)
     uint32 baseAddr = Can_GetBaseAddr(Controller);
     uint32 imaskValue = 0U;
 
-    if (Can_ConfigPtr->Controllers[Controller].BusOffProcessing) {
+    if ((Can_ConfigPtr->Controllers[Controller].BusOffProcessing) != 0U) {
         imaskValue |= CAN_ESR1_BOFFINT | CAN_ESR1_ERRINT;
     }
 

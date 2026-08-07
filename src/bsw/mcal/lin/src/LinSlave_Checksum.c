@@ -67,7 +67,7 @@ uint8 LinSlave_CalculateChecksum(
     LinSlave_ChecksumType ChecksumType
 )
 {
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > 8U) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > 8U)) {
         return 0xFFU;  /* 错误返回 */
     }
     
@@ -91,7 +91,7 @@ boolean LinSlave_ValidateChecksum(
 {
     uint8 CalculatedChecksum;
     
-    if ((DataPtr == NULL_PTR) || (Length == 0U) || Length > 8U) {
+    if ((DataPtr == NULL_PTR) || (Length == 0U) || (Length > 8U)) {
         return FALSE;
     }
     

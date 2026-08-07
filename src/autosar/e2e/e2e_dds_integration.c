@@ -243,7 +243,7 @@ Std_ReturnType E2E_DDS_CreateTopic(
     const E2E_DDS_TopicConfigType* config,
     E2E_DDS_TopicHandleType* handle)
 {
-    if (!E2E_DDS_IsInitialized() || (config == NULL) || handle == NULL) {
+    if (!E2E_DDS_IsInitialized() || (config == NULL) || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -625,7 +625,7 @@ Std_ReturnType E2E_DDS_GetDataLength(
     const E2E_DDS_TopicHandleType* handle,
     uint16_t* dataLength)
 {
-    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized || dataLength == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized || (dataLength == NULL)) {
         return E_NOT_OK;
     }
 
@@ -677,7 +677,7 @@ Std_ReturnType E2E_DDS_GetState(
     const E2E_DDS_TopicHandleType* handle,
     E2E_SM_StateType* state)
 {
-    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized || state == NULL) {
+    if (!E2E_DDS_IsInitialized() || (handle == NULL) || !handle->initialized || (state == NULL)) {
         return E_NOT_OK;
     }
 

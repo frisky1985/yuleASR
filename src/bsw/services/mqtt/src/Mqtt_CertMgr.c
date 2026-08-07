@@ -66,7 +66,7 @@ Mqtt_ReturnType Mqtt_CertMgr_Init(const Mqtt_CertMgrConfigType* config)
 {
     uint8 i;
     
-    if (CertMgr_Initialized) {
+    if ((CertMgr_Initialized) != 0U) {
         return MQTT_OK;
     }
     
@@ -107,7 +107,7 @@ void Mqtt_CertMgr_DeInit(void)
     
     /* 清理所有证书 */
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
-        if (CertMgr_Certs[i].isLoaded) {
+        if ((CertMgr_Certs[i].isLoaded) != 0U) {
             Mqtt_CertMgr_RemoveCert(CertMgr_Certs[i].alias);
         }
     }
@@ -200,7 +200,7 @@ Mqtt_ReturnType Mqtt_CertMgr_GetCert(const char* alias, Mqtt_CertEntryType* entr
 {
     sint8 idx;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || entry == NULL_PTR) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (entry == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -219,7 +219,7 @@ Mqtt_ReturnType Mqtt_CertMgr_UpdateCert(const char* alias,
 {
     Mqtt_ReturnType result;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || newData == NULL_PTR || dataLen == 0U ) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (newData == NULL_PTR) || dataLen == 0U ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -256,7 +256,7 @@ Mqtt_ReturnType Mqtt_CertMgr_LoadCertForTls(const char* alias,
 {
     sint8 idx;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || cert == NULL_PTR) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (cert == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -279,7 +279,7 @@ Mqtt_ReturnType Mqtt_CertMgr_LoadKeyForTls(const char* alias,
 {
     sint8 idx;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || key == NULL_PTR) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (key == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -302,7 +302,7 @@ Mqtt_ReturnType Mqtt_CertMgr_LoadTrustStore(const char* caAlias,
 {
     sint8 idx;
     
-    if (!CertMgr_Initialized || (caAlias == NULL_PTR) || trustStore == NULL_PTR) {
+    if (!CertMgr_Initialized || (caAlias == NULL_PTR) || (trustStore == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -351,7 +351,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCert(const char* alias,
     uint32_t flags;
     uint32 currentTime;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || status == NULL_PTR) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (status == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -391,11 +391,11 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCert(const char* alias,
     ret = mbedtls_x509_crt_verify(&crt, &crt, NULL_PTR, NULL_PTR, &flags, 
                                    NULL_PTR, NULL_PTR);
     if (ret != 0 ) {
-        if (flags & MBEDTLS_X509_BADCERT_EXPIRED) {
+        if ((flags & MBEDTLS_X509_BADCERT_EXPIRED) != 0U) {
             *status = MQTT_CERT_STATUS_EXPIRED;
-        } else if (flags & MBEDTLS_X509_BADCERT_REVOKED) {
+        } else if ((flags & MBEDTLS_X509_BADCERT_REVOKED) != 0U) {
             *status = MQTT_CERT_STATUS_REVOKED;
-        } else if (flags & MBEDTLS_X509_BADCERT_NOT_TRUSTED) {
+        } else if ((flags & MBEDTLS_X509_BADCERT_NOT_TRUSTED) != 0U) {
             *status = MQTT_CERT_STATUS_UNTRUSTED;
         } else {
             *status = MQTT_CERT_STATUS_SIGNATURE_FAILED;
@@ -419,7 +419,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ValidateCertChain(const char* certAlias,
     int ret;
     uint32_t flags;
     
-    if (!CertMgr_Initialized || (certAlias == NULL_PTR) || isValid == NULL_PTR) {
+    if (!CertMgr_Initialized || (certAlias == NULL_PTR) || (isValid == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -480,7 +480,7 @@ Mqtt_ReturnType Mqtt_CertMgr_CheckExpiry(const char* alias,
     mbedtls_x509_crt crt;
     int ret;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || isExpiringSoon == NULL_PTR) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (isExpiringSoon == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -528,7 +528,7 @@ uint8 Mqtt_CertMgr_GetCertCount(void)
     }
     
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
-        if (CertMgr_Certs[i].isLoaded) {
+        if ((CertMgr_Certs[i].isLoaded) != 0U) {
             count++;
         }
     }
@@ -543,12 +543,12 @@ Mqtt_ReturnType Mqtt_CertMgr_GetCertAliasByIndex(uint8 index,
     uint8 i;
     uint8 count = 0;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || aliasSize == 0U ) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (aliasSize == 0U) ) {
         return MQTT_E_NOT_OK;
     }
     
     for (i = 0; i < MQTT_CERTMGR_MAX_CERTS; i++) {
-        if (CertMgr_Certs[i].isLoaded) {
+        if ((CertMgr_Certs[i].isLoaded) != 0U) {
             if (count == index) {
                 strncpy(alias, CertMgr_Certs[i].alias, aliasSize - 1U);
                 alias[aliasSize - 1U] = '\0';
@@ -567,7 +567,7 @@ Mqtt_ReturnType Mqtt_CertMgr_FindCertByType(Mqtt_CertType type,
 {
     uint8 i;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || aliasSize == 0U ) {
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (aliasSize == 0U) ) {
         return MQTT_E_NOT_OK;
     }
     
@@ -627,7 +627,7 @@ void Mqtt_CertMgr_MainFunction(void)
                                           CertMgr_Config.expiryWarningDays,
                                           &isExpiring);
         
-        if ((result == MQTT_OK) && isExpiring && CertMgr_ExpiryCallback != NULL_PTR) {
+        if ((result == MQTT_OK) && isExpiring && (CertMgr_ExpiryCallback != NULL_PTR)) {
             CertMgr_ExpiryCallback(CertMgr_Certs[i].alias, 
                                     CertMgr_Config.expiryWarningDays);
         }
@@ -644,7 +644,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ImportFromPem(const char* pemData,
 {
     Mqtt_CertEntryType entry;
     
-    if (!CertMgr_Initialized || (pemData == NULL_PTR) || alias == NULL_PTR) {
+    if (!CertMgr_Initialized || (pemData == NULL_PTR) || (alias == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     
@@ -665,7 +665,7 @@ Mqtt_ReturnType Mqtt_CertMgr_ExportToPem(const char* alias,
 {
     sint8 idx;
     
-    if (!CertMgr_Initialized || (alias == NULL_PTR) || pemBuffer == NULL_PTR || 
+    if (!CertMgr_Initialized || (alias == NULL_PTR) || (pemBuffer == NULL_PTR) || 
         (bufferSize == 0U) || (writtenSize == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
@@ -717,7 +717,7 @@ static Mqtt_ReturnType CertMgr_ParseCertInfo(const uint8* data,
     mbedtls_x509_crt crt;
     int ret;
     
-    if ((data == NULL_PTR) || (dataLen == 0U) || entry == NULL_PTR) {
+    if ((data == NULL_PTR) || (dataLen == 0U) || (entry == NULL_PTR)) {
         return MQTT_E_NOT_OK;
     }
     

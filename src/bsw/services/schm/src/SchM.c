@@ -75,7 +75,7 @@ Std_ReturnType SchM_Start(void)
 
 Std_ReturnType SchM_Stop(void)
 {
-    if (SchM_State.state != SCHM_RUNNING) return E_NOT_OK;
+    if (SchM_State.state != SCHM_RUNNING) { return E_NOT_OK; }
     SchM_State.state = SCHM_IDLE;
     return E_OK;
 }
@@ -106,7 +106,7 @@ uint8 SchM_GetScheduleTable(void)
 
 void SchM_MainFunction(void)
 {
-    if ((SchM_State.state != SCHM_RUNNING) || (SchM_State.configPtr == NULL_PTR)) return;
+    if ((SchM_State.state != SCHM_RUNNING) || (SchM_State.configPtr == NULL_PTR)) { return; }
 
     SchM_State.tickCounter++;
 
@@ -122,7 +122,7 @@ void SchM_MainFunction(void)
 
     /* Handle table wrap */
     if (SchM_State.tickCounter >= table->TableDuration) {
-        if (table->TableRepeat) {
+        if ((table->TableRepeat) != 0U) {
             SchM_State.tickCounter = 0U;
         }
     }

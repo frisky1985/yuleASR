@@ -36,7 +36,7 @@ static uint64 E2E_P05_CalculateCRC64(
     crc = Crc_CalculateCRC64(Data, Length, 0ULL, TRUE);
     
     /* Include DataID in CRC if configured */
-    if (IncludeDataID) {
+    if ((IncludeDataID) != 0U) {
         uint8 dataIdBytes[8];
         dataIdBytes[0] = (uint8)(DataID & 0xFFU);
         dataIdBytes[1] = (uint8)((DataID >> 8) & 0xFFU);
@@ -75,7 +75,7 @@ static void E2E_P05_WriteCounter(uint8* Data, uint32 Offset, uint32 Counter)
             uint32 bitIdx = bitPos % 8U;
             uint8 bitValue = (uint8)((Counter >> i) & 0x01U);
             
-            if (bitValue) {
+            if ((bitValue) != 0U) {
                 Data[byteIdx] |= (uint8)(1U << bitIdx);
             } else {
                 Data[byteIdx] &= (uint8)~(1U << bitIdx);
@@ -107,7 +107,7 @@ static uint32 E2E_P05_ReadCounter(const uint8* Data, uint32 Offset)
             uint32 byteIdx = bitPos / 8U;
             uint32 bitIdx = bitPos % 8U;
             
-            if (Data[byteIdx] & (1U << bitIdx)) {
+            if ((Data[byteIdx] & (1U << bitIdx)) != 0U) {
                 counter |= (1U << i);
             }
         }
@@ -143,7 +143,7 @@ static void E2E_P05_WriteCRC(uint8* Data, uint32 Offset, uint64 CRC)
             uint32 bitIdx = bitPos % 8U;
             uint8 bitValue = (uint8)((CRC >> (63U - i)) & 0x01U);
             
-            if (bitValue) {
+            if ((bitValue) != 0U) {
                 Data[byteIdx] |= (uint8)(1U << bitIdx);
             } else {
                 Data[byteIdx] &= (uint8)~(1U << bitIdx);
@@ -179,7 +179,7 @@ static uint64 E2E_P05_ReadCRC(const uint8* Data, uint32 Offset)
             uint32 byteIdx = bitPos / 8U;
             uint32 bitIdx = bitPos % 8U;
             
-            if (Data[byteIdx] & (1U << bitIdx)) {
+            if ((Data[byteIdx] & (1U << bitIdx)) != 0U) {
                 crc |= (1ULL << (63U - i));
             }
         }

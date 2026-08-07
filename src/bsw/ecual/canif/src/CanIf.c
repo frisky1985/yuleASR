@@ -326,7 +326,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 
     if (CanTxPduId < CANIF_NUM_TX_PDUS) {
         const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[CanTxPduId];
-        if (txPduConfig->TxConfirmation) {
+        if ((txPduConfig->TxConfirmation) != 0U) {
             PduR_TxConfirmation(CanTxPduId, E_OK);
         }
     }
@@ -350,7 +350,7 @@ void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr
         if ((rxPduConfig->Hrh == Mailbox->Hoh) &&
             (rxPduConfig->CanId == Mailbox->CanId)) {
 
-            if (rxPduConfig->RxIndication) {
+            if ((rxPduConfig->RxIndication) != 0U) {
                 PduInfoType pduInfo;
                 pduInfo.SduDataPtr = PduInfoPtr->SduDataPtr;
                 pduInfo.SduLength = PduInfoPtr->SduLength;

@@ -1,14 +1,14 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-08-07T15:32:01.697489",
+  "generated_at": "2026-08-07T15:42:31.383479",
   "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
   "layers": [
     {
       "layer": 1,
       "status": "passed",
-      "commit": "53a43e1d",
-      "started_at": "2026-08-07T15:29:35.014217",
-      "completed_at": "2026-08-07T15:32:01.590063",
+      "commit": "c59ff300",
+      "started_at": "2026-08-07T15:40:04.165130",
+      "completed_at": "2026-08-07T15:42:31.275376",
       "stages_summary": {
         "total": 55,
         "passed": 42,
@@ -89,7 +89,7 @@
         {
           "name": "misra-check",
           "status": "warning",
-          "detail": "28103 MISRA violation(s) (8378 required, 18592 advisory) — see .yuleosh/reports/misra-report.json"
+          "detail": "27541 MISRA violation(s) (744 required, 13048 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -302,10 +302,10 @@
     }
   ],
   "misra": {
-    "total_violations": 28103,
-    "required": 8378,
-    "advisory": 18592,
-    "violations_per_kloc": 98.89,
+    "total_violations": 27541,
+    "required": 744,
+    "advisory": 13048,
+    "violations_per_kloc": 96.91,
     "rules_violated": 86,
     "files_affected": 721
   },

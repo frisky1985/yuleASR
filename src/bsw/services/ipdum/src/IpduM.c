@@ -96,7 +96,7 @@ IpduM_IpduModeType IpduM_GetIpduMode(uint16 IpduId)
 
 void IpduM_MainFunction(void)
 {
-    if (IpduM_State.state == IPDUM_UNINIT) return;
+    if (IpduM_State.state == IPDUM_UNINIT) { return; }
 
     /* Route PDUs based on active I-PDU mode */
     if (IpduM_State.configPtr != NULL_PTR) {

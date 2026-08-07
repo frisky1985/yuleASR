@@ -166,7 +166,7 @@ STATIC void StbM_UpdateGlobalTime(uint8 timeBaseId, StbM_VirtualLocalTimeType cu
     sint64 timeDiff;
     sint64 timeIncrement;
 
-    if (tbPtr->timeValid)
+    if ((tbPtr->timeValid) != 0U)
     {
         /* Calculate elapsed time in local ticks */
         timeDiff = (sint64)(currentLocalTime - tbPtr->localTime);
@@ -368,7 +368,7 @@ Std_ReturnType StbM_GetCurrentTime(uint8 timeBaseId,
 
     tbPtr = &StbM_InternalState.TimeBases[timeBaseId];
 
-    if (tbPtr->timeValid)
+    if ((tbPtr->timeValid) != 0U)
     {
         /* Update time before returning */
         StbM_VirtualLocalTimeType currentTime = StbM_GetVirtualLocalTime(timeBaseId);
@@ -460,7 +460,7 @@ Std_ReturnType StbM_SetGlobalTime(uint8 timeBaseId,
     tbPtr = &StbM_InternalState.TimeBases[timeBaseId];
 
     /* Only master can set global time directly */
-    if (tbPtr->isMaster)
+    if ((tbPtr->isMaster) != 0U)
     {
         tbPtr->globalTime.seconds = timeStampPtr->seconds;
         tbPtr->globalTime.nanoseconds = timeStampPtr->nanoseconds;

@@ -107,7 +107,7 @@ bool SM_Interface_IsInitialized(void) {
 }
 
 Std_ReturnType SM_RegisterClient(const char* name, uint32_t* clientId) {
-    if (!g_initialized || (name == NULL) || clientId == NULL) {
+    if (!g_initialized || (name == NULL) || (clientId == NULL)) {
         return E_NOT_OK;
     }
     

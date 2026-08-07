@@ -185,7 +185,7 @@ void FrTp_RxStateMachine(FrTp_ConnectionIdxType connIdx)
 
         case FRTP_STATE_RX_WAIT_CF:
             /* Waiting for CF - check for timeout */
-            if (FrTp_IsTimerExpired(runtime))
+            if ((FrTp_IsTimerExpired(runtime)) != 0U)
             {
                 /* N_Cr timeout - release buffer and reset */
                 FrTp_ReleaseRxBuffer(connIdx);

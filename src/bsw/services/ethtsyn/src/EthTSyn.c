@@ -35,7 +35,7 @@ Std_ReturnType EthTSyn_Init(const EthTSyn_ConfigType* Config)
     }
 #endif
 
-    if (EthTSyn_Initialized) {
+    if ((EthTSyn_Initialized) != 0U) {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
         Det_ReportError(ETHTSYN_MODULE_ID, 0U, 0U, DET_E_ALREADY_INITIALIZED);
 #endif

@@ -444,7 +444,7 @@ Std_ReturnType KeyM_SetKey(KeyM_KeyIdType keyId,
 #endif
 
     /* Check if key is locked */
-    if (KeyM_Keys[keyId].isLocked) {
+    if ((KeyM_Keys[keyId].isLocked) != 0U) {
 #if (KEYM_ASYNC_OPERATIONS == STD_ON)
         SchM_Exit_KeyM_KEYM_EXCLUSIVE_AREA_0();
 #endif
@@ -581,7 +581,7 @@ Std_ReturnType KeyM_UpdateKey(KeyM_KeyIdType keyId,
 #endif
 
     /* Check if key is locked */
-    if (KeyM_Keys[keyId].isLocked) {
+    if ((KeyM_Keys[keyId].isLocked) != 0U) {
 #if (KEYM_ASYNC_OPERATIONS == STD_ON)
         SchM_Exit_KeyM_KEYM_EXCLUSIVE_AREA_0();
 #endif
@@ -697,7 +697,7 @@ Std_ReturnType KeyM_ParseKey(KeyM_KeyIdType keyId,
 #endif
 
     /* Check if key is locked */
-    if (KeyM_Keys[keyId].isLocked) {
+    if ((KeyM_Keys[keyId].isLocked) != 0U) {
 #if (KEYM_ASYNC_OPERATIONS == STD_ON)
         SchM_Exit_KeyM_KEYM_EXCLUSIVE_AREA_0();
 #endif
@@ -822,7 +822,7 @@ Std_ReturnType KeyM_CopyKey(KeyM_KeyIdType srcKeyId,
     }
 
     /* Check if destination key is locked */
-    if (KeyM_Keys[destKeyId].isLocked) {
+    if ((KeyM_Keys[destKeyId].isLocked) != 0U) {
 #if (KEYM_ASYNC_OPERATIONS == STD_ON)
         SchM_Exit_KeyM_KEYM_EXCLUSIVE_AREA_0();
 #endif
@@ -1194,7 +1194,7 @@ void KeyM_MainFunction(void)
 #if (KEYM_ASYNC_OPERATIONS == STD_ON)
     /* Process operation queue */
     for (i = 0u; i < KEYM_OPERATION_QUEUE_SIZE; i++) {
-        if (KeyM_OpQueue[i].inUse) {
+        if ((KeyM_OpQueue[i].inUse) != 0U) {
             /* Process pending operation */
             if (KeyM_OpQueue[i].result == KEYM_OPRESULT_PENDING) {
                 /* Simulate operation completion */
@@ -1212,7 +1212,7 @@ void KeyM_MainFunction(void)
 
     /* Check for key expiry */
     for (i = 0u; i < KEYM_NUM_KEYS; i++) {
-        if (KeyM_Keys[i].isValid) {
+        if ((KeyM_Keys[i].isValid) != 0U) {
             (void)KeyM_IsKeyCurrentlyValid((KeyM_KeyIdType)i);
         }
     }

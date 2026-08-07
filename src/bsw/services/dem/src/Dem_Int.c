@@ -184,7 +184,7 @@ void Dem_IntResetDebounceCounter(Dem_EventIdType EventId)
 {
     uint16 eventIndex = EventId - 1U;
     
-    if (Dem_IntIsValidEventId(EventId))
+    if ((Dem_IntIsValidEventId(EventId)) != 0U)
     {
         Dem_InternalState.EventStates[eventIndex].DebounceCounter = 0;
         Dem_InternalState.EventStates[eventIndex].FaultDetectionCounter = 0;
@@ -691,7 +691,7 @@ void Dem_IntUpdateDTCStatusFromDebounce(Dem_EventIdType EventId, boolean Debounc
 
     Dem_DTCEntryType* dtcEntry = &Dem_InternalState.DTCEntries[dtcIndex];
 
-    if (DebounceResult)
+    if ((DebounceResult) != 0U)
     {
         /* Test Failed */
         dtcEntry->Status |= DEM_DTC_STATUS_TEST_FAILED;
@@ -727,7 +727,7 @@ void Dem_IntUpdateDTCStatusFromDebounce(Dem_EventIdType EventId, boolean Debounc
         /* Test Passed */
         dtcEntry->Status &= ~DEM_DTC_STATUS_TEST_FAILED;
         
-        if (eventState->TestCompletedThisOperationCycle)
+        if ((eventState->TestCompletedThisOperationCycle) != 0U)
         {
             dtcEntry->Status &= ~DEM_DTC_STATUS_PENDING_DTC;
         }
@@ -761,7 +761,7 @@ void Dem_IntProcessDebounceMainFunction(uint32 DeltaTimeMs)
                 (timeState->State == DEM_TIME_DEBOUNCE_COUNTING_DOWN))
             {
                 /* Check if debounce threshold reached */
-                if (timeState->ThresholdReached)
+                if ((timeState->ThresholdReached) != 0U)
                 {
                     /* Update DTC status based on debounce result */
                     boolean debounceResult = (timeState->State == DEM_TIME_DEBOUNCE_COUNTING_UP);

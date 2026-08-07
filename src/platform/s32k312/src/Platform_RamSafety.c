@@ -148,7 +148,7 @@ Std_ReturnType Platform_RamSafety_Init(const RamSafety_ConfigType* config)
     }
 
     /* 使能ECC中断 (如果配置中启用) */
-    if (config->useHardwareEcc)
+    if ((config->useHardwareEcc) != 0U)
     {
         MSCM_ECC_INT_EN = 0x03U;  /* 使能单位和双位错误中断 */
         Platform_MscmConfig.eccEnabled = TRUE;
@@ -394,7 +394,7 @@ Std_ReturnType Platform_RamSafety_SetMscmConfig(const Platform_MscmConfigType* c
     Platform_MscmConfig = *config;
 
     /* 应用配置到硬件 */
-    if (config->eccEnabled)
+    if ((config->eccEnabled) != 0U)
     {
         MSCM_RAMRECONFIG |= 0x01U;
     }
@@ -403,7 +403,7 @@ Std_ReturnType Platform_RamSafety_SetMscmConfig(const Platform_MscmConfigType* c
         MSCM_RAMRECONFIG &= ~0x01U;
     }
 
-    if (config->interruptEnabled)
+    if ((config->interruptEnabled) != 0U)
     {
         MSCM_ECC_INT_EN = 0x03U;
     }

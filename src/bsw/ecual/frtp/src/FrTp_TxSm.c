@@ -189,7 +189,7 @@ static void FrTp_TxSm_StateStarting(FrTp_ConnectionIdxType connIdx)
     /* State transition happens in FrTp_TxConfirmation() */
 
     /* If we're here and still in STARTING state, check for timeout */
-    if (FrTp_IsTimerExpired(runtime))
+    if ((FrTp_IsTimerExpired(runtime)) != 0U)
     {
         runtime->retryCount++;
         if (runtime->retryCount >= FRTP_MAX_RETRY_COUNT)
@@ -220,7 +220,7 @@ static void FrTp_TxSm_StateWaitFc(FrTp_ConnectionIdxType connIdx)
     /* The FC processing is done in FrTp_ProcessFlowControl() */
     /* This function only handles timeout checking */
 
-    if (FrTp_IsTimerExpired(runtime))
+    if ((FrTp_IsTimerExpired(runtime)) != 0U)
     {
         runtime->retryCount++;
         if (runtime->retryCount >= FRTP_MAX_RETRY_COUNT)
@@ -349,7 +349,7 @@ static void FrTp_TxSm_StateWaitConfirm(FrTp_ConnectionIdxType connIdx)
     /* The confirmation handling is done in FrTp_TxConfirmation() */
     /* This function only handles timeout checking */
 
-    if (FrTp_IsTimerExpired(runtime))
+    if ((FrTp_IsTimerExpired(runtime)) != 0U)
     {
         runtime->retryCount++;
         if (runtime->retryCount >= FRTP_MAX_RETRY_COUNT)

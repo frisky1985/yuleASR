@@ -219,7 +219,7 @@ static Std_ReturnType LinTrcv_SetTja1021Mode(uint8 Channel, LinTrcv_OpmodeType O
             LinTrcv_SetDioPin(channelCfg->EnPinDio, LINTRCV_PIN_LOW);
             
             /* Ensure NWake is HIGH (inactive) to enter Standby, not Sleep */
-            if (channelCfg->WakeupByPinEnabled)
+            if ((channelCfg->WakeupByPinEnabled) != 0U)
             {
                 /* NWake is input, so we rely on external pull-up */
                 /* For TJA1021, Standby requires EN=0 and sufficient time */
@@ -308,17 +308,17 @@ static Std_ReturnType LinTrcv_DetectWakeupReason(uint8 Channel)
     const LinTrcv_ChannelConfigType *channelCfg = &LinTrcv_ConfigPtr->ChannelCfg[Channel];
     LinTrcv_WakeupReasonType wakeupReason = LINTRCV_WU_ERROR;
     
-    if (channelCfg->WakeupByBusEnabled)
+    if ((channelCfg->WakeupByBusEnabled) != 0U)
     {
         /* Check for bus wake-up - detected via mode change from Standby/Sleep to Normal */
         /* In TJA1021, bus activity wakes up the transceiver */
-        if (LinTrcv_ChannelState[Channel].WakeupEventPending)
+        if ((LinTrcv_ChannelState[Channel].WakeupEventPending) != 0U)
         {
             wakeupReason = LINTRCV_WU_BY_BUS;
         }
     }
     
-    if (channelCfg->WakeupByPinEnabled)
+    if ((channelCfg->WakeupByPinEnabled) != 0U)
     {
         /* Check NWake pin for local wake-up */
         LinTrcv_PinStateType nWakeState = LinTrcv_ReadDioPin(channelCfg->NwadrsPinDio);
@@ -662,7 +662,7 @@ Std_ReturnType LinTrcv_CheckWakeup(uint8 Channel)
     (void)LinTrcv_DetectWakeupReason(Channel);
     
     /* Check if wake-up event is pending */
-    if (LinTrcv_ChannelState[Channel].WakeupEventPending)
+    if ((LinTrcv_ChannelState[Channel].WakeupEventPending) != 0U)
     {
         retVal = E_OK;
         
@@ -754,7 +754,7 @@ void LinTrcv_MainFunction(void)
         }
         
         /* Check NWake pin for local wake-up */
-        if (channelCfg->WakeupByPinEnabled)
+        if ((channelCfg->WakeupByPinEnabled) != 0U)
         {
             LinTrcv_PinStateType nWakeState = LinTrcv_ReadDioPin(channelCfg->NwadrsPinDio);
             

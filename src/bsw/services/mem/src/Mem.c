@@ -461,7 +461,7 @@ Std_ReturnType Mem_Free(Mem_HandleType Handle)
         while (block != NULL_PTR) {
             if ((block->handle == Handle) && (!block->isFree)) {
                 /* Validate block integrity */
-                if (Mem_ValidateBlock(block)) {
+                if ((Mem_ValidateBlock(block)) != 0U) {
                     /* Mark as free */
                     block->isFree = TRUE;
                     block->handle = MEM_INVALID_HANDLE;
@@ -530,7 +530,7 @@ Mem_HandleType Mem_Reallocate(Mem_HandleType Handle, uint32 NewSize)
         
         while (block != NULL_PTR) {
             if ((block->handle == Handle) && (!block->isFree)) {
-                if (Mem_ValidateBlock(block)) {
+                if ((Mem_ValidateBlock(block)) != 0U) {
                     oldSize = block->size - MEM_HEADER_SIZE;
                     oldPtr = (void*)((uint8*)block + MEM_HEADER_SIZE);
                 }
@@ -603,7 +603,7 @@ void* Mem_GetPointer(Mem_HandleType Handle)
         
         while (block != NULL_PTR) {
             if ((block->handle == Handle) && (!block->isFree)) {
-                if (Mem_ValidateBlock(block)) {
+                if ((Mem_ValidateBlock(block)) != 0U) {
                     ptr = (void*)((uint8*)block + MEM_HEADER_SIZE);
                 }
                 break;
@@ -665,7 +665,7 @@ Std_ReturnType Mem_GetMemInfo(uint8 PoolIndex, Mem_InfoType* InfoPtr)
     block = Mem_Pools[PoolIndex].firstBlock;
     
     while (block != NULL_PTR) {
-        if (block->isFree) {
+        if ((block->isFree) != 0U) {
             freeSize += block->size;
             numFragments++;
             if (block->size > maxFreeBlock) {

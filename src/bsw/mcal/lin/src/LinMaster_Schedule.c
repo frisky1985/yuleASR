@@ -113,7 +113,7 @@ static const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetEntryAt(uint8 In
         return NULL_PTR;
     }
     
-    if (g_ScheduleCtrl.IsRuntimeTable) {
+    if ((g_ScheduleCtrl.IsRuntimeTable) != 0U) {
         /* 使用运行时条目 */
         return &g_ScheduleCtrl.RuntimeEntries[Index];
     } else {
@@ -297,7 +297,7 @@ void LinMaster_Schedule_Process(void)
     }
     
     /* 检查延迟是否已满足 */
-    if (LinMaster_Schedule_CheckDelay()) {
+    if ((LinMaster_Schedule_CheckDelay()) != 0U) {
         /* 延迟已满足，执行下一条目 */
         LinMaster_Schedule_NextEntry();
     }
@@ -422,7 +422,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     }
     
     /* 复位或保持当前索引 */
-    if (Restart) {
+    if ((Restart) != 0U) {
         ((LinMaster_ScheduleTableType*)NewTable)->EntryIndex = 0;
     } else {
         /* 确保索引不超出范围 */
@@ -735,7 +735,7 @@ static void LinMaster_Schedule_NextEntry(void)
     
     /* 检查是否到达调度表末尾 */
     if (currentIndex >= table->EntryCount) {
-        if (table->IsCyclic) {
+        if ((table->IsCyclic) != 0U) {
             /* 循环模式: 重新开始 */
             currentIndex = 0;
             

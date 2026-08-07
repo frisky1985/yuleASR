@@ -390,7 +390,7 @@ void Nm_MainFunction(void)
             case NM_STATE_REPEAT_MESSAGE:
                 /* After repeat message time, transition to Normal Operation */
                 /* 定时处理通过 Nm_MainFunction 循环调用和 Nm_TimerUpdate 接口管理 */
-                if (Nm_NetworkRequested[i])
+                if ((Nm_NetworkRequested[i]) != 0U)
                 {
                     Nm_StateType prevState = Nm_ChannelState[i];
                     Nm_ChannelState[i] = NM_STATE_NORMAL_OPERATION;

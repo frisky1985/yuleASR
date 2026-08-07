@@ -86,7 +86,7 @@ LinMaster_StatusType LinMaster_Init(const LinMaster_ConfigType* ConfigPtr)
         return LINMASTER_NOT_OK;
     }
     
-    if (LinMaster_IsInitialized) {
+    if ((LinMaster_IsInitialized) != 0U) {
         return LINMASTER_NOT_OK;
     }
 #endif
@@ -242,7 +242,7 @@ LinMaster_StatusType LinMaster_SendHeader(uint8 Pid)
         return LINMASTER_NOT_OK;
     }
     
-    if (LinMaster_OperationPending) {
+    if ((LinMaster_OperationPending) != 0U) {
         return LINMASTER_BUSY;
     }
     
@@ -278,7 +278,7 @@ LinMaster_StatusType LinMaster_SendFrame(
         return LINMASTER_NOT_OK;
     }
     
-    if (LinMaster_OperationPending) {
+    if ((LinMaster_OperationPending) != 0U) {
         return LINMASTER_BUSY;
     }
     
@@ -318,7 +318,7 @@ LinMaster_StatusType LinMaster_ReceiveFrame(
         return LINMASTER_NOT_OK;
     }
     
-    if (LinMaster_OperationPending) {
+    if ((LinMaster_OperationPending) != 0U) {
         return LINMASTER_BUSY;
     }
     
@@ -459,7 +459,7 @@ static void LinMaster_StateMachineHandler(void)
     switch (LinMaster_State) {
         case LINMASTER_STATE_IDLE:
             /* 空闲状态，等待操作请求 */
-            if (LinMaster_HeaderRequested) {
+            if ((LinMaster_HeaderRequested) != 0U) {
                 LinMaster_HeaderRequested = FALSE;
                 LinMaster_ChangeState(LINMASTER_STATE_SEND_BREAK);
             }
@@ -479,7 +479,7 @@ static void LinMaster_StateMachineHandler(void)
             
         case LINMASTER_STATE_SEND_SYNC:
             /* 检查Sync发送超时 */
-            if (LinMaster_IsTimeout()) {
+            if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
@@ -497,7 +497,7 @@ static void LinMaster_StateMachineHandler(void)
             
         case LINMASTER_STATE_SEND_PID:
             /* 检查PID发送超时 */
-            if (LinMaster_IsTimeout()) {
+            if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
@@ -524,7 +524,7 @@ static void LinMaster_StateMachineHandler(void)
             
         case LINMASTER_STATE_SEND_TX_DATA:
             /* 检查数据发送超时 */
-            if (LinMaster_IsTimeout()) {
+            if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
@@ -546,7 +546,7 @@ static void LinMaster_StateMachineHandler(void)
             
         case LINMASTER_STATE_WAIT_CHECKSUM:
             /* 检查超时 */
-            if (LinMaster_IsTimeout()) {
+            if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_TIMEOUT);
                 return;
             }
@@ -573,7 +573,7 @@ static void LinMaster_StateMachineHandler(void)
             
         case LINMASTER_STATE_WAIT_RX_DATA:
             /* 检查响应超时 */
-            if (LinMaster_IsTimeout()) {
+            if ((LinMaster_IsTimeout()) != 0U) {
                 LinMaster_ProcessError(LINMASTER_ERROR_NO_RESPONSE);
                 return;
             }
@@ -582,7 +582,7 @@ static void LinMaster_StateMachineHandler(void)
             
         case LINMASTER_STATE_DELAY:
             /* 帧间延迟 */
-            if (LinMaster_IsTimeout()) {
+            if ((LinMaster_IsTimeout()) != 0U) {
                 /* 延迟结束，进入下一帧或返回空闲 */
                 LinMaster_ResetStateMachine();
                 LinMaster_ChangeState(LINMASTER_STATE_IDLE);
@@ -759,7 +759,7 @@ LinMaster_StatusType LinMaster_SendWakeup(void)
         return LINMASTER_NOT_OK;
     }
     
-    if (LinMaster_OperationPending) {
+    if ((LinMaster_OperationPending) != 0U) {
         return LINMASTER_BUSY;
     }
     
@@ -779,7 +779,7 @@ LinMaster_StatusType LinMaster_GoToSleep(void)
         return LINMASTER_NOT_OK;
     }
     
-    if (LinMaster_OperationPending) {
+    if ((LinMaster_OperationPending) != 0U) {
         return LINMASTER_BUSY;
     }
     

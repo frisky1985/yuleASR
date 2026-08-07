@@ -105,22 +105,22 @@ STATIC uint32                      Cdd_Boot_TickCount = 0U;
  */
 STATIC Cdd_Boot_ResetReasonType Cdd_Boot_DecodeResetReason(uint32 raw)
 {
-    if (raw & RGM_DES_F_LOCKSTEP)
+    if ((raw & RGM_DES_F_LOCKSTEP) != 0U)
     {
         return CDD_BOOT_RESET_LOCKSTEP;
     }
 
-    if (raw & RGM_DES_F_FCCU_SAFE)
+    if ((raw & RGM_DES_F_FCCU_SAFE) != 0U)
     {
         return CDD_BOOT_RESET_FCCU_SAFE;
     }
 
-    if (raw & RGM_DES_F_LOCKUP)
+    if ((raw & RGM_DES_F_LOCKUP) != 0U)
     {
         return CDD_BOOT_RESET_LOCKUP;
     }
 
-    if (raw & RGM_DES_F_SWT)
+    if ((raw & RGM_DES_F_SWT) != 0U)
     {
         return CDD_BOOT_RESET_WATCHDOG;
     }
@@ -165,14 +165,14 @@ Std_ReturnType Cdd_Boot_Init(const Cdd_Boot_ConfigType* config)
     Cdd_Boot_ResetReason = Cdd_Boot_DecodeResetReason(Cdd_Boot_ResetReasonRaw);
 
     /* Early HSM init for secure boot if requested */
-    if (config->enableSecureBoot)
+    if ((config->enableSecureBoot) != 0U)
     {
         /* Call Boot_Hsm_Init() or equivalent early HSM init */
         /* Result checked; failure may prevent boot */
     }
 
     /* Clock tree validation if requested */
-    if (config->enableClockCheck)
+    if ((config->enableClockCheck) != 0U)
     {
         /* Verify PLL / clock monitor status */
     }

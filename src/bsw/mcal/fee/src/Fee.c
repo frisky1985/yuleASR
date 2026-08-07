@@ -453,7 +453,7 @@ static uint8 Fee_FindSectorForAddress(Fee_AddressType Address)
     
     if ((Fee_ConfigPtr != NULL_PTR) && (Fee_ConfigPtr->sectorList != NULL_PTR)) {
         for (uint8 i = 0U; i < Fee_ConfigPtr->sectorCount; i++) {
-            if (Fee_IsAddressInSector(Address, i)) {
+            if ((Fee_IsAddressInSector(Address, i)) != 0U) {
                 sectorIdx = i;
                 break;
             }

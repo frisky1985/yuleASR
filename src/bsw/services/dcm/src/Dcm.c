@@ -345,7 +345,7 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
         if ((subFunction & 0x40U) == 0U)
         {
             /* Request Seed */
-            if (Dcm_InternalState.SecurityDelayActive)
+            if ((Dcm_InternalState.SecurityDelayActive) != 0U)
             {
                 Dcm_SendNegativeResponse(ProtocolId, DCM_SERVICE_SECURITY_ACCESS, DCM_E_REQUIRED_TIME_DELAY_NOT_EXPIRED);
             }
@@ -386,7 +386,7 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
                     }
                 }
 
-                if (keyValid)
+                if ((keyValid) != 0U)
                 {
                     Dcm_InternalState.CurrentSecurityLevel = securityLevel;
                     Dcm_InternalState.SecurityAttempts = 0U;
@@ -1224,7 +1224,7 @@ void Dcm_MainFunction(void)
             }
 
             /* Handle security delay timer */
-            if (Dcm_InternalState.SecurityDelayActive)
+            if ((Dcm_InternalState.SecurityDelayActive) != 0U)
             {
                 if (Dcm_InternalState.SecurityDelayTimer > 0U)
                 {
@@ -1244,7 +1244,7 @@ void Dcm_MainFunction(void)
                 if (protocolState->P2Timer == 0U)
                 {
                     /* P2 timeout - send response pending if needed */
-                    if (protocolState->ResponsePending)
+                    if ((protocolState->ResponsePending) != 0U)
                     {
                         Dcm_SendNegativeResponse(i, protocolState->CurrentSID, DCM_E_RESPONSE_TOO_LONG);
                         protocolState->ResponsePending = FALSE;

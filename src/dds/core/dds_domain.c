@@ -187,7 +187,7 @@ dds_DataWriterHandleType dds_create_writer(
     dds_publisher_t *publisher = handle_to_publisher(publisher_handle);
     dds_topic_t *topic = handle_to_topic(topic_handle);
     if ((publisher == NULL) || !publisher->active ||
-        topic == NULL || !topic->active) {
+        (topic == NULL) || !topic->active) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -225,7 +225,7 @@ dds_DataReaderHandleType dds_create_reader(
     dds_subscriber_t *subscriber = handle_to_subscriber(subscriber_handle);
     dds_topic_t *topic = handle_to_topic(topic_handle);
     if ((subscriber == NULL) || !subscriber->active ||
-        topic == NULL || !topic->active) {
+        (topic == NULL) || !topic->active) {
         return DDS_ENTITY_INVALID;
     }
 
@@ -268,7 +268,7 @@ dds_DataReaderHandleType dds_create_reader(
 dds_ReturnCode_t dds_write(dds_DataWriterHandleType writer_handle, const void *data)
 {
     dds_data_writer_t *writer = handle_to_writer(writer_handle);
-    if ((writer == NULL) || !writer->active || data == NULL) {
+    if ((writer == NULL) || !writer->active || (data == NULL)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
     if (writer->sample_size == 0U) {
@@ -311,7 +311,7 @@ dds_ReturnCode_t dds_take(
     (void)instance_states;
 
     dds_data_reader_t *reader = handle_to_reader(reader_handle);
-    if ((reader == NULL) || !reader->active || data == NULL || max_samples == 0U) {
+    if ((reader == NULL) || !reader->active || (data == NULL) || max_samples == 0U) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
 
@@ -477,7 +477,7 @@ dds_ReturnCode_t dds_set_writer_sample_size(
     uint32_t sample_size)
 {
     dds_data_writer_t *writer = handle_to_writer(writer_handle);
-    if ((writer == NULL) || !writer->active || sample_size == 0U) {
+    if ((writer == NULL) || !writer->active || (sample_size == 0U)) {
         return DDS_RETCODE_BAD_PARAMETER;
     }
     writer->sample_size = sample_size;

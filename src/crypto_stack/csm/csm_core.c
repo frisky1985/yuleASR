@@ -284,7 +284,7 @@ csm_status_t csm_job_get_state(csm_context_t *ctx, uint32_t job_id,
 {
     csm_job_t *job;
     
-    if ((ctx == NULL) || !ctx->initialized || state == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (state == NULL)) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -389,10 +389,10 @@ csm_status_t csm_encrypt(csm_context_t *ctx, csm_algorithm_t algorithm,
     }
     
     status = csm_job_set_input(ctx, job_id, plaintext, plaintext_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_set_output(ctx, job_id, ciphertext, *ciphertext_len, ciphertext_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_process_sync(ctx, job_id, 5000);
     
@@ -415,10 +415,10 @@ csm_status_t csm_decrypt(csm_context_t *ctx, csm_algorithm_t algorithm,
     }
     
     status = csm_job_set_input(ctx, job_id, ciphertext, ciphertext_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_set_output(ctx, job_id, plaintext, *plaintext_len, plaintext_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_process_sync(ctx, job_id, 5000);
     
@@ -441,10 +441,10 @@ csm_status_t csm_mac_generate(csm_context_t *ctx, csm_algorithm_t algorithm,
     }
     
     status = csm_job_set_input(ctx, job_id, data, data_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_set_output(ctx, job_id, mac, *mac_len, mac_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_process_sync(ctx, job_id, 5000);
     
@@ -467,7 +467,7 @@ csm_status_t csm_mac_verify(csm_context_t *ctx, csm_algorithm_t algorithm,
     }
     
     status = csm_job_set_input(ctx, job_id, data, data_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     /* 设置MAC作为secondary input */
     csm_job_t *job = csm_find_job(ctx, job_id);
@@ -497,10 +497,10 @@ csm_status_t csm_hash(csm_context_t *ctx, csm_algorithm_t algorithm,
     }
     
     status = csm_job_set_input(ctx, job_id, data, data_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_set_output(ctx, job_id, hash, *hash_len, hash_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_process_sync(ctx, job_id, 5000);
     
@@ -521,7 +521,7 @@ csm_status_t csm_random_generate(csm_context_t *ctx, uint8_t *random_data,
     }
     
     status = csm_job_set_output(ctx, job_id, random_data, random_len, &random_len);
-    if (status != CSM_OK) goto cleanup;
+    if (status != CSM_OK) { goto cleanup; }
     
     status = csm_job_process_sync(ctx, job_id, 5000);
     
@@ -558,7 +558,7 @@ uint32_t csm_process_queue(csm_context_t *ctx)
 
 csm_status_t csm_get_queue_stats(csm_context_t *ctx, csm_queue_stats_t *stats)
 {
-    if ((ctx == NULL) || !ctx->initialized || stats == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (stats == NULL)) {
         return CSM_ERROR_INVALID_PARAM;
     }
     
@@ -595,7 +595,7 @@ int csm_register_callback(csm_context_t *ctx, csm_job_callback_t callback,
 {
     int i;
     
-    if ((ctx == NULL) || !ctx->initialized || callback == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (callback == NULL)) {
         return -1;
     }
     
@@ -748,7 +748,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
         case CSM_JOB_ENCRYPT:
         case CSM_JOB_DECRYPT:
             /* 加密/解密 */
-            if ((job->output != NULL) && (job->output_len != NULL) && job->input != NULL) {
+            if ((job->output != NULL) && (job->output_len != NULL) && (job->input != NULL)) {
                 memcpy(job->output, job->input, job->input_len);
                 *job->output_len = job->input_len;
             }

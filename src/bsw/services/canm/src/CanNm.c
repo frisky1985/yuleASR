@@ -303,7 +303,7 @@ static void CanNm_ProcessPduData(CanNm_ChannelHandleType channel, const uint8 *p
 #endif
     
     /* Clear remote sleep indication on any reception */
-    if (chPtr->RemoteSleepInd) {
+    if ((chPtr->RemoteSleepInd) != 0U) {
         chPtr->RemoteSleepInd = FALSE;
 #if (CANNM_REMOTE_SLEEP_CALLBACK_ENABLED == STD_ON)
         Nm_RemoteSleepCancellation(channel);
@@ -370,7 +370,7 @@ static void CanNm_ProcessTimers(CanNm_ChannelHandleType channel)
             chPtr->TimerRepeatMessage = 0;
             /* Timer expired - check network request */
             if (chPtr->State == CANNM_STATE_REPEAT_MESSAGE) {
-                if (chPtr->NetworkRequested) {
+                if ((chPtr->NetworkRequested) != 0U) {
                     CanNm_ChangeState(channel, CANNM_STATE_NORMAL_OPERATION, 
                                        CANNM_MODE_NETWORK);
                 } else {
@@ -407,12 +407,12 @@ static void CanNm_StateMachine(CanNm_ChannelHandleType channel)
     switch (chPtr->State) {
         case CANNM_STATE_BUS_SLEEP:
             /* In Bus Sleep, wait for network request or Rx indication */
-            if (chPtr->RxIndPending) {
+            if ((chPtr->RxIndPending) != 0U) {
                 chPtr->RxIndPending = FALSE;
                 /* Transition to Repeat Message on reception */
                 CanNm_ChangeState(channel, CANNM_STATE_REPEAT_MESSAGE, 
                                    CANNM_MODE_NETWORK);
-            } else if (chPtr->NetworkRequested) {
+            } else if ((chPtr->NetworkRequested) != 0U) {
                 /* Transition to Repeat Message on request */
                 CanNm_ChangeState(channel, CANNM_STATE_REPEAT_MESSAGE, 
                                    CANNM_MODE_NETWORK);
@@ -431,7 +431,7 @@ static void CanNm_StateMachine(CanNm_ChannelHandleType channel)
             
         case CANNM_STATE_READY_SLEEP:
             /* Wait for timeout or network request */
-            if (chPtr->NetworkRequested) {
+            if ((chPtr->NetworkRequested) != 0U) {
                 CanNm_ChangeState(channel, CANNM_STATE_NORMAL_OPERATION, 
                                    CANNM_MODE_NETWORK);
             }

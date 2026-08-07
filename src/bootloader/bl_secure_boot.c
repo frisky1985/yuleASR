@@ -162,7 +162,7 @@ bl_secure_boot_error_t bl_secure_boot_parse_header(
     bl_firmware_header_t *header
 )
 {
-    if ((ctx == NULL) || (header_data == NULL) || header == NULL) {
+    if ((ctx == NULL) || (header_data == NULL) || (header == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -224,7 +224,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
     bl_signature_type_t sign_type
 )
 {
-    if ((ctx == NULL) || (firmware_data == NULL) || signature == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || (signature == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -311,7 +311,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_hash(
     bl_hash_type_t hash_type
 )
 {
-    if ((ctx == NULL) || (firmware_data == NULL) || expected_hash == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || (expected_hash == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -370,7 +370,7 @@ bl_secure_boot_error_t bl_secure_boot_calculate_hash(
     bl_hash_type_t hash_type
 )
 {
-    if ((ctx == NULL) || (firmware_data == NULL) || hash == NULL) {
+    if ((ctx == NULL) || (firmware_data == NULL) || (hash == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -496,7 +496,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     const uint8_t *trusted_root_key
 )
 {
-    if ((ctx == NULL) || (chain == NULL) || trusted_root_key == NULL) {
+    if ((ctx == NULL) || (chain == NULL) || (trusted_root_key == NULL)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
@@ -550,7 +550,7 @@ bl_secure_boot_error_t bl_secure_boot_verify(
     uint32_t firmware_size
 )
 {
-    if ((ctx == NULL) || (firmware_data == NULL) || firmware_size < FIRMWARE_HEADER_SIZE) {
+    if ((ctx == NULL) || (firmware_data == NULL) || (firmware_size < FIRMWARE_HEADER_SIZE)) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
     

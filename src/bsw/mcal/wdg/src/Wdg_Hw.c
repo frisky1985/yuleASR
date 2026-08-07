@@ -413,7 +413,7 @@ static Std_ReturnType Wdg_Hw_InitIWDG(const Wdg_Hw_IwdgConfigType* ConfigPtr)
     }
 
     /* Configure window if enabled */
-    if (ConfigPtr->windowModeEnabled) {
+    if ((ConfigPtr->windowModeEnabled) != 0U) {
         uint32 windowValue = Wdg_Hw_CalculateReloadValue(ConfigPtr->windowStart, prescaler);
 
         /* Wait for WVU to be cleared */
@@ -461,7 +461,7 @@ static Std_ReturnType Wdg_Hw_InitWWDG(const Wdg_Hw_WwdgConfigType* ConfigPtr)
     WDG_HW_WWDG_CFR = (prescaler << 7u) | window;
 
     /* Enable early warning interrupt if requested */
-    if (ConfigPtr->useInterrupt) {
+    if ((ConfigPtr->useInterrupt) != 0U) {
         WDG_HW_WWDG_CFR |= WDG_HW_WWDG_CFR_EWI;
     }
 
@@ -501,13 +501,13 @@ static uint32 Wdg_Hw_GetResetReasonSTM32(void)
     volatile const uint32* rcc_csr = (volatile uint32*)(0x40023800u + 0x74u);
     uint32 csr = *rcc_csr;
 
-    if (csr & 0x40000000u) {  /* WWDGRSTF */
+    if ((csr & 0x40000000u) != 0U) {  /* WWDGRSTF */
         return WDG_HW_RESET_WWDG;
-    } else if (csr & 0x20000000u) {  /* IWDGRSTF */
+    } else if ((csr & 0x20000000u) != 0U) {  /* IWDGRSTF */
         return WDG_HW_RESET_IWDG;
-    } else if (csr & 0x10000000u) {  /* SFTRSTF */
+    } else if ((csr & 0x10000000u) != 0U) {  /* SFTRSTF */
         return WDG_HW_RESET_SOFTWARE;
-    } else if (csr & 0x08000000u) {  /* PORRSTF */
+    } else if ((csr & 0x08000000u) != 0U) {  /* PORRSTF */
         return WDG_HW_RESET_POWER_ON;
     }
 
@@ -667,7 +667,7 @@ Std_ReturnType Wdg_Hw_Init(const Wdg_Hw_ConfigType* ConfigPtr)
     Std_ReturnType result = E_NOT_OK;
 
 #if (WDG_DEV_ERROR_DETECT == STD_ON)
-    if (Wdg_Hw_Initialized) {
+    if ((Wdg_Hw_Initialized) != 0U) {
         (void)Det_ReportError(WDG_HW_MODULE_ID, WDG_HW_INSTANCE_ID, WDG_HW_SID_INIT,
                               WDG_HW_E_ALREADY_INITIALIZED);
         return E_NOT_OK;
@@ -762,7 +762,7 @@ Std_ReturnType Wdg_Hw_DeInit(void)
     WDG_HW_ENTER_CRITICAL();
 
     /* Attempt to disable watchdog if allowed */
-    if (Wdg_Hw_Config.disableAllowed) {
+    if ((Wdg_Hw_Config.disableAllowed) != 0U) {
         (void)Wdg_Hw_Disable();
     }
 

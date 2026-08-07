@@ -156,7 +156,7 @@ STATIC void Com_PackSignal(const Com_SignalConfigType* SignalPtr, const void* Si
                 uint8 bitIdx = (startBit + i) % 8U;
                 uint8 bitValue = (value >> i) & 0x01U;
 
-                if (bitValue)
+                if ((bitValue) != 0U)
                 {
                     IPduDataPtr[byteIdx] |= (1U << bitIdx);
                 }
@@ -177,7 +177,7 @@ STATIC void Com_PackSignal(const Com_SignalConfigType* SignalPtr, const void* Si
                 uint8 bitIdx = 7U - ((startBit + i) % 8U);
                 uint8 bitValue = (value >> (bitSize - 1U - i)) & 0x01U;
 
-                if (bitValue)
+                if ((bitValue) != 0U)
                 {
                     IPduDataPtr[byteIdx] |= (1U << bitIdx);
                 }

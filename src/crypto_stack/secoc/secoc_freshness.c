@@ -669,7 +669,7 @@ secoc_status_t secoc_freshness_force_sync(secoc_freshness_manager_t *mgr, uint32
     entry->synchronized = false;
     
     /* 触发同步请求回调 */
-    if (mgr->on_sync_request) {
+    if ((mgr->on_sync_request) != 0U) {
         secoc_sync_request_t request;
         secoc_freshness_create_sync_request(mgr, pdu_id, &request);
         mgr->on_sync_request(pdu_id, &request);
@@ -812,10 +812,10 @@ void secoc_freshness_get_stats(secoc_fv_entry_t *entry,
         return;
     }
     
-    if (tx_count) *tx_count = entry->tx_count;
-    if (rx_count) *rx_count = entry->rx_count;
-    if (sync_count) *sync_count = entry->sync_count;
-    if (replay_count) *replay_count = entry->replay_count;
+    if ((tx_count) != 0U) { *tx_count = entry->tx_count; }
+    if ((rx_count) != 0U) { *rx_count = entry->rx_count; }
+    if ((sync_count) != 0U) { *sync_count = entry->sync_count; }
+    if ((replay_count) != 0U) { *replay_count = entry->replay_count; }
 }
 
 const char* secoc_freshness_state_str(secoc_fv_state_t state) {

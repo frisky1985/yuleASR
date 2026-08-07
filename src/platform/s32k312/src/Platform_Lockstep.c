@@ -134,7 +134,7 @@ Std_ReturnType Platform_Lockstep_Init(const Lockstep_ConfigType* config)
     
     /* 检查复位原因 */
     uint32 resetReason = MC_RGM->DES;
-    if (resetReason & MC_RGM_DES_F_LOCKSTEP)
+    if ((resetReason & MC_RGM_DES_F_LOCKSTEP) != 0U)
     {
         /* 上次复位是由于Lockstep错误，需要处理 */
         /* 记录或报告此事件 */
@@ -314,7 +314,7 @@ Std_ReturnType Platform_Lockstep_CheckStatus(boolean* mismatchDetected)
     status = MSCM->LOCKSTEP_STATUS;
     
     /* 检查是否检测到不匹配 */
-    if (status & MSCM_LOCKSTEP_STATUS_MISMATCH)
+    if ((status & MSCM_LOCKSTEP_STATUS_MISMATCH) != 0U)
     {
         *mismatchDetected = TRUE;
         
@@ -325,7 +325,7 @@ Std_ReturnType Platform_Lockstep_CheckStatus(boolean* mismatchDetected)
     }
     
     /* 检查是否有错误 */
-    if (status & MSCM_LOCKSTEP_STATUS_ERROR)
+    if ((status & MSCM_LOCKSTEP_STATUS_ERROR) != 0U)
     {
         *mismatchDetected = TRUE;
         return E_NOT_OK;
@@ -504,7 +504,7 @@ STATIC void Platform_Lockstep_DelayUs(uint32 microseconds)
 {
     /* 简单延时 - 假设80MHz时钟 */
     volatile uint32 count = microseconds * 80U;
-    while (count--)
+    while ((count--) != 0U)
     {
         PLATFORM_LOCKSTEP_NOP();
     }
@@ -521,12 +521,12 @@ STATIC Std_ReturnType Platform_Lockstep_WaitBistComplete(uint32 timeoutUs)
     {
         uint32 status = MSCM->BIST_STATUS;
         
-        if (status & MSCM_LOCKSTEP_STATUS_BIST_DONE)
+        if ((status & MSCM_LOCKSTEP_STATUS_BIST_DONE) != 0U)
         {
             /* BIST完成 */
             Platform_BistResults = status;
             
-            if (status & MSCM_LOCKSTEP_STATUS_BIST_FAIL)
+            if ((status & MSCM_LOCKSTEP_STATUS_BIST_FAIL) != 0U)
             {
                 Platform_BistStatus = BIST_STATUS_COMPLETE_FAIL;
                 return E_NOT_OK;
@@ -560,7 +560,7 @@ STATIC uint32 Platform_Crc32_Calculate(const uint8* data, uint32 length, uint32 
         
         for (j = 0U; j < 8U; j++)
         {
-            if (crc & 0x80000000U)
+            if ((crc & 0x80000000U) != 0U)
             {
                 crc = (crc << 1U) ^ CRC32_POLYNOMIAL;
             }

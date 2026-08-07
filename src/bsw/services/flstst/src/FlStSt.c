@@ -247,7 +247,7 @@ static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test)
         }
     }
 
-    if (test->Active)
+    if ((test->Active) != 0U)
     {
         test->Phase = FLSTST_PHASE_MARCH_C_UP;
     }
@@ -301,7 +301,7 @@ void FlStSt_DeInit(void)
 #endif
 
     /* Abort any running test */
-    if (FlStSt_InternalState.CurrentTest.Active)
+    if ((FlStSt_InternalState.CurrentTest.Active) != 0U)
     {
         FlStSt_InternalState.CurrentTest.Active = FALSE;
         FlStSt_InternalState.CurrentTest.Result  = FLSTST_RESULT_ABORTED;
@@ -341,7 +341,7 @@ Std_ReturnType FlStSt_RunTest(uint16 SectorId)
     }
 #endif
 
-    if (FlStSt_InternalState.CurrentTest.Active)
+    if ((FlStSt_InternalState.CurrentTest.Active) != 0U)
     {
         return E_NOT_OK;  /* Busy */
     }

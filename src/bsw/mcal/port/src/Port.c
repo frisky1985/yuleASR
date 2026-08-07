@@ -250,10 +250,10 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
     padValue |= PORT_HYS_DISABLE;
 
     /* Configure pull up/down */
-    if (config->PullUpEnable) {
+    if ((config->PullUpEnable) != 0U) {
         padValue |= PORT_PUS_UP;
         padValue |= PORT_PUE_PULL;
-    } else if (config->PullDownEnable) {
+    } else if ((config->PullDownEnable) != 0U) {
         padValue |= PORT_PUS_DOWN;
         padValue |= PORT_PUE_PULL;
     } else {

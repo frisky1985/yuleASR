@@ -391,7 +391,7 @@ static Std_ReturnType I2c_ReadByte(uint32 baseAddr, uint8* data, boolean sendAck
     i2cr &= ~I2CR_MTX;
     
     /* Configure ACK/NACK */
-    if (sendAck) {
+    if ((sendAck) != 0U) {
         i2cr &= ~I2CR_TXAK;
     } else {
         i2cr |= I2CR_TXAK;
@@ -490,7 +490,7 @@ static void I2c_IsrHandler(uint8 channel)
                                           chInfo->CurrentAddrMode, FALSE);
                 } else {
                     /* Send STOP */
-                    if (chInfo->StopRequested) {
+                    if ((chInfo->StopRequested) != 0U) {
                         I2c_SendStop(baseAddr);
                     }
                     chInfo->State = I2C_STATE_IDLE;
@@ -510,7 +510,7 @@ static void I2c_IsrHandler(uint8 channel)
                 
                 uint8 i2cr = REG_READ8(baseAddr + I2C_I2CR);
                 i2cr &= ~I2CR_MTX;
-                if (sendAck) {
+                if ((sendAck) != 0U) {
                     i2cr &= ~I2CR_TXAK;
                 } else {
                     i2cr |= I2CR_TXAK;
@@ -521,7 +521,7 @@ static void I2c_IsrHandler(uint8 channel)
                 (void)REG_READ8(baseAddr + I2C_I2DR);
             } else {
                 /* Transfer complete */
-                if (chInfo->StopRequested) {
+                if ((chInfo->StopRequested) != 0U) {
                     I2c_SendStop(baseAddr);
                 }
                 chInfo->State = I2C_STATE_IDLE;
@@ -607,7 +607,7 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
     }
     
     /* Send STOP */
-    if (chInfo->StopRequested) {
+    if ((chInfo->StopRequested) != 0U) {
         result = I2c_SendStop(baseAddr);
     }
     
@@ -967,7 +967,7 @@ Std_ReturnType I2c_WriteRead(I2c_ChannelType Channel,
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_CHANNEL);
         return E_NOT_OK;
     }
-    if (((TxBuffer == NULL_PTR) && (TxLength > 0U)) || (RxBuffer == NULL_PTR && RxLength > 0U)) {
+    if (((TxBuffer == NULL_PTR) && (TxLength > 0U)) || ((RxBuffer == NULL_PTR) && (RxLength > 0U))) {
         Det_ReportError(I2C_MODULE_ID, 0U, I2C_SID_WRITEREAD, I2C_E_PARAM_POINTER);
         return E_NOT_OK;
     }

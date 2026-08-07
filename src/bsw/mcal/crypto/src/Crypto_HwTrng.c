@@ -234,7 +234,7 @@ Std_ReturnType Crypto_HwTrng_Init(const Crypto_HwTrngConfigType* config)
         Trng_Regs->CONFIG = configReg;
         
         /* Configure health tests */
-        if (config->enableHealthTests) {
+        if ((config->enableHealthTests) != 0U) {
             result = Trng_ConfigureHealthTests(TRUE);
             if (result != E_OK) {
                 Trng_ReportError(CRYPTO_HWTRNG_SID_INIT, CRYPTO_HWTRNG_E_SELFTEST_FAILED);
@@ -244,10 +244,10 @@ Std_ReturnType Crypto_HwTrng_Init(const Crypto_HwTrngConfigType* config)
         
         /* Enable TRNG with conditioning */
         Trng_Regs->CTRL = TRNG_CTRL_ENABLE;
-        if (config->enableConditioning) {
+        if ((config->enableConditioning) != 0U) {
             Trng_Regs->CTRL |= TRNG_CTRL_CONDITIONING;
         }
-        if (config->enableHealthTests) {
+        if ((config->enableHealthTests) != 0U) {
             Trng_Regs->CTRL |= TRNG_CTRL_AUTO_RESEED;
         }
         
@@ -686,7 +686,7 @@ STATIC Std_ReturnType Trng_ConfigureHealthTests(boolean enable)
         return E_NOT_OK;
     }
     
-    if (enable) {
+    if ((enable) != 0U) {
         /* Configure NIST SP 800-90B health tests */
         uint32 healthCtrl = TRNG_HEALTH_CTRL_ENABLE_REP | 
                             TRNG_HEALTH_CTRL_ENABLE_ADAPT;

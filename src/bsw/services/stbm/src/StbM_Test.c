@@ -114,7 +114,7 @@ void Test_StbM_Init_Valid(void)
     StbM_DeInit();
     StbM_Init(&TestConfig);
     
-    TEST_ASSERT(TRUE, "StbM should be initialized");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "StbM should be initialized");
 }
 
 /**
@@ -127,7 +127,7 @@ void Test_StbM_DeInit(void)
     StbM_Init(&TestConfig);
     StbM_DeInit();
     
-    TEST_ASSERT(TRUE, "StbM_DeInit should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "StbM_DeInit should complete");
 }
 
 /**
@@ -303,7 +303,7 @@ void Test_StbM_MainFunction(void)
     StbM_Init(&TestConfig);
     StbM_MainFunction();
     
-    TEST_ASSERT(TRUE, "MainFunction should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "MainFunction should complete");
 }
 
 /**
@@ -322,7 +322,7 @@ void Test_StbM_TimeStampChanged(void)
     StbM_Init(&TestConfig);
     StbM_TimeStampChanged(STBM_TIMEBASE_ID_0, &ethTime);
     
-    TEST_ASSERT(TRUE, "TimeStampChanged should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "TimeStampChanged should complete");
 }
 
 /**

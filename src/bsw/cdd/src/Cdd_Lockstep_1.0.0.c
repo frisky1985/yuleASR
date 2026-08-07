@@ -138,11 +138,11 @@ STATIC Std_ReturnType Cdd_Lockstep_WaitBist(uint32 timeoutUs)
     {
         uint32 bistStatus = MSCM_BIST_STATUS;
 
-        if (bistStatus & LOCKSTEP_STATUS_BIST_DONE)
+        if ((bistStatus & LOCKSTEP_STATUS_BIST_DONE) != 0U)
         {
             Cdd_Lockstep_BistResultValue = bistStatus;
 
-            if (bistStatus & LOCKSTEP_STATUS_BIST_FAIL)
+            if ((bistStatus & LOCKSTEP_STATUS_BIST_FAIL) != 0U)
             {
                 Cdd_Lockstep_BistStatus = CDD_LOCKSTEP_BIST_COMPLETE_FAIL;
                 return E_NOT_OK;
@@ -199,7 +199,7 @@ Std_ReturnType Cdd_Lockstep_Init(const Cdd_Lockstep_ConfigType* config)
         }
         /* DISABLED: ctrl stays 0 */
 
-        if (config->enableEout)
+        if ((config->enableEout) != 0U)
         {
             ctrl |= LOCKSTEP_CTRL_EOUT_EN;
         }
@@ -212,7 +212,7 @@ Std_ReturnType Cdd_Lockstep_Init(const Cdd_Lockstep_ConfigType* config)
     }
 
     /* Run BIST if configured */
-    if (config->enableBist)
+    if ((config->enableBist) != 0U)
     {
         uint32 timeout = (config->bistTimeoutUs > 0U) ? config->bistTimeoutUs : CDD_LOCKSTEP_BIST_TIMEOUT_US;
         (void)Cdd_Lockstep_RunBist(timeout);
@@ -386,14 +386,14 @@ void Cdd_Lockstep_MainFunction(void)
         return;
     }
 
-    if (status.mismatchDetected)
+    if ((status.mismatchDetected) != 0U)
     {
         /* Lockstep mismatch — critical safety fault */
         /* Cdd_Safety_ReportFault(CDD_SAFETY_FAULT_LOCKSTEP, 1U); */
         (void)Cdd_Lockstep_ClearError();
     }
 
-    if (status.hasError)
+    if ((status.hasError) != 0U)
     {
         /* Non-critical error — report and clear */
         (void)Cdd_Lockstep_ClearError();

@@ -284,7 +284,7 @@ Std_ReturnType RamSafety_RunStartupTest(RamSafety_ProgressCallbackType progressC
     {
         const RamSafety_RegionType* region = &RamSafety_CurrentConfig->regions[i];
 
-        if (region->startupTest)
+        if ((region->startupTest) != 0U)
         {
             /* 通知进度 */
             if (NULL_PTR != progressCb)
@@ -315,7 +315,7 @@ Std_ReturnType RamSafety_RunStartupTest(RamSafety_ProgressCallbackType progressC
 
                 if (E_OK == Platform_RamSafety_CheckEccStatus(region->startAddress, &hasError, &errorCount))
                 {
-                    if (hasError)
+                    if ((hasError) != 0U)
                     {
                         result = E_NOT_OK;
                         RamSafety_HandleError(RAMSAFETY_TEST_FULL, region->startAddress, 0U, 0U);
@@ -414,7 +414,7 @@ void RamSafety_MainFunction(void)
             RamSafety_NextRegionIndex++;
         } while (!region->runtimeTest && (RamSafety_NextRegionIndex <= RamSafety_CurrentConfig->numRegions));
 
-        if (region->runtimeTest)
+        if ((region->runtimeTest) != 0U)
         {
             /* 运行时检查: CRC验证 */
             if (E_OK != RamSafety_VerifyRegion(RamSafety_NextRegionIndex - 1U))
@@ -1050,7 +1050,7 @@ STATIC Std_ReturnType RamSafety_RunDataLineTest(const RamSafety_RegionType* regi
  */
 STATIC void RamSafety_UpdateStats(boolean passed, RamSafety_TestType testType)
 {
-    if (passed)
+    if ((passed) != 0U)
     {
         RamSafety_Stats.testsPassed++;
     }

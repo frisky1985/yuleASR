@@ -137,7 +137,7 @@ void Test_SoAd_Init_Valid(void)
     SoAd_Init(&TestConfig);
     
     /* Verify: Module should be initialized */
-    TEST_ASSERT(TRUE, "SoAd should be initialized");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SoAd should be initialized");
 }
 
 /**
@@ -154,7 +154,7 @@ void Test_SoAd_Init_Null(void)
     SoAd_Init(NULL_PTR);
     
     /* Verify: Should handle NULL_PTR gracefully */
-    TEST_ASSERT(TRUE, "SoAd_Init with NULL_PTR should not crash");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SoAd_Init with NULL_PTR should not crash");
 }
 
 /**
@@ -171,7 +171,7 @@ void Test_SoAd_DeInit(void)
     SoAd_DeInit();
     
     /* Verify: Should complete without error */
-    TEST_ASSERT(TRUE, "SoAd_DeInit should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SoAd_DeInit should complete");
 }
 
 /**
@@ -368,7 +368,7 @@ void Test_SoAd_MainFunction(void)
     SoAd_MainFunction();
     
     /* Verify: Should complete without error */
-    TEST_ASSERT(TRUE, "SoAd_MainFunction should complete");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "SoAd_MainFunction should complete");
 }
 
 /**
@@ -385,7 +385,7 @@ void Test_SoAd_MainFunction_Uninit(void)
     SoAd_MainFunction();
     
     /* Verify: Should not crash */
-    TEST_ASSERT(TRUE, "MainFunction without init should not crash");
+    TEST_ASSERTTRUE != FALSE, (TRUE, "MainFunction without init should not crash");
 }
 
 /**

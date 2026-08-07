@@ -286,7 +286,7 @@ Std_ReturnType E2E_DeinitContext(E2E_ContextType* context)
  */
 Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -319,7 +319,7 @@ Std_ReturnType E2E_P01_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -368,7 +368,7 @@ Std_ReturnType E2E_P01_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -405,7 +405,7 @@ Std_ReturnType E2E_P02_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -469,7 +469,7 @@ Std_ReturnType E2E_P02_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -501,7 +501,7 @@ Std_ReturnType E2E_P04_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -548,7 +548,7 @@ Std_ReturnType E2E_P04_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -576,7 +576,7 @@ Std_ReturnType E2E_P05_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -620,7 +620,7 @@ Std_ReturnType E2E_P05_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -654,7 +654,7 @@ Std_ReturnType E2E_P06_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -716,7 +716,7 @@ Std_ReturnType E2E_P06_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -752,7 +752,7 @@ Std_ReturnType E2E_P07_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -816,7 +816,7 @@ Std_ReturnType E2E_P07_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -852,7 +852,7 @@ Std_ReturnType E2E_P11_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -923,7 +923,7 @@ Std_ReturnType E2E_P11_Check(E2E_ContextType* context, const void* data, uint32_
  */
 Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* length)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -976,7 +976,7 @@ Std_ReturnType E2E_P22_Protect(E2E_ContextType* context, void* data, uint32_t* l
  */
 Std_ReturnType E2E_P22_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 
@@ -1080,7 +1080,7 @@ Std_ReturnType E2E_P22_SetDataLength(E2E_ContextType* context, uint16_t dataLeng
  */
 Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* length, uint8_t profile)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || length == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || length == NULL) {
         return E_NOT_OK;
     }
 
@@ -1111,7 +1111,7 @@ Std_ReturnType E2E_Protect(E2E_ContextType* context, void* data, uint32_t* lengt
  */
 Std_ReturnType E2E_Check(E2E_ContextType* context, const void* data, uint32_t length, uint16_t* status, uint8_t profile)
 {
-    if (!E2E_IsInitialized() || (context == NULL) || data == NULL || status == NULL) {
+    if (!E2E_IsInitialized() || (context == NULL) || (data == NULL) || status == NULL) {
         return E_NOT_OK;
     }
 

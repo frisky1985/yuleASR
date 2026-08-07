@@ -125,7 +125,7 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
 
     for (uint8 i = 0U; i < ADC_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Adc_GetBaseAddr(ConfigPtr->HwUnits[i].HwUnitId);
-        if (baseAddr == 0U) continue;
+        if (baseAddr == 0U) { continue; }
 
         Adc_EnableClock(ConfigPtr->HwUnits[i].HwUnitId);
 
@@ -143,7 +143,7 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
         /* Calibration */
         gcValue |= ADC_GC_ADCONV;
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
-        while ((REG_READ32(baseAddr + ADC_GS) & ADC_GS_ADACT) != 0U);
+        while ((REG_READ32(baseAddr + ADC_GS) & ADC_GS_ADACT) != 0U){ ; }
     }
 
     for (uint8 i = 0U; i < ADC_NUM_GROUPS; i++) {
@@ -171,7 +171,7 @@ void Adc_DeInit(void)
 
     for (uint8 i = 0U; i < ADC_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Adc_GetBaseAddr(Adc_ConfigPtr->HwUnits[i].HwUnitId);
-        if (baseAddr == 0U) continue;
+        if (baseAddr == 0U) { continue; }
 
         /* Disable ADC */
         REG_WRITE32(baseAddr + ADC_GC, 0U);
@@ -224,7 +224,7 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
 
         /* Wait for conversion complete */
-        while ((REG_READ32(baseAddr + ADC_HS) & ADC_HS_COCO0) == 0U);
+        while ((REG_READ32(baseAddr + ADC_HS) & ADC_HS_COCO0) == 0U){ ; }
 
         /* Read result */
         Adc_GroupResults[Group][i] = (Adc_ValueGroupType)(REG_READ32(baseAddr + ADC_R0) & 0xFFFU);
@@ -233,7 +233,7 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
     Adc_GroupStatus[Group] = ADC_STREAM_COMPLETED;
 
     /* Call notification if enabled */
-    if (groupConfig->GroupNotification) {
+    if ((groupConfig->GroupNotification) != 0U) {
         if (groupConfig->NotificationFn != NULL_PTR) {
             groupConfig->NotificationFn();
         }

@@ -164,7 +164,7 @@ void Com_IpduGroupStart(Com_IpduGroupIdType IpduGroupId, boolean Initialize)
         Com_IPduIdType pduId = groupConfig->IPduRefs[i];
         Com_GlobalState.IPduRunTime[pduId].GroupStatus = COM_IPDU_GROUP_STARTED;
         
-        if (Initialize) {
+        if ((Initialize) != 0U) {
             Com_InitIPdu(pduId, TRUE);
         }
     }
@@ -211,7 +211,7 @@ static void Com_InitIPdu(Com_IPduIdType PduId, boolean initialize)
     ipduRuntime->PduId = (uint16)PduId;
     
     /* Initialize buffer if requested */
-    if (initialize) {
+    if ((initialize) != 0U) {
         for (uint8 i = 0; i < ipduConfig->Length; i++) {
             ipduConfig->DataPtr[i] = 0;
         }

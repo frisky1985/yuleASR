@@ -204,7 +204,7 @@ static Swc_RunnableHandleType Swc_FindRunnableById(uint16 runnableId)
 void Swc_Init(const Swc_ConfigType* ConfigPtr)
 {
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
-    if (Swc_InternalData.initialized)
+    if ((Swc_InternalData.initialized) != 0U)
     {
         Det_ReportError(SWC_MODULE_ID, SWC_INSTANCE_ID, SWC_INIT_SERVICE_ID, SWC_E_ALREADY_INITIALIZED);
         return;
@@ -572,7 +572,7 @@ void Swc_ProcessEvents(void)
 
 void Swc_MainFunction(void)
 {
-    if (Swc_InternalData.initialized)
+    if ((Swc_InternalData.initialized) != 0U)
     {
         Swc_InternalData.cycleCounter++;
         

@@ -66,7 +66,7 @@ void IoHwAb_Init(const IoHwAb_ConfigType* ConfigPtr)
     IoHwAb_State.channelCount = 0U;
     IoHwAb_State.configPtr = ConfigPtr;
 
-    if (ConfigPtr->NumChannels > IOHWAB_MAX_CHANNELS) return;
+    if (ConfigPtr->NumChannels > IOHWAB_MAX_CHANNELS) { return; }
 
     for (uint8 i = 0U; i < ConfigPtr->NumChannels; i++) {
         const IoHwAb_ChannelConfigType* cfg = &ConfigPtr->Channels[i];
@@ -90,11 +90,11 @@ void IoHwAb_DeInit(void)
 
 IoHwAb_ReturnType IoHwAb_AnalogRead(IoHwAb_ChannelType Channel, uint16* Value)
 {
-    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) return IOHWAB_NOT_OK;
-    if (NULL_PTR == Value) return IOHWAB_NOT_OK;
+    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) { return IOHWAB_NOT_OK; }
+    if (NULL_PTR == Value) { return IOHWAB_NOT_OK; }
 
     IoHwAb_ChannelEntryType* ch = IoHwAb_FindChannel(Channel);
-    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_ANALOG)) return IOHWAB_NOT_OK;
+    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_ANALOG)) { return IOHWAB_NOT_OK; }
 
     *Value = ch->value;
     return IOHWAB_OK;
@@ -102,11 +102,11 @@ IoHwAb_ReturnType IoHwAb_AnalogRead(IoHwAb_ChannelType Channel, uint16* Value)
 
 IoHwAb_ReturnType IoHwAb_DigitalRead(IoHwAb_ChannelType Channel, uint8* Value)
 {
-    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) return IOHWAB_NOT_OK;
-    if (NULL_PTR == Value) return IOHWAB_NOT_OK;
+    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) { return IOHWAB_NOT_OK; }
+    if (NULL_PTR == Value) { return IOHWAB_NOT_OK; }
 
     IoHwAb_ChannelEntryType* ch = IoHwAb_FindChannel(Channel);
-    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_DIGITAL)) return IOHWAB_NOT_OK;
+    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_DIGITAL)) { return IOHWAB_NOT_OK; }
 
     *Value = ch->inverted ? (uint8)(1U - ch->value) : ch->value;
     return IOHWAB_OK;
@@ -114,10 +114,10 @@ IoHwAb_ReturnType IoHwAb_DigitalRead(IoHwAb_ChannelType Channel, uint8* Value)
 
 IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, uint8 Value)
 {
-    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) return IOHWAB_NOT_OK;
+    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) { return IOHWAB_NOT_OK; }
 
     IoHwAb_ChannelEntryType* ch = IoHwAb_FindChannel(Channel);
-    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_DIGITAL)) return IOHWAB_NOT_OK;
+    if ((ch == NULL_PTR) || (ch->type != IOHWAB_CHANNEL_DIGITAL)) { return IOHWAB_NOT_OK; }
 
     ch->value = ch->inverted ? (uint8)(1U - Value) : Value;
     return IOHWAB_OK;
@@ -125,12 +125,12 @@ IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, uint8 Value)
 
 void IoHwAb_MainFunction(void)
 {
-    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) return;
+    if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) { return; }
 }
 
 void IoHwAb_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) return;
+    if (NULL_PTR == versioninfo) { return; }
     versioninfo->vendorID = IOHWAB_VENDOR_ID;
     versioninfo->moduleID = IOHWAB_MODULE_ID;
     versioninfo->sw_major_version = 1U;

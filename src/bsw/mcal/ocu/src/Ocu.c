@@ -269,7 +269,7 @@ void Ocu_DeInit(void)
     for (chIdx = 0U; chIdx < Ocu_CurrentConfig->NumChannels; chIdx++)
     {
         /* Stop channel if running */
-        if (Ocu_ChannelState[chIdx].IsRunning)
+        if ((Ocu_ChannelState[chIdx].IsRunning) != 0U)
         {
             Ocu_HwStopChannel(chIdx);
         }
@@ -355,7 +355,7 @@ void Ocu_StopChannel(Ocu_ChannelType Channel)
     #endif /* OCU_DEV_ERROR_DETECT */
 
     /* Check if running */
-    if (Ocu_ChannelState[Channel].IsRunning)
+    if ((Ocu_ChannelState[Channel].IsRunning) != 0U)
     {
         /* Stop hardware */
         Ocu_HwStopChannel(Channel);
@@ -397,7 +397,7 @@ void Ocu_SetPinState(Ocu_ChannelType Channel, Ocu_OutputPinStateType PinState)
     }
 
     /* Check if channel is running - cannot set pin state while running */
-    if (Ocu_ChannelState[Channel].IsRunning)
+    if ((Ocu_ChannelState[Channel].IsRunning) != 0U)
     {
         OCU_REPORT_ERROR(OCU_SID_SETPINSTATE, OCU_E_PARAM_INVALID_STATE);
         return;

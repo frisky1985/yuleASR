@@ -1,48 +1,48 @@
 # MISRA Compliance Report
 
-**Generated**: 2026-08-07T15:31:24.891769
+**Generated**: 2026-08-07T15:41:54.340432
 **Tool**: Cppcheck 2.17.1 from cppcheck-wheel 1.5.1
 **Ruleset**: 2023
 
 ## Summary
 
-- **Total Violations**: 28103
+- **Total Violations**: 27541
 - **Unique Rules**: 86
 - **Affected Files**: 721
-- **Density**: 98.89 violations/KLOC
+- **Density**: 96.91 violations/KLOC
 
 ## By Severity
 
 | Severity | Count |
 |---------|------:|
-| error | 24 |
+| error | 25 |
 | warning | 27 |
-| style | 27951 |
+| style | 27388 |
 | portability | 3 |
 
 ## By Rule Type
 
 | Type | Count |
 |------|------:|
-| required | 8378 |
-| advisory | 18592 |
+| required | 744 |
+| advisory | 13048 |
 
 ## By Category
 
 | Category | Count |
 |----------|------:|
-| 未分类 (Uncategorized) | 10252 |
-| 控制流 (Control Flow) | 6535 |
-| 声明 (Declarations) | 3133 |
-| 函数行为 | 2312 |
+| 未分类 (Uncategorized) | 10253 |
+| 控制流 (Control Flow) | 5993 |
+| 声明 (Declarations) | 3127 |
+| 函数行为 | 2294 |
+| 指针 (Pointer) | 1305 |
 | 预处理器 (Preprocessing) | 1207 |
-| 指针 (Pointer) | 1144 |
 | unknown | 1133 |
-| 基本类型 (Essential Types) | 658 |
-| 表达式 (Expressions) | 335 |
+| 基本类型 (Essential Types) | 663 |
 | 标识符 (Identifiers) | 326 |
-| 指针类型转换 (Pointer Type Conversions) | 304 |
+| 指针类型转换 (Pointer Type Conversions) | 301 |
 | 标准库 (Standard Library) | 289 |
+| 表达式 (Expressions) | 175 |
 | 函数 (Functions) | 130 |
 | 指针与数组 (Pointers & Arrays) | 112 |
 | 字面量 (Literals) | 85 |
@@ -55,31 +55,31 @@
 
 ## Violations by Rule
 
-- **misra-c2023-2.5** (9647 violations)
+- **misra-c2023-2.5** (9648 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:24` — A project should not contain unused macro declarations [misra-c2012-2.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:18` — A project should not contain unused macro declarations [misra-c2012-2.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:19` — A project should not contain unused macro declarations [misra-c2012-2.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:24` — A project should not contain unused macro declarations [misra-c2012-2.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/cppcheck-config.h:25` — A project should not contain unused macro declarations [misra-c2012-2.5]
-- **misra-c2023-15.5** (5588 violations)
+- **misra-c2023-15.5** (5582 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:61` — A function should have a single point of exit [misra-c2012-15.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:93` — A function should have a single point of exit [misra-c2012-15.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:95` — A function should have a single point of exit [misra-c2012-15.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:97` — A function should have a single point of exit [misra-c2012-15.5]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:99` — A function should have a single point of exit [misra-c2012-15.5]
-- **misra-c2023-17.7** (2312 violations)
+- **misra-c2023-17.7** (2294 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:192` — Return value of non-void function shall be used [misra-c2012-17.7]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:259` — Return value of non-void function shall be used [misra-c2012-17.7]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:285` — Return value of non-void function shall be used [misra-c2012-17.7]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:440` — Return value of non-void function shall be used [misra-c2012-17.7]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:446` — Return value of non-void function shall be used [misra-c2012-17.7]
-- **misra-c2023-8.7** (2234 violations)
+- **misra-c2023-8.7** (2235 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:171` — Functions/objects should not have external linkage if referenced in one TU [misr
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:202` — Functions/objects should not have external linkage if referenced in one TU [misr
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:244` — Functions/objects should not have external linkage if referenced in one TU [misr
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:297` — Functions/objects should not have external linkage if referenced in one TU [misr
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:363` — Functions/objects should not have external linkage if referenced in one TU [misr
-- **misra-c2023-11.9** (1144 violations)
+- **misra-c2023-11.9** (1305 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:77` — The macro NULL shall be the only permitted form of integer null pointer constant
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:248` — The macro NULL shall be the only permitted form of integer null pointer constant
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:367` — The macro NULL shall be the only permitted form of integer null pointer constant
@@ -97,19 +97,13 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:156` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c:779` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/asw/diagnostic_manager/include/Swc_DiagnosticManager.h:152` — misra violation 2001 with no text in the supplied rule-texts-file [misra-c2012-2
-- **misra-c2023-14.4** (528 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_RamSafety.c:151` — Controlling expression of if shall have essentially Boolean type [misra-c2012-14
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_RamSafety.c:397` — Controlling expression of if shall have essentially Boolean type [misra-c2012-14
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_RamSafety.c:406` — Controlling expression of if shall have essentially Boolean type [misra-c2012-14
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_Lockstep.c:137` — Controlling expression of if shall have essentially Boolean type [misra-c2012-14
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_Lockstep.c:317` — Controlling expression of if shall have essentially Boolean type [misra-c2012-14
 - **misra-c2023-8.4** (449 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/platform/s32k312/src/Platform_RamSafety.c:37` — A compatible declaration shall be visible when an object or function is defined 
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:21` — A compatible declaration shall be visible when an object or function is defined 
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:19` — A compatible declaration shall be visible when an object or function is defined 
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:111` — A compatible declaration shall be visible when an object or function is defined 
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Safety_1.0.0.c:130` — A compatible declaration shall be visible when an object or function is defined 
-- **misra-c2023-10.4** (409 violations)
+- **misra-c2023-10.4** (416 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:226` — Both operands shall have same essential type category [misra-c2012-10.4]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:53` — Both operands shall have same essential type category [misra-c2012-10.4]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:159` — Both operands shall have same essential type category [misra-c2012-10.4]
@@ -121,25 +115,19 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:122` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/common/types/eth_types.h:119` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.h:123` — The character sequence /* shall not be used within a comment [misra-c2012-2.3]
-- **misra-c2023-15.6** (285 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:406` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:486` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:584` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:671` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:672` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
 - **misra-c2023-20.5** (283 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:26` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:27` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:31` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:32` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/include/Det_MemMap.h:36` — misra violation 2005 with no text in the supplied rule-texts-file [misra-c2012-2
-- **misra-c2023-12.1** (262 violations)
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:248` — Operator precedence within expressions should be made explicit [misra-c2012-12.1
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:472` — Operator precedence within expressions should be made explicit [misra-c2012-12.1
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:568` — Operator precedence within expressions should be made explicit [misra-c2012-12.1
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:673` — Operator precedence within expressions should be made explicit [misra-c2012-12.1
-  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:706` — Operator precedence within expressions should be made explicit [misra-c2012-12.1
-- **misra-c2023-8.6** (251 violations)
+- **misra-c2023-15.6** (279 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:406` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:486` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/classic/rte_dds.c:584` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:671` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:672` — Body of iteration/selection statement shall be compound [misra-c2012-15.6]
+- **misra-c2023-8.6** (247 violations)
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_verify.c:103` — An identifier with external linkage shall have exactly one external definition [
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/cross/hello.c:26` — An identifier with external linkage shall have exactly one external definition [
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c:408` — An identifier with external linkage shall have exactly one external definition [
@@ -175,5 +163,17 @@
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c:582` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c:593` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
   - `/Users/stefan/.openclaw/workspace/yuleASR/src/bootloader/bl_secure_boot.c:608` — Pointer arithmetic operators should not be applied to pointer type [misra-c2012-
+- **misra-c2023-11.5** (109 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:297` — Conversion from pointer to void to pointer to object shall not be performed [mis
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:330` — Conversion from pointer to void to pointer to object shall not be performed [mis
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:379` — Conversion from pointer to void to pointer to object shall not be performed [mis
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:416` — Conversion from pointer to void to pointer to object shall not be performed [mis
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:480` — Conversion from pointer to void to pointer to object shall not be performed [mis
+- **misra-c2023-5.9** (107 violations)
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:24` — Identifiers that define objects or functions shall be unique before linker stage
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:23` — Identifiers that define objects or functions shall be unique before linker stage
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_dds_integration.c:23` — Identifiers that define objects or functions shall be unique before linker stage
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_state_machine.c:22` — Identifiers that define objects or functions shall be unique before linker stage
+  - `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/e2e/e2e_protection.c:40` — Identifiers that define objects or functions shall be unique before linker stage
 
 ... and 66 more rules

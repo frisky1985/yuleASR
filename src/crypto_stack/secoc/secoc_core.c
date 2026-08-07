@@ -72,7 +72,7 @@ static void generate_subkeys(const uint8_t *key, int key_bits, uint8_t *k1, uint
     
     /* K1 = L << 1 */
     left_shift_one(l, k1);
-    if (l[0] & 0x80U) {
+    if ((l[0] & 0x80U) != 0U) {
         for (int i = 0; i < AES_BLOCK_SIZE; i++) {
             k1[i] ^= rb[i];
         }
@@ -80,7 +80,7 @@ static void generate_subkeys(const uint8_t *key, int key_bits, uint8_t *k1, uint
     
     /* K2 = K1 << 1 */
     left_shift_one(k1, k2);
-    if (k1[0] & 0x80U) {
+    if ((k1[0] & 0x80U) != 0U) {
         for (int i = 0; i < AES_BLOCK_SIZE; i++) {
             k2[i] ^= rb[i];
         }
@@ -148,7 +148,7 @@ static void sha256_transform(uint32_t state[8], const uint8_t data[64]) {
     /* 准备消息日志 */
     for (int i = 0; i < 16; i++) {
         w[i] = ((uint32_t)data[i * 4] << 24) | ((uint32_t)data[(i * 4) + 1] << 16) |
-               ((uint32_t)data[(i * 4) + 2] << 8) | ((uint32_t)data[i * 4 + 3]);
+               ((uint32_t)data[(i * 4) + 2] << 8) | ((uint32_t)data[(i * 4) + 3]);
     }
     for (int i = 16; i < 64; i++) {
         w[i] = sha256_sig1(w[i - 2]) + w[i - 7] + sha256_sig0(w[i - 15]) + w[i - 16];
@@ -525,7 +525,7 @@ secoc_status_t secoc_compute_mac(secoc_context_t *ctx, const secoc_pdu_config_t 
     
     /* 计算MAC */
     uint32_t mac_len_bytes = config->mac_len / 8U;
-    if (mac_len_bytes == 0U) mac_len_bytes = AES_BLOCK_SIZE;
+    if (mac_len_bytes == 0U) { mac_len_bytes = AES_BLOCK_SIZE; }
     
     switch (config->auth_algo) {
         case SECOC_ALGO_AES_CMAC_128:
@@ -592,7 +592,7 @@ secoc_status_t secoc_authenticate_tx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     /* 设置freshness值长度 */
     auth_pdu->freshness_len = config->freshness_value_len / 8U;
     auth_pdu->auth_len = config->mac_len / 8U;
-    if (auth_pdu->auth_len == 0U) auth_pdu->auth_len = AES_BLOCK_SIZE;
+    if (auth_pdu->auth_len == 0U) { auth_pdu->auth_len = AES_BLOCK_SIZE; }
     
     /* 获取Freshness值 - 这里使用简单的计数器模式 */
     /* 在实际实现中，这里应调用secoc_freshness_get_tx_value() */
@@ -667,7 +667,7 @@ secoc_status_t secoc_parse_secured_pdu(const uint8_t *secured_pdu, uint32_t secu
     
     uint8_t fv_len = pdu_config->freshness_value_len / 8U;
     uint8_t auth_len = pdu_config->mac_len / 8U;
-    if (auth_len == 0U) auth_len = AES_BLOCK_SIZE;
+    if (auth_len == 0U) { auth_len = AES_BLOCK_SIZE; }
     
     /* 计算数据长度 */
     if (secured_len < (uint32_t)(fv_len + auth_len)) {
@@ -735,7 +735,7 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     uint8_t computed_mac[SECOC_MAX_MAC_LENGTH];
     status = secoc_compute_mac(ctx, config, &auth_pdu, computed_mac);
     if (status != SECOC_OK) {
-        if (auth_pdu.data) free(auth_pdu.data);
+        if ((auth_pdu.data) != 0U) { free(auth_pdu.data); }
         *result = SECOC_VERIFY_KEY_INVALID;
         ctx->verify_failure_count++;
         return status;
@@ -743,13 +743,13 @@ secoc_status_t secoc_verify_rx_pdu(secoc_context_t *ctx, uint32_t pdu_id,
     
     /* 验证MAC */
     uint8_t auth_len = config->mac_len / 8U;
-    if (auth_len == 0U) auth_len = AES_BLOCK_SIZE;
+    if (auth_len == 0U) { auth_len = AES_BLOCK_SIZE; }
     
     if (memcmp(auth_pdu.authenticator, computed_mac, auth_len) != 0) {
-        if (auth_pdu.data) free(auth_pdu.data);
+        if ((auth_pdu.data) != 0U) { free(auth_pdu.data); }
         *result = SECOC_VERIFY_MAC_FAILED;
         ctx->verify_failure_count++;
-        if (ctx->on_verify_failure) {
+        if ((ctx->on_verify_failure) != 0U) {
             ctx->on_verify_failure(pdu_id, *result);
         }
         return SECOC_OK;
@@ -784,10 +784,10 @@ void secoc_get_stats(secoc_context_t *ctx, uint64_t *tx_count, uint64_t *rx_coun
         return;
     }
     
-    if (tx_count) *tx_count = ctx->tx_pdu_count;
-    if (rx_count) *rx_count = ctx->rx_pdu_count;
-    if (verify_success) *verify_success = ctx->verify_success_count;
-    if (verify_failure) *verify_failure = ctx->verify_failure_count;
+    if ((tx_count) != 0U) { *tx_count = ctx->tx_pdu_count; }
+    if ((rx_count) != 0U) { *rx_count = ctx->rx_pdu_count; }
+    if ((verify_success) != 0U) { *verify_success = ctx->verify_success_count; }
+    if ((verify_failure) != 0U) { *verify_failure = ctx->verify_failure_count; }
 }
 
 void secoc_reset_stats(secoc_context_t *ctx) {

@@ -55,7 +55,7 @@ static inline uint64_t get_time_ms(void) {
 }
 
 static inline void notify_event(own_handle_t *own, own_event_t event, const void *data) {
-    if (own->event_callback) {
+    if ((own->event_callback) != 0U) {
         own->event_callback(event, data, own->event_user_data);
     }
 }
@@ -64,9 +64,9 @@ static int compare_contenders(const void *a, const void *b) {
     const own_contender_t *ca = (const own_contender_t*)a;
     const own_contender_t *cb = (const own_contender_t*)b;
     
-    if (!ca->active && !cb->active) return 0;
-    if (!ca->active) return 1;
-    if (!cb->active) return -1;
+    if (!ca->active && !cb->active) { return 0; }
+    if (!ca->active) { return 1; }
+    if (!cb->active) { return -1; }
     
     // 首先比较强度(降序)
     if (ca->strength != cb->strength) {
@@ -94,7 +94,7 @@ static own_contender_t* find_contender(own_handle_t *own, const dds_guid_t *guid
 static own_contender_t* add_contender(own_handle_t *own, const dds_guid_t *guid, uint32_t strength) {
     // 检查是否已存在
     own_contender_t *existing = find_contender(own, guid);
-    if (existing) {
+    if ((existing) != 0U) {
         existing->strength = strength;
         existing->last_seen = get_time_ms();
         return existing;
@@ -128,7 +128,7 @@ static own_contender_t* add_contender(own_handle_t *own, const dds_guid_t *guid,
 
 static void remove_contender(own_handle_t *own, const dds_guid_t *guid) {
     own_contender_t *c = find_contender(own, guid);
-    if (c) {
+    if ((c) != 0U) {
         c->active = false;
     }
 }
@@ -191,10 +191,10 @@ void own_deinit(void) {
 }
 
 own_handle_t* own_create(const own_config_t *config, const dds_guid_t *local_guid) {
-    if (!config || !local_guid) return NULL;
+    if (!config || !local_guid) { return NULL; }
     
     own_handle_t *own = (own_handle_t*)calloc(1, sizeof(own_handle_t));
-    if (!own) return NULL;
+    if (!own) { return NULL; }
     
     memcpy(&own->config, config, sizeof(own_config_t));
     memcpy(&own->local_guid, local_guid, sizeof(dds_guid_t));
@@ -204,7 +204,7 @@ own_handle_t* own_create(const own_config_t *config, const dds_guid_t *local_gui
     
     // 添加自己作为竞争者
     own_contender_t *self = add_contender(own, local_guid, own->current_strength);
-    if (self) {
+    if ((self) != 0U) {
         self->priority = 255; // 最高优先级
     }
     
@@ -218,7 +218,7 @@ own_handle_t* own_create(const own_config_t *config, const dds_guid_t *local_gui
 }
 
 eth_status_t own_delete(own_handle_t *own) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     if (own->state == OWN_STATE_OWNER) {
         uint64_t ownership_duration = get_time_ms() - own->ownership_start_time;
@@ -231,7 +231,7 @@ eth_status_t own_delete(own_handle_t *own) {
 }
 
 eth_status_t own_register_event_callback(own_handle_t *own, own_event_callback_t callback, void *user_data) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     own->event_callback = callback;
     own->event_user_data = user_data;
@@ -239,7 +239,7 @@ eth_status_t own_register_event_callback(own_handle_t *own, own_event_callback_t
 }
 
 eth_status_t own_register_transfer_callback(own_handle_t *own, own_transfer_callback_t callback, void *user_data) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     own->transfer_callback = callback;
     own->transfer_user_data = user_data;
@@ -247,7 +247,7 @@ eth_status_t own_register_transfer_callback(own_handle_t *own, own_transfer_call
 }
 
 eth_status_t own_set_strength(own_handle_t *own, uint32_t strength) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     // 限制强度范围
     if (strength > own->config.max_strength) {
@@ -262,7 +262,7 @@ eth_status_t own_set_strength(own_handle_t *own, uint32_t strength) {
     
     // 更新竞争者列表中的自己
     own_contender_t *self = find_contender(own, &own->local_guid);
-    if (self) {
+    if ((self) != 0U) {
         self->strength = strength;
     }
     
@@ -279,21 +279,21 @@ eth_status_t own_set_strength(own_handle_t *own, uint32_t strength) {
 }
 
 eth_status_t own_get_strength(own_handle_t *own, uint32_t *strength) {
-    if (!own || !strength) return ETH_INVALID_PARAM;
+    if (!own || !strength) { return ETH_INVALID_PARAM; }
     
     *strength = own->current_strength;
     return ETH_OK;
 }
 
 eth_status_t own_increase_strength(own_handle_t *own, uint32_t increment) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     uint32_t new_strength = own->current_strength + increment;
     return own_set_strength(own, new_strength);
 }
 
 eth_status_t own_decrease_strength(own_handle_t *own, uint32_t decrement) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     uint32_t new_strength = (own->current_strength > decrement) ? 
                             own->current_strength - decrement : 0U;
@@ -303,7 +303,7 @@ eth_status_t own_decrease_strength(own_handle_t *own, uint32_t decrement) {
 eth_status_t own_process_strength_announcement(own_handle_t *own, 
                                                 const dds_guid_t *remote_guid,
                                                 uint32_t remote_strength) {
-    if (!own || !remote_guid) return ETH_INVALID_PARAM;
+    if (!own || !remote_guid) { return ETH_INVALID_PARAM; }
     
     // 检查是否是自己
     if (memcmp(remote_guid, &own->local_guid, sizeof(dds_guid_t)) == 0) {
@@ -330,21 +330,21 @@ eth_status_t own_process_strength_announcement(own_handle_t *own,
 }
 
 eth_status_t own_is_owner(own_handle_t *own, bool *is_owner) {
-    if (!own || !is_owner) return ETH_INVALID_PARAM;
+    if (!own || !is_owner) { return ETH_INVALID_PARAM; }
     
     *is_owner = (own->state == OWN_STATE_OWNER);
     return ETH_OK;
 }
 
 eth_status_t own_get_current_owner(own_handle_t *own, own_owner_info_t *owner_info) {
-    if (!own || !owner_info) return ETH_INVALID_PARAM;
+    if (!own || !owner_info) { return ETH_INVALID_PARAM; }
     
     memcpy(owner_info, &own->current_owner, sizeof(own_owner_info_t));
     return ETH_OK;
 }
 
 eth_status_t own_negotiate(own_handle_t *own) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     own->state = OWN_STATE_NEGOTIATING;
     
@@ -359,7 +359,7 @@ eth_status_t own_negotiate(own_handle_t *own) {
 }
 
 eth_status_t own_request_transfer(own_handle_t *own, const dds_guid_t *target_guid) {
-    if (!own || !target_guid) return ETH_INVALID_PARAM;
+    if (!own || !target_guid) { return ETH_INVALID_PARAM; }
     
     if (own->state != OWN_STATE_OWNER) {
         return ETH_ERROR;
@@ -375,7 +375,7 @@ eth_status_t own_request_transfer(own_handle_t *own, const dds_guid_t *target_gu
 }
 
 eth_status_t own_accept_transfer(own_handle_t *own, uint32_t new_strength) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     // 接受转移，设置新强度
     if (new_strength > 0U) {
@@ -394,17 +394,17 @@ eth_status_t own_accept_transfer(own_handle_t *own, uint32_t new_strength) {
 }
 
 eth_status_t own_reject_transfer(own_handle_t *own, const char *reason) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     DDS_LOG_INFO(DDS_LOG_MODULE_CORE, "OWN", "Ownership transfer rejected: %s", reason ? reason : "no reason");
     return ETH_OK;
 }
 
 eth_status_t own_update_heartbeat(own_handle_t *own, const dds_guid_t *owner_guid) {
-    if (!own || !owner_guid) return ETH_INVALID_PARAM;
+    if (!own || !owner_guid) { return ETH_INVALID_PARAM; }
     
     own_contender_t *c = find_contender(own, owner_guid);
-    if (c) {
+    if ((c) != 0U) {
         c->last_seen = get_time_ms();
     }
     
@@ -412,7 +412,7 @@ eth_status_t own_update_heartbeat(own_handle_t *own, const dds_guid_t *owner_gui
 }
 
 eth_status_t own_check_timeout(own_handle_t *own, uint64_t current_time_ms, bool *timed_out) {
-    if (!own || !timed_out) return ETH_INVALID_PARAM;
+    if (!own || !timed_out) { return ETH_INVALID_PARAM; }
     
     *timed_out = false;
     
@@ -445,7 +445,7 @@ eth_status_t own_check_timeout(own_handle_t *own, uint64_t current_time_ms, bool
 }
 
 eth_status_t own_handle_owner_failure(own_handle_t *own) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     DDS_LOG_ERROR(DDS_LOG_MODULE_CORE, "OWN", "Handling owner failure");
     
@@ -463,21 +463,21 @@ eth_status_t own_handle_owner_failure(own_handle_t *own) {
 }
 
 eth_status_t own_get_stats(own_handle_t *own, own_stats_t *stats) {
-    if (!own || !stats) return ETH_INVALID_PARAM;
+    if (!own || !stats) { return ETH_INVALID_PARAM; }
     
     memcpy(stats, &own->stats, sizeof(own_stats_t));
     return ETH_OK;
 }
 
 eth_status_t own_reset_stats(own_handle_t *own) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     memset(&own->stats, 0, sizeof(own_stats_t));
     return ETH_OK;
 }
 
 eth_status_t own_enable_asil_mode(own_handle_t *own, uint8_t asil_level) {
-    if (!own || (asil_level > 4U)) return ETH_INVALID_PARAM;
+    if (!own || (asil_level > 4U)) { return ETH_INVALID_PARAM; }
     
     own->asil_enabled = true;
     own->asil_level = asil_level;
@@ -493,7 +493,7 @@ eth_status_t own_get_owner_list(own_handle_t *own,
                                  own_owner_info_t *owners,
                                  uint8_t max_count,
                                  uint8_t *actual_count) {
-    if (!own || !owners || !actual_count || (max_count == 0U)) return ETH_INVALID_PARAM;
+    if (!own || !owners || !actual_count || (max_count == 0U)) { return ETH_INVALID_PARAM; }
     
     sort_contenders(own);
     
@@ -512,7 +512,7 @@ eth_status_t own_get_owner_list(own_handle_t *own,
 }
 
 eth_status_t own_force_ownership(own_handle_t *own, uint32_t new_strength) {
-    if (!own) return ETH_INVALID_PARAM;
+    if (!own) { return ETH_INVALID_PARAM; }
     
     // 管理员强制获取所有权
     own_set_strength(own, new_strength > 0U ? new_strength : OWN_MAX_STRENGTH);

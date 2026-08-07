@@ -86,8 +86,8 @@ void Srp_DeInit(void)
 Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo)
 {
 #if (SRP_DEV_ERROR_DETECT == STD_ON)
-    if (Srp_Internal.state != SRP_INTERNAL_INIT) return E_NOT_OK;
-    if (NULL_PTR == TalkerInfo) return E_NOT_OK;
+    if (Srp_Internal.state != SRP_INTERNAL_INIT) { return E_NOT_OK; }
+    if (NULL_PTR == TalkerInfo) { return E_NOT_OK; }
 #endif
     Srp_StreamEntryType* existing = Srp_FindStream(TalkerInfo->StreamId);
     if (existing != NULL_PTR) {
@@ -95,7 +95,7 @@ Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo)
         existing->AccumulatedLatency = TalkerInfo->AccumulatedLatency;
         return E_OK;
     }
-    if (Srp_Internal.streamCount >= SRP_MAX_STREAMS) return E_NOT_OK;
+    if (Srp_Internal.streamCount >= SRP_MAX_STREAMS) { return E_NOT_OK; }
 
     Srp_StreamEntryType* entry = &Srp_Internal.streams[Srp_Internal.streamCount];
     memcpy(entry->StreamId, TalkerInfo->StreamId, SRP_STREAM_ID_SIZE);
@@ -109,13 +109,13 @@ Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo)
 
 Std_ReturnType Srp_RegisterListener(const Srp_StreamIdType StreamId)
 {
-    if (Srp_Internal.state != SRP_INTERNAL_INIT) return E_NOT_OK;
+    if (Srp_Internal.state != SRP_INTERNAL_INIT) { return E_NOT_OK; }
     Srp_StreamEntryType* entry = Srp_FindStream(StreamId);
     if (entry != NULL_PTR) {
         entry->State = SRP_STATE_REGISTERED;
         return E_OK;
     }
-    if (Srp_Internal.streamCount >= SRP_MAX_STREAMS) return E_NOT_OK;
+    if (Srp_Internal.streamCount >= SRP_MAX_STREAMS) { return E_NOT_OK; }
     entry = &Srp_Internal.streams[Srp_Internal.streamCount];
     memcpy(entry->StreamId, StreamId, SRP_STREAM_ID_SIZE);
     entry->State = SRP_STATE_REGISTERED;
@@ -126,7 +126,7 @@ Std_ReturnType Srp_RegisterListener(const Srp_StreamIdType StreamId)
 
 Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId)
 {
-    if (Srp_Internal.state != SRP_INTERNAL_INIT) return E_NOT_OK;
+    if (Srp_Internal.state != SRP_INTERNAL_INIT) { return E_NOT_OK; }
     for (uint8 i = 0U; i < Srp_Internal.streamCount; i++) {
         if (memcmp(Srp_Internal.streams[i].StreamId, StreamId, SRP_STREAM_ID_SIZE) == 0 ) {
             if (i < (Srp_Internal.streamCount - 1U)) {
@@ -141,16 +141,16 @@ Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId)
 
 Std_ReturnType Srp_GetStreamStatus(const Srp_StreamIdType StreamId, Srp_ReservationStateType* Status)
 {
-    if (NULL_PTR == Status) return E_NOT_OK;
+    if (NULL_PTR == Status) { return E_NOT_OK; }
     const Srp_StreamEntryType* entry = Srp_FindStream(StreamId);
-    if (entry == NULL_PTR) return E_NOT_OK;
+    if (entry == NULL_PTR) { return E_NOT_OK; }
     *Status = entry->State;
     return E_OK;
 }
 
 void Srp_RxIndication(const uint8* DataPtr, uint16 Length)
 {
-    if ((NULL_PTR == DataPtr) || (Length < Srp_HdrLen)) return;
+    if ((NULL_PTR == DataPtr) || (Length < Srp_HdrLen)) { return; }
     /* Parse SRP frame (simplified - checks for Talker Advertise/Listener Ready) */
     uint8 subtype = DataPtr[0] & 0x0FU;
     (void)subtype;
@@ -158,7 +158,7 @@ void Srp_RxIndication(const uint8* DataPtr, uint16 Length)
 
 void Srp_MainFunction(void)
 {
-    if (Srp_Internal.state != SRP_INTERNAL_INIT) return;
+    if (Srp_Internal.state != SRP_INTERNAL_INIT) { return; }
 
     /* Process stream state transitions */
     for (uint8 i = 0U; i < Srp_Internal.streamCount; i++) {
@@ -170,7 +170,7 @@ void Srp_MainFunction(void)
 
 void Srp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) return;
+    if (NULL_PTR == versioninfo) { return; }
     versioninfo->vendorID = SRP_VENDOR_ID;
     versioninfo->moduleID = SRP_MODULE_ID;
     versioninfo->sw_major_version = 1U;

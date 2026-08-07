@@ -299,7 +299,7 @@ eth_status_t rtps_writer_sm_write(rtps_writer_state_machine_t *writer,
                                    uint32_t len,
                                    rtps_sequence_number_t *seq_number)
 {
-    if ((writer == NULL) || (data == NULL) || len == 0U) {
+    if ((writer == NULL) || (data == NULL) || (len == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -337,7 +337,7 @@ eth_status_t rtps_writer_sm_handle_acknack(rtps_writer_state_machine_t *writer,
                                             const rtps_sequence_number_set_t *ack_bitmap,
                                             uint64_t current_time_ms)
 {
-    if ((writer == NULL) || (reader_guid == NULL) || ack_bitmap == NULL) {
+    if ((writer == NULL) || (reader_guid == NULL) || (ack_bitmap == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -447,7 +447,7 @@ eth_status_t rtps_writer_sm_get_requested_changes(rtps_writer_state_machine_t *w
                                                     uint32_t max_changes,
                                                     uint32_t *actual_changes)
 {
-    if ((writer == NULL) || (changes == NULL) || actual_changes == NULL) {
+    if ((writer == NULL) || (changes == NULL) || (actual_changes == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -472,7 +472,8 @@ eth_status_t rtps_writer_sm_get_requested_changes(rtps_writer_state_machine_t *w
                 current->ref_count++;
             }
         } else {
-            changes[(*actual_changes)++] = current;
+            changes[*actual_changes] = current;
+            (*actual_changes)++;
             current->ref_count++;
         }
         current = current->next;
@@ -597,7 +598,7 @@ eth_status_t rtps_reader_sm_handle_data(rtps_reader_state_machine_t *reader,
                                          uint64_t current_time_ms,
                                          bool *need_acknack)
 {
-    if ((reader == NULL) || (writer_guid == NULL) || seq_number == NULL || data == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL) || (seq_number == NULL) || data == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -670,7 +671,7 @@ eth_status_t rtps_reader_sm_handle_heartbeat(rtps_reader_state_machine_t *reader
                                               uint64_t current_time_ms,
                                               bool *need_acknack)
 {
-    if ((reader == NULL) || (writer_guid == NULL) || first_sn == NULL || last_sn == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL) || (first_sn == NULL) || last_sn == NULL) {
         return ETH_INVALID_PARAM;
     }
     
@@ -762,7 +763,7 @@ eth_status_t rtps_reader_sm_read(rtps_reader_state_machine_t *reader,
                                   uint32_t *actual_len,
                                   rtps_sequence_number_t *seq_number)
 {
-    if ((reader == NULL) || (data == NULL) || actual_len == NULL) {
+    if ((reader == NULL) || (data == NULL) || (actual_len == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -813,7 +814,7 @@ eth_status_t rtps_reader_sm_build_acknack(rtps_reader_state_machine_t *reader,
                                            uint32_t max_len,
                                            uint32_t *actual_len)
 {
-    if ((reader == NULL) || (writer_guid == NULL) || buffer == NULL || actual_len == NULL) {
+    if ((reader == NULL) || (writer_guid == NULL) || (buffer == NULL) || actual_len == NULL) {
         return ETH_INVALID_PARAM;
     }
     

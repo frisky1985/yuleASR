@@ -114,7 +114,7 @@ static void EthSwt_LocalInitPorts(const EthSwt_ConfigType* Config)
 
     for (i = 0U; i < Config->NumPorts; i++)
     {
-        if (ETHSWT_IS_VALID_PORT(Config->PortConfigs[i].PortId))
+        if ((ETHSWT_IS_VALID_PORT(Config->PortConfigs[i].PortId)) != 0U)
         {
             EthSwt_PortIdType pid = Config->PortConfigs[i].PortId;
             EthSwt_InternalState.Ports[pid].Enable = Config->PortConfigs[i].Enable;
@@ -379,7 +379,7 @@ Std_ReturnType EthSwt_ForwardFrame(EthSwt_PortIdType SrcPort, uint8 DstPortMask,
     /* Forward to destination ports */
     for (i = 0U; i < ETHSWT_MAX_PORTS; i++)
     {
-        if (EthSwt_LocalPortInVlan(DstPortMask, i))
+        if ((EthSwt_LocalPortInVlan(DstPortMask, i)) != 0U)
         {
             if (EthSwt_InternalState.Ports[i].Enable == ETHSWT_PORT_ENABLED)
             {

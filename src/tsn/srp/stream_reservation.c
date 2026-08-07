@@ -158,7 +158,7 @@ static eth_status_t update_reservation_state(srp_stream_reservation_t *stream) {
     if (new_state != old_state) {
         stream->state = new_state;
         
-        if (g_srp_state.reservation_cb) {
+        if ((g_srp_state.reservation_cb) != 0U) {
             g_srp_state.reservation_cb(stream->stream_id, old_state, new_state,
                                        g_srp_state.reservation_user_data);
         }
@@ -186,7 +186,7 @@ static eth_status_t check_safety(uint16_t port_id) {
         monitor->bandwidth_violated = true;
         monitor->bandwidth_violation_count++;
         
-        if (g_srp_state.safety_cb) {
+        if ((g_srp_state.safety_cb) != 0U) {
             g_srp_state.safety_cb(port_id, 0x01, "Bandwidth limit exceeded",
                                   g_srp_state.safety_user_data);
         }
@@ -274,7 +274,7 @@ eth_status_t srp_register_talker(uint16_t port_id,
     update_reservation_state(stream);
     
     /* 通知回调 */
-    if (g_srp_state.talker_cb) {
+    if ((g_srp_state.talker_cb) != 0U) {
         g_srp_state.talker_cb(talker->stream_id, talker, g_srp_state.talker_user_data);
     }
     
@@ -347,7 +347,7 @@ eth_status_t srp_register_listener(uint16_t port_id,
         
         update_reservation_state(stream);
         
-        if (g_srp_state.listener_cb) {
+        if ((g_srp_state.listener_cb) != 0U) {
             g_srp_state.listener_cb(listener->stream_id, listener, 
                                     g_srp_state.listener_user_data);
         }
@@ -366,7 +366,7 @@ eth_status_t srp_register_listener(uint16_t port_id,
     
     update_reservation_state(stream);
     
-    if (g_srp_state.listener_cb) {
+    if ((g_srp_state.listener_cb) != 0U) {
         g_srp_state.listener_cb(listener->stream_id, listener, 
                                 g_srp_state.listener_user_data);
     }
@@ -435,7 +435,7 @@ eth_status_t srp_reserve_bandwidth(uint16_t port_id, const srp_stream_id_t strea
     
     if (used_percent > ((port->bandwidth.available_bandwidth_bps * 100U / 
                        port->bandwidth.total_bandwidth_bps) - 10U)) {
-        if (g_srp_state.bw_alert_cb) {
+        if ((g_srp_state.bw_alert_cb) != 0U) {
             g_srp_state.bw_alert_cb(port_id, used_percent, 
                                     g_srp_state.bw_alert_user_data);
         }
@@ -483,7 +483,7 @@ eth_status_t srp_calculate_path(const srp_stream_id_t stream_id,
 
 eth_status_t srp_check_feasibility(uint16_t port_id, uint32_t bandwidth_bps,
                                     uint32_t latency_us, bool *feasible) {
-    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || feasible == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || (feasible == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -507,7 +507,7 @@ eth_status_t srp_check_feasibility(uint16_t port_id, uint32_t bandwidth_bps,
 }
 
 eth_status_t srp_get_port_bandwidth(uint16_t port_id, srp_port_bandwidth_t *bandwidth) {
-    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || bandwidth == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || (bandwidth == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -535,7 +535,7 @@ eth_status_t srp_get_stream_reservation(const srp_stream_id_t stream_id,
 
 eth_status_t srp_get_all_reservations(srp_stream_reservation_t *reservations, 
                                        uint32_t *count) {
-    if (!g_srp_state.initialized || (reservations == NULL) || count == NULL) {
+    if (!g_srp_state.initialized || (reservations == NULL) || (count == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -621,7 +621,7 @@ eth_status_t srp_run_safety_checks(uint16_t port_id) {
 }
 
 eth_status_t srp_get_safety_monitor(uint16_t port_id, srp_safety_monitor_t *monitor) {
-    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || monitor == NULL) {
+    if (!g_srp_state.initialized || (port_id >= SRP_MAX_PORTS) || (monitor == NULL)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -655,7 +655,7 @@ eth_status_t srp_validate_reservation_integrity(const srp_stream_id_t stream_id,
 
 eth_status_t srp_stream_id_to_string(const srp_stream_id_t stream_id, 
                                       char *buf, size_t buf_size) {
-    if ((stream_id == NULL) || (buf == NULL) || buf_size < 24U) {
+    if ((stream_id == NULL) || (buf == NULL) || (buf_size < 24U)) {
         return ETH_INVALID_PARAM;
     }
     

@@ -19,7 +19,7 @@ Std_ReturnType Tm_Init(const Tm_ConfigType* Config)
         return E_NOT_OK;
     }
 #endif
-    if (Tm_Initialized) {
+    if ((Tm_Initialized) != 0U) {
         return E_NOT_OK;
     }
     Tm_ConfigPtr = Config;
@@ -38,7 +38,7 @@ void Tm_DeInit(void)
 void Tm_MainFunction(void)
 {
     /* Cyclic time base update stub */
-    if (Tm_Initialized) {
+    if ((Tm_Initialized) != 0U) {
         Tm_LocalTime++;
     }
 }

@@ -269,7 +269,7 @@ void FrTp_MainFunction(void)
         }
 
         /* Check for timeouts */
-        if (FrTp_IsTimerExpired(runtime))
+        if ((FrTp_IsTimerExpired(runtime)) != 0U)
         {
             /* Handle timeout based on state */
             switch (runtime->state)

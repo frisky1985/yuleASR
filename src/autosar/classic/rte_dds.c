@@ -245,7 +245,7 @@ Std_ReturnType rte_CreateComponent(
     const rte_ComponentConfigType* config,
     rte_ComponentHandleType* handle)
 {
-    if (!rte_IsInitialized() || (config == NULL) || handle == NULL) {
+    if (!rte_IsInitialized() || (config == NULL) || (handle == NULL)) {
         return E_NOT_OK;
     }
 
@@ -403,7 +403,7 @@ rte_ResultType rte_Write(
                 break;
             }
         }
-        if (portConfig != NULL) break;
+        if (portConfig != NULL) { break; }
     }
 
     if (portConfig == NULL) {
@@ -469,7 +469,7 @@ rte_ResultType rte_ReadWithInfo(
     void* data,
     rte_DataInfoType* info)
 {
-    if (!rte_IsInitialized() || (data == NULL) || info == NULL) {
+    if (!rte_IsInitialized() || (data == NULL) || (info == NULL)) {
         return RTE_E_INVALID;
     }
 
@@ -483,7 +483,7 @@ rte_ResultType rte_ReadWithInfo(
                 break;
             }
         }
-        if (portConfig != NULL) break;
+        if (portConfig != NULL) { break; }
     }
 
     if (portConfig == NULL) {
@@ -565,7 +565,7 @@ rte_ResultType rte_Call(
     void* responseData,
     uint32_t* responseLength)
 {
-    if (!rte_IsInitialized() || (requestData == NULL) || responseData == NULL) {
+    if (!rte_IsInitialized() || (requestData == NULL) || (responseData == NULL)) {
         return RTE_E_INVALID;
     }
 
@@ -581,7 +581,7 @@ rte_ResultType rte_Call(
                 break;
             }
         }
-        if (portConfig != NULL) break;
+        if (portConfig != NULL) { break; }
     }
 
     if (portConfig == NULL) {
@@ -670,7 +670,7 @@ Std_ReturnType rte_ComSendSignal(
     rte_ComSignalHandleType signal,
     const void* data)
 {
-    if (!g_comContext.initialized || (signal >= g_comContext.numSignals) || data == NULL) {
+    if (!g_comContext.initialized || (signal >= g_comContext.numSignals) || (data == NULL)) {
         return E_NOT_OK;
     }
 
@@ -703,7 +703,7 @@ Std_ReturnType rte_ComReceiveSignal(
     rte_ComSignalHandleType signal,
     void* data)
 {
-    if (!g_comContext.initialized || (signal >= g_comContext.numSignals) || data == NULL) {
+    if (!g_comContext.initialized || (signal >= g_comContext.numSignals) || (data == NULL)) {
         return E_NOT_OK;
     }
 
@@ -725,7 +725,7 @@ Std_ReturnType rte_ComSendPdu(
     const void* data,
     uint32_t length)
 {
-    if (!g_comContext.initialized || (pdu >= g_comContext.numPdus) || data == NULL) {
+    if (!g_comContext.initialized || (pdu >= g_comContext.numPdus) || (data == NULL)) {
         return E_NOT_OK;
     }
 
@@ -769,7 +769,7 @@ Std_ReturnType rte_E2EProtect(
     void* data,
     uint32_t* length)
 {
-    if (!rte_IsInitialized() || (data == NULL) || length == NULL) {
+    if (!rte_IsInitialized() || (data == NULL) || (length == NULL)) {
         return E_NOT_OK;
     }
 
@@ -792,7 +792,7 @@ Std_ReturnType rte_E2ECheck(
     uint32_t length,
     uint16_t* status)
 {
-    if (!rte_IsInitialized() || (data == NULL) || status == NULL) {
+    if (!rte_IsInitialized() || (data == NULL) || (status == NULL)) {
         return E_NOT_OK;
     }
 

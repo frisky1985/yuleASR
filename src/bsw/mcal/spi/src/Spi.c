@@ -171,7 +171,7 @@ void Spi_Init(const Spi_ConfigType* Config)
         REG_WRITE32(Spi_BaseAddr[i] + ECSPI_CONFIGREG, cfgreg);
         
         /* 配置DMA */
-        if (chCfg->DmaEnabled) {
+        if ((chCfg->DmaEnabled) != 0U) {
             uint32 dmareg = DMAREG_RXDEN | DMAREG_TXDEN;
             dmareg |= (SPI_DMA_FIFO_THRESHOLD << DMAREG_RX_THRESHOLD_SHIFT);
             dmareg |= (SPI_DMA_FIFO_THRESHOLD << DMAREG_TX_THRESHOLD_SHIFT);
@@ -179,7 +179,7 @@ void Spi_Init(const Spi_ConfigType* Config)
         }
         
         /* 配置中断 */
-        if (chCfg->InterruptEnabled) {
+        if ((chCfg->InterruptEnabled) != 0U) {
             REG_WRITE32(Spi_BaseAddr[i] + ECSPI_INTREG, (INTREG_TEEN | INTREG_RREN));
         }
         
@@ -317,7 +317,7 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
         }
         
         /* 接收 */
-        if (RxData) {
+        if ((RxData) != 0U) {
             RxData[i] = (uint8)(REG_READ32(Spi_BaseAddr[channel] + ECSPI_RXDATA));
         } else {
             (void)REG_READ32(Spi_BaseAddr[channel] + ECSPI_RXDATA);
@@ -376,13 +376,13 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
         state->DmaActive = TRUE;
         
         /* 配置TX DMA */
-        if (TxData) {
+        if ((TxData) != 0U) {
             Dma_ConfigTx(chCfg->DmaTxChannel, (uint32)TxData, 
                         (uint32)(Spi_BaseAddr[channel] + ECSPI_TXDATA), Length);
         }
         
         /* 配置RX DMA */
-        if (RxData) {
+        if ((RxData) != 0U) {
             Dma_ConfigRx(chCfg->DmaRxChannel, 
                         (uint32)(Spi_BaseAddr[channel] + ECSPI_RXDATA), (uint32)RxData, Length);
         }
@@ -458,10 +458,10 @@ void Spi_IsrHandler(uint8 Channel)
     uint32 stat = REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG);
     
     /* RX中断 */
-    if (stat & STATREG_RR) {
+    if ((stat & STATREG_RR) != 0U) {
         while ((REG_READ32(Spi_BaseAddr[Channel] + ECSPI_STATREG) & STATREG_RR) && 
                (state->Transferred < state->Length)) {
-            if (state->RxBuffer) {
+            if ((state->RxBuffer) != 0U) {
                 state->RxBuffer[state->Transferred] = 
                     (uint8)(REG_READ32(Spi_BaseAddr[Channel] + ECSPI_RXDATA));
             } else {
@@ -509,7 +509,7 @@ void Spi_MainFunction(void)
                 Spi_Status = SPI_IDLE;
                 
                 /* 禁用DMA */
-                if (state->DmaActive) {
+                if ((state->DmaActive) != 0U) {
                     REG_WRITE32(Spi_BaseAddr[i] + ECSPI_DMAREG, 0);
                     Dma_DisableChannel(Spi_ConfigPtr->ChannelConfig[i].DmaTxChannel);
                     Dma_DisableChannel(Spi_ConfigPtr->ChannelConfig[i].DmaRxChannel);

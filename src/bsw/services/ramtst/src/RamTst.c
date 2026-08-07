@@ -240,7 +240,7 @@ static void RamTst_LocalRunMarchCStep(RamTst_TestRunType* test)
         }
     }
 
-    if (test->Active)
+    if ((test->Active) != 0U)
     {
         test->Phase = (test->MarchDirectionUp) ? RAMTST_PHASE_MARCH_C_UP : RAMTST_PHASE_MARCH_C_DOWN;
     }
@@ -292,7 +292,7 @@ void RamTst_DeInit(void)
     }
 #endif
 
-    if (RamTst_InternalState.CurrentTest.Active)
+    if ((RamTst_InternalState.CurrentTest.Active) != 0U)
     {
         RamTst_InternalState.CurrentTest.Active = FALSE;
         RamTst_InternalState.CurrentTest.Result  = RAMTST_RESULT_ABORTED;
@@ -332,7 +332,7 @@ Std_ReturnType RamTst_RunTest(uint16 RegionId)
     }
 #endif
 
-    if (RamTst_InternalState.CurrentTest.Active)
+    if ((RamTst_InternalState.CurrentTest.Active) != 0U)
     {
         return E_NOT_OK;  /* Busy */
     }

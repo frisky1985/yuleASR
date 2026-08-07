@@ -113,7 +113,7 @@ bool FG_IsInitialized(void) {
 }
 
 Std_ReturnType FG_CreateConfig(FunctionGroupNameType name, FG_ConfigType* config) {
-    if (!g_initialized || (config == NULL) || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (config == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -122,7 +122,7 @@ Std_ReturnType FG_CreateConfig(FunctionGroupNameType name, FG_ConfigType* config
 }
 
 Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) {
-    if (!g_initialized || (config == NULL) || member == NULL) {
+    if (!g_initialized || (config == NULL) || (member == NULL)) {
         return E_NOT_OK;
     }
     
@@ -144,7 +144,7 @@ Std_ReturnType FG_AddMember(FG_ConfigType* config, const FG_MemberType* member) 
 }
 
 Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
-    if (!g_initialized || (config == NULL) || memberName == NULL) {
+    if (!g_initialized || (config == NULL) || (memberName == NULL)) {
         return E_NOT_OK;
     }
     
@@ -173,7 +173,7 @@ Std_ReturnType FG_RemoveMember(FG_ConfigType* config, const char* memberName) {
 
 Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
                             FG_MemberType* member) {
-    if (!g_initialized || (config == NULL) || memberName == NULL || member == NULL) {
+    if (!g_initialized || (config == NULL) || (memberName == NULL) || member == NULL) {
         return E_NOT_OK;
     }
     
@@ -188,7 +188,7 @@ Std_ReturnType FG_GetMember(const FG_ConfigType* config, const char* memberName,
 }
 
 Std_ReturnType FG_Configure(FunctionGroupNameType name, const FG_ConfigType* config) {
-    if (!g_initialized || (config == NULL) || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (config == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -261,7 +261,7 @@ Std_ReturnType FG_Stop(FunctionGroupNameType name) {
 }
 
 Std_ReturnType FG_GetRuntimeState(FunctionGroupNameType name, FG_RuntimeType* runtime) {
-    if (!g_initialized || (runtime == NULL) || name >= FUNCTION_GROUP_COUNT) {
+    if (!g_initialized || (runtime == NULL) || (name >= FUNCTION_GROUP_COUNT)) {
         return E_NOT_OK;
     }
     
@@ -308,7 +308,7 @@ Std_ReturnType FG_WaitForStable(FunctionGroupNameType name, uint32_t timeoutMs) 
 
 Std_ReturnType FG_NotifyMemberState(FunctionGroupNameType name, const char* memberName,
                                      bool isActive) {
-    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT) || memberName == NULL) {
+    if (!g_initialized || (name >= FUNCTION_GROUP_COUNT) || (memberName == NULL)) {
         return E_NOT_OK;
     }
     

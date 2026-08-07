@@ -310,7 +310,7 @@ eth_status_t tsn_wait_for_sync(uint8_t domain_index, uint32_t timeout_ms) {
 eth_status_t tsn_transmit_frame(uint16_t port_id, uint8_t queue_id,
                                  const uint8_t *data, uint32_t len,
                                  uint8_t priority) {
-    if (!g_tsn_context.initialized || (data == NULL) || len == 0U) {
+    if (!g_tsn_context.initialized || (data == NULL) || (len == 0U)) {
         return ETH_INVALID_PARAM;
     }
     
@@ -487,7 +487,7 @@ const char* tsn_stack_get_version_string(void) {
 }
 
 void tsn_stack_get_version(uint8_t *major, uint8_t *minor, uint8_t *patch) {
-    if (major) *major = TSN_STACK_VERSION_MAJOR;
-    if (minor) *minor = TSN_STACK_VERSION_MINOR;
-    if (patch) *patch = TSN_STACK_VERSION_PATCH;
+    if ((major) != 0U) { *major = TSN_STACK_VERSION_MAJOR; }
+    if ((minor) != 0U) { *minor = TSN_STACK_VERSION_MINOR; }
+    if ((patch) != 0U) { *patch = TSN_STACK_VERSION_PATCH; }
 }

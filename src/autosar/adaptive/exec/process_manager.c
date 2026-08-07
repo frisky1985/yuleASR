@@ -353,7 +353,7 @@ bool ProcessManager_IsRunning(ProcessIdType pid) {
 }
 
 uint32_t ProcessManager_GetAllProcesses(ProcessIdType* pids, uint32_t maxCount) {
-    if (!g_initialized || (pids == NULL) || maxCount == 0U) {
+    if (!g_initialized || (pids == NULL) || (maxCount == 0U)) {
         return 0U;
     }
     

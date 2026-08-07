@@ -382,11 +382,11 @@ static inline psa_key_lifetime_t psa_get_key_lifetime(
 
 static inline void psa_extend_key_usage_flags(psa_key_usage_t *usage_flags)
 {
-    if (*usage_flags & PSA_KEY_USAGE_SIGN_HASH) {
+    if ((*usage_flags & PSA_KEY_USAGE_SIGN_HASH) != 0U) {
         *usage_flags |= PSA_KEY_USAGE_SIGN_MESSAGE;
     }
 
-    if (*usage_flags & PSA_KEY_USAGE_VERIFY_HASH) {
+    if ((*usage_flags & PSA_KEY_USAGE_VERIFY_HASH) != 0U) {
         *usage_flags |= PSA_KEY_USAGE_VERIFY_MESSAGE;
     }
 }

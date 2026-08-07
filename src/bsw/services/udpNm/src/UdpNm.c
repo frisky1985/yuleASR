@@ -245,7 +245,7 @@ static void UdpNm_BuildPdu(uint8 ChannelIdx)
     
     /* Set Node ID */
 #if (UDPNM_NODE_ID_ENABLED == STD_ON)
-    if (ChannelConfig->NodeIdEnabled)
+    if ((ChannelConfig->NodeIdEnabled) != 0U)
     {
         PduData[ChannelConfig->NodeIdPosition] = ChannelConfig->NodeId;
     }
@@ -258,13 +258,13 @@ static void UdpNm_BuildPdu(uint8 ChannelIdx)
         uint8 CBV = 0U;
         
         /* Set active wakeup bit if network was requested */
-        if (UdpNm_Channels[ChannelIdx].NetworkRequested)
+        if ((UdpNm_Channels[ChannelIdx].NetworkRequested) != 0U)
         {
             CBV |= UDPNM_CBV_ACTIVE_WAKEUP;
         }
         
         /* Set sleep ready bit */
-        if (UdpNm_Channels[ChannelIdx].SleepReadyBit)
+        if ((UdpNm_Channels[ChannelIdx].SleepReadyBit) != 0U)
         {
             CBV |= UDPNM_CBV_NM_COORD_SLEEP;
         }
@@ -275,7 +275,7 @@ static void UdpNm_BuildPdu(uint8 ChannelIdx)
     
     /* Copy user data */
 #if (UDPNM_USER_DATA_ENABLED == STD_ON)
-    if (ChannelConfig->UserDataEnabled)
+    if ((ChannelConfig->UserDataEnabled) != 0U)
     {
         /* User data is already in TxPduData buffer from SetUserData API */
     }
@@ -319,14 +319,14 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
     {
         case UDPNM_STATE_BUS_SLEEP:
             /* Wait for network request or Rx indication */
-            if (UdpNm_Channels[ChannelIdx].NetworkRequested)
+            if ((UdpNm_Channels[ChannelIdx].NetworkRequested) != 0U)
             {
                 UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_REPEAT_MESSAGE);
                 UdpNm_ResetTimer(&UdpNm_Channels[ChannelIdx].TimerRepeatMessage, 
                                  ChannelConfig->RepeatMessageTime);
                 UdpNm_Channels[ChannelIdx].ImmediateTxCounter = ChannelConfig->ImmediateNmTransmissions;
             }
-            else if (UdpNm_Channels[ChannelIdx].RxIndPending)
+            else if ((UdpNm_Channels[ChannelIdx].RxIndPending) != 0U)
             {
                 UdpNm_Channels[ChannelIdx].RxIndPending = FALSE;
                 UDPNM_NETWORK_START_INDICATION(ChannelIdx);
@@ -340,7 +340,7 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
             /* Transmit NM messages with fast cycle time initially */
             if (UdpNm_Channels[ChannelIdx].ImmediateTxCounter > 0U)
             {
-                if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerImmediate))
+                if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerImmediate)) != 0U)
                 {
                     UdpNm_TransmitMessage(ChannelIdx);
                     UdpNm_Channels[ChannelIdx].ImmediateTxCounter--;
@@ -348,15 +348,15 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
                                      ChannelConfig->ImmediateNmCycleTime);
                 }
             }
-            else if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerNM))
+            else if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerNM)) != 0U)
             {
                 UdpNm_TransmitMessage(ChannelIdx);
             }
             
             /* Check for repeat message timeout */
-            if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerRepeatMessage))
+            if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerRepeatMessage)) != 0U)
             {
-                if (UdpNm_Channels[ChannelIdx].NetworkRequested)
+                if ((UdpNm_Channels[ChannelIdx].NetworkRequested) != 0U)
                 {
                     UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_NORMAL_OPERATION);
                 }
@@ -369,7 +369,7 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
             
         case UDPNM_STATE_NORMAL_OPERATION:
             /* Transmit NM messages with normal cycle time */
-            if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerNM))
+            if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerNM)) != 0U)
             {
                 UdpNm_TransmitMessage(ChannelIdx);
             }
@@ -383,13 +383,13 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
             
         case UDPNM_STATE_READY_SLEEP:
             /* Continue to transmit NM messages */
-            if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerNM))
+            if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerNM)) != 0U)
             {
                 UdpNm_TransmitMessage(ChannelIdx);
             }
             
             /* Check timeout timer */
-            if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerTimeout))
+            if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerTimeout)) != 0U)
             {
                 /* No NM messages received from other nodes */
                 UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_PREPARE_BUS_SLEEP);
@@ -398,7 +398,7 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
             }
             
             /* Check for network request */
-            if (UdpNm_Channels[ChannelIdx].NetworkRequested)
+            if ((UdpNm_Channels[ChannelIdx].NetworkRequested) != 0U)
             {
                 UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_NORMAL_OPERATION);
             }
@@ -406,13 +406,13 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
             
         case UDPNM_STATE_PREPARE_BUS_SLEEP:
             /* Wait for bus sleep timeout */
-            if (UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerWaitBusSleep))
+            if ((UdpNm_IsTimerExpired(&UdpNm_Channels[ChannelIdx].TimerWaitBusSleep)) != 0U)
             {
                 UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_BUS_SLEEP);
             }
             
             /* Check for network request */
-            if (UdpNm_Channels[ChannelIdx].NetworkRequested)
+            if ((UdpNm_Channels[ChannelIdx].NetworkRequested) != 0U)
             {
                 UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_REPEAT_MESSAGE);
                 UdpNm_ResetTimer(&UdpNm_Channels[ChannelIdx].TimerRepeatMessage, 
@@ -420,7 +420,7 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
             }
             
             /* Check for Rx indication */
-            if (UdpNm_Channels[ChannelIdx].RxIndPending)
+            if ((UdpNm_Channels[ChannelIdx].RxIndPending) != 0U)
             {
                 UdpNm_Channels[ChannelIdx].RxIndPending = FALSE;
                 UdpNm_TransitionToState(ChannelIdx, UDPNM_STATE_REPEAT_MESSAGE);
@@ -963,7 +963,7 @@ void UdpNm_MainFunction(void)
     /* Process all channels */
     for (uint8 i = 0U; i < UDPNM_NUMBER_OF_CHANNELS; i++)
     {
-        if (UdpNm_Channels[i].Initialized)
+        if ((UdpNm_Channels[i].Initialized) != 0U)
         {
             UdpNm_UpdateTimers(i);
             UdpNm_ProcessStateMachine(i);

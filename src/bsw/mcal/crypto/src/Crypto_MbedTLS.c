@@ -108,7 +108,7 @@ Std_ReturnType Crypto_MbedTLS_Init(void)
     int ret;
     const char* pers = "yule_crypto";
     
-    if (Crypto_MbedTLS_Initialized) {
+    if ((Crypto_MbedTLS_Initialized) != 0U) {
         return E_OK;
     }
     
@@ -686,7 +686,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
     Std_ReturnType result = E_NOT_OK;
     
     if ((job == NULL_PTR) || (job->jobPrimitiveInfo == NULL_PTR) || 
-        job->jobPrimitiveInputOutput == NULL_PTR) {
+        (job->jobPrimitiveInputOutput == NULL_PTR)) {
         return E_NOT_OK;
     }
     

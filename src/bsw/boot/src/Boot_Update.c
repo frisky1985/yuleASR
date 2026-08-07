@@ -175,7 +175,7 @@ Boot_Result Boot_Update_SwapSlots(void)
     /* In A/B scheme: toggle a flag in BIB to select opposite slot */
     Boot_InfoBlock bib;
     Boot_Result ret = bib_read(&bib);
-    if (ret != BOOT_OK) return ret;
+    if (ret != BOOT_OK) { return ret; }
     /* Toggle slot selection bit in status */
     bib.status ^= 0x02U;
     bib.crc32 = bib_calc_crc(&bib);
@@ -192,7 +192,7 @@ static Boot_Result bib_read(Boot_InfoBlock *bib)
 static Boot_Result bib_write(const Boot_InfoBlock *bib)
 {
     Boot_Result ret = Boot_Flash_Erase(BOOT_BIB_ADDR, sizeof(Boot_InfoBlock));
-    if (ret != BOOT_OK) return ret;
+    if (ret != BOOT_OK) { return ret; }
     return Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)bib, sizeof(Boot_InfoBlock));
 }
 

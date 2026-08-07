@@ -297,7 +297,7 @@ Swc_StorageResultType Swc_StorageManager_WriteBlock(uint16 blockId,
     sint16 blockIndex;
     uint16 crc;
 
-    if ((data == NULL_PTR) || (length == 0U) || length > STORAGE_BLOCK_DATA_SIZE) {
+    if ((data == NULL_PTR) || (length == 0U) || (length > STORAGE_BLOCK_DATA_SIZE)) {
         return STORAGE_RESULT_INVALID_DATA;
     }
 

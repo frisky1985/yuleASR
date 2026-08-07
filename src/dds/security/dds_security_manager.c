@@ -164,18 +164,18 @@ void dds_security_manager_deinit(dds_security_context_t *ctx)
                            "DDS-Security manager shutting down");
 
     /* Deinitialize sub-modules */
-    if (ctx->crypto_ctx) {
+    if ((ctx->crypto_ctx) != 0U) {
         dds_crypto_deinit(ctx->crypto_ctx);
     }
-    if (ctx->access_ctx) {
+    if ((ctx->access_ctx) != 0U) {
         dds_access_deinit(ctx->access_ctx);
     }
-    if (ctx->auth_ctx) {
+    if ((ctx->auth_ctx) != 0U) {
         dds_auth_deinit(ctx->auth_ctx);
     }
 
     /* Free participants */
-    if (ctx->participants) {
+    if ((ctx->participants) != 0U) {
         /* Clear sensitive data */
         for (uint32_t i = 0; i < ctx->max_participants; i++) {
             if (ctx->participants[i].state != DDS_SEC_PARTICIPANT_UNAUTHENTICATED) {
@@ -187,12 +187,12 @@ void dds_security_manager_deinit(dds_security_context_t *ctx)
     }
 
     /* Free event manager */
-    if (ctx->event_mgr.events) {
+    if ((ctx->event_mgr.events) != 0U) {
         free(ctx->event_mgr.events);
     }
 
     /* Free audit log */
-    if (ctx->audit_mgr.log_entries) {
+    if ((ctx->audit_mgr.log_entries) != 0U) {
         free(ctx->audit_mgr.log_entries);
     }
 
@@ -233,7 +233,7 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
 
     /* Check if participant already exists */
     dds_sec_participant_t *participant = dds_security_find_participant(ctx, guid);
-    if (participant) {
+    if ((participant) != 0U) {
         return DDS_SECURITY_ERROR_ALREADY_INITIALIZED;
     }
 
@@ -254,7 +254,7 @@ dds_security_status_t dds_security_register_participant(dds_security_context_t *
     participant->state = DDS_SEC_PARTICIPANT_UNAUTHENTICATED;
     participant->created_time = dds_get_current_time_ms();
 
-    if (subject_name) {
+    if ((subject_name) != 0U) {
         strncpy(participant->subject_name, subject_name, sizeof(participant->subject_name) - 1U);
     }
 
@@ -284,7 +284,7 @@ dds_security_status_t dds_security_unregister_participant(dds_security_context_t
     }
 
     /* Clear handshake if exists */
-    if (participant->handshake) {
+    if ((participant->handshake) != 0U) {
         dds_auth_handshake_destroy(ctx->auth_ctx, participant->handshake);
     }
 
@@ -577,7 +577,7 @@ dds_security_status_t dds_security_check_access(dds_security_context_t *ctx,
                                    participant_guid, 
                                    "Access denied for topic: %s", topic_name);
         
-        if (ctx->config.on_access_violation) {
+        if ((ctx->config.on_access_violation) != 0U) {
             ctx->config.on_access_violation(topic_name, action);
         }
         
@@ -642,7 +642,7 @@ dds_security_status_t dds_security_trigger_event(dds_security_context_t *ctx,
     record->timestamp = dds_get_current_time_ms();
     record->event_type = event;
     record->severity = severity;
-    if (participant_guid) {
+    if ((participant_guid) != 0U) {
         memcpy(&record->participant_guid, participant_guid, sizeof(rtps_guid_t));
     }
     strncpy(record->description, message, sizeof(record->description) - 1U);
@@ -689,7 +689,7 @@ dds_security_status_t dds_security_log_audit(dds_security_context_t *ctx,
     log->timestamp = dds_get_current_time_ms();
     log->event_type = event_type;
     log->severity = severity;
-    if (participant_guid) {
+    if ((participant_guid) != 0U) {
         memcpy(&log->participant_guid, participant_guid, sizeof(rtps_guid_t));
     }
     strncpy(log->message, message, sizeof(log->message) - 1U);
@@ -706,9 +706,9 @@ dds_security_status_t dds_security_log_audit(dds_security_context_t *ctx,
     /* Write to file if enabled */
     if (ctx->audit_mgr.file_logging_enabled && ctx->audit_mgr.log_file_path[0]) {
         FILE *fp = fopen(ctx->audit_mgr.log_file_path, "a");
-        if (fp) {
+        if ((fp) != 0U) {
             char guid_str[64] = "N/A";
-            if (participant_guid) {
+            if ((participant_guid) != 0U) {
                 guid_to_string(participant_guid, guid_str, sizeof(guid_str));
             }
             
@@ -737,7 +737,7 @@ dds_security_status_t dds_security_configure_audit(dds_security_context_t *ctx,
     ctx->audit_mgr.file_logging_enabled = enable && (file_path != NULL);
     ctx->audit_mgr.min_severity = min_severity;
 
-    if (file_path) {
+    if ((file_path) != 0U) {
         strncpy(ctx->audit_mgr.log_file_path, file_path, 
                 sizeof(ctx->audit_mgr.log_file_path) - 1U);
     }
@@ -852,7 +852,7 @@ dds_security_status_t dds_security_rotate_keys(dds_security_context_t *ctx,
         return DDS_SECURITY_ERROR_INVALID_PARAM;
     }
 
-    if (participant_guid) {
+    if ((participant_guid) != 0U) {
         /* Rotate for specific participant */
         dds_sec_participant_t *participant = dds_security_find_participant(ctx, participant_guid);
         if (participant && (participant->crypto_session_id != 0U)) {
@@ -917,10 +917,10 @@ void dds_security_get_statistics(dds_security_context_t *ctx,
         return;
     }
 
-    if (total_auth_success) *total_auth_success = ctx->total_auth_success;
-    if (total_auth_failures) *total_auth_failures = ctx->total_auth_failures;
-    if (total_access_violations) *total_access_violations = ctx->total_access_violations;
-    if (total_replay_detected) *total_replay_detected = ctx->total_replay_detected;
+    if ((total_auth_success) != 0U) { *total_auth_success = ctx->total_auth_success; }
+    if ((total_auth_failures) != 0U) { *total_auth_failures = ctx->total_auth_failures; }
+    if ((total_access_violations) != 0U) { *total_access_violations = ctx->total_access_violations; }
+    if ((total_replay_detected) != 0U) { *total_replay_detected = ctx->total_replay_detected; }
 }
 
 const char* dds_security_participant_state_string(dds_sec_participant_state_t state)

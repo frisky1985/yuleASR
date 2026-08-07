@@ -73,7 +73,7 @@ LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
         return LINSLAVE_NOT_OK;
     }
     
-    if (LinSlave_IsInitialized) {
+    if ((LinSlave_IsInitialized) != 0U) {
         return LINSLAVE_NOT_OK;
     }
     
@@ -133,7 +133,7 @@ LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType*
         return LINSLAVE_NOT_OK;
     }
     
-    if (LinSlave_IsInitialized) {
+    if ((LinSlave_IsInitialized) != 0U) {
         return LINSLAVE_NOT_OK;
     }
     
@@ -168,7 +168,7 @@ LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType*
     LinSlave_LastError = LINSLAVE_ERROR_NONE;
     
     /* 初始化TP和UDS层 (如果使用诊断) */
-    if (ConfigTable->UseDiagnostic) {
+    if ((ConfigTable->UseDiagnostic) != 0U) {
         (void)LinSlave_Tp_Init();
         (void)LinSlave_Uds_Init();
         LinSlave_Uds_RegisterDefaultServices();
@@ -274,7 +274,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
             }
             
             /* 使用新配置表 */
-            if (UseConfigTable) {
+            if ((UseConfigTable) != 0U) {
                 uint8 frameIndex;
                 const LinSlave_UnconditionalFrameConfigType* frame;
                 
@@ -302,14 +302,14 @@ static void LinSlave_HandleRxData(uint8 RxByte)
                 }
                 
                 /* 检查是否是诊断帧 */
-                if (LinSlave_CfgTable_IsDiagnosticFrame(RxByte)) {
+                if ((LinSlave_CfgTable_IsDiagnosticFrame(RxByte)) != 0U) {
                     LinSlave_State = LINSLAVE_STATE_RX_DATA;
                     LinSlave_RxIndex = 0;
                     return;
                 }
                 
                 /* 检查是否是Event Triggered Frame */
-                if (LinSlave_CfgTable_IsEventFrame(RxByte)) {
+                if ((LinSlave_CfgTable_IsEventFrame(RxByte)) != 0U) {
                     /* Event Frame处理 */
                     const LinSlave_EventFrameConfigType* eventFrame = 
                         LinSlave_CfgTable_FindEventFrame(RxByte);
@@ -322,7 +322,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
                 }
                 
                 /* 检查是否是Sporadic Frame */
-                if (LinSlave_CfgTable_IsSporadicFrame(RxByte)) {
+                if ((LinSlave_CfgTable_IsSporadicFrame(RxByte)) != 0U) {
                     /* Sporadic Frame处理 */
                     LinSlave_State = LINSLAVE_STATE_IDLE;
                     LinSlave_ResetStateMachine();
@@ -355,7 +355,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
             
         case LINSLAVE_STATE_RX_DATA:
             /* 接收数据字节 */
-            if (UseConfigTable) {
+            if ((UseConfigTable) != 0U) {
                 /* 接收数据并存储 */
                 if (LinSlave_RxIndex < 8U) {
                     LinSlave_RxBuffer[LinSlave_RxIndex] = RxByte;

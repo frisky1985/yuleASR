@@ -190,7 +190,7 @@ static void Com_TxModeProcessDirect(Com_IPduIdType PduId)
         }
     } else if (modeState->State == COM_TXMODESTATE_REPEATING) {
         /* Process repetition timing */
-        if (Com_TxModeProcessRepetition(PduId)) {
+        if ((Com_TxModeProcessRepetition(PduId)) != 0U) {
             /* Execute repetition transmission */
             Com_TxModeExecuteTransmission(PduId);
 
@@ -218,7 +218,7 @@ static void Com_TxModeProcessPeriodicMode(Com_IPduIdType PduId)
     Com_TxModeStateType* modeState = &Com_TxModeStates[PduId];
 
     /* Check for periodic transmission */
-    if (Com_TxModeProcessPeriodic(PduId)) {
+    if ((Com_TxModeProcessPeriodic(PduId)) != 0U) {
         /* Execute periodic transmission */
         Com_TxModeExecuteTransmission(PduId);
 
@@ -251,7 +251,7 @@ static void Com_TxModeProcessMixed(Com_IPduIdType PduId)
         }
     } else if (modeState->State == COM_TXMODESTATE_REPEATING) {
         /* Process repetition timing */
-        if (Com_TxModeProcessRepetition(PduId)) {
+        if ((Com_TxModeProcessRepetition(PduId)) != 0U) {
             /* Execute repetition transmission */
             Com_TxModeExecuteTransmission(PduId);
 
@@ -270,7 +270,7 @@ static void Com_TxModeProcessMixed(Com_IPduIdType PduId)
         }
     } else {
         /* Process periodic part of MIXED mode */
-        if (Com_TxModeProcessPeriodic(PduId)) {
+        if ((Com_TxModeProcessPeriodic(PduId)) != 0U) {
             /* Execute periodic transmission */
             Com_TxModeExecuteTransmission(PduId);
 
@@ -367,7 +367,7 @@ boolean Com_TxModeUpdateSignalChange(Com_SignalIdType SignalId, const void* Sign
 
     /* Compare with last value */
     boolean changed = FALSE;
-    if (changeTrack->IsValid) {
+    if ((changeTrack->IsValid) != 0U) {
         if (memcmp(changeTrack->LastValue, SignalDataPtr, signalSize) != 0 ) {
             changed = TRUE;
         }
@@ -380,7 +380,7 @@ boolean Com_TxModeUpdateSignalChange(Com_SignalIdType SignalId, const void* Sign
     memcpy(changeTrack->LastValue, SignalDataPtr, signalSize);
     changeTrack->IsValid = TRUE;
 
-    if (changed) {
+    if ((changed) != 0U) {
         changeTrack->HasChanged = TRUE;
     }
 
@@ -463,7 +463,7 @@ static boolean Com_TxModeCheckSignalAgainstThreshold(
     );
 
     /* Compare based on operator */
-    if (UseGreaterThan) {
+    if ((UseGreaterThan) != 0U) {
         return (uint32)currentValue > Threshold;
     } else {
         return (uint32)currentValue < Threshold;
@@ -484,7 +484,7 @@ void Com_TxModeSwitch(Com_IPduIdType PduId, boolean NewModeIsTrue)
 
     /* Get new mode configuration */
     Com_TxModeType* newMode;
-    if (NewModeIsTrue) {
+    if ((NewModeIsTrue) != 0U) {
         newMode = (Com_TxModeType*)&ipduConfig->TxMode.TxModeTrue;
     } else {
         newMode = (Com_TxModeType*)&ipduConfig->TxMode.TxModeFalse;

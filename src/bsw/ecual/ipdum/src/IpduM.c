@@ -56,7 +56,7 @@ static uint8 IpduM_ExtractSelector(const uint8* DataPtr, const IpduM_SelectorFie
             uint8 BitPos = (7U - ((BitOffset + i) % 8U));
             uint8 BytePos = ByteIndex + ((BitOffset + i) / 8U);
             
-            if (DataPtr[BytePos] & (1U << BitPos))
+            if ((DataPtr[BytePos] & (1U << BitPos)) != 0U)
             {
                 SelectorValue |= (1U << (BitLength - 1U - i));
             }
@@ -71,7 +71,7 @@ static uint8 IpduM_ExtractSelector(const uint8* DataPtr, const IpduM_SelectorFie
             uint8 BitPos = ((BitOffset + i) % 8U);
             uint8 BytePos = ByteIndex + ((BitOffset + i) / 8U);
             
-            if (DataPtr[BytePos] & (1U << BitPos))
+            if ((DataPtr[BytePos] & (1U << BitPos)) != 0U)
             {
                 SelectorValue |= (1U << i);
             }
@@ -99,7 +99,7 @@ static void IpduM_InsertSelector(uint8* DataPtr, const IpduM_SelectorFieldType* 
             uint8 BitPos = (7U - ((BitOffset + i) % 8U));
             uint8 BytePos = ByteIndex + ((BitOffset + i) / 8U);
             
-            if (Value & (1U << (BitLength - 1U - i)))
+            if ((Value & (1U << (BitLength - 1U - i))) != 0U)
             {
                 DataPtr[BytePos] |= (1U << BitPos);
             }
@@ -118,7 +118,7 @@ static void IpduM_InsertSelector(uint8* DataPtr, const IpduM_SelectorFieldType* 
             uint8 BitPos = ((BitOffset + i) % 8U);
             uint8 BytePos = ByteIndex + ((BitOffset + i) / 8U);
             
-            if (Value & (1U << i))
+            if ((Value & (1U << i)) != 0U)
             {
                 DataPtr[BytePos] |= (1U << BitPos);
             }

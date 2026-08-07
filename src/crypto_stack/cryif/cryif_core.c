@@ -97,7 +97,7 @@ void cryif_deinit(cryif_context_t *ctx)
 
 cryif_status_t cryif_register_driver(cryif_context_t *ctx, cryif_driver_t *driver)
 {
-    if ((ctx == NULL) || !ctx->initialized || driver == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (driver == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -126,7 +126,7 @@ cryif_status_t cryif_register_driver(cryif_context_t *ctx, cryif_driver_t *drive
 
 cryif_status_t cryif_unregister_driver(cryif_context_t *ctx, cryif_driver_t *driver)
 {
-    if ((ctx == NULL) || !ctx->initialized || driver == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (driver == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -175,7 +175,7 @@ cryif_driver_t* cryif_find_driver_for_algo(cryif_context_t *ctx, uint32_t algori
 
 cryif_status_t cryif_set_default_driver(cryif_context_t *ctx, cryif_driver_t *driver)
 {
-    if ((ctx == NULL) || !ctx->initialized || driver == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (driver == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -190,7 +190,7 @@ cryif_status_t cryif_set_default_driver(cryif_context_t *ctx, cryif_driver_t *dr
 cryif_status_t cryif_channel_configure(cryif_context_t *ctx, uint8_t channel_id,
                                        cryif_driver_t *driver, uint32_t priority)
 {
-    if ((ctx == NULL) || !ctx->initialized || channel_id >= CRYIF_MAX_CHANNELS) {
+    if ((ctx == NULL) || !ctx->initialized || (channel_id >= CRYIF_MAX_CHANNELS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -204,7 +204,7 @@ cryif_status_t cryif_channel_configure(cryif_context_t *ctx, uint8_t channel_id,
 cryif_status_t cryif_channel_get_info(cryif_context_t *ctx, uint8_t channel_id,
                                       cryif_channel_t *channel)
 {
-    if ((ctx == NULL) || !ctx->initialized || channel == NULL ||
+    if ((ctx == NULL) || !ctx->initialized || (channel == NULL) ||
         channel_id >= CRYIF_MAX_CHANNELS) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
@@ -220,7 +220,7 @@ cryif_status_t cryif_channel_get_info(cryif_context_t *ctx, uint8_t channel_id,
 cryif_status_t cryif_key_slot_allocate(cryif_context_t *ctx, uint8_t *slot_id,
                                        cryif_driver_t *driver)
 {
-    if ((ctx == NULL) || !ctx->initialized || slot_id == NULL) {
+    if ((ctx == NULL) || !ctx->initialized || (slot_id == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -256,7 +256,7 @@ cryif_status_t cryif_key_slot_allocate(cryif_context_t *ctx, uint8_t *slot_id,
 
 cryif_status_t cryif_key_slot_free(cryif_context_t *ctx, uint8_t slot_id)
 {
-    if ((ctx == NULL) || !ctx->initialized || slot_id >= CRYIF_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || !ctx->initialized || (slot_id >= CRYIF_MAX_KEY_SLOTS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -285,7 +285,7 @@ cryif_status_t cryif_key_import(cryif_context_t *ctx, uint8_t slot_id,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || slot_id >= CRYIF_MAX_KEY_SLOTS ||
+    if ((ctx == NULL) || !ctx->initialized || (slot_id >= CRYIF_MAX_KEY_SLOTS) ||
         (key == NULL) || (key_len == 0U)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
@@ -309,7 +309,7 @@ cryif_status_t cryif_key_export(cryif_context_t *ctx, uint8_t slot_id,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || slot_id >= CRYIF_MAX_KEY_SLOTS ||
+    if ((ctx == NULL) || !ctx->initialized || (slot_id >= CRYIF_MAX_KEY_SLOTS) ||
         (key == NULL) || (key_len == NULL)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
@@ -333,7 +333,7 @@ cryif_status_t cryif_key_generate(cryif_context_t *ctx, uint8_t slot_id,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || slot_id >= CRYIF_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || !ctx->initialized || (slot_id >= CRYIF_MAX_KEY_SLOTS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -361,7 +361,7 @@ cryif_status_t cryif_key_get_info(cryif_context_t *ctx, uint8_t slot_id,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || slot_id >= CRYIF_MAX_KEY_SLOTS ||
+    if ((ctx == NULL) || !ctx->initialized || (slot_id >= CRYIF_MAX_KEY_SLOTS) ||
         info == NULL) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
@@ -422,7 +422,7 @@ cryif_status_t cryif_encrypt(cryif_context_t *ctx, uint8_t key_slot,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot >= CRYIF_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -453,7 +453,7 @@ cryif_status_t cryif_decrypt(cryif_context_t *ctx, uint8_t key_slot,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot >= CRYIF_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -481,7 +481,7 @@ cryif_status_t cryif_mac_generate(cryif_context_t *ctx, uint8_t key_slot,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot >= CRYIF_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -509,7 +509,7 @@ cryif_status_t cryif_mac_verify(cryif_context_t *ctx, uint8_t key_slot,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot >= CRYIF_MAX_KEY_SLOTS ||
+    if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS) ||
         verify_result == NULL) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
@@ -538,7 +538,7 @@ cryif_status_t cryif_sign(cryif_context_t *ctx, uint8_t key_slot,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot >= CRYIF_MAX_KEY_SLOTS) {
+    if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS)) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -566,7 +566,7 @@ cryif_status_t cryif_verify(cryif_context_t *ctx, uint8_t key_slot,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || key_slot >= CRYIF_MAX_KEY_SLOTS ||
+    if ((ctx == NULL) || !ctx->initialized || (key_slot >= CRYIF_MAX_KEY_SLOTS) ||
         verify_result == NULL) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
@@ -624,7 +624,7 @@ cryif_status_t cryif_random_generate(cryif_context_t *ctx,
 {
     cryif_driver_t *driver;
     
-    if ((ctx == NULL) || !ctx->initialized || random_data == NULL || random_len == 0U) {
+    if ((ctx == NULL) || !ctx->initialized || (random_data == NULL) || random_len == 0U) {
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
@@ -719,9 +719,9 @@ cryif_status_t cryif_get_stats(cryif_context_t *ctx, uint64_t *hw_ops,
         return CRYIF_ERROR_INVALID_PARAM;
     }
     
-    if (hw_ops != NULL) *hw_ops = ctx->stats.hw_operations;
-    if (sw_ops != NULL) *sw_ops = ctx->stats.sw_fallback_operations;
-    if (failed_ops != NULL) *failed_ops = ctx->stats.failed_operations;
+    if (hw_ops != NULL) { *hw_ops = ctx->stats.hw_operations; }
+    if (sw_ops != NULL) { *sw_ops = ctx->stats.sw_fallback_operations; }
+    if (failed_ops != NULL) { *failed_ops = ctx->stats.failed_operations; }
     
     return CRYIF_OK;
 }

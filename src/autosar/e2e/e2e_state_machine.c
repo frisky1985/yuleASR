@@ -156,7 +156,7 @@ Std_ReturnType E2E_SM_InitStateMachine(
     const E2E_SM_ConfigType* config,
     E2E_SM_InternalStateType* state)
 {
-    if (!E2E_SM_IsInitialized() || (config == NULL) || state == NULL) {
+    if (!E2E_SM_IsInitialized() || (config == NULL) || (state == NULL)) {
         return E_NOT_OK;
     }
 
@@ -205,7 +205,7 @@ E2E_SM_StateType E2E_SM_ProcessCheckResult(
     E2E_PCheckStatusType checkResult,
     uint32_t timestamp)
 {
-    if (!E2E_SM_IsInitialized() || (state == NULL) || config == NULL) {
+    if (!E2E_SM_IsInitialized() || (state == NULL) || (config == NULL)) {
         return E2E_SM_DEINIT;
     }
 
@@ -260,7 +260,7 @@ Std_ReturnType E2E_SM_Check(
     uint32_t timestamp,
     E2E_SM_CheckResultType* result)
 {
-    if (!E2E_SM_IsInitialized() || (state == NULL) || config == NULL || result == NULL) {
+    if (!E2E_SM_IsInitialized() || (state == NULL) || (config == NULL) || result == NULL) {
         return E_NOT_OK;
     }
 

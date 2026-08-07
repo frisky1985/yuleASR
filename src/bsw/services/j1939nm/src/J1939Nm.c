@@ -226,7 +226,7 @@ STATIC void J1939Nm_ProcessAddressClaiming(J1939Nm_ChannelType Channel)
             
         case J1939NM_AC_STATE_CONFLICT:
             /* Address conflict detected, try to resolve */
-            if (channelConfig->ArbitraryAddressCapable) {
+            if ((channelConfig->ArbitraryAddressCapable) != 0U) {
                 /* Try alternate address */
                 if (channelState->AcRetryCount < 10U) {
                     channelState->AcRetryCount++;
@@ -471,7 +471,7 @@ Std_ReturnType J1939Nm_SetBusOffState(J1939Nm_ChannelType Channel, boolean BusOf
     
     if (J1939Nm_Initialized && (J1939Nm_ValidateChannel(Channel) == E_OK)) {
         J1939Nm_ChannelStates[Channel].BusOffState = BusOffState;
-        if (BusOffState) {
+        if ((BusOffState) != 0U) {
             J1939Nm_ChannelStates[Channel].State = J1939NM_STATE_BUS_OFF;
             J1939Nm_ChannelStates[Channel].BusOffRecoveryTimer = 
                 J1939NM_BUS_OFF_RECOVERY_TIME_MS / J1939NM_MAIN_FUNCTION_PERIOD_MS;

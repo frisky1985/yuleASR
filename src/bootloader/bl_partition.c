@@ -436,7 +436,7 @@ bl_partition_error_t bl_partition_get_info(
     bl_partition_info_t *info
 )
 {
-    if ((mgr == NULL) || (partition_name == NULL) || info == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || (info == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -684,7 +684,7 @@ bl_partition_error_t bl_partition_read(
     uint32_t length
 )
 {
-    if ((mgr == NULL) || (partition_name == NULL) || data == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || (data == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -754,7 +754,7 @@ bl_partition_error_t bl_partition_program(
     uint32_t length
 )
 {
-    if ((mgr == NULL) || (partition_name == NULL) || data == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || (data == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -796,7 +796,7 @@ bl_partition_error_t bl_partition_verify_crc(
     bool *crc_valid
 )
 {
-    if ((mgr == NULL) || (partition_name == NULL) || crc_valid == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || (crc_valid == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -826,7 +826,7 @@ bl_partition_error_t bl_partition_calculate_crc(
     uint32_t *crc32
 )
 {
-    if ((mgr == NULL) || (partition_name == NULL) || crc32 == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || (crc32 == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     
@@ -849,7 +849,7 @@ bl_partition_error_t bl_partition_calculate_crc32(
     uint32_t *crc32
 )
 {
-    if ((mgr == NULL) || (partition_name == NULL) || crc32 == NULL) {
+    if ((mgr == NULL) || (partition_name == NULL) || (crc32 == NULL)) {
         return BL_ERROR_INVALID_PARAM;
     }
     

@@ -410,7 +410,7 @@ uint8 Com_SendSignal_Internal(Com_SignalIdType SignalId, const void* SignalDataP
     }
     
     /* Queue transmission request if needed */
-    if (shouldTransmit) {
+    if ((shouldTransmit) != 0U) {
         if (Com_TxQueueAddRequest(COM_TXREQ_SIGNAL, pduId, SignalId, 0u) == E_OK) {
             /* Set trigger flag for immediate processing */
             Com_GlobalState.IPduRunTime[pduId].Triggered = TRUE;
@@ -620,7 +620,7 @@ boolean Com_ShouldTransmitIPdu(Com_IPduIdType PduId)
             
         case COM_MIXED:
             /* Check both periodic and triggered */
-            if (ipduRuntime->Triggered) {
+            if ((ipduRuntime->Triggered) != 0U) {
                 shouldTransmit = TRUE;
                 ipduRuntime->Triggered = FALSE;
                 /* Start repetition counter */
@@ -692,7 +692,7 @@ void Com_ProcessTxRetries(void)
     uint32 currentTime = Com_GetCurrentTimestamp();
     
     for (uint16 i = 0u; i < Com_GlobalState.Config->NumIPdus; i++) {
-        if (Com_IPduTxContexts[i].IsActive) {
+        if ((Com_IPduTxContexts[i].IsActive) != 0U) {
             /* Check for timeout */
             if ((currentTime - Com_IPduTxContexts[i].StartTime) > Com_IPduTxContexts[i].Timeout) {
                 /* Timeout detected */
@@ -825,7 +825,7 @@ uint16 Com_CalculateCRC(const uint8* DataPtr, uint8 Length)
     for (uint8 i = 0u; i < Length; i++) {
         crc ^= ((uint16)DataPtr[i] << 8u);
         for (uint8 j = 0u; j < 8u; j++) {
-            if (crc & 0x8000u) {
+            if ((crc & 0x8000u) != 0U) {
                 crc = (crc << 1u) ^ polynomial;
             } else {
                 crc = crc << 1u;
@@ -887,7 +887,7 @@ Std_ReturnType Com_VerifyIPduIntegrity(Com_IPduIdType PduId)
  */
 static void Com_UpdateTxStatistics(boolean Success, boolean IsRetry)
 {
-    if (Success) {
+    if ((Success) != 0U) {
         Com_TxStatistics.SuccessfulTransmissions++;
     } else {
         /* Only count as failure if not a retry attempt */

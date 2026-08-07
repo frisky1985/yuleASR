@@ -261,7 +261,7 @@ STATIC void LinTp_ProcessTimers(LinTp_ChannelType Channel)
             connState->N_AsTimer--;
             if (connState->N_AsTimer == 0U) {
                 /* N_As timeout */
-                if (connState->TxBusy) {
+                if ((connState->TxBusy) != 0U) {
                     connState->TxBusy = FALSE;
                     connState->State = LINTP_STATE_IDLE;
                 }
@@ -273,7 +273,7 @@ STATIC void LinTp_ProcessTimers(LinTp_ChannelType Channel)
             connState->N_CrTimer--;
             if (connState->N_CrTimer == 0U) {
                 /* N_Cr timeout */
-                if (connState->RxBusy) {
+                if ((connState->RxBusy) != 0U) {
                     connState->RxBusy = FALSE;
                     connState->State = LINTP_STATE_IDLE;
                 }

@@ -308,7 +308,7 @@ STATIC Std_ReturnType PduR_FifoPop(PduR_FifoQueueType* FifoPtr, PduInfoType* Pdu
         {
             PduR_FifoEntryType* entryPtr = &FifoPtr->Entries[FifoPtr->Head];
 
-            if (entryPtr->IsValid)
+            if ((entryPtr->IsValid) != 0U)
             {
                 /* Copy PDU info */
                 PduInfoPtr->SduLength = entryPtr->PduInfo.SduLength;

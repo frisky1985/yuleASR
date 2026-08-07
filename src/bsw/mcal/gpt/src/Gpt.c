@@ -156,7 +156,7 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
             {
                 uint32 gpt_swr_timeout = 10000U;
                 while ((REG_READ32(baseAddr + GPT_CR) & GPT_CR_SWR) != 0U) {
-                    if (gpt_swr_timeout == 0U) break;
+                    if (gpt_swr_timeout == 0U) { break; }
                     gpt_swr_timeout--;
                 }
             }
@@ -198,7 +198,7 @@ void Gpt_DeInit(void)
     #endif
 
     for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
-        if (Gpt_ChannelRunning[i]) {
+        if ((Gpt_ChannelRunning[i]) != 0U) {
             return; /* Cannot deinit if any channel is running */
         }
     }
@@ -283,7 +283,7 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
         Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_PARAM_VALUE);
         return;
     }
-    if (Gpt_ChannelRunning[Channel]) {
+    if ((Gpt_ChannelRunning[Channel]) != 0U) {
         Det_ReportError(GPT_MODULE_ID, 0U, GPT_SID_STARTTIMER, GPT_E_CHANNEL_BUSY);
         return;
     }
@@ -299,7 +299,7 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
     REG_WRITE32(baseAddr + GPT_OCR1 + (chOffset * 4U), Value);
 
     /* Enable interrupt if notification is enabled */
-    if (Gpt_ConfigPtr->Channels[Channel].NotificationEnabled) {
+    if ((Gpt_ConfigPtr->Channels[Channel].NotificationEnabled) != 0U) {
         uint32 irValue = REG_READ32(baseAddr + GPT_IR);
         irValue |= (GPT_IR_OF1IE << chOffset);
         REG_WRITE32(baseAddr + GPT_IR, irValue);
@@ -353,7 +353,7 @@ void Gpt_EnableNotification(Gpt_ChannelType Channel)
     }
     #endif
 
-    if (Gpt_ChannelRunning[Channel]) {
+    if ((Gpt_ChannelRunning[Channel]) != 0U) {
         uint32 baseAddr = Gpt_GetBaseAddr(Gpt_ConfigPtr->Channels[Channel].ChannelId);
         uint8 chOffset = Gpt_GetChannelOffset(Gpt_ConfigPtr->Channels[Channel].ChannelId);
 
@@ -412,7 +412,7 @@ void Gpt_SetMode(Gpt_ModeType Mode)
     if (Mode == GPT_MODE_SLEEP) {
         /* Stop all channels */
         for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
-            if (Gpt_ChannelRunning[i]) {
+            if ((Gpt_ChannelRunning[i]) != 0U) {
                 Gpt_StopTimer(i);
             }
         }

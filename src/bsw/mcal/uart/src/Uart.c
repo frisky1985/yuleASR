@@ -284,11 +284,11 @@ static void Uart_HwInit(Uart_ChannelType Channel)
     
     /* 软件复位 */
     *(base + (UART_UCR2_OFFSET / 4U)) = 0x0;
-    while (*(base + (UART_UCR2_OFFSET / 4U)) & UCR2_SRST);
+    while ((*(base + (UART_UCR2_OFFSET / 4U)) & UCR2_SRST) != 0U){ ; }
     
     /* 配置UCR1 */
     regVal = UCR1_UARTEN;
-    if (ChannelConfig->DmaEnabled) {
+    if ((ChannelConfig->DmaEnabled) != 0U) {
         regVal |= (UCR1_TXDMAEN | UCR1_RXDMAEN | UCR1_RDMAEN | UCR1_TRDYEN);
     }
     if (ChannelConfig->OpMode == UART_MODE_INTERRUPT) {
@@ -640,7 +640,7 @@ Std_ReturnType Uart_Receive(
             
             /* 检查错误 */
             regVal = *(base + (UART_USR2_OFFSET / 4U));
-            if (regVal & USR2_ORE) {
+            if ((regVal & USR2_ORE) != 0U) {
                 state->ErrorCode = UART_E_OVERRUN;
                 state->RxBuffer.Result = UART_RESULT_ERROR;
                 state->RxStatus = UART_RX_ERROR;
@@ -895,15 +895,15 @@ void Uart_IsrHandler(Uart_ChannelType Channel)
     uint32 usr1 = *(base + (UART_USR1_OFFSET / 4U));
     uint32 usr2 = *(base + (UART_USR2_OFFSET / 4U));
     
-    if (usr1 & USR1_RRDY) {
+    if ((usr1 & USR1_RRDY) != 0U) {
         Uart_ProcessRxInterrupt(Channel);
     }
     
-    if (usr1 & USR1_TRDY) {
+    if ((usr1 & USR1_TRDY) != 0U) {
         Uart_ProcessTxInterrupt(Channel);
     }
     
-    if (usr2 & (USR2_ORE | USR2_BRCD)) {
+    if ((usr2 & (USR2_ORE | USR2_BRCD)) != 0U) {
         Uart_ProcessError(Channel);
     }
     
@@ -963,7 +963,7 @@ void Uart_Abort(Uart_ChannelType Channel)
     *(base + (UART_UCR1_OFFSET / 4U)) &= ~(UCR1_TXMPTYEN | UCR1_RRDYEN);
     
     #if (UART_DMA_SUPPORT == STD_ON)
-    if (state->DmaActive) {
+    if ((state->DmaActive) != 0U) {
         Dma_DisableChannel(Uart_ConfigPtr->ChannelConfig[Channel].DmaTxChannel);
         Dma_DisableChannel(Uart_ConfigPtr->ChannelConfig[Channel].DmaRxChannel);
         state->DmaActive = FALSE;
@@ -1062,8 +1062,8 @@ static void Uart_ProcessError(Uart_ChannelType Channel)
     volatile uint32* base = Uart_BaseAddr[Channel];
     uint32 usr2 = *(base + (UART_USR2_OFFSET / 4U));
     
-    if (usr2 & USR2_ORE) state->ErrorCode = UART_E_OVERRUN;
-    else if (usr2 & USR2_BRCD) state->ErrorCode = UART_E_BREAK;
+    if ((usr2 & USR2_ORE) != 0U) { state->ErrorCode = UART_E_OVERRUN; }
+    else if ((usr2 & USR2_BRCD) != 0U) { state->ErrorCode = UART_E_BREAK; }
     
     state->Status = UART_STATE_ERROR;
     if (Uart_ErrorNotification[Channel] != NULL_PTR) {

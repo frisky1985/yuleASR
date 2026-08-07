@@ -60,7 +60,7 @@ void secoc_dds_deinit(secoc_dds_context_t *ctx) {
     }
     
     /* 反初始化SecOC */
-    if (ctx->secoc_ctx) {
+    if ((ctx->secoc_ctx) != 0U) {
         secoc_deinit(ctx->secoc_ctx);
     }
     
@@ -386,9 +386,9 @@ void secoc_dds_get_stats(secoc_dds_context_t *ctx,
                          uint64_t *key_sync_count) {
     (void)ctx;  /* 未使用 */
     
-    if (dds_ops) *dds_ops = g_stats.dds_ops;
-    if (fallback_ops) *fallback_ops = g_stats.fallback_ops;
-    if (key_sync_count) *key_sync_count = g_stats.key_sync_count;
+    if ((dds_ops) != 0U) { *dds_ops = g_stats.dds_ops; }
+    if ((fallback_ops) != 0U) { *fallback_ops = g_stats.fallback_ops; }
+    if ((key_sync_count) != 0U) { *key_sync_count = g_stats.key_sync_count; }
 }
 
 void secoc_dcs_print_status(secoc_dds_context_t *ctx) {

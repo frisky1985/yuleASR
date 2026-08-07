@@ -138,7 +138,7 @@ STATIC uint32 Cdd_Safety_Crc32(const uint8* data, uint32 length, uint32 seed)
 
         for (j = 0U; j < 8U; j++)
         {
-            if (crc & 0x80000000U)
+            if ((crc & 0x80000000U) != 0U)
             {
                 crc = (crc << 1U) ^ 0x04C11DB7U;
             }
@@ -177,7 +177,7 @@ Std_ReturnType Cdd_Safety_Init(const Cdd_Safety_ConfigType* config)
     Cdd_Safety_Config = config;
 
     /* Initialize FCCU if enabled */
-    if (config->enableFccu)
+    if ((config->enableFccu) != 0U)
     {
         FCCU_CTRLK = FCCU_CTRLK_KEY;   /* Unlock FCCU */
         FCCU_CFG   = 0x00U;            /* Normal mode */
@@ -185,7 +185,7 @@ Std_ReturnType Cdd_Safety_Init(const Cdd_Safety_ConfigType* config)
     }
 
     /* Initialize CRC reference if integrity checks enabled */
-    if (config->enableCrcIntegrity)
+    if ((config->enableCrcIntegrity) != 0U)
     {
         /* Compute CRC of a known reference RAM region */
         /* (Region and address would come from configuration) */
@@ -298,9 +298,7 @@ void Cdd_Safety_SystemReset(uint8 resetType)
     Cdd_Safety_SetState(CDD_SAFETY_STATE_RESET);
 
     /* Trigger MC_RGM software reset */
-    REG32(CDD_LOCKSTEP_RGM_BASE + 0x10U) = 0x01U;  /* MC_RGM_CTRL */
-
-    /* Halt */
+    REG32(CDD_LOCKSTEP_RGM_BASE + 0x10U) = 0x01U;  /* MC_RGM_CTRLfor (;;)* Halt */
     while (1U)
     {
         /* Wait for reset */

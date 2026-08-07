@@ -163,7 +163,7 @@ void SomeIp_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIp_MessageType message;
     
-    if (!SomeIp_Initialized || (Data == NULL_PTR) || Length < SOMEIP_HEADER_SIZE)
+    if (!SomeIp_Initialized || (Data == NULL_PTR) || (Length < SOMEIP_HEADER_SIZE))
     {
         return;
     }

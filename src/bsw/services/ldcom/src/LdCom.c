@@ -18,7 +18,7 @@ Std_ReturnType LdCom_Init(const LdCom_ConfigType* Config)
         return E_NOT_OK;
     }
 #endif
-    if (LdCom_Initialized) {
+    if ((LdCom_Initialized) != 0U) {
         return E_NOT_OK;
     }
     LdCom_ConfigPtr = Config;
