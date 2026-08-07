@@ -77,6 +77,42 @@ int main(void)
     Os_CheckInterruptLockBudgets();
     Os_StopAllIntTiming();
 
+    /* ---- remaining fault actions (stub budgets per-task) ---- */
+    asil_rtos_tick = 0U;
+    Os_StartTaskExecutionTiming(1U);
+    asil_rtos_tick = 1000000U;
+    Os_CheckTaskExecutionBudget(1U);   /* TASK_KILL action */
+    Os_StopTaskExecutionTiming(1U);
+
+    Os_StartTaskExecutionTiming(2U);
+    asil_rtos_tick = 2000000U;
+    Os_CheckTaskExecutionBudget(2U);   /* TASK_RESTART action */
+    Os_StopTaskExecutionTiming(2U);
+
+    Os_StartTaskExecutionTiming(3U);
+    asil_rtos_tick = 3000000U;
+    Os_CheckTaskExecutionBudget(3U);   /* PROTECTION_HOOK action */
+    Os_StopTaskExecutionTiming(3U);
+
+    Os_StartTaskExecutionTiming(4U);
+    asil_rtos_tick = 4000000U;
+    Os_CheckTaskExecutionBudget(4U);   /* NONE action */
+    Os_StopTaskExecutionTiming(4U);
+
+    /* arrival-time: too-early rejection (delta < min interval) */
+    asil_rtos_tick = 100000U;
+    (void)Os_CheckTaskArrivalTime(5U);      /* first arrival */
+    asil_rtos_tick = 100001U;
+    CHECK(Os_CheckTaskArrivalTime(5U) == FALSE, "arrival too early rejected");
+    asil_rtos_tick = 110000U;
+    CHECK(Os_CheckTaskArrivalTime(5U) == TRUE, "arrival within interval accepted");
+
+    /* arrival-time: out-of-range task id allowed by default */
+    CHECK(Os_CheckTaskArrivalTime(0xFFU) == TRUE, "arrival out-of-range allowed");
+
+    /* MainFunction re-run covers all budgets */
+    Os_TimingProtectionMainFunction();
+
     printf("\nResult: %d/%d checks passed\n", t_pass, t_pass + t_fail);
     return (t_fail == 0) ? 0 : 1;
 }

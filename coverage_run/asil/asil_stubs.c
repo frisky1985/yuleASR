@@ -101,8 +101,19 @@ void Os_TerminateTask(void)
  *      Os_TimingProtection_Cfg.h; production Os_Cfg.c provides it but is
  *      not linked into this host binary) ---- */
 #if (OS_TASK_COUNT > 0)
+/* Per-task budgets: task 0 keeps ERROR_HOOK (baseline), the others use
+ * the remaining fault actions so every Os_CheckTimingFault branch is
+ * driven by the host test (test double only — production Os_Cfg.c
+ * untouched). */
 const Os_TaskTimingBudgetType Os_TaskTimingBudgets[OS_TASK_COUNT] = {
-    [0 ... (OS_TASK_COUNT - 1)] = { 0, 100000U, 10000U, OS_TIMING_ACTION_ERROR_HOOK }
+    [0] = { 0, 100000U, 10000U, OS_TIMING_ACTION_ERROR_HOOK },
+    [1] = { 0, 100000U, 10000U, OS_TIMING_ACTION_TASK_KILL },
+    [2] = { 0, 100000U, 10000U, OS_TIMING_ACTION_TASK_RESTART },
+    [3] = { 0, 100000U, 10000U, OS_TIMING_ACTION_PROTECTION_HOOK },
+    [4] = { 0, 100000U, 10000U, OS_TIMING_ACTION_NONE },
+#if (OS_TASK_COUNT > 5)
+    [5 ... (OS_TASK_COUNT - 1)] = { 0, 100000U, 10000U, OS_TIMING_ACTION_ERROR_HOOK }
+#endif
 };
 #endif
 

@@ -51,6 +51,37 @@ void TestErrorHook(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId
     hook_called++;
 }
 
+void TestRuntimeCallout(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId)
+{
+    (void)ModuleId; (void)InstanceId; (void)ApiId; (void)ErrorId;
+    hook_called++;
+}
+
+void TestTransientCallout(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 FaultId)
+{
+    (void)ModuleId; (void)InstanceId; (void)ApiId; (void)FaultId;
+    hook_called++;
+}
+
+/* Register hooks/callouts into the white-box exposed tables so the
+ * dispatch loops (Det_CallErrorHooks / Det_CallRuntimeCallouts /
+ * Det_CallTransientCallouts) execute against real registrations. */
+void Test_Det_RegisterHooks(void)
+{
+    Det_ConfigType config = {0};
+    Det_Init(&config);
+    Det_ErrorHooks[0] = TestErrorHook;
+    Det_NumRegisteredHooks = 1U;
+    Det_RuntimeCallouts[0] = TestRuntimeCallout;
+    Det_NumRuntimeCallouts = 1U;
+    Det_TransientCallouts[0] = TestTransientCallout;
+    Det_NumTransientCallouts = 1U;
+    (void)Det_ReportError(100u, 0u, 1u, 0x01u);
+    (void)Det_ReportRuntimeError(100u, 0u, 1u, 0x10u);
+    (void)Det_ReportTransientFault(100u, 0u, 1u, 0x20u);
+    TEST_ASSERT(hook_called >= 3, "Hooks/callouts should be dispatched");
+}
+
 /*==================================================================================================
  *                                    TEST CASES
  *==================================================================================================*/
@@ -270,6 +301,7 @@ int main(void)
     Test_Det_ReportError();
     Test_Det_ReportRuntimeError();
     Test_Det_ReportTransientFault();
+    Test_Det_RegisterHooks();
     #if (DET_VERSION_INFO_API == STD_ON)
     Test_Det_GetVersionInfo_Valid();
     Test_Det_GetVersionInfo_Null();
