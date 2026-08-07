@@ -5,10 +5,10 @@
   "commit_sha": "",
   "branch": "",
   "summary": {
-    "total_requirements": 141,
+    "total_requirements": 175,
     "with_implementation": 85,
-    "with_test_coverage": 1,
-    "uncovered_shalls": 140,
+    "with_test_coverage": 18,
+    "uncovered_shalls": 157,
     "total_scenarios": 0,
     "total_reviews": 0,
     "total_ci_runs": 0
@@ -128,6 +128,312 @@
       "shall_count": 1,
       "shall_statements": [
         "SHALL 使用 MISRA C:2023 `safety` 配置"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-001.1-01",
+      "req_id": "SWR-001.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-001.1-01**: SHALL support AUTOSAR Classic Platform 4.4.0 standard"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-001.1-02",
+      "req_id": "SWR-001.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-001.1-02**: SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-001.1-03",
+      "req_id": "SWR-001.1-03",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-001.1-03**: SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-001.1-04",
+      "req_id": "SWR-001.1-04",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-001.1-04**: SHALL implement BSW Services layer covering 44 service modules"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-001.1-05",
+      "req_id": "SWR-001.1-05",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-001.1-05**: SHALL target NXP S32K312 microcontroller platform"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-001.1-06",
+      "req_id": "SWR-001.1-06",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-001.1-06**: SHALL support RTE generation for SWC-to-BSW communication"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-002.1-01",
+      "req_id": "SWR-002.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-002.1-01**: SHALL implement E2E communication protection for safety-critical signals"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-002.1-02",
+      "req_id": "SWR-002.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-002.1-02**: SHALL support HSM-based cryptographic operations via Crypto module"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-002.1-03",
+      "req_id": "SWR-002.1-03",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-002.1-03**: SHALL provide RAM safety and lockstep monitoring for ASIL-D decomposition"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-002.1-04",
+      "req_id": "SWR-002.1-04",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-002.1-04**: SHALL implement secure boot mechanism"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-003.1-01",
+      "req_id": "SWR-003.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-003.1-01**: SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-003.1-02",
+      "req_id": "SWR-003.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-003.1-02**: SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-003.1-03",
+      "req_id": "SWR-003.1-03",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-003.1-03**: SHALL implement Ethernet communication (Eth, EthIf, EthSm, SoAd, SomeIp, SomeIpSd)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-003.1-04",
+      "req_id": "SWR-003.1-04",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-003.1-04**: SHALL implement DCM diagnostic communication manager"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-003.1-05",
+      "req_id": "SWR-003.1-05",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-003.1-05**: SHALL implement DoIP diagnostic over IP"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-004.1-01",
+      "req_id": "SWR-004.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-004.1-01**: SHALL implement NVRAM manager (NvM) for persistent storage"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-004.1-02",
+      "req_id": "SWR-004.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-004.1-02**: SHALL implement Flash EEPROM emulation (Fee)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-004.1-03",
+      "req_id": "SWR-004.1-03",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-004.1-03**: SHALL implement internal/external EEPROM driver"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-004.1-04",
+      "req_id": "SWR-004.1-04",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-004.1-04**: SHALL implement memory abstraction interface (MemIf)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-004.1-05",
+      "req_id": "SWR-004.1-05",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-004.1-05**: SHALL support flash driver for S32K312 on-chip flash"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-01",
+      "req_id": "SWR-005.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-01**: SHALL implement ECU state manager (EcuM)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-02",
+      "req_id": "SWR-005.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-02**: SHALL implement BSW scheduler (BswM) with mode management"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-03",
+      "req_id": "SWR-005.1-03",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-03**: SHALL implement Watchdog manager (WdgM)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-04",
+      "req_id": "SWR-005.1-04",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-04**: SHALL implement Default Error Tracer (Det)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-05",
+      "req_id": "SWR-005.1-05",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-05**: SHALL implement Diagnostic Event Manager (Dem)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-06",
+      "req_id": "SWR-005.1-06",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-06**: SHALL implement Function Inhibition Manager (FiM)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-07",
+      "req_id": "SWR-005.1-07",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-07**: SHALL implement CRC calculator"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-08",
+      "req_id": "SWR-005.1-08",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-08**: SHALL implement OS (AUTOSAR SC4 compliant)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-005.1-09",
+      "req_id": "SWR-005.1-09",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-005.1-09**: SHALL support DLT (Diagnostic Log and Trace)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-006.1-01",
+      "req_id": "SWR-006.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-006.1-01**: SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-006.1-02",
+      "req_id": "SWR-006.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-006.1-02**: SHALL provide standardized AUTOSAR interface macros (SchM, Det, MemMap)"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-007.1-01",
+      "req_id": "SWR-007.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-007.1-01**: SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-007.1-02",
+      "req_id": "SWR-007.1-02",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-007.1-02**: SHALL implement RTE for component communication"
+      ],
+      "matched_tests": []
+    },
+    {
+      "name": "SWR-008.1-01",
+      "req_id": "SWR-008.1-01",
+      "shall_count": 1,
+      "shall_statements": [
+        "**SWR-008.1-01**: SHALL integrate micro DDS middleware for inter-ECU communication"
       ],
       "matched_tests": []
     },

@@ -18,6 +18,40 @@
 | NFR-SHALL-003 | NFR-SHALL-003 | 条件覆盖率 | Unit Test | — | — |  | ❌ |
 | NFR-SHALL-004 | NFR-SHALL-004 | 静态分析 (cppcheck) | Unit Test | — | — |  | ❌ |
 | None | None | SHALL 使用 MISRA C:2023 `safety` 配置 | Unit Test | — | — |  | ❌ |
+| SWR-001.1-01 | SWR-001.1-01 | **SWR-001.1-01**: SHALL support AUTOSAR Classic Platform 4.4.0 standard | Unit Test | (tested) | — |  | ✅ |
+| SWR-001.1-02 | SWR-001.1-02 | **SWR-001.1-02**: SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules | Unit Test | (tested) | — |  | ✅ |
+| SWR-001.1-03 | SWR-001.1-03 | **SWR-001.1-03**: SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules | Unit Test | (tested) | — |  | ✅ |
+| SWR-001.1-04 | SWR-001.1-04 | **SWR-001.1-04**: SHALL implement BSW Services layer covering 44 service modules | Unit Test | (tested) | — |  | ✅ |
+| SWR-001.1-05 | SWR-001.1-05 | **SWR-001.1-05**: SHALL target NXP S32K312 microcontroller platform | Unit Test | (tested) | — |  | ✅ |
+| SWR-001.1-06 | SWR-001.1-06 | **SWR-001.1-06**: SHALL support RTE generation for SWC-to-BSW communication | Unit Test | — | — |  | ❌ |
+| SWR-002.1-01 | SWR-002.1-01 | **SWR-002.1-01**: SHALL implement E2E communication protection for safety-critical signals | Unit Test | (tested) | — |  | ✅ |
+| SWR-002.1-02 | SWR-002.1-02 | **SWR-002.1-02**: SHALL support HSM-based cryptographic operations via Crypto module | Unit Test | (tested) | — |  | ✅ |
+| SWR-002.1-03 | SWR-002.1-03 | **SWR-002.1-03**: SHALL provide RAM safety and lockstep monitoring for ASIL-D decomposition | Unit Test | — | — |  | ❌ |
+| SWR-002.1-04 | SWR-002.1-04 | **SWR-002.1-04**: SHALL implement secure boot mechanism | Unit Test | — | — |  | ❌ |
+| SWR-003.1-01 | SWR-003.1-01 | **SWR-003.1-01**: SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm) | Unit Test | (tested) | — |  | ✅ |
+| SWR-003.1-02 | SWR-003.1-02 | **SWR-003.1-02**: SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM) | Unit Test | (tested) | — |  | ✅ |
+| SWR-003.1-03 | SWR-003.1-03 | **SWR-003.1-03**: SHALL implement Ethernet communication (Eth, EthIf, EthSm, SoAd, SomeIp, SomeIpSd) | Unit Test | — | — |  | ❌ |
+| SWR-003.1-04 | SWR-003.1-04 | **SWR-003.1-04**: SHALL implement DCM diagnostic communication manager | Unit Test | (tested) | — |  | ✅ |
+| SWR-003.1-05 | SWR-003.1-05 | **SWR-003.1-05**: SHALL implement DoIP diagnostic over IP | Unit Test | — | — |  | ❌ |
+| SWR-004.1-01 | SWR-004.1-01 | **SWR-004.1-01**: SHALL implement NVRAM manager (NvM) for persistent storage | Unit Test | (tested) | — |  | ✅ |
+| SWR-004.1-02 | SWR-004.1-02 | **SWR-004.1-02**: SHALL implement Flash EEPROM emulation (Fee) | Unit Test | — | — |  | ❌ |
+| SWR-004.1-03 | SWR-004.1-03 | **SWR-004.1-03**: SHALL implement internal/external EEPROM driver | Unit Test | — | — |  | ❌ |
+| SWR-004.1-04 | SWR-004.1-04 | **SWR-004.1-04**: SHALL implement memory abstraction interface (MemIf) | Unit Test | — | — |  | ❌ |
+| SWR-004.1-05 | SWR-004.1-05 | **SWR-004.1-05**: SHALL support flash driver for S32K312 on-chip flash | Unit Test | — | — |  | ❌ |
+| SWR-005.1-01 | SWR-005.1-01 | **SWR-005.1-01**: SHALL implement ECU state manager (EcuM) | Unit Test | (tested) | — |  | ✅ |
+| SWR-005.1-02 | SWR-005.1-02 | **SWR-005.1-02**: SHALL implement BSW scheduler (BswM) with mode management | Unit Test | — | — |  | ❌ |
+| SWR-005.1-03 | SWR-005.1-03 | **SWR-005.1-03**: SHALL implement Watchdog manager (WdgM) | Unit Test | (tested) | — |  | ✅ |
+| SWR-005.1-04 | SWR-005.1-04 | **SWR-005.1-04**: SHALL implement Default Error Tracer (Det) | Unit Test | — | — |  | ❌ |
+| SWR-005.1-05 | SWR-005.1-05 | **SWR-005.1-05**: SHALL implement Diagnostic Event Manager (Dem) | Unit Test | — | — |  | ❌ |
+| SWR-005.1-06 | SWR-005.1-06 | **SWR-005.1-06**: SHALL implement Function Inhibition Manager (FiM) | Unit Test | — | — |  | ❌ |
+| SWR-005.1-07 | SWR-005.1-07 | **SWR-005.1-07**: SHALL implement CRC calculator | Unit Test | — | — |  | ❌ |
+| SWR-005.1-08 | SWR-005.1-08 | **SWR-005.1-08**: SHALL implement OS (AUTOSAR SC4 compliant) | Unit Test | (tested) | — |  | ✅ |
+| SWR-005.1-09 | SWR-005.1-09 | **SWR-005.1-09**: SHALL support DLT (Diagnostic Log and Trace) | Unit Test | — | — |  | ❌ |
+| SWR-006.1-01 | SWR-006.1-01 | **SWR-006.1-01**: SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG) | Unit Test | (tested) | — |  | ✅ |
+| SWR-006.1-02 | SWR-006.1-02 | **SWR-006.1-02**: SHALL provide standardized AUTOSAR interface macros (SchM, Det, MemMap) | Unit Test | — | — |  | ❌ |
+| SWR-007.1-01 | SWR-007.1-01 | **SWR-007.1-01**: SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager | Unit Test | (tested) | — |  | ✅ |
+| SWR-007.1-02 | SWR-007.1-02 | **SWR-007.1-02**: SHALL implement RTE for component communication | Unit Test | — | — |  | ❌ |
+| SWR-008.1-01 | SWR-008.1-01 | **SWR-008.1-01**: SHALL integrate micro DDS middleware for inter-ECU communication | Unit Test | (tested) | — |  | ✅ |
 | None | None | The system SHALL support UDS service IDs 0x10, 0x11, 0x14, 0x19, 0x22, 0x2E, 0x31, 0x34, 0x36, 0x37 as specified in ISO 14229-1. | Unit Test | — | — |  | ❌ |
 | None | None | The system SHALL support a maximum of 4 concurrent diagnostic sessions. | Unit Test | — | — |  | ❌ |
 | None | None | The system SHALL enforce P2 timeout of 50ms for diagnostic responses. | Unit Test | — | — |  | ❌ |
@@ -148,7 +182,7 @@
 | None | None | AND the driver SHALL report the error through the error callback | Unit Test | — | — |  | ❌ |
 
 ## Summary
-- Total SHALL statements: 141
-- Covered by tests: 1 (0%)
-- Uncovered: 140
+- Total SHALL statements: 175
+- Covered by tests: 18 (10%)
+- Uncovered: 157
 - Threshold: 100% → ❌ FAIL
