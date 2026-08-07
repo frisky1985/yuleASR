@@ -14,6 +14,26 @@
 #include <stdlib.h>
 
 /* ============================================================================
+ * 静态存储 (ISO 26262 / AUTOSAR R21-11 BSW 禁止动态内存)
+ * ============================================================================ */
+
+/* 描述符环: 编译期按最大配置固定分配 */
+static eth_dma_rx_desc_t s_rx_desc_ring_storage[ETH_DMA_MAX_RX_DESC_COUNT];
+static eth_dma_tx_desc_t s_tx_desc_ring_storage[ETH_DMA_MAX_TX_DESC_COUNT];
+
+/* 缓冲区池: 按最大描述符数 x 巨型帧大小固定分配 */
+static uint8_t s_rx_buf_pool[ETH_DMA_MAX_RX_DESC_COUNT][ETH_DMA_JUMBO_BUFFER_SIZE + ETH_DMA_ALIGN];
+static uint8_t s_tx_buf_pool[ETH_DMA_MAX_TX_DESC_COUNT][ETH_DMA_JUMBO_BUFFER_SIZE + ETH_DMA_ALIGN];
+
+/* 缓冲区指针数组 (描述符 -> 池内缓冲区) */
+static uint8_t *s_rx_buf_ptrs[ETH_DMA_MAX_RX_DESC_COUNT];
+static uint8_t *s_tx_buf_ptrs[ETH_DMA_MAX_TX_DESC_COUNT];
+
+/* 缓冲区使用位图 (1=已分配) */
+static uint32_t s_rx_buf_used[(ETH_DMA_MAX_RX_DESC_COUNT + 31U) / 32U];
+static uint32_t s_tx_buf_used[(ETH_DMA_MAX_TX_DESC_COUNT + 31U) / 32U];
+
+/* ============================================================================
  * 内部状态结构
  * ============================================================================ */
 
@@ -118,39 +138,30 @@ static inline bool eth_dma_tx_desc_owned_by_dma(const eth_dma_tx_desc_t *desc)
 }
 
 /**
- * @brief 初始化接收描述符环
+ * @brief 初始化接收描述符环 (静态池, 无动态分配)
  */
 static eth_status_t eth_dma_init_rx_ring(void)
 {
     uint16_t count = g_dma_ctx.config.rx_desc_count;
     uint32_t buffer_size = g_dma_ctx.config.buffer_size;
 
-    /* 分配描述符环 */
-    g_dma_ctx.rx_desc_ring = (eth_dma_rx_desc_t *)malloc(
-        sizeof(eth_dma_rx_desc_t) * count);
-    if (g_dma_ctx.rx_desc_ring == NULL) {
-        return ETH_NO_MEMORY;
-    }
-    memset(g_dma_ctx.rx_desc_ring, 0, sizeof(eth_dma_rx_desc_t) * count);
+    /* 使用静态描述符环 (编译期最大配置) */
+    g_dma_ctx.rx_desc_ring = s_rx_desc_ring_storage;
+    memset(g_dma_ctx.rx_desc_ring, 0, sizeof(eth_dma_rx_desc_t) * ETH_DMA_MAX_RX_DESC_COUNT);
 
-    /* 分配接收缓冲区数组 */
-    g_dma_ctx.rx_buffers = (uint8_t **)malloc(sizeof(uint8_t *) * count);
-    if (g_dma_ctx.rx_buffers == NULL) {
-        free(g_dma_ctx.rx_desc_ring);
-        return ETH_NO_MEMORY;
-    }
+    /* 使用静态缓冲区指针数组 */
+    g_dma_ctx.rx_buffers = s_rx_buf_ptrs;
+    memset(g_dma_ctx.rx_buffers, 0, sizeof(uint8_t *) * ETH_DMA_MAX_RX_DESC_COUNT);
 
     /* 分配和初始化描述符 */
     for (uint16_t i = 0; i < count; i++) {
-        /* 分配缓冲区 */
+        /* 从静态池分配缓冲区 (越界检查: count <= MAX 已由校验保证) */
         g_dma_ctx.rx_buffers[i] = (uint8_t *)eth_dma_alloc_buffer(buffer_size);
         if (g_dma_ctx.rx_buffers[i] == NULL) {
-            /* 清理已分配的缓冲区 */
+            /* 清理已分配的缓冲区 (静态池回收) */
             for (uint16_t j = 0; j < i; j++) {
                 eth_dma_free_buffer(g_dma_ctx.rx_buffers[j]);
             }
-            free(g_dma_ctx.rx_buffers);
-            free(g_dma_ctx.rx_desc_ring);
             return ETH_NO_MEMORY;
         }
 
@@ -175,39 +186,30 @@ static eth_status_t eth_dma_init_rx_ring(void)
 }
 
 /**
- * @brief 初始化发送描述符环
+ * @brief 初始化发送描述符环 (静态池, 无动态分配)
  */
 static eth_status_t eth_dma_init_tx_ring(void)
 {
     uint16_t count = g_dma_ctx.config.tx_desc_count;
     uint32_t buffer_size = g_dma_ctx.config.buffer_size;
 
-    /* 分配描述符环 */
-    g_dma_ctx.tx_desc_ring = (eth_dma_tx_desc_t *)malloc(
-        sizeof(eth_dma_tx_desc_t) * count);
-    if (g_dma_ctx.tx_desc_ring == NULL) {
-        return ETH_NO_MEMORY;
-    }
-    memset(g_dma_ctx.tx_desc_ring, 0, sizeof(eth_dma_tx_desc_t) * count);
+    /* 使用静态描述符环 (编译期最大配置) */
+    g_dma_ctx.tx_desc_ring = s_tx_desc_ring_storage;
+    memset(g_dma_ctx.tx_desc_ring, 0, sizeof(eth_dma_tx_desc_t) * ETH_DMA_MAX_TX_DESC_COUNT);
 
-    /* 分配发送缓冲区数组 */
-    g_dma_ctx.tx_buffers = (uint8_t **)malloc(sizeof(uint8_t *) * count);
-    if (g_dma_ctx.tx_buffers == NULL) {
-        free(g_dma_ctx.tx_desc_ring);
-        return ETH_NO_MEMORY;
-    }
+    /* 使用静态缓冲区指针数组 */
+    g_dma_ctx.tx_buffers = s_tx_buf_ptrs;
+    memset(g_dma_ctx.tx_buffers, 0, sizeof(uint8_t *) * ETH_DMA_MAX_TX_DESC_COUNT);
 
     /* 分配和初始化描述符 */
     for (uint16_t i = 0; i < count; i++) {
-        /* 分配缓冲区 */
+        /* 从静态池分配缓冲区 */
         g_dma_ctx.tx_buffers[i] = (uint8_t *)eth_dma_alloc_buffer(buffer_size);
         if (g_dma_ctx.tx_buffers[i] == NULL) {
-            /* 清理已分配的缓冲区 */
+            /* 清理已分配的缓冲区 (静态池回收) */
             for (uint16_t j = 0; j < i; j++) {
                 eth_dma_free_buffer(g_dma_ctx.tx_buffers[j]);
             }
-            free(g_dma_ctx.tx_buffers);
-            free(g_dma_ctx.tx_desc_ring);
             return ETH_NO_MEMORY;
         }
 
@@ -226,7 +228,7 @@ static eth_status_t eth_dma_init_tx_ring(void)
 }
 
 /**
- * @brief 释放接收环形缓冲区
+ * @brief 释放接收环形缓冲区 (静态池回收)
  */
 static void eth_dma_deinit_rx_ring(void)
 {
@@ -236,24 +238,22 @@ static void eth_dma_deinit_rx_ring(void)
 
     uint16_t count = g_dma_ctx.config.rx_desc_count;
 
-    /* 释放缓冲区 */
+    /* 回收缓冲区 */
     if (g_dma_ctx.rx_buffers != NULL) {
         for (uint16_t i = 0; i < count; i++) {
             if (g_dma_ctx.rx_buffers[i] != NULL) {
                 eth_dma_free_buffer(g_dma_ctx.rx_buffers[i]);
             }
         }
-        free(g_dma_ctx.rx_buffers);
         g_dma_ctx.rx_buffers = NULL;
     }
 
-    /* 释放描述符环 */
-    free(g_dma_ctx.rx_desc_ring);
+    /* 静态描述符环无需释放 */
     g_dma_ctx.rx_desc_ring = NULL;
 }
 
 /**
- * @brief 释放发送环形缓冲区
+ * @brief 释放发送环形缓冲区 (静态池回收)
  */
 static void eth_dma_deinit_tx_ring(void)
 {
@@ -263,19 +263,17 @@ static void eth_dma_deinit_tx_ring(void)
 
     uint16_t count = g_dma_ctx.config.tx_desc_count;
 
-    /* 释放缓冲区 */
+    /* 回收缓冲区 */
     if (g_dma_ctx.tx_buffers != NULL) {
         for (uint16_t i = 0; i < count; i++) {
             if (g_dma_ctx.tx_buffers[i] != NULL) {
                 eth_dma_free_buffer(g_dma_ctx.tx_buffers[i]);
             }
         }
-        free(g_dma_ctx.tx_buffers);
         g_dma_ctx.tx_buffers = NULL;
     }
 
-    /* 释放描述符环 */
-    free(g_dma_ctx.tx_desc_ring);
+    /* 静态描述符环无需释放 */
     g_dma_ctx.tx_desc_ring = NULL;
 }
 
@@ -819,24 +817,67 @@ eth_status_t eth_dma_register_error_callback(eth_dma_error_t_callback callback, 
 }
 
 /* ============================================================================
- * 内存管理API实现
+ * 内存管理API实现 (静态池)
  * ============================================================================ */
 
 void* eth_dma_alloc_buffer(uint32_t size)
 {
-    /* 对齐到ETH_DMA_ALIGN字节边界 */
-    uint32_t aligned_size = ETH_ALIGN_UP(size, ETH_DMA_ALIGN);
+    /* 越界检查: 仅支持静态池覆盖范围 (巨型帧上限) */
+    if (size > ETH_DMA_JUMBO_BUFFER_SIZE) {
+        return NULL;
+    }
 
-    /* 使用对齐的内存分配 */
-    void *buffer = aligned_alloc(ETH_DMA_ALIGN, aligned_size);
+    /* 接收池优先, 其次发送池 */
+    for (uint32_t i = 0; i < ETH_DMA_MAX_RX_DESC_COUNT; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_rx_buf_used[word] & (1U << bit)) == 0U) {
+            s_rx_buf_used[word] |= (1U << bit);
+            /* 对齐到 ETH_DMA_ALIGN 字节边界 */
+            uintptr_t base = (uintptr_t)&s_rx_buf_pool[i][0];
+            uintptr_t aligned = (base + (uintptr_t)ETH_DMA_ALIGN - 1U) &
+                                ~((uintptr_t)ETH_DMA_ALIGN - 1U);
+            return (void *)aligned;
+        }
+    }
+    for (uint32_t i = 0; i < ETH_DMA_MAX_TX_DESC_COUNT; i++) {
+        uint32_t word = i / 32U;
+        uint32_t bit = i % 32U;
+        if ((s_tx_buf_used[word] & (1U << bit)) == 0U) {
+            s_tx_buf_used[word] |= (1U << bit);
+            uintptr_t base = (uintptr_t)&s_tx_buf_pool[i][0];
+            uintptr_t aligned = (base + (uintptr_t)ETH_DMA_ALIGN - 1U) &
+                                ~((uintptr_t)ETH_DMA_ALIGN - 1U);
+            return (void *)aligned;
+        }
+    }
 
-    return buffer;
+    return NULL; /* 池耗尽 */
 }
 
 void eth_dma_free_buffer(void *buffer)
 {
-    if (buffer != NULL) {
-        free(buffer);
+    if (buffer == NULL) {
+        return;
+    }
+
+    /* 判定缓冲区所属池并回收 (静态池, 无需 free) */
+    uintptr_t ptr = (uintptr_t)buffer;
+    uintptr_t rx_base = (uintptr_t)&s_rx_buf_pool[0][0];
+    uintptr_t rx_end = rx_base + (uintptr_t)(sizeof(s_rx_buf_pool));
+    uintptr_t tx_base = (uintptr_t)&s_tx_buf_pool[0][0];
+    uintptr_t tx_end = tx_base + (uintptr_t)(sizeof(s_tx_buf_pool));
+
+    if ((ptr >= rx_base) && (ptr < rx_end)) {
+        uint32_t row = (uint32_t)((ptr - rx_base) / (uintptr_t)(sizeof(s_rx_buf_pool[0])));
+        if (row < ETH_DMA_MAX_RX_DESC_COUNT) {
+            s_rx_buf_used[row / 32U] &= ~(1U << (row % 32U));
+        }
+    } else if ((ptr >= tx_base) && (ptr < tx_end)) {
+        uint32_t row = (uint32_t)((ptr - tx_base) / (uintptr_t)(sizeof(s_tx_buf_pool[0])));
+        if (row < ETH_DMA_MAX_TX_DESC_COUNT) {
+            s_tx_buf_used[row / 32U] &= ~(1U << (row % 32U));
+        }
     }
 }
 
