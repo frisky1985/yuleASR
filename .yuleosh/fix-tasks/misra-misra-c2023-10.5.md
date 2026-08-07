@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-10.5
 
-> Generated: 2026-08-07T15:41:58.154098
+> Generated: 2026-08-07T16:48:20.406388
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -16,7 +16,14 @@
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c` | 307 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
 | 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c` | 308 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
 | 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/cdd/src/Cdd_Lockstep_1.0.0.c` | 309 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 404 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 800 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 802 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 804 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 806 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 808 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 810 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/mqtt/src/Mqtt_CertMgr.c` | 812 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
+| 12 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 405 | 0 | misra violation 1005 with no text in the supplied rule-texts-file [misra-c2012-1 |
 
 ## Fix Checklist
 

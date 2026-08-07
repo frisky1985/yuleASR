@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-21.7
 
-> Generated: 2026-08-07T15:41:58.164158
+> Generated: 2026-08-07T16:48:20.425824
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -14,8 +14,8 @@
 |--:|:-----|:----|:----|:--------|
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 263 | 0 | misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2 |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/security/dds_access.c` | 384 | 0 | misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 288 | 0 | misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2 |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 296 | 0 | misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 289 | 0 | misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2 |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 297 | 0 | misra violation 2107 with no text in the supplied rule-texts-file [misra-c2012-2 |
 
 ## Fix Checklist
 

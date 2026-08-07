@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-21.3
 
-> Generated: 2026-08-07T15:41:58.163792
+> Generated: 2026-08-07T16:48:20.425471
 > Severity: advisory
 > Spec Ref: SWE-MISRA-S1
 
@@ -15,11 +15,11 @@
 | 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 241 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 2 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 254 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 3 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 288 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 295 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 386 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 453 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 610 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 678 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 4 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 296 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 5 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 387 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 6 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 454 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 7 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 611 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 8 | `/Users/stefan/.openclaw/workspace/yuleASR/src/autosar/adaptive/ara_com_dds.c` | 679 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 9 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 168 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 10 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 170 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 11 | `/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/boot/test/test_boot_integration.c` | 175 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
@@ -163,13 +163,13 @@
 | 149 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/time_filter.c` | 253 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 150 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/time_filter.c` | 271 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 | 151 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/time_filter.c` | 275 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 226 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 268 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 275 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 282 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 554 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 587 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
-| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 616 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 152 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 227 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 153 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 269 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 154 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 276 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 155 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 283 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 156 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 555 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 157 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 588 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
+| 158 | `/Users/stefan/.openclaw/workspace/yuleASR/src/dds/pubsub/content_filtered_topic.c` | 617 | 0 | Memory allocation functions of stdlib.h shall not be used [misra-c2012-21.3] |
 
 ## Fix Checklist
 
