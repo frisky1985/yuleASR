@@ -23,6 +23,7 @@
  *   - Cdd_Lockstep  — Lockstep core monitor & BIST
  *   - Cdd_Safety    — Safety integrator (FCCU, WdgM, Dem integration)
  *   - Cdd_Boot      — Boot-time hardware init (HSM, RGM, safety)
+ *   - Cdd_Fvm       — Flash Virtual Memory (multi-bank, failover, XMEN-style)
  *
  *   All CDD modules use Cdd_MemMap.h for memory partitioning.
  *
@@ -57,6 +58,7 @@
 #define CDD_MODULE_ID_LOCKSTEP              0x82U   /**< Cdd_Lockstep module ID */
 #define CDD_MODULE_ID_SAFETY                0x83U   /**< Cdd_Safety module ID */
 #define CDD_MODULE_ID_BOOT                  0x84U   /**< Cdd_Boot module ID */
+#define CDD_MODULE_ID_FVM                   0x85U   /**< Cdd_Fvm module ID (Flash Virtual Memory) */
 
 /*==================================================================================================
  *                                         CDD API FUNCTIONS

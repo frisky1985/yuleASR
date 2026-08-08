@@ -24,6 +24,9 @@ add_subdirectory(ecual)
 # TcpIp 单元测试 (B1: API 补全/多连接/状态机/VLAN/统计)
 add_subdirectory(services/tcpip)
 
+# Cdd_Fvm 单元测试 (B3-1: Flash 虚拟化多 bank — 搬移/保护/故障切换)
+add_subdirectory(cdd)
+
 foreach(module ${UNIT_TEST_MODULES})
     # Check if test file exists
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${module}_test.c)
