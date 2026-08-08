@@ -1,10 +1,17 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (S3 P1 修复批 — isotp 命名空间隔离 + 删 doip stub + LTO 工具链, HEAD=fbb8dcf8)
+> 最后更新: 2026-08-08 (S4 P1 收尾 — CI/文档残留引用 + safety 模块真实编译, HEAD=47919b63, P1 全清零)
 
 ---
 
-## ✅ 2026-08-08 S3 P1 修复批 — 已完成
+## ✅ 2026-08-08 S4 P1 收尾批 — 已完成 (P1-5 + P1-6, P1 全清零)
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| P1-5 CI/文档/脚本残留引用已删路径 | ✅ ① workflows/integration-tests.yml 删除 ros2-bridge-tests job (test_ros2_qos.py 与 test_rmw_bridge 均随 51d94f6b 删除不再产出), generate-report needs 同步移除 ② tests/dcm/Makefile include/源/gcov 路径指向 src/bsw/services/dcm/legacy (原 src/diagnostics/dcm 已删), 修正 unity 路径 ③ docs/guides/dem_design.md + docs/dem/DESIGN.md + website/docs/guides/dem-design.md: src/diagnostics/dem/ → src/bsw/services/dem/ 并更新文件树 ④ 删除 3 个误入库的 Linux ELF 构建产物 | 4b72179a | grep 全仓零残留 (仅归档说明/新注释); YAML 语法有效; make 实测构建+运行 (5 过 3 挂为 legacy 测试自身断言遗留) |
+| P1-6 safety 挂载但永不编译 | ✅ ① src/safety/CMakeLists.txt 顶部定义 option 默认值 (RAM ON / SAFERAM ON / NVM OFF — nvm/ 目录仓内不存在, 加 EXISTS 保护) ② safe_data.c ReadElement monitor 指针初始化 NULL (uninitvar) ③ ram 测试块 BUILD_TESTS→BUILD_TESTING + unity→Unity ④ 编译暴露新问题: stack_protection.c GetCurrentSP 寄存器变量初始化 (Clang -Wuninitialized) | 47919b63 | native BUILD_TESTING=ON 全量构建 0 error; libeth_dds_safety_ram.a + libeth_dds_safety_saferam.a 产物确认; ram_ecc_unit + integration_safety_tests ctest 全 PASS; 交叉全量构建 0 error (safety 库双平台真实编译); safe_data.c 零 uninit 警告 |
+
+**P1 全部清零 (P1-1/1-2/1-3a/1-3b/1-4/1-5/1-6 均已完成)。** P2 遗留: dds-config-tool 三份并存、批C 自述修正等。
 
 | 项 | 结果 | Commit | 验证 |
 |:---|:-----|:-------|:-----|
