@@ -1,6 +1,22 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-09 (B1 TcpIp 加深, HEAD=929815f6, 已 push)
+> 最后更新: 2026-08-09 (B2 EthSwt 补全, HEAD=e2cfb7b6, 已 push)
+
+---
+
+## ✅ 2026-08-09 B2 EthSwt 补全 — 已完成 (HEAD=e2cfb7b6)
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| VLAN 补全 | ✅ 成员表 SetVlanConfig(upsert)/GetVlanConfig/AddVlanMember/RemoveVlanMember；PVID SetPvid/GetPvid；VID-PCP 映射 SetVidPcpMap/GetVidPcpMap；入口成员过滤 + 出口成员过滤 + DropUntagged（对齐 B1 TcpIp_VlanConfigType：VlanPriority=PCP、DropUntagged）；ForwardFrameVlan 显式 VID 转发 | e2cfb7b6 | VLAN 单测 16 项（含入口/出口过滤、drop-untagged、PCP 越界 DET） |
+| 流控 | ✅ FlowControl 配置（TxPauseEnable/RxPauseEnable/High-LowWatermark/PauseTime）+ Set-GetFlowControl；TX 队列深度仿真：超高水位触发 pause 帧计数（TxPauseFrames），MainFunction 排空低于低水位释放；IndicatePause HW 钩子（RxPauseEnable 门控，RxPauseFrames + 收帧丢弃） | e2cfb7b6 | 流控单测 6 项（水位非法 DET、暂停发射/释放、RX pause 丢弃/恢复） |
+| 端口统计 | ✅ EthSwt_PortStatsType 8→15 计数器（新增 Rx-TxPauseFrames/Rx-TxVlanFrames/Rx-TxFilteredFrames/MirroredFrames）；GetStatistics（SWS 名）+ ResetStatistics（ETHSWT_ALL_PORTS 全端口重置）；保留 GetPortStats 兼容 | e2cfb7b6 | 统计单测 6 项（含全端口重置、非法端口 DET） |
+| 镜像 | ✅ SetPortMirroring/GetPortMirroring（MirrorSourcePortMask/MirrorDestinationPort/MirrorEnabled）；转发路径自动镜像复制（MirroredFrames 计数） | e2cfb7b6 | 镜像单测 5 项（含非法目标端口 DET、非源端口不镜像） |
+| 端口查询 | ✅ GetPortEnable/GetSpeed/GetMacFilter（SWS 读侧 API 补齐） | e2cfb7b6 | 查询单测 7 项 |
+| 单测 | ✅ tests/unit/ecual/test_ethswt.c 25→70 项（真实生产源码 EthSwt.c + Det mock），挂载 ctest（EthSwt_UnitTest） | e2cfb7b6 | 70/70 PASS；ctest 42/42 100% |
+| 构建验证 | ✅ 全量 native 0 error；MISRA 15.7 修复；8.4 导出 API 与 TcpIp 基线同模式（cppcheck 单文件跨文件可见性误报，TcpIp.c 基线 49 处同款） | e2cfb7b6 | 全量 build 0 error；ctest 42/42 |
+
+> 行数：EthSwt.c 504→1368、EthSwt.h 197→318、EthSwt_Cfg.h 62→74（模块 763→1760）；导出 API 12→33 个；报告 `reports/ethswt-deepen-20260809.md`。MISRA：15.7（required）已修复；15.5/20.9/2.5 advisory + 8.4 导出 API 误报均与 TcpIp 基线同模式，无新增 required。
 
 ---
 
