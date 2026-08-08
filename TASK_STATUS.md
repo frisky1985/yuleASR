@@ -1,6 +1,18 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (S2 P0-B 修复批 ②③ — KeyM SP800-108 真实 KDF + crypto_stack mbedTLS 真实后端, HEAD=d82f810a)
+> 最后更新: 2026-08-08 (S3 P1 修复批 — isotp 命名空间隔离 + 删 doip stub + LTO 工具链, HEAD=fbb8dcf8)
+
+---
+
+## ✅ 2026-08-08 S3 P1 修复批 — 已完成
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| P1-1 isotp/主线 CanIf 符号冲突 | ✅ isotp_canif 全量改名 CanIf_* → CanIf_Isotp_* (22 个导出函数 + 类型, 已带 CanIf_Isotp 前缀保留), 与主线 AUTOSAR CanIf 完全隔离 | 267ac8ac | isotp+ecual_canif 两库 nm 导出符号交集为空 (73 vs 26, comm -12 无输出); 链接测试 (两库同链+依赖 stub) 无 multiple definition, 链接成功 |
+| P1-2 diagnostics/doip stub 假实现 | ✅ 删除 src/diagnostics/doip (doip_core.c 等 3 文件), 同步移除 add_subdirectory(doip) + 更新注释; DoIP 统一走主线 src/bsw/services/doip (AUTOSAR); 顺带消除 DoIp_MainFunction newSocket 未初始化 (cppcheck legacyUninitvar) | 451d43cb | 全量 native 构建 BUILD_EXIT=0; 构建树零 diagnostics/doip 残留; 主线 service_doip 正常产出; tests 全部引用主线 doip.h 无断裂 |
+| P1-4 Release 交叉 LTO 库不可索引 | ✅ toolchain-arm-none-eabi.cmake: CMAKE_AR=arm-none-eabi-gcc-ar, CMAKE_RANLIB=arm-none-eabi-gcc-ranlib, CMAKE_NM=gcc-nm (保留 LTO) | fbb8dcf8 | 交叉 Release 全量构建 BUILD_EXIT=0; LTO 索引警告 228→0; libservice_csm.a armap 含全部 Csm_* (nm -s 可读, gcc-nm 34 符号); 交叉链接 test.elf (Csm_Init/DeInit/Encrypt + 全 113 库) 成功, 符号解析到真实地址 |
+
+**剩余 P1 (未在本次批次)**: P1-3 已修 (S1); P1-5 CI/文档残留引用; P1-6 safety 挂载但永不编译 (safe_data.c uninitvar)。**P2**: dds-config-tool 三份并存、批C 自述修正等。
 
 ---
 
@@ -12,7 +24,7 @@
 | ② KeyM SP800-108 KDF 真实实现 | ✅ keym_sp800_108_counter/derive (counter mode, PRF=HMAC-SHA256, mbedtls_sha256 原语, 无动态分配) + keym_hkdf_sha256 (RFC 5869) + keym_hmac_sha256 (RFC 2104) + keym_crc32 (IEEE 802.3); DDS 证书导入导出/persistent 存储 → 显式 KEYM_ERROR_NOT_IMPLEMENTED (-15 兼容追加); crypto_stack PUBLIC 链接 mbedcrypto | 1a32172a | test_keym 15/15 (SP800-108 已知向量 cfe012ff.../多块 a44abe...、HKDF RFC5869 TC1 3cb25f25...、HMAC RFC2104 TC1、CRC32 0xCBF43926、全 API 派生对拍、NOT_IMPLEMENTED) |
 | ③ crypto_stack 模拟后端 → mbedTLS 真实后端 | ✅ csm_execute_crypto_op: HASH=mbedtls_sha256; MAC_GENERATE=HMAC-SHA256; MAC_VERIFY=真实计算+常数时间比较, 错误签名返回 false (不再恒 true); ENCRYPT/DECRYPT=AES-128-CBC+PKCS7; 不支持算法 fail-closed | d82f810a | test_csm 9/9 (含错误签名 FAIL + SHA256("abc") 向量); test_bootloader 15/15 (证书链伪造签名 → INVALID_SIGNATURE 失败语义); 全量 ctest 36/37 (唯一失败 = pre-existing mcal_uart SegFault, s0_smoke 无限循环排除, 与基线一致) |
 
-**遗留 (pre-existing, 与本次无关)**: mcal_uart_test SegFault; s0_smoke_test 无限循环; P1-1 isotp/CanIf 符号冲突; P1-2 doip stub; P1-4 LTO 库不可索引; P1-5 CI 残留; P1-6 safety 未编译。
+**遗留 (pre-existing, 与本次无关)**: mcal_uart_test SegFault; s0_smoke_test 无限循环; P1-5 CI 残留; P1-6 safety 未编译。 (P1-1 isotp 冲突 / P1-2 doip stub / P1-4 LTO 库 已于 S3 修复: 267ac8ac/451d43cb/fbb8dcf8)
 
 ---
 
