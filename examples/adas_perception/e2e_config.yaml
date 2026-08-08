@@ -1,0 +1,195 @@
+# E2E Protection Configuration
+# AUTOSAR E2E Profiles for ADAS Perception System
+# ASIL-D Safety Level
+
+system:
+  name: "ADAS_E2E_Configuration"
+  safety_level: "ASIL-D"
+  e2e_library_version: "R22-11"
+
+# E2E Profile Configurations
+profiles:
+  # Profile 1: CRC8 - for low bandwidth signals
+  profile_01:
+    profile_id: 1
+    description: "CRC8 protection for basic signals"
+    crc_polynomial: "SAE_J1850"  # 0x1D
+    header_size: 1
+    use_cases:
+      - "Low bandwidth sensor data"
+      - "Status signals"
+    data_ids:
+      range_start: 0x0100
+      range_end: 0x01FF
+
+  # Profile 2: CRC8 + Counter
+  profile_02:
+    profile_id: 2
+    description: "CRC8 with 4-bit counter"
+    crc_polynomial: "SAE_J1850"
+    header_size: 2
+    counter_max: 15
+    use_cases:
+      - "Medium bandwidth data"
+      - "Periodic signals"
+    data_ids:
+      range_start: 0x0200
+      range_end: 0x02FF
+
+  # Profile 4: CRC32 - for large data
+  profile_04:
+    profile_id: 4
+    description: "CRC32 protection for large data blocks"
+    crc_polynomial: "IEEE_802.3"  # 0x04C11DB7
+    header_size: 4
+    use_cases:
+      - "Image data"
+      - "Point cloud segments"
+    data_ids:
+      range_start: 0x0400
+      range_end: 0x04FF
+
+  # Profile 5: CRC16
+  profile_05:
+    profile_id: 5
+    description: "CRC16 protection"
+    crc_polynomial: "CCITT"  # 0x1021
+    header_size: 2
+    use_cases:
+      - "Medium bandwidth data"
+      - "Control signals"
+    data_ids:
+      range_start: 0x0500
+      range_end: 0x05FF
+
+  # Profile 6: CRC16 + Counter
+  profile_06:
+    profile_id: 6
+    description: "CRC16 with 4-bit counter"
+    crc_polynomial: "CCITT"
+    header_size: 4
+    counter_max: 15
+    use_cases:
+      - "ADAS Radar data"
+      - "Critical control signals"
+    data_ids:
+      range_start: 0x0600
+      range_end: 0x06FF
+
+  # Profile 7: CRC32 + Counter - PRIMARY FOR ADAS
+  profile_07:
+    profile_id: 7
+    description: "CRC32 with 8-bit counter - Primary for ASIL-D"
+    crc_polynomial: "IEEE_802.3"
+    header_size: 8
+    counter_max: 255
+    max_delta_counter: 2
+    use_cases:
+      - "LiDAR Point Cloud"
+      - "Camera Images"
+      - "Fusion Results"
+      - "Object Detections"
+    data_ids:
+      lidar: 0x0001
+      camera: 0x0002
+      fusion: 0x0003
+      objects: 0x0004
+      radar: 0x0005
+
+  # Profile 11: Dynamic CRC8 + Sequence
+  profile_11:
+    profile_id: 11
+    description: "Dynamic length protection"
+    crc_polynomial: "SAE_J1850"
+    header_size: 3
+    use_cases:
+      - "Variable length messages"
+      - "Dynamic configuration"
+    data_ids:
+      range_start: 0x1100
+      range_end: 0x11FF
+
+# Topic-Specific E2E Configuration
+topics:
+  Adas_LiDAR_PointCloud:
+    topic_name: "Adas/LiDAR/PointCloud"
+    profile: 7
+    data_id: 0x0001
+    safety_level: "ASIL-D"
+    max_latency_ms: 100
+    expected_rate_hz: 10
+
+  Adas_Camera_Image:
+    topic_name: "Adas/Camera/Image"
+    profile: 7
+    data_id: 0x0002
+    safety_level: "ASIL-D"
+    max_latency_ms: 50
+    expected_rate_hz: 30
+
+  Adas_Fusion_Result:
+    topic_name: "Adas/Fusion/Result"
+    profile: 7
+    data_id: 0x0003
+    safety_level: "ASIL-D"
+    max_latency_ms: 50
+    expected_rate_hz: 20
+
+  Adas_Objects_Detected:
+    topic_name: "Adas/Objects/Detected"
+    profile: 7
+    data_id: 0x0004
+    safety_level: "ASIL-D"
+    max_latency_ms: 50
+    expected_rate_hz: 20
+
+  Adas_Radar_Detections:
+    topic_name: "Adas/Radar/Detections"
+    profile: 6
+    data_id: 0x0005
+    safety_level: "ASIL-C"
+    max_latency_ms: 50
+    expected_rate_hz: 20
+
+# E2E Error Handling
+error_handling:
+  # Actions on E2E errors
+  on_crc_error:
+    action: "log_and_report"
+    severity: "high"
+  
+  on_counter_error:
+    action: "log_and_report"
+    max_drops_before_alert: 3
+    severity: "medium"
+  
+  on_timeout:
+    action: "report_to_safety_monitor"
+    timeout_threshold_ms: 200
+    severity: "critical"
+
+  # Safety monitor integration
+  safety_monitor:
+    enabled: true
+    report_topic: "Safety/E2E/Errors"
+    heartbeat_enabled: true
+    heartbeat_period_ms: 100
+
+# Monitoring and Diagnostics
+monitoring:
+  # E2E statistics collection
+  statistics:
+    enabled: true
+    collection_period_ms: 1000
+    metrics:
+      - total_messages
+      - crc_errors
+      - sequence_errors
+      - timeout_errors
+      - average_latency_us
+
+  # Health monitoring
+  health_check:
+    enabled: true
+    check_period_ms: 100
+    degradation_threshold_percent: 5

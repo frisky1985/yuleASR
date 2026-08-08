@@ -1,0 +1,117 @@
+# ADAS Perception System Configuration
+# AUTOSAR DDS Integration - ADAS Configuration
+
+system:
+  name: "ADAS_Perception_System"
+  version: "1.0.0"
+  safety_level: "ASIL-D"
+  domain_id: 1
+
+# Sensor Configuration
+sensors:
+  lidar:
+    - id: 0x1001
+      name: "LiDAR_Front_Center"
+      type: "lidar"
+      location: [1.5, 0.0, 1.8]  # x, y, z in meters
+      orientation: [0.0, 0.0, 0.0]  # roll, pitch, yaw in radians
+      publish_rate_hz: 10
+      topic: "Adas/LiDAR/PointCloud"
+      e2e_enabled: true
+      e2e_profile: 7  # CRC32 + Counter
+      qos:
+        reliability: "reliable"
+        durability: "volatile"
+        deadline_ms: 100
+        latency_budget_ms: 10
+
+  camera:
+    - id: 0x2001
+      name: "Camera_Front_Center"
+      type: "camera"
+      location: [1.8, 0.0, 1.2]
+      orientation: [0.0, -0.1, 0.0]
+      resolution: [1920, 1080]
+      publish_rate_hz: 30
+      topic: "Adas/Camera/Image"
+      e2e_enabled: true
+      e2e_profile: 7
+      qos:
+        reliability: "reliable"
+        durability: "volatile"
+        deadline_ms: 50
+        latency_budget_ms: 5
+
+  radar:
+    - id: 0x3001
+      name: "Radar_Front_Center"
+      type: "radar"
+      location: [2.0, 0.0, 0.8]
+      orientation: [0.0, 0.0, 0.0]
+      publish_rate_hz: 20
+      topic: "Adas/Radar/Detections"
+      e2e_enabled: true
+      e2e_profile: 6  # CRC16 + Counter
+
+# Fusion Configuration
+fusion:
+  module_name: "Sensor_Fusion_01"
+  publish_rate_hz: 20
+  topic: "Adas/Fusion/Result"
+  e2e_enabled: true
+  e2e_profile: 7
+  input_topics:
+    - "Adas/LiDAR/PointCloud"
+    - "Adas/Camera/Image"
+    - "Adas/Radar/Detections"
+  algorithms:
+    object_detection: true
+    lane_detection: true
+    free_space_detection: true
+    tracking: true
+  qos:
+    reliability: "reliable"
+    deadline_ms: 50
+
+# Object Detection Configuration
+object_detection:
+  topic: "Adas/Objects/Detected"
+  publish_rate_hz: 20
+  e2e_enabled: true
+  e2e_profile: 7
+  classes:
+    - pedestrian
+    - vehicle
+    - cyclist
+    - motorcycle
+    - truck
+    - traffic_sign
+    - traffic_light
+  max_objects: 256
+
+# Network Configuration
+network:
+  interface: "eth0"
+  multicast_group: "239.255.0.1"
+  port_base: 7400
+  transport: "udp"
+  
+# TSN Configuration (if available)
+tsn:
+  enabled: false
+  talker_streams:
+    - stream_id: "AdasLiDAR"
+      priority: 7
+      bandwidth_mbps: 50
+    - stream_id: "AdasCamera"
+      priority: 6
+      bandwidth_mbps: 100
+    - stream_id: "AdasFusion"
+      priority: 7
+      bandwidth_mbps: 10
+
+# Logging Configuration
+logging:
+  level: "info"  # debug, info, warning, error
+  output: "console"
+  file: "/var/log/adas_perception.log"
