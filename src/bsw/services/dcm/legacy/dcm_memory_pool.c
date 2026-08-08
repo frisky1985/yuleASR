@@ -22,6 +22,11 @@
  * ASIL-D Safety Level
  *
  * @copyright Copyright (c) 2024
+ *
+ * @note legacy (P2-8, 2026-08-08): 本文件位于 <module>/legacy/ 目录,
+ *       未挂载任何构建目标 (CMake 排除), 为合并遗留的参考实现。
+ *       实测无 malloc/calloc/realloc 调用 (静态池), 无动态内存风险。
+ *       保留供参考; 生产 DCM 使用 src/bsw/services/dcm 主实现。
  ******************************************************************************/
 
 #include "dcm_memory_pool.h"
