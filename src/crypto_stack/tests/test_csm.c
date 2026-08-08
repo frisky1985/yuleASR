@@ -202,29 +202,54 @@ static int test_csm_mac_operations(void)
     csm_context_t *ctx;
     csm_status_t status;
     
-    printf("  Testing CSM MAC operations...\n");
+    printf("  Testing CSM MAC operations (real HMAC-SHA256)...\n");
     
     ctx = csm_init(NULL);
     TEST_ASSERT(ctx != NULL);
     
     uint8_t data[] = "Message to authenticate";
-    uint8_t mac[16];
+    uint8_t mac[32];
     uint32_t mac_len = sizeof(mac);
     bool verify_result = false;
     
-    /* Generate MAC */
-    status = csm_mac_generate(ctx, CSM_ALGO_AES_CMAC_128, 1,
+    /* 生成 MAC (真实 HMAC-SHA256, 32B) */
+    status = csm_mac_generate(ctx, CSM_ALGO_HMAC_SHA_256, 1,
                               data, sizeof(data),
                               mac, &mac_len);
     TEST_ASSERT_EQ(status, CSM_OK);
-    TEST_ASSERT_EQ(mac_len, 16);
+    TEST_ASSERT_EQ(mac_len, 32);
     
-    /* Verify MAC */
-    status = csm_mac_verify(ctx, CSM_ALGO_AES_CMAC_128, 1,
+    /* 正确签名验证通过 (真实计算+比较) */
+    status = csm_mac_verify(ctx, CSM_ALGO_HMAC_SHA_256, 1,
                             data, sizeof(data),
                             mac, mac_len, &verify_result);
     TEST_ASSERT_EQ(status, CSM_OK);
     TEST_ASSERT_EQ(verify_result, true);
+    
+    /* 错误签名必须 FAIL (不再恒 true) */
+    {
+        uint8_t bad_mac[32];
+        memcpy(bad_mac, mac, sizeof(bad_mac));
+        bad_mac[0] ^= 0xFFU;   /* 翻转签名首字节 */
+        verify_result = true;  /* 预置为 true, 验证后端会将其改为 false */
+        status = csm_mac_verify(ctx, CSM_ALGO_HMAC_SHA_256, 1,
+                                data, sizeof(data),
+                                bad_mac, sizeof(bad_mac), &verify_result);
+        TEST_ASSERT_EQ(status, CSM_OK);
+        TEST_ASSERT_EQ(verify_result, false);
+    }
+    
+    /* 错误长度签名 (64B, 如 ECDSA 风格) 必须 FAIL */
+    {
+        uint8_t long_mac[64];
+        memset(long_mac, 0x11, sizeof(long_mac));
+        verify_result = true;
+        status = csm_mac_verify(ctx, CSM_ALGO_HMAC_SHA_256, 1,
+                                data, sizeof(data),
+                                long_mac, sizeof(long_mac), &verify_result);
+        TEST_ASSERT_EQ(status, CSM_OK);
+        TEST_ASSERT_EQ(verify_result, false);
+    }
     
     csm_deinit(ctx);
     
@@ -237,7 +262,7 @@ static int test_csm_hash(void)
     csm_context_t *ctx;
     csm_status_t status;
     
-    printf("  Testing CSM hash...\n");
+    printf("  Testing CSM hash (real SHA-256)...\n");
     
     ctx = csm_init(NULL);
     TEST_ASSERT(ctx != NULL);
@@ -250,6 +275,20 @@ static int test_csm_hash(void)
     status = csm_hash(ctx, CSM_ALGO_SHA_256, data, sizeof(data), hash, &hash_len);
     TEST_ASSERT_EQ(status, CSM_OK);
     TEST_ASSERT_EQ(hash_len, 32);
+    
+    /* SHA-256 已知向量: SHA256("abc") */
+    {
+        uint8_t hash_abc[32];
+        uint32_t hash_abc_len = sizeof(hash_abc);
+        static const uint8_t expected_abc[32] = {
+            0xba,0x78,0x16,0xbf,0x8f,0x01,0xcf,0xea,0x41,0x41,0x40,0xde,0x5d,0xae,0x22,0x23,
+            0xb0,0x03,0x61,0xa3,0x96,0x17,0x7a,0x9c,0xb4,0x10,0xff,0x61,0xf2,0x00,0x15,0xad};
+        status = csm_hash(ctx, CSM_ALGO_SHA_256, (const uint8_t*)"abc", 3U,
+                          hash_abc, &hash_abc_len);
+        TEST_ASSERT_EQ(status, CSM_OK);
+        TEST_ASSERT_EQ(hash_abc_len, 32);
+        TEST_ASSERT(memcmp(hash_abc, expected_abc, 32) == 0);
+    }
     
     csm_deinit(ctx);
     

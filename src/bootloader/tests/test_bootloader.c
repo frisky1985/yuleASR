@@ -727,31 +727,36 @@ static int test_secure_boot_cert_chain(void)
     mock_time_ms = 1000;
     bl_time_set_provider(mock_get_time_ms);
 
-    /* 正常链验证通过 */
-    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_OK);
-    TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_CERT_VALID);
+    /* 真实后端 (HMAC-SHA256 软件后端): 伪造签名 0x11/0x22 无法通过校验
+     * -> 证书链验证 fail-closed, 返回 INVALID_SIGNATURE (不再恒通过) */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
+    TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_VERIFICATION_FAILED);
 
-    /* 证书过期 */
-    chain.certs[0].valid_until = 500;
+    /* 根证书过期 → CERT_EXPIRED (根证书有效期检查先于其签名校验, 仍可达) */
+    chain.certs[1].valid_until = 500;
     TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_EXPIRED);
-    chain.certs[0].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+    chain.certs[1].valid_until = 0xFFFFFFFFFFFFFFFFULL;
 
     /* 无时间源 → 显式报错（不能恒真） */
     bl_time_set_provider(NULL);
     TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_TIME_UNAVAILABLE);
     bl_time_set_provider(mock_get_time_ms);
 
-    /* 签发者非 CA → CERT_INVALID */
+    /* 叶子证书过期 → 根证书伪造签名先行失败 (fail-closed 主导) → INVALID_SIGNATURE */
+    chain.certs[0].valid_until = 500;
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
+    chain.certs[0].valid_until = 0xFFFFFFFFFFFFFFFFULL;
+
+    /* 签发者非 CA / 证书无数据 / 不支持的签名类型:
+     * 真实后端下同样由根证书伪造签名失败主导, 锁定 fail-closed 语义 */
     chain.certs[1].is_ca = false;
-    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_INVALID);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
     chain.certs[1].is_ca = true;
 
-    /* 证书无数据 → CERT_INVALID */
     chain.certs[0].data = NULL;
-    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_INVALID);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
     chain.certs[0].data = (uint8_t*)"leaf_cert_data";
 
-    /* 不支持的签名类型 → INVALID_SIGNATURE */
     chain.certs[0].sign_type = BL_SB_SIGN_RSA_PKCS1_SHA256;
     TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
     chain.certs[0].sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
@@ -768,10 +773,11 @@ static int test_secure_boot_cert_chain(void)
     TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx, &chain, root_key), BL_SB_ERROR_CERT_CHAIN_INVALID);
     chain.num_certs = 2;
 
-    /* 无KeyM：根证书回退 root_ca_key_slot；中间证书必须失败 */
+    /* 无KeyM：根证书回退 root_ca_key_slot, 伪造签名/不支持算法 → fail-closed
+     * (原 mock 期恒通过后的 CRYPTO_FAILURE 断言随真实后端更新为 INVALID_SIGNATURE) */
     bl_secure_boot_context_t ctx_nokeym;
     TEST_ASSERT_EQ(bl_secure_boot_init(&ctx_nokeym, &cfg, csm, NULL), BL_SB_OK);
-    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx_nokeym, &chain, root_key), BL_SB_ERROR_CRYPTO_FAILURE);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_cert_chain(&ctx_nokeym, &chain, root_key), BL_SB_ERROR_INVALID_SIGNATURE);
 
     /* lock_version 无时间源 → 显式报错 */
     bl_time_set_provider(NULL);

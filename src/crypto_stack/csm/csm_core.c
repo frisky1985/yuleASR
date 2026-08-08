@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include "csm_core.h"
 #include "csm_jobs.h"
+#include <mbedtls/sha256.h>
+#include <mbedtls/aes.h>
 
 #define CSM_VERSION "4.4.0-AUTOSAR"
 
@@ -22,6 +24,97 @@
 
 /* 单例上下文: 编译期静态分配, 替代 calloc */
 static csm_context_t s_csm_ctx;
+
+/* ============================================================================
+ * mbedTLS 软件后端常量/辅助函数 (真实计算, 无动态分配)
+ * ============================================================================ */
+
+#define CSM_BACKEND_SHA256_DIGEST_LEN   32U
+#define CSM_BACKEND_HMAC_BLOCK_LEN      64U
+#define CSM_BACKEND_AES_BLOCK_LEN       16U
+#define CSM_BACKEND_AES_KEY_LEN         16U   /* AES-128 */
+
+/**
+ * @brief HMAC-SHA256 (RFC 2104) — mbedtls_sha256 原语, 无动态分配
+ *        (与 Csm_Cfg.c 软件后端同风格: 密钥 >64B 先哈希, <=64B 补零)
+ */
+static void csm_backend_hmac_sha256(const uint8_t *key, uint32_t key_len,
+                                    const uint8_t *msg, uint32_t msg_len,
+                                    uint8_t out[CSM_BACKEND_SHA256_DIGEST_LEN])
+{
+    uint8_t k[CSM_BACKEND_HMAC_BLOCK_LEN];
+    uint8_t ipad[CSM_BACKEND_HMAC_BLOCK_LEN];
+    uint8_t opad[CSM_BACKEND_HMAC_BLOCK_LEN];
+    uint8_t inner[CSM_BACKEND_SHA256_DIGEST_LEN];
+    uint32_t i;
+    mbedtls_sha256_context ctx;
+
+    if (key_len > CSM_BACKEND_HMAC_BLOCK_LEN) {
+        mbedtls_sha256(key, key_len, k, 0);
+        key_len = CSM_BACKEND_SHA256_DIGEST_LEN;
+    } else if ((key != NULL) && (key_len > 0U)) {
+        (void)memcpy(k, key, key_len);
+    } else {
+        key_len = 0U;
+    }
+    for (i = key_len; i < CSM_BACKEND_HMAC_BLOCK_LEN; i++) {
+        k[i] = 0U;
+    }
+    for (i = 0U; i < CSM_BACKEND_HMAC_BLOCK_LEN; i++) {
+        ipad[i] = (uint8_t)(k[i] ^ 0x36U);
+        opad[i] = (uint8_t)(k[i] ^ 0x5CU);
+    }
+
+    /* inner = SHA256(ipad || msg) */
+    mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_starts(&ctx, 0);
+    mbedtls_sha256_update(&ctx, ipad, CSM_BACKEND_HMAC_BLOCK_LEN);
+    if ((msg != NULL) && (msg_len > 0U)) {
+        mbedtls_sha256_update(&ctx, msg, msg_len);
+    }
+    mbedtls_sha256_finish(&ctx, inner);
+    mbedtls_sha256_free(&ctx);
+
+    /* out = SHA256(opad || inner) */
+    mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_starts(&ctx, 0);
+    mbedtls_sha256_update(&ctx, opad, CSM_BACKEND_HMAC_BLOCK_LEN);
+    mbedtls_sha256_update(&ctx, inner, CSM_BACKEND_SHA256_DIGEST_LEN);
+    mbedtls_sha256_finish(&ctx, out);
+    mbedtls_sha256_free(&ctx);
+}
+
+/**
+ * @brief key_id -> 32 字节密钥 (确定性排程)
+ *
+ * 软件后端无密钥注入通道 (API 仅传 key_id), 按固定排程展开密钥;
+ * 同一 key_id 在 generate/verify/encrypt/decrypt 间一致, 会话内可往返。
+ * 量产集成需接入密钥存储 (CryIf/NvM), 文档声明。
+ */
+static void csm_backend_key_from_id(uint8_t key_id, uint8_t out[CSM_BACKEND_SHA256_DIGEST_LEN])
+{
+    uint32_t i;
+    for (i = 0U; i < CSM_BACKEND_SHA256_DIGEST_LEN; i++) {
+        out[i] = (uint8_t)(0x5CU + (uint8_t)(key_id * 7U) + (uint8_t)(i * 13U));
+    }
+}
+
+/**
+ * @brief 常数时间比较 (避免早期退出泄露标签差异)
+ */
+static bool csm_backend_const_time_eq(const uint8_t *a, const uint8_t *b, uint32_t len)
+{
+    volatile uint8_t diff = 0U;
+    uint32_t i;
+
+    if ((a == NULL) || (b == NULL)) {
+        return false;
+    }
+    for (i = 0U; i < len; i++) {
+        diff = (uint8_t)(diff | (uint8_t)(a[i] ^ b[i]));
+    }
+    return (diff == 0U);
+}
 
 /* ============================================================================
  * 内部函数前向声明
@@ -715,50 +808,162 @@ static csm_status_t csm_process_job(csm_context_t *ctx, csm_job_t *job)
 
 static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
 {
-    /* 这里将调用CryIf接口执行实际加密操作 */
-    /* 目前返回模拟结果 */
-    
-    if (ctx->cryif != NULL) {
-        /* 通过CryIf调用硬件加密 */
-        /* TODO: 实现具体的加密调用 */
-    }
-    
-    /* 模拟成功执行 — 各 case 自行检查所需指针
-     * 注意: MAC_VERIFY/SIGNATURE_VERIFY 无 output 缓冲区, 只有 result 指针,
-     * 不能用 output_len != NULL 作为统一守卫, 否则它们永远不会执行 */
+    /* mbedTLS 软件后端 (真实计算, 无动态分配) — 替代原模拟实现:
+     *   HASH        -> mbedtls_sha256 (SHA-256, 32B)
+     *   MAC_GENERATE-> HMAC-SHA256 (RFC 2104, mbedtls_sha256 原语, 32B)
+     *   MAC_VERIFY  -> 真实计算+常数时间比较, 错误签名返回 false (不再恒 true)
+     *   ENCRYPT/DECRYPT -> AES-128-CBC + PKCS7 (mbedtls_aes)
+     *   RANDOM      -> LCG 伪随机 (保留, 非密码用途)
+     * 不支持算法 / 参数非法 -> fail-closed 错误返回; 软件后端无密钥注入通道,
+     * key_id 按固定排程展开 (csm_backend_key_from_id, 文档声明)。
+     */
+    (void)ctx;
+
     switch (job->job_type) {
         case CSM_JOB_HASH:
-            /* 计算哈希值 */
-            if ((job->output != NULL) && (job->output_len != NULL)) {
-                memset(job->output, 0, 32);  /* SHA-256 */
-                *job->output_len = 32;
+            /* 仅支持 SHA-256 (mbedtls_sha256), 其余 fail-closed */
+            if (job->algorithm != CSM_ALGO_SHA_256) {
+                return CSM_ERROR_ALGO_NOT_SUPPORTED;
             }
+            if ((job->input == NULL) || (job->input_len == 0U) ||
+                (job->output == NULL) || (job->output_len == NULL) ||
+                (*job->output_len < CSM_BACKEND_SHA256_DIGEST_LEN)) {
+                return CSM_ERROR_INVALID_PARAM;
+            }
+            mbedtls_sha256(job->input, job->input_len, job->output, 0);
+            *job->output_len = CSM_BACKEND_SHA256_DIGEST_LEN;
             break;
-            
+
         case CSM_JOB_MAC_GENERATE:
-            /* 生成MAC */
-            if ((job->output != NULL) && (job->output_len != NULL)) {
-                memset(job->output, 0, 16);  /* AES-CMAC-128 */
-                *job->output_len = 16;
+            /* 仅支持 HMAC-SHA256, 其余 fail-closed */
+            if (job->algorithm != CSM_ALGO_HMAC_SHA_256) {
+                return CSM_ERROR_ALGO_NOT_SUPPORTED;
             }
+            if ((job->input == NULL) || (job->input_len == 0U) ||
+                (job->output == NULL) || (job->output_len == NULL) ||
+                (*job->output_len < CSM_BACKEND_SHA256_DIGEST_LEN)) {
+                return CSM_ERROR_INVALID_PARAM;
+            }
+            {
+                uint8_t key[CSM_BACKEND_SHA256_DIGEST_LEN];
+                csm_backend_key_from_id(job->key_id, key);
+                csm_backend_hmac_sha256(key, sizeof(key),
+                                        job->input, job->input_len, job->output);
+            }
+            *job->output_len = CSM_BACKEND_SHA256_DIGEST_LEN;
             break;
-            
+
         case CSM_JOB_MAC_VERIFY:
-            /* 验证MAC */
-            if (job->mac_verify_result != NULL) {
-                *job->mac_verify_result = true;  /* 模拟验证成功 */
+            /* 真实计算 + 比较: 标签长度不符或内容不同 -> false (fail-closed) */
+            if (job->algorithm != CSM_ALGO_HMAC_SHA_256) {
+                return CSM_ERROR_ALGO_NOT_SUPPORTED;
+            }
+            if ((job->input == NULL) || (job->input_len == 0U) ||
+                (job->secondary_input == NULL) ||
+                (job->secondary_input_len == 0U) ||
+                (job->mac_verify_result == NULL)) {
+                return CSM_ERROR_INVALID_PARAM;
+            }
+            {
+                uint8_t key[CSM_BACKEND_SHA256_DIGEST_LEN];
+                uint8_t computed[CSM_BACKEND_SHA256_DIGEST_LEN];
+                csm_backend_key_from_id(job->key_id, key);
+                csm_backend_hmac_sha256(key, sizeof(key),
+                                        job->input, job->input_len, computed);
+                if (job->secondary_input_len != CSM_BACKEND_SHA256_DIGEST_LEN) {
+                    *job->mac_verify_result = false;
+                } else {
+                    *job->mac_verify_result = csm_backend_const_time_eq(
+                        computed, job->secondary_input, CSM_BACKEND_SHA256_DIGEST_LEN);
+                }
             }
             break;
-            
+
         case CSM_JOB_ENCRYPT:
         case CSM_JOB_DECRYPT:
-            /* 加密/解密 */
-            if ((job->output != NULL) && (job->output_len != NULL) && (job->input != NULL)) {
-                memcpy(job->output, job->input, job->input_len);
-                *job->output_len = job->input_len;
+            /* AES-128-CBC + PKCS7 (真实) */
+            if (job->algorithm != CSM_ALGO_AES_128_CBC) {
+                return CSM_ERROR_ALGO_NOT_SUPPORTED;
+            }
+            if ((job->input == NULL) || (job->input_len == 0U) ||
+                (job->output == NULL) || (job->output_len == NULL)) {
+                return CSM_ERROR_INVALID_PARAM;
+            }
+            {
+                uint8_t key[CSM_BACKEND_AES_KEY_LEN];
+                uint8_t iv[CSM_BACKEND_AES_BLOCK_LEN] = {0};
+                mbedtls_aes_context aes;
+                uint32_t i;
+                uint8_t pad_len;
+
+                csm_backend_key_from_id(job->key_id, key);
+                mbedtls_aes_init(&aes);
+
+                if (job->job_type == CSM_JOB_ENCRYPT) {
+                    uint32_t padded_len;
+
+                    /* PKCS7: 输入补满整块 (零余量时补一整块) */
+                    pad_len = (uint8_t)(CSM_BACKEND_AES_BLOCK_LEN -
+                                        (job->input_len % CSM_BACKEND_AES_BLOCK_LEN));
+                    padded_len = job->input_len + (uint32_t)pad_len;
+                    if (*job->output_len < padded_len) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_INVALID_PARAM;
+                    }
+
+                    (void)memcpy(job->output, job->input, job->input_len);
+                    for (i = job->input_len; i < padded_len; i++) {
+                        job->output[i] = pad_len;
+                    }
+                    if (mbedtls_aes_setkey_enc(&aes, key, CSM_BACKEND_AES_KEY_LEN * 8U) != 0) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_CRYPTO_FAILED;
+                    }
+                    if (mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_ENCRYPT, padded_len,
+                                              iv, job->output, job->output) != 0) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_CRYPTO_FAILED;
+                    }
+                    *job->output_len = padded_len;
+                } else {
+                    /* 解密: 密文必须是整块 */
+                    if ((job->input_len % CSM_BACKEND_AES_BLOCK_LEN) != 0U) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_INVALID_PARAM;
+                    }
+                    if (*job->output_len < job->input_len) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_INVALID_PARAM;
+                    }
+                    if (mbedtls_aes_setkey_dec(&aes, key, CSM_BACKEND_AES_KEY_LEN * 8U) != 0) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_CRYPTO_FAILED;
+                    }
+                    if (mbedtls_aes_crypt_cbc(&aes, MBEDTLS_AES_DECRYPT, job->input_len,
+                                              iv, job->input, job->output) != 0) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_CRYPTO_FAILED;
+                    }
+
+                    /* PKCS7 去填充 + 校验 */
+                    pad_len = job->output[job->input_len - 1U];
+                    if ((pad_len == 0U) || (pad_len > CSM_BACKEND_AES_BLOCK_LEN) ||
+                        ((uint32_t)pad_len > job->input_len)) {
+                        mbedtls_aes_free(&aes);
+                        return CSM_ERROR_CRYPTO_FAILED;
+                    }
+                    for (i = job->input_len - (uint32_t)pad_len; i < job->input_len; i++) {
+                        if (job->output[i] != pad_len) {
+                            mbedtls_aes_free(&aes);
+                            return CSM_ERROR_CRYPTO_FAILED;
+                        }
+                    }
+                    *job->output_len = job->input_len - (uint32_t)pad_len;
+                }
+                mbedtls_aes_free(&aes);
             }
             break;
-            
+
         case CSM_JOB_RANDOM_GENERATE:
             /* 生成随机数 — LCG 伪随机, 保持调用间状态, 避免两次输出相同 */
             if ((job->output != NULL) && (job->output_len != NULL)) {
@@ -770,7 +975,7 @@ static csm_status_t csm_execute_crypto_op(csm_context_t *ctx, csm_job_t *job)
                 *job->output_len = job->output_max_len;
             }
             break;
-            
+
         default:
             break;
     }
