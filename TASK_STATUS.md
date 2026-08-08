@@ -12,7 +12,19 @@
 | P2-6 _impl.c 死代码清理 | ✅ 16 个 _impl.c (6922 行) 逐一核实为死代码 (CMake FILTER EXCLUDE + 无父文件 include + 无引用, 父文件均有自有实现), 保守 git mv 至各模块 legacy/ 目录; CMake FILTER 注释更新, misra-deviation-report 路径同步 | 7326fb29 | 全量构建 0 error; src 下 */src/*_impl.c = 0; 无 _impl.o 产物 |
 | P2-9 dds_get_current_time_ms 强符号重复 | ✅ 保留 dds_security_manager.c 真实 CLOCK_MONOTONIC 实现, 删除 dds_runtime.c 重复定义 (包装模拟时钟), 头文件注释同步 | a8f950a5 | nm 全归档仅 1 个 T _dds_get_current_time_ms (dds_security_manager.c.o); 全量构建 0 error; dds_core/dds_security 测试通过 |
 
-**P2 遗留 (非代码类)**: dds-config-tool 三份并存、批C 自述修正、dds-config-tool make test 示例配置悬空引用、MISRA deviation 通配收窄、web_gui systemd 硬编码路径等。
+**P2-B 收尾批 (2026-08-08)**:
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| P2-3 dds-config-tool make test | ✅ 根因是 YAML 解析器状态机缺陷 (list 多元素只解析第一个 + 字段错位覆盖), 非示例配置问题; 修复后 3 domains/5 qos/8 topics/5 participants 全解析, make test 全绿 | 9f6ec8b9 | parse_dump 实测 + make test 0 error |
+| P2-2 dds-config-tool 三份收敛 | ✅ 评估后保留根目录 C 工具链 + tools/dds_config (Python CLI 实测可用), 删除 tools/dds-config-tool (旧基线, CLI 已损坏: cli.py SyntaxError + 无 __main__.py); README/DASHBOARD/集成测试引用同步; micro-dds 集成测试修复假通过 (return False→assert), 3 passed | 0cb2d967 | 直接运行 + pytest 均 3 passed |
+| P2-1 批C 自述更正 | ✅ TASK_STATUS/report 更正: platform.c.o 含 U _calloc/_free (默认函数指针), 池 init 后不落 libc; ros2_bridge 已删, dcm_memory_pool 在 legacy | 89cfca78 | nm 实证 |
+| P2-5 单行文件格式化 | ✅ 6 文件 (EthTrcv/LinNm/Crypto/Crypto_Hsm/LinMaster_Tp/LinSlave_Uds) 还原多行, token 流保真; 修复 3 处单行掩盖的编译缺陷 (匿名结构体成员/const 冲突); 发现并记录: 单行 include 粘连致 EthTrcv.c.o 空编译 (336B) 假 0 error, 真实缺陷 (Spi/I2c 函数未定义/const 写入/ComM 未声明) 列技术债 | b0295597 | 6 文件 CODE-TOKEN-IDENTICAL; CMake 补 i2c include |
+| P2-7 deviation 通配收窄 | ✅ **/src/** 57 条拆为文件级/模块级 (47 条具体模式) + 43 条 0 违规兑底 (注明理由); required 1366→覆盖 1353, 未覆盖 13 条全在 tests/third_party (非业务), regressed=0, 新增覆盖 17 | 17c52e8f | 模拟 fnmatch 全覆盖验证 + yuleosh 加载 92 条 OK |
+| P2-8 legacy 动态内存 | ✅ fullcheck 'malloc ×4' 为误报 (仅注释提及); legacy 目录未编译; 文件头标注状态, tests/ malloc 为主机测试合理 | aaf7f876 | grep 实证 0 malloc 调用 |
+| P2-10 web_gui 硬编码 | ✅ service 模板路径改 __WEBGUI_DIR__/__RUN_USER__ 占位符, SECRET_KEY 改 EnvironmentFile (无模板默认值); server 代码 4 处硬编码路径改环境变量+相对回退; install.sh 自动生成密钥; README 更新 | 212a2811 | py_compile OK; 0 残留硬编码; test_server 4 passed |
+
+**P2-B 遗留 (非代码类, 2026-08-08 批次)**: 已全部完成 — P2-1 批C 自述修正、P2-2 dds-config-tool 三份收敛、P2-3 make test 解析器修复、P2-5 单行文件格式化、P2-7 deviation 通配收窄、P2-8 legacy 标注、P2-10 web_gui systemd 硬编码去除 (commit 见下节)。
 
 ---
 
