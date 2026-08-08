@@ -71,6 +71,21 @@ foreach(subdir ${SERVICES_SUBDIRS})
                 PUBLIC mbedtls mbedx509 mbedcrypto mcal_crypto
             )
         endif()
+
+        # CSM hardware service layer (Csm_Cfg_HwService) uses real mbedTLS backend
+        # (SHA-256 / CTR_DRBG via 批C 32KB 静态内存池)
+        if(module_name STREQUAL "csm")
+            target_link_libraries(${target_name}
+                PUBLIC mbedtls mbedcrypto mcal_crypto
+            )
+        endif()
+
+        # CSM 配置层软件后端 (Csm_Cfg.c) 使用 mbedTLS SHA-256/AES 原语
+        if(module_name STREQUAL "csm")
+            target_link_libraries(${target_name}
+                PUBLIC mbedcrypto
+            )
+        endif()
         
         # Cross-module include directories for dependencies
         target_include_directories(${target_name}
