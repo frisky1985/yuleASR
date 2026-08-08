@@ -1,6 +1,22 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-09 (B2 EthSwt 补全, HEAD=e2cfb7b6, 已 push)
+> 最后更新: 2026-08-09 (B3 CDD_FVM + Libraries 完成, HEAD=11d44fa0, 已 push)
+
+---
+
+## ✅ 2026-08-09 B3 CDD_FVM + Libraries — 已完成 (HEAD=11d44fa0)
+
+> 最后一批（吸收 XMEN 长处）· 2 独立 commit + push（1fc38692..11d44fa0）· 报告 `reports/fvm-libs-20260809.md`
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| B3-1 CDD_FVM 模块 | ✅ src/bsw/cdd/ 新建 Flash Virtual Memory 复杂驱动（XMEN CDD_FVM 思路 + yuleASR Fls/Fee 风格）：bank 注册（编译期默认表 + 运行时 RegisterBank）/选择/查询、bank 间搬移 CopyBank（擦除→拷贝→CRC 校验，镜像回滚）、状态查询（VALID/ERASED/CORRUPT，magic 头 + CRC32 尾签名）、擦除/写保护、故障切换（Failover + MainFunction 周期自检自动切备份）；硬件抽象 Cdd_Fvm_Hw（RAM 镜像后端 native/单测，Fls 驱动后端目标）；Cdd_Fvm_Cfg.h S32K312 P-Flash 布局 2×256KB 默认 bank；Cdd.h 增 CDD_MODULE_ID_FVM 0x85 | 97d09d87 | 全量 native 0 error；单测 44/44；ctest 45/45 100% |
+| B3-1 单测 | ✅ tests/unit/cdd/fvm/test_fvm.c 44 项（真实生产源码 Cdd_Fvm_1.0.0.c + Cdd_Fvm_Hw.c + Det mock），挂载 ctest（CddFvm_UnitTest）：init 生命周期/注册/选择/读写与完整性最终化/擦除/保护/搬移/故障切换/备份恢复 | 97d09d87 | 44/44 PASS；ctest 45/45 |
+| B3-2 独立算法库 | ✅ src/libs/（XMEN Libraries/ 对齐）：libs_crc（CRC-8 SAE-J1850 / CRC-8 AUTOSAR(H2F) / CRC-16 CCITT-FALSE / CRC-16 XMODEM / CRC-32 ISO-HDLC，流式增量 API）+ libs_aes（AES-128/192/256 FIPS-197 单块 + ECB/CBC，程序化 S-box）；纯 C99 + stdint.h 零依赖，与 BSW 解耦；根 CMakeLists 挂载 libs_crc/libs_aes；原内嵌实现保留原因见 src/libs/README.md（Crc 服务保持 AUTOSAR 接口；Crypto 依赖 mbedTLS/aes_modes GCM/CCM/HSM，抽取风险大） | 11d44fa0 | 全量 native 0 error；单测 30 项（CRC 12 + AES 18）全绿含 NIST FIPS-197/SP 800-38A 向量 |
+| B3-2 单测 | ✅ tests/unit/libs/（LibCrc_UnitTest 12 项：目录 check 值 + 流式=一次性等价；LibAes_UnitTest 18 项：FIPS-197 三密钥长度加解密 + SP 800-38A CBC 4 块 + 回环/原地/错误处理），挂载 ctest | 11d44fa0 | 12/12 + 18/18 PASS；ctest 45/45 |
+| 静态分析 | ✅ cppcheck 7 个新文件 0 error 级（仅 6 条 style 变量作用域 advisory，与库内既有模式一致）；新文件编译 0 warning | 11d44fa0 | cppcheck exit=0（无 error/warning 级） |
+
+> 行数：B3-1 Cdd_Fvm 模块约 1500 行（.c 1 030 + 头 3 个 + HW 层）+ 单测 1000 行；B3-2 libs 约 1 100 行（crc 300 + aes 600 + 头/CMake）+ 单测 800 行。MISRA：无新增 required（新文件按 AUTOSAR CDD 风格编写；style 级 advisory 与 TcpIp/EthSwt 基线同模式）。
 
 ---
 
