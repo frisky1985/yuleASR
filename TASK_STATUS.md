@@ -1,6 +1,15 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (P2-A 代码类 3 项修复, HEAD=a8f950a5, P2-4/6/9 完成)
+> 最后更新: 2026-08-09 (A2+A3 RTE 生成器吸收 cogu 类型方法论, HEAD=8119509d, 已 push)
+
+---
+
+## ✅ 2026-08-09 A2+A3 RTE 生成器强化 — 已完成 (HEAD=8119509d)
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| A2 类型生成方法论 | ✅ rte_generator.py 吸收 cogu：① 逆层序 BFS 类型排序（gen_type_dependency_trees + get_type_creation_order，依赖类型先 typedef）；② type_emitter≠RTE 过滤（外部工具发射的类型不重复生成）；③ symbol_name 覆盖（SYMBOL-PROPS/SYMBOL 优先）；④ C 输出抽象 RteTypeCodeBlock 代码块对象 + render_type_def 确定性渲染；_generate_rte_type_h 改新管线，无自定义类型时保留原 fallback。arxml_parser.py DataType 增 symbol_name/type_emitter 字段并解析 SYMBOL-PROPS/TYPE-EMITTER/IMPLEMENTATION-DATA-TYPE-REF（附加式，零破坏） | c0f4c06f | 131 rte tests + 21 parser tests 全绿；demo 端到端 11 文件生成不变；6 种通信模式 API 零回归 |
+| A3 golden-string 快照测试 | ✅ 新增 41 个精确断言：类型创建顺序（依赖先于使用者/共享去重/循环保护）、type_emitter 过滤、symbol_name 覆盖、每类型每属性 golden-string（含 4 空格缩进）、Rte_Type.h 完整快照（时间戳归一化+确定性尾部） | 8119509d | pytest 152 全绿（131 rte + 21 parser） |
 
 ---
 
