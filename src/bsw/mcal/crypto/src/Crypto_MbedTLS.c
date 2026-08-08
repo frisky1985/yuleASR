@@ -21,6 +21,7 @@
  * INCLUDES
  *********************************************************************************************************************/
 #include "Crypto.h"
+#include "Crypto_MbedTLS_Mem.h"
 #include "MemMap.h"
 
 /* Mbed TLS Headers */
@@ -110,6 +111,12 @@ Std_ReturnType Crypto_MbedTLS_Init(void)
     
     if ((Crypto_MbedTLS_Initialized) != 0U) {
         return E_OK;
+    }
+    
+    /* 先建静态内存池：mbedTLS 内部分配器绑定 32KB 静态 buffer，
+     * 之后所有 mbedtls_calloc/free 不再触碰 libc 堆 (批C 收尾) */
+    if (Crypto_MbedTLS_MemInit() != E_OK) {
+        return E_NOT_OK;
     }
     
     mbedtls_entropy_init(&Crypto_EntropyCtx);

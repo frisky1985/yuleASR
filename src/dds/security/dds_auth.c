@@ -14,6 +14,9 @@
 #include <time.h>
 #include "mbedtls/bignum.h"
 
+/* 批C 收尾: mbedTLS 静态内存池 (共享, 幂等初始化) */
+#include "Crypto_MbedTLS_Mem.h"
+
 /* ============================================================================
  * DH Parameters - RFC 3526 Group 14 (2048-bit)
  * ============================================================================ */
@@ -235,6 +238,9 @@ dds_auth_context_t* dds_auth_init(const dds_security_config_t *config)
     if (!config) {
         return NULL;
     }
+
+    /* 批C 收尾: 先建 mbedTLS 静态内存池 (幂等), 否则 mbedtls_mpi 分配返回 NULL */
+    (void)Crypto_MbedTLS_MemInit();
 
     dds_auth_context_t *ctx = &s_auth_ctx;
     (void)memset(ctx, 0, sizeof(dds_auth_context_t));

@@ -38,4 +38,29 @@
 #define MBEDTLS_ALLOW_PRIVATE_ACCESS
 #endif
 
+/* Static memory pool (批C 收尾: 动态内存→静态分配)
+ *
+ * Replace the implicit libc calloc()/free() inside mbedTLS with the
+ * buffer allocator (MBEDTLS_MEMORY_BUFFER_ALLOC_C) backed by a
+ * compile-time fixed buffer owned by Crypto_MbedTLS_Mem.c (32KB,
+ * .bss).  This removes the last implicit heap dependency in the
+ * S32K312 bare-metal image (Crypto_MbedTLS.c) and the host TLS
+ * backend (Mqtt_Tls.c).
+ *
+ * Runtime contract: mbedtls_memory_buffer_alloc_init() must be called
+ * before any mbedTLS allocation (done by Crypto_MbedTLS_MemInit(),
+ * wired into Crypto_MbedTLS_Init / Mqtt_Tls_Init / dds_auth_init).
+ * Until then mbedtls_calloc() returns NULL (fail-fast, no libc heap).
+ *
+ * NOTE: MBEDTLS_MEMORY_BACKTRACE is intentionally NOT enabled — it
+ * requires GLIBC backtrace()/backtrace_symbols(), which do not exist
+ * on the bare-metal newlib toolchain.
+ */
+#ifndef MBEDTLS_PLATFORM_MEMORY
+#define MBEDTLS_PLATFORM_MEMORY
+#endif
+#ifndef MBEDTLS_MEMORY_BUFFER_ALLOC_C
+#define MBEDTLS_MEMORY_BUFFER_ALLOC_C
+#endif
+
 #endif /* YULEASR_MBEDTLS_CONFIG_H */

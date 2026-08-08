@@ -43,7 +43,16 @@ MEMORY
 /* Stack and Heap Configuration */
 STACK_TOP    = 0x20080000;    /* Top of RAM */
 STACK_SIZE   = 0x00020000;    /* 128KB Stack */
-HEAP_SIZE    = 0x00040000;    /* 256KB Heap */
+/*
+ * HEAP_SIZE: 批C「动态内存→静态分配」收尾后回收 (2026-08-08)
+ *   - 改造前: 256KB (0x40000) — 原为 libc malloc 预留
+ *   - 改造后: 生产代码 malloc/calloc 调用 = 0；mbedTLS 已挂 32KB 静态池
+ *     (MBEDTLS_MEMORY_BUFFER_ALLOC_C)；无 _sbrk 实现、无其他堆消费者
+ *   - 当前保留 4KB 最小预留: 维持 .heap 段与 __os_heap_* PROVIDE 符号非空,
+ *     避免 AUTOSAR OS/工具链对堆符号的假设失效；确认无引用后可置 0 全量回收
+ *   - 净回收: 256KB - 4KB = 252KB → 释放给 .bss/栈
+ */
+HEAP_SIZE    = 0x00001000;    /* 4KB Heap (was 256KB) — reclaimed by batch C */
 
 /* Region symbols for MPU configuration */
 __FLASH_START    = ORIGIN(flash_text);

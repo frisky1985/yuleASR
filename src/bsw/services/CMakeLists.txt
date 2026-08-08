@@ -10,6 +10,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/det/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../rte/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/crypto/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/eth/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/dio/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/can/include
@@ -64,10 +65,10 @@ foreach(subdir ${SERVICES_SUBDIRS})
             )
         endif()
 
-        # MQTT TLS backend links the real mbedTLS library
+        # MQTT TLS backend links the real mbedTLS library + 静态内存池 (mcal_crypto)
         if(module_name STREQUAL "mqtt")
             target_link_libraries(${target_name}
-                PUBLIC mbedtls mbedx509 mbedcrypto
+                PUBLIC mbedtls mbedx509 mbedcrypto mcal_crypto
             )
         endif()
         

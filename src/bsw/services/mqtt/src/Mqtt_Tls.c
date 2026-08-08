@@ -15,8 +15,8 @@
 #include <string.h>
 #include <stdio.h>
 
-/* YuleTech mbedTLS适配层 */
-#include "yule_mbedtls_adapter.h"
+/* YuleTech mbedTLS 适配层 — 静态内存池 (批C 收尾) */
+#include "Crypto_MbedTLS_Mem.h"
 
 /* mbedTLS头文件 */
 #include "mbedtls/ssl.h"
@@ -37,6 +37,11 @@
 #define MQTT_TLS_MAX_ERROR_STRING       (256)
 #define MQTT_TLS_DEFAULT_HANDSHAKE_TIMEOUT_MS  (10000)
 #define MQTT_TLS_DEFAULT_SESSION_TIMEOUT_MS    (86400000)  /* 24小时 */
+
+/*============================================================================
+ * 内部函数声明
+ *===========================================================================*/
+STATIC void Mqtt_Tls_DebugCallback(void* pCtx, int level, const char* file, int line, const char* msg);
 
 /*============================================================================
  * 内部TLS上下文结构
@@ -88,8 +93,8 @@ Mqtt_ReturnType Mqtt_Tls_Init(void)
         return MQTT_OK;
     }
     
-    /* 初始化YuleTech适配层 */
-    result = YuleMbedtls_Init();
+    /* 初始化共享 mbedTLS 静态内存池 (幂等) */
+    result = Crypto_MbedTLS_MemInit();
     if (result != E_OK) {
         return MQTT_E_NOT_OK;
     }
@@ -124,8 +129,7 @@ void Mqtt_Tls_DeInit(void)
         }
     }
     
-    /* 反初始化YuleTech适配层 */
-    YuleMbedtls_DeInit();
+    /* 共享静态池生命周期与系统一致，不做 DeInit (避免影响其他使用方) */
     
     Mqtt_TlsInitialized = FALSE;
 }
@@ -272,7 +276,7 @@ Mqtt_ReturnType Mqtt_Tls_CreateContext(
     }
     
     /* 配置回调函数 */
-    mbedtls_ssl_conf_dbg(&ctx->conf, (void (*)(void*, int, const char*, int, const char*))YuleMbedtls_DebugCallback, NULL_PTR);
+    mbedtls_ssl_conf_dbg(&ctx->conf, Mqtt_Tls_DebugCallback, NULL_PTR);
     mbedtls_debug_set_threshold(3);
     
     /* 应用配置 */
@@ -766,4 +770,15 @@ static int Mqtt_Tls_RecvTimeoutCallback(void* ctx, unsigned char* buf, size_t le
 {
     (void)timeout;  /* 嵌入式系统中通常不支持带超时的接收 */
     return Mqtt_Tls_RecvCallback(ctx, buf, len);
+}
+
+static void Mqtt_Tls_DebugCallback(void* pCtx, int level, const char* file, int line, const char* msg)
+{
+    (void)pCtx;
+    /* 轻量调试输出；生产可裁剪 (MBEDTLS_DEBUG_C 未启用时 mbedtls 不回调) */
+    if (level <= 3) {
+        (void)file;
+        (void)line;
+        (void)msg;
+    }
 }

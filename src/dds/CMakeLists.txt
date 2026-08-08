@@ -104,11 +104,13 @@ target_include_directories(eth_dds_middleware PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../../ethernet
     ${CMAKE_CURRENT_SOURCE_DIR}/../../soad
     ${CMAKE_CURRENT_SOURCE_DIR}/../../tsn
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../bsw/mcal/crypto/include
+    ${CMAKE_SOURCE_DIR}/include/autosar
 )
 
-# Security 依赖 mbedTLS (主线 third_party 提供)
+# Security 依赖 mbedTLS (主线 third_party 提供) + mbedTLS 静态内存池 (mcal_crypto)
 if(ENABLE_DDS_SECURITY)
-    target_link_libraries(eth_dds_middleware PRIVATE mbedtls)
+    target_link_libraries(eth_dds_middleware PRIVATE mbedtls mcal_crypto)
 endif()
 
 # common 工具库 (dds_log/eth_utils) — 由 src/common 提供, 替代失效的 GLOB 编译
