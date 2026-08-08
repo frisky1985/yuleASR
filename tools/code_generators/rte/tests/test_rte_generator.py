@@ -53,9 +53,23 @@ from rte_generator import (
     DataSemantics,
     ComPattern,
     NvBlockType,
+    RteTypeKind,
+    RteTypeDef,
+    RteTypeCodeBlock,
+    STANDARD_C_TYPES,
+    build_type_defs,
+    collect_referenced_type_names,
+    gen_type_dependency_trees,
+    get_type_creation_order,
+    gen_type_creation_order,
+    render_type_def,
+    gen_rte_type_defs_str,
     map_to_c_type,
     resolve_data_semantics,
 )
+
+# yuleASR ARXML parser data model (path is made importable by rte_generator)
+from arxml_parser import DataType
 
 
 # ---------------------------------------------------------------------------
@@ -977,6 +991,359 @@ class TestEdgeCases:
 
         decls = _generate_mode_switch_api_declarations(swc)
         assert "Rte_Switch_MinModeSWC_MinMode" in decls
+
+
+# ---------------------------------------------------------------------------
+#  13. RTE Type Generation methodology (A2/A3 — absorbed from cogu/autosar)
+# ---------------------------------------------------------------------------
+def _mk_type(name, **kw):
+    """Shortcut: build an RteTypeDef for golden-string tests."""
+    return RteTypeDef(name, **kw)
+
+
+def _swc_with_type_ref(type_ref):
+    """SWC whose R_PORT data element references a type by path."""
+    swc = RteSwcInfo("TestSWC")
+    port = RtePortInfo("InputPort", "R_PORT", "InputIF", "SenderReceiver")
+    de = RteDataElementInfo("InputData", "uint8")
+    de.type_ref = type_ref
+    port.data_elements.append(de)
+    swc.ports.append(port)
+    return swc
+
+
+class TestRteTypeDef:
+    """RteTypeDef model: symbol_name override + dependency tracking (A2.3)."""
+
+    def test_effective_name_defaults_to_short_name(self):
+        td = _mk_type('SpeedType', c_type='uint16')
+        assert td.effective_name == 'SpeedType'
+
+    def test_effective_name_uses_symbol_name(self):
+        td = _mk_type('SpeedType', symbol_name='Speed_T')
+        assert td.effective_name == 'Speed_T'
+
+    def test_scalar_has_no_dependencies(self):
+        td = _mk_type('SpeedType', c_type='uint16')
+        assert td.dependencies() == []
+
+    def test_array_depends_on_element_type(self):
+        td = _mk_type('SpeedArray', kind=RteTypeKind.ARRAY,
+                      element_type='SpeedType', array_size=8)
+        assert td.dependencies() == ['SpeedType']
+
+    def test_ref_depends_on_target_type(self):
+        td = _mk_type('ActualSpeed', kind=RteTypeKind.REF, ref_type='SpeedType')
+        assert td.dependencies() == ['SpeedType']
+
+    def test_record_depends_on_member_types(self):
+        td = _mk_type('PositionType', kind=RteTypeKind.RECORD,
+                      sub_elements=[{'name': 'speed', 'type_ref': 'SpeedType'},
+                                    {'name': 'x', 'type_ref': 'uint16'}])
+        assert td.dependencies() == ['SpeedType', 'uint16']
+
+    def test_standard_c_types_set(self):
+        assert 'uint8' in STANDARD_C_TYPES
+        assert 'float64' in STANDARD_C_TYPES
+        assert 'DoorStatusType' not in STANDARD_C_TYPES
+
+
+class TestTypeCreationOrder:
+    """Reverse level-order BFS: dependencies always precede users (A2.1)."""
+
+    def _defs(self):
+        return {
+            'SpeedType': _mk_type('SpeedType', c_type='uint16'),
+            'SpeedArray': _mk_type('SpeedArray', kind=RteTypeKind.ARRAY,
+                                   element_type='SpeedType', array_size=8),
+            'ActualSpeed': _mk_type('ActualSpeed', kind=RteTypeKind.REF,
+                                    ref_type='SpeedType'),
+            'PositionType': _mk_type('PositionType', kind=RteTypeKind.RECORD,
+                                     sub_elements=[{'name': 'speed', 'type_ref': 'SpeedType'},
+                                                   {'name': 'dist', 'type_ref': 'SpeedArray'}]),
+        }
+
+    def test_dependency_precedes_user(self):
+        defs = self._defs()
+        order = [td.name for td in gen_type_creation_order(defs, ['PositionType'])]
+        assert order.index('SpeedType') < order.index('PositionType')
+        assert order.index('SpeedArray') < order.index('PositionType')
+
+    def test_reverse_level_order_exact(self):
+        # Tree: PositionType → [SpeedType, SpeedArray] → SpeedArray → SpeedType
+        # BFS: P, SpeedArray, SpeedType  ⇒ reversed: SpeedType, SpeedArray, P
+        defs = self._defs()
+        order = [td.name for td in gen_type_creation_order(defs, ['PositionType'])]
+        assert order == ['SpeedType', 'SpeedArray', 'PositionType']
+
+    def test_shared_dependency_emitted_once(self):
+        defs = self._defs()
+        order = [td.name for td in gen_type_creation_order(
+            defs, ['ActualSpeed', 'SpeedArray'])]
+        assert order.count('SpeedType') == 1
+        assert order.index('SpeedType') < order.index('ActualSpeed')
+        assert order.index('SpeedType') < order.index('SpeedArray')
+
+    def test_cycle_does_not_loop_forever(self):
+        a = _mk_type('A', kind=RteTypeKind.REF, ref_type='B')
+        b = _mk_type('B', kind=RteTypeKind.REF, ref_type='A')
+        order = [td.name for td in gen_type_creation_order({'A': a, 'B': b}, ['A'])]
+        assert set(order) == {'A', 'B'}
+
+    def test_dependency_trees_one_root_per_referenced_type(self):
+        defs = self._defs()
+        trees = gen_type_dependency_trees(defs, ['ActualSpeed', 'SpeedArray'])
+        assert [t.data.name for t in trees] == ['ActualSpeed', 'SpeedArray']
+
+
+class TestTypeEmitterFilter:
+    """type_emitter != "RTE" types are skipped (A2.2)."""
+
+    def test_non_rte_emitter_excluded(self):
+        defs = {
+            'ExtType': _mk_type('ExtType', c_type='uint16', type_emitter='ECU'),
+            'MyType': _mk_type('MyType', kind=RteTypeKind.REF, ref_type='ExtType'),
+        }
+        order = [td.name for td in gen_type_creation_order(defs, ['MyType'])]
+        assert 'ExtType' not in order
+        assert order == ['MyType']
+
+    def test_rte_emitter_included(self):
+        defs = {'MyType': _mk_type('MyType', c_type='uint16', type_emitter='RTE')}
+        order = [td.name for td in gen_type_creation_order(defs, ['MyType'])]
+        assert order == ['MyType']
+
+    def test_none_emitter_included(self):
+        defs = {'MyType': _mk_type('MyType', c_type='uint16', type_emitter=None)}
+        order = [td.name for td in gen_type_creation_order(defs, ['MyType'])]
+        assert order == ['MyType']
+
+    def test_case_insensitive_rte(self):
+        defs = {'MyType': _mk_type('MyType', c_type='uint16', type_emitter='rte')}
+        order = [td.name for td in gen_type_creation_order(defs, ['MyType'])]
+        assert order == ['MyType']
+
+
+class TestSymbolNameOverride:
+    """SYMBOL-PROPS symbol_name overrides the default short name (A2.3)."""
+
+    def test_scalar_renders_symbol_name(self):
+        td = _mk_type('DoorStatusType', c_type='uint8', symbol_name='DoorStatus_T')
+        assert render_type_def(td) == 'typedef uint8 DoorStatus_T;'
+
+    def test_array_uses_symbol_name(self):
+        td = _mk_type('SpeedArray', kind=RteTypeKind.ARRAY, element_type='SpeedType',
+                      array_size=8, symbol_name='SpeedArr_T')
+        assert render_type_def(td) == 'typedef SpeedType SpeedArr_T[8];'
+
+    def test_record_uses_symbol_name_for_typedef(self):
+        td = _mk_type('PositionType', kind=RteTypeKind.RECORD, symbol_name='Position_T',
+                      sub_elements=[{'name': 'x', 'type_ref': 'uint16'}])
+        assert render_type_def(td) == (
+            'struct Rte_struct_Position_T\n'
+            '{\n'
+            '    uint16 x;\n'
+            '};\n'
+            'typedef struct Rte_struct_Position_T Position_T;'
+        )
+
+
+class TestTypeRendering:
+    """Exact golden strings per type kind — write-side assertions (A3)."""
+
+    def test_scalar_golden(self):
+        assert render_type_def(_mk_type('SpeedType', c_type='uint16')) \
+            == 'typedef uint16 SpeedType;'
+
+    def test_scalar_defaults_uint8(self):
+        assert render_type_def(_mk_type('UnknownType')) == 'typedef uint8 UnknownType;'
+
+    def test_ref_golden(self):
+        assert render_type_def(_mk_type('ActualSpeed', kind=RteTypeKind.REF,
+                                        ref_type='SpeedType')) \
+            == 'typedef SpeedType ActualSpeed;'
+
+    def test_ref_resolves_symbol_name_of_target(self):
+        defs = {'SpeedType': _mk_type('SpeedType', c_type='uint16', symbol_name='Speed_T')}
+        td = _mk_type('ActualSpeed', kind=RteTypeKind.REF, ref_type='SpeedType')
+        assert render_type_def(td, defs) == 'typedef Speed_T ActualSpeed;'
+
+    def test_array_golden(self):
+        td = _mk_type('SpeedArray', kind=RteTypeKind.ARRAY,
+                      element_type='SpeedType', array_size=8)
+        assert render_type_def(td) == 'typedef SpeedType SpeedArray[8];'
+
+    def test_array_resolves_symbol_name_of_element(self):
+        defs = {'SpeedType': _mk_type('SpeedType', c_type='uint16', symbol_name='Speed_T')}
+        td = _mk_type('SpeedArray', kind=RteTypeKind.ARRAY,
+                      element_type='SpeedType', array_size=8)
+        assert render_type_def(td, defs) == 'typedef Speed_T SpeedArray[8];'
+
+    def test_record_golden_with_member_indentation(self):
+        td = _mk_type('PositionType', kind=RteTypeKind.RECORD,
+                      sub_elements=[{'name': 'speed', 'type_ref': 'SpeedType'},
+                                    {'name': 'x', 'type_ref': 'uint16'}])
+        assert render_type_def(td) == (
+            'struct Rte_struct_PositionType\n'
+            '{\n'
+            '    SpeedType speed;\n'
+            '    uint16 x;\n'
+            '};\n'
+            'typedef struct Rte_struct_PositionType PositionType;'
+        )
+
+    def test_record_member_type_resolves_symbol_name(self):
+        defs = {'SpeedType': _mk_type('SpeedType', c_type='uint16', symbol_name='Speed_T')}
+        td = _mk_type('PositionType', kind=RteTypeKind.RECORD,
+                      sub_elements=[{'name': 'speed', 'type_ref': 'SpeedType'}])
+        assert render_type_def(td, defs) == (
+            'struct Rte_struct_PositionType\n'
+            '{\n'
+            '    Speed_T speed;\n'
+            '};\n'
+            'typedef struct Rte_struct_PositionType PositionType;'
+        )
+
+    def test_code_block_object_render_with_indent(self):
+        block = RteTypeCodeBlock(['typedef uint16 SpeedType;'])
+        assert block.render(4) == '    typedef uint16 SpeedType;'
+        assert block.render() == 'typedef uint16 SpeedType;'
+
+
+class TestBuildTypeDefs:
+    """DataType → RteTypeDef conversion (cogu create_from_element port)."""
+
+    def test_scalar_with_base_type(self):
+        dts = [DataType(name='SpeedType', category='VALUE', base_type='uint16')]
+        defs = build_type_defs([], dts)
+        assert 'SpeedType' in defs
+        td = defs['SpeedType']
+        assert td.kind == RteTypeKind.SCALAR
+        assert td.c_type == 'uint16'
+        assert td.effective_name == 'SpeedType'
+
+    def test_symbol_name_from_data_type(self):
+        dts = [DataType(name='DoorStatusType', category='VALUE', base_type='uint8',
+                        symbol_name='DoorStatus_T')]
+        defs = build_type_defs([], dts)
+        assert defs['DoorStatusType'].effective_name == 'DoorStatus_T'
+
+    def test_type_emitter_from_data_type(self):
+        dts = [DataType(name='ExtType', category='VALUE', base_type='uint16',
+                        type_emitter='ECU')]
+        defs = build_type_defs([], dts)
+        assert defs['ExtType'].type_emitter == 'ECU'
+
+    def test_application_type_without_base_skipped(self):
+        dts = [DataType(name='AppType', category='VALUE', base_type=None)]
+        assert build_type_defs([], dts) == {}
+
+    def test_ref_type_resolves_impl_data_type_ref(self):
+        dts = [DataType(name='ActualSpeed', category='TYPE_REFERENCE', base_type='uint16',
+                        sw_data_def_props={'impl_data_type_ref': '/DataTypes/Impl/SpeedType'})]
+        defs = build_type_defs([], dts)
+        assert defs['ActualSpeed'].kind == RteTypeKind.REF
+        assert defs['ActualSpeed'].ref_type == 'SpeedType'
+
+    def test_referenced_type_collected_from_ir(self):
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/SpeedType')
+        dts = [DataType(name='SpeedType', category='VALUE', base_type='uint16')]
+        defs = build_type_defs([swc], dts)
+        assert 'SpeedType' in defs
+        assert collect_referenced_type_names([swc]) == ['SpeedType']
+
+    def test_unresolved_ref_not_in_defs(self):
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/MissingType')
+        assert build_type_defs([swc], []) == {}
+
+
+class TestRteTypeHGolden:
+    """Golden-string snapshots of the typedefs section and Rte_Type.h (A3)."""
+
+    def _metadata(self, dts):
+        return {'source_file': 'test.arxml', 'swc_count': 1, 'data_types': dts}
+
+    def test_type_defs_section_dependency_order_exact(self):
+        dts = [
+            DataType(name='SpeedType', category='VALUE', base_type='uint16'),
+            DataType(name='ActualSpeed', category='TYPE_REFERENCE', base_type='uint16',
+                     sw_data_def_props={'impl_data_type_ref': '/DataTypes/Impl/SpeedType'}),
+        ]
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/ActualSpeed')
+        assert gen_rte_type_defs_str([swc], self._metadata(dts)) == (
+            'typedef uint16 SpeedType;\n'
+            'typedef SpeedType ActualSpeed;'
+        )
+
+    def test_type_defs_section_skips_non_rte_emitter(self):
+        dts = [
+            DataType(name='SpeedType', category='VALUE', base_type='uint16'),
+            DataType(name='ExtType', category='VALUE', base_type='uint32',
+                     type_emitter='ECU'),
+        ]
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/SpeedType')
+        assert gen_rte_type_defs_str([swc], self._metadata(dts)) == (
+            'typedef uint16 SpeedType;'
+        )
+
+    def test_type_defs_section_symbol_name_override(self):
+        dts = [DataType(name='DoorStatusType', category='VALUE', base_type='uint8',
+                        symbol_name='DoorStatus_T')]
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/DoorStatusType')
+        assert gen_rte_type_defs_str([swc], self._metadata(dts)) == (
+            'typedef uint8 DoorStatus_T;'
+        )
+
+    def test_type_defs_section_fallback_when_no_custom_types(self):
+        assert gen_rte_type_defs_str([], self._metadata([])) == (
+            '/* All types map to standard AUTOSAR types — no custom typedefs needed */'
+        )
+
+    def test_rte_type_h_full_contains_golden_typedef_block(self):
+        dts = [
+            DataType(name='SpeedType', category='VALUE', base_type='uint16'),
+            DataType(name='ActualSpeed', category='TYPE_REFERENCE', base_type='uint16',
+                     sw_data_def_props={'impl_data_type_ref': '/DataTypes/Impl/SpeedType'}),
+        ]
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/ActualSpeed')
+        content = _generate_rte_type_h([swc], self._metadata(dts))
+
+        lines = content.split('\n')
+        normalized = ['*  Generated : <TS>' if l.startswith('*  Generated : ')
+                      else l for l in lines]
+        text = '\n'.join(normalized)
+
+        # Exact ordered typedef block (dependencies first)
+        assert 'typedef uint16 SpeedType;\ntypedef SpeedType ActualSpeed;' in text
+        # Typedefs sit between the section banner and NULL_PTR block
+        assert text.index('typedef uint16 SpeedType;') > text.index('TYPE DEFINITIONS')
+        assert text.index('typedef uint16 SpeedType;') < text.index('#ifndef NULL_PTR')
+        # Deterministic tail (golden suffix)
+        assert text.endswith(
+            '#ifndef NULL_PTR\n'
+            '#define NULL_PTR    ((void*)0)\n'
+            '#endif\n'
+            '\n'
+            '#ifndef STATIC\n'
+            '#define STATIC      static\n'
+            '#endif\n'
+            '\n'
+            '#endif /* RTE_TYPE_H */\n'
+            '/*==================================================================================================\n'
+            '*                                       END OF FILE\n'
+            '*==================================================================================================*/'
+        )
+
+    def test_rte_type_h_excludes_non_rte_emitter_type(self):
+        dts = [
+            DataType(name='SpeedType', category='VALUE', base_type='uint16'),
+            DataType(name='ExtType', category='VALUE', base_type='uint32',
+                     type_emitter='ECU'),
+        ]
+        swc = _swc_with_type_ref('/DataTypes/ImplementationDataTypes/SpeedType')
+        content = _generate_rte_type_h([swc], self._metadata(dts))
+        assert 'typedef uint16 SpeedType;' in content
+        assert 'ExtType' not in content
 
 
 # ---------------------------------------------------------------------------
