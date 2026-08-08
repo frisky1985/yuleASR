@@ -1,6 +1,18 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (S1 修复批 — EthSM 多网络回归 + 2 条 error 级缺陷, HEAD=c800c265)
+> 最后更新: 2026-08-08 (S2 P0-B 修复批 ②③ — KeyM SP800-108 真实 KDF + crypto_stack mbedTLS 真实后端, HEAD=d82f810a)
+
+---
+
+## ✅ 2026-08-08 S2 P0-B 修复批 (接力会话) — 已完成
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| ① Csm_Cfg_HwService 5 回调真实定义 | ✅ 已完成 (上会话) | 84e38c5d | 链接测试通过, nm 无 U 符号 |
+| ② KeyM SP800-108 KDF 真实实现 | ✅ keym_sp800_108_counter/derive (counter mode, PRF=HMAC-SHA256, mbedtls_sha256 原语, 无动态分配) + keym_hkdf_sha256 (RFC 5869) + keym_hmac_sha256 (RFC 2104) + keym_crc32 (IEEE 802.3); DDS 证书导入导出/persistent 存储 → 显式 KEYM_ERROR_NOT_IMPLEMENTED (-15 兼容追加); crypto_stack PUBLIC 链接 mbedcrypto | 1a32172a | test_keym 15/15 (SP800-108 已知向量 cfe012ff.../多块 a44abe...、HKDF RFC5869 TC1 3cb25f25...、HMAC RFC2104 TC1、CRC32 0xCBF43926、全 API 派生对拍、NOT_IMPLEMENTED) |
+| ③ crypto_stack 模拟后端 → mbedTLS 真实后端 | ✅ csm_execute_crypto_op: HASH=mbedtls_sha256; MAC_GENERATE=HMAC-SHA256; MAC_VERIFY=真实计算+常数时间比较, 错误签名返回 false (不再恒 true); ENCRYPT/DECRYPT=AES-128-CBC+PKCS7; 不支持算法 fail-closed | d82f810a | test_csm 9/9 (含错误签名 FAIL + SHA256("abc") 向量); test_bootloader 15/15 (证书链伪造签名 → INVALID_SIGNATURE 失败语义); 全量 ctest 36/37 (唯一失败 = pre-existing mcal_uart SegFault, s0_smoke 无限循环排除, 与基线一致) |
+
+**遗留 (pre-existing, 与本次无关)**: mcal_uart_test SegFault; s0_smoke_test 无限循环; P1-1 isotp/CanIf 符号冲突; P1-2 doip stub; P1-4 LTO 库不可索引; P1-5 CI 残留; P1-6 safety 未编译。
 
 ---
 
