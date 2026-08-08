@@ -138,8 +138,8 @@ endif()
 
 add_subdirectory(src/bsw/services)
 
-# Diagnostics 传输层 (IsoTp/DoIP) — 合并自 archive/main-20260429 (2026-08-08)
-# 仅接入 isotp/doip 独立库；DCM/DEM 由 src/bsw/services/dcm|dem 质量线提供，不重复挂载
+# Diagnostics 传输层 (IsoTp) — 合并自 archive/main-20260429 (2026-08-08)
+# 仅接入 isotp 独立库；DoIP 用主线 src/bsw/services/doip (AUTOSAR)，DCM/DEM 由 src/bsw/services/dcm|dem 质量线提供，不重复挂载
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/diagnostics/CMakeLists.txt)
     add_subdirectory(src/diagnostics)
 endif()
