@@ -63,9 +63,19 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo -e "\n${YELLOW}Installing systemd service...${NC}"
     
-    # Update service file with correct paths
-    sed -i "s|/home/admin/eth-dds-integration/tools/web_gui|$SCRIPT_DIR|g" dds-web-gui.service
-    sed -i "s|User=admin|User=$USER|g" dds-web-gui.service
+    # Update service file with correct paths (P2-10: 占位符替换, 不再依赖硬编码路径)
+    sed -i "s|__WEBGUI_DIR__|$SCRIPT_DIR|g" dds-web-gui.service
+    sed -i "s|__RUN_USER__|$USER|g" dds-web-gui.service
+    
+    sudo mkdir -p /etc/eth-dds
+    # 生产密钥: 首次安装生成随机 SECRET_KEY / JWT_SECRET_KEY (缺失时 app 拒绝启动)
+    if [ ! -f /etc/eth-dds/web-gui.env ]; then
+        umask 077
+        echo "SECRET_KEY=$(openssl rand -hex 32)" | sudo tee /etc/eth-dds/web-gui.env > /dev/null
+        echo "JWT_SECRET_KEY=$(openssl rand -hex 32)" | sudo tee -a /etc/eth-dds/web-gui.env > /dev/null
+        sudo chown root:root /etc/eth-dds/web-gui.env
+        sudo chmod 600 /etc/eth-dds/web-gui.env
+    fi
     
     sudo cp dds-web-gui.service /etc/systemd/system/
     sudo systemctl daemon-reload
@@ -86,7 +96,9 @@ echo -e "     - admin / admin123"
 echo -e "     - operator / operator123"
 echo -e "     - viewer / viewer123"
 echo -e "\n${YELLOW}For production:${NC}"
-echo -e "  - Change default credentials in server/app.py"
-echo -e "  - Set SECRET_KEY and JWT_SECRET_KEY environment variables"
-echo -e "  - Configure HTTPS with reverse proxy (nginx/apache)"
+echo -e "  - 修改默认凭据 (server/app.py 或接入认证后端)"
+echo -e "  - SECRET_KEY / JWT_SECRET_KEY 已由 install.sh 写入 /etc/eth-dds/web-gui.env"
+echo -e "    (权限 600, 从环境变量读取; 缺失时 app 拒绝启动, 无模板默认值)"
+echo -e "  - DDS_CONFIG_PATH 指向 dds-config-tool 生成的 config.yaml (见 service 注释)"
+echo -e "  - 配置 HTTPS 反向代理 (nginx/apache)"
 echo -e "${GREEN}========================================${NC}"

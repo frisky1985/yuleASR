@@ -4,17 +4,27 @@ After=network.target
 
 [Service]
 Type=simple
-User=admin
-Group=admin
-WorkingDirectory=/home/admin/eth-dds-integration/tools/web_gui
-Environment="PATH=/home/admin/eth-dds-integration/tools/web_gui/venv/bin"
-Environment="SECRET_KEY=change-this-in-production"
-Environment="JWT_SECRET_KEY=change-this-in-production"
+# 部署时替换以下占位符 (或使用 install.sh 自动替换):
+#   __WEBGUI_DIR__  -> 本工具实际安装目录 (如 /opt/eth-dds/tools/web_gui)
+#   __RUN_USER__    -> 运行用户
+User=__RUN_USER__
+Group=__RUN_USER__
+WorkingDirectory=__WEBGUI_DIR__
+Environment="PATH=__WEBGUI_DIR__/venv/bin"
+# SECRET_KEY / JWT_SECRET_KEY 由 EnvironmentFile 提供 (生产必须设置,
+# 缺失时 app 抛错拒绝启动, 绝不使用模板默认值)。
+# 部署时: 生成随机密钥写入 /etc/eth-dds/web-gui.env, 例如:
+#   SECRET_KEY=$(openssl rand -hex 32)
+#   JWT_SECRET_KEY=$(openssl rand -hex 32)
+#   echo "SECRET_KEY=$SECRET_KEY" > /etc/eth-dds/web-gui.env
+#   echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> /etc/eth-dds/web-gui.env
+EnvironmentFile=-/etc/eth-dds/web-gui.env
 Environment="FLASK_ENV=production"
-Environment="DDS_CONFIG_PATH=/home/admin/eth-dds-integration/dds-config-tool/config.yaml"
+# DDS 配置文件路径 (指向 dds-config-tool 生成的 config.yaml, 按部署环境配置)
+Environment="DDS_CONFIG_PATH=__WEBGUI_DIR__/../dds-config-tool/config.yaml"
 Environment="LOG_LEVEL=INFO"
 
-ExecStart=/home/admin/eth-dds-integration/tools/web_gui/venv/bin/python server/app.py
+ExecStart=__WEBGUI_DIR__/venv/bin/python __WEBGUI_DIR__/server/app.py
 ExecReload=/bin/kill -HUP $MAINPID
 
 Restart=always

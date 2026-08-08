@@ -21,8 +21,10 @@ class Config:
     SOCKETIO_ASYNC_MODE = 'threading'
     SOCKETIO_CORS_ALLOWED_ORIGINS = '*'
     
-    # DDS Integration
-    DDS_CONFIG_PATH = os.environ.get('DDS_CONFIG_PATH') or '/home/admin/eth-dds-integration/dds-config-tool/config.yaml'
+    # DDS Integration (P2-10: 路径不再硬编码, 优先环境变量, 回退相对部署布局)
+    DDS_CONFIG_PATH = os.environ.get('DDS_CONFIG_PATH') or os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+        'dds-config-tool', 'config.yaml')
     DDS_RUNTIME_SOCKET = os.environ.get('DDS_RUNTIME_SOCKET') or '/tmp/dds_runtime.sock'
     
     # Monitoring

@@ -92,9 +92,9 @@ tools/web_gui/
 
 ### Quick Start
 
-1. **Navigate to web_gui directory:**
+1. **Navigate to web_gui directory (部署目录, 无需固定路径):**
    ```bash
-   cd /home/admin/eth-dds-integration/tools/web_gui
+   cd tools/web_gui   # 或部署环境中的实际安装目录
    ```
 
 2. **Start the server:**
@@ -243,13 +243,29 @@ Start EOL test mode.
 
 ### Using systemd
 
-1. **Copy service file:**
+推荐用 install.sh 一键安装 (自动替换路径占位符 + 生成密钥):
+
+```bash
+./install.sh   # 选择安装 systemd service 时自动: 替换 __WEBGUI_DIR__/__RUN_USER__,
+               # 生成 /etc/eth-dds/web-gui.env (SECRET_KEY/JWT_SECRET_KEY, 权限 600)
+sudo systemctl start dds-web-gui
+```
+
+手动安装:
+
+1. **Copy service file (先替换占位符):**
    ```bash
-   sudo cp dds-web-gui.service /etc/systemd/system/
+   sed "s|__WEBGUI_DIR__|$PWD|g; s|__RUN_USER__|$USER|g" \
+     dds-web-gui.service | sudo tee /etc/systemd/system/dds-web-gui.service
    ```
 
-2. **Edit service file:**
-   Update paths and environment variables as needed.
+2. **生成生产密钥 (必做, 缺失时 app 拒绝启动):**
+   ```bash
+   sudo mkdir -p /etc/eth-dds
+   echo "SECRET_KEY=$(openssl rand -hex 32)" | sudo tee /etc/eth-dds/web-gui.env
+   echo "JWT_SECRET_KEY=$(openssl rand -hex 32)" | sudo tee -a /etc/eth-dds/web-gui.env
+   sudo chmod 600 /etc/eth-dds/web-gui.env
+   ```
 
 3. **Enable and start:**
    ```bash
@@ -257,6 +273,10 @@ Start EOL test mode.
    sudo systemctl enable dds-web-gui
    sudo systemctl start dds-web-gui
    ```
+
+> P2-10 (2026-08-08): service 模板不再硬编码 /home/admin/eth-dds-integration 路径,
+> 改用 __WEBGUI_DIR__/__RUN_USER__ 占位符; SECRET_KEY 从 EnvironmentFile
+> (/etc/eth-dds/web-gui.env) 读取, 无模板默认值。
 
 ### Using Docker
 
@@ -277,11 +297,11 @@ Start EOL test mode.
 
 | Variable          | Description                  | Default                           |
 |-------------------|------------------------------|-----------------------------------|
-| SECRET_KEY        | Flask secret key             | dev-secret-key                    |
-| JWT_SECRET_KEY    | JWT signing key              | jwt-secret-key                    |
-| DDS_CONFIG_PATH   | Path to DDS config file      | /home/admin/eth-dds-integration/...|
+| SECRET_KEY        | Flask secret key             | 无 (生产必须由环境变量提供)       |
+| JWT_SECRET_KEY    | JWT signing key              | 无 (生产必须由环境变量提供)       |
+| DDS_CONFIG_PATH   | Path to DDS config file      | __WEBGUI_DIR__/../dds-config-tool/config.yaml |
 | LOG_LEVEL         | Logging level                | INFO                              |
-| FLASK_ENV         | Flask environment            | development                       |
+| FLASK_ENV         | Flask environment            | production                        |
 
 ## Security Considerations
 

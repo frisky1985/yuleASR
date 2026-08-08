@@ -19,8 +19,8 @@ from flask_cors import CORS
 from flask_socketio import SocketIO, emit, join_room, leave_room
 import jwt
 
-# Add project path for DDS integration
-sys.path.insert(0, '/home/admin/eth-dds-integration')
+# Add project path for DDS integration (P2-10: 去掉硬编码, 基于本文件定位)
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Get correct paths
@@ -464,11 +464,20 @@ def acknowledge_alert(current_user, alert_id):
             return jsonify({'success': True})
     return jsonify({'message': 'Alert not found'}), 404
 
+def _get_config_path():
+    """DDS 配置文件路径: 环境变量优先, 回退相对部署布局 (P2-10)"""
+    env = os.environ.get('DDS_CONFIG_PATH')
+    if env:
+        return env
+    base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.join(base, 'dds-config-tool', 'config.yaml')
+
+
 @app.route('/api/config')
 @token_required
 def get_config(current_user):
     """Get current configuration"""
-    config_path = '/home/admin/eth-dds-integration/dds-config-tool/config.yaml'
+    config_path = _get_config_path()
     try:
         with open(config_path, 'r') as f:
             return jsonify({
@@ -490,7 +499,7 @@ def update_config(current_user):
     if not content:
         return jsonify({'message': 'Content required'}), 400
     
-    config_path = '/home/admin/eth-dds-integration/dds-config-tool/config.yaml'
+    config_path = _get_config_path()
     
     # Save old version
     backup_path = f"{config_path}.backup.{int(time.time())}"
