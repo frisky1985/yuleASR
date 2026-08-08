@@ -32,9 +32,10 @@ import os
 import argparse
 import json
 import logging
+from collections import deque
 from datetime import datetime
 from pathlib import Path
-from typing import List, Dict, Optional, Any, Tuple
+from typing import List, Dict, Optional, Any, Tuple, Iterator
 from enum import Enum, auto
 
 # ---------------------------------------------------------------------------
@@ -295,6 +296,338 @@ def resolve_data_semantics(semantics_str: str) -> DataSemantics:
 
 
 # ============================================================================
+#  RTE Type Generation — data model & dependency ordering
+#  (methodology absorbed from cogu/autosar model/implementation.py:75-104 +
+#   generator/type_generator.py:77-93 — reverse level-order BFS ordering,
+#   type_emitter filtering, symbol_name override)
+# ============================================================================
+class RteTypeKind(Enum):
+    """AUTOSAR IMPLEMENTATION-DATA-TYPE categories (cogu model/element.py)."""
+    SCALAR  = "VALUE"
+    REF     = "TYPE_REFERENCE"
+    ARRAY   = "ARRAY"
+    RECORD  = "STRUCTURE"
+    POINTER = "DATA_REFERENCE"
+
+
+STANDARD_C_TYPES = frozenset({
+    'uint8', 'uint16', 'uint32', 'uint64',
+    'sint8', 'sint16', 'sint32', 'sint64',
+    'boolean', 'float32', 'float64',
+})
+
+
+class RteTypeDef:
+    """Implementation type definition (cogu model/element.py ImplementationType).
+
+    Attributes:
+        symbol_name:  overrides the default short name (AUTOSAR SYMBOL-PROPS/SYMBOL)
+        type_emitter: if set and != "RTE", this type is emitted by an external
+                      tool and must be skipped here (AUTOSAR TYPE-EMITTER)
+        c_type:       resolved base C type (for scalar/fallback rendering)
+        element_type: ARRAY element type name
+        array_size:   ARRAY length
+        ref_type:     REF/POINTER target type name
+        sub_elements: RECORD members as [{'name': ..., 'type_ref': ...}, ...]
+    """
+    __slots__ = ('name', 'kind', 'symbol_name', 'type_emitter', 'c_type',
+                 'element_type', 'array_size', 'ref_type', 'sub_elements')
+
+    def __init__(self, name: str, kind: 'RteTypeKind' = RteTypeKind.SCALAR,
+                 symbol_name: Optional[str] = None,
+                 type_emitter: Optional[str] = None,
+                 c_type: Optional[str] = None,
+                 element_type: Optional[str] = None,
+                 array_size: int = 0,
+                 ref_type: Optional[str] = None,
+                 sub_elements: Optional[List[Dict[str, Any]]] = None):
+        self.name = name
+        self.kind = kind
+        self.symbol_name = symbol_name
+        self.type_emitter = type_emitter
+        self.c_type = c_type
+        self.element_type = element_type
+        self.array_size = array_size
+        self.ref_type = ref_type
+        self.sub_elements = sub_elements or []
+
+    @property
+    def effective_name(self) -> str:
+        """Emitted type name: SYMBOL-PROPS symbol_name wins over the short name."""
+        return self.symbol_name or self.name
+
+    def dependencies(self) -> List[str]:
+        """Names of other RteTypeDefs that must be defined before this one."""
+        deps = []
+        if self.element_type:
+            deps.append(self.element_type)
+        if self.ref_type:
+            deps.append(self.ref_type)
+        for member in self.sub_elements:
+            ref = member.get('type_ref') if isinstance(member, dict) else None
+            if ref:
+                deps.append(ref)
+        return deps
+
+
+class _TypeDependencyNode:
+    """Node of a type dependency tree (cogu model/implementation.py Node)."""
+    __slots__ = ('data', 'children')
+
+    def __init__(self, data: RteTypeDef):
+        self.data = data
+        self.children: List['_TypeDependencyNode'] = []
+
+    def add_child(self, child: '_TypeDependencyNode') -> None:
+        self.children.append(child)
+
+
+def _kind_from_category(category: str) -> RteTypeKind:
+    """Map AUTOSAR category string to RteTypeKind (cogu create_from_element)."""
+    mapping = {
+        'VALUE': RteTypeKind.SCALAR,
+        'TYPE_REFERENCE': RteTypeKind.REF,
+        'ARRAY': RteTypeKind.ARRAY,
+        'STRUCTURE': RteTypeKind.RECORD,
+        'DATA_REFERENCE': RteTypeKind.POINTER,
+    }
+    return mapping.get((category or 'VALUE').upper(), RteTypeKind.SCALAR)
+
+
+def build_type_defs(swc_list: List[RteSwcInfo],
+                    data_types: Optional[List[Any]] = None
+                    ) -> Dict[str, RteTypeDef]:
+    """Build {name: RteTypeDef} for implementation types referenced by the IR.
+
+    Absorbs cogu ImplementationModel.create_from_element semantics:
+    category → kind; SYMBOL-PROPS symbol_name override; TYPE-EMITTER.
+    The current ARXML parser exposes only VALUE/TYPE_REFERENCE detail
+    (base type); ARRAY/STRUCTURE sub-element layout is not parsed yet, so
+    those kinds fall back to no-typedef (unchanged legacy behaviour).
+    """
+    type_map: Dict[str, Any] = {}
+    for dt in data_types or []:
+        name = getattr(dt, 'name', None) or ''
+        if not name:
+            continue
+        type_map[name] = dt
+        short = getattr(dt, 'short_name', None) or ''
+        if short and short != name:
+            type_map.setdefault(short, dt)
+
+    defs: Dict[str, RteTypeDef] = {}
+    for name, dt in type_map.items():
+        kind = _kind_from_category(getattr(dt, 'category', 'VALUE'))
+        base = getattr(dt, 'base_type', None) or ''
+        if not base:
+            # Application types without a resolved base type map to standard
+            # C types (uint8 default) — nothing to typedef, same as legacy.
+            continue
+        if kind in (RteTypeKind.ARRAY, RteTypeKind.RECORD, RteTypeKind.POINTER):
+            # Sub-element layout not exposed by the parser yet.
+            continue
+        ref_name = None
+        if kind == RteTypeKind.REF:
+            ref = (getattr(dt, 'sw_data_def_props', None) or {}).get(
+                'impl_data_type_ref', '') or ''
+            ref_name = extract_short_name_from_ref(ref) if ref else None
+        defs[name] = RteTypeDef(
+            name=name,
+            kind=kind,
+            symbol_name=getattr(dt, 'symbol_name', None),
+            type_emitter=getattr(dt, 'type_emitter', None),
+            c_type=map_to_c_type(base),
+            ref_type=ref_name,
+        )
+    return defs
+
+
+def collect_referenced_type_names(swc_list: List[RteSwcInfo]) -> List[str]:
+    """Short names of data types referenced by data elements / operations."""
+    names: List[str] = []
+    seen = set()
+    for swc in swc_list:
+        for port in swc.ports:
+            for de in port.data_elements:
+                name = extract_short_name_from_ref(de.type_ref or '')
+                if name and name not in seen:
+                    seen.add(name)
+                    names.append(name)
+            for op in port.operations:
+                for arg in op.get('arguments', []):
+                    name = extract_short_name_from_ref(arg.get('type_ref', '') or '')
+                    if name and name not in seen:
+                        seen.add(name)
+                        names.append(name)
+    return names
+
+
+def gen_type_dependency_trees(type_defs: Dict[str, RteTypeDef],
+                              root_names: List[str]
+                              ) -> List['_TypeDependencyNode']:
+    """Build one dependency tree per referenced root type (cogu port).
+
+    Each tree's children are the types the root depends on; dependencies of
+    dependencies are expanded recursively (cycle-guarded).
+    """
+    trees = []
+    for root_name in sorted(root_names):
+        root = type_defs.get(root_name)
+        if root is None:
+            continue
+        trees.append(_build_type_tree(root, type_defs, set()))
+    return trees
+
+
+def _build_type_tree(root: RteTypeDef, type_defs: Dict[str, RteTypeDef],
+                     visiting: set) -> '_TypeDependencyNode':
+    """Recursively build a dependency tree rooted at ``root``."""
+    node = _TypeDependencyNode(root)
+    if root.name in visiting:
+        return node  # cycle guard: emit once, do not recurse forever
+    visiting = set(visiting)
+    visiting.add(root.name)
+    for dep_name in root.dependencies():
+        dep = type_defs.get(dep_name)
+        if dep is not None:
+            node.add_child(_build_type_tree(dep, type_defs, visiting))
+    return node
+
+
+def get_type_creation_order(root: '_TypeDependencyNode') -> Iterator['_TypeDependencyNode']:
+    """Reverse level order of a dependency tree (cogu get_type_creation_order).
+
+    BFS enqueue + reverse ⇒ dependencies are yielded before their users,
+    so typedefs always reference already-defined types.
+    """
+    queue = deque()
+    queue.append(root)
+    result = []
+    while queue:
+        node = queue.popleft()
+        result.append(node)
+        for child in reversed(node.children):
+            queue.append(child)
+    return reversed(result)
+
+
+def gen_type_creation_order(type_defs: Dict[str, RteTypeDef],
+                            root_names: List[str]) -> List[RteTypeDef]:
+    """Ordered, deduplicated, filtered list of RteTypeDef for Rte_Type.h.
+
+    - dependencies precede users (reverse level order, cogu methodology)
+    - shared dependencies are emitted exactly once
+    - type_emitter != "RTE" types are skipped (external emitter owns them)
+    - standard C types are skipped (provided by Std_Types.h / platform)
+    """
+    result: List[RteTypeDef] = []
+    seen = set()
+    for tree in gen_type_dependency_trees(type_defs, root_names):
+        for node in get_type_creation_order(tree):
+            td = node.data
+            if td.name in seen:
+                continue
+            seen.add(td.name)
+            if td.type_emitter and td.type_emitter.upper() != 'RTE':
+                continue
+            if td.effective_name in STANDARD_C_TYPES:
+                continue
+            result.append(td)
+    return result
+
+
+class RteTypeCodeBlock:
+    """Renderable code block for one type definition (golden-string friendly).
+
+    Abstraction over raw f-string emission: cogu emits via the cfile AST
+    library; we keep a minimal deterministic block object so unit tests can
+    assert exact output including indentation (see cogu write_type_defs_str).
+    """
+    __slots__ = ('lines',)
+
+    def __init__(self, lines: List[str]):
+        self.lines = list(lines)
+
+    def render(self, indent: int = 0) -> str:
+        pad = ' ' * indent
+        return '\n'.join(pad + line if line else line for line in self.lines)
+
+    def __str__(self) -> str:
+        return self.render()
+
+
+def _resolve_member_type(member: Dict[str, Any],
+                         type_defs: Dict[str, RteTypeDef]) -> str:
+    """Resolve a record member's type to its effective C name.
+
+    Precedence: known RteTypeDef (symbol_name aware) → standard C type →
+    the referenced short name as-is (type provided elsewhere, e.g. by an
+    external RTE tool / Std_Types.h).
+    """
+    ref = member.get('type_ref') if isinstance(member, dict) else None
+    if ref:
+        short = extract_short_name_from_ref(ref)
+        target = type_defs.get(short)
+        if target is not None:
+            return target.effective_name
+        if short in STANDARD_C_TYPES:
+            return short
+        return short
+    return map_to_c_type(member.get('type', '') if isinstance(member, dict) else '')
+
+
+def render_type_def(td: RteTypeDef,
+                    type_defs: Optional[Dict[str, RteTypeDef]] = None) -> str:
+    """Render one type definition to exact C source (4-space member indent).
+
+    Follows cogu naming conventions: record structs are named
+    ``Rte_struct_<Name>`` and typedef'd to the effective type name.
+    """
+    type_defs = type_defs or {}
+    name = td.effective_name
+
+    if td.kind == RteTypeKind.ARRAY:
+        element = td.element_type or td.c_type or 'uint8'
+        if td.element_type:
+            target = type_defs.get(td.element_type)
+            if target is not None:
+                element = target.effective_name
+        return f'typedef {element} {name}[{td.array_size}];'
+
+    if td.kind == RteTypeKind.RECORD:
+        lines = [f'struct Rte_struct_{name}', '{']
+        for member in td.sub_elements:
+            member_name = member.get('name', 'Member')
+            lines.append(f'    {_resolve_member_type(member, type_defs)} {member_name};')
+        lines.extend(['};', f'typedef struct Rte_struct_{name} {name};'])
+        return '\n'.join(lines)
+
+    if td.kind == RteTypeKind.REF and td.ref_type:
+        target = type_defs.get(td.ref_type)
+        target_name = target.effective_name if target is not None else td.ref_type
+        return f'typedef {target_name} {name};'
+
+    # SCALAR / POINTER / REF without parsed target
+    return f'typedef {td.c_type or "uint8"} {name};'
+
+
+def gen_rte_type_defs_str(swc_list: List[RteSwcInfo],
+                          metadata: Optional[Dict[str, Any]] = None) -> str:
+    """Typedef section of Rte_Type.h as an exact string (cogu write_type_defs_str).
+
+    Primary golden-string assertion point for the type generation tests.
+    """
+    data_types = (metadata or {}).get('data_types', []) if metadata else []
+    type_defs = build_type_defs(swc_list, data_types)
+    ordered = gen_type_creation_order(
+        type_defs, collect_referenced_type_names(swc_list))
+    if not ordered:
+        return ('/* All types map to standard AUTOSAR types — '
+                'no custom typedefs needed */')
+    return '\n'.join(render_type_def(td, type_defs) for td in ordered)
+
+
+# ============================================================================
 #  ARXML → Internal IR Builder
 # ============================================================================
 def build_rte_ir_from_arxml(arxml_path: str,
@@ -439,6 +772,7 @@ def build_rte_ir_from_arxml(arxml_path: str,
         'generated': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'source_file': os.path.basename(arxml_path),
         'swc_count': len(swc_list),
+        'data_types': data_types,
         'errors': parser.validate(),
     }
 
@@ -698,6 +1032,7 @@ def _parse_arxml_direct(arxml_path: str) -> Tuple[List[RteSwcInfo], Dict[str, An
         'generated': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         'source_file': os.path.basename(arxml_path),
         'swc_count': len(swc_list),
+        'data_types': [],  # direct-XML fallback does not parse data types
         'errors': errors,
         'parser': 'direct_xml',
     }
@@ -1331,29 +1666,18 @@ def _generate_rte_type_h(swc_list: List[RteSwcInfo], metadata: Dict[str, Any]) -
         "*==================================================================================================*/",
     ]
 
-    # Collect unique type mappings
-    seen_types: Dict[str, str] = {}
-    for swc in swc_list:
-        for port in swc.ports:
-            for de in port.data_elements:
-                key = de.c_type
-                if key not in seen_types and key not in ('uint8', 'uint16', 'uint32',
-                                                         'sint8', 'sint16', 'sint32',
-                                                         'boolean', 'float32', 'float64',
-                                                         'uint64', 'sint64'):
-                    seen_types[key] = key
-        # Also scan NvBlock data types
-        for nv in swc.nv_block_ports:
-            key = nv.data_type
-            if key not in seen_types and key not in ('uint8', 'uint16', 'uint32',
-                                                     'sint8', 'sint16', 'sint32',
-                                                     'boolean', 'float32', 'float64',
-                                                     'uint64', 'sint64'):
-                seen_types[key] = key
+    # Collect unique type mappings — reverse level-order BFS ensures
+    # dependency types are typedef'd before their users (cogu methodology);
+    # types with type_emitter != "RTE" are skipped (external emitter owns
+    # them); SYMBOL-PROPS symbol_name overrides the default short name.
+    data_types = (metadata or {}).get('data_types', []) if metadata else []
+    type_defs = build_type_defs(swc_list, data_types)
+    ordered_types = gen_type_creation_order(
+        type_defs, collect_referenced_type_names(swc_list))
 
-    if seen_types:
-        for type_name in sorted(seen_types):
-            lines.append(f"typedef uint8 {type_name};")
+    if ordered_types:
+        for td in ordered_types:
+            lines.append(render_type_def(td, type_defs))
     else:
         lines.append("/* All types map to standard AUTOSAR types — no custom typedefs needed */")
 

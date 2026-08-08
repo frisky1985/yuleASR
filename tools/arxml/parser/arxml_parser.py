@@ -97,6 +97,10 @@ class DataType(ARXMLBaseElement):
     data_constraint: Optional[str] = None
     compu_method: Optional[str] = None
     sw_data_def_props: Dict[str, Any] = field(default_factory=dict)
+    # AUTOSAR SYMBOL-PROPS/SYMBOL — 覆盖默认短名的发射符号名
+    symbol_name: Optional[str] = None
+    # AUTOSAR TYPE-EMITTER — 非 RTE 的类型由外部工具发射，RTE 生成器应跳过
+    type_emitter: Optional[str] = None
 
 
 @dataclass
@@ -407,6 +411,14 @@ class ARXMLParser:
             base_type_ref = elem.find(f'{{{ns_ar}}}BASE-TYPE-REF')
             if base_type_ref is not None:
                 data_type.base_type = base_type_ref.text
+            # AUTOSAR TYPE-EMITTER: 标注由外部工具发射的类型
+            data_type.type_emitter = self._get_text(elem, 'TYPE-EMITTER') or None
+            # AUTOSAR SYMBOL-PROPS/SYMBOL: 发射符号名覆盖默认短名
+            props = elem.find(f'{{{ns_ar}}}SW-DATA-DEF-PROPS')
+            if props is not None:
+                data_type.sw_data_def_props = self._parse_sw_data_def_props(props)
+            if data_type.sw_data_def_props.get('symbol_name'):
+                data_type.symbol_name = data_type.sw_data_def_props['symbol_name']
         
         return data_type
     
@@ -427,6 +439,18 @@ class ARXMLParser:
                 constraint_ref = variant.find(f'{{{ns_ar}}}DATA-CONSTR-REF')
                 if constraint_ref is not None:
                     props['data_constraint'] = constraint_ref.text
+
+                # AUTOSAR SYMBOL-PROPS/SYMBOL — 发射符号名
+                symbol_props = variant.find(f'{{{ns_ar}}}SYMBOL-PROPS')
+                if symbol_props is not None:
+                    symbol = symbol_props.find(f'{{{ns_ar}}}SYMBOL')
+                    if symbol is not None and symbol.text:
+                        props['symbol_name'] = symbol.text.strip()
+
+                # AUTOSAR IMPLEMENTATION-DATA-TYPE-REF — TYPE_REFERENCE 指向的实现类型
+                impl_ref = variant.find(f'{{{ns_ar}}}IMPLEMENTATION-DATA-TYPE-REF')
+                if impl_ref is not None:
+                    props['impl_data_type_ref'] = impl_ref.text
         
         return props
     
