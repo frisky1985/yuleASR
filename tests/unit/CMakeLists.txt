@@ -27,6 +27,9 @@ add_subdirectory(services/tcpip)
 # Cdd_Fvm 单元测试 (B3-1: Flash 虚拟化多 bank — 搬移/保护/故障切换)
 add_subdirectory(cdd)
 
+# Libraries 独立算法库测试 (B3-2: crc + aes)
+add_subdirectory(libs)
+
 foreach(module ${UNIT_TEST_MODULES})
     # Check if test file exists
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${module}_test.c)

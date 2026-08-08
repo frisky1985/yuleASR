@@ -141,6 +141,12 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/blake2/CMakeLists.txt)
     add_subdirectory(third_party/crypto/blake2)
 endif()
 
+# 独立算法库 (B3-2, XMEN Libraries/ 对齐): libs_crc + libs_aes
+# 纯 C99 + stdint.h, 与 BSW 模块解耦, 可独立复用/单测
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/CMakeLists.txt)
+    add_subdirectory(src/libs)
+endif()
+
 add_subdirectory(src/bsw/services)
 
 # Diagnostics 传输层 (IsoTp) — 合并自 archive/main-20260429 (2026-08-08)
