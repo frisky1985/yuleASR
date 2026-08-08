@@ -1,6 +1,20 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (archive/main-20260429 功能模块合并批次)
+> 最后更新: 2026-08-08 (批C 收尾完成 — mbedTLS 静态池 + HEAP_SIZE 回收)
+
+---
+
+## ✅ 2026-08-08 批C 收尾 (动态内存→静态分配 最后一块) — 已完成
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| mbedTLS 静态内存池 | ✅ 32KB 静态池 (MBEDTLS_PLATFORM_MEMORY + MBEDTLS_MEMORY_BUFFER_ALLOC_C), mbedTLS 内部不再走 libc calloc/free | ea0215bb | 功能验证 PASS (ECDSA P-256 keygen/sign/verify + mpi_exp_mod 全走池); libmbedcrypto.a 无 calloc 引用 |
+| HEAP_SIZE 回收 | ✅ 256KB→4KB, 净回收 252KB 给 .bss/栈 | ea0215bb | 生产代码 malloc=0 + 无 _sbrk/无其他堆消费者; 保留 4KB 维持堆符号非空 |
+| 编译阻断修复 | ✅ 8 处 pre-existing 机械修复级联损坏 (Dcm.c uint32_t / E2E_Cfg P2VAR / telemetry 括号错位 / asw &request / Boot_Loader whfor / Mqtt_Tls 括号错位 / uart 宏顺序) | 9d0c9d5c | 全量 native 构建 BUILD_EXIT=0 |
+| 测试 | ✅ ctest 35/35 (排除 2 个 pre-existing 失败) | — | crypto/tls 相关 8 用例全绿 (cryif/keym/secoc_core/secoc_freshness/bootloader/boot*/integration_mem) |
+| MISRA | ✅ 新池自有代码零 required 违规; 剩余为 include 链噪声与基线一致; mbedtls 在 third_party exclude 语义 | — | misra_verify.py 扫描 |
+
+**遗留 (pre-existing, 与批C无关)**: mcal_uart_test SegFault (编译恢复后暴露); s0_smoke_test 无限循环; src/ros2_bridge/rmw_ethdds.c calloc/free (08-08 合并引入, 未挂载编译, 不进 MCU 镜像)
 
 ---
 
