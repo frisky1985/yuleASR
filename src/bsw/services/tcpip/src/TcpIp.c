@@ -903,6 +903,7 @@ TcpIp_ReturnType TcpIp_Send(TcpIp_SocketIdType SocketId, const uint8* Data, uint
     entry = TcpIp_LocalFindSocket(SocketId);
     if (entry == NULL_PTR)
     {
+        TCPIP_STATS_INC(TxErrors);
         return TCPIP_E_NOT_OK;
     }
 
@@ -1066,6 +1067,11 @@ boolean TcpIp_IsConnected(TcpIp_SocketIdType SocketId)
 TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPV4ADDR, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
     if (Addr == NULL_PTR)
     {
         TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPV4ADDR, TCPIP_E_PARAM_POINTER);
@@ -1083,6 +1089,11 @@ TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr)
 TcpIp_ReturnType TcpIp_GetIPv6Addr(TcpIp_Ipv6AddrType* Addr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPV6ADDR, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
     if (Addr == NULL_PTR)
     {
         TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPV6ADDR, TCPIP_E_PARAM_POINTER);
@@ -1108,6 +1119,11 @@ TcpIp_ReturnType TcpIp_GetIPv6Addr(TcpIp_Ipv6AddrType* Addr)
 TcpIp_ReturnType TcpIp_GetIPv4SubnetMask(uint8 IfIdx, TcpIp_Ipv4AddrType* Mask)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPV4SUBNETMASK, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
     if (Mask == NULL_PTR)
     {
         TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPV4SUBNETMASK, TCPIP_E_PARAM_POINTER);
@@ -1130,6 +1146,11 @@ TcpIp_ReturnType TcpIp_GetIPv4SubnetMask(uint8 IfIdx, TcpIp_Ipv4AddrType* Mask)
 TcpIp_ReturnType TcpIp_GetLinkState(TcpIp_LinkStateType* LinkState)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETLINKSTATE, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
     if (LinkState == NULL_PTR)
     {
         TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETLINKSTATE, TCPIP_E_PARAM_POINTER);
@@ -1147,6 +1168,11 @@ TcpIp_ReturnType TcpIp_GetLinkState(TcpIp_LinkStateType* LinkState)
 TcpIp_ReturnType TcpIp_GetInterfaceState(TcpIp_InterfaceStateType* InterfaceState)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIFSTATE, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
     if (InterfaceState == NULL_PTR)
     {
         TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIFSTATE, TCPIP_E_PARAM_POINTER);
@@ -1164,6 +1190,11 @@ TcpIp_ReturnType TcpIp_GetInterfaceState(TcpIp_InterfaceStateType* InterfaceStat
 TcpIp_ReturnType TcpIp_GetIpAddrState(uint8 IfIdx, TcpIp_IpAddrStateType* IpAddrState)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPADDRSTATE, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
     if (IpAddrState == NULL_PTR)
     {
         TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETIPADDRSTATE, TCPIP_E_PARAM_POINTER);
@@ -1253,6 +1284,11 @@ void TcpIp_MainFunction(void)
             }
             else if (entry->TcpState == TCPIP_TCPSTATE_TIME_WAIT)
             {
+                (void)TcpIp_Close(i, TRUE);
+            }
+            else
+            {
+                /* Unexpected closing state: abort and release the slot. */
                 (void)TcpIp_Close(i, TRUE);
             }
         }
@@ -1714,9 +1750,13 @@ TcpIp_ReturnType TcpIp_ChangeTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStat
         TcpIp_SocketIdType child;
         TcpIp_SocketEntryType* childEntry;
 
-        if (entry->PendingCount >= TCPIP_MAX_PENDING_CONNECTIONS)
+        if ((entry->Backlog > 0U) && (entry->PendingCount >= entry->Backlog))
         {
-            return TCPIP_E_NOBUFS;
+            return TCPIP_E_NOBUFS;   /* listener backlog full */
+        }
+        if (entry->PendingCount >= (uint8)TCPIP_MAX_PENDING_CONNECTIONS)
+        {
+            return TCPIP_E_NOBUFS;   /* pending queue array full */
         }
 
         child = TcpIp_LocalAllocSlot();
@@ -1906,6 +1946,7 @@ TcpIp_ReturnType TcpIp_ReleaseTxBuffer(TcpIp_SocketIdType SocketId, uint16 Lengt
     entry = TcpIp_LocalFindSocket(SocketId);
     if (entry == NULL_PTR)
     {
+        TCPIP_STATS_INC(TxErrors);
         return TCPIP_E_NOT_OK;
     }
     if (Length > (uint16)TCPIP_PBUF_POOL_BUF_SIZE)
