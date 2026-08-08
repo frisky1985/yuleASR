@@ -284,6 +284,8 @@ eth_status_t dds_runtime_cleanup(void);
 /**
  * @brief 获取当前时间戳（毫秒）
  * @return 时间戳
+ * @note 唯一实现在 dds_security_manager.c (真实 CLOCK_MONOTONIC),
+ *       P2-9 已删除 dds_runtime.c 的重复定义。
  */
 uint64_t dds_get_current_time_ms(void);
 

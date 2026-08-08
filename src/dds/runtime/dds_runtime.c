@@ -586,10 +586,10 @@ eth_status_t dds_runtime_cleanup(void)
  * 时间和时序API实现
  * ============================================================================ */
 
-uint64_t dds_get_current_time_ms(void)
-{
-    return platform_get_time_ms();
-}
+/* 注: dds_get_current_time_ms 的唯一实现位于 dds_security_manager.c
+ * (真实 CLOCK_MONOTONIC 时钟)。2026-08-08 P2-9: 删除本文件的重复定义,
+ * 避免同一归档内两个强符号 (dds_runtime.o + dds_security_manager.o)
+ * 同时拉入链接时重复定义。声明见 dds_runtime.h, 调用方见 dds_access.c。 */
 
 uint64_t dds_get_current_time_us(void)
 {
