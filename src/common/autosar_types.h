@@ -30,6 +30,11 @@ extern "C" {
 #define FALSE   0
 #endif
 
+/* Standard null pointer (guarded for coexistence with Std_Types.h) */
+#ifndef NULL_PTR
+#define NULL_PTR ((void*)0U)
+#endif
+
 /* Standard return type */
 typedef uint8_t Std_ReturnType;
 
@@ -56,7 +61,9 @@ typedef uint32_t TimeInMillisecondsType;
 typedef void* MemoryAddressType;
 typedef uint32_t ApplicationDataRefType;
 
-/* AUTOSAR version info */
+/* AUTOSAR version info (guarded for coexistence with AUTOSAR Std_Types.h) */
+#ifndef STD_VERSIONINFO_TYPE_DEFINED
+#define STD_VERSIONINFO_TYPE_DEFINED
 typedef struct {
     uint16_t vendorID;
     uint16_t moduleID;
@@ -64,6 +71,7 @@ typedef struct {
     uint8_t  sw_minor_version;
     uint8_t  sw_patch_version;
 } Std_VersionInfoType;
+#endif
 
 /******************************************************************************
  * Safety Related Types
