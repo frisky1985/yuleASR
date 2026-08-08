@@ -15,6 +15,9 @@ set(UNIT_TEST_MODULES
 # Add subdirectory tests (RTE, etc.)
 add_subdirectory(rte)
 
+# EthSM 双网络回归测试 (P0-A: trcvIdx/ctrlIdx 赋值恢复验证)
+add_subdirectory(ethsm)
+
 foreach(module ${UNIT_TEST_MODULES})
     # Check if test file exists
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${module}_test.c)

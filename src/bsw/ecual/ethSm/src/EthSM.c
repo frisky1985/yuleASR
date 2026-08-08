@@ -133,15 +133,15 @@ static boolean EthSM_CheckLinkState(uint8 networkIdx)
     /* Get transceiver index for this network */
     if (networkIdx == ETHSM_NETWORK_0)
     {
-        trcvIdx ;
+        trcvIdx = ETHSM_TRCV_IDX_NETWORK_0;
     }
     else if (networkIdx == ETHSM_NETWORK_1)
     {
-        trcvIdx ;
+        trcvIdx = ETHSM_TRCV_IDX_NETWORK_1;
     }
     else
     {
-        trcvIdx ;
+        trcvIdx = networkIdx;
     }
 
     /* Query link state from EthIf */
@@ -249,11 +249,11 @@ static void EthSM_ProcessState_NO_COM(uint8 networkIdx)
         /* Get controller index */
         if (networkIdx == ETHSM_NETWORK_0)
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
         }
         else
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
         }
 
         /* Initialize Ethernet Controller via EthIf */
@@ -305,11 +305,11 @@ static void EthSM_ProcessState_WAIT_TRCVLINK(uint8 networkIdx)
         /* Shut down controller */
         if (networkIdx == ETHSM_NETWORK_0)
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
         }
         else
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
         }
 
 #if defined(ETHIF_VERSION_INFO_API)
@@ -343,11 +343,11 @@ static void EthSM_ProcessState_WAIT_TRCVLINK(uint8 networkIdx)
             /* Timeout - shut down and go back to NO_COM */
             if (networkIdx == ETHSM_NETWORK_0)
             {
-                ctrlIdx ;
+                ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
             }
             else
             {
-                ctrlIdx ;
+                ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
             }
 
 #if defined(ETHIF_VERSION_INFO_API)
@@ -379,11 +379,11 @@ static void EthSM_ProcessState_WAIT_ONLINE(uint8 networkIdx)
         /* Shut down controller */
         if (networkIdx == ETHSM_NETWORK_0)
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
         }
         else
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
         }
 
 #if defined(ETHIF_VERSION_INFO_API)
@@ -417,11 +417,11 @@ static void EthSM_ProcessState_WAIT_ONLINE(uint8 networkIdx)
             /* Timeout - shut down and go back to NO_COM */
             if (networkIdx == ETHSM_NETWORK_0)
             {
-                ctrlIdx ;
+                ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
             }
             else
             {
-                ctrlIdx ;
+                ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
             }
 
 #if defined(ETHIF_VERSION_INFO_API)
@@ -450,11 +450,11 @@ static void EthSM_ProcessState_ONHOLD(uint8 networkIdx)
         /* Shut down controller */
         if (networkIdx == ETHSM_NETWORK_0)
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
         }
         else
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
         }
 
 #if defined(ETHIF_VERSION_INFO_API)
@@ -497,11 +497,11 @@ static void EthSM_ProcessState_COM_READY(uint8 networkIdx)
         /* Shut down controller */
         if (networkIdx == ETHSM_NETWORK_0)
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
         }
         else
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
         }
 
 #if defined(ETHIF_VERSION_INFO_API)
@@ -599,11 +599,11 @@ void EthSM_DeInit(void)
         /* Shut down controller */
         if (idx == ETHSM_NETWORK_0)
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_0;
         }
         else
         {
-            ctrlIdx ;
+            ctrlIdx = ETHSM_CTRL_IDX_NETWORK_1;
         }
 
 #if defined(ETHIF_VERSION_INFO_API)
