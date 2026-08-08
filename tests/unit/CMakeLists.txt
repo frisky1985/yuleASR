@@ -18,6 +18,9 @@ add_subdirectory(rte)
 # EthSM 双网络回归测试 (P0-A: trcvIdx/ctrlIdx 赋值恢复验证)
 add_subdirectory(ethsm)
 
+# EthSwt 单元测试 (B2: VLAN/流控/统计/镜像补全)
+add_subdirectory(ecual)
+
 # TcpIp 单元测试 (B1: API 补全/多连接/状态机/VLAN/统计)
 add_subdirectory(services/tcpip)
 

@@ -55,6 +55,27 @@
 #define ETHSWT_SID_SETMACFILTER                 (0x16U)
 #define ETHSWT_SID_MAINFUNCTION                 (0x17U)
 #define ETHSWT_SID_RESET                        (0x18U)
+#define ETHSWT_SID_GETPORTENABLE                (0x19U)
+#define ETHSWT_SID_GETSPEED                     (0x1AU)
+#define ETHSWT_SID_GETMACFILTER                 (0x1BU)
+#define ETHSWT_SID_SETVLANCONFIG                (0x1CU)
+#define ETHSWT_SID_GETVLANCONFIG                (0x1DU)
+#define ETHSWT_SID_ADDVLANMEMBER                (0x1EU)
+#define ETHSWT_SID_REMOVEVLANMEMBER             (0x1FU)
+#define ETHSWT_SID_SETPVID                      (0x20U)
+#define ETHSWT_SID_GETPVID                      (0x21U)
+#define ETHSWT_SID_SETVIDPCP                    (0x22U)
+#define ETHSWT_SID_GETVIDPCP                    (0x23U)
+#define ETHSWT_SID_FORWARDFRAMEVLAN             (0x24U)
+#define ETHSWT_SID_SETFLOWCONTROL               (0x25U)
+#define ETHSWT_SID_GETFLOWCONTROL               (0x26U)
+#define ETHSWT_SID_SETPAUSETIME                 (0x27U)
+#define ETHSWT_SID_GETPAUSETIME                 (0x28U)
+#define ETHSWT_SID_INDICATEPAUSE                (0x29U)
+#define ETHSWT_SID_GETSTATISTICS                (0x2AU)
+#define ETHSWT_SID_RESETSTATISTICS              (0x2BU)
+#define ETHSWT_SID_SETPORTMIRRORING             (0x2CU)
+#define ETHSWT_SID_GETPORTMIRRORING             (0x2DU)
 
 /*==================================================================================================
  *                                    DET ERROR CODES
@@ -71,6 +92,12 @@
 #define ETHSWT_E_BUFFER_FULL                    (0x0AU)
 #define ETHSWT_E_INIT_FAILED                    (0x0BU)
 #define ETHSWT_E_NOT_SUPPORTED                  (0x0CU)
+#define ETHSWT_E_INVALID_PCP                    (0x0DU)
+#define ETHSWT_E_VLAN_NOT_FOUND                 (0x0EU)
+#define ETHSWT_E_VLAN_FULL                      (0x0FU)
+#define ETHSWT_E_INVALID_WATERMARK              (0x10U)
+#define ETHSWT_E_MIRROR_INVALID                 (0x11U)
+#define ETHSWT_E_INVALID_PAUSE                  (0x12U)
 
 /*==================================================================================================
  *                                    TYPE DEFINITIONS
@@ -106,12 +133,33 @@ typedef struct {
     uint8 octet[6];
 } EthSwt_MacAddrType;
 
-/** VLAN configuration */
+/** VLAN configuration — aligned with B1 TcpIp_VlanConfigType
+ * (VlanEnabled/VlanId/VlanPriority/DropUntagged); VlanPriority carries
+ * the 802.1p PCP (VID-PCP mapping), DropUntagged gates untagged ingress.
+ * PortMask is the VLAN member table (bitmask of member ports). */
 typedef struct {
-    uint16 VlanId;              /* VLAN ID (0–4095) */
-    uint8  PortMask;            /* Bitmask of member ports */
+    uint16  VlanId;             /* VLAN ID (0–4095); 0 = no VLAN */
+    uint8   PortMask;           /* VLAN member table: bitmask of member ports */
     boolean Tagged;             /* Tagged (TRUE) or Untagged (FALSE) */
+    uint8   VlanPriority;       /* 802.1p PCP (0–7): VID-PCP mapping */
+    boolean DropUntagged;       /* Drop untagged ingress frames on member ports */
 } EthSwt_VlanConfigType;
+
+/** Flow control configuration (per port) */
+typedef struct {
+    boolean TxPauseEnable;      /* Generate pause frames when TX queue over HighWatermark */
+    boolean RxPauseEnable;      /* Honor received pause frames (drop TX while paused) */
+    uint16  HighWatermark;      /* TX queue depth that triggers pause emission */
+    uint16  LowWatermark;       /* TX queue depth that releases pause */
+    uint16  PauseTime;          /* Pause quanta advertised in pause frames */
+} EthSwt_FlowControlConfigType;
+
+/** Port mirroring configuration */
+typedef struct {
+    uint8             MirrorSourcePortMask;  /* Ports whose frames are mirrored */
+    EthSwt_PortIdType MirrorDestinationPort; /* Port receiving the mirrored copy */
+    boolean           MirrorEnabled;
+} EthSwt_MirrorConfigType;
 
 /** Port statistics */
 typedef struct {
@@ -123,6 +171,13 @@ typedef struct {
     uint64 RxErrors;
     uint64 Collisions;
     uint64 DroppedFrames;
+    uint64 RxPauseFrames;       /* Pause frames received (flow control) */
+    uint64 TxPauseFrames;       /* Pause frames transmitted (flow control) */
+    uint64 RxVlanFrames;        /* VLAN-tagged frames accepted (ingress) */
+    uint64 TxVlanFrames;        /* VLAN-tagged frames forwarded (egress) */
+    uint64 RxFilteredFrames;    /* Frames dropped by ingress VLAN/member filter */
+    uint64 TxFilteredFrames;    /* Frames dropped by egress VLAN/member filter */
+    uint64 MirroredFrames;      /* Frames copied to this port by mirroring */
 } EthSwt_PortStatsType;
 
 /** Per-port configuration */
@@ -143,6 +198,8 @@ typedef struct {
     const EthSwt_VlanConfigType* VlanConfigs;
     boolean                  DevErrorDetect;
     boolean                  VersionInfoApi;
+    const EthSwt_FlowControlConfigType* FlowControlConfigs;  /* Per-port, may be NULL */
+    const EthSwt_MirrorConfigType* MirrorConfig;             /* May be NULL */
 } EthSwt_ConfigType;
 
 /** Switch hardware type abstraction */
@@ -170,23 +227,87 @@ void EthSwt_GetVersionInfo(Std_VersionInfoType* versioninfo);
 /** @brief Enable or disable a switch port */
 Std_ReturnType EthSwt_SetPortEnable(EthSwt_PortIdType PortId, EthSwt_PortEnableType Enable);
 
+/** @brief Get current enable state of a port */
+Std_ReturnType EthSwt_GetPortEnable(EthSwt_PortIdType PortId, EthSwt_PortEnableType* Enable);
+
 /** @brief Set port speed and duplex */
 Std_ReturnType EthSwt_SetSpeed(EthSwt_PortIdType PortId, EthSwt_SpeedType Speed, EthSwt_DuplexType Duplex);
+
+/** @brief Get current speed and duplex of a port */
+Std_ReturnType EthSwt_GetSpeed(EthSwt_PortIdType PortId, EthSwt_SpeedType* Speed, EthSwt_DuplexType* Duplex);
 
 /** @brief Get link state of a port */
 Std_ReturnType EthSwt_GetLinkState(EthSwt_PortIdType PortId, EthSwt_LinkStateType* LinkState);
 
-/** @brief Configure a VLAN entry */
+/** @brief Configure a VLAN entry (append to member table) */
 Std_ReturnType EthSwt_ConfigVlan(const EthSwt_VlanConfigType* VlanConfig);
+
+/** @brief Set/upsert a VLAN entry (member table + PCP + drop-untagged) */
+Std_ReturnType EthSwt_SetVlanConfig(const EthSwt_VlanConfigType* VlanConfig);
+
+/** @brief Get a VLAN entry by VlanId */
+Std_ReturnType EthSwt_GetVlanConfig(uint16 VlanId, EthSwt_VlanConfigType* VlanConfig);
+
+/** @brief Add a port to a VLAN member table */
+Std_ReturnType EthSwt_AddVlanMember(uint16 VlanId, EthSwt_PortIdType PortId, boolean Tagged);
+
+/** @brief Remove a port from a VLAN member table */
+Std_ReturnType EthSwt_RemoveVlanMember(uint16 VlanId, EthSwt_PortIdType PortId);
+
+/** @brief Set the port VLAN ID (PVID) of a port */
+Std_ReturnType EthSwt_SetPvid(EthSwt_PortIdType PortId, uint16 VlanId);
+
+/** @brief Get the port VLAN ID (PVID) of a port */
+Std_ReturnType EthSwt_GetPvid(EthSwt_PortIdType PortId, uint16* VlanId);
+
+/** @brief Set VID-PCP mapping (802.1p priority) for a VLAN */
+Std_ReturnType EthSwt_SetVidPcpMap(uint16 VlanId, uint8 Pcp);
+
+/** @brief Get VID-PCP mapping (802.1p priority) of a VLAN */
+Std_ReturnType EthSwt_GetVidPcpMap(uint16 VlanId, uint8* Pcp);
 
 /** @brief Forward a frame from source port to destination port mask */
 Std_ReturnType EthSwt_ForwardFrame(EthSwt_PortIdType SrcPort, uint8 DstPortMask, const uint8* FrameData, uint16 Length);
 
-/** @brief Get statistics for a port */
+/** @brief Forward a VLAN-tagged frame (ingress/egress member filtering applied) */
+Std_ReturnType EthSwt_ForwardFrameVlan(EthSwt_PortIdType SrcPort, uint16 VlanId, uint8 DstPortMask,
+                                       const uint8* FrameData, uint16 Length);
+
+/** @brief Get statistics for a port (AUTOSAR name) */
 Std_ReturnType EthSwt_GetPortStats(EthSwt_PortIdType PortId, EthSwt_PortStatsType* Stats);
+
+/** @brief Get statistics for a port (SWS EthSwt_GetStatistics) */
+Std_ReturnType EthSwt_GetStatistics(EthSwt_PortIdType PortId, EthSwt_PortStatsType* Stats);
+
+/** @brief Reset statistics for a port (ETHSWT_ALL_PORTS resets every port) */
+Std_ReturnType EthSwt_ResetStatistics(EthSwt_PortIdType PortId);
 
 /** @brief Set MAC address filter on a port */
 Std_ReturnType EthSwt_SetMacFilter(EthSwt_PortIdType PortId, const EthSwt_MacAddrType* MacAddr, boolean Enable);
+
+/** @brief Get MAC address filter state of a port */
+Std_ReturnType EthSwt_GetMacFilter(EthSwt_PortIdType PortId, EthSwt_MacAddrType* MacAddr, boolean* Enable);
+
+/** @brief Configure flow control (pause frames, high/low watermarks) for a port */
+Std_ReturnType EthSwt_SetFlowControl(EthSwt_PortIdType PortId, const EthSwt_FlowControlConfigType* Config);
+
+/** @brief Get flow control configuration of a port */
+Std_ReturnType EthSwt_GetFlowControl(EthSwt_PortIdType PortId, EthSwt_FlowControlConfigType* Config);
+
+/** @brief Set pause time (quanta) advertised in pause frames */
+Std_ReturnType EthSwt_SetPauseTime(EthSwt_PortIdType PortId, uint16 PauseTime);
+
+/** @brief Get pause time of a port */
+Std_ReturnType EthSwt_GetPauseTime(EthSwt_PortIdType PortId, uint16* PauseTime);
+
+/** @brief Indicate received pause state (HW hook; gated by RxPauseEnable) */
+Std_ReturnType EthSwt_IndicatePause(EthSwt_PortIdType PortId, boolean Pause);
+
+/** @brief Configure port mirroring (source ports -> destination port) */
+Std_ReturnType EthSwt_SetPortMirroring(const EthSwt_MirrorConfigType* MirrorConfig);
+
+/** @brief Get current port mirroring configuration */
+Std_ReturnType EthSwt_GetPortMirroring(EthSwt_MirrorConfigType* MirrorConfig);
 
 /** @brief Main function — periodic housekeeping */
 void EthSwt_MainFunction(void);

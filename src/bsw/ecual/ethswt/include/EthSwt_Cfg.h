@@ -31,6 +31,9 @@
 #define ETHSWT_MAX_VLANS                        (16U)
 #define ETHSWT_MAX_MAC_FILTERS                  (32U)
 
+/* Special PortId value: reset statistics of every port */
+#define ETHSWT_ALL_PORTS                        (0xFFU)
+
 /*==================================================================================================
  *                                    BUFFER CONFIGURATION
  *==================================================================================================*/
@@ -51,6 +54,15 @@
 #define ETHSWT_ENABLE_MAC_FILTERING             (STD_ON)
 #define ETHSWT_ENABLE_PORT_STATS                (STD_ON)
 #define ETHSWT_ENABLE_AUTO_NEGOTIATION          (STD_ON)
+#define ETHSWT_ENABLE_FLOW_CONTROL              (STD_ON)
+#define ETHSWT_ENABLE_MIRRORING                 (STD_ON)
+
+/*==================================================================================================
+ *                                    FLOW CONTROL DEFAULTS
+ *==================================================================================================*/
+#define ETHSWT_DEFAULT_HIGH_WATERMARK           (32U)
+#define ETHSWT_DEFAULT_LOW_WATERMARK            (8U)
+#define ETHSWT_DEFAULT_PAUSE_TIME               (512U)
 
 /*==================================================================================================
  *                                    DEFAULT VALUES
