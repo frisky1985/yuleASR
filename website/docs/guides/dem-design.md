@@ -62,21 +62,20 @@ The Diagnostic Event Manager (Dem) is responsible for processing diagnostic even
 ### 2.1 File Organization
 
 ```
-src/diagnostics/dem/
-├── dem.h                 # Main API header
-├── dem.c                 # Main implementation
-├── dem_types.h           # Type definitions
-├── dem_event.h/c         # Event management
-├── dem_event.h/c         # DTC management
-├── dem_nvm.h/c           # NvM interface
-├── dem_freeze_frame.h/c  # Freeze frame handling
-├── dem_queue.h/c         # Event queue management
-├── dem_det.h             # Det integration
-├── dem_Internals.h       # Internal definitions
-└── config/
-    ├── Dem_Cfg.h         # Compile-time configuration
-    ├── Dem_Lcfg.c        # Link-time configuration
-    └── Dem_PBcfg.c       # Post-build configuration
+src/bsw/services/dem/
+├── include/
+│   ├── Dem.h             # Main API header
+│   ├── Dem_Types.h       # Type definitions
+│   ├── Dem_Cfg.h         # Compile-time configuration
+│   ├── Dem_Lcfg.h        # Link-time configuration
+│   ├── Dem_Pbcfg.h       # Post-build configuration
+│   ├── Dem_Int.h         # Internal definitions
+│   └── Dem_Error.h       # Error handling
+└── src/
+    ├── Dem.c             # Main implementation
+    ├── Dem_Int.c         # Internal implementation
+    ├── Dem_Cfg.c         # Compile-time configuration
+    └── Dem_Pbcfg.c       # Post-build configuration
 ```
 
 ### 2.2 Key Data Structures

@@ -5,17 +5,19 @@ CC = gcc
 CFLAGS = -Wall -Wextra -Wpedantic -std=c11 -g -O0 \
          -I../.. \
          -I../../src/common \
-         -I../../src/diagnostics/dcm \
-         -I../unity \
+         -I../../src/bsw \
+         -I../../src/bsw/services/dcm/legacy \
+         -I../../src/crypto_stack/csm \
+         -I../unit/framework \
          -DUNITY_INCLUDE_CONFIG_H
 
 # Unity framework
-UNITY_SRC = ../unity/unity.c
+UNITY_SRC = ../unit/framework/unity.c
 
-# DCM source files (minimal for memory tests)
-DCM_SRC = ../../src/diagnostics/dcm/dcm_memory.c \
-          ../../src/diagnostics/dcm/dcm_session.c \
-          ../../src/diagnostics/dcm/dcm_security.c
+# DCM source files (legacy, moved from src/diagnostics/dcm by 51d94f6b)
+DCM_SRC = ../../src/bsw/services/dcm/legacy/dcm_memory.c \
+          ../../src/bsw/services/dcm/legacy/dcm_session.c \
+          ../../src/bsw/services/dcm/legacy/dcm_security.c
 
 # Test source
 TEST_SRC = test_read_memory.c
@@ -36,7 +38,7 @@ test: $(TARGET)
 coverage: CFLAGS += --coverage
 coverage: $(TARGET)
 	./$(TARGET)
-	gcov -o . ../../src/diagnostics/dcm/dcm_memory.c 2>/dev/null || true
+	gcov -o . ../../src/bsw/services/dcm/legacy/dcm_memory.c 2>/dev/null || true
 
 clean:
 	rm -f $(TARGET) *.gcov *.gcda *.gcno

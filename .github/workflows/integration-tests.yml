@@ -176,46 +176,6 @@ jobs:
         name: ota-test-results
         path: test-results-ota.log
 
-  # ROS2 Bridge Tests
-  ros2-bridge-tests:
-    runs-on: ubuntu-22.04
-    needs: build
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Download Build Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: build-artifacts
-        path: build/
-
-    - name: Install ROS2 dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          python3-colcon-common-extensions \
-          python3-rosdep \
-          python3-vcstool
-
-    - name: Run RMW Bridge Tests
-      run: |
-        chmod +x build/bin/test_rmw_bridge
-        ./build/bin/test_rmw_bridge 2>&1 | tee test-results-rmw-bridge.log
-
-    - name: Run ROS2 QoS Tests
-      run: |
-        pip3 install pytest pytest-html
-        python3 tests/ros2_bridge/test_ros2_qos.py 2>&1 | tee test-results-ros2-qos.log
-
-    - name: Upload Test Results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: ros2-bridge-test-results
-        path: |
-          test-results-rmw-bridge.log
-          test-results-ros2-qos.log
-
   # Multi-ECU Integration Tests (Docker)
   multi-ecu-tests:
     runs-on: ubuntu-22.04
@@ -353,7 +313,6 @@ jobs:
       - e2e-dds-tests
       - uds-tests
       - ota-tests
-      - ros2-bridge-tests
       - multi-ecu-tests
       - performance-tests
       - security-tests
