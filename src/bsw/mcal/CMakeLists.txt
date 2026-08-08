@@ -57,7 +57,7 @@ foreach(subdir ${MCAL_SUBDIRS})
         # Crypto driver links the real mbedTLS library
         if(module_name STREQUAL "crypto")
             target_link_libraries(${target_name}
-                PUBLIC mbedtls mbedx509 mbedcrypto
+                PUBLIC mbedtls mbedx509 mbedcrypto blake2
             )
         endif()
         

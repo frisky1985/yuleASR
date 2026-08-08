@@ -8,6 +8,7 @@
  * * INCLUDES
  * *********************************************************************************************************************/
 #include "Crypto.h"
+#include "blake2.h"
 #include "Det.h"
 #include "MemMap.h"
 /**********************************************************************************************************************
@@ -931,7 +932,7 @@ __attribute__((weak)) void Crypto_ErrorNotification(uint16 moduleId, uint8 insta
 /**********************************************************************************************************************
  * * Crypto_ValidateJob
  * **********************************************************************************************************************/
-STATIC Std_ReturnType Crypto_ValidateJob(const Crypto_JobType* job)
+STATIC Std_ReturnType Crypto_ValidateJob(Crypto_JobType* job)
 {
     if (job->jobPrimitiveInfo == NULL_PTR)
     {
@@ -973,7 +974,7 @@ STATIC Crypto_JobType* Crypto_QueuePop(void)
 STATIC Std_ReturnType Crypto_ProcessJobInternal(Crypto_JobType* job)
 {
     Std_ReturnType result;
-    job->jobState = CRYPTO_JOBSTATE_ACTIVE;
+    job->jobState = CRYPTO_JOBSTATE_PROCESSING;
 #if (CRYPTO_CFG_HSM_ENABLED == STD_ON)
     /* Try HSM first if available and appropriate */
     if (Crypto_HsmAvailable && (job->jobPrimitiveInfo->processingType == CRYPTO_PROCESSING_SYNC))

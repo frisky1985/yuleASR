@@ -94,6 +94,16 @@ extern "C" {
  * @brief Number of configured transceivers
  */
 #define ETHTRCV_NUMBER_OF_TRCVS             (2U)
+/**
+ * @brief PHY access interface selectors (EthTrcv_TrcvConfigType.AccessInterface)
+ * T3 fix (2026-08-08): these constants were referenced by EthTrcv.c but never
+ * defined - the file previously compiled to an empty object (336B) because a
+ * mangled banner comment swallowed the sources, masking the errors.
+ */
+#define ETHTRCV_ACCESS_MII                  (0x00U)
+#define ETHTRCV_ACCESS_SPI                  (0x01U)
+#define ETHTRCV_ACCESS_I2C                  (0x02U)
+
 
 /**
  * @brief Instance ID for DET reporting

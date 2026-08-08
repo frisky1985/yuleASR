@@ -296,6 +296,13 @@ typedef enum {
     CRYPTO_OPRESULT_ENTROPY_EXHAUSTED   /* 熵耗尽 */
 } Crypto_OperationResultType;
 
+/* T3 fix (2026-08-08): Crypto_OperationModeType was referenced by the
+ * blake2 AUTOSAR integration (blake2_autosar.c) but defined only in the
+ * MCAL Crypto_Types.h, whose CRYPTO_ALGOFAM_* macros collide with the
+ * enum constants below. Defined here so the classic crypto-stack headers
+ * are self-contained. */
+typedef uint32 Crypto_OperationModeType;
+
 typedef enum {
     CRYPTO_VERIFY_FAILED = 0,           /* 验证失败 */
     CRYPTO_VERIFY_PASSED,               /* 验证通过 */

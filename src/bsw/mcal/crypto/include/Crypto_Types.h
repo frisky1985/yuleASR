@@ -173,6 +173,17 @@ typedef uint32 Crypto_VerifyResultType;
 typedef uint32 Crypto_JobIdType;
 typedef uint32 Crypto_JobStateType;
 
+/* Job state constants (T3 fix, 2026-08-08): Crypto.c referenced these but
+ * they were only defined in the classic CryptoStack_Types.h enum, which
+ * this header's CRYPTO_ALGOFAM_* macros clash with. Values mirror the
+ * classic enum. */
+#define CRYPTO_JOBSTATE_IDLE            (0x00U)
+#define CRYPTO_JOBSTATE_QUEUED          (0x01U)
+#define CRYPTO_JOBSTATE_PROCESSING      (0x02U)
+#define CRYPTO_JOBSTATE_WAITING         (0x03U)
+#define CRYPTO_JOBSTATE_RESULT_READY    (0x04U)
+#define CRYPTO_JOBSTATE_CANCELED        (0x05U)
+
 typedef uint32 Crypto_KeyIdType;
 typedef uint32 Crypto_KeyElementIdType;
 typedef uint32 Crypto_HsmStatusType;

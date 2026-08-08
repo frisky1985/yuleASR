@@ -26,12 +26,10 @@
  *                                   INTERNAL DEFINES
  *==================================================================================================*/
 
-/* Access Interface Types */
-#define ETHTRCV_ACCESS_MII                   (0x00U)
-#define ETHTRCV_ACCESS_RMII                  (0x01U)
-#define ETHTRCV_ACCESS_RGMII                 (0x02U)
-#define ETHTRCV_ACCESS_SPI                   (0x03U)
-#define ETHTRCV_ACCESS_I2C                   (0x04U)
+/* PHY access interface selectors now live in EthTrcv_Cfg.h
+ * (ETHTRCV_ACCESS_MII/SPI/I2C) - T3: single source of truth. The previous
+ * local block also conflated RMII/RGMII (MAC-interface types) with PHY
+ * access methods and duplicated the macros. */
 
 /*==================================================================================================
  *                                INTERNAL TYPE DEFINITIONS
@@ -221,7 +219,7 @@ static const EthTrcv_InterfaceConfigType EthTrcv_InterfaceConfig[ETHTRCV_NUMBER_
 {
     /* Transceiver 0 - RMII */
     {
-        .InterfaceType  = ETHTRCV_ACCESS_RMII,
+        .InterfaceType  = ETHTRCV_INTERFACE_RMII,
         .MaxFrameSize   = 1518U,
         .ClockGating    = FALSE,
         .ClockDivisor   = 1U
@@ -229,7 +227,7 @@ static const EthTrcv_InterfaceConfigType EthTrcv_InterfaceConfig[ETHTRCV_NUMBER_
 
     /* Transceiver 1 - RGMII */
     {
-        .InterfaceType  = ETHTRCV_ACCESS_RGMII,
+        .InterfaceType  = ETHTRCV_INTERFACE_RGMII,
         .MaxFrameSize   = 1518U,
         .ClockGating    = FALSE,
         .ClockDivisor   = 1U

@@ -334,14 +334,6 @@ Std_ReturnType LinNm_GetUserData(NetworkHandleType nmChannelHandle,
 void LinIf_TxConfirmation(uint8 Channel, uint8 LinTxPduId);
 
 /**
- * @brief Function called by LinIf to indicate a reception.
- * @param Channel LinIf channel handle
- * @param LinRxPduId PDU ID of the received PDU
- * @param SduPtr Pointer to received SDU
- */
-void LinIf_RxIndication(uint8 Channel, uint8 LinRxPduId, uint8* SduPtr);
-
-/**
  * @brief Function called by LinIf to indicate a schedule switch.
  * @param Channel LinIf channel handle
  * @param ScheduleIndex Index of the new active schedule

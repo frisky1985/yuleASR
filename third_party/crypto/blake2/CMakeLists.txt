@@ -101,7 +101,10 @@ endif()
 #======================================================================================================================
 target_link_libraries(blake2
     PUBLIC
-        crypto_stack_types
+        # NOTE (T3 fix, 2026-08-08): the 'crypto_stack_types' library was
+        # referenced here but never defined anywhere in the tree, breaking
+        # the link of every blake2 consumer (e.g. test_blake2, mcal_crypto).
+        # CryptoStack_Types.h is header-only; no library link is required.
     PRIVATE
         $<$<TARGET_EXISTS:Det>:Det>
 )

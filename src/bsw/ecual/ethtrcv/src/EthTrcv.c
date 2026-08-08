@@ -7,6 +7,7 @@
  * *==================================================================================================*/
 /*================================================================================================== * INCLUDES
  * *==================================================================================================*/
+#include <string.h>
 #include "EthTrcv.h"
 #include "EthTrcv_Cfg.h"
 #include "Det.h"
@@ -36,6 +37,7 @@
 typedef struct
 {
     EthTrcv_ModeType CurrentMode;
+    EthTrcv_TypeType DetectedType;      /* PHY type detected at runtime (config is const) */
     EthTrcv_LinkStateType LinkState;
     EthTrcv_BaudRateType BaudRate;
     EthTrcv_DuplexModeType DuplexMode;
@@ -114,6 +116,50 @@ static void EthTrcv_ReportDetError(uint8 ApiId, uint8 ErrorId)
     (void)ErrorId;
 #endif
 }
+/** * @brief SPI-based PHY register read (TJA1100) — T3: no SPI PHY backend
+ * exists in the tree yet, so this is an explicit unsupported stub instead of
+ * an undeclared call (previously the file did not compile at all). */
+static Std_ReturnType Spi_ReadPhyRegister(uint8 PhyAddress, uint8 RegIdx, uint16* RegVal)
+{
+    (void)PhyAddress;
+    (void)RegIdx;
+    if (RegVal != NULL_PTR)
+    {
+        *RegVal = 0U;
+    }
+    return E_NOT_OK;
+}
+
+/** * @brief SPI-based PHY register write — unsupported stub (see above) */
+static Std_ReturnType Spi_WritePhyRegister(uint8 PhyAddress, uint8 RegIdx, uint16 RegVal)
+{
+    (void)PhyAddress;
+    (void)RegIdx;
+    (void)RegVal;
+    return E_NOT_OK;
+}
+
+/** * @brief I2C-based PHY register read — unsupported stub (see above) */
+static Std_ReturnType I2c_ReadPhyRegister(uint8 PhyAddress, uint8 RegIdx, uint16* RegVal)
+{
+    (void)PhyAddress;
+    (void)RegIdx;
+    if (RegVal != NULL_PTR)
+    {
+        *RegVal = 0U;
+    }
+    return E_NOT_OK;
+}
+
+/** * @brief I2C-based PHY register write — unsupported stub (see above) */
+static Std_ReturnType I2c_WritePhyRegister(uint8 PhyAddress, uint8 RegIdx, uint16 RegVal)
+{
+    (void)PhyAddress;
+    (void)RegIdx;
+    (void)RegVal;
+    return E_NOT_OK;
+}
+
 /** * @brief Reads a PHY register via MII/SMI interface */
 static Std_ReturnType EthTrcv_ReadPhyRegister(uint8 TrcvIdx, uint8 RegIdx, uint16* RegVal)
 {
@@ -206,37 +252,37 @@ static Std_ReturnType EthTrcv_DetectTransceiver(uint8 TrcvIdx)
         case 0x0001C1U: /* NXP */
             if (Model == 0x04U)
             {
-                EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_TJA1100;
+                EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_TJA1100;
             }
             else if (Model == 0x05U)
             {
-                EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_TJA1101;
+                EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_TJA1101;
             }
             break;
         case 0x0010A0U: /* Realtek */
             if ((Model & 0x38U) == 0x00U)
             {
-                EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_RTL8211;
+                EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_RTL8211;
             }
             break;
         case 0x00005CU: /* Microchip/SMSC */
             if (Model == 0x00U)
             {
-                EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_LAN8720;
+                EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_LAN8720;
             }
             else if (Model == 0x08U)
             {
-                EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_KSZ8081;
+                EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_KSZ8081;
             }
             break;
         case 0x080017U: /* Texas Instruments */
             if (Model == 0x09U)
             {
-                EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_DP83848;
+                EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_DP83848;
             }
             break;
         default:
-            EthTrcv_TrcvConfig[TrcvIdx].DetectedType = ETHTRCV_TYPE_GENERIC;
+            EthTrcv_Global.Trcv[TrcvIdx].DetectedType = ETHTRCV_TYPE_GENERIC;
             break;
     }
     return E_OK;
@@ -259,7 +305,7 @@ static Std_ReturnType EthTrcv_InitTransceiver(uint8 TrcvIdx)
         Status = EthTrcv_ReadPhyRegister(TrcvIdx, ETHTRCV_PHY_REG_BMCR, &RegVal);
     } while ((Status == E_OK) && ((RegVal & ETHTRCV_BMCR_RESET) != 0U));
     /* Configure based on transceiver type */
-    switch (TrcvCfg->DetectedType)
+    switch (EthTrcv_Global.Trcv[TrcvIdx].DetectedType)
     {
         case ETHTRCV_TYPE_TJA1100:
         case ETHTRCV_TYPE_TJA1101:
@@ -427,7 +473,7 @@ static Std_ReturnType EthTrcv_UpdateLinkState(uint8 TrcvIdx)
 #endif
             }
             /* Read speed and duplex from PHY-specific registers */
-            switch (TrcvCfg->DetectedType)
+            switch (EthTrcv_Global.Trcv[TrcvIdx].DetectedType)
             {
                 case ETHTRCV_TYPE_RTL8211:
                 case ETHTRCV_TYPE_RTL8211E:
@@ -569,7 +615,7 @@ void EthTrcv_Init(const EthTrcv_ConfigType* CfgPtr)
     for (TrcvIdx = 0U; TrcvIdx < ETHTRCV_NUMBER_OF_TRCVS; TrcvIdx++)
     {
         /* Clear runtime data */
-        (void)MemSet(&EthTrcv_Global.Trcv[TrcvIdx], 0, sizeof(EthTrcv_TrcvRuntimeType));
+        (void)memset(&EthTrcv_Global.Trcv[TrcvIdx], 0, sizeof(EthTrcv_TrcvRuntimeType));
         /* Detect transceiver type */
         (void)EthTrcv_DetectTransceiver(TrcvIdx);
         /* Initialize transceiver */
@@ -848,7 +894,7 @@ Std_ReturnType EthTrcv_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
     return Status;
 }
 /** * @brief PHY register read completion indication (callback from Eth or Spi) */
-Std_ReturnType EthTrcv_ReadMiiIndication(uint8 TrcvIdx, uint8 RegIdx, const uint16* RegValPtr)
+Std_ReturnType EthTrcv_ReadMiiIndication(uint8 TrcvIdx, uint8 RegIdx, uint16* RegValPtr)
 {
 #if (ETHTRCV_DEV_ERROR_DETECT == STD_ON)
     if (TrcvIdx >= ETHTRCV_NUMBER_OF_TRCVS)

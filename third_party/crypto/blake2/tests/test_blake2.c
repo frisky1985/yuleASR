@@ -15,6 +15,7 @@
  * INCLUDES
  *********************************************************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "blake2.h"
 
@@ -197,7 +198,7 @@ static int test_blake2s_256_empty(void)
 {
     uint8 out[BLAKE2S_OUTBYTES];
     const char* expected = 
-        "69217a987580e162298be34671dcb94587b68b15a04e3630802b7ee81785fda8";
+        "69217a3079908094e11121d042354a7c1f55b6482ca1a51e1b250dfd1ed0eef9";
     Blake2_ReturnType ret;
 
     ret = blake2s(out, NULL, 0, NULL, 0, BLAKE2S_OUTBYTES);

@@ -136,6 +136,11 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/CMakeLists.txt)
     add_subdirectory(third_party/crypto/hash)
 endif()
 
+# BLAKE2 哈希库 (blake2b/blake2s) — Crypto.c 的 Crypto_Blake2b/Blake2s 依赖
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/blake2/CMakeLists.txt)
+    add_subdirectory(third_party/crypto/blake2)
+endif()
+
 add_subdirectory(src/bsw/services)
 
 # Diagnostics 传输层 (IsoTp) — 合并自 archive/main-20260429 (2026-08-08)

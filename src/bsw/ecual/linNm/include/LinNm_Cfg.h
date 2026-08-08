@@ -367,10 +367,10 @@
  * @brief Define callbacks based on configuration
  */
 #if (LINNM_STATE_CHANGE_NOTIFICATION == STD_ON)
-#define LINNM_CALL_STATE_CHANGE_NOTIFICATION(networkHandle, state) \
-    Nm_StateChangeNotification((networkHandle), (state))
+#define LINNM_CALL_STATE_CHANGE_NOTIFICATION(networkHandle, prevState, currState) \
+    Nm_StateChangeNotification((networkHandle), (prevState), (currState))
 #else
-#define LINNM_CALL_STATE_CHANGE_NOTIFICATION(networkHandle, state)
+#define LINNM_CALL_STATE_CHANGE_NOTIFICATION(networkHandle, prevState, currState)
 #endif
 
 #if (LINNM_REMOTE_SLEEP_CALLBACK == STD_ON)

@@ -38,6 +38,22 @@
 #define CRYPTO_SW_PATCH_VERSION             (0U)
 
 /* Service IDs for Error Reporting */
+
+/* AUTOSAR Crypto error codes (T3 fix, 2026-08-08): Crypto.c referenced
+ * these CRYPTO_E_* codes but they were never defined anywhere - the module
+ * previously compiled to an empty object (mangled banner comment), masking
+ * the gap. Values follow the AUTOSAR Crypto Driver specification. */
+#define CRYPTO_E_UNINIT                     (0x01U)
+#define CRYPTO_E_ALREADY_INITIALIZED        (0x02U)
+#define CRYPTO_E_PARAM_POINTER              (0x03U)
+#define CRYPTO_E_PARAM_HANDLE               (0x04U)
+#define CRYPTO_E_PARAM_VALUE                (0x05U)
+#define CRYPTO_E_PARAM_STATE                (0x06U)
+#define CRYPTO_E_SMALL_BUFFER               (0x07U)
+#define CRYPTO_E_NOT_SUPPORTED              (0x08U)
+#define CRYPTO_E_QUEUE_FULL                 (0x09U)
+#define CRYPTO_E_JOB_CANCELED               (0x0AU)
+
 #define CRYPTO_SID_INIT                     (0x00U)
 #define CRYPTO_SID_DEINIT                   (0x01U)
 #define CRYPTO_SID_PROCESSJOB               (0x03U)

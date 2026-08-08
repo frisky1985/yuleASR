@@ -203,5 +203,14 @@ extern Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, C
 extern void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status);
 extern void ComM_LimitECUToNoComMode(boolean Status);
 extern void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status);
+/**
+ * @brief Nm notification: network has entered/left full network mode.
+ * T3 fix (2026-08-08): declared for link compatibility with Nm/LinNm
+ * callers; notification handling is not yet wired into the channel state
+ * machine (see ComM.c for the stub implementations).
+ */
+extern void ComM_Nm_NetworkMode(uint8 NetworkHandle);
+extern void ComM_Nm_PrepareBusSleepMode(uint8 NetworkHandle);
+extern void ComM_Nm_BusSleepMode(uint8 NetworkHandle);
 
 #endif /* COMM_H */

@@ -42,7 +42,7 @@ static void LinNm_ProcessTimeouts(uint8 channelIndex);
 static void LinNm_SendNmPdu(uint8 channelIndex, boolean activeWakeup);
 static void LinNm_ReceiveNmPdu(uint8 channelIndex, const uint8* pduData);
 static void LinNm_UpdateRemoteSleepIndication(uint8 channelIndex);
-static void LinNm_NotifyStateChange(uint8 channelIndex, Nm_StateType newState);
+static void LinNm_NotifyStateChange(uint8 channelIndex, Nm_StateType prevState, Nm_StateType newState);
 static void LinNm_NotifyModeChange(uint8 channelIndex, Nm_ModeType newMode);
 static void LinNm_EnterBusSleep(uint8 channelIndex);
 static void LinNm_LeaveBusSleep(uint8 channelIndex);
@@ -217,16 +217,17 @@ static void LinNm_UpdateRemoteSleepIndication(uint8 channelIndex)
 #endif
 }
 /** * @brief Notify state change to Nm module */
-static void LinNm_NotifyStateChange(uint8 channelIndex, Nm_StateType newState)
+static void LinNm_NotifyStateChange(uint8 channelIndex, Nm_StateType prevState, Nm_StateType newState)
 {
     const LinNm_ChannelConfigType* chConfig;
+    (void)prevState;
     if (!LinNm_IsChannelValid(channelIndex))
     {
         return;
     }
     chConfig = &LinNm_ConfigPtr->ChannelConfig[channelIndex];
 #if (LINNM_STATE_CHANGE_IND_ENABLED == STD_ON)
-    LINNM_CALL_STATE_CHANGE_NOTIFICATION(chConfig->NetworkHandle, newState);
+    LINNM_CALL_STATE_CHANGE_NOTIFICATION(chConfig->NetworkHandle, prevState, newState);
 #endif
     /* Mark state change for ComM notification */
     LinNm_ConfigPtr->ChannelRuntime[channelIndex].StateChanged = TRUE;
@@ -366,7 +367,7 @@ static void LinNm_TransitionToState(uint8 channelIndex, LinNm_StateType newState
                 break;
         }
         /* Notify state change */
-        LinNm_NotifyStateChange(channelIndex, (Nm_StateType)newState);
+        LinNm_NotifyStateChange(channelIndex, oldState, (Nm_StateType)newState);
     }
 }
 /** * @brief Main state machine processing */
@@ -1031,31 +1032,6 @@ void LinIf_TxConfirmation(uint8 Channel, uint8 LinTxPduId)
             /* Message transmitted successfully */
             /* Reset message cycle timer */
             LinNm_ConfigPtr->ChannelRuntime[i].MessageCycleTimer = LinNm_ConfigPtr->ChannelConfig[i].MsgCycleTimeMs;
-            break;
-        }
-    }
-}
-/** * @brief LinIf reception indication callback */
-void LinIf_RxIndication(uint8 Channel, uint8 LinRxPduId, const uint8* SduPtr)
-{
-    uint8 i;
-    (void)LinRxPduId;
-    /* May be used for future extensions */
-    if (LinNm_ModuleState != LINNM_INITIALIZED)
-    {
-        return;
-    }
-    if (SduPtr == NULL_PTR)
-    {
-        return;
-    }
-    /* Find matching channel */
-    for (i = 0; i < LINNM_NUMBER_OF_CHANNELS; i++)
-    {
-        if (LinNm_ConfigPtr->ChannelConfig[i].LinIfChannelHandle == Channel)
-        {
-            /* Process received NM PDU */
-            LinNm_ReceiveNmPdu(i, SduPtr);
             break;
         }
     }
