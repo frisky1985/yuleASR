@@ -519,7 +519,7 @@ Std_ReturnType Dcm_TransferProcessRequestDownload(
     uint32 memorySize;
     uint8 compressionMethod;
     uint8 encryptionMethod;
-    uint8 responseData[4];
+    uint8 responseData[5]; /* lengthFormatIdentifier (1) + maxBlockLength (4) */
     uint32 maxBlockLength;
 
     /* Minimum length: 1 (format) + 1 (addr) + 1 (size) + 0 (compress) + 0 (encrypt) = 3 bytes */

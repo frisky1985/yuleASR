@@ -378,7 +378,15 @@ static void CanTSyn_ProcessSyncMessage(
 {
     StbM_TimeStampType RxTimeStamp;
     const uint8* DataPtr = PduInfoPtr->SduDataPtr;
-    
+
+    /* Initialize all fields before use (secondsHi/timeBaseStatus are not
+     * carried in the SYNC message; zero them to avoid propagating stack
+     * garbage into CanTSyn_TimeDomains[].RxTimeStamp / StbM) */
+    RxTimeStamp.nanoseconds = 0U;
+    RxTimeStamp.seconds = 0U;
+    RxTimeStamp.secondsHi = 0U;
+    RxTimeStamp.timeBaseStatus = 0U;
+
     /* Extract nanoseconds (bytes 1-4, big-endian) */
     RxTimeStamp.nanoseconds = ((uint32)DataPtr[1] << 24U) |
                               ((uint32)DataPtr[2] << 16U) |
