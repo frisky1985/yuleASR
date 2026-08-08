@@ -4,6 +4,20 @@
 
 ---
 
+
+## ✅ 2026-08-08 技术债还款批 (T1-T4) — 已完成 (HEAD=78fd1099)
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| T1 s0_smoke_test 无限挂起 | ✅ 5 个根因 (弱 Os_GlobalState 致 Os_Cfg 配置表从未链接 / macOS POSIX port 栈尺寸计算 bug / tick 线程标志非 volatile / vTaskEndScheduler 自删调用线程 / smoke 链接集不全+缺失回调) 全修复 + 看门狗 + ctest TIMEOUT；无残留 cron/脚本（查 crontab/LaunchAgents/仓库脚本） | 944667a5 | macOS native ALL PASS exit=0 tick=300 ~3.5s（原永久挂起，最久 8447 min CPU） |
+| T2 mcal_uart_test SegFault | ✅ Uart.c 38 处裸 MMIO 访问改 REG_* 宏（MockHAL 可重定向）；Uart_Send 补 Length==0 校验；测试补状态位默认值 | ed1b6368 | 23/23 ALL PASS exit=0（原 SIGSEGV + 挂起） |
+| T3 EthTrcv.c 空编译假 0 error | ✅ EthTrcv 真实编译（25,864B/14 函数，原 336B 空）+ 全量构建 0 error；连带修复同源空编译缺陷：LinNm/LinIf 重复符号与签名、ComM_Nm_* 缺失、Crypto 错误码/作业状态缺失、blake2 库接入与错误向量 | 4b9fb097 | build-t1 全量构建 0 error；ctest 39/39 100% PASS |
+| T4 MISRA 剩余 required 核实 | ✅ 官方全量扫描 (misra_full_scan.py, CI review.py 同参) 1447 条 required：68 在排除路径 (tests/third_party/legacy)、1379 在业务路径但全部被 ci-config.yaml 已批准 deviations 覆盖（模块级 11.9 等，expiry 2027-12-31）；**业务代码 required = 0**；T1-T3 改动文件 0 新增违规 | 本文档 | 严格 fnmatch 复核 0 剩余 |
+
+> T4 结论：08-07 记录的"剩 30 条在标准库头/测试排除路径"已被更强结论取代 —
+> 当前全库 required 1447 = 排除路径 68 + 已批准 deviations 1379，业务代码 0。
+> （标准库头 21.2/11.9 类发现为管道含系统头分析的产物；本项目门禁
+> suppress missingIncludeSystem，系统头不参与计数。）
 ## ✅ 2026-08-08 P2-A 修复批 (代码类 3 项) — 已完成
 
 | 项 | 结果 | Commit | 验证 |
