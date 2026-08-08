@@ -96,13 +96,17 @@ typedef struct {
     uint8                     PendingCount;
     TcpIp_SocketIdType        PendingSockets[TCPIP_MAX_PENDING_CONNECTIONS];
 
-    /* B1: receive buffer (user-attached or internal pool chunk) */
+    /* B1: receive buffers (user-attached preferred + pool-backed ring) */
     uint8*                    RxUserBuf;
     uint16                    RxUserCapacity;
-    uint8                     RxChunk[TCPIP_PBUF_POOL_BUF_SIZE];
-    uint16                    RxChunkLen;
-    boolean                   RxChunkPending;
-    boolean                   RxChunkInUse;
+    uint16                    RxUserLen;
+    boolean                   RxUserPending;
+    uint8                     RxPool[TCPIP_MAX_RX_BUFFERS][TCPIP_PBUF_POOL_BUF_SIZE];
+    uint16                    RxPoolLen[TCPIP_MAX_RX_BUFFERS];
+    uint8                     RxHead;
+    uint8                     RxTail;
+    uint8                     RxCount;
+    boolean                   RxChunkInUse;   /* head chunk held by GetRxBuffer */
 
     /* B1: transmit buffer (internal pool chunk, zero-copy TX model) */
     uint8                     TxBuf[TCPIP_PBUF_POOL_BUF_SIZE];
@@ -146,6 +150,10 @@ static boolean TcpIp_LocalIsValidTransition(TcpIp_TcpStateType From, TcpIp_TcpSt
 static void TcpIp_LocalClearPending(TcpIp_SocketEntryType* entry);
 static TcpIp_ReturnType TcpIp_LocalAbortConnection(TcpIp_SocketEntryType* entry);
 static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const uint8* Data, uint16 Length);
+static uint8* TcpIp_LocalRxPeekData(TcpIp_SocketEntryType* entry);
+static uint16 TcpIp_LocalRxPeekLen(TcpIp_SocketEntryType* entry);
+static void TcpIp_LocalRxDropHead(TcpIp_SocketEntryType* entry);
+static void TcpIp_LocalRxFlush(TcpIp_SocketEntryType* entry);
 
 #if defined(TCPIP_ENABLE_LWIP) && (TCPIP_ENABLE_LWIP == STD_ON)
 static err_t TcpIp_LwipConnected(void* Arg, struct tcp_pcb* Pcb, err_t Err);
@@ -365,8 +373,7 @@ static TcpIp_ReturnType TcpIp_LocalAbortConnection(TcpIp_SocketEntryType* entry)
     TcpIp_LocalClearPending(entry);
     entry->TcpState = TCPIP_TCPSTATE_CLOSED;
     entry->CloseInProgress = FALSE;
-    entry->RxChunkPending = FALSE;
-    entry->RxChunkInUse = FALSE;
+    TcpIp_LocalRxFlush(entry);
     TcpIp_LocalUpdateConnState(entry);
     return TCPIP_OK;
 }
@@ -425,6 +432,71 @@ static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const u
 #endif
 
     return result;
+}
+
+/**
+ * @brief Peek the oldest received chunk (user buffer first, then pool).
+ */
+static uint8* TcpIp_LocalRxPeekData(TcpIp_SocketEntryType* entry)
+{
+    uint8* result = NULL_PTR;
+    if (entry->RxUserPending)
+    {
+        result = entry->RxUserBuf;
+    }
+    else if (entry->RxCount > 0U)
+    {
+        result = &entry->RxPool[entry->RxHead][0];
+    }
+    return result;
+}
+
+/**
+ * @brief Peek the length of the oldest received chunk.
+ */
+static uint16 TcpIp_LocalRxPeekLen(TcpIp_SocketEntryType* entry)
+{
+    uint16 result = 0U;
+    if (entry->RxUserPending)
+    {
+        result = entry->RxUserLen;
+    }
+    else if (entry->RxCount > 0U)
+    {
+        result = entry->RxPoolLen[entry->RxHead];
+    }
+    return result;
+}
+
+/**
+ * @brief Drop the oldest received chunk (after consume/release).
+ */
+static void TcpIp_LocalRxDropHead(TcpIp_SocketEntryType* entry)
+{
+    if (entry->RxUserPending)
+    {
+        entry->RxUserPending = FALSE;
+        entry->RxUserLen = 0U;
+    }
+    else if (entry->RxCount > 0U)
+    {
+        entry->RxHead = (uint8)((entry->RxHead + 1U) % TCPIP_MAX_RX_BUFFERS);
+        entry->RxCount--;
+    }
+    entry->RxChunkInUse = FALSE;
+}
+
+/**
+ * @brief Flush all queued RX data of a socket.
+ */
+static void TcpIp_LocalRxFlush(TcpIp_SocketEntryType* entry)
+{
+    entry->RxUserPending = FALSE;
+    entry->RxUserLen = 0U;
+    entry->RxHead = 0U;
+    entry->RxTail = 0U;
+    entry->RxCount = 0U;
+    entry->RxChunkInUse = FALSE;
 }
 
 #if defined(TCPIP_ENABLE_LWIP) && (TCPIP_ENABLE_LWIP == STD_ON)
@@ -808,6 +880,7 @@ TcpIp_ReturnType TcpIp_Transmit(TcpIp_SocketIdType SocketId, const uint8* Data, 
 TcpIp_ReturnType TcpIp_Receive(TcpIp_SocketIdType SocketId, uint8* Buffer, uint16 MaxLen, uint16* ReceivedLen)
 {
     TcpIp_SocketEntryType* entry;
+    uint16 chunkLen;
 
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
     if (!TCPIP_IS_INIT())
@@ -830,20 +903,20 @@ TcpIp_ReturnType TcpIp_Receive(TcpIp_SocketIdType SocketId, uint8* Buffer, uint1
 
     *ReceivedLen = 0U;
 
-    if (!entry->RxChunkPending)
+    if ((!entry->RxUserPending) && (entry->RxCount == 0U))
     {
         return TCPIP_OK;   /* no data */
     }
 
-    if (MaxLen < entry->RxChunkLen)
+    chunkLen = TcpIp_LocalRxPeekLen(entry);
+    if (MaxLen < chunkLen)
     {
         return TCPIP_E_BUFFER_OVERFLOW;   /* data not consumed */
     }
 
-    (void)memcpy(Buffer, entry->RxChunk, entry->RxChunkLen);
-    *ReceivedLen = entry->RxChunkLen;
-    entry->RxChunkPending = FALSE;
-    entry->RxChunkLen = 0U;
+    (void)memcpy(Buffer, TcpIp_LocalRxPeekData(entry), chunkLen);
+    *ReceivedLen = chunkLen;
+    TcpIp_LocalRxDropHead(entry);
     return TCPIP_OK;
 }
 
@@ -1187,11 +1260,14 @@ TcpIp_ReturnType TcpIp_Listen(TcpIp_SocketIdType SocketId, uint8 Backlog)
         return TCPIP_E_INVALID_STATE;
     }
 
-    if (Backlog > TCPIP_MAX_PENDING_CONNECTIONS)
     {
-        Backlog = (uint8)TCPIP_MAX_PENDING_CONNECTIONS;
+        uint8 effectiveBacklog = Backlog;
+        if (effectiveBacklog > (uint8)TCPIP_MAX_PENDING_CONNECTIONS)
+        {
+            effectiveBacklog = (uint8)TCPIP_MAX_PENDING_CONNECTIONS;
+        }
+        entry->Backlog = effectiveBacklog;
     }
-    entry->Backlog = Backlog;
     entry->TcpState = TCPIP_TCPSTATE_LISTEN;
     TcpIp_LocalUpdateConnState(entry);
 
@@ -1687,24 +1763,17 @@ TcpIp_ReturnType TcpIp_GetRxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr,
     {
         return TCPIP_E_NOT_OK;
     }
-    if (!entry->RxChunkPending)
-    {
-        return TCPIP_E_NOT_OK;   /* no data */
-    }
     if (entry->RxChunkInUse)
     {
         return TCPIP_E_NOBUFS;   /* previous buffer not released */
     }
+    if ((!entry->RxUserPending) && (entry->RxCount == 0U))
+    {
+        return TCPIP_E_NOT_OK;   /* no data */
+    }
 
-    if ((entry->RxUserBuf != NULL_PTR) && (entry->RxChunkLen <= entry->RxUserCapacity))
-    {
-        *DataPtr = entry->RxUserBuf;
-    }
-    else
-    {
-        *DataPtr = entry->RxChunk;
-    }
-    *Length = entry->RxChunkLen;
+    *DataPtr = TcpIp_LocalRxPeekData(entry);
+    *Length = TcpIp_LocalRxPeekLen(entry);
     entry->RxChunkInUse = TRUE;
     return TCPIP_OK;
 }
@@ -1729,10 +1798,12 @@ TcpIp_ReturnType TcpIp_ReleaseRxBuffer(TcpIp_SocketIdType SocketId)
     {
         return TCPIP_E_NOT_OK;
     }
+    if ((!entry->RxUserPending) && (entry->RxCount == 0U))
+    {
+        return TCPIP_E_NOT_OK;   /* nothing to release */
+    }
 
-    entry->RxChunkPending = FALSE;
-    entry->RxChunkInUse = FALSE;
-    entry->RxChunkLen = 0U;
+    TcpIp_LocalRxDropHead(entry);
     return TCPIP_OK;
 }
 
@@ -2014,18 +2085,33 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
     {
         return TCPIP_OK;
     }
-    if (entry->RxChunkPending)
-    {
-        return TCPIP_E_BUFFER_OVERFLOW;   /* previous chunk not consumed */
-    }
     if (Length > (uint16)TCPIP_PBUF_POOL_BUF_SIZE)
     {
         return TCPIP_E_BUFFER_OVERFLOW;
     }
 
-    (void)memcpy(entry->RxChunk, Data, Length);
-    entry->RxChunkLen = Length;
-    entry->RxChunkPending = TRUE;
+    /* Preferred path: user-attached receive buffer when free. */
+    if ((entry->RxUserBuf != NULL_PTR) && (!entry->RxUserPending))
+    {
+        if (Length <= entry->RxUserCapacity)
+        {
+            (void)memcpy(entry->RxUserBuf, Data, Length);
+            entry->RxUserLen = Length;
+            entry->RxUserPending = TRUE;
+            return TCPIP_OK;
+        }
+        /* User buffer too small: fall through to the internal pool. */
+    }
+
+    /* Pool-backed ring queue (depth TCPIP_MAX_RX_BUFFERS per socket). */
+    if (entry->RxCount >= (uint8)TCPIP_MAX_RX_BUFFERS)
+    {
+        return TCPIP_E_BUFFER_OVERFLOW;   /* queue full */
+    }
+    (void)memcpy(&entry->RxPool[entry->RxTail][0], Data, Length);
+    entry->RxPoolLen[entry->RxTail] = Length;
+    entry->RxTail = (uint8)((entry->RxTail + 1U) % TCPIP_MAX_RX_BUFFERS);
+    entry->RxCount++;
     return TCPIP_OK;
 }
 
