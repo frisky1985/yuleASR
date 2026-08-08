@@ -14,7 +14,7 @@
 | 测试 | ✅ ctest 35/35 (排除 2 个 pre-existing 失败) | — | crypto/tls 相关 8 用例全绿 (cryif/keym/secoc_core/secoc_freshness/bootloader/boot*/integration_mem) |
 | MISRA | ✅ 新池自有代码零 required 违规; 剩余为 include 链噪声与基线一致; mbedtls 在 third_party exclude 语义 | — | misra_verify.py 扫描 |
 
-**遗留 (pre-existing, 与批C无关)**: mcal_uart_test SegFault (编译恢复后暴露); s0_smoke_test 无限循环; src/ros2_bridge/rmw_ethdds.c calloc/free (08-08 合并引入, 未挂载编译, 不进 MCU 镜像)
+**遗留 (pre-existing, 与批C无关)**: mcal_uart_test SegFault (编译恢复后暴露); s0_smoke_test 无限循环; src/ros2_bridge/rmw_ethdds.c calloc/free (08-08 合并引入, 未挂载编译, 不进 MCU 镜像); src/diagnostics/dcm/dcm_memory_pool.c malloc ×4 (08-08 合并引入的重复 DCM, 未挂载编译 — 已挂载的 isotp/doip 实测零 malloc)
 
 ---
 
