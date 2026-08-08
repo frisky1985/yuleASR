@@ -171,7 +171,7 @@ Std_ReturnType ara_com_Init(void)
     }
 
     /* 初始化E2E保护模块 */
-    if (E2E_Init() != E_OK) {
+    if (E2E_Protection_Init() != E_OK) {
         return E_NOT_OK;
     }
 

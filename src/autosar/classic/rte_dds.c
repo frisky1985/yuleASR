@@ -175,7 +175,7 @@ Std_ReturnType rte_Init(void)
     }
 
     /* 初始化E2E保护 */
-    if (E2E_Init() != E_OK) {
+    if (E2E_Protection_Init() != E_OK) {
         return E_NOT_OK;
     }
 

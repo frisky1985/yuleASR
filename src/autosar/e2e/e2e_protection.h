@@ -268,9 +268,11 @@ typedef struct {
  ******************************************************************************/
 
 /**
- * @brief 初始化E2E模块
+ * @brief 初始化E2E保护模块 (host/DDS integration 版)
+ * @note 2026-08-08 P2-4: 原名 E2E_Init, 与 Classic E2E 库的 AUTOSAR 标准
+ *       E2E_Init(const void*) 符号冲突, 更名避免同名不同签名 UB。
  */
-Std_ReturnType E2E_Init(void);
+Std_ReturnType E2E_Protection_Init(void);
 
 /**
  * @brief 反初始化E2E模块

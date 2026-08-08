@@ -160,9 +160,12 @@ uint32_t E2E_CalculateCRC32(const uint8_t* data, uint32_t length, uint32_t initi
  ******************************************************************************/
 
 /**
- * @brief Initialize E2E module
+ * @brief Initialize E2E protection module (host/DDS integration 版)
+ * @note  2026-08-08 P2-4: 由 E2E_Init 更名为 E2E_Protection_Init, 避免与
+ *        Classic E2E 库 (src/bsw/services/e2e) 导出的 AUTOSAR 标准
+ *        E2E_Init(const void*) 同名不同签名符号冲突 (同时链接即 UB)。
  */
-Std_ReturnType E2E_Init(void)
+Std_ReturnType E2E_Protection_Init(void)
 {
     if (g_initialized) {
         return E_OK;

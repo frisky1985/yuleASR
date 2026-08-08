@@ -46,7 +46,7 @@ static int test_profile01_basic(void)
     uint32_t length = 8;
     uint16_t status;
 
-    TEST_ASSERT(E2E_Init() == E_OK);
+    TEST_ASSERT(E2E_Protection_Init() == E_OK);
     TEST_ASSERT(E2E_InitContext(&ctx, E2E_PROFILE_01) == E_OK);
 
     /* Create TX context */
@@ -95,7 +95,7 @@ static int test_profile01_crcoffset(void)
     uint8_t data[16] = {0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17};
     uint32_t length = 8;
 
-    TEST_ASSERT(E2E_Init() == E_OK);
+    TEST_ASSERT(E2E_Protection_Init() == E_OK);
     TEST_ASSERT(E2E_InitContext(&txCtx, E2E_PROFILE_01) == E_OK);
     txCtx.config.p01.dataId = 0x1234;
     txCtx.config.p01.dataLength = 8;
@@ -224,7 +224,7 @@ static int test_profile02_crcoffset(void)
     uint16_t status;
 
     /* CRC at offset 5, counter at offset 1 (CRC not at position 0) */
-    TEST_ASSERT(E2E_Init() == E_OK);
+    TEST_ASSERT(E2E_Protection_Init() == E_OK);
     TEST_ASSERT(E2E_InitContext(&txCtx, E2E_PROFILE_02) == E_OK);
     txCtx.config.p02.dataId = 0xABCD;
     txCtx.config.p02.dataLength = 8;

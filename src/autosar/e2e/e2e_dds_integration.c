@@ -179,7 +179,7 @@ Std_ReturnType E2E_DDS_Init(void)
     }
 
     /* Initialize E2E module */
-    if (E2E_Init() != E_OK) {
+    if (E2E_Protection_Init() != E_OK) {
         return E_NOT_OK;
     }
 
