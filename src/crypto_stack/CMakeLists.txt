@@ -33,8 +33,10 @@ target_include_directories(crypto_stack PUBLIC
 )
 
 # Link with DDS middleware (eth_dds_middleware provides dds_crypto/dds_security types)
+# KeyM/CSM 真实密码原语: mbedTLS 软件后端 (SHA-256/HMAC/AES, 与 Csm_Cfg.c 同后端)
 target_link_libraries(crypto_stack PUBLIC
     eth_dds_middleware
+    mbedcrypto
 )
 
 # Compiler flags for security

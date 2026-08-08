@@ -55,7 +55,8 @@ typedef enum {
     KEYM_ERROR_ROTATION_FAILED = -11,
     KEYM_ERROR_CERT_INVALID = -12,
     KEYM_ERROR_STORAGE_FAILED = -13,
-    KEYM_ERROR_PERMISSION_DENIED = -14
+    KEYM_ERROR_PERMISSION_DENIED = -14,
+    KEYM_ERROR_NOT_IMPLEMENTED = -15   /* 功能未实现: 显式 fail-closed (兼容追加, 不改既有值) */
 } keym_status_t;
 
 /* ============================================================================
@@ -435,6 +436,75 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
                                const uint8_t *salt, uint32_t salt_len,
                                const uint8_t *info, uint32_t info_len,
                                uint32_t key_len);
+
+/**
+ * @brief HMAC-SHA256 (RFC 2104) — 基于 mbedtls_sha256 原语, 无动态分配
+ * @param key    密钥 (len>64 时先做 SHA-256 规整)
+ * @param key_len 密钥长度
+ * @param msg    消息
+ * @param msg_len 消息长度
+ * @param out    32 字节输出
+ */
+void keym_hmac_sha256(const uint8_t *key, uint32_t key_len,
+                      const uint8_t *msg, uint32_t msg_len,
+                      uint8_t out[32]);
+
+/**
+ * @brief NIST SP 800-108 KDF (counter mode, PRF=HMAC-SHA256)
+ *
+ * K(i) = HMAC-SHA256(KI, [i]_32 || Label || 0x00 || Context || [L]_32)
+ * 32 位大端 counter/length (L 单位: bit), 无动态分配
+ *
+ * @param ki          密钥输入 KI
+ * @param ki_len      KI 长度
+ * @param label       Label (可为 NULL, 此时 label_len 必须为 0)
+ * @param label_len   Label 长度
+ * @param context     Context (可为 NULL, 此时 context_len 必须为 0)
+ * @param context_len Context 长度
+ * @param okm         输出密钥材料
+ * @param okm_len     输出长度 (<= KEYM_MAX_KEY_MATERIAL_SIZE)
+ * @return KEYM_OK 成功
+ */
+keym_status_t keym_sp800_108_counter(const uint8_t *ki, uint32_t ki_len,
+                                     const uint8_t *label, uint32_t label_len,
+                                     const uint8_t *context, uint32_t context_len,
+                                     uint8_t *okm, uint32_t okm_len);
+
+/**
+ * @brief 基于父密钥槽的 NIST SP 800-108 派生 (含目标槽分配与簿记)
+ * @param ctx KeyM上下文
+ * @param params 派生参数 (label/context/derived_key_len 生效)
+ * @param derived_slot_id 输出派生密钥槽ID
+ * @return KEYM_OK 成功
+ */
+keym_status_t keym_sp800_108_derive(keym_context_t *ctx,
+                                    const keym_derivation_params_t *params,
+                                    uint8_t *derived_slot_id);
+
+/**
+ * @brief HKDF-SHA256 (RFC 5869 Extract+Expand)
+ * @param ikm     输入密钥材料 IKM
+ * @param ikm_len IKM 长度
+ * @param salt    盐 (NULL 且 salt_len=0 时按 RFC 5869 缺省为 32 字节零)
+ * @param salt_len 盐长度
+ * @param info    上下文信息
+ * @param info_len info 长度
+ * @param okm     输出密钥材料
+ * @param okm_len 输出长度 (<= KEYM_MAX_KEY_MATERIAL_SIZE)
+ * @return KEYM_OK 成功
+ */
+keym_status_t keym_hkdf_sha256(const uint8_t *ikm, uint32_t ikm_len,
+                               const uint8_t *salt, uint32_t salt_len,
+                               const uint8_t *info, uint32_t info_len,
+                               uint8_t *okm, uint32_t okm_len);
+
+/**
+ * @brief CRC-32 (IEEE 802.3, 多项式 0xEDB88320 反射式)
+ * @param data 数据
+ * @param len  长度
+ * @return CRC-32 校验值
+ */
+uint32_t keym_crc32(const uint8_t *data, uint32_t len);
 
 /* ============================================================================
  * 密钥轮换

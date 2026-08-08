@@ -35,6 +35,13 @@ static int test_keym_key_derivation(void);
 static int test_keym_key_rotation(void);
 static int test_keym_certificate_management(void);
 static int test_keym_secoc_integration(void);
+static int test_keym_hmac_rfc2104(void);
+static int test_keym_sp800_108_vector(void);
+static int test_keym_sp800_108_multiblock(void);
+static int test_keym_sp800_108_derive_api(void);
+static int test_keym_hkdf_rfc5869_tc1(void);
+static int test_keym_crc32(void);
+static int test_keym_not_implemented(void);
 
 /* ============================================================================
  * Test Implementations
@@ -359,6 +366,234 @@ static int test_keym_certificate_management(void)
     return 0;
 }
 
+static int test_keym_hmac_rfc2104(void)
+{
+    /* RFC 2104 Test Case 1: key=0x0b*20, data="Hi There" */
+    uint8_t key[20];
+    uint8_t out[32];
+    static const uint8_t expected[32] = {
+        0xb0,0x34,0x4c,0x61,0xd8,0xdb,0x38,0x53,0x5c,0xa8,0xaf,0xce,0xaf,0x0b,0xf1,0x2b,
+        0x88,0x1d,0xc2,0x00,0xc9,0x83,0x3d,0xa7,0x26,0xe9,0x37,0x6c,0x2e,0x32,0xcf,0xf7};
+    
+    printf("  Testing KeyM HMAC-SHA256 (RFC 2104 TC1)...\n");
+    
+    memset(key, 0x0b, sizeof(key));
+    keym_hmac_sha256(key, sizeof(key), (const uint8_t*)"Hi There", 8U, out);
+    TEST_ASSERT(memcmp(out, expected, 32) == 0);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_keym_sp800_108_vector(void)
+{
+    /* NIST SP 800-108 counter mode 已知向量 (Python hashlib/hmac 对拍):
+     * KI=0123456789abcdef0123456789abcdef, label="SP800-108-test",
+     * context="counter-mode", L=256bit -> OKM=cfe012ff... */
+    static const uint8_t ki[16] = {0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF,
+                                   0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF};
+    static const uint8_t label[] = "SP800-108-test";
+    static const uint8_t context[] = "counter-mode";
+    uint8_t okm[32];
+    static const uint8_t expected[32] = {
+        0xcf,0xe0,0x12,0xff,0xbe,0x94,0x44,0x3b,0x8c,0x81,0xea,0x2c,0xa7,0x77,0x1e,0xa9,
+        0x8c,0xe6,0x3e,0xb8,0x23,0x6a,0xee,0xc8,0x50,0xec,0x19,0x9d,0x15,0x6c,0x81,0x40};
+    keym_status_t status;
+    
+    printf("  Testing KeyM SP 800-108 KDF known vector...\n");
+    
+    status = keym_sp800_108_counter(ki, sizeof(ki),
+                                    label, sizeof(label) - 1U,
+                                    context, sizeof(context) - 1U,
+                                    okm, sizeof(okm));
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    TEST_ASSERT(memcmp(okm, expected, 32) == 0);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_keym_sp800_108_multiblock(void)
+{
+    /* L=384bit -> 2 个 PRF 块, 验证 counter 递增与拼接 */
+    static const uint8_t ki[16] = {0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF,
+                                   0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF};
+    static const uint8_t label[] = "SP800-108-test";
+    static const uint8_t context[] = "counter-mode";
+    uint8_t okm[48];
+    static const uint8_t expected[48] = {
+        0xa4,0x4a,0xbe,0x06,0x9a,0x9c,0x19,0x1c,0x38,0xbe,0xc8,0x27,0xb8,0x49,0x5d,0x6a,
+        0xb8,0x3e,0x31,0x75,0x12,0x4e,0xa1,0xb2,0xb6,0xc9,0x7a,0xa6,0x6e,0xb6,0x16,0xb2,
+        0xe5,0xd0,0x6c,0x84,0x71,0x50,0x75,0xa3,0xbb,0xb8,0xfe,0x25,0xa0,0xad,0xa3,0x43};
+    keym_status_t status;
+    
+    printf("  Testing KeyM SP 800-108 KDF multiblock...\n");
+    
+    status = keym_sp800_108_counter(ki, sizeof(ki),
+                                    label, sizeof(label) - 1U,
+                                    context, sizeof(context) - 1U,
+                                    okm, sizeof(okm));
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    TEST_ASSERT(memcmp(okm, expected, 48) == 0);
+    
+    /* 参数校验 fail-closed */
+    TEST_ASSERT_EQ(keym_sp800_108_counter(NULL, 0U, label, 0U, context, 0U, okm, 32U),
+                   KEYM_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(keym_sp800_108_counter(ki, sizeof(ki), NULL, 1U, context, 0U, okm, 32U),
+                   KEYM_ERROR_INVALID_PARAM);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_keym_sp800_108_derive_api(void)
+{
+    keym_context_t *ctx;
+    keym_status_t status;
+    uint8_t parent_slot;
+    uint8_t derived_slot;
+    uint8_t derived_key[32];
+    uint32_t derived_len;
+    keym_derivation_params_t params;
+    static const uint8_t ki[16] = {0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF,
+                                   0x01,0x23,0x45,0x67,0x89,0xAB,0xCD,0xEF};
+    static const uint8_t label[] = "SP800-108-test";
+    static const uint8_t context[] = "counter-mode";
+    static const uint8_t expected[32] = {
+        0xcf,0xe0,0x12,0xff,0xbe,0x94,0x44,0x3b,0x8c,0x81,0xea,0x2c,0xa7,0x77,0x1e,0xa9,
+        0x8c,0xe6,0x3e,0xb8,0x23,0x6a,0xee,0xc8,0x50,0xec,0x19,0x9d,0x15,0x6c,0x81,0x40};
+    keym_slot_info_t info;
+    
+    printf("  Testing KeyM SP 800-108 derive via keym_key_derive...\n");
+    
+    ctx = keym_init(NULL, NULL);
+    TEST_ASSERT(ctx != NULL);
+    
+    /* 父槽导入 KI */
+    parent_slot = KEYM_SLOT_ID_INVALID;
+    status = keym_slot_allocate(ctx, &parent_slot, "parent_ki", KEYM_TYPE_AES_128);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    status = keym_key_import(ctx, parent_slot, ki, sizeof(ki), 1U);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    
+    /* SP 800-108 派生 */
+    memset(&params, 0, sizeof(params));
+    params.parent_slot_id = parent_slot;
+    params.target_slot_id = KEYM_SLOT_ID_INVALID;
+    params.kdf_type = KEYM_KDF_NIST_SP800_108;
+    params.label = label;
+    params.label_len = sizeof(label) - 1U;
+    params.context = context;
+    params.context_len = sizeof(context) - 1U;
+    params.derived_key_type = KEYM_TYPE_AES_256;
+    params.derived_key_len = 32U;
+    
+    status = keym_key_derive(ctx, &params, &derived_slot);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    TEST_ASSERT_NE(derived_slot, KEYM_SLOT_ID_INVALID);
+    
+    /* 派生槽默认可导出性关闭 -> 先置可导出再比对 */
+    status = keym_slot_set_attributes(ctx, derived_slot, KEYM_USAGE_KEY_DERIVATION,
+                                      false, true);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    
+    /* 导出并与已知向量比对 */
+    derived_len = sizeof(derived_key);
+    status = keym_key_export(ctx, derived_slot, derived_key, &derived_len);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    TEST_ASSERT_EQ(derived_len, 32U);
+    TEST_ASSERT(memcmp(derived_key, expected, 32) == 0);
+    
+    /* 簿记 */
+    status = keym_slot_get_info(ctx, derived_slot, &info);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    TEST_ASSERT_EQ(info.parent_slot_id, parent_slot);
+    TEST_ASSERT_EQ(info.kdf_type, KEYM_KDF_NIST_SP800_108);
+    TEST_ASSERT_EQ(info.key_type, KEYM_TYPE_AES_256);
+    
+    /* 导入密钥 CRC 应为真实值 (IEEE 802.3) */
+    TEST_ASSERT_EQ(ctx->materials[parent_slot].crc32, keym_crc32(ki, sizeof(ki)));
+    
+    keym_deinit(ctx);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_keym_hkdf_rfc5869_tc1(void)
+{
+    /* RFC 5869 Appendix A.1 TC1 */
+    uint8_t ikm[22];
+    uint8_t salt[13];
+    uint8_t info[10];
+    uint8_t okm[42];
+    static const uint8_t expected[42] = {
+        0x3c,0xb2,0x5f,0x25,0xfa,0xac,0xd5,0x7a,0x90,0x43,0x4f,0x64,0xd0,0x36,0x2f,0x2a,
+        0x2d,0x2d,0x0a,0x90,0xcf,0x1a,0x5a,0x4c,0x5d,0xb0,0x2d,0x56,0xec,0xc4,0xc5,0xbf,
+        0x34,0x00,0x72,0x08,0xd5,0xb8,0x87,0x18,0x58,0x65};
+    keym_status_t status;
+    uint32_t i;
+    
+    printf("  Testing KeyM HKDF-SHA256 (RFC 5869 TC1)...\n");
+    
+    memset(ikm, 0x0b, sizeof(ikm));
+    for (i = 0U; i < 13U; i++) { salt[i] = (uint8_t)i; }
+    for (i = 0U; i < 10U; i++) { info[i] = (uint8_t)(0xF0U + i); }
+    
+    status = keym_hkdf_sha256(ikm, sizeof(ikm), salt, sizeof(salt),
+                              info, sizeof(info), okm, sizeof(okm));
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    TEST_ASSERT(memcmp(okm, expected, 42) == 0);
+    
+    /* salt 缺省 (NULL, 0) 应可用 (RFC 5869: 32 字节零盐) */
+    status = keym_hkdf_sha256(ikm, sizeof(ikm), NULL, 0U, info, sizeof(info),
+                              okm, 16U);
+    TEST_ASSERT_EQ(status, KEYM_OK);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_keym_crc32(void)
+{
+    uint32_t crc;
+    
+    printf("  Testing KeyM CRC-32 (IEEE 802.3)...\n");
+    
+    crc = keym_crc32((const uint8_t*)"123456789", 9U);
+    TEST_ASSERT_EQ(crc, 0xCBF43926UL);
+    
+    crc = keym_crc32(NULL, 0U);
+    TEST_ASSERT_EQ(crc, 0x00000000UL);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_keym_not_implemented(void)
+{
+    keym_context_t *ctx;
+    uint8_t slot;
+    
+    printf("  Testing KeyM NOT_IMPLEMENTED fail-closed...\n");
+    
+    ctx = keym_init(NULL, NULL);
+    TEST_ASSERT(ctx != NULL);
+    
+    /* DDS 证书导入导出 / 持久化存储 -> 显式 NOT_IMPLEMENTED (原 TODO 恒 OK 假实现) */
+    TEST_ASSERT_EQ(keym_import_from_dds_cert(ctx, "cert", &slot),
+                   KEYM_ERROR_NOT_IMPLEMENTED);
+    TEST_ASSERT_EQ(keym_export_to_dds_cert(ctx, 0U, "cert"),
+                   KEYM_ERROR_NOT_IMPLEMENTED);
+    TEST_ASSERT_EQ(keym_load_persistent_keys(ctx), KEYM_ERROR_NOT_IMPLEMENTED);
+    TEST_ASSERT_EQ(keym_save_persistent_keys(ctx), KEYM_ERROR_NOT_IMPLEMENTED);
+    
+    keym_deinit(ctx);
+    
+    printf("  PASSED\n");
+    return 0;
+}
+
 static int test_keym_secoc_integration(void)
 {
     keym_context_t *ctx;
@@ -377,14 +612,18 @@ static int test_keym_secoc_integration(void)
     TEST_ASSERT_NE(key_slot, KEYM_SLOT_ID_INVALID);
     
     /* Get SecOC key slot */
-    uint8_t found_slot = keym_get_secoc_key_slot(ctx, pdu_id);
-    TEST_ASSERT_EQ(found_slot, key_slot);
+    {
+        uint8_t found_slot = keym_get_secoc_key_slot(ctx, pdu_id);
+        TEST_ASSERT_EQ(found_slot, key_slot);
+    }
     
     /* Check slot info */
-    keym_slot_info_t info;
-    status = keym_slot_get_info(ctx, key_slot, &info);
-    TEST_ASSERT_EQ(status, KEYM_OK);
-    TEST_ASSERT_EQ(info.usage_flags, KEYM_USAGE_SECOC);
+    {
+        keym_slot_info_t info;
+        status = keym_slot_get_info(ctx, key_slot, &info);
+        TEST_ASSERT_EQ(status, KEYM_OK);
+        TEST_ASSERT_EQ(info.usage_flags, KEYM_USAGE_SECOC);
+    }
     
     keym_deinit(ctx);
     
@@ -422,6 +661,13 @@ int main(void)
     run_test(test_keym_key_rotation, "KeyM Key Rotation");
     run_test(test_keym_certificate_management, "KeyM Certificate Management");
     run_test(test_keym_secoc_integration, "KeyM SecOC Integration");
+    run_test(test_keym_hmac_rfc2104, "KeyM HMAC-SHA256 RFC 2104 TC1");
+    run_test(test_keym_sp800_108_vector, "KeyM SP 800-108 Known Vector");
+    run_test(test_keym_sp800_108_multiblock, "KeyM SP 800-108 Multiblock");
+    run_test(test_keym_sp800_108_derive_api, "KeyM SP 800-108 Derive API");
+    run_test(test_keym_hkdf_rfc5869_tc1, "KeyM HKDF-SHA256 RFC 5869 TC1");
+    run_test(test_keym_crc32, "KeyM CRC-32 IEEE 802.3");
+    run_test(test_keym_not_implemented, "KeyM NOT_IMPLEMENTED fail-closed");
     
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

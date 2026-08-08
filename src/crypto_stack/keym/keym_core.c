@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "keym_core.h"
+#include <mbedtls/sha256.h>
 
 #define KEYM_VERSION "4.4.0-AUTOSAR"
 
@@ -30,6 +31,23 @@ static uint8_t s_keym_key_storage[KEYM_MAX_KEY_SLOTS][KEYM_MAX_KEY_MATERIAL_SIZE
 static uint8_t s_keym_cert_storage[KEYM_MAX_CERTIFICATES][KEYM_MAX_CERT_SIZE];
 
 /* ============================================================================
+ * 密码原语常量 (mbedTLS 软件后端, 无动态分配)
+ * ============================================================================ */
+
+#define KEYM_SHA256_DIGEST_LEN   32U
+#define KEYM_HMAC_BLOCK_LEN      64U
+#define KEYM_CRC32_POLY          0xEDB88320UL   /* IEEE 802.3 反射多项式 */
+#define KEYM_CRC32_INIT          0xFFFFFFFFUL
+
+/* KDF 拼接暂存区 (counter||label||0x00||context||L 或 T(i-1)||info||[i]) */
+#define KEYM_KDF_SCRATCH_SIZE    512U
+static uint8_t s_keym_kdf_scratch[KEYM_KDF_SCRATCH_SIZE];
+
+/* CRC-32 查找表 (惰性初始化一次, 单线程确定性) */
+static uint32_t s_keym_crc32_table[256];
+static bool      s_keym_crc32_table_ready = false;
+
+/* ============================================================================
  * Internal Function Declarations
  * ============================================================================ */
 
@@ -39,6 +57,250 @@ static const char* keym_get_key_type_name_internal(keym_key_type_t type);
 static const char* keym_get_key_state_name_internal(keym_key_state_t state);
 static uint32_t keym_get_key_type_size(keym_key_type_t type);
 static bool keym_is_key_usage_allowed(keym_slot_info_t *slot, keym_key_usage_t usage);
+
+/* ============================================================================
+ * 密码原语实现 (真实计算, 替代原 TODO 假实现)
+ * ============================================================================ */
+
+/**
+ * @brief HMAC-SHA256 (RFC 2104) — mbedtls_sha256 原语, 无动态分配
+ *
+ * 与 Csm_Cfg.c 软件后端同风格: 密钥 >64B 先 SHA-256 规整, <=64B 补零;
+ * inner = SHA256(ipad || msg), out = SHA256(opad || inner)
+ */
+void keym_hmac_sha256(const uint8_t *key, uint32_t key_len,
+                      const uint8_t *msg, uint32_t msg_len,
+                      uint8_t out[KEYM_SHA256_DIGEST_LEN])
+{
+    uint8_t k[KEYM_HMAC_BLOCK_LEN];
+    uint8_t ipad[KEYM_HMAC_BLOCK_LEN];
+    uint8_t opad[KEYM_HMAC_BLOCK_LEN];
+    uint8_t inner[KEYM_SHA256_DIGEST_LEN];
+    uint32_t i;
+    mbedtls_sha256_context ctx;
+
+    /* 密钥规整: >64B 先哈希, <=64B 补零 */
+    if (key_len > KEYM_HMAC_BLOCK_LEN) {
+        mbedtls_sha256(key, key_len, k, 0);
+        key_len = KEYM_SHA256_DIGEST_LEN;
+    } else if ((key != NULL) && (key_len > 0U)) {
+        (void)memcpy(k, key, key_len);
+    } else {
+        key_len = 0U;
+    }
+    for (i = key_len; i < KEYM_HMAC_BLOCK_LEN; i++) {
+        k[i] = 0U;
+    }
+    for (i = 0U; i < KEYM_HMAC_BLOCK_LEN; i++) {
+        ipad[i] = (uint8_t)(k[i] ^ 0x36U);
+        opad[i] = (uint8_t)(k[i] ^ 0x5CU);
+    }
+
+    /* inner = SHA256(ipad || msg) */
+    mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_starts(&ctx, 0);
+    mbedtls_sha256_update(&ctx, ipad, KEYM_HMAC_BLOCK_LEN);
+    if ((msg != NULL) && (msg_len > 0U)) {
+        mbedtls_sha256_update(&ctx, msg, msg_len);
+    }
+    mbedtls_sha256_finish(&ctx, inner);
+    mbedtls_sha256_free(&ctx);
+
+    /* out = SHA256(opad || inner) */
+    mbedtls_sha256_init(&ctx);
+    mbedtls_sha256_starts(&ctx, 0);
+    mbedtls_sha256_update(&ctx, opad, KEYM_HMAC_BLOCK_LEN);
+    mbedtls_sha256_update(&ctx, inner, KEYM_SHA256_DIGEST_LEN);
+    mbedtls_sha256_finish(&ctx, out);
+    mbedtls_sha256_free(&ctx);
+}
+
+/**
+ * @brief NIST SP 800-108 KDF (counter mode, PRF=HMAC-SHA256)
+ *
+ * K(i) = HMAC-SHA256(KI, [i]_32 || Label || 0x00 || Context || [L]_32)
+ * OKM = K(1) || K(2) || ... (32 位大端 counter/length, L 单位 bit)
+ */
+keym_status_t keym_sp800_108_counter(const uint8_t *ki, uint32_t ki_len,
+                                     const uint8_t *label, uint32_t label_len,
+                                     const uint8_t *context, uint32_t context_len,
+                                     uint8_t *okm, uint32_t okm_len)
+{
+    uint32_t fixed_len;
+    uint32_t produced;
+    uint32_t counter;
+    uint8_t block[KEYM_SHA256_DIGEST_LEN];
+
+    if ((ki == NULL) || (ki_len == 0U)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if (((label == NULL) && (label_len != 0U)) ||
+        ((context == NULL) && (context_len != 0U))) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if ((okm == NULL) && (okm_len != 0U)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if ((okm_len == 0U) || (okm_len > KEYM_MAX_KEY_MATERIAL_SIZE)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+
+    /* 单块消息 = 4B counter + label + 0x00 + context + 4B L */
+    fixed_len = label_len + 1U + context_len + 4U;
+    if ((fixed_len + 4U) > KEYM_KDF_SCRATCH_SIZE) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+
+    produced = 0U;
+    counter = 1U;
+    while (produced < okm_len) {
+        uint32_t off = 0U;
+        uint32_t copy_len;
+        uint32_t l_bits;
+
+        /* [i]_32 大端 */
+        s_keym_kdf_scratch[off]     = (uint8_t)(counter >> 24U);
+        s_keym_kdf_scratch[off + 1U] = (uint8_t)(counter >> 16U);
+        s_keym_kdf_scratch[off + 2U] = (uint8_t)(counter >> 8U);
+        s_keym_kdf_scratch[off + 3U] = (uint8_t)counter;
+        off += 4U;
+
+        if (label_len > 0U) {
+            (void)memcpy(&s_keym_kdf_scratch[off], label, label_len);
+            off += label_len;
+        }
+        s_keym_kdf_scratch[off] = 0x00U;   /* 固定分隔符 */
+        off += 1U;
+        if (context_len > 0U) {
+            (void)memcpy(&s_keym_kdf_scratch[off], context, context_len);
+            off += context_len;
+        }
+
+        /* [L]_32 大端, 单位 bit (okm_len <= 512 -> 无溢出) */
+        l_bits = okm_len * 8U;
+        s_keym_kdf_scratch[off]     = (uint8_t)(l_bits >> 24U);
+        s_keym_kdf_scratch[off + 1U] = (uint8_t)(l_bits >> 16U);
+        s_keym_kdf_scratch[off + 2U] = (uint8_t)(l_bits >> 8U);
+        s_keym_kdf_scratch[off + 3U] = (uint8_t)l_bits;
+        off += 4U;
+
+        keym_hmac_sha256(ki, ki_len, s_keym_kdf_scratch, off, block);
+
+        copy_len = ((okm_len - produced) < KEYM_SHA256_DIGEST_LEN) ?
+                   (okm_len - produced) : KEYM_SHA256_DIGEST_LEN;
+        (void)memcpy(&okm[produced], block, copy_len);
+        produced += copy_len;
+        counter++;
+    }
+
+    return KEYM_OK;
+}
+
+/**
+ * @brief HKDF-SHA256 (RFC 5869 Extract+Expand)
+ *
+ * Extract: PRK = HMAC-SHA256(salt, IKM)  (salt 缺省为 32 字节零)
+ * Expand : T(i) = HMAC-SHA256(PRK, T(i-1) || info || [i]_8), OKM = T(1)||T(2)||...
+ */
+keym_status_t keym_hkdf_sha256(const uint8_t *ikm, uint32_t ikm_len,
+                               const uint8_t *salt, uint32_t salt_len,
+                               const uint8_t *info, uint32_t info_len,
+                               uint8_t *okm, uint32_t okm_len)
+{
+    static const uint8_t zero_salt[KEYM_SHA256_DIGEST_LEN] = {0};
+    uint8_t prk[KEYM_SHA256_DIGEST_LEN];
+    uint8_t prev[KEYM_SHA256_DIGEST_LEN];
+    uint8_t block[KEYM_SHA256_DIGEST_LEN];
+    uint8_t counter;
+    uint32_t produced;
+
+    if ((ikm == NULL) || (ikm_len == 0U)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if (((salt == NULL) && (salt_len != 0U)) ||
+        ((info == NULL) && (info_len != 0U))) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if ((okm == NULL) && (okm_len != 0U)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if ((okm_len == 0U) || (okm_len > KEYM_MAX_KEY_MATERIAL_SIZE)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+    if ((info_len + KEYM_SHA256_DIGEST_LEN + 1U) > KEYM_KDF_SCRATCH_SIZE) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+
+    /* Extract */
+    keym_hmac_sha256((salt != NULL) ? salt : zero_salt,
+                     (salt != NULL) ? salt_len : KEYM_SHA256_DIGEST_LEN,
+                     ikm, ikm_len, prk);
+
+    /* Expand: T(0) = 空串, T(i) = HMAC(PRK, T(i-1) || info || [i]_8) */
+    (void)memset(prev, 0, sizeof(prev));
+    produced = 0U;
+    counter = 1U;
+    while (produced < okm_len) {
+        uint32_t off = 0U;
+        uint32_t copy_len;
+
+        if (produced > 0U) {
+            (void)memcpy(&s_keym_kdf_scratch[off], prev, KEYM_SHA256_DIGEST_LEN);
+            off += KEYM_SHA256_DIGEST_LEN;
+        }
+        if (info_len > 0U) {
+            (void)memcpy(&s_keym_kdf_scratch[off], info, info_len);
+            off += info_len;
+        }
+        s_keym_kdf_scratch[off] = counter;   /* 单字节 counter */
+        off += 1U;
+
+        keym_hmac_sha256(prk, KEYM_SHA256_DIGEST_LEN,
+                         s_keym_kdf_scratch, off, block);
+
+        copy_len = ((okm_len - produced) < KEYM_SHA256_DIGEST_LEN) ?
+                   (okm_len - produced) : KEYM_SHA256_DIGEST_LEN;
+        (void)memcpy(&okm[produced], block, copy_len);
+        (void)memcpy(prev, block, KEYM_SHA256_DIGEST_LEN);
+        produced += copy_len;
+        counter++;
+        if (counter == 0U) {
+            return KEYM_ERROR_INVALID_PARAM;   /* >255 块 (超出 okm_len 上限) */
+        }
+    }
+
+    return KEYM_OK;
+}
+
+/**
+ * @brief CRC-32 (IEEE 802.3, 多项式 0xEDB88320 反射式, init/xorout 0xFFFFFFFF)
+ */
+uint32_t keym_crc32(const uint8_t *data, uint32_t len)
+{
+    uint32_t crc;
+    uint32_t i;
+
+    if (!s_keym_crc32_table_ready) {
+        for (i = 0U; i < 256U; i++) {
+            uint32_t c = i;
+            uint32_t j;
+            for (j = 0U; j < 8U; j++) {
+                c = ((c & 1U) != 0U) ? ((c >> 1U) ^ KEYM_CRC32_POLY) : (c >> 1U);
+            }
+            s_keym_crc32_table[i] = c;
+        }
+        s_keym_crc32_table_ready = true;
+    }
+
+    crc = KEYM_CRC32_INIT;
+    if (data != NULL) {
+        for (i = 0U; i < len; i++) {
+            crc = s_keym_crc32_table[(crc ^ data[i]) & 0xFFU] ^ (crc >> 8U);
+        }
+    }
+
+    return crc ^ KEYM_CRC32_INIT;
+}
 
 /* ============================================================================
  * Initialization/Deinitialization
@@ -292,7 +554,7 @@ keym_status_t keym_key_import(keym_context_t *ctx, uint8_t slot_id,
     
     memcpy(material->key_data, key_data, key_len);
     material->key_data_len = key_len;
-    material->crc32 = 0;  /* TODO: Calculate CRC */
+    material->crc32 = keym_crc32(key_data, key_len);  /* IEEE 802.3 真实校验 */
     
     /* Update slot info */
     ctx->slots[slot_id].key_version = key_version;
@@ -442,7 +704,6 @@ keym_status_t keym_key_derive(keym_context_t *ctx,
                               uint8_t *derived_slot_id)
 {
     keym_status_t status;
-    uint8_t target_slot;
     
     if ((ctx == NULL) || !ctx->initialized || (params == NULL) || (derived_slot_id == NULL)) {
         return KEYM_ERROR_INVALID_PARAM;
@@ -454,6 +715,84 @@ keym_status_t keym_key_derive(keym_context_t *ctx,
         return status;
     }
     
+    /* Perform key derivation based on KDF type
+     * (目标槽分配在各自 KDF 路径内完成, 避免重复分配) */
+    switch (params->kdf_type) {
+        case KEYM_KDF_HKDF_SHA256: {
+            uint8_t target_slot;
+            
+            /* Allocate target slot if needed */
+            if (params->target_slot_id == KEYM_SLOT_ID_INVALID) {
+                target_slot = KEYM_SLOT_ID_INVALID;
+                status = keym_slot_allocate(ctx, &target_slot, "derived_key",
+                                            params->derived_key_type);
+                if (status != KEYM_OK) {
+                    return status;
+                }
+                *derived_slot_id = target_slot;
+            } else {
+                target_slot = params->target_slot_id;
+                status = keym_validate_slot(ctx, target_slot);
+                if (status != KEYM_OK) {
+                    return status;
+                }
+                *derived_slot_id = target_slot;
+            }
+            
+            status = keym_hkdf_derive(ctx, params->parent_slot_id, target_slot,
+                                      NULL, 0,
+                                      params->context, params->context_len,
+                                      params->derived_key_len);
+            if (status == KEYM_OK) {
+                /* Update derived key info */
+                ctx->slots[target_slot].parent_slot_id = params->parent_slot_id;
+                ctx->slots[target_slot].kdf_type = params->kdf_type;
+                ctx->total_derivations++;
+            }
+            break;
+        }
+
+        case KEYM_KDF_NIST_SP800_108:
+            /* NIST SP 800-108 counter-mode KDF (真实实现, PRF=HMAC-SHA256)
+             * 含目标槽分配/簿记 */
+            status = keym_sp800_108_derive(ctx, params, derived_slot_id);
+            break;
+
+        default:
+            status = KEYM_ERROR_INVALID_PARAM;
+            break;
+    }
+
+    return status;
+}
+
+/**
+ * @brief NIST SP 800-108 派生 (public): 校验父槽 -> 分配/校验目标槽 -> 执行 KDF -> 簿记
+ */
+keym_status_t keym_sp800_108_derive(keym_context_t *ctx,
+                                    const keym_derivation_params_t *params,
+                                    uint8_t *derived_slot_id)
+{
+    keym_status_t status;
+    uint8_t target_slot;
+    keym_key_material_t *parent_mat;
+    keym_key_material_t *target_mat;
+
+    if ((ctx == NULL) || !ctx->initialized || (params == NULL) ||
+        (derived_slot_id == NULL)) {
+        return KEYM_ERROR_INVALID_PARAM;
+    }
+
+    /* Validate parent slot and key material */
+    status = keym_validate_slot(ctx, params->parent_slot_id);
+    if (status != KEYM_OK) {
+        return status;
+    }
+    parent_mat = &ctx->materials[params->parent_slot_id];
+    if ((parent_mat->key_data == NULL) || (parent_mat->key_data_len == 0U)) {
+        return KEYM_ERROR_KEY_NOT_FOUND;
+    }
+
     /* Allocate target slot if needed */
     if (params->target_slot_id == KEYM_SLOT_ID_INVALID) {
         target_slot = KEYM_SLOT_ID_INVALID;
@@ -471,35 +810,34 @@ keym_status_t keym_key_derive(keym_context_t *ctx,
         }
         *derived_slot_id = target_slot;
     }
-    
-    /* Perform key derivation based on KDF type */
-    switch (params->kdf_type) {
-        case KEYM_KDF_HKDF_SHA256:
-            status = keym_hkdf_derive(ctx, params->parent_slot_id, target_slot,
-                                      NULL, 0,
-                                      params->context, params->context_len,
-                                      params->derived_key_len);
-            break;
-            
-        case KEYM_KDF_NIST_SP800_108:
-            /* NIST SP 800-108 KDF implementation */
-            /* TODO: Implement */
-            status = KEYM_OK;
-            break;
-            
-        default:
-            status = KEYM_ERROR_INVALID_PARAM;
-            break;
+
+    /* Target key material -> 静态池 */
+    target_mat = &ctx->materials[target_slot];
+    if (target_mat->key_data == NULL) {
+        target_mat->key_data = s_keym_key_storage[target_slot];
     }
-    
-    if (status == KEYM_OK) {
-        /* Update derived key info */
-        ctx->slots[target_slot].parent_slot_id = params->parent_slot_id;
-        ctx->slots[target_slot].kdf_type = params->kdf_type;
-        ctx->total_derivations++;
+    if (target_mat->key_data == NULL) {
+        return KEYM_ERROR_NO_MEMORY;
     }
-    
-    return status;
+
+    /* NIST SP 800-108 counter mode */
+    status = keym_sp800_108_counter(parent_mat->key_data, parent_mat->key_data_len,
+                                    params->label, params->label_len,
+                                    params->context, params->context_len,
+                                    target_mat->key_data, params->derived_key_len);
+    if (status != KEYM_OK) {
+        return status;
+    }
+    target_mat->key_data_len = params->derived_key_len;
+    target_mat->crc32 = keym_crc32(target_mat->key_data, target_mat->key_data_len);
+
+    /* Update derived key info */
+    ctx->slots[target_slot].parent_slot_id = params->parent_slot_id;
+    ctx->slots[target_slot].kdf_type = params->kdf_type;
+    ctx->slots[target_slot].key_len = params->derived_key_len;
+    ctx->total_derivations++;
+
+    return KEYM_OK;
 }
 
 keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
@@ -508,31 +846,46 @@ keym_status_t keym_hkdf_derive(keym_context_t *ctx, uint8_t parent_slot,
                                const uint8_t *info, uint32_t info_len,
                                uint32_t key_len)
 {
-    /* Simplified HKDF implementation */
-    /* In production, this would use proper HKDF-SHA256 from crypto library */
-    
-    (void)ctx;
-    (void)parent_slot;
-    (void)salt;
-    (void)salt_len;
-    (void)info;
-    (void)info_len;
-    
+    keym_status_t status;
+    keym_key_material_t *parent_mat;
+    keym_key_material_t *target_mat;
+
+    /* RFC 5869 HKDF-SHA256 真实实现 (替代原假实现) */
+    status = keym_validate_slot(ctx, parent_slot);
+    if (status != KEYM_OK) {
+        return status;
+    }
+    status = keym_validate_slot(ctx, target_slot);
+    if (status != KEYM_OK) {
+        return status;
+    }
     if (key_len > KEYM_MAX_KEY_MATERIAL_SIZE) {
         return KEYM_ERROR_INVALID_PARAM;
     }
-    
+
+    parent_mat = &ctx->materials[parent_slot];
+    if ((parent_mat->key_data == NULL) || (parent_mat->key_data_len == 0U)) {
+        return KEYM_ERROR_KEY_NOT_FOUND;
+    }
+
     /* Allocate key material for derived key — 静态池已预指向 */
-    if (ctx->materials[target_slot].key_data == NULL) {
-        ctx->materials[target_slot].key_data = s_keym_key_storage[target_slot];
+    target_mat = &ctx->materials[target_slot];
+    if (target_mat->key_data == NULL) {
+        target_mat->key_data = s_keym_key_storage[target_slot];
     }
-    
-    /* Fill with derived pattern (simplified - should use real HKDF) */
-    for (uint32_t i = 0; i < key_len; i++) {
-        ctx->materials[target_slot].key_data[i] = (uint8_t)(((unsigned int)(i) * 3U) + (unsigned int)((target_slot * 11U)) + 0x5AU);
+    if (target_mat->key_data == NULL) {
+        return KEYM_ERROR_NO_MEMORY;
     }
-    ctx->materials[target_slot].key_data_len = key_len;
-    
+
+    status = keym_hkdf_sha256(parent_mat->key_data, parent_mat->key_data_len,
+                              salt, salt_len, info, info_len,
+                              target_mat->key_data, key_len);
+    if (status != KEYM_OK) {
+        return status;
+    }
+    target_mat->key_data_len = key_len;
+    target_mat->crc32 = keym_crc32(target_mat->key_data, key_len);
+
     return KEYM_OK;
 }
 
@@ -697,8 +1050,8 @@ keym_status_t keym_import_from_dds_cert(keym_context_t *ctx, const char *cert_na
     (void)ctx;
     (void)cert_name;
     (void)key_slot;
-    /* TODO: Implement DDS certificate key import */
-    return KEYM_OK;
+    /* DDS 证书密钥导入未实现: 显式 fail-closed (原 TODO 恒 OK 假实现) */
+    return KEYM_ERROR_NOT_IMPLEMENTED;
 }
 
 keym_status_t keym_export_to_dds_cert(keym_context_t *ctx, uint8_t key_slot,
@@ -707,8 +1060,8 @@ keym_status_t keym_export_to_dds_cert(keym_context_t *ctx, uint8_t key_slot,
     (void)ctx;
     (void)key_slot;
     (void)cert_name;
-    /* TODO: Implement key export to DDS certificate */
-    return KEYM_OK;
+    /* DDS 证书密钥导出未实现: 显式 fail-closed (原 TODO 恒 OK 假实现) */
+    return KEYM_ERROR_NOT_IMPLEMENTED;
 }
 
 keym_status_t keym_register_certificate(keym_context_t *ctx, uint8_t cert_id,
@@ -859,15 +1212,15 @@ keym_status_t keym_register_state_callback(keym_context_t *ctx,
 keym_status_t keym_load_persistent_keys(keym_context_t *ctx)
 {
     (void)ctx;
-    /* TODO: Implement persistent key loading from secure storage */
-    return KEYM_OK;
+    /* 持久化密钥加载未实现 (需 NvM/安全存储集成): 显式 fail-closed */
+    return KEYM_ERROR_NOT_IMPLEMENTED;
 }
 
 keym_status_t keym_save_persistent_keys(keym_context_t *ctx)
 {
     (void)ctx;
-    /* TODO: Implement persistent key saving to secure storage */
-    return KEYM_OK;
+    /* 持久化密钥保存未实现 (需 NvM/安全存储集成): 显式 fail-closed */
+    return KEYM_ERROR_NOT_IMPLEMENTED;
 }
 
 /* ============================================================================
