@@ -1,0 +1,62 @@
+system:
+# System configuration
+  name: GeneratedSystem
+  version: 2.0.0
+  description: Programmatically generated DDS configuration
+domains:
+# DDS Domains
+- id: 0
+  name: DefaultDomain
+  participants:
+  - name: Node1
+    publishers:
+    - topic: Temperature
+      qos:
+        reliability: BEST_EFFORT
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: Float64
+    subscribers: []
+  - name: Node2
+    publishers: []
+    subscribers:
+    - topic: Temperature
+      qos:
+        reliability: BEST_EFFORT
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: Float64
+transport:
+# Network transport configuration
+  kind: UDP
+  port_base: 7400
+  port_range: 100
+  buffer_size: 65535
+  max_message_size: 65535
+  heartbeat_period_ms: 1000
+tsn:
+# Time-Sensitive Networking configuration
+  enabled: true
+  streams:
+  - name: SensorStream
+    priority: 5
+    bandwidth: 1000000
+    max_latency: 50000
+    frame_size: 1500
+security:
+# DDS Security configuration
+  enabled: false
+  authentication: false
+  encryption: false
+  access_control: false
+  logging: false

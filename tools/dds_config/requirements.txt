@@ -1,0 +1,21 @@
+# DDS Configuration Tool Dependencies
+# Python 3.8+ required
+
+# Core dependencies
+pyyaml>=6.0
+flask>=2.0.0
+flask-cors>=3.0.10
+
+# Optional GUI dependencies (for Qt-based GUI)
+# PyQt5>=5.15.0
+
+# Development dependencies (optional)
+# pytest>=7.0.0
+# pytest-cov>=4.0.0
+# black>=22.0.0
+# flake8>=5.0.0
+
+# Optional dependencies for enhanced functionality
+# jsonschema>=4.0.0    # JSON Schema validation
+# lxml>=4.9.0          # Enhanced XML/ARXML processing
+# graphviz>=0.20.0     # Graph visualization

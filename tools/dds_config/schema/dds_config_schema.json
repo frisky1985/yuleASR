@@ -1,0 +1,518 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://eth-dds-integration.org/schemas/dds_config_schema.json",
+  "title": "DDS Configuration Schema",
+  "description": "Schema for DDS configuration files in YAML/JSON format",
+  "type": "object",
+  "required": ["system", "domains"],
+  "properties": {
+    "system": {
+      "type": "object",
+      "description": "System information",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "System name",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_-]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "version": {
+          "type": "string",
+          "description": "System version (semver format)",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+          "default": "1.0.0"
+        },
+        "description": {
+          "type": "string",
+          "description": "System description"
+        },
+        "vendor": {
+          "type": "string",
+          "description": "System vendor"
+        }
+      },
+      "additionalProperties": false
+    },
+    "domains": {
+      "type": "array",
+      "description": "DDS Domains",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/Domain"
+      }
+    },
+    "transport": {
+      "$ref": "#/definitions/Transport"
+    },
+    "tsn": {
+      "$ref": "#/definitions/TSN"
+    },
+    "security": {
+      "$ref": "#/definitions/Security"
+    },
+    "qos_profiles": {
+      "type": "object",
+      "description": "Named QoS profiles",
+      "additionalProperties": {
+        "$ref": "#/definitions/QoS"
+      }
+    },
+    "topics": {
+      "type": "array",
+      "description": "Topic definitions",
+      "items": {
+        "$ref": "#/definitions/Topic"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "Domain": {
+      "type": "object",
+      "description": "DDS Domain configuration",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Domain ID (0-232)",
+          "minimum": 0,
+          "maximum": 232
+        },
+        "name": {
+          "type": "string",
+          "description": "Domain name",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "description": {
+          "type": "string",
+          "description": "Domain description"
+        },
+        "participants": {
+          "type": "array",
+          "description": "Domain participants",
+          "items": {
+            "$ref": "#/definitions/Participant"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Participant": {
+      "type": "object",
+      "description": "DDS DomainParticipant configuration",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Participant name",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9_]*$",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "qos_profile": {
+          "type": "string",
+          "description": "Reference to QoS profile name"
+        },
+        "publishers": {
+          "type": "array",
+          "description": "Publishers",
+          "items": {
+            "$ref": "#/definitions/Publisher"
+          }
+        },
+        "subscribers": {
+          "type": "array",
+          "description": "Subscribers",
+          "items": {
+            "$ref": "#/definitions/Subscriber"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Publisher": {
+      "type": "object",
+      "description": "DDS Publisher configuration",
+      "required": ["topic"],
+      "properties": {
+        "topic": {
+          "type": "string",
+          "description": "Topic name",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "type": {
+          "type": "string",
+          "description": "Data type name"
+        },
+        "qos": {
+          "$ref": "#/definitions/QoS"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Subscriber": {
+      "type": "object",
+      "description": "DDS Subscriber configuration",
+      "required": ["topic"],
+      "properties": {
+        "topic": {
+          "type": "string",
+          "description": "Topic name",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "type": {
+          "type": "string",
+          "description": "Data type name"
+        },
+        "qos": {
+          "$ref": "#/definitions/QoS"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Topic": {
+      "type": "object",
+      "description": "DDS Topic definition",
+      "required": ["name", "type"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Topic name",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "type": {
+          "type": "string",
+          "description": "Data type name"
+        },
+        "qos": {
+          "$ref": "#/definitions/QoS"
+        },
+        "description": {
+          "type": "string",
+          "description": "Topic description"
+        }
+      },
+      "additionalProperties": false
+    },
+    "QoS": {
+      "type": "object",
+      "description": "DDS QoS policies",
+      "properties": {
+        "reliability": {
+          "type": "string",
+          "description": "Reliability QoS policy",
+          "enum": ["BEST_EFFORT", "RELIABLE"],
+          "default": "RELIABLE"
+        },
+        "durability": {
+          "type": "string",
+          "description": "Durability QoS policy",
+          "enum": ["VOLATILE", "TRANSIENT_LOCAL", "TRANSIENT", "PERSISTENT"],
+          "default": "VOLATILE"
+        },
+        "history": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["KEEP_LAST", "KEEP_ALL"],
+              "default": "KEEP_LAST"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": ["KEEP_LAST", "KEEP_ALL"],
+                  "default": "KEEP_LAST"
+                },
+                "depth": {
+                  "type": "integer",
+                  "description": "History depth",
+                  "minimum": 1,
+                  "maximum": 10000,
+                  "default": 1
+                }
+              }
+            }
+          ]
+        },
+        "deadline": {
+          "oneOf": [
+            {
+              "type": "number",
+              "description": "Deadline in seconds"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "sec": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "default": 0
+                },
+                "nanosec": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 999999999,
+                  "default": 0
+                }
+              }
+            }
+          ]
+        },
+        "latency_budget": {
+          "type": "object",
+          "properties": {
+            "sec": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "nanosec": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 999999999,
+              "default": 0
+            }
+          }
+        },
+        "lifespan": {
+          "type": "object",
+          "properties": {
+            "sec": {
+              "type": "integer",
+              "description": "Lifespan in seconds (-1 for infinite)",
+              "minimum": -1
+            },
+            "nanosec": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 999999999,
+              "default": 0
+            }
+          }
+        },
+        "liveliness": {
+          "type": "string",
+          "description": "Liveliness QoS policy",
+          "enum": ["AUTOMATIC", "MANUAL_BY_TOPIC", "MANUAL_BY_PARTICIPANT"],
+          "default": "AUTOMATIC"
+        },
+        "destination_order": {
+          "type": "string",
+          "description": "Destination order QoS policy",
+          "enum": ["BY_RECEPTION_TIMESTAMP", "BY_SOURCE_TIMESTAMP"],
+          "default": "BY_RECEPTION_TIMESTAMP"
+        },
+        "ownership": {
+          "type": "string",
+          "description": "Ownership QoS policy",
+          "enum": ["SHARED", "EXCLUSIVE"],
+          "default": "SHARED"
+        },
+        "resource_limits": {
+          "type": "object",
+          "description": "Resource limits",
+          "properties": {
+            "max_samples": {
+              "type": "integer",
+              "minimum": -1
+            },
+            "max_instances": {
+              "type": "integer",
+              "minimum": -1
+            },
+            "max_samples_per_instance": {
+              "type": "integer",
+              "minimum": -1
+            }
+          }
+        },
+        "partition": {
+          "type": "array",
+          "description": "Partition names",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Transport": {
+      "type": "object",
+      "description": "Transport configuration",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "Transport kind",
+          "enum": ["UDP", "TCP", "SHM", "TSN"],
+          "default": "UDP"
+        },
+        "interface": {
+          "type": "string",
+          "description": "Network interface name"
+        },
+        "multicast_address": {
+          "type": "string",
+          "description": "Multicast address for discovery"
+        },
+        "port_base": {
+          "type": "integer",
+          "description": "Base port number",
+          "minimum": 0,
+          "maximum": 65535,
+          "default": 7400
+        },
+        "port_range": {
+          "type": "integer",
+          "description": "Port range size",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 100
+        },
+        "buffer_size": {
+          "type": "integer",
+          "description": "Receive buffer size in bytes",
+          "minimum": 1024,
+          "maximum": 16777216,
+          "default": 65535
+        },
+        "max_message_size": {
+          "type": "integer",
+          "description": "Maximum message size in bytes",
+          "minimum": 64,
+          "maximum": 16777216,
+          "default": 65535
+        },
+        "heartbeat_period_ms": {
+          "type": "integer",
+          "description": "Heartbeat period in milliseconds",
+          "minimum": 10,
+          "maximum": 60000,
+          "default": 1000
+        }
+      },
+      "additionalProperties": false
+    },
+    "TSN": {
+      "type": "object",
+      "description": "Time-Sensitive Networking configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable TSN",
+          "default": false
+        },
+        "streams": {
+          "type": "array",
+          "description": "TSN streams",
+          "items": {
+            "$ref": "#/definitions/TSNStream"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "TSNStream": {
+      "type": "object",
+      "description": "TSN stream configuration",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Stream name",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "priority": {
+          "type": "integer",
+          "description": "Stream priority (0-7, 7 highest)",
+          "minimum": 0,
+          "maximum": 7,
+          "default": 0
+        },
+        "bandwidth": {
+          "type": "integer",
+          "description": "Bandwidth in bits per second",
+          "minimum": 0
+        },
+        "max_latency": {
+          "type": "integer",
+          "description": "Maximum latency in microseconds",
+          "minimum": 0
+        },
+        "frame_size": {
+          "type": "integer",
+          "description": "Maximum frame size in bytes",
+          "minimum": 64,
+          "maximum": 9000,
+          "default": 1500
+        }
+      },
+      "additionalProperties": false
+    },
+    "Security": {
+      "type": "object",
+      "description": "DDS Security configuration",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Enable security",
+          "default": false
+        },
+        "authentication": {
+          "type": "boolean",
+          "description": "Enable authentication",
+          "default": false
+        },
+        "encryption": {
+          "type": "boolean",
+          "description": "Enable encryption",
+          "default": false
+        },
+        "access_control": {
+          "type": "boolean",
+          "description": "Enable access control",
+          "default": false
+        },
+        "logging": {
+          "type": "boolean",
+          "description": "Enable security logging",
+          "default": false
+        },
+        "identity_ca": {
+          "type": "string",
+          "description": "Path to Identity CA certificate"
+        },
+        "permissions_ca": {
+          "type": "string",
+          "description": "Path to Permissions CA certificate"
+        },
+        "private_key": {
+          "type": "string",
+          "description": "Path to private key"
+        },
+        "identity_certificate": {
+          "type": "string",
+          "description": "Path to identity certificate"
+        },
+        "permissions_xml": {
+          "type": "string",
+          "description": "Path to permissions XML file"
+        },
+        "governance_xml": {
+          "type": "string",
+          "description": "Path to governance XML file"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,105 @@
+/**
+ * @file dds_generated_callbacks.h
+ * @brief DDS Generated Callback Function Declarations
+ * @version {{ version }}
+ * @date {{ timestamp }}
+ * @author Auto-generated
+ *
+ * @note This file is auto-generated. Do not modify manually.
+ */
+
+#ifndef DDS_GENERATED_CALLBACKS_H
+#define DDS_GENERATED_CALLBACKS_H
+
+#include "dds/core/dds_core.h"
+#include "common/types/eth_types.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* ============================================================================ */
+/* Data Callback Types                                                          */
+/* ============================================================================ */
+
+/**
+ * @brief Callback function type for data reception
+ * @param data Pointer to received data
+ * @param size Size of received data in bytes
+ * @param user_data User-provided context data
+ */
+typedef void (*dds_data_received_callback_t)(const void *data, uint32_t size, void *user_data);
+
+/**
+ * @brief Callback function type for write completion
+ * @param user_data User-provided context data
+ */
+typedef void (*dds_write_complete_callback_t)(void *user_data);
+
+/**
+ * @brief Callback function type for participant connection events
+ * @param participant The affected participant
+ * @param connected True if connected, false if disconnected
+ * @param user_data User-provided context data
+ */
+typedef void (*dds_participant_event_callback_t)(
+    dds_domain_participant_t *participant,
+    bool connected,
+    void *user_data
+);
+
+{% if publishers %}
+/* ============================================================================ */
+/* Publisher Callbacks                                                          */
+/* ============================================================================ */
+{% for pub in publishers %}
+
+/**
+ * @brief Write complete callback for {{ pub.topic_name }}
+ * @param user_data User-provided context data
+ */
+void {{ pub.callback_name }}(void *user_data);
+{% endfor %}
+{% endif %}
+
+{% if subscribers %}
+/* ============================================================================ */
+/* Subscriber Callbacks                                                         */
+/* ============================================================================ */
+{% for sub in subscribers %}
+
+/**
+ * @brief Data received callback for {{ sub.topic_name }}
+ * @param data Pointer to received data
+ * @param size Size of received data
+ * @param user_data User-provided context data
+ */
+void {{ sub.callback_name }}(const void *data, uint32_t size, void *user_data);
+{% endfor %}
+{% endif %}
+
+{% if participants %}
+/* ============================================================================ */
+/* Participant Event Callbacks                                                  */
+/* ============================================================================ */
+{% for part in participants %}
+
+/**
+ * @brief Connection event callback for {{ part.name }}
+ * @param participant The affected participant
+ * @param connected True if connected, false if disconnected
+ * @param user_data User-provided context data
+ */
+void {{ part.callback_name }}(
+    dds_domain_participant_t *participant,
+    bool connected,
+    void *user_data
+);
+{% endfor %}
+{% endif %}
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* DDS_GENERATED_CALLBACKS_H */

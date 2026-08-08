@@ -1,0 +1,74 @@
+/**
+ * @file {{ filename }}
+ * @brief {{ description }}
+ * @version {{ version }}
+ * @date {{ timestamp }}
+ * @author Auto-generated
+ *
+ * @note This file is auto-generated. Do not modify manually.
+ * @copyright Copyright (c) 2026
+ */
+
+#include "{{ header_path }}"
+
+{% if qos_definitions %}
+/* ============================================================================ */
+/* QoS Profile Definitions                                                      */
+/* ============================================================================ */
+{% for qos in qos_definitions %}
+/** @brief {{ qos.description }} */
+{% if qos.is_const %}const {% endif %}{{ qos.type }} {{ qos.name }} = {
+    .reliability = {{ qos.reliability }},
+    .durability = {{ qos.durability }},
+    .deadline_ms = {{ qos.deadline_ms }}U,
+    .latency_budget_ms = {{ qos.latency_budget_ms }}U,
+    .history_depth = {{ qos.history_depth }}U
+};
+{% endfor %}
+{% endif %}
+
+{% if participant_init %}
+/* ============================================================================ */
+/* Domain Participant Instances                                                 */
+/* ============================================================================ */
+{% for init in participant_init %}
+/** @brief {{ init.description }} */
+dds_domain_participant_t *{{ init.variable }} = NULL;
+{% endfor %}
+{% endif %}
+
+{% if callback_functions %}
+/* ============================================================================ */
+/* Default Callback Functions                                                   */
+/* ============================================================================ */
+{% for cb in callback_functions %}
+/**
+ * @brief {{ cb.description }}
+ */
+static {{ cb.return_type }} {{ cb.name }}({{ cb.params }})
+{
+{{ cb.body }}
+}
+{% endfor %}
+{% endif %}
+
+/* ============================================================================ */
+/* Initialization Functions                                                     */
+/* ============================================================================ */
+
+/**
+ * @brief {{ init_function_impl.description }}
+ * @return eth_status_t ETH_OK on success, error code on failure
+ */
+{{ init_function_impl.return_type }} {{ init_function_impl.name }}({{ init_function_impl.parameters }})
+{
+{{ init_function_impl.body }}
+}
+
+/**
+ * @brief {{ deinit_function_impl.description }}
+ */
+{{ deinit_function_impl.return_type }} {{ deinit_function_impl.name }}({{ deinit_function_impl.parameters }})
+{
+{{ deinit_function_impl.body }}
+}

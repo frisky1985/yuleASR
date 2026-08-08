@@ -1,0 +1,220 @@
+system:
+# System configuration
+  name: ImportedConfig
+  version: 1.0.0
+domains:
+# DDS Domains
+- id: 1
+  name: PerceptionDomain
+  participants:
+  - name: CameraECU
+    publishers:
+    - topic: CameraObjectDetection
+      qos:
+        reliability: RELIABLE
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+        deadline:
+          sec: 0
+          nanosec: 33000000
+      type: ObjectDetectionData
+    - topic: CameraImage
+      qos:
+        reliability: BEST_EFFORT
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 2
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: ImageData
+    subscribers: []
+    qos_profile: sensor_high_reliability
+  - name: RadarECU
+    publishers:
+    - topic: RadarData
+      qos:
+        reliability: RELIABLE
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+        deadline:
+          sec: 0
+          nanosec: 20000000
+      type: RadarPointCloud
+    subscribers:
+    - topic: FusedObjects
+      qos:
+        reliability: RELIABLE
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: ObjectList
+- id: 2
+  name: ControlDomain
+  participants:
+  - name: PlanningECU
+    publishers:
+    - topic: FusedObjects
+      qos:
+        reliability: RELIABLE
+        durability: TRANSIENT_LOCAL
+        history:
+          kind: KEEP_LAST
+          depth: 10
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: ObjectList
+    subscribers:
+    - topic: CameraObjectDetection
+      qos:
+        reliability: RELIABLE
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: ObjectDetectionData
+    - topic: RadarData
+      qos:
+        reliability: RELIABLE
+        durability: VOLATILE
+        history:
+          kind: KEEP_LAST
+          depth: 1
+        liveliness: AUTOMATIC
+        destination_order: BY_RECEPTION_TIMESTAMP
+        ownership: SHARED
+      type: RadarPointCloud
+    qos_profile: control_realtime
+transport:
+# Network transport configuration
+  kind: UDP
+  port_base: 7400
+  port_range: 100
+  buffer_size: 65535
+  max_message_size: 65535
+  heartbeat_period_ms: 1000
+  interface: eth0
+  multicast_address: 239.255.0.1
+tsn:
+# Time-Sensitive Networking configuration
+  enabled: true
+  streams:
+  - name: CameraStream
+    priority: 7
+    bandwidth: 10000000
+    max_latency: 100000
+    frame_size: 1500
+  - name: ControlStream
+    priority: 6
+    bandwidth: 1000000
+    max_latency: 50000
+    frame_size: 1500
+security:
+# DDS Security configuration
+  enabled: false
+  authentication: false
+  encryption: false
+  access_control: false
+  logging: false
+qos_profiles:
+  sensor_high_reliability:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+    deadline:
+      sec: 0
+      nanosec: 33000000
+  control_realtime:
+    reliability: RELIABLE
+    durability: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_LAST
+      depth: 10
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+  best_effort_sensor:
+    reliability: BEST_EFFORT
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+topics:
+- name: CameraObjectDetection
+  type: ObjectDetectionData
+  qos:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+    deadline:
+      sec: 0
+      nanosec: 33000000
+  description: Object detection results from camera
+- name: CameraImage
+  type: ImageData
+  qos:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+  description: Raw camera image data
+- name: RadarData
+  type: RadarPointCloud
+  qos:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+  description: Radar point cloud data
+- name: FusedObjects
+  type: ObjectList
+  qos:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    liveliness: AUTOMATIC
+    destination_order: BY_RECEPTION_TIMESTAMP
+    ownership: SHARED
+  description: Fused object list from sensor fusion

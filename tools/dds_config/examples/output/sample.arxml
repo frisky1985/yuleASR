@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>DDS_Configuration</SHORT-NAME>
+      <ELEMENTS>
+        <SYSTEM>
+          <SHORT-NAME>ADAS_Sensor_Fusion</SHORT-NAME>
+          <ADMIN-DATA>
+            <SDGS>
+              <SDG GID="Version">1.2.0</SDG>
+            </SDGS>
+          </ADMIN-DATA>
+          <MAPPINGS>
+            <ECU-TO-DDS-DOMAIN-MAPPING>
+              <SHORT-NAME>Domain_PerceptionDomain</SHORT-NAME>
+              <DDS-DOMAIN-ID>1</DDS-DOMAIN-ID>
+              <DDS-PARTICIPANT-REF DEST="DDS-PARTICIPANT">CameraECU</DDS-PARTICIPANT-REF>
+              <DDS-PARTICIPANT-REF DEST="DDS-PARTICIPANT">RadarECU</DDS-PARTICIPANT-REF>
+            </ECU-TO-DDS-DOMAIN-MAPPING>
+            <ECU-TO-DDS-DOMAIN-MAPPING>
+              <SHORT-NAME>Domain_ControlDomain</SHORT-NAME>
+              <DDS-DOMAIN-ID>2</DDS-DOMAIN-ID>
+              <DDS-PARTICIPANT-REF DEST="DDS-PARTICIPANT">PlanningECU</DDS-PARTICIPANT-REF>
+            </ECU-TO-DDS-DOMAIN-MAPPING>
+          </MAPPINGS>
+        </SYSTEM>
+        <DDS-PARTICIPANT>
+          <SHORT-NAME>CameraECU</SHORT-NAME>
+          <DOMAIN-REF DEST="DDS-DOMAIN">PerceptionDomain</DOMAIN-REF>
+          <PUBLISHER>
+            <SHORT-NAME>Pub_CameraObjectDetection</SHORT-NAME>
+            <TOPIC-NAME>CameraObjectDetection</TOPIC-NAME>
+            <TYPE-NAME>ObjectDetectionData</TYPE-NAME>
+          </PUBLISHER>
+          <PUBLISHER>
+            <SHORT-NAME>Pub_CameraLaneDetection</SHORT-NAME>
+            <TOPIC-NAME>CameraLaneDetection</TOPIC-NAME>
+            <TYPE-NAME>LaneData</TYPE-NAME>
+          </PUBLISHER>
+          <SUBSCRIBER>
+            <SHORT-NAME>Sub_FusionResult</SHORT-NAME>
+            <TOPIC-NAME>FusionResult</TOPIC-NAME>
+            <TYPE-NAME>FusionData</TYPE-NAME>
+          </SUBSCRIBER>
+        </DDS-PARTICIPANT>
+        <DDS-PARTICIPANT>
+          <SHORT-NAME>RadarECU</SHORT-NAME>
+          <DOMAIN-REF DEST="DDS-DOMAIN">PerceptionDomain</DOMAIN-REF>
+          <PUBLISHER>
+            <SHORT-NAME>Pub_RadarDetection</SHORT-NAME>
+            <TOPIC-NAME>RadarDetection</TOPIC-NAME>
+            <TYPE-NAME>RadarData</TYPE-NAME>
+          </PUBLISHER>
+        </DDS-PARTICIPANT>
+        <DDS-PARTICIPANT>
+          <SHORT-NAME>PlanningECU</SHORT-NAME>
+          <DOMAIN-REF DEST="DDS-DOMAIN">ControlDomain</DOMAIN-REF>
+          <PUBLISHER>
+            <SHORT-NAME>Pub_VehicleCommand</SHORT-NAME>
+            <TOPIC-NAME>VehicleCommand</TOPIC-NAME>
+            <TYPE-NAME>CommandData</TYPE-NAME>
+          </PUBLISHER>
+          <SUBSCRIBER>
+            <SHORT-NAME>Sub_CameraObjectDetection</SHORT-NAME>
+            <TOPIC-NAME>CameraObjectDetection</TOPIC-NAME>
+            <TYPE-NAME>ObjectDetectionData</TYPE-NAME>
+          </SUBSCRIBER>
+          <SUBSCRIBER>
+            <SHORT-NAME>Sub_RadarDetection</SHORT-NAME>
+            <TOPIC-NAME>RadarDetection</TOPIC-NAME>
+            <TYPE-NAME>RadarData</TYPE-NAME>
+          </SUBSCRIBER>
+          <SUBSCRIBER>
+            <SHORT-NAME>Sub_FusionResult</SHORT-NAME>
+            <TOPIC-NAME>FusionResult</TOPIC-NAME>
+            <TYPE-NAME>FusionData</TYPE-NAME>
+          </SUBSCRIBER>
+        </DDS-PARTICIPANT>
+        <DDS-QOS-PROFILE>
+          <SHORT-NAME>default</SHORT-NAME>
+          <RELIABILITY>BEST_EFFORT</RELIABILITY>
+        </DDS-QOS-PROFILE>
+        <DDS-QOS-PROFILE>
+          <SHORT-NAME>reliable</SHORT-NAME>
+          <RELIABILITY>RELIABLE</RELIABILITY>
+          <DURABILITY>TRANSIENT_LOCAL</DURABILITY>
+        </DDS-QOS-PROFILE>
+        <DDS-QOS-PROFILE>
+          <SHORT-NAME>sensor_high_reliability</SHORT-NAME>
+          <RELIABILITY>RELIABLE</RELIABILITY>
+          <DURABILITY>VOLATILE</DURABILITY>
+        </DDS-QOS-PROFILE>
+        <DDS-QOS-PROFILE>
+          <SHORT-NAME>control_realtime</SHORT-NAME>
+          <RELIABILITY>RELIABLE</RELIABILITY>
+        </DDS-QOS-PROFILE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

@@ -1,0 +1,123 @@
+# DDS Configuration Example
+# This is a sample DDS configuration for an automotive sensor fusion system
+
+system:
+  name: "ADAS_Sensor_Fusion"
+  version: "1.2.0"
+  description: "ADAS sensor fusion system with camera and radar"
+
+domains:
+  - id: 1
+    name: "PerceptionDomain"
+    participants:
+      - name: "CameraECU"
+        qos_profile: "sensor_high_reliability"
+        publishers:
+          - topic: "CameraObjectDetection"
+            type: "ObjectDetectionData"
+            qos:
+              reliability: RELIABLE
+              deadline:
+                sec: 0
+                nanosec: 33000000
+              history:
+                kind: KEEP_LAST
+                depth: 1
+          - topic: "CameraLaneDetection"
+            type: "LaneData"
+            qos:
+              reliability: BEST_EFFORT
+              history:
+                kind: KEEP_LAST
+                depth: 1
+        subscribers:
+          - topic: "FusionResult"
+            type: "FusionData"
+            qos:
+              reliability: RELIABLE
+
+      - name: "RadarECU"
+        publishers:
+          - topic: "RadarDetection"
+            type: "RadarData"
+            qos:
+              reliability: RELIABLE
+              history:
+                kind: KEEP_LAST
+                depth: 5
+
+  - id: 2
+    name: "ControlDomain"
+    participants:
+      - name: "PlanningECU"
+        qos_profile: "control_realtime"
+        subscribers:
+          - topic: "CameraObjectDetection"
+            type: "ObjectDetectionData"
+          - topic: "RadarDetection"
+            type: "RadarData"
+          - topic: "FusionResult"
+            type: "FusionData"
+        publishers:
+          - topic: "VehicleCommand"
+            type: "CommandData"
+            qos:
+              reliability: RELIABLE
+              deadline:
+                sec: 0
+                nanosec: 10000000
+
+transport:
+  kind: UDP
+  interface: "eth0"
+  multicast_address: "239.255.0.1"
+  port_base: 7400
+  ttl: 1
+
+tsn:
+  enabled: true
+  streams:
+    - name: "CameraStream"
+      priority: 7
+      bandwidth: 10000000
+      max_latency: 100000
+    - name: "ControlStream"
+      priority: 6
+      bandwidth: 5000000
+      max_latency: 50000
+
+qos_profiles:
+  default:
+    reliability: BEST_EFFORT
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+  reliable:
+    reliability: RELIABLE
+    durability: TRANSIENT_LOCAL
+    history:
+      kind: KEEP_LAST
+      depth: 10
+
+  sensor_high_reliability:
+    reliability: RELIABLE
+    durability: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 5
+    deadline:
+      sec: 0
+      nanosec: 50000000
+
+  control_realtime:
+    reliability: RELIABLE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+    deadline:
+      sec: 0
+      nanosec: 10000000
+    latency_budget:
+      sec: 0
+      nanosec: 100000
