@@ -1,6 +1,24 @@
 # 项目状态与待办
 
-> 最后更新: 2026-05-26
+> 最后更新: 2026-08-08 (archive/main-20260429 功能模块合并批次)
+
+---
+
+## 🔀 2026-08-08 归档功能合并记录 (master ← archive/main-20260429)
+
+| 模块 | 状态 | Commit | 验证 |
+|:-----|:----:|:-------|:-----|
+| 1. src/safety/saferam + ram (RAM ECC/SafeRAM, 31+ 文件) | ✅ 已合并 (上轮) | a4c1e027 | 编译通过 |
+| 2. src/diagnostics/dcm+dem+docan+doip+isotp (77+ 文件) | ✅ 已合并 | 9637da48 | 全部 .c 编译通过; isotp/doip 库 CMake 构建成功; test_io_control 32/32 通过; test_wdi 5/6 (1 项为 session/security 检查顺序与既有测试预期差异) |
+| 3. dds-config-tool C 工具链 (21 文件) | ✅ 已合并 | d1647320 | make 构建通过; validate minimal/automotive 正常; 适配 strings.h + Makefile 非 Linux 排除 inotify |
+| 4. src/autosar/classic + asw (51 文件) | ⛔ 不合并 | — | master bsw/services (bswm/com/ecum/nvm/memif/mcal-gpt) 及 src/asw 均为更新版本; 归档为旧版重复, 合并会回退质量主线 |
+| 5. tools/dds_config + web_gui (74 文件) | ✅ 已合并 | ae112667 | 35 个 .py 全部 py_compile 通过; CLI 正常; 修复 domain_tab.py 语法错误 |
+| 6. examples/adas_perception (10 文件) | ✅ 已合并 (保全) | cd2cb5fa | 依赖归档版 DDS API, master DDS 栈签名已演进, 需适配后编译; 未挂主构建 |
+| 7. src/platform/s32g3 + src/ros2_bridge (20 文件) | ✅ 已合并 (保全) | c2051bb1 | cache_manager/enet_driver/gptp_hw/rmw_type_support 0 错误; startup_s32g3 (ARM section) 需交叉编译; rmw_ethdds/security_bridge 依赖归档版 DDS QoS/SecOC API |
+| 8. src/platform/freertos (328 文件) | ⛔ 不合并 | — | 归档 V10.6.2 LTS (2023-11) < master third_party V11.1.0; 合并会回退内核版本; master 已有 arm_cm33/posix port |
+
+**合并方式**: git checkout archive/main-20260429 -- <paths> (两线无共同祖先, 未用 git merge)
+**质量主线保护**: 合并仅新增文件 + 最小适配 (include 路径/守卫/平台过滤), 未改动 master 既有模块逻辑
 
 ---
 
