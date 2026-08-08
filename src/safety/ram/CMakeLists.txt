@@ -43,7 +43,7 @@ if(CMAKE_C_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 
 # Tests
-if(BUILD_TESTS)
+if(BUILD_TESTING)
     enable_testing()
     
     # Collect test sources
@@ -58,7 +58,7 @@ if(BUILD_TESTS)
         
         target_link_libraries(test_ram_ecc
             eth_dds_safety_ram
-            unity
+            Unity
         )
         
         add_test(NAME ram_ecc_unit COMMAND test_ram_ecc)

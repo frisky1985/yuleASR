@@ -248,7 +248,7 @@ Std_ReturnType StackProtection_UnregisterStack(uint8_t stack_id)
 
 uint32_t StackProtection_GetCurrentSP(void)
 {
-    register uint32_t sp asm("sp");
+    register uint32_t sp asm("sp") = 0;
     return sp;
 }
 

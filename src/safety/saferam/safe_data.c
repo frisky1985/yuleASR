@@ -217,7 +217,7 @@ Std_ReturnType SafeData_ReadElement(
     SafeDataValidationType *result)
 {
     SafeDataValidationType local_result;
-    SafeDataMonitorType *monitor;
+    SafeDataMonitorType *monitor = NULL;
     
     if (!g_initialized || element == NULL || value == NULL) {
         return E_NOT_OK;
