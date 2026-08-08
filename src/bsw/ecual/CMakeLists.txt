@@ -14,6 +14,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/port/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/can/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/spi/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/i2c/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/fls/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/lin/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../mcal/uart/include
