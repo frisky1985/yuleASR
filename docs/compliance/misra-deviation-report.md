@@ -479,7 +479,7 @@ DP-XXX: [Rule] - [Short Name]
 |------|-----|
 | **偏差 ID** | DP-AUTOSAR-010 |
 | **规则** | misra-c2012-16.7 (Required) |
-| **范围** | `src/bsw/services/tcpip/src/TcpIp.c`、`src/bsw/services/xcp/src/_xcp_cmd_std_impl.c` |
+| **范围** | `src/bsw/services/tcpip/src/TcpIp.c`、`src/bsw/services/xcp/legacy/_xcp_cmd_std_impl.c` |
 | **当前违规数** | ~18 |
 | **策略** | ACCEPT（接受） |
 | **理由** | TcpIp.c 和 Xcp 命令处理中，switch 变量为枚举类型（如 `TcpIp_SocketStateType`、`Xcp_CmdIdType`），case 覆盖所有枚举值。MISRA Rule 16.7 要求 switch 变量类型必须拥有足够的 case（不包含隐式整数提升），但在 AUTOSAR 枚举类型宽度与底层 MCU 对齐的场景下，编译器确认枚举基数。枚举值集合封闭，新增枚举值会触发编译器 -Wswitch 警告，确保维护安全。 |

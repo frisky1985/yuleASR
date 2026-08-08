@@ -52,7 +52,8 @@ foreach(subdir ${SERVICES_SUBDIRS})
     # Filter out test files (_test.c, _Test.c)
     list(FILTER module_sources EXCLUDE REGEX ".*[_Tt]est\\.c$")
     
-    # Exclude unity-build _impl.c files (included by parent Csm.c via #include)
+    # Exclude legacy *_impl.c files (P2-6 2026-08-08: 已全部移至 <module>/legacy/,
+    # 此处 FILTER 作为防守保留, 防止误编译 unity-build 风格文件)
     list(FILTER module_sources EXCLUDE REGEX ".*_impl\\.c$")
     
     if(module_sources)

@@ -33,7 +33,8 @@ foreach(subdir ${MCAL_SUBDIRS})
     # Collect source files
     file(GLOB_RECURSE module_sources ${subdir}/src/*.c)
     
-    # Exclude unity-build _impl.c files (included by parent .c via #include)
+    # Exclude legacy *_impl.c files (P2-6 2026-08-08: 已全部移至 <module>/legacy/,
+    # 此处 FILTER 作为防守保留, 防止误编译 unity-build 风格文件)
     list(FILTER module_sources EXCLUDE REGEX ".*_impl\\.c$")
     
     if(module_sources)
