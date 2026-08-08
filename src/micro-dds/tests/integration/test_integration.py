@@ -1,68 +1,76 @@
 #!/usr/bin/env python3
-"""集成测试 - 验证dds-config-tool与micro-dds的协同工作"""
+"""集成测试 - 验证 dds_config 工具链 (tools/dds_config CLI) 与 micro-dds 的协同工作"""
 
 import sys
 import tempfile
 import subprocess
 from pathlib import Path
 
-def test_xml_config_generation():
-    """测试XML配置解析和代码生成"""
-    print("→ 测试XML配置解析和代码生成...")
+# P2-2 (2026-08-08): tools/dds-config-tool (Python 旧基线, CLI 损坏) 已删除,
+# 统一使用 tools/dds_config/dds_config_cli.py (Python CLI 唯一工具链)。
+DDS_CONFIG_CLI = str(Path(__file__).resolve().parents[4] / "tools" / "dds_config" / "dds_config_cli.py")
+
+
+def _run_generate(config_file, output_dir):
+    """调用 tools/dds_config CLI 生成代码, 返回 CompletedProcess"""
+    return subprocess.run(
+        [sys.executable, DDS_CONFIG_CLI, "generate",
+         str(config_file),
+         "-o", str(output_dir)],
+        capture_output=True,
+        text=True,
+    )
+
+def test_yaml_config_generation():
+    """测试YAML配置解析和代码生成 (tools/dds_config 支持 YAML/JSON, 不支持 XML)"""
+    print("→ 测试YAML配置解析和代码生成...")
     
-    xml_config = """<?xml version="1.0" encoding="UTF-8"?>
-<dds>
-    <domain_participant name="TestParticipant" domain_id="0">
-        <topic name="TestTopic" type_name="TestType">
-            <qos>
-                <reliability kind="RELIABLE" max_blocking_time_sec="1"/>
-                <durability kind="VOLATILE"/>
-                <history kind="KEEP_LAST" depth="10"/>
-                <ownership kind="SHARED"/>
-                <destination_order kind="BY_RECEPTION_TIMESTAMP"/>
-                <transport_priority value="0"/>
-            </qos>
-        </topic>
-    </domain_participant>
-</dds>"""
+    yaml_config = """\
+system:
+  name: "IntegrationTest"
+  version: "1.0.0"
+domains:
+  - id: 0
+    name: "TestDomain"
+    participants:
+      - name: "TestParticipant"
+        qos_profile: "default_qos"
+        publishers:
+          - topic: "TestTopic"
+            type: "TestType"
+            qos:
+              reliability: RELIABLE
+              durability: VOLATILE
+              history:
+                kind: KEEP_LAST
+                depth: 10
+"""
     
     with tempfile.TemporaryDirectory() as tmpdir:
-        config_file = Path(tmpdir) / "test_config.xml"
-        config_file.write_text(xml_config)
+        config_file = Path(tmpdir) / "test_config.yaml"
+        config_file.write_text(yaml_config)
         
         output_dir = Path(tmpdir) / "output"
         output_dir.mkdir()
         
         # 运行配置工具
-        result = subprocess.run(
-            [sys.executable, "-m", "dds_config_tool", 
-             str(config_file), 
-             "-o", str(output_dir),
-             "-p", "test"],
-            capture_output=True,
-            text=True
-        )
+        result = _run_generate(config_file, output_dir)
         
-        if result.returncode != 0:
-            print(f"  ✗ 失败: {result.stderr}")
-            return False
+        assert result.returncode == 0, f"dds_config generate 失败: {result.stderr}"
             
-        # 验证生成的文件
+        # 验证生成的文件 (tools/dds_config 输出 dds_config.h/.c + dds_qos_config.c)
         expected_files = [
-            "test_config.h",
-            "test_domain_config.c",
-            "test_topic_config.c",
-            "test_qos_config.c"
+            "dds_config.h",
+            "dds_config.c",
+            "dds_qos_config.c"
         ]
         
         for f in expected_files:
             file_path = output_dir / f
-            if not file_path.exists():
-                print(f"  ✗ 缺少文件: {f}")
-                return False
+            assert file_path.exists(), f"缺少文件: {f}"
             print(f"  ✓ 生成文件: {f}")
         
-        print("  ✓ XML配置测试通过")
+        print("  ✓ YAML配置测试通过")
         return True
 
 
@@ -71,28 +79,31 @@ def test_json_config_generation():
     print("→ 测试JSON配置解析和代码生成...")
     
     json_config = """{
-  "name": "IntegrationTest",
-  "version": "1.0.0",
-  "default_qos": {
-    "reliability": {"kind": "RELIABLE", "max_blocking_time_sec": 0, "max_blocking_time_nsec": 100000000},
-    "durability": {"kind": "TRANSIENT_LOCAL"},
-    "history": {"kind": "KEEP_LAST", "depth": 5},
-    "ownership": {"kind": "EXCLUSIVE", "strength": 10},
-    "destination_order": {"kind": "BY_SOURCE_TIMESTAMP"},
-    "transport_priority": {"value": 5}
+  "system": {
+    "name": "IntegrationTest",
+    "version": "1.0.0"
   },
-  "domain_participants": [
+  "domains": [
     {
-      "name": "JsonTestParticipant",
-      "domain_id": 1,
-      "topics": [
+      "id": 1,
+      "name": "JsonTestDomain",
+      "participants": [
         {
-          "name": "JsonTopic",
-          "type_name": "JsonType",
-          "qos": {
-            "reliability": {"kind": "RELIABLE"},
-            "durability": {"kind": "PERSISTENT"}
-          }
+          "name": "JsonTestParticipant",
+          "publishers": [
+            {
+              "topic": "JsonTopic",
+              "type": "JsonType",
+              "qos": {
+                "reliability": "RELIABLE",
+                "durability": "TRANSIENT_LOCAL",
+                "history": {
+                  "kind": "KEEP_LAST",
+                  "depth": 5
+                }
+              }
+            }
+          ]
         }
       ]
     }
@@ -106,27 +117,20 @@ def test_json_config_generation():
         output_dir = Path(tmpdir) / "output"
         output_dir.mkdir()
         
-        result = subprocess.run(
-            [sys.executable, "-m", "dds_config_tool",
-             str(config_file),
-             "-o", str(output_dir),
-             "-p", "jsontest"],
-            capture_output=True,
-            text=True
-        )
+        result = _run_generate(config_file, output_dir)
         
-        if result.returncode != 0:
-            print(f"  ✗ 失败: {result.stderr}")
-            return False
+        assert result.returncode == 0, f"dds_config generate 失败: {result.stderr}"
         
-        # 检查生成的文件内容
-        header_file = output_dir / "jsontest_config.h"
-        if header_file.exists():
-            content = header_file.read_text()
-            if "EXCLUSIVE_OWNERSHIP_QOS" in content:
-                print("  ✓ 高级QoS策略(所有权)正确生成")
-            if "BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS" in content:
-                print("  ✓ 高级QoS策略(目的排序)正确生成")
+        # 检查生成的文件内容 (QoS 策略生成在 dds_qos_config.c)
+        qos_file = output_dir / "dds_qos_config.c"
+        assert qos_file.exists(), "缺少 dds_qos_config.c"
+        content = qos_file.read_text()
+        # tools/dds_config 生成器输出含 QoS 常量/配置
+        assert "qos" in content.lower(), "dds_qos_config.c 缺少 QoS 配置"
+        if "RELIABLE" in content.upper():
+            print("  ✓ 高级QoS策略(可靠性)正确生成")
+        if "TRANSIENT_LOCAL" in content.upper():
+            print("  ✓ 高级QoS策略(持久性)正确生成")
         
         print("  ✓ JSON配置测试通过")
         return True
@@ -138,18 +142,24 @@ def test_qos_policy_compatibility():
     
     # 创建兼容的QoS配置
     compatible_config = """{
-  "name": "QosCompatibilityTest",
-  "domain_participants": [{
-    "name": "QosTest",
-    "domain_id": 0,
-    "topics": [{
-      "name": "QosTopic",
-      "type_name": "QosType",
-      "qos": {
-        "reliability": {"kind": "RELIABLE"},
-        "durability": {"kind": "TRANSIENT_LOCAL"},
-        "history": {"kind": "KEEP_LAST", "depth": 10}
-      }
+  "system": {
+    "name": "QosCompatibilityTest",
+    "version": "1.0.0"
+  },
+  "domains": [{
+    "id": 0,
+    "name": "QosDomain",
+    "participants": [{
+      "name": "QosTest",
+      "publishers": [{
+        "topic": "QosTopic",
+        "type": "QosType",
+        "qos": {
+          "reliability": "RELIABLE",
+          "durability": "TRANSIENT_LOCAL",
+          "history": {"kind": "KEEP_LAST", "depth": 10}
+        }
+      }]
     }]
   }]
 }"""
@@ -161,21 +171,13 @@ def test_qos_policy_compatibility():
         output_dir = Path(tmpdir) / "output"
         output_dir.mkdir()
         
-        result = subprocess.run(
-            [sys.executable, "-m", "dds_config_tool",
-             str(config_file),
-             "-o", str(output_dir),
-             "-p", "qos"],
-            capture_output=True,
-            text=True
-        )
+        result = _run_generate(config_file, output_dir)
         
-        if result.returncode == 0:
-            print("  ✓ QoS策略配置验证通过")
-            return True
-        else:
-            print(f"  ✗ 验证失败: {result.stderr}")
-            return False
+        assert result.returncode == 0, f"dds_config generate 失败: {result.stderr}"
+        header_file = output_dir / "dds_config.h"
+        assert header_file.exists(), "缺少 dds_config.h"
+        print("  ✓ QoS策略配置验证通过")
+        return True
 
 
 def main():
@@ -186,7 +188,7 @@ def main():
     
     results = []
     
-    results.append(("XML配置生成", test_xml_config_generation()))
+    results.append(("YAML配置生成", test_yaml_config_generation()))
     results.append(("JSON配置生成", test_json_config_generation()))
     results.append(("QoS策略兼容性", test_qos_policy_compatibility()))
     

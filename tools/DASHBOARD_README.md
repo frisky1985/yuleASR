@@ -36,7 +36,7 @@ static/
 
 | 工具 | 路径 | 功能 |
 |:-----|:-----|:-----|
-| DDS Config | `tools/dds-config-tool/` | DDS 通信配置生成 |
+| DDS Config | `tools/dds_config/` (Python CLI) + `dds-config-tool/` (C 工具链) | DDS 通信配置生成 |
 | DoIP Configurator | `tools/doip_configurator/gui/` | DoIP 诊断配置 |
 | UDS Configurator | `tools/uds_configurator/gui/` | UDS 诊断服务配置 |
 | DTC Configurator | `tools/dtc_config/gui/` | DTC 故障码配置 |

@@ -238,8 +238,10 @@ bash tools/dtc_config/dtc-tool.sh --input dtc_config.csv
 # RTE代码生成器
 python3 tools/rte-generator/rte_generator.py --config config/rte_cfg.json --output src/rte/
 
-# DDS配置工具
-python3 tools/dds-config-tool/ --help
+# DDS配置工具 (唯一工具链: tools/dds_config, 2026-08-08 P2-2 收敛)
+python3 tools/dds_config/dds_config_cli.py --help
+# 用法: validate <yaml/json> / generate <yaml/json> -o <outdir> / convert --yaml2arxml <in> <out>
+# C 工具链 (根目录 dds-config-tool/): make && make test (工具链详见 dds-config-tool/README)
 ```
 
 ### 项目目录速览
