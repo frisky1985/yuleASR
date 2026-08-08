@@ -48,6 +48,7 @@
 #define UART_E_PARAM_DATABITS       0x05u   /* 无效数据位 */
 #define UART_E_PARAM_STOPBITS       0x06u   /* 无效停止位 */
 #define UART_E_PARAM_PARITY         0x07u   /* 无效校验 */
+#define UART_E_PARAM_LENGTH         0x08u   /* 无效长度 */
 #define UART_E_UNINIT               0x10u   /* 驱动未初始化 */
 #define UART_E_ALREADY_INITIALIZED  0x11u   /* 驱动已初始化 */
 #define UART_E_TX_BUSY              0x20u   /* 发送忙 */

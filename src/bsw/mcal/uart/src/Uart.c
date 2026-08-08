@@ -279,12 +279,11 @@ void Uart_DeInit(void)
 static void Uart_HwInit(Uart_ChannelType Channel)
 {
     const Uart_ChannelConfigType* ChannelConfig = &Uart_ConfigPtr->ChannelConfig[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     uint32 regVal;
     
     /* 软件复位 */
-    *(base + (UART_UCR2_OFFSET / 4U)) = 0x0;
-    while ((*(base + (UART_UCR2_OFFSET / 4U)) & UCR2_SRST) != 0U){ ; }
+    Uart_WriteReg(Channel, UART_UCR2_OFFSET, 0x0);
+    while ((Uart_ReadReg(Channel, UART_UCR2_OFFSET) & UCR2_SRST) != 0U){ ; }
     
     /* 配置UCR1 */
     regVal = UCR1_UARTEN;
@@ -294,7 +293,7 @@ static void Uart_HwInit(Uart_ChannelType Channel)
     if (ChannelConfig->OpMode == UART_MODE_INTERRUPT) {
         regVal |= (UCR1_TXMPTYEN | UCR1_RRDYEN);
     }
-    *(base + (UART_UCR1_OFFSET / 4U)) = regVal;
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, regVal);
     
     /* 配置UCR2 */
     regVal = UCR2_SRST | UCR2_RXEN | UCR2_TXEN;
@@ -325,27 +324,27 @@ static void Uart_HwInit(Uart_ChannelType Channel)
         }
     }
     
-    *(base + (UART_UCR2_OFFSET / 4U)) = regVal;
+    Uart_WriteReg(Channel, UART_UCR2_OFFSET, regVal);
     
     /* 配置UCR3 */
     regVal = UCR3_RXDMUXSEL | UCR3_ADNIMP;
-    *(base + (UART_UCR3_OFFSET / 4U)) = regVal;
+    Uart_WriteReg(Channel, UART_UCR3_OFFSET, regVal);
     
     /* 配置UCR4 */
     regVal = 0;
     if (ChannelConfig->OpMode == UART_MODE_INTERRUPT) {
         regVal |= (UCR4_DREN | UCR4_OREN);
     }
-    *(base + (UART_UCR4_OFFSET / 4U)) = regVal;
+    Uart_WriteReg(Channel, UART_UCR4_OFFSET, regVal);
     
     /* 配置FIFO */
     if (ChannelConfig->FifoMode == UART_FIFO_ENABLED) {
         regVal = ((ChannelConfig->RxFifoThreshold << UFCR_RXTL_SHIFT) |
                   (UART_RFDIV_1 << UFCR_RFDIV_SHIFT) |
                   (ChannelConfig->TxFifoThreshold << UFCR_TXTL_SHIFT));
-        *(base + (UART_UFCR_OFFSET / 4U)) = regVal;
+        Uart_WriteReg(Channel, UART_UFCR_OFFSET, regVal);
     } else {
-        *(base + (UART_UFCR_OFFSET / 4U)) = (UART_RFDIV_1 << UFCR_RFDIV_SHIFT);
+        Uart_WriteReg(Channel, UART_UFCR_OFFSET, (UART_RFDIV_1 << UFCR_RFDIV_SHIFT));
     }
     
     /* 设置波特率 */
@@ -357,11 +356,10 @@ static void Uart_HwInit(Uart_ChannelType Channel)
  */
 static void Uart_HwDeInit(Uart_ChannelType Channel)
 {
-    volatile uint32* base = Uart_BaseAddr[Channel];
     
     /* 禁用UART */
-    *(base + (UART_UCR1_OFFSET / 4U)) = 0;
-    *(base + (UART_UCR2_OFFSET / 4U)) = 0;
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, 0);
+    Uart_WriteReg(Channel, UART_UCR2_OFFSET, 0);
 }
 
 /**
@@ -369,7 +367,6 @@ static void Uart_HwDeInit(Uart_ChannelType Channel)
  */
 static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate)
 {
-    volatile uint32* base = Uart_BaseAddr[Channel];
     uint32 refClock = UART_REF_CLOCK_HZ;
     uint32 div;
     uint32 bfDiv;
@@ -384,8 +381,8 @@ static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate)
     /* UBMR = 参考时钟 / (16 * 分额) - 1 */
     bmDiv = (refClock / div / 16U) - 1U;
     
-    *(base + (UART_UBIR_OFFSET / 4U)) = bfDiv;
-    *(base + (UART_UBMR_OFFSET / 4U)) = bmDiv;
+    Uart_WriteReg(Channel, UART_UBIR_OFFSET, bfDiv);
+    Uart_WriteReg(Channel, UART_UBMR_OFFSET, bmDiv);
 }
 
 
@@ -405,9 +402,18 @@ Std_ReturnType Uart_Send(
     UART_VALIDATE_CHANNEL(Channel, UART_SERVICE_ID_SEND);
     UART_VALIDATE_POINTER(Data, UART_SERVICE_ID_SEND);
     UART_VALIDATE_INITIALIZED(UART_SERVICE_ID_SEND);
+
+    /* Zero-length transmission is a parameter error (T2: unit-test
+     * contract — reject before touching channel state). */
+    if (Length == 0U) {
+        #if (UART_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(UART_MODULE_ID, UART_INSTANCE_ID,
+                        UART_SERVICE_ID_SEND, UART_E_PARAM_LENGTH);
+        #endif
+        return E_NOT_OK;
+    }
     
     const Uart_ChannelConfigType* ChannelConfig = &Uart_ConfigPtr->ChannelConfig[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
     uint32 i;
     uint32 startTime;
@@ -438,7 +444,7 @@ Std_ReturnType Uart_Send(
     
     for (i = 0; i < Length; i++) {
         /* 等待TX FIFO可用 */
-        while ((*(base + (UART_USR1_OFFSET / 4U)) & USR1_TRDY) == 0U ) {
+        while ((Uart_ReadReg(Channel, UART_USR1_OFFSET) & USR1_TRDY) == 0U ) {
             if (Uart_GetElapsedTime(startTime) > ChannelConfig->TxTimeout) {
                 state->TxBuffer.Result = UART_RESULT_TIMEOUT;
                 state->TxStatus = UART_TX_ERROR;
@@ -449,12 +455,12 @@ Std_ReturnType Uart_Send(
         }
         
         /* 写入数据 */
-        *(base + (UART_UTXD_OFFSET / 4U)) = Data[i];
+        Uart_WriteReg(Channel, UART_UTXD_OFFSET, Data[i]);
         state->TxBuffer.Transferred++;
     }
     
     /* 等待传输完成 */
-    while ((*(base + (UART_USR2_OFFSET / 4U)) & USR2_TXDC) == 0U ) {
+    while ((Uart_ReadReg(Channel, UART_USR2_OFFSET) & USR2_TXDC) == 0U ) {
         if (Uart_GetElapsedTime(startTime) > ChannelConfig->TxTimeout) {
             state->TxBuffer.Result = UART_RESULT_TIMEOUT;
             state->TxStatus = UART_TX_ERROR;
@@ -555,7 +561,6 @@ Std_ReturnType Uart_SendInterrupt(
     UART_VALIDATE_INITIALIZED(UART_SERVICE_ID_SEND);
     
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     
     /* 检查通道状态 */
     if ((state->Status == UART_STATE_TX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
@@ -576,10 +581,10 @@ Std_ReturnType Uart_SendInterrupt(
     state->TxStartTime = Uart_GetCurrentTime();
     
     /* 清除之前的中断标志 */
-    *(base + (UART_USR1_OFFSET / 4U)) |= USR1_TRDY;
+    Uart_WriteReg(Channel, UART_USR1_OFFSET, Uart_ReadReg(Channel, UART_USR1_OFFSET) | USR1_TRDY);
     
     /* 使能发送中断 */
-    *(base + (UART_UCR1_OFFSET / 4U)) |= UCR1_TXMPTYEN;
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) | UCR1_TXMPTYEN);
     
     return E_OK;
 }
@@ -598,7 +603,6 @@ Std_ReturnType Uart_Receive(
     UART_VALIDATE_INITIALIZED(UART_SERVICE_ID_RECEIVE);
     
     const Uart_ChannelConfigType* ChannelConfig = &Uart_ConfigPtr->ChannelConfig[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
     uint32 i;
     uint32 startTime;
@@ -629,7 +633,7 @@ Std_ReturnType Uart_Receive(
     
     for (i = 0; i < Length; i++) {
         /* 等待RX FIFO就绪 */
-        while ((*(base + (UART_USR2_OFFSET / 4U)) & USR2_RDR) == 0U ) {
+        while ((Uart_ReadReg(Channel, UART_USR2_OFFSET) & USR2_RDR) == 0U ) {
             if (Uart_GetElapsedTime(startTime) > ChannelConfig->RxTimeout) {
                 state->RxBuffer.Result = UART_RESULT_TIMEOUT;
                 state->RxStatus = UART_RX_ERROR;
@@ -639,20 +643,20 @@ Std_ReturnType Uart_Receive(
             }
             
             /* 检查错误 */
-            regVal = *(base + (UART_USR2_OFFSET / 4U));
+            regVal = Uart_ReadReg(Channel, UART_USR2_OFFSET);
             if ((regVal & USR2_ORE) != 0U) {
                 state->ErrorCode = UART_E_OVERRUN;
                 state->RxBuffer.Result = UART_RESULT_ERROR;
                 state->RxStatus = UART_RX_ERROR;
                 state->Status = (state->Status == UART_STATE_TX_RX_BUSY) ? 
                                 UART_STATE_TX_BUSY : UART_STATE_READY;
-                *(base + (UART_USR2_OFFSET / 4U)) |= USR2_ORE; /* 清除标志 */
+                Uart_WriteReg(Channel, UART_USR2_OFFSET, Uart_ReadReg(Channel, UART_USR2_OFFSET) | USR2_ORE); /* 清除标志 */
                 return E_NOT_OK;
             }
         }
         
         /* 读取数据 */
-        Buffer[i] = (uint8)(*(base + (UART_URXD_OFFSET / 4U)));
+        Buffer[i] = (uint8)(Uart_ReadReg(Channel, UART_URXD_OFFSET));
         state->RxBuffer.Transferred++;
     }
     
@@ -747,7 +751,6 @@ Std_ReturnType Uart_ReceiveInterrupt(
     UART_VALIDATE_INITIALIZED(UART_SERVICE_ID_RECEIVE);
     
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     
     /* 检查通道状态 */
     if ((state->Status == UART_STATE_RX_BUSY) || (state->Status == UART_STATE_TX_RX_BUSY)) {
@@ -768,10 +771,10 @@ Std_ReturnType Uart_ReceiveInterrupt(
     state->RxStartTime = Uart_GetCurrentTime();
     
     /* 清除之前的中断标志 */
-    *(base + (UART_USR1_OFFSET / 4U)) |= USR1_RRDY;
+    Uart_WriteReg(Channel, UART_USR1_OFFSET, Uart_ReadReg(Channel, UART_USR1_OFFSET) | USR1_RRDY);
     
     /* 使能接收中断 */
-    *(base + (UART_UCR1_OFFSET / 4U)) |= UCR1_RRDYEN;
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) | UCR1_RRDYEN);
     
     return E_OK;
 }
@@ -848,8 +851,7 @@ void Uart_EnableInterrupt(Uart_ChannelType Channel)
         return;
     }
     
-    volatile uint32* base = Uart_BaseAddr[Channel];
-    *(base + (UART_UCR1_OFFSET / 4U)) |= (UCR1_TXMPTYEN | UCR1_RRDYEN);
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) | (UCR1_TXMPTYEN | UCR1_RRDYEN));
 }
 
 /**
@@ -861,8 +863,7 @@ void Uart_DisableInterrupt(Uart_ChannelType Channel)
         return;
     }
     
-    volatile uint32* base = Uart_BaseAddr[Channel];
-    *(base + (UART_UCR1_OFFSET / 4U)) &= ~(UCR1_TXMPTYEN | UCR1_RRDYEN);
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) & ~((UCR1_TXMPTYEN | UCR1_RRDYEN)));
 }
 
 /**
@@ -875,10 +876,9 @@ void Uart_ClearFIFO(Uart_ChannelType Channel)
     }
     
     #if (UART_FIFO_SUPPORT == STD_ON)
-    volatile uint32* base = Uart_BaseAddr[Channel];
-    uint32 ufcr = *(base + (UART_UFCR_OFFSET / 4U));
+    uint32 ufcr = Uart_ReadReg(Channel, UART_UFCR_OFFSET);
     ufcr |= (1u << 15) | (1u << 14);
-    *(base + (UART_UFCR_OFFSET / 4U)) = ufcr;
+    Uart_WriteReg(Channel, UART_UFCR_OFFSET, ufcr);
     #endif
 }
 
@@ -891,9 +891,8 @@ void Uart_IsrHandler(Uart_ChannelType Channel)
         return;
     }
     
-    volatile uint32* base = Uart_BaseAddr[Channel];
-    uint32 usr1 = *(base + (UART_USR1_OFFSET / 4U));
-    uint32 usr2 = *(base + (UART_USR2_OFFSET / 4U));
+    uint32 usr1 = Uart_ReadReg(Channel, UART_USR1_OFFSET);
+    uint32 usr2 = Uart_ReadReg(Channel, UART_USR2_OFFSET);
     
     if ((usr1 & USR1_RRDY) != 0U) {
         Uart_ProcessRxInterrupt(Channel);
@@ -907,8 +906,8 @@ void Uart_IsrHandler(Uart_ChannelType Channel)
         Uart_ProcessError(Channel);
     }
     
-    *(base + (UART_USR1_OFFSET / 4U)) = usr1;
-    *(base + (UART_USR2_OFFSET / 4U)) = usr2;
+    Uart_WriteReg(Channel, UART_USR1_OFFSET, usr1);
+    Uart_WriteReg(Channel, UART_USR2_OFFSET, usr2);
 }
 
 /**
@@ -958,9 +957,8 @@ void Uart_Abort(Uart_ChannelType Channel)
     }
     
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     
-    *(base + (UART_UCR1_OFFSET / 4U)) &= ~(UCR1_TXMPTYEN | UCR1_RRDYEN);
+    Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) & ~((UCR1_TXMPTYEN | UCR1_RRDYEN)));
     
     #if (UART_DMA_SUPPORT == STD_ON)
     if ((state->DmaActive) != 0U) {
@@ -997,12 +995,12 @@ void Uart_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 /* 辅助函数 */
 static inline void Uart_WriteReg(Uart_ChannelType Channel, uint32 Offset, uint32 Value)
 {
-    *(Uart_BaseAddr[Channel] + (Offset / 4U)) = Value;
+    REG_WRITE32((uintptr_t)Uart_BaseAddr[Channel] + (uintptr_t)Offset, Value);
 }
 
 static inline uint32 Uart_ReadReg(Uart_ChannelType Channel, uint32 Offset)
 {
-    return *(Uart_BaseAddr[Channel] + (Offset / 4U));
+    return REG_READ32((uintptr_t)Uart_BaseAddr[Channel] + (uintptr_t)Offset);
 }
 
 static uint32 Uart_GetCurrentTime(void)
@@ -1019,48 +1017,45 @@ static uint32 Uart_GetElapsedTime(uint32 StartTime)
 static void Uart_ProcessTxInterrupt(Uart_ChannelType Channel)
 {
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     
     if (state->TxBuffer.Transferred >= state->TxBuffer.Length) {
         state->TxStatus = UART_TX_COMPLETE;
         state->TxBuffer.Result = UART_RESULT_OK;
         state->Status = (state->Status == UART_STATE_TX_RX_BUSY) ? UART_STATE_RX_BUSY : UART_STATE_READY;
-        *(base + (UART_UCR1_OFFSET / 4U)) &= ~UCR1_TXMPTYEN;
+        Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) & ~(UCR1_TXMPTYEN));
         if (Uart_TxNotification[Channel] != NULL_PTR) {
             Uart_TxNotification[Channel]();
         }
         return;
     }
     
-    *(base + (UART_UTXD_OFFSET / 4U)) = state->TxBuffer.Buffer[state->TxBuffer.Transferred];
+    Uart_WriteReg(Channel, UART_UTXD_OFFSET, state->TxBuffer.Buffer[state->TxBuffer.Transferred]);
     state->TxBuffer.Transferred++;
 }
 
 static void Uart_ProcessRxInterrupt(Uart_ChannelType Channel)
 {
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
     
     if (state->RxBuffer.Transferred >= state->RxBuffer.Length) {
         state->RxStatus = UART_RX_COMPLETE;
         state->RxBuffer.Result = UART_RESULT_OK;
         state->Status = (state->Status == UART_STATE_TX_RX_BUSY) ? UART_STATE_TX_BUSY : UART_STATE_READY;
-        *(base + (UART_UCR1_OFFSET / 4U)) &= ~UCR1_RRDYEN;
+        Uart_WriteReg(Channel, UART_UCR1_OFFSET, Uart_ReadReg(Channel, UART_UCR1_OFFSET) & ~(UCR1_RRDYEN));
         if (Uart_RxNotification[Channel] != NULL_PTR) {
             Uart_RxNotification[Channel]();
         }
         return;
     }
     
-    state->RxBuffer.Buffer[state->RxBuffer.Transferred] = (uint8)(*(base + (UART_URXD_OFFSET / 4U)));
+    state->RxBuffer.Buffer[state->RxBuffer.Transferred] = (uint8)(Uart_ReadReg(Channel, UART_URXD_OFFSET));
     state->RxBuffer.Transferred++;
 }
 
 static void Uart_ProcessError(Uart_ChannelType Channel)
 {
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
-    volatile uint32* base = Uart_BaseAddr[Channel];
-    uint32 usr2 = *(base + (UART_USR2_OFFSET / 4U));
+    uint32 usr2 = Uart_ReadReg(Channel, UART_USR2_OFFSET);
     
     if ((usr2 & USR2_ORE) != 0U) { state->ErrorCode = UART_E_OVERRUN; }
     else if ((usr2 & USR2_BRCD) != 0U) { state->ErrorCode = UART_E_BREAK; }
@@ -1069,5 +1064,5 @@ static void Uart_ProcessError(Uart_ChannelType Channel)
     if (Uart_ErrorNotification[Channel] != NULL_PTR) {
         Uart_ErrorNotification[Channel](state->ErrorCode);
     }
-    *(base + (UART_USR2_OFFSET / 4U)) |= (USR2_ORE | USR2_BRCD);
+    Uart_WriteReg(Channel, UART_USR2_OFFSET, Uart_ReadReg(Channel, UART_USR2_OFFSET) | (USR2_ORE | USR2_BRCD));
 }

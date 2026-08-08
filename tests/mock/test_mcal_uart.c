@@ -16,6 +16,20 @@
 #define UART_MAX_CHANNELS 4U
 #endif
 
+/* MockHAL base address for UART1 — must match Uart.c's UART1_BASE_ADDR in
+ * this build (S32K312 path: S32K312_LPUART0_BASE, see platform/s32k312).
+ * Tech-debt T2: the driver polls USR1_TRDY / USR2_TXDC / USR2_RDR status
+ * bits; without mock defaults those reads return 0 and the polling loops
+ * spin forever (test hung), and raw MMIO pointer access previously
+ * segfaulted before MockHAL redirection existed. */
+#define UART_MOCK_BASE                  0x40180000UL
+#define UART_MOCK_USR1_OFFSET           0x94U  /* UART_USR1_OFFSET */
+#define UART_MOCK_USR2_OFFSET           0x98U  /* UART_USR2_OFFSET */
+/* Status bits (mirror Uart.c defines): TRDY=1<<13, RRDY=1<<9,
+ * TXDC=1<<3, RDR=1<<0 */
+#define UART_MOCK_USR1_READY            ((1UL << 13U) | (1UL << 9U))
+#define UART_MOCK_USR2_READY            ((1UL << 3U) | (1UL << 0U))
+
 static Uart_ConfigType g_test_cfg;
 static Uart_ChannelConfigType g_channel_cfg[UART_MAX_CHANNELS];
 
@@ -29,10 +43,18 @@ static void uart_reset_module(void)
 void setUp(void)
 {
     mock_hal_reset();
+    /* Preset the UART status registers so the driver's polling loops
+     * (TX FIFO ready / TX done / RX data ready) pass immediately. */
+    mock_hal_set_default(UART_MOCK_BASE + UART_MOCK_USR1_OFFSET, UART_MOCK_USR1_READY);
+    mock_hal_set_default(UART_MOCK_BASE + UART_MOCK_USR2_OFFSET, UART_MOCK_USR2_READY);
     memset(&g_test_cfg, 0, sizeof(g_test_cfg));
     memset(g_channel_cfg, 0, sizeof(g_channel_cfg));
     g_test_cfg.ChannelCount = 1;
     g_test_cfg.ChannelConfig = g_channel_cfg;
+    /* Non-zero timeouts: the mock GPT does not advance time, so polls
+     * must pass on the preset status bits; timeouts are a safety net. */
+    g_channel_cfg[0].TxTimeout = 100U;
+    g_channel_cfg[0].RxTimeout = 100U;
     uart_reset_module();
 }
 void tearDown(void) {}
