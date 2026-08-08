@@ -28,12 +28,14 @@ endif()
 set(CMAKE_C_COMPILER "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-gcc" CACHE FILEPATH "C Compiler")
 set(CMAKE_CXX_COMPILER "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-g++" CACHE FILEPATH "C++ Compiler")
 set(CMAKE_ASM_COMPILER "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-gcc" CACHE FILEPATH "ASM Compiler")
-set(CMAKE_AR "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-ar" CACHE FILEPATH "Archiver")
-set(CMAKE_RANLIB "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-ranlib" CACHE FILEPATH "Ranlib")
+# Use gcc-ar/gcc-ranlib/gcc-nm: Release 构建启用 -flto (PlatformConfig.cmake)，
+# 普通 ar/ranlib 无法索引 LTO 对象 (228 条 "plugin needed to handle lto object"，库 nm 0 符号)
+set(CMAKE_AR "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-gcc-ar" CACHE FILEPATH "Archiver")
+set(CMAKE_RANLIB "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-gcc-ranlib" CACHE FILEPATH "Ranlib")
 set(CMAKE_OBJCOPY "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-objcopy" CACHE FILEPATH "Objcopy")
 set(CMAKE_OBJDUMP "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-objdump" CACHE FILEPATH "Objdump")
 set(CMAKE_SIZE "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-size" CACHE FILEPATH "Size")
-set(CMAKE_NM "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-nm" CACHE FILEPATH "NM")
+set(CMAKE_NM "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-gcc-nm" CACHE FILEPATH "NM")
 set(CMAKE_STRIP "${ARM_GCC_BIN_PATH}/${TARGET_TRIPLE}-strip" CACHE FILEPATH "Strip")
 
 # Don't run linker on compiler check
