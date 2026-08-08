@@ -1,0 +1,479 @@
+# DDS Configuration Schema
+# Defines the structure and validation rules for DDS configuration files
+# Supports YAML and JSON formats
+
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "https://example.org/dds-config-schema"
+title: "DDS Configuration"
+description: "Configuration schema for DDS middleware"
+type: object
+required:
+  - version
+  - system
+additionalProperties: false
+
+properties:
+  # Schema version
+  version:
+    type: string
+    description: "Configuration schema version"
+    pattern: "^\\d+\\.\\d+\\.\\d+$"
+    default: "1.0.0"
+
+  # System metadata
+  system:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
+        description: "System name"
+        maxLength: 256
+      description:
+        type: string
+        description: "System description"
+        maxLength: 1024
+      version:
+        type: string
+        description: "System version"
+        pattern: "^\\d+\\.\\d+\\.\\d+(-[a-zA-Z0-9]+)?$"
+    additionalProperties: false
+
+  # Domain configurations
+  domains:
+    type: array
+    description: "DDS domain configurations"
+    items:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          description: "Domain ID (0-230)"
+          minimum: 0
+          maximum: 230
+        name:
+          type: string
+          description: "Domain name"
+          maxLength: 256
+        description:
+          type: string
+          description: "Domain description"
+          maxLength: 512
+        discovery:
+          type: object
+          description: "Discovery configuration"
+          properties:
+            enabled:
+              type: boolean
+              default: true
+            protocol:
+              type: string
+              enum: [UDPv4, UDPv6, SHMEM, TCPv4, TCPv6]
+              default: UDPv4
+            initial_peers:
+              type: array
+              items:
+                type: string
+                description: "Initial peer addresses"
+            lease_duration:
+              type: string
+              description: "Participant lease duration"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "30s"
+            liveliness_check_interval:
+              type: string
+              description: "Liveliness check interval"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "1s"
+        transport:
+          type: object
+          description: "Transport configuration"
+          properties:
+            unicast:
+              type: array
+              items:
+                type: string
+                description: "Unicast addresses"
+            multicast:
+              type: boolean
+              default: false
+            multicast_address:
+              type: string
+              description: "Multicast group address"
+              format: ipv4
+        security:
+          type: object
+          description: "Security configuration"
+          properties:
+            enabled:
+              type: boolean
+              default: false
+            authentication:
+              type: object
+              properties:
+                plugin:
+                  type: string
+                  enum: [DDS:Auth:PKI-DH, DDS:Auth:PSK]
+                identity_ca:
+                  type: string
+                  description: "Identity CA certificate file"
+                identity_certificate:
+                  type: string
+                  description: "Identity certificate file"
+                identity_crl:
+                  type: string
+                  description: "Certificate revocation list file"
+                private_key:
+                  type: string
+                  description: "Private key file"
+            access_control:
+              type: object
+              properties:
+                plugin:
+                  type: string
+                  enum: [DDS:Access:Permissions, DDS:Access:None]
+                permissions_ca:
+                  type: string
+                  description: "Permissions CA certificate file"
+                governance:
+                  type: string
+                  description: "Governance document file"
+                permissions:
+                  type: string
+                  description: "Permissions document file"
+            encryption:
+              type: object
+              properties:
+                plugin:
+                  type: string
+                  enum: [DDS:Crypto:AES-GCM-GMAC, DDS:Crypto:None]
+                encrypt_rtps:
+                  type: boolean
+                  default: true
+                encrypt_payload:
+                  type: boolean
+                  default: true
+
+  # Topic configurations
+  topics:
+    type: array
+    description: "Topic configurations"
+    items:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          description: "Topic name"
+          maxLength: 256
+          pattern: "^[a-zA-Z_][a-zA-Z0-9_]*$"
+        type:
+          type: string
+          description: "Data type name"
+          maxLength: 256
+        domain_id:
+          type: integer
+          description: "Domain ID"
+          minimum: 0
+          maximum: 230
+        qos_profile:
+          type: string
+          description: "QoS profile name"
+          maxLength: 256
+        partitions:
+          type: array
+          items:
+            type: string
+            maxLength: 256
+        filters:
+          type: object
+          description: "Content/topic filters"
+          properties:
+            content_filter:
+              type: string
+              description: "Content filter expression"
+            time_based_filter:
+              type: string
+              description: "Minimum separation between samples"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+
+  # QoS Profile configurations
+  qos_profiles:
+    type: array
+    description: "QoS profile definitions"
+    items:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: "QoS profile name"
+          maxLength: 256
+        description:
+          type: string
+          description: "Profile description"
+          maxLength: 512
+        base_profile:
+          type: string
+          description: "Base profile to inherit from"
+          maxLength: 256
+        # Reliability QoS
+        reliability:
+          type: object
+          properties:
+            kind:
+              type: string
+              enum: [BEST_EFFORT, RELIABLE]
+              default: BEST_EFFORT
+            max_blocking_time:
+              type: string
+              description: "Max blocking time for reliable writes"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "100ms"
+        # Durability QoS
+        durability:
+          type: object
+          properties:
+            kind:
+              type: string
+              enum: [VOLATILE, TRANSIENT_LOCAL, TRANSIENT, PERSISTENT]
+              default: VOLATILE
+            service_cleanup_delay:
+              type: string
+              description: "Delay before cleanup of durable data"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "0s"
+        # History QoS
+        history:
+          type: object
+          properties:
+            kind:
+              type: string
+              enum: [KEEP_LAST, KEEP_ALL]
+              default: KEEP_LAST
+            depth:
+              type: integer
+              description: "History depth (for KEEP_LAST)"
+              minimum: 1
+              maximum: 65535
+              default: 1
+        # Deadline QoS
+        deadline:
+          type: object
+          properties:
+            period:
+              type: string
+              description: "Deadline period"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "INFINITE"
+        # Latency Budget QoS
+        latency_budget:
+          type: object
+          properties:
+            duration:
+              type: string
+              description: "Allowed latency"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "0s"
+        # Lifespan QoS
+        lifespan:
+          type: object
+          properties:
+            duration:
+              type: string
+              description: "Maximum sample lifespan"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "INFINITE"
+        # Ownership QoS
+        ownership:
+          type: object
+          properties:
+            kind:
+              type: string
+              enum: [SHARED, EXCLUSIVE]
+              default: SHARED
+        # Ownership Strength QoS
+        ownership_strength:
+          type: object
+          properties:
+            value:
+              type: integer
+              description: "Ownership strength value"
+              minimum: 0
+              default: 0
+        # Liveliness QoS
+        liveliness:
+          type: object
+          properties:
+            kind:
+              type: string
+              enum: [AUTOMATIC, MANUAL_BY_PARTICIPANT, MANUAL_BY_TOPIC]
+              default: AUTOMATIC
+            lease_duration:
+              type: string
+              description: "Liveliness lease duration"
+              pattern: "^\\d+(ns|us|ms|s|m|h)$"
+              default: "INFINITE"
+        # Destination Order QoS
+        destination_order:
+          type: object
+          properties:
+            kind:
+              type: string
+              enum: [BY_RECEPTION_TIMESTAMP, BY_SOURCE_TIMESTAMP]
+              default: BY_RECEPTION_TIMESTAMP
+        # Resource Limits QoS
+        resource_limits:
+          type: object
+          properties:
+            max_samples:
+              type: integer
+              description: "Maximum samples per instance"
+              minimum: -1
+              default: -1
+            max_instances:
+              type: integer
+              description: "Maximum number of instances"
+              minimum: -1
+              default: -1
+            max_samples_per_instance:
+              type: integer
+              description: "Maximum samples per instance"
+              minimum: -1
+              default: -1
+        # Transport Priority QoS
+        transport_priority:
+          type: object
+          properties:
+            value:
+              type: integer
+              description: "Transport priority value"
+              minimum: 0
+              default: 0
+
+  # Participant configurations
+  participants:
+    type: array
+    description: "Domain participant configurations"
+    items:
+      type: object
+      required:
+        - name
+        - domain_id
+      properties:
+        name:
+          type: string
+          description: "Participant name"
+          maxLength: 256
+        domain_id:
+          type: integer
+          description: "Domain ID"
+          minimum: 0
+          maximum: 230
+        qos_profile:
+          type: string
+          description: "QoS profile name"
+        entity_factory:
+          type: object
+          description: "Entity factory settings"
+          properties:
+            autoenable_created_entities:
+              type: boolean
+              default: true
+
+  # Type definitions (IDL-like)
+  types:
+    type: array
+    description: "Data type definitions"
+    items:
+      type: object
+      required:
+        - name
+        - kind
+      properties:
+        name:
+          type: string
+          description: "Type name"
+          maxLength: 256
+        kind:
+          type: string
+          enum: [struct, union, enum, typedef, module]
+        fields:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - type
+            properties:
+              name:
+                type: string
+              type:
+                type: string
+              array_bounds:
+                type: array
+                items:
+                  type: integer
+              key:
+                type: boolean
+                default: false
+              optional:
+                type: boolean
+                default: false
+
+  # Logging configuration
+  logging:
+    type: object
+    description: "Logging configuration"
+    properties:
+      enabled:
+        type: boolean
+        default: true
+      level:
+        type: string
+        enum: [FATAL, ERROR, WARN, INFO, DEBUG, TRACE]
+        default: INFO
+      output:
+        type: string
+        enum: [stdout, stderr, file, syslog]
+        default: stdout
+      file:
+        type: string
+        description: "Log file path (when output is file)"
+      categories:
+        type: array
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            level:
+              type: string
+              enum: [FATAL, ERROR, WARN, INFO, DEBUG, TRACE]
+
+  # Monitoring configuration
+  monitoring:
+    type: object
+    description: "Monitoring and statistics configuration"
+    properties:
+      enabled:
+        type: boolean
+        default: false
+      statistics_enabled:
+        type: boolean
+        default: false
+      statistics_interval:
+        type: string
+        pattern: "^\\d+(ns|us|ms|s|m|h)$"
+        default: "1s"
+      metrics:
+        type: array
+        items:
+          type: string
+          enum: [throughput, latency, discovery, resource_usage]

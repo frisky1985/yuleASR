@@ -1,0 +1,59 @@
+# Minimal DDS Configuration Example
+#
+# This is the simplest valid DDS configuration file.
+# It defines one domain, one QoS profile, one topic, and one participant.
+#
+# SPDX-License-Identifier: MIT
+
+version: "1.0.0"
+
+system:
+  name: "MinimalSystem"
+  description: "Minimal DDS configuration example"
+  version: "1.0.0"
+
+# Single domain
+domains:
+  - id: 0
+    name: "DefaultDomain"
+    discovery:
+      enabled: true
+      protocol: UDPv4
+    transport:
+      multicast_enabled: false
+    security:
+      enabled: false
+
+# Single QoS profile
+qos_profiles:
+  - name: "default"
+    reliability:
+      kind: BEST_EFFORT
+    durability:
+      kind: VOLATILE
+    history:
+      kind: KEEP_LAST
+      depth: 1
+
+# Single topic
+topics:
+  - name: "HelloWorld"
+    type: "HelloWorldType"
+    domain_id: 0
+    qos_profile: "default"
+
+# Single participant
+participants:
+  - name: "DefaultParticipant"
+    domain_id: 0
+    qos_profile: "default"
+
+# Basic logging
+logging:
+  enabled: true
+  level: INFO
+  output: stdout
+
+# Disabled monitoring
+monitoring:
+  enabled: false
