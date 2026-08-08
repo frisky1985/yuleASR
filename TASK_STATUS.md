@@ -65,13 +65,13 @@
 
 | 项 | 结果 | Commit | 验证 |
 |:---|:-----|:-------|:-----|
-| mbedTLS 静态内存池 | ✅ 32KB 静态池 (MBEDTLS_PLATFORM_MEMORY + MBEDTLS_MEMORY_BUFFER_ALLOC_C), mbedTLS 内部不再走 libc calloc/free | ea0215bb | 功能验证 PASS (ECDSA P-256 keygen/sign/verify + mpi_exp_mod 全走池); libmbedcrypto.a 无 calloc 引用 |
+| mbedTLS 静态内存池 | ✅ 32KB 静态池 (MBEDTLS_PLATFORM_MEMORY + MBEDTLS_MEMORY_BUFFER_ALLOC_C), 池 init 后 mbedTLS 分配不落入 libc; init 前默认函数指针回退 libc calloc/free (实际不会触发, 三使用方均在 init 首步建池) | ea0215bb | 功能验证 PASS (ECDSA P-256 keygen/sign/verify + mpi_exp_mod 全走池); 更正: platform.c.o 含 U _calloc/_free (MBEDTLS_PLATFORM_STD_CALLOC 默认 = libc calloc), 仅池 init 后被 pool 覆盖 |
 | HEAP_SIZE 回收 | ✅ 256KB→4KB, 净回收 252KB 给 .bss/栈 | ea0215bb | 生产代码 malloc=0 + 无 _sbrk/无其他堆消费者; 保留 4KB 维持堆符号非空 |
 | 编译阻断修复 | ✅ 8 处 pre-existing 机械修复级联损坏 (Dcm.c uint32_t / E2E_Cfg P2VAR / telemetry 括号错位 / asw &request / Boot_Loader whfor / Mqtt_Tls 括号错位 / uart 宏顺序) | 9d0c9d5c | 全量 native 构建 BUILD_EXIT=0 |
 | 测试 | ✅ ctest 35/35 (排除 2 个 pre-existing 失败) | — | crypto/tls 相关 8 用例全绿 (cryif/keym/secoc_core/secoc_freshness/bootloader/boot*/integration_mem) |
 | MISRA | ✅ 新池自有代码零 required 违规; 剩余为 include 链噪声与基线一致; mbedtls 在 third_party exclude 语义 | — | misra_verify.py 扫描 |
 
-**遗留 (pre-existing, 与批C无关)**: mcal_uart_test SegFault (编译恢复后暴露); s0_smoke_test 无限循环; src/ros2_bridge/rmw_ethdds.c calloc/free (08-08 合并引入, 未挂载编译, 不进 MCU 镜像); src/diagnostics/dcm/dcm_memory_pool.c malloc ×4 (08-08 合并引入的重复 DCM, 未挂载编译 — 已挂载的 isotp/doip 实测零 malloc)
+**遗留 (pre-existing, 与批C无关)**: mcal_uart_test SegFault (编译恢复后暴露); s0_smoke_test 无限循环; src/bsw/services/dcm/legacy/dcm_memory_pool.c malloc ×4 (合并引入的重复 DCM, 未挂载编译 — 已挂载的 isotp/doip 实测零 malloc; 更正: ros2_bridge 已随 51d94f6b 删除, dcm_memory_pool 在 legacy 目录)
 
 ---
 
