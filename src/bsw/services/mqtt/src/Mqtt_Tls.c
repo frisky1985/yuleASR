@@ -567,7 +567,7 @@ Mqtt_ReturnType Mqtt_Tls_SaveSession(
         *actualSize = sizeof(mbedtls_ssl_session);
     }
     
-    if ((sessionData != NULL_PTR) && (sessionDataSize >=) sizeof(mbedtls_ssl_session)) {
+    if ((sessionData != NULL_PTR) && (sessionDataSize >= sizeof(mbedtls_ssl_session))) {
         memcpy(sessionData, &ctx->savedSession, sizeof(mbedtls_ssl_session));
     }
     
@@ -587,7 +587,7 @@ Mqtt_ReturnType Mqtt_Tls_RestoreSession(
         return MQTT_E_NOT_OK;
     }
     
-    if ((sessionData == NULL_PTR) || (sessionDataSize <) sizeof(mbedtls_ssl_session)) {
+    if ((sessionData == NULL_PTR) || (sessionDataSize < sizeof(mbedtls_ssl_session))) {
         return MQTT_E_NOT_OK;
     }
     

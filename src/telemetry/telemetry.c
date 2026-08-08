@@ -191,7 +191,7 @@ TelStatus_t Tel_LogEvent(TelModuleId_t module, uint8_t event_id,
         return TEL_OK;
     }
     
-    if (len > (TEL_MAX_EVENT_SIZE -) sizeof(TelEventHeader_t)) {
+    if (len > TEL_MAX_EVENT_SIZE - sizeof(TelEventHeader_t)) {
         len = TEL_MAX_EVENT_SIZE - sizeof(TelEventHeader_t);
     }
     

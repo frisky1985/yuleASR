@@ -12,12 +12,12 @@
 #include "mock_hal_config.h"
 #include "Uart.h"
 
-static Uart_ConfigType g_test_cfg;
-static Uart_ChannelConfigType g_channel_cfg[UART_MAX_CHANNELS];
-
 #ifndef UART_MAX_CHANNELS
 #define UART_MAX_CHANNELS 4U
 #endif
+
+static Uart_ConfigType g_test_cfg;
+static Uart_ChannelConfigType g_channel_cfg[UART_MAX_CHANNELS];
 
 /* Reset Uart module state between tests: DeInit fully resets the static
  * driver state so before-init tests are hermetic. */

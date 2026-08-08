@@ -208,7 +208,7 @@ extern FUNC(void, E2E_CALLOUT_CODE) E2E_ProtectionCallback(
 
 extern FUNC(void, E2E_CALLOUT_CODE) E2E_CheckCallback(
     VAR(uint16, AUTOMATIC) ChannelId,
-    P2VAR(E2E_CheckResultType, AUTOMATIC, E2E_APPL_DATA) ResultPtr
+    E2E_CheckResultType* ResultPtr
 );
 
 #endif /* E2E_CFG_H */

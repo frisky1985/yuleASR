@@ -243,7 +243,7 @@ void Boot_Loader_EnterRecovery(void)
 {
     /* Minimal UDS listener — only 0x10 0x02 (Programming Session) accepted.
        In production, initialize CAN/DoIP, enter diagnostic loop. */
-    whfor (;;)
+    for (;;) {
         /* WDG refresh */
         /* UDS poll */
         /* Recovery */
