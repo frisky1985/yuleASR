@@ -3771,26 +3771,21 @@ void vTaskEndScheduler( void )
 
     #if ( INCLUDE_vTaskDelete == 1 )
     {
-        BaseType_t xCoreID;
-
-        #if ( configUSE_TIMERS == 1 )
-        {
-            /* Delete the timer task created by the kernel. */
-            vTaskDelete( xTimerGetTimerDaemonTaskHandle() );
-        }
-        #endif /* #if ( configUSE_TIMERS == 1 ) */
-
-        /* Delete Idle tasks created by the kernel.*/
-        for( xCoreID = 0; xCoreID < ( BaseType_t ) configNUMBER_OF_CORES; xCoreID++ )
-        {
-            vTaskDelete( xIdleTaskHandles[ xCoreID ] );
-        }
-
-        /* Idle task is responsible for reclaiming the resources of the tasks in
-         * xTasksWaitingTermination list. Since the idle task is now deleted and
-         * no longer going to run, we need to reclaim resources of all the tasks
-         * in the xTasksWaitingTermination list. */
-        prvCheckTasksWaitingTermination();
+        /* yuleASR T1 fix (2026-08-08): the task-deletion block below is
+         * unsafe on the Posix port when vTaskEndScheduler() is invoked from
+         * a task that gets deleted by it - e.g. the timer daemon task
+         * (tests/s0_smoke_test.c calls vTaskEndScheduler() from its exit-
+         * timer callback). Deleting the daemon (self-delete) and idle tasks
+         * marks their threads xDying, so the calling thread is killed by the
+         * next context switch MID-CALL, before vPortEndScheduler() can stop
+         * the tick thread and wake the main thread -> StartOS() never returns
+         * (hang on macOS). The same hazard applies to Os_Internal_ShutdownOS().
+         * On the Posix port vPortEndScheduler() stops the tick thread and
+         * wakes the main thread; the process exits immediately afterwards, so
+         * deleting/reclaiming these two tasks is unnecessary. The daemon and
+         * idle threads simply run until process exit. */
+        ( void ) xTimerGetTimerDaemonTaskHandle();
+        ( void ) xIdleTaskHandles[ 0 ];
     }
     #endif /* #if ( INCLUDE_vTaskDelete == 1 ) */
 

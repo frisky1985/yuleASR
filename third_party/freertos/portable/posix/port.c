@@ -109,7 +109,7 @@ static pthread_t hMainThread = ( pthread_t ) NULL;
 static volatile BaseType_t uxCriticalNesting;
 static BaseType_t xSchedulerEnd = pdFALSE;
 static pthread_t hTimerTickThread;
-static bool xTimerTickThreadShouldRun;
+static volatile bool xTimerTickThreadShouldRun;
 static uint64_t prvStartTimeNs;
 /*-----------------------------------------------------------*/
 
@@ -168,12 +168,20 @@ StackType_t * pxPortInitialiseStack( StackType_t * pxTopOfStack,
     pxTopOfStack = ( StackType_t * ) thread - 1;
 
     #ifdef __APPLE__
-        pxEndOfStack = ( StackType_t * ) mach_vm_round_page( pxEndOfStack );
+        /* NOTE (tech-debt T1 fix, 2026-08-08): do NOT round pxEndOfStack up
+         * before computing the size. For small static stacks (e.g. the
+         * 130-word idle task buffer in .bss, which is not page-aligned)
+         * the rounded-up low address lands ABOVE the stack top, producing
+         * a negative size that as size_t becomes huge and makes
+         * pthread_create() fault/hang - the root cause of the repeated
+         * s0_smoke_test hangs on macOS. Size is rounded DOWN below. */
     #endif
 
     ulStackSize = ( size_t ) ( pxTopOfStack + 1 - pxEndOfStack ) * sizeof( *pxTopOfStack );
 
     #ifdef __APPLE__
+        /* Round DOWN to a whole VM page (16KB on Apple Silicon) so the size
+         * stays guard-page friendly. */
         ulStackSize = mach_vm_trunc_page( ulStackSize );
     #endif
 

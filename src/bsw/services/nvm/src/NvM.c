@@ -2186,6 +2186,23 @@ const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId)
     return blockDesc->MirrorBlockData;
 }
 
+/*==================================================================================================
+*                          JOB NOTIFICATION CALLBACKS (T1, 2026-08-08)
+*
+* AUTOSAR-standard callbacks that the memory abstractions (Fee/Ea) invoke
+* when a job completes. They are declared/expected by Fee.c but were never
+* implemented in NvM.c - a latent pre-existing gap. No-op implementations
+* keep the native smoke link complete; NvM's internal state machine does
+* not rely on them yet (single-job synchronous processing).
+==================================================================================================*/
+void NvM_JobEndNotification(void)
+{
+}
+
+void NvM_JobErrorNotification(void)
+{
+}
+
 #define NVM_STOP_SEC_CODE
 #include "MemMap.h"
 

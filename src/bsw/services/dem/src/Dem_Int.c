@@ -808,5 +808,51 @@ Std_ReturnType Dem_IntValidateEventId(Dem_EventIdType EventId)
     return E_OK;
 }
 
+/*==================================================================================================
+*                          MISSING INTERNAL API STUBS (T1, 2026-08-08)
+*
+* Dem.c references these Dem_Int* internal APIs, but no implementation
+* exists anywhere in the tree (declared in Dem_Int.h only - a latent
+* pre-existing gap). Before the T1 fix the gap was masked because the
+* native smoke link dropped Rte_AswScheduler/Os_TaskEntries/Os_Cfg
+* entirely (weak Os_GlobalState), so these symbols were never pulled.
+* Safe defaults: freeze-frame get fails, filters match everything,
+* operation-cycle hooks are no-ops.
+==================================================================================================*/
+Std_ReturnType Dem_IntGetFreezeFrame(uint8 DtcIndex,
+                                     uint8 RecordNumber,
+                                     uint8* DestBuffer,
+                                     uint16* BufferSize)
+{
+    (void)DtcIndex;
+    (void)RecordNumber;
+    (void)DestBuffer;
+    if (BufferSize != NULL_PTR)
+    {
+        *BufferSize = 0U;
+    }
+    return E_NOT_OK;
+}
+
+void Dem_IntHandleOperationCycleStart(uint8 CycleIndex)
+{
+    (void)CycleIndex;
+}
+
+void Dem_IntHandleOperationCycleEnd(uint8 CycleIndex)
+{
+    (void)CycleIndex;
+}
+
+boolean Dem_IntMatchDTCFilter(uint8 DtcIndex)
+{
+    (void)DtcIndex;
+    return TRUE;
+}
+
+void Dem_IntUpdateFilteredCount(void)
+{
+}
+
 #define DEM_STOP_SEC_CODE
 #include "MemMap.h"

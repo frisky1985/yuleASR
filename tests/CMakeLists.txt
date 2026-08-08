@@ -52,6 +52,38 @@ if(NOT CMAKE_CROSSCOMPILING)
             Os
             Rte
             service_det
+            # Real-product BSW services referenced by the Rte ASW component
+            # table (Rte_AswScheduler.c): BswM/Com/Dcm/Dem/NvM MainFunctions.
+            # (Tech-debt T1: previously absent - the link only succeeded
+            # because a weak Os_GlobalState dropped Os_Cfg.c/Os_TaskEntries/
+            # Rte_AswScheduler from the link entirely.)
+            service_bswm
+            service_com
+            service_dcm
+            service_dem
+            service_nvm
+            # MemIf (NvM dependency) and PduR (Com dependency)
+            service_memif
+            service_pdur
+            # ECUAL: CanIf (Com dependency) and MemIf (NvM dependency)
+            ecual_canif
+            ecual_memif
+            # MCAL Can + ECUAL Ea/Fee (CanIf and NvM-MemIf hardware backends)
+            mcal_can
+            ecual_ea
+            ecual_fee
+            # MCAL Eep + Fls (Ea/Fee hardware backends)
+            mcal_eep
+            mcal_fls
+            # ASW components registered in the Rte component table
+            engine_control
+            vehicle_dynamics
+            diagnostic_manager
+            communication_manager
+            mode_manager
+            watchdog_manager
+            storage_manager
+            io_control
     )
 
     set_target_properties(s0_smoke_test PROPERTIES
@@ -60,6 +92,10 @@ if(NOT CMAKE_CROSSCOMPILING)
     )
 
     add_test(NAME s0_smoke COMMAND s0_smoke_test)
+
+    # Hard ctest-level timeout: the test has its own watchdog, but this
+    # keeps CI from hanging even if the watchdog path regresses.
+    set_tests_properties(s0_smoke PROPERTIES TIMEOUT 60)
 endif()
 
 message(STATUS "Tests configured")

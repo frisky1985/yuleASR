@@ -45,13 +45,16 @@
 /*==================================================================================================
 *                                  GLOBAL VARIABLES
 ==================================================================================================*/
-#define OS_START_SEC_VAR_CLEARED_UNSPECIFIED
-#include "MemMap.h"
-
-__attribute__((weak)) Os_GlobalStateType Os_GlobalState;
-
-#define OS_STOP_SEC_VAR_CLEARED_UNSPECIFIED
-#include "MemMap.h"
+/* NOTE (tech-debt T1 root cause, 2026-08-08): Os_GlobalState MUST NOT be
+ * defined here. Os_Cfg.c provides the strong, initialized definition
+ * (NumTasks/Tasks/Alarms/Resources -> config tables). A previous release
+ * added `__attribute__((weak)) Os_GlobalStateType Os_GlobalState;` here to
+ * dodge a -fno-common duplicate-symbol error; on Mach-O/ld64 (and archive
+ * extraction in general) the weak definition satisfies every reference, so
+ * the Os_Cfg.c.o archive member - carrying the whole OS configuration -
+ * is never pulled into the link. Result: NumTasks=0 / Tasks=NULL at runtime
+ * (silently empty OS configuration). The extern declaration lives in
+ * Os_Internal.h; the definition belongs exclusively to Os_Cfg.c. */
 
 /*==================================================================================================
 *                                  LOCAL FUNCTION PROTOTYPES

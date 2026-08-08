@@ -1714,5 +1714,24 @@ static boolean Fee_IsAddressInSector(Fee_AddressType Address, uint8 SectorIndex)
                        Fee_SectorInfo[SectorIndex].SectorSize)));
 }
 
+/*==================================================================================================
+*                          FLS UPPER-LAYER CALLBACKS (T1, 2026-08-08)
+*
+* Fls (mcal/fls) invokes the AUTOSAR-standard Fls_JobEndNotification /
+* Fls_JobErrorNotification when jobs finish. Fee provides the actual
+* handlers under the legacy names Fee_FlsJobEnd/ErrorNotification; these
+* thin wrappers wire Fls to them (the names were previously never defined,
+* which silently broke the Fls callback path and the native smoke link).
+==================================================================================================*/
+void Fls_JobEndNotification(void)
+{
+    Fee_FlsJobEndNotification();
+}
+
+void Fls_JobErrorNotification(void)
+{
+    Fee_FlsJobErrorNotification();
+}
+
 #define FEE_STOP_SEC_CODE
 #include "MemMap.h"
