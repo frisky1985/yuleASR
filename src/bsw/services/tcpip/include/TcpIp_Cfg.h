@@ -52,6 +52,16 @@
 #define TCPIP_ARP_TIMEOUT_MS                    (300000U)   /* 5 min */
 
 /*==================================================================================================
+ *                                    CONNECTION MANAGEMENT (B1)
+ *==================================================================================================*/
+/* Max pending (half-open / accepted-but-unaccepted) connections per listener */
+#define TCPIP_MAX_PENDING_CONNECTIONS           (4U)
+/* Per-socket RX chunk queue depth (pool-backed zero-copy model) */
+#define TCPIP_MAX_RX_BUFFERS                    (2U)
+/* Per-socket TCP option storage count */
+#define TCPIP_MAX_TCP_OPTIONS                   (4U)
+
+/*==================================================================================================
  *                                    FEATURE ENABLES
  *==================================================================================================*/
 #define TCPIP_ENABLE_IPV4                       (STD_ON)
@@ -70,5 +80,19 @@
 #define TCPIP_MEMP_NUM_TCP_PCB                  (8U)
 #define TCPIP_MEMP_NUM_TCP_SEG                  (32U)
 #define TCPIP_MEMP_NUM_UDP_PCB                  (8U)
+
+/*==================================================================================================
+ *                                    VLAN CONFIGURATION (B1)
+ *==================================================================================================*/
+/* Adaption-layer VLAN support: config + state tracking always available;
+ * on-wire tagging is performed by lwIP (LWIP_VLAN_PCP) or EthSwt (B2). */
+#define TCPIP_VLAN_SUPPORT                      (STD_ON)
+#define TCPIP_DEFAULT_VLAN_ID                   (0U)
+#define TCPIP_DEFAULT_VLAN_PRIORITY             (0U)
+
+/*==================================================================================================
+ *                                    STATISTICS (B1)
+ *==================================================================================================*/
+#define TCPIP_ENABLE_STATISTICS                 (STD_ON)
 
 #endif /* TCPIP_CFG_H */

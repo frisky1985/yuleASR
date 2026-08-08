@@ -13,11 +13,24 @@
 /**
  * @file TcpIp.h
  * @brief TCP/IP Stack Interface — AUTOSAR TcpIp Adaption Layer
- * @version 1.0.0
+ * @version 1.1.0
  * @implements AUTOSAR_SWS_TcpIp.pdf
  *
  * Integrates lwIP stack with AUTOSAR BSW.  Provides socket-based
  * TCP/UDP communication APIs used by SoAd (Socket Adapter).
+ *
+ * B1 deep-dive (2026-08-09): API surface expanded towards the AUTOSAR
+ * SWS TcpIp interface set (TcpIp_Listen/Connect/Accept/Abort,
+ * TcpIp_GetRxBuffer/ReleaseRxBuffer, TcpIp_GetTxBuffer/ReleaseTxBuffer,
+ * TcpIp_SetRemoteAddr, TcpIp_ChangeTcpState, TcpIp_GetConnectionState,
+ * TcpIp_GetIpAddrState, TcpIp_GetIPv4SubnetMask, TcpIp_Set/GetTcpOption,
+ * TcpIp_Set/GetUdpOption, ...).
+ *
+ * Deviations from the SWS documented for single-interface platforms:
+ *  - TcpIp_GetIPv4Addr/GetIPv6Addr/GetLinkState take no IfIdx (single Eth
+ *    interface); existing SoAd/MQTT callers rely on this signature.
+ *  - TcpIp_Close closes the connection AND releases the socket slot
+ *    (established yuleASR behaviour, SoAd/MQTT depend on it).
  */
 
 #ifndef TCPIP_H
@@ -33,7 +46,7 @@
 #define TCPIP_AR_RELEASE_MINOR_VERSION          (0x04U)
 #define TCPIP_AR_RELEASE_REVISION_VERSION       (0x00U)
 #define TCPIP_SW_MAJOR_VERSION                  (0x01U)
-#define TCPIP_SW_MINOR_VERSION                  (0x00U)
+#define TCPIP_SW_MINOR_VERSION                  (0x01U)
 #define TCPIP_SW_PATCH_VERSION                  (0x00U)
 
 /*==================================================================================================
@@ -54,6 +67,36 @@
 #define TCPIP_SID_RESET                         (0x15U)
 #define TCPIP_SID_GETIPV4ADDR                   (0x16U)
 #define TCPIP_SID_GETIPV6ADDR                   (0x17U)
+#define TCPIP_SID_LISTEN                        (0x20U)
+#define TCPIP_SID_CONNECT                       (0x21U)
+#define TCPIP_SID_ACCEPT                        (0x22U)
+#define TCPIP_SID_ABORT                         (0x23U)
+#define TCPIP_SID_SETREMOTEADDR                 (0x24U)
+#define TCPIP_SID_SETLOCALADDR                  (0x25U)
+#define TCPIP_SID_BINDLOCALADDR                 (0x26U)
+#define TCPIP_SID_GETLOCALADDR                  (0x27U)
+#define TCPIP_SID_GETREMOTEADDR                 (0x28U)
+#define TCPIP_SID_GETCONNSTATE                  (0x29U)
+#define TCPIP_SID_GETTCPSTATE                   (0x2AU)
+#define TCPIP_SID_GETIFSTATE                    (0x2BU)
+#define TCPIP_SID_GETIPADDRSTATE                (0x2CU)
+#define TCPIP_SID_GETIPV4SUBNETMASK             (0x2DU)
+#define TCPIP_SID_CHANGETCPSTATE                (0x2EU)
+#define TCPIP_SID_SETRXBUFFER                   (0x2FU)
+#define TCPIP_SID_GETRXBUFFER                   (0x30U)
+#define TCPIP_SID_RELEASERXBUFFER               (0x31U)
+#define TCPIP_SID_GETTXBUFFER                   (0x32U)
+#define TCPIP_SID_RELEASETXBUFFER               (0x33U)
+#define TCPIP_SID_SETTCPOPTION                  (0x34U)
+#define TCPIP_SID_GETTCPOPTION                  (0x35U)
+#define TCPIP_SID_SETUDPOPTION                  (0x36U)
+#define TCPIP_SID_GETUDPOPTION                  (0x37U)
+#define TCPIP_SID_RXINDICATION                  (0x38U)
+#define TCPIP_SID_TXCONFIRMATION                (0x39U)
+#define TCPIP_SID_SETVLANCONFIG                 (0x3AU)
+#define TCPIP_SID_GETVLANCONFIG                 (0x3BU)
+#define TCPIP_SID_GETSTATISTICS                 (0x3CU)
+#define TCPIP_SID_RESETSTATISTICS               (0x3DU)
 
 /*==================================================================================================
  *                                    DET ERROR CODES
@@ -71,6 +114,17 @@
 #define TCPIP_E_BUFFER_OVERFLOW                 (0x0BU)
 #define TCPIP_E_NOT_SUPPORTED                   (0x0CU)
 #define TCPIP_E_TIMEOUT                         (0x0EU)
+#define TCPIP_E_INVALID_STATE                   (0x0FU)
+#define TCPIP_E_NOBUFS                          (0x10U)
+#define TCPIP_E_TIMEDOUT                        (0x11U)
+#define TCPIP_E_CONNREFUSED                     (0x12U)
+#define TCPIP_E_ISCONN                          (0x13U)
+#define TCPIP_E_ALREADY                         (0x14U)
+#define TCPIP_E_INPROGRESS                      (0x15U)
+#define TCPIP_E_NOTCONN                         (0x16U)
+#define TCPIP_E_CONNABORTED                     (0x17U)
+#define TCPIP_E_CONNRESET                       (0x18U)
+#define TCPIP_E_DESTUNREACH                     (0x19U)
 
 /*==================================================================================================
  *                                    TYPE DEFINITIONS
@@ -126,6 +180,46 @@ typedef uint8 TcpIp_IpAddrStateType;
 #define TCPIP_IPADDR_STATE_UNASSIGNED           (0x00U)
 #define TCPIP_IPADDR_STATE_ASSIGNED             (0x01U)
 
+/* Interface state (AUTOSAR TcpIp_InterfaceStateType) */
+typedef uint8 TcpIp_InterfaceStateType;
+#define TCPIP_IFSTATE_DOWN                      (0x00U)
+#define TCPIP_IFSTATE_UP                        (0x01U)
+
+/* TCP connection state (AUTOSAR TcpIp_TcpStateType) */
+typedef uint8 TcpIp_TcpStateType;
+#define TCPIP_TCPSTATE_CLOSED                   (0x00U)
+#define TCPIP_TCPSTATE_LISTEN                   (0x01U)
+#define TCPIP_TCPSTATE_SYN_SENT                 (0x02U)
+#define TCPIP_TCPSTATE_SYN_RECEIVED             (0x03U)
+#define TCPIP_TCPSTATE_ESTABLISHED              (0x04U)
+#define TCPIP_TCPSTATE_FIN_WAIT_1               (0x05U)
+#define TCPIP_TCPSTATE_FIN_WAIT_2               (0x06U)
+#define TCPIP_TCPSTATE_CLOSE_WAIT               (0x07U)
+#define TCPIP_TCPSTATE_CLOSING                  (0x08U)
+#define TCPIP_TCPSTATE_LAST_ACK                 (0x09U)
+#define TCPIP_TCPSTATE_TIME_WAIT                (0x0AU)
+
+/* Connection state (AUTOSAR TcpIp_ConnectionStateType) */
+typedef uint8 TcpIp_ConnectionStateType;
+#define TCPIP_CONNSTATE_CLOSED                  (0x00U)
+#define TCPIP_CONNSTATE_OPEN                    (0x01U)
+#define TCPIP_CONNSTATE_LISTENING               (0x02U)
+#define TCPIP_CONNSTATE_CONNECTED               (0x03U)
+#define TCPIP_CONNSTATE_ESTABLISHED             (0x04U)
+
+/* TCP options (subset of AUTOSAR TcpIp_TcpOptionType) */
+typedef uint8 TcpIp_TcpOptionType;
+#define TCPIP_TCPOPT_REUSEADDR                  (0x01U)
+#define TCPIP_TCPOPT_KEEPALIVE                  (0x02U)
+#define TCPIP_TCPOPT_NODELAY                    (0x03U)
+#define TCPIP_TCPOPT_MAXSEG                     (0x04U)
+
+/* UDP options (subset of AUTOSAR TcpIp_UdpOptionType) */
+typedef uint8 TcpIp_UdpOptionType;
+#define TCPIP_UDPOPT_REUSEADDR                  (0x01U)
+#define TCPIP_UDPOPT_TTL                        (0x02U)
+#define TCPIP_UDPOPT_TOS                        (0x03U)
+
 /* IPv4 address (32-bit) */
 typedef uint32 TcpIp_Ipv4AddrType;
 
@@ -176,7 +270,13 @@ void TcpIp_GetVersionInfo(Std_VersionInfoType* versioninfo);
 /** @brief Create a socket (lwIP pcb allocation) */
 TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType domain, TcpIp_SockTypeType type, TcpIp_SocketIdType* SocketId);
 
-/** @brief Close and destroy a socket */
+/** @brief Close a connection and release the socket slot.
+ *
+ *  yuleASR deviation: closes the connection AND frees the socket slot
+ *  (SoAd/MQTT rely on this).  Force=TRUE aborts immediately, Force=FALSE
+ *  initiates a graceful close (FIN_WAIT_1, driven by TcpIp_ChangeTcpState
+ *  from the lwIP adapter; native simulation completes immediately).
+ */
 TcpIp_ReturnType TcpIp_Close(TcpIp_SocketIdType SocketId, boolean Force);
 
 /** @brief Bind a socket to a local address */
@@ -212,13 +312,113 @@ TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr);
 /** @brief Get the IPv6 address of the interface */
 TcpIp_ReturnType TcpIp_GetIPv6Addr(TcpIp_Ipv6AddrType* Addr);
 
+/** @brief Get the IPv4 subnet mask of the interface (AUTOSAR TcpIp_GetIPv4SubnetMask) */
+TcpIp_ReturnType TcpIp_GetIPv4SubnetMask(uint8 IfIdx, TcpIp_Ipv4AddrType* Mask);
+
 /** @brief Get the current link state */
 TcpIp_ReturnType TcpIp_GetLinkState(TcpIp_LinkStateType* LinkState);
+
+/** @brief Get the interface state (AUTOSAR TcpIp_GetInterfaceState) */
+TcpIp_ReturnType TcpIp_GetInterfaceState(TcpIp_InterfaceStateType* InterfaceState);
+
+/** @brief Get the IP address state (AUTOSAR TcpIp_GetIpAddrState) */
+TcpIp_ReturnType TcpIp_GetIpAddrState(uint8 IfIdx, TcpIp_IpAddrStateType* IpAddrState);
 
 /** @brief Reset the TCP/IP stack */
 TcpIp_ReturnType TcpIp_Reset(void);
 
 /** @brief Main function called cyclically (polling) */
 void TcpIp_MainFunction(void);
+
+/* ---- Socket-class APIs (AUTOSAR SWS TcpIp) ---- */
+
+/** @brief Put a TCP socket into listening state (server).
+ *
+ *  Extension over the SWS (the SWS models listening implicitly via
+ *  OpenSocket + Accept); provided explicitly to drive the connection
+ *  state machine.
+ */
+TcpIp_ReturnType TcpIp_Listen(TcpIp_SocketIdType SocketId, uint8 Backlog);
+
+/** @brief Initiate a connection to a remote address (AUTOSAR TcpIp_Connect).
+ *
+ *  Native (non-lwIP) builds simulate the handshake and reach
+ *  TCPIP_TCPSTATE_ESTABLISHED synchronously.  lwIP builds use
+ *  tcp_connect() and the state is driven by the adapter callbacks.
+ */
+TcpIp_ReturnType TcpIp_Connect(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* RemoteAddr);
+
+/** @brief Accept a pending connection on a listening socket
+ *         (AUTOSAR TcpIp_Accept). */
+TcpIp_ReturnType TcpIp_Accept(TcpIp_SocketIdType SocketId, TcpIp_SocketIdType* NewSocketId);
+
+/** @brief Abort a connection immediately (AUTOSAR TcpIp_Abort). */
+TcpIp_ReturnType TcpIp_Abort(TcpIp_SocketIdType SocketId);
+
+/** @brief Set the remote address of a socket (AUTOSAR TcpIp_SetRemoteAddr). */
+TcpIp_ReturnType TcpIp_SetRemoteAddr(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* RemoteAddr);
+
+/** @brief Set the local address of a socket (AUTOSAR TcpIp_SetLocalAddr). */
+TcpIp_ReturnType TcpIp_SetLocalAddr(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* LocalAddr);
+
+/** @brief Bind a socket to a local address (AUTOSAR TcpIp_BindLocalAddr). */
+TcpIp_ReturnType TcpIp_BindLocalAddr(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* LocalAddr);
+
+/** @brief Get the local address of a socket. */
+TcpIp_ReturnType TcpIp_GetLocalAddr(TcpIp_SocketIdType SocketId, TcpIp_SockAddrType* LocalAddr);
+
+/** @brief Get the remote address of a socket. */
+TcpIp_ReturnType TcpIp_GetRemoteAddr(TcpIp_SocketIdType SocketId, TcpIp_SockAddrType* RemoteAddr);
+
+/** @brief Get the connection state (AUTOSAR TcpIp_GetConnectionState). */
+TcpIp_ReturnType TcpIp_GetConnectionState(TcpIp_SocketIdType SocketId, TcpIp_ConnectionStateType* ConnState);
+
+/** @brief Get the TCP protocol state of a socket (AUTOSAR TcpIp_TcpStateType). */
+TcpIp_ReturnType TcpIp_GetTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStateType* TcpState);
+
+/** @brief Drive the TCP state machine (AUTOSAR TcpIp_ChangeTcpState).
+ *
+ *  Called by the lower-layer lwIP adapter on connect/accept/close
+ *  callbacks; also used by tests to simulate handshake/teardown steps.
+ */
+TcpIp_ReturnType TcpIp_ChangeTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStateType NewState);
+
+/** @brief Attach a static receive buffer to a socket (zero-copy RX model,
+ *         SoAd-style). */
+TcpIp_ReturnType TcpIp_SetRxBuffer(TcpIp_SocketIdType SocketId, uint8* Buffer, uint16 Capacity);
+
+/** @brief Get the oldest received chunk (AUTOSAR TcpIp_GetRxBuffer). */
+TcpIp_ReturnType TcpIp_GetRxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr, uint16* Length);
+
+/** @brief Release the buffer returned by TcpIp_GetRxBuffer
+ *         (AUTOSAR TcpIp_ReleaseRxBuffer). */
+TcpIp_ReturnType TcpIp_ReleaseRxBuffer(TcpIp_SocketIdType SocketId);
+
+/** @brief Get a transmit buffer (AUTOSAR TcpIp_GetTxBuffer). */
+TcpIp_ReturnType TcpIp_GetTxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr, uint16* Length);
+
+/** @brief Commit a transmit buffer for sending (AUTOSAR TcpIp_ReleaseTxBuffer). */
+TcpIp_ReturnType TcpIp_ReleaseTxBuffer(TcpIp_SocketIdType SocketId, uint16 Length);
+
+/** @brief Set a TCP option (AUTOSAR TcpIp_SetTcpOption). */
+TcpIp_ReturnType TcpIp_SetTcpOption(TcpIp_SocketIdType SocketId, TcpIp_TcpOptionType Option, uint32 Value);
+
+/** @brief Get a TCP option (AUTOSAR TcpIp_GetTcpOption). */
+TcpIp_ReturnType TcpIp_GetTcpOption(TcpIp_SocketIdType SocketId, TcpIp_TcpOptionType Option, uint32* Value);
+
+/** @brief Set a UDP option (AUTOSAR TcpIp_SetUdpOption). */
+TcpIp_ReturnType TcpIp_SetUdpOption(TcpIp_SocketIdType SocketId, TcpIp_UdpOptionType Option, uint32 Value);
+
+/** @brief Get a UDP option (AUTOSAR TcpIp_GetUdpOption). */
+TcpIp_ReturnType TcpIp_GetUdpOption(TcpIp_SocketIdType SocketId, TcpIp_UdpOptionType Option, uint32* Value);
+
+/** @brief RX data ingress hook — called by the lwIP adapter / EthIf Rx path
+ *         when data for a local socket arrives (mirrors the AUTOSAR
+ *         TcpIp_RxIndication concept). */
+TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Data, uint16 Length);
+
+/** @brief TX completion hook — called by the lwIP adapter on send
+ *         confirmation (AUTOSAR TcpIp_TxConfirmation concept). */
+TcpIp_ReturnType TcpIp_TxConfirmation(TcpIp_SocketIdType SocketId, boolean Success);
 
 #endif /* TCPIP_H */
