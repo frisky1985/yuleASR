@@ -39,7 +39,7 @@ typedef enum {
     CANIF_NO_BUFFER = 0x06U,
     CANIF_TX_QUEUE_FULL = 0x07U,
     CANIF_HW_ERROR = 0x08U
-} CanIf_ReturnType;
+} CanIf_Isotp_ReturnType;
 
 /******************************************************************************
  * CAN Hardware Types
@@ -49,12 +49,12 @@ typedef enum {
     CAN_HW_STANDARD = 0x00U,             /* Standard CAN 2.0 */
     CAN_HW_FD,                           /* CAN FD capable */
     CAN_HW_FD_BRS                        /* CAN FD with Bit Rate Switching */
-} CanIf_HwType;
+} CanIf_Isotp_HwType;
 
 typedef enum {
     CAN_ID_TYPE_STANDARD = 0x00U,        /* 11-bit CAN ID */
     CAN_ID_TYPE_EXTENDED                 /* 29-bit CAN ID */
-} CanIf_IdType;
+} CanIf_Isotp_IdType;
 
 /******************************************************************************
  * CAN Frame Structure
@@ -62,13 +62,13 @@ typedef enum {
 
 typedef struct {
     uint32_t canId;                      /* CAN identifier */
-    CanIf_IdType idType;                 /* Standard or Extended ID */
+    CanIf_Isotp_IdType idType;                 /* Standard or Extended ID */
     uint8_t dlc;                         /* Data length code */
     uint8_t data[64];                    /* Frame data (up to 64 bytes for CAN FD) */
     bool isFd;                           /* CAN FD frame */
     bool isBrs;                          /* Bit rate switching enabled */
     uint64_t timestamp;                  /* Reception timestamp */
-} CanIf_FrameType;
+} CanIf_Isotp_FrameType;
 
 /******************************************************************************
  * CAN Controller Configuration
@@ -76,13 +76,13 @@ typedef struct {
 
 typedef struct {
     uint8_t controllerId;                /* Controller ID */
-    CanIf_HwType hwType;                 /* Hardware type */
+    CanIf_Isotp_HwType hwType;                 /* Hardware type */
     uint32_t baudrate;                   /* Nominal baudrate (bps) */
     uint32_t fdBaudrate;                 /* FD data baudrate (bps) */
     bool fdEnabled;                      /* FD mode enabled */
     uint8_t txQueueSize;                 /* TX queue size */
     uint8_t rxQueueSize;                 /* RX queue size */
-} CanIf_ControllerConfigType;
+} CanIf_Isotp_ControllerConfigType;
 
 /******************************************************************************
  * Hardware Filter Configuration
@@ -91,38 +91,38 @@ typedef struct {
 typedef struct {
     uint32_t canId;                      /* CAN ID to filter */
     uint32_t mask;                       /* Filter mask */
-    CanIf_IdType idType;                 /* ID type */
+    CanIf_Isotp_IdType idType;                 /* ID type */
     uint8_t controllerId;                /* Associated controller */
-} CanIf_FilterType;
+} CanIf_Isotp_FilterType;
 
 /******************************************************************************
  * Callback Function Types
  ******************************************************************************/
 
 /* Frame reception callback */
-typedef void (*CanIf_RxCallback)(
+typedef void (*CanIf_Isotp_RxCallback)(
     uint8_t controllerId,
-    const CanIf_FrameType *frame,
+    const CanIf_Isotp_FrameType *frame,
     void *userData
 );
 
 /* Transmit confirmation callback */
-typedef void (*CanIf_TxConfirmationCallback)(
+typedef void (*CanIf_Isotp_TxConfirmationCallback)(
     uint8_t controllerId,
     uint32_t canId,
-    CanIf_ReturnType result,
+    CanIf_Isotp_ReturnType result,
     void *userData
 );
 
 /* Controller mode change callback */
-typedef void (*CanIf_ControllerModeCallback)(
+typedef void (*CanIf_Isotp_ControllerModeCallback)(
     uint8_t controllerId,
     uint8_t mode,
     void *userData
 );
 
 /* Bus error callback */
-typedef void (*CanIf_ErrorCallback)(
+typedef void (*CanIf_Isotp_ErrorCallback)(
     uint8_t controllerId,
     uint32_t errorCode,
     void *userData
@@ -135,30 +135,30 @@ typedef void (*CanIf_ErrorCallback)(
 /* Hardware driver function pointers (to be implemented by platform) */
 typedef struct {
     /* Initialize hardware */
-    CanIf_ReturnType (*init)(uint8_t controllerId, const CanIf_ControllerConfigType *config);
+    CanIf_Isotp_ReturnType (*init)(uint8_t controllerId, const CanIf_Isotp_ControllerConfigType *config);
     
     /* Deinitialize hardware */
-    CanIf_ReturnType (*deinit)(uint8_t controllerId);
+    CanIf_Isotp_ReturnType (*deinit)(uint8_t controllerId);
     
     /* Start controller */
-    CanIf_ReturnType (*start)(uint8_t controllerId);
+    CanIf_Isotp_ReturnType (*start)(uint8_t controllerId);
     
     /* Stop controller */
-    CanIf_ReturnType (*stop)(uint8_t controllerId);
+    CanIf_Isotp_ReturnType (*stop)(uint8_t controllerId);
     
     /* Transmit frame */
-    CanIf_ReturnType (*transmit)(uint8_t controllerId, const CanIf_FrameType *frame);
+    CanIf_Isotp_ReturnType (*transmit)(uint8_t controllerId, const CanIf_Isotp_FrameType *frame);
     
     /* Set filter */
-    CanIf_ReturnType (*setFilter)(uint8_t controllerId, const CanIf_FilterType *filter);
+    CanIf_Isotp_ReturnType (*setFilter)(uint8_t controllerId, const CanIf_Isotp_FilterType *filter);
     
     /* Clear filter */
-    CanIf_ReturnType (*clearFilter)(uint8_t controllerId, uint8_t filterIndex);
+    CanIf_Isotp_ReturnType (*clearFilter)(uint8_t controllerId, uint8_t filterIndex);
     
     /* Get controller status */
-    CanIf_ReturnType (*getStatus)(uint8_t controllerId, uint32_t *status);
+    CanIf_Isotp_ReturnType (*getStatus)(uint8_t controllerId, uint32_t *status);
     
-} CanIf_HwDriverType;
+} CanIf_Isotp_HwDriverType;
 
 /******************************************************************************
  * Initialization Functions
@@ -171,16 +171,16 @@ typedef struct {
  * @param hwDriver Hardware driver interface
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_Init(
-    const CanIf_ControllerConfigType *controllers,
+CanIf_Isotp_ReturnType CanIf_Isotp_Init(
+    const CanIf_Isotp_ControllerConfigType *controllers,
     uint8_t numControllers,
-    const CanIf_HwDriverType *hwDriver
+    const CanIf_Isotp_HwDriverType *hwDriver
 );
 
 /**
  * @brief Deinitialize CanIf module
  */
-void CanIf_DeInit(void);
+void CanIf_Isotp_DeInit(void);
 
 /******************************************************************************
  * Controller Management
@@ -192,7 +192,7 @@ void CanIf_DeInit(void);
  * @param mode Target mode (0=stopped, 1=started, 2=sleep)
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_SetControllerMode(uint8_t controllerId, uint8_t mode);
+CanIf_Isotp_ReturnType CanIf_Isotp_SetControllerMode(uint8_t controllerId, uint8_t mode);
 
 /**
  * @brief Get controller mode
@@ -200,7 +200,7 @@ CanIf_ReturnType CanIf_SetControllerMode(uint8_t controllerId, uint8_t mode);
  * @param mode Output mode
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_GetControllerMode(uint8_t controllerId, uint8_t *mode);
+CanIf_Isotp_ReturnType CanIf_Isotp_GetControllerMode(uint8_t controllerId, uint8_t *mode);
 
 /******************************************************************************
  * Transmission Functions
@@ -212,9 +212,9 @@ CanIf_ReturnType CanIf_GetControllerMode(uint8_t controllerId, uint8_t *mode);
  * @param frame Frame to transmit
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_Transmit(
+CanIf_Isotp_ReturnType CanIf_Isotp_Transmit(
     uint8_t controllerId,
-    const CanIf_FrameType *frame
+    const CanIf_Isotp_FrameType *frame
 );
 
 /**
@@ -224,9 +224,9 @@ CanIf_ReturnType CanIf_Transmit(
  * @param timeoutMs Timeout in milliseconds
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_TransmitBlocking(
+CanIf_Isotp_ReturnType CanIf_Isotp_TransmitBlocking(
     uint8_t controllerId,
-    const CanIf_FrameType *frame,
+    const CanIf_Isotp_FrameType *frame,
     uint32_t timeoutMs
 );
 
@@ -240,9 +240,9 @@ CanIf_ReturnType CanIf_TransmitBlocking(
  * @param frame Received frame
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_ProcessRxFrame(
+CanIf_Isotp_ReturnType CanIf_Isotp_ProcessRxFrame(
     uint8_t controllerId,
-    const CanIf_FrameType *frame
+    const CanIf_Isotp_FrameType *frame
 );
 
 /**
@@ -252,9 +252,9 @@ CanIf_ReturnType CanIf_ProcessRxFrame(
  * @param userData User data pointer
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_RegisterRxCallback(
+CanIf_Isotp_ReturnType CanIf_Isotp_RegisterRxCallback(
     uint32_t canId,
-    CanIf_RxCallback callback,
+    CanIf_Isotp_RxCallback callback,
     void *userData
 );
 
@@ -263,7 +263,7 @@ CanIf_ReturnType CanIf_RegisterRxCallback(
  * @param canId CAN ID
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_UnregisterRxCallback(uint32_t canId);
+CanIf_Isotp_ReturnType CanIf_Isotp_UnregisterRxCallback(uint32_t canId);
 
 /******************************************************************************
  * Filter Functions
@@ -276,9 +276,9 @@ CanIf_ReturnType CanIf_UnregisterRxCallback(uint32_t canId);
  * @param filterIndex Output filter index
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_AddFilter(
+CanIf_Isotp_ReturnType CanIf_Isotp_AddFilter(
     uint8_t controllerId,
-    const CanIf_FilterType *filter,
+    const CanIf_Isotp_FilterType *filter,
     uint8_t *filterIndex
 );
 
@@ -288,7 +288,7 @@ CanIf_ReturnType CanIf_AddFilter(
  * @param filterIndex Filter index
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_RemoveFilter(uint8_t controllerId, uint8_t filterIndex);
+CanIf_Isotp_ReturnType CanIf_Isotp_RemoveFilter(uint8_t controllerId, uint8_t filterIndex);
 
 /******************************************************************************
  * Callback Registration
@@ -298,19 +298,19 @@ CanIf_ReturnType CanIf_RemoveFilter(uint8_t controllerId, uint8_t filterIndex);
  * @brief Register transmit confirmation callback
  * @param callback Callback function
  */
-void CanIf_RegisterTxConfirmationCallback(CanIf_TxConfirmationCallback callback);
+void CanIf_Isotp_RegisterTxConfirmationCallback(CanIf_Isotp_TxConfirmationCallback callback);
 
 /**
  * @brief Register controller mode callback
  * @param callback Callback function
  */
-void CanIf_RegisterControllerModeCallback(CanIf_ControllerModeCallback callback);
+void CanIf_Isotp_RegisterControllerModeCallback(CanIf_Isotp_ControllerModeCallback callback);
 
 /**
  * @brief Register error callback
  * @param callback Callback function
  */
-void CanIf_RegisterErrorCallback(CanIf_ErrorCallback callback);
+void CanIf_Isotp_RegisterErrorCallback(CanIf_Isotp_ErrorCallback callback);
 
 /******************************************************************************
  * IsoTp Integration Functions
@@ -341,7 +341,7 @@ Isotp_ReturnType CanIf_IsotpTransmitWrapper(
  * @param rxCanId Receive CAN ID
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_MapIsotpChannel(
+CanIf_Isotp_ReturnType CanIf_Isotp_MapIsotpChannel(
     uint8_t channelId,
     uint8_t controllerId,
     uint32_t txCanId,
@@ -354,7 +354,7 @@ CanIf_ReturnType CanIf_MapIsotpChannel(
  * @param isFd CAN FD flag
  * @return CANIF_OK on success
  */
-CanIf_ReturnType CanIf_InitIsotpChannel(uint8_t channelId, bool isFd);
+CanIf_Isotp_ReturnType CanIf_Isotp_InitIsotpChannel(uint8_t channelId, bool isFd);
 
 /******************************************************************************
  * Utility Functions
@@ -365,14 +365,14 @@ CanIf_ReturnType CanIf_InitIsotpChannel(uint8_t channelId, bool isFd);
  * @param dlc Data length code
  * @return Actual data length in bytes
  */
-uint8_t CanIf_DlcToLength(uint8_t dlc);
+uint8_t CanIf_Isotp_DlcToLength(uint8_t dlc);
 
 /**
  * @brief Convert data length to DLC
  * @param length Data length in bytes
  * @return Data length code
  */
-uint8_t CanIf_LengthToDlc(uint8_t length);
+uint8_t CanIf_Isotp_LengthToDlc(uint8_t length);
 
 /**
  * @brief Check if CAN ID is valid
@@ -380,14 +380,14 @@ uint8_t CanIf_LengthToDlc(uint8_t length);
  * @param idType ID type (standard/extended)
  * @return true if valid
  */
-bool CanIf_IsValidCanId(uint32_t canId, CanIf_IdType idType);
+bool CanIf_Isotp_IsValidCanId(uint32_t canId, CanIf_Isotp_IdType idType);
 
 /**
  * @brief Get controller configuration
  * @param controllerId Controller ID
  * @return Configuration pointer or NULL
  */
-const CanIf_ControllerConfigType* CanIf_GetControllerConfig(uint8_t controllerId);
+const CanIf_Isotp_ControllerConfigType* CanIf_Isotp_GetControllerConfig(uint8_t controllerId);
 
 /******************************************************************************
  * Main Function
@@ -396,7 +396,7 @@ const CanIf_ControllerConfigType* CanIf_GetControllerConfig(uint8_t controllerId
 /**
  * @brief Main processing function (called cyclically)
  */
-void CanIf_MainFunction(void);
+void CanIf_Isotp_MainFunction(void);
 
 #ifdef __cplusplus
 }

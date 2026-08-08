@@ -26,20 +26,20 @@
 /* Module context */
 typedef struct {
     bool initialized;
-    const CanIf_ControllerConfigType *controllers;
+    const CanIf_Isotp_ControllerConfigType *controllers;
     uint8_t numControllers;
-    const CanIf_HwDriverType *hwDriver;
+    const CanIf_Isotp_HwDriverType *hwDriver;
     
     /* Callbacks */
-    CanIf_TxConfirmationCallback txConfirmationCallback;
-    CanIf_ControllerModeCallback controllerModeCallback;
-    CanIf_ErrorCallback errorCallback;
+    CanIf_Isotp_TxConfirmationCallback txConfirmationCallback;
+    CanIf_Isotp_ControllerModeCallback controllerModeCallback;
+    CanIf_Isotp_ErrorCallback errorCallback;
     
     /* Controller states */
     uint8_t controllerModes[CANIF_MAX_CONTROLLERS];
-} CanIf_ContextType;
+} CanIf_Isotp_ContextType;
 
-static CanIf_ContextType g_canifContext;
+static CanIf_Isotp_ContextType g_canifContext;
 
 /* IsoTp channel mapping */
 typedef struct {
@@ -56,12 +56,12 @@ static CanIf_IsotpChannelMapType g_isotpChannelMap[CANIF_MAX_ISOTP_CHANNELS];
 /* Rx callbacks registry */
 typedef struct {
     uint32_t canId;
-    CanIf_RxCallback callback;
+    CanIf_Isotp_RxCallback callback;
     void *userData;
     bool active;
-} CanIf_RxCallbackEntryType;
+} CanIf_Isotp_RxCallbackEntryType;
 
-static CanIf_RxCallbackEntryType g_rxCallbacks[CANIF_MAX_CALLBACKS];
+static CanIf_Isotp_RxCallbackEntryType g_rxCallbacks[CANIF_MAX_CALLBACKS];
 
 /******************************************************************************
  * Internal Helper Functions
@@ -70,7 +70,7 @@ static CanIf_RxCallbackEntryType g_rxCallbacks[CANIF_MAX_CALLBACKS];
 /**
  * @brief Validate controller ID
  */
-static bool CanIf_IsValidController(uint8_t controllerId)
+static bool CanIf_Isotp_IsValidController(uint8_t controllerId)
 {
     return (controllerId < g_canifContext.numControllers) &&
            (g_canifContext.initialized);
@@ -79,7 +79,7 @@ static bool CanIf_IsValidController(uint8_t controllerId)
 /**
  * @brief Find callback entry by CAN ID
  */
-static CanIf_RxCallbackEntryType* CanIf_FindRxCallback(uint32_t canId)
+static CanIf_Isotp_RxCallbackEntryType* CanIf_Isotp_FindRxCallback(uint32_t canId)
 {
     for (uint8_t i = 0U; i < CANIF_MAX_CALLBACKS; i++) {
         if (g_rxCallbacks[i].active && g_rxCallbacks[i].canId == canId) {
@@ -92,7 +92,7 @@ static CanIf_RxCallbackEntryType* CanIf_FindRxCallback(uint32_t canId)
 /**
  * @brief Find free callback entry
  */
-static CanIf_RxCallbackEntryType* CanIf_FindFreeRxCallback(void)
+static CanIf_Isotp_RxCallbackEntryType* CanIf_Isotp_FindFreeRxCallback(void)
 {
     for (uint8_t i = 0U; i < CANIF_MAX_CALLBACKS; i++) {
         if (!g_rxCallbacks[i].active) {
@@ -105,7 +105,7 @@ static CanIf_RxCallbackEntryType* CanIf_FindFreeRxCallback(void)
 /**
  * @brief Find IsoTp channel mapping
  */
-static CanIf_IsotpChannelMapType* CanIf_FindIsotpChannelMap(uint8_t channelId)
+static CanIf_IsotpChannelMapType* CanIf_Isotp_FindIsotpChannelMap(uint8_t channelId)
 {
     if (channelId >= CANIF_MAX_ISOTP_CHANNELS) {
         return NULL;
@@ -116,7 +116,7 @@ static CanIf_IsotpChannelMapType* CanIf_FindIsotpChannelMap(uint8_t channelId)
 /**
  * @brief Find IsoTp channel map by CAN ID
  */
-static CanIf_IsotpChannelMapType* CanIf_FindIsotpChannelByCanId(
+static CanIf_IsotpChannelMapType* CanIf_Isotp_FindIsotpChannelByCanId(
     uint32_t canId,
     bool isRx
 )
@@ -137,10 +137,10 @@ static CanIf_IsotpChannelMapType* CanIf_FindIsotpChannelByCanId(
  * Initialization Functions
  ******************************************************************************/
 
-CanIf_ReturnType CanIf_Init(
-    const CanIf_ControllerConfigType *controllers,
+CanIf_Isotp_ReturnType CanIf_Isotp_Init(
+    const CanIf_Isotp_ControllerConfigType *controllers,
     uint8_t numControllers,
-    const CanIf_HwDriverType *hwDriver
+    const CanIf_Isotp_HwDriverType *hwDriver
 )
 {
     if (controllers == NULL || numControllers == 0U || 
@@ -171,7 +171,7 @@ CanIf_ReturnType CanIf_Init(
     return CANIF_OK;
 }
 
-void CanIf_DeInit(void)
+void CanIf_Isotp_DeInit(void)
 {
     if (!g_canifContext.initialized) {
         return;
@@ -193,13 +193,13 @@ void CanIf_DeInit(void)
  * Controller Management
  ******************************************************************************/
 
-CanIf_ReturnType CanIf_SetControllerMode(uint8_t controllerId, uint8_t mode)
+CanIf_Isotp_ReturnType CanIf_Isotp_SetControllerMode(uint8_t controllerId, uint8_t mode)
 {
-    if (!CanIf_IsValidController(controllerId)) {
+    if (!CanIf_Isotp_IsValidController(controllerId)) {
         return CANIF_INVALID_PARAMETER;
     }
     
-    CanIf_ReturnType result = CANIF_OK;
+    CanIf_Isotp_ReturnType result = CANIF_OK;
     
     switch (mode) {
         case 0U:  /* Stop */
@@ -229,9 +229,9 @@ CanIf_ReturnType CanIf_SetControllerMode(uint8_t controllerId, uint8_t mode)
     return result;
 }
 
-CanIf_ReturnType CanIf_GetControllerMode(uint8_t controllerId, uint8_t *mode)
+CanIf_Isotp_ReturnType CanIf_Isotp_GetControllerMode(uint8_t controllerId, uint8_t *mode)
 {
-    if (!CanIf_IsValidController(controllerId) || mode == NULL) {
+    if (!CanIf_Isotp_IsValidController(controllerId) || mode == NULL) {
         return CANIF_INVALID_PARAMETER;
     }
     
@@ -243,18 +243,18 @@ CanIf_ReturnType CanIf_GetControllerMode(uint8_t controllerId, uint8_t *mode)
  * Transmission Functions
  ******************************************************************************/
 
-CanIf_ReturnType CanIf_Transmit(
+CanIf_Isotp_ReturnType CanIf_Isotp_Transmit(
     uint8_t controllerId,
-    const CanIf_FrameType *frame
+    const CanIf_Isotp_FrameType *frame
 )
 {
-    if (!CanIf_IsValidController(controllerId) || frame == NULL) {
+    if (!CanIf_Isotp_IsValidController(controllerId) || frame == NULL) {
         return CANIF_INVALID_PARAMETER;
     }
     
     /* Validate CAN ID */
-    CanIf_IdType idType = (frame->canId > 0x7FFU) ? CAN_ID_TYPE_EXTENDED : CAN_ID_TYPE_STANDARD;
-    if (!CanIf_IsValidCanId(frame->canId, idType)) {
+    CanIf_Isotp_IdType idType = (frame->canId > 0x7FFU) ? CAN_ID_TYPE_EXTENDED : CAN_ID_TYPE_STANDARD;
+    if (!CanIf_Isotp_IsValidCanId(frame->canId, idType)) {
         return CANIF_INVALID_PARAMETER;
     }
     
@@ -264,7 +264,7 @@ CanIf_ReturnType CanIf_Transmit(
     }
     
     /* Check FD compatibility */
-    const CanIf_ControllerConfigType *config = &g_canifContext.controllers[controllerId];
+    const CanIf_Isotp_ControllerConfigType *config = &g_canifContext.controllers[controllerId];
     if (frame->isFd && !config->fdEnabled) {
         return CANIF_ERROR;
     }
@@ -282,16 +282,16 @@ CanIf_ReturnType CanIf_Transmit(
     return CANIF_ERROR;
 }
 
-CanIf_ReturnType CanIf_TransmitBlocking(
+CanIf_Isotp_ReturnType CanIf_Isotp_TransmitBlocking(
     uint8_t controllerId,
-    const CanIf_FrameType *frame,
+    const CanIf_Isotp_FrameType *frame,
     uint32_t timeoutMs
 )
 {
     /* For blocking transmit, we would typically use a semaphore/flag */
     /* This is a simplified implementation */
     
-    CanIf_ReturnType result = CanIf_Transmit(controllerId, frame);
+    CanIf_Isotp_ReturnType result = CanIf_Isotp_Transmit(controllerId, frame);
     if (result != CANIF_OK) {
         return result;
     }
@@ -308,17 +308,17 @@ CanIf_ReturnType CanIf_TransmitBlocking(
  * Reception Functions
  ******************************************************************************/
 
-CanIf_ReturnType CanIf_ProcessRxFrame(
+CanIf_Isotp_ReturnType CanIf_Isotp_ProcessRxFrame(
     uint8_t controllerId,
-    const CanIf_FrameType *frame
+    const CanIf_Isotp_FrameType *frame
 )
 {
-    if (!CanIf_IsValidController(controllerId) || frame == NULL) {
+    if (!CanIf_Isotp_IsValidController(controllerId) || frame == NULL) {
         return CANIF_INVALID_PARAMETER;
     }
     
     /* Try IsoTp channel mapping first */
-    CanIf_IsotpChannelMapType *isotpMap = CanIf_FindIsotpChannelByCanId(frame->canId, true);
+    CanIf_IsotpChannelMapType *isotpMap = CanIf_Isotp_FindIsotpChannelByCanId(frame->canId, true);
     if (isotpMap != NULL && isotpMap->mapped) {
         /* Forward to IsoTp for processing */
         extern Isotp_ReturnType IsoTp_ProcessRxFrame(uint8_t, const uint8_t*, uint8_t);
@@ -327,7 +327,7 @@ CanIf_ReturnType CanIf_ProcessRxFrame(
     }
     
     /* Try registered callbacks */
-    CanIf_RxCallbackEntryType *callback = CanIf_FindRxCallback(frame->canId);
+    CanIf_Isotp_RxCallbackEntryType *callback = CanIf_Isotp_FindRxCallback(frame->canId);
     if (callback != NULL && callback->callback != NULL) {
         callback->callback(controllerId, frame, callback->userData);
         return CANIF_OK;
@@ -337,9 +337,9 @@ CanIf_ReturnType CanIf_ProcessRxFrame(
     return CANIF_OK;
 }
 
-CanIf_ReturnType CanIf_RegisterRxCallback(
+CanIf_Isotp_ReturnType CanIf_Isotp_RegisterRxCallback(
     uint32_t canId,
-    CanIf_RxCallback callback,
+    CanIf_Isotp_RxCallback callback,
     void *userData
 )
 {
@@ -347,7 +347,7 @@ CanIf_ReturnType CanIf_RegisterRxCallback(
         return CANIF_INVALID_PARAMETER;
     }
     
-    CanIf_RxCallbackEntryType *entry = CanIf_FindRxCallback(canId);
+    CanIf_Isotp_RxCallbackEntryType *entry = CanIf_Isotp_FindRxCallback(canId);
     if (entry != NULL) {
         /* Update existing entry */
         entry->callback = callback;
@@ -356,7 +356,7 @@ CanIf_ReturnType CanIf_RegisterRxCallback(
     }
     
     /* Find free entry */
-    entry = CanIf_FindFreeRxCallback();
+    entry = CanIf_Isotp_FindFreeRxCallback();
     if (entry == NULL) {
         return CANIF_NO_BUFFER;
     }
@@ -369,9 +369,9 @@ CanIf_ReturnType CanIf_RegisterRxCallback(
     return CANIF_OK;
 }
 
-CanIf_ReturnType CanIf_UnregisterRxCallback(uint32_t canId)
+CanIf_Isotp_ReturnType CanIf_Isotp_UnregisterRxCallback(uint32_t canId)
 {
-    CanIf_RxCallbackEntryType *entry = CanIf_FindRxCallback(canId);
+    CanIf_Isotp_RxCallbackEntryType *entry = CanIf_Isotp_FindRxCallback(canId);
     if (entry == NULL) {
         return CANIF_INVALID_PARAMETER;
     }
@@ -387,13 +387,13 @@ CanIf_ReturnType CanIf_UnregisterRxCallback(uint32_t canId)
  * Filter Functions
  ******************************************************************************/
 
-CanIf_ReturnType CanIf_AddFilter(
+CanIf_Isotp_ReturnType CanIf_Isotp_AddFilter(
     uint8_t controllerId,
-    const CanIf_FilterType *filter,
+    const CanIf_Isotp_FilterType *filter,
     uint8_t *filterIndex
 )
 {
-    if (!CanIf_IsValidController(controllerId) || filter == NULL) {
+    if (!CanIf_Isotp_IsValidController(controllerId) || filter == NULL) {
         return CANIF_INVALID_PARAMETER;
     }
     
@@ -404,9 +404,9 @@ CanIf_ReturnType CanIf_AddFilter(
     return CANIF_ERROR;
 }
 
-CanIf_ReturnType CanIf_RemoveFilter(uint8_t controllerId, uint8_t filterIndex)
+CanIf_Isotp_ReturnType CanIf_Isotp_RemoveFilter(uint8_t controllerId, uint8_t filterIndex)
 {
-    if (!CanIf_IsValidController(controllerId)) {
+    if (!CanIf_Isotp_IsValidController(controllerId)) {
         return CANIF_INVALID_PARAMETER;
     }
     
@@ -421,17 +421,17 @@ CanIf_ReturnType CanIf_RemoveFilter(uint8_t controllerId, uint8_t filterIndex)
  * Callback Registration
  ******************************************************************************/
 
-void CanIf_RegisterTxConfirmationCallback(CanIf_TxConfirmationCallback callback)
+void CanIf_Isotp_RegisterTxConfirmationCallback(CanIf_Isotp_TxConfirmationCallback callback)
 {
     g_canifContext.txConfirmationCallback = callback;
 }
 
-void CanIf_RegisterControllerModeCallback(CanIf_ControllerModeCallback callback)
+void CanIf_Isotp_RegisterControllerModeCallback(CanIf_Isotp_ControllerModeCallback callback)
 {
     g_canifContext.controllerModeCallback = callback;
 }
 
-void CanIf_RegisterErrorCallback(CanIf_ErrorCallback callback)
+void CanIf_Isotp_RegisterErrorCallback(CanIf_Isotp_ErrorCallback callback)
 {
     g_canifContext.errorCallback = callback;
 }
@@ -451,42 +451,42 @@ Isotp_ReturnType CanIf_IsotpTransmitWrapper(
     (void)userData;  /* Unused */
     
     /* Find IsoTp channel mapping to get controller ID */
-    CanIf_IsotpChannelMapType *map = CanIf_FindIsotpChannelByCanId(canId, false);
+    CanIf_IsotpChannelMapType *map = CanIf_Isotp_FindIsotpChannelByCanId(canId, false);
     if (map == NULL || !map->mapped) {
         return ISOTP_E_NOT_OK;
     }
     
     /* Build CAN frame */
-    CanIf_FrameType frame;
+    CanIf_Isotp_FrameType frame;
     memset(&frame, 0, sizeof(frame));
     
     frame.canId = canId;
     frame.idType = (canId > 0x7FFU) ? CAN_ID_TYPE_EXTENDED : CAN_ID_TYPE_STANDARD;
-    frame.dlc = CanIf_LengthToDlc(length);
+    frame.dlc = CanIf_Isotp_LengthToDlc(length);
     frame.isFd = isFd;
     frame.isBrs = isFd;  /* Enable BRS for FD frames */
     
     memcpy(frame.data, data, length);
     
     /* Pad remaining bytes */
-    uint8_t actualLength = CanIf_DlcToLength(frame.dlc);
+    uint8_t actualLength = CanIf_Isotp_DlcToLength(frame.dlc);
     for (uint8_t i = length; i < actualLength; i++) {
         frame.data[i] = 0xAAU;  /* Padding pattern */
     }
     
-    CanIf_ReturnType result = CanIf_Transmit(map->controllerId, &frame);
+    CanIf_Isotp_ReturnType result = CanIf_Isotp_Transmit(map->controllerId, &frame);
     
     return (result == CANIF_OK) ? ISOTP_E_OK : ISOTP_E_NOT_OK;
 }
 
-CanIf_ReturnType CanIf_MapIsotpChannel(
+CanIf_Isotp_ReturnType CanIf_Isotp_MapIsotpChannel(
     uint8_t channelId,
     uint8_t controllerId,
     uint32_t txCanId,
     uint32_t rxCanId
 )
 {
-    if (channelId >= CANIF_MAX_ISOTP_CHANNELS || !CanIf_IsValidController(controllerId)) {
+    if (channelId >= CANIF_MAX_ISOTP_CHANNELS || !CanIf_Isotp_IsValidController(controllerId)) {
         return CANIF_INVALID_PARAMETER;
     }
     
@@ -500,7 +500,7 @@ CanIf_ReturnType CanIf_MapIsotpChannel(
     return CANIF_OK;
 }
 
-CanIf_ReturnType CanIf_InitIsotpChannel(uint8_t channelId, bool isFd)
+CanIf_Isotp_ReturnType CanIf_Isotp_InitIsotpChannel(uint8_t channelId, bool isFd)
 {
     if (channelId >= CANIF_MAX_ISOTP_CHANNELS) {
         return CANIF_INVALID_PARAMETER;
@@ -514,21 +514,21 @@ CanIf_ReturnType CanIf_InitIsotpChannel(uint8_t channelId, bool isFd)
     map->isFd = isFd;
     
     /* Add hardware filter for RX CAN ID */
-    CanIf_FilterType filter;
+    CanIf_Isotp_FilterType filter;
     filter.canId = map->rxCanId;
     filter.mask = (map->rxCanId > 0x7FFU) ? 0x1FFFFFFFU : 0x7FFU;
     filter.idType = (map->rxCanId > 0x7FFU) ? CAN_ID_TYPE_EXTENDED : CAN_ID_TYPE_STANDARD;
     filter.controllerId = map->controllerId;
     
     uint8_t filterIndex;
-    return CanIf_AddFilter(map->controllerId, &filter, &filterIndex);
+    return CanIf_Isotp_AddFilter(map->controllerId, &filter, &filterIndex);
 }
 
 /******************************************************************************
  * Utility Functions
  ******************************************************************************/
 
-uint8_t CanIf_DlcToLength(uint8_t dlc)
+uint8_t CanIf_Isotp_DlcToLength(uint8_t dlc)
 {
     /* CAN FD DLC to length mapping */
     static const uint8_t dlcTable[] = {
@@ -543,7 +543,7 @@ uint8_t CanIf_DlcToLength(uint8_t dlc)
     return dlcTable[dlc];
 }
 
-uint8_t CanIf_LengthToDlc(uint8_t length)
+uint8_t CanIf_Isotp_LengthToDlc(uint8_t length)
 {
     /* Length to CAN FD DLC mapping */
     if (length <= 8U) {
@@ -567,7 +567,7 @@ uint8_t CanIf_LengthToDlc(uint8_t length)
     return 15U;  /* Max DLC */
 }
 
-bool CanIf_IsValidCanId(uint32_t canId, CanIf_IdType idType)
+bool CanIf_Isotp_IsValidCanId(uint32_t canId, CanIf_Isotp_IdType idType)
 {
     if (idType == CAN_ID_TYPE_STANDARD) {
         return (canId <= 0x7FFU);
@@ -576,9 +576,9 @@ bool CanIf_IsValidCanId(uint32_t canId, CanIf_IdType idType)
     }
 }
 
-const CanIf_ControllerConfigType* CanIf_GetControllerConfig(uint8_t controllerId)
+const CanIf_Isotp_ControllerConfigType* CanIf_Isotp_GetControllerConfig(uint8_t controllerId)
 {
-    if (!CanIf_IsValidController(controllerId)) {
+    if (!CanIf_Isotp_IsValidController(controllerId)) {
         return NULL;
     }
     return &g_canifContext.controllers[controllerId];
@@ -588,7 +588,7 @@ const CanIf_ControllerConfigType* CanIf_GetControllerConfig(uint8_t controllerId
  * Main Function
  ******************************************************************************/
 
-void CanIf_MainFunction(void)
+void CanIf_Isotp_MainFunction(void)
 {
     if (!g_canifContext.initialized) {
         return;
