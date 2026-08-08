@@ -1,6 +1,21 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-09 (A2+A3 RTE 生成器吸收 cogu 类型方法论, HEAD=8119509d, 已 push)
+> 最后更新: 2026-08-09 (B1 TcpIp 加深, HEAD=929815f6, 已 push)
+
+---
+
+## ✅ 2026-08-09 B1 TcpIp 加深 — 已完成 (HEAD=929815f6)
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| API 补全 | ✅ AUTOSAR SWS TcpIp 接口面补齐：新增 Listen/Connect/Accept/Abort/SetRemoteAddr/SetLocalAddr/BindLocalAddr/GetLocalAddr/GetRemoteAddr/GetConnectionState/GetTcpState/GetInterfaceState/GetIpAddrState/GetIPv4SubnetMask/ChangeTcpState/SetRxBuffer/GetRxBuffer/ReleaseRxBuffer/GetTxBuffer/ReleaseTxBuffer/Set-GetTcpOption/Set-GetUdpOption/RxIndication/TxConfirmation；导出 API 20→49 个 | e5efc655 | native 0 warning；lwIP 路径 -Werror 编译通过（lwIP 2.2.2 headers） |
+| 多连接/多 socket | ✅ 静态 socket 表 TCPIP_MAX_SOCKETS=8；RFC-793 子集状态机（CLOSED/LISTEN/SYN-SENT/SYN-RECEIVED/ESTABLISHED/FIN-WAIT/CLOSE-WAIT/TIME-WAIT）+ 转移校验；LISTEN→SYN 自动 spawn child 入 backlog 队列（Backlog 上限生效）；Accept FIFO；优雅关闭由 MainFunction 步进；每 socket 池化 RX 环形队列（TCPIP_MAX_RX_BUFFERS=2）| b01ea4fa | 多连接/backlog 溢出/状态机单测覆盖 |
+| VLAN 支持 | ✅ TcpIp_VlanConfigType（VlanEnabled/VID 12-bit/PCP 0-7/DropUntagged）+ Set/GetVlanConfig；校验 VID≤4095/PCP≤7；上线打标委派 lwIP LWIP_VLAN_PCP 或 EthSwt（B2），适配层只做跟踪校验（不重写协议栈） | 811646f3 | VLAN 单测 4 项（含非法值） |
+| 统计能力 | ✅ TcpIp_StatisticsType 13 计数器（Tx/Rx 包+字节/错误/溢出/TCP opens/established/close/socket 创建关闭）+ GetStatistics/ResetStatistics；计数接入 Send/Receive/RxIndication/Connect/ChangeTcpState/Create/Close | 6ad2c07a | 统计单测（含被动打开） |
+| 单测 | ✅ tests/unit/services/tcpip/test_tcpip.c 49 项（init/生命周期/多连接/状态机/RX-TX 缓冲/options/VLAN/统计/DET），挂载 ctest（TcpIp_UnitTest）；顺带修复旧测试框架隐患（RUN_TEST 需 test_ 前缀、RUN_TEST_SUITE 引用未定义 g_test_stats）| 1fd7fcc4 (amend 4ee02955) | 49/49 PASS；ctest 41/41 100% |
+| 构建验证 | ✅ tcpip_lwip_compile_check 常驻目标（TCPIP_ENABLE_LWIP=STD_ON vs lwIP 2.2.2 headers，-Werror）；全量 native 构建 0 error、tcpip 0 warning | 929815f6 | 全量 build 0 error；ctest 41/41 |
+
+> 行数：TcpIp.c 694→2363、TcpIp.h 224→474、TcpIp_Cfg.h 74→98（模块 992→2935）；报告 `reports/tcpip-deepen-20260809.md`。MISRA：pre-commit 扫描仅 advisory 类（15.5/20.9/2.3/2.5/unusedFunction，全库既有模式），无新增 required。
 
 ---
 
