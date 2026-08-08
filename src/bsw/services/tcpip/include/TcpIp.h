@@ -252,6 +252,18 @@ typedef struct {
     uint8  EthLinkCheckIntervalMs;  /* Link polling ms      */
 } TcpIp_ConfigType;
 
+/* VLAN configuration (B1): adaption-layer VLAN settings for the
+ * single Ethernet interface.  Actual on-wire tag insertion is performed
+ * by lwIP (LWIP_VLAN_PCP, per-PCB TCI via netif hints) or by the
+ * Ethernet Switch (EthSwt, see B2); this module validates and tracks
+ * the interface VLAN membership. */
+typedef struct {
+    boolean VlanEnabled;       /* Tag outgoing frames with the VLAN id */
+    uint16  VlanId;            /* 12-bit VID (0..4095); 0 = untagged */
+    uint8   VlanPriority;      /* 802.1p PCP (0..7) */
+    boolean DropUntagged;      /* Drop untagged ingress frames */
+} TcpIp_VlanConfigType;
+
 /*==================================================================================================
  *                                    FUNCTION DECLARATIONS
  *==================================================================================================*/
@@ -420,5 +432,15 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
 /** @brief TX completion hook — called by the lwIP adapter on send
  *         confirmation (AUTOSAR TcpIp_TxConfirmation concept). */
 TcpIp_ReturnType TcpIp_TxConfirmation(TcpIp_SocketIdType SocketId, boolean Success);
+
+/* ---- VLAN (B1) ---- */
+
+/** @brief Set the interface VLAN configuration. */
+#if (TCPIP_VLAN_SUPPORT == STD_ON)
+TcpIp_ReturnType TcpIp_SetVlanConfig(const TcpIp_VlanConfigType* VlanConfigPtr);
+
+/** @brief Get the interface VLAN configuration. */
+TcpIp_ReturnType TcpIp_GetVlanConfig(TcpIp_VlanConfigType* VlanConfigPtr);
+#endif
 
 #endif /* TCPIP_H */

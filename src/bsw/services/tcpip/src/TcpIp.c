@@ -132,6 +132,9 @@ typedef struct {
     uint32                Ipv4Addr;
     uint32                Ipv4Mask;
     uint32                Ipv4Gateway;
+#if (TCPIP_VLAN_SUPPORT == STD_ON)
+    TcpIp_VlanConfigType  VlanConfig;
+#endif
 } TcpIp_InternalStateType;
 
 /*==================================================================================================
@@ -584,6 +587,13 @@ void TcpIp_Init(const TcpIp_ConfigType* ConfigPtr)
     TcpIp_InternalState.Ipv4Addr  = TCPIP_DEFAULT_IPV4_ADDR;
     TcpIp_InternalState.Ipv4Mask  = TCPIP_DEFAULT_IPV4_MASK;
     TcpIp_InternalState.Ipv4Gateway = TCPIP_DEFAULT_IPV4_GW;
+
+#if (TCPIP_VLAN_SUPPORT == STD_ON)
+    TcpIp_InternalState.VlanConfig.VlanEnabled = FALSE;
+    TcpIp_InternalState.VlanConfig.VlanId = (uint16)TCPIP_DEFAULT_VLAN_ID;
+    TcpIp_InternalState.VlanConfig.VlanPriority = (uint8)TCPIP_DEFAULT_VLAN_PRIORITY;
+    TcpIp_InternalState.VlanConfig.DropUntagged = FALSE;
+#endif
 
     /* Clear socket table */
     (void)memset(TcpIp_InternalState.Sockets, 0, sizeof(TcpIp_InternalState.Sockets));
@@ -2140,3 +2150,79 @@ TcpIp_ReturnType TcpIp_TxConfirmation(TcpIp_SocketIdType SocketId, boolean Succe
     (void)Success;   /* status recorded by statistics (B1 commit 4) */
     return TCPIP_OK;
 }
+
+/*==================================================================================================
+ *                                      VLAN (B1)
+ *==================================================================================================*/
+
+#if (TCPIP_VLAN_SUPPORT == STD_ON)
+
+/**
+ * @brief Set the interface VLAN configuration.
+ *
+ * The adaption layer validates and stores the membership.  On-wire tag
+ * insertion is delegated to lwIP (LWIP_VLAN_PCP, per-PCB TCI set by the
+ * EthIf/lwIP port from this configuration) or to the Ethernet Switch
+ * driver (EthSwt, B2).
+ */
+TcpIp_ReturnType TcpIp_SetVlanConfig(const TcpIp_VlanConfigType* VlanConfigPtr)
+{
+#if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_SETVLANCONFIG, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
+    if (VlanConfigPtr == NULL_PTR)
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_SETVLANCONFIG, TCPIP_E_PARAM_POINTER);
+        return TCPIP_E_NOT_OK;
+    }
+#endif
+
+    if (VlanConfigPtr->VlanId > 4095U)
+    {
+        return TCPIP_E_PARAM_CONFIG;   /* 12-bit VID */
+    }
+    if (VlanConfigPtr->VlanPriority > 7U)
+    {
+        return TCPIP_E_PARAM_CONFIG;   /* 3-bit PCP */
+    }
+
+    TcpIp_InternalState.VlanConfig.VlanEnabled = VlanConfigPtr->VlanEnabled;
+    TcpIp_InternalState.VlanConfig.VlanId = VlanConfigPtr->VlanId;
+    TcpIp_InternalState.VlanConfig.VlanPriority = VlanConfigPtr->VlanPriority;
+    TcpIp_InternalState.VlanConfig.DropUntagged = VlanConfigPtr->DropUntagged;
+
+#if defined(TCPIP_ENABLE_LWIP) && (TCPIP_ENABLE_LWIP == STD_ON) && defined(LWIP_VLAN_PCP) && (LWIP_VLAN_PCP == 1)
+    /* lwIP per-PCB VLAN TCI: applied through netif hints by the lwIP
+     * port (EthIf).  This module stores the config; the actual TCI is
+     * consumed by LWIP_VLAN_PCP-enabled builds at transmit time. */
+#endif
+
+    return TCPIP_OK;
+}
+
+/**
+ * @brief Get the interface VLAN configuration.
+ */
+TcpIp_ReturnType TcpIp_GetVlanConfig(TcpIp_VlanConfigType* VlanConfigPtr)
+{
+#if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETVLANCONFIG, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
+    if (VlanConfigPtr == NULL_PTR)
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETVLANCONFIG, TCPIP_E_PARAM_POINTER);
+        return TCPIP_E_NOT_OK;
+    }
+#endif
+
+    *VlanConfigPtr = TcpIp_InternalState.VlanConfig;
+    return TCPIP_OK;
+}
+
+#endif /* TCPIP_VLAN_SUPPORT */
