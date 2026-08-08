@@ -1,6 +1,20 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (批C 收尾完成 — mbedTLS 静态池 + HEAP_SIZE 回收)
+> 最后更新: 2026-08-08 (S1 修复批 — EthSM 多网络回归 + 2 条 error 级缺陷, HEAD=c800c265)
+
+---
+
+## ✅ 2026-08-08 S1 修复批 (检视报告修复) — 已完成
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| P0-A EthSM 多网络回归 | ✅ 19 处赋值恢复 (trcvIdx ×3 + ctrlIdx ×16, 逐行对照 ef6ff5c3~1); 网络 1+ 不再被当网络 0 | 1889b03a | 新增双网络单测 tests/unit/ethsm/ (7 用例) 编译真实生产源码 + mock EthIf/ComM/Det; 修复前代码 6/7 FAIL, 修复后 7/7 PASS; ctest EthSM_UnitTest 通过 |
+| P1-3a dcm_transfer OOB | ✅ responseData [4]→[5] (ISO 14229 RequestDownload 正响应 5 字节), 协议语义不变 | c800c265 | cppcheck 无 arrayIndexOutOfBounds; 模块编译通过; integration_diag_tests 通过 |
+| P1-3b CanTSyn 未初始化 | ✅ RxTimeStamp 四字段先全部显式初始化再整体赋值 | c800c265 | cppcheck 实证修复前 uninitvar error (395:53) → 修复后 0 报错; 模块编译通过 |
+
+**验证总览**: 全量 native 构建 0 error; ctest 36/37 (唯一失败 = pre-existing mcal_uart SegFault; s0_smoke 无限循环为 pre-existing 遗留, 排除); cppcheck 三文件 0 uninitvar/OOB。
+
+**遗留 (pre-existing, 与本次无关)**: mcal_uart_test SegFault; s0_smoke_test 无限循环; P0-B 安全后端假实现 (Csm_Cfg_HwService/KeyM KDF/crypto_stack 模拟后端); P1-1 isotp/CanIf 符号冲突; P1-2 doip stub; P1-4 LTO 库不可索引; P1-5 CI 残留; P1-6 safety 未编译。
 
 ---
 
