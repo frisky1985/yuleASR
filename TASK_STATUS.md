@@ -1,6 +1,18 @@
 # 项目状态与待办
 
-> 最后更新: 2026-08-08 (S4 P1 收尾 — CI/文档残留引用 + safety 模块真实编译, HEAD=47919b63, P1 全清零)
+> 最后更新: 2026-08-08 (P2-A 代码类 3 项修复, HEAD=a8f950a5, P2-4/6/9 完成)
+
+---
+
+## ✅ 2026-08-08 P2-A 修复批 (代码类 3 项) — 已完成
+
+| 项 | 结果 | Commit | 验证 |
+|:---|:-----|:-------|:-----|
+| P2-4 E2E 双实现归一 | ✅ Classic E2E 库 E2E.c 由空 stub 实现 AUTOSAR 标准 E2E_Init(const void*)/DeInit, 由 Classic 库导出唯一 E2E_Init; host 版 e2e_protection.c 同名无参 E2E_Init(void) 更名 E2E_Protection_Init (4 处调用同步); 删除 src 下 6 个 *.dump 垃圾文件 | 0c33cee3 | nm: service_e2e.a 含唯一 T _E2E_Init; eth_e2e.a 无 T _E2E_Init 仅 T _E2E_Protection_Init; 目标构建 0 error |
+| P2-6 _impl.c 死代码清理 | ✅ 16 个 _impl.c (6922 行) 逐一核实为死代码 (CMake FILTER EXCLUDE + 无父文件 include + 无引用, 父文件均有自有实现), 保守 git mv 至各模块 legacy/ 目录; CMake FILTER 注释更新, misra-deviation-report 路径同步 | 7326fb29 | 全量构建 0 error; src 下 */src/*_impl.c = 0; 无 _impl.o 产物 |
+| P2-9 dds_get_current_time_ms 强符号重复 | ✅ 保留 dds_security_manager.c 真实 CLOCK_MONOTONIC 实现, 删除 dds_runtime.c 重复定义 (包装模拟时钟), 头文件注释同步 | a8f950a5 | nm 全归档仅 1 个 T _dds_get_current_time_ms (dds_security_manager.c.o); 全量构建 0 error; dds_core/dds_security 测试通过 |
+
+**P2 遗留 (非代码类)**: dds-config-tool 三份并存、批C 自述修正、dds-config-tool make test 示例配置悬空引用、MISRA deviation 通配收窄、web_gui systemd 硬编码路径等。
 
 ---
 
