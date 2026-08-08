@@ -72,6 +72,16 @@
 #define TCPIP_IS_INIT() \
     (TcpIp_InternalState.State == TCPIP_STATE_INIT)
 
+#if (TCPIP_ENABLE_STATISTICS == STD_ON)
+    #define TCPIP_STATS_INC(field) \
+        do { TcpIp_InternalState.Statistics.field = (uint32)(TcpIp_InternalState.Statistics.field + 1U); } while (0)
+    #define TCPIP_STATS_ADD(field, value) \
+        do { TcpIp_InternalState.Statistics.field = (uint32)(TcpIp_InternalState.Statistics.field + (uint32)(value)); } while (0)
+#else
+    #define TCPIP_STATS_INC(field)
+    #define TCPIP_STATS_ADD(field, value)
+#endif
+
 /*==================================================================================================
  *                                    LOCAL TYPES
  *==================================================================================================*/
@@ -134,6 +144,9 @@ typedef struct {
     uint32                Ipv4Gateway;
 #if (TCPIP_VLAN_SUPPORT == STD_ON)
     TcpIp_VlanConfigType  VlanConfig;
+#endif
+#if (TCPIP_ENABLE_STATISTICS == STD_ON)
+    TcpIp_StatisticsType  Statistics;
 #endif
 } TcpIp_InternalStateType;
 
@@ -209,7 +222,16 @@ static void TcpIp_LocalFreeSlot(TcpIp_SocketIdType SocketId)
 {
     if (TCPIP_IS_VALID_SOCKET(SocketId))
     {
-        (void)memset(&TcpIp_InternalState.Sockets[SocketId], 0, sizeof(TcpIp_SocketEntryType));
+        TcpIp_SocketEntryType* entry = &TcpIp_InternalState.Sockets[SocketId];
+        if (entry->InUse)
+        {
+            if (entry->SockType == TCPIP_SOCK_STREAM)
+            {
+                TCPIP_STATS_INC(TcpCloseCount);
+            }
+            TCPIP_STATS_INC(SocketCloseCount);
+        }
+        (void)memset(entry, 0, sizeof(TcpIp_SocketEntryType));
     }
 }
 
@@ -393,6 +415,7 @@ static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const u
     entry = TcpIp_LocalFindSocket(SocketId);
     if (entry == NULL_PTR)
     {
+        TCPIP_STATS_INC(TxErrors);
         return TCPIP_E_NOT_OK;
     }
 
@@ -404,6 +427,7 @@ static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const u
             err = tcp_write((struct tcp_pcb*)entry->Pcb, Data, Length, TCP_WRITE_FLAG_COPY);
             if (err != ERR_OK)
             {
+                TCPIP_STATS_INC(TxErrors);
                 result = TCPIP_E_NOT_OK;
             }
         }
@@ -412,6 +436,7 @@ static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const u
             struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT, Length, PBUF_POOL);
             if (p == NULL_PTR)
             {
+                TCPIP_STATS_INC(TxErrors);
                 result = TCPIP_E_NOBUFS;
             }
             else
@@ -421,6 +446,7 @@ static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const u
                 pbuf_free(p);
                 if (err != ERR_OK)
                 {
+                    TCPIP_STATS_INC(TxErrors);
                     result = TCPIP_E_NOT_OK;
                 }
             }
@@ -433,6 +459,12 @@ static TcpIp_ReturnType TcpIp_LocalCommitTx(TcpIp_SocketIdType SocketId, const u
     (void)Data;
     (void)Length;
 #endif
+
+    if (result == TCPIP_OK)
+    {
+        TCPIP_STATS_INC(TxPackets);
+        TCPIP_STATS_ADD(TxBytes, Length);
+    }
 
     return result;
 }
@@ -726,6 +758,7 @@ TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType domain, TcpIp_SockTypeType type, 
 #endif
 
     *SocketId = slot;
+    TCPIP_STATS_INC(SocketCreateCount);
     return TCPIP_OK;
 }
 
@@ -1330,6 +1363,7 @@ TcpIp_ReturnType TcpIp_Connect(TcpIp_SocketIdType SocketId, const TcpIp_SockAddr
     (void)memcpy(entry->RemoteAddr, RemoteAddr->addr, TCPIP_IPV6_ADDR_LEN);
     entry->TcpState = TCPIP_TCPSTATE_SYN_SENT;
     TcpIp_LocalUpdateConnState(entry);
+    TCPIP_STATS_INC(TcpActiveOpens);
 
 #if defined(TCPIP_ENABLE_LWIP) && (TCPIP_ENABLE_LWIP == STD_ON)
     {
@@ -1364,6 +1398,7 @@ TcpIp_ReturnType TcpIp_Connect(TcpIp_SocketIdType SocketId, const TcpIp_SockAddr
     {
         entry->TcpState = TCPIP_TCPSTATE_ESTABLISHED;
         TcpIp_LocalUpdateConnState(entry);
+        TCPIP_STATS_INC(TcpEstablishedCount);
     }
 #endif
 
@@ -1696,6 +1731,7 @@ TcpIp_ReturnType TcpIp_ChangeTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStat
         (void)memcpy(childEntry->LocalAddr, entry->LocalAddr, TCPIP_IPV6_ADDR_LEN);
         childEntry->TcpState = TCPIP_TCPSTATE_SYN_RECEIVED;
         childEntry->ConnState = TCPIP_CONNSTATE_CONNECTED;
+        TCPIP_STATS_INC(TcpPassiveOpens);
 
         entry->PendingSockets[entry->PendingCount] = child;
         entry->PendingCount++;
@@ -1709,6 +1745,10 @@ TcpIp_ReturnType TcpIp_ChangeTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStat
     }
 
     entry->TcpState = NewState;
+    if (NewState == TCPIP_TCPSTATE_ESTABLISHED)
+    {
+        TCPIP_STATS_INC(TcpEstablishedCount);
+    }
     if (NewState == TCPIP_TCPSTATE_CLOSED)
     {
         entry->CloseInProgress = FALSE;
@@ -2089,6 +2129,7 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
     entry = TcpIp_LocalFindSocket(SocketId);
     if (entry == NULL_PTR)
     {
+        TCPIP_STATS_INC(RxErrors);
         return TCPIP_E_NOT_OK;
     }
     if (Length == 0U)
@@ -2097,6 +2138,7 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
     }
     if (Length > (uint16)TCPIP_PBUF_POOL_BUF_SIZE)
     {
+        TCPIP_STATS_INC(RxOverflows);
         return TCPIP_E_BUFFER_OVERFLOW;
     }
 
@@ -2108,6 +2150,8 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
             (void)memcpy(entry->RxUserBuf, Data, Length);
             entry->RxUserLen = Length;
             entry->RxUserPending = TRUE;
+            TCPIP_STATS_INC(RxPackets);
+            TCPIP_STATS_ADD(RxBytes, Length);
             return TCPIP_OK;
         }
         /* User buffer too small: fall through to the internal pool. */
@@ -2116,12 +2160,15 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
     /* Pool-backed ring queue (depth TCPIP_MAX_RX_BUFFERS per socket). */
     if (entry->RxCount >= (uint8)TCPIP_MAX_RX_BUFFERS)
     {
+        TCPIP_STATS_INC(RxOverflows);
         return TCPIP_E_BUFFER_OVERFLOW;   /* queue full */
     }
     (void)memcpy(&entry->RxPool[entry->RxTail][0], Data, Length);
     entry->RxPoolLen[entry->RxTail] = Length;
     entry->RxTail = (uint8)((entry->RxTail + 1U) % TCPIP_MAX_RX_BUFFERS);
     entry->RxCount++;
+    TCPIP_STATS_INC(RxPackets);
+    TCPIP_STATS_ADD(RxBytes, Length);
     return TCPIP_OK;
 }
 
@@ -2226,3 +2273,50 @@ TcpIp_ReturnType TcpIp_GetVlanConfig(TcpIp_VlanConfigType* VlanConfigPtr)
 }
 
 #endif /* TCPIP_VLAN_SUPPORT */
+
+/*==================================================================================================
+ *                                  STATISTICS (B1)
+ *==================================================================================================*/
+
+#if (TCPIP_ENABLE_STATISTICS == STD_ON)
+
+/**
+ * @brief Get the module statistics counters.
+ */
+TcpIp_ReturnType TcpIp_GetStatistics(TcpIp_StatisticsType* StatisticsPtr)
+{
+#if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETSTATISTICS, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
+    if (StatisticsPtr == NULL_PTR)
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_GETSTATISTICS, TCPIP_E_PARAM_POINTER);
+        return TCPIP_E_NOT_OK;
+    }
+#endif
+
+    *StatisticsPtr = TcpIp_InternalState.Statistics;
+    return TCPIP_OK;
+}
+
+/**
+ * @brief Reset the module statistics counters to zero.
+ */
+TcpIp_ReturnType TcpIp_ResetStatistics(void)
+{
+#if (TCPIP_DEV_ERROR_DETECT == STD_ON)
+    if (!TCPIP_IS_INIT())
+    {
+        TCPIP_DET_REPORT_ERROR(TCPIP_SID_RESETSTATISTICS, TCPIP_E_UNINIT);
+        return TCPIP_E_NOT_OK;
+    }
+#endif
+
+    (void)memset(&TcpIp_InternalState.Statistics, 0, sizeof(TcpIp_InternalState.Statistics));
+    return TCPIP_OK;
+}
+
+#endif /* TCPIP_ENABLE_STATISTICS */

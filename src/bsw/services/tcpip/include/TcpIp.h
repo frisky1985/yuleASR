@@ -264,6 +264,24 @@ typedef struct {
     boolean DropUntagged;      /* Drop untagged ingress frames */
 } TcpIp_VlanConfigType;
 
+/* Statistics (B1): monotonic counters aligned with AUTOSAR
+ * TcpIp_GetStatistics-class capability.  Reset via TcpIp_ResetStatistics. */
+typedef struct {
+    uint32 TxPackets;          /* datagrams/segments handed to the stack  */
+    uint32 TxBytes;            /* payload bytes transmitted               */
+    uint32 RxPackets;          /* segments/datagrams queued by RxIndication */
+    uint32 RxBytes;            /* payload bytes received                  */
+    uint32 TxErrors;           /* transmit failures                       */
+    uint32 RxErrors;           /* receive errors (invalid socket/input)   */
+    uint32 RxOverflows;        /* RX queue / chunk overflow               */
+    uint32 TcpActiveOpens;     /* TCP connect() initiations               */
+    uint32 TcpPassiveOpens;    /* incoming SYNs accepted on listeners     */
+    uint32 TcpEstablishedCount;/* transitions into ESTABLISHED            */
+    uint32 TcpCloseCount;      /* TCP connections closed (slot freed)     */
+    uint32 SocketCreateCount;  /* TcpIp_Create successes                  */
+    uint32 SocketCloseCount;   /* slots released (Close/Abort/pending)    */
+} TcpIp_StatisticsType;
+
 /*==================================================================================================
  *                                    FUNCTION DECLARATIONS
  *==================================================================================================*/
@@ -441,6 +459,16 @@ TcpIp_ReturnType TcpIp_SetVlanConfig(const TcpIp_VlanConfigType* VlanConfigPtr);
 
 /** @brief Get the interface VLAN configuration. */
 TcpIp_ReturnType TcpIp_GetVlanConfig(TcpIp_VlanConfigType* VlanConfigPtr);
+#endif
+
+/* ---- Statistics (B1) ---- */
+
+/** @brief Get the module statistics counters. */
+#if (TCPIP_ENABLE_STATISTICS == STD_ON)
+TcpIp_ReturnType TcpIp_GetStatistics(TcpIp_StatisticsType* StatisticsPtr);
+
+/** @brief Reset the module statistics counters to zero. */
+TcpIp_ReturnType TcpIp_ResetStatistics(void);
 #endif
 
 #endif /* TCPIP_H */
