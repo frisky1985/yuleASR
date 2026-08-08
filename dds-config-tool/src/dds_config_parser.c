@@ -741,11 +741,30 @@ static dds_config_error_t parse_yaml_file(dds_config_parser_t *parser, FILE *fp,
         }
 
         /* List item detection (starts with - ) */
+        /*
+         * Fix (2026-08-08, P2-3): a new list element may start while the
+         * parser is still inside the element state (e.g. after the first
+         * "- name: ..." the state is PARSE_QOS_PROFILE, not PARSE_QOS_PROFILES).
+         * Accept list items in the element states too so that every "- " line
+         * starts a fresh element, matching the YAML structure.
+         */
         bool is_list_item = (strncmp(key, "- ", 2) == 0);
         if (is_list_item) {
             const char *item_key = key + 2;
 
-            if (parse_state == PARSE_DOMAINS) {
+            bool in_domain_list =
+                (parse_state == PARSE_DOMAINS || parse_state == PARSE_DOMAIN ||
+                 parse_state == PARSE_DOMAIN_DISCOVERY ||
+                 parse_state == PARSE_DOMAIN_TRANSPORT ||
+                 parse_state == PARSE_DOMAIN_SECURITY);
+            bool in_qos_list =
+                (parse_state == PARSE_QOS_PROFILES || parse_state == PARSE_QOS_PROFILE);
+            bool in_topic_list =
+                (parse_state == PARSE_TOPICS || parse_state == PARSE_TOPIC);
+            bool in_participant_list =
+                (parse_state == PARSE_PARTICIPANTS || parse_state == PARSE_PARTICIPANT);
+
+            if (in_domain_list) {
                 /* New domain */
                 cfg->domains = realloc(cfg->domains, (cfg->domain_count + 1) * sizeof(dds_domain_config_t));
                 if (cfg->domains) {
@@ -761,7 +780,7 @@ static dds_config_error_t parse_yaml_file(dds_config_parser_t *parser, FILE *fp,
                 continue;
             }
 
-            if (parse_state == PARSE_QOS_PROFILES) {
+            if (in_qos_list) {
                 /* New QoS profile */
                 cfg->qos_profiles = realloc(cfg->qos_profiles, (cfg->qos_profile_count + 1) * sizeof(dds_qos_profile_t));
                 if (cfg->qos_profiles) {
@@ -776,7 +795,7 @@ static dds_config_error_t parse_yaml_file(dds_config_parser_t *parser, FILE *fp,
                 continue;
             }
 
-            if (parse_state == PARSE_TOPICS) {
+            if (in_topic_list) {
                 /* New topic */
                 cfg->topics = realloc(cfg->topics, (cfg->topic_count + 1) * sizeof(dds_topic_config_t));
                 if (cfg->topics) {
@@ -791,7 +810,7 @@ static dds_config_error_t parse_yaml_file(dds_config_parser_t *parser, FILE *fp,
                 continue;
             }
 
-            if (parse_state == PARSE_PARTICIPANTS) {
+            if (in_participant_list) {
                 /* New participant */
                 cfg->participants = realloc(cfg->participants, (cfg->participant_count + 1) * sizeof(dds_participant_config_t));
                 if (cfg->participants) {
