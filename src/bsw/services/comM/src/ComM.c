@@ -889,3 +889,27 @@ static void ComM_HandlePncChannelRequests(ComM_PncHandleType Pnc)
     }
 }
 #endif /* COMM_PNC_SUPPORT */
+
+/*==================================================================================================
+*                          NM NOTIFICATIONS (T3, 2026-08-08)
+*
+* Called by the Nm stack (LinNm/CanNm/...) when a network enters
+* BUS_SLEEP / PREPARE_BUS_SLEEP / NETWORK mode. No-op stubs: the ComM
+* channel state machine is driven by ComM_RequestComMode; integrating
+* Nm-initiated mode changes is follow-up work. Providing the symbols is
+* required for the previously-empty-compiled modules to link.
+==================================================================================================*/
+void ComM_Nm_NetworkMode(uint8 NetworkHandle)
+{
+    (void)NetworkHandle;
+}
+
+void ComM_Nm_PrepareBusSleepMode(uint8 NetworkHandle)
+{
+    (void)NetworkHandle;
+}
+
+void ComM_Nm_BusSleepMode(uint8 NetworkHandle)
+{
+    (void)NetworkHandle;
+}
