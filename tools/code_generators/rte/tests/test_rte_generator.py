@@ -58,7 +58,9 @@ from rte_generator import (
     RteTypeCodeBlock,
     STANDARD_C_TYPES,
     build_type_defs,
+    build_type_model,
     collect_referenced_type_names,
+    collect_referenced_type_refs,
     gen_type_dependency_trees,
     get_type_creation_order,
     gen_type_creation_order,
@@ -66,6 +68,7 @@ from rte_generator import (
     gen_rte_type_defs_str,
     map_to_c_type,
     resolve_data_semantics,
+    TypeModel,
 )
 
 # yuleASR ARXML parser data model (path is made importable by rte_generator)
@@ -1347,7 +1350,97 @@ class TestRteTypeHGolden:
 
 
 # ---------------------------------------------------------------------------
-#  14. Run
+#  14. Y1: Memoized type model (cogu ImplementationModel.data_types port)
+# ---------------------------------------------------------------------------
+class TestTypeModelMemoization:
+    def test_shared_type_built_once_same_instance(self):
+        dt1 = DataType(name='SpeedType', category='VALUE',
+                       base_type='/BaseTypes/uint16')
+        dt2 = DataType(name='TempType', category='VALUE',
+                       base_type='/BaseTypes/uint8')
+        model = TypeModel()
+        a = model.create_from_element(dt1, ref='/DataTypes/SpeedType')
+        b = model.create_from_element(dt1, ref='/DataTypes/SpeedType')
+        c = model.create_from_element(dt2, ref='/DataTypes/TempType')
+        assert a is b          # same ref → cached, built exactly once
+        assert a is not c
+        # 2 distinct types → 2 instances, even though the dict carries
+        # both full-ref keys and short-name aliases (4 keys, 2 values)
+        assert len({id(v) for v in model.data_types.values()}) == 2
+        # short-name alias points at the same instance
+        assert model.data_types['SpeedType'] is a
+
+    def test_ref_and_short_name_share_cache(self):
+        dt = DataType(name='SpeedType', category='VALUE',
+                      base_type='/BaseTypes/uint16')
+        type_map = {'SpeedType': dt, '/DataTypes/SpeedType': dt}
+        model = TypeModel()
+        via_ref = model.create_from_ref('/DataTypes/SpeedType', type_map)
+        via_short = model.create_from_ref('SpeedType', type_map)
+        assert via_ref is via_short
+        assert model.data_types['/DataTypes/SpeedType'] is via_ref
+        assert model.data_types['SpeedType'] is via_ref
+
+    def test_unresolved_ref_returns_none(self):
+        model = TypeModel()
+        assert model.create_from_ref('/No/SuchType', {}) is None
+
+    def test_skipped_types_not_cached(self):
+        # No resolved base type → no typedef → nothing cached
+        dt = DataType(name='UnresolvedType', category='VALUE', base_type=None)
+        model = TypeModel()
+        assert model.create_from_element(dt, ref='UnresolvedType') is None
+        assert 'UnresolvedType' not in model.data_types
+
+    def test_collect_referenced_type_refs_full_paths(self):
+        swc = RteSwcInfo('TestSWC')
+        rp = RtePortInfo('InputPort', 'R_PORT', 'InputIF', 'SenderReceiver')
+        de = RteDataElementInfo('InputData', 'uint8')
+        de.type_ref = '/DataTypes/SpeedType'
+        rp.data_elements.append(de)
+        cp = RtePortInfo('ServerPort', 'R_PORT', 'SrvIF', 'ClientServer')
+        cp.operations.append({'name': 'Op', 'arguments': [
+            {'name': 'a', 'type_ref': '/DataTypes/TempType'}]})
+        swc.ports.extend([rp, cp])
+        refs = collect_referenced_type_refs([swc])
+        assert refs == ['/DataTypes/SpeedType', '/DataTypes/TempType']
+
+    def test_build_type_model_marks_source_refs(self):
+        dt = DataType(name='SpeedType', category='VALUE',
+                      base_type='/BaseTypes/uint16')
+        swc = RteSwcInfo('TestSWC')
+        rp = RtePortInfo('InputPort', 'R_PORT', 'InputIF', 'SenderReceiver')
+        de = RteDataElementInfo('InputData', 'uint8')
+        de.type_ref = '/DataTypes/SpeedType'
+        rp.data_elements.append(de)
+        swc.ports.append(rp)
+        model = build_type_model([swc], [dt])
+        assert model.source_type_refs == {'/DataTypes/SpeedType'}
+        order = model.gen_type_creation_order()
+        assert [td.name for td in order] == ['SpeedType']
+
+    def test_shared_type_emitted_once_across_swcs(self):
+        dt = DataType(name='SpeedType', category='VALUE',
+                      base_type='/BaseTypes/uint16')
+
+        def make_swc(name, port_name):
+            swc = RteSwcInfo(name)
+            rp = RtePortInfo(port_name, 'R_PORT', 'InputIF', 'SenderReceiver')
+            de = RteDataElementInfo('InputData', 'uint8')
+            de.type_ref = '/DataTypes/SpeedType'
+            rp.data_elements.append(de)
+            swc.ports.append(rp)
+            return swc
+
+        swcs = [make_swc('SWC_A', 'PortA'), make_swc('SWC_B', 'PortB')]
+        type_defs = build_type_defs(swcs, [dt])
+        ordered = gen_type_creation_order(
+            type_defs, collect_referenced_type_names(swcs))
+        assert [td.name for td in ordered] == ['SpeedType']  # exactly once
+
+
+# ---------------------------------------------------------------------------
+#  15. Run
 # ---------------------------------------------------------------------------
 if __name__ == '__main__':
     pytest.main([__file__, '-v', '--tb=short'])

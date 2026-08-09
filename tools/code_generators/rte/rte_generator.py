@@ -394,10 +394,112 @@ def _kind_from_category(category: str) -> RteTypeKind:
     return mapping.get((category or 'VALUE').upper(), RteTypeKind.SCALAR)
 
 
+def _build_type_def_from_element(element: Any) -> Optional[RteTypeDef]:
+    """Build a single RteTypeDef from a parsed DataType element.
+
+    Returns None for types that produce no typedef (application types
+    without a resolved base type, ARRAY/STRUCTURE/POINTER whose sub-element
+    layout is not exposed by the parser yet) — unchanged legacy behaviour.
+    """
+    name = getattr(element, 'name', None) or ''
+    if not name:
+        return None
+    kind = _kind_from_category(getattr(element, 'category', 'VALUE'))
+    base = getattr(element, 'base_type', None) or ''
+    if not base:
+        # Application types without a resolved base type map to standard
+        # C types (uint8 default) — nothing to typedef, same as legacy.
+        return None
+    if kind in (RteTypeKind.ARRAY, RteTypeKind.RECORD, RteTypeKind.POINTER):
+        # Sub-element layout not exposed by the parser yet.
+        return None
+    ref_name = None
+    if kind == RteTypeKind.REF:
+        ref = (getattr(element, 'sw_data_def_props', None) or {}).get(
+            'impl_data_type_ref', '') or ''
+        ref_name = extract_short_name_from_ref(ref) if ref else None
+    return RteTypeDef(
+        name=name,
+        kind=kind,
+        symbol_name=getattr(element, 'symbol_name', None),
+        type_emitter=getattr(element, 'type_emitter', None),
+        c_type=map_to_c_type(base),
+        ref_type=ref_name,
+    )
+
+
+class TypeModel:
+    """Memoized implementation-type model (cogu ImplementationModel.data_types).
+
+    Each type is built exactly once, keyed by its reference string; later
+    requests for the same type — by full TYPE-TREF path or by short name —
+    return the cached RteTypeDef instance, so a type shared by multiple
+    SWCs / data elements is never built twice and stays consistent.
+
+    Absorbs cogu create_from_element / create_from_ref semantics:
+    category → kind; SYMBOL-PROPS symbol_name override; TYPE-EMITTER.
+    """
+
+    def __init__(self) -> None:
+        self.data_types: Dict[str, RteTypeDef] = {}
+        self.source_type_refs: Set[str] = set()
+
+    def create_from_element(self, element: Any, ref: str = "") -> Optional[RteTypeDef]:
+        """Create (memoized) a type model from a parsed DataType element.
+
+        ``ref`` is the canonical reference key (full TYPE-TREF path when
+        available, otherwise the element name); the short name is registered
+        as an alias pointing to the same instance. A type already present in
+        the cache is returned as-is (``if ref not in`` guard, cogu port).
+        """
+        key = ref or (getattr(element, 'name', None) or '')
+        if not key:
+            return None
+        if key not in self.data_types:
+            td = _build_type_def_from_element(element)
+            if td is None:
+                return None
+            self.data_types[key] = td
+            short = (getattr(element, 'short_name', None)
+                     or getattr(element, 'name', None) or '')
+            if short and short != key:
+                self.data_types.setdefault(short, td)
+        return self.data_types[key]
+
+    def create_from_ref(self, ref: str, type_map: Dict[str, Any]) -> Optional[RteTypeDef]:
+        """Create (memoized) a type model from a reference string.
+
+        Resolves the referenced DataType via ``type_map`` (full ref or short
+        name keys) and delegates to create_from_element with the full ref as
+        the canonical cache key (cogu create_from_ref).
+        """
+        if ref in self.data_types:
+            return self.data_types[ref]
+        element = type_map.get(ref) or type_map.get(extract_short_name_from_ref(ref))
+        if element is None:
+            return None
+        return self.create_from_element(element, ref)
+
+    def add_source_ref(self, ref: str) -> None:
+        """Mark a reference as directly used by the IR (cogu source_type_refs)."""
+        if ref:
+            self.source_type_refs.add(ref)
+
+    def gen_type_creation_order(self) -> List[RteTypeDef]:
+        """Ordered, deduplicated emission order rooted at the source refs."""
+        root_names = [extract_short_name_from_ref(r) or r for r in self.source_type_refs]
+        return gen_type_creation_order(self.data_types, root_names)
+
+
 def build_type_defs(swc_list: List[RteSwcInfo],
                     data_types: Optional[List[Any]] = None
                     ) -> Dict[str, RteTypeDef]:
-    """Build {name: RteTypeDef} for implementation types referenced by the IR.
+    """Build the memoized {name: RteTypeDef} model (cogu data_types dict).
+
+    All parsed data types are registered in a TypeModel keyed by reference;
+    the returned dict contains both short-name and full-ref keys pointing at
+    the same instance, so a type referenced from multiple places is built
+    exactly once (shared-type consistency).
 
     Absorbs cogu ImplementationModel.create_from_element semantics:
     category → kind; SYMBOL-PROPS symbol_name override; TYPE-EMITTER.
@@ -405,6 +507,7 @@ def build_type_defs(swc_list: List[RteSwcInfo],
     (base type); ARRAY/STRUCTURE sub-element layout is not parsed yet, so
     those kinds fall back to no-typedef (unchanged legacy behaviour).
     """
+    model = TypeModel()
     type_map: Dict[str, Any] = {}
     for dt in data_types or []:
         name = getattr(dt, 'name', None) or ''
@@ -414,32 +517,52 @@ def build_type_defs(swc_list: List[RteSwcInfo],
         short = getattr(dt, 'short_name', None) or ''
         if short and short != name:
             type_map.setdefault(short, dt)
-
-    defs: Dict[str, RteTypeDef] = {}
     for name, dt in type_map.items():
-        kind = _kind_from_category(getattr(dt, 'category', 'VALUE'))
-        base = getattr(dt, 'base_type', None) or ''
-        if not base:
-            # Application types without a resolved base type map to standard
-            # C types (uint8 default) — nothing to typedef, same as legacy.
-            continue
-        if kind in (RteTypeKind.ARRAY, RteTypeKind.RECORD, RteTypeKind.POINTER):
-            # Sub-element layout not exposed by the parser yet.
-            continue
-        ref_name = None
-        if kind == RteTypeKind.REF:
-            ref = (getattr(dt, 'sw_data_def_props', None) or {}).get(
-                'impl_data_type_ref', '') or ''
-            ref_name = extract_short_name_from_ref(ref) if ref else None
-        defs[name] = RteTypeDef(
-            name=name,
-            kind=kind,
-            symbol_name=getattr(dt, 'symbol_name', None),
-            type_emitter=getattr(dt, 'type_emitter', None),
-            c_type=map_to_c_type(base),
-            ref_type=ref_name,
-        )
-    return defs
+        model.create_from_element(dt, ref=name)
+    return model.data_types
+
+
+def collect_referenced_type_refs(swc_list: List[RteSwcInfo]) -> List[str]:
+    """Full TYPE-TREF paths of types referenced by data elements / operations.
+
+    Ref-granularity counterpart of collect_referenced_type_names: returns
+    the original reference strings (first-seen order, deduplicated) instead
+    of extracted short names.
+    """
+    refs: List[str] = []
+    seen = set()
+    for swc in swc_list:
+        for port in swc.ports:
+            for de in port.data_elements:
+                ref = (de.type_ref or '').strip()
+                if ref and ref not in seen:
+                    seen.add(ref)
+                    refs.append(ref)
+            for op in port.operations:
+                for arg in op.get('arguments', []):
+                    ref = (arg.get('type_ref', '') or '').strip()
+                    if ref and ref not in seen:
+                        seen.add(ref)
+                        refs.append(ref)
+    return refs
+
+
+def build_type_model(swc_list: List[RteSwcInfo],
+                     data_types: Optional[List[Any]] = None) -> TypeModel:
+    """Build a memoized TypeModel and mark IR-referenced types as sources.
+
+    Cogu ImplementationModel port: register all parsed data types by ref,
+    then collect the type refs actually used by the SWC IR into
+    ``source_type_refs`` so gen_type_creation_order() knows the roots.
+    """
+    model = TypeModel()
+    for dt in data_types or []:
+        name = getattr(dt, 'name', None) or ''
+        if name:
+            model.create_from_element(dt, ref=name)
+    for ref in collect_referenced_type_refs(swc_list):
+        model.add_source_ref(ref)
+    return model
 
 
 def collect_referenced_type_names(swc_list: List[RteSwcInfo]) -> List[str]:
