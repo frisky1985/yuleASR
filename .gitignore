@@ -167,6 +167,10 @@ src/bsw/boot/test/test_boot_integration
 .yuleosh/fix-tasks/misra-misra-c2023-12.1.md
 .yuleosh/fix-tasks/misra-misra-c2023-11.9.md
 .yuleosh/fix-tasks/misra-unknown.md
+
+# Runtime-generated tool artifacts (absolute paths, regenerated per run)
+.yuleosh/ci/last-misra-snapshot.json
+.yuleosh/knowledge-pending.json
 artifacts/
 tests/hil/reports/
 coverage_report_asil/
