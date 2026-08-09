@@ -69,6 +69,7 @@ from rte_generator import (
     map_to_c_type,
     resolve_data_semantics,
     TypeModel,
+    BehaviorSettings,
 )
 
 # yuleASR ARXML parser data model (path is made importable by rte_generator)
@@ -1440,7 +1441,243 @@ class TestTypeModelMemoization:
 
 
 # ---------------------------------------------------------------------------
-#  15. Run
+#  15. Y2: BehaviorSettings naming prefixes (cogu element.py:2944 port)
+# ---------------------------------------------------------------------------
+class TestBehaviorSettings:
+    def test_defaults_all_none(self):
+        bs = BehaviorSettings()
+        assert bs.background_event_prefix is None
+        assert bs.timing_event_prefix is None
+        assert bs.init_event_prefix is None
+        assert bs.server_call_point_prefix is None
+
+    def test_set_value_ok(self):
+        bs = BehaviorSettings()
+        bs.set_value('timing_event_prefix', 'TimingEvent')
+        assert bs.timing_event_prefix == 'TimingEvent'
+
+    def test_set_value_invalid_name_raises(self):
+        bs = BehaviorSettings()
+        with pytest.raises(KeyError):
+            bs.set_value('no_such_prefix', 'X')
+
+    def test_set_value_non_string_raises(self):
+        bs = BehaviorSettings()
+        with pytest.raises(TypeError):
+            bs.set_value('timing_event_prefix', 42)
+
+    def test_update_multiple(self):
+        bs = BehaviorSettings()
+        bs.update({'timing_event_prefix': 'TimingEvent',
+                   'init_event_prefix': 'InitEvent'})
+        assert bs.timing_event_prefix == 'TimingEvent'
+        assert bs.init_event_prefix == 'InitEvent'
+
+    def test_get_value_unset_raises(self):
+        bs = BehaviorSettings()
+        with pytest.raises(ValueError):
+            bs.get_value('timing_event_prefix')
+
+    def test_get_value_set_ok(self):
+        bs = BehaviorSettings()
+        bs.timing_event_prefix = 'TimingEvent'
+        assert bs.get_value('timing_event_prefix') == 'TimingEvent'
+
+    def test_from_config_dict(self):
+        bs = BehaviorSettings.from_config({'timing_event_prefix': 'TimingEvent'})
+        assert isinstance(bs, BehaviorSettings)
+        assert bs.timing_event_prefix == 'TimingEvent'
+
+    def test_from_config_instance(self):
+        original = BehaviorSettings()
+        original.init_event_prefix = 'InitEvent'
+        assert BehaviorSettings.from_config(original) is original
+
+    def test_from_config_invalid_type(self):
+        with pytest.raises(TypeError):
+            BehaviorSettings.from_config(123)
+
+    def test_apply_event_prefix_configured(self):
+        bs = BehaviorSettings.from_config({'timing_event_prefix': 'TimingEvent'})
+        assert bs.apply_event_prefix(
+            'TIMING', 'MainRunnable', 'Evt10ms') == 'TimingEvent_MainRunnable'
+
+    def test_apply_event_prefix_unconfigured_fallback(self):
+        bs = BehaviorSettings()
+        assert bs.apply_event_prefix('TIMING', 'MainRunnable', 'Evt10ms') == 'Evt10ms'
+
+    def test_apply_event_prefix_unknown_type_fallback(self):
+        bs = BehaviorSettings.from_config({'timing_event_prefix': 'TimingEvent'})
+        assert bs.apply_event_prefix('TRIGGER', 'MainRunnable', 'TrigEvt') == 'TrigEvt'
+
+    def test_event_prefix_attrs_cover_cogu_set(self):
+        # 8 event kinds map to their prefix attributes (cogu 8-event set)
+        assert set(BehaviorSettings.EVENT_PREFIX_ATTRS.values()) == {
+            'background_event_prefix',
+            'data_receive_error_event_prefix',
+            'data_receive_event_prefix',
+            'init_event_prefix',
+            'operation_invoked_event_prefix',
+            'swc_mode_manager_error_event_prefix',
+            'swc_mode_switch_event_prefix',
+            'timing_event_prefix',
+        }
+
+
+EVENT_DEMO_ARXML = '''<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>EventDemo</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-SW-COMPONENT-TYPE>
+          <SHORT-NAME>EventSWC</SHORT-NAME>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR>
+              <SHORT-NAME>EventBehavior</SHORT-NAME>
+              <RUNNABLES>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>MainRunnable</SHORT-NAME>
+                  <SYMBOL>EventSWC_Main</SYMBOL>
+                </RUNNABLE-ENTITY>
+              </RUNNABLES>
+              <EVENTS>
+                <TIMING-EVENT>
+                  <SHORT-NAME>Evt10ms</SHORT-NAME>
+                  <START-ON-EVENT-REF>/EventDemo/EventSWC/EventBehavior/MainRunnable</START-ON-EVENT-REF>
+                  <PERIOD>0.01</PERIOD>
+                </TIMING-EVENT>
+              </EVENTS>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>
+'''
+
+MODE_EVENT_ARXML = '''<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>EventDemo</SHORT-NAME>
+      <ELEMENTS>
+        <APPLICATION-SW-COMPONENT-TYPE>
+          <SHORT-NAME>EventSWC</SHORT-NAME>
+          <INTERNAL-BEHAVIORS>
+            <SWC-INTERNAL-BEHAVIOR>
+              <SHORT-NAME>EventBehavior</SHORT-NAME>
+              <RUNNABLES>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>MainRunnable</SHORT-NAME>
+                  <SYMBOL>EventSWC_Main</SYMBOL>
+                </RUNNABLE-ENTITY>
+              </RUNNABLES>
+              <EVENTS>
+                <MODE-SWITCH-EVENT>
+                  <SHORT-NAME>ModeEvt</SHORT-NAME>
+                  <START-ON-EVENT-REF>/EventDemo/EventSWC/EventBehavior/MainRunnable</START-ON-EVENT-REF>
+                </MODE-SWITCH-EVENT>
+              </EVENTS>
+            </SWC-INTERNAL-BEHAVIOR>
+          </INTERNAL-BEHAVIORS>
+        </APPLICATION-SW-COMPONENT-TYPE>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>
+'''
+
+
+class TestBehaviorSettingsIntegration:
+    def _write_arxml(self, content):
+        fd, path = tempfile.mkstemp(suffix='.arxml')
+        with os.fdopen(fd, 'w') as f:
+            f.write(content)
+        return path
+
+    def test_ir_events_prefixed_when_configured(self):
+        path = self._write_arxml(EVENT_DEMO_ARXML)
+        try:
+            swc_list, _ = build_rte_ir_from_arxml(
+                path, behavior_settings={'timing_event_prefix': 'TimingEvent'})
+            runnable = swc_list[0].runnable_entities[0]
+            assert runnable.events[0]['name'] == 'TimingEvent_MainRunnable'
+            assert runnable.events[0]['type'] == 'TIMING'
+            assert runnable.events[0]['period_ms'] == 10.0
+        finally:
+            os.unlink(path)
+
+    def test_ir_events_keep_name_without_config(self):
+        path = self._write_arxml(EVENT_DEMO_ARXML)
+        try:
+            swc_list, _ = build_rte_ir_from_arxml(path)
+            runnable = swc_list[0].runnable_entities[0]
+            assert runnable.events[0]['name'] == 'Evt10ms'
+        finally:
+            os.unlink(path)
+
+    def test_generated_header_has_prefixed_event_mapping(self, temp_dir):
+        path = self._write_arxml(EVENT_DEMO_ARXML)
+        try:
+            generate_rte(path, temp_dir,
+                         behavior_settings={'timing_event_prefix': 'TimingEvent'})
+            with open(os.path.join(temp_dir, 'Rte_EventSWC.h')) as f:
+                content = f.read()
+            assert 'RUNNABLE EVENT MAPPING' in content
+            assert 'TimingEvent_MainRunnable  ->  EventSWC_Main' in content
+        finally:
+            os.unlink(path)
+
+    def test_no_config_keeps_original_event_names(self, temp_dir):
+        path = self._write_arxml(EVENT_DEMO_ARXML)
+        try:
+            generate_rte(path, temp_dir)
+            with open(os.path.join(temp_dir, 'Rte_EventSWC.h')) as f:
+                content = f.read()
+            # Mapping section always documents event → runnable; without
+            # BehaviorSettings the original ARXML event name is kept
+            assert 'RUNNABLE EVENT MAPPING' in content
+            assert 'Evt10ms  ->  EventSWC_Main' in content
+            assert 'TimingEvent_MainRunnable' not in content
+        finally:
+            os.unlink(path)
+
+    def test_generate_rte_accepts_behavior_settings_instance(self, temp_dir):
+        path = self._write_arxml(EVENT_DEMO_ARXML)
+        try:
+            bs = BehaviorSettings()
+            bs.timing_event_prefix = 'TimingEvent'
+            generate_rte(path, temp_dir, behavior_settings=bs)
+            with open(os.path.join(temp_dir, 'Rte_EventSWC.h')) as f:
+                content = f.read()
+            assert 'TimingEvent_MainRunnable  ->  EventSWC_Main' in content
+        finally:
+            os.unlink(path)
+
+    def test_direct_fallback_mode_switch_prefix(self):
+        path = self._write_arxml(MODE_EVENT_ARXML)
+        try:
+            swc_list, _ = _parse_arxml_direct(
+                path, behavior_settings={'swc_mode_switch_event_prefix': 'SwcModeSwitch'})
+            runnable = swc_list[0].runnable_entities[0]
+            assert runnable.mode_switch_refs == ['SwcModeSwitch_MainRunnable']
+        finally:
+            os.unlink(path)
+
+    def test_direct_fallback_no_config_keeps_name(self):
+        path = self._write_arxml(MODE_EVENT_ARXML)
+        try:
+            swc_list, _ = _parse_arxml_direct(path)
+            runnable = swc_list[0].runnable_entities[0]
+            assert runnable.mode_switch_refs == ['ModeEvt']
+        finally:
+            os.unlink(path)
+
+
+# ---------------------------------------------------------------------------
+#  16. Run
 # ---------------------------------------------------------------------------
 if __name__ == '__main__':
     pytest.main([__file__, '-v', '--tb=short'])

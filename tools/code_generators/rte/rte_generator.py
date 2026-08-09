@@ -296,6 +296,114 @@ def resolve_data_semantics(semantics_str: str) -> DataSemantics:
 
 
 # ============================================================================
+#  BehaviorSettings — InternalBehavior naming conventions
+#  (aligned with cogu/autosar xml/element.py:2944 BehaviorSettings)
+# ============================================================================
+class BehaviorSettings:
+    """Centralized naming-prefix configuration for SWC InternalBehavior
+    events / runnables (cogu BehaviorSettings port).
+
+    Each prefix defaults to None (not configured → the generator keeps the
+    original ARXML name). Configured prefixes are applied to generated event
+    names as ``<prefix>_<RunnableName>`` (cogu create_*_event formula),
+    giving OEM naming conventions a single configuration surface.
+    """
+
+    # Parser event_type string (e.g. "TIMING") → prefix attribute name.
+    # Covers the 8 AUTOSAR RTE event kinds; access-point prefixes below are
+    # reserved for future access-point generation (cogu 13-item set).
+    EVENT_PREFIX_ATTRS = {
+        'BACKGROUND': 'background_event_prefix',
+        'DATA_RECEIVE': 'data_receive_event_prefix',
+        'DATA_RECEIVE_ERROR': 'data_receive_error_event_prefix',
+        'INIT': 'init_event_prefix',
+        'OPERATION_INVOKED': 'operation_invoked_event_prefix',
+        'SWC_MODE_MANAGER_ERROR': 'swc_mode_manager_error_event_prefix',
+        'SWC_MODE_SWITCH': 'swc_mode_switch_event_prefix',
+        'TIMING': 'timing_event_prefix',
+    }
+
+    def __init__(self) -> None:
+        # Events
+        self.background_event_prefix: Optional[str] = None  # BackgroundEvent name prefix
+        self.data_receive_error_event_prefix: Optional[str] = None  # DataReceiveErrorEvent
+        self.data_receive_event_prefix: Optional[str] = None  # DataReceivedEvent
+        self.init_event_prefix: Optional[str] = None  # InitEvent
+        self.operation_invoked_event_prefix: Optional[str] = None  # OperationInvokedEvent
+        self.swc_mode_manager_error_event_prefix: Optional[str] = None  # SwcModeManagerErrorEvent
+        self.swc_mode_switch_event_prefix: Optional[str] = None  # SwcModeSwitchEvent
+        self.timing_event_prefix: Optional[str] = None  # TimingEvent
+        # Runnables / access points
+        self.data_read_access_prefix: Optional[str] = None  # DATA-READ-ACCESS
+        self.data_receive_point_prefix: Optional[str] = None  # DATA-RECEIVE-POINT
+        self.data_send_point_prefix: Optional[str] = None  # DATA-SEND-POINT
+        self.data_write_access_prefix: Optional[str] = None  # DATA-WRITE-ACCESS
+        self.external_triggering_point_prefix: Optional[str] = None  # EXTERNAL-TRIGGERING-POINT
+        self.internal_triggering_point_prefix: Optional[str] = None  # INTERNAL-TRIGGERING-POINT
+        self.mode_access_point_prefix: Optional[str] = None  # MODE-ACCESS-POINT
+        self.mode_switch_point_prefix: Optional[str] = None  # MODE-SWITCH-POINT
+        self.parameter_access_prefix: Optional[str] = None  # PARAMETER-ACCESS
+        self.read_local_variable_prefix: Optional[str] = None  # READ-LOCAL-VARIABLE
+        self.server_call_point_prefix: Optional[str] = None  # SERVER-CALL-POINT
+        self.wait_point_prefix: Optional[str] = None  # WAIT-POINT
+        self.write_local_variable_prefix: Optional[str] = None  # WRITE-LOCAL-VARIABLE
+
+    def set_value(self, name: str, value: str) -> None:
+        """Update a single prefix with error check (cogu set_value)."""
+        if hasattr(self, name):
+            if not isinstance(value, str):
+                raise TypeError(f"value: Expected string type. Got {str(type(value))}")
+            setattr(self, name, value)
+        else:
+            raise KeyError(f"name: Invalid name '{name}'")
+
+    def update(self, value_map: Dict[str, str]) -> None:
+        """Update multiple prefixes using keys in value_map (cogu update)."""
+        for name, value in value_map.items():
+            self.set_value(name, value)
+
+    def get_value(self, name: str) -> str:
+        """Return the named prefix only if it is not None (cogu get_value)."""
+        value = getattr(self, name)
+        if value is None:
+            raise ValueError(f"{name} is not set in behavior settings")
+        return value
+
+    @classmethod
+    def from_config(cls, config: Any) -> 'BehaviorSettings':
+        """Normalize a dict or BehaviorSettings instance into BehaviorSettings.
+
+        Config keys are the prefix attribute names, e.g.
+        ``{"timing_event_prefix": "TimingEvent", "init_event_prefix": "InitEvent"}``.
+        """
+        if isinstance(config, cls):
+            return config
+        if isinstance(config, dict):
+            settings = cls()
+            settings.update(config)
+            return settings
+        raise TypeError(
+            f"behavior_settings: Expected dict or BehaviorSettings. "
+            f"Got {str(type(config))}")
+
+    def apply_event_prefix(self, event_type: str, runnable_name: str,
+                           fallback: str) -> str:
+        """Canonical event name for generated output.
+
+        When a prefix is configured for ``event_type``, returns
+        ``<prefix>_<RunnableName>`` (cogu create_*_event naming formula);
+        otherwise returns ``fallback`` unchanged (legacy behaviour).
+        """
+        attr = self.EVENT_PREFIX_ATTRS.get(
+            (event_type or '').upper().replace('-', '_'))
+        if attr is not None:
+            prefix = getattr(self, attr, None)
+            if prefix:
+                return f"{prefix}_{runnable_name}"
+        return fallback
+
+
+# ============================================================================
 #  RTE Type Generation — data model & dependency ordering
 #  (methodology absorbed from cogu/autosar model/implementation.py:75-104 +
 #   generator/type_generator.py:77-93 — reverse level-order BFS ordering,
@@ -754,16 +862,27 @@ def gen_rte_type_defs_str(swc_list: List[RteSwcInfo],
 #  ARXML → Internal IR Builder
 # ============================================================================
 def build_rte_ir_from_arxml(arxml_path: str,
-                             swc_filter: Optional[List[str]] = None
+                             swc_filter: Optional[List[str]] = None,
+                             behavior_settings: Any = None
                              ) -> Tuple[List[RteSwcInfo], Dict[str, Any]]:
     """
     Parse an ARXML file and build an intermediate representation (IR)
     suitable for RTE code generation.
 
+    Args:
+        arxml_path: Path to the .arxml system description.
+        swc_filter: Optional list of SWC names to include (None = all).
+        behavior_settings: Optional naming-prefix configuration — a dict
+            (e.g. {"timing_event_prefix": "TimingEvent"}) or a
+            BehaviorSettings instance. Configured event prefixes are applied
+            to generated event names as ``<prefix>_<RunnableName>``.
+
     Returns: (swc_list, metadata)
     """
     if ARXMLParser is None:
         raise RuntimeError("yuleASR ARXML parser not available; cannot parse ARXML")
+
+    settings = BehaviorSettings.from_config(behavior_settings) if behavior_settings else None
 
     logger.info("Parsing ARXML: %s", arxml_path)
     parser = parse_arxml(arxml_path)
@@ -876,16 +995,20 @@ def build_rte_ir_from_arxml(arxml_path: str,
                 # Attach events
                 for evt in ib.events:
                     if evt.start_on_event_ref and runnable.name in evt.start_on_event_ref:
+                        canonical_name = evt.name
+                        if settings is not None:
+                            canonical_name = settings.apply_event_prefix(
+                                evt.event_type, runnable.name, evt.name)
                         run_info.events.append({
-                            'name': evt.name,
+                            'name': canonical_name,
                             'type': evt.event_type,
                             'period_ms': evt.period_ms or 0.0,
                         })
                         # Detect trigger/mode-switch events
                         if evt.event_type and 'trigger' in evt.event_type.lower():
-                            run_info.trigger_refs.append(evt.name)
+                            run_info.trigger_refs.append(canonical_name)
                         if evt.event_type and 'mode' in evt.event_type.lower():
-                            run_info.mode_switch_refs.append(evt.name)
+                            run_info.mode_switch_refs.append(canonical_name)
 
                 swc_info.runnable_entities.append(run_info)
 
@@ -952,13 +1075,22 @@ def _try_add_trigger_port(swc_info: RteSwcInfo, port: Any,
 # ============================================================================
 #  ARXML ← Direct XML fallback parser (extended)
 # ============================================================================
-def _parse_arxml_direct(arxml_path: str) -> Tuple[List[RteSwcInfo], Dict[str, Any]]:
+def _parse_arxml_direct(arxml_path: str,
+                        behavior_settings: Any = None
+                        ) -> Tuple[List[RteSwcInfo], Dict[str, Any]]:
     """
     Fallback: parse ARXML using Python's xml.etree directly.
     Supports AUTOSAR R4.0/R20-11 schema with Sender-Receiver, Client-Server,
     ModeSwitch, Trigger, and NvBlock SWCs.
+
+    Args:
+        arxml_path: Path to the .arxml file.
+        behavior_settings: Optional naming-prefix configuration (dict or
+            BehaviorSettings), applied to generated event names.
     """
     import xml.etree.ElementTree as ET
+
+    settings = BehaviorSettings.from_config(behavior_settings) if behavior_settings else None
 
     tree = ET.parse(arxml_path)
     root = tree.getroot()
@@ -1136,15 +1268,19 @@ def _parse_arxml_direct(arxml_path: str) -> Tuple[List[RteSwcInfo], Dict[str, An
                         for evt in ib.findall(f'.//{tag("TRIGGER-EVENT")}', ns):
                             on_ref = text(evt, tag("START-ON-EVENT-REF"), "")
                             if rname in on_ref:
-                                run_info.trigger_refs.append(
-                                    text(evt, tag("SHORT-NAME"), "TriggerEvent")
-                                )
+                                evt_name = text(evt, tag("SHORT-NAME"), "TriggerEvent")
+                                if settings is not None:
+                                    evt_name = settings.apply_event_prefix(
+                                        "TRIGGER", rname, evt_name)
+                                run_info.trigger_refs.append(evt_name)
                         for evt in ib.findall(f'.//{tag("MODE-SWITCH-EVENT")}', ns):
                             on_ref = text(evt, tag("START-ON-EVENT-REF"), "")
                             if rname in on_ref:
-                                run_info.mode_switch_refs.append(
-                                    text(evt, tag("SHORT-NAME"), "ModeSwitchEvent")
-                                )
+                                evt_name = text(evt, tag("SHORT-NAME"), "ModeSwitchEvent")
+                                if settings is not None:
+                                    evt_name = settings.apply_event_prefix(
+                                        "SWC_MODE_SWITCH", rname, evt_name)
+                                run_info.mode_switch_refs.append(evt_name)
 
                         swc_info.runnable_entities.append(run_info)
 
@@ -1939,6 +2075,17 @@ def _generate_swc_header(swc: RteSwcInfo) -> str:
         for runnable in swc.runnable_entities:
             lines.append(f"extern void {runnable.symbol}(void);")
 
+    # Runnable → event mapping (canonical event names, prefix-aware when
+    # BehaviorSettings configured; emitted only when events exist in the IR)
+    if any(r.events for r in swc.runnable_entities):
+        lines.append("")
+        lines.append("/*==================================================================================================")
+        lines.append("*                                     RUNNABLE EVENT MAPPING")
+        lines.append("*==================================================================================================*/")
+        for runnable in swc.runnable_entities:
+            for evt in runnable.events:
+                lines.append(f"/* {evt.get('name', '')}  ->  {runnable.symbol} */")
+
     lines.extend([
         "",
         "#endif /* RTE_{name_upper}_H */".format(name_upper=swc.name_upper),
@@ -2256,7 +2403,8 @@ def generate_rte(arxml_path: str,
                  swc_filter: Optional[List[str]] = None,
                  generate_rte_h: bool = True,
                  generate_rte_c: bool = True,
-                 generate_rte_type_h: bool = True) -> List[str]:
+                 generate_rte_type_h: bool = True,
+                 behavior_settings: Any = None) -> List[str]:
     """
     Parse an ARXML file and generate RTE code.
 
@@ -2267,6 +2415,10 @@ def generate_rte(arxml_path: str,
         generate_rte_h: Generate Rte.h
         generate_rte_c: Generate Rte.c
         generate_rte_type_h: Generate Rte_Type.h
+        behavior_settings: Optional naming-prefix configuration — a dict
+            (e.g. {"timing_event_prefix": "TimingEvent"}) or a
+            BehaviorSettings instance. Configured event prefixes are applied
+            to generated event names (see docs/tools/rte-generator.md §3.4).
 
     Returns:
         List of generated file paths
@@ -2276,9 +2428,9 @@ def generate_rte(arxml_path: str,
     # Parse ARXML → IR
     try:
         if ARXMLParser is not None:
-            swc_list, metadata = build_rte_ir_from_arxml(arxml_path, swc_filter)
+            swc_list, metadata = build_rte_ir_from_arxml(arxml_path, swc_filter, behavior_settings)
         else:
-            swc_list, metadata = _parse_arxml_direct(arxml_path)
+            swc_list, metadata = _parse_arxml_direct(arxml_path, behavior_settings)
     except Exception as e:
         logger.error("Failed to parse ARXML: %s", e)
         raise
@@ -2356,6 +2508,11 @@ Examples:
                         help='Skip generating Rte.c')
     parser.add_argument('--no-rte-type-h', action='store_true',
                         help='Skip generating Rte_Type.h')
+    parser.add_argument('--behavior-config', dest='behavior_config', metavar='JSON',
+                        help='JSON config file with BehaviorSettings naming prefixes '
+                             '(e.g. {"timing_event_prefix": "TimingEvent", '
+                             '"init_event_prefix": "InitEvent"}) — applied to '
+                             'generated event names as <prefix>_<RunnableName>')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='Verbose output')
 
@@ -2368,6 +2525,18 @@ Examples:
         logger.error("Input file not found: %s", args.input)
         sys.exit(1)
 
+    behavior_settings = None
+    if args.behavior_config:
+        if not os.path.isfile(args.behavior_config):
+            logger.error("Behavior config file not found: %s", args.behavior_config)
+            sys.exit(1)
+        try:
+            with open(args.behavior_config) as f:
+                behavior_settings = json.load(f)
+        except (ValueError, OSError) as e:
+            logger.error("Failed to load behavior config %s: %s", args.behavior_config, e)
+            sys.exit(1)
+
     try:
         generated = generate_rte(
             arxml_path=args.input,
@@ -2376,6 +2545,7 @@ Examples:
             generate_rte_h=not args.no_rte_h,
             generate_rte_c=not args.no_rte_c,
             generate_rte_type_h=not args.no_rte_type_h,
+            behavior_settings=behavior_settings,
         )
         print(f"\n✓ RTE generation complete: {len(generated)} file(s)")
         for g in generated:
