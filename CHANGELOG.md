@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-08-09
+
+294 commits since v1.4.0 (666d17e4). 主线功能与质量数字如下。
+
+### Added
+
+- **TcpIp 加深 (B1)** — TcpIp 模块 992→2935 行 (TcpIp.c 694→2363 / TcpIp.h 224→474 / TcpIp_Cfg.h 74→98)
+  - AUTOSAR SWS TcpIp 接口面补全 (Listen/Connect/Accept/Backlog/Rx-Tx 缓冲/options 等)，导出 API 20→49 个
+  - 多连接/多 socket：静态 socket 表 TCPIP_MAX_SOCKETS=8，RFC-793 子集状态机 (CLOSED/LISTEN/SYN-*/ESTABLISHED/FIN-WAIT/TIME-WAIT) + backlog 队列 + 优雅关闭
+  - VLAN 支持 (TcpIp_VlanConfigType: VID 12-bit/PCP/DropUntagged)
+  - 统计能力 (TcpIp_StatisticsType 13 计数器 + Get/ResetStatistics)
+  - 单测 49 项全绿；tcpip_lwip_compile_check 常驻目标 (lwIP 2.2.2 headers, -Werror)
+- **EthSwt 补全 (B2)** — EthSwt 模块 763→1760 行 (EthSwt.c 504→1368 / EthSwt.h 197→318 / EthSwt_Cfg.h 62→74)
+  - VLAN 成员表/PVID/VID-PCP 映射/入口出口过滤/DropUntagged (对齐 TcpIp_VlanConfigType)
+  - 流控 (TxPause/RxPause/水位仿真 + MainFunction 排空)
+  - 端口统计 8→15 计数器 + 镜像 (Set/GetPortMirroring + MirroredFrames)
+  - 导出 API 12→33 个；单测 25→70 项全绿
+- **CDD_FVM (B3-1)** — src/bsw/cdd/ 新增 Flash 虚拟内存复杂驱动：bank 注册 (编译期默认表 + 运行时 RegisterBank)/选择/查询、bank 间搬移 CopyBank (擦除→拷贝→CRC 校验镜像回滚)、擦除/写保护、故障切换 (Failover + MainFunction 周期自检)；Cdd_Fvm_Hw 硬件抽象 (RAM 镜像 native 后端 + Fls 驱动目标后端)；Cdd_Fvm_Cfg.h S32K312 2×256KB 默认 bank；模块 ~1500 行，单测 44 项全绿
+- **独立算法库 (B3-2)** — src/libs/ (XMEN Libraries/ 对齐，纯 C99 零依赖，与 BSW 解耦)
+  - libs_crc: CRC-8 SAE-J1850 / CRC-8 AUTOSAR(H2F) / CRC-16 CCITT-FALSE / CRC-16 XMODEM / CRC-32 ISO-HDLC，流式增量 API (12 项单测)
+  - libs_aes: AES-128/192/256 FIPS-197 单块 + ECB/CBC，程序化 S-box (18 项单测，含 NIST FIPS-197/SP 800-38A 向量)
+- **RTE 生成器吸收 cogu 方法论 (A2+A3)** — tools/code_generators/rte/
+  - 逆层序 BFS 类型排序 (依赖类型先 typedef)、type_emitter≠RTE 过滤、symbol_name 覆盖 (SYMBOL-PROPS 优先)、RteTypeCodeBlock 确定性渲染
+  - Y1 类型模型按 ref 备忘录化 (TypeModel 对齐 cogu ImplementationModel)；Y2 BehaviorSettings 事件命名前缀 (对齐 cogu element.py:2944)
+  - golden-string 快照测试：类型创建顺序/type_emitter 过滤/symbol_name 覆盖/完整 Rte_Type.h 快照 (时间戳归一化)；pytest 159 test functions 全绿
+- **KeyM NIST SP800-108 KDF 真实实现** — keym_sp800_108_counter/derive + HKDF-SHA256 (RFC 5869) + HMAC-SHA256 (RFC 2104) + CRC32 (IEEE 802.3)；crypto_stack 模拟后端 → mbedTLS 真实后端 (AES-128-CBC+PKCS7, 常数时间 MAC_VERIFY)；test_keym 15/15 + test_csm 9/9
+
+### Fixed
+
+- **技术债 T1-T4 修复**
+  - T1 s0_smoke_test 无限挂起：5 根因 (Os_Cfg 配置表未链接 / macOS POSIX port 栈尺寸 / tick 线程标志非 volatile / vTaskEndScheduler 自删 / smoke 链接集不全) 全修复 + 看门狗 + ctest TIMEOUT
+  - T2 mcal_uart_test SegFault：Uart.c 38 处裸 MMIO 改 REG_* 宏 (MockHAL 可重定向)，23/23 PASS
+  - T3 EthTrcv.c 空编译假 0 error：真实编译 (336B→25,864B/14 函数) + 连带修复 LinNm/LinIf/ComM_Nm/Crypto/blake2 同源缺陷
+  - T4 MISRA 剩余 required 核实：官方全量扫描 1447 条 required → 68 在排除路径 + 1379 被已批准 deviations 覆盖，**业务代码 required = 0**
+- **MISRA required 清零** — 10.4/12.1/20.7/19.2 批量修复 (宏体 U 后缀/括号化/变体 union 改 struct/类型双关改 memcpy) + deviation 通配收窄为文件级/规则级明细 (57 条拆分)
+- **P0 批修复** — mbedTLS 挂 32KB 静态内存池 (HEAP_SIZE 256KB→4KB 回收 252KB)；CryIf/EthSm/DDS 工具级联损坏编译错误修复；bootloader 安全链单测 + 回滚记录 CRC 自包含缺陷
+- **P1 批清理** — doip stub 假实现删除统一走主线；safety 模块挂载但永不编译修复 (真实编译 + 交叉构建)；Release 交叉 LTO 库 armap 修复 (gcc-ar/gcc-ranlib)；CI/文档/脚本残留引用清理
+- **P2 批清理** — dds-config-tool 三份收敛 + YAML 解析器状态机缺陷修复；deviation 通配收窄；legacy 动态内存标注；web_gui systemd 硬编码去除
+
+### Quality
+
+- 全量 native 构建 0 error
+- ctest 45/45 100% PASS
+- 新增单测：TcpIp 49 / EthSwt 70 / CDD_FVM 44 / libs 30 / RTE 生成器 pytest 159 全绿
+- MISRA 业务代码 required = 0
+
 ## [1.2.0] - 2026-05-26
 
 ### Added
