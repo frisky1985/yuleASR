@@ -149,6 +149,45 @@ add_custom_command(
 )
 ```
 
+### 3.4 事件命名前缀配置（BehaviorSettings）
+
+RTE 生成器（`tools/code_generators/rte/rte_generator.py`）提供集中可配的
+InternalBehavior **事件命名前缀**层（对齐 cogu/autosar `BehaviorSettings`）：
+配置后生成的事件名按 `<前缀>_<RunnableName>` 规范化（如 `TimingEvent_MainRunnable`），
+适配不同 OEM 命名规范；未配置时保持 ARXML 原始事件名（输出不变）。
+
+**CLI 入口**（`--behavior-config <json>`）：
+
+```bash
+python rte_generator.py -i input.arxml -o generated/ \
+  --behavior-config behavior.json
+```
+
+`behavior.json` 示例（键 = 前缀属性名，21 项均可配）：
+
+```json
+{
+  "timing_event_prefix": "TimingEvent",
+  "init_event_prefix": "InitEvent",
+  "background_event_prefix": "Background",
+  "data_receive_event_prefix": "DataReceive",
+  "data_receive_error_event_prefix": "DataReceiveError",
+  "operation_invoked_event_prefix": "OperationInvoked",
+  "swc_mode_switch_event_prefix": "SwcModeSwitch",
+  "swc_mode_manager_error_event_prefix": "SwcModeManagerError"
+}
+```
+
+**API 入口**：`generate_rte(..., behavior_settings=...)` 接受 dict 或
+`BehaviorSettings` 实例；`build_rte_ir_from_arxml` / `_parse_arxml_direct`
+同样支持。
+
+**效果**：配置后 `Rte_<Swc>.h` 输出 `RUNNABLE EVENT MAPPING` 段，事件名按前缀命名；
+8 个 RTE 事件类型（Timing/Init/Background/DataReceive/DataReceiveError/
+OperationInvoked/SwcModeSwitch/SwcModeManagerError）接入生成，另 13 项
+access-point 前缀（DATA-READ-ACCESS、SERVER-CALL-POINT 等）为后续
+access-point 生成预留。
+
 ---
 
 ## 4 生成文件结构
@@ -166,6 +205,11 @@ src/rte/
 ├── Rte_E2E.h             # E2E 模块 RTE 适配
 └── Rte_WdgM.h            # WdgM 模块 RTE 适配
 ```
+
+> 注：类型生成层按**引用备忘录化**（`TypeModel.data_types`，对齐 cogu
+> `ImplementationModel`）——同一类型无论经全路径 ref 还是短名引用，只建一次模型，
+> 共享类型保持一致。含事件（Timing/Init 等）的 SWC，其 `Rte_<Swc>.h` 含
+> `RUNNABLE EVENT MAPPING` 段，事件名受 §3.4 前缀配置控制。
 
 ### 4.2 接口生成示例
 
@@ -237,3 +281,4 @@ extern Std_ReturnType Rte_Call_Dcm_ReadDataByIdentifier(
 | 版本 | 日期 | 作者 | 变更 |
 |------|------|------|------|
 | 1.0 | 2026-07-26 | 小马 🐴 | 初始文档 |
+| 1.1 | 2026-08-09 | 小马 🐴 | §3.4 新增 BehaviorSettings 事件命名前缀配置（R4）；类型生成层按 ref 备忘录化（R5） |
