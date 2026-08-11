@@ -44,7 +44,7 @@
 /*==================================================================================================
 *                                    Other Configuration
 *================================================================================================*/
-#define ETH_CTRL0_MAC_ADDR    ""
+#define ETH_CTRL0_MAC_ADDR    {0x00, 0x01, 0x02, 0x03, 0x04, 0x05}
 #define ETH_CTRL0_SPEED    ETH_RATE_100MBPS
 #define ETH_CTRL0_FULL_DUPLEX    STD_ON
 #define ETH_CFG_BUF_SIZE    (1536U)

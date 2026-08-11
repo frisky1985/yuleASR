@@ -146,10 +146,10 @@
 #define DOIP_VIN    "YULETECHASR000001"
 #endif
 #ifndef DOIP_EID
-#define DOIP_EID    ""
+#define DOIP_EID    {0x00, 0x1A, 0x2B, 0x3C, 0x4D, 0x5E}
 #endif
 #ifndef DOIP_GID
-#define DOIP_GID    ""
+#define DOIP_GID    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
 #endif
 
 

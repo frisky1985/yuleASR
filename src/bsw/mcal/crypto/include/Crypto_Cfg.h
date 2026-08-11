@@ -96,13 +96,55 @@
 #define CRYPTO_KEY_ELEMENT_ID_PUBLIC_KEY    (10U)
 #define CRYPTO_KEY_ELEMENT_ID_PRIVATE_KEY    (11U)
 #define CRYPTO_KEY_ELEMENT_ID_SIGNATURE    (20U)
-#define CRYPTO_ALG_ECDSA_SECP256R1    ""
-#define CRYPTO_ALG_ECDH_SECP256R1    ""
-#define CRYPTO_ALG_AES128_GCM    ""
-#define CRYPTO_ALG_AES256_GCM    ""
-#define CRYPTO_ALG_SHA256    ""
-#define CRYPTO_ALG_HMAC_SHA256    ""
-#define CRYPTO_ALG_HKDF_SHA256    ""
+#define CRYPTO_ALG_ECDSA_SECP256R1    \
+{ \
+.family = CRYPTO_ALGOFAM_ECDSA, \
+.mode = 0, \
+.keyLength = 256, \
+.curve = CRYPTO_ECC_CURVE_SECP256R1 \
+}
+#define CRYPTO_ALG_ECDH_SECP256R1    \
+{ \
+.family = CRYPTO_ALGOFAM_ECDH, \
+.mode = 0, \
+.keyLength = 256, \
+.curve = CRYPTO_ECC_CURVE_SECP256R1 \
+}
+#define CRYPTO_ALG_AES128_GCM    \
+{ \
+.family = CRYPTO_ALGOFAM_AES, \
+.mode = CRYPTO_ALGOMODE_GCM, \
+.keyLength = 128, \
+.curve = 0 \
+}
+#define CRYPTO_ALG_AES256_GCM    \
+{ \
+.family = CRYPTO_ALGOFAM_AES, \
+.mode = CRYPTO_ALGOMODE_GCM, \
+.keyLength = 256, \
+.curve = 0 \
+}
+#define CRYPTO_ALG_SHA256    \
+{ \
+.family = CRYPTO_ALGOFAM_SHA2_256, \
+.mode = 0, \
+.keyLength = 0, \
+.curve = 0 \
+}
+#define CRYPTO_ALG_HMAC_SHA256    \
+{ \
+.family = CRYPTO_ALGOFAM_HMAC, \
+.mode = CRYPTO_ALGOFAM_SHA2_256, \
+.keyLength = 256, \
+.curve = 0 \
+}
+#define CRYPTO_ALG_HKDF_SHA256    \
+{ \
+.family = CRYPTO_ALGOFAM_HKDF, \
+.mode = CRYPTO_ALGOFAM_SHA2_256, \
+.keyLength = 256, \
+.curve = 0 \
+}
 #define CRYPTO_CFG_CALLBACK_ON_COMPLETE    STD_ON
 #define CRYPTO_CFG_CALLBACK_ON_PROGRESS    STD_OFF
 #define CRYPTO_CFG_DEBUG_LEVEL    (0U)
