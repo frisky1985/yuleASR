@@ -11,9 +11,12 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include "bl_partition.h"
 #include "bl_rollback.h"
 #include "bl_secure_boot.h"
+#include "bl_antrollback.h"
+#include "bl_upgrade_log.h"
 #include "bl_time.h"
 #include "../crypto_stack/csm/csm_core.h"
 #include "../crypto_stack/keym/keym_core.h"
@@ -138,6 +141,29 @@ static void on_rollback(const bl_rollback_info_t *info)
 {
     (void)info;
     rollback_cb_count++;
+}
+
+/* ============================================================================
+ * 测试辅助: CRC32 (与生产模块同算法, 用于构造合法固件头)
+ * ============================================================================ */
+
+static uint32_t test_crc32(const uint8_t *data, uint32_t length)
+{
+    uint32_t crc = 0xFFFFFFFF;
+    const uint32_t polynomial = 0xEDB88320;
+
+    for (uint32_t i = 0; i < length; i++) {
+        crc ^= data[i];
+        for (uint8_t j = 0; j < 8U; j++) {
+            if ((crc & 1U) != 0U) {
+                crc = (crc >> 1) ^ polynomial;
+            } else {
+                crc >>= 1;
+            }
+        }
+    }
+
+    return ~crc;
 }
 
 /* ============================================================================
@@ -797,6 +823,515 @@ static int test_secure_boot_cert_chain(void)
 }
 
 /* ============================================================================
+ * 抗回滚计数器测试 (G1 / RS-OTA-01)
+ * ============================================================================ */
+
+#define TEST_ARB_ADDR   (0x300000U)   /* 独立 NVM 区域 (mock flash) */
+
+static int test_antrollback_basic(void)
+{
+    printf("  Testing anti-rollback counter basic operations...\n");
+
+    bl_antrollback_context_t arb;
+    memset(mock_flash, 0xFF, sizeof(mock_flash));   /* 擦除态 */
+
+    /* GIVEN 全新 NVM / WHEN 初始化 / THEN 计数器从 0 开始 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 0),
+                   BL_ANTIROLLBACK_OK);
+    uint32_t c = 0;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0);
+
+    /* GIVEN 计数器 0 / WHEN Increment / THEN 变为 1 并返回新值 */
+    uint32_t new_c = 0;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Increment(&arb, &new_c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(new_c, 1);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 1);
+
+    /* GIVEN 计数器 1 / WHEN Write(5) / THEN 成功且单调递增 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb, 5), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 5);
+
+    /* GIVEN 计数器 5 / WHEN Write(3) 回退 / THEN 拒绝且值不变 (防回滚攻击) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb, 3), BL_ANTIROLLBACK_ERROR_DECREMENT_ATTEMPT);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 5);
+
+    /* GIVEN 计数器 5 / WHEN Write(5) 同值 / THEN 允许 (幂等重写) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb, 5), BL_ANTIROLLBACK_OK);
+
+    /* 未初始化 / NULL 参数 / 非法槽位数 */
+    bl_antrollback_context_t bad;
+    memset(&bad, 0, sizeof(bad));
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&bad, &c), BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&bad, 1), BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Increment(&bad, NULL), BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(NULL, &c), BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, NULL), BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(NULL, &mock_flash_driver, 0, 0),
+                   BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, NULL, 0, 0), BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, 0,
+                                          BL_ANTIROLLBACK_MAX_SLOTS + 1U),
+                   BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+
+    Boot_AntiRollback_Deinit(&arb);
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_antrollback_persistence(void)
+{
+    printf("  Testing anti-rollback persistence & wear leveling...\n");
+
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+
+    /* GIVEN 4 槽位 / WHEN 连续 6 次写入 / THEN 槽位轮转 (磨损均衡) */
+    uint32_t last_slot = arb.active_slot;
+    for (uint32_t i = 1U; i <= 6U; i++) {
+        TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb, i), BL_ANTIROLLBACK_OK);
+        TEST_ASSERT_EQ(arb.active_slot, (last_slot + 1U) % 4U);
+        last_slot = arb.active_slot;
+    }
+
+    /* GIVEN NVM 已写入 / WHEN 重新初始化 / THEN 恢复最大计数器值 */
+    bl_antrollback_context_t arb2;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb2, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    uint32_t c = 0;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb2, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 6);
+    TEST_ASSERT_EQ(arb2.active_slot, arb.active_slot);
+
+    /* GIVEN 某槽位损坏 / WHEN 重新初始化 / THEN 其余槽位仍恢复最大值 */
+    uint32_t corrupted_slot = (arb.active_slot + 1U) % 4U;
+    uint32_t slot_addr = TEST_ARB_ADDR
+                         + corrupted_slot * (uint32_t)sizeof(bl_antrollback_slot_t);
+    mock_flash[slot_addr] = 0x00;   /* 破坏魔数 */
+    bl_antrollback_context_t arb3;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb3, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb3, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 6);
+
+    /* GIVEN 计数器 6 / WHEN 写入 4 (回退) / THEN 拒绝, NVM 仍保持 6 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb3, 4), BL_ANTIROLLBACK_ERROR_DECREMENT_ATTEMPT);
+    bl_antrollback_context_t arb4;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb4, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb4, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 6);
+
+    /* GIVEN Flash 注入失败 / WHEN 写入 / THEN STORAGE_ERROR 且 RAM 值不变 */
+    mock_program_fail = 1;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb4, 7), BL_ANTIROLLBACK_ERROR_STORAGE_ERROR);
+    mock_program_fail = 0;
+    mock_erase_fail = 1;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb4, 7), BL_ANTIROLLBACK_ERROR_STORAGE_ERROR);
+    mock_erase_fail = 0;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb4, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 6);
+
+    Boot_AntiRollback_Deinit(&arb4);
+    Boot_AntiRollback_Deinit(&arb3);
+    Boot_AntiRollback_Deinit(&arb2);
+    Boot_AntiRollback_Deinit(&arb);
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
+ * 升级日志测试 (G3 / RS-OTA-03)
+ * ============================================================================ */
+
+static int test_upgrade_log_basic(void)
+{
+    printf("  Testing upgrade log write/read/count...\n");
+
+    mock_time_ms = 5000;
+    bl_time_set_provider(mock_get_time_ms);
+
+    bl_upgrade_log_context_t log;
+    bl_upgrade_log_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.capacity = 4;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(&log, &cfg), BL_UPGRADE_LOG_OK);
+
+    bl_upgrade_log_entry_t e;
+    memset(&e, 0, sizeof(e));
+    e.version = 0x100;
+    e.source = BL_UPGRADE_LOG_SOURCE_OTA;
+    e.signature_result = BL_UPGRADE_LOG_SIG_OK;
+    e.result = BL_UPGRADE_LOG_RESULT_SUCCESS;
+
+    /* GIVEN 时间源可用 / WHEN 写入日志 / THEN 时间戳由模块填充, 可读回 */
+    mock_time_ms = 6000;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, &e), BL_UPGRADE_LOG_OK);
+    e.version = 0x200;
+    e.result = BL_UPGRADE_LOG_RESULT_FAILED;
+    mock_time_ms = 7000;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, &e), BL_UPGRADE_LOG_OK);
+
+    uint32_t count = 0;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_GetCount(&log, &count), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(count, 2);
+
+    bl_upgrade_log_entry_t r;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 0, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x100);
+    TEST_ASSERT_EQ(r.timestamp_ms, 6000);
+    TEST_ASSERT_EQ(r.source, BL_UPGRADE_LOG_SOURCE_OTA);
+    TEST_ASSERT_EQ(r.signature_result, BL_UPGRADE_LOG_SIG_OK);
+    TEST_ASSERT_EQ(r.result, BL_UPGRADE_LOG_RESULT_SUCCESS);
+
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 1, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x200);
+    TEST_ASSERT_EQ(r.timestamp_ms, 7000);
+    TEST_ASSERT_EQ(r.result, BL_UPGRADE_LOG_RESULT_FAILED);
+
+    /* 越界读取 */
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 2, &r), BL_UPGRADE_LOG_ERROR_INDEX_OUT_OF_RANGE);
+
+    /* NULL 参数 / 未初始化 / 容量超限 */
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 0, NULL), BL_UPGRADE_LOG_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_GetCount(&log, NULL), BL_UPGRADE_LOG_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, NULL), BL_UPGRADE_LOG_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(NULL, &e), BL_UPGRADE_LOG_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(NULL, &cfg), BL_UPGRADE_LOG_ERROR_INVALID_PARAM);
+
+    bl_upgrade_log_context_t bad;
+    memset(&bad, 0, sizeof(bad));
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&bad, &e), BL_UPGRADE_LOG_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&bad, 0, &r), BL_UPGRADE_LOG_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_GetCount(&bad, &count), BL_UPGRADE_LOG_ERROR_NOT_INITIALIZED);
+
+    cfg.capacity = BL_UPGRADE_LOG_MAX_ENTRIES + 1U;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(&log, &cfg), BL_UPGRADE_LOG_ERROR_INVALID_PARAM);
+
+    /* 来源/结果字符串 (诊断输出) */
+    TEST_ASSERT(Boot_UpgradeLog_SourceToString(BL_UPGRADE_LOG_SOURCE_OTA) != NULL);
+    TEST_ASSERT(Boot_UpgradeLog_ResultToString(BL_UPGRADE_LOG_RESULT_ROLLBACK) != NULL);
+
+    Boot_UpgradeLog_Deinit(&log);
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_upgrade_log_ring_overwrite(void)
+{
+    printf("  Testing upgrade log ring overwrite & corruption detection...\n");
+
+    mock_time_ms = 1000;
+    bl_time_set_provider(mock_get_time_ms);
+
+    bl_upgrade_log_context_t log;
+    bl_upgrade_log_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.capacity = 4;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(&log, &cfg), BL_UPGRADE_LOG_OK);
+
+    /* GIVEN 容量 4 / WHEN 写入 6 条 / THEN 保留最近 4 条, 覆盖最旧 */
+    bl_upgrade_log_entry_t e;
+    for (uint32_t i = 0U; i < 6U; i++) {
+        memset(&e, 0, sizeof(e));
+        e.version = 0x100 + i;
+        e.source = BL_UPGRADE_LOG_SOURCE_DIAGNOSTIC;
+        e.signature_result = BL_UPGRADE_LOG_SIG_OK;
+        e.result = BL_UPGRADE_LOG_RESULT_SUCCESS;
+        mock_time_ms = 1000U + i;
+        TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, &e), BL_UPGRADE_LOG_OK);
+    }
+
+    uint32_t count = 0;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_GetCount(&log, &count), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(count, 4);
+
+    bl_upgrade_log_entry_t r;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 0, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x102);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 3, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x105);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 2, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x104);
+    TEST_ASSERT_EQ(r.timestamp_ms, 1000U + 4U);
+
+    /* GIVEN 某条目被篡改 / WHEN 读取该条目 / THEN 报 ENTRY_CORRUPTED, 其余仍可读 */
+    log.entries[(log.header.head + 1U) % log.header.capacity].version ^= 0xFFU;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 1, &r), BL_UPGRADE_LOG_ERROR_ENTRY_CORRUPTED);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 0, &r), BL_UPGRADE_LOG_OK);
+
+    /* GIVEN 无时间源 / WHEN 写入 / THEN TIME_UNAVAILABLE (禁止 0 时间戳) */
+    bl_time_set_provider(NULL);
+    memset(&e, 0, sizeof(e));
+    e.version = 0x200;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, &e), BL_UPGRADE_LOG_ERROR_TIME_UNAVAILABLE);
+    bl_time_set_provider(mock_get_time_ms);
+
+    /* GIVEN 日志非空 / WHEN Clear / THEN 清空 */
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Clear(&log), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_GetCount(&log, &count), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(count, 0);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 0, &r), BL_UPGRADE_LOG_ERROR_INDEX_OUT_OF_RANGE);
+
+    Boot_UpgradeLog_Deinit(&log);
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_upgrade_log_save_load(void)
+{
+    printf("  Testing upgrade log NVM persistence...\n");
+
+    bl_partition_manager_t part_mgr;
+    memset(&part_mgr, 0, sizeof(part_mgr));
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(bl_partition_init(&part_mgr, &mock_flash_driver, 0), BL_OK);
+
+    bl_upgrade_log_context_t log;
+    bl_upgrade_log_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.capacity = 4;
+    cfg.storage = &part_mgr;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(&log, &cfg), BL_UPGRADE_LOG_OK);
+
+    mock_time_ms = 8000;
+    bl_time_set_provider(mock_get_time_ms);
+
+    bl_upgrade_log_entry_t e;
+    memset(&e, 0, sizeof(e));
+    e.version = 0x100;
+    e.source = BL_UPGRADE_LOG_SOURCE_OTA;
+    e.signature_result = BL_UPGRADE_LOG_SIG_OK;
+    e.result = BL_UPGRADE_LOG_RESULT_SUCCESS;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, &e), BL_UPGRADE_LOG_OK);
+    e.version = 0x200;
+    e.signature_result = BL_UPGRADE_LOG_SIG_INVALID;
+    e.result = BL_UPGRADE_LOG_RESULT_ROLLBACK;
+    mock_time_ms = 9000;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Write(&log, &e), BL_UPGRADE_LOG_OK);
+
+    /* GIVEN 日志已写 / WHEN Save 到 NVM / THEN 可 Load 完整恢复 */
+    uint32_t log_addr = 0x20000;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Save(&log, log_addr), BL_UPGRADE_LOG_OK);
+
+    Boot_UpgradeLog_Deinit(&log);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(&log, &cfg), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Load(&log, log_addr), BL_UPGRADE_LOG_OK);
+    uint32_t count = 0;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_GetCount(&log, &count), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(count, 2);
+    bl_upgrade_log_entry_t r;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 0, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x100);
+    TEST_ASSERT_EQ(r.signature_result, BL_UPGRADE_LOG_SIG_OK);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Read(&log, 1, &r), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(r.version, 0x200);
+    TEST_ASSERT_EQ(r.signature_result, BL_UPGRADE_LOG_SIG_INVALID);
+    TEST_ASSERT_EQ(r.result, BL_UPGRADE_LOG_RESULT_ROLLBACK);
+
+    /* GIVEN NVM 头部损坏 / WHEN Load / THEN STORAGE_ERROR (不污染运行态) */
+    mock_flash[log_addr] = 0x00;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Load(&log, log_addr), BL_UPGRADE_LOG_ERROR_STORAGE_ERROR);
+
+    /* 重新保存后恢复可用 */
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Save(&log, log_addr), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Load(&log, log_addr), BL_UPGRADE_LOG_OK);
+
+    /* 无存储 → STORAGE_ERROR */
+    bl_upgrade_log_context_t log2;
+    bl_upgrade_log_config_t cfg2;
+    memset(&cfg2, 0, sizeof(cfg2));
+    cfg2.capacity = 4;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Init(&log2, &cfg2), BL_UPGRADE_LOG_OK);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Save(&log2, log_addr), BL_UPGRADE_LOG_ERROR_STORAGE_ERROR);
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Load(&log2, log_addr), BL_UPGRADE_LOG_ERROR_STORAGE_ERROR);
+
+    /* 注入 flash 失败 */
+    mock_program_fail = 1;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Save(&log, log_addr), BL_UPGRADE_LOG_ERROR_STORAGE_ERROR);
+    mock_program_fail = 0;
+    mock_erase_fail = 1;
+    TEST_ASSERT_EQ(Boot_UpgradeLog_Save(&log, log_addr), BL_UPGRADE_LOG_ERROR_STORAGE_ERROR);
+    mock_erase_fail = 0;
+
+    Boot_UpgradeLog_Deinit(&log2);
+    Boot_UpgradeLog_Deinit(&log);
+    bl_partition_deinit(&part_mgr);
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
+ * 验签 3 步强化测试 (G4 / RS-OTA-04) + 抗回滚集成 (G1)
+ * ============================================================================ */
+
+static int test_secure_boot_strict_verify(void)
+{
+    printf("  Testing secure boot 3-step strict verification...\n");
+
+    csm_context_t *csm = csm_init(NULL);
+    TEST_ASSERT(csm != NULL);
+
+    bl_secure_boot_context_t ctx;
+    bl_secure_boot_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.verify_signature = true;
+    cfg.verify_hash = true;
+    cfg.verify_version = true;
+    cfg.oem_key_slot = 1;
+    cfg.anti_rollback_counter = 0;
+    /* 无 KeyM: 走无密钥导出路径, 便于验证签名步骤 fail-closed 语义 */
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx, &cfg, csm, NULL), BL_SB_OK);
+
+    uint8_t payload[16] = {0x01,0x02,0x03,0x04,0x05,0x06,0x07,0x08,
+                           0x09,0x0A,0x0B,0x0C,0x0D,0x0E,0x0F,0x10};
+    uint8_t sig[BL_SB_SIGNATURE_SIZE];
+    memset(sig, 0xAB, sizeof(sig));
+
+    /* 步骤①: 伪造签名 → INVALID_SIGNATURE (fail-closed) */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_signature_bound(
+                       &ctx, payload, sizeof(payload), 0x100,
+                       sig, BL_SB_SIGN_ECDSA_P256_SHA256),
+                   BL_SB_ERROR_INVALID_SIGNATURE);
+
+    /* 步骤①: SM2 预留枚举 — 后端未接入时 fail-closed */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_signature_bound(
+                       &ctx, payload, sizeof(payload), 0x100,
+                       sig, BL_SB_SIGN_SM2_SM3),
+                   BL_SB_ERROR_INVALID_SIGNATURE);
+
+    /* 步骤②: 签名内版本 != 头部版本 → VERSION_MISMATCH */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_version_binding(&ctx, 0x100, 0x200),
+                   BL_SB_ERROR_VERSION_MISMATCH);
+
+    /* 步骤②: 版本 < 抗回滚计数器 → ROLLBACK_PROTECTION */
+    cfg.anti_rollback_counter = 0x150;
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx, &cfg, csm, NULL), BL_SB_OK);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_version_binding(&ctx, 0x100, 0x100),
+                   BL_SB_ERROR_ROLLBACK_PROTECTION);
+    TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_ROLLBACK_DETECTED);
+
+    /* 步骤②: 正常路径 (签名内版本==头部版本 且 >= 计数器) */
+    cfg.anti_rollback_counter = 0x50;
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx, &cfg, csm, NULL), BL_SB_OK);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_version_binding(&ctx, 0x100, 0x100), BL_SB_OK);
+
+    /* 步骤③: 完整性哈希 — 一致 OK, 不一致 INVALID_HASH */
+    uint8_t good_hash[BL_SB_HASH_SIZE];
+    TEST_ASSERT_EQ(bl_secure_boot_calculate_hash(&ctx, payload, sizeof(payload),
+                                                 good_hash, BL_SB_HASH_SHA256), BL_SB_OK);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_integrity(&ctx, payload, sizeof(payload),
+                                                   good_hash, BL_SB_HASH_SHA256), BL_SB_OK);
+    uint8_t bad_hash[BL_SB_HASH_SIZE];
+    memset(bad_hash, 0x00, sizeof(bad_hash));
+    TEST_ASSERT_EQ(bl_secure_boot_verify_integrity(&ctx, payload, sizeof(payload),
+                                                   bad_hash, BL_SB_HASH_SHA256),
+                   BL_SB_ERROR_INVALID_HASH);
+
+    /* verify_strict 完整流程: 构造合法头部 (magic+CRC, 版本绑定格式),
+     * 伪造签名 → 步骤① 先行失败 (INVALID_SIGNATURE), 后续步骤不执行 */
+    bl_firmware_header_t hdr;
+    memset(&hdr, 0, sizeof(hdr));
+    hdr.magic = BL_SB_FIRMWARE_MAGIC;
+    hdr.header_version = BL_SB_HEADER_VERSION;
+    hdr.firmware_version = 0x100;
+    hdr.security_flags = BL_SB_FLAG_VERSION_BOUND_SIGNATURE;
+    hdr.sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    hdr.hash_type = BL_SB_HASH_SHA256;
+    memcpy(hdr.signature, sig, BL_SB_SIGNATURE_SIZE);
+    hdr.header_crc32 = test_crc32((const uint8_t *)&hdr,
+                                  (uint32_t)offsetof(bl_firmware_header_t, header_crc32));
+
+    uint8_t image[sizeof(bl_firmware_header_t) + sizeof(payload)];
+    memcpy(image, &hdr, sizeof(hdr));
+    memcpy(image + sizeof(hdr), payload, sizeof(payload));
+    TEST_ASSERT_EQ(bl_secure_boot_verify_strict(&ctx, image, sizeof(image)),
+                   BL_SB_ERROR_INVALID_SIGNATURE);
+    TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_VERIFICATION_FAILED);
+
+    /* NULL 参数 */
+    TEST_ASSERT_EQ(bl_secure_boot_verify_strict(NULL, image, sizeof(image)),
+                   BL_SB_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_strict(&ctx, NULL, sizeof(image)),
+                   BL_SB_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_signature_bound(&ctx, NULL, 4U, 0x100, sig,
+                                                         BL_SB_SIGN_ECDSA_P256_SHA256),
+                   BL_SB_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_version_binding(NULL, 1U, 1U),
+                   BL_SB_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_integrity(&ctx, NULL, 4U, good_hash,
+                                                   BL_SB_HASH_SHA256),
+                   BL_SB_ERROR_INVALID_PARAM);
+
+    bl_secure_boot_deinit(&ctx);
+    csm_deinit(csm);
+    printf("  PASSED\n");
+    return 0;
+}
+
+static int test_secure_boot_antrollback(void)
+{
+    printf("  Testing secure boot anti-rollback integration...\n");
+
+    csm_context_t *csm = csm_init(NULL);
+    TEST_ASSERT(csm != NULL);
+
+    bl_secure_boot_context_t ctx;
+    bl_secure_boot_config_t cfg;
+    memset(&cfg, 0, sizeof(cfg));
+    cfg.verify_signature = true;
+    cfg.verify_hash = true;
+    cfg.verify_version = true;
+    cfg.oem_key_slot = 1;
+    cfg.anti_rollback_counter = 0x200;   /* 计数器高于待验证固件版本 */
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx, &cfg, csm, NULL), BL_SB_OK);
+
+    /* GIVEN 计数器 0x200 / WHEN check_rollback(0x100, ...) / THEN 拒绝启动 */
+    TEST_ASSERT_EQ(bl_secure_boot_check_rollback(&ctx, 0x100, 0x300),
+                   BL_SB_ERROR_ROLLBACK_PROTECTION);
+    TEST_ASSERT_EQ(bl_secure_boot_get_state(&ctx), BL_SB_STATE_ROLLBACK_DETECTED);
+
+    /* GIVEN 版本 >= 计数器 / WHEN check_rollback / THEN 正常放行 */
+    TEST_ASSERT_EQ(bl_secure_boot_check_rollback(&ctx, 0x300, 0x300), BL_SB_OK);
+
+    /* 完整 verify (旧格式): 构造合法头部, 版本低于计数器
+     * → 版本检查阶段返回 ROLLBACK_PROTECTION (先于哈希/签名) */
+    bl_firmware_header_t hdr;
+    memset(&hdr, 0, sizeof(hdr));
+    hdr.magic = BL_SB_FIRMWARE_MAGIC;
+    hdr.header_version = BL_SB_HEADER_VERSION;
+    hdr.firmware_version = 0x100;
+    hdr.security_flags = 0;   /* 旧格式 (非版本绑定) */
+    hdr.sign_type = BL_SB_SIGN_ECDSA_P256_SHA256;
+    hdr.hash_type = BL_SB_HASH_SHA256;
+    hdr.header_crc32 = test_crc32((const uint8_t *)&hdr,
+                                  (uint32_t)offsetof(bl_firmware_header_t, header_crc32));
+
+    uint8_t image[sizeof(bl_firmware_header_t) + 16U];
+    memset(image, 0x5A, sizeof(image));
+    memcpy(image, &hdr, sizeof(hdr));
+    TEST_ASSERT_EQ(bl_secure_boot_verify(&ctx, image, sizeof(image)),
+                   BL_SB_ERROR_ROLLBACK_PROTECTION);
+
+    /* GIVEN 计数器禁用 (0) / WHEN verify / THEN 版本检查通过后进入哈希阶段
+     * (payload 哈希 != 头部声明哈希 → INVALID_HASH, 证明顺序: 版本→哈希) */
+    cfg.anti_rollback_counter = 0;
+    TEST_ASSERT_EQ(bl_secure_boot_init(&ctx, &cfg, csm, NULL), BL_SB_OK);
+    TEST_ASSERT_EQ(bl_secure_boot_verify(&ctx, image, sizeof(image)),
+                   BL_SB_ERROR_INVALID_HASH);
+
+    bl_secure_boot_deinit(&ctx);
+    csm_deinit(csm);
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * Test Runner
  * ============================================================================ */
 
@@ -814,7 +1349,8 @@ static int run_test(int (*test_func)(void), const char *name)
 int main(void)
 {
     printf("============================================\n");
-    printf("Bootloader Unit Tests (Partition CRC + Rollback)\n");
+    printf("Bootloader Unit Tests (Partition CRC + Rollback)");
+    printf(" + OTA Security (AntiRollback/UpgradeLog/3-Step)\n");
     printf("============================================\n\n");
 
     run_test(test_partition_init_deinit, "Partition Init/Deinit");
@@ -832,6 +1368,13 @@ int main(void)
     run_test(test_rollback_time_unavailable, "Rollback Time Unavailable");
     run_test(test_rollback_save_load_record, "Rollback Save/Load Record");
     run_test(test_secure_boot_cert_chain, "Secure Boot Cert Chain");
+    run_test(test_antrollback_basic, "Anti-Rollback Counter Basic");
+    run_test(test_antrollback_persistence, "Anti-Rollback Persistence & Wear Leveling");
+    run_test(test_upgrade_log_basic, "Upgrade Log Write/Read/Count");
+    run_test(test_upgrade_log_ring_overwrite, "Upgrade Log Ring Overwrite");
+    run_test(test_upgrade_log_save_load, "Upgrade Log NVM Persistence");
+    run_test(test_secure_boot_strict_verify, "Secure Boot 3-Step Strict Verify");
+    run_test(test_secure_boot_antrollback, "Secure Boot Anti-Rollback Integration");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

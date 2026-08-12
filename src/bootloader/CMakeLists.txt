@@ -5,10 +5,12 @@
 cmake_minimum_required(VERSION 3.16)
 
 add_library(eth_bootloader STATIC
+    bl_antrollback.c
     bl_partition.c
     bl_rollback.c
     bl_secure_boot.c
     bl_time.c
+    bl_upgrade_log.c
 )
 
 target_include_directories(eth_bootloader PUBLIC
@@ -35,10 +37,12 @@ endif()
 
 # Install headers
 install(FILES
+    bl_antrollback.h
     bl_partition.h
     bl_rollback.h
     bl_secure_boot.h
     bl_time.h
+    bl_upgrade_log.h
     DESTINATION include/eth_dds/bootloader
     COMPONENT headers
 )

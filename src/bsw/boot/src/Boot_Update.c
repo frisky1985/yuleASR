@@ -20,18 +20,135 @@ typedef struct {
 #endif
     uint32_t       bytes_written;
     boolean        active;
+    /* 用户确认状态 (RS-OTA-02) */
+    Boot_ConfirmState confirm_state;
+    uint64_t     confirm_start_ms;   /* 确认请求发起时刻 (超时判定) */
 } UpdateContext;
 
 static UpdateContext g_ctx;
 static boolean g_ctx_valid = FALSE;
+
+/* 单调时间源 (确认超时用; NULL = 无时间源) */
+static uint64_t (*s_tick_fn)(void) = NULL_PTR;
 
 /* Forward declaration for BIB helpers */
 static Boot_Result bib_read(Boot_InfoBlock *bib);
 static Boot_Result bib_write(const Boot_InfoBlock *bib);
 static uint32_t    bib_calc_crc(const Boot_InfoBlock *bib);
 
+/* ============================================================================
+ * 用户确认内部辅助 (RS-OTA-02)
+ * ============================================================================ */
+
+/**
+ * @brief 获取当前时间 (ms)
+ * @param out_ms 输出时间; 仅返回 TRUE 时有效
+ */
+static boolean confirm_now_ms(uint64_t *out_ms)
+{
+    if (s_tick_fn == NULL_PTR) {
+        return FALSE;
+    }
+    *out_ms = s_tick_fn();
+    return TRUE;
+}
+
+/**
+ * @brief 确认窗口是否已超时 (仅 PENDING 态判定)
+ */
+static boolean confirm_timeout_elapsed(void)
+{
+    if (BOOT_USER_CONFIRM_TIMEOUT_MS == 0U) {
+        return FALSE;   /* 0 = 不超时 */
+    }
+    uint64_t now;
+    if (!confirm_now_ms(&now)) {
+        return FALSE;   /* 无时间源: 无法判定超时, 等待显式确认 */
+    }
+    return (now >= g_ctx.confirm_start_ms + BOOT_USER_CONFIRM_TIMEOUT_MS);
+}
+
+/**
+ * @brief 确认门控检查: 未确认/被拒/超时 → 拒绝写入
+ * @return BOOT_OK 放行; 否则对应错误码
+ */
+static Boot_Result confirm_gate(void)
+{
+    if (BOOT_USER_CONFIRM_REQUIRED == 0U) {
+        return BOOT_OK;   /* 配置关闭确认门控 */
+    }
+
+    switch (g_ctx.confirm_state) {
+        case BOOT_CONFIRM_GRANTED:
+            return BOOT_OK;
+        case BOOT_CONFIRM_DENIED:
+            return BOOT_E_CONFIRM_DENIED;
+        case BOOT_CONFIRM_TIMEOUT:
+            return BOOT_E_TIMEOUT;
+        case BOOT_CONFIRM_PENDING:
+        default:
+            /* 超时自动取消 (可配置, 默认 30s) */
+            if (confirm_timeout_elapsed()) {
+                g_ctx.confirm_state = BOOT_CONFIRM_TIMEOUT;
+                return BOOT_E_TIMEOUT;
+            }
+            return BOOT_E_CONFIRM_PENDING;
+    }
+}
+
+/* ============================================================================
+ * User Confirm API (RS-OTA-02)
+ * ============================================================================ */
+
+Boot_Result Boot_Update_RequestUserConfirm(void)
+{
+    if (BOOT_USER_CONFIRM_REQUIRED == 0U) {
+        g_ctx.confirm_state = BOOT_CONFIRM_GRANTED;  /* 未启用确认, 直接放行 */
+        return BOOT_OK;
+    }
+
+    /* 已确认/已拒绝/已超时: 保持终态 (幂等) */
+    if ((g_ctx.confirm_state == BOOT_CONFIRM_GRANTED) ||
+        (g_ctx.confirm_state == BOOT_CONFIRM_DENIED) ||
+        (g_ctx.confirm_state == BOOT_CONFIRM_TIMEOUT)) {
+        return BOOT_OK;
+    }
+
+    /* 进入等待确认, 启动超时计时 */
+    g_ctx.confirm_state = BOOT_CONFIRM_PENDING;
+    if (!confirm_now_ms(&g_ctx.confirm_start_ms)) {
+        g_ctx.confirm_start_ms = 0U;  /* 无时间源: 不超时, 等待显式确认 */
+    }
+    return BOOT_OK;
+}
+
+Boot_Result Boot_Update_ConfirmUserDecision(boolean confirmed)
+{
+    if (g_ctx.confirm_state != BOOT_CONFIRM_PENDING) {
+        return BOOT_E_PARAM;   /* 无待确认请求 */
+    }
+    g_ctx.confirm_state = (confirmed != 0U) ? BOOT_CONFIRM_GRANTED : BOOT_CONFIRM_DENIED;
+    return BOOT_OK;
+}
+
+Boot_ConfirmState Boot_Update_GetConfirmState(void)
+{
+    return g_ctx.confirm_state;
+}
+
+void Boot_Update_SetTimeSource(uint64_t (*tick_fn)(void))
+{
+    s_tick_fn = tick_fn;
+}
+
 Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
 {
+    /* 用户确认门控 (RS-OTA-02): 未确认不得开始升级写入 */
+    Boot_Result confirm_ret = confirm_gate();
+    if (confirm_ret != BOOT_OK) {
+        return confirm_ret;
+    }
+
     if (g_ctx_valid!= 0U) {
         (void)Boot_Update_Abort();
     }
@@ -40,6 +157,7 @@ Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
     g_ctx.slot_addr    = slot_addr;
     g_ctx.image_type   = image_type;
     g_ctx.active       = TRUE;
+    g_ctx.confirm_state = BOOT_CONFIRM_GRANTED;  /* Prepare 时确认已通过, 保持授权 */
 
 #if defined(MBEDTLS_USE)
     mbedtls_sha256_init(&g_ctx.hash_ctx);
@@ -65,6 +183,12 @@ Boot_Result Boot_Update_WriteBlock(const uint8_t *data,
         return BOOT_E_NOT_INIT;
     }
 
+    /* 用户确认门控: 未确认/拒绝/超时 → 拒绝写入 */
+    Boot_Result confirm_ret = confirm_gate();
+    if (confirm_ret != BOOT_OK) {
+        return confirm_ret;
+    }
+
     uint32_t write_addr = g_ctx.slot_addr + offset;
 
     /* Update running hash incrementally */
@@ -87,6 +211,12 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 {
     if (g_ctx_valid == 0U) {
         return BOOT_E_NOT_INIT;
+    }
+
+    /* 用户确认门控: 未确认/拒绝/超时 → 拒绝完成升级 */
+    Boot_Result confirm_ret = confirm_gate();
+    if (confirm_ret != BOOT_OK) {
+        return confirm_ret;
     }
 
     /* 1. Build and write image header */
@@ -159,6 +289,10 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     bib.crc32 = bib_calc_crc(&bib);
 
     ret = bib_write(&bib);
+    if (ret == BOOT_OK) {
+        /* 升级完成: 一次性确认授权复位 */
+        g_ctx.confirm_state = BOOT_CONFIRM_IDLE;
+    }
     g_ctx_valid = FALSE;
     return ret;
 }

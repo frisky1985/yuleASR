@@ -80,11 +80,12 @@ typedef enum {
  * ============================================================================ */
 typedef enum {
     BL_SB_SIGN_NONE = 0,
-    BL_SB_SIGN_ECDSA_P256_SHA256,
+    BL_SB_SIGN_ECDSA_P256_SHA256,   /* 默认: ECDSA P-256 + SHA-256 */
     BL_SB_SIGN_ECDSA_P384_SHA384,
     BL_SB_SIGN_RSA_PKCS1_SHA256,
     BL_SB_SIGN_RSA_PSS_SHA256,
-    BL_SB_SIGN_ED25519
+    BL_SB_SIGN_ED25519,
+    BL_SB_SIGN_SM2_SM3              /* 预留: SM2 国密 (Csm 后端接入后启用; 当前 fail-closed) */
 } bl_signature_type_t;
 
 /* ============================================================================
@@ -146,6 +147,24 @@ typedef struct {
 #define BL_SB_FLAG_ROLLBACK_PROTECTION  0x0004
 #define BL_SB_FLAG_DEBUG_DISABLED       0x0008
 #define BL_SB_FLAG_ANTI_TAMPER          0x0010
+#define BL_SB_FLAG_VERSION_BOUND_SIGNATURE 0x0020  /* 版本绑定签名 (G4, RS-OTA-04) */
+
+/* ============================================================================
+ * 版本绑定签名格式 (RS-OTA-04: 版本号在签名内容内)
+ * ============================================================================ */
+#define BL_SB_VERSION_BINDING_FORMAT_VERSION  1U
+
+/*
+ * 版本绑定结构: 签名覆盖该结构的 SHA-256, 从而将固件版本号绑定进签名内容。
+ * 攻击者篡改头部 firmware_version 后, 验签结构随之改变 → 步骤①签名验证失败。
+ * 布局固定 (AUTOSAR 风格, 无隐式填充依赖: 4+4+4+32=44 字节)。
+ */
+typedef struct {
+    uint32_t format_version;    /* BL_SB_VERSION_BINDING_FORMAT_VERSION (防混淆) */
+    uint32_t firmware_version;  /* 签名内固件版本号 */
+    uint32_t firmware_size;     /* payload 大小 (防长度混淆) */
+    uint8_t  payload_hash[BL_SB_HASH_SIZE];  /* payload SHA-256 */
+} bl_version_binding_t;
 
 /* ============================================================================
  * 版本信息结构
@@ -230,6 +249,9 @@ typedef struct {
     /* 密钥索引 */
     uint8_t root_ca_key_slot;           /* 根CA密钥槽 */
     uint8_t oem_key_slot;               /* OEM密钥槽 */
+
+    /* 抗回滚计数器 (RS-OTA-01): 启动时从 NVM 加载的快照; 0 表示禁用 */
+    uint32_t anti_rollback_counter;
     
     /* 回调 */
     void (*on_verification_progress)(bl_secure_boot_state_t state, uint8_t progress);
@@ -379,10 +401,13 @@ bl_version_compare_t bl_secure_boot_compare_versions(
 
 /**
  * @brief 检查版本防回滚
+ * @details 包含抗回滚计数器校验 (RS-OTA-01): 新版本低于计数器
+ *          → BL_SB_ERROR_ROLLBACK_PROTECTION; 随后执行现有版本回滚检查。
  * @param ctx 安全启动上下文
  * @param new_version 新版本
  * @param current_version 当前版本
- * @return BL_SB_OK允许升级, BL_SB_ERROR_VERSION_ROLLBACK禁止回滚
+ * @return BL_SB_OK允许升级, BL_SB_ERROR_ROLLBACK_PROTECTION (计数器拒绝),
+ *         BL_SB_ERROR_VERSION_ROLLBACK禁止回滚
  */
 bl_secure_boot_error_t bl_secure_boot_check_rollback(
     bl_secure_boot_context_t *ctx,
@@ -510,6 +535,80 @@ const char* bl_secure_boot_version_to_string(
     uint32_t version,
     char *buf,
     uint32_t buf_size
+);
+
+/**
+ * @brief 验签 3 步强化 (RS-OTA-04): 严格按 ①签名 ②版本绑定 ③完整性 顺序执行
+ * @details ① 签名验证: 对版本绑定结构 (含版本号+payload哈希) 验签;
+ *          ② 版本绑定校验: 签名内版本 == 头部版本, 且版本 >= 抗回滚计数器;
+ *          ③ 完整性哈希: 实际 payload 哈希 == 头部声明哈希。
+ *          任一失败即拒绝并返回对应错误码 (调用方应写升级日志)。
+ *          内部完成头部解析/CRC 校验, 可独立使用。
+ * @param ctx 安全启动上下文
+ * @param firmware_data 固件数据 (包含头部)
+ * @param firmware_size 固件大小
+ * @return BL_SB_OK验证通过
+ */
+bl_secure_boot_error_t bl_secure_boot_verify_strict(
+    bl_secure_boot_context_t *ctx,
+    const uint8_t *firmware_data,
+    uint32_t firmware_size
+);
+
+/**
+ * @brief 3步验签 步骤①: 版本绑定签名验证 (版本号在签名内容内)
+ * @details 计算 payload 哈希, 构造版本绑定结构, 对绑定结构验签。
+ *          版本号被签名覆盖 → 篡改版本号必然导致验签失败。
+ * @param ctx 安全启动上下文
+ * @param payload payload 数据 (不含头部)
+ * @param payload_size payload 大小
+ * @param version 固件版本号 (写入签名内容)
+ * @param signature 签名数据
+ * @param sign_type 签名类型
+ * @return BL_SB_OK成功; BL_SB_ERROR_INVALID_SIGNATURE 签名无效
+ */
+bl_secure_boot_error_t bl_secure_boot_verify_signature_bound(
+    bl_secure_boot_context_t *ctx,
+    const uint8_t *payload,
+    uint32_t payload_size,
+    uint32_t version,
+    const uint8_t *signature,
+    bl_signature_type_t sign_type
+);
+
+/**
+ * @brief 3步验签 步骤②: 版本绑定校验
+ * @details ① 签名内版本与头部版本一致性 (防版本号篡改);
+ *          ② 抗回滚计数器: 头部版本 < 计数器 → BL_SB_ERROR_ROLLBACK_PROTECTION;
+ *          ③ 现有版本回滚检查 (与 current_version 比较)。
+ * @param ctx 安全启动上下文
+ * @param signed_version 从签名内容解析出的版本号
+ * @param header_version 头部声明的版本号
+ * @return BL_SB_OK成功; BL_SB_ERROR_VERSION_MISMATCH (版本不一致),
+ *         BL_SB_ERROR_ROLLBACK_PROTECTION (低于计数器), BL_SB_ERROR_VERSION_ROLLBACK
+ */
+bl_secure_boot_error_t bl_secure_boot_verify_version_binding(
+    bl_secure_boot_context_t *ctx,
+    uint32_t signed_version,
+    uint32_t header_version
+);
+
+/**
+ * @brief 3步验签 步骤③: 完整性哈希校验
+ * @details 计算 payload 哈希并与头部声明哈希比较 (防篡改/损坏)。
+ * @param ctx 安全启动上下文
+ * @param payload payload 数据 (不含头部)
+ * @param payload_size payload 大小
+ * @param expected_hash 头部声明的期望哈希
+ * @param hash_type 哈希类型
+ * @return BL_SB_OK成功; BL_SB_ERROR_INVALID_HASH 哈希不一致
+ */
+bl_secure_boot_error_t bl_secure_boot_verify_integrity(
+    bl_secure_boot_context_t *ctx,
+    const uint8_t *payload,
+    uint32_t payload_size,
+    const uint8_t *expected_hash,
+    bl_hash_type_t hash_type
 );
 
 /**

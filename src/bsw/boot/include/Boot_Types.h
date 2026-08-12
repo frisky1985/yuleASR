@@ -28,6 +28,8 @@ typedef enum {
     BOOT_E_HSM_INIT      = 0x30U,
     BOOT_E_HSM_VERIFY    = 0x31U,
     BOOT_E_TIMEOUT       = 0x40U,
+    BOOT_E_CONFIRM_PENDING = 0x50U,  /* 用户确认未完成 (等待确认/未请求) */
+    BOOT_E_CONFIRM_DENIED  = 0x51U,  /* 用户拒绝升级 */
     BOOT_E_GENERAL       = 0xFFU
 } Boot_Result;
 

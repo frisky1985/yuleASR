@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stddef.h>
 #include "bl_secure_boot.h"
 #include "bl_time.h"
 #include "../common/log/dds_log.h"
@@ -200,8 +201,9 @@ bl_secure_boot_error_t bl_secure_boot_verify_header_crc(
         return BL_SB_ERROR_INVALID_PARAM;
     }
     
-    /* 计算头部CRC (排除header_crc32字段) */
-    uint32_t header_size_without_crc = sizeof(bl_firmware_header_t) - sizeof(uint32_t);
+    /* 计算头部CRC (排除header_crc32字段自身; 用 offsetof 而非 sizeof-4,
+     * 避免结构体尾部对齐填充把 crc32 字段包含进自身 CRC 的隐式错误) */
+    uint32_t header_size_without_crc = (uint32_t)offsetof(bl_firmware_header_t, header_crc32);
     uint32_t calculated_crc = calculate_crc32(
         (const uint8_t*)header,
         header_size_without_crc
@@ -431,7 +433,19 @@ bl_secure_boot_error_t bl_secure_boot_check_rollback(
     if (ctx == NULL) {
         return BL_SB_ERROR_INVALID_PARAM;
     }
-    
+
+    /* 抗回滚计数器 (RS-OTA-01): 固件版本 < 计数器 → 拒绝启动 */
+    if ((ctx->config.anti_rollback_counter > 0U) &&
+        (new_version < ctx->config.anti_rollback_counter)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Rollback protection: version 0x%08X below counter %u",
+                new_version, ctx->config.anti_rollback_counter);
+        ctx->rollback_attempts_blocked++;
+        ctx->rollback_info.rollback_detected = true;
+        set_state(ctx, BL_SB_STATE_ROLLBACK_DETECTED);
+        return BL_SB_ERROR_ROLLBACK_PROTECTION;
+    }
+
     /* 检查版本是否回滚 */
     if (new_version < current_version) {
         DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
@@ -646,6 +660,177 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
     return BL_SB_OK;
 }
 
+/* ============================================================================
+ * 验签 3 步强化 (RS-OTA-04)
+ * ============================================================================ */
+
+bl_secure_boot_error_t bl_secure_boot_verify_signature_bound(
+    bl_secure_boot_context_t *ctx,
+    const uint8_t *payload,
+    uint32_t payload_size,
+    uint32_t version,
+    const uint8_t *signature,
+    bl_signature_type_t sign_type
+)
+{
+    if ((ctx == NULL) || (payload == NULL) || (signature == NULL)) {
+        return BL_SB_ERROR_INVALID_PARAM;
+    }
+
+    /* 计算 payload 哈希 (SHA-256, 与版本绑定结构定义一致) */
+    uint8_t payload_hash[BL_SB_HASH_SIZE];
+    bl_secure_boot_error_t result = bl_secure_boot_calculate_hash(
+        ctx, payload, payload_size, payload_hash, BL_SB_HASH_SHA256);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    /* 构造版本绑定结构: 版本号在签名内容内 (防篡改版本号) */
+    bl_version_binding_t binding;
+    memset(&binding, 0, sizeof(binding));
+    binding.format_version = BL_SB_VERSION_BINDING_FORMAT_VERSION;
+    binding.firmware_version = version;
+    binding.firmware_size = payload_size;
+    memcpy(binding.payload_hash, payload_hash, BL_SB_HASH_SIZE);
+
+    /* 对绑定结构验签 (签名覆盖整个绑定结构) */
+    return bl_secure_boot_verify_signature(
+        ctx,
+        (const uint8_t *)&binding,
+        (uint32_t)sizeof(bl_version_binding_t),
+        signature,
+        sign_type
+    );
+}
+
+bl_secure_boot_error_t bl_secure_boot_verify_version_binding(
+    bl_secure_boot_context_t *ctx,
+    uint32_t signed_version,
+    uint32_t header_version
+)
+{
+    if (ctx == NULL) {
+        return BL_SB_ERROR_INVALID_PARAM;
+    }
+
+    /* ① 签名内版本与头部版本一致性 (防版本号篡改) */
+    if (signed_version != header_version) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Version binding mismatch: signed=0x%08X, header=0x%08X",
+                signed_version, header_version);
+        set_state(ctx, BL_SB_STATE_VERIFICATION_FAILED);
+        return BL_SB_ERROR_VERSION_MISMATCH;
+    }
+
+    /* ② 抗回滚计数器 (RS-OTA-01) */
+    if ((ctx->config.anti_rollback_counter > 0U) &&
+        (header_version < ctx->config.anti_rollback_counter)) {
+        DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                "Rollback protection: version 0x%08X below counter %u",
+                header_version, ctx->config.anti_rollback_counter);
+        ctx->rollback_attempts_blocked++;
+        ctx->rollback_info.rollback_detected = true;
+        set_state(ctx, BL_SB_STATE_ROLLBACK_DETECTED);
+        return BL_SB_ERROR_ROLLBACK_PROTECTION;
+    }
+
+    /* ③ 现有版本回滚检查 (与当前版本比较) */
+    bl_secure_boot_error_t result = bl_secure_boot_check_rollback(
+        ctx, header_version, ctx->rollback_info.current_version);
+    if (result != BL_SB_OK) {
+        return result;
+    }
+
+    return BL_SB_OK;
+}
+
+bl_secure_boot_error_t bl_secure_boot_verify_integrity(
+    bl_secure_boot_context_t *ctx,
+    const uint8_t *payload,
+    uint32_t payload_size,
+    const uint8_t *expected_hash,
+    bl_hash_type_t hash_type
+)
+{
+    /* 3步验签 步骤③: 完整性哈希 (复用哈希验证实现) */
+    return bl_secure_boot_verify_hash(
+        ctx, payload, payload_size, expected_hash, hash_type);
+}
+
+bl_secure_boot_error_t bl_secure_boot_verify_strict(
+    bl_secure_boot_context_t *ctx,
+    const uint8_t *firmware_data,
+    uint32_t firmware_size
+)
+{
+    if ((ctx == NULL) || (firmware_data == NULL) ||
+        (firmware_size < FIRMWARE_HEADER_SIZE)) {
+        return BL_SB_ERROR_INVALID_PARAM;
+    }
+
+    bl_secure_boot_error_t result;
+    bl_firmware_header_t header;
+
+    ctx->total_verifications++;
+
+    /* 头部解析 + CRC 校验 (预检查, 非3步验签之一) */
+    result = bl_secure_boot_parse_header(ctx, firmware_data,
+                                         FIRMWARE_HEADER_SIZE, &header);
+    if (result != BL_SB_OK) {
+        set_error(ctx, result);
+        return result;
+    }
+    memcpy(&ctx->current_header, &header, sizeof(bl_firmware_header_t));
+
+    result = bl_secure_boot_verify_header_crc(ctx, &header);
+    if (result != BL_SB_OK) {
+        set_error(ctx, result);
+        return result;
+    }
+
+    const uint8_t *payload = firmware_data + FIRMWARE_HEADER_SIZE;
+    uint32_t payload_size = firmware_size - FIRMWARE_HEADER_SIZE;
+
+    /* 步骤①: 签名验证 — 版本号在签名内容内 */
+    result = bl_secure_boot_verify_signature_bound(
+        ctx, payload, payload_size, header.firmware_version,
+        header.signature, header.sign_type);
+    if (result != BL_SB_OK) {
+        set_error(ctx, result);
+        return result;
+    }
+
+    /* 步骤②: 版本绑定校验 (签名内版本 == 头部版本 + 抗回滚计数器) */
+    result = bl_secure_boot_verify_version_binding(
+        ctx, header.firmware_version, header.firmware_version);
+    if (result != BL_SB_OK) {
+        set_error(ctx, result);
+        return result;
+    }
+
+    /* 步骤③: 完整性哈希 (payload 哈希 == 头部声明哈希) */
+    result = bl_secure_boot_verify_integrity(
+        ctx, payload, payload_size, header.hash, header.hash_type);
+    if (result != BL_SB_OK) {
+        set_error(ctx, result);
+        return result;
+    }
+
+    /* 验证成功 */
+    set_state(ctx, BL_SB_STATE_VERIFIED);
+    bl_secure_boot_update_rollback_info(ctx, header.firmware_version);
+
+    if (ctx->config.on_verification_complete != NULL) {
+        ctx->config.on_verification_complete(BL_SB_OK);
+    }
+
+    DDS_LOG(BL_SB_LOG_LEVEL, BL_SB_MODULE_NAME,
+            "Strict 3-step verification passed (version 0x%08X)",
+            header.firmware_version);
+
+    return BL_SB_OK;
+}
+
 bl_secure_boot_error_t bl_secure_boot_verify(
     bl_secure_boot_context_t *ctx,
     const uint8_t *firmware_data,
@@ -658,9 +843,7 @@ bl_secure_boot_error_t bl_secure_boot_verify(
     
     bl_secure_boot_error_t result;
     bl_firmware_header_t header;
-    
-    ctx->total_verifications++;
-    
+
     /* 1. 解析头部 */
     result = bl_secure_boot_parse_header(ctx, firmware_data, 
                                          FIRMWARE_HEADER_SIZE, &header);
@@ -676,8 +859,16 @@ bl_secure_boot_error_t bl_secure_boot_verify(
         set_error(ctx, result);
         return result;
     }
-    
-    /* 3. 检查版本防回滚 */
+
+    /* 版本绑定签名格式 (G4/RS-OTA-04): 走严格 3 步验签 */
+    if ((header.security_flags & BL_SB_FLAG_VERSION_BOUND_SIGNATURE) != 0U) {
+        result = bl_secure_boot_verify_strict(ctx, firmware_data, firmware_size);
+        /* verify_strict 内部已 set_error; 此处直接返回 */
+        return result;
+    }
+
+    /* 3. 检查版本防回滚 (旧格式: 仅统计验签次数; 严格格式由 verify_strict 统计) */
+    ctx->total_verifications++;
     if (ctx->config.verify_version) {
         result = bl_secure_boot_check_rollback(ctx, header.firmware_version,
                                                ctx->rollback_info.current_version);
