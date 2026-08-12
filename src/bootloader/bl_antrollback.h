@@ -27,6 +27,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "bl_partition.h"
+#include "bl_rollback_storage.h"   /* 跨层抗回滚存储服务接口 (共享 include 树) */
 
 #ifdef __cplusplus
 extern "C" {
@@ -206,6 +207,21 @@ bl_antrollback_error_t Boot_AntiRollback_GetPending(
     uint32_t *version,
     uint32_t *count
 );
+
+/* ============================================================================
+ * 抗回滚存储服务接口实现 (方案 C: 接口抽象, 供 Boot_Update 注入使用)
+ * ============================================================================ */
+
+/**
+ * @brief 获取抗回滚存储服务接口 (bl_rollback_storage_api_t 实现)
+ * @details 返回静态函数表, ctx 参数为 bl_antrollback_context_t*。
+ *          供集成层注入给 bsw/boot 层 Boot_Update
+ *          (Boot_Update_SetAntiRollbackStorage), 使 Boot_Update 经
+ *          回调访问本 NVM 计数器 — 计数器单一事实源, 分层解耦。
+ *          表内函数与 bl_antrollback API 一一对应 (见 bl_antrollback.c)。
+ * @return 静态接口表 (永不为 NULL)
+ */
+const bl_rollback_storage_api_t *Boot_AntiRollback_GetStorageApi(void);
 
 #ifdef __cplusplus
 }

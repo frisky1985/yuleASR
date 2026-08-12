@@ -471,3 +471,86 @@ bl_antrollback_error_t Boot_AntiRollback_GetPending(
     }
     return BL_ANTIROLLBACK_OK;
 }
+
+/* ============================================================================
+ * 抗回滚存储服务接口实现 (方案 C: 跨层接口抽象)
+ *
+ * Boot_AntiRollback_GetStorageApi() 返回静态函数表, 由集成层 (SBL main)
+ * 注入给 bsw/boot 层 Boot_Update。表内函数把 bl_rollback_storage_api_t 的
+ * ctx 解释为 bl_antrollback_context_t*, 显式映射错误码 (不依赖数值巧合,
+ * 下方编译期断言保证两套错误码数值 1:1 对齐)。
+ * ============================================================================ */
+
+/* 编译期断言: bl_antrollback 错误码与 bl_rollback_storage 错误码数值对齐 */
+typedef char bl_arb_err_align_ok[(
+    (int)BL_ANTIROLLBACK_ERROR_INVALID_PARAM == (int)BL_ROLLBACK_STORAGE_ERROR_INVALID_PARAM) &&
+    ((int)BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED == (int)BL_ROLLBACK_STORAGE_ERROR_NOT_INITIALIZED) &&
+    ((int)BL_ANTIROLLBACK_ERROR_STORAGE_ERROR == (int)BL_ROLLBACK_STORAGE_ERROR_STORAGE) &&
+    ((int)BL_ANTIROLLBACK_ERROR_DECREMENT_ATTEMPT == (int)BL_ROLLBACK_STORAGE_ERROR_DECREMENT_ATTEMPT) &&
+    ((int)BL_ANTIROLLBACK_ERROR_INVALID_RECORD == (int)BL_ROLLBACK_STORAGE_ERROR_INVALID_RECORD) &&
+    ((int)BL_ANTIROLLBACK_ERROR_COUNTER_FULL == (int)BL_ROLLBACK_STORAGE_ERROR_COUNTER_FULL)
+    ? 1 : -1];
+
+/* MISRA 8.7 保留: 表内函数为公开接口 (bl_rollback_storage_api_t) 成员,
+ * 经 Boot_AntiRollback_GetStorageApi() 暴露给集成层/测试, 消费者在扫描范围外 */
+
+static bl_rollback_storage_error_t storage_adapter_read(void *ctx, uint32_t *counter)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_Read(
+        (const bl_antrollback_context_t *)ctx, counter);
+}
+
+static bl_rollback_storage_error_t storage_adapter_write(void *ctx, uint32_t counter)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_Write(
+        (bl_antrollback_context_t *)ctx, counter);
+}
+
+static bl_rollback_storage_error_t storage_adapter_increment(void *ctx, uint32_t *new_counter)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_Increment(
+        (bl_antrollback_context_t *)ctx, new_counter);
+}
+
+static bl_rollback_storage_error_t storage_adapter_set_confirm_boots(void *ctx, uint32_t boots)
+{
+    /* bl_antrollback 的 SetConfirmBoots 返回 void; 接口层统一返回 OK */
+    Boot_AntiRollback_SetConfirmBoots((bl_antrollback_context_t *)ctx, boots);
+    return BL_ROLLBACK_STORAGE_OK;
+}
+
+static bl_rollback_storage_error_t storage_adapter_stage(void *ctx, uint32_t version)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_Stage(
+        (bl_antrollback_context_t *)ctx, version);
+}
+
+static bl_rollback_storage_error_t storage_adapter_notify_boot(void *ctx, uint32_t current_version)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_NotifySuccessfulBoot(
+        (bl_antrollback_context_t *)ctx, current_version);
+}
+
+static bl_rollback_storage_error_t storage_adapter_get_pending(void *ctx,
+                                                               uint32_t *version,
+                                                               uint32_t *count)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_GetPending(
+        (const bl_antrollback_context_t *)ctx, version, count);
+}
+
+/* MISRA 8.7 保留: 静态表经 GetStorageApi() 暴露 (消费者在扫描范围外) */
+static const bl_rollback_storage_api_t g_antrollback_storage_api = {
+    .read_counter          = storage_adapter_read,
+    .write_counter         = storage_adapter_write,
+    .increment             = storage_adapter_increment,
+    .set_confirm_boots     = storage_adapter_set_confirm_boots,
+    .stage                 = storage_adapter_stage,
+    .notify_successful_boot = storage_adapter_notify_boot,
+    .get_pending           = storage_adapter_get_pending
+};
+
+const bl_rollback_storage_api_t *Boot_AntiRollback_GetStorageApi(void)
+{
+    return &g_antrollback_storage_api;
+}

@@ -41,6 +41,10 @@ static uint64_t (*s_tick_fn)(void) = NULL_PTR;
 /* 延后递增阈值 N (P1-4): 新版本成功启动 N 次后提交抗回滚计数器 */
 static uint32_t s_confirm_boots = BOOT_ROLLBACK_CONFIRM_BOOTS;
 
+/* 抗回滚存储服务接口 (方案 C 注入, NULL = 旧 BIB 行为) */
+static const bl_rollback_storage_api_t *s_antrollback_api = NULL_PTR;
+static void *s_antrollback_ctx = NULL_PTR;
+
 /* Forward declaration for BIB helpers */
 static Boot_Result bib_read(Boot_InfoBlock *bib);
 static Boot_Result bib_write(const Boot_InfoBlock *bib);
@@ -308,6 +312,51 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 
     /* 3. 抗回滚延后递增 (RS-OTA-01 / P1-4): 不立即提升计数器,
      *    先记录待确认版本, 新版本成功启动 N 次后由 NotifyBootSuccess 提交 */
+    if (s_antrollback_api != NULL_PTR) {
+        /* 注入模式 (方案 C): 计数器唯一来源 = 注入的 NVM 存储 (bl_antrollback),
+         * BIB 只做版本管理 (不写 anti_rollback_counter/pending 字段) */
+        uint32_t arb_counter = 0U;
+        if (s_antrollback_api->read_counter(s_antrollback_ctx, &arb_counter)
+                != BL_ROLLBACK_STORAGE_OK) {
+            g_ctx_valid = FALSE;
+            return BOOT_E_GENERAL;   /* NVM 不可用: 拒绝完成升级 (fail-closed) */
+        }
+        if (version <= arb_counter) {
+            g_ctx_valid = FALSE;
+            return BOOT_E_VERSION;   /* 低于已确认地板: 拒绝 (防回滚攻击) */
+        }
+        bl_rollback_storage_error_t st_ret =
+            s_antrollback_api->stage(s_antrollback_ctx, version);
+        if (st_ret != BL_ROLLBACK_STORAGE_OK) {
+            g_ctx_valid = FALSE;
+            return (st_ret == BL_ROLLBACK_STORAGE_ERROR_DECREMENT_ATTEMPT)
+                       ? BOOT_E_VERSION : BOOT_E_GENERAL;
+        }
+
+        /* BIB 仅记录版本信息 (版本管理) */
+        Boot_InfoBlock bib;
+        ret = bib_read(&bib);
+        if (ret != BOOT_OK) {
+            g_ctx_valid = FALSE;
+            return ret;
+        }
+        if (image_type == BOOT_IMAGE_SBL) {
+            bib.sbl_version = version;
+        } else {
+            bib.app_version = version;
+        }
+        bib.crc32 = bib_calc_crc(&bib);
+
+        ret = bib_write(&bib);
+        if (ret == BOOT_OK) {
+            /* 升级完成: 一次性确认授权复位 */
+            g_ctx.confirm_state = BOOT_CONFIRM_IDLE;
+        }
+        g_ctx_valid = FALSE;
+        return ret;
+    }
+
+    /* 旧模式 (未注入): BIB 自带 pending 机制 (兼容既有集成/测试) */
     Boot_InfoBlock bib;
     ret = bib_read(&bib);
     if (ret != BOOT_OK) {
@@ -364,6 +413,15 @@ Boot_Result Boot_Update_SwapSlots(void)
 /* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
 Boot_Result Boot_Update_NotifyBootSuccess(uint32_t current_version)
 {
+    /* 注入模式: 延后递增状态/计数器保存在注入的 NVM 存储 (bl_antrollback),
+     * BIB 不参与 (计数器单一事实源) */
+    if (s_antrollback_api != NULL_PTR) {
+        bl_rollback_storage_error_t st_ret =
+            s_antrollback_api->notify_successful_boot(s_antrollback_ctx, current_version);
+        return (st_ret == BL_ROLLBACK_STORAGE_OK) ? BOOT_OK : BOOT_E_GENERAL;
+    }
+
+    /* 旧模式 (未注入): BIB 自带 pending 机制 */
     Boot_InfoBlock bib;
     Boot_Result ret = bib_read(&bib);
     if (ret != BOOT_OK) {
@@ -398,6 +456,19 @@ Boot_Result Boot_Update_GetRollbackCounter(uint32_t *counter)
     if (counter == NULL_PTR) {
         return BOOT_E_PARAM;
     }
+
+    /* 注入模式: 计数器来自 NVM 存储 (bl_antrollback), 非 BIB */
+    if (s_antrollback_api != NULL_PTR) {
+        uint32_t arb_counter = 0U;
+        if (s_antrollback_api->read_counter(s_antrollback_ctx, &arb_counter)
+                != BL_ROLLBACK_STORAGE_OK) {
+            return BOOT_E_GENERAL;
+        }
+        *counter = arb_counter;
+        return BOOT_OK;
+    }
+
+    /* 旧模式 (未注入): 读取 BIB */
     Boot_InfoBlock bib;
     Boot_Result ret = bib_read(&bib);
     if (ret != BOOT_OK) {
@@ -411,6 +482,23 @@ Boot_Result Boot_Update_GetRollbackCounter(uint32_t *counter)
 void Boot_Update_SetRollbackConfirmBoots(uint32_t n)
 {
     s_confirm_boots = (n == 0U) ? BOOT_ROLLBACK_CONFIRM_BOOTS : n;
+
+    /* 注入模式下同步到存储实现 (bl_antrollback 为运行期配置) */
+    if ((s_antrollback_api != NULL_PTR) &&
+        (s_antrollback_api->set_confirm_boots != NULL_PTR)) {
+        (void)s_antrollback_api->set_confirm_boots(s_antrollback_ctx, s_confirm_boots);
+    }
+}
+
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
+void Boot_Update_SetAntiRollbackStorage(const bl_rollback_storage_api_t *api, void *ctx)
+{
+    s_antrollback_api = api;
+    s_antrollback_ctx = ctx;
+
+    /* 仅绑定接口, 不同步阈值: 存储实现可能已有运行期配置 (如 bl_antrollback
+     * 由集成层 SetConfirmBoots 设定), 此处推送会覆盖之。阈值同步统一走
+     * Boot_Update_SetRollbackConfirmBoots (显式调用)。 */
 }
 
 /* ---- BIB Helpers ---- */

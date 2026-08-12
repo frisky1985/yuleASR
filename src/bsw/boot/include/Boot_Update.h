@@ -2,6 +2,7 @@
 #define BOOT_UPDATE_H
 
 #include "Boot_Types.h"
+#include "bl_rollback_storage.h"
 #include <stdint.h>
 
 /*==================================================================================================
@@ -110,5 +111,24 @@ Boot_Result Boot_Update_GetRollbackCounter(uint32_t *counter);
  * @param n 成功启动次数阈值; 0 = 恢复默认 (BOOT_ROLLBACK_CONFIRM_BOOTS)
  */
 void Boot_Update_SetRollbackConfirmBoots(uint32_t n);
+
+/**
+ * @brief 注册抗回滚存储服务接口 (RS-OTA-01 / 方案 C 接口抽象)
+ * @details 集成层 (SBL main) 在初始化时注入 bl_antrollback 实现, 使本模块
+ *          经回调访问抗回滚计数器 — 不直接依赖 bootloader 层 (分层解耦)。
+ *
+ *          注入模式语义 (计数器单一事实源 = 注入的 NVM 存储):
+ *          - Finalize / NotifyBootSuccess / GetRollbackCounter 全部走注入接口
+ *          - BIB 不再重复存抗回滚计数器 (anti_rollback_counter / pending 字段
+ *            不再写入), BIB 仅做版本管理 (sbl_version/app_version/status/boot_count)
+ *          - 注: 既有设备若曾用 BIB 计数器, 切换注入模式后以 NVM 存储为准
+ *            (计数器从 0 或 NVM 既有值恢复; 迁移策略由集成层决定)
+ *
+ *          未注入 (api==NULL_PTR) 时保持旧行为: BIB 自带 pending 机制
+ *          (兼容既有测试与老集成)。
+ * @param api 抗回滚存储服务接口 (NULL = 恢复旧 BIB 行为)
+ * @param ctx 存储实现上下文 (由 api 解释, 通常为 bl_antrollback_context_t*)
+ */
+void Boot_Update_SetAntiRollbackStorage(const bl_rollback_storage_api_t *api, void *ctx);
 
 #endif /* BOOT_UPDATE_H */
