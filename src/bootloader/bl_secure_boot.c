@@ -19,6 +19,14 @@
 #include "../crypto_stack/csm/csm_core.h"
 #include "../crypto_stack/keym/keym_core.h"
 
+/* MISRA 8.7 基线说明: 本文件公开 API (init/deinit/compare_versions/
+ * verify_cert_chain/verify/verify_fast/record_boot_attempt/check_need_rollback/
+ * get_state/get_last_error/version_to_string/lock_version) 均声明于
+ * bl_secure_boot.h 并由 test_bootloader.c 在扫描范围外调用; 对应 8.7 报告
+ * 为历史基线 (commit 9dab8e22 已存在, 非本轮新增), 与 bl_antrollback/
+ * bl_upgrade_log 同因: 受限扫描文件集导致 "仅单 TU 引用" 误判。
+ * 保持 external 链接, 不改为 static。 */
+
 /* ============================================================================
  * 内部宏和常量
  * ============================================================================ */
@@ -92,7 +100,7 @@ static void set_error(bl_secure_boot_context_t *ctx, bl_secure_boot_error_t erro
 /**
  * @brief 验证头部CRC32
  */
-static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
+static uint32_t bl_secure_boot_crc32(const uint8_t *data, uint32_t length)
 {
     uint32_t crc = 0xFFFFFFFF;
     const uint32_t polynomial = 0xEDB88320;
@@ -204,7 +212,7 @@ bl_secure_boot_error_t bl_secure_boot_verify_header_crc(
     /* 计算头部CRC (排除header_crc32字段自身; 用 offsetof 而非 sizeof-4,
      * 避免结构体尾部对齐填充把 crc32 字段包含进自身 CRC 的隐式错误) */
     uint32_t header_size_without_crc = (uint32_t)offsetof(bl_firmware_header_t, header_crc32);
-    uint32_t calculated_crc = calculate_crc32(
+    uint32_t calculated_crc = bl_secure_boot_crc32(
         (const uint8_t*)header,
         header_size_without_crc
     );
@@ -260,6 +268,12 @@ bl_secure_boot_error_t bl_secure_boot_verify_signature(
         case BL_SB_SIGN_ECDSA_P256_SHA256:
             sign_algo = CSM_ALGO_ECDSA_P256_SHA_256;
             break;
+        case BL_SB_SIGN_SM2_SM3:
+            /* SM2 国密就绪框架: 无后端 (mbedtls 无 SM2; S32K312 HSM 不支持),
+             * 显式返回 NOT_SUPPORTED (fail-closed), 不得降级到其他算法 */
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "SM2-SM3 signature requested but no SM backend (GmSSL/SM HSM required)");
+            return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
         default:
             DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                     "Unsupported signature type: %d", sign_type);
@@ -340,6 +354,16 @@ bl_secure_boot_error_t bl_secure_boot_verify_hash(
             hash_algo = CSM_ALGO_SHA_512;
             hash_len = 64;
             break;
+        case BL_SB_HASH_SM3:
+            /* SM3 国密就绪框架: 无后端 → 显式 NOT_SUPPORTED (fail-closed),
+             * 不得用 SHA-256 冒充 SM3 (防算法降级攻击) */
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "SM3 hash requested but no SM backend (GmSSL/SM HSM required)");
+            return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
+        default:
+            DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                    "Unsupported hash type: %d", hash_type);
+            return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
     }
     
     csm_status_t status = csm_hash(csm, hash_algo, firmware_data, firmware_size,
@@ -398,6 +422,11 @@ bl_secure_boot_error_t bl_secure_boot_calculate_hash(
             hash_algo = CSM_ALGO_SHA_512;
             hash_len = 64;
             break;
+        case BL_SB_HASH_SM3:
+            /* SM3 国密就绪框架: 无后端 → 显式 NOT_SUPPORTED (fail-closed) */
+            return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
+        default:
+            return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
     }
     
     csm_status_t status = csm_hash(csm, hash_algo, firmware_data, firmware_size,
@@ -593,6 +622,11 @@ bl_secure_boot_error_t bl_secure_boot_verify_cert_chain(
             case BL_SB_SIGN_ECDSA_P384_SHA384:
                 sign_algo = CSM_ALGO_ECDSA_P384_SHA_384;
                 break;
+            case BL_SB_SIGN_SM2_SM3:
+                /* SM2 国密就绪框架: 无后端 → 显式 NOT_SUPPORTED (fail-closed) */
+                DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
+                        "SM2-SM3 certificate signature requested but no SM backend");
+                return BL_SB_ERROR_ALGO_NOT_SUPPORTED;
             default:
                 DDS_LOG(DDS_LOG_LEVEL_ERROR, BL_SB_MODULE_NAME,
                         "Unsupported certificate signature type: %d", cert->sign_type);

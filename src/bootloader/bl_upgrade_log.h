@@ -56,33 +56,36 @@ typedef enum {
 /* ============================================================================
  * 升级来源
  * ============================================================================ */
-typedef enum {
+/* 枚举类型刻意匿名 (MISRA 2.3): 字段按 AUTOSAR 风格以显式定长 uint8_t 存储
+ * (见 bl_upgrade_log_entry_t), 枚举仅提供取值常量; typedef 名无消费方,
+ * 避免产生未使用的类型定义。 */
+enum {
     BL_UPGRADE_LOG_SOURCE_OTA = 0,        /* OTA 远程升级 */
     BL_UPGRADE_LOG_SOURCE_DIAGNOSTIC,     /* 诊断仪升级 */
     BL_UPGRADE_LOG_SOURCE_LOCAL,          /* 本地烧录 */
     BL_UPGRADE_LOG_SOURCE_UNKNOWN = 0xFFU /* 未知来源 */
-} bl_upgrade_log_source_t;
+};
 
 /* ============================================================================
  * 签名验证结果
  * ============================================================================ */
-typedef enum {
+enum {
     BL_UPGRADE_LOG_SIG_OK = 0,            /* 签名验证通过 */
     BL_UPGRADE_LOG_SIG_INVALID,           /* 签名验证失败 */
     BL_UPGRADE_LOG_SIG_NOT_VERIFIED       /* 未执行验签 (旧格式/降级路径) */
-} bl_upgrade_log_sig_result_t;
+};
 
 /* ============================================================================
  * 升级结果状态
  * ============================================================================ */
-typedef enum {
+enum {
     BL_UPGRADE_LOG_RESULT_SUCCESS = 0,    /* 升级成功 */
     BL_UPGRADE_LOG_RESULT_FAILED,         /* 升级失败 */
     BL_UPGRADE_LOG_RESULT_ABORTED,        /* 升级中止 */
     BL_UPGRADE_LOG_RESULT_ROLLBACK,       /* 回滚 */
     BL_UPGRADE_LOG_RESULT_TIMEOUT,        /* 超时 */
     BL_UPGRADE_LOG_RESULT_UNKNOWN = 0xFFU /* 未知结果 */
-} bl_upgrade_log_result_t;
+};
 
 /* ============================================================================
  * 升级日志条目
@@ -90,9 +93,9 @@ typedef enum {
 typedef struct {
     uint64_t timestamp_ms;        /* 时间戳 (自固定纪元, ms) */
     uint32_t version;             /* 固件版本号 */
-    uint8_t  source;              /* bl_upgrade_log_source_t */
-    uint8_t  signature_result;    /* bl_upgrade_log_sig_result_t */
-    uint8_t  result;              /* bl_upgrade_log_result_t */
+    uint8_t  source;              /* 取值见 BL_UPGRADE_LOG_SOURCE_* (匿名枚举) */
+    uint8_t  signature_result;    /* 取值见 BL_UPGRADE_LOG_SIG_* (匿名枚举) */
+    uint8_t  result;              /* 取值见 BL_UPGRADE_LOG_RESULT_* (匿名枚举) */
     uint8_t  reserved[7];         /* 保留对齐 */
     uint32_t crc32;               /* 条目完整性 (覆盖除 crc32 外字段) */
 } bl_upgrade_log_entry_t;

@@ -999,6 +999,8 @@ static const char* csm_get_algo_name_internal(csm_algorithm_t algo)
         case CSM_ALGO_RSA_PSS_SHA_256:  return "RSA-PSS-SHA256";
         case CSM_ALGO_ECDSA_P256_SHA_256: return "ECDSA-P256-SHA256";
         case CSM_ALGO_ECDSA_P384_SHA_384: return "ECDSA-P384-SHA384";
+        case CSM_ALGO_SM3_HASH:     return "SM3";
+        case CSM_ALGO_SM2_SM3:      return "SM2-SM3";
         case CSM_ALGO_DRBG_CTR:         return "DRBG-CTR";
         default:                        return "UNKNOWN";
     }

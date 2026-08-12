@@ -10,6 +10,13 @@
 #include "mbedtls/sha256.h"
 #endif
 
+/* MISRA 8.4 保留说明: 本文件全部外部函数均声明于 Boot_Update.h
+ * (Boot_Types.h/Boot_Cfg.h 亦在 src/bsw/boot/include 下, 声明/定义一致
+ * 由编译期保证: 头文件缺失或签名不符将直接编译失败)。cppcheck 8.4
+ * "定义无可见声明"系扫描命令未含 -I src/bsw/boot/include 且 Std_Types.h
+ * (host 测试 stub, 位于 src/bsw/boot/test) 无法解析所致 — 补上 include
+ * 路径后 8.4 全部消失 (已实测验证)。故保留 external 链接, 不调整头文件。 */
+
 /* Internal update context */
 typedef struct {
     uint32_t       slot_addr;
@@ -31,10 +38,37 @@ static boolean g_ctx_valid = FALSE;
 /* 单调时间源 (确认超时用; NULL = 无时间源) */
 static uint64_t (*s_tick_fn)(void) = NULL_PTR;
 
+/* 延后递增阈值 N (P1-4): 新版本成功启动 N 次后提交抗回滚计数器 */
+static uint32_t s_confirm_boots = BOOT_ROLLBACK_CONFIRM_BOOTS;
+
 /* Forward declaration for BIB helpers */
 static Boot_Result bib_read(Boot_InfoBlock *bib);
 static Boot_Result bib_write(const Boot_InfoBlock *bib);
 static uint32_t    bib_calc_crc(const Boot_InfoBlock *bib);
+
+/* ============================================================================
+ * 抗回滚延后递增内部辅助 (RS-OTA-01 / P1-4)
+ * ============================================================================ */
+
+/**
+ * @brief 待确认状态合法性判定
+ * @details BIB 老格式的 reserved 字节被复用为 pending 字段, 旧数据可能为
+ *          0x00 (清零) / 0xFF (擦除) 等任意值; 仅当字段自洽时才视为有效:
+ *          pending_counter > 已确认地板 且 启动次数不超过阈值。
+ */
+static boolean bib_pending_valid(const Boot_InfoBlock *bib)
+{
+    if (bib->pending_counter == 0U) {
+        return FALSE;   /* 无待确认升级 */
+    }
+    if (bib->pending_counter <= bib->anti_rollback_counter) {
+        return FALSE;   /* 低于地板: 无效残留 */
+    }
+    if (bib->pending_boot_count > s_confirm_boots) {
+        return FALSE;   /* 次数越界: 无效残留 (防 0xFF 擦除态误判) */
+    }
+    return TRUE;
+}
 
 /* ============================================================================
  * 用户确认内部辅助 (RS-OTA-02)
@@ -100,6 +134,7 @@ static Boot_Result confirm_gate(void)
  * User Confirm API (RS-OTA-02)
  * ============================================================================ */
 
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
 Boot_Result Boot_Update_RequestUserConfirm(void)
 {
     if (BOOT_USER_CONFIRM_REQUIRED == 0U) {
@@ -122,6 +157,7 @@ Boot_Result Boot_Update_RequestUserConfirm(void)
     return BOOT_OK;
 }
 
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
 Boot_Result Boot_Update_ConfirmUserDecision(boolean confirmed)
 {
     if (g_ctx.confirm_state != BOOT_CONFIRM_PENDING) {
@@ -131,11 +167,13 @@ Boot_Result Boot_Update_ConfirmUserDecision(boolean confirmed)
     return BOOT_OK;
 }
 
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
 Boot_ConfirmState Boot_Update_GetConfirmState(void)
 {
     return g_ctx.confirm_state;
 }
 
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
 void Boot_Update_SetTimeSource(uint64_t (*tick_fn)(void))
 {
     s_tick_fn = tick_fn;
@@ -268,7 +306,8 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     const uint8_t *payload_buf ; /* In production, read-back from flash and verify */
     /* For stub, trust the hash was correct during write */
 
-    /* 3. Update anti-rollback counter in BIB */
+    /* 3. 抗回滚延后递增 (RS-OTA-01 / P1-4): 不立即提升计数器,
+     *    先记录待确认版本, 新版本成功启动 N 次后由 NotifyBootSuccess 提交 */
     Boot_InfoBlock bib;
     ret = bib_read(&bib);
     if (ret != BOOT_OK) {
@@ -277,10 +316,12 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     }
 
     if (version <= bib.anti_rollback_counter) {
-        return BOOT_E_VERSION;  /* Anti-rollback triggered */
+        return BOOT_E_VERSION;  /* 低于已确认地板: 拒绝 (防回滚攻击) */
     }
 
-    bib.anti_rollback_counter = version;
+    /* 记录待确认升级 (覆盖旧 pending: 以最新升级为准) */
+    bib.pending_counter = version;
+    bib.pending_boot_count = 0U;
     if (image_type == BOOT_IMAGE_SBL) {
         bib.sbl_version = version;
     } else {
@@ -314,6 +355,62 @@ Boot_Result Boot_Update_SwapSlots(void)
     bib.status ^= 0x02U;
     bib.crc32 = bib_calc_crc(&bib);
     return bib_write(&bib);
+}
+
+/* ============================================================================
+ * 抗回滚延后递增 API (RS-OTA-01 / P1-4)
+ * ============================================================================ */
+
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
+Boot_Result Boot_Update_NotifyBootSuccess(uint32_t current_version)
+{
+    Boot_InfoBlock bib;
+    Boot_Result ret = bib_read(&bib);
+    if (ret != BOOT_OK) {
+        return ret;
+    }
+
+    /* 无待确认升级 / 待确认状态非法 (旧格式残留) → 无需处理 */
+    if (!bib_pending_valid(&bib)) {
+        return BOOT_OK;
+    }
+
+    /* 启动版本 != 待确认版本 (A/B 槽位回退等): 不计数、不清除,
+     * 槽位中可能仍保留新版本待下次启动确认 */
+    if (current_version != bib.pending_counter) {
+        return BOOT_OK;
+    }
+
+    bib.pending_boot_count++;
+    if (bib.pending_boot_count >= s_confirm_boots) {
+        /* 达到阈值 N: 提交计数器, 清除待确认状态 */
+        bib.anti_rollback_counter = bib.pending_counter;
+        bib.pending_counter = 0U;
+        bib.pending_boot_count = 0U;
+    }
+    bib.crc32 = bib_calc_crc(&bib);
+    return bib_write(&bib);
+}
+
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
+Boot_Result Boot_Update_GetRollbackCounter(uint32_t *counter)
+{
+    if (counter == NULL_PTR) {
+        return BOOT_E_PARAM;
+    }
+    Boot_InfoBlock bib;
+    Boot_Result ret = bib_read(&bib);
+    if (ret != BOOT_OK) {
+        return ret;
+    }
+    *counter = bib.anti_rollback_counter;
+    return BOOT_OK;
+}
+
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
+void Boot_Update_SetRollbackConfirmBoots(uint32_t n)
+{
+    s_confirm_boots = (n == 0U) ? BOOT_ROLLBACK_CONFIRM_BOOTS : n;
 }
 
 /* ---- BIB Helpers ---- */

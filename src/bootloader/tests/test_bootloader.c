@@ -946,6 +946,97 @@ static int test_antrollback_persistence(void)
 }
 
 /* ============================================================================
+ * 抗回滚延后递增测试 (P1-4: Stage → N 次成功启动 → 提交)
+ * ============================================================================ */
+
+static int test_antrollback_deferred_increment(void)
+{
+    printf("  Testing anti-rollback deferred increment (P1-4)...\n");
+
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 3U);   /* 阈值 N=3 */
+
+    uint32_t c = 0U, pv = 0U, pc = 0U;
+
+    /* GIVEN 全新计数器 / WHEN Stage(5) / THEN 计数器不动, 待确认 (5,0) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 5U);
+    TEST_ASSERT_EQ(pc, 0U);
+
+    /* GIVEN 待确认 5 / WHEN 成功启动 2 次 (N-1) / THEN 仍未提交 (回滚窗口开放) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pc, 2U);
+
+    /* 确认窗口内回滚: 计数器仍为 0, 旧版本 0 写入放行 (幂等) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Write(&arb, 0U), BL_ANTIROLLBACK_OK);
+
+    /* WHEN 第 3 次成功启动 / THEN 提交: counter=5, pending 清除 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 5U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 0U);
+
+    /* GIVEN 地板 5 / WHEN Stage(4) 低于地板 / THEN 拒绝 (防回滚攻击) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 4U),
+                   BL_ANTIROLLBACK_ERROR_DECREMENT_ATTEMPT);
+
+    /* GIVEN 待确认 8 / WHEN 启动其他版本 6 / THEN 不计数、不清除 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 8U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 6U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 8U);
+    TEST_ASSERT_EQ(pc, 0U);
+
+    /* GIVEN 待确认 (8,1) / WHEN 重新初始化 / THEN 待确认状态持久化恢复 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 8U), BL_ANTIROLLBACK_OK);
+    bl_antrollback_context_t arb2;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb2, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb2, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 8U);
+    TEST_ASSERT_EQ(pc, 1U);
+
+    /* GIVEN 阈值 N=1 / WHEN Stage(9) + 1 次成功启动 / THEN 立即提交 */
+    Boot_AntiRollback_SetConfirmBoots(&arb2, 1U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb2, 9U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb2, 9U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb2, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 9U);
+
+    /* 未初始化 / NULL 参数 */
+    bl_antrollback_context_t bad;
+    memset(&bad, 0, sizeof(bad));
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&bad, 1U), BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&bad, 1U),
+                   BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&bad, &pv, &pc),
+                   BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(NULL, 1U), BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(NULL, 1U),
+                   BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(NULL, &pv, &pc),
+                   BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb2, NULL, &pc),
+                   BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+
+    Boot_AntiRollback_Deinit(&arb2);
+    Boot_AntiRollback_Deinit(&arb);
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * 升级日志测试 (G3 / RS-OTA-03)
  * ============================================================================ */
 
@@ -1199,11 +1290,11 @@ static int test_secure_boot_strict_verify(void)
                        sig, BL_SB_SIGN_ECDSA_P256_SHA256),
                    BL_SB_ERROR_INVALID_SIGNATURE);
 
-    /* 步骤①: SM2 预留枚举 — 后端未接入时 fail-closed */
+    /* 步骤①: SM2 预留枚举 — 无 SM 后端 → 显式 ALGO_NOT_SUPPORTED (fail-closed) */
     TEST_ASSERT_EQ(bl_secure_boot_verify_signature_bound(
                        &ctx, payload, sizeof(payload), 0x100,
                        sig, BL_SB_SIGN_SM2_SM3),
-                   BL_SB_ERROR_INVALID_SIGNATURE);
+                   BL_SB_ERROR_ALGO_NOT_SUPPORTED);
 
     /* 步骤②: 签名内版本 != 头部版本 → VERSION_MISMATCH */
     TEST_ASSERT_EQ(bl_secure_boot_verify_version_binding(&ctx, 0x100, 0x200),
@@ -1232,6 +1323,15 @@ static int test_secure_boot_strict_verify(void)
     TEST_ASSERT_EQ(bl_secure_boot_verify_integrity(&ctx, payload, sizeof(payload),
                                                    bad_hash, BL_SB_HASH_SHA256),
                    BL_SB_ERROR_INVALID_HASH);
+
+    /* 步骤③: SM3 国密就绪框架 — 无后端 → 显式 ALGO_NOT_SUPPORTED
+     * (不得用 SHA-256 冒充 SM3) */
+    TEST_ASSERT_EQ(bl_secure_boot_calculate_hash(&ctx, payload, sizeof(payload),
+                                                 good_hash, BL_SB_HASH_SM3),
+                   BL_SB_ERROR_ALGO_NOT_SUPPORTED);
+    TEST_ASSERT_EQ(bl_secure_boot_verify_hash(&ctx, payload, sizeof(payload),
+                                              good_hash, BL_SB_HASH_SM3),
+                   BL_SB_ERROR_ALGO_NOT_SUPPORTED);
 
     /* verify_strict 完整流程: 构造合法头部 (magic+CRC, 版本绑定格式),
      * 伪造签名 → 步骤① 先行失败 (INVALID_SIGNATURE), 后续步骤不执行 */
@@ -1370,6 +1470,7 @@ int main(void)
     run_test(test_secure_boot_cert_chain, "Secure Boot Cert Chain");
     run_test(test_antrollback_basic, "Anti-Rollback Counter Basic");
     run_test(test_antrollback_persistence, "Anti-Rollback Persistence & Wear Leveling");
+    run_test(test_antrollback_deferred_increment, "Anti-Rollback Deferred Increment (P1-4)");
     run_test(test_upgrade_log_basic, "Upgrade Log Write/Read/Count");
     run_test(test_upgrade_log_ring_overwrite, "Upgrade Log Ring Overwrite");
     run_test(test_upgrade_log_save_load, "Upgrade Log NVM Persistence");

@@ -20,6 +20,18 @@
 #define BOOT_USER_CONFIRM_TIMEOUT_MS (30000U)
 #endif
 
+/*==================================================================================================
+*                              抗回滚延后递增配置 (RS-OTA-01 / P1-4)
+*==================================================================================================
+* 延后递增策略: 新版本安装后不立即提升抗回滚计数器, 待该版本成功启动
+* BOOT_ROLLBACK_CONFIRM_BOOTS 次后才提交 (counter = 新版本)。
+* 确认窗口内允许: 回滚到旧版本 (回滚目标 < 计数器不成立) / 同版本重装。
+* N=1 即退化为立即递增 (不推荐)。宏可由 Configurator 在 Boot_Cfg.h 覆盖。
+*/
+#ifndef BOOT_ROLLBACK_CONFIRM_BOOTS
+#define BOOT_ROLLBACK_CONFIRM_BOOTS (3U)
+#endif
+
 /* 用户确认状态机 */
 typedef enum {
     BOOT_CONFIRM_IDLE     = 0x00U,  /* 无确认请求 */
@@ -70,5 +82,33 @@ Boot_ConfirmState Boot_Update_GetConfirmState(void);
  * @param tick_fn 时间源回调; NULL 表示无时间源 (超时功能禁用, 等待显式确认)
  */
 void Boot_Update_SetTimeSource(uint64_t (*tick_fn)(void));
+
+/*==================================================================================================
+*                                   抗回滚延后递增 API (RS-OTA-01 / P1-4)
+*==================================================================================================*/
+
+/**
+ * @brief 上报一次新版本成功启动 (延后递增策略的提交触发器)
+ * @details 仅当 current_version == BIB.pending_counter (待确认版本) 时计数;
+ *          成功启动 BOOT_ROLLBACK_CONFIRM_BOOTS 次后提交抗回滚计数器
+ *          (anti_rollback_counter = pending_counter) 并清除待确认状态。
+ *          current_version != pending 时忽略 (不计数不清除, 兼容 A/B 槽位回退)。
+ * @param current_version 本次成功启动的固件版本号
+ * @return BOOT_OK 成功; BOOT_E_NOT_INIT/存储错误透传
+ */
+Boot_Result Boot_Update_NotifyBootSuccess(uint32_t current_version);
+
+/**
+ * @brief 读取当前已确认的抗回滚计数器 (启动验签/诊断用)
+ * @param counter 输出计数器值
+ * @return BOOT_OK 成功
+ */
+Boot_Result Boot_Update_GetRollbackCounter(uint32_t *counter);
+
+/**
+ * @brief 设置延后递增阈值 N (运行期覆盖 BOOT_ROLLBACK_CONFIRM_BOOTS, 测试/整定用)
+ * @param n 成功启动次数阈值; 0 = 恢复默认 (BOOT_ROLLBACK_CONFIRM_BOOTS)
+ */
+void Boot_Update_SetRollbackConfirmBoots(uint32_t n);
 
 #endif /* BOOT_UPDATE_H */

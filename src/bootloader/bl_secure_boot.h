@@ -57,7 +57,8 @@ typedef enum {
     BL_SB_ERROR_PARSE_ERROR = -15,
     BL_SB_ERROR_ROLLBACK_PROTECTION = -16,
     BL_SB_ERROR_VERSION_MISMATCH = -17,
-    BL_SB_ERROR_TIME_UNAVAILABLE = -18   /* 无可用时间源, 无法校验有效期/记录时间戳 */
+    BL_SB_ERROR_TIME_UNAVAILABLE = -18,   /* 无可用时间源, 无法校验有效期/记录时间戳 */
+    BL_SB_ERROR_ALGO_NOT_SUPPORTED = -19  /* 签名/哈希算法已声明但无后端实现 (如 SM2/SM3 国密, 需 GmSSL 或 SM 版 HSM 固件) */
 } bl_secure_boot_error_t;
 
 /* ============================================================================
@@ -85,7 +86,10 @@ typedef enum {
     BL_SB_SIGN_RSA_PKCS1_SHA256,
     BL_SB_SIGN_RSA_PSS_SHA256,
     BL_SB_SIGN_ED25519,
-    BL_SB_SIGN_SM2_SM3              /* 预留: SM2 国密 (Csm 后端接入后启用; 当前 fail-closed) */
+    BL_SB_SIGN_SM2_SM3              /* SM2 国密 (预留): 分发表含 SM2 条目, 当前无后端
+                                     * (mbedtls 无 SM2; S32K312 HSM/HSE 不支持) →
+                                     * 验签显式返回 BL_SB_ERROR_ALGO_NOT_SUPPORTED (fail-closed)。
+                                     * 接入 GmSSL 或 SM 版 HSM 固件后启用。 */
 } bl_signature_type_t;
 
 /* ============================================================================
@@ -94,7 +98,9 @@ typedef enum {
 typedef enum {
     BL_SB_HASH_SHA256 = 0,
     BL_SB_HASH_SHA384,
-    BL_SB_HASH_SHA512
+    BL_SB_HASH_SHA512,
+    BL_SB_HASH_SM3                /* SM3 国密 (预留): 无后端 (mbedtls/HSM 均不支持) →
+                                   * 哈希校验显式返回 BL_SB_ERROR_ALGO_NOT_SUPPORTED (fail-closed) */
 } bl_hash_type_t;
 
 /* ============================================================================

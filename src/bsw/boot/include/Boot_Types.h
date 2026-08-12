@@ -56,8 +56,16 @@ typedef struct {
     uint32_t boot_count;
     uint32_t max_boot_attempts;
     uint8_t  status;
+    /* 抗回滚 (RS-OTA-01 / P1-4 延后递增):
+     * anti_rollback_counter = 已确认地板; pending_counter/pending_boot_count
+     * = 待确认升级状态 (新版本成功启动 N 次后提交)。
+     * 字段占用原 reserved[32] 前 12 字节 (reserved 缩为 [24]),
+     * 结构总尺寸与 crc32 偏移不变 (68B / 64) → 旧 BIB CRC 仍可校验,
+     * 旧 reserved 字节被读为 pending 时由 bib_pending_valid 拦截。 */
     uint32_t anti_rollback_counter;
-    uint8_t  reserved[32];
+    uint32_t pending_counter;        /* 待确认版本 (0 = 无) */
+    uint32_t pending_boot_count;     /* 新版本已成功启动次数 */
+    uint8_t  reserved[24];
     uint32_t crc32;
 } Boot_InfoBlock;
 

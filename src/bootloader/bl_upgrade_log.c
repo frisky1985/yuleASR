@@ -37,7 +37,7 @@
 /**
  * @brief 计算CRC32
  */
-static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
+static uint32_t bl_upgrade_log_crc32(const uint8_t *data, uint32_t length)
 {
     uint32_t crc = 0xFFFFFFFF;
     const uint32_t polynomial = 0xEDB88320;
@@ -61,7 +61,7 @@ static uint32_t calculate_crc32(const uint8_t *data, uint32_t length)
  */
 static bool validate_entry(const bl_upgrade_log_entry_t *entry)
 {
-    return (calculate_crc32((const uint8_t *)entry, BL_UPGRADE_LOG_ENTRY_CRC_SIZE)
+    return (bl_upgrade_log_crc32((const uint8_t *)entry, BL_UPGRADE_LOG_ENTRY_CRC_SIZE)
             == entry->crc32);
 }
 
@@ -70,7 +70,7 @@ static bool validate_entry(const bl_upgrade_log_entry_t *entry)
  */
 static void update_entry_crc(bl_upgrade_log_entry_t *entry)
 {
-    entry->crc32 = calculate_crc32((const uint8_t *)entry, BL_UPGRADE_LOG_ENTRY_CRC_SIZE);
+    entry->crc32 = bl_upgrade_log_crc32((const uint8_t *)entry, BL_UPGRADE_LOG_ENTRY_CRC_SIZE);
 }
 
 /**
@@ -90,14 +90,20 @@ static bool validate_header(const bl_upgrade_log_header_t *header)
     if (header->count > header->capacity) {
         return false;
     }
-    return (calculate_crc32((const uint8_t *)header, BL_UPGRADE_LOG_HEADER_CRC_SIZE)
+    return (bl_upgrade_log_crc32((const uint8_t *)header, BL_UPGRADE_LOG_HEADER_CRC_SIZE)
             == header->crc32);
 }
 
 /* ============================================================================
  * API函数实现
+ *
+ * MISRA 8.7 保留说明 (下列公开 API 均声明于 bl_upgrade_log.h, 由
+ * test_bootloader.c 及 SBL 集成层在扫描范围外调用): cppcheck 8.7 判定
+ * "仅单 TU 引用"是基于本任务扫描命令的受限文件集; 将测试纳入扫描范围后
+ * 这些 8.7 全部消失 (已实测验证)。故保持 external 链接, 不改为 static。
  * ============================================================================ */
 
+/* MISRA 8.7 保留: 公开 API, 消费者在扫描范围外 (见文件头说明) */
 bl_upgrade_log_error_t Boot_UpgradeLog_Init(
     bl_upgrade_log_context_t *ctx,
     const bl_upgrade_log_config_t *config
@@ -136,6 +142,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Init(
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (Deinit), 消费者在扫描范围外 */
 void Boot_UpgradeLog_Deinit(bl_upgrade_log_context_t *ctx)
 {
     if (ctx == NULL) {
@@ -148,6 +155,7 @@ void Boot_UpgradeLog_Deinit(bl_upgrade_log_context_t *ctx)
             "Upgrade log deinitialized");
 }
 
+/* MISRA 8.7 保留: 公开 API (Write), 消费者在扫描范围外 */
 bl_upgrade_log_error_t Boot_UpgradeLog_Write(
     bl_upgrade_log_context_t *ctx,
     bl_upgrade_log_entry_t *entry
@@ -194,6 +202,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Write(
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (Read), 消费者在扫描范围外 */
 bl_upgrade_log_error_t Boot_UpgradeLog_Read(
     const bl_upgrade_log_context_t *ctx,
     uint32_t index,
@@ -223,6 +232,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Read(
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (GetCount), 消费者在扫描范围外 */
 bl_upgrade_log_error_t Boot_UpgradeLog_GetCount(
     const bl_upgrade_log_context_t *ctx,
     uint32_t *count
@@ -239,6 +249,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_GetCount(
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (Clear), 消费者在扫描范围外 */
 bl_upgrade_log_error_t Boot_UpgradeLog_Clear(bl_upgrade_log_context_t *ctx)
 {
     if (ctx == NULL) {
@@ -258,6 +269,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Clear(bl_upgrade_log_context_t *ctx)
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (Save), 消费者在扫描范围外 */
 bl_upgrade_log_error_t Boot_UpgradeLog_Save(
     bl_upgrade_log_context_t *ctx,
     uint32_t address
@@ -276,7 +288,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Save(
     const bl_flash_driver_t *flash = part_mgr->flash_driver;
 
     /* 更新头部 CRC */
-    ctx->header.crc32 = calculate_crc32((const uint8_t *)&ctx->header,
+    ctx->header.crc32 = bl_upgrade_log_crc32((const uint8_t *)&ctx->header,
                                         BL_UPGRADE_LOG_HEADER_CRC_SIZE);
 
     uint32_t total_size = (uint32_t)sizeof(bl_upgrade_log_header_t)
@@ -335,6 +347,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Save(
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (Load), 消费者在扫描范围外 */
 bl_upgrade_log_error_t Boot_UpgradeLog_Load(
     bl_upgrade_log_context_t *ctx,
     uint32_t address
@@ -400,6 +413,7 @@ bl_upgrade_log_error_t Boot_UpgradeLog_Load(
     return BL_UPGRADE_LOG_OK;
 }
 
+/* MISRA 8.7 保留: 公开 API (SourceToString), 消费者在扫描范围外 */
 const char* Boot_UpgradeLog_SourceToString(uint8_t source)
 {
     switch (source) {
@@ -414,6 +428,7 @@ const char* Boot_UpgradeLog_SourceToString(uint8_t source)
     }
 }
 
+/* MISRA 8.7 保留: 公开 API (ResultToString), 消费者在扫描范围外 */
 const char* Boot_UpgradeLog_ResultToString(uint8_t result)
 {
     switch (result) {

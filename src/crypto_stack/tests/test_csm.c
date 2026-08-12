@@ -289,7 +289,16 @@ static int test_csm_hash(void)
         TEST_ASSERT_EQ(hash_abc_len, 32);
         TEST_ASSERT(memcmp(hash_abc, expected_abc, 32) == 0);
     }
-    
+
+    /* 国密就绪框架: SM3 无后端 → 显式 fail-closed NOT_SUPPORTED (而非误算 SHA-256) */
+    {
+        uint8_t hash_sm[64];
+        uint32_t hash_sm_len = sizeof(hash_sm);
+        status = csm_hash(ctx, CSM_ALGO_SM3_HASH, data, sizeof(data),
+                          hash_sm, &hash_sm_len);
+        TEST_ASSERT_EQ(status, CSM_ERROR_ALGO_NOT_SUPPORTED);
+    }
+
     csm_deinit(ctx);
     
     printf("  PASSED\n");

@@ -145,3 +145,36 @@ bl_rollback_confirm(&mgr);
 - UNECE R156 Software Update Management System
 - ISO/SAE 21434 Cybersecurity Engineering
 - ASIL-D Safety Level
+
+## 国密 SM2/SM3 支持状态 (就绪框架, 2026-08-12)
+
+### 结论
+
+**SM2/SM3 当前无法完整实装**: 本仓库无任何 SM 后端可用, 已落地为
+「SM2 就绪框架」(枚举/分发/文档), 全部调用显式 fail-closed。
+
+### 依赖调研结论
+
+| 候选后端 | SM2/SM3 支持 | 说明 |
+|----------|-------------|------|
+| mbedtls (third_party/mbedtls) | ❌ 无 | 上游 mbedtls 不包含 SM2/SM3 算法 |
+| S32K312 HSM/HSE (src/bsw/mcal/crypto) | ❌ 无 | HSM 仅 AES/ECC P-256/P-384/SHA-256/RNG (见 Crypto_S32K312_Hsm.h SID 表), HSE 固件不支持国密 |
+| Csm 栈 (crypto_stack) | ❌ 无 | csm_algorithm_t 原无 SM 条目; 后端仅 mbedtls SHA-256/HMAC/AES |
+| GmSSL / 其他国密库 | ✅ 需引入 | 唯一可行路径: 引入 GmSSL (或 SM 版 HSM 固件) 后接入 CSM |
+
+### 已落地 (就绪框架)
+
+1. `Csm_Types.h`: 新增 `CSM_ALGOFAM_SM2` / `CSM_ALGOFAM_SM3` 算法族枚举。
+2. `csm_core.h`: 新增 `CSM_ALGO_SM3_HASH` / `CSM_ALGO_SM2_SM3` 算法枚举,
+   名称表同步; 实际调用由现有 fail-closed 分发返回
+   `CSM_ERROR_ALGO_NOT_SUPPORTED` (test_csm 已覆盖)。
+3. `bl_secure_boot.h/c`: `BL_SB_SIGN_SM2_SM3` / `BL_SB_HASH_SM3` 在分发表中
+   显式返回 `BL_SB_ERROR_ALGO_NOT_SUPPORTED` (新增错误码 -19), 不得降级到
+   SHA-256/ECDSA (防算法降级攻击); test_bootloader 已覆盖。
+
+### 完整实装路径 (后续)
+
+1. 引入 GmSSL 或具备 SM 能力的 HSM 固件。
+2. Csm 后端接入: `csm_hash` 支持 SM3, `csm_mac_verify`/签名路径支持 SM2-SM3。
+3. 移除 `bl_secure_boot` 中 SM2/SM3 的 NOT_SUPPORTED 分支, 改分发到 CSM。
+4. 固件头/证书链 SM2 验签 + 端到端测试。

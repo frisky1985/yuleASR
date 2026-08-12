@@ -117,7 +117,14 @@ typedef enum {
     CSM_ALGO_ECDH_P256,                 /* 密钥协商 */
     CSM_ALGO_ECDH_P384,
     CSM_ALGO_ECDH_P521,
-    
+
+    /* 国密算法 (SM2/SM3 就绪框架): 当前无 SM 后端 (mbedtls 无 SM2/SM3;
+     * S32K312 HSM/HSE 固件不支持), 枚举先行落地供分发引用, 实际调用
+     * fail-closed 返回 CSM_ERROR_ALGO_NOT_SUPPORTED。
+     * 接入 GmSSL 或 SM 版 HSM 固件后在此启用。 */
+    CSM_ALGO_SM3_HASH = 0x90,           /* SM3 杂凑 (256-bit) */
+    CSM_ALGO_SM2_SM3,                   /* SM2 签名验签 (SM3 杂凑) */
+
     /* DRBG随机数生成 */
     CSM_ALGO_DRBG_CTR = 0x80,
     CSM_ALGO_DRBG_HASH,

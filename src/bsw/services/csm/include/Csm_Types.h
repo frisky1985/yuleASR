@@ -152,7 +152,13 @@ typedef enum
     CSM_ALGOFAM_CHACHA20_POLY1305,      /* ChaCha20-Poly1305 */
     CSM_ALGOFAM_DRBG,                   /* DRBG */
     CSM_ALGOFAM_PADDING_PKCS7,          /* PKCS#7 Padding */
-    CSM_ALGOFAM_PADDING_ONEWITHZEROS    /* One with Zeros Padding */
+    CSM_ALGOFAM_PADDING_ONEWITHZEROS,   /* One with Zeros Padding */
+    /* 国密算法族 (SM2/SM3 就绪框架, SM2-SM3 完整实现见 CSM 后端依赖说明):
+     * 当前无 SM 后端 (mbedtls 无 SM2/SM3; S32K312 HSM/HSE 固件不支持),
+     * 算法族枚举先行落地供配置/分发引用, 实际调用 fail-closed 返回
+     * CSM_ERROR_ALGO_NOT_SUPPORTED。接入 GmSSL 或 SM 版 HSM 固件后启用。*/
+    CSM_ALGOFAM_SM2,                    /* SM2 (国密椭圆曲线公钥密码算法) */
+    CSM_ALGOFAM_SM3                     /* SM3 (国密密码杂凑算法, 256-bit) */
 } Csm_AlgorithmFamilyType;
 
 /**

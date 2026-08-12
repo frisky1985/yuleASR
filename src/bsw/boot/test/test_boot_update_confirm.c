@@ -249,6 +249,133 @@ static int test_confirm_state_errors(void)
 }
 
 /* ============================================================================
+ * 抗回滚延后递增测试 (RS-OTA-01 / P1-4)
+ * ============================================================================ */
+
+/* 与 Boot_Update.c 一致的 BIB 校验和 (测试构造 BIB 用) */
+static uint32_t test_bib_crc(const Boot_InfoBlock *bib)
+{
+    const uint8_t *bytes = (const uint8_t *)bib;
+    uint32_t sum = 0U;
+    uint32_t len = sizeof(Boot_InfoBlock) - sizeof(bib->crc32);
+    for (uint32_t i = 0U; i < len; i++) {
+        sum += bytes[i];
+    }
+    return sum;
+}
+
+/* 执行一次完整的 确认→Prepare→WriteBlock→Finalize 流程 */
+static Boot_Result run_upgrade(uint32_t version)
+{
+    uint8_t block[64];
+    memset(block, 0xA5, sizeof(block));
+    (void)Boot_Update_Abort();
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmUserDecision(TRUE), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_WriteBlock(block, 0U, sizeof(block)), BOOT_OK);
+    return Boot_Update_Finalize(BOOT_IMAGE_APP, version);
+}
+
+static int test_deferred_antrollback(void)
+{
+    printf("  Testing deferred anti-rollback increment (P1-4)...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();
+    /* 清零 BIB 区: counter=0, pending=0 (擦除态 0xFF 会误判) */
+    memset(&g_test_flash[BOOT_BIB_ADDR], 0x00, sizeof(Boot_InfoBlock));
+
+    Boot_Update_SetRollbackConfirmBoots(2U);   /* 阈值 N=2 */
+    uint32_t rc = 0U;
+    Boot_InfoBlock bib;
+
+    /* GIVEN 确认流程 / WHEN Finalize(0x100) / THEN 计数器不动, 记录 pending */
+    TEST_ASSERT_EQ(run_upgrade(0x100U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&rc), BOOT_OK);
+    TEST_ASSERT_EQ(rc, 0U);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_counter, 0x100U);
+    TEST_ASSERT_EQ(bib.pending_boot_count, 0U);
+
+    /* GIVEN pending 0x100 / WHEN 成功启动 1 次 (N-1) / THEN 仍未提交 */
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x100U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&rc), BOOT_OK);
+    TEST_ASSERT_EQ(rc, 0U);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_boot_count, 1U);
+
+    /* 确认窗口内回滚成功 (P1-4 核心): 地板未提升, 旧版本 0x90 可安装 */
+    TEST_ASSERT_EQ(run_upgrade(0x90U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&rc), BOOT_OK);
+    TEST_ASSERT_EQ(rc, 0U);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_counter, 0x90U);   /* 新升级覆盖 pending */
+    TEST_ASSERT_EQ(bib.pending_boot_count, 0U);
+
+    /* 确认窗口内同版本重装: Finalize(0x100) 再次放行, pending 重置 */
+    TEST_ASSERT_EQ(run_upgrade(0x100U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_counter, 0x100U);
+    TEST_ASSERT_EQ(bib.pending_boot_count, 0U);
+
+    /* WHEN 再成功启动 2 次 (共 N=2) / THEN 提交: counter=0x100, pending 清除 */
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x100U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x100U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&rc), BOOT_OK);
+    TEST_ASSERT_EQ(rc, 0x100U);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_counter, 0U);
+
+    /* GIVEN 地板 0x100 / WHEN Finalize 同版本 / THEN 拒绝 (地板已提交) */
+    TEST_ASSERT_EQ(run_upgrade(0x100U), BOOT_E_VERSION);
+    (void)Boot_Update_Abort();
+
+    /* GIVEN 地板 0x100 / WHEN Finalize 旧版本 0x90 / THEN 拒绝 (防回滚) */
+    TEST_ASSERT_EQ(run_upgrade(0x90U), BOOT_E_VERSION);
+    (void)Boot_Update_Abort();
+
+    /* GIVEN pending 0x200 / WHEN 启动其他版本 0x50 / THEN 不计数不清除 */
+    TEST_ASSERT_EQ(run_upgrade(0x200U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x50U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_counter, 0x200U);
+    TEST_ASSERT_EQ(bib.pending_boot_count, 0U);
+
+    /* GIVEN N=1 / WHEN Finalize(0x300) + 1 次成功启动 / THEN 立即提交 */
+    Boot_Update_SetRollbackConfirmBoots(1U);
+    TEST_ASSERT_EQ(run_upgrade(0x300U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x300U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&rc), BOOT_OK);
+    TEST_ASSERT_EQ(rc, 0x300U);
+
+    /* 非法 pending (旧格式 reserved 残留 0xFF): 视为无待确认, 不提交垃圾值 */
+    {
+        Boot_InfoBlock raw;
+        memset(&raw, 0, sizeof(raw));
+        raw.magic = 0x30424942U;
+        raw.max_boot_attempts = 5U;
+        raw.anti_rollback_counter = 0x300U;
+        raw.pending_counter = 0xFFFFFFFFU;
+        raw.pending_boot_count = 0xFFFFFFFFU;
+        raw.crc32 = test_bib_crc(&raw);
+        TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&raw, sizeof(raw)),
+                       BOOT_OK);
+        TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x300U), BOOT_OK);
+        TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&rc), BOOT_OK);
+        TEST_ASSERT_EQ(rc, 0x300U);   /* 未提交垃圾 pending */
+    }
+
+    /* NULL 参数 */
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(NULL_PTR), BOOT_E_PARAM);
+
+    Boot_Update_SetRollbackConfirmBoots(0U);   /* 恢复默认 */
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * Test Runner
  * ============================================================================ */
 
@@ -277,6 +404,7 @@ int main(void)
     run_test(test_confirm_timeout, "Confirm Timeout Auto-Cancel");
     run_test(test_confirm_no_timesource, "Confirm Without Time Source");
     run_test(test_confirm_state_errors, "Confirm State-Machine Errors");
+    run_test(test_deferred_antrollback, "Deferred Anti-Rollback Increment (P1-4)");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);
