@@ -45,7 +45,14 @@ extern "C" {
  * ============================================================================ */
 #define BL_ANTIROLLBACK_MAX_SLOTS           8U   /* 磨损均衡槽位数上限 */
 #define BL_ANTIROLLBACK_DEFAULT_SLOTS       4U   /* 默认槽位数 */
-#define BL_ANTIROLLBACK_DEFAULT_CONFIRM_BOOTS  3U  /* 延后递增默认阈值 N: 新版本成功启动 N 次后提交 */
+/* Configurator 驱动（Boot_Cfg.h 生成 OTA 安全配置）：
+ * BOOT_ROLLBACK_CONFIRM_BOOTS 由 yuleASR-Configurator 生成（OtaSecurity 容器）。
+ * 此处只读不写（避免先于 Boot_Cfg.h 被 include 时重定义宏）。 */
+#ifdef BOOT_ROLLBACK_CONFIRM_BOOTS
+#define BL_ANTIROLLBACK_DEFAULT_CONFIRM_BOOTS  BOOT_ROLLBACK_CONFIRM_BOOTS  /* 延后递增默认阈值 N */
+#else
+#define BL_ANTIROLLBACK_DEFAULT_CONFIRM_BOOTS  3U
+#endif
 #define BL_ANTIROLLBACK_MAGIC               0x41524243U  /* "ARBC" */
 #define BL_ANTIROLLBACK_RECORD_VERSION      2U   /* v2: 槽位含 pending_counter/pending_boot_count */
 

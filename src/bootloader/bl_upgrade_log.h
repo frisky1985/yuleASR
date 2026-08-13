@@ -35,8 +35,16 @@ extern "C" {
 /* ============================================================================
  * 配置常量
  * ============================================================================ */
-#define BL_UPGRADE_LOG_MAX_ENTRIES          16U   /* 环形缓冲容量上限 (可裁剪) */
-#define BL_UPGRADE_LOG_DEFAULT_CAPACITY     16U   /* 默认容量 */
+/* Configurator 驱动（Boot_Cfg.h 生成 OTA 安全配置）：
+ * BOOT_UPGRADE_LOG_MAX_ENTRIES 由 yuleASR-Configurator 生成（OtaSecurity 容器）。
+ * 此处只读不写（避免先于 Boot_Cfg.h 被 include 时重定义宏）。 */
+#ifdef BOOT_UPGRADE_LOG_MAX_ENTRIES
+#define BL_UPGRADE_LOG_MAX_ENTRIES      BOOT_UPGRADE_LOG_MAX_ENTRIES  /* 环形缓冲容量上限 (可裁剪) */
+#define BL_UPGRADE_LOG_DEFAULT_CAPACITY BOOT_UPGRADE_LOG_MAX_ENTRIES   /* 默认容量 */
+#else
+#define BL_UPGRADE_LOG_MAX_ENTRIES      16U
+#define BL_UPGRADE_LOG_DEFAULT_CAPACITY 16U
+#endif
 #define BL_UPGRADE_LOG_MAGIC                0x554C4F47U  /* "ULOG" */
 #define BL_UPGRADE_LOG_RECORD_VERSION       1U
 

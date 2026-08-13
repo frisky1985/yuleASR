@@ -29,10 +29,26 @@ extern "C" {
 /* ============================================================================
  * 配置常量
  * ============================================================================ */
+/* Configurator 驱动（Boot_Cfg.h 生成 OTA 安全配置）：
+ * BOOT_CERT_CHAIN_MAX_DEPTH / BOOT_SIGNATURE_SIZE / BOOT_HASH_SIZE
+ * 已由 yuleASR-Configurator 生成（OtaSecurity 容器）。此处只读不写（避免
+ * 先于 Boot_Cfg.h 被 include 时重定义宏），未定义则回落本地默认。 */
+#ifdef BOOT_CERT_CHAIN_MAX_DEPTH
+#define BL_SB_MAX_CERT_CHAIN_DEPTH      BOOT_CERT_CHAIN_MAX_DEPTH
+#else
 #define BL_SB_MAX_CERT_CHAIN_DEPTH      4U
+#endif
 #define BL_SB_MAX_CERT_SIZE             2048
-#define BL_SB_SIGNATURE_SIZE            64      /* ECDSA P-256 */
-#define BL_SB_HASH_SIZE                 32      /* SHA-256 */
+#ifdef BOOT_SIGNATURE_SIZE
+#define BL_SB_SIGNATURE_SIZE            BOOT_SIGNATURE_SIZE   /* ECDSA P-256 */
+#else
+#define BL_SB_SIGNATURE_SIZE            64
+#endif
+#ifdef BOOT_HASH_SIZE
+#define BL_SB_HASH_SIZE                 BOOT_HASH_SIZE        /* SHA-256 */
+#else
+#define BL_SB_HASH_SIZE                 32
+#endif
 #define BL_SB_MAX_FIRMWARE_SIZE         (256 * 1024 * 1024)
 
 /* ============================================================================

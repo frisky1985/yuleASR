@@ -14,6 +14,10 @@
 
 #include <string.h>
 #include <stddef.h>
+/* Configurator 驱动：Boot_Cfg.h 由 yuleASR-Configurator 生成（OtaSecurity 容器）,
+ * 必须先于 bl_upgrade_log.h 引入, 使 BOOT_UPGRADE_LOG_MAX_ENTRIES 在
+ * BL_UPGRADE_LOG_* 常量求值前已定义。 */
+#include "Boot_Cfg.h"
 #include "bl_upgrade_log.h"
 #include "bl_partition.h"
 #include "bl_time.h"

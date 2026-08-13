@@ -14,6 +14,10 @@
 
 #include <string.h>
 #include <stddef.h>
+/* Configurator 驱动：Boot_Cfg.h 由 yuleASR-Configurator 生成（OtaSecurity 容器）,
+ * 必须先于 bl_antrollback.h 引入, 使 BOOT_ROLLBACK_CONFIRM_BOOTS 在
+ * BL_ANTIROLLBACK_* 常量求值前已定义。 */
+#include "Boot_Cfg.h"
 #include "bl_antrollback.h"
 #include "../common/log/dds_log.h"
 

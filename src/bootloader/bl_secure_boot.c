@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
+/* Configurator 驱动：Boot_Cfg.h 由 yuleASR-Configurator 生成（OtaSecurity 容器）,
+ * 必须先于 bl_secure_boot.h 引入, 使 BOOT_CERT_CHAIN_MAX_DEPTH / BOOT_SIGNATURE_SIZE /
+ * BOOT_HASH_SIZE 在 BL_SB_* 常量求值前已定义。 */
+#include "Boot_Cfg.h"
 #include "bl_secure_boot.h"
 #include "bl_time.h"
 #include "../common/log/dds_log.h"

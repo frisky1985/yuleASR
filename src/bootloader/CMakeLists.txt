@@ -30,6 +30,7 @@ target_include_directories(eth_bootloader PUBLIC
 # 注意: sbl_main.o 被引用时才需链接 boot 库 (见 tests/test_sbl_main)。
 target_include_directories(eth_bootloader PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/boot/include
+    ${CMAKE_SOURCE_DIR}/include/autosar
 )
 
 # bootloader 依赖 crypto_stack (CSM/KeyM) 与 DDS 日志
