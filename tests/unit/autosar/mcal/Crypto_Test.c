@@ -4,6 +4,12 @@
  * @version 1.0.0
  * @date 2026-04-30
  * @author Shanghai Yule Electronics Technology Co., Ltd.
+ *
+ * @deprecated 2026-08-13 真实测试改造：标记废弃（语法错误，不参与构建）。
+ *   第 8 行起 SHALL-CRYPTO-* 需求注释漏了块注释闭合（`*/` 提前闭合后注释行
+ *   落入顶层声明区 → 编译报 implicit-int/expected ';'）。疑似草稿文件，且
+ *   非 test_ 前缀，从未挂载。挂载尝试记录：
+ *   docs/real-test-refactor-exec-20260813.md（③ 废弃处置）。
  *==================================================================================================*/
  * SHALL-CRYPTO-01: SHALL support AES-128/256 encryption in ECB, CBC, and CTR modes
  * SHALL-CRYPTO-02: SHALL support SHA-256 hashing

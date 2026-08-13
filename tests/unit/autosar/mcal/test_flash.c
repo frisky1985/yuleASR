@@ -3,6 +3,14 @@
  * @brief Flash Driver (Flash.h) Module Unit Tests
  * @version 1.0.0
  * @note Tests for the Flash.h API (legacy wrapper around Fls)
+ *
+ * @deprecated 2026-08-13 真实测试改造：不可挂载。
+ *   1) 调用 Fls_BlankCheck / Fls_ConfigureReadProtection /
+ *      Fls_ConfigureWriteProtection，这三个 API 在 Flash.h 中声明但任何
+ *      驱动源码（Flash.c/Fls.c/Fls_Hw.c）均无实现 → 链接必然失败。
+ *   2) MEMIF_BLOCK_INCONSISTENT 未定义（Flash.h 无此宏，补 #include "Fls.h"
+ *      又会与 Flash.h 的 MEMIF_MODE_SLOW 枚举重定义冲突）。
+ *   挂载尝试记录：docs/real-test-refactor-exec-20260813.md（③ 废弃处置）。
  */
 
 #include <stdio.h>

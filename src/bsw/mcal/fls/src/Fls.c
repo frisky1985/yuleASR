@@ -134,7 +134,7 @@ static const Fls_SectorType* Fls_GetSector(Fls_AddressType address);
 static void Fls_UnlockFlash(void);
 static void Fls_LockFlash(void);
 static Std_ReturnType Fls_EraseSector(Fls_AddressType address);
-static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data);
+static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data, Fls_LengthType length);
 static void Fls_ReadData(Fls_AddressType address, uint8* data, Fls_LengthType length);
 static void Fls_ProcessErase(void);
 static void Fls_ProcessWrite(void);
@@ -298,6 +298,16 @@ Std_ReturnType Fls_Write(Fls_AddressType TargetAddress, const uint8* SourceAddre
         (void)Det_ReportError(FLS_MODULE_ID, FLS_INSTANCE_ID, FLS_SID_WRITE, FLS_E_PARAM_ADDRESS);
         return E_NOT_OK;
     }
+
+    /* Reject write to read-only sector (sectorWritable == FALSE) */
+    {
+        const Fls_SectorType* sector = Fls_GetSector(TargetAddress);
+        if ((sector == NULL_PTR) || (sector->sectorWritable == FALSE))
+        {
+            (void)Det_ReportError(FLS_MODULE_ID, FLS_INSTANCE_ID, FLS_SID_WRITE, FLS_E_PARAM_ADDRESS);
+            return E_NOT_OK;
+        }
+    }
 #endif
     
     FLS_ENTER_CRITICAL_SECTION();
@@ -375,6 +385,89 @@ void Fls_Read(Fls_AddressType SourceAddress, uint8* TargetAddressPtr, Fls_Length
     
     FLS_EXIT_CRITICAL_SECTION();
 }
+
+/**
+ * @brief Reads flash memory synchronously
+ * @param SourceAddress Source address in flash memory
+ * @param TargetAddressPtr Pointer to target data buffer
+ * @param Length Number of bytes to read
+ * @return E_OK: Success, E_NOT_OK: Failed
+ * @req SWS_Fls_00300
+ *
+ * Synchronous variant of Fls_Read: performs the same parameter validation as
+ * the asynchronous API, then reads the requested range in chunks (same chunk
+ * policy as Fls_ProcessRead) by calling Fls_ReadData directly. Only available
+ * when FLS_USE_ISR == STD_OFF (no interrupt-driven job processing).
+ */
+#if (FLS_USE_ISR == STD_OFF)
+Std_ReturnType Fls_ReadSync(Fls_AddressType SourceAddress, uint8* TargetAddressPtr, Fls_LengthType Length)
+{
+    Fls_AddressType currentAddr;
+    Fls_LengthType remaining;
+    Fls_LengthType chunkSize;
+    uint8* currentPtr;
+
+#if (FLS_DEV_ERROR_DETECT == STD_ON)
+    /* Check initialization */
+    if (Fls_Status == FLS_UNINIT)
+    {
+        (void)Det_ReportError(FLS_MODULE_ID, FLS_INSTANCE_ID, FLS_SID_READ, FLS_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    /* Check parameters */
+    if (TargetAddressPtr == NULL_PTR)
+    {
+        (void)Det_ReportError(FLS_MODULE_ID, FLS_INSTANCE_ID, FLS_SID_READ, FLS_E_PARAM_DATA);
+        return E_NOT_OK;
+    }
+
+    if (Fls_ValidateAddress(SourceAddress, Length) != E_OK)
+    {
+        (void)Det_ReportError(FLS_MODULE_ID, FLS_INSTANCE_ID, FLS_SID_READ, FLS_E_PARAM_ADDRESS);
+        return E_NOT_OK;
+    }
+#endif
+
+    /* Synchronous read must not run while another job is in progress */
+    if (Fls_Status != FLS_IDLE)
+    {
+        return E_NOT_OK;
+    }
+
+    currentAddr = SourceAddress;
+    currentPtr = TargetAddressPtr;
+    remaining = Length;
+
+    /* Read in chunks until the requested range is fully read */
+    while (remaining > 0u)
+    {
+        /* Determine chunk size based on mode (same policy as Fls_ProcessRead) */
+        if (Fls_CurrentMode == MEMIF_MODE_FAST)
+        {
+            chunkSize = (Fls_ConfigPtr != NULL_PTR) ? Fls_ConfigPtr->maxReadFastMode : FLS_MAX_READ_FAST_MODE;
+        }
+        else
+        {
+            chunkSize = (Fls_ConfigPtr != NULL_PTR) ? Fls_ConfigPtr->maxReadNormalMode : FLS_MAX_READ_NORMAL_MODE;
+        }
+
+        /* Limit chunk to remaining length */
+        if (chunkSize > remaining)
+        {
+            chunkSize = remaining;
+        }
+
+        Fls_ReadData(currentAddr, currentPtr, chunkSize);
+
+        currentAddr += chunkSize;
+        currentPtr += chunkSize;
+        remaining -= chunkSize;
+    }
+
+    return E_OK;
+}
+#endif
 
 /**
  * @brief Compares flash memory with data buffer
@@ -719,26 +812,32 @@ static Std_ReturnType Fls_EraseSector(Fls_AddressType address)
 /**
  * @brief Writes a single page to flash
  */
-static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data)
+static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data, Fls_LengthType length)
 {
-    /* Hardware-specific page write */
-    /* This is a simplified implementation */
-    
+    Fls_LengthType i;
+
+    /* Hardware-specific page write — simplified implementation using
+     * REG_WRITE8 so host tests can redirect to MockHAL memory-backed table
+     * (same pattern as Dio/Gpt/Adc; fixes previous no-op write stub). */
+
     /* 1. Unlock flash */
     Fls_UnlockFlash();
-    
+
     /* 2. Enable programming */
     /* FLASH->CR |= FLS_CR_PG; */
-    
-    /* 3. Write data (32-bit words for ARM) */
-    /* *((volatile uint32*)address) = *((const uint32*)data); */
-    
+
+    /* 3. Write data bytes */
+    for (i = 0u; i < length; i++)
+    {
+        REG_WRITE8(address + i, data[i]);
+    }
+
     /* 4. Wait for completion */
     /* while (FLASH->SR & FLS_SR_BSY); */
-    
+
     /* 5. Lock flash */
     Fls_LockFlash();
-    
+
     return E_OK;
 }
 
@@ -747,11 +846,12 @@ static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data)
  */
 static void Fls_ReadData(Fls_AddressType address, uint8* data, Fls_LengthType length)
 {
-    /* Flash can be read directly like RAM */
+    /* Flash can be read directly like RAM — via REG_READ8 so host tests can
+     * redirect to MockHAL memory-backed table (same pattern as Dio/Gpt/Adc). */
     Fls_LengthType i;
     for (i = 0u; i < length; i++)
     {
-        data[i] = ((const uint8*)(uintptr)address)[i];
+        data[i] = REG_READ8(address + i);
     }
 }
 
@@ -831,7 +931,7 @@ static void Fls_ProcessWrite(void)
         }
         
         /* Write chunk */
-        if (Fls_WritePage(currentAddr, &Fls_JobControl.writePtr[Fls_JobControl.processed]) == E_OK)
+        if (Fls_WritePage(currentAddr, &Fls_JobControl.writePtr[Fls_JobControl.processed], chunkSize) == E_OK)
         {
             Fls_JobControl.processed += chunkSize;
             

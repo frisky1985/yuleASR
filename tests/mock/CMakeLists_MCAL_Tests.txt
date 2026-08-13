@@ -70,11 +70,18 @@ set(MCAL_TEST_INCLUDES
     ${SRC_MCAL}/eep/include
     ${SRC_MCAL}/fee/include
     ${SRC_MCAL}/flash/include
+    ${SRC_MCAL}/fls/include
+    ${SRC_MCAL}/eth/include
+    ${SRC_MCAL}/crypto/include
     ${SRC_MCAL}/i2c/include
     ${SRC_MCAL}/lin/include
     ${SRC_MCAL}/ocu/include
     ${SRC_MCAL}/ramtst/include
     ${SRC_MCAL}/uart/include
+    ${CMAKE_SOURCE_DIR}/src/bsw/ecual/include
+    ${CMAKE_SOURCE_DIR}/src/rte/include
+    ${CMAKE_SOURCE_DIR}/third_party/crypto/blake2/include
+    ${CMAKE_SOURCE_DIR}/third_party/mbedtls/include
     ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
     ${CMAKE_SOURCE_DIR}/config/input/mcal
     ${CMAKE_SOURCE_DIR}/config/generated
@@ -427,6 +434,95 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c)
         MOCK_SRCS
             ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
             ${MOCK_DIR}/dma_mock.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# ETH real driver test (test_ETH.c — unique, no mock equivalent)
+# Links real Eth.c against MockHAL.  Eth_Lcfg.c does not exist in the
+# repo (only Eth_Lcfg.h declaring extern config tables), so only Eth.c
+# is linked — Eth.c itself does not reference Eth_Config/Eth_ControllerConfig.
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_ETH.c)
+    add_mcal_test(
+        NAME        mcal_eth_real_test
+        TEST_FILE   ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_ETH.c
+        MCAL_SRCS
+            ${SRC_MCAL}/eth/src/Eth.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# Fls real driver test (test_fls.c — unique, no mock equivalent)
+# Links real Fls.c + Fls_Hw.c.  Fls job notification callbacks are
+# application-owned externs (Fls_Cfg.h) -> provided as host stubs.
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_fls.c)
+    add_mcal_test(
+        NAME        mcal_fls_real_test
+        TEST_FILE   ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_fls.c
+        MCAL_SRCS
+            ${SRC_MCAL}/fls/src/Fls.c
+            ${SRC_MCAL}/fls/src/Fls_Hw.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+            ${MOCK_DIR}/stubs/fls_job_notification_stubs.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# LinSlave real driver test (test_linslave.c — unique, no mock equivalent)
+# Links real LinSlave stack (core + PID + checksum + TP + UDS + Hal sim)
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_linslave.c)
+    add_mcal_test(
+        NAME        mcal_linslave_real_test
+        TEST_FILE   ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_linslave.c
+        MCAL_SRCS
+            ${SRC_MCAL}/lin/src/LinSlave.c
+            ${SRC_MCAL}/lin/src/LinSlave_Pid.c
+            ${SRC_MCAL}/lin/src/LinSlave_Checksum.c
+            ${SRC_MCAL}/lin/src/LinSlave_Tp.c
+            ${SRC_MCAL}/lin/src/LinSlave_Uds.c
+            ${SRC_MCAL}/lin/src/LinSlave_Hal.c
+            ${SRC_MCAL}/lin/src/LinSlave_CfgTable.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+endif()
+
+#----------------------------------------------------------------------
+# Crypto real driver test (test_Crypto.c — unique, no mock equivalent)
+# Links real Crypto.c + MbedTLS backend + HSM interface + blake2 lib.
+# The add_mcal_test macro registers the executable; mbedtls/blake2 are
+# linked afterwards since they are separate CMake library targets.
+#----------------------------------------------------------------------
+if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_Crypto.c)
+    add_mcal_test(
+        NAME        mcal_crypto_real_test
+        TEST_FILE   ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_Crypto.c
+        MCAL_SRCS
+            ${SRC_MCAL}/crypto/src/Crypto.c
+            ${SRC_MCAL}/crypto/src/Crypto_MbedTLS.c
+            ${SRC_MCAL}/crypto/src/Crypto_MbedTLS_Mem.c
+            ${SRC_MCAL}/crypto/src/Crypto_Hsm.c
+            ${SRC_MCAL}/crypto/src/Crypto_Cfg.c
+        MOCK_SRCS
+            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+    )
+    target_link_libraries(mcal_crypto_real_test PRIVATE
+        mbedtls mbedx509 mbedcrypto blake2
+    )
+    # mbedTLS private-field access + yuleASR config are required by the
+    # Crypto/MQTT backends (same definitions as the main MCAL build)
+    target_compile_definitions(mcal_crypto_real_test PRIVATE
+        MBEDTLS_ALLOW_PRIVATE_ACCESS
+        "MBEDTLS_CONFIG_FILE=<yuleasr_config.h>"
+    )
+    target_include_directories(mcal_crypto_real_test PRIVATE
+        ${CMAKE_SOURCE_DIR}/third_party/mbedtls/configs
     )
 endif()
 

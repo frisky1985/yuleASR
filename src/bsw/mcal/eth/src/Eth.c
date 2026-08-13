@@ -587,6 +587,50 @@ void Eth_SetPhysAddr(Eth_ControllerType CtrlIdx, const uint8* PhysAddrPtr)
 }
 
 /**
+ * @brief Update physical address filter (MAC address filtering)
+ * @param CtrlIdx Controller index
+ * @param PhysAddrPtr Physical address (MAC address) to add/remove from filter
+ * @param Action ETH_FILTER_ACTION_ADD or ETH_FILTER_ACTION_REMOVE
+ * @return E_OK: Success, E_NOT_OK: Failed
+ * @note Simplified host-testable implementation: parameter validation plus
+ *       HW filter programming stub (mirrors Eth_Hw* simplified pattern).
+ */
+Std_ReturnType Eth_UpdatePhysAddrFilter(Eth_ControllerType CtrlIdx, const uint8* PhysAddrPtr,
+                                        Eth_FilterActionType Action)
+{
+    ETH_CHECK_STATE_INIT(ETH_UPDATEADDRFILTER_SID);
+    ETH_CHECK_CONTROLLER_VALID(CtrlIdx, ETH_UPDATEADDRFILTER_SID);
+
+    #if (ETH_DEV_ERROR_DETECT == STD_ON)
+    if (PhysAddrPtr == NULL_PTR)
+    {
+        ETH_REPORT_ERROR(ETH_UPDATEADDRFILTER_SID, ETH_E_INV_POINTER);
+        return E_NOT_OK;
+    }
+
+    if ((Action != ETH_FILTER_ACTION_ADD) && (Action != ETH_FILTER_ACTION_REMOVE))
+    {
+        ETH_REPORT_ERROR(ETH_UPDATEADDRFILTER_SID, ETH_E_INV_PARAM);
+        return E_NOT_OK;
+    }
+    #endif
+
+    if (Eth_CtrlState[CtrlIdx].InitDone == FALSE)
+    {
+        #if (ETH_DEV_ERROR_DETECT == STD_ON)
+        ETH_REPORT_ERROR(ETH_UPDATEADDRFILTER_SID, ETH_E_NOT_INITIALIZED);
+        #endif
+        return E_NOT_OK;
+    }
+
+    /* Hardware filter programming (host test: no-op) */
+    (void)PhysAddrPtr;
+    (void)Action;
+
+    return E_OK;
+}
+
+/**
  * @brief Write to MII register
  */
 Std_ReturnType Eth_WriteMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 

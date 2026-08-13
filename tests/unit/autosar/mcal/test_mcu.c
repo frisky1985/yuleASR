@@ -21,6 +21,13 @@
 *
 * Target Coverage: 80%+
 * Test Cases: 20+
+*
+* @deprecated 2026-08-13 真实测试改造：标记废弃（不参与构建）。
+*   依赖 tests/mocks/mock_mcal.h + mock_registers.h + mock_det.h 自包含桩，
+*   属 stub 契约测试而非真实驱动测试（未链接生产 Mcu.c/mock_hal），且
+*   include 路径缺 tests/mocks（构建配置未挂载）。与已挂载的真实驱动测试
+*   （mock_hal + REG 宏重定向模式）定位重复。挂载尝试记录：
+*   docs/real-test-refactor-exec-20260813.md（③ 废弃处置）。
 ==================================================================================================*/
 
 #include "test_framework.h"

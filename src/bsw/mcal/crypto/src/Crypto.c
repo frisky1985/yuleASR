@@ -477,6 +477,14 @@ Std_ReturnType Crypto_KeyDerive(Crypto_KeyIdType cryptoKeyId, Crypto_KeyIdType t
         Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_KEYDERIVE, CRYPTO_E_UNINIT);
         return E_NOT_OK;
     }
+
+    /* Validate key IDs (same contract as Crypto_KeyElementSet) */
+    if ((Crypto_ConfigPtr == NULL_PTR) ||
+        (cryptoKeyId >= Crypto_ConfigPtr->numKeys) ||
+        (targetCryptoKeyId >= Crypto_ConfigPtr->numKeys))
+    {
+        return E_NOT_OK;
+    }
 #endif
     return Crypto_MbedTLS_KeyDerive(cryptoKeyId, targetCryptoKeyId);
 }
@@ -519,6 +527,10 @@ Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* result
     if (resultLength == 0U)
     {
         Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_RANDOMGENERATE, CRYPTO_E_PARAM_VALUE);
+        return E_NOT_OK;
+    }
+    if ((Crypto_ConfigPtr == NULL_PTR) || (cryptoKeyId >= Crypto_ConfigPtr->numKeys))
+    {
         return E_NOT_OK;
     }
 #endif

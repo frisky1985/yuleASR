@@ -259,6 +259,84 @@ static const Crypto_KeyConfigType Crypto_KeyConfigs[CRYPTO_NUM_KEYS] = {
 };
 
 /*==================================================================================================
+ *                                    RUNTIME KEY CONFIGURATIONS
+ *==================================================================================================
+ * NOTE: Crypto_ConfigType.keys is declared as Crypto_KeyType* (runtime layout:
+ * keyId/numElements/keyElements/keyType/keyState), while the config-time table
+ * above is Crypto_KeyConfigType (keyId/keyElements/numKeyElements/keyValid).
+ * The old `(Crypto_KeyType*)Crypto_KeyConfigs` cast made the driver read wrong
+ * struct offsets (numElements read pointer padding) — replaced by a proper
+ * runtime mirror table below.
+ *==================================================================================================*/
+
+/* Key element storage buffers (writable, backed by runtime driver) */
+static uint8 Crypto_AesKeyData[CRYPTO_AES_KEY_SIZE_256];
+static uint8 Crypto_AesIvData[CRYPTO_AES_IV_SIZE];
+static uint8 Crypto_HmacKeyData[CRYPTO_HMAC_MAX_KEY_SIZE];
+static uint8 Crypto_RsaNData[CRYPTO_RSA_KEY_SIZE_2048];
+static uint8 Crypto_RsaDData[CRYPTO_RSA_KEY_SIZE_2048];
+static uint8 Crypto_RsaEData[4u];
+static uint8 Crypto_SeedData[32u];
+static uint8 Crypto_CertData[CRYPTO_RSA_KEY_SIZE_2048];
+
+/* Runtime key elements (layout: id/size/allowPartialAccess/writeAccess/data) */
+static Crypto_KeyElementType Crypto_RtAesMasterElements[] = {
+    { CRYPTO_KEY_ELEMENT_AES_KEY, CRYPTO_AES_KEY_SIZE_256, FALSE, TRUE, Crypto_AesKeyData },
+    { CRYPTO_KEY_ELEMENT_AES_IV,  CRYPTO_AES_IV_SIZE,      TRUE,  TRUE, Crypto_AesIvData  }
+};
+
+static Crypto_KeyElementType Crypto_RtHmacMasterElements[] = {
+    { CRYPTO_KEY_ELEMENT_HMAC_KEY, CRYPTO_HMAC_MAX_KEY_SIZE, FALSE, TRUE, Crypto_HmacKeyData }
+};
+
+static Crypto_KeyElementType Crypto_RtRsaPrivateElements[] = {
+    { CRYPTO_KEY_ELEMENT_RSA_MOD_N,       CRYPTO_RSA_KEY_SIZE_2048, FALSE, TRUE, Crypto_RsaNData },
+    { CRYPTO_KEY_ELEMENT_RSA_PRIV_EXP_D,  CRYPTO_RSA_KEY_SIZE_2048, FALSE, TRUE, Crypto_RsaDData }
+};
+
+static Crypto_KeyElementType Crypto_RtRsaPublicElements[] = {
+    { CRYPTO_KEY_ELEMENT_RSA_MOD_N,      CRYPTO_RSA_KEY_SIZE_2048, FALSE, TRUE, Crypto_RsaNData },
+    { CRYPTO_KEY_ELEMENT_RSA_PUB_EXP_E,  4u,                       FALSE, TRUE, Crypto_RsaEData }
+};
+
+static Crypto_KeyElementType Crypto_RtStorageElements[] = {
+    { CRYPTO_KEY_ELEMENT_AES_KEY, CRYPTO_AES_KEY_SIZE_256, FALSE, TRUE, Crypto_AesKeyData }
+};
+
+static Crypto_KeyElementType Crypto_RtRngSeedElements[] = {
+    { CRYPTO_KEY_ELEMENT_SEED, 32u, FALSE, TRUE, Crypto_SeedData }
+};
+
+static Crypto_KeyElementType Crypto_RtDeriveBaseElements[] = {
+    { CRYPTO_KEY_ELEMENT_AES_KEY, CRYPTO_AES_KEY_SIZE_256, FALSE, TRUE, Crypto_AesKeyData },
+    { CRYPTO_KEY_ELEMENT_SALT,    32u,                     TRUE,  TRUE, Crypto_SeedData  }
+};
+
+static Crypto_KeyElementType Crypto_RtCertElements[] = {
+    { CRYPTO_KEY_ELEMENT_AES_KEY, CRYPTO_RSA_KEY_SIZE_2048, FALSE, TRUE, Crypto_CertData }
+};
+
+/* Runtime keys (layout: keyId/numElements/keyElements/keyType/keyState) */
+static Crypto_KeyType Crypto_RuntimeKeys[CRYPTO_NUM_KEYS] = {
+    { CRYPTO_KEY_ID_AES_MASTER,   2u, Crypto_RtAesMasterElements,   CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_AES_SESSION,  2u, Crypto_RtAesMasterElements,   CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_HMAC_MASTER,  1u, Crypto_RtHmacMasterElements,  CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_RSA_PRIVATE,  2u, Crypto_RtRsaPrivateElements,  CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_RSA_PUBLIC,   2u, Crypto_RtRsaPublicElements,   CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_ECC_PRIVATE,  1u, Crypto_RtStorageElements,     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_ECC_PUBLIC,   1u, Crypto_RtStorageElements,     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_RNG_SEED,     1u, Crypto_RtRngSeedElements,     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_AES_STORAGE,  1u, Crypto_RtStorageElements,     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_HMAC_STORAGE, 1u, Crypto_RtHmacMasterElements,  CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_DERIVE_BASE,  2u, Crypto_RtDeriveBaseElements,  CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_DERIVED_1,    1u, Crypto_RtStorageElements,     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_DERIVED_2,    1u, Crypto_RtStorageElements,     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_CERT_ROOT,    1u, Crypto_RtCertElements,        CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_CERT_DEVICE,  1u, Crypto_RtCertElements,        CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID },
+    { CRYPTO_KEY_ID_RESERVED,     0u, NULL_PTR,                     CRYPTO_KEY_TYPE_SEED,   CRYPTO_KEY_INVALID }
+};
+
+/*==================================================================================================
  *                                    DRIVER OBJECT CONFIGURATIONS
  *==================================================================================================*/
 static void Crypto_AesCallback(Crypto_JobType* job, Crypto_JobStateType result);
@@ -425,7 +503,7 @@ const Crypto_ConfigType Crypto_Config = {
     .numDriverObjects = CRYPTO_NUM_DRIVER_OBJECTS,
     .channels = Crypto_ChannelConfigs,
     .numChannels = CRYPTO_NUM_CHANNELS,
-    .keys = (Crypto_KeyType*)Crypto_KeyConfigs,
+    .keys = Crypto_RuntimeKeys,
     .numKeys = CRYPTO_NUM_KEYS,
     .hwAccelerationEnabled = TRUE,
     .clockFrequency = 160000000U  /* 160 MHz */

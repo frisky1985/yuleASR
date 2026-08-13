@@ -129,7 +129,20 @@ set(ENABLE_PROGRAMS OFF CACHE BOOL "Build Mbed TLS programs." FORCE)
 set(ENABLE_TESTING OFF CACHE BOOL "Build Mbed TLS tests." FORCE)
 set(MBEDTLS_FATAL_WARNINGS OFF CACHE BOOL "Compiler warnings treated as errors" FORCE)
 set(DISABLE_PACKAGE_CONFIG_AND_INSTALL ON CACHE BOOL "Disable mbedTLS install" FORCE)
+# Host test builds: enable MBEDTLS_ENTROPY_HARDWARE_ALT so mbedtls_entropy_func
+# works on macOS/Linux.  The hardware poll callback (mbedtls_host_entropy.c)
+# is appended to the mbedcrypto target below — test-only glue; production
+# (cross) builds keep bare-metal TRNG entropy (MBEDTLS_NO_PLATFORM_ENTROPY).
+if(NOT CMAKE_CROSSCOMPILING)
+    set(MBEDTLS_USER_CONFIG_FILE "host_entropy_user_config.h" CACHE FILEPATH "Host entropy for mbedTLS" FORCE)
+endif()
 add_subdirectory(third_party/mbedtls)
+
+# Host test builds: provide the mbedTLS hardware entropy poll implementation
+# (see tests/mock/mbedtls_host_entropy.c for rationale).
+if(NOT CMAKE_CROSSCOMPILING AND TARGET mbedcrypto)
+    target_sources(mbedcrypto PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/tests/mock/mbedtls_host_entropy.c)
+endif()
 
 # Hash 算法库 (sha1/sha224/sha256/sha384/sha512) — 先于 boot 挂载, boot 测试需链接 HashAlgos
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/third_party/crypto/hash/CMakeLists.txt)
