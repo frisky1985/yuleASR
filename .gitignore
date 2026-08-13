@@ -174,3 +174,6 @@ src/bsw/boot/test/test_boot_integration
 artifacts/
 tests/hil/reports/
 coverage_report_asil/
+
+# Coverage HTML report (build artifact, not source)
+coverage_report/
