@@ -243,7 +243,7 @@ static void RamTst_ExecuteMarchC(void)
                     RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
                     break;
                 }
-                *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress = RamTst_State.WritePattern;
+                REG_WRITE32(RamTst_State.CurrentAddress, RamTst_State.WritePattern);
                 RamTst_State.CurrentAddress += stepSize;
                 stepComplete = TRUE;
                 break;
@@ -255,12 +255,12 @@ static void RamTst_ExecuteMarchC(void)
                     break;
                 }
                 addr = RamTst_State.CurrentAddress;
-                if (*(volatile uint32*)(uintptr)addr != RamTst_State.WritePattern) {
+                if (REG_READ32(addr) != RamTst_State.WritePattern) {
                     RamTst_RecordError(addr, RamTst_State.WritePattern,
-                                       *(volatile uint32*)(uintptr)addr, 1U);
+                                       REG_READ32(addr), 1U);
                     if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
                 }
-                *(volatile uint32*)(uintptr)addr = RamTst_State.ReadPattern;
+                REG_WRITE32(addr, RamTst_State.ReadPattern);
                 RamTst_State.CurrentAddress += stepSize;
                 stepComplete = TRUE;
                 break;
@@ -273,12 +273,12 @@ static void RamTst_ExecuteMarchC(void)
                     break;
                 }
                 addr = RamTst_State.CurrentAddress;
-                if (*(volatile uint32*)(uintptr)addr != RamTst_State.ReadPattern) {
+                if (REG_READ32(addr) != RamTst_State.ReadPattern) {
                     RamTst_RecordError(addr, RamTst_State.ReadPattern,
-                                       *(volatile uint32*)(uintptr)addr, 2U);
+                                       REG_READ32(addr), 2U);
                     if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
                 }
-                *(volatile uint32*)(uintptr)addr = RamTst_State.WritePattern;
+                REG_WRITE32(addr, RamTst_State.WritePattern);
                 RamTst_State.CurrentAddress += stepSize;
                 stepComplete = TRUE;
                 break;
@@ -290,12 +290,12 @@ static void RamTst_ExecuteMarchC(void)
                     break;
                 }
                 addr = RamTst_State.CurrentAddress;
-                if (*(volatile uint32*)(uintptr)addr != RamTst_State.WritePattern) {
+                if (REG_READ32(addr) != RamTst_State.WritePattern) {
                     RamTst_RecordError(addr, RamTst_State.WritePattern,
-                                       *(volatile uint32*)(uintptr)addr, 3U);
+                                       REG_READ32(addr), 3U);
                     if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
                 }
-                *(volatile uint32*)(uintptr)addr = RamTst_State.ReadPattern;
+                REG_WRITE32(addr, RamTst_State.ReadPattern);
                 RamTst_State.CurrentAddress = (RamTst_State.CurrentAddress > stepSize)
                                               ? (RamTst_State.CurrentAddress - stepSize) : 0U;
                 stepComplete = TRUE;
@@ -309,12 +309,12 @@ static void RamTst_ExecuteMarchC(void)
                     break;
                 }
                 addr = RamTst_State.CurrentAddress;
-                if (*(volatile uint32*)(uintptr)addr != RamTst_State.ReadPattern) {
+                if (REG_READ32(addr) != RamTst_State.ReadPattern) {
                     RamTst_RecordError(addr, RamTst_State.ReadPattern,
-                                       *(volatile uint32*)(uintptr)addr, 4U);
+                                       REG_READ32(addr), 4U);
                     if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
                 }
-                *(volatile uint32*)(uintptr)addr = RamTst_State.WritePattern;
+                REG_WRITE32(addr, RamTst_State.WritePattern);
                 RamTst_State.CurrentAddress = (RamTst_State.CurrentAddress > stepSize)
                                               ? (RamTst_State.CurrentAddress - stepSize) : 0U;
                 stepComplete = TRUE;
@@ -330,9 +330,9 @@ static void RamTst_ExecuteMarchC(void)
                     return;
                 }
                 addr = RamTst_State.CurrentAddress;
-                if (*(volatile uint32*)(uintptr)addr != RamTst_State.WritePattern) {
+                if (REG_READ32(addr) != RamTst_State.WritePattern) {
                     RamTst_RecordError(addr, RamTst_State.WritePattern,
-                                       *(volatile uint32*)(uintptr)addr, 5U);
+                                       REG_READ32(addr), 5U);
                     if ((RamTst_State.StopOnError) != 0U) { RamTst_State.Result = RAMTST_RESULT_FAILED; return; }
                 }
                 RamTst_State.CurrentAddress += stepSize;
@@ -377,7 +377,7 @@ static void RamTst_ExecuteCheckerboard(void)
                 RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress + stepSize;
                 break;
             }
-            *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress = data0;
+            REG_WRITE32(RamTst_State.CurrentAddress, data0);
             RamTst_State.CurrentAddress += addrStepSize;
             break;
 
@@ -387,7 +387,7 @@ static void RamTst_ExecuteCheckerboard(void)
                 RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
                 break;
             }
-            *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress = data1;
+            REG_WRITE32(RamTst_State.CurrentAddress, data1);
             RamTst_State.CurrentAddress += addrStepSize;
             break;
 
@@ -397,9 +397,9 @@ static void RamTst_ExecuteCheckerboard(void)
                 RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress + stepSize;
                 break;
             }
-            if (*(volatile uint32*)(uintptr)RamTst_State.CurrentAddress != data0) {
+            if (REG_READ32(RamTst_State.CurrentAddress) != data0) {
                 RamTst_RecordError(RamTst_State.CurrentAddress, data0,
-                                   *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress, 2U);
+                                   REG_READ32(RamTst_State.CurrentAddress), 2U);
                 if ((RamTst_State.StopOnError) != 0U) { return; }
             }
             RamTst_State.CurrentAddress += addrStepSize;
@@ -413,9 +413,9 @@ static void RamTst_ExecuteCheckerboard(void)
                 RamTst_State.Status = RAMTST_STATUS_COMPLETED;
                 return;
             }
-            if (*(volatile uint32*)(uintptr)RamTst_State.CurrentAddress != data1) {
+            if (REG_READ32(RamTst_State.CurrentAddress) != data1) {
                 RamTst_RecordError(RamTst_State.CurrentAddress, data1,
-                                   *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress, 3U);
+                                   REG_READ32(RamTst_State.CurrentAddress), 3U);
                 if ((RamTst_State.StopOnError) != 0U) { return; }
             }
             RamTst_State.CurrentAddress += addrStepSize;
@@ -452,7 +452,7 @@ static void RamTst_ExecuteGALPAT(void)
     if (RamTst_State.CurrentMarchStep == 0U) {
         /* Write 0 to entire region */
         if (RamTst_State.CurrentAddress < RamTst_State.EndAddress) {
-            *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress = background;
+            REG_WRITE32(RamTst_State.CurrentAddress, background);
             RamTst_State.CurrentAddress += stepSize;
         } else {
             RamTst_State.CurrentMarchStep = 1U;
@@ -469,7 +469,7 @@ static void RamTst_ExecuteGALPAT(void)
                 RamTst_State.CurrentAddress = RamTst_State.Config.StartAddress;
                 break;
             }
-            *(volatile uint32*)(uintptr)RamTst_State.CurrentAddress = dataMask;
+            REG_WRITE32(RamTst_State.CurrentAddress, dataMask);
             RamTst_State.CurrentAddress += stepSize;
             break;
 
@@ -481,8 +481,8 @@ static void RamTst_ExecuteGALPAT(void)
                 break;
             }
             addr = RamTst_State.CurrentAddress;
-            if (*(volatile uint32*)(uintptr)addr != dataMask) {
-                RamTst_RecordError(addr, dataMask, *(volatile uint32*)(uintptr)addr, 2U);
+            if (REG_READ32(addr) != dataMask) {
+                RamTst_RecordError(addr, dataMask, REG_READ32(addr), 2U);
                 if ((RamTst_State.StopOnError) != 0U) { return; }
             }
             RamTst_State.CurrentAddress += stepSize;
@@ -516,14 +516,14 @@ static void RamTst_ExecuteWalkpath(void)
 
     /* Write: one cell has walking-1, all others 0 */
     for (i = 0U; i < numWords; i++) {
-        *(volatile uint32*)(uintptr)(baseAddr + (i * stepSize)) =
-            (i == RamTst_State.CurrentBit) ? 0xFFFFFFFFU : 0x00000000U;
+        REG_WRITE32(baseAddr + (i * stepSize),
+            (i == RamTst_State.CurrentBit) ? 0xFFFFFFFFU : 0x00000000U);
     }
 
     /* Read-back verification */
     for (i = 0U; i < numWords; i++) {
         uint32 expected = (i == RamTst_State.CurrentBit) ? 0xFFFFFFFFU : 0x00000000U;
-        uint32 actual = *(volatile uint32*)(uintptr)(baseAddr + (i * stepSize));
+        uint32 actual = REG_READ32(baseAddr + (i * stepSize));
         if (actual != expected) {
             RamTst_RecordError(baseAddr + (i * stepSize), expected, actual, 1U);
             if ((RamTst_State.StopOnError) != 0U) { return; }
