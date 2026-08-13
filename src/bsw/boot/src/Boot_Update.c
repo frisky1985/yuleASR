@@ -49,6 +49,7 @@ static void *s_antrollback_ctx = NULL_PTR;
 static Boot_Result bib_read(Boot_InfoBlock *bib);
 static Boot_Result bib_write(const Boot_InfoBlock *bib);
 static uint32_t    bib_calc_crc(const Boot_InfoBlock *bib);
+static Boot_Result bib_set_update_state(Boot_UpdateState state);
 
 /* ============================================================================
  * 抗回滚延后递增内部辅助 (RS-OTA-01 / P1-4)
@@ -62,6 +63,12 @@ static uint32_t    bib_calc_crc(const Boot_InfoBlock *bib);
  */
 static boolean bib_pending_valid(const Boot_InfoBlock *bib)
 {
+    /* 掉电保护 (RS-OTA-06): DOWNLOADING = 升级写入未完成 (Prepare 落盘后
+     * 擦除/写入中途掉电), 待确认状态不可信 → 视为无 pending。
+     * 旧 BIB 无 update_state 字段 (reserved=0) → 读为 IDLE, 天然兼容。 */
+    if (bib->update_state == BOOT_UPDATE_DOWNLOADING) {
+        return FALSE;
+    }
     if (bib->pending_counter == 0U) {
         return FALSE;   /* 无待确认升级 */
     }
@@ -191,6 +198,24 @@ Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
         return confirm_ret;
     }
 
+    /* 防护性拒绝 (P1-1 裁决, 2026-08-13): OTA 只写非活动槽 — 活动槽是当前
+     * 运行固件, 写入活动槽会击穿 DOWNLOADING 掉电保护 (中断后回退指向
+     * 正在被擦写的槽)。约定: 升级目标必须是非活动槽。
+     * 仅 BIB 有效 (magic 匹配) 时判定活动槽; BIB 无效 (首次启动/出厂态)
+     * 放行 — 无既有固件可保护, 且 Boot_Loader 首次启动固定走 SBL。 */
+    {
+        Boot_InfoBlock bib;
+        if ((bib_read(&bib) == BOOT_OK) &&
+            (bib.magic == 0x30424942U)) {
+            uint32_t active_slot_addr = ((bib.status & 0x02U) != 0U)
+                                            ? BOOT_APP_SLOT_B_ADDR
+                                            : BOOT_APP_SLOT_A_ADDR;
+            if (slot_addr == active_slot_addr) {
+                return BOOT_E_PARAM;   /* 禁止写入活动槽 */
+            }
+        }
+    }
+
     if (g_ctx_valid!= 0U) {
         (void)Boot_Update_Abort();
     }
@@ -207,9 +232,20 @@ Boot_Result Boot_Update_Prepare(uint32_t slot_addr, Boot_ImageType image_type)
     g_ctx.hash_active = TRUE;
 #endif
 
-    Boot_Result ret = Boot_Flash_Erase(slot_addr, BOOT_APP_SLOT_A_SIZE);
+    /* 掉电保护节点① (RS-OTA-06): 擦除目标槽之前先落盘
+     * BIB(update_state=DOWNLOADING) — 擦除/写入中途掉电, 重启时启动决策
+     * 识别未完成升级并回退活动槽 (旧固件照常运行)。 */
+    Boot_Result ret = bib_set_update_state(BOOT_UPDATE_DOWNLOADING);
     if (ret != BOOT_OK) {
         g_ctx_valid = FALSE;
+        return ret;
+    }
+
+    ret = Boot_Flash_Erase(slot_addr, BOOT_APP_SLOT_A_SIZE);
+    if (ret != BOOT_OK) {
+        /* 擦除失败: 升级未开始, 恢复 BIB(update_state=IDLE) 不留残留 */
+        g_ctx_valid = FALSE;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);
         return ret;
     }
 
@@ -310,6 +346,15 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     const uint8_t *payload_buf ; /* In production, read-back from flash and verify */
     /* For stub, trust the hash was correct during write */
 
+    /* 掉电保护节点② (RS-OTA-06): 校验通过 → BIB(update_state=PENDING),
+     * 升级进入待验证/确认阶段; 全部成功后再落盘 IDLE。 */
+    ret = bib_set_update_state(BOOT_UPDATE_PENDING);
+    if (ret != BOOT_OK) {
+        g_ctx_valid = FALSE;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 尽力恢复 */
+        return ret;
+    }
+
     /* 3. 抗回滚延后递增 (RS-OTA-01 / P1-4): 不立即提升计数器,
      *    先记录待确认版本, 新版本成功启动 N 次后由 NotifyBootSuccess 提交 */
     if (s_antrollback_api != NULL_PTR) {
@@ -319,16 +364,19 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
         if (s_antrollback_api->read_counter(s_antrollback_ctx, &arb_counter)
                 != BL_ROLLBACK_STORAGE_OK) {
             g_ctx_valid = FALSE;
+            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
             return BOOT_E_GENERAL;   /* NVM 不可用: 拒绝完成升级 (fail-closed) */
         }
         if (version <= arb_counter) {
             g_ctx_valid = FALSE;
+            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
             return BOOT_E_VERSION;   /* 低于已确认地板: 拒绝 (防回滚攻击) */
         }
         bl_rollback_storage_error_t st_ret =
             s_antrollback_api->stage(s_antrollback_ctx, version);
         if (st_ret != BL_ROLLBACK_STORAGE_OK) {
             g_ctx_valid = FALSE;
+            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
             return (st_ret == BL_ROLLBACK_STORAGE_ERROR_DECREMENT_ATTEMPT)
                        ? BOOT_E_VERSION : BOOT_E_GENERAL;
         }
@@ -338,6 +386,7 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
         ret = bib_read(&bib);
         if (ret != BOOT_OK) {
             g_ctx_valid = FALSE;
+            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
             return ret;
         }
         if (image_type == BOOT_IMAGE_SBL) {
@@ -349,8 +398,12 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 
         ret = bib_write(&bib);
         if (ret == BOOT_OK) {
-            /* 升级完成: 一次性确认授权复位 */
+            /* 升级完成: 一次性确认授权复位 + BIB(update_state=IDLE),
+             * 状态机无残留 */
             g_ctx.confirm_state = BOOT_CONFIRM_IDLE;
+            (void)bib_set_update_state(BOOT_UPDATE_IDLE);
+        } else {
+            (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
         }
         g_ctx_valid = FALSE;
         return ret;
@@ -361,10 +414,13 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
     ret = bib_read(&bib);
     if (ret != BOOT_OK) {
         g_ctx_valid = FALSE;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
         return ret;
     }
 
     if (version <= bib.anti_rollback_counter) {
+        g_ctx_valid = FALSE;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
         return BOOT_E_VERSION;  /* 低于已确认地板: 拒绝 (防回滚攻击) */
     }
 
@@ -380,8 +436,12 @@ Boot_Result Boot_Update_Finalize(Boot_ImageType image_type, uint32_t version)
 
     ret = bib_write(&bib);
     if (ret == BOOT_OK) {
-        /* 升级完成: 一次性确认授权复位 */
+        /* 升级完成: 一次性确认授权复位 + BIB(update_state=IDLE),
+         * 状态机无残留 */
         g_ctx.confirm_state = BOOT_CONFIRM_IDLE;
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);
+    } else {
+        (void)bib_set_update_state(BOOT_UPDATE_IDLE);   /* 失败恢复 */
     }
     g_ctx_valid = FALSE;
     return ret;
@@ -491,6 +551,39 @@ void Boot_Update_SetRollbackConfirmBoots(uint32_t n)
 }
 
 /* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
+void Boot_Update_SetHealthCheckMode(boolean enabled)
+{
+    /* 注入模式: 转发到抗回滚存储 (bl_antrollback 运行期配置, 默认关闭) */
+    if ((s_antrollback_api != NULL_PTR) &&
+        (s_antrollback_api->set_health_check_mode != NULL_PTR)) {
+        (void)s_antrollback_api->set_health_check_mode(s_antrollback_ctx, enabled != 0U);
+    }
+    /* 旧模式 (未注入): 无健康门控, 无操作 (向后兼容) */
+}
+
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
+Boot_Result Boot_Update_ConfirmBusinessHealth(boolean ok)
+{
+    /* 注入模式: 转发到抗回滚存储 (bl_antrollback) — 版本取存储中的
+     * 待确认版本, 由存储侧校验版本匹配 (RS-OTA-05 P1) */
+    if ((s_antrollback_api != NULL_PTR) &&
+        (s_antrollback_api->confirm_health != NULL_PTR)) {
+        uint32_t version = 0U;
+        uint32_t count = 0U;
+        if (s_antrollback_api->get_pending(s_antrollback_ctx, &version, &count)
+                != BL_ROLLBACK_STORAGE_OK) {
+            return BOOT_E_GENERAL;
+        }
+        bl_rollback_storage_error_t st_ret =
+            s_antrollback_api->confirm_health(s_antrollback_ctx, version, ok != 0U);
+        return (st_ret == BL_ROLLBACK_STORAGE_OK) ? BOOT_OK : BOOT_E_GENERAL;
+    }
+
+    /* 旧模式 (未注入): BIB 机制无健康门控 → 无操作 (向后兼容) */
+    return BOOT_OK;
+}
+
+/* MISRA 8.4 保留: 声明见 Boot_Update.h, 扫描缺 include 路径 (见文件头说明) */
 void Boot_Update_SetAntiRollbackStorage(const bl_rollback_storage_api_t *api, void *ctx)
 {
     s_antrollback_api = api;
@@ -526,4 +619,21 @@ static uint32_t bib_calc_crc(const Boot_InfoBlock *bib)
         sum += bytes[i];
     }
     return sum;
+}
+
+/**
+ * @brief 读-改-写 BIB 升级状态字段 (掉电保护, RS-OTA-06)
+ * @details 保留其余字段, 仅更新 update_state 并重算 CRC 落盘。
+ *          旧 BIB (无该字段, reserved=0) 读为 IDLE, 天然兼容。
+ */
+static Boot_Result bib_set_update_state(Boot_UpdateState state)
+{
+    Boot_InfoBlock bib;
+    Boot_Result ret = bib_read(&bib);
+    if (ret != BOOT_OK) {
+        return ret;
+    }
+    bib.update_state = (uint8_t)state;
+    bib.crc32 = bib_calc_crc(&bib);
+    return bib_write(&bib);
 }

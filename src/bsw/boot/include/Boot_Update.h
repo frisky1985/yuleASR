@@ -113,6 +113,25 @@ Boot_Result Boot_Update_GetRollbackCounter(uint32_t *counter);
 void Boot_Update_SetRollbackConfirmBoots(uint32_t n);
 
 /**
+ * @brief 使能/关闭健康门控 (RS-OTA-05 P1, 薄封装 → 注入的抗回滚存储)
+ * @details 门控默认关闭 = 原 N 次制向后兼容; 门控开启时, 抗回滚提交
+ *          需 N 次成功启动 且 业务健康已确认。未注入存储时无操作。
+ * @param enabled TRUE=开启; FALSE=关闭 (默认)
+ */
+void Boot_Update_SetHealthCheckMode(boolean enabled);
+
+/**
+ * @brief App 业务健康确认 (RS-OTA-05 P1, 薄封装 → 注入的抗回滚存储)
+ * @details 由 ASW 业务健康检查 (DCM 响应/传感器有效/无功能异常) 调用:
+ *          - ok==TRUE: 确认待确认版本业务健康 (版本取存储中 pending 版本);
+ *          - ok==FALSE: 标记业务异常 (pending 保持, 等待回滚)。
+ *          未注入存储 (旧 BIB 模式) 时无操作返回 BOOT_OK (向后兼容)。
+ * @param ok TRUE=业务健康; FALSE=业务异常
+ * @return BOOT_OK 成功; BOOT_E_GENERAL 存储错误透传
+ */
+Boot_Result Boot_Update_ConfirmBusinessHealth(boolean ok);
+
+/**
  * @brief 注册抗回滚存储服务接口 (RS-OTA-01 / 方案 C 接口抽象)
  * @details 集成层 (SBL main) 在初始化时注入 bl_antrollback 实现, 使本模块
  *          经回调访问抗回滚计数器 — 不直接依赖 bootloader 层 (分层解耦)。

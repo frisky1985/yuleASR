@@ -1037,6 +1037,217 @@ static int test_antrollback_deferred_increment(void)
 }
 
 /* ============================================================================
+ * 健康门控测试 (P1 / RS-OTA-05): 业务健康确认钩子
+ * ============================================================================ */
+
+/* v2 记录布局 (28B, 无 health_confirmed; CRC 覆盖前 6 字段) —
+ * 用于构造升级前由 v2 代码写入的 NVM, 验证 v3 兼容读 */
+typedef struct {
+    uint32_t magic;              /* 0  */
+    uint32_t record_version;     /* 4  */
+    uint32_t counter;            /* 8  */
+    uint32_t write_seq;          /* 12 */
+    uint32_t pending_counter;    /* 16 */
+    uint32_t pending_boot_count; /* 20 */
+    uint32_t crc32;              /* 24 */
+} v2_slot_layout_t;
+
+static void write_v2_record(uint32_t addr, uint32_t counter, uint32_t seq,
+                            uint32_t pending, uint32_t boots)
+{
+    v2_slot_layout_t rec;
+    memset(&rec, 0, sizeof(rec));
+    rec.magic = BL_ANTIROLLBACK_MAGIC;
+    rec.record_version = 2U;   /* v2 */
+    rec.counter = counter;
+    rec.write_seq = seq;
+    rec.pending_counter = pending;
+    rec.pending_boot_count = boots;
+    rec.crc32 = test_crc32((const uint8_t *)&rec,
+                           (uint32_t)offsetof(v2_slot_layout_t, crc32));
+    (void)mock_flash_program(addr, (const uint8_t *)&rec, sizeof(rec));
+}
+
+static int test_antrollback_health_gate(void)
+{
+    printf("  Testing anti-rollback health gate (RS-OTA-05)...\n");
+
+    uint32_t c = 0U, pv = 0U, pc = 0U;
+
+    /* ── ① 门控关闭 (默认): N 次制行为不变 (向后兼容回归) ── */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    bl_antrollback_context_t arb;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 3U);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == false);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == false);   /* 新 pending 未确认 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 5U, true), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == true);
+    /* 门控关闭: 仅按 N 次制提交 (健康确认不阻塞) */
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 5U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 5U);
+    Boot_AntiRollback_Deinit(&arb);
+
+    /* ── ② 门控开启 + 不确认 → 计数累计但不提交 (pending 保持) ── */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 3U);
+    Boot_AntiRollback_SetHealthCheckMode(&arb, true);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 8U), BL_ANTIROLLBACK_OK);
+    for (uint32_t i = 0U; i < 3U; i++) {
+        TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 8U), BL_ANTIROLLBACK_OK);
+    }
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0U);                        /* 达 N 次仍不提交 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 8U);                       /* pending 保持 */
+    TEST_ASSERT_EQ(pc, 3U);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == false);
+
+    /* ── ③ 门控开启 + ConfirmHealth(true) (版本匹配) → 达 N 次提交 ── */
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 8U, true), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == true);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 8U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 8U);                        /* 提交 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 0U);
+    Boot_AntiRollback_Deinit(&arb);
+
+    /* ── ④ 门控开启 + ConfirmHealth 版本不匹配 → 不落盘 (防误确认) ── */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 1U);
+    Boot_AntiRollback_SetHealthCheckMode(&arb, true);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 10U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 99U, true), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == false);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 10U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0U);                        /* 未确认 → 不提交 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 10U, true), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 10U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 10U);                       /* 确认后提交 */
+    Boot_AntiRollback_Deinit(&arb);
+
+    /* ── ⑤ ConfirmHealth(false) → 不提交 (pending 保持, 等待回滚) ── */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 2U);
+    Boot_AntiRollback_SetHealthCheckMode(&arb, true);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 12U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 12U, false), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == false);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 12U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 12U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 0U);                        /* 达 N 次仍不提交 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 12U);
+    /* 业务恢复后重新确认 true → 下次启动提交 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 12U, true), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 12U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 12U);
+    Boot_AntiRollback_Deinit(&arb);
+
+    /* ── ⑥ 持久化: 门控开启 + 已确认标记跨重启恢复 ── */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 2U);
+    Boot_AntiRollback_SetHealthCheckMode(&arb, true);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 20U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb, 20U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&arb, 20U, true), BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_Deinit(&arb);
+
+    bl_antrollback_context_t arb2;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb2, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb2, 2U);
+    Boot_AntiRollback_SetHealthCheckMode(&arb2, true);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb2) == true);   /* v3 记录恢复 */
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb2, 20U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb2, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 20U);
+    Boot_AntiRollback_Deinit(&arb2);
+
+    /* 未初始化 / NULL 参数 */
+    bl_antrollback_context_t bad;
+    memset(&bad, 0, sizeof(bad));
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(&bad, 1U, true),
+                   BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED);
+    TEST_ASSERT_EQ(Boot_AntiRollback_ConfirmHealth(NULL, 1U, true),
+                   BL_ANTIROLLBACK_ERROR_INVALID_PARAM);
+    Boot_AntiRollback_SetHealthCheckMode(&bad, true);   /* 无操作, 不崩溃 */
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* 旧 v2 记录兼容读: v3 代码读 v2 NVM, health_confirmed 置 false (门控关闭语义) */
+static int test_antrollback_v2_record_compat(void)
+{
+    printf("  Testing anti-rollback v2 record compat read...\n");
+
+    /* GIVEN 升级前由 v2 代码写入的 NVM (槽位步长 28B, 最新写入 seq=4) */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    write_v2_record(TEST_ARB_ADDR + 0U * 28U, 3U, 1U, 0U, 0U);
+    write_v2_record(TEST_ARB_ADDR + 1U * 28U, 3U, 2U, 0U, 0U);
+    write_v2_record(TEST_ARB_ADDR + 2U * 28U, 3U, 3U, 0U, 0U);
+    write_v2_record(TEST_ARB_ADDR + 3U * 28U, 3U, 4U, 0U, 0U);
+
+    bl_antrollback_context_t arb;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    uint32_t c = 0U, pv = 0U, pc = 0U;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 3U);                              /* 从最新 v2 记录恢复, 非重置 0 */
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb) == false);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 0U);
+    Boot_AntiRollback_Deinit(&arb);
+
+    /* GIVEN v2 遗留待确认状态 (counter=3, pending=7, boots=1) */
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+    write_v2_record(TEST_ARB_ADDR + 0U * 28U, 3U, 1U, 0U, 0U);
+    write_v2_record(TEST_ARB_ADDR + 1U * 28U, 3U, 2U, 7U, 1U);   /* 最新: 待确认 7 */
+
+    bl_antrollback_context_t arb2;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb2, &mock_flash_driver, TEST_ARB_ADDR, 4U),
+                   BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb2, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 3U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&arb2, &pv, &pc), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pv, 7U);
+    TEST_ASSERT_EQ(pc, 1U);
+    TEST_ASSERT(Boot_AntiRollback_IsHealthConfirmed(&arb2) == false);
+
+    /* 兼容读后写入 v3 记录: 磨损均衡正常轮转, 遗留 pending 走原 N 次制提交 */
+    Boot_AntiRollback_SetConfirmBoots(&arb2, 3U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb2, 7U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_NotifySuccessfulBoot(&arb2, 7U), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Read(&arb2, &c), BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(c, 7U);
+    Boot_AntiRollback_Deinit(&arb2);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * 升级日志测试 (G3 / RS-OTA-03)
  * ============================================================================ */
 
@@ -1476,6 +1687,8 @@ int main(void)
     run_test(test_upgrade_log_save_load, "Upgrade Log NVM Persistence");
     run_test(test_secure_boot_strict_verify, "Secure Boot 3-Step Strict Verify");
     run_test(test_secure_boot_antrollback, "Secure Boot Anti-Rollback Integration");
+    run_test(test_antrollback_health_gate, "Anti-Rollback Health Gate (RS-OTA-05)");
+    run_test(test_antrollback_v2_record_compat, "Anti-Rollback v2 Record Compat Read");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

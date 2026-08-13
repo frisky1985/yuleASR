@@ -28,7 +28,20 @@
 #define BL_ANTIROLLBACK_LOG_LEVEL       DDS_LOG_LEVEL_INFO
 
 /* 槽位记录 CRC 覆盖长度 (排除 crc32 字段自身) */
-#define BL_ANTIROLLBACK_SLOT_CRC_SIZE   (uint32_t)offsetof(bl_antrollback_slot_t, crc32)
+#define BL_ANTIROLLBACK_SLOT_CRC_SIZE      (uint32_t)offsetof(bl_antrollback_slot_t, crc32)   /* v3: 前 7 字段 */
+#define BL_ANTIROLLBACK_SLOT_CRC_SIZE_V2   (uint32_t)offsetof(bl_antrollback_slot_t, health_confirmed) /* v2: 前 6 字段 */
+#define BL_ANTIROLLBACK_RECORD_SIZE_V2     28U   /* v2 槽位步长 (无 health_confirmed) */
+
+/* v2 记录布局 (兼容读: 升级前由 v2 代码写入的 NVM; crc32 位于偏移 24) */
+typedef struct {
+    uint32_t magic;              /* 0  */
+    uint32_t record_version;     /* 4  */
+    uint32_t counter;            /* 8  */
+    uint32_t write_seq;          /* 12 */
+    uint32_t pending_counter;    /* 16 */
+    uint32_t pending_boot_count; /* 20 */
+    uint32_t crc32;              /* 24 */
+} bl_antrollback_slot_v2_t;
 
 /* ============================================================================
  * 内部辅助函数
@@ -57,18 +70,23 @@ static uint32_t bl_antrollback_crc32(const uint8_t *data, uint32_t length)
 }
 
 /**
- * @brief 校验槽位记录完整性 (魔数 + CRC32)
+ * @brief 校验槽位记录完整性 (魔数 + CRC32, 版本感知)
+ * @details v2 记录 (兼容读): CRC 覆盖前 6 字段 (health_confirmed 不存在);
+ *          v3 记录: CRC 覆盖前 7 字段。
  */
 static bool validate_slot(const bl_antrollback_slot_t *slot)
 {
     if (slot->magic != BL_ANTIROLLBACK_MAGIC) {
         return false;
     }
-    if (slot->record_version != BL_ANTIROLLBACK_RECORD_VERSION) {
+    if ((slot->record_version != BL_ANTIROLLBACK_RECORD_VERSION) &&
+        (slot->record_version != BL_ANTIROLLBACK_RECORD_VERSION_V2)) {
         return false;
     }
-    return (bl_antrollback_crc32((const uint8_t *)slot, BL_ANTIROLLBACK_SLOT_CRC_SIZE)
-            == slot->crc32);
+    uint32_t crc_len = (slot->record_version == BL_ANTIROLLBACK_RECORD_VERSION_V2)
+                           ? BL_ANTIROLLBACK_SLOT_CRC_SIZE_V2
+                           : BL_ANTIROLLBACK_SLOT_CRC_SIZE;
+    return (bl_antrollback_crc32((const uint8_t *)slot, crc_len) == slot->crc32);
 }
 
 /**
@@ -92,17 +110,26 @@ static bl_antrollback_error_t read_slot(
 
 /**
  * @brief 扫描全部槽位, 恢复当前计数器值及待确认状态
+ * @details 两遍扫描兼容 v2/v3 布局:
+ *          第一遍按 v3 槽位步长; 若发现 v3 记录则采用其结果 (混合布局下
+ *          v3 写入序号必然最高, 取最大 write_seq 即最新)。
+ *          若全无 v3 记录 (升级前遗留的 v2 NVM), 第二遍按 v2 槽位步长
+ *          扫描, 恢复最新 v2 写入 (计数器/待确认状态), health_confirmed
+ *          置 false (门控关闭语义)。
  */
 static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
 {
     bl_antrollback_slot_t slot;
     bool found = false;
+    bool found_v3 = false;
     uint32_t best_seq = 0U;
     uint32_t best_counter = 0U;
     uint32_t best_slot = 0U;
     uint32_t best_pending_counter = 0U;
     uint32_t best_pending_boot_count = 0U;
+    bool best_health_confirmed = false;
 
+    /* 第一遍: v3 布局 (槽位步长 sizeof(bl_antrollback_slot_t)) */
     for (uint32_t i = 0U; i < ctx->slots; i++) {
         bl_antrollback_error_t result = read_slot(ctx, i, &slot);
         if (result != BL_ANTIROLLBACK_OK) {
@@ -116,6 +143,12 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
                     "Slot %u invalid (magic/CRC), skipped", i);
             continue;
         }
+        if (slot.record_version == BL_ANTIROLLBACK_RECORD_VERSION) {
+            found_v3 = true;
+        }
+        /* v2 记录无 health_confirmed 字段 → 门控关闭语义 (false) */
+        bool health_confirmed = (slot.record_version == BL_ANTIROLLBACK_RECORD_VERSION_V2)
+                                    ? false : (slot.health_confirmed != 0U);
         /* 以最大写入序号为准; 序号相同取较大计数器值 */
         if ((!found) || (slot.write_seq > best_seq) ||
             ((slot.write_seq == best_seq) && (slot.counter > best_counter))) {
@@ -125,6 +158,50 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
             best_slot = i;
             best_pending_counter = slot.pending_counter;
             best_pending_boot_count = slot.pending_boot_count;
+            best_health_confirmed = health_confirmed;
+        }
+    }
+
+    /* 第二遍: v2 布局兼容扫描 (仅当 NVM 中无 v3 记录 — 升级前遗留 v2 数据)
+     * 按 v2 槽位步长 (28B) 读取, 使用 v2 记录布局 (crc32 在偏移 24) */
+    if (!found_v3) {
+        found = false;
+        best_seq = 0U;
+        best_counter = 0U;
+        best_slot = 0U;
+        best_pending_counter = 0U;
+        best_pending_boot_count = 0U;
+        best_health_confirmed = false;
+
+        for (uint32_t i = 0U; i < ctx->slots; i++) {
+            bl_antrollback_slot_v2_t v2;
+            uint32_t slot_addr = ctx->base_address
+                                 + i * BL_ANTIROLLBACK_RECORD_SIZE_V2;
+            if (ctx->flash->read(slot_addr, (uint8_t *)&v2,
+                                 BL_ANTIROLLBACK_RECORD_SIZE_V2) != 0) {
+                continue;
+            }
+            if (v2.magic != BL_ANTIROLLBACK_MAGIC) {
+                continue;
+            }
+            if (v2.record_version != BL_ANTIROLLBACK_RECORD_VERSION_V2) {
+                continue;
+            }
+            if (bl_antrollback_crc32((const uint8_t *)&v2,
+                                     (uint32_t)offsetof(bl_antrollback_slot_v2_t, crc32))
+                    != v2.crc32) {
+                continue;
+            }
+            if ((!found) || (v2.write_seq > best_seq) ||
+                ((v2.write_seq == best_seq) && (v2.counter > best_counter))) {
+                found = true;
+                best_seq = v2.write_seq;
+                best_counter = v2.counter;
+                best_slot = i;
+                best_pending_counter = v2.pending_counter;
+                best_pending_boot_count = v2.pending_boot_count;
+                best_health_confirmed = false;   /* v2 无健康确认标记 */
+            }
         }
     }
 
@@ -135,6 +212,7 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
         ctx->write_seq = 0U;
         ctx->pending_counter = 0U;
         ctx->pending_boot_count = 0U;
+        ctx->health_confirmed = false;
         DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
                 "No valid slot found, counter starts at 0");
         return BL_ANTIROLLBACK_OK;
@@ -145,11 +223,13 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
     ctx->write_seq = best_seq;
     ctx->pending_counter = best_pending_counter;
     ctx->pending_boot_count = best_pending_boot_count;
+    ctx->health_confirmed = best_health_confirmed;
 
     DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
-            "Counter restored: %u (slot %u, seq %u)%s",
+            "Counter restored: %u (slot %u, seq %u)%s%s",
             ctx->counter, ctx->active_slot, ctx->write_seq,
-            (ctx->pending_counter != 0U) ? ", pending active" : "");
+            (ctx->pending_counter != 0U) ? ", pending active" : "",
+            ctx->health_confirmed ? ", health confirmed" : "");
 
     return BL_ANTIROLLBACK_OK;
 }
@@ -160,12 +240,14 @@ static bl_antrollback_error_t scan_slots(bl_antrollback_context_t *ctx)
  * @param counter 已确认计数器值
  * @param pending_counter 待确认版本 (0 = 无)
  * @param pending_boot_count 待确认版本已成功启动次数
+ * @param health_confirmed 待确认版本的业务健康确认标记 (v3)
  */
 static bl_antrollback_error_t write_slot(
     bl_antrollback_context_t *ctx,
     uint32_t counter,
     uint32_t pending_counter,
-    uint32_t pending_boot_count
+    uint32_t pending_boot_count,
+    bool health_confirmed
 )
 {
     /* 磨损均衡: 轮转到下一槽位 */
@@ -181,6 +263,7 @@ static bl_antrollback_error_t write_slot(
     slot.write_seq = ctx->write_seq + 1U;
     slot.pending_counter = pending_counter;
     slot.pending_boot_count = pending_boot_count;
+    slot.health_confirmed = health_confirmed ? 1U : 0U;
     slot.crc32 = bl_antrollback_crc32((const uint8_t *)&slot, BL_ANTIROLLBACK_SLOT_CRC_SIZE);
 
     /* 擦除目标槽位 */
@@ -211,13 +294,14 @@ static bl_antrollback_error_t write_slot(
     ctx->counter = counter;
     ctx->pending_counter = pending_counter;
     ctx->pending_boot_count = pending_boot_count;
+    ctx->health_confirmed = health_confirmed;
     ctx->active_slot = next_slot;
     ctx->write_seq = slot.write_seq;
 
     DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
-            "Slot written: counter=%u pending=%u pending_boots=%u (slot %u, seq %u)",
+            "Slot written: counter=%u pending=%u pending_boots=%u health=%u (slot %u, seq %u)",
             counter, pending_counter, pending_boot_count,
-            ctx->active_slot, ctx->write_seq);
+            health_confirmed ? 1U : 0U, ctx->active_slot, ctx->write_seq);
 
     return BL_ANTIROLLBACK_OK;
 }
@@ -329,7 +413,8 @@ bl_antrollback_error_t Boot_AntiRollback_Write(
     }
 
     /* 直接写入只改已确认计数器, 待确认状态原样保留 */
-    return write_slot(ctx, counter, ctx->pending_counter, ctx->pending_boot_count);
+    return write_slot(ctx, counter, ctx->pending_counter, ctx->pending_boot_count,
+                      ctx->health_confirmed);
 }
 
 /* MISRA 8.7 保留: 公开 API (Increment), 消费者在扫描范围外 */
@@ -398,8 +483,8 @@ bl_antrollback_error_t Boot_AntiRollback_Stage(
         return BL_ANTIROLLBACK_ERROR_DECREMENT_ATTEMPT;
     }
 
-    /* 记录待确认版本, 计数器保持不动 (延后递增) */
-    bl_antrollback_error_t result = write_slot(ctx, ctx->counter, version, 0U);
+    /* 记录待确认版本, 计数器保持不动 (延后递增); 新 pending 健康未确认 */
+    bl_antrollback_error_t result = write_slot(ctx, ctx->counter, version, 0U, false);
     if (result != BL_ANTIROLLBACK_OK) {
         return result;
     }
@@ -439,20 +524,33 @@ bl_antrollback_error_t Boot_AntiRollback_NotifySuccessfulBoot(
     }
 
     uint32_t boots = ctx->pending_boot_count + 1U;
-    if (boots >= ctx->confirm_boots) {
-        /* 达到阈值 N: 提交计数器 */
+
+    /* 提交条件 (RS-OTA-05 P1):
+     * 门控关闭 (默认): 仅按 N 次制 (向后兼容);
+     * 门控开启: N 次制 且 业务健康已确认 (health_confirmed)。
+     * 门控开启未确认 → 计数照常累计, 但不提交 (pending 保持,
+     * 等待 App 确认或 watchdog/boot_attempt 超限自动回滚)。 */
+    bool commit_ready = (boots >= ctx->confirm_boots);
+    if (ctx->health_check_enabled) {
+        commit_ready = commit_ready && ctx->health_confirmed;
+    }
+
+    if (commit_ready) {
+        /* 达到阈值 N (且健康门控通过): 提交计数器 */
         uint32_t committed = ctx->pending_counter;
         DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
                 "Pending version 0x%08X confirmed after %u successful boots, "
                 "counter committed", committed, boots);
-        return write_slot(ctx, committed, 0U, 0U);
+        return write_slot(ctx, committed, 0U, 0U, false);
     }
 
-    /* 未达阈值: 持久化成功启动次数 */
+    /* 未达阈值 (或健康未确认): 持久化成功启动次数 */
     DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
-            "Successful boot %u/%u for pending version 0x%08X",
-            boots, ctx->confirm_boots, ctx->pending_counter);
-    return write_slot(ctx, ctx->counter, ctx->pending_counter, boots);
+            "Successful boot %u/%u for pending version 0x%08X%s",
+            boots, ctx->confirm_boots, ctx->pending_counter,
+            ctx->health_check_enabled ? " (health gate: waiting confirm)" : "");
+    return write_slot(ctx, ctx->counter, ctx->pending_counter, boots,
+                      ctx->health_confirmed);
 }
 
 /* MISRA 8.7 保留: 公开 API (GetPending), 消费者在扫描范围外 */
@@ -474,6 +572,71 @@ bl_antrollback_error_t Boot_AntiRollback_GetPending(
         *count = ctx->pending_boot_count;
     }
     return BL_ANTIROLLBACK_OK;
+}
+
+/* ============================================================================
+ * 健康门控 API (RS-OTA-05 P1): 主动业务健康检查钩子
+ * ============================================================================ */
+
+/* MISRA 8.7 保留: 公开 API (SetHealthCheckMode), 消费者在扫描范围外 */
+void Boot_AntiRollback_SetHealthCheckMode(bl_antrollback_context_t *ctx, bool enabled)
+{
+    if (ctx == NULL) {
+        return;
+    }
+    ctx->health_check_enabled = enabled;
+
+    DDS_LOG(BL_ANTIROLLBACK_LOG_LEVEL, BL_ANTIROLLBACK_MODULE_NAME,
+            "Health check mode %s", enabled ? "enabled" : "disabled");
+}
+
+/* MISRA 8.7 保留: 公开 API (ConfirmHealth), 消费者在扫描范围外 */
+bl_antrollback_error_t Boot_AntiRollback_ConfirmHealth(
+    bl_antrollback_context_t *ctx,
+    uint32_t version,
+    bool ok
+)
+{
+    if (ctx == NULL) {
+        return BL_ANTIROLLBACK_ERROR_INVALID_PARAM;
+    }
+    if (!ctx->initialized) {
+        return BL_ANTIROLLBACK_ERROR_NOT_INITIALIZED;
+    }
+
+    if (ctx->pending_counter == 0U) {
+        /* 无待确认升级: 无操作 */
+        return BL_ANTIROLLBACK_OK;
+    }
+
+    if (ok) {
+        if (version != ctx->pending_counter) {
+            /* 确认版本与待确认版本不符: 不落盘 (防误确认其他版本) */
+            DDS_LOG(DDS_LOG_LEVEL_WARN, BL_ANTIROLLBACK_MODULE_NAME,
+                    "ConfirmHealth ignored: version 0x%08X != pending 0x%08X",
+                    version, ctx->pending_counter);
+            return BL_ANTIROLLBACK_OK;
+        }
+        /* 业务健康通过: 置确认标记并落盘 */
+        return write_slot(ctx, ctx->counter, ctx->pending_counter,
+                          ctx->pending_boot_count, true);
+    }
+
+    /* 业务健康失败: 清除确认标记并落盘 (pending 保持, 等待回滚) */
+    DDS_LOG(DDS_LOG_LEVEL_WARN, BL_ANTIROLLBACK_MODULE_NAME,
+            "Business health NOT confirmed for pending 0x%08X",
+            ctx->pending_counter);
+    return write_slot(ctx, ctx->counter, ctx->pending_counter,
+                      ctx->pending_boot_count, false);
+}
+
+/* MISRA 8.7 保留: 公开 API (IsHealthConfirmed), 消费者在扫描范围外 */
+bool Boot_AntiRollback_IsHealthConfirmed(const bl_antrollback_context_t *ctx)
+{
+    if ((ctx == NULL) || (!ctx->initialized)) {
+        return false;
+    }
+    return ctx->health_confirmed;
 }
 
 /* ============================================================================
@@ -543,15 +706,32 @@ static bl_rollback_storage_error_t storage_adapter_get_pending(void *ctx,
         (const bl_antrollback_context_t *)ctx, version, count);
 }
 
+static bl_rollback_storage_error_t storage_adapter_set_health_mode(void *ctx, bool enabled)
+{
+    /* bl_antrollback 的 SetHealthCheckMode 返回 void; 接口层统一返回 OK */
+    Boot_AntiRollback_SetHealthCheckMode((bl_antrollback_context_t *)ctx, enabled);
+    return BL_ROLLBACK_STORAGE_OK;
+}
+
+static bl_rollback_storage_error_t storage_adapter_confirm_health(void *ctx,
+                                                                  uint32_t version,
+                                                                  bool ok)
+{
+    return (bl_rollback_storage_error_t)Boot_AntiRollback_ConfirmHealth(
+        (bl_antrollback_context_t *)ctx, version, ok);
+}
+
 /* MISRA 8.7 保留: 静态表经 GetStorageApi() 暴露 (消费者在扫描范围外) */
 static const bl_rollback_storage_api_t g_antrollback_storage_api = {
-    .read_counter          = storage_adapter_read,
-    .write_counter         = storage_adapter_write,
-    .increment             = storage_adapter_increment,
-    .set_confirm_boots     = storage_adapter_set_confirm_boots,
-    .stage                 = storage_adapter_stage,
+    .read_counter           = storage_adapter_read,
+    .write_counter          = storage_adapter_write,
+    .increment              = storage_adapter_increment,
+    .set_confirm_boots      = storage_adapter_set_confirm_boots,
+    .stage                  = storage_adapter_stage,
     .notify_successful_boot = storage_adapter_notify_boot,
-    .get_pending           = storage_adapter_get_pending
+    .get_pending            = storage_adapter_get_pending,
+    .set_health_check_mode  = storage_adapter_set_health_mode,
+    .confirm_health         = storage_adapter_confirm_health
 };
 
 const bl_rollback_storage_api_t *Boot_AntiRollback_GetStorageApi(void)

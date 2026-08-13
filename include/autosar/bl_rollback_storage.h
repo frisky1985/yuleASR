@@ -111,6 +111,27 @@ typedef struct bl_rollback_storage_api_s {
     bl_rollback_storage_error_t (*get_pending)(void *ctx,
                                                uint32_t *version,
                                                uint32_t *count);
+
+    /**
+     * @brief 使能/关闭健康门控 (RS-OTA-05 P1)
+     * @details 运行期配置 (不持久化); 默认关闭 = 原 N 次制向后兼容。
+     *          门控开启时, 提交需 pending_boot_count >= confirm_boots
+     *          且 health_confirmed == true。
+     * @param ctx 存储上下文
+     * @param enabled TRUE=开启健康门控; FALSE=关闭 (默认)
+     */
+    bl_rollback_storage_error_t (*set_health_check_mode)(void *ctx, bool enabled);
+
+    /**
+     * @brief 业务健康确认 (RS-OTA-05 P1, App 健康检查通过/失败后调用)
+     * @details ok==true 且 version==待确认版本 → 置 health_confirmed=true 落盘;
+     *          ok==false → 置 health_confirmed=false 落盘 (pending 保持,
+     *          等待 watchdog/boot_attempt 超限自动回滚)。
+     * @param ctx 存储上下文
+     * @param version 本次健康检查对应的固件版本
+     * @param ok TRUE=业务健康; FALSE=业务异常
+     */
+    bl_rollback_storage_error_t (*confirm_health)(void *ctx, uint32_t version, bool ok);
 } bl_rollback_storage_api_t;
 
 #ifdef __cplusplus

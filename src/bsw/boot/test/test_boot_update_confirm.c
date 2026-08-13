@@ -17,6 +17,8 @@
 #include "Std_Types.h"
 #include "Boot_Update.h"
 #include "Boot_Flash.h"
+#include "Boot_Loader.h"
+#include "bl_rollback_storage.h"
 
 /* ---- RAM-backed Boot_Flash stub ---- */
 
@@ -24,10 +26,16 @@
 
 static uint8_t g_test_flash[TEST_FLASH_SIZE];
 
+/* 故障注入: 目标槽 (BOOT_APP_SLOT_A_ADDR) 擦除失败 (BIB 擦除不受影响) */
+static int g_fail_erase_slot = 0;
+
 Boot_Result Boot_Flash_Init(void) { return BOOT_OK; }
 
 Boot_Result Boot_Flash_Erase(uint32_t addr, uint32_t size)
 {
+    if ((g_fail_erase_slot != 0) && (addr == BOOT_APP_SLOT_A_ADDR)) {
+        return BOOT_E_FLASH_ERASE;
+    }
     for (uint32_t i = 0U; i < size; i++) {
         if ((addr + i) < TEST_FLASH_SIZE) {
             g_test_flash[addr + i] = 0xFFU;
@@ -376,6 +384,229 @@ static int test_deferred_antrollback(void)
 }
 
 /* ============================================================================
+ * 掉电保护测试 (P2 / RS-OTA-06): BIB update_state 生命周期 + 启动决策回退
+ * ============================================================================ */
+
+/* GIVEN 确认流程 / WHEN Prepare / THEN 擦除前落盘 DOWNLOADING;
+ *    Finalize 全部成功 → IDLE; 中断 (DOWNLOADING) → 启动决策回退活动槽 */
+static int test_update_state_lifecycle(void)
+{
+    printf("  Testing BIB update_state lifecycle (DOWNLOADING/PENDING/IDLE)...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();
+    memset(&g_test_flash[BOOT_BIB_ADDR], 0x00, sizeof(Boot_InfoBlock));
+
+    Boot_InfoBlock bib;
+
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmUserDecision(TRUE), BOOT_OK);
+
+    /* Prepare → BIB(update_state=DOWNLOADING) 落盘 (擦除前) */
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ((int)bib.update_state, (int)BOOT_UPDATE_DOWNLOADING);
+
+    /* GIVEN 擦除/写入中途掉电重启 (status 已选中 Slot B + DOWNLOADING)
+     * WHEN 启动决策 / THEN 按 marker 启动活动槽 B (旧固件照常运行)。
+     * 语义 (P1-1 裁决 2026-08-13): OTA 只写非活动槽 (Prepare 防护性拒绝
+     * 活动槽写入), 故 DOWNLOADING 时 marker 指向的活动槽必然完好 —
+     * 不再强制回退 Slot A (旧实现会指向正在被擦写的目标槽 A, 击穿保护)。 */
+    bib.magic = 0x30424942U;   /* 'BIB0' (Boot_Loader load_bib 需合法魔数) */
+    bib.status = 0x03U;   /* 0x01 active + 0x02 slot-B 选中 → 活动槽 B */
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+    Boot_Decision dec = Boot_Loader_ResolveBootTarget();
+    TEST_ASSERT_EQ((int)dec.last_error, (int)BOOT_OK);
+    TEST_ASSERT_EQ((int)dec.target, (int)BOOT_IMAGE_APP);      /* 启动活动槽 B */
+    TEST_ASSERT_EQ(dec.target_addr, BOOT_APP_SLOT_B_ADDR);
+
+    /* 对照: IDLE + 选中 Slot B → 正常切换 Slot B (无 DOWNLOADING 时行为不变) */
+    bib.update_state = BOOT_UPDATE_IDLE;
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+    dec = Boot_Loader_ResolveBootTarget();
+    TEST_ASSERT_EQ((int)dec.target, (int)BOOT_IMAGE_APP);      /* 正常切 Slot B */
+    TEST_ASSERT_EQ(dec.target_addr, BOOT_APP_SLOT_B_ADDR);
+
+    /* Finalize 全部成功 → BIB(update_state=IDLE) (状态机无残留) */
+    memset(&g_test_flash[BOOT_BIB_ADDR], 0x00, sizeof(Boot_InfoBlock));
+    (void)Boot_Update_Abort();   /* 复位一次性确认授权, 重新发起完整升级流程 */
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmUserDecision(TRUE), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP), BOOT_OK);
+    uint8_t block[64];
+    memset(block, 0xA5, sizeof(block));
+    TEST_ASSERT_EQ(Boot_Update_WriteBlock(block, 0U, sizeof(block)), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_Finalize(BOOT_IMAGE_APP, 0x100U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ((int)bib.update_state, (int)BOOT_UPDATE_IDLE);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* GIVEN Prepare 已落盘 DOWNLOADING / WHEN 目标槽擦除失败 / THEN
+ *    Prepare 返回错误且 BIB 恢复 IDLE (不留残留状态) */
+static int test_update_state_erase_failure_restore(void)
+{
+    printf("  Testing Prepare erase-failure restores IDLE...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();
+    memset(&g_test_flash[BOOT_BIB_ADDR], 0x00, sizeof(Boot_InfoBlock));
+
+    g_fail_erase_slot = 1;   /* 注入: 目标槽擦除失败 */
+
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmUserDecision(TRUE), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP),
+                   BOOT_E_FLASH_ERASE);
+
+    g_fail_erase_slot = 0;
+
+    Boot_InfoBlock bib;
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ((int)bib.update_state, (int)BOOT_UPDATE_IDLE);   /* 恢复 IDLE */
+
+    /* 后续正常流程不受影响: 授权保留 (Prepare 失败不消耗用户确认), 直接重试 */
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP), BOOT_OK);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* GIVEN BIB update_state=DOWNLOADING / WHEN NotifyBootSuccess (旧 BIB 模式)
+ * THEN pending 视为无效: 不计数不提交; 旧 BIB (读为 0=IDLE) 行为不变 */
+static int test_update_state_downloading_invalidates_pending(void)
+{
+    printf("  Testing DOWNLOADING invalidates BIB pending...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();
+
+    Boot_InfoBlock bib;
+    memset(&bib, 0, sizeof(bib));
+    bib.magic = 0x30424942U;   /* 'BIB0' */
+    bib.max_boot_attempts = 5U;
+    bib.anti_rollback_counter = 0x300U;
+    bib.pending_counter = 0x400U;
+    bib.pending_boot_count = 0U;
+    bib.update_state = BOOT_UPDATE_DOWNLOADING;
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+
+    /* 未注入模式: DOWNLOADING 下的 pending 不计数、不提交 */
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x400U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_boot_count, 0U);
+    TEST_ASSERT_EQ(bib.anti_rollback_counter, 0x300U);
+
+    /* 旧 BIB 兼容: update_state 读为 0=IDLE → 原行为不变 (计数) */
+    bib.update_state = BOOT_UPDATE_IDLE;
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x400U), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.pending_boot_count, 1U);
+    TEST_ASSERT_EQ(bib.anti_rollback_counter, 0x300U);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
+ * 健康确认封装测试 (P1 / RS-OTA-05): Boot_Update_ConfirmBusinessHealth 转发
+ * ============================================================================ */
+
+/* Mock 存储接口: 记录 set_health_check_mode / confirm_health 调用 */
+static int g_inject_calls = 0;
+static int g_inject_mode = 0;
+static uint32_t g_inject_confirm_version = 0U;
+static int g_inject_confirm_ok = 0;
+static void *g_mock_ctx = (void *)0x1;   /* 任意非 NULL 上下文 */
+
+static bl_rollback_storage_error_t mock_read_counter(void *ctx, uint32_t *c)
+{ (void)ctx; *c = 0U; return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_write_counter(void *ctx, uint32_t c)
+{ (void)ctx; (void)c; return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_increment(void *ctx, uint32_t *c)
+{ (void)ctx; if (c != NULL) { *c = 1U; } return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_set_confirm_boots(void *ctx, uint32_t n)
+{ (void)ctx; (void)n; return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_stage(void *ctx, uint32_t v)
+{ (void)ctx; (void)v; return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_notify_boot(void *ctx, uint32_t v)
+{ (void)ctx; (void)v; return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_get_pending(void *ctx, uint32_t *v, uint32_t *c)
+{ (void)ctx; *v = 0x7U; if (c != NULL) { *c = 0U; } return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_set_health_mode(void *ctx, bool enabled)
+{ (void)ctx; g_inject_mode = enabled ? 1 : 0; g_inject_calls++; return BL_ROLLBACK_STORAGE_OK; }
+static bl_rollback_storage_error_t mock_confirm_health(void *ctx, uint32_t version, bool ok)
+{ (void)ctx; g_inject_confirm_version = version; g_inject_confirm_ok = ok ? 1 : 0;
+  g_inject_calls++; return BL_ROLLBACK_STORAGE_OK; }
+
+static const bl_rollback_storage_api_t mock_storage_api = {
+    .read_counter           = mock_read_counter,
+    .write_counter          = mock_write_counter,
+    .increment              = mock_increment,
+    .set_confirm_boots      = mock_set_confirm_boots,
+    .stage                  = mock_stage,
+    .notify_successful_boot = mock_notify_boot,
+    .get_pending            = mock_get_pending,
+    .set_health_check_mode  = mock_set_health_mode,
+    .confirm_health         = mock_confirm_health
+};
+
+/* GIVEN 注入存储接口 / WHEN Boot_Update_SetHealthCheckMode +
+ * Boot_Update_ConfirmBusinessHealth / THEN 转发到存储实现; 未注入时无操作 */
+static int test_confirm_business_health_forward(void)
+{
+    printf("  Testing Boot_Update health forwarding (RS-OTA-05)...\n");
+
+    (void)Boot_Update_Abort();
+
+    /* 未注入: 无操作兼容 (旧 BIB 模式无健康门控) */
+    TEST_ASSERT_EQ(Boot_Update_ConfirmBusinessHealth(TRUE), BOOT_OK);
+    Boot_Update_SetHealthCheckMode(TRUE);   /* 无操作, 不崩溃 */
+
+    g_inject_calls = 0;
+    Boot_Update_SetAntiRollbackStorage(&mock_storage_api, g_mock_ctx);
+
+    /* SetHealthCheckMode → set_health_check_mode 转发 */
+    Boot_Update_SetHealthCheckMode(TRUE);
+    TEST_ASSERT_EQ(g_inject_calls, 1);
+    TEST_ASSERT_EQ(g_inject_mode, 1);
+    Boot_Update_SetHealthCheckMode(FALSE);
+    TEST_ASSERT_EQ(g_inject_calls, 2);
+    TEST_ASSERT_EQ(g_inject_mode, 0);
+
+    /* ConfirmBusinessHealth: 从 get_pending 取版本 (mock: 0x7) 转发 confirm_health */
+    TEST_ASSERT_EQ(Boot_Update_ConfirmBusinessHealth(FALSE), BOOT_OK);
+    TEST_ASSERT_EQ(g_inject_calls, 3);
+    TEST_ASSERT_EQ(g_inject_confirm_version, 0x7U);
+    TEST_ASSERT_EQ(g_inject_confirm_ok, 0);
+
+    TEST_ASSERT_EQ(Boot_Update_ConfirmBusinessHealth(TRUE), BOOT_OK);
+    TEST_ASSERT_EQ(g_inject_calls, 4);
+    TEST_ASSERT_EQ(g_inject_confirm_ok, 1);
+
+    /* 解除注入: 恢复无操作 */
+    Boot_Update_SetAntiRollbackStorage(NULL_PTR, NULL_PTR);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmBusinessHealth(TRUE), BOOT_OK);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * Test Runner
  * ============================================================================ */
 
@@ -388,6 +619,48 @@ static int run_test(int (*test_func)(void), const char *name)
         return 0;
     }
     return -1;
+}
+
+/* GIVEN BIB 有效且当前活动槽 A / WHEN Prepare 目标 = 活动槽 A
+ * THEN 防护性拒绝 (BOOT_E_PARAM) — OTA 只写非活动槽约定 (P1-1 裁决) */
+static int test_prepare_rejects_active_slot(void)
+{
+    printf("  Testing Prepare rejects active slot write...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();
+    memset(&g_test_flash[BOOT_BIB_ADDR], 0x00, sizeof(Boot_InfoBlock));
+
+    /* BIB 有效: 活动槽 A (status 无 slot-B 位) */
+    Boot_InfoBlock bib;
+    memset(&bib, 0, sizeof(bib));
+    bib.magic = 0x30424942U;
+    bib.status = 0x01U;   /* active, 未选 Slot B → 活动槽 A */
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmUserDecision(TRUE), BOOT_OK);
+
+    /* 写活动槽 A → 拒绝 */
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP),
+                   BOOT_E_PARAM);
+
+    /* 写非活动槽 B → 放行 */
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_B_ADDR, BOOT_IMAGE_APP), BOOT_OK);
+    (void)Boot_Update_Abort();
+
+    /* 对照: BIB 无效 (magic 不符, 首次启动) → 放行 (无既有固件可保护) */
+    memset(&g_test_flash[BOOT_BIB_ADDR], 0x00, sizeof(Boot_InfoBlock));
+    (void)Boot_Update_Abort();
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_ConfirmUserDecision(TRUE), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP), BOOT_OK);
+
+    printf("  PASSED\n");
+    return 0;
 }
 
 int main(void)
@@ -405,6 +678,11 @@ int main(void)
     run_test(test_confirm_no_timesource, "Confirm Without Time Source");
     run_test(test_confirm_state_errors, "Confirm State-Machine Errors");
     run_test(test_deferred_antrollback, "Deferred Anti-Rollback Increment (P1-4)");
+    run_test(test_update_state_lifecycle, "BIB Update State Lifecycle (RS-OTA-06)");
+    run_test(test_update_state_erase_failure_restore, "Prepare Erase-Failure Restores IDLE");
+    run_test(test_update_state_downloading_invalidates_pending, "DOWNLOADING Invalidates Pending");
+    run_test(test_confirm_business_health_forward, "Health Forwarding via Injected Storage");
+    run_test(test_prepare_rejects_active_slot, "Prepare Rejects Active Slot Write (P1-1)");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

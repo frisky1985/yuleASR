@@ -70,9 +70,15 @@ sbl_main_error_t sbl_main_connect_antrollback(sbl_main_context_t *ctx)
     /* 同步延后递增阈值 (bl_antrollback 运行期配置) */
     Boot_Update_SetRollbackConfirmBoots(confirm_boots);
 
+    /* 同步健康门控状态 (RS-OTA-05 P1): 经注入接口传给 Boot_Update,
+     * 使 bsw/boot 层感知门控开/关 (默认关闭 = 向后兼容 N 次制)。
+     * 门控状态由集成层经 Boot_AntiRollback_SetHealthCheckMode 在启动前配置。 */
+    Boot_Update_SetHealthCheckMode(ctx->antrollback.health_check_enabled);
+
     DDS_LOG(SBL_MAIN_LOG_LEVEL, SBL_MAIN_MODULE_NAME,
-            "Anti-rollback storage injected into Boot_Update (confirm_boots=%u)",
-            ctx->antrollback.confirm_boots);
+            "Anti-rollback storage injected into Boot_Update (confirm_boots=%u, health_gate=%u)",
+            ctx->antrollback.confirm_boots,
+            ctx->antrollback.health_check_enabled ? 1U : 0U);
 
     return SBL_MAIN_OK;
 }
@@ -202,16 +208,28 @@ sbl_main_error_t sbl_main_boot(sbl_main_context_t *ctx)
         &ctx->secure_boot, ctx->config.app_image, ctx->config.app_image_size);
 
     if (sb_result == BL_SB_OK) {
-        /* ⑤a 验签通过: 延后递增提交 — 上报本次成功启动 (达到阈值 N 后
-         *     计数器才提升; 确认窗口内允许回滚/同版本重装)。
-         *     生产: 亦可延后到 App 健康检查通过后再上报 (平台策略)。 */
-        bl_antrollback_error_t notify_ret = Boot_AntiRollback_NotifySuccessfulBoot(
-            &ctx->antrollback, ctx->config.app_version);
-        if (notify_ret != BL_ANTIROLLBACK_OK) {
-            /* 计数失败不阻塞启动, 仅记录 (下次启动仍受计数器保护) */
-            DDS_LOG(DDS_LOG_LEVEL_WARN, SBL_MAIN_MODULE_NAME,
-                    "NotifySuccessfulBoot failed (%d) — boot proceeds",
-                    (int)notify_ret);
+        /* ⑤a 验签通过:
+         * 健康门控关闭 (默认) → 立即上报本次成功启动, 走原 N 次制 (向后兼容);
+         * 健康门控开启 → 不立即上报, 等待 App 业务健康确认
+         *   (App 经 Boot_Update_ConfirmBusinessHealth 确认健康,
+         *    经 Boot_Update_NotifyBootSuccess 完成计数/提交; 未确认则
+         *    pending 保持, watchdog/boot_attempt 超限后自动回滚)。
+         * P2-2 (2026-08-13): 门控开启且未确认时, 本次启动计入 boot_attempt —
+         *   若 App 持续不确认 (业务挂死), boot_attempt_counter 超限后
+         *   bl_rollback_check_needed 触发回滚, 不无限等待。 */
+        if (!ctx->antrollback.health_check_enabled) {
+            bl_antrollback_error_t notify_ret = Boot_AntiRollback_NotifySuccessfulBoot(
+                &ctx->antrollback, ctx->config.app_version);
+            if (notify_ret != BL_ANTIROLLBACK_OK) {
+                /* 计数失败不阻塞启动, 仅记录 (下次启动仍受计数器保护) */
+                DDS_LOG(DDS_LOG_LEVEL_WARN, SBL_MAIN_MODULE_NAME,
+                        "NotifySuccessfulBoot failed (%d) — boot proceeds",
+                        (int)notify_ret);
+            }
+        } else {
+            /* 门控开启: 未确认健康前, 本次启动记入 boot_attempt (试运行计数),
+             * 超限由 bl_rollback 回滚兜底 (P2-2)。 */
+            (void)bl_rollback_record_boot_attempt(&ctx->rollback);
         }
 
         if (ctx->config.on_boot_result != NULL) {

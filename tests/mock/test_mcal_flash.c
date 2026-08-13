@@ -482,6 +482,34 @@ void test_Fls_GetVersionInfo_Null(void)
     Fls_GetVersionInfo(NULL);
 }
 
+/* =====================================================================
+ * Fls_ConfigureWriteProtection (P3, 2026-08-13)
+ * 真实实现位于 Flash.c (操作静态 Flash_WriteProtectMask, 不碰硬件寄存器,
+ * 可在 host 运行)。WRP 掩码内部状态不可直接观察, 此处验证 API 契约
+ * (返回 E_OK / 可重复调用); 掩码生效行为由 Flash_EraseSector /
+ * Flash_ProgramWord 的保护检查承担 (真实代码路径, 见 Flash.c)。
+ * ===================================================================== */
+
+/* ========= Fls_ConfigureWriteProtection ========= */
+void test_Fls_ConfigureWriteProtection_Enable(void)
+{
+    Std_ReturnType ret = Fls_ConfigureWriteProtection(FLS_WRP_SECTOR_0, TRUE);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+}
+
+void test_Fls_ConfigureWriteProtection_Disable(void)
+{
+    Std_ReturnType ret = Fls_ConfigureWriteProtection(FLS_WRP_SECTOR_0, FALSE);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+}
+
+void test_Fls_ConfigureWriteProtection_All(void)
+{
+    Std_ReturnType ret = Fls_ConfigureWriteProtection(FLS_WRP_ALL_SECTORS, TRUE);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    (void)Fls_ConfigureWriteProtection(FLS_WRP_ALL_SECTORS, FALSE);
+}
+
 /* ========= Main ========= */
 int main(void)
 {
@@ -516,5 +544,8 @@ int main(void)
     UnityRunTest(test_Fls_MainFunction_Uninit, "MainFunction uninit", __LINE__);
     UnityRunTest(test_Fls_GetVersionInfo_Valid, "GetVersionInfo valid", __LINE__);
     UnityRunTest(test_Fls_GetVersionInfo_Null, "GetVersionInfo null", __LINE__);
+    UnityRunTest(test_Fls_ConfigureWriteProtection_Enable, "WRP enable", __LINE__);
+    UnityRunTest(test_Fls_ConfigureWriteProtection_Disable, "WRP disable", __LINE__);
+    UnityRunTest(test_Fls_ConfigureWriteProtection_All, "WRP all sectors", __LINE__);
     return UnityEnd();
 }

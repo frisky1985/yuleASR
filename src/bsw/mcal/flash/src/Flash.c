@@ -68,6 +68,11 @@ typedef struct {
     uint32 initState;
 } Flash_DriverStateType;
 
+/* WRP 写保护掩码 (P3, 2026-08-13): 位 N = 扇区 N 受写保护。
+ * 由 Fls_ConfigureWriteProtection 运行期设置, Flash_Init 从
+ * Fls_ProtectionConfig.WriteProtectionMask 初始化 (配置消费点)。 */
+static uint32 Flash_WriteProtectMask = 0U;
+
 /*==================================================================================================
  *                                      LOCAL CONSTANTS
  *==================================================================================================*/
@@ -285,6 +290,14 @@ static Std_ReturnType Flash_ProgramWord(Flash_AddressType address, uint32 data)
 {
     Std_ReturnType result = E_NOT_OK;
 
+    /* WRP 写保护检查 (P3): 地址所在扇区受保护 → 拒绝写入 */
+    if ((address >= FLASH_BASE_ADDRESS) && (Flash_WriteProtectMask != 0U)) {
+        uint32 sector = (address - FLASH_BASE_ADDRESS) / FLASH_ERASE_UNIT;
+        if ((Flash_WriteProtectMask & (1UL << sector)) != 0UL) {
+            return E_NOT_OK;
+        }
+    }
+
     if (Flash_WaitForOperation(FLASH_TIMEOUT_MS)) {
         /* Clear error flags */
         FLASH_SR = (FLASH_SR_OPERR | FLASH_SR_WRPERR | FLASH_SR_PGAERR |
@@ -358,6 +371,13 @@ static Std_ReturnType Flash_ProgramDoubleWord(Flash_AddressType address, uint64 
 static Std_ReturnType Flash_EraseSector(uint32 sectorNum)
 {
     Std_ReturnType result = E_NOT_OK;
+
+    /* WRP 写保护检查 (P3): 目标扇区受保护 → 拒绝擦除 (WRPERR 语义) */
+    if ((Flash_WriteProtectMask & (1UL << sectorNum)) != 0UL) {
+        FLASH_SR = (FLASH_SR_OPERR | FLASH_SR_WRPERR | FLASH_SR_PGAERR |
+                    FLASH_SR_PGPERR | FLASH_SR_PGSERR);
+        return E_NOT_OK;
+    }
 
     if (Flash_WaitForOperation(FLASH_TIMEOUT_MS)) {
         /* Clear error flags */
@@ -735,6 +755,10 @@ void Flash_Init(const Flash_ConfigType* ConfigPtr)
     Flash_DriverState.remainingLength = 0U;
     Flash_DriverState.dataPtr = NULL_PTR;
     Flash_DriverState.initState = FLASH_INITIALIZED;
+
+    /* WRP 写保护初始化 (P3): 消费 Fls_ProtectionConfig.WriteProtectionMask 配置
+     * (默认保护 Bootloader 扇区 Sector 0)。生产平台可在启动早期锁定。 */
+    Flash_WriteProtectMask = Fls_ProtectionConfig.WriteProtectionMask;
 
     /* Unlock flash control register */
     Flash_Unlock();
@@ -1277,6 +1301,25 @@ boolean Flash_IsAddressValid(Flash_AddressType Address)
 
 #define FLASH_STOP_SEC_CODE
 #include "Flash_MemMap.h"
+
+/* ============================================================================
+ * AUTOSAR API — WRP 写保护 (P3, 2026-08-13)
+ * 声明见 Flash.h: Fls_ConfigureWriteProtection。
+ * 运行期设置写保护掩码 (位 N = 扇区 N); Flash_EraseSector / Flash_ProgramWord
+ * 在操作前检查, 受保护扇区拒绝擦/写 (返回 E_NOT_OK, 硬件 WRPERR 语义)。
+ * 默认掩码来自 Fls_ProtectionConfig.WriteProtectionMask (Flash_Init 装载)。
+ * ============================================================================ */
+
+/* MISRA 8.7 保留: 公开 API, 消费者在集成层 (Bootloader/ASW) */
+Std_ReturnType Fls_ConfigureWriteProtection(uint32 SectorMask, boolean Enable)
+{
+    if (Enable != FALSE) {
+        Flash_WriteProtectMask |= SectorMask;
+    } else {
+        Flash_WriteProtectMask &= ~SectorMask;
+    }
+    return E_OK;
+}
 
 /*==================================================================================================
  *                                      END OF FILE

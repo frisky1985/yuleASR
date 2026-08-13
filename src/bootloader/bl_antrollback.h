@@ -13,8 +13,11 @@
  *   成功启动 N 次 (SetConfirmBoots 可配) 后 NotifySuccessfulBoot 才提交
  *   counter = pending (平衡安全与回滚: 确认窗口内允许回滚到旧版本/同版本重装)
  *
- * 记录格式 v2: 槽位新增 pending_counter/pending_boot_count (v1 记录不兼容,
- * 升级后首次初始化从 0 开始, 属预期格式变更, 见 BL_ANTIROLLBACK_RECORD_VERSION)。
+ * 记录格式 v3: 槽位新增 pending_counter/pending_boot_count (v2) 与
+ * health_confirmed (v3, 业务健康确认标记)。v2 记录兼容读: v3 代码可恢复
+ * v2 布局的 NVM (计数器/待确认状态), 此时 health_confirmed 置 false
+ * (健康门控关闭语义)。v1 记录不兼容 (升级后首次初始化从 0 开始,
+ * 属预期格式变更, 见 BL_ANTIROLLBACK_RECORD_VERSION)。
  *
  * 生产集成要求: base_address 需按 Flash 扇区对齐, NVM 区域大小应 >=
  * slots * 扇区大小 (每个槽位一个扇区), 以保证擦除/写入的硬件正确性。
@@ -54,7 +57,8 @@ extern "C" {
 #define BL_ANTIROLLBACK_DEFAULT_CONFIRM_BOOTS  3U
 #endif
 #define BL_ANTIROLLBACK_MAGIC               0x41524243U  /* "ARBC" */
-#define BL_ANTIROLLBACK_RECORD_VERSION      2U   /* v2: 槽位含 pending_counter/pending_boot_count */
+#define BL_ANTIROLLBACK_RECORD_VERSION      3U   /* v3: 槽位含 pending 状态 + health_confirmed */
+#define BL_ANTIROLLBACK_RECORD_VERSION_V2   2U   /* v2: 槽位含 pending 状态 (无 health_confirmed, 兼容读) */
 
 /* ============================================================================
  * 错误码定义
@@ -74,12 +78,13 @@ typedef enum {
  * ============================================================================ */
 typedef struct {
     uint32_t magic;             /* 魔数 BL_ANTIROLLBACK_MAGIC */
-    uint32_t record_version;    /* 记录格式版本 (v2: 含待确认状态) */
+    uint32_t record_version;    /* 记录格式版本 (v3: 含待确认状态 + 健康确认标记) */
     uint32_t counter;           /* 已确认的抗回滚计数器 (地板) */
     uint32_t write_seq;         /* 全局写入序号 (磨损均衡/最新判定) */
-    uint32_t pending_counter;   /* v2: 待确认版本 (0 = 无待确认升级) */
-    uint32_t pending_boot_count;/* v2: 新版本成功启动次数 (达到阈值后提交) */
-    uint32_t crc32;             /* 前 6 字段的 CRC32 */
+    uint32_t pending_counter;   /* 待确认版本 (0 = 无待确认升级) */
+    uint32_t pending_boot_count;/* 新版本成功启动次数 (达到阈值后提交) */
+    uint32_t health_confirmed;  /* v3: 业务健康确认标记 (0/1; 健康门控开启时提交需此位) */
+    uint32_t crc32;             /* 前 7 字段的 CRC32 (v2 记录为前 6 字段, 兼容读) */
 } bl_antrollback_slot_t;
 
 /* ============================================================================
@@ -95,6 +100,8 @@ typedef struct {
     uint32_t confirm_boots;     /* 延后递增阈值 N (0 由 Init 置默认) */
     uint32_t pending_counter;   /* 待确认版本 (RAM 快照, 0 = 无) */
     uint32_t pending_boot_count;/* 新版本成功启动次数 (RAM 快照) */
+    bool     health_check_enabled; /* 健康门控 (RS-OTA-05, 运行期配置, 默认关闭) */
+    bool     health_confirmed;  /* 待确认版本的业务健康确认标记 (RAM 快照) */
     bool     initialized;       /* 初始化标志 */
 } bl_antrollback_context_t;
 
@@ -201,6 +208,42 @@ bl_antrollback_error_t Boot_AntiRollback_NotifySuccessfulBoot(
     bl_antrollback_context_t *ctx,
     uint32_t current_version
 );
+
+/**
+ * @brief 使能/关闭健康门控 (RS-OTA-05 P1: 主动业务健康检查钩子)
+ * @details 运行期配置 (不持久化), 默认关闭 = 原 N 次制向后兼容:
+ *          门控关闭时提交条件仅为 pending_boot_count >= confirm_boots;
+ *          门控开启时还需 health_confirmed == true (App 业务健康确认)。
+ * @param ctx 上下文
+ * @param enabled TRUE=开启健康门控; FALSE=关闭 (默认)
+ */
+void Boot_AntiRollback_SetHealthCheckMode(bl_antrollback_context_t *ctx, bool enabled);
+
+/**
+ * @brief App 业务健康确认 (RS-OTA-05 P1)
+ * @details 由 ASW 层业务健康检查 (DCM 响应/传感器有效/无功能异常) 通过后调用:
+ *          - ok==true 且 version == pending_counter → 置 health_confirmed=true 并落盘;
+ *            version 不匹配 → 不落盘 (防误确认); 无 pending → 无操作。
+ *          - ok==false → 置 health_confirmed=false 落盘 (pending 保持,
+ *            等待 watchdog/boot_attempt 超限自动回滚)。
+ *          确认标记随槽位记录持久化, 跨重启恢复。
+ * @param ctx 上下文
+ * @param version 本次健康检查对应的固件版本
+ * @param ok TRUE=业务健康; FALSE=业务异常
+ * @return BL_ANTIROLLBACK_OK 成功; 存储错误透传
+ */
+bl_antrollback_error_t Boot_AntiRollback_ConfirmHealth(
+    bl_antrollback_context_t *ctx,
+    uint32_t version,
+    bool ok
+);
+
+/**
+ * @brief 查询当前待确认版本的业务健康确认标记 (MAY, 诊断/测试用)
+ * @param ctx 上下文
+ * @return TRUE=已确认健康; FALSE=未确认/无 pending/未初始化
+ */
+bool Boot_AntiRollback_IsHealthConfirmed(const bl_antrollback_context_t *ctx);
 
 /**
  * @brief 查询待确认升级状态 (启动流程/诊断用)

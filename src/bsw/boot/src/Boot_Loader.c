@@ -160,6 +160,15 @@ Boot_Decision Boot_Loader_ResolveBootTarget(void)
     /* Check if we should boot from slot B (after failed A) */
     boolean use_slot_b = (bib.status & 0x02U) != 0U;
 
+    /* 掉电保护 (RS-OTA-06): BIB(update_state=DOWNLOADING) = Prepare 已落盘
+     * 但擦除/写入未完成 (中途掉电)。
+     * 按既定约定 OTA 只写非活动槽 (Prepare 防护性拒绝活动槽写入, 见 Boot_Update),
+     * 故 DOWNLOADING 时活动槽必然未被擦写 → 按 marker 正常决策即回退到完好的
+     * 活动槽 (旧固件照常运行)。不再强制回退 Slot A: marker=1 时活动槽是 B,
+     * 强制回退 A 反而会指向正在被擦写的目标槽 (击穿保护)。
+     * 旧 BIB 无该字段 (reserved=0) → 读为 IDLE, 行为不变。 */
+    /* (DOWNLOADING 无需 override: marker 即正确决策) */
+
     if (use_slot_b == 0U) {
         /* Verify SBL first; if SBL is valid, boot it,
            then SBL will verify and jump to App */

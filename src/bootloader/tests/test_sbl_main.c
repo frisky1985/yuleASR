@@ -599,6 +599,128 @@ static int test_sbl_invalid_params(void)
     return 0;
 }
 
+/* ⑦ 健康门控 (RS-OTA-05): 门控开启时 sbl_main_boot 不立即上报,
+ *    等待 App 业务健康确认后才走延后递增提交 */
+static int test_sbl_boot_health_gate(void)
+{
+    printf("  Testing SBL boot health gate (RS-OTA-05)...\n");
+
+    reset_mock_callbacks();
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+
+    /* GIVEN NVM 预置待确认升级 (counter=0, pending=0x100), 阈值 N=1 */
+    bl_antrollback_context_t arb;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_BASE, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 1U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 0x100U), BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_Deinit(&arb);
+
+    uint8_t payload[16] = {0x21,0x22,0x23,0x24,0x25,0x26,0x27,0x28,
+                           0x29,0x2A,0x2B,0x2C,0x2D,0x2E,0x2F,0x30};
+    uint8_t image[sizeof(bl_firmware_header_t) + sizeof(payload)];
+    uint32_t image_size = 0;
+    TEST_ASSERT_EQ(build_image(0x100U, payload, sizeof(payload), true,
+                               image, &image_size), 0);
+
+    sbl_main_config_t cfg;
+    make_default_config(&cfg, image, image_size);
+    cfg.confirm_boots = 1U;          /* 阈值 N=1 */
+    cfg.app_version = 0x100U;
+    cfg.csm_ctx = csm_init(NULL);
+
+    sbl_main_context_t ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    TEST_ASSERT_EQ(sbl_main_init(&ctx, &cfg), SBL_MAIN_OK);
+
+    /* 开启健康门控 (集成层经公开 API 配置; sbl_main API 不变) */
+    Boot_AntiRollback_SetHealthCheckMode(&ctx.antrollback, true);
+
+    /* WHEN 启动 (验签通过) / THEN 跳转 App, 但不立即上报 → 计数不增、不提交 */
+    TEST_ASSERT_EQ(sbl_main_boot(&ctx), SBL_MAIN_OK);
+    TEST_ASSERT_EQ(mock_jump_calls, 1);
+    TEST_ASSERT_EQ(mock_result_last, (int)SBL_MAIN_RESULT_APP_STARTED);
+    uint32_t pend = 0, pend_cnt = 0;
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&ctx.antrollback, &pend, &pend_cnt),
+                   BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pend, 0x100U);
+    TEST_ASSERT_EQ(pend_cnt, 0U);    /* 未上报: 等待 App 健康确认 */
+
+    /* GIVEN App 业务健康确认 + 上报 / THEN N=1 → 提交 */
+    TEST_ASSERT_EQ(Boot_Update_ConfirmBusinessHealth(TRUE), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x100U), BOOT_OK);
+    uint32_t c = 0;
+    TEST_ASSERT_EQ(Boot_Update_GetRollbackCounter(&c), BOOT_OK);
+    TEST_ASSERT_EQ(c, 0x100U);
+
+    sbl_main_deinit(&ctx);
+    csm_deinit((csm_context_t *)cfg.csm_ctx);
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* GIVEN 健康门控开启 + App 永不确认 (业务挂死) / WHEN 反复启动
+ * THEN 每次启动计入 boot_attempt (P2-2), 超限后 bl_rollback 触发回滚 */
+static int test_sbl_boot_health_gate_unconfirmed(void)
+{
+    printf("  Testing SBL health gate unconfirmed -> boot_attempt accrual (P2-2)...\n");
+
+    reset_mock_callbacks();
+    memset(mock_flash, 0xFF, sizeof(mock_flash));
+
+    /* NVM 预置待确认升级 (counter=0, pending=0x100), 阈值 N=1 */
+    bl_antrollback_context_t arb;
+    TEST_ASSERT_EQ(Boot_AntiRollback_Init(&arb, &mock_flash_driver, TEST_ARB_BASE, 4U),
+                   BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_SetConfirmBoots(&arb, 1U);
+    TEST_ASSERT_EQ(Boot_AntiRollback_Stage(&arb, 0x100U), BL_ANTIROLLBACK_OK);
+    Boot_AntiRollback_Deinit(&arb);
+
+    uint8_t payload[16] = {0x41,0x42,0x43,0x44,0x45,0x46,0x47,0x48,
+                           0x49,0x4A,0x4B,0x4C,0x4D,0x4E,0x4F,0x50};
+    uint8_t image[sizeof(bl_firmware_header_t) + sizeof(payload)];
+    uint32_t image_size = 0;
+    TEST_ASSERT_EQ(build_image(0x100U, payload, sizeof(payload), true,
+                               image, &image_size), 0);
+
+    sbl_main_config_t cfg;
+    make_default_config(&cfg, image, image_size);
+    cfg.confirm_boots = 1U;
+    cfg.app_version = 0x100U;
+    cfg.csm_ctx = csm_init(NULL);
+    cfg.rollback_max_boot_attempts = 3U;   /* 超限阈值 */
+
+    sbl_main_context_t ctx;
+    memset(&ctx, 0, sizeof(ctx));
+    TEST_ASSERT_EQ(sbl_main_init(&ctx, &cfg), SBL_MAIN_OK);
+    Boot_AntiRollback_SetHealthCheckMode(&ctx.antrollback, true);
+
+    /* 三次启动, App 均不确认健康 (业务挂死模拟) */
+    for (int i = 0; i < 3; i++) {
+        TEST_ASSERT_EQ(sbl_main_boot(&ctx), SBL_MAIN_OK);
+        TEST_ASSERT_EQ(mock_jump_calls, i + 1);
+    }
+
+    /* boot_attempt 已累计 3 次 (未确认不提交, pending 保持) */
+    TEST_ASSERT_EQ(ctx.rollback.boot_attempt_counter, 3U);
+    uint32_t pend = 0, pend_cnt = 0;
+    TEST_ASSERT_EQ(Boot_AntiRollback_GetPending(&ctx.antrollback, &pend, &pend_cnt),
+                   BL_ANTIROLLBACK_OK);
+    TEST_ASSERT_EQ(pend, 0x100U);
+    TEST_ASSERT_EQ(pend_cnt, 0U);
+
+    /* 超限判定: bl_rollback_check_needed 应指示需要回滚 */
+    bool need_rollback = false;
+    TEST_ASSERT_EQ(bl_rollback_check_needed(&ctx.rollback, &need_rollback, NULL),
+                   BL_ROLLBACK_OK);
+    TEST_ASSERT_EQ(need_rollback, true);
+
+    sbl_main_deinit(&ctx);
+    csm_deinit((csm_context_t *)cfg.csm_ctx);
+    printf("  PASSED\n");
+    return 0;
+}
+
 /* ============================================================================
  * Test Runner
  * ============================================================================ */
@@ -626,6 +748,8 @@ int main(void)
     run_test(test_sbl_boot_rollback_protection, "SBL Boot Rollback Protection (NVM counter)");
     run_test(test_sbl_boot_rollback_execute, "SBL Boot Rollback Execute");
     run_test(test_sbl_storage_wiring_boot_update, "Boot_Update via Injected Storage API");
+    run_test(test_sbl_boot_health_gate, "SBL Boot Health Gate (RS-OTA-05)");
+    run_test(test_sbl_boot_health_gate_unconfirmed, "SBL Health Gate Unconfirmed Boot-Attempt (P2-2)");
     run_test(test_sbl_invalid_params, "SBL Invalid Params");
 
     printf("\n============================================\n");
