@@ -38,14 +38,14 @@ tools/arxml/
 
 ```bash
 cd /home/admin/yuleASR
-python tools/arxml/arxml_tool.py parse configs/arxml/example.arxml --output parsed.json
+python tools/arxml/arxml_tool.py parse config/input/arxml/example.arxml --output parsed.json
 ```
 
 ### 2. 生成配置代码
 
 ```bash
 # 从ARXML直接生成
-python tools/arxml/arxml_tool.py generate configs/arxml/example.arxml --output-dir ./generated
+python tools/arxml/arxml_tool.py generate config/input/arxml/example.arxml --output-dir ./generated
 
 # 或从解析后的JSON生成
 python tools/arxml/arxml_tool.py generate parsed.json --output-dir ./generated
@@ -54,7 +54,7 @@ python tools/arxml/arxml_tool.py generate parsed.json --output-dir ./generated
 ### 3. 检查完整性
 
 ```bash
-python tools/arxml/arxml_tool.py check configs/arxml/example.arxml --report report.txt
+python tools/arxml/arxml_tool.py check config/input/arxml/example.arxml --report report.txt
 ```
 
 ## 使用示例

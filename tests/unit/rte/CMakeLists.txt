@@ -22,7 +22,7 @@ foreach(test_src ${RTE_UNIT_TEST_SRCS})
     target_include_directories(${TEST_TARGET}
         PRIVATE
             ${TEST_FRAMEWORK_INCLUDE}
-            ${CMAKE_CURRENT_SOURCE_DIR}/../../src/rte/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../../src/middleware/rte/include
             ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/common
             ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/general/inc
             ${CMAKE_CURRENT_SOURCE_DIR}/..

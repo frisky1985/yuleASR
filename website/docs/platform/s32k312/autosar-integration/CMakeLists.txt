@@ -88,7 +88,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/../rte/include
     
     # ASW头文件
-    ${CMAKE_SOURCE_DIR}/../src/asw/include
+    ${CMAKE_SOURCE_DIR}/../src/application/include
 )
 
 #===================================================================================================
@@ -105,7 +105,7 @@ file(GLOB_RECURSE BSW_SOURCES
 )
 
 file(GLOB_RECURSE APP_SOURCES
-    "../src/asw/*.c"
+    "../src/application/*.c"
     "startup/*.c"
     "startup/*.S"
 )

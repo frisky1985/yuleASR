@@ -41,9 +41,9 @@ set(ADAPTIVE_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}/../e2e
     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../common/types
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/runtime
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/pubsub
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/dds/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/dds/runtime
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/dds/pubsub
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../include/autosar
 )
