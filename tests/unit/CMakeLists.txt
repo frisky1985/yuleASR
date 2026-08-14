@@ -72,3 +72,44 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test_utils.c)
             ${CMAKE_CURRENT_SOURCE_DIR}
     )
 endif()
+
+# ── NvM_Redundant 单元测试 (2026-08-14: 冗余存储宏开启后真实验证) ──
+# 链接真实 NvM_Redundant.c + Crc.c（查表），mock NvM_ReadBlock/WriteBlock/NvM_Config
+add_executable(NvM_Redundant_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_nvm_redundant_verify.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/nvm/src/NvM_Redundant.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/crc/src/Crc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/crc/src/Crc_Lcfg.c
+)
+target_include_directories(NvM_Redundant_UnitTest
+    PRIVATE
+        ${TEST_FRAMEWORK_INCLUDE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/nvm/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/crc/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/det/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/memif/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/autosar
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../config/input/services
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/lin/include
+)
+# 头文件漂移规避：全局 include_directories 把 include/autosar（旧版 Crc.h，无 Crc_Cfg.h）
+# 排在 src/bsw/services/crc/include（新版，含 Crc_Cfg.h MODE 宏）之前，导致 Crc.c
+# 编译时 CRC_16_MODE 未定义 → CRC 恒返回 0。BEFORE 强制本 target 优先新版头。
+target_include_directories(NvM_Redundant_UnitTest
+    BEFORE PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/crc/include
+)
+target_compile_options(NvM_Redundant_UnitTest PRIVATE
+    -Wall -Wextra -Werror -g -O0
+)
+# Crc.c 在 TABLE_MODE/DEV_ERROR_DETECT 配置下部分变量/参数未使用（既有配置相关），单独豁免
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/crc/src/Crc.c
+    PROPERTIES COMPILE_OPTIONS "-Wno-unused-variable;-Wno-unused-parameter"
+)
+set_target_properties(NvM_Redundant_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+add_test(NAME NvM_Redundant_UnitTest COMMAND NvM_Redundant_UnitTest)
+message(STATUS "  Unit test: NvM_Redundant_UnitTest (redundant storage, 8 cases)")

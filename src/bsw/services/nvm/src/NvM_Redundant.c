@@ -17,8 +17,10 @@
  */
 
 #include "NvM.h"
+#include "NvM_Redundant.h"
 #include "NvM_Cfg.h"
 #include "Crc.h"
+#include <string.h>
 
 #if (NVM_REDUNDANT_STORAGE_ENABLED == STD_ON)
 
@@ -67,7 +69,8 @@ static Std_ReturnType NvM_RedundantWriteBlock(
     const uint8* SrcPtr);
 
 static uint16 NvM_CalculateCRC16(const uint8* DataPtr, uint32 Length);
-static uint32 NvM_CalculateCRC32(const uint8* DataPtr, uint32 Length);
+
+static const NvM_BlockDescriptorType* NvM_Redundant_GetBlockDescriptor(NvM_BlockIdType BlockId);
 
 /*******************************************************************************
  * API Functions
@@ -80,15 +83,23 @@ Std_ReturnType NvM_RedundantWrite(NvM_BlockIdType BlockId, const uint8* SrcPtr)
 {
     Std_ReturnType RetVal;
     uint16 Crc;
-    uint8* RamBlockPtr;
+    uint16 BlockLength;
+    const NvM_BlockDescriptorType* BlockDesc;
     
     if (BlockId >= NVM_NUM_REDUNDANT_BLOCKS)
     {
         return E_NOT_OK;
     }
     
+    BlockDesc = NvM_Redundant_GetBlockDescriptor(BlockId);
+    if (BlockDesc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    BlockLength = BlockDesc->NvBlockLength;
+    
     /* Calculate CRC */
-    Crc = NvM_CalculateCRC16(SrcPtr, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
+    Crc = NvM_CalculateCRC16(SrcPtr, BlockLength);
     
     /* Write to primary instance */
     RetVal = NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, SrcPtr);
@@ -128,19 +139,28 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     uint16 MirrorCrc;
     boolean PrimaryValid;
     boolean MirrorValid;
+    uint16 BlockLength;
+    const NvM_BlockDescriptorType* BlockDesc;
     
     if (BlockId >= NVM_NUM_REDUNDANT_BLOCKS)
     {
         return E_NOT_OK;
     }
     
+    BlockDesc = NvM_Redundant_GetBlockDescriptor(BlockId);
+    if (BlockDesc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    BlockLength = BlockDesc->NvBlockLength;
+    
     /* Read both instances */
     PrimaryRetVal = NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, PrimaryBuffer);
     MirrorRetVal = NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_MIRROR, MirrorBuffer);
     
     /* Calculate CRCs */
-    PrimaryCrc = NvM_CalculateCRC16(PrimaryBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
-    MirrorCrc = NvM_CalculateCRC16(MirrorBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
+    PrimaryCrc = NvM_CalculateCRC16(PrimaryBuffer, BlockLength);
+    MirrorCrc = NvM_CalculateCRC16(MirrorBuffer, BlockLength);
     
     /* Check validity */
     PrimaryValid = (PrimaryRetVal == E_OK) && (PrimaryCrc == NvM_RedundantBlockInfo[BlockId].Crc);
@@ -150,13 +170,13 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     if (PrimaryValid && MirrorValid)
     {
         /* Both valid - use primary, check sequence numbers */
-        memcpy(DestPtr, PrimaryBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
+        memcpy(DestPtr, PrimaryBuffer, BlockLength);
         return E_OK;
     }
     else if (PrimaryValid)
     {
         /* Primary valid, mirror corrupt - recover mirror */
-        memcpy(DestPtr, PrimaryBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
+        memcpy(DestPtr, PrimaryBuffer, BlockLength);
         NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_MIRROR, PrimaryBuffer);
         NvM_RedundantBlockInfo[BlockId].State = NVM_REDUNDANT_BLOCK_STATE_INCONSISTENT;
         return E_OK;
@@ -164,7 +184,7 @@ Std_ReturnType NvM_RedundantRead(NvM_BlockIdType BlockId, uint8* DestPtr)
     else if (MirrorValid)
     {
         /* Mirror valid, primary corrupt - recover primary */
-        memcpy(DestPtr, MirrorBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
+        memcpy(DestPtr, MirrorBuffer, BlockLength);
         NvM_RedundantWriteBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, MirrorBuffer);
         NvM_RedundantBlockInfo[BlockId].State = NVM_REDUNDANT_BLOCK_STATE_INCONSISTENT;
         return E_OK;
@@ -185,11 +205,20 @@ Std_ReturnType NvM_RedundantCheckConsistency(NvM_BlockIdType BlockId)
     Std_ReturnType RetVal;
     uint8 PrimaryBuffer[NVM_MAX_BLOCK_SIZE];
     uint8 MirrorBuffer[NVM_MAX_BLOCK_SIZE];
+    uint16 BlockLength;
+    const NvM_BlockDescriptorType* BlockDesc;
     
     if (BlockId >= NVM_NUM_REDUNDANT_BLOCKS)
     {
         return E_NOT_OK;
     }
+    
+    BlockDesc = NvM_Redundant_GetBlockDescriptor(BlockId);
+    if (BlockDesc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    BlockLength = BlockDesc->NvBlockLength;
     
     /* Read both instances */
     RetVal = NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, PrimaryBuffer);
@@ -205,7 +234,7 @@ Std_ReturnType NvM_RedundantCheckConsistency(NvM_BlockIdType BlockId)
     }
     
     /* Compare */
-    if (memcmp(PrimaryBuffer, MirrorBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength) == 0U )
+    if (memcmp(PrimaryBuffer, MirrorBuffer, BlockLength) == 0U )
     {
         return E_OK;
     }
@@ -225,19 +254,28 @@ Std_ReturnType NvM_RedundantRepair(NvM_BlockIdType BlockId)
     uint8 MirrorBuffer[NVM_MAX_BLOCK_SIZE];
     uint16 PrimaryCrc;
     uint16 MirrorCrc;
+    uint16 BlockLength;
+    const NvM_BlockDescriptorType* BlockDesc;
     
     if (BlockId >= NVM_NUM_REDUNDANT_BLOCKS)
     {
         return E_NOT_OK;
     }
     
+    BlockDesc = NvM_Redundant_GetBlockDescriptor(BlockId);
+    if (BlockDesc == NULL_PTR)
+    {
+        return E_NOT_OK;
+    }
+    BlockLength = BlockDesc->NvBlockLength;
+    
     /* Read both instances */
     NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_PRIMARY, PrimaryBuffer);
     NvM_RedundantReadBlock(BlockId, NVM_RED_INSTANCE_MIRROR, MirrorBuffer);
     
     /* Calculate CRCs */
-    PrimaryCrc = NvM_CalculateCRC16(PrimaryBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
-    MirrorCrc = NvM_CalculateCRC16(MirrorBuffer, NvM_BlockDescriptorTable[BlockId].NvBlockLength);
+    PrimaryCrc = NvM_CalculateCRC16(PrimaryBuffer, BlockLength);
+    MirrorCrc = NvM_CalculateCRC16(MirrorBuffer, BlockLength);
     
     /* Try to determine valid data */
     if (PrimaryCrc == NvM_RedundantBlockInfo[BlockId].Crc)
@@ -267,6 +305,27 @@ Std_ReturnType NvM_RedundantRepair(NvM_BlockIdType BlockId)
 /*******************************************************************************
  * Local Functions
  ******************************************************************************/
+
+static const NvM_BlockDescriptorType* NvM_Redundant_GetBlockDescriptor(NvM_BlockIdType BlockId)
+{
+    uint16 i;
+    NvM_BlockIdType PrimaryBlockId;
+    const NvM_BlockDescriptorType* result = NULL_PTR;
+
+    /* Redundant group uses two consecutive NV blocks: primary = BlockId*2, mirror = BlockId*2+1 */
+    PrimaryBlockId = (NvM_BlockIdType)((uint16)BlockId * NVM_RED_INSTANCE_COUNT);
+
+    for (i = 0U; i < NvM_Config.NumBlockDescriptors; i++)
+    {
+        if (NvM_Config.BlockDescriptors[i].BlockId == PrimaryBlockId)
+        {
+            result = &NvM_Config.BlockDescriptors[i];
+            break;
+        }
+    }
+
+    return result;
+}
 
 static Std_ReturnType NvM_RedundantReadBlock(
     NvM_BlockIdType BlockId,
@@ -300,12 +359,6 @@ static uint16 NvM_CalculateCRC16(const uint8* DataPtr, uint32 Length)
 {
     /* Use CRC library */
     return Crc_CalculateCRC16(DataPtr, Length, 0xFFFFU, TRUE);
-}
-
-static uint32 NvM_CalculateCRC32(const uint8* DataPtr, uint32 Length)
-{
-    /* Use CRC library */
-    return Crc_CalculateCRC32(DataPtr, Length, 0xFFFFFFFFU, TRUE);
 }
 
 #endif /* NVM_REDUNDANT_STORAGE_ENABLED */
