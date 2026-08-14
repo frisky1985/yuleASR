@@ -40,7 +40,7 @@ fc7cdc0a feat(generator): 代码生成器v2.0模板驱动架构          ← 已
 | `docs/modules/` | **30** 个 | 原始 sprint1 文档 vs 远程更新版 |
 | `tests/` | **6** 个 | 原始 sprint1 测试 vs 远程完整测试 |
 | `config/input/` | **3** 个 | 原始 sprint1 配置头文件 vs 远程完整版 |
-| `docs-site/` | **1** 个 | Docusaurus 数据文件 |
+| `docs/docs-site/` | **1** 个 | Docusaurus 数据文件 |
 | **合计** | **54** | **+8,329 / -8,950 行** |
 
 ### 2.1 src/bsw/ — 14 个文件差异
