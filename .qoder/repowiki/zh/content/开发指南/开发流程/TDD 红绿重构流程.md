@@ -8,11 +8,11 @@
 - [Com_test.c](file://src/bsw/services/com/src/Com_test.c)
 - [Dcm_test.c](file://src/bsw/services/dcm/src/Dcm_test.c)
 - [Dem_test.c](file://src/bsw/services/dem/src/Dem_test.c)
-- [BswM_test.c](file://src/bsw/integration/BswM_test.c)
-- [EcuM_test.c](file://src/bsw/integration/EcuM_test.c)
-- [integration_test.c](file://src/bsw/integration/tests/integration_test.c)
-- [integration_test_cfg.h](file://src/bsw/integration/tests/integration_test_cfg.h)
-- [test_runner.c](file://src/bsw/integration/tests/test_runner.c)
+- [BswM_test.c](file://tests/integration/bsw/BswM_test.c)
+- [EcuM_test.c](file://tests/integration/bsw/EcuM_test.c)
+- [integration_test.c](file://tests/integration/bsw/integration_test.c)
+- [integration_test_cfg.h](file://tests/integration/integration_test_cfg.h)
+- [test_runner.c](file://tests/integration/bsw/test_runner.c)
 - [main.c](file://examples/can_demo/main.c)
 </cite>
 
@@ -34,14 +34,14 @@
 ## 项目结构
 YuleTech BSW平台采用分层架构（RTE → Service → ECUAL → MCAL → 硬件），测试体系覆盖单模块单元测试与跨层集成测试：
 - 单元测试：位于tests/unit与各模块src目录下的*_test.c，使用自研轻量测试框架
-- 集成测试：位于src/bsw/integration/tests，覆盖MCAL→ECUAL→Service→RTE端到端场景
+- 集成测试：位于tests/integration/bsw，覆盖MCAL→ECUAL→Service→RTE端到端场景
 - 示例：examples/can_demo展示典型MCAL/ECUAL/Service协同工作流
 
 ```mermaid
 graph TB
 subgraph "测试层"
 UT["单元测试<br/>tests/unit/*.c"]
-IT["集成测试<br/>src/bsw/integration/tests/*.c"]
+IT["集成测试<br/>tests/integration/bsw/*.c"]
 end
 subgraph "被测层"
 RTE["RTE"]
@@ -61,12 +61,12 @@ IT --> MCAL
 图示来源
 - [README.md:48-84](file://README.md#L48-L84)
 - [test_framework.h:123-138](file://tests/unit/test_framework.h#L123-L138)
-- [integration_test.c:12-71](file://src/bsw/integration/tests/integration_test.c#L12-L71)
+- [integration_test.c:12-71](file://tests/integration/bsw/integration_test.c#L12-L71)
 
 章节来源
 - [README.md:48-84](file://README.md#L48-L84)
 - [test_framework.h:123-138](file://tests/unit/test_framework.h#L123-L138)
-- [integration_test.c:12-71](file://src/bsw/integration/tests/integration_test.c#L12-L71)
+- [integration_test.c:12-71](file://tests/integration/bsw/integration_test.c#L12-L71)
 
 ## 核心组件
 - 测试框架（轻量级）
@@ -84,9 +84,9 @@ IT --> MCAL
 - [Com_test.c:111-394](file://src/bsw/services/com/src/Com_test.c#L111-L394)
 - [Dcm_test.c:135-274](file://src/bsw/services/dcm/src/Dcm_test.c#L135-L274)
 - [Dem_test.c:88-328](file://src/bsw/services/dem/src/Dem_test.c#L88-L328)
-- [BswM_test.c:116-314](file://src/bsw/integration/BswM_test.c#L116-L314)
-- [EcuM_test.c:304-521](file://src/bsw/integration/EcuM_test.c#L304-L521)
-- [integration_test.c:164-514](file://src/bsw/integration/tests/integration_test.c#L164-L514)
+- [BswM_test.c:116-314](file://tests/integration/bsw/BswM_test.c#L116-L314)
+- [EcuM_test.c:304-521](file://tests/integration/bsw/EcuM_test.c#L304-L521)
+- [integration_test.c:164-514](file://tests/integration/bsw/integration_test.c#L164-L514)
 
 ## 架构总览
 下图展示典型TDD流程在YuleTech平台的落地：从需求/规范出发，编写最小失败测试，实现满足需求的最简代码，随后进行安全重构提升质量与可维护性。
@@ -281,10 +281,10 @@ EcuM->>OS : ShutdownOS(...)
 ```
 
 图示来源
-- [EcuM_test.c:304-456](file://src/bsw/integration/EcuM_test.c#L304-L456)
+- [EcuM_test.c:304-456](file://tests/integration/bsw/EcuM_test.c#L304-L456)
 
 章节来源
-- [EcuM_test.c:304-521](file://src/bsw/integration/EcuM_test.c#L304-L521)
+- [EcuM_test.c:304-521](file://tests/integration/bsw/EcuM_test.c#L304-L521)
 
 ### 集成测试示例：BswM（基础软件模式管理）
 - 关键点
@@ -312,10 +312,10 @@ I --> |假| K["执行假动作列表"]
 ```
 
 图示来源
-- [BswM_test.c:139-218](file://src/bsw/integration/BswM_test.c#L139-L218)
+- [BswM_test.c:139-218](file://tests/integration/bsw/BswM_test.c#L139-L218)
 
 章节来源
-- [BswM_test.c:116-314](file://src/bsw/integration/BswM_test.c#L116-L314)
+- [BswM_test.c:116-314](file://tests/integration/bsw/BswM_test.c#L116-L314)
 
 ### 集成测试示例：跨层端到端（CAN信号收发）
 - 关键点
@@ -343,14 +343,14 @@ CanIf-->>OS : CanIf_MainFunction()
 ```
 
 图示来源
-- [integration_test.c:177-235](file://src/bsw/integration/tests/integration_test.c#L177-L235)
-- [integration_test.c:456-514](file://src/bsw/integration/tests/integration_test.c#L456-L514)
-- [integration_test_cfg.h:24-88](file://src/bsw/integration/tests/integration_test_cfg.h#L24-L88)
+- [integration_test.c:177-235](file://tests/integration/bsw/integration_test.c#L177-L235)
+- [integration_test.c:456-514](file://tests/integration/bsw/integration_test.c#L456-L514)
+- [integration_test_cfg.h:24-88](file://tests/integration/integration_test_cfg.h#L24-L88)
 
 章节来源
-- [integration_test.c:177-235](file://src/bsw/integration/tests/integration_test.c#L177-L235)
-- [integration_test.c:456-514](file://src/bsw/integration/tests/integration_test.c#L456-L514)
-- [integration_test_cfg.h:24-88](file://src/bsw/integration/tests/integration_test_cfg.h#L24-L88)
+- [integration_test.c:177-235](file://tests/integration/bsw/integration_test.c#L177-L235)
+- [integration_test.c:456-514](file://tests/integration/bsw/integration_test.c#L456-L514)
+- [integration_test_cfg.h:24-88](file://tests/integration/integration_test_cfg.h#L24-L88)
 
 ## 依赖关系分析
 - 测试对实现的耦合
@@ -373,11 +373,11 @@ IT --> Mock["Mock/Stub<br/>CanIf/Det/Fee/Gpt 等"]
 
 图示来源
 - [test_framework.h:123-138](file://tests/unit/test_framework.h#L123-L138)
-- [integration_test.c:164-514](file://src/bsw/integration/tests/integration_test.c#L164-L514)
+- [integration_test.c:164-514](file://tests/integration/bsw/integration_test.c#L164-L514)
 
 章节来源
 - [test_framework.h:123-138](file://tests/unit/test_framework.h#L123-L138)
-- [integration_test.c:164-514](file://src/bsw/integration/tests/integration_test.c#L164-L514)
+- [integration_test.c:164-514](file://tests/integration/bsw/integration_test.c#L164-L514)
 
 ## 性能考量
 - 断言与打印
@@ -388,8 +388,8 @@ IT --> Mock["Mock/Stub<br/>CanIf/Det/Fee/Gpt 等"]
   - OS定时器频率影响测试稳定性，应与被测模块主函数周期匹配
 
 章节来源
-- [integration_test_cfg.h:24-88](file://src/bsw/integration/tests/integration_test_cfg.h#L24-L88)
-- [integration_test.c:493-514](file://src/bsw/integration/tests/integration_test.c#L493-L514)
+- [integration_test_cfg.h:24-88](file://tests/integration/integration_test_cfg.h#L24-L88)
+- [integration_test.c:493-514](file://tests/integration/bsw/integration_test.c#L493-L514)
 
 ## 故障排查指南
 - 如何解读测试失败
@@ -405,8 +405,8 @@ IT --> Mock["Mock/Stub<br/>CanIf/Det/Fee/Gpt 等"]
 - [Com_test.c:122-133](file://src/bsw/services/com/src/Com_test.c#L122-L133)
 - [Dcm_test.c:220-237](file://src/bsw/services/dcm/src/Dcm_test.c#L220-L237)
 - [Dem_test.c:274-288](file://src/bsw/services/dem/src/Dem_test.c#L274-L288)
-- [BswM_test.c:220-242](file://src/bsw/integration/BswM_test.c#L220-L242)
-- [EcuM_test.c:416-456](file://src/bsw/integration/EcuM_test.c#L416-L456)
+- [BswM_test.c:220-242](file://tests/integration/bsw/BswM_test.c#L220-L242)
+- [EcuM_test.c:416-456](file://tests/integration/bsw/EcuM_test.c#L416-L456)
 
 ## 结论
 YuleTech AutoSAR BSW平台提供了完善的TDD基础设施：自研轻量测试框架、丰富的单模块单元测试与跨层集成测试。遵循“红-绿-重构”流程，可在嵌入式环境下高效、安全地交付高质量代码。建议在新功能开发中坚持先写测试、再写实现、持续重构的原则，并充分利用Mock/Stub隔离外部依赖，确保测试稳定与可维护。
@@ -419,4 +419,4 @@ YuleTech AutoSAR BSW平台提供了完善的TDD基础设施：自研轻量测试
 
 章节来源
 - [main.c:63-118](file://examples/can_demo/main.c#L63-L118)
-- [test_runner.c:27-39](file://src/bsw/integration/tests/test_runner.c#L27-L39)
+- [test_runner.c:27-39](file://tests/integration/bsw/test_runner.c#L27-L39)

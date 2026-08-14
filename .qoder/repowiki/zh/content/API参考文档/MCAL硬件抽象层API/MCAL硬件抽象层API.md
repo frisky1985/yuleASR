@@ -13,8 +13,8 @@
 - [Pwm.h](file://src/bsw/mcal/pwm/include/Pwm.h)
 - [Adc.h](file://src/bsw/mcal/adc/include/Adc.h)
 - [Wdg.h](file://src/bsw/mcal/wdg/include/Wdg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [api-reference.md](file://docs/api-reference.md)
 - [main.c（LED闪烁示例）](file://examples/led_blink/main.c)
 - [main.c（CAN通信示例）](file://examples/can_demo/main.c)
@@ -85,8 +85,8 @@ WDG --> DET
 - [Pwm.h:13-299](file://src/bsw/mcal/pwm/include/Pwm.h#L13-L299)
 - [Adc.h:13-384](file://src/bsw/mcal/adc/include/Adc.h#L13-L384)
 - [Wdg.h:13-169](file://src/bsw/mcal/wdg/include/Wdg.h#L13-L169)
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 
 章节来源
 - [Mcu.h:13-239](file://src/bsw/mcal/mcu/include/Mcu.h#L13-L239)
@@ -98,8 +98,8 @@ WDG --> DET
 - [Pwm.h:13-299](file://src/bsw/mcal/pwm/include/Pwm.h#L13-L299)
 - [Adc.h:13-384](file://src/bsw/mcal/adc/include/Adc.h#L13-L384)
 - [Wdg.h:13-169](file://src/bsw/mcal/wdg/include/Wdg.h#L13-L169)
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 
 ## 核心组件
 - 标准类型与错误码：统一的返回类型、布尔、数值类型与版本信息结构，确保跨模块一致性。
@@ -107,8 +107,8 @@ WDG --> DET
 - 模块通用接口：所有 MCAL 模块遵循统一的 Init/DeInit/MainFunction/GetVersionInfo 接口风格，便于集成与维护。
 
 章节来源
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
 - [api-reference.md:39-56](file://docs/api-reference.md#L39-L56)
 
 ## 架构总览
@@ -338,8 +338,8 @@ WDG --> DET
 ```
 
 图表来源
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 - [Mcu.h:19-20](file://src/bsw/mcal/mcu/include/Mcu.h#L19-L20)
 - [Port.h:21-22](file://src/bsw/mcal/port/include/Port.h#L21-L22)
 - [Dio.h:19-21](file://src/bsw/mcal/dio/include/Dio.h#L19-L21)
@@ -351,8 +351,8 @@ WDG --> DET
 - [Wdg.h:19-20](file://src/bsw/mcal/wdg/include/Wdg.h#L19-L20)
 
 章节来源
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 
 ## 性能考量
 - 时钟与分频：合理配置系统/总线/Flash 时钟与 PLL 参数，避免过高的系统频率导致功耗与稳定性问题。
@@ -382,7 +382,7 @@ WDG --> DET
   - CAN 示例展示了 Mcu、Port、Can、CanIf 的初始化与主函数循环处理。
 
 章节来源
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
 - [Mcu.h:46-52](file://src/bsw/mcal/mcu/include/Mcu.h#L46-L52)
 - [Port.h:44-50](file://src/bsw/mcal/port/include/Port.h#L44-L50)
 - [Dio.h:46-49](file://src/bsw/mcal/dio/include/Dio.h#L46-L49)

@@ -5,8 +5,8 @@
 - [NvM.h](file://src/bsw/services/nvm/include/NvM.h)
 - [NvM_Cfg.h](file://src/bsw/services/nvm/include/NvM_Cfg.h)
 - [NvM.c](file://src/bsw/services/nvm/src/NvM.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [bsw_config.json](file://config/bsw_config.json)
 </cite>
 

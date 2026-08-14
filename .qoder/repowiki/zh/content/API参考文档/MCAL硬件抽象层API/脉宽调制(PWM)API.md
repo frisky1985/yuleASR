@@ -6,10 +6,10 @@
 - [Pwm.c](file://src/bsw/mcal/pwm/src/Pwm.c)
 - [Pwm_Cfg.h](file://src/bsw/mcal/pwm/include/Pwm_Cfg.h)
 - [IoHwAb.c](file://src/bsw/ecual/iohwab/src/IoHwAb.c)
-- [EcuM.c](file://src/bsw/integration/EcuM.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
+- [EcuM.c](file://src/bsw/services/ecum/src/EcuM.c)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
 </cite>
 
 ## 目录
@@ -66,20 +66,20 @@ PWM_H --> CSTK
 - [Pwm.c:1-383](file://src/bsw/mcal/pwm/src/Pwm.c#L1-L383)
 - [Pwm_Cfg.h:1-63](file://src/bsw/mcal/pwm/include/Pwm_Cfg.h#L1-L63)
 - [IoHwAb.c:240-296](file://src/bsw/ecual/iohwab/src/IoHwAb.c#L240-L296)
-- [EcuM.c:166-167](file://src/bsw/integration/EcuM.c#L166-L167)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [ComStack_Types.h:1-170](file://src/bsw/common/ComStack_Types.h#L1-L170)
+- [EcuM.c:166-167](file://src/bsw/services/ecum/src/EcuM.c#L166-L167)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [ComStack_Types.h:1-170](file://src/bsw/ecual/include/ComStack_Types.h#L1-L170)
 
 章节来源
 - [Pwm.h:1-299](file://src/bsw/mcal/pwm/include/Pwm.h#L1-L299)
 - [Pwm.c:1-383](file://src/bsw/mcal/pwm/src/Pwm.c#L1-L383)
 - [Pwm_Cfg.h:1-63](file://src/bsw/mcal/pwm/include/Pwm_Cfg.h#L1-L63)
 - [IoHwAb.c:240-296](file://src/bsw/ecual/iohwab/src/IoHwAb.c#L240-L296)
-- [EcuM.c:166-167](file://src/bsw/integration/EcuM.c#L166-L167)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [ComStack_Types.h:1-170](file://src/bsw/common/ComStack_Types.h#L1-L170)
+- [EcuM.c:166-167](file://src/bsw/services/ecum/src/EcuM.c#L166-L167)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [ComStack_Types.h:1-170](file://src/bsw/ecual/include/ComStack_Types.h#L1-L170)
 
 ## 核心组件
 - 数据类型与枚举
@@ -118,7 +118,7 @@ Note over APP,PWM : 启动阶段由系统集成调用 Pwm_Init 完成硬件初�
 图表来源
 - [IoHwAb.c:263-296](file://src/bsw/ecual/iohwab/src/IoHwAb.c#L263-L296)
 - [Pwm.c:176-205](file://src/bsw/mcal/pwm/src/Pwm.c#L176-L205)
-- [EcuM.c:166-167](file://src/bsw/integration/EcuM.c#L166-L167)
+- [EcuM.c:166-167](file://src/bsw/services/ecum/src/EcuM.c#L166-L167)
 
 ## 详细组件分析
 
@@ -324,14 +324,14 @@ ECUM --> PWM_C
 - [IoHwAb.c:240-296](file://src/bsw/ecual/iohwab/src/IoHwAb.c#L240-L296)
 - [Pwm.h:1-299](file://src/bsw/mcal/pwm/include/Pwm.h#L1-L299)
 - [Pwm.c:1-383](file://src/bsw/mcal/pwm/src/Pwm.c#L1-L383)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [ComStack_Types.h:1-170](file://src/bsw/common/ComStack_Types.h#L1-L170)
-- [EcuM.c:166-167](file://src/bsw/integration/EcuM.c#L166-L167)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [ComStack_Types.h:1-170](file://src/bsw/ecual/include/ComStack_Types.h#L1-L170)
+- [EcuM.c:166-167](file://src/bsw/services/ecum/src/EcuM.c#L166-L167)
 
 章节来源
 - [IoHwAb.c:240-296](file://src/bsw/ecual/iohwab/src/IoHwAb.c#L240-L296)
-- [EcuM.c:166-167](file://src/bsw/integration/EcuM.c#L166-L167)
+- [EcuM.c:166-167](file://src/bsw/services/ecum/src/EcuM.c#L166-L167)
 
 ## 性能考虑
 - 分辨率与精度
@@ -357,7 +357,7 @@ ECUM --> PWM_C
 - [Pwm.h:62-71](file://src/bsw/mcal/pwm/include/Pwm.h#L62-L71)
 - [Pwm.c:86-95](file://src/bsw/mcal/pwm/src/Pwm.c#L86-L95)
 - [Pwm.c:179-192](file://src/bsw/mcal/pwm/src/Pwm.c#L179-L192)
-- [Det.h:40-44](file://src/bsw/common/Det.h#L40-L44)
+- [Det.h:40-44](file://src/bsw/services/det/include/Det.h#L40-L44)
 
 ## 结论
 PWM模块提供了完整的AutoSAR兼容接口，具备灵活的配置能力与良好的可扩展性。通过编译期配置与上层适配层的配合，可在不同应用场景中高效实现精确的波形生成与控制。建议在高频应用中注意占空比分辨率与中断开销，在低功耗场景中合理使用电源状态管理接口。

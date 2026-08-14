@@ -7,7 +7,7 @@
 - [DoCan_Cfg.h](file://src/bsw/services/docan/include/DoCan_Cfg.h)
 - [DoCan_Lcfg.c](file://src/bsw/services/docan/src/DoCan_Lcfg.c)
 - [DoCan_test.c](file://src/bsw/services/docan/src/DoCan_test.c)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [main.c](file://examples/can_demo/main.c)
 </cite>
 

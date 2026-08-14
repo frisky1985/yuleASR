@@ -5,8 +5,8 @@
 - [Spi.h](file://src/bsw/mcal/spi/include/Spi.h)
 - [Spi.c](file://src/bsw/mcal/spi/src/Spi.c)
 - [Spi_Cfg.h](file://src/bsw/config/templates/Spi_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [api-reference.md](file://docs/api-reference.md)
 - [modules.md](file://docs/modules.md)
 </cite>
@@ -54,8 +54,8 @@ DOC_MOD --> SPI
 - [Spi.h:1-362](file://src/bsw/mcal/spi/include/Spi.h#L1-L362)
 - [Spi.c:1-439](file://src/bsw/mcal/spi/src/Spi.c#L1-L439)
 - [Spi_Cfg.h:1-93](file://src/bsw/config/templates/Spi_Cfg.h#L1-L93)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 - [api-reference.md:1-609](file://docs/api-reference.md#L1-L609)
 - [modules.md:1-639](file://docs/modules.md#L1-L639)
 
@@ -76,8 +76,8 @@ DOC_MOD --> SPI
 - [Spi.h:13-362](file://src/bsw/mcal/spi/include/Spi.h#L13-L362)
 - [Spi.c:1-439](file://src/bsw/mcal/spi/src/Spi.c#L1-L439)
 - [Spi_Cfg.h:1-93](file://src/bsw/config/templates/Spi_Cfg.h#L1-L93)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 
 ## 架构总览
 SPI 模块在 AutoSAR 分层架构中的定位如下：
@@ -472,4 +472,4 @@ SPI 模块提供了符合 AutoSAR 标准的主机通信接口，支持多设备�
 - 作业配置：[Spi_JobConfigType:171-187](file://src/bsw/mcal/spi/include/Spi.h#L171-L187)
 - 通道配置：[Spi_ChannelConfigType:160-169](file://src/bsw/mcal/spi/include/Spi.h#L160-L169)
 - 外部设备配置：[Spi_ExternalDeviceType:199-212](file://src/bsw/mcal/spi/include/Spi.h#L199-L212)
-- 标准类型与返回值：[Std_Types.h:23-41](file://src/bsw/common/Std_Types.h#L23-L41)
+- 标准类型与返回值：[Std_Types.h:23-41](file://src/bsw/os/include/Std_Types.h#L23-L41)

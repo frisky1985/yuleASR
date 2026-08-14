@@ -9,7 +9,7 @@
 - [Dio.h](file://src/bsw/mcal/dio/include/Dio.h)
 - [Dio.c](file://src/bsw/mcal/dio/src/Dio.c)
 - [main.c](file://examples/led_blink/main.c)
-- [EcuM_test.c](file://src/bsw/integration/EcuM_test.c)
+- [EcuM_test.c](file://tests/integration/bsw/EcuM_test.c)
 </cite>
 
 ## 目录

@@ -7,9 +7,9 @@
 - [CanIf_Cfg.h](file://src/bsw/ecual/CanIf/include/CanIf_Cfg.h)
 - [Can.h](file://src/bsw/mcal/can/include/Can.h)
 - [PduR.h](file://src/bsw/services/pdur/include/PduR.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 - [main.c](file://examples/can_demo/main.c)
 </cite>
@@ -140,7 +140,7 @@ CanIf_ReturnType --|> Std_ReturnType : "扩展"
 
 **图表来源**
 - [CanIf.h:95-103](file://src/bsw/ecual/CanIf/include/CanIf.h#L95-L103)
-- [Std_Types.h:23-31](file://src/bsw/common/Std_Types.h#L23-L31)
+- [Std_Types.h:23-31](file://src/bsw/os/include/Std_Types.h#L23-L31)
 
 #### 模式类型定义
 ```mermaid

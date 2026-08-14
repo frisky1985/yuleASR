@@ -1061,6 +1061,73 @@ Wdg_ConfigType --> WdgIf_ModeType : "初始模式"
 - [Wdg.h:134-163](file://src/bsw/mcal/wdg/include/Wdg.h#L134-L163)
 - [Wdg_Cfg.h:15-62](file://src/bsw/mcal/wdg/include/Wdg_Cfg.h#L15-L62)
 
+### Crypto 加密驱动分析
+- 功能要点：硬件加密引擎抽象（AES/RSA/SHA/HMAC）、密钥管理、随机数生成。
+- 接口规范：Crypto_ProcessJob、Crypto_KeyElementSet/Get、Crypto_RandomSeed/Generate。
+- 错误处理：作业失败、密钥无效、算法不支持、DET 参数校验。
+- ⚠️ 状态：真实驱动实现，runtime 密钥镜像表（非结构体强转），已修复布局错位生产 bug。
+
+**章节来源**
+- [Crypto.h](file://src/bsw/mcal/crypto/include/Crypto.h)
+
+### Eep EEPROM驱动分析
+- 功能要点：外部 EEPROM 读写抽象（SPI/I2C 总线）、擦写周期管理、掉电保护。
+- 接口规范：Eep_Init/Read/Write/Erase、JobEndNotification/JobErrorNotification 回调。
+- 错误处理：地址越界、总线错误、写保护违规、DET 参数校验。
+
+**章节来源**
+- [Eep.h](file://src/bsw/mcal/eep/include/Eep.h)
+
+### Eth 以太网驱动分析
+- 功能要点：以太网控制器驱动（MAC 层）、收发描述符管理、MAC 地址过滤。
+- 接口规范：Eth_Init/Transmit/Receive、TxConfirmation/RxIndication 回调、MAC 过滤配置。
+- 错误处理：DMA 错误、链路断开、描述符耗尽、DET 参数校验。
+
+**章节来源**
+- [Eth.h](file://src/bsw/mcal/eth/include/Eth.h)
+
+### Fee Flash EEPROM仿真分析
+- 功能要点：Flash 模拟 EEPROM（扇区管理、磨损均衡、掉电恢复）。
+- 关键数据结构：Fee 块配置表、扇区状态机（Empty/Valid/Invalid）。
+- 接口规范：Fee_Init/Read/Write/Erase/EraseImmediate、JobEnd/JobError 回调。
+- 错误处理：扇区损坏、写入中断恢复、地址非法。
+
+**章节来源**
+- [Fee.h](file://src/bsw/mcal/fee/include/Fee.h)
+
+### Fls Flash驱动分析
+- 功能要点：片内 Flash 底层驱动（扇区擦除/编程/读取）、写保护配置。
+- 接口规范：Fls_Init/Read/Write/Erase、JobEnd/JobError 回调、写保护寄存器配置。
+- 错误处理：擦写失败、写保护违规、地址越界、DET 参数校验。
+- ⚠️ 状态：真实驱动，含 Fls_ConfigureWriteProtection 实现（WRP 写保护）。
+
+**章节来源**
+- [Fls.h](file://src/bsw/mcal/fls/include/Fls.h)
+
+### I2c I2C驱动分析
+- 功能要点：I2C 总线控制器驱动（主/从模式）、多主机仲裁、时钟拉伸。
+- 接口规范：I2c_Init/Write/Read/SyncTransmit、异步回调。
+- 错误处理：NACK、仲裁丢失、总线忙、DET 参数校验。
+
+**章节来源**
+- [I2c.h](file://src/bsw/mcal/i2c/include/I2c.h)
+
+### Icu 输入捕获驱动分析
+- 功能要点：输入信号测量（周期/脉宽/占空比/边沿计数）、边沿检测中断。
+- 接口规范：Icu_Init/StartSignalMeasurement/GetSignalMeasurement、EdgeNotification 回调。
+- 错误处理：测量超时、模式非法、DET 参数校验。
+
+**章节来源**
+- [Icu.h](file://src/bsw/mcal/icu/include/Icu.h)
+
+### Lin LIN驱动分析
+- 功能要点：LIN 控制器驱动（主/从模式）、报文调度表、唤醒/休眠。
+- 接口规范：Lin_Init/SendFrame/GetStatus、Wakeup 检测、帧收发回调。
+- 错误处理：总线错误、帧校验失败、模式非法、DET 参数校验。
+
+**章节来源**
+- [Lin.h](file://src/bsw/mcal/lin/include/Lin.h)
+
 ## 依赖关系分析
 
 MCAL硬件抽象层的模块间依赖关系体现了清晰的层次结构和职责分离：

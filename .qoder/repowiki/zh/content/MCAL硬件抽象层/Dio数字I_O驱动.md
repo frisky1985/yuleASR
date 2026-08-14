@@ -9,8 +9,8 @@
 - [Port.c](file://src/bsw/mcal/port/src/Port.c)
 - [Port_Cfg.h](file://src/bsw/config/templates/Port_Cfg.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [main.c](file://examples/led_blink/main.c)
 </cite>
 
@@ -96,8 +96,8 @@ PORT --> GPIO
 - [Port.h:55-173](file://src/bsw/mcal/port/include/Port.h#L55-L173)
 - [Port.c:252-457](file://src/bsw/mcal/port/src/Port.c#L252-L457)
 - [MemMap.h:46-173](file://src/bsw/general/inc/MemMap.h#L46-L173)
-- [Det.h:47-71](file://src/bsw/common/Det.h#L47-L71)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:47-71](file://src/bsw/services/det/include/Det.h#L47-L71)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 
 ## 架构总览
 Dio与Port共同构成数字I/O的完整栈：Port负责引脚级的硬件配置（方向、模式、电气特性），Dio负责运行时的读写与翻转操作。两者通过统一的通道/端口编号体系与寄存器地址映射协同工作。
@@ -300,8 +300,8 @@ App --> Port
 - [Dio.h:20-21](file://src/bsw/mcal/dio/include/Dio.h#L20-L21)
 - [Dio.c:9-11](file://src/bsw/mcal/dio/src/Dio.c#L9-L11)
 - [MemMap.h:46-173](file://src/bsw/general/inc/MemMap.h#L46-L173)
-- [Det.h:17-19](file://src/bsw/common/Det.h#L17-L19)
-- [Det.c:19-20](file://src/bsw/common/Det.c#L19-L20)
+- [Det.h:17-19](file://src/bsw/services/det/include/Det.h#L17-L19)
+- [Det.c:19-20](file://src/bsw/services/det/src/Det.c#L19-L20)
 - [Port.h:21-22](file://src/bsw/mcal/port/include/Port.h#L21-L22)
 - [Port.c:17-19](file://src/bsw/mcal/port/src/Port.c#L17-L19)
 - [main.c:15-18](file://examples/led_blink/main.c#L15-L18)
@@ -338,8 +338,8 @@ App --> Port
 - [Dio.c:58-66](file://src/bsw/mcal/dio/src/Dio.c#L58-L66)
 - [Dio.c:71-80](file://src/bsw/mcal/dio/src/Dio.c#L71-L80)
 - [Dio.c:196-207](file://src/bsw/mcal/dio/src/Dio.c#L196-L207)
-- [Det.h:47-71](file://src/bsw/common/Det.h#L47-L71)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:47-71](file://src/bsw/services/det/include/Det.h#L47-L71)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 
 ## 结论
 Dio驱动提供了简洁高效的数字I/O访问接口，结合Port驱动的引脚配置能力，能够满足从引脚模式切换到运行时读写的完整需求。通过合理的端口/通道组操作与掩码写入策略，可在保证正确性的前提下提升性能。建议在开发阶段充分利用DET进行错误检测，在生产阶段根据需求权衡错误检测开关以获得最佳性能。

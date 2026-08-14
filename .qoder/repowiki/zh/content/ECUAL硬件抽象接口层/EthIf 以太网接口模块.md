@@ -5,8 +5,8 @@
 - [EthIf.h](file://src/bsw/ecual/ethif/include/EthIf.h)
 - [EthIf_Cfg.h](file://src/bsw/ecual/ethif/include/EthIf_Cfg.h)
 - [EthIf.c](file://src/bsw/ecual/ethif/src/EthIf.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [Rte.h](file://src/bsw/rte/include/Rte.h)
 - [bsw_config.json](file://config/bsw_config.json)
 </cite>
@@ -201,7 +201,7 @@ end
 
 **图表来源**
 - [EthIf.c:29-59](file://src/bsw/ecual/ethif/src/EthIf.c#L29-L59)
-- [Det.h:47-59](file://src/bsw/common/Det.h#L47-L59)
+- [Det.h:47-59](file://src/bsw/services/det/include/Det.h#L47-L59)
 
 ### 帧传输处理
 EthIf 提供完整的帧传输处理机制：
@@ -322,7 +322,7 @@ RTE --> EthIf
 
 **图表来源**
 - [Rte.h:76-106](file://src/bsw/rte/include/Rte.h#L76-L106)
-- [Det.h:47-59](file://src/bsw/common/Det.h#L47-L59)
+- [Det.h:47-59](file://src/bsw/services/det/include/Det.h#L47-L59)
 
 **章节来源**
 - [EthIf.h:19-21](file://src/bsw/ecual/ethif/include/EthIf.h#L19-L21)
@@ -367,7 +367,7 @@ EthIf 定义了完整的错误代码体系：
 
 **章节来源**
 - [EthIf.h:65-91](file://src/bsw/ecual/ethif/include/EthIf.h#L65-L91)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 ## 结论
 EthIf 以太网接口模块是一个功能完整、设计规范的 AutoSAR 兼容模块。其主要特点包括：

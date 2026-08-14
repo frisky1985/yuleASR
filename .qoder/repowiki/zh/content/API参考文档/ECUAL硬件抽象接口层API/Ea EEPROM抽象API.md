@@ -9,8 +9,8 @@
 - [MemIf_Cfg.h](file://src/bsw/ecual/memif/include/MemIf_Cfg.h)
 - [NvM.h](file://src/bsw/services/nvm/include/NvM.h)
 - [NvM_Cfg.h](file://src/bsw/services/nvm/include/NvM_Cfg.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [bsw_config.json](file://config/bsw_config.json)
 </cite>
 
@@ -80,8 +80,8 @@ FEE --> HW
 - [Ea.c:25-60](file://src/bsw/ecual/ea/src/Ea.c#L25-L60)
 - [MemIf.h:58-127](file://src/bsw/ecual/memif/include/MemIf.h#L58-L127)
 - [NvM.h:78-173](file://src/bsw/services/nvm/include/NvM.h#L78-L173)
-- [Det.h:38-76](file://src/bsw/common/Det.h#L38-L76)
-- [Std_Types.h:23-81](file://src/bsw/common/Std_Types.h#L23-L81)
+- [Det.h:38-76](file://src/bsw/services/det/include/Det.h#L38-L76)
+- [Std_Types.h:23-81](file://src/bsw/os/include/Std_Types.h#L23-L81)
 
 ## 架构总览
 Ea模块采用“块管理+作业队列”的异步处理模型：调用者发起读写请求后，Ea将作业委托给底层MemIf/Eep驱动；在Ea_MainFunction中轮询作业结果，完成后通过回调通知上层NvM。
@@ -230,9 +230,9 @@ Ea_BlockInfoType --> "管理" Ea_BlockConfigType : "映射"
 - 标准返回类型：成功、失败、忙
 
 **章节来源**
-- [Det.h:38-76](file://src/bsw/common/Det.h#L38-L76)
+- [Det.h:38-76](file://src/bsw/services/det/include/Det.h#L38-L76)
 - [Ea.h:70-94](file://src/bsw/ecual/ea/include/Ea.h#L70-L94)
-- [Std_Types.h:23-41](file://src/bsw/common/Std_Types.h#L23-L41)
+- [Std_Types.h:23-41](file://src/bsw/os/include/Std_Types.h#L23-L41)
 
 ### 数据流与处理逻辑
 
@@ -391,7 +391,7 @@ MEMIF --> CFG_MEMIF["MemIf_Cfg.h"]
 - [Ea.c:138-159](file://src/bsw/ecual/ea/src/Ea.c#L138-L159)
 - [Ea.c:172-175](file://src/bsw/ecual/ea/src/Ea.c#L172-L175)
 - [Ea.c:429-479](file://src/bsw/ecual/ea/src/Ea.c#L429-L479)
-- [Det.h:38-76](file://src/bsw/common/Det.h#L38-L76)
+- [Det.h:38-76](file://src/bsw/services/det/include/Det.h#L38-L76)
 
 ## 结论
 Ea EEPROM抽象模块提供了符合AutoSAR标准的统一接口，通过MemIf屏蔽底层差异，结合NvM实现块管理与数据保护。其异步设计与完善的错误处理机制确保了在复杂嵌入式环境中的可靠性与可维护性。建议在产品设计中充分利用写入/擦除计数与CRC功能，制定合理的磨损均衡与数据备份策略。

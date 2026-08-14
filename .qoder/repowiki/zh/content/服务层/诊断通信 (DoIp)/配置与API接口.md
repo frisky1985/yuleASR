@@ -7,9 +7,9 @@
 - [DoIp.c](file://src/bsw/services/doip/src/DoIp.c)
 - [DoIp_Lcfg.c](file://src/bsw/services/doip/src/DoIp_Lcfg.c)
 - [DoIp_test.c](file://src/bsw/services/doip/src/DoIp_test.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [DoIp_spec.md](file://openspec/changes/dev-doip-docan-module/specs/DoIp_spec.md)
 - [api-reference.md](file://docs/api-reference.md)
 </cite>
@@ -352,13 +352,13 @@ DoIp --> StdTypes["Std_Types"]
 
 图表来源
 - [DoIp.c:28-31](file://src/bsw/services/doip/src/DoIp.c#L28-L31)
-- [Det.h:17-17](file://src/bsw/common/Det.h#L17-L17)
-- [Std_Types.h:17-18](file://src/bsw/common/Std_Types.h#L17-L18)
+- [Det.h:17-17](file://src/bsw/services/det/include/Det.h#L17-L17)
+- [Std_Types.h:17-18](file://src/bsw/os/include/Std_Types.h#L17-L18)
 
 章节来源
 - [DoIp.c:28-31](file://src/bsw/services/doip/src/DoIp.c#L28-L31)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
 
 ## 性能考虑
 - 缓冲区大小：发送缓冲区包含通用头部、诊断消息头部与最大诊断数据长度，确保一次封装满足常见UDS报文

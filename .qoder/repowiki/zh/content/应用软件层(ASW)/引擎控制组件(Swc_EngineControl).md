@@ -9,8 +9,8 @@
 - [Rte_Type.h](file://src/bsw/rte/include/Rte_Type.h)
 - [Rte.c](file://src/bsw/rte/src/Rte.c)
 - [bsw_config.json](file://config/bsw_config.json)
-- [integration_test.c](file://src/bsw/integration/tests/integration_test.c)
-- [integration_test_cfg.h](file://src/bsw/integration/tests/integration_test_cfg.h)
+- [integration_test.c](file://tests/integration/bsw/integration_test.c)
+- [integration_test_cfg.h](file://tests/integration/integration_test_cfg.h)
 </cite>
 
 ## 目录
@@ -333,8 +333,8 @@ Swc_EngineControlOutputType --> Swc_EngineParametersType : "由参数驱动"
 - 基础配置
   - [bsw_config.json:1-21](file://config/bsw_config.json#L1-L21)
 - 集成测试参考
-  - [integration_test.c 中的RTE读取示例:1027-1031](file://src/bsw/integration/tests/integration_test.c#L1027-L1031)
-  - [integration_test_cfg.h 引擎配置类型:92-98](file://src/bsw/integration/tests/integration_test_cfg.h#L92-L98)
+  - [integration_test.c 中的RTE读取示例:1027-1031](file://tests/integration/bsw/integration_test.c#L1027-L1031)
+  - [integration_test_cfg.h 引擎配置类型:92-98](file://tests/integration/integration_test_cfg.h#L92-L98)
 
 ## 依赖关系分析
 - 组件对外依赖
@@ -421,5 +421,5 @@ Swc_EngineControl以清晰的状态机与快慢环架构实现了对发动机的
 - 基础配置
   - [bsw_config.json:1-21](file://config/bsw_config.json#L1-L21)
 - 集成测试参考
-  - [integration_test.c 中的RTE读取示例:1027-1031](file://src/bsw/integration/tests/integration_test.c#L1027-L1031)
-  - [integration_test_cfg.h 引擎配置类型:92-98](file://src/bsw/integration/tests/integration_test_cfg.h#L92-L98)
+  - [integration_test.c 中的RTE读取示例:1027-1031](file://tests/integration/bsw/integration_test.c#L1027-L1031)
+  - [integration_test_cfg.h 引擎配置类型:92-98](file://tests/integration/integration_test_cfg.h#L92-L98)

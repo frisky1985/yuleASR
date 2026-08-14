@@ -135,7 +135,6 @@ dSYM/
 *.dSYM
 
 # Coverage run artifacts
-coverage_run/bin/
 # Coverage report output
 # NVM configurator generated output
 tools/nvm_configurator/output/
@@ -184,7 +183,6 @@ output/build/
 output/generated/
 
 # AI-rules 对齐：产物目录全部忽略（2026-08-14 refactor/align-ai-rules）
-/coverage_run/
 /coverage_report/
 /coverage_report_asil/
 /coverage_report_focused/

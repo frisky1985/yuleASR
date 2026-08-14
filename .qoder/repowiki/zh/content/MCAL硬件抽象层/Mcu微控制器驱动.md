@@ -6,8 +6,8 @@
 - [Mcu.c](file://src/bsw/mcal/mcu/src/Mcu.c)
 - [Mcu_Cfg.h](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h)
 - [Mcu_Cfg.h（模板）](file://src/bsw/config/templates/Mcu_Cfg.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 - [platform_config.h](file://platform/cortex-m/platform_config.h)
 - [startup_cortex_m.c](file://platform/cortex-m/startup_cortex_m.c)
@@ -37,8 +37,8 @@ Mcu驱动位于BSW（基础软件）层的MCAL（微控制器抽象层），采�
 - 实现文件：src/bsw/mcal/mcu/src/Mcu.c
 - 配置头文件：src/bsw/mcal/mcu/include/Mcu_Cfg.h
 - 配置模板：src/bsw/config/templates/Mcu_Cfg.h
-- 错误检测模块：src/bsw/common/Det.h
-- 标准类型定义：src/bsw/common/Std_Types.h
+- 错误检测模块：src/bsw/services/det/include/Det.h
+- 标准类型定义：src/bsw/os/include/Std_Types.h
 - 内存映射宏：src/bsw/general/inc/MemMap.h
 - 平台配置：platform/cortex-m/platform_config.h
 - 启动文件：platform/cortex-m/startup_cortex_m.c
@@ -85,8 +85,8 @@ EXAMPLE --> MCU_H
 - [Mcu.c:1-547](file://src/bsw/mcal/mcu/src/Mcu.c#L1-L547)
 - [Mcu_Cfg.h:1-82](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h#L1-L82)
 - [Mcu_Cfg.h（模板）:1-69](file://src/bsw/config/templates/Mcu_Cfg.h#L1-L69)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [MemMap.h:29-79](file://src/bsw/general/inc/MemMap.h#L29-L79)
 - [platform_config.h:1-307](file://platform/cortex-m/platform_config.h#L1-L307)
 - [startup_cortex_m.c:1-267](file://platform/cortex-m/startup_cortex_m.c#L1-L267)
@@ -99,8 +99,8 @@ EXAMPLE --> MCU_H
 - [Mcu.c:1-547](file://src/bsw/mcal/mcu/src/Mcu.c#L1-L547)
 - [Mcu_Cfg.h:1-82](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h#L1-L82)
 - [Mcu_Cfg.h（模板）:1-69](file://src/bsw/config/templates/Mcu_Cfg.h#L1-L69)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [MemMap.h:29-79](file://src/bsw/general/inc/MemMap.h#L29-L79)
 - [platform_config.h:1-307](file://platform/cortex-m/platform_config.h#L1-L307)
 - [startup_cortex_m.c:1-267](file://platform/cortex-m/startup_cortex_m.c#L1-L267)
@@ -202,8 +202,8 @@ PLATFORM_CFG --> STARTUP
 **图表来源**
 - [Mcu.h:134-230](file://src/bsw/mcal/mcu/include/Mcu.h#L134-L230)
 - [Mcu.c:252-488](file://src/bsw/mcal/mcu/src/Mcu.c#L252-L488)
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
-- [Std_Types.h:40-80](file://src/bsw/common/Std_Types.h#L40-L80)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
+- [Std_Types.h:40-80](file://src/bsw/os/include/Std_Types.h#L40-L80)
 - [MemMap.h:40-79](file://src/bsw/general/inc/MemMap.h#L40-L79)
 - [platform_config.h:1-307](file://platform/cortex-m/platform_config.h#L1-L307)
 - [startup_cortex_m.c:243-266](file://platform/cortex-m/startup_cortex_m.c#L243-L266)
@@ -230,7 +230,7 @@ STATE-->>App : 初始化完成
 
 **图表来源**
 - [Mcu.c:252-280](file://src/bsw/mcal/mcu/src/Mcu.c#L252-L280)
-- [Det.h:59-59](file://src/bsw/common/Det.h#L59-L59)
+- [Det.h:59-59](file://src/bsw/services/det/include/Det.h#L59-L59)
 
 **章节来源**
 - [Mcu.c:252-280](file://src/bsw/mcal/mcu/src/Mcu.c#L252-L280)
@@ -432,7 +432,7 @@ Mcu驱动采用开发错误检测（DevErrorDetect）机制，所有公共API都
 - [Mcu.c:254-264](file://src/bsw/mcal/mcu/src/Mcu.c#L254-L264)
 - [Mcu.c:289-299](file://src/bsw/mcal/mcu/src/Mcu.c#L289-L299)
 - [Mcu.c:317-327](file://src/bsw/mcal/mcu/src/Mcu.c#L317-L327)
-- [Det.h:59-59](file://src/bsw/common/Det.h#L59-L59)
+- [Det.h:59-59](file://src/bsw/services/det/include/Det.h#L59-L59)
 
 ### 版本信息获取
 Mcu_GetVersionInfo()提供模块版本信息，包含供应商ID、模块ID和软件版本号。
@@ -467,8 +467,8 @@ PLATFORM_CFG --> STARTUP
 - [Mcu.c:17-21](file://src/bsw/mcal/mcu/src/Mcu.c#L17-L21)
 - [Mcu.h:19-20](file://src/bsw/mcal/mcu/include/Mcu.h#L19-L20)
 - [Mcu_Cfg.h:1-82](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h#L1-L82)
-- [Det.h:17-17](file://src/bsw/common/Det.h#L17-L17)
-- [Std_Types.h:17-18](file://src/bsw/common/Std_Types.h#L17-L18)
+- [Det.h:17-17](file://src/bsw/services/det/include/Det.h#L17-L17)
+- [Std_Types.h:17-18](file://src/bsw/os/include/Std_Types.h#L17-L18)
 - [MemMap.h:40-41](file://src/bsw/general/inc/MemMap.h#L40-L41)
 - [platform_config.h:1-307](file://platform/cortex-m/platform_config.h#L1-L307)
 - [startup_cortex_m.c:19-19](file://platform/cortex-m/startup_cortex_m.c#L19-L19)

@@ -5,9 +5,9 @@
 - [CanTp.h](file://src/bsw/ecual/cantp/include/CanTp.h)
 - [CanTp_Cfg.h](file://src/bsw/ecual/cantp/include/CanTp_Cfg.h)
 - [CanTp.c](file://src/bsw/ecual/cantp/src/CanTp.c)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [Com.h](file://src/bsw/services/com/include/Com.h)
 - [main.c](file://examples/can_demo/main.c)
 - [bsw_config.json](file://config/bsw_config.json)
@@ -526,7 +526,7 @@ ProcessData --> End
 
 **章节来源**
 - [CanTp.c:417-569](file://src/bsw/ecual/cantp/src/CanTp.c#L417-L569)
-- [Det.h:47-70](file://src/bsw/common/Det.h#L47-L70)
+- [Det.h:47-70](file://src/bsw/services/det/include/Det.h#L47-L70)
 
 ## 结论
 

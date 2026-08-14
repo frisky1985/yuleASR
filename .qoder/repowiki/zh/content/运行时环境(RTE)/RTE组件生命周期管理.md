@@ -11,7 +11,7 @@
 - [Rte_NvMInterface.c](file://src/bsw/rte/src/Rte_NvMInterface.c)
 - [Swc_EngineControl.c](file://src/asw/engine_control/src/Swc_EngineControl.c)
 - [Swc_DiagnosticManager.c](file://src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c)
-- [EcuM.c](file://src/bsw/integration/EcuM.c)
+- [EcuM.c](file://src/bsw/services/ecum/src/EcuM.c)
 - [main.c](file://examples/can_demo/main.c)
 </cite>
 
@@ -82,7 +82,7 @@ BSW4 --> MCAL4
 **图表来源**
 - [Rte.h:1-441](file://src/bsw/rte/include/Rte.h#L1-L441)
 - [Rte.c:1-792](file://src/bsw/rte/src/Rte.c#L1-L792)
-- [EcuM.c:1-518](file://src/bsw/integration/EcuM.c#L1-L518)
+- [EcuM.c:1-518](file://src/bsw/services/ecum/src/EcuM.c#L1-L518)
 
 **章节来源**
 - [Rte.h:1-441](file://src/bsw/rte/include/Rte.h#L1-L441)
@@ -419,10 +419,10 @@ Phase3 --> DemInit
 ```
 
 **图表来源**
-- [EcuM.c:140-342](file://src/bsw/integration/EcuM.c#L140-L342)
+- [EcuM.c:140-342](file://src/bsw/services/ecum/src/EcuM.c#L140-L342)
 
 **章节来源**
-- [EcuM.c:1-518](file://src/bsw/integration/EcuM.c#L1-L518)
+- [EcuM.c:1-518](file://src/bsw/services/ecum/src/EcuM.c#L1-L518)
 
 ## 依赖关系分析
 

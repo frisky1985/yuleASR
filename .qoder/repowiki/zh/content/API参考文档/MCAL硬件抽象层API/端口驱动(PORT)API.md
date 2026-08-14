@@ -6,9 +6,9 @@
 - [Port_Cfg.h](file://src/bsw/mcal/port/include/Port_Cfg.h)
 - [Port.c](file://src/bsw/mcal/port/src/Port.c)
 - [Port_Cfg.h（模板）](file://src/bsw/config/templates/Port_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [api-reference.md](file://docs/api-reference.md)
 - [modules.md](file://docs/modules.md)
 - [main.c（LED闪烁示例）](file://examples/led_blink/main.c)
@@ -61,9 +61,9 @@ DOC2 --> PORT
 图表来源
 - [Port.h:1-183](file://src/bsw/mcal/port/include/Port.h#L1-L183)
 - [Port.c:1-461](file://src/bsw/mcal/port/src/Port.c#L1-L461)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 - [main.c（LED闪烁示例）:1-100](file://examples/led_blink/main.c#L1-L100)
 - [api-reference.md:1-609](file://docs/api-reference.md#L1-L609)
 - [modules.md:1-639](file://docs/modules.md#L1-L639)
@@ -73,9 +73,9 @@ DOC2 --> PORT
 - [Port.c:1-461](file://src/bsw/mcal/port/src/Port.c#L1-L461)
 - [Port_Cfg.h:1-103](file://src/bsw/mcal/port/include/Port_Cfg.h#L1-L103)
 - [Port_Cfg.h（模板）:1-80](file://src/bsw/config/templates/Port_Cfg.h#L1-L80)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 - [api-reference.md:1-609](file://docs/api-reference.md#L1-L609)
 - [modules.md:1-639](file://docs/modules.md#L1-L639)
 - [main.c（LED闪烁示例）:1-100](file://examples/led_blink/main.c#L1-L100)
@@ -208,7 +208,7 @@ GPIO --> HW
 - [Port.c:254-264](file://src/bsw/mcal/port/src/Port.c#L254-L264)
 - [Port.c:314-340](file://src/bsw/mcal/port/src/Port.c#L314-L340)
 - [Port.c:421-452](file://src/bsw/mcal/port/src/Port.c#L421-L452)
-- [Det.h:40-44](file://src/bsw/common/Det.h#L40-L44)
+- [Det.h:40-44](file://src/bsw/services/det/include/Det.h#L40-L44)
 
 ### API调用序列（Port_Init）
 ```mermaid
@@ -308,16 +308,16 @@ Det_c["Det.c"] --> Det_h
 图表来源
 - [Port.h:1-22](file://src/bsw/mcal/port/include/Port.h#L1-L22)
 - [Port.c:17-20](file://src/bsw/mcal/port/src/Port.c#L17-L20)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 
 章节来源
 - [Port.h:1-22](file://src/bsw/mcal/port/include/Port.h#L1-L22)
 - [Port.c:17-20](file://src/bsw/mcal/port/src/Port.c#L17-L20)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 
 ## 性能考虑
 - 初始化阶段
@@ -346,7 +346,7 @@ Det_c["Det.c"] --> Det_h
 - [Port.c:254-264](file://src/bsw/mcal/port/src/Port.c#L254-L264)
 - [Port.c:314-340](file://src/bsw/mcal/port/src/Port.c#L314-L340)
 - [Port.c:421-452](file://src/bsw/mcal/port/src/Port.c#L421-L452)
-- [Det.h:40-44](file://src/bsw/common/Det.h#L40-L44)
+- [Det.h:40-44](file://src/bsw/services/det/include/Det.h#L40-L44)
 
 ## 结论
 PORT模块提供了完整的GPIO端口配置与控制能力，涵盖初始化、方向设置、模式切换、方向刷新与版本信息查询等核心功能。通过合理的配置与严格的错误处理，可在AutoSAR MCAL层稳定地管理端口引脚。建议在设计阶段明确引脚用途与变更策略，充分利用配置集的可变性标志位，以获得更好的灵活性与安全性。

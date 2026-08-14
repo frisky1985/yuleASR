@@ -10,8 +10,8 @@
 - [Swc_DiagnosticManager.c](file://src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c)
 - [Dcm_spec.md](file://openspec/changes/dev-dcm-dem-module/specs/Dcm_spec.md)
 - [api-reference.md](file://docs/api-reference.md)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
 </cite>
 
 ## 目录

@@ -7,8 +7,8 @@
 - [CanIf.c](file://src/bsw/ecual/canif/src/CanIf.c)
 - [Can.h](file://src/bsw/mcal/can/include/Can.h)
 - [PduR.h](file://src/bsw/services/pdur/include/PduR.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 - [Can_Cfg.h](file://generated/Can_Cfg.h)
 - [main.c](file://examples/can_demo/main.c)
@@ -199,11 +199,11 @@ ReturnError --> End
 
 **图表来源**
 - [CanIf.c:29-50](file://src/bsw/ecual/canif/src/CanIf.c#L29-L50)
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
 
 **章节来源**
 - [CanIf.c:29-487](file://src/bsw/ecual/canif/src/CanIf.c#L29-L487)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 
 ## 详细组件分析
 

@@ -5,8 +5,8 @@
 - [Can.h](file://src/bsw/mcal/can/include/Can.h)
 - [Can.c](file://src/bsw/mcal/can/src/Can.c)
 - [Can_Cfg.h](file://src/bsw/mcal/can/include/Can_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [CanIf.h](file://src/bsw/ecual/canif/include/CanIf.h)
 - [Com.h](file://src/bsw/services/com/include/Com.h)
 - [main.c](file://examples/can_demo/main.c)
@@ -136,7 +136,7 @@ Can_BaudrateConfigType --> Can_ControllerStateType
 
 **章节来源**
 - [Can.h:76-174](file://src/bsw/mcal/can/include/Can.h#L76-L174)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 
 ## 架构概览
 
@@ -424,7 +424,7 @@ ReturnNotOK --> End
 4. **验证时序**: 确保主函数调用频率满足要求
 
 **章节来源**
-- [Det.h:40-44](file://src/bsw/common/Det.h#L40-L44)
+- [Det.h:40-44](file://src/bsw/services/det/include/Det.h#L40-L44)
 - [Can.c:128-137](file://src/bsw/mcal/can/src/Can.c#L128-L137)
 
 ## 结论

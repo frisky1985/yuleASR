@@ -7,7 +7,7 @@
 - [CanTp.c](file://src/bsw/ecual/cantp/src/CanTp.c)
 - [CanIf.h](file://src/bsw/ecual/canif/include/CanIf.h)
 - [PduR.h](file://src/bsw/services/pdur/include/PduR.h)
-- [integration_test.c](file://src/bsw/integration/tests/integration_test.c)
+- [integration_test.c](file://tests/integration/bsw/integration_test.c)
 - [bsw_integration_verification.md](file://verification/bsw_integration_verification.md)
 - [main.c](file://examples/can_demo/main.c)
 </cite>
@@ -402,7 +402,7 @@ CanTp模块支持多通道并发处理，每个通道独立管理自己的状态
 
 **章节来源**
 - [CanTp.c:624-652](file://src/bsw/ecual/cantp/src/CanTp.c#L624-L652)
-- [integration_test.c:631-695](file://src/bsw/integration/tests/integration_test.c#L631-L695)
+- [integration_test.c:631-695](file://tests/integration/bsw/integration_test.c#L631-L695)
 
 ## 结论
 
@@ -472,5 +472,5 @@ void handle_transmission_complete(PduIdType pduId, Std_ReturnType result) {
 ```
 
 **章节来源**
-- [integration_test.c:631-695](file://src/bsw/integration/tests/integration_test.c#L631-L695)
+- [integration_test.c:631-695](file://tests/integration/bsw/integration_test.c#L631-L695)
 - [bsw_integration_verification.md:1-193](file://verification/bsw_integration_verification.md#L1-L193)

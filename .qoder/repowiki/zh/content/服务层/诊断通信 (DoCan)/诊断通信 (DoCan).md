@@ -9,7 +9,7 @@
 - [DoCan_spec.md](file://openspec/changes/dev-doip-docan-module/specs/DoCan_spec.md)
 - [CanTp.h](file://src/bsw/ecual/cantp/include/CanTp.h)
 - [Dcm.h](file://src/bsw/services/dcm/include/Dcm.h)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
 - [DoCan_test.c](file://src/bsw/services/docan/src/DoCan_test.c)
 </cite>
 
@@ -383,7 +383,7 @@ CanTp --> CanIf
 
 **章节来源**
 - [DoCan.c:27-29](file://src/bsw/services/docan/src/DoCan.c#L27-L29)
-- [ComStack_Types.h:56-60](file://src/bsw/common/ComStack_Types.h#L56-L60)
+- [ComStack_Types.h:56-60](file://src/bsw/ecual/include/ComStack_Types.h#L56-L60)
 
 ### 数据流图
 ```mermaid

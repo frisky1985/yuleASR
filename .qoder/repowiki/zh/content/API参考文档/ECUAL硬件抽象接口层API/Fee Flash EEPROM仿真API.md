@@ -8,7 +8,7 @@
 - [Ea.h](file://src/bsw/ecual/ea/include/Ea.h)
 - [Ea.c](file://src/bsw/ecual/ea/src/Ea.c)
 - [MemIf.h](file://src/bsw/ecual/memif/include/MemIf.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [NvM.h](file://src/bsw/services/nvm/include/NvM.h)
 - [api-reference.md](file://docs/api-reference.md)
 - [modules.md](file://docs/modules.md)
@@ -491,7 +491,7 @@ ReturnOK --> End
 
 **章节来源**
 - [Fee.c:134-155](file://src/bsw/ecual/fee/src/Fee.c#L134-L155)
-- [Det.h:59](file://src/bsw/common/Det.h#L59)
+- [Det.h:59](file://src/bsw/services/det/include/Det.h#L59)
 
 ## 性能考虑
 
@@ -573,7 +573,7 @@ Total --> TempBuf
 
 **章节来源**
 - [Fee.h:59-77](file://src/bsw/ecual/fee/include/Fee.h#L59-L77)
-- [Det.h:40-44](file://src/bsw/common/Det.h#L40-L44)
+- [Det.h:40-44](file://src/bsw/services/det/include/Det.h#L40-L44)
 
 ### 调试技巧
 

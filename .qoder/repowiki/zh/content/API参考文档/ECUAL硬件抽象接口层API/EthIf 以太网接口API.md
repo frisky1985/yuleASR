@@ -5,9 +5,9 @@
 - [EthIf.h](file://src/bsw/ecual/ethif/include/EthIf.h)
 - [EthIf_Cfg.h](file://src/bsw/ecual/ethif/include/EthIf_Cfg.h)
 - [EthIf.c](file://src/bsw/ecual/ethif/src/EthIf.c)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 - [Swc_CommunicationManager.h](file://src/asw/communication_manager/include/Swc_CommunicationManager.h)
 </cite>
@@ -355,7 +355,7 @@ EthIf模块采用了AutoSAR标准的内存映射机制，确保在不同编译�
 
 **章节来源**
 - [EthIf.c:31-40](file://src/bsw/ecual/ethif/src/EthIf.c#L31-L40)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 ## 结论
 
