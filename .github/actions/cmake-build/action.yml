@@ -1,0 +1,65 @@
+name: CMake Build
+description: 公共 CMake 配置 + 构建步骤
+
+inputs:
+  build-dir:
+    description: 构建目录
+    required: false
+    default: build
+  build-type:
+    description: CMAKE_BUILD_TYPE (Debug/Release)
+    required: false
+    default: Debug
+  build-testing:
+    description: BUILD_TESTING ON/OFF
+    required: false
+    default: 'OFF'
+  enable-coverage:
+    description: ENABLE_COVERAGE ON/OFF
+    required: false
+    default: 'OFF'
+  generator:
+    description: CMake generator（留空用默认）
+    required: false
+    default: ''
+  toolchain-file:
+    description: 交叉编译工具链文件路径（留空 = native）
+    required: false
+    default: ''
+  extra-config:
+    description: 额外 cmake 配置参数
+    required: false
+    default: ''
+  targets:
+    description: 构建目标（空格分隔，留空 = all）
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Configure CMake
+      run: |
+        CMAKE_ARGS="-DCMAKE_BUILD_TYPE=${{ inputs.build-type }}"
+        CMAKE_ARGS="${CMAKE_ARGS} -DBUILD_TESTING=${{ inputs.build-testing }}"
+        CMAKE_ARGS="${CMAKE_ARGS} -DENABLE_COVERAGE=${{ inputs.enable-coverage }}"
+        if [ -n "${{ inputs.toolchain-file }}" ]; then
+          CMAKE_ARGS="${CMAKE_ARGS} -DCMAKE_TOOLCHAIN_FILE=${{ inputs.toolchain-file }}"
+        fi
+        if [ -n "${{ inputs.generator }}" ]; then
+          CMAKE_ARGS="${CMAKE_ARGS} -G ${{ inputs.generator }}"
+        fi
+        CMAKE_ARGS="${CMAKE_ARGS} ${{ inputs.extra-config }}"
+        cmake -B ${{ inputs.build-dir }} -S . ${CMAKE_ARGS}
+      shell: bash
+
+    - name: Build
+      run: |
+        if [ -n "${{ inputs.targets }}" ]; then
+          for t in ${{ inputs.targets }}; do
+            cmake --build ${{ inputs.build-dir }} --target "$t" -j"$(nproc)"
+          done
+        else
+          cmake --build ${{ inputs.build-dir }} -j"$(nproc)"
+        fi
+      shell: bash
