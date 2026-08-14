@@ -192,3 +192,4 @@ output/generated/
 /arms_cache/
 /Testing/
 /reports/*.json
+logs/*.log
