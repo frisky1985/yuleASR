@@ -6,8 +6,8 @@
 - [Gpt.c](file://src/bsw/mcal/gpt/src/Gpt.c)
 - [Gpt_Cfg.h](file://src/bsw/mcal/gpt/include/Gpt_Cfg.h)
 - [Gpt_Cfg.h（模板）](file://src/bsw/config/templates/Gpt_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [main.c（LED闪烁示例）](file://examples/led_blink/main.c)
 - [main.c（CAN通信示例）](file://examples/can_demo/main.c)
 - [api-reference.md](file://docs/api-reference.md)
@@ -64,8 +64,8 @@ CanDemo --> GptH
 - [Gpt.c:9-12](file://src/bsw/mcal/gpt/src/Gpt.c#L9-L12)
 - [Gpt_Cfg.h:15-64](file://src/bsw/mcal/gpt/include/Gpt_Cfg.h#L15-L64)
 - [Gpt_Cfg.h（模板）:20-76](file://src/bsw/config/templates/Gpt_Cfg.h#L20-L76)
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
 - [main.c（LED闪烁示例）:61-99](file://examples/led_blink/main.c#L61-L99)
 - [main.c（CAN通信示例）:63-118](file://examples/can_demo/main.c#L63-L118)
 
@@ -74,8 +74,8 @@ CanDemo --> GptH
 - [Gpt.c:1-473](file://src/bsw/mcal/gpt/src/Gpt.c#L1-L473)
 - [Gpt_Cfg.h:1-66](file://src/bsw/mcal/gpt/include/Gpt_Cfg.h#L1-L66)
 - [Gpt_Cfg.h（模板）:1-77](file://src/bsw/config/templates/Gpt_Cfg.h#L1-L77)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 - [main.c（LED闪烁示例）:1-100](file://examples/led_blink/main.c#L1-L100)
 - [main.c（CAN通信示例）:1-119](file://examples/can_demo/main.c#L1-L119)
 
@@ -100,7 +100,7 @@ CanDemo --> GptH
 - [Gpt.h:174-261](file://src/bsw/mcal/gpt/include/Gpt.h#L174-L261)
 - [Gpt.c:113-469](file://src/bsw/mcal/gpt/src/Gpt.c#L113-L469)
 - [Gpt_Cfg.h:15-64](file://src/bsw/mcal/gpt/include/Gpt_Cfg.h#L15-L64)
-- [Det.h:40-70](file://src/bsw/common/Det.h#L40-L70)
+- [Det.h:40-70](file://src/bsw/services/det/include/Det.h#L40-L70)
 
 ## 架构总览
 GPT驱动通过直接寄存器访问控制GPT外设，内部维护每个通道的目标值、已耗时、运行状态；支持中断通知回调；根据配置决定API可用性与功能特性。
@@ -130,7 +130,7 @@ Gpt-->>App : 停止完成
 图表来源
 - [Gpt.c:113-314](file://src/bsw/mcal/gpt/src/Gpt.c#L113-L314)
 - [Gpt.h:174-222](file://src/bsw/mcal/gpt/include/Gpt.h#L174-L222)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ## 详细组件分析
 
@@ -151,7 +151,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:174-178](file://src/bsw/mcal/gpt/include/Gpt.h#L174-L178)
 - [Gpt.c:113-162](file://src/bsw/mcal/gpt/src/Gpt.c#L113-L162)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 - [main.c（LED闪烁示例）:82-85](file://examples/led_blink/main.c#L82-L85)
 
 ### Gpt_StartTimer 启动定时器
@@ -172,7 +172,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:200-204](file://src/bsw/mcal/gpt/include/Gpt.h#L200-L204)
 - [Gpt.c:245-286](file://src/bsw/mcal/gpt/src/Gpt.c#L245-L286)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 - [main.c（LED闪烁示例）:87-89](file://examples/led_blink/main.c#L87-L89)
 
 ### Gpt_StopTimer 停止定时器
@@ -189,7 +189,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:206-210](file://src/bsw/mcal/gpt/include/Gpt.h#L206-L210)
 - [Gpt.c:288-314](file://src/bsw/mcal/gpt/src/Gpt.c#L288-L314)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Gpt_GetTimeElapsed/Gpt_GetTimeRemaining 时间查询
 - 函数签名与作用
@@ -205,7 +205,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:185-197](file://src/bsw/mcal/gpt/include/Gpt.h#L185-L197)
 - [Gpt.c:197-243](file://src/bsw/mcal/gpt/src/Gpt.c#L197-L243)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Gpt_EnableNotification/Gpt_DisableNotification 中断通知
 - 函数签名与作用
@@ -221,7 +221,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:212-222](file://src/bsw/mcal/gpt/include/Gpt.h#L212-L222)
 - [Gpt.c:317-360](file://src/bsw/mcal/gpt/src/Gpt.c#L317-L360)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Gpt_SetMode 模式设置
 - 函数签名与作用
@@ -236,7 +236,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:230-234](file://src/bsw/mcal/gpt/include/Gpt.h#L230-L234)
 - [Gpt.c:377-396](file://src/bsw/mcal/gpt/src/Gpt.c#L377-L396)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Gpt_GetVersionInfo 版本信息
 - 函数签名与作用
@@ -252,7 +252,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:224-228](file://src/bsw/mcal/gpt/include/Gpt.h#L224-L228)
 - [Gpt.c:362-375](file://src/bsw/mcal/gpt/src/Gpt.c#L362-L375)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Gpt_GetPredefTimerValue 预定义定时器
 - 函数签名与作用
@@ -269,7 +269,7 @@ Gpt-->>App : 停止完成
 章节来源
 - [Gpt.h:255-261](file://src/bsw/mcal/gpt/include/Gpt.h#L255-L261)
 - [Gpt.c:450-469](file://src/bsw/mcal/gpt/src/Gpt.c#L450-L469)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### 配置与数据模型
 - 通道配置结构体
@@ -379,15 +379,15 @@ GptC --> Det["Det.h"]
 - [Gpt.c:9-12](file://src/bsw/mcal/gpt/src/Gpt.c#L9-L12)
 - [Gpt.h:19-20](file://src/bsw/mcal/gpt/include/Gpt.h#L19-L20)
 - [Gpt_Cfg.h:15-26](file://src/bsw/mcal/gpt/include/Gpt_Cfg.h#L15-L26)
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
 
 章节来源
 - [Gpt.c:9-12](file://src/bsw/mcal/gpt/src/Gpt.c#L9-L12)
 - [Gpt.h:19-20](file://src/bsw/mcal/gpt/include/Gpt.h#L19-L20)
 - [Gpt_Cfg.h:15-26](file://src/bsw/mcal/gpt/include/Gpt_Cfg.h#L15-L26)
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
-- [Det.h:51-70](file://src/bsw/common/Det.h#L51-L70)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
+- [Det.h:51-70](file://src/bsw/services/det/include/Det.h#L51-L70)
 
 ## 性能考虑
 - 时钟分频与精度
@@ -416,7 +416,7 @@ GptC --> Det["Det.h"]
 章节来源
 - [Gpt.h:62-71](file://src/bsw/mcal/gpt/include/Gpt.h#L62-L71)
 - [Gpt.c:115-124](file://src/bsw/mcal/gpt/src/Gpt.c#L115-L124)
-- [Det.h:40-70](file://src/bsw/common/Det.h#L40-L70)
+- [Det.h:40-70](file://src/bsw/services/det/include/Det.h#L40-L70)
 
 ## 结论
 GPT模块提供了完整的MCAL定时器接口，具备灵活的配置能力与完善的错误检测机制。通过合理的配置与使用，可满足从毫秒级延时到微秒级高精度计数的应用需求，并为上层模块（如PWM、OS）提供稳定的时间基准。建议在项目初期明确时钟分频与预定义定时器能力，结合示例工程快速落地。

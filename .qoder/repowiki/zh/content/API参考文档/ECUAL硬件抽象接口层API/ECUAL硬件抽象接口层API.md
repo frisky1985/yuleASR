@@ -15,7 +15,7 @@
 - [Fee.h](file://src/bsw/ecual/fee/include/Fee.h)
 - [FrIf.h](file://src/bsw/ecual/frif/include/FrIf.h)
 - [LinIf.h](file://src/bsw/ecual/linif/include/LinIf.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [main.c](file://examples/can_demo/main.c)
 - [main.c](file://examples/led_blink/main.c)
 </cite>
@@ -85,7 +85,7 @@ LINIF --> STDTYPES
 - [Fee.h:1-273](file://src/bsw/ecual/fee/include/Fee.h#L1-L273)
 - [FrIf.h:1-367](file://src/bsw/ecual/frif/include/FrIf.h#L1-L367)
 - [LinIf.h:1-305](file://src/bsw/ecual/linif/include/LinIf.h#L1-L305)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 
 章节来源
 - [CanIf.h:1-403](file://src/bsw/ecual/canif/include/CanIf.h#L1-L403)
@@ -97,7 +97,7 @@ LINIF --> STDTYPES
 - [Fee.h:1-273](file://src/bsw/ecual/fee/include/Fee.h#L1-L273)
 - [FrIf.h:1-367](file://src/bsw/ecual/frif/include/FrIf.h#L1-L367)
 - [LinIf.h:1-305](file://src/bsw/ecual/linif/include/LinIf.h#L1-L305)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 
 ## 核心组件
 本节概述各模块提供的核心能力与典型职责：

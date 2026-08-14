@@ -5,9 +5,9 @@
 - [FrIf.h](file://src/bsw/ecual/frif/include/FrIf.h)
 - [FrIf.c](file://src/bsw/ecual/frif/src/FrIf.c)
 - [FrIf_Cfg.h](file://src/bsw/ecual/frif/include/FrIf_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 </cite>
 

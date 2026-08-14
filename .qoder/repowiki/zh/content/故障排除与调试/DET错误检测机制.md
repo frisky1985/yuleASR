@@ -2,9 +2,9 @@
 
 <cite>
 **本文档引用的文件**
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 - [Mcu.h](file://src/bsw/mcal/mcu/include/Mcu.h)
 - [Mcu.c](file://src/bsw/mcal/mcu/src/Mcu.c)
@@ -81,14 +81,14 @@ DET --> MEM
 ```
 
 **图表来源**
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 - [Mcu.h:1-239](file://src/bsw/mcal/mcu/include/Mcu.h#L1-L239)
 - [CanIf.h:1-403](file://src/bsw/ecual/canif/include/CanIf.h#L1-L403)
 - [Com.h:1-508](file://src/bsw/services/com/include/Com.h#L1-L508)
 
 **章节来源**
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [MemMap.h:1-796](file://src/bsw/general/inc/MemMap.h#L1-L796)
 
 ## 核心组件
@@ -120,8 +120,8 @@ DET模块支持完整的版本信息查询，包括：
 - AUTOSAR兼容性版本
 
 **章节来源**
-- [Det.h:34-70](file://src/bsw/common/Det.h#L34-L70)
-- [Det.c:70-80](file://src/bsw/common/Det.c#L70-L80)
+- [Det.h:34-70](file://src/bsw/services/det/include/Det.h#L34-L70)
+- [Det.c:70-80](file://src/bsw/services/det/src/Det.c#L70-L80)
 
 ## 架构概览
 
@@ -175,8 +175,8 @@ Det --> Std_Types : 使用
 ```
 
 **图表来源**
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
 
 #### 关键实现特性
 
@@ -193,7 +193,7 @@ Det --> Std_Types : 使用
    - 返回标准AUTOSAR返回类型
 
 **章节来源**
-- [Det.c:33-80](file://src/bsw/common/Det.c#L33-L80)
+- [Det.c:33-80](file://src/bsw/services/det/src/Det.c#L33-L80)
 
 ### MCAL层集成示例
 
@@ -343,7 +343,7 @@ DET --> MEM
 ```
 
 **图表来源**
-- [Det.h:17-18](file://src/bsw/common/Det.h#L17-L18)
+- [Det.h:17-18](file://src/bsw/services/det/include/Det.h#L17-L18)
 - [Mcu.c:17-20](file://src/bsw/mcal/mcu/src/Mcu.c#L17-L20)
 - [CanIf.c:9-13](file://src/bsw/ecual/canif/src/CanIf.c#L9-L13)
 - [Com.c:19-24](file://src/bsw/services/com/src/Com.c#L19-L24)
@@ -441,7 +441,7 @@ DET模块通过MemMap.h实现跨编译器的内存段管理：
    - 识别潜在的设计问题
 
 **章节来源**
-- [Det.h:41-43](file://src/bsw/common/Det.h#L41-L43)
+- [Det.h:41-43](file://src/bsw/services/det/include/Det.h#L41-L43)
 - [Mcu.c:254-264](file://src/bsw/mcal/mcu/src/Mcu.c#L254-L264)
 - [CanIf.c:31-40](file://src/bsw/ecual/canif/src/CanIf.c#L31-L40)
 
@@ -485,7 +485,7 @@ Det_GetVersionInfo(&versionInfo);
 ```
 
 **章节来源**
-- [Det.c:70-80](file://src/bsw/common/Det.c#L70-L80)
+- [Det.c:70-80](file://src/bsw/services/det/src/Det.c#L70-L80)
 - [Mcu_Cfg.h:15](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h#L15)
 - [CanIf_Cfg.h:15](file://src/bsw/ecual/canif/include/CanIf_Cfg.h#L15)
 - [Com_Cfg.h:15](file://src/bsw/services/com/include/Com_Cfg.h#L15)

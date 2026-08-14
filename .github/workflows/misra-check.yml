@@ -423,7 +423,7 @@ jobs:
           - [Full Audit Report](../../docs/compliance/MISRA_C2023_AUDIT.md)
           - [Deviation Permits](../../docs/compliance/deviation_permits_c2023.md)
           - [Rule Reference](../../tools/misra/misra_rules.json)
-          - [Migration Report](../../tasks/yuleASR/p1-misra-c2023-status.md)
+          - [Migration Report](../../docs/next-phase-plan.md)
           
           ## Next Steps
           
@@ -432,7 +432,7 @@ jobs:
           2. Run locally: `yuleosh ci check misra --profile safety`
           3. Apply automatic fixes: `python3 scripts/fix_misra_issues.py --rules=20.7,17.7,c2023-11.9 --apply <files>`
           4. Document deviations in `docs/compliance/deviation_permits_c2023.md`
-          5. See WP1 plan: `tasks/yuleASR-enhancement-plan.md` for batch workflow
+          5. See WP1 plan: `docs/next-phase-plan.md` for batch workflow
           EOF
 
       - name: Upload Summary

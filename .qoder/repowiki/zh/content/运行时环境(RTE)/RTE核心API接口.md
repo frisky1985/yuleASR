@@ -6,7 +6,7 @@
 - [Rte_Type.h](file://src/bsw/rte/include/Rte_Type.h)
 - [Rte_Cfg.h](file://src/bsw/rte/include/Rte_Cfg.h)
 - [Rte.c](file://src/bsw/rte/src/Rte.c)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [README.md](file://tools/rte_generator/README.md)
 - [example_config.json](file://tools/rte_generator/example_config.json)
 - [api-reference.md](file://docs/api-reference.md)
@@ -86,7 +86,7 @@ VersionInfo --> RTE_Versions : "提供版本信息"
 
 **图表来源**
 - [Rte.h:25-32](file://src/bsw/rte/include/Rte.h#L25-L32)
-- [Std_Types.h:74-80](file://src/bsw/common/Std_Types.h#L74-L80)
+- [Std_Types.h:74-80](file://src/bsw/os/include/Std_Types.h#L74-L80)
 
 ### 错误码常量系统
 

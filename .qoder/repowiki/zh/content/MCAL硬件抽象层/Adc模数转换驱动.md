@@ -5,9 +5,9 @@
 - [Adc.h](file://src/bsw/mcal/adc/include/Adc.h)
 - [Adc_Cfg.h](file://src/bsw/mcal/adc/include/Adc_Cfg.h)
 - [Adc.c](file://src/bsw/mcal/adc/src/Adc.c)
-- [EcuM.c](file://src/bsw/integration/EcuM.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [EcuM.c](file://src/bsw/services/ecum/src/EcuM.c)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [IoHwAb.c](file://src/bsw/ecual/iohwab/src/IoHwAb.c)
 </cite>
 
@@ -64,7 +64,7 @@ ADC_HW --> MCU
 
 **图表来源**
 - [Adc.h:1-384](file://src/bsw/mcal/adc/include/Adc.h#L1-L384)
-- [EcuM.c:150-173](file://src/bsw/integration/EcuM.c#L150-L173)
+- [EcuM.c:150-173](file://src/bsw/services/ecum/src/EcuM.c#L150-L173)
 
 **章节来源**
 - [Adc.h:1-384](file://src/bsw/mcal/adc/include/Adc.h#L1-L384)

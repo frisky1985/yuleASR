@@ -2,11 +2,11 @@
 
 <cite>
 **本文引用的文件**   
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
-- [Compiler.h](file://src/bsw/common/Compiler.h)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
+- [Compiler.h](file://include/autosar/Compiler.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
 - [Mcu.h](file://src/bsw/mcal/mcu/include/Mcu.h)
 - [Com.h](file://src/bsw/services/com/include/Com.h)
@@ -74,12 +74,12 @@ CFG --> MAIN_C
 ```
 
 **图表来源**
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Compiler.h:1-187](file://src/bsw/common/Compiler.h#L1-L187)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Compiler.h:1-187](file://include/autosar/Compiler.h#L1-L187)
 - [MemMap.h:1-796](file://src/bsw/general/inc/MemMap.h#L1-L796)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
-- [ComStack_Types.h:1-170](file://src/bsw/common/ComStack_Types.h#L1-L170)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
+- [ComStack_Types.h:1-170](file://src/bsw/ecual/include/ComStack_Types.h#L1-L170)
 - [Mcu.h:1-239](file://src/bsw/mcal/mcu/include/Mcu.h#L1-L239)
 - [Com.h:1-508](file://src/bsw/services/com/include/Com.h#L1-L508)
 - [main.c:1-119](file://examples/can_demo/main.c#L1-L119)
@@ -87,12 +87,12 @@ CFG --> MAIN_C
 - [bsw_config.json:1-21](file://config/bsw_config.json#L1-L21)
 
 **章节来源**
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Compiler.h:1-187](file://src/bsw/common/Compiler.h#L1-L187)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Compiler.h:1-187](file://include/autosar/Compiler.h#L1-L187)
 - [MemMap.h:1-796](file://src/bsw/general/inc/MemMap.h#L1-L796)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
-- [ComStack_Types.h:1-170](file://src/bsw/common/ComStack_Types.h#L1-L170)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
+- [ComStack_Types.h:1-170](file://src/bsw/ecual/include/ComStack_Types.h#L1-L170)
 - [Mcu.h:1-239](file://src/bsw/mcal/mcu/include/Mcu.h#L1-L239)
 - [Com.h:1-508](file://src/bsw/services/com/include/Com.h#L1-L508)
 - [main.c:1-119](file://examples/can_demo/main.c#L1-L119)
@@ -107,10 +107,10 @@ CFG --> MAIN_C
 - 通信栈类型（ComStack_Types）：定义PDU、CAN ID、缓冲区请求返回值、通信模式等通信相关类型，支撑Com/PduR/CAN等模块。
 
 **章节来源**
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
-- [Det.h:34-70](file://src/bsw/common/Det.h#L34-L70)
-- [Compiler.h:28-121](file://src/bsw/common/Compiler.h#L28-L121)
-- [ComStack_Types.h:36-167](file://src/bsw/common/ComStack_Types.h#L36-L167)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
+- [Det.h:34-70](file://src/bsw/services/det/include/Det.h#L34-L70)
+- [Compiler.h:28-121](file://include/autosar/Compiler.h#L28-L121)
+- [ComStack_Types.h:36-167](file://src/bsw/ecual/include/ComStack_Types.h#L36-L167)
 
 ## 架构总览
 下图展示通用API在AutoSAR分层中的角色与交互关系。MCAL通过Std_Types与Compiler进行类型与编译器无关的实现；服务层（如Com）依赖Std_Types与ComStack_Types完成信号与PDU处理；DET贯穿各模块，提供统一的错误上报能力。
@@ -152,11 +152,11 @@ CT --> CM
 ```
 
 **图表来源**
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Compiler.h:1-187](file://src/bsw/common/Compiler.h#L1-L187)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Compiler.h:1-187](file://include/autosar/Compiler.h#L1-L187)
 - [MemMap.h:1-796](file://src/bsw/general/inc/MemMap.h#L1-L796)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [ComStack_Types.h:1-170](file://src/bsw/common/ComStack_Types.h#L1-L170)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [ComStack_Types.h:1-170](file://src/bsw/ecual/include/ComStack_Types.h#L1-L170)
 - [Mcu.h:1-239](file://src/bsw/mcal/mcu/include/Mcu.h#L1-L239)
 - [Com.h:1-508](file://src/bsw/services/com/include/Com.h#L1-L508)
 
@@ -177,7 +177,7 @@ CT --> CM
   - 版本查询统一通过GetVersionInfo填充Std_VersionInfoType。
 
 **章节来源**
-- [Std_Types.h:23-80](file://src/bsw/common/Std_Types.h#L23-L80)
+- [Std_Types.h:23-80](file://src/bsw/os/include/Std_Types.h#L23-L80)
 
 ### 开发错误检测（DET）
 - 功能接口
@@ -204,12 +204,12 @@ DET-->>Caller : "填充版本信息"
 ```
 
 **图表来源**
-- [Det.h:48-73](file://src/bsw/common/Det.h#L48-L73)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:48-73](file://src/bsw/services/det/include/Det.h#L48-L73)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 
 **章节来源**
-- [Det.h:34-70](file://src/bsw/common/Det.h#L34-L70)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:34-70](file://src/bsw/services/det/include/Det.h#L34-L70)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 
 ### 编译器抽象（Compiler）
 - 编译器适配
@@ -238,10 +238,10 @@ CheckGHS --> |否| Error["报错：不支持的编译器"]
 ```
 
 **图表来源**
-- [Compiler.h:28-121](file://src/bsw/common/Compiler.h#L28-L121)
+- [Compiler.h:28-121](file://include/autosar/Compiler.h#L28-L121)
 
 **章节来源**
-- [Compiler.h:28-187](file://src/bsw/common/Compiler.h#L28-L187)
+- [Compiler.h:28-187](file://include/autosar/Compiler.h#L28-L187)
 
 ### 通信栈类型（ComStack_Types）
 - PDU与ID类型
@@ -261,7 +261,7 @@ CheckGHS --> |否| Error["报错：不支持的编译器"]
   - 对于PduInfoType，务必同时维护SduDataPtr与SduLength，避免越界访问。
 
 **章节来源**
-- [ComStack_Types.h:36-167](file://src/bsw/common/ComStack_Types.h#L36-L167)
+- [ComStack_Types.h:36-167](file://src/bsw/ecual/include/ComStack_Types.h#L36-L167)
 
 ### 内存映射（MemMap）
 - 作用
@@ -294,19 +294,19 @@ DET_H --> ST
 ```
 
 **图表来源**
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [Com.h:1-508](file://src/bsw/services/com/include/Com.h#L1-L508)
 - [Mcu.h:1-239](file://src/bsw/mcal/mcu/include/Mcu.h#L1-L239)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Compiler.h:1-187](file://src/bsw/common/Compiler.h#L1-L187)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Compiler.h:1-187](file://include/autosar/Compiler.h#L1-L187)
 - [MemMap.h:1-796](file://src/bsw/general/inc/MemMap.h#L1-L796)
 
 **章节来源**
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [Com.h:1-508](file://src/bsw/services/com/include/Com.h#L1-L508)
 - [Mcu.h:1-239](file://src/bsw/mcal/mcu/include/Mcu.h#L1-L239)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Compiler.h:1-187](file://src/bsw/common/Compiler.h#L1-L187)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Compiler.h:1-187](file://include/autosar/Compiler.h#L1-L187)
 - [MemMap.h:1-796](file://src/bsw/general/inc/MemMap.h#L1-L796)
 
 ## 性能考量
@@ -328,8 +328,8 @@ DET_H --> ST
   - examples/can_demo/main.c演示了回调函数、主循环与模块初始化流程，可对照检查回调注册与主函数调用顺序。
 
 **章节来源**
-- [Det.h:34-70](file://src/bsw/common/Det.h#L34-L70)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:34-70](file://src/bsw/services/det/include/Det.h#L34-L70)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 - [test_mcu.c:19-208](file://tests/unit/test_mcu.c#L19-L208)
 - [main.c:63-118](file://examples/can_demo/main.c#L63-L118)
 

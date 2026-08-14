@@ -10,9 +10,9 @@
 - [Rte_SwcEngineCtrl.h](file://src/bsw/rte/generated/Rte_SwcEngineCtrl.h)
 - [Rte_SwcDisplay.h](file://src/bsw/rte/generated/Rte_SwcDisplay.h)
 - [RteGenerator_spec.md](file://openspec/changes/dev-rte-generator/specs/RteGenerator_spec.md)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [MemMap.h](file://src/bsw/general/inc/MemMap.h)
-- [Compiler.h](file://src/bsw/common/Compiler.h)
+- [Compiler.h](file://include/autosar/Compiler.h)
 - [Swc_EngineControl.c](file://src/asw/engine_control/src/Swc_EngineControl.c)
 </cite>
 
@@ -337,7 +337,7 @@ RTE_GEN --> RTE_CORE
 **章节来源**
 - [Rte.c:19-26](file://src/bsw/rte/src/Rte.c#L19-L26)
 - [MemMap.h:35-796](file://src/bsw/general/inc/MemMap.h#L35-L796)
-- [Compiler.h:26-121](file://src/bsw/common/Compiler.h#L26-L121)
+- [Compiler.h:26-121](file://include/autosar/Compiler.h#L26-L121)
 
 ## 性能考虑
 

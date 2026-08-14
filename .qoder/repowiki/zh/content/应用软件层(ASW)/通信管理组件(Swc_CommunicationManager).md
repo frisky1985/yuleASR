@@ -8,8 +8,8 @@
 - [Com_Cfg.h](file://src/bsw/services/com/include/Com_Cfg.h)
 - [Rte.h](file://src/bsw/rte/include/Rte.h)
 - [PduR.h](file://src/bsw/services/pdur/include/PduR.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [architecture.md](file://docs/architecture.md)
 - [modules.md](file://docs/modules.md)
 - [README.md](file://README.md)
@@ -287,7 +287,7 @@ CM-->>CM : 更新 RX PDU 缓冲
 
 章节来源
 - [Swc_CommunicationManager.c](file://src/asw/communication_manager/src/Swc_CommunicationManager.c)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [Com_Cfg.h](file://src/bsw/services/com/include/Com_Cfg.h)
 
 ### 通信初始化流程
@@ -355,8 +355,8 @@ CM --> DET["Det.h"]
 - [Rte.h](file://src/bsw/rte/include/Rte.h)
 - [Com.h](file://src/bsw/services/com/include/Com.h)
 - [PduR.h](file://src/bsw/services/pdur/include/PduR.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 
 章节来源
 - [Swc_CommunicationManager.h](file://src/asw/communication_manager/include/Swc_CommunicationManager.h)
@@ -364,8 +364,8 @@ CM --> DET["Det.h"]
 - [Rte.h](file://src/bsw/rte/include/Rte.h)
 - [Com.h](file://src/bsw/services/com/include/Com.h)
 - [PduR.h](file://src/bsw/services/pdur/include/PduR.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 
 ## 性能考虑
 - 时间复杂度：
@@ -393,7 +393,7 @@ CM --> DET["Det.h"]
 
 章节来源
 - [Swc_CommunicationManager.c](file://src/asw/communication_manager/src/Swc_CommunicationManager.c)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 
 ## 结论
 Swc_CommunicationManager 作为 ASW 层的通信管理组件，提供了信号与 PDU 的本地管理能力，并通过 RTE 与 Com/PduR 服务层协作完成跨总线的数据交换。其实现具备清晰的状态机、完善的错误检测与统计机制，适合在 AutoSAR Classic Platform 4.x 环境中稳定运行。为进一步提升性能与可靠性，建议引入索引优化、批处理与自动重传策略。

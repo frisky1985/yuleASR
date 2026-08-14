@@ -9,7 +9,7 @@
 | 文件名 | 说明 | 来源 |
 |:-------|:------|:------|
 | `architecture.md` | 系统架构概览 | docs/architecture.md |
-| `architecture-overview.md` | 架构设计概览 | design/architecture-overview.md |
+| `architecture-overview.md` | 架构设计概览 | docs/design/architecture-overview.md |
 | `modules.md` | 模块总览 | docs/modules.md |
 | `OS_README.md` | 操作系统文档 | docs/OS_README.md |
 
@@ -86,23 +86,23 @@
 
 ---
 
-## 5. 设计文档 (design/)
+## 5. 设计文档 (docs/design/)
 
 | 文件名 | 说明 | 来源 |
 |:-------|:------|:------|
-| `architecture-overview.md` | 架构概览 | design/architecture-overview.md |
-| `brainstorming-bsw-optimization.md` | BSW优化脑暴 | design/brainstorming-bsw-optimization.md |
-| `brainstorming-next-steps.md` | 后续步骤脑暴 | design/brainstorming-next-steps.md |
-| `configuration-system.md` | 配置系统设计 | design/configuration-system.md |
-| `data-flow.md` | 数据流设计 | design/data-flow.md |
-| `error-handling.md` | 错误处理策略 | design/error-handling.md |
+| `architecture-overview.md` | 架构概览 | docs/design/architecture-overview.md |
+| `brainstorming-bsw-optimization.md` | BSW优化脑暴 | docs/design/brainstorming-bsw-optimization.md |
+| `brainstorming-next-steps.md` | 后续步骤脑暴 | docs/design/brainstorming-next-steps.md |
+| `configuration-system.md` | 配置系统设计 | docs/design/configuration-system.md |
+| `data-flow.md` | 数据流设计 | docs/design/data-flow.md |
+| `error-handling.md` | 错误处理策略 | docs/design/error-handling.md |
 | `memory-management.md` | 内存管理设计 | design/memory-management.md |
 | `module-interactions.md` | 模块交互设计 | design/module-interactions.md |
 | `testing-strategy.md` | 测试策略 | design/testing-strategy.md |
 
 ---
 
-## 6. 规范文档 (specs/)
+## 6. 规范文档 (docs/specs/)
 
 | 文件名 | 说明 | 来源 |
 |:-------|:------|:------|
@@ -140,7 +140,7 @@
 | `OSH_IMPLEMENTATION_ROADMAP.md` | OSH实施路线图 |
 | `PROGRESS.md` | 项目进度 |
 | `README.md` | 项目说明 |
-| `TODO.md` | 待办事项 |
+| `docs/TODO.md` | 待办事项 |
 | `TODO_REMAINING.md` | 剩余待办 |
 | `100_PERCENT_TEST_COVERAGE.md` | 100%测试覆盖 |
 | `DOCUMENTATION_TEST_COVERAGE_REPORT.md` | 文档测试覆盖报告 |

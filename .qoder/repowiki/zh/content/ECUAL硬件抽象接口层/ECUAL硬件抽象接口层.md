@@ -485,6 +485,71 @@ Idle --> Start
 - [LinIf.h:116-178](file://src/bsw/ecual/linif/include/LinIf.h#L116-L178)
 - [LinIf_Cfg.h:14-105](file://src/bsw/ecual/linif/include/LinIf_Cfg.h#L14-L105)
 
+### CanTrcv（CAN收发器）分析
+- 功能要点：CAN 收发器控制（正常/待机/睡眠模式）、BusOff 检测上报、唤醒检测。
+- 接口规范：CanTrcv_Init/GetOpMode/SetOpMode、TrcvModeIndication、BusOffIndication 回调。
+- 错误处理：DET 参数校验、模式切换非法、收发器故障上报。
+- ⚠️ 状态：轻量框架实现，文档已如实标注。
+
+**章节来源**
+- [CanTrcv.h](file://src/bsw/ecual/cantrcv/include/CanTrcv.h)
+
+### EthSM（以太网状态管理）分析
+- 功能要点：以太网通信状态机（Full/No-Communication）、链路监控、网络协调。
+- 接口规范：EthSM_Init/RequestComMode/GetCurrentComMode、LinkStateIndication 回调。
+- 错误处理：DET 参数校验、链路状态异常。
+
+**章节来源**
+- [EthSM.h](file://src/bsw/ecual/ethsm/include/EthSM.h)
+
+### EthSwt（以太网交换机）分析
+- 功能要点：以太网交换机端口管理、VLAN 配置、端口镜像。
+- 接口规范：EthSwt_Init/SetPortMode、端口状态查询。
+- 错误处理：DET 参数校验、端口配置非法。
+
+**章节来源**
+- [EthSwt.h](file://src/bsw/ecual/ethswt/include/EthSwt.h)
+
+### EthTrcv（以太网收发器）分析
+- 功能要点：以太网 PHY 管理（链路协商/唤醒）、PHY 寄存器访问、故障检测。
+- 接口规范：EthTrcv_Init/GetLinkState、MII 寄存器读写。
+- 错误处理：DET 参数校验、链路丢失检测、PHY 通信失败。
+
+**章节来源**
+- [EthTrcv.h](file://src/bsw/ecual/ethtrcv/include/EthTrcv.h)
+
+### FrTp（FlexRay传输协议）分析
+- 功能要点：FlexRay TP 分帧/重组、流控（Credit-based）、连接管理。
+- 接口规范：FrTp_Init/CopyTxData/CopyRxData、TxConfirmation/RxIndication 回调。
+- 错误处理：DET 参数校验、序列号错误、流控超时。
+
+**章节来源**
+- [FrTp.h](file://src/bsw/ecual/frtp/include/FrTp.h)
+
+### LinNm（LIN网络管理）分析
+- 功能要点：LIN NM 报文调度、网络状态管理、休眠协调。
+- 接口规范：LinNm_Init/PassiveStartUp/NetworkRequest、RxIndication 回调。
+- 错误处理：DET 参数校验、NM 报文超时。
+
+**章节来源**
+- [LinNm.h](file://src/bsw/ecual/linnm/include/LinNm.h)
+
+### LinTrcv（LIN收发器）分析
+- 功能要点：LIN 收发器控制（正常/休眠模式）、唤醒检测、故障上报。
+- 接口规范：LinTrcv_Init/GetOpMode/SetOpMode、TrcvModeIndication 回调。
+- 错误处理：DET 参数校验、模式切换非法、总线故障。
+
+**章节来源**
+- [LinTrcv.h](file://src/bsw/ecual/lintrcv/include/LinTrcv.h)
+
+### WdgIf（看门狗接口）分析
+- 功能要点：看门狗驱动抽象（内部/外部 WDG）、触发/模式切换统一接口。
+- 接口规范：WdgIf_Init/SetMode/Trigger、超时回调。
+- 错误处理：DET 参数校验、模式非法、触发失败。
+
+**章节来源**
+- [WdgIf.h](file://src/bsw/ecual/wdgif/include/WdgIf.h)
+
 ## 依赖关系分析
 - 模块内聚与耦合
   - 各模块在ECUAL层保持高内聚、低耦合：CanIf/Cantp/EthIf/FrIf/LinIf直接依赖MCAL；IoHwAb聚合多个MCAL；MemIf桥接Fee/Ea。

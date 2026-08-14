@@ -5,8 +5,8 @@
 - [Swc_ModeManager.h](file://src/asw/mode_manager/include/Swc_ModeManager.h)
 - [Swc_ModeManager.c](file://src/asw/mode_manager/src/Swc_ModeManager.c)
 - [asw_interfaces.h](file://src/asw/asw_interfaces.h)
-- [EcuM.h](file://src/bsw/integration/EcuM.h)
-- [EcuM.c](file://src/bsw/integration/EcuM.c)
+- [EcuM.h](file://src/bsw/services/ecum/include/EcuM.h)
+- [EcuM.c](file://src/bsw/services/ecum/src/EcuM.c)
 - [Rte_Type.h](file://src/bsw/rte/include/Rte_Type.h)
 - [asw_verification.md](file://verification/asw_verification.md)
 </cite>
@@ -64,7 +64,7 @@ Hdr --> AswI
 **图表来源**
 - [Swc_ModeManager.h:1-217](file://src/asw/mode_manager/include/Swc_ModeManager.h#L1-217)
 - [Swc_ModeManager.c:1-563](file://src/asw/mode_manager/src/Swc_ModeManager.c#L1-563)
-- [EcuM.h:1-220](file://src/bsw/integration/EcuM.h#L1-220)
+- [EcuM.h:1-220](file://src/bsw/services/ecum/include/EcuM.h#L1-220)
 - [Rte_Type.h:1-361](file://src/bsw/rte/include/Rte_Type.h#L1-361)
 
 **章节来源**
@@ -178,7 +178,7 @@ CM --> MCAL
 
 **图表来源**
 - [Swc_ModeManager.c:274-335](file://src/asw/mode_manager/src/Swc_ModeManager.c#L274-L335)
-- [EcuM.c:252-342](file://src/bsw/integration/EcuM.c#L252-L342)
+- [EcuM.c:252-342](file://src/bsw/services/ecum/src/EcuM.c#L252-L342)
 
 ## 详细组件分析
 
@@ -322,7 +322,7 @@ MM --> Other
 
 **图表来源**
 - [Swc_ModeManager.c:15-18](file://src/asw/mode_manager/src/Swc_ModeManager.c#L15-L18)
-- [EcuM.c:19-52](file://src/bsw/integration/EcuM.c#L19-L52)
+- [EcuM.c:19-52](file://src/bsw/services/ecum/src/EcuM.c#L19-L52)
 
 ### 内部组件依赖
 
@@ -360,7 +360,7 @@ Error --> Status
 
 **章节来源**
 - [Swc_ModeManager.c:15-18](file://src/asw/mode_manager/src/Swc_ModeManager.c#L15-L18)
-- [EcuM.h:13-22](file://src/bsw/integration/EcuM.h#L13-L22)
+- [EcuM.h:13-22](file://src/bsw/services/ecum/include/EcuM.h#L13-L22)
 
 ## 性能考虑
 

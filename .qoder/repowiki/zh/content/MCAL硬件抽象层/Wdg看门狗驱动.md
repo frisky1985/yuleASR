@@ -7,8 +7,8 @@
 - [Wdg.c](file://src/bsw/mcal/wdg/src/Wdg.c)
 - [Swc_WatchdogManager.h](file://src/asw/watchdog_manager/include/Swc_WatchdogManager.h)
 - [Swc_WatchdogManager.c](file://src/asw/watchdog_manager/src/Swc_WatchdogManager.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [modules.md](file://docs/modules.md)
 </cite>
 

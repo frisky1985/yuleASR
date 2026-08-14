@@ -6,7 +6,7 @@
 - [Com_Cfg.h](file://src/bsw/services/com/include/Com_Cfg.h)
 - [Com.c](file://src/bsw/services/com/src/Com.c)
 - [Com_test.c](file://src/bsw/services/com/src/Com_test.c)
-- [ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
+- [ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
 </cite>
 
 ## 目录

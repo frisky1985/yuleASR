@@ -4,8 +4,8 @@
 **本文档引用的文件**
 - [README.md](file://README.md)
 - [docs/api-reference.md](file://docs/api-reference.md)
-- [src/bsw/common/Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [src/bsw/common/Det.h](file://src/bsw/common/Det.h)
+- [src/bsw/os/include/Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [src/bsw/services/det/include/Det.h](file://src/bsw/services/det/include/Det.h)
 - [src/bsw/rte/include/Rte.h](file://src/bsw/rte/include/Rte.h)
 - [src/bsw/rte/include/Rte_Type.h](file://src/bsw/rte/include/Rte_Type.h)
 - [src/bsw/mcal/mcu/include/Mcu.h](file://src/bsw/mcal/mcu/include/Mcu.h)
@@ -13,7 +13,7 @@
 - [src/bsw/services/pdur/include/PduR.h](file://src/bsw/services/pdur/include/PduR.h)
 - [src/bsw/services/nvm/include/NvM.h](file://src/bsw/services/nvm/include/NvM.h)
 - [src/bsw/services/com/include/Com.h](file://src/bsw/services/com/include/Com.h)
-- [src/bsw/common/ComStack_Types.h](file://src/bsw/common/ComStack_Types.h)
+- [src/bsw/ecual/include/ComStack_Types.h](file://src/bsw/ecual/include/ComStack_Types.h)
 - [src/asw/asw_interfaces.h](file://src/asw/asw_interfaces.h)
 - [src/asw/engine_control/include/Swc_EngineControl.h](file://src/asw/engine_control/include/Swc_EngineControl.h)
 - [src/asw/diagnostic_manager/include/Swc_DiagnosticManager.h](file://src/asw/diagnostic_manager/include/Swc_DiagnosticManager.h)
@@ -95,9 +95,9 @@ ECUAL1 --> MCAL1
   - PduIdType、PduInfoType、BufReq_ReturnType等
 
 **章节来源**
-- [src/bsw/common/Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [src/bsw/common/Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
-- [src/bsw/common/ComStack_Types.h:12-170](file://src/bsw/common/ComStack_Types.h#L12-L170)
+- [src/bsw/os/include/Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [src/bsw/services/det/include/Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
+- [src/bsw/ecual/include/ComStack_Types.h:12-170](file://src/bsw/ecual/include/ComStack_Types.h#L12-L170)
 - [docs/api-reference.md:17-56](file://docs/api-reference.md#L17-L56)
 
 ## 架构总览
@@ -318,14 +318,14 @@ RTE --> DET["DET"]
 ```
 
 **图表来源**
-- [src/bsw/common/ComStack_Types.h:12-170](file://src/bsw/common/ComStack_Types.h#L12-L170)
-- [src/bsw/common/Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [src/bsw/common/Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [src/bsw/ecual/include/ComStack_Types.h:12-170](file://src/bsw/ecual/include/ComStack_Types.h#L12-L170)
+- [src/bsw/os/include/Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [src/bsw/services/det/include/Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 
 **章节来源**
-- [src/bsw/common/ComStack_Types.h:12-170](file://src/bsw/common/ComStack_Types.h#L12-L170)
-- [src/bsw/common/Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [src/bsw/common/Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [src/bsw/ecual/include/ComStack_Types.h:12-170](file://src/bsw/ecual/include/ComStack_Types.h#L12-L170)
+- [src/bsw/os/include/Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [src/bsw/services/det/include/Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 
 ## 性能考虑
 - 主函数周期
@@ -358,7 +358,7 @@ RTE --> DET["DET"]
 
 **章节来源**
 - [docs/api-reference.md:520-549](file://docs/api-reference.md#L520-L549)
-- [src/bsw/common/Det.h:48-76](file://src/bsw/common/Det.h#L48-L76)
+- [src/bsw/services/det/include/Det.h:48-76](file://src/bsw/services/det/include/Det.h#L48-L76)
 - [src/bsw/mcal/mcu/include/Mcu.h:45-52](file://src/bsw/mcal/mcu/include/Mcu.h#L45-L52)
 - [src/bsw/ecual/canif/include/CanIf.h:62-91](file://src/bsw/ecual/canif/include/CanIf.h#L62-L91)
 - [src/bsw/services/pdur/include/PduR.h:51-71](file://src/bsw/services/pdur/include/PduR.h#L51-L71)

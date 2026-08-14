@@ -6,9 +6,9 @@
 - [Spi.c](file://src/bsw/mcal/spi/src/Spi.c)
 - [Spi_Cfg.h](file://src/bsw/mcal/spi/include/Spi_Cfg.h)
 - [Spi_Cfg.h（模板）](file://src/bsw/config/templates/Spi_Cfg.h)
-- [EcuM.c](file://src/bsw/integration/EcuM.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [EcuM.c](file://src/bsw/services/ecum/src/EcuM.c)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [modules.md](file://docs/modules.md)
 - [api-reference.md](file://docs/api-reference.md)
 - [README.md](file://README.md)
@@ -42,8 +42,8 @@ SPI驱动位于MCAL层，采用AutoSAR分层架构，与上层服务层（如IoH
 - 实现文件：src/bsw/mcal/spi/src/Spi.c
 - 配置头文件：src/bsw/mcal/spi/include/Spi_Cfg.h
 - 配置模板：src/bsw/config/templates/Spi_Cfg.h
-- 集成示例：src/bsw/integration/EcuM.c
-- DET错误追踪：src/bsw/common/Det.h, src/bsw/common/Det.c
+- 集成示例：src/bsw/services/ecum/src/EcuM.c
+- DET错误追踪：src/bsw/services/det/include/Det.h, src/bsw/services/det/src/Det.c
 - 文档：docs/modules.md, docs/api-reference.md, README.md
 
 ```mermaid
@@ -77,18 +77,18 @@ SPIC --> ECSPI
 - [Spi.c:1-439](file://src/bsw/mcal/spi/src/Spi.c#L1-L439)
 - [Spi_Cfg.h:1-98](file://src/bsw/mcal/spi/include/Spi_Cfg.h#L1-L98)
 - [Spi_Cfg.h（模板）:1-93](file://src/bsw/config/templates/Spi_Cfg.h#L1-L93)
-- [EcuM.c:150-170](file://src/bsw/integration/EcuM.c#L150-L170)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [EcuM.c:150-170](file://src/bsw/services/ecum/src/EcuM.c#L150-L170)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 
 章节来源
 - [Spi.h:1-362](file://src/bsw/mcal/spi/include/Spi.h#L1-L362)
 - [Spi.c:1-439](file://src/bsw/mcal/spi/src/Spi.c#L1-L439)
 - [Spi_Cfg.h:1-98](file://src/bsw/mcal/spi/include/Spi_Cfg.h#L1-L98)
 - [Spi_Cfg.h（模板）:1-93](file://src/bsw/config/templates/Spi_Cfg.h#L1-L93)
-- [EcuM.c:150-170](file://src/bsw/integration/EcuM.c#L150-L170)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [EcuM.c:150-170](file://src/bsw/services/ecum/src/EcuM.c#L150-L170)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 
 ## 核心组件
 - 接口与类型定义：包含状态类型、作业/序列结果类型、缓冲区类型、异步模式、通道/作业/序列/HW单元标识、数据缓冲结构、通道/作业/序列/外部设备配置结构、全局配置结构等。
@@ -121,14 +121,14 @@ EcuM-->>App : "继续后续初始化"
 ```
 
 图表来源
-- [EcuM.c:160-161](file://src/bsw/integration/EcuM.c#L160-L161)
+- [EcuM.c:160-161](file://src/bsw/services/ecum/src/EcuM.c#L160-L161)
 - [Spi.c:131-174](file://src/bsw/mcal/spi/src/Spi.c#L131-L174)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 章节来源
-- [EcuM.c:150-170](file://src/bsw/integration/EcuM.c#L150-L170)
+- [EcuM.c:150-170](file://src/bsw/services/ecum/src/EcuM.c#L150-L170)
 - [Spi.c:131-174](file://src/bsw/mcal/spi/src/Spi.c#L131-L174)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 ## 详细组件分析
 
@@ -320,14 +320,14 @@ SPI --> ECSPI["ECSPI寄存器"]
 ```
 
 图表来源
-- [EcuM.c:160-161](file://src/bsw/integration/EcuM.c#L160-L161)
+- [EcuM.c:160-161](file://src/bsw/services/ecum/src/EcuM.c#L160-L161)
 - [Spi.c:131-174](file://src/bsw/mcal/spi/src/Spi.c#L131-L174)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 章节来源
-- [EcuM.c:150-170](file://src/bsw/integration/EcuM.c#L150-L170)
+- [EcuM.c:150-170](file://src/bsw/services/ecum/src/EcuM.c#L150-L170)
 - [Spi.c:131-174](file://src/bsw/mcal/spi/src/Spi.c#L131-L174)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 ## 性能考虑
 - 硬件寄存器访问：尽量批量设置寄存器，减少多次读写。
@@ -353,8 +353,8 @@ SPI --> ECSPI["ECSPI寄存器"]
 - [Spi.c:131-174](file://src/bsw/mcal/spi/src/Spi.c#L131-L174)
 - [Spi.c:219-293](file://src/bsw/mcal/spi/src/Spi.c#L219-L293)
 - [Spi.c:331-403](file://src/bsw/mcal/spi/src/Spi.c#L331-L403)
-- [Det.h:41-70](file://src/bsw/common/Det.h#L41-L70)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.h:41-70](file://src/bsw/services/det/include/Det.h#L41-L70)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 
 ## 结论
 本SPI驱动实现了AutoSAR标准的接口与配置框架，具备初始化、异步传输、状态查询与错误处理能力。当前实现以轮询为主，模式配置与波特率分频已完备，为后续扩展DMA与中断提供了清晰的接口基础。结合合理的配置与优化策略，可满足大多数MCAL层对SPI通信的需求。

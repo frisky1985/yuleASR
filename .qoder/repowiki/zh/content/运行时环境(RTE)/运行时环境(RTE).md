@@ -12,8 +12,8 @@
 - [Rte_ComInterface.c](file://src/bsw/rte/src/Rte_ComInterface.c)
 - [Rte_NvMInterface.c](file://src/bsw/rte/src/Rte_NvMInterface.c)
 - [Swc_EngineControl.c](file://src/asw/engine_control/src/Swc_EngineControl.c)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [Os.h](file://src/bsw/os/include/Os.h)
 - [main.c](file://examples/can_demo/main.c)
 </cite>
@@ -95,8 +95,8 @@ RTN --> STD
 - [Rte_NvMInterface.c:1-429](file://src/bsw/rte/src/Rte_NvMInterface.c#L1-L429)
 - [Swc_EngineControl.c:1-540](file://src/asw/engine_control/src/Swc_EngineControl.c#L1-L540)
 - [Os.h:1-213](file://src/bsw/os/include/Os.h#L1-L213)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 
 **章节来源**
 - [Rte.h:1-441](file://src/bsw/rte/include/Rte.h#L1-L441)
@@ -360,8 +360,8 @@ EC --> DET
 - [Rte_NvMInterface.c:19-23](file://src/bsw/rte/src/Rte_NvMInterface.c#L19-L23)
 - [Swc_EngineControl.c:15-18](file://src/asw/engine_control/src/Swc_EngineControl.c#L15-L18)
 - [Os.h:1-213](file://src/bsw/os/include/Os.h#L1-L213)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
 
 **章节来源**
 - [Rte.c:19-26](file://src/bsw/rte/src/Rte.c#L19-L26)
@@ -404,7 +404,7 @@ EC --> DET
 - [Rte.c:431-465](file://src/bsw/rte/src/Rte.c#L431-L465)
 - [Rte.c:596-661](file://src/bsw/rte/src/Rte.c#L596-L661)
 - [Rte_Scheduler.c:386-444](file://src/bsw/rte/src/Rte_Scheduler.c#L386-L444)
-- [Det.h:59-70](file://src/bsw/common/Det.h#L59-L70)
+- [Det.h:59-70](file://src/bsw/services/det/include/Det.h#L59-L70)
 
 ## 结论
 RTE通过统一的类型与句柄体系、完善的组件通信接口、灵活的任务调度与事件机制，有效实现了软件组件的解耦与系统集成。结合COM/NvM等接口层与OS调度，RTE在保证实时性的同时提供了良好的可维护性与扩展性。建议在工程实践中严格遵循配置宏约束、事件驱动设计与错误检测策略，确保系统稳定运行。

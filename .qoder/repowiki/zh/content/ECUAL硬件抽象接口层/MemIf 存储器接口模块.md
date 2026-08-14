@@ -10,7 +10,7 @@
 - [NvM.h](file://src/bsw/services/nvm/include/NvM.h)
 - [Swc_StorageManager.h](file://src/asw/storage_manager/include/Swc_StorageManager.h)
 - [Swc_StorageManager.c](file://src/asw/storage_manager/src/Swc_StorageManager.c)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [NvM_test.c](file://src/bsw/services/nvm/src/NvM_test.c)
 </cite>
 
@@ -263,7 +263,7 @@ RETURN_RESULT --> ERROR_END([错误处理完成])
 
 **图表来源**
 - [MemIf.c:71-92](file://src/bsw/ecual/memif/src/MemIf.c#L71-L92)
-- [Det.h:39-76](file://src/bsw/common/Det.h#L39-L76)
+- [Det.h:39-76](file://src/bsw/services/det/include/Det.h#L39-L76)
 
 **章节来源**
 - [MemIf.h:47-56](file://src/bsw/ecual/memif/include/MemIf.h#L47-L56)
@@ -413,7 +413,7 @@ VERIFY_FIX --> DEBUG_END([调试结束])
 - [NvM_test.c:100-109](file://src/bsw/services/nvm/src/NvM_test.c#L100-L109)
 
 **章节来源**
-- [Det.h:51-76](file://src/bsw/common/Det.h#L51-L76)
+- [Det.h:51-76](file://src/bsw/services/det/include/Det.h#L51-L76)
 - [NvM_test.c:28-109](file://src/bsw/services/nvm/src/NvM_test.c#L28-L109)
 
 ## 结论

@@ -7,7 +7,7 @@
 - [Wdg_Cfg.h](file://src/bsw/mcal/wdg/include/Wdg_Cfg.h)
 - [Swc_WatchdogManager.h](file://src/asw/watchdog_manager/include/Swc_WatchdogManager.h)
 - [Swc_WatchdogManager.c](file://src/asw/watchdog_manager/src/Swc_WatchdogManager.c)
-- [integration_test.c](file://src/bsw/integration/tests/integration_test.c)
+- [integration_test.c](file://tests/integration/bsw/integration_test.c)
 </cite>
 
 ## 目录
@@ -34,7 +34,7 @@
 WDG相关代码位于以下位置：
 - MCAL驱动层：src/bsw/mcal/wdg/include 与 src/bsw/mcal/wdg/src
 - 应用软件层：src/asw/watchdog_manager/include 与 src/asw/watchdog_manager/src
-- 集成测试：src/bsw/integration/tests/integration_test.c（包含对Wdg_Init的调用桩）
+- 集成测试：tests/integration/bsw/integration_test.c（包含对Wdg_Init的调用桩）
 
 ```mermaid
 graph TB
@@ -61,7 +61,7 @@ INT --> WDG_C
 - [Wdg_Cfg.h:15-60](file://src/bsw/mcal/wdg/include/Wdg_Cfg.h#L15-L60)
 - [Swc_WatchdogManager.h:110-181](file://src/asw/watchdog_manager/include/Swc_WatchdogManager.h#L110-L181)
 - [Swc_WatchdogManager.c:222-307](file://src/asw/watchdog_manager/src/Swc_WatchdogManager.c#L222-L307)
-- [integration_test.c:432-432](file://src/bsw/integration/tests/integration_test.c#L432-L432)
+- [integration_test.c:432-432](file://tests/integration/bsw/integration_test.c#L432-L432)
 
 **章节来源**
 - [Wdg.h:13-168](file://src/bsw/mcal/wdg/include/Wdg.h#L13-L168)
@@ -69,7 +69,7 @@ INT --> WDG_C
 - [Wdg_Cfg.h:1-62](file://src/bsw/mcal/wdg/include/Wdg_Cfg.h#L1-L62)
 - [Swc_WatchdogManager.h:1-202](file://src/asw/watchdog_manager/include/Swc_WatchdogManager.h#L1-L202)
 - [Swc_WatchdogManager.c:1-520](file://src/asw/watchdog_manager/src/Swc_WatchdogManager.c#L1-L520)
-- [integration_test.c:432-432](file://src/bsw/integration/tests/integration_test.c#L432-L432)
+- [integration_test.c:432-432](file://tests/integration/bsw/integration_test.c#L432-L432)
 
 ## 核心组件
 - 驱动层(WDG)：提供Wdg_Init、Wdg_SetMode、Wdg_Trigger、Wdg_GetVersionInfo、Wdg_SetTriggerCondition等接口，支持FAST/SLOW/OFF模式、超时配置、可选中断。
@@ -308,14 +308,14 @@ INT["integration_test.c"] --> C
 - [Wdg.h:134-163](file://src/bsw/mcal/wdg/include/Wdg.h#L134-L163)
 - [Wdg.c:85-143](file://src/bsw/mcal/wdg/src/Wdg.c#L85-L143)
 - [Swc_WatchdogManager.c:204-213](file://src/asw/watchdog_manager/src/Swc_WatchdogManager.c#L204-L213)
-- [integration_test.c:432-432](file://src/bsw/integration/tests/integration_test.c#L432-L432)
+- [integration_test.c:432-432](file://tests/integration/bsw/integration_test.c#L432-L432)
 
 **章节来源**
 - [Wdg.h:134-163](file://src/bsw/mcal/wdg/include/Wdg.h#L134-L163)
 - [Wdg.c:85-143](file://src/bsw/mcal/wdg/src/Wdg.c#L85-L143)
 - [Wdg_Cfg.h:15-60](file://src/bsw/mcal/wdg/include/Wdg_Cfg.h#L15-L60)
 - [Swc_WatchdogManager.c:204-213](file://src/asw/watchdog_manager/src/Swc_WatchdogManager.c#L204-L213)
-- [integration_test.c:432-432](file://src/bsw/integration/tests/integration_test.c#L432-L432)
+- [integration_test.c:432-432](file://tests/integration/bsw/integration_test.c#L432-L432)
 
 ## 性能考量
 - 超时计算：驱动层根据时钟频率与分频计算WT值，确保超时精度与边界限制。

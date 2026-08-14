@@ -5,7 +5,7 @@
 - [Pwm.h](file://src/bsw/mcal/pwm/include/Pwm.h)
 - [Pwm.c](file://src/bsw/mcal/pwm/src/Pwm.c)
 - [Pwm_Cfg.h](file://src/bsw/mcal/pwm/include/Pwm_Cfg.h)
-- [EcuM_test.c](file://src/bsw/integration/EcuM_test.c)
+- [EcuM_test.c](file://tests/integration/bsw/EcuM_test.c)
 - [IoHwAb_Cfg.h](file://src/bsw/ecual/iohwab/include/IoHwAb_Cfg.h)
 - [Swc_IOControl.c](file://src/asw/io_control/src/Swc_IOControl.c)
 </cite>
@@ -36,7 +36,7 @@ PWM驱动位于BSW（基础软件）的MCAL（微控制器抽象层）中，采�
 - 接口定义：src/bsw/mcal/pwm/include/Pwm.h
 - 实现代码：src/bsw/mcal/pwm/src/Pwm.c
 - 配置头文件：src/bsw/mcal/pwm/include/Pwm_Cfg.h
-- 集成测试桩：src/bsw/integration/EcuM_test.c
+- 集成测试桩：tests/integration/bsw/EcuM_test.c
 - 上层应用接口配置：src/bsw/ecual/iohwab/include/IoHwAb_Cfg.h
 - 应用层IO控制实现：src/asw/io_control/src/Swc_IOControl.c
 
@@ -64,13 +64,13 @@ BswM --> MCU
 **图表来源**
 - [Pwm.h:209-293](file://src/bsw/mcal/pwm/include/Pwm.h#L209-L293)
 - [Pwm.c:84-127](file://src/bsw/mcal/pwm/src/Pwm.c#L84-L127)
-- [EcuM_test.c:114-124](file://src/bsw/integration/EcuM_test.c#L114-L124)
+- [EcuM_test.c:114-124](file://tests/integration/bsw/EcuM_test.c#L114-L124)
 
 **章节来源**
 - [Pwm.h:1-299](file://src/bsw/mcal/pwm/include/Pwm.h#L1-L299)
 - [Pwm.c:1-383](file://src/bsw/mcal/pwm/src/Pwm.c#L1-L383)
 - [Pwm_Cfg.h:1-63](file://src/bsw/mcal/pwm/include/Pwm_Cfg.h#L1-L63)
-- [EcuM_test.c:55-254](file://src/bsw/integration/EcuM_test.c#L55-L254)
+- [EcuM_test.c:55-254](file://tests/integration/bsw/EcuM_test.c#L55-L254)
 
 ## 核心组件
 本节概述PWM驱动的核心数据类型、配置结构和API函数族。

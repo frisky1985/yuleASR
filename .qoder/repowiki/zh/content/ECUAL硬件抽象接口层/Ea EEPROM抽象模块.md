@@ -11,8 +11,8 @@
 - [MemIf.h](file://src/bsw/ecual/memif/include/MemIf.h)
 - [MemIf_Cfg.h](file://src/bsw/ecual/memif/include/MemIf_Cfg.h)
 - [MemIf.c](file://src/bsw/ecual/memif/src/MemIf.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [bsw_config.json](file://config/bsw_config.json)
 </cite>
 
@@ -390,7 +390,7 @@ Ea模块在设计时充分考虑了性能优化：
 
 **章节来源**
 - [Ea.h:56-65](file://src/bsw/ecual/ea/include/Ea.h#L56-L65)
-- [Det.h:40-44](file://src/bsw/common/Det.h#L40-L44)
+- [Det.h:40-44](file://src/bsw/services/det/include/Det.h#L40-L44)
 
 ## 结论
 

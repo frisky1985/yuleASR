@@ -5,9 +5,9 @@
 - [LinIf.h](file://src/bsw/ecual/linif/include/LinIf.h)
 - [LinIf_Cfg.h](file://src/bsw/ecual/linif/include/LinIf_Cfg.h)
 - [LinIf.c](file://src/bsw/ecual/linif/src/LinIf.c)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [bsw_config.json](file://config/bsw_config.json)
 </cite>
 

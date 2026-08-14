@@ -5,9 +5,9 @@
 - [Dio.h](file://src/bsw/mcal/dio/include/Dio.h)
 - [Dio.c](file://src/bsw/mcal/dio/src/Dio.c)
 - [Dio_Cfg.h](file://src/bsw/mcal/dio/include/Dio_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Det.c](file://src/bsw/common/Det.c)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Det.c](file://src/bsw/services/det/src/Det.c)
 - [Port_Cfg.h](file://src/bsw/config/templates/Port_Cfg.h)
 - [IoHwAb_Cfg.h](file://src/bsw/config/templates/IoHwAb_Cfg.h)
 - [main.c（LED闪烁示例）](file://examples/led_blink/main.c)
@@ -69,9 +69,9 @@ EX --> H
 - [Dio.h:1-195](file://src/bsw/mcal/dio/include/Dio.h#L1-L195)
 - [Dio.c:1-266](file://src/bsw/mcal/dio/src/Dio.c#L1-L266)
 - [Dio_Cfg.h:1-87](file://src/bsw/mcal/dio/include/Dio_Cfg.h#L1-L87)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 - [Port_Cfg.h:1-80](file://src/bsw/config/templates/Port_Cfg.h#L1-L80)
 - [IoHwAb_Cfg.h:1-115](file://src/bsw/config/templates/IoHwAb_Cfg.h#L1-L115)
 - [main.c（LED闪烁示例）:1-100](file://examples/led_blink/main.c#L1-L100)
@@ -80,9 +80,9 @@ EX --> H
 - [Dio.h:1-195](file://src/bsw/mcal/dio/include/Dio.h#L1-L195)
 - [Dio.c:1-266](file://src/bsw/mcal/dio/src/Dio.c#L1-L266)
 - [Dio_Cfg.h:1-87](file://src/bsw/mcal/dio/include/Dio_Cfg.h#L1-L87)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Det.c:1-88](file://src/bsw/common/Det.c#L1-L88)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Det.c:1-88](file://src/bsw/services/det/src/Det.c#L1-L88)
 - [Port_Cfg.h:1-80](file://src/bsw/config/templates/Port_Cfg.h#L1-L80)
 - [IoHwAb_Cfg.h:1-115](file://src/bsw/config/templates/IoHwAb_Cfg.h#L1-L115)
 - [main.c（LED闪烁示例）:1-100](file://examples/led_blink/main.c#L1-L100)
@@ -98,8 +98,8 @@ EX --> H
 - [Dio.h:35-195](file://src/bsw/mcal/dio/include/Dio.h#L35-L195)
 - [Dio.c:56-266](file://src/bsw/mcal/dio/src/Dio.c#L56-L266)
 - [Dio_Cfg.h:15-87](file://src/bsw/mcal/dio/include/Dio_Cfg.h#L15-L87)
-- [Det.h:32-76](file://src/bsw/common/Det.h#L32-L76)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:32-76](file://src/bsw/services/det/include/Det.h#L32-L76)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 - [main.c（LED闪烁示例）:61-99](file://examples/led_blink/main.c#L61-L99)
 
 ## 架构总览
@@ -125,8 +125,8 @@ MCU --> RTE
 **图表来源**
 - [Dio.h:85-195](file://src/bsw/mcal/dio/include/Dio.h#L85-L195)
 - [Dio.c:56-266](file://src/bsw/mcal/dio/src/Dio.c#L56-L266)
-- [Det.h:47-76](file://src/bsw/common/Det.h#L47-L76)
-- [Det.c:47-80](file://src/bsw/common/Det.c#L47-L80)
+- [Det.h:47-76](file://src/bsw/services/det/include/Det.h#L47-L76)
+- [Det.c:47-80](file://src/bsw/services/det/src/Det.c#L47-L80)
 - [main.c（LED闪烁示例）:61-99](file://examples/led_blink/main.c#L61-L99)
 
 ## 详细组件分析
@@ -163,11 +163,11 @@ class 接口与类型 {
 
 **图表来源**
 - [Dio.h:54-74](file://src/bsw/mcal/dio/include/Dio.h#L54-L74)
-- [Std_Types.h:44-60](file://src/bsw/common/Std_Types.h#L44-L60)
+- [Std_Types.h:44-60](file://src/bsw/os/include/Std_Types.h#L44-L60)
 
 **章节来源**
 - [Dio.h:54-74](file://src/bsw/mcal/dio/include/Dio.h#L54-L74)
-- [Std_Types.h:44-60](file://src/bsw/common/Std_Types.h#L44-L60)
+- [Std_Types.h:44-60](file://src/bsw/os/include/Std_Types.h#L44-L60)
 
 ### API概览与行为
 - Dio_Init：初始化DIO驱动，启用错误检测时校验配置指针。
@@ -393,16 +393,16 @@ DIO_C --> DET_C
 **图表来源**
 - [Dio.h:20-21](file://src/bsw/mcal/dio/include/Dio.h#L20-L21)
 - [Dio.c:9-11](file://src/bsw/mcal/dio/src/Dio.c#L9-L11)
-- [Std_Types.h:17-18](file://src/bsw/common/Std_Types.h#L17-L18)
+- [Std_Types.h:17-18](file://src/bsw/os/include/Std_Types.h#L17-L18)
 - [Dio_Cfg.h:1-10](file://src/bsw/mcal/dio/include/Dio_Cfg.h#L1-L10)
-- [Det.h:17-18](file://src/bsw/common/Det.h#L17-L18)
-- [Det.c:19-20](file://src/bsw/common/Det.c#L19-L20)
+- [Det.h:17-18](file://src/bsw/services/det/include/Det.h#L17-L18)
+- [Det.c:19-20](file://src/bsw/services/det/src/Det.c#L19-L20)
 
 **章节来源**
 - [Dio.h:20-21](file://src/bsw/mcal/dio/include/Dio.h#L20-L21)
 - [Dio.c:9-11](file://src/bsw/mcal/dio/src/Dio.c#L9-L11)
-- [Det.h:17-18](file://src/bsw/common/Det.h#L17-L18)
-- [Det.c:19-20](file://src/bsw/common/Det.c#L19-L20)
+- [Det.h:17-18](file://src/bsw/services/det/include/Det.h#L17-L18)
+- [Det.c:19-20](file://src/bsw/services/det/src/Det.c#L19-L20)
 
 ## 性能考虑
 - 寄存器直接访问：通道读写、端口读写均为寄存器级操作，延迟低、实时性好。
@@ -429,8 +429,8 @@ DIO_C --> DET_C
 **章节来源**
 - [Dio.h:45-50](file://src/bsw/mcal/dio/include/Dio.h#L45-L50)
 - [Dio.c:58-63](file://src/bsw/mcal/dio/src/Dio.c#L58-L63)
-- [Det.h:41-44](file://src/bsw/common/Det.h#L41-L44)
-- [Det.c:47-57](file://src/bsw/common/Det.c#L47-L57)
+- [Det.h:41-44](file://src/bsw/services/det/include/Det.h#L41-L44)
+- [Det.c:47-57](file://src/bsw/services/det/src/Det.c#L47-L57)
 - [Dio_Cfg.h:23-41](file://src/bsw/mcal/dio/include/Dio_Cfg.h#L23-L41)
 - [Port_Cfg.h:28-78](file://src/bsw/config/templates/Port_Cfg.h#L28-L78)
 

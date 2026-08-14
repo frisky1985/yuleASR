@@ -5,8 +5,8 @@
 - [Adc.h](file://src/bsw/mcal/adc/include/Adc.h)
 - [Adc_Cfg.h](file://src/bsw/mcal/adc/include/Adc_Cfg.h)
 - [Adc.c](file://src/bsw/mcal/adc/src/Adc.c)
-- [Det.h](file://src/bsw/common/Det.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
 - [bsw_config.json](file://config/bsw_config.json)
 - [README.md（示例）](file://examples/README.md)
 - [main.c（CAN示例）](file://examples/can_demo/main.c)
@@ -32,8 +32,8 @@ ADC模块位于MCAL层，遵循AutoSAR标准，采用头文件声明接口、源
 - 接口与类型：src/bsw/mcal/adc/include/Adc.h
 - 配置宏：src/bsw/mcal/adc/include/Adc_Cfg.h
 - 实现：src/bsw/mcal/adc/src/Adc.c
-- 错误检测：src/bsw/common/Det.h
-- 标准类型：src/bsw/common/Std_Types.h
+- 错误检测：src/bsw/services/det/include/Det.h
+- 标准类型：src/bsw/os/include/Std_Types.h
 - 构建配置：config/bsw_config.json
 - 示例工程：examples/
 
@@ -61,8 +61,8 @@ ExReadme --> ExMain
 - [Adc.h:1-384](file://src/bsw/mcal/adc/include/Adc.h#L1-L384)
 - [Adc_Cfg.h:1-105](file://src/bsw/mcal/adc/include/Adc_Cfg.h#L1-L105)
 - [Adc.c:1-506](file://src/bsw/mcal/adc/src/Adc.c#L1-L506)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [bsw_config.json:1-21](file://config/bsw_config.json#L1-L21)
 - [README.md（示例）:1-165](file://examples/README.md#L1-L165)
 - [main.c（CAN示例）:1-119](file://examples/can_demo/main.c#L1-L119)
@@ -71,8 +71,8 @@ ExReadme --> ExMain
 - [Adc.h:1-384](file://src/bsw/mcal/adc/include/Adc.h#L1-L384)
 - [Adc_Cfg.h:1-105](file://src/bsw/mcal/adc/include/Adc_Cfg.h#L1-L105)
 - [Adc.c:1-506](file://src/bsw/mcal/adc/src/Adc.c#L1-L506)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [bsw_config.json:1-21](file://config/bsw_config.json#L1-L21)
 - [README.md（示例）:1-165](file://examples/README.md#L1-L165)
 - [main.c（CAN示例）:1-119](file://examples/can_demo/main.c#L1-L119)
@@ -149,7 +149,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:261-265](file://src/bsw/mcal/adc/include/Adc.h#L261-L265)
 - [Adc.c:93-136](file://src/bsw/mcal/adc/src/Adc.c#L93-L136)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_StartGroupConversion 启动组转换
 - 函数签名路径：[Adc_StartGroupConversion:273-276](file://src/bsw/mcal/adc/include/Adc.h#L273-L276)
@@ -169,7 +169,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:273-276](file://src/bsw/mcal/adc/include/Adc.h#L273-L276)
 - [Adc.c:168-223](file://src/bsw/mcal/adc/src/Adc.c#L168-L223)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_ReadGroup 读取组结果
 - 函数签名路径：[Adc_ReadGroup:285-290](file://src/bsw/mcal/adc/include/Adc.h#L285-L290)
@@ -187,7 +187,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:285-290](file://src/bsw/mcal/adc/include/Adc.h#L285-L290)
 - [Adc.c:254-278](file://src/bsw/mcal/adc/src/Adc.c#L254-L278)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_EnableHardwareTrigger/Adc_DisableHardwareTrigger 硬件触发控制
 - 函数签名路径
@@ -207,7 +207,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:293-302](file://src/bsw/mcal/adc/include/Adc.h#L293-L302)
 - [Adc.c:280-328](file://src/bsw/mcal/adc/src/Adc.c#L280-L328)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_EnableGroupNotification/Adc_DisableGroupNotification 组通知
 - 函数签名路径
@@ -226,7 +226,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:305-314](file://src/bsw/mcal/adc/include/Adc.h#L305-L314)
 - [Adc.c:330-360](file://src/bsw/mcal/adc/src/Adc.c#L330-L360)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_GetGroupStatus 获取组状态
 - 函数签名路径：[Adc_GetGroupStatus:317-321](file://src/bsw/mcal/adc/include/Adc.h#L317-L321)
@@ -243,7 +243,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:317-321](file://src/bsw/mcal/adc/include/Adc.h#L317-L321)
 - [Adc.c:362-375](file://src/bsw/mcal/adc/src/Adc.c#L362-L375)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_GetVersionInfo 版本信息
 - 函数签名路径：[Adc_GetVersionInfo:324-327](file://src/bsw/mcal/adc/include/Adc.h#L324-L327)
@@ -260,7 +260,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:324-327](file://src/bsw/mcal/adc/include/Adc.h#L324-L327)
 - [Adc.c:377-390](file://src/bsw/mcal/adc/src/Adc.c#L377-L390)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_GetStreamLastPointer 流式最后指针
 - 函数签名路径：[Adc_GetStreamLastPointer:330-335](file://src/bsw/mcal/adc/include/Adc.h#L330-L335)
@@ -278,7 +278,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:330-335](file://src/bsw/mcal/adc/include/Adc.h#L330-L335)
 - [Adc.c:392-413](file://src/bsw/mcal/adc/src/Adc.c#L392-L413)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### Adc_SetupResultBuffer 结果缓冲区设置
 - 函数签名路径：[Adc_SetupResultBuffer:338-343](file://src/bsw/mcal/adc/include/Adc.h#L338-L343)
@@ -296,7 +296,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:338-343](file://src/bsw/mcal/adc/include/Adc.h#L338-L343)
 - [Adc.c:415-436](file://src/bsw/mcal/adc/src/Adc.c#L415-L436)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ### 功率状态管理（条件编译）
 - 接口
@@ -309,7 +309,7 @@ ADC-->>App : 若启用通知则调用回调
 **章节来源**
 - [Adc.h:353-378](file://src/bsw/mcal/adc/include/Adc.h#L353-L378)
 - [Adc.c:438-502](file://src/bsw/mcal/adc/src/Adc.c#L438-L502)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ## 依赖关系分析
 - 内部依赖
@@ -334,8 +334,8 @@ BswCfg["bsw_config.json"] -. 影响构建 .-> AdcC
 - [Adc.h:1-384](file://src/bsw/mcal/adc/include/Adc.h#L1-L384)
 - [Adc_Cfg.h:1-105](file://src/bsw/mcal/adc/include/Adc_Cfg.h#L1-L105)
 - [Adc.c:1-506](file://src/bsw/mcal/adc/src/Adc.c#L1-L506)
-- [Det.h:1-76](file://src/bsw/common/Det.h#L1-L76)
-- [Std_Types.h:1-117](file://src/bsw/common/Std_Types.h#L1-L117)
+- [Det.h:1-76](file://src/bsw/services/det/include/Det.h#L1-L76)
+- [Std_Types.h:1-117](file://src/bsw/os/include/Std_Types.h#L1-L117)
 - [bsw_config.json:1-21](file://config/bsw_config.json#L1-L21)
 
 **章节来源**
@@ -376,7 +376,7 @@ BswCfg["bsw_config.json"] -. 影响构建 .-> AdcC
 - [Adc.c:170-179](file://src/bsw/mcal/adc/src/Adc.c#L170-L179)
 - [Adc.c:256-269](file://src/bsw/mcal/adc/src/Adc.c#L256-L269)
 - [Adc.c:364-373](file://src/bsw/mcal/adc/src/Adc.c#L364-L373)
-- [Det.h:51-59](file://src/bsw/common/Det.h#L51-L59)
+- [Det.h:51-59](file://src/bsw/services/det/include/Det.h#L51-L59)
 
 ## 结论
 ADC模块提供了完整的AutoSAR MCAL接口集合，涵盖初始化、转换控制、结果读取、触发与通知、状态与版本查询以及功率状态管理。通过Adc_Cfg.h可灵活裁剪功能并配置硬件参数。结合DMA与流式缓冲模式，可实现高性能、低开销的传感器数据采集与处理。建议在设计阶段明确分辨率、采样时间与触发策略，并在开发过程中充分利用DET进行早期错误诊断。

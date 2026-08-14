@@ -7,8 +7,8 @@
 - [Mcu_Cfg.h（官方模板）](file://src/bsw/config/templates/Mcu_Cfg.h)
 - [Mcu_Cfg.h（生成配置）](file://generated/Mcu_Cfg.h)
 - [Mcu_Cfg.h（实现侧）](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h)
-- [Std_Types.h](file://src/bsw/common/Std_Types.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Std_Types.h](file://src/bsw/os/include/Std_Types.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [platform_config.h](file://platform/cortex-m/platform_config.h)
 - [test_mcu.c](file://tests/unit/test_mcu.c)
 - [main.c（LED闪烁示例）](file://examples/led_blink/main.c)
@@ -63,8 +63,8 @@ MCU_CFG_IMPL -. 平台 .-> PLATFORM
 - [Mcu_Cfg.h（实现侧）:15-82](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h#L15-L82)
 - [Mcu_Cfg.h（生成配置）:1-19](file://generated/Mcu_Cfg.h#L1-L19)
 - [Mcu_Cfg.h（官方模板）:1-69](file://src/bsw/config/templates/Mcu_Cfg.h#L1-L69)
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 - [platform_config.h:12-307](file://platform/cortex-m/platform_config.h#L12-L307)
 
 **章节来源**
@@ -73,8 +73,8 @@ MCU_CFG_IMPL -. 平台 .-> PLATFORM
 - [Mcu_Cfg.h（实现侧）:15-82](file://src/bsw/mcal/mcu/include/Mcu_Cfg.h#L15-L82)
 - [Mcu_Cfg.h（生成配置）:1-19](file://generated/Mcu_Cfg.h#L1-L19)
 - [Mcu_Cfg.h（官方模板）:1-69](file://src/bsw/config/templates/Mcu_Cfg.h#L1-L69)
-- [Std_Types.h:11-117](file://src/bsw/common/Std_Types.h#L11-L117)
-- [Det.h:11-76](file://src/bsw/common/Det.h#L11-L76)
+- [Std_Types.h:11-117](file://src/bsw/os/include/Std_Types.h#L11-L117)
+- [Det.h:11-76](file://src/bsw/services/det/include/Det.h#L11-L76)
 - [platform_config.h:12-307](file://platform/cortex-m/platform_config.h#L12-L307)
 
 ## 核心组件
@@ -111,8 +111,8 @@ DET --> STD
 **图表来源**
 - [Mcu.h:134-230](file://src/bsw/mcal/mcu/include/Mcu.h#L134-L230)
 - [Mcu.c:249-488](file://src/bsw/mcal/mcu/src/Mcu.c#L249-L488)
-- [Det.h:59-70](file://src/bsw/common/Det.h#L59-L70)
-- [Std_Types.h:40-80](file://src/bsw/common/Std_Types.h#L40-L80)
+- [Det.h:59-70](file://src/bsw/services/det/include/Det.h#L59-L70)
+- [Std_Types.h:40-80](file://src/bsw/os/include/Std_Types.h#L40-L80)
 
 ## 详细组件分析
 
@@ -317,7 +317,7 @@ MCU_CFG --> PLATFORM["platform_config.h"]
 - [Mcu_Cfg.h（官方模板）:15-25](file://src/bsw/config/templates/Mcu_Cfg.h#L15-L25)
 - [Mcu_Cfg.h（生成配置）:10-18](file://generated/Mcu_Cfg.h#L10-L18)
 - [platform_config.h:12-307](file://platform/cortex-m/platform_config.h#L12-L307)
-- [Det.h:59-70](file://src/bsw/common/Det.h#L59-L70)
+- [Det.h:59-70](file://src/bsw/services/det/include/Det.h#L59-L70)
 
 **章节来源**
 - [Mcu.h:19-20](file://src/bsw/mcal/mcu/include/Mcu.h#L19-L20)
@@ -326,7 +326,7 @@ MCU_CFG --> PLATFORM["platform_config.h"]
 - [Mcu_Cfg.h（官方模板）:15-25](file://src/bsw/config/templates/Mcu_Cfg.h#L15-L25)
 - [Mcu_Cfg.h（生成配置）:10-18](file://generated/Mcu_Cfg.h#L10-L18)
 - [platform_config.h:12-307](file://platform/cortex-m/platform_config.h#L12-L307)
-- [Det.h:59-70](file://src/bsw/common/Det.h#L59-L70)
+- [Det.h:59-70](file://src/bsw/services/det/include/Det.h#L59-L70)
 
 ## 性能考虑
 - 超时控制：PLL锁定与时钟切换过程包含超时保护，避免无限等待。

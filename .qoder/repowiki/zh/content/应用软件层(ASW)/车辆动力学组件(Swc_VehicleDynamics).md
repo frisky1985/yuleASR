@@ -6,7 +6,7 @@
 - [Swc_VehicleDynamics.c](file://src/asw/vehicle_dynamics/src/Swc_VehicleDynamics.c)
 - [Rte_Swc.h](file://src/bsw/rte/include/Rte_Swc.h)
 - [Rte.h](file://src/bsw/rte/include/Rte.h)
-- [Det.h](file://src/bsw/common/Det.h)
+- [Det.h](file://src/bsw/services/det/include/Det.h)
 - [modules.md](file://docs/modules.md)
 - [bsw_config.json](file://config/bsw_config.json)
 </cite>
@@ -381,7 +381,7 @@ SafeState --> End([结束])
 - [Swc_VehicleDynamics.c:330-331](file://src/asw/vehicle_dynamics/src/Swc_VehicleDynamics.c#L330-L331)
 
 **章节来源**
-- [Det.h:59-70](file://src/bsw/common/Det.h#L59-L70)
+- [Det.h:59-70](file://src/bsw/services/det/include/Det.h#L59-L70)
 
 ## 结论
 

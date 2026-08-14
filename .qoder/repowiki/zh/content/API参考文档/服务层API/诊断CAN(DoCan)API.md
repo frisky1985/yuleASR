@@ -11,7 +11,7 @@
 - [Dcm.h](file://src/bsw/services/dcm/include/Dcm.h)
 - [Can.h](file://src/bsw/mcal/can/include/Can.h)
 - [CanIf.h](file://src/bsw/ecual/canif/include/CanIf.h)
-- [integration_test_cfg.h](file://src/bsw/integration/tests/integration_test_cfg.h)
+- [integration_test_cfg.h](file://tests/integration/integration_test_cfg.h)
 - [spec.md](file://openspec/specs/bsw/spec.md)
 </cite>
 
@@ -341,7 +341,7 @@ DoCan作为诊断通信的桥梁，通过明确的PDU映射与通道状态机，
 - 实践建议：在系统启动阶段先完成Can/CanIf初始化与波特率设置，再初始化DoCan与上层模块。
 
 章节来源
-- [integration_test_cfg.h:35-41](file://src/bsw/integration/tests/integration_test_cfg.h#L35-L41)
+- [integration_test_cfg.h:35-41](file://tests/integration/integration_test_cfg.h#L35-L41)
 - [CanIf.h:389-397](file://src/bsw/ecual/canif/include/CanIf.h#L389-L397)
 - [Can.h:139-164](file://src/bsw/mcal/can/include/Can.h#L139-L164)
 
