@@ -81,7 +81,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/dem/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/mcu/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/mcal/port/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/rte/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/middleware/rte/include
 )
 
 # AUTOSAR stub headers for native builds
@@ -171,7 +171,7 @@ endif()
 add_subdirectory(src/bsw/mcal)
 add_subdirectory(src/bsw/ecual)
 add_subdirectory(src/bsw/boot)
-add_subdirectory(src/rte)
+add_subdirectory(src/middleware/rte)
 add_subdirectory(src/bsw/os)
 add_subdirectory(src/platform)
 
@@ -179,7 +179,7 @@ add_subdirectory(src/platform)
 #    bootloader/adaptive/classic) ─────────────────────────────────────────
 # 依赖 pthread/zlib/dirent 等 POSIX 接口与 DDS 类型, S32K312 裸机
 # (Cortex-M33, newlib 无 pthread) 无法编译。交叉构建时整体排除,
-# 与 src/asw 的 gate 模式一致; 宿主构建 (BUILD_TESTING/CI) 全部保留。
+# 与 src/application 的 gate 模式一致; 宿主构建 (BUILD_TESTING/CI) 全部保留。
 if(NOT CMAKE_CROSSCOMPILING)
     # Common utilities (eth_dds_common: eth_types/dds_log/eth_utils)
     if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/common/CMakeLists.txt)
@@ -187,8 +187,8 @@ if(NOT CMAKE_CROSSCOMPILING)
     endif()
 
     # DDS middleware (ETH-DDS integration)
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/dds/CMakeLists.txt)
-        add_subdirectory(src/dds)
+    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/middleware/dds/CMakeLists.txt)
+        add_subdirectory(src/middleware/dds)
     endif()
 
     # ETH-DDS 辅助模块: EthSM / Ethernet driver / Telemetry
@@ -225,7 +225,7 @@ endif()
 
 # ASW components (optional for embedded target)
 if(NOT CMAKE_CROSSCOMPILING OR BUILD_EXAMPLES)
-    add_subdirectory(src/asw)
+    add_subdirectory(src/application)
 endif()
 
 # Safety components

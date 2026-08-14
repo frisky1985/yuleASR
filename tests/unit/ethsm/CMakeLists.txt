@@ -25,7 +25,7 @@ target_include_directories(EthSM_UnitTest
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/services/det/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/os/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/general/inc
-        ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/rte/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/middleware/rte/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../include/autosar
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../config/input/ecual
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../config/input/services

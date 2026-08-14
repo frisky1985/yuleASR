@@ -57,7 +57,7 @@ for src in sources:
     # Add all module source files for linking
     for cfile in sorted(project_dir.glob('src/bsw/**/*.c')):
         cmd.append(str(cfile))
-    for cfile in sorted(project_dir.glob('src/rte/**/*.c')):
+    for cfile in sorted(project_dir.glob('src/middleware/rte/**/*.c')):
         cmd.append(str(cfile))
     for cfile in sorted(project_dir.glob('src/platform/**/*.c')):
         cmd.append(str(cfile))
@@ -70,7 +70,7 @@ for src in sources:
         'src/bsw/services/com/include',
         'src/bsw/services/dcm/include',
         'src/bsw/services/dem/include',
-        'src/rte/include',
+        'src/middleware/rte/include',
     ]:
         cmd.extend(['-I', str(project_dir / incdir)])
     print(f'  Compiling {src.name}...')

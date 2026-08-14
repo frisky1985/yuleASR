@@ -221,7 +221,7 @@ cmake --build "${BUILD_DIR}" --target hil_runner 2>&1 || {
         -I"${PROJECT_ROOT}/src/bsw/services/e2e/include" \
         -I"${PROJECT_ROOT}/src/bsw/comm/can/include" \
         -I"${PROJECT_ROOT}/src/bsw/services/dcm/include" \
-        -I"${PROJECT_ROOT}/src/micro-dds/include" \
+        -I"${PROJECT_ROOT}/src/middleware/microdds/include" \
         "${HIL_SRC_DIR}/test_hil_runner.c" \
         "${HIL_SRC_DIR}/test_hil_can.c" \
         "${HIL_SRC_DIR}/test_hil_diag.c" \

@@ -43,7 +43,7 @@ target_include_directories(Os
         ${CMAKE_SOURCE_DIR}/src/bsw/services/com/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/dcm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/nvm/include
-        ${CMAKE_SOURCE_DIR}/src/rte/include
+        ${CMAKE_SOURCE_DIR}/src/middleware/rte/include
 )
 
 # Posix port needs pthread (native builds)

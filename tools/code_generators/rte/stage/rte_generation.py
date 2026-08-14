@@ -12,7 +12,7 @@ Design:
   This stage integrates with the yuleOSH pipeline framework. It:
   1. Scans for .arxml input files (config/input/arxml/ or custom path)
   2. Runs the RTE generator (tools/code_generators/rte/)
-  3. Outputs generated RTE code to src/rte/generated/
+  3. Outputs generated RTE code to src/middleware/rte/generated/
   4. Validates output files (include guards, function presence)
   5. Optionally runs MISRA check on generated code
 
@@ -70,8 +70,8 @@ def run(args: Optional[List[str]] = None) -> Dict[str, Any]:
     parser.add_argument('--arxml', '-i', dest='arxml_path',
                         help='Input ARXML file path')
     parser.add_argument('--output', '-o', dest='output_dir',
-                        default='src/rte/generated',
-                        help='Output directory (default: src/rte/generated)')
+                        default='src/middleware/rte/generated',
+                        help='Output directory (default: src/middleware/rte/generated)')
     parser.add_argument('--swc', dest='swc_filter', action='append',
                         help='Filter: generate for specific SWC only')
     parser.add_argument('--project-root', dest='project_root',

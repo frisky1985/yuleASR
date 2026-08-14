@@ -30,11 +30,11 @@ DEFAULT_ARXML_PATHS=(
     "${PROJECT_ROOT}/config/input/arxml/bcm_demo.arxml"
     "${PROJECT_ROOT}/config/input/arxml/example.arxml"
     "${PROJECT_ROOT}/tools/code_generators/rte/examples/bcm_demo.arxml"
-    "${PROJECT_ROOT}/configs/arxml/example.arxml"
+    "${PROJECT_ROOT}/config/input/arxml/example.arxml"
 )
 
 # Output directory (generated RTE code goes here)
-RTE_GENERATED_DIR="${PROJECT_ROOT}/src/rte/generated"
+RTE_GENERATED_DIR="${PROJECT_ROOT}/src/middleware/rte/generated"
 
 # Generator script path
 GENERATOR="${PROJECT_ROOT}/tools/code_generators/rte/rte_generator.py"
@@ -66,7 +66,7 @@ while [[ $# -gt 0 ]]; do
         --help|-h)
             echo "Usage: $0 [options]"
             echo "  --arxml FILE    Input ARXML file"
-            echo "  --output DIR    Output directory (default: src/rte/generated/)"
+            echo "  --output DIR    Output directory (default: src/middleware/rte/generated/)"
             echo "  --swc NAME      Filter: generate only for SWC (repeatable)"
             echo "  --check         Validation check only, no generation"
             echo "  --misra         Also run MISRA check on generated code"
@@ -189,7 +189,7 @@ if [ "$RUN_MISRA" = true ]; then
             --template='{file}:{line}:{severity}:{message}' \
             --suppress='unmatchedSuppression' \
             -I "$OUTPUT_DIR" \
-            -I "${PROJECT_ROOT}/src/rte/include" \
+            -I "${PROJECT_ROOT}/src/middleware/rte/include" \
             "$OUTPUT_DIR" 2>&1 | tee "$MISRA_REPORT"
         echo -e "${GREEN}[RTE] ✅ MISRA report saved to ${MISRA_REPORT}${NC}"
     else

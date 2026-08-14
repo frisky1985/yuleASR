@@ -18,13 +18,13 @@ Usage:
 
 Examples:
     # Parse ARXML file
-    python arxml_tool.py parse configs/arxml/example.arxml --output parsed.json
+    python arxml_tool.py parse config/input/arxml/example.arxml --output parsed.json
 
     # Generate configuration
     python arxml_tool.py generate parsed.json --output-dir ./generated
 
     # Check integrity
-    python arxml_tool.py check configs/arxml/example.arxml --report integrity_report.txt
+    python arxml_tool.py check config/input/arxml/example.arxml --report integrity_report.txt
 """
 
 import sys

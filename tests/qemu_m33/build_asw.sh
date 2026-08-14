@@ -39,7 +39,7 @@ INCLUDES="\
     -Ithird_party/FreeRTOS-Kernel/portable/GCC/ARM_CM33_NTZ/non_secure \
     -I$REPO_ROOT/src/bsw/os/include \
     -I$REPO_ROOT/include/autosar \
-    -I$REPO_ROOT/src/rte/include \
+    -I$REPO_ROOT/src/middleware/rte/include \
     -I$REPO_ROOT/src/bsw/services/bswm/include \
     -I$REPO_ROOT/src/bsw/services/com/include \
     -I$REPO_ROOT/src/bsw/services/canif/include \
@@ -47,15 +47,15 @@ INCLUDES="\
     -I$REPO_ROOT/src/bsw/services/dcm/include \
     -I$REPO_ROOT/src/bsw/services/nvm/include \
     -I$REPO_ROOT/src/bsw/services/dem/include \
-    -I$REPO_ROOT/src/asw \
-    -I$REPO_ROOT/src/asw/engine_control/include \
-    -I$REPO_ROOT/src/asw/vehicle_dynamics/include \
-    -I$REPO_ROOT/src/asw/diagnostic_manager/include \
-    -I$REPO_ROOT/src/asw/communication_manager/include \
-    -I$REPO_ROOT/src/asw/storage_manager/include \
-    -I$REPO_ROOT/src/asw/io_control/include \
-    -I$REPO_ROOT/src/asw/mode_manager/include \
-    -I$REPO_ROOT/src/asw/watchdog_manager/include \
+    -I$REPO_ROOT/src/application \
+    -I$REPO_ROOT/src/application/engine_control/include \
+    -I$REPO_ROOT/src/application/vehicle_dynamics/include \
+    -I$REPO_ROOT/src/application/diagnostic_manager/include \
+    -I$REPO_ROOT/src/application/communication_manager/include \
+    -I$REPO_ROOT/src/application/storage_manager/include \
+    -I$REPO_ROOT/src/application/io_control/include \
+    -I$REPO_ROOT/src/application/mode_manager/include \
+    -I$REPO_ROOT/src/application/watchdog_manager/include \
 "
 
 KERNEL_SRCS="\
@@ -84,18 +84,18 @@ YULE_SRCS="\
     $REPO_ROOT/src/bsw/os/src/Os.c \
     $REPO_ROOT/src/bsw/os/src/Os_Cfg.c \
     $REPO_ROOT/src/bsw/os/src/Os_TaskEntries.c \
-    $REPO_ROOT/src/rte/src/Rte.c \
-    $REPO_ROOT/src/rte/src/Rte_Scheduler.c \
-    $REPO_ROOT/src/rte/src/Rte_AswScheduler.c \
-    $REPO_ROOT/src/rte/src/Rte_SwcPortApi.c \
-    $REPO_ROOT/src/asw/engine_control/src/Swc_EngineControl.c \
-    $REPO_ROOT/src/asw/vehicle_dynamics/src/Swc_VehicleDynamics.c \
-    $REPO_ROOT/src/asw/diagnostic_manager/src/Swc_DiagnosticManager.c \
-    $REPO_ROOT/src/asw/communication_manager/src/Swc_CommunicationManager.c \
-    $REPO_ROOT/src/asw/storage_manager/src/Swc_StorageManager.c \
-    $REPO_ROOT/src/asw/io_control/src/Swc_IOControl.c \
-    $REPO_ROOT/src/asw/mode_manager/src/Swc_ModeManager.c \
-    $REPO_ROOT/src/asw/watchdog_manager/src/Swc_WatchdogManager.c \
+    $REPO_ROOT/src/middleware/rte/src/Rte.c \
+    $REPO_ROOT/src/middleware/rte/src/Rte_Scheduler.c \
+    $REPO_ROOT/src/middleware/rte/src/Rte_AswScheduler.c \
+    $REPO_ROOT/src/middleware/rte/src/Rte_SwcPortApi.c \
+    $REPO_ROOT/src/application/engine_control/src/Swc_EngineControl.c \
+    $REPO_ROOT/src/application/vehicle_dynamics/src/Swc_VehicleDynamics.c \
+    $REPO_ROOT/src/application/diagnostic_manager/src/Swc_DiagnosticManager.c \
+    $REPO_ROOT/src/application/communication_manager/src/Swc_CommunicationManager.c \
+    $REPO_ROOT/src/application/storage_manager/src/Swc_StorageManager.c \
+    $REPO_ROOT/src/application/io_control/src/Swc_IOControl.c \
+    $REPO_ROOT/src/application/mode_manager/src/Swc_ModeManager.c \
+    $REPO_ROOT/src/application/watchdog_manager/src/Swc_WatchdogManager.c \
 "
 
 echo "==> Building qemu_m33_asw.elf ..."

@@ -59,28 +59,34 @@ yuleASR 是 **上海予乐电子科技有限公司** 开发的开源汽车基础
 
 ## <a name="structure"></a> 项目结构
 
+
 ```
 yuleASR/
 ├── src/                      # 源代码
-│   ├── autosar/             # AUTOSAR BSW 静态代码
+│   ├── bsw/                 # AUTOSAR BSW 静态代码
 │   │   ├── mcal/           # 微控制器驱动层 (21模块)
 │   │   ├── ecual/          # ECU抽象层 (29模块)
 │   │   ├── services/       # 服务层 (44模块)
-│   │   └── common/         # 通用头文件
+│   │   ├── os/             # 操作系统 (FreeRTOS)
+│   │   └── boot/ cdd/      # 启动代码 / 复杂驱动
+│   ├── autosar/             # AUTOSAR 集成层 (adaptive/classic/e2e)
 │   ├── application/         # 应用层 (ASW)
-│   ├── middleware/          # 中间件 (DDS, RTE)
-│   ├── platform/            # 平台相关 (S32K312)
-│   └── diagnostics/         # 诊断模块 (DCM/DEM)
-├── config/                 # 配置代码 (117个配置文件)
-├── tests/                  # 测试代码
+│   ├── middleware/          # 中间件 (DDS, RTE, Micro-DDS)
+│   ├── platform/            # 平台相关 (S32K312 / i.MX8M Mini)
+│   ├── diagnostics/         # 诊断模块 (DCM/DEM)
+│   └── common/ libs/        # 通用代码 / 算法库
+├── config/                 # 配置代码 (input/generated/templates)
+├── tests/                  # 测试代码 (unit/integration/system/resources)
 ├── tools/                  # 工具链
 │   ├── arxml/             # ARXML处理工具
 │   ├── can_config/        # CAN配置工具
 │   ├── dtc_config/        # DTC配置工具
-│   └── code_generators/   # 代码生成器
+│   ├── code_generators/   # 代码生成器
+│   └── analysis/          # 静态分析工具
 ├── third_party/            # 第三方代码
-├── docs/                   # 文档 (150+文档)
-└── scripts/                # 构建和测试脚本
+├── docs/                   # 文档 (含 reports/ 报告归档)
+├── scripts/                # 脚本 (build/test/deploy/analysis)
+└── output/                 # 输出目录 (build/reports/generated)
 ```
 
 详细结构请参阅 [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)

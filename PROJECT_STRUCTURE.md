@@ -7,13 +7,13 @@
 ```
 yuleASR/
 ├── src/                      # 源代码
-│   ├── autosar/             # AUTOSAR BSW 静态代码
+│   ├── bsw/                 # AUTOSAR BSW 静态代码
 │   │   ├── mcal/           # 微控制器驱动层 (Microcontroller Drivers)
 │   │   ├── ecual/          # ECU抽象层 (ECU Abstraction)
 │   │   ├── services/       # 服务层 (Services)
-│   │   ├── crypto/         # 加密服务
-│   │   ├── common/         # 通用头文件
-│   │   └── integration/    # 集成代码
+│   │   ├── os/             # 操作系统 (FreeRTOS)
+│   │   └── boot/ cdd/      # 启动代码 / 复杂驱动
+│   ├── autosar/             # AUTOSAR 集成层 (adaptive/classic/e2e)
 │   ├── application/         # 应用层 (ASW)
 │   │   └── swc/            # 软件组件
 │   ├── middleware/          # 中间件
@@ -22,21 +22,14 @@ yuleASR/
 │   │   └── rte/            # RTE实现
 │   ├── platform/            # 平台相关代码
 │   │   └── s32k312/        # NXP S32K312
-│   └── diagnostics/         # 诊断模块 (DCM/DEM)
+│   ├── diagnostics/         # 诊断模块 (DCM/DEM)
+│   └── common/ libs/        # 通用代码 / 算法库
 ├── config/                 # 配置代码
-│   ├── mcal/              # MCAL配置
-│   ├── ecual/             # ECUAL配置
-│   ├── services/          # Services配置
+│   ├── input/             # 输入配置 (mcal/ecual/services/arxml)
 │   ├── generated/         # 工具生成的配置
-│   ├── templates/         # 配置模板
-│   └── arxml/             # ARXML配置文件
+│   └── templates/         # 配置模板
 ├── tests/                  # 测试代码
 │   ├── unit/              # 单元测试
-│   │   ├── autosar/       # AUTOSAR模块测试
-│   │   ├── middleware/    # 中间件测试
-│   │   ├── platform/      # 平台测试
-│   │   ├── diagnostics/   # 诊断模块测试
-│   │   └── framework/     # 测试框架
 │   ├── integration/       # 集成测试
 │   ├── system/            # 系统测试
 │   └── resources/         # 测试资源
@@ -45,50 +38,27 @@ yuleASR/
 │   ├── can_config/        # CAN配置工具
 │   ├── dtc_config/        # DTC配置工具
 │   ├── code_generators/   # 代码生成器
-│   ├── analysis/          # 静态分析工具
-│   └── build/             # 构建脚本
+│   └── analysis/          # 静态分析工具
 ├── third_party/            # 第三方代码
-│   ├── crypto/            # 加密库
-│   ├── test_frameworks/   # 测试框架
-│   ├── network/           # 网络协议栈
-│   └── rtos/              # 实时操作系统
-├── docs/                   # 文档
-│   ├── architecture/      # 架构文档
-│   ├── api/               # API参考
-│   ├── modules/           # 模块文档
-│   ├── guides/            # 使用指南
-│   ├── design/            # 设计文档
-│   ├── specs/             # 规范文档
-│   ├── reports/           # 项目报告
-│   └── external/          # 外部资料
-├── scripts/                # 脚本
-│   ├── build/             # 构建脚本
-│   ├── test/              # 测试脚本
-│   ├── deploy/            # 部署脚本
-│   └── analysis/          # 分析脚本
-├── output/                 # 输出目录
-│   ├── build/             # 构建输出
-│   ├── reports/           # 报告输出
-│   └── generated/         # 生成的文件
-├── cmake/                  # CMake配置
-├── build/                  # 构建目录
-├── examples/               # 示例代码
-├── platform/               # 平台配置
-└── openspec/               # OpenSpec文档
+├── docs/                   # 文档 (含 reports/ 报告归档)
+├── scripts/                # 脚本 (build/test/deploy/analysis)
+└── output/                 # 输出目录 (build/reports/generated)
 ```
 
 ## 各层详细说明
 
-### 1. src/autosar/ - AUTOSAR静态代码
+### 1. src/bsw/ - AUTOSAR BSW 静态代码
 
 遵循AUTOSAR标准的基础软件模块，按层级组织：
 
 - **mcal/**: 微控制器驱动层 (ADC, CAN, Crypto, DIO, ETH, FLS, GPT, I2C, ICU, LIN, MCU, PORT, PWM, SPI, UART, WDG等)
 - **ecual/**: ECU抽象层 (CanIf, CanTp, EthIf, LinIf, FrIf, MemIf, WdgIf等)
 - **services/**: 服务层 (COM, DCM, DEM, NVM, PDUR, CSM, Crypto Services等)
-- **crypto/**: 加密服务特定实现
-- **common/**: 通用类型和头文件 (Std_Types.h, Compiler.h等)
-- **integration/**: 集成模块 (BswM, EcuM)
+- **os/**: 操作系统 (FreeRTOS)
+- **boot/**: 启动代码
+- **cdd/**: 复杂设备驱动
+
+另见 `src/autosar/`（AUTOSAR 集成层: adaptive/classic/e2e）。
 
 每个模块结构：
 ```

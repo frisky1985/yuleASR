@@ -14,14 +14,14 @@ target_include_directories(eth_rte_dds PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/../e2e
     ${CMAKE_CURRENT_SOURCE_DIR}/../../common
     ${CMAKE_CURRENT_SOURCE_DIR}/../../common/types
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/runtime
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../dds/pubsub
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/dds/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/dds/runtime
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/dds/pubsub
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../include/autosar
     ${CMAKE_CURRENT_SOURCE_DIR}/../../bsw/services/com/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../bsw/services/det/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../rte/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../middleware/rte/include
 )
 
 target_link_libraries(eth_rte_dds PRIVATE
