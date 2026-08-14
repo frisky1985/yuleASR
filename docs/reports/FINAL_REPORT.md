@@ -20,7 +20,7 @@
 
 | # | 任务 | 文件 | 行数 | 状态 |
 |---|:-----|:-----|:----:|:----:|
-| 4 | TODO 跟踪文档 | `TODO.md` | 181 | ✅ |
+| 4 | TODO 跟踪文档 | `docs/TODO.md` | 181 | ✅ |
 | 5 | 测试框架基础设施 | `tests/` 目录 | 471 | ✅ |
 | 6 | PduR 单元测试 | `tests/unit/services/test_PduR.c` | 323 | ✅ |
 | 7 | Com 单元测试 | `tests/unit/services/test_Com.c` | 440 | ✅ |
@@ -36,7 +36,7 @@
 根目录:
 ├── .gitignore              (97 行)   - Git 忽略规则
 ├── LICENSE                 (22 行)   - MIT 许可证
-├── TODO.md                 (181 行)  - TODO 跟踪
+├── docs/TODO.md                 (181 行)  - TODO 跟踪
 └── PROGRESS.md             (295 行)  - 进展报告
 
 测试框架:
@@ -166,8 +166,8 @@ bash tests/run_tests.sh  # Linux
 ### 查看 TODO 清单
 
 ```bash
-# 打开 TODO.md
-code TODO.md
+# 打开 docs/TODO.md
+code docs/TODO.md
 
 # 查看 TODO 数量
 grep -r "TODO" src/ --include="*.c" --include="*.h" | wc -l
@@ -352,7 +352,7 @@ TEST_CASE_DECLARE(Module_Boundary_max_value)
 ## 📞 反馈与支持
 
 如有问题或建议，请:
-1. 查看 `TODO.md` 了解待办事项
+1. 查看 `docs/TODO.md` 了解待办事项
 2. 查看 `PROGRESS.md` 了解详细进展
 3. 运行测试验证框架: `.\tests\run_tests.ps1`
 
