@@ -8,22 +8,24 @@
 yuleASR/
 ├── src/                      # 源代码
 │   ├── bsw/                 # AUTOSAR BSW 静态代码
-│   │   ├── mcal/           # 微控制器驱动层 (Microcontroller Drivers)
-│   │   ├── ecual/          # ECU抽象层 (ECU Abstraction)
-│   │   ├── services/       # 服务层 (Services)
+│   │   ├── mcal/           # 微控制器驱动层 (21模块: ADC/CAN/DIO/FLS/GPT/ICU/LIN/MCU/PORT/PWM/SPI/UART/WDG...)
+│   │   ├── ecual/          # ECU抽象层 (34模块: CanIf/CanNm/CanTp/EthIf/Ea/Fee/FrIf/IoHwAb/LinIf/MemIf/WdgIf/Xcp...)
+│   │   ├── services/       # 服务层 (53模块: Com/Dcm/Dem/EcuM/E2E/NvM/PduR/Csm/SecOC/SomeIp/TcpIp/UdpNm/WdgM...)
 │   │   ├── os/             # 操作系统 (FreeRTOS)
-│   │   └── boot/ cdd/      # 启动代码 / 复杂驱动
+│   │   └── boot/ cdd/ classic/  # 启动代码 / 复杂驱动 / Classic 兼容层
 │   ├── autosar/             # AUTOSAR 集成层 (adaptive/classic/e2e)
-│   ├── application/         # 应用层 (ASW)
-│   │   └── swc/            # 软件组件
-│   ├── middleware/          # 中间件
-│   │   ├── dds/            # DDS协议栈
-│   │   ├── microdds/       # Micro-DDS实现
-│   │   └── rte/            # RTE实现
-│   ├── platform/            # 平台相关代码
-│   │   └── s32k312/        # NXP S32K312
+│   ├── application/         # 应用层 (ASW, 8 组件: 通信/诊断/发动机/IO/模式/存储/动力学/看门狗)
+│   ├── bootloader/          # 安全启动 (防回滚/验签/升级日志/分区管理)
+│   ├── middleware/          # 中间件 (DDS, RTE, Micro-DDS)
+│   ├── platform/            # 平台相关代码 (cortex-m)
+│   ├── crypto_stack/        # 加密栈 (CryIf/CSM/KeyM/SecOC)
 │   ├── diagnostics/         # 诊断模块 (DCM/DEM)
+│   ├── safety/              # 功能安全 (RAM/SafeRAM)
+│   ├── ethernet/ eth_sm/    # 以太网协议栈 / 以太网状态管理
+│   ├── tcpip/ soad/ tsn/    # TCP/IP / 服务发现 / 时间敏感网络
+│   ├── telemetry/           # 遥测 (DDS/诊断双通道)
 │   └── common/ libs/        # 通用代码 / 算法库
+├── include/                # 公共头文件 (ara/autosar/tcpip/telemetry)
 ├── config/                 # 配置代码
 │   ├── input/             # 输入配置 (mcal/ecual/services/arxml)
 │   ├── generated/         # 工具生成的配置
@@ -32,17 +34,17 @@ yuleASR/
 │   ├── unit/              # 单元测试
 │   ├── integration/       # 集成测试
 │   ├── system/            # 系统测试
+│   ├── sil/ hil/          # 软件在环 / 硬件在环
+│   ├── qemu_m33/          # QEMU M33 验证 (FreeRTOS OS/ASW)
 │   └── resources/         # 测试资源
-├── tools/                  # 工具链
-│   ├── arxml/             # ARXML处理工具
-│   ├── can_config/        # CAN配置工具
-│   ├── dtc_config/        # DTC配置工具
-│   ├── code_generators/   # 代码生成器
-│   └── analysis/          # 静态分析工具
+├── tools/                  # 工具链 (61项)
 ├── third_party/            # 第三方代码
-├── docs/                   # 文档 (含 reports/ 报告归档)
-├── scripts/                # 脚本 (build/test/deploy/analysis)
-└── output/                 # 输出目录 (build/reports/generated)
+├── docs/                   # 文档 (架构/API/模块/规范/报告)
+├── scripts/                # 脚本 (build/test/deploy/flash)
+├── output/                 # 输出目录 (build/generated/reports/sdk)
+├── qemu/                   # QEMU 模拟 (S32K312 寄存器映射验证)
+├── verification/           # 验证报告 (模块/集成/RTE/OS)
+└── openspec/               # OpenSpec 规范 (changes/specs)
 ```
 
 ## 各层详细说明
