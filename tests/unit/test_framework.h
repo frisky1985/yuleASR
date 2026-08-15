@@ -57,6 +57,14 @@
 #define TEST_CASE(name) \
     void test_##name(void)
 
+/*
+ * TEST_CASE_DECLARE — 早期测试/模板使用的旧式声明宏（2026-08-15 补定义）:
+ *   TEST_CASE_DECLARE(foo) { ... }  ≡  void foo(void) { ... }
+ * 与 TEST_CASE 的区别: 函数名不带 test_ 前缀, RUN_TEST(foo) 直接调用。
+ */
+#define TEST_CASE_DECLARE(name) \
+    void name(void)
+
 /*==================================================================================================
 *                                      RUN_TEST (simple call, no setUp/tearDown)
 *
@@ -74,6 +82,11 @@
 /* 扩展布尔/比较断言 (test_framework.h 风格的 ASSERT_*) */
 #define ASSERT_EQ(expected, actual)     TEST_ASSERT_EQUAL(expected, actual)
 #define ASSERT_NE(expected, actual)     do { \
+    TEST_ASSERT((expected) != (actual)); \
+} while(0)
+
+/* 旧式别名 (services 层旧测试文件使用) */
+#define ASSERT_NEQ(expected, actual)    do { \
     TEST_ASSERT((expected) != (actual)); \
 } while(0)
 

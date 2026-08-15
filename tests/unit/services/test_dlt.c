@@ -8,8 +8,10 @@
  */
 
 #include "../test_framework.h"
-#include "../../src/bsw/services/dlt/include/Dlt.h"
-#include "../../src/bsw/services/dlt/include/Dlt_Internal.h"
+#include "Dlt.h"
+#include "Dlt_Internal.h"
+#include "Dlt_Cfg.h"
+#include <string.h>
 
 /* ========================================================================== */
 /*                          测试辅助函数和变量                                  */
@@ -59,6 +61,9 @@ TEST_CASE_DECLARE(Dlt_Init_valid_config)
 
 TEST_CASE_DECLARE(Dlt_Init_null_config)
 {
+    /* 确保从未初始化状态开始 (模块状态跨测试残留) */
+    Dlt_DeInit();
+
     /* 测试空指针配置 - 应该通过 DET 检测但不崩溃 */
     Dlt_Init(NULL);
     
@@ -68,7 +73,7 @@ TEST_CASE_DECLARE(Dlt_Init_null_config)
     
 }
 
-TEST_CASE_DECLARE(Dlt_DeInit)
+TEST_CASE_DECLARE(Dlt_DeInit_basic)
 {
     Dlt_Init(&g_test_config);
     Dlt_DeInit();
@@ -130,6 +135,7 @@ TEST_CASE_DECLARE(Dlt_RegisterApp_null_pointer)
 TEST_CASE_DECLARE(Dlt_RegisterApp_uninit)
 {
     /* 在未初始化状态下注册 */
+    Dlt_DeInit();
     Dlt_AppHandleType handle = Dlt_RegisterApp(&g_test_app_info);
     
     ASSERT_EQ(DLT_INVALID_APP_HANDLE, handle);
@@ -176,6 +182,7 @@ TEST_CASE_DECLARE(Dlt_SendLogMessage_valid)
 
 TEST_CASE_DECLARE(Dlt_SendLogMessage_uninit)
 {
+    Dlt_DeInit();
     uint8 testData[8] = {0};
     Std_ReturnType result = Dlt_SendLogMessage(1, DLT_LOG_INFO, 0x0001U, testData, 8);
     
@@ -237,6 +244,7 @@ TEST_CASE_DECLARE(Dlt_SendTraceMessage_valid)
 
 TEST_CASE_DECLARE(Dlt_SendTraceMessage_uninit)
 {
+    Dlt_DeInit();
     uint8 testData[8] = {0};
     Std_ReturnType result = Dlt_SendTraceMessage(1, DLT_TRACE_VARIABLE, 0x0001U, testData, 8);
     
@@ -309,7 +317,7 @@ TEST_CASE_DECLARE(Dlt_SetFilter_invalid_handle)
 /*                          队列操作测试                                       */
 /* ========================================================================== */
 
-TEST_CASE_DECLARE(Dlt_FlushQueue)
+TEST_CASE_DECLARE(Dlt_FlushQueue_basic)
 {
     Dlt_Init(&g_test_config);
     
@@ -329,6 +337,7 @@ TEST_CASE_DECLARE(Dlt_FlushQueue)
 
 TEST_CASE_DECLARE(Dlt_FlushQueue_uninit)
 {
+    Dlt_DeInit();
     Std_ReturnType result = Dlt_FlushQueue();
     
     ASSERT_EQ(E_NOT_OK, result);
@@ -390,6 +399,51 @@ TEST_CASE_DECLARE(Dlt_MaxLengthMessage)
 }
 
 /* ========================================================================== */
+/*                  Context 配置表测试 (ecual 合并, 2026-08-15)                */
+/* ========================================================================== */
+
+/* Dlt_Lcfg.c 导出的链接期配置符号 */
+extern const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT];
+extern Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
+extern const uint16 Dlt_ContextGroupCount;
+extern const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH];
+extern const uint32 Dlt_DefaultSessionId;
+extern const uint8 Dlt_ProtocolVersionMajor;
+extern const uint8 Dlt_ProtocolVersionMinor;
+extern const uint32 Dlt_BufferTimeout;
+extern const uint32 Dlt_MainFunctionPeriod;
+
+TEST_CASE_DECLARE(Dlt_Lcfg_ContextConfig_table_size)
+{
+    /* Dlt_ContextConfig 必须为 DLT_MAX_CONTEXT_COUNT (32) 项 */
+    ASSERT_EQ(DLT_MAX_CONTEXT_COUNT, 32U);
+    ASSERT_EQ(0x44454641U, Dlt_ContextConfig[0].appId);   /* "DEFA" */
+    ASSERT_EQ(0x434D444CU, Dlt_ContextConfig[0].contextId); /* "CMDL" */
+    ASSERT_EQ(DLT_LOG_INFO, Dlt_ContextConfig[0].logLevel);
+    ASSERT_EQ(DLT_TRACE_STATUS_ON, Dlt_ContextConfig[0].traceStatus);
+    ASSERT_TRUE(Dlt_ContextConfig[0].registered);
+    /* 尾项 APP2 */
+    ASSERT_EQ(0x41505032U, Dlt_ContextConfig[31].appId);
+    ASSERT_TRUE(Dlt_ContextConfig[31].registered);
+}
+
+TEST_CASE_DECLARE(Dlt_Lcfg_ContextGroups)
+{
+    /* 分组表与 context 表一一对应 (32 组) */
+    ASSERT_EQ(32U, Dlt_ContextGroupCount);
+}
+
+TEST_CASE_DECLARE(Dlt_Lcfg_GlobalConfig)
+{
+    ASSERT_EQ(0U, memcmp("ECU1", Dlt_EcuId, DLT_ECU_ID_LENGTH));
+    ASSERT_EQ(DLT_DEFAULT_SESSION_ID, Dlt_DefaultSessionId);
+    ASSERT_EQ(DLT_PROTOCOL_VERSION_MAJOR, Dlt_ProtocolVersionMajor);
+    ASSERT_EQ(DLT_PROTOCOL_VERSION_MINOR, Dlt_ProtocolVersionMinor);
+    ASSERT_EQ(DLT_BUFFERING_TIMEOUT, Dlt_BufferTimeout);
+    ASSERT_EQ(DLT_MAIN_FUNCTION_PERIOD, Dlt_MainFunctionPeriod);
+}
+
+/* ========================================================================== */
 /*                          测试主函数                                         */
 /* ========================================================================== */
 
@@ -398,7 +452,7 @@ TEST_MAIN_BEGIN()
     /* 初始化/反初始化测试 */
     RUN_TEST(Dlt_Init_valid_config);
     RUN_TEST(Dlt_Init_null_config);
-    RUN_TEST(Dlt_DeInit);
+    RUN_TEST(Dlt_DeInit_basic);
     
     /* 版本信息测试 */
     RUN_TEST(Dlt_GetVersionInfo_valid);
@@ -432,7 +486,7 @@ TEST_MAIN_BEGIN()
     RUN_TEST(Dlt_SetFilter_invalid_handle);
     
     /* 队列操作测试 */
-    RUN_TEST(Dlt_FlushQueue);
+    RUN_TEST(Dlt_FlushQueue_basic);
     RUN_TEST(Dlt_FlushQueue_uninit);
     
     /* 多消息测试 */
@@ -441,5 +495,10 @@ TEST_MAIN_BEGIN()
     /* 边界条件测试 */
     RUN_TEST(Dlt_EmptyMessage);
     RUN_TEST(Dlt_MaxLengthMessage);
+
+    /* Context 配置表测试 (ecual 合并) */
+    RUN_TEST(Dlt_Lcfg_ContextConfig_table_size);
+    RUN_TEST(Dlt_Lcfg_ContextGroups);
+    RUN_TEST(Dlt_Lcfg_GlobalConfig);
 }
 TEST_MAIN_END()

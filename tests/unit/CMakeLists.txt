@@ -24,6 +24,9 @@ add_subdirectory(ecual)
 # TcpIp 单元测试 (B1: API 补全/多连接/状态机/VLAN/统计)
 add_subdirectory(services/tcpip)
 
+# Services 层单元测试 (2026-08-15: DLT context 配置体系合并)
+add_subdirectory(services)
+
 # Cdd_Fvm 单元测试 (B3-1: Flash 虚拟化多 bank — 搬移/保护/故障切换)
 add_subdirectory(cdd)
 
