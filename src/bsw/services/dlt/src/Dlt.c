@@ -49,47 +49,10 @@ static Dlt_AppHandleType g_NextAppHandle = 1U;
 /*                          配置数据定义                                       */
 /* ========================================================================== */
 
-/**
- * @brief 传输配置
- */
-const Dlt_TransportConfigType Dlt_TransportConfig = {
-    .protocol = DLT_TRANSPORT_PROTOCOL,
-    .port = DLT_SERVER_PORT,
-    .bufferSize = DLT_BUFFER_SIZE,
-    .maxMessageSize = DLT_MAX_MSG_SIZE
-};
-
-/**
- * @brief 默认过滤器配置
- */
-static const Dlt_FilterConfigType g_DefaultFilterConfig[] = {
-    {
-        .appHandle = 0U,
-        .messageType = DLT_MSG_TYPE_LOG,
-        .minLogLevel = DLT_DEFAULT_LOG_LEVEL,
-        .enabled = DLT_DEFAULT_ENABLED
-    }
-};
-
-/**
- * @brief 过滤器配置数量
- */
-const uint16 Dlt_FilterConfigCount = 1U;
-
-/**
- * @brief 过滤器配置表
- */
-const Dlt_FilterConfigType* Dlt_FilterConfigTable = g_DefaultFilterConfig;
-
-/**
- * @brief 模块配置
- */
-const Dlt_ConfigType Dlt_Config = {
-    .transportConfig = &Dlt_TransportConfig,
-    .filterConfig = g_DefaultFilterConfig,
-    .filterCount = Dlt_FilterConfigCount,
-    .queueSize = DLT_QUEUE_SIZE
-};
+/* 链接期配置已迁移至 Dlt_Lcfg.c（AUTOSAR 三层配置结构，2026-08-15 治理）:
+ * - Dlt_TransportConfig / Dlt_FilterConfigTable / Dlt_FilterConfigCount
+ * - Dlt_Config（含默认过滤器表）
+ * 此处仅保留 extern 声明引用（见 Dlt_Cfg.h NON-MACRO SEGMENT）。 */
 
 /* ========================================================================== */
 /*                          API 函数实现                                       */
