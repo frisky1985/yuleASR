@@ -52,7 +52,18 @@ static Dlt_AppHandleType g_NextAppHandle = 1U;
 /* 链接期配置已迁移至 Dlt_Lcfg.c（AUTOSAR 三层配置结构，2026-08-15 治理）:
  * - Dlt_TransportConfig / Dlt_FilterConfigTable / Dlt_FilterConfigCount
  * - Dlt_Config（含默认过滤器表）
+ * - context 配置体系（Dlt_ContextConfig / Dlt_RuntimeContext, ecual 合并）
  * 此处仅保留 extern 声明引用（见 Dlt_Cfg.h NON-MACRO SEGMENT）。 */
+
+/**
+ * @brief 链接期 context 配置表 (Dlt_Lcfg.c 定义)
+ */
+extern const Dlt_ContextType Dlt_ContextConfig[DLT_MAX_CONTEXT_COUNT];
+
+/**
+ * @brief 运行时 context 表 (Dlt_Lcfg.c 定义, Dlt_Init 时由配置表初始化)
+ */
+extern Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
 
 /* ========================================================================== */
 /*                          API 函数实现                                       */
@@ -92,6 +103,9 @@ void Dlt_Init(const Dlt_ConfigType* ConfigPtr)
 
     /* 清空消息队列 */
     (void)memset(g_DltState.queue, 0, sizeof(g_DltState.queue));
+
+    /* 初始化运行时 context 表 (由链接期配置表复制, ecual 合并 2026-08-15) */
+    (void)memcpy(Dlt_RuntimeContext, Dlt_ContextConfig, sizeof(Dlt_ContextConfig));
 
     /* 更新状态为就绪 */
     g_DltState.moduleState = DLT_STATE_READY;
@@ -798,3 +812,277 @@ void Dlt_GetStatistics(
         *queueCount = g_DltState.queueCount;
     }
 }
+
+/* ========================================================================== */
+/*                    Context 管理 API 实现 (ecual 合并, 2026-08-15)          */
+/* ========================================================================== */
+
+/**
+ * @brief 在运行时 context 表中按 appId+contextId 查找
+ *
+ * @param appId 应用 ID
+ * @param contextId 上下文 ID
+ * @param contextIndex 输出参数: 命中索引
+ *
+ * @return boolean TRUE=命中, FALSE=未找到
+ */
+static boolean Dlt_FindContext(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    uint16* contextIndex)
+{
+    for (uint16 i = 0U; i < DLT_MAX_CONTEXT_COUNT; i++) {
+        if (Dlt_RuntimeContext[i].registered &&
+            (Dlt_RuntimeContext[i].appId == appId) &&
+            (Dlt_RuntimeContext[i].contextId == contextId)) {
+            if (contextIndex != NULL_PTR) {
+                *contextIndex = i;
+            }
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+/**
+ * @brief 注册 context
+ *
+ * @note 语义参考 ecual 版: 重复注册幂等返回 E_OK;
+ *       32 个链接期预配置 context 占满表项时返回 E_NOT_OK (需先注销释放槽位)。
+ */
+Std_ReturnType Dlt_RegisterContext(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    const uint8* description,
+    uint8 descriptionLength)
+{
+    uint16 freeIndex = DLT_MAX_CONTEXT_COUNT;
+
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_REGISTER_CONTEXT, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if (description == NULL_PTR) {
+        DLT_DETECT_ERROR(DLT_APIID_REGISTER_CONTEXT, DLT_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+
+    if (descriptionLength > DLT_MAX_CONTEXT_DESCRIPTION) {
+        DLT_DETECT_ERROR(DLT_APIID_REGISTER_CONTEXT, DLT_E_PARAM_LENGTH);
+        return E_NOT_OK;
+    }
+#endif
+
+    /* 已注册则幂等返回 */
+    if (Dlt_FindContext(appId, contextId, NULL_PTR)) {
+        return E_OK;
+    }
+
+    /* 查找空闲槽位 */
+    for (uint16 i = 0U; i < DLT_MAX_CONTEXT_COUNT; i++) {
+        if (!Dlt_RuntimeContext[i].registered) {
+            freeIndex = i;
+            break;
+        }
+    }
+
+    if (freeIndex >= DLT_MAX_CONTEXT_COUNT) {
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+        DLT_DETECT_ERROR(DLT_APIID_REGISTER_CONTEXT, DLT_E_CONTEXT_FULL);
+#endif
+        return E_NOT_OK;
+    }
+
+    /* 注册新 context */
+    Dlt_RuntimeContext[freeIndex].appId = appId;
+    Dlt_RuntimeContext[freeIndex].contextId = contextId;
+    Dlt_RuntimeContext[freeIndex].logLevel = DLT_DEFAULT_LOG_LEVEL;
+    Dlt_RuntimeContext[freeIndex].traceStatus = DLT_DEFAULT_TRACE_STATUS;
+    Dlt_RuntimeContext[freeIndex].registered = TRUE;
+
+    /* 复制描述 (先清零再拷贝, 保证定长缓冲内容确定) */
+    (void)memset(Dlt_RuntimeContext[freeIndex].description, 0, DLT_MAX_CONTEXT_DESCRIPTION);
+    if (descriptionLength > 0U) {
+        (void)memcpy(Dlt_RuntimeContext[freeIndex].description, description, descriptionLength);
+    }
+
+    return E_OK;
+}
+
+/**
+ * @brief 注销 context
+ */
+Std_ReturnType Dlt_UnregisterContext(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId)
+{
+    uint16 contextIndex = 0U;
+
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_UNREGISTER_CONTEXT, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+
+    if (!Dlt_FindContext(appId, contextId, &contextIndex)) {
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+        DLT_DETECT_ERROR(DLT_APIID_UNREGISTER_CONTEXT, DLT_E_CONTEXT_NOT_FOUND);
+#endif
+        return E_NOT_OK;
+    }
+
+    /* 释放槽位 */
+    Dlt_RuntimeContext[contextIndex].registered = FALSE;
+    Dlt_RuntimeContext[contextIndex].appId = 0U;
+    Dlt_RuntimeContext[contextIndex].contextId = 0U;
+    (void)memset(Dlt_RuntimeContext[contextIndex].description, 0, DLT_MAX_CONTEXT_DESCRIPTION);
+
+    return E_OK;
+}
+
+/**
+ * @brief 设置 context 日志级别
+ */
+Std_ReturnType Dlt_SetLogLevel(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_LogLevelType logLevel)
+{
+    uint16 contextIndex = 0U;
+
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_SET_LOG_LEVEL, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+
+    if (!Dlt_FindContext(appId, contextId, &contextIndex)) {
+        return E_NOT_OK;
+    }
+
+    Dlt_RuntimeContext[contextIndex].logLevel = logLevel;
+    return E_OK;
+}
+
+/**
+ * @brief 读取 context 日志级别
+ */
+Std_ReturnType Dlt_GetLogLevel(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_LogLevelType* logLevel)
+{
+    uint16 contextIndex = 0U;
+
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_GET_LOG_LEVEL, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if (logLevel == NULL_PTR) {
+        DLT_DETECT_ERROR(DLT_APIID_GET_LOG_LEVEL, DLT_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+#endif
+
+    if (!Dlt_FindContext(appId, contextId, &contextIndex)) {
+        return E_NOT_OK;
+    }
+
+    *logLevel = Dlt_RuntimeContext[contextIndex].logLevel;
+    return E_OK;
+}
+
+/**
+ * @brief 设置 context 跟踪状态
+ */
+Std_ReturnType Dlt_SetTraceStatus(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_TraceStatusType traceStatus)
+{
+    uint16 contextIndex = 0U;
+
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_SET_TRACE_STATUS, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+#endif
+
+    if (!Dlt_FindContext(appId, contextId, &contextIndex)) {
+        return E_NOT_OK;
+    }
+
+    Dlt_RuntimeContext[contextIndex].traceStatus = traceStatus;
+    return E_OK;
+}
+
+/**
+ * @brief 读取 context 跟踪状态
+ */
+Std_ReturnType Dlt_GetTraceStatus(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_TraceStatusType* traceStatus)
+{
+    uint16 contextIndex = 0U;
+
+    /* 检查开发错误 */
+#if (DLT_DEV_ERROR_DETECT == STD_ON)
+    if (g_DltState.moduleState == DLT_STATE_UNINIT) {
+        DLT_DETECT_ERROR(DLT_APIID_GET_TRACE_STATUS, DLT_E_UNINIT);
+        return E_NOT_OK;
+    }
+
+    if (traceStatus == NULL_PTR) {
+        DLT_DETECT_ERROR(DLT_APIID_GET_TRACE_STATUS, DLT_E_PARAM_POINTER);
+        return E_NOT_OK;
+    }
+#endif
+
+    if (!Dlt_FindContext(appId, contextId, &contextIndex)) {
+        return E_NOT_OK;
+    }
+
+    *traceStatus = Dlt_RuntimeContext[contextIndex].traceStatus;
+    return E_OK;
+}
+
+/**
+ * @brief Com 发送确认回调 (占位实现, 语义参考 ecual 版)
+ *
+ * @note 当前无调用方: services 版传输路径为 UDP/TCP 抽象 (Dlt_TransportSend),
+ *       未接入 Com 模块。待 Com 集成后消费该回调。
+ */
+#if (DLT_USE_COM == STD_ON)
+void Dlt_ComTxConfirmation(uint8 result)
+{
+    (void)result;
+    /* Handle transmission confirmation */
+}
+#endif
+
+/**
+ * @brief Com 接收指示回调 (占位实现, 语义参考 ecual 版)
+ *
+ * @note 当前无调用方: 待 Com 集成后处理收到的 DLT 控制消息。
+ */
+#if (DLT_USE_COM == STD_ON)
+void Dlt_ComRxIndication(const uint8* data, uint16 length)
+{
+    (void)data;
+    (void)length;
+    /* Handle received DLT control messages */
+}
+#endif

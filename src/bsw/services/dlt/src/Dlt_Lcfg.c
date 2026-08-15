@@ -383,8 +383,9 @@ Dlt_ContextType Dlt_RuntimeContext[DLT_MAX_CONTEXT_COUNT];
  * @brief 缓冲区配置 (优先级 0~3)
  *
  * @note 保留自 ecual (供缓冲路径/未来接入使用); 当前 services Dlt.c 尚未消费。
+ *       外部链接: 与 ecual 版 Dlt.c 的 extern 引用一致, 避免 static/extern 矛盾。
  */
-static Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
+Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
     /* Buffer 0: High Priority */
     {
         .data = {0},
@@ -425,7 +426,7 @@ static Dlt_BufferType Dlt_Buffer[DLT_BUFFER_COUNT] = {
  * @note 状态 0 (生产模式, 不记录) 用 DLT_LOG_OFF 宏 (services 枚举外扩展,
  *       因 services 版枚举以 DLT_LOG_FATAL=0 为基线, 无 OFF 枚举成员)。
  */
-static const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
+const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
     DLT_LOG_OFF,        /* State 0: Production - No logging */
     DLT_LOG_FATAL,      /* State 1: Fatal errors only */
     DLT_LOG_ERROR,      /* State 2: Errors only */
@@ -439,7 +440,7 @@ static const Dlt_LogLevelType Dlt_DefaultLogLevels[8] = {
 /**
  * @brief 默认跟踪状态配置表 (按系统状态 0~7)
  */
-static const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8] = {
+const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8] = {
     DLT_TRACE_STATUS_OFF,   /* State 0: Production - Tracing off */
     DLT_TRACE_STATUS_OFF,   /* State 1: Tracing off */
     DLT_TRACE_STATUS_OFF,   /* State 2: Tracing off */
@@ -451,9 +452,9 @@ static const Dlt_TraceStatusType Dlt_DefaultTraceStatus[8] = {
 };
 
 /**
- * @brief ECU 配置
+ * @brief ECU 配置 (逐字符初始化, 避免字符串含 NUL 触发数组过长告警)
  */
-const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = DLT_ECU_ID;
+const uint8 Dlt_EcuId[DLT_ECU_ID_LENGTH] = { DLT_ECU_ID[0], DLT_ECU_ID[1], DLT_ECU_ID[2], DLT_ECU_ID[3] };
 
 /**
  * @brief 会话配置
@@ -469,7 +470,7 @@ const uint8 Dlt_ProtocolVersionMinor = DLT_PROTOCOL_VERSION_MINOR;
 /**
  * @brief 缓冲区大小配置 (每缓冲区字节数)
  */
-static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
+const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
     DLT_BUFFER_SIZE,    /* Buffer 0 */
     DLT_BUFFER_SIZE,    /* Buffer 1 */
     DLT_BUFFER_SIZE,    /* Buffer 2 */
@@ -479,7 +480,7 @@ static const uint16 Dlt_BufferSize[DLT_BUFFER_COUNT] = {
 /**
  * @brief 缓冲区优先级配置
  */
-static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
+const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
     0,  /* Buffer 0: Highest */
     1,  /* Buffer 1: High */
     2,  /* Buffer 2: Normal */
@@ -489,7 +490,7 @@ static const uint8 Dlt_BufferPriority[DLT_BUFFER_COUNT] = {
 /**
  * @brief Context 分组配置 (按 appId 分组, 用于批量操作)
  */
-static const Dlt_ContextGroupType Dlt_ContextGroups[] = {
+const Dlt_ContextGroupType Dlt_ContextGroups[] = {
     {0x44454641, 0, 1},     /* DEFA group */
     {0x4543554D, 1, 1},     /* ECUM group */
     {0x4F535F5F, 2, 1},     /* OS__ group */
@@ -546,7 +547,7 @@ typedef struct {
     boolean enabled;
 } Dlt_LogFilterType;
 
-static Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
+Dlt_LogFilterType Dlt_LogFilters[DLT_MAX_CONTEXT_COUNT] = {
     {0x44454641, 0x434D444C, DLT_LOG_INFO, TRUE},
     {0x4543554D, 0x4D41494E, DLT_LOG_DEBUG, TRUE},
     {0x4F535F5F, 0x4B45524E, DLT_LOG_WARN, TRUE},

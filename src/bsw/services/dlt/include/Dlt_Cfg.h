@@ -56,6 +56,7 @@
 #define DLT_PROTOCOL_VERSION_MAJOR    (1U)      /* DLT 协议版本-主 */
 #define DLT_PROTOCOL_VERSION_MINOR    (0U)      /* DLT 协议版本-次 */
 #define DLT_MAX_CONTEXT_DESCRIPTION    (32U)    /* context 描述最大长度 (Dlt_ContextType.description 定长) */
+#define DLT_DEFAULT_TRACE_STATUS    DLT_TRACE_STATUS_ON   /* 新注册 context 默认跟踪状态 */
 
 
 /*==================================================================================================

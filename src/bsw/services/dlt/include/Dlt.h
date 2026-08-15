@@ -26,6 +26,7 @@
 
 #include "Std_Types.h"
 #include "Dlt_Types.h"
+#include "Dlt_Cfg.h"
 #include "ComStack_Types.h"
 
 #ifdef __cplusplus
@@ -275,6 +276,143 @@ void Dlt_GetStatistics(
 );
 
 /* ========================================================================== */
+/*                      Context 管理 API (ecual 合并, 2026-08-15)              */
+/* ========================================================================== */
+
+/**
+ * @brief 注册 context
+ * 
+ * @param appId 应用 ID (4 字节打包 ASCII, 如 0x44454641 == "DEFA")
+ * @param contextId 上下文 ID (4 字节打包 ASCII)
+ * @param description context 描述 (定长 32 字节, 见 DLT_MAX_CONTEXT_DESCRIPTION)
+ * @param descriptionLength 描述长度 (<= DLT_MAX_CONTEXT_DESCRIPTION)
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 注册成功 (或已注册, 幂等)
+ * @retval E_NOT_OK 注册失败 (context 表满 / 参数错误)
+ * 
+ * @note 32 个链接期预配置 context 占满表项时, 需先 Dlt_UnregisterContext 释放槽位。
+ */
+Std_ReturnType Dlt_RegisterContext(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    const uint8* description,
+    uint8 descriptionLength
+);
+
+/**
+ * @brief 注销 context
+ * 
+ * @param appId 应用 ID
+ * @param contextId 上下文 ID
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 注销成功
+ * @retval E_NOT_OK 未找到匹配 context
+ */
+Std_ReturnType Dlt_UnregisterContext(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId
+);
+
+/**
+ * @brief 设置 context 日志级别
+ * 
+ * @param appId 应用 ID
+ * @param contextId 上下文 ID
+ * @param logLevel 日志级别
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 设置成功
+ * @retval E_NOT_OK 未找到匹配 context
+ */
+Std_ReturnType Dlt_SetLogLevel(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_LogLevelType logLevel
+);
+
+/**
+ * @brief 读取 context 日志级别
+ * 
+ * @param appId 应用 ID
+ * @param contextId 上下文 ID
+ * @param logLevel 输出指针
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 读取成功
+ * @retval E_NOT_OK 未找到匹配 context 或空指针
+ */
+Std_ReturnType Dlt_GetLogLevel(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_LogLevelType* logLevel
+);
+
+/**
+ * @brief 设置 context 跟踪状态
+ * 
+ * @param appId 应用 ID
+ * @param contextId 上下文 ID
+ * @param traceStatus 跟踪状态
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 设置成功
+ * @retval E_NOT_OK 未找到匹配 context
+ */
+Std_ReturnType Dlt_SetTraceStatus(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_TraceStatusType traceStatus
+);
+
+/**
+ * @brief 读取 context 跟踪状态
+ * 
+ * @param appId 应用 ID
+ * @param contextId 上下文 ID
+ * @param traceStatus 输出指针
+ * 
+ * @return Std_ReturnType
+ * @retval E_OK 读取成功
+ * @retval E_NOT_OK 未找到匹配 context 或空指针
+ */
+Std_ReturnType Dlt_GetTraceStatus(
+    Dlt_ApplicationIdType appId,
+    Dlt_ContextIdType contextId,
+    Dlt_TraceStatusType* traceStatus
+);
+
+/**
+ * @brief Com 发送确认回调 (DLT 消息经 Com 发送)
+ * 
+ * @param result 发送结果
+ * 
+ * @return void
+ * 
+ * @note 当前为占位实现 (语义参考 ecual 版), 无调用方;
+ *       待 Com 集成接入后消费。
+ */
+#if (DLT_USE_COM == STD_ON)
+void Dlt_ComTxConfirmation(uint8 result);
+#endif
+
+/**
+ * @brief Com 接收指示回调 (接收 DLT 控制消息)
+ * 
+ * @param data 接收数据指针
+ * @param length 数据长度
+ * 
+ * @return void
+ * 
+ * @note 当前为占位实现 (语义参考 ecual 版), 无调用方;
+ *       待 Com 集成接入后消费。
+ */
+#if (DLT_USE_COM == STD_ON)
+void Dlt_ComRxIndication(const uint8* data, uint16 length);
+#endif
+
+/* ========================================================================== */
 /*                          开发错误检测 (DET)                                 */
 /* ========================================================================== */
 
@@ -308,6 +446,8 @@ void Dlt_GetStatistics(
 #define DLT_E_SESSION_ERROR   0x33U  /**< 会话错误 */
 #define DLT_E_PRIORITY_ERROR  0x34U  /**< 优先级错误 */
 #define DLT_E_BUFFER_OVERFLOW 0x40U  /**< 缓冲区溢出 */
+#define DLT_E_CONTEXT_NOT_FOUND 0x41U /**< 未找到匹配 context */
+#define DLT_E_CONTEXT_FULL 0x42U      /**< context 表满 */
 
 /* API ID 定义 */
 #define DLT_APIID_INIT            0x00U
@@ -323,6 +463,14 @@ void Dlt_GetStatistics(
 #define DLT_APIID_GET_STATUS      0x0AU
 #define DLT_APIID_SET_SESSION     0x0BU
 #define DLT_APIID_GET_STATISTICS  0x0CU
+#define DLT_APIID_REGISTER_CONTEXT    0x0DU
+#define DLT_APIID_UNREGISTER_CONTEXT  0x0EU
+#define DLT_APIID_SET_LOG_LEVEL       0x0FU
+#define DLT_APIID_GET_LOG_LEVEL       0x10U
+#define DLT_APIID_SET_TRACE_STATUS    0x11U
+#define DLT_APIID_GET_TRACE_STATUS    0x12U
+#define DLT_APIID_COM_TX_CONFIRMATION 0x13U
+#define DLT_APIID_COM_RX_INDICATION   0x14U
 
 #ifdef __cplusplus
 }

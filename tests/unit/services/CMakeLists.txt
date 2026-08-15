@@ -49,3 +49,42 @@ endif()
 add_test(NAME Dlt_UnitTest COMMAND Dlt_UnitTest)
 
 message(STATUS "  Unit test: Dlt_UnitTest (ecual context 配置合并)")
+
+# ── DLT Context 管理 API 单测 (ecual 合并 包3) ────────────────────────────
+set(DLTCTX_TEST_SRC ${CMAKE_CURRENT_SOURCE_DIR}/test_DltContext.c)
+
+add_executable(DltContext_UnitTest
+    ${DLTCTX_TEST_SRC}
+    ${DLT_PRODUCT_SRC}
+)
+
+target_include_directories(DltContext_UnitTest
+    PRIVATE
+        ${TEST_FRAMEWORK_INCLUDE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../..                      # test_framework.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/services/dlt/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/services/det/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/os/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../include/autosar
+)
+
+target_compile_options(DltContext_UnitTest PRIVATE
+    -Wall
+    -Wextra
+    -g
+    -O0
+    -DUNIT_TEST
+)
+
+set_target_properties(DltContext_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+
+if(TEST_FRAMEWORK_LIB)
+    target_link_libraries(DltContext_UnitTest PRIVATE ${TEST_FRAMEWORK_LIB})
+endif()
+
+add_test(NAME DltContext_UnitTest COMMAND DltContext_UnitTest)
+
+message(STATUS "  Unit test: DltContext_UnitTest (context API 17 cases)")
