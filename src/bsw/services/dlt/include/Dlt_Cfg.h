@@ -42,6 +42,21 @@
 #define DLT_MAIN_FUNCTION_CYCLE    (10U)
 #define DLT_MESSAGE_LOSS_THRESHOLD    (100U)
 
+/*==================================================================================================
+*                                    Context Configuration (ecual 合并)
+* 2026-08-15: 由 ecual/dlt 链接期配置体系迁移而来，供 Dlt_Lcfg.c 的 context 配置表使用。
+*================================================================================================*/
+#define DLT_MAX_CONTEXT_COUNT    (32U)          /* 最大 context 数量 (Dlt_ContextConfig 表大小) */
+#define DLT_BUFFER_COUNT    (4U)                /* 缓冲区数量 (优先级 0~3) */
+#define DLT_BUFFERING_TIMEOUT    (1000U)        /* 缓冲超时 (ms) */
+#define DLT_MAIN_FUNCTION_PERIOD    (10U)       /* 主函数周期 (ms, ecual 兼容名) */
+#define DLT_USE_COM    STD_ON                   /* 是否启用 Com 集成 (Tx 确认/Rx 指示) */
+#define DLT_ECU_ID    "ECU1"                    /* ECU ID (4 字节, 用于 DLT 标准头) */
+#define DLT_ECU_ID_LENGTH    (4U)               /* ECU ID 长度 */
+#define DLT_PROTOCOL_VERSION_MAJOR    (1U)      /* DLT 协议版本-主 */
+#define DLT_PROTOCOL_VERSION_MINOR    (0U)      /* DLT 协议版本-次 */
+#define DLT_MAX_CONTEXT_DESCRIPTION    (32U)    /* context 描述最大长度 (Dlt_ContextType.description 定长) */
+
 
 /*==================================================================================================
 *  NON-MACRO SEGMENT (preserved from handwritten header, merged by codegen splice)
