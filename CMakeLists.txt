@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # Project definition
 project(YuleTech_AutoSAR
-    VERSION 1.5.0
+    VERSION 1.6.0
     DESCRIPTION "YuleTech AutoSAR BSW Platform - Open Source BSW Implementation"
     LANGUAGES C CXX ASM
 )

@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-08-22
+
+35 commits since v1.5.0 (9c77dcff). 主线：DLT 模块归口服务层、OTA 信息安全增强、工程结构真重构、SDK 导出工具。
+
+### Added
+
+- **DLT context 配置体系（ecual 合并 3 包）** — services/dlt 补全 context 类型+宏 + 配置表合并进 Dlt_Lcfg.c + context API，删除 ecual/dlt 重复模块（refactor 归口服务层）
+- **OTA 信息安全增强 G1-G4（GB44496 + R156）** — 抗回滚/用户确认/升级日志/验签 3 步
+- **OTA 健康确认钩子 + DOWNLOADING 掉电保护 + WRP 写保护（P1/P2/P3）** — 含 bootloader 接线 Configurator OTA 安全配置（Boot_Cfg.h 驱动 BL_* 常量）
+- **SDK 导出工具** — find_package 一键集成
+- **Swc_EngineControl SRS** — AUTOSAR 需求模板首个实例
+- **.ai-rules.md** — AI 驱动项目编写规范（项目级 AI 系统提示词）
+
+### Fixed
+
+- **CanIf_Cfg.h 重复宏清理** — NUM_TX/RX_PDUS 保留 4U 对齐配置表，DEFAULT_BAUDRATE 单一定义
+- **NvM 冗余存储启用 + Crc.h 头文件漂移修复**
+- **恢复 15 个对象字面量宏真实值**（08-10 入库带入的 "" 空值缺陷）
+- **ComM_Cfg.h 大小写别名条目同步** — comM/comm 双条目 blob 对齐
+- **test_Dlt.c 文件名大小写修正**
+
+### Changed
+
+- **工程结构真重构（Step 1-4）** — 根目录收敛/文档归位 docs/、物理删除纯产物目录、纠正 coverage_run 误分类、命名审计报告 + logs/changes 真实机制
+- **RamTst 寄存器直访 REG 宏化** — 27 处 volatile → REG_READ32/WRITE32
+- **CI 8→5 workflow 合并** + 抽公共 composite action
+- **Configurator 生成头全量替换入库** — 110 模块宏名版 schema 生成（可追溯）
+
+### Tests
+
+- **真实测试改造** — 挂载 4 个独有驱动测试 + 修复 4 个真实驱动缺口
+
 ## [1.5.0] - 2026-08-09
 
 294 commits since v1.4.0 (666d17e4). 主线功能与质量数字如下。
