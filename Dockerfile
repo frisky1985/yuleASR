@@ -61,6 +61,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     file \
     wget \
     unzip \
+    # OpenSSL dev headers (test_boot_integration 链接 OpenSSL::Crypto)
+    libssl-dev \
+    # OpenSSL dev headers (test_boot_integration 链接 OpenSSL::Crypto)
+    libssl-dev \
     # Documentation generation
     doxygen \
     graphviz \
