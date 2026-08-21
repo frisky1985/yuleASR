@@ -91,6 +91,13 @@ if(NOT CMAKE_CROSSCOMPILING)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
     )
 
+    # MemIf 有意双挂：service_memif（NvM 依赖）+ ecual_memif（ECUAL 抽象层），
+    # 与 configurator-linkage 门禁白名单一致（YAC-CI-004 登记）。
+    # Linux/GNU ld 需 --allow-multiple-definition 容忍；macOS ld64 无此选项且不报错。
+    if(UNIX AND NOT APPLE)
+        target_link_options(s0_smoke_test PRIVATE -Wl,--allow-multiple-definition)
+    endif()
+
     add_test(NAME s0_smoke COMMAND s0_smoke_test)
 
     # Hard ctest-level timeout: the test has its own watchdog, but this
