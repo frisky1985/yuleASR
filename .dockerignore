@@ -1,0 +1,16 @@
+# Build artifacts — 防止宿主机 build/（含 CMakeCache 路径记录）被 COPY 进镜像
+# 导致 docker 内 cmake 报 "CMakeCache.txt directory is different"（release workflow 实测踩坑）
+build/
+build_*/
+output/
+coverage_run/
+coverage/
+*.o
+*.a
+*.so
+*.elf
+*.hex
+*.bin
+.git/
+docs/_build/
+node_modules/
