@@ -161,7 +161,7 @@ RUN if [ -f tools/analysis/static_analysis.py ]; then \
     fi
 
 # Architecture validation
-RUN python3 -c "
+RUN python3 <<'PYEOF'
 import os, re
 violations = []
 for root, dirs, files in os.walk('src/bsw/mcal'):
@@ -180,7 +180,7 @@ if violations:
         print(f'  - {v}')
     exit(1)
 print('✅ 架构依赖检查通过')
-"
+PYEOF
 
 # =============================================================================
 # Stage 4: Release - Minimal image with build artifacts
