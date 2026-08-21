@@ -1,10 +1,10 @@
 # Build artifacts — 防止宿主机 build/（含 CMakeCache 路径记录）被 COPY 进镜像
 # 导致 docker 内 cmake 报 "CMakeCache.txt directory is different"（release workflow 实测踩坑）
+# 注意：coverage_run/ 是 git 跟踪的 MCAL 测试 stub（CMake 引用 coverage_run/Det.c），不可排除
 build/
 build_*/
-output/
-coverage_run/
-coverage/
+output/build/
+coverage_run/build/
 *.o
 *.a
 *.so
@@ -12,5 +12,4 @@ coverage/
 *.hex
 *.bin
 .git/
-docs/_build/
 node_modules/
