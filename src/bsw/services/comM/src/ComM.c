@@ -84,6 +84,7 @@ static void ComM_HandlePncChannelRequests(ComM_PncHandleType Pnc);
 static void ComM_UpdateDcmChannelRequests(ComM_ChannelHandleType Channel);
 #endif
 
+/** @req SWS_ComM_00001 */
 /*=============================================================================
  * Core API Implementation
  *===========================================================================*/
@@ -140,6 +141,7 @@ void ComM_Init(const ComM_ConfigType* ConfigPtr)
     ComM_ModuleState = COMM_INITIALIZED;
 }
 
+/** @req SWS_ComM_00002 */
 void ComM_DeInit(void)
 {
     ComM_ChannelHandleType ch;
@@ -162,6 +164,7 @@ void ComM_DeInit(void)
     ComM_ModuleState = COMM_UNINITIALIZED;
 }
 
+/** @req SWS_ComM_00003 */
 void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -182,6 +185,7 @@ void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 #endif
 }
 
+/** @req SWS_ComM_00005 */
 /*=============================================================================
  * Communication Mode Management
  *===========================================================================*/
@@ -212,6 +216,7 @@ Std_ReturnType ComM_RequestComMode(ComM_UserHandleType User, ComM_ModeType ComMo
     return E_OK;
 }
 
+/** @req SWS_ComM_00006 */
 Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -235,11 +240,13 @@ Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComMo
     return E_OK;
 }
 
+/** @req SWS_ComM_00007 */
 Std_ReturnType ComM_GetRequestedComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
 {
     return ComM_GetMaxComMode(User, ComModePtr);
 }
 
+/** @req SWS_ComM_00008 */
 Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr)
 {
     const ComM_UserConfigType* userConfig;
@@ -277,6 +284,7 @@ Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* C
     return E_OK;
 }
 
+/** @req SWS_ComM_00009 */
 /*=============================================================================
  * Channel Management
  *===========================================================================*/
@@ -297,6 +305,7 @@ void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed)
     ComM_ChannelStates[Channel].CommunicationAllowed = Allowed;
 }
 
+/** @req SWS_ComM_00004 */
 void ComM_MainFunction(void)
 {
     ComM_ChannelHandleType ch;
@@ -322,6 +331,7 @@ void ComM_MainFunction(void)
  * PNC Management
  *===========================================================================*/
 #if (COMM_PNC_SUPPORT == STD_ON)
+/** @req SWS_ComM_00010 */
 void ComM_MainFunctionPnc(void)
 {
     ComM_PncHandleType pnc;
@@ -331,6 +341,7 @@ void ComM_MainFunctionPnc(void)
     }
 }
 
+/** @req SWS_ComM_00011 */
 Std_ReturnType ComM_RequestPncMode(ComM_PncHandleType Pnc, ComM_PncModeType PncMode)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -349,6 +360,7 @@ Std_ReturnType ComM_RequestPncMode(ComM_PncHandleType Pnc, ComM_PncModeType PncM
     return E_OK;
 }
 
+/** @req SWS_ComM_00012 */
 Std_ReturnType ComM_GetPncMode(ComM_PncHandleType Pnc, ComM_PncModeType* PncModePtr)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -370,6 +382,7 @@ Std_ReturnType ComM_GetPncMode(ComM_PncHandleType Pnc, ComM_PncModeType* PncMode
  * ECU State Manager Integration
  *===========================================================================*/
 #if (COMM_ECUM_SUPPORT == STD_ON)
+/** @req SWS_ComM_00013 */
 void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType)
 {
     ComM_ChannelHandleType ch;
@@ -392,6 +405,7 @@ void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType)
     }
 }
 
+/** @req SWS_ComM_00014 */
 void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -407,6 +421,7 @@ void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel)
     }
 }
 
+/** @req SWS_ComM_00015 */
 void ComM_EcuM_RunRequestIndication(boolean Requested)
 {
     (void)Requested;
@@ -414,6 +429,7 @@ void ComM_EcuM_RunRequestIndication(boolean Requested)
 }
 #endif /* COMM_ECUM_SUPPORT */
 
+/** @req SWS_ComM_00016 */
 /*=============================================================================
  * Bus State Manager Interface
  *===========================================================================*/
@@ -444,16 +460,19 @@ void ComM_BusSM_ModeIndication(ComM_ChannelHandleType Channel, ComM_ModeType Mod
     }
 }
 
+/** @req SWS_ComM_00017 */
 void ComM_BusSM_BusSleepMode(ComM_ChannelHandleType Channel)
 {
     ComM_BusSM_ModeIndication(Channel, COMM_NO_COMMUNICATION);
 }
 
+/** @req SWS_ComM_00018 */
 void ComM_BusSM_NetworkMode(ComM_ChannelHandleType Channel)
 {
     ComM_BusSM_ModeIndication(Channel, COMM_FULL_COMMUNICATION);
 }
 
+/** @req SWS_ComM_00019 */
 void ComM_BusSM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
 {
     ComM_BusSM_ModeIndication(Channel, COMM_SILENT_COMMUNICATION);
@@ -463,6 +482,7 @@ void ComM_BusSM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
  * DCM Integration
  *===========================================================================*/
 #if (COMM_DCM_SUPPORT == STD_ON)
+/** @req SWS_ComM_00020 */
 Std_ReturnType ComM_DCM_ActiveDiagnostic(ComM_ChannelHandleType Channel)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -480,6 +500,7 @@ Std_ReturnType ComM_DCM_ActiveDiagnostic(ComM_ChannelHandleType Channel)
     return E_OK;
 }
 
+/** @req SWS_ComM_00021 */
 Std_ReturnType ComM_DCM_InactiveDiagnostic(ComM_ChannelHandleType Channel)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -494,6 +515,7 @@ Std_ReturnType ComM_DCM_InactiveDiagnostic(ComM_ChannelHandleType Channel)
     return E_OK;
 }
 
+/** @req SWS_ComM_00022 */
 Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolean Active)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -515,6 +537,7 @@ Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolea
 }
 #endif /* COMM_DCM_SUPPORT */
 
+/** @req SWS_ComM_00023 */
 /*=============================================================================
  * ECNM Integration
  *===========================================================================*/
@@ -523,11 +546,13 @@ void ComM_ECNM_NetworkMode(ComM_ChannelHandleType Channel)
     ComM_BusSM_NetworkMode(Channel);
 }
 
+/** @req SWS_ComM_00024 */
 void ComM_ECNM_PrepareBusSleepMode(ComM_ChannelHandleType Channel)
 {
     ComM_BusSM_PrepareBusSleepMode(Channel);
 }
 
+/** @req SWS_ComM_00025 */
 void ComM_ECNM_BusSleepMode(ComM_ChannelHandleType Channel)
 {
     ComM_BusSM_BusSleepMode(Channel);
@@ -537,17 +562,20 @@ void ComM_ECNM_BusSleepMode(ComM_ChannelHandleType Channel)
  * NVM Integration
  *===========================================================================*/
 #if (COMM_NVM_STORAGE_ENABLED == STD_ON)
+/** @req SWS_ComM_00026 */
 void ComM_Nvm_StartUpError(void)
 {
     /* Handle NVM startup errors - may inhibit certain features */
 }
 
+/** @req SWS_ComM_00027 */
 void ComM_Nvm_StoreInhibitionStatus(void)
 {
     /* Store inhibition status to NVM */
 }
 #endif
 
+/** @req SWS_ComM_00028 */
 /*=============================================================================
  * Diagnostic Support
  *===========================================================================*/
@@ -572,6 +600,7 @@ Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, ComM_Inh
     return E_OK;
 }
 
+/** @req SWS_ComM_00029 */
 void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -588,6 +617,7 @@ void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status
     }
 }
 
+/** @req SWS_ComM_00030 */
 void ComM_LimitECUToNoComMode(boolean Status)
 {
     ComM_ChannelHandleType ch;
@@ -608,6 +638,7 @@ void ComM_LimitECUToNoComMode(boolean Status)
     }
 }
 
+/** @req SWS_ComM_00031 */
 void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status)
 {
 #if (COMM_DEV_ERROR_DETECT == STD_ON)
@@ -890,6 +921,7 @@ static void ComM_HandlePncChannelRequests(ComM_PncHandleType Pnc)
 }
 #endif /* COMM_PNC_SUPPORT */
 
+/** @req SWS_ComM_00032 */
 /*==================================================================================================
 *                          NM NOTIFICATIONS (T3, 2026-08-08)
 *
@@ -904,11 +936,13 @@ void ComM_Nm_NetworkMode(uint8 NetworkHandle)
     (void)NetworkHandle;
 }
 
+/** @req SWS_ComM_00033 */
 void ComM_Nm_PrepareBusSleepMode(uint8 NetworkHandle)
 {
     (void)NetworkHandle;
 }
 
+/** @req SWS_ComM_00034 */
 void ComM_Nm_BusSleepMode(uint8 NetworkHandle)
 {
     (void)NetworkHandle;

@@ -4,6 +4,8 @@
 
 看门狗管理
 
+详细设计文档见 [WdgM 设计文档](../design/modules/services/wdgm-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0

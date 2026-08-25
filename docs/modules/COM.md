@@ -58,6 +58,10 @@ void example(void)
 
 - `src/bsw/services/com/`
 
+## 设计文档
+
+- 详细设计: [COM Design Document](../design/modules/services/com-design.md)
+
 ## 测试
 
 - 单元测试: `tests/unit/com/`

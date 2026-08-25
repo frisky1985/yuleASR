@@ -153,56 +153,88 @@ typedef struct {
     boolean EcuMSupportEnabled;
 } ComM_ConfigType;
 
+/** @req SWS_ComM_00001 */
 /* Function Prototypes - Core API */
 extern void ComM_Init(const ComM_ConfigType* ConfigPtr);
+/** @req SWS_ComM_00002 */
 extern void ComM_DeInit(void);
+/** @req SWS_ComM_00003 */
 extern void ComM_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 
+/** @req SWS_ComM_00005 */
 /* Function Prototypes - Communication Mode Management */
 extern Std_ReturnType ComM_RequestComMode(ComM_UserHandleType User, ComM_ModeType ComMode);
+/** @req SWS_ComM_00006 */
 extern Std_ReturnType ComM_GetMaxComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr);
+/** @req SWS_ComM_00007 */
 extern Std_ReturnType ComM_GetRequestedComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr);
+/** @req SWS_ComM_00008 */
 extern Std_ReturnType ComM_GetCurrentComMode(ComM_UserHandleType User, ComM_ModeType* ComModePtr);
 
+/** @req SWS_ComM_00009 */
 /* Function Prototypes - Channel Management */
 extern void ComM_CommunicationAllowed(ComM_ChannelHandleType Channel, boolean Allowed);
+/** @req SWS_ComM_00004 */
 extern void ComM_MainFunction(void);
 
+/** @req SWS_ComM_00010 */
 /* Function Prototypes - PNC Management */
 extern void ComM_MainFunctionPnc(void);
+/** @req SWS_ComM_00011 */
 extern Std_ReturnType ComM_RequestPncMode(ComM_PncHandleType Pnc, ComM_PncModeType PncMode);
+/** @req SWS_ComM_00012 */
 extern Std_ReturnType ComM_GetPncMode(ComM_PncHandleType Pnc, ComM_PncModeType* PncModePtr);
 
+/** @req SWS_ComM_00013 */
 /* Function Prototypes - ECU State Manager Integration */
 extern void ComM_EcuM_WakeUpIndication(ComM_EcuM_WakeUpType WakeupType);
+/** @req SWS_ComM_00014 */
 extern void ComM_EcuM_BusWakeUpIndication(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00015 */
 extern void ComM_EcuM_RunRequestIndication(boolean Requested);
 
+/** @req SWS_ComM_00016 */
 /* Function Prototypes - Bus State Manager Interface */
 extern void ComM_BusSM_ModeIndication(ComM_ChannelHandleType Channel, ComM_ModeType Mode);
+/** @req SWS_ComM_00017 */
 extern void ComM_BusSM_BusSleepMode(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00018 */
 extern void ComM_BusSM_NetworkMode(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00019 */
 extern void ComM_BusSM_PrepareBusSleepMode(ComM_ChannelHandleType Channel);
 
+/** @req SWS_ComM_00020 */
 /* Function Prototypes - DCM Integration */
 extern Std_ReturnType ComM_DCM_ActiveDiagnostic(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00021 */
 extern Std_ReturnType ComM_DCM_InactiveDiagnostic(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00022 */
 extern Std_ReturnType ComM_DCM_PassiveDiagnostic(ComM_ChannelHandleType Channel, boolean Active);
 
+/** @req SWS_ComM_00023 */
 /* Function Prototypes - ECNM Integration */
 extern void ComM_ECNM_NetworkMode(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00024 */
 extern void ComM_ECNM_PrepareBusSleepMode(ComM_ChannelHandleType Channel);
+/** @req SWS_ComM_00025 */
 extern void ComM_ECNM_BusSleepMode(ComM_ChannelHandleType Channel);
 
+/** @req SWS_ComM_00026 */
 /* Function Prototypes - NVM Integration */
 extern void ComM_Nvm_StartUpError(void);
+/** @req SWS_ComM_00027 */
 extern void ComM_Nvm_StoreInhibitionStatus(void);
 
+/** @req SWS_ComM_00028 */
 /* Function Prototypes - Diagnostic Support */
 extern Std_ReturnType ComM_GetInhibitionStatus(ComM_ChannelHandleType Channel, ComM_InhibitionStatusType* StatusPtr);
+/** @req SWS_ComM_00029 */
 extern void ComM_LimitChannelToNoComMode(ComM_ChannelHandleType Channel, boolean Status);
+/** @req SWS_ComM_00030 */
 extern void ComM_LimitECUToNoComMode(boolean Status);
+/** @req SWS_ComM_00031 */
 extern void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status);
+/** @req SWS_ComM_00032 */
 /**
  * @brief Nm notification: network has entered/left full network mode.
  * T3 fix (2026-08-08): declared for link compatibility with Nm/LinNm
@@ -210,7 +242,9 @@ extern void ComM_PreventWakeUp(ComM_ChannelHandleType Channel, boolean Status);
  * machine (see ComM.c for the stub implementations).
  */
 extern void ComM_Nm_NetworkMode(uint8 NetworkHandle);
+/** @req SWS_ComM_00033 */
 extern void ComM_Nm_PrepareBusSleepMode(uint8 NetworkHandle);
+/** @req SWS_ComM_00034 */
 extern void ComM_Nm_BusSleepMode(uint8 NetworkHandle);
 
 #endif /* COMM_H */

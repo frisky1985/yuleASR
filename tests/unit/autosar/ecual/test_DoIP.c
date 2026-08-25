@@ -34,6 +34,7 @@ static int teardown(void **state)
 /**
  * @brief Test DoIP_Init with valid configuration
  */
+/** @req SWS_DoIP_00001 */
 static void test_DoIP_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -47,6 +48,7 @@ static void test_DoIP_Init_ValidConfig(void **state)
 /**
  * @brief Test DoIP_DeInit functionality
  */
+/** @req SWS_DoIP_00001 */
 static void test_DoIP_DeInit(void **state)
 {
     (void)state;
@@ -62,6 +64,7 @@ static void test_DoIP_DeInit(void **state)
 /**
  * @brief Test DoIP_GetVersionInfo
  */
+/** @req SWS_DoIP_00003 */
 static void test_DoIP_GetVersionInfo(void **state)
 {
     (void)state;
@@ -101,6 +104,7 @@ static void test_DoIP_ActivationLineInactive(void **state)
 /**
  * @brief Test DoIP_MainFunction
  */
+/** @req SWS_DoIP_00004 */
 static void test_DoIP_MainFunction(void **state)
 {
     (void)state;
@@ -113,6 +117,7 @@ static void test_DoIP_MainFunction(void **state)
 /**
  * @brief Test DoIP_MainFunction when uninitialized
  */
+/** @req SWS_DoIP_00001 */
 static void test_DoIP_MainFunction_Uninit(void **state)
 {
     (void)state;
@@ -216,6 +221,7 @@ static void test_DoIP_SocketStateTypes(void **state)
 /**
  * @brief Test DoIP_SoAdIfRxIndication callback
  */
+/** @req SWS_DoIP_00006 */
 static void test_DoIP_SoAdIfRxIndication(void **state)
 {
     (void)state;
@@ -247,6 +253,7 @@ static void test_DoIP_SoAdIfTxConfirmation(void **state)
 /**
  * @brief Test DoIP_SoAdTpTxConfirmation callback
  */
+/** @req SWS_DoIP_00017 */
 static void test_DoIP_SoAdTpTxConfirmation(void **state)
 {
     (void)state;

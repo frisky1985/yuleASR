@@ -4,6 +4,8 @@
 
 诊断通信管理
 
+详细设计文档见 [DCM Design Document](../design/modules/services/dcm-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0

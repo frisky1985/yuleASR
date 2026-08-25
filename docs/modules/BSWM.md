@@ -4,6 +4,8 @@
 
 管理 BSW 模式转换
 
+详细设计文档见 [BswM 设计文档](../design/modules/services/bswm-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0
