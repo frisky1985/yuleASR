@@ -1,51 +1,438 @@
 # Traceability Matrix
 
-> Generated: 2026-08-07
-> Version: 0.2.0 (批D 真实映射重建 — 测试文件存在性校验)
-> Source: docs/software-requirements.md
+> Generated: 2026-08-25
+> Version: 0.1.0
 
 ## Requirements → Implementation → Tests
 
-| Requirement | SHALL statement | Tests | Status |
-|:------------|:----------------|:------|:-------|
-| SWR-001.1-01 | SHALL support AUTOSAR Classic Platform 4.4.0 standard | tests/unit/autosar/services/Dcm/test_Dcm.c | ✅ Covered |
-| SWR-001.1-02 | SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules | tests/unit/mcal/test_dio.c, tests/unit/mcal/test_can.c, tests/unit/mcal/test_mcu.c | ✅ Covered |
-| SWR-001.1-03 | SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules | tests/unit/ecual/test_canif.c, tests/unit/ecual/test_ethswt.c | ✅ Covered |
-| SWR-001.1-04 | SHALL implement BSW Services layer covering 44 service modules | tests/unit/autosar/services/Dcm/test_Dcm.c, tests/unit/autosar/services/Nvm/test_Nvm.c | ✅ Covered |
-| SWR-001.1-05 | SHALL target NXP S32K312 microcontroller platform | tests/unit/mcal/test_mcu.c | ✅ Covered |
-| SWR-001.1-06 | SHALL support RTE generation for SWC-to-BSW communication | tests/unit/rte/test_rte_cs_operations.c | ✅ Covered |
-| SWR-002.1-01 | SHALL implement E2E communication protection for safety-critical signals | tests/unit/autosar/services/E2E/test_E2E.c, coverage_run/asil/test_e2e_coverage.c | ✅ Covered |
-| SWR-002.1-02 | SHALL support HSM-based cryptographic operations via Crypto module | tests/unit/mcal/test_Crypto.c | ✅ Covered |
-| SWR-002.1-03 | SHALL provide RAM safety and lockstep monitoring for ASIL-D decomposition | tests/unit/autosar/services/RamSafety_test.c | ✅ Covered |
-| SWR-002.1-04 | SHALL implement secure boot mechanism | — | ❌ Not Covered |
-| SWR-002.1-05 | SHOULD support SHE-compliant key management | tests/unit/autosar/services/CryIf_Test.c, tests/unit/keym/test_keym.c | ✅ Covered |
-| SWR-003.1-01 | SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm) | tests/unit/autosar/mcal/test_CAN.c, tests/unit/autosar/services/test_cansm.c, tests/unit/autosar/services/test_canm.c, tests/unit/autosar/ecual/test_canNm.c | ✅ Covered |
-| SWR-003.1-02 | SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM) | tests/unit/autosar/mcal/test_LIN.c | ✅ Covered |
-| SWR-003.1-03 | SHALL implement Ethernet communication (Eth, EthIf, EthSm, SoAd, SomeIp, SomeIpSd) | tests/unit/mcal/test_eth.c, tests/unit/autosar/services/test_someip.c, tests/unit/autosar/services/test_someiptp.c, tests/unit/autosar/services/test_someipxf.c | ✅ Covered |
-| SWR-003.1-04 | SHALL implement DCM diagnostic communication manager | tests/unit/autosar/services/Dcm/test_Dcm.c, tests/unit/dcm/test_dcm.c, tests/unit/dcm/test_dcm_transfer.c | ✅ Covered |
-| SWR-003.1-05 | SHALL implement DoIP diagnostic over IP | tests/unit/doip/test_doip.c | ✅ Covered |
-| SWR-003.1-06 | SHOULD support J1939 transport and network management | tests/unit/j1939nm/test_j1939nm.c | ✅ Covered |
-| SWR-003.1-07 | SHOULD support SOME/IP Service Discovery | tests/unit/autosar/services/test_someipxf.c, tests/unit/autosar/services/test_someip.c | ✅ Covered |
-| SWR-004.1-01 | SHALL implement NVRAM manager (NvM) for persistent storage | tests/unit/autosar/services/Nvm/test_Nvm.c, coverage_run/asil/test_nvm_coverage.c | ✅ Covered |
-| SWR-004.1-02 | SHALL implement Flash EEPROM emulation (Fee) | tests/unit/fee/test_fee_init.c, tests/unit/fee/test_fee_read.c, tests/unit/fee/test_fee_write.c | ✅ Covered |
-| SWR-004.1-03 | SHALL implement internal/external EEPROM driver | tests/unit/autosar/mcal/test_eep.c | ✅ Covered |
-| SWR-004.1-04 | SHALL implement memory abstraction interface (MemIf) | tests/unit/autosar/services/test_memif.c | ✅ Covered |
-| SWR-004.1-05 | SHALL support flash driver for S32K312 on-chip flash | tests/unit/flash/test_flash_init.c, tests/unit/flash/test_flash_read.c, tests/unit/flash/test_flash_write.c | ✅ Covered |
-| SWR-005.1-01 | SHALL implement ECU state manager (EcuM) | tests/unit/ecum/test_ecum.c | ✅ Covered |
-| SWR-005.1-02 | SHALL implement BSW scheduler (BswM) with mode management | tests/unit/bswm/test_bswm.c | ✅ Covered |
-| SWR-005.1-03 | SHALL implement Watchdog manager (WdgM) | tests/unit/autosar/services/WdgM_Test.c, coverage_run/asil/test_wdgm_coverage.c | ✅ Covered |
-| SWR-005.1-04 | SHALL implement Default Error Tracer (Det) | tests/unit/det/Det_Test.c | ✅ Covered |
-| SWR-005.1-05 | SHALL implement Diagnostic Event Manager (Dem) | tests/unit/dem/test_dem.c | ✅ Covered |
-| SWR-005.1-06 | SHALL implement Function Inhibition Manager (FiM) | tests/unit/fim/test_fim.c | ✅ Covered |
-| SWR-005.1-07 | SHALL implement CRC calculator | tests/unit/crc/Crc_test.c, coverage_run/test_crc_coverage.c | ✅ Covered |
-| SWR-005.1-08 | SHALL implement OS (AUTOSAR SC4 compliant) | coverage_run/asil/test_os_timing_coverage.c, tests/unit/test_os_timing.c | ✅ Covered |
-| SWR-005.1-09 | SHALL support DLT (Diagnostic Log and Trace) | tests/unit/dlt/test_dlt.c | ✅ Covered |
-| SWR-005.1-10 | SHOULD support XCP calibration protocol | tests/unit/xcp/test_xcp.c | ✅ Covered |
-| SWR-006.1-01 | SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG) | tests/unit/mcal/test_adc.c, tests/unit/mcal/test_can.c, tests/unit/mcal/test_dio.c, tests/unit/mcal/test_gpt.c, tests/unit/mcal/test_mcu.c, tests/unit/mcal/test_eth.c | ✅ Covered |
-| SWR-006.1-02 | SHALL provide standardized AUTOSAR interface macros (SchM, Det, MemMap) | tests/unit/autosar/mcal/test_ADC.c, tests/unit/autosar/mcal/test_CAN.c | ✅ Covered |
-| SWR-007.1-01 | SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager | tests/unit/autosar/services/Dcm/test_Dcm.c, tests/unit/autosar/services/WdgM_Test.c | ✅ Covered |
-| SWR-007.1-02 | SHALL implement RTE for component communication | tests/unit/rte/test_rte_cs_operations.c | ✅ Covered |
-| SWR-008.1-01 | SHALL integrate micro DDS middleware for inter-ECU communication | tests/e2e/test_e2e_dds_communication.c | ✅ Covered |
-| SWR-008.1-02 | SHOULD support DDS QoS policies | tests/unit/middleware/test_qos.c | ✅ Covered |
+### MCAL-SHALL-001
+- Req ID: MCAL-SHALL-001
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ MCAL SHALL 提供标准 AUTOSAR API (如 Adc_Init, Can_Write)
 
-**Covered: 38/39 (97.4%)**
+### MCAL-SHALL-002
+- Req ID: MCAL-SHALL-002
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 所有 MCAL 模块 SHALL 支持同步和中断两种操作模式
+
+### MCAL-SHALL-003
+- Req ID: MCAL-SHALL-003
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ MCAL SHALL 使用 MISRA C:2023 合规编码风格
+
+### ECUAL-SHALL-001
+- Req ID: ECUAL-SHALL-001
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ ECUAL SHALL 使用 MCAL API, 不直接操作硬件寄存器
+
+### ECUAL-SHALL-002
+- Req ID: ECUAL-SHALL-002
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 看门狗管理器 SHALL 在超时前刷新
+
+### SVC-SHALL-001
+- Req ID: SVC-SHALL-001
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ OS SHALL 提供符合 OSEK/AUTOSAR OS 的调度服务
+
+### SVC-SHALL-002
+- Req ID: SVC-SHALL-002
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 通信栈 (CAN/以太网) SHALL 实现 PDU 路由
+
+### SVC-SHALL-003
+- Req ID: SVC-SHALL-003
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 诊断事件管理器 (Dem) SHALL 记录并上报 DTC
+
+### NFR-SHALL-001
+- Req ID: NFR-SHALL-001
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 代码 MISRA C:2023 合规
+
+### NFR-SHALL-002
+- Req ID: NFR-SHALL-002
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 单元测试行覆盖率
+
+### NFR-SHALL-003
+- Req ID: NFR-SHALL-003
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 条件覆盖率
+
+### NFR-SHALL-004
+- Req ID: NFR-SHALL-004
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ 静态分析 (cppcheck)
+
+### None
+- Req ID: None
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ SHALL 使用 MISRA C:2023 `safety` 配置
+
+### SWR-001.1-01
+- Req ID: SWR-001.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Dcm/test_Dcm.c
+- SHALL details:
+  ❌ **SWR-001.1-01**: SHALL support AUTOSAR Classic Platform 4.4.0 standard
+
+### SWR-001.1-02
+- Req ID: SWR-001.1-02
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_ADC.c
+- SHALL details:
+  ❌ **SWR-001.1-02**: SHALL implement MCAL abstraction layer covering 21 microcontroller driver modules
+
+### SWR-001.1-03
+- Req ID: SWR-001.1-03
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/ecual/test_CanIf.c
+- SHALL details:
+  ❌ **SWR-001.1-03**: SHALL implement ECUAL abstraction layer covering 29 ECU hardware driver modules
+
+### SWR-001.1-04
+- Req ID: SWR-001.1-04
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Dcm/test_Dcm.c
+- SHALL details:
+  ❌ **SWR-001.1-04**: SHALL implement BSW Services layer covering 44 service modules
+
+### SWR-001.1-05
+- Req ID: SWR-001.1-05
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_mcu.c
+- SHALL details:
+  ❌ **SWR-001.1-05**: SHALL target NXP S32K312 microcontroller platform
+
+### SWR-001.1-06
+- Req ID: SWR-001.1-06
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-001.1-06**: SHALL support RTE generation for SWC-to-BSW communication
+
+### SWR-002.1-01
+- Req ID: SWR-002.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/E2E/test_E2E.c
+- SHALL details:
+  ❌ **SWR-002.1-01**: SHALL implement E2E communication protection for safety-critical signals
+
+### SWR-002.1-02
+- Req ID: SWR-002.1-02
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_Crypto.c
+- SHALL details:
+  ❌ **SWR-002.1-02**: SHALL support HSM-based cryptographic operations via Crypto module
+
+### SWR-002.1-03
+- Req ID: SWR-002.1-03
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-002.1-03**: SHALL provide RAM safety and lockstep monitoring for ASIL-D decomposition
+
+### SWR-002.1-04
+- Req ID: SWR-002.1-04
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-002.1-04**: SHALL implement secure boot mechanism
+
+### SWR-003.1-01
+- Req ID: SWR-003.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_CAN.c
+- SHALL details:
+  ❌ **SWR-003.1-01**: SHALL implement CAN communication (Can, CanIf, CanTp, CanNm, CanSm)
+
+### SWR-003.1-02
+- Req ID: SWR-003.1-02
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_LIN.c
+- SHALL details:
+  ❌ **SWR-003.1-02**: SHALL implement LIN communication (Lin, LinIf, LinTp, LinNm, LinSM)
+
+### SWR-003.1-03
+- Req ID: SWR-003.1-03
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-003.1-03**: SHALL implement Ethernet communication (Eth, EthIf, EthSm, SoAd, SomeIp, SomeIpSd)
+
+### SWR-003.1-04
+- Req ID: SWR-003.1-04
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Dcm/test_Dcm.c
+- SHALL details:
+  ❌ **SWR-003.1-04**: SHALL implement DCM diagnostic communication manager
+
+### SWR-003.1-05
+- Req ID: SWR-003.1-05
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-003.1-05**: SHALL implement DoIP diagnostic over IP
+
+### SWR-004.1-01
+- Req ID: SWR-004.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/services/Nvm/test_Nvm.c
+- SHALL details:
+  ❌ **SWR-004.1-01**: SHALL implement NVRAM manager (NvM) for persistent storage
+
+### SWR-004.1-02
+- Req ID: SWR-004.1-02
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-004.1-02**: SHALL implement Flash EEPROM emulation (Fee)
+
+### SWR-004.1-03
+- Req ID: SWR-004.1-03
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-004.1-03**: SHALL implement internal/external EEPROM driver
+
+### SWR-004.1-04
+- Req ID: SWR-004.1-04
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-004.1-04**: SHALL implement memory abstraction interface (MemIf)
+
+### SWR-004.1-05
+- Req ID: SWR-004.1-05
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-004.1-05**: SHALL support flash driver for S32K312 on-chip flash
+
+### SWR-005.1-01
+- Req ID: SWR-005.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/services/test_ecum.c
+- SHALL details:
+  ❌ **SWR-005.1-01**: SHALL implement ECU state manager (EcuM)
+
+### SWR-005.1-02
+- Req ID: SWR-005.1-02
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-005.1-02**: SHALL implement BSW scheduler (BswM) with mode management
+
+### SWR-005.1-03
+- Req ID: SWR-005.1-03
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_wdg.c
+- SHALL details:
+  ❌ **SWR-005.1-03**: SHALL implement Watchdog manager (WdgM)
+
+### SWR-005.1-04
+- Req ID: SWR-005.1-04
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-005.1-04**: SHALL implement Default Error Tracer (Det)
+
+### SWR-005.1-05
+- Req ID: SWR-005.1-05
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-005.1-05**: SHALL implement Diagnostic Event Manager (Dem)
+
+### SWR-005.1-06
+- Req ID: SWR-005.1-06
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-005.1-06**: SHALL implement Function Inhibition Manager (FiM)
+
+### SWR-005.1-07
+- Req ID: SWR-005.1-07
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-005.1-07**: SHALL implement CRC calculator
+
+### SWR-005.1-08
+- Req ID: SWR-005.1-08
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/test_os_timing.c
+- SHALL details:
+  ❌ **SWR-005.1-08**: SHALL implement OS (AUTOSAR SC4 compliant)
+
+### SWR-005.1-09
+- Req ID: SWR-005.1-09
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-005.1-09**: SHALL support DLT (Diagnostic Log and Trace)
+
+### SWR-006.1-01
+- Req ID: SWR-006.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/autosar/mcal/test_gpt.c
+- SHALL details:
+  ❌ **SWR-006.1-01**: SHALL implement 21 MCAL modules (ADC, CAN, Crypto, DIO, EEP, ETH, FEE, Flash, FLS, GPT, I2C, ICU, LIN, MCU, OCU, PORT, PWM, RAMTST, SPI, UART, WDG)
+
+### SWR-006.1-02
+- Req ID: SWR-006.1-02
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-006.1-02**: SHALL provide standardized AUTOSAR interface macros (SchM, Det, MemMap)
+
+### SWR-007.1-01
+- Req ID: SWR-007.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/services/test_comm.c
+- SHALL details:
+  ❌ **SWR-007.1-01**: SHALL support ASW components: CommunicationManager, DiagnosticManager, EngineControl, IOControl, ModeManager, StorageManager, VehicleDynamics, WatchdogManager
+
+### SWR-007.1-02
+- Req ID: SWR-007.1-02
+- SHALL statements: 1
+- Status: ❌ Not Covered
+- Scenarios: 0 ⚠️
+- Test files: 0 ❌ Not covered by any test
+- SHALL details:
+  ❌ **SWR-007.1-02**: SHALL implement RTE for component communication
+
+### SWR-008.1-01
+- Req ID: SWR-008.1-01
+- SHALL statements: 1
+- Status: ✅ Covered
+- Scenarios: 0 ⚠️
+- Test files: 1 ✅ Covered: tests/unit/test_dds_qualification.c
+- SHALL details:
+  ❌ **SWR-008.1-01**: SHALL integrate micro DDS middleware for inter-ECU communication
+
+## Summary
+- Total Requirements: 47
+- Requirements with implementation: 85 (180%)
+- Requirements with test coverage: 17 (36%)
+- Uncovered SHALLs: 30
+- Scenarios: 0
+- Reviews: 0
+- CI Runs: 0

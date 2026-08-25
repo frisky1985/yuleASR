@@ -1,25 +1,25 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-08-07T17:25:50.885091",
-  "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
+  "generated_at": "2026-08-25T20:57:18.692426",
+  "project_dir": "/Users/ingeek/workspace/AUTOSAR",
   "layers": [
     {
       "layer": 1,
-      "status": "passed",
-      "commit": "4dbf2bd0",
-      "started_at": "2026-08-07T17:23:26.543015",
-      "completed_at": "2026-08-07T17:25:50.873324",
+      "status": "failed",
+      "commit": "c2f916869",
+      "started_at": "2026-08-25T20:56:43.290299",
+      "completed_at": "2026-08-25T20:57:18.689854",
       "stages_summary": {
-        "total": 55,
-        "passed": 42,
-        "failed": 0,
-        "skipped": 9
+        "total": 52,
+        "passed": 37,
+        "failed": 1,
+        "skipped": 12
       },
       "stages": [
         {
           "name": "methodology-grilling-alignment",
           "status": "passed",
-          "detail": "spec.md 无决策记录 — 存量项目降级（无 .osh/specs/ 活跃流程，建议后续新 spec 补充 Grilling 记录，不阻断）"
+          "detail": "2025-04-23-education-community-phase.md 无决策记录 — 存量项目降级（无 .osh/specs/ 活跃流程，建议后续新 spec 补充 Grilling 记录，不阻断）"
         },
         {
           "name": "methodology-domain-model",
@@ -29,12 +29,12 @@
         {
           "name": "methodology-two-axis-review",
           "status": "warning",
-          "detail": "最近报告 yuleasr-ci-fix-20260807.md 缺双轴之一（应含 Standards + Spec 两节）"
+          "detail": "无评审报告（reports/*.md）可检查双轴"
         },
         {
           "name": "methodology-tight-loop-debug",
-          "status": "warning",
-          "detail": "yuleasr-ci-fix-20260807.md 无复现回路证据（应含复现步骤/回路描述）"
+          "status": "passed",
+          "detail": "无调试/修复报告（跳过，软检查）"
         },
         {
           "name": "methodology-vertical-slices",
@@ -49,7 +49,7 @@
         {
           "name": "methodology-gate",
           "status": "passed",
-          "detail": "4 pass, 2 soft, 0 hard"
+          "detail": "5 pass, 1 soft, 0 hard"
         },
         {
           "name": "yaml-validation",
@@ -58,8 +58,8 @@
         },
         {
           "name": "spec-validation",
-          "status": "passed",
-          "detail": "0 missing, 3 req keywords found"
+          "status": "warning",
+          "detail": "MISRA acceptance matrix (specs/misra-acceptance-matrix.md)"
         },
         {
           "name": "architecture-review",
@@ -69,42 +69,27 @@
         {
           "name": "requirements-trace",
           "status": "passed",
-          "detail": "249 reqs, 0 modules, 7 tests (ratio 700.0%)"
+          "detail": "154 reqs, 0 modules, 7 tests (ratio 700.0%)"
         },
         {
           "name": "plan-lint",
-          "status": "passed",
-          "detail": ""
+          "status": "skipped",
+          "detail": "No task/plan files found"
         },
         {
           "name": "docsync-gate",
-          "status": "warning",
-          "detail": "Sync gate: warning | 3 total, 0 error(s), 0 warning(s)"
+          "status": "passed",
+          "detail": "Sync gate: passed | 3 total, 0 error(s), 0 warning(s)"
         },
         {
           "name": "clang-tidy",
-          "status": "passed",
-          "detail": ""
+          "status": "skipped",
+          "detail": "clang-tidy not installed"
         },
         {
           "name": "misra-check",
-          "status": "warning",
-          "detail": "2530 MISRA violation(s) (30 required, 29 advisory) — see .yuleosh/reports/misra-report.json"
-        },
-        {
-          "name": "unit-tests",
           "status": "passed",
-          "detail": ""
-        },
-        {
-          "name": "unit-tests",
-          "status": "passed",
-          "detail": ""
-        },
-        {
-          "name": "unit-tests",
-          "status": "passed",
-          "detail": ""
+          "detail": "74 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
         },
         {
           "name": "unit-tests",
@@ -273,8 +258,8 @@
         },
         {
           "name": "coverage",
-          "status": "passed",
-          "detail": "line=21.62162162162162%, cond=21.62162162162162%"
+          "status": "failed",
+          "detail": "Line coverage 0.0% < 40.0%"
         },
         {
           "name": "coverage-regression",
@@ -283,34 +268,37 @@
         },
         {
           "name": "c-coverage",
-          "status": "passed",
-          "detail": "line=75.84%, branch=0.0%, 7 file(s)"
+          "status": "skipped",
+          "detail": "No build directory with coverage data found"
         },
         {
           "name": "c-coverage-gate",
           "status": "passed",
-          "detail": "line_rate=75.8% >= 35%"
+          "detail": "line_rate=91.6% >= 40%"
         }
       ],
       "coverage": {
-        "line": 21.62162162162162,
-        "condition": 21.62162162162162,
-        "line_pass": true,
-        "condition_pass": true
+        "line": 0.0,
+        "condition": 0.0,
+        "line_pass": false,
+        "condition_pass": false
       },
-      "errors": []
+      "errors": [
+        "clang-tidy failed",
+        "coverage failed"
+      ]
     }
   ],
   "misra": {
-    "total_violations": 2530,
-    "required": 30,
-    "advisory": 29,
-    "violations_per_kloc": 19.94,
-    "rules_violated": 23,
-    "files_affected": 207
+    "total_violations": 74,
+    "required": 0,
+    "advisory": 0,
+    "violations_per_kloc": 17.24,
+    "rules_violated": 1,
+    "files_affected": 5
   },
   "c_coverage": {
-    "line_rate": 75.84,
-    "branch_rate": 0.0
+    "line_rate": 91.57,
+    "branch_rate": 79.79
   }
 }

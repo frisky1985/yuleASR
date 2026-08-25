@@ -1,6 +1,6 @@
 # MISRA Fix Task: misra-c2023-7.1
 
-> Generated: 2026-08-07T14:30:06.032744
+> Generated: 2026-08-25T20:50:03.504487
 > Severity: required
 > Spec Ref: SWE-MISRA-S1
 
@@ -12,7 +12,10 @@
 
 | # | File | Line | Col | Message |
 |--:|:-----|:----|:----|:--------|
-| 1 | `/Users/stefan/.openclaw/workspace/yuleASR/src/common/log/dds_log.c` | 301 | 0 | misra violation 701 with no text in the supplied rule-texts-file [misra-c2012-7. |
+| 1 | `/Users/ingeek/workspace/AUTOSAR/src/middleware/dds/pubsub/persistence.c` | 144 | 0 | misra violation (rule-texts-file not found: /Users/stefan/.openclaw/workspace/yu |
+| 2 | `/Users/ingeek/workspace/AUTOSAR/src/middleware/dds/pubsub/persistence.c` | 258 | 0 | misra violation (rule-texts-file not found: /Users/stefan/.openclaw/workspace/yu |
+| 3 | `/Users/ingeek/workspace/AUTOSAR/src/middleware/dds/pubsub/persistence.c` | 265 | 0 | misra violation (rule-texts-file not found: /Users/stefan/.openclaw/workspace/yu |
+| 4 | `/Users/ingeek/workspace/AUTOSAR/src/common/log/dds_log.c` | 353 | 0 | misra violation (rule-texts-file not found: /Users/stefan/.openclaw/workspace/yu |
 
 ## Fix Checklist
 

@@ -1,25 +1,25 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-08-07T23:35:59.416134",
-  "project_dir": "/Users/stefan/.openclaw/workspace/yuleASR",
+  "generated_at": "2026-08-25T20:50:04.520876",
+  "project_dir": "/Users/ingeek/workspace/AUTOSAR",
   "layers": [
     {
       "layer": 2,
-      "status": "passed",
-      "commit": "46a0e7c3",
-      "started_at": "2026-08-07T23:35:56.814589",
-      "completed_at": "2026-08-07T23:35:59.405038",
+      "status": "failed",
+      "commit": "c2f916869",
+      "started_at": "2026-08-25T20:48:16.014541",
+      "completed_at": "2026-08-25T20:50:04.504968",
       "stages_summary": {
-        "total": 5,
-        "passed": 4,
-        "failed": 0,
-        "skipped": 1
+        "total": 6,
+        "passed": 3,
+        "failed": 1,
+        "skipped": 2
       },
       "stages": [
         {
           "name": "cross-compile",
-          "status": "passed",
-          "detail": "ARM ELF at /Users/stefan/.openclaw/workspace/yuleASR/build/yuleasr-cross-probe.elf"
+          "status": "failed",
+          "detail": "make returned 2: CMake Error at CMakeLists.txt:7 (project):\n  The CMAKE_C_COMPILER:\n\n    ARM_GCC_BIN_PATH-NOTFOUND/arm-none-eabi-gcc\n\n  is not a full path and was not found in the PATH.\n\n  Tell CMake where to find the compiler by setting either the environment\n  variable \"CC\" or the CMake cache entry CMAKE_C_COMPILER to the full path to\n  the compiler, or to the compiler name if it is in the PATH.\n\n\nCMake Error at"
         },
         {
           "name": "static-analysis",
@@ -27,9 +27,14 @@
           "detail": ""
         },
         {
-          "name": "sil-tests",
+          "name": "misra-check",
           "status": "passed",
-          "detail": "1 test(s) passed"
+          "detail": "2211 MISRA violation(s) (4 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
+        },
+        {
+          "name": "sil-tests",
+          "status": "skipped",
+          "detail": "No prebuilt .elf found in tests/fixtures/prebuilt/. Compile with: cd tests/fixtures/hello-arm && make"
         },
         {
           "name": "integration-tests",
@@ -47,15 +52,15 @@
     }
   ],
   "misra": {
-    "total_violations": 2530,
-    "required": 30,
-    "advisory": 29,
-    "violations_per_kloc": 19.94,
-    "rules_violated": 23,
-    "files_affected": 207
+    "total_violations": 2211,
+    "required": 4,
+    "advisory": 0,
+    "violations_per_kloc": 15.42,
+    "rules_violated": 2,
+    "files_affected": 227
   },
   "c_coverage": {
-    "line_rate": 43.25,
-    "branch_rate": 31.19
+    "line_rate": 91.57,
+    "branch_rate": 79.79
   }
 }
