@@ -14,6 +14,10 @@ ci:
   layer1_timeout: 180          # seconds; overridable via CI_LAYER1_TIMEOUT env
 
 coverage:
+  # C 项目: Python-coverage 阶段（coverage run pytest tests/ 测 src/ Python）
+  # 对本项目无意义（C 覆盖率由 c-coverage-gate/gcov 权威验证）。
+  # enabled: false → yuleosh L1 跳过该阶段（默认 true，2026-08-25 新增）。
+  enabled: false
   # ── 门禁阈值 ──────────────────────────────────────────────
   #
   # 2026-08-07 批D校准 (真实数据):

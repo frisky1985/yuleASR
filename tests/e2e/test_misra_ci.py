@@ -98,7 +98,14 @@ def test_ci_layer1_misra_check():
             if stage.get("name") == "misra-check":
                 found = True
                 detail = stage.get("detail", "")
-                print(f"  L1 misra-check: {detail}")
+                status = stage.get("status", "")
+                print(f"  L1 misra-check [{status}]: {detail}")
+                if status == "skipped":
+                    # Delta 模式: 最近 commit 无生产 C 文件改动（如纯文档 commit）
+                    # → 合法跳过（exclude_paths 排除全部 delta 文件）。
+                    assert "excluded" in detail.lower() or "no c/c++" in detail.lower(), \
+                        f"unexpected skip reason: {detail}"
+                    break
                 # yuleosh 3.4.4 writes block_reasons (failed) or
                 # "N MISRA violation(s) (X required, Y advisory)" (passed/warning).
                 # Accept either, but require a real violation count somewhere.
