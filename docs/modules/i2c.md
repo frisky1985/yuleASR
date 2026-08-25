@@ -1,6 +1,7 @@
 # I2C 模块
 
 ## 概述
+详细设计文档见 [I2c 设计文档](../design/modules/mcal/i2c-design.md)。
 
 I2C串行通信驱动，支持主机和从机模式
 

@@ -1,6 +1,7 @@
 # WDG 模块
 
 ## 概述
+详细设计文档见 [Wdg 设计文档](../design/modules/mcal/wdg-design.md)。
 
 看门狗驱动，提供系统可靠性监控
 

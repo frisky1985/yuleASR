@@ -314,7 +314,7 @@ const uint8 PortConfigData[] = {...};
 
 如果以上方案无法解决您的问题：
 
-1. 查看 [故障排除指南](/docs/troubleshooting)
+1. 查看 [故障排除指南](./troubleshooting.md)
 2. 搜索 [GitHub Discussions](https://github.com/frisky1985/yuleASR/discussions)
 3. 创建 [GitHub Issue](https://github.com/frisky1985/yuleASR/issues)
 4. 加入社区交流

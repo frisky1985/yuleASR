@@ -1,4 +1,5 @@
 # EEP (EEPROM Driver) Module
+详细设计文档见 [Eep 设计文档](../design/modules/mcal/eep-design.md)。
 
 ## Overview
 

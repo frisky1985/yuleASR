@@ -1,6 +1,7 @@
 # FEE 模块
 
 ## 概述
+详细设计文档见 [Fee 设计文档](../design/modules/mcal/fee-design.md)。
 
 FEE 模块实现。
 

@@ -52,4 +52,4 @@
 - Compatible with existing Rte_Type.h types (uint16, uint8, Std_ReturnType, etc.)
 - COM interfaces map to Com_SendSignal / Com_ReceiveSignal
 - NVM interfaces map to NvM_ReadBlock / NvM_WriteBlock
-- Client/Server stubs return E_OK with TODO placeholders
+- Client/Server stubs use COM signal dispatch with static argument marshaling buffers and one-shot result retrieval

@@ -1,6 +1,7 @@
 # MCU Driver Module
 
 ## 概述
+详细设计文档见 [Mcu 设计文档](../design/modules/mcal/mcu-design.md)。
 
 MCU Driver (Microcontroller Driver) 是 AutoSAR MCAL 层的核心模块之一，负责微控制器的基本初始化、时钟配置、复位管理和低功耗模式控制。
 

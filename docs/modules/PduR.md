@@ -58,6 +58,10 @@ void example(void)
 
 - `src/bsw/services/pdur/`
 
+## 设计文档
+
+- 详细设计: [PDUR Design Document](../design/modules/services/pdur-design.md)
+
 ## 测试
 
 - 单元测试: `tests/unit/pdur/`

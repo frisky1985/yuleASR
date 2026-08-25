@@ -414,9 +414,9 @@ const Com_ConfigType ComConfig = {
 
 ## 相关文档
 
-- [API 参考](./API_REFERENCE.md)
-- [用户手册](./USER_MANUAL.md)
-- [故障排除指南](./TROUBLESHOOTING.md)
+- [API 参考](../api/com_api_reference.md)
+- [用户手册](com_user_manual.md)
+- [故障排除指南](com_troubleshooting.md)
 
 ---
 

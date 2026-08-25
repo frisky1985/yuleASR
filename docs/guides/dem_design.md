@@ -1,3 +1,5 @@
+> **Note**: This document is preserved for history. The canonical DEM design document is now located at [`docs/design/modules/services/dem-design.md`](../design/modules/services/dem-design.md). Please refer to that file for the latest version.
+
 # Dem (Diagnostic Event Manager) Design Document
 
 ## 1. Overview

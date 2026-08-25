@@ -18,10 +18,10 @@ sidebar_position: 20
 
 | 文档 | 说明 | 适用读者 |
 |******|******|*********|
-| [API 参考](./API_REFERENCE.md) | 完整的 API 参考手册 | 开发工程师1 |
-| [用户手册](./USER_MANUAL.md) | 详细使用指南和示例 | 开发工程师1、系统工程师1 |
-| [故障排除指南](./TROUBLESHOOTING.md) | 常见问题解决方案 | 开发工程师1、支持工程师1 |
-| [配置指南](./CONFIG_GUIDE.md) | 配置参数说明 | 系统工程师1、配置工程师1 |
+| [API 参考](../api/com-api.md) | 完整的 API 参考手册 | 开发工程师1 |
+| [用户手册](com-user-manual.md) | 详细使用指南和示例 | 开发工程师1、系统工程师1 |
+| [故障排除指南](com-troubleshooting.md) | 常见问题解决方案 | 开发工程师1、支持工程师1 |
+| [配置指南](com-config.md) | 配置参数说明 | 系统工程师1、配置工程师1 |
 
 ***
 
@@ -29,7 +29,7 @@ sidebar_position: 20
 
 ### 第一步：阅读用户手册
 
-如果你是首次使用 COM 模块，请先阅读 [用户手册](./USER_MANUAL.md)。手册包含：
+如果你是首次使用 COM 模块，请先阅读 [用户手册](com-user-manual.md)。手册包含：
 
 - COM 模块概述
 - 快速入门示例
@@ -38,7 +38,7 @@ sidebar_position: 20
 
 ### 第二步：查阅 API 参考
 
-在开发过程中，请参考 [API 参考](./API_REFERENCE.md)了解：
+在开发过程中，请参考 [API 参考](../api/com-api.md)了解：
 
 - 所有 API 函数的详细说明
 - 参数和返回值
@@ -47,7 +47,7 @@ sidebar_position: 20
 
 ### 第三步：配置系统
 
-进行系统配置时，请参考 [配置指南](./CONFIG_GUIDE.md)：
+进行系统配置时，请参考 [配置指南](com-config.md)：
 
 - 预编译配置选项
 - 信号和 I-PDU 配置
@@ -56,7 +56,7 @@ sidebar_position: 20
 
 ### 第四步：问题排查
 
-遇到问题时，请参考 [故障排除指南](./TROUBLESHOOTING.md)：
+遇到问题时，请参考 [故障排除指南](com-troubleshooting.md)：
 
 - 累计问题索引
 - 详细诊断步骤
@@ -153,8 +153,8 @@ tests/unit/com/              # 单元测试
 
 ### 开发规范
 
-- [项目主页](../../README.md)
-- [AGENTS 导航](../../AGENTS.md)
+- [项目主页](../../../README.md)
+- [AGENTS 导航](../../../AGENTS.md)
 
 ***
 

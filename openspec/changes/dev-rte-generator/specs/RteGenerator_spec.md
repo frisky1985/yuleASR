@@ -283,7 +283,9 @@ Generated code uses the following MemMap sections:
 - SenderReceiver write operations check `Com_SendSignal` return value
 - SenderReceiver read operations check `Com_ReceiveSignal` return value against `COM_SERVICE_OK`
 - NvBlock operations propagate `NvM_ReadBlock` / `NvM_WriteBlock` return values
-- Client/Server stubs return `E_OK` with TODO comments for manual implementation
+- Client/Server client stubs marshal input arguments via `memcpy` into static buffers, dispatch via `Rte_ComSendSignal`, and store results for async retrieval
+- Client/Server server stubs store operation results in static buffers; `Rte_Result_*` retrieves results with one-shot semantics (validity cleared after read)
+- ModeSwitch stubs use `Rte_Bsw_BswM_RequestMode` for mode transitions and return `RTE_E_NO_DATA` when no valid mode is available
 
 ---
 
@@ -307,8 +309,8 @@ python tools/rte_generator/rte_generator.py \
 - Python 3.x only, standard library only (`json`, `argparse`, `os`, `sys`)
 - No support for queued sender-receiver communication (queue length configuration)
 - No support for inter-runnable variables (IRV) or per-instance memory (PIM) generation
-- Client/Server operations generate synchronous stubs only; async semantics require manual implementation
-- ModeSwitch generates placeholder implementations
+- Client/Server operations generate synchronous stubs with COM signal dispatch and static result buffers; async semantics use one-shot result retrieval via `Rte_Result_*`
+- ModeSwitch generates implementations using `Rte_Bsw_BswM_RequestMode` for mode transitions and local mode buffer for mode queries
 - Inline struct types are supported for NvBlock data elements only
 
 ---

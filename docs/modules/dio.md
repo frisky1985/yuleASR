@@ -1,4 +1,5 @@
 # DIO (Digital Input/Output) Module
+详细设计文档见 [Dio 设计文档](../design/modules/mcal/dio-design.md)。
 
 ## Overview
 

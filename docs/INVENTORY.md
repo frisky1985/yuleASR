@@ -82,11 +82,13 @@
 | `hara_analysis.md` | 危害风险分析 | docs/safety/HARA_ANALYSIS.md |
 | `safety_manual.md` | 安全手册 | docs/safety/SAFETY_MANUAL.md |
 | `safety_verification_report.md` | 安全验证报告 | docs/safety/VERIFICATION_REPORT.md |
-| `dem_design.md` | DEM设计文档 | docs/dem/DESIGN.md |
+| `dem_design.md` | DEM设计文档 | docs/design/modules/services/dem-design.md |
 
 ---
 
 ## 5. 设计文档 (docs/design/)
+
+### 系统设计文档
 
 | 文件名 | 说明 | 来源 |
 |:-------|:------|:------|
@@ -99,6 +101,45 @@
 | `memory-management.md` | 内存管理设计 | design/memory-management.md |
 | `module-interactions.md` | 模块交互设计 | design/module-interactions.md |
 | `testing-strategy.md` | 测试策略 | design/testing-strategy.md |
+
+### 模块设计文档 (docs/design/modules/)
+| `modules/mcal/adc-design.md` | Adc 设计文档 | docs/design/modules/mcal/adc-design.md |
+| `modules/mcal/can-design.md` | Can 设计文档 | docs/design/modules/mcal/can-design.md |
+| `modules/mcal/crypto-design.md` | Crypto 设计文档 | docs/design/modules/mcal/crypto-design.md |
+| `modules/mcal/dio-design.md` | Dio 设计文档 | docs/design/modules/mcal/dio-design.md |
+| `modules/mcal/eep-design.md` | Eep 设计文档 | docs/design/modules/mcal/eep-design.md |
+| `modules/mcal/eth-design.md` | Eth 设计文档 | docs/design/modules/mcal/eth-design.md |
+| `modules/mcal/fee-design.md` | Fee 设计文档 | docs/design/modules/mcal/fee-design.md |
+| `modules/mcal/flash-design.md` | Flash 设计文档 | docs/design/modules/mcal/flash-design.md |
+| `modules/mcal/fls-design.md` | Fls 设计文档 | docs/design/modules/mcal/fls-design.md |
+| `modules/mcal/gpt-design.md` | Gpt 设计文档 | docs/design/modules/mcal/gpt-design.md |
+| `modules/mcal/i2c-design.md` | I2c 设计文档 | docs/design/modules/mcal/i2c-design.md |
+| `modules/mcal/icu-design.md` | Icu 设计文档 | docs/design/modules/mcal/icu-design.md |
+| `modules/mcal/lin-design.md` | Lin 设计文档 | docs/design/modules/mcal/lin-design.md |
+| `modules/mcal/mcu-design.md` | Mcu 设计文档 | docs/design/modules/mcal/mcu-design.md |
+| `modules/mcal/ocu-design.md` | Ocu 设计文档 | docs/design/modules/mcal/ocu-design.md |
+| `modules/mcal/port-design.md` | Port 设计文档 | docs/design/modules/mcal/port-design.md |
+| `modules/mcal/pwm-design.md` | Pwm 设计文档 | docs/design/modules/mcal/pwm-design.md |
+| `modules/mcal/ramtst-design.md` | RamTst 设计文档 | docs/design/modules/mcal/ramtst-design.md |
+| `modules/mcal/spi-design.md` | Spi 设计文档 | docs/design/modules/mcal/spi-design.md |
+| `modules/mcal/uart-design.md` | Uart 设计文档 | docs/design/modules/mcal/uart-design.md |
+| `modules/mcal/wdg-design.md` | Wdg 设计文档 | docs/design/modules/mcal/wdg-design.md |
+
+| 文件名 | 说明 | 来源 |
+|:-------|:------|:------|
+| `modules/README.md` | 模块设计文档总览 | docs/design/modules/README.md |
+| `modules/services/com-design.md` | Com 设计文档 | docs/design/modules/services/com-design.md |
+| `modules/services/dem-design.md` | Dem 设计文档 | docs/design/modules/services/dem-design.md |
+| `modules/ecual/canif-design.md` | CanIf 设计文档 | docs/design/modules/ecual/canif-design.md |
+| `modules/services/pdur-design.md` | PduR 设计文档 | docs/design/modules/services/pdur-design.md |
+| `modules/ecual/cantp-design.md` | CanTp 设计文档 | docs/design/modules/ecual/cantp-design.md |
+| `modules/services/dcm-design.md` | Dcm 设计文档 | docs/design/modules/services/dcm-design.md |
+| `modules/services/nvm-design.md` | NvM 设计文档 | docs/design/modules/services/nvm-design.md |
+| `modules/services/ecum-design.md` | EcuM 设计文档 | docs/design/modules/services/ecum-design.md |
+| `modules/services/bswm-design.md` | BswM 设计文档 | docs/design/modules/services/bswm-design.md |
+| `modules/services/secoc-design.md` | SecOC 设计文档 | docs/design/modules/services/secoc-design.md |
+| `modules/services/csm-design.md` | Csm 设计文档 | docs/design/modules/services/csm-design.md |
+| `modules/services/wdgm-design.md` | WdgM 设计文档 | docs/design/modules/services/wdgm-design.md |
 
 ---
 

@@ -1,4 +1,5 @@
 # ETH (Ethernet) Driver
+详细设计文档见 [Eth 设计文档](../design/modules/mcal/eth-design.md)。
 
 ## Overview
 

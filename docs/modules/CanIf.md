@@ -4,6 +4,8 @@
 
 CanIf implements the **AUTOSAR CAN Interface** module, providing a hardware-independent abstraction layer between the CAN driver (MCAL) and upper layers (Com, CanTp, PduR, etc.). It manages CAN controller configuration, PDU routing, transmission handling, and transceiver control.
 
+For the detailed design document, see [CanIf Design Document](../design/modules/ecual/canif-design.md).
+
 ## Standards Compliance
 
 | Standard | Version | Description |

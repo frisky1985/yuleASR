@@ -406,8 +406,8 @@ ls build/my_ecu.hex  # 确认生成固件
 
 ## 下一步
 
-- [学习配置驱动](configuration.md)
-- [阅读架构文档](../concepts/architecture.md)
+- [学习配置驱动](../design/configuration-system.md)
+- [阅读架构文档](../architecture.md)
 ```
 
 **Step 4: 编写架构概述**

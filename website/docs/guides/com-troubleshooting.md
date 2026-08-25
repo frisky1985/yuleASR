@@ -840,8 +840,8 @@ grep "RxIndication" debug.log | tail -20
 
 ## 相关文档
 
-- [API 参考](./API_REFERENCE.md)
-- [用户手册](./USER_MANUAL.md)
+- [API 参考](../api/com-api.md)
+- [用户手册](com-user-manual.md)
 
 ***
 

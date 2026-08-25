@@ -447,7 +447,7 @@ gcc -I../../../../src/bsw/mcal/pwm/include test_pwm.c -o test_pwm
 
 - [AutoSAR PWM驱动规范](https://www.autosar.org/standards/classic-platform/)
 - [i.MX8M Mini PWM 寄存器参考手册](https://www.nxp.com/docs/en/reference-manual/IMX8MMRM.pdf)
-- [MCAL开发指南](../development-guide.md)
+- [MCAL开发指南](../../quick-start/installation.md)
 
 ---
 

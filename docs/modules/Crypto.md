@@ -1,4 +1,5 @@
 # CRYPTO (Cryptographic Services) Module
+详细设计文档见 [Crypto 设计文档](../design/modules/mcal/crypto-design.md)。
 
 ## Overview
 

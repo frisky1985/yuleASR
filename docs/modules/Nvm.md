@@ -4,6 +4,8 @@
 
 非易失性存储
 
+详细设计文档见 [NvM Design Document](../design/modules/services/nvm-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0

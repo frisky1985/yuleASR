@@ -250,6 +250,8 @@ docs/
 
 ## 📝 设计文档
 
+### 系统设计文档
+
 | 文档 | 说明 | 路径 |
 |:-----|:-----|:-----|
 | 架构概览 | 设计架构概览 | [design/architecture-overview.md](design/architecture-overview.md) |
@@ -260,6 +262,46 @@ docs/
 | 内存管理 | 内存管理设计 | [design/memory-management.md](design/memory-management.md) |
 | 模块交互 | 模块交互设计 | [design/module-interactions.md](design/module-interactions.md) |
 | 测试策略 | 测试设计策略 | [design/testing-strategy.md](design/testing-strategy.md) |
+
+### 模块设计文档
+
+| 模块 | 层级 | 文档 | 状态 |
+|:-----|:-----|:-----|:-----|
+| Com | Services | [design/modules/services/com-design.md](design/modules/services/com-design.md) | 已完成 |
+| ADC | MCAL | [design/modules/mcal/adc-design.md](design/modules/mcal/adc-design.md) | 已完成 |
+| CAN | MCAL | [design/modules/mcal/can-design.md](design/modules/mcal/can-design.md) | 已完成 |
+| CRYPTO | MCAL | [design/modules/mcal/crypto-design.md](design/modules/mcal/crypto-design.md) | 已完成 |
+| DIO | MCAL | [design/modules/mcal/dio-design.md](design/modules/mcal/dio-design.md) | 已完成 |
+| EEP | MCAL | [design/modules/mcal/eep-design.md](design/modules/mcal/eep-design.md) | 已完成 |
+| ETH | MCAL | [design/modules/mcal/eth-design.md](design/modules/mcal/eth-design.md) | 已完成 |
+| FEE | MCAL | [design/modules/mcal/fee-design.md](design/modules/mcal/fee-design.md) | 已完成 |
+| FLASH | MCAL | [design/modules/mcal/flash-design.md](design/modules/mcal/flash-design.md) | 已完成 |
+| FLS | MCAL | [design/modules/mcal/fls-design.md](design/modules/mcal/fls-design.md) | 已完成 |
+| GPT | MCAL | [design/modules/mcal/gpt-design.md](design/modules/mcal/gpt-design.md) | 已完成 |
+| I2C | MCAL | [design/modules/mcal/i2c-design.md](design/modules/mcal/i2c-design.md) | 已完成 |
+| ICU | MCAL | [design/modules/mcal/icu-design.md](design/modules/mcal/icu-design.md) | 已完成 |
+| LIN | MCAL | [design/modules/mcal/lin-design.md](design/modules/mcal/lin-design.md) | 已完成 |
+| MCU | MCAL | [design/modules/mcal/mcu-design.md](design/modules/mcal/mcu-design.md) | 已完成 |
+| OCU | MCAL | [design/modules/mcal/ocu-design.md](design/modules/mcal/ocu-design.md) | 已完成 |
+| PORT | MCAL | [design/modules/mcal/port-design.md](design/modules/mcal/port-design.md) | 已完成 |
+| PWM | MCAL | [design/modules/mcal/pwm-design.md](design/modules/mcal/pwm-design.md) | 已完成 |
+| RAMTST | MCAL | [design/modules/mcal/ramtst-design.md](design/modules/mcal/ramtst-design.md) | 已完成 |
+| SPI | MCAL | [design/modules/mcal/spi-design.md](design/modules/mcal/spi-design.md) | 已完成 |
+| UART | MCAL | [design/modules/mcal/uart-design.md](design/modules/mcal/uart-design.md) | 已完成 |
+| WDG | MCAL | [design/modules/mcal/wdg-design.md](design/modules/mcal/wdg-design.md) | 已完成 |
+| Dem | Services | [design/modules/services/dem-design.md](design/modules/services/dem-design.md) | 已完成 |
+| CanIf | ECUAL | [design/modules/ecual/canif-design.md](design/modules/ecual/canif-design.md) | 已完成 |
+| PduR | Services | [design/modules/services/pdur-design.md](design/modules/services/pdur-design.md) | 已完成 |
+| CanTp | ECUAL | [design/modules/ecual/cantp-design.md](design/modules/ecual/cantp-design.md) | 已完成 |
+| Dcm | Services | [design/modules/services/dcm-design.md](design/modules/services/dcm-design.md) | 已完成 |
+| NvM | Services | [design/modules/services/nvm-design.md](design/modules/services/nvm-design.md) | 已完成 |
+| EcuM | Services | [design/modules/services/ecum-design.md](design/modules/services/ecum-design.md) | 已完成 |
+| BswM | Services | [design/modules/services/bswm-design.md](design/modules/services/bswm-design.md) | 已完成 |
+| SecOC | Services | [design/modules/services/secoc-design.md](design/modules/services/secoc-design.md) | 已完成 |
+| Csm | Services | [design/modules/services/csm-design.md](design/modules/services/csm-design.md) | 已完成 |
+| WdgM | Services | [design/modules/services/wdgm-design.md](design/modules/services/wdgm-design.md) | 已完成 |
+
+完整清单见 [design/modules/README.md](design/modules/README.md)。
 
 ---
 

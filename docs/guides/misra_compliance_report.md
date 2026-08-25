@@ -269,9 +269,9 @@ The COM module implementation has been assessed against MISRA C:2012 Amendment 2
 ### 8.2 Project Documents
 
 1. [MISRA Deviations Document](misra_deviations.md)
-2. [COM Module Design Document](../design/com_module_design.md)
-3. [COM Module Test Report](../tests/com_test_report.md)
-4. [Safety Case Document](../safety/safety_case.md)
+2. [COM Module Design Document](../design/modules/services/com-design.md)
+3. COM Module Test Report
+4. Safety Case Document
 
 ### 8.3 AutoSAR References
 

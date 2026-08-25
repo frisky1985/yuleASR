@@ -2,7 +2,7 @@
 
 > 执行: 小明 (cron yuleASR-fix-kickoff-1200)
 > 基线: master @ ab0963b9 (含本地未提交改动，未覆盖他人工作)
-> 前置: [yuleasr-full-diagnosis-20260807.md](./yuleasr-full-diagnosis-20260807.md) (08:33 诊断, CI 三层全红)
+> 前置: yuleasr-full-diagnosis-20260807 (08:33 诊断, CI 三层全红)
 > 结果: `yuleosh ci run 1/2/3` **三层全绿**；`pytest tests/` **36 passed / 6 skipped**
 
 ---

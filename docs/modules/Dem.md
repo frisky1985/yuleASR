@@ -58,6 +58,10 @@ void example(void)
 
 - `src/bsw/services/dem/`
 
+## 设计文档
+
+- 详细设计: [DEM Design Document](../design/modules/services/dem-design.md)
+
 ## 测试
 
 - 单元测试: `tests/unit/dem/`

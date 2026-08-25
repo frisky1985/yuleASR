@@ -1,6 +1,7 @@
 # GPT (General Purpose Timer) 模块文档
 
 ## 概述
+详细设计文档见 [Gpt 设计文档](../design/modules/mcal/gpt-design.md)。
 
 GPT (General Purpose Timer) 模块是AutoSAR MCAL层的通用定时器驱动，提供基于硬件定时器的精确时间服务。该模块支持多通道定时器管理、通知回调、睡眠唤醒等功能。
 

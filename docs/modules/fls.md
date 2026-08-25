@@ -1,4 +1,5 @@
 # FLS (Flash Driver) Module
+详细设计文档见 [Fls 设计文档](../design/modules/mcal/fls-design.md)。
 
 ## Overview
 

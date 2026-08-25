@@ -4,6 +4,8 @@
 
 ECU 状态管理
 
+详细设计文档见 [EcuM 设计文档](../design/modules/services/ecum-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0

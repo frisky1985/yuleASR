@@ -4,6 +4,8 @@
 
 安全车载通信
 
+详细设计文档见 [SecOC 设计文档](../design/modules/services/secoc-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0

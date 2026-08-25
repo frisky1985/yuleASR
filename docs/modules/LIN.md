@@ -51,6 +51,7 @@ The LIN module provides low-level access to the LIN (Local Interconnect Network)
 ```
 
 ## LIN Frame Structure
+详细设计文档见 [Lin 设计文档](../design/modules/mcal/lin-design.md)。
 
 ```
 +-----------+----------+--------+--------+----------+

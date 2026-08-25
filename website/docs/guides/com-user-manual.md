@@ -687,8 +687,8 @@ if (Com_GetStatus() == COM_READY) { /* ... */ }
 
 ### 相关文档
 
-- [API 参考](./API_REFERENCE.md)
-- [故障排除指南](./TROUBLESHOOTING.md)
+- [API 参考](../api/com-api.md)
+- [故障排除指南](com-troubleshooting.md)
 - [AUTOSAR SWS COM 4.4.0 规范](https://www.autosar.org)
 
 ***

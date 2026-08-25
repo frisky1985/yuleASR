@@ -1,6 +1,7 @@
 # PORT 模块
 
 ## 概述
+详细设计文档见 [Port 设计文档](../design/modules/mcal/port-design.md)。
 
 PORT驱动，配置IO引脚的功能和电气特性
 

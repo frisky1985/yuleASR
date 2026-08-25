@@ -1,0 +1,75 @@
+name: smoke-linux
+
+on:
+  push:
+    branches: [ v1.3.0, master ]
+  pull_request:
+    branches: [ v1.3.0, master ]
+
+jobs:
+  smoke-run:
+    name: Build & Run s0_smoke_test (Linux)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y cmake ninja-build
+
+      - name: Configure (BUILD_TESTING=ON)
+        run: |
+          cmake -B build-s1 \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DBUILD_TESTING=ON \
+            -G Ninja
+
+      - name: Build s0_smoke_test
+        run: cmake --build build-s1 --target s0_smoke_test
+
+      - name: Verify ctest registration
+        run: ctest --test-dir build-s1 -N | grep s0_smoke
+
+      - name: Run s0_smoke_test (C3)
+        run: |
+          ./build-s1/bin/s0_smoke_test
+          echo "Exit code: $?"
+
+      - name: Assert output (C3)
+        run: |
+          OUTPUT=$(./build-s1/bin/s0_smoke_test 2>&1)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep -q "RESULT: ALL CHECKS PASSED"
+          echo "$OUTPUT" | grep -qE "Rte_SchedulerGetTickCount = [1-9]"
+
+  arm-cross:
+    name: ARM Cross-Compile Regression (C5)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ARM toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y gcc-arm-none-eabi binutils-arm-none-eabi cmake ninja-build
+
+      - name: Configure ARM cross-compile
+        run: |
+          cmake -B build-arm \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchain-arm-none-eabi.cmake \
+            -G Ninja
+
+      - name: Build ARM (C5)
+        run: cmake --build build-arm --parallel
+
+      - name: Verify ARM libOs.a symbols
+        run: |
+          arm-none-eabi-nm build-arm/lib/bsw/os/libOs.a | grep " T xTaskCreate"
+          arm-none-eabi-nm build-arm/lib/bsw/os/libOs.a | grep " T vTaskStartScheduler"
+          arm-none-eabi-nm build-arm/lib/bsw/os/libOs.a | grep " T SetRelAlarm"

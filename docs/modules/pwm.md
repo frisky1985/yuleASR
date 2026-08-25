@@ -1,6 +1,7 @@
 # PWM (脉宽调制) 模块文档
 
 ## 概述
+详细设计文档见 [Pwm 设计文档](../design/modules/mcal/pwm-design.md)。
 
 PWM (Pulse Width Modulation) 模块是AutoSAR MCAL层的脉宽调制驱动，提供精确的PWM信号生成能力，支持多通道、可变占空比、可变周期等特性，广泛应用于电机控制、LED调光、电源管理等场景。
 

@@ -138,18 +138,18 @@ make test-report
 
 | 文档 | 描述 |
 |:-----|:-----|
-| [架构文档](docs/architecture.md) | 系统架构设计说明 |
-| [API 参考](docs/api-reference.md) | 完整 API 接口文档 |
-| [开发指南](docs/development-guide.md) | 开发规范和指南 |
-| [模块清单](docs/modules.md) | 所有模块详细说明 |
-| [版本历史](docs/changelog.md) | 版本更新记录 |
+| [架构文档](architecture.md) | 系统架构设计说明 |
+| [API 参考](api-reference.md) | 完整 API 接口文档 |
+| [开发指南](development-guide.md) | 开发规范和指南 |
+| [模块清单](modules.md) | 所有模块详细说明 |
+| [版本历史](changelog.md) | 版本更新记录 |
 
 ### 模块文档
 
-- [MCAL 驱动文档](docs/mcal/README.md)
-- [ECUAL 模块文档](docs/ecual/README.md)
-- [Service 层文档](docs/services/README.md)
-- [RTE 层文档](docs/rte/README.md)
+- [MCAL 驱动文档](modules/mcu.md)
+- [ECUAL 模块文档](modules/dio.md)
+- [Service 层文档](modules/COM.md)
+- [RTE 层文档](modules.md)
 
 ## 项目结构
 
@@ -258,7 +258,7 @@ yuletech-openspec/
 4. **验证审查** (`/triple-verify`) - 验证实现符合规范
 5. **归档合并** (`/triple-archive`) - 合并到主分支
 
-详细的开发流程文档请参考 [开发流程 Skill](.harness/yuletech-dev-process.md)。
+详细的开发流程文档请参考 [开发流程 Skill](../.harness/yuletech-dev-process.md)。
 
 ### 代码规范
 
@@ -307,7 +307,7 @@ Stage 5: 归档合并      → /triple-archive
 
 ## 许可证
 
-本项目采用 **MIT 许可证** - 详见 [LICENSE](LICENSE) 文件
+本项目采用 **MIT 许可证** - 详见 [LICENSE](../LICENSE) 文件
 
 ## 联系方式
 

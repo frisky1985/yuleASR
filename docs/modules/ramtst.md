@@ -1,4 +1,5 @@
 # RAMTST (RAM Test) Module
+详细设计文档见 [RamTst 设计文档](../design/modules/mcal/ramtst-design.md)。
 
 ## Overview
 

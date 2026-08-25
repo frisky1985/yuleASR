@@ -762,9 +762,9 @@ typedef enum {
 
 ## 相关文档
 
-- [用户手册](./USER_MANUAL.md) - 详细使用指南
-- [故障排除指南](./TROUBLESHOOTING.md) - 常见问题解决
-- [配置指南](./CONFIG_GUIDE.md) - 配置参数说明
+- [用户手册](../guides/com_user_manual.md) - 详细使用指南
+- [故障排除指南](../guides/com_troubleshooting.md) - 常见问题解决
+- [配置指南](../guides/com_config_guide.md) - 配置参数说明
 
 ---
 

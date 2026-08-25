@@ -1,6 +1,7 @@
 # UART 模块
 
 ## 概述
+详细设计文档见 [Uart 设计文档](../design/modules/mcal/uart-design.md)。
 
 UART串口通信驱动，支持异步发收
 

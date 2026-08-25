@@ -241,7 +241,7 @@ python3 tools/build/build.py lint
 
 ## 获得帮助
 
-- 查看 [FAQ](/docs/faq)
+- 查看 [FAQ](./faq.md)
 - 参与 [Discussions](https://github.com/frisky1985/yuleASR/discussions)
 - 加入社区交流
 

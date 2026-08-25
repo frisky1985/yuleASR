@@ -1,4 +1,5 @@
 # ADC (Analog-to-Digital Converter) Module
+详细设计文档见 [Adc 设计文档](../design/modules/mcal/adc-design.md)。
 
 ## Overview
 

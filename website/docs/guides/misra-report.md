@@ -168,7 +168,7 @@ This report documents the MISRA C:2012 compliance status of the COM module imple
 | 15.5 | Single point of exit | Com_ErrorHandling.c, Com_TxMode.c, Com_Confirmation.c | State machines and error handlers require multiple exit points for clarity |
 | 8.13 | Const pointer recommendation | Com_Transmit.c, Com_TxMode.c | API compatibility and modification requirements |
 
-**See:** [MISRA Deviations Document](misra_deviations.md) for detailed justification.
+**See:** [MISRA Deviations Document](misra-deviations.md) for detailed justification.
 
 ***
 
@@ -274,10 +274,10 @@ The COM module implementation has been assessed against MISRA C:2012 Amendment 2
 
 ### 8.2 Project Documents
 
-1. [MISRA Deviations Document](misra_deviations.md)
-2. [COM Module Design Document](../design/com_module_design.md)
-3. [COM Module Test Report](../tests/com_test_report.md)
-4. [Safety Case Document](../safety/safety_case.md)
+1. [MISRA Deviations Document](misra-deviations.md)
+2. COM Module Design Document
+3. COM Module Test Report
+4. Safety Case Document
 
 ### 8.3 AutoSAR References
 

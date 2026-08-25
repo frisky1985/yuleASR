@@ -413,4 +413,3 @@ test:
 ## 参考文档
 
 - [Yule BSW Spec](../bsw/spec.md)
-- [Yule Platform Spec](../platform/spec.md)

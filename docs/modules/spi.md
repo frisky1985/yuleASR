@@ -1,6 +1,7 @@
 # SPI 模块
 
 ## 概述
+详细设计文档见 [Spi 设计文档](../design/modules/mcal/spi-design.md)。
 
 SPI串行外设接口驱动，支持全双工通信
 

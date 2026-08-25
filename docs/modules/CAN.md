@@ -230,6 +230,7 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 ```
 
 ## CAN FD Support
+详细设计文档见 [Can 设计文档](../design/modules/mcal/can-design.md)。
 
 The driver supports CAN Flexible Data-rate (CAN FD) with:
 - **Data Phase**: Up to 8 Mbps (configurable)

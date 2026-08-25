@@ -4,6 +4,8 @@
 
 CanTp implements the ISO 15765-2 CAN Transport Protocol for diagnostic and large data transmission over CAN bus. It segments messages larger than 8 bytes into multiple CAN frames and handles the flow control between sender and receiver.
 
+For the detailed module design, see [CanTp Design Document](../design/modules/ecual/cantp-design.md).
+
 ## Standards
 
 - ISO 15765-2:2016 - Road vehicles - Diagnostic communication over CAN

@@ -4,6 +4,8 @@
 
 加密服务管理
 
+详细设计文档见 [Csm 设计文档](../design/modules/services/csm-design.md)。
+
 ## AUTOSAR 版本
 
 - AUTOSAR Classic Platform 4.4.0

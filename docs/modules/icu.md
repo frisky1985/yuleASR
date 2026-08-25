@@ -1,4 +1,5 @@
 # ICU (Input Capture Unit) Module
+详细设计文档见 [Icu 设计文档](../design/modules/mcal/icu-design.md)。
 
 ## Overview
 

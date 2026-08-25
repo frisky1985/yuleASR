@@ -17,4 +17,4 @@ sidebar_position: 1
 
 ## 开始使用
 
-跳到[安装指博](installation) 了解如何安装和配置。
+跳到[安装指南](installation.md) 了解如何安装和配置。

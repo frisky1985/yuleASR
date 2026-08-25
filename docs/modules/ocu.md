@@ -1,4 +1,5 @@
 # OCU (Output Compare Unit) Module
+详细设计文档见 [Ocu 设计文档](../design/modules/mcal/ocu-design.md)。
 
 ## Overview
 
