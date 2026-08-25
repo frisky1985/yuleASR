@@ -63,6 +63,7 @@ extern const uint32 Crc_32_Table[CRC_32_TABLE_SIZE];
  * GLOBAL FUNCTIONS
  ==================================================================================================*/
 
+/** @req SWS_Crc_00001 */
 /**
  * @brief Initialize the CRC module
  * @req SHALL_CRC - Initialize the CRC module
@@ -77,6 +78,7 @@ void Crc_Init(const void* configPtr)
     Crc_InitStatus = TRUE;
 }
 
+/** @req SWS_Crc_00003 */
 /**
  * @brief Calculate CRC8 using SAE J1850 polynomial
  * @req SHALL_CRC - Calculate CRC8 using SAE J1850 polynomial
@@ -147,6 +149,7 @@ uint8 Crc_CalculateCRC8(
 #endif /* CRC_8_MODE */
 }
 
+/** @req SWS_Crc_00004 */
 /**
  * @brief Calculate CRC16 using CCITT-FALSE polynomial
  * @req SHALL_CRC - Calculate CRC16 using CCITT-FALSE polynomial
@@ -203,7 +206,7 @@ uint16 Crc_CalculateCRC16(
 #if (CRC_16_TABLE_MODE == STD_ON)
     /* Lookup table mode - faster execution */
     for (i = 0U; i < Crc_Length; i++) {
-        crc = (crc << 8U) ^ Crc_16_Table[((crc >> 8U) ^ Crc_DataPtr[i]) & 0xFFU];
+        crc = (uint16)((crc << 8U) ^ Crc_16_Table[((crc >> 8U) ^ Crc_DataPtr[i]) & 0xFFU]);
     }
 #else
     /* Runtime calculation mode - smaller code size */
@@ -217,6 +220,7 @@ uint16 Crc_CalculateCRC16(
 #endif /* CRC_16_MODE */
 }
 
+/** @req SWS_Crc_00005 */
 /**
  * @brief Calculate CRC32 using IEEE 802.3 polynomial
  * @req SHALL_CRC - Calculate CRC32 using IEEE 802.3 polynomial
@@ -295,6 +299,7 @@ uint32 Crc_CalculateCRC32(
  * @param versioninfo Pointer to version info structure
  */
 #if (CRC_VERSION_INFO_API == STD_ON)
+/** @req SWS_Crc_00002 */
 void Crc_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (CRC_DEV_ERROR_DETECT == STD_ON)

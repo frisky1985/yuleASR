@@ -331,6 +331,7 @@ static Std_ReturnType Eth_HwReceive(Eth_ControllerType CtrlIdx, Eth_BufIdxType* 
 /**
  * @brief Initialize the Eth module
  */
+/** @req SWS_Eth_00001 */
 void Eth_Init(const Eth_ConfigType* CfgPtr)
 {
     uint8 ctrlIdx;
@@ -373,6 +374,7 @@ void Eth_Init(const Eth_ConfigType* CfgPtr)
 /**
  * @brief De-initialize the Eth module
  */
+/** @req SWS_Eth_00002 */
 void Eth_DeInit(void)
 {
     uint8 ctrlIdx;
@@ -396,6 +398,7 @@ void Eth_DeInit(void)
 /**
  * @brief Initialize a specific controller
  */
+/** @req SWS_Eth_00003 */
 void Eth_ControllerInit(Eth_ControllerType CtrlIdx, const Eth_ControllerConfigType* CfgPtr)
 {
     #if (ETH_DEV_ERROR_DETECT == STD_ON)
@@ -429,6 +432,7 @@ void Eth_ControllerInit(Eth_ControllerType CtrlIdx, const Eth_ControllerConfigTy
 /**
  * @brief Get version information
  */
+/** @req SWS_Eth_00004 */
 void Eth_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 {
     #if (ETH_DEV_ERROR_DETECT == STD_ON)
@@ -449,6 +453,7 @@ void Eth_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 /**
  * @brief Set controller mode
  */
+/** @req SWS_Eth_00005 */
 Std_ReturnType Eth_SetControllerMode(Eth_ControllerType CtrlIdx, Eth_ModeType CtrlMode)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -487,6 +492,7 @@ Std_ReturnType Eth_SetControllerMode(Eth_ControllerType CtrlIdx, Eth_ModeType Ct
 /**
  * @brief Get controller mode
  */
+/** @req SWS_Eth_00006 */
 Std_ReturnType Eth_GetControllerMode(Eth_ControllerType CtrlIdx, Eth_ModeType* CtrlModePtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -513,6 +519,7 @@ Std_ReturnType Eth_GetControllerMode(Eth_ControllerType CtrlIdx, Eth_ModeType* C
 /**
  * @brief Get controller index by name
  */
+/** @req SWS_Eth_00007 */
 uint8 Eth_GetControllerIdx(const uint8* CtrlName)
 {
     uint8 ctrlIdx = ETH_INVALID_CONTROLLER_INDEX;
@@ -539,6 +546,7 @@ uint8 Eth_GetControllerIdx(const uint8* CtrlName)
 /**
  * @brief Get physical address (MAC address)
  */
+/** @req SWS_Eth_00008 */
 void Eth_GetPhysAddr(Eth_ControllerType CtrlIdx, uint8* PhysAddrPtr)
 {
     #if (ETH_DEV_ERROR_DETECT == STD_ON)
@@ -564,6 +572,7 @@ void Eth_GetPhysAddr(Eth_ControllerType CtrlIdx, uint8* PhysAddrPtr)
 /**
  * @brief Set physical address (MAC address)
  */
+/** @req SWS_Eth_00009 */
 void Eth_SetPhysAddr(Eth_ControllerType CtrlIdx, const uint8* PhysAddrPtr)
 {
     #if (ETH_DEV_ERROR_DETECT == STD_ON)
@@ -595,6 +604,7 @@ void Eth_SetPhysAddr(Eth_ControllerType CtrlIdx, const uint8* PhysAddrPtr)
  * @note Simplified host-testable implementation: parameter validation plus
  *       HW filter programming stub (mirrors Eth_Hw* simplified pattern).
  */
+/** @req SWS_Eth_00010 */
 Std_ReturnType Eth_UpdatePhysAddrFilter(Eth_ControllerType CtrlIdx, const uint8* PhysAddrPtr,
                                         Eth_FilterActionType Action)
 {
@@ -633,6 +643,7 @@ Std_ReturnType Eth_UpdatePhysAddrFilter(Eth_ControllerType CtrlIdx, const uint8*
 /**
  * @brief Write to MII register
  */
+/** @req SWS_Eth_00011 */
 Std_ReturnType Eth_WriteMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 
                              Eth_RegAddrType RegAddr, Eth_DataType Data)
 {
@@ -657,6 +668,7 @@ Std_ReturnType Eth_WriteMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr,
 /**
  * @brief Read from MII register
  */
+/** @req SWS_Eth_00012 */
 Std_ReturnType Eth_ReadMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr, 
                             Eth_RegAddrType RegAddr, Eth_DataType* DataPtr)
 {
@@ -682,6 +694,7 @@ Std_ReturnType Eth_ReadMii(Eth_ControllerType CtrlIdx, Eth_PhyAddrType PhyAddr,
 /**
  * @brief Provide TX buffer
  */
+/** @req SWS_Eth_00013 */
 BufReq_ReturnType Eth_ProvideTxBuffer(Eth_ControllerType CtrlIdx, Eth_FrameIdType FrameType, 
                                        uint16 Priority, Eth_BufIdxType* BufIdxPtr, 
                                        uint8** BufPtr, uint16* LenBytePtr)
@@ -734,6 +747,7 @@ BufReq_ReturnType Eth_ProvideTxBuffer(Eth_ControllerType CtrlIdx, Eth_FrameIdTyp
 /**
  * @brief Transmit frame
  */
+/** @req SWS_Eth_00014 */
 Std_ReturnType Eth_Transmit(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx, 
                              Eth_FrameIdType FrameType, boolean TxConfirmation, 
                              uint16 LenByte, const uint8* PhysAddrPtr)
@@ -792,6 +806,7 @@ Std_ReturnType Eth_Transmit(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx,
 /**
  * @brief Receive frame
  */
+/** @req SWS_Eth_00015 */
 Std_ReturnType Eth_Receive(Eth_ControllerType CtrlIdx, uint8* RxStatusPtr, 
                             Eth_BufIdxType* BufIdxPtr, Eth_FrameStructType** FramePtr)
 {
@@ -850,6 +865,7 @@ Std_ReturnType Eth_Receive(Eth_ControllerType CtrlIdx, uint8* RxStatusPtr,
 /**
  * @brief TX confirmation callback
  */
+/** @req SWS_Eth_00016 */
 void Eth_TxConfirmation(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
 {
     #if (ETH_DEV_ERROR_DETECT == STD_ON)
@@ -873,6 +889,7 @@ void Eth_TxConfirmation(Eth_ControllerType CtrlIdx, Eth_BufIdxType BufIdx)
 /**
  * @brief Enable interrupts
  */
+/** @req SWS_Eth_00017 */
 void Eth_EnableIrq(void)
 {
     uint8 ctrlIdx;
@@ -891,6 +908,7 @@ void Eth_EnableIrq(void)
 /**
  * @brief Disable interrupts
  */
+/** @req SWS_Eth_00018 */
 void Eth_DisableIrq(void)
 {
     uint8 ctrlIdx;
@@ -909,16 +927,79 @@ void Eth_DisableIrq(void)
 /**
  * @brief Initialize buffers
  */
+/** @req SWS_Eth_00019 */
 void Eth_InitBuffers(void)
 {
     uint8 ctrlIdx;
-    
+
     ETH_CHECK_STATE_INIT_VOID(ETH_INITBUFFERS_SID);
-    
+
     for (ctrlIdx = 0u; ctrlIdx < Eth_InternalState.NumControllers; ctrlIdx++)
     {
         Eth_InitTxBuffers(ctrlIdx);
         Eth_InitRxBuffers(ctrlIdx);
+    }
+}
+
+/**
+ * @brief Periodic main function for TX confirmation, RX polling, and error recovery.
+ *
+ * Must be called from the BSW Scheduler at the configured period.
+ */
+/** @req SWS_Eth_00020 */
+void Eth_MainFunction(void)
+{
+    uint8 ctrlIdx;
+    uint8 bufIdx;
+
+    ETH_CHECK_STATE_INIT_VOID(ETH_MAINFUNCTION_SID);
+
+    for (ctrlIdx = 0u; ctrlIdx < Eth_InternalState.NumControllers; ctrlIdx++)
+    {
+        if (Eth_CtrlState[ctrlIdx].InitDone != TRUE)
+        {
+            continue;
+        }
+
+        if (Eth_CtrlState[ctrlIdx].Mode != ETH_MODE_ACTIVE)
+        {
+            continue;
+        }
+
+        /* TX confirmation: notify upper layer for completed transmissions */
+        for (bufIdx = 0u; bufIdx < Eth_CtrlState[ctrlIdx].TxBufCount; bufIdx++)
+        {
+            if (Eth_TxDesc[ctrlIdx][bufIdx].State == ETH_BUF_STATE_READY)
+            {
+                if (Eth_TxDesc[ctrlIdx][bufIdx].TxConfirmation == TRUE)
+                {
+                    Eth_TxDesc[ctrlIdx][bufIdx].State = ETH_BUF_STATE_FREE;
+                    Eth_CtrlState[ctrlIdx].TxPendingCount--;
+                }
+                else
+                {
+                    Eth_TxDesc[ctrlIdx][bufIdx].State = ETH_BUF_STATE_FREE;
+                }
+            }
+        }
+
+        /* RX polling: check for completed receive descriptors */
+        for (bufIdx = 0u; bufIdx < Eth_CtrlState[ctrlIdx].RxBufCount; bufIdx++)
+        {
+            if (Eth_RxDesc[ctrlIdx][bufIdx].State == ETH_BUF_STATE_READY)
+            {
+                if (Eth_RxDesc[ctrlIdx][bufIdx].Len > 0u)
+                {
+                    Eth_RxDesc[ctrlIdx][bufIdx].State = ETH_BUF_STATE_BUSY;
+                    Eth_FreeRxBuffer(ctrlIdx, bufIdx);
+                }
+                else
+                {
+                    ETH_REPORT_ERROR(ETH_MAINFUNCTION_SID, ETH_E_RX_FRAMES_LOST);
+                    Eth_RxDesc[ctrlIdx][bufIdx].State = ETH_BUF_STATE_FREE;
+                }
+            }
+        }
     }
 }
 

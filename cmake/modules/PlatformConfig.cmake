@@ -23,8 +23,10 @@ if(YULE_PLATFORM_S32K312)
     add_compile_definitions(
         S32K312
         S32K3XX
-        CORE_CM7
+        CORE_CM33
+        ARMV8M_MAIN
         __FPU_PRESENT=1
+        __MPU_PRESENT=1
     )
 endif()
 

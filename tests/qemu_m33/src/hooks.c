@@ -54,3 +54,12 @@ void vApplicationStackOverflowHook( TaskHandle_t xTask, char * pcTaskName )
     {
     }
 }
+
+void vAssertCall( void )
+{
+    Uart_WriteString( "FREERTOS_ASSERT_FAIL\n" );
+    __asm volatile ( "bkpt #0" );
+    for ( ;; )
+    {
+    }
+}

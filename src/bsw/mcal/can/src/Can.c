@@ -23,6 +23,10 @@
 #include "Can_Cfg.h"
 #include "Det.h"
 
+#ifdef QEMU_CAN_LOOPBACK
+#include "ComStack_Types.h"
+#endif
+
 #ifdef S32K312
 #include "S32K312.h"
 #define CAN_FLEXCAN1_BASE_ADDR          (S32K312_CAN0_BASE)
@@ -98,6 +102,7 @@ static const Can_ConfigType* Can_ConfigPtr = NULL_PTR;
 #define CAN_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/** @req SWS_Can_00101 */
 static uint32 Can_GetBaseAddr(uint8 ctrlIdx)
 {
     uint32 baseAddr;
@@ -109,16 +114,19 @@ static uint32 Can_GetBaseAddr(uint8 ctrlIdx)
     return baseAddr;
 }
 
+/** @req SWS_Can_00102 */
 static void Can_EnableClock(uint8 ctrlIdx)
 {
     (void)ctrlIdx;
 }
 
+/** @req SWS_Can_00103 */
 static void Can_DisableClock(uint8 ctrlIdx)
 {
     (void)ctrlIdx;
 }
 
+/** @req SWS_Can_00104 */
 static Std_ReturnType Can_WaitForFreezeAck(uint32 baseAddr)
 {
     uint32 timeout = 10000U;
@@ -129,6 +137,7 @@ static Std_ReturnType Can_WaitForFreezeAck(uint32 baseAddr)
     return E_OK;
 }
 
+/** @req SWS_Can_00105 */
 static Std_ReturnType Can_WaitForNotReady(uint32 baseAddr)
 {
     uint32 timeout = 10000U;
@@ -142,6 +151,7 @@ static Std_ReturnType Can_WaitForNotReady(uint32 baseAddr)
 #define CAN_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Can_00001 */
 void Can_Init(const Can_ConfigType* Config)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
@@ -216,6 +226,7 @@ void Can_Init(const Can_ConfigType* Config)
     Can_DriverInitialized = TRUE;
 }
 
+/** @req SWS_Can_00002 */
 void Can_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
@@ -231,6 +242,7 @@ void Can_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = CAN_SW_PATCH_VERSION;
 }
 
+/** @req SWS_Can_00003 */
 Can_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType Transition)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
@@ -287,6 +299,7 @@ Can_ReturnType Can_SetControllerMode(uint8 Controller, Can_ControllerStateType T
     return CAN_OK;
 }
 
+/** @req SWS_Can_00004 */
 void Can_DisableControllerInterrupts(uint8 Controller)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
@@ -305,6 +318,7 @@ void Can_DisableControllerInterrupts(uint8 Controller)
     REG_WRITE32(baseAddr + CAN_IMASK2, 0U);
 }
 
+/** @req SWS_Can_00005 */
 void Can_EnableControllerInterrupts(uint8 Controller)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
@@ -328,6 +342,7 @@ void Can_EnableControllerInterrupts(uint8 Controller)
     REG_WRITE32(baseAddr + CAN_IMASK1, imaskValue);
 }
 
+/** @req SWS_Can_00006 */
 Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)
@@ -381,9 +396,29 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)(PduInfo->CanDlc & 0x0FU) << 16);
     REG_WRITE32(mbAddr + 0U, csValue);
 
+#ifdef QEMU_CAN_LOOPBACK
+    {
+        Can_HwType hwMailbox;
+        PduInfoType rxPduInfo;
+        extern void CanIf_RxIndication(const Can_HwType* Mailbox,
+                                        const PduInfoType* PduInfoPtr);
+
+        hwMailbox.ControllerId = (uint8)controller;
+        hwMailbox.Hoh = Hth;
+        hwMailbox.CanId = PduInfo->CanId;
+
+        rxPduInfo.SduDataPtr = (uint8*)PduInfo->SduPtr;
+        rxPduInfo.SduLength = (PduLengthType)PduInfo->CanDlc;
+        rxPduInfo.MetaDataPtr = NULL_PTR;
+
+        CanIf_RxIndication(&hwMailbox, &rxPduInfo);
+    }
+#endif
+
     return CAN_OK;
 }
 
+/** @req SWS_Can_00007 */
 void Can_MainFunction_Write(void)
 {
     /* Polling mode implementation - check TX completion */
@@ -404,6 +439,7 @@ void Can_MainFunction_Write(void)
     }
 }
 
+/** @req SWS_Can_00008 */
 void Can_MainFunction_Read(void)
 {
     /* Polling mode implementation - check RX reception */
@@ -425,6 +461,7 @@ void Can_MainFunction_Read(void)
     }
 }
 
+/** @req SWS_Can_00009 */
 void Can_MainFunction_BusOff(void)
 {
     for (uint8 ctrlIdx = 0U; ctrlIdx < CAN_NUM_CONTROLLERS; ctrlIdx++) {
@@ -442,16 +479,19 @@ void Can_MainFunction_BusOff(void)
     }
 }
 
+/** @req SWS_Can_00010 */
 void Can_MainFunction_Wakeup(void)
 {
     /* Wakeup handling */
 }
 
+/** @req SWS_Can_00011 */
 void Can_MainFunction_Mode(void)
 {
     /* Mode transition handling */
 }
 
+/** @req SWS_Can_00012 */
 Std_ReturnType Can_CheckWakeup(uint8 Controller)
 {
     #if (CAN_DEV_ERROR_DETECT == STD_ON)

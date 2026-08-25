@@ -166,7 +166,7 @@ typedef struct dds_permissions_config {
     char permissions_ca[256];
     
     /* 主体列表 */
-    struct {
+    struct dds_access_subject {
         char subject_name[DDS_SECURITY_MAX_SUBJECT_NAME_LEN];
         char validity_from[32];
         char validity_until[32];
@@ -224,7 +224,7 @@ typedef struct dds_governance_config {
     char permissions_ca[256];
     
     /* 域治理 */
-    struct {
+    struct dds_access_domain {
         dds_domain_id_t domain_id;
         
         /* 安全策略 */

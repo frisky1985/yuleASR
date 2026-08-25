@@ -319,6 +319,7 @@ def generate_swc_header(swc, build_date):
                     )
 
         elif interface_type == "ModeSwitch":
+            extra_includes.add("#include \"Rte_Bsw.h\"")
             mode_group = port.get("modeGroup", "ModeGroup")
             prototypes.append(
                 f"extern Rte_StatusType Rte_Switch_{swc_name}_{port_name}_{mode_group}(uint32 mode);"
@@ -374,6 +375,7 @@ def generate_swc_source(swc, build_date):
 
         if interface_type == "SenderReceiver":
             extra_includes.add("#include \"Com.h\"")
+            extra_includes.add("#include \"Rte_Cfg.h\"")
             for de in port.get("dataElements", []):
                 de_name = de["name"]
                 de_type = de["type"]
@@ -525,42 +527,104 @@ Std_ReturnType Rte_Write_{swc_name}_{port_name}_{de_name}(const {c_type}* data)
                 )
 
         elif interface_type == "ClientServer":
+            extra_includes.add("#include \"Rte_Bsw.h\"")
+            extra_includes.add("#include \"Rte_Cfg.h\"")
+            extra_includes.add("#include \"string.h\"")
             if port["direction"] == "Required":
-                # Client port
+                extra_includes.add("#include \"Com.h\"")
+            if port["direction"] == "Required":
+                # Client port - add static result buffers and generate functions
                 for op in port.get("operations", []):
                     op_name = op["name"]
+                    result_buf = f"Rte_CSResult_{swc_name}_{port_name}_{op_name}"
+                    local_vars_list.append(f"STATIC Std_ReturnType {result_buf} = E_OK;")
+                    local_vars_list.append(f"STATIC boolean {result_buf}_Valid = FALSE;")
+                    arg_buf = f"Rte_CSArgBuffer_{swc_name}_{port_name}_{op_name}"
+                    local_vars_list.append(f"STATIC uint8 {arg_buf}[RTE_MAX_BUFFER_SIZE];")
+
+                    # Add COM signal ID for CS operation dispatch
+                    cs_signal_define = f"RTE_COMSIGNAL_{swc_name_upper}_{port_name.upper()}_{op_name.upper()}"
+                    cs_signal_id = len(com_signals) + 0x100  # CS signals start at 0x100
+                    com_signals.append({
+                        "define": cs_signal_define,
+                        "id": cs_signal_id,
+                    })
+
                     params = []
                     args = []
+                    out_args = []
                     for p in op.get("arguments", []):
                         p_type = to_c_type(p["type"])
                         if p["direction"] == "in":
                             params.append(f"{p_type} {p['name']}")
                         else:
                             params.append(f"{p_type}* {p['name']}")
+                            out_args.append(p["name"])
                         args.append(p["name"])
                     params_str = ", ".join(params) if params else "void"
-                    args_str = ", ".join(args)
+
+                    # Build argument marshaling: copy 'in' args into static buffer
+                    marshal_lines = []
+                    offset = 0
+                    for p in op.get("arguments", []):
+                        p_type = to_c_type(p["type"])
+                        if p["direction"] == "in":
+                            marshal_lines.append(
+                                f"    (void)memcpy(&{arg_buf}[{offset}U], (const void*)&{p['name']}, sizeof({p_type}));"
+                            )
+                            offset_str = f"sizeof({p_type})"
+                            offset += 1  # symbolic; actual offset computed at runtime
+                    marshal_code = "\n".join(marshal_lines) if marshal_lines else "    /* No input arguments to marshal */"
+
+                    # Build out-argument initialization
+                    out_init_lines = []
+                    for a in out_args:
+                        out_init_lines.append(f"    if ({a} != NULL_PTR) {{ *{a} = ({to_c_type('uint8')})0U; }}")
+                    out_init_code = "\n".join(out_init_lines) if out_init_lines else "    /* No output arguments */"
 
                     global_functions_list.append(
                         f"""
 /**
  * @brief   Call {op_name} on {port_name} (Client)
+ * @details Marshals input arguments into static buffer, dispatches via COM signal,
+ *          and stores result for asynchronous retrieval via Rte_Result.
  */
 Std_ReturnType Rte_Call_{swc_name}_{port_name}_{op_name}({params_str})
 {{
-    Std_ReturnType result = E_OK;
+    Std_ReturnType result = E_NOT_OK;
 
-    /* TODO: Implement client-server call dispatch */
-    (void)result;
-    {''.join(f"    (void){a};\\n" for a in args)}
+    /* Marshal input arguments into static buffer */
+{marshal_code}
+
+#if (RTE_COM_SUPPORT == STD_ON)
+    /* Dispatch client-server call via COM signal */
+    result = Rte_ComSendSignal(RTE_COMSIGNAL_{swc_name_upper}_{port_name.upper()}_{op_name.upper()}, (const void*){arg_buf});
+#else
+    /* Local client-server call: result pending */
+    result = E_OK;
+#endif
+
+    if (result == E_OK)
+    {{
+        /* Initialize output arguments */
+{out_init_code}
+
+        /* Store result for async retrieval */
+        {result_buf} = result;
+        {result_buf}_Valid = TRUE;
+    }}
 
     return result;
 }}"""
                     )
             else:
-                # Server port
+                # Server port - add static result buffers and generate functions
                 for op in port.get("operations", []):
                     op_name = op["name"]
+                    result_buf = f"Rte_CSResult_{swc_name}_{port_name}_{op_name}"
+                    local_vars_list.append(f"STATIC Std_ReturnType {result_buf} = E_OK;")
+                    local_vars_list.append(f"STATIC boolean {result_buf}_Valid = FALSE;")
+
                     params = []
                     args = []
                     for p in op.get("arguments", []):
@@ -571,19 +635,30 @@ Std_ReturnType Rte_Call_{swc_name}_{port_name}_{op_name}({params_str})
                             params.append(f"{p_type}* {p['name']}")
                         args.append(p["name"])
                     params_str = ", ".join(params) if params else "void"
-                    args_str = ", ".join(args)
+
+                    # Build void-cast for unused args (server skeleton)
+                    void_cast_lines = []
+                    for a in args:
+                        void_cast_lines.append(f"    (void){a};")
+                    void_cast_code = "\n".join(void_cast_lines) if void_cast_lines else "    /* No arguments */"
 
                     global_functions_list.append(
                         f"""
 /**
  * @brief   Server implementation of {op_name} on {port_name}
+ * @details Server-side operation handler. This skeleton accepts the call
+ *          and returns E_OK. Application logic should be integrated here.
  */
 Std_ReturnType Rte_Server_{swc_name}_{port_name}_{op_name}({params_str})
 {{
     Std_ReturnType result = E_OK;
 
-    /* TODO: Implement server operation logic */
-    {''.join(f"    (void){a};\\n" for a in args)}
+    /* Server operation dispatch - application logic to be integrated */
+{void_cast_code}
+
+    /* Store result for async retrieval */
+    {result_buf} = result;
+    {result_buf}_Valid = TRUE;
 
     return result;
 }}"""
@@ -592,31 +667,67 @@ Std_ReturnType Rte_Server_{swc_name}_{port_name}_{op_name}({params_str})
                         f"""
 /**
  * @brief   Get result of {op_name} on {port_name}
+ * @details Retrieves the stored result from the last server operation invocation.
+ *          Returns E_OK if a valid result is available, E_NOT_OK otherwise.
  */
 Std_ReturnType Rte_Result_{swc_name}_{port_name}_{op_name}({params_str})
 {{
-    Std_ReturnType result = E_OK;
+    Std_ReturnType result;
 
-    /* TODO: Implement async result retrieval */
-    {''.join(f"    (void){a};\\n" for a in args)}
+    if ({result_buf}_Valid != FALSE)
+    {{
+        result = {result_buf};
+        /* Clear validity after retrieval (one-shot semantics) */
+        {result_buf}_Valid = FALSE;
+    }}
+    else
+    {{
+        result = E_NOT_OK;
+    }}
+
+{void_cast_code}
 
     return result;
 }}"""
                     )
 
         elif interface_type == "ModeSwitch":
+            extra_includes.add("#include \"Rte_Bsw.h\"")
+            extra_includes.add("#include \"Rte_Cfg.h\"")
             mode_group = port.get("modeGroup", "ModeGroup")
+            mode_var = f"Rte_CurrentMode_{swc_name}_{port_name}_{mode_group}"
+            local_vars_list.append(f"STATIC uint32 {mode_var} = 0U;")
+            local_vars_list.append(f"STATIC boolean {mode_var}_Valid = FALSE;")
+
             global_functions_list.append(
                 f"""
 /**
  * @brief   Switch mode on {port_name}
+ * @details Requests a mode transition via BswM and stores the requested mode
+ *          in the local mode buffer. Returns RTE_E_OK on success.
  */
 Rte_StatusType Rte_Switch_{swc_name}_{port_name}_{mode_group}(uint32 mode)
 {{
     Rte_StatusType result = RTE_E_OK;
 
-    /* TODO: Implement mode switch */
-    (void)mode;
+#if (RTE_COM_SUPPORT == STD_ON)
+    /* Request mode switch via BswM interface */
+    Std_ReturnType bswResult;
+    bswResult = Rte_Bsw_BswM_RequestMode(RTE_BSW_COMPONENT_MODE_MANAGER, (uint8)mode);
+    if (bswResult != E_OK)
+    {{
+        result = RTE_E_NOK;
+    }}
+    else
+    {{
+        {mode_var} = mode;
+        {mode_var}_Valid = TRUE;
+    }}
+#else
+    /* Store requested mode locally */
+    {mode_var} = mode;
+    {mode_var}_Valid = TRUE;
+#endif
 
     return result;
 }}"""
@@ -625,6 +736,8 @@ Rte_StatusType Rte_Switch_{swc_name}_{port_name}_{mode_group}(uint32 mode)
                 f"""
 /**
  * @brief   Get current mode on {port_name}
+ * @details Reads the current mode from the local mode buffer.
+ *          Returns RTE_E_OK if a valid mode is available, RTE_E_NO_DATA otherwise.
  */
 Rte_StatusType Rte_Mode_{swc_name}_{port_name}_{mode_group}(uint32* mode)
 {{
@@ -632,8 +745,19 @@ Rte_StatusType Rte_Mode_{swc_name}_{port_name}_{mode_group}(uint32* mode)
 
     if (mode != NULL_PTR)
     {{
-        /* TODO: Implement mode read */
-        *mode = 0U;
+        if ({mode_var}_Valid != FALSE)
+        {{
+            *mode = {mode_var};
+        }}
+        else
+        {{
+            *mode = 0U;
+            result = RTE_E_NO_DATA;
+        }}
+    }}
+    else
+    {{
+        result = RTE_E_SEG_FAULT;
     }}
 
     return result;

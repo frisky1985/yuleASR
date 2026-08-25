@@ -66,6 +66,7 @@ extern "C" {
 #define ETH_ENABLEIRQ_SID                  0x13
 #define ETH_DISABLEIRQ_SID                 0x14
 #define ETH_INITBUFFERS_SID                0x15
+#define ETH_MAINFUNCTION_SID               0x16
 
 /*==================================================================================================
 *                              ERROR CODES
@@ -81,6 +82,8 @@ extern "C" {
 #define ETH_E_INV_BUF_INDEX                0x09
 #define ETH_E_TIMEOUT                      0x0A
 #define ETH_E_BUSY                         0x0B
+#define ETH_E_RX_FRAMES_LOST               0x11
+#define ETH_E_TX_TIMEOUT                   0x12
 
 /*==================================================================================================
 *                              CONTROLLER STATE
@@ -253,6 +256,9 @@ extern void Eth_DisableIrq(void);
 
 /* Buffer Initialization */
 extern void Eth_InitBuffers(void);
+
+/* Scheduled Main Function (TX confirmation + RX polling + error recovery) */
+extern void Eth_MainFunction(void);
 
 /*==================================================================================================
 *                              ISR DECLARATIONS

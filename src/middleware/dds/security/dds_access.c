@@ -218,7 +218,7 @@ dds_access_status_t dds_access_parse_permissions_xml(dds_access_context_t *ctx,
         char *subject_tag = xml_find_tag(search_pos, "subject", &subject_len);
         if (!subject_tag) { break; }
 
-        typeof(config->subjects[0]) *subject = &config->subjects[config->subject_count];
+        struct dds_access_subject *subject = &config->subjects[config->subject_count];
 
         /* Parse subject name */
         uint32_t name_len;
@@ -373,7 +373,7 @@ dds_access_status_t dds_access_parse_governance_xml(dds_access_context_t *ctx,
         char *domain_tag = xml_find_tag(search_pos, "domain", &domain_len);
         if (!domain_tag) { break; }
 
-        typeof(config->domains[0]) *domain = &config->domains[config->domain_count];
+        struct dds_access_domain *domain = &config->domains[config->domain_count];
 
         /* Parse domain ID */
         uint32_t id_len;

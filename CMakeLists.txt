@@ -41,6 +41,58 @@ set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeR
 # Position independent code (for static libraries that might be linked to shared)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+# ── Global C Standard ──────────────────────────────────────────────────────
+# All BSW modules target C99 (MISRA C:2012 compliant subset).
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+
+# ── MISRA-friendly warning configuration ────────────────────────────────────
+# These flags are applied globally; per-module targets may add further warnings
+# via yule_add_module().  The goal is to surface real issues while suppressing
+# warnings that are unavoidable in AUTOSAR code (e.g. unused parameters in
+# callback signatures mandated by the specification).
+add_compile_options(
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wwrite-strings
+    -Wstrict-prototypes
+    -Wmissing-prototypes
+    -Wnested-externs
+    -Wredundant-decls
+    -Wpointer-arith
+    -Wconversion
+    -Wsign-conversion
+    -Wnull-dereference
+    -Wdouble-promotion
+    -Wformat=2
+    -Winit-self
+    # MISRA: allow unused params — AUTOSAR callback signatures often have
+    # parameters required by the spec but unused in a particular implementation.
+    -Wno-unused-parameter
+    # MISRA: allow unused functions — static helpers may be conditionally used.
+    -Wno-unused-function
+    # Embedded code frequently casts byte buffers to typed pointers;
+    # -Wcast-align is too strict for this pattern and causes false positives.
+    # Modules that need stricter alignment checks can add it locally.
+    -Wno-cast-align
+)
+
+# Debug/Release specific flags
+add_compile_options(
+    $<$<CONFIG:Debug>:-O0>
+    $<$<CONFIG:Debug>:-g3>
+    $<$<CONFIG:Debug>:-gdwarf-2>
+    $<$<CONFIG:Release>:-O2>
+    $<$<CONFIG:Release>:-DNDEBUG>
+    $<$<CONFIG:MinSizeRel>:-Os>
+    $<$<CONFIG:MinSizeRel>:-DNDEBUG>
+    $<$<CONFIG:RelWithDebInfo>:-O2>
+    $<$<CONFIG:RelWithDebInfo>:-g>
+    $<$<CONFIG:RelWithDebInfo>:-DNDEBUG>
+)
+
 # Output directories
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -339,6 +391,17 @@ endif()
 # Testing
 if(BUILD_TESTING)
     enable_testing()
+    # MISRA 严格警告（-Wconversion/-Wsign-conversion/-Wmissing-prototypes 等）
+    # 只面向生产源码（src/）。Unity 测试函数按框架惯例无前向原型，
+    # -Wmissing-prototypes 属误报；测试断言中的窄化转换也非生产问题。
+    # 在挂载 tests/ 前关闭，避免与测试目标既有的 -Werror 叠加。
+    add_compile_options(
+        -Wno-conversion
+        -Wno-sign-conversion
+        -Wno-missing-prototypes
+        -Wno-strict-prototypes
+        -Wno-implicit-int-conversion
+    )
     add_subdirectory(tests)
 endif()
 

@@ -335,7 +335,7 @@ static Std_ReturnType NvM_RedundantReadBlock(
     NvM_BlockIdType ActualBlockId;
     
     /* Calculate actual block ID based on instance */
-    ActualBlockId = (BlockId * NVM_RED_INSTANCE_COUNT) + Instance;
+    ActualBlockId = (NvM_BlockIdType)((BlockId * NVM_RED_INSTANCE_COUNT) + Instance);
     
     /* Read via standard NVM read */
     return NvM_ReadBlock(ActualBlockId, DestPtr);
@@ -349,7 +349,7 @@ static Std_ReturnType NvM_RedundantWriteBlock(
     NvM_BlockIdType ActualBlockId;
     
     /* Calculate actual block ID based on instance */
-    ActualBlockId = (BlockId * NVM_RED_INSTANCE_COUNT) + Instance;
+    ActualBlockId = (NvM_BlockIdType)((BlockId * NVM_RED_INSTANCE_COUNT) + Instance);
     
     /* Write via standard NVM write */
     return NvM_WriteBlock(ActualBlockId, SrcPtr);

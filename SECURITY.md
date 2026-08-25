@@ -193,7 +193,7 @@ cd build && cmake .. -DTARGET_PLATFORM=S32K312 && make -j$(nproc)
 
 ## 致谢
 
-我们感谢所有安全研究者和社区成员负责任地披露漏洞。贡献者名单将记录在 [SECURITY_ACKNOWLEDGEMENTS.md](SECURITY_ACKNOWLEDGEMENTS.md) 中（如适用）。
+我们感谢所有安全研究者和社区成员负责任地披露漏洞。贡献者名单将记录在 SECURITY_ACKNOWLEDGEMENTS 中（如适用）。
 
 ---
 

@@ -24,7 +24,30 @@
     .word 0                     /* reserved */
     .word PendSV_Handler        /* PendSV (FreeRTOS) */
     .word SysTick_Handler       /* SysTick (FreeRTOS) */
-    .space 0x80                 /* remaining IRQs -> default */
+
+    /* External IRQs — weak aliases let test code override Default_Handler */
+    .weak TIMER0_IRQHandler
+    .set  TIMER0_IRQHandler, Default_Handler
+    .weak UART0_IRQHandler
+    .set  UART0_IRQHandler, Default_Handler
+
+    .word TIMER0_IRQHandler     /* IRQ0  - CMSDK Timer0 */
+    .word Default_Handler       /* IRQ1 */
+    .word Default_Handler       /* IRQ2 */
+    .word Default_Handler       /* IRQ3 */
+    .word Default_Handler       /* IRQ4 */
+    .word Default_Handler       /* IRQ5 */
+    .word Default_Handler       /* IRQ6 */
+    .word Default_Handler       /* IRQ7 */
+    .word Default_Handler       /* IRQ8 */
+    .word Default_Handler       /* IRQ9 */
+    .word UART0_IRQHandler      /* IRQ10 - CMSDK UART0 */
+    .word Default_Handler       /* IRQ11 */
+    .word Default_Handler       /* IRQ12 */
+    .word Default_Handler       /* IRQ13 */
+    .word Default_Handler       /* IRQ14 */
+    .word Default_Handler       /* IRQ15 */
+    .space (16 * 4)             /* IRQ16-IRQ31 -> default */
 
 /*==========================================================================
  * Reset_Handler - C runtime init: data copy + bss zero + call main
