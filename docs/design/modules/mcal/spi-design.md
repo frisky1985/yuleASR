@@ -349,3 +349,19 @@ typedef struct {
 1. AUTOSAR_SWS_Spi.pdf
 2. `docs/modules/Spi.md`
 3. `src/bsw/mcal/Spi/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Spi | — | SPI 模块级需求归属 |
+| SWS_Spi_00001 | `spi_init_null` | 测试 spi_init_null 覆盖: spi_init_null 场景 |
+| SWS_Spi_00002 | `spi_deinit_busy` | 测试 spi_deinit_busy 覆盖: spi_deinit_busy 场景 |
+| SWS_Spi_00003 | `spi_sync_transmit_valid` | 测试 spi_sync_transmit_valid 覆盖: spi_sync_transmit_valid 场景 |
+| SWS_Spi_00004 | `spi_async_transmit_busy` | 测试 spi_async_transmit_busy 覆盖: spi_async_transmit_busy 场景 |
+| SWS_Spi_00005 | `spi_get_status_uninit` | 测试 spi_get_status_uninit 覆盖: spi_get_status_uninit 场景 |
+| SWS_Spi_00006 | `spi_get_job_result` | 测试 spi_get_job_result 覆盖: spi_get_job_result 场景 |
+| SWS_Spi_00007 | `Spi_GetVersionInfo` | 测试 test_Spi_GetVersionInfo_NullPtr_ShouldReportDet 覆盖: Spi_GetVersionInfo_NullPtr_ShouldReportDet 场景 |
+| SWS_Spi_00009 | `spi_get_version_info` | 测试 spi_get_version_info 覆盖: spi_get_version_info 场景 |

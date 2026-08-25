@@ -186,3 +186,15 @@ typedef enum {
 
 - AUTOSAR_SWS_LINStateManager.pdf (R4.4.0)
 - yuleASR LinSM 源码: `src/bsw/services/linsm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_LinSM | — | LINSM 模块级需求归属 |
+| SWS_LinSM_00008 | `LinSM_MainFunction` | 测试 test_LinSM_MainFunction_AfterInit_ShouldNotCrash 覆盖: LinSM_MainFunction_AfterInit_ShouldNotCrash 场景 |
+| SWS_LinSM_00009 | `LinSM_ScheduleConfirmation` | 测试 test_LinSM_ScheduleConfirmation_ShouldNotCrash 覆盖: LinSM_ScheduleConfirmation_ShouldNotCrash 场景 |
+| SWS_LinSM_00010 | `LinSM_WakeUpConfirmation` | 测试 test_LinSM_WakeUpConfirmation_ShouldNotCrash 覆盖: LinSM_WakeUpConfirmation_ShouldNotCrash 场景 |
+| SWS_LinSM_00011 | `LinSM_GotoSleepConfirmation` | 测试 test_LinSM_GotoSleepConfirmation_ShouldNotCrash 覆盖: LinSM_GotoSleepConfirmation_ShouldNotCrash 场景 |

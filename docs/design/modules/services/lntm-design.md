@@ -352,3 +352,16 @@ typedef struct {
 - ISO 15765-2 (Road vehicles - Diagnostic communication over Controller Area Network)
 - LIN Protocol Specification V2.1
 - 源码: `src/bsw/services/lntm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_LnTm_00001 | `LnTm` | 测试 test_LnTm_Init_DoubleInit_ShouldSucceed 覆盖: LnTm_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_LnTm_00002 | `LnTm_DeInit` | 测试 test_LnTm_DeInit_ValidCall_ShouldSucceed 覆盖: LnTm_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_LnTm_00003 | `LnTm_GetVersionInfo` | 测试 test_LnTm_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: LnTm_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_LnTm_00004 | `LnTm_MainFunction` | 测试 test_LnTm_MainFunction_ValidCall_ShouldSucceed 覆盖: LnTm_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_LnTm_00005 | `LnTm_GetTime` | 测试 test_LnTm_GetTime_ValidCall_ShouldSucceed 覆盖: LnTm_GetTime_ValidCall_ShouldSucceed 场景 |
+| SWS_LnTm_00006 | `LnTm_SetTime` | 测试 test_LnTm_SetTime_ValidCall_ShouldSucceed 覆盖: LnTm_SetTime_ValidCall_ShouldSucceed 场景 |

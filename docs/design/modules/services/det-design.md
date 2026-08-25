@@ -192,3 +192,9 @@ Det 本身作为错误追踪基础设施，其错误处理极简：
 
 - AUTOSAR_SWS_DefaultErrorTracer.pdf (R4.4.0)
 - yuleASR Det 模块源码: `src/bsw/services/det/`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Det | — | DET 模块级需求归属 |

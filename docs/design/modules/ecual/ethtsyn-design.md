@@ -344,3 +344,18 @@ static boolean EthTSyn_Initialized = FALSE;     /* 初始化标志 */
 | EthTSyn.h | 模块公共接口定义 |
 | EthTSyn.c | 模块实现源码 |
 | SchM_EthTSyn.h | 调度管理器定义 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_EthTSyn_00001 | `EthTSyn` | 测试 test_EthTSyn_Init_DoubleInit_ShouldSucceed 覆盖: EthTSyn_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_EthTSyn_00002 | `EthTSyn_DeInit` | 测试 test_EthTSyn_DeInit_ValidCall_ShouldSucceed 覆盖: EthTSyn_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_EthTSyn_00003 | `EthTSyn_GetVersionInfo` | 测试 test_EthTSyn_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: EthTSyn_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_EthTSyn_00004 | `EthTSyn_MainFunction` | 测试 test_EthTSyn_MainFunction_ValidCall_ShouldSucceed 覆盖: EthTSyn_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_EthTSyn_00005 | `EthTSyn_GetTime` | 测试 test_EthTSyn_GetTime_ValidCall_ShouldSucceed 覆盖: EthTSyn_GetTime_ValidCall_ShouldSucceed 场景 |
+| SWS_EthTSyn_00006 | `EthTSyn_SetTime` | 测试 test_EthTSyn_SetTime_ValidCall_ShouldSucceed 覆盖: EthTSyn_SetTime_ValidCall_ShouldSucceed 场景 |
+| SWS_EthTSyn_00007 | `EthTSyn_GetRateRatio` | 测试 test_EthTSyn_GetRateRatio_ValidCall_ShouldSucceed 覆盖: EthTSyn_GetRateRatio_ValidCall_ShouldSucceed 场景 |
+| SWS_EthTSyn_00008 | `EthTSyn_GetGlobalTime` | 测试 test_EthTSyn_GetGlobalTime_ValidCall_ShouldSucceed 覆盖: EthTSyn_GetGlobalTime_ValidCall_ShouldSucceed 场景 |

@@ -388,3 +388,13 @@ typedef uint8 Icu_ChannelType;
 2. `docs/modules/icu.md`
 3. `src/bsw/mcal/icu/`
 4. `docs/design/modules/TEMPLATE.md`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Icu | — | ICU 模块级需求归属 |
+| SWS_Icu_00021 | `Icu_GetDutyCycleValues` | 测试 test_Icu_GetDutyCycleValues_ShouldReturnCorrectValues 覆盖: Icu_GetDutyCycleValues_ShouldReturnCorrectValues 场景 |
+| SWS_Icu_00022 | `Icu_GetVersionInfo` | 测试 test_Icu_GetVersionInfo_ShouldReturnCorrectVersion 覆盖: Icu_GetVersionInfo_ShouldReturnCorrectVersion 场景 |

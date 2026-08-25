@@ -315,3 +315,15 @@ const Dio_ConfigType* const Dio_ConfigPtr = &Dio_Config;
 1. AUTOSAR_SWS_DIO.pdf
 2. `docs/modules/dio.md`
 3. `src/bsw/mcal/dio/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Dio | — | DIO 模块级需求归属 |
+| SWS_Dio_00211 | `data_types` | 测试 test_data_types 覆盖: data_types 场景 |
+| SWS_Dio_00212 | `error_handling` | 测试 test_error_handling 覆盖: error_handling 场景 |
+| SWS_Dio_00213 | `combined_operations` | 测试 test_combined_operations 覆盖: combined_operations 场景 |
+| SWS_Dio_00214 | `boundary_conditions` | 测试 test_boundary_conditions 覆盖: boundary_conditions 场景 |

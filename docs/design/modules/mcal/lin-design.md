@@ -360,3 +360,12 @@ typedef uint8 Lin_ChannelType;
 2. `docs/modules/lin.md`
 3. `src/bsw/mcal/lin/`
 4. `docs/design/modules/TEMPLATE.md`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Lin_00209 | `checksum_types` | 测试 test_checksum_types 覆盖: checksum_types 场景 |
+| SWS_Lin_00211 | `state_transitions` | 测试 test_state_transitions 覆盖: state_transitions 场景 |

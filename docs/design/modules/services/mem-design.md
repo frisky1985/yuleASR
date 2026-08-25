@@ -190,3 +190,18 @@ typedef struct {
 
 - AUTOSAR_SWS_MemoryAbstractionInterface.pdf (R4.4.0)
 - yuleASR Mem 源码: `src/bsw/services/mem/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Mem_00001 | `Mem` | 测试 test_Mem_Init_DoubleInit_ShouldSucceed 覆盖: Mem_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_Mem_00002 | `Mem_DeInit` | 测试 test_Mem_DeInit_ValidCall_ShouldSucceed 覆盖: Mem_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_Mem_00003 | `Mem_GetVersionInfo` | 测试 test_Mem_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Mem_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_Mem_00004 | `Mem_MainFunction` | 测试 test_Mem_MainFunction_ValidCall_ShouldSucceed 覆盖: Mem_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_Mem_00005 | `Mem_Read` | 测试 test_Mem_Read_ValidCall_ShouldSucceed 覆盖: Mem_Read_ValidCall_ShouldSucceed 场景 |
+| SWS_Mem_00006 | `Mem_Write` | 测试 test_Mem_Write_ValidCall_ShouldSucceed 覆盖: Mem_Write_ValidCall_ShouldSucceed 场景 |
+| SWS_Mem_00007 | `Mem_Erase` | 测试 test_Mem_Erase_ValidCall_ShouldSucceed 覆盖: Mem_Erase_ValidCall_ShouldSucceed 场景 |
+| SWS_Mem_00008 | `Mem_GetStatus` | 测试 test_Mem_GetStatus_ValidCall_ShouldReturnStatus 覆盖: Mem_GetStatus_ValidCall_ShouldReturnStatus 场景 |

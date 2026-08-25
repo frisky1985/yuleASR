@@ -166,3 +166,14 @@ extern const uint32 Crc_Table32[256];
 
 - AUTOSAR_SWS_CRCLibrary.pdf (R4.4.0)
 - yuleASR CRC 模块源码: `src/bsw/services/crc/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Crc_00001 | `Crc` | 测试 test_Crc_Init_SetsModuleState 覆盖: Crc_Init_SetsModuleState 场景 |
+| SWS_Crc_00002 | `Crc_GetVersionInfo_ReturnsCorrectInfo` | 测试 test_Crc_GetVersionInfo_ReturnsCorrectInfo 覆盖: Crc_GetVersionInfo_ReturnsCorrectInfo 场景 |
+| SWS_Crc_00006 | `Crc_CalculateCRC64` | 测试 test_Crc_CalculateCRC64_ValidData_ShouldReturnCRC 覆盖: Crc_CalculateCRC64_ValidData_ShouldReturnCRC 场景 |
+| SWS_Crc_00007 | `Crc_GetVersionInfo` | 测试 test_Crc_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Crc_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |

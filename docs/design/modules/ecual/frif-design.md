@@ -182,3 +182,16 @@ typedef struct {
 - AUTOSAR_SWS_FlexRayInterface.pdf (R4.4.0)
 - FlexRay Communications System Protocol Specification v3.0
 - yuleASR FrIf 源码: `src/bsw/ecual/frif/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_FrIf_00002 | `FrIf_DeInit` | 测试 test_FrIf_DeInit_ValidCall_ShouldSucceed 覆盖: FrIf_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_FrIf_00004 | `FrIf_Transmit` | 测试 test_FrIf_Transmit_ValidCall_ShouldSucceed 覆盖: FrIf_Transmit_ValidCall_ShouldSucceed 场景 |
+| SWS_FrIf_00005 | `FrIf_Cancel` | 测试 test_FrIf_Cancel_ValidCall_ShouldSucceed 覆盖: FrIf_Cancel_ValidCall_ShouldSucceed 场景 |
+| SWS_FrIf_00006 | `FrIf_GetCtrlIdx` | 测试 test_FrIf_GetCtrlIdx_ValidCall_ShouldSucceed 覆盖: FrIf_GetCtrlIdx_ValidCall_ShouldSucceed 场景 |
+| SWS_FrIf_00007 | `FrIf_GetCtrlMode` | 测试 test_FrIf_GetCtrlMode_ValidCall_ShouldReturnMode 覆盖: FrIf_GetCtrlMode_ValidCall_ShouldReturnMode 场景 |
+| SWS_FrIf_00008 | `FrIf_SetCtrlMode` | 测试 test_FrIf_SetCtrlMode_ValidCall_ShouldSucceed 覆盖: FrIf_SetCtrlMode_ValidCall_ShouldSucceed 场景 |

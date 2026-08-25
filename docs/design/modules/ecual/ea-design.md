@@ -197,3 +197,14 @@ typedef struct {
 
 - AUTOSAR_SWS_EEPROMAbstraction.pdf (R4.4.0)
 - yuleASR EA 源码: `src/bsw/ecual/ea/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Ea_00004 | `Ea_Write` | 测试 test_Ea_Write_ValidCall_ShouldSucceed 覆盖: Ea_Write_ValidCall_ShouldSucceed 场景 |
+| SWS_Ea_00007 | `Ea_GetStatus` | 测试 test_Ea_GetStatus_ValidCall_ShouldReturnStatus 覆盖: Ea_GetStatus_ValidCall_ShouldReturnStatus 场景 |
+| SWS_Ea_00008 | `Ea_GetVersionInfo` | 测试 test_Ea_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Ea_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_Ea_00009 | `Ea_MainFunction` | 测试 test_Ea_MainFunction_ValidCall_ShouldSucceed 覆盖: Ea_MainFunction_ValidCall_ShouldSucceed 场景 |

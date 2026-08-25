@@ -204,3 +204,15 @@ typedef struct {
 - AUTOSAR_SWS_DiagnosticLogAndTrace.pdf (R4.4.0)
 - GENIVI DLT Daemon Specification
 - yuleASR Dlt 源码: `src/bsw/services/dlt/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Dlt_00003 | `Dlt_GetVersionInfo` | 测试 test_Dlt_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Dlt_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_Dlt_00005 | `Dlt_Log` | 测试 test_Dlt_Log_ValidCall_ShouldSucceed 覆盖: Dlt_Log_ValidCall_ShouldSucceed 场景 |
+| SWS_Dlt_00006 | `Dlt_SendLogMessage` | 测试 test_Dlt_SendLogMessage 覆盖: Dlt_SendLogMessage 场景 |
+| SWS_Dlt_00007 | `Dlt_SendTraceMessage` | 测试 test_Dlt_SendTraceMessage 覆盖: Dlt_SendTraceMessage 场景 |
+| SWS_Dlt_00008 | `Dlt_RegisterContext` | 测试 test_Dlt_RegisterContext_ValidCall_ShouldSucceed 覆盖: Dlt_RegisterContext_ValidCall_ShouldSucceed 场景 |

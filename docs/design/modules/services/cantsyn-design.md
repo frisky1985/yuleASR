@@ -412,3 +412,12 @@ typedef struct {
 | AUTOSAR_SWS_CanInterface | CAN 接口规范 |
 | IEEE 1588 | 精确时间协议参考 |
 | `src/bsw/services/cantsyn/` | 源代码目录 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanTSyn_00001 | `CanTSyn` | 测试 test_CanTSyn_Init 覆盖: CanTSyn_Init 场景 |
+| SWS_CanTSyn_00004 | `CanTSyn_MainFunction` | 测试 test_CanTSyn_MainFunction 覆盖: CanTSyn_MainFunction 场景 |

@@ -347,3 +347,18 @@ src/bsw/mcal/flash/
 1. AUTOSAR_SWS_FlashDriver.pdf
 2. `docs/modules/FLASH.md`
 3. `src/bsw/mcal/flash/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Flash_00001 | `Flash` | 测试 test_Flash_Init_DoubleInit_ShouldSucceed 覆盖: Flash_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_Flash_00002 | `Flash_Erase` | 测试 test_Flash_Erase_ValidSector_ShouldSucceed 覆盖: Flash_Erase_ValidSector_ShouldSucceed 场景 |
+| SWS_Flash_00003 | `Flash_Write` | 测试 test_Flash_Write_ValidData_ShouldSucceed 覆盖: Flash_Write_ValidData_ShouldSucceed 场景 |
+| SWS_Flash_00004 | `Flash_Read` | 测试 test_Flash_Read_ValidBuffer_ShouldSucceed 覆盖: Flash_Read_ValidBuffer_ShouldSucceed 场景 |
+| SWS_Flash_00005 | `Flash_Lock` | 测试 test_Flash_Lock_ValidCall_ShouldSucceed 覆盖: Flash_Lock_ValidCall_ShouldSucceed 场景 |
+| SWS_Flash_00006 | `Flash_Unlock` | 测试 test_Flash_Unlock_ValidCall_ShouldSucceed 覆盖: Flash_Unlock_ValidCall_ShouldSucceed 场景 |
+| SWS_Flash_00007 | `Flash_GetStatus` | 测试 test_Flash_GetStatus_ValidCall_ShouldReturnStatus 覆盖: Flash_GetStatus_ValidCall_ShouldReturnStatus 场景 |
+| SWS_Flash_00008 | `Flash_GetVersionInfo` | 测试 test_Flash_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Flash_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |

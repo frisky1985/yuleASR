@@ -428,3 +428,9 @@ typedef void (*WdgM_SafetyCallbackType)(
 3. `src/bsw/services/wdgm/WdgM.h`
 4. `src/bsw/services/wdgm/WdgM.c`
 5. `src/bsw/services/wdgm/WdgM_Cfg.h`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_WdgM | — | WDGM 模块级需求归属 |

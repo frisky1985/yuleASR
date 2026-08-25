@@ -388,3 +388,17 @@ typedef struct {
 - OSEK/VDX Network Management Specification (OSEK NM V2.5.3)
 - AUTOSAR Template Specification - ECU Configuration
 - 源码: `src/bsw/services/canm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanM_00001 | `CanM` | 测试 test_CanM_Init_DoubleInit_ShouldSucceed 覆盖: CanM_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_CanM_00002 | `CanM_DeInit` | 测试 test_CanM_DeInit_ValidCall_ShouldSucceed 覆盖: CanM_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_CanM_00003 | `CanM_GetVersionInfo` | 测试 test_CanM_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: CanM_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_CanM_00004 | `CanM_MainFunction` | 测试 test_CanM_MainFunction_ValidCall_ShouldSucceed 覆盖: CanM_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_CanM_00005 | `CanM_RequestComMode` | 测试 test_CanM_RequestComMode_ValidCall_ShouldSucceed 覆盖: CanM_RequestComMode_ValidCall_ShouldSucceed 场景 |
+| SWS_CanM_00006 | `CanM_GetComMode` | 测试 test_CanM_GetComMode_ValidCall_ShouldReturnMode 覆盖: CanM_GetComMode_ValidCall_ShouldReturnMode 场景 |
+| SWS_CanM_00007 | `CanM_CtrlBusOff` | 测试 test_CanM_CtrlBusOff_ValidCall_ShouldSucceed 覆盖: CanM_CtrlBusOff_ValidCall_ShouldSucceed 场景 |

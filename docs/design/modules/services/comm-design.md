@@ -192,3 +192,17 @@ typedef enum {
 
 - AUTOSAR_SWS_CommunicationManager.pdf (R4.4.0)
 - yuleASR ComM 源码: `src/bsw/services/comm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_ComM_00003 | `ComM_GetStatus` | 测试 test_ComM_GetStatus_ValidCall_ShouldReturnStatus 覆盖: ComM_GetStatus_ValidCall_ShouldReturnStatus 场景 |
+| SWS_ComM_00005 | `ComM_RequestComMode` | 测试 test_ComM_RequestComMode 覆盖: ComM_RequestComMode 场景 |
+| SWS_ComM_00006 | `ComM_GetMaxComMode` | 测试 test_ComM_GetMaxComMode 覆盖: ComM_GetMaxComMode 场景 |
+| SWS_ComM_00007 | `ComM_GetInhibitionStatus` | 测试 test_ComM_GetInhibitionStatus_ValidCall_ShouldReturnStatus 覆盖: ComM_GetInhibitionStatus_ValidCall_ShouldReturnStatus 场景 |
+| SWS_ComM_00008 | `ComM_GetCurrentComMode` | 测试 test_ComM_GetCurrentComMode 覆盖: ComM_GetCurrentComMode 场景 |
+| SWS_ComM_00009 | `ComM_MainFunction` | 测试 test_ComM_MainFunction_ValidCall_ShouldSucceed 覆盖: ComM_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_ComM_00010 | `ComM_RequestComMode` | 测试 test_ComM_RequestComMode_ValidCall_ShouldSucceed 覆盖: ComM_RequestComMode_ValidCall_ShouldSucceed 场景 |

@@ -130,3 +130,14 @@ WdgIf (Watchdog Interface) 为 WdgM (Watchdog Manager) 提供统一的看门狗�
 
 - AUTOSAR_SWS_WatchdogInterface.pdf (R4.4.0)
 - yuleASR WdgIf 源码: `src/bsw/ecual/wdgif/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_WdgIf_00002 | `WdgIf_DeInit` | 测试 test_WdgIf_DeInit_ValidCall_ShouldSucceed 覆盖: WdgIf_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_WdgIf_00003 | `WdgIf_GetVersionInfo` | 测试 test_WdgIf_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: WdgIf_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_WdgIf_00007 | `WdgIf_CheckReset` | 测试 test_WdgIf_CheckReset_ValidCall_ShouldSucceed 覆盖: WdgIf_CheckReset_ValidCall_ShouldSucceed 场景 |
+| SWS_WdgIf_00008 | `WdgIf_SetTriggerCondition` | 测试 test_WdgIf_SetTriggerCondition_ValidCall_ShouldSucceed 覆盖: WdgIf_SetTriggerCondition_ValidCall_ShouldSucceed 场景 |

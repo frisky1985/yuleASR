@@ -332,3 +332,17 @@ src/bsw/mcal/fls/
 1. AUTOSAR_SWS_FlashDriver.pdf
 2. `docs/modules/FLS.md`
 3. `src/bsw/mcal/fls/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Fls_00203 | `fls_multiple_operations` | 测试 test_fls_multiple_operations 覆盖: fls_multiple_operations 场景 |
+| SWS_Fls_00204 | `Fls_Hw_GetSectorNumber` | 测试 test_Fls_Hw_GetSectorNumber_Valid 覆盖: Fls_Hw_GetSectorNumber_Valid 场景 |
+| SWS_Fls_00205 | `Fls_Hw_GetSectorNumber` | 测试 test_Fls_Hw_GetSectorNumber_Invalid 覆盖: Fls_Hw_GetSectorNumber_Invalid 场景 |
+| SWS_Fls_00206 | `Fls_Hw_GetSectorSize` | 测试 test_Fls_Hw_GetSectorSize 覆盖: Fls_Hw_GetSectorSize 场景 |
+| SWS_Fls_00207 | `Fls_Hw_LockUnlock` | 测试 test_Fls_Hw_LockUnlock 覆盖: Fls_Hw_LockUnlock 场景 |
+| SWS_Fls_00210 | `Fls_Hw_ClearFlags` | 测试 test_Fls_Hw_ClearFlags 覆盖: Fls_Hw_ClearFlags 场景 |
+| SWS_Fls_00211 | `Fls_Hw_Verify` | 测试 test_Fls_Hw_Verify 覆盖: Fls_Hw_Verify 场景 |

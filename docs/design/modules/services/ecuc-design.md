@@ -339,3 +339,12 @@ EcuC 不直接报告 DEM 事件。
 
 - AUTOSAR_SWS_ECUConfiguration.pdf (R4.4.0)
 - yuleASR EcuC 模块源码: `src/bsw/services/ecuC/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_EcuC_00006 | `EcuC_SetResetReason` | 测试 test_EcuC_SetResetReason_ValidCall_ShouldSucceed 覆盖: EcuC_SetResetReason_ValidCall_ShouldSucceed 场景 |
+| SWS_EcuC_00007 | `EcuC_PerformReset` | 测试 test_EcuC_PerformReset_ValidCall_ShouldSucceed 覆盖: EcuC_PerformReset_ValidCall_ShouldSucceed 场景 |

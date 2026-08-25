@@ -109,11 +109,12 @@ def _match_api(func_norm: str, api_map: dict[str, str], module: str = "") -> str
 
 
 def build_all_sws_ids() -> set[str]:
-    """提取全部 design 文档中的 SWS ID (含非 API 表的需求, 如错误码/配置/时序)。"""
+    """提取全部 design 文档中的 SWS ID (含裸模块名 SWS_Adc 和编号 SWS_Adc_00001)。"""
     ids: set[str] = set()
     for doc in sorted(DESIGN_DIR.rglob("*-design.md")):
         text = doc.read_text(encoding="utf-8", errors="replace")
         ids.update(re.findall(r"SWS_\w+_\d+", text))
+        ids.update(re.findall(r"SWS_[A-Za-z]+", text))
     return ids
 
 

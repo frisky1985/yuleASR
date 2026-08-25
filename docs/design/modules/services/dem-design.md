@@ -460,3 +460,15 @@ Reports errors to Det module:
 - `src/bsw/services/dem/src/Dem_Int.c`
 - ISO 14229-1 (UDS)
 - ISO 15031-5 (OBD)
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Dem | — | DEM 模块级需求归属 |
+| SWS_Dem_00007 | `Dem_GetEventFailed` | 测试 test_Dem_GetEventFailed 覆盖: Dem_GetEventFailed 场景 |
+| SWS_Dem_00008 | `Dem_GetEventTested` | 测试 test_Dem_GetEventTested 覆盖: Dem_GetEventTested 场景 |
+| SWS_Dem_00009 | `Dem_GetFaultDetectionCounter` | 测试 test_Dem_GetFaultDetectionCounter 覆盖: Dem_GetFaultDetectionCounter 场景 |
+| SWS_Dem_00016 | `Dem_DTCSettingControl` | 测试 test_Dem_DTCSettingControl 覆盖: Dem_DTCSettingControl 场景 |

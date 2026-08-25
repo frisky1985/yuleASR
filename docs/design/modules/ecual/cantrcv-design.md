@@ -379,3 +379,17 @@ SetOpMode(Transceiver, OpMode)
 | CanTrcv.h | 模块公共接口定义 |
 | CanTrcv_Cfg.h | 预编译配置定义 |
 | CanTrcv.c | 模块实现源码 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanTrcv_00001 | `CanTrcv` | 测试 test_CanTrcv_Init_DoubleInit_ShouldSucceed 覆盖: CanTrcv_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_CanTrcv_00002 | `CanTrcv_DeInit` | 测试 test_CanTrcv_DeInit_ValidCall_ShouldSucceed 覆盖: CanTrcv_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_CanTrcv_00003 | `CanTrcv_GetVersionInfo` | 测试 test_CanTrcv_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: CanTrcv_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_CanTrcv_00004 | `CanTrcv_SetTransceiverMode` | 测试 test_CanTrcv_SetTransceiverMode_ValidCall_ShouldSucceed 覆盖: CanTrcv_SetTransceiverMode_ValidCall_ShouldSucceed 场景 |
+| SWS_CanTrcv_00005 | `cantrcv` | 测试 test_cantrcv_Init_should_initialize 覆盖: cantrcv_Init_should_initialize 场景 |
+| SWS_CanTrcv_00006 | `CanTrcv_GetTrcvWakeupReason` | 测试 test_CanTrcv_GetTrcvWakeupReason_ValidCall_ShouldReturnReason 覆盖: CanTrcv_GetTrcvWakeupReason_ValidCall_ShouldReturnReason 场景 |
+| SWS_CanTrcv_00007 | `CanTrcv_MainFunction` | 测试 test_CanTrcv_MainFunction_ValidCall_ShouldSucceed 覆盖: CanTrcv_MainFunction_ValidCall_ShouldSucceed 场景 |

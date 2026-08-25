@@ -378,3 +378,12 @@ Bus Off 事件通过 `CANSM_E_BUSOFF_RECOVERY_ACTIVE` 报告，可由 Dem 记录
 - AUTOSAR SWS CANStateManagement (AUTOSAR_SWS_CANStateManagement.pdf)
 - AUTOSAR SWS CommunicationManager
 - 源码: `src/bsw/services/cansm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanSM | — | CANSM 模块级需求归属 |
+| SWS_CanSM_00008 | `CanSm_ControllerBusOff_Recovery` | 测试 test_CanSm_ControllerBusOff_Recovery_ShouldNotCrash 覆盖: CanSm_ControllerBusOff_Recovery_ShouldNotCrash 场景 |

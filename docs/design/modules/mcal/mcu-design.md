@@ -358,3 +358,9 @@ typedef uint8 Mcu_ModeType;
 2. `docs/modules/mcu.md`
 3. `src/bsw/mcal/mcu/`
 4. `docs/design/modules/TEMPLATE.md`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Mcu | — | MCU 模块级需求归属 |

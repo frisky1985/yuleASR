@@ -312,3 +312,14 @@ typedef struct {
 1. AUTOSAR_SWS_IOHardwareAbstraction.pdf
 2. `docs/modules/iohwab.md`
 3. `src/bsw/ecual/iohwab/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_IoHwAb_00005 | `IoHwAb_ReadAnalog` | 测试 test_IoHwAb_ReadAnalog_ValidCall_ShouldReturnValue 覆盖: IoHwAb_ReadAnalog_ValidCall_ShouldReturnValue 场景 |
+| SWS_IoHwAb_00006 | `IoHwAb_WriteAnalog` | 测试 test_IoHwAb_WriteAnalog_ValidCall_ShouldSucceed 覆盖: IoHwAb_WriteAnalog_ValidCall_ShouldSucceed 场景 |
+| SWS_IoHwAb_00007 | `IoHwAb_ReadPwm` | 测试 test_IoHwAb_ReadPwm_ValidCall_ShouldReturnPwm 覆盖: IoHwAb_ReadPwm_ValidCall_ShouldReturnPwm 场景 |
+| SWS_IoHwAb_00008 | `IoHwAb_WritePwm` | 测试 test_IoHwAb_WritePwm_ValidCall_ShouldSucceed 覆盖: IoHwAb_WritePwm_ValidCall_ShouldSucceed 场景 |

@@ -401,3 +401,17 @@ RamSafety 检测到 RAM 故障时通过 `RamSafety_EnterSafeState()` 触发安�
 - ISO 26262-5:2018 Clause 8 (RAM requirements)
 - March C- Algorithm Reference (van de Goor, 1991)
 - yuleASR RamSafety 模块源码: `src/bsw/services/ramsafety/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_RamSafety | — | RAMSAFETY 模块级需求归属 |
+| SWS_RamSafety_00004 | `RamSafety_RunStartupTest` | 测试 test_RamSafety_RunStartupTest_AfterInit_ShouldReturnResult 覆盖: RamSafety_RunStartupTest_AfterInit_ShouldReturnResult 场景 |
+| SWS_RamSafety_00005 | `RamSafety_MainFunction` | 测试 test_RamSafety_MainFunction_AfterInit_ShouldNotCrash 覆盖: RamSafety_MainFunction_AfterInit_ShouldNotCrash 场景 |
+| SWS_RamSafety_00006 | `RamSafety_TriggerTest_BeforeInit` | 测试 test_RamSafety_TriggerTest_BeforeInit_ShouldFail 覆盖: RamSafety_TriggerTest_BeforeInit_ShouldFail 场景 |
+| SWS_RamSafety_00007 | `RamSafety_VerifyRegion_BeforeInit` | 测试 test_RamSafety_VerifyRegion_BeforeInit_ShouldFail 覆盖: RamSafety_VerifyRegion_BeforeInit_ShouldFail 场景 |
+| SWS_RamSafety_00008 | `RamSafety_VerifyRange_BeforeInit` | 测试 test_RamSafety_VerifyRange_BeforeInit_ShouldFail 覆盖: RamSafety_VerifyRange_BeforeInit_ShouldFail 场景 |
+| SWS_RamSafety_00009 | `RamSafety_GetStatistics` | 测试 test_RamSafety_GetStatistics_AfterInit_ShouldSucceed 覆盖: RamSafety_GetStatistics_AfterInit_ShouldSucceed 场景 |

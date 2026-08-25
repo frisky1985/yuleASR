@@ -295,3 +295,13 @@ static boolean Nm_ModuleInitialized = FALSE;                    // 模块初始�
 - AUTOSAR SWS NetworkManagement (AUTOSAR_SWS_NetworkManagement.pdf)
 - OSEK/VDX Network Management Specification
 - 源码: `src/bsw/services/nm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Nm | — | NM 模块级需求归属 |
+| SWS_Nm_00014 | `Nm_CheckRemoteSleepIndication` | 测试 test_Nm_CheckRemoteSleepIndication 覆盖: Nm_CheckRemoteSleepIndication 场景 |
+| SWS_Nm_00100 | `Nm_Callback_NetworkModeEntry` | 测试 test_Nm_Callback_NetworkModeEntry 覆盖: Nm_Callback_NetworkModeEntry 场景 |

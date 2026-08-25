@@ -370,3 +370,19 @@ typedef struct {
 1. AUTOSAR_SWS_OCU.pdf
 2. `docs/modules/OCU.md`
 3. `src/bsw/mcal/ocu/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Ocu_00228 | `PWM_50Percent_Duty` | 测试 Test_PWM_50Percent_Duty 覆盖: PWM_50Percent_Duty 场景 |
+| SWS_Ocu_00229 | `PWM_VariableDutyCycle` | 测试 Test_PWM_VariableDutyCycle 覆盖: PWM_VariableDutyCycle 场景 |
+| SWS_Ocu_00230 | `PWM_MultipleChannels` | 测试 Test_PWM_MultipleChannels 覆盖: PWM_MultipleChannels 场景 |
+| SWS_Ocu_00231 | `OutputCompare_SingleShot` | 测试 Test_OutputCompare_SingleShot 覆盖: OutputCompare_SingleShot 场景 |
+| SWS_Ocu_00232 | `OutputCompare_TimedPulse` | 测试 Test_OutputCompare_TimedPulse 覆盖: OutputCompare_TimedPulse 场景 |
+| SWS_Ocu_00233 | `Edge_MaxChannels` | 测试 Test_Edge_MaxChannels 覆盖: Edge_MaxChannels 场景 |
+| SWS_Ocu_00234 | `Edge_MaxThreshold` | 测试 Test_Edge_MaxThreshold 覆盖: Edge_MaxThreshold 场景 |
+| SWS_Ocu_00235 | `Edge_ZeroThreshold` | 测试 Test_Edge_ZeroThreshold 覆盖: Edge_ZeroThreshold 场景 |
+| SWS_Ocu_00237 | `Sequence_MultipleOperations` | 测试 Test_Sequence_MultipleOperations 覆盖: Sequence_MultipleOperations 场景 |

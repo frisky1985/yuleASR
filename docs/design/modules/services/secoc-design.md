@@ -425,3 +425,9 @@ typedef struct {
 3. `src/bsw/services/secoc/SecOC.h`
 4. `src/bsw/services/secoc/SecOC.c`
 5. `src/bsw/services/secoc/SecOC_Cfg.h`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_SecOC | — | SECOC 模块级需求归属 |

@@ -334,3 +334,9 @@ src/bsw/mcal/gpt/
 1. AUTOSAR_SWS_GPTDriver.pdf
 2. `docs/modules/GPT.md`
 3. `src/bsw/mcal/gpt/`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Gpt | — | GPT 模块级需求归属 |

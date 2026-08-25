@@ -405,3 +405,9 @@ typedef struct {
 3. `src/bsw/services/ecum/EcuM.h`
 4. `src/bsw/services/ecum/EcuM.c`
 5. `src/bsw/services/ecum/EcuM_Cfg.h`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_EcuM | — | ECUM 模块级需求归属 |

@@ -500,3 +500,17 @@ Transformer 配置通过 `SomeIpXf_Config` 全局结构体引用，包含最多 
 | AUTOSAR_TPS_SOMEIP | SOME/IP 技术规范 |
 | AUTOSAR_SWS_SOMEIPTransportProtocol | SOME/IP TP 规范 |
 | `src/bsw/services/someipxf/` | 源代码目录 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_SomeIpXF_00001 | `SomeIpXF` | 测试 test_SomeIpXF_Init_DoubleInit_ShouldSucceed 覆盖: SomeIpXF_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_SomeIpXF_00002 | `SomeIpXF_DeInit` | 测试 test_SomeIpXF_DeInit_ValidCall_ShouldSucceed 覆盖: SomeIpXF_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpXF_00003 | `SomeIpXF_GetVersionInfo` | 测试 test_SomeIpXF_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: SomeIpXF_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_SomeIpXF_00004 | `SomeIpXF_MainFunction` | 测试 test_SomeIpXF_MainFunction_ValidCall_ShouldSucceed 覆盖: SomeIpXF_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpXF_00005 | `SomeIpXF_Serialize` | 测试 test_SomeIpXF_Serialize_ValidCall_ShouldSucceed 覆盖: SomeIpXF_Serialize_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpXF_00006 | `SomeIpXF_Deserialize` | 测试 test_SomeIpXF_Deserialize_ValidCall_ShouldSucceed 覆盖: SomeIpXF_Deserialize_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpXF_00007 | `SomeIpXF_GetPayloadSize` | 测试 test_SomeIpXF_GetPayloadSize_ValidCall_ShouldReturnSize 覆盖: SomeIpXF_GetPayloadSize_ValidCall_ShouldReturnSize 场景 |

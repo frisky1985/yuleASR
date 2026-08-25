@@ -355,3 +355,9 @@ typedef struct {
 - AUTOSAR SWS UDPNetworkManagement (AUTOSAR_SWS_UDPNetworkManagement.pdf)
 - OSEK/VDX Network Management Specification
 - 源码: `src/bsw/services/udpNm/`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_UdpNm | — | UDPNM 模块级需求归属 |

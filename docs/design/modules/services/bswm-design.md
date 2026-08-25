@@ -357,3 +357,13 @@ typedef struct {
 3. `src/bsw/services/bswm/BswM.h`
 4. `src/bsw/services/bswm/BswM.c`
 5. `src/bsw/services/bswm/BswM_Cfg.h`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_BswM | — | BSWM 模块级需求归属 |
+| SWS_BswM_00006 | `BswM_GetMode` | 测试 test_BswM_GetMode_ValidCall_ShouldReturnMode 覆盖: BswM_GetMode_ValidCall_ShouldReturnMode 场景 |
+| SWS_BswM_00007 | `BswM_SetMode` | 测试 test_BswM_SetMode_ValidCall_ShouldSucceed 覆盖: BswM_SetMode_ValidCall_ShouldSucceed 场景 |

@@ -191,3 +191,17 @@ typedef enum {
 
 - AUTOSAR_SWS_E2ELibrary.pdf (R4.4.0)
 - yuleASR E2E 模块源码: `src/bsw/services/e2e/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_E2E_00001 | `E2E_P05Init` | 测试 test_E2E_P05Init 覆盖: E2E_P05Init 场景 |
+| SWS_E2E_00002 | `E2E_Protect` | 测试 test_E2E_Protect_ValidData_ShouldSucceed 覆盖: E2E_Protect_ValidData_ShouldSucceed 场景 |
+| SWS_E2E_00003 | `E2E_P01Protect` | 测试 test_E2E_P01Protect 覆盖: E2E_P01Protect 场景 |
+| SWS_E2E_00004 | `E2E_P01Check` | 测试 test_E2E_P01Check 覆盖: E2E_P01Check 场景 |
+| SWS_E2E_00005 | `E2E_RegisterProfile` | 测试 test_E2E_RegisterProfile_ValidCall_ShouldSucceed 覆盖: E2E_RegisterProfile_ValidCall_ShouldSucceed 场景 |
+| SWS_E2E_00006 | `E2E_MainFunction` | 测试 test_E2E_MainFunction_ValidCall_ShouldSucceed 覆盖: E2E_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_E2E_00012 | `E2E_P05Protect` | 测试 test_E2E_P05Protect 覆盖: E2E_P05Protect 场景 |

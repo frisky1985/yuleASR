@@ -504,3 +504,9 @@ Key DET error codes from `NvM.h`:
 5. `src/bsw/services/nvm/include/NvM_Private.h`
 6. `src/bsw/services/nvm/src/NvM.c`
 7. `src/bsw/services/nvm/src/NvM_Redundant.c`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_NvM | — | NVM 模块级需求归属 |

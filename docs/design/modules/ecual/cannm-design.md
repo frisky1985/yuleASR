@@ -215,3 +215,20 @@ typedef struct {
 - AUTOSAR_SWS_CANNetworkManagement.pdf (R4.4.0)
 - OSEK/VDX Network Management Specification v3.0
 - yuleASR CanNm 源码: `src/bsw/ecual/canNm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanNm | — | CANNM 模块级需求归属 |
+| SWS_CanNm_00007 | `CanNm_NetworkRelease` | 测试 test_CanNm_NetworkRelease 覆盖: CanNm_NetworkRelease 场景 |
+| SWS_CanNm_00010 | `CanNm_TriggerTransmit` | 测试 test_CanNm_TriggerTransmit_NullPointer 覆盖: CanNm_TriggerTransmit_NullPointer 场景 |
+| SWS_CanNm_00012 | `CanNm_GetVersionInfo` | 测试 test_CanNm_GetVersionInfo_NullPointer 覆盖: CanNm_GetVersionInfo_NullPointer 场景 |
+| SWS_CanNm_00013 | `CanNm_GetState` | 测试 test_CanNm_GetState_InvalidChannel 覆盖: CanNm_GetState_InvalidChannel 场景 |
+| SWS_CanNm_00014 | `CanNm_GetUserData` | 测试 test_CanNm_GetUserData_NullPointer 覆盖: CanNm_GetUserData_NullPointer 场景 |
+| SWS_CanNm_00015 | `CanNm_SetSleepReadyBit` | 测试 test_CanNm_SetSleepReadyBit_InvalidChannel 覆盖: CanNm_SetSleepReadyBit_InvalidChannel 场景 |
+| SWS_CanNm_00016 | `CanNm_SetSleepReadyBit` | 测试 test_CanNm_SetSleepReadyBit_InvalidChannel 覆盖: CanNm_SetSleepReadyBit_InvalidChannel 场景 |
+| SWS_CanNm_00017 | `CanNm_EnableCommunication` | 测试 test_CanNm_EnableCommunication 覆盖: CanNm_EnableCommunication 场景 |
+| SWS_CanNm_00018 | `CanNm_RxIndication` | 测试 test_CanNm_RxIndication_InvalidPduId 覆盖: CanNm_RxIndication_InvalidPduId 场景 |

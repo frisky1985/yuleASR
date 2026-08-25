@@ -529,3 +529,9 @@ Dcm → `PduR_Transmit` → PduR → CanTp/DoIP → Tester
 6. `src/bsw/services/dcm/include/Dcm_Cfg.h`
 7. `src/bsw/services/dcm/include/dcm_transfer.h`
 8. `src/bsw/services/dcm/src/Dcm.c`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Dcm | — | DCM 模块级需求归属 |

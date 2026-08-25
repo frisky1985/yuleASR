@@ -378,3 +378,9 @@ CanTp -> CanIf_RxIndication -> PduR_RxIndication -> Dcm_RxIndication
 - `src/bsw/services/pdur/include/PduR.h`
 - `src/bsw/services/pdur/src/PduR.c`
 - `src/bsw/services/pdur/src/PduR_Lcfg.c`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_PduR | — | PDUR 模块级需求归属 |

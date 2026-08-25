@@ -353,3 +353,17 @@ typedef struct {
 - AUTOSAR SWS TcpIp
 - RFC 793 (TCP), RFC 768 (UDP)
 - 源码: `src/bsw/services/soad/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_SoAd_00020 | `soad_trigger_transmit` | 测试 soad_trigger_transmit 覆盖: soad_trigger_transmit 场景 |
+| SWS_SoAd_00101 | `SoAd_ModuleConstants_Exist` | 测试 test_SoAd_ModuleConstants_Exist 覆盖: SoAd_ModuleConstants_Exist 场景 |
+| SWS_SoAd_00102 | `SoAd_ServiceIDs_Exist` | 测试 test_SoAd_ServiceIDs_Exist 覆盖: SoAd_ServiceIDs_Exist 场景 |
+| SWS_SoAd_00103 | `SoAd_ErrorCodes_Exist` | 测试 test_SoAd_ErrorCodes_Exist 覆盖: SoAd_ErrorCodes_Exist 场景 |
+| SWS_SoAd_00104 | `SoAd_ConnStateTypes_Exist` | 测试 test_SoAd_ConnStateTypes_Exist 覆盖: SoAd_ConnStateTypes_Exist 场景 |
+| SWS_SoAd_00105 | `SoAd_ProtocolTypes_Exist` | 测试 test_SoAd_ProtocolTypes_Exist 覆盖: SoAd_ProtocolTypes_Exist 场景 |
+| SWS_SoAd_00106 | `SoAd_ConnModeRequestTypes_Exist` | 测试 test_SoAd_ConnModeRequestTypes_Exist 覆盖: SoAd_ConnModeRequestTypes_Exist 场景 |

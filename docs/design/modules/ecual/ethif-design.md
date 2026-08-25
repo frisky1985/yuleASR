@@ -190,3 +190,12 @@ typedef struct {
 
 - AUTOSAR_SWS_EthernetInterface.pdf (R4.4.0)
 - yuleASR EthIf 源码: `src/bsw/ecual/ethif/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_EthIf_00010 | `EthIf_GetPhyState` | 测试 test_EthIf_GetPhyState_ValidCall_ShouldSucceed 覆盖: EthIf_GetPhyState_ValidCall_ShouldSucceed 场景 |
+| SWS_EthIf_00011 | `EthIf_SetForwardingMode` | 测试 test_EthIf_SetForwardingMode_ValidCall_ShouldSucceed 覆盖: EthIf_SetForwardingMode_ValidCall_ShouldSucceed 场景 |

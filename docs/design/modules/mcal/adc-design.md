@@ -408,3 +408,13 @@ typedef struct {
 1. AUTOSAR_SWS_ADC.pdf
 2. `docs/modules/ADC.md`
 3. `src/bsw/mcal/adc/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Adc | — | ADC 模块级需求归属 |
+| SWS_Adc_00212 | `resolution` | 测试 test_resolution 覆盖: resolution 场景 |
+| SWS_Adc_00213 | `sampling_time` | 测试 test_sampling_time 覆盖: sampling_time 场景 |

@@ -355,3 +355,11 @@ FiM 不直接报告 DEM 事件。FiM 的抑制状态可作为 Dem 事件的消�
 - AUTOSAR_SWS_FunctionInhibitionManager.pdf (R4.4.0)
 - AUTOSAR_SWS_EventStatusManagement.pdf
 - yuleASR FiM 模块源码: `src/bsw/services/fim/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_FiM_00008 | `FiM_RegisterEvent` | 测试 test_FiM_RegisterEvent_ValidCall_ShouldSucceed 覆盖: FiM_RegisterEvent_ValidCall_ShouldSucceed 场景 |

@@ -325,3 +325,31 @@ typedef struct {
 1. AUTOSAR_SWS_Pwm.pdf
 2. `docs/modules/Pwm.md`
 3. `src/bsw/mcal/Pwm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Pwm | — | PWM 模块级需求归属 |
+| SWS_Pwm_00001 | `pwm_init_null` | 测试 pwm_init_null 覆盖: pwm_init_null 场景 |
+| SWS_Pwm_00002 | `pwm_deinit` | 测试 pwm_deinit 覆盖: pwm_deinit 场景 |
+| SWS_Pwm_00003 | `pwm_set_duty_cycle` | 测试 pwm_set_duty_cycle 覆盖: pwm_set_duty_cycle 场景 |
+| SWS_Pwm_00004 | `pwm_set_period_and_duty_fixed` | 测试 pwm_set_period_and_duty_fixed 覆盖: pwm_set_period_and_duty_fixed 场景 |
+| SWS_Pwm_00005 | `pwm_set_output_to_idle` | 测试 pwm_set_output_to_idle 覆盖: pwm_set_output_to_idle 场景 |
+| SWS_Pwm_00006 | `pwm_get_output_state` | 测试 pwm_get_output_state 覆盖: pwm_get_output_state 场景 |
+| SWS_Pwm_00007 | `pwm_disable_notification` | 测试 pwm_disable_notification 覆盖: pwm_disable_notification 场景 |
+| SWS_Pwm_00008 | `pwm_enable_notification` | 测试 pwm_enable_notification 覆盖: pwm_enable_notification 场景 |
+| SWS_Pwm_00009 | `pwm_get_version_info` | 测试 pwm_get_version_info 覆盖: pwm_get_version_info 场景 |
+| SWS_Pwm_00201 | `init` | 测试 test_init 覆盖: init 场景 |
+| SWS_Pwm_00202 | `deinit` | 测试 test_deinit 覆盖: deinit 场景 |
+| SWS_Pwm_00203 | `set_duty_cycle` | 测试 test_set_duty_cycle 覆盖: set_duty_cycle 场景 |
+| SWS_Pwm_00204 | `set_period_and_duty` | 测试 test_set_period_and_duty 覆盖: set_period_and_duty 场景 |
+| SWS_Pwm_00205 | `set_output_to_idle` | 测试 test_set_output_to_idle 覆盖: set_output_to_idle 场景 |
+| SWS_Pwm_00206 | `get_output_state` | 测试 test_get_output_state 覆盖: get_output_state 场景 |
+| SWS_Pwm_00207 | `notification` | 测试 test_notification 覆盖: notification 场景 |
+| SWS_Pwm_00208 | `version_info` | 测试 test_version_info 覆盖: version_info 场景 |
+| SWS_Pwm_00209 | `power_state` | 测试 test_power_state 覆盖: power_state 场景 |
+| SWS_Pwm_00210 | `multi_channel` | 测试 test_multi_channel 覆盖: multi_channel 场景 |
+| SWS_Pwm_00211 | `boundary_conditions` | 测试 test_boundary_conditions 覆盖: boundary_conditions 场景 |

@@ -402,3 +402,9 @@ Csm.h 中定义了 API ID，错误码在 `Csm_Types.h` 中（如 `CSM_E_NOT_INIT
 4. `src/bsw/services/csm/Csm.c`
 5. `src/bsw/services/csm/Csm_Cfg.h`
 6. `src/bsw/services/csm/Csm_Types.h`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Csm | — | CSM 模块级需求归属 |

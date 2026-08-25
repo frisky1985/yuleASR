@@ -200,3 +200,12 @@ typedef struct {
 - AUTOSAR_SWS_SOMEIP.pdf (R4.4.0)
 - GENIVI SOME/IP Protocol Specification
 - yuleASR SomeIp 源码: `src/bsw/services/someip/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_SomeIp_00006 | `SomeIp_UnregisterEvent` | 测试 test_SomeIp_UnregisterEvent_ValidCall_ShouldSucceed 覆盖: SomeIp_UnregisterEvent_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIp_00010 | `SomeIp_GetServiceState` | 测试 test_SomeIp_GetServiceState_ValidCall_ShouldReturnState 覆盖: SomeIp_GetServiceState_ValidCall_ShouldReturnState 场景 |

@@ -367,3 +367,12 @@ static const Eep_ConfigType Eep_Config = {
 1. AUTOSAR_SWS_EEPROMDriver.pdf
 2. `docs/modules/eep.md`
 3. `src/bsw/mcal/eep/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Eep_00201 | `eep_multiple_operations` | 测试 test_eep_multiple_operations 覆盖: eep_multiple_operations 场景 |
+| SWS_Eep_00202 | `eep_concurrent_request_rejection` | 测试 test_eep_concurrent_request_rejection 覆盖: eep_concurrent_request_rejection 场景 |

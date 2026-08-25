@@ -409,3 +409,21 @@ typedef struct {
 1. AUTOSAR_SWS_Uart.pdf
 2. `docs/modules/Uart.md`
 3. `src/bsw/mcal/Uart/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Uart_00001 | `uart` | 测试 test_uart_Init_should_initialize_successfully 覆盖: uart_Init_should_initialize_successfully 场景 |
+| SWS_Uart_00002 | `uart_DeInit_should_cleanup_successfully` | 测试 test_uart_DeInit_should_cleanup_successfully 覆盖: uart_DeInit_should_cleanup_successfully 场景 |
+| SWS_Uart_00003 | `Uart_Transmit` | 测试 test_Uart_Transmit_ValidCall_ShouldSucceed 覆盖: Uart_Transmit_ValidCall_ShouldSucceed 场景 |
+| SWS_Uart_00004 | `Uart_Receive` | 测试 test_Uart_Receive_ValidCall_ShouldSucceed 覆盖: Uart_Receive_ValidCall_ShouldSucceed 场景 |
+| SWS_Uart_00005 | `Uart_GetStatus` | 测试 test_Uart_GetStatus_ValidCall_ShouldReturnStatus 覆盖: Uart_GetStatus_ValidCall_ShouldReturnStatus 场景 |
+| SWS_Uart_00006 | `Uart_GetVersionInfo` | 测试 test_Uart_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Uart_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_Uart_00007 | `Uart_SetBaudRate` | 测试 test_Uart_SetBaudRate_ValidCall_ShouldSucceed 覆盖: Uart_SetBaudRate_ValidCall_ShouldSucceed 场景 |
+| SWS_Uart_00008 | `Uart_MainFunction` | 测试 test_Uart_MainFunction_ValidCall_ShouldSucceed 覆盖: Uart_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_Uart_00009 | `Uart_FlushTxBuffer` | 测试 test_Uart_FlushTxBuffer_ValidCall_ShouldSucceed 覆盖: Uart_FlushTxBuffer_ValidCall_ShouldSucceed 场景 |
+| SWS_Uart_00010 | `Uart_FlushRxBuffer` | 测试 test_Uart_FlushRxBuffer_ValidCall_ShouldSucceed 覆盖: Uart_FlushRxBuffer_ValidCall_ShouldSucceed 场景 |
+| SWS_Uart_00019 | `uart_GetVersionInfo_should_return_version` | 测试 test_uart_GetVersionInfo_should_return_version 覆盖: uart_GetVersionInfo_should_return_version 场景 |

@@ -198,3 +198,16 @@ typedef struct {
 - AUTOSAR_SWS_TimeBaseManager.pdf (R4.4.0)
 - IEEE 802.1AS (gPTP)
 - yuleASR StbM 源码: `src/bsw/services/stbm/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_StbM_00003 | `StbM_GetVersionInfo` | 测试 test_StbM_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: StbM_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_StbM_00005 | `StbM_GetCurrentTime` | 测试 test_StbM_GetCurrentTime 覆盖: StbM_GetCurrentTime 场景 |
+| SWS_StbM_00006 | `StbM_SetTime` | 测试 test_StbM_SetTime_ValidCall_ShouldSucceed 覆盖: StbM_SetTime_ValidCall_ShouldSucceed 场景 |
+| SWS_StbM_00007 | `StbM_SetGlobalTime` | 测试 test_StbM_SetGlobalTime 覆盖: StbM_SetGlobalTime 场景 |
+| SWS_StbM_00008 | `StbM_SyncTime` | 测试 test_StbM_SyncTime_ValidCall_ShouldSucceed 覆盖: StbM_SyncTime_ValidCall_ShouldSucceed 场景 |
+| SWS_StbM_00009 | `StbM_GetTimeBaseStatus` | 测试 test_StbM_GetTimeBaseStatus 覆盖: StbM_GetTimeBaseStatus 场景 |

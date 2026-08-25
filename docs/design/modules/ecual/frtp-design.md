@@ -207,3 +207,11 @@ typedef enum {
 
 - AUTOSAR_SWS_FrTp.pdf (R4.4.0)
 - yuleASR FrTp 源码: `src/bsw/ecual/frtp/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_FrTp_00003 | `FrTp_GetVersionInfo` | 测试 test_FrTp_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: FrTp_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |

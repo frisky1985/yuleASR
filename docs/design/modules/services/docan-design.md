@@ -187,3 +187,13 @@ typedef struct {
 - AUTOSAR_SWS_DiagnosticsOverCAN.pdf (R4.4.0)
 - ISO 15765-2 (CAN TP)
 - yuleASR DoCan 源码: `src/bsw/services/docan/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_DoCan_00003 | `DoCan_GetVersionInfo` | 测试 test_DoCan_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: DoCan_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_DoCan_00008 | `DoCan_TxConfirmation` | 测试 test_DoCan_TxConfirmation_ValidCall_ShouldSucceed 覆盖: DoCan_TxConfirmation_ValidCall_ShouldSucceed 场景 |
+| SWS_DoCan_00009 | `DoCan_GetState` | 测试 test_DoCan_GetState_ValidCall_ShouldSucceed 覆盖: DoCan_GetState_ValidCall_ShouldSucceed 场景 |

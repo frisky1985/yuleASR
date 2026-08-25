@@ -424,3 +424,17 @@ DetectWakeupReason(Channel)
 | LinTrcv.h | 模块公共接口定义 |
 | LinTrcv_Cfg.h | 预编译配置定义 |
 | LinTrcv.c | 模块实现源码 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_LinTrcv_00001 | `lintrcv` | 测试 test_lintrcv_Init_should_initialize 覆盖: lintrcv_Init_should_initialize 场景 |
+| SWS_LinTrcv_00002 | `LinTrcv_DeInit` | 测试 test_LinTrcv_DeInit_ValidCall_ShouldSucceed 覆盖: LinTrcv_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_LinTrcv_00003 | `LinTrcv_GetVersionInfo` | 测试 test_LinTrcv_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: LinTrcv_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_LinTrcv_00004 | `LinTrcv_SetTrcvMode` | 测试 test_LinTrcv_SetTrcvMode_ValidCall_ShouldSucceed 覆盖: LinTrcv_SetTrcvMode_ValidCall_ShouldSucceed 场景 |
+| SWS_LinTrcv_00005 | `LinTrcv_GetTrcvMode` | 测试 test_LinTrcv_GetTrcvMode_ValidCall_ShouldReturnMode 覆盖: LinTrcv_GetTrcvMode_ValidCall_ShouldReturnMode 场景 |
+| SWS_LinTrcv_00006 | `LinTrcv_GetTrcvWakeupReason` | 测试 test_LinTrcv_GetTrcvWakeupReason_ValidCall_ShouldReturnReason 覆盖: LinTrcv_GetTrcvWakeupReason_ValidCall_ShouldReturnReason 场景 |
+| SWS_LinTrcv_00007 | `LinTrcv_MainFunction` | 测试 test_LinTrcv_MainFunction_ValidCall_ShouldSucceed 覆盖: LinTrcv_MainFunction_ValidCall_ShouldSucceed 场景 |

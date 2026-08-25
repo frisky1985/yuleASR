@@ -327,3 +327,45 @@ typedef struct {
 1. AUTOSAR_SWS_RamTst.pdf
 2. `docs/modules/RamTst.md`
 3. `src/bsw/mcal/RamTst/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_RamTst | — | RAMTST 模块级需求归属 |
+| SWS_RamTst_00001 | `RamTst` | 测试 test_RamTst_Init_NullConfig 覆盖: RamTst_Init_NullConfig 场景 |
+| SWS_RamTst_00002 | `RamTst_DeInit` | 测试 test_RamTst_DeInit_AfterInit 覆盖: RamTst_DeInit_AfterInit 场景 |
+| SWS_RamTst_00003 | `RamTst_Run_Start` | 测试 test_RamTst_Run_Start 覆盖: RamTst_Run_Start 场景 |
+| SWS_RamTst_00004 | `RamTst_Stop_Running` | 测试 test_RamTst_Stop_Running 覆盖: RamTst_Stop_Running 场景 |
+| SWS_RamTst_00005 | `RamTst_GetTestResult_BeforeRun` | 测试 test_RamTst_GetTestResult_BeforeRun 覆盖: RamTst_GetTestResult_BeforeRun 场景 |
+| SWS_RamTst_00006 | `RamTst_Abort` | 测试 test_RamTst_Abort_AfterInit_ShouldReturnResult 覆盖: RamTst_Abort_AfterInit_ShouldReturnResult 场景 |
+| SWS_RamTst_00007 | `RamTst_MainFunction` | 测试 test_RamTst_MainFunction_AfterInit_ShouldNotCrash 覆盖: RamTst_MainFunction_AfterInit_ShouldNotCrash 场景 |
+| SWS_RamTst_00008 | `RamTst_MainFunction_CompletesTest` | 测试 test_RamTst_MainFunction_CompletesTest 覆盖: RamTst_MainFunction_CompletesTest 场景 |
+| SWS_RamTst_00201 | `setup` | 测试 test_setup 覆盖: setup 场景 |
+| SWS_RamTst_00202 | `init_with_valid_config` | 测试 test_init_with_valid_config 覆盖: init_with_valid_config 场景 |
+| SWS_RamTst_00203 | `init_with_null_config` | 测试 test_init_with_null_config 覆盖: init_with_null_config 场景 |
+| SWS_RamTst_00204 | `init_multiple_times` | 测试 test_init_multiple_times 覆盖: init_multiple_times 场景 |
+| SWS_RamTst_00205 | `deinit_after_init` | 测试 test_deinit_after_init 覆盖: deinit_after_init 场景 |
+| SWS_RamTst_00206 | `deinit_without_init` | 测试 test_deinit_without_init 覆盖: deinit_without_init 场景 |
+| SWS_RamTst_00207 | `run_after_init` | 测试 test_run_after_init 覆盖: run_after_init 场景 |
+| SWS_RamTst_00208 | `run_without_init` | 测试 test_run_without_init 覆盖: run_without_init 场景 |
+| SWS_RamTst_00209 | `run_while_already_running` | 测试 test_run_while_already_running 覆盖: run_while_already_running 场景 |
+| SWS_RamTst_00210 | `stop_while_running` | 测试 test_stop_while_running 覆盖: stop_while_running 场景 |
+| SWS_RamTst_00211 | `stop_while_idle` | 测试 test_stop_while_idle 覆盖: stop_while_idle 场景 |
+| SWS_RamTst_00212 | `stop_while_uninit` | 测试 test_stop_while_uninit 覆盖: stop_while_uninit 场景 |
+| SWS_RamTst_00213 | `get_status_uninit` | 测试 test_get_status_uninit 覆盖: get_status_uninit 场景 |
+| SWS_RamTst_00214 | `get_status_idle` | 测试 test_get_status_idle 覆盖: get_status_idle 场景 |
+| SWS_RamTst_00215 | `get_status_running` | 测试 test_get_status_running 覆盖: get_status_running 场景 |
+| SWS_RamTst_00216 | `get_result_not_tested` | 测试 test_get_result_not_tested 覆盖: get_result_not_tested 场景 |
+| SWS_RamTst_00217 | `get_result_after_run` | 测试 test_get_result_after_run 覆盖: get_result_after_run 场景 |
+| SWS_RamTst_00218 | `mainfunction_when_not_running` | 测试 test_mainfunction_when_not_running 覆盖: mainfunction_when_not_running 场景 |
+| SWS_RamTst_00219 | `mainfunction_completes_test` | 测试 test_mainfunction_completes_test 覆盖: mainfunction_completes_test 场景 |
+| SWS_RamTst_00220 | `mainfunction_while_uninit` | 测试 test_mainfunction_while_uninit 覆盖: mainfunction_while_uninit 场景 |
+| SWS_RamTst_00221 | `full_test_cycle` | 测试 test_full_test_cycle 覆盖: full_test_cycle 场景 |
+| SWS_RamTst_00222 | `multiple_test_cycles` | 测试 test_multiple_test_cycles 覆盖: multiple_test_cycles 场景 |
+| SWS_RamTst_00223 | `stop_during_test` | 测试 test_stop_during_test 覆盖: stop_during_test 场景 |
+| SWS_RamTst_00224 | `algorithm_march` | 测试 test_algorithm_march 覆盖: algorithm_march 场景 |
+| SWS_RamTst_00225 | `algorithm_galpat` | 测试 test_algorithm_galpat 覆盖: algorithm_galpat 场景 |
+| SWS_RamTst_00226 | `algorithm_walkpath` | 测试 test_algorithm_walkpath 覆盖: algorithm_walkpath 场景 |

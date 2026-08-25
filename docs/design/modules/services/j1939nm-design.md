@@ -407,3 +407,20 @@ typedef struct {
 | AUTOSAR_SWS_J1939NetworkManagement | AUTOSAR J1939 NM 模块规范 |
 | AUTOSAR_SWS_CanInterface | CAN 接口规范 |
 | `src/bsw/services/j1939nm/` | 源代码目录 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_J1939Nm_00001 | `J1939Nm_GetState` | 测试 test_J1939Nm_GetState_NotInitialized 覆盖: J1939Nm_GetState_NotInitialized 场景 |
+| SWS_J1939Nm_00002 | `J1939Nm_DeInit` | 测试 test_J1939Nm_DeInit_ValidCall_ShouldSucceed 覆盖: J1939Nm_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Nm_00003 | `J1939Nm_GetVersionInfo` | 测试 test_J1939Nm_GetVersionInfo_NullPointer 覆盖: J1939Nm_GetVersionInfo_NullPointer 场景 |
+| SWS_J1939Nm_00004 | `J1939Nm_MainFunction` | 测试 test_J1939Nm_MainFunction 覆盖: J1939Nm_MainFunction 场景 |
+| SWS_J1939Nm_00005 | `J1939Nm_NetworkRequest` | 测试 test_J1939Nm_NetworkRequest_ValidCall_ShouldSucceed 覆盖: J1939Nm_NetworkRequest_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Nm_00006 | `J1939Nm_NetworkRelease` | 测试 test_J1939Nm_NetworkRelease_ValidCall_ShouldSucceed 覆盖: J1939Nm_NetworkRelease_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Nm_00007 | `J1939Nm_GetNodeState` | 测试 test_J1939Nm_GetNodeState_ValidCall_ShouldReturnState 覆盖: J1939Nm_GetNodeState_ValidCall_ShouldReturnState 场景 |
+| SWS_J1939Nm_00008 | `J1939Nm_SetGetAddress` | 测试 test_J1939Nm_SetGetAddress_Valid 覆盖: J1939Nm_SetGetAddress_Valid 场景 |
+| SWS_J1939Nm_00010 | `J1939Nm_SetGetName` | 测试 test_J1939Nm_SetGetName_Valid 覆盖: J1939Nm_SetGetName_Valid 场景 |
+| SWS_J1939Nm_00013 | `J1939Nm_RxIndication_AddressClaimed` | 测试 test_J1939Nm_RxIndication_AddressClaimed 覆盖: J1939Nm_RxIndication_AddressClaimed 场景 |

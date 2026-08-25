@@ -353,3 +353,20 @@ typedef struct {
 1. AUTOSAR_SWS_Wdg.pdf
 2. `docs/modules/Wdg.md`
 3. `src/bsw/mcal/Wdg/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Wdg | — | WDG 模块级需求归属 |
+| SWS_Wdg_00001 | `wdg_init_already_initialized` | 测试 wdg_init_already_initialized 覆盖: wdg_init_already_initialized 场景 |
+| SWS_Wdg_00002 | `wdg_set_mode_off_allowed` | 测试 wdg_set_mode_off_allowed 覆盖: wdg_set_mode_off_allowed 场景 |
+| SWS_Wdg_00003 | `wdg_trigger_not_initialized` | 测试 wdg_trigger_not_initialized 覆盖: wdg_trigger_not_initialized 场景 |
+| SWS_Wdg_00004 | `wdg_get_version_info_null` | 测试 wdg_get_version_info_null 覆盖: wdg_get_version_info_null 场景 |
+| SWS_Wdg_00005 | `wdg_set_trigger_condition_invalid` | 测试 wdg_set_trigger_condition_invalid 覆盖: wdg_set_trigger_condition_invalid 场景 |
+| SWS_Wdg_00006 | `Wdg_GetStatus` | 测试 test_Wdg_GetStatus_AfterInit_ShouldReturnState 覆盖: Wdg_GetStatus_AfterInit_ShouldReturnState 场景 |
+| SWS_Wdg_00007 | `Wdg_GetTriggerCounter` | 测试 test_Wdg_GetTriggerCounter_AfterInit_ShouldReturnZero 覆盖: Wdg_GetTriggerCounter_AfterInit_ShouldReturnZero 场景 |
+| SWS_Wdg_00008 | `Wdg_GetLastTriggerTime` | 测试 test_Wdg_GetLastTriggerTime_AfterInit_ShouldReturnZero 覆盖: Wdg_GetLastTriggerTime_AfterInit_ShouldReturnZero 场景 |
+| SWS_Wdg_00201 | `wdg_DeInit_should_cleanup_successfully` | 测试 test_wdg_DeInit_should_cleanup_successfully 覆盖: wdg_DeInit_should_cleanup_successfully 场景 |

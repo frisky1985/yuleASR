@@ -312,3 +312,9 @@ typedef struct {
 1. AUTOSAR_SWS_Port.pdf
 2. `docs/modules/Port.md`
 3. `src/bsw/mcal/Port/`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Port | — | PORT 模块级需求归属 |

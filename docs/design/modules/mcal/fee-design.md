@@ -343,3 +343,18 @@ src/bsw/mcal/fee/
 1. AUTOSAR_SWS_FlashEEPROMEmulation.pdf
 2. `docs/modules/FEE.md`
 3. `src/bsw/mcal/fee/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Fee_00001 | `Fee` | 测试 test_Fee_Init_DoubleInit_ShouldSucceed 覆盖: Fee_Init_DoubleInit_ShouldSucceed 场景 |
+| SWS_Fee_00002 | `Fee` | 测试 test_Fee_Invalidate_ValidBlock_ShouldSucceed 覆盖: Fee_Invalidate_ValidBlock_ShouldSucceed 场景 |
+| SWS_Fee_00003 | `Fee_Read` | 测试 test_Fee_Read_ValidBlock_ShouldSucceed 覆盖: Fee_Read_ValidBlock_ShouldSucceed 场景 |
+| SWS_Fee_00004 | `Fee_Write` | 测试 test_Fee_Write_ValidData_ShouldSucceed 覆盖: Fee_Write_ValidData_ShouldSucceed 场景 |
+| SWS_Fee_00005 | `Fee_Cancel` | 测试 test_Fee_Cancel_ValidCall_ShouldSucceed 覆盖: Fee_Cancel_ValidCall_ShouldSucceed 场景 |
+| SWS_Fee_00006 | `Fee_GetStatus` | 测试 test_Fee_GetStatus_ValidCall_ShouldReturnStatus 覆盖: Fee_GetStatus_ValidCall_ShouldReturnStatus 场景 |
+| SWS_Fee_00007 | `Fee_GetVersionInfo` | 测试 test_Fee_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: Fee_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_Fee_00008 | `Fee` | 测试 test_Fee_InvalidateImmediate_ValidBlock_ShouldSucceed 覆盖: Fee_InvalidateImmediate_ValidBlock_ShouldSucceed 场景 |

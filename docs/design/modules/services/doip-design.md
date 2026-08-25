@@ -200,3 +200,17 @@ typedef struct {
 - AUTOSAR_SWS_DiagnosticsOverIP.pdf (R4.4.0)
 - ISO 13400-2:2019
 - yuleASR DoIP 源码: `src/bsw/services/doip/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_DoIP_00003 | `DoIP_GetVersionInfo` | 测试 test_DoIP_GetVersionInfo 覆盖: DoIP_GetVersionInfo 场景 |
+| SWS_DoIP_00005 | `DoIP_RxIndication` | 测试 test_DoIP_RxIndication_ValidCall_ShouldSucceed 覆盖: DoIP_RxIndication_ValidCall_ShouldSucceed 场景 |
+| SWS_DoIP_00006 | `DoIP_SoAdIfRxIndication` | 测试 test_DoIP_SoAdIfRxIndication 覆盖: DoIP_SoAdIfRxIndication 场景 |
+| SWS_DoIP_00007 | `DoIP_GetConnectionState` | 测试 test_DoIP_GetConnectionState_ValidCall_ShouldReturnState 覆盖: DoIP_GetConnectionState_ValidCall_ShouldReturnState 场景 |
+| SWS_DoIP_00008 | `DoIP_ActivateRouting` | 测试 test_DoIP_ActivateRouting_ValidCall_ShouldSucceed 覆盖: DoIP_ActivateRouting_ValidCall_ShouldSucceed 场景 |
+| SWS_DoIP_00009 | `DoIP_DeactivateRouting` | 测试 test_DoIP_DeactivateRouting_ValidCall_ShouldSucceed 覆盖: DoIP_DeactivateRouting_ValidCall_ShouldSucceed 场景 |
+| SWS_DoIP_00017 | `DoIP_SoAdTpTxConfirmation` | 测试 test_DoIP_SoAdTpTxConfirmation 覆盖: DoIP_SoAdTpTxConfirmation 场景 |

@@ -403,3 +403,18 @@ typedef struct {
 | SOME/IP Protocol Specification | SOME/IP 协议规范 |
 | AUTOSAR_SWS_SocketAdaptor | SoAd 规范 |
 | `src/bsw/services/someiptp/` | 源代码目录 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_SomeIpTp_00001 | `SomeIpTp` | 测试 test_SomeIpTp_Init 覆盖: SomeIpTp_Init 场景 |
+| SWS_SomeIpTp_00002 | `SomeIpTp_DeInit` | 测试 test_SomeIpTp_DeInit_ValidCall_ShouldSucceed 覆盖: SomeIpTp_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpTp_00003 | `SomeIpTp_GetVersionInfo` | 测试 test_SomeIpTp_GetVersionInfo_ValidPtr_ShouldSucceed 覆盖: SomeIpTp_GetVersionInfo_ValidPtr_ShouldSucceed 场景 |
+| SWS_SomeIpTp_00004 | `SomeIpTp_Transmit` | 测试 test_SomeIpTp_Transmit_ValidCall_ShouldSucceed 覆盖: SomeIpTp_Transmit_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpTp_00005 | `SomeIpTp_Transmit` | 测试 test_SomeIpTp_Transmit 覆盖: SomeIpTp_Transmit 场景 |
+| SWS_SomeIpTp_00006 | `SomeIpTp_GetState` | 测试 test_SomeIpTp_GetState_ValidCall_ShouldSucceed 覆盖: SomeIpTp_GetState_ValidCall_ShouldSucceed 场景 |
+| SWS_SomeIpTp_00007 | `SomeIpTp_RxIndication` | 测试 test_SomeIpTp_RxIndication 覆盖: SomeIpTp_RxIndication 场景 |
+| SWS_SomeIpTp_00008 | `SomeIpTp_TxConfirmation` | 测试 test_SomeIpTp_TxConfirmation 覆盖: SomeIpTp_TxConfirmation 场景 |

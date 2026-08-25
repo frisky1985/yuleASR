@@ -188,3 +188,11 @@ typedef struct {
 
 - AUTOSAR_SWS_LINInterface.pdf (R4.4.0)
 - yuleASR LinIf 源码: `src/bsw/ecual/linif/`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_LinIf_00008 | `LinIf_GetFrameStatus` | 测试 test_LinIf_GetFrameStatus_ValidCall_ShouldReturnStatus 覆盖: LinIf_GetFrameStatus_ValidCall_ShouldReturnStatus 场景 |

@@ -444,3 +444,20 @@ Byte 1-7: 数据 (7 字节)
 | AUTOSAR_SWS_J1939TransportProtocol | AUTOSAR J1939 TP 模块规范 |
 | AUTOSAR_SWS_PduRouter | PDU 路由器规范 |
 | `src/bsw/services/j1939tp/` | 源代码目录 |
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_J1939Tp_00001 | `j1939tp` | 测试 test_j1939tp_Init_should_initialize 覆盖: j1939tp_Init_should_initialize 场景 |
+| SWS_J1939Tp_00002 | `J1939Tp_DeInit` | 测试 test_J1939Tp_DeInit_ValidCall_ShouldSucceed 覆盖: J1939Tp_DeInit_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Tp_00003 | `J1939Tp_GetVersionInfo` | 测试 test_J1939Tp_GetVersionInfo_NullPtr 覆盖: J1939Tp_GetVersionInfo_NullPtr 场景 |
+| SWS_J1939Tp_00004 | `J1939Tp_MainFunction` | 测试 test_J1939Tp_MainFunction_ValidCall_ShouldSucceed 覆盖: J1939Tp_MainFunction_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Tp_00005 | `J1939Tp_CancelTransmit` | 测试 test_J1939Tp_CancelTransmit_NoActiveSession 覆盖: J1939Tp_CancelTransmit_NoActiveSession 场景 |
+| SWS_J1939Tp_00006 | `J1939Tp_CancelTransmit` | 测试 test_J1939Tp_CancelTransmit_ValidCall_ShouldSucceed 覆盖: J1939Tp_CancelTransmit_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Tp_00007 | `J1939Tp_GetState` | 测试 test_J1939Tp_GetState_ValidCall_ShouldSucceed 覆盖: J1939Tp_GetState_ValidCall_ShouldSucceed 场景 |
+| SWS_J1939Tp_00008 | `J1939Tp_ChangeParameter` | 测试 test_J1939Tp_ChangeParameter 覆盖: J1939Tp_ChangeParameter 场景 |
+| SWS_J1939Tp_00009 | `J1939Tp_RxIndication` | 测试 test_J1939Tp_RxIndication_ValidPdu 覆盖: J1939Tp_RxIndication_ValidPdu 场景 |
+| SWS_J1939Tp_00010 | `J1939Tp_TxConfirmation` | 测试 test_J1939Tp_TxConfirmation 覆盖: J1939Tp_TxConfirmation 场景 |

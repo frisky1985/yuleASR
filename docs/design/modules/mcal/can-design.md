@@ -390,3 +390,9 @@ const Can_ConfigType* const Can_ConfigPtr = &Can_Config;
 1. AUTOSAR_SWS_CAN.pdf
 2. `docs/modules/CAN.md`
 3. `src/bsw/mcal/can/`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Can | — | CAN 模块级需求归属 |

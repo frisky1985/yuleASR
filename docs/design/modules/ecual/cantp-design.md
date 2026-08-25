@@ -532,3 +532,9 @@ Key runtime error codes defined in `CanTp.h`:
 5. `src/bsw/ecual/cantp/include/CanTp_Cfg.h`
 6. `src/bsw/ecual/cantp/src/CanTp.c`
 7. `src/bsw/ecual/cantp/src/CanTp_Lcfg.c`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanTp | — | CANTP 模块级需求归属 |

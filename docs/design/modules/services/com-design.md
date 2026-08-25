@@ -409,3 +409,14 @@ RTE 通过 `Com_SendSignal` / `Com_ReceiveSignal` 读写信号；对于信号组
 3. `src/bsw/services/com/include/Com.h`
 4. `src/bsw/services/com/src/Com.c`
 5. `src/bsw/services/com/src/Com_Lcfg.c`
+
+## 需求追溯表
+
+> 自动生成 (2026-08-25): 测试引用编号 → 需求定义补全。
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_Com | — | COM 模块级需求归属 |
+| SWS_Com_00022 | `—` |  |
+| SWS_Com_00024 | `—` |  |
+| SWS_Com_00025 | `—` |  |

@@ -384,3 +384,9 @@ typedef struct {
 - `src/bsw/ecual/canif/include/CanIf.h`
 - `src/bsw/ecual/canif/src/CanIf.c`
 - `src/bsw/ecual/canif/src/CanIf_Lcfg.c`
+
+## 需求追溯表
+
+| 需求 ID | 对应 API | 功能描述 |
+|---------|----------|----------|
+| SWS_CanIf | — | CANIF 模块级需求归属 |
