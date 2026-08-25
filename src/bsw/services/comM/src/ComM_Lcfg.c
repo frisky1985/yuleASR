@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_ComM_00001 @req SWS_ComM_00002 @req SWS_ComM_00004 */
+
 
 /**
  * @file ComM_Lcfg.c

@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_CANTSYN */
+
 
 /* CanTSyn Link-time Configuration */
 #include "CanTSyn.h"

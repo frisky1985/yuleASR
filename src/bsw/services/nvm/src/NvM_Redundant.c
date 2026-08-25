@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_NvM_00001 @req SWS_NvM_00005 @req SWS_NvM_00011 */
+
 
 /**
  * @file NvM_Redundant.c

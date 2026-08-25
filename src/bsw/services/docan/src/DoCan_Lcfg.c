@@ -9,6 +9,8 @@
  * AutoSAR Standard: Diagnostic over CAN (DoCan)
  * Layer: Service Layer
  */
+/* @req SWS_DoCan_00001 @req SWS_DoCan_00002 @req SWS_DoCan_00005 */
+
 
 /*==================================================================================================
 *                                             INCLUDES

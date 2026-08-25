@@ -7,6 +7,8 @@
  * Implementation of AUTOSAR CSM 4.4 specification
  * Job-based asynchronous crypto service interface
  */
+/* @req SWS_Csm_00001 @req SWS_Csm_00002 @req SWS_Csm_00010 */
+
 
 #include <stdlib.h>
 #include <string.h>

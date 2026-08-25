@@ -15,6 +15,8 @@
  * It defines the mapping between EthSM networks, Ethernet controllers, transceivers,
  * and TcpIp controllers.
  */
+/* @req SWS_EthSM_00001 @req SWS_EthSM_00002 @req SWS_EthSM_00003 */
+
 
 /*==================================================================================================
 *                                          INCLUDE FILES

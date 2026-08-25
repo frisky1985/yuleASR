@@ -10,6 +10,8 @@
  *
  * @copyright Copyright (c) 2024
  */
+/* @req SHALL_OS */
+
 
 #include "isotp_pdur.h"
 #include <string.h>

@@ -6,6 +6,8 @@
  *
  * 实现AUTOSAR SecOC 4.4规范的核心功能
  */
+/* @req SWS_SecOC_00001 @req SWS_SecOC_00002 @req SWS_SecOC_00040 */
+
 
 #include "secoc_core.h"
 #include <stdlib.h>

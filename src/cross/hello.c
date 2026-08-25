@@ -12,6 +12,8 @@
  * with arm-none-eabi-gcc -ffreestanding (the full BSW cross-build uses
  * the AUTOSAR stub headers via CMake toolchain).
  */
+/* @req SHALL_OS */
+
 
 typedef unsigned int uint32_t;
 typedef unsigned char uint8_t;

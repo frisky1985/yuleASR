@@ -7,6 +7,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_OS */
+
 
 #include "ara/sm/sm_interface.h"
 #include <string.h>

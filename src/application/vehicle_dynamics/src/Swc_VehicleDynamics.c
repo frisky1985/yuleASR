@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_VEHICLE_DYNAMICS */
+
 
 /**
  * @file Swc_VehicleDynamics.c

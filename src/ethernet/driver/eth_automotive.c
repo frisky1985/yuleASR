@@ -8,6 +8,8 @@
  * @note 支持1000BASE-T1 (TJA1103/DP83TG720/88Q2112)
  * @note 符合AUTOSAR MCAL规范
  */
+/* @req SHALL_DRIVER */
+
 
 #include "eth_automotive.h"
 #include <string.h>

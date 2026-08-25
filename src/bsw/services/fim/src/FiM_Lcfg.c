@@ -1,4 +1,6 @@
 /** @file FiM_Lcfg.c @brief FiM Link-Time Configuration */
+/* @req SWS_FiM_00001 @req SWS_FiM_00002 @req SWS_FiM_00003 */
+
 #include "FiM.h"
 #include "FiM_Cfg.h"
 extern const FiM_ConfigType* const FiM_ConfigPtr;

@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_EcuC_00001 @req SWS_EcuC_00002 @req SWS_EcuC_00004 */
+
 
 /**
  * @file EcuC_Lcfg.c

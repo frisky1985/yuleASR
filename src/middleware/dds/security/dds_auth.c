@@ -6,6 +6,8 @@
  * This file implements the DDS:Auth:PKI-DH authentication plugin
  * as specified in the OMG DDS-Security specification.
  */
+/* @req SHALL_DDS */
+
 
 #include "dds_auth.h"
 #include <stdlib.h>

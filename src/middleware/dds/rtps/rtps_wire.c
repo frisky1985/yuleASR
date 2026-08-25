@@ -4,6 +4,8 @@
  * @version 1.0
  * @date 2026-08-04
  */
+/* @req SHALL_DDS */
+
 #include "rtps_wire.h"
 #include <string.h>
 

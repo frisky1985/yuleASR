@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_MODE_MANAGER */
+
 
 /**
  * @file Swc_ModeManager.c

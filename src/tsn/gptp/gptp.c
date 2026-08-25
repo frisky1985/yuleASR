@@ -8,6 +8,8 @@
  * @note 时钟同步精度<100ns
  * @note 符合ASIL-D安全等级
  */
+/* @req SHALL_GPTP */
+
 
 #include "gptp.h"
 #include <string.h>

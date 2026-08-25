@@ -6,6 +6,8 @@
  *
  * 使用静态内存分配，避免malloc/free
  */
+/* @req SHALL_MICRODDS */
+
 
 #include <stdint.h>
 #include <stdbool.h>

@@ -2,6 +2,8 @@
  * @file telemetry_dds.c
  * @brief DDS集成实现
  */
+/* @req SHALL_TELEMETRY */
+
 
 #include "telemetry_dds.h"
 #include <string.h>

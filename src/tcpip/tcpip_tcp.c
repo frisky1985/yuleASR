@@ -7,6 +7,8 @@
  * @note MISRA C:2012 compliant
  * @note RFC 793, RFC 1122, RFC 5681 compliant
  */
+/* @req SWS_TcpIp_00001 @req SWS_TcpIp_00002 @req SWS_TcpIp_00003 */
+
 
 #include <string.h>
 #include "tcpip_tcp.h"

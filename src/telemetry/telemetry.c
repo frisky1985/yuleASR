@@ -2,6 +2,8 @@
  * @file telemetry.c
  * @brief 嵌入式埋点系统核心实现
  */
+/* @req SHALL_TELEMETRY */
+
 
 #include "telemetry.h"
 

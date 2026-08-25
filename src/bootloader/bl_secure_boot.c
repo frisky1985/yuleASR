@@ -8,6 +8,8 @@
  * 使用SecOC/CSM/KeyM进行安全验证
  * ASIL-D Safety Level
  */
+/* @req SHALL_BOOT */
+
 
 #include <string.h>
 #include <stdlib.h>

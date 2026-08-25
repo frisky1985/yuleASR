@@ -9,6 +9,8 @@
  * AutoSAR Standard: LIN Network Management (LINNM)
  * Layer: ECU Abstraction Layer (ECUAL)
  */
+/* @req SHALL_LINNM */
+
 
 /*==================================================================================================
 *                                          INCLUDE FILES

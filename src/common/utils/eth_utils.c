@@ -2,6 +2,8 @@
  * @file eth_utils.c
  * @brief 通用工具函数实现
  */
+/* @req SHALL_UTILS */
+
 
 #include "eth_utils.h"
 #include <string.h>

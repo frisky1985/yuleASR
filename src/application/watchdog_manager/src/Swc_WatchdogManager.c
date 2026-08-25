@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_WATCHDOG_MANAGER */
+
 
 /**
  * @file Swc_WatchdogManager.c

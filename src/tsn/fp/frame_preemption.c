@@ -8,6 +8,8 @@
  * @note 快速帧切换 < 100ns
  * @note 符合ASIL-D安全等级
  */
+/* @req SHALL_FP */
+
 
 #include "frame_preemption.h"
 #include <string.h>

@@ -2,6 +2,8 @@
  * @file BswM_Lcfg.c
  * @brief BswM Configuration Tables
  */
+/* @req SWS_BswM_00001 @req SWS_BswM_00002 @req SWS_BswM_00010 */
+
 
 #include "BswM.h"
 #include "BswM_Cfg.h"

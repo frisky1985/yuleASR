@@ -8,6 +8,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_OS */
+
 
 #include "isotp_core.h"
 #include <string.h>

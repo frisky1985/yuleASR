@@ -9,6 +9,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_RAM */
+
 
 #include "ram_monitor.h"
 #include "../../common/utils/eth_utils.h"

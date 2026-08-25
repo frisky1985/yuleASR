@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_FrTp_00001 @req SWS_FrTp_00002 @req SWS_FrTp_00005 */
+
 
 /**
  * @file FrTp_PrivUtil.c

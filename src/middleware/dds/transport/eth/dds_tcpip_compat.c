@@ -8,6 +8,8 @@
  * - 签名一致的 (create/close): 直接转发
  * - 签名不一致的 (bind/sendto/recvfrom/join/leave): 宏重命名真实函数后实现适配版
  */
+/* @req SHALL_DDS */
+
 #include <stdint.h>
 #include <stddef.h>
 

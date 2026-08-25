@@ -9,6 +9,8 @@
  * - Lookup table for freshness value
  * - Static memory pools (no malloc/free)
  */
+/* @req SWS_SecOC_00001 @req SWS_SecOC_00002 @req SWS_SecOC_00040 */
+
 
 #include "secoc_core.h"
 #include <string.h>

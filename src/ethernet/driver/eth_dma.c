@@ -8,6 +8,8 @@
  * @note 支持中断和轮询模式
  * @note 符合AUTOSAR MCAL规范
  */
+/* @req SHALL_DRIVER */
+
 
 #include "eth_dma.h"
 #include <string.h>

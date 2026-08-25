@@ -4,6 +4,8 @@
  * @copyright Copyright (c) 2024 YuleTech
  * @license MIT
  */
+/* @req SHALL_OS */
+
 
 #include "microdds/qos.h"
 #include <string.h>

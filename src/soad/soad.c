@@ -1,3 +1,5 @@
+/* @req SWS_SoAd_00001 @req SWS_SoAd_00002 @req SWS_SoAd_00003 */
+
 #include "tcpip/tcpip_socket.h"
 
 /**

@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_FiM_00001 @req SWS_FiM_00002 @req SWS_FiM_00003 */
+
 
 /*
  * FiM_Lcfg.c - Function Inhibition Manager Link-time Configuration

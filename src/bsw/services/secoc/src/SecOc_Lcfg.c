@@ -5,6 +5,8 @@
  * Profiles and PDUs are declared in the module's configuration header
  * (SecOc_Cfg.h / SecOC_Cfg.h).
  *================================================================================================*/
+/* @req SWS_SecOC_00001 @req SWS_SecOC_00002 @req SWS_SecOC_00040 */
+
 
 #include "SecOC.h"
 #include "SecOC_Cfg.h"

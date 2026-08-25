@@ -6,6 +6,8 @@
  * This file implements the DDS:Crypto:AES-GCM-GMAC plugin
  * as specified in the OMG DDS-Security specification.
  */
+/* @req SHALL_DDS */
+
 
 #include "dds_crypto.h"
 #include <stdlib.h>

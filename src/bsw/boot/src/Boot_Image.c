@@ -1,3 +1,5 @@
+/* @req SHALL_BOOT */
+
 #include "Boot_Image.h"
 #include <stdint.h>
 #include "Boot_Flash.h"

@@ -7,6 +7,8 @@
  * Implementation of AUTOSAR KeyM 4.4 specification
  * Key slot management, key derivation, and key rotation
  */
+/* @req SWS_KeyM_00001 @req SWS_KeyM_00002 @req SWS_KeyM_00003 */
+
 
 #include <stdlib.h>
 #include <string.h>

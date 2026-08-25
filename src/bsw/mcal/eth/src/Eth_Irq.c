@@ -9,6 +9,8 @@
  * 
  * @copyright 2024-2026 Shanghai Yule Electronics Technology Co., Ltd.
  */
+/* @req SWS_Eth_00001 @req SWS_Eth_00002 @req SWS_Eth_00003 */
+
 
 /*==================================================================================================
 *                              PRE-COMPILATION CHECKS

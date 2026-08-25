@@ -8,6 +8,8 @@
  * - SPDP: 简单参与者发现协议（Simple Participant Discovery Protocol）
  * - SEDP: 简单端点发现协议（Simple Endpoint Discovery Protocol）
  */
+/* @req SHALL_DDS */
+
 
 #include "rtps_discovery.h"
 #include <string.h>

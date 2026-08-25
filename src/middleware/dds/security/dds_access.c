@@ -6,6 +6,8 @@
  * This file implements the DDS:Access:Permissions plugin
  * as specified in the OMG DDS-Security specification.
  */
+/* @req SHALL_DDS */
+
 
 #include "dds_access.h"
 #include <stdlib.h>

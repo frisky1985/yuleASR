@@ -12,6 +12,8 @@
  * USAGE: These tables provide optimized CRC calculation via lookup.
  *        Each table is 256 entries for byte-oriented CRC computation.
  ==================================================================================================*/
+/* @req SWS_Crc_00003 @req SWS_Crc_00004 @req SWS_Crc_00005 */
+
 
 /*==================================================================================================
  * INCLUDE FILES

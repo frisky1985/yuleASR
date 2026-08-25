@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_RamSafety_00001 @req SWS_RamSafety_00002 @req SWS_RamSafety_00003 */
+
 
 /**
  * @file RamSafety_Cfg.c

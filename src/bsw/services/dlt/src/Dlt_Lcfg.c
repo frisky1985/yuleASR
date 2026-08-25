@@ -19,6 +19,8 @@
 *       类型兼容说明: 表值采用 services 版 Dlt_Types.h/Dlt_Cfg.h 语义
 *         (Dlt_ContextIdType 已加宽 uint32 对齐 ecual 打包 ASCII; DLT_LOG_OFF 为宏扩展)。
 *================================================================================================*/
+/* @req SWS_Dlt_00001 @req SWS_Dlt_00002 @req SWS_Dlt_00004 */
+
 
 #include "Dlt.h"
 #include "Dlt_Cfg.h"

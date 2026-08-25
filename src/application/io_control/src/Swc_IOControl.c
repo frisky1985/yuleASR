@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_IO_CONTROL */
+
 
 /**
  * @file Swc_IOControl.c

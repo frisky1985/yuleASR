@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_STORAGE_MANAGER */
+
 
 /**
  * @file Swc_StorageManager.c

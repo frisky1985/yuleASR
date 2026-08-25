@@ -7,6 +7,8 @@
  * Implementation of AUTOSAR CryIf 4.4 specification
  * HSM/TPM/TEE hardware abstraction layer
  */
+/* @req SWS_CryIf_00001 @req SWS_CryIf_00002 @req SWS_CryIf_00003 */
+
 
 #include <stdlib.h>
 #include <string.h>

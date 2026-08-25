@@ -5,6 +5,8 @@
  * AUTOSAR R22-11 compliant
  * ISO 26262 ASIL-D Safety Level
  ******************************************************************************/
+/* @req SHALL_SAFERAM */
+
 
 #include "fault_injection.h"
 #include <string.h>

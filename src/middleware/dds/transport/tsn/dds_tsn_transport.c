@@ -4,6 +4,8 @@
  * @version 1.0
  * @date 2026-04-26
  */
+/* @req SHALL_DDS */
+
 
 #include <string.h>
 #include <stdio.h>

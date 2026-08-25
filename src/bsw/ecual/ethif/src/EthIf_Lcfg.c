@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_EthIf_00001 @req SWS_EthIf_00002 @req SWS_EthIf_00003 */
+
 
 /**
  * @file EthIf_Lcfg.c

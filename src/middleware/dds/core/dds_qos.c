@@ -9,6 +9,8 @@
  * dds_subscriber_qos_init / dds_topic_qos_init /
  * dds_datawriter_qos_init / dds_datareader_qos_init
  */
+/* @req SHALL_OS */
+
 #include "dds_qos.h"
 #include <string.h>
 

@@ -8,6 +8,8 @@
  * @note SR Class A (2ms) / SR Class B (50ms)
  * @note 符合ASIL-D安全等级
  */
+/* @req SHALL_CBS */
+
 
 #include "cbs.h"
 #include <string.h>

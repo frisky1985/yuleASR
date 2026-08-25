@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_CanIf_00001 @req SWS_CanIf_00002 @req SWS_CanIf_00003 */
+
 
 /*
  * CanIf_Lcfg.c

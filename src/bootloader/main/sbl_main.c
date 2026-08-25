@@ -14,6 +14,8 @@
  *
  * UNECE R156 / GB 44496-2024 对齐, ASIL-D Safety Level
  */
+/* @req SHALL_BOOT */
+
 
 #include <string.h>
 #include "sbl_main.h"

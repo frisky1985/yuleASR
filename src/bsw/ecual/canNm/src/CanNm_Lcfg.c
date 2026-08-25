@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_CanNm_00001 @req SWS_CanNm_00002 @req SWS_CanNm_00004 */
+
 
 /**
  * @file CanNm_Lcfg.c

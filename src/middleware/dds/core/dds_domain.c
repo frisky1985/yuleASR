@@ -15,6 +15,8 @@
  * 参与者管理委托给 runtime 层 (dds_runtime_create_participant 等)，
  * 本层维护标准句柄 → 内部实体的映射。
  */
+/* @req SHALL_DDS */
+
 #include "dds_domain.h"
 #include "dds_entity.h"
 #include "dds_qos.h"

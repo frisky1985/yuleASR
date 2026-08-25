@@ -7,6 +7,8 @@
  * @note 符合AUTOSAR MCAL规范
  * @note 支持功能安全ASIL等级
  */
+/* @req SHALL_DRIVER */
+
 
 #include "eth_mac_driver.h"
 #include <string.h>

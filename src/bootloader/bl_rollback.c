@@ -8,6 +8,8 @@
  * UNECE R156 compliant
  * ASIL-D Safety Level
  */
+/* @req SHALL_BOOT */
+
 
 #include <string.h>
 #include <stdlib.h>

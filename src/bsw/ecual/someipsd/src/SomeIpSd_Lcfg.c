@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_SomeIpSd_00001 @req SWS_SomeIpSd_00002 @req SWS_SomeIpSd_00005 */
+
 
 /**
  * @file SomeIpSd_Lcfg.c

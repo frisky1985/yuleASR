@@ -7,6 +7,8 @@
  * authentication, access control, and encryption for DDS-Security.
  * Designed for automotive use cases per ISO/SAE 21434 and ISO 26262.
  */
+/* @req SHALL_DDS */
+
 
 #include "dds_security_manager.h"
 #include <stdlib.h>

@@ -9,6 +9,8 @@
  * AutoSAR Standard: PDU Router (PDUR)
  * Layer: Service Layer
  */
+/* @req SWS_PduR_00001 @req SWS_PduR_00002 @req SWS_PduR_00012 */
+
 
 /*==================================================================================================
 *                                             INCLUDES

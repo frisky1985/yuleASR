@@ -11,6 +11,8 @@
  * UNECE R156 §7.1.1 SUMS / GB 44496-2024 §7.2 对齐
  * ASIL-D Safety Level
  */
+/* @req SHALL_BOOT */
+
 
 #include <string.h>
 #include <stddef.h>

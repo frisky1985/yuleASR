@@ -1,4 +1,6 @@
 /** @file Nm_Lcfg.c @brief Nm Link-Time Configuration */
+/* @req SWS_Nm_00001 @req SWS_Nm_00002 @req SWS_Nm_00003 */
+
 #include "Nm.h"
 #include "Nm_Cfg.h"
 extern const Nm_ConfigType* const Nm_ConfigPtr;

@@ -2,6 +2,8 @@
  * @file telemetry_diag.c
  * @brief 诊断集成实现
  */
+/* @req SHALL_TELEMETRY */
+
 
 #include "telemetry_diag.h"
 #include <string.h>

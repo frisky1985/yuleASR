@@ -21,6 +21,8 @@
 * communication (Rte_ComSendSignal/Rte_ComReceiveSignal) for data
 * transport, with DET error checking following AUTOSAR MISRA C:2012.
 ==================================================================================================*/
+/* @req SHALL_RTE */
+
 
 /*==================================================================================================
 *                                             INCLUDES

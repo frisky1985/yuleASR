@@ -2,6 +2,8 @@
  * @file dds_log.c
  * @brief DDS日志系统实现
  ******************************************************************************/
+/* @req SHALL_LOG */
+
 
 #include "dds_log.h"
 #include <stdio.h>

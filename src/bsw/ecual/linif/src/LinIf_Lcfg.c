@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SWS_LinIf_00001 @req SWS_LinIf_00002 @req SWS_LinIf_00003 */
+
 
 /**
  * @file LinIf_Lcfg.c

@@ -7,6 +7,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_OS */
+
 #include "rte_dds.h"
 #include "e2e_protection.h"
 #include "autosar_common.h"

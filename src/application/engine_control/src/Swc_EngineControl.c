@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_ENGINE_CONTROL */
+
 
 /**
  * @file Swc_EngineControl.c

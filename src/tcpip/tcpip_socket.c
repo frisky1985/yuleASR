@@ -6,6 +6,8 @@
  *
  * @note MISRA C:2012 compliant
  */
+/* @req SWS_TcpIp_00001 @req SWS_TcpIp_00002 @req SWS_TcpIp_00003 */
+
 
 #include <string.h>
 #include "tcpip_socket.h"

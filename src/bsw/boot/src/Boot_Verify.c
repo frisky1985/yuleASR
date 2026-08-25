@@ -1,3 +1,5 @@
+/* @req SHALL_BOOT */
+
 #include "Boot_Verify.h"
 #include <stdint.h>
 #include <string.h>

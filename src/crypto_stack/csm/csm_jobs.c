@@ -6,6 +6,8 @@
  *
  * Job queue management and processing logic
  */
+/* @req SWS_Csm_00001 @req SWS_Csm_00002 @req SWS_Csm_00010 */
+
 
 #include <string.h>
 #include <stdio.h>

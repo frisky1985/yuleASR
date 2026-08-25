@@ -4,6 +4,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_OS */
+
 
 #include "pdur_interface.h"
 #include "isotp_core.h"

@@ -13,6 +13,8 @@
  * - 地址解析和转换函数
  * - 平台抽象层 (FreeRTOS/POSIX兼容)
  */
+/* @req SHALL_MICRODDS */
+
 
 #include <stdint.h>
 #include <stdbool.h>

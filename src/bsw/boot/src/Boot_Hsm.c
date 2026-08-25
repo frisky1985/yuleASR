@@ -1,3 +1,5 @@
+/* @req SHALL_BOOT */
+
 #include "Boot_Hsm.h"
 #include <stdint.h>
 

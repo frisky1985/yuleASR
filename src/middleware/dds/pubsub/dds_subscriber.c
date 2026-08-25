@@ -4,6 +4,8 @@
  * @version 1.0
  * @date 2026-08-04
  */
+/* @req SHALL_DDS */
+
 #include "dds_subscriber.h"
 
 dds_subscriber_t* dds_subscriber_find(dds_domain_participant_t *participant,

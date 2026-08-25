@@ -8,6 +8,8 @@
  *  Based on ISO 17987-2 Transport Protocol
  *  Following AUTOSAR_SWS_LINTransportProtocol
  */
+/* @req SWS_LinTp_00001 @req SWS_LinTp_00002 @req SWS_LinTp_00003 */
+
 
 /*==================================================================================================
  *                                         INCLUDES

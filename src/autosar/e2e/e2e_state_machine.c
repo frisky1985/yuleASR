@@ -7,6 +7,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_OS */
+
 #include "e2e_state_machine.h"
 #include <string.h>
 #include <stdio.h>

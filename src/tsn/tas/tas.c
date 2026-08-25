@@ -8,6 +8,8 @@
  * @note 确定性延迟<1ms
  * @note 符合ASIL-D安全等级
  */
+/* @req SHALL_TAS */
+
 
 #include "tas.h"
 #include <string.h>

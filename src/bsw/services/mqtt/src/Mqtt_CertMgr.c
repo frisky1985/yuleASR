@@ -4,6 +4,8 @@
  * @copyright Copyright (c) 2024 YuleTech
  * @license MIT
  */
+/* @req SWS_Mqtt_00001 @req SWS_Mqtt_00002 @req SWS_Mqtt_00005 */
+
 
 /*============================================================================
  * 包含文件

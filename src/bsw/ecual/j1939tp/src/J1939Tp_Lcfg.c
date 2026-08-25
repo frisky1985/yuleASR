@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_J1939TP */
+
 
 /* J1939Tp Link-time Configuration */
 #include "J1939Tp.h"

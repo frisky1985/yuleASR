@@ -10,6 +10,8 @@
  * Module ID: 0x33
  * Layer: Service Layer
  */
+/* @req SWS_UdpNm_00001 @req SWS_UdpNm_00002 @req SWS_UdpNm_00003 */
+
 
 /*==================================================================================================
 *                                          INCLUDE FILES

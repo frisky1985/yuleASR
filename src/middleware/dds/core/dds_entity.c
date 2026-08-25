@@ -11,6 +11,8 @@
  * 实体全部来自 dds_domain.c 的静态实体池, 释放 = 池槽回收。
  * 此处将句柄归还给对应池 (地址范围判定)。
  */
+/* @req SHALL_DDS */
+
 #include "dds_entity.h"
 
 /* dds_domain.c 提供的静态池释放接口 (同文件内可见) */

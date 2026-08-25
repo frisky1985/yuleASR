@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_OS */
+
 
 /**
  * @file Swc_DiagnosticManager.c

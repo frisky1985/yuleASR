@@ -8,6 +8,8 @@
  * @note AUTOSAR EthSM specification compliant
  * @note State machine: UNINIT -> INIT -> WAIT_REQ -> READY
  */
+/* @req SHALL_ETH_SM */
+
 
 #include <string.h>
 #include "eth_sm.h"

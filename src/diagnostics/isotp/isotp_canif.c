@@ -4,6 +4,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_OS */
+
 
 #include "isotp_canif.h"
 #include <string.h>

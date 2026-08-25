@@ -12,6 +12,8 @@
  * On aarch64 host builds the same semantics are provided with the real
  * PSTATE.DAIF interrupt-mask instructions (msr daifset/daifclr #2).
  *================================================================================================*/
+/* @req SWS_Mcu_00001 @req SWS_Mcu_00002 @req SWS_Mcu_00003 */
+
 #include "Mcal.h"
 
 /*==================================================================================================

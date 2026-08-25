@@ -8,6 +8,8 @@
  * @note 符合IEEE 802.1AS/Qbv/Qbu/Qav/Qcc/Qca
  * @note 支持ASIL-D安全等级
  */
+/* @req SHALL_TSN */
+
 
 #include "tsn_stack.h"
 #include <string.h>

@@ -4,6 +4,8 @@
  * @version 1.0
  * @date 2026-08-04
  */
+/* @req SHALL_DDS */
+
 #include "dds_writer.h"
 
 uint32_t dds_writer_get_samples_written(dds_data_writer_t *writer)

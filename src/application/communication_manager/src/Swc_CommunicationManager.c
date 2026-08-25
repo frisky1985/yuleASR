@@ -9,6 +9,8 @@
 * SPDX-License-Identifier: MIT
 *
 *================================================================================================*/
+/* @req SHALL_COMMUNICATION_MANAGER */
+
 
 /**
  * @file Swc_CommunicationManager.c

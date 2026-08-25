@@ -4,6 +4,8 @@
  * @version 1.0
  * @date 2026-08-04
  */
+/* @req SHALL_DDS */
+
 #include "dds_publisher.h"
 
 dds_publisher_t* dds_publisher_find(dds_domain_participant_t *participant,

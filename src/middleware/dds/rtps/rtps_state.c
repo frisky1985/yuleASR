@@ -6,6 +6,8 @@
  *
  * 实现Writer/Reader状态管理、心跳机制和网络状态管理
  */
+/* @req SHALL_DDS */
+
 
 #include "rtps_state.h"
 #include <string.h>

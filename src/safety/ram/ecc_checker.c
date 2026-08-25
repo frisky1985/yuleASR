@@ -10,6 +10,8 @@
  *
  * @copyright Copyright (c) 2024
  ******************************************************************************/
+/* @req SHALL_RAM */
+
 
 #include "ecc_checker.h"
 #include <string.h>

@@ -8,6 +8,8 @@
  * @note MSRP协议实现
  * @note 符合ASIL-D安全等级
  */
+/* @req SWS_Srp_00001 @req SWS_Srp_00002 @req SWS_Srp_00005 */
+
 
 #include "stream_reservation.h"
 #include <string.h>

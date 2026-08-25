@@ -7,6 +7,8 @@
  * 默认无时间源（provider 未注册）→ bl_time_get_ms() 返回 false。
  * 平台启动早期调用 bl_time_set_provider() 接入真实时钟。
  */
+/* @req SHALL_BOOT */
+
 
 #include <stddef.h>
 #include "bl_time.h"
