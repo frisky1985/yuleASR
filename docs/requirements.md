@@ -73,8 +73,8 @@
 
 - **SWR-002.1-04**: SHALL implement secure boot mechanism
 - 系统需求追溯: SYS-REQ-BSW-002-04
-- 测试追溯: —
-- 状态: ❌ Not Covered
+- 测试追溯: src/bootloader/tests/test_bootloader.c
+- 状态: ✅ Covered
 
 ### REQ-SWR-002.1-05
 
