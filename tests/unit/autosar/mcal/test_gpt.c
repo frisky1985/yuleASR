@@ -550,7 +550,7 @@ static void reset_driver_state(void)
 /*-----------------------------------------
  * Initialization Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00201 */
+/* @req SWS_Gpt_00001 */
 void test_init_valid(void)
 {
     printf("\n=== Test: Init Valid ===\n");
@@ -564,7 +564,7 @@ void test_init_valid(void)
     TEST_ASSERT(Gpt_ConfigPtr == &test_config);
 }
 
-/* @req SWS_Gpt_00202 */
+/* @req SWS_Gpt_00001 */
 void test_init_null_config(void)
 {
     printf("\n=== Test: Init NULL Config ===\n");
@@ -579,7 +579,7 @@ void test_init_null_config(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_POINTER, det_error_id);
 }
 
-/* @req SWS_Gpt_00203 */
+/* @req SWS_Gpt_00001 */
 void test_init_already_initialized(void)
 {
     printf("\n=== Test: Init Already Initialized ===\n");
@@ -599,7 +599,7 @@ void test_init_already_initialized(void)
 /*-----------------------------------------
  * Deinitialization Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00204 */
+/* @req SWS_Gpt_00002 */
 void test_deinit_valid(void)
 {
     printf("\n=== Test: DeInit Valid ===\n");
@@ -612,7 +612,7 @@ void test_deinit_valid(void)
     TEST_ASSERT_EQ(FALSE, Gpt_DriverInitialized);
 }
 
-/* @req SWS_Gpt_00205 */
+/* @req SWS_Gpt_00002 */
 void test_deinit_not_initialized(void)
 {
     printf("\n=== Test: DeInit Not Initialized ===\n");
@@ -624,7 +624,7 @@ void test_deinit_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00206 */
+/* @req SWS_Gpt_00002 */
 void test_deinit_with_running_channel(void)
 {
     printf("\n=== Test: DeInit With Running Channel ===\n");
@@ -648,7 +648,7 @@ void test_deinit_with_running_channel(void)
 /*-----------------------------------------
  * GetTimeElapsed Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00207 */
+/* @req SWS_Gpt_00003 */
 void test_get_time_elapsed_valid(void)
 {
     printf("\n=== Test: GetTimeElapsed Valid ===\n");
@@ -663,7 +663,7 @@ void test_get_time_elapsed_valid(void)
     TEST_ASSERT_EQ(5000, elapsed);
 }
 
-/* @req SWS_Gpt_00208 */
+/* @req SWS_Gpt_00003 */
 void test_get_time_elapsed_not_initialized(void)
 {
     printf("\n=== Test: GetTimeElapsed Not Initialized ===\n");
@@ -676,7 +676,7 @@ void test_get_time_elapsed_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00209 */
+/* @req SWS_Gpt_00003 */
 void test_get_time_elapsed_invalid_channel(void)
 {
     printf("\n=== Test: GetTimeElapsed Invalid Channel ===\n");
@@ -692,7 +692,7 @@ void test_get_time_elapsed_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00210 */
+/* @req SWS_Gpt_00003 */
 void test_get_time_elapsed_multiple_channels(void)
 {
     printf("\n=== Test: GetTimeElapsed Multiple Channels ===\n");
@@ -712,7 +712,7 @@ void test_get_time_elapsed_multiple_channels(void)
 /*-----------------------------------------
  * GetTimeRemaining Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00211 */
+/* @req SWS_Gpt_00003 */
 void test_get_time_remaining_valid(void)
 {
     printf("\n=== Test: GetTimeRemaining Valid ===\n");
@@ -728,7 +728,7 @@ void test_get_time_remaining_valid(void)
     TEST_ASSERT_EQ(7000, remaining);
 }
 
-/* @req SWS_Gpt_00212 */
+/* @req SWS_Gpt_00004 */
 void test_get_time_remaining_not_running(void)
 {
     printf("\n=== Test: GetTimeRemaining Not Running ===\n");
@@ -742,7 +742,7 @@ void test_get_time_remaining_not_running(void)
     TEST_ASSERT_EQ(0, remaining);
 }
 
-/* @req SWS_Gpt_00213 */
+/* @req SWS_Gpt_00001 */
 void test_get_time_remaining_not_initialized(void)
 {
     printf("\n=== Test: GetTimeRemaining Not Initialized ===\n");
@@ -754,7 +754,7 @@ void test_get_time_remaining_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00214 */
+/* @req SWS_Gpt_00004 */
 void test_get_time_remaining_invalid_channel(void)
 {
     printf("\n=== Test: GetTimeRemaining Invalid Channel ===\n");
@@ -769,7 +769,7 @@ void test_get_time_remaining_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00215 */
+/* @req SWS_Gpt_00003 */
 void test_get_time_remaining_expired(void)
 {
     printf("\n=== Test: GetTimeRemaining Expired ===\n");
@@ -788,7 +788,7 @@ void test_get_time_remaining_expired(void)
 /*-----------------------------------------
  * StartTimer Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00216 */
+/* @req SWS_Gpt_00005 */
 void test_start_timer_valid(void)
 {
     printf("\n=== Test: StartTimer Valid ===\n");
@@ -802,7 +802,7 @@ void test_start_timer_valid(void)
     TEST_ASSERT_EQ(5000, Gpt_ChannelTargetValue[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00217 */
+/* @req SWS_Gpt_00005 */
 void test_start_timer_not_initialized(void)
 {
     printf("\n=== Test: StartTimer Not Initialized ===\n");
@@ -813,7 +813,7 @@ void test_start_timer_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00218 */
+/* @req SWS_Gpt_00005 */
 void test_start_timer_invalid_channel(void)
 {
     printf("\n=== Test: StartTimer Invalid Channel ===\n");
@@ -826,7 +826,7 @@ void test_start_timer_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00219 */
+/* @req SWS_Gpt_00005 */
 void test_start_timer_zero_value(void)
 {
     printf("\n=== Test: StartTimer Zero Value ===\n");
@@ -840,7 +840,7 @@ void test_start_timer_zero_value(void)
     TEST_ASSERT_EQ(FALSE, Gpt_ChannelRunning[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00220 */
+/* @req SWS_Gpt_00005 */
 void test_start_timer_channel_busy(void)
 {
     printf("\n=== Test: StartTimer Channel Busy ===\n");
@@ -857,7 +857,7 @@ void test_start_timer_channel_busy(void)
     TEST_ASSERT_EQ(GPT_E_CHANNEL_BUSY, det_error_id);
 }
 
-/* @req SWS_Gpt_00221 */
+/* @req SWS_Gpt_00005 */
 void test_start_timer_multiple_channels(void)
 {
     printf("\n=== Test: StartTimer Multiple Channels ===\n");
@@ -880,7 +880,7 @@ void test_start_timer_multiple_channels(void)
 /*-----------------------------------------
  * StopTimer Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00222 */
+/* @req SWS_Gpt_00006 */
 void test_stop_timer_valid(void)
 {
     printf("\n=== Test: StopTimer Valid ===\n");
@@ -894,7 +894,7 @@ void test_stop_timer_valid(void)
     TEST_ASSERT_EQ(FALSE, Gpt_ChannelRunning[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00223 */
+/* @req SWS_Gpt_00001 */
 void test_stop_timer_not_initialized(void)
 {
     printf("\n=== Test: StopTimer Not Initialized ===\n");
@@ -905,7 +905,7 @@ void test_stop_timer_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00224 */
+/* @req SWS_Gpt_00006 */
 void test_stop_timer_invalid_channel(void)
 {
     printf("\n=== Test: StopTimer Invalid Channel ===\n");
@@ -918,7 +918,7 @@ void test_stop_timer_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00225 */
+/* @req SWS_Gpt_00006 */
 void test_stop_timer_not_running(void)
 {
     printf("\n=== Test: StopTimer Not Running ===\n");
@@ -935,7 +935,7 @@ void test_stop_timer_not_running(void)
 /*-----------------------------------------
  * Notification Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00226 */
+/* @req SWS_Gpt_00007 */
 void test_enable_notification_valid(void)
 {
     printf("\n=== Test: EnableNotification Valid ===\n");
@@ -948,7 +948,7 @@ void test_enable_notification_valid(void)
     TEST_ASSERT_EQ(TRUE, Gpt_ChannelNotificationEnabled[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00227 */
+/* @req SWS_Gpt_00007 */
 void test_enable_notification_not_initialized(void)
 {
     printf("\n=== Test: EnableNotification Not Initialized ===\n");
@@ -959,7 +959,7 @@ void test_enable_notification_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00228 */
+/* @req SWS_Gpt_00007 */
 void test_enable_notification_invalid_channel(void)
 {
     printf("\n=== Test: EnableNotification Invalid Channel ===\n");
@@ -972,7 +972,7 @@ void test_enable_notification_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00229 */
+/* @req SWS_Gpt_00007 */
 void test_disable_notification_valid(void)
 {
     printf("\n=== Test: DisableNotification Valid ===\n");
@@ -987,7 +987,7 @@ void test_disable_notification_valid(void)
     TEST_ASSERT_EQ(FALSE, Gpt_ChannelNotificationEnabled[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00230 */
+/* @req SWS_Gpt_00007 */
 void test_disable_notification_not_initialized(void)
 {
     printf("\n=== Test: DisableNotification Not Initialized ===\n");
@@ -998,7 +998,7 @@ void test_disable_notification_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00231 */
+/* @req SWS_Gpt_00007 */
 void test_disable_notification_invalid_channel(void)
 {
     printf("\n=== Test: DisableNotification Invalid Channel ===\n");
@@ -1014,7 +1014,7 @@ void test_disable_notification_invalid_channel(void)
 /*-----------------------------------------
  * Version Info Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00232 */
+/* @req SWS_Gpt_00009 */
 void test_get_version_info_valid(void)
 {
     printf("\n=== Test: GetVersionInfo Valid ===\n");
@@ -1029,7 +1029,7 @@ void test_get_version_info_valid(void)
     TEST_ASSERT_EQ(GPT_SW_PATCH_VERSION, version_info.sw_patch_version);
 }
 
-/* @req SWS_Gpt_00233 */
+/* @req SWS_Gpt_00009 */
 void test_get_version_info_null(void)
 {
     printf("\n=== Test: GetVersionInfo NULL ===\n");
@@ -1042,7 +1042,7 @@ void test_get_version_info_null(void)
 /*-----------------------------------------
  * SetMode Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00234 */
+/* @req SWS_Gpt_00010 */
 void test_set_mode_normal(void)
 {
     printf("\n=== Test: SetMode Normal ===\n");
@@ -1055,7 +1055,7 @@ void test_set_mode_normal(void)
     TEST_ASSERT_EQ(GPT_MODE_NORMAL, Gpt_DriverMode);
 }
 
-/* @req SWS_Gpt_00235 */
+/* @req SWS_Gpt_00010 */
 void test_set_mode_sleep(void)
 {
     printf("\n=== Test: SetMode Sleep ===\n");
@@ -1070,7 +1070,7 @@ void test_set_mode_sleep(void)
     TEST_ASSERT_EQ(FALSE, Gpt_ChannelRunning[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00236 */
+/* @req SWS_Gpt_00010 */
 void test_set_mode_not_initialized(void)
 {
     printf("\n=== Test: SetMode Not Initialized ===\n");
@@ -1084,7 +1084,7 @@ void test_set_mode_not_initialized(void)
 /*-----------------------------------------
  * Wakeup Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00237 */
+/* @req SWS_Gpt_00007 */
 void test_enable_wakeup_valid(void)
 {
     printf("\n=== Test: EnableWakeup Valid ===\n");
@@ -1098,7 +1098,7 @@ void test_enable_wakeup_valid(void)
     TEST_ASSERT(TRUE);
 }
 
-/* @req SWS_Gpt_00238 */
+/* @req SWS_Gpt_00007 */
 void test_enable_wakeup_not_initialized(void)
 {
     printf("\n=== Test: EnableWakeup Not Initialized ===\n");
@@ -1109,7 +1109,7 @@ void test_enable_wakeup_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00239 */
+/* @req SWS_Gpt_00007 */
 void test_enable_wakeup_invalid_channel(void)
 {
     printf("\n=== Test: EnableWakeup Invalid Channel ===\n");
@@ -1122,7 +1122,7 @@ void test_enable_wakeup_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00240 */
+/* @req SWS_Gpt_00011 */
 void test_disable_wakeup_valid(void)
 {
     printf("\n=== Test: DisableWakeup Valid ===\n");
@@ -1137,7 +1137,7 @@ void test_disable_wakeup_valid(void)
     TEST_ASSERT(TRUE);
 }
 
-/* @req SWS_Gpt_00241 */
+/* @req SWS_Gpt_00011 */
 void test_disable_wakeup_not_initialized(void)
 {
     printf("\n=== Test: DisableWakeup Not Initialized ===\n");
@@ -1148,7 +1148,7 @@ void test_disable_wakeup_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00242 */
+/* @req SWS_Gpt_00011 */
 void test_disable_wakeup_invalid_channel(void)
 {
     printf("\n=== Test: DisableWakeup Invalid Channel ===\n");
@@ -1161,7 +1161,7 @@ void test_disable_wakeup_invalid_channel(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_CHANNEL, det_error_id);
 }
 
-/* @req SWS_Gpt_00243 */
+/* @req SWS_Gpt_00011 */
 void test_check_wakeup_valid(void)
 {
     printf("\n=== Test: CheckWakeup Valid ===\n");
@@ -1174,7 +1174,7 @@ void test_check_wakeup_valid(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
-/* @req SWS_Gpt_00244 */
+/* @req SWS_Gpt_00011 */
 void test_check_wakeup_not_initialized(void)
 {
     printf("\n=== Test: CheckWakeup Not Initialized ===\n");
@@ -1186,7 +1186,7 @@ void test_check_wakeup_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00245 */
+/* @req SWS_Gpt_00011 */
 void test_check_wakeup_invalid_channel(void)
 {
     printf("\n=== Test: CheckWakeup Invalid Channel ===\n");
@@ -1203,7 +1203,7 @@ void test_check_wakeup_invalid_channel(void)
 /*-----------------------------------------
  * Predef Timer Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00246 */
+/* @req SWS_Gpt_00014 */
 void test_get_predef_timer_valid(void)
 {
     printf("\n=== Test: GetPredefTimerValue Valid ===\n");
@@ -1220,7 +1220,7 @@ void test_get_predef_timer_valid(void)
     TEST_ASSERT_EQ(12345, time_value);
 }
 
-/* @req SWS_Gpt_00247 */
+/* @req SWS_Gpt_00004 */
 void test_get_predef_timer_not_initialized(void)
 {
     printf("\n=== Test: GetPredefTimerValue Not Initialized ===\n");
@@ -1233,7 +1233,7 @@ void test_get_predef_timer_not_initialized(void)
     TEST_ASSERT_EQ(GPT_E_UNINIT, det_error_id);
 }
 
-/* @req SWS_Gpt_00248 */
+/* @req SWS_Gpt_00004 */
 void test_get_predef_timer_null_pointer(void)
 {
     printf("\n=== Test: GetPredefTimerValue NULL Pointer ===\n");
@@ -1247,7 +1247,7 @@ void test_get_predef_timer_null_pointer(void)
     TEST_ASSERT_EQ(GPT_E_PARAM_POINTER, det_error_id);
 }
 
-/* @req SWS_Gpt_00249 */
+/* @req SWS_Gpt_00004 */
 void test_get_predef_timer_all_types(void)
 {
     printf("\n=== Test: GetPredefTimerValue All Types ===\n");
@@ -1266,7 +1266,7 @@ void test_get_predef_timer_all_types(void)
 /*-----------------------------------------
  * Integration Tests
  *-----------------------------------------*/
-/* @req SWS_Gpt_00250 */
+/* @req SWS_Gpt_00004 */
 void test_timer_full_lifecycle(void)
 {
     printf("\n=== Test: Timer Full Lifecycle ===\n");
@@ -1301,7 +1301,7 @@ void test_timer_full_lifecycle(void)
     TEST_ASSERT_EQ(FALSE, Gpt_DriverInitialized);
 }
 
-/* @req SWS_Gpt_00251 */
+/* @req SWS_Gpt_00007 */
 void test_notification_full_lifecycle(void)
 {
     printf("\n=== Test: Notification Full Lifecycle ===\n");
@@ -1326,7 +1326,7 @@ void test_notification_full_lifecycle(void)
     TEST_ASSERT_EQ(TRUE, Gpt_ChannelNotificationEnabled[GPT_CHANNEL_0]);
 }
 
-/* @req SWS_Gpt_00252 */
+/* @req SWS_Gpt_00011 */
 void test_wakeup_full_lifecycle(void)
 {
     printf("\n=== Test: Wakeup Full Lifecycle ===\n");
@@ -1350,7 +1350,7 @@ void test_wakeup_full_lifecycle(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
-/* @req SWS_Gpt_00253 */
+/* @req SWS_Gpt_00010 */
 void test_mode_transition(void)
 {
     printf("\n=== Test: Mode Transition ===\n");

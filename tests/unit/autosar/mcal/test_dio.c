@@ -253,7 +253,7 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
 ==================================================================================================*/
 
 /* 初始化测试 */
-/* @req SWS_Dio_00201 */
+/* @req SWS_Dio_00001 */
 void test_init(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -271,7 +271,7 @@ void test_init(void)
 }
 
 /* 通道读测试 */
-/* @req SWS_Dio_00202 */
+/* @req SWS_Dio_00002 */
 void test_read_channel(void)
 {
     Dio_LevelType level;
@@ -303,7 +303,7 @@ void test_read_channel(void)
 }
 
 /* 通道写测试 */
-/* @req SWS_Dio_00203 */
+/* @req SWS_Dio_00002 */
 void test_write_channel(void)
 {
     printf("\n=== Write Channel Tests ===\n");
@@ -340,7 +340,7 @@ void test_write_channel(void)
 }
 
 /* 端口读测试 */
-/* @req SWS_Dio_00204 */
+/* @req SWS_Dio_00004 */
 void test_read_port(void)
 {
     Dio_PortLevelType level;
@@ -375,7 +375,7 @@ void test_read_port(void)
 }
 
 /* 端口写测试 */
-/* @req SWS_Dio_00205 */
+/* @req SWS_Dio_00004 */
 void test_write_port(void)
 {
     printf("\n=== Write Port Tests ===\n");
@@ -408,7 +408,7 @@ void test_write_port(void)
 }
 
 /* 通道组读测试 */
-/* @req SWS_Dio_00206 */
+/* @req SWS_Dio_00002 */
 void test_read_channel_group(void)
 {
     Dio_ChannelGroupType group;
@@ -448,7 +448,7 @@ void test_read_channel_group(void)
 }
 
 /* 通道组写测试 */
-/* @req SWS_Dio_00207 */
+/* @req SWS_Dio_00002 */
 void test_write_channel_group(void)
 {
     Dio_ChannelGroupType group;
@@ -485,7 +485,7 @@ void test_write_channel_group(void)
 }
 
 /* 通道翻转测试 */
-/* @req SWS_Dio_00208 */
+/* @req SWS_Dio_00002 */
 void test_flip_channel(void)
 {
     Dio_LevelType level;
@@ -521,7 +521,7 @@ void test_flip_channel(void)
 }
 
 /* 掩码写端口测试 */
-/* @req SWS_Dio_00209 */
+/* @req SWS_Dio_00004 */
 void test_masked_write_port(void)
 {
     printf("\n=== Masked Write Port Tests ===\n");
@@ -557,7 +557,7 @@ void test_masked_write_port(void)
 }
 
 /* 版本信息测试 */
-/* @req SWS_Dio_00210 */
+/* @req SWS_Dio_00008 */
 void test_version_info(void)
 {
     Std_VersionInfoType version_info;

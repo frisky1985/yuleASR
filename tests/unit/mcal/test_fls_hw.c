@@ -52,7 +52,7 @@ void tearDown(void)
 /**
  * @brief Test Fls_Hw_Init with valid configuration
  */
-/* @req SWS_Fls_00201 */
+/* @req SWS_Fls_00001 */
 void test_Fls_Hw_Init_ValidConfig(void)
 {
     Fls_Hw_ConfigType config = {
@@ -75,7 +75,7 @@ void test_Fls_Hw_Init_ValidConfig(void)
 /**
  * @brief Test Fls_Hw_Init with NULL pointer
  */
-/* @req SWS_Fls_00202 */
+/* @req SWS_Fls_00001 */
 void test_Fls_Hw_Init_NullConfig(void)
 {
     Std_ReturnType result = Fls_Hw_Init(NULL_PTR);
@@ -88,7 +88,7 @@ void test_Fls_Hw_Init_NullConfig(void)
 /**
  * @brief Test Fls_Hw_DeInit
  */
-/* @req SWS_Fls_00203 */
+/* @req SWS_Fls_00001 */
 void test_Fls_Hw_DeInit(void)
 {
     Fls_Hw_ConfigType config = {
@@ -222,7 +222,7 @@ void test_Fls_Hw_LockUnlock(void)
 /**
  * @brief Test Fls_Hw_ReadWord
  */
-/* @req SWS_Fls_00208 */
+/* @req SWS_Fls_00004 */
 void test_Fls_Hw_ReadWord(void)
 {
     Fls_Hw_ConfigType config = {
@@ -247,7 +247,7 @@ void test_Fls_Hw_ReadWord(void)
 /**
  * @brief Test Fls_Hw_ReadBuffer
  */
-/* @req SWS_Fls_00209 */
+/* @req SWS_Fls_00004 */
 void test_Fls_Hw_ReadBuffer(void)
 {
     Fls_Hw_ConfigType config = {

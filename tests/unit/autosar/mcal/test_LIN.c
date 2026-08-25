@@ -45,7 +45,7 @@ static int tests_failed = 0;
 static uint8 test_sdu[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
 
 /* 初始化测试 */
-/* @req SWS_Lin_00201 */
+/* @req SWS_Lin_00002 */
 void test_init_deinit(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -60,7 +60,7 @@ void test_init_deinit(void)
 }
 
 /* 发送帧测试 */
-/* @req SWS_Lin_00202 */
+/* @req SWS_Lin_00004 */
 void test_send_frame(void)
 {
     Std_ReturnType result;
@@ -100,7 +100,7 @@ void test_send_frame(void)
 }
 
 /* 发送响应测试 */
-/* @req SWS_Lin_00203 */
+/* @req SWS_Lin_00005 */
 void test_send_response(void)
 {
     Std_ReturnType result;
@@ -134,7 +134,7 @@ void test_send_response(void)
 }
 
 /* 禁用响应测试 */
-/* @req SWS_Lin_00204 */
+/* @req SWS_Lin_00005 */
 void test_disable_response(void)
 {
     Std_ReturnType result;
@@ -155,7 +155,7 @@ void test_disable_response(void)
 }
 
 /* 唤醒测试 */
-/* @req SWS_Lin_00205 */
+/* @req SWS_Lin_00007 */
 void test_wakeup(void)
 {
     Std_ReturnType result;
@@ -190,7 +190,7 @@ void test_wakeup(void)
 }
 
 /* 获取状态测试 */
-/* @req SWS_Lin_00206 */
+/* @req SWS_Lin_00010 */
 void test_get_status(void)
 {
     Lin_StatusType status;
@@ -212,7 +212,7 @@ void test_get_status(void)
 }
 
 /* 休眠测试 */
-/* @req SWS_Lin_00207 */
+/* @req SWS_Lin_00011 */
 void test_go_to_sleep(void)
 {
     Std_ReturnType result;
@@ -240,7 +240,7 @@ void test_go_to_sleep(void)
 }
 
 /* 帧类型测试 */
-/* @req SWS_Lin_00208 */
+/* @req SWS_Lin_00004 */
 void test_frame_types(void)
 {
     Std_ReturnType result;
@@ -305,7 +305,7 @@ void test_checksum_types(void)
 }
 
 /* 版本信息测试 */
-/* @req SWS_Lin_00210 */
+/* @req SWS_Lin_00003 */
 void test_version_info(void)
 {
     printf("\n=== Version Info Tests ===\n");

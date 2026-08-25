@@ -126,84 +126,84 @@ void test_Mqtt_Connect_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_Mqtt_00006 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Disconnect_Uninit_ShouldReportError(void) {
     /* Not initialized */
     Mqtt_Disconnect();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00006 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Disconnect_ValidCall_ShouldSucceed(void) {
     Mqtt_Disconnect();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_Mqtt_00007 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Publish_Uninit_ShouldReportError(void) {
     /* Not initialized */
     Mqtt_Publish();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00007 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Publish_NullPtr_ShouldReportError(void) {
     Mqtt_Publish(NULL_PTR);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00007 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Publish_ValidCall_ShouldSucceed(void) {
     Mqtt_Publish();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_Mqtt_00008 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Subscribe_Uninit_ShouldReportError(void) {
     /* Not initialized */
     Mqtt_Subscribe();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00008 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Subscribe_NullPtr_ShouldReportError(void) {
     Mqtt_Subscribe(NULL_PTR);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00008 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Subscribe_ValidCall_ShouldSucceed(void) {
     Mqtt_Subscribe();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_Mqtt_00009 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Unsubscribe_Uninit_ShouldReportError(void) {
     /* Not initialized */
     Mqtt_Unsubscribe();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00009 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Unsubscribe_NullPtr_ShouldReportError(void) {
     Mqtt_Unsubscribe(NULL_PTR);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00009 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_Unsubscribe_ValidCall_ShouldSucceed(void) {
     Mqtt_Unsubscribe();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_Mqtt_00010 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_GetConnectionState_Uninit_ShouldReportError(void) {
     /* Not initialized */
     Mqtt_GetConnectionState();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_Mqtt_00010 */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_GetConnectionState_ValidCall_ShouldReturnState(void) {
     Mqtt_GetConnectionState();
     TEST_ASSERT_TRUE(1);

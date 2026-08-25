@@ -52,11 +52,11 @@ void test_Adc_Init_Valid(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg)
 void test_Adc_DeInit_NoInit(void) { Adc_DeInit(); }
 /* @req SWS_Adc_00002 */
 void test_Adc_DeInit_AfterInit(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_DeInit(); }
-/* @req SWS_Adc_00201 */
+/* @req SWS_Adc_00001 */
 void test_Adc_StartGroupConv_NoInit(void) { Adc_StartGroupConversion(0); }
-/* @req SWS_Adc_00202 */
+/* @req SWS_Adc_00003 */
 void test_Adc_StartGroupConv(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_StartGroupConversion(0); }
-/* @req SWS_Adc_00203 */
+/* @req SWS_Adc_00004 */
 void test_Adc_StopGroupConv(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_StopGroupConversion(0); }
 /* @req SWS_Adc_00005 */
 void test_Adc_ReadGroup(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_ValueGroupType buf; Adc_ReadGroup(0, &buf); }

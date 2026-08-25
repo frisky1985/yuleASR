@@ -82,51 +82,51 @@ void test_BswM_DeInit_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00003 */
+/** @req SWS_BswM_00030 */
 void test_BswM_GetVersionInfo_NullPtr_ShouldReportError(void) {
     BswM_GetVersionInfo(NULL_PTR);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_BswM_00003 */
+/** @req SWS_BswM_00030 */
 void test_BswM_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     BswM_GetVersionInfo();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00004 */
+/** @req SWS_BswM_00020 */
 void test_BswM_MainFunction_Uninit_ShouldNotCrash(void) {
     /* Not initialized */
     BswM_MainFunction();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_BswM_00004 */
+/** @req SWS_BswM_00020 */
 void test_BswM_MainFunction_ValidCall_ShouldSucceed(void) {
     BswM_MainFunction();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00005 */
+/** @req SWS_BswM_00010 */
 void test_BswM_RequestMode_Uninit_ShouldReportError(void) {
     /* Not initialized */
     BswM_RequestMode();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_BswM_00005 */
+/** @req SWS_BswM_00010 */
 void test_BswM_RequestMode_InvalidMode_ShouldReportError(void) {
     BswM_RequestMode(0xFFFFU);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_BswM_00005 */
+/** @req SWS_BswM_00010 */
 void test_BswM_RequestMode_ValidCall_ShouldSucceed(void) {
     BswM_RequestMode();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00006 */
+/** @req SWS_BswM_00001 */
 void test_BswM_GetMode_Uninit_ShouldReportError(void) {
     /* Not initialized */
     BswM_GetMode();
@@ -139,7 +139,7 @@ void test_BswM_GetMode_ValidCall_ShouldReturnMode(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00007 */
+/** @req SWS_BswM_00001 */
 void test_BswM_SetMode_Uninit_ShouldReportError(void) {
     /* Not initialized */
     BswM_SetMode();
@@ -158,14 +158,14 @@ void test_BswM_SetMode_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00008 */
+/** @req SWS_BswM_00011 */
 void test_BswM_GetCurrentMode_Uninit_ShouldReportError(void) {
     /* Not initialized */
     BswM_GetCurrentMode();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_BswM_00008 */
+/** @req SWS_BswM_00011 */
 void test_BswM_GetCurrentMode_ValidCall_ShouldReturnMode(void) {
     BswM_GetCurrentMode();
     TEST_ASSERT_TRUE(1);

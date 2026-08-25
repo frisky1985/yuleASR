@@ -69,26 +69,26 @@ void test_SomeIp_Init_DoubleInit_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1); /* No crash */
 }
 
-/** @req SWS_SomeIp_00002 */
+/** @req SWS_SomeIpSd_00002 */
 void test_SomeIp_DeInit_Uninit_ShouldReportError(void) {
     /* Not initialized */
     SomeIp_DeInit();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_SomeIp_00002 */
+/** @req SWS_SomeIpSd_00002 */
 void test_SomeIp_DeInit_ValidCall_ShouldSucceed(void) {
     SomeIp_DeInit();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_SomeIp_00003 */
+/** @req SWS_SomeIpSd_00003 */
 void test_SomeIp_GetVersionInfo_NullPtr_ShouldReportError(void) {
     SomeIp_GetVersionInfo(NULL_PTR);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_SomeIp_00003 */
+/** @req SWS_SomeIpSd_00003 */
 void test_SomeIp_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     SomeIp_GetVersionInfo();
     TEST_ASSERT_TRUE(1);
@@ -132,7 +132,7 @@ void test_SomeIp_RegisterEvent_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_SomeIp_00006 */
+/** @req SWS_SomeIpSd_00001 */
 void test_SomeIp_UnregisterEvent_Uninit_ShouldReportError(void) {
     /* Not initialized */
     SomeIp_UnregisterEvent();
@@ -170,39 +170,39 @@ void test_SomeIp_SubscribeEventgroup_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_SomeIp_00008 */
+/** @req SWS_SomeIpSd_00001 */
 void test_SomeIp_UnsubscribeEventgroup_Uninit_ShouldReportError(void) {
     /* Not initialized */
     SomeIp_UnsubscribeEventgroup();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_SomeIp_00008 */
+/** @req SWS_SomeIpSd_00008 */
 void test_SomeIp_UnsubscribeEventgroup_InvalidEvent_ShouldReportError(void) {
     SomeIp_UnsubscribeEventgroup(0xFFFFU);
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_SomeIp_00008 */
+/** @req SWS_SomeIpSd_00008 */
 void test_SomeIp_UnsubscribeEventgroup_ValidCall_ShouldSucceed(void) {
     SomeIp_UnsubscribeEventgroup();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_SomeIp_00009 */
+/** @req SWS_SomeIpSd_00004 */
 void test_SomeIp_MainFunction_Uninit_ShouldNotCrash(void) {
     /* Not initialized */
     SomeIp_MainFunction();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_SomeIp_00009 */
+/** @req SWS_SomeIpSd_00004 */
 void test_SomeIp_MainFunction_ValidCall_ShouldSucceed(void) {
     SomeIp_MainFunction();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_SomeIp_00010 */
+/** @req SWS_SomeIpSd_00001 */
 void test_SomeIp_GetServiceState_Uninit_ShouldReportError(void) {
     /* Not initialized */
     SomeIp_GetServiceState();

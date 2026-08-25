@@ -119,7 +119,7 @@ void test_IoHwAb_WriteDigital_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_IoHwAb_00005 */
+/** @req SWS_IoHwAb_00001 */
 void test_IoHwAb_ReadAnalog_Uninit_ShouldReportError(void) {
     /* Not initialized */
     IoHwAb_ReadAnalog();
@@ -138,7 +138,7 @@ void test_IoHwAb_ReadAnalog_ValidCall_ShouldReturnValue(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_IoHwAb_00006 */
+/** @req SWS_IoHwAb_00001 */
 void test_IoHwAb_WriteAnalog_Uninit_ShouldReportError(void) {
     /* Not initialized */
     IoHwAb_WriteAnalog();
@@ -157,7 +157,7 @@ void test_IoHwAb_WriteAnalog_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_IoHwAb_00007 */
+/** @req SWS_IoHwAb_00001 */
 void test_IoHwAb_ReadPwm_Uninit_ShouldReportError(void) {
     /* Not initialized */
     IoHwAb_ReadPwm();
@@ -176,7 +176,7 @@ void test_IoHwAb_ReadPwm_ValidCall_ShouldReturnPwm(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_IoHwAb_00008 */
+/** @req SWS_IoHwAb_00001 */
 void test_IoHwAb_WritePwm_Uninit_ShouldReportError(void) {
     /* Not initialized */
     IoHwAb_WritePwm();
@@ -195,14 +195,14 @@ void test_IoHwAb_WritePwm_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_IoHwAb_00009 */
+/** @req SWS_IoHwAb_00004 */
 void test_IoHwAb_MainFunction_Uninit_ShouldNotCrash(void) {
     /* Not initialized */
     IoHwAb_MainFunction();
     TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
 }
 
-/** @req SWS_IoHwAb_00009 */
+/** @req SWS_IoHwAb_00004 */
 void test_IoHwAb_MainFunction_ValidCall_ShouldSucceed(void) {
     IoHwAb_MainFunction();
     TEST_ASSERT_TRUE(1);

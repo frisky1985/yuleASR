@@ -39,28 +39,28 @@ void test_Csm_DeInit_AfterInit_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_Csm_00003 */
+/** @req SWS_Csm_00010 */
 void test_Csm_KeyElementSet_BeforeInit_ShouldFail(void) {
     uint8 data[16] = {0};
     Std_ReturnType ret = Csm_KeyElementSet(0U, 0U, data, 16U);
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
-/** @req SWS_Csm_00003 */
+/** @req SWS_Csm_00010 */
 void test_Csm_KeyElementSet_NullData_ShouldFail(void) {
     Csm_Init(&testConfig);
     Std_ReturnType ret = Csm_KeyElementSet(0U, 0U, NULL_PTR, 16U);
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
-/** @req SWS_Csm_00004 */
+/** @req SWS_Csm_00011 */
 void test_Csm_KeySetValid_AfterInit_ShouldReturnResult(void) {
     Csm_Init(&testConfig);
     Std_ReturnType ret = Csm_KeySetValid(0U);
     TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK);
 }
 
-/** @req SWS_Csm_00005 */
+/** @req SWS_Csm_00012 */
 void test_Csm_KeyElementGet_BeforeInit_ShouldFail(void) {
     uint8 data[16];
     uint32 actualLen;
@@ -68,28 +68,28 @@ void test_Csm_KeyElementGet_BeforeInit_ShouldFail(void) {
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
-/** @req SWS_Csm_00006 */
+/** @req SWS_Csm_00016 */
 void test_Csm_KeyGenerate_AfterInit_ShouldReturnResult(void) {
     Csm_Init(&testConfig);
     Std_ReturnType ret = Csm_KeyGenerate(0U);
     TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK);
 }
 
-/** @req SWS_Csm_00007 */
+/** @req SWS_Csm_00017 */
 void test_Csm_KeyDerive_AfterInit_ShouldReturnResult(void) {
     Csm_Init(&testConfig);
     Std_ReturnType ret = Csm_KeyDerive(0U, 1U);
     TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK);
 }
 
-/** @req SWS_Csm_00008 */
+/** @req SWS_Csm_00014 */
 void test_Csm_KeyCopy_AfterInit_ShouldReturnResult(void) {
     Csm_Init(&testConfig);
     Std_ReturnType ret = Csm_KeyCopy(0U, 1U);
     TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK);
 }
 
-/** @req SWS_Csm_00009 */
+/** @req SWS_Csm_00015 */
 void test_Csm_KeyElementIdsGet_BeforeInit_ShouldFail(void) {
     uint32 ids[4]; uint32 count;
     Std_ReturnType ret = Csm_KeyElementIdsGet(0U, ids, 4U, &count);

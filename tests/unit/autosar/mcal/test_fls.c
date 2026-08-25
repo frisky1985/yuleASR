@@ -653,7 +653,7 @@ void test_fls_main_function(void)
 /*==================================================================================================
  *                                    VERSION INFO TESTS
  *==================================================================================================*/
-/* @req SWS_Fls_00201 */
+/* @req SWS_Fls_00012 */
 void test_fls_version_info(void)
 {
     printf("\n=== Fls_GetVersionInfo Tests ===\n");
@@ -677,7 +677,7 @@ void test_fls_version_info(void)
 #endif
 }
 
-/* @req SWS_Fls_00202 */
+/* @req SWS_Fls_00012 */
 void test_fls_version_info_null(void)
 {
     printf("\n=== Fls_GetVersionInfo NULL Test ===\n");

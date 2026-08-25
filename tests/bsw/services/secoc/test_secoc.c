@@ -41,20 +41,20 @@ void test_SecOC_DeInit_AfterInit_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_SecOC_00003 */
+/** @req SWS_SecOC_00040 */
 void test_SecOC_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     Std_VersionInfoType info;
     SecOC_GetVersionInfo(&info);
     TEST_ASSERT_EQUAL(SECOC_VENDOR_ID, info.vendorID);
 }
 
-/** @req SWS_SecOC_00003 */
+/** @req SWS_SecOC_00040 */
 void test_SecOC_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     SecOC_GetVersionInfo(NULL_PTR);
     TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
 }
 
-/** @req SWS_SecOC_00004 */
+/** @req SWS_SecOC_00010 */
 void test_SecOC_IfTransmit_BeforeInit_ShouldFail(void) {
     PduInfoType pduInfo;
     uint8 data[8] = {0};
@@ -64,14 +64,14 @@ void test_SecOC_IfTransmit_BeforeInit_ShouldFail(void) {
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
-/** @req SWS_SecOC_00004 */
+/** @req SWS_SecOC_00010 */
 void test_SecOC_IfTransmit_NullPduInfo_ShouldFail(void) {
     SecOC_Init(&testConfig);
     Std_ReturnType ret = SecOC_IfTransmit(0U, NULL_PTR);
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
-/** @req SWS_SecOC_00004 */
+/** @req SWS_SecOC_00010 */
 void test_SecOC_IfTransmit_AfterInit_ShouldReturnResult(void) {
     SecOC_Init(&testConfig);
     PduInfoType pduInfo;

@@ -18,19 +18,19 @@ void test_Icu_Init_Valid(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg));
 void test_Icu_DeInit(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_DeInit(); }
 /* @req SWS_Icu_00003 */
 void test_Icu_SetMode(void) { Icu_SetMode(ICU_MODE_NORMAL); Icu_SetMode(ICU_MODE_SLEEP); }
-/* @req SWS_Icu_00201 */
+/* @req SWS_Icu_00004 */
 void test_Icu_Wakeup(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_EnableWakeup(0); Icu_DisableWakeup(0); }
 /* @req SWS_Icu_00006 */
 void test_Icu_CheckWakeup(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_CheckWakeup(0); }
-/* @req SWS_Icu_00202 */
+/* @req SWS_Icu_00008 */
 void test_Icu_Notif(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_EnableNotification(0); Icu_DisableNotification(0); }
-/* @req SWS_Icu_00203 */
+/* @req SWS_Icu_00011 */
 void test_Icu_Timestamp(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); uint32 buf[8]; Icu_StartTimestamp(0, buf, 8, 0); Icu_StopTimestamp(0); }
-/* @req SWS_Icu_00204 */
+/* @req SWS_Icu_00014 */
 void test_Icu_EdgeCount(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_EnableEdgeCount(0); Icu_DisableEdgeCount(0); Icu_ResetEdgeCount(0); }
-/* @req SWS_Icu_00205 */
+/* @req SWS_Icu_00018 */
 void test_Icu_SignalMeas(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_StartSignalMeasurement(0, ICU_PERIOD_TIME); Icu_StopSignalMeasurement(0); }
-/* @req SWS_Icu_00206 */
+/* @req SWS_Icu_00007 */
 void test_Icu_Activation(void) { Icu_ConfigType cfg; memset(&cfg,0,sizeof(cfg)); Icu_Init(&cfg); Icu_SetActivationCondition(0, ICU_RISING_EDGE); }
 /* @req SWS_Icu_00022 */
 void test_Icu_GetVersionInfo(void) { Std_VersionInfoType vi; memset(&vi,0,sizeof(vi)); Icu_GetVersionInfo(&vi); }

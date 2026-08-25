@@ -150,7 +150,7 @@ void test_Ocu_SetPinState_BeforeInit(void)
 }
 
 /* ========= Ocu_EnableDisableNotification ========= */
-/* @req SWS_Ocu_00201 */
+/* @req SWS_Ocu_00001 */
 void test_Ocu_Notification_AfterInit(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -158,7 +158,7 @@ void test_Ocu_Notification_AfterInit(void)
     Ocu_DisableNotification(0);
 }
 
-/* @req SWS_Ocu_00202 */
+/* @req SWS_Ocu_00010 */
 void test_Ocu_Notification_BeforeInit(void)
 {
     Ocu_EnableNotification(0);

@@ -28,11 +28,11 @@ void test_Dcm_DeInit_AfterInit_ShouldSucceed(void) { Dcm_Init(&testConfig); Dcm_
 void test_Dcm_GetVersionInfo_ValidPtr_ShouldSucceed(void) { Std_VersionInfoType info; Dcm_GetVersionInfo(&info); TEST_ASSERT_EQUAL(DCM_VENDOR_ID, info.vendorID); }
 /** @req SWS_Dcm_00003 */
 void test_Dcm_GetVersionInfo_NullPtr_ShouldReportDet(void) { Dcm_GetVersionInfo(NULL_PTR); TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls); }
-/** @req SWS_Dcm_00004 */
+/** @req SWS_Dcm_00003 */
 void test_Dcm_MainFunction_AfterInit_ShouldNotCrash(void) { Dcm_Init(&testConfig); Dcm_MainFunction(); TEST_ASSERT_TRUE(1); }
-/** @req SWS_Dcm_00005 */
+/** @req SWS_Dcm_00001 */
 void test_Dcm_GetActiveProtocol_AfterInit_ShouldReturnResult(void) { Dcm_Init(&testConfig); uint8 protocolId; Std_ReturnType ret = Dcm_GetActiveProtocol(&protocolId); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
-/** @req SWS_Dcm_00006 */
+/** @req SWS_Dcm_00001 */
 void test_Dcm_GetSession_AfterInit_ShouldReturnResult(void) { Dcm_Init(&testConfig); Dcm_SessionType session; Std_ReturnType ret = Dcm_GetSession(0U, &session); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
 /** @req SWS_Dcm_00007 */
 void test_Dcm_GetSecurityLevel_AfterInit_ShouldReturnResult(void) { Dcm_Init(&testConfig); Dcm_SecurityLevelType level; Std_ReturnType ret = Dcm_GetSecurityLevel(0U, &level); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }

@@ -34,16 +34,16 @@ void test_Dem_GetEventStatus_AfterInit_ShouldSucceed(void) { Dem_Init(&testConfi
 void test_Dem_GetEventFailed_AfterInit_ShouldSucceed(void) { Dem_Init(&testConfig); boolean failed; Std_ReturnType ret = Dem_GetEventFailed(0U, &failed); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
 /** @req SWS_Dem_00006 */
 void test_Dem_GetEventTested_AfterInit_ShouldSucceed(void) { Dem_Init(&testConfig); boolean tested; Std_ReturnType ret = Dem_GetEventTested(0U, &tested); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
-/** @req SWS_Dem_00007 */
+/** @req SWS_Dem_00001 */
 void test_Dem_GetFaultDetectionCounter_AfterInit_ShouldSucceed(void) { Dem_Init(&testConfig); sint8 counter; Std_ReturnType ret = Dem_GetFaultDetectionCounter(0U, &counter); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
-/** @req SWS_Dem_00008 */
+/** @req SWS_Dem_00014 */
 void test_Dem_ClearDTC_AfterInit_ShouldReturnResult(void) { Dem_Init(&testConfig); Std_ReturnType ret = Dem_ClearDTC(0U, DEM_DTC_FORMAT_UDS, DEM_DTC_ORIGIN_PRIMARY_MEMORY); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
-/** @req SWS_Dem_00009 */
+/** @req SWS_Dem_00001 */
 void test_Dem_GetStatusOfDTC_AfterInit_ShouldSucceed(void) { Dem_Init(&testConfig); Dem_UdsStatusByteType status; Std_ReturnType ret = Dem_GetStatusOfDTC(0U, DEM_DTC_FORMAT_UDS, DEM_DTC_ORIGIN_PRIMARY_MEMORY, &status); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
-/** @req SWS_Dem_00010 */
+/** @req SWS_Dem_00005 */
 void test_Dem_ResetEventStatus_AfterInit_ShouldReturnResult(void) { Dem_Init(&testConfig); Std_ReturnType ret = Dem_ResetEventStatus(0U); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
-/** @req SWS_Dem_00011 */
+/** @req SWS_Dem_00001 */
 void test_Dem_Shutdown_AfterInit_ShouldNotCrash(void) { Dem_Init(&testConfig); Dem_Shutdown(); TEST_ASSERT_TRUE(1); }
-/** @req SWS_Dem_00012 */
+/** @req SWS_Dem_00029 */
 void test_Dem_GetVersionInfo_ValidPtr_ShouldSucceed(void) { Std_VersionInfoType info; Dem_GetVersionInfo(&info); TEST_ASSERT_EQUAL(DEM_VENDOR_ID, info.vendorID); }
 void test_Dem_Init_DoubleInit_ShouldNotCrash(void) { Dem_Init(&testConfig); Dem_Init(&testConfig); TEST_ASSERT_TRUE(1); }

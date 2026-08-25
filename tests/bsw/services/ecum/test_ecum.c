@@ -25,7 +25,7 @@ void test_EcuM_Init_ShouldSucceed(void) {
     TEST_ASSERT_NOT_EQUAL(ECUM_STATE_UNINIT, state);
 }
 
-/** @req SWS_EcuM_00002 */
+/** @req SWS_EcuM_00021 */
 void test_EcuM_GetState_AfterInit_ShouldSucceed(void) {
     EcuM_Init();
     EcuM_StateType state;
@@ -33,21 +33,21 @@ void test_EcuM_GetState_AfterInit_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00002 */
+/** @req SWS_EcuM_00021 */
 void test_EcuM_GetState_NullPtr_ShouldFail(void) {
     EcuM_Init();
     Std_ReturnType ret = EcuM_GetState(NULL_PTR);
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
-/** @req SWS_EcuM_00003 */
+/** @req SWS_EcuM_00090 */
 void test_EcuM_RequestRUN_ValidUser_ShouldSucceed(void) {
     EcuM_Init();
     Std_ReturnType ret = EcuM_RequestRUN(0U);
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00004 */
+/** @req SWS_EcuM_00091 */
 void test_EcuM_ReleaseRUN_AfterRequest_ShouldSucceed(void) {
     EcuM_Init();
     EcuM_RequestRUN(0U);
@@ -55,14 +55,14 @@ void test_EcuM_ReleaseRUN_AfterRequest_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00005 */
+/** @req SWS_EcuM_00030 */
 void test_EcuM_SelectShutdownTarget_ValidTarget_ShouldSucceed(void) {
     EcuM_Init();
     Std_ReturnType ret = EcuM_SelectShutdownTarget(ECUM_SHUTDOWN_TARGET_OFF, 0U);
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00006 */
+/** @req SWS_EcuM_00031 */
 void test_EcuM_GetShutdownTarget_AfterSelect_ShouldSucceed(void) {
     EcuM_Init();
     EcuM_SelectShutdownTarget(ECUM_SHUTDOWN_TARGET_OFF, 0U);
@@ -71,21 +71,21 @@ void test_EcuM_GetShutdownTarget_AfterSelect_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00007 */
+/** @req SWS_EcuM_00040 */
 void test_EcuM_SetWakeupEvent_ShouldNotCrash(void) {
     EcuM_Init();
     EcuM_SetWakeupEvent(ECUM_WAKEUP_SOURCE_TIMER);
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_EcuM_00008 */
+/** @req SWS_EcuM_00041 */
 void test_EcuM_ClearWakeupEvent_ShouldNotCrash(void) {
     EcuM_Init();
     EcuM_ClearWakeupEvent(ECUM_WAKEUP_SOURCE_TIMER);
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_EcuM_00009 */
+/** @req SWS_EcuM_00042 */
 void test_EcuM_CheckWakeup_ShouldNotCrash(void) {
     EcuM_Init();
     EcuM_CheckWakeup(ECUM_WAKEUP_SOURCE_TIMER);
@@ -106,7 +106,7 @@ void test_EcuM_DisableWakeupSources_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00012 */
+/** @req SWS_EcuM_00022 */
 void test_EcuM_GetSubState_AfterInit_ShouldSucceed(void) {
     EcuM_Init();
     EcuM_SubStateType subState;
@@ -114,7 +114,7 @@ void test_EcuM_GetSubState_AfterInit_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_EcuM_00013 */
+/** @req SWS_EcuM_00092 */
 void test_EcuM_KillAllRUNRequests_ShouldSucceed(void) {
     EcuM_Init();
     EcuM_RequestRUN(0U);

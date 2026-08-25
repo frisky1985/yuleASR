@@ -50,7 +50,7 @@ static int tests_failed = 0;
 static Adc_ValueGroupType test_buffer[16];
 
 /* 初始化测试 */
-/* @req SWS_Adc_00201 */
+/* @req SWS_Adc_00002 */
 void test_init_deinit(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -65,7 +65,7 @@ void test_init_deinit(void)
 }
 
 /* 组转换测试 */
-/* @req SWS_Adc_00202 */
+/* @req SWS_Adc_00003 */
 void test_group_conversion(void)
 {
     printf("\n=== Group Conversion Tests ===\n");
@@ -88,7 +88,7 @@ void test_group_conversion(void)
 }
 
 /* 读取组数据测试 */
-/* @req SWS_Adc_00203 */
+/* @req SWS_Adc_00005 */
 void test_read_group(void)
 {
     Std_ReturnType result;
@@ -114,7 +114,7 @@ void test_read_group(void)
 }
 
 /* 硬件触发测试 */
-/* @req SWS_Adc_00204 */
+/* @req SWS_Adc_00006 */
 void test_hardware_trigger(void)
 {
     printf("\n=== Hardware Trigger Tests ===\n");
@@ -137,7 +137,7 @@ void test_hardware_trigger(void)
 }
 
 /* 通知测试 */
-/* @req SWS_Adc_00205 */
+/* @req SWS_Adc_00008 */
 void test_notification(void)
 {
     printf("\n=== Notification Tests ===\n");
@@ -160,7 +160,7 @@ void test_notification(void)
 }
 
 /* 获取组状态测试 */
-/* @req SWS_Adc_00206 */
+/* @req SWS_Adc_00010 */
 void test_get_group_status(void)
 {
     Adc_StatusType status;
@@ -187,7 +187,7 @@ void test_get_group_status(void)
 }
 
 /* 缓冲区设置测试 */
-/* @req SWS_Adc_00207 */
+/* @req SWS_Adc_00013 */
 void test_setup_result_buffer(void)
 {
     Std_ReturnType result;
@@ -213,7 +213,7 @@ void test_setup_result_buffer(void)
 }
 
 /* 流指针测试 */
-/* @req SWS_Adc_00208 */
+/* @req SWS_Adc_00012 */
 void test_stream_last_pointer(void)
 {
     Adc_StreamNumSampleType num_samples;
@@ -240,7 +240,7 @@ void test_stream_last_pointer(void)
 }
 
 /* 自检测试 */
-/* @req SWS_Adc_00209 */
+/* @req SWS_Adc_00003 */
 void test_self_group_check(void)
 {
     Std_ReturnType result;
@@ -261,7 +261,7 @@ void test_self_group_check(void)
 }
 
 /* 电源状态测试 */
-/* @req SWS_Adc_00210 */
+/* @req SWS_Adc_00014 */
 void test_power_state(void)
 {
     printf("\n=== Power State Tests ===\n");
@@ -298,7 +298,7 @@ void test_power_state(void)
 }
 
 /* 版本信息测试 */
-/* @req SWS_Adc_00211 */
+/* @req SWS_Adc_00011 */
 void test_version_info(void)
 {
     printf("\n=== Version Info Tests ===\n");
@@ -362,7 +362,7 @@ void test_sampling_time(void)
 }
 
 /* 触发源测试 */
-/* @req SWS_Adc_00214 */
+/* @req SWS_Adc_00006 */
 void test_trigger_source(void)
 {
     printf("\n=== Trigger Source Tests ===\n");

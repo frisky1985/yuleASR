@@ -57,13 +57,13 @@ void test_Gpt_StopTimer(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg);
 void test_Gpt_GetTimeElapsed(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg); Gpt_GetTimeElapsed(0); }
 /* @req SWS_Gpt_00004 */
 void test_Gpt_GetTimeRemaining(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg); Gpt_GetTimeRemaining(0); }
-/* @req SWS_Gpt_00201 */
+/* @req SWS_Gpt_00007 */
 void test_Gpt_Notif(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg); Gpt_EnableNotification(0); Gpt_DisableNotification(0); }
-/* @req SWS_Gpt_00202 */
+/* @req SWS_Gpt_00011 */
 void test_Gpt_Wakeup(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg); Gpt_EnableWakeup(0); Gpt_DisableWakeup(0); }
 /* @req SWS_Gpt_00013 */
 void test_Gpt_CheckWakeup(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg); Gpt_CheckWakeup(0); }
-/* @req SWS_Gpt_00203 */
+/* @req SWS_Gpt_00014 */
 void test_Gpt_GetPredefTimer(void) { Gpt_ConfigType cfg = make_cfg(); Gpt_Init(&cfg); uint32 tv; Gpt_GetPredefTimerValue(0, &tv); }
 /* @req SWS_Gpt_00009 */
 void test_Gpt_GetVersionInfo(void) { Std_VersionInfoType vi; memset(&vi,0,sizeof(vi)); Gpt_GetVersionInfo(&vi); }

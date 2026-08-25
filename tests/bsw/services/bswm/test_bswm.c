@@ -38,21 +38,21 @@ void test_BswM_DeInit_AfterInit_ShouldSucceed(void) {
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00003 */
+/** @req SWS_BswM_00010 */
 void test_BswM_RequestMode_AfterInit_ShouldSucceed(void) {
     BswM_Init(&testConfig);
     Std_ReturnType ret = BswM_RequestMode(0U, BSWM_MODE_FULL);
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
-/** @req SWS_BswM_00004 */
+/** @req SWS_BswM_00011 */
 void test_BswM_GetCurrentMode_AfterInit_ShouldReturnMode(void) {
     BswM_Init(&testConfig);
     BswM_ModeType mode = BswM_GetCurrentMode();
     TEST_ASSERT_TRUE(mode == BSWM_MODE_FULL || mode == BSWM_MODE_MINIMUM || mode == BSWM_MODE_UNINIT);
 }
 
-/** @req SWS_BswM_00005 */
+/** @req SWS_BswM_00012 */
 void test_BswM_GetRequestedMode_AfterRequest_ShouldReturnMode(void) {
     BswM_Init(&testConfig);
     BswM_RequestMode(0U, BSWM_MODE_FULL);
@@ -60,21 +60,21 @@ void test_BswM_GetRequestedMode_AfterRequest_ShouldReturnMode(void) {
     TEST_ASSERT_TRUE(mode == BSWM_MODE_FULL || mode == BSWM_MODE_MINIMUM);
 }
 
-/** @req SWS_BswM_00006 */
+/** @req SWS_BswM_00020 */
 void test_BswM_MainFunction_AfterInit_ShouldNotCrash(void) {
     BswM_Init(&testConfig);
     BswM_MainFunction();
     TEST_ASSERT_TRUE(1);
 }
 
-/** @req SWS_BswM_00007 */
+/** @req SWS_BswM_00030 */
 void test_BswM_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     Std_VersionInfoType info;
     BswM_GetVersionInfo(&info);
     TEST_ASSERT_EQUAL(BSWM_VENDOR_ID, info.vendorID);
 }
 
-/** @req SWS_BswM_00007 */
+/** @req SWS_BswM_00030 */
 void test_BswM_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     BswM_GetVersionInfo(NULL_PTR);
     TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
