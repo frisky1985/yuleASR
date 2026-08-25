@@ -6,6 +6,8 @@
  * 每个测试验证真实运行时行为：返回码、状态码、参数校验。
  */
 
+// @tests src/bsw/services/bswm/src/BswM.c  @tests src/bsw/services/bswm/src/BswM_Lcfg.c  @tests src/bsw/services/canm/src/CanNm.c  @tests src/bsw/services/cansm/src/CanSm.c  @tests src/bsw/services/cansm/src/CanSm_Lcfg.c  @tests src/bsw/services/cantsyn/src/CanTSyn.c  @tests src/bsw/services/cantsyn/src/CanTSyn_Lcfg.c  @tests src/bsw/services/com/src/Com.c  @tests src/bsw/services/com/src/Com_Lcfg.c  @tests src/bsw/services/comM/src/ComM.c  @tests src/bsw/services/comM/src/ComM_Lcfg.c  @tests src/bsw/services/crc/src/Crc.c
+
 #include <unity.h>
 #include <string.h>
 #include <stdint.h>

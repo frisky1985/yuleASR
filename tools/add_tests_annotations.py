@@ -70,29 +70,47 @@ def resolve_sources(test_file: Path) -> list[str]:
         "someipsd2": "someipsd",  # test_someipsd2.c → someipsd/
         "cantpsyn": "cantp",    # 归并到 CanTp
         "flsstst": "fls",       # test_flsstst.c → FLS
+        "dcm_obd": "dcm",       # test_dcm_obd.c → dcm 模块
     }
     stem = NAME_DRIFT.get(stem.lower(), stem)
-    module = stem
+    # 聚合契约测试: test_<layer>_api_contracts.c → 映射到该层 (无单一模块)
+    LAYER_CONTRACTS = {
+        "mcal_api_contracts": "mcal",
+        "ecual_api_contracts": "ecual",
+        "services_api_contracts": "services",
+        "service_api_contracts": "services",
+    }
+    layer_override = LAYER_CONTRACTS.get(stem.lower())
+    if layer_override:
+        # 用层目录: src/bsw/<layer>/ 全部源码
+        layer = layer_override
+        module = ""  # 特殊标记: 匹配层目录内全部源文件
+    else:
+        module = stem
 
     # 跳过明确无源码对应的目录
     if any(p in SKIP_DIR_PARTS for p in parts[:-1]):
         return []
 
-    # 定位 layer:
-    #   tests/bsw/<layer>/<module>/test_x.c  → layer = parts[1] 后的下一个
-    #   tests/unit/autosar/<layer>/...       → layer = 'autosar' 后一个
-    #   tests/unit/<layer>/...               → layer = parts[1]
-    try:
-        ai = parts.index("autosar")
-        layer = parts[ai + 1] if len(parts) > ai + 1 else ""
-    except ValueError:
-        if len(parts) >= 3 and parts[0] == "bsw":
-            layer = parts[1]  # tests/bsw/services/... → services
-        elif len(parts) == 2 and parts[1].startswith("test_"):
-            # tests/<module>/test_x.c → layer 未知, 直接全 src 搜模块
-            layer = ""
-        else:
-            layer = parts[1] if len(parts) > 1 else ""
+    # 定位 layer (layer_override 已设置时跳过 — 聚合契约测试已指定层)
+    if not layer_override:
+        #   tests/bsw/<layer>/<module>/test_x.c  → layer = parts[1] 后的下一个
+        #   tests/unit/autosar/<layer>/...       → layer = 'autosar' 后一个
+        #   tests/unit/<layer>/...               → layer = parts[1]
+        try:
+            ai = parts.index("autosar")
+            layer = parts[ai + 1] if len(parts) > ai + 1 else ""
+        except ValueError:
+            if len(parts) >= 3 and parts[0] == "bsw":
+                layer = parts[1]  # tests/bsw/services/... → services
+            elif len(parts) == 2 and parts[1].startswith("test_"):
+                # tests/<module>/test_x.c → layer 未知, 直接全 src 搜模块
+                layer = ""
+            elif len(parts) == 2 and parts[0] == "unit" and parts[1].startswith("test_"):
+                # tests/unit/test_X.c → layer 未知, 用文件名模块名搜全 src
+                layer = ""
+            else:
+                layer = parts[1] if len(parts) > 1 else ""
 
     if not layer:
         # tests/<module>/ 顶层结构: 优先用目录名（tests/dcm/ → dcm），
@@ -125,6 +143,22 @@ def resolve_sources(test_file: Path) -> list[str]:
                     break
         if mdir is None:
             return []
+    elif not module:
+        # 层聚合契约测试: module="" → 匹配 src/bsw/<layer>/ 下全部模块源码
+        layer_dir = SRC_DIR / "bsw" / layer
+        if not layer_dir.is_dir():
+            layer_dir = SRC_DIR / layer
+        if not layer_dir.is_dir():
+            return []
+        src_files = sorted(layer_dir.rglob("*.c"))
+        # 排除测试/生成物
+        src_files = [f for f in src_files
+                     if f.is_file() and not f.name.startswith("test_")
+                     and "_test" not in f.stem.lower()]
+        if not src_files:
+            return []
+        # 最多标注前 12 个核心文件
+        return [str(f.relative_to(ROOT)) for f in src_files[:12]]
     else:
         mdir = _module_dir(layer, module.lower())
     low = module.lower()

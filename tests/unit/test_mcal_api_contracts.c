@@ -5,6 +5,8 @@
  * 覆盖 MCAL 模块的所有标准 AUTOSAR API 及子驱动 SHALL。
  */
 
+// @tests src/bsw/mcal/adc/src/Adc.c  @tests src/bsw/mcal/can/src/Can.c  @tests src/bsw/mcal/can/src/Can_Lcfg.c  @tests src/bsw/mcal/crypto/legacy/_crypto_hsm_aes_impl.c  @tests src/bsw/mcal/crypto/legacy/_crypto_hsm_ecc_impl.c  @tests src/bsw/mcal/crypto/legacy/_crypto_hsm_key_impl.c  @tests src/bsw/mcal/crypto/legacy/_crypto_hsm_sha_impl.c  @tests src/bsw/mcal/crypto/src/Crypto.c  @tests src/bsw/mcal/crypto/src/Crypto_Aes.c  @tests src/bsw/mcal/crypto/src/Crypto_Cfg.c  @tests src/bsw/mcal/crypto/src/Crypto_Hsm.c  @tests src/bsw/mcal/crypto/src/Crypto_HwTrng.c
+
 #include <unity.h>
 #include <string.h>
 #include <stdint.h>

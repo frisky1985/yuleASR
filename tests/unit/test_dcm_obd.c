@@ -15,6 +15,8 @@
  * ASIL Level: QM
  */
 
+// @tests src/bsw/services/dcm/src/Dcm.c  @tests src/bsw/services/dcm/include/Dcm.h
+
 #include <unity.h>
 #include "Dcm.h"
 #include "Dcm_OBD.h"
