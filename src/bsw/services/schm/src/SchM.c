@@ -40,6 +40,7 @@ typedef struct {
 
 static SchM_InternalType SchM_State = { SCHM_UNINIT, 0U, 0U, NULL_PTR };
 
+/** @req SWS_SchM_00001 */
 void SchM_Init(const SchM_ConfigType* ConfigPtr)
 {
 #if (SCHM_DEV_ERROR_DETECT == STD_ON)
@@ -54,12 +55,14 @@ void SchM_Init(const SchM_ConfigType* ConfigPtr)
     SchM_State.state = SCHM_IDLE;
 }
 
+/** @req SWS_SchM_00002 */
 void SchM_DeInit(void)
 {
     SchM_State.state = SCHM_UNINIT;
     SchM_State.configPtr = NULL_PTR;
 }
 
+/** @req SWS_SchM_00005 */
 Std_ReturnType SchM_Start(void)
 {
 #if (SCHM_DEV_ERROR_DETECT == STD_ON)
@@ -73,6 +76,7 @@ Std_ReturnType SchM_Start(void)
     return E_OK;
 }
 
+/** @req SWS_SchM_00006 */
 Std_ReturnType SchM_Stop(void)
 {
     if (SchM_State.state != SCHM_RUNNING) { return E_NOT_OK; }
@@ -80,6 +84,7 @@ Std_ReturnType SchM_Stop(void)
     return E_OK;
 }
 
+/** @req SWS_SchM_00007 */
 Std_ReturnType SchM_SetScheduleTable(uint8 ScheduleId)
 {
 #if (SCHM_DEV_ERROR_DETECT == STD_ON)
@@ -99,11 +104,13 @@ Std_ReturnType SchM_SetScheduleTable(uint8 ScheduleId)
     return E_NOT_OK;
 }
 
+/** @req SWS_SchM_00008 */
 uint8 SchM_GetScheduleTable(void)
 {
     return SchM_State.activeScheduleId;
 }
 
+/** @req SWS_SchM_00004 */
 void SchM_MainFunction(void)
 {
     if ((SchM_State.state != SCHM_RUNNING) || (SchM_State.configPtr == NULL_PTR)) { return; }
@@ -128,6 +135,7 @@ void SchM_MainFunction(void)
     }
 }
 
+/** @req SWS_SchM_00003 */
 void SchM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SCHM_DEV_ERROR_DETECT == STD_ON)

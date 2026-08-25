@@ -9,10 +9,12 @@
 void setUp(void) {}
 void tearDown(void) {}
 
+/** @req SWS_Det_00001 */
 void test_det_Init_should_initialize(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }
 
+/** @req SWS_Det_00006 */
 void test_det_GetVersionInfo_should_return_version(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }

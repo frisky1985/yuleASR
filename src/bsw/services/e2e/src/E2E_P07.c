@@ -134,6 +134,7 @@ static uint32 E2E_P07_ReadCRC(const uint8* Data, uint32 Offset)
  * Profile 7 Protect
  *=============================================================================*/
 
+/** @req SWS_E2E_00018 */
 Std_ReturnType E2E_P07Protect(
     const E2E_P07ConfigType* Config,
     E2E_P07ProtectStateType* State,
@@ -177,6 +178,7 @@ Std_ReturnType E2E_P07Protect(
  * Profile 7 Check
  *=============================================================================*/
 
+/** @req SWS_E2E_00019 */
 Std_ReturnType E2E_P07Check(
     const E2E_P07ConfigType* Config,
     E2E_P07CheckStateType* State,
@@ -251,6 +253,7 @@ Std_ReturnType E2E_P07Check(
     return E_OK;
 }
 
+/** @req SWS_E2E_00020 */
 /**
  * @brief Map Profile 7 check status to State Machine
  */

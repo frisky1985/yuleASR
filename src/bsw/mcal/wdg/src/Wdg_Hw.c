@@ -662,6 +662,7 @@ static Std_ReturnType Wdg_Hw_InitWDOG_S32K(const Wdg_Hw_ConfigType* ConfigPtr)
 /**
  * @brief Initialize watchdog hardware
  */
+/** @req SWS_Wdg_00201 */
 Std_ReturnType Wdg_Hw_Init(const Wdg_Hw_ConfigType* ConfigPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -749,6 +750,7 @@ Std_ReturnType Wdg_Hw_Init(const Wdg_Hw_ConfigType* ConfigPtr)
 /**
  * @brief Deinitialize watchdog hardware
  */
+/** @req SWS_Wdg_00202 */
 Std_ReturnType Wdg_Hw_DeInit(void)
 {
 #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -777,6 +779,7 @@ Std_ReturnType Wdg_Hw_DeInit(void)
 /**
  * @brief Set trigger condition (timeout)
  */
+/** @req SWS_Wdg_00203 */
 Std_ReturnType Wdg_Hw_SetTriggerCondition(uint16 Timeout)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -877,6 +880,7 @@ Std_ReturnType Wdg_Hw_SetTriggerCondition(uint16 Timeout)
 /**
  * @brief Trigger (refresh) the watchdog
  */
+/** @req SWS_Wdg_00204 */
 Std_ReturnType Wdg_Hw_Trigger(void)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -935,6 +939,7 @@ Std_ReturnType Wdg_Hw_Trigger(void)
 /**
  * @brief Disable the watchdog
  */
+/** @req SWS_Wdg_00205 */
 Std_ReturnType Wdg_Hw_Disable(void)
 {
 #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -985,6 +990,7 @@ Std_ReturnType Wdg_Hw_Disable(void)
 /**
  * @brief Get watchdog status
  */
+/** @req SWS_Wdg_00206 */
 Wdg_Hw_StatusType Wdg_Hw_GetStatus(void)
 {
     return Wdg_Hw_Status;
@@ -993,6 +999,7 @@ Wdg_Hw_StatusType Wdg_Hw_GetStatus(void)
 /**
  * @brief Set window mode
  */
+/** @req SWS_Wdg_00207 */
 Std_ReturnType Wdg_Hw_SetWindow(uint32 StartValue, uint32 EndValue)
 {
     (void)StartValue;
@@ -1015,6 +1022,7 @@ Std_ReturnType Wdg_Hw_SetWindow(uint32 StartValue, uint32 EndValue)
 /**
  * @brief Watchdog interrupt handler
  */
+/** @req SWS_Wdg_00208 */
 void Wdg_Hw_IRQHandler(void)
 {
     if (!Wdg_Hw_Initialized) {
@@ -1051,6 +1059,7 @@ void Wdg_Hw_IRQHandler(void)
 /**
  * @brief Get reset reason
  */
+/** @req SWS_Wdg_00209 */
 Wdg_Hw_ResetReasonType Wdg_Hw_GetResetReason(void)
 {
     return Wdg_Hw_LastResetReason;
@@ -1059,6 +1068,7 @@ Wdg_Hw_ResetReasonType Wdg_Hw_GetResetReason(void)
 /**
  * @brief Check if watchdog is enabled
  */
+/** @req SWS_Wdg_00210 */
 boolean Wdg_Hw_IsEnabled(void)
 {
     if (!Wdg_Hw_Initialized) {
@@ -1087,6 +1097,7 @@ boolean Wdg_Hw_IsEnabled(void)
 /**
  * @brief Get current counter value
  */
+/** @req SWS_Wdg_00211 */
 uint32 Wdg_Hw_GetCounter(void)
 {
     if (!Wdg_Hw_Initialized) {
@@ -1113,6 +1124,7 @@ uint32 Wdg_Hw_GetCounter(void)
 /**
  * @brief Set early warning interrupt
  */
+/** @req SWS_Wdg_00212 */
 Std_ReturnType Wdg_Hw_SetEarlyWarningInterrupt(uint32 Threshold)
 {
     (void)Threshold;
@@ -1152,6 +1164,7 @@ Std_ReturnType Wdg_Hw_SetEarlyWarningInterrupt(uint32 Threshold)
 /**
  * @brief Clear interrupt flag
  */
+/** @req SWS_Wdg_00213 */
 void Wdg_Hw_ClearInterruptFlag(void)
 {
     if (!Wdg_Hw_Initialized) {

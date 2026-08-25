@@ -22,18 +22,21 @@
 #include <time.h>
 
 /* 模拟UART发送函数 */
+/** @req SWS_Lin_00060 */
 void LinSlave_Hal_UartInit(uint32_t BaudRate)
 {
     /* 模拟: 打印初始化信息 */
     printf("[HAL] UART Init: BaudRate=%u\n", (unsigned int)BaudRate);
 }
 
+/** @req SWS_Lin_00061 */
 void LinSlave_Hal_UartSend(uint8 Data)
 {
     /* 模拟: 打印发送的数据 */
     (void)printf("[HAL] UART TX: 0x%02X\n", Data);
 }
 
+/** @req SWS_Lin_00062 */
 void LinSlave_Hal_UartSendBuffer(const uint8* Buffer, uint8 Length)
 {
     uint8 i;
@@ -44,26 +47,31 @@ void LinSlave_Hal_UartSendBuffer(const uint8* Buffer, uint8 Length)
     (void)printf("\n");
 }
 
+/** @req SWS_Lin_00063 */
 void LinSlave_Hal_EnableRxInterrupt(void)
 {
     (void)printf("[HAL] RX Interrupt Enabled\n");
 }
 
+/** @req SWS_Lin_00064 */
 void LinSlave_Hal_DisableRxInterrupt(void)
 {
     (void)printf("[HAL] RX Interrupt Disabled\n");
 }
 
+/** @req SWS_Lin_00065 */
 void LinSlave_Hal_EnableBreakDetection(void)
 {
     (void)printf("[HAL] Break Detection Enabled\n");
 }
 
+/** @req SWS_Lin_00066 */
 void LinSlave_Hal_DisableBreakDetection(void)
 {
     (void)printf("[HAL] Break Detection Disabled\n");
 }
 
+/** @req SWS_Lin_00067 */
 uint32_t LinSlave_Hal_GetTimestampMs(void)
 {
     /* 模拟: 返回模拟的时间戳 */
@@ -71,6 +79,7 @@ uint32_t LinSlave_Hal_GetTimestampMs(void)
     return mockTime++;
 }
 
+/** @req SWS_Lin_00068 */
 void LinSlave_Hal_DelayUs(uint16_t Microseconds)
 {
     /* 模拟: 打印延时信息 */

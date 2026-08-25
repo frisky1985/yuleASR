@@ -49,22 +49,31 @@ typedef struct {
     boolean enableSync;
 } Tm_ConfigType;
 
+/** @req SWS_Tm_00001 */
 /* Initialization */
 Std_ReturnType Tm_Init(const Tm_ConfigType* config);
+/** @req SWS_Tm_00002 */
 void Tm_DeInit(void);
 
+/** @req SWS_Tm_00003 */
 /* Main function */
 void Tm_MainFunction(void);
 
+/** @req SWS_Tm_00004 */
 /* Time base operations */
 Std_ReturnType Tm_GetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType* value);
+/** @req SWS_Tm_00005 */
 Std_ReturnType Tm_SetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType value);
+/** @req SWS_Tm_00006 */
 Std_ReturnType Tm_GetTimeBaseInfo(uint8 timeBaseId, Tm_TimeBaseInfoType* info);
 
+/** @req SWS_Tm_00007 */
 /* Global time */
 Std_ReturnType Tm_GetGlobalTime(Tm_GlobalTimeType* time);
+/** @req SWS_Tm_00008 */
 Std_ReturnType Tm_SetGlobalTime(const Tm_GlobalTimeType* time);
 
+/** @req SWS_Tm_00009 */
 /* Synchronization */
 Std_ReturnType Tm_SyncTimeBase(uint8 sourceId, uint8 targetId);
 

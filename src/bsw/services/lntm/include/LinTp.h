@@ -157,12 +157,14 @@ extern const LinTp_ConfigType LinTp_Config;
 #define LINTP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_LinTp_00001 */
 /**
  * @brief Initializes the LIN Transport Layer module
  * @param ConfigPtr Pointer to configuration structure
  */
 extern void LinTp_Init(const LinTp_ConfigType* ConfigPtr);
 
+/** @req SWS_LinTp_00002 */
 /**
  * @brief Deinitializes the LIN Transport Layer module
  */
@@ -173,9 +175,11 @@ extern void LinTp_DeInit(void);
  * @param VersionInfo Pointer to version info structure
  */
 #if (LINTP_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinTp_00003 */
 extern void LinTp_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 #endif
 
+/** @req SWS_LinTp_00005 */
 /**
  * @brief Transmits data via LIN TP
  * @param TxPduId PDU ID for transmission
@@ -184,6 +188,7 @@ extern void LinTp_GetVersionInfo(Std_VersionInfoType* VersionInfo);
  */
 extern Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_LinTp_00006 */
 /**
  * @brief Cancels an ongoing reception
  * @param RxPduId PDU ID to cancel
@@ -191,6 +196,7 @@ extern Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType* PduIn
  */
 extern Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId);
 
+/** @req SWS_LinTp_00007 */
 /**
  * @brief Cancels an ongoing transmission
  * @param TxPduId PDU ID to cancel
@@ -198,6 +204,7 @@ extern Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId);
  */
 extern Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId);
 
+/** @req SWS_LinTp_00008 */
 /**
  * @brief Changes a parameter value
  * @param id PDU ID
@@ -207,6 +214,7 @@ extern Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId);
  */
 extern Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
 
+/** @req SWS_LinTp_00009 */
 /**
  * @brief Resets a parameter to default value
  * @param id PDU ID
@@ -215,11 +223,13 @@ extern Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parame
  */
 extern Std_ReturnType LinTp_ResetToDefaultParameters(PduIdType id, TPParameterType parameter);
 
+/** @req SWS_LinTp_00004 */
 /**
  * @brief Main function for LinTp (to be called periodically)
  */
 extern void LinTp_MainFunction(void);
 
+/** @req SWS_LinTp_00010 */
 /**
  * @brief RxIndication callback from LinIf
  * @param RxPduId PDU ID of received message
@@ -227,6 +237,7 @@ extern void LinTp_MainFunction(void);
  */
 extern void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_LinTp_00011 */
 /**
  * @brief TxConfirmation callback from LinIf
  * @param TxPduId PDU ID of transmitted message

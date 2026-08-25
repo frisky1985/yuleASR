@@ -52,6 +52,7 @@
 #define INCLUDE_vTaskSuspend                     1
 #define INCLUDE_xTaskGetCurrentTaskHandle        1
 #define INCLUDE_xTaskGetSchedulerState           1
+#define INCLUDE_uxTaskGetStackHighWaterMark       1
 
 /*-----------------------------------------------------------
  * ARMv8-M (Cortex-M33) port configuration (V11 kernel)

@@ -461,6 +461,7 @@ static void CanNm_StateMachine(CanNm_ChannelHandleType channel)
 /**
  * @brief Initialize CAN NM module
  */
+/** @req SWS_CanNm_00001 */
 void CanNm_Init(const CanNm_ConfigType *ConfigPtr)
 {
     CanNm_ChannelHandleType channel;

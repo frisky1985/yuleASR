@@ -46,6 +46,7 @@ static BswM_InternalType BswM_State = {
     NULL_PTR
 };
 
+/** @req SWS_BswM_00001 */
 void BswM_Init(const BswM_ConfigType* ConfigPtr)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
@@ -61,12 +62,14 @@ void BswM_Init(const BswM_ConfigType* ConfigPtr)
     BswM_State.internalState = BSWM_INTERNAL_INIT;
 }
 
+/** @req SWS_BswM_00002 */
 void BswM_DeInit(void)
 {
     BswM_State.internalState = BSWM_INTERNAL_UNINIT;
     BswM_State.configPtr = NULL_PTR;
 }
 
+/** @req SWS_BswM_00010 */
 Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
@@ -81,16 +84,19 @@ Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode)
     return E_OK;
 }
 
+/** @req SWS_BswM_00011 */
 BswM_ModeType BswM_GetCurrentMode(void)
 {
     return BswM_State.currentMode;
 }
 
+/** @req SWS_BswM_00012 */
 BswM_ModeType BswM_GetRequestedMode(void)
 {
     return BswM_State.requestedMode;
 }
 
+/** @req SWS_BswM_00020 */
 void BswM_MainFunction(void)
 {
     if ((BswM_State.internalState == BSWM_INTERNAL_UNINIT) || (BswM_State.configPtr == NULL_PTR)) { return; }
@@ -106,6 +112,7 @@ void BswM_MainFunction(void)
     }
 }
 
+/** @req SWS_BswM_00030 */
 void BswM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)

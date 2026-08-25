@@ -92,10 +92,12 @@ typedef enum {
     E2E_SM_INVALID
 } E2E_SMStateType;
 
+/** @req SWS_E2E_00001 */
 /*=============================================================================*
  * Global Function Prototypes
  *=============================================================================*/
 Std_ReturnType E2E_Init(const void* ConfigPtr);
+/** @req SWS_E2E_00002 */
 Std_ReturnType E2E_DeInit(void);
 
 #endif /* E2E_H */

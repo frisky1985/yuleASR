@@ -180,46 +180,66 @@ typedef struct
 *                                     FUNCTION PROTOTYPES
 ==================================================================================================*/
 
+/** @req SWS_Swc_00001 */
 /* Initialization and Lifecycle */
 extern void Swc_Init(const Swc_ConfigType* ConfigPtr);
+/** @req SWS_Swc_00002 */
 extern void Swc_DeInit(void);
+/** @req SWS_Swc_00003 */
 extern Std_ReturnType Swc_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/** @req SWS_Swc_00005 */
 /* Component Lifecycle Management */
 extern Std_ReturnType Swc_CreateInstance(Swc_ComponentHandleType componentId, 
                                           void* instanceData,
                                           Swc_ComponentHandleType* outHandle);
+/** @req SWS_Swc_00006 */
 extern Std_ReturnType Swc_DestroyInstance(Swc_ComponentHandleType handle);
+/** @req SWS_Swc_00007 */
 extern Std_ReturnType Swc_SetComponentState(Swc_ComponentHandleType handle, 
                                             Swc_StateType newState);
 extern Swc_StateType Swc_GetComponentState(Swc_ComponentHandleType handle);
 
+/** @req SWS_Swc_00008 */
 /* Runnable Entity Scheduling */
 extern Std_ReturnType Swc_ActivateRunnable(Swc_RunnableHandleType runnableHandle);
+/** @req SWS_Swc_00009 */
 extern Std_ReturnType Swc_TerminateRunnable(Swc_RunnableHandleType runnableHandle);
+/** @req SWS_Swc_00010 */
 extern void Swc_ScheduleRunnables(void);
+/** @req SWS_Swc_00011 */
 extern Std_ReturnType Swc_IsRunnableReady(Swc_RunnableHandleType runnableHandle, 
                                           boolean* isReady);
 
+/** @req SWS_Swc_00012 */
 /* Port Interface Management */
 extern Std_ReturnType Swc_ConnectPort(Swc_PortHandleType portHandle, 
                                       const void* connectionData);
+/** @req SWS_Swc_00013 */
 extern Std_ReturnType Swc_DisconnectPort(Swc_PortHandleType portHandle);
+/** @req SWS_Swc_00014 */
 extern Std_ReturnType Swc_WritePortData(Swc_PortHandleType portHandle, 
                                         const void* data, 
                                         uint16 length);
+/** @req SWS_Swc_00015 */
 extern Std_ReturnType Swc_ReadPortData(Swc_PortHandleType portHandle, 
                                        void* data, 
                                        uint16* length);
 
+/** @req SWS_Swc_00016 */
 /* RTE Event Handling */
 extern Std_ReturnType Swc_RegisterEvent(Swc_ComponentHandleType compHandle,
                                         const Swc_RteEventType* eventConfig);
+/** @req SWS_Swc_00017 */
 extern Std_ReturnType Swc_TriggerEvent(Swc_EventHandleType eventHandle);
+/** @req SWS_Swc_00018 */
 extern Std_ReturnType Swc_EnableEvent(Swc_EventHandleType eventHandle);
+/** @req SWS_Swc_00019 */
 extern Std_ReturnType Swc_DisableEvent(Swc_EventHandleType eventHandle);
+/** @req SWS_Swc_00020 */
 extern void Swc_ProcessEvents(void);
 
+/** @req SWS_Swc_00004 */
 /* Main Functions */
 extern void Swc_MainFunction(void);
 

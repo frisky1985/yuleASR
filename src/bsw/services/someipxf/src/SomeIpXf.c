@@ -150,6 +150,7 @@ STATIC uint16 SomeIpXf_AlignOffset(uint16 Offset, uint16 Alignment)
 *                                      GLOBAL FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_SomeIpXf_00001 */
 /**
  * @brief   Initializes the SOME/IP Transformer module
  */
@@ -176,6 +177,7 @@ void SomeIpXf_Init(const SomeIpXf_ConfigType* ConfigPtr)
     SomeIpXf_InternalState.State = SOMEIPXF_STATE_INIT;
 }
 
+/** @req SWS_SomeIpXf_00002 */
 /**
  * @brief   Deinitializes the SOME/IP Transformer module
  */
@@ -200,6 +202,7 @@ void SomeIpXf_DeInit(void)
  * @brief   Gets version information
  */
 #if (SOMEIPXF_VERSION_INFO_API == STD_ON)
+/** @req SWS_SomeIpXf_00003 */
 void SomeIpXf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SOMEIPXF_DEV_ERROR_DETECT == STD_ON)
@@ -218,6 +221,7 @@ void SomeIpXf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_SomeIpXf_00004 */
 /**
  * @brief   Transforms data to SOME/IP format
  */
@@ -382,6 +386,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
     return result;
 }
 
+/** @req SWS_SomeIpXf_00005 */
 /**
  * @brief   De-transforms data from SOME/IP format
  */

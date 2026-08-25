@@ -52,6 +52,7 @@ static void setup_test_config(void)
 ==================================================================================================*/
 
 /* Test: Port_Init with valid config */
+/** @req SWS_Port_00001 */
 TEST_CASE(port_init_valid_config)
 {
     setup_test_config();
@@ -64,6 +65,7 @@ TEST_CASE(port_init_valid_config)
 }
 
 /* Test: Port_Init with NULL config */
+/** @req SWS_Port_00001 */
 TEST_CASE(port_init_null_config)
 {
     Det_Mock_Reset();
@@ -77,6 +79,7 @@ TEST_CASE(port_init_null_config)
 }
 
 /* Test: Port_Init twice without deinit */
+/** @req SWS_Port_00001 */
 TEST_CASE(port_init_twice)
 {
     setup_test_config();
@@ -93,6 +96,7 @@ TEST_CASE(port_init_twice)
 
 #if (PORT_SET_PIN_DIRECTION_API == STD_ON)
 /* Test: Port_SetPinDirection with valid pin */
+/** @req SWS_Port_00003 */
 TEST_CASE(port_set_pin_direction_valid)
 {
     setup_test_config();
@@ -105,6 +109,7 @@ TEST_CASE(port_set_pin_direction_valid)
 }
 
 /* Test: Port_SetPinDirection with unchangeable pin */
+/** @req SWS_Port_00003 */
 TEST_CASE(port_set_pin_direction_unchangeable)
 {
     setup_test_config();
@@ -119,6 +124,7 @@ TEST_CASE(port_set_pin_direction_unchangeable)
 }
 
 /* Test: Port_SetPinDirection with invalid pin */
+/** @req SWS_Port_00003 */
 TEST_CASE(port_set_pin_direction_invalid)
 {
     setup_test_config();
@@ -133,6 +139,7 @@ TEST_CASE(port_set_pin_direction_invalid)
 #endif /* PORT_SET_PIN_DIRECTION_API */
 
 /* Test: Port_RefreshPortDirection */
+/** @req SWS_Port_00004 */
 TEST_CASE(port_refresh_port_direction)
 {
     setup_test_config();
@@ -148,6 +155,7 @@ TEST_CASE(port_refresh_port_direction)
 }
 
 /* Test: Port_RefreshPortDirection when not initialized */
+/** @req SWS_Port_00004 */
 TEST_CASE(port_refresh_port_direction_uninit)
 {
     Det_Mock_Reset();
@@ -160,6 +168,7 @@ TEST_CASE(port_refresh_port_direction_uninit)
 
 #if (PORT_VERSION_INFO_API == STD_ON)
 /* Test: Port_GetVersionInfo with valid pointer */
+/** @req SWS_Port_00005 */
 TEST_CASE(port_get_version_info_valid)
 {
     Std_VersionInfoType version_info;
@@ -171,6 +180,7 @@ TEST_CASE(port_get_version_info_valid)
 }
 
 /* Test: Port_GetVersionInfo with NULL pointer */
+/** @req SWS_Port_00005 */
 TEST_CASE(port_get_version_info_null)
 {
     Det_Mock_Reset();
@@ -184,6 +194,7 @@ TEST_CASE(port_get_version_info_null)
 
 #if (PORT_SET_PIN_MODE_API == STD_ON)
 /* Test: Port_SetPinMode with valid parameters */
+/** @req SWS_Port_00006 */
 TEST_CASE(port_set_pin_mode_valid)
 {
     setup_test_config();
@@ -196,6 +207,7 @@ TEST_CASE(port_set_pin_mode_valid)
 }
 
 /* Test: Port_SetPinMode with unchangeable mode */
+/** @req SWS_Port_00006 */
 TEST_CASE(port_set_pin_mode_unchangeable)
 {
     setup_test_config();
@@ -210,6 +222,7 @@ TEST_CASE(port_set_pin_mode_unchangeable)
 }
 
 /* Test: Port_SetPinMode with invalid mode */
+/** @req SWS_Port_00006 */
 TEST_CASE(port_set_pin_mode_invalid)
 {
     setup_test_config();

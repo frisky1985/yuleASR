@@ -46,6 +46,7 @@ static Std_ReturnType FrTp_SendFrame(FrTp_ConnectionIdxType connIdx, const PduIn
 #include "MemMap.h"
 #include <string.h>
 
+/** @req SWS_FrTp_00005 */
 /**
  * @brief Requests transmission of data
  * @param TxPduId PDU to transmit
@@ -139,6 +140,7 @@ Std_ReturnType FrTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return result;
 }
 
+/** @req SWS_FrTp_00006 */
 /**
  * @brief Cancels an ongoing transmission
  * @param TxPduId PDU to cancel
@@ -180,6 +182,7 @@ Std_ReturnType FrTp_CancelTransmit(PduIdType TxPduId)
     return result;
 }
 
+/** @req SWS_FrTp_00010 */
 /**
  * @brief Handles transmission confirmation from FrIf
  * @param TxPduId Transmitted PDU ID

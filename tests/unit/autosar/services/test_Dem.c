@@ -36,6 +36,7 @@ static int teardown(void **state)
  *                                    Test Cases
  *================================================================================================*/
 
+/** @req SWS_Dem_00001 */
 static void test_Dem_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -44,6 +45,7 @@ static void test_Dem_Init_ValidConfig(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Dem_00002 */
 static void test_Dem_DeInit(void **state)
 {
     (void)state;
@@ -52,6 +54,7 @@ static void test_Dem_DeInit(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Dem_00003 */
 static void test_Dem_Shutdown(void **state)
 {
     (void)state;
@@ -60,6 +63,7 @@ static void test_Dem_Shutdown(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Dem_00029 */
 static void test_Dem_GetVersionInfo(void **state)
 {
     (void)state;
@@ -72,6 +76,7 @@ static void test_Dem_GetVersionInfo(void **state)
     assert_int_equal(versionInfo.vendorID, DEM_VENDOR_ID);
 }
 
+/** @req SWS_Dem_00004 */
 static void test_Dem_SetEventStatus_Passed(void **state)
 {
     (void)state;
@@ -84,6 +89,7 @@ static void test_Dem_SetEventStatus_Passed(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00004 */
 static void test_Dem_SetEventStatus_Failed(void **state)
 {
     (void)state;
@@ -95,6 +101,7 @@ static void test_Dem_SetEventStatus_Failed(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00004 */
 static void test_Dem_SetEventStatus_PrePassed(void **state)
 {
     (void)state;
@@ -106,6 +113,7 @@ static void test_Dem_SetEventStatus_PrePassed(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00004 */
 static void test_Dem_SetEventStatus_PreFailed(void **state)
 {
     (void)state;
@@ -117,6 +125,7 @@ static void test_Dem_SetEventStatus_PreFailed(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00005 */
 static void test_Dem_ResetEventStatus(void **state)
 {
     (void)state;
@@ -128,6 +137,7 @@ static void test_Dem_ResetEventStatus(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00006 */
 static void test_Dem_GetEventStatus(void **state)
 {
     (void)state;
@@ -140,6 +150,7 @@ static void test_Dem_GetEventStatus(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00007 */
 static void test_Dem_GetEventFailed(void **state)
 {
     (void)state;
@@ -152,6 +163,7 @@ static void test_Dem_GetEventFailed(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00008 */
 static void test_Dem_GetEventTested(void **state)
 {
     (void)state;
@@ -164,6 +176,7 @@ static void test_Dem_GetEventTested(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00009 */
 static void test_Dem_GetFaultDetectionCounter(void **state)
 {
     (void)state;
@@ -202,6 +215,7 @@ static void test_Dem_UDSStatusBits_Exist(void **state)
     assert_int_equal(DEM_UDS_STATUS_WIR, 0x80U);
 }
 
+/** @req SWS_Dem_00032 */
 static void test_Dem_MainFunction_Uninit(void **state)
 {
     (void)state;
@@ -210,6 +224,7 @@ static void test_Dem_MainFunction_Uninit(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Dem_00032 */
 static void test_Dem_MainFunction_Initialized(void **state)
 {
     (void)state;
@@ -218,6 +233,7 @@ static void test_Dem_MainFunction_Initialized(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Dem_00025 */
 static void test_Dem_OperationCycleControl(void **state)
 {
     (void)state;
@@ -228,6 +244,7 @@ static void test_Dem_OperationCycleControl(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dem_00016 */
 static void test_Dem_DTCSettingControl(void **state)
 {
     (void)state;

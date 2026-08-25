@@ -349,6 +349,7 @@ STATIC Std_ReturnType SoAd_ParsePduHeader(const uint8* Buffer, uint16* HeaderLen
 /**
  * @brief   Initializes the Socket Adapter module
  */
+/** @req SWS_SoAd_00001 */
 void SoAd_Init(const SoAd_ConfigType* ConfigPtr)
 {
     uint16 i;
@@ -400,6 +401,7 @@ void SoAd_Init(const SoAd_ConfigType* ConfigPtr)
 /**
  * @brief   Deinitializes the Socket Adapter module
  */
+/** @req SWS_SoAd_00002 */
 void SoAd_DeInit(void)
 {
 #if (SOAD_DEV_ERROR_DETECT == STD_ON)
@@ -424,6 +426,7 @@ void SoAd_DeInit(void)
  * @brief   Gets version information
  */
 #if (SOAD_VERSION_INFO_API == STD_ON)
+/** @req SWS_SoAd_00003 */
 void SoAd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SOAD_DEV_ERROR_DETECT == STD_ON)
@@ -445,6 +448,7 @@ void SoAd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /**
  * @brief   Opens a TCP connection
  */
+/** @req SWS_SoAd_00004 */
 Std_ReturnType SoAd_OpenTcpConnection(uint16 SoConId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -505,6 +509,7 @@ Std_ReturnType SoAd_OpenTcpConnection(uint16 SoConId)
 /**
  * @brief   Opens a UDP connection
  */
+/** @req SWS_SoAd_00005 */
 Std_ReturnType SoAd_OpenUdpConnection(uint16 SoConId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -559,6 +564,7 @@ Std_ReturnType SoAd_OpenUdpConnection(uint16 SoConId)
 }
 
 /** @brief Close a TCP connection */
+/** @req SWS_SoAd_00006 */
 Std_ReturnType SoAd_CloseTcpConnection(uint16 SoConId, boolean Force)
 {
     SoAd_ConnectionStateType* connState;
@@ -590,12 +596,14 @@ Std_ReturnType SoAd_CloseTcpConnection(uint16 SoConId, boolean Force)
 }
 
 /** @brief Close a UDP connection */
+/** @req SWS_SoAd_00007 */
 Std_ReturnType SoAd_CloseUdpConnection(uint16 SoConId)
 {
     return SoAd_CloseTcpConnection(SoConId, TRUE);
 }
 
 /** @brief Send data over a connection */
+/** @req SWS_SoAd_00008 */
 Std_ReturnType SoAd_Send(uint16 SoConId, const PduInfoType* PduInfoPtr)
 {
     SoAd_ConnectionStateType* connState;
@@ -630,6 +638,7 @@ Std_ReturnType SoAd_Send(uint16 SoConId, const PduInfoType* PduInfoPtr)
 }
 
 /** @brief Receive data from a connection */
+/** @req SWS_SoAd_00009 */
 Std_ReturnType SoAd_Receive(uint16 SoConId, PduInfoType* PduInfoPtr, PduLengthType* Length)
 {
     SoAd_ConnectionStateType* connState;
@@ -663,6 +672,7 @@ Std_ReturnType SoAd_Receive(uint16 SoConId, PduInfoType* PduInfoPtr, PduLengthTy
 }
 
 /** @brief Get remote address of a connection */
+/** @req SWS_SoAd_00010 */
 Std_ReturnType SoAd_GetRemoteAddr(uint16 SoConId, TcpIp_SockAddrType* IpAddrPtr, uint16* PortPtr)
 {
     SoAd_ConnectionStateType* connState;
@@ -687,6 +697,7 @@ Std_ReturnType SoAd_GetRemoteAddr(uint16 SoConId, TcpIp_SockAddrType* IpAddrPtr,
 }
 
 /** @brief Set remote address of a connection */
+/** @req SWS_SoAd_00011 */
 Std_ReturnType SoAd_SetRemoteAddr(uint16 SoConId, const TcpIp_SockAddrType* IpAddrPtr)
 {
     SoAd_ConnectionStateType* connState;
@@ -710,6 +721,7 @@ Std_ReturnType SoAd_SetRemoteAddr(uint16 SoConId, const TcpIp_SockAddrType* IpAd
 }
 
 /** @brief Release IP address assignment */
+/** @req SWS_SoAd_00012 */
 Std_ReturnType SoAd_ReleaseIpAddrAssignment(uint16 LocalAddrId)
 {
     (void)LocalAddrId;
@@ -717,6 +729,7 @@ Std_ReturnType SoAd_ReleaseIpAddrAssignment(uint16 LocalAddrId)
 }
 
 /** @brief Request IP address assignment */
+/** @req SWS_SoAd_00013 */
 Std_ReturnType SoAd_RequestIpAddrAssignment(uint16 LocalAddrId, TcpIp_IpAddrAssignmentType Type)
 {
     (void)LocalAddrId;
@@ -725,6 +738,7 @@ Std_ReturnType SoAd_RequestIpAddrAssignment(uint16 LocalAddrId, TcpIp_IpAddrAssi
 }
 
 /** @brief Request connection mode change */
+/** @req SWS_SoAd_00014 */
 Std_ReturnType SoAd_RequestConnMode(uint16 SoConId, SoAd_ConnModeRequestType Mode)
 {
     (void)SoConId;
@@ -733,6 +747,7 @@ Std_ReturnType SoAd_RequestConnMode(uint16 SoConId, SoAd_ConnModeRequestType Mod
 }
 
 /** @brief Main function for periodic processing */
+/** @req SWS_SoAd_00015 */
 void SoAd_MainFunction(void)
 {
     if (SoAd_InternalState.State != SOAD_STATE_INIT)
@@ -744,6 +759,7 @@ void SoAd_MainFunction(void)
 }
 
 /** @brief RxIndication callback from TcpIp */
+/** @req SWS_SoAd_00016 */
 void SoAd_RxIndication(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* RemoteAddrPtr,
                        const uint8* BufPtr, uint16 Length)
 {
@@ -764,6 +780,7 @@ void SoAd_RxIndication(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* Re
 }
 
 /** @brief TxConfirmation callback from TcpIp */
+/** @req SWS_SoAd_00017 */
 void SoAd_TxConfirmation(TcpIp_SocketIdType SocketId, uint16 Length)
 {
     (void)SocketId;
@@ -771,6 +788,7 @@ void SoAd_TxConfirmation(TcpIp_SocketIdType SocketId, uint16 Length)
 }
 
 /** @brief TcpIp event callback */
+/** @req SWS_SoAd_00018 */
 void SoAd_TcpIpEvent(TcpIp_SocketIdType SocketId, TcpIp_EventType Event,
                      TcpIp_ReturnType EventStatus)
 {
@@ -780,6 +798,7 @@ void SoAd_TcpIpEvent(TcpIp_SocketIdType SocketId, TcpIp_EventType Event,
 }
 
 /** @brief IP address assignment changed callback */
+/** @req SWS_SoAd_00019 */
 void SoAd_LocalIpAddrAssignmentChg(uint16 LocalAddrId, TcpIp_IpAddrStateType State)
 {
     (void)LocalAddrId;
@@ -787,6 +806,7 @@ void SoAd_LocalIpAddrAssignmentChg(uint16 LocalAddrId, TcpIp_IpAddrStateType Sta
 }
 
 /* For backward compatibility with test code: */
+/** @req SWS_SoAd_00020 */
 void SoAd_TriggerTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     (void)TxPduId;

@@ -112,6 +112,7 @@ static void reset_mcu_driver_state(void)
  * @desc Verify successful initialization with valid config pointer
  * @coverage Mcu_Init
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_valid_config)
 {
     setup_test_config();
@@ -129,6 +130,7 @@ TEST_CASE(mcu_init_valid_config)
  * @desc Verify successful clock initialization
  * @coverage Mcu_InitClock, Mcu_ConfigureClock
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_clock_valid)
 {
     Std_ReturnType result;
@@ -151,6 +153,7 @@ TEST_CASE(mcu_init_clock_valid)
  * @desc Verify PLL clock distribution works correctly
  * @coverage Mcu_DistributePllClock
  */
+/** @req SWS_Mcu_00003 */
 TEST_CASE(mcu_distribute_pll_clock_valid)
 {
     setup_test_config();
@@ -171,6 +174,7 @@ TEST_CASE(mcu_distribute_pll_clock_valid)
  * @desc Verify PLL status reading
  * @coverage Mcu_GetPllStatus
  */
+/** @req SWS_Mcu_00004 */
 TEST_CASE(mcu_get_pll_status_locked)
 {
     Mcu_PllStatusType status;
@@ -192,6 +196,7 @@ TEST_CASE(mcu_get_pll_status_locked)
  * @desc Verify PLL unlocked status detection
  * @coverage Mcu_GetPllStatus
  */
+/** @req SWS_Mcu_00004 */
 TEST_CASE(mcu_get_pll_status_unlocked)
 {
     Mcu_PllStatusType status;
@@ -212,6 +217,7 @@ TEST_CASE(mcu_get_pll_status_unlocked)
  * @desc Verify mode switching to RUN
  * @coverage Mcu_SetMode
  */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode_run)
 {
     setup_test_config();
@@ -229,6 +235,7 @@ TEST_CASE(mcu_set_mode_run)
  * @desc Verify mode switching to SLEEP
  * @coverage Mcu_SetMode
  */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode_sleep)
 {
     setup_test_config();
@@ -246,6 +253,7 @@ TEST_CASE(mcu_set_mode_sleep)
  * @desc Verify mode switching to DEEP_SLEEP
  * @coverage Mcu_SetMode
  */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode_deep_sleep)
 {
     setup_test_config();
@@ -263,6 +271,7 @@ TEST_CASE(mcu_set_mode_deep_sleep)
  * @desc Verify power-on reset detection
  * @coverage Mcu_GetResetReason, Mcu_GetResetReasonFromRegister
  */
+/** @req SWS_Mcu_00006 */
 TEST_CASE(mcu_get_reset_reason_power_on)
 {
     Mcu_ResetType reason;
@@ -283,6 +292,7 @@ TEST_CASE(mcu_get_reset_reason_power_on)
  * @desc Verify watchdog reset detection
  * @coverage Mcu_GetResetReason
  */
+/** @req SWS_Mcu_00006 */
 TEST_CASE(mcu_get_reset_reason_watchdog)
 {
     Mcu_ResetType reason;
@@ -303,6 +313,7 @@ TEST_CASE(mcu_get_reset_reason_watchdog)
  * @desc Verify software reset detection
  * @coverage Mcu_GetResetReason
  */
+/** @req SWS_Mcu_00006 */
 TEST_CASE(mcu_get_reset_reason_software)
 {
     Mcu_ResetType reason;
@@ -323,6 +334,7 @@ TEST_CASE(mcu_get_reset_reason_software)
  * @desc Verify external reset detection
  * @coverage Mcu_GetResetReason
  */
+/** @req SWS_Mcu_00006 */
 TEST_CASE(mcu_get_reset_reason_external)
 {
     Mcu_ResetType reason;
@@ -343,6 +355,7 @@ TEST_CASE(mcu_get_reset_reason_external)
  * @desc Verify raw reset value reading
  * @coverage Mcu_GetResetRawValue
  */
+/** @req SWS_Mcu_00007 */
 TEST_CASE(mcu_get_reset_raw_value)
 {
     Mcu_RawResetType raw;
@@ -363,6 +376,7 @@ TEST_CASE(mcu_get_reset_raw_value)
  * @desc Verify version information retrieval
  * @coverage Mcu_GetVersionInfo
  */
+/** @req SWS_Mcu_00009 */
 TEST_CASE(mcu_get_version_info_valid)
 {
     Std_VersionInfoType version_info;
@@ -382,6 +396,7 @@ TEST_CASE(mcu_get_version_info_valid)
  * @desc Verify RAM section initialization
  * @coverage Mcu_InitRamSection
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_ram_section_valid)
 {
     Std_ReturnType result;
@@ -401,6 +416,7 @@ TEST_CASE(mcu_init_ram_section_valid)
  * @desc Verify RAM state reading
  * @coverage Mcu_GetRamState
  */
+/** @req SWS_Mcu_00011 */
 TEST_CASE(mcu_get_ram_state_valid)
 {
     Mcu_RamStateType state;
@@ -425,6 +441,7 @@ TEST_CASE(mcu_get_ram_state_valid)
  * @desc Verify error reporting for NULL config
  * @coverage Mcu_Init, Det_ReportError
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_null_config)
 {
     setup_test_config();
@@ -444,6 +461,7 @@ TEST_CASE(mcu_init_null_config)
  * @desc Verify error reporting for double initialization
  * @coverage Mcu_Init, Det_ReportError
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_already_initialized)
 {
     setup_test_config();
@@ -463,6 +481,7 @@ TEST_CASE(mcu_init_already_initialized)
  * @desc Verify error reporting when calling InitClock before Init
  * @coverage Mcu_InitClock, Det_ReportError
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_clock_not_initialized)
 {
     Std_ReturnType result;
@@ -482,6 +501,7 @@ TEST_CASE(mcu_init_clock_not_initialized)
  * @desc Verify error reporting for invalid clock setting
  * @coverage Mcu_InitClock, Det_ReportError
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_clock_invalid_setting)
 {
     Std_ReturnType result;
@@ -538,6 +558,7 @@ TEST_CASE(mcu_distribute_pll_not_locked)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_GetPllStatus, Det_ReportError
  */
+/** @req SWS_Mcu_00004 */
 TEST_CASE(mcu_get_pll_status_not_initialized)
 {
     Mcu_PllStatusType status;
@@ -557,6 +578,7 @@ TEST_CASE(mcu_get_pll_status_not_initialized)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_SetMode, Det_ReportError
  */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode_not_initialized)
 {
     reset_mcu_driver_state();
@@ -573,6 +595,7 @@ TEST_CASE(mcu_set_mode_not_initialized)
  * @desc Verify error reporting for invalid mode
  * @coverage Mcu_SetMode, Det_ReportError
  */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode_invalid)
 {
     setup_test_config();
@@ -591,6 +614,7 @@ TEST_CASE(mcu_set_mode_invalid)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_GetResetReason, Det_ReportError
  */
+/** @req SWS_Mcu_00006 */
 TEST_CASE(mcu_get_reset_reason_not_initialized)
 {
     Mcu_ResetType reason;
@@ -610,6 +634,7 @@ TEST_CASE(mcu_get_reset_reason_not_initialized)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_GetResetRawValue, Det_ReportError
  */
+/** @req SWS_Mcu_00007 */
 TEST_CASE(mcu_get_reset_raw_value_not_initialized)
 {
     Mcu_RawResetType raw;
@@ -629,6 +654,7 @@ TEST_CASE(mcu_get_reset_raw_value_not_initialized)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_PerformReset, Det_ReportError
  */
+/** @req SWS_Mcu_00008 */
 TEST_CASE(mcu_perform_reset_not_initialized)
 {
     reset_mcu_driver_state();
@@ -645,6 +671,7 @@ TEST_CASE(mcu_perform_reset_not_initialized)
  * @desc Verify error reporting for NULL version info pointer
  * @coverage Mcu_GetVersionInfo, Det_ReportError
  */
+/** @req SWS_Mcu_00009 */
 TEST_CASE(mcu_get_version_info_null)
 {
     Mcu_GetVersionInfo(NULL);
@@ -659,6 +686,7 @@ TEST_CASE(mcu_get_version_info_null)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_InitRamSection, Det_ReportError
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_ram_section_not_initialized)
 {
     Std_ReturnType result;
@@ -678,6 +706,7 @@ TEST_CASE(mcu_init_ram_section_not_initialized)
  * @desc Verify error reporting for invalid RAM section
  * @coverage Mcu_InitRamSection, Det_ReportError
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_ram_section_invalid)
 {
     Std_ReturnType result;
@@ -699,6 +728,7 @@ TEST_CASE(mcu_init_ram_section_invalid)
  * @desc Verify error reporting for uninitialized driver
  * @coverage Mcu_GetRamState, Det_ReportError
  */
+/** @req SWS_Mcu_00011 */
 TEST_CASE(mcu_get_ram_state_not_initialized)
 {
     Mcu_RamStateType state;
@@ -723,6 +753,7 @@ TEST_CASE(mcu_get_ram_state_not_initialized)
  * @desc Verify clock initialization with minimum valid setting
  * @coverage Mcu_InitClock
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_clock_boundary_min)
 {
     Std_ReturnType result;
@@ -743,6 +774,7 @@ TEST_CASE(mcu_init_clock_boundary_min)
  * @desc Verify RAM initialization with minimum valid section
  * @coverage Mcu_InitRamSection
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_ram_section_boundary_min)
 {
     Std_ReturnType result;
@@ -762,6 +794,7 @@ TEST_CASE(mcu_init_ram_section_boundary_min)
  * @desc Verify mode switching with minimum valid mode
  * @coverage Mcu_SetMode
  */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode_boundary_min)
 {
     setup_test_config();
@@ -805,6 +838,7 @@ TEST_CASE(mcu_state_transition_init)
  * @desc Verify complete initialization sequence
  * @coverage Mcu_Init, Mcu_InitClock, Mcu_DistributePllClock
  */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_sequence_complete)
 {
     Std_ReturnType result;

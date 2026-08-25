@@ -15,6 +15,7 @@
 #include "PduR_Cfg.h"
 
 /* Test: PduR_Init */
+/** @req SWS_PduR_00001 */
 static void test_PduR_Init(void **state)
 {
     (void)state;
@@ -25,6 +26,7 @@ static void test_PduR_Init(void **state)
 }
 
 /* Test: PduR_DeInit */
+/** @req SWS_PduR_00002 */
 static void test_PduR_DeInit(void **state)
 {
     (void)state;
@@ -34,6 +36,7 @@ static void test_PduR_DeInit(void **state)
 }
 
 /* Test: PduR_GetVersionInfo */
+/** @req SWS_PduR_00012 */
 static void test_PduR_GetVersionInfo(void **state)
 {
     (void)state;
@@ -44,6 +47,7 @@ static void test_PduR_GetVersionInfo(void **state)
 }
 
 /* Test: PduR_ComTransmit */
+/** @req SWS_PduR_00003 */
 static void test_PduR_ComTransmit(void **state)
 {
     (void)state;
@@ -56,6 +60,7 @@ static void test_PduR_ComTransmit(void **state)
 }
 
 /* Test: PduR_CanIfRxIndication */
+/** @req SWS_PduR_00004 */
 static void test_PduR_CanIfRxIndication(void **state)
 {
     (void)state;
@@ -68,6 +73,7 @@ static void test_PduR_CanIfRxIndication(void **state)
 }
 
 /* Test: PduR_CanIfTxConfirmation */
+/** @req SWS_PduR_00005 */
 static void test_PduR_CanIfTxConfirmation(void **state)
 {
     (void)state;
@@ -80,6 +86,7 @@ static void test_PduR_CanIfTxConfirmation(void **state)
 }
 
 /* Test: PduR_DcmTransmit */
+/** @req SWS_PduR_00003 */
 static void test_PduR_DcmTransmit(void **state)
 {
     (void)state;

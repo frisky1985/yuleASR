@@ -179,17 +179,21 @@ typedef struct {
  *                                    FUNCTION DECLARATIONS
  *==================================================================================================*/
 
+/** @req SWS_Sd_00001 */
 /** @brief Initialise the Service Discovery module */
 void Sd_Init(const Sd_ConfigType* ConfigPtr);
 
+/** @req SWS_Sd_00002 */
 /** @brief De-initialise the Service Discovery module */
 void Sd_DeInit(void);
 
 /** @brief Get version information */
 #if (SD_VERSION_INFO_API == STD_ON)
+/** @req SWS_Sd_00003 */
 void Sd_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_Sd_00005 */
 /**
  * @brief Find an offered service on the network.
  * @param ServiceId  SOME/IP Service ID
@@ -200,6 +204,7 @@ void Sd_GetVersionInfo(Std_VersionInfoType* versioninfo);
 Std_ReturnType Sd_FindService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType InstanceId,
                               Sd_Ipv4EndpointType* Endpoint);
 
+/** @req SWS_Sd_00006 */
 /**
  * @brief Start offering a service.
  * @param ServiceId    Service ID
@@ -213,11 +218,13 @@ Std_ReturnType Sd_OfferService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType Ins
                                Sd_MajorVersionType MajorVersion, Sd_MinorVersionType MinorVersion,
                                const Sd_Ipv4EndpointType* Endpoint);
 
+/** @req SWS_Sd_00007 */
 /**
  * @brief Stop offering a service.
  */
 Std_ReturnType Sd_StopService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType InstanceId);
 
+/** @req SWS_Sd_00008 */
 /**
  * @brief Subscribe to an event group.
  * @param ServiceId    Service ID
@@ -228,12 +235,14 @@ Std_ReturnType Sd_StopService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType Inst
 Std_ReturnType Sd_SubscribeEventGroup(Sd_ServiceIdType ServiceId, Sd_InstanceIdType InstanceId,
                                       Sd_EventGroupIdType EventGroupId);
 
+/** @req SWS_Sd_00009 */
 /**
  * @brief Unsubscribe from an event group.
  */
 Std_ReturnType Sd_UnsubscribeEventGroup(Sd_ServiceIdType ServiceId, Sd_InstanceIdType InstanceId,
                                         Sd_EventGroupIdType EventGroupId);
 
+/** @req SWS_Sd_00010 */
 /**
  * @brief Set event status for an event group (ready / not ready).
  */
@@ -241,11 +250,13 @@ Std_ReturnType Sd_SetEventStatus(Sd_ServiceIdType ServiceId, Sd_InstanceIdType I
                                  Sd_EventGroupIdType EventGroupId,
                                  Sd_EventGroupStatusType Status);
 
+/** @req SWS_Sd_00004 */
 /**
  * @brief Main function — periodic SD message handling.
  */
 void Sd_MainFunction(void);
 
+/** @req SWS_Sd_00011 */
 /**
  * @brief Handle an incoming SD message.
  * @param Data   Pointer to SD message payload

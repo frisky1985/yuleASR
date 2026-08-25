@@ -80,6 +80,7 @@ void tearDown(void)
 /**
  * @brief TC001: 正常初始化测试
  * @requirement WDGM_REQ_INIT_001
+ * @req SWS_WdgM_00001
  */
 void test_TC001_Init_Normal(void)
 {
@@ -94,6 +95,7 @@ void test_TC001_Init_Normal(void)
 /**
  * @brief TC002: 去初始化测试
  * @requirement WDGM_REQ_INIT_002
+ * @req SWS_WdgM_00002
  */
 void test_TC002_DeInit_Normal(void)
 {
@@ -107,6 +109,7 @@ void test_TC002_DeInit_Normal(void)
 /**
  * @brief TC003: 空指针初始化测试
  * @requirement WDGM_REQ_INIT_003
+ * @req SWS_WdgM_00001
  */
 void test_TC003_Init_NullPointer(void)
 {
@@ -120,6 +123,7 @@ void test_TC003_Init_NullPointer(void)
 /**
  * @brief TC004: 重复初始化测试
  * @requirement WDGM_REQ_INIT_004
+ * @req SWS_WdgM_00001
  */
 void test_TC004_Init_DoubleInit(void)
 {
@@ -138,6 +142,7 @@ void test_TC004_Init_DoubleInit(void)
 /**
  * @brief TC005: 设置慢速模式测试
  * @requirement WDGM_REQ_MODE_001
+ * @req SWS_WdgM_00004
  */
 void test_TC005_SetMode_Slow(void)
 {
@@ -153,6 +158,7 @@ void test_TC005_SetMode_Slow(void)
 /**
  * @brief TC006: 设置快速模式测试
  * @requirement WDGM_REQ_MODE_002
+ * @req SWS_WdgM_00004
  */
 void test_TC006_SetMode_Fast(void)
 {
@@ -168,6 +174,7 @@ void test_TC006_SetMode_Fast(void)
 /**
  * @brief TC007: 设置无效模式测试
  * @requirement WDGM_REQ_MODE_003
+ * @req SWS_WdgM_00004
  */
 void test_TC007_SetMode_Invalid(void)
 {
@@ -182,6 +189,7 @@ void test_TC007_SetMode_Invalid(void)
 /**
  * @brief TC008: 未初始化设置模式测试
  * @requirement WDGM_REQ_MODE_004
+ * @req SWS_WdgM_00004
  */
 void test_TC008_SetMode_NotInitialized(void)
 {
@@ -199,6 +207,7 @@ void test_TC008_SetMode_NotInitialized(void)
 /**
  * @brief TC009: 获取有效监督实体状态测试
  * @requirement WDGM_REQ_SE_001
+ * @req SWS_WdgM_00009
  */
 void test_TC009_GetSEState_Valid(void)
 {
@@ -215,6 +224,7 @@ void test_TC009_GetSEState_Valid(void)
 /**
  * @brief TC010: 获取无效监督实体状态测试
  * @requirement WDGM_REQ_SE_002
+ * @req SWS_WdgM_00009
  */
 void test_TC010_GetSEState_Invalid(void)
 {
@@ -230,6 +240,7 @@ void test_TC010_GetSEState_Invalid(void)
 /**
  * @brief TC011: 空指针获取状态测试
  * @requirement WDGM_REQ_SE_003
+ * @req SWS_WdgM_00009
  */
 void test_TC011_GetSEState_NullPointer(void)
 {
@@ -244,6 +255,7 @@ void test_TC011_GetSEState_NullPointer(void)
 /**
  * @brief TC012: 激活监督实体测试
  * @requirement WDGM_REQ_SE_004
+ * @req SWS_WdgM_00011
  */
 void test_TC012_ActivateSE_Normal(void)
 {
@@ -265,6 +277,7 @@ void test_TC012_ActivateSE_Normal(void)
 /**
  * @brief TC013: 去激活监督实体测试
  * @requirement WDGM_REQ_SE_005
+ * @req SWS_WdgM_00010
  */
 void test_TC013_DeactivateSE_Normal(void)
 {
@@ -287,6 +300,7 @@ void test_TC013_DeactivateSE_Normal(void)
 /**
  * @brief TC014: 有效检查点报告测试
  * @requirement WDGM_REQ_CP_001
+ * @req SWS_WdgM_00007
  */
 void test_TC014_CheckpointReached_Valid(void)
 {
@@ -303,6 +317,7 @@ void test_TC014_CheckpointReached_Valid(void)
 /**
  * @brief TC015: 无效检查点报告测试
  * @requirement WDGM_REQ_CP_002
+ * @req SWS_WdgM_00007
  */
 void test_TC015_CheckpointReached_Invalid(void)
 {
@@ -317,6 +332,7 @@ void test_TC015_CheckpointReached_Invalid(void)
 /**
  * @brief TC016: 未初始化检查点报告测试
  * @requirement WDGM_REQ_CP_003
+ * @req SWS_WdgM_00007
  */
 void test_TC016_CheckpointReached_NotInitialized(void)
 {
@@ -330,6 +346,7 @@ void test_TC016_CheckpointReached_NotInitialized(void)
 /**
  * @brief TC017: 更新活指示测试
  * @requirement WDGM_REQ_CP_004
+ * @req SWS_WdgM_00008
  */
 void test_TC017_UpdateAliveIndication_Normal(void)
 {
@@ -350,6 +367,7 @@ void test_TC017_UpdateAliveIndication_Normal(void)
 /**
  * @brief TC018: 正常看门狗触发测试
  * @requirement WDGM_REQ_WD_001
+ * @req SWS_WdgM_00014
  */
 void test_TC018_TriggerWatchdog_Normal(void)
 {
@@ -366,6 +384,7 @@ void test_TC018_TriggerWatchdog_Normal(void)
 /**
  * @brief TC019: 未初始化触发看门狗测试
  * @requirement WDGM_REQ_WD_002
+ * @req SWS_WdgM_00014
  */
 void test_TC019_TriggerWatchdog_NotInitialized(void)
 {
@@ -378,6 +397,7 @@ void test_TC019_TriggerWatchdog_NotInitialized(void)
 /**
  * @brief TC020: 主函数调用测试
  * @requirement WDGM_REQ_WD_003
+ * @req SWS_WdgM_00013
  */
 void test_TC020_MainFunction_Normal(void)
 {
@@ -401,6 +421,7 @@ void test_TC020_MainFunction_Normal(void)
 /**
  * @brief TC021: 未初始化主函数调用测试
  * @requirement WDGM_REQ_WD_004
+ * @req SWS_WdgM_00013
  */
 void test_TC021_MainFunction_NotInitialized(void)
 {
@@ -417,6 +438,7 @@ void test_TC021_MainFunction_NotInitialized(void)
 /**
  * @brief TC022: 注册安全回调测试
  * @requirement WDGM_REQ_SAFETY_001
+ * @req SWS_WdgM_00019
  */
 void test_TC022_RegisterSafetyCallback_Normal(void)
 {
@@ -430,6 +452,7 @@ void test_TC022_RegisterSafetyCallback_Normal(void)
 /**
  * @brief TC023: 处理Lockstep错误测试
  * @requirement WDGM_REQ_SAFETY_002
+ * @req SWS_WdgM_00017
  */
 void test_TC023_HandleLockstepError_Normal(void)
 {
@@ -449,6 +472,7 @@ void test_TC023_HandleLockstepError_Normal(void)
 /**
  * @brief TC024: 处理RamSafety错误测试
  * @requirement WDGM_REQ_SAFETY_003
+ * @req SWS_WdgM_00018
  */
 void test_TC024_HandleRamSafetyError_Normal(void)
 {
@@ -472,6 +496,7 @@ void test_TC024_HandleRamSafetyError_Normal(void)
 /**
  * @brief TC025: 获取全局状态测试
  * @requirement WDGM_REQ_STATUS_001
+ * @req SWS_WdgM_00012
  */
 void test_TC025_GetGlobalStatus_Normal(void)
 {
@@ -488,6 +513,7 @@ void test_TC025_GetGlobalStatus_Normal(void)
 /**
  * @brief TC026: 空指针获取状态测试
  * @requirement WDGM_REQ_STATUS_002
+ * @req SWS_WdgM_00012
  */
 void test_TC026_GetGlobalStatus_NullPointer(void)
 {
@@ -502,6 +528,7 @@ void test_TC026_GetGlobalStatus_NullPointer(void)
 /**
  * @brief TC027: 获取第一超时SEID测试
  * @requirement WDGM_REQ_STATUS_003
+ * @req SWS_WdgM_00016
  */
 void test_TC027_GetFirstExpiredSEID_Normal(void)
 {
@@ -523,6 +550,7 @@ void test_TC027_GetFirstExpiredSEID_Normal(void)
 /**
  * @brief TC028: 检查禁用允许状态测试
  * @requirement WDGM_REQ_STATUS_004
+ * @req SWS_WdgM_00006
  */
 void test_TC028_IsDisableAllowed_Normal(void)
 {
@@ -543,6 +571,7 @@ void test_TC028_IsDisableAllowed_Normal(void)
 /**
  * @brief TC029: 获取版本信息测试
  * @requirement WDGM_REQ_VERSION_001
+ * @req SWS_WdgM_00020
  */
 void test_TC029_GetVersionInfo_Normal(void)
 {
@@ -558,6 +587,7 @@ void test_TC029_GetVersionInfo_Normal(void)
 /**
  * @brief TC030: 空指针获取版本信息测试
  * @requirement WDGM_REQ_VERSION_002
+ * @req SWS_WdgM_00020
  */
 void test_TC030_GetVersionInfo_NullPointer(void)
 {
@@ -575,6 +605,7 @@ void test_TC030_GetVersionInfo_NullPointer(void)
 /**
  * @brief TC031: 无效配置 - 超出最大实体数测试
  * @requirement WDGM_REQ_CONFIG_001
+ * @req SWS_WdgM_00001
  */
 void test_TC031_Config_TooManyEntities(void)
 {
@@ -586,6 +617,7 @@ void test_TC031_Config_TooManyEntities(void)
 /**
  * @brief TC032: 使用调试配置测试
  * @requirement WDGM_REQ_CONFIG_002
+ * @req SWS_WdgM_00001
  */
 void test_TC032_Config_DebugConfig(void)
 {
@@ -604,6 +636,7 @@ void test_TC032_Config_DebugConfig(void)
 /**
  * @brief TC033: 主函数循环测试
  * @requirement WDGM_REQ_MAIN_001
+ * @req SWS_WdgM_00013
  */
 void test_TC033_MainFunction_CycleTest(void)
 {
@@ -628,6 +661,7 @@ void test_TC033_MainFunction_CycleTest(void)
 /**
  * @brief TC034: 未初始化状态调用测试
  * @requirement WDGM_REQ_MAIN_002
+ * @req SWS_WdgM_00003
  */
 void test_TC034_Uninitialized_CallTest(void)
 {
@@ -650,6 +684,7 @@ void test_TC034_Uninitialized_CallTest(void)
 /**
  * @brief TC035: Lockstep集成测试
  * @requirement WDGM_REQ_INTEGRATION_001
+ * @req SWS_WdgM_00017
  */
 void test_TC035_LockstepIntegration(void)
 {
@@ -664,6 +699,7 @@ void test_TC035_LockstepIntegration(void)
 /**
  * @brief TC036: RamSafety集成测试
  * @requirement WDGM_REQ_INTEGRATION_002
+ * @req SWS_WdgM_00018
  */
 void test_TC036_RamSafetyIntegration(void)
 {
@@ -678,6 +714,7 @@ void test_TC036_RamSafetyIntegration(void)
 /**
  * @brief TC037: Dem集成测试
  * @requirement WDGM_REQ_INTEGRATION_003
+ * @req SWS_WdgM_00001
  */
 void test_TC037_DemIntegration(void)
 {
@@ -692,6 +729,7 @@ void test_TC037_DemIntegration(void)
 /**
  * @brief TC038: 窗口看门狗配置测试
  * @requirement WDGM_REQ_INTEGRATION_004
+ * @req SWS_WdgM_00014
  */
 void test_TC038_WwdConfig(void)
 {
@@ -707,6 +745,7 @@ void test_TC038_WwdConfig(void)
 /**
  * @brief TC039: 独立看门狗配置测试
  * @requirement WDGM_REQ_INTEGRATION_005
+ * @req SWS_WdgM_00014
  */
 void test_TC039_IwdConfig(void)
 {
@@ -725,6 +764,7 @@ void test_TC039_IwdConfig(void)
 /**
  * @brief TC040: 最大实体数量测试
  * @requirement WDGM_REQ_BOUNDARY_001
+ * @req SWS_WdgM_00001
  */
 void test_TC040_MaxEntities(void)
 {
@@ -736,6 +776,7 @@ void test_TC040_MaxEntities(void)
 /**
  * @brief TC041: 最大看门狗数量测试
  * @requirement WDGM_REQ_BOUNDARY_002
+ * @req SWS_WdgM_00001
  */
 void test_TC041_MaxWatchdogs(void)
 {
@@ -747,6 +788,7 @@ void test_TC041_MaxWatchdogs(void)
 /**
  * @brief TC042: 错误阈值测试
  * @requirement WDGM_REQ_BOUNDARY_003
+ * @req SWS_WdgM_00013
  */
 void test_TC042_FailureThreshold(void)
 {
@@ -758,6 +800,7 @@ void test_TC042_FailureThreshold(void)
 /**
  * @brief TC043: 监督周期测试
  * @requirement WDGM_REQ_BOUNDARY_004
+ * @req SWS_WdgM_00013
  */
 void test_TC043_SupervisionCycle(void)
 {

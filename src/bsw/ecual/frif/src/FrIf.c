@@ -60,6 +60,7 @@ static FrIf_LpduStateType FrIf_LpduState[FRIF_NUM_LPDUS];
 #define FRIF_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_FrIf_00001 */
 void FrIf_Init(const FrIf_ConfigType* ConfigPtr)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -115,6 +116,7 @@ void FrIf_Init(const FrIf_ConfigType* ConfigPtr)
     FrIf_Initialized = TRUE;
 }
 
+/** @req SWS_FrIf_00004 */
 Std_ReturnType FrIf_ControllerInit(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -136,6 +138,7 @@ Std_ReturnType FrIf_ControllerInit(uint8 FrIf_CtrlIdx)
     return E_OK;
 }
 
+/** @req SWS_FrIf_00005 */
 Std_ReturnType FrIf_SetAbsoluteTimer(uint8 FrIf_CtrlIdx,
                                       uint8 FrIf_AbsTimerIdx,
                                       uint8 FrIf_Cycle,
@@ -166,6 +169,7 @@ Std_ReturnType FrIf_SetAbsoluteTimer(uint8 FrIf_CtrlIdx,
     return E_OK;
 }
 
+/** @req SWS_FrIf_00006 */
 Std_ReturnType FrIf_SetRelativeTimer(uint8 FrIf_CtrlIdx,
                                       uint8 FrIf_RelTimerIdx,
                                       uint16 FrIf_Offset)
@@ -192,6 +196,7 @@ Std_ReturnType FrIf_SetRelativeTimer(uint8 FrIf_CtrlIdx,
     return E_OK;
 }
 
+/** @req SWS_FrIf_00007 */
 Std_ReturnType FrIf_CancelAbsoluteTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_AbsTimerIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -214,6 +219,7 @@ Std_ReturnType FrIf_CancelAbsoluteTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_AbsTimerI
     return E_OK;
 }
 
+/** @req SWS_FrIf_00008 */
 Std_ReturnType FrIf_CancelRelativeTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_RelTimerIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -236,6 +242,7 @@ Std_ReturnType FrIf_CancelRelativeTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_RelTimerI
     return E_OK;
 }
 
+/** @req SWS_FrIf_00009 */
 Std_ReturnType FrIf_Transmit(PduIdType FrIf_TxPduId, const PduInfoType* FrIf_PduInfoPtr)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -277,6 +284,7 @@ Std_ReturnType FrIf_Transmit(PduIdType FrIf_TxPduId, const PduInfoType* FrIf_Pdu
     return E_OK;
 }
 
+/** @req SWS_FrIf_00010 */
 Std_ReturnType FrIf_GetPOCStatus(uint8 FrIf_CtrlIdx, FrIf_POCStatusType* FrIf_POCStatusPtr)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -303,6 +311,7 @@ Std_ReturnType FrIf_GetPOCStatus(uint8 FrIf_CtrlIdx, FrIf_POCStatusType* FrIf_PO
     return E_OK;
 }
 
+/** @req SWS_FrIf_00011 */
 Std_ReturnType FrIf_GetGlobalTime(uint8 FrIf_CtrlIdx,
                                    uint8* FrIf_CyclePtr,
                                    uint16* FrIf_MacrotickPtr)
@@ -329,6 +338,7 @@ Std_ReturnType FrIf_GetGlobalTime(uint8 FrIf_CtrlIdx,
     return E_OK;
 }
 
+/** @req SWS_FrIf_00012 */
 Std_ReturnType FrIf_AllowColdstart(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -356,6 +366,7 @@ Std_ReturnType FrIf_AllowColdstart(uint8 FrIf_CtrlIdx)
     #endif
 }
 
+/** @req SWS_FrIf_00013 */
 Std_ReturnType FrIf_HaltCommunication(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -376,6 +387,7 @@ Std_ReturnType FrIf_HaltCommunication(uint8 FrIf_CtrlIdx)
     return E_OK;
 }
 
+/** @req SWS_FrIf_00014 */
 Std_ReturnType FrIf_AbortCommunication(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -396,6 +408,7 @@ Std_ReturnType FrIf_AbortCommunication(uint8 FrIf_CtrlIdx)
     return E_OK;
 }
 
+/** @req SWS_FrIf_00015 */
 Std_ReturnType FrIf_SendWUP(uint8 FrIf_CtrlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -421,6 +434,7 @@ Std_ReturnType FrIf_SendWUP(uint8 FrIf_CtrlIdx)
     #endif
 }
 
+/** @req SWS_FrIf_00016 */
 Std_ReturnType FrIf_SetWakeupChannel(uint8 FrIf_CtrlIdx, FrIf_ChannelType FrIf_ChnlIdx)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -449,6 +463,7 @@ Std_ReturnType FrIf_SetWakeupChannel(uint8 FrIf_CtrlIdx, FrIf_ChannelType FrIf_C
     #endif
 }
 
+/** @req SWS_FrIf_00002 */
 void FrIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (FRIF_DEV_ERROR_DETECT == STD_ON)
@@ -465,6 +480,7 @@ void FrIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = FRIF_SW_PATCH_VERSION;
 }
 
+/** @req SWS_FrIf_00003 */
 void FrIf_MainFunction(void)
 {
     if (FrIf_Initialized == FALSE) {

@@ -156,7 +156,7 @@ static void Det_CallTransientCallouts(uint16 ModuleId, uint8 InstanceId, uint8 A
  * @brief Initializes the Det module
  * @param ConfigPtr Pointer to configuration structure (post-build)
  * @return None
- * @req SWS_Det_00005
+ * @req SWS_Det_00001
  * @note ConfigPtr may be NULL_PTR for pre-compile configuration
  */
 void Det_Init(const Det_ConfigType* ConfigPtr)
@@ -233,7 +233,7 @@ void Det_Init(const Det_ConfigType* ConfigPtr)
  * @param ApiId API ID where error was detected
  * @param ErrorId Error code
  * @return Always returns E_OK
- * @req SWS_Det_00006
+ * @req SWS_Det_00002
  * @note This is the main API for reporting development errors
  */
 Std_ReturnType Det_ReportError(
@@ -283,7 +283,7 @@ Std_ReturnType Det_ReportError(
 /**
  * @brief Starts the error tracer
  * @return None
- * @req SWS_Det_00008
+ * @req SWS_Det_00003
  * @note After Start(), error reporting becomes active
  */
 void Det_Start(void)
@@ -304,7 +304,7 @@ void Det_Start(void)
  * @param ApiId API ID where error was detected
  * @param ErrorId Error code
  * @return E_OK if handled, E_NOT_OK otherwise
- * @req SWS_Det_00012
+ * @req SWS_Det_00004
  * @note Runtime errors are for production code, not development only
  */
 Std_ReturnType Det_ReportRuntimeError(
@@ -352,7 +352,7 @@ Std_ReturnType Det_ReportRuntimeError(
  * @param ApiId API ID where fault was detected
  * @param FaultId Fault code
  * @return E_OK if handled, E_NOT_OK otherwise
- * @req SWS_Det_00013
+ * @req SWS_Det_00005
  * @note Transient faults are recoverable error conditions
  */
 Std_ReturnType Det_ReportTransientFault(
@@ -390,7 +390,7 @@ Std_ReturnType Det_ReportTransientFault(
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  * @return None
- * @req SWS_Det_00011
+ * @req SWS_Det_00006
  */
 #if (DET_VERSION_INFO_API == STD_ON)
 void Det_GetVersionInfo(Std_VersionInfoType* versioninfo)

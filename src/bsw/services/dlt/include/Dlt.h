@@ -63,6 +63,7 @@ extern "C" {
 /*                              API 函数声明                                   */
 /* ========================================================================== */
 
+/** @req SWS_Dlt_00001 */
 /**
  * @brief 初始化 DLT 模块
  * 
@@ -82,6 +83,7 @@ extern "C" {
  */
 void Dlt_Init(const Dlt_ConfigType* ConfigPtr);
 
+/** @req SWS_Dlt_00002 */
 /**
  * @brief 反初始化 DLT 模块
  * 
@@ -113,6 +115,7 @@ void Dlt_DeInit(void);
  */
 Dlt_AppHandleType Dlt_RegisterApp(const Dlt_AppInfoType* AppInfoPtr);
 
+/** @req SWS_Dlt_00005 */
 /**
  * @brief 注销应用
  * 
@@ -147,6 +150,7 @@ Std_ReturnType Dlt_UnregisterApp(Dlt_AppHandleType AppHandle);
  * 
  * AUTOSAR SWS DLT_00005
  */
+/** @req SWS_Dlt_00006 */
 Std_ReturnType Dlt_SendLogMessage(
     Dlt_AppHandleType  AppHandle,
     Dlt_LogLevelType   LogLevel,
@@ -155,6 +159,7 @@ Std_ReturnType Dlt_SendLogMessage(
     uint16             Length
 );
 
+/** @req SWS_Dlt_00007 */
 /**
  * @brief 发送跟踪消息
  * 
@@ -179,6 +184,7 @@ Std_ReturnType Dlt_SendTraceMessage(
     uint16            Length
 );
 
+/** @req SWS_Dlt_00004 */
 /**
  * @brief DLT 主函数
  * 
@@ -195,6 +201,7 @@ Std_ReturnType Dlt_SendTraceMessage(
  */
 void Dlt_MainFunction(void);
 
+/** @req SWS_Dlt_00003 */
 /**
  * @brief 获取 DLT 模块版本信息
  * 
@@ -206,6 +213,7 @@ void Dlt_MainFunction(void);
  */
 void Dlt_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr);
 
+/** @req SWS_Dlt_00008 */
 /**
  * @brief 设置消息过滤器
  * 
@@ -225,6 +233,7 @@ Std_ReturnType Dlt_SetFilter(
     boolean           Enabled
 );
 
+/** @req SWS_Dlt_00009 */
 /**
  * @brief 清空消息队列
  * 
@@ -245,6 +254,7 @@ Std_ReturnType Dlt_FlushQueue(void);
  */
 Dlt_ModuleStateType Dlt_GetStatus(void);
 
+/** @req SWS_Dlt_00010 */
 /**
  * @brief 设置会话ID
  * 
@@ -258,6 +268,7 @@ Dlt_ModuleStateType Dlt_GetStatus(void);
  */
 Std_ReturnType Dlt_SetSessionId(uint32 sessionId);
 
+/** @req SWS_Dlt_00011 */
 /**
  * @brief 获取统计信息
  * 
@@ -279,6 +290,7 @@ void Dlt_GetStatistics(
 /*                      Context 管理 API (ecual 合并, 2026-08-15)              */
 /* ========================================================================== */
 
+/** @req SWS_Dlt_00012 */
 /**
  * @brief 注册 context
  * 
@@ -300,6 +312,7 @@ Std_ReturnType Dlt_RegisterContext(
     uint8 descriptionLength
 );
 
+/** @req SWS_Dlt_00013 */
 /**
  * @brief 注销 context
  * 
@@ -315,6 +328,7 @@ Std_ReturnType Dlt_UnregisterContext(
     Dlt_ContextIdType contextId
 );
 
+/** @req SWS_Dlt_00014 */
 /**
  * @brief 设置 context 日志级别
  * 
@@ -332,6 +346,7 @@ Std_ReturnType Dlt_SetLogLevel(
     Dlt_LogLevelType logLevel
 );
 
+/** @req SWS_Dlt_00015 */
 /**
  * @brief 读取 context 日志级别
  * 
@@ -349,6 +364,7 @@ Std_ReturnType Dlt_GetLogLevel(
     Dlt_LogLevelType* logLevel
 );
 
+/** @req SWS_Dlt_00016 */
 /**
  * @brief 设置 context 跟踪状态
  * 
@@ -366,6 +382,7 @@ Std_ReturnType Dlt_SetTraceStatus(
     Dlt_TraceStatusType traceStatus
 );
 
+/** @req SWS_Dlt_00017 */
 /**
  * @brief 读取 context 跟踪状态
  * 
@@ -394,6 +411,7 @@ Std_ReturnType Dlt_GetTraceStatus(
  *       待 Com 集成接入后消费。
  */
 #if (DLT_USE_COM == STD_ON)
+/** @req SWS_Dlt_00018 */
 void Dlt_ComTxConfirmation(uint8 result);
 #endif
 
@@ -409,6 +427,7 @@ void Dlt_ComTxConfirmation(uint8 result);
  *       待 Com 集成接入后消费。
  */
 #if (DLT_USE_COM == STD_ON)
+/** @req SWS_Dlt_00019 */
 void Dlt_ComRxIndication(const uint8* data, uint16 length);
 #endif
 

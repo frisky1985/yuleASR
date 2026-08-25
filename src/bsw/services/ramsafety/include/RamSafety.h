@@ -211,6 +211,7 @@ typedef void (*RamSafety_ErrorCallbackType)(
  * 
  * @param config 配置指针
  * @return E_OK: 成功, E_NOT_OK: 失败
+ * @req SWS_RamSafety_00001
  */
 extern Std_ReturnType RamSafety_Init(const RamSafety_ConfigType* config);
 
@@ -218,6 +219,7 @@ extern Std_ReturnType RamSafety_Init(const RamSafety_ConfigType* config);
  * @brief 去初始化RamSafety模块
  * 
  * @return E_OK: 成功, E_NOT_OK: 失败
+ * @req SWS_RamSafety_00002
  */
 extern Std_ReturnType RamSafety_DeInit(void);
 
@@ -225,6 +227,7 @@ extern Std_ReturnType RamSafety_DeInit(void);
  * @brief 获取当前状态
  * 
  * @return 当前状态
+ * @req SWS_RamSafety_00003
  */
 extern RamSafety_StateType RamSafety_GetState(void);
 
@@ -237,6 +240,7 @@ extern RamSafety_StateType RamSafety_GetState(void);
  * 
  * @param progressCb 进度回调 (可为NULL)
  * @return E_OK: 所有检查通过, E_NOT_OK: 至少一个检查失败
+ * @req SWS_RamSafety_00010
  */
 extern Std_ReturnType RamSafety_RunStartupTest(
     RamSafety_ProgressCallbackType progressCb
@@ -248,6 +252,7 @@ extern Std_ReturnType RamSafety_RunStartupTest(
  * 
  * 应在主循环中定期调用 (建议100ms周期)
  * 每次检查一个或多个区域
+ * @req SWS_RamSafety_00011
  */
 extern void RamSafety_MainFunction(void);
 
@@ -259,6 +264,7 @@ extern void RamSafety_MainFunction(void);
  * @param regionId 区域ID (如果为0xFF则检查所有区域)
  * @param errorCb 错误回调 (可为NULL)
  * @return 测试结果
+ * @req SWS_RamSafety_00012
  */
 extern RamSafety_ResultType RamSafety_TriggerTest(
     RamSafety_TestType testType,
@@ -272,6 +278,7 @@ extern RamSafety_ResultType RamSafety_TriggerTest(
  * 
  * @param regionId 区域ID
  * @return E_OK: 验证通过, E_NOT_OK: 验证失败
+ * @req SWS_RamSafety_00020
  */
 extern Std_ReturnType RamSafety_VerifyRegion(uint8 regionId);
 
@@ -281,6 +288,7 @@ extern Std_ReturnType RamSafety_VerifyRegion(uint8 regionId);
  * @param startAddr 起始地址
  * @param size 大小
  * @return E_OK: 验证通过, E_NOT_OK: 验证失败
+ * @req SWS_RamSafety_00021
  */
 extern Std_ReturnType RamSafety_VerifyRange(uint32 startAddr, uint32 size);
 
@@ -289,6 +297,7 @@ extern Std_ReturnType RamSafety_VerifyRange(uint32 startAddr, uint32 size);
  * 
  * @param stats 统计结构体指针
  * @return E_OK: 成功, E_NOT_OK: 失败
+ * @req SWS_RamSafety_00030
  */
 extern Std_ReturnType RamSafety_GetStatistics(RamSafety_StatisticsType* stats);
 
@@ -296,6 +305,7 @@ extern Std_ReturnType RamSafety_GetStatistics(RamSafety_StatisticsType* stats);
  * @brief 清除统计信息
  * 
  * @return E_OK: 成功, E_NOT_OK: 失败
+ * @req SWS_RamSafety_00031
  */
 extern Std_ReturnType RamSafety_ClearStatistics(void);
 
@@ -306,6 +316,7 @@ extern Std_ReturnType RamSafety_ClearStatistics(void);
  * @param hasError 错误状态输出
  * @param errorCount 错误计数输出 (可为NULL)
  * @return E_OK: 成功, E_NOT_OK: 失败
+ * @req SWS_RamSafety_00032
  */
 extern Std_ReturnType RamSafety_CheckEccStatus(
     uint8 regionId,
@@ -320,6 +331,7 @@ extern Std_ReturnType RamSafety_CheckEccStatus(
  * 当检测到严重RAM错误时调用，触发系统安全响应
  * 
  * @param reason 进入安全状态的原因
+ * @req SWS_RamSafety_00040
  */
 extern void RamSafety_EnterSafeState(uint8 reason);
 
@@ -328,6 +340,7 @@ extern void RamSafety_EnterSafeState(uint8 reason);
  * @brief 获取版本信息
  * 
  * @param versioninfo 版本信息结构体
+ * @req SWS_RamSafety_00050
  */
 extern void RamSafety_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif

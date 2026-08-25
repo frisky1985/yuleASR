@@ -34,6 +34,7 @@ static boolean E2E_ModuleInitialized = FALSE;
  * Function Implementations
  *=============================================================================*/
 
+/** @req SWS_E2E_00001 */
 /**
  * @brief 初始化 E2E 模块 (AUTOSAR 标准 API)
  * @param ConfigPtr E2E 配置指针 (当前实现不依赖模块级配置)
@@ -50,6 +51,7 @@ Std_ReturnType E2E_Init(const void* ConfigPtr)
     return E_OK;
 }
 
+/** @req SWS_E2E_00002 */
 /**
  * @brief 反初始化 E2E 模块
  * @return E_OK 始终成功

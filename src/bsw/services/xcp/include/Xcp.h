@@ -386,12 +386,14 @@ typedef Std_ReturnType (*Xcp_SeedKeyCallbackType)(uint8 Resource, uint8* Seed, u
 #define XCP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Xcp_00001 */
 /**
  * @brief Initializes the XCP module
  * @param ConfigPtr Pointer to configuration structure
  */
 void Xcp_Init(const Xcp_ConfigType* ConfigPtr);
 
+/** @req SWS_Xcp_00002 */
 /**
  * @brief Deinitializes the XCP module
  */
@@ -402,14 +404,17 @@ void Xcp_DeInit(void);
  * @param versioninfo Pointer to version info structure
  */
 #if (XCP_VERSION_INFO_API == STD_ON)
+/** @req SWS_Xcp_00003 */
 void Xcp_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_Xcp_00004 */
 /**
  * @brief Main function for cyclic processing
  */
 void Xcp_MainFunction(void);
 
+/** @req SWS_Xcp_00005 */
 /**
  * @brief Rx Indication callback from lower layer
  * @param XcpChannelId Channel ID
@@ -418,6 +423,7 @@ void Xcp_MainFunction(void);
  */
 void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType* XcpRxPduPtr);
 
+/** @req SWS_Xcp_00006 */
 /**
  * @brief Tx Confirmation callback from lower layer
  * @param XcpChannelId Channel ID
@@ -425,6 +431,7 @@ void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType*
  */
 void Xcp_TxConfirmation(uint8 XcpChannelId, PduIdType XcpTxPduId);
 
+/** @req SWS_Xcp_00007 */
 /**
  * @brief Trigger transmit callback from lower layer
  * @param XcpChannelId Channel ID
@@ -434,6 +441,7 @@ void Xcp_TxConfirmation(uint8 XcpChannelId, PduIdType XcpTxPduId);
  */
 Std_ReturnType Xcp_TriggerTransmit(uint8 XcpChannelId, PduIdType XcpTxPduId, PduInfoType* PduInfoPtr);
 
+/** @req SWS_Xcp_00008 */
 /**
  * @brief Sets transmission mode
  * @param XcpChannelId Channel ID
@@ -447,6 +455,7 @@ void Xcp_SetTransmissionMode(uint8 XcpChannelId, uint8 Mode);
  */
 Xcp_SessionStatusType Xcp_GetSessionStatus(void);
 
+/** @req SWS_Xcp_00009 */
 /**
  * @brief Processes received XCP command
  * @param ChannelId Channel ID
@@ -455,6 +464,7 @@ Xcp_SessionStatusType Xcp_GetSessionStatus(void);
  */
 void Xcp_ProcessCommand(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00010 */
 /**
  * @brief Sends response packet
  * @param ChannelId Channel ID
@@ -463,6 +473,7 @@ void Xcp_ProcessCommand(uint8 ChannelId, const uint8* Data, uint8 Length);
  */
 void Xcp_SendResponse(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00011 */
 /**
  * @brief Sends error packet
  * @param ChannelId Channel ID
@@ -471,6 +482,7 @@ void Xcp_SendResponse(uint8 ChannelId, const uint8* Data, uint8 Length);
  */
 void Xcp_SendError(uint8 ChannelId, uint8 ErrorCode, uint8 ErrorInfo);
 
+/** @req SWS_Xcp_00012 */
 /**
  * @brief Sends event packet
  * @param ChannelId Channel ID
@@ -480,6 +492,7 @@ void Xcp_SendError(uint8 ChannelId, uint8 ErrorCode, uint8 ErrorInfo);
  */
 void Xcp_SendEvent(uint8 ChannelId, uint8 EventCode, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00013 */
 /**
  * @brief Handles Connect command
  * @param ChannelId Channel ID
@@ -488,24 +501,28 @@ void Xcp_SendEvent(uint8 ChannelId, uint8 EventCode, const uint8* Data, uint8 Le
  */
 void Xcp_CmdConnect(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00014 */
 /**
  * @brief Handles Disconnect command
  * @param ChannelId Channel ID
  */
 void Xcp_CmdDisconnect(uint8 ChannelId);
 
+/** @req SWS_Xcp_00015 */
 /**
  * @brief Handles GetStatus command
  * @param ChannelId Channel ID
  */
 void Xcp_CmdGetStatus(uint8 ChannelId);
 
+/** @req SWS_Xcp_00016 */
 /**
  * @brief Handles GetCommModeInfo command
  * @param ChannelId Channel ID
  */
 void Xcp_CmdGetCommModeInfo(uint8 ChannelId);
 
+/** @req SWS_Xcp_00017 */
 /**
  * @brief Handles GetID command
  * @param ChannelId Channel ID
@@ -514,6 +531,7 @@ void Xcp_CmdGetCommModeInfo(uint8 ChannelId);
  */
 void Xcp_CmdGetId(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00018 */
 /**
  * @brief Handles SetMTA command
  * @param ChannelId Channel ID
@@ -521,6 +539,7 @@ void Xcp_CmdGetId(uint8 ChannelId, const uint8* Data, uint8 Length);
  */
 void Xcp_CmdSetMta(uint8 ChannelId, const uint8* Data);
 
+/** @req SWS_Xcp_00019 */
 /**
  * @brief Handles Upload command
  * @param ChannelId Channel ID
@@ -528,6 +547,7 @@ void Xcp_CmdSetMta(uint8 ChannelId, const uint8* Data);
  */
 void Xcp_CmdUpload(uint8 ChannelId, const uint8* Data);
 
+/** @req SWS_Xcp_00020 */
 /**
  * @brief Handles ShortUpload command
  * @param ChannelId Channel ID
@@ -535,6 +555,7 @@ void Xcp_CmdUpload(uint8 ChannelId, const uint8* Data);
  */
 void Xcp_CmdShortUpload(uint8 ChannelId, const uint8* Data);
 
+/** @req SWS_Xcp_00021 */
 /**
  * @brief Handles Download command
  * @param ChannelId Channel ID
@@ -543,6 +564,7 @@ void Xcp_CmdShortUpload(uint8 ChannelId, const uint8* Data);
  */
 void Xcp_CmdDownload(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00022 */
 /**
  * @brief Handles GetSeed command
  * @param ChannelId Channel ID
@@ -550,6 +572,7 @@ void Xcp_CmdDownload(uint8 ChannelId, const uint8* Data, uint8 Length);
  */
 void Xcp_CmdGetSeed(uint8 ChannelId, const uint8* Data);
 
+/** @req SWS_Xcp_00023 */
 /**
  * @brief Handles Unlock command
  * @param ChannelId Channel ID
@@ -558,45 +581,69 @@ void Xcp_CmdGetSeed(uint8 ChannelId, const uint8* Data);
  */
 void Xcp_CmdUnlock(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00024 */
 /**
  * @brief DAQ Functions
  */
 void Xcp_CmdClearDaqList(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00025 */
 void Xcp_CmdSetDaqPtr(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00026 */
 void Xcp_CmdWriteDaq(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00027 */
 void Xcp_CmdSetDaqListMode(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00028 */
 void Xcp_CmdGetDaqListMode(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00029 */
 void Xcp_CmdStartStopDaqList(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00030 */
 void Xcp_CmdStartStopSynch(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00031 */
 void Xcp_CmdGetDaqProcessorInfo(uint8 ChannelId);
+/** @req SWS_Xcp_00032 */
 void Xcp_CmdGetDaqResolutionInfo(uint8 ChannelId);
+/** @req SWS_Xcp_00033 */
 void Xcp_CmdGetDaqListInfo(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00034 */
 void Xcp_CmdFreeDaq(uint8 ChannelId);
+/** @req SWS_Xcp_00035 */
 void Xcp_CmdAllocDaq(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00036 */
 void Xcp_CmdAllocOdt(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00037 */
 void Xcp_CmdAllocOdtEntry(uint8 ChannelId, const uint8* Data);
 
+/** @req SWS_Xcp_00038 */
 /**
  * @brief PGM Functions
  */
 void Xcp_CmdProgramStart(uint8 ChannelId);
+/** @req SWS_Xcp_00039 */
 void Xcp_CmdProgramClear(uint8 ChannelId, const uint8* Data);
+/** @req SWS_Xcp_00040 */
 void Xcp_CmdProgram(uint8 ChannelId, const uint8* Data, uint8 Length);
+/** @req SWS_Xcp_00041 */
 void Xcp_CmdProgramReset(uint8 ChannelId);
+/** @req SWS_Xcp_00042 */
 void Xcp_CmdProgramVerify(uint8 ChannelId, const uint8* Data);
 
+/** @req SWS_Xcp_00043 */
 /**
  * @brief DAQ Processing Functions
  */
 void Xcp_DaqProcessor(void);
+/** @req SWS_Xcp_00044 */
 void Xcp_DaqSample(uint16 DaqListIdx);
+/** @req SWS_Xcp_00045 */
 void Xcp_DaqTransmit(uint16 DaqListIdx, uint8 OdtIdx);
 
+/** @req SWS_Xcp_00046 */
 /**
  * @brief STIM Processing Functions
  */
 void Xcp_StimProcessor(uint8 ChannelId, const uint8* Data, uint8 Length);
 
+/** @req SWS_Xcp_00047 */
 /**
  * @brief Memory Access Functions
  * @param Addr Memory address
@@ -606,8 +653,10 @@ void Xcp_StimProcessor(uint8 ChannelId, const uint8* Data, uint8 Length);
  * @return Result of operation
  */
 Std_ReturnType Xcp_ReadMemory(uint32 Addr, uint8 Ext, uint8* Data, uint32 Length);
+/** @req SWS_Xcp_00048 */
 Std_ReturnType Xcp_WriteMemory(uint32 Addr, uint8 Ext, const uint8* Data, uint32 Length);
 
+/** @req SWS_Xcp_00049 */
 /**
  * @brief Set resource protection
  * @param Resource Resource type
@@ -615,6 +664,7 @@ Std_ReturnType Xcp_WriteMemory(uint32 Addr, uint8 Ext, const uint8* Data, uint32
  */
 void Xcp_SetResourceProtection(uint8 Resource, boolean Protected);
 
+/** @req SWS_Xcp_00050 */
 /**
  * @brief Check resource protection
  * @param Resource Resource type
@@ -622,6 +672,7 @@ void Xcp_SetResourceProtection(uint8 Resource, boolean Protected);
  */
 boolean Xcp_IsResourceProtected(uint8 Resource);
 
+/** @req SWS_Xcp_00051 */
 /**
  * @brief Unlock resource
  * @param Resource Resource type

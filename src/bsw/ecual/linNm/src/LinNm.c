@@ -52,6 +52,7 @@ static void LinNm_StopTimeoutTimer(uint8 channelIndex);
 /*==================================================================================================* HELPER
  * FUNCTIONS==================================================================================================*/
 /** * @brief Get channel index from network handle */
+/** @req SWS_LinNm_00001 */
 static inline uint8 LinNm_GetChannelIndex(NetworkHandleType nmChannelHandle)
 {
     uint8 i;
@@ -69,11 +70,13 @@ static inline uint8 LinNm_GetChannelIndex(NetworkHandleType nmChannelHandle)
     return LINNM_INVALID_CHANNEL;
 }
 /** * @brief Check if channel index is valid */
+/** @req SWS_LinNm_00002 */
 static inline boolean LinNm_IsChannelValid(uint8 channelIndex)
 {
     return (channelIndex < LINNM_NUMBER_OF_CHANNELS);
 }
 /** * @brief Check if node is master */
+/** @req SWS_LinNm_00003 */
 static boolean LinNm_IsMasterNode(uint8 channelIndex)
 {
     if (!LinNm_IsChannelValid(channelIndex))
@@ -83,6 +86,7 @@ static boolean LinNm_IsMasterNode(uint8 channelIndex)
     return (LinNm_ConfigPtr->ChannelConfig[channelIndex].NodeType == LINNM_NODE_TYPE_MASTER);
 }
 /** * @brief Start timeout timer */
+/** @req SWS_LinNm_00004 */
 static void LinNm_StartTimeoutTimer(uint8 channelIndex, uint32 timeoutMs)
 {
     if (LinNm_IsChannelValid(channelIndex))
@@ -91,6 +95,7 @@ static void LinNm_StartTimeoutTimer(uint8 channelIndex, uint32 timeoutMs)
     }
 }
 /** * @brief Stop timeout timer */
+/** @req SWS_LinNm_00005 */
 static void LinNm_StopTimeoutTimer(uint8 channelIndex)
 {
     if (LinNm_IsChannelValid(channelIndex))
@@ -99,6 +104,7 @@ static void LinNm_StopTimeoutTimer(uint8 channelIndex)
     }
 }
 /** * @brief Send NM PDU (triggered by master or during bus synchronization) */
+/** @req SWS_LinNm_00006 */
 static void LinNm_SendNmPdu(uint8 channelIndex, boolean activeWakeup)
 {
     const LinNm_ChannelConfigType* chConfig;
@@ -143,6 +149,7 @@ static void LinNm_SendNmPdu(uint8 channelIndex, boolean activeWakeup)
     chRuntime->MessageCycleTimer = chConfig->MsgCycleTimeMs;
 }
 /** * @brief Process received NM PDU */
+/** @req SWS_LinNm_00007 */
 static void LinNm_ReceiveNmPdu(uint8 channelIndex, const uint8* pduData)
 {
     const LinNm_ChannelConfigType* chConfig;
@@ -188,6 +195,7 @@ static void LinNm_ReceiveNmPdu(uint8 channelIndex, const uint8* pduData)
     }
 }
 /** * @brief Update remote sleep indication status */
+/** @req SWS_LinNm_00008 */
 static void LinNm_UpdateRemoteSleepIndication(uint8 channelIndex)
 {
     LinNm_ChannelRuntimeType* chRuntime;
@@ -217,6 +225,7 @@ static void LinNm_UpdateRemoteSleepIndication(uint8 channelIndex)
 #endif
 }
 /** * @brief Notify state change to Nm module */
+/** @req SWS_LinNm_00009 */
 static void LinNm_NotifyStateChange(uint8 channelIndex, Nm_StateType prevState, Nm_StateType newState)
 {
     const LinNm_ChannelConfigType* chConfig;
@@ -233,6 +242,7 @@ static void LinNm_NotifyStateChange(uint8 channelIndex, Nm_StateType prevState, 
     LinNm_ConfigPtr->ChannelRuntime[channelIndex].StateChanged = TRUE;
 }
 /** * @brief Notify mode change to ComM module */
+/** @req SWS_LinNm_00010 */
 static void LinNm_NotifyModeChange(uint8 channelIndex, Nm_ModeType newMode)
 {
     const LinNm_ChannelConfigType* chConfig;
@@ -261,6 +271,7 @@ static void LinNm_NotifyModeChange(uint8 channelIndex, Nm_ModeType newMode)
     }
 }
 /** * @brief Enter bus sleep mode */
+/** @req SWS_LinNm_00011 */
 static void LinNm_EnterBusSleep(uint8 channelIndex)
 {
     const LinNm_ChannelConfigType* chConfig;
@@ -275,6 +286,7 @@ static void LinNm_EnterBusSleep(uint8 channelIndex)
     ComM_Nm_BusSleepMode(chConfig->NetworkHandle);
 }
 /** * @brief Leave bus sleep mode (wake-up) */
+/** @req SWS_LinNm_00012 */
 static void LinNm_LeaveBusSleep(uint8 channelIndex)
 {
     const LinNm_ChannelConfigType* chConfig;
@@ -291,6 +303,7 @@ static void LinNm_LeaveBusSleep(uint8 channelIndex)
 /*==================================================================================================* STATE
  * MACHINE==================================================================================================*/
 /** * @brief Transition to a new state */
+/** @req SWS_LinNm_00013 */
 static void LinNm_TransitionToState(uint8 channelIndex, LinNm_StateType newState)
 {
     LinNm_ChannelRuntimeType* chRuntime;
@@ -371,6 +384,7 @@ static void LinNm_TransitionToState(uint8 channelIndex, LinNm_StateType newState
     }
 }
 /** * @brief Main state machine processing */
+/** @req SWS_LinNm_00014 */
 static void LinNm_StateMachine(uint8 channelIndex, LinNm_EventType event)
 {
     const LinNm_ChannelRuntimeType* chRuntime;
@@ -477,6 +491,7 @@ static void LinNm_StateMachine(uint8 channelIndex, LinNm_EventType event)
     }
 }
 /** * @brief Process timeout timers */
+/** @req SWS_LinNm_00015 */
 static void LinNm_ProcessTimeouts(uint8 channelIndex)
 {
     LinNm_ChannelRuntimeType* chRuntime;
@@ -499,6 +514,7 @@ static void LinNm_ProcessTimeouts(uint8 channelIndex)
  * FUNCTIONS==================================================================================================*/
 /** * @brief Returns the version information of the LinNm module. */
 #if (LINNM_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinNm_00016 */
 void LinNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #    if (LINNM_DEV_ERROR_DETECT == STD_ON)
@@ -516,6 +532,7 @@ void LinNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 /** * @brief Initializes the LIN NM module. */
+/** @req SWS_LinNm_00017 */
 void LinNm_Init(const LinNm_ConfigType* config)
 {
     uint8 i;
@@ -560,6 +577,7 @@ void LinNm_Init(const LinNm_ConfigType* config)
     LinNm_ModuleState = LINNM_INITIALIZED;
 }
 /** * @brief De-initializes the LIN NM module. */
+/** @req SWS_LinNm_00018 */
 void LinNm_DeInit(void)
 {
     uint8 i;
@@ -579,6 +597,7 @@ void LinNm_DeInit(void)
     LinNm_ModuleState = LINNM_UNINITIALIZED;
 }
 /** * @brief Passive startup of the network management. */
+/** @req SWS_LinNm_00019 */
 Std_ReturnType LinNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
 {
     uint8 channelIndex;
@@ -616,6 +635,7 @@ Std_ReturnType LinNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
     return ret;
 }
 /** * @brief Request the network to enter network mode. */
+/** @req SWS_LinNm_00020 */
 Std_ReturnType LinNm_NetworkRequest(NetworkHandleType nmChannelHandle)
 {
     uint8 channelIndex;

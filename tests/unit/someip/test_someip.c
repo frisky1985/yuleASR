@@ -10,6 +10,7 @@
 #include "SomeIp.h"
 
 /* Test: SomeIp_Init */
+/** @req SWS_SomeIp_00001 */
 static void test_SomeIp_Init(void **state)
 {
     (void)state;
@@ -20,6 +21,7 @@ static void test_SomeIp_Init(void **state)
 }
 
 /* Test: SomeIp_DeInit */
+/** @req SWS_SomeIp_00001 */
 static void test_SomeIp_DeInit(void **state)
 {
     (void)state;
@@ -29,6 +31,7 @@ static void test_SomeIp_DeInit(void **state)
 }
 
 /* Test: SomeIp_SendRequest */
+/** @req SWS_SomeIp_00004 */
 static void test_SomeIp_SendRequest(void **state)
 {
     (void)state;
@@ -43,6 +46,7 @@ static void test_SomeIp_SendRequest(void **state)
 }
 
 /* Test: SomeIp_SendResponse */
+/** @req SWS_SomeIp_00005 */
 static void test_SomeIp_SendResponse(void **state)
 {
     (void)state;

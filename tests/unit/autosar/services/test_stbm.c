@@ -9,6 +9,7 @@
 void setUp(void) {}
 void tearDown(void) {}
 
+/** @req SWS_StbM_00001 */
 void test_stbm_Init_should_initialize(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }

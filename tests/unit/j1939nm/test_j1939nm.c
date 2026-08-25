@@ -44,6 +44,7 @@ static int teardown(void **state) {
 }
 
 /* Test: Init with valid config */
+/** @req SWS_J1939Nm_00001 */
 static void test_J1939Nm_Init_Valid(void **state) {
     (void)state;
     
@@ -79,6 +80,7 @@ static void test_J1939Nm_Init_Valid(void **state) {
 }
 
 /* Test: Init with NULL config */
+/** @req SWS_J1939Nm_00001 */
 static void test_J1939Nm_Init_NullConfig(void **state) {
     (void)state;
     
@@ -89,6 +91,7 @@ static void test_J1939Nm_Init_NullConfig(void **state) {
 
 /* Test: GetVersionInfo */
 #if (J1939NM_VERSION_INFO_API == STD_ON)
+/** @req SWS_J1939Nm_00003 */
 static void test_J1939Nm_GetVersionInfo_Valid(void **state) {
     (void)state;
     
@@ -101,6 +104,7 @@ static void test_J1939Nm_GetVersionInfo_Valid(void **state) {
     assert_int_equal(versionInfo.sw_minor_version, J1939NM_SW_MINOR_VERSION);
 }
 
+/** @req SWS_J1939Nm_00003 */
 static void test_J1939Nm_GetVersionInfo_NullPointer(void **state) {
     (void)state;
     
@@ -111,6 +115,7 @@ static void test_J1939Nm_GetVersionInfo_NullPointer(void **state) {
 #endif
 
 /* Test: GetState before Init */
+/** @req SWS_J1939Nm_00001 */
 static void test_J1939Nm_GetState_NotInitialized(void **state) {
     (void)state;
     
@@ -121,6 +126,7 @@ static void test_J1939Nm_GetState_NotInitialized(void **state) {
 }
 
 /* Test: Set/Get Address */
+/** @req SWS_J1939Nm_00008 */
 static void test_J1939Nm_SetGetAddress_Valid(void **state) {
     (void)state;
     
@@ -159,6 +165,7 @@ static void test_J1939Nm_SetGetAddress_Valid(void **state) {
 }
 
 /* Test: Set/Get Name */
+/** @req SWS_J1939Nm_00010 */
 static void test_J1939Nm_SetGetName_Valid(void **state) {
     (void)state;
     
@@ -242,6 +249,7 @@ static void test_J1939Nm_BusOffHandling(void **state) {
 }
 
 /* Test: MainFunction */
+/** @req SWS_J1939Nm_00004 */
 static void test_J1939Nm_MainFunction(void **state) {
     (void)state;
     
@@ -281,6 +289,7 @@ static void test_J1939Nm_MainFunction(void **state) {
 }
 
 /* Test: RxIndication for Address Claimed */
+/** @req SWS_J1939Nm_00013 */
 static void test_J1939Nm_RxIndication_AddressClaimed(void **state) {
     (void)state;
     

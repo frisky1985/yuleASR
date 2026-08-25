@@ -39,6 +39,7 @@ static int teardown(void **state) {
 }
 
 /* Test: Init with valid config */
+/** @req SWS_LinM_00001 */
 static void test_LinM_Init_Valid(void **state) {
     (void)state;
 
@@ -79,6 +80,7 @@ static void test_LinM_Init_Valid(void **state) {
 }
 
 /* Test: Init with NULL config */
+/** @req SWS_LinM_00001 */
 static void test_LinM_Init_NullConfig(void **state) {
     (void)state;
 
@@ -89,6 +91,7 @@ static void test_LinM_Init_NullConfig(void **state) {
 
 /* Test: GetVersionInfo */
 #if (LINM_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinM_00003 */
 static void test_LinM_GetVersionInfo_Valid(void **state) {
     (void)state;
 
@@ -101,6 +104,7 @@ static void test_LinM_GetVersionInfo_Valid(void **state) {
     assert_int_equal(versionInfo.sw_minor_version, LINM_SW_MINOR_VERSION);
 }
 
+/** @req SWS_LinM_00003 */
 static void test_LinM_GetVersionInfo_NullPointer(void **state) {
     (void)state;
 
@@ -168,6 +172,7 @@ static void test_LinM_ScheduleOperations(void **state) {
 }
 
 /* Test: SetScheduleMode */
+/** @req SWS_LinM_00008 */
 static void test_LinM_SetScheduleMode(void **state) {
     (void)state;
 
@@ -208,6 +213,7 @@ static void test_LinM_SetScheduleMode(void **state) {
 }
 
 /* Test: WakeUp */
+/** @req SWS_LinM_00010 */
 static void test_LinM_WakeUp(void **state) {
     (void)state;
 
@@ -235,6 +241,7 @@ static void test_LinM_WakeUp(void **state) {
 }
 
 /* Test: GotoSleep */
+/** @req SWS_LinM_00011 */
 static void test_LinM_GotoSleep(void **state) {
     (void)state;
 
@@ -262,6 +269,7 @@ static void test_LinM_GotoSleep(void **state) {
 }
 
 /* Test: MainFunction */
+/** @req SWS_LinM_00004 */
 static void test_LinM_MainFunction(void **state) {
     (void)state;
 
@@ -303,6 +311,7 @@ static void test_LinM_MainFunction(void **state) {
 }
 
 /* Test: GetSlaveResponse */
+/** @req SWS_LinM_00012 */
 static void test_LinM_GetSlaveResponse(void **state) {
     (void)state;
 

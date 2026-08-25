@@ -10,6 +10,7 @@
 static const LdCom_ConfigType* LdCom_ConfigPtr = NULL_PTR;
 static boolean LdCom_Initialized = FALSE;
 
+/** @req SWS_LdCom_00001 */
 Std_ReturnType LdCom_Init(const LdCom_ConfigType* Config)
 {
 #if (LDCOM_DEV_ERROR_DETECT == STD_ON)
@@ -26,17 +27,20 @@ Std_ReturnType LdCom_Init(const LdCom_ConfigType* Config)
     return E_OK;
 }
 
+/** @req SWS_LdCom_00002 */
 void LdCom_DeInit(void)
 {
     LdCom_ConfigPtr = NULL_PTR;
     LdCom_Initialized = FALSE;
 }
 
+/** @req SWS_LdCom_00003 */
 void LdCom_MainFunction(void)
 {
     /* Cyclic processing stub */
 }
 
+/** @req SWS_LdCom_00004 */
 Std_ReturnType LdCom_Transmit(PduIdType pduId, const PduInfoType* pduInfo)
 {
     (void)pduId;
@@ -55,12 +59,14 @@ Std_ReturnType LdCom_Transmit(PduIdType pduId, const PduInfoType* pduInfo)
     return E_OK;
 }
 
+/** @req SWS_LdCom_00005 */
 Std_ReturnType LdCom_CancelTransmit(PduIdType pduId)
 {
     (void)pduId;
     return E_OK;
 }
 
+/** @req SWS_LdCom_00006 */
 Std_ReturnType LdCom_RxIndication(PduIdType pduId, const PduInfoType* pduInfo)
 {
     (void)pduId;
@@ -68,6 +74,7 @@ Std_ReturnType LdCom_RxIndication(PduIdType pduId, const PduInfoType* pduInfo)
     return E_OK;
 }
 
+/** @req SWS_LdCom_00007 */
 Std_ReturnType LdCom_GetSegmentStatus(PduIdType pduId, LdCom_SegmentStatusType* status)
 {
     (void)pduId;
@@ -77,6 +84,7 @@ Std_ReturnType LdCom_GetSegmentStatus(PduIdType pduId, LdCom_SegmentStatusType* 
     return E_OK;
 }
 
+/** @req SWS_LdCom_00008 */
 Std_ReturnType LdCom_GetProgress(PduIdType pduId, uint16* bytesSent, uint16* totalBytes)
 {
     (void)pduId;
@@ -85,6 +93,7 @@ Std_ReturnType LdCom_GetProgress(PduIdType pduId, uint16* bytesSent, uint16* tot
     return E_OK;
 }
 
+/** @req SWS_LdCom_00009 */
 Std_ReturnType LdCom_TriggerTransmit(PduIdType pduId, PduInfoType* pduInfo)
 {
     (void)pduId;

@@ -444,6 +444,7 @@ static void UdpNm_ProcessStateMachine(uint8 ChannelIdx)
  * @brief Initializes the UDP Network Management module
  * @param ConfigPtr Pointer to configuration structure
  */
+/** @req SWS_UdpNm_00001 */
 void UdpNm_Init(const UdpNm_ConfigType *ConfigPtr)
 {
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
@@ -490,6 +491,7 @@ void UdpNm_Init(const UdpNm_ConfigType *ConfigPtr)
 /**
  * @brief Deinitializes the UDP Network Management module
  */
+/** @req SWS_UdpNm_00002 */
 void UdpNm_DeInit(void)
 {
 #if (UDPNM_DEV_ERROR_DETECT == STD_ON)
@@ -516,6 +518,7 @@ void UdpNm_DeInit(void)
  * @param nmChannelHandle NM channel handle
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00003 */
 Std_ReturnType UdpNm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle)
 {
     Std_ReturnType result = UdpNm_ValidateChannel(nmChannelHandle, UDPNM_SID_PASSIVESTARTUP);
@@ -540,6 +543,7 @@ Std_ReturnType UdpNm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle)
  * @param nmChannelHandle NM channel handle
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00004 */
 Std_ReturnType UdpNm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle)
 {
     Std_ReturnType result = UdpNm_ValidateChannel(nmChannelHandle, UDPNM_SID_NETWORKREQUEST);
@@ -568,6 +572,7 @@ Std_ReturnType UdpNm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle)
  * @param nmChannelHandle NM channel handle
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00005 */
 Std_ReturnType UdpNm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle)
 {
     Std_ReturnType result = UdpNm_ValidateChannel(nmChannelHandle, UDPNM_SID_NETWORKRELEASE);
@@ -588,6 +593,7 @@ Std_ReturnType UdpNm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle)
  * @param nmChannelHandle NM channel handle
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00006 */
 Std_ReturnType UdpNm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle)
 {
     Std_ReturnType result = UdpNm_ValidateChannel(nmChannelHandle, UDPNM_SID_DISABLECOMMUNICATION);
@@ -605,6 +611,7 @@ Std_ReturnType UdpNm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle)
  * @param nmChannelHandle NM channel handle
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00007 */
 Std_ReturnType UdpNm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle)
 {
     Std_ReturnType result = UdpNm_ValidateChannel(nmChannelHandle, UDPNM_SID_ENABLECOMMUNICATION);
@@ -623,6 +630,7 @@ Std_ReturnType UdpNm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle)
  * @param nmUserDataPtr Pointer to store user data
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00008 */
 Std_ReturnType UdpNm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8 *nmUserDataPtr)
 {
     Std_ReturnType result = E_OK;
@@ -664,6 +672,7 @@ Std_ReturnType UdpNm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8 *nm
  * @param nmUserDataPtr Pointer to user data
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00009 */
 Std_ReturnType UdpNm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uint8 *nmUserDataPtr)
 {
     Std_ReturnType result = E_OK;
@@ -705,6 +714,7 @@ Std_ReturnType UdpNm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uin
  * @param nmPduDataPtr Pointer to store PDU data
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00010 */
 Std_ReturnType UdpNm_GetPduData(Nm_ChannelHandleType nmChannelHandle, uint8 *nmPduDataPtr)
 {
     Std_ReturnType result = E_OK;
@@ -817,6 +827,7 @@ Std_ReturnType UdpNm_GetState(Nm_ChannelHandleType nmChannelHandle,
  * @brief Get version information
  * @param VersionInfoPtr Pointer to version info structure
  */
+/** @req SWS_UdpNm_00012 */
 void UdpNm_GetVersionInfo(Std_VersionInfoType *VersionInfoPtr)
 {
 #if (UDPNM_VERSION_INFO_API == STD_ON)
@@ -836,6 +847,7 @@ void UdpNm_GetVersionInfo(Std_VersionInfoType *VersionInfoPtr)
  * @param nmChannelHandle NM channel handle
  * @return Result of operation
  */
+/** @req SWS_UdpNm_00013 */
 Std_ReturnType UdpNm_RequestBusSynchronization(Nm_ChannelHandleType nmChannelHandle)
 {
 #if (UDPNM_BUS_SYNCHRONIZATION_ENABLED == STD_ON)
@@ -953,6 +965,7 @@ Std_ReturnType UdpNm_Transmit(Nm_ChannelHandleType nmChannelHandle,
  * @brief Main function for periodic processing
  * Must be called cyclically with configured period
  */
+/** @req SWS_UdpNm_00017 */
 void UdpNm_MainFunction(void)
 {
     if (UdpNm_ModuleInitialized == 0U)
@@ -979,6 +992,7 @@ void UdpNm_MainFunction(void)
  * @brief Tx confirmation callback from SoAd
  * @param UdpNmTxPduId PDU ID of transmitted NM message
  */
+/** @req SWS_UdpNm_00100 */
 void UdpNm_TxConfirmation(PduIdType UdpNmTxPduId)
 {
     if (UdpNm_ModuleInitialized == 0U)
@@ -1002,6 +1016,7 @@ void UdpNm_TxConfirmation(PduIdType UdpNmTxPduId)
  * @param UdpNmRxPduId PDU ID of received NM message
  * @param PduInfoPtr Pointer to PDU info structure
  */
+/** @req SWS_UdpNm_00101 */
 void UdpNm_RxIndication(PduIdType UdpNmRxPduId, const PduInfoType *PduInfoPtr)
 {
     if ((!UdpNm_ModuleInitialized) || (PduInfoPtr == NULL_PTR))
@@ -1046,6 +1061,7 @@ void UdpNm_RxIndication(PduIdType UdpNmRxPduId, const PduInfoType *PduInfoPtr)
  * @brief Remote sleep indication callback
  * @param nmChannelHandle NM channel handle
  */
+/** @req SWS_UdpNm_00102 */
 void UdpNm_RemoteSleepIndication(Nm_ChannelHandleType nmChannelHandle)
 {
     if ((UdpNm_ModuleInitialized) && (nmChannelHandle < UDPNM_NUMBER_OF_CHANNELS))
@@ -1059,6 +1075,7 @@ void UdpNm_RemoteSleepIndication(Nm_ChannelHandleType nmChannelHandle)
  * @brief Remote sleep cancellation callback
  * @param nmChannelHandle NM channel handle
  */
+/** @req SWS_UdpNm_00103 */
 void UdpNm_RemoteSleepCancellation(Nm_ChannelHandleType nmChannelHandle)
 {
     if ((UdpNm_ModuleInitialized) && (nmChannelHandle < UDPNM_NUMBER_OF_CHANNELS))

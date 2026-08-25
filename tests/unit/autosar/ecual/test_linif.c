@@ -34,6 +34,7 @@ static int teardown(void **state)
 /**
  * @brief Test LinIf_Init with valid configuration
  */
+/** @req SWS_LinIf_00001 */
 static void test_LinIf_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -47,6 +48,7 @@ static void test_LinIf_Init_ValidConfig(void **state)
 /**
  * @brief Test LinIf_DeInit functionality
  */
+/** @req SWS_LinIf_00002 */
 static void test_LinIf_DeInit(void **state)
 {
     (void)state;
@@ -62,6 +64,7 @@ static void test_LinIf_DeInit(void **state)
 /**
  * @brief Test LinIf_GetVersionInfo
  */
+/** @req SWS_LinIf_00007 */
 static void test_LinIf_GetVersionInfo(void **state)
 {
     (void)state;
@@ -78,6 +81,7 @@ static void test_LinIf_GetVersionInfo(void **state)
 /**
  * @brief Test LinIf_Transmit with valid parameters
  */
+/** @req SWS_LinIf_00003 */
 static void test_LinIf_Transmit(void **state)
 {
     (void)state;
@@ -97,6 +101,7 @@ static void test_LinIf_Transmit(void **state)
 /**
  * @brief Test LinIf_Transmit with invalid parameters
  */
+/** @req SWS_LinIf_00003 */
 static void test_LinIf_Transmit_InvalidParams(void **state)
 {
     (void)state;
@@ -119,6 +124,7 @@ static void test_LinIf_Transmit_InvalidParams(void **state)
 /**
  * @brief Test LinIf_ScheduleRequest with valid parameters
  */
+/** @req SWS_LinIf_00004 */
 static void test_LinIf_ScheduleRequest(void **state)
 {
     (void)state;
@@ -141,6 +147,7 @@ static void test_LinIf_ScheduleRequest(void **state)
 /**
  * @brief Test LinIf_ScheduleRequest with invalid channel
  */
+/** @req SWS_LinIf_00004 */
 static void test_LinIf_ScheduleRequest_InvalidChannel(void **state)
 {
     (void)state;
@@ -207,6 +214,7 @@ static void test_LinIf_GotoSleep_InvalidChannel(void **state)
 /**
  * @brief Test LinIf_MainFunction
  */
+/** @req SWS_LinIf_00006 */
 static void test_LinIf_MainFunction(void **state)
 {
     (void)state;
@@ -262,6 +270,7 @@ static void test_LinIf_ScheduleRunModeTypes(void **state)
 /**
  * @brief Test LinIf_RxIndication callback
  */
+/** @req SWS_LinIf_00005 */
 static void test_LinIf_RxIndication(void **state)
 {
     (void)state;
@@ -276,6 +285,7 @@ static void test_LinIf_RxIndication(void **state)
 /**
  * @brief Test LinIf_TxConfirmation callback
  */
+/** @req SWS_LinIf_00005 */
 static void test_LinIf_TxConfirmation(void **state)
 {
     (void)state;

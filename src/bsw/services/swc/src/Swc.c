@@ -201,6 +201,7 @@ static Swc_RunnableHandleType Swc_FindRunnableById(uint16 runnableId)
 *                                     GLOBAL FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_Swc_00001 */
 void Swc_Init(const Swc_ConfigType* ConfigPtr)
 {
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
@@ -228,6 +229,7 @@ void Swc_Init(const Swc_ConfigType* ConfigPtr)
     Swc_InternalData.initialized = TRUE;
 }
 
+/** @req SWS_Swc_00002 */
 void Swc_DeInit(void)
 {
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
@@ -247,6 +249,7 @@ void Swc_DeInit(void)
     Swc_InternalInitEventQueue();
 }
 
+/** @req SWS_Swc_00003 */
 Std_ReturnType Swc_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
@@ -266,6 +269,7 @@ Std_ReturnType Swc_GetVersionInfo(Std_VersionInfoType* versioninfo)
     return E_OK;
 }
 
+/** @req SWS_Swc_00005 */
 Std_ReturnType Swc_CreateInstance(Swc_ComponentHandleType componentId, 
                                    void* instanceData,
                                    Swc_ComponentHandleType* outHandle)
@@ -319,6 +323,7 @@ Std_ReturnType Swc_CreateInstance(Swc_ComponentHandleType componentId,
     return ret;
 }
 
+/** @req SWS_Swc_00006 */
 Std_ReturnType Swc_DestroyInstance(Swc_ComponentHandleType handle)
 {
     Std_ReturnType ret;
@@ -345,6 +350,7 @@ Std_ReturnType Swc_DestroyInstance(Swc_ComponentHandleType handle)
     return ret;
 }
 
+/** @req SWS_Swc_00007 */
 Std_ReturnType Swc_SetComponentState(Swc_ComponentHandleType handle, Swc_StateType newState)
 {
     Std_ReturnType ret;
@@ -387,6 +393,7 @@ Swc_StateType Swc_GetComponentState(Swc_ComponentHandleType handle)
     return state;
 }
 
+/** @req SWS_Swc_00008 */
 Std_ReturnType Swc_ActivateRunnable(Swc_RunnableHandleType runnableHandle)
 {
     Std_ReturnType ret;
@@ -412,6 +419,7 @@ Std_ReturnType Swc_ActivateRunnable(Swc_RunnableHandleType runnableHandle)
     return ret;
 }
 
+/** @req SWS_Swc_00009 */
 Std_ReturnType Swc_TerminateRunnable(Swc_RunnableHandleType runnableHandle)
 {
     Std_ReturnType ret;
@@ -426,6 +434,7 @@ Std_ReturnType Swc_TerminateRunnable(Swc_RunnableHandleType runnableHandle)
     return ret;
 }
 
+/** @req SWS_Swc_00010 */
 void Swc_ScheduleRunnables(void)
 {
     uint16 i;
@@ -448,6 +457,7 @@ void Swc_ScheduleRunnables(void)
     }
 }
 
+/** @req SWS_Swc_00011 */
 Std_ReturnType Swc_IsRunnableReady(Swc_RunnableHandleType runnableHandle, boolean* isReady)
 {
     Std_ReturnType ret;
@@ -470,6 +480,7 @@ Std_ReturnType Swc_IsRunnableReady(Swc_RunnableHandleType runnableHandle, boolea
     return ret;
 }
 
+/** @req SWS_Swc_00012 */
 Std_ReturnType Swc_ConnectPort(Swc_PortHandleType portHandle, const void* connectionData)
 {
     /* Placeholder implementation */
@@ -478,6 +489,7 @@ Std_ReturnType Swc_ConnectPort(Swc_PortHandleType portHandle, const void* connec
     return E_OK;
 }
 
+/** @req SWS_Swc_00013 */
 Std_ReturnType Swc_DisconnectPort(Swc_PortHandleType portHandle)
 {
     /* Placeholder implementation */
@@ -485,6 +497,7 @@ Std_ReturnType Swc_DisconnectPort(Swc_PortHandleType portHandle)
     return E_OK;
 }
 
+/** @req SWS_Swc_00014 */
 Std_ReturnType Swc_WritePortData(Swc_PortHandleType portHandle, const void* data, uint16 length)
 {
     /* Placeholder implementation */
@@ -494,6 +507,7 @@ Std_ReturnType Swc_WritePortData(Swc_PortHandleType portHandle, const void* data
     return E_OK;
 }
 
+/** @req SWS_Swc_00015 */
 Std_ReturnType Swc_ReadPortData(Swc_PortHandleType portHandle, void* data, uint16* length)
 {
     /* Placeholder implementation */
@@ -503,6 +517,7 @@ Std_ReturnType Swc_ReadPortData(Swc_PortHandleType portHandle, void* data, uint1
     return E_OK;
 }
 
+/** @req SWS_Swc_00016 */
 Std_ReturnType Swc_RegisterEvent(Swc_ComponentHandleType compHandle, const Swc_RteEventType* eventConfig)
 {
     /* Placeholder implementation */
@@ -511,6 +526,7 @@ Std_ReturnType Swc_RegisterEvent(Swc_ComponentHandleType compHandle, const Swc_R
     return E_OK;
 }
 
+/** @req SWS_Swc_00017 */
 Std_ReturnType Swc_TriggerEvent(Swc_EventHandleType eventHandle)
 {
     Std_ReturnType ret = E_NOT_OK;
@@ -543,6 +559,7 @@ Std_ReturnType Swc_TriggerEvent(Swc_EventHandleType eventHandle)
     return ret;
 }
 
+/** @req SWS_Swc_00018 */
 Std_ReturnType Swc_EnableEvent(Swc_EventHandleType eventHandle)
 {
     /* Placeholder implementation */
@@ -550,6 +567,7 @@ Std_ReturnType Swc_EnableEvent(Swc_EventHandleType eventHandle)
     return E_OK;
 }
 
+/** @req SWS_Swc_00019 */
 Std_ReturnType Swc_DisableEvent(Swc_EventHandleType eventHandle)
 {
     /* Placeholder implementation */
@@ -557,6 +575,7 @@ Std_ReturnType Swc_DisableEvent(Swc_EventHandleType eventHandle)
     return E_OK;
 }
 
+/** @req SWS_Swc_00020 */
 void Swc_ProcessEvents(void)
 {
     #if (SWC_DEV_ERROR_DETECT == STD_ON)
@@ -570,6 +589,7 @@ void Swc_ProcessEvents(void)
     Swc_ProcessQueuedEvents();
 }
 
+/** @req SWS_Swc_00004 */
 void Swc_MainFunction(void)
 {
     if ((Swc_InternalData.initialized) != 0U)

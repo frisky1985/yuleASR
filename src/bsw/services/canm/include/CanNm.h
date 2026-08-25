@@ -197,17 +197,20 @@ extern const CanNm_ConfigType CanNm_Config;
 #define CANNM_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_CanNm_00001 */
 /**
  * @brief Initializes the CAN Network Management module
  * @param ConfigPtr Pointer to configuration structure
  */
 void CanNm_Init(const CanNm_ConfigType *ConfigPtr);
 
+/** @req SWS_CanNm_00002 */
 /**
  * @brief Deinitializes the CAN Network Management module
  */
 void CanNm_DeInit(void);
 
+/** @req SWS_CanNm_00005 */
 /**
  * @brief Passive startup of network management
  * @param nmChannelHandle NM channel handle
@@ -215,6 +218,7 @@ void CanNm_DeInit(void);
  */
 Std_ReturnType CanNm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle);
 
+/** @req SWS_CanNm_00006 */
 /**
  * @brief Request the network
  * @param nmChannelHandle NM channel handle
@@ -222,6 +226,7 @@ Std_ReturnType CanNm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle);
  */
 Std_ReturnType CanNm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle);
 
+/** @req SWS_CanNm_00007 */
 /**
  * @brief Release the network
  * @param nmChannelHandle NM channel handle
@@ -229,6 +234,7 @@ Std_ReturnType CanNm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle);
  */
 Std_ReturnType CanNm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle);
 
+/** @req SWS_CanNm_00008 */
 /**
  * @brief Disable NM PDU transmission
  * @param nmChannelHandle NM channel handle
@@ -236,6 +242,7 @@ Std_ReturnType CanNm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle);
  */
 Std_ReturnType CanNm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle);
 
+/** @req SWS_CanNm_00009 */
 /**
  * @brief Enable NM PDU transmission
  * @param nmChannelHandle NM channel handle
@@ -243,6 +250,7 @@ Std_ReturnType CanNm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle);
  */
 Std_ReturnType CanNm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle);
 
+/** @req SWS_CanNm_00010 */
 /**
  * @brief Get user data from last received NM message
  * @param nmChannelHandle NM channel handle
@@ -251,6 +259,7 @@ Std_ReturnType CanNm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle);
  */
 Std_ReturnType CanNm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8 *nmUserDataPtr);
 
+/** @req SWS_CanNm_00011 */
 /**
  * @brief Set user data for next NM message transmission
  * @param nmChannelHandle NM channel handle
@@ -259,6 +268,7 @@ Std_ReturnType CanNm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8 *nm
  */
 Std_ReturnType CanNm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uint8 *nmUserDataPtr);
 
+/** @req SWS_CanNm_00012 */
 /**
  * @brief Get PDU data from last received NM message
  * @param nmChannelHandle NM channel handle
@@ -267,6 +277,7 @@ Std_ReturnType CanNm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uin
  */
 Std_ReturnType CanNm_GetPduData(Nm_ChannelHandleType nmChannelHandle, uint8 *nmPduDataPtr);
 
+/** @req SWS_CanNm_00013 */
 /**
  * @brief Get current state and mode
  * @param nmChannelHandle NM channel handle
@@ -278,12 +289,14 @@ Std_ReturnType CanNm_GetState(Nm_ChannelHandleType nmChannelHandle,
                                Nm_StateType *nmStatePtr, 
                                Nm_ModeType *nmModePtr);
 
+/** @req SWS_CanNm_00003 */
 /**
  * @brief Get version information
  * @param VersionInfoPtr Pointer to version info structure
  */
 void CanNm_GetVersionInfo(Std_VersionInfoType *VersionInfoPtr);
 
+/** @req SWS_CanNm_00014 */
 /**
  * @brief Request bus synchronization
  * @param nmChannelHandle NM channel handle
@@ -291,6 +304,7 @@ void CanNm_GetVersionInfo(Std_VersionInfoType *VersionInfoPtr);
  */
 Std_ReturnType CanNm_RequestBusSynchronization(Nm_ChannelHandleType nmChannelHandle);
 
+/** @req SWS_CanNm_00015 */
 /**
  * @brief Check remote sleep indication
  * @param nmChannelHandle NM channel handle
@@ -300,6 +314,7 @@ Std_ReturnType CanNm_RequestBusSynchronization(Nm_ChannelHandleType nmChannelHan
 Std_ReturnType CanNm_CheckRemoteSleepIndication(Nm_ChannelHandleType nmChannelHandle, 
                                                 boolean *nmRemoteSleepIndPtr);
 
+/** @req SWS_CanNm_00016 */
 /**
  * @brief Set sleep ready bit
  * @param nmChannelHandle NM channel handle
@@ -309,6 +324,7 @@ Std_ReturnType CanNm_CheckRemoteSleepIndication(Nm_ChannelHandleType nmChannelHa
 Std_ReturnType CanNm_SetSleepReadyBit(Nm_ChannelHandleType nmChannelHandle, 
                                        boolean nmSleepReadyBit);
 
+/** @req SWS_CanNm_00004 */
 /**
  * @brief Main function for periodic processing
  * Must be called cyclically with configured period
@@ -319,12 +335,14 @@ void CanNm_MainFunction(void);
 *                                    CALLBACK FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_CanNm_00017 */
 /**
  * @brief Tx confirmation callback from CAN driver
  * @param CanNmTxPduId PDU ID of transmitted NM message
  */
 void CanNm_TxConfirmation(PduIdType CanNmTxPduId);
 
+/** @req SWS_CanNm_00018 */
 /**
  * @brief Rx indication callback from CAN driver
  * @param CanNmRxPduId PDU ID of received NM message
@@ -332,6 +350,7 @@ void CanNm_TxConfirmation(PduIdType CanNmTxPduId);
  */
 void CanNm_RxIndication(PduIdType CanNmRxPduId, const PduInfoType *PduInfoPtr);
 
+/** @req SWS_CanNm_00019 */
 /**
  * @brief Controller bus off callback from CAN driver
  * @param Controller CAN controller ID

@@ -87,6 +87,7 @@ static CanTp_ChannelRuntimeType CanTp_ChannelRuntime[CANTP_MAX_CHANNEL_CNT];
  * @param txSduId Tx SDU ID
  * @return Pointer to Tx NSDU configuration, or NULL_PTR if invalid
  */
+/** @req SWS_CanTp_00101 */
 static const CanTp_TxNsduConfigType* CanTp_GetTxNsduConfig(PduIdType txSduId)
 {
     if (CanTp_ConfigPtr == NULL_PTR) {
@@ -110,6 +111,7 @@ static const CanTp_TxNsduConfigType* CanTp_GetTxNsduConfig(PduIdType txSduId)
  * @param rxSduId Rx SDU ID
  * @return Pointer to Rx NSDU configuration, or NULL_PTR if invalid
  */
+/** @req SWS_CanTp_00102 */
 static const CanTp_RxNsduConfigType* CanTp_GetRxNsduConfig(PduIdType rxSduId)
 {
     if (CanTp_ConfigPtr == NULL_PTR) {
@@ -133,6 +135,7 @@ static const CanTp_RxNsduConfigType* CanTp_GetRxNsduConfig(PduIdType rxSduId)
  * @details Implements the AUTOSAR CanTp_ResetChannel function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00103 */
 static void CanTp_ResetChannel(CanTp_ChannelType Channel)
 {
     if (Channel < CANTP_MAX_CHANNEL_CNT) {
@@ -167,6 +170,7 @@ static CanTp_ChannelType CanTp_FindFreeChannel(void)
  * @details Implements the AUTOSAR CanTp_SendFlowControl function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00105 */
 static void CanTp_SendFlowControl(CanTp_ChannelType Channel, CanTp_FlowStatusType Fs, uint8 Bs, uint8 Stmin)
 {
     uint8 fcFrame[CANTP_CAN_FRAME_LENGTH];
@@ -194,6 +198,7 @@ static void CanTp_SendFlowControl(CanTp_ChannelType Channel, CanTp_FlowStatusTyp
  * @details Implements the AUTOSAR CanTp_SendSingleFrame function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00106 */
 static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Length)
 {
     uint8 sfFrame[CANTP_CAN_FRAME_LENGTH];
@@ -222,6 +227,7 @@ static void CanTp_SendSingleFrame(PduIdType TxSduId, const uint8* Data, uint8 Le
  * @details Implements the AUTOSAR CanTp_SendFirstFrame function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00107 */
 static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength)
 {
     uint8 ffFrame[CANTP_CAN_FRAME_LENGTH];
@@ -252,6 +258,7 @@ static void CanTp_SendFirstFrame(CanTp_ChannelType Channel, uint16 MessageLength
  * @details Implements the AUTOSAR CanTp_SendConsecutiveFrame function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00108 */
 static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
 {
     uint8 cfFrame[CANTP_CAN_FRAME_LENGTH];
@@ -287,6 +294,7 @@ static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
  * @details Implements the AUTOSAR CanTp_Init function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00001 */
 void CanTp_Init(const CanTp_ConfigType* CfgPtr)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -311,6 +319,7 @@ void CanTp_Init(const CanTp_ConfigType* CfgPtr)
  * @details Implements the AUTOSAR CanTp_Shutdown function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00002 */
 void CanTp_Shutdown(void)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -334,6 +343,7 @@ void CanTp_Shutdown(void)
  * @details Implements the AUTOSAR CanTp_Transmit function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00003 */
 Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTxInfoPtr)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -400,6 +410,7 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
  * @details Implements the AUTOSAR CanTp_CancelTransmit function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00004 */
 Std_ReturnType CanTp_CancelTransmit(PduIdType CanTpTxSduId)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -430,6 +441,7 @@ Std_ReturnType CanTp_CancelTransmit(PduIdType CanTpTxSduId)
  * @details Implements the AUTOSAR CanTp_CancelReceive function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00005 */
 Std_ReturnType CanTp_CancelReceive(PduIdType CanTpRxSduId)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -459,6 +471,7 @@ Std_ReturnType CanTp_CancelReceive(PduIdType CanTpRxSduId)
  * @details Implements the AUTOSAR CanTp_ChangeParameter function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00006 */
 Std_ReturnType CanTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -495,6 +508,7 @@ Std_ReturnType CanTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
  * @details Implements the AUTOSAR CanTp_ReadParameter function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00007 */
 Std_ReturnType CanTp_ReadParameter(PduIdType id, TPParameterType parameter, uint16* value)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -535,6 +549,7 @@ Std_ReturnType CanTp_ReadParameter(PduIdType id, TPParameterType parameter, uint
  * @details Implements the AUTOSAR CanTp_GetVersionInfo function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00008 */
 void CanTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (CANTP_DEV_ERROR_DETECT == STD_ON)
@@ -556,6 +571,7 @@ void CanTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @details Implements the AUTOSAR CanTp_RxIndication function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00009 */
 void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     if (CanTp_Initialized == FALSE) {
@@ -737,6 +753,7 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
  * @details Implements the AUTOSAR CanTp_TxConfirmation function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00010 */
 void CanTp_TxConfirmation(PduIdType TxPduId)
 {
     if (CanTp_Initialized == FALSE) {
@@ -786,6 +803,7 @@ void CanTp_TxConfirmation(PduIdType TxPduId)
  * @details Implements the AUTOSAR CanTp_MainFunction function for CAN TP segmentation/reassembly
  * @return Std_ReturnType or void per AUTOSAR specification
  */
+/** @req SWS_CanTp_00011 */
 void CanTp_MainFunction(void)
 {
     if (CanTp_Initialized == FALSE) {

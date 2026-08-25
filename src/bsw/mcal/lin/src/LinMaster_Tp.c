@@ -34,6 +34,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_SendConsecutiveFrame(void);
 static LinMaster_Tp_StatusType LinMaster_Tp_ProcessFlowControl(const uint8* DataPtr, uint8 Length);
 static void LinMaster_Tp_SetPendingTx(uint16 Length, const uint8* DataPtr);
 /** * @brief 初始化TP模块 */
+/** @req SWS_Lin_00110 */
 LinMaster_Tp_StatusType LinMaster_Tp_Init(void)
 {
     (void)memset(&TpChannel, 0, sizeof(LinMaster_Tp_ChannelType));
@@ -45,6 +46,7 @@ LinMaster_Tp_StatusType LinMaster_Tp_Init(void)
     return LINMASTER_TP_OK;
 }
 /** * @brief 反初始化TP模块 */
+/** @req SWS_Lin_00111 */
 void LinMaster_Tp_DeInit(void)
 {
     LinMaster_Tp_ResetChannel();
@@ -205,6 +207,7 @@ static LinMaster_Tp_StatusType LinMaster_Tp_ProcessFlowControl(const uint8* Data
     return LINMASTER_TP_OK;
 }
 /** * @brief 发送TP数据 (诊断请求) */
+/** @req SWS_Lin_00112 */
 LinMaster_Tp_StatusType LinMaster_Tp_Transmit(uint16 Length, const uint8* DataPtr)
 {
     if (TpInitialized == 0U)
@@ -244,6 +247,7 @@ LinMaster_Tp_StatusType LinMaster_Tp_Transmit(uint16 Length, const uint8* DataPt
     }
 }
 /** * @brief 接收TP响应指示 (处理FC流控帧) */
+/** @req SWS_Lin_00113 */
 LinMaster_Tp_StatusType LinMaster_Tp_RxIndication(uint8* DataPtr, uint8 Length)
 {
     uint8 PciType;
@@ -280,6 +284,7 @@ LinMaster_Tp_StatusType LinMaster_Tp_RxIndication(uint8* DataPtr, uint8 Length)
     return status;
 }
 /** * @brief TP主函数 - 状态机处理 */
+/** @req SWS_Lin_00114 */
 void LinMaster_Tp_MainFunction(void)
 {
     uint32 CurrentTime;
@@ -346,16 +351,19 @@ void LinMaster_Tp_MainFunction(void)
     }
 }
 /** * @brief 注册接收回调 */
+/** @req SWS_Lin_00115 */
 void LinMaster_Tp_RegisterRxCallback(LinMaster_Tp_RxCallbackFuncType Callback)
 {
     TpRxCallback = Callback;
 }
 /** * @brief 注册发送确认回调 */
+/** @req SWS_Lin_00116 */
 void LinMaster_Tp_RegisterTxConfirmCallback(LinMaster_Tp_TxConfirmFuncType Callback)
 {
     TpTxConfirm = Callback;
 }
 /** * @brief 获取通道状态 */
+/** @req SWS_Lin_00117 */
 LinMaster_Tp_StateType LinMaster_Tp_GetState(void)
 {
     if (TpInitialized == 0U)
@@ -365,6 +373,7 @@ LinMaster_Tp_StateType LinMaster_Tp_GetState(void)
     return TpChannel.State;
 }
 /** * @brief 检查TP是否忙碌 */
+/** @req SWS_Lin_00118 */
 boolean LinMaster_Tp_IsBusy(void)
 {
     if (TpInitialized == 0U)
@@ -374,6 +383,7 @@ boolean LinMaster_Tp_IsBusy(void)
     return (TpChannel.State != LINMASTER_TP_STATE_IDLE);
 }
 /** * @brief 取消当前传输 */
+/** @req SWS_Lin_00119 */
 void LinMaster_Tp_Cancel(void)
 {
     if (TpInitialized && TpChannel.State != LINMASTER_TP_STATE_IDLE)
@@ -386,6 +396,7 @@ void LinMaster_Tp_Cancel(void)
     }
 }
 /** * @brief 获取版本信息 */
+/** @req SWS_Lin_00120 */
 void LinMaster_Tp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo != NULL_PTR)

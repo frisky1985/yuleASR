@@ -10,6 +10,7 @@
 #include "CryIf.h"
 #include "CryIf_Cfg.h"
 
+/** @req SWS_CryIf_00001 */
 static void test_CryIf_Init(void **state) {
     (void)state;
     const CryIf_ConfigType* config = NULL;
@@ -17,6 +18,7 @@ static void test_CryIf_Init(void **state) {
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_CryIf_00005 */
 static void test_CryIf_ProcessJob(void **state) {
     (void)state;
     uint32 channelId = 0;
@@ -25,6 +27,7 @@ static void test_CryIf_ProcessJob(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_CryIf_00006 */
 static void test_CryIf_CancelJob(void **state) {
     (void)state;
     uint32 channelId = 0;
@@ -33,6 +36,7 @@ static void test_CryIf_CancelJob(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_CryIf_00007 */
 static void test_CryIf_KeyElementSet(void **state) {
     (void)state;
     uint32 cryIfKeyId = 0;
@@ -43,6 +47,7 @@ static void test_CryIf_KeyElementSet(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_CryIf_00012 */
 static void test_CryIf_KeyCopy(void **state) {
     (void)state;
     uint32 cryIfKeyId = 0;

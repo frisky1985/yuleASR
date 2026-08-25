@@ -192,6 +192,7 @@ static uint64 E2E_P05_ReadCRC(const uint8* Data, uint32 Offset)
  * Profile 5 Protect
  *=============================================================================*/
 
+/** @req SWS_E2E_00012 */
 /**
  * @brief E2E Profile 5 Protect
  * @details Adds CRC64 protection with 32-bit counter to data
@@ -233,6 +234,7 @@ Std_ReturnType E2E_P05Protect(
  * Profile 5 Check
  *=============================================================================*/
 
+/** @req SWS_E2E_00013 */
 /**
  * @brief E2E Profile 5 Check
  * @details Verifies CRC64 protected data with 32-bit counter
@@ -307,6 +309,7 @@ Std_ReturnType E2E_P05Check(
     return E_OK;
 }
 
+/** @req SWS_E2E_00014 */
 /**
  * @brief Map Profile 5 check status to State Machine
  */

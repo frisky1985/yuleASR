@@ -232,12 +232,14 @@ extern const SomeIpXf_ConfigType SomeIpXf_Config;
 #define SOMEIPXF_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_SomeIpXf_00001 */
 /**
  * @brief Initializes the SOME/IP Transformer module
  * @param ConfigPtr Pointer to configuration structure
  */
 void SomeIpXf_Init(const SomeIpXf_ConfigType* ConfigPtr);
 
+/** @req SWS_SomeIpXf_00002 */
 /**
  * @brief Deinitializes the SOME/IP Transformer module
  */
@@ -248,9 +250,11 @@ void SomeIpXf_DeInit(void);
  * @param versioninfo Pointer to version info structure
  */
 #if (SOMEIPXF_VERSION_INFO_API == STD_ON)
+/** @req SWS_SomeIpXf_00003 */
 void SomeIpXf_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_SomeIpXf_00004 */
 /**
  * @brief Transforms data to SOME/IP format
  * @param TransformerId Transformer configuration ID
@@ -263,6 +267,7 @@ Std_ReturnType SomeIpXf_Transform(uint16 TransformerId, uint16 DataElementId,
                                    const SomeIpXf_BufferType* SourceBuffer,
                                    SomeIpXf_BufferType* TargetBuffer);
 
+/** @req SWS_SomeIpXf_00005 */
 /**
  * @brief De-transforms data from SOME/IP format
  * @param TransformerId Transformer configuration ID
@@ -275,6 +280,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
                                      const SomeIpXf_BufferType* SourceBuffer,
                                      SomeIpXf_BufferType* TargetBuffer);
 
+/** @req SWS_SomeIpXf_00006 */
 /**
  * @brief Initializes transformer for a specific interface
  * @param TransformerId Transformer configuration ID
@@ -283,6 +289,7 @@ Std_ReturnType SomeIpXf_Detransform(uint16 TransformerId, uint16 DataElementId,
  */
 Std_ReturnType SomeIpXf_TransformerInit(uint16 TransformerId, SomeIpXf_HeaderType* HeaderPtr);
 
+/** @req SWS_SomeIpXf_00007 */
 /**
  * @brief Serializes a boolean value
  * @param Value Boolean value
@@ -292,6 +299,7 @@ Std_ReturnType SomeIpXf_TransformerInit(uint16 TransformerId, SomeIpXf_HeaderTyp
  */
 uint16 SomeIpXf_SerializeBoolean(boolean Value, uint8* Buffer, uint16 Offset);
 
+/** @req SWS_SomeIpXf_00008 */
 /**
  * @brief Deserializes a boolean value
  * @param Buffer Source buffer
@@ -301,6 +309,7 @@ uint16 SomeIpXf_SerializeBoolean(boolean Value, uint8* Buffer, uint16 Offset);
  */
 uint16 SomeIpXf_DeserializeBoolean(const uint8* Buffer, uint16 Offset, boolean* Value);
 
+/** @req SWS_SomeIpXf_00009 */
 /**
  * @brief Serializes a uint8 value
  * @param Value uint8 value
@@ -310,6 +319,7 @@ uint16 SomeIpXf_DeserializeBoolean(const uint8* Buffer, uint16 Offset, boolean* 
  */
 uint16 SomeIpXf_SerializeUint8(uint8 Value, uint8* Buffer, uint16 Offset);
 
+/** @req SWS_SomeIpXf_00010 */
 /**
  * @brief Deserializes a uint8 value
  * @param Buffer Source buffer
@@ -319,6 +329,7 @@ uint16 SomeIpXf_SerializeUint8(uint8 Value, uint8* Buffer, uint16 Offset);
  */
 uint16 SomeIpXf_DeserializeUint8(const uint8* Buffer, uint16 Offset, uint8* Value);
 
+/** @req SWS_SomeIpXf_00011 */
 /**
  * @brief Serializes a uint16 value (big-endian)
  * @param Value uint16 value
@@ -328,6 +339,7 @@ uint16 SomeIpXf_DeserializeUint8(const uint8* Buffer, uint16 Offset, uint8* Valu
  */
 uint16 SomeIpXf_SerializeUint16(uint16 Value, uint8* Buffer, uint16 Offset);
 
+/** @req SWS_SomeIpXf_00012 */
 /**
  * @brief Deserializes a uint16 value (big-endian)
  * @param Buffer Source buffer
@@ -337,6 +349,7 @@ uint16 SomeIpXf_SerializeUint16(uint16 Value, uint8* Buffer, uint16 Offset);
  */
 uint16 SomeIpXf_DeserializeUint16(const uint8* Buffer, uint16 Offset, uint16* Value);
 
+/** @req SWS_SomeIpXf_00013 */
 /**
  * @brief Serializes a uint32 value (big-endian)
  * @param Value uint32 value
@@ -346,6 +359,7 @@ uint16 SomeIpXf_DeserializeUint16(const uint8* Buffer, uint16 Offset, uint16* Va
  */
 uint16 SomeIpXf_SerializeUint32(uint32 Value, uint8* Buffer, uint16 Offset);
 
+/** @req SWS_SomeIpXf_00014 */
 /**
  * @brief Deserializes a uint32 value (big-endian)
  * @param Buffer Source buffer
@@ -355,6 +369,7 @@ uint16 SomeIpXf_SerializeUint32(uint32 Value, uint8* Buffer, uint16 Offset);
  */
 uint16 SomeIpXf_DeserializeUint32(const uint8* Buffer, uint16 Offset, uint32* Value);
 
+/** @req SWS_SomeIpXf_00015 */
 /**
  * @brief Serializes a string
  * @param StringPtr String pointer
@@ -366,6 +381,7 @@ uint16 SomeIpXf_DeserializeUint32(const uint8* Buffer, uint16 Offset, uint32* Va
 uint32 SomeIpXf_SerializeString(const uint8* StringPtr, uint32 StringLen,
                                  uint8* Buffer, const SomeIpXf_DataElementConfigType* Config);
 
+/** @req SWS_SomeIpXf_00016 */
 /**
  * @brief Deserializes a string
  * @param Buffer Source buffer
@@ -379,6 +395,7 @@ uint32 SomeIpXf_DeserializeString(const uint8* Buffer, uint32 BufferLen,
                                    uint8* StringPtr, uint32* StringLen,
                                    const SomeIpXf_DataElementConfigType* Config);
 
+/** @req SWS_SomeIpXf_00017 */
 /**
  * @brief Serializes an array
  * @param ArrayPtr Array pointer
@@ -391,6 +408,7 @@ uint32 SomeIpXf_DeserializeString(const uint8* Buffer, uint32 BufferLen,
 uint32 SomeIpXf_SerializeArray(const uint8* ArrayPtr, uint32 ArrayLen, uint32 ElementSize,
                                 uint8* Buffer, const SomeIpXf_DataElementConfigType* Config);
 
+/** @req SWS_SomeIpXf_00018 */
 /**
  * @brief Deserializes an array
  * @param Buffer Source buffer
@@ -406,6 +424,7 @@ uint32 SomeIpXf_DeserializeArray(const uint8* Buffer, uint32 BufferLen,
                                   uint32 ElementSize,
                                   const SomeIpXf_DataElementConfigType* Config);
 
+/** @req SWS_SomeIpXf_00019 */
 /**
  * @brief Builds SOME/IP header
  * @param Header Header structure
@@ -414,6 +433,7 @@ uint32 SomeIpXf_DeserializeArray(const uint8* Buffer, uint32 BufferLen,
  */
 Std_ReturnType SomeIpXf_BuildHeader(const SomeIpXf_HeaderType* Header, uint8* Buffer);
 
+/** @req SWS_SomeIpXf_00020 */
 /**
  * @brief Parses SOME/IP header
  * @param Buffer Source buffer (must be at least 8 bytes)

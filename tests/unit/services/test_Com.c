@@ -77,6 +77,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
 *                                   TEST CASES
 *==================================================================================================*/
 
+/** @req SWS_Com_00001 */
 /**
  * @brief 测试: Com 正常初始化
  */
@@ -93,6 +94,7 @@ TEST_CASE_DECLARE(Com_Init_valid_config)
     
 }
 
+/** @req SWS_Com_00001 */
 /**
  * @brief 测试: Com NULL 配置初始化
  */
@@ -109,6 +111,7 @@ TEST_CASE_DECLARE(Com_Init_null_config)
     
 }
 
+/** @req SWS_Com_00002 */
 /**
  * @brief 测试: Com 反初始化
  */
@@ -126,6 +129,7 @@ TEST_CASE_DECLARE(Com_DeInit)
     
 }
 
+/** @req SWS_Com_00017 */
 /**
  * @brief 测试: Com 获取版本信息
  */
@@ -145,6 +149,7 @@ TEST_CASE_DECLARE(Com_GetVersionInfo)
     
 }
 
+/** @req SWS_Com_00017 */
 /**
  * @brief 测试: Com_GetVersionInfo NULL 指针
  */
@@ -156,6 +161,7 @@ TEST_CASE_DECLARE(Com_GetVersionInfo_null)
     /* Verify */
 }
 
+/** @req SWS_Com_00003 */
 /**
  * @brief 测试: Com_SendSignal 正常发送 8 位信号
  */
@@ -177,6 +183,7 @@ TEST_CASE_DECLARE(Com_SendSignal_8bit)
     
 }
 
+/** @req SWS_Com_00003 */
 /**
  * @brief 测试: Com_SendSignal NULL 指针
  */
@@ -195,6 +202,7 @@ TEST_CASE_DECLARE(Com_SendSignal_null_pointer)
     
 }
 
+/** @req SWS_Com_00004 */
 /**
  * @brief 测试: Com_ReceiveSignal 正常接收
  */
@@ -214,6 +222,7 @@ TEST_CASE_DECLARE(Com_ReceiveSignal_normal)
     
 }
 
+/** @req SWS_Com_00004 */
 /**
  * @brief 测试: Com_ReceiveSignal NULL 指针
  */
@@ -232,6 +241,7 @@ TEST_CASE_DECLARE(Com_ReceiveSignal_null_pointer)
     
 }
 
+/** @req SWS_Com_00013 */
 /**
  * @brief 测试: Com_MainFunctionRx 正常执行
  */
@@ -246,6 +256,7 @@ TEST_CASE_DECLARE(Com_MainFunctionRx_normal)
     /* Verify - 不应崩溃 */
 }
 
+/** @req SWS_Com_00014 */
 /**
  * @brief 测试: Com_MainFunctionTx 正常执行
  */
@@ -263,6 +274,7 @@ TEST_CASE_DECLARE(Com_MainFunctionTx_normal)
     
 }
 
+/** @req SWS_Com_00003 */
 /**
  * @brief 测试: Com 未初始化状态调用 API
  */
@@ -282,6 +294,7 @@ TEST_CASE_DECLARE(Com_SendSignal_uninit)
     
 }
 
+/** @req SWS_Com_00003 */
 /**
  * @brief 测试: Com 无效信号 ID
  */
@@ -301,6 +314,7 @@ TEST_CASE_DECLARE(Com_SendSignal_invalid_id)
     
 }
 
+/** @req SWS_Com_00025 */
 /**
  * @brief 测试: Com 信号无效化
  */
@@ -317,6 +331,7 @@ TEST_CASE_DECLARE(Com_InvalidateSignal_normal)
     /* Verify - 不应崩溃 */
 }
 
+/** @req SWS_Com_00010 */
 /**
  * @brief 测试: Com I-PDU 发送触发
  */
@@ -336,6 +351,7 @@ TEST_CASE_DECLARE(Com_TriggerIPDUSend_normal)
     
 }
 
+/** @req SWS_Com_00022 */
 /**
  * @brief 测试: Com 接收路径控制 - 启用
  */
@@ -352,6 +368,7 @@ TEST_CASE_DECLARE(Com_EnableReception_normal)
     /* Verify - 不应崩溃 */
 }
 
+/** @req SWS_Com_00024 */
 /**
  * @brief 测试: Com 接收路径控制 - 禁用
  */
@@ -368,6 +385,7 @@ TEST_CASE_DECLARE(Com_DisableReception_normal)
     /* Verify - 不应崩溃 */
 }
 
+/** @req SWS_Com_00003 */
 /**
  * @brief 测试: Com 边界条件 - 最大长度信号
  */

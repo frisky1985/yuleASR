@@ -79,6 +79,7 @@ static void setup_test_config(void)
 *                                      TEST CASES
 ==================================================================================================*/
 
+/** @req SWS_Adc_00001 */
 TEST_CASE(adc_init_valid)
 {
     setup_test_config();
@@ -87,6 +88,7 @@ TEST_CASE(adc_init_valid)
     ASSERT_TRUE(Adc_MockGroups[0].Status != 0 || TRUE); /* Initialized */
 }
 
+/** @req SWS_Adc_00001 */
 TEST_CASE(adc_init_null)
 {
     Det_Mock_Reset();
@@ -97,6 +99,7 @@ TEST_CASE(adc_init_null)
     ASSERT_EQ(ADC_E_PARAM_CONFIG, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Adc_00001 */
 TEST_CASE(adc_init_already_initialized)
 {
     setup_test_config();
@@ -109,6 +112,7 @@ TEST_CASE(adc_init_already_initialized)
     ASSERT_EQ(ADC_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Adc_00002 */
 TEST_CASE(adc_deinit)
 {
     setup_test_config();
@@ -118,6 +122,7 @@ TEST_CASE(adc_deinit)
     ASSERT_TRUE(Adc_MockGroups[0].Status == ADC_IDLE || Adc_MockGroups[0].Status == ADC_UNINIT);
 }
 
+/** @req SWS_Adc_00003 */
 TEST_CASE(adc_start_group_conversion)
 {
     setup_test_config();
@@ -128,6 +133,7 @@ TEST_CASE(adc_start_group_conversion)
     ASSERT_EQ(ADC_BUSY, Adc_MockGroups[0].Status);
 }
 
+/** @req SWS_Adc_00004 */
 TEST_CASE(adc_stop_group_conversion)
 {
     setup_test_config();
@@ -139,6 +145,7 @@ TEST_CASE(adc_stop_group_conversion)
     ASSERT_EQ(ADC_IDLE, Adc_MockGroups[0].Status);
 }
 
+/** @req SWS_Adc_00005 */
 TEST_CASE(adc_read_group)
 {
     Std_ReturnType result;
@@ -158,6 +165,7 @@ TEST_CASE(adc_read_group)
     ASSERT_EQ(5678, buffer[1]);
 }
 
+/** @req SWS_Adc_00005 */
 TEST_CASE(adc_read_group_busy)
 {
     Std_ReturnType result;
@@ -174,6 +182,7 @@ TEST_CASE(adc_read_group_busy)
     ASSERT_EQ(ADC_E_BUSY, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Adc_00006 */
 TEST_CASE(adc_enable_hardware_trigger)
 {
     setup_test_config();
@@ -186,6 +195,7 @@ TEST_CASE(adc_enable_hardware_trigger)
     ASSERT_EQ(ADC_TRIGG_SRC_HW, g_mock_adc_groups[0].trigger_source);
 }
 
+/** @req SWS_Adc_00007 */
 TEST_CASE(adc_disable_hardware_trigger)
 {
     setup_test_config();
@@ -198,6 +208,7 @@ TEST_CASE(adc_disable_hardware_trigger)
     ASSERT_EQ(ADC_TRIGG_SRC_SW, g_mock_adc_groups[0].trigger_source);
 }
 
+/** @req SWS_Adc_00008 */
 TEST_CASE(adc_enable_group_notification)
 {
     setup_test_config();
@@ -208,6 +219,7 @@ TEST_CASE(adc_enable_group_notification)
     ASSERT_TRUE(Adc_MockGroups[0].NotificationEnabled);
 }
 
+/** @req SWS_Adc_00009 */
 TEST_CASE(adc_disable_group_notification)
 {
     setup_test_config();
@@ -219,6 +231,7 @@ TEST_CASE(adc_disable_group_notification)
     ASSERT_FALSE(Adc_MockGroups[0].NotificationEnabled);
 }
 
+/** @req SWS_Adc_00010 */
 TEST_CASE(adc_get_group_status)
 {
     Adc_StatusType status;
@@ -233,6 +246,7 @@ TEST_CASE(adc_get_group_status)
     ASSERT_EQ(ADC_BUSY, status);
 }
 
+/** @req SWS_Adc_00011 */
 TEST_CASE(adc_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -243,6 +257,7 @@ TEST_CASE(adc_get_version_info)
     ASSERT_EQ(ADC_MODULE_ID, version_info.moduleID);
 }
 
+/** @req SWS_Adc_00013 */
 TEST_CASE(adc_setup_result_buffer)
 {
     Std_ReturnType result;

@@ -543,6 +543,7 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
 }
 
 #if (CANSM_VERSION_INFO_API == STD_ON)
+/** @req SWS_CanSM_00009 */
 void CanSm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (CANSM_DEV_ERROR_DETECT == STD_ON)

@@ -39,7 +39,11 @@
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_Ocu_00101 */
+/** @req SWS_Ocu_00101 */
 static void Ocu_ValidateInitConfig(const Ocu_ConfigType* ConfigPtr);
+/** @req SWS_Ocu_00102 */
+/** @req SWS_Ocu_00102 */
 static void Ocu_ChannelInit(const Ocu_ChannelConfigType* ChannelConfig);
 
 /*==================================================================================================
@@ -150,6 +154,8 @@ const Ocu_ConfigType Ocu_Config = {
  * @brief Validates initialization configuration
  * @param ConfigPtr Pointer to configuration structure
  */
+/** @req SWS_Ocu_00103 */
+/** @req SWS_Ocu_00101 */
 static void Ocu_ValidateInitConfig(const Ocu_ConfigType* ConfigPtr)
 {
     /* MISRA C:2012 Rule 15.5 - Single exit point not required for simple validation */
@@ -168,6 +174,8 @@ static void Ocu_ValidateInitConfig(const Ocu_ConfigType* ConfigPtr)
  * @brief Initializes a single channel
  * @param ChannelConfig Channel configuration pointer
  */
+/** @req SWS_Ocu_00104 */
+/** @req SWS_Ocu_00102 */
 static void Ocu_ChannelInit(const Ocu_ChannelConfigType* ChannelConfig)
 {
     Ocu_ChannelType channel;
@@ -203,6 +211,8 @@ static void Ocu_ChannelInit(const Ocu_ChannelConfigType* ChannelConfig)
  * @param ConfigPtr Pointer to configuration structure
  * @implements Ocu_Init
  */
+/** @req SWS_Ocu_00001 */
+/** @req SWS_Ocu_00001 */
 void Ocu_Init(const Ocu_ConfigType* ConfigPtr)
 {
     Ocu_ChannelType chIdx;
@@ -252,6 +262,8 @@ void Ocu_Init(const Ocu_ConfigType* ConfigPtr)
  * @brief Deinitializes the OCU driver
  * @implements Ocu_DeInit
  */
+/** @req SWS_Ocu_00002 */
+/** @req SWS_Ocu_00002 */
 void Ocu_DeInit(void)
 {
     Ocu_ChannelType chIdx;
@@ -295,6 +307,8 @@ void Ocu_DeInit(void)
  * @param Channel Channel to start
  * @implements Ocu_StartChannel
  */
+/** @req SWS_Ocu_00003 */
+/** @req SWS_Ocu_00003 */
 void Ocu_StartChannel(Ocu_ChannelType Channel)
 {
     #if (OCU_DEV_ERROR_DETECT == STD_ON)
@@ -336,6 +350,8 @@ void Ocu_StartChannel(Ocu_ChannelType Channel)
  * @param Channel Channel to stop
  * @implements Ocu_StopChannel
  */
+/** @req SWS_Ocu_00004 */
+/** @req SWS_Ocu_00004 */
 void Ocu_StopChannel(Ocu_ChannelType Channel)
 {
     #if (OCU_DEV_ERROR_DETECT == STD_ON)
@@ -372,6 +388,8 @@ void Ocu_StopChannel(Ocu_ChannelType Channel)
  * @param PinState Pin state to set
  * @implements Ocu_SetPinState
  */
+/** @req SWS_Ocu_00005 */
+/** @req SWS_Ocu_00005 */
 void Ocu_SetPinState(Ocu_ChannelType Channel, Ocu_OutputPinStateType PinState)
 {
     #if (OCU_DEV_ERROR_DETECT == STD_ON)
@@ -417,6 +435,8 @@ void Ocu_SetPinState(Ocu_ChannelType Channel, Ocu_OutputPinStateType PinState)
  * @param PinAction Action to perform
  * @implements Ocu_SetPinAction
  */
+/** @req SWS_Ocu_00006 */
+/** @req SWS_Ocu_00006 */
 void Ocu_SetPinAction(Ocu_ChannelType Channel, Ocu_PinActionType PinAction)
 {
     #if (OCU_DEV_ERROR_DETECT == STD_ON)
@@ -457,6 +477,8 @@ void Ocu_SetPinAction(Ocu_ChannelType Channel, Ocu_PinActionType PinAction)
  * @return Result of operation
  * @implements Ocu_SetAbsoluteThreshold
  */
+/** @req SWS_Ocu_00007 */
+/** @req SWS_Ocu_00007 */
 Std_ReturnType Ocu_SetAbsoluteThreshold(Ocu_ChannelType Channel,
                                         Ocu_ValueType ReferenceValue,
                                         Ocu_ValueType AbsoluteValue)
@@ -509,6 +531,8 @@ Std_ReturnType Ocu_SetAbsoluteThreshold(Ocu_ChannelType Channel,
  * @return Result of operation
  * @implements Ocu_SetRelativeThreshold
  */
+/** @req SWS_Ocu_00008 */
+/** @req SWS_Ocu_00008 */
 Std_ReturnType Ocu_SetRelativeThreshold(Ocu_ChannelType Channel,
                                         Ocu_ValueType RelativeValue)
 {
@@ -563,6 +587,8 @@ Std_ReturnType Ocu_SetRelativeThreshold(Ocu_ChannelType Channel,
  * @return Current counter value
  * @implements Ocu_GetCounter
  */
+/** @req SWS_Ocu_00009 */
+/** @req SWS_Ocu_00009 */
 Ocu_ValueType Ocu_GetCounter(Ocu_ChannelType Channel)
 {
     #if (OCU_DEV_ERROR_DETECT == STD_ON)
@@ -589,6 +615,8 @@ Ocu_ValueType Ocu_GetCounter(Ocu_ChannelType Channel)
  * @param Channel Channel to disable
  * @implements Ocu_DisableNotification
  */
+/** @req SWS_Ocu_00010 */
+/** @req SWS_Ocu_00010 */
 void Ocu_DisableNotification(Ocu_ChannelType Channel)
 {
     #if (OCU_NOTIFICATION_SUPPORTED == STD_ON)
@@ -627,6 +655,8 @@ void Ocu_DisableNotification(Ocu_ChannelType Channel)
  * @param Channel Channel to enable
  * @implements Ocu_EnableNotification
  */
+/** @req SWS_Ocu_00011 */
+/** @req SWS_Ocu_00011 */
 void Ocu_EnableNotification(Ocu_ChannelType Channel)
 {
     #if (OCU_NOTIFICATION_SUPPORTED == STD_ON)
@@ -665,6 +695,8 @@ void Ocu_EnableNotification(Ocu_ChannelType Channel)
  * @param versioninfo Pointer to version info structure
  * @implements Ocu_GetVersionInfo
  */
+/** @req SWS_Ocu_00012 */
+/** @req SWS_Ocu_00012 */
 void Ocu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (OCU_VERSION_INFO_API == STD_ON)

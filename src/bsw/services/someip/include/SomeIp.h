@@ -147,11 +147,15 @@ typedef struct {
     boolean VersionInfoApi;
 } SomeIp_ConfigType;
 
+/** @req SWS_SomeIp_00001 */
 /* Function Prototypes */
 extern void SomeIp_Init(const SomeIp_ConfigType* ConfigPtr);
+/** @req SWS_SomeIp_00002 */
 extern void SomeIp_DeInit(void);
+/** @req SWS_SomeIp_00003 */
 extern void SomeIp_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr);
 
+/** @req SWS_SomeIp_00004 */
 /* Message Handling */
 extern Std_ReturnType SomeIp_SendRequest(
     SomeIp_ClientIdType ClientId,
@@ -161,6 +165,7 @@ extern Std_ReturnType SomeIp_SendRequest(
     SomeIp_LengthType PayloadLength
 );
 
+/** @req SWS_SomeIp_00005 */
 extern Std_ReturnType SomeIp_SendResponse(
     SomeIp_RequestIdType RequestId,
     const uint8* Payload,
@@ -168,6 +173,7 @@ extern Std_ReturnType SomeIp_SendResponse(
     SomeIp_ReturnCodeType ReturnCode
 );
 
+/** @req SWS_SomeIp_00006 */
 extern Std_ReturnType SomeIp_SendNotification(
     SomeIp_ServiceIdType ServiceId,
     SomeIp_MethodIdType EventId,
@@ -175,18 +181,24 @@ extern Std_ReturnType SomeIp_SendNotification(
     SomeIp_LengthType PayloadLength
 );
 
+/** @req SWS_SomeIp_00007 */
 /* Message Reception */
 extern void SomeIp_RxIndication(const uint8* Data, uint32 Length);
+/** @req SWS_SomeIp_00008 */
 extern void SomeIp_TxConfirmation(SomeIp_RequestIdType RequestId);
 
+/** @req SWS_SomeIp_00009 */
 /* Message Processing */
 extern Std_ReturnType SomeIp_ProcessMessage(const SomeIp_MessageType* MessagePtr);
+/** @req SWS_SomeIp_00010 */
 extern Std_ReturnType SomeIp_ParseHeader(const uint8* Data, SomeIp_HeaderType* HeaderPtr);
+/** @req SWS_SomeIp_00011 */
 extern Std_ReturnType SomeIp_SerializeHeader(const SomeIp_HeaderType* HeaderPtr, uint8* Data);
 
 /* Utility Functions */
 extern SomeIp_MessageIdType SomeIp_CreateMessageId(SomeIp_ServiceIdType ServiceId, SomeIp_MethodIdType MethodId);
 extern SomeIp_RequestIdType SomeIp_CreateRequestId(SomeIp_ClientIdType ClientId, SomeIp_SessionIdType SessionId);
+/** @req SWS_SomeIp_00012 */
 extern void SomeIp_ExtractIds(SomeIp_MessageIdType MessageId, SomeIp_ServiceIdType* ServiceId, SomeIp_MethodIdType* MethodId);
 
 /* Callback Types */

@@ -9,10 +9,12 @@
 void setUp(void) {}
 void tearDown(void) {}
 
+/** @req SWS_WdgM_00001 */
 void test_wdgm_Init_should_initialize(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }
 
+/** @req SWS_WdgM_00020 */
 void test_wdgm_GetVersionInfo_should_return_version(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }

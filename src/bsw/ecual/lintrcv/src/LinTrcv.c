@@ -352,6 +352,7 @@ static Std_ReturnType LinTrcv_DetectWakeupReason(uint8 Channel)
  * API Function Implementations
  ============================================================================*/
 
+/** @req SWS_LinTrcv_00001 */
 /*******************************************************************************
  * Function Name : LinTrcv_Init
  * Description   : Initializes the LIN transceiver driver
@@ -409,6 +410,7 @@ void LinTrcv_Init(const LinTrcv_ConfigType *ConfigPtr)
     LinTrcv_ModuleInitialized = TRUE;
 }
 
+/** @req SWS_LinTrcv_00002 */
 /*******************************************************************************
  * Function Name : LinTrcv_DeInit
  * Description   : De-initializes the LIN transceiver driver
@@ -434,6 +436,7 @@ void LinTrcv_DeInit(void)
     LinTrcv_ModuleInitialized = FALSE;
 }
 
+/** @req SWS_LinTrcv_00005 */
 /*******************************************************************************
  * Function Name : LinTrcv_SetOpMode
  * Description   : Sets the operation mode of a LIN transceiver channel
@@ -489,6 +492,7 @@ Std_ReturnType LinTrcv_SetOpMode(uint8 Channel, LinTrcv_OpmodeType OpMode)
     return retVal;
 }
 
+/** @req SWS_LinTrcv_00006 */
 /*******************************************************************************
  * Function Name : LinTrcv_GetOpMode
  * Description   : Gets the current operation mode of a LIN transceiver channel
@@ -544,6 +548,7 @@ Std_ReturnType LinTrcv_GetOpMode(uint8 Channel, LinTrcv_OpmodeType *OpMode)
     return retVal;
 }
 
+/** @req SWS_LinTrcv_00007 */
 /*******************************************************************************
  * Function Name : LinTrcv_GetBusWuReason
  * Description   : Gets the wake-up reason for the specified channel
@@ -586,6 +591,7 @@ Std_ReturnType LinTrcv_GetBusWuReason(uint8 Channel, LinTrcv_WakeupReasonType *W
  * Description   : Returns version information of the LIN transceiver driver
  ******************************************************************************/
 #if (LINTRCV_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinTrcv_00003 */
 void LinTrcv_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 {
 #if (LINTRCV_DEV_ERROR_DETECT == STD_ON)
@@ -604,6 +610,7 @@ void LinTrcv_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 }
 #endif
 
+/** @req SWS_LinTrcv_00008 */
 /*******************************************************************************
  * Function Name : LinTrcv_Wakeup
  * Description   : Initiates wake-up on the specified channel
@@ -634,6 +641,7 @@ Std_ReturnType LinTrcv_Wakeup(uint8 Channel)
     return retVal;
 }
 
+/** @req SWS_LinTrcv_00009 */
 /*******************************************************************************
  * Function Name : LinTrcv_CheckWakeup
  * Description   : Checks if wake-up event occurred on specified channel
@@ -680,6 +688,7 @@ Std_ReturnType LinTrcv_CheckWakeup(uint8 Channel)
     return retVal;
 }
 
+/** @req SWS_LinTrcv_00010 */
 /*******************************************************************************
  * Function Name : LinTrcv_Cbk_WakeupByBus
  * Description   : Callback for wake-up by bus notification
@@ -711,6 +720,7 @@ void LinTrcv_Cbk_WakeupByBus(uint8 Channel)
     }
 }
 
+/** @req SWS_LinTrcv_00004 */
 /*******************************************************************************
  * Function Name : LinTrcv_MainFunction
  * Description   : Main function for periodic wake-up detection

@@ -94,6 +94,7 @@ static void setup_test_config(void)
 ==================================================================================================*/
 
 /* Test: Crypto_Init with valid config */
+/** @req SWS_Crypto_00001 */
 TEST_CASE(crypto_init_valid_config)
 {
     setup_test_config();
@@ -104,6 +105,7 @@ TEST_CASE(crypto_init_valid_config)
 }
 
 /* Test: Crypto_Init with NULL config */
+/** @req SWS_Crypto_00001 */
 TEST_CASE(crypto_init_null_config)
 {
     Crypto_Init(NULL_PTR);
@@ -112,6 +114,7 @@ TEST_CASE(crypto_init_null_config)
 }
 
 /* Test: Crypto_DeInit */
+/** @req SWS_Crypto_00002 */
 TEST_CASE(crypto_deinit)
 {
     setup_test_config();
@@ -123,6 +126,7 @@ TEST_CASE(crypto_deinit)
 }
 
 /* Test: Crypto_GetVersionInfo */
+/** @req SWS_Crypto_00003 */
 TEST_CASE(crypto_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -138,6 +142,7 @@ TEST_CASE(crypto_get_version_info)
 }
 
 /* Test: Crypto_ProcessJob - Encrypt */
+/** @req SWS_Crypto_00004 */
 TEST_CASE(crypto_process_job_encrypt)
 {
     Std_ReturnType result;
@@ -174,6 +179,7 @@ TEST_CASE(crypto_process_job_encrypt)
 }
 
 /* Test: Crypto_ProcessJob - Decrypt */
+/** @req SWS_Crypto_00004 */
 TEST_CASE(crypto_process_job_decrypt)
 {
     Std_ReturnType result;
@@ -210,6 +216,7 @@ TEST_CASE(crypto_process_job_decrypt)
 }
 
 /* Test: Crypto_ProcessJob - Hash */
+/** @req SWS_Crypto_00004 */
 TEST_CASE(crypto_process_job_hash)
 {
     Std_ReturnType result;
@@ -244,6 +251,7 @@ TEST_CASE(crypto_process_job_hash)
 }
 
 /* Test: Crypto_ProcessJob - MAC Generate */
+/** @req SWS_Crypto_00004 */
 TEST_CASE(crypto_process_job_mac_generate)
 {
     Std_ReturnType result;
@@ -278,6 +286,7 @@ TEST_CASE(crypto_process_job_mac_generate)
 }
 
 /* Test: Crypto_CancelJob */
+/** @req SWS_Crypto_00005 */
 TEST_CASE(crypto_cancel_job)
 {
     Std_ReturnType result;
@@ -295,6 +304,7 @@ TEST_CASE(crypto_cancel_job)
 }
 
 /* Test: Crypto_KeyElementSet */
+/** @req SWS_Crypto_00006 */
 TEST_CASE(crypto_key_element_set)
 {
     Std_ReturnType result;
@@ -310,6 +320,7 @@ TEST_CASE(crypto_key_element_set)
 }
 
 /* Test: Crypto_KeyElementGet */
+/** @req SWS_Crypto_00007 */
 TEST_CASE(crypto_key_element_get)
 {
     Std_ReturnType result;
@@ -325,6 +336,7 @@ TEST_CASE(crypto_key_element_get)
 }
 
 /* Test: Crypto_KeyValidSet */
+/** @req SWS_Crypto_00008 */
 TEST_CASE(crypto_key_valid_set)
 {
     Std_ReturnType result;
@@ -338,6 +350,7 @@ TEST_CASE(crypto_key_valid_set)
 }
 
 /* Test: Crypto_KeyElementCopy */
+/** @req SWS_Crypto_00010 */
 TEST_CASE(crypto_key_element_copy)
 {
     Std_ReturnType result;
@@ -351,6 +364,7 @@ TEST_CASE(crypto_key_element_copy)
 }
 
 /* Test: Crypto_RandomSeed */
+/** @req SWS_Crypto_00015 */
 TEST_CASE(crypto_random_seed)
 {
     Std_ReturnType result;
@@ -366,6 +380,7 @@ TEST_CASE(crypto_random_seed)
 }
 
 /* Test: Crypto_KeyGenerate */
+/** @req SWS_Crypto_00011 */
 TEST_CASE(crypto_key_generate)
 {
     Std_ReturnType result;
@@ -379,6 +394,7 @@ TEST_CASE(crypto_key_generate)
 }
 
 /* Test: Crypto_KeyDerive */
+/** @req SWS_Crypto_00012 */
 TEST_CASE(crypto_key_derive)
 {
     Std_ReturnType result;

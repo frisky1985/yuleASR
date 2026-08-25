@@ -296,6 +296,7 @@ STATIC void FiM_UpdateSummaryEventState(FiM_SummaryEventIdType SummaryEventId)
 
 /**
  * @brief   Initializes the FiM module
+ * @req SWS_FiM_00001
  */
 void FiM_Init(const FiM_ConfigType* ConfigPtr)
 {
@@ -349,6 +350,7 @@ void FiM_Init(const FiM_ConfigType* ConfigPtr)
 
 /**
  * @brief   Deinitializes the FiM module
+ * @req SWS_FiM_00002
  */
 void FiM_DeInit(void)
 {
@@ -369,6 +371,7 @@ void FiM_DeInit(void)
 
 /**
  * @brief   Set function availability
+ * @req SWS_FiM_00003
  */
 Std_ReturnType FiM_SetFunctionAvailable(FiM_FunctionIdType FID, boolean Availability)
 {
@@ -416,6 +419,7 @@ Std_ReturnType FiM_SetFunctionAvailable(FiM_FunctionIdType FID, boolean Availabi
 
 /**
  * @brief   Get function permission
+ * @req SWS_FiM_00004
  */
 Std_ReturnType FiM_GetFunctionPermission(FiM_FunctionIdType FID, FiM_PermissionStateType* Permission)
 {
@@ -466,6 +470,7 @@ Std_ReturnType FiM_GetFunctionPermission(FiM_FunctionIdType FID, FiM_PermissionS
 
 /**
  * @brief   Set function permission (for testing purposes)
+ * @req SWS_FiM_00005
  */
 Std_ReturnType FiM_SetFunctionPermission(FiM_FunctionIdType FID, FiM_PermissionStateType Permission)
 {
@@ -502,6 +507,7 @@ Std_ReturnType FiM_SetFunctionPermission(FiM_FunctionIdType FID, FiM_PermissionS
 
 /**
  * @brief   Get inhibition status
+ * @req SWS_FiM_00006
  */
 Std_ReturnType FiM_GetInhibitionStatus(FiM_FunctionIdType FID, FiM_InhibitionStatusType* InhibitionStatus)
 {

@@ -60,18 +60,21 @@ void setUp(void)
 void tearDown(void) {}
 
 /* ========= Uart_Init ========= */
+/* @req SWS_Uart_00001 */
 void test_Uart_Init_NullConfig(void)
 {
     Uart_Init(NULL);
     TEST_ASSERT_EQUAL(UART_STATE_UNINIT, Uart_GetStatus(0));
 }
 
+/* @req SWS_Uart_00001 */
 void test_Uart_Init_Valid(void)
 {
     Uart_Init(&g_test_cfg);
     TEST_ASSERT_EQUAL(UART_STATE_READY, Uart_GetStatus(0));
 }
 
+/* @req SWS_Uart_00001 */
 void test_Uart_Init_DoubleInit(void)
 {
     Uart_Init(&g_test_cfg);
@@ -80,12 +83,14 @@ void test_Uart_Init_DoubleInit(void)
 }
 
 /* ========= Uart_DeInit ========= */
+/* @req SWS_Uart_00002 */
 void test_Uart_DeInit_BeforeInit(void)
 {
     Uart_DeInit();
     TEST_ASSERT_EQUAL(UART_STATE_UNINIT, Uart_GetStatus(0));
 }
 
+/* @req SWS_Uart_00002 */
 void test_Uart_DeInit_AfterInit(void)
 {
     Uart_Init(&g_test_cfg);
@@ -94,12 +99,14 @@ void test_Uart_DeInit_AfterInit(void)
 }
 
 /* ========= Uart_Send ========= */
+/* @req SWS_Uart_00003 */
 void test_Uart_Send_BeforeInit(void)
 {
     const uint8 data[] = {0x55};
     TEST_ASSERT_EQUAL(E_NOT_OK, Uart_Send(0, data, 1));
 }
 
+/* @req SWS_Uart_00003 */
 void test_Uart_Send_Valid(void)
 {
     Uart_Init(&g_test_cfg);
@@ -108,12 +115,14 @@ void test_Uart_Send_Valid(void)
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
+/* @req SWS_Uart_00003 */
 void test_Uart_Send_NullData(void)
 {
     Uart_Init(&g_test_cfg);
     TEST_ASSERT_EQUAL(E_NOT_OK, Uart_Send(0, NULL, 1));
 }
 
+/* @req SWS_Uart_00003 */
 void test_Uart_Send_Empty(void)
 {
     Uart_Init(&g_test_cfg);
@@ -122,6 +131,7 @@ void test_Uart_Send_Empty(void)
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
+/* @req SWS_Uart_00003 */
 void test_Uart_Send_Interrupt(void)
 {
     Uart_Init(&g_test_cfg);
@@ -130,6 +140,7 @@ void test_Uart_Send_Interrupt(void)
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
+/* @req SWS_Uart_00003 */
 void test_Uart_Send_DMA(void)
 {
     Uart_Init(&g_test_cfg);
@@ -139,18 +150,21 @@ void test_Uart_Send_DMA(void)
 }
 
 /* ========= Uart_Receive ========= */
+/* @req SWS_Uart_00006 */
 void test_Uart_Receive_BeforeInit(void)
 {
     uint8 buf[4];
     TEST_ASSERT_EQUAL(E_NOT_OK, Uart_Receive(0, buf, 4));
 }
 
+/* @req SWS_Uart_00006 */
 void test_Uart_Receive_NullBuffer(void)
 {
     Uart_Init(&g_test_cfg);
     TEST_ASSERT_EQUAL(E_NOT_OK, Uart_Receive(0, NULL, 4));
 }
 
+/* @req SWS_Uart_00006 */
 void test_Uart_Receive_Valid(void)
 {
     Uart_Init(&g_test_cfg);
@@ -160,6 +174,7 @@ void test_Uart_Receive_Valid(void)
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
+/* @req SWS_Uart_00006 */
 void test_Uart_Receive_Interrupt(void)
 {
     Uart_Init(&g_test_cfg);
@@ -169,11 +184,13 @@ void test_Uart_Receive_Interrupt(void)
 }
 
 /* ========= Uart_GetStatus ========= */
+/* @req SWS_Uart_00009 */
 void test_Uart_GetStatus_Uninit(void)
 {
     TEST_ASSERT_EQUAL(UART_STATE_UNINIT, Uart_GetStatus(0));
 }
 
+/* @req SWS_Uart_00009 */
 void test_Uart_GetStatus_AfterInit(void)
 {
     Uart_Init(&g_test_cfg);
@@ -181,11 +198,13 @@ void test_Uart_GetStatus_AfterInit(void)
 }
 
 /* ========= Uart_SetBaudRate ========= */
+/* @req SWS_Uart_00012 */
 void test_Uart_SetBaudRate_BeforeInit(void)
 {
     TEST_ASSERT_EQUAL(E_NOT_OK, Uart_SetBaudRate(0, 115200));
 }
 
+/* @req SWS_Uart_00012 */
 void test_Uart_SetBaudRate_Valid(void)
 {
     Uart_Init(&g_test_cfg);
@@ -194,12 +213,14 @@ void test_Uart_SetBaudRate_Valid(void)
 }
 
 /* ========= Uart_EnableDisableInterrupt ========= */
+/* @req SWS_Uart_00201 */
 void test_Uart_Interrupt_BeforeInit(void)
 {
     Uart_EnableInterrupt(0);
     Uart_DisableInterrupt(0);
 }
 
+/* @req SWS_Uart_00202 */
 void test_Uart_Interrupt_AfterInit(void)
 {
     Uart_Init(&g_test_cfg);
@@ -208,6 +229,7 @@ void test_Uart_Interrupt_AfterInit(void)
 }
 
 /* ========= Uart_GetVersionInfo ========= */
+/* @req SWS_Uart_00019 */
 void test_Uart_GetVersionInfo_Valid(void)
 {
     Std_VersionInfoType vi;
@@ -217,6 +239,7 @@ void test_Uart_GetVersionInfo_Valid(void)
     TEST_ASSERT_EQUAL(UART_MODULE_ID, vi.moduleID);
 }
 
+/* @req SWS_Uart_00019 */
 void test_Uart_GetVersionInfo_Null(void)
 {
     Uart_GetVersionInfo(NULL);

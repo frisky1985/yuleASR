@@ -79,6 +79,7 @@ static int test_teardown(void** state)
 /**
  * @test Csm_Init 正常初始化
  * @brief 验证CSM模块可以正确初始化
+ * @req SWS_Csm_00001
  */
 static void test_Csm_Init_Success(void** state)
 {
@@ -92,6 +93,7 @@ static void test_Csm_Init_Success(void** state)
 /**
  * @test Csm_Init 空配置指针
  * @brief 验证传入NULL配置指针时返回错误
+ * @req SWS_Csm_00001
  */
 static void test_Csm_Init_NullConfig(void** state)
 {
@@ -105,6 +107,7 @@ static void test_Csm_Init_NullConfig(void** state)
 /**
  * @test Csm_Init 重复初始化
  * @brief 验证重复初始化返回错误
+ * @req SWS_Csm_00001
  */
 static void test_Csm_Init_AlreadyInitialized(void** state)
 {
@@ -122,6 +125,7 @@ static void test_Csm_Init_AlreadyInitialized(void** state)
 /**
  * @test Csm_DeInit 正常去初始化
  * @brief 验证CSM模块可以正确去初始化
+ * @req SWS_Csm_00002
  */
 static void test_Csm_DeInit_Success(void** state)
 {
@@ -139,6 +143,7 @@ static void test_Csm_DeInit_Success(void** state)
 /**
  * @test Csm_DeInit 未初始化状态
  * @brief 验证未初始化时去初始化返回错误
+ * @req SWS_Csm_00002
  */
 static void test_Csm_DeInit_NotInitialized(void** state)
 {
@@ -159,6 +164,7 @@ static void test_Csm_DeInit_NotInitialized(void** state)
 /**
  * @test Csm_KeyElementSet 正常设置密钥元素
  * @brief 验证可以设置密钥元素数据
+ * @req SWS_Csm_00010
  */
 static void test_Csm_KeyElementSet_Success(void** state)
 {
@@ -179,6 +185,7 @@ static void test_Csm_KeyElementSet_Success(void** state)
 /**
  * @test Csm_KeyElementSet 空指针
  * @brief 验证传入NULL数据指针返回错误
+ * @req SWS_Csm_00010
  */
 static void test_Csm_KeyElementSet_NullPointer(void** state)
 {
@@ -196,6 +203,7 @@ static void test_Csm_KeyElementSet_NullPointer(void** state)
 /**
  * @test Csm_KeyElementSet 密钥长度超限
  * @brief 验证传入超长密钥返回错误
+ * @req SWS_Csm_00010
  */
 static void test_Csm_KeyElementSet_LengthExceeded(void** state)
 {
@@ -216,6 +224,7 @@ static void test_Csm_KeyElementSet_LengthExceeded(void** state)
 /**
  * @test Csm_KeyElementSet 无效密钥ID
  * @brief 验证传入无效密钥ID返回错误
+ * @req SWS_Csm_00010
  */
 static void test_Csm_KeyElementSet_InvalidKeyId(void** state)
 {
@@ -235,6 +244,7 @@ static void test_Csm_KeyElementSet_InvalidKeyId(void** state)
 /**
  * @test Csm_KeySetValid 设置密钥有效
  * @brief 验证可以设置密钥为有效状态
+ * @req SWS_Csm_00011
  */
 static void test_Csm_KeySetValid_Success(void** state)
 {
@@ -256,6 +266,7 @@ static void test_Csm_KeySetValid_Success(void** state)
 /**
  * @test Csm_KeyElementGet 获取密钥元素
  * @brief 验证可以获取已设置的密钥元素
+ * @req SWS_Csm_00012
  */
 static void test_Csm_KeyElementGet_Success(void** state)
 {
@@ -285,6 +296,7 @@ static void test_Csm_KeyElementGet_Success(void** state)
 /**
  * @test Csm_KeyElementGet 未有效化的密钥
  * @brief 验证获取未有效化密钥返回错误
+ * @req SWS_Csm_00012
  */
 static void test_Csm_KeyElementGet_KeyNotValid(void** state)
 {
@@ -305,6 +317,7 @@ static void test_Csm_KeyElementGet_KeyNotValid(void** state)
 /**
  * @test Csm_KeyCopy 复制密钥
  * @brief 验证可以复制密钥到另一个密钥ID
+ * @req SWS_Csm_00014
  */
 static void test_Csm_KeyCopy_Success(void** state)
 {
@@ -327,6 +340,7 @@ static void test_Csm_KeyCopy_Success(void** state)
 /**
  * @test Csm_GetKeyStatus 获取密钥状态
  * @brief 验证可以获取密钥状态
+ * @req SWS_Csm_00102
  */
 static void test_Csm_GetKeyStatus_Success(void** state)
 {
@@ -349,6 +363,7 @@ static void test_Csm_GetKeyStatus_Success(void** state)
 /**
  * @test Csm_Hash 计算哈希值
  * @brief 验证可以计算数据哈希值
+ * @req SWS_Csm_00030
  */
 static void test_Csm_Hash_Success(void** state)
 {
@@ -372,6 +387,7 @@ static void test_Csm_Hash_Success(void** state)
 /**
  * @test Csm_Hash 多阶段哈希
  * @brief 验证支持START/UPDATE/FINISH多阶段操作
+ * @req SWS_Csm_00030
  */
 static void test_Csm_Hash_MultiStage(void** state)
 {
@@ -417,6 +433,7 @@ static void test_Csm_Hash_MultiStage(void** state)
 /**
  * @test Csm_Hash 无效作业ID
  * @brief 验证传入无效作业ID返回错误
+ * @req SWS_Csm_00030
  */
 static void test_Csm_Hash_InvalidJobId(void** state)
 {
@@ -443,6 +460,7 @@ static void test_Csm_Hash_InvalidJobId(void** state)
 /**
  * @test Csm_Encrypt 加密数据
  * @brief 验证可以加密数据
+ * @req SWS_Csm_00050
  */
 static void test_Csm_Encrypt_Success(void** state)
 {
@@ -473,6 +491,7 @@ static void test_Csm_Encrypt_Success(void** state)
 /**
  * @test Csm_Encrypt 空指针检查
  * @brief 验证传入空指针返回错误
+ * @req SWS_Csm_00050
  */
 static void test_Csm_Encrypt_NullPointer(void** state)
 {
@@ -496,6 +515,7 @@ static void test_Csm_Encrypt_NullPointer(void** state)
 /**
  * @test Csm_Decrypt 解密数据
  * @brief 验证可以解密数据
+ * @req SWS_Csm_00051
  */
 static void test_Csm_Decrypt_Success(void** state)
 {
@@ -530,6 +550,7 @@ static void test_Csm_Decrypt_Success(void** state)
 /**
  * @test Csm_MacGenerate 生成MAC
  * @brief 验证可以生成MAC
+ * @req SWS_Csm_00040
  */
 static void test_Csm_MacGenerate_Success(void** state)
 {
@@ -561,6 +582,7 @@ static void test_Csm_MacGenerate_Success(void** state)
 /**
  * @test Csm_MacVerify 验证MAC
  * @brief 验证可以验证MAC
+ * @req SWS_Csm_00041
  */
 static void test_Csm_MacVerify_Success(void** state)
 {
@@ -597,6 +619,7 @@ static void test_Csm_MacVerify_Success(void** state)
 /**
  * @test Csm_SignatureGenerate 生成签名
  * @brief 验证可以生成数字签名
+ * @req SWS_Csm_00060
  */
 static void test_Csm_SignatureGenerate_Success(void** state)
 {
@@ -628,6 +651,7 @@ static void test_Csm_SignatureGenerate_Success(void** state)
 /**
  * @test Csm_SignatureVerify 验证签名
  * @brief 验证可以验证数字签名
+ * @req SWS_Csm_00061
  */
 static void test_Csm_SignatureVerify_Success(void** state)
 {
@@ -664,6 +688,7 @@ static void test_Csm_SignatureVerify_Success(void** state)
 /**
  * @test Csm_RandomGenerate 生成随机数
  * @brief 验证可以生成随机数
+ * @req SWS_Csm_00070
  */
 static void test_Csm_RandomGenerate_Success(void** state)
 {
@@ -690,6 +715,7 @@ static void test_Csm_RandomGenerate_Success(void** state)
 /**
  * @test Csm_RandomGenerate 长度检查
  * @brief 验证随机数长度限制
+ * @req SWS_Csm_00070
  */
 static void test_Csm_RandomGenerate_LengthCheck(void** state)
 {
@@ -713,6 +739,7 @@ static void test_Csm_RandomGenerate_LengthCheck(void** state)
 /**
  * @test Csm_JobKeySetUp 设置作业密钥
  * @brief 验证可以设置作业关联的密钥
+ * @req SWS_Csm_00080
  */
 static void test_Csm_JobKeySetUp_Success(void** state)
 {
@@ -728,6 +755,7 @@ static void test_Csm_JobKeySetUp_Success(void** state)
 /**
  * @test Csm_CancelJob 取消作业
  * @brief 验证可以取消正在进行的作业
+ * @req SWS_Csm_00090
  */
 static void test_Csm_CancelJob_Success(void** state)
 {
@@ -743,6 +771,7 @@ static void test_Csm_CancelJob_Success(void** state)
 /**
  * @test Csm_GetJobState 获取作业状态
  * @brief 验证可以获取作业状态
+ * @req SWS_Csm_00103
  */
 static void test_Csm_GetJobState_Success(void** state)
 {
@@ -761,6 +790,7 @@ static void test_Csm_GetJobState_Success(void** state)
 /**
  * @test Csm_RegisterCallback 注册回调
  * @brief 验证可以注册作业完成回调
+ * @req SWS_Csm_00101
  */
 static void test_Csm_RegisterCallback_Success(void** state)
 {
@@ -782,6 +812,7 @@ static void test_Csm_RegisterCallback_Success(void** state)
 /**
  * @test Csm_MainFunction 主函数处理
  * @brief 验证主函数可以正常执行
+ * @req SWS_Csm_00100
  */
 static void test_Csm_MainFunction_Success(void** state)
 {
@@ -799,6 +830,7 @@ static void test_Csm_MainFunction_Success(void** state)
 /**
  * @test Csm_MainFunction 未初始化状态
  * @brief 验证未初始化时主函数不执行
+ * @req SWS_Csm_00100
  */
 static void test_Csm_MainFunction_NotInitialized(void** state)
 {
@@ -821,6 +853,7 @@ static void test_Csm_MainFunction_NotInitialized(void** state)
 /**
  * @test Csm_GetVersionInfo 获取版本信息
  * @brief 验证可以获取版本信息
+ * @req SWS_Csm_00104
  */
 static void test_Csm_GetVersionInfo_Success(void** state)
 {
@@ -844,6 +877,7 @@ static void test_Csm_GetVersionInfo_Success(void** state)
 /**
  * @test Csm 未初始化访问
  * @brief 验证未初始化时API返回错误
+ * @req SWS_Csm_00001
  */
 static void test_Csm_UninitializedAccess(void** state)
 {
@@ -883,6 +917,7 @@ static void test_Csm_UninitializedAccess(void** state)
 /**
  * @test Csm 空数据处理
  * @brief 验证可以处理空数据
+ * @req SWS_Csm_00030
  */
 static void test_Csm_EmptyData(void** state)
 {
@@ -905,6 +940,7 @@ static void test_Csm_EmptyData(void** state)
 /**
  * @test Csm 大数据量处理
  * @brief 验证可以处理最大允许数据量
+ * @req SWS_Csm_00030
  */
 static void test_Csm_MaxDataLength(void** state)
 {

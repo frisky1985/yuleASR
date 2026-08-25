@@ -59,6 +59,7 @@ typedef struct {
     E2E_PCheckStatusType Status;
 } E2E_P04CheckStateType;
 
+/** @req SWS_E2E_00009 */
 /*=============================================================================*
  * Profile 4 Function Prototypes
  *=============================================================================*/
@@ -68,12 +69,14 @@ Std_ReturnType E2E_P04Protect(
     uint8* Data
 );
 
+/** @req SWS_E2E_00010 */
 Std_ReturnType E2E_P04Check(
     const E2E_P04ConfigType* Config,
     E2E_P04CheckStateType* State,
     const uint8* Data
 );
 
+/** @req SWS_E2E_00011 */
 void E2E_P04MapStatusToSM(
     E2E_PCheckStatusType CheckStatus,
     E2E_SMStateType* SMState,

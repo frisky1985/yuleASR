@@ -9,6 +9,7 @@
 void setUp(void) {}
 void tearDown(void) {}
 
+/** @req SWS_Srp_00001 */
 void test_srp_Init_should_initialize(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }

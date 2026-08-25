@@ -335,6 +335,7 @@ static void EthSwt_LocalForwardToPort(EthSwt_PortIdType SrcPort, EthSwt_PortIdTy
 /**
  * @brief Initialise the Ethernet Switch driver.
  */
+/** @req SWS_EthSwt_00001 */
 void EthSwt_Init(const EthSwt_ConfigType* ConfigPtr)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -363,6 +364,7 @@ void EthSwt_Init(const EthSwt_ConfigType* ConfigPtr)
 /**
  * @brief De-initialise the Ethernet Switch driver.
  */
+/** @req SWS_EthSwt_00002 */
 void EthSwt_DeInit(void)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -394,6 +396,7 @@ void EthSwt_DeInit(void)
  * @brief Get version information.
  */
 #if (ETHSWT_VERSION_INFO_API == STD_ON)
+/** @req SWS_EthSwt_00003 */
 void EthSwt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -414,6 +417,7 @@ void EthSwt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /**
  * @brief Enable or disable a switch port.
  */
+/** @req SWS_EthSwt_00004 */
 Std_ReturnType EthSwt_SetPortEnable(EthSwt_PortIdType PortId, EthSwt_PortEnableType Enable)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -443,6 +447,7 @@ Std_ReturnType EthSwt_SetPortEnable(EthSwt_PortIdType PortId, EthSwt_PortEnableT
 /**
  * @brief Get current enable state of a port.
  */
+/** @req SWS_EthSwt_00005 */
 Std_ReturnType EthSwt_GetPortEnable(EthSwt_PortIdType PortId, EthSwt_PortEnableType* Enable)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -470,6 +475,7 @@ Std_ReturnType EthSwt_GetPortEnable(EthSwt_PortIdType PortId, EthSwt_PortEnableT
 /**
  * @brief Set port speed and duplex.
  */
+/** @req SWS_EthSwt_00006 */
 Std_ReturnType EthSwt_SetSpeed(EthSwt_PortIdType PortId, EthSwt_SpeedType Speed, EthSwt_DuplexType Duplex)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -500,6 +506,7 @@ Std_ReturnType EthSwt_SetSpeed(EthSwt_PortIdType PortId, EthSwt_SpeedType Speed,
 /**
  * @brief Get current speed and duplex of a port.
  */
+/** @req SWS_EthSwt_00007 */
 Std_ReturnType EthSwt_GetSpeed(EthSwt_PortIdType PortId, EthSwt_SpeedType* Speed, EthSwt_DuplexType* Duplex)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -528,6 +535,7 @@ Std_ReturnType EthSwt_GetSpeed(EthSwt_PortIdType PortId, EthSwt_SpeedType* Speed
 /**
  * @brief Get link state of a port.
  */
+/** @req SWS_EthSwt_00008 */
 Std_ReturnType EthSwt_GetLinkState(EthSwt_PortIdType PortId, EthSwt_LinkStateType* LinkState)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -555,6 +563,7 @@ Std_ReturnType EthSwt_GetLinkState(EthSwt_PortIdType PortId, EthSwt_LinkStateTyp
 /**
  * @brief Configure a VLAN entry (append to member table).
  */
+/** @req SWS_EthSwt_00009 */
 Std_ReturnType EthSwt_ConfigVlan(const EthSwt_VlanConfigType* VlanConfig)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -587,6 +596,7 @@ Std_ReturnType EthSwt_ConfigVlan(const EthSwt_VlanConfigType* VlanConfig)
 /**
  * @brief Set/upsert a VLAN entry (member table + PCP + drop-untagged).
  */
+/** @req SWS_EthSwt_00010 */
 Std_ReturnType EthSwt_SetVlanConfig(const EthSwt_VlanConfigType* VlanConfig)
 {
     uint8 idx;
@@ -626,6 +636,7 @@ Std_ReturnType EthSwt_SetVlanConfig(const EthSwt_VlanConfigType* VlanConfig)
 /**
  * @brief Get a VLAN entry by VlanId.
  */
+/** @req SWS_EthSwt_00011 */
 Std_ReturnType EthSwt_GetVlanConfig(uint16 VlanId, EthSwt_VlanConfigType* VlanConfig)
 {
     uint8 idx;
@@ -655,6 +666,7 @@ Std_ReturnType EthSwt_GetVlanConfig(uint16 VlanId, EthSwt_VlanConfigType* VlanCo
 /**
  * @brief Add a port to a VLAN member table.
  */
+/** @req SWS_EthSwt_00012 */
 Std_ReturnType EthSwt_AddVlanMember(uint16 VlanId, EthSwt_PortIdType PortId, boolean Tagged)
 {
     uint8 idx;
@@ -689,6 +701,7 @@ Std_ReturnType EthSwt_AddVlanMember(uint16 VlanId, EthSwt_PortIdType PortId, boo
 /**
  * @brief Remove a port from a VLAN member table.
  */
+/** @req SWS_EthSwt_00013 */
 Std_ReturnType EthSwt_RemoveVlanMember(uint16 VlanId, EthSwt_PortIdType PortId)
 {
     uint8 idx;
@@ -719,6 +732,7 @@ Std_ReturnType EthSwt_RemoveVlanMember(uint16 VlanId, EthSwt_PortIdType PortId)
 /**
  * @brief Set the port VLAN ID (PVID) of a port.
  */
+/** @req SWS_EthSwt_00014 */
 Std_ReturnType EthSwt_SetPvid(EthSwt_PortIdType PortId, uint16 VlanId)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -741,6 +755,7 @@ Std_ReturnType EthSwt_SetPvid(EthSwt_PortIdType PortId, uint16 VlanId)
 /**
  * @brief Get the port VLAN ID (PVID) of a port.
  */
+/** @req SWS_EthSwt_00015 */
 Std_ReturnType EthSwt_GetPvid(EthSwt_PortIdType PortId, uint16* VlanId)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -768,6 +783,7 @@ Std_ReturnType EthSwt_GetPvid(EthSwt_PortIdType PortId, uint16* VlanId)
 /**
  * @brief Set VID-PCP mapping (802.1p priority) for a VLAN.
  */
+/** @req SWS_EthSwt_00016 */
 Std_ReturnType EthSwt_SetVidPcpMap(uint16 VlanId, uint8 Pcp)
 {
     uint8 idx;
@@ -797,6 +813,7 @@ Std_ReturnType EthSwt_SetVidPcpMap(uint16 VlanId, uint8 Pcp)
 /**
  * @brief Get VID-PCP mapping (802.1p priority) of a VLAN.
  */
+/** @req SWS_EthSwt_00017 */
 Std_ReturnType EthSwt_GetVidPcpMap(uint16 VlanId, uint8* Pcp)
 {
     uint8 idx;
@@ -828,6 +845,7 @@ Std_ReturnType EthSwt_GetVidPcpMap(uint16 VlanId, uint8* Pcp)
  *        Untagged ingress: effective VLAN = source port PVID; ingress and
  *        egress member filtering applied when the VLAN exists.
  */
+/** @req SWS_EthSwt_00018 */
 Std_ReturnType EthSwt_ForwardFrame(EthSwt_PortIdType SrcPort, uint8 DstPortMask,
                                    const uint8* FrameData, uint16 Length)
 {
@@ -861,6 +879,7 @@ Std_ReturnType EthSwt_ForwardFrame(EthSwt_PortIdType SrcPort, uint8 DstPortMask,
  *        DropUntagged check.  Unknown VLANs (not in the member table) are
  *        forwarded unfiltered (legacy behaviour).
  */
+/** @req SWS_EthSwt_00019 */
 Std_ReturnType EthSwt_ForwardFrameVlan(EthSwt_PortIdType SrcPort, uint16 VlanId, uint8 DstPortMask,
                                        const uint8* FrameData, uint16 Length)
 {
@@ -973,6 +992,7 @@ Std_ReturnType EthSwt_ForwardFrameVlan(EthSwt_PortIdType SrcPort, uint16 VlanId,
 /**
  * @brief Get port statistics.
  */
+/** @req SWS_EthSwt_00020 */
 Std_ReturnType EthSwt_GetPortStats(EthSwt_PortIdType PortId, EthSwt_PortStatsType* Stats)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1000,6 +1020,7 @@ Std_ReturnType EthSwt_GetPortStats(EthSwt_PortIdType PortId, EthSwt_PortStatsTyp
 /**
  * @brief Get statistics for a port (AUTOSAR SWS name).
  */
+/** @req SWS_EthSwt_00021 */
 Std_ReturnType EthSwt_GetStatistics(EthSwt_PortIdType PortId, EthSwt_PortStatsType* Stats)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1027,6 +1048,7 @@ Std_ReturnType EthSwt_GetStatistics(EthSwt_PortIdType PortId, EthSwt_PortStatsTy
 /**
  * @brief Reset statistics for a port (ETHSWT_ALL_PORTS resets every port).
  */
+/** @req SWS_EthSwt_00022 */
 Std_ReturnType EthSwt_ResetStatistics(EthSwt_PortIdType PortId)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1063,6 +1085,7 @@ Std_ReturnType EthSwt_ResetStatistics(EthSwt_PortIdType PortId)
 /**
  * @brief Set MAC address filter on a port.
  */
+/** @req SWS_EthSwt_00023 */
 Std_ReturnType EthSwt_SetMacFilter(EthSwt_PortIdType PortId, const EthSwt_MacAddrType* MacAddr, boolean Enable)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1092,6 +1115,7 @@ Std_ReturnType EthSwt_SetMacFilter(EthSwt_PortIdType PortId, const EthSwt_MacAdd
 /**
  * @brief Get MAC address filter state of a port.
  */
+/** @req SWS_EthSwt_00024 */
 Std_ReturnType EthSwt_GetMacFilter(EthSwt_PortIdType PortId, EthSwt_MacAddrType* MacAddr, boolean* Enable)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1120,6 +1144,7 @@ Std_ReturnType EthSwt_GetMacFilter(EthSwt_PortIdType PortId, EthSwt_MacAddrType*
 /**
  * @brief Configure flow control (pause frames, high/low watermarks) for a port.
  */
+/** @req SWS_EthSwt_00025 */
 Std_ReturnType EthSwt_SetFlowControl(EthSwt_PortIdType PortId, const EthSwt_FlowControlConfigType* Config)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1158,6 +1183,7 @@ Std_ReturnType EthSwt_SetFlowControl(EthSwt_PortIdType PortId, const EthSwt_Flow
 /**
  * @brief Get flow control configuration of a port.
  */
+/** @req SWS_EthSwt_00026 */
 Std_ReturnType EthSwt_GetFlowControl(EthSwt_PortIdType PortId, EthSwt_FlowControlConfigType* Config)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1185,6 +1211,7 @@ Std_ReturnType EthSwt_GetFlowControl(EthSwt_PortIdType PortId, EthSwt_FlowContro
 /**
  * @brief Set pause time (quanta) advertised in pause frames.
  */
+/** @req SWS_EthSwt_00027 */
 Std_ReturnType EthSwt_SetPauseTime(EthSwt_PortIdType PortId, uint16 PauseTime)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1207,6 +1234,7 @@ Std_ReturnType EthSwt_SetPauseTime(EthSwt_PortIdType PortId, uint16 PauseTime)
 /**
  * @brief Get pause time of a port.
  */
+/** @req SWS_EthSwt_00028 */
 Std_ReturnType EthSwt_GetPauseTime(EthSwt_PortIdType PortId, uint16* PauseTime)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1234,6 +1262,7 @@ Std_ReturnType EthSwt_GetPauseTime(EthSwt_PortIdType PortId, uint16* PauseTime)
 /**
  * @brief Indicate received pause state (HW hook; gated by RxPauseEnable).
  */
+/** @req SWS_EthSwt_00029 */
 Std_ReturnType EthSwt_IndicatePause(EthSwt_PortIdType PortId, boolean Pause)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1268,6 +1297,7 @@ Std_ReturnType EthSwt_IndicatePause(EthSwt_PortIdType PortId, boolean Pause)
 /**
  * @brief Configure port mirroring (source ports -> destination port).
  */
+/** @req SWS_EthSwt_00030 */
 Std_ReturnType EthSwt_SetPortMirroring(const EthSwt_MirrorConfigType* MirrorConfig)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1295,6 +1325,7 @@ Std_ReturnType EthSwt_SetPortMirroring(const EthSwt_MirrorConfigType* MirrorConf
 /**
  * @brief Get current port mirroring configuration.
  */
+/** @req SWS_EthSwt_00031 */
 Std_ReturnType EthSwt_GetPortMirroring(EthSwt_MirrorConfigType* MirrorConfig)
 {
 #if (ETHSWT_DEV_ERROR_DETECT == STD_ON)
@@ -1317,6 +1348,7 @@ Std_ReturnType EthSwt_GetPortMirroring(EthSwt_MirrorConfigType* MirrorConfig)
 /**
  * @brief Main function — periodic housekeeping: link polling + queue drain.
  */
+/** @req SWS_EthSwt_00032 */
 void EthSwt_MainFunction(void)
 {
     uint8 i;
@@ -1362,6 +1394,7 @@ void EthSwt_MainFunction(void)
 /**
  * @brief Reset the switch (de-init then re-init with saved config).
  */
+/** @req SWS_EthSwt_00033 */
 Std_ReturnType EthSwt_Reset(void)
 {
     const EthSwt_ConfigType* savedConfig;

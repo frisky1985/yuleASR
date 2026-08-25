@@ -45,6 +45,7 @@ typedef struct {
 
 static EthIf_InternalType EthIf_State;
 
+/** @req SWS_EthIf_00001 */
 void EthIf_Init(const EthIf_ConfigType* ConfigPtr)
 {
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
@@ -66,12 +67,14 @@ void EthIf_Init(const EthIf_ConfigType* ConfigPtr)
     EthIf_State.state = ETHIF_INIT;
 }
 
+/** @req SWS_EthIf_00002 */
 void EthIf_DeInit(void)
 {
     EthIf_State.state = ETHIF_UNINIT;
     EthIf_State.activeControllerCount = 0U;
 }
 
+/** @req SWS_EthIf_00003 */
 Std_ReturnType EthIf_Transmit(uint8 ControllerId, uint32 BufferHandle, const EthIf_PduType* PduInfoPtr)
 {
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
@@ -95,6 +98,7 @@ Std_ReturnType EthIf_Transmit(uint8 ControllerId, uint32 BufferHandle, const Eth
     return E_NOT_OK;
 }
 
+/** @req SWS_EthIf_00004 */
 Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode Mode)
 {
 #if (ETHIF_DEV_ERROR_DETECT == STD_ON)
@@ -111,12 +115,14 @@ Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode 
     return E_OK;
 }
 
+/** @req SWS_EthIf_00005 */
 EthIf_ControllerMode EthIf_GetControllerMode(uint8 ControllerId)
 {
     if (ControllerId >= EthIf_State.activeControllerCount) { return ETHIF_CS_STOPPED; }
     return EthIf_State.controllerModes[ControllerId];
 }
 
+/** @req SWS_EthIf_00006 */
 void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr)
 {
     if (NULL_PTR == PduInfoPtr) { return; }
@@ -142,17 +148,20 @@ void EthIf_RxIndication(uint8 ControllerId, const EthIf_PduType* PduInfoPtr)
     }
 }
 
+/** @req SWS_EthIf_00007 */
 void EthIf_TxConfirmation(uint8 ControllerId, uint32 BufferHandle)
 {
     (void)ControllerId;
     (void)BufferHandle;
 }
 
+/** @req SWS_EthIf_00008 */
 void EthIf_MainFunction(void)
 {
     if (EthIf_State.state < ETHIF_INIT) { return; }
 }
 
+/** @req SWS_EthIf_00009 */
 void EthIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) { return; }

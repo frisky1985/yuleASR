@@ -666,6 +666,7 @@ void Ocu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /*----------------------------------
  * Initialization Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00201 */
 void Test_Init_Basic(void)
 {
     TEST_SECTION("Init - Basic");
@@ -677,6 +678,7 @@ void Test_Init_Basic(void)
     TEST_ASSERT_EQ(0, det_call_count);
 }
 
+/* @req SWS_Ocu_00202 */
 void Test_Init_AlreadyInitialized(void)
 {
     TEST_SECTION("Init - Already Initialized");
@@ -690,6 +692,7 @@ void Test_Init_AlreadyInitialized(void)
     TEST_ASSERT_EQ(OCU_E_ALREADY_INITIALIZED, det_error_id);
 }
 
+/* @req SWS_Ocu_00203 */
 void Test_Init_NullConfig(void)
 {
     TEST_SECTION("Init - Null Config");
@@ -705,6 +708,7 @@ void Test_Init_NullConfig(void)
 /*----------------------------------
  * Deinitialization Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00204 */
 void Test_DeInit_Basic(void)
 {
     TEST_SECTION("DeInit - Basic");
@@ -718,6 +722,7 @@ void Test_DeInit_Basic(void)
     TEST_ASSERT_EQ(0, det_call_count);
 }
 
+/* @req SWS_Ocu_00205 */
 void Test_DeInit_NotInitialized(void)
 {
     TEST_SECTION("DeInit - Not Initialized");
@@ -732,6 +737,7 @@ void Test_DeInit_NotInitialized(void)
 /*----------------------------------
  * Channel Start/Stop Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00206 */
 void Test_StartStopChannel_Basic(void)
 {
     TEST_SECTION("Start/Stop Channel - Basic");
@@ -749,6 +755,7 @@ void Test_StartStopChannel_Basic(void)
     TEST_ASSERT_EQ(0, Ocu_HwRegisters[OCU_CHANNEL_0].Control & 0x01U);
 }
 
+/* @req SWS_Ocu_00207 */
 void Test_StartChannel_InvalidChannel(void)
 {
     TEST_SECTION("Start Channel - Invalid Channel");
@@ -761,6 +768,7 @@ void Test_StartChannel_InvalidChannel(void)
     TEST_ASSERT_EQ(OCU_E_PARAM_CHANNEL, det_error_id);
 }
 
+/* @req SWS_Ocu_00208 */
 void Test_StartChannel_NotInitialized(void)
 {
     TEST_SECTION("Start Channel - Not Initialized");
@@ -772,6 +780,7 @@ void Test_StartChannel_NotInitialized(void)
     TEST_ASSERT_EQ(OCU_E_UNINIT, det_error_id);
 }
 
+/* @req SWS_Ocu_00209 */
 void Test_StartChannel_AlreadyRunning(void)
 {
     TEST_SECTION("Start Channel - Already Running");
@@ -788,6 +797,7 @@ void Test_StartChannel_AlreadyRunning(void)
 /*----------------------------------
  * Pin State Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00210 */
 void Test_SetPinState_Basic(void)
 {
     TEST_SECTION("SetPinState - Basic");
@@ -803,6 +813,7 @@ void Test_SetPinState_Basic(void)
     TEST_ASSERT_EQ(OCU_LOW, Ocu_HwRegisters[OCU_CHANNEL_0].PinCtrl);
 }
 
+/* @req SWS_Ocu_00211 */
 void Test_SetPinState_InvalidState(void)
 {
     TEST_SECTION("SetPinState - Invalid State");
@@ -816,6 +827,7 @@ void Test_SetPinState_InvalidState(void)
     TEST_ASSERT_EQ(OCU_E_PARAM_PIN_STATE, det_error_id);
 }
 
+/* @req SWS_Ocu_00212 */
 void Test_SetPinState_ChannelRunning(void)
 {
     TEST_SECTION("SetPinState - Channel Running");
@@ -832,6 +844,7 @@ void Test_SetPinState_ChannelRunning(void)
 /*----------------------------------
  * Pin Action Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00213 */
 void Test_SetPinAction_Basic(void)
 {
     TEST_SECTION("SetPinAction - Basic");
@@ -852,6 +865,7 @@ void Test_SetPinAction_Basic(void)
     TEST_ASSERT_EQ(OCU_HOLD, Ocu_ChannelState[OCU_CHANNEL_0].PinAction);
 }
 
+/* @req SWS_Ocu_00214 */
 void Test_SetPinAction_InvalidAction(void)
 {
     TEST_SECTION("SetPinAction - Invalid Action");
@@ -867,6 +881,7 @@ void Test_SetPinAction_InvalidAction(void)
 /*----------------------------------
  * Absolute Threshold Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00215 */
 void Test_SetAbsoluteThreshold_Basic(void)
 {
     TEST_SECTION("SetAbsoluteThreshold - Basic");
@@ -880,6 +895,7 @@ void Test_SetAbsoluteThreshold_Basic(void)
     TEST_ASSERT_EQ(0x5000, Ocu_HwRegisters[OCU_CHANNEL_0].Compare);
 }
 
+/* @req SWS_Ocu_00216 */
 void Test_SetAbsoluteThreshold_InvalidValue(void)
 {
     TEST_SECTION("SetAbsoluteThreshold - Invalid Value");
@@ -893,6 +909,7 @@ void Test_SetAbsoluteThreshold_InvalidValue(void)
     TEST_ASSERT_EQ(OCU_E_PARAM_THRESHOLD_VALUE, det_error_id);
 }
 
+/* @req SWS_Ocu_00217 */
 void Test_SetAbsoluteThreshold_NotInitialized(void)
 {
     TEST_SECTION("SetAbsoluteThreshold - Not Initialized");
@@ -907,6 +924,7 @@ void Test_SetAbsoluteThreshold_NotInitialized(void)
 /*----------------------------------
  * Relative Threshold Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00218 */
 void Test_SetRelativeThreshold_Basic(void)
 {
     TEST_SECTION("SetRelativeThreshold - Basic");
@@ -922,6 +940,7 @@ void Test_SetRelativeThreshold_Basic(void)
     TEST_ASSERT_EQ(1500, Ocu_ChannelState[OCU_CHANNEL_0].CompareValue);
 }
 
+/* @req SWS_Ocu_00219 */
 void Test_SetRelativeThreshold_ZeroValue(void)
 {
     TEST_SECTION("SetRelativeThreshold - Zero Value");
@@ -935,6 +954,7 @@ void Test_SetRelativeThreshold_ZeroValue(void)
     TEST_ASSERT_EQ(OCU_E_PARAM_THRESHOLD_VALUE, det_error_id);
 }
 
+/* @req SWS_Ocu_00220 */
 void Test_SetRelativeThreshold_Overflow(void)
 {
     TEST_SECTION("SetRelativeThreshold - Overflow");
@@ -953,6 +973,7 @@ void Test_SetRelativeThreshold_Overflow(void)
 /*----------------------------------
  * GetCounter Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00221 */
 void Test_GetCounter_Basic(void)
 {
     TEST_SECTION("GetCounter - Basic");
@@ -966,6 +987,7 @@ void Test_GetCounter_Basic(void)
     TEST_ASSERT_EQ(0x12345, counter);
 }
 
+/* @req SWS_Ocu_00222 */
 void Test_GetCounter_NotInitialized(void)
 {
     TEST_SECTION("GetCounter - Not Initialized");
@@ -978,6 +1000,7 @@ void Test_GetCounter_NotInitialized(void)
     TEST_ASSERT_EQ(OCU_E_UNINIT, det_error_id);
 }
 
+/* @req SWS_Ocu_00223 */
 void Test_GetCounter_InvalidChannel(void)
 {
     TEST_SECTION("GetCounter - Invalid Channel");
@@ -994,6 +1017,7 @@ void Test_GetCounter_InvalidChannel(void)
 /*----------------------------------
  * Notification Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00224 */
 void Test_Notification_EnableDisable(void)
 {
     TEST_SECTION("Notification - Enable/Disable");
@@ -1007,6 +1031,7 @@ void Test_Notification_EnableDisable(void)
     TEST_ASSERT_EQ(FALSE, Ocu_ChannelState[OCU_CHANNEL_1].NotificationEnabled);
 }
 
+/* @req SWS_Ocu_00225 */
 void Test_Notification_NotInitialized(void)
 {
     TEST_SECTION("Notification - Not Initialized");
@@ -1025,6 +1050,7 @@ void Test_Notification_NotInitialized(void)
 /*----------------------------------
  * Version Info Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00226 */
 void Test_GetVersionInfo_Basic(void)
 {
     TEST_SECTION("GetVersionInfo - Basic");
@@ -1040,6 +1066,7 @@ void Test_GetVersionInfo_Basic(void)
     TEST_ASSERT_EQ(OCU_SW_PATCH_VERSION, versionInfo.sw_patch_version);
 }
 
+/* @req SWS_Ocu_00227 */
 void Test_GetVersionInfo_NullPointer(void)
 {
     TEST_SECTION("GetVersionInfo - Null Pointer");
@@ -1054,6 +1081,7 @@ void Test_GetVersionInfo_NullPointer(void)
 /*----------------------------------
  * PWM Generation Pattern Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00228 */
 void Test_PWM_50Percent_Duty(void)
 {
     TEST_SECTION("PWM - 50% Duty Cycle Pattern");
@@ -1079,6 +1107,7 @@ void Test_PWM_50Percent_Duty(void)
     TEST_ASSERT_EQ(halfPeriod, Ocu_ChannelState[OCU_CHANNEL_0].CompareValue);
 }
 
+/* @req SWS_Ocu_00229 */
 void Test_PWM_VariableDutyCycle(void)
 {
     TEST_SECTION("PWM - Variable Duty Cycle");
@@ -1098,6 +1127,7 @@ void Test_PWM_VariableDutyCycle(void)
     TEST_ASSERT_EQ((period * 3) / 4, Ocu_ChannelState[OCU_CHANNEL_0].CompareValue);
 }
 
+/* @req SWS_Ocu_00230 */
 void Test_PWM_MultipleChannels(void)
 {
     TEST_SECTION("PWM - Multiple Channels");
@@ -1132,6 +1162,7 @@ void Test_PWM_MultipleChannels(void)
 /*----------------------------------
  * Output Compare Pattern Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00231 */
 void Test_OutputCompare_SingleShot(void)
 {
     TEST_SECTION("Output Compare - Single Shot");
@@ -1149,6 +1180,7 @@ void Test_OutputCompare_SingleShot(void)
     TEST_ASSERT_EQ(0x10000, Ocu_ChannelState[OCU_CHANNEL_0].CompareValue);
 }
 
+/* @req SWS_Ocu_00232 */
 void Test_OutputCompare_TimedPulse(void)
 {
     TEST_SECTION("Output Compare - Timed Pulse");
@@ -1173,6 +1205,7 @@ void Test_OutputCompare_TimedPulse(void)
 /*----------------------------------
  * Edge Case and Boundary Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00233 */
 void Test_Edge_MaxChannels(void)
 {
     TEST_SECTION("Edge Case - All Channels");
@@ -1192,6 +1225,7 @@ void Test_Edge_MaxChannels(void)
     }
 }
 
+/* @req SWS_Ocu_00234 */
 void Test_Edge_MaxThreshold(void)
 {
     TEST_SECTION("Edge Case - Maximum Threshold");
@@ -1208,6 +1242,7 @@ void Test_Edge_MaxThreshold(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
+/* @req SWS_Ocu_00235 */
 void Test_Edge_ZeroThreshold(void)
 {
     TEST_SECTION("Edge Case - Zero Threshold");
@@ -1227,6 +1262,7 @@ void Test_Edge_ZeroThreshold(void)
 /*----------------------------------
  * Stress and Sequence Tests
  *----------------------------------*/
+/* @req SWS_Ocu_00236 */
 void Test_Sequence_InitStartStopDeinit(void)
 {
     TEST_SECTION("Sequence - Init->Start->Stop->DeInit");
@@ -1254,6 +1290,7 @@ void Test_Sequence_InitStartStopDeinit(void)
     TEST_ASSERT_EQ(OCU_RUNNING, Ocu_ChannelState[OCU_CHANNEL_0].State);
 }
 
+/* @req SWS_Ocu_00237 */
 void Test_Sequence_MultipleOperations(void)
 {
     TEST_SECTION("Sequence - Multiple Operations");

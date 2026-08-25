@@ -14,6 +14,7 @@ void tearDown(void) {
     RamTst_DeInit();
 }
 
+/** @req SWS_RamTst_00001 */
 void test_RamTst_Init_ValidConfig(void) {
     extern const RamTst_ConfigType RamTst_Config;
     RamTst_Init(&RamTst_Config);
@@ -21,11 +22,13 @@ void test_RamTst_Init_ValidConfig(void) {
     TEST_ASSERT_EQUAL(RAMTST_RESULT_NOT_TESTED, RamTst_GetTestResult());
 }
 
+/** @req SWS_RamTst_00001 */
 void test_RamTst_Init_NullConfig(void) {
     RamTst_Init(NULL_PTR);
     /* Should trigger DET error */
 }
 
+/** @req SWS_RamTst_00002 */
 void test_RamTst_DeInit_AfterInit(void) {
     extern const RamTst_ConfigType RamTst_Config;
     RamTst_Init(&RamTst_Config);

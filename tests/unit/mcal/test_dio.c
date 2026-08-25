@@ -19,6 +19,7 @@
 ==================================================================================================*/
 
 /* Test: Dio_ReadChannel with valid channel */
+/** @req SWS_Dio_00002 */
 TEST_CASE(dio_read_channel_valid_high)
 {
     Dio_LevelType level;
@@ -31,6 +32,7 @@ TEST_CASE(dio_read_channel_valid_high)
     ASSERT_EQ(STD_HIGH, level);
 }
 
+/** @req SWS_Dio_00002 */
 TEST_CASE(dio_read_channel_valid_low)
 {
     Dio_LevelType level;
@@ -44,6 +46,7 @@ TEST_CASE(dio_read_channel_valid_low)
 }
 
 /* Test: Dio_ReadChannel with invalid channel */
+/** @req SWS_Dio_00002 */
 TEST_CASE(dio_read_channel_invalid)
 {
     Dio_LevelType level;
@@ -59,6 +62,7 @@ TEST_CASE(dio_read_channel_invalid)
 }
 
 /* Test: Dio_WriteChannel with valid channel */
+/** @req SWS_Dio_00003 */
 TEST_CASE(dio_write_channel_valid_high)
 {
     Dio_WriteChannel(0, STD_HIGH);
@@ -66,6 +70,7 @@ TEST_CASE(dio_write_channel_valid_high)
     ASSERT_EQ(STD_HIGH, Dio_Mock_GetChannelLevel(0));
 }
 
+/** @req SWS_Dio_00003 */
 TEST_CASE(dio_write_channel_valid_low)
 {
     Dio_WriteChannel(0, STD_LOW);
@@ -74,6 +79,7 @@ TEST_CASE(dio_write_channel_valid_low)
 }
 
 /* Test: Dio_WriteChannel with invalid channel */
+/** @req SWS_Dio_00003 */
 TEST_CASE(dio_write_channel_invalid)
 {
     Det_Mock_Reset();
@@ -85,6 +91,7 @@ TEST_CASE(dio_write_channel_invalid)
 }
 
 /* Test: Dio_ReadPort with valid port */
+/** @req SWS_Dio_00004 */
 TEST_CASE(dio_read_port_valid)
 {
     Dio_PortLevelType level;
@@ -98,6 +105,7 @@ TEST_CASE(dio_read_port_valid)
 }
 
 /* Test: Dio_ReadPort with invalid port */
+/** @req SWS_Dio_00004 */
 TEST_CASE(dio_read_port_invalid)
 {
     Dio_PortLevelType level;
@@ -112,6 +120,7 @@ TEST_CASE(dio_read_port_invalid)
 }
 
 /* Test: Dio_WritePort with valid port */
+/** @req SWS_Dio_00005 */
 TEST_CASE(dio_write_port_valid)
 {
     Dio_WritePort(0, 0x1234);
@@ -120,6 +129,7 @@ TEST_CASE(dio_write_port_valid)
 }
 
 /* Test: Dio_WritePort with invalid port */
+/** @req SWS_Dio_00005 */
 TEST_CASE(dio_write_port_invalid)
 {
     Det_Mock_Reset();
@@ -131,6 +141,7 @@ TEST_CASE(dio_write_port_invalid)
 }
 
 /* Test: Dio_ReadChannelGroup */
+/** @req SWS_Dio_00006 */
 TEST_CASE(dio_read_channel_group_valid)
 {
     Dio_ChannelGroupType group;
@@ -150,6 +161,7 @@ TEST_CASE(dio_read_channel_group_valid)
 }
 
 /* Test: Dio_ReadChannelGroup with NULL pointer */
+/** @req SWS_Dio_00006 */
 TEST_CASE(dio_read_channel_group_null)
 {
     Dio_PortLevelType level;
@@ -164,6 +176,7 @@ TEST_CASE(dio_read_channel_group_null)
 }
 
 /* Test: Dio_ReadChannelGroup with invalid group */
+/** @req SWS_Dio_00006 */
 TEST_CASE(dio_read_channel_group_invalid)
 {
     Dio_ChannelGroupType group;
@@ -183,6 +196,7 @@ TEST_CASE(dio_read_channel_group_invalid)
 }
 
 /* Test: Dio_WriteChannelGroup */
+/** @req SWS_Dio_00007 */
 TEST_CASE(dio_write_channel_group_valid)
 {
     Dio_ChannelGroupType group;
@@ -201,6 +215,7 @@ TEST_CASE(dio_write_channel_group_valid)
 }
 
 /* Test: Dio_WriteChannelGroup with NULL pointer */
+/** @req SWS_Dio_00007 */
 TEST_CASE(dio_write_channel_group_null)
 {
     Det_Mock_Reset();
@@ -213,6 +228,7 @@ TEST_CASE(dio_write_channel_group_null)
 
 #if (DIO_VERSION_INFO_API == STD_ON)
 /* Test: Dio_GetVersionInfo with valid pointer */
+/** @req SWS_Dio_00008 */
 TEST_CASE(dio_get_version_info_valid)
 {
     Std_VersionInfoType version_info;
@@ -224,6 +240,7 @@ TEST_CASE(dio_get_version_info_valid)
 }
 
 /* Test: Dio_GetVersionInfo with NULL pointer */
+/** @req SWS_Dio_00008 */
 TEST_CASE(dio_get_version_info_null)
 {
     Det_Mock_Reset();
@@ -237,6 +254,7 @@ TEST_CASE(dio_get_version_info_null)
 
 #if (DIO_FLIP_CHANNEL_API == STD_ON)
 /* Test: Dio_FlipChannel */
+/** @req SWS_Dio_00009 */
 TEST_CASE(dio_flip_channel_valid)
 {
     Dio_LevelType level;
@@ -257,6 +275,7 @@ TEST_CASE(dio_flip_channel_valid)
 }
 
 /* Test: Dio_FlipChannel with invalid channel */
+/** @req SWS_Dio_00009 */
 TEST_CASE(dio_flip_channel_invalid)
 {
     Det_Mock_Reset();

@@ -20,15 +20,18 @@ void tearDown(void) {
 }
 
 /* 初始化测试 */
+/** @req SWS_Wdg_00001 */
 void test_wdg_Init_should_initialize_successfully(void) {
     TEST_IGNORE_MESSAGE("API stub - needs implementation");
 }
 
+/* @req SWS_Wdg_00201 */
 void test_wdg_DeInit_should_cleanup_successfully(void) {
     TEST_IGNORE_MESSAGE("API stub - needs implementation");
 }
 
 /* 版本信息测试 */
+/** @req SWS_Wdg_00004 */
 void test_wdg_GetVersionInfo_should_return_version(void) {
     TEST_IGNORE_MESSAGE("API stub - needs implementation");
 }

@@ -26,6 +26,7 @@ static boolean CfgTableInitialized = FALSE;
 /**
  * @brief 初始化配置表
  */
+/** @req SWS_Lin_00180 */
 LinSlave_StatusType LinSlave_CfgTable_Init(const LinSlave_ConfigTableType* ConfigTable)
 {
     if (ConfigTable == NULL_PTR) {
@@ -65,6 +66,7 @@ LinSlave_StatusType LinSlave_CfgTable_Init(const LinSlave_ConfigTableType* Confi
 /**
  * @brief 通过PID查找Unconditional Frame
  */
+/** @req SWS_Lin_00181 */
 const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_FindUnconditionalByPid(uint8 Pid)
 {
     uint8 i;
@@ -89,6 +91,7 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_FindUnconditional
 /**
  * @brief 通过索引获取Unconditional Frame
  */
+/** @req SWS_Lin_00182 */
 const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_GetUnconditionalEntry(uint8 Index)
 {
     if (!CfgTableInitialized || (CfgTablePtr == NULL_PTR)) {
@@ -105,6 +108,7 @@ const LinSlave_UnconditionalFrameConfigType* LinSlave_CfgTable_GetUnconditionalE
 /**
  * @brief 获取Unconditional Frame数量
  */
+/** @req SWS_Lin_00183 */
 uint8 LinSlave_CfgTable_GetUnconditionalCount(void)
 {
     if (!CfgTableInitialized || (CfgTablePtr == NULL_PTR)) {
@@ -117,6 +121,7 @@ uint8 LinSlave_CfgTable_GetUnconditionalCount(void)
 /**
  * @brief 查找Event Triggered Frame
  */
+/** @req SWS_Lin_00184 */
 const LinSlave_EventFrameConfigType* LinSlave_CfgTable_FindEventFrame(uint8 Pid)
 {
     uint8 i;
@@ -141,6 +146,7 @@ const LinSlave_EventFrameConfigType* LinSlave_CfgTable_FindEventFrame(uint8 Pid)
 /**
  * @brief 查找Sporadic Frame
  */
+/** @req SWS_Lin_00185 */
 const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint8 Pid)
 {
     uint8 i;
@@ -165,6 +171,7 @@ const LinSlave_SporadicFrameConfigType* LinSlave_CfgTable_FindSporadicFrame(uint
 /**
  * @brief 获取诊断配置
  */
+/** @req SWS_Lin_00186 */
 const LinSlave_DiagnosticFrameConfigType* LinSlave_CfgTable_GetDiagnosticConfig(void)
 {
     if (!CfgTableInitialized || (CfgTablePtr == NULL_PTR)) {
@@ -185,6 +192,7 @@ const LinSlave_DiagnosticFrameConfigType* LinSlave_CfgTable_GetDiagnosticConfig(
 /**
  * @brief 获取帧状态
  */
+/** @req SWS_Lin_00187 */
 LinSlave_FrameStatusType LinSlave_CfgTable_GetFrameStatus(uint8 FrameIndex)
 {
     if (!CfgTableInitialized || (CfgTablePtr == NULL_PTR)) {
@@ -201,6 +209,7 @@ LinSlave_FrameStatusType LinSlave_CfgTable_GetFrameStatus(uint8 FrameIndex)
 /**
  * @brief 设置帧状态
  */
+/** @req SWS_Lin_00188 */
 void LinSlave_CfgTable_SetFrameStatus(uint8 FrameIndex, LinSlave_FrameStatusType Status)
 {
     LinSlave_UnconditionalFrameConfigType* frame;
@@ -220,6 +229,7 @@ void LinSlave_CfgTable_SetFrameStatus(uint8 FrameIndex, LinSlave_FrameStatusType
 /**
  * @brief 清除更新标志
  */
+/** @req SWS_Lin_00189 */
 void LinSlave_CfgTable_ClearUpdateFlag(uint8 FrameIndex)
 {
     LinSlave_UnconditionalFrameConfigType* frame;
@@ -239,6 +249,7 @@ void LinSlave_CfgTable_ClearUpdateFlag(uint8 FrameIndex)
 /**
  * @brief 检查帧是否已更新
  */
+/** @req SWS_Lin_00190 */
 uint8 LinSlave_CfgTable_IsFrameUpdated(uint8 FrameIndex)
 {
     if (!CfgTableInitialized || (CfgTablePtr == NULL_PTR)) {
@@ -255,6 +266,7 @@ uint8 LinSlave_CfgTable_IsFrameUpdated(uint8 FrameIndex)
 /**
  * @brief 获取帧数据缓存
  */
+/** @req SWS_Lin_00191 */
 const uint8* LinSlave_CfgTable_GetFrameData(uint8 FrameIndex)
 {
     if (!CfgTableInitialized || (CfgTablePtr == NULL_PTR)) {
@@ -271,6 +283,7 @@ const uint8* LinSlave_CfgTable_GetFrameData(uint8 FrameIndex)
 /**
  * @brief 设置帧数据缓存
  */
+/** @req SWS_Lin_00192 */
 void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint8 Length)
 {
     LinSlave_UnconditionalFrameConfigType* frame;
@@ -303,10 +316,12 @@ void LinSlave_CfgTable_SetFrameData(uint8 FrameIndex, const uint8* DataPtr, uint
 /**
  * @brief 通过索引查找PID
  */
+/** @req SWS_Lin_00193 */
 uint8 LinSlave_CfgTable_GetPidByIndex(uint8 Index)
 {
     const LinSlave_UnconditionalFrameConfigType* entry;
     
+    /** @req SWS_Lin_00182 */
     entry = LinSlave_CfgTable_GetUnconditionalEntry(Index);
     if (entry == NULL_PTR) {
         return 0xFF;
@@ -318,6 +333,7 @@ uint8 LinSlave_CfgTable_GetPidByIndex(uint8 Index)
 /**
  * @brief 通过PID查找索引
  */
+/** @req SWS_Lin_00194 */
 uint8 LinSlave_CfgTable_GetIndexByPid(uint8 Pid)
 {
     uint8 i;
@@ -338,6 +354,7 @@ uint8 LinSlave_CfgTable_GetIndexByPid(uint8 Pid)
 /**
  * @brief 获取所有Unconditional Frame的PID列表
  */
+/** @req SWS_Lin_00195 */
 uint8 LinSlave_CfgTable_GetAllUnconditionalPids(uint8* PidList, uint8 MaxCount)
 {
     uint8 i;
@@ -364,34 +381,42 @@ uint8 LinSlave_CfgTable_GetAllUnconditionalPids(uint8* PidList, uint8 MaxCount)
 /**
  * @brief 检查PID是否属于Unconditional Frame
  */
+/** @req SWS_Lin_00196 */
 boolean LinSlave_CfgTable_IsUnconditionalFrame(uint8 Pid)
 {
+    /** @req SWS_Lin_00181 */
     return (LinSlave_CfgTable_FindUnconditionalByPid(Pid) != NULL_PTR);
 }
 
 /**
  * @brief 检查PID是否属于Event Triggered Frame
  */
+/** @req SWS_Lin_00197 */
 boolean LinSlave_CfgTable_IsEventFrame(uint8 Pid)
 {
+    /** @req SWS_Lin_00184 */
     return (LinSlave_CfgTable_FindEventFrame(Pid) != NULL_PTR);
 }
 
 /**
  * @brief 检查PID是否属于Sporadic Frame
  */
+/** @req SWS_Lin_00198 */
 boolean LinSlave_CfgTable_IsSporadicFrame(uint8 Pid)
 {
+    /** @req SWS_Lin_00185 */
     return (LinSlave_CfgTable_FindSporadicFrame(Pid) != NULL_PTR);
 }
 
 /**
  * @brief 检查PID是否属于诊断帧
  */
+/** @req SWS_Lin_00199 */
 boolean LinSlave_CfgTable_IsDiagnosticFrame(uint8 Pid)
 {
     const LinSlave_DiagnosticFrameConfigType* diag;
     
+    /** @req SWS_Lin_00186 */
     diag = LinSlave_CfgTable_GetDiagnosticConfig();
     if (diag == NULL_PTR) {
         return FALSE;

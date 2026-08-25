@@ -42,6 +42,7 @@ static LinSlave_Tp_StatusType LinSlave_Tp_ProcessFC(uint8 ChannelId, uint8 Pci, 
 /**
  * @brief 初始化TP模块
  */
+/** @req SWS_Lin_00150 */
 LinSlave_Tp_StatusType LinSlave_Tp_Init(void)
 {
     uint8 i;
@@ -59,6 +60,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Init(void)
 /**
  * @brief 反初始化TP模块
  */
+/** @req SWS_Lin_00151 */
 void LinSlave_Tp_DeInit(void)
 {
     uint8 i;
@@ -236,6 +238,7 @@ static void LinSlave_Tp_SendFlowControl(uint8 ChannelId, uint8 BlockSize, uint8 
 /**
  * @brief 处理接收到的帧
  */
+/** @req SWS_Lin_00152 */
 LinSlave_Tp_StatusType LinSlave_Tp_ProcessFrame(
     uint8 Pid,
     uint8 Pci,
@@ -272,6 +275,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_ProcessFrame(
 /**
  * @brief 发送TP数据
  */
+/** @req SWS_Lin_00153 */
 LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
     uint8 ChannelId,
     const uint8* DataPtr,
@@ -331,6 +335,7 @@ LinSlave_Tp_StatusType LinSlave_Tp_Transmit(
 /**
  * @brief 注册接收回调
  */
+/** @req SWS_Lin_00154 */
 void LinSlave_Tp_RegisterRxIndication(LinSlave_Tp_RxIndicationFuncType Callback)
 {
     TpRxIndication = Callback;
@@ -339,6 +344,7 @@ void LinSlave_Tp_RegisterRxIndication(LinSlave_Tp_RxIndicationFuncType Callback)
 /**
  * @brief 注册发送确认回调
  */
+/** @req SWS_Lin_00155 */
 void LinSlave_Tp_RegisterTxConfirmation(LinSlave_Tp_TxConfirmationFuncType Callback)
 {
     TpTxConfirmation = Callback;
@@ -347,6 +353,7 @@ void LinSlave_Tp_RegisterTxConfirmation(LinSlave_Tp_TxConfirmationFuncType Callb
 /**
  * @brief TP主函数
  */
+/** @req SWS_Lin_00156 */
 void LinSlave_Tp_MainFunction(void)
 {
     uint8 i;
@@ -386,6 +393,7 @@ void LinSlave_Tp_MainFunction(void)
 /**
  * @brief 获取通道状态
  */
+/** @req SWS_Lin_00157 */
 LinSlave_Tp_StateType LinSlave_Tp_GetState(uint8 ChannelId)
 {
     if (ChannelId >= LINSLAVE_TP_MAX_PDUs) {
@@ -397,6 +405,7 @@ LinSlave_Tp_StateType LinSlave_Tp_GetState(uint8 ChannelId)
 /**
  * @brief 检查通道是否忙碌
  */
+/** @req SWS_Lin_00158 */
 boolean LinSlave_Tp_IsBusy(uint8 ChannelId)
 {
     if (ChannelId >= LINSLAVE_TP_MAX_PDUs) {
@@ -408,6 +417,7 @@ boolean LinSlave_Tp_IsBusy(uint8 ChannelId)
 /**
  * @brief 取消传输
  */
+/** @req SWS_Lin_00159 */
 void LinSlave_Tp_Cancel(uint8 ChannelId)
 {
     if (ChannelId < LINSLAVE_TP_MAX_PDUs) {

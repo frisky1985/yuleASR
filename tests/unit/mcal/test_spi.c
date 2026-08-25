@@ -80,6 +80,7 @@ static void setup_test_config(void)
 ==================================================================================================*/
 
 /* Test: Spi_Init with valid config */
+/** @req SWS_Spi_00001 */
 TEST_CASE(spi_init_valid)
 {
     Spi_StatusType status;
@@ -92,6 +93,7 @@ TEST_CASE(spi_init_valid)
 }
 
 /* Test: Spi_Init with NULL config */
+/** @req SWS_Spi_00001 */
 TEST_CASE(spi_init_null)
 {
     Det_Mock_Reset();
@@ -103,6 +105,7 @@ TEST_CASE(spi_init_null)
 }
 
 /* Test: Spi_DeInit */
+/** @req SWS_Spi_00002 */
 TEST_CASE(spi_deinit_valid)
 {
     Std_ReturnType result;
@@ -117,6 +120,7 @@ TEST_CASE(spi_deinit_valid)
 }
 
 /* Test: Spi_DeInit when busy */
+/** @req SWS_Spi_00002 */
 TEST_CASE(spi_deinit_busy)
 {
     Std_ReturnType result;
@@ -215,6 +219,7 @@ TEST_CASE(spi_setup_eb_valid)
 }
 
 /* Test: Spi_AsyncTransmit with valid sequence */
+/** @req SWS_Spi_00004 */
 TEST_CASE(spi_async_transmit_valid)
 {
     Std_ReturnType result;
@@ -229,6 +234,7 @@ TEST_CASE(spi_async_transmit_valid)
 }
 
 /* Test: Spi_AsyncTransmit when busy */
+/** @req SWS_Spi_00004 */
 TEST_CASE(spi_async_transmit_busy)
 {
     Std_ReturnType result;
@@ -247,6 +253,7 @@ TEST_CASE(spi_async_transmit_busy)
 }
 
 /* Test: Spi_SyncTransmit with valid sequence */
+/** @req SWS_Spi_00003 */
 TEST_CASE(spi_sync_transmit_valid)
 {
     Std_ReturnType result;
@@ -260,6 +267,7 @@ TEST_CASE(spi_sync_transmit_valid)
 }
 
 /* Test: Spi_GetStatus when uninitialized */
+/** @req SWS_Spi_00005 */
 TEST_CASE(spi_get_status_uninit)
 {
     Spi_StatusType status;
@@ -270,6 +278,7 @@ TEST_CASE(spi_get_status_uninit)
 }
 
 /* Test: Spi_GetJobResult */
+/** @req SWS_Spi_00006 */
 TEST_CASE(spi_get_job_result)
 {
     Spi_JobResultType result;
@@ -300,6 +309,7 @@ TEST_CASE(spi_get_sequence_result)
 }
 
 /* Test: Spi_GetVersionInfo */
+/** @req SWS_Spi_00009 */
 TEST_CASE(spi_get_version_info)
 {
     Std_VersionInfoType version_info;

@@ -46,6 +46,7 @@ typedef struct {
 
 static EthSM_InternalType EthSM_State = { ETHSM_INTERNAL_UNINIT, ETHSM_STATE_OFF, ETHSM_STATE_OFF, 0U, 0U, NULL_PTR };
 
+/** @req SWS_EthSM_00001 */
 void EthSM_Init(const EthSM_ConfigType* ConfigPtr)
 {
 #if (ETHSM_DEV_ERROR_DETECT == STD_ON)
@@ -62,12 +63,14 @@ void EthSM_Init(const EthSM_ConfigType* ConfigPtr)
     EthSM_State.internalState = ETHSM_INTERNAL_INIT;
 }
 
+/** @req SWS_EthSM_00002 */
 void EthSM_DeInit(void)
 {
     EthSM_State.internalState = ETHSM_INTERNAL_UNINIT;
     EthSM_State.configPtr = NULL_PTR;
 }
 
+/** @req SWS_EthSM_00003 */
 Std_ReturnType EthSM_Start(void)
 {
 #if (ETHSM_DEV_ERROR_DETECT == STD_ON)
@@ -81,6 +84,7 @@ Std_ReturnType EthSM_Start(void)
     return E_OK;
 }
 
+/** @req SWS_EthSM_00004 */
 Std_ReturnType EthSM_Stop(void)
 {
     if (EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) { return E_NOT_OK; }
@@ -89,11 +93,13 @@ Std_ReturnType EthSM_Stop(void)
     return E_OK;
 }
 
+/** @req SWS_EthSM_00005 */
 EthSM_StateType EthSM_GetState(void)
 {
     return EthSM_State.currentState;
 }
 
+/** @req SWS_EthSM_00006 */
 Std_ReturnType EthSM_SetState(EthSM_StateType State)
 {
 #if (ETHSM_DEV_ERROR_DETECT == STD_ON)
@@ -126,6 +132,7 @@ Std_ReturnType EthSM_SetState(EthSM_StateType State)
     return E_NOT_OK;
 }
 
+/** @req SWS_EthSM_00007 */
 void EthSM_MainFunction(void)
 {
     if ((EthSM_State.internalState == ETHSM_INTERNAL_UNINIT) || (EthSM_State.configPtr == NULL_PTR)) { return; }
@@ -142,6 +149,7 @@ void EthSM_MainFunction(void)
     }
 }
 
+/** @req SWS_EthSM_00008 */
 void EthSM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (ETHSM_DEV_ERROR_DETECT == STD_ON)

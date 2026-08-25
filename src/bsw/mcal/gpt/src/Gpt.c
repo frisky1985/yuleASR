@@ -89,6 +89,8 @@ static boolean Gpt_ChannelRunning[GPT_NUM_CHANNELS];
 #define GPT_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/** @req SWS_Gpt_00101 */
+/** @req SWS_Gpt_00101 */
 static uint32 Gpt_GetBaseAddr(Gpt_ChannelType chId)
 {
     uint32 baseAddr;
@@ -112,16 +114,22 @@ static uint32 Gpt_GetBaseAddr(Gpt_ChannelType chId)
     return baseAddr;
 }
 
+/** @req SWS_Gpt_00102 */
+/** @req SWS_Gpt_00102 */
 static uint8 Gpt_GetChannelOffset(Gpt_ChannelType chId)
 {
     return (uint8)(chId % 4U);
 }
 
+/** @req SWS_Gpt_00103 */
+/** @req SWS_Gpt_00103 */
 static void Gpt_EnableClock(Gpt_ChannelType chId)
 {
     (void)chId;
 }
 
+/** @req SWS_Gpt_00104 */
+/** @req SWS_Gpt_00104 */
 static void Gpt_DisableClock(Gpt_ChannelType chId)
 {
     (void)chId;
@@ -130,6 +138,8 @@ static void Gpt_DisableClock(Gpt_ChannelType chId)
 #define GPT_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Gpt_00001 */
+/** @req SWS_Gpt_00001 */
 void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -188,6 +198,8 @@ void Gpt_Init(const Gpt_ConfigType* ConfigPtr)
 }
 
 #if (GPT_DEINIT_API == STD_ON)
+/** @req SWS_Gpt_00002 */
+/** @req SWS_Gpt_00002 */
 void Gpt_DeInit(void)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -220,6 +232,8 @@ void Gpt_DeInit(void)
 #endif
 
 #if (GPT_TIME_ELAPSED_API == STD_ON)
+/** @req SWS_Gpt_00003 */
+/** @req SWS_Gpt_00003 */
 Gpt_ValueType Gpt_GetTimeElapsed(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -241,6 +255,8 @@ Gpt_ValueType Gpt_GetTimeElapsed(Gpt_ChannelType Channel)
 #endif
 
 #if (GPT_TIME_REMAINING_API == STD_ON)
+/** @req SWS_Gpt_00004 */
+/** @req SWS_Gpt_00004 */
 Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -268,6 +284,8 @@ Gpt_ValueType Gpt_GetTimeRemaining(Gpt_ChannelType Channel)
 }
 #endif
 
+/** @req SWS_Gpt_00005 */
+/** @req SWS_Gpt_00005 */
 void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -311,6 +329,8 @@ void Gpt_StartTimer(Gpt_ChannelType Channel, Gpt_ValueType Value)
     REG_WRITE32(baseAddr + GPT_CR, crValue);
 }
 
+/** @req SWS_Gpt_00006 */
+/** @req SWS_Gpt_00006 */
 void Gpt_StopTimer(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -340,6 +360,8 @@ void Gpt_StopTimer(Gpt_ChannelType Channel)
 }
 
 #if (GPT_ENABLE_DISABLE_NOTIFICATION_API == STD_ON)
+/** @req SWS_Gpt_00007 */
+/** @req SWS_Gpt_00007 */
 void Gpt_EnableNotification(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -363,6 +385,8 @@ void Gpt_EnableNotification(Gpt_ChannelType Channel)
     }
 }
 
+/** @req SWS_Gpt_00008 */
+/** @req SWS_Gpt_00008 */
 void Gpt_DisableNotification(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -385,6 +409,8 @@ void Gpt_DisableNotification(Gpt_ChannelType Channel)
 }
 #endif
 
+/** @req SWS_Gpt_00009 */
+/** @req SWS_Gpt_00009 */
 void Gpt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -400,6 +426,8 @@ void Gpt_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = GPT_SW_PATCH_VERSION;
 }
 
+/** @req SWS_Gpt_00010 */
+/** @req SWS_Gpt_00010 */
 void Gpt_SetMode(Gpt_ModeType Mode)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -413,6 +441,8 @@ void Gpt_SetMode(Gpt_ModeType Mode)
         /* Stop all channels */
         for (uint8 i = 0U; i < GPT_NUM_CHANNELS; i++) {
             if ((Gpt_ChannelRunning[i]) != 0U) {
+/** @req SWS_Gpt_00006 */
+                /** @req SWS_Gpt_00006 */
                 Gpt_StopTimer(i);
             }
         }
@@ -422,6 +452,8 @@ void Gpt_SetMode(Gpt_ModeType Mode)
 }
 
 #if (GPT_WAKEUP_FUNCTIONALITY_API == STD_ON)
+/** @req SWS_Gpt_00011 */
+/** @req SWS_Gpt_00011 */
 void Gpt_DisableWakeup(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -437,6 +469,8 @@ void Gpt_DisableWakeup(Gpt_ChannelType Channel)
     (void)Channel;
 }
 
+/** @req SWS_Gpt_00012 */
+/** @req SWS_Gpt_00012 */
 void Gpt_EnableWakeup(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -452,6 +486,8 @@ void Gpt_EnableWakeup(Gpt_ChannelType Channel)
     (void)Channel;
 }
 
+/** @req SWS_Gpt_00013 */
+/** @req SWS_Gpt_00013 */
 Std_ReturnType Gpt_CheckWakeup(Gpt_ChannelType Channel)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)
@@ -468,16 +504,22 @@ Std_ReturnType Gpt_CheckWakeup(Gpt_ChannelType Channel)
     return E_NOT_OK;
 }
 #else
+/** @req SWS_Gpt_00011 */
+/** @req SWS_Gpt_00011 */
 void Gpt_DisableWakeup(Gpt_ChannelType Channel)
 {
     (void)Channel;
 }
 
+/** @req SWS_Gpt_00012 */
+/** @req SWS_Gpt_00012 */
 void Gpt_EnableWakeup(Gpt_ChannelType Channel)
 {
     (void)Channel;
 }
 
+/** @req SWS_Gpt_00013 */
+/** @req SWS_Gpt_00013 */
 Std_ReturnType Gpt_CheckWakeup(Gpt_ChannelType Channel)
 {
     (void)Channel;
@@ -489,6 +531,8 @@ Std_ReturnType Gpt_CheckWakeup(Gpt_ChannelType Channel)
     (GPT_PREDEF_TIMER_1US_24BIT_ENABLE == STD_ON) || \
     (GPT_PREDEF_TIMER_1US_32BIT_ENABLE == STD_ON) || \
     (GPT_PREDEF_TIMER_100US_32BIT_ENABLE == STD_ON)
+/** @req SWS_Gpt_00014 */
+/** @req SWS_Gpt_00014 */
 Std_ReturnType Gpt_GetPredefTimerValue(Gpt_PredefTimerType PredefTimer, uint32* TimeValuePtr)
 {
     #if (GPT_DEV_ERROR_DETECT == STD_ON)

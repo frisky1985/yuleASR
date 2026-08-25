@@ -89,10 +89,20 @@ static const Mcu_ConfigType* Mcu_ConfigPtr = NULL_PTR;
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_Mcu_00101 */
+/** @req SWS_Mcu_00101 */
 static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig);
+/** @req SWS_Mcu_00102 */
+/** @req SWS_Mcu_00102 */
 static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigType* pllConfig);
+/** @req SWS_Mcu_00103 */
+/** @req SWS_Mcu_00103 */
 static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr);
+/** @req SWS_Mcu_00104 */
+/** @req SWS_Mcu_00104 */
 static void Mcu_SetClockDividers(const Mcu_ClockConfigType* clockConfig);
+/** @req SWS_Mcu_00105 */
+/** @req SWS_Mcu_00105 */
 static Mcu_ResetType Mcu_GetResetReasonFromRegister(void);
 
 /*==================================================================================================
@@ -103,6 +113,8 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void);
  * @brief Configures the system clock
  * @req SHALL_MCU - Configures the system clock
  */
+/** @req SWS_Mcu_00106 */
+/** @req SWS_Mcu_00101 */
 static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
 {
     Std_ReturnType status = E_OK;
@@ -141,6 +153,8 @@ static Std_ReturnType Mcu_ConfigureClock(const Mcu_ClockConfigType* clockConfig)
  * @brief Configures a PLL
  * @req SHALL_MCU - Configures a PLL
  */
+/** @req SWS_Mcu_00107 */
+/** @req SWS_Mcu_00102 */
 static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigType* pllConfig)
 {
     Std_ReturnType status = E_OK;
@@ -183,6 +197,8 @@ static Std_ReturnType Mcu_ConfigurePLL(uint32 pllBaseAddr, const Mcu_PllConfigTy
  * @brief Waits for PLL to lock
  * @req SHALL_MCU - Waits for PLL to lock
  */
+/** @req SWS_Mcu_00108 */
+/** @req SWS_Mcu_00103 */
 static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
 {
     Std_ReturnType status = E_NOT_OK;
@@ -205,6 +221,8 @@ static Std_ReturnType Mcu_WaitForPLLLock(uint32 pllBaseAddr)
  * @brief Sets clock dividers
  * @req SHALL_MCU - Sets clock dividers
  */
+/** @req SWS_Mcu_00109 */
+/** @req SWS_Mcu_00104 */
 static void Mcu_SetClockDividers(const Mcu_ClockConfigType* clockConfig)
 {
     uint32 regValue;
@@ -232,6 +250,8 @@ static void Mcu_SetClockDividers(const Mcu_ClockConfigType* clockConfig)
  * @brief Gets reset reason from hardware register
  * @req SHALL_MCU - Gets reset reason from hardware register
  */
+/** @req SWS_Mcu_00110 */
+/** @req SWS_Mcu_00105 */
 static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
 {
     Mcu_ResetType resetReason;
@@ -268,6 +288,8 @@ static Mcu_ResetType Mcu_GetResetReasonFromRegister(void)
  * @brief Initializes the MCU driver
  * @req SHALL_MCU - Initializes the MCU driver
  */
+/** @req SWS_Mcu_00001 */
+/** @req SWS_Mcu_00001 */
 Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
@@ -304,6 +326,8 @@ Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr)
  * @brief Initializes the MCU clock
  * @req SHALL_MCU - Initializes the MCU clock
  */
+/** @req SWS_Mcu_00002 */
+/** @req SWS_Mcu_00002 */
 Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
 {
     Std_ReturnType status = E_OK;
@@ -335,6 +359,8 @@ Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
  * @brief Distributes the PLL clock
  * @req SHALL_MCU - Distributes the PLL clock
  */
+/** @req SWS_Mcu_00003 */
+/** @req SWS_Mcu_00003 */
 void Mcu_DistributePllClock(void)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
@@ -359,6 +385,8 @@ void Mcu_DistributePllClock(void)
  * @brief Gets PLL lock status
  * @req SHALL_MCU - Gets PLL lock status
  */
+/** @req SWS_Mcu_00004 */
+/** @req SWS_Mcu_00004 */
 Mcu_PllStatusType Mcu_GetPllStatus(void)
 {
     Mcu_PllStatusType pllStatus;
@@ -389,6 +417,8 @@ Mcu_PllStatusType Mcu_GetPllStatus(void)
  * @brief Sets MCU mode
  * @req SHALL_MCU - Sets MCU mode
  */
+/** @req SWS_Mcu_00005 */
+/** @req SWS_Mcu_00005 */
 void Mcu_SetMode(Mcu_ModeType McuMode)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
@@ -434,6 +464,8 @@ void Mcu_SetMode(Mcu_ModeType McuMode)
  * @brief Gets reset reason
  * @req SHALL_MCU - Gets reset reason
  */
+/** @req SWS_Mcu_00006 */
+/** @req SWS_Mcu_00006 */
 Mcu_ResetType Mcu_GetResetReason(void)
 {
     Mcu_ResetType resetReason;
@@ -454,6 +486,8 @@ Mcu_ResetType Mcu_GetResetReason(void)
  * @brief Gets reset raw value
  * @req SHALL_MCU - Gets reset raw value
  */
+/** @req SWS_Mcu_00007 */
+/** @req SWS_Mcu_00007 */
 Mcu_RawResetType Mcu_GetResetRawValue(void)
 {
     Mcu_RawResetType rawValue;
@@ -474,6 +508,8 @@ Mcu_RawResetType Mcu_GetResetRawValue(void)
  * @brief Performs MCU reset
  * @req SHALL_MCU - Performs MCU reset
  */
+/** @req SWS_Mcu_00008 */
+/** @req SWS_Mcu_00008 */
 void Mcu_PerformReset(void)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
@@ -498,6 +534,8 @@ void Mcu_PerformReset(void)
  * @brief Gets version information
  * @req SHALL_MCU - Gets version information
  */
+/** @req SWS_Mcu_00009 */
+/** @req SWS_Mcu_00009 */
 void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
@@ -520,6 +558,8 @@ void Mcu_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @brief Initializes RAM section
  * @req SHALL_MCU - Initializes RAM section
  */
+/** @req SWS_Mcu_00010 */
+/** @req SWS_Mcu_00010 */
 Std_ReturnType Mcu_InitRamSection(uint8 RamSection)
 {
     Std_ReturnType status = E_NOT_OK;
@@ -552,6 +592,8 @@ Std_ReturnType Mcu_InitRamSection(uint8 RamSection)
  * @brief Gets RAM state
  * @req SHALL_MCU - Gets RAM state
  */
+/** @req SWS_Mcu_00011 */
+/** @req SWS_Mcu_00011 */
 Mcu_RamStateType Mcu_GetRamState(void)
 {
     Mcu_RamStateType ramState;

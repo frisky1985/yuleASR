@@ -311,6 +311,7 @@ STATIC void J1939Nm_ProcessStateMachine(J1939Nm_ChannelType Channel)
 /*==================================================================================================
 *                                    GLOBAL FUNCTIONS
 ==================================================================================================*/
+/** @req SWS_J1939Nm_00001 */
 /**
  * @brief Initializes the J1939 Network Management module
  */
@@ -346,6 +347,7 @@ void J1939Nm_Init(const J1939Nm_ConfigType* ConfigPtr)
     J1939Nm_Initialized = TRUE;
 }
 
+/** @req SWS_J1939Nm_00002 */
 /**
  * @brief Deinitializes the J1939 Network Management module
  */
@@ -374,6 +376,7 @@ void J1939Nm_DeInit(void)
  * @brief Gets version information
  */
 #if (J1939NM_VERSION_INFO_API == STD_ON)
+/** @req SWS_J1939Nm_00003 */
 void J1939Nm_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR) {
@@ -391,6 +394,7 @@ void J1939Nm_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 }
 #endif
 
+/** @req SWS_J1939Nm_00005 */
 /**
  * @brief Gets the current NM state for a channel
  */
@@ -421,6 +425,7 @@ Std_ReturnType J1939Nm_GetState(J1939Nm_ChannelType Channel, J1939Nm_StateType* 
     return result;
 }
 
+/** @req SWS_J1939Nm_00006 */
 /**
  * @brief Gets the bus-off state for a channel
  */
@@ -451,6 +456,7 @@ Std_ReturnType J1939Nm_GetBusOffState(J1939Nm_ChannelType Channel, boolean* BusO
     return result;
 }
 
+/** @req SWS_J1939Nm_00007 */
 /**
  * @brief Sets the bus-off state for a channel
  */
@@ -482,6 +488,7 @@ Std_ReturnType J1939Nm_SetBusOffState(J1939Nm_ChannelType Channel, boolean BusOf
     return result;
 }
 
+/** @req SWS_J1939Nm_00008 */
 /**
  * @brief Gets the current address for a channel
  */
@@ -512,6 +519,7 @@ Std_ReturnType J1939Nm_GetAddress(J1939Nm_ChannelType Channel, J1939Nm_AddressTy
     return result;
 }
 
+/** @req SWS_J1939Nm_00009 */
 /**
  * @brief Sets the address for a channel
  */
@@ -538,6 +546,7 @@ Std_ReturnType J1939Nm_SetAddress(J1939Nm_ChannelType Channel, J1939Nm_AddressTy
     return result;
 }
 
+/** @req SWS_J1939Nm_00010 */
 /**
  * @brief Gets the NAME for a channel
  */
@@ -568,6 +577,7 @@ Std_ReturnType J1939Nm_GetName(J1939Nm_ChannelType Channel, J1939Nm_NameType* Na
     return result;
 }
 
+/** @req SWS_J1939Nm_00011 */
 /**
  * @brief Sets the NAME for a channel
  */
@@ -594,6 +604,7 @@ Std_ReturnType J1939Nm_SetName(J1939Nm_ChannelType Channel, J1939Nm_NameType Nam
     return result;
 }
 
+/** @req SWS_J1939Nm_00004 */
 /**
  * @brief Main function for J1939NM (to be called periodically)
  */
@@ -610,6 +621,7 @@ void J1939Nm_MainFunction(void)
     }
 }
 
+/** @req SWS_J1939Nm_00012 */
 /**
  * @brief Bus-off callback from CanIf
  */
@@ -623,6 +635,7 @@ void J1939Nm_BusOffCbk(J1939Nm_ChannelType Channel)
     }
 }
 
+/** @req SWS_J1939Nm_00013 */
 /**
  * @brief RxIndication callback from CanIf
  */
@@ -668,6 +681,7 @@ void J1939Nm_RxIndication(
     }
 }
 
+/** @req SWS_J1939Nm_00014 */
 /**
  * @brief TxConfirmation callback from CanIf
  */
@@ -680,6 +694,7 @@ void J1939Nm_TxConfirmation(J1939Nm_ChannelType Channel, PduIdType TxPduId, Std_
     (void)Channel;
 }
 
+/** @req SWS_J1939Nm_00015 */
 /**
  * @brief Requests transmission of Address Claimed message
  */
@@ -694,6 +709,7 @@ Std_ReturnType J1939Nm_RequestAddressClaimed(J1939Nm_ChannelType Channel)
     return result;
 }
 
+/** @req SWS_J1939Nm_00016 */
 /**
  * @brief Requests transmission of Cannot Claim Address message
  */
@@ -708,6 +724,7 @@ Std_ReturnType J1939Nm_RequestCannotClaimAddress(J1939Nm_ChannelType Channel)
     return result;
 }
 
+/** @req SWS_J1939Nm_00017 */
 /**
  * @brief Handles address conflict detection
  */

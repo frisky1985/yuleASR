@@ -543,6 +543,7 @@ static void EthSM_ProcessState_COM_READY(uint8 networkIdx)
 /**
  * @brief Initializes the Ethernet State Manager
  */
+/** @req SWS_EthSM_00001 */
 void EthSM_Init(const EthSM_ConfigType* ConfigPtr)
 {
     uint8 idx;
@@ -579,6 +580,7 @@ void EthSM_Init(const EthSM_ConfigType* ConfigPtr)
 /**
  * @brief Deinitializes the Ethernet State Manager
  */
+/** @req SWS_EthSM_00002 */
 void EthSM_DeInit(void)
 {
     uint8 idx;
@@ -628,6 +630,7 @@ void EthSM_DeInit(void)
  * @brief Returns version information
  */
 #if (ETHSM_VERSION_INFO_API == STD_ON)
+/** @req SWS_EthSM_00003 */
 void EthSM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR)
@@ -649,6 +652,7 @@ void EthSM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 /**
  * @brief Requests a communication mode change
  */
+/** @req SWS_EthSM_00004 */
 Std_ReturnType EthSM_RequestComMode(
     EthSM_NetworkHandleType NetworkHandle,
     ComM_ModeType ComMode)
@@ -701,6 +705,7 @@ Std_ReturnType EthSM_RequestComMode(
 /**
  * @brief Gets the current communication mode
  */
+/** @req SWS_EthSM_00005 */
 Std_ReturnType EthSM_GetCurrentComMode(
     EthSM_NetworkHandleType NetworkHandle,
     ComM_ModeType* ComMode)
@@ -745,6 +750,7 @@ Std_ReturnType EthSM_GetCurrentComMode(
 /**
  * @brief TcpIp mode indication callback
  */
+/** @req SWS_EthSM_00006 */
 void EthSM_TcpIpModeIndication(
     EthSM_NetworkHandleType NetworkHandle,
     TcpIp_StateType TcpIpMode)
@@ -778,6 +784,7 @@ void EthSM_TcpIpModeIndication(
 /**
  * @brief Main function for cyclic processing
  */
+/** @req SWS_EthSM_00007 */
 void EthSM_MainFunction(void)
 {
     uint8 idx;
@@ -825,6 +832,7 @@ void EthSM_MainFunction(void)
 /**
  * @brief Gets internal state (for debugging)
  */
+/** @req SWS_EthSM_00101 */
 EthSM_StateType EthSM_GetInternalState(EthSM_NetworkHandleType NetworkHandle)
 {
     uint8 networkIdx;

@@ -66,6 +66,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex);
 /**
  * 初始化函数
  */
+/** @req SWS_Lin_00021 */
 LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
 {
 #if (LINSLAVE_DEV_ERROR_DETECT == STD_ON)
@@ -127,6 +128,7 @@ LinSlave_StatusType LinSlave_Init(const LinSlave_ConfigType* ConfigPtr)
 /**
  * @brief 初始化 - 使用配置表方式 (支持多Unconditional Frame)
  */
+/** @req SWS_Lin_00022 */
 LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType* ConfigTable)
 {
     if (ConfigTable == NULL_PTR) {
@@ -180,6 +182,7 @@ LinSlave_StatusType LinSlave_InitWithConfigTable(const LinSlave_ConfigTableType*
 /**
  * 反初始化函数
  */
+/** @req SWS_Lin_00023 */
 void LinSlave_DeInit(void)
 {
     if (LinSlave_IsInitialized == 0U) {
@@ -233,6 +236,7 @@ static void LinSlave_ProcessError(LinSlave_ErrorType Error)
 /**
  * 串口接收中断处理函数
  */
+/** @req SWS_Lin_00024 */
 void LinSlave_RxInterruptHandler(uint8 RxByte)
 {
     if (LinSlave_IsInitialized == 0U) {
@@ -424,6 +428,7 @@ static void LinSlave_HandleRxData(uint8 RxByte)
 /**
  * Break检测处理
  */
+/** @req SWS_Lin_00025 */
 void LinSlave_BreakDetected(void)
 {
     if (LinSlave_IsInitialized == 0U) {
@@ -548,6 +553,7 @@ static void LinSlave_ProcessUnconditionalTx(uint8 FrameIndex)
 /**
  * 设置响应数据
  */
+/** @req SWS_Lin_00026 */
 LinSlave_StatusType LinSlave_SetResponseData(const uint8* DataPtr, uint8 Length)
 {
 #if (LINSLAVE_DEV_ERROR_DETECT == STD_ON)
@@ -574,6 +580,7 @@ LinSlave_StatusType LinSlave_SetResponseData(const uint8* DataPtr, uint8 Length)
 /**
  * 获取当前状态
  */
+/** @req SWS_Lin_00027 */
 LinSlave_StateType LinSlave_GetState(void)
 {
     return LinSlave_State;
@@ -582,6 +589,7 @@ LinSlave_StateType LinSlave_GetState(void)
 /**
  * 获取最后错误
  */
+/** @req SWS_Lin_00028 */
 LinSlave_ErrorType LinSlave_GetLastError(void)
 {
     return LinSlave_LastError;
@@ -590,6 +598,7 @@ LinSlave_ErrorType LinSlave_GetLastError(void)
 /**
  * 注册接收回调函数
  */
+/** @req SWS_Lin_00029 */
 void LinSlave_RegisterRxCallback(LinSlave_RxCallbackFuncType Callback)
 {
     LinSlave_RxCallback = Callback;
@@ -598,6 +607,7 @@ void LinSlave_RegisterRxCallback(LinSlave_RxCallbackFuncType Callback)
 /**
  * 注册错误回调函数
  */
+/** @req SWS_Lin_00030 */
 void LinSlave_RegisterErrorCallback(LinSlave_ErrorCallbackFuncType Callback)
 {
     LinSlave_ErrorCallback = Callback;
@@ -616,6 +626,7 @@ const LinSlave_ConfigType LinSlave_DefaultConfig = {
 /**
  * @brief v2.0: 主函数 - 需要周期调用
  */
+/** @req SWS_Lin_00031 */
 void LinSlave_MainFunction(void)
 {
     if (LinSlave_IsInitialized == 0U) {

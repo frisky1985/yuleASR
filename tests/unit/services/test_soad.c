@@ -41,6 +41,7 @@ static void setup_default_config(void)
 *                                      TEST CASES
 ==================================================================================================*/
 
+/** @req SWS_SoAd_00001 */
 TEST_CASE(soad_init_valid)
 {
     setup_default_config();
@@ -48,6 +49,7 @@ TEST_CASE(soad_init_valid)
     SoAd_Init(&g_soad_config);
 }
 
+/** @req SWS_SoAd_00001 */
 TEST_CASE(soad_init_null)
 {
     setup_default_config();
@@ -55,6 +57,7 @@ TEST_CASE(soad_init_null)
     SoAd_Init(NULL_PTR);
 }
 
+/** @req SWS_SoAd_00001 */
 TEST_CASE(soad_init_twice)
 {
     setup_default_config();
@@ -63,6 +66,7 @@ TEST_CASE(soad_init_twice)
     SoAd_Init(&g_soad_config);
 }
 
+/** @req SWS_SoAd_00002 */
 TEST_CASE(soad_deinit)
 {
     setup_default_config();
@@ -71,11 +75,13 @@ TEST_CASE(soad_deinit)
     SoAd_DeInit();
 }
 
+/** @req SWS_SoAd_00002 */
 TEST_CASE(soad_deinit_uninit)
 {
     SoAd_DeInit();
 }
 
+/** @req SWS_SoAd_00003 */
 TEST_CASE(soad_get_version_info)
 {
     Std_VersionInfoType ver;
@@ -87,6 +93,7 @@ TEST_CASE(soad_get_version_info)
     ASSERT_EQ(SOAD_MODULE_ID, ver.moduleID);
 }
 
+/** @req SWS_SoAd_00015 */
 TEST_CASE(soad_main_function)
 {
     setup_default_config();
@@ -95,11 +102,13 @@ TEST_CASE(soad_main_function)
     SoAd_MainFunction();
 }
 
+/** @req SWS_SoAd_00015 */
 TEST_CASE(soad_main_function_uninit)
 {
     SoAd_MainFunction();
 }
 
+/** @req SWS_SoAd_00017 */
 TEST_CASE(soad_tx_confirmation)
 {
     PduIdType pduId = 0;
@@ -110,6 +119,7 @@ TEST_CASE(soad_tx_confirmation)
     /* Should not crash */
 }
 
+/** @req SWS_SoAd_00016 */
 TEST_CASE(soad_rx_indication)
 {
     PduIdType pduId = 0;
@@ -126,6 +136,7 @@ TEST_CASE(soad_rx_indication)
     /* Should not crash */
 }
 
+/** @req SWS_SoAd_00020 */
 TEST_CASE(soad_trigger_transmit)
 {
     PduIdType pduId = 0;

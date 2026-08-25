@@ -11,8 +11,10 @@
 void setUp(void) { mock_hal_reset(); Det_Mock_Reset(); }
 void tearDown(void) {}
 
+/* @req SWS_Pwm_00001 */
 void test_Pwm_Init_NullConfig(void) { Pwm_Init(NULL); }
 
+/* @req SWS_Pwm_00001 */
 void test_Pwm_Init_Valid(void) {
     /* Use channel IDs that return baseAddr=0 (default in Pwm_GetBaseAddr) */
     Pwm_ChannelConfigType channels[PWM_NUM_CHANNELS];
@@ -24,12 +26,14 @@ void test_Pwm_Init_Valid(void) {
     Pwm_Init(&cfg);
 }
 
+/* @req SWS_Pwm_00009 */
 void test_Pwm_GetVersionInfo(void) {
     Std_VersionInfoType vi; memset(&vi,0,sizeof(vi));
     Pwm_GetVersionInfo(&vi);
     TEST_ASSERT_TRUE(vi.vendorID != 0) /* not zero after init */;
 }
 
+/* @req SWS_Pwm_00009 */
 void test_Pwm_GetVersionInfo_Null(void) { Pwm_GetVersionInfo(NULL); }
 
 int main(void) {

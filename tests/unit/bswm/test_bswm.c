@@ -11,6 +11,7 @@
 #include "BswM_Cfg.h"
 
 /* Test: BswM_Init */
+/** @req SWS_BswM_00001 */
 static void test_BswM_Init(void **state)
 {
     (void)state;
@@ -21,6 +22,7 @@ static void test_BswM_Init(void **state)
 }
 
 /* Test: BswM_DeInit */
+/** @req SWS_BswM_00002 */
 static void test_BswM_DeInit(void **state)
 {
     (void)state;
@@ -30,6 +32,7 @@ static void test_BswM_DeInit(void **state)
 }
 
 /* Test: BswM_MainFunction */
+/** @req SWS_BswM_00020 */
 static void test_BswM_MainFunction(void **state)
 {
     (void)state;
@@ -39,6 +42,7 @@ static void test_BswM_MainFunction(void **state)
 }
 
 /* Test: BswM_RequestMode */
+/** @req SWS_BswM_00010 */
 static void test_BswM_RequestMode(void **state)
 {
     (void)state;
@@ -51,6 +55,7 @@ static void test_BswM_RequestMode(void **state)
 }
 
 /* Test: BswM_GetVersionInfo */
+/** @req SWS_BswM_00030 */
 static void test_BswM_GetVersionInfo(void **state)
 {
     (void)state;

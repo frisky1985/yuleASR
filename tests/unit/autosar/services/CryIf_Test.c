@@ -53,6 +53,7 @@ static const CryIf_ConfigType CryIf_TestConfig = {
 };
 
 /* Test functions */
+/** @req SWS_CryIf_00001 */
 static void test_init_deinit(void)
 {
     printf("Testing CryIf_Init/DeInit...\n");

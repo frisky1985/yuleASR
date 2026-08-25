@@ -26,6 +26,7 @@
 #define LINMASTER_INSTANCE_ID            0x00
 
 /* 全局变量 */
+/** @req SWS_Lin_00012 */
 void LinMaster_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 static LinMaster_StateType LinMaster_State = LINMASTER_STATE_UNINIT;
 static LinMaster_ErrorType LinMaster_LastError = LINMASTER_ERROR_NONE;
@@ -79,6 +80,7 @@ static uint8 LinMaster_CalculateChecksumInternal(const uint8* DataPtr, uint8 Len
 /**
  * @brief 初始化函数
  */
+/** @req SWS_Lin_00001 */
 LinMaster_StatusType LinMaster_Init(const LinMaster_ConfigType* ConfigPtr)
 {
 #if (LINMASTER_DEV_ERROR_DETECT == STD_ON)
@@ -136,6 +138,7 @@ LinMaster_StatusType LinMaster_Init(const LinMaster_ConfigType* ConfigPtr)
 /**
  * @brief 反初始化函数
  */
+/** @req SWS_Lin_00002 */
 void LinMaster_DeInit(void)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -236,6 +239,7 @@ static void LinMaster_ProcessError(LinMaster_ErrorType Error)
 /**
  * @brief 发送报文头 (Break + Sync + PID)
  */
+/** @req SWS_Lin_00003 */
 LinMaster_StatusType LinMaster_SendHeader(uint8 Pid)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -248,6 +252,7 @@ LinMaster_StatusType LinMaster_SendHeader(uint8 Pid)
     
 #if (LINMASTER_DEV_ERROR_DETECT == STD_ON)
     /* 验证PID校验位 */
+    /** @req SWS_Lin_00019 */
     if (!LinMaster_ValidateProtectedId(Pid)) {
         return LINMASTER_NOT_OK;
     }
@@ -255,6 +260,7 @@ LinMaster_StatusType LinMaster_SendHeader(uint8 Pid)
     
     /* 保存当前操作参数 */
     LinMaster_CurrentPid = Pid;
+    /** @req SWS_Lin_00020 */
     LinMaster_CurrentId = LinMaster_ExtractId(Pid);
     LinMaster_HeaderRequested = TRUE;
     LinMaster_OperationPending = TRUE;
@@ -268,6 +274,7 @@ LinMaster_StatusType LinMaster_SendHeader(uint8 Pid)
 /**
  * @brief 发送完整帧 (报文头 + 数据)
  */
+/** @req SWS_Lin_00004 */
 LinMaster_StatusType LinMaster_SendFrame(
     uint8 Pid,
     const uint8* DataPtr,
@@ -291,6 +298,7 @@ LinMaster_StatusType LinMaster_SendFrame(
         return LINMASTER_NOT_OK;
     }
     
+    /** @req SWS_Lin_00019 */
     if (!LinMaster_ValidateProtectedId(Pid)) {
         return LINMASTER_NOT_OK;
     }
@@ -303,12 +311,14 @@ LinMaster_StatusType LinMaster_SendFrame(
     LinMaster_CurrentDirection = LINMASTER_FRAME_DIR_TX;
     
     /* 发送报文头 */
+    /** @req SWS_Lin_00003 */
     return LinMaster_SendHeader(Pid);
 }
 
 /**
  * @brief 接收帧 (发送报文头后等待从机响应)
  */
+/** @req SWS_Lin_00005 */
 LinMaster_StatusType LinMaster_ReceiveFrame(
     uint8 Pid,
     uint8 ExpectedLength,
@@ -327,6 +337,7 @@ LinMaster_StatusType LinMaster_ReceiveFrame(
         return LINMASTER_NOT_OK;
     }
     
+    /** @req SWS_Lin_00019 */
     if (!LinMaster_ValidateProtectedId(Pid)) {
         return LINMASTER_NOT_OK;
     }
@@ -339,12 +350,14 @@ LinMaster_StatusType LinMaster_ReceiveFrame(
     LinMaster_RxIndex = 0;
     
     /* 发送报文头 */
+    /** @req SWS_Lin_00003 */
     return LinMaster_SendHeader(Pid);
 }
 
 /**
  * @brief 发送 Break 字段
  */
+/** @req SWS_Lin_00006 */
 LinMaster_StatusType LinMaster_SendBreak(void)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -362,6 +375,7 @@ LinMaster_StatusType LinMaster_SendBreak(void)
 /**
  * @brief 发送 Sync 字段
  */
+/** @req SWS_Lin_00007 */
 LinMaster_StatusType LinMaster_SendSync(void)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -379,6 +393,7 @@ LinMaster_StatusType LinMaster_SendSync(void)
 /**
  * @brief 串口接收中断处理
  */
+/** @req SWS_Lin_00008 */
 void LinMaster_RxInterruptHandler(uint8 RxByte)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -440,6 +455,7 @@ void LinMaster_RxInterruptHandler(uint8 RxByte)
 /**
  * @brief 串口发送完成中断处理
  */
+/** @req SWS_Lin_00009 */
 void LinMaster_TxCompleteInterruptHandler(void)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -651,6 +667,7 @@ static uint8 LinMaster_CalculateChecksumInternal(const uint8* DataPtr, uint8 Len
 /**
  * @brief 主函数 - 状态机驱动
  */
+/** @req SWS_Lin_00010 */
 void LinMaster_MainFunction(void)
 {
     if (LinMaster_IsInitialized == 0U) {
@@ -664,6 +681,7 @@ void LinMaster_MainFunction(void)
 /**
  * @brief 获取当前状态
  */
+/** @req SWS_Lin_00011 */
 LinMaster_StateType LinMaster_GetState(void)
 {
     return LinMaster_State;
@@ -672,6 +690,7 @@ LinMaster_StateType LinMaster_GetState(void)
 /**
  * @brief 获取最后错误
  */
+/** @req SWS_Lin_00013 */
 LinMaster_ErrorType LinMaster_GetLastError(void)
 {
     return LinMaster_LastError;
@@ -680,6 +699,7 @@ LinMaster_ErrorType LinMaster_GetLastError(void)
 /**
  * @brief 注册接收完成回调
  */
+/** @req SWS_Lin_00014 */
 void LinMaster_RegisterRxCallback(LinMaster_RxCallbackFuncType Callback)
 {
     LinMaster_RxCallback = Callback;
@@ -688,6 +708,7 @@ void LinMaster_RegisterRxCallback(LinMaster_RxCallbackFuncType Callback)
 /**
  * @brief 注册发送完成回调
  */
+/** @req SWS_Lin_00015 */
 void LinMaster_RegisterTxCallback(LinMaster_TxCallbackFuncType Callback)
 {
     LinMaster_TxCallback = Callback;
@@ -696,6 +717,7 @@ void LinMaster_RegisterTxCallback(LinMaster_TxCallbackFuncType Callback)
 /**
  * @brief 注册错误回调
  */
+/** @req SWS_Lin_00016 */
 void LinMaster_RegisterErrorCallback(LinMaster_ErrorCallbackFuncType Callback)
 {
     LinMaster_ErrorCallback = Callback;
@@ -704,6 +726,7 @@ void LinMaster_RegisterErrorCallback(LinMaster_ErrorCallbackFuncType Callback)
 /**
  * @brief 注册状态变化回调
  */
+/** @req SWS_Lin_00017 */
 void LinMaster_RegisterStateCallback(LinMaster_StateCallbackFuncType Callback)
 {
     LinMaster_StateCallback = Callback;
@@ -713,6 +736,7 @@ void LinMaster_RegisterStateCallback(LinMaster_StateCallbackFuncType Callback)
  * @brief 计算Protected ID (添加校验位)
  * LIN协议使用奇偶校验: P0 = ID0 XOR ID1 XOR ID2 XOR ID4, P1 = ~(ID1 XOR ID3 XOR ID4 XOR ID5)
  */
+/** @req SWS_Lin_00018 */
 uint8 LinMaster_CalculateProtectedId(uint8 Id)
 {
     uint8 pid;
@@ -734,9 +758,11 @@ uint8 LinMaster_CalculateProtectedId(uint8 Id)
 /**
  * @brief 验证PID校验位
  */
+/** @req SWS_Lin_00019 */
 boolean LinMaster_ValidateProtectedId(uint8 Pid)
 {
     uint8 id = Pid & LINMASTER_PID_MASK;
+    /** @req SWS_Lin_00018 */
     uint8 calculatedPid = LinMaster_CalculateProtectedId(id);
     
     return (Pid == calculatedPid) ? TRUE : FALSE;
@@ -745,6 +771,7 @@ boolean LinMaster_ValidateProtectedId(uint8 Pid)
 /**
  * @brief 从Protected ID提取原始ID
  */
+/** @req SWS_Lin_00020 */
 uint8 LinMaster_ExtractId(uint8 Pid)
 {
     return (Pid & LINMASTER_PID_MASK);
@@ -794,6 +821,7 @@ LinMaster_StatusType LinMaster_GoToSleep(void)
  * @brief 获取版本信息
  */
 #if (LINMASTER_VERSION_INFO_API == STD_ON)
+/** @req SWS_Lin_00012 */
 void LinMaster_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo != NULL_PTR) {

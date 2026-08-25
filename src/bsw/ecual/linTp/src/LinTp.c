@@ -94,6 +94,7 @@ static PduLengthType LinTp_CalculatePayloadLength(PduLengthType DataLength, LinT
  *  FUNCTION: LinTp_Init
  *  Purpose: Initialize the LinTp module
  *================================================================================================*/
+/** @req SWS_LinTp_00001 */
 void LinTp_Init(const LinTp_ConfigType *ConfigPtr)
 {
     uint8 channelIdx;
@@ -123,6 +124,7 @@ void LinTp_Init(const LinTp_ConfigType *ConfigPtr)
  *  FUNCTION: LinTp_DeInit
  *  Purpose: De-initialize the LinTp module
  *================================================================================================*/
+/** @req SWS_LinTp_00002 */
 void LinTp_DeInit(void)
 {
     uint8 channelIdx;
@@ -149,6 +151,7 @@ void LinTp_DeInit(void)
  *  FUNCTION: LinTp_Transmit
  *  Purpose: Request transmission of a TP message
  *================================================================================================*/
+/** @req SWS_LinTp_00003 */
 Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
 {
     uint8 channelIdx;
@@ -244,6 +247,7 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType *PduInfoPtr)
  *  Purpose: Cancel an ongoing transmission
  *================================================================================================*/
 #if (LINTP_CANCEL_TRANSMIT_API == STD_ON)
+/** @req SWS_LinTp_00004 */
 Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
 {
     uint8 channelIdx;
@@ -295,6 +299,7 @@ Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
  *  Purpose: Cancel an ongoing reception
  *================================================================================================*/
 #if (LINTP_CANCEL_RECEIVE_API == STD_ON)
+/** @req SWS_LinTp_00005 */
 Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId)
 {
     uint8 channelIdx;
@@ -340,6 +345,7 @@ Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId)
  *  Purpose: Change protocol parameters (BS or STmin)
  *================================================================================================*/
 #if (LINTP_CHANGE_PARAMETER_API == STD_ON)
+/** @req SWS_LinTp_00006 */
 Std_ReturnType LinTp_ChangeParameter(PduIdType PduId, LinTp_ParameterType Parameter, uint16 Value)
 {
     uint8 channelIdx;
@@ -406,6 +412,7 @@ Std_ReturnType LinTp_ChangeParameter(PduIdType PduId, LinTp_ParameterType Parame
  *  Purpose: Get version information of the module
  *================================================================================================*/
 #if (LINTP_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinTp_00007 */
 void LinTp_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 {
 #if (LINTP_DEV_ERROR_DETECT == STD_ON)
@@ -428,6 +435,7 @@ void LinTp_GetVersionInfo(Std_VersionInfoType *VersionInfo)
  *  FUNCTION: LinTp_MainFunction
  *  Purpose: Cyclic processing of the TP state machines
  *================================================================================================*/
+/** @req SWS_LinTp_00008 */
 void LinTp_MainFunction(void)
 {
     uint8 channelIdx;
@@ -484,6 +492,7 @@ void LinTp_MainFunction(void)
  *  FUNCTION: LinTp_RxIndication
  *  Purpose: Called by LinIf when a LIN frame is received
  *================================================================================================*/
+/** @req SWS_LinTp_00100 */
 void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
 {
     uint8 channelIdx;
@@ -566,6 +575,7 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType *PduInfoPtr)
  *  FUNCTION: LinTp_TxConfirmation
  *  Purpose: Called by LinIf when a LIN frame transmission is confirmed
  *================================================================================================*/
+/** @req SWS_LinTp_00101 */
 void LinTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     uint8 channelIdx;
@@ -665,6 +675,7 @@ void LinTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
  *  FUNCTION: LinTp_TriggerTransmit
  *  Purpose: Called by LinIf to get data for transmission
  *================================================================================================*/
+/** @req SWS_LinTp_00102 */
 Std_ReturnType LinTp_TriggerTransmit(PduIdType TxPduId, PduInfoType *PduInfoPtr)
 {
     uint8 channelIdx;

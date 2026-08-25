@@ -42,6 +42,7 @@ typedef struct {
 
 static LinIf_InternalType LinIf_State;
 
+/** @req SWS_LinIf_00001 */
 void LinIf_Init(const LinIf_ConfigType* ConfigPtr)
 {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
@@ -58,12 +59,14 @@ void LinIf_Init(const LinIf_ConfigType* ConfigPtr)
 /* [MISRA Advisory] Redundant:     LinIf_State.state = LINIF_INIT; */
 }
 
+/** @req SWS_LinIf_00002 */
 void LinIf_DeInit(void)
 {
     LinIf_State.state = LINIF_UNINIT;
     LinIf_State.configPtr = NULL_PTR;
 }
 
+/** @req SWS_LinIf_00003 */
 Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
@@ -81,6 +84,7 @@ Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return E_OK;
 }
 
+/** @req SWS_LinIf_00004 */
 Std_ReturnType LinIf_SetSchedule(uint8 ScheduleTableId)
 {
 #if (LINIF_DEV_ERROR_DETECT == STD_ON)
@@ -94,12 +98,14 @@ Std_ReturnType LinIf_SetSchedule(uint8 ScheduleTableId)
     return E_OK;
 }
 
+/** @req SWS_LinIf_00005 */
 void LinIf_RxIndication(uint8 LinChannel, const LinIf_PduType* PduInfoPtr)
 {
     (void)LinChannel;
     (void)PduInfoPtr;
 }
 
+/** @req SWS_LinIf_00006 */
 void LinIf_MainFunction(void)
 {
     if (LinIf_State.state < LINIF_INIT) { return; }
@@ -124,6 +130,7 @@ void LinIf_MainFunction(void)
     }
 }
 
+/** @req SWS_LinIf_00007 */
 void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) { return; }

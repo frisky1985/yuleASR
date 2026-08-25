@@ -22,6 +22,7 @@ static uint8_t g_initCounter = 0;
 ==================================================================================================*/
 
 /* Test: EcuM startup sequence with BswM mode request */
+/** @req SWS_EcuM_00001 @req SWS_BswM_00001 @req SWS_BswM_00010 */
 TEST_CASE(ecum_startup_initializes_bswm)
 {
     EcuM_StateType state;
@@ -43,6 +44,7 @@ TEST_CASE(ecum_startup_initializes_bswm)
 }
 
 /* Test: Mode switch during runtime */
+/** @req SWS_EcuM_00090 @req SWS_BswM_00001 @req SWS_BswM_00010 @req SWS_BswM_00020 */
 TEST_CASE(mode_switch_during_runtime)
 {
     EcuM_StateType state;
@@ -66,6 +68,7 @@ TEST_CASE(mode_switch_during_runtime)
 }
 
 /* Test: Shutdown sequence */
+/** @req SWS_EcuM_00035 @req SWS_BswM_00001 @req SWS_BswM_00002 */
 TEST_CASE(shutdown_sequence)
 {
     /* Initialize */

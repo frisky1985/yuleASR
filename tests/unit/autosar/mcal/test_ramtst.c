@@ -250,6 +250,7 @@ void RamTst_MainFunction(void)
 /*==================================================================================================
 *                                      TEST FIXTURE
 ==================================================================================================*/
+/* @req SWS_RamTst_00201 */
 void test_setup(void)
 {
     /* Reset module state before each test */
@@ -263,6 +264,7 @@ void test_setup(void)
 /*==================================================================================================
 *                                      TEST CASES - INITIALIZATION
 ==================================================================================================*/
+/* @req SWS_RamTst_00202 */
 void test_init_with_valid_config(void)
 {
     RamTst_ConfigType config;
@@ -283,6 +285,7 @@ void test_init_with_valid_config(void)
     TEST_ASSERT_EQ(0U, Det_ErrorCount);
 }
 
+/* @req SWS_RamTst_00203 */
 void test_init_with_null_config(void)
 {
     printf("\n[Test] RamTst_Init with NULL config\n");
@@ -297,6 +300,7 @@ void test_init_with_null_config(void)
     TEST_ASSERT_EQ(RAMTST_E_PARAM_POINTER, Det_LastError.ErrorId);
 }
 
+/* @req SWS_RamTst_00204 */
 void test_init_multiple_times(void)
 {
     RamTst_ConfigType config;
@@ -322,6 +326,7 @@ void test_init_multiple_times(void)
 /*==================================================================================================
 *                                      TEST CASES - DEINITIALIZATION
 ==================================================================================================*/
+/* @req SWS_RamTst_00205 */
 void test_deinit_after_init(void)
 {
     RamTst_ConfigType config;
@@ -343,6 +348,7 @@ void test_deinit_after_init(void)
     TEST_ASSERT(RamTst_ConfigPtr == NULL_PTR);
 }
 
+/* @req SWS_RamTst_00206 */
 void test_deinit_without_init(void)
 {
     printf("\n[Test] RamTst_DeInit without initialization\n");
@@ -357,6 +363,7 @@ void test_deinit_without_init(void)
 /*==================================================================================================
 *                                      TEST CASES - RUN/STOP
 ==================================================================================================*/
+/* @req SWS_RamTst_00207 */
 void test_run_after_init(void)
 {
     RamTst_ConfigType config;
@@ -379,6 +386,7 @@ void test_run_after_init(void)
     TEST_ASSERT_EQ(RAMTST_RESULT_NOT_TESTED, RamTst_Result);
 }
 
+/* @req SWS_RamTst_00208 */
 void test_run_without_init(void)
 {
     Std_ReturnType result;
@@ -395,6 +403,7 @@ void test_run_without_init(void)
     TEST_ASSERT_EQ(RAMTST_E_UNINIT, Det_LastError.ErrorId);
 }
 
+/* @req SWS_RamTst_00209 */
 void test_run_while_already_running(void)
 {
     RamTst_ConfigType config;
@@ -418,6 +427,7 @@ void test_run_while_already_running(void)
     TEST_ASSERT_EQ(RAMTST_STATE_RUNNING, RamTst_State);
 }
 
+/* @req SWS_RamTst_00210 */
 void test_stop_while_running(void)
 {
     RamTst_ConfigType config;
@@ -439,6 +449,7 @@ void test_stop_while_running(void)
     TEST_ASSERT_EQ(RAMTST_STATE_IDLE, RamTst_State);
 }
 
+/* @req SWS_RamTst_00211 */
 void test_stop_while_idle(void)
 {
     RamTst_ConfigType config;
@@ -460,6 +471,7 @@ void test_stop_while_idle(void)
     TEST_ASSERT_EQ(RAMTST_STATE_IDLE, RamTst_State);
 }
 
+/* @req SWS_RamTst_00212 */
 void test_stop_while_uninit(void)
 {
     printf("\n[Test] RamTst_Stop while uninitialized\n");
@@ -474,6 +486,7 @@ void test_stop_while_uninit(void)
 /*==================================================================================================
 *                                      TEST CASES - GET STATUS
 ==================================================================================================*/
+/* @req SWS_RamTst_00213 */
 void test_get_status_uninit(void)
 {
     RamTst_StatusType status;
@@ -486,6 +499,7 @@ void test_get_status_uninit(void)
     TEST_ASSERT_EQ(RAMTST_STATUS_UNINIT, status);
 }
 
+/* @req SWS_RamTst_00214 */
 void test_get_status_idle(void)
 {
     RamTst_ConfigType config;
@@ -505,6 +519,7 @@ void test_get_status_idle(void)
     TEST_ASSERT_EQ(RAMTST_STATUS_IDLE, status);
 }
 
+/* @req SWS_RamTst_00215 */
 void test_get_status_running(void)
 {
     RamTst_ConfigType config;
@@ -528,6 +543,7 @@ void test_get_status_running(void)
 /*==================================================================================================
 *                                      TEST CASES - GET RESULT
 ==================================================================================================*/
+/* @req SWS_RamTst_00216 */
 void test_get_result_not_tested(void)
 {
     RamTst_ConfigType config;
@@ -547,6 +563,7 @@ void test_get_result_not_tested(void)
     TEST_ASSERT_EQ(RAMTST_RESULT_NOT_TESTED, result);
 }
 
+/* @req SWS_RamTst_00217 */
 void test_get_result_after_run(void)
 {
     RamTst_ConfigType config;
@@ -571,6 +588,7 @@ void test_get_result_after_run(void)
 /*==================================================================================================
 *                                      TEST CASES - MAIN FUNCTION
 ==================================================================================================*/
+/* @req SWS_RamTst_00218 */
 void test_mainfunction_when_not_running(void)
 {
     RamTst_ConfigType config;
@@ -592,6 +610,7 @@ void test_mainfunction_when_not_running(void)
     TEST_ASSERT_EQ(RAMTST_RESULT_NOT_TESTED, RamTst_Result);
 }
 
+/* @req SWS_RamTst_00219 */
 void test_mainfunction_completes_test(void)
 {
     RamTst_ConfigType config;
@@ -624,6 +643,7 @@ void test_mainfunction_completes_test(void)
     TEST_ASSERT_EQ(RAMTST_RESULT_OK, result);
 }
 
+/* @req SWS_RamTst_00220 */
 void test_mainfunction_while_uninit(void)
 {
     printf("\n[Test] RamTst_MainFunction when uninitialized\n");
@@ -639,6 +659,7 @@ void test_mainfunction_while_uninit(void)
 /*==================================================================================================
 *                                      TEST CASES - FULL CYCLE
 ==================================================================================================*/
+/* @req SWS_RamTst_00221 */
 void test_full_test_cycle(void)
 {
     RamTst_ConfigType config;
@@ -689,6 +710,7 @@ void test_full_test_cycle(void)
     TEST_ASSERT_EQ(RAMTST_STATUS_UNINIT, testStatus);
 }
 
+/* @req SWS_RamTst_00222 */
 void test_multiple_test_cycles(void)
 {
     RamTst_ConfigType config;
@@ -722,6 +744,7 @@ void test_multiple_test_cycles(void)
     }
 }
 
+/* @req SWS_RamTst_00223 */
 void test_stop_during_test(void)
 {
     RamTst_ConfigType config;
@@ -754,6 +777,7 @@ void test_stop_during_test(void)
 /*==================================================================================================
 *                                      TEST CASES - DIFFERENT ALGORITHMS
 ==================================================================================================*/
+/* @req SWS_RamTst_00224 */
 void test_algorithm_march(void)
 {
     RamTst_ConfigType config;
@@ -770,6 +794,7 @@ void test_algorithm_march(void)
     TEST_ASSERT_EQ(RAMTST_ALGORITHM_MARCH, RamTst_ConfigPtr->Algorithm);
 }
 
+/* @req SWS_RamTst_00225 */
 void test_algorithm_galpat(void)
 {
     RamTst_ConfigType config;
@@ -786,6 +811,7 @@ void test_algorithm_galpat(void)
     TEST_ASSERT_EQ(RAMTST_ALGORITHM_GALPAT, RamTst_ConfigPtr->Algorithm);
 }
 
+/* @req SWS_RamTst_00226 */
 void test_algorithm_walkpath(void)
 {
     RamTst_ConfigType config;

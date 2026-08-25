@@ -24,6 +24,7 @@
  * P0 = ID0 ^ ID1 ^ ID2 ^ ID4
  * P1 = ~(ID1 ^ ID3 ^ ID4 ^ ID5)
  */
+/** @req SWS_Lin_00140 */
 uint8 LinSlave_CalculatePid(uint8 Id)
 {
     uint8 P0, P1;
@@ -54,6 +55,7 @@ uint8 LinSlave_CalculatePid(uint8 Id)
  * 验证PID有效性
  * 通过重新计算保护位并比较
  */
+/** @req SWS_Lin_00141 */
 boolean LinSlave_ValidatePid(uint8 Pid)
 {
     uint8 Id;
@@ -68,6 +70,7 @@ boolean LinSlave_ValidatePid(uint8 Pid)
     }
     
     /* 计算预期的PID */
+    /** @req SWS_Lin_00140 */
     CalculatedPid = LinSlave_CalculatePid(Id);
     
     /* 比较 */
@@ -77,6 +80,7 @@ boolean LinSlave_ValidatePid(uint8 Pid)
 /**
  * 从PID提取ID
  */
+/** @req SWS_Lin_00142 */
 uint8 LinSlave_ExtractId(uint8 Pid)
 {
     return (uint8)(Pid & 0x3FU);

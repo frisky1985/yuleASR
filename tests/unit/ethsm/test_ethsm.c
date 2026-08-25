@@ -128,6 +128,7 @@ static void ethsm_bring_both_networks_to_wait_trcvlink(void)
 /* P0-A 回归: 双网络 FullComm 请求后, ProcessState_NO_COM 必须用各网络的 ctrlIdx
  * 调 EthIf_SetControllerMode (网络 0 → 0, 网络 1 → 1)。
  * 修复前: 两次调用都传 0 (赋值丢失, ctrlIdx 恒为初值) → 本用例失败。 */
+/** @req SWS_EthSM_00004 */
 void test_EthSM_DualNetwork_ProcessNOCOM_UsesNetworkCtrlIdx(void)
 {
     ethsm_setup();
@@ -148,6 +149,7 @@ void test_EthSM_DualNetwork_ProcessNOCOM_UsesNetworkCtrlIdx(void)
 /* P0-A 回归: WAIT_TRCVLINK 中 CheckLinkState 必须用各网络的 trcvIdx
  * 调 EthIf_GetTransceiverLinkState (网络 0 → 0, 网络 1 → 1)。
  * 修复前: 两次调用都传 0 → 本用例失败。 */
+/** @req SWS_EthSM_00007 */
 void test_EthSM_DualNetwork_CheckLinkState_UsesNetworkTrcvIdx(void)
 {
     ethsm_setup();
@@ -166,6 +168,7 @@ void test_EthSM_DualNetwork_CheckLinkState_UsesNetworkTrcvIdx(void)
 }
 
 /* P0-A 回归: WAIT_TRCVLINK 中收到 NO_COMMUNICATION → 用各网络 ctrlIdx 关控制器 */
+/** @req SWS_EthSM_00004 */
 void test_EthSM_DualNetwork_NoComShutdown_UsesNetworkCtrlIdx(void)
 {
     ethsm_setup();
@@ -185,6 +188,7 @@ void test_EthSM_DualNetwork_NoComShutdown_UsesNetworkCtrlIdx(void)
 }
 
 /* P0-A 回归: WAIT_ONLINE 超时 → 用各网络 ctrlIdx 关控制器 */
+/** @req SWS_EthSM_00007 */
 void test_EthSM_DualNetwork_WaitOnlineTimeout_UsesNetworkCtrlIdx(void)
 {
     ethsm_setup();

@@ -16,12 +16,14 @@
 #include "NvM.h"
 #include "NvM_Cfg.h"
 
+/** @req SWS_NvM_00001 */
 static void test_NvM_Init(void **state) {
     (void)state;
     NvM_Init();
     assert_true(1);
 }
 
+/** @req SWS_NvM_00002 */
 static void test_NvM_ReadBlock(void **state) {
     (void)state;
     NvM_BlockIdType blockId = 0;
@@ -30,6 +32,7 @@ static void test_NvM_ReadBlock(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_NvM_00003 */
 static void test_NvM_WriteBlock(void **state) {
     (void)state;
     NvM_BlockIdType blockId = 0;
@@ -38,6 +41,7 @@ static void test_NvM_WriteBlock(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_NvM_00004 */
 static void test_NvM_RestoreBlockDefaults(void **state) {
     (void)state;
     NvM_BlockIdType blockId = 0;
@@ -46,6 +50,7 @@ static void test_NvM_RestoreBlockDefaults(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_NvM_00013 */
 static void test_NvM_EraseNvBlock(void **state) {
     (void)state;
     NvM_BlockIdType blockId = 0;
@@ -53,6 +58,7 @@ static void test_NvM_EraseNvBlock(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_NvM_00014 */
 static void test_NvM_InvalidateNvBlock(void **state) {
     (void)state;
     NvM_BlockIdType blockId = 0;
@@ -60,6 +66,7 @@ static void test_NvM_InvalidateNvBlock(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_NvM_00015 */
 static void test_NvM_MainFunction(void **state) {
     (void)state;
     NvM_MainFunction();

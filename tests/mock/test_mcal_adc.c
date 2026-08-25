@@ -44,17 +44,29 @@ static Adc_ConfigType make_cfg(void)
     return cfg;
 }
 
+/* @req SWS_Adc_00001 */
 void test_Adc_Init_NullConfig(void) { Adc_Init(NULL); }
+/* @req SWS_Adc_00001 */
 void test_Adc_Init_Valid(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); }
+/* @req SWS_Adc_00002 */
 void test_Adc_DeInit_NoInit(void) { Adc_DeInit(); }
+/* @req SWS_Adc_00002 */
 void test_Adc_DeInit_AfterInit(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_DeInit(); }
+/* @req SWS_Adc_00201 */
 void test_Adc_StartGroupConv_NoInit(void) { Adc_StartGroupConversion(0); }
+/* @req SWS_Adc_00202 */
 void test_Adc_StartGroupConv(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_StartGroupConversion(0); }
+/* @req SWS_Adc_00203 */
 void test_Adc_StopGroupConv(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_StopGroupConversion(0); }
+/* @req SWS_Adc_00005 */
 void test_Adc_ReadGroup(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_ValueGroupType buf; Adc_ReadGroup(0, &buf); }
+/* @req SWS_Adc_00010 */
 void test_Adc_GetGroupStatus(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_GetGroupStatus(0); }
+/* @req SWS_Adc_00204 */
 void test_Adc_EnableHwTrigger(void) { Adc_ConfigType cfg = make_cfg(); Adc_Init(&cfg); Adc_EnableHardwareTrigger(0); Adc_DisableHardwareTrigger(0); }
+/* @req SWS_Adc_00011 */
 void test_Adc_GetVersionInfo(void) { Std_VersionInfoType vi; memset(&vi,0,sizeof(vi)); Adc_GetVersionInfo(&vi); }
+/* @req SWS_Adc_00011 */
 void test_Adc_GetVersionInfo_Null(void) { Adc_GetVersionInfo(NULL); }
 
 int main(void) {

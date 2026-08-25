@@ -119,33 +119,42 @@ typedef struct {
  *                                    FUNCTION DECLARATIONS
  *==================================================================================================*/
 
+/** @req SWS_FlStSt_00001 */
 /** @brief Initialise the Flash Test module */
 void FlStSt_Init(const FlStSt_ConfigType* ConfigPtr);
 
+/** @req SWS_FlStSt_00002 */
 /** @brief De-initialise the Flash Test module */
 void FlStSt_DeInit(void);
 
 /** @brief Get version information */
 #if (FLSTST_VERSION_INFO_API == STD_ON)
+/** @req SWS_FlStSt_00003 */
 void FlStSt_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_FlStSt_00005 */
 /** @brief Run March C test on a flash sector */
 Std_ReturnType FlStSt_RunTest(uint16 SectorId);
 
+/** @req SWS_FlStSt_00006 */
 /** @brief Verify an erase operation (read-back = 0xFF) */
 Std_ReturnType FlStSt_VerifyErase(uint16 SectorId, boolean* Result);
 
+/** @req SWS_FlStSt_00007 */
 /** @brief Verify a program operation (read-back = expected data) */
 Std_ReturnType FlStSt_VerifyProgram(uint16 SectorId, const uint8* ExpectedData,
                                     uint16 Length, boolean* Result);
 
+/** @req SWS_FlStSt_00008 */
 /** @brief Get the last test result */
 Std_ReturnType FlStSt_GetResult(FlStSt_ResultType* Result);
 
+/** @req SWS_FlStSt_00009 */
 /** @brief Abort a running test */
 Std_ReturnType FlStSt_Abort(void);
 
+/** @req SWS_FlStSt_00004 */
 /** @brief Main function — step through long-running test phases */
 void FlStSt_MainFunction(void);
 

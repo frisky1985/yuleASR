@@ -75,7 +75,8 @@ static void test_eth_full_init(void)
     Eth_ControllerInit(0u, &test_ctrl_config);
 }
 
-/* 初始化测试 */
+/** @req SWS_Eth_00001 */
+/** @req SWS_Eth_00002 */
 void test_init_deinit(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -89,6 +90,8 @@ void test_init_deinit(void)
     TEST_ASSERT(1);  /* 反初始化完成 */
 }
 
+/** @req SWS_Eth_00005 */
+/** @req SWS_Eth_00006 */
 /* 控制器模式测试 */
 void test_controller_mode(void)
 {
@@ -127,6 +130,9 @@ void test_controller_mode(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00008 */
+/** @req SWS_Eth_00009 */
+/** @req SWS_Eth_00010 */
 /* MAC地址管理测试 */
 void test_mac_address(void)
 {
@@ -164,6 +170,8 @@ void test_mac_address(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00011 */
+/** @req SWS_Eth_00012 */
 /* MII接口测试 */
 void test_mii_interface(void)
 {
@@ -193,6 +201,7 @@ void test_mii_interface(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00013 */
 /* 缓冲区管理测试 */
 void test_buffer_management(void)
 {
@@ -227,6 +236,8 @@ void test_buffer_management(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00014 */
+/** @req SWS_Eth_00015 */
 /* 数据收发测试 */
 void test_transmit_receive(void)
 {
@@ -270,6 +281,8 @@ void test_transmit_receive(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00017 */
+/** @req SWS_Eth_00018 */
 /* 中断控制测试 */
 void test_interrupt_control(void)
 {
@@ -288,6 +301,7 @@ void test_interrupt_control(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00019 */
 /* 缓冲区初始化测试 */
 void test_buffer_init(void)
 {
@@ -302,6 +316,7 @@ void test_buffer_init(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00007 */
 /* 控制器索引测试 */
 void test_controller_index(void)
 {
@@ -326,6 +341,7 @@ void test_controller_index(void)
     Eth_DeInit();
 }
 
+/** @req SWS_Eth_00004 */
 /* 版本信息测试 */
 void test_version_info(void)
 {

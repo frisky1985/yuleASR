@@ -86,16 +86,19 @@ static uint16 DoIP_AliveCheckTimer = 0;
 
 static uint16 DoIP_GetPayloadType(const uint8* headerPtr);
 static uint32 DoIP_GetPayloadLength(const uint8* headerPtr);
+/** @req SWS_DoIP_00001 */
 static void DoIP_WriteHeader(
     uint8* bufferPtr,
     uint16 payloadType,
     uint32 payloadLength
 );
+/** @req SWS_DoIP_00002 */
 static Std_ReturnType DoIP_SendGenericNack(
     PduIdType TxPduId,
     uint8 nackCode
 );
 static Std_ReturnType DoIP_ProcessVehicleIdRequest(uint16 socketId);
+/** @req SWS_DoIP_00003 */
 static void DoIP_SendRoutingActivationResponse(
     uint16 socketId,
     uint16 logicalAddress,
@@ -103,11 +106,13 @@ static void DoIP_SendRoutingActivationResponse(
     uint8 responseCode,
     const uint8* oemDataPtr
 );
+/** @req SWS_DoIP_00004 */
 static Std_ReturnType DoIP_ProcessDiagnosticMessage(
     uint16 socketId,
     const uint8* messagePtr,
     uint32 messageLength
 );
+/** @req SWS_DoIP_00005 */
 static void DoIP_SendDiagnosticAck(
     uint16 socketId,
     uint16 sourceAddress,
@@ -115,6 +120,7 @@ static void DoIP_SendDiagnosticAck(
     uint8 ackCode,
     uint32 previousMsgLength
 );
+/** @req SWS_DoIP_00006 */
 static uint8 DoIP_GetRoutingActivationResponseCode(
     uint16 socketId,
     uint16 testerAddress,
@@ -129,6 +135,7 @@ static void DoIP_ResetTesterConnection(uint8 connectionIdx);
 **  EXTERNAL FUNCTIONS - LIFECYCLE
 ================================================================================*/
 
+/** @req SWS_DoIP_00007 */
 void DoIP_Init(const DoIP_ConfigType* ConfigPtr)
 {
     uint8 i;
@@ -191,6 +198,7 @@ void DoIP_Init(const DoIP_ConfigType* ConfigPtr)
     DoIP_ModuleState = DOIP_STATE_INIT;
 }
 
+/** @req SWS_DoIP_00008 */
 void DoIP_DeInit(void)
 {
     uint8 i;
@@ -226,6 +234,7 @@ void DoIP_DeInit(void)
 **  EXTERNAL FUNCTIONS - ACTIVATION LINE
 ================================================================================*/
 
+/** @req SWS_DoIP_00009 */
 void DoIP_ActivationLineSwitchActive(void)
 {
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
@@ -255,6 +264,7 @@ void DoIP_ActivationLineSwitchActive(void)
     SchM_Exit_DoIP();
 }
 
+/** @req SWS_DoIP_00010 */
 void DoIP_ActivationLineSwitchInactive(void)
 {
     uint8 i;
@@ -293,6 +303,7 @@ void DoIP_ActivationLineSwitchInactive(void)
 ================================================================================*/
 
 #if (DOIP_VERSION_INFO_API == STD_ON)
+/** @req SWS_DoIP_00011 */
 void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
@@ -320,6 +331,7 @@ void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo)
 **  EXTERNAL FUNCTIONS - SOAD CALLBACKS
 ================================================================================*/
 
+/** @req SWS_DoIP_00012 */
 void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     uint16 payloadType;
@@ -427,24 +439,28 @@ void DoIP_SoAdIfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 }
 
+/** @req SWS_DoIP_00013 */
 void DoIP_SoAdIfTxConfirmation(PduIdType TxPduId)
 {
     /* Transmission confirmation */
     (void)TxPduId;
 }
 
+/** @req SWS_DoIP_00014 */
 void DoIP_SoAdTpRxIndication(PduIdType RxPduId, Std_ReturnType result)
 {
     (void)RxPduId;
     (void)result;
 }
 
+/** @req SWS_DoIP_00015 */
 void DoIP_SoAdTpTxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     (void)TxPduId;
     (void)result;
 }
 
+/** @req SWS_DoIP_00016 */
 Std_ReturnType DoIP_SoAdTriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
     (void)TxPduId;
@@ -456,6 +472,7 @@ Std_ReturnType DoIP_SoAdTriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoP
 **  EXTERNAL FUNCTIONS - PDUR CALLBACKS
 ================================================================================*/
 
+/** @req SWS_DoIP_00017 */
 Std_ReturnType DoIP_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     #if (DOIP_DEV_ERROR_DETECT == STD_ON)
@@ -475,12 +492,14 @@ Std_ReturnType DoIP_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return SoAd_IfTransmit(TxPduId, PduInfoPtr);
 }
 
+/** @req SWS_DoIP_00018 */
 void DoIP_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     (void)RxPduId;
     (void)PduInfoPtr;
 }
 
+/** @req SWS_DoIP_00019 */
 void DoIP_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     (void)TxPduId;
@@ -491,6 +510,7 @@ void DoIP_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 **  EXTERNAL FUNCTIONS - MAIN FUNCTION
 ================================================================================*/
 
+/** @req SWS_DoIP_00020 */
 void DoIP_MainFunction(void)
 {
     uint8 i;
@@ -758,6 +778,7 @@ Std_ReturnType DoIP_ProcessRoutingActivation(
     return (responseCode == DOIP_ROUTING_ACTIVATION_RES_CODE_SUCCESS) ? E_OK : E_NOT_OK;
 }
 
+/** @req SWS_DoIP_00003 */
 static void DoIP_SendRoutingActivationResponse(
     uint16 socketId,
     uint16 logicalAddress,
@@ -823,6 +844,7 @@ static void DoIP_SendRoutingActivationResponse(
     SoAd_IfTransmit((PduIdType)socketId, &pduInfo);
 }
 
+/** @req SWS_DoIP_00006 */
 static uint8 DoIP_GetRoutingActivationResponseCode(
     uint16 socketId,
     uint16 testerAddress,
@@ -873,6 +895,7 @@ static uint8 DoIP_GetRoutingActivationResponseCode(
 **  INTERNAL FUNCTIONS - DIAGNOSTIC MESSAGE ROUTING
 ================================================================================*/
 
+/** @req SWS_DoIP_00004 */
 static Std_ReturnType DoIP_ProcessDiagnosticMessage(
     uint16 socketId,
     const uint8* messagePtr,
@@ -982,6 +1005,7 @@ static Std_ReturnType DoIP_ProcessDiagnosticMessage(
     return E_OK;
 }
 
+/** @req SWS_DoIP_00005 */
 static void DoIP_SendDiagnosticAck(
     uint16 socketId,
     uint16 sourceAddress,
@@ -1105,6 +1129,7 @@ static uint32 DoIP_GetPayloadLength(const uint8* headerPtr)
             headerPtr[DOIP_HDR_IDX_PAYLOAD_LENGTH_3]);
 }
 
+/** @req SWS_DoIP_00001 */
 static void DoIP_WriteHeader(uint8* bufferPtr, uint16 payloadType, uint32 payloadLength)
 {
     bufferPtr[DOIP_HDR_IDX_PROTOCOL_VER] = DOIP_PROTOCOL_VERSION;
@@ -1117,6 +1142,7 @@ static void DoIP_WriteHeader(uint8* bufferPtr, uint16 payloadType, uint32 payloa
     bufferPtr[DOIP_HDR_IDX_PAYLOAD_LENGTH_3] = (uint8)(payloadLength);
 }
 
+/** @req SWS_DoIP_00002 */
 static Std_ReturnType DoIP_SendGenericNack(PduIdType TxPduId, uint8 nackCode)
 {
     PduInfoType pduInfo;

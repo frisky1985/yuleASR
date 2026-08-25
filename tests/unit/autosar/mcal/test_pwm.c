@@ -554,6 +554,7 @@ void Pwm_PreparePowerState(Pwm_PowerStateType PowerState, Pwm_PowerStateRequestR
 ==================================================================================================*/
 
 /* 初始化测试 */
+/* @req SWS_Pwm_00201 */
 void test_init(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -597,6 +598,7 @@ void test_init(void)
 }
 
 /* 反初始化测试 */
+/* @req SWS_Pwm_00202 */
 void test_deinit(void)
 {
     printf("\n=== De-initialization Tests ===\n");
@@ -629,6 +631,7 @@ void test_deinit(void)
 }
 
 /* 占空比设置测试 */
+/* @req SWS_Pwm_00203 */
 void test_set_duty_cycle(void)
 {
     printf("\n=== Set Duty Cycle Tests ===\n");
@@ -678,6 +681,7 @@ void test_set_duty_cycle(void)
 }
 
 /* 周期和占空比设置测试 */
+/* @req SWS_Pwm_00204 */
 void test_set_period_and_duty(void)
 {
     printf("\n=== Set Period and Duty Tests ===\n");
@@ -729,6 +733,7 @@ void test_set_period_and_duty(void)
 }
 
 /* 输出到空闲状态测试 */
+/* @req SWS_Pwm_00205 */
 void test_set_output_to_idle(void)
 {
     printf("\n=== Set Output To Idle Tests ===\n");
@@ -772,6 +777,7 @@ void test_set_output_to_idle(void)
 }
 
 /* 获取输出状态测试 */
+/* @req SWS_Pwm_00206 */
 void test_get_output_state(void)
 {
     Pwm_OutputStateType state;
@@ -819,6 +825,7 @@ void test_get_output_state(void)
 }
 
 /* 通知功能测试 */
+/* @req SWS_Pwm_00207 */
 void test_notification(void)
 {
     printf("\n=== Notification Tests ===\n");
@@ -882,6 +889,7 @@ void test_notification(void)
 }
 
 /* 版本信息测试 */
+/* @req SWS_Pwm_00208 */
 void test_version_info(void)
 {
     Std_VersionInfoType versionInfo;
@@ -904,6 +912,7 @@ void test_version_info(void)
 }
 
 /* 电源状态测试 */
+/* @req SWS_Pwm_00209 */
 void test_power_state(void)
 {
     Pwm_PowerStateType powerState;
@@ -996,6 +1005,7 @@ void test_power_state(void)
 }
 
 /* 多通道测试 */
+/* @req SWS_Pwm_00210 */
 void test_multi_channel(void)
 {
     printf("\n=== Multi-Channel Tests ===\n");
@@ -1043,6 +1053,7 @@ void test_multi_channel(void)
 }
 
 /* 边界条件测试 */
+/* @req SWS_Pwm_00211 */
 void test_boundary_conditions(void)
 {
     printf("\n=== Boundary Condition Tests ===\n");

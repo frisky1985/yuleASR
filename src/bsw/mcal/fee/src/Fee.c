@@ -150,6 +150,7 @@ static uint8 Fee_FindSectorForAddress(Fee_AddressType Address);
 /**
  * @brief Initialize sector states
  */
+/** @req SWS_Fee_00001 */
 static void Fee_InitSectors(void)
 {
     uint8 i;
@@ -170,6 +171,7 @@ static void Fee_InitSectors(void)
 /**
  * @brief Validate flash address
  */
+/** @req SWS_Fee_00002 */
 static Std_ReturnType Fee_ValidateAddress(Fee_AddressType Address, Fee_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -202,6 +204,7 @@ static Std_ReturnType Fee_ValidateAddress(Fee_AddressType Address, Fee_LengthTyp
 /**
  * @brief Validate length parameter
  */
+/** @req SWS_Fee_00003 */
 static Std_ReturnType Fee_ValidateLength(Fee_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -219,6 +222,7 @@ static Std_ReturnType Fee_ValidateLength(Fee_LengthType Length)
 /**
  * @brief Validate data pointer
  */
+/** @req SWS_Fee_00004 */
 static Std_ReturnType Fee_ValidateDataPtr(const uint8* DataPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -233,6 +237,7 @@ static Std_ReturnType Fee_ValidateDataPtr(const uint8* DataPtr)
 /**
  * @brief Set job result
  */
+/** @req SWS_Fee_00005 */
 static void Fee_SetJobResult(Fee_JobResultType Result)
 {
     Fee_DriverState.jobResult = Result;
@@ -241,6 +246,7 @@ static void Fee_SetJobResult(Fee_JobResultType Result)
 /**
  * @brief Process read job
  */
+/** @req SWS_Fee_00006 */
 static void Fee_ProcessRead(void)
 {
     Fee_LengthType bytesToRead;
@@ -277,6 +283,7 @@ static void Fee_ProcessRead(void)
 /**
  * @brief Process write job
  */
+/** @req SWS_Fee_00007 */
 static void Fee_ProcessWrite(void)
 {
     Fee_LengthType bytesToWrite;
@@ -329,6 +336,7 @@ static void Fee_ProcessWrite(void)
 /**
  * @brief Process erase job
  */
+/** @req SWS_Fee_00008 */
 static void Fee_ProcessErase(void)
 {
     Std_ReturnType status;
@@ -358,6 +366,7 @@ static void Fee_ProcessErase(void)
 /**
  * @brief Process compare job
  */
+/** @req SWS_Fee_00009 */
 static void Fee_ProcessCompare(void)
 {
     /* Compare operation - to be implemented with hardware abstraction */
@@ -373,6 +382,7 @@ static void Fee_ProcessCompare(void)
 /**
  * @brief Process blank check job
  */
+/** @req SWS_Fee_00010 */
 static void Fee_ProcessBlankCheck(void)
 {
     /* Blank check operation - to be implemented with hardware abstraction */
@@ -388,6 +398,7 @@ static void Fee_ProcessBlankCheck(void)
 /**
  * @brief Low-level flash read (hardware abstraction)
  */
+/** @req SWS_Fee_00011 */
 static Std_ReturnType Fee_FlashRead(Fee_AddressType Address, uint8* DestPtr, Fee_LengthType Length)
 {
     /* Hardware-specific flash read implementation */
@@ -401,6 +412,7 @@ static Std_ReturnType Fee_FlashRead(Fee_AddressType Address, uint8* DestPtr, Fee
 /**
  * @brief Low-level flash write (hardware abstraction)
  */
+/** @req SWS_Fee_00012 */
 static Std_ReturnType Fee_FlashWrite(Fee_AddressType Address, const uint8* SourcePtr, Fee_LengthType Length)
 {
     /* Hardware-specific flash write implementation */
@@ -414,6 +426,7 @@ static Std_ReturnType Fee_FlashWrite(Fee_AddressType Address, const uint8* Sourc
 /**
  * @brief Low-level flash erase (hardware abstraction)
  */
+/** @req SWS_Fee_00013 */
 static Std_ReturnType Fee_FlashErase(Fee_AddressType Address, Fee_LengthType Length)
 {
     /* Hardware-specific flash erase implementation */
@@ -426,6 +439,7 @@ static Std_ReturnType Fee_FlashErase(Fee_AddressType Address, Fee_LengthType Len
 /**
  * @brief Check if address is within a sector
  */
+/** @req SWS_Fee_00014 */
 static boolean Fee_IsAddressInSector(Fee_AddressType Address, uint8 SectorIdx)
 {
     boolean result = FALSE;
@@ -447,6 +461,7 @@ static boolean Fee_IsAddressInSector(Fee_AddressType Address, uint8 SectorIdx)
 /**
  * @brief Find sector index for given address
  */
+/** @req SWS_Fee_00015 */
 static uint8 Fee_FindSectorForAddress(Fee_AddressType Address)
 {
     uint8 sectorIdx = FEE_NUM_SECTORS;  /* Invalid sector */
@@ -470,6 +485,7 @@ static uint8 Fee_FindSectorForAddress(Fee_AddressType Address)
 /**
  * @brief Initializes the Fee driver
  */
+/** @req SWS_Fee_00016 */
 Std_ReturnType Fee_Init(const Fee_ConfigType* ConfigPtr)
 {
     Std_ReturnType result = E_OK;
@@ -504,6 +520,7 @@ Std_ReturnType Fee_Init(const Fee_ConfigType* ConfigPtr)
 /**
  * @brief De-initializes the Fee driver
  */
+/** @req SWS_Fee_00017 */
 Std_ReturnType Fee_DeInit(void)
 {
     Std_ReturnType result = E_OK;
@@ -542,6 +559,7 @@ Std_ReturnType Fee_DeInit(void)
 /**
  * @brief Sets the operation mode
  */
+/** @req SWS_Fee_00018 */
 Std_ReturnType Fee_SetMode(Fee_ModeType Mode)
 {
     Std_ReturnType result = E_OK;
@@ -568,6 +586,7 @@ Std_ReturnType Fee_SetMode(Fee_ModeType Mode)
 /**
  * @brief Reads data from flash
  */
+/** @req SWS_Fee_00019 */
 Std_ReturnType Fee_Read(Fee_AddressType SourceAddress,
                          Fee_LengthType Length,
                          uint8* DestPtr)
@@ -621,6 +640,7 @@ Std_ReturnType Fee_Read(Fee_AddressType SourceAddress,
 /**
  * @brief Writes data to flash
  */
+/** @req SWS_Fee_00020 */
 Std_ReturnType Fee_Write(Fee_AddressType TargetAddress,
                           Fee_LengthType Length,
                           const uint8* SourcePtr)
@@ -674,6 +694,7 @@ Std_ReturnType Fee_Write(Fee_AddressType TargetAddress,
 /**
  * @brief Erases flash sector(s)
  */
+/** @req SWS_Fee_00021 */
 Std_ReturnType Fee_Erase(Fee_AddressType TargetAddress,
                           Fee_LengthType Length)
 {
@@ -721,6 +742,7 @@ Std_ReturnType Fee_Erase(Fee_AddressType TargetAddress,
 /**
  * @brief Compares flash data with buffer
  */
+/** @req SWS_Fee_00022 */
 Std_ReturnType Fee_Compare(Fee_AddressType SourceAddress,
                             Fee_LengthType Length,
                             const uint8* DataPtr)
@@ -774,6 +796,7 @@ Std_ReturnType Fee_Compare(Fee_AddressType SourceAddress,
 /**
  * @brief Checks if flash area is blank
  */
+/** @req SWS_Fee_00023 */
 Std_ReturnType Fee_BlankCheck(Fee_AddressType TargetAddress,
                                Fee_LengthType Length)
 {
@@ -821,6 +844,7 @@ Std_ReturnType Fee_BlankCheck(Fee_AddressType TargetAddress,
 /**
  * @brief Gets the driver status
  */
+/** @req SWS_Fee_00024 */
 Fee_StateType Fee_GetStatus(void)
 {
     Fee_StateType status = FEE_UNINIT;
@@ -842,6 +866,7 @@ Fee_StateType Fee_GetStatus(void)
 /**
  * @brief Gets the result of the last job
  */
+/** @req SWS_Fee_00025 */
 Fee_JobResultType Fee_GetJobResult(void)
 {
     Fee_JobResultType result = FEE_JOB_FAILED;
@@ -863,6 +888,7 @@ Fee_JobResultType Fee_GetJobResult(void)
 /**
  * @brief Cancels the ongoing job
  */
+/** @req SWS_Fee_00026 */
 Std_ReturnType Fee_Cancel(void)
 {
     Std_ReturnType result = E_OK;
@@ -898,6 +924,7 @@ Std_ReturnType Fee_Cancel(void)
 /**
  * @brief Suspends the ongoing erase operation
  */
+/** @req SWS_Fee_00027 */
 Std_ReturnType Fee_Suspend(void)
 {
     Std_ReturnType result = E_OK;
@@ -928,6 +955,7 @@ Std_ReturnType Fee_Suspend(void)
 /**
  * @brief Resumes a suspended erase operation
  */
+/** @req SWS_Fee_00028 */
 Std_ReturnType Fee_Resume(void)
 {
     Std_ReturnType result = E_OK;
@@ -959,6 +987,7 @@ Std_ReturnType Fee_Resume(void)
  * @brief Gets version information
  */
 #if (FEE_VERSION_INFO_API == STD_ON)
+/** @req SWS_Fee_00029 */
 void Fee_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 {
     #if (FEE_DEV_ERROR_DETECT == STD_ON)
@@ -979,6 +1008,7 @@ void Fee_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 /**
  * @brief Main function for processing asynchronous jobs
  */
+/** @req SWS_Fee_00030 */
 void Fee_MainFunction(void)
 {
     #if (FEE_DEV_ERROR_DETECT == STD_ON)

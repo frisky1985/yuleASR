@@ -147,6 +147,7 @@ static Std_ReturnType CanTSyn_GetCurrentTime(
  * API Functions
  ******************************************************************************/
 
+/** @req SWS_CanTSyn_00001 */
 /**
  * @brief Initialize CanTSyn module
  */
@@ -191,6 +192,7 @@ void CanTSyn_Init(const CanTSyn_ConfigType* ConfigPtr)
  * @brief Get version information
  */
 #if (CANTSYN_VERSION_INFO_API == STD_ON)
+/** @req SWS_CanTSyn_00003 */
 void CanTSyn_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     #if (CANTSYN_DEV_ERROR_DETECT == STD_ON)
@@ -210,6 +212,7 @@ void CanTSyn_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 }
 #endif
 
+/** @req SWS_CanTSyn_00014 */
 /**
  * @brief Transmission confirmation callback
  */
@@ -238,6 +241,7 @@ void CanTSyn_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     }
 }
 
+/** @req SWS_CanTSyn_00013 */
 /**
  * @brief Reception indication callback
  */
@@ -475,6 +479,7 @@ static Std_ReturnType CanTSyn_GetCurrentTime(
  * Main Function
  ******************************************************************************/
 
+/** @req SWS_CanTSyn_00004 */
 void CanTSyn_MainFunction(void)
 {
     uint8 i;

@@ -257,6 +257,7 @@ static void FlStSt_LocalRunMarchCStep(FlStSt_TestRunType* test)
  *                                    GLOBAL FUNCTIONS
  *==================================================================================================*/
 
+/** @req SWS_FlStSt_00001 */
 void FlStSt_Init(const FlStSt_ConfigType* ConfigPtr)
 {
 #if (FLSTST_DEV_ERROR_DETECT == STD_ON)
@@ -290,6 +291,7 @@ void FlStSt_Init(const FlStSt_ConfigType* ConfigPtr)
 #endif
 }
 
+/** @req SWS_FlStSt_00002 */
 void FlStSt_DeInit(void)
 {
 #if (FLSTST_DEV_ERROR_DETECT == STD_ON)
@@ -312,6 +314,7 @@ void FlStSt_DeInit(void)
 }
 
 #if (FLSTST_VERSION_INFO_API == STD_ON)
+/** @req SWS_FlStSt_00003 */
 void FlStSt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (FLSTST_DEV_ERROR_DETECT == STD_ON)
@@ -329,6 +332,7 @@ void FlStSt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_FlStSt_00005 */
 Std_ReturnType FlStSt_RunTest(uint16 SectorId)
 {
     const FlStSt_SectorType* sector;
@@ -369,6 +373,7 @@ Std_ReturnType FlStSt_RunTest(uint16 SectorId)
     return E_OK;
 }
 
+/** @req SWS_FlStSt_00006 */
 Std_ReturnType FlStSt_VerifyErase(uint16 SectorId, boolean* Result)
 {
     const FlStSt_SectorType* sector;
@@ -423,6 +428,7 @@ Std_ReturnType FlStSt_VerifyErase(uint16 SectorId, boolean* Result)
     return E_OK;
 }
 
+/** @req SWS_FlStSt_00007 */
 Std_ReturnType FlStSt_VerifyProgram(uint16 SectorId, const uint8* ExpectedData,
                                     uint16 Length, boolean* Result)
 {
@@ -470,6 +476,7 @@ Std_ReturnType FlStSt_VerifyProgram(uint16 SectorId, const uint8* ExpectedData,
     return E_OK;
 }
 
+/** @req SWS_FlStSt_00008 */
 Std_ReturnType FlStSt_GetResult(FlStSt_ResultType* Result)
 {
 #if (FLSTST_DEV_ERROR_DETECT == STD_ON)
@@ -484,6 +491,7 @@ Std_ReturnType FlStSt_GetResult(FlStSt_ResultType* Result)
     return E_OK;
 }
 
+/** @req SWS_FlStSt_00009 */
 Std_ReturnType FlStSt_Abort(void)
 {
 #if (FLSTST_DEV_ERROR_DETECT == STD_ON)
@@ -508,6 +516,7 @@ Std_ReturnType FlStSt_Abort(void)
     return E_OK;
 }
 
+/** @req SWS_FlStSt_00004 */
 void FlStSt_MainFunction(void)
 {
     if (FlStSt_InternalState.State != FLSTST_STATE_BUSY)

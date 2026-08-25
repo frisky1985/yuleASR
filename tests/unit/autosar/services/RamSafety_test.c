@@ -117,6 +117,7 @@ void tearDown(void)
 /**
  * @brief TC001: 正常初始化测试
  * @requirement RAMSAFETY_REQ_INIT_001
+ * @req SWS_RamSafety_00001
  */
 void test_TC001_Init_Normal(void)
 {
@@ -130,6 +131,7 @@ void test_TC001_Init_Normal(void)
 /**
  * @brief TC002: 去初始化测试
  * @requirement RAMSAFETY_REQ_INIT_002
+ * @req SWS_RamSafety_00002
  */
 void test_TC002_DeInit_Normal(void)
 {
@@ -145,6 +147,7 @@ void test_TC002_DeInit_Normal(void)
 /**
  * @brief TC003: 空指针初始化测试
  * @requirement RAMSAFETY_REQ_INIT_003
+ * @req SWS_RamSafety_00001
  */
 void test_TC003_Init_NullPointer(void)
 {
@@ -158,6 +161,7 @@ void test_TC003_Init_NullPointer(void)
 /**
  * @brief TC004: 重复初始化测试
  * @requirement RAMSAFETY_REQ_INIT_004
+ * @req SWS_RamSafety_00001
  */
 void test_TC004_Init_DoubleInit(void)
 {
@@ -176,6 +180,7 @@ void test_TC004_Init_DoubleInit(void)
 /**
  * @brief TC005: 正常启动检查测试
  * @requirement RAMSAFETY_REQ_STARTUP_001
+ * @req SWS_RamSafety_00010
  */
 void test_TC005_StartupTest_Normal(void)
 {
@@ -192,6 +197,7 @@ void test_TC005_StartupTest_Normal(void)
 /**
  * @brief TC006: 启动检查未初始化状态测试
  * @requirement RAMSAFETY_REQ_STARTUP_002
+ * @req SWS_RamSafety_00010
  */
 void test_TC006_StartupTest_NotInitialized(void)
 {
@@ -209,6 +215,7 @@ void test_TC006_StartupTest_NotInitialized(void)
 /**
  * @brief TC007: March C- 检查测试
  * @requirement RAMSAFETY_REQ_TEST_001
+ * @req SWS_RamSafety_00012
  */
 void test_TC007_TriggerTest_MarchC(void)
 {
@@ -223,6 +230,7 @@ void test_TC007_TriggerTest_MarchC(void)
 /**
  * @brief TC008: 行走模式检查测试
  * @requirement RAMSAFETY_REQ_TEST_002
+ * @req SWS_RamSafety_00012
  */
 void test_TC008_TriggerTest_WalkPattern(void)
 {
@@ -237,6 +245,7 @@ void test_TC008_TriggerTest_WalkPattern(void)
 /**
  * @brief TC009: 地址线检查测试
  * @requirement RAMSAFETY_REQ_TEST_003
+ * @req SWS_RamSafety_00012
  */
 void test_TC009_TriggerTest_AddrLine(void)
 {
@@ -251,6 +260,7 @@ void test_TC009_TriggerTest_AddrLine(void)
 /**
  * @brief TC010: 数据线检查测试
  * @requirement RAMSAFETY_REQ_TEST_004
+ * @req SWS_RamSafety_00012
  */
 void test_TC010_TriggerTest_DataLine(void)
 {
@@ -265,6 +275,7 @@ void test_TC010_TriggerTest_DataLine(void)
 /**
  * @brief TC011: 快速检查测试
  * @requirement RAMSAFETY_REQ_TEST_005
+ * @req SWS_RamSafety_00012
  */
 void test_TC011_TriggerTest_Quick(void)
 {
@@ -279,6 +290,7 @@ void test_TC011_TriggerTest_Quick(void)
 /**
  * @brief TC012: 完整检查测试
  * @requirement RAMSAFETY_REQ_TEST_006
+ * @req SWS_RamSafety_00012
  */
 void test_TC012_TriggerTest_Full(void)
 {
@@ -293,6 +305,7 @@ void test_TC012_TriggerTest_Full(void)
 /**
  * @brief TC013: 无效区域ID测试
  * @requirement RAMSAFETY_REQ_TEST_007
+ * @req SWS_RamSafety_00012
  */
 void test_TC013_TriggerTest_InvalidRegion(void)
 {
@@ -311,6 +324,7 @@ void test_TC013_TriggerTest_InvalidRegion(void)
 /**
  * @brief TC014: 主函数调用测试
  * @requirement RAMSAFETY_REQ_RUNTIME_001
+ * @req SWS_RamSafety_00011
  */
 void test_TC014_MainFunction_Normal(void)
 {
@@ -333,6 +347,7 @@ void test_TC014_MainFunction_Normal(void)
 /**
  * @brief TC015: 未初始化主函数调用测试
  * @requirement RAMSAFETY_REQ_RUNTIME_002
+ * @req SWS_RamSafety_00011
  */
 void test_TC015_MainFunction_NotInitialized(void)
 {
@@ -350,6 +365,7 @@ void test_TC015_MainFunction_NotInitialized(void)
 /**
  * @brief TC016: 区域验证测试
  * @requirement RAMSAFETY_REQ_VERIFY_001
+ * @req SWS_RamSafety_00020
  */
 void test_TC016_VerifyRegion_Normal(void)
 {
@@ -366,6 +382,7 @@ void test_TC016_VerifyRegion_Normal(void)
 /**
  * @brief TC017: 范围验证测试
  * @requirement RAMSAFETY_REQ_VERIFY_002
+ * @req SWS_RamSafety_00021
  */
 void test_TC017_VerifyRange_Normal(void)
 {
@@ -379,6 +396,7 @@ void test_TC017_VerifyRange_Normal(void)
 /**
  * @brief TC018: 无效区域验证测试
  * @requirement RAMSAFETY_REQ_VERIFY_003
+ * @req SWS_RamSafety_00020
  */
 void test_TC018_VerifyRegion_Invalid(void)
 {
@@ -397,6 +415,7 @@ void test_TC018_VerifyRegion_Invalid(void)
 /**
  * @brief TC019: 获取统计信息测试
  * @requirement RAMSAFETY_REQ_STATS_001
+ * @req SWS_RamSafety_00030
  */
 void test_TC019_GetStatistics_Normal(void)
 {
@@ -415,6 +434,7 @@ void test_TC019_GetStatistics_Normal(void)
 /**
  * @brief TC020: 清除统计信息测试
  * @requirement RAMSAFETY_REQ_STATS_002
+ * @req SWS_RamSafety_00031
  */
 void test_TC020_ClearStatistics_Normal(void)
 {
@@ -434,6 +454,7 @@ void test_TC020_ClearStatistics_Normal(void)
 /**
  * @brief TC021: 空指针统计测试
  * @requirement RAMSAFETY_REQ_STATS_003
+ * @req SWS_RamSafety_00030
  */
 void test_TC021_GetStatistics_NullPointer(void)
 {
@@ -452,6 +473,7 @@ void test_TC021_GetStatistics_NullPointer(void)
 /**
  * @brief TC022: 无效配置 - 空区域
  * @requirement RAMSAFETY_REQ_CONFIG_001
+ * @req SWS_RamSafety_00001
  */
 void test_TC022_Config_NoRegions(void)
 {
@@ -467,6 +489,7 @@ void test_TC022_Config_NoRegions(void)
 /**
  * @brief TC023: 无效配置 - 超出最大区域数
  * @requirement RAMSAFETY_REQ_CONFIG_002
+ * @req SWS_RamSafety_00001
  */
 void test_TC023_Config_TooManyRegions(void)
 {
@@ -482,6 +505,7 @@ void test_TC023_Config_TooManyRegions(void)
 /**
  * @brief TC024: 无效配置 - 地址不对齐
  * @requirement RAMSAFETY_REQ_CONFIG_003
+ * @req SWS_RamSafety_00001
  */
 void test_TC024_Config_UnalignedAddress(void)
 {
@@ -516,6 +540,7 @@ void test_TC024_Config_UnalignedAddress(void)
 /**
  * @brief TC025: 获取版本信息测试
  * @requirement RAMSAFETY_REQ_VERSION_001
+ * @req SWS_RamSafety_00050
  */
 void test_TC025_GetVersionInfo_Normal(void)
 {
@@ -535,6 +560,7 @@ void test_TC025_GetVersionInfo_Normal(void)
 /**
  * @brief TC026: 平台CRC计算测试
  * @requirement RAMSAFETY_REQ_PLATFORM_001
+ * @req SWS_RamSafety_00020
  */
 void test_TC026_Platform_CrcCalculation(void)
 {
@@ -550,6 +576,7 @@ void test_TC026_Platform_CrcCalculation(void)
 /**
  * @brief TC027: 平台CRC存储测试
  * @requirement RAMSAFETY_REQ_PLATFORM_002
+ * @req SWS_RamSafety_00020
  */
 void test_TC027_Platform_CrcStorage(void)
 {
@@ -565,6 +592,7 @@ void test_TC027_Platform_CrcStorage(void)
 /**
  * @brief TC028: 平台初始化/去初始化
  * @requirement RAMSAFETY_REQ_PLATFORM_003
+ * @req SWS_RamSafety_00001
  */
 void test_TC028_Platform_InitDeInit(void)
 {
@@ -584,6 +612,7 @@ void test_TC028_Platform_InitDeInit(void)
 /**
  * @brief TC029: 进入安全状态测试
  * @requirement RAMSAFETY_REQ_SAFETY_001
+ * @req SWS_RamSafety_00040
  */
 void test_TC029_EnterSafeState(void)
 {

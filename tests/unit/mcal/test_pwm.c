@@ -66,6 +66,7 @@ static void setup_test_config(void)
 *                                      TEST CASES
 ==================================================================================================*/
 
+/** @req SWS_Pwm_00001 */
 TEST_CASE(pwm_init_valid)
 {
     setup_test_config();
@@ -75,6 +76,7 @@ TEST_CASE(pwm_init_valid)
     ASSERT_TRUE(Pwm_MockChannels[1].Initialized);
 }
 
+/** @req SWS_Pwm_00001 */
 TEST_CASE(pwm_init_null)
 {
     Det_Mock_Reset();
@@ -85,6 +87,7 @@ TEST_CASE(pwm_init_null)
     ASSERT_EQ(PWM_E_PARAM_CONFIG, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Pwm_00002 */
 TEST_CASE(pwm_deinit)
 {
     setup_test_config();
@@ -95,6 +98,7 @@ TEST_CASE(pwm_deinit)
     ASSERT_FALSE(Pwm_MockChannels[0].Initialized);
 }
 
+/** @req SWS_Pwm_00003 */
 TEST_CASE(pwm_set_duty_cycle)
 {
     setup_test_config();
@@ -105,6 +109,7 @@ TEST_CASE(pwm_set_duty_cycle)
     ASSERT_EQ(7500, Pwm_MockChannels[0].DutyCycle);
 }
 
+/** @req SWS_Pwm_00004 */
 TEST_CASE(pwm_set_period_and_duty)
 {
     setup_test_config();
@@ -117,6 +122,7 @@ TEST_CASE(pwm_set_period_and_duty)
     ASSERT_EQ(4000, Pwm_MockChannels[1].DutyCycle);
 }
 
+/** @req SWS_Pwm_00005 */
 TEST_CASE(pwm_set_output_to_idle)
 {
     setup_test_config();
@@ -127,6 +133,7 @@ TEST_CASE(pwm_set_output_to_idle)
     ASSERT_EQ(PWM_IDLE_LOW, Pwm_MockChannels[0].OutputState);
 }
 
+/** @req SWS_Pwm_00006 */
 TEST_CASE(pwm_get_output_state)
 {
     Pwm_OutputStateType state;
@@ -141,6 +148,7 @@ TEST_CASE(pwm_get_output_state)
     ASSERT_EQ(PWM_HIGH, state);
 }
 
+/** @req SWS_Pwm_00007 */
 TEST_CASE(pwm_disable_notification)
 {
     setup_test_config();
@@ -151,6 +159,7 @@ TEST_CASE(pwm_disable_notification)
     ASSERT_FALSE(Pwm_MockChannels[0].NotificationEnabled);
 }
 
+/** @req SWS_Pwm_00008 */
 TEST_CASE(pwm_enable_notification)
 {
     setup_test_config();
@@ -161,6 +170,7 @@ TEST_CASE(pwm_enable_notification)
     ASSERT_TRUE(Pwm_MockChannels[0].NotificationEnabled);
 }
 
+/** @req SWS_Pwm_00009 */
 TEST_CASE(pwm_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -171,6 +181,7 @@ TEST_CASE(pwm_get_version_info)
     ASSERT_EQ(PWM_MODULE_ID, version_info.moduleID);
 }
 
+/** @req SWS_Pwm_00004 */
 TEST_CASE(pwm_set_period_and_duty_fixed)
 {
     setup_test_config();

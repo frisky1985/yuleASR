@@ -86,9 +86,11 @@ STATIC const Crypto_MbedTLS_EccInfoType Crypto_EccInfo[] = {
  * LOCAL FUNCTION PROTOTYPES
  *********************************************************************************************************************/
 STATIC Std_ReturnType Crypto_MbedTLS_ConvertResult(int mbedtls_result);
+/** @req SWS_Crypto_00075 */
 STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Sign_Internal(const uint8* privKey, uint32 privKeyLen,
                                                           const uint8* digest, uint32 digestLen,
                                                           uint8* signature, uint32* sigLen);
+/** @req SWS_Crypto_00077 */
 STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Verify_Internal(const uint8* pubKey, uint32 pubKeyLen,
                                                             const uint8* digest, uint32 digestLen,
                                                             const uint8* signature, uint32 sigLen);
@@ -104,6 +106,7 @@ STATIC int Crypto_MbedTLS_RandomCallback(void* ctx, unsigned char* output, size_
 /**********************************************************************************************************************
  * Crypto_MbedTLS_Init
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00070 */
 Std_ReturnType Crypto_MbedTLS_Init(void)
 {
     int ret;
@@ -138,6 +141,7 @@ Std_ReturnType Crypto_MbedTLS_Init(void)
 /**********************************************************************************************************************
  * Crypto_MbedTLS_DeInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00071 */
 void Crypto_MbedTLS_DeInit(void)
 {
     if (!Crypto_MbedTLS_Initialized) {
@@ -156,6 +160,7 @@ void Crypto_MbedTLS_DeInit(void)
 /**********************************************************************************************************************
  * Crypto_MbedTLS_RandomGenerate
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00072 */
 Std_ReturnType Crypto_MbedTLS_RandomGenerate(uint8* resultPtr, uint32 resultLength)
 {
     int ret;
@@ -176,6 +181,7 @@ Std_ReturnType Crypto_MbedTLS_RandomGenerate(uint8* resultPtr, uint32 resultLeng
 /**********************************************************************************************************************
  * Crypto_MbedTLS_RandomCallback
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00073 */
 STATIC int Crypto_MbedTLS_RandomCallback(void* ctx, unsigned char* output, size_t len)
 {
     (void)ctx;
@@ -193,6 +199,7 @@ STATIC int Crypto_MbedTLS_RandomCallback(void* ctx, unsigned char* output, size_
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ECDSA_Sign
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00074 */
 Std_ReturnType Crypto_MbedTLS_ECDSA_Sign(Crypto_KeyIdType keyId,
                                           const uint8* digest,
                                           uint32 digestLen,
@@ -215,6 +222,7 @@ Std_ReturnType Crypto_MbedTLS_ECDSA_Sign(Crypto_KeyIdType keyId,
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ECDSA_Sign_Internal
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00075 */
 STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Sign_Internal(const uint8* privKey, uint32 privKeyLen,
                                                           const uint8* digest, uint32 digestLen,
                                                           uint8* signature, uint32* sigLen)
@@ -273,6 +281,7 @@ cleanup:
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ECDSA_Verify
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00076 */
 Std_ReturnType Crypto_MbedTLS_ECDSA_Verify(Crypto_KeyIdType keyId,
                                             const uint8* digest,
                                             uint32 digestLen,
@@ -296,6 +305,7 @@ Std_ReturnType Crypto_MbedTLS_ECDSA_Verify(Crypto_KeyIdType keyId,
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ECDSA_Verify_Internal
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00077 */
 STATIC Std_ReturnType Crypto_MbedTLS_ECDSA_Verify_Internal(const uint8* pubKey, uint32 pubKeyLen,
                                                             const uint8* digest, uint32 digestLen,
                                                             const uint8* signature, uint32 sigLen)
@@ -371,6 +381,7 @@ cleanup:
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ECDH_CalcSecret
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00078 */
 Std_ReturnType Crypto_MbedTLS_ECDH_CalcSecret(Crypto_KeyIdType privKeyId,
                                                const uint8* pubKeyPtr,
                                                uint32 pubKeyLen)
@@ -459,6 +470,7 @@ cleanup:
 /**********************************************************************************************************************
  * Crypto_MbedTLS_AES_GCM_Encrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00079 */
 Std_ReturnType Crypto_MbedTLS_AES_GCM_Encrypt(Crypto_KeyIdType keyId,
                                                const uint8* plaintext,
                                                uint32 plaintextLen,
@@ -503,6 +515,7 @@ Std_ReturnType Crypto_MbedTLS_AES_GCM_Encrypt(Crypto_KeyIdType keyId,
 /**********************************************************************************************************************
  * Crypto_MbedTLS_AES_GCM_Decrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00080 */
 Std_ReturnType Crypto_MbedTLS_AES_GCM_Decrypt(Crypto_KeyIdType keyId,
                                                const uint8* ciphertext,
                                                uint32 ciphertextLen,
@@ -549,6 +562,7 @@ Std_ReturnType Crypto_MbedTLS_AES_GCM_Decrypt(Crypto_KeyIdType keyId,
 /**********************************************************************************************************************
  * Crypto_MbedTLS_SHA256
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00081 */
 Std_ReturnType Crypto_MbedTLS_SHA256(const uint8* data, uint32 dataLen, uint8* digest)
 {
     int ret;
@@ -569,6 +583,7 @@ Std_ReturnType Crypto_MbedTLS_SHA256(const uint8* data, uint32 dataLen, uint8* d
 /**********************************************************************************************************************
  * Crypto_MbedTLS_HMAC
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00082 */
 Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId,
                                     const uint8* data,
                                     uint32 dataLen,
@@ -601,6 +616,7 @@ Std_ReturnType Crypto_MbedTLS_HMAC(Crypto_KeyIdType keyId,
 /**********************************************************************************************************************
  * Crypto_MbedTLS_HKDF
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00083 */
 Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId,
                                     const uint8* salt,
                                     uint32 saltLen,
@@ -640,6 +656,7 @@ Std_ReturnType Crypto_MbedTLS_HKDF(Crypto_KeyIdType ikmKeyId,
 /**********************************************************************************************************************
  * Crypto_MbedTLS_KeyGenerate
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00084 */
 Std_ReturnType Crypto_MbedTLS_KeyGenerate(Crypto_KeyIdType keyId)
 {
     mbedtls_ecp_group       grp;
@@ -672,6 +689,7 @@ cleanup:
 /**********************************************************************************************************************
  * Crypto_MbedTLS_KeyDerive
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00085 */
 Std_ReturnType Crypto_MbedTLS_KeyDerive(Crypto_KeyIdType srcKeyId, Crypto_KeyIdType dstKeyId)
 {
     (void)srcKeyId;
@@ -688,6 +706,7 @@ Std_ReturnType Crypto_MbedTLS_KeyDerive(Crypto_KeyIdType srcKeyId, Crypto_KeyIdT
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ProcessJob
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00086 */
 Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -827,6 +846,7 @@ Std_ReturnType Crypto_MbedTLS_ProcessJob(Crypto_JobType* job)
 /**********************************************************************************************************************
  * Crypto_MbedTLS_ConvertResult
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00087 */
 STATIC Std_ReturnType Crypto_MbedTLS_ConvertResult(int mbedtls_result)
 {
     if (mbedtls_result == MBEDTLS_SUCCESS) {

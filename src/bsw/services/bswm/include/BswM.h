@@ -74,12 +74,19 @@ typedef struct {
     const BswM_ActionListType* ActionLists;
 } BswM_ConfigType;
 
+/** @req SWS_BswM_00001 */
 void BswM_Init(const BswM_ConfigType* ConfigPtr);
+/** @req SWS_BswM_00002 */
 void BswM_DeInit(void);
+/** @req SWS_BswM_00010 */
 Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode);
+/** @req SWS_BswM_00011 */
 BswM_ModeType BswM_GetCurrentMode(void);
+/** @req SWS_BswM_00012 */
 BswM_ModeType BswM_GetRequestedMode(void);
+/** @req SWS_BswM_00020 */
 void BswM_MainFunction(void);
+/** @req SWS_BswM_00030 */
 void BswM_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* BSWM_H */

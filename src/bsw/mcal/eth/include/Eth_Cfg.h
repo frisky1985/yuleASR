@@ -9,8 +9,6 @@
 #ifndef ETH_CFG_H
 #define ETH_CFG_H
 
-#include "Eth.h"
-
 /*==================================================================================================
 *                                    PRE-COMPILE CONFIGURATION
 *================================================================================================*/
@@ -50,6 +48,9 @@
 #define ETH_CFG_BUF_SIZE    (1536U)
 #define ETH_MULTICAST_SUPPORT    STD_ON
 #define ETH_PROMISCUOUS_MODE    STD_OFF
+
+/* Include Eth.h after macros are defined so conditional declarations work */
+#include "Eth.h"
 
 #endif /* ETH_CFG_H */
 

@@ -34,6 +34,7 @@ extern void Wdg_Init(void);
 extern Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode);
 extern void Wdg_DeInit(void);
 
+/** @req SWS_WdgIf_00001 */
 void WdgIf_Init(const WdgIf_ConfigType* ConfigPtr)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
@@ -47,6 +48,7 @@ void WdgIf_Init(const WdgIf_ConfigType* ConfigPtr)
     WdgIf_State.internalState = WDGIF_INTERNAL_INIT;
 }
 
+/** @req SWS_WdgIf_00002 */
 void WdgIf_DeInit(void)
 {
     WdgIf_State.internalState = WDGIF_INTERNAL_UNINIT;
@@ -54,6 +56,7 @@ void WdgIf_DeInit(void)
     WdgIf_State.deviceCount = 0U;
 }
 
+/** @req SWS_WdgIf_00004 */
 Std_ReturnType WdgIf_SetMode(WdgIf_DeviceType Device, WdgIf_ModeType WdgMode)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
@@ -74,6 +77,7 @@ Std_ReturnType WdgIf_SetMode(WdgIf_DeviceType Device, WdgIf_ModeType WdgMode)
     return Wdg_SetMode(WdgMode);
 }
 
+/** @req SWS_WdgIf_00005 */
 Std_ReturnType WdgIf_Trigger(WdgIf_DeviceType Device)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
@@ -89,6 +93,7 @@ Std_ReturnType WdgIf_Trigger(WdgIf_DeviceType Device)
     return E_OK;
 }
 
+/** @req SWS_WdgIf_00006 */
 Std_ReturnType WdgIf_SetTriggerCondition(WdgIf_DeviceType Device, WdgIf_TimeoutType Timeout)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)
@@ -106,6 +111,7 @@ Std_ReturnType WdgIf_SetTriggerCondition(WdgIf_DeviceType Device, WdgIf_TimeoutT
 }
 
 #if (WDGIF_VERSION_INFO_API == STD_ON)
+/** @req SWS_WdgIf_00003 */
 void WdgIf_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (WDGIF_DEV_ERROR_DETECT == STD_ON)

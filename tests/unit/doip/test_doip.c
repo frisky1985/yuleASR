@@ -9,6 +9,7 @@
 #include <cmocka.h>
 #include "DoIP.h"
 
+/** @req SWS_DoIP_00001 */
 static void test_DoIP_Init(void **state) {
     (void)state;
     const DoIP_ConfigType* config = NULL;
@@ -16,6 +17,7 @@ static void test_DoIP_Init(void **state) {
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_DoIP_00001 */
 static void test_DoIP_DeInit(void **state) {
     (void)state;
     DoIP_DeInit();
@@ -34,6 +36,7 @@ static void test_DoIP_ActivationLineSwitchInactive(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_DoIP_00006 */
 static void test_DoIP_SoAdIfRxIndication(void **state) {
     (void)state;
     PduIdType RxPduId = 0;
@@ -49,6 +52,7 @@ static void test_DoIP_SoAdIfTxConfirmation(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_DoIP_00004 */
 static void test_DoIP_MainFunction(void **state) {
     (void)state;
     DoIP_MainFunction();

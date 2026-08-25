@@ -64,6 +64,7 @@ static void setup_test_config(void)
 *                                      TEST CASES
 ==================================================================================================*/
 
+/** @req SWS_Gpt_00001 */
 TEST_CASE(gpt_init_valid)
 {
     setup_test_config();
@@ -73,6 +74,7 @@ TEST_CASE(gpt_init_valid)
     ASSERT_TRUE(Gpt_MockChannels[1].Enabled);
 }
 
+/** @req SWS_Gpt_00001 */
 TEST_CASE(gpt_init_null)
 {
     Det_Mock_Reset();
@@ -83,6 +85,7 @@ TEST_CASE(gpt_init_null)
     ASSERT_EQ(GPT_E_PARAM_CONFIG, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Gpt_00002 */
 TEST_CASE(gpt_deinit)
 {
     setup_test_config();
@@ -93,6 +96,7 @@ TEST_CASE(gpt_deinit)
     ASSERT_FALSE(Gpt_MockChannels[0].Enabled);
 }
 
+/** @req SWS_Gpt_00003 */
 TEST_CASE(gpt_get_time_elapsed)
 {
     Gpt_ValueType time;
@@ -107,6 +111,7 @@ TEST_CASE(gpt_get_time_elapsed)
     ASSERT_EQ(1000, time);
 }
 
+/** @req SWS_Gpt_00004 */
 TEST_CASE(gpt_get_time_remaining)
 {
     Gpt_ValueType time;
@@ -121,6 +126,7 @@ TEST_CASE(gpt_get_time_remaining)
     ASSERT_EQ(1500, time);
 }
 
+/** @req SWS_Gpt_00005 */
 TEST_CASE(gpt_start_timer)
 {
     setup_test_config();
@@ -132,6 +138,7 @@ TEST_CASE(gpt_start_timer)
     ASSERT_TRUE(Gpt_MockChannels[0].Enabled);
 }
 
+/** @req SWS_Gpt_00006 */
 TEST_CASE(gpt_stop_timer)
 {
     setup_test_config();
@@ -143,6 +150,7 @@ TEST_CASE(gpt_stop_timer)
     ASSERT_FALSE(Gpt_MockChannels[0].Enabled);
 }
 
+/** @req SWS_Gpt_00007 */
 TEST_CASE(gpt_enable_notification)
 {
     setup_test_config();
@@ -153,6 +161,7 @@ TEST_CASE(gpt_enable_notification)
     /* DONE-TODO: verify notification enable effect once mock exposes notification state */
 }
 
+/** @req SWS_Gpt_00008 */
 TEST_CASE(gpt_disable_notification)
 {
     setup_test_config();
@@ -164,6 +173,7 @@ TEST_CASE(gpt_disable_notification)
 ASSERT_FALSE(Gpt_MockChannels[0].NotificationEnabled);
 }
 
+/** @req SWS_Gpt_00009 */
 TEST_CASE(gpt_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -174,6 +184,7 @@ TEST_CASE(gpt_get_version_info)
     ASSERT_EQ(GPT_MODULE_ID, version_info.moduleID);
 }
 
+/** @req SWS_Gpt_00010 */
 TEST_CASE(gpt_set_mode)
 {
     setup_test_config();
@@ -184,6 +195,7 @@ TEST_CASE(gpt_set_mode)
     /* DONE-TODO: verify mode transition once GPT mode mock state is available */
 }
 
+/** @req SWS_Gpt_00012 */
 TEST_CASE(gpt_enable_wakeup)
 {
     setup_test_config();
@@ -194,6 +206,7 @@ TEST_CASE(gpt_enable_wakeup)
 ASSERT_TRUE(Gpt_MockChannels[1].WakeupEnabled);
 }
 
+/** @req SWS_Gpt_00011 */
 TEST_CASE(gpt_disable_wakeup)
 {
     setup_test_config();
@@ -204,6 +217,7 @@ TEST_CASE(gpt_disable_wakeup)
 ASSERT_FALSE(Gpt_MockChannels[1].WakeupEnabled);
 }
 
+/** @req SWS_Gpt_00013 */
 TEST_CASE(gpt_check_wakeup)
 {
     Std_ReturnType result;

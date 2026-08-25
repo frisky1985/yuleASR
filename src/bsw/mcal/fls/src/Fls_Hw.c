@@ -655,6 +655,7 @@ static Std_ReturnType Fls_Hw_ProgramPhraseS32K(uint32 Address, const uint8* Data
 /**
  * @brief Initialize flash hardware
  */
+/** @req SWS_Fls_00201 */
 Std_ReturnType Fls_Hw_Init(const Fls_Hw_ConfigType* ConfigPtr)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -700,6 +701,7 @@ Std_ReturnType Fls_Hw_Init(const Fls_Hw_ConfigType* ConfigPtr)
 /**
  * @brief Deinitialize flash hardware
  */
+/** @req SWS_Fls_00202 */
 Std_ReturnType Fls_Hw_DeInit(void)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -726,6 +728,7 @@ Std_ReturnType Fls_Hw_DeInit(void)
 /**
  * @brief Unlock flash
  */
+/** @req SWS_Fls_00203 */
 Std_ReturnType Fls_Hw_Unlock(void)
 {
     Std_ReturnType result = E_NOT_OK;

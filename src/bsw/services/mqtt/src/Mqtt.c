@@ -141,6 +141,7 @@ static boolean Mqtt_CheckTimeout(Mqtt_InternalConnectionType* conn, uint32 timeo
  * 公共API实现
  *===========================================================================*/
 
+/** @req SWS_Mqtt_00001 */
 Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
 {
     uint8 i, j;
@@ -188,6 +189,7 @@ Mqtt_ReturnType Mqtt_Init(const Mqtt_ConfigType* config)
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00002 */
 Mqtt_ReturnType Mqtt_DeInit(void)
 {
     uint8 i;
@@ -210,6 +212,7 @@ Mqtt_ReturnType Mqtt_DeInit(void)
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00005 */
 Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
                               const Mqtt_ConnectionConfigType* connConfig)
 {
@@ -289,6 +292,7 @@ Mqtt_ReturnType Mqtt_Connect(Mqtt_ConnectionIdType connectionId,
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00006 */
 Mqtt_ReturnType Mqtt_Disconnect(Mqtt_ConnectionIdType connectionId)
 {
     Mqtt_InternalConnectionType* conn;
@@ -328,6 +332,7 @@ Mqtt_ReturnType Mqtt_Disconnect(Mqtt_ConnectionIdType connectionId)
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00007 */
 Mqtt_ReturnType Mqtt_Publish(Mqtt_ConnectionIdType connectionId,
                               const Mqtt_PublishMessageType* message,
                               Mqtt_PublishCallbackType callback)
@@ -389,6 +394,7 @@ Mqtt_ReturnType Mqtt_Publish(Mqtt_ConnectionIdType connectionId,
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00008 */
 Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
                                 const Mqtt_SubscriptionType* subscription,
                                 Mqtt_MessageCallbackType msgCallback)
@@ -460,6 +466,7 @@ Mqtt_ReturnType Mqtt_Subscribe(Mqtt_ConnectionIdType connectionId,
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00009 */
 Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
                                   const char* topicFilter)
 {
@@ -501,6 +508,7 @@ Mqtt_ReturnType Mqtt_Unsubscribe(Mqtt_ConnectionIdType connectionId,
     return MQTT_E_NOT_OK; /* 未找到订阅 */
 }
 
+/** @req SWS_Mqtt_00010 */
 Mqtt_ReturnType Mqtt_Ping(Mqtt_ConnectionIdType connectionId)
 {
     Mqtt_InternalConnectionType* conn;
@@ -537,6 +545,7 @@ Mqtt_ReturnType Mqtt_Ping(Mqtt_ConnectionIdType connectionId)
     return result;
 }
 
+/** @req SWS_Mqtt_00011 */
 Mqtt_ConnectionStateType Mqtt_GetConnectionState(Mqtt_ConnectionIdType connectionId)
 {
     if (!Mqtt_Initialized || !MQTT_IS_VALID_CONNECTION_ID(connectionId)) {
@@ -546,6 +555,7 @@ Mqtt_ConnectionStateType Mqtt_GetConnectionState(Mqtt_ConnectionIdType connectio
     return Mqtt_Connections[connectionId].state;
 }
 
+/** @req SWS_Mqtt_00012 */
 Mqtt_ReturnType Mqtt_GetConnectionInfo(Mqtt_ConnectionIdType connectionId,
                                         Mqtt_ConnectionInfoType* info)
 {
@@ -566,6 +576,7 @@ Mqtt_ReturnType Mqtt_GetConnectionInfo(Mqtt_ConnectionIdType connectionId,
     return MQTT_OK;
 }
 
+/** @req SWS_Mqtt_00013 */
 void Mqtt_SetConnectionCallback(Mqtt_ConnectionIdType connectionId,
                                  Mqtt_ConnectionCallbackType callback)
 {
@@ -576,6 +587,7 @@ void Mqtt_SetConnectionCallback(Mqtt_ConnectionIdType connectionId,
     Mqtt_Connections[connectionId].connCallback = callback;
 }
 
+/** @req SWS_Mqtt_00004 */
 void Mqtt_MainFunction(void)
 {
     uint8 i;
@@ -594,6 +606,7 @@ void Mqtt_MainFunction(void)
 }
 
 #if (MQTT_VERSION_INFO_API == STD_ON)
+/** @req SWS_Mqtt_00003 */
 void Mqtt_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (versioninfo == NULL_PTR) {

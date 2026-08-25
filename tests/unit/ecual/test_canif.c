@@ -44,6 +44,7 @@ static void setup_test_pdu(void)
 ==================================================================================================*/
 
 /* Test: CanIf_Init with valid config */
+/** @req SWS_CanIf_00001 */
 TEST_CASE(canif_init_valid_config)
 {
     setup_test_config();
@@ -54,6 +55,7 @@ TEST_CASE(canif_init_valid_config)
 }
 
 /* Test: CanIf_Init with NULL config (should trigger DET) */
+/** @req SWS_CanIf_00001 */
 TEST_CASE(canif_init_null_config)
 {
     /* Expect DET error */
@@ -65,6 +67,7 @@ TEST_CASE(canif_init_null_config)
 }
 
 /* Test: CanIf_Transmit when not initialized */
+/** @req SWS_CanIf_00005 */
 TEST_CASE(canif_transmit_not_initialized)
 {
     Std_ReturnType result;
@@ -80,6 +83,7 @@ TEST_CASE(canif_transmit_not_initialized)
 }
 
 /* Test: CanIf_Transmit with valid PDU */
+/** @req SWS_CanIf_00005 */
 TEST_CASE(canif_transmit_valid_pdu)
 {
     Std_ReturnType result;
@@ -96,6 +100,7 @@ TEST_CASE(canif_transmit_valid_pdu)
 }
 
 /* Test: CanIf_Transmit with NULL PDU */
+/** @req SWS_CanIf_00005 */
 TEST_CASE(canif_transmit_null_pdu)
 {
     Std_ReturnType result;
@@ -109,6 +114,7 @@ TEST_CASE(canif_transmit_null_pdu)
 }
 
 /* Test: CanIf_SetControllerMode */
+/** @req SWS_CanIf_00003 */
 TEST_CASE(canif_set_controller_mode)
 {
     Std_ReturnType result;
@@ -122,6 +128,7 @@ TEST_CASE(canif_set_controller_mode)
 }
 
 /* Test: CanIf_GetControllerMode */
+/** @req SWS_CanIf_00004 */
 TEST_CASE(canif_get_controller_mode)
 {
     Std_ReturnType result;

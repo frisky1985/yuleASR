@@ -50,6 +50,7 @@ static void setup_test_config(void)
 *                                      TEST CASES
 ==================================================================================================*/
 
+/** @req SWS_Wdg_00001 */
 TEST_CASE(wdg_init_valid)
 {
     setup_test_config();
@@ -60,6 +61,7 @@ TEST_CASE(wdg_init_valid)
     ASSERT_EQ(100, Wdg_MockState.Timeout);
 }
 
+/** @req SWS_Wdg_00001 */
 TEST_CASE(wdg_init_null)
 {
     Det_Mock_Reset();
@@ -70,6 +72,7 @@ TEST_CASE(wdg_init_null)
     ASSERT_EQ(WDG_E_PARAM_CONFIG, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Wdg_00001 */
 TEST_CASE(wdg_init_already_initialized)
 {
     setup_test_config();
@@ -82,6 +85,7 @@ TEST_CASE(wdg_init_already_initialized)
     ASSERT_EQ(WDG_E_ALREADY_INITIALIZED, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Wdg_00002 */
 TEST_CASE(wdg_set_mode_fast)
 {
     Std_ReturnType result;
@@ -96,6 +100,7 @@ TEST_CASE(wdg_set_mode_fast)
     ASSERT_EQ(100, Wdg_MockState.Timeout);
 }
 
+/** @req SWS_Wdg_00002 */
 TEST_CASE(wdg_set_mode_slow)
 {
     Std_ReturnType result;
@@ -110,6 +115,7 @@ TEST_CASE(wdg_set_mode_slow)
     ASSERT_EQ(500, Wdg_MockState.Timeout);
 }
 
+/** @req SWS_Wdg_00002 */
 TEST_CASE(wdg_set_mode_off_not_allowed)
 {
     Std_ReturnType result;
@@ -125,6 +131,7 @@ TEST_CASE(wdg_set_mode_off_not_allowed)
     ASSERT_EQ(WDG_E_DISABLE_NOT_ALLOWED, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Wdg_00002 */
 TEST_CASE(wdg_set_mode_off_allowed)
 {
     Std_ReturnType result;
@@ -139,6 +146,7 @@ TEST_CASE(wdg_set_mode_off_allowed)
     ASSERT_EQ(WDGIF_OFF_MODE, Wdg_MockState.Mode);
 }
 
+/** @req SWS_Wdg_00003 */
 TEST_CASE(wdg_trigger)
 {
     uint32 trigger_count_before;
@@ -153,6 +161,7 @@ TEST_CASE(wdg_trigger)
     ASSERT_EQ(trigger_count_before + 1, Wdg_MockState.TriggerCount);
 }
 
+/** @req SWS_Wdg_00003 */
 TEST_CASE(wdg_trigger_not_initialized)
 {
     Det_Mock_Reset();
@@ -163,6 +172,7 @@ TEST_CASE(wdg_trigger_not_initialized)
     ASSERT_EQ(WDG_E_UNINIT, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Wdg_00005 */
 TEST_CASE(wdg_set_trigger_condition)
 {
     Std_ReturnType result;
@@ -176,6 +186,7 @@ TEST_CASE(wdg_set_trigger_condition)
     ASSERT_EQ(200, Wdg_MockState.Timeout);
 }
 
+/** @req SWS_Wdg_00005 */
 TEST_CASE(wdg_set_trigger_condition_invalid)
 {
     Std_ReturnType result;
@@ -191,6 +202,7 @@ TEST_CASE(wdg_set_trigger_condition_invalid)
     ASSERT_EQ(WDG_E_PARAM_TIMEOUT, Det_MockData.ErrorId);
 }
 
+/** @req SWS_Wdg_00004 */
 TEST_CASE(wdg_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -201,6 +213,7 @@ TEST_CASE(wdg_get_version_info)
     ASSERT_EQ(WDG_MODULE_ID, version_info.moduleID);
 }
 
+/** @req SWS_Wdg_00004 */
 TEST_CASE(wdg_get_version_info_null)
 {
     Det_Mock_Reset();

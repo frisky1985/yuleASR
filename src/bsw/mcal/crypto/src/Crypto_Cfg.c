@@ -460,6 +460,7 @@ static const Crypto_ChannelConfigType Crypto_ChannelConfigs[CRYPTO_NUM_CHANNELS]
 /*==================================================================================================
  *                                    CALLBACK IMPLEMENTATIONS
  *==================================================================================================*/
+/** @req SWS_Crypto_00140 */
 static void Crypto_AesCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
     /* AES operation complete - invoked by driver upon job completion */
@@ -468,6 +469,7 @@ static void Crypto_AesCallback(Crypto_JobType* job, Crypto_JobStateType result)
     (void)result;
 }
 
+/** @req SWS_Crypto_00141 */
 static void Crypto_HashCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
     /* Hash operation complete - invoked by driver upon job completion */
@@ -476,6 +478,7 @@ static void Crypto_HashCallback(Crypto_JobType* job, Crypto_JobStateType result)
     (void)result;
 }
 
+/** @req SWS_Crypto_00142 */
 static void Crypto_HmacCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
     /* HMAC operation complete - invoked by driver upon job completion */
@@ -484,6 +487,7 @@ static void Crypto_HmacCallback(Crypto_JobType* job, Crypto_JobStateType result)
     (void)result;
 }
 
+/** @req SWS_Crypto_00143 */
 static void Crypto_RsaCallback(Crypto_JobType* job, Crypto_JobStateType result)
 {
     /* RSA operation complete - invoked by driver upon job completion */

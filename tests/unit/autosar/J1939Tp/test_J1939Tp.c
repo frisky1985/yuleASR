@@ -32,6 +32,7 @@ static int teardown(void **state)
  *                                    Test Cases
  *================================================================================================*/
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -39,6 +40,7 @@ static void test_J1939Tp_Init_ValidConfig(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_Init_NullConfig(void **state)
 {
     (void)state;
@@ -47,6 +49,7 @@ static void test_J1939Tp_Init_NullConfig(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_DeInit(void **state)
 {
     (void)state;
@@ -58,6 +61,7 @@ static void test_J1939Tp_DeInit(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00003 */
 static void test_J1939Tp_GetVersionInfo(void **state)
 {
     (void)state;
@@ -76,6 +80,7 @@ static void test_J1939Tp_GetVersionInfo(void **state)
 #endif
 }
 
+/** @req SWS_J1939Tp_00003 */
 static void test_J1939Tp_GetVersionInfo_NullPtr(void **state)
 {
     (void)state;
@@ -84,6 +89,7 @@ static void test_J1939Tp_GetVersionInfo_NullPtr(void **state)
     J1939Tp_GetVersionInfo(NULL);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_MainFunction_Uninit(void **state)
 {
     (void)state;
@@ -92,6 +98,7 @@ static void test_J1939Tp_MainFunction_Uninit(void **state)
     assert_true(1);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_MainFunction_Initialized(void **state)
 {
     (void)state;
@@ -100,6 +107,7 @@ static void test_J1939Tp_MainFunction_Initialized(void **state)
     assert_true(1);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_Transmit_Uninit(void **state)
 {
     (void)state;
@@ -112,6 +120,7 @@ static void test_J1939Tp_Transmit_Uninit(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00005 */
 static void test_J1939Tp_Transmit_NullPdu(void **state)
 {
     (void)state;
@@ -120,6 +129,7 @@ static void test_J1939Tp_Transmit_NullPdu(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00005 */
 static void test_J1939Tp_Transmit_SingleFrame(void **state)
 {
     (void)state;
@@ -138,6 +148,7 @@ static void test_J1939Tp_Transmit_SingleFrame(void **state)
     assert_true(1);
 }
 
+/** @req SWS_J1939Tp_00005 */
 static void test_J1939Tp_Transmit_MultiFrame(void **state)
 {
     (void)state;
@@ -159,6 +170,7 @@ static void test_J1939Tp_Transmit_MultiFrame(void **state)
     assert_true(1);
 }
 
+/** @req SWS_J1939Tp_00005 */
 static void test_J1939Tp_Transmit_InvalidSduId(void **state)
 {
     (void)state;
@@ -173,6 +185,7 @@ static void test_J1939Tp_Transmit_InvalidSduId(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00005 */
 static void test_J1939Tp_Transmit_TooLarge(void **state)
 {
     (void)state;
@@ -188,6 +201,7 @@ static void test_J1939Tp_Transmit_TooLarge(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_CancelTransmit_Uninit(void **state)
 {
     (void)state;
@@ -195,6 +209,7 @@ static void test_J1939Tp_CancelTransmit_Uninit(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00005 */
 static void test_J1939Tp_CancelTransmit_NoActiveSession(void **state)
 {
     (void)state;
@@ -204,6 +219,7 @@ static void test_J1939Tp_CancelTransmit_NoActiveSession(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00001 */
 static void test_J1939Tp_CancelReceive_Uninit(void **state)
 {
     (void)state;
@@ -211,6 +227,7 @@ static void test_J1939Tp_CancelReceive_Uninit(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00008 */
 static void test_J1939Tp_ChangeParameter(void **state)
 {
     (void)state;
@@ -220,6 +237,7 @@ static void test_J1939Tp_ChangeParameter(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_J1939Tp_00009 */
 static void test_J1939Tp_RxIndication_NullPdu(void **state)
 {
     (void)state;
@@ -229,6 +247,7 @@ static void test_J1939Tp_RxIndication_NullPdu(void **state)
     assert_true(1);
 }
 
+/** @req SWS_J1939Tp_00009 */
 static void test_J1939Tp_RxIndication_ValidPdu(void **state)
 {
     (void)state;
@@ -244,6 +263,7 @@ static void test_J1939Tp_RxIndication_ValidPdu(void **state)
     assert_true(1);
 }
 
+/** @req SWS_J1939Tp_00010 */
 static void test_J1939Tp_TxConfirmation(void **state)
 {
     (void)state;

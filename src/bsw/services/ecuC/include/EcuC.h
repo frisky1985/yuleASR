@@ -88,10 +88,15 @@ typedef struct {
     const EcuC_RoutingPathType* RoutingPaths;
 } EcuC_ConfigType;
 
+/** @req SWS_EcuC_00001 */
 void EcuC_Init(const EcuC_ConfigType* ConfigPtr);
+/** @req SWS_EcuC_00002 */
 void EcuC_DeInit(void);
+/** @req SWS_EcuC_00004 */
 Std_ReturnType EcuC_GetConfigValue(uint16 ConfigId, uint32* Value);
+/** @req SWS_EcuC_00005 */
 Std_ReturnType EcuC_SetConfigValue(uint16 ConfigId, uint32 Value);
+/** @req SWS_EcuC_00003 */
 void EcuC_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* ECUC_H */

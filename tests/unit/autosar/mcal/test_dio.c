@@ -251,6 +251,7 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
 ==================================================================================================*/
 
 /* 初始化测试 */
+/* @req SWS_Dio_00201 */
 void test_init(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -268,6 +269,7 @@ void test_init(void)
 }
 
 /* 通道读测试 */
+/* @req SWS_Dio_00202 */
 void test_read_channel(void)
 {
     Dio_LevelType level;
@@ -299,6 +301,7 @@ void test_read_channel(void)
 }
 
 /* 通道写测试 */
+/* @req SWS_Dio_00203 */
 void test_write_channel(void)
 {
     printf("\n=== Write Channel Tests ===\n");
@@ -335,6 +338,7 @@ void test_write_channel(void)
 }
 
 /* 端口读测试 */
+/* @req SWS_Dio_00204 */
 void test_read_port(void)
 {
     Dio_PortLevelType level;
@@ -369,6 +373,7 @@ void test_read_port(void)
 }
 
 /* 端口写测试 */
+/* @req SWS_Dio_00205 */
 void test_write_port(void)
 {
     printf("\n=== Write Port Tests ===\n");
@@ -401,6 +406,7 @@ void test_write_port(void)
 }
 
 /* 通道组读测试 */
+/* @req SWS_Dio_00206 */
 void test_read_channel_group(void)
 {
     Dio_ChannelGroupType group;
@@ -440,6 +446,7 @@ void test_read_channel_group(void)
 }
 
 /* 通道组写测试 */
+/* @req SWS_Dio_00207 */
 void test_write_channel_group(void)
 {
     Dio_ChannelGroupType group;
@@ -476,6 +483,7 @@ void test_write_channel_group(void)
 }
 
 /* 通道翻转测试 */
+/* @req SWS_Dio_00208 */
 void test_flip_channel(void)
 {
     Dio_LevelType level;
@@ -511,6 +519,7 @@ void test_flip_channel(void)
 }
 
 /* 掩码写端口测试 */
+/* @req SWS_Dio_00209 */
 void test_masked_write_port(void)
 {
     printf("\n=== Masked Write Port Tests ===\n");
@@ -546,6 +555,7 @@ void test_masked_write_port(void)
 }
 
 /* 版本信息测试 */
+/* @req SWS_Dio_00210 */
 void test_version_info(void)
 {
     Std_VersionInfoType version_info;
@@ -565,6 +575,7 @@ void test_version_info(void)
 }
 
 /* 数据类型测试 */
+/* @req SWS_Dio_00211 */
 void test_data_types(void)
 {
     printf("\n=== Data Type Tests ===\n");
@@ -585,6 +596,7 @@ void test_data_types(void)
 }
 
 /* 错误处理测试 */
+/* @req SWS_Dio_00212 */
 void test_error_handling(void)
 {
     Dio_LevelType level;
@@ -619,6 +631,7 @@ void test_error_handling(void)
 }
 
 /* 组合操作测试 */
+/* @req SWS_Dio_00213 */
 void test_combined_operations(void)
 {
     printf("\n=== Combined Operations Tests ===\n");
@@ -650,6 +663,7 @@ void test_combined_operations(void)
 }
 
 /* 边界条件测试 */
+/* @req SWS_Dio_00214 */
 void test_boundary_conditions(void)
 {
     printf("\n=== Boundary Conditions Tests ===\n");

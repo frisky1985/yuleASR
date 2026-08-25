@@ -185,6 +185,7 @@ static void CanTrcv_CheckWakeupInternal(uint8 channelIndex)
  *                                       API FUNCTIONS
  *=================================================================================================*/
 
+/** @req SWS_CanTrcv_00001 */
 /**
  * @brief Initialize CAN Transceiver driver
  */
@@ -215,6 +216,7 @@ void CanTrcv_Init(const CanTrcv_ConfigType* ConfigPtr)
     CanTrcv_InitStatus = TRUE;
 }
 
+/** @req SWS_CanTrcv_00002 */
 /**
  * @brief De-initialize CAN Transceiver driver
  */
@@ -239,6 +241,7 @@ Std_ReturnType CanTrcv_DeInit(void)
     return E_OK;
 }
 
+/** @req SWS_CanTrcv_00006 */
 /**
  * @brief Set transceiver operation mode
  */
@@ -279,6 +282,7 @@ Std_ReturnType CanTrcv_SetOpMode(CanTrcv_TrcvChnlType Transceiver,
     return E_OK;
 }
 
+/** @req SWS_CanTrcv_00007 */
 /**
  * @brief Get transceiver operation mode
  */
@@ -309,6 +313,7 @@ Std_ReturnType CanTrcv_GetOpMode(CanTrcv_TrcvChnlType Transceiver,
     return E_OK;
 }
 
+/** @req SWS_CanTrcv_00008 */
 /**
  * @brief Get wake-up reason
  */
@@ -339,6 +344,7 @@ Std_ReturnType CanTrcv_GetBusWuReason(CanTrcv_TrcvChnlType Transceiver,
     return E_OK;
 }
 
+/** @req SWS_CanTrcv_00009 */
 /**
  * @brief Set wake-up mode
  */
@@ -389,6 +395,7 @@ Std_ReturnType CanTrcv_SetWakeupMode(CanTrcv_TrcvChnlType Transceiver,
     return E_OK;
 }
 
+/** @req SWS_CanTrcv_00004 */
 /**
  * @brief Main function - cyclic processing
  */
@@ -415,6 +422,7 @@ void CanTrcv_MainFunction(void)
  * @brief Get version information
  */
 #if (CANTRCV_VERSION_INFO_API == STD_ON)
+/** @req SWS_CanTrcv_00003 */
 void CanTrcv_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR)
@@ -435,6 +443,7 @@ void CanTrcv_GetVersionInfo(Std_VersionInfoType* VersionInfo)
  *                                       CALLBACK FUNCTIONS
  *=================================================================================================*/
 
+/** @req SWS_CanTrcv_00011 */
 /**
  * @brief Check wake-up by transceiver (called by EcuM)
  */

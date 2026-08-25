@@ -53,6 +53,7 @@ static MemIf_ModeType MemIf_CurrentMode[MEMIF_NUM_DEVICES];
 #define MEMIF_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_MemIf_00001 */
 void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
 {
     #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
@@ -74,6 +75,7 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
     MemIf_Initialized = TRUE;
 }
 
+/** @req SWS_MemIf_00002 */
 Std_ReturnType MemIf_Read(MemIf_DeviceIdType DeviceIndex,
                            MemIf_BlockIdType BlockNumber,
                            uint16 BlockOffset,
@@ -131,6 +133,7 @@ Std_ReturnType MemIf_Read(MemIf_DeviceIdType DeviceIndex,
     return result;
 }
 
+/** @req SWS_MemIf_00003 */
 Std_ReturnType MemIf_Write(MemIf_DeviceIdType DeviceIndex,
                             MemIf_BlockIdType BlockNumber,
                             const uint8* DataBufferPtr)
@@ -182,6 +185,7 @@ Std_ReturnType MemIf_Write(MemIf_DeviceIdType DeviceIndex,
     return result;
 }
 
+/** @req SWS_MemIf_00004 */
 void MemIf_Cancel(MemIf_DeviceIdType DeviceIndex)
 {
     #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
@@ -217,6 +221,7 @@ void MemIf_Cancel(MemIf_DeviceIdType DeviceIndex)
     }
 }
 
+/** @req SWS_MemIf_00005 */
 MemIf_StatusType MemIf_GetStatus(MemIf_DeviceIdType DeviceIndex)
 {
     #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
@@ -258,6 +263,7 @@ MemIf_StatusType MemIf_GetStatus(MemIf_DeviceIdType DeviceIndex)
     return status;
 }
 
+/** @req SWS_MemIf_00006 */
 MemIf_JobResultType MemIf_GetJobResult(MemIf_DeviceIdType DeviceIndex)
 {
     #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
@@ -299,6 +305,7 @@ MemIf_JobResultType MemIf_GetJobResult(MemIf_DeviceIdType DeviceIndex)
     return result;
 }
 
+/** @req SWS_MemIf_00007 */
 Std_ReturnType MemIf_InvalidateBlock(MemIf_DeviceIdType DeviceIndex,
                                       MemIf_BlockIdType BlockNumber)
 {
@@ -345,6 +352,7 @@ Std_ReturnType MemIf_InvalidateBlock(MemIf_DeviceIdType DeviceIndex,
     return result;
 }
 
+/** @req SWS_MemIf_00008 */
 Std_ReturnType MemIf_EraseImmediateBlock(MemIf_DeviceIdType DeviceIndex,
                                           MemIf_BlockIdType BlockNumber)
 {
@@ -391,6 +399,7 @@ Std_ReturnType MemIf_EraseImmediateBlock(MemIf_DeviceIdType DeviceIndex,
     return result;
 }
 
+/** @req SWS_MemIf_00009 */
 void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (MEMIF_DEV_ERROR_DETECT == STD_ON)
@@ -407,6 +416,7 @@ void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = MEMIF_SW_PATCH_VERSION;
 }
 
+/** @req SWS_MemIf_00010 */
 void MemIf_SetMode(MemIf_DeviceIdType DeviceIndex, MemIf_ModeType Mode)
 {
     #if (MEMIF_DEV_ERROR_DETECT == STD_ON)

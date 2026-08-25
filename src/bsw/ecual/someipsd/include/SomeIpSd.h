@@ -65,15 +65,24 @@ typedef struct {
     const SomeIpSd_ServiceConfigType* Services;
 } SomeIpSd_ConfigType;
 
+/** @req SWS_SomeIpSd_00001 */
 void SomeIpSd_Init(const void* ConfigPtr);
+/** @req SWS_SomeIpSd_00002 */
 void SomeIpSd_DeInit(void);
+/** @req SWS_SomeIpSd_00004 */
 void SomeIpSd_MainFunction(void);
+/** @req SWS_SomeIpSd_00005 */
 Std_ReturnType SomeIpSd_FindService(uint16 ServiceId, uint16 InstanceId);
+/** @req SWS_SomeIpSd_00006 */
 Std_ReturnType SomeIpSd_OfferService(uint16 ServiceId, uint16 InstanceId);
+/** @req SWS_SomeIpSd_00007 */
 Std_ReturnType SomeIpSd_StopOffer(uint16 ServiceId, uint16 InstanceId);
+/** @req SWS_SomeIpSd_00008 */
 Std_ReturnType SomeIpSd_SubscribeEventGroup(uint16 ServiceId, uint16 EventGroupId);
 SomeIpSd_ServiceStateType SomeIpSd_GetServiceState(uint16 ServiceId, uint16 InstanceId);
+/** @req SWS_SomeIpSd_00009 */
 void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+/** @req SWS_SomeIpSd_00003 */
 void SomeIpSd_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* SOMEIPSD_H */

@@ -242,6 +242,7 @@ void Flash_Init(const Flash_ConfigType* ConfigPtr);
 /**
  * @brief Unlock flash control register
  */
+/** @req SWS_Fls_00001 */
 static void Flash_Unlock(void)
 {
     if ((FLASH_CR & FLASH_CR_LOCK) != 0U) {
@@ -253,6 +254,7 @@ static void Flash_Unlock(void)
 /**
  * @brief Lock flash control register
  */
+/** @req SWS_Fls_00002 */
 static void Flash_Lock(void)
 {
     FLASH_CR |= FLASH_CR_LOCK;
@@ -263,6 +265,7 @@ static void Flash_Lock(void)
  * @param timeout Timeout in milliseconds
  * @return TRUE if operation completed successfully, FALSE if timeout
  */
+/** @req SWS_Fls_00003 */
 static boolean Flash_WaitForOperation(uint32 timeout)
 {
     uint32 elapsed = 0U;
@@ -286,6 +289,7 @@ static boolean Flash_WaitForOperation(uint32 timeout)
  * @param data Data to program
  * @return E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_Fls_00004 */
 static Std_ReturnType Flash_ProgramWord(Flash_AddressType address, uint32 data)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -331,6 +335,7 @@ static Std_ReturnType Flash_ProgramWord(Flash_AddressType address, uint32 data)
  * @param data Data to program
  * @return E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_Fls_00005 */
 static Std_ReturnType Flash_ProgramDoubleWord(Flash_AddressType address, uint64 data)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -368,6 +373,7 @@ static Std_ReturnType Flash_ProgramDoubleWord(Flash_AddressType address, uint64 
  * @param sectorNum Sector number to erase
  * @return E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_Fls_00006 */
 static Std_ReturnType Flash_EraseSector(uint32 sectorNum)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -411,6 +417,7 @@ static Std_ReturnType Flash_EraseSector(uint32 sectorNum)
 /**
  * @brief Process erase job
  */
+/** @req SWS_Fls_00007 */
 static void Flash_ProcessEraseJob(void)
 {
     uint32 sectorIdx;
@@ -468,6 +475,7 @@ static void Flash_ProcessEraseJob(void)
 /**
  * @brief Process write job
  */
+/** @req SWS_Fls_00008 */
 static void Flash_ProcessWriteJob(void)
 {
     uint32 bytesToWrite;
@@ -541,6 +549,7 @@ static void Flash_ProcessWriteJob(void)
 /**
  * @brief Process read job
  */
+/** @req SWS_Fls_00009 */
 static void Flash_ProcessReadJob(void)
 {
     uint32 bytesToRead;
@@ -585,6 +594,7 @@ static void Flash_ProcessReadJob(void)
 /**
  * @brief Process compare job
  */
+/** @req SWS_Fls_00010 */
 static void Flash_ProcessCompareJob(void)
 {
     uint32 bytesToCompare;
@@ -644,6 +654,7 @@ static void Flash_ProcessCompareJob(void)
 /**
  * @brief Process blank check job
  */
+/** @req SWS_Fls_00011 */
 static void Flash_ProcessBlankCheckJob(void)
 {
     uint32 bytesToCheck;
@@ -703,6 +714,7 @@ static void Flash_ProcessBlankCheckJob(void)
  * @param serviceId Service ID
  * @param errorCode Error code
  */
+/** @req SWS_Fls_00012 */
 static void Flash_ReportError(uint8 serviceId, uint8 errorCode)
 {
 #if (FLASH_DEV_ERROR_DETECT == STD_ON)
@@ -725,6 +737,7 @@ static void Flash_ReportError(uint8 serviceId, uint8 errorCode)
 /**
  * @brief Initialize the Flash driver
  */
+/** @req SWS_Fls_00013 */
 void Flash_Init(const Flash_ConfigType* ConfigPtr)
 {
     if (Flash_DriverState.initState == FLASH_INITIALIZED) {
@@ -771,6 +784,7 @@ void Flash_Init(const Flash_ConfigType* ConfigPtr)
 /**
  * @brief Deinitialize the Flash driver
  */
+/** @req SWS_Fls_00014 */
 void Flash_DeInit(void)
 {
     if (Flash_DriverState.initState != FLASH_INITIALIZED) {
@@ -796,6 +810,7 @@ void Flash_DeInit(void)
 /**
  * @brief Erase one or more complete flash sectors
  */
+/** @req SWS_Fls_00015 */
 Std_ReturnType Flash_Erase(Flash_AddressType TargetAddress, Flash_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -844,6 +859,7 @@ Std_ReturnType Flash_Erase(Flash_AddressType TargetAddress, Flash_LengthType Len
 /**
  * @brief Write one or more complete flash pages
  */
+/** @req SWS_Fls_00016 */
 Std_ReturnType Flash_Write(Flash_AddressType TargetAddress, const uint8* SourceAddressPtr, Flash_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -903,6 +919,7 @@ Std_ReturnType Flash_Write(Flash_AddressType TargetAddress, const uint8* SourceA
 /**
  * @brief Read data from flash memory
  */
+/** @req SWS_Fls_00017 */
 Std_ReturnType Flash_Read(Flash_AddressType SourceAddress, uint8* TargetAddressPtr, Flash_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -952,6 +969,7 @@ Std_ReturnType Flash_Read(Flash_AddressType SourceAddress, uint8* TargetAddressP
  * @brief Compare data in flash memory with application data buffer
  */
 #if (FLASH_COMPARE_API == STD_ON)
+/** @req SWS_Fls_00018 */
 Std_ReturnType Flash_Compare(Flash_AddressType SourceAddress, const uint8* TargetAddressPtr, Flash_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1002,6 +1020,7 @@ Std_ReturnType Flash_Compare(Flash_AddressType SourceAddress, const uint8* Targe
  * @brief Set the flash driver's operation mode
  */
 #if (FLASH_SET_MODE_API == STD_ON)
+/** @req SWS_Fls_00019 */
 void Flash_SetMode(Flash_OpModeType Mode)
 {
     if (Flash_DriverState.initState != FLASH_INITIALIZED) {
@@ -1024,6 +1043,7 @@ void Flash_SetMode(Flash_OpModeType Mode)
  * @brief Cancel an ongoing flash operation
  */
 #if (FLASH_CANCEL_API == STD_ON)
+/** @req SWS_Fls_00020 */
 void Flash_Cancel(void)
 {
     if (Flash_DriverState.initState != FLASH_INITIALIZED) {
@@ -1054,6 +1074,7 @@ void Flash_Cancel(void)
 /**
  * @brief Get the current status of the flash driver
  */
+/** @req SWS_Fls_00021 */
 Flash_StatusType Flash_GetStatus(void)
 {
     Flash_StatusType status;
@@ -1085,6 +1106,7 @@ Flash_StatusType Flash_GetStatus(void)
 /**
  * @brief Get the result of the most recent job
  */
+/** @req SWS_Fls_00022 */
 Flash_JobResultType Flash_GetJobResult(void)
 {
     Flash_JobResultType result;
@@ -1103,6 +1125,7 @@ Flash_JobResultType Flash_GetJobResult(void)
  * @brief Perform blank check on flash memory area
  */
 #if (FLASH_BLANK_CHECK_API == STD_ON)
+/** @req SWS_Fls_00023 */
 Std_ReturnType Flash_BlankCheck(Flash_AddressType TargetAddress, Flash_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1147,6 +1170,7 @@ Std_ReturnType Flash_BlankCheck(Flash_AddressType TargetAddress, Flash_LengthTyp
  * @brief Suspend an ongoing erase or write operation
  */
 #if (FLASH_SUSPEND_RESUME_API == STD_ON)
+/** @req SWS_Fls_00024 */
 Std_ReturnType Flash_Suspend(void)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1177,6 +1201,7 @@ Std_ReturnType Flash_Suspend(void)
 /**
  * @brief Resume a suspended erase or write operation
  */
+/** @req SWS_Fls_00025 */
 Std_ReturnType Flash_Resume(void)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1204,6 +1229,7 @@ Std_ReturnType Flash_Resume(void)
 /**
  * @brief Main function for handling flash jobs
  */
+/** @req SWS_Fls_00026 */
 void Flash_MainFunction(void)
 {
     if (Flash_DriverState.initState != FLASH_INITIALIZED) {
@@ -1243,6 +1269,7 @@ void Flash_MainFunction(void)
  * @brief Get version information of the flash driver
  */
 #if (FLASH_VERSION_INFO_API == STD_ON)
+/** @req SWS_Fls_00027 */
 void Flash_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 {
 #if (FLASH_DEV_ERROR_DETECT == STD_ON)
@@ -1263,6 +1290,7 @@ void Flash_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 /**
  * @brief Get sector information for a given address
  */
+/** @req SWS_Fls_00028 */
 const Flash_SectorInfoType* Flash_GetSectorInfo(Flash_AddressType Address)
 {
     const Flash_SectorInfoType* sectorInfo = NULL_PTR;
@@ -1287,6 +1315,7 @@ const Flash_SectorInfoType* Flash_GetSectorInfo(Flash_AddressType Address)
 /**
  * @brief Check if an address is within valid flash range
  */
+/** @req SWS_Fls_00029 */
 boolean Flash_IsAddressValid(Flash_AddressType Address)
 {
     boolean valid = FALSE;
@@ -1311,6 +1340,7 @@ boolean Flash_IsAddressValid(Flash_AddressType Address)
  * ============================================================================ */
 
 /* MISRA 8.7 保留: 公开 API, 消费者在集成层 (Bootloader/ASW) */
+/** @req SWS_Fls_00030 */
 Std_ReturnType Fls_ConfigureWriteProtection(uint32 SectorMask, boolean Enable)
 {
     if (Enable != FALSE) {

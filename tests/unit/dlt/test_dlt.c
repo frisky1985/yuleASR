@@ -10,6 +10,7 @@
 #include "Dlt.h"
 #include "Dlt_Cfg.h"
 
+/** @req SWS_Dlt_00001 */
 static void test_Dlt_Init(void **state) {
     (void)state;
     const Dlt_ConfigType* config = NULL;
@@ -17,12 +18,14 @@ static void test_Dlt_Init(void **state) {
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_Dlt_00001 */
 static void test_Dlt_DeInit(void **state) {
     (void)state;
     Dlt_DeInit();
     assert_true(1);
 }
 
+/** @req SWS_Dlt_00006 */
 static void test_Dlt_SendLogMessage(void **state) {
     (void)state;
     Dlt_SessionIDType sessionId = 0;
@@ -33,6 +36,7 @@ static void test_Dlt_SendLogMessage(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dlt_00007 */
 static void test_Dlt_SendTraceMessage(void **state) {
     (void)state;
     Dlt_SessionIDType sessionId = 0;
@@ -43,6 +47,7 @@ static void test_Dlt_SendTraceMessage(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Dlt_00004 */
 static void test_Dlt_MainFunction(void **state) {
     (void)state;
     Dlt_MainFunction();

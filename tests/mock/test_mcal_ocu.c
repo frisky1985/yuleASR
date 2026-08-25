@@ -18,18 +18,21 @@ void setUp(void) { mock_hal_reset(); memset(&g_test_cfg, 0, sizeof(g_test_cfg));
 void tearDown(void) {}
 
 /* ========= Ocu_Init ========= */
+/* @req SWS_Ocu_00001 */
 void test_Ocu_Init_NullConfig(void)
 {
     Ocu_Init(NULL);
     TEST_ASSERT_EQUAL(0, Ocu_GetCounter(0));
 }
 
+/* @req SWS_Ocu_00001 */
 void test_Ocu_Init_Valid(void)
 {
     Ocu_Init(&g_test_cfg);
     TEST_ASSERT_EQUAL(0, Ocu_GetCounter(0));
 }
 
+/* @req SWS_Ocu_00001 */
 void test_Ocu_Init_DoubleInit(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -37,11 +40,13 @@ void test_Ocu_Init_DoubleInit(void)
 }
 
 /* ========= Ocu_DeInit ========= */
+/* @req SWS_Ocu_00002 */
 void test_Ocu_DeInit_BeforeInit(void)
 {
     Ocu_DeInit();
 }
 
+/* @req SWS_Ocu_00002 */
 void test_Ocu_DeInit_AfterInit(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -49,6 +54,7 @@ void test_Ocu_DeInit_AfterInit(void)
 }
 
 /* ========= Ocu_StartChannel ========= */
+/* @req SWS_Ocu_00003 */
 void test_Ocu_StartChannel_Valid(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -57,17 +63,20 @@ void test_Ocu_StartChannel_Valid(void)
     TEST_ASSERT_EQUAL(0, cnt);
 }
 
+/* @req SWS_Ocu_00003 */
 void test_Ocu_StartChannel_BeforeInit(void)
 {
     Ocu_StartChannel(0);
 }
 
 /* ========= Ocu_StopChannel ========= */
+/* @req SWS_Ocu_00004 */
 void test_Ocu_StopChannel_BeforeInit(void)
 {
     Ocu_StopChannel(0);
 }
 
+/* @req SWS_Ocu_00004 */
 void test_Ocu_StopChannel_Valid(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -76,6 +85,7 @@ void test_Ocu_StopChannel_Valid(void)
 }
 
 /* ========= Ocu_SetAbsoluteThreshold ========= */
+/* @req SWS_Ocu_00007 */
 void test_Ocu_SetAbsoluteThreshold_BeforeInit(void)
 {
     Std_ReturnType ret = Ocu_SetAbsoluteThreshold(0, 0, 5000);
@@ -83,6 +93,7 @@ void test_Ocu_SetAbsoluteThreshold_BeforeInit(void)
     TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK);
 }
 
+/* @req SWS_Ocu_00007 */
 void test_Ocu_SetAbsoluteThreshold_Valid(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -91,6 +102,7 @@ void test_Ocu_SetAbsoluteThreshold_Valid(void)
 }
 
 /* ========= Ocu_SetRelativeThreshold ========= */
+/* @req SWS_Ocu_00008 */
 void test_Ocu_SetRelativeThreshold_Valid(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -98,6 +110,7 @@ void test_Ocu_SetRelativeThreshold_Valid(void)
     TEST_ASSERT_EQUAL(E_OK, ret);
 }
 
+/* @req SWS_Ocu_00008 */
 void test_Ocu_SetRelativeThreshold_BeforeInit(void)
 {
     Std_ReturnType ret = Ocu_SetRelativeThreshold(0, 250);
@@ -106,12 +119,14 @@ void test_Ocu_SetRelativeThreshold_BeforeInit(void)
 }
 
 /* ========= Ocu_GetCounter ========= */
+/* @req SWS_Ocu_00009 */
 void test_Ocu_GetCounter_BeforeInit(void)
 {
     Ocu_ValueType cnt = Ocu_GetCounter(0);
     TEST_ASSERT_EQUAL(0, cnt);
 }
 
+/* @req SWS_Ocu_00009 */
 void test_Ocu_GetCounter_AfterInit(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -120,6 +135,7 @@ void test_Ocu_GetCounter_AfterInit(void)
 }
 
 /* ========= Ocu_SetPinState ========= */
+/* @req SWS_Ocu_00005 */
 void test_Ocu_SetPinState_Valid(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -127,12 +143,14 @@ void test_Ocu_SetPinState_Valid(void)
     Ocu_SetPinState(0, OCU_LOW);
 }
 
+/* @req SWS_Ocu_00005 */
 void test_Ocu_SetPinState_BeforeInit(void)
 {
     Ocu_SetPinState(0, OCU_HIGH);
 }
 
 /* ========= Ocu_EnableDisableNotification ========= */
+/* @req SWS_Ocu_00201 */
 void test_Ocu_Notification_AfterInit(void)
 {
     Ocu_Init(&g_test_cfg);
@@ -140,6 +158,7 @@ void test_Ocu_Notification_AfterInit(void)
     Ocu_DisableNotification(0);
 }
 
+/* @req SWS_Ocu_00202 */
 void test_Ocu_Notification_BeforeInit(void)
 {
     Ocu_EnableNotification(0);
@@ -147,6 +166,7 @@ void test_Ocu_Notification_BeforeInit(void)
 }
 
 /* ========= Ocu_GetVersionInfo ========= */
+/* @req SWS_Ocu_00012 */
 void test_Ocu_GetVersionInfo_Valid(void)
 {
     Std_VersionInfoType vi;
@@ -156,6 +176,7 @@ void test_Ocu_GetVersionInfo_Valid(void)
     TEST_ASSERT_EQUAL(OCU_MODULE_ID, vi.moduleID);
 }
 
+/* @req SWS_Ocu_00012 */
 void test_Ocu_GetVersionInfo_Null(void)
 {
     Ocu_GetVersionInfo(NULL);

@@ -41,11 +41,13 @@ void tearDown(void) {
 }
 
 /* ========= Dio_Init ========= */
+/* @req SWS_Dio_00001 */
 void test_Dio_Init_NullConfig(void) {
     Dio_Init(NULL); /* Should not crash; DET reports, returns */
     /* After error, module not initialized — but doesn't crash */
 }
 
+/* @req SWS_Dio_00001 */
 void test_Dio_Init_Valid(void) {
     Dio_ConfigType cfg; /* dummy */
     memset(&cfg, 0, sizeof(cfg));
@@ -53,11 +55,13 @@ void test_Dio_Init_Valid(void) {
 }
 
 /* ========= Dio_ReadChannel ========= */
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannel_BeforeInit_ReturnsLow(void) {
     Dio_LevelType l = Dio_ReadChannel(0);
     TEST_ASSERT_EQUAL(STD_LOW, l);
 }
 
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannel_ValidHigh(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -66,6 +70,7 @@ void test_Dio_ReadChannel_ValidHigh(void) {
     TEST_ASSERT_EQUAL(STD_HIGH, Dio_ReadChannel(0));
 }
 
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannel_ValidLow(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -73,12 +78,14 @@ void test_Dio_ReadChannel_ValidLow(void) {
     TEST_ASSERT_EQUAL(STD_LOW, Dio_ReadChannel(0));
 }
 
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannel_InvalidChannel(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
     TEST_ASSERT_EQUAL(STD_LOW, Dio_ReadChannel(256)); /* DIO_NUM_PORTS*DIO_NUM_CHANNELS_PER_PORT = 256 */
 }
 
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannel_InvalidChannel_255(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -87,6 +94,7 @@ void test_Dio_ReadChannel_InvalidChannel_255(void) {
 }
 
 /* ========= Dio_WriteChannel ========= */
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannel_ValidHigh(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -95,6 +103,7 @@ void test_Dio_WriteChannel_ValidHigh(void) {
     TEST_ASSERT_TRUE(v & 0x01);
 }
 
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannel_ValidLow(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -104,10 +113,12 @@ void test_Dio_WriteChannel_ValidLow(void) {
     TEST_ASSERT_FALSE(v & 0x01);
 }
 
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannel_BeforeInit(void) {
     Dio_WriteChannel(0, STD_HIGH); /* Should not crash, returns early */
 }
 
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannel_Invalid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -115,6 +126,7 @@ void test_Dio_WriteChannel_Invalid(void) {
 }
 
 /* ========= Dio_ReadPort ========= */
+/* @req SWS_Dio_00004 */
 void test_Dio_ReadPort_Valid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -122,17 +134,20 @@ void test_Dio_ReadPort_Valid(void) {
     TEST_ASSERT_EQUAL(0xDEAD, Dio_ReadPort(0));
 }
 
+/* @req SWS_Dio_00004 */
 void test_Dio_ReadPort_Invalid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
     TEST_ASSERT_EQUAL(0, Dio_ReadPort(8)); /* DIO_NUM_PORTS=8, so 8 is invalid */
 }
 
+/* @req SWS_Dio_00004 */
 void test_Dio_ReadPort_BeforeInit(void) {
     TEST_ASSERT_EQUAL(0, Dio_ReadPort(0));
 }
 
 /* ========= Dio_WritePort ========= */
+/* @req SWS_Dio_00005 */
 void test_Dio_WritePort_Valid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -140,6 +155,7 @@ void test_Dio_WritePort_Valid(void) {
     TEST_ASSERT_EQUAL(0x1234, mock_hal_read32(DIO_GPIO1_BASE + DIO_GPIO_DR_OFF));
 }
 
+/* @req SWS_Dio_00005 */
 void test_Dio_WritePort_Invalid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -147,6 +163,7 @@ void test_Dio_WritePort_Invalid(void) {
 }
 
 /* ========= Dio_ReadChannelGroup ========= */
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannelGroup_Valid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -155,18 +172,21 @@ void test_Dio_ReadChannelGroup_Valid(void) {
     TEST_ASSERT_EQUAL(0x0B, Dio_ReadChannelGroup(&g));
 }
 
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannelGroup_Null(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
     TEST_ASSERT_EQUAL(0, Dio_ReadChannelGroup(NULL));
 }
 
+/* @req SWS_Dio_00002 */
 void test_Dio_ReadChannelGroup_BeforeInit(void) {
     Dio_ChannelGroupType g = {0, 0, 0x0F};
     TEST_ASSERT_EQUAL(0, Dio_ReadChannelGroup(&g));
 }
 
 /* ========= Dio_WriteChannelGroup ========= */
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannelGroup_Valid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -176,18 +196,21 @@ void test_Dio_WriteChannelGroup_Valid(void) {
     TEST_ASSERT_EQUAL(0xF5, mock_hal_read32(DIO_GPIO1_BASE + DIO_GPIO_DR_OFF));
 }
 
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannelGroup_Null(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
     Dio_WriteChannelGroup(NULL, 0x05); /* Should not crash */
 }
 
+/* @req SWS_Dio_00003 */
 void test_Dio_WriteChannelGroup_BeforeInit(void) {
     Dio_ChannelGroupType g = {0, 0, 0x0F};
     Dio_WriteChannelGroup(&g, 0x05); /* Should not crash */
 }
 
 /* ========= Dio_GetVersionInfo ========= */
+/* @req SWS_Dio_00008 */
 void test_Dio_GetVersionInfo_Valid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -197,6 +220,7 @@ void test_Dio_GetVersionInfo_Valid(void) {
     TEST_ASSERT_EQUAL(DIO_MODULE_ID, vi.moduleID);
 }
 
+/* @req SWS_Dio_00008 */
 void test_Dio_GetVersionInfo_Null(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -204,6 +228,7 @@ void test_Dio_GetVersionInfo_Null(void) {
 }
 
 /* ========= Dio_FlipChannel ========= */
+/* @req SWS_Dio_00009 */
 void test_Dio_FlipChannel_Valid_HighToLow(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -211,6 +236,7 @@ void test_Dio_FlipChannel_Valid_HighToLow(void) {
     TEST_ASSERT_EQUAL(STD_LOW, Dio_FlipChannel(0));
 }
 
+/* @req SWS_Dio_00009 */
 void test_Dio_FlipChannel_Valid_LowToHigh(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -218,17 +244,20 @@ void test_Dio_FlipChannel_Valid_LowToHigh(void) {
     TEST_ASSERT_EQUAL(STD_HIGH, Dio_FlipChannel(0));
 }
 
+/* @req SWS_Dio_00009 */
 void test_Dio_FlipChannel_Invalid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
     TEST_ASSERT_EQUAL(STD_LOW, Dio_FlipChannel(256));
 }
 
+/* @req SWS_Dio_00009 */
 void test_Dio_FlipChannel_BeforeInit(void) {
     TEST_ASSERT_EQUAL(STD_LOW, Dio_FlipChannel(0));
 }
 
 /* ========= Dio_MaskedWritePort ========= */
+/* @req SWS_Dio_00010 */
 void test_Dio_MaskedWritePort_Valid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
@@ -239,12 +268,14 @@ void test_Dio_MaskedWritePort_Valid(void) {
     /* Actually: dr = 0x00FF, mask=0xF000 -> dr &= ~0xF000 = 0x00FF, dr |= (0x0F00 & 0xF000) = 0x00FF | 0x0000 = 0x00FF */
 }
 
+/* @req SWS_Dio_00010 */
 void test_Dio_MaskedWritePort_Invalid(void) {
     Dio_ConfigType cfg; memset(&cfg, 0, sizeof(cfg));
     Dio_Init(&cfg);
     Dio_MaskedWritePort(8, 0x0F00, 0xF000); /* Should report error */
 }
 
+/* @req SWS_Dio_00010 */
 void test_Dio_MaskedWritePort_BeforeInit(void) {
     Dio_MaskedWritePort(0, 0x0F00, 0xF000); /* Should not crash */
 }

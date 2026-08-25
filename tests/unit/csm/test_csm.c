@@ -10,7 +10,9 @@
 #include "Csm.h"
 #include "Csm_Cfg.h"
 
-/* Test: Csm_Init */
+/* Test: Csm_Init
+ * @req SWS_Csm_00001
+ */
 static void test_Csm_Init(void **state)
 {
     (void)state;
@@ -20,7 +22,9 @@ static void test_Csm_Init(void **state)
     assert_int_equal(result, E_OK);
 }
 
-/* Test: Csm_DeInit */
+/* Test: Csm_DeInit
+ * @req SWS_Csm_00002
+ */
 static void test_Csm_DeInit(void **state)
 {
     (void)state;
@@ -29,7 +33,9 @@ static void test_Csm_DeInit(void **state)
     assert_true(1);
 }
 
-/* Test: Csm_Encrypt */
+/* Test: Csm_Encrypt
+ * @req SWS_Csm_00050
+ */
 static void test_Csm_Encrypt(void **state)
 {
     (void)state;
@@ -45,7 +51,9 @@ static void test_Csm_Encrypt(void **state)
     assert_true(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
 }
 
-/* Test: Csm_Decrypt */
+/* Test: Csm_Decrypt
+ * @req SWS_Csm_00051
+ */
 static void test_Csm_Decrypt(void **state)
 {
     (void)state;
@@ -61,7 +69,9 @@ static void test_Csm_Decrypt(void **state)
     assert_true(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
 }
 
-/* Test: Csm_MacGenerate */
+/* Test: Csm_MacGenerate
+ * @req SWS_Csm_00040
+ */
 static void test_Csm_MacGenerate(void **state)
 {
     (void)state;
@@ -77,7 +87,9 @@ static void test_Csm_MacGenerate(void **state)
     assert_true(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
 }
 
-/* Test: Csm_MacVerify */
+/* Test: Csm_MacVerify
+ * @req SWS_Csm_00041
+ */
 static void test_Csm_MacVerify(void **state)
 {
     (void)state;
@@ -94,7 +106,9 @@ static void test_Csm_MacVerify(void **state)
     assert_true(result == E_OK || result == E_NOT_OK || result == CRYPTO_E_BUSY);
 }
 
-/* Test: Csm_RandomGenerate */
+/* Test: Csm_RandomGenerate
+ * @req SWS_Csm_00070
+ */
 static void test_Csm_RandomGenerate(void **state)
 {
     (void)state;
@@ -107,7 +121,9 @@ static void test_Csm_RandomGenerate(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
-/* Test: Csm_Hash */
+/* Test: Csm_Hash
+ * @req SWS_Csm_00030
+ */
 static void test_Csm_Hash(void **state)
 {
     (void)state;

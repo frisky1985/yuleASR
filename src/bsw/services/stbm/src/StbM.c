@@ -239,6 +239,7 @@ STATIC void StbM_UpdateTimeouts(void)
 *                                      GLOBAL FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_StbM_00001 */
 /**
  * @brief   Initializes the StbM module
  */
@@ -294,6 +295,7 @@ void StbM_Init(const StbM_ConfigType* ConfigPtr)
     StbM_InternalState.State = STBM_STATE_INIT;
 }
 
+/** @req SWS_StbM_00002 */
 /**
  * @brief   Deinitializes the StbM module
  */
@@ -318,6 +320,7 @@ void StbM_DeInit(void)
  * @brief   Gets version information
  */
 #if (STBM_VERSION_INFO_API == STD_ON)
+/** @req SWS_StbM_00003 */
 void StbM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (STBM_DEV_ERROR_DETECT == STD_ON)
@@ -336,6 +339,7 @@ void StbM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_StbM_00005 */
 /**
  * @brief   Gets current synchronized time
  */
@@ -393,6 +397,7 @@ Std_ReturnType StbM_GetCurrentTime(uint8 timeBaseId,
     return result;
 }
 
+/** @req SWS_StbM_00006 */
 /**
  * @brief   Gets current virtual local time
  */
@@ -427,6 +432,7 @@ Std_ReturnType StbM_GetCurrentVirtualTime(uint8 timeBaseId,
     return result;
 }
 
+/** @req SWS_StbM_00007 */
 /**
  * @brief   Sets global time
  */
@@ -482,6 +488,7 @@ Std_ReturnType StbM_SetGlobalTime(uint8 timeBaseId,
     return result;
 }
 
+/** @req SWS_StbM_00008 */
 /**
  * @brief   Sets global time from bus (time sync protocol)
  */

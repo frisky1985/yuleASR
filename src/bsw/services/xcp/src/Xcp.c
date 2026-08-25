@@ -127,6 +127,7 @@ static uint32 Xcp_GetTimestamp(void);
 #define XCP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Xcp_00001 */
 /**
  * @brief Initializes the XCP module
  */
@@ -214,6 +215,7 @@ void Xcp_Init(const Xcp_ConfigType* ConfigPtr)
     Xcp_Initialized = TRUE;
 }
 
+/** @req SWS_Xcp_00002 */
 /**
  * @brief Deinitializes the XCP module
  */
@@ -238,6 +240,7 @@ void Xcp_DeInit(void)
 }
 
 #if (XCP_VERSION_INFO_API == STD_ON)
+/** @req SWS_Xcp_00003 */
 /**
  * @brief Gets version information
  */
@@ -258,6 +261,7 @@ void Xcp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_Xcp_00004 */
 /**
  * @brief Main function for cyclic processing
  */
@@ -278,6 +282,7 @@ void Xcp_MainFunction(void)
     }
 }
 
+/** @req SWS_Xcp_00005 */
 /**
  * @brief Rx Indication callback from lower layer
  */
@@ -306,6 +311,7 @@ void Xcp_RxIndication(uint8 XcpChannelId, PduIdType XcpPduId, const PduInfoType*
     }
 }
 
+/** @req SWS_Xcp_00006 */
 /**
  * @brief Tx Confirmation callback from lower layer
  */
@@ -327,6 +333,7 @@ void Xcp_TxConfirmation(uint8 XcpChannelId, PduIdType XcpTxPduId)
     /* Transmission completed - can be used for flow control */
 }
 
+/** @req SWS_Xcp_00007 */
 /**
  * @brief Trigger transmit callback from lower layer
  */
@@ -355,6 +362,7 @@ Std_ReturnType Xcp_TriggerTransmit(uint8 XcpChannelId, PduIdType XcpTxPduId, Pdu
     return E_OK;
 }
 
+/** @req SWS_Xcp_00008 */
 /**
  * @brief Sets transmission mode
  */
@@ -394,6 +402,7 @@ Xcp_SessionStatusType Xcp_GetSessionStatus(void)
     return status;
 }
 
+/** @req SWS_Xcp_00009 */
 /**
  * @brief Processes received XCP command
  */
@@ -436,6 +445,7 @@ void Xcp_ProcessCommand(uint8 ChannelId, const uint8* Data, uint8 Length)
     }
 }
 
+/** @req SWS_Xcp_00010 */
 /**
  * @brief Sends response packet
  */
@@ -460,6 +470,7 @@ void Xcp_SendResponse(uint8 ChannelId, const uint8* Data, uint8 Length)
     /* This is simplified - actual implementation depends on transport layer */
 }
 
+/** @req SWS_Xcp_00011 */
 /**
  * @brief Sends error packet
  */
@@ -483,6 +494,7 @@ void Xcp_SendError(uint8 ChannelId, uint8 ErrorCode, uint8 ErrorInfo)
 /*     pduInfo.SduLength = 3U; */
 }
 
+/** @req SWS_Xcp_00012 */
 /**
  * @brief Sends event packet
  */
@@ -507,6 +519,7 @@ void Xcp_SendEvent(uint8 ChannelId, uint8 EventCode, const uint8* Data, uint8 Le
 *                                    COMMAND HANDLERS
 ==================================================================================================*/
 
+/** @req SWS_Xcp_00013 */
 /**
  * @brief Handles Connect command
  */
@@ -558,6 +571,7 @@ void Xcp_CmdConnect(uint8 ChannelId, const uint8* Data, uint8 Length)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00014 */
 /**
  * @brief Handles Disconnect command
  */
@@ -578,6 +592,7 @@ void Xcp_CmdDisconnect(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00015 */
 /**
  * @brief Handles GetStatus command
  */
@@ -598,6 +613,7 @@ void Xcp_CmdGetStatus(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, response, 5U);
 }
 
+/** @req SWS_Xcp_00016 */
 /**
  * @brief Handles GetCommModeInfo command
  */
@@ -625,6 +641,7 @@ void Xcp_CmdGetCommModeInfo(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00017 */
 /**
  * @brief Handles GetID command
  */
@@ -673,6 +690,7 @@ void Xcp_CmdGetId(uint8 ChannelId, const uint8* Data, uint8 Length)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00018 */
 /**
  * @brief Handles SetMTA command
  */
@@ -688,6 +706,7 @@ void Xcp_CmdSetMta(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00019 */
 /**
  * @brief Handles Upload command
  */
@@ -726,6 +745,7 @@ void Xcp_CmdUpload(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, response, length);
 }
 
+/** @req SWS_Xcp_00020 */
 /**
  * @brief Handles ShortUpload command
  */
@@ -765,6 +785,7 @@ void Xcp_CmdShortUpload(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, response, length);
 }
 
+/** @req SWS_Xcp_00021 */
 /**
  * @brief Handles Download command
  */
@@ -824,6 +845,7 @@ void Xcp_CmdDownload(uint8 ChannelId, const uint8* Data, uint8 Length)
     }
 }
 
+/** @req SWS_Xcp_00022 */
 /**
  * @brief Handles GetSeed command
  */
@@ -868,6 +890,7 @@ void Xcp_CmdGetSeed(uint8 ChannelId, const uint8* Data)
     }
 }
 
+/** @req SWS_Xcp_00023 */
 /**
  * @brief Handles Unlock command
  */
@@ -915,6 +938,7 @@ void Xcp_CmdUnlock(uint8 ChannelId, const uint8* Data, uint8 Length)
 *                                    DAQ COMMAND HANDLERS
 ==================================================================================================*/
 
+/** @req SWS_Xcp_00024 */
 /**
  * @brief Handles ClearDaqList command
  */
@@ -943,6 +967,7 @@ void Xcp_CmdClearDaqList(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00025 */
 /**
  * @brief Handles SetDaqPtr command
  */
@@ -963,6 +988,7 @@ void Xcp_CmdSetDaqPtr(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00026 */
 /**
  * @brief Handles WriteDaq command
  */
@@ -1001,6 +1027,7 @@ void Xcp_CmdWriteDaq(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00027 */
 /**
  * @brief Handles SetDaqListMode command
  */
@@ -1035,6 +1062,7 @@ void Xcp_CmdSetDaqListMode(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00028 */
 /**
  * @brief Handles GetDaqListMode command
  */
@@ -1064,6 +1092,7 @@ void Xcp_CmdGetDaqListMode(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00029 */
 /**
  * @brief Handles StartStopDaqList command
  */
@@ -1107,6 +1136,7 @@ void Xcp_CmdStartStopDaqList(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, response, 1U);
 }
 
+/** @req SWS_Xcp_00030 */
 /**
  * @brief Handles StartStopSynch command
  */
@@ -1149,6 +1179,7 @@ void Xcp_CmdStartStopSynch(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00031 */
 /**
  * @brief Handles GetDaqProcessorInfo command
  */
@@ -1188,6 +1219,7 @@ void Xcp_CmdGetDaqProcessorInfo(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00032 */
 /**
  * @brief Handles GetDaqResolutionInfo command
  */
@@ -1203,6 +1235,7 @@ void Xcp_CmdGetDaqResolutionInfo(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, response, 4U);
 }
 
+/** @req SWS_Xcp_00033 */
 /**
  * @brief Handles GetDaqListInfo command
  */
@@ -1245,6 +1278,7 @@ void Xcp_CmdGetDaqListInfo(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00034 */
 /**
  * @brief Handles FreeDaq command
  */
@@ -1261,6 +1295,7 @@ void Xcp_CmdFreeDaq(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00035 */
 /**
  * @brief Handles AllocDaq command
  */
@@ -1289,6 +1324,7 @@ void Xcp_CmdAllocDaq(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00036 */
 /**
  * @brief Handles AllocOdt command
  */
@@ -1324,6 +1360,7 @@ void Xcp_CmdAllocOdt(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00037 */
 /**
  * @brief Handles AllocOdtEntry command
  */
@@ -1365,6 +1402,7 @@ void Xcp_CmdAllocOdtEntry(uint8 ChannelId, const uint8* Data)
 *                                    PGM COMMAND HANDLERS
 ==================================================================================================*/
 
+/** @req SWS_Xcp_00038 */
 /**
  * @brief Handles ProgramStart command
  */
@@ -1398,6 +1436,7 @@ void Xcp_CmdProgramStart(uint8 ChannelId)
     Xcp_SendResponse(ChannelId, response, 7U);
 }
 
+/** @req SWS_Xcp_00039 */
 /**
  * @brief Handles ProgramClear command
  */
@@ -1421,6 +1460,7 @@ void Xcp_CmdProgramClear(uint8 ChannelId, const uint8* Data)
     Xcp_SendResponse(ChannelId, NULL_PTR, 0U);
 }
 
+/** @req SWS_Xcp_00040 */
 /**
  * @brief Handles Program command
  */
@@ -1475,6 +1515,7 @@ void Xcp_CmdProgram(uint8 ChannelId, const uint8* Data, uint8 Length)
     }
 }
 
+/** @req SWS_Xcp_00041 */
 /**
  * @brief Handles ProgramReset command
  */
@@ -1489,6 +1530,7 @@ void Xcp_CmdProgramReset(uint8 ChannelId)
     /* In a real implementation, this might trigger ECU reset */
 }
 
+/** @req SWS_Xcp_00042 */
 /**
  * @brief Handles ProgramVerify command
  */
@@ -1517,6 +1559,7 @@ void Xcp_CmdProgramVerify(uint8 ChannelId, const uint8* Data)
 *                                    DAQ PROCESSING
 ==================================================================================================*/
 
+/** @req SWS_Xcp_00043 */
 /**
  * @brief DAQ processor - called periodically
  */
@@ -1542,6 +1585,7 @@ void Xcp_DaqProcessor(void)
     }
 }
 
+/** @req SWS_Xcp_00044 */
 /**
  * @brief Sample data for a DAQ list
  */
@@ -1612,6 +1656,7 @@ void Xcp_DaqSample(uint16 DaqListIdx)
     }
 }
 
+/** @req SWS_Xcp_00045 */
 /**
  * @brief Transmit DTO packet
  */
@@ -1632,6 +1677,7 @@ void Xcp_DaqTransmit(uint16 DaqListIdx, uint8 OdtIdx)
     /* In real implementation: CanIf_Transmit, SoAd_Transmit, etc. */
 }
 
+/** @req SWS_Xcp_00046 */
 /**
  * @brief STIM processor
  */
@@ -1655,6 +1701,7 @@ void Xcp_StimProcessor(uint8 ChannelId, const uint8* Data, uint8 Length)
 *                                    MEMORY ACCESS
 ==================================================================================================*/
 
+/** @req SWS_Xcp_00047 */
 /**
  * @brief Read memory
  */
@@ -1683,6 +1730,7 @@ Std_ReturnType Xcp_ReadMemory(uint32 Addr, uint8 Ext, uint8* Data, uint32 Length
     return E_OK;
 }
 
+/** @req SWS_Xcp_00048 */
 /**
  * @brief Write memory
  */
@@ -1715,6 +1763,7 @@ Std_ReturnType Xcp_WriteMemory(uint32 Addr, uint8 Ext, const uint8* Data, uint32
 *                                    RESOURCE PROTECTION
 ==================================================================================================*/
 
+/** @req SWS_Xcp_00049 */
 /**
  * @brief Set resource protection
  */
@@ -1732,6 +1781,7 @@ void Xcp_SetResourceProtection(uint8 Resource, boolean Protected)
     }
 }
 
+/** @req SWS_Xcp_00050 */
 /**
  * @brief Check if resource is protected
  */
@@ -1740,6 +1790,7 @@ boolean Xcp_IsResourceProtected(uint8 Resource)
     return XCP_IS_RESOURCE_PROTECTED(Resource, Xcp_ChannelState[0].ResourceProtection);
 }
 
+/** @req SWS_Xcp_00051 */
 /**
  * @brief Unlock resource
  */

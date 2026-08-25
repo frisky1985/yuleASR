@@ -10,6 +10,7 @@
 #include "ComM.h"
 #include "ComM_Cfg.h"
 
+/** @req SWS_ComM_00001 */
 static void test_ComM_Init(void **state) {
     (void)state;
     const ComM_ConfigType* config = NULL;
@@ -17,12 +18,14 @@ static void test_ComM_Init(void **state) {
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_ComM_00001 */
 static void test_ComM_DeInit(void **state) {
     (void)state;
     ComM_DeInit();
     assert_true(1);
 }
 
+/** @req SWS_ComM_00005 */
 static void test_ComM_RequestComMode(void **state) {
     (void)state;
     ComM_UserHandleType user = 0;
@@ -31,6 +34,7 @@ static void test_ComM_RequestComMode(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_ComM_00008 */
 static void test_ComM_GetCurrentComMode(void **state) {
     (void)state;
     ComM_UserHandleType user = 0;
@@ -39,6 +43,7 @@ static void test_ComM_GetCurrentComMode(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_ComM_00006 */
 static void test_ComM_GetMaxComMode(void **state) {
     (void)state;
     ComM_UserHandleType user = 0;
@@ -47,6 +52,7 @@ static void test_ComM_GetMaxComMode(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_ComM_00004 */
 static void test_ComM_MainFunction(void **state) {
     (void)state;
     ComM_MainFunction();

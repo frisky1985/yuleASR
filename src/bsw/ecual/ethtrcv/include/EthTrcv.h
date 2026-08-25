@@ -337,6 +337,7 @@ extern const EthTrcv_ConfigType EthTrcv_Config;
 #define ETHTRCV_START_SEC_CODE
 #include "EthTrcv_MemMap.h"
 
+/** @req SWS_EthTrcv_00001 */
 /**
  * @brief Initializes the Ethernet Transceiver driver.
  * @param CfgPtr Pointer to configuration structure
@@ -345,6 +346,7 @@ extern void EthTrcv_Init(
     const EthTrcv_ConfigType* CfgPtr
 );
 
+/** @req SWS_EthTrcv_00002 */
 /**
  * @brief Deinitializes the Ethernet Transceiver driver.
  */
@@ -352,6 +354,7 @@ extern void EthTrcv_DeInit(
     void
 );
 
+/** @req SWS_EthTrcv_00005 */
 /**
  * @brief Sets the transceiver mode.
  * @param TrcvIdx Index of the transceiver
@@ -364,6 +367,7 @@ extern Std_ReturnType EthTrcv_SetTransceiverMode(
     EthTrcv_ModeType Mode
 );
 
+/** @req SWS_EthTrcv_00006 */
 /**
  * @brief Gets the current transceiver mode.
  * @param TrcvIdx Index of the transceiver
@@ -376,6 +380,7 @@ extern Std_ReturnType EthTrcv_GetTransceiverMode(
     EthTrcv_ModeType* Mode
 );
 
+/** @req SWS_EthTrcv_00007 */
 /**
  * @brief Gets the link state of the transceiver.
  * @param TrcvIdx Index of the transceiver
@@ -388,6 +393,7 @@ extern Std_ReturnType EthTrcv_GetLinkState(
     EthTrcv_LinkStateType* LinkStatePtr
 );
 
+/** @req SWS_EthTrcv_00008 */
 /**
  * @brief Gets the baud rate of the transceiver.
  * @param TrcvIdx Index of the transceiver
@@ -400,6 +406,7 @@ extern Std_ReturnType EthTrcv_GetBaudRate(
     EthTrcv_BaudRateType* BaudRatePtr
 );
 
+/** @req SWS_EthTrcv_00009 */
 /**
  * @brief Gets the duplex mode of the transceiver.
  * @param TrcvIdx Index of the transceiver
@@ -412,6 +419,7 @@ extern Std_ReturnType EthTrcv_GetDuplexMode(
     EthTrcv_DuplexModeType* DuplexModePtr
 );
 
+/** @req SWS_EthTrcv_00004 */
 /**
  * @brief Main function for cyclic processing.
  */
@@ -420,6 +428,7 @@ extern void EthTrcv_MainFunction(
 );
 
 #if (ETHTRCV_VERSION_INFO_API == STD_ON)
+/** @req SWS_EthTrcv_00003 */
 /**
  * @brief Gets version information of the EthTrcv module.
  * @param VersionInfoPtr Pointer to version info structure
@@ -429,6 +438,7 @@ extern void EthTrcv_GetVersionInfo(
 );
 #endif /* ETHTRCV_VERSION_INFO_API */
 
+/** @req SWS_EthTrcv_00010 */
 /**
  * @brief Checks for wake-up events.
  * @param WakeupSource Wake-up source to check
@@ -437,6 +447,7 @@ extern Std_ReturnType EthTrcv_CheckWakeup(
     EcuM_WakeupSourceType WakeupSource
 );
 
+/** @req SWS_EthTrcv_00011 */
 /**
  * @brief Reads a PHY register.
  * @param TrcvIdx Index of the transceiver
@@ -449,6 +460,7 @@ extern Std_ReturnType EthTrcv_ReadMiiIndication(
     uint16* RegValPtr
 );
 
+/** @req SWS_EthTrcv_00012 */
 /**
  * @brief Writes a PHY register.
  * @param TrcvIdx Index of the transceiver
@@ -461,6 +473,7 @@ extern Std_ReturnType EthTrcv_WriteMiiIndication(
     uint16 RegVal
 );
 
+/** @req SWS_EthTrcv_00013 */
 /**
  * @brief Gets signal quality information.
  * @param TrcvIdx Index of the transceiver
@@ -471,6 +484,7 @@ extern Std_ReturnType EthTrcv_GetSignalQuality(
     EthTrcv_SignalQualityType* SignalQualityPtr
 );
 
+/** @req SWS_EthTrcv_00014 */
 /**
  * @brief Runs cable diagnostics.
  * @param TrcvIdx Index of the transceiver

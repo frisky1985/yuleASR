@@ -83,19 +83,23 @@ static uint32 Wdg_LastTriggerTime = 0U;  /* 上次触发时间戳 */
 #define WDG_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/** @req SWS_Wdg_00101 */
 static uint32 Wdg_GetBaseAddr(void)
 {
     return WDG_WDOG1_BASE_ADDR;
 }
 
+/** @req SWS_Wdg_00102 */
 static void Wdg_EnableClock(void)
 {
 }
 
+/** @req SWS_Wdg_00103 */
 static void Wdg_DisableClock(void)
 {
 }
 
+/** @req SWS_Wdg_00104 */
 static uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs)
 {
     /* WDOG timeout = (WCR[WT] + 1) * 2 / WDOG clock frequency */
@@ -130,6 +134,7 @@ static uint16 Wdg_CalculateTimeoutValue(Wdg_TimeoutType timeoutMs)
  * @param modeSettings 当前模式配置
  * @return Wdg_TriggerResultType 触发结果
  */
+/** @req SWS_Wdg_00105 */
 static Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
     uint32 currentTime,
     const Wdg_ModeSettingsType* modeSettings)
@@ -157,6 +162,7 @@ static Wdg_TriggerResultType Wdg_ValidateWindowTrigger(
  * @brief 获取当前系统时间戳
  * @return 当前时间戳(ms)
  */
+/** @req SWS_Wdg_00106 */
 static uint32 Wdg_GetCurrentTimeMs(void)
 {
     /* 时间戳获取 - 依赖系统定时器集成 (可用 GPT 定时器或系统计数器) */
@@ -166,6 +172,7 @@ static uint32 Wdg_GetCurrentTimeMs(void)
 /**
  * @brief 调用超时前预警回调
  */
+/** @req SWS_Wdg_00107 */
 static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
 {
     if ((Wdg_ConfigPtr != NULL_PTR) && 
@@ -177,6 +184,7 @@ static void Wdg_InvokePreWarningCallback(uint32 TimeRemainingUs)
 /**
  * @brief 调用窗口违规回调
  */
+/** @req SWS_Wdg_00108 */
 static void Wdg_InvokeWindowViolationCallback(void)
 {
     if ((Wdg_ConfigPtr != NULL_PTR) && 
@@ -188,6 +196,7 @@ static void Wdg_InvokeWindowViolationCallback(void)
 #define WDG_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Wdg_00001 */
 void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -261,6 +270,7 @@ void Wdg_Init(const Wdg_ConfigType* ConfigPtr)
     Wdg_DriverInitialized = TRUE;
 }
 
+/** @req SWS_Wdg_00002 */
 Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -334,6 +344,7 @@ Std_ReturnType Wdg_SetMode(WdgIf_ModeType Mode)
     return E_OK;
 }
 
+/** @req SWS_Wdg_00003 */
 void Wdg_Trigger(void)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -413,6 +424,7 @@ void Wdg_Trigger(void)
     Wdg_LastTriggerTime = currentTime;
 }
 
+/** @req SWS_Wdg_00004 */
 void Wdg_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -428,6 +440,7 @@ void Wdg_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = WDG_SW_PATCH_VERSION;
 }
 
+/** @req SWS_Wdg_00005 */
 Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
 {
     #if (WDG_DEV_ERROR_DETECT == STD_ON)
@@ -465,6 +478,8 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
     REG_WRITE16(baseAddr + WDG_WCR, wcrValue);
 
     /* Trigger watchdog */
+/** @req SWS_Wdg_00003 */
+    /** @req SWS_Wdg_00003 */
     Wdg_Trigger();
 
     Wdg_CurrentTimeout = timeout;
@@ -475,6 +490,7 @@ Std_ReturnType Wdg_SetTriggerCondition(uint16 timeout)
  * @brief 获取看门狗当前状态
  * @return Wdg_StateType 当前状态
  */
+/** @req SWS_Wdg_00006 */
 Wdg_StateType Wdg_GetStatus(void)
 {
     return Wdg_ModuleState;
@@ -484,6 +500,7 @@ Wdg_StateType Wdg_GetStatus(void)
  * @brief 获取触发计数器值
  * @return uint32 触发次数
  */
+/** @req SWS_Wdg_00007 */
 uint32 Wdg_GetTriggerCounter(void)
 {
     return Wdg_TriggerCounter;
@@ -493,6 +510,7 @@ uint32 Wdg_GetTriggerCounter(void)
  * @brief 获取上次触发时间
  * @return uint32 上次触发时间戳(ms)
  */
+/** @req SWS_Wdg_00008 */
 uint32 Wdg_GetLastTriggerTime(void)
 {
     return Wdg_LastTriggerTime;

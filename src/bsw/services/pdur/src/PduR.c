@@ -108,13 +108,21 @@ STATIC PduR_InternalStateType PduR_InternalState;
 /*==================================================================================================
 *                                  LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_PduR_00101 */
 STATIC Std_ReturnType PduR_FindRoutingPath(PduIdType PduId, uint8 ModuleType, uint8* PathIndex);
+/** @req SWS_PduR_00102 */
 STATIC Std_ReturnType PduR_RoutePdu(const PduR_RoutingPathConfigType* PathPtr, const PduInfoType* PduInfoPtr);
+/** @req SWS_PduR_00103 */
 STATIC Std_ReturnType PduR_RouteToDestination(const PduR_DestPduConfigType* DestPtr, const PduInfoType* PduInfoPtr);
+/** @req SWS_PduR_00104 */
 STATIC void PduR_FifoInit(PduR_FifoQueueType* FifoPtr);
+/** @req SWS_PduR_00105 */
 STATIC Std_ReturnType PduR_FifoPush(PduR_FifoQueueType* FifoPtr, const PduInfoType* PduInfoPtr);
+/** @req SWS_PduR_00106 */
 STATIC Std_ReturnType PduR_FifoPop(PduR_FifoQueueType* FifoPtr, PduInfoType* PduInfoPtr);
+/** @req SWS_PduR_00107 */
 STATIC boolean PduR_FifoIsEmpty(const PduR_FifoQueueType* FifoPtr);
+/** @req SWS_PduR_00108 */
 STATIC boolean PduR_FifoIsFull(const PduR_FifoQueueType* FifoPtr);
 
 /*==================================================================================================
@@ -130,6 +138,7 @@ STATIC boolean PduR_FifoIsFull(const PduR_FifoQueueType* FifoPtr);
  * @param   PathIndex   - Output parameter for found path index
  * @return  E_OK if path found, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00101 */
 STATIC Std_ReturnType PduR_FindRoutingPath(PduIdType PduId, uint8 ModuleType, uint8* PathIndex)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -160,6 +169,7 @@ STATIC Std_ReturnType PduR_FindRoutingPath(PduIdType PduId, uint8 ModuleType, ui
  * @param   PduInfoPtr  - Pointer to PDU data
  * @return  E_OK if routing successful, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00102 */
 STATIC Std_ReturnType PduR_RoutePdu(const PduR_RoutingPathConfigType* PathPtr, const PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_OK;
@@ -189,6 +199,7 @@ STATIC Std_ReturnType PduR_RoutePdu(const PduR_RoutingPathConfigType* PathPtr, c
  * @param   PduInfoPtr  - Pointer to PDU data
  * @return  E_OK if routing successful, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00103 */
 STATIC Std_ReturnType PduR_RouteToDestination(const PduR_DestPduConfigType* DestPtr, const PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -228,6 +239,7 @@ STATIC Std_ReturnType PduR_RouteToDestination(const PduR_DestPduConfigType* Dest
  * @brief   Initialize FIFO queue
  * @param   FifoPtr - Pointer to FIFO queue
  */
+/** @req SWS_PduR_00104 */
 STATIC void PduR_FifoInit(PduR_FifoQueueType* FifoPtr)
 {
     uint8 i;
@@ -251,6 +263,7 @@ STATIC void PduR_FifoInit(PduR_FifoQueueType* FifoPtr)
  * @param   PduInfoPtr  - Pointer to PDU data
  * @return  E_OK if successful, E_NOT_OK if FIFO full
  */
+/** @req SWS_PduR_00105 */
 STATIC Std_ReturnType PduR_FifoPush(PduR_FifoQueueType* FifoPtr, const PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -298,6 +311,7 @@ STATIC Std_ReturnType PduR_FifoPush(PduR_FifoQueueType* FifoPtr, const PduInfoTy
  * @param   PduInfoPtr  - Output pointer for PDU data
  * @return  E_OK if successful, E_NOT_OK if FIFO empty
  */
+/** @req SWS_PduR_00106 */
 STATIC Std_ReturnType PduR_FifoPop(PduR_FifoQueueType* FifoPtr, PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -334,6 +348,7 @@ STATIC Std_ReturnType PduR_FifoPop(PduR_FifoQueueType* FifoPtr, PduInfoType* Pdu
  * @param   FifoPtr - Pointer to FIFO queue
  * @return  TRUE if empty, FALSE otherwise
  */
+/** @req SWS_PduR_00107 */
 STATIC boolean PduR_FifoIsEmpty(const PduR_FifoQueueType* FifoPtr)
 {
     boolean result = TRUE;
@@ -351,6 +366,7 @@ STATIC boolean PduR_FifoIsEmpty(const PduR_FifoQueueType* FifoPtr)
  * @param   FifoPtr - Pointer to FIFO queue
  * @return  TRUE if full, FALSE otherwise
  */
+/** @req SWS_PduR_00108 */
 STATIC boolean PduR_FifoIsFull(const PduR_FifoQueueType* FifoPtr)
 {
     boolean result = TRUE;
@@ -372,6 +388,7 @@ STATIC boolean PduR_FifoIsFull(const PduR_FifoQueueType* FifoPtr)
  * @param   ConfigPtr - Pointer to configuration structure
  * @return  None
  */
+/** @req SWS_PduR_00001 */
 void PduR_Init(const PduR_ConfigType* ConfigPtr)
 {
     uint8 i;
@@ -403,6 +420,7 @@ void PduR_Init(const PduR_ConfigType* ConfigPtr)
  * @param   None
  * @return  None
  */
+/** @req SWS_PduR_00002 */
 void PduR_DeInit(void)
 {
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
@@ -426,6 +444,7 @@ void PduR_DeInit(void)
  * @param   PduInfoPtr  - Pointer to PDU data
  * @return  E_OK if transmission successful, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00003 */
 Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -472,6 +491,7 @@ Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
  * @param   PduInfoPtr  - Pointer to PDU data
  * @return  None
  */
+/** @req SWS_PduR_00004 */
 void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     uint8 pathIndex;
@@ -510,6 +530,7 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
  * @param   result  - Transmission result
  * @return  None
  */
+/** @req SWS_PduR_00005 */
 void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     uint8 pathIndex;
@@ -577,6 +598,7 @@ void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
  * @param   PduInfoPtr  - Pointer to PDU info
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00006 */
 Std_ReturnType PduR_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -629,6 +651,7 @@ Std_ReturnType PduR_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
  * @param   TxPduId - PDU identifier
  * @return  E_OK if canceled, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00007 */
 Std_ReturnType PduR_CancelTransmitRequest(PduIdType TxPduId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -665,6 +688,7 @@ Std_ReturnType PduR_CancelTransmitRequest(PduIdType TxPduId)
  * @param   RxPduId - PDU identifier
  * @return  E_OK if canceled, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00008 */
 Std_ReturnType PduR_CancelReceiveRequest(PduIdType RxPduId)
 {
     (void)RxPduId;
@@ -678,6 +702,7 @@ Std_ReturnType PduR_CancelReceiveRequest(PduIdType RxPduId)
  * @param   value       - New value
  * @return  E_OK if changed, E_NOT_OK otherwise
  */
+/** @req SWS_PduR_00009 */
 Std_ReturnType PduR_ChangeParameterRequest(PduIdType id, TPParameterType parameter, uint16 value)
 {
     (void)id;
@@ -691,6 +716,7 @@ Std_ReturnType PduR_ChangeParameterRequest(PduIdType id, TPParameterType paramet
  * @param   id - Group ID to enable
  * @return  None
  */
+/** @req SWS_PduR_00010 */
 void PduR_EnableRouting(uint8 id)
 {
     if (id < PDUR_NUMBER_OF_ROUTING_PATH_GROUPS)
@@ -704,6 +730,7 @@ void PduR_EnableRouting(uint8 id)
  * @param   id - Group ID to disable
  * @return  None
  */
+/** @req SWS_PduR_00011 */
 void PduR_DisableRouting(uint8 id)
 {
     if (id < PDUR_NUMBER_OF_ROUTING_PATH_GROUPS)
@@ -718,6 +745,7 @@ void PduR_DisableRouting(uint8 id)
  * @return  None
  */
 #if (PDUR_VERSION_INFO_API == STD_ON)
+/** @req SWS_PduR_00012 */
 void PduR_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (PDUR_DEV_ERROR_DETECT == STD_ON)
@@ -744,6 +772,7 @@ void PduR_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @param   None
  * @return  None
  */
+/** @req SWS_PduR_00013 */
 void PduR_MainFunction(void)
 {
     uint8 i;

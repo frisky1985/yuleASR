@@ -28,6 +28,7 @@ static void setup_default_config(void)
 *                                      TEST CASES
 ==================================================================================================*/
 
+/** @req SWS_TcpIp_00001 */
 TEST_CASE(tcpip_init_valid_config)
 {
     setup_default_config();
@@ -35,12 +36,14 @@ TEST_CASE(tcpip_init_valid_config)
     /* No assert — smoke test */
 }
 
+/** @req SWS_TcpIp_00001 */
 TEST_CASE(tcpip_init_null_config)
 {
     TcpIp_Init(NULL_PTR);
     /* Should not crash, DET should report */
 }
 
+/** @req SWS_TcpIp_00001 */
 TEST_CASE(tcpip_init_twice)
 {
     setup_default_config();
@@ -48,6 +51,7 @@ TEST_CASE(tcpip_init_twice)
     TcpIp_Init(&g_test_config);  /* Should report already-init */
 }
 
+/** @req SWS_TcpIp_00002 */
 TEST_CASE(tcpip_deinit)
 {
     setup_default_config();
@@ -55,11 +59,13 @@ TEST_CASE(tcpip_deinit)
     TcpIp_DeInit();
 }
 
+/** @req SWS_TcpIp_00002 */
 TEST_CASE(tcpip_deinit_uninit)
 {
     TcpIp_DeInit();  /* Should not crash */
 }
 
+/** @req SWS_TcpIp_00004 */
 TEST_CASE(tcpip_create_tcp_socket)
 {
     TcpIp_SocketIdType sockId;
@@ -70,6 +76,7 @@ TEST_CASE(tcpip_create_tcp_socket)
     ASSERT_NE(TCPIP_SOCKETID_INVALID, sockId);
 }
 
+/** @req SWS_TcpIp_00004 */
 TEST_CASE(tcpip_create_udp_socket)
 {
     TcpIp_SocketIdType sockId;
@@ -80,6 +87,7 @@ TEST_CASE(tcpip_create_udp_socket)
     ASSERT_NE(TCPIP_SOCKETID_INVALID, sockId);
 }
 
+/** @req SWS_TcpIp_00004 */
 TEST_CASE(tcpip_create_null_id)
 {
     setup_default_config();
@@ -87,12 +95,14 @@ TEST_CASE(tcpip_create_null_id)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_Create(TCPIP_AF_INET, TCPIP_SOCK_STREAM, NULL_PTR));
 }
 
+/** @req SWS_TcpIp_00004 */
 TEST_CASE(tcpip_create_uninit)
 {
     TcpIp_SocketIdType sockId;
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_Create(TCPIP_AF_INET, TCPIP_SOCK_STREAM, &sockId));
 }
 
+/** @req SWS_TcpIp_00005 */
 TEST_CASE(tcpip_close_socket)
 {
     TcpIp_SocketIdType sockId;
@@ -102,6 +112,7 @@ TEST_CASE(tcpip_close_socket)
     ASSERT_EQ(TCPIP_OK, TcpIp_Close(sockId, TRUE));
 }
 
+/** @req SWS_TcpIp_00005 */
 TEST_CASE(tcpip_close_invalid)
 {
     setup_default_config();
@@ -109,6 +120,7 @@ TEST_CASE(tcpip_close_invalid)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_Close(TCPIP_SOCKETID_INVALID, TRUE));
 }
 
+/** @req SWS_TcpIp_00006 */
 TEST_CASE(tcpip_bind)
 {
     TcpIp_SocketIdType sockId;
@@ -124,6 +136,7 @@ TEST_CASE(tcpip_bind)
     ASSERT_EQ(TCPIP_OK, TcpIp_Bind(sockId, &addr));
 }
 
+/** @req SWS_TcpIp_00006 */
 TEST_CASE(tcpip_bind_null)
 {
     TcpIp_SocketIdType sockId;
@@ -134,6 +147,7 @@ TEST_CASE(tcpip_bind_null)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_Bind(sockId, NULL_PTR));
 }
 
+/** @req SWS_TcpIp_00007 */
 TEST_CASE(tcpip_send)
 {
     TcpIp_SocketIdType sockId;
@@ -145,6 +159,7 @@ TEST_CASE(tcpip_send)
     ASSERT_EQ(TCPIP_OK, TcpIp_Send(sockId, data, sizeof(data)));
 }
 
+/** @req SWS_TcpIp_00008 */
 TEST_CASE(tcpip_transmit)
 {
     TcpIp_SocketIdType sockId;
@@ -156,6 +171,7 @@ TEST_CASE(tcpip_transmit)
     ASSERT_EQ(TCPIP_OK, TcpIp_Transmit(sockId, data, sizeof(data)));
 }
 
+/** @req SWS_TcpIp_00007 */
 TEST_CASE(tcpip_send_null)
 {
     TcpIp_SocketIdType sockId;
@@ -166,6 +182,7 @@ TEST_CASE(tcpip_send_null)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_Send(sockId, NULL_PTR, 0));
 }
 
+/** @req SWS_TcpIp_00009 */
 TEST_CASE(tcpip_receive)
 {
     TcpIp_SocketIdType sockId;
@@ -178,6 +195,7 @@ TEST_CASE(tcpip_receive)
     ASSERT_EQ(TCPIP_OK, TcpIp_Receive(sockId, buf, sizeof(buf), &recvLen));
 }
 
+/** @req SWS_TcpIp_00009 */
 TEST_CASE(tcpip_receive_null_buf)
 {
     TcpIp_SocketIdType sockId;
@@ -189,6 +207,7 @@ TEST_CASE(tcpip_receive_null_buf)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_Receive(sockId, NULL_PTR, 0, &recvLen));
 }
 
+/** @req SWS_TcpIp_00010 */
 TEST_CASE(tcpip_open_socket_tcp)
 {
     TcpIp_SocketIdType sockId;
@@ -199,6 +218,7 @@ TEST_CASE(tcpip_open_socket_tcp)
     ASSERT_NE(TCPIP_SOCKETID_INVALID, sockId);
 }
 
+/** @req SWS_TcpIp_00010 */
 TEST_CASE(tcpip_open_socket_udp)
 {
     TcpIp_SocketIdType sockId;
@@ -209,6 +229,7 @@ TEST_CASE(tcpip_open_socket_udp)
     ASSERT_NE(TCPIP_SOCKETID_INVALID, sockId);
 }
 
+/** @req SWS_TcpIp_00010 */
 TEST_CASE(tcpip_open_socket_invalid_proto)
 {
     TcpIp_SocketIdType sockId;
@@ -218,6 +239,7 @@ TEST_CASE(tcpip_open_socket_invalid_proto)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_OpenSocket(0xFF, 30490, &sockId));
 }
 
+/** @req SWS_TcpIp_00011 */
 TEST_CASE(tcpip_close_socket_api)
 {
     TcpIp_SocketIdType sockId;
@@ -227,6 +249,7 @@ TEST_CASE(tcpip_close_socket_api)
     ASSERT_EQ(TCPIP_OK, TcpIp_CloseSocket(sockId));
 }
 
+/** @req SWS_TcpIp_00015 */
 TEST_CASE(tcpip_get_ipv4_addr)
 {
     TcpIp_Ipv4AddrType addr;
@@ -236,6 +259,7 @@ TEST_CASE(tcpip_get_ipv4_addr)
     ASSERT_EQ(TCPIP_DEFAULT_IPV4_ADDR, addr);
 }
 
+/** @req SWS_TcpIp_00015 */
 TEST_CASE(tcpip_get_ipv4_addr_null)
 {
     setup_default_config();
@@ -243,6 +267,7 @@ TEST_CASE(tcpip_get_ipv4_addr_null)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_GetIPv4Addr(NULL_PTR));
 }
 
+/** @req SWS_TcpIp_00016 */
 TEST_CASE(tcpip_get_ipv6_addr)
 {
     TcpIp_Ipv6AddrType addr;
@@ -251,6 +276,7 @@ TEST_CASE(tcpip_get_ipv6_addr)
     ASSERT_EQ(TCPIP_E_NOT_SUPPORTED, TcpIp_GetIPv6Addr(&addr));
 }
 
+/** @req SWS_TcpIp_00018 */
 TEST_CASE(tcpip_get_link_state)
 {
     TcpIp_LinkStateType state;
@@ -259,6 +285,7 @@ TEST_CASE(tcpip_get_link_state)
     ASSERT_EQ(TCPIP_OK, TcpIp_GetLinkState(&state));
 }
 
+/** @req SWS_TcpIp_00018 */
 TEST_CASE(tcpip_get_link_state_null)
 {
     setup_default_config();
@@ -266,6 +293,7 @@ TEST_CASE(tcpip_get_link_state_null)
     ASSERT_EQ(TCPIP_E_NOT_OK, TcpIp_GetLinkState(NULL_PTR));
 }
 
+/** @req SWS_TcpIp_00021 */
 TEST_CASE(tcpip_reset)
 {
     setup_default_config();
@@ -273,6 +301,7 @@ TEST_CASE(tcpip_reset)
     ASSERT_EQ(TCPIP_OK, TcpIp_Reset());
 }
 
+/** @req SWS_TcpIp_00022 */
 TEST_CASE(tcpip_main_function)
 {
     setup_default_config();
@@ -281,12 +310,14 @@ TEST_CASE(tcpip_main_function)
     /* Smoke test — should not crash */
 }
 
+/** @req SWS_TcpIp_00022 */
 TEST_CASE(tcpip_main_function_uninit)
 {
     TcpIp_MainFunction();
     /* Should not crash */
 }
 
+/** @req SWS_TcpIp_00004 */
 TEST_CASE(tcpip_multiple_sockets)
 {
     TcpIp_SocketIdType sockets[4];
@@ -306,6 +337,7 @@ TEST_CASE(tcpip_multiple_sockets)
     }
 }
 
+/** @req SWS_TcpIp_00004 */
 TEST_CASE(tcpip_exhaust_sockets)
 {
     TcpIp_SocketIdType sockId;
@@ -326,6 +358,7 @@ TEST_CASE(tcpip_exhaust_sockets)
     ASSERT_EQ(TCPIP_E_NOT_OK, ret);
 }
 
+/** @req SWS_TcpIp_00003 */
 TEST_CASE(tcpip_get_version_info)
 {
     Std_VersionInfoType ver;

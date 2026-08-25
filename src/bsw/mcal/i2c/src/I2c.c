@@ -149,24 +149,62 @@ static const uint16 I2c_FreqDividerTable[64] = {
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_I2c_00101 */
+/** @req SWS_I2c_00101 */
 static uint32 I2c_GetBaseAddr(uint8 hwUnit);
+/** @req SWS_I2c_00102 */
+/** @req SWS_I2c_00102 */
 static void I2c_EnableClock(uint8 hwUnit);
+/** @req SWS_I2c_00103 */
+/** @req SWS_I2c_00103 */
 static void I2c_DisableClock(uint8 hwUnit);
+/** @req SWS_I2c_00104 */
+/** @req SWS_I2c_00104 */
 static Std_ReturnType I2c_WaitForBusIdle(uint32 baseAddr, uint32 timeoutMs);
+/** @req SWS_I2c_00105 */
+/** @req SWS_I2c_00105 */
 static Std_ReturnType I2c_WaitForTransferComplete(uint32 baseAddr, uint32 timeoutMs);
+/** @req SWS_I2c_00106 */
+/** @req SWS_I2c_00106 */
 static void I2c_SetFrequency(uint32 baseAddr, uint32 freq);
+/** @req SWS_I2c_00107 */
+/** @req SWS_I2c_00107 */
 static Std_ReturnType I2c_SendStart(uint32 baseAddr, I2c_AddressType slaveAddr, I2c_AddrModeType addrMode, boolean isTx);
+/** @req SWS_I2c_00108 */
+/** @req SWS_I2c_00108 */
 static Std_ReturnType I2c_SendRepeatedStart(uint32 baseAddr, I2c_AddressType slaveAddr, I2c_AddrModeType addrMode, boolean isTx);
+/** @req SWS_I2c_00109 */
+/** @req SWS_I2c_00109 */
 static Std_ReturnType I2c_SendStop(uint32 baseAddr);
+/** @req SWS_I2c_00110 */
+/** @req SWS_I2c_00110 */
 static Std_ReturnType I2c_WriteByte(uint32 baseAddr, uint8 data, uint32 timeoutMs);
+/** @req SWS_I2c_00111 */
+/** @req SWS_I2c_00111 */
 static Std_ReturnType I2c_ReadByte(uint32 baseAddr, uint8* data, boolean sendAck, uint32 timeoutMs);
+/** @req SWS_I2c_00112 */
+/** @req SWS_I2c_00112 */
 static void I2c_DmaInit(uint8 channel, I2c_DataType* buffer, I2c_LengthType length, boolean isTx);
+/** @req SWS_I2c_00113 */
+/** @req SWS_I2c_00113 */
 static void I2c_DmaStart(uint8 channel);
+/** @req SWS_I2c_00114 */
+/** @req SWS_I2c_00114 */
 static void I2c_DmaStop(uint8 channel);
+/** @req SWS_I2c_00115 */
+/** @req SWS_I2c_00115 */
 static void I2c_IsrHandler(uint8 channel);
+/** @req SWS_I2c_00116 */
+/** @req SWS_I2c_00116 */
 static void I2c_ErrorHandler(uint8 channel, uint32 errorFlags);
+/** @req SWS_I2c_00117 */
+/** @req SWS_I2c_00117 */
 static Std_ReturnType I2c_MasterTransferPolling(uint8 channel);
+/** @req SWS_I2c_00118 */
+/** @req SWS_I2c_00118 */
 static Std_ReturnType I2c_MasterTransferInterrupt(uint8 channel);
+/** @req SWS_I2c_00119 */
+/** @req SWS_I2c_00119 */
 static Std_ReturnType I2c_MasterTransferDma(uint8 channel);
 
 /*==================================================================================================
@@ -176,6 +214,8 @@ static Std_ReturnType I2c_MasterTransferDma(uint8 channel);
 /**
  * @brief Gets base address for I2C hardware unit
  */
+/** @req SWS_I2c_00120 */
+/** @req SWS_I2c_00101 */
 static uint32 I2c_GetBaseAddr(uint8 hwUnit)
 {
     uint32 baseAddr;
@@ -192,6 +232,8 @@ static uint32 I2c_GetBaseAddr(uint8 hwUnit)
 /**
  * @brief Enables clock for I2C hardware unit
  */
+/** @req SWS_I2c_00121 */
+/** @req SWS_I2c_00102 */
 static void I2c_EnableClock(uint8 hwUnit)
 {
     (void)hwUnit;
@@ -201,6 +243,8 @@ static void I2c_EnableClock(uint8 hwUnit)
 /**
  * @brief Disables clock for I2C hardware unit
  */
+/** @req SWS_I2c_00122 */
+/** @req SWS_I2c_00103 */
 static void I2c_DisableClock(uint8 hwUnit)
 {
     (void)hwUnit;
@@ -210,6 +254,8 @@ static void I2c_DisableClock(uint8 hwUnit)
 /**
  * @brief Waits for bus to become idle
  */
+/** @req SWS_I2c_00123 */
+/** @req SWS_I2c_00104 */
 static Std_ReturnType I2c_WaitForBusIdle(uint32 baseAddr, uint32 timeoutMs)
 {
     uint32 timeout = timeoutMs * 1000U; /* Convert to approximate loop count */
@@ -226,6 +272,8 @@ static Std_ReturnType I2c_WaitForBusIdle(uint32 baseAddr, uint32 timeoutMs)
 /**
  * @brief Waits for data transfer complete
  */
+/** @req SWS_I2c_00124 */
+/** @req SWS_I2c_00105 */
 static Std_ReturnType I2c_WaitForTransferComplete(uint32 baseAddr, uint32 timeoutMs)
 {
     uint32 timeout = timeoutMs * 1000U;
@@ -242,6 +290,8 @@ static Std_ReturnType I2c_WaitForTransferComplete(uint32 baseAddr, uint32 timeou
 /**
  * @brief Sets I2C frequency
  */
+/** @req SWS_I2c_00125 */
+/** @req SWS_I2c_00106 */
 static void I2c_SetFrequency(uint32 baseAddr, uint32 freq)
 {
     uint32 periphClk = I2C_PERIPHERAL_CLOCK_FREQ;
@@ -271,6 +321,8 @@ static void I2c_SetFrequency(uint32 baseAddr, uint32 freq)
 /**
  * @brief Sends START condition and slave address
  */
+/** @req SWS_I2c_00126 */
+/** @req SWS_I2c_00107 */
 static Std_ReturnType I2c_SendStart(uint32 baseAddr, I2c_AddressType slaveAddr, 
                                      I2c_AddrModeType addrMode, boolean isTx)
 {
@@ -335,6 +387,8 @@ static Std_ReturnType I2c_SendStart(uint32 baseAddr, I2c_AddressType slaveAddr,
 /**
  * @brief Sends repeated START condition
  */
+/** @req SWS_I2c_00127 */
+/** @req SWS_I2c_00108 */
 static Std_ReturnType I2c_SendRepeatedStart(uint32 baseAddr, I2c_AddressType slaveAddr,
                                              I2c_AddrModeType addrMode, boolean isTx)
 {
@@ -348,6 +402,8 @@ static Std_ReturnType I2c_SendRepeatedStart(uint32 baseAddr, I2c_AddressType sla
 /**
  * @brief Sends STOP condition
  */
+/** @req SWS_I2c_00128 */
+/** @req SWS_I2c_00109 */
 static Std_ReturnType I2c_SendStop(uint32 baseAddr)
 {
     uint8 i2cr = REG_READ8(baseAddr + I2C_I2CR);
@@ -365,6 +421,8 @@ static Std_ReturnType I2c_SendStop(uint32 baseAddr)
 /**
  * @brief Writes a single byte
  */
+/** @req SWS_I2c_00129 */
+/** @req SWS_I2c_00110 */
 static Std_ReturnType I2c_WriteByte(uint32 baseAddr, uint8 data, uint32 timeoutMs)
 {
     REG_WRITE8(baseAddr + I2C_I2DR, data);
@@ -384,6 +442,8 @@ static Std_ReturnType I2c_WriteByte(uint32 baseAddr, uint8 data, uint32 timeoutM
 /**
  * @brief Reads a single byte
  */
+/** @req SWS_I2c_00130 */
+/** @req SWS_I2c_00111 */
 static Std_ReturnType I2c_ReadByte(uint32 baseAddr, uint8* data, boolean sendAck, uint32 timeoutMs)
 {
     /* Set receive mode if not already */
@@ -414,6 +474,8 @@ static Std_ReturnType I2c_ReadByte(uint32 baseAddr, uint8* data, boolean sendAck
 /**
  * @brief Initializes DMA for I2C transfer
  */
+/** @req SWS_I2c_00131 */
+/** @req SWS_I2c_00112 */
 static void I2c_DmaInit(uint8 channel, I2c_DataType* buffer, I2c_LengthType length, boolean isTx)
 {
     (void)channel;
@@ -426,6 +488,8 @@ static void I2c_DmaInit(uint8 channel, I2c_DataType* buffer, I2c_LengthType leng
 /**
  * @brief Starts DMA transfer
  */
+/** @req SWS_I2c_00132 */
+/** @req SWS_I2c_00113 */
 static void I2c_DmaStart(uint8 channel)
 {
     (void)channel;
@@ -435,6 +499,8 @@ static void I2c_DmaStart(uint8 channel)
 /**
  * @brief Stops DMA transfer
  */
+/** @req SWS_I2c_00133 */
+/** @req SWS_I2c_00114 */
 static void I2c_DmaStop(uint8 channel)
 {
     (void)channel;
@@ -444,6 +510,8 @@ static void I2c_DmaStop(uint8 channel)
 /**
  * @brief I2C interrupt handler
  */
+/** @req SWS_I2c_00134 */
+/** @req SWS_I2c_00115 */
 static void I2c_IsrHandler(uint8 channel)
 {
     I2c_ChannelInfoType* chInfo = &I2c_ChannelInfo[channel];
@@ -540,6 +608,8 @@ static void I2c_IsrHandler(uint8 channel)
 /**
  * @brief Error handler
  */
+/** @req SWS_I2c_00135 */
+/** @req SWS_I2c_00116 */
 static void I2c_ErrorHandler(uint8 channel, uint32 errorFlags)
 {
     I2c_ChannelInfoType* chInfo = &I2c_ChannelInfo[channel];
@@ -556,6 +626,8 @@ static void I2c_ErrorHandler(uint8 channel, uint32 errorFlags)
 /**
  * @brief Master transfer using polling mode
  */
+/** @req SWS_I2c_00136 */
+/** @req SWS_I2c_00117 */
 static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
 {
     I2c_ChannelInfoType* chInfo = &I2c_ChannelInfo[channel];
@@ -620,6 +692,8 @@ static Std_ReturnType I2c_MasterTransferPolling(uint8 channel)
 /**
  * @brief Master transfer using interrupt mode
  */
+/** @req SWS_I2c_00137 */
+/** @req SWS_I2c_00118 */
 static Std_ReturnType I2c_MasterTransferInterrupt(uint8 channel)
 {
     I2c_ChannelInfoType* chInfo = &I2c_ChannelInfo[channel];
@@ -648,6 +722,8 @@ static Std_ReturnType I2c_MasterTransferInterrupt(uint8 channel)
 /**
  * @brief Master transfer using DMA mode
  */
+/** @req SWS_I2c_00138 */
+/** @req SWS_I2c_00119 */
 static Std_ReturnType I2c_MasterTransferDma(uint8 channel)
 {
 #if (I2C_DMA_SUPPORTED == STD_ON)
@@ -697,6 +773,8 @@ static Std_ReturnType I2c_MasterTransferDma(uint8 channel)
 #define I2C_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_I2c_00001 */
+/** @req SWS_I2c_00001 */
 void I2c_Init(const I2c_ConfigType* Config)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -773,6 +851,8 @@ void I2c_Init(const I2c_ConfigType* Config)
     I2c_DriverInitialized = TRUE;
 }
 
+/** @req SWS_I2c_00002 */
+/** @req SWS_I2c_00002 */
 Std_ReturnType I2c_DeInit(void)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -807,6 +887,8 @@ Std_ReturnType I2c_DeInit(void)
     return E_OK;
 }
 
+/** @req SWS_I2c_00003 */
+/** @req SWS_I2c_00003 */
 Std_ReturnType I2c_WriteBytes(I2c_ChannelType Channel,
                                I2c_AddressType SlaveAddress,
                                const I2c_DataType* DataBuffer,
@@ -879,6 +961,8 @@ Std_ReturnType I2c_WriteBytes(I2c_ChannelType Channel,
     return result;
 }
 
+/** @req SWS_I2c_00004 */
+/** @req SWS_I2c_00004 */
 Std_ReturnType I2c_ReadBytes(I2c_ChannelType Channel,
                               I2c_AddressType SlaveAddress,
                               I2c_DataType* DataBuffer,
@@ -950,6 +1034,8 @@ Std_ReturnType I2c_ReadBytes(I2c_ChannelType Channel,
     return result;
 }
 
+/** @req SWS_I2c_00005 */
+/** @req SWS_I2c_00005 */
 Std_ReturnType I2c_WriteRead(I2c_ChannelType Channel,
                               I2c_AddressType SlaveAddress,
                               const I2c_DataType* TxBuffer,
@@ -1025,11 +1111,15 @@ Std_ReturnType I2c_WriteRead(I2c_ChannelType Channel,
     return result;
 }
 
+/** @req SWS_I2c_00006 */
+/** @req SWS_I2c_00006 */
 I2c_StatusType I2c_GetStatus(void)
 {
     return I2c_DriverStatus;
 }
 
+/** @req SWS_I2c_00007 */
+/** @req SWS_I2c_00007 */
 void I2c_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -1046,6 +1136,8 @@ void I2c_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = I2C_SW_PATCH_VERSION;
 }
 
+/** @req SWS_I2c_00008 */
+/** @req SWS_I2c_00008 */
 Std_ReturnType I2c_SetClockMode(I2c_ChannelType Channel, I2c_ClockModeType ClockMode)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -1085,6 +1177,8 @@ Std_ReturnType I2c_SetClockMode(I2c_ChannelType Channel, I2c_ClockModeType Clock
     return E_OK;
 }
 
+/** @req SWS_I2c_00009 */
+/** @req SWS_I2c_00009 */
 Std_ReturnType I2c_EnableInterrupt(I2c_ChannelType Channel)
 {
     #if (I2C_INTERRUPT_SUPPORTED == STD_ON)
@@ -1113,6 +1207,8 @@ Std_ReturnType I2c_EnableInterrupt(I2c_ChannelType Channel)
     #endif
 }
 
+/** @req SWS_I2c_00010 */
+/** @req SWS_I2c_00010 */
 Std_ReturnType I2c_DisableInterrupt(I2c_ChannelType Channel)
 {
     #if (I2C_INTERRUPT_SUPPORTED == STD_ON)
@@ -1141,6 +1237,8 @@ Std_ReturnType I2c_DisableInterrupt(I2c_ChannelType Channel)
     #endif
 }
 
+/** @req SWS_I2c_00011 */
+/** @req SWS_I2c_00011 */
 Std_ReturnType I2c_SetSlaveAddress(I2c_ChannelType Channel,
                                     I2c_AddressType SlaveAddress,
                                     I2c_AddrModeType AddrMode)
@@ -1172,6 +1270,8 @@ Std_ReturnType I2c_SetSlaveAddress(I2c_ChannelType Channel,
     return E_NOT_OK;
 }
 
+/** @req SWS_I2c_00012 */
+/** @req SWS_I2c_00012 */
 I2c_BusStateType I2c_GetBusState(I2c_ChannelType Channel)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -1195,6 +1295,8 @@ I2c_BusStateType I2c_GetBusState(I2c_ChannelType Channel)
     return I2C_BUS_STATE_IDLE;
 }
 
+/** @req SWS_I2c_00013 */
+/** @req SWS_I2c_00013 */
 Std_ReturnType I2c_ClearBus(I2c_ChannelType Channel)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -1230,6 +1332,8 @@ Std_ReturnType I2c_ClearBus(I2c_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_I2c_00014 */
+/** @req SWS_I2c_00014 */
 Std_ReturnType I2c_SoftwareReset(I2c_ChannelType Channel)
 {
     #if (I2C_SW_RESET_API == STD_ON)
@@ -1268,6 +1372,8 @@ Std_ReturnType I2c_SoftwareReset(I2c_ChannelType Channel)
     #endif
 }
 
+/** @req SWS_I2c_00015 */
+/** @req SWS_I2c_00015 */
 Std_ReturnType I2c_SetTransferMode(I2c_ChannelType Channel, I2c_TransferModeType TransferMode)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -1297,6 +1403,8 @@ Std_ReturnType I2c_SetTransferMode(I2c_ChannelType Channel, I2c_TransferModeType
     return E_OK;
 }
 
+/** @req SWS_I2c_00016 */
+/** @req SWS_I2c_00016 */
 Std_ReturnType I2c_CancelTransfer(I2c_ChannelType Channel)
 {
     #if (I2C_DEV_ERROR_DETECT == STD_ON)
@@ -1332,6 +1440,8 @@ Std_ReturnType I2c_CancelTransfer(I2c_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_I2c_00017 */
+/** @req SWS_I2c_00017 */
 Std_ReturnType I2c_PrepareSlaveBuffer(I2c_ChannelType Channel,
                                        I2c_DataType* Buffer,
                                        I2c_LengthType Length)
@@ -1367,6 +1477,8 @@ Std_ReturnType I2c_PrepareSlaveBuffer(I2c_ChannelType Channel,
     #endif
 }
 
+/** @req SWS_I2c_00018 */
+/** @req SWS_I2c_00018 */
 Std_ReturnType I2c_SlaveWriteBuffer(I2c_ChannelType Channel,
                                      const I2c_DataType* Buffer,
                                      I2c_LengthType Length)
@@ -1402,6 +1514,8 @@ Std_ReturnType I2c_SlaveWriteBuffer(I2c_ChannelType Channel,
     #endif
 }
 
+/** @req SWS_I2c_00019 */
+/** @req SWS_I2c_00019 */
 Std_ReturnType I2c_SlaveReadBuffer(I2c_ChannelType Channel,
                                     I2c_DataType* Buffer,
                                     I2c_LengthType Length)
@@ -1438,6 +1552,8 @@ Std_ReturnType I2c_SlaveReadBuffer(I2c_ChannelType Channel,
     #endif
 }
 
+/** @req SWS_I2c_00020 */
+/** @req SWS_I2c_00020 */
 void I2c_MainFunction(void)
 {
     if (I2c_DriverInitialized == FALSE) {

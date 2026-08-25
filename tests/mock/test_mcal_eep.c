@@ -35,12 +35,14 @@ void tearDown(void) {
 }
 
 /* ========= Eep_Init ========= */
+/* @req SWS_Eep_00001 */
 void test_Eep_Init_NullConfig(void)
 {
     Eep_Init(NULL);
     TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
 }
 
+/* @req SWS_Eep_00001 */
 void test_Eep_Init_Valid(void)
 {
     Eep_Init(&g_cfg);
@@ -48,6 +50,7 @@ void test_Eep_Init_Valid(void)
     TEST_ASSERT_EQUAL(EEP_JOB_OK, Eep_GetJobResult());
 }
 
+/* @req SWS_Eep_00001 */
 void test_Eep_Init_DoubleInit(void)
 {
     Eep_Init(&g_cfg);
@@ -56,12 +59,14 @@ void test_Eep_Init_DoubleInit(void)
 }
 
 /* ========= Eep_DeInit ========= */
+/* @req SWS_Eep_00002 */
 void test_Eep_DeInit_BeforeInit(void)
 {
     Eep_DeInit();
     TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
 }
 
+/* @req SWS_Eep_00002 */
 void test_Eep_DeInit_AfterInit(void)
 {
     Eep_Init(&g_cfg);
@@ -70,12 +75,14 @@ void test_Eep_DeInit_AfterInit(void)
 }
 
 /* ========= Eep_Read (error paths only) ========= */
+/* @req SWS_Eep_00003 */
 void test_Eep_Read_NullBuffer(void)
 {
     Eep_Init(&g_cfg);
     TEST_ASSERT_EQUAL(E_NOT_OK, Eep_Read(0, NULL, 16));
 }
 
+/* @req SWS_Eep_00003 */
 void test_Eep_Read_InvalidAddress(void)
 {
     Eep_Init(&g_cfg);
@@ -83,6 +90,7 @@ void test_Eep_Read_InvalidAddress(void)
     TEST_ASSERT_EQUAL(E_NOT_OK, Eep_Read(4096, buf, 16));
 }
 
+/* @req SWS_Eep_00003 */
 void test_Eep_Read_ZeroLength(void)
 {
     Eep_Init(&g_cfg);
@@ -91,12 +99,14 @@ void test_Eep_Read_ZeroLength(void)
 }
 
 /* ========= Eep_Write (error paths only) ========= */
+/* @req SWS_Eep_00004 */
 void test_Eep_Write_NullData(void)
 {
     Eep_Init(&g_cfg);
     TEST_ASSERT_EQUAL(E_NOT_OK, Eep_Write(0, NULL, 4));
 }
 
+/* @req SWS_Eep_00004 */
 void test_Eep_Write_OutOfBounds(void)
 {
     Eep_Init(&g_cfg);
@@ -105,6 +115,7 @@ void test_Eep_Write_OutOfBounds(void)
 }
 
 /* ========= Eep_Erase (error paths only) ========= */
+/* @req SWS_Eep_00005 */
 void test_Eep_Erase_Invalid(void)
 {
     Eep_Init(&g_cfg);
@@ -112,6 +123,7 @@ void test_Eep_Erase_Invalid(void)
 }
 
 /* ========= Eep_Cancel ========= */
+/* @req SWS_Eep_00006 */
 void test_Eep_Cancel_AfterInit(void)
 {
     Eep_Init(&g_cfg);
@@ -122,22 +134,26 @@ void test_Eep_Cancel_AfterInit(void)
 }
 
 /* ========= Eep_GetStatus / Eep_GetJobResult ========= */
+/* @req SWS_Eep_00007 */
 void test_Eep_GetStatus_Uninit(void)
 {
     TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
 }
 
+/* @req SWS_Eep_00008 */
 void test_Eep_GetJobResult_Uninit(void)
 {
     TEST_ASSERT_EQUAL(EEP_JOB_OK, Eep_GetJobResult());
 }
 
+/* @req SWS_Eep_00007 */
 void test_Eep_GetStatus_Idle(void)
 {
     Eep_Init(&g_cfg);
     TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
+/* @req SWS_Eep_00008 */
 void test_Eep_GetJobResult_AfterInit(void)
 {
     Eep_Init(&g_cfg);
@@ -145,6 +161,7 @@ void test_Eep_GetJobResult_AfterInit(void)
 }
 
 /* ========= Eep_MainFunction ========= */
+/* @req SWS_Eep_00009 */
 void test_Eep_MainFunction_Idle(void)
 {
     Eep_Init(&g_cfg);
@@ -152,12 +169,14 @@ void test_Eep_MainFunction_Idle(void)
     TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
+/* @req SWS_Eep_00009 */
 void test_Eep_MainFunction_Uninit(void)
 {
     Eep_MainFunction();
 }
 
 /* ========= Eep_GetVersionInfo ========= */
+/* @req SWS_Eep_00010 */
 void test_Eep_GetVersionInfo_Valid(void)
 {
     Std_VersionInfoType vi;
@@ -167,6 +186,7 @@ void test_Eep_GetVersionInfo_Valid(void)
     TEST_ASSERT_EQUAL(EEP_MODULE_ID, vi.moduleID);
 }
 
+/* @req SWS_Eep_00010 */
 void test_Eep_GetVersionInfo_Null(void)
 {
     Eep_GetVersionInfo(NULL);

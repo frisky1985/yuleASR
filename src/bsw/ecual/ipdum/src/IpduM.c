@@ -40,6 +40,7 @@ static boolean IpduM_InitStatus = FALSE;
 /**
  * @brief Extract selector value from PDU data
  */
+/** @req SWS_IpduM_00020 */
 static uint8 IpduM_ExtractSelector(const uint8* DataPtr, const IpduM_SelectorFieldType* Selector)
 {
     uint8 SelectorValue = 0U;
@@ -84,6 +85,7 @@ static uint8 IpduM_ExtractSelector(const uint8* DataPtr, const IpduM_SelectorFie
 /**
  * @brief Insert selector value into PDU data
  */
+/** @req SWS_IpduM_00021 */
 static void IpduM_InsertSelector(uint8* DataPtr, const IpduM_SelectorFieldType* Selector, uint8 Value)
 {
     uint8 ByteIndex = Selector->StartByte;
@@ -133,6 +135,7 @@ static void IpduM_InsertSelector(uint8* DataPtr, const IpduM_SelectorFieldType* 
 /**
  * @brief Find Tx Mux PDU configuration by upper layer PDU ID
  */
+/** @req SWS_IpduM_00022 */
 static const IpduM_TxMuxPduType* IpduM_FindTxMuxPdu(PduIdType TxPduId)
 {
     uint16 i;
@@ -151,6 +154,7 @@ static const IpduM_TxMuxPduType* IpduM_FindTxMuxPdu(PduIdType TxPduId)
 /**
  * @brief Find Rx Mux PDU configuration by lower layer PDU ID
  */
+/** @req SWS_IpduM_00023 */
 static const IpduM_RxMuxPduType* IpduM_FindRxMuxPdu(PduIdType RxPduId)
 {
     uint16 i;
@@ -169,6 +173,7 @@ static const IpduM_RxMuxPduType* IpduM_FindRxMuxPdu(PduIdType RxPduId)
 /**
  * @brief Find dynamic part by selector value
  */
+/** @req SWS_IpduM_00024 */
 static const IpduM_DynamicPartType* IpduM_FindDynamicPart(
     const IpduM_DynamicPartType* DynamicParts,
     uint8 NumDynamicParts,
@@ -192,6 +197,7 @@ static const IpduM_DynamicPartType* IpduM_FindDynamicPart(
 /**
  * @brief Initialize I-PDU Multiplexer
  */
+/** @req SWS_IpduM_00025 */
 void IpduM_Init(const IpduM_ConfigType* ConfigPtr)
 {
     if (ConfigPtr == NULL_PTR)
@@ -207,6 +213,7 @@ void IpduM_Init(const IpduM_ConfigType* ConfigPtr)
 /**
  * @brief De-initialize I-PDU Multiplexer
  */
+/** @req SWS_IpduM_00026 */
 Std_ReturnType IpduM_DeInit(void)
 {
     if (IpduM_InitStatus == FALSE)
@@ -223,6 +230,7 @@ Std_ReturnType IpduM_DeInit(void)
  * @brief Get version information
  */
 #if (IPDUM_VERSION_INFO_API == STD_ON)
+/** @req SWS_IpduM_00027 */
 void IpduM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR)
@@ -242,6 +250,7 @@ void IpduM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 /**
  * @brief Transmit multiplexed PDU
  */
+/** @req SWS_IpduM_00028 */
 Std_ReturnType IpduM_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     Std_ReturnType Result = E_NOT_OK;
@@ -322,6 +331,7 @@ Std_ReturnType IpduM_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 /**
  * @brief Receive indication from lower layer
  */
+/** @req SWS_IpduM_00029 */
 void IpduM_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     const IpduM_RxMuxPduType* RxMuxPdu;
@@ -383,6 +393,7 @@ void IpduM_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 /**
  * @brief Tx confirmation from lower layer
  */
+/** @req SWS_IpduM_00030 */
 void IpduM_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     const IpduM_TxMuxPduType* TxMuxPdu;
@@ -407,6 +418,7 @@ void IpduM_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 /**
  * @brief Trigger transmit from lower layer
  */
+/** @req SWS_IpduM_00031 */
 Std_ReturnType IpduM_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
     if (IpduM_InitStatus == FALSE)
@@ -428,6 +440,7 @@ Std_ReturnType IpduM_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 /**
  * @brief Main function - cyclic processing
  */
+/** @req SWS_IpduM_00032 */
 void IpduM_MainFunction(void)
 {
     /* IpduM has no cyclic processing needs */

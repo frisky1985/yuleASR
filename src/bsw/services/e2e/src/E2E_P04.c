@@ -134,6 +134,7 @@ static uint32 E2E_P04_CalculateCRC(
     return crc ^ 0xFFFFFFFFU;
 }
 
+/** @req SWS_E2E_00009 */
 /**
  * @brief E2E Profile 4 Protect
  * @details Adds CRC32 protection with 16-bit counter
@@ -177,6 +178,7 @@ Std_ReturnType E2E_P04Protect(
     return E_OK;
 }
 
+/** @req SWS_E2E_00010 */
 /**
  * @brief E2E Profile 4 Check
  * @details Verifies CRC32 protected data
@@ -251,6 +253,7 @@ Std_ReturnType E2E_P04Check(
     return E_OK;
 }
 
+/** @req SWS_E2E_00011 */
 /**
  * @brief Map Profile 4 check status to State Machine
  */

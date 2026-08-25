@@ -170,12 +170,14 @@ extern const LinM_ConfigType LinM_Config;
 #define LINM_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_LinM_00001 */
 /**
  * @brief Initializes the LIN Master Management module
  * @param ConfigPtr Pointer to configuration structure
  */
 extern void LinM_Init(const LinM_ConfigType* ConfigPtr);
 
+/** @req SWS_LinM_00002 */
 /**
  * @brief Deinitializes the LIN Master Management module
  */
@@ -186,9 +188,11 @@ extern void LinM_DeInit(void);
  * @param VersionInfo Pointer to version info structure
  */
 #if (LINM_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinM_00003 */
 extern void LinM_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 #endif
 
+/** @req SWS_LinM_00005 */
 /**
  * @brief Initializes a schedule for a channel
  * @param Channel Channel ID
@@ -197,6 +201,7 @@ extern void LinM_GetVersionInfo(Std_VersionInfoType* VersionInfo);
  */
 extern Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule);
 
+/** @req SWS_LinM_00006 */
 /**
  * @brief Starts a schedule for a channel
  * @param Channel Channel ID
@@ -205,6 +210,7 @@ extern Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleT
  */
 extern Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_ScheduleType Schedule);
 
+/** @req SWS_LinM_00007 */
 /**
  * @brief Stops a schedule for a channel
  * @param Channel Channel ID
@@ -212,6 +218,7 @@ extern Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_Schedule
  */
 extern Std_ReturnType LinM_StopSchedule(LinM_ChannelType Channel);
 
+/** @req SWS_LinM_00008 */
 /**
  * @brief Sets schedule mode for a channel
  * @param Channel Channel ID
@@ -220,6 +227,7 @@ extern Std_ReturnType LinM_StopSchedule(LinM_ChannelType Channel);
  */
 extern Std_ReturnType LinM_SetScheduleMode(LinM_ChannelType Channel, LinM_ScheduleModeType Mode);
 
+/** @req SWS_LinM_00009 */
 /**
  * @brief Gets schedule status for a channel
  * @param Channel Channel ID
@@ -228,11 +236,13 @@ extern Std_ReturnType LinM_SetScheduleMode(LinM_ChannelType Channel, LinM_Schedu
  */
 extern Std_ReturnType LinM_GetScheduleStatus(LinM_ChannelType Channel, LinM_ScheduleStatusType* Status);
 
+/** @req SWS_LinM_00004 */
 /**
  * @brief Main function for LinM (to be called periodically)
  */
 extern void LinM_MainFunction(void);
 
+/** @req SWS_LinM_00010 */
 /**
  * @brief Sends wakeup signal on LIN bus
  * @param Channel Channel ID
@@ -240,6 +250,7 @@ extern void LinM_MainFunction(void);
  */
 extern Std_ReturnType LinM_WakeUp(LinM_ChannelType Channel);
 
+/** @req SWS_LinM_00011 */
 /**
  * @brief Sends go-to-sleep command on LIN bus
  * @param Channel Channel ID
@@ -247,6 +258,7 @@ extern Std_ReturnType LinM_WakeUp(LinM_ChannelType Channel);
  */
 extern Std_ReturnType LinM_GotoSleep(LinM_ChannelType Channel);
 
+/** @req SWS_LinM_00012 */
 /**
  * @brief Gets slave response status
  * @param Channel Channel ID

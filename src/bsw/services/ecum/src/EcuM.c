@@ -144,6 +144,7 @@ static void EcuM_EnableInterrupts(void);
  *                              Initialization                                 *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00001 */
 /**
  * @brief Initialize EcuM module
  * @details First entry point - initializes minimal hardware and starts OS
@@ -191,6 +192,7 @@ void EcuM_Init(void)
     EcuM_StartupOne();
 }
 
+/** @req SWS_EcuM_00010 */
 /**
  * @brief Startup Phase One - Pre-OS Initialization
  * @details Initialize drivers that don't require OS, start OS
@@ -213,6 +215,7 @@ void EcuM_StartupOne(void)
     EcuM_ProcessStartupOne();
 }
 
+/** @req SWS_EcuM_00011 */
 /**
  * @brief Startup Phase Two - Post-OS Initialization
  * @details Initialize BSW modules after OS is running
@@ -364,6 +367,7 @@ static void EcuM_ProcessStartupTwo(void)
 *                              Main Function                                  *
 *==================================================================================================*/
 
+/** @req SWS_EcuM_00060 */
 /**
  * @brief EcuM Main Function - Cyclic processing
  * @details Called periodically to process state machine
@@ -459,6 +463,7 @@ static void EcuM_ProcessPostRun(void)
  *                              Sleep Management                               *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00080 */
 /**
  * @brief Go to Sleep mode
  * @details Prepare and enter sleep mode
@@ -481,6 +486,7 @@ void EcuM_GoSleep(void)
     EcuM_ProcessGoSleep();
 }
 
+/** @req SWS_EcuM_00081 */
 /**
  * @brief Go to Halt mode
  * @details Enter halt mode (CPU clock stopped)
@@ -505,6 +511,7 @@ void EcuM_GoHalt(void)
 #endif
 }
 
+/** @req SWS_EcuM_00082 */
 /**
  * @brief Go to Poll mode
  * @details Enter poll mode (active wait)
@@ -625,6 +632,7 @@ static void EcuM_ProcessPoll(void)
     }
 }
 
+/** @req SWS_EcuM_00083 */
 /**
  * @brief Wakeup Restart sequence
  * @details Handle wakeup from sleep
@@ -704,6 +712,7 @@ static void EcuM_ProcessWakeupTwo(void)
  *                              Shutdown Management                            *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00035 */
 /**
  * @brief Shutdown sequence
  * @details Initiate shutdown sequence
@@ -871,6 +880,7 @@ static void EcuM_PerformSleep(void)
  *                              RUN Request Management                         *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00090 */
 /**
  * @brief Request RUN mode
  * @param user User requesting RUN mode
@@ -904,6 +914,7 @@ Std_ReturnType EcuM_RequestRUN(EcuM_UserType user)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00091 */
 /**
  * @brief Release RUN mode request
  * @param user User releasing RUN mode
@@ -933,6 +944,7 @@ Std_ReturnType EcuM_ReleaseRUN(EcuM_UserType user)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00092 */
 /**
  * @brief Kill all RUN requests
  * @return E_OK if successful, E_NOT_OK otherwise
@@ -982,6 +994,7 @@ static void EcuM_CheckRunRequests(void)
  *                              State Queries                                  *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00021 */
 /**
  * @brief Get current ECU state
  * @param state Pointer to store state
@@ -1006,6 +1019,7 @@ Std_ReturnType EcuM_GetState(EcuM_StateType* state)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00022 */
 /**
  * @brief Get current sub-state
  * @param subState Pointer to store sub-state
@@ -1034,6 +1048,7 @@ Std_ReturnType EcuM_GetSubState(EcuM_SubStateType* subState)
  *                          Shutdown Target Management                         *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00030 */
 /**
  * @brief Select shutdown target
  * @param target Shutdown target (OFF, RESET, SLEEP)
@@ -1071,6 +1086,7 @@ Std_ReturnType EcuM_SelectShutdownTarget(EcuM_ShutdownTargetType target, uint8 m
     return E_OK;
 }
 
+/** @req SWS_EcuM_00031 */
 /**
  * @brief Get current shutdown target
  * @param target Pointer to store target
@@ -1106,6 +1122,7 @@ Std_ReturnType EcuM_GetShutdownTarget(EcuM_ShutdownTargetType* target, uint8* mo
     return E_OK;
 }
 
+/** @req SWS_EcuM_00032 */
 /**
  * @brief Get last shutdown target
  * @param target Pointer to store target
@@ -1134,6 +1151,7 @@ Std_ReturnType EcuM_GetLastShutdownTarget(EcuM_ShutdownTargetType* target, uint8
     return E_OK;
 }
 
+/** @req SWS_EcuM_00033 */
 /**
  * @brief Select shutdown cause
  * @param cause Shutdown cause
@@ -1152,6 +1170,7 @@ Std_ReturnType EcuM_SelectShutdownCause(EcuM_ShutdownCauseType cause)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00034 */
 /**
  * @brief Get shutdown cause
  * @param cause Pointer to store cause
@@ -1180,6 +1199,7 @@ Std_ReturnType EcuM_GetShutdownCause(EcuM_ShutdownCauseType* cause)
  *                          Wakeup Source Management                           *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00040 */
 /**
  * @brief Set wakeup event
  * @param sources Wakeup source bitmask
@@ -1222,6 +1242,7 @@ void EcuM_SetWakeupEvent(EcuM_WakeupSourceType sources)
     }
 }
 
+/** @req SWS_EcuM_00041 */
 /**
  * @brief Clear wakeup event
  * @param sources Wakeup source bitmask to clear
@@ -1252,6 +1273,7 @@ void EcuM_ClearWakeupEvent(EcuM_WakeupSourceType sources)
     }
 }
 
+/** @req SWS_EcuM_00042 */
 /**
  * @brief Check wakeup sources
  * @param sources Wakeup sources to check
@@ -1274,6 +1296,7 @@ void EcuM_CheckWakeup(EcuM_WakeupSourceType sources)
 #endif
 }
 
+/** @req SWS_EcuM_00043 */
 /**
  * @brief Enable wakeup sources
  * @param sources Wakeup source bitmask
@@ -1297,6 +1320,7 @@ Std_ReturnType EcuM_EnableWakeupSources(EcuM_WakeupSourceType sources)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00044 */
 /**
  * @brief Disable wakeup sources
  * @param sources Wakeup source bitmask
@@ -1320,6 +1344,7 @@ Std_ReturnType EcuM_DisableWakeupSources(EcuM_WakeupSourceType sources)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00045 */
 /**
  * @brief Get status of wakeup source
  * @param sources Wakeup source (single bit)
@@ -1351,6 +1376,7 @@ EcuM_WakeupStatusType EcuM_GetStatusOfWakeupSource(EcuM_WakeupSourceType sources
     return ECUM_WKSTATUS_NONE;
 }
 
+/** @req SWS_EcuM_00046 */
 /**
  * @brief Get all pending/validated wakeup sources
  * @param sources Pointer to store sources
@@ -1375,6 +1401,7 @@ Std_ReturnType EcuM_GetWakeupSources(EcuM_WakeupSourceType* sources)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00047 */
 /**
  * @brief Check validation of wakeup source
  * @param source Single wakeup source
@@ -1511,6 +1538,7 @@ static boolean EcuM_IsValidWakeupSource(EcuM_WakeupSourceType source)
  *                          Boot Target Management                             *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00050 */
 /**
  * @brief Select boot target
  * @param target Boot target
@@ -1537,6 +1565,7 @@ Std_ReturnType EcuM_SelectBootTarget(EcuM_BootTargetType target)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00051 */
 /**
  * @brief Get boot target
  * @param target Pointer to store target
@@ -1565,6 +1594,7 @@ Std_ReturnType EcuM_GetBootTarget(EcuM_BootTargetType* target)
  *                          Application Mode                                   *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00100 */
 /**
  * @brief Select application mode
  * @param appMode Application mode
@@ -1585,6 +1615,7 @@ Std_ReturnType EcuM_SelectApplicationMode(EcuM_AppModeType appMode)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00101 */
 /**
  * @brief Get application mode
  * @param appMode Pointer to store mode
@@ -1613,6 +1644,7 @@ Std_ReturnType EcuM_GetApplicationMode(EcuM_AppModeType* appMode)
  *                          Communication Mode                                 *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00110 */
 /**
  * @brief Request communication mode
  * @param channel Communication channel
@@ -1638,6 +1670,7 @@ Std_ReturnType EcuM_ComM_RequestComMode(uint8 channel, EcuM_ModeType mode)
     return E_OK;
 }
 
+/** @req SWS_EcuM_00111 */
 /**
  * @brief Release communication mode
  * @param channel Communication channel
@@ -1660,6 +1693,7 @@ Std_ReturnType EcuM_ComM_ReleaseComMode(uint8 channel)
  *                          BSW Mode Management                                *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00120 */
 /**
  * @brief Start BSW mode
  * @param mode BSW mode to start
@@ -1670,6 +1704,7 @@ void EcuM_StartBswMode(EcuM_BswModeType mode)
     /* Mode handling implementation */
 }
 
+/** @req SWS_EcuM_00121 */
 /**
  * @brief Stop BSW mode
  * @param mode BSW mode to stop
@@ -1684,6 +1719,7 @@ void EcuM_StopBswMode(EcuM_BswModeType mode)
  *                          Version Info                                       *
  ******************************************************************************/
 
+/** @req SWS_EcuM_00070 */
 /**
  * @brief Get version information
  * @param versionInfo Pointer to version info structure

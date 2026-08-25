@@ -36,6 +36,7 @@ static void setup_test_config(void)
 ==================================================================================================*/
 
 /* Test: Mcu_Init with valid config */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_valid_config)
 {
     Std_ReturnType result;
@@ -49,6 +50,7 @@ TEST_CASE(mcu_init_valid_config)
 }
 
 /* Test: Mcu_Init with NULL config */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_null_config)
 {
     Std_ReturnType result;
@@ -63,6 +65,7 @@ TEST_CASE(mcu_init_null_config)
 }
 
 /* Test: Mcu_Init when already initialized */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_already_initialized)
 {
     setup_test_config();
@@ -77,6 +80,7 @@ TEST_CASE(mcu_init_already_initialized)
 }
 
 /* Test: Mcu_InitClock */
+/** @req SWS_Mcu_00001 */
 TEST_CASE(mcu_init_clock)
 {
     Std_ReturnType result;
@@ -91,6 +95,7 @@ TEST_CASE(mcu_init_clock)
 }
 
 /* Test: Mcu_DistributePllClock */
+/** @req SWS_Mcu_00003 */
 TEST_CASE(mcu_distribute_pll_clock)
 {
     Std_ReturnType result;
@@ -105,6 +110,7 @@ TEST_CASE(mcu_distribute_pll_clock)
 }
 
 /* Test: Mcu_GetPllStatus */
+/** @req SWS_Mcu_00004 */
 TEST_CASE(mcu_get_pll_status)
 {
     Mcu_PllStatusType status;
@@ -119,6 +125,7 @@ TEST_CASE(mcu_get_pll_status)
 }
 
 /* Test: Mcu_SetMode */
+/** @req SWS_Mcu_00005 */
 TEST_CASE(mcu_set_mode)
 {
     setup_test_config();
@@ -131,6 +138,7 @@ TEST_CASE(mcu_set_mode)
 }
 
 /* Test: Mcu_GetResetReason */
+/** @req SWS_Mcu_00006 */
 TEST_CASE(mcu_get_reset_reason)
 {
     Mcu_ResetType reason;
@@ -144,6 +152,7 @@ TEST_CASE(mcu_get_reset_reason)
 }
 
 /* Test: Mcu_GetResetRawValue */
+/** @req SWS_Mcu_00007 */
 TEST_CASE(mcu_get_reset_raw_value)
 {
     Mcu_RawResetType raw;
@@ -157,6 +166,7 @@ TEST_CASE(mcu_get_reset_raw_value)
 }
 
 /* Test: Mcu_GetVersionInfo */
+/** @req SWS_Mcu_00009 */
 TEST_CASE(mcu_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -168,6 +178,7 @@ TEST_CASE(mcu_get_version_info)
 }
 
 /* Test: Mcu_GetVersionInfo with NULL pointer */
+/** @req SWS_Mcu_00009 */
 TEST_CASE(mcu_get_version_info_null)
 {
     Det_Mock_Reset();

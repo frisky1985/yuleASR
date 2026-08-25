@@ -35,6 +35,7 @@ static int teardown(void **state)
 /**
  * @brief Test EthIf_Init with valid configuration
  */
+/** @req SWS_EthIf_00001 */
 static void test_EthIf_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -46,6 +47,7 @@ static void test_EthIf_Init_ValidConfig(void **state)
 /**
  * @brief Test EthIf_GetVersionInfo
  */
+/** @req SWS_EthIf_00009 */
 static void test_EthIf_GetVersionInfo(void **state)
 {
     (void)state;
@@ -65,6 +67,7 @@ static void test_EthIf_GetVersionInfo(void **state)
 /**
  * @brief Test EthIf_ControllerInit
  */
+/** @req SWS_EthIf_00001 */
 static void test_EthIf_ControllerInit(void **state)
 {
     (void)state;
@@ -77,6 +80,7 @@ static void test_EthIf_ControllerInit(void **state)
 /**
  * @brief Test EthIf_SetControllerMode with valid parameters
  */
+/** @req SWS_EthIf_00004 */
 static void test_EthIf_SetControllerMode(void **state)
 {
     (void)state;
@@ -95,6 +99,7 @@ static void test_EthIf_SetControllerMode(void **state)
 /**
  * @brief Test EthIf_SetControllerMode with invalid controller ID
  */
+/** @req SWS_EthIf_00004 */
 static void test_EthIf_SetControllerMode_InvalidId(void **state)
 {
     (void)state;
@@ -109,6 +114,7 @@ static void test_EthIf_SetControllerMode_InvalidId(void **state)
 /**
  * @brief Test EthIf_GetControllerMode
  */
+/** @req SWS_EthIf_00005 */
 static void test_EthIf_GetControllerMode(void **state)
 {
     (void)state;
@@ -128,6 +134,7 @@ static void test_EthIf_GetControllerMode(void **state)
 /**
  * @brief Test EthIf_GetControllerMode with NULL pointer
  */
+/** @req SWS_EthIf_00005 */
 static void test_EthIf_GetControllerMode_NullPtr(void **state)
 {
     (void)state;
@@ -141,6 +148,7 @@ static void test_EthIf_GetControllerMode_NullPtr(void **state)
 /**
  * @brief Test EthIf_GetPhysAddr and EthIf_SetPhysAddr
  */
+/** @req SWS_EthIf_00003 */
 static void test_EthIf_PhysAddr(void **state)
 {
     (void)state;
@@ -161,6 +169,7 @@ static void test_EthIf_PhysAddr(void **state)
 /**
  * @brief Test EthIf_Transmit
  */
+/** @req SWS_EthIf_00003 */
 static void test_EthIf_Transmit(void **state)
 {
     (void)state;
@@ -179,6 +188,7 @@ static void test_EthIf_Transmit(void **state)
 /**
  * @brief Test EthIf_Transmit with invalid parameters
  */
+/** @req SWS_EthIf_00003 */
 static void test_EthIf_Transmit_InvalidParams(void **state)
 {
     (void)state;
@@ -248,6 +258,7 @@ static void test_EthIf_LinkStateTypes(void **state)
 /**
  * @brief Test EthIf_MainFunction
  */
+/** @req SWS_EthIf_00008 */
 static void test_EthIf_MainFunction(void **state)
 {
     (void)state;
@@ -260,6 +271,7 @@ static void test_EthIf_MainFunction(void **state)
 /**
  * @brief Test EthIf_RxIndication callback
  */
+/** @req SWS_EthIf_00006 */
 static void test_EthIf_RxIndication(void **state)
 {
     (void)state;
@@ -277,6 +289,7 @@ static void test_EthIf_RxIndication(void **state)
 /**
  * @brief Test EthIf_TxConfirmation callback
  */
+/** @req SWS_EthIf_00007 */
 static void test_EthIf_TxConfirmation(void **state)
 {
     (void)state;

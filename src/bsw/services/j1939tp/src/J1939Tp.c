@@ -87,6 +87,7 @@ static void J1939Tp_HandleAbort(const uint8* Data, uint8 ChannelIdx);
 /* PduR callback forward declaration (defined in this file) */
 void PduR_J1939TpRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_J1939Tp_00001 */
 /*==================================================================================================
  *                                   API Functions
  *================================================================================================*/
@@ -117,6 +118,7 @@ Std_ReturnType J1939Tp_Init(const J1939Tp_ConfigType* ConfigPtr)
     return result;
 }
 
+/** @req SWS_J1939Tp_00002 */
 void J1939Tp_DeInit(void)
 {
     if (J1939Tp_ModuleState == J1939TP_STATE_INITED) {
@@ -134,6 +136,7 @@ void J1939Tp_DeInit(void)
     }
 }
 
+/** @req SWS_J1939Tp_00003 */
 void J1939Tp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (J1939TP_VERSION_INFO_API == STD_ON)
@@ -152,6 +155,7 @@ void J1939Tp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 #endif
 }
 
+/** @req SWS_J1939Tp_00005 */
 Std_ReturnType J1939Tp_Transmit(PduIdType TxSduId, const PduInfoType* TxInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -210,6 +214,7 @@ Std_ReturnType J1939Tp_Transmit(PduIdType TxSduId, const PduInfoType* TxInfoPtr)
     return result;
 }
 
+/** @req SWS_J1939Tp_00006 */
 Std_ReturnType J1939Tp_CancelTransmit(PduIdType TxSduId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -232,6 +237,7 @@ Std_ReturnType J1939Tp_CancelTransmit(PduIdType TxSduId)
     return result;
 }
 
+/** @req SWS_J1939Tp_00007 */
 Std_ReturnType J1939Tp_CancelReceive(PduIdType RxSduId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -254,6 +260,7 @@ Std_ReturnType J1939Tp_CancelReceive(PduIdType RxSduId)
     return result;
 }
 
+/** @req SWS_J1939Tp_00008 */
 Std_ReturnType J1939Tp_ChangeParameter(PduIdType SduId, J1939Tp_ParameterType Parameter, uint16 Value)
 {
     /* Not fully implemented - placeholder */
@@ -263,6 +270,7 @@ Std_ReturnType J1939Tp_ChangeParameter(PduIdType SduId, J1939Tp_ParameterType Pa
     return E_NOT_OK;
 }
 
+/** @req SWS_J1939Tp_00004 */
 void J1939Tp_MainFunction(void)
 {
     if (J1939Tp_ModuleState == J1939TP_STATE_INITED) {
@@ -278,6 +286,7 @@ void J1939Tp_MainFunction(void)
     }
 }
 
+/** @req SWS_J1939Tp_00009 */
 void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (J1939TP_DEV_ERROR_DETECT == STD_ON)
@@ -306,6 +315,7 @@ void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 }
 
+/** @req SWS_J1939Tp_00010 */
 void J1939Tp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     (void)TxPduId;

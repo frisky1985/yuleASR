@@ -26,6 +26,7 @@ void tearDown(void) {
 }
 
 /* ========= I2c_Init ========= */
+/* @req SWS_I2c_00001 */
 void test_I2c_Init_NullConfig(void)
 {
     I2c_Init(NULL);
@@ -33,12 +34,14 @@ void test_I2c_Init_NullConfig(void)
     TEST_ASSERT_EQUAL(I2C_UNINIT, I2c_GetStatus());
 }
 
+/* @req SWS_I2c_00001 */
 void test_I2c_Init_Valid(void)
 {
     I2c_Init(&g_test_cfg);
     TEST_ASSERT_EQUAL(I2C_IDLE, I2c_GetStatus());
 }
 
+/* @req SWS_I2c_00001 */
 void test_I2c_Init_DoubleInit(void)
 {
     I2c_Init(&g_test_cfg);
@@ -47,12 +50,14 @@ void test_I2c_Init_DoubleInit(void)
 }
 
 /* ========= I2c_DeInit ========= */
+/* @req SWS_I2c_00002 */
 void test_I2c_DeInit_BeforeInit(void)
 {
     Std_ReturnType ret = I2c_DeInit();
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
+/* @req SWS_I2c_00002 */
 void test_I2c_DeInit_AfterInit(void)
 {
     I2c_Init(&g_test_cfg);
@@ -62,6 +67,7 @@ void test_I2c_DeInit_AfterInit(void)
 }
 
 /* ========= I2c_WriteBytes ========= */
+/* @req SWS_I2c_00003 */
 void test_I2c_WriteBytes_BeforeInit(void)
 {
     const uint8 data[] = {0x01, 0x02};
@@ -69,6 +75,7 @@ void test_I2c_WriteBytes_BeforeInit(void)
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
+/* @req SWS_I2c_00003 */
 void test_I2c_WriteBytes_NullBuffer(void)
 {
     I2c_Init(&g_test_cfg);
@@ -76,6 +83,7 @@ void test_I2c_WriteBytes_NullBuffer(void)
     TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }
 
+/* @req SWS_I2c_00003 */
 void test_I2c_WriteBytes_Valid(void)
 {
     I2c_Init(&g_test_cfg);
@@ -86,18 +94,21 @@ void test_I2c_WriteBytes_Valid(void)
 }
 
 /* ========= I2c_ReadBytes ========= */
+/* @req SWS_I2c_00004 */
 void test_I2c_ReadBytes_BeforeInit(void)
 {
     uint8 buf[4];
     TEST_ASSERT_EQUAL(E_NOT_OK, I2c_ReadBytes(0, 0x50, buf, 4, 0));
 }
 
+/* @req SWS_I2c_00004 */
 void test_I2c_ReadBytes_NullBuffer(void)
 {
     I2c_Init(&g_test_cfg);
     TEST_ASSERT_EQUAL(E_NOT_OK, I2c_ReadBytes(0, 0x50, NULL, 4, 0));
 }
 
+/* @req SWS_I2c_00004 */
 void test_I2c_ReadBytes_Valid(void)
 {
     I2c_Init(&g_test_cfg);
@@ -109,6 +120,7 @@ void test_I2c_ReadBytes_Valid(void)
 }
 
 /* ========= I2c_WriteRead ========= */
+/* @req SWS_I2c_00005 */
 void test_I2c_WriteRead_Valid(void)
 {
     I2c_Init(&g_test_cfg);
@@ -121,11 +133,13 @@ void test_I2c_WriteRead_Valid(void)
 }
 
 /* ========= I2c_GetStatus ========= */
+/* @req SWS_I2c_00006 */
 void test_I2c_GetStatus_Uninit(void)
 {
     TEST_ASSERT_EQUAL(I2C_UNINIT, I2c_GetStatus());
 }
 
+/* @req SWS_I2c_00006 */
 void test_I2c_GetStatus_AfterInit(void)
 {
     I2c_Init(&g_test_cfg);
@@ -133,6 +147,7 @@ void test_I2c_GetStatus_AfterInit(void)
 }
 
 /* ========= I2c_SetClockMode ========= */
+/* @req SWS_I2c_00008 */
 void test_I2c_SetClockMode_Valid(void)
 {
     I2c_Init(&g_test_cfg);
@@ -141,12 +156,14 @@ void test_I2c_SetClockMode_Valid(void)
     TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK);
 }
 
+/* @req SWS_I2c_00008 */
 void test_I2c_SetClockMode_BeforeInit(void)
 {
     TEST_ASSERT_EQUAL(E_NOT_OK, I2c_SetClockMode(0, 0));
 }
 
 /* ========= I2c_GetBusState ========= */
+/* @req SWS_I2c_00012 */
 void test_I2c_GetBusState_Valid(void)
 {
     I2c_Init(&g_test_cfg);
@@ -155,6 +172,7 @@ void test_I2c_GetBusState_Valid(void)
 }
 
 /* ========= I2c_MainFunction ========= */
+/* @req SWS_I2c_00020 */
 void test_I2c_MainFunction_Idle(void)
 {
     I2c_Init(&g_test_cfg);
@@ -162,12 +180,14 @@ void test_I2c_MainFunction_Idle(void)
     TEST_ASSERT_EQUAL(I2C_IDLE, I2c_GetStatus());
 }
 
+/* @req SWS_I2c_00020 */
 void test_I2c_MainFunction_Uninit(void)
 {
     I2c_MainFunction();
 }
 
 /* ========= I2c_GetVersionInfo ========= */
+/* @req SWS_I2c_00007 */
 void test_I2c_GetVersionInfo_Valid(void)
 {
     Std_VersionInfoType vi;
@@ -177,6 +197,7 @@ void test_I2c_GetVersionInfo_Valid(void)
     TEST_ASSERT_EQUAL(I2C_MODULE_ID, vi.moduleID);
 }
 
+/* @req SWS_I2c_00007 */
 void test_I2c_GetVersionInfo_Null(void)
 {
     I2c_GetVersionInfo(NULL);

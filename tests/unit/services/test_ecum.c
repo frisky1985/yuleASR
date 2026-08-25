@@ -23,6 +23,7 @@
 ==================================================================================================*/
 
 /* Test: EcuM_Init should initialize and enter STARTUP state */
+/** @req SWS_EcuM_00001 */
 TEST_CASE(ecum_init_startup_state)
 {
     EcuM_StateType state;
@@ -34,6 +35,7 @@ TEST_CASE(ecum_init_startup_state)
 }
 
 /* Test: EcuM_StartupTwo should transition to RUN state */
+/** @req SWS_EcuM_00011 */
 TEST_CASE(ecum_startup_two_run_state)
 {
     EcuM_StateType state;
@@ -46,6 +48,7 @@ TEST_CASE(ecum_startup_two_run_state)
 }
 
 /* Test: EcuM_RequestRUN should keep RUN state */
+/** @req SWS_EcuM_00090 */
 TEST_CASE(ecum_request_run)
 {
     EcuM_StateType state;
@@ -59,6 +62,7 @@ TEST_CASE(ecum_request_run)
 }
 
 /* Test: EcuM_ReleaseRUN should transition to SHUTDOWN */
+/** @req SWS_EcuM_00091 */
 TEST_CASE(ecum_release_run_shutdown)
 {
     EcuM_StateType state;
@@ -72,6 +76,7 @@ TEST_CASE(ecum_release_run_shutdown)
 }
 
 /* Test: EcuM_SelectShutdownTarget should set target */
+/** @req SWS_EcuM_00030 */
 TEST_CASE(ecum_select_shutdown_target)
 {
     EcuM_StateType target;

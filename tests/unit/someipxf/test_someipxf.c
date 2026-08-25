@@ -10,6 +10,7 @@
 #include "SomeIpXf.h"
 
 /* Test: SomeIpXf_Init */
+/** @req SWS_SomeIpXf_00001 */
 static void test_SomeIpXf_Init(void **state)
 {
     (void)state;

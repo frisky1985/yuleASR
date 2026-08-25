@@ -77,6 +77,8 @@ static uint16 Pwm_ChannelDutyCycle[PWM_NUM_CHANNELS];
 #define PWM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/** @req SWS_Pwm_00101 */
+/** @req SWS_Pwm_00101 */
 static uint32 Pwm_GetBaseAddr(Pwm_ChannelType chId)
 {
     uint32 baseAddr;
@@ -90,11 +92,15 @@ static uint32 Pwm_GetBaseAddr(Pwm_ChannelType chId)
     return baseAddr;
 }
 
+/** @req SWS_Pwm_00102 */
+/** @req SWS_Pwm_00102 */
 static void Pwm_EnableClock(Pwm_ChannelType chId)
 {
     (void)chId;
 }
 
+/** @req SWS_Pwm_00103 */
+/** @req SWS_Pwm_00103 */
 static void Pwm_DisableClock(Pwm_ChannelType chId)
 {
     (void)chId;
@@ -103,6 +109,8 @@ static void Pwm_DisableClock(Pwm_ChannelType chId)
 #define PWM_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Pwm_00001 */
+/** @req SWS_Pwm_00001 */
 void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -155,6 +163,8 @@ void Pwm_Init(const Pwm_ConfigType* ConfigPtr)
 }
 
 #if (PWM_DE_INIT_API == STD_ON)
+/** @req SWS_Pwm_00002 */
+/** @req SWS_Pwm_00002 */
 void Pwm_DeInit(void)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -178,6 +188,8 @@ void Pwm_DeInit(void)
 }
 #endif
 
+/** @req SWS_Pwm_00003 */
+/** @req SWS_Pwm_00003 */
 void Pwm_SetDutyCycle(Pwm_ChannelType Channel, uint16 DutyCycle)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -202,6 +214,8 @@ void Pwm_SetDutyCycle(Pwm_ChannelType Channel, uint16 DutyCycle)
 }
 
 #if (PWM_SET_PERIOD_AND_DUTY_API == STD_ON)
+/** @req SWS_Pwm_00004 */
+/** @req SWS_Pwm_00004 */
 void Pwm_SetPeriodAndDuty(Pwm_ChannelType Channel, Pwm_PeriodType Period, uint16 DutyCycle)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -233,6 +247,8 @@ void Pwm_SetPeriodAndDuty(Pwm_ChannelType Channel, Pwm_PeriodType Period, uint16
 #endif
 
 #if (PWM_SET_OUTPUT_TO_IDLE_API == STD_ON)
+/** @req SWS_Pwm_00005 */
+/** @req SWS_Pwm_00005 */
 void Pwm_SetOutputToIdle(Pwm_ChannelType Channel)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -254,6 +270,8 @@ void Pwm_SetOutputToIdle(Pwm_ChannelType Channel)
 #endif
 
 #if (PWM_GET_OUTPUT_STATE_API == STD_ON)
+/** @req SWS_Pwm_00006 */
+/** @req SWS_Pwm_00006 */
 Pwm_OutputStateType Pwm_GetOutputState(Pwm_ChannelType Channel)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -280,6 +298,8 @@ Pwm_OutputStateType Pwm_GetOutputState(Pwm_ChannelType Channel)
 #endif
 
 #if (PWM_NOTIFICATION_SUPPORTED == STD_ON)
+/** @req SWS_Pwm_00007 */
+/** @req SWS_Pwm_00007 */
 void Pwm_DisableNotification(Pwm_ChannelType Channel)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -297,6 +317,8 @@ void Pwm_DisableNotification(Pwm_ChannelType Channel)
     REG_WRITE32(baseAddr + PWM_IR, 0U);
 }
 
+/** @req SWS_Pwm_00008 */
+/** @req SWS_Pwm_00008 */
 void Pwm_EnableNotification(Pwm_ChannelType Channel, Pwm_EdgeNotificationType Notification)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -325,6 +347,8 @@ void Pwm_EnableNotification(Pwm_ChannelType Channel, Pwm_EdgeNotificationType No
 }
 #endif
 
+/** @req SWS_Pwm_00009 */
+/** @req SWS_Pwm_00009 */
 void Pwm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -341,6 +365,8 @@ void Pwm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 
 #if (PWM_POWER_STATE_SUPPORTED == STD_ON)
+/** @req SWS_Pwm_00010 */
+/** @req SWS_Pwm_00010 */
 void Pwm_SetPowerState(Pwm_PowerStateType PowerState, Pwm_PowerStateRequestResultType* Result)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -357,6 +383,8 @@ void Pwm_SetPowerState(Pwm_PowerStateType PowerState, Pwm_PowerStateRequestResul
     *Result = PWM_SERVICE_ACCEPTED;
 }
 
+/** @req SWS_Pwm_00011 */
+/** @req SWS_Pwm_00011 */
 void Pwm_GetTargetPowerState(Pwm_PowerStateType* TargetPowerState, Pwm_PowerStateRequestResultType* Result)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -373,6 +401,8 @@ void Pwm_GetTargetPowerState(Pwm_PowerStateType* TargetPowerState, Pwm_PowerStat
     *Result = PWM_SERVICE_ACCEPTED;
 }
 
+/** @req SWS_Pwm_00012 */
+/** @req SWS_Pwm_00012 */
 void Pwm_GetCurrentPowerState(Pwm_PowerStateType* CurrentPowerState, Pwm_PowerStateRequestResultType* Result)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)
@@ -389,6 +419,8 @@ void Pwm_GetCurrentPowerState(Pwm_PowerStateType* CurrentPowerState, Pwm_PowerSt
     *Result = PWM_SERVICE_ACCEPTED;
 }
 
+/** @req SWS_Pwm_00013 */
+/** @req SWS_Pwm_00013 */
 void Pwm_PreparePowerState(Pwm_PowerStateType PowerState, Pwm_PowerStateRequestResultType* Result)
 {
     #if (PWM_DEV_ERROR_DETECT == STD_ON)

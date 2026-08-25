@@ -10,12 +10,14 @@
 #include "E2E.h"
 #include "E2E_Cfg.h"
 
+/** @req SWS_E2E_00001 */
 static void test_E2E_Init(void **state) {
     (void)state;
     E2E_Init();
     assert_true(1);
 }
 
+/** @req SWS_E2E_00001 */
 static void test_E2E_P01Init(void **state) {
     (void)state;
     E2E_P01ConfigType config;
@@ -23,6 +25,7 @@ static void test_E2E_P01Init(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_E2E_00003 */
 static void test_E2E_P01Protect(void **state) {
     (void)state;
     E2E_P01ConfigType config;
@@ -32,6 +35,7 @@ static void test_E2E_P01Protect(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_E2E_00004 */
 static void test_E2E_P01Check(void **state) {
     (void)state;
     E2E_P01ConfigType config;
@@ -41,6 +45,7 @@ static void test_E2E_P01Check(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_E2E_00001 */
 static void test_E2E_P05Init(void **state) {
     (void)state;
     E2E_P05ConfigType config;
@@ -48,6 +53,7 @@ static void test_E2E_P05Init(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_E2E_00012 */
 static void test_E2E_P05Protect(void **state) {
     (void)state;
     E2E_P05ConfigType config;

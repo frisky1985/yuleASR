@@ -204,6 +204,7 @@ static BswM_ModeType BswM_PortModes[BSWM_MAX_MODE_REQUEST_PORTS];
 static boolean BswM_ModeRequestPending[BSWM_MAX_MODE_REQUEST_PORTS];
 static boolean BswM_PortValid[BSWM_MAX_MODE_REQUEST_PORTS];
 
+/** @req SWS_BswM_00001 */
 void BswM_Init(const BswM_ConfigType* ConfigPtr)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
@@ -227,6 +228,7 @@ void BswM_Init(const BswM_ConfigType* ConfigPtr)
     SchM_Exit_BswM(BSWM_EXCLUSIVE_AREA_0);
 }
 
+/** @req SWS_BswM_00002 */
 void BswM_DeInit(void)
 {
     SchM_Enter_BswM(BSWM_EXCLUSIVE_AREA_0);
@@ -241,6 +243,7 @@ void BswM_DeInit(void)
     SchM_Exit_BswM(BSWM_EXCLUSIVE_AREA_0);
 }
 
+/** @req SWS_BswM_00030 */
 #if (BSWM_VERSION_INFO_API == STD_ON)
 void BswM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
@@ -258,6 +261,7 @@ void BswM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 }
 #endif
 
+/** @req SWS_BswM_00010 */
 Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode)
 {
 #if (BSWM_DEV_ERROR_DETECT == STD_ON)
@@ -285,16 +289,19 @@ Std_ReturnType BswM_RequestMode(uint8 SwCompositionId, BswM_ModeType Mode)
     return E_OK;
 }
 
+/** @req SWS_BswM_00011 */
 BswM_ModeType BswM_GetCurrentMode(void)
 {
     return BSWM_MODE_STARTUP; /* Default; real impl returns global current mode */
 }
 
+/** @req SWS_BswM_00012 */
 BswM_ModeType BswM_GetRequestedMode(void)
 {
     return BSWM_MODE_STARTUP; /* Default; real impl returns global requested mode */
 }
 
+/** @req SWS_BswM_00020 */
 void BswM_MainFunction(void)
 {
     if (BSWM_UNINIT == BswM_State) {

@@ -156,17 +156,20 @@ extern const FrTp_ConfigType FrTp_Config;
 #define FRTP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_FrTp_00001 */
 /**
  * @brief Initializes the FlexRay Transport Protocol module
  * @param CfgPtr Pointer to configuration structure
  */
 void FrTp_Init(const FrTp_ConfigType* CfgPtr);
 
+/** @req SWS_FrTp_00002 */
 /**
  * @brief Deinitializes the FrTp module
  */
 void FrTp_DeInit(void);
 
+/** @req SWS_FrTp_00005 */
 /**
  * @brief Transmits data via FrTp
  * @param TxPduId PDU to transmit
@@ -175,6 +178,7 @@ void FrTp_DeInit(void);
  */
 Std_ReturnType FrTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_FrTp_00006 */
 /**
  * @brief Cancels an ongoing transmission
  * @param TxPduId PDU to cancel
@@ -182,6 +186,7 @@ Std_ReturnType FrTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
  */
 Std_ReturnType FrTp_CancelTransmit(PduIdType TxPduId);
 
+/** @req SWS_FrTp_00007 */
 /**
  * @brief Cancels an ongoing reception
  * @param RxPduId PDU to cancel
@@ -207,6 +212,7 @@ typedef enum {
 } TPParameterType;
 #endif
 
+/** @req SWS_FrTp_00008 */
 Std_ReturnType FrTp_ChangeParameter(PduIdType id, TPParameterType parameter, uint16 value);
 
 /**
@@ -214,9 +220,11 @@ Std_ReturnType FrTp_ChangeParameter(PduIdType id, TPParameterType parameter, uin
  * @param versioninfo Pointer to version info structure
  */
 #if (FRTP_VERSION_INFO_API == STD_ON)
+/** @req SWS_FrTp_00003 */
 void FrTp_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_FrTp_00004 */
 /**
  * @brief Main function for periodic processing
  */
@@ -226,6 +234,7 @@ void FrTp_MainFunction(void);
 *                                    CALLBACK FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_FrTp_00009 */
 /**
  * @brief Rx indication callback from FrIf
  * @param RxPduId Received PDU ID
@@ -233,6 +242,7 @@ void FrTp_MainFunction(void);
  */
 void FrTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_FrTp_00010 */
 /**
  * @brief Tx confirmation callback from FrIf
  * @param TxPduId Transmitted PDU ID

@@ -107,17 +107,20 @@ typedef struct {
  *  FUNCTION PROTOTYPES
  *===========================================================================*/
 
+/** @req SWS_WdgIf_00001 */
 /**
  * @brief Initialize WdgIf module
  * @param ConfigPtr Pointer to configuration structure
  */
 void WdgIf_Init(const WdgIf_ConfigType* ConfigPtr);
 
+/** @req SWS_WdgIf_00002 */
 /**
  * @brief Deinitialize WdgIf module
  */
 void WdgIf_DeInit(void);
 
+/** @req SWS_WdgIf_00004 */
 /**
  * @brief Set watchdog mode for specified device
  * @param Device Index of device
@@ -126,6 +129,7 @@ void WdgIf_DeInit(void);
  */
 Std_ReturnType WdgIf_SetMode(WdgIf_DeviceType Device, WdgIf_ModeType WdgMode);
 
+/** @req SWS_WdgIf_00005 */
 /**
  * @brief Trigger (kick) the watchdog for specified device
  * @param Device Index of device
@@ -138,9 +142,11 @@ Std_ReturnType WdgIf_Trigger(WdgIf_DeviceType Device);
  * @param VersionInfo Pointer to version info structure
  */
 #if (WDGIF_VERSION_INFO_API == STD_ON)
+/** @req SWS_WdgIf_00003 */
 void WdgIf_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 #endif
 
+/** @req SWS_WdgIf_00006 */
 /**
  * @brief Set trigger condition (timeout) for watchdog
  * @param Device Index of device

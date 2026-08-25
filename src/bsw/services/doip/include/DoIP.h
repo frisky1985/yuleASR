@@ -345,23 +345,27 @@ extern const DoIP_ConfigType DoIP_Config;
 #define DOIP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_DoIP_00001 */
 /**
  * @brief Initializes the DoIP module
  * @param ConfigPtr Pointer to configuration structure
  */
 void DoIP_Init(const DoIP_ConfigType* ConfigPtr);
 
+/** @req SWS_DoIP_00002 */
 /**
  * @brief Deinitializes the DoIP module
  */
 void DoIP_DeInit(void);
 
+/** @req SWS_DoIP_00003 */
 /**
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  */
 void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/** @req SWS_DoIP_00005 */
 /**
  * @brief Transmits a diagnostic message via DoIP
  * @param TxPduId PDU to transmit
@@ -370,6 +374,7 @@ void DoIP_GetVersionInfo(Std_VersionInfoType* versioninfo);
  */
 Std_ReturnType DoIP_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_DoIP_00006 */
 /**
  * @brief Receive indication from lower layer (SoAd)
  * @param RxPduId Received PDU ID
@@ -377,6 +382,7 @@ Std_ReturnType DoIP_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
  */
 void DoIP_IfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_DoIP_00007 */
 /**
  * @brief Activates a diagnostic routing path
  * @param SourceAddress Source logical address
@@ -386,6 +392,7 @@ void DoIP_IfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  */
 Std_ReturnType DoIP_ActivateRouting(uint16 SourceAddress, uint16 TargetAddress, uint8 ActivationType);
 
+/** @req SWS_DoIP_00008 */
 /**
  * @brief Closes an active diagnostic connection
  * @param ConnectionId Connection identifier to close
@@ -393,12 +400,14 @@ Std_ReturnType DoIP_ActivateRouting(uint16 SourceAddress, uint16 TargetAddress, 
  */
 Std_ReturnType DoIP_CloseConnection(uint16 ConnectionId);
 
+/** @req SWS_DoIP_00009 */
 /**
  * @brief Triggers vehicle identification announcement
  * @return Result of operation
  */
 Std_ReturnType DoIP_VehicleAnnouncement(void);
 
+/** @req SWS_DoIP_00010 */
 /**
  * @brief Requests entity status information
  * @param EntityIndex Entity index
@@ -412,18 +421,21 @@ Std_ReturnType DoIP_RequestEntityStatus(uint8 EntityIndex);
  */
 DoIP_PowerModeType DoIP_GetPowerMode(void);
 
+/** @req SWS_DoIP_00011 */
 /**
  * @brief Sets diagnostic power mode
  * @param PowerMode Power mode to set
  */
 void DoIP_SetPowerMode(DoIP_PowerModeType PowerMode);
 
+/** @req SWS_DoIP_00012 */
 /**
  * @brief Handles alive check timeout for a connection
  * @param ConnectionId Connection ID
  */
 void DoIP_HandleAliveCheckTimeout(uint16 ConnectionId);
 
+/** @req SWS_DoIP_00013 */
 /**
  * @brief Transmit confirmation callback from SoAd
  * @param TxPduId PDU that was transmitted
@@ -431,6 +443,7 @@ void DoIP_HandleAliveCheckTimeout(uint16 ConnectionId);
  */
 void DoIP_SoAdTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
+/** @req SWS_DoIP_00014 */
 /**
  * @brief TCP connection establishment callback
  * @param SoConId Socket connection ID
@@ -438,11 +451,13 @@ void DoIP_SoAdTxConfirmation(PduIdType TxPduId, Std_ReturnType result);
  */
 void DoIP_SoConModeChg(uint16 SoConId, SoAd_ModeType Mode);
 
+/** @req SWS_DoIP_00004 */
 /**
  * @brief Main function for periodic processing
  */
 void DoIP_MainFunction(void);
 
+/** @req SWS_DoIP_00015 */
 /**
  * @brief Trigger transmit callback from DCM
  * @param TxPduId PDU ID
@@ -451,6 +466,7 @@ void DoIP_MainFunction(void);
  */
 Std_ReturnType DoIP_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
 
+/** @req SWS_DoIP_00016 */
 /**
  * @brief TpRxIndication callback from DCM
  * @param RxPduId PDU ID
@@ -458,6 +474,7 @@ Std_ReturnType DoIP_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr);
  */
 void DoIP_TpRxIndication(PduIdType RxPduId, Std_ReturnType Result);
 
+/** @req SWS_DoIP_00017 */
 /**
  * @brief TpTxConfirmation callback from DCM
  * @param TxPduId PDU ID

@@ -302,6 +302,7 @@ static void KeyM_TriggerNotification(KeyM_KeyIdType keyId,
  *                                    GLOBAL FUNCTIONS
  *==================================================================================================*/
 
+/** @req SWS_KeyM_00001 */
 /**
  * @brief Initializes the Key Manager module
  */
@@ -346,6 +347,7 @@ void KeyM_Init(const KeyM_ConfigType* ConfigPtr)
 #endif
 }
 
+/** @req SWS_KeyM_00002 */
 /**
  * @brief Deinitializes the Key Manager module
  */
@@ -383,6 +385,7 @@ void KeyM_DeInit(void)
  * @brief Gets version information
  */
 #if (KEYM_VERSION_INFO_API == STD_ON)
+/** @req SWS_KeyM_00003 */
 void KeyM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (KEYM_DEV_ERROR_DETECT == STD_ON)
@@ -401,6 +404,7 @@ void KeyM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_KeyM_00005 */
 /**
  * @brief Sets a key with the given data
  */
@@ -475,6 +479,7 @@ Std_ReturnType KeyM_SetKey(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00006 */
 /**
  * @brief Gets a key
  */
@@ -538,6 +543,7 @@ Std_ReturnType KeyM_GetKey(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00007 */
 /**
  * @brief Updates an existing key
  */
@@ -614,6 +620,7 @@ Std_ReturnType KeyM_UpdateKey(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00008 */
 /**
  * @brief Finalizes a key, making it valid for use
  */
@@ -658,6 +665,7 @@ Std_ReturnType KeyM_FinalizeKey(KeyM_KeyIdType keyId)
     return E_OK;
 }
 
+/** @req SWS_KeyM_00009 */
 /**
  * @brief Parses key data from a specific format
  */
@@ -728,6 +736,7 @@ Std_ReturnType KeyM_ParseKey(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00010 */
 /**
  * @brief Converts key data to a specific format
  */
@@ -789,6 +798,7 @@ Std_ReturnType KeyM_ConvertKey(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00011 */
 /**
  * @brief Copies a key from source to destination
  */
@@ -846,6 +856,7 @@ Std_ReturnType KeyM_CopyKey(KeyM_KeyIdType srcKeyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00012 */
 /**
  * @brief Sets a key element
  */
@@ -903,6 +914,7 @@ Std_ReturnType KeyM_KeyElementSet(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00013 */
 /**
  * @brief Gets a key element
  */
@@ -969,6 +981,7 @@ Std_ReturnType KeyM_KeyElementGet(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00014 */
 /**
  * @brief Gets the status of a key
  */
@@ -1011,6 +1024,7 @@ Std_ReturnType KeyM_KeyStatusGet(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00015 */
 /**
  * @brief Gets the version of a key
  */
@@ -1050,6 +1064,7 @@ Std_ReturnType KeyM_KeyVersionGet(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00016 */
 /**
  * @brief Gets the validity information of a key
  */
@@ -1091,6 +1106,7 @@ Std_ReturnType KeyM_KeyValidityGet(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00017 */
 /**
  * @brief Gets key information
  */
@@ -1147,6 +1163,7 @@ Std_ReturnType KeyM_KeyInfoGet(KeyM_KeyIdType keyId,
     return E_OK;
 }
 
+/** @req SWS_KeyM_00018 */
 /**
  * @brief Sets the notification callback
  */
@@ -1173,6 +1190,7 @@ Std_ReturnType KeyM_SetNotificationCallback(KeyM_NotificationCallbackType callba
     return E_OK;
 }
 
+/** @req SWS_KeyM_00004 */
 /**
  * @brief Main function for background key operations
  */

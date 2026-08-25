@@ -76,6 +76,7 @@ static uint32 SomeIpIf_BuildHeader(uint8* buffer, uint16 serviceId, uint16 metho
     return hdrLen;
 }
 
+/** @req SWS_SomeIpIf_00001 */
 void SomeIpIf_Init(const SomeIpIf_ConfigType* ConfigPtr)
 {
 #if (SOMEIPIF_DEV_ERROR_DETECT == STD_ON)
@@ -91,12 +92,14 @@ void SomeIpIf_Init(const SomeIpIf_ConfigType* ConfigPtr)
     SomeIpIf_State.state = SOMEIPIF_INIT;
 }
 
+/** @req SWS_SomeIpIf_00002 */
 void SomeIpIf_DeInit(void)
 {
     SomeIpIf_State.state = SOMEIPIF_UNINIT;
     SomeIpIf_State.txBufferCount = 0U;
 }
 
+/** @req SWS_SomeIpIf_00005 */
 Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (SOMEIPIF_DEV_ERROR_DETECT == STD_ON)
@@ -153,6 +156,7 @@ Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
     return E_OK;
 }
 
+/** @req SWS_SomeIpIf_00006 */
 void SomeIpIf_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     (void)RxPduId;
@@ -160,6 +164,7 @@ void SomeIpIf_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     /* Parse SOME/IP header and forward to upper layer */
 }
 
+/** @req SWS_SomeIpIf_00004 */
 void SomeIpIf_MainFunction(void)
 {
     if (SomeIpIf_State.state < SOMEIPIF_INIT) { return; }
@@ -172,6 +177,7 @@ void SomeIpIf_MainFunction(void)
     SomeIpIf_State.txBufferCount = 0U;
 }
 
+/** @req SWS_SomeIpIf_00007 */
 Std_ReturnType SomeIpIf_SetState(uint8 ChannelId, boolean Online)
 {
     (void)ChannelId;
@@ -179,6 +185,7 @@ Std_ReturnType SomeIpIf_SetState(uint8 ChannelId, boolean Online)
     return E_OK;
 }
 
+/** @req SWS_SomeIpIf_00003 */
 void SomeIpIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) { return; }

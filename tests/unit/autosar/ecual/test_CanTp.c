@@ -68,6 +68,7 @@ static void setup_test_data(uint8* data, uint16 length)
 *                                      TEST CASES - INITIALIZATION
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00001 */
 static void test_CanTp_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -79,6 +80,7 @@ static void test_CanTp_Init_ValidConfig(void **state)
     assert_true(1);
 }
 
+/** @req SWS_CanTp_00001 */
 static void test_CanTp_Init_NullConfig(void **state)
 {
     (void)state;
@@ -91,6 +93,7 @@ static void test_CanTp_Init_NullConfig(void **state)
     CanTp_Init(&CanTp_Config);
 }
 
+/** @req SWS_CanTp_00002 */
 static void test_CanTp_Shutdown(void **state)
 {
     (void)state;
@@ -107,6 +110,7 @@ static void test_CanTp_Shutdown(void **state)
 *                                      TEST CASES - VERSION INFO
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00008 */
 static void test_CanTp_GetVersionInfo(void **state)
 {
     (void)state;
@@ -121,6 +125,7 @@ static void test_CanTp_GetVersionInfo(void **state)
     assert_int_equal(version.sw_patch_version, CANTP_SW_PATCH_VERSION);
 }
 
+/** @req SWS_CanTp_00008 */
 static void test_CanTp_GetVersionInfo_NullPtr(void **state)
 {
     (void)state;
@@ -134,6 +139,7 @@ static void test_CanTp_GetVersionInfo_NullPtr(void **state)
 *                                      TEST CASES - SINGLE FRAME TRANSMISSION
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_SF_1Byte(void **state)
 {
     (void)state;
@@ -149,6 +155,7 @@ static void test_CanTp_Transmit_SF_1Byte(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_SF_7Bytes(void **state)
 {
     (void)state;
@@ -164,6 +171,7 @@ static void test_CanTp_Transmit_SF_7Bytes(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_SF_InvalidLength(void **state)
 {
     (void)state;
@@ -178,6 +186,7 @@ static void test_CanTp_Transmit_SF_InvalidLength(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_NullPtr(void **state)
 {
     (void)state;
@@ -187,6 +196,7 @@ static void test_CanTp_Transmit_NullPtr(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_InvalidId(void **state)
 {
     (void)state;
@@ -206,6 +216,7 @@ static void test_CanTp_Transmit_InvalidId(void **state)
 *                                      TEST CASES - MULTI-FRAME TRANSMISSION
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_MF_8Bytes(void **state)
 {
     (void)state;
@@ -222,6 +233,7 @@ static void test_CanTp_Transmit_MF_8Bytes(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_CanTp_00003 */
 static void test_CanTp_Transmit_MF_LargePayload(void **state)
 {
     (void)state;
@@ -241,6 +253,7 @@ static void test_CanTp_Transmit_MF_LargePayload(void **state)
 *                                      TEST CASES - RECEPTION
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00009 */
 static void test_CanTp_RxIndication_SF(void **state)
 {
     (void)state;
@@ -257,6 +270,7 @@ static void test_CanTp_RxIndication_SF(void **state)
     assert_true(1);
 }
 
+/** @req SWS_CanTp_00009 */
 static void test_CanTp_RxIndication_FF(void **state)
 {
     (void)state;
@@ -273,6 +287,7 @@ static void test_CanTp_RxIndication_FF(void **state)
     assert_true(1);
 }
 
+/** @req SWS_CanTp_00009 */
 static void test_CanTp_RxIndication_NullPtr(void **state)
 {
     (void)state;
@@ -286,6 +301,7 @@ static void test_CanTp_RxIndication_NullPtr(void **state)
 *                                      TEST CASES - TX CONFIRMATION
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00010 */
 static void test_CanTp_TxConfirmation(void **state)
 {
     (void)state;
@@ -307,6 +323,7 @@ static void test_CanTp_TxConfirmation(void **state)
 *                                      TEST CASES - CANCEL OPERATIONS
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00004 */
 static void test_CanTp_CancelTransmit(void **state)
 {
     (void)state;
@@ -325,6 +342,7 @@ static void test_CanTp_CancelTransmit(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_CanTp_00005 */
 static void test_CanTp_CancelReceive(void **state)
 {
     (void)state;
@@ -339,6 +357,7 @@ static void test_CanTp_CancelReceive(void **state)
 *                                      TEST CASES - PARAMETER APIs
 ==================================================================================================*/
 
+/** @req SWS_CanTp_00006 */
 static void test_CanTp_ChangeParameter(void **state)
 {
     (void)state;
@@ -357,6 +376,7 @@ static void test_CanTp_ChangeParameter(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_CanTp_00007 */
 static void test_CanTp_ReadParameter(void **state)
 {
     (void)state;
@@ -379,6 +399,7 @@ static void test_CanTp_ReadParameter(void **state)
     assert_int_equal(value, 50);
 }
 
+/** @req SWS_CanTp_00007 */
 static void test_CanTp_ReadParameter_NullPtr(void **state)
 {
     (void)state;

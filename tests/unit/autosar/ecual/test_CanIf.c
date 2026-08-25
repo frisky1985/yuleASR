@@ -65,6 +65,7 @@ static int setup_uninitialized(void **state)
 /**
  * @brief Test CanIf_Init with valid configuration
  */
+/** @req SWS_CanIf_00001 */
 static void test_CanIf_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -78,6 +79,7 @@ static void test_CanIf_Init_ValidConfig(void **state)
 /**
  * @brief Test CanIf_Init with NULL config (DET error)
  */
+/** @req SWS_CanIf_00001 */
 static void test_CanIf_Init_NullConfig(void **state)
 {
     (void)state;
@@ -92,6 +94,7 @@ static void test_CanIf_Init_NullConfig(void **state)
 /**
  * @brief Test CanIf_Init called twice (should report already initialized)
  */
+/** @req SWS_CanIf_00001 */
 static void test_CanIf_Init_DoubleInit(void **state)
 {
     (void)state;
@@ -105,6 +108,7 @@ static void test_CanIf_Init_DoubleInit(void **state)
 /**
  * @brief Test CanIf_DeInit functionality
  */
+/** @req SWS_CanIf_00002 */
 static void test_CanIf_DeInit(void **state)
 {
     (void)state;
@@ -120,6 +124,7 @@ static void test_CanIf_DeInit(void **state)
 /**
  * @brief Test CanIf_DeInit when not initialized
  */
+/** @req SWS_CanIf_00002 */
 static void test_CanIf_DeInit_NotInitialized(void **state)
 {
     (void)state;
@@ -139,6 +144,7 @@ static void test_CanIf_DeInit_NotInitialized(void **state)
 /**
  * @brief Test CanIf_GetVersionInfo with valid pointer
  */
+/** @req SWS_CanIf_00009 */
 static void test_CanIf_GetVersionInfo(void **state)
 {
     (void)state;
@@ -158,6 +164,7 @@ static void test_CanIf_GetVersionInfo(void **state)
 /**
  * @brief Test CanIf_GetVersionInfo with NULL pointer
  */
+/** @req SWS_CanIf_00009 */
 static void test_CanIf_GetVersionInfo_NullPtr(void **state)
 {
     (void)state;
@@ -174,6 +181,7 @@ static void test_CanIf_GetVersionInfo_NullPtr(void **state)
 /**
  * @brief Test CanIf_SetControllerMode with valid parameters
  */
+/** @req SWS_CanIf_00003 */
 static void test_CanIf_SetControllerMode(void **state)
 {
     (void)state;
@@ -196,6 +204,7 @@ static void test_CanIf_SetControllerMode(void **state)
 /**
  * @brief Test CanIf_SetControllerMode with invalid controller ID
  */
+/** @req SWS_CanIf_00003 */
 static void test_CanIf_SetControllerMode_InvalidId(void **state)
 {
     (void)state;
@@ -210,6 +219,7 @@ static void test_CanIf_SetControllerMode_InvalidId(void **state)
 /**
  * @brief Test CanIf_SetControllerMode when not initialized
  */
+/** @req SWS_CanIf_00003 */
 static void test_CanIf_SetControllerMode_NotInitialized(void **state)
 {
     (void)state;
@@ -226,6 +236,7 @@ static void test_CanIf_SetControllerMode_NotInitialized(void **state)
 /**
  * @brief Test CanIf_GetControllerMode
  */
+/** @req SWS_CanIf_00004 */
 static void test_CanIf_GetControllerMode(void **state)
 {
     (void)state;
@@ -245,6 +256,7 @@ static void test_CanIf_GetControllerMode(void **state)
 /**
  * @brief Test CanIf_GetControllerMode with NULL pointer
  */
+/** @req SWS_CanIf_00004 */
 static void test_CanIf_GetControllerMode_NullPtr(void **state)
 {
     (void)state;
@@ -258,6 +270,7 @@ static void test_CanIf_GetControllerMode_NullPtr(void **state)
 /**
  * @brief Test CanIf_GetControllerMode with invalid controller ID
  */
+/** @req SWS_CanIf_00004 */
 static void test_CanIf_GetControllerMode_InvalidId(void **state)
 {
     (void)state;
@@ -271,6 +284,7 @@ static void test_CanIf_GetControllerMode_InvalidId(void **state)
 /**
  * @brief Test CanIf_GetControllerMode when not initialized
  */
+/** @req SWS_CanIf_00004 */
 static void test_CanIf_GetControllerMode_NotInitialized(void **state)
 {
     (void)state;
@@ -289,6 +303,7 @@ static void test_CanIf_GetControllerMode_NotInitialized(void **state)
 /**
  * @brief Test CanIf_SetBaudrate
  */
+/** @req SWS_CanIf_00020 */
 static void test_CanIf_SetBaudrate(void **state)
 {
     (void)state;
@@ -302,6 +317,7 @@ static void test_CanIf_SetBaudrate(void **state)
 /**
  * @brief Test CanIf_SetBaudrate with invalid controller ID
  */
+/** @req SWS_CanIf_00020 */
 static void test_CanIf_SetBaudrate_InvalidId(void **state)
 {
     (void)state;
@@ -315,6 +331,7 @@ static void test_CanIf_SetBaudrate_InvalidId(void **state)
 /**
  * @brief Test CanIf_SetBaudrate when not initialized
  */
+/** @req SWS_CanIf_00020 */
 static void test_CanIf_SetBaudrate_NotInitialized(void **state)
 {
     (void)state;
@@ -331,6 +348,7 @@ static void test_CanIf_SetBaudrate_NotInitialized(void **state)
 /**
  * @brief Test CanIf_GetBaudrate
  */
+/** @req SWS_CanIf_00021 */
 static void test_CanIf_GetBaudrate(void **state)
 {
     (void)state;
@@ -344,6 +362,7 @@ static void test_CanIf_GetBaudrate(void **state)
 /**
  * @brief Test CanIf_GetBaudrate with NULL pointer
  */
+/** @req SWS_CanIf_00021 */
 static void test_CanIf_GetBaudrate_NullPtr(void **state)
 {
     (void)state;
@@ -355,6 +374,7 @@ static void test_CanIf_GetBaudrate_NullPtr(void **state)
 /**
  * @brief Test CanIf_GetBaudrate with invalid controller ID
  */
+/** @req SWS_CanIf_00021 */
 static void test_CanIf_GetBaudrate_InvalidId(void **state)
 {
     (void)state;
@@ -386,6 +406,7 @@ static void test_CanIf_ControllerModeTypes(void **state)
 /**
  * @brief Test CanIf_Transmit with valid parameters
  */
+/** @req SWS_CanIf_00005 */
 static void test_CanIf_Transmit(void **state)
 {
     (void)state;
@@ -405,6 +426,7 @@ static void test_CanIf_Transmit(void **state)
 /**
  * @brief Test CanIf_Transmit with invalid parameters
  */
+/** @req SWS_CanIf_00005 */
 static void test_CanIf_Transmit_InvalidParams(void **state)
 {
     (void)state;
@@ -427,6 +449,7 @@ static void test_CanIf_Transmit_InvalidParams(void **state)
 /**
  * @brief Test CanIf_Transmit when not initialized
  */
+/** @req SWS_CanIf_00005 */
 static void test_CanIf_Transmit_NotInitialized(void **state)
 {
     (void)state;
@@ -449,6 +472,7 @@ static void test_CanIf_Transmit_NotInitialized(void **state)
 /**
  * @brief Test CanIf_CancelTransmit
  */
+/** @req SWS_CanIf_00006 */
 static void test_CanIf_CancelTransmit(void **state)
 {
     (void)state;
@@ -461,6 +485,7 @@ static void test_CanIf_CancelTransmit(void **state)
 /**
  * @brief Test CanIf_CancelTransmit with invalid PDU ID
  */
+/** @req SWS_CanIf_00006 */
 static void test_CanIf_CancelTransmit_InvalidId(void **state)
 {
     (void)state;
@@ -472,6 +497,7 @@ static void test_CanIf_CancelTransmit_InvalidId(void **state)
 /**
  * @brief Test CanIf_CancelTransmit when not initialized
  */
+/** @req SWS_CanIf_00006 */
 static void test_CanIf_CancelTransmit_NotInitialized(void **state)
 {
     (void)state;
@@ -488,6 +514,7 @@ static void test_CanIf_CancelTransmit_NotInitialized(void **state)
 /**
  * @brief Test CanIf_SetDynamicTxId
  */
+/** @req SWS_CanIf_00014 */
 static void test_CanIf_SetDynamicTxId(void **state)
 {
     (void)state;
@@ -500,6 +527,7 @@ static void test_CanIf_SetDynamicTxId(void **state)
 /**
  * @brief Test CanIf_SetDynamicTxId with invalid PDU ID
  */
+/** @req SWS_CanIf_00014 */
 static void test_CanIf_SetDynamicTxId_InvalidId(void **state)
 {
     (void)state;
@@ -511,6 +539,7 @@ static void test_CanIf_SetDynamicTxId_InvalidId(void **state)
 /**
  * @brief Test CanIf_SetDynamicTxId when not initialized
  */
+/** @req SWS_CanIf_00014 */
 static void test_CanIf_SetDynamicTxId_NotInitialized(void **state)
 {
     (void)state;
@@ -531,6 +560,7 @@ static void test_CanIf_SetDynamicTxId_NotInitialized(void **state)
 /**
  * @brief Test CanIf_SetPduMode and CanIf_GetPduMode
  */
+/** @req SWS_CanIf_00007 */
 static void test_CanIf_PduMode(void **state)
 {
     (void)state;
@@ -556,6 +586,7 @@ static void test_CanIf_PduMode(void **state)
 /**
  * @brief Test CanIf_SetPduMode with invalid controller ID
  */
+/** @req SWS_CanIf_00007 */
 static void test_CanIf_SetPduMode_InvalidId(void **state)
 {
     (void)state;
@@ -567,6 +598,7 @@ static void test_CanIf_SetPduMode_InvalidId(void **state)
 /**
  * @brief Test CanIf_SetPduMode when not initialized
  */
+/** @req SWS_CanIf_00007 */
 static void test_CanIf_SetPduMode_NotInitialized(void **state)
 {
     (void)state;
@@ -583,6 +615,7 @@ static void test_CanIf_SetPduMode_NotInitialized(void **state)
 /**
  * @brief Test CanIf_GetPduMode with NULL pointer
  */
+/** @req SWS_CanIf_00008 */
 static void test_CanIf_GetPduMode_NullPtr(void **state)
 {
     (void)state;
@@ -594,6 +627,7 @@ static void test_CanIf_GetPduMode_NullPtr(void **state)
 /**
  * @brief Test CanIf_GetPduMode with invalid controller ID
  */
+/** @req SWS_CanIf_00008 */
 static void test_CanIf_GetPduMode_InvalidId(void **state)
 {
     (void)state;
@@ -638,6 +672,7 @@ static void test_CanIf_TransceiverModeTypes(void **state)
 /**
  * @brief Test CanIf_SetTrcvMode
  */
+/** @req SWS_CanIf_00016 */
 static void test_CanIf_SetTrcvMode(void **state)
 {
     (void)state;
@@ -649,6 +684,7 @@ static void test_CanIf_SetTrcvMode(void **state)
 /**
  * @brief Test CanIf_SetTrcvMode with invalid transceiver ID
  */
+/** @req SWS_CanIf_00016 */
 static void test_CanIf_SetTrcvMode_InvalidId(void **state)
 {
     (void)state;
@@ -660,6 +696,7 @@ static void test_CanIf_SetTrcvMode_InvalidId(void **state)
 /**
  * @brief Test CanIf_SetTrcvMode when not initialized
  */
+/** @req SWS_CanIf_00016 */
 static void test_CanIf_SetTrcvMode_NotInitialized(void **state)
 {
     (void)state;
@@ -676,6 +713,7 @@ static void test_CanIf_SetTrcvMode_NotInitialized(void **state)
 /**
  * @brief Test CanIf_GetTrcvMode
  */
+/** @req SWS_CanIf_00017 */
 static void test_CanIf_GetTrcvMode(void **state)
 {
     (void)state;
@@ -691,6 +729,7 @@ static void test_CanIf_GetTrcvMode(void **state)
 /**
  * @brief Test CanIf_GetTrcvMode with NULL pointer
  */
+/** @req SWS_CanIf_00017 */
 static void test_CanIf_GetTrcvMode_NullPtr(void **state)
 {
     (void)state;
@@ -702,6 +741,7 @@ static void test_CanIf_GetTrcvMode_NullPtr(void **state)
 /**
  * @brief Test CanIf_GetTrcvMode with invalid transceiver ID
  */
+/** @req SWS_CanIf_00017 */
 static void test_CanIf_GetTrcvMode_InvalidId(void **state)
 {
     (void)state;
@@ -715,6 +755,7 @@ static void test_CanIf_GetTrcvMode_InvalidId(void **state)
 /**
  * @brief Test CanIf_GetTrcvWakeupReason
  */
+/** @req SWS_CanIf_00018 */
 static void test_CanIf_GetTrcvWakeupReason(void **state)
 {
     (void)state;
@@ -730,6 +771,7 @@ static void test_CanIf_GetTrcvWakeupReason(void **state)
 /**
  * @brief Test CanIf_GetTrcvWakeupReason with NULL pointer
  */
+/** @req SWS_CanIf_00018 */
 static void test_CanIf_GetTrcvWakeupReason_NullPtr(void **state)
 {
     (void)state;
@@ -741,6 +783,7 @@ static void test_CanIf_GetTrcvWakeupReason_NullPtr(void **state)
 /**
  * @brief Test CanIf_SetTrcvWakeupMode
  */
+/** @req SWS_CanIf_00019 */
 static void test_CanIf_SetTrcvWakeupMode(void **state)
 {
     (void)state;
@@ -752,6 +795,7 @@ static void test_CanIf_SetTrcvWakeupMode(void **state)
 /**
  * @brief Test CanIf_SetTrcvWakeupMode with invalid transceiver ID
  */
+/** @req SWS_CanIf_00019 */
 static void test_CanIf_SetTrcvWakeupMode_InvalidId(void **state)
 {
     (void)state;
@@ -767,6 +811,7 @@ static void test_CanIf_SetTrcvWakeupMode_InvalidId(void **state)
 /**
  * @brief Test CanIf_CheckWakeup
  */
+/** @req SWS_CanIf_00015 */
 static void test_CanIf_CheckWakeup(void **state)
 {
     (void)state;
@@ -781,6 +826,7 @@ static void test_CanIf_CheckWakeup(void **state)
 /**
  * @brief Test CanIf_CheckWakeup when not initialized
  */
+/** @req SWS_CanIf_00015 */
 static void test_CanIf_CheckWakeup_NotInitialized(void **state)
 {
     (void)state;
@@ -801,6 +847,7 @@ static void test_CanIf_CheckWakeup_NotInitialized(void **state)
 /**
  * @brief Test CanIf_TxConfirmation
  */
+/** @req SWS_CanIf_00010 */
 static void test_CanIf_TxConfirmation(void **state)
 {
     (void)state;
@@ -813,6 +860,7 @@ static void test_CanIf_TxConfirmation(void **state)
 /**
  * @brief Test CanIf_TxConfirmation with invalid PDU ID
  */
+/** @req SWS_CanIf_00010 */
 static void test_CanIf_TxConfirmation_InvalidId(void **state)
 {
     (void)state;
@@ -825,6 +873,7 @@ static void test_CanIf_TxConfirmation_InvalidId(void **state)
 /**
  * @brief Test CanIf_TxConfirmation when not initialized
  */
+/** @req SWS_CanIf_00010 */
 static void test_CanIf_TxConfirmation_NotInitialized(void **state)
 {
     (void)state;
@@ -842,6 +891,7 @@ static void test_CanIf_TxConfirmation_NotInitialized(void **state)
 /**
  * @brief Test CanIf_RxIndication
  */
+/** @req SWS_CanIf_00011 */
 static void test_CanIf_RxIndication(void **state)
 {
     (void)state;
@@ -866,6 +916,7 @@ static void test_CanIf_RxIndication(void **state)
 /**
  * @brief Test CanIf_RxIndication when not initialized
  */
+/** @req SWS_CanIf_00011 */
 static void test_CanIf_RxIndication_NotInitialized(void **state)
 {
     (void)state;
@@ -894,6 +945,7 @@ static void test_CanIf_RxIndication_NotInitialized(void **state)
 /**
  * @brief Test CanIf_ControllerBusOff
  */
+/** @req SWS_CanIf_00012 */
 static void test_CanIf_ControllerBusOff(void **state)
 {
     (void)state;
@@ -906,6 +958,7 @@ static void test_CanIf_ControllerBusOff(void **state)
 /**
  * @brief Test CanIf_ControllerBusOff with invalid controller ID
  */
+/** @req SWS_CanIf_00012 */
 static void test_CanIf_ControllerBusOff_InvalidId(void **state)
 {
     (void)state;
@@ -918,6 +971,7 @@ static void test_CanIf_ControllerBusOff_InvalidId(void **state)
 /**
  * @brief Test CanIf_ControllerBusOff when not initialized
  */
+/** @req SWS_CanIf_00012 */
 static void test_CanIf_ControllerBusOff_NotInitialized(void **state)
 {
     (void)state;
@@ -935,6 +989,7 @@ static void test_CanIf_ControllerBusOff_NotInitialized(void **state)
 /**
  * @brief Test CanIf_ControllerModeIndication
  */
+/** @req SWS_CanIf_00013 */
 static void test_CanIf_ControllerModeIndication(void **state)
 {
     (void)state;
@@ -947,6 +1002,7 @@ static void test_CanIf_ControllerModeIndication(void **state)
 /**
  * @brief Test CanIf_ControllerModeIndication with invalid controller ID
  */
+/** @req SWS_CanIf_00013 */
 static void test_CanIf_ControllerModeIndication_InvalidId(void **state)
 {
     (void)state;
@@ -959,6 +1015,7 @@ static void test_CanIf_ControllerModeIndication_InvalidId(void **state)
 /**
  * @brief Test CanIf_ControllerModeIndication when not initialized
  */
+/** @req SWS_CanIf_00013 */
 static void test_CanIf_ControllerModeIndication_NotInitialized(void **state)
 {
     (void)state;

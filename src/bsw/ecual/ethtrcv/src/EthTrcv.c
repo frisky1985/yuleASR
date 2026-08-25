@@ -594,6 +594,7 @@ static void EthTrcv_ProcessLinkStateMachine(uint8 TrcvIdx)
 }
 /*================================================================================================== * GLOBAL FUNCTIONS
  * *==================================================================================================*/
+/** @req SWS_EthTrcv_00001 */
 /** * @brief Initializes the Ethernet Transceiver driver */
 void EthTrcv_Init(const EthTrcv_ConfigType* CfgPtr)
 {
@@ -622,6 +623,7 @@ void EthTrcv_Init(const EthTrcv_ConfigType* CfgPtr)
         (void)EthTrcv_InitTransceiver(TrcvIdx);
     }
 }
+/** @req SWS_EthTrcv_00002 */
 /** * @brief Deinitializes the Ethernet Transceiver driver */
 void EthTrcv_DeInit(void)
 {
@@ -645,6 +647,7 @@ void EthTrcv_DeInit(void)
     EthTrcv_Global.ModuleState = ETHTRCV_STATE_UNINIT;
     EthTrcv_Global.ConfigPtr = NULL_PTR;
 }
+/** @req SWS_EthTrcv_00005 */
 /** * @brief Sets the transceiver mode */
 Std_ReturnType EthTrcv_SetTransceiverMode(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_ModeType Mode)
 {
@@ -691,6 +694,7 @@ Std_ReturnType EthTrcv_SetTransceiverMode(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_
     }
     return Status;
 }
+/** @req SWS_EthTrcv_00006 */
 /** * @brief Gets the current transceiver mode */
 Std_ReturnType EthTrcv_GetTransceiverMode(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_ModeType* Mode)
 {
@@ -717,6 +721,7 @@ Std_ReturnType EthTrcv_GetTransceiverMode(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_
     *Mode = EthTrcv_Global.Trcv[TrcvIdx].CurrentMode;
     return E_OK;
 }
+/** @req SWS_EthTrcv_00007 */
 /** * @brief Gets the link state */
 Std_ReturnType EthTrcv_GetLinkState(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_LinkStateType* LinkStatePtr)
 {
@@ -743,6 +748,7 @@ Std_ReturnType EthTrcv_GetLinkState(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_LinkSt
     *LinkStatePtr = EthTrcv_Global.Trcv[TrcvIdx].LinkState;
     return E_OK;
 }
+/** @req SWS_EthTrcv_00008 */
 /** * @brief Gets the baud rate */
 Std_ReturnType EthTrcv_GetBaudRate(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_BaudRateType* BaudRatePtr)
 {
@@ -769,6 +775,7 @@ Std_ReturnType EthTrcv_GetBaudRate(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_BaudRat
     *BaudRatePtr = EthTrcv_Global.Trcv[TrcvIdx].BaudRate;
     return E_OK;
 }
+/** @req SWS_EthTrcv_00009 */
 /** * @brief Gets the duplex mode */
 Std_ReturnType EthTrcv_GetDuplexMode(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_DuplexModeType* DuplexModePtr)
 {
@@ -795,6 +802,7 @@ Std_ReturnType EthTrcv_GetDuplexMode(uint8 TrcvIdx, uint8 CtrlIdx, EthTrcv_Duple
     *DuplexModePtr = EthTrcv_Global.Trcv[TrcvIdx].DuplexMode;
     return E_OK;
 }
+/** @req SWS_EthTrcv_00004 */
 /** * @brief Main function for cyclic processing */
 void EthTrcv_MainFunction(void)
 {
@@ -823,6 +831,7 @@ void EthTrcv_MainFunction(void)
 }
 /** * @brief Gets version information */
 #if (ETHTRCV_VERSION_INFO_API == STD_ON)
+/** @req SWS_EthTrcv_00003 */
 void EthTrcv_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 {
 #    if (ETHTRCV_DEV_ERROR_DETECT == STD_ON)
@@ -839,6 +848,7 @@ void EthTrcv_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
     VersionInfoPtr->sw_patch_version = ETHTRCV_SW_PATCH_VERSION;
 }
 #endif
+/** @req SWS_EthTrcv_00010 */
 /** * @brief Checks for wake-up events */
 Std_ReturnType EthTrcv_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
 {
@@ -893,6 +903,7 @@ Std_ReturnType EthTrcv_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
 #endif
     return Status;
 }
+/** @req SWS_EthTrcv_00011 */
 /** * @brief PHY register read completion indication (callback from Eth or Spi) */
 Std_ReturnType EthTrcv_ReadMiiIndication(uint8 TrcvIdx, uint8 RegIdx, uint16* RegValPtr)
 {
@@ -916,6 +927,7 @@ Std_ReturnType EthTrcv_ReadMiiIndication(uint8 TrcvIdx, uint8 RegIdx, uint16* Re
     EthTrcv_Global.Trcv[TrcvIdx].PhyAccessState = ETHTRCV_PHY_STATE_IDLE;
     return E_OK;
 }
+/** @req SWS_EthTrcv_00012 */
 /** * @brief PHY register write completion indication (callback from Eth or Spi) */
 Std_ReturnType EthTrcv_WriteMiiIndication(uint8 TrcvIdx, uint8 RegIdx, uint16 RegVal)
 {
@@ -937,6 +949,7 @@ Std_ReturnType EthTrcv_WriteMiiIndication(uint8 TrcvIdx, uint8 RegIdx, uint16 Re
 }
 /** * @brief Gets signal quality information */
 #if (ETHTRCV_SIGNAL_QUALITY_SUPPORT == STD_ON)
+/** @req SWS_EthTrcv_00013 */
 Std_ReturnType EthTrcv_GetSignalQuality(uint8 TrcvIdx, EthTrcv_SignalQualityType* SignalQualityPtr)
 {
     Std_ReturnType Status = E_NOT_OK;
@@ -1008,6 +1021,7 @@ Std_ReturnType EthTrcv_GetSignalQuality(uint8 TrcvIdx, EthTrcv_SignalQualityType
 #endif
 /** * @brief Gets cable diagnostics result */
 #if (ETHTRCV_CABLE_DIAGNOSTICS_SUPPORT == STD_ON)
+/** @req SWS_EthTrcv_00014 */
 Std_ReturnType EthTrcv_GetCableDiagnosticsResult(uint8 TrcvIdx, EthTrcv_CableDiagnosticsResultType* ResultPtr)
 {
     Std_ReturnType Status = E_NOT_OK;

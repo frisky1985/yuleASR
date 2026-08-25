@@ -180,6 +180,7 @@ STATIC const Dcm_RIDConfigType* Dcm_FindRID(uint16 RID)
 
 /**
  * @brief   Send positive response
+ * @req SWS_Dcm_00102
  */
 STATIC void Dcm_SendPositiveResponse(uint8 ProtocolId, uint8 SID, const uint8* Data, uint16 Length)
 {
@@ -211,6 +212,7 @@ STATIC void Dcm_SendPositiveResponse(uint8 ProtocolId, uint8 SID, const uint8* D
 
 /**
  * @brief   Send negative response
+ * @req SWS_Dcm_00103
  */
 STATIC void Dcm_SendNegativeResponse(uint8 ProtocolId, uint8 SID, uint8 NRC)
 {
@@ -237,6 +239,7 @@ STATIC void Dcm_SendNegativeResponse(uint8 ProtocolId, uint8 SID, uint8 NRC)
 
 /**
  * @brief   Process Diagnostic Session Control service
+ * @req SWS_Dcm_00100
  */
 STATIC Std_ReturnType Dcm_ProcessDiagnosticSessionControl(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -284,6 +287,7 @@ STATIC Std_ReturnType Dcm_ProcessDiagnosticSessionControl(uint8 ProtocolId, cons
 
 /**
  * @brief   Process ECU Reset service
+ * @req SWS_Dcm_00101
  */
 STATIC Std_ReturnType Dcm_ProcessEcuReset(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -328,6 +332,7 @@ STATIC Std_ReturnType Dcm_ProcessEcuReset(uint8 ProtocolId, const uint8* Data, u
 
 /**
  * @brief   Process Security Access service
+ * @req SWS_Dcm_00102
  */
 STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -417,6 +422,7 @@ STATIC Std_ReturnType Dcm_ProcessSecurityAccess(uint8 ProtocolId, const uint8* D
 
 /**
  * @brief   Process Tester Present service
+ * @req SWS_Dcm_00103
  */
 STATIC Std_ReturnType Dcm_ProcessTesterPresent(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -457,6 +463,7 @@ STATIC Std_ReturnType Dcm_ProcessTesterPresent(uint8 ProtocolId, const uint8* Da
 
 /**
  * @brief   Process Read Data By Identifier service
+ * @req SWS_Dcm_00104
  */
 STATIC Std_ReturnType Dcm_ProcessReadDataByIdentifier(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -528,6 +535,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDataByIdentifier(uint8 ProtocolId, const ui
 
 /**
  * @brief   Process Write Data By Identifier service
+ * @req SWS_Dcm_00105
  */
 STATIC Std_ReturnType Dcm_ProcessWriteDataByIdentifier(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -599,6 +607,7 @@ STATIC Std_ReturnType Dcm_ProcessWriteDataByIdentifier(uint8 ProtocolId, const u
 
 /**
  * @brief   Process Read DTC Information service
+ * @req SWS_Dcm_00106
  */
 STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -775,6 +784,7 @@ STATIC Std_ReturnType Dcm_ProcessReadDTCInformation(uint8 ProtocolId, const uint
 
 /**
  * @brief   Process Clear Diagnostic Information service
+ * @req SWS_Dcm_00107
  */
 STATIC Std_ReturnType Dcm_ProcessClearDiagnosticInformation(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -798,6 +808,7 @@ STATIC Std_ReturnType Dcm_ProcessClearDiagnosticInformation(uint8 ProtocolId, co
 
 /**
  * @brief   Process Routine Control service
+ * @req SWS_Dcm_00108
  */
 STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -912,6 +923,7 @@ STATIC Std_ReturnType Dcm_ProcessRoutineControl(uint8 ProtocolId, const uint8* D
 
 /**
  * @brief   Process Request Download service (0x34)
+ * @req SWS_Dcm_00109
  */
 STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -979,6 +991,7 @@ STATIC Std_ReturnType Dcm_ProcessRequestDownload(uint8 ProtocolId, const uint8* 
 
 /**
  * @brief   Process Transfer Data service (0x36)
+ * @req SWS_Dcm_00110
  */
 STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -1026,6 +1039,7 @@ STATIC Std_ReturnType Dcm_ProcessTransferData(uint8 ProtocolId, const uint8* Dat
 
 /**
  * @brief   Process Request Transfer Exit service (0x37)
+ * @req SWS_Dcm_00111
  */
 STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uint8* Data, uint16 Length)
 {
@@ -1053,6 +1067,7 @@ STATIC Std_ReturnType Dcm_ProcessRequestTransferExit(uint8 ProtocolId, const uin
 
 /**
  * @brief   Process incoming diagnostic request
+ * @req SWS_Dcm_00101
  */
 STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
 {
@@ -1127,6 +1142,7 @@ STATIC void Dcm_ProcessRequest(uint8 ProtocolId)
 
 /**
  * @brief   Initializes the DCM module
+ * @req SWS_Dcm_00001
  */
 void Dcm_Init(const Dcm_ConfigType* ConfigPtr)
 {
@@ -1175,6 +1191,7 @@ void Dcm_Init(const Dcm_ConfigType* ConfigPtr)
 
 /**
  * @brief   Deinitializes the DCM module
+ * @req SWS_Dcm_00002
  */
 void Dcm_DeInit(void)
 {
@@ -1199,6 +1216,7 @@ void Dcm_DeInit(void)
 
 /**
  * @brief   Main function for DCM processing
+ * @req SWS_Dcm_00003
  */
 void Dcm_MainFunction(void)
 {
@@ -1257,6 +1275,7 @@ void Dcm_MainFunction(void)
 
 /**
  * @brief   TxConfirmation callback from PduR
+ * @req SWS_Dcm_00004
  */
 void Dcm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
@@ -1278,6 +1297,7 @@ void Dcm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 
 /**
  * @brief   RxIndication callback from PduR
+ * @req SWS_Dcm_00005
  */
 void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
@@ -1317,6 +1337,7 @@ void Dcm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
 /**
  * @brief   TriggerTransmit callback from PduR
+ * @req SWS_Dcm_00006
  */
 Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
@@ -1352,6 +1373,7 @@ Std_ReturnType Dcm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 
 /**
  * @brief   Get current security level
+ * @req SWS_Dcm_00007
  */
 Std_ReturnType Dcm_GetSecurityLevel(uint8* SecLevel)
 {
@@ -1382,6 +1404,7 @@ Std_ReturnType Dcm_GetSecurityLevel(uint8* SecLevel)
 
 /**
  * @brief   Get current session control type
+ * @req SWS_Dcm_00008
  */
 Std_ReturnType Dcm_GetSesCtrlType(uint8* SesCtrlType)
 {
@@ -1412,6 +1435,7 @@ Std_ReturnType Dcm_GetSesCtrlType(uint8* SesCtrlType)
 
 /**
  * @brief   Reset to default session
+ * @req SWS_Dcm_00009
  */
 void Dcm_ResetToDefaultSession(void)
 {
@@ -1432,6 +1456,7 @@ void Dcm_ResetToDefaultSession(void)
 
 /**
  * @brief   Get version information
+ * @req SWS_Dcm_00010
  */
 #if (DCM_VERSION_INFO_API == STD_ON)
 void Dcm_GetVersionInfo(Std_VersionInfoType* versioninfo)

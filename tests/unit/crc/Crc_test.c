@@ -118,6 +118,7 @@ void tearDown(void)
  * The function accepts a NULL configPtr (pre-compile config).
  * After calling Crc_Init, subsequent CRC calculations should succeed.
  */
+/** @req SWS_Crc_00001 */
 void test_Crc_Init_SetsModuleState(void)
 {
     uint8 result;
@@ -137,6 +138,7 @@ void test_Crc_Init_SetsModuleState(void)
 /**
  * @brief Verify CRC8 of known data "123" produces the expected SAE J1850 value.
  */
+/** @req SWS_Crc_00003 */
 void test_Crc_CalculateCRC8_KnownValue(void)
 {
     uint8 result;
@@ -149,6 +151,7 @@ void test_Crc_CalculateCRC8_KnownValue(void)
 /**
  * @brief Verify CRC8 of "Hello" produces the expected value.
  */
+/** @req SWS_Crc_00003 */
 void test_Crc_CalculateCRC8_Hello(void)
 {
     uint8 result;
@@ -162,6 +165,7 @@ void test_Crc_CalculateCRC8_Hello(void)
 /**
  * @brief Verify CRC8 with NULL data pointer returns 0 and reports DET error.
  */
+/** @req SWS_Crc_00003 */
 void test_Crc_CalculateCRC8_NullPointer_ReturnsZero(void)
 {
     uint8 result;
@@ -177,6 +181,7 @@ void test_Crc_CalculateCRC8_NullPointer_ReturnsZero(void)
 /**
  * @brief Verify CRC8 with zero length returns 0 and reports DET error.
  */
+/** @req SWS_Crc_00003 */
 void test_Crc_CalculateCRC8_ZeroLength_ReturnsZero(void)
 {
     uint8 result;
@@ -197,6 +202,7 @@ void test_Crc_CalculateCRC8_ZeroLength_ReturnsZero(void)
 /**
  * @brief Verify CRC16 CCITT-FALSE of known data "123" produces the expected value.
  */
+/** @req SWS_Crc_00004 */
 void test_Crc_CalculateCRC16_KnownValue(void)
 {
     uint16 result;
@@ -209,6 +215,7 @@ void test_Crc_CalculateCRC16_KnownValue(void)
 /**
  * @brief Verify CRC16 CCITT-FALSE of "Hello" produces the expected value.
  */
+/** @req SWS_Crc_00004 */
 void test_Crc_CalculateCRC16_Hello(void)
 {
     uint16 result;
@@ -225,6 +232,7 @@ void test_Crc_CalculateCRC16_Hello(void)
 /**
  * @brief Verify CRC32 IEEE 802.3 of known data "123" produces the expected value.
  */
+/** @req SWS_Crc_00005 */
 void test_Crc_CalculateCRC32_KnownValue(void)
 {
     uint32 result;
@@ -237,6 +245,7 @@ void test_Crc_CalculateCRC32_KnownValue(void)
 /**
  * @brief Verify CRC32 IEEE 802.3 of "Hello" produces the expected value.
  */
+/** @req SWS_Crc_00005 */
 void test_Crc_CalculateCRC32_Hello(void)
 {
     uint32 result;
@@ -254,6 +263,7 @@ void test_Crc_CalculateCRC32_Hello(void)
 /**
  * @brief Verify Crc_GetVersionInfo returns correct vendor/module/version info.
  */
+/** @req SWS_Crc_00002 */
 void test_Crc_GetVersionInfo_ReturnsCorrectInfo(void)
 {
     Std_VersionInfoType versionInfo;

@@ -33,6 +33,7 @@ static EcuC_InternalType EcuC_State = {
     NULL_PTR
 };
 
+/** @req SWS_EcuC_00001 */
 void EcuC_Init(const EcuC_ConfigType* ConfigPtr)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
@@ -47,12 +48,14 @@ void EcuC_Init(const EcuC_ConfigType* ConfigPtr)
     EcuC_State.state = ECUC_INIT;
 }
 
+/** @req SWS_EcuC_00002 */
 void EcuC_DeInit(void)
 {
     EcuC_State.state = ECUC_UNINIT;
     EcuC_State.configPtr = NULL_PTR;
 }
 
+/** @req SWS_EcuC_00004 */
 Std_ReturnType EcuC_GetConfigValue(uint16 ConfigId, uint32* Value)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
@@ -78,6 +81,7 @@ Std_ReturnType EcuC_GetConfigValue(uint16 ConfigId, uint32* Value)
     return E_OK;
 }
 
+/** @req SWS_EcuC_00005 */
 Std_ReturnType EcuC_SetConfigValue(uint16 ConfigId, uint32 Value)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)
@@ -99,6 +103,7 @@ Std_ReturnType EcuC_SetConfigValue(uint16 ConfigId, uint32 Value)
     return E_OK;
 }
 
+/** @req SWS_EcuC_00003 */
 void EcuC_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (ECUC_DEV_ERROR_DETECT == STD_ON)

@@ -78,6 +78,7 @@ static void setup_test_config(void)
 ==================================================================================================*/
 
 /* Test: Can_Init with valid config */
+/** @req SWS_Can_00001 */
 TEST_CASE(can_init_valid)
 {
     setup_test_config();
@@ -89,6 +90,7 @@ TEST_CASE(can_init_valid)
 }
 
 /* Test: Can_Init with NULL config */
+/** @req SWS_Can_00001 */
 TEST_CASE(can_init_null)
 {
     Det_Mock_Reset();
@@ -100,6 +102,7 @@ TEST_CASE(can_init_null)
 }
 
 /* Test: Can_Init when already initialized */
+/** @req SWS_Can_00001 */
 TEST_CASE(can_init_already_initialized)
 {
     setup_test_config();
@@ -113,6 +116,7 @@ TEST_CASE(can_init_already_initialized)
 }
 
 /* Test: Can_GetVersionInfo */
+/** @req SWS_Can_00002 */
 TEST_CASE(can_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -126,6 +130,7 @@ TEST_CASE(can_get_version_info)
 }
 
 /* Test: Can_GetVersionInfo with NULL pointer */
+/** @req SWS_Can_00002 */
 TEST_CASE(can_get_version_info_null)
 {
     Det_Mock_Reset();
@@ -137,6 +142,7 @@ TEST_CASE(can_get_version_info_null)
 }
 
 /* Test: Can_SetControllerMode - Stop -> Start */
+/** @req SWS_Can_00003 */
 TEST_CASE(can_set_mode_start)
 {
     Can_ReturnType result;
@@ -152,6 +158,7 @@ TEST_CASE(can_set_mode_start)
 }
 
 /* Test: Can_SetControllerMode with invalid controller */
+/** @req SWS_Can_00003 */
 TEST_CASE(can_set_mode_invalid_controller)
 {
     Can_ReturnType result;
@@ -168,6 +175,7 @@ TEST_CASE(can_set_mode_invalid_controller)
 }
 
 /* Test: Can_SetControllerMode when not initialized */
+/** @req SWS_Can_00003 */
 TEST_CASE(can_set_mode_uninit)
 {
     Can_ReturnType result;
@@ -182,6 +190,7 @@ TEST_CASE(can_set_mode_uninit)
 }
 
 /* Test: Can_DisableControllerInterrupts */
+/** @req SWS_Can_00004 */
 TEST_CASE(can_disable_interrupts)
 {
     setup_test_config();
@@ -193,6 +202,7 @@ TEST_CASE(can_disable_interrupts)
 }
 
 /* Test: Can_DisableControllerInterrupts when not initialized */
+/** @req SWS_Can_00004 */
 TEST_CASE(can_disable_interrupts_uninit)
 {
     Det_Mock_Reset();
@@ -204,6 +214,7 @@ TEST_CASE(can_disable_interrupts_uninit)
 }
 
 /* Test: Can_EnableControllerInterrupts */
+/** @req SWS_Can_00005 */
 TEST_CASE(can_enable_interrupts)
 {
     setup_test_config();
@@ -215,6 +226,7 @@ TEST_CASE(can_enable_interrupts)
 }
 
 /* Test: Can_EnableControllerInterrupts when not initialized */
+/** @req SWS_Can_00005 */
 TEST_CASE(can_enable_interrupts_uninit)
 {
     Det_Mock_Reset();
@@ -226,6 +238,7 @@ TEST_CASE(can_enable_interrupts_uninit)
 }
 
 /* Test: Can_Write with valid PDU */
+/** @req SWS_Can_00006 */
 TEST_CASE(can_write_valid)
 {
     Can_ReturnType result;
@@ -248,6 +261,7 @@ TEST_CASE(can_write_valid)
 }
 
 /* Test: Can_Write when not initialized */
+/** @req SWS_Can_00006 */
 TEST_CASE(can_write_uninit)
 {
     Can_ReturnType result;
@@ -269,6 +283,7 @@ TEST_CASE(can_write_uninit)
 }
 
 /* Test: Can_Write with controller stopped */
+/** @req SWS_Can_00006 */
 TEST_CASE(can_write_stopped)
 {
     Can_ReturnType result;
@@ -290,6 +305,7 @@ TEST_CASE(can_write_stopped)
 }
 
 /* Test: Can_Write with NULL PDU */
+/** @req SWS_Can_00006 */
 TEST_CASE(can_write_null_pdu)
 {
     Can_ReturnType result;
@@ -306,6 +322,7 @@ TEST_CASE(can_write_null_pdu)
 }
 
 /* Test: Can_MainFunction_Write */
+/** @req SWS_Can_00007 */
 TEST_CASE(can_main_function_write)
 {
     setup_test_config();
@@ -317,6 +334,7 @@ TEST_CASE(can_main_function_write)
 }
 
 /* Test: Can_MainFunction_Read */
+/** @req SWS_Can_00008 */
 TEST_CASE(can_main_function_read)
 {
     setup_test_config();
@@ -328,6 +346,7 @@ TEST_CASE(can_main_function_read)
 }
 
 /* Test: Can_MainFunction_BusOff */
+/** @req SWS_Can_00009 */
 TEST_CASE(can_main_function_busoff)
 {
     setup_test_config();
@@ -339,6 +358,7 @@ TEST_CASE(can_main_function_busoff)
 }
 
 /* Test: Can_CheckWakeup */
+/** @req SWS_Can_00012 */
 TEST_CASE(can_check_wakeup)
 {
     Std_ReturnType result;

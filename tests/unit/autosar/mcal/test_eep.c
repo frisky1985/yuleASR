@@ -305,6 +305,7 @@ void reset_test_env(void) {
 /*==============================================
  * 测试用例: Eep_Init
  *==============================================*/
+/** @req SWS_Eep_00001 */
 void test_eep_init_null_config(void) {
     printf("\n[Test] Eep_Init - NULL Config Pointer\n");
     reset_test_env();
@@ -318,6 +319,7 @@ void test_eep_init_null_config(void) {
     TEST_ASSERT_EQ(1, det_error_count);
 }
 
+/** @req SWS_Eep_00001 */
 void test_eep_init_valid_config(void) {
     printf("\n[Test] Eep_Init - Valid Configuration\n");
     reset_test_env();
@@ -339,6 +341,7 @@ void test_eep_init_valid_config(void) {
 /*==============================================
  * 测试用例: Eep_DeInit
  *==============================================*/
+/** @req SWS_Eep_00002 */
 void test_eep_deinit_normal(void) {
     printf("\n[Test] Eep_DeInit - Normal Deinitialization\n");
     reset_test_env();
@@ -355,6 +358,7 @@ void test_eep_deinit_normal(void) {
     TEST_ASSERT_EQ(NULL_PTR, eep_config_ptr);
 }
 
+/** @req SWS_Eep_00002 */
 void test_eep_deinit_without_init(void) {
     printf("\n[Test] Eep_DeInit - Without Initialization\n");
     reset_test_env();
@@ -368,6 +372,7 @@ void test_eep_deinit_without_init(void) {
 /*==============================================
  * 测试用例: Eep_Read
  *==============================================*/
+/** @req SWS_Eep_00003 */
 void test_eep_read_uninit(void) {
     printf("\n[Test] Eep_Read - Uninitialized Driver\n");
     reset_test_env();
@@ -381,6 +386,7 @@ void test_eep_read_uninit(void) {
     TEST_ASSERT_EQ(EEP_E_UNINIT, det_last_error_id);
 }
 
+/** @req SWS_Eep_00003 */
 void test_eep_read_null_pointer(void) {
     printf("\n[Test] Eep_Read - NULL Data Pointer\n");
     reset_test_env();
@@ -394,6 +400,7 @@ void test_eep_read_null_pointer(void) {
     TEST_ASSERT_EQ(EEP_E_PARAM_POINTER, det_last_error_id);
 }
 
+/** @req SWS_Eep_00003 */
 void test_eep_read_zero_length(void) {
     printf("\n[Test] Eep_Read - Zero Length\n");
     reset_test_env();
@@ -408,6 +415,7 @@ void test_eep_read_zero_length(void) {
     TEST_ASSERT_EQ(EEP_E_PARAM_POINTER, det_last_error_id);
 }
 
+/** @req SWS_Eep_00003 */
 void test_eep_read_busy(void) {
     printf("\n[Test] Eep_Read - Driver Busy\n");
     reset_test_env();
@@ -425,6 +433,7 @@ void test_eep_read_busy(void) {
     TEST_ASSERT_EQ(EEP_STATE_READ, eep_state);
 }
 
+/** @req SWS_Eep_00003 */
 void test_eep_read_valid(void) {
     printf("\n[Test] Eep_Read - Valid Read Operation\n");
     reset_test_env();
@@ -457,6 +466,7 @@ void test_eep_read_valid(void) {
 /*==============================================
  * 测试用例: Eep_Write
  *==============================================*/
+/** @req SWS_Eep_00004 */
 void test_eep_write_uninit(void) {
     printf("\n[Test] Eep_Write - Uninitialized Driver\n");
     reset_test_env();
@@ -470,6 +480,7 @@ void test_eep_write_uninit(void) {
     TEST_ASSERT_EQ(EEP_E_UNINIT, det_last_error_id);
 }
 
+/** @req SWS_Eep_00004 */
 void test_eep_write_null_pointer(void) {
     printf("\n[Test] Eep_Write - NULL Data Pointer\n");
     reset_test_env();
@@ -483,6 +494,7 @@ void test_eep_write_null_pointer(void) {
     TEST_ASSERT_EQ(EEP_E_PARAM_POINTER, det_last_error_id);
 }
 
+/** @req SWS_Eep_00004 */
 void test_eep_write_zero_length(void) {
     printf("\n[Test] Eep_Write - Zero Length\n");
     reset_test_env();
@@ -497,6 +509,7 @@ void test_eep_write_zero_length(void) {
     TEST_ASSERT_EQ(EEP_E_PARAM_POINTER, det_last_error_id);
 }
 
+/** @req SWS_Eep_00004 */
 void test_eep_write_busy(void) {
     printf("\n[Test] Eep_Write - Driver Busy\n");
     reset_test_env();
@@ -514,6 +527,7 @@ void test_eep_write_busy(void) {
     TEST_ASSERT_EQ(EEP_STATE_WRITE, eep_state);
 }
 
+/** @req SWS_Eep_00004 */
 void test_eep_write_valid(void) {
     printf("\n[Test] Eep_Write - Valid Write Operation\n");
     reset_test_env();
@@ -542,6 +556,7 @@ void test_eep_write_valid(void) {
 /*==============================================
  * 测试用例: Eep_Erase
  *==============================================*/
+/** @req SWS_Eep_00005 */
 void test_eep_erase_uninit(void) {
     printf("\n[Test] Eep_Erase - Uninitialized Driver\n");
     reset_test_env();
@@ -554,6 +569,7 @@ void test_eep_erase_uninit(void) {
     TEST_ASSERT_EQ(EEP_E_UNINIT, det_last_error_id);
 }
 
+/** @req SWS_Eep_00005 */
 void test_eep_erase_busy(void) {
     printf("\n[Test] Eep_Erase - Driver Busy\n");
     reset_test_env();
@@ -569,6 +585,7 @@ void test_eep_erase_busy(void) {
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
+/** @req SWS_Eep_00005 */
 void test_eep_erase_valid(void) {
     printf("\n[Test] Eep_Erase - Valid Erase Operation\n");
     reset_test_env();
@@ -604,6 +621,7 @@ void test_eep_erase_valid(void) {
 /*==============================================
  * 测试用例: Eep_Cancel
  *==============================================*/
+/** @req SWS_Eep_00006 */
 void test_eep_cancel_normal(void) {
     printf("\n[Test] Eep_Cancel - Normal Operation\n");
     reset_test_env();
@@ -622,6 +640,7 @@ void test_eep_cancel_normal(void) {
     TEST_ASSERT_EQ(EEP_JOB_CANCELED, eep_job_result);
 }
 
+/** @req SWS_Eep_00006 */
 void test_eep_cancel_uninit(void) {
     printf("\n[Test] Eep_Cancel - Uninitialized Driver\n");
     reset_test_env();
@@ -632,6 +651,7 @@ void test_eep_cancel_uninit(void) {
     TEST_ASSERT_EQ(EEP_STATE_UNINIT, eep_state);
 }
 
+/** @req SWS_Eep_00006 */
 void test_eep_cancel_idle(void) {
     printf("\n[Test] Eep_Cancel - Idle State\n");
     reset_test_env();
@@ -649,6 +669,7 @@ void test_eep_cancel_idle(void) {
 /*==============================================
  * 测试用例: Eep_GetStatus
  *==============================================*/
+/** @req SWS_Eep_00007 */
 void test_eep_get_status_uninit(void) {
     printf("\n[Test] Eep_GetStatus - Uninitialized State\n");
     reset_test_env();
@@ -658,6 +679,7 @@ void test_eep_get_status_uninit(void) {
     TEST_ASSERT_EQ(EEP_UNINIT, status);
 }
 
+/** @req SWS_Eep_00007 */
 void test_eep_get_status_idle(void) {
     printf("\n[Test] Eep_GetStatus - Idle State\n");
     reset_test_env();
@@ -670,6 +692,7 @@ void test_eep_get_status_idle(void) {
     TEST_ASSERT_EQ(EEP_IDLE, status);
 }
 
+/** @req SWS_Eep_00007 */
 void test_eep_get_status_busy_read(void) {
     printf("\n[Test] Eep_GetStatus - Busy (Read)\n");
     reset_test_env();
@@ -685,6 +708,7 @@ void test_eep_get_status_busy_read(void) {
     TEST_ASSERT_EQ(EEP_BUSY, status);
 }
 
+/** @req SWS_Eep_00007 */
 void test_eep_get_status_busy_write(void) {
     printf("\n[Test] Eep_GetStatus - Busy (Write)\n");
     reset_test_env();
@@ -700,6 +724,7 @@ void test_eep_get_status_busy_write(void) {
     TEST_ASSERT_EQ(EEP_BUSY, status);
 }
 
+/** @req SWS_Eep_00007 */
 void test_eep_get_status_busy_erase(void) {
     printf("\n[Test] Eep_GetStatus - Busy (Erase)\n");
     reset_test_env();
@@ -717,6 +742,7 @@ void test_eep_get_status_busy_erase(void) {
 /*==============================================
  * 测试用例: Eep_GetJobResult
  *==============================================*/
+/** @req SWS_Eep_00008 */
 void test_eep_get_job_result_ok(void) {
     printf("\n[Test] Eep_GetJobResult - Job OK\n");
     reset_test_env();
@@ -729,6 +755,7 @@ void test_eep_get_job_result_ok(void) {
     TEST_ASSERT_EQ(EEP_JOB_OK, result);
 }
 
+/** @req SWS_Eep_00008 */
 void test_eep_get_job_result_pending(void) {
     printf("\n[Test] Eep_GetJobResult - Job Pending\n");
     reset_test_env();
@@ -744,6 +771,7 @@ void test_eep_get_job_result_pending(void) {
     TEST_ASSERT_EQ(EEP_JOB_PENDING, result);
 }
 
+/** @req SWS_Eep_00008 */
 void test_eep_get_job_result_canceled(void) {
     printf("\n[Test] Eep_GetJobResult - Job Canceled\n");
     reset_test_env();
@@ -763,6 +791,7 @@ void test_eep_get_job_result_canceled(void) {
 /*==============================================
  * 测试用例: Eep_MainFunction
  *==============================================*/
+/** @req SWS_Eep_00009 */
 void test_eep_mainfunction_uninit(void) {
     printf("\n[Test] Eep_MainFunction - Uninitialized State\n");
     reset_test_env();
@@ -773,6 +802,7 @@ void test_eep_mainfunction_uninit(void) {
     TEST_ASSERT_EQ(EEP_STATE_UNINIT, eep_state);
 }
 
+/** @req SWS_Eep_00009 */
 void test_eep_mainfunction_idle(void) {
     printf("\n[Test] Eep_MainFunction - Idle State\n");
     reset_test_env();
@@ -785,6 +815,7 @@ void test_eep_mainfunction_idle(void) {
     TEST_ASSERT_EQ(EEP_STATE_IDLE, eep_state);
 }
 
+/** @req SWS_Eep_00009 */
 void test_eep_mainfunction_complete_read(void) {
     printf("\n[Test] Eep_MainFunction - Complete Read Job\n");
     reset_test_env();
@@ -807,6 +838,7 @@ void test_eep_mainfunction_complete_read(void) {
     TEST_ASSERT_EQ(0, memcmp(read_buffer, write_data, 8));
 }
 
+/** @req SWS_Eep_00009 */
 void test_eep_mainfunction_complete_write(void) {
     printf("\n[Test] Eep_MainFunction - Complete Write Job\n");
     reset_test_env();
@@ -825,6 +857,7 @@ void test_eep_mainfunction_complete_write(void) {
     TEST_ASSERT_EQ(0, memcmp(&mock_eeprom_memory[0x500], write_data, 8));
 }
 
+/** @req SWS_Eep_00009 */
 void test_eep_mainfunction_complete_erase(void) {
     printf("\n[Test] Eep_MainFunction - Complete Erase Job\n");
     reset_test_env();
@@ -854,6 +887,7 @@ void test_eep_mainfunction_complete_erase(void) {
 /*==============================================
  * 综合测试场景
  *==============================================*/
+/** @req SWS_Eep_00003 */
 void test_eep_read_write_sequence(void) {
     printf("\n[Test] Eep - Read/Write Sequence\n");
     reset_test_env();
@@ -887,6 +921,7 @@ void test_eep_read_write_sequence(void) {
     TEST_ASSERT_EQ(0, memcmp(read_data, write_data, 32));
 }
 
+/* @req SWS_Eep_00201 */
 void test_eep_multiple_operations(void) {
     printf("\n[Test] Eep - Multiple Operations\n");
     reset_test_env();
@@ -919,6 +954,7 @@ void test_eep_multiple_operations(void) {
     TEST_ASSERT_EQ(0, memcmp(read2, expected, 8));
 }
 
+/* @req SWS_Eep_00202 */
 void test_eep_concurrent_request_rejection(void) {
     printf("\n[Test] Eep - Concurrent Request Rejection\n");
     reset_test_env();

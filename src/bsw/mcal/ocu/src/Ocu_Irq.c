@@ -61,6 +61,7 @@ static void Ocu_IrqHandler(Ocu_ChannelType Channel);
  * @brief Common interrupt handler for all channels
  * @param Channel Channel that triggered the interrupt
  */
+/** @req SWS_Ocu_00011 */
 static void Ocu_IrqHandler(Ocu_ChannelType Channel)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -111,6 +112,7 @@ static void Ocu_IrqHandler(Ocu_ChannelType Channel)
  * @param Channel Channel that triggered compare match
  * @implements Ocu_ProcessCompareMatch
  */
+/** @req SWS_Ocu_00007 */
 void Ocu_ProcessCompareMatch(Ocu_ChannelType Channel)
 {
     Ocu_PinActionType action;
@@ -159,6 +161,7 @@ void Ocu_ProcessCompareMatch(Ocu_ChannelType Channel)
  * @brief OCU Channel 0 Interrupt Handler
  * @implements Ocu_Channel0_IrqHandler
  */
+/** @req SWS_Ocu_00011 */
 void Ocu_Channel0_IrqHandler(void)
 {
     #if (OCU_CHANNEL_0_ENABLE == STD_ON)
@@ -170,6 +173,7 @@ void Ocu_Channel0_IrqHandler(void)
  * @brief OCU Channel 1 Interrupt Handler
  * @implements Ocu_Channel1_IrqHandler
  */
+/** @req SWS_Ocu_00011 */
 void Ocu_Channel1_IrqHandler(void)
 {
     #if (OCU_CHANNEL_1_ENABLE == STD_ON)
@@ -181,6 +185,7 @@ void Ocu_Channel1_IrqHandler(void)
  * @brief OCU Channel 2 Interrupt Handler
  * @implements Ocu_Channel2_IrqHandler
  */
+/** @req SWS_Ocu_00011 */
 void Ocu_Channel2_IrqHandler(void)
 {
     #if (OCU_CHANNEL_2_ENABLE == STD_ON)
@@ -192,6 +197,7 @@ void Ocu_Channel2_IrqHandler(void)
  * @brief OCU Channel 3 Interrupt Handler
  * @implements Ocu_Channel3_IrqHandler
  */
+/** @req SWS_Ocu_00011 */
 void Ocu_Channel3_IrqHandler(void)
 {
     #if (OCU_CHANNEL_3_ENABLE == STD_ON)
@@ -214,6 +220,7 @@ void Ocu_Channel3_IrqHandler(void)
  * @param Channel Channel to initialize
  * @param Config Channel configuration
  */
+/** @req SWS_Ocu_00001 */
 void Ocu_HwInitChannel(Ocu_ChannelType Channel, const Ocu_ChannelConfigType* Config)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -261,6 +268,7 @@ void Ocu_HwInitChannel(Ocu_ChannelType Channel, const Ocu_ChannelConfigType* Con
  * @brief Deinitialize hardware for a channel
  * @param Channel Channel to deinitialize
  */
+/** @req SWS_Ocu_00002 */
 void Ocu_HwDeInitChannel(Ocu_ChannelType Channel)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -285,6 +293,7 @@ void Ocu_HwDeInitChannel(Ocu_ChannelType Channel)
  * @brief Start hardware channel
  * @param Channel Channel to start
  */
+/** @req SWS_Ocu_00003 */
 void Ocu_HwStartChannel(Ocu_ChannelType Channel)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -307,6 +316,7 @@ void Ocu_HwStartChannel(Ocu_ChannelType Channel)
  * @brief Stop hardware channel
  * @param Channel Channel to stop
  */
+/** @req SWS_Ocu_00004 */
 void Ocu_HwStopChannel(Ocu_ChannelType Channel)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -330,6 +340,7 @@ void Ocu_HwStopChannel(Ocu_ChannelType Channel)
  * @param Channel Channel to set
  * @param PinState Pin state to set
  */
+/** @req SWS_Ocu_00005 */
 void Ocu_HwSetPinState(Ocu_ChannelType Channel, Ocu_OutputPinStateType PinState)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -346,6 +357,7 @@ void Ocu_HwSetPinState(Ocu_ChannelType Channel, Ocu_OutputPinStateType PinState)
  * @param Channel Channel to set
  * @param PinAction Pin action to set
  */
+/** @req SWS_Ocu_00006 */
 void Ocu_HwSetPinAction(Ocu_ChannelType Channel, Ocu_PinActionType PinAction)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -362,6 +374,7 @@ void Ocu_HwSetPinAction(Ocu_ChannelType Channel, Ocu_PinActionType PinAction)
  * @param Channel Channel to set
  * @param Value Compare value
  */
+/** @req SWS_Ocu_00007 */
 void Ocu_HwSetCompareValue(Ocu_ChannelType Channel, Ocu_ValueType Value)
 {
     Ocu_HwRegisterType* hwRegs;
@@ -378,6 +391,7 @@ void Ocu_HwSetCompareValue(Ocu_ChannelType Channel, Ocu_ValueType Value)
  * @param Channel Channel to read
  * @return Counter value
  */
+/** @req SWS_Ocu_00009 */
 Ocu_ValueType Ocu_HwGetCounter(Ocu_ChannelType Channel)
 {
     Ocu_HwRegisterType* hwRegs;

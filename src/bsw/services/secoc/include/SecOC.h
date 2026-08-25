@@ -255,7 +255,7 @@ extern void SecOC_DeInit(void);
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  * @return None
- * @req SWS_SecOC_00003
+ * @req SWS_SecOC_00040
  */
 #if (SECOC_VERSION_INFO_API == STD_ON)
 extern void SecOC_GetVersionInfo(Std_VersionInfoType* versioninfo);
@@ -266,7 +266,7 @@ extern void SecOC_GetVersionInfo(Std_VersionInfoType* versioninfo);
  * @param TxPduId PDU to transmit
  * @param PduInfoPtr Pointer to PDU info
  * @return Result of operation
- * @req SWS_SecOC_00041
+ * @req SWS_SecOC_00010
  */
 extern Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
@@ -275,7 +275,7 @@ extern Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* Pdu
  * @param RxPduId PDU that was received
  * @param PduInfoPtr Pointer to PDU info
  * @return None
- * @req SWS_SecOC_00043
+ * @req SWS_SecOC_00011
  */
 extern void SecOC_IfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
@@ -284,7 +284,7 @@ extern void SecOC_IfRxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPt
  * @param PduId PDU ID
  * @param status New verification status
  * @return E_OK if successful, E_NOT_OK otherwise
- * @req SWS_SecOC_00081
+ * @req SWS_SecOC_00012
  */
 extern Std_ReturnType SecOC_VerifyStatusOverride(PduIdType PduId, 
                                                   SecOC_VerificationStatusType status);
@@ -293,7 +293,7 @@ extern Std_ReturnType SecOC_VerifyStatusOverride(PduIdType PduId,
  * @brief Gets current verification status for a PDU
  * @param PduId PDU ID
  * @return Current verification status
- * @req SWS_SecOC_00084
+ * @req SWS_SecOC_00013
  */
 extern SecOC_VerificationStatusType SecOC_GetVerificationStatus(PduIdType PduId);
 
@@ -302,7 +302,7 @@ extern SecOC_VerificationStatusType SecOC_GetVerificationStatus(PduIdType PduId)
  * @param PduId PDU ID
  * @param resultPtr Pointer to store verification result
  * @return E_OK if successful, E_NOT_OK otherwise
- * @req SWS_SecOC_00085
+ * @req SWS_SecOC_00014
  */
 extern Std_ReturnType SecOC_GetVerificationResult(PduIdType PduId, 
                                                    SecOC_VerificationResultType* resultPtr);
@@ -314,7 +314,7 @@ extern Std_ReturnType SecOC_GetVerificationResult(PduIdType PduId,
  * @param RetryInfoPtr Pointer to retry info
  * @param AvailableDataPtr Pointer to available data
  * @return BufReq_ReturnType
- * @req SWS_SecOC_00046
+ * @req SWS_SecOC_00030
  */
 extern BufReq_ReturnType SecOC_CopyTxData(PduIdType TxPduId, 
                                            PduInfoType* PduInfoPtr,
@@ -327,7 +327,7 @@ extern BufReq_ReturnType SecOC_CopyTxData(PduIdType TxPduId,
  * @param PduInfoPtr Pointer to PDU info
  * @param RxBufferSizePtr Pointer to receive buffer size
  * @return BufReq_ReturnType
- * @req SWS_SecOC_00047
+ * @req SWS_SecOC_00031
  */
 extern BufReq_ReturnType SecOC_CopyRxData(PduIdType RxPduId,
                                            const PduInfoType* PduInfoPtr,
@@ -339,7 +339,7 @@ extern BufReq_ReturnType SecOC_CopyRxData(PduIdType RxPduId,
  * @param TpSduLength TP SDU length
  * @param RxBufferSizePtr Pointer to receive buffer size
  * @return BufReq_ReturnType
- * @req SWS_SecOC_00048
+ * @req SWS_SecOC_00032
  */
 extern BufReq_ReturnType SecOC_StartOfReception(PduIdType RxPduId,
                                                  PduLengthType TpSduLength,
@@ -350,21 +350,21 @@ extern BufReq_ReturnType SecOC_StartOfReception(PduIdType RxPduId,
  * @param TxPduId PDU that was transmitted
  * @param result Transmission result
  * @return None
- * @req SWS_SecOC_00083
+ * @req SWS_SecOC_00033
  */
 extern void SecOC_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
 /**
  * @brief Main function for RX processing
  * @return None
- * @req SWS_SecOC_00091
+ * @req SWS_SecOC_00021
  */
 extern void SecOC_MainFunctionRx(void);
 
 /**
  * @brief Main function for TX processing
  * @return None
- * @req SWS_SecOC_00092
+ * @req SWS_SecOC_00020
  */
 extern void SecOC_MainFunctionTx(void);
 

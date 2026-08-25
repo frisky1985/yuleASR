@@ -11,6 +11,7 @@ static const Tm_ConfigType* Tm_ConfigPtr = NULL_PTR;
 static boolean Tm_Initialized = FALSE;
 static Tm_TimeBaseType Tm_LocalTime = 0U;
 
+/** @req SWS_Tm_00001 */
 Std_ReturnType Tm_Init(const Tm_ConfigType* Config)
 {
 #if (TM_DEV_ERROR_DETECT == STD_ON)
@@ -28,6 +29,7 @@ Std_ReturnType Tm_Init(const Tm_ConfigType* Config)
     return E_OK;
 }
 
+/** @req SWS_Tm_00002 */
 void Tm_DeInit(void)
 {
     Tm_ConfigPtr = NULL_PTR;
@@ -35,6 +37,7 @@ void Tm_DeInit(void)
     Tm_Initialized = FALSE;
 }
 
+/** @req SWS_Tm_00003 */
 void Tm_MainFunction(void)
 {
     /* Cyclic time base update stub */
@@ -43,6 +46,7 @@ void Tm_MainFunction(void)
     }
 }
 
+/** @req SWS_Tm_00004 */
 Std_ReturnType Tm_GetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType* value)
 {
     (void)timeBaseId;
@@ -60,6 +64,7 @@ Std_ReturnType Tm_GetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType* value)
     return E_OK;
 }
 
+/** @req SWS_Tm_00005 */
 Std_ReturnType Tm_SetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType value)
 {
     (void)timeBaseId;
@@ -67,6 +72,7 @@ Std_ReturnType Tm_SetTimeBaseValue(uint8 timeBaseId, Tm_TimeBaseType value)
     return E_OK;
 }
 
+/** @req SWS_Tm_00006 */
 Std_ReturnType Tm_GetTimeBaseInfo(uint8 timeBaseId, Tm_TimeBaseInfoType* info)
 {
     (void)timeBaseId;
@@ -84,6 +90,7 @@ Std_ReturnType Tm_GetTimeBaseInfo(uint8 timeBaseId, Tm_TimeBaseInfoType* info)
     return E_OK;
 }
 
+/** @req SWS_Tm_00007 */
 Std_ReturnType Tm_GetGlobalTime(Tm_GlobalTimeType* time)
 {
 #if (TM_DEV_ERROR_DETECT == STD_ON)
@@ -99,12 +106,14 @@ Std_ReturnType Tm_GetGlobalTime(Tm_GlobalTimeType* time)
     return E_OK;
 }
 
+/** @req SWS_Tm_00008 */
 Std_ReturnType Tm_SetGlobalTime(const Tm_GlobalTimeType* time)
 {
     (void)time;
     return E_OK;
 }
 
+/** @req SWS_Tm_00009 */
 Std_ReturnType Tm_SyncTimeBase(uint8 sourceId, uint8 targetId)
 {
     (void)sourceId;

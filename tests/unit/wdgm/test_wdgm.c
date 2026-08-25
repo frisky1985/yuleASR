@@ -10,6 +10,7 @@
 #include "WdgM.h"
 
 /* Test: WdgM_Init */
+/** @req SWS_WdgM_00001 */
 static void test_WdgM_Init(void **state)
 {
     (void)state;
@@ -20,6 +21,7 @@ static void test_WdgM_Init(void **state)
 }
 
 /* Test: WdgM_DeInit */
+/** @req SWS_WdgM_00002 */
 static void test_WdgM_DeInit(void **state)
 {
     (void)state;
@@ -29,6 +31,7 @@ static void test_WdgM_DeInit(void **state)
 }
 
 /* Test: WdgM_GetVersionInfo */
+/** @req SWS_WdgM_00020 */
 static void test_WdgM_GetVersionInfo(void **state)
 {
     (void)state;
@@ -39,6 +42,7 @@ static void test_WdgM_GetVersionInfo(void **state)
 }
 
 /* Test: WdgM_SetMode */
+/** @req SWS_WdgM_00004 */
 static void test_WdgM_SetMode(void **state)
 {
     (void)state;
@@ -49,6 +53,7 @@ static void test_WdgM_SetMode(void **state)
 }
 
 /* Test: WdgM_CheckpointReached */
+/** @req SWS_WdgM_00007 */
 static void test_WdgM_CheckpointReached(void **state)
 {
     (void)state;
@@ -61,6 +66,7 @@ static void test_WdgM_CheckpointReached(void **state)
 }
 
 /* Test: WdgM_UpdateAliveCounter */
+/** @req SWS_WdgM_00008 */
 static void test_WdgM_UpdateAliveCounter(void **state)
 {
     (void)state;
@@ -71,6 +77,7 @@ static void test_WdgM_UpdateAliveCounter(void **state)
 }
 
 /* Test: WdgM_GetLocalStatus */
+/** @req SWS_WdgM_00009 */
 static void test_WdgM_GetLocalStatus(void **state)
 {
     (void)state;
@@ -83,6 +90,7 @@ static void test_WdgM_GetLocalStatus(void **state)
 }
 
 /* Test: WdgM_GetGlobalStatus */
+/** @req SWS_WdgM_00012 */
 static void test_WdgM_GetGlobalStatus(void **state)
 {
     (void)state;
@@ -93,6 +101,7 @@ static void test_WdgM_GetGlobalStatus(void **state)
 }
 
 /* Test: WdgM_PerformReset */
+/** @req SWS_WdgM_00015 */
 static void test_WdgM_PerformReset(void **state)
 {
     (void)state;
@@ -102,6 +111,7 @@ static void test_WdgM_PerformReset(void **state)
 }
 
 /* Test: WdgM_MainFunction */
+/** @req SWS_WdgM_00013 */
 static void test_WdgM_MainFunction(void **state)
 {
     (void)state;

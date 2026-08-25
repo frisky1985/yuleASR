@@ -92,6 +92,7 @@ static boolean LinMaster_Schedule_CheckDelay(void)
     currentTime = LinMaster_Schedule_GetSystemTime();
     elapsed = currentTime - g_ScheduleCtrl.CurrentEntryStartTime;
     
+    /** @req SWS_Lin_00077 */
     currentEntry = LinMaster_Schedule_GetCurrentEntry();
     if (currentEntry != NULL_PTR) {
         requiredDelay = currentEntry->DelayMs;
@@ -129,6 +130,7 @@ static const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetEntryAt(uint8 In
 /**
  * @brief 初始化调度表模块
  */
+/** @req SWS_Lin_00070 */
 Std_ReturnType LinMaster_Schedule_Init(const LinMaster_ScheduleTableType* ScheduleTable)
 {
     /* 重置控制块 */
@@ -160,6 +162,7 @@ Std_ReturnType LinMaster_Schedule_Init(const LinMaster_ScheduleTableType* Schedu
 /**
  * @brief 反初始化调度表模块
  */
+/** @req SWS_Lin_00071 */
 void LinMaster_Schedule_DeInit(void)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -178,6 +181,7 @@ void LinMaster_Schedule_DeInit(void)
 /**
  * @brief 启动当前调度表
  */
+/** @req SWS_Lin_00072 */
 Std_ReturnType LinMaster_Schedule_Start(void)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -199,6 +203,7 @@ Std_ReturnType LinMaster_Schedule_Start(void)
     g_ScheduleCtrl.State = LINMASTER_SCHEDULE_STATE_RUNNING;
     
     /* 执行第一个条目 */
+    /** @req SWS_Lin_00077 */
     const LinMaster_ScheduleEntryType* entry = LinMaster_Schedule_GetCurrentEntry();
     if (entry != NULL_PTR) {
         LinMaster_Schedule_ExecuteEntry(entry);
@@ -210,6 +215,7 @@ Std_ReturnType LinMaster_Schedule_Start(void)
 /**
  * @brief 停止当前调度表
  */
+/** @req SWS_Lin_00073 */
 Std_ReturnType LinMaster_Schedule_Stop(void)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -234,6 +240,7 @@ Std_ReturnType LinMaster_Schedule_Stop(void)
 /**
  * @brief 暂停调度表
  */
+/** @req SWS_Lin_00074 */
 Std_ReturnType LinMaster_Schedule_Pause(void)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -253,6 +260,7 @@ Std_ReturnType LinMaster_Schedule_Pause(void)
 /**
  * @brief 恢复调度表
  */
+/** @req SWS_Lin_00075 */
 Std_ReturnType LinMaster_Schedule_Resume(void)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -279,6 +287,7 @@ Std_ReturnType LinMaster_Schedule_Resume(void)
 /**
  * @brief 处理调度表 - 决定下一个条目
  */
+/** @req SWS_Lin_00076 */
 void LinMaster_Schedule_Process(void)
 {
     const LinMaster_ScheduleTableType* table;
@@ -306,6 +315,7 @@ void LinMaster_Schedule_Process(void)
 /**
  * @brief 获取当前调度条目
  */
+/** @req SWS_Lin_00077 */
 const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetCurrentEntry(void)
 {
     const LinMaster_ScheduleTableType* table;
@@ -325,6 +335,7 @@ const LinMaster_ScheduleEntryType* LinMaster_Schedule_GetCurrentEntry(void)
 /**
  * @brief 设置条目间延迟
  */
+/** @req SWS_Lin_00078 */
 Std_ReturnType LinMaster_Schedule_SetDelay(uint16 DelayMs)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -338,6 +349,7 @@ Std_ReturnType LinMaster_Schedule_SetDelay(uint16 DelayMs)
 /**
  * @brief 向运行时调度表添加条目
  */
+/** @req SWS_Lin_00079 */
 Std_ReturnType LinMaster_Schedule_AddEntry(const LinMaster_ScheduleEntryType* Entry)
 {
     if (!g_ScheduleCtrl.Initialized) {
@@ -371,6 +383,7 @@ Std_ReturnType LinMaster_Schedule_AddEntry(const LinMaster_ScheduleEntryType* En
 /**
  * @brief 切换到新调度表
  */
+/** @req SWS_Lin_00080 */
 Std_ReturnType LinMaster_Schedule_SwitchTable(
     const LinMaster_ScheduleTableType* NewTable,
     boolean Restart)
@@ -434,6 +447,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
     /* 自动启动新调度表 */
     g_ScheduleCtrl.State = LINMASTER_SCHEDULE_STATE_IDLE;
     g_ScheduleCtrl.CurrentEntryStartTime = LinMaster_Schedule_GetSystemTime();
+    /** @req SWS_Lin_00072 */
     (void)LinMaster_Schedule_Start();
     
     return E_OK;
@@ -442,6 +456,7 @@ Std_ReturnType LinMaster_Schedule_SwitchTable(
 /**
  * @brief 设置当前条目索引
  */
+/** @req SWS_Lin_00081 */
 Std_ReturnType LinMaster_Schedule_SetEntryIndex(uint8 Index)
 {
     const LinMaster_ScheduleTableType* table;
@@ -471,6 +486,7 @@ Std_ReturnType LinMaster_Schedule_SetEntryIndex(uint8 Index)
 /**
  * @brief 获取当前条目索引
  */
+/** @req SWS_Lin_00082 */
 uint8 LinMaster_Schedule_GetEntryIndex(void)
 {
     const LinMaster_ScheduleTableType* table;
@@ -490,6 +506,7 @@ uint8 LinMaster_Schedule_GetEntryIndex(void)
 /**
  * @brief 获取调度表状态
  */
+/** @req SWS_Lin_00083 */
 LinMaster_ScheduleStateType LinMaster_Schedule_GetState(void)
 {
     return g_ScheduleCtrl.State;
@@ -498,6 +515,7 @@ LinMaster_ScheduleStateType LinMaster_Schedule_GetState(void)
 /**
  * @brief 获取当前调度表
  */
+/** @req SWS_Lin_00084 */
 const LinMaster_ScheduleTableType* LinMaster_Schedule_GetCurrentTable(void)
 {
     return g_ScheduleCtrl.CurrentTable;
@@ -506,6 +524,7 @@ const LinMaster_ScheduleTableType* LinMaster_Schedule_GetCurrentTable(void)
 /**
  * @brief 设置条目执行回调
  */
+/** @req SWS_Lin_00085 */
 void LinMaster_Schedule_RegisterEntryCallback(LinMaster_EntryCallbackFuncType Callback)
 {
     g_ScheduleCtrl.EntryCallback = Callback;
@@ -514,6 +533,7 @@ void LinMaster_Schedule_RegisterEntryCallback(LinMaster_EntryCallbackFuncType Ca
 /**
  * @brief 设置调度表完成回调
  */
+/** @req SWS_Lin_00086 */
 void LinMaster_Schedule_RegisterTableCompleteCallback(LinMaster_TableCompleteCallbackFuncType Callback)
 {
     g_ScheduleCtrl.TableCompleteCallback = Callback;
@@ -522,6 +542,7 @@ void LinMaster_Schedule_RegisterTableCompleteCallback(LinMaster_TableCompleteCal
 /**
  * @brief 设置调度表切换回调
  */
+/** @req SWS_Lin_00087 */
 void LinMaster_Schedule_RegisterTableSwitchCallback(LinMaster_TableSwitchCallbackFuncType Callback)
 {
     g_ScheduleCtrl.TableSwitchCallback = Callback;
@@ -530,6 +551,7 @@ void LinMaster_Schedule_RegisterTableSwitchCallback(LinMaster_TableSwitchCallbac
 /**
  * @brief 获取当前条目已等待时间
  */
+/** @req SWS_Lin_00088 */
 uint32 LinMaster_Schedule_GetElapsedTime(void)
 {
     uint32 currentTime;
@@ -545,6 +567,7 @@ uint32 LinMaster_Schedule_GetElapsedTime(void)
 /**
  * @brief 获取当前条目剩余等待时间
  */
+/** @req SWS_Lin_00089 */
 uint32 LinMaster_Schedule_GetRemainingTime(void)
 {
     uint32 elapsed;
@@ -555,8 +578,10 @@ uint32 LinMaster_Schedule_GetRemainingTime(void)
         return 0;
     }
     
+    /** @req SWS_Lin_00088 */
     elapsed = LinMaster_Schedule_GetElapsedTime();
     
+    /** @req SWS_Lin_00077 */
     entry = LinMaster_Schedule_GetCurrentEntry();
     if (entry != NULL_PTR) {
         requiredDelay = entry->DelayMs;
@@ -719,6 +744,7 @@ static void LinMaster_Schedule_NextEntry(void)
     }
     
     currentIndex = table->EntryIndex;
+    /** @req SWS_Lin_00077 */
     entry = LinMaster_Schedule_GetCurrentEntry();
     
     /* 调用完成回调(如果注册) */

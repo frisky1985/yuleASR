@@ -42,6 +42,7 @@ static boolean Nm_ModuleInitialized = FALSE;
 #define NM_VENDOR_ID                      0x0001
 #define NM_INSTANCE_ID                    0x00
 
+/** @req SWS_Nm_00001 */
 void Nm_Init(const Nm_ConfigType* ConfigPtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -72,6 +73,7 @@ void Nm_Init(const Nm_ConfigType* ConfigPtr)
     Nm_ModuleInitialized = TRUE;
 }
 
+/** @req SWS_Nm_00002 */
 void Nm_DeInit(void)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -91,6 +93,7 @@ void Nm_DeInit(void)
     Nm_ModuleInitialized = FALSE;
 }
 
+/** @req SWS_Nm_00003 */
 void Nm_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
 #if (NM_VERSION_INFO_API == STD_ON)
@@ -105,6 +108,7 @@ void Nm_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 #endif
 }
 
+/** @req SWS_Nm_00004 */
 Std_ReturnType Nm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -127,6 +131,7 @@ Std_ReturnType Nm_PassiveStartUp(Nm_ChannelHandleType nmChannelHandle)
     return E_OK;
 }
 
+/** @req SWS_Nm_00005 */
 Std_ReturnType Nm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -155,6 +160,7 @@ Std_ReturnType Nm_NetworkRequest(Nm_ChannelHandleType nmChannelHandle)
     return E_OK;
 }
 
+/** @req SWS_Nm_00006 */
 Std_ReturnType Nm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -182,6 +188,7 @@ Std_ReturnType Nm_NetworkRelease(Nm_ChannelHandleType nmChannelHandle)
     return E_OK;
 }
 
+/** @req SWS_Nm_00007 */
 Std_ReturnType Nm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -201,6 +208,7 @@ Std_ReturnType Nm_DisableCommunication(Nm_ChannelHandleType nmChannelHandle)
     return E_OK;
 }
 
+/** @req SWS_Nm_00008 */
 Std_ReturnType Nm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -220,6 +228,7 @@ Std_ReturnType Nm_EnableCommunication(Nm_ChannelHandleType nmChannelHandle)
     return E_OK;
 }
 
+/** @req SWS_Nm_00009 */
 Std_ReturnType Nm_GetState(Nm_ChannelHandleType nmChannelHandle, Nm_StateType* nmStatePtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -244,6 +253,7 @@ Std_ReturnType Nm_GetState(Nm_ChannelHandleType nmChannelHandle, Nm_StateType* n
     return E_OK;
 }
 
+/** @req SWS_Nm_00010 */
 Std_ReturnType Nm_GetMode(Nm_ChannelHandleType nmChannelHandle, Nm_ModeType* nmModePtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -268,6 +278,7 @@ Std_ReturnType Nm_GetMode(Nm_ChannelHandleType nmChannelHandle, Nm_ModeType* nmM
     return E_OK;
 }
 
+/** @req SWS_Nm_00011 */
 Std_ReturnType Nm_GetLocalNodeIdentifier(Nm_ChannelHandleType nmChannelHandle, Nm_NodeIdType* nmNodeIdPtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -288,6 +299,7 @@ Std_ReturnType Nm_GetLocalNodeIdentifier(Nm_ChannelHandleType nmChannelHandle, N
     return E_OK;
 }
 
+/** @req SWS_Nm_00012 */
 Std_ReturnType Nm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8* nmUserDataPtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -317,6 +329,7 @@ Std_ReturnType Nm_GetUserData(Nm_ChannelHandleType nmChannelHandle, uint8* nmUse
     return E_OK;
 }
 
+/** @req SWS_Nm_00013 */
 Std_ReturnType Nm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uint8* nmUserDataPtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -346,6 +359,7 @@ Std_ReturnType Nm_SetUserData(Nm_ChannelHandleType nmChannelHandle, const uint8*
     return E_OK;
 }
 
+/** @req SWS_Nm_00014 */
 Std_ReturnType Nm_CheckRemoteSleepIndication(Nm_ChannelHandleType nmChannelHandle, boolean* nmRemoteSleepIndPtr)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -367,6 +381,7 @@ Std_ReturnType Nm_CheckRemoteSleepIndication(Nm_ChannelHandleType nmChannelHandl
     return E_OK;
 }
 
+/** @req SWS_Nm_00015 */
 void Nm_MainFunction(void)
 {
 #if (NM_DEV_ERROR_DETECT == STD_ON)
@@ -421,6 +436,7 @@ void Appl_Nm_RemoteSleepIndication(Nm_ChannelHandleType ch);
 void Appl_Nm_RemoteSleepCancellation(Nm_ChannelHandleType ch);
 
 /* Callback Functions */
+/** @req SWS_Nm_00100 */
 void Nm_StateChangeNotification(Nm_ChannelHandleType nmNetworkHandle, Nm_StateType nmPreviousState, Nm_StateType nmCurrentState)
 {
 #if (NM_STATE_CHANGE_IND_ENABLED == STD_ON)
@@ -432,6 +448,7 @@ void Nm_StateChangeNotification(Nm_ChannelHandleType nmNetworkHandle, Nm_StateTy
     (void)nmCurrentState;
 }
 
+/** @req SWS_Nm_00101 */
 void Nm_RemoteSleepIndication(Nm_ChannelHandleType nmNetworkHandle)
 {
 #if (NM_REMOTE_SLEEP_IND_ENABLED == STD_ON)
@@ -443,6 +460,7 @@ void Nm_RemoteSleepIndication(Nm_ChannelHandleType nmNetworkHandle)
 #endif
 }
 
+/** @req SWS_Nm_00102 */
 void Nm_RemoteSleepCancellation(Nm_ChannelHandleType nmNetworkHandle)
 {
 #if (NM_REMOTE_SLEEP_IND_ENABLED == STD_ON)
@@ -455,12 +473,14 @@ void Nm_RemoteSleepCancellation(Nm_ChannelHandleType nmNetworkHandle)
     (void)nmNetworkHandle;
 }
 
+/** @req SWS_Nm_00103 */
 void Nm_NetworkStartIndication(Nm_ChannelHandleType nmNetworkHandle)
 {
     /* Called when network startup is indicated by BusNm */
     (void)nmNetworkHandle;
 }
 
+/** @req SWS_Nm_00104 */
 void Nm_RxIndication(Nm_ChannelHandleType nmNetworkHandle, const uint8* nmPduDataPtr)
 {
     /* Called when NM message is received */

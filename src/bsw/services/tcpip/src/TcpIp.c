@@ -596,6 +596,7 @@ static err_t TcpIp_LwipConnected(void* Arg, struct tcp_pcb* Pcb, err_t Err)
  * Initialises lwIP (if TCPIP_ENABLE_LWIP is defined from project config)
  * and the internal socket table.
  */
+/** @req SWS_TcpIp_00001 */
 void TcpIp_Init(const TcpIp_ConfigType* ConfigPtr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -642,6 +643,7 @@ void TcpIp_Init(const TcpIp_ConfigType* ConfigPtr)
 /**
  * @brief De-initialize the TCP/IP stack.
  */
+/** @req SWS_TcpIp_00002 */
 void TcpIp_DeInit(void)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -674,6 +676,7 @@ void TcpIp_DeInit(void)
  * @brief Get version information.
  */
 #if (TCPIP_VERSION_INFO_API == STD_ON)
+/** @req SWS_TcpIp_00003 */
 void TcpIp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -697,6 +700,7 @@ void TcpIp_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * On lwIP-enabled builds this allocates a tcp_pcb or udp_pcb.
  * When lwIP is absent it allocates a slot in the internal table only.
  */
+/** @req SWS_TcpIp_00004 */
 TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType domain, TcpIp_SockTypeType type, TcpIp_SocketIdType* SocketId)
 {
     TcpIp_SocketIdType slot;
@@ -769,6 +773,7 @@ TcpIp_ReturnType TcpIp_Create(TcpIp_DomainType domain, TcpIp_SockTypeType type, 
  * (FIN_WAIT_1; native builds advance it in TcpIp_MainFunction, lwIP builds
  * hand the PCB to tcp_close()).
  */
+/** @req SWS_TcpIp_00005 */
 TcpIp_ReturnType TcpIp_Close(TcpIp_SocketIdType SocketId, boolean Force)
 {
     TcpIp_SocketEntryType* entry;
@@ -828,6 +833,7 @@ TcpIp_ReturnType TcpIp_Close(TcpIp_SocketIdType SocketId, boolean Force)
 /**
  * @brief Bind a socket to a local address / port.
  */
+/** @req SWS_TcpIp_00006 */
 TcpIp_ReturnType TcpIp_Bind(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* Addr)
 {
     TcpIp_SocketEntryType* entry;
@@ -883,6 +889,7 @@ TcpIp_ReturnType TcpIp_Bind(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrTyp
 /**
  * @brief Send data on a connected socket.
  */
+/** @req SWS_TcpIp_00007 */
 TcpIp_ReturnType TcpIp_Send(TcpIp_SocketIdType SocketId, const uint8* Data, uint16 Length)
 {
     TcpIp_SocketEntryType* entry;
@@ -913,6 +920,7 @@ TcpIp_ReturnType TcpIp_Send(TcpIp_SocketIdType SocketId, const uint8* Data, uint
 /**
  * @brief Transmit — alias for TcpIp_Send for higher-layer compatibility.
  */
+/** @req SWS_TcpIp_00008 */
 TcpIp_ReturnType TcpIp_Transmit(TcpIp_SocketIdType SocketId, const uint8* Data, uint16 Length)
 {
     return TcpIp_Send(SocketId, Data, Length);
@@ -921,6 +929,7 @@ TcpIp_ReturnType TcpIp_Transmit(TcpIp_SocketIdType SocketId, const uint8* Data, 
 /**
  * @brief Receive data from a socket (drains the queued RX chunk).
  */
+/** @req SWS_TcpIp_00009 */
 TcpIp_ReturnType TcpIp_Receive(TcpIp_SocketIdType SocketId, uint8* Buffer, uint16 MaxLen, uint16* ReceivedLen)
 {
     TcpIp_SocketEntryType* entry;
@@ -969,6 +978,7 @@ TcpIp_ReturnType TcpIp_Receive(TcpIp_SocketIdType SocketId, uint8* Buffer, uint1
  *
  * Convenience wrapper: Create + Bind in one call.
  */
+/** @req SWS_TcpIp_00010 */
 TcpIp_ReturnType TcpIp_OpenSocket(TcpIp_ProtocolType Protocol, uint16 Port, TcpIp_SocketIdType* SocketId)
 {
     TcpIp_ReturnType result;
@@ -1011,6 +1021,7 @@ TcpIp_ReturnType TcpIp_OpenSocket(TcpIp_ProtocolType Protocol, uint16 Port, TcpI
 /**
  * @brief Close a socket by ID.
  */
+/** @req SWS_TcpIp_00011 */
 TcpIp_ReturnType TcpIp_CloseSocket(TcpIp_SocketIdType SocketId)
 {
     return TcpIp_Close(SocketId, TRUE);
@@ -1019,6 +1030,7 @@ TcpIp_ReturnType TcpIp_CloseSocket(TcpIp_SocketIdType SocketId)
 /**
  * @brief Create a TCP socket (convenience wrapper).
  */
+/** @req SWS_TcpIp_00012 */
 Std_ReturnType TcpIp_SocketCreate(TcpIp_SocketIdType* SocketId)
 {
     TcpIp_ReturnType result;
@@ -1035,6 +1047,7 @@ Std_ReturnType TcpIp_SocketCreate(TcpIp_SocketIdType* SocketId)
 /**
  * @brief Close a socket (convenience wrapper).
  */
+/** @req SWS_TcpIp_00013 */
 void TcpIp_SocketClose(TcpIp_SocketIdType SocketId)
 {
     (void)TcpIp_CloseSocket(SocketId);
@@ -1043,6 +1056,7 @@ void TcpIp_SocketClose(TcpIp_SocketIdType SocketId)
 /**
  * @brief Check whether a socket is connected (convenience wrapper).
  */
+/** @req SWS_TcpIp_00014 */
 boolean TcpIp_IsConnected(TcpIp_SocketIdType SocketId)
 {
     TcpIp_SocketEntryType* entry;
@@ -1064,6 +1078,7 @@ boolean TcpIp_IsConnected(TcpIp_SocketIdType SocketId)
 /**
  * @brief Get the IPv4 address.
  */
+/** @req SWS_TcpIp_00015 */
 TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -1086,6 +1101,7 @@ TcpIp_ReturnType TcpIp_GetIPv4Addr(TcpIp_Ipv4AddrType* Addr)
 /**
  * @brief Get the IPv6 address (stub — fe80::1 unless DHCPv6 is enabled).
  */
+/** @req SWS_TcpIp_00016 */
 TcpIp_ReturnType TcpIp_GetIPv6Addr(TcpIp_Ipv6AddrType* Addr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -1116,6 +1132,7 @@ TcpIp_ReturnType TcpIp_GetIPv6Addr(TcpIp_Ipv6AddrType* Addr)
 /**
  * @brief Get the IPv4 subnet mask of an interface.
  */
+/** @req SWS_TcpIp_00017 */
 TcpIp_ReturnType TcpIp_GetIPv4SubnetMask(uint8 IfIdx, TcpIp_Ipv4AddrType* Mask)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -1143,6 +1160,7 @@ TcpIp_ReturnType TcpIp_GetIPv4SubnetMask(uint8 IfIdx, TcpIp_Ipv4AddrType* Mask)
 /**
  * @brief Get the current link state.
  */
+/** @req SWS_TcpIp_00018 */
 TcpIp_ReturnType TcpIp_GetLinkState(TcpIp_LinkStateType* LinkState)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -1165,6 +1183,7 @@ TcpIp_ReturnType TcpIp_GetLinkState(TcpIp_LinkStateType* LinkState)
 /**
  * @brief Get the interface state.
  */
+/** @req SWS_TcpIp_00019 */
 TcpIp_ReturnType TcpIp_GetInterfaceState(TcpIp_InterfaceStateType* InterfaceState)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -1187,6 +1206,7 @@ TcpIp_ReturnType TcpIp_GetInterfaceState(TcpIp_InterfaceStateType* InterfaceStat
 /**
  * @brief Get the IP address state of an interface.
  */
+/** @req SWS_TcpIp_00020 */
 TcpIp_ReturnType TcpIp_GetIpAddrState(uint8 IfIdx, TcpIp_IpAddrStateType* IpAddrState)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -1214,6 +1234,7 @@ TcpIp_ReturnType TcpIp_GetIpAddrState(uint8 IfIdx, TcpIp_IpAddrStateType* IpAddr
 /**
  * @brief Reset the TCP/IP stack (tear down and re-init).
  */
+/** @req SWS_TcpIp_00021 */
 TcpIp_ReturnType TcpIp_Reset(void)
 {
     const TcpIp_ConfigType* savedConfig;
@@ -1251,6 +1272,7 @@ TcpIp_ReturnType TcpIp_Reset(void)
  * @brief Main function — called periodically to poll link state and
  *        advance native graceful-close sequences.
  */
+/** @req SWS_TcpIp_00022 */
 void TcpIp_MainFunction(void)
 {
     TcpIp_SocketIdType i;
@@ -1307,6 +1329,7 @@ void TcpIp_MainFunction(void)
 /**
  * @brief Put a TCP socket into listening state (server).
  */
+/** @req SWS_TcpIp_00023 */
 TcpIp_ReturnType TcpIp_Listen(TcpIp_SocketIdType SocketId, uint8 Backlog)
 {
     TcpIp_SocketEntryType* entry;
@@ -1368,6 +1391,7 @@ TcpIp_ReturnType TcpIp_Listen(TcpIp_SocketIdType SocketId, uint8 Backlog)
 /**
  * @brief Initiate a connection to a remote address.
  */
+/** @req SWS_TcpIp_00024 */
 TcpIp_ReturnType TcpIp_Connect(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* RemoteAddr)
 {
     TcpIp_SocketEntryType* entry;
@@ -1444,6 +1468,7 @@ TcpIp_ReturnType TcpIp_Connect(TcpIp_SocketIdType SocketId, const TcpIp_SockAddr
 /**
  * @brief Accept a pending connection on a listening socket.
  */
+/** @req SWS_TcpIp_00025 */
 TcpIp_ReturnType TcpIp_Accept(TcpIp_SocketIdType SocketId, TcpIp_SocketIdType* NewSocketId)
 {
     TcpIp_SocketEntryType* entry;
@@ -1492,6 +1517,7 @@ TcpIp_ReturnType TcpIp_Accept(TcpIp_SocketIdType SocketId, TcpIp_SocketIdType* N
 /**
  * @brief Abort a connection immediately.
  */
+/** @req SWS_TcpIp_00026 */
 TcpIp_ReturnType TcpIp_Abort(TcpIp_SocketIdType SocketId)
 {
     TcpIp_SocketEntryType* entry;
@@ -1519,6 +1545,7 @@ TcpIp_ReturnType TcpIp_Abort(TcpIp_SocketIdType SocketId)
 /**
  * @brief Set the remote address of a socket.
  */
+/** @req SWS_TcpIp_00027 */
 TcpIp_ReturnType TcpIp_SetRemoteAddr(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* RemoteAddr)
 {
     TcpIp_SocketEntryType* entry;
@@ -1561,6 +1588,7 @@ TcpIp_ReturnType TcpIp_SetRemoteAddr(TcpIp_SocketIdType SocketId, const TcpIp_So
 /**
  * @brief Set the local address of a socket (stored; TcpIp_Bind applies it).
  */
+/** @req SWS_TcpIp_00028 */
 TcpIp_ReturnType TcpIp_SetLocalAddr(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* LocalAddr)
 {
     TcpIp_SocketEntryType* entry;
@@ -1592,6 +1620,7 @@ TcpIp_ReturnType TcpIp_SetLocalAddr(TcpIp_SocketIdType SocketId, const TcpIp_Soc
 /**
  * @brief Bind a socket to a local address (AUTOSAR name).
  */
+/** @req SWS_TcpIp_00029 */
 TcpIp_ReturnType TcpIp_BindLocalAddr(TcpIp_SocketIdType SocketId, const TcpIp_SockAddrType* LocalAddr)
 {
     return TcpIp_Bind(SocketId, LocalAddr);
@@ -1600,6 +1629,7 @@ TcpIp_ReturnType TcpIp_BindLocalAddr(TcpIp_SocketIdType SocketId, const TcpIp_So
 /**
  * @brief Get the local address of a socket.
  */
+/** @req SWS_TcpIp_00030 */
 TcpIp_ReturnType TcpIp_GetLocalAddr(TcpIp_SocketIdType SocketId, TcpIp_SockAddrType* LocalAddr)
 {
     TcpIp_SocketEntryType* entry;
@@ -1632,6 +1662,7 @@ TcpIp_ReturnType TcpIp_GetLocalAddr(TcpIp_SocketIdType SocketId, TcpIp_SockAddrT
 /**
  * @brief Get the remote address of a socket.
  */
+/** @req SWS_TcpIp_00031 */
 TcpIp_ReturnType TcpIp_GetRemoteAddr(TcpIp_SocketIdType SocketId, TcpIp_SockAddrType* RemoteAddr)
 {
     TcpIp_SocketEntryType* entry;
@@ -1664,6 +1695,7 @@ TcpIp_ReturnType TcpIp_GetRemoteAddr(TcpIp_SocketIdType SocketId, TcpIp_SockAddr
 /**
  * @brief Get the connection state of a socket.
  */
+/** @req SWS_TcpIp_00032 */
 TcpIp_ReturnType TcpIp_GetConnectionState(TcpIp_SocketIdType SocketId, TcpIp_ConnectionStateType* ConnState)
 {
     TcpIp_SocketEntryType* entry;
@@ -1694,6 +1726,7 @@ TcpIp_ReturnType TcpIp_GetConnectionState(TcpIp_SocketIdType SocketId, TcpIp_Con
 /**
  * @brief Get the TCP protocol state of a socket.
  */
+/** @req SWS_TcpIp_00033 */
 TcpIp_ReturnType TcpIp_GetTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStateType* TcpState)
 {
     TcpIp_SocketEntryType* entry;
@@ -1724,6 +1757,7 @@ TcpIp_ReturnType TcpIp_GetTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStateTy
 /**
  * @brief Drive the TCP state machine.
  */
+/** @req SWS_TcpIp_00034 */
 TcpIp_ReturnType TcpIp_ChangeTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStateType NewState)
 {
     TcpIp_SocketEntryType* entry;
@@ -1800,6 +1834,7 @@ TcpIp_ReturnType TcpIp_ChangeTcpState(TcpIp_SocketIdType SocketId, TcpIp_TcpStat
 /**
  * @brief Attach a static receive buffer to a socket.
  */
+/** @req SWS_TcpIp_00035 */
 TcpIp_ReturnType TcpIp_SetRxBuffer(TcpIp_SocketIdType SocketId, uint8* Buffer, uint16 Capacity)
 {
     TcpIp_SocketEntryType* entry;
@@ -1831,6 +1866,7 @@ TcpIp_ReturnType TcpIp_SetRxBuffer(TcpIp_SocketIdType SocketId, uint8* Buffer, u
 /**
  * @brief Get the oldest received chunk (zero-copy RX model).
  */
+/** @req SWS_TcpIp_00036 */
 TcpIp_ReturnType TcpIp_GetRxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr, uint16* Length)
 {
     TcpIp_SocketEntryType* entry;
@@ -1871,6 +1907,7 @@ TcpIp_ReturnType TcpIp_GetRxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr,
 /**
  * @brief Release the buffer returned by TcpIp_GetRxBuffer.
  */
+/** @req SWS_TcpIp_00037 */
 TcpIp_ReturnType TcpIp_ReleaseRxBuffer(TcpIp_SocketIdType SocketId)
 {
     TcpIp_SocketEntryType* entry;
@@ -1900,6 +1937,7 @@ TcpIp_ReturnType TcpIp_ReleaseRxBuffer(TcpIp_SocketIdType SocketId)
 /**
  * @brief Get a transmit buffer (zero-copy TX model).
  */
+/** @req SWS_TcpIp_00038 */
 TcpIp_ReturnType TcpIp_GetTxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr, uint16* Length)
 {
     TcpIp_SocketEntryType* entry;
@@ -1931,6 +1969,7 @@ TcpIp_ReturnType TcpIp_GetTxBuffer(TcpIp_SocketIdType SocketId, uint8** DataPtr,
 /**
  * @brief Commit a transmit buffer for sending.
  */
+/** @req SWS_TcpIp_00039 */
 TcpIp_ReturnType TcpIp_ReleaseTxBuffer(TcpIp_SocketIdType SocketId, uint16 Length)
 {
     TcpIp_SocketEntryType* entry;
@@ -1961,6 +2000,7 @@ TcpIp_ReturnType TcpIp_ReleaseTxBuffer(TcpIp_SocketIdType SocketId, uint16 Lengt
 /**
  * @brief Set a TCP option.
  */
+/** @req SWS_TcpIp_00040 */
 TcpIp_ReturnType TcpIp_SetTcpOption(TcpIp_SocketIdType SocketId, TcpIp_TcpOptionType Option, uint32 Value)
 {
     TcpIp_SocketEntryType* entry;
@@ -2015,6 +2055,7 @@ TcpIp_ReturnType TcpIp_SetTcpOption(TcpIp_SocketIdType SocketId, TcpIp_TcpOption
 /**
  * @brief Get a TCP option.
  */
+/** @req SWS_TcpIp_00041 */
 TcpIp_ReturnType TcpIp_GetTcpOption(TcpIp_SocketIdType SocketId, TcpIp_TcpOptionType Option, uint32* Value)
 {
     TcpIp_SocketEntryType* entry;
@@ -2061,6 +2102,7 @@ TcpIp_ReturnType TcpIp_GetTcpOption(TcpIp_SocketIdType SocketId, TcpIp_TcpOption
 /**
  * @brief Set a UDP option.
  */
+/** @req SWS_TcpIp_00042 */
 TcpIp_ReturnType TcpIp_SetUdpOption(TcpIp_SocketIdType SocketId, TcpIp_UdpOptionType Option, uint32 Value)
 {
     TcpIp_SocketEntryType* entry;
@@ -2106,6 +2148,7 @@ TcpIp_ReturnType TcpIp_SetUdpOption(TcpIp_SocketIdType SocketId, TcpIp_UdpOption
 /**
  * @brief Get a UDP option.
  */
+/** @req SWS_TcpIp_00043 */
 TcpIp_ReturnType TcpIp_GetUdpOption(TcpIp_SocketIdType SocketId, TcpIp_UdpOptionType Option, uint32* Value)
 {
     TcpIp_SocketEntryType* entry;
@@ -2150,6 +2193,7 @@ TcpIp_ReturnType TcpIp_GetUdpOption(TcpIp_SocketIdType SocketId, TcpIp_UdpOption
  * @brief RX data ingress hook — called by the lwIP adapter / EthIf Rx path
  *        when data for a local socket arrives.
  */
+/** @req SWS_TcpIp_00044 */
 TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Data, uint16 Length)
 {
     TcpIp_SocketEntryType* entry;
@@ -2217,6 +2261,7 @@ TcpIp_ReturnType TcpIp_RxIndication(TcpIp_SocketIdType SocketId, const uint8* Da
  * @brief TX completion hook — called by the lwIP adapter on send
  *        confirmation.
  */
+/** @req SWS_TcpIp_00045 */
 TcpIp_ReturnType TcpIp_TxConfirmation(TcpIp_SocketIdType SocketId, boolean Success)
 {
     TcpIp_SocketEntryType* entry;
@@ -2253,6 +2298,7 @@ TcpIp_ReturnType TcpIp_TxConfirmation(TcpIp_SocketIdType SocketId, boolean Succe
  * EthIf/lwIP port from this configuration) or to the Ethernet Switch
  * driver (EthSwt, B2).
  */
+/** @req SWS_TcpIp_00046 */
 TcpIp_ReturnType TcpIp_SetVlanConfig(const TcpIp_VlanConfigType* VlanConfigPtr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -2294,6 +2340,7 @@ TcpIp_ReturnType TcpIp_SetVlanConfig(const TcpIp_VlanConfigType* VlanConfigPtr)
 /**
  * @brief Get the interface VLAN configuration.
  */
+/** @req SWS_TcpIp_00047 */
 TcpIp_ReturnType TcpIp_GetVlanConfig(TcpIp_VlanConfigType* VlanConfigPtr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -2324,6 +2371,7 @@ TcpIp_ReturnType TcpIp_GetVlanConfig(TcpIp_VlanConfigType* VlanConfigPtr)
 /**
  * @brief Get the module statistics counters.
  */
+/** @req SWS_TcpIp_00048 */
 TcpIp_ReturnType TcpIp_GetStatistics(TcpIp_StatisticsType* StatisticsPtr)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)
@@ -2346,6 +2394,7 @@ TcpIp_ReturnType TcpIp_GetStatistics(TcpIp_StatisticsType* StatisticsPtr)
 /**
  * @brief Reset the module statistics counters to zero.
  */
+/** @req SWS_TcpIp_00049 */
 TcpIp_ReturnType TcpIp_ResetStatistics(void)
 {
 #if (TCPIP_DEV_ERROR_DETECT == STD_ON)

@@ -52,6 +52,7 @@ STATIC boolean gCryptoAesInitialized = FALSE;
 /**
  * @brief 获取空闲的AES作业上下文
  */
+/** @req SWS_Crypto_00011 */
 STATIC Crypto_AesJobContextType* Crypto_AesGetFreeContext(void)
 {
     uint32 i;
@@ -66,6 +67,7 @@ STATIC Crypto_AesJobContextType* Crypto_AesGetFreeContext(void)
 /**
  * @brief 通过jobId查找AES作业上下文
  */
+/** @req SWS_Crypto_00012 */
 STATIC Crypto_AesJobContextType* Crypto_AesFindContext(uint32 jobId)
 {
     uint32 i;
@@ -80,6 +82,7 @@ STATIC Crypto_AesJobContextType* Crypto_AesFindContext(uint32 jobId)
 /**
  * @brief 将AUTOSAR算法模式转换为AES模式
  */
+/** @req SWS_Crypto_00013 */
 STATIC Aes_ModeType Crypto_AesConvertMode(Crypto_AlgorithmModeType mode)
 {
     switch (mode) {
@@ -105,6 +108,7 @@ STATIC Aes_ModeType Crypto_AesConvertMode(Crypto_AlgorithmModeType mode)
 /**
  * @brief 获取密钥元素
  */
+/** @req SWS_Crypto_00009 */
 STATIC Std_ReturnType Crypto_AesGetKeyElement(Crypto_KeyIdType keyId,
                                                uint8* keyBuffer,
                                                uint32* keyLength)
@@ -115,6 +119,7 @@ STATIC Std_ReturnType Crypto_AesGetKeyElement(Crypto_KeyIdType keyId,
 /**
  * @brief 获取IV元素
  */
+/** @req SWS_Crypto_00010 */
 STATIC Std_ReturnType Crypto_AesGetIvElement(Crypto_KeyIdType keyId,
                                               uint8* ivBuffer,
                                               uint32* ivLength)
@@ -129,6 +134,7 @@ STATIC Std_ReturnType Crypto_AesGetIvElement(Crypto_KeyIdType keyId,
 /**
  * @brief 初始化AES模块
  */
+/** @req SWS_Crypto_00001 */
 void Crypto_AesInit(void)
 {
     uint32 i;
@@ -141,6 +147,7 @@ void Crypto_AesInit(void)
 /**
  * @brief 反初始化AES模块
  */
+/** @req SWS_Crypto_00002 */
 void Crypto_AesDeInit(void)
 {
     uint32 i;
@@ -156,6 +163,7 @@ void Crypto_AesDeInit(void)
 /**
  * @brief 检查是否支持指定的AES模式
  */
+/** @req SWS_Crypto_00003 */
 boolean Crypto_AesIsModeSupported(Crypto_AlgorithmModeType mode)
 {
     switch (mode) {
@@ -175,6 +183,7 @@ boolean Crypto_AesIsModeSupported(Crypto_AlgorithmModeType mode)
 /**
  * @brief 处理AES加密作业
  */
+/** @req SWS_Crypto_00004 */
 Std_ReturnType Crypto_AesProcessEncrypt(Crypto_JobType* job)
 {
     Crypto_AesJobContextType* ctx;
@@ -367,6 +376,7 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
 /**
  * @brief 处理AES解密作业
  */
+/** @req SWS_Crypto_00005 */
 Std_ReturnType Crypto_AesProcessDecrypt(Crypto_JobType* job)
 {
     Crypto_AesJobContextType* ctx;
@@ -567,6 +577,7 @@ result = Aes_CtrEncryptUpdate(&ctx->aesCtx, (const uint8*)io->inputPtr,
 /**
  * @brief 启动AES流式操作
  */
+/** @req SWS_Crypto_00006 */
 Std_ReturnType Crypto_AesStreamStart(Crypto_JobType* job)
 {
     Crypto_AesJobContextType* ctx;
@@ -632,6 +643,7 @@ Std_ReturnType Crypto_AesStreamStart(Crypto_JobType* job)
 /**
  * @brief 更新AES流式操作
  */
+/** @req SWS_Crypto_00007 */
 Std_ReturnType Crypto_AesStreamUpdate(Crypto_JobType* job)
 {
     Crypto_AesJobContextType* ctx;
@@ -679,6 +691,7 @@ Std_ReturnType Crypto_AesStreamUpdate(Crypto_JobType* job)
 /**
  * @brief 完成AES流式操作
  */
+/** @req SWS_Crypto_00008 */
 Std_ReturnType Crypto_AesStreamFinish(Crypto_JobType* job)
 {
     Crypto_AesJobContextType* ctx;

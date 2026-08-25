@@ -45,13 +45,21 @@ typedef struct {
     const SchM_ScheduleTableType* ScheduleTables;
 } SchM_ConfigType;
 
+/** @req SWS_SchM_00001 */
 void SchM_Init(const SchM_ConfigType* ConfigPtr);
+/** @req SWS_SchM_00002 */
 void SchM_DeInit(void);
+/** @req SWS_SchM_00005 */
 Std_ReturnType SchM_Start(void);
+/** @req SWS_SchM_00006 */
 Std_ReturnType SchM_Stop(void);
+/** @req SWS_SchM_00007 */
 Std_ReturnType SchM_SetScheduleTable(uint8 ScheduleId);
+/** @req SWS_SchM_00008 */
 uint8 SchM_GetScheduleTable(void);
+/** @req SWS_SchM_00004 */
 void SchM_MainFunction(void);
+/** @req SWS_SchM_00003 */
 void SchM_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* SCHM_H */

@@ -73,6 +73,7 @@ static void Xcp_SetResponseByte(uint8 idx, uint8 val);
  * @brief XCP module initialization
  * @param config Pointer to configuration structure (NULL_PTR for link-time config)
  */
+/** @req SWS_Xcp_00001 */
 void Xcp_Init(const void *config)
 {
     (void)config;
@@ -105,6 +106,7 @@ void Xcp_Init(const void *config)
 /**
  * @brief XCP module deinitialization
  */
+/** @req SWS_Xcp_00002 */
 void Xcp_DeInit(void)
 {
     /* Stop all DAQ lists */
@@ -123,6 +125,7 @@ void Xcp_DeInit(void)
  * @brief Cyclic XCP main function
  * @details Processes DAQ and handles timeouts
  */
+/** @req SWS_Xcp_00003 */
 void Xcp_MainFunction(void)
 {
     /* Process DAQ if connected */
@@ -140,6 +143,7 @@ void Xcp_MainFunction(void)
  * @param data Received data pointer
  * @param length Data length
  */
+/** @req SWS_Xcp_00004 */
 void Xcp_RxIndication(const uint8 *data, uint16 length)
 {
     if ((data == NULL_PTR) || (length == 0U ) || (length > XCP_CTO_SIZE)) {
@@ -155,6 +159,7 @@ void Xcp_RxIndication(const uint8 *data, uint16 length)
  * @param cmd Command data
  * @param len Command length
  */
+/** @req SWS_Xcp_00005 */
 void Xcp_ProcessCommand(const uint8 *cmd, uint8 len)
 {
     uint8 pid;
@@ -257,6 +262,7 @@ void Xcp_ProcessCommand(const uint8 *cmd, uint8 len)
  * @brief CONNECT command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00006 */
 void Xcp_CmdConnect(const uint8 *cmd)
 {
     uint8 mode;
@@ -286,6 +292,7 @@ void Xcp_CmdConnect(const uint8 *cmd)
  * @brief DISCONNECT command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00007 */
 void Xcp_CmdDisconnect(const uint8 *cmd)
 {
     (void)cmd;
@@ -307,6 +314,7 @@ void Xcp_CmdDisconnect(const uint8 *cmd)
  * @brief GET_STATUS command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00008 */
 void Xcp_CmdGetStatus(const uint8 *cmd)
 {
     (void)cmd;
@@ -332,6 +340,7 @@ void Xcp_CmdGetStatus(const uint8 *cmd)
  * @brief SYNCH command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00009 */
 void Xcp_CmdSynch(const uint8 *cmd)
 {
     (void)cmd;
@@ -342,6 +351,7 @@ void Xcp_CmdSynch(const uint8 *cmd)
  * @brief SET_MTA command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00010 */
 void Xcp_CmdSetMta(const uint8 *cmd)
 {
     Xcp_Mta.address = ((uint32)cmd[4] << 24) | 
@@ -359,6 +369,7 @@ void Xcp_CmdSetMta(const uint8 *cmd)
  * @brief UPLOAD command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00011 */
 void Xcp_CmdUpload(const uint8 *cmd)
 {
     uint8 count = cmd[1];
@@ -384,6 +395,7 @@ void Xcp_CmdUpload(const uint8 *cmd)
  * @brief SHORT_UPLOAD command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00012 */
 void Xcp_CmdShortUpload(const uint8 *cmd)
 {
     uint8 count = cmd[1] & 0x07U;
@@ -415,6 +427,7 @@ void Xcp_CmdShortUpload(const uint8 *cmd)
  * @brief DOWNLOAD command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00013 */
 void Xcp_CmdDownload(const uint8 *cmd)
 {
     uint8 count = cmd[1];
@@ -446,6 +459,7 @@ void Xcp_CmdDownload(const uint8 *cmd)
  * @brief SET_CAL_PAGE command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00014 */
 void Xcp_CmdSetCalPage(const uint8 *cmd)
 {
     uint8 mode = cmd[1];
@@ -475,6 +489,7 @@ void Xcp_CmdSetCalPage(const uint8 *cmd)
  * @brief GET_CAL_PAGE command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00015 */
 void Xcp_CmdGetCalPage(const uint8 *cmd)
 {
     uint8 mode = cmd[1];
@@ -494,6 +509,7 @@ void Xcp_CmdGetCalPage(const uint8 *cmd)
  * @brief COPY_CAL_PAGE command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00016 */
 void Xcp_CmdCopyCalPage(const uint8 *cmd)
 {
     uint8 srcSeg = cmd[1];
@@ -521,6 +537,7 @@ void Xcp_CmdCopyCalPage(const uint8 *cmd)
  * @brief FREE_DAQ command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00017 */
 void Xcp_CmdFreeDaq(const uint8 *cmd)
 {
     (void)cmd;
@@ -544,6 +561,7 @@ void Xcp_CmdFreeDaq(const uint8 *cmd)
  * @brief ALLOC_DAQ command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00018 */
 void Xcp_CmdAllocDaq(const uint8 *cmd)
 {
     uint16 count = ((uint16)cmd[2] << 8) | cmd[1];
@@ -567,6 +585,7 @@ void Xcp_CmdAllocDaq(const uint8 *cmd)
  * @brief ALLOC_ODT command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00019 */
 void Xcp_CmdAllocOdt(const uint8 *cmd)
 {
     uint8 daqList = cmd[1];
@@ -589,6 +608,7 @@ void Xcp_CmdAllocOdt(const uint8 *cmd)
  * @brief ALLOC_ODT_ENTRY command handler
  * @param cmd Command data
  */
+/** @req SWS_Xcp_00020 */
 void Xcp_CmdAllocOdtEntry(const uint8 *cmd)
 {
     uint8 daqList = cmd[1];

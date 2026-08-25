@@ -66,14 +66,23 @@ typedef struct {
     uint16 SrpEtherType;
 } Srp_ConfigType;
 
+/** @req SWS_Srp_00001 */
 void Srp_Init(const void* ConfigPtr);
+/** @req SWS_Srp_00002 */
 void Srp_DeInit(void);
+/** @req SWS_Srp_00005 */
 Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo);
+/** @req SWS_Srp_00006 */
 Std_ReturnType Srp_RegisterListener(const Srp_StreamIdType StreamId);
+/** @req SWS_Srp_00007 */
 Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId);
+/** @req SWS_Srp_00008 */
 Std_ReturnType Srp_GetStreamStatus(const Srp_StreamIdType StreamId, Srp_ReservationStateType* Status);
+/** @req SWS_Srp_00009 */
 void Srp_RxIndication(const uint8* DataPtr, uint16 Length);
+/** @req SWS_Srp_00004 */
 void Srp_MainFunction(void);
+/** @req SWS_Srp_00003 */
 void Srp_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* SRP_H */

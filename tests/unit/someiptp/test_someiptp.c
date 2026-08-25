@@ -10,6 +10,7 @@
 #include "SomeIpTp.h"
 
 /* Test: SomeIpTp_Init */
+/** @req SWS_SomeIpTp_00001 */
 static void test_SomeIpTp_Init(void **state)
 {
     (void)state;
@@ -20,6 +21,7 @@ static void test_SomeIpTp_Init(void **state)
 }
 
 /* Test: SomeIpTp_Transmit */
+/** @req SWS_SomeIpTp_00005 */
 static void test_SomeIpTp_Transmit(void **state)
 {
     (void)state;
@@ -32,6 +34,7 @@ static void test_SomeIpTp_Transmit(void **state)
 }
 
 /* Test: SomeIpTp_RxIndication */
+/** @req SWS_SomeIpTp_00007 */
 static void test_SomeIpTp_RxIndication(void **state)
 {
     (void)state;
@@ -44,6 +47,7 @@ static void test_SomeIpTp_RxIndication(void **state)
 }
 
 /* Test: SomeIpTp_TxConfirmation */
+/** @req SWS_SomeIpTp_00008 */
 static void test_SomeIpTp_TxConfirmation(void **state)
 {
     (void)state;

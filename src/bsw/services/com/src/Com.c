@@ -114,13 +114,21 @@ STATIC boolean Com_DMEnabled[COM_NUM_OF_IPDUS];
 /*==================================================================================================
 *                                  LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_Com_00101 */
 STATIC void Com_PackSignal(const Com_SignalConfigType* SignalPtr, const void* SignalDataPtr, uint8* IPduDataPtr);
+/** @req SWS_Com_00102 */
 STATIC void Com_UnpackSignal(const Com_SignalConfigType* SignalPtr, const uint8* IPduDataPtr, void* SignalDataPtr);
+/** @req SWS_Com_00103 */
 STATIC boolean Com_ApplyFilter(const Com_SignalConfigType* SignalPtr, uint32 NewValue);
+/** @req SWS_Com_00104 */
 STATIC uint32 Com_GetSignalValueAsUint32(const Com_SignalConfigType* SignalPtr, const void* SignalDataPtr);
+/** @req SWS_Com_00105 */
 STATIC void Com_SetSignalValueFromUint32(const Com_SignalConfigType* SignalPtr, void* SignalDataPtr, uint32 Value);
+/** @req SWS_Com_00106 */
 STATIC Std_ReturnType Com_TransmitIPdu(PduIdType PduId);
+/** @req SWS_Com_00107 */
 STATIC const Com_SignalConfigType* Com_GetSignalConfig(Com_SignalIdType SignalId);
+/** @req SWS_Com_00108 */
 STATIC const Com_IPduConfigType* Com_GetIPduConfig(PduIdType PduId);
 
 /*==================================================================================================
@@ -132,6 +140,7 @@ STATIC const Com_IPduConfigType* Com_GetIPduConfig(PduIdType PduId);
 /**
  * @brief   Pack signal data into IPDU buffer
  */
+/** @req SWS_Com_00101 */
 STATIC void Com_PackSignal(const Com_SignalConfigType* SignalPtr, const void* SignalDataPtr, uint8* IPduDataPtr)
 {
     uint32 value;
@@ -193,6 +202,7 @@ STATIC void Com_PackSignal(const Com_SignalConfigType* SignalPtr, const void* Si
 /**
  * @brief   Unpack signal data from IPDU buffer
  */
+/** @req SWS_Com_00102 */
 STATIC void Com_UnpackSignal(const Com_SignalConfigType* SignalPtr, const uint8* IPduDataPtr, void* SignalDataPtr)
 {
     uint32 value = 0U;
@@ -241,6 +251,7 @@ STATIC void Com_UnpackSignal(const Com_SignalConfigType* SignalPtr, const uint8*
 /**
  * @brief   Apply filter algorithm to signal value
  */
+/** @req SWS_Com_00103 */
 STATIC boolean Com_ApplyFilter(const Com_SignalConfigType* SignalPtr, uint32 NewValue)
 {
     boolean result = TRUE;
@@ -282,6 +293,7 @@ STATIC boolean Com_ApplyFilter(const Com_SignalConfigType* SignalPtr, uint32 New
 /**
  * @brief   Convert signal data to uint32 for processing
  */
+/** @req SWS_Com_00104 */
 STATIC uint32 Com_GetSignalValueAsUint32(const Com_SignalConfigType* SignalPtr, const void* SignalDataPtr)
 {
     uint32 value = 0U;
@@ -309,6 +321,7 @@ STATIC uint32 Com_GetSignalValueAsUint32(const Com_SignalConfigType* SignalPtr, 
 /**
  * @brief   Convert uint32 value to signal data
  */
+/** @req SWS_Com_00105 */
 STATIC void Com_SetSignalValueFromUint32(const Com_SignalConfigType* SignalPtr, void* SignalDataPtr, uint32 Value)
 {
     uint8* dataPtr = (uint8*)SignalDataPtr;
@@ -333,6 +346,7 @@ STATIC void Com_SetSignalValueFromUint32(const Com_SignalConfigType* SignalPtr, 
 /**
  * @brief   Transmit IPDU via PduR
  */
+/** @req SWS_Com_00106 */
 STATIC Std_ReturnType Com_TransmitIPdu(PduIdType PduId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -361,6 +375,7 @@ STATIC Std_ReturnType Com_TransmitIPdu(PduIdType PduId)
 /**
  * @brief   Get signal configuration by ID
  */
+/** @req SWS_Com_00107 */
 STATIC const Com_SignalConfigType* Com_GetSignalConfig(Com_SignalIdType SignalId)
 {
     const Com_SignalConfigType* result = NULL_PTR;
@@ -376,6 +391,7 @@ STATIC const Com_SignalConfigType* Com_GetSignalConfig(Com_SignalIdType SignalId
 /**
  * @brief   Get IPDU configuration by PduId
  */
+/** @req SWS_Com_00108 */
 STATIC const Com_IPduConfigType* Com_GetIPduConfig(PduIdType PduId)
 {
     const Com_IPduConfigType* result = NULL_PTR;
@@ -403,6 +419,7 @@ STATIC const Com_IPduConfigType* Com_GetIPduConfig(PduIdType PduId)
 /**
  * @brief   Initializes the COM module
  */
+/** @req SWS_Com_00001 */
 void Com_Init(const Com_ConfigType* config)
 {
     uint8 i;
@@ -456,6 +473,7 @@ void Com_Init(const Com_ConfigType* config)
 /**
  * @brief   Deinitializes the COM module
  */
+/** @req SWS_Com_00002 */
 void Com_DeInit(void)
 {
 #if (COM_DEV_ERROR_DETECT == STD_ON)
@@ -476,6 +494,7 @@ void Com_DeInit(void)
 /**
  * @brief   Send signal
  */
+/** @req SWS_Com_00003 */
 uint8 Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataPtr)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -549,6 +568,7 @@ uint8 Com_SendSignal(Com_SignalIdType SignalId, const void* SignalDataPtr)
 /**
  * @brief   Receive signal
  */
+/** @req SWS_Com_00004 */
 uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -593,6 +613,7 @@ uint8 Com_ReceiveSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 /**
  * @brief   Send signal group
  */
+/** @req SWS_Com_00005 */
 uint8 Com_SendSignalGroup(Com_SignalGroupIdType SignalGroupId)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -629,6 +650,7 @@ uint8 Com_SendSignalGroup(Com_SignalGroupIdType SignalGroupId)
 /**
  * @brief   Receive signal group
  */
+/** @req SWS_Com_00006 */
 uint8 Com_ReceiveSignalGroup(Com_SignalGroupIdType SignalGroupId)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -658,6 +680,7 @@ uint8 Com_ReceiveSignalGroup(Com_SignalGroupIdType SignalGroupId)
 /**
  * @brief   Update shadow signal
  */
+/** @req SWS_Com_00007 */
 uint8 Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* SignalDataPtr)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -692,6 +715,7 @@ uint8 Com_UpdateShadowSignal(Com_SignalIdType SignalId, const void* SignalDataPt
 /**
  * @brief   Receive shadow signal
  */
+/** @req SWS_Com_00008 */
 uint8 Com_ReceiveShadowSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -726,6 +750,7 @@ uint8 Com_ReceiveShadowSignal(Com_SignalIdType SignalId, void* SignalDataPtr)
 /**
  * @brief   Trigger transmit callback from PduR
  */
+/** @req SWS_Com_00009 */
 Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -764,6 +789,7 @@ Std_ReturnType Com_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 /**
  * @brief   Trigger IPDU send
  */
+/** @req SWS_Com_00010 */
 Std_ReturnType Com_TriggerIPDUSend(PduIdType PduId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -790,6 +816,7 @@ Std_ReturnType Com_TriggerIPDUSend(PduIdType PduId)
 /**
  * @brief   TxConfirmation callback from PduR
  */
+/** @req SWS_Com_00011 */
 void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
 #if (COM_DEV_ERROR_DETECT == STD_ON)
@@ -829,6 +856,7 @@ void Com_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 /**
  * @brief   RxIndication callback from PduR
  */
+/** @req SWS_Com_00012 */
 void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
 #if (COM_DEV_ERROR_DETECT == STD_ON)
@@ -864,6 +892,7 @@ void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 /**
  * @brief   Main function for reception processing
  */
+/** @req SWS_Com_00013 */
 void Com_MainFunctionRx(void)
 {
     uint8 i;
@@ -896,6 +925,7 @@ void Com_MainFunctionRx(void)
 /**
  * @brief   Main function for transmission processing
  */
+/** @req SWS_Com_00014 */
 void Com_MainFunctionTx(void)
 {
     uint8 i;
@@ -944,6 +974,7 @@ void Com_MainFunctionTx(void)
 /**
  * @brief   Main function for signal routing
  */
+/** @req SWS_Com_00015 */
 void Com_MainFunctionRouteSignals(void)
 {
 #if (COM_GATEWAY_SUPPORT == STD_ON)
@@ -963,6 +994,7 @@ void Com_MainFunctionRouteSignals(void)
 /**
  * @brief   Get COM module status
  */
+/** @req SWS_Com_00016 */
 Com_StatusType Com_GetStatus(void)
 {
     return (Com_InternalState.State == COM_STATE_INIT) ? COM_INIT : COM_UNINIT;
@@ -971,6 +1003,7 @@ Com_StatusType Com_GetStatus(void)
 /**
  * @brief   Get version information
  */
+/** @req SWS_Com_00017 */
 void Com_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (COM_DEV_ERROR_DETECT == STD_ON)
@@ -992,6 +1025,7 @@ void Com_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 
 /* IPDU Group Control functions */
+/** @req SWS_Com_00018 */
 void Com_ClearIpduGroupVector(Com_IpduGroupVector ipduGroupVector)
 {
     uint8 i;
@@ -1001,6 +1035,7 @@ void Com_ClearIpduGroupVector(Com_IpduGroupVector ipduGroupVector)
     }
 }
 
+/** @req SWS_Com_00019 */
 void Com_SetIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId)
 {
     if (ipduGroupId < COM_NUM_OF_IPDU_GROUPS)
@@ -1009,6 +1044,7 @@ void Com_SetIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType i
     }
 }
 
+/** @req SWS_Com_00020 */
 void Com_ClearIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType ipduGroupId)
 {
     if (ipduGroupId < COM_NUM_OF_IPDU_GROUPS)
@@ -1017,6 +1053,7 @@ void Com_ClearIpduGroup(Com_IpduGroupVector ipduGroupVector, Com_IpduGroupIdType
     }
 }
 
+/** @req SWS_Com_00021 */
 void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
 {
     uint8 i;
@@ -1027,6 +1064,7 @@ void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
     (void)ipduGroupVector;
 }
 
+/** @req SWS_Com_00022 */
 void Com_ReceptionDMControl(Com_IpduGroupVector ipduGroupVector, boolean Enable)
 {
     uint8 i;
@@ -1046,17 +1084,20 @@ void Com_ReceptionDMControl(Com_IpduGroupVector ipduGroupVector, boolean Enable)
     (void)ipduGroupVector;
 }
 
+/** @req SWS_Com_00023 */
 void Com_EnableReceptionDM(Com_IpduGroupVector ipduGroupVector)
 {
     Com_ReceptionDMControl(ipduGroupVector, TRUE);
 }
 
+/** @req SWS_Com_00024 */
 void Com_DisableReceptionDM(Com_IpduGroupVector ipduGroupVector)
 {
     Com_ReceptionDMControl(ipduGroupVector, FALSE);
 }
 
 /* Stub functions for unimplemented features */
+/** @req SWS_Com_00025 */
 uint8 Com_InvalidateSignal(Com_SignalIdType SignalId)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -1102,6 +1143,7 @@ uint8 Com_InvalidateSignal(Com_SignalIdType SignalId)
     return result;
 }
 
+/** @req SWS_Com_00026 */
 uint8 Com_InvalidateSignalGroup(Com_SignalGroupIdType SignalGroupId)
 {
     uint8 result = COM_SERVICE_NOT_OK;
@@ -1135,6 +1177,7 @@ uint8 Com_InvalidateSignalGroup(Com_SignalGroupIdType SignalGroupId)
     return result;
 }
 
+/** @req SWS_Com_00027 */
 uint8 Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, uint16 Length)
 {
     (void)SignalId;
@@ -1143,6 +1186,7 @@ uint8 Com_SendDynSignal(Com_SignalIdType SignalId, const void* SignalDataPtr, ui
     return COM_SERVICE_NOT_OK;
 }
 
+/** @req SWS_Com_00028 */
 uint8 Com_ReceiveDynSignal(Com_SignalIdType SignalId, void* SignalDataPtr, uint16* Length)
 {
     (void)SignalId;
@@ -1151,12 +1195,14 @@ uint8 Com_ReceiveDynSignal(Com_SignalIdType SignalId, void* SignalDataPtr, uint1
     return COM_SERVICE_NOT_OK;
 }
 
+/** @req SWS_Com_00029 */
 void Com_SwitchIpduTxMode(PduIdType PduId, ComTxModeModeType Mode)
 {
     (void)PduId;
     (void)Mode;
 }
 
+/** @req SWS_Com_00030 */
 Std_ReturnType Com_TriggerIPDUSendWithMetaData(PduIdType PduId, const uint8* MetaData)
 {
     (void)PduId;
@@ -1164,12 +1210,14 @@ Std_ReturnType Com_TriggerIPDUSendWithMetaData(PduIdType PduId, const uint8* Met
     return E_NOT_OK;
 }
 
+/** @req SWS_Com_00031 */
 void Com_TpRxIndication(PduIdType id, Std_ReturnType result)
 {
     (void)id;
     (void)result;
 }
 
+/** @req SWS_Com_00032 */
 void Com_TpTxConfirmation(PduIdType id, Std_ReturnType result)
 {
     (void)id;

@@ -196,15 +196,33 @@ static Uart_ErrorNotificationType Uart_ErrorNotification[UART_CHANNEL_COUNT];
 /*============================================================================
  * 内部函数声明
  *===========================================================================*/
+/** @req SWS_Uart_00101 */
+/** @req SWS_Uart_00101 */
 static void Uart_HwInit(Uart_ChannelType Channel);
+/** @req SWS_Uart_00102 */
+/** @req SWS_Uart_00102 */
 static uint32 Uart_GetCurrentTime(void);
+/** @req SWS_Uart_00103 */
+/** @req SWS_Uart_00103 */
 static uint32 Uart_GetElapsedTime(uint32 StartTime);
+/** @req SWS_Uart_00104 */
+/** @req SWS_Uart_00104 */
 static void Uart_HwDeInit(Uart_ChannelType Channel);
+/** @req SWS_Uart_00105 */
+/** @req SWS_Uart_00105 */
 static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate);
+/** @req SWS_Uart_00106 */
+/** @req SWS_Uart_00106 */
 static void Uart_ProcessTxInterrupt(Uart_ChannelType Channel);
+/** @req SWS_Uart_00107 */
+/** @req SWS_Uart_00107 */
 static void Uart_ProcessRxInterrupt(Uart_ChannelType Channel);
+/** @req SWS_Uart_00108 */
+/** @req SWS_Uart_00108 */
 static void Uart_ProcessError(Uart_ChannelType Channel);
+/** @req SWS_Uart_00109 */
 static inline void Uart_WriteReg(Uart_ChannelType Channel, uint32 Offset, uint32 Value);
+/** @req SWS_Uart_00110 */
 static inline uint32 Uart_ReadReg(Uart_ChannelType Channel, uint32 Offset);
 
 /*============================================================================
@@ -215,6 +233,8 @@ static inline uint32 Uart_ReadReg(Uart_ChannelType Channel, uint32 Offset);
  * @brief UART驱动初始化
  * @param Config 驱动配置指针
  */
+/** @req SWS_Uart_00001 */
+/** @req SWS_Uart_00001 */
 void Uart_Init(const Uart_ConfigType* Config)
 {
     uint8 channel;
@@ -254,6 +274,8 @@ void Uart_Init(const Uart_ConfigType* Config)
 /**
  * @brief UART驱动反初始化
  */
+/** @req SWS_Uart_00002 */
+/** @req SWS_Uart_00002 */
 void Uart_DeInit(void)
 {
     uint8 channel;
@@ -276,6 +298,8 @@ void Uart_DeInit(void)
 /**
  * @brief 硬件初始化
  */
+/** @req SWS_Uart_00109 */
+/** @req SWS_Uart_00101 */
 static void Uart_HwInit(Uart_ChannelType Channel)
 {
     const Uart_ChannelConfigType* ChannelConfig = &Uart_ConfigPtr->ChannelConfig[Channel];
@@ -354,6 +378,8 @@ static void Uart_HwInit(Uart_ChannelType Channel)
 /**
  * @brief 硬件反初始化
  */
+/** @req SWS_Uart_00110 */
+/** @req SWS_Uart_00104 */
 static void Uart_HwDeInit(Uart_ChannelType Channel)
 {
     
@@ -365,6 +391,8 @@ static void Uart_HwDeInit(Uart_ChannelType Channel)
 /**
  * @brief 内部波特率设置
  */
+/** @req SWS_Uart_00111 */
+/** @req SWS_Uart_00105 */
 static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate)
 {
     uint32 refClock = UART_REF_CLOCK_HZ;
@@ -393,6 +421,8 @@ static void Uart_SetBaudRateInternal(Uart_ChannelType Channel, uint32 BaudRate)
  * @param Length 数据长度
  * @return E_OK成功，E_NOT_OK失败
  */
+/** @req SWS_Uart_00003 */
+/** @req SWS_Uart_00003 */
 Std_ReturnType Uart_Send(
     Uart_ChannelType Channel,
     const uint8* Data,
@@ -487,6 +517,8 @@ Std_ReturnType Uart_Send(
 /**
  * @brief DMA方式发送数据
  */
+/** @req SWS_Uart_00004 */
+/** @req SWS_Uart_00004 */
 Std_ReturnType Uart_SendDMA(
     Uart_ChannelType Channel,
     const uint8* Data,
@@ -550,6 +582,8 @@ Std_ReturnType Uart_SendDMA(
 /**
  * @brief 中断方式发送数据
  */
+/** @req SWS_Uart_00005 */
+/** @req SWS_Uart_00005 */
 Std_ReturnType Uart_SendInterrupt(
     Uart_ChannelType Channel,
     const uint8* Data,
@@ -592,6 +626,8 @@ Std_ReturnType Uart_SendInterrupt(
 /**
  * @brief 轮询方式接收数据
  */
+/** @req SWS_Uart_00006 */
+/** @req SWS_Uart_00006 */
 Std_ReturnType Uart_Receive(
     Uart_ChannelType Channel,
     uint8* Buffer,
@@ -677,6 +713,8 @@ Std_ReturnType Uart_Receive(
 /**
  * @brief DMA方式接收数据
  */
+/** @req SWS_Uart_00007 */
+/** @req SWS_Uart_00007 */
 Std_ReturnType Uart_ReceiveDMA(
     Uart_ChannelType Channel,
     uint8* Buffer,
@@ -740,6 +778,8 @@ Std_ReturnType Uart_ReceiveDMA(
 /**
  * @brief 中断方式接收数据
  */
+/** @req SWS_Uart_00008 */
+/** @req SWS_Uart_00008 */
 Std_ReturnType Uart_ReceiveInterrupt(
     Uart_ChannelType Channel,
     uint8* Buffer,
@@ -784,6 +824,8 @@ Std_ReturnType Uart_ReceiveInterrupt(
 /**
  * @brief 获取通道状态
  */
+/** @req SWS_Uart_00009 */
+/** @req SWS_Uart_00009 */
 Uart_StatusType Uart_GetStatus(Uart_ChannelType Channel)
 {
     if (Channel >= UART_CHANNEL_COUNT) {
@@ -800,6 +842,8 @@ Uart_StatusType Uart_GetStatus(Uart_ChannelType Channel)
 /**
  * @brief 获取发送结果
  */
+/** @req SWS_Uart_00010 */
+/** @req SWS_Uart_00010 */
 Uart_ResultType Uart_GetTxResult(Uart_ChannelType Channel)
 {
     UART_VALIDATE_CHANNEL(Channel, UART_SERVICE_ID_GETSTATUS);
@@ -810,6 +854,8 @@ Uart_ResultType Uart_GetTxResult(Uart_ChannelType Channel)
 /**
  * @brief 获取接收结果
  */
+/** @req SWS_Uart_00011 */
+/** @req SWS_Uart_00011 */
 Uart_ResultType Uart_GetRxResult(Uart_ChannelType Channel)
 {
     UART_VALIDATE_CHANNEL(Channel, UART_SERVICE_ID_GETSTATUS);
@@ -820,6 +866,8 @@ Uart_ResultType Uart_GetRxResult(Uart_ChannelType Channel)
 /**
  * @brief 设置波特率
  */
+/** @req SWS_Uart_00012 */
+/** @req SWS_Uart_00012 */
 Std_ReturnType Uart_SetBaudRate(Uart_ChannelType Channel, uint32 BaudRate)
 {
     UART_VALIDATE_CHANNEL(Channel, UART_SERVICE_ID_SETBAUDRATE);
@@ -845,6 +893,8 @@ Std_ReturnType Uart_SetBaudRate(Uart_ChannelType Channel, uint32 BaudRate)
 /**
  * @brief 使能中断
  */
+/** @req SWS_Uart_00013 */
+/** @req SWS_Uart_00013 */
 void Uart_EnableInterrupt(Uart_ChannelType Channel)
 {
     if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
@@ -857,6 +907,8 @@ void Uart_EnableInterrupt(Uart_ChannelType Channel)
 /**
  * @brief 禁用中断
  */
+/** @req SWS_Uart_00014 */
+/** @req SWS_Uart_00014 */
 void Uart_DisableInterrupt(Uart_ChannelType Channel)
 {
     if (Channel >= UART_CHANNEL_COUNT) {
@@ -869,6 +921,8 @@ void Uart_DisableInterrupt(Uart_ChannelType Channel)
 /**
  * @brief 清除FIFO
  */
+/** @req SWS_Uart_00015 */
+/** @req SWS_Uart_00015 */
 void Uart_ClearFIFO(Uart_ChannelType Channel)
 {
     if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
@@ -885,6 +939,8 @@ void Uart_ClearFIFO(Uart_ChannelType Channel)
 /**
  * @brief 中断处理函数
  */
+/** @req SWS_Uart_00016 */
+/** @req SWS_Uart_00016 */
 void Uart_IsrHandler(Uart_ChannelType Channel)
 {
     if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
@@ -913,6 +969,8 @@ void Uart_IsrHandler(Uart_ChannelType Channel)
 /**
  * @brief 主函数
  */
+/** @req SWS_Uart_00017 */
+/** @req SWS_Uart_00017 */
 void Uart_MainFunction(void)
 {
     uint8 channel;
@@ -931,6 +989,8 @@ void Uart_MainFunction(void)
                 Uart_ConfigPtr->ChannelConfig[channel].TxTimeout) {
                 state->TxBuffer.Result = UART_RESULT_TIMEOUT;
                 state->TxStatus = UART_TX_ERROR;
+/** @req SWS_Uart_00018 */
+                /** @req SWS_Uart_00018 */
                 Uart_Abort(channel);
             }
         }
@@ -941,6 +1001,8 @@ void Uart_MainFunction(void)
                 Uart_ConfigPtr->ChannelConfig[channel].RxTimeout) {
                 state->RxBuffer.Result = UART_RESULT_TIMEOUT;
                 state->RxStatus = UART_RX_ERROR;
+/** @req SWS_Uart_00018 */
+                /** @req SWS_Uart_00018 */
                 Uart_Abort(channel);
             }
         }
@@ -950,6 +1012,8 @@ void Uart_MainFunction(void)
 /**
  * @brief 传输中止
  */
+/** @req SWS_Uart_00018 */
+/** @req SWS_Uart_00018 */
 void Uart_Abort(Uart_ChannelType Channel)
 {
     if ((Channel >= UART_CHANNEL_COUNT) || (Uart_Initialized == FALSE)) {
@@ -974,6 +1038,8 @@ void Uart_Abort(Uart_ChannelType Channel)
 }
 
 #if (UART_VERSION_INFO_API == STD_ON)
+/** @req SWS_Uart_00019 */
+/** @req SWS_Uart_00019 */
 void Uart_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR) {
@@ -993,27 +1059,35 @@ void Uart_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 #endif
 
 /* 辅助函数 */
+/** @req SWS_Uart_00109 */
 static inline void Uart_WriteReg(Uart_ChannelType Channel, uint32 Offset, uint32 Value)
 {
     REG_WRITE32((uintptr_t)Uart_BaseAddr[Channel] + (uintptr_t)Offset, Value);
 }
 
+/** @req SWS_Uart_00110 */
 static inline uint32 Uart_ReadReg(Uart_ChannelType Channel, uint32 Offset)
 {
     return REG_READ32((uintptr_t)Uart_BaseAddr[Channel] + (uintptr_t)Offset);
 }
 
+/** @req SWS_Uart_00112 */
+/** @req SWS_Uart_00102 */
 static uint32 Uart_GetCurrentTime(void)
 {
     return Gpt_GetTimeElapsed(0);
 }
 
+/** @req SWS_Uart_00113 */
+/** @req SWS_Uart_00103 */
 static uint32 Uart_GetElapsedTime(uint32 StartTime)
 {
     uint32 current = Uart_GetCurrentTime();
     return (current >= StartTime) ? (current - StartTime) : ((0xFFFFFFFF - StartTime) + current);
 }
 
+/** @req SWS_Uart_00114 */
+/** @req SWS_Uart_00106 */
 static void Uart_ProcessTxInterrupt(Uart_ChannelType Channel)
 {
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
@@ -1033,6 +1107,8 @@ static void Uart_ProcessTxInterrupt(Uart_ChannelType Channel)
     state->TxBuffer.Transferred++;
 }
 
+/** @req SWS_Uart_00115 */
+/** @req SWS_Uart_00107 */
 static void Uart_ProcessRxInterrupt(Uart_ChannelType Channel)
 {
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];
@@ -1052,6 +1128,8 @@ static void Uart_ProcessRxInterrupt(Uart_ChannelType Channel)
     state->RxBuffer.Transferred++;
 }
 
+/** @req SWS_Uart_00116 */
+/** @req SWS_Uart_00108 */
 static void Uart_ProcessError(Uart_ChannelType Channel)
 {
     Uart_ChannelStateType* state = &Uart_ChannelState[Channel];

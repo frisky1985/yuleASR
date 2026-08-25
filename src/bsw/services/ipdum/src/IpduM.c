@@ -36,6 +36,7 @@ typedef struct {
 
 static IpduM_InternalType IpduM_State = { IPDUM_UNINIT, 0U, NULL_PTR };
 
+/** @req SWS_IpduM_00001 */
 void IpduM_Init(const IpduM_ConfigType* ConfigPtr)
 {
 #if (IPDUM_DEV_ERROR_DETECT == STD_ON)
@@ -48,12 +49,14 @@ void IpduM_Init(const IpduM_ConfigType* ConfigPtr)
     IpduM_State.state = IPDUM_IDLE;
 }
 
+/** @req SWS_IpduM_00002 */
 void IpduM_DeInit(void)
 {
     IpduM_State.state = IPDUM_UNINIT;
     IpduM_State.configPtr = NULL_PTR;
 }
 
+/** @req SWS_IpduM_00003 */
 Std_ReturnType IpduM_SetIpduMode(uint16 IpduId, IpduM_IpduModeType Mode)
 {
 #if (IPDUM_DEV_ERROR_DETECT == STD_ON)
@@ -82,6 +85,7 @@ Std_ReturnType IpduM_SetIpduMode(uint16 IpduId, IpduM_IpduModeType Mode)
     return E_OK;
 }
 
+/** @req SWS_IpduM_00004 */
 IpduM_IpduModeType IpduM_GetIpduMode(uint16 IpduId)
 {
 #if (IPDUM_DEV_ERROR_DETECT == STD_ON)
@@ -94,6 +98,7 @@ IpduM_IpduModeType IpduM_GetIpduMode(uint16 IpduId)
     return IPDUM_IPDU_MODE_ON;
 }
 
+/** @req SWS_IpduM_00005 */
 void IpduM_MainFunction(void)
 {
     if (IpduM_State.state == IPDUM_UNINIT) { return; }
@@ -109,6 +114,7 @@ void IpduM_MainFunction(void)
     }
 }
 
+/** @req SWS_IpduM_00006 */
 void IpduM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (IPDUM_DEV_ERROR_DETECT == STD_ON)

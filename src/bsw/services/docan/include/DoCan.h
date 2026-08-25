@@ -129,23 +129,27 @@ extern const DoCan_ConfigType DoCan_Config;
 #define DOCAN_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_DoCan_00001 */
 /**
  * @brief Initializes the DoCan module
  * @param ConfigPtr Pointer to configuration structure
  */
 void DoCan_Init(const DoCan_ConfigType* ConfigPtr);
 
+/** @req SWS_DoCan_00002 */
 /**
  * @brief Deinitializes the DoCan module
  */
 void DoCan_DeInit(void);
 
+/** @req SWS_DoCan_00003 */
 /**
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  */
 void DoCan_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/** @req SWS_DoCan_00005 */
 /**
  * @brief Transmits a diagnostic message via CanTp
  * @param TxPduId PDU to transmit
@@ -154,6 +158,7 @@ void DoCan_GetVersionInfo(Std_VersionInfoType* versioninfo);
  */
 Std_ReturnType DoCan_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_DoCan_00006 */
 /**
  * @brief Receive indication from CanTp
  * @param RxPduId Received PDU ID
@@ -161,6 +166,7 @@ Std_ReturnType DoCan_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
  */
 void DoCan_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_DoCan_00007 */
 /**
  * @brief Transmit confirmation from CanTp
  * @param TxPduId PDU that was transmitted
@@ -168,6 +174,7 @@ void DoCan_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  */
 void DoCan_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
+/** @req SWS_DoCan_00004 */
 /**
  * @brief Main function for periodic processing
  */

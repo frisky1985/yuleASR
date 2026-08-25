@@ -246,6 +246,7 @@ extern const CanTSyn_ConfigType CanTSyn_Config;
 #define CANTSYN_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_CanTSyn_00001 */
 /**
  * @brief Initializes the CanTSyn module
  * @param ConfigPtr Pointer to configuration structure
@@ -254,6 +255,7 @@ extern const CanTSyn_ConfigType CanTSyn_Config;
  */
 void CanTSyn_Init(const CanTSyn_ConfigType* ConfigPtr);
 
+/** @req SWS_CanTSyn_00002 */
 /**
  * @brief Deinitializes the CanTSyn module
  * @pre CanTSyn module must be initialized
@@ -268,9 +270,11 @@ void CanTSyn_DeInit(void);
  * @post Version information stored in versioninfo
  */
 #if (CANTSYN_VERSION_INFO_API == STD_ON)
+/** @req SWS_CanTSyn_00003 */
 void CanTSyn_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_CanTSyn_00005 */
 /**
  * @brief Sets the transmission mode for a time base
  * @param timeBaseId Time base ID
@@ -280,6 +284,7 @@ void CanTSyn_GetVersionInfo(Std_VersionInfoType* versioninfo);
  */
 Std_ReturnType CanTSyn_SetTransmissionMode(uint8 timeBaseId, uint8 txMode);
 
+/** @req SWS_CanTSyn_00006 */
 /**
  * @brief Gets the transmission mode for a time base
  * @param timeBaseId Time base ID
@@ -289,6 +294,7 @@ Std_ReturnType CanTSyn_SetTransmissionMode(uint8 timeBaseId, uint8 txMode);
  */
 Std_ReturnType CanTSyn_GetTransmissionMode(uint8 timeBaseId, uint8* txModePtr);
 
+/** @req SWS_CanTSyn_00007 */
 /**
  * @brief Checks if valid SYNC has been received for a time base
  * @param timeBaseId Time base ID
@@ -297,6 +303,7 @@ Std_ReturnType CanTSyn_GetTransmissionMode(uint8 timeBaseId, uint8* txModePtr);
  */
 boolean CanTSyn_GetSyncReceived(uint8 timeBaseId);
 
+/** @req SWS_CanTSyn_00008 */
 /**
  * @brief Gets current virtual time for a time base
  * @param timeBaseId Time base ID
@@ -307,6 +314,7 @@ boolean CanTSyn_GetSyncReceived(uint8 timeBaseId);
 Std_ReturnType CanTSyn_GetCurrentVirtualTime(uint8 timeBaseId, 
                                               StbM_VirtualLocalTimeType* virtualTimePtr);
 
+/** @req SWS_CanTSyn_00009 */
 /**
  * @brief Sets global time for a time base (called by application)
  * @param timeBaseId Time base ID
@@ -319,6 +327,7 @@ Std_ReturnType CanTSyn_SetGlobalTime(uint8 timeBaseId,
                                      const StbM_TimeStampType* timeStampPtr,
                                      const StbM_UserDataType* userDataPtr);
 
+/** @req SWS_CanTSyn_00010 */
 /**
  * @brief Sets rate correction for a time base
  * @param timeBaseId Time base ID
@@ -328,6 +337,7 @@ Std_ReturnType CanTSyn_SetGlobalTime(uint8 timeBaseId,
  */
 Std_ReturnType CanTSyn_SetRateCorrection(uint8 timeBaseId, sint32 rateCorrection);
 
+/** @req SWS_CanTSyn_00011 */
 /**
  * @brief Sets user data for a time base
  * @param timeBaseId Time base ID
@@ -337,6 +347,7 @@ Std_ReturnType CanTSyn_SetRateCorrection(uint8 timeBaseId, sint32 rateCorrection
  */
 Std_ReturnType CanTSyn_SetUserData(uint8 timeBaseId, const StbM_UserDataType* userDataPtr);
 
+/** @req SWS_CanTSyn_00012 */
 /**
  * @brief Gets user data for a time base
  * @param timeBaseId Time base ID
@@ -346,6 +357,7 @@ Std_ReturnType CanTSyn_SetUserData(uint8 timeBaseId, const StbM_UserDataType* us
  */
 Std_ReturnType CanTSyn_GetUserData(uint8 timeBaseId, StbM_UserDataType* userDataPtr);
 
+/** @req SWS_CanTSyn_00013 */
 /**
  * @brief Rx indication callback from CanIf
  * @param RxPduId Rx PDU ID
@@ -355,6 +367,7 @@ Std_ReturnType CanTSyn_GetUserData(uint8 timeBaseId, StbM_UserDataType* userData
  */
 void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_CanTSyn_00014 */
 /**
  * @brief Tx confirmation callback from CanIf
  * @param TxPduId Tx PDU ID
@@ -364,6 +377,7 @@ void CanTSyn_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  */
 void CanTSyn_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
+/** @req SWS_CanTSyn_00015 */
 /**
  * @brief Time Tx confirmation callback for SYNC messages
  * @param TxPduId Tx PDU ID
@@ -372,6 +386,7 @@ void CanTSyn_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
  */
 void CanTSyn_TimeTxConfirmationSYNC(PduIdType TxPduId, const StbM_TimeStampType* timeStampPtr);
 
+/** @req SWS_CanTSyn_00016 */
 /**
  * @brief Time Tx confirmation callback for FUP messages
  * @param TxPduId Tx PDU ID
@@ -380,6 +395,7 @@ void CanTSyn_TimeTxConfirmationSYNC(PduIdType TxPduId, const StbM_TimeStampType*
  */
 void CanTSyn_TimeTxConfirmationFUP(PduIdType TxPduId, const StbM_TimeStampType* timeStampPtr);
 
+/** @req SWS_CanTSyn_00017 */
 /**
  * @brief Time Tx confirmation callback for OCS messages
  * @param TxPduId Tx PDU ID
@@ -388,6 +404,7 @@ void CanTSyn_TimeTxConfirmationFUP(PduIdType TxPduId, const StbM_TimeStampType* 
  */
 void CanTSyn_TimeTxConfirmationOCS(PduIdType TxPduId, const StbM_TimeStampType* timeStampPtr);
 
+/** @req SWS_CanTSyn_00004 */
 /**
  * @brief Main function for periodic processing
  * @details Handles SYNC/FUP transmission timing and timeout detection

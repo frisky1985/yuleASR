@@ -52,6 +52,7 @@
 
  /**
   * @brief   Initializes the DEM module
+  * @req SWS_Dem_00001
   */
 void Dem_Init(const Dem_ConfigType* ConfigPtr)
 {
@@ -178,6 +179,7 @@ void Dem_Init(const Dem_ConfigType* ConfigPtr)
 
  /**
   * @brief   Deinitializes the DEM module
+  * @req SWS_Dem_00002
   */
 void Dem_DeInit(void)
 {
@@ -198,6 +200,7 @@ void Dem_DeInit(void)
 
  /**
   * @brief   Shuts down the DEM (alias for Dem_DeInit)
+  * @req SWS_Dem_00003
   */
 void Dem_Shutdown(void)
 {
@@ -208,6 +211,7 @@ void Dem_Shutdown(void)
   * @brief   Set event status
   * 
   * CRITICAL FIX: Now properly handles all debounce algorithms
+  * @req SWS_Dem_00004
   */
 Std_ReturnType Dem_SetEventStatus(Dem_EventIdType EventId, Dem_EventStatusType EventStatus)
 {
@@ -299,6 +303,7 @@ Std_ReturnType Dem_SetEventStatus(Dem_EventIdType EventId, Dem_EventStatusType E
 
  /**
   * @brief   Reset event status
+  * @req SWS_Dem_00005
   */
 Std_ReturnType Dem_ResetEventStatus(Dem_EventIdType EventId)
 {
@@ -335,6 +340,7 @@ Std_ReturnType Dem_ResetEventStatus(Dem_EventIdType EventId)
 
  /**
   * @brief   Get event status
+  * @req SWS_Dem_00006
   */
 Std_ReturnType Dem_GetEventStatus(Dem_EventIdType EventId, Dem_EventStatusType* EventStatus)
 {
@@ -371,6 +377,7 @@ Std_ReturnType Dem_GetEventStatus(Dem_EventIdType EventId, Dem_EventStatusType* 
 
  /**
   * @brief   Get event failed status
+  * @req SWS_Dem_00007
   */
 Std_ReturnType Dem_GetEventFailed(Dem_EventIdType EventId, boolean* EventFailed)
 {
@@ -408,6 +415,7 @@ Std_ReturnType Dem_GetEventFailed(Dem_EventIdType EventId, boolean* EventFailed)
 
  /**
   * @brief   Get event tested status
+  * @req SWS_Dem_00008
   */
 Std_ReturnType Dem_GetEventTested(Dem_EventIdType EventId, boolean* EventTested)
 {
@@ -444,6 +452,7 @@ Std_ReturnType Dem_GetEventTested(Dem_EventIdType EventId, boolean* EventTested)
 
  /**
   * @brief   Get fault detection counter
+  * @req SWS_Dem_00009
   */
 Std_ReturnType Dem_GetFaultDetectionCounter(Dem_EventIdType EventId, sint8* FaultDetectionCounter)
 {
@@ -480,6 +489,7 @@ Std_ReturnType Dem_GetFaultDetectionCounter(Dem_EventIdType EventId, sint8* Faul
 
  /**
   * @brief   Get status of DTC
+  * @req SWS_Dem_00010
   */
 Std_ReturnType Dem_GetStatusOfDTC(Dem_DtcType DTC,
                                   Dem_DTCOriginType DTCOrigin,
@@ -521,6 +531,7 @@ Std_ReturnType Dem_GetStatusOfDTC(Dem_DtcType DTC,
 
  /**
   * @brief   Get DTC status availability mask
+  * @req SWS_Dem_00011
   */
 Std_ReturnType Dem_GetDTCStatusAvailabilityMask(uint8* DTCStatusMask)
 {
@@ -544,6 +555,7 @@ Std_ReturnType Dem_GetDTCStatusAvailabilityMask(uint8* DTCStatusMask)
 
  /**
   * @brief   Get number of filtered DTCs
+  * @req SWS_Dem_00012
   */
 Std_ReturnType Dem_GetNumberOfFilteredDTC(uint16* NumberOfFilteredDTC)
 {
@@ -567,6 +579,7 @@ Std_ReturnType Dem_GetNumberOfFilteredDTC(uint16* NumberOfFilteredDTC)
 
  /**
   * @brief   Get next filtered DTC
+  * @req SWS_Dem_00013
   */
 Std_ReturnType Dem_GetNextFilteredDTC(Dem_DtcType* DTC, Dem_UdsStatusByteType* DTCStatus)
 {
@@ -605,6 +618,7 @@ Std_ReturnType Dem_GetNextFilteredDTC(Dem_DtcType* DTC, Dem_UdsStatusByteType* D
 
  /**
   * @brief   Clear DTC
+  * @req SWS_Dem_00014
   */
 Std_ReturnType Dem_ClearDTC(Dem_DtcType DTC,
                             Dem_DTCFormatType DTCFormat,
@@ -665,6 +679,7 @@ Std_ReturnType Dem_ClearDTC(Dem_DtcType DTC,
 
  /**
   * @brief   Select DTC
+  * @req SWS_Dem_00015
   */
 Std_ReturnType Dem_SelectDTC(Dem_DtcType DTC, Dem_DTCFormatType DTCFormat, Dem_DTCOriginType DTCOrigin)
 {
@@ -696,6 +711,7 @@ Std_ReturnType Dem_SelectDTC(Dem_DtcType DTC, Dem_DTCFormatType DTCFormat, Dem_D
 
  /**
   * @brief   Disable DTC setting
+  * @req SWS_Dem_00016
   */
 Std_ReturnType Dem_DisableDTCSetting(Dem_DtcType DTCGroup, uint8 DTCKind)
 {
@@ -713,6 +729,7 @@ Std_ReturnType Dem_DisableDTCSetting(Dem_DtcType DTCGroup, uint8 DTCKind)
 
  /**
   * @brief   Enable DTC setting
+  * @req SWS_Dem_00017
   */
 Std_ReturnType Dem_EnableDTCSetting(Dem_DtcType DTCGroup, uint8 DTCKind)
 {
@@ -730,6 +747,7 @@ Std_ReturnType Dem_EnableDTCSetting(Dem_DtcType DTCGroup, uint8 DTCKind)
 
  /**
   * @brief   Disable DTC record update
+  * @req SWS_Dem_00018
   */
 Std_ReturnType Dem_DisableDTCRecordUpdate(void)
 {
@@ -752,6 +770,7 @@ Std_ReturnType Dem_DisableDTCRecordUpdate(void)
 
  /**
   * @brief   Enable DTC record update
+  * @req SWS_Dem_00019
   */
 Std_ReturnType Dem_EnableDTCRecordUpdate(void)
 {
@@ -769,6 +788,7 @@ Std_ReturnType Dem_EnableDTCRecordUpdate(void)
 
  /**
   * @brief   Get indicator status
+  * @req SWS_Dem_00020
   */
 Std_ReturnType Dem_GetIndicatorStatus(uint8 IndicatorId, Dem_IndicatorStatusType* IndicatorStatus)
 {
@@ -811,6 +831,7 @@ Std_ReturnType Dem_GetIndicatorStatus(uint8 IndicatorId, Dem_IndicatorStatusType
 
  /**
   * @brief   Set indicator status
+  * @req SWS_Dem_00021
   */
 Std_ReturnType Dem_SetIndicatorStatus(uint8 IndicatorId, Dem_IndicatorStatusType IndicatorStatus)
 {
@@ -834,6 +855,7 @@ Std_ReturnType Dem_SetIndicatorStatus(uint8 IndicatorId, Dem_IndicatorStatusType
 
  /**
   * @brief   Get freeze frame data by DTC
+  * @req SWS_Dem_00022
   */
 Std_ReturnType Dem_GetFreezeFrameDataByDTC(Dem_DtcType DTC,
                                            Dem_DTCOriginType DTCOrigin,
@@ -876,6 +898,7 @@ Std_ReturnType Dem_GetFreezeFrameDataByDTC(Dem_DtcType DTC,
   * @brief   Get extended data record by DTC
   * 
   * CRITICAL FIX: Added extended data record support
+  * @req SWS_Dem_00023
   */
 Std_ReturnType Dem_GetExtendedDataRecordByDTC(Dem_DtcType DTC,
                                               Dem_DTCOriginType DTCOrigin,
@@ -916,6 +939,7 @@ Std_ReturnType Dem_GetExtendedDataRecordByDTC(Dem_DtcType DTC,
 
  /**
   * @brief   Get size of extended data record
+  * @req SWS_Dem_00024
   */
 Std_ReturnType Dem_GetSizeOfExtendedDataRecordByDTC(Dem_DtcType DTC,
                                                     Dem_DTCOriginType DTCOrigin,
@@ -960,6 +984,7 @@ Std_ReturnType Dem_GetSizeOfExtendedDataRecordByDTC(Dem_DtcType DTC,
 
  /**
   * @brief   Set operation cycle state
+  * @req SWS_Dem_00025
   */
 Std_ReturnType Dem_SetOperationCycleState(Dem_OperationCycleType OperationCycleType,
                                           Dem_OperationCycleStateType CycleState)
@@ -1001,6 +1026,7 @@ Std_ReturnType Dem_SetOperationCycleState(Dem_OperationCycleType OperationCycleT
 
  /**
   * @brief   Get operation cycle state
+  * @req SWS_Dem_00026
   */
 Std_ReturnType Dem_GetOperationCycleState(Dem_OperationCycleType OperationCycleType,
                                           Dem_OperationCycleStateType* CycleState)
@@ -1031,6 +1057,7 @@ Std_ReturnType Dem_GetOperationCycleState(Dem_OperationCycleType OperationCycleT
 
  /**
   * @brief   Restart operation cycle
+  * @req SWS_Dem_00027
   */
 Std_ReturnType Dem_RestartOperationCycle(Dem_OperationCycleType OperationCycleType)
 {
@@ -1050,6 +1077,7 @@ Std_ReturnType Dem_RestartOperationCycle(Dem_OperationCycleType OperationCycleTy
 
  /**
   * @brief   Get DTC of check failed
+  * @req SWS_Dem_00028
   */
 Std_ReturnType Dem_GetDTCOfCheckFailed(Dem_DtcType* DTC)
 {
@@ -1082,6 +1110,7 @@ Std_ReturnType Dem_GetDTCOfCheckFailed(Dem_DtcType* DTC)
 
  /**
   * @brief   Get version info
+  * @req SWS_Dem_00029
   */
 void Dem_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
@@ -1102,6 +1131,7 @@ void Dem_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
  /**
   * @brief   Prestore freeze frame
+  * @req SWS_Dem_00030
   */
 Std_ReturnType Dem_PrestoreFreezeFrame(Dem_EventIdType EventId)
 {
@@ -1139,6 +1169,7 @@ Std_ReturnType Dem_PrestoreFreezeFrame(Dem_EventIdType EventId)
 
  /**
   * @brief   Clear prestored freeze frame
+  * @req SWS_Dem_00031
   */
 Std_ReturnType Dem_ClearPrestoredFreezeFrame(Dem_EventIdType EventId)
 {
@@ -1170,6 +1201,7 @@ Std_ReturnType Dem_ClearPrestoredFreezeFrame(Dem_EventIdType EventId)
   * @brief   Main function - periodic processing
   * 
   * CRITICAL FIX: Now properly processes time-based debounce and aging
+  * @req SWS_Dem_00032
   */
 void Dem_MainFunction(void)
 {

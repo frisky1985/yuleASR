@@ -127,6 +127,7 @@ static boolean Icu_SignalMeasurementRunning[ICU_NUM_CHANNELS];
 /**
  * @brief Get eMIOS base address for a channel
  */
+/** @req SWS_Icu_00101 */
 static uint32 Icu_GetEmiosBaseAddr(Icu_ChannelType channel)
 {
     if (channel < (ICU_NUM_CHANNELS / 2U)) {
@@ -139,6 +140,7 @@ static uint32 Icu_GetEmiosBaseAddr(Icu_ChannelType channel)
 /**
  * @brief Get eMIOS channel number within an instance
  */
+/** @req SWS_Icu_00102 */
 static uint8 Icu_GetEmiosChannelNum(Icu_ChannelType channel)
 {
     if (channel < (ICU_NUM_CHANNELS / 2U)) {
@@ -151,6 +153,7 @@ static uint8 Icu_GetEmiosChannelNum(Icu_ChannelType channel)
 /**
  * @brief Get channel register address
  */
+/** @req SWS_Icu_00103 */
 static uint32 Icu_GetChannelRegAddr(uint32 emiosBase, uint8 chNum)
 {
     return emiosBase + 0x20U + (chNum * EMIOS_CHANNEL_SIZE);
@@ -159,6 +162,7 @@ static uint32 Icu_GetChannelRegAddr(uint32 emiosBase, uint8 chNum)
 /**
  * @brief Configure eMIOS mode for ICU
  */
+/** @req SWS_Icu_00104 */
 static void Icu_ConfigureEmiosMode(Icu_ChannelType channel, uint8 mode)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
@@ -175,6 +179,7 @@ static void Icu_ConfigureEmiosMode(Icu_ChannelType channel, uint8 mode)
 /**
  * @brief Enable channel interrupt
  */
+/** @req SWS_Icu_00105 */
 static void Icu_EnableChannelInterrupt(Icu_ChannelType channel)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
@@ -189,6 +194,7 @@ static void Icu_EnableChannelInterrupt(Icu_ChannelType channel)
 /**
  * @brief Disable channel interrupt
  */
+/** @req SWS_Icu_00106 */
 static void Icu_DisableChannelInterrupt(Icu_ChannelType channel)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
@@ -203,6 +209,7 @@ static void Icu_DisableChannelInterrupt(Icu_ChannelType channel)
 /**
  * @brief Clear channel flag
  */
+/** @req SWS_Icu_00107 */
 static void Icu_ClearChannelFlag(Icu_ChannelType channel)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
@@ -215,6 +222,7 @@ static void Icu_ClearChannelFlag(Icu_ChannelType channel)
 /**
  * @brief Get channel input state
  */
+/** @req SWS_Icu_00108 */
 static uint32 Icu_GetChannelFlag(Icu_ChannelType channel)
 {
     uint32 emiosBase = Icu_GetEmiosBaseAddr(channel);
@@ -228,6 +236,7 @@ static uint32 Icu_GetChannelFlag(Icu_ChannelType channel)
 /**
  * @brief Process signal measurement for a channel
  */
+/** @req SWS_Icu_00109 */
 static void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 currentCapture)
 {
     uint16 period;
@@ -281,6 +290,7 @@ static void Icu_ProcessSignalMeasurement(Icu_ChannelType channel, uint16 current
 *                                    API IMPLEMENTATION
 ==================================================================================================*/
 
+/** @req SWS_Icu_00001 */
 void Icu_Init(const Icu_ConfigType* ConfigPtr)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -404,6 +414,7 @@ void Icu_Init(const Icu_ConfigType* ConfigPtr)
 }
 
 #if (ICU_DE_INIT_API == STD_ON)
+/** @req SWS_Icu_00002 */
 void Icu_DeInit(void)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -436,6 +447,7 @@ void Icu_DeInit(void)
 #endif
 
 #if (ICU_SET_MODE_API == STD_ON)
+/** @req SWS_Icu_00003 */
 void Icu_SetMode(Icu_ModeType Mode)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -473,6 +485,7 @@ void Icu_SetMode(Icu_ModeType Mode)
 #endif
 
 #if (ICU_DISABLE_WAKEUP_API == STD_ON)
+/** @req SWS_Icu_00004 */
 void Icu_DisableWakeup(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -489,6 +502,7 @@ void Icu_DisableWakeup(Icu_ChannelType Channel)
     Icu_ChannelWakeupEnabled[Channel] = FALSE;
 }
 #else
+/** @req SWS_Icu_00004 */
 void Icu_DisableWakeup(Icu_ChannelType Channel)
 {
     (void)Channel;
@@ -496,6 +510,7 @@ void Icu_DisableWakeup(Icu_ChannelType Channel)
 #endif
 
 #if (ICU_ENABLE_WAKEUP_API == STD_ON)
+/** @req SWS_Icu_00005 */
 void Icu_EnableWakeup(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -512,6 +527,7 @@ void Icu_EnableWakeup(Icu_ChannelType Channel)
     Icu_ChannelWakeupEnabled[Channel] = TRUE;
 }
 #else
+/** @req SWS_Icu_00005 */
 void Icu_EnableWakeup(Icu_ChannelType Channel)
 {
     (void)Channel;
@@ -519,6 +535,7 @@ void Icu_EnableWakeup(Icu_ChannelType Channel)
 #endif
 
 #if (ICU_CHECK_WAKEUP_API == STD_ON)
+/** @req SWS_Icu_00006 */
 Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -542,6 +559,7 @@ Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
     return E_NOT_OK;
 }
 #else
+/** @req SWS_Icu_00006 */
 Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
 {
     (void)WakeupSource;
@@ -549,6 +567,7 @@ Std_ReturnType Icu_CheckWakeup(uint32 WakeupSource)
 }
 #endif
 
+/** @req SWS_Icu_00007 */
 void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Activation)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -595,6 +614,7 @@ void Icu_SetActivationCondition(Icu_ChannelType Channel, Icu_ActivationType Acti
     Icu_ChannelActivation[Channel] = Activation;
 }
 
+/** @req SWS_Icu_00008 */
 void Icu_DisableNotification(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -612,6 +632,7 @@ void Icu_DisableNotification(Icu_ChannelType Channel)
     Icu_DisableChannelInterrupt(Channel);
 }
 
+/** @req SWS_Icu_00009 */
 void Icu_EnableNotification(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -629,6 +650,7 @@ void Icu_EnableNotification(Icu_ChannelType Channel)
     Icu_EnableChannelInterrupt(Channel);
 }
 
+/** @req SWS_Icu_00010 */
 Icu_InputStateType Icu_GetInputState(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -658,6 +680,7 @@ Icu_InputStateType Icu_GetInputState(Icu_ChannelType Channel)
 }
 
 #if (ICU_TIMESTAMP_API == STD_ON)
+/** @req SWS_Icu_00011 */
 void Icu_StartTimestamp(Icu_ChannelType Channel, uint32* BufferPtr, uint16 BufferSize, uint16 NotifyInterval)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -704,6 +727,7 @@ void Icu_StartTimestamp(Icu_ChannelType Channel, uint32* BufferPtr, uint16 Buffe
     }
 }
 
+/** @req SWS_Icu_00012 */
 void Icu_StopTimestamp(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -722,6 +746,7 @@ void Icu_StopTimestamp(Icu_ChannelType Channel)
     Icu_TimestampBuffer[Channel] = NULL_PTR;
 }
 
+/** @req SWS_Icu_00013 */
 Icu_IndexType Icu_GetTimestampIndex(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -744,6 +769,7 @@ Icu_IndexType Icu_GetTimestampIndex(Icu_ChannelType Channel)
 #endif
 
 #if (ICU_EDGE_COUNT_API == STD_ON)
+/** @req SWS_Icu_00014 */
 void Icu_ResetEdgeCount(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -766,6 +792,7 @@ void Icu_ResetEdgeCount(Icu_ChannelType Channel)
     Icu_EdgeCount[Channel] = 0U;
 }
 
+/** @req SWS_Icu_00015 */
 void Icu_EnableEdgeCount(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -789,6 +816,7 @@ void Icu_EnableEdgeCount(Icu_ChannelType Channel)
     }
 }
 
+/** @req SWS_Icu_00016 */
 void Icu_DisableEdgeCount(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -807,6 +835,7 @@ void Icu_DisableEdgeCount(Icu_ChannelType Channel)
     Icu_EdgeCountEnabled[Channel] = FALSE;
 }
 
+/** @req SWS_Icu_00017 */
 uint16 Icu_GetEdgeNumbers(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -837,6 +866,7 @@ uint16 Icu_GetEdgeNumbers(Icu_ChannelType Channel)
 #endif
 
 #if (ICU_SIGNAL_MEASUREMENT_API == STD_ON)
+/** @req SWS_Icu_00018 */
 void Icu_StartSignalMeasurement(Icu_ChannelType Channel, Icu_SignalMeasurementPropertyType MeasureKind)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -874,6 +904,7 @@ void Icu_StartSignalMeasurement(Icu_ChannelType Channel, Icu_SignalMeasurementPr
     }
 }
 
+/** @req SWS_Icu_00019 */
 void Icu_StopSignalMeasurement(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -892,6 +923,7 @@ void Icu_StopSignalMeasurement(Icu_ChannelType Channel)
     Icu_SignalMeasurementRunning[Channel] = FALSE;
 }
 
+/** @req SWS_Icu_00020 */
 uint16 Icu_GetTimeElapsed(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -908,6 +940,7 @@ uint16 Icu_GetTimeElapsed(Icu_ChannelType Channel)
     return Icu_SignalPeriodTime[Channel];
 }
 
+/** @req SWS_Icu_00021 */
 void Icu_GetDutyCycleValues(Icu_ChannelType Channel, Icu_DutyCycleType* DutyCycleValues)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -930,6 +963,7 @@ void Icu_GetDutyCycleValues(Icu_ChannelType Channel, Icu_DutyCycleType* DutyCycl
 }
 #endif
 
+/** @req SWS_Icu_00022 */
 void Icu_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -946,6 +980,7 @@ void Icu_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = ICU_SW_PATCH_VERSION;
 }
 
+/** @req SWS_Icu_00023 */
 uint8 Icu_GetInputLevel(Icu_ChannelType Channel)
 {
     #if (ICU_DEV_ERROR_DETECT == STD_ON)
@@ -967,6 +1002,7 @@ uint8 Icu_GetInputLevel(Icu_ChannelType Channel)
     return ((sReg & EMIOS_S_UCIN) != 0U) ? 1U : 0U;
 }
 
+/** @req SWS_Icu_00024 */
 uint32 Icu_GetSysTimestamp(void)
 {
     /* Use EMIOS_0 channel 23 (last channel) as free-running counter for system timestamp */
@@ -984,6 +1020,7 @@ uint32 Icu_GetSysTimestamp(void)
  * @brief ICU Interrupt Handler
  * @param Channel Channel that triggered the interrupt
  */
+/** @req SWS_Icu_00025 */
 void Icu_ProcessInterrupt(Icu_ChannelType Channel)
 {
     if (Channel >= ICU_NUM_CHANNELS) {
@@ -1014,6 +1051,7 @@ void Icu_ProcessInterrupt(Icu_ChannelType Channel)
                     Icu_TimestampIndex[Channel] = 0U;
                 } else {
                     /* Linear buffer - stop capturing */
+/** @req SWS_Icu_00012 */
                     Icu_StopTimestamp(Channel);
                 }
             }

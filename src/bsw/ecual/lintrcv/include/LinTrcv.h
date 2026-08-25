@@ -190,6 +190,7 @@ extern const LinTrcv_ConfigType *LinTrcv_ConfigPtr;
 #define LINTRCV_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_LinTrcv_00001 */
 /*******************************************************************************
  * Function Name : LinTrcv_Init
  * Description   : Initializes the LIN transceiver driver
@@ -199,6 +200,7 @@ extern const LinTrcv_ConfigType *LinTrcv_ConfigPtr;
  ******************************************************************************/
 extern void LinTrcv_Init(const LinTrcv_ConfigType *ConfigPtr);
 
+/** @req SWS_LinTrcv_00002 */
 /*******************************************************************************
  * Function Name : LinTrcv_DeInit
  * Description   : De-initializes the LIN transceiver driver
@@ -208,6 +210,7 @@ extern void LinTrcv_Init(const LinTrcv_ConfigType *ConfigPtr);
  ******************************************************************************/
 extern void LinTrcv_DeInit(void);
 
+/** @req SWS_LinTrcv_00005 */
 /*******************************************************************************
  * Function Name : LinTrcv_SetOpMode
  * Description   : Sets the operation mode of a LIN transceiver channel
@@ -219,6 +222,7 @@ extern void LinTrcv_DeInit(void);
  ******************************************************************************/
 extern Std_ReturnType LinTrcv_SetOpMode(uint8 Channel, LinTrcv_OpmodeType OpMode);
 
+/** @req SWS_LinTrcv_00006 */
 /*******************************************************************************
  * Function Name : LinTrcv_GetOpMode
  * Description   : Gets the current operation mode of a LIN transceiver channel
@@ -229,6 +233,7 @@ extern Std_ReturnType LinTrcv_SetOpMode(uint8 Channel, LinTrcv_OpmodeType OpMode
  ******************************************************************************/
 extern Std_ReturnType LinTrcv_GetOpMode(uint8 Channel, LinTrcv_OpmodeType *OpMode);
 
+/** @req SWS_LinTrcv_00007 */
 /*******************************************************************************
  * Function Name : LinTrcv_GetBusWuReason
  * Description   : Gets the wake-up reason for the specified channel
@@ -247,9 +252,11 @@ extern Std_ReturnType LinTrcv_GetBusWuReason(uint8 Channel, LinTrcv_WakeupReason
  * Return        : None
  ******************************************************************************/
 #if (LINTRCV_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinTrcv_00003 */
 extern void LinTrcv_GetVersionInfo(Std_VersionInfoType *VersionInfo);
 #endif
 
+/** @req SWS_LinTrcv_00008 */
 /*******************************************************************************
  * Function Name : LinTrcv_Wakeup
  * Description   : Initiates wake-up on the specified channel
@@ -260,6 +267,7 @@ extern void LinTrcv_GetVersionInfo(Std_VersionInfoType *VersionInfo);
  ******************************************************************************/
 extern Std_ReturnType LinTrcv_Wakeup(uint8 Channel);
 
+/** @req SWS_LinTrcv_00009 */
 /*******************************************************************************
  * Function Name : LinTrcv_CheckWakeup
  * Description   : Checks if wake-up event occurred on specified channel
@@ -270,6 +278,7 @@ extern Std_ReturnType LinTrcv_Wakeup(uint8 Channel);
  ******************************************************************************/
 extern Std_ReturnType LinTrcv_CheckWakeup(uint8 Channel);
 
+/** @req SWS_LinTrcv_00010 */
 /*******************************************************************************
  * Function Name : LinTrcv_Cbk_WakeupByBus
  * Description   : Callback for wake-up by bus notification
@@ -279,6 +288,7 @@ extern Std_ReturnType LinTrcv_CheckWakeup(uint8 Channel);
  ******************************************************************************/
 extern void LinTrcv_Cbk_WakeupByBus(uint8 Channel);
 
+/** @req SWS_LinTrcv_00004 */
 /*******************************************************************************
  * Function Name : LinTrcv_MainFunction
  * Description   : Main function for periodic wake-up detection and mode monitoring

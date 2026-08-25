@@ -113,13 +113,26 @@ static RamTst_InternalType RamTst_State;
 /*==================================================================================================
  *                                    LOCAL FUNCTION PROTOTYPES
  *==================================================================================================*/
+/** @req SWS_RamTst_00101 */
 static void RamTst_ResetInternalState(void);
+/** @req SWS_RamTst_00102 */
 static void RamTst_RecordError(uint32 Address, uint32 Expected, uint32 Actual, uint8 Step);
+/** @req SWS_RamTst_00103 */
 static uint32 RamTst_GetPattern(uint32 Address, uint32 Seed);
+/** @req SWS_RamTst_00104 */
+/** @req SWS_RamTst_00105 */
 static void RamTst_ExecuteMarchC(void);
+/** @req SWS_RamTst_00105 */
+/** @req SWS_RamTst_00106 */
 static void RamTst_ExecuteCheckerboard(void);
+/** @req SWS_RamTst_00106 */
+/** @req SWS_RamTst_00107 */
 static void RamTst_ExecuteGALPAT(void);
+/** @req SWS_RamTst_00107 */
+/** @req SWS_RamTst_00108 */
 static void RamTst_ExecuteWalkpath(void);
+/** @req SWS_RamTst_00108 */
+/** @req SWS_RamTst_00104 */
 static uint32 RamTst_GetTickMs(void);
 
 /*==================================================================================================
@@ -130,6 +143,8 @@ static uint32 RamTst_GetTickMs(void);
  * @brief Resets internal state to defaults
  * @requirement RamTst-200 Reset internal variables
  */
+/** @req SWS_RamTst_00109 */
+/** @req SWS_RamTst_00101 */
 static void RamTst_ResetInternalState(void)
 {
     RamTst_State.Status = RAMTST_STATUS_UNINIT;
@@ -170,6 +185,8 @@ static void RamTst_ResetInternalState(void)
  * @param Step Algorithm step number
  * @requirement RamTst-510 Record detailed error information
  */
+/** @req SWS_RamTst_00110 */
+/** @req SWS_RamTst_00102 */
 static void RamTst_RecordError(uint32 Address, uint32 Expected, uint32 Actual, uint8 Step)
 {
     if (RamTst_State.ErrorRecordIndex < RAMTST_MAX_ERRORS) {
@@ -196,6 +213,8 @@ static void RamTst_RecordError(uint32 Address, uint32 Expected, uint32 Actual, u
  * @return 32-bit data pattern
  * @requirement RamTst-310 Generate deterministic test patterns
  */
+/** @req SWS_RamTst_00111 */
+/** @req SWS_RamTst_00103 */
 static uint32 RamTst_GetPattern(uint32 Address, uint32 Seed)
 {
     /* LFSR-based pattern for good fault coverage */
@@ -211,6 +230,8 @@ static uint32 RamTst_GetPattern(uint32 Address, uint32 Seed)
  * @brief Gets current system tick in milliseconds
  * @return Tick count in ms
  */
+/** @req SWS_RamTst_00112 */
+/** @req SWS_RamTst_00104 */
 static uint32 RamTst_GetTickMs(void)
 {
     /* Simple tick counter incremented by MainFunction */
@@ -229,6 +250,8 @@ static uint32 RamTst_GetTickMs(void)
  * M4: Read(1), Write(0) descending
  * M5: Read(0) ascending
  */
+/** @req SWS_RamTst_00113 */
+/** @req SWS_RamTst_00105 */
 static void RamTst_ExecuteMarchC(void)
 {
     uint32 stepSize = RAMTST_STEP_SIZE;
@@ -361,6 +384,8 @@ static void RamTst_ExecuteMarchC(void)
  * @brief Executes checkerboard pattern test
  * @requirement RamTst-320 Checkerboard test for adjacent cell coupling
  */
+/** @req SWS_RamTst_00114 */
+/** @req SWS_RamTst_00106 */
 static void RamTst_ExecuteCheckerboard(void)
 {
     uint32 stepSize = RAMTST_STEP_SIZE;
@@ -432,6 +457,8 @@ static void RamTst_ExecuteCheckerboard(void)
  * @brief Executes GALPAT (galloping pattern) test
  * @requirement RamTst-330 GALPAT test for bit-line coupling
  */
+/** @req SWS_RamTst_00115 */
+/** @req SWS_RamTst_00107 */
 static void RamTst_ExecuteGALPAT(void)
 {
     /* Simplified - checks each bit position across all addresses */
@@ -498,6 +525,8 @@ static void RamTst_ExecuteGALPAT(void)
 /**
  * @brief Executes Walkpath test (walking 1s/0s through address bus)
  */
+/** @req SWS_RamTst_00116 */
+/** @req SWS_RamTst_00108 */
 static void RamTst_ExecuteWalkpath(void)
 {
     uint32 stepSize = RAMTST_STEP_SIZE;
@@ -545,6 +574,7 @@ static void RamTst_ExecuteWalkpath(void)
  * @requirement RamTst-100: Initialize to IDLE state
  * @requirement RamTst-110: NULL_PTR pointer check with DET
  */
+/** @req SWS_RamTst_00001 */
 void RamTst_Init(const RamTst_ConfigType* ConfigPtr)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
@@ -575,6 +605,7 @@ void RamTst_Init(const RamTst_ConfigType* ConfigPtr)
  * @brief De-initializes the RAM Test module
  * @requirement RamTst-200: Reset to UNINIT
  */
+/** @req SWS_RamTst_00002 */
 void RamTst_DeInit(void)
 {
     RamTst_ResetInternalState();
@@ -585,6 +616,7 @@ void RamTst_DeInit(void)
  * @return E_OK if started, E_NOT_OK otherwise
  * @requirement RamTst-300: Start test execution
  */
+/** @req SWS_RamTst_00003 */
 Std_ReturnType RamTst_Run(void)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
@@ -650,6 +682,7 @@ Std_ReturnType RamTst_Run(void)
  * @brief Stops the current test
  * @requirement RamTst-400: Abort and return to IDLE
  */
+/** @req SWS_RamTst_00004 */
 void RamTst_Stop(void)
 {
     if (RamTst_State.Status == RAMTST_STATUS_RUNNING) {
@@ -663,6 +696,7 @@ void RamTst_Stop(void)
  * @return Test result
  * @requirement RamTst-500: Return last result
  */
+/** @req SWS_RamTst_00005 */
 RamTst_TestResultType RamTst_GetTestResult(void)
 {
     return RamTst_State.Result;
@@ -674,6 +708,7 @@ RamTst_TestResultType RamTst_GetTestResult(void)
  * @return E_OK if available, E_NOT_OK if no errors
  * @requirement RamTst-510: Provide error details
  */
+/** @req SWS_RamTst_00006 */
 Std_ReturnType RamTst_GetErrorRecord(RamTst_ErrorRecordType* ErrorRecord)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
@@ -696,6 +731,7 @@ Std_ReturnType RamTst_GetErrorRecord(RamTst_ErrorRecordType* ErrorRecord)
  * @return Module status
  * @requirement RamTst-600: Return current state
  */
+/** @req SWS_RamTst_00007 */
 RamTst_StatusType RamTst_GetTestStatus(void)
 {
     return RamTst_State.Status;
@@ -706,6 +742,7 @@ RamTst_StatusType RamTst_GetTestStatus(void)
  * @requirement RamTst-700: Execute test steps
  * @requirement RamTst-710: Non-blocking execution
  */
+/** @req SWS_RamTst_00008 */
 void RamTst_MainFunction(void)
 {
     if (RamTst_State.Status != RAMTST_STATUS_RUNNING) {
@@ -752,6 +789,7 @@ void RamTst_MainFunction(void)
  * @requirement RamTst-800: Version info API
  */
 #if (RAMTST_VERSION_INFO_API == STD_ON)
+/** @req SWS_RamTst_00009 */
 void RamTst_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
@@ -775,6 +813,7 @@ void RamTst_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @return E_OK if successful
  */
 #if (RAMTST_SET_MODE_API == STD_ON)
+/** @req SWS_RamTst_00010 */
 Std_ReturnType RamTst_SetMode(RamTst_ModeType Mode)
 {
 #if (RAMTST_DEV_ERROR_DETECT == STD_ON)
@@ -793,6 +832,7 @@ Std_ReturnType RamTst_SetMode(RamTst_ModeType Mode)
  * @return Current mode
  */
 #if (RAMTST_GET_MODE_API == STD_ON)
+/** @req SWS_RamTst_00011 */
 RamTst_ModeType RamTst_GetMode(void)
 {
     return 0U;

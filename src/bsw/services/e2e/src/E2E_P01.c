@@ -147,6 +147,7 @@ static uint8 E2E_P01_CalculateCRC(
     return crc ^ 0xFFU; /* Final XOR */
 }
 
+/** @req SWS_E2E_00003 */
 /**
  * @brief E2E Profile 1 Protect
  * @details Adds E2E protection to data (CRC8 + 4-bit counter)
@@ -194,6 +195,7 @@ Std_ReturnType E2E_P01Protect(
     return E_OK;
 }
 
+/** @req SWS_E2E_00004 */
 /**
  * @brief E2E Profile 1 Check
  * @details Verifies E2E protection of received data
@@ -271,6 +273,7 @@ Std_ReturnType E2E_P01Check(
     return E_OK;
 }
 
+/** @req SWS_E2E_00005 */
 /**
  * @brief Map Profile 1 check status to State Machine state
  */

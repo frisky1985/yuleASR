@@ -31,6 +31,7 @@ static uint16 LinMaster_Hal_CurrentBaudRate = LINMASTER_DEFAULT_BAUDRATE;
 /**
  * @brief 初始化UART
  */
+/** @req SWS_Lin_00040 */
 LinMaster_StatusType LinMaster_Hal_UartInit(uint16 BaudRate)
 {
     /* 保存波特率 */
@@ -54,6 +55,7 @@ LinMaster_StatusType LinMaster_Hal_UartInit(uint16 BaudRate)
 /**
  * @brief 发送单个字节
  */
+/** @req SWS_Lin_00041 */
 LinMaster_StatusType LinMaster_Hal_SendByte(uint8 Byte)
 {
     /* 实际实现:
@@ -76,6 +78,7 @@ LinMaster_StatusType LinMaster_Hal_SendByte(uint8 Byte)
  * - 接着是至少1位的隐性电平 (停止位)
  * - 然后是同步字节 (0x55)
  */
+/** @req SWS_Lin_00042 */
 LinMaster_StatusType LinMaster_Hal_SendBreak(void)
 {
     /* 实际实现方法1: 使用UART的Break功能
@@ -123,6 +126,7 @@ LinMaster_StatusType LinMaster_Hal_SendBreak(void)
 /**
  * @brief 发送数据块
  */
+/** @req SWS_Lin_00043 */
 LinMaster_StatusType LinMaster_Hal_SendBlock(const uint8* DataPtr, uint8 Length)
 {
     uint8 i;
@@ -132,6 +136,7 @@ LinMaster_StatusType LinMaster_Hal_SendBlock(const uint8* DataPtr, uint8 Length)
     }
     
     for (i = 0; i < Length; i++) {
+        /** @req SWS_Lin_00041 */
         if (LinMaster_Hal_SendByte(DataPtr[i]) != LINMASTER_OK) {
             return LINMASTER_NOT_OK;
         }
@@ -143,6 +148,7 @@ LinMaster_StatusType LinMaster_Hal_SendBlock(const uint8* DataPtr, uint8 Length)
 /**
  * @brief 使能接收中断
  */
+/** @req SWS_Lin_00044 */
 void LinMaster_Hal_EnableRxInterrupt(void)
 {
     /* 实际实现: 使能UART接收中断 */
@@ -152,6 +158,7 @@ void LinMaster_Hal_EnableRxInterrupt(void)
 /**
  * @brief 禁能接收中断
  */
+/** @req SWS_Lin_00045 */
 void LinMaster_Hal_DisableRxInterrupt(void)
 {
     /* 实际实现: 禁能UART接收中断 */
@@ -161,6 +168,7 @@ void LinMaster_Hal_DisableRxInterrupt(void)
 /**
  * @brief 使能发送完成中断
  */
+/** @req SWS_Lin_00046 */
 void LinMaster_Hal_EnableTxInterrupt(void)
 {
     /* 实际实现: 使能UART发送完成中断 */
@@ -170,6 +178,7 @@ void LinMaster_Hal_EnableTxInterrupt(void)
 /**
  * @brief 禁能发送完成中断
  */
+/** @req SWS_Lin_00047 */
 void LinMaster_Hal_DisableTxInterrupt(void)
 {
     /* 实际实现: 禁能UART发送完成中断 */
@@ -183,6 +192,7 @@ void LinMaster_Hal_DisableTxInterrupt(void)
  */
 static uint32 MockCurrentTimeMs = 0;
 
+/** @req SWS_Lin_00048 */
 uint32 LinMaster_Hal_GetCurrentTimeMs(void)
 {
     /* 实际实现:
@@ -198,6 +208,7 @@ uint32 LinMaster_Hal_GetCurrentTimeMs(void)
  * 
  * 注意: 此为模拟实现，实际应用不建议使用软件延时
  */
+/** @req SWS_Lin_00049 */
 void LinMaster_Hal_DelayMs(uint16 DelayMs)
 {
     volatile uint32 delay = DelayMs * 1000U;
@@ -210,6 +221,7 @@ void LinMaster_Hal_DelayMs(uint16 DelayMs)
  * @brief 获取总线状态
  * @return 总线状态 (0=显性, 1=隐性)
  */
+/** @req SWS_Lin_00050 */
 uint8 LinMaster_Hal_GetBusState(void)
 {
     /* 实际实现: 读取GPIO状态或UART状态寄存器 */

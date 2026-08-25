@@ -110,6 +110,7 @@ const SecOC_ConfigType* SecOC_ConfigPtr = NULL_PTR;
 
 /**
  * @brief Get TX PDU index from PDU ID
+ * @req SWS_SecOC_00100
  */
 static sint16 SecOC_GetTxPduIndex(PduIdType pduId)
 {
@@ -121,6 +122,7 @@ static sint16 SecOC_GetTxPduIndex(PduIdType pduId)
 
 /**
  * @brief Get RX PDU index from PDU ID
+ * @req SWS_SecOC_00101
  */
 static sint16 SecOC_GetRxPduIndex(PduIdType pduId)
 {
@@ -132,6 +134,7 @@ static sint16 SecOC_GetRxPduIndex(PduIdType pduId)
 
 /**
  * @brief Increment freshness value
+ * @req SWS_SecOC_00102
  */
 static uint32 SecOC_IncrementFreshness(uint32 freshness)
 {
@@ -145,6 +148,7 @@ static uint32 SecOC_IncrementFreshness(uint32 freshness)
 
 /**
  * @brief Build authentication data
+ * @req SWS_SecOC_00103
  */
 static void SecOC_BuildAuthData(const uint8* pduData, PduLengthType pduLength,
                                  uint32 freshnessValue, uint8 dataId,
@@ -171,6 +175,7 @@ static void SecOC_BuildAuthData(const uint8* pduData, PduLengthType pduLength,
 
 /**
  * @brief Generate authentication code
+ * @req SWS_SecOC_00104
  */
 static Std_ReturnType SecOC_GenerateAuthCode(const uint8* authData, uint16 authDataLen,
                                               uint8* authCode, uint32* authCodeLen)
@@ -181,6 +186,7 @@ static Std_ReturnType SecOC_GenerateAuthCode(const uint8* authData, uint16 authD
 
 /**
  * @brief Verify authentication code
+ * @req SWS_SecOC_00105
  */
 static Std_ReturnType SecOC_VerifyAuthCode(const uint8* authData, uint16 authDataLen,
                                             const uint8* authCode, uint32 authCodeLen,
@@ -192,6 +198,7 @@ static Std_ReturnType SecOC_VerifyAuthCode(const uint8* authData, uint16 authDat
 
 /**
  * @brief Process TX PDU - add security
+ * @req SWS_SecOC_00106
  */
 static Std_ReturnType SecOC_ProcessTxPdu(PduIdType pduId)
 {
@@ -268,6 +275,7 @@ static Std_ReturnType SecOC_ProcessTxPdu(PduIdType pduId)
 
 /**
  * @brief Process RX PDU - verify security
+ * @req SWS_SecOC_00107
  */
 static void SecOC_ProcessRxPdu(PduIdType pduId)
 {
@@ -367,6 +375,7 @@ static void SecOC_ProcessRxPdu(PduIdType pduId)
 
 /**
  * @brief Initializes the SecOC module
+ * @req SWS_SecOC_00001
  */
 void SecOC_Init(const SecOC_ConfigType* configPtr)
 {
@@ -419,6 +428,7 @@ void SecOC_Init(const SecOC_ConfigType* configPtr)
 
 /**
  * @brief Deinitializes the SecOC module
+ * @req SWS_SecOC_00002
  */
 void SecOC_DeInit(void)
 {
@@ -456,6 +466,7 @@ void SecOC_DeInit(void)
 
 /**
  * @brief Gets version information
+ * @req SWS_SecOC_00040
  */
 #if (SECOC_VERSION_INFO_API == STD_ON)
 void SecOC_GetVersionInfo(Std_VersionInfoType* versioninfo)
@@ -478,6 +489,7 @@ void SecOC_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief Transmits a secured PDU
+ * @req SWS_SecOC_00010
  */
 Std_ReturnType SecOC_IfTransmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {

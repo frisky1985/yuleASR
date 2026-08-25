@@ -202,6 +202,7 @@ static Std_ReturnType CryIf_UpdateKeyMapping(CryIf_KeyIdType cryIfKeyId)
 *                                    LIFECYCLE FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00001 */
 /**
  * @brief Initializes the Crypto Interface module
  */
@@ -286,6 +287,7 @@ void CryIf_Init(const CryIf_ConfigType* configPtr)
     CRYIF_DBG_PRINT("CryIf module initialized successfully");
 }
 
+/** @req SWS_CryIf_00002 */
 /**
  * @brief Deinitializes the Crypto Interface module
  */
@@ -329,6 +331,7 @@ void CryIf_DeInit(void)
 }
 
 #if (CRYIF_VERSION_INFO_API == STD_ON)
+/** @req SWS_CryIf_00003 */
 /**
  * @brief Returns the version information of the CRYIF module
  */
@@ -355,6 +358,7 @@ void CryIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 *                                    JOB MANAGEMENT FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00005 */
 /**
  * @brief Processes a crypto job
  */
@@ -419,6 +423,7 @@ Std_ReturnType CryIf_ProcessJob(CryIf_ChannelIdType channelId, CryIf_JobType* jo
     return retVal;
 }
 
+/** @req SWS_CryIf_00006 */
 /**
  * @brief Cancels a pending crypto job
  */
@@ -460,6 +465,7 @@ Std_ReturnType CryIf_CancelJob(CryIf_ChannelIdType channelId, CryIf_JobType* job
 *                                    KEY MANAGEMENT FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00007 */
 /**
  * @brief Sets a key element value
  */
@@ -510,6 +516,7 @@ Std_ReturnType CryIf_KeyElementSet(
     return E_OK;
 }
 
+/** @req SWS_CryIf_00008 */
 /**
  * @brief Validates a key
  */
@@ -547,6 +554,7 @@ Std_ReturnType CryIf_KeySetValid(CryIf_KeyIdType cryIfKeyId)
     return E_NOT_OK;
 }
 
+/** @req SWS_CryIf_00009 */
 /**
  * @brief Gets a key element value
  */
@@ -590,6 +598,7 @@ Std_ReturnType CryIf_KeyElementGet(
 }
 
 #if (CRYIF_KEY_ELEMENT_COPY_API == STD_ON)
+/** @req SWS_CryIf_00010 */
 /**
  * @brief Copies a key element from one key to another
  */
@@ -623,6 +632,7 @@ Std_ReturnType CryIf_KeyElementCopy(
     return E_OK;
 }
 
+/** @req SWS_CryIf_00011 */
 /**
  * @brief Copies a key element with partial access
  */
@@ -653,6 +663,7 @@ Std_ReturnType CryIf_KeyElementCopyPartial(
 }
 #endif
 
+/** @req SWS_CryIf_00012 */
 /**
  * @brief Copies a key including all key elements
  */
@@ -684,6 +695,7 @@ Std_ReturnType CryIf_KeyCopy(
     return E_OK;
 }
 
+/** @req SWS_CryIf_00013 */
 /**
  * @brief Gets the IDs of all key elements in a key
  */
@@ -718,6 +730,7 @@ Std_ReturnType CryIf_KeyElementIdsGet(
 }
 
 #if (CRYIF_KEY_VALID_CHECK_API == STD_ON)
+/** @req SWS_CryIf_00014 */
 /**
  * @brief Checks if a key is valid
  */
@@ -737,6 +750,7 @@ Std_ReturnType CryIf_KeyValidCheck(CryIf_KeyIdType cryIfKeyId)
 *                                    CRYPTOGRAPHIC FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00015 */
 /**
  * @brief Seeds the random number generator
  */
@@ -768,6 +782,7 @@ Std_ReturnType CryIf_RandomSeed(
     return E_OK;
 }
 
+/** @req SWS_CryIf_00016 */
 /**
  * @brief Generates a new key
  */
@@ -793,6 +808,7 @@ Std_ReturnType CryIf_KeyGenerate(CryIf_KeyIdType cryIfKeyId)
     return E_OK;
 }
 
+/** @req SWS_CryIf_00017 */
 /**
  * @brief Derives a key from another key
  */
@@ -817,6 +833,7 @@ Std_ReturnType CryIf_KeyDerive(
     return E_OK;
 }
 
+/** @req SWS_CryIf_00018 */
 /**
  * @brief Calculates the public value for key exchange
  */
@@ -847,6 +864,7 @@ Std_ReturnType CryIf_KeyExchangeCalcPubValue(
     return E_OK;
 }
 
+/** @req SWS_CryIf_00019 */
 /**
  * @brief Calculates the shared secret for key exchange
  */
@@ -884,6 +902,7 @@ Std_ReturnType CryIf_KeyExchangeCalcSecret(
 *                                    CERTIFICATE FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00020 */
 /**
  * @brief Parses a certificate
  */
@@ -904,6 +923,7 @@ Std_ReturnType CryIf_CertificateParse(CryIf_KeyIdType cryIfKeyId)
     return E_OK;
 }
 
+/** @req SWS_CryIf_00021 */
 /**
  * @brief Verifies a certificate
  */
@@ -932,6 +952,7 @@ Std_ReturnType CryIf_CertificateVerify(
 *                                    CALLBACK FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00022 */
 /**
  * @brief Callback notification from crypto driver
  */
@@ -962,6 +983,7 @@ void CryIf_CallbackNotification(
 *                                    SCHEDULING FUNCTIONS
 --------------------------------------------------------------------------------------------------*/
 
+/** @req SWS_CryIf_00004 */
 /**
  * @brief Main function for processing async operations
  */

@@ -28,6 +28,7 @@ static SomeIp_SessionIdType SomeIp_CurrentSessionId = 0;
 #define SOMEIP_VENDOR_ID                   0x0001
 #define SOMEIP_INSTANCE_ID                 0x00
 
+/** @req SWS_SomeIp_00001 */
 void SomeIp_Init(const SomeIp_ConfigType* ConfigPtr)
 {
 #if (STD_ON == SOMEIP_DEV_ERROR_DETECT)
@@ -43,6 +44,7 @@ void SomeIp_Init(const SomeIp_ConfigType* ConfigPtr)
     SomeIp_Initialized = TRUE;
 }
 
+/** @req SWS_SomeIp_00002 */
 void SomeIp_DeInit(void)
 {
     if (!SomeIp_Initialized)
@@ -54,6 +56,7 @@ void SomeIp_DeInit(void)
     SomeIp_Initialized = FALSE;
 }
 
+/** @req SWS_SomeIp_00003 */
 void SomeIp_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
 {
     if (VersionInfoPtr != NULL_PTR)
@@ -66,6 +69,7 @@ void SomeIp_GetVersionInfo(Std_VersionInfoType* VersionInfoPtr)
     }
 }
 
+/** @req SWS_SomeIp_00004 */
 Std_ReturnType SomeIp_SendRequest(
     SomeIp_ClientIdType ClientId,
     SomeIp_ServiceIdType ServiceId,
@@ -98,6 +102,7 @@ Std_ReturnType SomeIp_SendRequest(
     return E_OK;
 }
 
+/** @req SWS_SomeIp_00005 */
 Std_ReturnType SomeIp_SendResponse(
     SomeIp_RequestIdType RequestId,
     const uint8* Payload,
@@ -128,6 +133,7 @@ Std_ReturnType SomeIp_SendResponse(
     return E_OK;
 }
 
+/** @req SWS_SomeIp_00006 */
 Std_ReturnType SomeIp_SendNotification(
     SomeIp_ServiceIdType ServiceId,
     SomeIp_MethodIdType EventId,
@@ -159,6 +165,7 @@ Std_ReturnType SomeIp_SendNotification(
     return E_OK;
 }
 
+/** @req SWS_SomeIp_00007 */
 void SomeIp_RxIndication(const uint8* Data, uint32 Length)
 {
     SomeIp_MessageType message;
@@ -182,6 +189,7 @@ void SomeIp_RxIndication(const uint8* Data, uint32 Length)
     SomeIp_ProcessMessage(&message);
 }
 
+/** @req SWS_SomeIp_00009 */
 Std_ReturnType SomeIp_ProcessMessage(const SomeIp_MessageType* MessagePtr)
 {
     SomeIp_ServiceIdType serviceId;
@@ -225,6 +233,7 @@ Std_ReturnType SomeIp_ProcessMessage(const SomeIp_MessageType* MessagePtr)
     return E_OK;
 }
 
+/** @req SWS_SomeIp_00010 */
 Std_ReturnType SomeIp_ParseHeader(const uint8* Data, SomeIp_HeaderType* HeaderPtr)
 {
     if ((Data == NULL_PTR) || (HeaderPtr == NULL_PTR))
@@ -262,6 +271,7 @@ Std_ReturnType SomeIp_ParseHeader(const uint8* Data, SomeIp_HeaderType* HeaderPt
     return E_OK;
 }
 
+/** @req SWS_SomeIp_00011 */
 Std_ReturnType SomeIp_SerializeHeader(const SomeIp_HeaderType* HeaderPtr, uint8* Data)
 {
     if ((HeaderPtr == NULL_PTR) || (Data == NULL_PTR))
@@ -303,6 +313,7 @@ SomeIp_RequestIdType SomeIp_CreateRequestId(SomeIp_ClientIdType ClientId, SomeIp
     return ((uint32)ClientId << 16) | (uint32)SessionId;
 }
 
+/** @req SWS_SomeIp_00012 */
 void SomeIp_ExtractIds(SomeIp_MessageIdType MessageId, SomeIp_ServiceIdType* ServiceId, SomeIp_MethodIdType* MethodId)
 {
     if (ServiceId != NULL_PTR)
@@ -315,6 +326,7 @@ void SomeIp_ExtractIds(SomeIp_MessageIdType MessageId, SomeIp_ServiceIdType* Ser
     }
 }
 
+/** @req SWS_SomeIp_00008 */
 void SomeIp_TxConfirmation(SomeIp_RequestIdType RequestId)
 {
     /* Handle transmission confirmation */

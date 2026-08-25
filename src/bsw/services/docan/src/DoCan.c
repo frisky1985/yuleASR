@@ -179,6 +179,7 @@ STATIC Std_ReturnType DoCan_FindChannelConfig(PduIdType PduId, uint8* ChannelInd
 *                                      GLOBAL FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_DoCan_00001 */
 /**
  * @brief   Initializes the DoCan module
  * @param   ConfigPtr - Pointer to configuration structure
@@ -211,6 +212,7 @@ void DoCan_Init(const DoCan_ConfigType* ConfigPtr)
     DoCan_InternalState.State = DOCAN_STATE_INIT;
 }
 
+/** @req SWS_DoCan_00002 */
 /**
  * @brief   Deinitializes the DoCan module
  * @param   None
@@ -233,6 +235,7 @@ void DoCan_DeInit(void)
     DoCan_InternalState.State = DOCAN_STATE_UNINIT;
 }
 
+/** @req SWS_DoCan_00005 */
 /**
  * @brief   Transmits a diagnostic message via CanTp
  * @param   TxPduId     - DCM-facing PDU identifier
@@ -302,6 +305,7 @@ Std_ReturnType DoCan_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return result;
 }
 
+/** @req SWS_DoCan_00006 */
 /**
  * @brief   Receive indication from CanTp
  * @param   RxPduId     - CanTp RX PDU identifier
@@ -358,6 +362,7 @@ void DoCan_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 }
 
+/** @req SWS_DoCan_00007 */
 /**
  * @brief   Transmit confirmation from CanTp
  * @param   TxPduId - CanTp TX PDU identifier
@@ -408,6 +413,7 @@ void DoCan_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     }
 }
 
+/** @req SWS_DoCan_00004 */
 /**
  * @brief   Main function for periodic processing
  * @param   None
@@ -451,6 +457,7 @@ void DoCan_MainFunction(void)
  * @return  None
  */
 #if (DOCAN_VERSION_INFO_API == STD_ON)
+/** @req SWS_DoCan_00003 */
 void DoCan_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (DOCAN_DEV_ERROR_DETECT == STD_ON)

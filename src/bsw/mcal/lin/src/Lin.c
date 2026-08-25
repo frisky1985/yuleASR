@@ -33,6 +33,8 @@ static uint8 Lin_RxBuffer[LIN_MAX_CHANNELS][LIN_MAX_FRAME_LENGTH];
 #define LIN_VENDOR_ID                      0x0001
 #define LIN_INSTANCE_ID                    0x00
 
+/** @req SWS_Lin_00001 */
+/** @req SWS_Lin_00001 */
 void Lin_Init(const Lin_ConfigType* Config)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -65,6 +67,8 @@ void Lin_Init(const Lin_ConfigType* Config)
      *       pending MCAL hardware abstraction layer integration */
 }
 
+/** @req SWS_Lin_00002 */
+/** @req SWS_Lin_00002 */
 void Lin_DeInit(void)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -85,6 +89,8 @@ void Lin_DeInit(void)
     Lin_ModuleInitialized = FALSE;
 }
 
+/** @req SWS_Lin_00003 */
+/** @req SWS_Lin_00003 */
 void Lin_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (LIN_VERSION_INFO_API == STD_ON)
@@ -99,6 +105,8 @@ void Lin_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #endif
 }
 
+/** @req SWS_Lin_00004 */
+/** @req SWS_Lin_00004 */
 Std_ReturnType Lin_SendFrame(Lin_ChannelType Channel, const Lin_PduType* PduInfoPtr)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -143,6 +151,8 @@ Std_ReturnType Lin_SendFrame(Lin_ChannelType Channel, const Lin_PduType* PduInfo
     return E_OK;
 }
 
+/** @req SWS_Lin_00005 */
+/** @req SWS_Lin_00005 */
 Std_ReturnType Lin_SendResponse(Lin_ChannelType Channel, const Lin_PduType* PduInfoPtr)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -170,6 +180,8 @@ Std_ReturnType Lin_SendResponse(Lin_ChannelType Channel, const Lin_PduType* PduI
     return E_OK;
 }
 
+/** @req SWS_Lin_00006 */
+/** @req SWS_Lin_00006 */
 Std_ReturnType Lin_DisableResponse(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -187,6 +199,8 @@ Std_ReturnType Lin_DisableResponse(Lin_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_Lin_00007 */
+/** @req SWS_Lin_00007 */
 Std_ReturnType Lin_WakeUp(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -209,6 +223,8 @@ Std_ReturnType Lin_WakeUp(Lin_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_Lin_00008 */
+/** @req SWS_Lin_00008 */
 Std_ReturnType Lin_WakeUpInternal(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -227,6 +243,8 @@ Std_ReturnType Lin_WakeUpInternal(Lin_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_Lin_00009 */
+/** @req SWS_Lin_00009 */
 Std_ReturnType Lin_CheckWakeup(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -245,6 +263,8 @@ Std_ReturnType Lin_CheckWakeup(Lin_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_Lin_00010 */
+/** @req SWS_Lin_00010 */
 Lin_StatusType Lin_GetStatus(Lin_ChannelType Channel, uint8** Lin_SduPtr)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -267,6 +287,8 @@ Lin_StatusType Lin_GetStatus(Lin_ChannelType Channel, uint8** Lin_SduPtr)
     return Lin_ChannelStatus[Channel];
 }
 
+/** @req SWS_Lin_00011 */
+/** @req SWS_Lin_00011 */
 Std_ReturnType Lin_GoToSleep(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -289,6 +311,8 @@ Std_ReturnType Lin_GoToSleep(Lin_ChannelType Channel)
     return E_OK;
 }
 
+/** @req SWS_Lin_00012 */
+/** @req SWS_Lin_00012 */
 Std_ReturnType Lin_GoToSleepInternal(Lin_ChannelType Channel)
 {
 #if (LIN_DEV_ERROR_DETECT == STD_ON)
@@ -308,6 +332,8 @@ Std_ReturnType Lin_GoToSleepInternal(Lin_ChannelType Channel)
 }
 
 /* Callback Implementations */
+/** @req SWS_Lin_00013 */
+/** @req SWS_Lin_00013 */
 void Lin_WakeUpConfirmation(Lin_ChannelType Channel)
 {
     if (Channel < LIN_MAX_CHANNELS)
@@ -316,12 +342,16 @@ void Lin_WakeUpConfirmation(Lin_ChannelType Channel)
     }
 }
 
+/** @req SWS_Lin_00014 */
+/** @req SWS_Lin_00014 */
 void Lin_WakeUpFrameIndication(void)
 {
     /* Wake-up frame received */
 }
 
 /* ISR Implementations */
+/** @req SWS_Lin_00015 */
+/** @req SWS_Lin_00015 */
 void Lin_IsrTx(Lin_ChannelType Channel)
 {
     if (Channel < LIN_MAX_CHANNELS)
@@ -330,6 +360,8 @@ void Lin_IsrTx(Lin_ChannelType Channel)
     }
 }
 
+/** @req SWS_Lin_00016 */
+/** @req SWS_Lin_00016 */
 void Lin_IsrRx(Lin_ChannelType Channel)
 {
     if (Channel < LIN_MAX_CHANNELS)
@@ -338,6 +370,8 @@ void Lin_IsrRx(Lin_ChannelType Channel)
     }
 }
 
+/** @req SWS_Lin_00017 */
+/** @req SWS_Lin_00017 */
 void Lin_IsrErr(Lin_ChannelType Channel)
 {
     if (Channel < LIN_MAX_CHANNELS)

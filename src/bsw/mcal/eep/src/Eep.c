@@ -128,12 +128,20 @@ static Eep_InternalType Eep_State;
 /*==================================================================================================
  *                                    LOCAL FUNCTION PROTOTYPES
  *==================================================================================================*/
+/** @req SWS_Eep_00101 */
 static void Eep_ResetInternalState(void);
+/** @req SWS_Eep_00102 */
 static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Length);
+/** @req SWS_Eep_00103 */
 static void Eep_ProcessRead(void);
+/** @req SWS_Eep_00104 */
 static void Eep_ProcessWrite(void);
+/** @req SWS_Eep_00105 */
 static void Eep_ProcessErase(void);
+/** @req SWS_Eep_00106 */
 static void Eep_ExecuteMemoryAccess(void);
+/** @req SWS_Eep_00107 */
+/** @req SWS_Eep_00106 */
 static uint32 Eep_GetTick(void);
 
 /*==================================================================================================
@@ -144,6 +152,8 @@ static uint32 Eep_GetTick(void);
  * @brief Resets internal state to defaults
  * @req SHALL_EEP - Resets internal state to defaults
  */
+/** @req SWS_Eep_00108 */
+/** @req SWS_Eep_00101 */
 static void Eep_ResetInternalState(void)
 {
     Eep_State.Status = EEP_UNINIT;
@@ -171,6 +181,8 @@ static void Eep_ResetInternalState(void)
  * @param Length Length of operation
  * @return TRUE if valid, FALSE otherwise
  */
+/** @req SWS_Eep_00109 */
+/** @req SWS_Eep_00102 */
 static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Length)
 {
     if (Address >= Eep_State.TotalSize) {
@@ -189,6 +201,8 @@ static boolean Eep_ValidateAddress(Eep_AddressType Address, Eep_LengthType Lengt
  * @brief Executes memory read operation from backing store
  * @req SHALL_EEP - Executes memory read operation from backing store
  */
+/** @req SWS_Eep_00110 */
+/** @req SWS_Eep_00103 */
 static void Eep_ProcessRead(void)
 {
     uint32 i;
@@ -211,6 +225,8 @@ static void Eep_ProcessRead(void)
  * @brief Executes memory write operation to backing store
  * @req SHALL_EEP - Executes memory write operation to backing store
  */
+/** @req SWS_Eep_00111 */
+/** @req SWS_Eep_00104 */
 static void Eep_ProcessWrite(void)
 {
     uint32 i;
@@ -233,6 +249,8 @@ static void Eep_ProcessWrite(void)
  * @brief Executes memory erase operation (fill with 0xFF)
  * @req SHALL_EEP - Executes memory erase operation (fill with 0xFF)
  */
+/** @req SWS_Eep_00112 */
+/** @req SWS_Eep_00105 */
 static void Eep_ProcessErase(void)
 {
     uint32 i;
@@ -254,6 +272,8 @@ static void Eep_ProcessErase(void)
  * @brief Gets current system tick
  * @req SHALL_EEP - Gets current system tick
  */
+/** @req SWS_Eep_00113 */
+/** @req SWS_Eep_00106 */
 static uint32 Eep_GetTick(void)
 {
     /* For bare-metal: this should use a system tick counter */
@@ -272,6 +292,7 @@ static uint32 Eep_GetTick(void)
  * @param ConfigPtr Pointer to configuration structure
  * @requirement Eep-100: Initialize to IDLE
  */
+/** @req SWS_Eep_00001 */
 void Eep_Init(const Eep_ConfigType* ConfigPtr)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
@@ -303,6 +324,7 @@ void Eep_Init(const Eep_ConfigType* ConfigPtr)
  * @req SHALL_EEP - De-initializes the EEPROM module
  * @requirement Eep-200: Reset to UNINIT
  */
+/** @req SWS_Eep_00002 */
 void Eep_DeInit(void)
 {
     Eep_ResetInternalState();
@@ -317,6 +339,7 @@ void Eep_DeInit(void)
  * @return E_OK if accepted
  * @requirement Eep-300: Asynchronous read
  */
+/** @req SWS_Eep_00003 */
 Std_ReturnType Eep_Read(Eep_AddressType Address, uint8* DataPtr, Eep_LengthType Length)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
@@ -371,6 +394,7 @@ Std_ReturnType Eep_Read(Eep_AddressType Address, uint8* DataPtr, Eep_LengthType 
  * @return E_OK if accepted
  * @requirement Eep-400: Asynchronous write
  */
+/** @req SWS_Eep_00004 */
 Std_ReturnType Eep_Write(Eep_AddressType Address, const uint8* DataPtr, Eep_LengthType Length)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
@@ -424,6 +448,7 @@ Std_ReturnType Eep_Write(Eep_AddressType Address, const uint8* DataPtr, Eep_Leng
  * @return E_OK if accepted
  * @requirement Eep-500: Asynchronous erase
  */
+/** @req SWS_Eep_00005 */
 Std_ReturnType Eep_Erase(Eep_AddressType Address, Eep_LengthType Length)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)
@@ -466,6 +491,7 @@ Std_ReturnType Eep_Erase(Eep_AddressType Address, Eep_LengthType Length)
  * @requirement Eep-600: Cancel
  */
 #if (EEP_CANCEL_API == STD_ON)
+/** @req SWS_Eep_00006 */
 void Eep_Cancel(void)
 {
     if (Eep_State.Status != EEP_UNINIT) {
@@ -482,6 +508,7 @@ void Eep_Cancel(void)
  * @return Current status
  * @requirement Eep-700: Get status
  */
+/** @req SWS_Eep_00007 */
 Eep_StatusType Eep_GetStatus(void)
 {
     if (Eep_State.Status == EEP_UNINIT) {
@@ -499,6 +526,7 @@ Eep_StatusType Eep_GetStatus(void)
  * @return Last job result
  * @requirement Eep-800: Get job result
  */
+/** @req SWS_Eep_00008 */
 Eep_JobResultType Eep_GetJobResult(void)
 {
     return Eep_State.JobResult;
@@ -509,6 +537,7 @@ Eep_JobResultType Eep_GetJobResult(void)
  * @req SHALL_EEP - Main function called periodically
  * @requirement Eep-900: Process pending operations
  */
+/** @req SWS_Eep_00009 */
 void Eep_MainFunction(void)
 {
     if (Eep_State.Status != EEP_BUSY) {
@@ -542,6 +571,7 @@ void Eep_MainFunction(void)
  * @requirement Eep-1000: Version info
  */
 #if (EEP_VERSION_INFO_API == STD_ON)
+/** @req SWS_Eep_00010 */
 void Eep_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (EEP_DEV_ERROR_DETECT == STD_ON)

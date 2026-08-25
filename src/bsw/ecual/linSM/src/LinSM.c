@@ -128,6 +128,7 @@ static Std_ReturnType LinSM_ValidateSchedule(uint8 Channel, uint8 Schedule);
  * Service Functions Implementation
  *===============================================================================*/
 
+/** @req SWS_LinSM_00001 */
 void LinSM_Init(const LinSM_ConfigType *ConfigPtr)
 {
     uint8 channelIdx;
@@ -169,6 +170,7 @@ void LinSM_Init(const LinSM_ConfigType *ConfigPtr)
     LinSM_ModuleState = LINSM_STATE_INIT;
 }
 
+/** @req SWS_LinSM_00002 */
 void LinSM_DeInit(void)
 {
     uint8 channelIdx;
@@ -192,6 +194,7 @@ void LinSM_DeInit(void)
     LinSM_ModuleState = LINSM_STATE_UNINIT;
 }
 
+/** @req SWS_LinSM_00003 */
 Std_ReturnType LinSM_RequestComMode(uint8 Channel, ComM_ModeType Mode)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)
@@ -228,6 +231,7 @@ Std_ReturnType LinSM_RequestComMode(uint8 Channel, ComM_ModeType Mode)
     return E_OK;
 }
 
+/** @req SWS_LinSM_00004 */
 Std_ReturnType LinSM_GetCurrentComMode(uint8 Channel, ComM_ModeType *Mode)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)
@@ -249,6 +253,7 @@ Std_ReturnType LinSM_GetCurrentComMode(uint8 Channel, ComM_ModeType *Mode)
     return E_OK;
 }
 
+/** @req SWS_LinSM_00005 */
 Std_ReturnType LinSM_ScheduleRequest(uint8 Channel, uint8 Schedule)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)
@@ -291,6 +296,7 @@ Std_ReturnType LinSM_ScheduleRequest(uint8 Channel, uint8 Schedule)
 }
 
 #if (LINSM_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinSM_00006 */
 void LinSM_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)
@@ -309,6 +315,7 @@ void LinSM_GetVersionInfo(Std_VersionInfoType *VersionInfo)
 }
 #endif
 
+/** @req SWS_LinSM_00007 */
 void LinSM_MainFunction(void)
 {
     uint8 channelIdx;
@@ -339,6 +346,7 @@ void LinSM_MainFunction(void)
  * Callback Functions
  *===============================================================================*/
 
+/** @req SWS_LinSM_00100 */
 void LinSM_WakeUpConfirmation(uint8 Channel, boolean Success)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)
@@ -379,6 +387,7 @@ void LinSM_WakeUpConfirmation(uint8 Channel, boolean Success)
     }
 }
 
+/** @req SWS_LinSM_00101 */
 void LinSM_GoToSleepConfirmation(uint8 Channel, boolean Success)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)
@@ -409,6 +418,7 @@ void LinSM_GoToSleepConfirmation(uint8 Channel, boolean Success)
     }
 }
 
+/** @req SWS_LinSM_00102 */
 void LinSM_ScheduleTableRequest(uint8 Channel, uint8 Schedule)
 {
     #if (LINSM_DEV_ERROR_DETECT == STD_ON)

@@ -38,6 +38,7 @@ static void LinMaster_Diag_BuildRequest(const LinMaster_Diag_RequestType* Reques
 /**
  * @brief 初始化诊断模块
  */
+/** @req SWS_Lin_00090 */
 LinMaster_Diag_StatusType LinMaster_Diag_Init(void)
 {
     (void)memset(&DiagRuntime, 0, sizeof(LinMaster_Diag_RuntimeType));
@@ -68,6 +69,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_Init(void)
 /**
  * @brief 反初始化诊断模块
  */
+/** @req SWS_Lin_00091 */
 void LinMaster_Diag_DeInit(void)
 {
     DiagInitialized = FALSE;
@@ -180,6 +182,7 @@ static LinMaster_Diag_StatusType LinMaster_Diag_ProcessResponse(const uint8* Dat
 /**
  * @brief 发送诊断请求
  */
+/** @req SWS_Lin_00092 */
 LinMaster_Diag_StatusType LinMaster_Diag_SendRequest(
     const LinMaster_Diag_RequestType* RequestPtr
 )
@@ -226,6 +229,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_SendRequest(
 /**
  * @brief 获取诊断响应
  */
+/** @req SWS_Lin_00093 */
 LinMaster_Diag_StatusType LinMaster_Diag_GetResponse(
     LinMaster_Diag_ResponseType* ResponsePtr
 )
@@ -260,6 +264,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetResponse(
 /**
  * @brief 注册回调函数
  */
+/** @req SWS_Lin_00094 */
 void LinMaster_Diag_RegisterCallback(
     LinMaster_Diag_CallbackFuncType Callback
 )
@@ -274,6 +279,7 @@ void LinMaster_Diag_RegisterCallback(
 /**
  * @brief 检查请求是否完成
  */
+/** @req SWS_Lin_00095 */
 boolean LinMaster_Diag_IsRequestComplete(void)
 {
     if (DiagInitialized == 0U) {
@@ -288,6 +294,7 @@ boolean LinMaster_Diag_IsRequestComplete(void)
 /**
  * @brief 获取最后错误码
  */
+/** @req SWS_Lin_00096 */
 LinMaster_Diag_StatusType LinMaster_Diag_GetLastError(void)
 {
     return DiagRuntime.LastError;
@@ -296,6 +303,7 @@ LinMaster_Diag_StatusType LinMaster_Diag_GetLastError(void)
 /**
  * @brief 设置响应超时时间
  */
+/** @req SWS_Lin_00097 */
 void LinMaster_Diag_SetTimeout(uint32 TimeoutMs)
 {
     if (DiagInitialized == 0U) {
@@ -310,6 +318,7 @@ void LinMaster_Diag_SetTimeout(uint32 TimeoutMs)
 /**
  * @brief 取消当前请求
  */
+/** @req SWS_Lin_00098 */
 void LinMaster_Diag_CancelRequest(void)
 {
     if (DiagInitialized == 0U) {
@@ -323,6 +332,7 @@ void LinMaster_Diag_CancelRequest(void)
 /**
  * @brief 诊断主函数 - 状态机管理
  */
+/** @req SWS_Lin_00099 */
 void LinMaster_Diag_MainFunction(void)
 {
     LinMaster_Diag_StatusType status;
@@ -415,6 +425,7 @@ void LinMaster_Diag_MainFunction(void)
 /**
  * @brief 诊断会话控制 (0x10)
  */
+/** @req SWS_Lin_00100 */
 LinMaster_Diag_StatusType LinMaster_Diag_SessionControl(
     uint8 SessionType
 )
@@ -431,12 +442,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_SessionControl(
     request.Length = 0;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief ECU复位 (0x11)
  */
+/** @req SWS_Lin_00101 */
 LinMaster_Diag_StatusType LinMaster_Diag_EcuReset(
     uint8 ResetType
 )
@@ -453,12 +466,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_EcuReset(
     request.Length = 0;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 读取数据By标识符 (0x22)
  */
+/** @req SWS_Lin_00102 */
 LinMaster_Diag_StatusType LinMaster_Diag_ReadDataById(
     uint16 Did
 )
@@ -479,12 +494,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDataById(
     request.Length = 2;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 写入数据By标识符 (0x2E)
  */
+/** @req SWS_Lin_00103 */
 LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
     uint16 Did,
     const uint8* DataPtr,
@@ -517,12 +534,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_WriteDataById(
     request.Length = 2U + Length;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 安全访问 (0x27)
  */
+/** @req SWS_Lin_00104 */
 LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     uint8 SubFunc,
     const uint8* KeyPtr,
@@ -552,12 +571,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_SecurityAccess(
     
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 例行程序控制 (0x31)
  */
+/** @req SWS_Lin_00105 */
 LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     uint8 SubFunc,
     uint16 Rid,
@@ -596,12 +617,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_RoutineControl(
     
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 清除诊断信息 (0x14)
  */
+/** @req SWS_Lin_00106 */
 LinMaster_Diag_StatusType LinMaster_Diag_ClearDiagnosticInformation(
     uint32 GroupOfDTC
 )
@@ -623,12 +646,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_ClearDiagnosticInformation(
     request.Length = 3;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 读取DTC信息 (0x19)
  */
+/** @req SWS_Lin_00107 */
 LinMaster_Diag_StatusType LinMaster_Diag_ReadDTCInformation(
     uint8 SubFunc,
     uint8 DTCStatusMask
@@ -649,12 +674,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_ReadDTCInformation(
     request.Length = 1;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief TesterPresent (0x3E)
  */
+/** @req SWS_Lin_00108 */
 LinMaster_Diag_StatusType LinMaster_Diag_TesterPresent(
     uint8 SubFunc
 )
@@ -671,12 +698,14 @@ LinMaster_Diag_StatusType LinMaster_Diag_TesterPresent(
     request.Length = 0;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }
 
 /**
  * @brief 通信控制 (0x28)
  */
+/** @req SWS_Lin_00109 */
 LinMaster_Diag_StatusType LinMaster_Diag_CommunicationControl(
     uint8 SubFunc,
     uint8 CommunicationType
@@ -697,5 +726,6 @@ LinMaster_Diag_StatusType LinMaster_Diag_CommunicationControl(
     request.Length = 1;
     request.IsFunctional = FALSE;
     
+    /** @req SWS_Lin_00092 */
     return LinMaster_Diag_SendRequest(&request);
 }

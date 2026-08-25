@@ -104,6 +104,7 @@ void init_fls_test_config(void)
 /*==================================================================================================
  *                                    INITIALIZATION TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00001 */
 void test_fls_init_valid(void)
 {
     printf("\n=== Fls_Init Valid Tests ===\n");
@@ -120,6 +121,7 @@ void test_fls_init_valid(void)
     TEST_ASSERT_EQ(MEMIF_JOB_OK, Fls_GetJobResult());
 }
 
+/** @req SWS_Fls_00001 */
 void test_fls_init_null_config(void)
 {
     printf("\n=== Fls_Init NULL Config Test ===\n");
@@ -132,6 +134,7 @@ void test_fls_init_null_config(void)
     TEST_ASSERT(Fls_GetStatus() == FLS_UNINIT || Fls_GetStatus() == FLS_IDLE);
 }
 
+/** @req SWS_Fls_00001 */
 void test_fls_init_multiple(void)
 {
     printf("\n=== Fls_Init Multiple Tests ===\n");
@@ -152,6 +155,7 @@ void test_fls_init_multiple(void)
 /*==================================================================================================
  *                                    ERASE TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00002 */
 void test_fls_erase_valid(void)
 {
     Std_ReturnType result;
@@ -177,6 +181,7 @@ void test_fls_erase_valid(void)
     TEST_ASSERT_EQ(MEMIF_JOB_OK, Fls_GetJobResult());
 }
 
+/** @req SWS_Fls_00002 */
 void test_fls_erase_invalid_address(void)
 {
     Std_ReturnType result;
@@ -195,6 +200,7 @@ void test_fls_erase_invalid_address(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
+/** @req SWS_Fls_00002 */
 void test_fls_erase_invalid_length(void)
 {
     Std_ReturnType result;
@@ -209,6 +215,7 @@ void test_fls_erase_invalid_length(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
+/** @req SWS_Fls_00002 */
 void test_fls_erase_while_busy(void)
 {
     Std_ReturnType result;
@@ -232,6 +239,7 @@ void test_fls_erase_while_busy(void)
     }
 }
 
+/** @req SWS_Fls_00002 */
 void test_fls_erase_uninit(void)
 {
     Std_ReturnType result;
@@ -250,6 +258,7 @@ void test_fls_erase_uninit(void)
 /*==================================================================================================
  *                                    WRITE TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00003 */
 void test_fls_write_valid(void)
 {
     Std_ReturnType result;
@@ -278,6 +287,7 @@ void test_fls_write_valid(void)
     TEST_ASSERT_EQ(MEMIF_JOB_OK, Fls_GetJobResult());
 }
 
+/** @req SWS_Fls_00003 */
 void test_fls_write_null_data(void)
 {
     Std_ReturnType result;
@@ -292,6 +302,7 @@ void test_fls_write_null_data(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
+/** @req SWS_Fls_00003 */
 void test_fls_write_invalid_address(void)
 {
     Std_ReturnType result;
@@ -310,6 +321,7 @@ void test_fls_write_invalid_address(void)
     TEST_ASSERT_EQ(E_NOT_OK, result);
 }
 
+/** @req SWS_Fls_00003 */
 void test_fls_write_while_busy(void)
 {
     Std_ReturnType result;
@@ -335,6 +347,7 @@ void test_fls_write_while_busy(void)
 /*==================================================================================================
  *                                    READ TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00004 */
 void test_fls_read_valid(void)
 {
     printf("\n=== Fls_Read Valid Tests ===\n");
@@ -367,6 +380,7 @@ void test_fls_read_valid(void)
     TEST_ASSERT_EQ(MEMIF_JOB_OK, Fls_GetJobResult());
 }
 
+/** @req SWS_Fls_00004 */
 void test_fls_read_null_buffer(void)
 {
     printf("\n=== Fls_Read NULL Buffer Test ===\n");
@@ -379,6 +393,7 @@ void test_fls_read_null_buffer(void)
     TEST_ASSERT(1); /* Function executed, error depends on DET config */
 }
 
+/** @req SWS_Fls_00004 */
 void test_fls_read_invalid_address(void)
 {
     printf("\n=== Fls_Read Invalid Address Test ===\n");
@@ -395,6 +410,7 @@ void test_fls_read_invalid_address(void)
 /*==================================================================================================
  *                                    COMPARE TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00006 */
 void test_fls_compare_valid(void)
 {
     printf("\n=== Fls_Compare Valid Tests ===\n");
@@ -425,6 +441,7 @@ void test_fls_compare_valid(void)
     TEST_ASSERT_EQ(MEMIF_JOB_OK, Fls_GetJobResult());
 }
 
+/** @req SWS_Fls_00006 */
 void test_fls_compare_mismatch(void)
 {
     uint8 mismatch_data[64];
@@ -463,6 +480,7 @@ void test_fls_compare_mismatch(void)
                 Fls_GetJobResult() == MEMIF_JOB_FAILED);
 }
 
+/** @req SWS_Fls_00006 */
 void test_fls_compare_null_buffer(void)
 {
     printf("\n=== Fls_Compare NULL Buffer Test ===\n");
@@ -479,6 +497,7 @@ void test_fls_compare_null_buffer(void)
 /*==================================================================================================
  *                                    MODE SETTING TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00007 */
 void test_fls_set_mode(void)
 {
     printf("\n=== Fls_SetMode Tests ===\n");
@@ -495,6 +514,7 @@ void test_fls_set_mode(void)
     TEST_ASSERT_EQ(FLS_IDLE, Fls_GetStatus());
 }
 
+/** @req SWS_Fls_00007 */
 void test_fls_set_mode_uninit(void)
 {
     printf("\n=== Fls_SetMode Uninitialized Test ===\n");
@@ -510,6 +530,7 @@ void test_fls_set_mode_uninit(void)
 /*==================================================================================================
  *                                    CANCEL TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00010 */
 void test_fls_cancel(void)
 {
     printf("\n=== Fls_Cancel Tests ===\n");
@@ -531,6 +552,7 @@ void test_fls_cancel(void)
     TEST_ASSERT_EQ(MEMIF_JOB_CANCELED, Fls_GetJobResult());
 }
 
+/** @req SWS_Fls_00010 */
 void test_fls_cancel_idle(void)
 {
     printf("\n=== Fls_Cancel When Idle Test ===\n");
@@ -549,6 +571,7 @@ void test_fls_cancel_idle(void)
 /*==================================================================================================
  *                                    STATUS TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00008 */
 void test_fls_get_status(void)
 {
     printf("\n=== Fls_GetStatus Tests ===\n");
@@ -576,6 +599,7 @@ void test_fls_get_status(void)
     TEST_ASSERT_EQ(FLS_IDLE, Fls_GetStatus());
 }
 
+/** @req SWS_Fls_00009 */
 void test_fls_get_job_result(void)
 {
     printf("\n=== Fls_GetJobResult Tests ===\n");
@@ -600,6 +624,7 @@ void test_fls_get_job_result(void)
 /*==================================================================================================
  *                                    MAIN FUNCTION TESTS
  *==================================================================================================*/
+/** @req SWS_Fls_00011 */
 void test_fls_main_function(void)
 {
     printf("\n=== Fls_MainFunction Tests ===\n");
@@ -626,6 +651,7 @@ void test_fls_main_function(void)
 /*==================================================================================================
  *                                    VERSION INFO TESTS
  *==================================================================================================*/
+/* @req SWS_Fls_00201 */
 void test_fls_version_info(void)
 {
     printf("\n=== Fls_GetVersionInfo Tests ===\n");
@@ -649,6 +675,7 @@ void test_fls_version_info(void)
 #endif
 }
 
+/* @req SWS_Fls_00202 */
 void test_fls_version_info_null(void)
 {
     printf("\n=== Fls_GetVersionInfo NULL Test ===\n");
@@ -668,6 +695,7 @@ void test_fls_version_info_null(void)
  *                                    READ SYNC TESTS
  *==================================================================================================*/
 #if (FLS_USE_ISR == STD_OFF)
+/** @req SWS_Fls_00004 */
 void test_fls_read_sync(void)
 {
     Std_ReturnType result;
@@ -700,6 +728,7 @@ void test_fls_read_sync(void)
 /*==================================================================================================
  *                                    ENDURANCE TESTS
  *==================================================================================================*/
+/* @req SWS_Fls_00203 */
 void test_fls_multiple_operations(void)
 {
     printf("\n=== Fls Multiple Operations Test ===\n");

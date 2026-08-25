@@ -172,6 +172,7 @@ static int teardown(void **state)
 /*==================================================================================================
  *                              E2E Library API Tests
  *================================================================================================*/
+/** @req SWS_E2E_00001 */
 static void test_E2E_Init_Valid(void **state)
 {
     (void)state;
@@ -180,6 +181,7 @@ static void test_E2E_Init_Valid(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_E2E_00001 */
 static void test_E2E_DeInit(void **state)
 {
     (void)state;

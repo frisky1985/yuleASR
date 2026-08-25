@@ -72,6 +72,7 @@ static const Adc_ConfigType* Adc_ConfigPtr = NULL_PTR;
 #define ADC_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/** @req SWS_Adc_00101 */
 static uint32 Adc_GetBaseAddr(Adc_HWUnitType hwUnit)
 {
     uint32 baseAddr;
@@ -82,16 +83,19 @@ static uint32 Adc_GetBaseAddr(Adc_HWUnitType hwUnit)
     return baseAddr;
 }
 
+/** @req SWS_Adc_00102 */
 static void Adc_EnableClock(Adc_HWUnitType hwUnit)
 {
     (void)hwUnit;
 }
 
+/** @req SWS_Adc_00103 */
 static void Adc_DisableClock(Adc_HWUnitType hwUnit)
 {
     (void)hwUnit;
 }
 
+/** @req SWS_Adc_00104 */
 static uint32 Adc_GetResolutionBits(Adc_ResolutionType resolution)
 {
     uint32 bits;
@@ -108,6 +112,7 @@ static uint32 Adc_GetResolutionBits(Adc_ResolutionType resolution)
 #define ADC_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Adc_00001 */
 void Adc_Init(const Adc_ConfigType* ConfigPtr)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -154,6 +159,7 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
 }
 
 #if (ADC_DE_INIT_API == STD_ON)
+/** @req SWS_Adc_00002 */
 void Adc_DeInit(void)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -183,6 +189,7 @@ void Adc_DeInit(void)
 }
 #endif
 
+/** @req SWS_Adc_00003 */
 void Adc_StartGroupConversion(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -240,6 +247,7 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
     }
 }
 
+/** @req SWS_Adc_00004 */
 void Adc_StopGroupConversion(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -269,6 +277,7 @@ void Adc_StopGroupConversion(Adc_GroupType Group)
     Adc_GroupStatus[Group] = ADC_IDLE;
 }
 
+/** @req SWS_Adc_00005 */
 Std_ReturnType Adc_ReadGroup(Adc_GroupType Group, Adc_ValueGroupType* DataBufferPtr)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -296,6 +305,7 @@ Std_ReturnType Adc_ReadGroup(Adc_GroupType Group, Adc_ValueGroupType* DataBuffer
 }
 
 #if (ADC_HW_TRIGGER_API == STD_ON)
+/** @req SWS_Adc_00006 */
 void Adc_EnableHardwareTrigger(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -322,6 +332,7 @@ void Adc_EnableHardwareTrigger(Adc_GroupType Group)
     REG_WRITE32(baseAddr + ADC_GC, gcValue);
 }
 
+/** @req SWS_Adc_00007 */
 void Adc_DisableHardwareTrigger(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -346,6 +357,7 @@ void Adc_DisableHardwareTrigger(Adc_GroupType Group)
 #endif
 
 #if (ADC_GRP_NOTIF_CAPABILITY == STD_ON)
+/** @req SWS_Adc_00008 */
 void Adc_EnableGroupNotification(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -361,6 +373,7 @@ void Adc_EnableGroupNotification(Adc_GroupType Group)
     (void)Group;
 }
 
+/** @req SWS_Adc_00009 */
 void Adc_DisableGroupNotification(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -377,6 +390,7 @@ void Adc_DisableGroupNotification(Adc_GroupType Group)
 }
 #endif
 
+/** @req SWS_Adc_00010 */
 Adc_StatusType Adc_GetGroupStatus(Adc_GroupType Group)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -392,6 +406,7 @@ Adc_StatusType Adc_GetGroupStatus(Adc_GroupType Group)
     return Adc_GroupStatus[Group];
 }
 
+/** @req SWS_Adc_00011 */
 void Adc_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -408,6 +423,7 @@ void Adc_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 
 #if (ADC_GET_STREAM_LAST_POINTER_API == STD_ON)
+/** @req SWS_Adc_00012 */
 Adc_StreamNumSampleType Adc_GetStreamLastPointer(Adc_GroupType Group, Adc_ValueGroupType** PtrToSamplePtr)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -431,6 +447,7 @@ Adc_StreamNumSampleType Adc_GetStreamLastPointer(Adc_GroupType Group, Adc_ValueG
 #endif
 
 #if (ADC_ENABLE_QUEUING == STD_ON)
+/** @req SWS_Adc_00013 */
 Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType* DataBufferPtr)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -454,6 +471,7 @@ Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType* Da
 #endif
 
 #if (ADC_POWER_STATE_SUPPORTED == STD_ON)
+/** @req SWS_Adc_00014 */
 void Adc_SetPowerState(Adc_PowerStateType PowerState, Adc_PowerStateRequestResultType* Result)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -470,6 +488,7 @@ void Adc_SetPowerState(Adc_PowerStateType PowerState, Adc_PowerStateRequestResul
     *Result = ADC_SERVICE_ACCEPTED;
 }
 
+/** @req SWS_Adc_00015 */
 void Adc_GetTargetPowerState(Adc_PowerStateType* TargetPowerState, Adc_PowerStateRequestResultType* Result)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -486,6 +505,7 @@ void Adc_GetTargetPowerState(Adc_PowerStateType* TargetPowerState, Adc_PowerStat
     *Result = ADC_SERVICE_ACCEPTED;
 }
 
+/** @req SWS_Adc_00016 */
 void Adc_GetCurrentPowerState(Adc_PowerStateType* CurrentPowerState, Adc_PowerStateRequestResultType* Result)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)
@@ -502,6 +522,7 @@ void Adc_GetCurrentPowerState(Adc_PowerStateType* CurrentPowerState, Adc_PowerSt
     *Result = ADC_SERVICE_ACCEPTED;
 }
 
+/** @req SWS_Adc_00017 */
 void Adc_PreparePowerState(Adc_PowerStateType PowerState, Adc_PowerStateRequestResultType* Result)
 {
     #if (ADC_DEV_ERROR_DETECT == STD_ON)

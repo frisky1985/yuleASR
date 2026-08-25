@@ -54,6 +54,7 @@ static IoHwAb_ChannelEntryType* IoHwAb_FindChannel(uint16 ChannelId)
     return NULL_PTR;
 }
 
+/** @req SWS_IoHwAb_00001 */
 void IoHwAb_Init(const IoHwAb_ConfigType* ConfigPtr)
 {
 #if (IOHWAB_DEV_ERROR_DETECT == STD_ON)
@@ -82,6 +83,7 @@ void IoHwAb_Init(const IoHwAb_ConfigType* ConfigPtr)
     IoHwAb_State.state = IOHWAB_INTERNAL_INIT;
 }
 
+/** @req SWS_IoHwAb_00002 */
 void IoHwAb_DeInit(void)
 {
     IoHwAb_State.state = IOHWAB_INTERNAL_UNINIT;
@@ -123,11 +125,13 @@ IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, uint8 Value)
     return IOHWAB_OK;
 }
 
+/** @req SWS_IoHwAb_00004 */
 void IoHwAb_MainFunction(void)
 {
     if (IoHwAb_State.state < IOHWAB_INTERNAL_INIT) { return; }
 }
 
+/** @req SWS_IoHwAb_00003 */
 void IoHwAb_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) { return; }

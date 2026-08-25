@@ -230,12 +230,14 @@ extern const FrIf_ConfigType FrIf_Config;
 #define FRIF_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_FrIf_00001 */
 /**
  * @brief Initializes the FlexRay Interface
  * @param ConfigPtr Pointer to configuration structure
  */
 void FrIf_Init(const FrIf_ConfigType* ConfigPtr);
 
+/** @req SWS_FrIf_00004 */
 /**
  * @brief Initializes a controller
  * @param FrIf_CtrlIdx Controller index
@@ -243,6 +245,7 @@ void FrIf_Init(const FrIf_ConfigType* ConfigPtr);
  */
 Std_ReturnType FrIf_ControllerInit(uint8 FrIf_CtrlIdx);
 
+/** @req SWS_FrIf_00005 */
 /**
  * @brief Sets absolute timer
  * @param FrIf_CtrlIdx Controller index
@@ -256,6 +259,7 @@ Std_ReturnType FrIf_SetAbsoluteTimer(uint8 FrIf_CtrlIdx,
                                       uint8 FrIf_Cycle,
                                       uint16 FrIf_Offset);
 
+/** @req SWS_FrIf_00006 */
 /**
  * @brief Sets relative timer
  * @param FrIf_CtrlIdx Controller index
@@ -267,6 +271,7 @@ Std_ReturnType FrIf_SetRelativeTimer(uint8 FrIf_CtrlIdx,
                                       uint8 FrIf_RelTimerIdx,
                                       uint16 FrIf_Offset);
 
+/** @req SWS_FrIf_00007 */
 /**
  * @brief Cancels absolute timer
  * @param FrIf_CtrlIdx Controller index
@@ -275,6 +280,7 @@ Std_ReturnType FrIf_SetRelativeTimer(uint8 FrIf_CtrlIdx,
  */
 Std_ReturnType FrIf_CancelAbsoluteTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_AbsTimerIdx);
 
+/** @req SWS_FrIf_00008 */
 /**
  * @brief Cancels relative timer
  * @param FrIf_CtrlIdx Controller index
@@ -283,6 +289,7 @@ Std_ReturnType FrIf_CancelAbsoluteTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_AbsTimerI
  */
 Std_ReturnType FrIf_CancelRelativeTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_RelTimerIdx);
 
+/** @req SWS_FrIf_00009 */
 /**
  * @brief Transmits a PDU
  * @param FrIf_TxPduId PDU ID
@@ -291,6 +298,7 @@ Std_ReturnType FrIf_CancelRelativeTimer(uint8 FrIf_CtrlIdx, uint8 FrIf_RelTimerI
  */
 Std_ReturnType FrIf_Transmit(PduIdType FrIf_TxPduId, const PduInfoType* FrIf_PduInfoPtr);
 
+/** @req SWS_FrIf_00010 */
 /**
  * @brief Gets POC status
  * @param FrIf_CtrlIdx Controller index
@@ -299,6 +307,7 @@ Std_ReturnType FrIf_Transmit(PduIdType FrIf_TxPduId, const PduInfoType* FrIf_Pdu
  */
 Std_ReturnType FrIf_GetPOCStatus(uint8 FrIf_CtrlIdx, FrIf_POCStatusType* FrIf_POCStatusPtr);
 
+/** @req SWS_FrIf_00011 */
 /**
  * @brief Gets global time
  * @param FrIf_CtrlIdx Controller index
@@ -310,6 +319,7 @@ Std_ReturnType FrIf_GetGlobalTime(uint8 FrIf_CtrlIdx,
                                    uint8* FrIf_CyclePtr,
                                    uint16* FrIf_MacrotickPtr);
 
+/** @req SWS_FrIf_00012 */
 /**
  * @brief Allows coldstart
  * @param FrIf_CtrlIdx Controller index
@@ -317,6 +327,7 @@ Std_ReturnType FrIf_GetGlobalTime(uint8 FrIf_CtrlIdx,
  */
 Std_ReturnType FrIf_AllowColdstart(uint8 FrIf_CtrlIdx);
 
+/** @req SWS_FrIf_00013 */
 /**
  * @brief Halts communication
  * @param FrIf_CtrlIdx Controller index
@@ -324,6 +335,7 @@ Std_ReturnType FrIf_AllowColdstart(uint8 FrIf_CtrlIdx);
  */
 Std_ReturnType FrIf_HaltCommunication(uint8 FrIf_CtrlIdx);
 
+/** @req SWS_FrIf_00014 */
 /**
  * @brief Aborts communication
  * @param FrIf_CtrlIdx Controller index
@@ -331,6 +343,7 @@ Std_ReturnType FrIf_HaltCommunication(uint8 FrIf_CtrlIdx);
  */
 Std_ReturnType FrIf_AbortCommunication(uint8 FrIf_CtrlIdx);
 
+/** @req SWS_FrIf_00015 */
 /**
  * @brief Sends wakeup pattern
  * @param FrIf_CtrlIdx Controller index
@@ -338,6 +351,7 @@ Std_ReturnType FrIf_AbortCommunication(uint8 FrIf_CtrlIdx);
  */
 Std_ReturnType FrIf_SendWUP(uint8 FrIf_CtrlIdx);
 
+/** @req SWS_FrIf_00016 */
 /**
  * @brief Sets wakeup channel
  * @param FrIf_CtrlIdx Controller index
@@ -346,12 +360,14 @@ Std_ReturnType FrIf_SendWUP(uint8 FrIf_CtrlIdx);
  */
 Std_ReturnType FrIf_SetWakeupChannel(uint8 FrIf_CtrlIdx, FrIf_ChannelType FrIf_ChnlIdx);
 
+/** @req SWS_FrIf_00002 */
 /**
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  */
 void FrIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/** @req SWS_FrIf_00003 */
 /**
  * @brief Main function for periodic processing
  */

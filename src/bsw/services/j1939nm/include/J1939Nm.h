@@ -172,12 +172,14 @@ extern const J1939Nm_ConfigType J1939Nm_Config;
 #define J1939NM_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_J1939Nm_00001 */
 /**
  * @brief Initializes the J1939 Network Management module
  * @param ConfigPtr Pointer to configuration structure
  */
 extern void J1939Nm_Init(const J1939Nm_ConfigType* ConfigPtr);
 
+/** @req SWS_J1939Nm_00002 */
 /**
  * @brief Deinitializes the J1939 Network Management module
  */
@@ -188,9 +190,11 @@ extern void J1939Nm_DeInit(void);
  * @param VersionInfo Pointer to version info structure
  */
 #if (J1939NM_VERSION_INFO_API == STD_ON)
+/** @req SWS_J1939Nm_00003 */
 extern void J1939Nm_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 #endif
 
+/** @req SWS_J1939Nm_00005 */
 /**
  * @brief Gets the current NM state for a channel
  * @param Channel Channel ID
@@ -199,6 +203,7 @@ extern void J1939Nm_GetVersionInfo(Std_VersionInfoType* VersionInfo);
  */
 extern Std_ReturnType J1939Nm_GetState(J1939Nm_ChannelType Channel, J1939Nm_StateType* State);
 
+/** @req SWS_J1939Nm_00006 */
 /**
  * @brief Gets the bus-off state for a channel
  * @param Channel Channel ID
@@ -207,6 +212,7 @@ extern Std_ReturnType J1939Nm_GetState(J1939Nm_ChannelType Channel, J1939Nm_Stat
  */
 extern Std_ReturnType J1939Nm_GetBusOffState(J1939Nm_ChannelType Channel, boolean* BusOffState);
 
+/** @req SWS_J1939Nm_00007 */
 /**
  * @brief Sets the bus-off state for a channel
  * @param Channel Channel ID
@@ -215,6 +221,7 @@ extern Std_ReturnType J1939Nm_GetBusOffState(J1939Nm_ChannelType Channel, boolea
  */
 extern Std_ReturnType J1939Nm_SetBusOffState(J1939Nm_ChannelType Channel, boolean BusOffState);
 
+/** @req SWS_J1939Nm_00008 */
 /**
  * @brief Gets the current address for a channel
  * @param Channel Channel ID
@@ -223,6 +230,7 @@ extern Std_ReturnType J1939Nm_SetBusOffState(J1939Nm_ChannelType Channel, boolea
  */
 extern Std_ReturnType J1939Nm_GetAddress(J1939Nm_ChannelType Channel, J1939Nm_AddressType* Address);
 
+/** @req SWS_J1939Nm_00009 */
 /**
  * @brief Sets the address for a channel
  * @param Channel Channel ID
@@ -231,6 +239,7 @@ extern Std_ReturnType J1939Nm_GetAddress(J1939Nm_ChannelType Channel, J1939Nm_Ad
  */
 extern Std_ReturnType J1939Nm_SetAddress(J1939Nm_ChannelType Channel, J1939Nm_AddressType Address);
 
+/** @req SWS_J1939Nm_00010 */
 /**
  * @brief Gets the NAME for a channel
  * @param Channel Channel ID
@@ -239,6 +248,7 @@ extern Std_ReturnType J1939Nm_SetAddress(J1939Nm_ChannelType Channel, J1939Nm_Ad
  */
 extern Std_ReturnType J1939Nm_GetName(J1939Nm_ChannelType Channel, J1939Nm_NameType* Name);
 
+/** @req SWS_J1939Nm_00011 */
 /**
  * @brief Sets the NAME for a channel
  * @param Channel Channel ID
@@ -247,17 +257,20 @@ extern Std_ReturnType J1939Nm_GetName(J1939Nm_ChannelType Channel, J1939Nm_NameT
  */
 extern Std_ReturnType J1939Nm_SetName(J1939Nm_ChannelType Channel, J1939Nm_NameType Name);
 
+/** @req SWS_J1939Nm_00004 */
 /**
  * @brief Main function for J1939NM (to be called periodically)
  */
 extern void J1939Nm_MainFunction(void);
 
+/** @req SWS_J1939Nm_00012 */
 /**
  * @brief Bus-off callback from CanIf
  * @param Channel Channel ID
  */
 extern void J1939Nm_BusOffCbk(J1939Nm_ChannelType Channel);
 
+/** @req SWS_J1939Nm_00013 */
 /**
  * @brief RxIndication callback from CanIf
  * @param Channel Channel ID
@@ -272,6 +285,7 @@ extern void J1939Nm_RxIndication(
     uint8 DataLength
 );
 
+/** @req SWS_J1939Nm_00014 */
 /**
  * @brief TxConfirmation callback from CanIf
  * @param Channel Channel ID
@@ -280,6 +294,7 @@ extern void J1939Nm_RxIndication(
  */
 extern void J1939Nm_TxConfirmation(J1939Nm_ChannelType Channel, PduIdType TxPduId, Std_ReturnType result);
 
+/** @req SWS_J1939Nm_00015 */
 /**
  * @brief Requests transmission of Address Claimed message
  * @param Channel Channel ID
@@ -287,6 +302,7 @@ extern void J1939Nm_TxConfirmation(J1939Nm_ChannelType Channel, PduIdType TxPduI
  */
 extern Std_ReturnType J1939Nm_RequestAddressClaimed(J1939Nm_ChannelType Channel);
 
+/** @req SWS_J1939Nm_00016 */
 /**
  * @brief Requests transmission of Cannot Claim Address message
  * @param Channel Channel ID
@@ -294,6 +310,7 @@ extern Std_ReturnType J1939Nm_RequestAddressClaimed(J1939Nm_ChannelType Channel)
  */
 extern Std_ReturnType J1939Nm_RequestCannotClaimAddress(J1939Nm_ChannelType Channel);
 
+/** @req SWS_J1939Nm_00017 */
 /**
  * @brief Handles address conflict detection
  * @param Channel Channel ID

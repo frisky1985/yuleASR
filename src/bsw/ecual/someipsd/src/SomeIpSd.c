@@ -99,6 +99,7 @@ static void Sd_BuildHeader(uint8* Header, uint8 MsgType)
     Sd_State.sessionId++;
 }
 
+/** @req SWS_SomeIpSd_00001 */
 void SomeIpSd_Init(const void* ConfigPtr)
 {
     Sd_State.state = SD_INTERNAL_UNINIT;
@@ -110,12 +111,14 @@ void SomeIpSd_Init(const void* ConfigPtr)
     Sd_State.state = SD_INTERNAL_INIT;
 }
 
+/** @req SWS_SomeIpSd_00002 */
 void SomeIpSd_DeInit(void)
 {
     Sd_State.state = SD_INTERNAL_UNINIT;
     Sd_State.serviceCount = 0U;
 }
 
+/** @req SWS_SomeIpSd_00005 */
 Std_ReturnType SomeIpSd_FindService(uint16 ServiceId, uint16 InstanceId)
 {
     if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
@@ -148,6 +151,7 @@ Std_ReturnType SomeIpSd_FindService(uint16 ServiceId, uint16 InstanceId)
     return E_OK;
 }
 
+/** @req SWS_SomeIpSd_00006 */
 Std_ReturnType SomeIpSd_OfferService(uint16 ServiceId, uint16 InstanceId)
 {
     if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
@@ -177,6 +181,7 @@ Std_ReturnType SomeIpSd_OfferService(uint16 ServiceId, uint16 InstanceId)
     return E_OK;
 }
 
+/** @req SWS_SomeIpSd_00007 */
 Std_ReturnType SomeIpSd_StopOffer(uint16 ServiceId, uint16 InstanceId)
 {
     if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
@@ -187,6 +192,7 @@ Std_ReturnType SomeIpSd_StopOffer(uint16 ServiceId, uint16 InstanceId)
     return E_OK;
 }
 
+/** @req SWS_SomeIpSd_00008 */
 Std_ReturnType SomeIpSd_SubscribeEventGroup(uint16 ServiceId, uint16 EventGroupId)
 {
     if (Sd_State.state != SD_INTERNAL_INIT) { return E_NOT_OK; }
@@ -206,6 +212,7 @@ SomeIpSd_ServiceStateType SomeIpSd_GetServiceState(uint16 ServiceId, uint16 Inst
     return entry->State;
 }
 
+/** @req SWS_SomeIpSd_00009 */
 void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     if ((NULL_PTR == PduInfoPtr) || (NULL_PTR == PduInfoPtr->SduDataPtr)) { return; }
@@ -227,6 +234,7 @@ void SomeIpSd_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 }
 
+/** @req SWS_SomeIpSd_00004 */
 void SomeIpSd_MainFunction(void)
 {
     if (Sd_State.state != SD_INTERNAL_INIT) { return; }
@@ -255,6 +263,7 @@ void SomeIpSd_MainFunction(void)
     }
 }
 
+/** @req SWS_SomeIpSd_00003 */
 void SomeIpSd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) { return; }

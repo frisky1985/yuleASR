@@ -85,6 +85,7 @@ static const Wdgm_ConfigType testConfig = {
  *  TEST FUNCTIONS
  *===========================================================================*/
 
+/** @req SWS_WdgM_00001 */
 static int test_Init(void)
 {
     printf("TEST: Wdgm_Init\n");
@@ -111,6 +112,7 @@ static int test_Init(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00002 */
 static int test_DeInit(void)
 {
     printf("TEST: Wdgm_DeInit\n");
@@ -135,6 +137,7 @@ static int test_DeInit(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00004 */
 static int test_SetMode(void)
 {
     printf("TEST: Wdgm_SetMode\n");
@@ -160,6 +163,7 @@ static int test_SetMode(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00007 */
 static int test_CheckpointReached(void)
 {
     printf("TEST: Wdgm_CheckpointReached\n");
@@ -188,6 +192,7 @@ static int test_CheckpointReached(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00009 */
 static int test_GetLocalStatus(void)
 {
     printf("TEST: Wdgm_GetLocalStatus\n");
@@ -211,6 +216,7 @@ static int test_GetLocalStatus(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00012 */
 static int test_GetGlobalStatus(void)
 {
     printf("TEST: Wdgm_GetGlobalStatus\n");
@@ -228,6 +234,7 @@ static int test_GetGlobalStatus(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00013 */
 static int test_MainFunction(void)
 {
     printf("TEST: Wdgm_MainFunction\n");
@@ -255,6 +262,7 @@ static int test_MainFunction(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00015 */
 static int test_PerformReset(void)
 {
     printf("TEST: Wdgm_PerformReset\n");
@@ -275,6 +283,7 @@ static int test_PerformReset(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00016 */
 static int test_GetFirstExpiredSEID(void)
 {
     printf("TEST: Wdgm_GetFirstExpiredSEID\n");
@@ -291,6 +300,7 @@ static int test_GetFirstExpiredSEID(void)
     return 0;
 }
 
+/** @req SWS_WdgM_00013 */
 static int test_AliveSupervision(void)
 {
     printf("TEST: Alive Supervision\n");

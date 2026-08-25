@@ -242,6 +242,7 @@ STATIC void LinM_ProcessSchedule(LinM_ChannelType Channel)
 /*==================================================================================================
 *                                    GLOBAL FUNCTIONS
 ==================================================================================================*/
+/** @req SWS_LinM_00001 */
 /**
  * @brief Initializes the LIN Master Management module
  * @req SHALL_LINM - Initializes the LIN Master Management module
@@ -275,6 +276,7 @@ void LinM_Init(const LinM_ConfigType* ConfigPtr)
     LinM_Initialized = TRUE;
 }
 
+/** @req SWS_LinM_00002 */
 /**
  * @brief Deinitializes the LIN Master Management module
  * @req SHALL_LINM - Deinitializes the LIN Master Management module
@@ -308,6 +310,7 @@ void LinM_DeInit(void)
  * @req SHALL_LINM - Gets version information
  */
 #if (LINM_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinM_00003 */
 void LinM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR) {
@@ -325,6 +328,7 @@ void LinM_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 }
 #endif
 
+/** @req SWS_LinM_00005 */
 /**
  * @brief Initializes a schedule for a channel
  * @req SHALL_LINM - Initializes a schedule for a channel
@@ -360,6 +364,7 @@ Std_ReturnType LinM_InitSchedule(LinM_ChannelType Channel, LinM_ScheduleType Sch
     return result;
 }
 
+/** @req SWS_LinM_00006 */
 /**
  * @brief Starts a schedule for a channel
  * @req SHALL_LINM - Starts a schedule for a channel
@@ -400,6 +405,7 @@ Std_ReturnType LinM_StartSchedule(LinM_ChannelType Channel, LinM_ScheduleType Sc
     return result;
 }
 
+/** @req SWS_LinM_00007 */
 /**
  * @brief Stops a schedule for a channel
  * @req SHALL_LINM - Stops a schedule for a channel
@@ -429,6 +435,7 @@ Std_ReturnType LinM_StopSchedule(LinM_ChannelType Channel)
     return result;
 }
 
+/** @req SWS_LinM_00008 */
 /**
  * @brief Sets schedule mode for a channel
  * @req SHALL_LINM - Sets schedule mode for a channel
@@ -463,6 +470,7 @@ Std_ReturnType LinM_SetScheduleMode(LinM_ChannelType Channel, LinM_ScheduleModeT
     return result;
 }
 
+/** @req SWS_LinM_00009 */
 /**
  * @brief Gets schedule status for a channel
  * @req SHALL_LINM - Gets schedule status for a channel
@@ -494,6 +502,7 @@ Std_ReturnType LinM_GetScheduleStatus(LinM_ChannelType Channel, LinM_ScheduleSta
     return result;
 }
 
+/** @req SWS_LinM_00004 */
 /**
  * @brief Main function for LinM (to be called periodically)
  * @req SHALL_LINM - Main function for LinM (to be called periodically)
@@ -511,6 +520,7 @@ void LinM_MainFunction(void)
     }
 }
 
+/** @req SWS_LinM_00010 */
 /**
  * @brief Sends wakeup signal on LIN bus
  * @req SHALL_LINM - Sends wakeup signal on LIN bus
@@ -540,6 +550,7 @@ Std_ReturnType LinM_WakeUp(LinM_ChannelType Channel)
     return result;
 }
 
+/** @req SWS_LinM_00011 */
 /**
  * @brief Sends go-to-sleep command on LIN bus
  * @req SHALL_LINM - Sends go-to-sleep command on LIN bus
@@ -569,6 +580,7 @@ Std_ReturnType LinM_GotoSleep(LinM_ChannelType Channel)
     return result;
 }
 
+/** @req SWS_LinM_00012 */
 /**
  * @brief Gets slave response status
  * @req SHALL_LINM - Gets slave response status

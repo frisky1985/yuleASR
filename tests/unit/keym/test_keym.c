@@ -11,6 +11,7 @@
 #include "KeyM_Cfg.h"
 
 /* Test: KeyM_Init */
+/** @req SWS_KeyM_00001 */
 static void test_KeyM_Init(void **state)
 {
     (void)state;
@@ -21,6 +22,7 @@ static void test_KeyM_Init(void **state)
 }
 
 /* Test: KeyM_DeInit */
+/** @req SWS_KeyM_00001 */
 static void test_KeyM_DeInit(void **state)
 {
     (void)state;
@@ -30,6 +32,7 @@ static void test_KeyM_DeInit(void **state)
 }
 
 /* Test: KeyM_GetVersionInfo */
+/** @req SWS_KeyM_00003 */
 static void test_KeyM_GetVersionInfo(void **state)
 {
     (void)state;
@@ -40,6 +43,7 @@ static void test_KeyM_GetVersionInfo(void **state)
 }
 
 /* Test: KeyM_MainFunction */
+/** @req SWS_KeyM_00004 */
 static void test_KeyM_MainFunction(void **state)
 {
     (void)state;
@@ -59,6 +63,7 @@ static void test_KeyM_StartKeyExchange(void **state)
 }
 
 /* Test: KeyM_FinalizeKeyExchange */
+/** @req SWS_KeyM_00008 */
 static void test_KeyM_FinalizeKeyExchange(void **state)
 {
     (void)state;
@@ -69,6 +74,7 @@ static void test_KeyM_FinalizeKeyExchange(void **state)
 }
 
 /* Test: KeyM_SetKey */
+/** @req SWS_KeyM_00005 */
 static void test_KeyM_SetKey(void **state)
 {
     (void)state;
@@ -82,6 +88,7 @@ static void test_KeyM_SetKey(void **state)
 }
 
 /* Test: KeyM_GetKey */
+/** @req SWS_KeyM_00006 */
 static void test_KeyM_GetKey(void **state)
 {
     (void)state;

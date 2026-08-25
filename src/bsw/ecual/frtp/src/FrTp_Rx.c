@@ -46,6 +46,7 @@ static void FrTp_ProcessFlowControlRx(FrTp_ConnectionIdxType connIdx, const PduI
 #include "MemMap.h"
 #include <string.h>
 
+/** @req SWS_FrTp_00009 */
 /**
  * @brief Handles reception indication from FrIf
  * @param RxPduId Received PDU ID
@@ -116,6 +117,7 @@ void FrTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 }
 
+/** @req SWS_FrTp_00007 */
 /**
  * @brief Cancels an ongoing reception
  * @param RxPduId PDU to cancel

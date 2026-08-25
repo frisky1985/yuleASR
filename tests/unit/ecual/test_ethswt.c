@@ -134,17 +134,20 @@ static void setup_default_config(void)
 *                                      TEST CASES
 *==================================================================================================*/
 
+/** @req SWS_EthSwt_00001 */
 TEST_CASE(ethswt_init_valid)
 {
     setup_default_config();
     EthSwt_Init(&g_test_config);
 }
 
+/** @req SWS_EthSwt_00001 */
 TEST_CASE(ethswt_init_null)
 {
     EthSwt_Init(NULL_PTR);
 }
 
+/** @req SWS_EthSwt_00001 */
 TEST_CASE(ethswt_init_twice)
 {
     setup_default_config();
@@ -152,6 +155,7 @@ TEST_CASE(ethswt_init_twice)
     EthSwt_Init(&g_test_config);
 }
 
+/** @req SWS_EthSwt_00002 */
 TEST_CASE(ethswt_deinit)
 {
     setup_default_config();
@@ -159,11 +163,13 @@ TEST_CASE(ethswt_deinit)
     EthSwt_DeInit();
 }
 
+/** @req SWS_EthSwt_00002 */
 TEST_CASE(ethswt_deinit_uninit)
 {
     EthSwt_DeInit();
 }
 
+/** @req SWS_EthSwt_00004 */
 TEST_CASE(ethswt_set_port_enable)
 {
     setup_default_config();
@@ -172,6 +178,7 @@ TEST_CASE(ethswt_set_port_enable)
     ASSERT_EQ(E_OK, EthSwt_SetPortEnable(0, ETHSWT_PORT_ENABLED));
 }
 
+/** @req SWS_EthSwt_00004 */
 TEST_CASE(ethswt_set_port_enable_invalid)
 {
     setup_default_config();
@@ -179,6 +186,7 @@ TEST_CASE(ethswt_set_port_enable_invalid)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetPortEnable(99, ETHSWT_PORT_ENABLED));
 }
 
+/** @req SWS_EthSwt_00006 */
 TEST_CASE(ethswt_set_speed)
 {
     setup_default_config();
@@ -186,6 +194,7 @@ TEST_CASE(ethswt_set_speed)
     ASSERT_EQ(E_OK, EthSwt_SetSpeed(0, ETHSWT_SPEED_1000MBPS, ETHSWT_DUPLEX_FULL));
 }
 
+/** @req SWS_EthSwt_00006 */
 TEST_CASE(ethswt_set_speed_invalid_port)
 {
     setup_default_config();
@@ -193,6 +202,7 @@ TEST_CASE(ethswt_set_speed_invalid_port)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetSpeed(99, ETHSWT_SPEED_1000MBPS, ETHSWT_DUPLEX_FULL));
 }
 
+/** @req SWS_EthSwt_00008 */
 TEST_CASE(ethswt_get_link_state)
 {
     EthSwt_LinkStateType state;
@@ -201,6 +211,7 @@ TEST_CASE(ethswt_get_link_state)
     ASSERT_EQ(E_OK, EthSwt_GetLinkState(0, &state));
 }
 
+/** @req SWS_EthSwt_00008 */
 TEST_CASE(ethswt_get_link_state_null)
 {
     setup_default_config();
@@ -208,6 +219,7 @@ TEST_CASE(ethswt_get_link_state_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetLinkState(0, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00008 */
 TEST_CASE(ethswt_get_link_state_invalid_port)
 {
     EthSwt_LinkStateType state;
@@ -216,6 +228,7 @@ TEST_CASE(ethswt_get_link_state_invalid_port)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetLinkState(99, &state));
 }
 
+/** @req SWS_EthSwt_00009 */
 TEST_CASE(ethswt_config_vlan)
 {
     EthSwt_VlanConfigType vlan;
@@ -231,6 +244,7 @@ TEST_CASE(ethswt_config_vlan)
     ASSERT_EQ(E_OK, EthSwt_ConfigVlan(&vlan));
 }
 
+/** @req SWS_EthSwt_00009 */
 TEST_CASE(ethswt_config_vlan_null)
 {
     setup_default_config();
@@ -238,6 +252,7 @@ TEST_CASE(ethswt_config_vlan_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_ConfigVlan(NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00018 */
 TEST_CASE(ethswt_forward_frame)
 {
     uint8 frame[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x08, 0x00};
@@ -246,6 +261,7 @@ TEST_CASE(ethswt_forward_frame)
     ASSERT_EQ(E_OK, EthSwt_ForwardFrame(0, 0x02, frame, sizeof(frame)));
 }
 
+/** @req SWS_EthSwt_00018 */
 TEST_CASE(ethswt_forward_frame_null)
 {
     setup_default_config();
@@ -253,6 +269,7 @@ TEST_CASE(ethswt_forward_frame_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_ForwardFrame(0, 0x02, NULL_PTR, 0));
 }
 
+/** @req SWS_EthSwt_00020 */
 TEST_CASE(ethswt_get_port_stats)
 {
     EthSwt_PortStatsType stats;
@@ -261,6 +278,7 @@ TEST_CASE(ethswt_get_port_stats)
     ASSERT_EQ(E_OK, EthSwt_GetPortStats(0, &stats));
 }
 
+/** @req SWS_EthSwt_00020 */
 TEST_CASE(ethswt_get_port_stats_null)
 {
     setup_default_config();
@@ -268,6 +286,7 @@ TEST_CASE(ethswt_get_port_stats_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetPortStats(0, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00023 */
 TEST_CASE(ethswt_set_mac_filter)
 {
     EthSwt_MacAddrType mac;
@@ -283,6 +302,7 @@ TEST_CASE(ethswt_set_mac_filter)
     ASSERT_EQ(E_OK, EthSwt_SetMacFilter(0, &mac, TRUE));
 }
 
+/** @req SWS_EthSwt_00023 */
 TEST_CASE(ethswt_set_mac_filter_null)
 {
     setup_default_config();
@@ -290,6 +310,7 @@ TEST_CASE(ethswt_set_mac_filter_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetMacFilter(0, NULL_PTR, TRUE));
 }
 
+/** @req SWS_EthSwt_00032 */
 TEST_CASE(ethswt_main_function)
 {
     setup_default_config();
@@ -297,11 +318,13 @@ TEST_CASE(ethswt_main_function)
     EthSwt_MainFunction();
 }
 
+/** @req SWS_EthSwt_00032 */
 TEST_CASE(ethswt_main_function_uninit)
 {
     EthSwt_MainFunction();
 }
 
+/** @req SWS_EthSwt_00033 */
 TEST_CASE(ethswt_reset)
 {
     setup_default_config();
@@ -309,6 +332,7 @@ TEST_CASE(ethswt_reset)
     ASSERT_EQ(E_OK, EthSwt_Reset());
 }
 
+/** @req SWS_EthSwt_00003 */
 TEST_CASE(ethswt_get_version_info)
 {
     Std_VersionInfoType ver;
@@ -319,6 +343,7 @@ TEST_CASE(ethswt_get_version_info)
     ASSERT_EQ(ETHSWT_MODULE_ID, ver.moduleID);
 }
 
+/** @req SWS_EthSwt_00018 */
 TEST_CASE(ethswt_forward_stats_update)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -340,6 +365,7 @@ TEST_CASE(ethswt_forward_stats_update)
  * B2: port query APIs (GetPortEnable / GetSpeed / GetMacFilter)
  * ══════════════════════════════════════════════════════════════════════ */
 
+/** @req SWS_EthSwt_00005 */
 TEST_CASE(ethswt_get_port_enable)
 {
     EthSwt_PortEnableType enable;
@@ -349,6 +375,7 @@ TEST_CASE(ethswt_get_port_enable)
     ASSERT_EQ(ETHSWT_PORT_ENABLED, enable);
 }
 
+/** @req SWS_EthSwt_00005 */
 TEST_CASE(ethswt_get_port_enable_null)
 {
     setup_default_config();
@@ -356,6 +383,7 @@ TEST_CASE(ethswt_get_port_enable_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetPortEnable(0, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00005 */
 TEST_CASE(ethswt_get_port_enable_invalid)
 {
     EthSwt_PortEnableType enable;
@@ -364,6 +392,7 @@ TEST_CASE(ethswt_get_port_enable_invalid)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetPortEnable(99, &enable));
 }
 
+/** @req SWS_EthSwt_00007 */
 TEST_CASE(ethswt_get_speed)
 {
     EthSwt_SpeedType speed;
@@ -375,6 +404,7 @@ TEST_CASE(ethswt_get_speed)
     ASSERT_EQ(ETHSWT_DUPLEX_FULL, duplex);
 }
 
+/** @req SWS_EthSwt_00007 */
 TEST_CASE(ethswt_get_speed_null)
 {
     EthSwt_SpeedType speed;
@@ -383,6 +413,7 @@ TEST_CASE(ethswt_get_speed_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetSpeed(0, &speed, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00024 */
 TEST_CASE(ethswt_get_mac_filter)
 {
     EthSwt_MacAddrType mac;
@@ -393,6 +424,7 @@ TEST_CASE(ethswt_get_mac_filter)
     ASSERT_EQ(FALSE, enable);
 }
 
+/** @req SWS_EthSwt_00024 */
 TEST_CASE(ethswt_get_mac_filter_null)
 {
     EthSwt_MacAddrType mac;
@@ -405,6 +437,7 @@ TEST_CASE(ethswt_get_mac_filter_null)
  * B2: VLAN — member table, ingress/egress filtering, PVID, VID-PCP
  * ══════════════════════════════════════════════════════════════════════ */
 
+/** @req SWS_EthSwt_00010 */
 TEST_CASE(ethswt_vlan_set_get)
 {
     EthSwt_VlanConfigType vlan;
@@ -424,6 +457,7 @@ TEST_CASE(ethswt_vlan_set_get)
     ASSERT_EQ(TRUE, vlan.DropUntagged);
 }
 
+/** @req SWS_EthSwt_00010 */
 TEST_CASE(ethswt_vlan_set_upsert)
 {
     EthSwt_VlanConfigType vlan;
@@ -443,6 +477,7 @@ TEST_CASE(ethswt_vlan_set_upsert)
     ASSERT_EQ(7U, vlan.VlanPriority);
 }
 
+/** @req SWS_EthSwt_00010 */
 TEST_CASE(ethswt_vlan_set_invalid_pcp)
 {
     EthSwt_VlanConfigType vlan;
@@ -459,6 +494,7 @@ TEST_CASE(ethswt_vlan_set_invalid_pcp)
     ASSERT_EQ(1U, mock_det_count_for(ETHSWT_SID_SETVLANCONFIG));
 }
 
+/** @req SWS_EthSwt_00010 */
 TEST_CASE(ethswt_vlan_set_null)
 {
     setup_default_config();
@@ -466,6 +502,7 @@ TEST_CASE(ethswt_vlan_set_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetVlanConfig(NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00011 */
 TEST_CASE(ethswt_vlan_get_missing)
 {
     EthSwt_VlanConfigType vlan;
@@ -474,6 +511,7 @@ TEST_CASE(ethswt_vlan_get_missing)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetVlanConfig(999, &vlan));
 }
 
+/** @req SWS_EthSwt_00011 */
 TEST_CASE(ethswt_vlan_get_null)
 {
     setup_default_config();
@@ -481,6 +519,7 @@ TEST_CASE(ethswt_vlan_get_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetVlanConfig(1, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00012 */
 TEST_CASE(ethswt_vlan_add_remove_member)
 {
     EthSwt_VlanConfigType vlan;
@@ -498,6 +537,7 @@ TEST_CASE(ethswt_vlan_add_remove_member)
     ASSERT_EQ(0x03U, vlan.PortMask);
 }
 
+/** @req SWS_EthSwt_00012 */
 TEST_CASE(ethswt_vlan_add_member_missing_vlan)
 {
     setup_default_config();
@@ -505,6 +545,7 @@ TEST_CASE(ethswt_vlan_add_member_missing_vlan)
     ASSERT_EQ(E_NOT_OK, EthSwt_AddVlanMember(500, 2, TRUE));
 }
 
+/** @req SWS_EthSwt_00013 */
 TEST_CASE(ethswt_vlan_remove_member_missing_vlan)
 {
     setup_default_config();
@@ -512,6 +553,7 @@ TEST_CASE(ethswt_vlan_remove_member_missing_vlan)
     ASSERT_EQ(E_NOT_OK, EthSwt_RemoveVlanMember(500, 2));
 }
 
+/** @req SWS_EthSwt_00012 */
 TEST_CASE(ethswt_vlan_add_member_invalid_port)
 {
     setup_default_config();
@@ -519,6 +561,7 @@ TEST_CASE(ethswt_vlan_add_member_invalid_port)
     ASSERT_EQ(E_NOT_OK, EthSwt_AddVlanMember(1, 99, TRUE));
 }
 
+/** @req SWS_EthSwt_00014 */
 TEST_CASE(ethswt_pvid_set_get)
 {
     uint16 pvid;
@@ -529,6 +572,7 @@ TEST_CASE(ethswt_pvid_set_get)
     ASSERT_EQ(42U, pvid);
 }
 
+/** @req SWS_EthSwt_00015 */
 TEST_CASE(ethswt_pvid_invalid_port)
 {
     uint16 pvid;
@@ -537,6 +581,7 @@ TEST_CASE(ethswt_pvid_invalid_port)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetPvid(99, &pvid));
 }
 
+/** @req SWS_EthSwt_00015 */
 TEST_CASE(ethswt_pvid_null)
 {
     setup_default_config();
@@ -544,6 +589,7 @@ TEST_CASE(ethswt_pvid_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetPvid(0, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00016 */
 TEST_CASE(ethswt_vid_pcp_map)
 {
     uint8 pcp;
@@ -554,6 +600,7 @@ TEST_CASE(ethswt_vid_pcp_map)
     ASSERT_EQ(6U, pcp);
 }
 
+/** @req SWS_EthSwt_00016 */
 TEST_CASE(ethswt_vid_pcp_invalid)
 {
     setup_default_config();
@@ -562,6 +609,7 @@ TEST_CASE(ethswt_vid_pcp_invalid)
     ASSERT_EQ(1U, mock_det_count_for(ETHSWT_SID_SETVIDPCP));
 }
 
+/** @req SWS_EthSwt_00017 */
 TEST_CASE(ethswt_vid_pcp_missing_vlan)
 {
     setup_default_config();
@@ -569,6 +617,7 @@ TEST_CASE(ethswt_vid_pcp_missing_vlan)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetVidPcpMap(999, 3));
 }
 
+/** @req SWS_EthSwt_00019 */
 TEST_CASE(ethswt_forward_vlan_member)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -585,6 +634,7 @@ TEST_CASE(ethswt_forward_vlan_member)
     ASSERT_EQ(1U, stats.TxVlanFrames);
 }
 
+/** @req SWS_EthSwt_00019 */
 TEST_CASE(ethswt_forward_vlan_ingress_filter)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -600,6 +650,7 @@ TEST_CASE(ethswt_forward_vlan_ingress_filter)
     ASSERT_EQ(0U, stats.RxFrames);
 }
 
+/** @req SWS_EthSwt_00019 */
 TEST_CASE(ethswt_forward_vlan_egress_filter)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -617,6 +668,7 @@ TEST_CASE(ethswt_forward_vlan_egress_filter)
     ASSERT_EQ(0U, stats.RxFrames);
 }
 
+/** @req SWS_EthSwt_00019 */
 TEST_CASE(ethswt_forward_vlan_drop_untagged)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -645,6 +697,7 @@ TEST_CASE(ethswt_forward_vlan_drop_untagged)
  * B2: flow control — pause frames, high/low watermarks
  * ══════════════════════════════════════════════════════════════════════ */
 
+/** @req SWS_EthSwt_00025 */
 TEST_CASE(ethswt_flow_control_set_get)
 {
     EthSwt_FlowControlConfigType fc;
@@ -664,6 +717,7 @@ TEST_CASE(ethswt_flow_control_set_get)
     ASSERT_EQ(4U, fc.LowWatermark);
 }
 
+/** @req SWS_EthSwt_00025 */
 TEST_CASE(ethswt_flow_control_invalid_watermark)
 {
     EthSwt_FlowControlConfigType fc;
@@ -680,6 +734,7 @@ TEST_CASE(ethswt_flow_control_invalid_watermark)
     ASSERT_EQ(1U, mock_det_count_for(ETHSWT_SID_SETFLOWCONTROL));
 }
 
+/** @req SWS_EthSwt_00025 */
 TEST_CASE(ethswt_flow_control_null)
 {
     setup_default_config();
@@ -687,6 +742,7 @@ TEST_CASE(ethswt_flow_control_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetFlowControl(0, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00025 */
 TEST_CASE(ethswt_flow_control_pause_emission)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -723,6 +779,7 @@ TEST_CASE(ethswt_flow_control_pause_emission)
     ASSERT_EQ(2U, stats.TxPauseFrames);
 }
 
+/** @req SWS_EthSwt_00027 */
 TEST_CASE(ethswt_flow_control_pause_time)
 {
     uint16 pause_time;
@@ -733,6 +790,7 @@ TEST_CASE(ethswt_flow_control_pause_time)
     ASSERT_EQ(1024U, pause_time);
 }
 
+/** @req SWS_EthSwt_00029 */
 TEST_CASE(ethswt_flow_control_rx_pause)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -768,6 +826,7 @@ TEST_CASE(ethswt_flow_control_rx_pause)
  * B2: statistics — GetStatistics / ResetStatistics
  * ══════════════════════════════════════════════════════════════════════ */
 
+/** @req SWS_EthSwt_00021 */
 TEST_CASE(ethswt_get_statistics)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -781,6 +840,7 @@ TEST_CASE(ethswt_get_statistics)
     ASSERT_EQ(sizeof(frame), stats.TxBytes);
 }
 
+/** @req SWS_EthSwt_00021 */
 TEST_CASE(ethswt_get_statistics_null)
 {
     setup_default_config();
@@ -788,6 +848,7 @@ TEST_CASE(ethswt_get_statistics_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetStatistics(0, NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00021 */
 TEST_CASE(ethswt_get_statistics_invalid_port)
 {
     EthSwt_PortStatsType stats;
@@ -796,6 +857,7 @@ TEST_CASE(ethswt_get_statistics_invalid_port)
     ASSERT_EQ(E_NOT_OK, EthSwt_GetStatistics(99, &stats));
 }
 
+/** @req SWS_EthSwt_00022 */
 TEST_CASE(ethswt_reset_statistics)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -810,6 +872,7 @@ TEST_CASE(ethswt_reset_statistics)
     ASSERT_EQ(0U, stats.RxBytes);
 }
 
+/** @req SWS_EthSwt_00022 */
 TEST_CASE(ethswt_reset_statistics_all)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -825,6 +888,7 @@ TEST_CASE(ethswt_reset_statistics_all)
     ASSERT_EQ(0U, stats.RxFrames);
 }
 
+/** @req SWS_EthSwt_00022 */
 TEST_CASE(ethswt_reset_statistics_invalid_port)
 {
     setup_default_config();
@@ -836,6 +900,7 @@ TEST_CASE(ethswt_reset_statistics_invalid_port)
  * B2: mirroring — mirror source/dest port config
  * ══════════════════════════════════════════════════════════════════════ */
 
+/** @req SWS_EthSwt_00030 */
 TEST_CASE(ethswt_mirror_set_get)
 {
     EthSwt_MirrorConfigType mirror;
@@ -853,6 +918,7 @@ TEST_CASE(ethswt_mirror_set_get)
     ASSERT_EQ(TRUE, mirror.MirrorEnabled);
 }
 
+/** @req SWS_EthSwt_00030 */
 TEST_CASE(ethswt_mirror_set_invalid_dest)
 {
     EthSwt_MirrorConfigType mirror;
@@ -867,6 +933,7 @@ TEST_CASE(ethswt_mirror_set_invalid_dest)
     ASSERT_EQ(1U, mock_det_count_for(ETHSWT_SID_SETPORTMIRRORING));
 }
 
+/** @req SWS_EthSwt_00030 */
 TEST_CASE(ethswt_mirror_set_null)
 {
     setup_default_config();
@@ -874,6 +941,7 @@ TEST_CASE(ethswt_mirror_set_null)
     ASSERT_EQ(E_NOT_OK, EthSwt_SetPortMirroring(NULL_PTR));
 }
 
+/** @req SWS_EthSwt_00030 */
 TEST_CASE(ethswt_mirror_forward_copy)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -899,6 +967,7 @@ TEST_CASE(ethswt_mirror_forward_copy)
     ASSERT_EQ(1U, stats.MirroredFrames);   /* unchanged */
 }
 
+/** @req SWS_EthSwt_00030 */
 TEST_CASE(ethswt_mirror_disabled)
 {
     uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -921,6 +990,7 @@ TEST_CASE(ethswt_mirror_disabled)
  * B2: DET — uninitialised APIs report errors
  * ══════════════════════════════════════════════════════════════════════ */
 
+/** @req SWS_EthSwt_00001 */
 TEST_CASE(ethswt_det_uninit_new_apis)
 {
     EthSwt_VlanConfigType vlan;

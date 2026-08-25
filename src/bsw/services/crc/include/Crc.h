@@ -80,12 +80,14 @@ typedef uint32 Crc32_Type;
  * FUNCTION PROTOTYPES
  ==================================================================================================*/
 
+/** @req SWS_Crc_00001 */
 /**
  * @brief Initialize the CRC module
  * @return None
  */
 extern void Crc_Init(const void* configPtr);
 
+/** @req SWS_Crc_00003 */
 /**
  * @brief Calculate CRC8 using SAE J1850 polynomial
  * @param Crc_DataPtr Pointer to data buffer
@@ -101,6 +103,7 @@ extern uint8 Crc_CalculateCRC8(
     boolean Crc_IsFirstCall
 );
 
+/** @req SWS_Crc_00004 */
 /**
  * @brief Calculate CRC16 using CCITT-FALSE polynomial
  * @param Crc_DataPtr Pointer to data buffer
@@ -116,6 +119,7 @@ extern uint16 Crc_CalculateCRC16(
     boolean Crc_IsFirstCall
 );
 
+/** @req SWS_Crc_00005 */
 /**
  * @brief Calculate CRC32 using IEEE 802.3 polynomial
  * @param Crc_DataPtr Pointer to data buffer
@@ -137,6 +141,7 @@ extern uint32 Crc_CalculateCRC32(
  * @return None
  */
 #if (CRC_VERSION_INFO_API == STD_ON)
+/** @req SWS_Crc_00002 */
 extern void Crc_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 

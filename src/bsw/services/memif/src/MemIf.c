@@ -170,7 +170,7 @@ static boolean MemIf_IsBlockNumberValid(uint8 DeviceIndex, uint16 BlockNumber)
 
 /**
  * @brief Initializes the Memory Interface module
- * @req SHALL_MEMIF - Initializes the Memory Interface module
+ * @req SWS_MemIf_00001
  * @param ConfigPtr Pointer to configuration structure
  * @return None
  */
@@ -202,7 +202,7 @@ void MemIf_Init(const MemIf_ConfigType* ConfigPtr)
 
 /**
  * @brief Deinitializes the Memory Interface module
- * @req SHALL_MEMIF - Deinitializes the Memory Interface module
+ * @req SWS_MemIf_00002
  * @return None
  */
 void MemIf_DeInit(void)
@@ -224,7 +224,7 @@ void MemIf_DeInit(void)
 
 /**
  * @brief Gets version information
- * @req SHALL_MEMIF - Gets version information
+ * @req SWS_MemIf_00003
  * @param versioninfo Pointer to version info structure
  * @return None
  */
@@ -252,7 +252,7 @@ void MemIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief Reads data from a block
- * @req SHALL_MEMIF - Reads data from a block
+ * @req SWS_MemIf_00004
  * @param DeviceIndex Index of the device (Fee or Ea)
  * @param BlockNumber Number of the block to read
  * @param DataBufferPtr Pointer to data buffer
@@ -297,7 +297,7 @@ Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint16 BlockOff
 
 /**
  * @brief Writes data to a block
- * @req SHALL_MEMIF - Writes data to a block
+ * @req SWS_MemIf_00005
  * @param DeviceIndex Index of the device (Fee or Ea)
  * @param BlockNumber Number of the block to write
  * @param DataBufferPtr Pointer to data buffer
@@ -341,7 +341,7 @@ Std_ReturnType MemIf_Write(uint8 DeviceIndex, uint16 BlockNumber, const uint8* D
 
 /**
  * @brief Cancels ongoing job
- * @req SHALL_MEMIF - Cancels ongoing job
+ * @req SWS_MemIf_00006
  * @param DeviceIndex Index of the device
  * @return None
  */
@@ -369,7 +369,7 @@ void MemIf_Cancel(uint8 DeviceIndex)
 
 /**
  * @brief Gets the status of the device
- * @req SHALL_MEMIF - Gets the status of the device
+ * @req SWS_MemIf_00007
  * @param DeviceIndex Index of the device
  * @return Status of the device
  */
@@ -407,7 +407,7 @@ MemIf_StatusType MemIf_GetStatus(uint8 DeviceIndex)
 
 /**
  * @brief Gets the result of the last job
- * @req SHALL_MEMIF - Gets the result of the last job
+ * @req SWS_MemIf_00008
  * @param DeviceIndex Index of the device
  * @return Job result
  */
@@ -438,7 +438,7 @@ MemIf_JobResultType MemIf_GetJobResult(uint8 DeviceIndex)
 
 /**
  * @brief Invalidates a block
- * @req SHALL_MEMIF - Invalidates a block
+ * @req SWS_MemIf_00009
  * @param DeviceIndex Index of the device
  * @param BlockNumber Number of the block to invalidate
  * @return E_OK if request accepted, E_NOT_OK if rejected
@@ -480,7 +480,7 @@ Std_ReturnType MemIf_InvalidateBlock(uint8 DeviceIndex, uint16 BlockNumber)
 
 /**
  * @brief Erases a block
- * @req SHALL_MEMIF - Erases a block
+ * @req SWS_MemIf_00010
  * @param DeviceIndex Index of the device
  * @param BlockNumber Number of the block to erase
  * @return E_OK if request accepted, E_NOT_OK if rejected
@@ -522,7 +522,7 @@ Std_ReturnType MemIf_EraseBlock(uint8 DeviceIndex, uint16 BlockNumber)
 
 /**
  * @brief Main function for periodic processing
- * @req SHALL_MEMIF - Main function for periodic processing
+ * @req SWS_MemIf_00011
  * @param DeviceIndex Index of the device
  * @return None
  */
@@ -556,7 +556,7 @@ void MemIf_MainFunction(uint8 DeviceIndex)
 
 /**
  * @brief Sets the device mode
- * @req SHALL_MEMIF - Sets the device mode
+ * @req SWS_MemIf_00012
  * @param DeviceIndex Index of the device
  * @param Mode Mode to set (slow/fast)
  * @return None
@@ -582,7 +582,7 @@ void MemIf_SetMode(uint8 DeviceIndex, MemIf_ModeType Mode)
 
 /**
  * @brief Gets the number of devices
- * @req SHALL_MEMIF - Gets the number of devices
+ * @req SWS_MemIf_00013
  * @return Number of configured devices
  */
 uint8 MemIf_GetNumberOfDevices(void)

@@ -108,10 +108,15 @@ static Port_DriverStateType Port_DriverState = {
 /*==================================================================================================
 *                                    LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_Port_00101 */
 static uint32 Port_GetGpioBaseAddr(uint8 port);
+/** @req SWS_Port_00102 */
 static uint32 Port_GetMuxRegisterAddr(Port_PinType pin);
+/** @req SWS_Port_00103 */
 static uint32 Port_GetPadRegisterAddr(Port_PinType pin);
+/** @req SWS_Port_00104 */
 static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode);
+/** @req SWS_Port_00105 */
 static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* config);
 
 /*==================================================================================================
@@ -122,6 +127,8 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
  * @brief Gets GPIO base address for a port
  * @req SHALL_PORT - Gets GPIO base address for a port
  */
+/** @req SWS_Port_00106 */
+/** @req SWS_Port_00101 */
 static uint32 Port_GetGpioBaseAddr(uint8 port)
 {
     uint32 baseAddr;
@@ -154,6 +161,8 @@ static uint32 Port_GetGpioBaseAddr(uint8 port)
  * @brief Gets IOMUXC mux register address for a pin
  * @req SHALL_PORT - Gets IOMUXC mux register address for a pin
  */
+/** @req SWS_Port_00107 */
+/** @req SWS_Port_00102 */
 static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
 {
     uint8 port = (uint8)(pin >> 8);
@@ -170,6 +179,8 @@ static uint32 Port_GetMuxRegisterAddr(Port_PinType pin)
  * @brief Gets IOMUXC pad register address for a pin
  * @req SHALL_PORT - Gets IOMUXC pad register address for a pin
  */
+/** @req SWS_Port_00108 */
+/** @req SWS_Port_00103 */
 static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
 {
     uint8 port = (uint8)(pin >> 8);
@@ -186,6 +197,8 @@ static uint32 Port_GetPadRegisterAddr(Port_PinType pin)
  * @brief Configures pin mux mode
  * @req SHALL_PORT - Configures pin mux mode
  */
+/** @req SWS_Port_00109 */
+/** @req SWS_Port_00104 */
 static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
 {
     uint32 muxRegAddr = Port_GetMuxRegisterAddr(pin);
@@ -231,6 +244,8 @@ static void Port_ConfigurePinMux(Port_PinType pin, Port_PinModeType mode)
  * @brief Configures pin pad settings
  * @req SHALL_PORT - Configures pin pad settings
  */
+/** @req SWS_Port_00110 */
+/** @req SWS_Port_00105 */
 static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* config)
 {
     uint32 padRegAddr = Port_GetPadRegisterAddr(pin);
@@ -276,6 +291,7 @@ static void Port_ConfigurePinPad(Port_PinType pin, const Port_PinConfigType* con
  * @brief Initializes the PORT driver
  * @req SHALL_PORT - Initializes the PORT driver
  */
+/** @req SWS_Port_00001 */
 void Port_Init(const Port_ConfigType* ConfigPtr)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
@@ -337,6 +353,7 @@ void Port_Init(const Port_ConfigType* ConfigPtr)
  * @req SHALL_PORT - Deinitializes the Port Driver module
  */
 #if (PORT_DE_INIT_API == STD_ON)
+/** @req SWS_Port_00002 */
 void Port_DeInit(void)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
@@ -356,6 +373,7 @@ void Port_DeInit(void)
  * @req SHALL_PORT - Sets pin direction
  */
 #if (PORT_SET_PIN_DIRECTION_API == STD_ON)
+/** @req SWS_Port_00003 */
 void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
@@ -407,6 +425,7 @@ void Port_SetPinDirection(Port_PinType Pin, Port_PinDirectionType Direction)
  * @brief Refreshes port direction
  * @req SHALL_PORT - Refreshes port direction
  */
+/** @req SWS_Port_00004 */
 void Port_RefreshPortDirection(void)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
@@ -444,6 +463,7 @@ void Port_RefreshPortDirection(void)
  * @req SHALL_PORT - Gets version information
  */
 #if (PORT_VERSION_INFO_API == STD_ON)
+/** @req SWS_Port_00005 */
 void Port_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)
@@ -466,6 +486,7 @@ void Port_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @req SHALL_PORT - Sets pin mode
  */
 #if (PORT_SET_PIN_MODE_API == STD_ON)
+/** @req SWS_Port_00006 */
 void Port_SetPinMode(Port_PinType Pin, Port_PinModeType Mode)
 {
     #if (PORT_DEV_ERROR_DETECT == STD_ON)

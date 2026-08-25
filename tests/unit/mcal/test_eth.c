@@ -87,6 +87,7 @@ static void reset_eth_module(void)
 ==================================================================================================*/
 
 /* Test: Eth_Init with valid config */
+/** @req SWS_Eth_00001 */
 TEST_CASE(eth_init_valid)
 {
     setup_test_config();
@@ -98,6 +99,7 @@ TEST_CASE(eth_init_valid)
 }
 
 /* Test: Eth_Init with NULL config */
+/** @req SWS_Eth_00001 */
 TEST_CASE(eth_init_null)
 {
     Det_Mock_Reset();
@@ -109,6 +111,7 @@ TEST_CASE(eth_init_null)
 }
 
 /* Test: Eth_DeInit */
+/** @req SWS_Eth_00002 */
 TEST_CASE(eth_deinit)
 {
     setup_test_config();
@@ -121,6 +124,7 @@ TEST_CASE(eth_deinit)
 }
 
 /* Test: Eth_GetVersionInfo */
+/** @req SWS_Eth_00004 */
 TEST_CASE(eth_get_version_info)
 {
     Std_VersionInfoType version_info;
@@ -134,6 +138,7 @@ TEST_CASE(eth_get_version_info)
 }
 
 /* Test: Eth_GetVersionInfo with NULL pointer */
+/** @req SWS_Eth_00004 */
 TEST_CASE(eth_get_version_info_null)
 {
     Det_Mock_Reset();
@@ -145,6 +150,7 @@ TEST_CASE(eth_get_version_info_null)
 }
 
 /* Test: Eth_ControllerInit */
+/** @req SWS_Eth_00003 */
 TEST_CASE(eth_controller_init)
 {
     Eth_ControllerConfigType ctrl_config;
@@ -162,6 +168,7 @@ TEST_CASE(eth_controller_init)
 }
 
 /* Test: Eth_SetControllerMode - DOWN -> ACTIVE */
+/** @req SWS_Eth_00005 */
 TEST_CASE(eth_set_mode_active)
 {
     Std_ReturnType result;
@@ -181,6 +188,7 @@ TEST_CASE(eth_set_mode_active)
 }
 
 /* Test: Eth_SetControllerMode with invalid controller */
+/** @req SWS_Eth_00005 */
 TEST_CASE(eth_set_mode_invalid_controller)
 {
     Std_ReturnType result;
@@ -197,6 +205,7 @@ TEST_CASE(eth_set_mode_invalid_controller)
 }
 
 /* Test: Eth_SetControllerMode when not initialized */
+/** @req SWS_Eth_00005 */
 TEST_CASE(eth_set_mode_uninit)
 {
     Std_ReturnType result;
@@ -212,6 +221,7 @@ TEST_CASE(eth_set_mode_uninit)
 }
 
 /* Test: Eth_GetControllerMode */
+/** @req SWS_Eth_00006 */
 TEST_CASE(eth_get_controller_mode)
 {
     Std_ReturnType result;
@@ -228,6 +238,7 @@ TEST_CASE(eth_get_controller_mode)
 }
 
 /* Test: Eth_GetControllerMode with NULL pointer */
+/** @req SWS_Eth_00006 */
 TEST_CASE(eth_get_controller_mode_null)
 {
     Std_ReturnType result;
@@ -244,6 +255,7 @@ TEST_CASE(eth_get_controller_mode_null)
 }
 
 /* Test: Eth_GetPhysAddr */
+/** @req SWS_Eth_00008 */
 TEST_CASE(eth_get_phys_addr)
 {
     uint8 mac_addr[6];
@@ -258,6 +270,7 @@ TEST_CASE(eth_get_phys_addr)
 }
 
 /* Test: Eth_SetPhysAddr */
+/** @req SWS_Eth_00009 */
 TEST_CASE(eth_set_phys_addr)
 {
     uint8 new_mac[6] = {0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
@@ -274,6 +287,7 @@ TEST_CASE(eth_set_phys_addr)
 }
 
 /* Test: Eth_ProvideTxBuffer */
+/** @req SWS_Eth_00013 */
 TEST_CASE(eth_provide_tx_buffer)
 {
     BufReq_ReturnType result;
@@ -293,6 +307,7 @@ TEST_CASE(eth_provide_tx_buffer)
 }
 
 /* Test: Eth_ProvideTxBuffer with NULL pointer */
+/** @req SWS_Eth_00013 */
 TEST_CASE(eth_provide_tx_buffer_null)
 {
     BufReq_ReturnType result;
@@ -311,6 +326,7 @@ TEST_CASE(eth_provide_tx_buffer_null)
 }
 
 /* Test: Eth_Transmit */
+/** @req SWS_Eth_00014 */
 TEST_CASE(eth_transmit)
 {
     Std_ReturnType result;
@@ -337,6 +353,7 @@ TEST_CASE(eth_transmit)
 }
 
 /* Test: Eth_Transmit when controller not active */
+/** @req SWS_Eth_00014 */
 TEST_CASE(eth_transmit_not_active)
 {
     Std_ReturnType result;
@@ -360,6 +377,7 @@ TEST_CASE(eth_transmit_not_active)
 }
 
 /* Test: Eth_Receive */
+/** @req SWS_Eth_00015 */
 TEST_CASE(eth_receive)
 {
     Std_ReturnType result;
@@ -378,6 +396,7 @@ TEST_CASE(eth_receive)
 }
 
 /* Test: Eth_Receive with NULL pointer */
+/** @req SWS_Eth_00015 */
 TEST_CASE(eth_receive_null)
 {
     Std_ReturnType result;
@@ -396,6 +415,7 @@ TEST_CASE(eth_receive_null)
 }
 
 /* Test: Eth_TxConfirmation */
+/** @req SWS_Eth_00016 */
 TEST_CASE(eth_tx_confirmation)
 {
     setup_test_config();
@@ -410,6 +430,7 @@ TEST_CASE(eth_tx_confirmation)
 }
 
 /* Test: Eth_EnableIrq */
+/** @req SWS_Eth_00017 */
 TEST_CASE(eth_enable_irq)
 {
     setup_test_config();
@@ -422,6 +443,7 @@ TEST_CASE(eth_enable_irq)
 }
 
 /* Test: Eth_DisableIrq */
+/** @req SWS_Eth_00018 */
 TEST_CASE(eth_disable_irq)
 {
     setup_test_config();
@@ -435,6 +457,7 @@ TEST_CASE(eth_disable_irq)
 }
 
 /* Test: Eth_InitBuffers */
+/** @req SWS_Eth_00019 */
 TEST_CASE(eth_init_buffers)
 {
     setup_test_config();
@@ -465,6 +488,7 @@ TEST_CASE(eth_init_buffers)
 }
 
 /* Test: Eth_WriteMii and Eth_ReadMii */
+/** @req SWS_Eth_00011 */
 TEST_CASE(eth_mii_access)
 {
     Std_ReturnType write_result;
@@ -486,6 +510,7 @@ TEST_CASE(eth_mii_access)
 }
 
 /* Test: Eth_ReadMii with NULL pointer */
+/** @req SWS_Eth_00012 */
 TEST_CASE(eth_read_mii_null)
 {
     Std_ReturnType result;
@@ -502,6 +527,7 @@ TEST_CASE(eth_read_mii_null)
 }
 
 /* Test: Eth_GetControllerIdx */
+/** @req SWS_Eth_00007 */
 TEST_CASE(eth_get_controller_idx)
 {
     uint8 ctrl_idx;
@@ -517,6 +543,7 @@ TEST_CASE(eth_get_controller_idx)
 }
 
 /* Test: Eth_GetControllerIdx with NULL pointer */
+/** @req SWS_Eth_00007 */
 TEST_CASE(eth_get_controller_idx_null)
 {
     uint8 ctrl_idx;

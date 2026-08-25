@@ -127,14 +127,22 @@ static Spi_ChannelStateType Spi_ChannelState[SPI_CHANNEL_COUNT];
 #endif
 
 /* 前向声明 */
+/** @req SWS_Spi_00101 */
+/** @req SWS_Spi_00101 */
 static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate);
+/** @req SWS_Spi_00102 */
+/** @req SWS_Spi_00102 */
 static uint32 Spi_GetCurrentTime(void);
+/** @req SWS_Spi_00103 */
+/** @req SWS_Spi_00103 */
 static uint32 Spi_GetElapsedTime(uint32 StartTime);
 
 /**
  * @brief SPI初始化
  * @req SHALL_SPI - SPI初始化
  */
+/** @req SWS_Spi_00001 */
+/** @req SWS_Spi_00001 */
 void Spi_Init(const Spi_ConfigType* Config)
 {
     uint8 i;
@@ -200,6 +208,8 @@ void Spi_Init(const Spi_ConfigType* Config)
  * @brief 内部波特率设置
  * @req SHALL_SPI - 内部波特率设置
  */
+/** @req SWS_Spi_00104 */
+/** @req SWS_Spi_00101 */
 static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
 {
     uint32 refClock = SPI_REF_CLOCK_HZ;
@@ -228,6 +238,8 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
  * @brief SPI反初始化
  * @req SHALL_SPI - SPI反初始化
  */
+/** @req SWS_Spi_00002 */
+/** @req SWS_Spi_00002 */
 Std_ReturnType Spi_DeInit(void)
 {
     uint8 i;
@@ -255,6 +267,8 @@ Std_ReturnType Spi_DeInit(void)
  * @brief 同步传输
  * @req SHALL_SPI - 同步传输
  */
+/** @req SWS_Spi_00003 */
+/** @req SWS_Spi_00003 */
 Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxData, uint32 Length)
 {
     SPI_VALIDATE_INITIALIZED(SPI_SERVICE_ID_SYNCTRANSMIT);
@@ -336,6 +350,8 @@ Std_ReturnType Spi_SyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxDa
  * @brief 异步传输
  * @req SHALL_SPI - 异步传输
  */
+/** @req SWS_Spi_00004 */
+/** @req SWS_Spi_00004 */
 Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxData, uint32 Length)
 {
     SPI_VALIDATE_INITIALIZED(SPI_SERVICE_ID_ASYNC_TRANSMIT);
@@ -420,6 +436,8 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
  * @brief 获取状态
  * @req SHALL_SPI - 获取状态
  */
+/** @req SWS_Spi_00005 */
+/** @req SWS_Spi_00005 */
 Spi_StatusType Spi_GetStatus(void)
 {
     return Spi_Status;
@@ -429,6 +447,8 @@ Spi_StatusType Spi_GetStatus(void)
  * @brief 获取任务结果
  * @req SHALL_SPI - 获取任务结果
  */
+/** @req SWS_Spi_00006 */
+/** @req SWS_Spi_00006 */
 Spi_JobResultType Spi_GetJobResult(void)
 {
     if (Spi_Initialized == FALSE) {
@@ -448,6 +468,8 @@ Spi_JobResultType Spi_GetJobResult(void)
  * @brief 中断处理
  * @req SHALL_SPI - 中断处理
  */
+/** @req SWS_Spi_00007 */
+/** @req SWS_Spi_00007 */
 void Spi_IsrHandler(uint8 Channel)
 {
     if ((Channel >= SPI_CHANNEL_COUNT) || (Spi_Initialized == FALSE)) {
@@ -493,6 +515,8 @@ void Spi_IsrHandler(uint8 Channel)
  * @brief 主函数
  * @req SHALL_SPI - 主函数
  */
+/** @req SWS_Spi_00008 */
+/** @req SWS_Spi_00008 */
 void Spi_MainFunction(void)
 {
     if ((Spi_Initialized == FALSE) || (Spi_Status != SPI_BUSY)) {
@@ -520,11 +544,15 @@ void Spi_MainFunction(void)
 }
 
 /* 辅助函数 */
+/** @req SWS_Spi_00105 */
+/** @req SWS_Spi_00102 */
 static uint32 Spi_GetCurrentTime(void)
 {
     return Gpt_GetTimeElapsed(0);
 }
 
+/** @req SWS_Spi_00106 */
+/** @req SWS_Spi_00103 */
 static uint32 Spi_GetElapsedTime(uint32 StartTime)
 {
     uint32 current = Spi_GetCurrentTime();
@@ -533,6 +561,8 @@ static uint32 Spi_GetElapsedTime(uint32 StartTime)
 }
 
 #if (SPI_VERSION_INFO_API == STD_ON)
+/** @req SWS_Spi_00009 */
+/** @req SWS_Spi_00009 */
 void Spi_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SPI_DEV_ERROR_DETECT == STD_ON)

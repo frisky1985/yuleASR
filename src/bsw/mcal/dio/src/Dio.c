@@ -74,6 +74,7 @@ static boolean Dio_DriverInitialized = FALSE;
 #define DIO_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
 
+/** @req SWS_Dio_00101 */
 static uint32 Dio_GetGpioBaseAddr(uint8 port)
 {
     uint32 baseAddr;
@@ -91,6 +92,7 @@ static uint32 Dio_GetGpioBaseAddr(uint8 port)
 #define DIO_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Dio_00001 */
 void Dio_Init(const Dio_ConfigType* ConfigPtr)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
@@ -103,6 +105,7 @@ void Dio_Init(const Dio_ConfigType* ConfigPtr)
     Dio_DriverInitialized = TRUE;
 }
 
+/** @req SWS_Dio_00002 */
 Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
 {
     Dio_LevelType level;
@@ -126,6 +129,7 @@ Dio_LevelType Dio_ReadChannel(Dio_ChannelType ChannelId)
     return level;
 }
 
+/** @req SWS_Dio_00003 */
 void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
@@ -152,6 +156,7 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
     REG_WRITE32(gpioBase + DIO_GPIO_DR, drValue);
 }
 
+/** @req SWS_Dio_00004 */
 Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
 {
     Dio_PortLevelType level;
@@ -171,6 +176,7 @@ Dio_PortLevelType Dio_ReadPort(Dio_PortType PortId)
     return level;
 }
 
+/** @req SWS_Dio_00005 */
 void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
@@ -188,6 +194,7 @@ void Dio_WritePort(Dio_PortType PortId, Dio_PortLevelType Level)
     REG_WRITE32(gpioBase + DIO_GPIO_DR, (uint32)Level);
 }
 
+/** @req SWS_Dio_00006 */
 Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr)
 {
     Dio_PortLevelType level;
@@ -208,6 +215,7 @@ Dio_PortLevelType Dio_ReadChannelGroup(const Dio_ChannelGroupType* ChannelGroupI
     return level;
 }
 
+/** @req SWS_Dio_00007 */
 void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_PortLevelType Level)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
@@ -229,6 +237,7 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_Po
 }
 
 #if (DIO_VERSION_INFO_API == STD_ON)
+/** @req SWS_Dio_00008 */
 void Dio_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)
@@ -246,6 +255,7 @@ void Dio_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #endif
 
 #if (DIO_FLIP_CHANNEL_API == STD_ON)
+/** @req SWS_Dio_00009 */
 Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
 {
     Dio_LevelType newLevel;
@@ -278,6 +288,7 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
 #endif
 
 #if (DIO_MASKED_WRITE_PORT_API == STD_ON)
+/** @req SWS_Dio_00010 */
 void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortLevelType Mask)
 {
     #if (DIO_DEV_ERROR_DETECT == STD_ON)

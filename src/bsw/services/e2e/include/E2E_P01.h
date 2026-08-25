@@ -67,6 +67,7 @@ typedef struct {
 #define E2E_P01_DATAID_LOW      0x02U  /* Low byte only */
 #define E2E_P01_DATAID_NIBBLE   0x03U  /* Single nibble selected by DataIDNibbleOffset */
 
+/** @req SWS_E2E_00003 */
 /*=============================================================================*
  * Profile 1 Function Prototypes
  *=============================================================================*/
@@ -76,12 +77,14 @@ Std_ReturnType E2E_P01Protect(
     uint8* Data
 );
 
+/** @req SWS_E2E_00004 */
 Std_ReturnType E2E_P01Check(
     const E2E_P01ConfigType* Config,
     E2E_P01CheckStateType* State,
     const uint8* Data
 );
 
+/** @req SWS_E2E_00005 */
 void E2E_P01MapStatusToSM(
     E2E_PCheckStatusType CheckStatus,
     E2E_SMStateType* SMState,

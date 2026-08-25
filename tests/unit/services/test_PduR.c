@@ -74,6 +74,7 @@ Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, u
 *                                   TEST CASES
 *==================================================================================================*/
 
+/** @req SWS_PduR_00001 */
 /**
  * @brief 测试: PduR 正常初始化
  */
@@ -90,6 +91,7 @@ TEST_CASE_DECLARE(PduR_Init_valid_config)
     
 }
 
+/** @req SWS_PduR_00001 */
 /**
  * @brief 测试: PduR NULL 配置初始化
  */
@@ -106,6 +108,7 @@ TEST_CASE_DECLARE(PduR_Init_null_config)
     
 }
 
+/** @req SWS_PduR_00002 */
 /**
  * @brief 测试: PduR 反初始化
  */
@@ -123,6 +126,7 @@ TEST_CASE_DECLARE(PduR_DeInit)
     
 }
 
+/** @req SWS_PduR_00003 */
 /**
  * @brief 测试: PduR_Transmit 正常路由到 CanIf
  */
@@ -148,6 +152,7 @@ TEST_CASE_DECLARE(PduR_Transmit_route_to_CanIf)
     
 }
 
+/** @req SWS_PduR_00003 */
 /**
  * @brief 测试: PduR_Transmit 未初始化状态
  */
@@ -170,6 +175,7 @@ TEST_CASE_DECLARE(PduR_Transmit_uninit)
     
 }
 
+/** @req SWS_PduR_00003 */
 /**
  * @brief 测试: PduR_Transmit NULL 指针
  */
@@ -186,6 +192,7 @@ TEST_CASE_DECLARE(PduR_Transmit_null_pointer)
     
 }
 
+/** @req SWS_PduR_00004 */
 /**
  * @brief 测试: PduR_RxIndication 正常路由到 Com
  */
@@ -210,6 +217,7 @@ TEST_CASE_DECLARE(PduR_RxIndication_route_to_Com)
     
 }
 
+/** @req SWS_PduR_00004 */
 /**
  * @brief 测试: PduR_RxIndication NULL 指针
  */
@@ -225,6 +233,7 @@ TEST_CASE_DECLARE(PduR_RxIndication_null_pointer)
     ASSERT_EQ(PDUR_INIT, g_pdur_state);
 }
 
+/** @req SWS_PduR_00005 */
 /**
  * @brief 测试: PduR_TxConfirmation 正常处理
  */
@@ -240,6 +249,7 @@ TEST_CASE_DECLARE(PduR_TxConfirmation_success)
     ASSERT_EQ(PDUR_INIT, g_pdur_state);
 }
 
+/** @req SWS_PduR_00006 */
 /**
  * @brief 测试: PduR_TriggerTransmit 正常处理
  */
@@ -263,6 +273,7 @@ TEST_CASE_DECLARE(PduR_TriggerTransmit_normal)
 TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_PduR_00003 */
 /**
  * @brief 测试: PduR 边界条件 - 最大长度数据
  */

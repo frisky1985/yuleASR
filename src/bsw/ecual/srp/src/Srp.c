@@ -68,6 +68,7 @@ static Srp_StreamEntryType* Srp_FindStream(const Srp_StreamIdType StreamId)
     return NULL_PTR;
 }
 
+/** @req SWS_Srp_00001 */
 void Srp_Init(const void* ConfigPtr)
 {
     Srp_Internal.state = SRP_INTERNAL_UNINIT;
@@ -77,12 +78,14 @@ void Srp_Init(const void* ConfigPtr)
     Srp_Internal.state = SRP_INTERNAL_INIT;
 }
 
+/** @req SWS_Srp_00002 */
 void Srp_DeInit(void)
 {
     Srp_Internal.state = SRP_INTERNAL_UNINIT;
     Srp_Internal.streamCount = 0U;
 }
 
+/** @req SWS_Srp_00005 */
 Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo)
 {
 #if (SRP_DEV_ERROR_DETECT == STD_ON)
@@ -107,6 +110,7 @@ Std_ReturnType Srp_RegisterTalker(const Srp_TalkerAdvertiseType* TalkerInfo)
     return E_OK;
 }
 
+/** @req SWS_Srp_00006 */
 Std_ReturnType Srp_RegisterListener(const Srp_StreamIdType StreamId)
 {
     if (Srp_Internal.state != SRP_INTERNAL_INIT) { return E_NOT_OK; }
@@ -124,6 +128,7 @@ Std_ReturnType Srp_RegisterListener(const Srp_StreamIdType StreamId)
     return E_OK;
 }
 
+/** @req SWS_Srp_00007 */
 Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId)
 {
     if (Srp_Internal.state != SRP_INTERNAL_INIT) { return E_NOT_OK; }
@@ -139,6 +144,7 @@ Std_ReturnType Srp_DeregisterStream(const Srp_StreamIdType StreamId)
     return E_NOT_OK;
 }
 
+/** @req SWS_Srp_00008 */
 Std_ReturnType Srp_GetStreamStatus(const Srp_StreamIdType StreamId, Srp_ReservationStateType* Status)
 {
     if (NULL_PTR == Status) { return E_NOT_OK; }
@@ -148,6 +154,7 @@ Std_ReturnType Srp_GetStreamStatus(const Srp_StreamIdType StreamId, Srp_Reservat
     return E_OK;
 }
 
+/** @req SWS_Srp_00009 */
 void Srp_RxIndication(const uint8* DataPtr, uint16 Length)
 {
     if ((NULL_PTR == DataPtr) || (Length < Srp_HdrLen)) { return; }
@@ -156,6 +163,7 @@ void Srp_RxIndication(const uint8* DataPtr, uint16 Length)
     (void)subtype;
 }
 
+/** @req SWS_Srp_00004 */
 void Srp_MainFunction(void)
 {
     if (Srp_Internal.state != SRP_INTERNAL_INIT) { return; }
@@ -168,6 +176,7 @@ void Srp_MainFunction(void)
     }
 }
 
+/** @req SWS_Srp_00003 */
 void Srp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (NULL_PTR == versioninfo) { return; }

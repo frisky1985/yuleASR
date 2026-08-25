@@ -48,6 +48,7 @@ static int tests_failed = 0;
 static Adc_ValueGroupType test_buffer[16];
 
 /* 初始化测试 */
+/* @req SWS_Adc_00201 */
 void test_init_deinit(void)
 {
     printf("\n=== Initialization Tests ===\n");
@@ -62,6 +63,7 @@ void test_init_deinit(void)
 }
 
 /* 组转换测试 */
+/* @req SWS_Adc_00202 */
 void test_group_conversion(void)
 {
     printf("\n=== Group Conversion Tests ===\n");
@@ -84,6 +86,7 @@ void test_group_conversion(void)
 }
 
 /* 读取组数据测试 */
+/* @req SWS_Adc_00203 */
 void test_read_group(void)
 {
     Std_ReturnType result;
@@ -109,6 +112,7 @@ void test_read_group(void)
 }
 
 /* 硬件触发测试 */
+/* @req SWS_Adc_00204 */
 void test_hardware_trigger(void)
 {
     printf("\n=== Hardware Trigger Tests ===\n");
@@ -131,6 +135,7 @@ void test_hardware_trigger(void)
 }
 
 /* 通知测试 */
+/* @req SWS_Adc_00205 */
 void test_notification(void)
 {
     printf("\n=== Notification Tests ===\n");
@@ -153,6 +158,7 @@ void test_notification(void)
 }
 
 /* 获取组状态测试 */
+/* @req SWS_Adc_00206 */
 void test_get_group_status(void)
 {
     Adc_StatusType status;
@@ -179,6 +185,7 @@ void test_get_group_status(void)
 }
 
 /* 缓冲区设置测试 */
+/* @req SWS_Adc_00207 */
 void test_setup_result_buffer(void)
 {
     Std_ReturnType result;
@@ -204,6 +211,7 @@ void test_setup_result_buffer(void)
 }
 
 /* 流指针测试 */
+/* @req SWS_Adc_00208 */
 void test_stream_last_pointer(void)
 {
     Adc_StreamNumSampleType num_samples;
@@ -230,6 +238,7 @@ void test_stream_last_pointer(void)
 }
 
 /* 自检测试 */
+/* @req SWS_Adc_00209 */
 void test_self_group_check(void)
 {
     Std_ReturnType result;
@@ -250,6 +259,7 @@ void test_self_group_check(void)
 }
 
 /* 电源状态测试 */
+/* @req SWS_Adc_00210 */
 void test_power_state(void)
 {
     printf("\n=== Power State Tests ===\n");
@@ -286,6 +296,7 @@ void test_power_state(void)
 }
 
 /* 版本信息测试 */
+/* @req SWS_Adc_00211 */
 void test_version_info(void)
 {
     printf("\n=== Version Info Tests ===\n");
@@ -305,6 +316,7 @@ void test_version_info(void)
 }
 
 /* 分辨率测试 */
+/* @req SWS_Adc_00212 */
 void test_resolution(void)
 {
     printf("\n=== Resolution Tests ===\n");
@@ -326,6 +338,7 @@ void test_resolution(void)
 }
 
 /* 采样时间测试 */
+/* @req SWS_Adc_00213 */
 void test_sampling_time(void)
 {
     printf("\n=== Sampling Time Tests ===\n");
@@ -347,6 +360,7 @@ void test_sampling_time(void)
 }
 
 /* 触发源测试 */
+/* @req SWS_Adc_00214 */
 void test_trigger_source(void)
 {
     printf("\n=== Trigger Source Tests ===\n");

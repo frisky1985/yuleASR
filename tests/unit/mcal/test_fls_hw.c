@@ -52,6 +52,7 @@ void tearDown(void)
 /**
  * @brief Test Fls_Hw_Init with valid configuration
  */
+/* @req SWS_Fls_00201 */
 void test_Fls_Hw_Init_ValidConfig(void)
 {
     Fls_Hw_ConfigType config = {
@@ -74,6 +75,7 @@ void test_Fls_Hw_Init_ValidConfig(void)
 /**
  * @brief Test Fls_Hw_Init with NULL pointer
  */
+/* @req SWS_Fls_00202 */
 void test_Fls_Hw_Init_NullConfig(void)
 {
     Std_ReturnType result = Fls_Hw_Init(NULL_PTR);
@@ -86,6 +88,7 @@ void test_Fls_Hw_Init_NullConfig(void)
 /**
  * @brief Test Fls_Hw_DeInit
  */
+/* @req SWS_Fls_00203 */
 void test_Fls_Hw_DeInit(void)
 {
     Fls_Hw_ConfigType config = {
@@ -108,6 +111,7 @@ void test_Fls_Hw_DeInit(void)
 /**
  * @brief Test Fls_Hw_GetSectorNumber with valid address
  */
+/* @req SWS_Fls_00204 */
 void test_Fls_Hw_GetSectorNumber_Valid(void)
 {
     Fls_Hw_ConfigType config = {
@@ -134,6 +138,7 @@ void test_Fls_Hw_GetSectorNumber_Valid(void)
 /**
  * @brief Test Fls_Hw_GetSectorNumber with invalid address
  */
+/* @req SWS_Fls_00205 */
 void test_Fls_Hw_GetSectorNumber_Invalid(void)
 {
     Fls_Hw_ConfigType config = {
@@ -160,6 +165,7 @@ void test_Fls_Hw_GetSectorNumber_Invalid(void)
 /**
  * @brief Test Fls_Hw_GetSectorSize
  */
+/* @req SWS_Fls_00206 */
 void test_Fls_Hw_GetSectorSize(void)
 {
     Fls_Hw_ConfigType config = {
@@ -189,6 +195,7 @@ void test_Fls_Hw_GetSectorSize(void)
 /**
  * @brief Test Fls_Hw_Lock and Fls_Hw_Unlock
  */
+/* @req SWS_Fls_00207 */
 void test_Fls_Hw_LockUnlock(void)
 {
     Fls_Hw_ConfigType config = {
@@ -215,6 +222,7 @@ void test_Fls_Hw_LockUnlock(void)
 /**
  * @brief Test Fls_Hw_ReadWord
  */
+/* @req SWS_Fls_00208 */
 void test_Fls_Hw_ReadWord(void)
 {
     Fls_Hw_ConfigType config = {
@@ -239,6 +247,7 @@ void test_Fls_Hw_ReadWord(void)
 /**
  * @brief Test Fls_Hw_ReadBuffer
  */
+/* @req SWS_Fls_00209 */
 void test_Fls_Hw_ReadBuffer(void)
 {
     Fls_Hw_ConfigType config = {
@@ -263,6 +272,7 @@ void test_Fls_Hw_ReadBuffer(void)
 /**
  * @brief Test Fls_Hw_ClearFlags
  */
+/* @req SWS_Fls_00210 */
 void test_Fls_Hw_ClearFlags(void)
 {
     Fls_Hw_ConfigType config = {
@@ -288,6 +298,7 @@ void test_Fls_Hw_ClearFlags(void)
 /**
  * @brief Test Fls_Hw_Verify
  */
+/* @req SWS_Fls_00211 */
 void test_Fls_Hw_Verify(void)
 {
     Fls_Hw_ConfigType config = {

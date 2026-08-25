@@ -183,6 +183,7 @@ STATIC void S32K312_Hsm_ReportError(uint8 serviceId, uint32 errorCode);
 /**********************************************************************************************************************
  * S32K312_Hsm_Init
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00100 */
 Std_ReturnType S32K312_Hsm_Init(const S32K312_HsmConfigType* config)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -273,6 +274,7 @@ Std_ReturnType S32K312_Hsm_Init(const S32K312_HsmConfigType* config)
 /**********************************************************************************************************************
  * S32K312_Hsm_DeInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00101 */
 void S32K312_Hsm_DeInit(void)
 {
     if (S32K312_Hsm_State == S32K312_HSM_STATE_UNINIT) {
@@ -306,6 +308,7 @@ void S32K312_Hsm_DeInit(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_SelfTest
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00102 */
 Std_ReturnType S32K312_Hsm_SelfTest(void)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -415,6 +418,7 @@ Std_ReturnType S32K312_Hsm_SelfTest(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_GetStatus
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00103 */
 Std_ReturnType S32K312_Hsm_GetStatus(S32K312_HsmStatusType* status)
 {
     if (status == NULL_PTR) {
@@ -468,6 +472,7 @@ Std_ReturnType S32K312_Hsm_GetStatus(S32K312_HsmStatusType* status)
 /**********************************************************************************************************************
  * S32K312_Hsm_AesInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00104 */
 Std_ReturnType S32K312_Hsm_AesInit(S32K312_HsmAesContextType* context,
                                     const uint8* key,
                                     uint32 keyLength,
@@ -527,6 +532,7 @@ Std_ReturnType S32K312_Hsm_AesInit(S32K312_HsmAesContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_AesEcbEncrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00105 */
 Std_ReturnType S32K312_Hsm_AesEcbEncrypt(const S32K312_HsmAesContextType* context,
                                           const uint8* plaintext,
                                           uint8* ciphertext,
@@ -642,6 +648,7 @@ Std_ReturnType S32K312_Hsm_AesEcbEncrypt(const S32K312_HsmAesContextType* contex
 /**********************************************************************************************************************
  * S32K312_Hsm_AesEcbDecrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00106 */
 Std_ReturnType S32K312_Hsm_AesEcbDecrypt(const S32K312_HsmAesContextType* context,
                                           const uint8* ciphertext,
                                           uint8* plaintext,
@@ -754,6 +761,7 @@ Std_ReturnType S32K312_Hsm_AesEcbDecrypt(const S32K312_HsmAesContextType* contex
 /**********************************************************************************************************************
  * S32K312_Hsm_AesCbcEncrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00107 */
 Std_ReturnType S32K312_Hsm_AesCbcEncrypt(const S32K312_HsmAesContextType* context,
                                           const uint8* plaintext,
                                           uint8* ciphertext,
@@ -784,6 +792,7 @@ Std_ReturnType S32K312_Hsm_AesCbcEncrypt(const S32K312_HsmAesContextType* contex
 /**********************************************************************************************************************
  * S32K312_Hsm_AesCbcDecrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00108 */
 Std_ReturnType S32K312_Hsm_AesCbcDecrypt(const S32K312_HsmAesContextType* context,
                                           const uint8* ciphertext,
                                           uint8* plaintext,
@@ -807,6 +816,7 @@ Std_ReturnType S32K312_Hsm_AesCbcDecrypt(const S32K312_HsmAesContextType* contex
 /**********************************************************************************************************************
  * S32K312_Hsm_AesGcmEncrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00109 */
 Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* context,
                                           const uint8* plaintext,
                                           uint32 plaintextLength,
@@ -937,6 +947,7 @@ Std_ReturnType S32K312_Hsm_AesGcmEncrypt(const S32K312_HsmAesContextType* contex
 /**********************************************************************************************************************
  * S32K312_Hsm_AesGcmDecrypt
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00110 */
 Std_ReturnType S32K312_Hsm_AesGcmDecrypt(const S32K312_HsmAesContextType* context,
                                           const uint8* ciphertext,
                                           uint32 ciphertextLength,
@@ -981,6 +992,7 @@ Std_ReturnType S32K312_Hsm_AesGcmDecrypt(const S32K312_HsmAesContextType* contex
 /**********************************************************************************************************************
  * S32K312_Hsm_EccInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00111 */
 Std_ReturnType S32K312_Hsm_EccInit(S32K312_HsmEccContextType* context,
                                     S32K312_HsmEccCurveType curve)
 {
@@ -1018,6 +1030,7 @@ Std_ReturnType S32K312_Hsm_EccInit(S32K312_HsmEccContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_EccLoadPrivateKey
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00112 */
 Std_ReturnType S32K312_Hsm_EccLoadPrivateKey(S32K312_HsmEccContextType* context,
                                               const uint8* privateKey,
                                               uint32 keyLength)
@@ -1044,6 +1057,7 @@ Std_ReturnType S32K312_Hsm_EccLoadPrivateKey(S32K312_HsmEccContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_EccLoadPublicKey
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00113 */
 Std_ReturnType S32K312_Hsm_EccLoadPublicKey(S32K312_HsmEccContextType* context,
                                              const uint8* publicKey,
                                              uint32 keyLength)
@@ -1074,6 +1088,7 @@ Std_ReturnType S32K312_Hsm_EccLoadPublicKey(S32K312_HsmEccContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_EccPointMultiply
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00114 */
 Std_ReturnType S32K312_Hsm_EccPointMultiply(const S32K312_HsmEccContextType* context,
                                              uint8* resultPoint)
 {
@@ -1155,6 +1170,7 @@ Std_ReturnType S32K312_Hsm_EccPointMultiply(const S32K312_HsmEccContextType* con
 /**********************************************************************************************************************
  * S32K312_Hsm_EccSign
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00115 */
 Std_ReturnType S32K312_Hsm_EccSign(const S32K312_HsmEccContextType* context,
                                     const uint8* digest,
                                     uint32 digestLength,
@@ -1258,6 +1274,7 @@ Std_ReturnType S32K312_Hsm_EccSign(const S32K312_HsmEccContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_EccVerify
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00116 */
 Std_ReturnType S32K312_Hsm_EccVerify(const S32K312_HsmEccContextType* context,
                                       const uint8* digest,
                                       uint32 digestLength,
@@ -1368,6 +1385,7 @@ Std_ReturnType S32K312_Hsm_EccVerify(const S32K312_HsmEccContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_Sha256Init
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00117 */
 Std_ReturnType S32K312_Hsm_Sha256Init(S32K312_HsmSha256ContextType* context)
 {
     uint32 i;
@@ -1390,6 +1408,7 @@ Std_ReturnType S32K312_Hsm_Sha256Init(S32K312_HsmSha256ContextType* context)
 /**********************************************************************************************************************
  * S32K312_Hsm_Sha256Update
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00118 */
 Std_ReturnType S32K312_Hsm_Sha256Update(S32K312_HsmSha256ContextType* context,
                                          const uint8* data,
                                          uint32 length)
@@ -1424,6 +1443,7 @@ Std_ReturnType S32K312_Hsm_Sha256Update(S32K312_HsmSha256ContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_Sha256Finish
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00119 */
 Std_ReturnType S32K312_Hsm_Sha256Finish(S32K312_HsmSha256ContextType* context,
                                          uint8* digest)
 {
@@ -1445,6 +1465,7 @@ Std_ReturnType S32K312_Hsm_Sha256Finish(S32K312_HsmSha256ContextType* context,
 /**********************************************************************************************************************
  * S32K312_Hsm_Sha256
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00120 */
 Std_ReturnType S32K312_Hsm_Sha256(const uint8* data,
                                    uint32 length,
                                    uint8* digest)
@@ -1525,6 +1546,7 @@ Std_ReturnType S32K312_Hsm_Sha256(const uint8* data,
 /**********************************************************************************************************************
  * S32K312_Hsm_KeyImport
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00121 */
 Std_ReturnType S32K312_Hsm_KeyImport(uint8 slotId,
                                       uint8 keyType,
                                       const uint8* keyData,
@@ -1586,6 +1608,7 @@ Std_ReturnType S32K312_Hsm_KeyImport(uint8 slotId,
 /**********************************************************************************************************************
  * S32K312_Hsm_KeyExport
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00122 */
 Std_ReturnType S32K312_Hsm_KeyExport(uint8 slotId,
                                       uint8* keyData,
                                       uint16* keyLength)
@@ -1603,6 +1626,7 @@ Std_ReturnType S32K312_Hsm_KeyExport(uint8 slotId,
 /**********************************************************************************************************************
  * S32K312_Hsm_KeyErase
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00123 */
 Std_ReturnType S32K312_Hsm_KeyErase(uint8 slotId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1635,6 +1659,7 @@ Std_ReturnType S32K312_Hsm_KeyErase(uint8 slotId)
 /**********************************************************************************************************************
  * S32K312_Hsm_KeyGetSlotInfo
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00124 */
 Std_ReturnType S32K312_Hsm_KeyGetSlotInfo(uint8 slotId,
                                            S32K312_HsmKeySlotType* slotInfo)
 {
@@ -1665,6 +1690,7 @@ Std_ReturnType S32K312_Hsm_KeyGetSlotInfo(uint8 slotId,
 /**********************************************************************************************************************
  * S32K312_Hsm_WaitReady
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00125 */
 Std_ReturnType S32K312_Hsm_WaitReady(uint32 timeoutUs)
 {
     /* Simple timeout loop - in production, use proper timer */
@@ -1684,6 +1710,7 @@ Std_ReturnType S32K312_Hsm_WaitReady(uint32 timeoutUs)
 /**********************************************************************************************************************
  * S32K312_Hsm_ClearError
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00126 */
 Std_ReturnType S32K312_Hsm_ClearError(void)
 {
     if (S32K312_Hsm_GlobalRegs != NULL_PTR) {
@@ -1703,6 +1730,7 @@ Std_ReturnType S32K312_Hsm_ClearError(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_GetFirmwareVersion
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00127 */
 Std_ReturnType S32K312_Hsm_GetFirmwareVersion(uint8* version)
 {
     if (version == NULL_PTR) {
@@ -1732,6 +1760,7 @@ Std_ReturnType S32K312_Hsm_GetFirmwareVersion(uint8* version)
 /**********************************************************************************************************************
  * S32K312_Hsm_ValidateConfig
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00128 */
 STATIC Std_ReturnType S32K312_Hsm_ValidateConfig(const S32K312_HsmConfigType* config)
 {
     if (config == NULL_PTR) {
@@ -1755,6 +1784,7 @@ STATIC Std_ReturnType S32K312_Hsm_ValidateConfig(const S32K312_HsmConfigType* co
 /**********************************************************************************************************************
  * S32K312_Hsm_InitRegisters
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00129 */
 STATIC Std_ReturnType S32K312_Hsm_InitRegisters(void)
 {
     /* Initialize register pointers to HSM base addresses */
@@ -1779,6 +1809,7 @@ STATIC Std_ReturnType S32K312_Hsm_InitRegisters(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_WaitForAesReady
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00130 */
 STATIC Std_ReturnType S32K312_Hsm_WaitForAesReady(uint32 timeoutUs)
 {
     volatile uint32 i;
@@ -1800,6 +1831,7 @@ STATIC Std_ReturnType S32K312_Hsm_WaitForAesReady(uint32 timeoutUs)
 /**********************************************************************************************************************
  * S32K312_Hsm_WaitForEccReady
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00131 */
 STATIC Std_ReturnType S32K312_Hsm_WaitForEccReady(uint32 timeoutUs)
 {
     volatile uint32 i;
@@ -1821,6 +1853,7 @@ STATIC Std_ReturnType S32K312_Hsm_WaitForEccReady(uint32 timeoutUs)
 /**********************************************************************************************************************
  * S32K312_Hsm_WaitForShaReady
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00132 */
 STATIC Std_ReturnType S32K312_Hsm_WaitForShaReady(uint32 timeoutUs)
 {
     volatile uint32 i;
@@ -1842,6 +1875,7 @@ STATIC Std_ReturnType S32K312_Hsm_WaitForShaReady(uint32 timeoutUs)
 /**********************************************************************************************************************
  * S32K312_Hsm_ClearAesContext
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00133 */
 STATIC void S32K312_Hsm_ClearAesContext(void)
 {
     uint32 i;
@@ -1866,6 +1900,7 @@ STATIC void S32K312_Hsm_ClearAesContext(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_ClearEccContext
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00134 */
 STATIC void S32K312_Hsm_ClearEccContext(void)
 {
     uint32 i;
@@ -1886,6 +1921,7 @@ STATIC void S32K312_Hsm_ClearEccContext(void)
 /**********************************************************************************************************************
  * S32K312_Hsm_ReportError
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00135 */
 STATIC void S32K312_Hsm_ReportError(uint8 serviceId, uint32 errorCode)
 {
     (void)serviceId;

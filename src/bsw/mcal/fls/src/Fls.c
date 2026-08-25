@@ -128,18 +128,41 @@ static uint32 Fls_TimeoutCounter = 0u;
 #define FLS_START_SEC_CODE
 #include "Fls_MemMap.h"
 
+/** @req SWS_Fls_00101 */
 static void Fls_SetJobResult(Fls_JobResultType result);
+/** @req SWS_Fls_00102 */
 static Std_ReturnType Fls_ValidateAddress(Fls_AddressType address, Fls_LengthType length);
+/** @req SWS_Fls_00103 */
 static const Fls_SectorType* Fls_GetSector(Fls_AddressType address);
+/** @req SWS_Fls_00103 */
+/** @req SWS_Fls_00104 */
 static void Fls_UnlockFlash(void);
+/** @req SWS_Fls_00104 */
+/** @req SWS_Fls_00105 */
 static void Fls_LockFlash(void);
+/** @req SWS_Fls_00105 */
+/** @req SWS_Fls_00106 */
 static Std_ReturnType Fls_EraseSector(Fls_AddressType address);
+/** @req SWS_Fls_00106 */
+/** @req SWS_Fls_00107 */
 static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data, Fls_LengthType length);
+/** @req SWS_Fls_00107 */
+/** @req SWS_Fls_00108 */
 static void Fls_ReadData(Fls_AddressType address, uint8* data, Fls_LengthType length);
+/** @req SWS_Fls_00108 */
+/** @req SWS_Fls_00109 */
 static void Fls_ProcessErase(void);
+/** @req SWS_Fls_00109 */
+/** @req SWS_Fls_00110 */
 static void Fls_ProcessWrite(void);
+/** @req SWS_Fls_00110 */
+/** @req SWS_Fls_00111 */
 static void Fls_ProcessRead(void);
+/** @req SWS_Fls_00111 */
+/** @req SWS_Fls_00112 */
 static void Fls_ProcessCompare(void);
+/** @req SWS_Fls_00112 */
+/** @req SWS_Fls_00113 */
 static void Fls_FinishJob(void);
 
 /*==================================================================================================
@@ -152,6 +175,7 @@ static void Fls_FinishJob(void);
  * @return None
  * @req SWS_Fls_00153
  */
+/** @req SWS_Fls_00001 */
 void Fls_Init(const Fls_ConfigType* ConfigPtr)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -202,6 +226,7 @@ void Fls_Init(const Fls_ConfigType* ConfigPtr)
  * @return E_OK: Job accepted, E_NOT_OK: Job rejected
  * @req SWS_Fls_00154
  */
+/** @req SWS_Fls_00002 */
 Std_ReturnType Fls_Erase(Fls_AddressType TargetAddress, Fls_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -267,6 +292,7 @@ Std_ReturnType Fls_Erase(Fls_AddressType TargetAddress, Fls_LengthType Length)
  * @return E_OK: Job accepted, E_NOT_OK: Job rejected
  * @req SWS_Fls_00155
  */
+/** @req SWS_Fls_00003 */
 Std_ReturnType Fls_Write(Fls_AddressType TargetAddress, const uint8* SourceAddress, Fls_LengthType Length)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -342,6 +368,7 @@ Std_ReturnType Fls_Write(Fls_AddressType TargetAddress, const uint8* SourceAddre
  * @return None
  * @req SWS_Fls_00156
  */
+/** @req SWS_Fls_00004 */
 void Fls_Read(Fls_AddressType SourceAddress, uint8* TargetAddressPtr, Fls_LengthType Length)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -400,6 +427,7 @@ void Fls_Read(Fls_AddressType SourceAddress, uint8* TargetAddressPtr, Fls_Length
  * when FLS_USE_ISR == STD_OFF (no interrupt-driven job processing).
  */
 #if (FLS_USE_ISR == STD_OFF)
+/** @req SWS_Fls_00005 */
 Std_ReturnType Fls_ReadSync(Fls_AddressType SourceAddress, uint8* TargetAddressPtr, Fls_LengthType Length)
 {
     Fls_AddressType currentAddr;
@@ -477,6 +505,7 @@ Std_ReturnType Fls_ReadSync(Fls_AddressType SourceAddress, uint8* TargetAddressP
  * @return None
  * @req SWS_Fls_00157
  */
+/** @req SWS_Fls_00006 */
 void Fls_Compare(Fls_AddressType SourceAddress, const uint8* TargetAddressPtr, Fls_LengthType Length)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -527,6 +556,7 @@ void Fls_Compare(Fls_AddressType SourceAddress, const uint8* TargetAddressPtr, F
  * @return None
  * @req SWS_Fls_00158
  */
+/** @req SWS_Fls_00007 */
 void Fls_SetMode(MemIf_ModeType Mode)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -548,6 +578,7 @@ void Fls_SetMode(MemIf_ModeType Mode)
  * @return Fls_StatusType: Current driver status
  * @req SWS_Fls_00159
  */
+/** @req SWS_Fls_00008 */
 Fls_StatusType Fls_GetStatus(void)
 {
     return Fls_Status;
@@ -558,6 +589,7 @@ Fls_StatusType Fls_GetStatus(void)
  * @return Fls_JobResultType: Result of last job
  * @req SWS_Fls_00160
  */
+/** @req SWS_Fls_00009 */
 Fls_JobResultType Fls_GetJobResult(void)
 {
     Fls_JobResultType result;
@@ -583,6 +615,7 @@ Fls_JobResultType Fls_GetJobResult(void)
  * @return None
  * @req SWS_Fls_00161
  */
+/** @req SWS_Fls_00010 */
 void Fls_Cancel(void)
 {
 #if (FLS_DEV_ERROR_DETECT == STD_ON)
@@ -612,6 +645,7 @@ void Fls_Cancel(void)
  * @return None
  * @req SWS_Fls_00162
  */
+/** @req SWS_Fls_00011 */
 void Fls_MainFunction(void)
 {
     if (Fls_Status != FLS_BUSY)
@@ -670,6 +704,7 @@ void Fls_MainFunction(void)
  * @req SWS_Fls_00163
  */
 #if (FLS_VERSION_INFO_API == STD_ON)
+/** @req SWS_Fls_00012 */
 void Fls_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (versioninfo != NULL_PTR)
@@ -696,6 +731,8 @@ void Fls_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /**
  * @brief Sets job result and triggers notification
  */
+/** @req SWS_Fls_00113 */
+/** @req SWS_Fls_00101 */
 static void Fls_SetJobResult(Fls_JobResultType result)
 {
     Fls_JobControl.result = result;
@@ -717,6 +754,8 @@ static void Fls_SetJobResult(Fls_JobResultType result)
 /**
  * @brief Validates flash address and length
  */
+/** @req SWS_Fls_00114 */
+/** @req SWS_Fls_00102 */
 static Std_ReturnType Fls_ValidateAddress(Fls_AddressType address, Fls_LengthType length)
 {
     if (!FLS_IS_ADDRESS_VALID(address))
@@ -740,6 +779,7 @@ static Std_ReturnType Fls_ValidateAddress(Fls_AddressType address, Fls_LengthTyp
 /**
  * @brief Gets sector configuration for given address
  */
+/** @req SWS_Fls_00103 */
 static const Fls_SectorType* Fls_GetSector(Fls_AddressType address)
 {
     const Fls_SectorType* sector = NULL_PTR;
@@ -765,6 +805,8 @@ static const Fls_SectorType* Fls_GetSector(Fls_AddressType address)
 /**
  * @brief Unlocks flash for programming/erasing
  */
+/** @req SWS_Fls_00115 */
+/** @req SWS_Fls_00104 */
 static void Fls_UnlockFlash(void)
 {
     /* Hardware-specific unlock sequence */
@@ -774,6 +816,8 @@ static void Fls_UnlockFlash(void)
 /**
  * @brief Locks flash after programming/erasing
  */
+/** @req SWS_Fls_00116 */
+/** @req SWS_Fls_00105 */
 static void Fls_LockFlash(void)
 {
     /* Hardware-specific lock sequence */
@@ -783,6 +827,8 @@ static void Fls_LockFlash(void)
 /**
  * @brief Erases a single flash sector
  */
+/** @req SWS_Fls_00117 */
+/** @req SWS_Fls_00106 */
 static Std_ReturnType Fls_EraseSector(Fls_AddressType address)
 {
     /* Hardware-specific sector erase */
@@ -812,6 +858,8 @@ static Std_ReturnType Fls_EraseSector(Fls_AddressType address)
 /**
  * @brief Writes a single page to flash
  */
+/** @req SWS_Fls_00118 */
+/** @req SWS_Fls_00107 */
 static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data, Fls_LengthType length)
 {
     Fls_LengthType i;
@@ -844,6 +892,8 @@ static Std_ReturnType Fls_WritePage(Fls_AddressType address, const uint8* data, 
 /**
  * @brief Reads data from flash
  */
+/** @req SWS_Fls_00119 */
+/** @req SWS_Fls_00108 */
 static void Fls_ReadData(Fls_AddressType address, uint8* data, Fls_LengthType length)
 {
     /* Flash can be read directly like RAM — via REG_READ8 so host tests can
@@ -858,6 +908,8 @@ static void Fls_ReadData(Fls_AddressType address, uint8* data, Fls_LengthType le
 /**
  * @brief Processes erase job
  */
+/** @req SWS_Fls_00120 */
+/** @req SWS_Fls_00109 */
 static void Fls_ProcessErase(void)
 {
     const Fls_SectorType* sector;
@@ -900,6 +952,8 @@ static void Fls_ProcessErase(void)
 /**
  * @brief Processes write job
  */
+/** @req SWS_Fls_00121 */
+/** @req SWS_Fls_00110 */
 static void Fls_ProcessWrite(void)
 {
     const Fls_SectorType* sector;
@@ -958,6 +1012,8 @@ static void Fls_ProcessWrite(void)
 /**
  * @brief Processes read job
  */
+/** @req SWS_Fls_00122 */
+/** @req SWS_Fls_00111 */
 static void Fls_ProcessRead(void)
 {
     Fls_AddressType currentAddr;
@@ -998,6 +1054,8 @@ static void Fls_ProcessRead(void)
 /**
  * @brief Processes compare job
  */
+/** @req SWS_Fls_00123 */
+/** @req SWS_Fls_00112 */
 static void Fls_ProcessCompare(void)
 {
     Fls_AddressType currentAddr;
@@ -1051,6 +1109,8 @@ static void Fls_ProcessCompare(void)
 /**
  * @brief Finishes current job
  */
+/** @req SWS_Fls_00124 */
+/** @req SWS_Fls_00113 */
 static void Fls_FinishJob(void)
 {
     Fls_Status = FLS_IDLE;

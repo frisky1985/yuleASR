@@ -61,12 +61,19 @@ typedef struct {
     const SomeIpIf_EndpointType* Endpoints;
 } SomeIpIf_ConfigType;
 
+/** @req SWS_SomeIpIf_00001 */
 void SomeIpIf_Init(const SomeIpIf_ConfigType* ConfigPtr);
+/** @req SWS_SomeIpIf_00002 */
 void SomeIpIf_DeInit(void);
+/** @req SWS_SomeIpIf_00005 */
 Std_ReturnType SomeIpIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);
+/** @req SWS_SomeIpIf_00006 */
 void SomeIpIf_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
+/** @req SWS_SomeIpIf_00004 */
 void SomeIpIf_MainFunction(void);
+/** @req SWS_SomeIpIf_00007 */
 Std_ReturnType SomeIpIf_SetState(uint8 ChannelId, boolean Online);
+/** @req SWS_SomeIpIf_00003 */
 void SomeIpIf_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* SOMEIPIF_H */

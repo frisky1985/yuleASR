@@ -9,6 +9,7 @@
 void setUp(void) {}
 void tearDown(void) {}
 
+/** @req SWS_CanTrcv_00005 */
 void test_cantrcv_Init_should_initialize(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }

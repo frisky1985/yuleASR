@@ -47,6 +47,7 @@ typedef struct {
 #define E2E_P06_COUNTER_MAX     0xFFFFU
 #define E2E_P06_CRC_SIZE        8U
 
+/** @req SWS_E2E_00015 */
 /*=============================================================================*
  * Function Prototypes
  *=============================================================================*/
@@ -57,6 +58,7 @@ Std_ReturnType E2E_P06Protect(
     uint32 Length
 );
 
+/** @req SWS_E2E_00016 */
 Std_ReturnType E2E_P06Check(
     const E2E_P06ConfigType* Config,
     E2E_P06CheckStateType* State,
@@ -64,6 +66,7 @@ Std_ReturnType E2E_P06Check(
     uint32 Length
 );
 
+/** @req SWS_E2E_00017 */
 void E2E_P06MapStatusToSM(
     E2E_PCheckStatusType CheckStatus,
     E2E_SMStateType* SMState,

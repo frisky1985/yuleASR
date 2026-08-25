@@ -128,6 +128,7 @@ static uint32 calculate_crc(const uint8* data, uint16 length)
 /**
  * @brief 测试: NvM 正常初始化
  */
+/** @req SWS_NvM_00001 */
 TEST_CASE_DECLARE(NvM_Init_valid_config)
 {
     /* Setup */
@@ -144,6 +145,7 @@ TEST_CASE_DECLARE(NvM_Init_valid_config)
 /**
  * @brief 测试: NvM NULL 配置初始化
  */
+/** @req SWS_NvM_00001 */
 TEST_CASE_DECLARE(NvM_Init_null_config)
 {
     /* Setup */
@@ -160,6 +162,7 @@ TEST_CASE_DECLARE(NvM_Init_null_config)
 /**
  * @brief 测试: NvM 获取版本信息
  */
+/** @req SWS_NvM_00010 */
 TEST_CASE_DECLARE(NvM_GetVersionInfo)
 {
     /* Setup */
@@ -178,6 +181,7 @@ TEST_CASE_DECLARE(NvM_GetVersionInfo)
 /**
  * @brief 测试: NvM_GetVersionInfo NULL 指针
  */
+/** @req SWS_NvM_00010 */
 TEST_CASE_DECLARE(NvM_GetVersionInfo_null)
 {
     /* Execute */
@@ -189,6 +193,7 @@ TEST_CASE_DECLARE(NvM_GetVersionInfo_null)
 /**
  * @brief 测试: NvM_ReadBlock 正常读取
  */
+/** @req SWS_NvM_00002 */
 TEST_CASE_DECLARE(NvM_ReadBlock_normal)
 {
     /* Setup */
@@ -215,6 +220,7 @@ TEST_CASE_DECLARE(NvM_ReadBlock_normal)
 /**
  * @brief 测试: NvM_ReadBlock NULL 指针
  */
+/** @req SWS_NvM_00002 */
 TEST_CASE_DECLARE(NvM_ReadBlock_null_pointer)
 {
     /* Setup */
@@ -233,6 +239,7 @@ TEST_CASE_DECLARE(NvM_ReadBlock_null_pointer)
 /**
  * @brief 测试: NvM_WriteBlock 正常写入
  */
+/** @req SWS_NvM_00003 */
 TEST_CASE_DECLARE(NvM_WriteBlock_normal)
 {
     /* Setup */
@@ -256,6 +263,7 @@ TEST_CASE_DECLARE(NvM_WriteBlock_normal)
 /**
  * @brief 测试: NvM_WriteBlock NULL 指针
  */
+/** @req SWS_NvM_00003 */
 TEST_CASE_DECLARE(NvM_WriteBlock_null_pointer)
 {
     /* Setup */
@@ -274,6 +282,7 @@ TEST_CASE_DECLARE(NvM_WriteBlock_null_pointer)
 /**
  * @brief 测试: NvM 未初始化状态调用 API
  */
+/** @req SWS_NvM_00002 */
 TEST_CASE_DECLARE(NvM_ReadBlock_uninit)
 {
     /* Setup */
@@ -292,6 +301,7 @@ TEST_CASE_DECLARE(NvM_ReadBlock_uninit)
 /**
  * @brief 测试: NvM 无效块 ID
  */
+/** @req SWS_NvM_00002 */
 TEST_CASE_DECLARE(NvM_ReadBlock_invalid_id)
 {
     /* Setup */
@@ -311,6 +321,7 @@ TEST_CASE_DECLARE(NvM_ReadBlock_invalid_id)
 /**
  * @brief 测试: NvM_EraseBlock 正常擦除
  */
+/** @req SWS_NvM_00013 */
 TEST_CASE_DECLARE(NvM_EraseBlock_normal)
 {
     /* Setup */
@@ -331,6 +342,7 @@ TEST_CASE_DECLARE(NvM_EraseBlock_normal)
 /**
  * @brief 测试: NvM_ReadAll 正常执行
  */
+/** @req SWS_NvM_00016 */
 TEST_CASE_DECLARE(NvM_ReadAll_normal)
 {
     /* Setup */
@@ -347,6 +359,7 @@ TEST_CASE_DECLARE(NvM_ReadAll_normal)
 /**
  * @brief 测试: NvM_WriteAll 正常执行
  */
+/** @req SWS_NvM_00017 */
 TEST_CASE_DECLARE(NvM_WriteAll_normal)
 {
     /* Setup */
@@ -365,6 +378,7 @@ TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
 /**
  * @brief 测试: NvM 主函数正常执行
  */
+/** @req SWS_NvM_00015 */
 TEST_CASE_DECLARE(NvM_MainFunction_normal)
 {
     /* Setup */
@@ -380,6 +394,7 @@ TEST_CASE_DECLARE(NvM_MainFunction_normal)
 /**
  * @brief 测试: NvM_CancelJobs 取消任务
  */
+/** @req SWS_NvM_00106 */
 TEST_CASE_DECLARE(NvM_CancelJobs_normal)
 {
     /* Setup */
@@ -397,6 +412,7 @@ TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
 /**
  * @brief 测试: NvM 错误状态获取
  */
+/** @req SWS_NvM_00011 */
 TEST_CASE_DECLARE(NvM_GetErrorStatus_normal)
 {
     /* Setup */
@@ -415,6 +431,7 @@ TEST_CASE_DECLARE(NvM_GetErrorStatus_normal)
 /**
  * @brief 测试: NvM_GetErrorStatus NULL 指针
  */
+/** @req SWS_NvM_00011 */
 TEST_CASE_DECLARE(NvM_GetErrorStatus_null)
 {
     /* Setup */
@@ -430,6 +447,7 @@ TEST_CASE_DECLARE(NvM_GetErrorStatus_null)
 /**
  * @brief 测试: NvM 边界条件 - 最大块 ID
  */
+/** @req SWS_NvM_00002 */
 TEST_CASE_DECLARE(NvM_ReadBlock_max_id)
 {
     /* Setup */
@@ -450,6 +468,7 @@ TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
 /**
  * @brief 测试: NvM 写计数器验证
  */
+/** @req SWS_NvM_00003 */
 TEST_CASE_DECLARE(NvM_WriteBlock_counter)
 {
     /* Setup */

@@ -9,6 +9,7 @@
 #include <cmocka.h>
 #include "Xcp.h"
 
+/** @req SWS_Xcp_00001 */
 static void test_Xcp_Init(void **state) {
     (void)state;
     const Xcp_ConfigType* config = NULL;
@@ -16,12 +17,14 @@ static void test_Xcp_Init(void **state) {
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_Xcp_00001 */
 static void test_Xcp_DeInit(void **state) {
     (void)state;
     Xcp_DeInit();
     assert_true(1);
 }
 
+/** @req SWS_Xcp_00004 */
 static void test_Xcp_MainFunction(void **state) {
     (void)state;
     Xcp_MainFunction();
@@ -34,6 +37,7 @@ static void test_Xcp_CmdProcessor(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_Xcp_00005 */
 static void test_Xcp_RxIndication(void **state) {
     (void)state;
     PduIdType RxPduId = 0;
@@ -42,6 +46,7 @@ static void test_Xcp_RxIndication(void **state) {
     assert_true(1);
 }
 
+/** @req SWS_Xcp_00006 */
 static void test_Xcp_TxConfirmation(void **state) {
     (void)state;
     PduIdType TxPduId = 0;

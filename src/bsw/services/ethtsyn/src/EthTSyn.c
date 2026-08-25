@@ -26,6 +26,7 @@ static uint32 EthTSyn_LocalNanoSeconds = 0U;
  * @param config Pointer to configuration set
  * @return E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_EthTSyn_00001 */
 Std_ReturnType EthTSyn_Init(const EthTSyn_ConfigType* Config)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
@@ -53,6 +54,7 @@ Std_ReturnType EthTSyn_Init(const EthTSyn_ConfigType* Config)
 /**
  * @brief De-initialize EthTSyn module.
  */
+/** @req SWS_EthTSyn_00002 */
 void EthTSyn_DeInit(void)
 {
     EthTSyn_ConfigPtr = NULL_PTR;
@@ -64,6 +66,7 @@ void EthTSyn_DeInit(void)
 /**
  * @brief Main function — called cyclically for time management.
  */
+/** @req SWS_EthTSyn_00003 */
 void EthTSyn_MainFunction(void)
 {
     if (!EthTSyn_Initialized) {
@@ -77,6 +80,7 @@ void EthTSyn_MainFunction(void)
  * @param timestamp Output timestamp
  * @return E_OK on success
  */
+/** @req SWS_EthTSyn_00004 */
 Std_ReturnType EthTSyn_GetTime(EthTSyn_TimestampType* Timestamp)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
@@ -100,6 +104,7 @@ Std_ReturnType EthTSyn_GetTime(EthTSyn_TimestampType* Timestamp)
  * @param timestamp New time value
  * @return E_OK on success
  */
+/** @req SWS_EthTSyn_00005 */
 Std_ReturnType EthTSyn_SetTime(const EthTSyn_TimestampType* Timestamp)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
@@ -121,6 +126,7 @@ Std_ReturnType EthTSyn_SetTime(const EthTSyn_TimestampType* Timestamp)
 /**
  * @brief Adjust clock rate for servo loop.
  */
+/** @req SWS_EthTSyn_00006 */
 Std_ReturnType EthTSyn_AdjustRate(int32 rateNumerator, int32 rateDenominator)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
@@ -142,6 +148,7 @@ Std_ReturnType EthTSyn_AdjustRate(int32 rateNumerator, int32 rateDenominator)
 /**
  * @brief Get current port state.
  */
+/** @req SWS_EthTSyn_00007 */
 Std_ReturnType EthTSyn_GetPortState(uint8 PortIndex, EthTSyn_PortStateType* StatePtr)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)
@@ -163,6 +170,7 @@ Std_ReturnType EthTSyn_GetPortState(uint8 PortIndex, EthTSyn_PortStateType* Stat
 /**
  * @brief Get clock identity.
  */
+/** @req SWS_EthTSyn_00008 */
 Std_ReturnType EthTSyn_GetClockIdentity(EthTSyn_ClockIdentityType* IdentityPtr)
 {
 #if (ETHTSYN_DEV_ERROR_DETECT == STD_ON)

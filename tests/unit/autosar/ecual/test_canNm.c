@@ -179,6 +179,8 @@ static int teardown(void **state)
 /**
  * @brief Test CanNm_Init with valid configuration
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00001 */
 static void test_CanNm_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -197,6 +199,8 @@ static void test_CanNm_Init_ValidConfig(void **state)
 /**
  * @brief Test CanNm_Init with NULL pointer (should report error when DET enabled)
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00001 */
 static void test_CanNm_Init_NullPointer(void **state)
 {
     (void)state;
@@ -219,6 +223,8 @@ static void test_CanNm_Init_NullPointer(void **state)
 /**
  * @brief Test CanNm_Init double initialization (should report error when DET enabled)
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00001 */
 static void test_CanNm_Init_DoubleInit(void **state)
 {
     (void)state;
@@ -236,6 +242,8 @@ static void test_CanNm_Init_DoubleInit(void **state)
 /**
  * @brief Test CanNm_DeInit functionality
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00002 */
 static void test_CanNm_DeInit(void **state)
 {
     (void)state;
@@ -249,6 +257,8 @@ static void test_CanNm_DeInit(void **state)
 /**
  * @brief Test CanNm_DeInit when not initialized (should report error when DET enabled)
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00002 */
 static void test_CanNm_DeInit_NotInitialized(void **state)
 {
     (void)state;
@@ -266,6 +276,8 @@ static void test_CanNm_DeInit_NotInitialized(void **state)
 /**
  * @brief Test CanNm_GetVersionInfo
  */
+/** @req SWS_CanNm_00003 */
+/** @req SWS_CanNm_00012 */
 static void test_CanNm_GetVersionInfo(void **state)
 {
     (void)state;
@@ -284,6 +296,8 @@ static void test_CanNm_GetVersionInfo(void **state)
 /**
  * @brief Test CanNm_GetVersionInfo with NULL pointer
  */
+/** @req SWS_CanNm_00003 */
+/** @req SWS_CanNm_00012 */
 static void test_CanNm_GetVersionInfo_NullPointer(void **state)
 {
     (void)state;
@@ -302,6 +316,8 @@ static void test_CanNm_GetVersionInfo_NullPointer(void **state)
 /**
  * @brief Test CanNm_NetworkRequest from Bus Sleep mode
  */
+/** @req SWS_CanNm_00006 */
+/** @req SWS_CanNm_00004 */
 static void test_CanNm_NetworkRequest_FromBusSleep(void **state)
 {
     (void)state;
@@ -331,6 +347,8 @@ static void test_CanNm_NetworkRequest_FromBusSleep(void **state)
 /**
  * @brief Test CanNm_NetworkRequest from Ready Sleep mode
  */
+/** @req SWS_CanNm_00006 */
+/** @req SWS_CanNm_00004 */
 static void test_CanNm_NetworkRequest_FromReadySleep(void **state)
 {
     (void)state;
@@ -372,6 +390,8 @@ static void test_CanNm_NetworkRequest_FromReadySleep(void **state)
 /**
  * @brief Test CanNm_NetworkRequest with invalid channel
  */
+/** @req SWS_CanNm_00006 */
+/** @req SWS_CanNm_00004 */
 static void test_CanNm_NetworkRequest_InvalidChannel(void **state)
 {
     (void)state;
@@ -390,6 +410,8 @@ static void test_CanNm_NetworkRequest_InvalidChannel(void **state)
 /**
  * @brief Test CanNm_NetworkRelease from Normal Operation mode
  */
+/** @req SWS_CanNm_00007 */
+/** @req SWS_CanNm_00005 */
 static void test_CanNm_NetworkRelease_FromNormalOperation(void **state)
 {
     (void)state;
@@ -428,6 +450,8 @@ static void test_CanNm_NetworkRelease_FromNormalOperation(void **state)
 /**
  * @brief Test CanNm_NetworkRelease with invalid channel
  */
+/** @req SWS_CanNm_00007 */
+/** @req SWS_CanNm_00005 */
 static void test_CanNm_NetworkRelease_InvalidChannel(void **state)
 {
     (void)state;
@@ -446,6 +470,8 @@ static void test_CanNm_NetworkRelease_InvalidChannel(void **state)
 /**
  * @brief Test CanNm_PassiveStartUp from Bus Sleep
  */
+/** @req SWS_CanNm_00005 */
+/** @req SWS_CanNm_00003 */
 static void test_CanNm_PassiveStartUp_FromBusSleep(void **state)
 {
     (void)state;
@@ -473,6 +499,8 @@ static void test_CanNm_PassiveStartUp_FromBusSleep(void **state)
 /**
  * @brief Test CanNm_PassiveStartUp with invalid channel
  */
+/** @req SWS_CanNm_00005 */
+/** @req SWS_CanNm_00003 */
 static void test_CanNm_PassiveStartUp_InvalidChannel(void **state)
 {
     (void)state;
@@ -495,6 +523,7 @@ static void test_CanNm_PassiveStartUp_InvalidChannel(void **state)
 /**
  * @brief Test state transition from Repeat Message to Normal Operation
  */
+/** @req SWS_CanNm_00006 */
 static void test_CanNm_StateMachine_RepeatMsgToNormalOp(void **state)
 {
     (void)state;
@@ -526,6 +555,7 @@ static void test_CanNm_StateMachine_RepeatMsgToNormalOp(void **state)
 /**
  * @brief Test state transition from Normal Operation to Ready Sleep
  */
+/** @req SWS_CanNm_00006 */
 static void test_CanNm_StateMachine_NormalOpToReadySleep(void **state)
 {
     (void)state;
@@ -558,6 +588,7 @@ static void test_CanNm_StateMachine_NormalOpToReadySleep(void **state)
 /**
  * @brief Test state transition to Prepare Bus Sleep
  */
+/** @req SWS_CanNm_00006 */
 static void test_CanNm_StateMachine_ToPrepareBusSleep(void **state)
 {
     (void)state;
@@ -595,6 +626,7 @@ static void test_CanNm_StateMachine_ToPrepareBusSleep(void **state)
 /**
  * @brief Test state transition to Bus Sleep
  */
+/** @req SWS_CanNm_00006 */
 static void test_CanNm_StateMachine_ToBusSleep(void **state)
 {
     (void)state;
@@ -643,6 +675,7 @@ static void test_CanNm_StateMachine_ToBusSleep(void **state)
 /**
  * @brief Test periodic message transmission in Network Mode
  */
+/** @req SWS_CanNm_00007 */
 static void test_CanNm_PeriodicTransmission(void **state)
 {
     (void)state;
@@ -670,6 +703,8 @@ static void test_CanNm_PeriodicTransmission(void **state)
 /**
  * @brief Test TX confirmation callback
  */
+/** @req SWS_CanNm_00017 */
+/** @req SWS_CanNm_00009 */
 static void test_CanNm_TxConfirmation(void **state)
 {
     (void)state;
@@ -684,6 +719,8 @@ static void test_CanNm_TxConfirmation(void **state)
 /**
  * @brief Test TX confirmation with invalid PDU ID
  */
+/** @req SWS_CanNm_00017 */
+/** @req SWS_CanNm_00009 */
 static void test_CanNm_TxConfirmation_InvalidPduId(void **state)
 {
     (void)state;
@@ -698,6 +735,8 @@ static void test_CanNm_TxConfirmation_InvalidPduId(void **state)
 /**
  * @brief Test TX confirmation when not initialized
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00009 */
 static void test_CanNm_TxConfirmation_NotInitialized(void **state)
 {
     (void)state;
@@ -721,6 +760,8 @@ static void test_CanNm_TxConfirmation_NotInitialized(void **state)
 /**
  * @brief Test RX indication callback
  */
+/** @req SWS_CanNm_00018 */
+/** @req SWS_CanNm_00008 */
 static void test_CanNm_RxIndication(void **state)
 {
     (void)state;
@@ -746,6 +787,8 @@ static void test_CanNm_RxIndication(void **state)
 /**
  * @brief Test RX indication with repeat message request
  */
+/** @req SWS_CanNm_00018 */
+/** @req SWS_CanNm_00008 */
 static void test_CanNm_RxIndication_RepeatMsgRequest(void **state)
 {
     (void)state;
@@ -782,6 +825,8 @@ static void test_CanNm_RxIndication_RepeatMsgRequest(void **state)
 /**
  * @brief Test RX indication with NULL pointer
  */
+/** @req SWS_CanNm_00018 */
+/** @req SWS_CanNm_00008 */
 static void test_CanNm_RxIndication_NullPointer(void **state)
 {
     (void)state;
@@ -796,6 +841,8 @@ static void test_CanNm_RxIndication_NullPointer(void **state)
 /**
  * @brief Test RX indication with invalid PDU ID
  */
+/** @req SWS_CanNm_00018 */
+/** @req SWS_CanNm_00008 */
 static void test_CanNm_RxIndication_InvalidPduId(void **state)
 {
     (void)state;
@@ -820,6 +867,8 @@ static void test_CanNm_RxIndication_InvalidPduId(void **state)
 /**
  * @brief Test CanNm_SetUserData
  */
+/** @req SWS_CanNm_00011 */
+/** @req SWS_CanNm_00013 */
 static void test_CanNm_SetUserData(void **state)
 {
     (void)state;
@@ -839,6 +888,8 @@ static void test_CanNm_SetUserData(void **state)
 /**
  * @brief Test CanNm_SetUserData with NULL pointer
  */
+/** @req SWS_CanNm_00011 */
+/** @req SWS_CanNm_00013 */
 static void test_CanNm_SetUserData_NullPointer(void **state)
 {
     (void)state;
@@ -853,6 +904,8 @@ static void test_CanNm_SetUserData_NullPointer(void **state)
 /**
  * @brief Test CanNm_SetUserData with invalid channel
  */
+/** @req SWS_CanNm_00011 */
+/** @req SWS_CanNm_00013 */
 static void test_CanNm_SetUserData_InvalidChannel(void **state)
 {
     (void)state;
@@ -872,6 +925,8 @@ static void test_CanNm_SetUserData_InvalidChannel(void **state)
 /**
  * @brief Test CanNm_GetUserData
  */
+/** @req SWS_CanNm_00010 */
+/** @req SWS_CanNm_00014 */
 static void test_CanNm_GetUserData(void **state)
 {
     (void)state;
@@ -892,6 +947,8 @@ static void test_CanNm_GetUserData(void **state)
 /**
  * @brief Test CanNm_GetUserData with NULL pointer
  */
+/** @req SWS_CanNm_00010 */
+/** @req SWS_CanNm_00014 */
 static void test_CanNm_GetUserData_NullPointer(void **state)
 {
     (void)state;
@@ -910,6 +967,8 @@ static void test_CanNm_GetUserData_NullPointer(void **state)
 /**
  * @brief Test CanNm_DisableCommunication
  */
+/** @req SWS_CanNm_00008 */
+/** @req SWS_CanNm_00016 */
 static void test_CanNm_DisableCommunication(void **state)
 {
     (void)state;
@@ -931,6 +990,8 @@ static void test_CanNm_DisableCommunication(void **state)
 /**
  * @brief Test CanNm_EnableCommunication
  */
+/** @req SWS_CanNm_00009 */
+/** @req SWS_CanNm_00017 */
 static void test_CanNm_EnableCommunication(void **state)
 {
     (void)state;
@@ -954,6 +1015,8 @@ static void test_CanNm_EnableCommunication(void **state)
 /**
  * @brief Test CanNm_DisableCommunication with invalid channel
  */
+/** @req SWS_CanNm_00008 */
+/** @req SWS_CanNm_00016 */
 static void test_CanNm_DisableCommunication_InvalidChannel(void **state)
 {
     (void)state;
@@ -976,6 +1039,8 @@ static void test_CanNm_DisableCommunication_InvalidChannel(void **state)
 /**
  * @brief Test CanNm_SetSleepReadyBit
  */
+/** @req SWS_CanNm_00016 */
+/** @req SWS_CanNm_00015 */
 static void test_CanNm_SetSleepReadyBit(void **state)
 {
     (void)state;
@@ -994,6 +1059,8 @@ static void test_CanNm_SetSleepReadyBit(void **state)
 /**
  * @brief Test CanNm_SetSleepReadyBit with invalid channel
  */
+/** @req SWS_CanNm_00016 */
+/** @req SWS_CanNm_00015 */
 static void test_CanNm_SetSleepReadyBit_InvalidChannel(void **state)
 {
     (void)state;
@@ -1016,6 +1083,8 @@ static void test_CanNm_SetSleepReadyBit_InvalidChannel(void **state)
 /**
  * @brief Test CanNm_GetState with valid parameters
  */
+/** @req SWS_CanNm_00013 */
+/** @req SWS_CanNm_00011 */
 static void test_CanNm_GetState(void **state)
 {
     (void)state;
@@ -1035,6 +1104,8 @@ static void test_CanNm_GetState(void **state)
 /**
  * @brief Test CanNm_GetState with NULL pointers
  */
+/** @req SWS_CanNm_00013 */
+/** @req SWS_CanNm_00011 */
 static void test_CanNm_GetState_NullPointer(void **state)
 {
     (void)state;
@@ -1058,6 +1129,8 @@ static void test_CanNm_GetState_NullPointer(void **state)
 /**
  * @brief Test CanNm_GetState with invalid channel
  */
+/** @req SWS_CanNm_00013 */
+/** @req SWS_CanNm_00011 */
 static void test_CanNm_GetState_InvalidChannel(void **state)
 {
     (void)state;
@@ -1082,6 +1155,7 @@ static void test_CanNm_GetState_InvalidChannel(void **state)
 /**
  * @brief Test independent operation of multiple channels
  */
+/** @req SWS_CanNm_00004 */
 static void test_CanNm_MultipleChannels(void **state)
 {
     (void)state;
@@ -1119,6 +1193,8 @@ static void test_CanNm_MultipleChannels(void **state)
 /**
  * @brief Test CanNm_MainFunction basic operation
  */
+/** @req SWS_CanNm_00004 */
+/** @req SWS_CanNm_00006 */
 static void test_CanNm_MainFunction(void **state)
 {
     (void)state;
@@ -1132,6 +1208,8 @@ static void test_CanNm_MainFunction(void **state)
 /**
  * @brief Test CanNm_MainFunction when not initialized
  */
+/** @req SWS_CanNm_00001 */
+/** @req SWS_CanNm_00006 */
 static void test_CanNm_MainFunction_NotInitialized(void **state)
 {
     (void)state;
@@ -1155,6 +1233,7 @@ static void test_CanNm_MainFunction_NotInitialized(void **state)
 /**
  * @brief Test CanNm_TriggerTransmit
  */
+/** @req SWS_CanNm_00010 */
 static void test_CanNm_TriggerTransmit(void **state)
 {
     (void)state;
@@ -1174,6 +1253,7 @@ static void test_CanNm_TriggerTransmit(void **state)
 /**
  * @brief Test CanNm_TriggerTransmit with NULL pointer
  */
+/** @req SWS_CanNm_00010 */
 static void test_CanNm_TriggerTransmit_NullPointer(void **state)
 {
     (void)state;
@@ -1192,6 +1272,7 @@ static void test_CanNm_TriggerTransmit_NullPointer(void **state)
 /**
  * @brief Test configuration constants
  */
+/** @req SWS_CanNm_00001 */
 static void test_CanNm_Configuration(void **state)
 {
     (void)state;
@@ -1211,6 +1292,7 @@ static void test_CanNm_Configuration(void **state)
 /**
  * @brief Test channel configuration
  */
+/** @req SWS_CanNm_00001 */
 static void test_CanNm_ChannelConfiguration(void **state)
 {
     (void)state;

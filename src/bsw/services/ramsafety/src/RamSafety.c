@@ -146,6 +146,7 @@ STATIC void RamSafety_HandleError(RamSafety_TestType testType, uint32 addr, uint
 /**
  * @brief 初始化RamSafety模块
  * @ASIL-D: Safety critical initialization
+ * @req SWS_RamSafety_00001
  */
 Std_ReturnType RamSafety_Init(const RamSafety_ConfigType* config)
 {
@@ -215,6 +216,7 @@ Std_ReturnType RamSafety_Init(const RamSafety_ConfigType* config)
 
 /**
  * @brief 去初始化RamSafety模块
+ * @req SWS_RamSafety_00002
  */
 Std_ReturnType RamSafety_DeInit(void)
 {
@@ -243,6 +245,7 @@ Std_ReturnType RamSafety_DeInit(void)
 
 /**
  * @brief 获取当前状态
+ * @req SWS_RamSafety_00003
  */
 RamSafety_StateType RamSafety_GetState(void)
 {
@@ -252,6 +255,7 @@ RamSafety_StateType RamSafety_GetState(void)
 /**
  * @brief 运行启动时完整检查
  * @ASIL-D: Startup test with full coverage
+ * @req SWS_RamSafety_00010
  */
 Std_ReturnType RamSafety_RunStartupTest(RamSafety_ProgressCallbackType progressCb)
 {
@@ -363,6 +367,7 @@ Std_ReturnType RamSafety_RunStartupTest(RamSafety_ProgressCallbackType progressC
 /**
  * @brief 运行时主函数
  * @ASIL-D: Runtime monitoring
+ * @req SWS_RamSafety_00011
  */
 void RamSafety_MainFunction(void)
 {
@@ -428,6 +433,7 @@ void RamSafety_MainFunction(void)
 
 /**
  * @brief 手动触发指定类型的检查
+ * @req SWS_RamSafety_00012
  */
 RamSafety_ResultType RamSafety_TriggerTest(
     RamSafety_TestType testType,
@@ -535,6 +541,7 @@ RamSafety_ResultType RamSafety_TriggerTest(
 
 /**
  * @brief 验证指定区域 (CRC方法)
+ * @req SWS_RamSafety_00020
  */
 Std_ReturnType RamSafety_VerifyRegion(uint8 regionId)
 {
@@ -578,6 +585,7 @@ Std_ReturnType RamSafety_VerifyRegion(uint8 regionId)
 
 /**
  * @brief 验证指定地址范围
+ * @req SWS_RamSafety_00021
  */
 Std_ReturnType RamSafety_VerifyRange(uint32 startAddr, uint32 size)
 {
@@ -601,6 +609,7 @@ Std_ReturnType RamSafety_VerifyRange(uint32 startAddr, uint32 size)
 
 /**
  * @brief 获取统计信息
+ * @req SWS_RamSafety_00030
  */
 Std_ReturnType RamSafety_GetStatistics(RamSafety_StatisticsType* stats)
 {
@@ -629,6 +638,7 @@ Std_ReturnType RamSafety_GetStatistics(RamSafety_StatisticsType* stats)
 
 /**
  * @brief 清除统计信息
+ * @req SWS_RamSafety_00031
  */
 Std_ReturnType RamSafety_ClearStatistics(void)
 {
@@ -651,6 +661,7 @@ Std_ReturnType RamSafety_ClearStatistics(void)
 
 /**
  * @brief 检查硬件ECC状态
+ * @req SWS_RamSafety_00032
  */
 Std_ReturnType RamSafety_CheckEccStatus(uint8 regionId, boolean* hasError, uint32* errorCount)
 {
@@ -671,6 +682,7 @@ Std_ReturnType RamSafety_CheckEccStatus(uint8 regionId, boolean* hasError, uint3
 /**
  * @brief 进入安全状态
  * @ASIL-D: Emergency safety response
+ * @req SWS_RamSafety_00040
  */
 void RamSafety_EnterSafeState(uint8 reason)
 {
@@ -689,6 +701,7 @@ void RamSafety_EnterSafeState(uint8 reason)
 #if (RAMSAFETY_VERSION_INFO_API == STD_ON)
 /**
  * @brief 获取版本信息
+ * @req SWS_RamSafety_00050
  */
 void RamSafety_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
@@ -709,6 +722,7 @@ void RamSafety_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief 报告错误
+ * @req SWS_RamSafety_00100
  */
 STATIC void RamSafety_ReportError(uint8 apiId, uint8 errorId)
 {
@@ -719,6 +733,7 @@ STATIC void RamSafety_ReportError(uint8 apiId, uint8 errorId)
 
 /**
  * @brief 验证配置
+ * @req SWS_RamSafety_00101
  */
 STATIC Std_ReturnType RamSafety_ValidateConfig(const RamSafety_ConfigType* config)
 {
@@ -762,6 +777,7 @@ STATIC Std_ReturnType RamSafety_ValidateConfig(const RamSafety_ConfigType* confi
 /**
  * @brief 运行March C- 算法
  * @ASIL-D: Memory test algorithm
+ * @req SWS_RamSafety_00102
  */
 STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, RamSafety_ErrorCallbackType errorCb)
 {
@@ -898,6 +914,7 @@ STATIC Std_ReturnType RamSafety_RunMarchC(const RamSafety_RegionType* region, Ra
 
 /**
  * @brief 运行行走模式检查
+ * @req SWS_RamSafety_00103
  */
 STATIC Std_ReturnType RamSafety_RunWalkPattern(const RamSafety_RegionType* region, RamSafety_ErrorCallbackType errorCb)
 {
@@ -961,6 +978,7 @@ STATIC Std_ReturnType RamSafety_RunWalkPattern(const RamSafety_RegionType* regio
 
 /**
  * @brief 运行地址线检查
+ * @req SWS_RamSafety_00104
  */
 STATIC Std_ReturnType RamSafety_RunAddrLineTest(const RamSafety_RegionType* region, RamSafety_ErrorCallbackType errorCb)
 {
@@ -1015,6 +1033,7 @@ STATIC Std_ReturnType RamSafety_RunAddrLineTest(const RamSafety_RegionType* regi
 
 /**
  * @brief 运行数据线检查
+ * @req SWS_RamSafety_00105
  */
 STATIC Std_ReturnType RamSafety_RunDataLineTest(const RamSafety_RegionType* region, RamSafety_ErrorCallbackType errorCb)
 {
@@ -1047,6 +1066,7 @@ STATIC Std_ReturnType RamSafety_RunDataLineTest(const RamSafety_RegionType* regi
 
 /**
  * @brief 更新统计信息
+ * @req SWS_RamSafety_00106
  */
 STATIC void RamSafety_UpdateStats(boolean passed, RamSafety_TestType testType)
 {
@@ -1063,6 +1083,7 @@ STATIC void RamSafety_UpdateStats(boolean passed, RamSafety_TestType testType)
 
 /**
  * @brief 处理错误
+ * @req SWS_RamSafety_00107
  */
 STATIC void RamSafety_HandleError(RamSafety_TestType testType, uint32 addr, uint8 expected, uint8 actual)
 {

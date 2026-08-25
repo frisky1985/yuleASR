@@ -55,6 +55,7 @@ static Dcm_MainStateType s_dcmState;
 
 /**
  * @brief Send negative response
+ * @req SWS_Dcm_00101
  */
 static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response, 
                                             uint8_t sid, 
@@ -77,6 +78,10 @@ static Dcm_ReturnType sendNegativeResponse(Dcm_ResponseType *response,
  * Public Functions
  ******************************************************************************/
 
+/**
+ * @brief Initialize the DCM module
+ * @req SWS_Dcm_00001
+ */
 Dcm_ReturnType Dcm_Init(const Dcm_ConfigType *config)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
@@ -148,6 +153,10 @@ Dcm_ReturnType Dcm_Init(const Dcm_ConfigType *config)
     return result;
 }
 
+/**
+ * @brief Deinitialize the DCM module
+ * @req SWS_Dcm_00002
+ */
 Dcm_ReturnType Dcm_DeInit(void)
 {
     Dcm_ReturnType result = DCM_E_NOT_OK;
@@ -168,6 +177,10 @@ Dcm_ReturnType Dcm_DeInit(void)
     return result;
 }
 
+/**
+ * @brief Main function for periodic DCM processing
+ * @req SWS_Dcm_00003
+ */
 void Dcm_MainFunction(uint32_t elapsedTimeMs)
 {
     if (s_dcmState.initialized) {
@@ -188,6 +201,10 @@ void Dcm_MainFunction(uint32_t elapsedTimeMs)
     }
 }
 
+/**
+ * @brief Process a diagnostic request
+ * @req SWS_Dcm_00004
+ */
 Dcm_ReturnType Dcm_ProcessRequest(const Dcm_RequestType *request,
                                   Dcm_ResponseType *response)
 {
@@ -288,16 +305,28 @@ Dcm_ReturnType Dcm_ProcessRequest(const Dcm_RequestType *request,
     return result;
 }
 
+/**
+ * @brief Check if DCM is initialized
+ * @req SWS_Dcm_00005
+ */
 bool Dcm_IsInitialized(void)
 {
     return s_dcmState.initialized;
 }
 
+/**
+ * @brief Get the current DCM state
+ * @req SWS_Dcm_00006
+ */
 Dcm_StateType Dcm_GetState(void)
 {
     return s_dcmState.state;
 }
 
+/**
+ * @brief Get DCM version information
+ * @req SWS_Dcm_00010
+ */
 void Dcm_GetVersionInfo(uint8_t *major, uint8_t *minor, uint8_t *patch)
 {
     if (major != NULL_PTR) {
@@ -315,18 +344,30 @@ void Dcm_GetVersionInfo(uint8_t *major, uint8_t *minor, uint8_t *patch)
  * Service-specific process functions for external use
  ******************************************************************************/
 
+/**
+ * @brief Process security access service
+ * @req SWS_Dcm_00102
+ */
 Dcm_ReturnType Dcm_ProcessSecurityAccess(const Dcm_RequestType *request,
                                          Dcm_ResponseType *response)
 {
     return Dcm_SecurityAccess(request, response);
 }
 
+/**
+ * @brief Process communication control service
+ * @req SWS_Dcm_00103
+ */
 Dcm_ReturnType Dcm_ProcessCommunicationControl(const Dcm_RequestType *request,
                                                Dcm_ResponseType *response)
 {
     return Dcm_CommunicationControl(request, response);
 }
 
+/**
+ * @brief Process dynamic DID service
+ * @req SWS_Dcm_00104
+ */
 Dcm_ReturnType Dcm_ProcessDynamicDid(const Dcm_RequestType *request,
                                      Dcm_ResponseType *response)
 {

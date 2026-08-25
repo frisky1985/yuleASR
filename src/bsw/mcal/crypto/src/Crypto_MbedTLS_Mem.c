@@ -65,6 +65,7 @@ static boolean Crypto_MbedTLS_MemInitialized = FALSE;
 /**********************************************************************************************************************
  * Crypto_MbedTLS_MemInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00090 */
 Std_ReturnType Crypto_MbedTLS_MemInit(void)
 {
     if (Crypto_MbedTLS_MemInitialized == FALSE) {
@@ -84,6 +85,7 @@ Std_ReturnType Crypto_MbedTLS_MemInit(void)
 /**********************************************************************************************************************
  * Crypto_MbedTLS_MemDeInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00091 */
 void Crypto_MbedTLS_MemDeInit(void)
 {
     if (Crypto_MbedTLS_MemInitialized != FALSE) {
@@ -95,6 +97,7 @@ void Crypto_MbedTLS_MemDeInit(void)
 /**********************************************************************************************************************
  * Crypto_MbedTLS_MemGetStats
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00092 */
 void Crypto_MbedTLS_MemGetStats(uint32* totalSizePtr,
                                 boolean* verifiedPtr)
 {

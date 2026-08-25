@@ -186,6 +186,7 @@ STATIC void WdgM_PerformSafetyAction(uint32 errorCode);
 /**
  * @brief 初始化WdgM模块
  * @ASIL-D: Safety critical initialization with redundancy check
+ * @req SWS_WdgM_00001
  */
 Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
 {
@@ -282,6 +283,7 @@ Std_ReturnType WdgM_Init(const WdgM_ConfigType* config)
 
 /**
  * @brief 去初始化WdgM模块
+ * @req SWS_WdgM_00002
  */
 Std_ReturnType WdgM_DeInit(void)
 {
@@ -325,6 +327,7 @@ Std_ReturnType WdgM_DeInit(void)
 
 /**
  * @brief 获取当前状态
+ * @req SWS_WdgM_00003
  */
 WdgM_StateType WdgM_GetState(void)
 {
@@ -334,6 +337,7 @@ WdgM_StateType WdgM_GetState(void)
 /**
  * @brief 设置看门狗模式
  * @ASIL-D: Requires privilege verification
+ * @req SWS_WdgM_00004
  */
 Std_ReturnType WdgM_SetMode(uint8 mode)
 {
@@ -381,6 +385,7 @@ Std_ReturnType WdgM_SetMode(uint8 mode)
 
 /**
  * @brief 获取当前模式
+ * @req SWS_WdgM_00005
  */
 uint8 WdgM_GetMode(void)
 {
@@ -389,6 +394,7 @@ uint8 WdgM_GetMode(void)
 
 /**
  * @brief 检查是否允许禁用看门狗
+ * @req SWS_WdgM_00006
  */
 boolean WdgM_IsDisableAllowed(void)
 {
@@ -398,6 +404,7 @@ boolean WdgM_IsDisableAllowed(void)
 /**
  * @brief 检查点报告 (Alive Supervision)
  * @ASIL-D: Runtime safety check
+ * @req SWS_WdgM_00007
  */
 Std_ReturnType WdgM_CheckpointReached(uint16 seId)
 {
@@ -445,6 +452,7 @@ Std_ReturnType WdgM_CheckpointReached(uint16 seId)
 
 /**
  * @brief 更新活监督指示
+ * @req SWS_WdgM_00008
  */
 Std_ReturnType WdgM_UpdateAliveIndication(uint16 seId)
 {
@@ -453,6 +461,7 @@ Std_ReturnType WdgM_UpdateAliveIndication(uint16 seId)
 
 /**
  * @brief 获取监督实体状态
+ * @req SWS_WdgM_00009
  */
 Std_ReturnType WdgM_GetSEState(uint16 seId, WdgM_SEStateType* state)
 {
@@ -483,6 +492,7 @@ Std_ReturnType WdgM_GetSEState(uint16 seId, WdgM_SEStateType* state)
 
 /**
  * @brief 去激活监督实体
+ * @req SWS_WdgM_00010
  */
 Std_ReturnType WdgM_DeactivateSupervisionEntity(uint16 seId)
 {
@@ -509,6 +519,7 @@ Std_ReturnType WdgM_DeactivateSupervisionEntity(uint16 seId)
 
 /**
  * @brief 重新激活监督实体
+ * @req SWS_WdgM_00011
  */
 Std_ReturnType WdgM_ActivateSupervisionEntity(uint16 seId)
 {
@@ -537,6 +548,7 @@ Std_ReturnType WdgM_ActivateSupervisionEntity(uint16 seId)
 
 /**
  * @brief 获取全局状态信息
+ * @req SWS_WdgM_00012
  */
 Std_ReturnType WdgM_GetGlobalStatus(WdgM_GlobalStatusType* status)
 {
@@ -566,6 +578,7 @@ Std_ReturnType WdgM_GetGlobalStatus(WdgM_GlobalStatusType* status)
 /**
  * @brief 主循环处理函数
  * @ASIL-D: Periodic safety monitoring
+ * @req SWS_WdgM_00013
  */
 void WdgM_MainFunction(void)
 {
@@ -613,6 +626,7 @@ void WdgM_MainFunction(void)
 /**
  * @brief 执行看门狗触发
  * @ASIL-D: Watchdog refresh
+ * @req SWS_WdgM_00014
  */
 void WdgM_TriggerWatchdog(void)
 {
@@ -634,6 +648,7 @@ void WdgM_TriggerWatchdog(void)
 /**
  * @brief 执行立即复位
  * @ASIL-D: Emergency reset
+ * @req SWS_WdgM_00015
  */
 void WdgM_PerformReset(void)
 {
@@ -651,6 +666,7 @@ void WdgM_PerformReset(void)
 
 /**
  * @brief 获取第一超时值
+ * @req SWS_WdgM_00016
  */
 Std_ReturnType WdgM_GetFirstExpiredSEID(uint16* seId)
 {
@@ -673,6 +689,7 @@ Std_ReturnType WdgM_GetFirstExpiredSEID(uint16* seId)
 /**
  * @brief 处理Lockstep错误事件
  * @ASIL-D: Lockstep integration
+ * @req SWS_WdgM_00017
  */
 void WdgM_HandleLockstepError(uint32 errorCode)
 {
@@ -701,6 +718,7 @@ void WdgM_HandleLockstepError(uint32 errorCode)
 /**
  * @brief 处理RamSafety错误事件
  * @ASIL-D: RamSafety integration
+ * @req SWS_WdgM_00018
  */
 void WdgM_HandleRamSafetyError(uint32 errorCode)
 {
@@ -728,6 +746,7 @@ void WdgM_HandleRamSafetyError(uint32 errorCode)
 
 /**
  * @brief 注册安全事件回调
+ * @req SWS_WdgM_00019
  */
 Std_ReturnType WdgM_RegisterSafetyCallback(
     WdgM_SafetyCallbackType callback,
@@ -741,6 +760,7 @@ Std_ReturnType WdgM_RegisterSafetyCallback(
 #if (WDGM_VERSION_INFO_API == STD_ON)
 /**
  * @brief 获取版本信息
+ * @req SWS_WdgM_00020
  */
 void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
@@ -761,6 +781,7 @@ void WdgM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 
 /**
  * @brief 报告错误
+ * @req SWS_WdgM_00101
  */
 STATIC void WdgM_ReportError(uint8 apiId, uint8 errorId)
 {
@@ -771,6 +792,7 @@ STATIC void WdgM_ReportError(uint8 apiId, uint8 errorId)
 
 /**
  * @brief 通知事件
+ * @req SWS_WdgM_00102
  */
 STATIC void WdgM_NotifyEvent(uint8 eventType, uint32 errorCode)
 {
@@ -782,6 +804,7 @@ STATIC void WdgM_NotifyEvent(uint8 eventType, uint32 errorCode)
 
 /**
  * @brief 验证配置
+ * @req SWS_WdgM_00103
  */
 STATIC Std_ReturnType WdgM_ValidateConfig(const WdgM_ConfigType* config)
 {
@@ -805,6 +828,7 @@ STATIC Std_ReturnType WdgM_ValidateConfig(const WdgM_ConfigType* config)
 
 /**
  * @brief 更新监督状态
+ * @req SWS_WdgM_00104
  */
 STATIC void WdgM_UpdateSupervision(void)
 {
@@ -822,6 +846,7 @@ STATIC void WdgM_UpdateSupervision(void)
 
 /**
  * @brief 检查实体活性状态
+ * @req SWS_WdgM_00105
  */
 STATIC void WdgM_CheckEntityAlive(uint8 entityIdx)
 {
@@ -845,6 +870,7 @@ STATIC void WdgM_CheckEntityAlive(uint8 entityIdx)
 
 /**
  * @brief 处理超时监督
+ * @req SWS_WdgM_00106
  */
 STATIC void WdgM_HandleExpiredSupervision(uint8 entityIdx)
 {
@@ -865,6 +891,7 @@ STATIC void WdgM_HandleExpiredSupervision(uint8 entityIdx)
 
 /**
  * @brief 查找监督实体索引
+ * @req SWS_WdgM_00107
  */
 STATIC Std_ReturnType WdgM_FindEntityIndex(uint16 seId, uint8* index)
 {
@@ -884,6 +911,7 @@ STATIC Std_ReturnType WdgM_FindEntityIndex(uint16 seId, uint8* index)
 
 /**
  * @brief 底层平台触发看门狗
+ * @req SWS_WdgM_00108
  */
 STATIC void WdgM_PlatformTrigger(void)
 {
@@ -893,6 +921,7 @@ STATIC void WdgM_PlatformTrigger(void)
 
 /**
  * @brief 底层平台设置模式
+ * @req SWS_WdgM_00109
  */
 STATIC void WdgM_PlatformSetMode(uint8 mode)
 {
@@ -902,6 +931,7 @@ STATIC void WdgM_PlatformSetMode(uint8 mode)
 
 /**
  * @brief 执行安全响应
+ * @req SWS_WdgM_00110
  */
 STATIC void WdgM_PerformSafetyAction(uint32 errorCode)
 {

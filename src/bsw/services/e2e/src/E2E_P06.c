@@ -151,6 +151,7 @@ static uint64 E2E_P06_ReadCRC(const uint8* Data, uint32 Offset)
  * Profile 6 Protect
  *=============================================================================*/
 
+/** @req SWS_E2E_00015 */
 Std_ReturnType E2E_P06Protect(
     const E2E_P06ConfigType* Config,
     E2E_P06ProtectStateType* State,
@@ -194,6 +195,7 @@ Std_ReturnType E2E_P06Protect(
  * Profile 6 Check
  *=============================================================================*/
 
+/** @req SWS_E2E_00016 */
 Std_ReturnType E2E_P06Check(
     const E2E_P06ConfigType* Config,
     E2E_P06CheckStateType* State,
@@ -268,6 +270,7 @@ Std_ReturnType E2E_P06Check(
     return E_OK;
 }
 
+/** @req SWS_E2E_00017 */
 /**
  * @brief Map Profile 6 check status to State Machine
  */

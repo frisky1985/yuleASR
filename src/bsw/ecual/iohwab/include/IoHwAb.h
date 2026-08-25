@@ -66,12 +66,16 @@ typedef struct {
     const IoHwAb_ChannelConfigType* Channels;
 } IoHwAb_ConfigType;
 
+/** @req SWS_IoHwAb_00001 */
 void IoHwAb_Init(const IoHwAb_ConfigType* ConfigPtr);
+/** @req SWS_IoHwAb_00002 */
 void IoHwAb_DeInit(void);
 IoHwAb_ReturnType IoHwAb_AnalogRead(IoHwAb_ChannelType Channel, uint16* Value);
 IoHwAb_ReturnType IoHwAb_DigitalRead(IoHwAb_ChannelType Channel, uint8* Value);
 IoHwAb_ReturnType IoHwAb_DigitalWrite(IoHwAb_ChannelType Channel, uint8 Value);
+/** @req SWS_IoHwAb_00004 */
 void IoHwAb_MainFunction(void);
+/** @req SWS_IoHwAb_00003 */
 void IoHwAb_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
 #endif /* IOHWAB_H */

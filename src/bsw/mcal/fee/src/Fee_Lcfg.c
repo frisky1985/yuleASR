@@ -305,6 +305,7 @@ const Fee_ConfigType Fee_Config =
 #include "Fee_MemMap.h"
 
 /* NVM Job End Notification - called when Fee job completes successfully */
+/** @req SWS_Fee_00031 */
 void Fee_NvmJobEndNotification(void)
 {
     /* This function should be implemented by the NvM module
@@ -313,6 +314,7 @@ void Fee_NvmJobEndNotification(void)
 }
 
 /* NVM Job Error Notification - called when Fee job fails */
+/** @req SWS_Fee_00032 */
 void Fee_NvmJobErrorNotification(void)
 {
     /* This function should be implemented by the NvM module

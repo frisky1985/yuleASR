@@ -115,6 +115,7 @@ void tearDown(void)
 /**
  * @brief Verify Mqtt_Init with a valid configuration returns MQTT_OK.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_Init_ValidConfig_ReturnsOk(void)
 {
     Mqtt_ReturnType result;
@@ -128,6 +129,7 @@ void test_Mqtt_Init_ValidConfig_ReturnsOk(void)
  * @brief Verify Mqtt_Init with NULL config returns an error
  *        and reports a DET error.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_Init_NullConfig_ReturnsError(void)
 {
     Mqtt_ReturnType result;
@@ -140,6 +142,7 @@ void test_Mqtt_Init_NullConfig_ReturnsError(void)
 /**
  * @brief Verify calling Mqtt_Init twice returns MQTT_E_NOT_OK.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_Init_DoubleInit_ReturnsError(void)
 {
     Mqtt_ReturnType result;
@@ -160,6 +163,7 @@ void test_Mqtt_Init_DoubleInit_ReturnsError(void)
 /**
  * @brief Verify connection state is MQTT_STATE_UNINIT before Mqtt_Init.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_GetConnectionState_Uninit_ReturnsUninit(void)
 {
     Mqtt_ConnectionStateType state;
@@ -172,6 +176,7 @@ void test_Mqtt_GetConnectionState_Uninit_ReturnsUninit(void)
 /**
  * @brief Verify connection state after Mqtt_Init returns DISCONNECTED.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_GetConnectionState_AfterInit_ReturnsDisconnected(void)
 {
     Mqtt_ConnectionStateType state;
@@ -185,6 +190,7 @@ void test_Mqtt_GetConnectionState_AfterInit_ReturnsDisconnected(void)
 /**
  * @brief Verify connection state with invalid connection ID returns UNINIT.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_GetConnectionState_InvalidId_ReturnsUninit(void)
 {
     Mqtt_ConnectionStateType state;
@@ -203,6 +209,7 @@ void test_Mqtt_GetConnectionState_InvalidId_ReturnsUninit(void)
  * @brief Verify Mqtt_DeInit resets the module state so that subsequent
  *        Mqtt_GetConnectionState returns MQTT_STATE_UNINIT.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_DeInit_ResetsState(void)
 {
     Mqtt_ReturnType deinitResult;
@@ -223,6 +230,7 @@ void test_Mqtt_DeInit_ResetsState(void)
 /**
  * @brief Verify calling Mqtt_DeInit twice — second call returns error.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_DeInit_DoubleDeinit_ReturnsError(void)
 {
     Mqtt_ReturnType result;
@@ -246,6 +254,7 @@ void test_Mqtt_DeInit_DoubleDeinit_ReturnsError(void)
  * @brief Verify Mqtt_GetConnectionInfo returns the connection info
  *        for a valid connection ID.
  */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_GetConnectionInfo_ReturnsInfo(void)
 {
     Mqtt_ReturnType result;
@@ -265,6 +274,7 @@ void test_Mqtt_GetConnectionInfo_ReturnsInfo(void)
 /**
  * @brief Verify Mqtt_GetConnectionInfo with invalid connection ID returns error.
  */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_GetConnectionInfo_InvalidId_ReturnsError(void)
 {
     Mqtt_ReturnType result;
@@ -278,6 +288,7 @@ void test_Mqtt_GetConnectionInfo_InvalidId_ReturnsError(void)
 /**
  * @brief Verify Mqtt_GetConnectionInfo with NULL info pointer returns error.
  */
+/** @req SWS_Mqtt_00005 */
 void test_Mqtt_GetConnectionInfo_NullPointer_ReturnsError(void)
 {
     Mqtt_ReturnType result;
@@ -291,6 +302,7 @@ void test_Mqtt_GetConnectionInfo_NullPointer_ReturnsError(void)
 /**
  * @brief Verify Mqtt_GetConnectionInfo before init returns error.
  */
+/** @req SWS_Mqtt_00001 */
 void test_Mqtt_GetConnectionInfo_BeforeInit_ReturnsError(void)
 {
     Mqtt_ReturnType result;
@@ -308,6 +320,7 @@ void test_Mqtt_GetConnectionInfo_BeforeInit_ReturnsError(void)
  * @brief Verify Mqtt_GetVersionInfo returns correct vendor, module, and
  *        software version information.
  */
+/** @req SWS_Mqtt_00003 */
 void test_Mqtt_GetVersionInfo_ReturnsCorrectInfo(void)
 {
     Std_VersionInfoType versionInfo;

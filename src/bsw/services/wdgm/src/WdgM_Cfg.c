@@ -238,6 +238,7 @@ const WdgM_ConfigType WdgM_ConfigDebug =
 
 /**
  * @brief 看门狗触发函数
+ * @req SWS_WdgM_00111
  * 
  * 由WdgM调用，实现应调用MCAL Wdg驱动
  */
@@ -256,6 +257,7 @@ void WdgM_WatchdogTrigger(void)
 
 /**
  * @brief 看门狗模式设置函数
+ * @req SWS_WdgM_00112
  * 
  * @param mode 模式 (WDGM_WATCHDOG_MODE_OFF/SLOW/FAST)
  */
@@ -289,6 +291,7 @@ void WdgM_WatchdogSetMode(uint8 mode)
 
 /**
  * @brief 安全事件回调
+ * @req SWS_WdgM_00113
  * 
  * 处理安全相关事件，可在应用层实现
  * 

@@ -43,6 +43,7 @@ STATIC const Crypto_HsmConfigType* Hsm_ConfigPtr = NULL_PTR;
 /**********************************************************************************************************************
  * * Crypto_Hsm_Init
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00020 */
 Std_ReturnType Crypto_Hsm_Init(const Crypto_HsmConfigType* config)
 {
     if (config == NULL_PTR)
@@ -67,6 +68,7 @@ Std_ReturnType Crypto_Hsm_Init(const Crypto_HsmConfigType* config)
 /**********************************************************************************************************************
  * * Crypto_Hsm_DeInit
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00021 */
 void Crypto_Hsm_DeInit(void)
 {
     if (Hsm_State == HSM_STATE_UNINIT)
@@ -84,6 +86,7 @@ void Crypto_Hsm_DeInit(void)
 /**********************************************************************************************************************
  * * Crypto_Hsm_IsAvailable
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00022 */
 boolean Crypto_Hsm_IsAvailable(void)
 {
     return (Hsm_State == HSM_STATE_READY) || (Hsm_State == HSM_STATE_BUSY);
@@ -91,6 +94,7 @@ boolean Crypto_Hsm_IsAvailable(void)
 /**********************************************************************************************************************
  * * Crypto_Hsm_GetState
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00023 */
 Crypto_HsmStateType Crypto_Hsm_GetState(void)
 {
     switch (Hsm_State)
@@ -113,6 +117,7 @@ Crypto_HsmStateType Crypto_Hsm_GetState(void)
 /**********************************************************************************************************************
  * * Crypto_Hsm_ProcessJob
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00024 */
 Std_ReturnType Crypto_Hsm_ProcessJob(const Crypto_JobType* job)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -161,6 +166,7 @@ Std_ReturnType Crypto_Hsm_ProcessJob(const Crypto_JobType* job)
 /**********************************************************************************************************************
  * * Crypto_Hsm_LoadKey
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00025 */
 Std_ReturnType Crypto_Hsm_LoadKey(Crypto_KeyIdType keyId)
 {
     if (Hsm_State != HSM_STATE_READY)
@@ -176,6 +182,7 @@ Std_ReturnType Crypto_Hsm_LoadKey(Crypto_KeyIdType keyId)
 /**********************************************************************************************************************
  * * Crypto_Hsm_UnloadKey
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00026 */
 Std_ReturnType Crypto_Hsm_UnloadKey(Crypto_KeyIdType keyId)
 {
     if (Hsm_State != HSM_STATE_READY)
@@ -190,6 +197,7 @@ Std_ReturnType Crypto_Hsm_UnloadKey(Crypto_KeyIdType keyId)
 /**********************************************************************************************************************
  * * Crypto_Hsm_SelfTest
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00027 */
 Std_ReturnType Crypto_Hsm_SelfTest(void)
 {
     if (Hsm_State != HSM_STATE_READY)
@@ -204,6 +212,7 @@ Std_ReturnType Crypto_Hsm_SelfTest(void)
 /**********************************************************************************************************************
  * * Crypto_Hsm_GenerateRandom
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00028 */
 Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length)
 {
     if (Hsm_State != HSM_STATE_READY)
@@ -224,6 +233,7 @@ Std_ReturnType Crypto_Hsm_GenerateRandom(uint8* output, uint32 length)
 /**********************************************************************************************************************
  * * Crypto_Hsm_SecureBootVerify
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00029 */
 Std_ReturnType Crypto_Hsm_SecureBootVerify(const uint8* imageHash, uint32 imageHashLen, const uint8* signature,
                                            uint32 signatureLen, Crypto_VerifyResultType* verifyResult)
 {

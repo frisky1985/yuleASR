@@ -10,24 +10,28 @@
 #include "EcuM.h"
 #include "EcuM_Cfg.h"
 
+/** @req SWS_EcuM_00001 */
 static void test_EcuM_Init(void **state) {
     (void)state;
     EcuM_Init();
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00011 */
 static void test_EcuM_StartupTwo(void **state) {
     (void)state;
     EcuM_StartupTwo();
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00035 */
 static void test_EcuM_Shutdown(void **state) {
     (void)state;
     EcuM_Shutdown();
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00021 */
 static void test_EcuM_GetState(void **state) {
     (void)state;
     EcuM_StateType state;
@@ -35,6 +39,7 @@ static void test_EcuM_GetState(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00090 */
 static void test_EcuM_RequestRUN(void **state) {
     (void)state;
     EcuM_UserType user = 0;
@@ -42,6 +47,7 @@ static void test_EcuM_RequestRUN(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00091 */
 static void test_EcuM_ReleaseRUN(void **state) {
     (void)state;
     EcuM_UserType user = 0;
@@ -49,6 +55,7 @@ static void test_EcuM_ReleaseRUN(void **state) {
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00060 */
 static void test_EcuM_MainFunction(void **state) {
     (void)state;
     EcuM_MainFunction();

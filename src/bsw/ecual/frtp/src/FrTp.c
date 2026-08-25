@@ -78,6 +78,7 @@ static void FrTp_InitConnections(void);
 #define FRTP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_FrTp_00001 */
 /**
  * @brief Initializes the FrTp module
  * @param CfgPtr Pointer to configuration structure
@@ -125,6 +126,7 @@ void FrTp_Init(const FrTp_ConfigType* CfgPtr)
     FrTp_InitState = FRTP_INIT;
 }
 
+/** @req SWS_FrTp_00002 */
 /**
  * @brief Deinitializes the FrTp module
  */
@@ -152,6 +154,7 @@ void FrTp_DeInit(void)
     FrTp_InitState = FRTP_UNINIT;
 }
 
+/** @req SWS_FrTp_00003 */
 /**
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
@@ -175,6 +178,7 @@ void FrTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #endif
 }
 
+/** @req SWS_FrTp_00008 */
 /**
  * @brief Changes a TP parameter
  * @param id PDU ID
@@ -240,6 +244,7 @@ Std_ReturnType FrTp_ChangeParameter(PduIdType id, TPParameterType parameter, uin
     return result;
 }
 
+/** @req SWS_FrTp_00004 */
 /**
  * @brief Main function for periodic processing
  */

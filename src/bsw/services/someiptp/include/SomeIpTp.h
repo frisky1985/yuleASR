@@ -174,12 +174,14 @@ extern const SomeIpTp_ConfigType SomeIpTp_Config;
 #define SOMEIPTP_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_SomeIpTp_00001 */
 /**
  * @brief Initializes the SOME/IP TP module
  * @param ConfigPtr Pointer to configuration structure
  */
 void SomeIpTp_Init(const SomeIpTp_ConfigType* ConfigPtr);
 
+/** @req SWS_SomeIpTp_00002 */
 /**
  * @brief Deinitializes the SOME/IP TP module
  */
@@ -190,9 +192,11 @@ void SomeIpTp_DeInit(void);
  * @param versioninfo Pointer to version info structure
  */
 #if (SOMEIPTP_VERSION_INFO_API == STD_ON)
+/** @req SWS_SomeIpTp_00003 */
 void SomeIpTp_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_SomeIpTp_00005 */
 /**
  * @brief Transmits a large PDU using fragmentation
  * @param TxPduId PDU ID to transmit
@@ -205,6 +209,7 @@ Std_ReturnType SomeIpTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
                                   const RetryInfoType* RetryInfoPtr,
                                   PduLengthType* TxDataCntPtr);
 
+/** @req SWS_SomeIpTp_00006 */
 /**
  * @brief Cancels a transmission
  * @param TxPduId PDU ID to cancel
@@ -212,6 +217,7 @@ Std_ReturnType SomeIpTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPt
  */
 Std_ReturnType SomeIpTp_CancelTransmit(PduIdType TxPduId);
 
+/** @req SWS_SomeIpTp_00007 */
 /**
  * @brief RxIndication callback for received segments
  * @param RxPduId PDU ID that was received
@@ -219,6 +225,7 @@ Std_ReturnType SomeIpTp_CancelTransmit(PduIdType TxPduId);
  */
 void SomeIpTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
 
+/** @req SWS_SomeIpTp_00008 */
 /**
  * @brief TxConfirmation callback for transmitted segments
  * @param TxPduId PDU ID that was transmitted
@@ -226,11 +233,13 @@ void SomeIpTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr);
  */
 void SomeIpTp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result);
 
+/** @req SWS_SomeIpTp_00004 */
 /**
  * @brief Main function for periodic processing
  */
 void SomeIpTp_MainFunction(void);
 
+/** @req SWS_SomeIpTp_00009 */
 /**
  * @brief Builds TP header extension
  * @param Offset Segment offset
@@ -240,6 +249,7 @@ void SomeIpTp_MainFunction(void);
  */
 Std_ReturnType SomeIpTp_BuildTpHeader(uint32 Offset, boolean MoreSegments, uint8* Buffer);
 
+/** @req SWS_SomeIpTp_00010 */
 /**
  * @brief Parses TP header extension
  * @param Buffer Input buffer (4 bytes)
@@ -249,6 +259,7 @@ Std_ReturnType SomeIpTp_BuildTpHeader(uint32 Offset, boolean MoreSegments, uint8
  */
 Std_ReturnType SomeIpTp_ParseTpHeader(const uint8* Buffer, uint32* Offset, boolean* MoreSegments);
 
+/** @req SWS_SomeIpTp_00011 */
 /**
  * @brief Gets reception buffer status
  * @param RxPduId Rx PDU ID

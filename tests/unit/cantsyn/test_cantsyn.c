@@ -10,6 +10,7 @@
 #include "CanTSyn.h"
 #include "CanTSyn_Cfg.h"
 
+/** @req SWS_CanTSyn_00001 */
 static void test_CanTSyn_Init(void **state) {
     (void)state;
     const CanTSyn_ConfigType* config = NULL;
@@ -17,6 +18,7 @@ static void test_CanTSyn_Init(void **state) {
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_CanTSyn_00004 */
 static void test_CanTSyn_MainFunction(void **state) {
     (void)state;
     CanTSyn_MainFunction();

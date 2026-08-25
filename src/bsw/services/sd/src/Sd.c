@@ -232,6 +232,7 @@ static void Sd_LocalSendFindMessages(void)
  *                                    GLOBAL FUNCTIONS
  *==================================================================================================*/
 
+/** @req SWS_Sd_00001 */
 /**
  * @brief Initialise the Service Discovery module.
  */
@@ -259,6 +260,7 @@ void Sd_Init(const Sd_ConfigType* ConfigPtr)
     Sd_InternalState.InitialDelayElapsed = FALSE;
 }
 
+/** @req SWS_Sd_00002 */
 /**
  * @brief De-initialise the Service Discovery module.
  */
@@ -283,6 +285,7 @@ void Sd_DeInit(void)
  * @brief Get version information.
  */
 #if (SD_VERSION_INFO_API == STD_ON)
+/** @req SWS_Sd_00003 */
 void Sd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SD_DEV_ERROR_DETECT == STD_ON)
@@ -300,6 +303,7 @@ void Sd_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_Sd_00005 */
 /**
  * @brief Find a service — search in found services registry.
  */
@@ -331,6 +335,7 @@ Std_ReturnType Sd_FindService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType Inst
     return E_OK;
 }
 
+/** @req SWS_Sd_00006 */
 /**
  * @brief Start offering a service.
  */
@@ -385,6 +390,7 @@ Std_ReturnType Sd_OfferService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType Ins
     return E_OK;
 }
 
+/** @req SWS_Sd_00007 */
 /**
  * @brief Stop offering a service.
  */
@@ -422,6 +428,7 @@ Std_ReturnType Sd_StopService(Sd_ServiceIdType ServiceId, Sd_InstanceIdType Inst
     return E_OK;
 }
 
+/** @req SWS_Sd_00008 */
 /**
  * @brief Subscribe to an event group.
  */
@@ -461,6 +468,7 @@ Std_ReturnType Sd_SubscribeEventGroup(Sd_ServiceIdType ServiceId, Sd_InstanceIdT
     return E_OK;
 }
 
+/** @req SWS_Sd_00009 */
 /**
  * @brief Unsubscribe from an event group.
  */
@@ -497,6 +505,7 @@ Std_ReturnType Sd_UnsubscribeEventGroup(Sd_ServiceIdType ServiceId, Sd_InstanceI
     return E_OK;
 }
 
+/** @req SWS_Sd_00010 */
 /**
  * @brief Set event status for an event group.
  */
@@ -532,6 +541,7 @@ Std_ReturnType Sd_SetEventStatus(Sd_ServiceIdType ServiceId, Sd_InstanceIdType I
     return E_OK;
 }
 
+/** @req SWS_Sd_00004 */
 /**
  * @brief Main function — periodic SD processing.
  */
@@ -570,6 +580,7 @@ void Sd_MainFunction(void)
     }
 }
 
+/** @req SWS_Sd_00011 */
 /**
  * @brief Handle an incoming SD message.
  */

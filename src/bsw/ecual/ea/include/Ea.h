@@ -145,18 +145,21 @@ extern const Ea_ConfigType Ea_Config;
 #define EA_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_Ea_00001 */
 /**
  * @brief Initializes the EEPROM Abstraction module
  * @param ConfigPtr Pointer to configuration structure
  */
 void Ea_Init(const Ea_ConfigType* ConfigPtr);
 
+/** @req SWS_Ea_00004 */
 /**
  * @brief Sets the operation mode
  * @param Mode Mode to set (SLOW/FAST)
  */
 void Ea_SetMode(Ea_ModeType Mode);
 
+/** @req SWS_Ea_00005 */
 /**
  * @brief Reads data from a block
  * @param BlockNumber Block number
@@ -170,6 +173,7 @@ Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
                         uint8* DataBufferPtr,
                         uint16 Length);
 
+/** @req SWS_Ea_00006 */
 /**
  * @brief Writes data to a block
  * @param BlockNumber Block number
@@ -178,6 +182,7 @@ Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
  */
 Std_ReturnType Ea_Write(Ea_BlockIdType BlockNumber, const uint8* DataBufferPtr);
 
+/** @req SWS_Ea_00007 */
 /**
  * @brief Cancels ongoing operation
  */
@@ -195,6 +200,7 @@ Ea_StatusType Ea_GetStatus(void);
  */
 Ea_JobResultType Ea_GetJobResult(void);
 
+/** @req SWS_Ea_00008 */
 /**
  * @brief Invalidates a block
  * @param BlockNumber Block number
@@ -202,6 +208,7 @@ Ea_JobResultType Ea_GetJobResult(void);
  */
 Std_ReturnType Ea_InvalidateBlock(Ea_BlockIdType BlockNumber);
 
+/** @req SWS_Ea_00009 */
 /**
  * @brief Erases immediate block
  * @param BlockNumber Block number
@@ -209,28 +216,33 @@ Std_ReturnType Ea_InvalidateBlock(Ea_BlockIdType BlockNumber);
  */
 Std_ReturnType Ea_EraseImmediateBlock(Ea_BlockIdType BlockNumber);
 
+/** @req SWS_Ea_00010 */
 /**
  * @brief Job end notification callback
  */
 void Ea_JobEndNotification(void);
 
+/** @req SWS_Ea_00011 */
 /**
  * @brief Job error notification callback
  */
 void Ea_JobErrorNotification(void);
 
+/** @req SWS_Ea_00002 */
 /**
  * @brief Gets version information
  * @param versioninfo Pointer to version info structure
  */
 void Ea_GetVersionInfo(Std_VersionInfoType* versioninfo);
 
+/** @req SWS_Ea_00012 */
 /**
  * @brief Gets erase cycle count
  * @return Erase cycle count
  */
 uint32 Ea_GetEraseCycleCount(void);
 
+/** @req SWS_Ea_00003 */
 /**
  * @brief Main function for periodic processing
  */

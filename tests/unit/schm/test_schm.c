@@ -10,6 +10,7 @@
 #include "SchM.h"
 
 /* Test: SchM_Init */
+/** @req SWS_SchM_00001 */
 static void test_SchM_Init(void **state)
 {
     (void)state;
@@ -20,6 +21,7 @@ static void test_SchM_Init(void **state)
 }
 
 /* Test: SchM_DeInit */
+/** @req SWS_SchM_00001 */
 static void test_SchM_DeInit(void **state)
 {
     (void)state;
@@ -29,6 +31,7 @@ static void test_SchM_DeInit(void **state)
 }
 
 /* Test: SchM_Start */
+/** @req SWS_SchM_00005 */
 static void test_SchM_Start(void **state)
 {
     (void)state;
@@ -38,6 +41,7 @@ static void test_SchM_Start(void **state)
 }
 
 /* Test: SchM_StartTiming */
+/** @req SWS_SchM_00005 */
 static void test_SchM_StartTiming(void **state)
 {
     (void)state;
@@ -47,6 +51,7 @@ static void test_SchM_StartTiming(void **state)
 }
 
 /* Test: SchM_Init_BSW */
+/** @req SWS_SchM_00001 */
 static void test_SchM_Init_BSW(void **state)
 {
     (void)state;
@@ -56,6 +61,7 @@ static void test_SchM_Init_BSW(void **state)
 }
 
 /* Test: SchM_Deinit_BSW */
+/** @req SWS_SchM_00001 */
 static void test_SchM_Deinit_BSW(void **state)
 {
     (void)state;
@@ -83,6 +89,7 @@ static void test_SchM_Exit_Can(void **state)
 }
 
 /* Test: SchM_ActMainFunction */
+/** @req SWS_SchM_00004 */
 static void test_SchM_ActMainFunction(void **state)
 {
     (void)state;

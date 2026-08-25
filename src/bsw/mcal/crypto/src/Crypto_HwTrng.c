@@ -180,6 +180,7 @@ STATIC void Trng_UpdateEntropyLevel(void);
 /**********************************************************************************************************************
  * Crypto_HwTrng_Init
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00040 */
 Std_ReturnType Crypto_HwTrng_Init(const Crypto_HwTrngConfigType* config)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -282,6 +283,7 @@ Std_ReturnType Crypto_HwTrng_Init(const Crypto_HwTrngConfigType* config)
 /**********************************************************************************************************************
  * Crypto_HwTrng_DeInit
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00041 */
 void Crypto_HwTrng_DeInit(void)
 {
     if (Trng_State.state == CRYPTO_HWTRNG_STATE_UNINIT) {
@@ -316,6 +318,7 @@ void Crypto_HwTrng_DeInit(void)
 /**********************************************************************************************************************
  * Crypto_HwTrng_SelfTest
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00042 */
 Std_ReturnType Crypto_HwTrng_SelfTest(void)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -413,6 +416,7 @@ Std_ReturnType Crypto_HwTrng_SelfTest(void)
 /**********************************************************************************************************************
  * Crypto_HwTrng_GetStatus
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00043 */
 Std_ReturnType Crypto_HwTrng_GetStatus(Crypto_HwTrngStatusType* status)
 {
     if (status == NULL_PTR) {
@@ -461,6 +465,7 @@ Std_ReturnType Crypto_HwTrng_GetStatus(Crypto_HwTrngStatusType* status)
 /**********************************************************************************************************************
  * Crypto_HwTrng_Generate
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00044 */
 Std_ReturnType Crypto_HwTrng_Generate(uint8* output, uint32 length)
 {
     return Crypto_HwTrng_GenerateBlocking(output, length, CRYPTO_HWTRNG_TIMEOUT_DEFAULT);
@@ -469,6 +474,7 @@ Std_ReturnType Crypto_HwTrng_Generate(uint8* output, uint32 length)
 /**********************************************************************************************************************
  * Crypto_HwTrng_GenerateBlocking
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00045 */
 Std_ReturnType Crypto_HwTrng_GenerateBlocking(uint8* output, 
                                                uint32 length, 
                                                uint32 timeoutUs)
@@ -558,6 +564,7 @@ Std_ReturnType Crypto_HwTrng_GenerateBlocking(uint8* output,
 /**********************************************************************************************************************
  * Crypto_HwTrng_GetEntropyEstimate
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00046 */
 Std_ReturnType Crypto_HwTrng_GetEntropyEstimate(uint32* entropyBits)
 {
     if (entropyBits == NULL_PTR) {
@@ -585,6 +592,7 @@ Std_ReturnType Crypto_HwTrng_GetEntropyEstimate(uint32* entropyBits)
 /**********************************************************************************************************************
  * Crypto_HwTrng_Reseed
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00047 */
 Std_ReturnType Crypto_HwTrng_Reseed(const uint8* seedData, uint32 seedLength)
 {
     if (Trng_State.state != CRYPTO_HWTRNG_STATE_READY) {
@@ -629,6 +637,7 @@ Std_ReturnType Crypto_HwTrng_Reseed(const uint8* seedData, uint32 seedLength)
 /**********************************************************************************************************************
  * Crypto_HwTrng_IsEntropyAvailable
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00048 */
 boolean Crypto_HwTrng_IsEntropyAvailable(void)
 {
     if (Trng_State.state != CRYPTO_HWTRNG_STATE_READY) {
@@ -645,6 +654,7 @@ boolean Crypto_HwTrng_IsEntropyAvailable(void)
 /**********************************************************************************************************************
  * Crypto_HwTrng_WaitReady
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00049 */
 Std_ReturnType Crypto_HwTrng_WaitReady(uint32 timeoutUs)
 {
     return Trng_WaitForReady(timeoutUs);
@@ -657,6 +667,7 @@ Std_ReturnType Crypto_HwTrng_WaitReady(uint32 timeoutUs)
 /**********************************************************************************************************************
  * Trng_InitRegisters
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00050 */
 STATIC Std_ReturnType Trng_InitRegisters(void)
 {
     /* Initialize register pointer */
@@ -680,6 +691,7 @@ STATIC Std_ReturnType Trng_InitRegisters(void)
 /**********************************************************************************************************************
  * Trng_ConfigureHealthTests
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00051 */
 STATIC Std_ReturnType Trng_ConfigureHealthTests(boolean enable)
 {
     if (Trng_Regs == NULL_PTR) {
@@ -705,6 +717,7 @@ STATIC Std_ReturnType Trng_ConfigureHealthTests(boolean enable)
 /**********************************************************************************************************************
  * Trng_WaitForReady
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00052 */
 STATIC Std_ReturnType Trng_WaitForReady(uint32 timeoutUs)
 {
     volatile uint32 i;
@@ -726,6 +739,7 @@ STATIC Std_ReturnType Trng_WaitForReady(uint32 timeoutUs)
 /**********************************************************************************************************************
  * Trng_CheckHealthStatus
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00053 */
 STATIC Std_ReturnType Trng_CheckHealthStatus(void)
 {
     if (Trng_Regs == NULL_PTR) {
@@ -756,6 +770,7 @@ STATIC Std_ReturnType Trng_CheckHealthStatus(void)
 /**********************************************************************************************************************
  * Trng_GetFifoLevel
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00054 */
 STATIC uint32 Trng_GetFifoLevel(void)
 {
     if (Trng_Regs == NULL_PTR) {
@@ -769,6 +784,7 @@ STATIC uint32 Trng_GetFifoLevel(void)
 /**********************************************************************************************************************
  * Trng_IsFifoEmpty
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00055 */
 STATIC boolean Trng_IsFifoEmpty(void)
 {
     if (Trng_Regs == NULL_PTR) {
@@ -781,6 +797,7 @@ STATIC boolean Trng_IsFifoEmpty(void)
 /**********************************************************************************************************************
  * Trng_IsFifoFull
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00056 */
 STATIC boolean Trng_IsFifoFull(void)
 {
     if (Trng_Regs == NULL_PTR) {
@@ -793,6 +810,7 @@ STATIC boolean Trng_IsFifoFull(void)
 /**********************************************************************************************************************
  * Trng_ClearInterrupts
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00057 */
 STATIC void Trng_ClearInterrupts(void)
 {
     if (Trng_Regs != NULL_PTR) {
@@ -804,6 +822,7 @@ STATIC void Trng_ClearInterrupts(void)
 /**********************************************************************************************************************
  * Trng_ReadRandomWord
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00058 */
 STATIC uint32 Trng_ReadRandomWord(void)
 {
     if (Trng_Regs == NULL_PTR) {
@@ -816,6 +835,7 @@ STATIC uint32 Trng_ReadRandomWord(void)
 /**********************************************************************************************************************
  * Trng_ReportError
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00059 */
 STATIC void Trng_ReportError(uint8 serviceId, uint8 errorCode)
 {
     (void)serviceId;
@@ -830,6 +850,7 @@ STATIC void Trng_ReportError(uint8 serviceId, uint8 errorCode)
 /**********************************************************************************************************************
  * Trng_UpdateEntropyLevel
  *********************************************************************************************************************/
+/** @req SWS_Crypto_00060 */
 STATIC void Trng_UpdateEntropyLevel(void)
 {
     /* Update entropy level based on health test results */

@@ -213,6 +213,7 @@ static const Fls_SectorInfoType Fls_SectorInfoTable[FLS_NUM_OF_CONFIGURED_SECTOR
  ************************************************************************************/
 
 /* Job End Notification Callback */
+/** @req SWS_Fls_00031 */
 static void Fls_JobEndNotification(void)
 {
     /* User-defined notification function */
@@ -221,6 +222,7 @@ static void Fls_JobEndNotification(void)
 }
 
 /* Job Error Notification Callback */
+/** @req SWS_Fls_00032 */
 static void Fls_JobErrorNotification(void)
 {
     /* User-defined error notification function */
@@ -311,6 +313,7 @@ const Fls_ConfigType Fls_Config =
  ************************************************************************************/
 
 /* Get Sector Configuration by Index */
+/** @req SWS_Fls_00033 */
 static const Fls_SectorConfigType* Fls_GetSectorConfig(uint32 SectorIndex)
 {
     const Fls_SectorConfigType* SectorConfigPtr = NULL_PTR;
@@ -324,6 +327,7 @@ static const Fls_SectorConfigType* Fls_GetSectorConfig(uint32 SectorIndex)
 }
 
 /* Get Sector Index by Address */
+/** @req SWS_Fls_00034 */
 static sint32 Fls_GetSectorIndexByAddress(uint32 Address)
 {
     sint32 SectorIndex = -1;
@@ -343,6 +347,7 @@ static sint32 Fls_GetSectorIndexByAddress(uint32 Address)
 }
 
 /* Get Sector Size by Index */
+/** @req SWS_Fls_00035 */
 static uint32 Fls_GetSectorSize(uint32 SectorIndex)
 {
     uint32 SectorSize = 0U;

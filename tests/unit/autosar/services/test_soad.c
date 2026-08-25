@@ -32,6 +32,7 @@ static int teardown(void **state)
  *                                    Test Cases
  *================================================================================================*/
 
+/** @req SWS_SoAd_00001 */
 static void test_SoAd_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -40,6 +41,7 @@ static void test_SoAd_Init_ValidConfig(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00002 */
 static void test_SoAd_DeInit(void **state)
 {
     (void)state;
@@ -48,6 +50,7 @@ static void test_SoAd_DeInit(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00003 */
 static void test_SoAd_GetVersionInfo(void **state)
 {
     (void)state;
@@ -63,6 +66,7 @@ static void test_SoAd_GetVersionInfo(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00004 */
 static void test_SoAd_OpenTcpConnection(void **state)
 {
     (void)state;
@@ -74,6 +78,7 @@ static void test_SoAd_OpenTcpConnection(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00005 */
 static void test_SoAd_OpenUdpConnection(void **state)
 {
     (void)state;
@@ -85,17 +90,13 @@ static void test_SoAd_OpenUdpConnection(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00006 */
 static void test_SoAd_CloseTcpConnection(void **state)
-{
-    (void)state;
-    uint16 soConId = 0;
-    
-    SoAd_Init(NULL);
-    Std_ReturnType result = SoAd_CloseTcpConnection(soConId, FALSE);
     
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00006 */
 static void test_SoAd_CloseTcpConnection_Abort(void **state)
 {
     (void)state;
@@ -107,6 +108,7 @@ static void test_SoAd_CloseTcpConnection_Abort(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00007 */
 static void test_SoAd_CloseUdpConnection(void **state)
 {
     (void)state;
@@ -118,11 +120,8 @@ static void test_SoAd_CloseUdpConnection(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00008 */
 static void test_SoAd_Send(void **state)
-{
-    (void)state;
-    uint16 soConId = 0;
-    uint8 data[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
     PduInfoType pduInfo;
     
     pduInfo.SduDataPtr = data;
@@ -135,6 +134,7 @@ static void test_SoAd_Send(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00008 */
 static void test_SoAd_Send_NullPduInfo(void **state)
 {
     (void)state;
@@ -147,6 +147,7 @@ static void test_SoAd_Send_NullPduInfo(void **state)
     assert_true(result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00009 */
 static void test_SoAd_Receive(void **state)
 {
     (void)state;
@@ -165,6 +166,7 @@ static void test_SoAd_Receive(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00011 */
 static void test_SoAd_SetRemoteAddr(void **state)
 {
     (void)state;
@@ -184,6 +186,7 @@ static void test_SoAd_SetRemoteAddr(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00012 */
 static void test_SoAd_ReleaseIpAddrAssignment(void **state)
 {
     (void)state;
@@ -195,6 +198,7 @@ static void test_SoAd_ReleaseIpAddrAssignment(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00013 */
 static void test_SoAd_RequestIpAddrAssignment(void **state)
 {
     (void)state;
@@ -206,6 +210,7 @@ static void test_SoAd_RequestIpAddrAssignment(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00014 */
 static void test_SoAd_RequestConnMode(void **state)
 {
     (void)state;
@@ -217,6 +222,7 @@ static void test_SoAd_RequestConnMode(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_SoAd_00015 */
 static void test_SoAd_MainFunction(void **state)
 {
     (void)state;
@@ -228,6 +234,7 @@ static void test_SoAd_MainFunction(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00016 */
 static void test_SoAd_RxIndication(void **state)
 {
     (void)state;
@@ -248,6 +255,7 @@ static void test_SoAd_RxIndication(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00017 */
 static void test_SoAd_TxConfirmation(void **state)
 {
     (void)state;
@@ -259,6 +267,7 @@ static void test_SoAd_TxConfirmation(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00018 */
 static void test_SoAd_TcpIpEvent(void **state)
 {
     (void)state;
@@ -270,6 +279,7 @@ static void test_SoAd_TcpIpEvent(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00019 */
 static void test_SoAd_LocalIpAddrAssignmentChg(void **state)
 {
     (void)state;
@@ -281,6 +291,7 @@ static void test_SoAd_LocalIpAddrAssignmentChg(void **state)
     assert_true(1);
 }
 
+/** @req SWS_SoAd_00101 */
 static void test_SoAd_ModuleConstants_Exist(void **state)
 {
     (void)state;
@@ -290,6 +301,7 @@ static void test_SoAd_ModuleConstants_Exist(void **state)
     assert_int_equal(SOAD_INSTANCE_ID, 0x00U);
 }
 
+/** @req SWS_SoAd_00102 */
 static void test_SoAd_ServiceIDs_Exist(void **state)
 {
     (void)state;
@@ -305,6 +317,7 @@ static void test_SoAd_ServiceIDs_Exist(void **state)
     assert_int_equal(SOAD_SID_RECEIVE, 0x09U);
 }
 
+/** @req SWS_SoAd_00103 */
 static void test_SoAd_ErrorCodes_Exist(void **state)
 {
     (void)state;
@@ -317,6 +330,7 @@ static void test_SoAd_ErrorCodes_Exist(void **state)
     assert_int_equal(SOAD_E_INVALID_PDUID, 0x06U);
 }
 
+/** @req SWS_SoAd_00104 */
 static void test_SoAd_ConnStateTypes_Exist(void **state)
 {
     (void)state;
@@ -334,6 +348,7 @@ static void test_SoAd_ConnStateTypes_Exist(void **state)
     assert_int_equal(connState, 4);
 }
 
+/** @req SWS_SoAd_00105 */
 static void test_SoAd_ProtocolTypes_Exist(void **state)
 {
     (void)state;
@@ -345,6 +360,7 @@ static void test_SoAd_ProtocolTypes_Exist(void **state)
     assert_int_equal(protocol, 1);
 }
 
+/** @req SWS_SoAd_00106 */
 static void test_SoAd_ConnModeRequestTypes_Exist(void **state)
 {
     (void)state;

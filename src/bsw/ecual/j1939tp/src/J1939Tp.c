@@ -111,6 +111,7 @@ static void J1939Tp_SendAbort(PduIdType ConnectionId, uint8 Reason);
  * API Functions
  ******************************************************************************/
 
+/** @req SWS_J1939Tp_00001 */
 void J1939Tp_Init(const J1939Tp_ConfigType* ConfigPtr)
 {
     uint8 i;
@@ -125,6 +126,7 @@ void J1939Tp_Init(const J1939Tp_ConfigType* ConfigPtr)
     J1939Tp_ModuleState = J1939TP_STATE_INIT;
 }
 
+/** @req SWS_J1939Tp_00002 */
 Std_ReturnType J1939Tp_Transmit(PduIdType TxSduId, const PduInfoType* PduInfoPtr)
 {
     J1939Tp_ConnectionType* ConnPtr;
@@ -178,6 +180,7 @@ Std_ReturnType J1939Tp_Transmit(PduIdType TxSduId, const PduInfoType* PduInfoPtr
     return E_OK;
 }
 
+/** @req SWS_J1939Tp_00003 */
 void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     uint8 Command;
@@ -227,6 +230,7 @@ void J1939Tp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     }
 }
 
+/** @req SWS_J1939Tp_00004 */
 void J1939Tp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     J1939Tp_ConnectionType* ConnPtr;
@@ -269,6 +273,7 @@ void J1939Tp_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     }
 }
 
+/** @req SWS_J1939Tp_00005 */
 void J1939Tp_MainFunction(void)
 {
     uint8 i;
@@ -305,6 +310,7 @@ void J1939Tp_MainFunction(void)
  * Local Functions
  ******************************************************************************/
 
+/** @req SWS_J1939Tp_00006 */
 static void J1939Tp_SendRTS(PduIdType ConnectionId)
 {
     uint8 Data[8];
@@ -329,6 +335,7 @@ static void J1939Tp_SendRTS(PduIdType ConnectionId)
     CanIf_Transmit(J1939Tp_NSduConfig[ConnectionId].TxPduId, &PduInfo);
 }
 
+/** @req SWS_J1939Tp_00007 */
 static void J1939Tp_SendCTS(PduIdType ConnectionId)
 {
     uint8 Data[8];
@@ -350,6 +357,7 @@ static void J1939Tp_SendCTS(PduIdType ConnectionId)
     CanIf_Transmit(J1939Tp_NSduConfig[ConnectionId].TxPduId, &PduInfo);
 }
 
+/** @req SWS_J1939Tp_00008 */
 static void J1939Tp_SendEOMACK(PduIdType ConnectionId)
 {
     uint8 Data[8];
@@ -374,6 +382,7 @@ static void J1939Tp_SendEOMACK(PduIdType ConnectionId)
     CanIf_Transmit(J1939Tp_NSduConfig[ConnectionId].TxPduId, &PduInfo);
 }
 
+/** @req SWS_J1939Tp_00009 */
 static void J1939Tp_SendBAM(PduIdType ConnectionId)
 {
     uint8 Data[8];
@@ -398,6 +407,7 @@ static void J1939Tp_SendBAM(PduIdType ConnectionId)
     CanIf_Transmit(J1939Tp_NSduConfig[ConnectionId].TxPduId, &PduInfo);
 }
 
+/** @req SWS_J1939Tp_00010 */
 static void J1939Tp_SendDT(PduIdType ConnectionId)
 {
     uint8 Data[8];
@@ -423,6 +433,7 @@ static void J1939Tp_SendDT(PduIdType ConnectionId)
     }
 }
 
+/** @req SWS_J1939Tp_00011 */
 static void J1939Tp_SendAbort(PduIdType ConnectionId, uint8 Reason)
 {
     uint8 Data[8];
@@ -444,6 +455,7 @@ static void J1939Tp_SendAbort(PduIdType ConnectionId, uint8 Reason)
     CanIf_Transmit(J1939Tp_NSduConfig[ConnectionId].TxPduId, &PduInfo);
 }
 
+/** @req SWS_J1939Tp_00012 */
 static uint8 J1939Tp_CalculateChecksum(const uint8* DataPtr, uint16 Length)
 {
     uint16 i;

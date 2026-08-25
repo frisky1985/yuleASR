@@ -60,6 +60,7 @@ static uint8 CalculateEnhancedChecksum(uint8 Pid, const uint8* DataPtr, uint8 Le
 /**
  * 计算校验和
  */
+/** @req SWS_Lin_00130 */
 uint8 LinSlave_CalculateChecksum(
     const uint8* DataPtr,
     uint8 Length,
@@ -81,6 +82,7 @@ uint8 LinSlave_CalculateChecksum(
 /**
  * 验证校验和
  */
+/** @req SWS_Lin_00131 */
 boolean LinSlave_ValidateChecksum(
     const uint8* DataPtr,
     uint8 Length,
@@ -95,6 +97,7 @@ boolean LinSlave_ValidateChecksum(
         return FALSE;
     }
     
+    /** @req SWS_Lin_00130 */
     CalculatedChecksum = LinSlave_CalculateChecksum(DataPtr, Length, Pid, ChecksumType);
     
     return (CalculatedChecksum == ReceivedChecksum) ? TRUE : FALSE;

@@ -87,6 +87,7 @@ static void FiM_UpdateEventStatus(uint16 EventId);
  * @param FID Function ID to validate
  * @return E_OK if valid, E_NOT_OK otherwise
  */
+/** @req SWS_FiM_00001 */
 static Std_ReturnType FiM_ValidateFid(FiM_FunctionIdType FID)
 {
     if (FID >= FIM_CFG_NUMBER_OF_FIDS) {
@@ -108,6 +109,7 @@ static Std_ReturnType FiM_ValidateFid(FiM_FunctionIdType FID)
  * @param EventId Event ID to validate
  * @return E_OK if valid, E_NOT_OK otherwise
  */
+/** @req SWS_FiM_00002 */
 static Std_ReturnType FiM_ValidateEventId(uint16 EventId)
 {
     if (EventId >= FIM_CFG_NUMBER_OF_EVENTS) {
@@ -128,6 +130,7 @@ static Std_ReturnType FiM_ValidateEventId(uint16 EventId)
  * @brief Update cached event status from Dem
  * @param EventId Event ID to update
  */
+/** @req SWS_FiM_00003 */
 static void FiM_UpdateEventStatus(uint16 EventId)
 {
     uint8 eventStatus = 0u;
@@ -144,6 +147,7 @@ static void FiM_UpdateEventStatus(uint16 EventId)
  * @param InhibitionMask The inhibition mask to apply
  * @return TRUE if function should be inhibited
  */
+/** @req SWS_FiM_00004 */
 static boolean FiM_CalculateInhibition(uint16 EventId, uint8 InhibitionMask)
 {
     uint8 eventStatus = FiM_EventStatus[EventId];
@@ -188,6 +192,7 @@ static boolean FiM_CalculateInhibition(uint16 EventId, uint8 InhibitionMask)
  * @param InhibitionMask The inhibition mask
  * @return TRUE if the event inhibits this FID
  */
+/** @req SWS_FiM_00005 */
 static boolean FiM_CheckEventInhibitsFid(uint16 EventId, FiM_FunctionIdType Fid, uint8 InhibitionMask)
 {
     (void)Fid; /* Parameter not needed in this implementation but kept for API consistency */
@@ -198,6 +203,7 @@ static boolean FiM_CheckEventInhibitsFid(uint16 EventId, FiM_FunctionIdType Fid,
  * @brief Mark all FIDs affected by an event as dirty
  * @param EventId The event that changed
  */
+/** @req SWS_FiM_00006 */
 static void FiM_MarkAffectedFidsDirty(uint16 EventId)
 {
     uint16 i;
@@ -221,6 +227,7 @@ static void FiM_MarkAffectedFidsDirty(uint16 EventId)
  * @brief Recalculate permission for a single FID
  * @param Fid Function ID to recalculate
  */
+/** @req SWS_FiM_00007 */
 static void FiM_RecalculateFidPermission(FiM_FunctionIdType Fid)
 {
     uint16 i;
@@ -258,6 +265,7 @@ static void FiM_RecalculateFidPermission(FiM_FunctionIdType Fid)
  * @brief Initialize FiM module
  * @param configPtr Configuration pointer (not used in post-build variant)
  */
+/** @req SWS_FiM_00008 */
 void FiM_Init(const void* configPtr)
 {
     uint16 i;
@@ -314,6 +322,7 @@ void FiM_Init(const void* configPtr)
 /**
  * @brief Deinitialize FiM module
  */
+/** @req SWS_FiM_00009 */
 void FiM_DeInit(void)
 {
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
@@ -337,6 +346,7 @@ void FiM_DeInit(void)
  * @param Permission Output: TRUE if function is allowed
  * @return E_OK if successful, E_NOT_OK if error
  */
+/** @req SWS_FiM_00010 */
 Std_ReturnType FiM_GetFunctionPermission(FiM_FunctionIdType FID, boolean* Permission)
 {
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
@@ -375,6 +385,7 @@ Std_ReturnType FiM_GetFunctionPermission(FiM_FunctionIdType FID, boolean* Permis
  * @param Availability TRUE to make function available, FALSE to inhibit
  * @return E_OK if successful, E_NOT_OK if error
  */
+/** @req SWS_FiM_00011 */
 Std_ReturnType FiM_SetFunctionAvailable(FiM_FunctionIdType FID, boolean Availability)
 {
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
@@ -408,6 +419,7 @@ Std_ReturnType FiM_SetFunctionAvailable(FiM_FunctionIdType FID, boolean Availabi
  * @brief Callback from Dem when monitor status changes
  * @param EventId The event whose monitor status changed
  */
+/** @req SWS_FiM_00012 */
 void FiM_DemTriggerOnMonitorStatus(uint16 EventId)
 {
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
@@ -437,6 +449,7 @@ void FiM_DemTriggerOnMonitorStatus(uint16 EventId)
  * @brief Callback from Dem when event status changes
  * @param EventId The event whose status changed
  */
+/** @req SWS_FiM_00013 */
 void FiM_DemTriggerOnEventStatus(uint16 EventId)
 {
 #if (FIM_DEV_ERROR_DETECT == STD_ON)
@@ -468,6 +481,7 @@ void FiM_DemTriggerOnEventStatus(uint16 EventId)
  * @param EventStatusByteOld Previous status
  * @param EventStatusByteNew Current status
  */
+/** @req SWS_FiM_00014 */
 void FiM_DemTriggerOnEventStatusUds(uint16 EventId, uint8 EventStatusByteOld, uint8 EventStatusByteNew)
 {
     (void)EventStatusByteOld;
@@ -483,6 +497,7 @@ void FiM_DemTriggerOnEventStatusUds(uint16 EventId, uint8 EventStatusByteOld, ui
  * @brief Main function - performs deferred recalculation
  * Called cyclically by the scheduler
  */
+/** @req SWS_FiM_00015 */
 void FiM_MainFunction(void)
 {
     uint16 i;
@@ -525,6 +540,7 @@ void FiM_MainFunction(void)
  * @param versioninfo Pointer to version info structure
  */
 #if (FIM_VERSION_INFO_API == STD_ON)
+/** @req SWS_FiM_00016 */
 void FiM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (FIM_DEV_ERROR_DETECT == STD_ON)

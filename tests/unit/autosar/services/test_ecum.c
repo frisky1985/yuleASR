@@ -63,6 +63,7 @@ static int test_teardown(void **state)
 *                                   INITIALIZATION TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00001 */
 /**
  * @test EcuM_Init normal initialization
  * @requirement ECUM_INIT_001
@@ -83,6 +84,7 @@ static void test_EcuM_Init_Normal(void **state)
     assert_int_equal(currentState, ECUM_STATE_STARTUP);
 }
 
+/** @req SWS_EcuM_00001 */
 /**
  * @test EcuM_Init double initialization
  * @requirement ECUM_INIT_002
@@ -105,6 +107,7 @@ static void test_EcuM_Init_DoubleInit(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00010 */
 /**
  * @test EcuM_StartupOne normal execution
  * @requirement ECUM_STARTUP_001
@@ -125,6 +128,7 @@ static void test_EcuM_StartupOne_Normal(void **state)
                 currentState == ECUM_STATE_RUN);
 }
 
+/** @req SWS_EcuM_00011 */
 /**
  * @test EcuM_StartupTwo without proper initialization
  * @requirement ECUM_STARTUP_002
@@ -150,6 +154,7 @@ static void test_EcuM_StartupTwo_WrongOrder(void **state)
 *                                  STATE MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00021 */
 /**
  * @test EcuM_GetState normal case
  * @requirement ECUM_STATE_001
@@ -168,6 +173,7 @@ static void test_EcuM_GetState_Normal(void **state)
                 state == ECUM_STATE_OFF);
 }
 
+/** @req SWS_EcuM_00021 */
 /**
  * @test EcuM_GetState with NULL pointer
  * @requirement ECUM_STATE_002
@@ -182,6 +188,7 @@ static void test_EcuM_GetState_NullPointer(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00021 */
 /**
  * @test EcuM_GetState before initialization
  * @requirement ECUM_STATE_003
@@ -201,6 +208,7 @@ static void test_EcuM_GetState_NotInitialized(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00022 */
 /**
  * @test EcuM_GetSubState normal case
  * @requirement ECUM_SUBSTATE_001
@@ -221,6 +229,7 @@ static void test_EcuM_GetSubState_Normal(void **state)
                 subState == ECUM_SUBSTATE_POST_RUN);
 }
 
+/** @req SWS_EcuM_00022 */
 /**
  * @test EcuM_GetSubState with NULL pointer
  * @requirement ECUM_SUBSTATE_002
@@ -239,6 +248,7 @@ static void test_EcuM_GetSubState_NullPointer(void **state)
 *                               RUN REQUEST MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00090 */
 /**
  * @test EcuM_RequestRUN normal case
  * @requirement ECUM_RUN_001
@@ -254,6 +264,7 @@ static void test_EcuM_RequestRUN_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00090 */
 /**
  * @test EcuM_RequestRUN with invalid user
  * @requirement ECUM_RUN_002
@@ -270,6 +281,7 @@ static void test_EcuM_RequestRUN_InvalidUser(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00091 */
 /**
  * @test EcuM_ReleaseRUN normal case
  * @requirement ECUM_RUN_003
@@ -289,6 +301,7 @@ static void test_EcuM_ReleaseRUN_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00091 */
 /**
  * @test EcuM_ReleaseRUN without prior request
  * @requirement ECUM_RUN_004
@@ -305,6 +318,7 @@ static void test_EcuM_ReleaseRUN_NoPriorRequest(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00091 */
 /**
  * @test EcuM_ReleaseRUN with invalid user
  * @requirement ECUM_RUN_005
@@ -320,6 +334,7 @@ static void test_EcuM_ReleaseRUN_InvalidUser(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00092 */
 /**
  * @test EcuM_KillAllRUNRequests normal case
  * @requirement ECUM_RUN_006
@@ -340,6 +355,7 @@ static void test_EcuM_KillAllRUNRequests_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00090 */
 /**
  * @test Complete RUN request lifecycle
  * @requirement ECUM_RUN_007
@@ -378,6 +394,7 @@ static void test_EcuM_RUNRequest_Lifecycle(void **state)
 *                               SHUTDOWN MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00030 */
 /**
  * @test EcuM_SelectShutdownTarget normal cases
  * @requirement ECUM_SHUTDOWN_001
@@ -400,6 +417,7 @@ static void test_EcuM_SelectShutdownTarget_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00030 */
 /**
  * @test EcuM_SelectShutdownTarget with invalid target
  * @requirement ECUM_SHUTDOWN_002
@@ -416,6 +434,7 @@ static void test_EcuM_SelectShutdownTarget_Invalid(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00031 */
 /**
  * @test EcuM_GetShutdownTarget normal case
  * @requirement ECUM_SHUTDOWN_003
@@ -438,6 +457,7 @@ static void test_EcuM_GetShutdownTarget_Normal(void **state)
     assert_int_equal(mode, 1);
 }
 
+/** @req SWS_EcuM_00031 */
 /**
  * @test EcuM_GetShutdownTarget with NULL pointers
  * @requirement ECUM_SHUTDOWN_004
@@ -459,6 +479,7 @@ static void test_EcuM_GetShutdownTarget_NullPointers(void **state)
     assert_int_equal(result2, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00032 */
 /**
  * @test EcuM_GetLastShutdownTarget normal case
  * @requirement ECUM_SHUTDOWN_005
@@ -475,6 +496,7 @@ static void test_EcuM_GetLastShutdownTarget_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00033 */
 /**
  * @test EcuM_SelectShutdownCause normal case
  * @requirement ECUM_SHUTDOWN_006
@@ -494,6 +516,7 @@ static void test_EcuM_SelectShutdownCause_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00034 */
 /**
  * @test EcuM_GetShutdownCause normal case
  * @requirement ECUM_SHUTDOWN_007
@@ -514,6 +537,7 @@ static void test_EcuM_GetShutdownCause_Normal(void **state)
     assert_int_equal(cause, ECUM_CAUSE_DCM);
 }
 
+/** @req SWS_EcuM_00034 */
 /**
  * @test EcuM_GetShutdownCause with NULL pointer
  * @requirement ECUM_SHUTDOWN_008
@@ -527,6 +551,7 @@ static void test_EcuM_GetShutdownCause_NullPointer(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00035 */
 /**
  * @test EcuM_Shutdown normal case
  * @requirement ECUM_SHUTDOWN_009
@@ -555,6 +580,7 @@ static void test_EcuM_Shutdown_Normal(void **state)
 *                               SLEEP MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00080 */
 /**
  * @test EcuM_GoSleep normal case
  * @requirement ECUM_SLEEP_001
@@ -580,6 +606,7 @@ static void test_EcuM_GoSleep_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00081 */
 /**
  * @test EcuM_GoHalt normal case
  * @requirement ECUM_SLEEP_002
@@ -603,6 +630,7 @@ static void test_EcuM_GoHalt_Normal(void **state)
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00082 */
 /**
  * @test EcuM_GoPoll normal case
  * @requirement ECUM_SLEEP_003
@@ -626,6 +654,7 @@ static void test_EcuM_GoPoll_Normal(void **state)
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00083 */
 /**
  * @test EcuM_WakeupRestart normal case
  * @requirement ECUM_SLEEP_004
@@ -652,6 +681,7 @@ static void test_EcuM_WakeupRestart_Normal(void **state)
 *                             WAKEUP SOURCE MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00040 */
 /**
  * @test EcuM_SetWakeupEvent normal case
  * @requirement ECUM_WAKEUP_001
@@ -672,6 +702,7 @@ static void test_EcuM_SetWakeupEvent_Normal(void **state)
     assert_true((sources & ECUM_WKSOURCE_POWER) != 0);
 }
 
+/** @req SWS_EcuM_00040 */
 /**
  * @test EcuM_SetWakeupEvent multiple sources
  * @requirement ECUM_WAKEUP_002
@@ -695,6 +726,7 @@ static void test_EcuM_SetWakeupEvent_Multiple(void **state)
     assert_true((sources & ECUM_WKSOURCE_TIMER) != 0);
 }
 
+/** @req SWS_EcuM_00041 */
 /**
  * @test EcuM_ClearWakeupEvent normal case
  * @requirement ECUM_WAKEUP_003
@@ -715,6 +747,7 @@ static void test_EcuM_ClearWakeupEvent_Normal(void **state)
     assert_int_equal(sources, ECUM_WKSOURCE_NONE);
 }
 
+/** @req SWS_EcuM_00041 */
 /**
  * @test EcuM_ClearWakeupEvent partial clear
  * @requirement ECUM_WAKEUP_004
@@ -738,6 +771,7 @@ static void test_EcuM_ClearWakeupEvent_Partial(void **state)
     assert_int_equal(sources, ECUM_WKSOURCE_LIN);
 }
 
+/** @req SWS_EcuM_00042 */
 /**
  * @test EcuM_CheckWakeup normal case
  * @requirement ECUM_WAKEUP_005
@@ -754,6 +788,7 @@ static void test_EcuM_CheckWakeup_Normal(void **state)
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00043 */
 /**
  * @test EcuM_EnableWakeupSources normal case
  * @requirement ECUM_WAKEUP_006
@@ -769,6 +804,7 @@ static void test_EcuM_EnableWakeupSources_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00044 */
 /**
  * @test EcuM_DisableWakeupSources normal case
  * @requirement ECUM_WAKEUP_007
@@ -787,6 +823,7 @@ static void test_EcuM_DisableWakeupSources_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00045 */
 /**
  * @test EcuM_GetStatusOfWakeupSource normal case
  * @requirement ECUM_WAKEUP_008
@@ -808,6 +845,7 @@ static void test_EcuM_GetStatusOfWakeupSource_Normal(void **state)
                 status == ECUM_WKSTATUS_NONE);
 }
 
+/** @req SWS_EcuM_00045 */
 /**
  * @test EcuM_GetStatusOfWakeupSource with invalid source
  * @requirement ECUM_WAKEUP_009
@@ -824,6 +862,7 @@ static void test_EcuM_GetStatusOfWakeupSource_Invalid(void **state)
     assert_int_equal(status, ECUM_WKSTATUS_NONE);
 }
 
+/** @req SWS_EcuM_00046 */
 /**
  * @test EcuM_GetWakeupSources normal case
  * @requirement ECUM_WAKEUP_010
@@ -839,6 +878,7 @@ static void test_EcuM_GetWakeupSources_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00046 */
 /**
  * @test EcuM_GetWakeupSources with NULL pointer
  * @requirement ECUM_WAKEUP_011
@@ -853,6 +893,7 @@ static void test_EcuM_GetWakeupSources_NullPointer(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00047 */
 /**
  * @test EcuM_CheckValidation normal case
  * @requirement ECUM_WAKEUP_012
@@ -876,6 +917,7 @@ static void test_EcuM_CheckValidation_Normal(void **state)
 *                             BOOT TARGET MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00050 */
 /**
  * @test EcuM_SelectBootTarget normal cases
  * @requirement ECUM_BOOT_001
@@ -898,6 +940,7 @@ static void test_EcuM_SelectBootTarget_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00050 */
 /**
  * @test EcuM_SelectBootTarget with invalid target
  * @requirement ECUM_BOOT_002
@@ -913,6 +956,7 @@ static void test_EcuM_SelectBootTarget_Invalid(void **state)
     assert_int_equal(result, E_NOT_OK);
 }
 
+/** @req SWS_EcuM_00051 */
 /**
  * @test EcuM_GetBootTarget normal case
  * @requirement ECUM_BOOT_003
@@ -933,6 +977,7 @@ static void test_EcuM_GetBootTarget_Normal(void **state)
     assert_int_equal(target, ECUM_BOOT_TARGET_OEM_BOOTLOADER);
 }
 
+/** @req SWS_EcuM_00051 */
 /**
  * @test EcuM_GetBootTarget with NULL pointer
  * @requirement ECUM_BOOT_004
@@ -951,6 +996,7 @@ static void test_EcuM_GetBootTarget_NullPointer(void **state)
 *                           APPLICATION MODE MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00100 */
 /**
  * @test EcuM_SelectApplicationMode before initialization
  * @requirement ECUM_APPMODE_001
@@ -973,6 +1019,7 @@ static void test_EcuM_SelectApplicationMode_BeforeInit(void **state)
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00101 */
 /**
  * @test EcuM_GetApplicationMode normal case
  * @requirement ECUM_APPMODE_002
@@ -989,6 +1036,7 @@ static void test_EcuM_GetApplicationMode_Normal(void **state)
     assert_int_equal(appMode, ECUM_APPMODE_DEFAULT);
 }
 
+/** @req SWS_EcuM_00101 */
 /**
  * @test EcuM_GetApplicationMode with NULL pointer
  * @requirement ECUM_APPMODE_003
@@ -1007,6 +1055,7 @@ static void test_EcuM_GetApplicationMode_NullPointer(void **state)
 *                           COMMUNICATION MODE MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00110 */
 /**
  * @test EcuM_ComM_RequestComMode normal case
  * @requirement ECUM_COMM_001
@@ -1021,6 +1070,7 @@ static void test_EcuM_ComM_RequestComMode_Normal(void **state)
     assert_int_equal(result, E_OK);
 }
 
+/** @req SWS_EcuM_00111 */
 /**
  * @test EcuM_ComM_ReleaseComMode normal case
  * @requirement ECUM_COMM_002
@@ -1039,6 +1089,7 @@ static void test_EcuM_ComM_ReleaseComMode_Normal(void **state)
 *                               BSW MODE MANAGEMENT TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00120 */
 /**
  * @test EcuM_StartBswMode normal case
  * @requirement ECUM_BSWMODE_001
@@ -1056,6 +1107,7 @@ static void test_EcuM_StartBswMode_Normal(void **state)
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00121 */
 /**
  * @test EcuM_StopBswMode normal case
  * @requirement ECUM_BSWMODE_002
@@ -1077,6 +1129,7 @@ static void test_EcuM_StopBswMode_Normal(void **state)
 *                               MAIN FUNCTION TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00060 */
 /**
  * @test EcuM_MainFunction normal case
  * @requirement ECUM_MAINFUNC_001
@@ -1094,6 +1147,7 @@ static void test_EcuM_MainFunction_Normal(void **state)
     assert_true(1);
 }
 
+/** @req SWS_EcuM_00060 */
 /**
  * @test EcuM_MainFunction state machine progression
  * @requirement ECUM_MAINFUNC_002
@@ -1123,6 +1177,7 @@ static void test_EcuM_MainFunction_StateMachine(void **state)
 *                               VERSION INFO TESTS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00070 */
 /**
  * @test EcuM_GetVersionInfo normal case
  * @requirement ECUM_VERSION_001
@@ -1141,6 +1196,7 @@ static void test_EcuM_GetVersionInfo_Normal(void **state)
     assert_int_equal(versionInfo.sw_patch_version, ECUM_SW_PATCH_VERSION);
 }
 
+/** @req SWS_EcuM_00070 */
 /**
  * @test EcuM_GetVersionInfo with NULL pointer
  * @requirement ECUM_VERSION_002
@@ -1160,6 +1216,7 @@ static void test_EcuM_GetVersionInfo_NullPointer(void **state)
 *                              INTEGRATION TEST SCENARIOS
 ==================================================================================================*/
 
+/** @req SWS_EcuM_00001 */
 /**
  * @test Complete startup sequence
  * @requirement ECUM_INT_001
@@ -1177,6 +1234,7 @@ static void test_EcuM_StartupSequence_Complete(void **state)
     assert_int_equal(currentState, ECUM_STATE_RUN);
 }
 
+/** @req SWS_EcuM_00090 */
 /**
  * @test RUN to POST_RUN transition
  * @requirement ECUM_INT_002
@@ -1205,6 +1263,7 @@ static void test_EcuM_StateTransition_RunToPostRun(void **state)
     assert_true(state == ECUM_STATE_RUN || state == ECUM_STATE_POST_RUN);
 }
 
+/** @req SWS_EcuM_00040 */
 /**
  * @test Wakeup source validation flow
  * @requirement ECUM_INT_003
@@ -1228,6 +1287,7 @@ static void test_EcuM_WakeupValidation_Flow(void **state)
     EcuM_MainFunction();
 }
 
+/** @req SWS_EcuM_00030 */
 /**
  * @test Shutdown target selection and retrieval
  * @requirement ECUM_INT_004
@@ -1259,6 +1319,7 @@ static void test_EcuM_ShutdownTarget_RoundTrip(void **state)
     }
 }
 
+/** @req SWS_EcuM_00090 */
 /**
  * @test Multiple user RUN request management
  * @requirement ECUM_INT_005

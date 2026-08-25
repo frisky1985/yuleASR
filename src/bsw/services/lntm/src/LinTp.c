@@ -355,6 +355,7 @@ STATIC void LinTp_ProcessRxState(LinTp_ChannelType Channel, LinTp_ConnectionType
 /*==================================================================================================
 *                                    GLOBAL FUNCTIONS
 ==================================================================================================*/
+/** @req SWS_LinTp_00001 */
 /**
  * @brief Initializes the LIN Transport Layer module
  */
@@ -406,6 +407,7 @@ void LinTp_Init(const LinTp_ConfigType* ConfigPtr)
     LinTp_Initialized = TRUE;
 }
 
+/** @req SWS_LinTp_00002 */
 /**
  * @brief Deinitializes the LIN Transport Layer module
  */
@@ -433,6 +435,7 @@ void LinTp_DeInit(void)
  * @brief Gets version information
  */
 #if (LINTP_VERSION_INFO_API == STD_ON)
+/** @req SWS_LinTp_00003 */
 void LinTp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 {
     if (VersionInfo == NULL_PTR) {
@@ -450,6 +453,7 @@ void LinTp_GetVersionInfo(Std_VersionInfoType* VersionInfo)
 }
 #endif
 
+/** @req SWS_LinTp_00005 */
 /**
  * @brief Transmits data via LIN TP
  */
@@ -502,6 +506,7 @@ Std_ReturnType LinTp_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     return result;
 }
 
+/** @req SWS_LinTp_00006 */
 /**
  * @brief Cancels an ongoing reception
  */
@@ -525,6 +530,7 @@ Std_ReturnType LinTp_CancelReceive(PduIdType RxPduId)
     return result;
 }
 
+/** @req SWS_LinTp_00007 */
 /**
  * @brief Cancels an ongoing transmission
  */
@@ -548,6 +554,7 @@ Std_ReturnType LinTp_CancelTransmit(PduIdType TxPduId)
     return result;
 }
 
+/** @req SWS_LinTp_00008 */
 /**
  * @brief Changes a parameter value
  */
@@ -585,6 +592,7 @@ Std_ReturnType LinTp_ChangeParameter(PduIdType id, TPParameterType parameter, ui
     return result;
 }
 
+/** @req SWS_LinTp_00009 */
 /**
  * @brief Resets a parameter to default value
  */
@@ -610,6 +618,7 @@ Std_ReturnType LinTp_ResetToDefaultParameters(PduIdType id, TPParameterType para
     return result;
 }
 
+/** @req SWS_LinTp_00004 */
 /**
  * @brief Main function for LinTp (to be called periodically)
  */
@@ -642,6 +651,7 @@ void LinTp_MainFunction(void)
     }
 }
 
+/** @req SWS_LinTp_00010 */
 /**
  * @brief RxIndication callback from LinIf
  */
@@ -687,6 +697,7 @@ void LinTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     (void)RxPduId;
 }
 
+/** @req SWS_LinTp_00011 */
 /**
  * @brief TxConfirmation callback from LinIf
  */

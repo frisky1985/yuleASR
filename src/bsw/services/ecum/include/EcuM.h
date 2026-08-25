@@ -261,61 +261,97 @@ typedef struct {
  ******************************************************************************/
 
 /* Initialization Functions */
+/** @req SWS_EcuM_00001 */
 extern void EcuM_Init(void);
+/** @req SWS_EcuM_00010 */
 extern void EcuM_StartupOne(void);
+/** @req SWS_EcuM_00011 */
 extern void EcuM_StartupTwo(void);
 
 /* Runtime Functions */
+/** @req SWS_EcuM_00060 */
 extern void EcuM_MainFunction(void);
+/** @req SWS_EcuM_00090 */
 extern Std_ReturnType EcuM_RequestRUN(EcuM_UserType user);
+/** @req SWS_EcuM_00091 */
 extern Std_ReturnType EcuM_ReleaseRUN(EcuM_UserType user);
+/** @req SWS_EcuM_00092 */
 extern Std_ReturnType EcuM_KillAllRUNRequests(void);
 
 /* State Management */
+/** @req SWS_EcuM_00021 */
 extern Std_ReturnType EcuM_GetState(EcuM_StateType* state);
+/** @req SWS_EcuM_00022 */
 extern Std_ReturnType EcuM_GetSubState(EcuM_SubStateType* subState);
 
 /* Shutdown Management */
+/** @req SWS_EcuM_00035 */
 extern void EcuM_Shutdown(void);
+/** @req SWS_EcuM_00030 */
 extern Std_ReturnType EcuM_SelectShutdownTarget(EcuM_ShutdownTargetType target, uint8 mode);
+/** @req SWS_EcuM_00031 */
 extern Std_ReturnType EcuM_GetShutdownTarget(EcuM_ShutdownTargetType* target, uint8* mode);
+/** @req SWS_EcuM_00032 */
 extern Std_ReturnType EcuM_GetLastShutdownTarget(EcuM_ShutdownTargetType* target, uint8* mode);
+/** @req SWS_EcuM_00033 */
 extern Std_ReturnType EcuM_SelectShutdownCause(EcuM_ShutdownCauseType cause);
+/** @req SWS_EcuM_00034 */
 extern Std_ReturnType EcuM_GetShutdownCause(EcuM_ShutdownCauseType* cause);
 
 /* Sleep Management */
+/** @req SWS_EcuM_00080 */
 extern void EcuM_GoSleep(void);
+/** @req SWS_EcuM_00081 */
 extern void EcuM_GoHalt(void);
+/** @req SWS_EcuM_00082 */
 extern void EcuM_GoPoll(void);
+/** @req SWS_EcuM_00083 */
 extern void EcuM_WakeupRestart(void);
 
 /* Wakeup Source Management */
+/** @req SWS_EcuM_00040 */
 extern void EcuM_SetWakeupEvent(EcuM_WakeupSourceType sources);
+/** @req SWS_EcuM_00041 */
 extern void EcuM_ClearWakeupEvent(EcuM_WakeupSourceType sources);
+/** @req SWS_EcuM_00042 */
 extern void EcuM_CheckWakeup(EcuM_WakeupSourceType sources);
+/** @req SWS_EcuM_00043 */
 extern Std_ReturnType EcuM_EnableWakeupSources(EcuM_WakeupSourceType sources);
+/** @req SWS_EcuM_00044 */
 extern Std_ReturnType EcuM_DisableWakeupSources(EcuM_WakeupSourceType sources);
+/** @req SWS_EcuM_00045 */
 extern EcuM_WakeupStatusType EcuM_GetStatusOfWakeupSource(EcuM_WakeupSourceType sources);
+/** @req SWS_EcuM_00046 */
 extern Std_ReturnType EcuM_GetWakeupSources(EcuM_WakeupSourceType* sources);
+/** @req SWS_EcuM_00047 */
 extern Std_ReturnType EcuM_CheckValidation(EcuM_WakeupSourceType source);
 
 /* Boot Target Management */
+/** @req SWS_EcuM_00050 */
 extern Std_ReturnType EcuM_SelectBootTarget(EcuM_BootTargetType target);
+/** @req SWS_EcuM_00051 */
 extern Std_ReturnType EcuM_GetBootTarget(EcuM_BootTargetType* target);
 
 /* Application Mode */
+/** @req SWS_EcuM_00100 */
 extern Std_ReturnType EcuM_SelectApplicationMode(EcuM_AppModeType appMode);
+/** @req SWS_EcuM_00101 */
 extern Std_ReturnType EcuM_GetApplicationMode(EcuM_AppModeType* appMode);
 
 /* BSW Mode Management */
+/** @req SWS_EcuM_00120 */
 extern void EcuM_StartBswMode(EcuM_BswModeType mode);
+/** @req SWS_EcuM_00121 */
 extern void EcuM_StopBswMode(EcuM_BswModeType mode);
 
 /* Communication Mode */
+/** @req SWS_EcuM_00110 */
 extern Std_ReturnType EcuM_ComM_RequestComMode(uint8 channel, EcuM_ModeType mode);
+/** @req SWS_EcuM_00111 */
 extern Std_ReturnType EcuM_ComM_ReleaseComMode(uint8 channel);
 
 /* Version Info */
+/** @req SWS_EcuM_00070 */
 extern void EcuM_GetVersionInfo(Std_VersionInfoType* versionInfo);
 
 /* Callout Declarations - To be implemented by integrator */

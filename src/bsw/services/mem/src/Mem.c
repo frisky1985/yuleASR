@@ -100,6 +100,7 @@ const Mem_ConfigType* Mem_ConfigPtr = NULL_PTR;
 /**
  * @brief Calculate checksum for memory block
  */
+/** @req SWS_Mem_00001 */
 static uint32 Mem_CalculateChecksum(const Mem_BlockType* block)
 {
     uint32 checksum = 0u;
@@ -115,6 +116,7 @@ static uint32 Mem_CalculateChecksum(const Mem_BlockType* block)
 /**
  * @brief Validate block integrity
  */
+/** @req SWS_Mem_00002 */
 static boolean Mem_ValidateBlock(const Mem_BlockType* block)
 {
     if (block == NULL_PTR) {
@@ -134,6 +136,7 @@ static boolean Mem_ValidateBlock(const Mem_BlockType* block)
 /**
  * @brief Update block checksum
  */
+/** @req SWS_Mem_00003 */
 static void Mem_UpdateChecksum(Mem_BlockType* block)
 {
 #if (MEM_ENABLE_CHECKSUM == STD_ON)
@@ -146,6 +149,7 @@ static void Mem_UpdateChecksum(Mem_BlockType* block)
 /**
  * @brief Initialize a memory pool
  */
+/** @req SWS_Mem_00004 */
 static void Mem_InitPool(uint8 poolIndex, uint8* base, uint32 size, uint32 maxBlockSize)
 {
     Mem_BlockType* block;
@@ -172,6 +176,7 @@ static void Mem_InitPool(uint8 poolIndex, uint8* base, uint32 size, uint32 maxBl
 /**
  * @brief Find free block using configured strategy
  */
+/** @req SWS_Mem_00005 */
 static Mem_BlockType* Mem_FindFreeBlock(uint8 poolIndex, uint32 size, Mem_AllocStrategyType strategy)
 {
     Mem_BlockType* current = Mem_Pools[poolIndex].firstBlock;
@@ -212,6 +217,7 @@ static Mem_BlockType* Mem_FindFreeBlock(uint8 poolIndex, uint32 size, Mem_AllocS
 /**
  * @brief Split a block if large enough
  */
+/** @req SWS_Mem_00006 */
 static void Mem_SplitBlock(Mem_BlockType* block, uint32 size)
 {
     uint32 minBlockSize = MEM_HEADER_SIZE + MEM_MIN_BLOCK_SIZE;
@@ -243,6 +249,7 @@ static void Mem_SplitBlock(Mem_BlockType* block, uint32 size)
 /**
  * @brief Merge adjacent free blocks
  */
+/** @req SWS_Mem_00007 */
 static void Mem_MergeFreeBlocks(Mem_BlockType* block)
 {
     /* Merge with next block if free */
@@ -273,6 +280,7 @@ static void Mem_MergeFreeBlocks(Mem_BlockType* block)
 /**
  * @brief Get pool index for allocation size
  */
+/** @req SWS_Mem_00008 */
 static uint8 Mem_GetPoolForSize(uint32 size)
 {
     if (size <= MEM_FAST_POOL_MAX_BLOCK) {
@@ -291,6 +299,7 @@ static uint8 Mem_GetPoolForSize(uint32 size)
 /**
  * @brief Initializes the Memory Service module
  */
+/** @req SWS_Mem_00009 */
 void Mem_Init(const Mem_ConfigType* ConfigPtr)
 {
     uint8 i;
@@ -325,6 +334,7 @@ void Mem_Init(const Mem_ConfigType* ConfigPtr)
 /**
  * @brief Deinitializes the Memory Service module
  */
+/** @req SWS_Mem_00010 */
 void Mem_DeInit(void)
 {
     uint8 i;
@@ -356,6 +366,7 @@ void Mem_DeInit(void)
  * @brief Gets version information
  */
 #if (MEM_VERSION_INFO_API == STD_ON)
+/** @req SWS_Mem_00011 */
 void Mem_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (MEM_DEV_ERROR_DETECT == STD_ON)
@@ -376,6 +387,7 @@ void Mem_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /**
  * @brief Allocates a memory block
  */
+/** @req SWS_Mem_00012 */
 Mem_HandleType Mem_Allocate(uint32 Size, uint8 Alignment)
 {
     Mem_HandleType handle = MEM_INVALID_HANDLE;
@@ -434,6 +446,7 @@ Mem_HandleType Mem_Allocate(uint32 Size, uint8 Alignment)
 /**
  * @brief Frees a previously allocated memory block
  */
+/** @req SWS_Mem_00013 */
 Std_ReturnType Mem_Free(Mem_HandleType Handle)
 {
     uint8 poolIndex;
@@ -498,6 +511,7 @@ Std_ReturnType Mem_Free(Mem_HandleType Handle)
 /**
  * @brief Reallocates a memory block with new size
  */
+/** @req SWS_Mem_00014 */
 Mem_HandleType Mem_Reallocate(Mem_HandleType Handle, uint32 NewSize)
 {
     Mem_HandleType newHandle = MEM_INVALID_HANDLE;
@@ -579,6 +593,7 @@ Mem_HandleType Mem_Reallocate(Mem_HandleType Handle, uint32 NewSize)
 /**
  * @brief Gets pointer from memory handle
  */
+/** @req SWS_Mem_00015 */
 void* Mem_GetPointer(Mem_HandleType Handle)
 {
     uint8 poolIndex;
@@ -624,6 +639,7 @@ void* Mem_GetPointer(Mem_HandleType Handle)
 /**
  * @brief Gets current module status
  */
+/** @req SWS_Mem_00016 */
 Mem_StatusType Mem_GetStatus(void)
 {
     return Mem_Status;
@@ -632,6 +648,7 @@ Mem_StatusType Mem_GetStatus(void)
 /**
  * @brief Gets memory information
  */
+/** @req SWS_Mem_00017 */
 Std_ReturnType Mem_GetMemInfo(uint8 PoolIndex, Mem_InfoType* InfoPtr)
 {
     const Mem_BlockType* block;
@@ -691,6 +708,7 @@ Std_ReturnType Mem_GetMemInfo(uint8 PoolIndex, Mem_InfoType* InfoPtr)
 /**
  * @brief Main function for periodic processing
  */
+/** @req SWS_Mem_00018 */
 void Mem_MainFunction(void)
 {
     uint8 poolIndex;
@@ -720,6 +738,7 @@ void Mem_MainFunction(void)
 /**
  * @brief Checks memory integrity
  */
+/** @req SWS_Mem_00019 */
 Std_ReturnType Mem_CheckIntegrity(void)
 {
     uint8 poolIndex;
@@ -765,6 +784,7 @@ Std_ReturnType Mem_CheckIntegrity(void)
 /**
  * @brief Defragments memory pool
  */
+/** @req SWS_Mem_00020 */
 Std_ReturnType Mem_Defragment(uint8 PoolIndex)
 {
 #if (MEM_DEV_ERROR_DETECT == STD_ON)

@@ -61,12 +61,14 @@ static void create_min_cfg(Spi_ConfigType* cfg)
 }
 
 /* ========= Spi_Init ========= */
+/* @req SWS_Spi_00001 */
 void test_Spi_Init_NullConfig(void)
 {
     Spi_Init(NULL);
     TEST_ASSERT_EQUAL(SPI_UNINIT, Spi_GetStatus());
 }
 
+/* @req SWS_Spi_00001 */
 void test_Spi_Init_Valid(void)
 {
     Spi_ConfigType cfg;
@@ -85,11 +87,13 @@ void test_Spi_Init_Valid(void)
  * 无条件 Spi_Initialized 检查保障。 */
 
 /* ========= Spi_SyncTransmit ========= */
+/* @req SWS_Spi_00003 */
 void test_Spi_SyncTransmit_BeforeInit(void)
 {
     TEST_ASSERT_EQUAL(E_NOT_OK, Spi_SyncTransmit(0U, NULL, NULL, 0U));
 }
 
+/* @req SWS_Spi_00003 */
 void test_Spi_SyncTransmit_InvalidDevice(void)
 {
     Spi_ConfigType cfg;
@@ -100,28 +104,33 @@ void test_Spi_SyncTransmit_InvalidDevice(void)
 }
 
 /* ========= Spi_AsyncTransmit ========= */
+/* @req SWS_Spi_00004 */
 void test_Spi_AsyncTransmit_BeforeInit(void)
 {
     TEST_ASSERT_EQUAL(E_NOT_OK, Spi_AsyncTransmit(0U, NULL, NULL, 0U));
 }
 
 /* ========= Spi_GetStatus / Spi_GetJobResult ========= */
+/* @req SWS_Spi_00006 */
 void test_Spi_GetJobResult_BeforeInit(void)
 {
     TEST_ASSERT_EQUAL(SPI_JOB_FAILED, Spi_GetJobResult());
 }
 
+/* @req SWS_Spi_00005 */
 void test_Spi_GetStatus_Uninit(void)
 {
     TEST_ASSERT_EQUAL(SPI_UNINIT, Spi_GetStatus());
 }
 
 /* ========= Spi_MainFunction / Spi_IsrHandler ========= */
+/* @req SWS_Spi_00008 */
 void test_Spi_MainFunction_Uninit(void)
 {
     Spi_MainFunction(); /* 未初始化 → 直接返回，不崩溃 */
 }
 
+/* @req SWS_Spi_00008 */
 void test_Spi_MainFunction_Idle(void)
 {
     Spi_ConfigType cfg;
@@ -131,6 +140,7 @@ void test_Spi_MainFunction_Idle(void)
     TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
 }
 
+/* @req SWS_Spi_00007 */
 void test_Spi_IsrHandler_Uninit(void)
 {
     Spi_IsrHandler(0U); /* 未初始化 → 直接返回，不崩溃 */
@@ -138,6 +148,7 @@ void test_Spi_IsrHandler_Uninit(void)
 }
 
 /* ========= Spi_GetVersionInfo ========= */
+/* @req SWS_Spi_00009 */
 void test_Spi_GetVersionInfo_Valid(void)
 {
     Std_VersionInfoType vi;
@@ -147,6 +158,7 @@ void test_Spi_GetVersionInfo_Valid(void)
     TEST_ASSERT_EQUAL(SPI_MODULE_ID, vi.moduleID);
 }
 
+/* @req SWS_Spi_00009 */
 void test_Spi_GetVersionInfo_Null(void)
 {
     Spi_GetVersionInfo(NULL); /* DET 报告，不崩溃 */

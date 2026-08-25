@@ -96,6 +96,7 @@ static uint8 E2E_P02_CalculateCRC(
     return crc ^ 0xFFU;
 }
 
+/** @req SWS_E2E_00006 */
 /**
  * @brief E2E Profile 2 Protect
  * @details Adds protection with dual path support
@@ -141,6 +142,7 @@ Std_ReturnType E2E_P02Protect(
     return E_OK;
 }
 
+/** @req SWS_E2E_00007 */
 /**
  * @brief E2E Profile 2 Check
  * @details Verifies data from one path
@@ -211,6 +213,7 @@ Std_ReturnType E2E_P02Check(
     return E_OK;
 }
 
+/** @req SWS_E2E_00008 */
 /**
  * @brief Map Profile 2 check status to State Machine
  */

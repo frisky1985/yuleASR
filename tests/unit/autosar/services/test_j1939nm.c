@@ -9,6 +9,7 @@
 void setUp(void) {}
 void tearDown(void) {}
 
+/** @req SWS_J1939Nm_00001 */
 void test_j1939nm_Init_should_initialize(void) {
     TEST_IGNORE_MESSAGE("API stub");
 }

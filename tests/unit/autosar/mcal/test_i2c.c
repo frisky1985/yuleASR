@@ -20,15 +20,18 @@ void tearDown(void) {
 }
 
 /* 初始化测试 */
+/** @req SWS_I2c_00001 */
 void test_i2c_Init_should_initialize_successfully(void) {
     TEST_IGNORE_MESSAGE("API stub - needs implementation");
 }
 
+/** @req SWS_I2c_00002 */
 void test_i2c_DeInit_should_cleanup_successfully(void) {
     TEST_IGNORE_MESSAGE("API stub - needs implementation");
 }
 
 /* 版本信息测试 */
+/** @req SWS_I2c_00007 */
 void test_i2c_GetVersionInfo_should_return_version(void) {
     TEST_IGNORE_MESSAGE("API stub - needs implementation");
 }

@@ -204,6 +204,7 @@ typedef struct {
  *                                  Function Prototypes
  *================================================================================================*/
 
+/** @req SWS_J1939Tp_00001 */
 /**
  * @brief Initialize J1939Tp module
  * @param ConfigPtr Pointer to configuration structure
@@ -211,22 +212,26 @@ typedef struct {
  */
 extern Std_ReturnType J1939Tp_Init(const J1939Tp_ConfigType* ConfigPtr);
 
+/** @req SWS_J1939Tp_00002 */
 /**
  * @brief Deinitialize J1939Tp module
  */
 extern void J1939Tp_DeInit(void);
 
+/** @req SWS_J1939Tp_00003 */
 /**
  * @brief Get version information
  * @param VersionInfo Pointer to version info structure
  */
 extern void J1939Tp_GetVersionInfo(Std_VersionInfoType* VersionInfo);
 
+/** @req SWS_J1939Tp_00004 */
 /**
  * @brief Main function for periodic processing
  */
 extern void J1939Tp_MainFunction(void);
 
+/** @req SWS_J1939Tp_00005 */
 /**
  * @brief Request transmission of a PDU
  * @param TxSduId SDU ID to transmit
@@ -238,6 +243,7 @@ extern Std_ReturnType J1939Tp_Transmit(
     const PduInfoType* TxInfoPtr
 );
 
+/** @req SWS_J1939Tp_00006 */
 /**
  * @brief Cancel an ongoing transmission
  * @param TxSduId SDU ID to cancel
@@ -245,6 +251,7 @@ extern Std_ReturnType J1939Tp_Transmit(
  */
 extern Std_ReturnType J1939Tp_CancelTransmit(PduIdType TxSduId);
 
+/** @req SWS_J1939Tp_00007 */
 /**
  * @brief Cancel an ongoing reception
  * @param RxSduId SDU ID to cancel
@@ -252,6 +259,7 @@ extern Std_ReturnType J1939Tp_CancelTransmit(PduIdType TxSduId);
  */
 extern Std_ReturnType J1939Tp_CancelReceive(PduIdType RxSduId);
 
+/** @req SWS_J1939Tp_00008 */
 /**
  * @brief Change a TP parameter
  * @param SduId SDU ID
@@ -265,6 +273,7 @@ extern Std_ReturnType J1939Tp_ChangeParameter(
     uint16 Value
 );
 
+/** @req SWS_J1939Tp_00009 */
 /**
  * @brief PDU reception callback from CanIf
  */
@@ -273,6 +282,7 @@ extern void J1939Tp_RxIndication(
     const PduInfoType* PduInfoPtr
 );
 
+/** @req SWS_J1939Tp_00010 */
 /**
  * @brief Transmission confirmation callback from CanIf
  */

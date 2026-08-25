@@ -617,6 +617,7 @@ STATIC Std_ReturnType Csm_LoadKeyElement(uint32 keyId, uint32 elementId)
 
 /**
  * @brief 初始化CSM模块
+ * @req SWS_Csm_00001
  */
 Std_ReturnType Csm_Init(const Csm_ConfigType* config)
 {
@@ -708,6 +709,7 @@ Std_ReturnType Csm_Init(const Csm_ConfigType* config)
 
 /**
  * @brief 去初始化CSM模块
+ * @req SWS_Csm_00002
  */
 Std_ReturnType Csm_DeInit(void)
 {
@@ -733,6 +735,7 @@ Std_ReturnType Csm_DeInit(void)
 
 /**
  * @brief 设置密钥元素数据
+ * @req SWS_Csm_00010
  */
 Std_ReturnType Csm_KeyElementSet(
     uint32 keyId,
@@ -782,6 +785,7 @@ Std_ReturnType Csm_KeyElementSet(
 
 /**
  * @brief 设置密钥为有效状态
+ * @req SWS_Csm_00011
  */
 Std_ReturnType Csm_KeySetValid(uint32 keyId)
 {
@@ -822,6 +826,7 @@ Std_ReturnType Csm_KeySetValid(uint32 keyId)
 
 /**
  * @brief 获取密钥元素数据
+ * @req SWS_Csm_00012
  */
 Std_ReturnType Csm_KeyElementGet(
     uint32 keyId,
@@ -867,6 +872,7 @@ Std_ReturnType Csm_KeyElementGet(
 
 /**
  * @brief 复制密钥元素
+ * @req SWS_Csm_00013
  */
 Std_ReturnType Csm_KeyElementCopy(
     uint32 keyId,
@@ -889,6 +895,7 @@ Std_ReturnType Csm_KeyElementCopy(
 
 /**
  * @brief 复制完整密钥
+ * @req SWS_Csm_00014
  */
 Std_ReturnType Csm_KeyCopy(uint32 keyId, uint32 targetKeyId)
 {
@@ -918,6 +925,7 @@ Std_ReturnType Csm_KeyCopy(uint32 keyId, uint32 targetKeyId)
 
 /**
  * @brief 获取密钥的元素ID列表
+ * @req SWS_Csm_00015
  */
 Std_ReturnType Csm_KeyElementIdsGet(
     uint32 keyId,
@@ -959,6 +967,7 @@ Std_ReturnType Csm_KeyElementIdsGet(
  * 2. 软件回退: 使用Csm_Cfg_RandomGenerate生成随机密钥材料
  * 3. 支持Job异步处理模式
  * 4. DET错误检查全覆盖
+ * @req SWS_Csm_00016
  */
 Std_ReturnType Csm_KeyGenerate(uint32 keyId)
 {
@@ -1109,6 +1118,7 @@ Std_ReturnType Csm_KeyGenerate(uint32 keyId)
  * 2. 软件回退: 基于HMAC-SHA256的KDF (或简单哈希迭代)
  * 3. 支持Job异步处理
  * 4. DET检查: 源密钥有效, 目标密钥存在, 使用权限
+ * @req SWS_Csm_00017
  */
 Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
 {
@@ -1412,6 +1422,7 @@ Std_ReturnType Csm_KeyDerive(uint32 keyId, uint32 targetKeyId)
  * 2. 软件回退: 从私钥推导公钥 (基于哈希映射)
  * 3. 通过Job异步机制处理
  * 4. DET错误检查全覆盖
+ * @req SWS_Csm_00018
  */
 Std_ReturnType Csm_KeyExchangeCalcPubVal(
     uint32 keyId,
@@ -1680,6 +1691,7 @@ Std_ReturnType Csm_KeyExchangeCalcPubVal(
  * 2. 软件回退: 从私钥 + 对方公钥计算共享秘密 (基于KDF)
  * 3. 通过Job异步机制处理
  * 4. DET错误检查全覆盖
+ * @req SWS_Csm_00019
  */
 Std_ReturnType Csm_KeyExchangeCalcSecret(
     uint32 keyId,
@@ -1962,6 +1974,7 @@ Std_ReturnType Csm_KeyExchangeCalcSecret(
 
 /**
  * @brief 计算哈希值
+ * @req SWS_Csm_00030
  */
 Std_ReturnType Csm_Hash(
     uint32 jobId,
@@ -2038,6 +2051,7 @@ Std_ReturnType Csm_Hash(
 
 /**
  * @brief 生成MAC
+ * @req SWS_Csm_00040
  */
 Std_ReturnType Csm_MacGenerate(
     uint32 jobId,
@@ -2114,6 +2128,7 @@ Std_ReturnType Csm_MacGenerate(
 
 /**
  * @brief 验证MAC
+ * @req SWS_Csm_00041
  */
 Std_ReturnType Csm_MacVerify(
     uint32 jobId,
@@ -2170,6 +2185,7 @@ Std_ReturnType Csm_MacVerify(
 
 /**
  * @brief 加密数据
+ * @req SWS_Csm_00050
  */
 Std_ReturnType Csm_Encrypt(
     uint32 jobId,
@@ -2246,6 +2262,7 @@ Std_ReturnType Csm_Encrypt(
 
 /**
  * @brief 解密数据
+ * @req SWS_Csm_00051
  */
 Std_ReturnType Csm_Decrypt(
     uint32 jobId,
@@ -2322,6 +2339,7 @@ Std_ReturnType Csm_Decrypt(
 
 /**
  * @brief 生成数字签名
+ * @req SWS_Csm_00060
  */
 Std_ReturnType Csm_SignatureGenerate(
     uint32 jobId,
@@ -2398,6 +2416,7 @@ Std_ReturnType Csm_SignatureGenerate(
 
 /**
  * @brief 验证数字签名
+ * @req SWS_Csm_00061
  */
 Std_ReturnType Csm_SignatureVerify(
     uint32 jobId,
@@ -2476,6 +2495,7 @@ Std_ReturnType Csm_SignatureVerify(
 
 /**
  * @brief 生成随机数
+ * @req SWS_Csm_00070
  */
 Std_ReturnType Csm_RandomGenerate(
     uint32 jobId,
@@ -2505,6 +2525,7 @@ Std_ReturnType Csm_RandomGenerate(
 
 /**
  * @brief 设置作业密钥
+ * @req SWS_Csm_00080
  */
 Std_ReturnType Csm_JobKeySetUp(uint32 jobId, uint32 keyId)
 {
@@ -2524,6 +2545,7 @@ Std_ReturnType Csm_JobKeySetUp(uint32 jobId, uint32 keyId)
 
 /**
  * @brief 异步设置作业密钥
+ * @req SWS_Csm_00081
  */
 Std_ReturnType Csm_JobKeySetUpAsync(uint32 jobId, uint32 keyId)
 {
@@ -2533,6 +2555,7 @@ Std_ReturnType Csm_JobKeySetUpAsync(uint32 jobId, uint32 keyId)
 
 /**
  * @brief 取消作业
+ * @req SWS_Csm_00090
  */
 Std_ReturnType Csm_CancelJob(uint32 jobId)
 {
@@ -2563,6 +2586,7 @@ Std_ReturnType Csm_CancelJob(uint32 jobId)
 
 /**
  * @brief 主函数处理
+ * @req SWS_Csm_00100
  */
 void Csm_MainFunction(void)
 {
@@ -2590,6 +2614,7 @@ void Csm_MainFunction(void)
 
 /**
  * @brief 注册作业完成回调
+ * @req SWS_Csm_00101
  */
 Std_ReturnType Csm_RegisterCallback(
     uint32 jobId,
@@ -2613,6 +2638,7 @@ Std_ReturnType Csm_RegisterCallback(
 
 /**
  * @brief 获取密钥状态
+ * @req SWS_Csm_00102
  */
 Std_ReturnType Csm_GetKeyStatus(
     uint32 keyId, Csm_KeyStatusType* keyStatusPtr)
@@ -2634,6 +2660,7 @@ Std_ReturnType Csm_GetKeyStatus(
 
 /**
  * @brief 获取作业状态
+ * @req SWS_Csm_00103
  */
 Std_ReturnType Csm_GetJobState(
     uint32 jobId, Csm_JobStateType* jobStatePtr)
@@ -2656,6 +2683,7 @@ Std_ReturnType Csm_GetJobState(
 #if (CSM_VERSION_INFO_API == STD_ON)
 /**
  * @brief 获取版本信息
+ * @req SWS_Csm_00104
  */
 void Csm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {

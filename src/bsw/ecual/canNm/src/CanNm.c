@@ -575,6 +575,7 @@ static void CanNm_ProcessStateMachine(uint8 ChannelIndex)
 /**
  * @brief Initialize the CAN NM module
  */
+/** @req SWS_CanNm_00001 */
 void CanNm_Init(const CanNm_ConfigType* ConfigPtr)
 {
     uint8 ChannelIndex;
@@ -625,6 +626,7 @@ void CanNm_Init(const CanNm_ConfigType* ConfigPtr)
 /**
  * @brief De-initialize the CAN NM module
  */
+/** @req SWS_CanNm_00002 */
 void CanNm_DeInit(void)
 {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
@@ -651,6 +653,7 @@ void CanNm_DeInit(void)
 /**
  * @brief Passive startup of a CAN NM channel
  */
+/** @req SWS_CanNm_00003 */
 Std_ReturnType CanNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
 {
     uint8 ChannelIndex;
@@ -690,6 +693,7 @@ Std_ReturnType CanNm_PassiveStartUp(NetworkHandleType nmChannelHandle)
 /**
  * @brief Request network mode on a channel
  */
+/** @req SWS_CanNm_00004 */
 Std_ReturnType CanNm_NetworkRequest(NetworkHandleType nmChannelHandle)
 {
     uint8 ChannelIndex;
@@ -747,6 +751,7 @@ Std_ReturnType CanNm_NetworkRequest(NetworkHandleType nmChannelHandle)
 /**
  * @brief Release network mode on a channel
  */
+/** @req SWS_CanNm_00005 */
 Std_ReturnType CanNm_NetworkRelease(NetworkHandleType nmChannelHandle)
 {
     uint8 ChannelIndex;
@@ -803,6 +808,7 @@ Std_ReturnType CanNm_NetworkRelease(NetworkHandleType nmChannelHandle)
 /**
  * @brief Main function for CAN NM
  */
+/** @req SWS_CanNm_00006 */
 void CanNm_MainFunction(void)
 {
     uint8 ChannelIndex;
@@ -825,6 +831,7 @@ void CanNm_MainFunction(void)
 /**
  * @brief Transmit function (for external PDU requests)
  */
+/** @req SWS_CanNm_00007 */
 Std_ReturnType CanNm_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 {
     uint8 ChannelIndex;
@@ -860,6 +867,7 @@ Std_ReturnType CanNm_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
 /**
  * @brief RX indication callback from CAN Interface
  */
+/** @req SWS_CanNm_00008 */
 void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 {
     uint8 ChannelIndex;
@@ -964,6 +972,7 @@ void CanNm_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 /**
  * @brief TX confirmation callback from CAN Interface
  */
+/** @req SWS_CanNm_00009 */
 void CanNm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 {
     uint8 ChannelIndex;
@@ -1009,6 +1018,7 @@ void CanNm_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
 /**
  * @brief Trigger transmit callback from PDU Router
  */
+/** @req SWS_CanNm_00010 */
 Std_ReturnType CanNm_TriggerTransmit(PduIdType TxPduId, PduInfoType* PduInfoPtr)
 {
     uint8 ChannelIndex;
@@ -1151,6 +1161,7 @@ Std_ReturnType CanNm_GetState(NetworkHandleType nmChannelHandle,
 /**
  * @brief Get version information of CAN NM module
  */
+/** @req SWS_CanNm_00012 */
 void CanNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (CANNM_DEV_ERROR_DETECT == STD_ON)
@@ -1172,6 +1183,7 @@ void CanNm_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /**
  * @brief Set user data for NM PDU
  */
+/** @req SWS_CanNm_00013 */
 Std_ReturnType CanNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8* nmUserDataPtr)
 {
     uint8 ChannelIndex;
@@ -1224,6 +1236,7 @@ Std_ReturnType CanNm_SetUserData(NetworkHandleType nmChannelHandle, const uint8*
 /**
  * @brief Get user data from NM PDU
  */
+/** @req SWS_CanNm_00014 */
 Std_ReturnType CanNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUserDataPtr)
 {
     uint8 ChannelIndex;
@@ -1276,6 +1289,7 @@ Std_ReturnType CanNm_GetUserData(NetworkHandleType nmChannelHandle, uint8* nmUse
 /**
  * @brief Set sleep ready bit in CBV
  */
+/** @req SWS_CanNm_00015 */
 Std_ReturnType CanNm_SetSleepReadyBit(NetworkHandleType nmChannelHandle, boolean nmSleepReadyBit)
 {
     uint8 ChannelIndex;
@@ -1323,6 +1337,7 @@ Std_ReturnType CanNm_SetSleepReadyBit(NetworkHandleType nmChannelHandle, boolean
 /**
  * @brief Disable NM PDU transmission
  */
+/** @req SWS_CanNm_00016 */
 Std_ReturnType CanNm_DisableCommunication(NetworkHandleType nmChannelHandle)
 {
     uint8 ChannelIndex;
@@ -1357,6 +1372,7 @@ Std_ReturnType CanNm_DisableCommunication(NetworkHandleType nmChannelHandle)
 /**
  * @brief Enable NM PDU transmission
  */
+/** @req SWS_CanNm_00017 */
 Std_ReturnType CanNm_EnableCommunication(NetworkHandleType nmChannelHandle)
 {
     uint8 ChannelIndex;

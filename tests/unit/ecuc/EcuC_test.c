@@ -110,6 +110,7 @@ void tearDown(void)
  * @brief Verify EcuC_Init with NULL config pointer returns immediately
  *        and reports a DET error (when DEV_ERROR_DETECT is enabled).
  */
+/** @req SWS_EcuC_00001 */
 void test_EcuC_Init_NullConfig_ReturnsEarly(void)
 {
     Std_ReturnType result;
@@ -134,6 +135,7 @@ void test_EcuC_Init_NullConfig_ReturnsEarly(void)
  * @brief Verify EcuC_Init with a valid config sets the module state to
  *        initialized and config values are readable.
  */
+/** @req SWS_EcuC_00001 */
 void test_EcuC_Init_ValidConfig_SetsState(void)
 {
     Std_ReturnType result;
@@ -155,6 +157,7 @@ void test_EcuC_Init_ValidConfig_SetsState(void)
 /**
  * @brief Verify EcuC_GetConfigValue retrieves the correct CoreFrequency.
  */
+/** @req SWS_EcuC_00004 */
 void test_EcuC_GetConfigValue_CoreFreq_ReturnsValue(void)
 {
     Std_ReturnType result;
@@ -170,6 +173,7 @@ void test_EcuC_GetConfigValue_CoreFreq_ReturnsValue(void)
 /**
  * @brief Verify EcuC_GetConfigValue retrieves the correct BusFrequency.
  */
+/** @req SWS_EcuC_00004 */
 void test_EcuC_GetConfigValue_BusFreq_ReturnsValue(void)
 {
     Std_ReturnType result;
@@ -190,6 +194,7 @@ void test_EcuC_GetConfigValue_BusFreq_ReturnsValue(void)
  * @brief Verify EcuC_SetConfigValue updates a configuration value that can
  *        then be read back.
  */
+/** @req SWS_EcuC_00005 */
 void test_EcuC_SetConfigValue_UpdatesValue(void)
 {
     Std_ReturnType result;
@@ -210,6 +215,7 @@ void test_EcuC_SetConfigValue_UpdatesValue(void)
 /**
  * @brief Verify EcuC_SetConfigValue with an unknown ConfigId returns E_NOT_OK.
  */
+/** @req SWS_EcuC_00005 */
 void test_EcuC_SetConfigValue_InvalidId_ReturnsError(void)
 {
     Std_ReturnType result;
@@ -229,6 +235,7 @@ void test_EcuC_SetConfigValue_InvalidId_ReturnsError(void)
  * @brief Verify EcuC_GetVersionInfo returns correct vendor, module, and
  *        software version information.
  */
+/** @req SWS_EcuC_00003 */
 void test_EcuC_GetVersionInfo_ReturnsCorrectInfo(void)
 {
     Std_VersionInfoType versionInfo;
@@ -252,6 +259,7 @@ void test_EcuC_GetVersionInfo_ReturnsCorrectInfo(void)
  * @brief Verify EcuC_GetConfigValue with NULL value pointer returns E_NOT_OK
  *        and reports a DET error.
  */
+/** @req SWS_EcuC_00004 */
 void test_EcuC_GetConfigValue_NullPointer_ReturnsError(void)
 {
     Std_ReturnType result;

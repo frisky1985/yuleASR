@@ -30,6 +30,7 @@ static int teardown(void **state)
  *                                    Test Cases
  *================================================================================================*/
 
+/** @req SWS_Nm_00001 */
 static void test_Nm_Init_ValidConfig(void **state)
 {
     (void)state;
@@ -38,6 +39,7 @@ static void test_Nm_Init_ValidConfig(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Nm_00002 */
 static void test_Nm_DeInit(void **state)
 {
     (void)state;
@@ -46,6 +48,7 @@ static void test_Nm_DeInit(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Nm_00003 */
 static void test_Nm_GetVersionInfo(void **state)
 {
     (void)state;
@@ -57,6 +60,7 @@ static void test_Nm_GetVersionInfo(void **state)
     assert_int_equal(versionInfo.moduleID, NM_MODULE_ID);
 }
 
+/** @req SWS_Nm_00004 */
 static void test_Nm_PassiveStartUp(void **state)
 {
     (void)state;
@@ -68,6 +72,7 @@ static void test_Nm_PassiveStartUp(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00005 */
 static void test_Nm_NetworkRequest(void **state)
 {
     (void)state;
@@ -79,6 +84,7 @@ static void test_Nm_NetworkRequest(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00006 */
 static void test_Nm_NetworkRelease(void **state)
 {
     (void)state;
@@ -90,6 +96,7 @@ static void test_Nm_NetworkRelease(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00007 */
 static void test_Nm_DisableCommunication(void **state)
 {
     (void)state;
@@ -101,6 +108,7 @@ static void test_Nm_DisableCommunication(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00008 */
 static void test_Nm_EnableCommunication(void **state)
 {
     (void)state;
@@ -112,6 +120,7 @@ static void test_Nm_EnableCommunication(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00009 */
 static void test_Nm_GetState(void **state)
 {
     (void)state;
@@ -124,6 +133,7 @@ static void test_Nm_GetState(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00010 */
 static void test_Nm_GetMode(void **state)
 {
     (void)state;
@@ -136,6 +146,7 @@ static void test_Nm_GetMode(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00011 */
 static void test_Nm_GetLocalNodeIdentifier(void **state)
 {
     (void)state;
@@ -160,6 +171,7 @@ static void test_Nm_GetPduData(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00012 */
 static void test_Nm_GetUserData(void **state)
 {
     (void)state;
@@ -172,6 +184,7 @@ static void test_Nm_GetUserData(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00013 */
 static void test_Nm_SetUserData(void **state)
 {
     (void)state;
@@ -195,6 +208,7 @@ static void test_Nm_RepeatMessageRequest(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00014 */
 static void test_Nm_CheckRemoteSleepIndication(void **state)
 {
     (void)state;
@@ -207,6 +221,7 @@ static void test_Nm_CheckRemoteSleepIndication(void **state)
     assert_true(result == E_OK || result == E_NOT_OK);
 }
 
+/** @req SWS_Nm_00015 */
 static void test_Nm_MainFunction(void **state)
 {
     (void)state;
@@ -275,6 +290,7 @@ static void test_Nm_ErrorCodes_Exist(void **state)
     assert_int_equal(NM_E_NOT_OK, 0x04);
 }
 
+/** @req SWS_Nm_00100 */
 static void test_Nm_Callback_BusSleepModeEntry(void **state)
 {
     (void)state;
@@ -285,6 +301,7 @@ static void test_Nm_Callback_BusSleepModeEntry(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Nm_00100 */
 static void test_Nm_Callback_PrepareBusSleepModeEntry(void **state)
 {
     (void)state;
@@ -295,6 +312,7 @@ static void test_Nm_Callback_PrepareBusSleepModeEntry(void **state)
     assert_true(1);
 }
 
+/** @req SWS_Nm_00100 */
 static void test_Nm_Callback_NetworkModeEntry(void **state)
 {
     (void)state;

@@ -247,6 +247,7 @@ typedef void (*WdgM_SafetyCallbackType)(
 /**
  * @brief 初始化WdgM模块
  * @ASIL-D: Safety critical initialization
+ * @req SWS_WdgM_00001
  * 
  * @param config 配置指针
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -255,6 +256,7 @@ extern Std_ReturnType WdgM_Init(const WdgM_ConfigType* config);
 
 /**
  * @brief 去初始化WdgM模块
+ * @req SWS_WdgM_00002
  * 
  * @return E_OK: 成功, E_NOT_OK: 失败
  */
@@ -262,6 +264,7 @@ extern Std_ReturnType WdgM_DeInit(void);
 
 /**
  * @brief 获取当前状态
+ * @req SWS_WdgM_00003
  * 
  * @return 当前状态
  */
@@ -270,6 +273,7 @@ extern WdgM_StateType WdgM_GetState(void);
 /**
  * @brief 设置看门狗模式
  * @ASIL-D: Requires privilege verification
+ * @req SWS_WdgM_00004
  * 
  * @param mode 目标模式 (WDGM_WATCHDOG_MODE_OFF/SLOW/FAST)
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -278,6 +282,7 @@ extern Std_ReturnType WdgM_SetMode(uint8 mode);
 
 /**
  * @brief 获取当前模式
+ * @req SWS_WdgM_00005
  * 
  * @return 当前模式
  */
@@ -285,6 +290,7 @@ extern uint8 WdgM_GetMode(void);
 
 /**
  * @brief 检查是否允许禁用看门狗
+ * @req SWS_WdgM_00006
  * 
  * @return TRUE: 允许, FALSE: 不允许
  */
@@ -293,6 +299,7 @@ extern boolean WdgM_IsDisableAllowed(void);
 /**
  * @brief 检查点报告 (Alive Supervision)
  * @ASIL-D: Runtime safety check
+ * @req SWS_WdgM_00007
  * 
  * @param seId 监督实体ID
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -301,6 +308,7 @@ extern Std_ReturnType WdgM_CheckpointReached(uint16 seId);
 
 /**
  * @brief 更新活监督指示
+ * @req SWS_WdgM_00008
  * 
  * @param seId 监督实体ID
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -309,6 +317,7 @@ extern Std_ReturnType WdgM_UpdateAliveIndication(uint16 seId);
 
 /**
  * @brief 获取监督实体状态
+ * @req SWS_WdgM_00009
  * 
  * @param seId 监督实体ID
  * @param state 状态输出指针
@@ -318,6 +327,7 @@ extern Std_ReturnType WdgM_GetSEState(uint16 seId, WdgM_SEStateType* state);
 
 /**
  * @brief 去激活监督实体
+ * @req SWS_WdgM_00010
  * 
  * @param seId 监督实体ID
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -326,6 +336,7 @@ extern Std_ReturnType WdgM_DeactivateSupervisionEntity(uint16 seId);
 
 /**
  * @brief 重新激活监督实体
+ * @req SWS_WdgM_00011
  * 
  * @param seId 监督实体ID
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -334,6 +345,7 @@ extern Std_ReturnType WdgM_ActivateSupervisionEntity(uint16 seId);
 
 /**
  * @brief 获取全局状态信息
+ * @req SWS_WdgM_00012
  * 
  * @param status 状态信息输出指针
  * @return E_OK: 成功, E_NOT_OK: 失败
@@ -343,6 +355,7 @@ extern Std_ReturnType WdgM_GetGlobalStatus(WdgM_GlobalStatusType* status);
 /**
  * @brief 主循环处理函数
  * @ASIL-D: Periodic safety monitoring
+ * @req SWS_WdgM_00013
  * 
  * 应在主循环中定期调用 (建议10ms周期)
  */
@@ -351,6 +364,7 @@ extern void WdgM_MainFunction(void);
 /**
  * @brief 执行看门狗触发
  * @ASIL-D: Watchdog refresh
+ * @req SWS_WdgM_00014
  * 
  * 在窗口内触发看门狗，防止复位
  */
@@ -359,11 +373,13 @@ extern void WdgM_TriggerWatchdog(void);
 /**
  * @brief 执行立即复位
  * @ASIL-D: Emergency reset
+ * @req SWS_WdgM_00015
  */
 extern void WdgM_PerformReset(void);
 
 /**
  * @brief 获取第一超时值
+ * @req SWS_WdgM_00016
  * 
  * @param seId 监督实体ID
  * @param timeout 超时值输出指针 (单位: ms)
@@ -374,6 +390,7 @@ extern Std_ReturnType WdgM_GetFirstExpiredSEID(uint16* seId);
 /**
  * @brief 处理Lockstep错误事件
  * @ASIL-D: Lockstep integration
+ * @req SWS_WdgM_00017
  * 
  * @param errorCode Lockstep错误码
  */
@@ -382,6 +399,7 @@ extern void WdgM_HandleLockstepError(uint32 errorCode);
 /**
  * @brief 处理RamSafety错误事件
  * @ASIL-D: RamSafety integration
+ * @req SWS_WdgM_00018
  * 
  * @param errorCode RamSafety错误码
  */
@@ -389,6 +407,7 @@ extern void WdgM_HandleRamSafetyError(uint32 errorCode);
 
 /**
  * @brief 注册安全事件回调
+ * @req SWS_WdgM_00019
  * 
  * @param callback 回调函数
  * @param context 上下文指针
@@ -402,6 +421,7 @@ extern Std_ReturnType WdgM_RegisterSafetyCallback(
 #if (WDGM_VERSION_INFO_API == STD_ON)
 /**
  * @brief 获取版本信息
+ * @req SWS_WdgM_00020
  * 
  * @param versioninfo 版本信息结构体
  */

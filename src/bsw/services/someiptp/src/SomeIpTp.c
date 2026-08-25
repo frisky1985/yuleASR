@@ -367,6 +367,7 @@ STATIC void SomeIpTp_ResetChannel(uint16 ChannelId)
 *                                      GLOBAL FUNCTIONS
 ==================================================================================================*/
 
+/** @req SWS_SomeIpTp_00001 */
 /**
  * @brief   Initializes the SOME/IP TP module
  */
@@ -406,6 +407,7 @@ void SomeIpTp_Init(const SomeIpTp_ConfigType* ConfigPtr)
     SomeIpTp_InternalState.State = SOMEIPTP_STATE_INIT;
 }
 
+/** @req SWS_SomeIpTp_00002 */
 /**
  * @brief   Deinitializes the SOME/IP TP module
  */
@@ -438,6 +440,7 @@ void SomeIpTp_DeInit(void)
  * @brief   Gets version information
  */
 #if (SOMEIPTP_VERSION_INFO_API == STD_ON)
+/** @req SWS_SomeIpTp_00003 */
 void SomeIpTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SOMEIPTP_DEV_ERROR_DETECT == STD_ON)
@@ -456,6 +459,7 @@ void SomeIpTp_GetVersionInfo(Std_VersionInfoType* versioninfo)
 }
 #endif
 
+/** @req SWS_SomeIpTp_00005 */
 /**
  * @brief   Transmits a large PDU using fragmentation
  */

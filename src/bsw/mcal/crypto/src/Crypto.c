@@ -82,13 +82,18 @@ extern Std_ReturnType Crypto_Hsm_ProcessJob(Crypto_JobType* job);
 extern Std_ReturnType Crypto_Hsm_LoadKey(Crypto_KeyIdType keyId);
 extern Std_ReturnType Crypto_Hsm_SelfTest(void);
 #endif
+/** @req SWS_Crypto_00101 */
 /**********************************************************************************************************************
  * * LOCAL FUNCTION PROTOTYPES
  * *********************************************************************************************************************/
 STATIC Std_ReturnType Crypto_ValidateJob(Crypto_JobType* job);
+/** @req SWS_Crypto_00102 */
 STATIC Std_ReturnType Crypto_QueuePush(Crypto_JobType* job);
+/** @req SWS_Crypto_00103 */
 STATIC Crypto_JobType* Crypto_QueuePop(void);
+/** @req SWS_Crypto_00104 */
 STATIC Std_ReturnType Crypto_ProcessJobInternal(Crypto_JobType* job);
+/** @req SWS_Crypto_00105 */
 STATIC Std_ReturnType Crypto_ProcessService(Crypto_JobType* job);
 /**********************************************************************************************************************
  * * GLOBAL FUNCTIONS - STANDARD AUTOSAR API
@@ -98,6 +103,7 @@ STATIC Std_ReturnType Crypto_ProcessService(Crypto_JobType* job);
 /**********************************************************************************************************************
  * * Crypto_Init
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00001 */
 void Crypto_Init(const Crypto_ConfigType* configPtr)
 {
     uint32 i;
@@ -144,6 +150,7 @@ void Crypto_Init(const Crypto_ConfigType* configPtr)
 /**********************************************************************************************************************
  * * Crypto_DeInit
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00002 */
 void Crypto_DeInit(void)
 {
     if (Crypto_DriverState == CRYPTO_DRIVER_UNINIT)
@@ -169,6 +176,7 @@ void Crypto_DeInit(void)
  * * Crypto_GetVersionInfo
  * *********************************************************************************************************************/
 #if (CRYPTO_CFG_VERSION_INFO_API == STD_ON)
+/** @req SWS_Crypto_00003 */
 void Crypto_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #    if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -188,6 +196,7 @@ void Crypto_GetVersionInfo(Std_VersionInfoType* versioninfo)
 /**********************************************************************************************************************
  * * Crypto_ProcessJob
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00004 */
 Std_ReturnType Crypto_ProcessJob(uint32 objectId, Crypto_JobType* job)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -238,6 +247,7 @@ Std_ReturnType Crypto_ProcessJob(uint32 objectId, Crypto_JobType* job)
 /**********************************************************************************************************************
  * * Crypto_CancelJob
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00005 */
 Std_ReturnType Crypto_CancelJob(uint32 objectId, Crypto_JobType* job)
 {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -266,6 +276,7 @@ Std_ReturnType Crypto_CancelJob(uint32 objectId, Crypto_JobType* job)
 /**********************************************************************************************************************
  * * Crypto_KeyElementSet
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00006 */
 Std_ReturnType Crypto_KeyElementSet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElementIdType keyElementId,
                                     const uint8* keyPtr, uint32 keyLength)
 {
@@ -325,6 +336,7 @@ Std_ReturnType Crypto_KeyElementSet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElem
 /**********************************************************************************************************************
  * * Crypto_KeyElementGet
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00007 */
 Std_ReturnType Crypto_KeyElementGet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElementIdType keyElementId, uint8* keyPtr,
                                     uint32* keyLengthPtr)
 {
@@ -376,6 +388,7 @@ Std_ReturnType Crypto_KeyElementGet(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElem
 /**********************************************************************************************************************
  * * Crypto_KeyValidSet
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00008 */
 Std_ReturnType Crypto_KeyValidSet(Crypto_KeyIdType cryptoKeyId, boolean valid)
 {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -395,6 +408,7 @@ Std_ReturnType Crypto_KeyValidSet(Crypto_KeyIdType cryptoKeyId, boolean valid)
 /**********************************************************************************************************************
  * * Crypto_KeyElementIdsGet
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00009 */
 Std_ReturnType Crypto_KeyElementIdsGet(Crypto_KeyIdType cryptoKeyId, uint32* keyElementIdsPtr)
 {
     Crypto_KeyType* key;
@@ -425,20 +439,24 @@ Std_ReturnType Crypto_KeyElementIdsGet(Crypto_KeyIdType cryptoKeyId, uint32* key
 /**********************************************************************************************************************
  * * Crypto_KeyElementCopy
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00010 */
 Std_ReturnType Crypto_KeyElementCopy(Crypto_KeyIdType cryptoKeyId, Crypto_KeyElementIdType keyElementId,
                                      Crypto_KeyIdType targetCryptoKeyId, Crypto_KeyElementIdType targetKeyElementId)
 {
     uint8 keyBuffer[CRYPTO_CFG_MAX_KEY_SIZE];
     uint32 keyLength = CRYPTO_CFG_MAX_KEY_SIZE;
+    /** @req SWS_Crypto_00007 */
     if (Crypto_KeyElementGet(cryptoKeyId, keyElementId, keyBuffer, &keyLength) != E_OK)
     {
         return E_NOT_OK;
     }
+    /** @req SWS_Crypto_00006 */
     return Crypto_KeyElementSet(targetCryptoKeyId, targetKeyElementId, keyBuffer, keyLength);
 }
 /**********************************************************************************************************************
  * * Crypto_KeyGenerate
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00011 */
 Std_ReturnType Crypto_KeyGenerate(Crypto_KeyIdType cryptoKeyId)
 {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -469,6 +487,7 @@ Std_ReturnType Crypto_KeyGenerate(Crypto_KeyIdType cryptoKeyId)
 /**********************************************************************************************************************
  * * Crypto_KeyDerive
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00012 */
 Std_ReturnType Crypto_KeyDerive(Crypto_KeyIdType cryptoKeyId, Crypto_KeyIdType targetCryptoKeyId)
 {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -491,6 +510,7 @@ Std_ReturnType Crypto_KeyDerive(Crypto_KeyIdType cryptoKeyId, Crypto_KeyIdType t
 /**********************************************************************************************************************
  * * Crypto_KeyExchangeCalcSecret
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00013 */
 Std_ReturnType Crypto_KeyExchangeCalcSecret(Crypto_KeyIdType cryptoKeyId, const uint8* partnerPublicKeyPtr,
                                             uint32 partnerPublicKeyLength)
 {
@@ -511,6 +531,7 @@ Std_ReturnType Crypto_KeyExchangeCalcSecret(Crypto_KeyIdType cryptoKeyId, const 
 /**********************************************************************************************************************
  * * Crypto_RandomGenerate
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00014 */
 Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* resultPtr, uint32 resultLength)
 {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -548,6 +569,7 @@ Std_ReturnType Crypto_RandomGenerate(Crypto_KeyIdType cryptoKeyId, uint8* result
 /**********************************************************************************************************************
  * * Crypto_RandomSeed
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00015 */
 Std_ReturnType Crypto_RandomSeed(Crypto_KeyIdType cryptoKeyId, const uint8* entropyPtr, uint32 entropyLength)
 {
 #if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -575,6 +597,7 @@ Std_ReturnType Crypto_RandomSeed(Crypto_KeyIdType cryptoKeyId, const uint8* entr
 /**********************************************************************************************************************
  * * Crypto_HsmIsAvailable
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00016 */
 boolean Crypto_HsmIsAvailable(void)
 {
     return Crypto_HsmAvailable;
@@ -582,6 +605,7 @@ boolean Crypto_HsmIsAvailable(void)
 /**********************************************************************************************************************
  * * Crypto_HsmGetStatus
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00017 */
 Crypto_HsmStateType Crypto_HsmGetStatus(void)
 {
     if (Crypto_HsmAvailable == 0U)
@@ -593,6 +617,7 @@ Crypto_HsmStateType Crypto_HsmGetStatus(void)
 /**********************************************************************************************************************
  * * Crypto_HsmLoadKey
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00018 */
 Std_ReturnType Crypto_HsmLoadKey(Crypto_KeyIdType cryptoKeyId)
 {
 #    if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
@@ -611,6 +636,7 @@ Std_ReturnType Crypto_HsmLoadKey(Crypto_KeyIdType cryptoKeyId)
 /**********************************************************************************************************************
  * * Crypto_HsmSelfTest
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00019 */
 Std_ReturnType Crypto_HsmSelfTest(void)
 {
     if (Crypto_HsmAvailable == 0U)
@@ -622,6 +648,7 @@ Std_ReturnType Crypto_HsmSelfTest(void)
 /**********************************************************************************************************************
  * * Crypto_HsmGetId
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00020 */
 Std_ReturnType Crypto_HsmGetId(uint8* idPtr, uint32* idLengthPtr)
 {
     if (Crypto_HsmAvailable == 0U)
@@ -641,6 +668,7 @@ Std_ReturnType Crypto_HsmGetId(uint8* idPtr, uint32* idLengthPtr)
 /**********************************************************************************************************************
  * * Crypto_Blake2b
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00021 */
 Std_ReturnType Crypto_Blake2b(const uint8* dataPtr, uint32 dataLength, const uint8* keyPtr, uint32 keyLength,
                               uint32 digestLength, uint8* digestPtr)
 {
@@ -683,6 +711,7 @@ Std_ReturnType Crypto_Blake2b(const uint8* dataPtr, uint32 dataLength, const uin
 /**********************************************************************************************************************
  * * Crypto_Blake2s
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00022 */
 Std_ReturnType Crypto_Blake2s(const uint8* dataPtr, uint32 dataLength, const uint8* keyPtr, uint32 keyLength,
                               uint32 digestLength, uint8* digestPtr)
 {
@@ -730,6 +759,7 @@ static boolean Crypto_Blake2b_ContextInitialized = FALSE;
 /**********************************************************************************************************************
  * * Crypto_Blake2b_Start
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00023 */
 Std_ReturnType Crypto_Blake2b_Start(uint32 jobId, const uint8* keyPtr, uint32 keyLength, uint32 digestLength)
 {
     Blake2_ReturnType ret;
@@ -775,6 +805,7 @@ Std_ReturnType Crypto_Blake2b_Start(uint32 jobId, const uint8* keyPtr, uint32 ke
 /**********************************************************************************************************************
  * * Crypto_Blake2b_Update
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00024 */
 Std_ReturnType Crypto_Blake2b_Update(uint32 jobId, const uint8* dataPtr, uint32 dataLength)
 {
     Blake2_ReturnType ret;
@@ -803,6 +834,7 @@ Std_ReturnType Crypto_Blake2b_Update(uint32 jobId, const uint8* dataPtr, uint32 
 /**********************************************************************************************************************
  * * Crypto_Blake2b_Finish
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00025 */
 Std_ReturnType Crypto_Blake2b_Finish(uint32 jobId, uint8* digestPtr, uint32* digestLengthPtr)
 {
     Blake2_ReturnType ret;
@@ -847,6 +879,7 @@ Std_ReturnType Crypto_Blake2b_Finish(uint32 jobId, uint8* digestPtr, uint32* dig
 /**********************************************************************************************************************
  * * Crypto_CccGenerateAttestation
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00026 */
 Std_ReturnType Crypto_CccGenerateAttestation(const uint8* challengePtr, uint32 challengeLength, uint8* signaturePtr,
                                              uint32* signatureLengthPtr)
 {
@@ -869,6 +902,7 @@ Std_ReturnType Crypto_CccGenerateAttestation(const uint8* challengePtr, uint32 c
 /**********************************************************************************************************************
  * * Crypto_CccVerifyOwnerCertificate
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00027 */
 Std_ReturnType Crypto_CccVerifyOwnerCertificate(const uint8* certificatePtr, uint32 certificateLength,
                                                 Crypto_VerifyResultType* verifyResultPtr)
 {
@@ -884,6 +918,7 @@ Std_ReturnType Crypto_CccVerifyOwnerCertificate(const uint8* certificatePtr, uin
 /**********************************************************************************************************************
  * * Crypto_CccDeriveSessionKey
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00028 */
 Std_ReturnType Crypto_CccDeriveSessionKey(const uint8* ephemeralPublicKeyPtr, uint32 ephemeralPublicKeyLength,
                                           Crypto_KeyIdType sessionKeyId)
 {
@@ -893,6 +928,7 @@ Std_ReturnType Crypto_CccDeriveSessionKey(const uint8* ephemeralPublicKeyPtr, ui
 /**********************************************************************************************************************
  * * Crypto_CccEncrypt
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00029 */
 Std_ReturnType Crypto_CccEncrypt(Crypto_KeyIdType keyId, const uint8* plaintextPtr, uint32 plaintextLength,
                                  const uint8* aadPtr, uint32 aadLength, const uint8* ivPtr, uint32 ivLength,
                                  uint8* ciphertextPtr, uint8* tagPtr, uint32* tagLengthPtr)
@@ -908,6 +944,7 @@ Std_ReturnType Crypto_CccEncrypt(Crypto_KeyIdType keyId, const uint8* plaintextP
 /**********************************************************************************************************************
  * * Crypto_CccDecrypt
  * *********************************************************************************************************************/
+/** @req SWS_Crypto_00030 */
 Std_ReturnType Crypto_CccDecrypt(Crypto_KeyIdType keyId, const uint8* ciphertextPtr, uint32 ciphertextLength,
                                  const uint8* aadPtr, uint32 aadLength, const uint8* ivPtr, uint32 ivLength,
                                  const uint8* tagPtr, uint32 tagLength, uint8* plaintextPtr, uint32* plaintextLengthPtr)
@@ -941,6 +978,7 @@ __attribute__((weak)) void Crypto_ErrorNotification(uint16 moduleId, uint8 insta
 /**********************************************************************************************************************
  * * LOCAL FUNCTIONS
  * **********************************************************************************************************************/
+/** @req SWS_Crypto_00106 */
 /**********************************************************************************************************************
  * * Crypto_ValidateJob
  * **********************************************************************************************************************/
@@ -956,6 +994,7 @@ STATIC Std_ReturnType Crypto_ValidateJob(Crypto_JobType* job)
     }
     return E_OK;
 }
+/** @req SWS_Crypto_00107 */
 /**********************************************************************************************************************
  * * Crypto_QueuePush
  * **********************************************************************************************************************/
@@ -966,6 +1005,7 @@ STATIC Std_ReturnType Crypto_QueuePush(Crypto_JobType* job)
     Crypto_QueueCount++;
     return E_OK;
 }
+/** @req SWS_Crypto_00108 */
 /**********************************************************************************************************************
  * * Crypto_QueuePop
  * **********************************************************************************************************************/
@@ -980,6 +1020,7 @@ STATIC Crypto_JobType* Crypto_QueuePop(void)
     return NULL_PTR;
     /* Would return actual job in full implementation */
 }
+/** @req SWS_Crypto_00109 */
 /**********************************************************************************************************************
  * * Crypto_ProcessJobInternal
  * **********************************************************************************************************************/
@@ -1027,6 +1068,7 @@ STATIC Std_ReturnType Crypto_ProcessJobInternal(Crypto_JobType* job)
 /**********************************************************************************************************************
  * * Crypto_MainFunction
  * **********************************************************************************************************************/
+/** @req SWS_Crypto_00031 */
 void Crypto_MainFunction(void)
 {
     Crypto_JobType* job;

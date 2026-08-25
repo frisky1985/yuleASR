@@ -146,26 +146,39 @@ STATIC NvM_InternalStateType NvM_InternalState;
 /*==================================================================================================
 *                                  LOCAL FUNCTION PROTOTYPES
 ==================================================================================================*/
+/** @req SWS_NvM_00101 */
 STATIC Std_ReturnType NvM_QueuePush(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, const NvM_JobQueueEntryType* Entry);
+/** @req SWS_NvM_00102 */
 STATIC Std_ReturnType NvM_QueuePop(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, NvM_JobQueueEntryType* Entry);
+/** @req SWS_NvM_00103 */
 STATIC boolean NvM_QueueIsEmpty(uint8 Count);
+/** @req SWS_NvM_00104 */
 STATIC boolean NvM_QueueIsFull(uint8 Count, uint8 MaxSize);
 
+/** @req SWS_NvM_00105 */
 STATIC const NvM_BlockDescriptorType* NvM_GetBlockDescriptor(NvM_BlockIdType BlockId);
+/** @req SWS_NvM_00106 */
 STATIC Std_ReturnType NvM_ValidateBlockId(NvM_BlockIdType BlockId);
 
+/** @req SWS_NvM_00107 */
 STATIC void NvM_ProcessReadJob(NvM_JobQueueEntryType* JobPtr);
+/** @req SWS_NvM_00108 */
 STATIC void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr);
+/** @req SWS_NvM_00109 */
 STATIC void NvM_ProcessRestoreJob(NvM_JobQueueEntryType* JobPtr);
+/** @req SWS_NvM_00110 */
 STATIC void NvM_ProcessEraseJob(NvM_JobQueueEntryType* JobPtr);
+/** @req SWS_NvM_00111 */
 STATIC void NvM_ProcessInvalidateJob(NvM_JobQueueEntryType* JobPtr);
 
+/** @req SWS_NvM_00112 */
 STATIC uint32 NvM_CalculateCrc(const void* DataPtr, uint16 Length, NvM_BlockCrcType CrcType);
 STATIC uint8 NvM_CalculateCrc8(const uint8* DataPtr, uint16 Length);
 STATIC uint16 NvM_CalculateCrc16(const uint8* DataPtr, uint16 Length);
 STATIC uint32 NvM_CalculateCrc32(const uint8* DataPtr, uint16 Length);
 STATIC uint8 NvM_GetCrcSize(NvM_BlockCrcType CrcType);
 
+/** @req SWS_NvM_00113 */
 STATIC void NvM_CopyRomDataToRam(NvM_BlockIdType BlockId, void* DestPtr);
 
 STATIC void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr);
@@ -181,6 +194,7 @@ STATIC void NvM_InvokeJobEndCallback(NvM_BlockIdType BlockId, NvM_RequestResultT
 /**
  * @brief   Push job into queue
  */
+/** @req SWS_NvM_00101 */
 STATIC Std_ReturnType NvM_QueuePush(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, const NvM_JobQueueEntryType* Entry)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -202,6 +216,7 @@ STATIC Std_ReturnType NvM_QueuePush(NvM_JobQueueEntryType* Queue, uint8* Head, u
 /**
  * @brief   Pop job from queue
  */
+/** @req SWS_NvM_00102 */
 STATIC Std_ReturnType NvM_QueuePop(NvM_JobQueueEntryType* Queue, uint8* Head, uint8* Tail, uint8* Count, uint8 MaxSize, NvM_JobQueueEntryType* Entry)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -223,6 +238,7 @@ STATIC Std_ReturnType NvM_QueuePop(NvM_JobQueueEntryType* Queue, uint8* Head, ui
 /**
  * @brief   Check if queue is empty
  */
+/** @req SWS_NvM_00103 */
 STATIC boolean NvM_QueueIsEmpty(uint8 Count)
 {
     return (Count == 0U) ? TRUE : FALSE;
@@ -231,6 +247,7 @@ STATIC boolean NvM_QueueIsEmpty(uint8 Count)
 /**
  * @brief   Check if queue is full
  */
+/** @req SWS_NvM_00104 */
 STATIC boolean NvM_QueueIsFull(uint8 Count, uint8 MaxSize)
 {
     return (Count >= MaxSize) ? TRUE : FALSE;
@@ -239,6 +256,7 @@ STATIC boolean NvM_QueueIsFull(uint8 Count, uint8 MaxSize)
 /**
  * @brief   Get block descriptor for given block ID
  */
+/** @req SWS_NvM_00105 */
 STATIC const NvM_BlockDescriptorType* NvM_GetBlockDescriptor(NvM_BlockIdType BlockId)
 {
     const NvM_BlockDescriptorType* result = NULL_PTR;
@@ -262,6 +280,7 @@ STATIC const NvM_BlockDescriptorType* NvM_GetBlockDescriptor(NvM_BlockIdType Blo
 /**
  * @brief   Validate block ID
  */
+/** @req SWS_NvM_00106 */
 STATIC Std_ReturnType NvM_ValidateBlockId(NvM_BlockIdType BlockId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -364,6 +383,7 @@ STATIC uint32 NvM_CalculateCrc32(const uint8* DataPtr, uint16 Length)
 /**
  * @brief   Calculate CRC based on type
  */
+/** @req SWS_NvM_00112 */
 STATIC uint32 NvM_CalculateCrc(const void* DataPtr, uint16 Length, NvM_BlockCrcType CrcType)
 {
     uint32 crc = 0U;
@@ -425,6 +445,7 @@ STATIC uint8 NvM_GetCrcSize(NvM_BlockCrcType CrcType)
 /**
  * @brief   Copy ROM default data to RAM
  */
+/** @req SWS_NvM_00113 */
 STATIC void NvM_CopyRomDataToRam(NvM_BlockIdType BlockId, void* DestPtr)
 {
     const NvM_BlockDescriptorType* blockDesc = NvM_GetBlockDescriptor(BlockId);
@@ -508,6 +529,7 @@ STATIC void NvM_ReadRedundantBlock(NvM_JobQueueEntryType* JobPtr)
 /**
  * @brief   Process read job
  */
+/** @req SWS_NvM_00107 */
 STATIC void NvM_ProcessReadJob(NvM_JobQueueEntryType* JobPtr)
 {
     const NvM_BlockDescriptorType* blockDesc;
@@ -650,6 +672,7 @@ STATIC void NvM_WriteRedundantBlock(NvM_JobQueueEntryType* JobPtr)
 /**
  * @brief   Process write job
  */
+/** @req SWS_NvM_00108 */
 STATIC void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr)
 {
     const NvM_BlockDescriptorType* blockDesc;
@@ -737,6 +760,7 @@ STATIC void NvM_ProcessWriteJob(NvM_JobQueueEntryType* JobPtr)
 /**
  * @brief   Process restore job
  */
+/** @req SWS_NvM_00109 */
 STATIC void NvM_ProcessRestoreJob(NvM_JobQueueEntryType* JobPtr)
 {
     if (JobPtr != NULL_PTR)
@@ -754,6 +778,7 @@ STATIC void NvM_ProcessRestoreJob(NvM_JobQueueEntryType* JobPtr)
 /**
  * @brief   Process erase job
  */
+/** @req SWS_NvM_00110 */
 STATIC void NvM_ProcessEraseJob(NvM_JobQueueEntryType* JobPtr)
 {
     const NvM_BlockDescriptorType* blockDesc;
@@ -801,6 +826,7 @@ STATIC void NvM_ProcessEraseJob(NvM_JobQueueEntryType* JobPtr)
 /**
  * @brief   Process invalidate job
  */
+/** @req SWS_NvM_00111 */
 STATIC void NvM_ProcessInvalidateJob(NvM_JobQueueEntryType* JobPtr)
 {
     const NvM_BlockDescriptorType* blockDesc;
@@ -919,6 +945,7 @@ STATIC void NvM_UpdateBatchOperationStatus(uint8 JobType)
  * @param   ConfigPtr - Pointer to configuration structure
  * @return  None
  */
+/** @req SWS_NvM_00001 */
 void NvM_Init(const NvM_ConfigType* ConfigPtr)
 {
     uint8 i;
@@ -977,6 +1004,7 @@ void NvM_Init(const NvM_ConfigType* ConfigPtr)
  * @param   NvM_DstPtr  - Destination pointer for read data
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00002 */
 Std_ReturnType NvM_ReadBlock(NvM_BlockIdType BlockId, void* NvM_DstPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1041,6 +1069,7 @@ Std_ReturnType NvM_ReadBlock(NvM_BlockIdType BlockId, void* NvM_DstPtr)
  * @param   NvM_SrcPtr  - Source pointer for write data
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00003 */
 Std_ReturnType NvM_WriteBlock(NvM_BlockIdType BlockId, const void* NvM_SrcPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1125,6 +1154,7 @@ Std_ReturnType NvM_WriteBlock(NvM_BlockIdType BlockId, const void* NvM_SrcPtr)
  * @param   NvM_DestPtr - Destination pointer
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00004 */
 Std_ReturnType NvM_RestoreBlockDefaults(NvM_BlockIdType BlockId, void* NvM_DestPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1189,6 +1219,7 @@ Std_ReturnType NvM_RestoreBlockDefaults(NvM_BlockIdType BlockId, void* NvM_DestP
  * @param   DataIndex - Data index to set
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00005 */
 Std_ReturnType NvM_SetDataIndex(NvM_BlockIdType BlockId, uint8 DataIndex)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1243,6 +1274,7 @@ Std_ReturnType NvM_SetDataIndex(NvM_BlockIdType BlockId, uint8 DataIndex)
  * @param   NvM_SrcPtr  - Source pointer for write data
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00006 */
 Std_ReturnType NvM_WriteBlockOnce(NvM_BlockIdType BlockId, const void* NvM_SrcPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1289,6 +1321,7 @@ Std_ReturnType NvM_WriteBlockOnce(NvM_BlockIdType BlockId, const void* NvM_SrcPt
  * @param   BlockLocked - TRUE to lock, FALSE to unlock
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00007 */
 Std_ReturnType NvM_SetBlockLockStatus(NvM_BlockIdType BlockId, boolean BlockLocked)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1322,6 +1355,7 @@ Std_ReturnType NvM_SetBlockLockStatus(NvM_BlockIdType BlockId, boolean BlockLock
  * @param   ProtectionEnabled  - TRUE to enable protection, FALSE to disable
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00008 */
 Std_ReturnType NvM_SetBlockProtection(NvM_BlockIdType BlockId, boolean ProtectionEnabled)
 {
     const NvM_BlockDescriptorType* blockDesc;
@@ -1358,6 +1392,7 @@ Std_ReturnType NvM_SetBlockProtection(NvM_BlockIdType BlockId, boolean Protectio
  * @param   WriteOnce - TRUE to enable write-once, FALSE to disable
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00009 */
 Std_ReturnType NvM_SetWriteOnceStatus(NvM_BlockIdType BlockId, boolean WriteOnce)
 {
     (void)WriteOnce;
@@ -1386,6 +1421,7 @@ Std_ReturnType NvM_SetWriteOnceStatus(NvM_BlockIdType BlockId, boolean WriteOnce
  * @param   versioninfo - Pointer to version info structure
  * @return  None
  */
+/** @req SWS_NvM_00010 */
 void NvM_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     if (versioninfo != NULL_PTR)
@@ -1404,6 +1440,7 @@ void NvM_GetVersionInfo(Std_VersionInfoType* versioninfo)
  * @param   RequestResultPtr - Output pointer for request result
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00011 */
 Std_ReturnType NvM_GetErrorStatus(NvM_BlockIdType BlockId, NvM_RequestResultType* RequestResultPtr)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1451,6 +1488,7 @@ Std_ReturnType NvM_GetErrorStatus(NvM_BlockIdType BlockId, NvM_RequestResultType
  * @param   BlockChanged - TRUE if block data has changed
  * @return  E_OK if successful, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00012 */
 Std_ReturnType NvM_SetRamBlockStatus(NvM_BlockIdType BlockId, boolean BlockChanged)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1483,6 +1521,7 @@ Std_ReturnType NvM_SetRamBlockStatus(NvM_BlockIdType BlockId, boolean BlockChang
  * @param   BlockId - Block identifier
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00013 */
 Std_ReturnType NvM_EraseNvBlock(NvM_BlockIdType BlockId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1541,6 +1580,7 @@ Std_ReturnType NvM_EraseNvBlock(NvM_BlockIdType BlockId)
  * @param   BlockId - Block identifier
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00014 */
 Std_ReturnType NvM_InvalidateNvBlock(NvM_BlockIdType BlockId)
 {
     Std_ReturnType result = E_NOT_OK;
@@ -1599,6 +1639,7 @@ Std_ReturnType NvM_InvalidateNvBlock(NvM_BlockIdType BlockId)
  * @param   None
  * @return  None
  */
+/** @req SWS_NvM_00015 */
 void NvM_MainFunction(void)
 {
     NvM_JobQueueEntryType jobEntry;
@@ -2043,6 +2084,7 @@ void NvM_MainFunction(void)
  * @brief   Read all permanent RAM blocks from NV memory (startup recovery)
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00016 */
 Std_ReturnType NvM_ReadAll(void)
 {
     Std_ReturnType result = E_OK;
@@ -2091,6 +2133,7 @@ Std_ReturnType NvM_ReadAll(void)
  * @brief   Write all dirty permanent RAM blocks to NV memory (shutdown flush)
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  */
+/** @req SWS_NvM_00017 */
 Std_ReturnType NvM_WriteAll(void)
 {
     Std_ReturnType result = E_OK;
@@ -2139,6 +2182,7 @@ Std_ReturnType NvM_WriteAll(void)
 /**
  * @brief   Kill WriteAll operation
  */
+/** @req SWS_NvM_00018 */
 void NvM_KillWriteAll(void)
 {
     NvM_InternalState.KillWriteAllRequested = TRUE;
@@ -2147,6 +2191,7 @@ void NvM_KillWriteAll(void)
 /**
  * @brief   Kill ReadAll operation
  */
+/** @req SWS_NvM_00019 */
 void NvM_KillReadAll(void)
 {
     NvM_InternalState.KillReadAllRequested = TRUE;
@@ -2157,6 +2202,7 @@ void NvM_KillReadAll(void)
  * @param   BlockId - Block identifier
  * @return  Pointer to the block RAM data, or NULL_PTR if not found
  */
+/** @req SWS_NvM_00020 */
 const void* NvM_GetBlockAddress(NvM_BlockIdType BlockId)
 {
     const NvM_BlockDescriptorType* blockDesc = NvM_GetBlockDescriptor(BlockId);
@@ -2174,6 +2220,7 @@ const void* NvM_GetBlockAddress(NvM_BlockIdType BlockId)
  * @param   BlockId - Block identifier
  * @return  Pointer to the mirror block data, or NULL_PTR if not available
  */
+/** @req SWS_NvM_00021 */
 const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId)
 {
     const NvM_BlockDescriptorType* blockDesc = NvM_GetBlockDescriptor(BlockId);
@@ -2195,10 +2242,12 @@ const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId)
 * keep the native smoke link complete; NvM's internal state machine does
 * not rely on them yet (single-job synchronous processing).
 ==================================================================================================*/
+/** @req SWS_NvM_00022 */
 void NvM_JobEndNotification(void)
 {
 }
 
+/** @req SWS_NvM_00023 */
 void NvM_JobErrorNotification(void)
 {
 }

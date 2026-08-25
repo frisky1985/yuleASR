@@ -11,6 +11,7 @@
 #include "StbM_Cfg.h"
 
 /* Test: StbM_Init */
+/** @req SWS_StbM_00001 */
 static void test_StbM_Init(void **state)
 {
     (void)state;
@@ -21,6 +22,7 @@ static void test_StbM_Init(void **state)
 }
 
 /* Test: StbM_DeInit */
+/** @req SWS_StbM_00001 */
 static void test_StbM_DeInit(void **state)
 {
     (void)state;
@@ -30,6 +32,7 @@ static void test_StbM_DeInit(void **state)
 }
 
 /* Test: StbM_GetCurrentTime */
+/** @req SWS_StbM_00005 */
 static void test_StbM_GetCurrentTime(void **state)
 {
     (void)state;
@@ -42,6 +45,7 @@ static void test_StbM_GetCurrentTime(void **state)
 }
 
 /* Test: StbM_SetGlobalTime */
+/** @req SWS_StbM_00007 */
 static void test_StbM_SetGlobalTime(void **state)
 {
     (void)state;
@@ -66,6 +70,7 @@ static void test_StbM_UpdateGlobalTime(void **state)
 }
 
 /* Test: StbM_GetTimeBaseStatus */
+/** @req SWS_StbM_00009 */
 static void test_StbM_GetTimeBaseStatus(void **state)
 {
     (void)state;
@@ -78,6 +83,7 @@ static void test_StbM_GetTimeBaseStatus(void **state)
 }
 
 /* Test: StbM_MainFunction */
+/** @req SWS_StbM_00004 */
 static void test_StbM_MainFunction(void **state)
 {
     (void)state;

@@ -80,6 +80,7 @@ static void Ea_ProcessJob(void);
 static Std_ReturnType Ea_FindBlockAddress(Ea_BlockIdType BlockNumber, uint32* BlockAddress);
 static uint32 Ea_CalculateBlockAddress(Ea_BlockIdType BlockNumber);
 
+/** @req SWS_Ea_00001 */
 void Ea_Init(const Ea_ConfigType* ConfigPtr)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -119,6 +120,7 @@ void Ea_Init(const Ea_ConfigType* ConfigPtr)
     Ea_Initialized = TRUE;
 }
 
+/** @req SWS_Ea_00004 */
 void Ea_SetMode(Ea_ModeType Mode)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -143,6 +145,7 @@ void Ea_SetMode(Ea_ModeType Mode)
     #endif
 }
 
+/** @req SWS_Ea_00005 */
 Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
                         uint16 BlockOffset,
                         uint8* DataBufferPtr,
@@ -210,6 +213,7 @@ Std_ReturnType Ea_Read(Ea_BlockIdType BlockNumber,
     return E_OK;
 }
 
+/** @req SWS_Ea_00006 */
 Std_ReturnType Ea_Write(Ea_BlockIdType BlockNumber, const uint8* DataBufferPtr)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -260,6 +264,7 @@ Std_ReturnType Ea_Write(Ea_BlockIdType BlockNumber, const uint8* DataBufferPtr)
     return E_OK;
 }
 
+/** @req SWS_Ea_00007 */
 void Ea_Cancel(void)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -302,6 +307,7 @@ Ea_JobResultType Ea_GetJobResult(void)
     return Ea_JobResult;
 }
 
+/** @req SWS_Ea_00008 */
 Std_ReturnType Ea_InvalidateBlock(Ea_BlockIdType BlockNumber)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -341,6 +347,7 @@ Std_ReturnType Ea_InvalidateBlock(Ea_BlockIdType BlockNumber)
     return E_OK;
 }
 
+/** @req SWS_Ea_00009 */
 Std_ReturnType Ea_EraseImmediateBlock(Ea_BlockIdType BlockNumber)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -383,6 +390,7 @@ Std_ReturnType Ea_EraseImmediateBlock(Ea_BlockIdType BlockNumber)
     return E_OK;
 }
 
+/** @req SWS_Ea_00010 */
 void Ea_JobEndNotification(void)
 {
     #if (EA_NVM_JOB_END_NOTIFICATION == STD_ON)
@@ -391,6 +399,7 @@ void Ea_JobEndNotification(void)
     #endif
 }
 
+/** @req SWS_Ea_00011 */
 void Ea_JobErrorNotification(void)
 {
     #if (EA_NVM_JOB_ERROR_NOTIFICATION == STD_ON)
@@ -399,6 +408,7 @@ void Ea_JobErrorNotification(void)
     #endif
 }
 
+/** @req SWS_Ea_00002 */
 void Ea_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -415,6 +425,7 @@ void Ea_GetVersionInfo(Std_VersionInfoType* versioninfo)
     versioninfo->sw_patch_version = EA_SW_PATCH_VERSION;
 }
 
+/** @req SWS_Ea_00012 */
 uint32 Ea_GetEraseCycleCount(void)
 {
     #if (EA_DEV_ERROR_DETECT == STD_ON)
@@ -427,6 +438,7 @@ uint32 Ea_GetEraseCycleCount(void)
     return Ea_EraseCycleCounter;
 }
 
+/** @req SWS_Ea_00003 */
 void Ea_MainFunction(void)
 {
     if (Ea_Initialized == FALSE) {

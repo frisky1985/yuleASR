@@ -193,12 +193,14 @@ extern const StbM_ConfigType StbM_Config;
 #define STBM_START_SEC_CODE
 #include "MemMap.h"
 
+/** @req SWS_StbM_00001 */
 /**
  * @brief Initializes the StbM module
  * @param ConfigPtr Pointer to configuration structure
  */
 void StbM_Init(const StbM_ConfigType* ConfigPtr);
 
+/** @req SWS_StbM_00002 */
 /**
  * @brief Deinitializes the StbM module
  */
@@ -209,9 +211,11 @@ void StbM_DeInit(void);
  * @param versioninfo Pointer to version info structure
  */
 #if (STBM_VERSION_INFO_API == STD_ON)
+/** @req SWS_StbM_00003 */
 void StbM_GetVersionInfo(Std_VersionInfoType* versioninfo);
 #endif
 
+/** @req SWS_StbM_00005 */
 /**
  * @brief Gets current synchronized time
  * @param timeBaseId Time base ID
@@ -223,6 +227,7 @@ Std_ReturnType StbM_GetCurrentTime(uint8 timeBaseId,
                                     StbM_TimeStampType* timeStampPtr,
                                     StbM_UserDataType* userDataPtr);
 
+/** @req SWS_StbM_00006 */
 /**
  * @brief Gets current virtual local time
  * @param timeBaseId Time base ID
@@ -232,6 +237,7 @@ Std_ReturnType StbM_GetCurrentTime(uint8 timeBaseId,
 Std_ReturnType StbM_GetCurrentVirtualTime(uint8 timeBaseId,
                                            StbM_VirtualLocalTimeType* virtualLocalTimePtr);
 
+/** @req SWS_StbM_00007 */
 /**
  * @brief Sets global time
  * @param timeBaseId Time base ID
@@ -243,6 +249,7 @@ Std_ReturnType StbM_SetGlobalTime(uint8 timeBaseId,
                                    const StbM_TimeStampType* timeStampPtr,
                                    const StbM_UserDataType* userDataPtr);
 
+/** @req SWS_StbM_00008 */
 /**
  * @brief Sets global time from bus (called by time sync protocol)
  * @param timeBaseId Time base ID
@@ -256,6 +263,7 @@ Std_ReturnType StbM_BusSetGlobalTime(uint8 timeBaseId,
                                       const StbM_VirtualLocalTimeType* virtualLocalTimePtr,
                                       const StbM_UserDataType* userDataPtr);
 
+/** @req SWS_StbM_00009 */
 /**
  * @brief Gets time base status
  * @param timeBaseId Time base ID
@@ -267,6 +275,7 @@ Std_ReturnType StbM_GetTimeBaseStatus(uint8 timeBaseId,
                                        uint8* syncStatusPtr,
                                        uint8* timeBaseStatusPtr);
 
+/** @req SWS_StbM_00010 */
 /**
  * @brief Gets master configuration
  * @param timeBaseId Time base ID
@@ -276,6 +285,7 @@ Std_ReturnType StbM_GetTimeBaseStatus(uint8 timeBaseId,
 Std_ReturnType StbM_GetMasterConfig(uint8 timeBaseId,
                                      StbM_MasterConfigType* masterConfigPtr);
 
+/** @req SWS_StbM_00011 */
 /**
  * @brief Sets rate correction
  * @param timeBaseId Time base ID
@@ -285,6 +295,7 @@ Std_ReturnType StbM_GetMasterConfig(uint8 timeBaseId,
 Std_ReturnType StbM_SetRateCorrection(uint8 timeBaseId,
                                        StbM_RateDeviationType rateDeviation);
 
+/** @req SWS_StbM_00012 */
 /**
  * @brief Gets time base update counter
  * @param timeBaseId Time base ID
@@ -294,6 +305,7 @@ Std_ReturnType StbM_SetRateCorrection(uint8 timeBaseId,
 Std_ReturnType StbM_GetTimeBaseUpdateCounter(uint8 timeBaseId,
                                               uint32* updateCounterPtr);
 
+/** @req SWS_StbM_00013 */
 /**
  * @brief Gets current time difference
  * @param timeBaseId Time base ID
@@ -303,6 +315,7 @@ Std_ReturnType StbM_GetTimeBaseUpdateCounter(uint8 timeBaseId,
 Std_ReturnType StbM_GetCurrentTimeDiff(uint8 timeBaseId,
                                         StbM_TimeDiffType* timeDiffPtr);
 
+/** @req SWS_StbM_00014 */
 /**
  * @brief Sets user data
  * @param timeBaseId Time base ID
@@ -312,11 +325,13 @@ Std_ReturnType StbM_GetCurrentTimeDiff(uint8 timeBaseId,
 Std_ReturnType StbM_SetUserData(uint8 timeBaseId,
                                  const StbM_UserDataType* userDataPtr);
 
+/** @req SWS_StbM_00004 */
 /**
  * @brief Main function for periodic processing
  */
 void StbM_MainFunction(void);
 
+/** @req SWS_StbM_00015 */
 /**
  * @brief Called when timestamp is received from Ethernet (gPTP)
  * @param timeBaseId Time base ID
