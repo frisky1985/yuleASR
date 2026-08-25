@@ -1,67 +1,47 @@
-# yuleASR — Qualification Test Strategy
+# Qualification Test Strategy — yuleASR BSW
 
-> **Version**: 1.0 | **Date**: 2026-07-15
-> **Project**: yuleASR AUTOSAR BSW Platform (S32K312)
+> 生成: 2026-08-25 (yuleOSH 审计闭环 — SWE.6.BP1)
+> 适用项目: /Users/ingeek/workspace/AUTOSAR
+> 状态: DRAFT — 定义合格性测试范围、环境与验收标准
 
-## 1. Scope
+## 1. 目的
 
-This document defines the qualification test strategy for yuleASR BSW platform. All 18 software requirements (SWR-001 through SWR-008) must have corresponding qualification tests.
+证明集成后的 yuleASR BSW 软件栈满足软件需求（Spec → Code → Tests 追溯链已接通，
+56 需求 ID / 287 SHALL 语句），为量产评审提供合格性证据。
 
-## 2. Test Environments
+## 2. 合格性测试范围
 
-| Environment | Purpose | Coverage |
-|:------------|:--------|:---------|
-| **SIL** (Software-in-the-Loop) | Unit and integration tests on host PC | Unit/Integration |
-| **DIL** (Device-in-the-Loop) | Target execution on S32K312 dev board | Integration/System |
-| **HIL** (Hardware-in-the-Loop) | Full system with CAN/LIN/Ethernet I/O | Qualification |
+| 范围 | 内容 | 证据 |
+|:-----|:-----|:-----|
+| 需求覆盖 | 全部 56 需求 ID 的 SHALL 语句可追溯 | traceability-matrix |
+| 单元级 | 35 模块单元测试 (54 ctest 用例) | ctest passing-run |
+| 集成级 | 层间接口集成测试 | integration tests |
+| 系统级 | QEMU/SIL 运行 + 启动序列 | sil-reports/ |
+| 目标级 | S32K312 交叉编译 + 链接 | build-arm 产物 |
 
-## 3. Acceptance Criteria per Requirement
+## 3. 测试环境
 
-| Requirement | Acceptance Criteria | Test Env | Priority |
-|:------------|:-------------------|:---------|:---------|
-| SWR-001: Platform Architecture | All 94 BSW modules compile and link for S32K312 | SIL | P0 |
-| SWR-001.1-05: S32K312 Target | Application boots on S32K312 target board | DIL | P0 |
-| SWR-002: Safety & Security | E2E error injection detected + HSM crypto verified | HIL | P0 |
-| SWR-003: Communication | CAN/LIN/Ethernet frames transmitted/received correctly | HIL | P0 |
-| SWR-004: Memory | NvM read/write cycles verified with power-loss recovery | HIL | P0 |
-| SWR-005: System Services | EcuM startup/shutdown sequence verified | DIL | P0 |
-| SWR-006: MCAL Drivers | All 21 MCAL modules functional on target | DIL | P1 |
-| SWR-007: ASW Components | All 8 ASW components functional with RTE | SIL | P1 |
-| SWR-008: Micro DDS | DDS pub/sub communication end-to-end | HIL | P2 |
+- **Host**: macOS native (ctest, 54 用例)
+- **SIL**: QEMU M33 (`tests/qemu_m33/`)，预编译 .elf 放 `tests/fixtures/prebuilt/`
+- **Target**: S32K312 (arm-none-eabi-gcc 交叉编译)，配置见 `.yuleosh.yaml` cross_compile
+- **覆盖率门槛**: line ≥ 70%, branch ≥ 60%（.yuleosh.yaml coverage）
 
-## 4. Test Levels
+## 4. 执行与证据归档
 
-### Level 1: SIL (Software-in-the-Loop)
-- **Host**: x86_64 Linux/macOS
-- **Test Framework**: Unity/CMock
-- **Coverage**: Unit tests + integration tests
-- **Pass Criteria**: 100% pass rate, branch coverage ≥ 80%
+1. 每层 CI 执行记录: `.osh/ci/layer{1,2,3}-*.json`
+2. 测试报告: ctest 输出 + JUnit XML
+3. 覆盖率报告: `.osh/evidence/code-coverage-report.md`
+4. 全部归档: `yuleosh audit evidence` → `.yuleosh/audit/`
 
-### Level 2: DIL (Device-in-the-Loop)
-- **Target**: S32K312 Evaluation Board
-- **Debugger**: SEGGER J-Link / PEmicro
-- **Coverage**: Integration tests + system smoke tests
-- **Pass Criteria**: All target tests pass
+## 5. 每条需求的验收标准
 
-### Level 3: HIL (Hardware-in-the-Loop)
-- **Hardware**: S32K312 + CAN/LIN/Ethernet I/O boards
-- **Stimulus**: Vector CANoe / custom HIL scripts
-- **Coverage**: Full qualification tests
-- **Pass Criteria**: All HIL tests pass, performance within spec
+- 需求可追溯到至少一个测试用例（test → req 双向）
+- 测试用例通过且覆盖率达标
+- 测试在目标环境或等效环境（QEMU SIL）执行
 
-## 5. Test Execution Plan
+## 6. 完成定义 (Definition of Done)
 
-### Phase 1: SIL Qualification (Weekly)
-- Run `tests/unit/` — all unit tests
-- Run `tests/integration/` — all integration tests
-- Generate coverage report
-
-### Phase 2: DIL Qualification (Per Release)
-- Flash target with qualification build
-- Run embedded test suite
-- Capture trace/log output
-
-### Phase 3: HIL Qualification (Per Major Release)
-- Full system test with CAN/LIN/Ethernet stimulators
-- Stress test (72h continuous)
-- Fault injection testing
+- [ ] 全部合格性测试通过（passing-run evidence 归档）
+- [ ] 覆盖率 line ≥ 70%
+- [ ] 需求 → 测试 100% 双向追溯
+- [ ] SIL/HIL 执行记录归档

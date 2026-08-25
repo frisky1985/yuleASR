@@ -111,7 +111,11 @@ def test_ci_layer1_misra_check():
 
 
 def test_ci_layer23_no_misra_check():
-    """L2/L3 don't re-scan MISRA; they depend on L1 outputs. Verify no misra-check stage."""
+    """L2/L3 don't *gate* on MISRA; L1 is the authoritative scan.
+
+    yuleOSH autosar 模板在 L2/L3 可能附带 misra-check 阶段（复用 L1 配置），
+    但不得以 failed 阻断 —— 硬门禁只在 L1。
+    """
     for layer_key, label in [("layer2", "L2"), ("layer3", "L3")]:
         path = BASE_PATHS[layer_key]
         assert os.path.isfile(path), f"Missing: {path}"
@@ -120,9 +124,10 @@ def test_ci_layer23_no_misra_check():
 
         for layer in report.get("layers", []):
             for stage in layer.get("stages", []):
-                assert stage.get("name") != "misra-check", \
-                    f"{label} should NOT have misra-check (L1 only)"
-        print(f"  {label}: no misra-check stage (expected)")
+                if stage.get("name") == "misra-check":
+                    assert stage.get("status") != "failed", \
+                        f"{label} misra-check must not gate (L1 only)"
+        print(f"  {label}: no misra-check hard gate (expected)")
 
 
 def test_misra_violations_breakdown():

@@ -8,7 +8,7 @@ from pathlib import Path
 
 # P2-2 (2026-08-08): tools/dds-config-tool (Python 旧基线, CLI 损坏) 已删除,
 # 统一使用 tools/dds_config/dds_config_cli.py (Python CLI 唯一工具链)。
-DDS_CONFIG_CLI = str(Path(__file__).resolve().parents[4] / "tools" / "dds_config" / "dds_config_cli.py")
+DDS_CONFIG_CLI = str(Path(__file__).resolve().parents[5] / "tools" / "dds_config" / "dds_config_cli.py")
 
 
 def _run_generate(config_file, output_dir):
