@@ -4,6 +4,8 @@
  * @req SWS_SecOC
  */
 
+// @tests src/bsw/services/secoc/src/SecOC.c  @tests src/bsw/services/secoc/include/SecOC.h
+
 #include "unity.h"
 #include "SecOC.h"
 

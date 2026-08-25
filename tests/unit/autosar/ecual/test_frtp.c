@@ -3,6 +3,8 @@
  * @brief FRTP 模块单元测试
  */
 
+// @tests src/bsw/ecual/frtp/src/FrTp.c  @tests src/bsw/ecual/frtp/include/FrTp.h
+
 #include <unity.h>
 #include "frtp.h"
 

@@ -3,6 +3,8 @@
  * @brief SOMEIP 模块单元测试
  */
 
+// @tests src/bsw/services/someip/src/SomeIp.c  @tests src/bsw/services/someip/include/SomeIp.h
+
 #include <unity.h>
 #include "someip.h"
 

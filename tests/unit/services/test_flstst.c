@@ -6,6 +6,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/flstst/src/FlStSt.c  @tests src/bsw/services/flstst/include/FlStSt.h
+
 #include "../test_framework.h"
 #include "FlStSt.h"
 

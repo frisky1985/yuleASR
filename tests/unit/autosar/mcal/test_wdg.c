@@ -5,6 +5,8 @@
  * @date 2026-01-09
  */
 
+// @tests src/bsw/mcal/wdg/src/Wdg.c  @tests src/bsw/mcal/wdg/include/Wdg.h
+
 #include <unity.h>
 #include <string.h>
 #include "wdg.h"

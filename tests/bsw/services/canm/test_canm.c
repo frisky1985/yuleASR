@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/canNm/src/CanNm.c  @tests src/bsw/ecual/canNm/include/CanNm.h
+
 #include "unity.h"
 #include "CanM.h"
 

@@ -3,6 +3,8 @@
  * @brief DoIP Unit Tests
  */
 
+// @tests src/bsw/services/doip/src/DoIP.c  @tests src/bsw/services/doip/include/DoIP.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/eep/src/Eep.c  @tests src/bsw/mcal/eep/include/Eep.h
+
 #include "unity.h"
 #include "Eep.h"
 

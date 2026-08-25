@@ -3,6 +3,8 @@
  * @brief SRP 模块单元测试
  */
 
+// @tests src/bsw/ecual/srp/src/Srp.c  @tests src/bsw/ecual/srp/include/Srp.h
+
 #include <unity.h>
 #include "srp.h"
 

@@ -3,6 +3,8 @@
  * @brief LinSM (LIN State Manager) Unit Tests
  * @req SWS_LinSM
  */
+
+// @tests src/bsw/services/linsm/src/LinSM.c  @tests src/bsw/services/linsm/include/LinSM.h
 #include "unity.h"
 #include "LinSM.h"
 

@@ -3,6 +3,8 @@
  * @brief ETHSM 模块单元测试
  */
 
+// @tests src/bsw/services/ethsm/src/EthSM.c  @tests src/bsw/services/ethsm/include/EthSM.h
+
 #include <unity.h>
 #include "ethsm.h"
 

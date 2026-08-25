@@ -3,6 +3,8 @@
  * @brief PduR (PDU Router) Unit Tests
  */
 
+// @tests src/bsw/services/pdur/src/PduR.c  @tests src/bsw/services/pdur/include/PduR.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

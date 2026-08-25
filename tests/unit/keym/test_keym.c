@@ -3,6 +3,8 @@
  * @brief KeyM (Key Manager) Unit Tests
  */
 
+// @tests src/bsw/services/keym/src/KeyM.c  @tests src/bsw/services/keym/include/KeyM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

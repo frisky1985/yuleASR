@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/fim/src/FiM.c  @tests src/bsw/services/fim/include/FiM.h
+
 #include "unity.h"
 #include "FiM.h"
 

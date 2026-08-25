@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/eth/src/Eth.c  @tests src/bsw/mcal/eth/include/Eth.h
+
 #include "test_framework.h"
 #include "Eth.h"
 #include "Eth_Private.h"

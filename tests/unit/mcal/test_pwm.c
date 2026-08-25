@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/pwm/src/Pwm.c  @tests src/bsw/mcal/pwm/include/Pwm.h
+
 #include "test_framework.h"
 #include "Pwm.h"
 #include "mock_mcal.h"

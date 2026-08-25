@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/dio/src/Dio.c  @tests src/bsw/mcal/dio/include/Dio.h
+
 #include "test_framework.h"
 #include "Dio.h"
 #include "mock_mcal.h"

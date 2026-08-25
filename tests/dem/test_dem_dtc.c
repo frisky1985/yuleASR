@@ -3,6 +3,8 @@
  * Description: Unit tests for Dem DTC Management
  **********************************************************************************************************************/
 
+// @tests src/bsw/services/dem/src/Dem.c  @tests src/bsw/services/dem/src/Dem_Cfg.c  @tests src/bsw/services/dem/src/Dem_Int.c
+
 #include "unity.h"
 #include "Dem.h"
 #include "Dem_Cfg.h"

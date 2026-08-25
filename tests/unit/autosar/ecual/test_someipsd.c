@@ -3,6 +3,8 @@
  * @brief SOMEIPSD 模块单元测试
  */
 
+// @tests src/bsw/ecual/someipsd/src/SomeIpSd.c  @tests src/bsw/ecual/someipsd/include/SomeIpSd.h
+
 #include <unity.h>
 #include "someipsd.h"
 

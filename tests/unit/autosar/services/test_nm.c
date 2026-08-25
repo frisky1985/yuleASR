@@ -3,6 +3,8 @@
  * @brief Nm (Network Management) Unit Tests
  */
 
+// @tests src/bsw/services/nm/src/Nm.c  @tests src/bsw/services/nm/include/Nm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

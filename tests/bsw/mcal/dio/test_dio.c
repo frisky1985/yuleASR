@@ -3,6 +3,8 @@
  * @brief Dio (Digital I/O) Unit Tests
  * @req SWS_Dio
  */
+
+// @tests src/bsw/mcal/dio/src/Dio.c  @tests src/bsw/mcal/dio/include/Dio.h
 #include "unity.h"
 #include "Dio.h"
 

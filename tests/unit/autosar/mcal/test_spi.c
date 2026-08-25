@@ -5,6 +5,8 @@
  * @date 2026-01-09
  */
 
+// @tests src/bsw/mcal/spi/src/Spi.c  @tests src/bsw/mcal/spi/include/Spi.h
+
 #include <unity.h>
 #include <string.h>
 #include "spi.h"

@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/j1939tp/src/J1939Tp.c  @tests src/bsw/ecual/j1939tp/include/J1939Tp.h
+
 #include "unity.h"
 #include "J1939Tp.h"
 

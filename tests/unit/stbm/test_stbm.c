@@ -3,6 +3,8 @@
  * @brief StbM (Synchronized Time Base Manager) Unit Tests
  */
 
+// @tests src/bsw/services/stbm/src/StbM.c  @tests src/bsw/services/stbm/include/StbM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

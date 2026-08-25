@@ -8,6 +8,8 @@
  *==================================================================================================
  */
 
+// @tests src/bsw/services/keym/src/KeyM.c  @tests src/bsw/services/keym/include/KeyM.h
+
 #include <stdio.h>
 #include <string.h>
 #include "KeyM.h"

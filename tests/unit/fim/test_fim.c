@@ -3,6 +3,8 @@
  * @brief Function Inhibition Manager Unit Tests
  */
 
+// @tests src/bsw/services/fim/src/FiM.c  @tests src/bsw/services/fim/include/FiM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

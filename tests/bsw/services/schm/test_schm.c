@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/schm/src/SchM.c  @tests src/bsw/services/schm/include/SchM.h
+
 #include "unity.h"
 #include "SchM.h"
 

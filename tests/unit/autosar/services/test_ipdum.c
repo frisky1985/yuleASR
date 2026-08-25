@@ -3,6 +3,8 @@
  * @brief IPDUM 模块单元测试
  */
 
+// @tests src/bsw/services/ipdum/src/IpduM.c  @tests src/bsw/services/ipdum/include/IpduM.h
+
 #include <unity.h>
 #include "ipdum.h"
 

@@ -3,6 +3,8 @@
  * @brief CanTSyn Unit Tests
  */
 
+// @tests src/bsw/services/cantsyn/src/CanTSyn.c  @tests src/bsw/services/cantsyn/include/CanTSyn.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

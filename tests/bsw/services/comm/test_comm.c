@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/comm/src/ComM.c  @tests src/bsw/services/comm/include/ComM.h
+
 #include "unity.h"
 #include "ComM.h"
 

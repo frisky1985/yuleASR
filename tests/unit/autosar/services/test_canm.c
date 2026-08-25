@@ -3,6 +3,8 @@
  * @brief CANM 模块单元测试
  */
 
+// @tests src/bsw/ecual/canNm/src/CanNm.c  @tests src/bsw/ecual/canNm/include/CanNm.h
+
 #include <unity.h>
 #include "canm.h"
 

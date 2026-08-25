@@ -3,6 +3,8 @@
  * @brief SomeIp Unit Tests
  */
 
+// @tests src/bsw/services/someip/src/SomeIp.c  @tests src/bsw/services/someip/include/SomeIp.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

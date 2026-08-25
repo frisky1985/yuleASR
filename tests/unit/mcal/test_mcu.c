@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/mcu/src/Mcu.c  @tests src/bsw/mcal/mcu/include/Mcu.h
+
 #include "test_framework.h"
 #include "Mcu.h"
 #include "mock_mcal.h"

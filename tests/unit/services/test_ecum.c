@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/ecum/src/EcuM.c  @tests src/bsw/services/ecum/include/EcuM.h
+
 #include "test_framework.h"
 #include "EcuM.h"
 #include "mock_services.h"

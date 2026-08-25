@@ -3,6 +3,8 @@
  * @brief Dem (Diagnostic Event Manager) Unit Tests
  * @req SWS_Dem
  */
+
+// @tests src/bsw/services/dem/src/Dem.c  @tests src/bsw/services/dem/include/Dem.h
 #include "unity.h"
 #include "Dem.h"
 

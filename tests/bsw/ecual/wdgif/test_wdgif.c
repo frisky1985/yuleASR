@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/wdgif/src/WdgIf.c  @tests src/bsw/ecual/wdgif/include/WdgIf.h
+
 #include "unity.h"
 #include "WdgIf.h"
 

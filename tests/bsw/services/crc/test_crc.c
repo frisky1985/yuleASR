@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/crc/src/Crc.c  @tests src/bsw/services/crc/include/Crc.h
+
 #include "unity.h"
 #include "Crc.h"
 

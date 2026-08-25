@@ -6,6 +6,8 @@
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  */
 
+// @tests src/bsw/ecual/linTp/src/LinTp.c  @tests src/bsw/ecual/linTp/include/LinTp.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>

@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/ethtsyn/src/EthTSyn.c  @tests src/bsw/services/ethtsyn/include/EthTSyn.h
+
 #include "unity.h"
 #include "EthTSyn.h"
 

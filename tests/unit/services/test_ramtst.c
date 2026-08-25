@@ -6,6 +6,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/ramtst/src/RamTst.c  @tests src/bsw/services/ramtst/include/RamTst.h
+
 #include "../test_framework.h"
 #include "RamTst.h"
 

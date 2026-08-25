@@ -3,6 +3,8 @@
  * @brief SchM (BSW Scheduler) Unit Tests
  */
 
+// @tests src/bsw/services/schm/src/SchM.c  @tests src/bsw/services/schm/include/SchM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

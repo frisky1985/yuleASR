@@ -10,6 +10,8 @@
  *==================================================================================================
  */
 
+// @tests src/bsw/services/secoc/src/SecOC.c  @tests src/bsw/services/secoc/include/SecOC.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

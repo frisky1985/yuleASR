@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/icu/src/Icu.c  @tests src/bsw/mcal/icu/include/Icu.h
+
 #include "test_framework.h"
 #include "Icu.h"
 #include "Icu_Private.h"

@@ -3,6 +3,8 @@
  * @brief COM Unit Tests
  */
 
+// @tests src/bsw/services/com/src/Com.c  @tests src/bsw/services/com/include/Com.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

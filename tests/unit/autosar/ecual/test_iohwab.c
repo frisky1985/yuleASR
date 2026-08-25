@@ -3,6 +3,8 @@
  * @brief IOHWAB 模块单元测试
  */
 
+// @tests src/bsw/ecual/iohwab/src/IoHwAb.c  @tests src/bsw/ecual/iohwab/include/IoHwAb.h
+
 #include <unity.h>
 #include "iohwab.h"
 

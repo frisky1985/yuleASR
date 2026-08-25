@@ -3,6 +3,8 @@
  * @brief CANSM 模块单元测试
  */
 
+// @tests src/bsw/services/cansm/src/CanSm.c  @tests src/bsw/services/cansm/include/CanSm.h
+
 #include <unity.h>
 #include "cansm.h"
 

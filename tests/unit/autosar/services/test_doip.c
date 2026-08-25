@@ -3,6 +3,8 @@
  * @brief DOIP 模块单元测试
  */
 
+// @tests src/bsw/services/doip/src/DoIP.c  @tests src/bsw/services/doip/include/DoIP.h
+
 #include <unity.h>
 #include "doip.h"
 

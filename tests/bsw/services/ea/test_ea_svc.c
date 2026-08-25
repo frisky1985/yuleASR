@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/ea/src/Ea.c  @tests src/bsw/ecual/ea/include/Ea.h
+
 #include "unity.h"
 #include "EaSvc.h"
 

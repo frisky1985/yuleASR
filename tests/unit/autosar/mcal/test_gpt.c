@@ -23,6 +23,8 @@
  * @test_coverage 目标覆盖率: 80%+
  */
 
+// @tests src/bsw/mcal/gpt/src/Gpt.c  @tests src/bsw/mcal/gpt/include/Gpt.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

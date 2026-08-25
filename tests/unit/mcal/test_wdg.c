@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/wdg/src/Wdg.c  @tests src/bsw/mcal/wdg/include/Wdg.h
+
 #include "test_framework.h"
 #include "Wdg.h"
 #include "mock_mcal.h"

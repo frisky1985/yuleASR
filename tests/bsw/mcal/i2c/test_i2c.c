@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/i2c/src/I2c.c  @tests src/bsw/mcal/i2c/include/I2c.h
+
 #include "unity.h"
 #include "I2c.h"
 

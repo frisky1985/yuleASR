@@ -3,6 +3,8 @@
  * @brief DEM (Diagnostic Event Manager) Unit Tests
  */
 
+// @tests src/bsw/services/dem/src/Dem.c  @tests src/bsw/services/dem/include/Dem.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

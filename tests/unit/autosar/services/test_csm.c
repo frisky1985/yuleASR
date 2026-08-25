@@ -9,6 +9,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/services/csm/src/Csm.c  @tests src/bsw/services/csm/include/Csm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

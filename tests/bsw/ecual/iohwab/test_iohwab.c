@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/iohwab/src/IoHwAb.c  @tests src/bsw/ecual/iohwab/include/IoHwAb.h
+
 #include "unity.h"
 #include "IoHwAb.h"
 

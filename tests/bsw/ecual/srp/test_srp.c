@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/srp/src/Srp.c  @tests src/bsw/ecual/srp/include/Srp.h
+
 #include "unity.h"
 #include "Srp.h"
 

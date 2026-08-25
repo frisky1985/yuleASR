@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/memif/src/MemIf.c  @tests src/bsw/services/memif/include/MemIf.h
+
 #include "unity.h"
 #include "MemIf.h"
 

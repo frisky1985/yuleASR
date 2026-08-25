@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/lintp/src/LinTp.c  @tests src/bsw/ecual/lintp/include/LinTp.h
+
 #include "unity.h"
 #include "LinTp.h"
 

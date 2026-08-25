@@ -3,6 +3,8 @@
  * @brief DCM 模块单元测试
  */
 
+// @tests src/bsw/services/dcm/src/Dcm.c  @tests src/bsw/services/dcm/include/Dcm.h
+
 #include <unity.h>
 #include "dcm.h"
 

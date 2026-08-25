@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/crypto/src/Crypto.c  @tests src/bsw/mcal/crypto/include/Crypto.h
+
 #include "unity.h"
 #include "Crypto.h"
 

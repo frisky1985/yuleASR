@@ -3,6 +3,8 @@
  * @brief ETHTRCV 模块单元测试
  */
 
+// @tests src/bsw/ecual/ethtrcv/src/EthTrcv.c  @tests src/bsw/ecual/ethtrcv/include/EthTrcv.h
+
 #include <unity.h>
 #include "ethtrcv.h"
 

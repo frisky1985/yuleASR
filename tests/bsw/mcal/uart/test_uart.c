@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/uart/src/Uart.c  @tests src/bsw/mcal/uart/include/Uart.h
+
 #include "unity.h"
 #include "Uart.h"
 

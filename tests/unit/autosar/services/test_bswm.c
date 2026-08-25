@@ -17,6 +17,8 @@
  * Target Coverage: 80%+
  */
 
+// @tests src/bsw/services/bswm/src/BswM.c  @tests src/bsw/services/bswm/include/BswM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

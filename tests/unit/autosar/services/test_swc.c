@@ -3,6 +3,8 @@
  * @brief SWC 模块单元测试
  */
 
+// @tests src/bsw/services/swc/src/Swc.c  @tests src/bsw/services/swc/include/Swc.h
+
 #include <unity.h>
 #include "swc.h"
 

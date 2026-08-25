@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/comm/src/ComM.c  @tests src/bsw/services/comm/include/ComM.h
+
 #include "test_framework.h"
 #include "ComM.h"
 #include "mock_services.h"

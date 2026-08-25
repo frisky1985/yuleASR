@@ -9,6 +9,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/mcal/adc/src/Adc.c  @tests src/bsw/mcal/adc/include/Adc.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

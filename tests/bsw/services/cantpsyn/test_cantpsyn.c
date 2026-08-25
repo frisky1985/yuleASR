@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/cantp/src/CanTp.c  @tests src/bsw/ecual/cantp/include/CanTp.h
+
 #include "unity.h"
 #include "CanTpSyn.h"
 

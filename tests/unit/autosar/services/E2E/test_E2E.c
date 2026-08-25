@@ -3,6 +3,8 @@
  * @brief E2E Protection Unit Tests
  */
 
+// @tests src/bsw/services/e2e/src/E2E.c  @tests src/bsw/services/e2e/include/E2E.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

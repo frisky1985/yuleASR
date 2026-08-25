@@ -3,6 +3,8 @@
  * @brief CanSM (CAN State Manager) Unit Tests
  * @req SWS_CanSM
  */
+
+// @tests src/bsw/services/cansm/src/CanSm.c  @tests src/bsw/services/cansm/include/CanSm.h
 #include "unity.h"
 #include "CanSm.h"
 

@@ -3,6 +3,8 @@
  * @brief FRIF 模块单元测试
  */
 
+// @tests src/bsw/ecual/frif/src/FrIf.c  @tests src/bsw/ecual/frif/include/FrIf.h
+
 #include <unity.h>
 #include "frif.h"
 

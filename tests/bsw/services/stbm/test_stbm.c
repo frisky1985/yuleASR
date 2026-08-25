@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/stbm/src/StbM.c  @tests src/bsw/services/stbm/include/StbM.h
+
 #include "unity.h"
 #include "StbM.h"
 

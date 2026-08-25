@@ -3,6 +3,8 @@
  * @brief DET 模块单元测试
  */
 
+// @tests src/bsw/services/det/src/Det.c  @tests src/bsw/services/det/include/Det.h
+
 #include <unity.h>
 #include "det.h"
 

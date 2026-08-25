@@ -3,6 +3,8 @@
  * @brief LINTP 模块单元测试
  */
 
+// @tests src/bsw/ecual/lintp/src/LinTp.c  @tests src/bsw/ecual/lintp/include/LinTp.h
+
 #include <unity.h>
 #include "lintp.h"
 

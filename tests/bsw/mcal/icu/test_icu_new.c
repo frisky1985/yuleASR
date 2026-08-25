@@ -3,6 +3,8 @@
  * @brief Icu (Input Capture Unit) Additional Unit Tests
  * @req SWS_Icu
  */
+
+// @tests src/bsw/mcal/icu/src/Icu.c  @tests src/bsw/mcal/icu/include/Icu.h
 #include "unity.h"
 #include "Icu.h"
 

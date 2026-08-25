@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/ipdum/src/IpduM.c  @tests src/bsw/ecual/ipdum/include/IpduM.h
+
 #include "unity.h"
 #include "IpduM.h"
 

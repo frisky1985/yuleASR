@@ -3,6 +3,8 @@
  * @brief CANTSYN 模块单元测试
  */
 
+// @tests src/bsw/services/cantsyn/src/CanTSyn.c  @tests src/bsw/services/cantsyn/include/CanTSyn.h
+
 #include <unity.h>
 #include "cantsyn.h"
 

@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/ethtrcv/src/EthTrcv.c  @tests src/bsw/ecual/ethtrcv/include/EthTrcv.h
+
 #include "unity.h"
 #include "EthTrcv.h"
 

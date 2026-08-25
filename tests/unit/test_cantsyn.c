@@ -14,6 +14,8 @@
  * ASIL Level: B
  */
 
+// @tests src/bsw/services/cantsyn/src/CanTSyn.c  @tests src/bsw/services/cantsyn/include/CanTSyn.h
+
 #include <unity.h>
 #include "CanTSyn.h"
 #include "StbM.h"

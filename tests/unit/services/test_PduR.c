@@ -11,6 +11,8 @@
 * Description: PduR 模块单元测试 - 验证 PDU 路由功能
 ==================================================================================================*/
 
+// @tests src/bsw/services/pdur/src/PduR.c  @tests src/bsw/services/pdur/include/PduR.h
+
 #include "../test_framework.h"
 #include "PduR.h"
 #include "PduR_Cfg.h"

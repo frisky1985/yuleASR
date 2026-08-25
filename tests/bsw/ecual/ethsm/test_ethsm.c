@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/ethsm/src/EthSM.c  @tests src/bsw/ecual/ethsm/include/EthSM.h
+
 #include "unity.h"
 #include "EthSM.h"
 

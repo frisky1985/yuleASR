@@ -8,6 +8,8 @@
  * SHALL-DEM-04: SHALL provide a configurable aging counter with default 40 cycles
  */
 
+// @tests src/bsw/services/dem/src/Dem.c  @tests src/bsw/services/dem/include/Dem.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

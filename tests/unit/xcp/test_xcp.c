@@ -3,6 +3,8 @@
  * @brief XCP Unit Tests
  */
 
+// @tests src/bsw/services/xcp/src/Xcp.c  @tests src/bsw/services/xcp/include/Xcp.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

@@ -3,6 +3,8 @@
  * @brief WDGM (Watchdog Manager) Unit Tests
  */
 
+// @tests src/bsw/services/wdgm/src/WdgM.c  @tests src/bsw/services/wdgm/include/WdgM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

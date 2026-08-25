@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/linnm/src/LinNm.c  @tests src/bsw/ecual/linnm/include/LinNm.h
+
 #include "unity.h"
 #include "LinNm.h"
 

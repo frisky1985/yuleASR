@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/fee/src/Fee.c  @tests src/bsw/mcal/fee/include/Fee.h
+
 #include "unity.h"
 #include "Fee.h"
 

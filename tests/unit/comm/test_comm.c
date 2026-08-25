@@ -3,6 +3,8 @@
  * @brief Communication Manager Unit Tests
  */
 
+// @tests src/bsw/services/comM/src/ComM.c  @tests src/bsw/services/comM/include/ComM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

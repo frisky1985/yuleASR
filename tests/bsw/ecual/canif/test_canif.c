@@ -3,6 +3,8 @@
  * @brief CanIf Unit Tests
  * @req SWS_CanIf
  */
+
+// @tests src/bsw/ecual/canif/src/CanIf.c  @tests src/bsw/ecual/canif/include/CanIf.h
 #include "unity.h"
 #include "CanIf.h"
 

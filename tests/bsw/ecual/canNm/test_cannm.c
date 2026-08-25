@@ -3,6 +3,8 @@
  * @brief CanNm (CAN Network Management) Unit Tests
  * @req SWS_CanNm
  */
+
+// @tests src/bsw/ecual/cannm/src/CanNm.c  @tests src/bsw/ecual/cannm/include/CanNm.h
 #include "unity.h"
 #include "CanNm.h"
 

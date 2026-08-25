@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/eth/src/Eth.c  @tests src/bsw/mcal/eth/include/Eth.h
+
 #include "unity.h"
 #include "Eth_Cfg.h"
 #include "Eth.h"

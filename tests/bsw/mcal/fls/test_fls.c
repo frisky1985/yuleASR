@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/fls/src/Fls.c  @tests src/bsw/mcal/fls/include/Fls.h
+
 #include "unity.h"
 #include "Fls.h"
 

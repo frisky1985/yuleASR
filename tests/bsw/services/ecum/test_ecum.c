@@ -3,6 +3,8 @@
  * @brief EcuM (ECU State Manager) Unit Tests
  * @req SWS_EcuM
  */
+
+// @tests src/bsw/services/ecum/src/EcuM.c  @tests src/bsw/services/ecum/include/EcuM.h
 #include "unity.h"
 #include "EcuM.h"
 

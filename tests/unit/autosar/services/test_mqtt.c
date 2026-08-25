@@ -3,6 +3,8 @@
  * @brief MQTT 模块单元测试
  */
 
+// @tests src/bsw/services/mqtt/src/Mqtt.c  @tests src/bsw/services/mqtt/include/Mqtt.h
+
 #include <unity.h>
 #include "mqtt.h"
 

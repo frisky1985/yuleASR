@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/ocu/src/Ocu.c  @tests src/bsw/mcal/ocu/include/Ocu.h
+
 #include "unity.h"
 #include "Ocu.h"
 #include "Ocu_Cfg.h"

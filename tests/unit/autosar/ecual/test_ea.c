@@ -3,6 +3,8 @@
  * @brief EA 模块单元测试
  */
 
+// @tests src/bsw/ecual/ea/src/Ea.c  @tests src/bsw/ecual/ea/include/Ea.h
+
 #include <unity.h>
 #include "ea.h"
 

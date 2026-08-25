@@ -5,6 +5,8 @@
  * @date 2026-01-09
  */
 
+// @tests src/bsw/mcal/port/src/Port.c  @tests src/bsw/mcal/port/include/Port.h
+
 #include <unity.h>
 #include <string.h>
 #include "port.h"

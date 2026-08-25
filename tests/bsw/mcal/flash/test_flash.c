@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/flash/src/Flash.c  @tests src/bsw/mcal/flash/include/Flash.h
+
 #include "unity.h"
 #include "Flash.h"
 

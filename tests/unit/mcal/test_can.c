@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/can/src/Can.c  @tests src/bsw/mcal/can/include/Can.h
+
 #include "test_framework.h"
 #include "Can.h"
 #include "mock_mcal.h"

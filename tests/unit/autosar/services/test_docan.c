@@ -3,6 +3,8 @@
  * @brief DOCAN 模块单元测试
  */
 
+// @tests src/bsw/services/docan/src/DoCan.c  @tests src/bsw/services/docan/include/DoCan.h
+
 #include <unity.h>
 #include "docan.h"
 

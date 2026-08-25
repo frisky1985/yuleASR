@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/soad/src/SoAd.c  @tests src/bsw/services/soad/include/SoAd.h
+
 #include "unity.h"
 #include "SoAd.h"
 

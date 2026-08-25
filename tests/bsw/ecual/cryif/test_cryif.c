@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/cryif/src/CryIf.c  @tests src/bsw/services/cryif/include/CryIf.h
+
 #include "unity.h"
 #include "CryIf.h"
 

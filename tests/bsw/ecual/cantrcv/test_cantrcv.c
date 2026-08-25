@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/cantrcv/src/CanTrcv.c  @tests src/bsw/ecual/cantrcv/include/CanTrcv.h
+
 #include "unity.h"
 #include "CanTrcv.h"
 

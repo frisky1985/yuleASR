@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/xcp/src/Xcp.c  @tests src/bsw/ecual/xcp/include/Xcp.h
+
 #include "unity.h"
 #include "Xcp.h"
 

@@ -3,6 +3,8 @@
  * @brief CanTp (CAN Transport Protocol) Unit Tests
  * @req SWS_CanTp
  */
+
+// @tests src/bsw/ecual/cantp/src/CanTp.c  @tests src/bsw/ecual/cantp/include/CanTp.h
 #include "unity.h"
 #include "CanTp.h"
 

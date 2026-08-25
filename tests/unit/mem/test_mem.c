@@ -3,6 +3,8 @@
  * @brief MEM (Memory Services) Unit Tests
  */
 
+// @tests src/bsw/services/mem/src/Mem.c  @tests src/bsw/services/mem/include/Mem.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

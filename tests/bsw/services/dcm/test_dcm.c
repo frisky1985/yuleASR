@@ -3,6 +3,8 @@
  * @brief Dcm (Diagnostic Communication Manager) Unit Tests
  * @req SWS_Dcm
  */
+
+// @tests src/bsw/services/dcm/src/Dcm.c  @tests src/bsw/services/dcm/include/Dcm.h
 #include "unity.h"
 #include "Dcm.h"
 

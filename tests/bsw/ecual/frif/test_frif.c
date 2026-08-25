@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/frif/src/FrIf.c  @tests src/bsw/ecual/frif/include/FrIf.h
+
 #include "unity.h"
 #include "FrIf.h"
 

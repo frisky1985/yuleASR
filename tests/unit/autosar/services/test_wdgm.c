@@ -3,6 +3,8 @@
  * @brief WDGM 模块单元测试
  */
 
+// @tests src/bsw/services/wdgm/src/WdgM.c  @tests src/bsw/services/wdgm/include/WdgM.h
+
 #include <unity.h>
 #include "wdgm.h"
 

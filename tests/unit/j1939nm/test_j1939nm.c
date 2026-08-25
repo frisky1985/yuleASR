@@ -6,6 +6,8 @@
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  */
 
+// @tests src/bsw/services/j1939nm/src/J1939Nm.c  @tests src/bsw/services/j1939nm/include/J1939Nm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>

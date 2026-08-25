@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/fim/src/FiM.c  @tests src/bsw/services/fim/include/FiM.h
+
 #include "../test_framework.h"
 #include "FiM.h"
 

@@ -3,6 +3,8 @@
  * @brief CSM (Crypto Services Manager) Unit Tests
  */
 
+// @tests src/bsw/services/csm/src/Csm.c  @tests src/bsw/services/csm/include/Csm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

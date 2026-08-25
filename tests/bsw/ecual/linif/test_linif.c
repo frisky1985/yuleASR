@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/linif/src/LinIf.c  @tests src/bsw/ecual/linif/include/LinIf.h
+
 #include "unity.h"
 #include "LinIf.h"
 

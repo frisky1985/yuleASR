@@ -3,6 +3,8 @@
  * @brief SomeIpXf Unit Tests
  */
 
+// @tests src/bsw/services/someipxf/src/SomeIpXf.c  @tests src/bsw/services/someipxf/include/SomeIpXf.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

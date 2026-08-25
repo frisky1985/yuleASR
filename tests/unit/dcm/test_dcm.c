@@ -3,6 +3,8 @@
  * @brief DCM Unit Tests
  */
 
+// @tests src/bsw/services/dcm/src/Dcm.c  @tests src/bsw/services/dcm/include/Dcm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

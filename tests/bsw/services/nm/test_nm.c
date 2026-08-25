@@ -3,6 +3,8 @@
  * @brief Nm (Network Management Interface) Unit Tests
  * @req SWS_Nm
  */
+
+// @tests src/bsw/services/nm/src/Nm.c  @tests src/bsw/services/nm/include/Nm.h
 #include "unity.h"
 #include "Nm.h"
 

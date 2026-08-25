@@ -13,6 +13,8 @@
  *   挂载尝试记录：docs/real-test-refactor-exec-20260813.md（③ 废弃处置）。
  */
 
+// @tests src/bsw/mcal/flash/src/Flash.c  @tests src/bsw/mcal/flash/include/Flash.h
+
 #include <stdio.h>
 #include <string.h>
 #include "Flash.h"

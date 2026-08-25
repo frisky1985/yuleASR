@@ -3,6 +3,8 @@
  * @brief COMM 模块单元测试
  */
 
+// @tests src/bsw/services/comm/src/ComM.c  @tests src/bsw/services/comm/include/ComM.h
+
 #include <unity.h>
 #include "comm.h"
 

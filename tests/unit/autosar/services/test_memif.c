@@ -3,6 +3,8 @@
  * @brief MEMIF 模块单元测试
  */
 
+// @tests src/bsw/services/memif/src/MemIf.c  @tests src/bsw/services/memif/include/MemIf.h
+
 #include <unity.h>
 #include "memif.h"
 

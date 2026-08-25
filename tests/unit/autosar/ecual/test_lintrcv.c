@@ -3,6 +3,8 @@
  * @brief LINTRCV 模块单元测试
  */
 
+// @tests src/bsw/ecual/lintrcv/src/LinTrcv.c  @tests src/bsw/ecual/lintrcv/include/LinTrcv.h
+
 #include <unity.h>
 #include "lintrcv.h"
 

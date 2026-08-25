@@ -3,6 +3,8 @@
  * @brief Gpt (General Purpose Timer) Unit Tests
  * @req SWS_Gpt
  */
+
+// @tests src/bsw/mcal/gpt/src/Gpt.c  @tests src/bsw/mcal/gpt/include/Gpt.h
 #include "unity.h"
 #include "Gpt.h"
 

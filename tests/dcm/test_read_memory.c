@@ -10,6 +10,8 @@
  * @copyright Copyright (c) 2024
  ******************************************************************************/
 
+// @tests src/bsw/services/dcm/src/Dcm.c  @tests src/bsw/services/dcm/src/Dcm_Obd.c  @tests src/bsw/services/dcm/src/Dcm_test.c
+
 #include "unity.h"
 #include "dcm_memory.h"
 #include <string.h>

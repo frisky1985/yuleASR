@@ -3,6 +3,8 @@
  * @brief Wdg (Watchdog Driver) Unit Tests
  * @req SWS_Wdg
  */
+
+// @tests src/bsw/mcal/wdg/src/Wdg.c  @tests src/bsw/mcal/wdg/include/Wdg.h
 #include "unity.h"
 #include "Wdg.h"
 

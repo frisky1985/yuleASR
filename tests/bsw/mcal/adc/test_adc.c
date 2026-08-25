@@ -3,6 +3,8 @@
  * @brief Adc (ADC Driver) Unit Tests
  * @req SWS_Adc
  */
+
+// @tests src/bsw/mcal/adc/src/Adc.c  @tests src/bsw/mcal/adc/include/Adc.h
 #include "unity.h"
 #include "Adc.h"
 

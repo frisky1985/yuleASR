@@ -6,6 +6,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/soad/src/SoAd.c  @tests src/bsw/services/soad/include/SoAd.h
+
 #include "../test_framework.h"
 #include "SoAd.h"
 #include "TcpIp.h"

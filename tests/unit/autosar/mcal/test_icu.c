@@ -20,6 +20,8 @@
  * - 错误处理
  */
 
+// @tests src/bsw/mcal/icu/src/Icu.c  @tests src/bsw/mcal/icu/include/Icu.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

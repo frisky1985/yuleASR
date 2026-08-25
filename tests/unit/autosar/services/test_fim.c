@@ -3,6 +3,8 @@
  * @brief FIM 模块单元测试
  */
 
+// @tests src/bsw/services/fim/src/FiM.c  @tests src/bsw/services/fim/include/FiM.h
+
 #include <unity.h>
 #include "fim.h"
 

@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/ecuc/src/EcuC.c  @tests src/bsw/services/ecuc/include/EcuC.h
+
 #include "unity.h"
 #include "EcuC.h"
 

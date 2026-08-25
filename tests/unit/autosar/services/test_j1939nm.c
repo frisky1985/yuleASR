@@ -3,6 +3,8 @@
  * @brief J1939NM 模块单元测试
  */
 
+// @tests src/bsw/services/j1939nm/src/J1939Nm.c  @tests src/bsw/services/j1939nm/include/J1939Nm.h
+
 #include <unity.h>
 #include "j1939nm.h"
 

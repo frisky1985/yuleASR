@@ -15,6 +15,8 @@
  * ASIL Level: D
  */
 
+// @tests src/bsw/services/e2e/src/E2E.c  @tests src/bsw/services/e2e/include/E2E.h
+
 #include <unity.h>
 #include "E2E.h"
 #include "Crc.h"

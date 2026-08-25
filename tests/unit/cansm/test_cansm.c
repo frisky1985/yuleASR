@@ -3,6 +3,8 @@
  * @brief CAN State Manager Unit Tests
  */
 
+// @tests src/bsw/services/cansm/src/CanSm.c  @tests src/bsw/services/cansm/include/CanSm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

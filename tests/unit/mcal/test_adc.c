@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/adc/src/Adc.c  @tests src/bsw/mcal/adc/include/Adc.h
+
 #include "test_framework.h"
 #include "Adc.h"
 #include "mock_mcal.h"

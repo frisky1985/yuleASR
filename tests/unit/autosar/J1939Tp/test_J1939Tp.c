@@ -3,6 +3,8 @@
  * @brief J1939Tp Unit Tests
  */
 
+// @tests src/bsw/services/j1939tp/src/J1939Tp.c  @tests src/bsw/services/j1939tp/include/J1939Tp.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

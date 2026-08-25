@@ -3,6 +3,8 @@
  * @brief DLT Unit Tests
  */
 
+// @tests src/bsw/services/dlt/src/Dlt.c  @tests src/bsw/services/dlt/include/Dlt.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

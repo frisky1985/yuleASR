@@ -28,6 +28,8 @@
  * Target Coverage: 80%+
  */
 
+// @tests src/bsw/services/ecum/src/EcuM.c  @tests src/bsw/services/ecum/include/EcuM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

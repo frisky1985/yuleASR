@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/mcal/eth/src/Eth.c  @tests src/bsw/mcal/eth/include/Eth.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

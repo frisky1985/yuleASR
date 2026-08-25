@@ -3,6 +3,8 @@
  * @brief CANTRCV 模块单元测试
  */
 
+// @tests src/bsw/ecual/cantrcv/src/CanTrcv.c  @tests src/bsw/ecual/cantrcv/include/CanTrcv.h
+
 #include <unity.h>
 #include "cantrcv.h"
 

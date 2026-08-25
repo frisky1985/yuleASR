@@ -3,6 +3,8 @@
  * @brief CRC 模块单元测试
  */
 
+// @tests src/bsw/services/crc/src/Crc.c  @tests src/bsw/services/crc/include/Crc.h
+
 #include <unity.h>
 #include "crc.h"
 

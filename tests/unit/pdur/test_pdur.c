@@ -7,6 +7,8 @@
  * SHALL-PDUR-03: SHALL support gateway routing between CAN <-> LIN and CAN <-> Ethernet
  */
 
+// @tests src/bsw/services/pdur/src/PduR.c  @tests src/bsw/services/pdur/include/PduR.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

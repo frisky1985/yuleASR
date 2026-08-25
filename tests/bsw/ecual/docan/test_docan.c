@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/docan/src/DoCan.c  @tests src/bsw/services/docan/include/DoCan.h
+
 #include "unity.h"
 #include "DoCan.h"
 

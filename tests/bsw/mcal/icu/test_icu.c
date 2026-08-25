@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/mcal/icu/src/Icu.c  @tests src/bsw/mcal/icu/include/Icu.h
+
 #include "unity.h"
 #include "Icu.h"
 #include "Icu_Cfg.h"

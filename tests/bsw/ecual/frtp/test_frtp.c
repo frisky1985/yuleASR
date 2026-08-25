@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/frtp/src/FrTp.c  @tests src/bsw/ecual/frtp/include/FrTp.h
+
 #include "unity.h"
 #include "FrTp.h"
 

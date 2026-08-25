@@ -11,6 +11,8 @@
 * Description: Com 模块单元测试 - 验证信号发送/接收、I-PDU 管理功能
 ==================================================================================================*/
 
+// @tests src/bsw/services/com/src/Com.c  @tests src/bsw/services/com/include/Com.h
+
 #include "../test_framework.h"
 #include "Com.h"
 #include "Com_Cfg.h"

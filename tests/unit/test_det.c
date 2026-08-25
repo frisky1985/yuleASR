@@ -4,6 +4,8 @@
  *
  * Tests the real Det.c module with actual assertions.
  */
+
+// @tests src/bsw/services/det/src/Det.c  @tests src/bsw/services/det/include/Det.h
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

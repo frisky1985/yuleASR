@@ -8,6 +8,8 @@
  * SHALL-DCM-04: SHALL enforce P2* timeout of 500ms for diagnostic responses
  */
 
+// @tests src/bsw/services/dcm/src/Dcm.c  @tests src/bsw/services/dcm/include/Dcm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

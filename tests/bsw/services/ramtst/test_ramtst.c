@@ -3,6 +3,8 @@
  * @brief RamTst (RAM Test) Unit Tests
  * @req SWS_RamTst
  */
+
+// @tests src/bsw/services/ramtst/src/RamTst.c  @tests src/bsw/services/ramtst/include/RamTst.h
 #include "unity.h"
 #include "RamTst.h"
 

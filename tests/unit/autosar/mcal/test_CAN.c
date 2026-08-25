@@ -10,6 +10,8 @@
  * SHALL-CAN-06: SHALL provide automatic bus-off recovery
  */
 
+// @tests src/bsw/mcal/can/src/Can.c  @tests src/bsw/mcal/can/include/Can.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

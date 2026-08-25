@@ -3,6 +3,8 @@
  * @brief Crypto Interface Unit Tests
  */
 
+// @tests src/bsw/services/cryif/src/CryIf.c  @tests src/bsw/services/cryif/include/CryIf.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

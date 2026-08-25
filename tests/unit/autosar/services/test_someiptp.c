@@ -3,6 +3,8 @@
  * @brief SOMEIPTP 模块单元测试
  */
 
+// @tests src/bsw/services/someiptp/src/SomeIpTp.c  @tests src/bsw/services/someiptp/include/SomeIpTp.h
+
 #include <unity.h>
 #include "someiptp.h"
 

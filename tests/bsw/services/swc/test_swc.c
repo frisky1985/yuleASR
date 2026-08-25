@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/swc/src/Swc.c  @tests src/bsw/services/swc/include/Swc.h
+
 #include "unity.h"
 #include "Swc.h"
 

@@ -3,6 +3,8 @@
  * @brief CAN Network Management Unit Tests
  */
 
+// @tests src/bsw/ecual/canNm/src/CanNm.c  @tests src/bsw/ecual/canNm/include/CanNm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

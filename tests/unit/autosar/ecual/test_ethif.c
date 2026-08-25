@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/ecual/ethif/src/EthIf.c  @tests src/bsw/ecual/ethif/include/EthIf.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

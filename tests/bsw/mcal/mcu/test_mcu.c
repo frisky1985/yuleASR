@@ -3,6 +3,8 @@
  * @brief Mcu (MCU Driver) Unit Tests
  * @req SWS_Mcu
  */
+
+// @tests src/bsw/mcal/mcu/src/Mcu.c  @tests src/bsw/mcal/mcu/include/Mcu.h
 #include "unity.h"
 #include "Mcu.h"
 

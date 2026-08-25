@@ -26,6 +26,8 @@
  * - Error Handling (DET errors, invalid parameters)
  */
 
+// @tests src/bsw/ecual/canif/src/CanIf.c  @tests src/bsw/ecual/canif/include/CanIf.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

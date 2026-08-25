@@ -3,6 +3,8 @@
  * @brief UDPNM 模块单元测试
  */
 
+// @tests src/bsw/services/udpnm/src/UdpNm.c  @tests src/bsw/services/udpnm/include/UdpNm.h
+
 #include <unity.h>
 #include "udpnm.h"
 

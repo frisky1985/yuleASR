@@ -3,6 +3,8 @@
  * @brief SOMEIPXF 模块单元测试
  */
 
+// @tests src/bsw/services/someipxf/src/SomeIpXf.c  @tests src/bsw/services/someipxf/include/SomeIpXf.h
+
 #include <unity.h>
 #include "someipxf.h"
 

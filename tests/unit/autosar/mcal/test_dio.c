@@ -9,6 +9,8 @@
  * SHALL-DIO-04: SHALL support edge-triggered interrupt on rising, falling, and both edges
  */
 
+// @tests src/bsw/mcal/dio/src/Dio.c  @tests src/bsw/mcal/dio/include/Dio.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

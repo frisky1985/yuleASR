@@ -19,6 +19,8 @@
 *                - EthSM_DeInit: 每个网络使用正确 ctrlIdx 关闭
 *=================================================================================================*/
 
+// @tests src/bsw/services/ethsm/src/EthSM.c  @tests src/bsw/services/ethsm/include/EthSM.h
+
 #include "../test_framework.h"
 
 #include "EthSM.h"

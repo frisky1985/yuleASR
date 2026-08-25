@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/mem/src/Mem.c  @tests src/bsw/services/mem/include/Mem.h
+
 #include "unity.h"
 #include "Mem.h"
 

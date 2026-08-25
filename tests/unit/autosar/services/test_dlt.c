@@ -3,6 +3,8 @@
  * @brief DLT 模块单元测试
  */
 
+// @tests src/bsw/services/dlt/src/Dlt.c  @tests src/bsw/services/dlt/include/Dlt.h
+
 #include <unity.h>
 #include "dlt.h"
 

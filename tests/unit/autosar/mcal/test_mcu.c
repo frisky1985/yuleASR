@@ -30,6 +30,8 @@
 *   docs/real-test-refactor-exec-20260813.md（③ 废弃处置）。
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/mcu/src/Mcu.c  @tests src/bsw/mcal/mcu/include/Mcu.h
+
 #include "test_framework.h"
 #include "Mcu.h"
 #include "Mcu_Cfg.h"

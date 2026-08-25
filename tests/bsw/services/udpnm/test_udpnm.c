@@ -3,6 +3,8 @@
  * @brief UdpNm (UDP Network Management) Unit Tests
  * @req SWS_UdpNm
  */
+
+// @tests src/bsw/services/udpnm/src/UdpNm.c  @tests src/bsw/services/udpnm/include/UdpNm.h
 #include "unity.h"
 #include "UdpNm.h"
 

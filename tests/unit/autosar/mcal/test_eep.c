@@ -5,6 +5,8 @@
  * @date 2026-05-15
  */
 
+// @tests src/bsw/mcal/eep/src/Eep.c  @tests src/bsw/mcal/eep/include/Eep.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

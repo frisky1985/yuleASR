@@ -3,6 +3,8 @@
  * @brief FEE 模块单元测试
  */
 
+// @tests src/bsw/ecual/fee/src/Fee.c  @tests src/bsw/ecual/fee/include/Fee.h
+
 #include <unity.h>
 #include "fee.h"
 

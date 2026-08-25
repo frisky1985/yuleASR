@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/ethif/src/EthIf.c  @tests src/bsw/ecual/ethif/include/EthIf.h
+
 #include "unity.h"
 #include "EthIf.h"
 

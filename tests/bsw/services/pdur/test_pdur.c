@@ -3,6 +3,8 @@
  * @brief PduR (PDU Router) Unit Tests
  * @req SWS_PduR
  */
+
+// @tests src/bsw/services/pdur/src/PduR.c  @tests src/bsw/services/pdur/include/PduR.h
 #include "unity.h"
 #include "PduR.h"
 

@@ -3,6 +3,8 @@
  * @brief J1939TP 模块单元测试
  */
 
+// @tests src/bsw/ecual/j1939tp/src/J1939Tp.c  @tests src/bsw/ecual/j1939tp/include/J1939Tp.h
+
 #include <unity.h>
 #include "j1939tp.h"
 

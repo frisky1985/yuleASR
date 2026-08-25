@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/port/src/Port.c  @tests src/bsw/mcal/port/include/Port.h
+
 #include "test_framework.h"
 #include "Port.h"
 #include "mock_mcal.h"

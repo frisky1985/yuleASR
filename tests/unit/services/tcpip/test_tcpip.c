@@ -17,6 +17,8 @@
 *        - DET error reporting
 *================================================================================================*/
 
+// @tests src/bsw/services/tcpip/src/TcpIp.c  @tests src/bsw/services/tcpip/include/TcpIp.h
+
 #include "../test_framework.h"
 #include "TcpIp.h"
 #include <string.h>

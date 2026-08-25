@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/mcal/lin/src/Lin.c  @tests src/bsw/mcal/lin/include/Lin.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

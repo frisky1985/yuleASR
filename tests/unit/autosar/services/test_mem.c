@@ -3,6 +3,8 @@
  * @brief MEM 模块单元测试
  */
 
+// @tests src/bsw/services/mem/src/Mem.c  @tests src/bsw/services/mem/include/Mem.h
+
 #include <unity.h>
 #include "mem.h"
 

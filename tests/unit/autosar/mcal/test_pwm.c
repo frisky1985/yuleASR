@@ -18,6 +18,8 @@
  * @test_coverage 目标覆盖率: 80%+
  */
 
+// @tests src/bsw/mcal/pwm/src/Pwm.c  @tests src/bsw/mcal/pwm/include/Pwm.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

@@ -4,6 +4,8 @@
  * @req SWS_WdgM
  */
 
+// @tests src/bsw/services/wdgm/src/WdgM.c  @tests src/bsw/services/wdgm/include/WdgM.h
+
 #include "unity.h"
 #include "WdgM.h"
 

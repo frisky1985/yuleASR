@@ -6,6 +6,8 @@
  * @author Shanghai Yule Electronics Technology Co., Ltd.
  */
 
+// @tests src/bsw/services/linm/src/LinM.c  @tests src/bsw/services/linm/include/LinM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <stdint.h>

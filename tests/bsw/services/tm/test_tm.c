@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/tm/src/Tm.c  @tests src/bsw/services/tm/include/Tm.h
+
 #include "unity.h"
 #include "Tm.h"
 

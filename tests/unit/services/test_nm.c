@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/nm/src/Nm.c  @tests src/bsw/services/nm/include/Nm.h
+
 #include "test_framework.h"
 #include "Nm.h"
 #include "mock_services.h"

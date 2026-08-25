@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/mcal/spi/src/Spi.c  @tests src/bsw/mcal/spi/include/Spi.h
+
 #include "test_framework.h"
 #include "Spi.h"
 #include "mock_mcal.h"

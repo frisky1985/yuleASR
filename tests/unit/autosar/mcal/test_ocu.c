@@ -18,6 +18,8 @@
  * - Error Handling
  */
 
+// @tests src/bsw/mcal/ocu/src/Ocu.c  @tests src/bsw/mcal/ocu/include/Ocu.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

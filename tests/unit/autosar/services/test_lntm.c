@@ -3,6 +3,8 @@
  * @brief LNTM 模块单元测试
  */
 
+// @tests src/bsw/ecual/linTp/src/LinTp.c  @tests src/bsw/ecual/linTp/include/LinTp.h
+
 #include <unity.h>
 #include "lntm.h"
 

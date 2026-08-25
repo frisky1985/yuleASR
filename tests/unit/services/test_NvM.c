@@ -11,6 +11,8 @@
 * Description: NvM 模块单元测试 - 验证 NVRAM 读写、CRC 验证、冗余管理功能
 ==================================================================================================*/
 
+// @tests src/bsw/services/nvm/src/NvM.c  @tests src/bsw/services/nvm/include/NvM.h
+
 #include "../test_framework.h"
 #include "NvM.h"
 #include "NvM_Cfg.h"

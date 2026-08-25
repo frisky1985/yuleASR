@@ -7,6 +7,8 @@
  * @date 2026-04-27
  */
 
+// @tests src/bsw/services/dlt/src/Dlt.c  @tests src/bsw/services/dlt/include/Dlt.h
+
 #include "../test_framework.h"
 #include "Dlt.h"
 #include "Dlt_Internal.h"

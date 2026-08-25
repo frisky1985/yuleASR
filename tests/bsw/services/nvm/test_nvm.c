@@ -3,6 +3,8 @@
  * @brief NvM (NVRAM Manager) Unit Tests
  * @req SWS_NvM
  */
+
+// @tests src/bsw/services/nvm/src/NvM.c  @tests src/bsw/services/nvm/include/NvM.h
 #include "unity.h"
 #include "NvM.h"
 

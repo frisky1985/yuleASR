@@ -3,6 +3,8 @@
  * @brief NVM Unit Tests
  */
 
+// @tests src/bsw/services/nvm/src/NvM.c  @tests src/bsw/services/nvm/include/NvM.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

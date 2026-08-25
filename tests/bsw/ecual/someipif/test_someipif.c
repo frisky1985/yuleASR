@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/someipif/src/SomeIpIf.c  @tests src/bsw/ecual/someipif/include/SomeIpIf.h
+
 #include "unity.h"
 #include "SomeIpIf.h"
 

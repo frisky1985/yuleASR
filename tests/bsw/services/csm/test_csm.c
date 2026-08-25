@@ -3,6 +3,8 @@
  * @brief Csm (Crypto Service Manager) Unit Tests
  * @req SWS_Csm
  */
+
+// @tests src/bsw/services/csm/src/Csm.c  @tests src/bsw/services/csm/include/Csm.h
 #include "unity.h"
 #include "Csm.h"
 

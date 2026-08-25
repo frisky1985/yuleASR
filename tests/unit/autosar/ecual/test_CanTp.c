@@ -25,6 +25,8 @@
 * Target Coverage: 80%+
 ==================================================================================================*/
 
+// @tests src/bsw/ecual/cantp/src/CanTp.c  @tests src/bsw/ecual/cantp/include/CanTp.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

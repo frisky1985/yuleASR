@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/ecual/doip/src/DoIP.c  @tests src/bsw/ecual/doip/include/DoIP.h
+
 #include "unity.h"
 #include "DoIP.h"
 

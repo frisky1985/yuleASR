@@ -3,6 +3,8 @@
  * @brief CRYIF 模块单元测试
  */
 
+// @tests src/bsw/services/cryif/src/CryIf.c  @tests src/bsw/services/cryif/include/CryIf.h
+
 #include <unity.h>
 #include "cryif.h"
 

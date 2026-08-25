@@ -3,6 +3,8 @@
  * @brief Det (Default Error Tracer) Unit Tests
  * @req SWS_Det
  */
+
+// @tests src/bsw/services/det/src/Det.c  @tests src/bsw/services/det/include/Det.h
 #include "unity.h"
 #include "Det.h"
 

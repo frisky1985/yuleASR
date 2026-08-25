@@ -3,6 +3,8 @@
  * @brief RAMSAFETY 模块单元测试
  */
 
+// @tests src/bsw/services/ramsafety/src/RamSafety.c  @tests src/bsw/services/ramsafety/include/RamSafety.h
+
 #include <unity.h>
 #include "ramsafety.h"
 

@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/ecual/linif/src/LinIf.c  @tests src/bsw/ecual/linif/include/LinIf.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

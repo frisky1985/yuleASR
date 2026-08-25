@@ -3,6 +3,8 @@
  * @brief LINM 模块单元测试
  */
 
+// @tests src/bsw/services/linm/src/LinM.c  @tests src/bsw/services/linm/include/LinM.h
+
 #include <unity.h>
 #include "linm.h"
 

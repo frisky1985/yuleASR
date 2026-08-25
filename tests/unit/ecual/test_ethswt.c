@@ -14,6 +14,8 @@
 * Use: cmake -DBUILD_TESTING=ON .. && make EthSwt_UnitTest && ctest -R EthSwt
 ==================================================================================================*/
 
+// @tests src/bsw/ecual/ethswt/src/EthSwt.c  @tests src/bsw/ecual/ethswt/include/EthSwt.h
+
 #include "../test_framework.h"
 #include "EthSwt.h"
 #include <string.h>

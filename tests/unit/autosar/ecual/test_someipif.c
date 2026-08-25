@@ -3,6 +3,8 @@
  * @brief SOMEIPIF 模块单元测试
  */
 
+// @tests src/bsw/ecual/someipif/src/SomeIpIf.c  @tests src/bsw/ecual/someipif/include/SomeIpIf.h
+
 #include <unity.h>
 #include "someipif.h"
 

@@ -3,6 +3,8 @@
  * @brief Com (Communication Manager) Unit Tests
  * @req SWS_Com
  */
+
+// @tests src/bsw/services/com/src/Com.c  @tests src/bsw/services/com/include/Com.h
 #include "unity.h"
 #include "Com.h"
 

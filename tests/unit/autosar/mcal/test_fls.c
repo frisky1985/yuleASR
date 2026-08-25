@@ -5,6 +5,8 @@
  * @note Tests for the standard AUTOSAR Fls API
  */
 
+// @tests src/bsw/mcal/fls/src/Fls.c  @tests src/bsw/mcal/fls/include/Fls.h
+
 #include <stdio.h>
 #include <string.h>
 #include "Fls.h"

@@ -3,6 +3,8 @@
  * @brief NVM 模块单元测试
  */
 
+// @tests src/bsw/services/nvm/src/NvM.c  @tests src/bsw/services/nvm/include/NvM.h
+
 #include <unity.h>
 #include "nvm.h"
 

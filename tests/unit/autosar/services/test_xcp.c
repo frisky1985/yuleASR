@@ -3,6 +3,8 @@
  * @brief XCP 模块单元测试
  */
 
+// @tests src/bsw/services/xcp/src/Xcp.c  @tests src/bsw/services/xcp/include/Xcp.h
+
 #include <unity.h>
 #include "xcp.h"
 

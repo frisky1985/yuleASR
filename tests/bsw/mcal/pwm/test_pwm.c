@@ -3,6 +3,8 @@
  * @brief Pwm (PWM Driver) Unit Tests
  * @req SWS_Pwm
  */
+
+// @tests src/bsw/mcal/pwm/src/Pwm.c  @tests src/bsw/mcal/pwm/include/Pwm.h
 #include "unity.h"
 #include "Pwm.h"
 

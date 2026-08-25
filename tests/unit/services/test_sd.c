@@ -6,6 +6,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/services/sd/src/Sd.c  @tests src/bsw/services/sd/include/Sd.h
+
 #include "../test_framework.h"
 #include "Sd.h"
 

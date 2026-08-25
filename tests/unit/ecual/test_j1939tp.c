@@ -9,6 +9,8 @@
 * All Rights Reserved.
 ==================================================================================================*/
 
+// @tests src/bsw/ecual/j1939tp/src/J1939Tp.c  @tests src/bsw/ecual/j1939tp/include/J1939Tp.h
+
 #include "../test_framework.h"
 #include "J1939Tp.h"
 #include "J1939Tp_Cfg.h"

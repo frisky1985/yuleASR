@@ -3,6 +3,8 @@
  * @brief STBM 模块单元测试
  */
 
+// @tests src/bsw/services/stbm/src/StbM.c  @tests src/bsw/services/stbm/include/StbM.h
+
 #include <unity.h>
 #include "stbm.h"
 

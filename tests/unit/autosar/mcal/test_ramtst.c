@@ -17,6 +17,8 @@
  * @test_coverage 目标覆盖率: 80%+
  */
 
+// @tests src/bsw/mcal/ramtst/src/RamTst.c  @tests src/bsw/mcal/ramtst/include/RamTst.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

@@ -3,6 +3,8 @@
  * @brief Port Driver Unit Tests
  * @req SWS_Port
  */
+
+// @tests src/bsw/mcal/port/src/Port.c  @tests src/bsw/mcal/port/include/Port.h
 #include "unity.h"
 #include "Port.h"
 

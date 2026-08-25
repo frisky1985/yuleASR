@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/mcal/crypto/src/Crypto.c  @tests src/bsw/mcal/crypto/include/Crypto.h
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>

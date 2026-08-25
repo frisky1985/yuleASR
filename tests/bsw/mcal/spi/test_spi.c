@@ -3,6 +3,8 @@
  * @brief Spi (SPI Driver) Unit Tests
  * @req SWS_Spi
  */
+
+// @tests src/bsw/mcal/spi/src/Spi.c  @tests src/bsw/mcal/spi/include/Spi.h
 #include "unity.h"
 #include "Spi.h"
 

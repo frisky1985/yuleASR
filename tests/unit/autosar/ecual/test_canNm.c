@@ -13,6 +13,8 @@
  * AUTOSAR_SWS_CANNetworkManagement specification version 4.4.0
  */
 
+// @tests src/bsw/ecual/cannm/src/CanNm.c  @tests src/bsw/ecual/cannm/include/CanNm.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

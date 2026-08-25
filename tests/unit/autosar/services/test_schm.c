@@ -3,6 +3,8 @@
  * @brief SCHM 模块单元测试
  */
 
+// @tests src/bsw/services/schm/src/SchM.c  @tests src/bsw/services/schm/include/SchM.h
+
 #include <unity.h>
 #include "schm.h"
 

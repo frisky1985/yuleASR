@@ -5,6 +5,8 @@
  * @date 2026-08-25
  */
 
+// @tests src/bsw/services/ldcom/src/LdCom.c  @tests src/bsw/services/ldcom/include/LdCom.h
+
 #include "unity.h"
 #include "LdCom.h"
 
