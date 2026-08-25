@@ -130,6 +130,11 @@ int main(void)
     uint8 out[TEST_BLOCK_LEN];
     uint8 i;
 
+    /* Release(NDEBUG) 下 assert 被编译为空，变量仅被 assert 引用会触发
+     * -Werror=unused-variable / unused-but-set-variable；显式引用保持编译一致 */
+    (void)data;
+    (void)out;
+
     reset_mock();
     for (i = 0U; i < TEST_BLOCK_LEN; i++) { data[i] = (uint8)(0xA0U + i); }
 

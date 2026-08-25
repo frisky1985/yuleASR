@@ -24,6 +24,11 @@ foreach(test_src ${TEST_SOURCES})
     
     add_executable(${test_name} ${test_src})
     target_link_libraries(${test_name} PRIVATE boot HashAlgos)
+    # Linux/GNU ld：Boot_Loader.c 内联汇编 `mov sp, %0` 缺 % 前缀 → `sp` 未定义符号
+    # + PIE 重定位冲突（YAC-CI-004 linkage gate 白名单项，release workflow 需同等待遇）
+    if(UNIX AND NOT APPLE)
+        target_link_options(${test_name} PRIVATE -no-pie -Wl,--defsym=sp=0)
+    endif()
     target_include_directories(${test_name} PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}          # test/ 目录自身: Std_Types.h/boot_platform.h host stub
         ${CMAKE_CURRENT_SOURCE_DIR}/../include
