@@ -33,12 +33,13 @@
  ******************************************************************************/
 #include "Std_Types.h"
 #include "MemIf_Cfg.h"
+#include "ModuleId.h"
 
 /*******************************************************************************
  *                              Version Info
  ******************************************************************************/
 #define MEMIF_VENDOR_ID                     (0x01u)
-#define MEMIF_MODULE_ID                     (0x16u)
+#define MEMIF_MODULE_ID                     (MODULE_ID_MEMIF_SERVICES) /* Fixed: was 0x16, conflict with ICU — see ModuleId.h */
 #define MEMIF_AR_MAJOR_VERSION              (4u)
 #define MEMIF_AR_MINOR_VERSION              (4u)
 #define MEMIF_AR_PATCH_VERSION              (0u)

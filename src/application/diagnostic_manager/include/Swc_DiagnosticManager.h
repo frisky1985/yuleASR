@@ -29,6 +29,7 @@
 ==================================================================================================*/
 #include "Rte_Swc.h"
 #include "Std_Types.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    COMPONENT TYPE DEFINITIONS
@@ -62,7 +63,7 @@
 /**
  * @brief Module and instance IDs for DET reporting
  */
-#define SWC_DIAGNOSTICMANAGER_MODULE_ID       (0x82U)
+#define SWC_DIAGNOSTICMANAGER_MODULE_ID       (MODULE_ID_SWC_DIAG)  /* Fixed: was 0x82, conflict with CDD_Lockstep — see ModuleId.h */
 #define SWC_DIAGNOSTICMANAGER_INSTANCE_ID     (0x00U)
 
 /**

@@ -20,13 +20,14 @@
 #include "Std_Types.h"
 #include "FiM_Cfg.h"
 #include "Dem_Types.h"  /* For Dem_EventIdType, Dem_EventStatusType, Dem_UdsStatusByteType */
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define FIM_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
 #define FIM_INSTANCE_ID           0U
-#define FIM_MODULE_ID                   (0x55U) /* FiM Module ID */
+#define FIM_MODULE_ID                   (MODULE_ID_FIM_SERVICES) /* Fixed: was 0x55, conflict with TcpIp — see ModuleId.h */
 #define FIM_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define FIM_AR_RELEASE_MINOR_VERSION    (0x04U)
 #define FIM_AR_RELEASE_REVISION_VERSION (0x00U)

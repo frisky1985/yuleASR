@@ -20,12 +20,13 @@
 #include "Std_Types.h"
 #include "LinTp_Cfg.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define LINTP_VENDOR_ID                     (0x01U) /* YuleTech Vendor ID */
-#define LINTP_MODULE_ID                     (0x90U) /* LinTp Module ID */
+#define LINTP_MODULE_ID                     (MODULE_ID_LINTP_SERVICES) /* Fixed: was 0x90, conflict with Srp — see ModuleId.h */
 #define LINTP_AR_RELEASE_MAJOR_VERSION      (0x04U)
 #define LINTP_AR_RELEASE_MINOR_VERSION      (0x04U)
 #define LINTP_AR_RELEASE_REVISION_VERSION   (0x00U)

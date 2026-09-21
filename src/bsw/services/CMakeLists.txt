@@ -25,6 +25,7 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/config/input/mcal
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/include/autosar/classic/com
+    ${CMAKE_SOURCE_DIR}/src/common/include
     ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
     ${CMAKE_SOURCE_DIR}/third_party/mbedtls/include
     ${CMAKE_SOURCE_DIR}/third_party/yule-mbedtls-adapter/include

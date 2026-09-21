@@ -16,6 +16,32 @@
 #ifndef MOCK_REGISTERS_H
 #define MOCK_REGISTERS_H
 
+/*==================================================================================================
+*                                      MOCK REGISTER ACCESS
+*                                      Must appear before any #include that might define
+*                                      REG_READ32/REG_WRITE32 (e.g. Std_Types.h).
+==================================================================================================*/
+
+#ifndef REG_READ32
+#define REG_READ32(address)             MockRegisters_Read32(address)
+#endif
+#ifndef REG_READ16
+#define REG_READ16(address)             MockRegisters_Read16(address)
+#endif
+#ifndef REG_READ8
+#define REG_READ8(address)              MockRegisters_Read8(address)
+#endif
+
+#ifndef REG_WRITE32
+#define REG_WRITE32(address, value)     MockRegisters_Write32(address, value)
+#endif
+#ifndef REG_WRITE16
+#define REG_WRITE16(address, value)     MockRegisters_Write16(address, value)
+#endif
+#ifndef REG_WRITE8
+#define REG_WRITE8(address, value)      MockRegisters_Write8(address, value)
+#endif
+
 #include "Std_Types.h"
 
 /*==================================================================================================
@@ -114,22 +140,9 @@ void MockRegisters_Write8(uint32 address, uint8 value);
 
 /*==================================================================================================
 *                                      MOCK REGISTER ACCESS
-*                                      Used by source code
+*                                      Defined at the top of this header.
 ==================================================================================================*/
 
-/**
- * @brief Mock register read macro
- */
-#define REG_READ32(address)             MockRegisters_Read32(address)
-#define REG_READ16(address)             MockRegisters_Read16(address)
-#define REG_READ8(address)              MockRegisters_Read8(address)
-
-/**
- * @brief Mock register write macro
- */
-#define REG_WRITE32(address, value)     MockRegisters_Write32(address, value)
-#define REG_WRITE16(address, value)     MockRegisters_Write16(address, value)
-#define REG_WRITE8(address, value)      MockRegisters_Write8(address, value)
 
 #ifdef __cplusplus
 }

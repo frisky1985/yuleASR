@@ -13,6 +13,7 @@
 
 #include "Std_Types.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
 #define SOMEIPIF_AR_RELEASE_MAJOR_VERSION   4U
 #define SOMEIPIF_AR_RELEASE_MINOR_VERSION   4U
@@ -20,7 +21,7 @@
 #define SOMEIPIF_SW_MAJOR_VERSION           1U
 #define SOMEIPIF_SW_MINOR_VERSION           0U
 #define SOMEIPIF_SW_PATCH_VERSION           0U
-#define SOMEIPIF_MODULE_ID          0x82U
+#define SOMEIPIF_MODULE_ID          MODULE_ID_SOMEIPIF   /* Fixed: was 0x82, conflict with CDD_Lockstep — see ModuleId.h */
 #define SOMEIPIF_VENDOR_ID          0x0055U
 
 /* Connection Types */

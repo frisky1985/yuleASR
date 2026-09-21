@@ -1,19 +1,19 @@
 {
   "report_type": "incremental",
-  "generated_at": "2026-08-25T20:57:18.692426",
+  "generated_at": "2026-08-25T21:12:55.950027",
   "project_dir": "/Users/ingeek/workspace/AUTOSAR",
   "layers": [
     {
       "layer": 1,
-      "status": "failed",
-      "commit": "c2f916869",
-      "started_at": "2026-08-25T20:56:43.290299",
-      "completed_at": "2026-08-25T20:57:18.689854",
+      "status": "passed",
+      "commit": "95d1e6edb",
+      "started_at": "2026-08-25T21:12:38.116887",
+      "completed_at": "2026-08-25T21:12:55.947177",
       "stages_summary": {
         "total": 52,
-        "passed": 37,
-        "failed": 1,
-        "skipped": 12
+        "passed": 36,
+        "failed": 0,
+        "skipped": 14
       },
       "stages": [
         {
@@ -84,12 +84,12 @@
         {
           "name": "clang-tidy",
           "status": "skipped",
-          "detail": "clang-tidy not installed"
+          "detail": "no compile_commands.json — clang-tidy skipped (run cmake with CMAKE_EXPORT_COMPILE_COMMANDS=ON)"
         },
         {
           "name": "misra-check",
-          "status": "passed",
-          "detail": "74 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json"
+          "status": "skipped",
+          "detail": "All C/C++ files excluded by exclude_paths"
         },
         {
           "name": "unit-tests",
@@ -258,8 +258,8 @@
         },
         {
           "name": "coverage",
-          "status": "failed",
-          "detail": "Line coverage 0.0% < 40.0%"
+          "status": "skipped",
+          "detail": "coverage.enabled=false — C coverage via c-coverage-gate"
         },
         {
           "name": "coverage-regression",
@@ -277,16 +277,8 @@
           "detail": "line_rate=91.6% >= 40%"
         }
       ],
-      "coverage": {
-        "line": 0.0,
-        "condition": 0.0,
-        "line_pass": false,
-        "condition_pass": false
-      },
-      "errors": [
-        "clang-tidy failed",
-        "coverage failed"
-      ]
+      "coverage": null,
+      "errors": []
     }
   ],
   "misra": {

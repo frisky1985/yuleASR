@@ -50,7 +50,7 @@ void tearDown(void) {
 /** @req SWS_SoAd_00001 */
 void test_SoAd_Init_NullPtr_ShouldNotCrash(void) {
     SoAd_Init(NULL_PTR);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCallCount); /* Det should report error for NULL config */
 }
 
 /** @req SWS_SoAd_00001 */
@@ -66,7 +66,7 @@ void test_SoAd_Init_DoubleInit_ShouldSucceed(void) {
     test_SoAd_SetupDefaultConfig();
     SoAd_Init(&testConfig);
     SoAd_Init(&testConfig);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCallCount); /* Det should report error for double init */
 }
 
 /** @req SWS_SoAd_00002 */
@@ -79,7 +79,7 @@ void test_SoAd_MainFunction_Uninit_ShouldNotCrash(void) {
 /** @req SWS_SoAd_00002 */
 void test_SoAd_MainFunction_ValidCall_ShouldSucceed(void) {
     SoAd_MainFunction();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid MainFunction call */
 }
 
 /** @req SWS_SoAd_00003 */
@@ -98,7 +98,7 @@ void test_SoAd_Open_InvalidSocket_ShouldReportError(void) {
 /** @req SWS_SoAd_00003 */
 void test_SoAd_Open_ValidCall_ShouldSucceed(void) {
     SoAd_Open();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid Open call */
 }
 
 /** @req SWS_SoAd_00004 */
@@ -117,7 +117,7 @@ void test_SoAd_Close_InvalidSocket_ShouldReportError(void) {
 /** @req SWS_SoAd_00004 */
 void test_SoAd_Close_ValidCall_ShouldSucceed(void) {
     SoAd_Close();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid Close call */
 }
 
 /** @req SWS_SoAd_00005 */
@@ -136,7 +136,7 @@ void test_SoAd_Send_NullBuf_ShouldReportError(void) {
 /** @req SWS_SoAd_00005 */
 void test_SoAd_Send_ValidData_ShouldSucceed(void) {
     SoAd_Send();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid Send call */
 }
 
 /** @req SWS_SoAd_00006 */
@@ -155,7 +155,7 @@ void test_SoAd_Receive_NullBuf_ShouldReportError(void) {
 /** @req SWS_SoAd_00006 */
 void test_SoAd_Receive_ValidCall_ShouldSucceed(void) {
     SoAd_Receive();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid Receive call */
 }
 
 /** @req SWS_SoAd_00007 */
@@ -174,7 +174,7 @@ void test_SoAd_GetStats_NullPtr_ShouldReportError(void) {
 /** @req SWS_SoAd_00007 */
 void test_SoAd_GetStats_ValidCall_ShouldSucceed(void) {
     SoAd_GetStats();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid GetStats call */
 }
 
 /** @req SWS_SoAd_00008 */
@@ -186,7 +186,7 @@ void test_SoAd_GetVersionInfo_NullPtr_ShouldReportError(void) {
 /** @req SWS_SoAd_00008 */
 void test_SoAd_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     SoAd_GetVersionInfo();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid GetVersionInfo call */
 }
 
 /** @req SWS_SoAd_00009 */
@@ -199,7 +199,7 @@ void test_SoAd_EnableRouting_Uninit_ShouldReportError(void) {
 /** @req SWS_SoAd_00009 */
 void test_SoAd_EnableRouting_ValidCall_ShouldSucceed(void) {
     SoAd_EnableRouting();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid EnableRouting call */
 }
 
 /** @req SWS_SoAd_00010 */
@@ -212,7 +212,7 @@ void test_SoAd_DisableRouting_Uninit_ShouldReportError(void) {
 /** @req SWS_SoAd_00010 */
 void test_SoAd_DisableRouting_ValidCall_ShouldSucceed(void) {
     SoAd_DisableRouting();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid DisableRouting call */
 }
 
 /** @req SWS_SoAd_00011 */
@@ -224,6 +224,6 @@ void test_SoAd_SocketStateNotification_InvalidSocket_ShouldReportError(void) {
 /** @req SWS_SoAd_00011 */
 void test_SoAd_SocketStateNotification_ValidCall_ShouldSucceed(void) {
     SoAd_SocketStateNotification();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* No Det errors expected for valid SocketStateNotification call */
 }
 

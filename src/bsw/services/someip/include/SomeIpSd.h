@@ -31,7 +31,7 @@
 #define SOMEIPSD_SW_MAJOR_VERSION           1U
 #define SOMEIPSD_SW_MINOR_VERSION           0U
 #define SOMEIPSD_SW_PATCH_VERSION           0U
-#define SOMEIPSD_MODULE_ID                 0x71
+#define SOMEIPSD_MODULE_ID                 0x74U /* Fixed: was 0x71, conflict with SD/FiM — see ModuleId.h */
 
 /* Service IDs */
 #define SOMEIPSD_INIT_SID                  0x01

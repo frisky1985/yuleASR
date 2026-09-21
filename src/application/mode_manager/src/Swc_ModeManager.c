@@ -29,11 +29,12 @@
 #include "Swc_ModeManager.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_MODEMANAGER_MODULE_ID           0x86
+#define SWC_MODEMANAGER_MODULE_ID           MODULE_ID_SWC_MODE  /* Fixed: was 0x86, aligned to SWC range — see ModuleId.h */
 #define SWC_MODEMANAGER_INSTANCE_ID         0x00
 
 /* Maximum components to manage */

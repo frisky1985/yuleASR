@@ -20,12 +20,13 @@
 #include "Std_Types.h"
 #include "Dcm_Cfg.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define DCM_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
-#define DCM_MODULE_ID                   (0x29U) /* DCM Module ID */
+#define DCM_MODULE_ID                   (MODULE_ID_DCM) /* Fixed: was 0x29, conflict with DIO — see ModuleId.h */
 #define DCM_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define DCM_AR_RELEASE_MINOR_VERSION    (0x04U)
 #define DCM_AR_RELEASE_REVISION_VERSION (0x00U)

@@ -25,7 +25,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define SOMEIPXF_VENDOR_ID                      (0x01U) /* YuleTech Vendor ID */
-#define SOMEIPXF_MODULE_ID                      (0x7BU) /* SOMEIPXF Module ID */
+#define SOMEIPXF_MODULE_ID                      (0x76U) /* Fixed: was 0x7B, conflict with PWM — see ModuleId.h */
 #define SOMEIPXF_INSTANCE_ID                    (0x00U)
 
 #define SOMEIPXF_AR_RELEASE_MAJOR_VERSION       (0x22U)

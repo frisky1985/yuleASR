@@ -16,6 +16,7 @@ project(autosar_integration_tests C)
 
 # 共用头文件路径
 set(INTEGRATION_INCLUDES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/common/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/com/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/pdur/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/canif/include

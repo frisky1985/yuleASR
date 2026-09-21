@@ -19,12 +19,13 @@
 #include "Std_Types.h"
 #include "DoCan_Cfg.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define DOCAN_VENDOR_ID                 (0x01U) /* YuleTech Vendor ID */
-#define DOCAN_MODULE_ID                 (0x4DU) /* DOCAN Module ID */
+#define DOCAN_MODULE_ID                 (MODULE_ID_DOCAN_SERVICES) /* Fixed: was 0x4D, conflict with IpduM — see ModuleId.h */
 #define DOCAN_AR_RELEASE_MAJOR_VERSION  (0x04U)
 #define DOCAN_AR_RELEASE_MINOR_VERSION  (0x04U)
 #define DOCAN_AR_RELEASE_REVISION_VERSION (0x00U)

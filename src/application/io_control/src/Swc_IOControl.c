@@ -29,11 +29,12 @@
 #include "Swc_IOControl.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_IOCONTROL_MODULE_ID             0x85
+#define SWC_IOCONTROL_MODULE_ID             MODULE_ID_SWC_IO  /* Fixed: was 0x85, conflict with CDD_FVM — see ModuleId.h */
 #define SWC_IOCONTROL_INSTANCE_ID           0x00
 
 /* Maximum channels */

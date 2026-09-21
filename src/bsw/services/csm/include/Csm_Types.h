@@ -39,6 +39,7 @@
 *                                       包含头文件
 ==================================================================================================*/
 #include "Std_Types.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                       宏定义
@@ -46,7 +47,7 @@
 /**
  * @brief CSM模块ID (用于Det)
  */
-#define CSM_MODULE_ID                           0x70U
+#define CSM_MODULE_ID                           MODULE_ID_CSM   /* Fixed: was 0x70, conflict with RTE/SomeIp/EthIf — see ModuleId.h */
 
 /**
  * @brief 最大密钥数量

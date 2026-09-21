@@ -20,10 +20,11 @@
 
 #include "Std_Types.h"
 #include "FiM_Cfg.h"
+#include "ModuleId.h"
 
 /* Module / vendor identification */
 #define FIM_VENDOR_ID               (0x0055U)
-#define FIM_MODULE_ID               (0x71U)
+#define FIM_MODULE_ID               (MODULE_ID_FIM_ECUAL) /* Fixed: was 0x71, conflict with SD/SomeIpSd — see ModuleId.h */
 #define FIM_INSTANCE_ID             (0x00U)
 
 /* AUTOSAR Version Information */

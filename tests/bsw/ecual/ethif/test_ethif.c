@@ -50,7 +50,7 @@ void tearDown(void) {
 /** @req SWS_EthIf_00001 */
 void test_EthIf_Init_NullPtr_ShouldNotCrash(void) {
     EthIf_Init(NULL_PTR);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    TEST_ASSERT_NOT_EQUAL(0U, mock_DetCallCount); /* Det should report error for NULL config */
 }
 
 /** @req SWS_EthIf_00001 */
@@ -66,7 +66,7 @@ void test_EthIf_Init_DoubleInit_ShouldSucceed(void) {
     test_EthIf_SetupDefaultConfig();
     EthIf_Init(&testConfig);
     EthIf_Init(&testConfig);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    TEST_ASSERT_NOT_EQUAL(0U, mock_DetCallCount); /* Det should report error for double init */
 }
 
 /** @req SWS_EthIf_00002 */
@@ -78,7 +78,7 @@ void test_EthIf_GetVersionInfo_NullPtr_ShouldReportError(void) {
 /** @req SWS_EthIf_00002 */
 void test_EthIf_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     EthIf_GetVersionInfo();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00003 */
@@ -90,7 +90,7 @@ void test_EthIf_GetCtrlIdx_NullPtr_ShouldReportError(void) {
 /** @req SWS_EthIf_00003 */
 void test_EthIf_GetCtrlIdx_ValidCall_ShouldSucceed(void) {
     EthIf_GetCtrlIdx();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00004 */
@@ -102,7 +102,7 @@ void test_EthIf_SetCtrlMode_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00004 */
 void test_EthIf_SetCtrlMode_ValidCall_ShouldSucceed(void) {
     EthIf_SetCtrlMode();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00005 */
@@ -114,7 +114,7 @@ void test_EthIf_GetCtrlMode_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00005 */
 void test_EthIf_GetCtrlMode_ValidCall_ShouldSucceed(void) {
     EthIf_GetCtrlMode();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00006 */
@@ -126,7 +126,7 @@ void test_EthIf_GetPhyCtrlIdx_NullPtr_ShouldReportError(void) {
 /** @req SWS_EthIf_00006 */
 void test_EthIf_GetPhyCtrlIdx_ValidCall_ShouldSucceed(void) {
     EthIf_GetPhyCtrlIdx();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00007 */
@@ -138,7 +138,7 @@ void test_EthIf_SetPhyCtrlMode_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00007 */
 void test_EthIf_SetPhyCtrlMode_ValidCall_ShouldSucceed(void) {
     EthIf_SetPhyCtrlMode();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00008 */
@@ -150,7 +150,7 @@ void test_EthIf_GetPhyCtrlMode_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00008 */
 void test_EthIf_GetPhyCtrlMode_ValidCall_ShouldSucceed(void) {
     EthIf_GetPhyCtrlMode();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00009 */
@@ -162,7 +162,7 @@ void test_EthIf_UpdatePhyState_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00009 */
 void test_EthIf_UpdatePhyState_ValidCall_ShouldSucceed(void) {
     EthIf_UpdatePhyState();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00010 */
@@ -174,7 +174,7 @@ void test_EthIf_GetPhyState_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00010 */
 void test_EthIf_GetPhyState_ValidCall_ShouldSucceed(void) {
     EthIf_GetPhyState();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 
 /** @req SWS_EthIf_00011 */
@@ -186,6 +186,6 @@ void test_EthIf_SetForwardingMode_InvalidCtrl_ShouldReportError(void) {
 /** @req SWS_EthIf_00011 */
 void test_EthIf_SetForwardingMode_ValidCall_ShouldSucceed(void) {
     EthIf_SetForwardingMode();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* Valid operation, no Det errors */
 }
 

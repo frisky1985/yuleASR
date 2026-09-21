@@ -29,12 +29,13 @@
 #include "Swc_StorageManager.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 #include <string.h>
 
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_STORAGEMANAGER_MODULE_ID        0x84
+#define SWC_STORAGEMANAGER_MODULE_ID        MODULE_ID_SWC_STORAGE  /* Fixed: was 0x84, conflict with CDD_Boot — see ModuleId.h */
 #define SWC_STORAGEMANAGER_INSTANCE_ID      0x00
 
 /* Maximum blocks */

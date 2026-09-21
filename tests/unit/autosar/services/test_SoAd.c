@@ -3,6 +3,8 @@
  * @brief SoAd (Socket Adapter) Unit Tests
  */
 
+// @tests src/bsw/services/soad/src/SoAd.c  @tests src/bsw/services/soad/include/SoAd.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

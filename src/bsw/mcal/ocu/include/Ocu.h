@@ -19,12 +19,13 @@
 ==================================================================================================*/
 #include "Std_Types.h"
 #include "Ocu_Cfg.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define OCU_VENDOR_ID                   (0x01U) /* YuleTech Vendor ID */
-#define OCU_MODULE_ID                   (0x7AU) /* OCU Driver Module ID */
+#define OCU_MODULE_ID                   (MODULE_ID_OCU) /* Fixed: was 0x7A, conflict with SPI/IoHwAb — see ModuleId.h */
 #define OCU_AR_RELEASE_MAJOR_VERSION    (0x04U)
 #define OCU_AR_RELEASE_MINOR_VERSION    (0x04U)
 #define OCU_AR_RELEASE_REVISION_VERSION (0x00U)

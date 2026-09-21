@@ -4,6 +4,8 @@
  * @version 1.0.0
  */
 
+// @tests src/bsw/ecual/doip/src/DoIP.c  @tests src/bsw/ecual/doip/include/DoIP.h
+
 #include <stdarg.h>
 #include <stddef.h>
 #include <setjmp.h>

@@ -38,6 +38,7 @@ target_include_directories(Os
         ${CMAKE_SOURCE_DIR}/third_party/freertos/include
         ${FREERTOS_PORT_INCLUDE}
     PRIVATE
+        ${CMAKE_SOURCE_DIR}/src/common/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/bswm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/com/include

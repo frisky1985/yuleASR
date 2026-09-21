@@ -47,6 +47,7 @@ set(SRC_MCAL ${CMAKE_SOURCE_DIR}/src/bsw/mcal)
 set(SRC_OS   ${CMAKE_SOURCE_DIR}/src/bsw/os)
 set(SRC_DET  ${CMAKE_SOURCE_DIR}/src/bsw/services/det)
 set(MOCK_DIR ${CMAKE_SOURCE_DIR}/tests/mock)
+set(BSW_MCAL_MOCK_DIR ${CMAKE_SOURCE_DIR}/tests/mocks)
 
 #----------------------------------------------------------------------
 # Base include directories for all MCAL tests
@@ -54,6 +55,7 @@ set(MOCK_DIR ${CMAKE_SOURCE_DIR}/tests/mock)
 set(MCAL_TEST_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/include/autosar
+    ${CMAKE_SOURCE_DIR}/src/common/include
     ${CMAKE_SOURCE_DIR}/coverage_run            # Contains Det.c stubs, Std_Types.h stub
     ${SRC_OS}/include
     ${SRC_DET}/include
@@ -86,6 +88,7 @@ set(MCAL_TEST_INCLUDES
     ${CMAKE_SOURCE_DIR}/config/input/mcal
     ${CMAKE_SOURCE_DIR}/config/generated
     ${CMAKE_SOURCE_DIR}/tests/mock/stubs
+    ${BSW_MCAL_MOCK_DIR}
     ${UNITY_DIR}
     ${MOCK_DIR}
 )
@@ -174,218 +177,321 @@ function(add_mcal_test)
 endfunction()
 
 #----------------------------------------------------------------------
+# Helper function: add_bsw_mcal_test
+#
+# Builds substantiated MCAL unit tests from tests/bsw/mcal/<module>/.
+# These tests use mock_registers/mock_det (i.MX8M register model) instead
+# of MockHAL/S32K312, and the production sources must be compiled without
+# the global S32K312/S32K3XX macros so they take the i.MX8M code path.
+#
+# Usage:
+#   add_bsw_mcal_test(
+#     NAME        <target_name>
+#     TEST_FILE   <path/to/test.c>
+#     MCAL_SRCS   <src1.c> [src2.c ...]   # Real production MCAL sources
+#     DEFINES     <DEF1=VAL1> [DEF2=VAL2] # Compile definitions
+#   )
+#----------------------------------------------------------------------
+function(add_bsw_mcal_test)
+    cmake_parse_arguments(ARG "" "NAME;TEST_FILE" "MCAL_SRCS;DEFINES" ${ARGN})
+
+    set(TEST_TARGET "${ARG_NAME}")
+
+    if(NOT EXISTS ${ARG_TEST_FILE})
+        message(STATUS "  BSW MCAL test skipped (not found): ${ARG_TEST_FILE}")
+        return()
+    endif()
+
+    # Extract test function names from the test file so we can auto-generate
+    # a Unity runner (the substantiated test files only provide setUp/tearDown
+    # and test_xxx() functions, not a main()).
+    file(STRINGS ${ARG_TEST_FILE} TEST_DECLS REGEX "^void[ \\t]+test_[A-Za-z0-9_]+[ \\t]*\\(")
+    set(TEST_FUNCS "")
+    foreach(decl ${TEST_DECLS})
+        string(REGEX MATCH "test_[A-Za-z0-9_]+" func_name "${decl}")
+        if(func_name)
+            list(APPEND TEST_FUNCS ${func_name})
+        endif()
+    endforeach()
+
+    if(NOT TEST_FUNCS)
+        message(WARNING "  No test_* functions found in ${ARG_TEST_FILE}; skipping ${TEST_TARGET}")
+        return()
+    endif()
+
+    # Several MCAL drivers keep initialization state in static variables that
+    # cannot be reset between tests on the host. Run all BeforeInit checks first
+    # so they observe the genuine uninitialized state.
+    set(BEFORE_INIT_FUNCS "")
+    set(OTHER_FUNCS "")
+    foreach(func ${TEST_FUNCS})
+        if(func MATCHES "BeforeInit")
+            list(APPEND BEFORE_INIT_FUNCS ${func})
+        else()
+            list(APPEND OTHER_FUNCS ${func})
+        endif()
+    endforeach()
+    set(TEST_FUNCS ${BEFORE_INIT_FUNCS} ${OTHER_FUNCS})
+
+    # Generate a Unity runner for this test file
+    set(RUNNER_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TEST_TARGET}_runner.c")
+    set(RUNNER_SRC "/* Auto-generated Unity runner for ${TEST_TARGET} */\n#include \"unity.h\"\n\n")
+    foreach(func ${TEST_FUNCS})
+        string(APPEND RUNNER_SRC "extern void ${func}(void);\n")
+    endforeach()
+    string(APPEND RUNNER_SRC "\nint main(void)\n{\n    UnityBegin();\n")
+    foreach(func ${TEST_FUNCS})
+        string(APPEND RUNNER_SRC "    UnityRunTest(${func}, \"${func}\", 0);\n")
+    endforeach()
+    string(APPEND RUNNER_SRC "    return UnityEnd();\n}\n")
+    file(WRITE ${RUNNER_FILE} "${RUNNER_SRC}")
+
+    # Decide whether this test file expects the shared mock_det implementation
+    file(STRINGS ${ARG_TEST_FILE} MOCK_DET_INCLUDES REGEX "#include[ \\t]+[\"<]mock_det\\.h[\">]")
+    set(MOCK_SRCS ${BSW_MCAL_MOCK_DIR}/mock_registers.c)
+    if(MOCK_DET_INCLUDES)
+        list(APPEND MOCK_SRCS ${BSW_MCAL_MOCK_DIR}/mock_det.c)
+    endif()
+
+    set(SOURCES
+        ${ARG_TEST_FILE}
+        ${RUNNER_FILE}
+        ${UNITY_C}
+        ${ARG_MCAL_SRCS}
+        ${MOCK_SRCS}
+    )
+
+    add_executable(${TEST_TARGET} ${SOURCES})
+
+    # Make mock_registers.h visible everywhere and undefine the S32K312/S32K3XX
+    # macros so the i.MX8M code path is selected.
+    target_compile_options(${TEST_TARGET} PRIVATE
+        -include ${BSW_MCAL_MOCK_DIR}/mock_registers.h
+        -US32K312
+        -US32K3XX
+    )
+
+    target_include_directories(${TEST_TARGET} PRIVATE
+        ${MCAL_TEST_INCLUDES}
+        ${CMAKE_CURRENT_BINARY_DIR}
+    )
+
+    # Additional compile definitions supplied by the caller
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        ${ARG_DEFINES}
+    )
+
+    target_compile_options(${TEST_TARGET} PRIVATE
+        -Wall
+        -Wextra
+        -Wno-unused-parameter
+        -Wno-unused-variable
+        -Wno-unused-function
+        -Wno-int-conversion
+        -Wno-implicit-int
+        -Wno-implicit-function-declaration
+        -Wno-excess-initializers
+        -g
+        -O0
+    )
+
+    if(ENABLE_COVERAGE)
+        target_compile_options(${TEST_TARGET} PRIVATE --coverage)
+        target_link_libraries(${TEST_TARGET} PRIVATE gcov)
+    endif()
+
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+
+    message(STATUS "  BSW MCAL test: ${TEST_TARGET}")
+endfunction()
+
+#----------------------------------------------------------------------
 # Build MockHAL library first
 #----------------------------------------------------------------------
 add_subdirectory(${MOCK_DIR} ${CMAKE_BINARY_DIR}/mock_hal)
 
 #----------------------------------------------------------------------
-# Test runner source directory
+# Substantiated MCAL test source directory
 #----------------------------------------------------------------------
-set(MCAL_TEST_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/mock)
-file(GLOB MCAL_TEST_SRCS ${MCAL_TEST_SRC_DIR}/test_mcal_*.c)
-list(APPEND MCAL_TEST_SRCS ${MCAL_TEST_SRC_DIR}/test_mcal_*.c)
+set(MCAL_TEST_SRC_DIR ${CMAKE_SOURCE_DIR}/tests/bsw/mcal)
 
 #----------------------------------------------------------------------
 # DIO test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_dio.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/dio/test_dio.c)
+    add_bsw_mcal_test(
         NAME        mcal_dio_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_dio.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/dio/test_dio.c
         MCAL_SRCS
             ${SRC_MCAL}/dio/src/Dio.c
             ${SRC_MCAL}/dio/src/Dio_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # PWM test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_pwm.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/pwm/test_pwm.c)
+    add_bsw_mcal_test(
         NAME        mcal_pwm_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_pwm.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/pwm/test_pwm.c
         MCAL_SRCS
             ${SRC_MCAL}/pwm/src/Pwm.c
             ${SRC_MCAL}/pwm/src/Pwm_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # CAN test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_can.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/can/test_can.c)
+    add_bsw_mcal_test(
         NAME        mcal_can_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_can.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/can/test_can.c
         MCAL_SRCS
             ${SRC_MCAL}/can/src/Can.c
             ${SRC_MCAL}/can/src/Can_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # GPT test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_gpt.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/gpt/test_gpt.c)
+    add_bsw_mcal_test(
         NAME        mcal_gpt_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_gpt.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/gpt/test_gpt.c
         MCAL_SRCS
             ${SRC_MCAL}/gpt/src/Gpt.c
             ${SRC_MCAL}/gpt/src/Gpt_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # ICU test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_icu.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/icu/test_icu.c)
+    add_bsw_mcal_test(
         NAME        mcal_icu_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_icu.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/icu/test_icu.c
         MCAL_SRCS
             ${SRC_MCAL}/icu/src/Icu.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # ADC test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_adc.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/adc/test_adc.c)
+    add_bsw_mcal_test(
         NAME        mcal_adc_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_adc.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/adc/test_adc.c
         MCAL_SRCS
             ${SRC_MCAL}/adc/src/Adc.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # PORT test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_port.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/port/test_port.c)
+    add_bsw_mcal_test(
         NAME        mcal_port_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_port.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/port/test_port.c
         MCAL_SRCS
             ${SRC_MCAL}/port/src/Port.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # WDG test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_wdg.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/wdg/test_wdg.c)
+    add_bsw_mcal_test(
         NAME        mcal_wdg_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_wdg.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/wdg/test_wdg.c
         MCAL_SRCS
             ${SRC_MCAL}/wdg/src/Wdg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # SPI test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_spi.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/spi/test_spi.c)
+    add_bsw_mcal_test(
         NAME        mcal_spi_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_spi.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/spi/test_spi.c
         MCAL_SRCS
             ${SRC_MCAL}/spi/src/Spi.c
             ${SRC_MCAL}/spi/src/Spi_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # EEP test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_eep.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/eep/test_eep.c)
+    add_bsw_mcal_test(
         NAME        mcal_eep_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_eep.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/eep/test_eep.c
         MCAL_SRCS
             ${SRC_MCAL}/eep/src/Eep.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # Fee test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_fee.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/fee/test_fee.c)
+    add_bsw_mcal_test(
         NAME        mcal_fee_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_fee.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/fee/test_fee.c
         MCAL_SRCS
             ${SRC_MCAL}/fee/src/Fee.c
             ${SRC_MCAL}/fee/src/Fee_Lcfg.c
             ${SRC_MCAL}/mcu/src/Mcal.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # Flash test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_flash.c)
-    add_mcal_test(
+# Note: production Flash.c implements the legacy Flash_* API and accesses
+# hardware registers via absolute addresses (0x40023C14 etc.). It cannot run
+# on the host, so the substantiated test provides host-safe Fls_* stubs that
+# verify the Flash.h API contract. Only Flash_Lcfg.c (Fls_Config) is linked.
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/flash/test_flash.c)
+    add_bsw_mcal_test(
         NAME        mcal_flash_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_flash.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/flash/test_flash.c
         MCAL_SRCS
-            ${SRC_MCAL}/flash/src/Flash.c
             ${SRC_MCAL}/flash/src/Flash_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # I2C test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_i2c.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/i2c/test_i2c.c)
+    add_bsw_mcal_test(
         NAME        mcal_i2c_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_i2c.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/i2c/test_i2c.c
         MCAL_SRCS
             ${SRC_MCAL}/i2c/src/I2c.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # LIN test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_lin.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/lin/test_lin.c)
+    add_bsw_mcal_test(
         NAME        mcal_lin_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_lin.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/lin/test_lin.c
         MCAL_SRCS
             ${SRC_MCAL}/lin/src/Lin.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
         DEFINES
             DISABLE_MCAL_INTERMODULE_ASR_CHECK=1
     )
@@ -394,46 +500,39 @@ endif()
 #----------------------------------------------------------------------
 # OCU test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_ocu.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/ocu/test_ocu.c)
+    add_bsw_mcal_test(
         NAME        mcal_ocu_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_ocu.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/ocu/test_ocu.c
         MCAL_SRCS
             ${SRC_MCAL}/ocu/src/Ocu.c
             ${SRC_MCAL}/ocu/src/Ocu_Irq.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # RamTst test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_ramtst.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/ramtst/test_ramtst.c)
+    add_bsw_mcal_test(
         NAME        mcal_ramtst_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_ramtst.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/ramtst/test_ramtst.c
         MCAL_SRCS
             ${SRC_MCAL}/ramtst/src/RamTst.c
             ${SRC_MCAL}/ramtst/src/RamTst_Lcfg.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
     )
 endif()
 
 #----------------------------------------------------------------------
 # UART test
 #----------------------------------------------------------------------
-if(EXISTS ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c)
-    add_mcal_test(
+if(EXISTS ${MCAL_TEST_SRC_DIR}/uart/test_uart.c)
+    add_bsw_mcal_test(
         NAME        mcal_uart_test
-        TEST_FILE   ${MCAL_TEST_SRC_DIR}/test_mcal_uart.c
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/uart/test_uart.c
         MCAL_SRCS
             ${SRC_MCAL}/uart/src/Uart.c
             ${SRC_MCAL}/gpt/src/Gpt.c
-        MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
-            ${MOCK_DIR}/dma_mock.c
     )
 endif()
 
@@ -544,4 +643,4 @@ if(BUILD_TESTING)
     )
 endif()
 
-message(STATUS "MCAL unit tests configured with MockHAL (${MCAL_TEST_SRCS})")
+message(STATUS "MCAL unit tests configured from ${MCAL_TEST_SRC_DIR}")

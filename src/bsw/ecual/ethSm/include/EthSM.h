@@ -26,12 +26,13 @@
 #include "EthSM_Cfg.h"
 #include "ComStack_Types.h"
 #include "ComM.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define ETHSM_VENDOR_ID                     (0x01U) /* YuleTech Vendor ID */
-#define ETHSM_MODULE_ID                     (0x43U) /* ETHSM Module ID per AUTOSAR */
+#define ETHSM_MODULE_ID                     (MODULE_ID_ETHSM_ECUAL) /* Fixed: was 0x43, conflict with SOAD — see ModuleId.h */
 #define ETHSM_AR_RELEASE_MAJOR_VERSION      (0x04U)
 #define ETHSM_AR_RELEASE_MINOR_VERSION      (0x04U)
 #define ETHSM_AR_RELEASE_REVISION_VERSION   (0x00U)

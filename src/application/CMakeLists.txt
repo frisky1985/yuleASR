@@ -26,6 +26,7 @@ foreach(component ${ASW_COMPONENTS})
             PUBLIC 
                 ${CMAKE_CURRENT_SOURCE_DIR}/${component}/include
             PRIVATE
+                ${CMAKE_SOURCE_DIR}/src/common/include
                 ${CMAKE_CURRENT_SOURCE_DIR}/../rte/include
                 ${CMAKE_CURRENT_SOURCE_DIR}/../platform/include
                 ${CMAKE_CURRENT_SOURCE_DIR}/../bsw/services/com/include

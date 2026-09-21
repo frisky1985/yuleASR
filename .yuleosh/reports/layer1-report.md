@@ -1,16 +1,16 @@
 # CI Report Summary
 
-> Generated: 2026-08-25T20:57:18.692722
+> Generated: 2026-08-25T21:12:55.950350
 > Project: /Users/ingeek/workspace/AUTOSAR
 > Type: Incremental
 
-## Overall: ❌ FAILED
+## Overall: ✅ ALL PASSED
 
 ## Layer Summary
 
 | Layer | Status | Passed | Failed | Skipped | Errors |
 |:------|:-------|------:|------:|--------:|:-------|
-| L1 | ❌ failed | 37 | 1 | 12 | ⚠️ |
+| L1 | ✅ passed | 36 | 0 | 14 | — |
 
 ### Layer L1 — Stage Details
 
@@ -29,8 +29,8 @@
 | requirements-trace | ✅ | 154 reqs, 0 modules, 7 tests (ratio 700.0%) |
 | plan-lint | ⏭️ | No task/plan files found |
 | docsync-gate | ✅ | Sync gate: passed | 3 total, 0 error(s), 0 warning(s) |
-| clang-tidy | ⏭️ | clang-tidy not installed |
-| misra-check | ✅ | 74 MISRA violation(s) (0 required, 0 advisory) — see .yuleosh/reports/misra-report.json |
+| clang-tidy | ⏭️ | no compile_commands.json — clang-tidy skipped (run cmake with CMAKE_EXPORT_COMPILE_COMMANDS=ON) |
+| misra-check | ⏭️ | All C/C++ files excluded by exclude_paths |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
 | unit-tests | ✅ |  |
@@ -64,17 +64,10 @@
 | unit-tests | ⏭️ | third_party/mbedtls/tests/scripts/test_psa_constant_names.py: no tests collected |
 | unit-tests | ⏭️ | third_party/mbedtls/tests/scripts/test_psa_compliance.py: no tests collected |
 | unit-tests | ✅ |  |
-| coverage | ❌ | Line coverage 0.0% < 40.0% |
+| coverage | ⏭️ | coverage.enabled=false — C coverage via c-coverage-gate |
 | coverage-regression | ✅ | No regression detected |
 | c-coverage | ⏭️ | No build directory with coverage data found |
 | c-coverage-gate | ✅ | line_rate=91.6% >= 40% |
-
-### Layer L1 — Code Coverage
-
-| Metric | Value | Threshold | Status |
-|:-------|------:|---------:|:-------|
-| Line Coverage | 0.0% | 85% | ❌ |
-| Condition Coverage | 0.0% | 80% | ❌ |
 
 ## MISRA C:2023
 

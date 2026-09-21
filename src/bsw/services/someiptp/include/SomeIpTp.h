@@ -25,7 +25,7 @@
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define SOMEIPTP_VENDOR_ID                      (0x01U) /* YuleTech Vendor ID */
-#define SOMEIPTP_MODULE_ID                      (0x7CU) /* SOMEIPTP Module ID */
+#define SOMEIPTP_MODULE_ID                      (0x75U) /* Fixed: was 0x7C, conflict with CryIf/Crypto — see ModuleId.h */
 #define SOMEIPTP_INSTANCE_ID                    (0x00U)
 
 #define SOMEIPTP_AR_RELEASE_MAJOR_VERSION       (0x22U)

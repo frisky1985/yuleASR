@@ -20,6 +20,7 @@ target_include_directories(EthSM_UnitTest
         ${TEST_FRAMEWORK_INCLUDE}
         ${CMAKE_CURRENT_SOURCE_DIR}/..                       # test_framework.h
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/ecual/ethSm/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/common/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/ecual/ethif/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/services/comM/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/bsw/services/det/include

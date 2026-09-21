@@ -19,12 +19,13 @@
 ==================================================================================================*/
 #include "Std_Types.h"
 #include "MemIf_Cfg.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define MEMIF_VENDOR_ID                 (0x01U) /* YuleTech Vendor ID */
-#define MEMIF_MODULE_ID                 (0x16U) /* MEMIF Module ID */
+#define MEMIF_MODULE_ID                 (MODULE_ID_MEMIF_ECUAL) /* Fixed: was 0x16, conflict with ICU — see ModuleId.h */
 #define MEMIF_AR_RELEASE_MAJOR_VERSION  (0x04U)
 #define MEMIF_AR_RELEASE_MINOR_VERSION  (0x04U)
 #define MEMIF_AR_RELEASE_REVISION_VERSION (0x00U)

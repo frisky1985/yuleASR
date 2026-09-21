@@ -29,11 +29,12 @@
 #include "Swc_CommunicationManager.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_COMMUNICATIONMANAGER_MODULE_ID  0x83
+#define SWC_COMMUNICATIONMANAGER_MODULE_ID  MODULE_ID_SWC_COMM  /* Fixed: was 0x83, conflict with CDD_Safety — see ModuleId.h */
 #define SWC_COMMUNICATIONMANAGER_INSTANCE_ID 0x00
 
 /* Maximum signals and PDUs */

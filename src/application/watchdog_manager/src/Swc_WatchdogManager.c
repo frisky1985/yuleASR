@@ -29,11 +29,12 @@
 #include "Swc_WatchdogManager.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_WATCHDOGMANAGER_MODULE_ID       0x87
+#define SWC_WATCHDOGMANAGER_MODULE_ID       MODULE_ID_SWC_WDG_MGR  /* Fixed: was 0x87, aligned to SWC range — see ModuleId.h */
 #define SWC_WATCHDOGMANAGER_INSTANCE_ID     0x00
 
 /* Maximum supervised entities */

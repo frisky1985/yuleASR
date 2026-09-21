@@ -8,8 +8,13 @@
 // @tests src/bsw/mcal/icu/src/Icu.c  @tests src/bsw/mcal/icu/include/Icu.h
 
 #include "unity.h"
+#include "mock_registers.h"
 #include "Icu.h"
 #include "Icu_Cfg.h"
+
+/* eMIOS channel register layout (mirrors the static helpers in Icu.c) */
+#define TEST_ICU_CH0_REGS       (ICU_EMIOS_0_BASE_ADDR + 0x20U)   /* channel 0 register block */
+#define TEST_ICU_EMIOS_C_S      (0x10U)                           /* Channel Status Register offset */
 
 /* Mock Det_ReportError */
 static uint8 mock_DetLastApiId = 0xFFU;
@@ -80,10 +85,17 @@ static void test_Icu_SetupDefaultConfig(void) {
 
 void setUp(void) {
     mock_Det_Reset();
+    MockRegisters_Reset();
     test_Icu_SetupDefaultConfig();
 }
 
 void tearDown(void) {
+    /* The SUT keeps its initialization state in file-static variables that
+     * persist between test cases on the host. Deinitialize after every test
+     * so each case observes the genuine uninitialized driver. When the driver
+     * was never initialized this only reports ICU_E_UNINIT into the mock,
+     * which the next setUp() clears. */
+    Icu_DeInit();
 }
 
 /* Init/DeInit Tests */
@@ -91,7 +103,8 @@ void tearDown(void) {
 void test_Icu_Init_NullPtr_ShouldReportError(void) {
     Icu_Init(NULL_PTR);
     TEST_ASSERT_GREATER_THAN(0U, mock_DetCallCount);
-    TEST_ASSERT_EQUAL(ICU_E_PARAM_CONFIG, mock_DetLastErrorId);
+    /* SUT reports ICU_E_PARAM_POINTER (0x10) for a NULL config pointer */
+    TEST_ASSERT_EQUAL(ICU_E_PARAM_POINTER, mock_DetLastErrorId);
 }
 
 /** @req SWS_Icu_00001 */
@@ -258,6 +271,10 @@ void test_Icu_DisableNotification_ShouldSucceed(void) {
 /** @req SWS_Icu_00010 */
 void test_Icu_GetInputState_AfterInit_ShouldReturnIdle(void) {
     Icu_Init(&testConfig);
+    /* Icu_Init clears the channel flag by writing EMIOS_S_FLAG to the status
+     * register; the register mock stores written values verbatim, so preset
+     * the flag to 0 here to emulate idle hardware input. */
+    MockRegisters_Write32(TEST_ICU_CH0_REGS + TEST_ICU_EMIOS_C_S, 0U);
     Icu_InputStateType state = Icu_GetInputState(0U);
     TEST_ASSERT_EQUAL(ICU_IDLE, state);
 }

@@ -23,6 +23,7 @@
 #define SOMEIP_H
 
 #include "Std_Types.h"
+#include "ModuleId.h"
 
 /* AUTOSAR Version */
 #define SOMEIP_AR_RELEASE_MAJOR_VERSION    4
@@ -35,7 +36,7 @@
 #define SOMEIP_SW_PATCH_VERSION            0
 
 /* Module ID */
-#define SOMEIP_MODULE_ID                   0x70
+#define SOMEIP_MODULE_ID                   MODULE_ID_SOMEIP   /* Fixed: was 0x70, conflict with RTE/CSM/EthIf — see ModuleId.h */
 
 /* Service IDs */
 #define SOMEIP_INIT_SID                    0x01

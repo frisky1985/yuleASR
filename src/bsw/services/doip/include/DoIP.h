@@ -20,6 +20,7 @@
 #include "Std_Types.h"
 #include "DoIP_Cfg.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
 /* SoAd_ModeType forward declaration for DoIP-SoAd interface */
 #ifndef SOAD_MODETYPE_DEFINED
@@ -31,7 +32,7 @@ typedef uint8 SoAd_ModeType;
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define DOIP_VENDOR_ID                  (0x01U) /* YuleTech Vendor ID */
-#define DOIP_MODULE_ID                  (0x4CU) /* DOIP Module ID */
+#define DOIP_MODULE_ID                  (MODULE_ID_DOIP_SERVICES) /* Fixed: was 0x4C, moved to Diagnostic Transport range — see ModuleId.h */
 #define DOIP_AR_RELEASE_MAJOR_VERSION   (0x04U)
 #define DOIP_AR_RELEASE_MINOR_VERSION   (0x04U)
 #define DOIP_AR_RELEASE_REVISION_VERSION (0x00U)

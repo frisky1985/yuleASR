@@ -1,5 +1,5 @@
 /**
- * @file test_test_eep.c
+ * @file test_eep.c
  * @brief Eep Unit Tests
  * @version 1.0.0
  * @date 2026-08-25
@@ -8,180 +8,325 @@
 // @tests src/bsw/mcal/eep/src/Eep.c  @tests src/bsw/mcal/eep/include/Eep.h
 
 #include "unity.h"
+#include "mock_registers.h"
+#include "mock_det.h"
 #include "Eep.h"
 
-/* Mock Det_ReportError */
-static uint8 mock_DetLastApiId = 0xFFU;
-static uint8 mock_DetLastErrorId = 0xFFU;
-static uint8 mock_DetCallCount = 0U;
+/*==================================================================================================
+ * Test support
+ *==================================================================================================*/
 
-static void mock_Det_Reset(void) {
-    mock_DetLastApiId = 0xFFU;
-    mock_DetLastErrorId = 0xFFU;
-    mock_DetCallCount = 0U;
-}
+/*
+ * Host-safe configuration:
+ *  - PollingMode = FALSE keeps Read/Write/Erase asynchronous (the job stays
+ *    EEP_BUSY instead of touching the backing store through the raw
+ *    BaseAddress pointer, which cannot be dereferenced on the host).
+ *  - Eep_DeInit() fully restores the uninitialized state, so every test can
+ *    run from a genuine UNINIT state without a one-shot-init restriction.
+ */
+static const Eep_ConfigType Eep_TestConfig = {
+    0x00A00000U, /* BaseAddress       */
+    4096U,       /* Size              */
+    10U,         /* JobCallCycle      */
+    8U,          /* PageSize          */
+    5U,          /* WriteCycleTimeMs  */
+    10U,         /* EraseCycleTimeMs  */
+    FALSE        /* PollingMode       */
+};
 
-Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId) {
-    (void)ModuleId;
-    (void)InstanceId;
-    mock_DetLastApiId = ApiId;
-    mock_DetLastErrorId = ErrorId;
-    mock_DetCallCount++;
-    return E_OK;
-}
-
-/* Test config */
-Eep_ConfigType testConfig;
-static void test_Eep_SetupDefaultConfig(void) {
-    (void)testConfig;
-}
-
-static boolean eep_initialized = FALSE;
+static uint8 Eep_TestBuffer[64U];
 
 void setUp(void) {
-    mock_Det_Reset();
-    eep_initialized = FALSE;
+    MockRegisters_Reset();
+    Det_Mock_Reset();
 }
 
 void tearDown(void) {
+    /* Restore genuine uninitialized state for the next test. */
+    Eep_DeInit();
 }
 
+/* Verifies the last DET report matches the expected module/API/error triple. */
+static void test_Eep_AssertDet(uint8 expectedApiId, uint8 expectedErrorId)
+{
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid); /* expected DET report */
+    TEST_ASSERT_EQUAL_UINT(EEP_MODULE_ID, Det_MockData.ModuleId);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.InstanceId);
+    TEST_ASSERT_EQUAL_UINT(expectedApiId, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL_UINT(expectedErrorId, Det_MockData.ErrorId);
+}
+
+/*==================================================================================================
+ * Init / DeInit
+ *==================================================================================================*/
 
 /** @req SWS_Eep_00001 */
-void test_Eep_Init_NullPtr_ShouldNotCrash(void) {
+void test_Eep_Init_NullPtr_ShouldReportDetError(void) {
     Eep_Init(NULL_PTR);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    test_Eep_AssertDet(EEP_SID_INIT, EEP_E_PARAM_POINTER);
+    TEST_ASSERT_EQUAL_UINT(1U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00001 */
-void test_Eep_Init_ValidConfig_ShouldSucceed(void) {
-    test_Eep_SetupDefaultConfig();
-    Eep_Init(&testConfig);
-    eep_initialized = TRUE;
-    TEST_ASSERT_TRUE(eep_initialized);
+void test_Eep_Init_ValidConfig_ShouldReachIdle(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_OK, Eep_GetJobResult());
 }
 
 /** @req SWS_Eep_00001 */
-void test_Eep_Init_DoubleInit_ShouldSucceed(void) {
-    test_Eep_SetupDefaultConfig();
-    Eep_Init(&testConfig);
-    Eep_Init(&testConfig);
-    TEST_ASSERT_TRUE(1); /* No crash */
+void test_Eep_Init_RepeatedInit_ShouldReinitializeSilently(void) {
+    /* Implementation has no double-init protection: a second Init resets the
+     * module silently (documented actual behavior). */
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(E_OK, Eep_Write(0U, Eep_TestBuffer, 8U));
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_OK, Eep_GetJobResult());
 }
 
 /** @req SWS_Eep_00002 */
-void test_Eep_Erase_Uninit_ShouldReportError(void) {
-    /* Not initialized */
-    Eep_Erase();
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+void test_Eep_DeInit_WhenInitialized_ShouldReturnToUninit(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(E_OK, Eep_Write(0U, Eep_TestBuffer, 8U));
+
+    Eep_DeInit();
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_OK, Eep_GetJobResult());
+}
+
+/*==================================================================================================
+ * Erase
+ *==================================================================================================*/
+
+/** @req SWS_Eep_00002 */
+void test_Eep_Erase_BeforeInit_ShouldReportUninit(void) {
+    Std_ReturnType ret = Eep_Erase(0U, 16U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_ERASE, EEP_E_UNINIT);
+    TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00002 */
-void test_Eep_Erase_InvalidSector_ShouldReportError(void) {
-    Eep_Erase(0xFFFFU);
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+void test_Eep_Erase_InvalidAddress_ShouldReportParamAddress(void) {
+    Eep_Init(&Eep_TestConfig);
+    /* 0xFFFF is beyond the configured Size of 4096 bytes. */
+    Std_ReturnType ret = Eep_Erase(0xFFFFU, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_ERASE, EEP_E_PARAM_ADDRESS);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00002 */
-void test_Eep_Erase_ValidSector_ShouldSucceed(void) {
-    Eep_Erase();
-    TEST_ASSERT_TRUE(1);
+void test_Eep_Erase_LengthBeyondSize_ShouldReportParamAddress(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Erase(4090U, 16U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_ERASE, EEP_E_PARAM_ADDRESS);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+}
+
+/** @req SWS_Eep_00002 */
+void test_Eep_Erase_ValidRegion_ShouldStartPendingJob(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Erase(0U, 64U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_PENDING, Eep_GetJobResult());
+}
+
+/** @req SWS_Eep_00002 */
+void test_Eep_Erase_WhileBusy_ShouldReturnNotOkSilently(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(E_OK, Eep_Erase(0U, 64U));
+    /* Busy rejection path reports no DET error. */
+    Std_ReturnType ret = Eep_Erase(64U, 64U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+}
+
+/*==================================================================================================
+ * Write
+ *==================================================================================================*/
+
+/** @req SWS_Eep_00003 */
+void test_Eep_Write_BeforeInit_ShouldReportUninit(void) {
+    Std_ReturnType ret = Eep_Write(0U, Eep_TestBuffer, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_WRITE, EEP_E_UNINIT);
 }
 
 /** @req SWS_Eep_00003 */
-void test_Eep_Write_Uninit_ShouldReportError(void) {
-    /* Not initialized */
-    Eep_Write();
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+void test_Eep_Write_InvalidAddress_ShouldReportParamAddress(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Write(0xFFFFU, Eep_TestBuffer, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_WRITE, EEP_E_PARAM_ADDRESS);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00003 */
-void test_Eep_Write_InvalidAddress_ShouldReportError(void) {
-    Eep_Write(0xFFFFU);
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+void test_Eep_Write_ValidData_ShouldStartPendingJob(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Write(64U, Eep_TestBuffer, 16U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_PENDING, Eep_GetJobResult());
+}
+
+/** @req SWS_Eep_00005 */
+void test_Eep_Write_NullDataPtr_ShouldReportParamPointer(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Write(0U, NULL_PTR, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_WRITE, EEP_E_PARAM_POINTER);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+}
+
+/** @req SWS_Eep_00005 */
+void test_Eep_Write_ZeroLength_ShouldReportParamLength(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Write(0U, Eep_TestBuffer, 0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_WRITE, EEP_E_PARAM_LENGTH);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00003 */
-void test_Eep_Write_ValidData_ShouldSucceed(void) {
-    Eep_Write();
-    TEST_ASSERT_TRUE(1);
+void test_Eep_Write_WhileBusy_ShouldReturnNotOkSilently(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(E_OK, Eep_Write(0U, Eep_TestBuffer, 8U));
+    Std_ReturnType ret = Eep_Write(16U, Eep_TestBuffer, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+}
+
+/*==================================================================================================
+ * Read
+ *==================================================================================================*/
+
+/** @req SWS_Eep_00004 */
+void test_Eep_Read_BeforeInit_ShouldReportUninit(void) {
+    Std_ReturnType ret = Eep_Read(0U, Eep_TestBuffer, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_READ, EEP_E_UNINIT);
 }
 
 /** @req SWS_Eep_00004 */
-void test_Eep_Read_Uninit_ShouldReportError(void) {
-    /* Not initialized */
-    Eep_Read();
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+void test_Eep_Read_InvalidAddress_ShouldReportParamAddress(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Read(0xFFFFU, Eep_TestBuffer, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_READ, EEP_E_PARAM_ADDRESS);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00004 */
-void test_Eep_Read_InvalidAddress_ShouldReportError(void) {
-    Eep_Read(0xFFFFU);
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+void test_Eep_Read_ValidBuffer_ShouldStartPendingJob(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Read(128U, Eep_TestBuffer, 32U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_PENDING, Eep_GetJobResult());
+}
+
+/** @req SWS_Eep_00005 */
+void test_Eep_Read_NullDataPtr_ShouldReportParamPointer(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Read(0U, NULL_PTR, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_READ, EEP_E_PARAM_POINTER);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+}
+
+/** @req SWS_Eep_00005 */
+void test_Eep_Read_ZeroLength_ShouldReportParamLength(void) {
+    Eep_Init(&Eep_TestConfig);
+    Std_ReturnType ret = Eep_Read(0U, Eep_TestBuffer, 0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    test_Eep_AssertDet(EEP_SID_READ, EEP_E_PARAM_LENGTH);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00004 */
-void test_Eep_Read_ValidBuffer_ShouldSucceed(void) {
-    Eep_Read();
-    TEST_ASSERT_TRUE(1);
+void test_Eep_Read_WhileBusy_ShouldReturnNotOkSilently(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(E_OK, Eep_Read(0U, Eep_TestBuffer, 8U));
+    Std_ReturnType ret = Eep_Read(16U, Eep_TestBuffer, 8U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
 }
 
-/** @req SWS_Eep_00005 */
-void test_Eep_Compare_Uninit_ShouldReportError(void) {
-    /* Not initialized */
-    Eep_Compare();
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
-}
+/*==================================================================================================
+ * Cancel
+ *==================================================================================================*/
 
-/** @req SWS_Eep_00005 */
-void test_Eep_Compare_Mismatch_ShouldReturnNotOk(void) {
-    /* Compare mismatch scenario */
-    Eep_Compare(0U, NULL_PTR, 0U);
-    TEST_ASSERT_TRUE(1);
-}
-
-/** @req SWS_Eep_00005 */
-void test_Eep_Compare_Match_ShouldReturnOk(void) {
-    /* Compare match scenario */
-    Eep_Compare(0U, NULL_PTR, 0U);
-    TEST_ASSERT_TRUE(1);
+/** @req SWS_Eep_00006 */
+void test_Eep_Cancel_BeforeInit_ShouldBeSilent(void) {
+    /* Cancel does not report DET in any state (documented actual behavior). */
+    Eep_Cancel();
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
 }
 
 /** @req SWS_Eep_00006 */
-void test_Eep_Cancel_Uninit_ShouldReportError(void) {
-    /* Not initialized */
+void test_Eep_Cancel_DuringJob_ShouldCancelToIdle(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(E_OK, Eep_Write(0U, Eep_TestBuffer, 8U));
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+
     Eep_Cancel();
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(EEP_JOB_CANCELED, Eep_GetJobResult());
 }
 
-/** @req SWS_Eep_00006 */
-void test_Eep_Cancel_ValidCall_ShouldSucceed(void) {
-    Eep_Cancel();
-    TEST_ASSERT_TRUE(1);
+/*==================================================================================================
+ * Status / JobResult / VersionInfo
+ *==================================================================================================*/
+
+/** @req SWS_Eep_00007 */
+void test_Eep_GetStatus_BeforeInit_ShouldReturnUninit(void) {
+    TEST_ASSERT_EQUAL(EEP_UNINIT, Eep_GetStatus());
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
 }
 
 /** @req SWS_Eep_00007 */
-void test_Eep_GetStatus_Uninit_ShouldReturnIdle(void) {
-    /* Not initialized */
-    Eep_GetStatus();
-    TEST_ASSERT_EQUAL(0U, mock_DetCallCount); /* No DET in uninit for status */
-}
-
-/** @req SWS_Eep_00007 */
-void test_Eep_GetStatus_ValidCall_ShouldReturnStatus(void) {
-    Eep_GetStatus();
-    TEST_ASSERT_TRUE(1);
+void test_Eep_GetStatus_AfterInitAndJob_ShouldTrackState(void) {
+    Eep_Init(&Eep_TestConfig);
+    TEST_ASSERT_EQUAL(EEP_IDLE, Eep_GetStatus());
+    TEST_ASSERT_EQUAL(E_OK, Eep_Read(0U, Eep_TestBuffer, 8U));
+    TEST_ASSERT_EQUAL(EEP_BUSY, Eep_GetStatus());
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
 }
 
 /** @req SWS_Eep_00008 */
-void test_Eep_GetVersionInfo_NullPtr_ShouldReportError(void) {
+void test_Eep_GetVersionInfo_NullPtr_ShouldReportDetError(void) {
     Eep_GetVersionInfo(NULL_PTR);
-    TEST_ASSERT_TRUE(mock_DetCallCount > 0U);
+    test_Eep_AssertDet(EEP_SID_GET_VERSION_INFO, EEP_E_PARAM_POINTER);
+    TEST_ASSERT_EQUAL_UINT(1U, Det_MockData.CallCount);
 }
 
 /** @req SWS_Eep_00008 */
-void test_Eep_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
-    Eep_GetVersionInfo();
-    TEST_ASSERT_TRUE(1);
+void test_Eep_GetVersionInfo_ValidPtr_ShouldFillFields(void) {
+    Std_VersionInfoType info = {0U, 0U, 0U, 0U, 0U};
+    Eep_GetVersionInfo(&info);
+    TEST_ASSERT_EQUAL_UINT(0U, Det_MockData.CallCount);
+    TEST_ASSERT_EQUAL_UINT(EEP_VENDOR_ID, info.vendorID);
+    TEST_ASSERT_EQUAL_UINT(EEP_MODULE_ID, info.moduleID);
+    TEST_ASSERT_EQUAL_UINT(EEP_SW_MAJOR_VERSION, info.sw_major_version);
+    TEST_ASSERT_EQUAL_UINT(EEP_SW_MINOR_VERSION, info.sw_minor_version);
+    TEST_ASSERT_EQUAL_UINT(EEP_SW_PATCH_VERSION, info.sw_patch_version);
 }
-

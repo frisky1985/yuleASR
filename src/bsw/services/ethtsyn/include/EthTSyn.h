@@ -12,9 +12,10 @@
 
 #include "Std_Types.h"
 #include "Eth.h"
+#include "ModuleId.h"
 
 /* Module ID */
-#define ETHTSYN_MODULE_ID        0x0AUL
+#define ETHTSYN_MODULE_ID        MODULE_ID_ETHTSYN
 
 /* EthTSyn Configuration */
 typedef struct {

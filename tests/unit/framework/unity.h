@@ -113,6 +113,19 @@ extern Unity_Struct Unity;
 #define TEST_ASSERT_NOT_NULL(pointer) \
     TEST_ASSERT((pointer) != NULL)
 
+/* 指针断言 (uintptr_t 中转以兼容任意对象指针) */
+#ifndef TEST_ASSERT_EQUAL_PTR
+#define TEST_ASSERT_EQUAL_PTR(expected, actual) \
+    do { \
+        const void* _expected_ptr = (const void*)(uintptr_t)(expected); \
+        const void* _actual_ptr = (const void*)(uintptr_t)(actual); \
+        char _msg[128]; \
+        snprintf(_msg, sizeof(_msg), "Expected pointer %p but was %p", \
+                 _expected_ptr, _actual_ptr); \
+        UNITY_TEST_ASSERT((_expected_ptr) == (_actual_ptr), _msg, __LINE__, __FILE__); \
+    } while (0)
+#endif
+
 /* 不等断言 */
 #define TEST_ASSERT_NOT_EQUAL(expected, actual) \
     do { \

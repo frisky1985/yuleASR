@@ -29,11 +29,12 @@
 #include "Swc_EngineControl.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_ENGINECONTROL_MODULE_ID         0x80
+#define SWC_ENGINECONTROL_MODULE_ID         MODULE_ID_SWC_ENGINE  /* Fixed: was 0x80, conflict with CDD_HSM — see ModuleId.h */
 #define SWC_ENGINECONTROL_INSTANCE_ID       0x00
 
 /* Engine control constants */

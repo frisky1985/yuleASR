@@ -19,11 +19,11 @@ void setUp(void) { mock_DetCalls = 0; }
 void tearDown(void) {}
 
 /** @req SWS_CanIf_00001 */
-void test_CanIf_Init_NullPtr_ShouldNotCrash(void) { CanIf_Init(NULL_PTR); TEST_ASSERT_TRUE(1); }
+void test_CanIf_Init_NullPtr_ShouldReportDet(void) { CanIf_Init(NULL_PTR); TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls); }
 /** @req SWS_CanIf_00001 */
-void test_CanIf_Init_ValidConfig_ShouldSucceed(void) { testConfig.NumTxPdus = 0U; testConfig.NumRxPdus = 0U; CanIf_Init(&testConfig); TEST_ASSERT_TRUE(1); }
+void test_CanIf_Init_ValidConfig_ShouldSucceed(void) { testConfig.NumTxPdus = 0U; testConfig.NumRxPdus = 0U; CanIf_Init(&testConfig); Std_VersionInfoType info; CanIf_GetVersionInfo(&info); TEST_ASSERT_EQUAL(CANIF_VENDOR_ID, info.vendorID); }
 /** @req SWS_CanIf_00002 */
-void test_CanIf_DeInit_AfterInit_ShouldSucceed(void) { CanIf_Init(&testConfig); CanIf_DeInit(); TEST_ASSERT_TRUE(1); }
+void test_CanIf_DeInit_AfterInit_ShouldSucceed(void) { CanIf_Init(&testConfig); mock_DetCalls = 0; CanIf_DeInit(); CanIf_Transmit(0U, NULL_PTR); TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls); }
 /** @req SWS_CanIf_00003 */
 void test_CanIf_SetControllerMode_AfterInit_ShouldReturnResult(void) { CanIf_Init(&testConfig); Std_ReturnType ret = CanIf_SetControllerMode(0U, CANIF_CS_STARTED); TEST_ASSERT_TRUE(ret == E_OK || ret == E_NOT_OK); }
 /** @req SWS_CanIf_00004 */
@@ -43,7 +43,7 @@ void test_CanIf_GetVersionInfo_ValidPtr_ShouldSucceed(void) { Std_VersionInfoTyp
 /** @req SWS_CanIf_00009 */
 void test_CanIf_GetVersionInfo_NullPtr_ShouldReportDet(void) { CanIf_GetVersionInfo(NULL_PTR); TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls); }
 /** @req SWS_CanIf_00010 */
-void test_CanIf_TxConfirmation_ShouldNotCrash(void) { CanIf_Init(&testConfig); CanIf_TxConfirmation(0U); TEST_ASSERT_TRUE(1); }
+void test_CanIf_TxConfirmation_ShouldNotReportDet(void) { CanIf_Init(&testConfig); mock_DetCalls = 0; CanIf_TxConfirmation(0U); TEST_ASSERT_EQUAL(0, mock_DetCalls); }
 /** @req SWS_CanIf_00011 */
-void test_CanIf_ControllerBusOff_ShouldNotCrash(void) { CanIf_Init(&testConfig); CanIf_ControllerBusOff(0U); TEST_ASSERT_TRUE(1); }
-void test_CanIf_Init_DoubleInit_ShouldNotCrash(void) { CanIf_Init(&testConfig); CanIf_Init(&testConfig); TEST_ASSERT_TRUE(1); }
+void test_CanIf_ControllerBusOff_ShouldNotReportDet(void) { CanIf_Init(&testConfig); mock_DetCalls = 0; CanIf_ControllerBusOff(0U); TEST_ASSERT_EQUAL(0, mock_DetCalls); }
+void test_CanIf_Init_DoubleInit_ShouldReportDet(void) { CanIf_Init(&testConfig); mock_DetCalls = 0; CanIf_Init(&testConfig); TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls); }

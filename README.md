@@ -51,7 +51,7 @@ yuleASR 是 **上海予乐电子科技有限公司** 开发的开源汽车基础
 
 ### 支持的硬件平台
 
-- **NXP S32K312** (主要目标平台) - ARM Cortex-M7 处理器
+- **NXP S32K312** (主要目标平台) - ARM Cortex-M33 处理器
 - **NXP i.MX8M Mini** - ARM Cortex-A53 四核处理器
 - 支持 CAN、CAN FD、Ethernet、LIN 等车载网络
 
@@ -379,8 +379,11 @@ docs/
 
 | 版本 | 日期 | 主要变更 |
 |------|------|---------|
-| v2.0 | 2025-05 | 项目结构重构，添加DDS和ARXML工具 |
-| v1.0 | 2024-04 | 初始版本，完整BSW实现 |
+| v1.6.0 | 2026-08-22 | DLT 整合、OTA 安全 (GB44496/R156)、SDK 导出工具 |
+| v1.5.0 | 2026-08-09 | TcpIp 深度实现、EthSwt、CDD_FVM、算法库 |
+| v1.2.0 | 2026-05-26 | Docusaurus 文档站、RTE 客户端调用、ASW 调度 |
+| v1.1.0 | 2026-04-29 | Eth/Icu/Ocu 驱动、FrTp、MISRA 合规 |
+| v1.0.0 | 2026-04-23 | 初始版本: 9 MCAL 驱动、ECUAL/Services 框架 |
 
 ---
 

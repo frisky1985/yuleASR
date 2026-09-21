@@ -14,8 +14,9 @@
 #include "Std_Types.h"
 #include "ComStack_Types.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
-#define SOMEIPSD_MODULE_ID          0x81U
+#define SOMEIPSD_MODULE_ID          MODULE_ID_SOMEIPSD_ECUAL   /* Fixed: was 0x81, conflict with CDD_RamEcc — see ModuleId.h */
 #define SOMEIPSD_VENDOR_ID          0x0055U
 #define SOMEIPSD_PROTOCOL_VERSION   0x01U
 #define SOMEIPSD_INTERFACE_VERSION  0x01U

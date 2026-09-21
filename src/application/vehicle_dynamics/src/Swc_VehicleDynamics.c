@@ -29,6 +29,7 @@
 #include "Swc_VehicleDynamics.h"
 #include "Rte.h"
 #include "Det.h"
+#include "ModuleId.h"
 
 /* Absolute value macro (works for float and integer operands) */
 #ifndef ABS
@@ -38,7 +39,7 @@
 /*==================================================================================================
 *                                    LOCAL MACROS
 ==================================================================================================*/
-#define SWC_VEHICLEDYNAMICS_MODULE_ID       0x81
+#define SWC_VEHICLEDYNAMICS_MODULE_ID       MODULE_ID_SWC_VEHICLE  /* Fixed: was 0x81, conflict with CDD_RamEcc — see ModuleId.h */
 #define SWC_VEHICLEDYNAMICS_INSTANCE_ID     0x00
 
 /* Vehicle dynamics constants */

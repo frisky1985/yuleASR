@@ -14,6 +14,7 @@ target_include_directories(Rte
         ${CMAKE_CURRENT_SOURCE_DIR}/include
         ${CMAKE_CURRENT_SOURCE_DIR}/generated
     PRIVATE
+        ${CMAKE_SOURCE_DIR}/src/common/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../services/com/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../services/nvm/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../os/include

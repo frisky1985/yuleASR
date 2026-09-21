@@ -16,6 +16,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/spi/include
     ${CMAKE_CURRENT_SOURCE_DIR}/dio/include
     ${CMAKE_SOURCE_DIR}/src/platform/s32k312/include
+    ${CMAKE_SOURCE_DIR}/src/common/include
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/third_party/crypto/aes_modes/include
     ${CMAKE_SOURCE_DIR}/third_party/mbedtls/include

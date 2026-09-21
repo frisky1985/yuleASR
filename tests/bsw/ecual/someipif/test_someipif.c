@@ -50,7 +50,7 @@ void tearDown(void) {
 /** @req SWS_SomeIpIf_00001 */
 void test_SomeIpIf_Init_NullPtr_ShouldNotCrash(void) {
     SomeIpIf_Init(NULL_PTR);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCallCount); /* Det should report error for NULL config */
 }
 
 /** @req SWS_SomeIpIf_00001 */
@@ -66,7 +66,7 @@ void test_SomeIpIf_Init_DoubleInit_ShouldSucceed(void) {
     test_SomeIpIf_SetupDefaultConfig();
     SomeIpIf_Init(&testConfig);
     SomeIpIf_Init(&testConfig);
-    TEST_ASSERT_TRUE(1); /* No crash */
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCallCount); /* Double init should report error */
 }
 
 /** @req SWS_SomeIpIf_00002 */
@@ -79,7 +79,7 @@ void test_SomeIpIf_DeInit_Uninit_ShouldReportError(void) {
 /** @req SWS_SomeIpIf_00002 */
 void test_SomeIpIf_DeInit_ValidCall_ShouldSucceed(void) {
     SomeIpIf_DeInit();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* Valid DeInit should not report errors */
 }
 
 /** @req SWS_SomeIpIf_00003 */
@@ -91,7 +91,7 @@ void test_SomeIpIf_GetVersionInfo_NullPtr_ShouldReportError(void) {
 /** @req SWS_SomeIpIf_00003 */
 void test_SomeIpIf_GetVersionInfo_ValidPtr_ShouldSucceed(void) {
     SomeIpIf_GetVersionInfo();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* Should not crash or report errors */
 }
 
 /** @req SWS_SomeIpIf_00004 */
@@ -110,7 +110,7 @@ void test_SomeIpIf_Transmit_NullPtr_ShouldReportError(void) {
 /** @req SWS_SomeIpIf_00004 */
 void test_SomeIpIf_Transmit_ValidCall_ShouldSucceed(void) {
     SomeIpIf_Transmit();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* Should not crash or report errors */
 }
 
 /** @req SWS_SomeIpIf_00005 */
@@ -129,7 +129,7 @@ void test_SomeIpIf_RegisterEvent_NullPtr_ShouldReportError(void) {
 /** @req SWS_SomeIpIf_00005 */
 void test_SomeIpIf_RegisterEvent_ValidCall_ShouldSucceed(void) {
     SomeIpIf_RegisterEvent();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* Should not crash or report errors */
 }
 
 /** @req SWS_SomeIpIf_00006 */
@@ -148,7 +148,7 @@ void test_SomeIpIf_UnregisterEvent_InvalidEvent_ShouldReportError(void) {
 /** @req SWS_SomeIpIf_00006 */
 void test_SomeIpIf_UnregisterEvent_ValidCall_ShouldSucceed(void) {
     SomeIpIf_UnregisterEvent();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* Should not crash or report errors */
 }
 
 /** @req SWS_SomeIpIf_00007 */
@@ -161,6 +161,6 @@ void test_SomeIpIf_MainFunction_Uninit_ShouldNotCrash(void) {
 /** @req SWS_SomeIpIf_00007 */
 void test_SomeIpIf_MainFunction_ValidCall_ShouldSucceed(void) {
     SomeIpIf_MainFunction();
-    TEST_ASSERT_TRUE(1);
+    TEST_ASSERT_EQUAL(0, mock_DetCallCount); /* Should not crash or report errors */
 }
 

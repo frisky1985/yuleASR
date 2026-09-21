@@ -22,12 +22,13 @@
 #include "CryIf_Types.h"
 #include "CryIf_Cfg.h"
 #include "ComStack_Types.h"
+#include "ModuleId.h"
 
 /*==================================================================================================
 *                                    VERSION INFORMATION
 ==================================================================================================*/
 #define CRYIF_VENDOR_ID                         (0x0055U)  /* YuleTech */
-#define CRYIF_MODULE_ID                         (0x007CU)  /* CRYIF Module ID */
+#define CRYIF_MODULE_ID                         (MODULE_ID_CRYIF)  /* Fixed: was 0x7C, conflict with Crypto/SomeIpTp — see ModuleId.h */
 #define CRYIF_INSTANCE_ID                       (0x00U)
 
 #define CRYIF_SW_MAJOR_VERSION                  (0x01U)

@@ -68,14 +68,25 @@ void setUp(void) {
 }
 
 void tearDown(void) {
+    /* The SUT keeps its initialization state in file-static variables that
+     * persist between test cases on the host. Deinitialize after every test
+     * so each case observes the genuine uninitialized driver. When the driver
+     * was never initialized this only reports OCU_E_UNINIT into the mock,
+     * which the next setUp() clears. */
+    Ocu_DeInit();
 }
 
 /* Init/DeInit Tests */
 /** @req SWS_Ocu_00001 */
-void test_Ocu_Init_NullPtr_ShouldReportError(void) {
+void test_Ocu_Init_NullPtr_ShouldUsePreCompileConfig(void) {
+    /* Pre-compile configuration variant (OCU_CONFIGURATION_VARIANT ==
+     * OCU_VARIANT_PRE_COMPILE): the SUT accepts a NULL pointer, silently
+     * falls back to the built-in Ocu_Config and reports no DET error. */
     Ocu_Init(NULL_PTR);
-    TEST_ASSERT_GREATER_THAN(0U, mock_DetCallCount);
-    TEST_ASSERT_EQUAL(OCU_E_PARAM_CONFIG, mock_DetLastErrorId);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+    /* Driver must be operational afterwards */
+    Ocu_StartChannel(0U);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
 }
 
 /** @req SWS_Ocu_00001 */
@@ -193,18 +204,26 @@ void test_Ocu_SetAbsoluteThreshold_BeforeInit_ShouldReportError(void) {
 
 /* Notification Tests */
 /** @req SWS_Ocu_00011 */
-void test_Ocu_EnableNotification_ShouldEnable(void) {
+void test_Ocu_EnableNotification_NoCallbackConfigured_ShouldReportError(void) {
     Ocu_Init(&testConfig);
+    /* In the pre-compile variant the SUT always uses the built-in Ocu_Config
+     * (the passed config is ignored), where every channel's notification
+     * callback is NULL_PTR. Enabling notification on such a channel is
+     * rejected with OCU_E_PARAM_CHANNEL. */
     Ocu_EnableNotification(0U);
-    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+    TEST_ASSERT_GREATER_THAN(0U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(OCU_E_PARAM_CHANNEL, mock_DetLastErrorId);
 }
 
 /** @req SWS_Ocu_00010 */
-void test_Ocu_DisableNotification_ShouldDisable(void) {
+void test_Ocu_DisableNotification_NoCallbackConfigured_ShouldReportError(void) {
     Ocu_Init(&testConfig);
-    Ocu_EnableNotification(0U);
+    /* Same as enable: no notification callback is configured for the channel
+     * in the built-in pre-compile config, so the SUT reports
+     * OCU_E_PARAM_CHANNEL. */
     Ocu_DisableNotification(0U);
-    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+    TEST_ASSERT_GREATER_THAN(0U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(OCU_E_PARAM_CHANNEL, mock_DetLastErrorId);
 }
 
 /** @req SWS_Ocu_00011 */

@@ -28,6 +28,7 @@
  *********************************************************************************************************************/
 #include "Crypto_Types.h"
 #include "Std_Types.h"
+#include "ModuleId.h"
 
 /* S32K312.h single-source-of-truth for register map */
 #include "S32K312.h"
@@ -41,7 +42,7 @@
 #define S32K312_HSM_SW_PATCH_VERSION        (0U)
 
 /* HSM Module IDs */
-#define S32K312_HSM_MODULE_ID               (0x81U)
+#define S32K312_HSM_MODULE_ID               (MODULE_ID_S32K312_HSM)   /* Fixed: was 0x81, conflict with CDD_RamEcc — see ModuleId.h */
 #define S32K312_HSM_SID_INIT                (0x00U)
 #define S32K312_HSM_SID_DEINIT              (0x01U)
 #define S32K312_HSM_SID_SELFTEST            (0x02U)
