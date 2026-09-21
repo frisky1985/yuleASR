@@ -250,8 +250,22 @@ Std_ReturnType StackProtection_UnregisterStack(uint8_t stack_id)
 
 uint32_t StackProtection_GetCurrentSP(void)
 {
+#if defined(__arm__)
+    /* ARM Cortex-M (arm-none-eabi-gcc): bind sp register directly */
     register uint32_t sp asm("sp") = 0;
     return sp;
+#elif defined(__aarch64__)
+    /* ARM64: read SP via inline assembly */
+    uint64_t sp64 = 0U;
+    __asm__ volatile("mov %0, sp" : "=r"(sp64));
+    return (uint32_t)sp64;
+#else
+    /* Host build (native unit tests / CI): no direct SP register access.
+       Approximate SP with the address of a stack local, which lies on the
+       current stack frame and preserves underflow/watermark semantics. */
+    uint32_t sp_marker = 0U;
+    return (uint32_t)(uintptr_t)&sp_marker;
+#endif
 }
 
 Std_ReturnType StackProtection_CheckTaskStack(
