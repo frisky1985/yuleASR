@@ -56,6 +56,7 @@
 
 #define CRYPTO_SID_INIT                     (0x00U)
 #define CRYPTO_SID_DEINIT                   (0x01U)
+#define CRYPTO_SID_GETVERSIONINFO           (0x02U)
 #define CRYPTO_SID_PROCESSJOB               (0x03U)
 #define CRYPTO_SID_CANCELJOB                (0x0EU)
 #define CRYPTO_SID_KEYELEMENTSET            (0x11U)

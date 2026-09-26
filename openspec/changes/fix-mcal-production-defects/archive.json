@@ -1,0 +1,22 @@
+{
+  "change_id": "fix-mcal-production-defects",
+  "status": "archived",
+  "archived_at": "2026-09-26",
+  "summary": "量产阻断缺陷修复：MCAL D1-D4（Crypto/Mcu/Spi）缺陷-测试共生解除 + ECUAL D5-D8（LinIf/CanIf）缺陷修复与 CanTp/LinIf/CanIf 空心测试实化",
+  "completion": {
+    "status": "completed",
+    "defects_fixed": [
+      "D1 Crypto_GetVersionInfo 错误 SID",
+      "D2 Mcu 时钟索引 0 被哨兵误判",
+      "D3 Spi 分频 off-by-one",
+      "D4 Spi_GetVersionInfo 字面量 SID",
+      "D5 LinIf_Init 未激活模块状态",
+      "D6 LinIf_GetVersionInfo 缺 DET",
+      "D7 LinIf_Config static 不可链接",
+      "D8 CanIf.h 缺回调原型且不自洽"
+    ],
+    "tests_substantiated": ["cantp_test (14)", "linif_test (13)", "canif_test (17)"],
+    "verification": "ctest 全量回归 104/104 通过（2026-09-26）",
+    "notes": "归档评审门禁由用户于 2026-09-26 批准跳过（直接归档）。已知问题：CanIf_Lcfg.c 配置过期，移交配置生成器任务。openspec validate --strict 的 delta 格式要求与仓内 full-spec 约定不一致，非本变更独有问题。"
+  }
+}

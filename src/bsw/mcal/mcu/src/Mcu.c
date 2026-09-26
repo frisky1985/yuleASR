@@ -58,6 +58,10 @@
 #define MCU_PLL_LOCK_TIMEOUT            (10000U)
 #define MCU_CLOCK_SWITCH_TIMEOUT        (10000U)
 
+/* Sentinel for "no clock configured": valid clock config indices are bound by
+ * Mcu_InitClock's ClockSetting >= NumClockConfigs check and are far below this. */
+#define MCU_CLOCK_INVALID               ((Mcu_ClockType)0xFFFFFFFFU)
+
 /*==================================================================================================
 *                                    LOCAL TYPES
 ==================================================================================================*/
@@ -76,7 +80,7 @@ typedef struct {
 
 static Mcu_DriverStateType Mcu_DriverState = {
     .initialized = FALSE,
-    .currentClock = 0U,
+    .currentClock = MCU_CLOCK_INVALID,
     .currentMode = MCU_MODE_RUN,
     .ramState = MCU_RAMSTATE_INVALID
 };
@@ -307,6 +311,10 @@ Std_ReturnType Mcu_Init(const Mcu_ConfigType* ConfigPtr)
     Mcu_ConfigPtr = ConfigPtr;
     Mcu_DriverState.initialized = TRUE;
     Mcu_DriverState.currentMode = MCU_MODE_RUN;
+    /* Re-init must also reset the runtime clock selection — the static
+     * initializer only runs once per process, and the previous session's
+     * currentClock would otherwise leak into the new one. */
+    Mcu_DriverState.currentClock = MCU_CLOCK_INVALID;
 
     /* Initialize RAM sections if configured */
     if (ConfigPtr->RamSections != NULL_PTR) {
@@ -360,7 +368,6 @@ Std_ReturnType Mcu_InitClock(Mcu_ClockType ClockSetting)
  * @req SHALL_MCU - Distributes the PLL clock
  */
 /** @req SWS_Mcu_00003 */
-/** @req SWS_Mcu_00003 */
 void Mcu_DistributePllClock(void)
 {
     #if (MCU_DEV_ERROR_DETECT == STD_ON)
@@ -369,7 +376,7 @@ void Mcu_DistributePllClock(void)
         return;
     }
 
-    if (Mcu_DriverState.currentClock == 0U) {
+    if (Mcu_DriverState.currentClock == MCU_CLOCK_INVALID) {
         Det_ReportError(MCU_MODULE_ID, 0U, MCU_SID_DISTRIBUTE_PLL_CLOCK, MCU_E_PLL_NOT_LOCKED);
         return;
     }

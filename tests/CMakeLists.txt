@@ -145,7 +145,12 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/services/wdgm)
 endif()
 
 # ── T-021 Batch 3: substantiated ecual-layer tests (anchors replaced by workers) ──
-# @ANCHOR3:cantp
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/canif)
+    add_subdirectory(bsw/ecual/canif)
+endif()
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/cantp)
+    add_subdirectory(bsw/ecual/cantp)
+endif()
 # @ANCHOR3:cantrcv
 # @ANCHOR3:cryif
 # @ANCHOR3:docan
@@ -171,7 +176,9 @@ endif()
 # @ANCHOR3:ipdum
 # @ANCHOR3:j1939nm
 # @ANCHOR3:j1939tp
-# @ANCHOR3:linif
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/linif)
+    add_subdirectory(bsw/ecual/linif)
+endif()
 # @ANCHOR3:linm
 # @ANCHOR3:linnm
 # @ANCHOR3:lintp

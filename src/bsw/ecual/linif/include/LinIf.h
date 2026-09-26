@@ -79,6 +79,8 @@ typedef struct {
     const LinIf_ChannelConfigType* Channels;
 } LinIf_ConfigType;
 
+extern const LinIf_ConfigType LinIf_Config;
+
 void LinIf_Init(const LinIf_ConfigType* ConfigPtr);
 void LinIf_DeInit(void);
 Std_ReturnType LinIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr);

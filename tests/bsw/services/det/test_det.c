@@ -24,11 +24,15 @@ void test_Det_Init_ValidConfig_ShouldSucceed(void)
     TEST_ASSERT_TRUE(DetInitialized);
 }
 
-/** @req SWS_Det_00001 */
+/** @req SWS_Det_00001
+ * Must run before any successful Init: Det.c accepts NULL_PTR for pre-compile
+ * configuration, storing it in DetConfigPtr while still transitioning to the
+ * initialized state. Both globals are observable here. */
 void test_Det_Init_NullPtr_ShouldNotCrash(void)
 {
     Det_Init(NULL_PTR);
-    /* No crash; if already initialized the call is ignored. */
+    TEST_ASSERT_TRUE(DetInitialized);
+    TEST_ASSERT_NULL(DetConfigPtr);
 }
 
 /** @req SWS_Det_00001 */
@@ -97,16 +101,23 @@ void test_Det_GetVersionInfo_ValidPtr_ShouldSucceed(void)
 /** @req SWS_Det_00006 */
 void test_Det_GetVersionInfo_NullPtr_ShouldNotCrash(void)
 {
+    Std_VersionInfoType info;
+    memset(&info, 0, sizeof(info));
+    /* DET-enabled build routes the NULL argument through Det_ReportError
+     * (DET_E_PARAM_POINTER) and returns without touching the caller's buffer. */
     Det_GetVersionInfo(NULL_PTR);
-    /* No crash; DET-enabled build reports internally. */
+    /* The module must stay fully operational after the rejected call. */
+    Det_GetVersionInfo(&info);
+    TEST_ASSERT_EQUAL(DET_MODULE_ID, info.moduleID);
+    TEST_ASSERT_EQUAL(DET_SW_MAJOR_VERSION, info.sw_major_version);
 }
 
 int main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_Det_Init_ValidConfig_ShouldSucceed);
     RUN_TEST(test_Det_Init_NullPtr_ShouldNotCrash);
+    RUN_TEST(test_Det_Init_ValidConfig_ShouldSucceed);
     RUN_TEST(test_Det_Init_DoubleInit_ShouldNotCrash);
     RUN_TEST(test_Det_Start_AfterInit_ShouldNotCrash);
     RUN_TEST(test_Det_ReportError_AfterInit_ShouldReturnOk);

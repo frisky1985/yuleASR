@@ -429,6 +429,18 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/spi/test_spi.c)
 endif()
 
 #----------------------------------------------------------------------
+# MCU test
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/mcu/test_mcu.c)
+    add_bsw_mcal_test(
+        NAME        mcal_mcu_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/mcu/test_mcu.c
+        MCAL_SRCS
+            ${SRC_MCAL}/mcu/src/Mcu.c
+    )
+endif()
+
+#----------------------------------------------------------------------
 # EEP test
 #----------------------------------------------------------------------
 if(EXISTS ${MCAL_TEST_SRC_DIR}/eep/test_eep.c)

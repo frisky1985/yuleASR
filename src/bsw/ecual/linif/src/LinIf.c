@@ -56,7 +56,7 @@ void LinIf_Init(const LinIf_ConfigType* ConfigPtr)
     LinIf_State.activeSchedule = 0U;
     LinIf_State.tickCount = 0U;
     LinIf_State.configPtr = ConfigPtr;
-/* [MISRA Advisory] Redundant:     LinIf_State.state = LINIF_INIT; */
+    LinIf_State.state = LINIF_INIT;
 }
 
 /** @req SWS_LinIf_00002 */
@@ -133,7 +133,12 @@ void LinIf_MainFunction(void)
 /** @req SWS_LinIf_00007 */
 void LinIf_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
-    if (NULL_PTR == versioninfo) { return; }
+    if (NULL_PTR == versioninfo) {
+#if (LINIF_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(LINIF_MODULE_ID, 0U, 0x08U, LINIF_E_PARAM_POINTER);
+#endif
+        return;
+    }
     versioninfo->vendorID = LINIF_VENDOR_ID;
     versioninfo->moduleID = LINIF_MODULE_ID;
     versioninfo->sw_major_version = 1U;

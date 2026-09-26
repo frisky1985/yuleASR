@@ -216,21 +216,32 @@ static void Spi_SetBaudRateInternal(uint8 Channel, uint32 BaudRate)
     uint32 preDiv = 0;
     uint32 postDiv = 0;
     uint32 tempDiv;
-    
-    tempDiv = refClock / BaudRate;
-    
-    /* 计算预分额和后分额 - 使用标志变量替代goto */
+    uint32 bestPre = 0U;
+    uint32 bestPost = 0U;
     boolean found = FALSE;
-    for (preDiv = 0; (preDiv < 16U) && !found; preDiv++) {
+
+    tempDiv = refClock / BaudRate;
+
+    /* 计算预分频和后分频: 捕获首个满足 2^preDiv * (postDiv+1) >= tempDiv 的组合。
+     * 必须用独立变量捕获 — 内层 break 后外层 for 的 preDiv++ 仍会执行一次。 */
+    for (preDiv = 0; (preDiv < 16U) && (found == FALSE); preDiv++) {
         for (postDiv = 0; postDiv < 16U; postDiv++) {
-            if (((1u << preDiv) * (postDiv + 1U)) >= tempDiv) {
+            if (((1UL << preDiv) * (postDiv + 1UL)) >= tempDiv) {
+                bestPre = preDiv;
+                bestPost = postDiv;
                 found = TRUE;
                 break;
             }
         }
     }
-    
-    uint32 periodreg = (preDiv << 0) | (postDiv << 4);
+
+    if (found == FALSE) {
+        /* 目标波特率低于最小可达值: 回退到最大分频 */
+        bestPre = 15U;
+        bestPost = 15U;
+    }
+
+    uint32 periodreg = (bestPre << 0) | (bestPost << 4);
     REG_WRITE32(Spi_BaseAddr[Channel] + ECSPI_PERIODREG, periodreg);
 }
 
@@ -562,12 +573,11 @@ static uint32 Spi_GetElapsedTime(uint32 StartTime)
 
 #if (SPI_VERSION_INFO_API == STD_ON)
 /** @req SWS_Spi_00009 */
-/** @req SWS_Spi_00009 */
 void Spi_GetVersionInfo(Std_VersionInfoType* versioninfo)
 {
 #if (SPI_DEV_ERROR_DETECT == STD_ON)
     if (NULL_PTR == versioninfo) {
-        Det_ReportError(SPI_MODULE_ID, SPI_INSTANCE_ID, 0x02U, SPI_E_PARAM_POINTER);
+        Det_ReportError(SPI_MODULE_ID, SPI_INSTANCE_ID, SPI_SERVICE_ID_GETVERSIONINFO, SPI_E_PARAM_POINTER);
         return;
     }
 #endif

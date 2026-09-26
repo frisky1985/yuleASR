@@ -19,6 +19,7 @@
 #include "Std_Types.h"
 #include "CanIf_Cfg.h"
 #include "ComStack_Types.h"
+#include "Can.h"
 
 /* Forward declarations */
 typedef uint32 EcuM_WakeupSourceType;
@@ -325,6 +326,25 @@ Std_ReturnType CanIf_SetPduMode(uint8 ControllerId, CanIf_PduModeType PduModeReq
  * @return Result of operation
  */
 Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePtr);
+
+/**
+ * @brief Tx confirmation callback invoked by the CAN driver
+ * @param CanTxPduId Transmitted PDU ID
+ */
+void CanIf_TxConfirmation(PduIdType CanTxPduId);
+
+/**
+ * @brief Bus-off notification callback invoked by the CAN driver
+ * @param ControllerId Controller that went bus-off
+ */
+void CanIf_ControllerBusOff(uint8 ControllerId);
+
+/**
+ * @brief Rx indication callback invoked by the CAN driver
+ * @param Mailbox Hardware object that received the frame
+ * @param PduInfoPtr Received PDU data
+ */
+void CanIf_RxIndication(const Can_HwType* Mailbox, const PduInfoType* PduInfoPtr);
 
 /**
  * @brief Gets version information

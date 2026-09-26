@@ -50,7 +50,7 @@
 #define TEST_PLL_BASE       (0x40000000UL)
 
 static Mcu_PllConfigType testPlls[1];
-static Mcu_ClockConfigType testClocks[2];
+static Mcu_ClockConfigType testClocks[1];
 static Mcu_ModeConfigType testModes[4];
 static Mcu_ConfigType testConfig;
 
@@ -75,11 +75,6 @@ static void test_Mcu_SetupConfig(void)
     testClocks[0].AxiDiv = 3U;
     testClocks[0].AhbDiv = 4U;
 
-    /* Second identical entry: Mcu_DistributePllClock treats
-     * currentClock==0 as "PLL not locked", so clock config index 0 can
-     * never be distributed. Index 1 is used to exercise the success path. */
-    testClocks[1] = testClocks[0];
-
     /* RamSections kept NULL: the driver fills sections through a raw uint8*
      * derived from the uint32 RamBaseAddr, which cannot be dereferenced on a
      * 64-bit host (address truncation + unmapped store). */
@@ -97,7 +92,7 @@ static void test_Mcu_SetupConfig(void)
     testConfig.PllDivider = 3U;
     testConfig.PllEnabled = TRUE;
     testConfig.ClockConfigs = testClocks;
-    testConfig.NumClockConfigs = 2U;
+    testConfig.NumClockConfigs = 1U;
     testConfig.ModeConfigs = testModes;
     testConfig.NumModes = 4U;
 }
@@ -172,6 +167,23 @@ void test_Mcu_InitRamSection_InvalidIndex_ShouldReportDet(void) {
     TEST_ASSERT_EQUAL(MCU_E_PARAM_RAMSECTION, Det_MockData.ErrorId);
 }
 
+/* --- DistributePllClock / GetPllStatus --- */
+
+/** @req SWS_Mcu_00004 */
+void test_Mcu_DistributePllClock_NoClockSelected_ShouldReportPllNotLocked(void) {
+    test_Mcu_EnsureInitialized();
+    /* No Mcu_InitClock called yet (this test must run BEFORE any successful
+     * InitClock in the file — the runner preserves declaration order): the
+     * currentClock stays at the MCU_CLOCK_INVALID sentinel, so distribution
+     * is rejected with MCU_E_PLL_NOT_LOCKED and CCR is left untouched. */
+    MockRegisters_Write32(MCU_CCM_CCR, 0U);
+    Mcu_DistributePllClock();
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(MCU_SID_DISTRIBUTE_PLL_CLOCK, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(MCU_E_PLL_NOT_LOCKED, Det_MockData.ErrorId);
+    TEST_ASSERT_EQUAL(0U, MockRegisters_Read32(MCU_CCM_CCR));
+}
+
 /* --- InitClock --- */
 
 /** @req SWS_Mcu_00004 */
@@ -225,28 +237,13 @@ void test_Mcu_InitClock_PllNeverLocks_ShouldTimeoutAndFail(void) {
 /* --- DistributePllClock / GetPllStatus --- */
 
 /** @req SWS_Mcu_00004 */
-void test_Mcu_DistributePllClock_NoClockSelected_ShouldReportPllNotLocked(void) {
-    test_Mcu_EnsureInitialized();
-    /* Source quirk (documented, asserted as-is): the driver stores the
-     * selected clock config index in currentClock and uses 0 as the
-     * "no PLL locked" sentinel. Mcu_Init and Mcu_InitClock(0) both leave
-     * currentClock==0, so distributing clock config 0 is always rejected
-     * with MCU_E_PLL_NOT_LOCKED and CCR is left untouched. */
-    MockRegisters_Write32(MCU_CCM_CCR, 0U);
-    Mcu_DistributePllClock();
-    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
-    TEST_ASSERT_EQUAL(MCU_SID_DISTRIBUTE_PLL_CLOCK, Det_MockData.ApiId);
-    TEST_ASSERT_EQUAL(MCU_E_PLL_NOT_LOCKED, Det_MockData.ErrorId);
-    TEST_ASSERT_EQUAL(0U, MockRegisters_Read32(MCU_CCM_CCR));
-}
-
-/** @req SWS_Mcu_00004 */
 void test_Mcu_DistributePllClock_AfterInitClock_ShouldSetClockEnable(void) {
     test_Mcu_EnsureInitialized();
-    /* Select clock config #1 (nonzero index) so currentClock!=0 */
+    /* Clock config index 0 is valid: regression for the former 0-sentinel bug
+     * that made InitClock(0) undistributable. */
     MockRegisters_Write32(testPlls[0].PllBaseAddr, PLL_CTRL_LOCK);
     MockRegisters_Write32(MCU_CCM_CCSR, CCSR_SRC_SEL);
-    TEST_ASSERT_EQUAL(E_OK, Mcu_InitClock(1U));
+    TEST_ASSERT_EQUAL(E_OK, Mcu_InitClock(0U));
     Det_Mock_Reset();
     MockRegisters_Write32(MCU_CCM_CCR, 0U);
     Mcu_DistributePllClock();

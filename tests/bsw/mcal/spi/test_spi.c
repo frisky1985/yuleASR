@@ -272,11 +272,13 @@ void test_Spi_Init_ValidConfig_ShouldConfigureChannelRegisters(void) {
                              MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_INTREG_OFF));
     TEST_ASSERT_EQUAL_HEX32(0x0UL, MockRegisters_Read32(SPI_TEST_ECSPI2_BASE + ECSPI_INTREG_OFF));
 
-    /* PERIODREG baud dividers for 80 MHz / 1 Mbit/s. Source quirk (asserted
-     * as-is): the pre-divider search loop increments preDiv once more after
-     * the match before exiting, so the register carries matched_preDiv + 1.
-     * tempDiv = 80 -> match at preDiv=3/postDiv=9 -> register (4)|(9<<4) = 0x94. */
-    TEST_ASSERT_EQUAL_HEX32(0x94UL, MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_PERIODREG_OFF));
+    /* PERIODREG baud dividers for 80 MHz ref clock. Golden values: the
+     * register carries the exact matched combination 2^preDiv * (postDiv+1)
+     * >= refClock/baud. Ch0 1 Mbit/s: tempDiv=80 -> preDiv=3, postDiv=9 ->
+     * 3|(9<<4) = 0x93. Ch1 8 Mbit/s: tempDiv=10 -> preDiv=0, postDiv=9 ->
+     * 0|(9<<4) = 0x90. */
+    TEST_ASSERT_EQUAL_HEX32(0x93UL, MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_PERIODREG_OFF));
+    TEST_ASSERT_EQUAL_HEX32(0x90UL, MockRegisters_Read32(SPI_TEST_ECSPI2_BASE + ECSPI_PERIODREG_OFF));
 
     TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
     TEST_ASSERT_EQUAL(SPI_JOB_OK, Spi_GetJobResult());
@@ -342,10 +344,9 @@ void test_Spi_SyncTransmit_DeviceOnChannel1_ShouldApplyDeviceBaudRate(void) {
     Std_ReturnType ret = Spi_SyncTransmit(1U, tx, rx, 1U);
     TEST_ASSERT_EQUAL(E_OK, ret);
     TEST_ASSERT_EQUAL_HEX8(0x99U, rx[0]);
-    /* PERIODREG reprogrammed from the device baud (8 Mbit/s). Same preDiv
-     * off-by-one quirk: tempDiv=10 -> match preDiv=0/postDiv=9 -> register
-     * (1)|(9<<4) = 0x91. */
-    TEST_ASSERT_EQUAL_HEX32(0x91UL, MockRegisters_Read32(SPI_TEST_ECSPI2_BASE + ECSPI_PERIODREG_OFF));
+    /* PERIODREG reprogrammed from the device baud (8 Mbit/s): tempDiv=10 ->
+     * match preDiv=0/postDiv=9 -> 0|(9<<4) = 0x90. */
+    TEST_ASSERT_EQUAL_HEX32(0x90UL, MockRegisters_Read32(SPI_TEST_ECSPI2_BASE + ECSPI_PERIODREG_OFF));
 }
 
 /** @req SWS_Spi_00003 */
@@ -494,8 +495,6 @@ void test_Spi_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     Spi_GetVersionInfo(NULL_PTR);
     TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
     TEST_ASSERT_EQUAL(SPI_MODULE_ID, Det_MockData.ModuleId);
-    /* Source quirk (asserted as-is): the ApiId is the literal 0x02 instead
-     * of SPI_SERVICE_ID_GETVERSIONINFO (9). */
-    TEST_ASSERT_EQUAL(0x02U, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(SPI_SERVICE_ID_GETVERSIONINFO, Det_MockData.ApiId);
     TEST_ASSERT_EQUAL(SPI_E_PARAM_POINTER, Det_MockData.ErrorId);
 }

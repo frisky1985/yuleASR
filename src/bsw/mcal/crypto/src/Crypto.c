@@ -182,7 +182,7 @@ void Crypto_GetVersionInfo(Std_VersionInfoType* versioninfo)
 #    if (CRYPTO_CFG_DEV_ERROR_DETECT == STD_ON)
     if (versioninfo == NULL_PTR)
     {
-        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_DEINIT, CRYPTO_E_PARAM_POINTER);
+        Det_ReportError(CRYPTO_MODULE_ID, 0U, CRYPTO_SID_GETVERSIONINFO, CRYPTO_E_PARAM_POINTER);
         return;
     }
 #    endif

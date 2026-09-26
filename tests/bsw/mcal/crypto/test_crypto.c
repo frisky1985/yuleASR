@@ -669,9 +669,7 @@ void test_Crypto_DeInit_AfterInit_ShouldReturnToUninitAndAllowReinit(void) {
 /** @req SWS_Crypto_00003 */
 void test_Crypto_GetVersionInfo_NullPtr_ShouldReportParamPointer(void) {
     Crypto_GetVersionInfo(NULL_PTR);
-    /* Quirk: the DET report uses CRYPTO_SID_DEINIT (0x01) instead of a
-     * dedicated version-info SID - asserted here to document source behavior. */
-    test_Crypto_AssertDet(CRYPTO_SID_DEINIT, CRYPTO_E_PARAM_POINTER);
+    test_Crypto_AssertDet(CRYPTO_SID_GETVERSIONINFO, CRYPTO_E_PARAM_POINTER);
 }
 
 /** @req SWS_Crypto_00003 */
