@@ -15,6 +15,7 @@ if(TARGET service_cansm)
         ${CMAKE_SOURCE_DIR}/src/bsw/services/cansm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/comM/include
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/can/include
         ${CMAKE_SOURCE_DIR}/include/autosar
         ${CMAKE_SOURCE_DIR}/config/input/services
         ${CMAKE_SOURCE_DIR}/config/input/ecual

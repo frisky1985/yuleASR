@@ -131,6 +131,7 @@ typedef struct {
     uint32 CanId;
     uint8 CanDlc;
     const uint8* SduPtr;
+    boolean FdFrame;    /* TRUE: request CAN FD frame format (payload up to 64 bytes) */
 } Can_PduType;
 
 /*==================================================================================================
@@ -156,6 +157,13 @@ typedef struct {
     uint32 PhaseSeg2;
     uint32 SyncJumpWidth;
     uint32 Prescaler;
+    boolean FdEnabled;          /* TRUE: CAN FD operation enabled for this configuration */
+    uint32 FdDataBaudRate;      /* FD data phase baudrate (nominal for arbitration phase) */
+    uint32 FdPropSeg;           /* FD data phase propagation segment */
+    uint32 FdPhaseSeg1;         /* FD data phase segment 1 */
+    uint32 FdPhaseSeg2;         /* FD data phase segment 2 */
+    uint32 FdSyncJumpWidth;     /* FD data phase sync jump width */
+    uint32 FdPrescaler;         /* FD data phase prescaler */
 } Can_BaudrateConfigType;
 
 /*==================================================================================================

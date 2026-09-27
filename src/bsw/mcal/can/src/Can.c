@@ -148,6 +148,38 @@ static Std_ReturnType Can_WaitForNotReady(uint32 baseAddr)
     return E_OK;
 }
 
+/** @req SWS_Can_00106 */
+static boolean Can_IsValidFdLength(uint8 length)
+{
+    /* ISO 11898-1 only defines these payload lengths in the CAN FD DLC field */
+    if (length <= 8U) {
+        return TRUE;
+    }
+    switch (length) {
+        case 12U: case 16U: case 20U: case 24U:
+        case 32U: case 48U: case 64U:
+            return TRUE;
+        default:
+            return FALSE;
+    }
+}
+
+/** @req SWS_Can_00107 */
+static uint8 Can_FdLengthToDlcCode(uint8 length)
+{
+    /* Code 9..15 represent 12/16/20/24/32/48/64 bytes; 0..8 map 1:1 */
+    switch (length) {
+        case 12U: return 9U;
+        case 16U: return 10U;
+        case 20U: return 11U;
+        case 24U: return 12U;
+        case 32U: return 13U;
+        case 48U: return 14U;
+        case 64U: return 15U;
+        default:  return length;
+    }
+}
+
 #define CAN_START_SEC_CODE
 #include "MemMap.h"
 
@@ -365,6 +397,27 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     uint32 baseAddr = Can_GetBaseAddr(controller);
     uint32 mbAddr = baseAddr + CAN_MB_BASE + (mbIndex * 16U);
 
+    #if (CAN_DEV_ERROR_DETECT == STD_ON)
+    if (PduInfo->FdFrame == TRUE) {
+        /* FD frames require a controller baudrate config with FD enabled;
+         * same lookup as Can_Init (BaudrateConfigs[0]) via the stored config */
+        const Can_ControllerConfigType* ctrlConfig = &Can_ConfigPtr->Controllers[controller];
+        const Can_BaudrateConfigType* fdConfig = &ctrlConfig->BaudrateConfigs[0];
+        if (fdConfig->FdEnabled != TRUE) {
+            Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+            return CAN_NOT_OK;
+        }
+        if (Can_IsValidFdLength(PduInfo->CanDlc) != TRUE) {
+            Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+            return CAN_NOT_OK;
+        }
+    } else if (PduInfo->CanDlc > 8U) {
+        /* Classic frames remain limited to the 0..8 DLC range */
+        Det_ReportError(CAN_MODULE_ID, 0U, CAN_SID_WRITECANID, CAN_E_PARAM_DLC);
+        return CAN_NOT_OK;
+    }
+    #endif
+
     /* Check if mailbox is available */
     uint32 csValue = REG_READ32(mbAddr + 0U);
     if ((csValue & CAN_MB_CODE_MASK) != CAN_MB_CODE_TX_INACTIVE) {
@@ -380,21 +433,40 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo)
     }
     REG_WRITE32(mbAddr + 4U, idValue);
 
-    /* Write data */
-    uint32 dataWord0 = 0U;
-    uint32 dataWord1 = 0U;
-    for (uint8 i = 0U; (i < PduInfo->CanDlc) && (i < 4U); i++) {
-        dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8U);
-    }
-    for (uint8 i = 4U; (i < PduInfo->CanDlc) && (i < 8U); i++) {
-        dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8U);
-    }
-    REG_WRITE32(mbAddr + 8U, dataWord0);
-    REG_WRITE32(mbAddr + 12U, dataWord1);
+    if (PduInfo->FdFrame == TRUE) {
+        /* FD payload: up to 16 data words (64 bytes) at consecutive mailbox
+         * offsets after the two classic words; DLC field carries the FD code */
+        for (uint8 word = 0U; word < 16U; word++) {
+            uint32 dataWord = 0U;
+            for (uint8 byte = 0U; byte < 4U; byte++) {
+                uint8 index = (uint8)((word * 4U) + byte);
+                if (index < PduInfo->CanDlc) {
+                    dataWord |= (uint32)(PduInfo->SduPtr[index]) << (byte * 8U);
+                }
+            }
+            REG_WRITE32(mbAddr + 8U + ((uint32)word * 4U), dataWord);
+        }
 
-    /* Write CS (code and DLC) */
-    csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)(PduInfo->CanDlc & 0x0FU) << 16);
-    REG_WRITE32(mbAddr + 0U, csValue);
+        /* Write CS (code and FD DLC code) */
+        csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)Can_FdLengthToDlcCode(PduInfo->CanDlc) << 16);
+        REG_WRITE32(mbAddr + 0U, csValue);
+    } else {
+        /* Write data */
+        uint32 dataWord0 = 0U;
+        uint32 dataWord1 = 0U;
+        for (uint8 i = 0U; (i < PduInfo->CanDlc) && (i < 4U); i++) {
+            dataWord0 |= (uint32)(PduInfo->SduPtr[i]) << (i * 8U);
+        }
+        for (uint8 i = 4U; (i < PduInfo->CanDlc) && (i < 8U); i++) {
+            dataWord1 |= (uint32)(PduInfo->SduPtr[i]) << ((i - 4U) * 8U);
+        }
+        REG_WRITE32(mbAddr + 8U, dataWord0);
+        REG_WRITE32(mbAddr + 12U, dataWord1);
+
+        /* Write CS (code and DLC) */
+        csValue = CAN_MB_CODE_TX_ACTIVE | ((uint32)(PduInfo->CanDlc & 0x0FU) << 16);
+        REG_WRITE32(mbAddr + 0U, csValue);
+    }
 
 #ifdef QEMU_CAN_LOOPBACK
     {

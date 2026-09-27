@@ -122,7 +122,6 @@ message(STATUS "")
 
 # Global include directories
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/classic/com
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/os/include
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/general/inc
     ${CMAKE_CURRENT_SOURCE_DIR}/src/bsw/services/det/include

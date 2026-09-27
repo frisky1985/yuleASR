@@ -13,6 +13,9 @@
 | `/triple-verify` | 验证审查 | Stage 4 |
 | `/triple-archive` | 归档合并 | Stage 5 |
 | `/triple-health` | 健康检查 | Stage 6 |
+| `/autosar-benchmark-compare` | 开源基线对标（EasyXMen/OpenBSW 差距矩阵） | 按需 |
+
+> 对标分析也可用自然语言触发（如"对比开源 AUTOSAR 完整性"、"深度对比 BSW 量产差距"）；方法定义与可复用脚本见 `.qoder/skills/autosar-benchmark-compare/`，历史矩阵与深度报告见其 `references/`。
 
 ## 项目愿景
 

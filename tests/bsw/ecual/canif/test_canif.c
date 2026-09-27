@@ -16,6 +16,19 @@ static uint8 mock_CanWriteCalls = 0;
 static uint8 mock_PduRTxConfCalls = 0;
 static uint8 mock_PduRRxIndCalls = 0;
 
+/* CanTrcv stub: CanTrcv.h is intentionally not included, the mode type is
+ * mirrored with the same constants/values as CanTrcv_TrcvModeType. */
+typedef enum {
+    CANTRCV_TRCVMODE_NORMAL = 0u,
+    CANTRCV_TRCVMODE_STANDBY = 1u,
+    CANTRCV_TRCVMODE_SLEEP = 2u
+} CanTrcv_TrcvModeType;
+
+static uint8 mock_CanTrcvCalls = 0;
+static uint8 mock_CanTrcvLastTransceiver = 0xFFU;
+static CanTrcv_TrcvModeType mock_CanTrcvLastMode = CANTRCV_TRCVMODE_NORMAL;
+static Std_ReturnType mock_CanTrcvReturn = E_OK;
+
 Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId) {
     (void)ModuleId;(void)InstanceId;(void)ApiId;(void)ErrorId;
     mock_DetCalls++; return E_OK;
@@ -28,6 +41,12 @@ Can_ReturnType Can_Write(Can_HwHandleType Hth, const Can_PduType* PduInfo) {
 }
 Std_ReturnType Can_CheckWakeup(uint8 Controller) {
     (void)Controller; return E_OK;
+}
+Std_ReturnType CanTrcv_SetOpMode(uint8 Transceiver, CanTrcv_TrcvModeType OpMode) {
+    mock_CanTrcvCalls++;
+    mock_CanTrcvLastTransceiver = Transceiver;
+    mock_CanTrcvLastMode = OpMode;
+    return mock_CanTrcvReturn;
 }
 void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
     (void)TxPduId;(void)result; mock_PduRTxConfCalls++;
@@ -68,6 +87,10 @@ void setUp(void) {
     mock_CanWriteCalls = 0;
     mock_PduRTxConfCalls = 0;
     mock_PduRRxIndCalls = 0;
+    mock_CanTrcvCalls = 0;
+    mock_CanTrcvLastTransceiver = 0xFFU;
+    mock_CanTrcvLastMode = CANTRCV_TRCVMODE_NORMAL;
+    mock_CanTrcvReturn = E_OK;
 }
 void tearDown(void) {}
 
@@ -238,6 +261,95 @@ void test_CanIf_DeInit_AfterInit_ShouldSucceed(void) {
     TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls); /* E_UNINIT after DeInit */
 }
 
+/** @req SWS_CanIf_00016 */
+void test_CanIf_SetTrcvMode_Standby_AfterInit_ShouldSucceed(void) {
+    CanIf_TransceiverModeType mode = CANIF_TRCV_MODE_NORMAL;
+    CanIf_Init(&testConfig);
+
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_STANDBY));
+    TEST_ASSERT_EQUAL(1, mock_CanTrcvCalls);
+    TEST_ASSERT_EQUAL(0, mock_CanTrcvLastTransceiver);
+    TEST_ASSERT_EQUAL(CANTRCV_TRCVMODE_STANDBY, mock_CanTrcvLastMode);
+
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetTrcvMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_TRCV_MODE_STANDBY, mode);
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/** @req SWS_CanIf_00016 */
+void test_CanIf_SetTrcvMode_BeforeInit_ShouldFail(void) {
+    Std_ReturnType ret = CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_STANDBY);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+    TEST_ASSERT_EQUAL(0, mock_CanTrcvCalls);
+}
+
+/** @req SWS_CanIf_00016 */
+void test_CanIf_SetTrcvMode_InvalidTrcvId_ShouldReportDet(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+
+    Std_ReturnType ret = CanIf_SetTrcvMode(CANIF_NUM_TRANSCEIVERS, CANIF_TRCV_MODE_NORMAL);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+    TEST_ASSERT_EQUAL(0, mock_CanTrcvCalls);
+}
+
+/** @req SWS_CanIf_00017 */
+void test_CanIf_SetTrcvMode_TrcvError_ShouldKeepPreviousMode(void) {
+    CanIf_TransceiverModeType mode = CANIF_TRCV_MODE_NORMAL;
+    CanIf_Init(&testConfig);
+
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_STANDBY));
+
+    mock_CanTrcvReturn = E_NOT_OK;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_SLEEP));
+
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetTrcvMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_TRCV_MODE_STANDBY, mode); /* unchanged */
+}
+
+/** @req SWS_CanIf_00022 */
+void test_CanIf_CheckValidation_ShouldSucceedOncePerWakeup(void) {
+    CanIf_Init(&testConfig);
+
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CheckValidation(0U));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_CheckWakeup(0U));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_CheckValidation(0U));
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CheckValidation(0U)); /* flag consumed */
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/** @req SWS_CanIf_00023 */
+void test_CanIf_GetTxConfirmationState_AfterTransmitAndConfirm(void) {
+    PduInfoType pdu;
+    uint8 data[8] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(CANIF_TXCONF_NONE, CanIf_GetTxConfirmationState(0U));
+
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    (void)CanIf_SetPduMode(0U, CANIF_ONLINE);
+
+    TEST_ASSERT_EQUAL(E_OK, CanIf_Transmit(0U, &pdu));
+    TEST_ASSERT_EQUAL(CANIF_TXCONF_PENDING, CanIf_GetTxConfirmationState(0U));
+
+    CanIf_TxConfirmation(0U);
+    TEST_ASSERT_EQUAL(CANIF_TXCONF_CONFIRMED, CanIf_GetTxConfirmationState(0U));
+    TEST_ASSERT_EQUAL(1, mock_PduRTxConfCalls);
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/** @req SWS_CanIf_00023 */
+void test_CanIf_GetTxConfirmationState_InvalidPduId_ShouldReportDet(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+
+    TEST_ASSERT_EQUAL(CANIF_TXCONF_NONE, CanIf_GetTxConfirmationState(CANIF_NUM_TX_PDUS));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -259,6 +371,13 @@ int main(void)
     RUN_TEST(test_CanIf_RxIndication_MatchingPdu_ShouldNotifyPduR);
     RUN_TEST(test_CanIf_ControllerBusOff_ShouldSetStopped);
     RUN_TEST(test_CanIf_DeInit_AfterInit_ShouldSucceed);
+    RUN_TEST(test_CanIf_SetTrcvMode_Standby_AfterInit_ShouldSucceed);
+    RUN_TEST(test_CanIf_SetTrcvMode_BeforeInit_ShouldFail);
+    RUN_TEST(test_CanIf_SetTrcvMode_InvalidTrcvId_ShouldReportDet);
+    RUN_TEST(test_CanIf_SetTrcvMode_TrcvError_ShouldKeepPreviousMode);
+    RUN_TEST(test_CanIf_CheckValidation_ShouldSucceedOncePerWakeup);
+    RUN_TEST(test_CanIf_GetTxConfirmationState_AfterTransmitAndConfirm);
+    RUN_TEST(test_CanIf_GetTxConfirmationState_InvalidPduId_ShouldReportDet);
 
     return UnityEnd();
 }

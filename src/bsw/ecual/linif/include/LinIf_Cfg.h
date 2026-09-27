@@ -24,6 +24,9 @@
 *================================================================================================*/
 #define LINIF_MAX_CHANNELS    (2U)
 #define LINIF_MAX_FRAMES    (16U)
+#define LINIF_MAX_FRAME_LENGTH    (8U)
+#define LINIF_MAX_TX_PDUS    (4U)
+#define LINIF_MAIN_FUNCTION_PERIOD_MS    (1U)
 #define LINIF_MAX_SCHEDULES    (8U)
 #define LINIF_MAX_SCHEDULE_ENTRIES    (32U)
 #define LINIF_FRAME_UNCONDITIONAL    (0U)

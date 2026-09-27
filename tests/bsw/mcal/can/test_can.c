@@ -37,6 +37,8 @@ static Can_ControllerConfigType testControllers[2];
 static Can_ConfigType testConfig;
 static Can_PduType testPdu;
 static uint8 pduData[8];
+static Can_BaudrateConfigType testFdBaudrates[2];
+static uint8 fdPduData[64];
 
 static void test_Can_SetupConfig(void)
 {
@@ -77,6 +79,37 @@ static void test_Can_SetupPdu(void)
     testPdu.CanId = 0x100U;
     testPdu.CanDlc = 8U;
     testPdu.SduPtr = pduData;
+    testPdu.FdFrame = FALSE;
+}
+
+/* FD-enabled baudrate config for controller 1 (CAN2), built the same way as
+ * test_Can_SetupConfig with the appended CAN FD fields set. */
+static void test_Can_SetupFdConfig(void)
+{
+    testFdBaudrates[0].BaudRate = 500000U;
+    testFdBaudrates[0].PropSeg = 7U;
+    testFdBaudrates[0].PhaseSeg1 = 4U;
+    testFdBaudrates[0].PhaseSeg2 = 2U;
+    testFdBaudrates[0].SyncJumpWidth = 1U;
+    testFdBaudrates[0].Prescaler = 8U;
+    testFdBaudrates[0].FdEnabled = TRUE;
+    testFdBaudrates[0].FdDataBaudRate = 2000000U;
+    testFdBaudrates[0].FdPropSeg = 3U;
+    testFdBaudrates[0].FdPhaseSeg1 = 3U;
+    testFdBaudrates[0].FdPhaseSeg2 = 2U;
+    testFdBaudrates[0].FdSyncJumpWidth = 1U;
+    testFdBaudrates[0].FdPrescaler = 2U;
+
+    testControllers[1].BaudrateConfigs = testFdBaudrates;
+    testControllers[1].NumBaudrateConfigs = 1U;
+}
+
+/* Deterministic 64-byte FD payload: byte i holds value i */
+static void test_Can_SetupFdPdu(void)
+{
+    for (uint8 i = 0U; i < 64U; i++) {
+        fdPduData[i] = i;
+    }
 }
 
 /* Can.c keeps static init state that cannot be reset on host; the driver is
@@ -370,4 +403,102 @@ void test_Can_CheckWakeup_InvalidController_ShouldReportDet(void) {
     test_Can_EnsureInitialized();
     TEST_ASSERT_EQUAL(E_NOT_OK, Can_CheckWakeup(200U));
     TEST_ASSERT_EQUAL(CAN_E_PARAM_CONTROLLER, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Can_00006 */
+void test_Can_Write_FdFrame12_FdEnabled_ShouldEncodeDlcCode9(void) {
+    test_Can_EnsureInitialized();
+    test_Can_SetupFdConfig();
+    test_Can_SetupFdPdu();
+    /* Hth 8 -> controller 1 (FD-enabled), mailbox 0 */
+    uint32 mbAddr = CAN2_BASE + CAN_MB_BASE_OFF;
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    testPdu.FdFrame = TRUE;
+    testPdu.CanDlc = 12U;
+    testPdu.SduPtr = fdPduData;
+
+    Can_ReturnType ret = Can_Write(8U, &testPdu);
+    TEST_ASSERT_EQUAL(CAN_OK, ret);
+    /* DLC code 9 encodes 12 bytes in CAN FD */
+    uint32 cs = MockRegisters_Read32(mbAddr + 0U);
+    TEST_ASSERT_EQUAL(9U, (cs >> 16) & 0x0FU);
+    /* Word 2 (bytes 8..11) at the first offset beyond the classic 8 bytes */
+    TEST_ASSERT_EQUAL_HEX32(0x0B0A0908U, MockRegisters_Read32(mbAddr + 16U));
+}
+
+/** @req SWS_Can_00006 */
+void test_Can_Write_FdFrame64_FdEnabled_ShouldEncodeDlcCode15(void) {
+    test_Can_EnsureInitialized();
+    test_Can_SetupFdConfig();
+    test_Can_SetupFdPdu();
+    uint32 mbAddr = CAN2_BASE + CAN_MB_BASE_OFF;
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    testPdu.FdFrame = TRUE;
+    testPdu.CanDlc = 64U;
+    testPdu.SduPtr = fdPduData;
+
+    Can_ReturnType ret = Can_Write(8U, &testPdu);
+    TEST_ASSERT_EQUAL(CAN_OK, ret);
+    /* DLC code 15 encodes 64 bytes in CAN FD */
+    uint32 cs = MockRegisters_Read32(mbAddr + 0U);
+    TEST_ASSERT_EQUAL(15U, (cs >> 16) & 0x0FU);
+    /* Spot-check a word beyond the classic 8 bytes (bytes 8..11) */
+    TEST_ASSERT_EQUAL_HEX32(0x0B0A0908U, MockRegisters_Read32(mbAddr + 16U));
+    /* Last data word: bytes 60..63 at mbAddr + 8 + 15*4 */
+    TEST_ASSERT_EQUAL_HEX32(0x3F3E3D3CU, MockRegisters_Read32(mbAddr + 68U));
+}
+
+/** @req SWS_Can_00006 */
+void test_Can_Write_FdFrame_FdDisabled_ShouldRejectWithDet(void) {
+    test_Can_EnsureInitialized();
+    /* Hth 0 -> controller 0 whose baudrate config keeps FD disabled */
+    uint32 mbAddr = CAN1_BASE + CAN_MB_BASE_OFF;
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    testPdu.FdFrame = TRUE;
+    testPdu.CanDlc = 12U;
+    testPdu.SduPtr = fdPduData;
+
+    Can_ReturnType ret = Can_Write(0U, &testPdu);
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, ret);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_DLC, Det_MockData.ErrorId);
+    /* Rejected frame must not arm the mailbox (no silent truncation) */
+    TEST_ASSERT_EQUAL(CAN_MB_CS_INACTIVE, MockRegisters_Read32(mbAddr + 0U));
+}
+
+/** @req SWS_Can_00006 */
+void test_Can_Write_FdFrameIllegalLength_ShouldRejectWithDet(void) {
+    test_Can_EnsureInitialized();
+    test_Can_SetupFdConfig();
+    /* Hth 8 -> controller 1 (FD-enabled), mailbox 0 */
+    uint32 mbAddr = CAN2_BASE + CAN_MB_BASE_OFF;
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    testPdu.FdFrame = TRUE;
+    testPdu.SduPtr = fdPduData;
+
+    testPdu.CanDlc = 9U;
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, Can_Write(8U, &testPdu));
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_DLC, Det_MockData.ErrorId);
+
+    Det_Mock_Reset();
+    testPdu.CanDlc = 13U;
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, Can_Write(8U, &testPdu));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_DLC, Det_MockData.ErrorId);
+    TEST_ASSERT_EQUAL(CAN_MB_CS_INACTIVE, MockRegisters_Read32(mbAddr + 0U));
+}
+
+/** @req SWS_Can_00006 */
+void test_Can_Write_ClassicFrameLength12_ShouldRejectWithDet(void) {
+    test_Can_EnsureInitialized();
+    uint32 mbAddr = CAN1_BASE + CAN_MB_BASE_OFF; /* Hth 0 -> controller 0 */
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    testPdu.FdFrame = FALSE;
+    testPdu.CanDlc = 12U;
+    testPdu.SduPtr = fdPduData;
+
+    Can_ReturnType ret = Can_Write(0U, &testPdu);
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, ret);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_DLC, Det_MockData.ErrorId);
 }

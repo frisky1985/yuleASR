@@ -8,6 +8,7 @@ set(BSWM_TEST_INCLUDES
     ${TEST_FRAMEWORK_INCLUDE}
     ${CMAKE_SOURCE_DIR}/src/bsw/services/bswm/include
     ${CMAKE_SOURCE_DIR}/src/bsw/services/det/include
+    ${CMAKE_SOURCE_DIR}/src/bsw/services/ecum/include
     ${CMAKE_SOURCE_DIR}/src/bsw/os/include
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/src/common/include

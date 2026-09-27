@@ -53,6 +53,7 @@
 *                                    Other Configuration
 *================================================================================================*/
 #define CANTP_DYNAMIC_CHANNEL_ALLOCATION    STD_OFF
+#define CANTP_CANFD_ENABLED    STD_OFF
 #define CANTP_PADDING_BYTE    STD_ON
 #define CANTP_PADDING_BYTE_VALUE    (204U)
 #define CANTP_CHANGE_PARAMETER_API    STD_ON

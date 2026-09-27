@@ -15,6 +15,7 @@ target_include_directories(cantpsyn_test
         ${TEST_FRAMEWORK_INCLUDE}
         ${CMAKE_SOURCE_DIR}/src/bsw/services/cantsyn/include
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/can/include
         ${CMAKE_SOURCE_DIR}/src/bsw/mcal/eth/include
         ${CMAKE_SOURCE_DIR}/src/bsw/os/include
         ${CMAKE_SOURCE_DIR}/include/autosar

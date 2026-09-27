@@ -31,18 +31,6 @@
 #include "SchM.h"
 #include "Rte.h"
 
-/*
- * Forward declarations for BswM callbacks invoked by EcuM.
- * BswM_EcuM_CurrentState and BswM_EcuM_CurrentWakeup are BswM callbacks
- * that notify the BSW Mode Manager of ECU state/wakeup changes.
- * These should be provided by the BswM implementation per AUTOSAR_SWS_BSWModeManager.
- * TODO: Replace stubs with actual BswM implementation once available.
- */
-extern FUNC(void, BSWM_CODE) BswM_EcuM_CurrentState(VAR(EcuM_StateType, AUTOMATIC) CurrentState);
-extern FUNC(void, BSWM_CODE) BswM_EcuM_CurrentWakeup(
-    VAR(EcuM_WakeupSourceType, AUTOMATIC) WakeupSource,
-    VAR(EcuM_WakeupStatusType, AUTOMATIC) WakeupStatus);
-
 #if (ECUM_NVM_ENABLED == STD_ON)
 #include "NvM.h"
 #endif

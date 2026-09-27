@@ -15,6 +15,7 @@ target_include_directories(linif_test
     PRIVATE
         ${TEST_FRAMEWORK_INCLUDE}
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/linif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/lin/include
         ${CMAKE_SOURCE_DIR}/include/autosar
 )
 

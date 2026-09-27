@@ -23,6 +23,7 @@
 *                                    Other Configuration
 *================================================================================================*/
 #define BSWM_MAX_MODE_REQUEST_PORTS    (32U)
+#define BSWM_MAX_EXPRESSIONS    (128U)
 #define BSWM_MAX_RULES    (64U)
 #define BSWM_MAX_ACTIONS    (128U)
 #define BSWM_MAX_ACTION_LISTS    (32U)

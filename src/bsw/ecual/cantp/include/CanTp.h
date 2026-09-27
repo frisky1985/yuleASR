@@ -216,6 +216,7 @@ typedef struct {
     uint8 NumRxNsdu;
     const CanTp_TxNsduConfigType* TxNsduConfigs;
     const CanTp_RxNsduConfigType* RxNsduConfigs;
+    boolean CanFdEnabled;           /* TRUE: CAN FD channel (FD frame lengths, CANTP_CANFD_MAX_MESSAGE_LENGTH) */
 } CanTp_ChannelConfigType;
 
 /*==================================================================================================

@@ -200,7 +200,8 @@ static const CanTp_ChannelConfigType CanTp_ChannelConfigs[CANTP_NUM_CHANNELS] = 
         /* NumTxNsdu */       CANTP_NUM_TX_NSDU,
         /* NumRxNsdu */       CANTP_NUM_RX_NSDU,
         /* TxNsduConfigs */   CanTp_TxNsduConfigs,
-        /* RxNsduConfigs */   CanTp_RxNsduConfigs
+        /* RxNsduConfigs */   CanTp_RxNsduConfigs,
+        /* CanFdEnabled */    CANTP_CANFD_ENABLED
     },
     {
         /* ChannelId */       1U,
@@ -208,7 +209,8 @@ static const CanTp_ChannelConfigType CanTp_ChannelConfigs[CANTP_NUM_CHANNELS] = 
         /* NumTxNsdu */       CANTP_NUM_TX_NSDU,
         /* NumRxNsdu */       CANTP_NUM_RX_NSDU,
         /* TxNsduConfigs */   CanTp_TxNsduConfigs,
-        /* RxNsduConfigs */   CanTp_RxNsduConfigs
+        /* RxNsduConfigs */   CanTp_RxNsduConfigs,
+        /* CanFdEnabled */    CANTP_CANFD_ENABLED
     }
 };
 

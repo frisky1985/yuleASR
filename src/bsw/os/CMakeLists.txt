@@ -41,6 +41,7 @@ target_include_directories(Os
         ${CMAKE_SOURCE_DIR}/src/common/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/bswm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/can/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/com/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/dcm/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/nvm/include

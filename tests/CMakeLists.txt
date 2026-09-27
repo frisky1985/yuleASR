@@ -237,8 +237,14 @@ if(NOT CMAKE_CROSSCOMPILING)
             # ECUAL: CanIf (Com dependency) and MemIf (NvM dependency)
             ecual_canif
             ecual_memif
+            # CanIf_SetTrcvMode -> CanTrcv driver -> Dio/EcuM wakeup path
+            ecual_cantrcv
             # MCAL Can + ECUAL Ea/Fee (CanIf and NvM-MemIf hardware backends)
             mcal_can
+            mcal_dio
+            service_ecum
+            service_comM
+            service_schm
             ecual_ea
             ecual_fee
             # MCAL Eep + Fls (Ea/Fee hardware backends)

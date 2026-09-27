@@ -56,6 +56,8 @@ typedef uint32 EcuM_WakeupSourceType;
 #define CANIF_SID_GETTRCVWAKEUPREASON   (0x0FU)
 #define CANIF_SID_SETTRCVWAKEUPMODE     (0x10U)
 #define CANIF_SID_CHECKWAKEUP           (0x11U)
+#define CANIF_SID_CHECKVALIDATION       (0x12U)
+#define CANIF_SID_GETTXCONFIRMATIONSTATE (0x13U)
 #define CANIF_SID_SETBAUDRATE           (0x27U)
 #define CANIF_SID_GETBAUDRATE           (0x28U)
 #define CANIF_SID_GETCONTROLLERRXERRORCOUNTER (0x4CU)
@@ -113,6 +115,16 @@ typedef enum {
     CANIF_NO_NOTIFICATION = 0,
     CANIF_TX_RX_NOTIFICATION
 } CanIf_NotifStatusType;
+
+/*==================================================================================================
+*                                    CANIF TX CONFIRMATION STATE TYPE
+==================================================================================================*/
+/** @brief Tx confirmation state of a Tx L-PDU */
+typedef uint8 CanIf_TxConfirmationStateType;
+
+#define CANIF_TXCONF_NONE       (0x00U) /* No transmit requested */
+#define CANIF_TXCONF_PENDING    (0x01U) /* Transmit requested, confirmation outstanding */
+#define CANIF_TXCONF_CONFIRMED  (0x02U) /* Transmit confirmed by CAN driver */
 
 /*==================================================================================================
 *                                    CANIF PDU MODE TYPE (enum values)
@@ -334,6 +346,13 @@ Std_ReturnType CanIf_GetPduMode(uint8 ControllerId, CanIf_PduModeType* PduModePt
 void CanIf_TxConfirmation(PduIdType CanTxPduId);
 
 /**
+ * @brief Gets the TX confirmation state of a Tx PDU
+ * @param CanTxPduId PDU to query
+ * @return Confirmation state (CANIF_TXCONF_*)
+ */
+CanIf_TxConfirmationStateType CanIf_GetTxConfirmationState(PduIdType CanTxPduId);
+
+/**
  * @brief Bus-off notification callback invoked by the CAN driver
  * @param ControllerId Controller that went bus-off
  */
@@ -366,6 +385,13 @@ Std_ReturnType CanIf_SetDynamicTxId(PduIdType CanTxPduId, uint32 CanId);
  * @return Result of operation
  */
 Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource);
+
+/**
+ * @brief Checks and consumes a pending wakeup validation
+ * @param WakeupSource Wakeup source to validate
+ * @return E_OK if a wakeup was validated since the last call, else E_NOT_OK
+ */
+Std_ReturnType CanIf_CheckValidation(EcuM_WakeupSourceType WakeupSource);
 
 /**
  * @brief Sets transceiver mode

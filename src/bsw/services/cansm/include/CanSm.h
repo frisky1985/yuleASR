@@ -46,6 +46,8 @@
 #define CANSM_SID_MAINFUNCTION                  (0x05U)
 #define CANSM_SID_CONTROLLERMODEINDICATION      (0x07U)
 #define CANSM_SID_GETVERSIONINFO                (0x09U)
+#define CANSM_SID_CONFIRMPNAVAILABILITY         (0x0AU)
+#define CANSM_SID_CLEARTRCVWUFFLAGINDICATION    (0x0BU)
 #define CANSM_SID_CONTROLLERERRORSSTATUSINDICATION (0x3CU)
 #define CANSM_SID_SETECUPASSIVE                 (0x10U)
 #define CANSM_SID_TXTIMEOUTEXCEPTION            (0x11U)
@@ -66,6 +68,7 @@
 #define CANSM_E_NOT_INITIALIZED                 (0x07U)
 #define CANSM_E_INVALID_BAUDRATE                (0x08U)
 #define CANSM_E_BUSOFF_RECOVERY_ACTIVE          (0x09U)
+#define CANSM_E_PARAM_NETWORK                   (0x0AU)
 
 /*==================================================================================================
 *                                    CANSM STATES (BSM - Bus State Machine)
@@ -205,14 +208,16 @@ typedef uint8 CanSm_NetworkHandleType;
 
 /**
  * @brief Initializes the CAN State Management module
- * @param ConfigPtr Pointer to configuration structure
- * @details This function initializes all CAN networks to CANSM_BSM_S_NOTINITIALIZED state
+ * @param ConfigPtr Pointer to configuration structure (NULL_PTR selects the
+ *        pre-compile default configuration object)
+ * @details This function initializes all CAN networks to CANSM_BSM_S_NOCOM state
  */
 void CanSM_Init(const CanSm_ConfigType* ConfigPtr);
 
 /**
  * @brief Deinitializes the CAN State Management module
- * @details This function deinitializes the CanSM and transitions all networks to CANSM_BSM_S_NOCOM
+ * @details This function transitions all networks to CANSM_BSM_S_NOTINITIALIZED
+ *          and clears all timers and counters
  */
 void CanSM_DeInit(void);
 
@@ -253,6 +258,22 @@ void CanSM_ControllerBusOff(uint8 ControllerId);
  * @details Called by CanIf to confirm controller mode changes
  */
 void CanSM_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType ControllerMode);
+
+/**
+ * @brief Confirms partial networking availability for a network
+ * @param NetworkHandle Network handle
+ * @return E_OK if the confirmation was accepted, E_NOT_OK otherwise
+ * @details Only supported while the network is in full communication
+ */
+Std_ReturnType CanSM_ConfirmPnAvailability(NetworkHandleType NetworkHandle);
+
+/**
+ * @brief Clears the transceiver wakeup-flag indication of a network
+ * @param NetworkHandle Network handle
+ * @return E_OK if the indication was cleared, E_NOT_OK otherwise
+ * @details Only supported while the network is in full communication
+ */
+Std_ReturnType CanSM_ClearTrcvWufFlagIndication(NetworkHandleType NetworkHandle);
 
 /**
  * @brief Gets version information

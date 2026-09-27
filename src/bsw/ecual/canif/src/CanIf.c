@@ -21,6 +21,7 @@
 #include "CanIf.h"
 #include "CanIf_Cfg.h"
 #include "Can.h"
+#include "CanTrcv.h"
 #include "PduR.h"
 #include "Det.h"
 
@@ -31,6 +32,9 @@ static boolean CanIf_DriverInitialized = FALSE;
 static CanIf_ControllerModeType CanIf_ControllerMode[CANIF_NUM_CONTROLLERS];
 static CanIf_PduModeType CanIf_PduMode[CANIF_NUM_CONTROLLERS];
 static const CanIf_ConfigType* CanIf_ConfigPtr = NULL_PTR;
+static CanIf_TransceiverModeType CanIf_TrcvMode[CANIF_NUM_TRANSCEIVERS];
+static boolean CanIf_WakeupValidationPending = FALSE;
+static CanIf_TxConfirmationStateType CanIf_TxConfirmationState[CANIF_NUM_TX_PDUS];
 
 #define CANIF_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
@@ -64,6 +68,16 @@ void CanIf_Init(const CanIf_ConfigType* ConfigPtr)
         CanIf_PduMode[i] = CANIF_OFFLINE;
     }
 
+    for (uint8 i = 0U; i < CANIF_NUM_TRANSCEIVERS; i++) {
+        CanIf_TrcvMode[i] = CANIF_TRCV_MODE_NORMAL;
+    }
+
+    for (PduIdType i = 0U; i < CANIF_NUM_TX_PDUS; i++) {
+        CanIf_TxConfirmationState[i] = CANIF_TXCONF_NONE;
+    }
+
+    CanIf_WakeupValidationPending = FALSE;
+
     CanIf_DriverInitialized = TRUE;
 }
 
@@ -86,6 +100,16 @@ void CanIf_DeInit(void)
         CanIf_ControllerMode[i] = CANIF_CS_UNINIT;
         CanIf_PduMode[i] = CANIF_OFFLINE;
     }
+
+    for (uint8 i = 0U; i < CANIF_NUM_TRANSCEIVERS; i++) {
+        CanIf_TrcvMode[i] = CANIF_TRCV_MODE_NORMAL;
+    }
+
+    for (PduIdType i = 0U; i < CANIF_NUM_TX_PDUS; i++) {
+        CanIf_TxConfirmationState[i] = CANIF_TXCONF_NONE;
+    }
+
+    CanIf_WakeupValidationPending = FALSE;
 
     CanIf_DriverInitialized = FALSE;
 }
@@ -214,10 +238,12 @@ Std_ReturnType CanIf_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     canPdu.CanId = txPduConfig->CanId;
     canPdu.CanDlc = (uint8)PduInfoPtr->SduLength;
     canPdu.SduPtr = PduInfoPtr->SduDataPtr;
+    canPdu.FdFrame = FALSE;
 
     Can_ReturnType canStatus = Can_Write(txPduConfig->Hth, &canPdu);
 
     if (canStatus == CAN_OK) {
+        CanIf_TxConfirmationState[TxPduId] = CANIF_TXCONF_PENDING;
         return E_OK;
     } else if (canStatus == CAN_BUSY) {
         return E_NOT_OK;
@@ -336,10 +362,33 @@ void CanIf_TxConfirmation(PduIdType CanTxPduId)
 
     if (CanTxPduId < CANIF_NUM_TX_PDUS) {
         const CanIf_TxPduConfigType* txPduConfig = &CanIf_ConfigPtr->TxPdus[CanTxPduId];
+        CanIf_TxConfirmationState[CanTxPduId] = CANIF_TXCONF_CONFIRMED;
         if ((txPduConfig->TxConfirmation) != 0U) {
             PduR_TxConfirmation(CanTxPduId, E_OK);
         }
     }
+}
+
+/**
+ * @brief CanIf_GetTxConfirmationState - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_GetTxConfirmationState function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
+/** @req SWS_CanIf_00023 */
+CanIf_TxConfirmationStateType CanIf_GetTxConfirmationState(PduIdType CanTxPduId)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTXCONFIRMATIONSTATE, CANIF_E_UNINIT);
+        return CANIF_TXCONF_NONE;
+    }
+    if (CanTxPduId >= CANIF_NUM_TX_PDUS) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_GETTXCONFIRMATIONSTATE, CANIF_E_INVALID_TXPDUID);
+        return CANIF_TXCONF_NONE;
+    }
+    #endif
+
+    return CanIf_TxConfirmationState[CanTxPduId];
 }
 
 /**
@@ -459,11 +508,37 @@ Std_ReturnType CanIf_CheckWakeup(EcuM_WakeupSourceType WakeupSource)
     /* Check all controllers for wakeup */
     for (uint8 i = 0U; i < CANIF_NUM_CONTROLLERS; i++) {
         if (Can_CheckWakeup(i) == E_OK) {
+            CanIf_WakeupValidationPending = TRUE;
             return E_OK;
         }
     }
 
     (void)WakeupSource;
+    return E_NOT_OK;
+}
+
+/**
+ * @brief CanIf_CheckValidation - AUTOSAR CAN Interface API
+ * @details Implements the AUTOSAR CanIf_CheckValidation function for CAN interface abstraction
+ * @return Std_ReturnType or void per AUTOSAR specification
+ */
+/** @req SWS_CanIf_00022 */
+Std_ReturnType CanIf_CheckValidation(EcuM_WakeupSourceType WakeupSource)
+{
+    #if (CANIF_DEV_ERROR_DETECT == STD_ON)
+    if (CanIf_DriverInitialized == FALSE) {
+        Det_ReportError(CANIF_MODULE_ID, 0U, CANIF_SID_CHECKVALIDATION, CANIF_E_UNINIT);
+        return E_NOT_OK;
+    }
+    #endif
+
+    (void)WakeupSource;
+
+    if (CanIf_WakeupValidationPending == TRUE) {
+        CanIf_WakeupValidationPending = FALSE;
+        return E_OK;
+    }
+
     return E_NOT_OK;
 }
 
@@ -486,8 +561,30 @@ Std_ReturnType CanIf_SetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType 
     }
     #endif
 
-    (void)TransceiverId;
-    (void)TransceiverMode;
+    CanTrcv_TrcvModeType trcvMode;
+
+    switch (TransceiverMode) {
+        case CANIF_TRCV_MODE_NORMAL:
+            trcvMode = CANTRCV_TRCVMODE_NORMAL;
+            break;
+
+        case CANIF_TRCV_MODE_STANDBY:
+            trcvMode = CANTRCV_TRCVMODE_STANDBY;
+            break;
+
+        case CANIF_TRCV_MODE_SLEEP:
+            trcvMode = CANTRCV_TRCVMODE_SLEEP;
+            break;
+
+        default:
+            return E_NOT_OK;
+    }
+
+    if (CanTrcv_SetOpMode(TransceiverId, trcvMode) != E_OK) {
+        return E_NOT_OK;
+    }
+
+    CanIf_TrcvMode[TransceiverId] = TransceiverMode;
     return E_OK;
 }
 
@@ -514,7 +611,7 @@ Std_ReturnType CanIf_GetTrcvMode(uint8 TransceiverId, CanIf_TransceiverModeType*
     }
     #endif
 
-    *TransceiverModePtr = CANIF_TRCV_MODE_NORMAL;
+    *TransceiverModePtr = CanIf_TrcvMode[TransceiverId];
     return E_OK;
 }
 

@@ -14,7 +14,11 @@ target_include_directories(canif_test
     PRIVATE
         ${TEST_FRAMEWORK_INCLUDE}
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/ecual/cantrcv/include
         ${CMAKE_SOURCE_DIR}/src/bsw/mcal/can/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/dio/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/spi/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/ecum/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/pdur/include
         ${CMAKE_SOURCE_DIR}/include/autosar
 )
@@ -22,6 +26,11 @@ target_include_directories(canif_test
 target_compile_options(canif_test PRIVATE
     -Wall
     -Wextra
+    # CanTrcv.h (included by CanIf.c) pulls in CanTrcv_Cfg/Spi/EcuM headers that
+    # re-typedef/re-define names already defined; CanIf_Cfg.h also duplicates two
+    # CANIF_E_PARAM_* macros from CanIf.h. Silence that header noise only.
+    -Wno-typedef-redefinition
+    -Wno-macro-redefined
     -g
     -O0
 )

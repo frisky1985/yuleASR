@@ -51,6 +51,8 @@ typedef struct {
     uint8 STmin;
     uint8 WftCounter;
     uint16 Timer;
+    uint16 StMinTimerMs;                           /* STmin (N_Cs) separation countdown in milliseconds */
+    boolean StMinActive;                           /* TRUE while the STmin separation time gates the next CF */
     uint8 Buffer[CANTP_CHANNEL_BUFFER_SIZE];       /* Temporary buffer for frame data */
     boolean TxConfirmed;
     boolean RxIndicated;
@@ -148,6 +150,8 @@ static void CanTp_ResetChannel(CanTp_ChannelType Channel)
         CanTp_ChannelRuntime[Channel].STmin = 0U;
         CanTp_ChannelRuntime[Channel].WftCounter = 0U;
         CanTp_ChannelRuntime[Channel].Timer = 0U;
+        CanTp_ChannelRuntime[Channel].StMinTimerMs = 0U;
+        CanTp_ChannelRuntime[Channel].StMinActive = FALSE;
         CanTp_ChannelRuntime[Channel].TxConfirmed = FALSE;
         CanTp_ChannelRuntime[Channel].RxIndicated = FALSE;
         CanTp_ChannelRuntime[Channel].TxNsduConfig = NULL_PTR;
@@ -163,6 +167,77 @@ static CanTp_ChannelType CanTp_FindFreeChannel(void)
         }
     }
     return CANTP_INVALID_CHANNEL_ID;  /* No free channel */
+}
+
+/*==================================================================================================
+*                                    FRAME LENGTH AND STmin HELPERS
+*==================================================================================================*/
+/**
+ * @brief Check whether a channel is configured for CAN FD frame lengths
+ * @param Channel Channel ID
+ * @return TRUE if the channel accepts CAN FD frame lengths, FALSE otherwise (classic CAN)
+ */
+static boolean CanTp_IsChannelFd(CanTp_ChannelType Channel)
+{
+    if (CanTp_ConfigPtr != NULL_PTR) {
+        for (uint8 ch = 0U; ch < CanTp_ConfigPtr->NumChannels; ch++) {
+            if (CanTp_ConfigPtr->ChannelConfigs[ch].ChannelId == Channel) {
+                return CanTp_ConfigPtr->ChannelConfigs[ch].CanFdEnabled;
+            }
+        }
+    }
+    return FALSE;  /* Unconfigured channels use classic CAN semantics */
+}
+
+/**
+ * @brief Check if a CAN frame payload length is valid
+ * @param Length Frame length in bytes
+ * @param FdEnabled TRUE for CAN FD channel, FALSE for classic CAN channel
+ * @return TRUE if Length is a valid frame length for the channel type
+ */
+static boolean CanTp_IsValidFrameLength(uint16 Length, boolean FdEnabled)
+{
+    if (FdEnabled == TRUE) {
+        /* CAN FD valid payload lengths: 0..8 bytes plus 12/16/20/24/32/48/64 bytes */
+        switch (Length) {
+            case 0U:
+            case 1U:
+            case 2U:
+            case 3U:
+            case 4U:
+            case 5U:
+            case 6U:
+            case 7U:
+            case 8U:
+            case 12U:
+            case 16U:
+            case 20U:
+            case 24U:
+            case 32U:
+            case 48U:
+            case 64U:
+                return TRUE;
+            default:
+                return FALSE;
+        }
+    }
+    return (Length <= CANTP_CAN_FRAME_LENGTH) ? TRUE : FALSE;  /* Classic CAN: 0..8 bytes */
+}
+
+/**
+ * @brief Convert the STmin byte from a Flow Control frame to a separation countdown in ms
+ * @param StMin STmin value from the FC frame
+ * @return Separation time in ms
+ */
+static uint16 CanTp_EncodeStMinMs(uint8 StMin)
+{
+    if ((StMin >= 0xF1U) && (StMin <= 0xF9U)) {
+        return 1U;  /* 100..900 us values are rounded up to the 1 ms timer resolution */
+    }
+    if (StMin <= 0x7FU) {
+        return (uint16)StMin;  /* 0..127 ms */
+    }
+    return 0U;  /* Reserved values: no separation time */
 }
 
 /**
@@ -269,6 +344,11 @@ static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
     uint16 remainingBytes = runtime->DataLength - runtime->DataIndex;
     uint8 bytesToSend = (remainingBytes > CANTP_MAX_CF_DATA_LEN) ? CANTP_MAX_CF_DATA_LEN : (uint8)remainingBytes;
 
+    /* The assembled CF length must be legal for the channel type */
+    if (CanTp_IsValidFrameLength((uint16)(bytesToSend + 1U), CanTp_IsChannelFd(Channel)) != TRUE) {
+        return;
+    }
+
     for (uint8 i = 0U; i < bytesToSend; i++) {
         cfFrame[i + 1U] = runtime->Buffer[runtime->DataIndex + i];
     }
@@ -285,6 +365,10 @@ static void CanTp_SendConsecutiveFrame(CanTp_ChannelType Channel)
 
     runtime->DataIndex += bytesToSend;
     runtime->SequenceNumber = (runtime->SequenceNumber + 1U) & 0x0FU;
+
+    /* Arm the STmin separation time for the next Consecutive Frame */
+    runtime->StMinTimerMs = CanTp_EncodeStMinMs(runtime->STmin);
+    runtime->StMinActive = TRUE;
 
     (void)CanIf_Transmit(CANTP_CANIF_TX_PDU_ID, &pduInfo);
 }
@@ -365,6 +449,13 @@ Std_ReturnType CanTp_Transmit(PduIdType CanTpTxSduId, const PduInfoType* CanTpTx
 
     if (dataLength == 0U) {
         return E_NOT_OK;
+    }
+
+    if (dataLength > CANTP_CANFD_MAX_MESSAGE_LENGTH) {
+        #if (CANTP_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANTP_MODULE_ID, 0U, CANTP_SID_TRANSMIT, CANTP_E_INVALID_TX_LENGTH);
+        #endif
+        return E_NOT_OK;  /* Message exceeds the maximum TP message length */
     }
 
     /* Find free channel */
@@ -593,7 +684,8 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             if ((sfDl > 0U) && (sfDl <= CANTP_MAX_SF_DATA_LEN)) {
                 /* Find free channel */
                 CanTp_ChannelType channel = CanTp_FindFreeChannel();
-                if (channel != 0xFFU) {
+                if ((channel != 0xFFU) &&
+                    (CanTp_IsValidFrameLength(PduInfoPtr->SduLength, CanTp_IsChannelFd(channel)) == TRUE)) {
                     CanTp_ChannelRuntimeType* runtime = &CanTp_ChannelRuntime[channel];
                     runtime->State = CANTP_CH_RX_SF;
                     runtime->DataLength = sfDl;
@@ -621,10 +713,15 @@ void CanTp_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
             /* First Frame received */
             uint16 ffDl = ((uint16)(pci & CANTP_PCI_FF_DL_MASK) << 8) | PduInfoPtr->SduDataPtr[1];
 
-            if ((ffDl > CANTP_MAX_SF_DATA_LEN) && (ffDl <= CANTP_MAX_MESSAGE_LENGTH)) {
-                /* Find free channel */
-                CanTp_ChannelType channel = CanTp_FindFreeChannel();
-                if (channel != 0xFFU) {
+            /* Find free channel */
+            CanTp_ChannelType channel = CanTp_FindFreeChannel();
+            if (channel != 0xFFU) {
+                boolean channelFd = CanTp_IsChannelFd(channel);
+                uint16 maxMessageLength = (channelFd == TRUE) ? CANTP_CANFD_MAX_MESSAGE_LENGTH : CANTP_MAX_MESSAGE_LENGTH;
+
+                /* FF DL and frame length must be consistent with the channel capability */
+                if ((ffDl > CANTP_MAX_SF_DATA_LEN) && (ffDl <= maxMessageLength) &&
+                    (CanTp_IsValidFrameLength(PduInfoPtr->SduLength, channelFd) == TRUE)) {
                     /* Get Rx NSDU configuration based on RxPduId */
                     const CanTp_RxNsduConfigType* rxNsduConfig = CanTp_GetRxNsduConfig(RxPduId);
                     if (rxNsduConfig == NULL_PTR) {
@@ -818,9 +915,12 @@ void CanTp_MainFunction(void)
             continue;
         }
 
-        /* Decrement timer */
+        /* Decrement timers */
         if (runtime->Timer > 0U) {
             runtime->Timer--;
+        }
+        if ((runtime->StMinActive == TRUE) && (runtime->StMinTimerMs > 0U)) {
+            runtime->StMinTimerMs--;
         }
 
         /* Check for timeouts */
@@ -838,13 +938,11 @@ void CanTp_MainFunction(void)
                     break;
 
                 case CANTP_CH_TX_CF:
-                    /* N_Cs timeout - send next frame */
-                    CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
-                    /* Use N_Cs from config if available */
-                    if (runtime->TxNsduConfig != NULL_PTR) {
-                        runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
-                    } else {
-                        runtime->Timer = CANTP_NCS_DEFAULT;
+                    /* N_Cs timeout: abort only if a next CF is still gated by the STmin separation */
+                    if ((runtime->DataIndex < runtime->DataLength) &&
+                        (runtime->StMinActive == TRUE) &&
+                        (runtime->StMinTimerMs > 0U)) {
+                        CanTp_ResetChannel((CanTp_ChannelType)i);
                     }
                     break;
 
@@ -858,10 +956,18 @@ void CanTp_MainFunction(void)
             }
         }
 
-        /* Handle Consecutive Frame transmission with STmin */
-        if ((runtime->State == CANTP_CH_TX_CF) && (runtime->DataIndex < runtime->DataLength)) {
-            /* Check if ready to send next CF based on STmin */
-            /* In a real implementation, this would use a separate STmin timer */
+        /* Send the next Consecutive Frame once the STmin separation time has elapsed */
+        if ((runtime->State == CANTP_CH_TX_CF) &&
+            (runtime->StMinActive == TRUE) &&
+            (runtime->StMinTimerMs == 0U) &&
+            (runtime->DataIndex < runtime->DataLength)) {
+            CanTp_SendConsecutiveFrame((CanTp_ChannelType)i);
+            /* Use N_Cs from config if available */
+            if (runtime->TxNsduConfig != NULL_PTR) {
+                runtime->Timer = runtime->TxNsduConfig->CanTpNcs;
+            } else {
+                runtime->Timer = CANTP_NCS_DEFAULT;
+            }
         }
     }
 }

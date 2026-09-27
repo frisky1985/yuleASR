@@ -78,6 +78,7 @@ typedef struct {
     boolean BaudrateChangePending;          /**< Baudrate change pending */
     CanIf_ControllerModeType RequestedCtrlMode; /**< Requested controller mode */
     boolean ModeChangePending;              /**< Mode change pending flag */
+    boolean TrcvWufFlagIndication;          /**< Transceiver wakeup-flag indication pending */
     boolean Initialized;                    /**< Network initialized flag */
 } CanSm_NetworkStateType;
 
@@ -265,7 +266,8 @@ static void CanSm_HandleModeConfirmation(uint8 NetworkIndex, CanIf_ControllerMod
     switch (Mode) {
         case CANIF_CS_STARTED:
             /* Controller is now started - can transition to FULLCOM */
-            if (CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_NOCOM) {
+            if ((CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_NOCOM) ||
+                (CanSm_Global.Networks[NetworkIndex].BsmState == CANSM_BSM_S_SILENTCOM)) {
                 CanSm_TransitionToFullCom(NetworkIndex);
             }
             break;
@@ -540,6 +542,232 @@ static Std_ReturnType CanSm_ProcessFullComState(uint8 NetworkIndex)
     }
     
     return result;
+}
+
+/*==================================================================================================
+*                                    GLOBAL FUNCTIONS
+==================================================================================================*/
+
+/**
+ * @brief Initializes the CAN State Management module
+ * @req SHALL_CANSM - Initializes the CAN State Management module
+ */
+void CanSM_Init(const CanSm_ConfigType* ConfigPtr)
+{
+    uint8 networkIdx;
+    CanSm_NetworkStateType* netState;
+
+    /* Pre-compile configuration: NULL_PTR selects the default config object */
+    if (NULL_PTR == ConfigPtr) {
+        ConfigPtr = &CanSm_Config;
+    }
+
+    CanSm_Global.InitStatus = CANSM_INIT;
+    CanSm_Global.NumNetworks = CANSM_NUM_NETWORKS;
+    CanSm_Global.ConfigPtr = ConfigPtr;
+
+    for (networkIdx = 0U; (networkIdx < CANSM_NUM_NETWORKS) && (networkIdx < CANSM_MAX_NETWORKS); networkIdx++) {
+        netState = &CanSm_Global.Networks[networkIdx];
+
+        netState->BsmState = CANSM_BSM_S_NOCOM;
+        netState->SubState = CANSM_S_NOCOM_NOP;
+        netState->RequestedComMMode = COMM_NO_COMMUNICATION;
+        netState->CurrentComMMode = COMM_NO_COMMUNICATION;
+        netState->ModeRequestTimer = 0U;
+        netState->BusOffRecoveryTimer = 0U;
+        netState->BusOffCounter = 0U;
+        netState->BusOffEventPending = FALSE;
+        netState->CurrentBaudrate = CANSM_DEFAULT_BAUDRATE;
+        netState->RequestedBaudrateIndex = 0U;
+        netState->BaudrateChangePending = FALSE;
+        netState->RequestedCtrlMode = CANIF_CS_UNINIT;
+        netState->ModeChangePending = FALSE;
+        netState->TrcvWufFlagIndication = FALSE;
+        netState->Initialized = TRUE;
+    }
+}
+
+/**
+ * @brief Deinitializes the CAN State Management module
+ * @req SHALL_CANSM - Deinitializes the CAN State Management module
+ */
+void CanSM_DeInit(void)
+{
+    uint8 networkIdx;
+    CanSm_NetworkStateType* netState;
+
+    for (networkIdx = 0U; networkIdx < CANSM_MAX_NETWORKS; networkIdx++) {
+        netState = &CanSm_Global.Networks[networkIdx];
+
+        netState->BsmState = CANSM_BSM_S_NOTINITIALIZED;
+        netState->SubState = 0U;
+        netState->RequestedComMMode = COMM_NO_COMMUNICATION;
+        netState->CurrentComMMode = COMM_NO_COMMUNICATION;
+        netState->ModeRequestTimer = 0U;
+        netState->BusOffRecoveryTimer = 0U;
+        netState->BusOffCounter = 0U;
+        netState->BusOffEventPending = FALSE;
+        netState->CurrentBaudrate = 0U;
+        netState->RequestedBaudrateIndex = 0U;
+        netState->BaudrateChangePending = FALSE;
+        netState->RequestedCtrlMode = CANIF_CS_UNINIT;
+        netState->ModeChangePending = FALSE;
+        netState->TrcvWufFlagIndication = FALSE;
+        netState->Initialized = FALSE;
+    }
+
+    CanSm_Global.InitStatus = CANSM_UNINIT;
+    CanSm_Global.NumNetworks = 0U;
+    CanSm_Global.ConfigPtr = NULL_PTR;
+}
+
+/**
+ * @brief Controller mode indication callback from CanIf
+ * @req SHALL_CANSM - Controller mode indication callback from CanIf
+ */
+void CanSM_ControllerModeIndication(uint8 ControllerId, CanIf_ControllerModeType ControllerMode)
+{
+    uint8 networkIdx;
+
+    if (CanSm_Global.InitStatus != CANSM_INIT) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CONTROLLERMODEINDICATION, CANSM_E_NOT_INITIALIZED);
+#endif
+        return;
+    }
+
+    for (networkIdx = 0U; networkIdx < CANSM_NUM_NETWORKS; networkIdx++) {
+        if (CanSm_NetworkConfigs[networkIdx].ControllerId == ControllerId) {
+            CanSm_HandleModeConfirmation(networkIdx, ControllerMode);
+            return;
+        }
+    }
+
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+    Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                    CANSM_SID_CONTROLLERMODEINDICATION, CANSM_E_PARAM_CONTROLLER);
+#endif
+}
+
+/**
+ * @brief Gets the current internal state of a network
+ * @req SHALL_CANSM - Gets the current internal state of a network
+ */
+Std_ReturnType CanSM_GetCurrentInternalState(uint8 Network, CanSm_BsmStateType* StatePtr)
+{
+    uint8 networkIdx;
+
+    if (CanSm_Global.InitStatus != CANSM_INIT) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_GETCURRENTINTERNALSTATE, CANSM_E_NOT_INITIALIZED);
+#endif
+        return E_NOT_OK;
+    }
+
+    if (NULL_PTR == StatePtr) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_GETCURRENTINTERNALSTATE, CANSM_E_PARAM_POINTER);
+#endif
+        return E_NOT_OK;
+    }
+
+    if (CanSm_IsNetworkValid(Network) == FALSE) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_GETCURRENTINTERNALSTATE, CANSM_E_PARAM_NETWORK);
+#endif
+        return E_NOT_OK;
+    }
+
+    networkIdx = CanSm_GetNetworkIndex(Network);
+    *StatePtr = CanSm_Global.Networks[networkIdx].BsmState;
+
+    return E_OK;
+}
+
+/**
+ * @brief Confirms partial networking availability for a network
+ * @req SHALL_CANSM - Confirms partial networking availability for a network
+ */
+Std_ReturnType CanSM_ConfirmPnAvailability(NetworkHandleType NetworkHandle)
+{
+    uint8 networkIdx;
+
+    if (CanSm_Global.InitStatus != CANSM_INIT) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CONFIRMPNAVAILABILITY, CANSM_E_NOT_INITIALIZED);
+#endif
+        return E_NOT_OK;
+    }
+
+    if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CONFIRMPNAVAILABILITY, CANSM_E_PARAM_NETWORK);
+#endif
+        return E_NOT_OK;
+    }
+
+    networkIdx = CanSm_GetNetworkIndex(NetworkHandle);
+
+    /* Partial networking confirmation is only supported in full communication */
+    if (CanSm_Global.Networks[networkIdx].BsmState != CANSM_BSM_S_FULLCOM) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CONFIRMPNAVAILABILITY, CANSM_E_PARAM_INVALID_NETWORK_MODE);
+#endif
+        return E_NOT_OK;
+    }
+
+    /* CanIf provides no ConfirmPnAvailability service in this integration;
+     * acknowledge the availability directly */
+    return E_OK;
+}
+
+/**
+ * @brief Clears the transceiver wakeup-flag indication of a network
+ * @req SHALL_CANSM - Clears the transceiver wakeup-flag indication of a network
+ */
+Std_ReturnType CanSM_ClearTrcvWufFlagIndication(NetworkHandleType NetworkHandle)
+{
+    uint8 networkIdx;
+
+    if (CanSm_Global.InitStatus != CANSM_INIT) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CLEARTRCVWUFFLAGINDICATION, CANSM_E_NOT_INITIALIZED);
+#endif
+        return E_NOT_OK;
+    }
+
+    if (CanSm_IsNetworkValid(NetworkHandle) == FALSE) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CLEARTRCVWUFFLAGINDICATION, CANSM_E_PARAM_NETWORK);
+#endif
+        return E_NOT_OK;
+    }
+
+    networkIdx = CanSm_GetNetworkIndex(NetworkHandle);
+
+    /* Wakeup-flag handling is only supported in full communication */
+    if (CanSm_Global.Networks[networkIdx].BsmState != CANSM_BSM_S_FULLCOM) {
+#if (CANSM_DEV_ERROR_DETECT == STD_ON)
+        Det_ReportError(CANSM_MODULE_ID, CANSM_INSTANCE_ID,
+                        CANSM_SID_CLEARTRCVWUFFLAGINDICATION, CANSM_E_PARAM_INVALID_NETWORK_MODE);
+#endif
+        return E_NOT_OK;
+    }
+
+    /* CanIf provides no ClearTrcvWufFlag service in this integration;
+     * clear the internal wakeup-flag indication directly */
+    CanSm_Global.Networks[networkIdx].TrcvWufFlagIndication = FALSE;
+
+    return E_OK;
 }
 
 #if (CANSM_VERSION_INFO_API == STD_ON)

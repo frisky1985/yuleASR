@@ -345,28 +345,6 @@ for f in \
     fi
 done
 
-# COM 模块测试（需要 unity + 生产代码）
-COM_PRODUCTION=""
-for com_src in \
-    src/bsw/classic/com/Com.c \
-    src/bsw/classic/com/Com_Main.c \
-    src/bsw/classic/com/Com_Signal.c \
-    src/bsw/classic/com/Com_Transmit.c \
-    src/bsw/classic/com/Com_Confirmation.c \
-    src/bsw/classic/com/Com_TxMode.c \
-    src/bsw/classic/com/Com_DeadlineMon.c \
-    src/bsw/classic/com/Com_ErrorHandling.c \
-; do
-    COM_PRODUCTION="$COM_PRODUCTION $com_src"
-done
-
-for f in tests/unit/com/test_com_init.c tests/unit/com/test_com_signal.c tests/unit/com/test_com_main.c; do
-    if [ -f "$f" ]; then
-        name="$(basename "$f" .c)"
-        build_and_run "com_$name" "$f $COM_PRODUCTION $UNITY_C"
-    fi
-done
-
 # 服务模块测试
 for f in \
     tests/unit/services/test_Com.c \

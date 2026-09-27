@@ -16,6 +16,7 @@ target_include_directories(cantp_test
         ${TEST_FRAMEWORK_INCLUDE}
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/cantp/include
         ${CMAKE_SOURCE_DIR}/src/bsw/ecual/canif/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/mcal/can/include
         ${CMAKE_SOURCE_DIR}/src/bsw/services/pdur/include
         ${CMAKE_SOURCE_DIR}/include/autosar
 )

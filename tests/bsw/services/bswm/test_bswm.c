@@ -12,6 +12,7 @@
 // @tests src/bsw/services/bswm/src/BswM.c  @tests src/bsw/services/bswm/include/BswM.h
 #include "unity.h"
 #include "BswM.h"
+#include "EcuM.h"
 
 /* Service IDs and error codes from BswM.c */
 #define BSWM_SID_INIT               0x00U
@@ -53,14 +54,58 @@ void setUp(void) {
 void tearDown(void) {}
 
 /** @req SWS_BswM_00001 */
-void test_BswM_Init_NullPtr_ShouldReportDet(void) {
+void test_BswM_Init_NullPtr_ShouldSelectDefaultConfig(void) {
+    /* Pre-compile configuration: NULL selects the BswM_Config object of
+     * BswM_Lcfg.c instead of reporting a parameter error. */
     BswM_Init(NULL_PTR);
-    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCalls);
-    TEST_ASSERT_EQUAL_UINT16(BSWM_MODULE_ID, mock_DetLastModuleId);
-    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_INIT, mock_DetLastApiId);
-    TEST_ASSERT_EQUAL_UINT8(BSWM_E_PARAM_POINTER, mock_DetLastErrorId);
-    /* Module must remain uninitialized: a mode request still fails. */
-    TEST_ASSERT_EQUAL(E_NOT_OK, BswM_RequestMode(0U, BSWM_MODE_VALUE_RUN));
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCalls);
+    TEST_ASSERT_EQUAL(E_OK, BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN));
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetRequestedMode());
+}
+
+/** @req SWS_BswM_00001 */
+void test_BswM_Init_NullPtr_DefaultConfigShape_ShouldMatchLcfg(void) {
+    /* The default config must expose the arbitration tables of BswM_Lcfg.c. */
+    TEST_ASSERT_EQUAL_UINT8(3U, BswM_Config.NumModeRequestPorts);
+    TEST_ASSERT_EQUAL_UINT16(6U, BswM_Config.NumExpressions);
+    TEST_ASSERT_EQUAL_UINT8(3U, BswM_Config.NumRules);
+    TEST_ASSERT_EQUAL_UINT8(4U, BswM_Config.NumActionLists);
+    TEST_ASSERT_NOT_NULL(BswM_Config.ModeRequestPorts);
+    TEST_ASSERT_NOT_NULL(BswM_Config.Expressions);
+    TEST_ASSERT_NOT_NULL(BswM_Config.Rules);
+    TEST_ASSERT_NOT_NULL(BswM_Config.ActionLists);
+}
+
+/** @req SWS_BswM_00210 */
+void test_BswM_DefaultConfig_EcuMShutdown_ShouldEnterShutdown(void) {
+    BswM_Init(NULL_PTR);
+    BswM_EcuM_CurrentState(ECUM_STATE_SHUTDOWN);
+    /* Request latched, rule 2 (EcuM SHUTDOWN) evaluated once MainFunction runs. */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCalls);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_SHUTDOWN, BswM_GetCurrentMode());
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_SHUTDOWN, BswM_GetRequestedMode());
+}
+
+/** @req SWS_BswM_00210 */
+void test_BswM_DefaultConfig_UnmappedEcuMState_ShouldBeIgnored(void) {
+    BswM_Init(NULL_PTR);
+    /* 0x02 is not a defined ECUM_STATE_* value: no mode request is issued. */
+    BswM_EcuM_CurrentState((EcuM_StateType)0x02U);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCalls);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetRequestedMode());
+}
+
+/** @req SWS_BswM_00211 */
+void test_BswM_DefaultConfig_ValidatedWakeup_ShouldRequestWakeupMode(void) {
+    BswM_Init(NULL_PTR);
+    BswM_EcuM_CurrentWakeup(0x01U, ECUM_WKSTATUS_VALIDATED);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_WAKEUP, BswM_GetRequestedMode());
+    /* A non-validated wakeup status must not change the requested mode. */
+    BswM_Init(NULL_PTR);
+    BswM_EcuM_CurrentWakeup(0x01U, ECUM_WKSTATUS_PENDING);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetRequestedMode());
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCalls);
 }
 
 /** @req SWS_BswM_00001 */
@@ -135,7 +180,7 @@ void test_BswM_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     BswM_GetVersionInfo(NULL_PTR);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCalls);
     TEST_ASSERT_EQUAL_UINT16(BSWM_MODULE_ID, mock_DetLastModuleId);
-    TEST_ASSERT_EQUAL_UINT8(0xFFU, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_GETVERSIONINFO, mock_DetLastApiId);
     TEST_ASSERT_EQUAL_UINT8(BSWM_E_PARAM_POINTER, mock_DetLastErrorId);
 }
 
@@ -167,7 +212,11 @@ int main(void)
 {
     UNITY_BEGIN();
 
-    RUN_TEST(test_BswM_Init_NullPtr_ShouldReportDet);
+    RUN_TEST(test_BswM_Init_NullPtr_ShouldSelectDefaultConfig);
+    RUN_TEST(test_BswM_Init_NullPtr_DefaultConfigShape_ShouldMatchLcfg);
+    RUN_TEST(test_BswM_DefaultConfig_EcuMShutdown_ShouldEnterShutdown);
+    RUN_TEST(test_BswM_DefaultConfig_UnmappedEcuMState_ShouldBeIgnored);
+    RUN_TEST(test_BswM_DefaultConfig_ValidatedWakeup_ShouldRequestWakeupMode);
     RUN_TEST(test_BswM_Init_ValidConfig_ShouldSucceed);
     RUN_TEST(test_BswM_DeInit_BeforeInit_ShouldNotCrash);
     RUN_TEST(test_BswM_DeInit_AfterInit_ShouldReturnToUninit);
