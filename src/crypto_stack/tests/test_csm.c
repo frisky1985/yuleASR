@@ -351,25 +351,34 @@ static int test_csm_queue_management(void)
     csm_status_t status;
     csm_queue_stats_t stats;
     uint32_t job_ids[5];
-    
+    /* Per-job storage, hoisted out of the submit loop. The SUT keeps the
+     * input/output pointers and dereferences them later, during
+     * csm_process_queue(): buffers (and the length variable) declared inside
+     * the loop would have ended their lifetime by then, which is undefined
+     * behaviour — it read back as a stale 32 on macOS but as 0 on Linux,
+     * failing every job there. */
+    uint8_t data[5][32];
+    uint8_t hash[5][32];
+    uint32_t hash_len[5];
+
     printf("  Testing CSM queue management...\n");
-    
+
+    memset(data, 0, sizeof(data));
+
     ctx = csm_init(NULL);
     TEST_ASSERT(ctx != NULL);
-    
+
     /* Create and submit multiple jobs */
     for (int i = 0; i < 5; i++) {
         job_ids[i] = csm_job_create(ctx, CSM_JOB_HASH, CSM_ALGO_SHA_256, 0);
         TEST_ASSERT_NE(job_ids[i], CSM_JOB_ID_INVALID);
-        
-        uint8_t data[32] = {0};
-        uint8_t hash[32];
-        uint32_t hash_len = sizeof(hash);
-        
-        status = csm_job_set_input(ctx, job_ids[i], data, sizeof(data));
+
+        hash_len[i] = sizeof(hash[i]);
+
+        status = csm_job_set_input(ctx, job_ids[i], data[i], sizeof(data[i]));
         TEST_ASSERT_EQ(status, CSM_OK);
-        
-        status = csm_job_set_output(ctx, job_ids[i], hash, hash_len, &hash_len);
+
+        status = csm_job_set_output(ctx, job_ids[i], hash[i], hash_len[i], &hash_len[i]);
         TEST_ASSERT_EQ(status, CSM_OK);
         
         status = csm_job_submit(ctx, job_ids[i], (i % 2 == 0) ? CSM_JOB_PRIO_HIGH : CSM_JOB_PRIO_NORMAL);
@@ -392,6 +401,22 @@ static int test_csm_queue_management(void)
      * macOS, so print every counter to localise the divergence. */
     TEST_ASSERT_EQ_MSG(stats.total_jobs_completed, 5);
     TEST_ASSERT_EQ_MSG(stats.total_jobs_failed, 0);
+
+    /* Real payload assertion: every job hashes 32 zero bytes, so each output
+     * buffer must hold SHA-256(32 x 0x00). Guards against the counter being
+     * satisfied without the crypto actually running. */
+    {
+        static const uint8_t expected[32] = {
+            0x66U, 0x68U, 0x7AU, 0xADU, 0xF8U, 0x62U, 0xBDU, 0x77U,
+            0x6CU, 0x8FU, 0xC1U, 0x8BU, 0x8EU, 0x9FU, 0x8EU, 0x20U,
+            0x08U, 0x97U, 0x14U, 0x85U, 0x6EU, 0xE2U, 0x33U, 0xB3U,
+            0x90U, 0x2AU, 0x59U, 0x1DU, 0x0DU, 0x5FU, 0x29U, 0x25U
+        };
+        for (int i = 0; i < 5; i++) {
+            TEST_ASSERT_EQ_MSG(hash_len[i], 32);
+            TEST_ASSERT(memcmp(hash[i], expected, sizeof(expected)) == 0);
+        }
+    }
     
     /* Release jobs */
     for (int i = 0; i < 5; i++) {
