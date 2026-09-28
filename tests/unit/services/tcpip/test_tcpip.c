@@ -576,13 +576,20 @@ TEST_CASE(tcpip_receive_buffer_too_small)
     tcpip_setup();
     TcpIp_SocketIdType id = create_tcp_socket();
     static const uint8 data[8] = { 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U };
-    uint8 buf[4];
+    /* 必须真正容纳 8 字节: 原先声明为 buf[4] 却在第二次调用里以 16U 作为
+     * MaxLen 传入，等于向 TcpIp_Receive() 谎报缓冲区容量，生产代码
+     * memcpy(Buffer, ..., chunkLen=8) 会写穿 4 字节栈缓冲区。macOS/AppleClang
+     * 恰好未命中 canary，Linux GCC 默认 -fstack-protector-strong 直接
+     * "*** stack smashing detected ***" 终止 -> ctest "Subprocess aborted"。 */
+    uint8 buf[16];
     uint16 len = 0U;
 
     ASSERT_EQ(TCPIP_OK, TcpIp_RxIndication(id, data, 8U));
-    ASSERT_EQ(TCPIP_E_BUFFER_OVERFLOW, TcpIp_Receive(id, buf, sizeof(buf), &len));
-    /* Data must NOT be consumed */
-    ASSERT_EQ(TCPIP_OK, TcpIp_Receive(id, buf, 16U, &len));
+    /* 以显式 4U 表达"缓冲区过小"的语义，而不是谎报 buf 的真实容量 */
+    ASSERT_EQ(TCPIP_E_BUFFER_OVERFLOW, TcpIp_Receive(id, buf, 4U, &len));
+    ASSERT_EQ(0U, len);   /* TcpIp_Receive() 在容量检查之前已置 *ReceivedLen = 0 */
+    /* Data must NOT be consumed — 足量且真实的缓冲区此时应取回全部 8 字节 */
+    ASSERT_EQ(TCPIP_OK, TcpIp_Receive(id, buf, sizeof(buf), &len));
     ASSERT_EQ(8U, len);
 }
 
