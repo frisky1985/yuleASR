@@ -402,6 +402,15 @@ jobs:
 
       - name: Generate MISRA C:2023 Compliance Summary
         run: |
+          # 必须先建目录: 本步骤位于 summary job (if: always())，而真正产出报告的
+          # cppcheck/auto-fix/yuleosh-ci 都带 `if: needs.detect-changes.outputs.c_files
+          # != ''`。当本次推送未改动受检测范围的 C 文件时它们全部 skipped，
+          # reports/misra/ 从未被创建，重定向直接失败并使整个 workflow 变红:
+          #   line 1: reports/misra/compliance-summary.md: No such file or directory
+          #   ##[error]Process completed with exit code 1.
+          mkdir -p ${{ env.MISRA_REPORT_DIR }}
+
+          MIGRATION_DATE="$(date -u +%Y-%m-%d)"
           cat << 'EOF' > ${{ env.MISRA_REPORT_DIR }}/compliance-summary.md
           # MISRA C:2023 Compliance Summary
           
@@ -420,7 +429,7 @@ jobs:
           ## Migration Status
           
           - **From:** MISRA C:2012 → **To:** MISRA C:2023
-          - **Migration Date:** $(date +%Y-%m-%d)
+          - **Migration Date:** __MIGRATION_DATE__
           - **Baseline Violations (C:2023):** 3266 total (369 required, 1020 advisory)
           - **Baseline Scan:** 2026-07-22 (commit fc0d857)
           
@@ -440,6 +449,12 @@ jobs:
           4. Document deviations in `docs/compliance/deviation_permits_c2023.md`
           5. See WP1 plan: `docs/next-phase-plan.md` for batch workflow
           EOF
+
+          # quoted heredoc ('EOF') 内不做 shell 展开，故 $(date ...) 会原样输出。
+          # 这里用占位符 + sed 回填。不能改用 unquoted heredoc —— 正文里的反引号
+          # (如 `yuleosh ci check misra ...`) 会被当作命令替换执行。
+          sed -i "s/__MIGRATION_DATE__/${MIGRATION_DATE}/" \
+            ${{ env.MISRA_REPORT_DIR }}/compliance-summary.md
 
       - name: Upload Summary
         uses: actions/upload-artifact@v4
