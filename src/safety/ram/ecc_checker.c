@@ -351,7 +351,7 @@ Std_ReturnType EccChecker_CheckAndCorrect64(uint64_t data,
         /* Try to identify the error position */
         if (hamming_syndrome > 0U && hamming_syndrome <= 64U) {
             /* Syndrome matches a data bit position (simplified mapping) */
-            error_pos = hamming_syndrome - 1U;
+            error_pos = (uint8_t)(hamming_syndrome - 1U);
         }
 
         if (error_pos != 0xFFU && error_pos < 64U) {

@@ -52,50 +52,67 @@ extern void test_FrIf_MainFunction_Uninit_ShouldReturnSilently(void);
 extern void test_FrIf_MainFunction_ValidCall_ShouldKeepStateStable(void);
 
 int main(void) {
-    UnityBegin("test_frif.c");
+    UnityBegin();
 
-    RUN_TEST(test_FrIf_Init_NullPtr_ShouldReportInvConfig, __LINE__);
-    RUN_TEST(test_FrIf_Init_ValidConfig_ShouldSucceed, __LINE__);
-    RUN_TEST(test_FrIf_Init_DoubleInit_ShouldReportAlreadyInitialized, __LINE__);
-    RUN_TEST(test_FrIf_GetVersionInfo_NullPtr_ShouldReportInvPointer, __LINE__);
-    RUN_TEST(test_FrIf_GetVersionInfo_ValidPtr_ShouldFillVersionInfo, __LINE__);
+    /* ------------------------------------------------------------------
+     * Phase 1 — uninitialised contract.
+     *
+     * FrIf_Init() is once-only per process (SWS_FrIf) and FrIf has no
+     * DeInit, so a module instance can never return to the uninitialised
+     * state. These cases therefore have to run before the first
+     * FrIf_Init() of this process, and setUp() only resets the DET mock.
+     * ------------------------------------------------------------------ */
+    RUN_TEST(test_FrIf_ControllerInit_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_SetAbsoluteTimer_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_SetRelativeTimer_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_CancelAbsoluteTimer_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_CancelRelativeTimer_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_Transmit_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_GetPOCStatus_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_GetGlobalTime_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_AllowColdstart_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_SendWUP_Uninit_ShouldReportUninit);
+    RUN_TEST(test_FrIf_MainFunction_Uninit_ShouldReturnSilently);
 
-    RUN_TEST(test_FrIf_ControllerInit_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_ControllerInit_InvalidCtrl_ShouldReportInvCtrlIdx, __LINE__);
+    /* ------------------------------------------------------------------
+     * Phase 2 — initialisation. ValidConfig performs the first (and only)
+     * successful FrIf_Init() of this process; every later case runs with
+     * the module already initialised, so it must not re-init.
+     * ------------------------------------------------------------------ */
+    RUN_TEST(test_FrIf_Init_NullPtr_ShouldReportInvConfig);
+    RUN_TEST(test_FrIf_Init_ValidConfig_ShouldSucceed);
+    RUN_TEST(test_FrIf_Init_DoubleInit_ShouldReportAlreadyInitialized);
+    RUN_TEST(test_FrIf_GetVersionInfo_NullPtr_ShouldReportInvPointer);
+    RUN_TEST(test_FrIf_GetVersionInfo_ValidPtr_ShouldFillVersionInfo);
 
-    RUN_TEST(test_FrIf_SetAbsoluteTimer_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_SetAbsoluteTimer_InvalidTimer_ShouldReportInvTimerIdx, __LINE__);
-    RUN_TEST(test_FrIf_SetAbsoluteTimer_ValidCall_ShouldSucceedAndArmTimer, __LINE__);
-    RUN_TEST(test_FrIf_SetRelativeTimer_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_SetRelativeTimer_InvalidTimer_ShouldReportInvTimerIdx, __LINE__);
-    RUN_TEST(test_FrIf_CancelAbsoluteTimer_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_CancelAbsoluteTimer_ValidCall_ShouldSucceed, __LINE__);
-    RUN_TEST(test_FrIf_CancelRelativeTimer_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_CancelRelativeTimer_ValidCall_ShouldSucceed, __LINE__);
+    /* ------------------------------------------------------------------
+     * Phase 3 — initialised behaviour
+     * ------------------------------------------------------------------ */
+    RUN_TEST(test_FrIf_ControllerInit_InvalidCtrl_ShouldReportInvCtrlIdx);
 
-    RUN_TEST(test_FrIf_Transmit_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_Transmit_NullPtr_ShouldReportInvPointer, __LINE__);
-    RUN_TEST(test_FrIf_Transmit_InvalidLpdu_ShouldReportInvLpduIdx, __LINE__);
-    RUN_TEST(test_FrIf_Transmit_ControllerNotActive_ShouldReturnNotOk, __LINE__);
+    RUN_TEST(test_FrIf_SetAbsoluteTimer_InvalidTimer_ShouldReportInvTimerIdx);
+    RUN_TEST(test_FrIf_SetAbsoluteTimer_ValidCall_ShouldSucceedAndArmTimer);
+    RUN_TEST(test_FrIf_SetRelativeTimer_InvalidTimer_ShouldReportInvTimerIdx);
+    RUN_TEST(test_FrIf_CancelAbsoluteTimer_ValidCall_ShouldSucceed);
+    RUN_TEST(test_FrIf_CancelRelativeTimer_ValidCall_ShouldSucceed);
 
-    RUN_TEST(test_FrIf_GetPOCStatus_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_GetPOCStatus_NullPtr_ShouldReportInvPointer, __LINE__);
-    RUN_TEST(test_FrIf_GetPOCStatus_ValidCall_ShouldReturnCurrentMode, __LINE__);
-    RUN_TEST(test_FrIf_GetGlobalTime_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_GetGlobalTime_NullPtr_ShouldReportInvPointer, __LINE__);
-    RUN_TEST(test_FrIf_GetGlobalTime_ValidCall_ShouldSucceed, __LINE__);
+    RUN_TEST(test_FrIf_Transmit_NullPtr_ShouldReportInvPointer);
+    RUN_TEST(test_FrIf_Transmit_InvalidLpdu_ShouldReportInvLpduIdx);
+    RUN_TEST(test_FrIf_Transmit_ControllerNotActive_ShouldReturnNotOk);
 
-    RUN_TEST(test_FrIf_AllowColdstart_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_AllowColdstart_ValidCall_ShouldSetColdstartMode, __LINE__);
-    RUN_TEST(test_FrIf_HaltCommunication_ValidCall_ShouldSetHaltMode, __LINE__);
-    RUN_TEST(test_FrIf_AbortCommunication_ValidCall_ShouldSetStandbyMode, __LINE__);
-    RUN_TEST(test_FrIf_SendWUP_Uninit_ShouldReportUninit, __LINE__);
-    RUN_TEST(test_FrIf_SendWUP_ValidCall_ShouldSetWakeupMode, __LINE__);
-    RUN_TEST(test_FrIf_SetWakeupChannel_InvalidChannel_ShouldReportInvChnl, __LINE__);
-    RUN_TEST(test_FrIf_SetWakeupChannel_ValidCall_ShouldSucceed, __LINE__);
+    RUN_TEST(test_FrIf_GetPOCStatus_NullPtr_ShouldReportInvPointer);
+    RUN_TEST(test_FrIf_GetPOCStatus_ValidCall_ShouldReturnCurrentMode);
+    RUN_TEST(test_FrIf_GetGlobalTime_NullPtr_ShouldReportInvPointer);
+    RUN_TEST(test_FrIf_GetGlobalTime_ValidCall_ShouldSucceed);
 
-    RUN_TEST(test_FrIf_MainFunction_Uninit_ShouldReturnSilently, __LINE__);
-    RUN_TEST(test_FrIf_MainFunction_ValidCall_ShouldKeepStateStable, __LINE__);
+    RUN_TEST(test_FrIf_AllowColdstart_ValidCall_ShouldSetColdstartMode);
+    RUN_TEST(test_FrIf_HaltCommunication_ValidCall_ShouldSetHaltMode);
+    RUN_TEST(test_FrIf_AbortCommunication_ValidCall_ShouldSetStandbyMode);
+    RUN_TEST(test_FrIf_SendWUP_ValidCall_ShouldSetWakeupMode);
+    RUN_TEST(test_FrIf_SetWakeupChannel_InvalidChannel_ShouldReportInvChnl);
+    RUN_TEST(test_FrIf_SetWakeupChannel_ValidCall_ShouldSucceed);
+
+    RUN_TEST(test_FrIf_MainFunction_ValidCall_ShouldKeepStateStable);
 
     return UnityEnd();
 }

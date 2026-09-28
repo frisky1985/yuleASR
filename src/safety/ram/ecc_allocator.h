@@ -335,12 +335,15 @@ static inline EccMemBlockType* EccAllocator_PtrToBlock(void *ptr)
     return NULL;
 }
 
+/* Heap state instance, defined in ecc_allocator.c. Declared at file scope:
+   a function-local extern triggers -Wnested-externs under CI's -Werror. */
+extern EccHeapStateType g_heap_state;
+
 /**
  * @brief Check if pointer is from ECC heap
  */
 static inline boolean EccAllocator_IsHeapPtr(void *ptr)
 {
-    extern EccHeapStateType g_heap_state;
     if (ptr == NULL || !g_heap_state.initialized) {
         return FALSE;
     }

@@ -108,6 +108,8 @@ void test_FrIf_Init_NullPtr_ShouldReportInvConfig(void) {
 /** @req SWS_FrIf_00001 */
 void test_FrIf_Init_ValidConfig_ShouldSucceed(void) {
     Std_ReturnType ret;
+    /* Only successful FrIf_Init() of this process: FrIf_Init is once-only
+     * (no DeInit), so every later case runs already initialised. */
     test_FrIf_InitValid();
     /* Initialized: no DET complaints and API calls succeed */
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
@@ -118,7 +120,6 @@ void test_FrIf_Init_ValidConfig_ShouldSucceed(void) {
 
 /** @req SWS_FrIf_00001 */
 void test_FrIf_Init_DoubleInit_ShouldReportAlreadyInitialized(void) {
-    test_FrIf_InitValid();
     mock_Det_Reset();
     FrIf_Init(&testConfig);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -165,7 +166,6 @@ void test_FrIf_ControllerInit_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00004 */
 void test_FrIf_ControllerInit_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_ControllerInit((uint8)FRIF_NUM_CONTROLLERS);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -185,7 +185,6 @@ void test_FrIf_SetAbsoluteTimer_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00005 */
 void test_FrIf_SetAbsoluteTimer_InvalidTimer_ShouldReportInvTimerIdx(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_SetAbsoluteTimer(0U, 4U, 0U, 0U);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -198,7 +197,6 @@ void test_FrIf_SetAbsoluteTimer_ValidCall_ShouldSucceedAndArmTimer(void) {
     Std_ReturnType ret;
     FrIf_POCStatusType poc;
 
-    test_FrIf_InitValid();
     ret = FrIf_SetAbsoluteTimer(0U, 0U, 2U, 100U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
@@ -213,10 +211,12 @@ void test_FrIf_SetAbsoluteTimer_ValidCall_ShouldSucceedAndArmTimer(void) {
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
 
-    /* POC status reflects controller mode (STANDBY after Init) */
+    /* POC status mirrors the controller mode. The controller is READY here:
+     * the init phase already performed a successful FrIf_ControllerInit(0),
+     * which moves the controller from STANDBY (post-Init) to READY. */
     ret = FrIf_GetPOCStatus(0U, &poc);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
-    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_MODE_STANDBY, poc.State);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_MODE_READY, poc.State);
 }
 
 /** @req SWS_FrIf_00006 */
@@ -231,7 +231,6 @@ void test_FrIf_SetRelativeTimer_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00006 */
 void test_FrIf_SetRelativeTimer_InvalidTimer_ShouldReportInvTimerIdx(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_SetRelativeTimer(0U, 4U, 0U);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -251,7 +250,6 @@ void test_FrIf_CancelAbsoluteTimer_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00007 */
 void test_FrIf_CancelAbsoluteTimer_ValidCall_ShouldSucceed(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     (void)FrIf_SetAbsoluteTimer(0U, 1U, 0U, 10U);
     ret = FrIf_CancelAbsoluteTimer(0U, 1U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -270,7 +268,6 @@ void test_FrIf_CancelRelativeTimer_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00008 */
 void test_FrIf_CancelRelativeTimer_ValidCall_ShouldSucceed(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     (void)FrIf_SetRelativeTimer(0U, 2U, 10U);
     ret = FrIf_CancelRelativeTimer(0U, 2U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -290,7 +287,6 @@ void test_FrIf_Transmit_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00009 */
 void test_FrIf_Transmit_NullPtr_ShouldReportInvPointer(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_Transmit(0U, NULL_PTR);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -302,7 +298,6 @@ void test_FrIf_Transmit_NullPtr_ShouldReportInvPointer(void) {
 void test_FrIf_Transmit_InvalidLpdu_ShouldReportInvLpduIdx(void) {
     PduInfoType info = { NULL_PTR, 0U };
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_Transmit((PduIdType)FRIF_NUM_LPDUS, &info);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -315,7 +310,6 @@ void test_FrIf_Transmit_ControllerNotActive_ShouldReturnNotOk(void) {
     uint8 sdu[8] = { 0U };
     PduInfoType info = { sdu, 8U };
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     /* LPDU 0 is configured but controller stays in STANDBY (not NORMAL_ACTIVE):
      * hardware "not ready" equivalent — Transmit must refuse without DET. */
     ret = FrIf_Transmit(0U, &info);
@@ -336,7 +330,6 @@ void test_FrIf_GetPOCStatus_Uninit_ShouldReportUninit(void) {
 /** @req SWS_FrIf_00010 */
 void test_FrIf_GetPOCStatus_NullPtr_ShouldReportInvPointer(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_GetPOCStatus(0U, NULL_PTR);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -348,7 +341,6 @@ void test_FrIf_GetPOCStatus_NullPtr_ShouldReportInvPointer(void) {
 void test_FrIf_GetPOCStatus_ValidCall_ShouldReturnCurrentMode(void) {
     FrIf_POCStatusType poc;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     (void)FrIf_ControllerInit(0U);              /* mode -> READY */
     ret = FrIf_GetPOCStatus(0U, &poc);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -372,7 +364,6 @@ void test_FrIf_GetGlobalTime_Uninit_ShouldReportUninit(void) {
 void test_FrIf_GetGlobalTime_NullPtr_ShouldReportInvPointer(void) {
     uint16 mt = 0U;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_GetGlobalTime(0U, NULL_PTR, &mt);
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -385,7 +376,6 @@ void test_FrIf_GetGlobalTime_ValidCall_ShouldSucceed(void) {
     uint8 cycle = 0xFFU;
     uint16 mt = 0xFFFFU;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_GetGlobalTime(0U, &cycle, &mt);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
     /* Host stub returns zeroed global time */
@@ -407,7 +397,6 @@ void test_FrIf_AllowColdstart_Uninit_ShouldReportUninit(void) {
 void test_FrIf_AllowColdstart_ValidCall_ShouldSetColdstartMode(void) {
     FrIf_POCStatusType poc;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     /* FRIF_COLDSTART_SUPPORT == STD_ON in FrIf_Cfg.h */
     ret = FrIf_AllowColdstart(0U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -421,7 +410,6 @@ void test_FrIf_AllowColdstart_ValidCall_ShouldSetColdstartMode(void) {
 void test_FrIf_HaltCommunication_ValidCall_ShouldSetHaltMode(void) {
     FrIf_POCStatusType poc;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_HaltCommunication(0U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
     ret = FrIf_GetPOCStatus(0U, &poc);
@@ -434,7 +422,6 @@ void test_FrIf_HaltCommunication_ValidCall_ShouldSetHaltMode(void) {
 void test_FrIf_AbortCommunication_ValidCall_ShouldSetStandbyMode(void) {
     FrIf_POCStatusType poc;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     (void)FrIf_ControllerInit(0U);  /* leave STANDBY first */
     ret = FrIf_AbortCommunication(0U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -457,7 +444,6 @@ void test_FrIf_SendWUP_Uninit_ShouldReportUninit(void) {
 void test_FrIf_SendWUP_ValidCall_ShouldSetWakeupMode(void) {
     FrIf_POCStatusType poc;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     /* FRIF_WAKEUP_SUPPORT == STD_ON in FrIf_Cfg.h */
     ret = FrIf_SendWUP(0U);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -470,7 +456,6 @@ void test_FrIf_SendWUP_ValidCall_ShouldSetWakeupMode(void) {
 /** @req SWS_FrIf_00016 */
 void test_FrIf_SetWakeupChannel_InvalidChannel_ShouldReportInvChnl(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     ret = FrIf_SetWakeupChannel(0U, (FrIf_ChannelType)(FRIF_CHANNEL_AB + 1U));
     TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
     TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
@@ -481,7 +466,6 @@ void test_FrIf_SetWakeupChannel_InvalidChannel_ShouldReportInvChnl(void) {
 /** @req SWS_FrIf_00016 */
 void test_FrIf_SetWakeupChannel_ValidCall_ShouldSucceed(void) {
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     /* FRIF_WAKEUP_SUPPORT == STD_ON in FrIf_Cfg.h */
     ret = FrIf_SetWakeupChannel(0U, (FrIf_ChannelType)FRIF_CHANNEL_B);
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
@@ -505,7 +489,6 @@ void test_FrIf_MainFunction_Uninit_ShouldReturnSilently(void) {
 void test_FrIf_MainFunction_ValidCall_ShouldKeepStateStable(void) {
     FrIf_POCStatusType poc;
     Std_ReturnType ret;
-    test_FrIf_InitValid();
     (void)FrIf_ControllerInit(0U);
     (void)FrIf_SetAbsoluteTimer(0U, 0U, 1U, 100U);
     (void)FrIf_SetRelativeTimer(0U, 0U, 100U);

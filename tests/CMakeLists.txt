@@ -170,7 +170,9 @@ endif()
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/ethtsyn)
     add_subdirectory(bsw/ecual/ethtsyn)
 endif()
-# @ANCHOR3:frif
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/frif)
+    add_subdirectory(bsw/ecual/frif)
+endif()
 # @ANCHOR3:frtp
 # @ANCHOR3:iohwab
 # @ANCHOR3:ipdum
