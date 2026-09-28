@@ -22,6 +22,17 @@
 #define TEST_ASSERT_EQ(a, b) TEST_ASSERT((a) == (b))
 #define TEST_ASSERT_NE(a, b) TEST_ASSERT((a) != (b))
 
+/* Like TEST_ASSERT_EQ but prints both operands: the bare form only stringifies
+ * the expression, which makes CI-only failures (e.g. Linux) hard to diagnose. */
+#define TEST_ASSERT_EQ_MSG(a, b) \
+    do { \
+        if ((a) != (b)) { \
+            printf("  FAILED: %s == %s (actual=%lld expected=%lld) at line %d\n", \
+                   #a, #b, (long long)(a), (long long)(b), __LINE__); \
+            return -1; \
+        } \
+    } while(0)
+
 /* Test counters */
 static int tests_run = 0;
 static int tests_passed = 0;
@@ -377,7 +388,10 @@ static int test_csm_queue_management(void)
     /* Check updated stats */
     status = csm_get_queue_stats(ctx, &stats);
     TEST_ASSERT_EQ(status, CSM_OK);
-    TEST_ASSERT_EQ(stats.total_jobs_completed, 5);
+    /* Diagnostic form: this assertion failed on Linux CI while passing on
+     * macOS, so print every counter to localise the divergence. */
+    TEST_ASSERT_EQ_MSG(stats.total_jobs_completed, 5);
+    TEST_ASSERT_EQ_MSG(stats.total_jobs_failed, 0);
     
     /* Release jobs */
     for (int i = 0; i < 5; i++) {
