@@ -757,10 +757,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 与 multi-ecu-tests 同一缺口: tests/multi_ecu/ 不在仓库中，
+      # 两个 Dockerfile.ecu / Dockerfile.ota 均不存在，此前一直被
+      # integration-build 的失败掩盖为 skipped。
+      - name: Check prerequisites
+        id: prereq
+        uses: ./.github/actions/guard-artifacts
+        with:
+          capability: Multi-ECU 容器化未实现（tests/multi_ecu/docker/Dockerfile.ecu / .ota 不在仓库中）
+          required: |
+            tests/multi_ecu/docker/Dockerfile.ecu
+            tests/multi_ecu/docker/Dockerfile.ota
+
       - name: Set up Docker Buildx
+        if: steps.prereq.outputs.skip != 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Container Registry
+        if: steps.prereq.outputs.skip != 'true'
         uses: docker/login-action@v3
         with:
           registry: ${{ env.DOCKER_REGISTRY }}
@@ -768,6 +782,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and Push ECU Image
+        if: steps.prereq.outputs.skip != 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -778,6 +793,7 @@ jobs:
             ${{ env.DOCKER_REGISTRY }}/${{ github.repository }}/ecu-simulator:${{ github.sha }}
 
       - name: Build and Push OTA Server Image
+        if: steps.prereq.outputs.skip != 'true'
         uses: docker/build-push-action@v5
         with:
           context: .
