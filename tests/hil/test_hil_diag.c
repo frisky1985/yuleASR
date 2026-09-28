@@ -25,6 +25,11 @@
 #include <string.h>
 #include <stdio.h>
 
+/* AUTOSAR platform types (uint8/uint16/...) — 经 include/autosar 纳入头文件搜索路径。
+ * 此前缺失该包含，standalone 构建 (cmake ../tests/hil) 直接报
+ * "unknown type name 'uint8'" 导致 CI 的 hil_interface_test 无法编译。 */
+#include "Platform_Types.h"
+
 /*==================================================================================================
  *                                    Test Constants
  *================================================================================================*/
