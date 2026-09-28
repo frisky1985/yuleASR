@@ -290,16 +290,46 @@ jobs:
           with open('coverage-reports/coverage.json') as f:
               report = json.load(f)
 
-          line_rate = report.get('line_rate', 0) * 100
-          branch_rate = report.get('branch_rate', 0) * 100
+          # gcovr 两种 JSON 结构都要能解析:
+          #   --json-summary : {'lines': {'found': N, 'hit': M}, 'branches': {...}}
+          #   --json         : {'lines': [ {...count...} ], 'branches': [ ... ]}
+          # 本 workflow 生成的是后者, 原先只按前者取值，在 lines 是列表时
+          # 触发 AttributeError: 'list' object has no attribute 'get'，
+          # 使门禁在覆盖率正常的情况下也必然失败。
+          def _count(entry):
+              if isinstance(entry, dict):
+                  return entry.get('found', 0), entry.get('hit', 0)
+              if isinstance(entry, list):
+                  found = len(entry)
+                  hit = sum(1 for item in entry
+                            if isinstance(item, dict) and item.get('count', 0) > 0)
+                  return found, hit
+              return 0, 0
 
           # 统计文件数（仅 src/* 生产代码）
-          files = report.get('files', [])
-          src_files = [f for f in files if f.get('file', '').startswith('src/')]
-          total_line_found = sum(f.get('lines', {}).get('found', 0) for f in src_files)
-          total_line_hit = sum(f.get('lines', {}).get('hit', 0) for f in src_files)
-          total_branch_found = sum(f.get('branches', {}).get('found', 0) for f in src_files)
-          total_branch_hit = sum(f.get('branches', {}).get('hit', 0) for f in src_files)
+          files = report.get('files', []) or []
+          src_files = [f for f in files
+                       if isinstance(f, dict) and f.get('file', '').startswith('src/')]
+
+          total_line_found = 0
+          total_line_hit = 0
+          total_branch_found = 0
+          total_branch_hit = 0
+          for _f in src_files:
+              _lf, _lh = _count(_f.get('lines'))
+              _bf, _bh = _count(_f.get('branches'))
+              total_line_found += _lf
+              total_line_hit += _lh
+              total_branch_found += _bf
+              total_branch_hit += _bh
+
+          # 根级 rate 可能缺失（--json 不带汇总），按总量回算
+          _lr = report.get('line_rate')
+          line_rate = (_lr * 100) if isinstance(_lr, (int, float)) else \
+              (100.0 * total_line_hit / total_line_found if total_line_found else 0.0)
+          _br = report.get('branch_rate')
+          branch_rate = (_br * 100) if isinstance(_br, (int, float)) else \
+              (100.0 * total_branch_hit / total_branch_found if total_branch_found else 0.0)
 
           print(f'=== Coverage Gate Check (hard gate) ===')
           print(f'Source files measured: {len(src_files)}')
