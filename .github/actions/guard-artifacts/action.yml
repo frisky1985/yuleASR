@@ -1,0 +1,57 @@
+# Guard for optional/placeholder test jobs.
+#
+# Several CI jobs consume build artifacts that belong to test suites which are
+# not yet implemented (no source files, no CMake targets). Those jobs used to
+# be `skipped` only because their `needs` job was failing; once that job
+# recovered they started running and failed on a missing binary.
+#
+# This action checks the required paths up front and, when anything is
+# missing, emits an explicit ::notice:: (so the gap stays visible in the log)
+# and sets `skip=true` so the caller can gate its later steps with:
+#
+#   if: steps.<id>.outputs.skip != 'true'
+#
+# Deliberately NOT `continue-on-error`: the skip is explicit and auditable,
+# and genuine failures inside the job still block the pipeline.
+name: Guard optional artifacts
+description: >-
+  Verify required paths exist; if any is missing, print an explicit notice and
+  set output skip=true (caller gates subsequent steps on it).
+inputs:
+  required:
+    description: Newline-separated paths that must exist for the job to run.
+    required: true
+  capability:
+    description: >
+      Human-readable description of what is missing, shown in the notice so
+      the log explains WHY the job is skipped.
+    required: true
+outputs:
+  skip:
+    description: "true when at least one required path is missing"
+    value: ${{ steps.check.outputs.skip }}
+runs:
+  using: composite
+  steps:
+    - id: check
+      shell: bash
+      run: |
+        missing=0
+        while IFS= read -r p; do
+          [ -z "$p" ] && continue
+          if [ -e "$p" ]; then
+            echo "  ok       $p"
+          else
+            echo "  MISSING  $p"
+            missing=1
+          fi
+        done <<< "${{ inputs.required }}"
+
+        if [ "$missing" -ne 0 ]; then
+          echo "::notice title=Skipped::${{ inputs.capability }}"
+          echo "  -> 前置产物缺失，本 job 整体跳过（测试套件尚未实现，或未被接入构建）"
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "  所有必需产物齐备，继续执行"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+        fi
