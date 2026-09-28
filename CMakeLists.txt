@@ -321,6 +321,7 @@ if(ENABLE_COVERAGE)
                         --output ${CMAKE_BINARY_DIR}/coverage/index.html
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 COMMENT "Generating HTML coverage report (gcovr)"
+                VERBATIM
             )
             
             add_custom_target(coverage-json
@@ -333,6 +334,7 @@ if(ENABLE_COVERAGE)
                         --output ${CMAKE_BINARY_DIR}/coverage/coverage.json
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 COMMENT "Generating JSON coverage report (gcovr)"
+                VERBATIM
             )
             
             add_custom_target(coverage
@@ -354,6 +356,7 @@ if(ENABLE_COVERAGE)
                         --output ${CMAKE_BINARY_DIR}/coverage/coverage.json
                 WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
                 COMMENT "Running tests and generating coverage reports (gcovr)"
+                VERBATIM
             )
             
             # Note: coverage-run is run as part of the 'coverage' target chain
