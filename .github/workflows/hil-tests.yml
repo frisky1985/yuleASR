@@ -48,6 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - uses: actions/checkout@v4
+
     - uses: ./.github/actions/setup-env
       with:
         apt-packages: libcunit1-dev lcov gcovr

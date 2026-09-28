@@ -67,8 +67,14 @@ jobs:
           done
           
           # Output for next jobs
-          echo "c_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
-          echo "new_code_only=$NEW_CODE_ONLY" >> $GITHUB_OUTPUT
+          # c_files is multi-line: GITHUB_OUTPUT requires a heredoc delimiter,
+          # otherwise the runner rejects it ("Invalid format '<path>'").
+          {
+            echo "c_files<<CHANGED_FILES_EOF"
+            echo "$CHANGED_FILES"
+            echo "CHANGED_FILES_EOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "new_code_only=$NEW_CODE_ONLY" >> "$GITHUB_OUTPUT"
           
           # Save to file for artifact
           echo "$CHANGED_FILES" > changed_files.txt
