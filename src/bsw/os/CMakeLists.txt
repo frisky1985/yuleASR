@@ -52,14 +52,6 @@ target_include_directories(Os
 if(NOT CMAKE_CROSSCOMPILING)
     find_package(Threads REQUIRED)
     target_link_libraries(Os PUBLIC Threads::Threads)
-
-    # FreeRTOS Posix port relies on the GNU feature-test macro. On
-    # glibc >= 2.38 it is required for CLOCK_REALTIME (time.h) and
-    # clockid_t / locale_t (pthread.h); without it the Linux CI build
-    # failed with "CLOCK_REALTIME undeclared" / "unknown type name".
-    # Only _GNU_SOURCE is set on purpose: defining _POSIX_C_SOURCE on
-    # macOS hides pthread_setname_np() and breaks the host build.
-    target_compile_definitions(Os PRIVATE _GNU_SOURCE)
 endif()
 
 set_target_properties(Os PROPERTIES

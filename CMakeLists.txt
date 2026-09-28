@@ -25,6 +25,15 @@ option(BUILD_EXAMPLES "Build example applications" OFF)
 option(ENABLE_COVERAGE "Enable code coverage" OFF)
 option(ENABLE_LTO "Enable Link Time Optimization" OFF)
 
+# Host (POSIX) builds need the GNU feature-test macro: on glibc >= 2.38
+# CLOCK_REALTIME / clockid_t / locale_t / pthread_rwlock_t / struct timespec
+# stay hidden without it, which made the Linux CI build fail in
+# third_party/freertos/portable/posix and src/common/log/dds_log.c.
+# Only defined for non-cross builds (_GNU_SOURCE is a glibc concept).
+if(NOT CMAKE_CROSSCOMPILING)
+    add_compile_definitions(_GNU_SOURCE)
+endif()
+
 # Testing must be enabled BEFORE any add_subdirectory so module-level tests
 # (src/*/tests) register with ctest. enable_testing() is idempotent; the
 # BUILD_TESTING gate at the bottom still adds the top-level tests/ dir.

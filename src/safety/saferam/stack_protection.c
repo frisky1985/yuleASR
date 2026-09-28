@@ -251,8 +251,10 @@ Std_ReturnType StackProtection_UnregisterStack(uint8_t stack_id)
 uint32_t StackProtection_GetCurrentSP(void)
 {
 #if defined(__arm__)
-    /* ARM Cortex-M (arm-none-eabi-gcc): bind sp register directly */
-    register uint32_t sp asm("sp") = 0;
+    /* ARM Cortex-M (arm-none-eabi-gcc): bind sp register directly.
+     * __asm__ (not asm) — the project compiles with -std=c99, where the
+     * bare `asm` keyword is not available. */
+    register uint32_t sp __asm__("sp") = 0;
     return sp;
 #elif defined(__aarch64__)
     /* ARM64: read SP via inline assembly */
