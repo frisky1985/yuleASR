@@ -193,12 +193,14 @@ jobs:
 
       - name: Verify coverage flags in build (diagnostic)
         run: |
-          echo "=== CMake C_FLAGS verification ==="
-          grep -r "C_FLAGS" build-coverage/CMakeFiles/ --include="flags.make" 2>/dev/null | head -3 || echo "No flags.make found"
-          echo "---"
-          HAS_COVERAGE=$(grep -r "\--coverage" build-coverage/ --include="flags.make" 2>/dev/null | head -1)
-          if [ -n "$HAS_COVERAGE" ]; then
-            echo "✅ --coverage flag confirmed in build targets"
+          echo "=== coverage flag verification ==="
+          # Ninja writes the flags into build.ninja; only the Makefile generator
+          # emits per-target flags.make. Probe whichever this build produced —
+          # grepping flags.make unconditionally always failed under Ninja.
+          if grep -rsq -- "--coverage" build-coverage/build.ninja 2>/dev/null; then
+            echo "✅ --coverage flag confirmed in build.ninja"
+          elif grep -rsq -- "--coverage" build-coverage/ --include="flags.make" 2>/dev/null; then
+            echo "✅ --coverage flag confirmed in flags.make"
           else
             echo "⚠️  --coverage flag NOT found — ENABLE_COVERAGE may not have applied"
             exit 1
