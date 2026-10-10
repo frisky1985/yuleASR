@@ -38,7 +38,7 @@ set_target_properties(ecum_test PROPERTIES
 )
 
 if(TARGET service_ecum)
-    target_link_libraries(ecum_test PRIVATE service_ecum)
+    target_link_libraries(ecum_test PRIVATE service_ecum cdd)
 endif()
 
 if(TEST_FRAMEWORK_LIB)

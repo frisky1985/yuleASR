@@ -77,6 +77,23 @@ static sint32 AddRegisterEntry(uint32 address)
 }
 
 /*==================================================================================================
+*                                      GPIO REGISTER SIMULATION
+==================================================================================================*/
+/* GPIO base addresses (must match Dio.c) */
+#define MOCK_GPIO1_BASE                 (0x30200000UL)
+#define MOCK_GPIO5_BASE                 (0x30240000UL)
+/* GPIO register offsets */
+#define MOCK_GPIO_DR_OFF                (0x00U)
+#define MOCK_GPIO_PSOR_OFF              (0x04U)  /* atomic bit set */
+#define MOCK_GPIO_PCOR_OFF              (0x08U)  /* atomic bit clear */
+#define MOCK_GPIO_PTOR_OFF              (0x0CU)  /* atomic bit toggle */
+
+static boolean IsGpioBase(uint32 addr)
+{
+    return (addr == MOCK_GPIO1_BASE) || (addr == MOCK_GPIO5_BASE);
+}
+
+/*==================================================================================================
 *                                      GLOBAL FUNCTIONS
 ==================================================================================================*/
 
@@ -100,6 +117,43 @@ uint32 MockRegisters_Read32(uint32 address)
 
 void MockRegisters_Write32(uint32 address, uint32 value)
 {
+    /* Simulate GPIO atomic-bit registers: PSOR/PCOR/PTOR modify DR */
+    uint32 base = address & ~0x0FU;  /* align to 16-byte boundary */
+    uint32 offset = address & 0x0FU;
+
+    if (IsGpioBase(base) && (offset >= MOCK_GPIO_PSOR_OFF))
+    {
+        sint32 drIndex = FindRegisterIndex(base + MOCK_GPIO_DR_OFF);
+        if (drIndex < 0)
+        {
+            drIndex = AddRegisterEntry(base + MOCK_GPIO_DR_OFF);
+        }
+        if (drIndex >= 0)
+        {
+            switch (offset)
+            {
+                case MOCK_GPIO_PSOR_OFF:
+                    MockRegisters[drIndex].value |= value;
+                    break;
+                case MOCK_GPIO_PCOR_OFF:
+                    MockRegisters[drIndex].value &= ~value;
+                    break;
+                case MOCK_GPIO_PTOR_OFF:
+                    MockRegisters[drIndex].value ^= value;
+                    break;
+                default:
+                    break;
+            }
+        }
+        /* Also store the raw write for observability */
+        sint32 rawIndex = AddRegisterEntry(address);
+        if (rawIndex >= 0)
+        {
+            MockRegisters[rawIndex].value = value;
+        }
+        return;
+    }
+
     sint32 index = AddRegisterEntry(address);
     if (index >= 0)
     {
@@ -127,4 +181,15 @@ void MockRegisters_Write8(uint32 address, uint8 value)
 {
     uint32 currentValue = MockRegisters_Read32(address);
     MockRegisters_Write32(address, (currentValue & 0xFFFFFF00U) | value);
+}
+
+/* Weak stubs for interrupt control - used by SchM critical sections */
+__attribute__((weak)) void Mcal_DisableAllInterrupts(void)
+{
+    /* No-op in test environment */
+}
+
+__attribute__((weak)) void Mcal_EnableAllInterrupts(void)
+{
+    /* No-op in test environment */
 }

@@ -350,6 +350,13 @@ Std_ReturnType Adc_SetupResultBuffer(Adc_GroupType Group, Adc_ValueGroupType* Da
 Std_ReturnType Adc_SelfGroupCheck(Adc_GroupType Group);
 
 /**
+ * @brief Error notification callback (weak default, override to handle)
+ * @param Group Group that encountered the error
+ * @param ErrorCode 0x01=calibration fail, 0x02=timeout, 0x04=range, 0x08=BIST fail
+ */
+void Adc_ErrorNotification(Adc_GroupType Group, uint8 ErrorCode);
+
+/**
  * @brief Sets power state
  * @param PowerState Power state to set
  * @param Result Result of operation

@@ -53,7 +53,7 @@
 #define PORT_IOMUXC_SW_PAD_CTL_PAD_OFFSET   (0x0204)
 
 #define PORT_GPIO_DR                    (0x00U)
-#define PORT_GPIO_GDIR                  (0x04U)
+#define PORT_GPIO_GDIR                  (0x14U)  /* PDDR: Port Data Direction Register */
 #define PORT_GPIO_PSR                   (0x08)
 #define PORT_GPIO_ICR1                  (0x0C)
 #define PORT_GPIO_ICR2                  (0x10)

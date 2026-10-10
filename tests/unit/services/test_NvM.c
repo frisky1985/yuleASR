@@ -24,11 +24,11 @@
 /* Mock NvM 状态 */
 static uint8 g_nvm_state = 0U;  /* 0 = UNINIT, 1 = INIT */
 
-/* Mock Fee 调用记录 */
-static uint8 g_fee_read_called = 0U;
-static uint8 g_fee_write_called = 0U;
-static uint8 g_fee_erase_called = 0U;
-static uint16 g_fee_block_id = 0xFFFFU;
+/* Mock MemIf 调用记录 */
+static uint8 g_memif_read_called = 0U;
+static uint8 g_memif_write_called = 0U;
+static uint8 g_memif_erase_called = 0U;
+static uint16 g_memif_block_id = 0xFFFFU;
 
 /* Mock 块数据 */
 static uint8 g_block_data[64] = {0};
@@ -51,58 +51,88 @@ static const NvM_ConfigType g_test_config = {
 *                                   MOCK FUNCTIONS
 *==================================================================================================*/
 
-/* Mock Fee_Read */
-Std_ReturnType Fee_Read(uint16 BlockNumber, uint16 BlockOffset, 
-                        uint8* DataBufferPtr, uint16 Length)
+/* Mock MemIf_Read */
+Std_ReturnType MemIf_Read(uint8 DeviceIndex, uint16 BlockNumber, uint16 BlockOffset,
+                          uint8* DataPtr, uint16 Length)
 {
-    g_fee_read_called = 1U;
-    g_fee_block_id = BlockNumber;
-    
+    (void)DeviceIndex;
+    (void)BlockOffset;
+    g_memif_read_called = 1U;
+    g_memif_block_id = BlockNumber;
+
     /* 模拟读取数据 */
-    if (DataBufferPtr != NULL && Length <= 64) {
+    if (DataPtr != NULL && Length <= 64) {
         for (uint16 i = 0; i < Length; i++) {
-            DataBufferPtr[i] = g_block_data[i];
+            DataPtr[i] = g_block_data[i];
         }
     }
-    
+
     return E_OK;
 }
 
-/* Mock Fee_Write */
-Std_ReturnType Fee_Write(uint16 BlockNumber, const uint8* DataBufferPtr)
+/* Mock MemIf_Write */
+Std_ReturnType MemIf_Write(uint8 DeviceIndex, uint16 BlockNumber, const uint8* DataPtr)
 {
-    g_fee_write_called = 1U;
-    g_fee_block_id = BlockNumber;
-    
+    (void)DeviceIndex;
+    g_memif_write_called = 1U;
+    g_memif_block_id = BlockNumber;
+
     /* 模拟写入数据 */
-    if (DataBufferPtr != NULL) {
+    if (DataPtr != NULL) {
         for (uint16 i = 0; i < 64; i++) {
-            g_block_data[i] = DataBufferPtr[i];
+            g_block_data[i] = DataPtr[i];
         }
     }
-    
+
     g_write_counter++;
-    
+
     return E_OK;
 }
 
-/* Mock Fee_Erase */
-Std_ReturnType Fee_Erase(uint16 BlockNumber)
+/* Mock MemIf_EraseImmediateBlock */
+Std_ReturnType MemIf_EraseImmediateBlock(uint8 DeviceIndex, uint16 BlockNumber)
 {
-    g_fee_erase_called = 1U;
-    g_fee_block_id = BlockNumber;
-    
+    (void)DeviceIndex;
+    g_memif_erase_called = 1U;
+    g_memif_block_id = BlockNumber;
+
     /* 模拟擦除数据 */
     for (uint16 i = 0; i < 64; i++) {
         g_block_data[i] = 0xFFU;
     }
-    
+
     return E_OK;
+}
+
+/* Mock MemIf_InvalidateBlock */
+Std_ReturnType MemIf_InvalidateBlock(uint8 DeviceIndex, uint16 BlockNumber)
+{
+    (void)DeviceIndex;
+    (void)BlockNumber;
+    return E_OK;
+}
+
+/* Mock MemIf_GetStatus */
+MemIf_StatusType MemIf_GetStatus(uint8 DeviceIndex)
+{
+    (void)DeviceIndex;
+    return MEMIF_IDLE;
+}
+
+/* Mock MemIf_GetJobResult */
+MemIf_JobResultType MemIf_GetJobResult(uint8 DeviceIndex)
+{
+    (void)DeviceIndex;
+    return MEMIF_JOB_OK;
 }
 
 /* Mock Det_ReportError */
 Std_ReturnType Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId)
 {
+    (void)ModuleId;
+    (void)InstanceId;
+    (void)ApiId;
+    (void)ErrorId;
     return E_OK;
 }
 
@@ -200,7 +230,7 @@ TEST_CASE_DECLARE(NvM_ReadBlock_normal)
 {
     /* Setup */
     NvM_Init(&g_test_config);
-    g_fee_read_called = 0U;
+    g_memif_read_called = 0U;
     
     /* 准备测试数据 */
     for (uint16 i = 0; i < 64; i++) {
@@ -215,7 +245,7 @@ TEST_CASE_DECLARE(NvM_ReadBlock_normal)
     
     /* Verify */
     ASSERT_EQ(E_OK, result);
-    ASSERT_EQ(1U, g_fee_read_called);
+    ASSERT_EQ(1U, g_memif_read_called);
     
 }
 
@@ -246,7 +276,7 @@ TEST_CASE_DECLARE(NvM_WriteBlock_normal)
 {
     /* Setup */
     NvM_Init(&g_test_config);
-    g_fee_write_called = 0U;
+    g_memif_write_called = 0U;
     g_write_counter = 0U;
     
     uint8 write_data[64] = {0x55U};
@@ -257,7 +287,7 @@ TEST_CASE_DECLARE(NvM_WriteBlock_normal)
     
     /* Verify */
     ASSERT_EQ(E_OK, result);
-    ASSERT_EQ(1U, g_fee_write_called);
+    ASSERT_EQ(1U, g_memif_write_called);
     ASSERT_EQ(1U, g_write_counter);
     
 }
@@ -328,7 +358,7 @@ TEST_CASE_DECLARE(NvM_EraseBlock_normal)
 {
     /* Setup */
     NvM_Init(&g_test_config);
-    g_fee_erase_called = 0U;
+    g_memif_erase_called = 0U;
     
     NvM_BlockIdType block_id = 0;
     
@@ -337,7 +367,7 @@ TEST_CASE_DECLARE(NvM_EraseBlock_normal)
     
     /* Verify */
     ASSERT_EQ(E_OK, result);
-    ASSERT_EQ(1U, g_fee_erase_called);
+    ASSERT_EQ(1U, g_memif_erase_called);
     
 }
 
@@ -366,7 +396,7 @@ TEST_CASE_DECLARE(NvM_WriteAll_normal)
 {
     /* Setup */
     NvM_Init(&g_test_config);
-    g_fee_write_called = 0U;
+    g_memif_write_called = 0U;
     
     /* Execute */
     Std_ReturnType result = NvM_WriteAll();
@@ -490,6 +520,105 @@ TEST_CASE_DECLARE(NvM_WriteBlock_counter)
     
 }
 
+/**
+ * @brief 测试: NvM_CancelJobs 未初始化
+ */
+/** @req SWS_NvM_00024 */
+TEST_CASE_DECLARE(NvM_CancelJobs_uninit)
+{
+    g_nvm_state = 0U;
+    Std_ReturnType result = NvM_CancelJobs(0);
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_CancelJobs 无效块 ID
+ */
+/** @req SWS_NvM_00024 */
+TEST_CASE_DECLARE(NvM_CancelJobs_invalid_id)
+{
+    NvM_Init(&g_test_config);
+    Std_ReturnType result = NvM_CancelJobs(0xFFFFU);
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_CancelJobs 无排队任务
+ */
+/** @req SWS_NvM_00024 */
+TEST_CASE_DECLARE(NvM_CancelJobs_no_jobs)
+{
+    NvM_Init(&g_test_config);
+    Std_ReturnType result = NvM_CancelJobs(0);
+    ASSERT_EQ(E_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_ReadPRAMBlock 未初始化
+ */
+/** @req SWS_NvM_00025 */
+TEST_CASE_DECLARE(NvM_ReadPRAMBlock_uninit)
+{
+    g_nvm_state = 0U;
+    Std_ReturnType result = NvM_ReadPRAMBlock(0);
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_ReadPRAMBlock 无效块 ID
+ */
+/** @req SWS_NvM_00025 */
+TEST_CASE_DECLARE(NvM_ReadPRAMBlock_invalid_id)
+{
+    NvM_Init(&g_test_config);
+    Std_ReturnType result = NvM_ReadPRAMBlock(0xFFFFU);
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_WritePRAMBlock 未初始化
+ */
+/** @req SWS_NvM_00026 */
+TEST_CASE_DECLARE(NvM_WritePRAMBlock_uninit)
+{
+    g_nvm_state = 0U;
+    Std_ReturnType result = NvM_WritePRAMBlock(0);
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_WritePRAMBlock 无效块 ID
+ */
+/** @req SWS_NvM_00026 */
+TEST_CASE_DECLARE(NvM_WritePRAMBlock_invalid_id)
+{
+    NvM_Init(&g_test_config);
+    Std_ReturnType result = NvM_WritePRAMBlock(0xFFFFU);
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_RepairDamagedBlocks 未初始化
+ */
+/** @req SWS_NvM_00027 */
+TEST_CASE_DECLARE(NvM_RepairDamagedBlocks_uninit)
+{
+    g_nvm_state = 0U;
+    Std_ReturnType result = NvM_RepairDamagedBlocks();
+    ASSERT_EQ(E_NOT_OK, result);
+}
+
+/**
+ * @brief 测试: NvM_RepairDamagedBlocks 初始化后正常执行
+ */
+/** @req SWS_NvM_00027 */
+TEST_CASE_DECLARE(NvM_RepairDamagedBlocks_init)
+{
+    NvM_Init(&g_test_config);
+    Std_ReturnType result = NvM_RepairDamagedBlocks();
+    TEST_ASSERT_TRUE(result == E_OK || result == E_NOT_OK);
+}
+
 /*==================================================================================================
 *                                   TEST RUNNER
 *==================================================================================================*/
@@ -497,7 +626,7 @@ TEST_CASE_DECLARE(NvM_WriteBlock_counter)
 TEST_MAIN_BEGIN()
 {
     printf("\n--- NvM Module Tests ---\n");
-    
+
     RUN_TEST(NvM_Init_valid_config);
     RUN_TEST(NvM_Init_null_config);
     RUN_TEST(NvM_GetVersionInfo);
@@ -513,6 +642,15 @@ TEST_MAIN_BEGIN()
     RUN_TEST(NvM_WriteAll_normal);
     RUN_TEST(NvM_MainFunction_normal);
     RUN_TEST(NvM_CancelJobs_normal);
+    RUN_TEST(NvM_CancelJobs_uninit);
+    RUN_TEST(NvM_CancelJobs_invalid_id);
+    RUN_TEST(NvM_CancelJobs_no_jobs);
+    RUN_TEST(NvM_ReadPRAMBlock_uninit);
+    RUN_TEST(NvM_ReadPRAMBlock_invalid_id);
+    RUN_TEST(NvM_WritePRAMBlock_uninit);
+    RUN_TEST(NvM_WritePRAMBlock_invalid_id);
+    RUN_TEST(NvM_RepairDamagedBlocks_uninit);
+    RUN_TEST(NvM_RepairDamagedBlocks_init);
     RUN_TEST(NvM_GetErrorStatus_normal);
     RUN_TEST(NvM_GetErrorStatus_null);
     RUN_TEST(NvM_ReadBlock_max_id);

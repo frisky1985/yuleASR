@@ -26,7 +26,7 @@
 #define PORT_IOMUXC_BASE        (0x30330000UL)
 #define PORT_GPIO1_BASE         (0x30200000UL)
 #define PORT_GPIO_DR_OFF        (0x00U)
-#define PORT_GPIO_GDIR_OFF      (0x04U)
+#define PORT_GPIO_GDIR_OFF      (0x14U)  /* PDDR: matches Port.c */
 
 #define PORT_MUX_REG(pin)   (PORT_IOMUXC_BASE + (((uint32)((pin) >> 8) * 32U + ((pin) & 0xFFU)) * 4U))
 #define PORT_PAD_REG(pin)   (PORT_IOMUXC_BASE + 0x204UL + (((uint32)((pin) >> 8) * 32U + ((pin) & 0xFFU)) * 4U))

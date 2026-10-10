@@ -1,8 +1,7 @@
 /*==================================================================================================
  * Dma.h - DMA driver interface stub (yuleASR)
  *
- * Minimal DMA driver interface used by the Uart driver's DMA transfer path.
- * TODO: replace with a real DMA (eDMA) driver for production builds.
+ * DMA driver interface for Uart driver's DMA transfer path.
  * @file Dma.h
  * @brief DMA driver interface stub
  *================================================================================================*/

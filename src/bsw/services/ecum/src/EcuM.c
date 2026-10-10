@@ -30,6 +30,7 @@
 #include "BswM.h"
 #include "SchM.h"
 #include "Rte.h"
+#include "Cdd_Fvm.h"
 
 #if (ECUM_NVM_ENABLED == STD_ON)
 #include "NvM.h"
@@ -311,7 +312,10 @@ static void EcuM_ProcessStartupTwo(void)
     NvM_Init(NULL_PTR);
     NvM_ReadAll();
 #endif
-    
+
+    /* CDD: Flash Virtual Memory Manager (bank integrity + failover) */
+    Cdd_Fvm_Init(NULL_PTR);
+
     /* Initialize COM module */
     /* Com_Init(&Com_Config); */
     
@@ -376,6 +380,7 @@ void EcuM_MainFunction(void)
     {
         case ECUM_STATE_RUN:
             EcuM_ProcessRun();
+            Cdd_Fvm_MainFunction();
             break;
             
         case ECUM_STATE_POST_RUN:
@@ -807,6 +812,9 @@ static void EcuM_ProcessGoOffTwo(void)
  */
 static void EcuM_PerformShutdown(void)
 {
+    /* De-init CDD modules before power-off */
+    Cdd_Fvm_DeInit();
+
     /* Call shutdown hook */
     EcuM_AL_SwitchOff();
     

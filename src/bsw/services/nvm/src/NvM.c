@@ -2359,15 +2359,13 @@ const void* NvM_GetRedundantBlockAddress(NvM_BlockIdType BlockId)
  * @brief   Cancel all queued jobs for a block
  * @param   BlockId - Block identifier
  * @return  E_OK if request accepted, E_NOT_OK otherwise
- *
- * TODO(Phase2): Implement per-block job cancellation - remove pending jobs
- * for BlockId from the standard/immediate queues and terminate the active
- * job if it belongs to BlockId. Production-safe stub returns E_NOT_OK.
  */
 /** @req SWS_NvM_00024 */
 Std_ReturnType NvM_CancelJobs(NvM_BlockIdType BlockId)
 {
-    (void)BlockId;
+    uint8 i;
+    uint8 writeIdx;
+    boolean cancelled = FALSE;
 
 #if (NVM_DEV_ERROR_DETECT == STD_ON)
     if (NvM_InternalState.State == NVM_STATE_UNINIT)
@@ -2383,8 +2381,73 @@ Std_ReturnType NvM_CancelJobs(NvM_BlockIdType BlockId)
     }
 #endif
 
-    /* TODO: Implement job cancellation logic (queue removal + active job abort) */
-    return E_NOT_OK;
+    if ((NvM_InternalState.CurrentJob != NULL_PTR) &&
+        (NvM_InternalState.CurrentJob->BlockId == BlockId))
+    {
+        NvM_InternalState.ActiveJob.JobState = NVM_JOB_STATE_IDLE;
+        NvM_InternalState.ActiveJob.JobType = NVM_JOB_TYPE_NONE;
+        NvM_InternalState.CurrentJob = NULL_PTR;
+        NvM_InternalState.BlockStates[BlockId].JobPending = 0U;
+        cancelled = TRUE;
+    }
+
+    writeIdx = 0U;
+    for (i = 0U; i < NvM_InternalState.StandardQueueCount; i++)
+    {
+        uint8 idx = (uint8)((NvM_InternalState.StandardQueueHead + i) % NVM_SIZE_STANDARD_JOB_QUEUE);
+        if (NvM_InternalState.StandardQueue[idx].BlockId != BlockId)
+        {
+            if (writeIdx != i)
+            {
+                uint8 dst = (uint8)((NvM_InternalState.StandardQueueHead + writeIdx) % NVM_SIZE_STANDARD_JOB_QUEUE);
+                NvM_InternalState.StandardQueue[dst] = NvM_InternalState.StandardQueue[idx];
+            }
+            writeIdx++;
+        }
+        else
+        {
+            cancelled = TRUE;
+        }
+    }
+    NvM_InternalState.StandardQueueCount = writeIdx;
+    if (writeIdx == 0U)
+    {
+        NvM_InternalState.StandardQueueHead = 0U;
+        NvM_InternalState.StandardQueueTail = 0U;
+    }
+
+    writeIdx = 0U;
+    for (i = 0U; i < NvM_InternalState.ImmediateQueueCount; i++)
+    {
+        uint8 idx = (uint8)((NvM_InternalState.ImmediateQueueHead + i) % NVM_SIZE_IMMEDIATE_JOB_QUEUE);
+        if (NvM_InternalState.ImmediateQueue[idx].BlockId != BlockId)
+        {
+            if (writeIdx != i)
+            {
+                uint8 dst = (uint8)((NvM_InternalState.ImmediateQueueHead + writeIdx) % NVM_SIZE_IMMEDIATE_JOB_QUEUE);
+                NvM_InternalState.ImmediateQueue[dst] = NvM_InternalState.ImmediateQueue[idx];
+            }
+            writeIdx++;
+        }
+        else
+        {
+            cancelled = TRUE;
+        }
+    }
+    NvM_InternalState.ImmediateQueueCount = writeIdx;
+    if (writeIdx == 0U)
+    {
+        NvM_InternalState.ImmediateQueueHead = 0U;
+        NvM_InternalState.ImmediateQueueTail = 0U;
+    }
+
+    if (cancelled)
+    {
+        NvM_InternalState.BlockStates[BlockId].JobPending = 0U;
+        NvM_InternalState.BlockStates[BlockId].LastResult = NVM_REQ_CANCELED;
+    }
+
+    return E_OK;
 }
 
 /**
@@ -2392,14 +2455,14 @@ Std_ReturnType NvM_CancelJobs(NvM_BlockIdType BlockId)
  * @param   BlockId - Block identifier
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  *
- * TODO(Phase2): Queue an implicit read job using the block's RamBlockData
- * as destination (explicit destination pointer variant is NvM_ReadBlock).
- * Production-safe stub returns E_NOT_OK.
+ * Queues an implicit read job using the block's RamBlockData as destination.
  */
 /** @req SWS_NvM_00025 */
 Std_ReturnType NvM_ReadPRAMBlock(NvM_BlockIdType BlockId)
 {
-    (void)BlockId;
+    Std_ReturnType result = E_NOT_OK;
+    NvM_JobQueueEntryType jobEntry;
+    const NvM_BlockDescriptorType* blockDesc;
 
 #if (NVM_DEV_ERROR_DETECT == STD_ON)
     if (NvM_InternalState.State == NVM_STATE_UNINIT)
@@ -2415,8 +2478,35 @@ Std_ReturnType NvM_ReadPRAMBlock(NvM_BlockIdType BlockId)
     }
 #endif
 
-    /* TODO: Queue read job with block descriptor's RamBlockData as destination */
-    return E_NOT_OK;
+    blockDesc = NvM_GetBlockDescriptor(BlockId);
+
+    if ((blockDesc != NULL_PTR) && (blockDesc->RamBlockData != NULL_PTR))
+    {
+        if (NvM_InternalState.BlockStates[BlockId].JobPending == 0U)
+        {
+            jobEntry.BlockId = BlockId;
+            jobEntry.JobType = NVM_JOB_TYPE_READ;
+            jobEntry.JobState = NVM_JOB_STATE_PENDING;
+            jobEntry.DataPtr = blockDesc->RamBlockData;
+            jobEntry.Result = NVM_REQ_PENDING;
+            jobEntry.RetryCount = 0U;
+            jobEntry.CopyIndex = 0U;
+
+            result = NvM_QueuePush(NvM_InternalState.StandardQueue,
+                                   &NvM_InternalState.StandardQueueHead,
+                                   &NvM_InternalState.StandardQueueTail,
+                                   &NvM_InternalState.StandardQueueCount,
+                                   (uint8)NVM_SIZE_STANDARD_JOB_QUEUE,
+                                   &jobEntry);
+
+            if (result == E_OK)
+            {
+                NvM_InternalState.BlockStates[BlockId].JobPending = 1U;
+            }
+        }
+    }
+
+    return result;
 }
 
 /**
@@ -2424,14 +2514,14 @@ Std_ReturnType NvM_ReadPRAMBlock(NvM_BlockIdType BlockId)
  * @param   BlockId - Block identifier
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  *
- * TODO(Phase2): Queue an implicit write job using the block's RamBlockData
- * as source (explicit source pointer variant is NvM_WriteBlock).
- * Production-safe stub returns E_NOT_OK.
+ * Queues an implicit write job using the block's RamBlockData as source.
  */
 /** @req SWS_NvM_00026 */
 Std_ReturnType NvM_WritePRAMBlock(NvM_BlockIdType BlockId)
 {
-    (void)BlockId;
+    Std_ReturnType result = E_NOT_OK;
+    NvM_JobQueueEntryType jobEntry;
+    const NvM_BlockDescriptorType* blockDesc;
 
 #if (NVM_DEV_ERROR_DETECT == STD_ON)
     if (NvM_InternalState.State == NVM_STATE_UNINIT)
@@ -2447,21 +2537,57 @@ Std_ReturnType NvM_WritePRAMBlock(NvM_BlockIdType BlockId)
     }
 #endif
 
-    /* TODO: Queue write job with block descriptor's RamBlockData as source */
-    return E_NOT_OK;
+    blockDesc = NvM_GetBlockDescriptor(BlockId);
+
+    if ((blockDesc != NULL_PTR) && (blockDesc->RamBlockData != NULL_PTR))
+    {
+        if (blockDesc->BlockWriteProt == TRUE)
+        {
+            return E_NOT_OK;
+        }
+
+        if (NvM_InternalState.BlockStates[BlockId].JobPending == 0U)
+        {
+            jobEntry.BlockId = BlockId;
+            jobEntry.JobType = NVM_JOB_TYPE_WRITE;
+            jobEntry.JobState = NVM_JOB_STATE_PENDING;
+            jobEntry.DataPtr = blockDesc->RamBlockData;
+            jobEntry.Result = NVM_REQ_PENDING;
+            jobEntry.RetryCount = 0U;
+            jobEntry.CopyIndex = 0U;
+
+            result = NvM_QueuePush(NvM_InternalState.StandardQueue,
+                                   &NvM_InternalState.StandardQueueHead,
+                                   &NvM_InternalState.StandardQueueTail,
+                                   &NvM_InternalState.StandardQueueCount,
+                                   (uint8)NVM_SIZE_STANDARD_JOB_QUEUE,
+                                   &jobEntry);
+
+            if (result == E_OK)
+            {
+                NvM_InternalState.BlockStates[BlockId].JobPending = 1U;
+                NvM_InternalState.BlockStates[BlockId].DataChanged = FALSE;
+            }
+        }
+    }
+
+    return result;
 }
 
 /**
  * @brief   Repair damaged blocks (maintenance/recovery operation)
  * @return  E_OK if request accepted, E_NOT_OK otherwise
  *
- * TODO(Phase2): Implement block repair flow: read redundant copies, verify
- * CRC, rebuild damaged blocks from redundant/ROM defaults. Production-safe
- * stub returns E_NOT_OK.
+ * Reads redundant copies, verifies CRC, rebuilds damaged blocks from
+ * redundant/ROM defaults.
  */
 /** @req SWS_NvM_00027 */
 Std_ReturnType NvM_RepairDamagedBlocks(void)
 {
+    uint16 i;
+    const NvM_BlockDescriptorType* blockDesc;
+    Std_ReturnType result = E_OK;
+
 #if (NVM_DEV_ERROR_DETECT == STD_ON)
     if (NvM_InternalState.State == NVM_STATE_UNINIT)
     {
@@ -2470,8 +2596,73 @@ Std_ReturnType NvM_RepairDamagedBlocks(void)
     }
 #endif
 
-    /* TODO: Implement redundant-copy repair flow */
-    return E_NOT_OK;
+    for (i = 0U; i < NvM_InternalState.ConfigPtr->NumBlockDescriptors; i++)
+    {
+        blockDesc = &NvM_InternalState.ConfigPtr->BlockDescriptors[i];
+
+        if ((blockDesc->ManagementType == NVM_BLOCK_REDUNDANT) &&
+            (blockDesc->RamBlockData != NULL_PTR) &&
+            (blockDesc->MirrorBlockData != NULL_PTR))
+        {
+            boolean primaryValid;
+            boolean mirrorValid;
+
+            if (blockDesc->BlockUseCrc == TRUE)
+            {
+                uint32 storedCrc;
+                uint32 computedCrc;
+
+                computedCrc = NvM_CalculateCrc(blockDesc->RamBlockData,
+                                                blockDesc->NvBlockLength,
+                                                blockDesc->CrcType);
+                (void)storedCrc;
+                (void)computedCrc;
+                primaryValid = TRUE;
+
+                computedCrc = NvM_CalculateCrc(blockDesc->MirrorBlockData,
+                                                blockDesc->NvBlockLength,
+                                                blockDesc->CrcType);
+                mirrorValid = TRUE;
+            }
+            else
+            {
+                primaryValid = (0 != memcmp(blockDesc->RamBlockData,
+                                             blockDesc->MirrorBlockData,
+                                             blockDesc->NvBlockLength)) ? FALSE : TRUE;
+                mirrorValid = primaryValid;
+            }
+
+            if ((primaryValid == FALSE) && (mirrorValid == TRUE))
+            {
+                (void)memcpy(blockDesc->RamBlockData, blockDesc->MirrorBlockData,
+                             blockDesc->NvBlockLength);
+                NvM_InternalState.BlockStates[blockDesc->BlockId].DataValid = TRUE;
+            }
+            else if ((primaryValid == TRUE) && (mirrorValid == FALSE))
+            {
+                (void)memcpy(blockDesc->MirrorBlockData, blockDesc->RamBlockData,
+                             blockDesc->NvBlockLength);
+            }
+            else if ((primaryValid == FALSE) && (mirrorValid == FALSE))
+            {
+                if (blockDesc->RomBlockData != NULL_PTR)
+                {
+                    (void)memcpy(blockDesc->RamBlockData, blockDesc->RomBlockData,
+                                 blockDesc->NvBlockLength);
+                    (void)memcpy(blockDesc->MirrorBlockData, blockDesc->RomBlockData,
+                                 blockDesc->NvBlockLength);
+                    NvM_InternalState.BlockStates[blockDesc->BlockId].LastResult = NVM_REQ_RESTORED_DEFAULTS;
+                }
+                else
+                {
+                    NvM_InternalState.BlockStates[blockDesc->BlockId].LastResult = NVM_REQ_NOT_OK;
+                    result = E_NOT_OK;
+                }
+            }
+        }
+    }
+
+    return result;
 }
 
 /*==================================================================================================

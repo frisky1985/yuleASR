@@ -23,6 +23,13 @@
 #include "Dio_Cfg.h"
 #include "Det.h"
 
+/* Critical section for multi-bit RMW operations on GPIO data register.
+ * Uses OS DisableAllInterrupts/EnableAllInterrupts to prevent ISR preemption
+ * during read-modify-write sequences that are not atomic. */
+#include "SchM_Dio.h"
+#define DIO_ENTER_CRITICAL()   SchM_Enter_Dio_WriteChannelGroup()
+#define DIO_EXIT_CRITICAL()    SchM_Exit_Dio_WriteChannelGroup()
+
 #ifdef S32K312
 #include "S32K312.h"
 /* S32K312 SIUL2 GPIO register layout per port group (0x1000 stride):
@@ -40,6 +47,9 @@
 #define DIO_GPIO4_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (3U * 0x1000U))
 #define DIO_GPIO5_BASE_ADDR             (S32K312_SIUL2_GPIO_BASE + (4U * 0x1000U))
 #define DIO_GPIO_DR                     SIUL2_GPIO_PDOR_OFF
+#define DIO_GPIO_PSR_SET                (0x04U)  /* PSOR: atomic bit set */
+#define DIO_GPIO_PCR_CLR                (0x08U)  /* PCOR: atomic bit clear */
+#define DIO_GPIO_PTOR_TOG               (0x0CU)  /* PTOR: atomic bit toggle */
 #define DIO_GPIO_GDIR                   SIUL2_GPIO_PDDR_OFF
 #define DIO_GPIO_PSR                    SIUL2_GPIO_PDIR_OFF
 #define DIO_GPIO_ICR1                   (0x0C)  /* No SIUL2 equiv, reserved */
@@ -54,6 +64,9 @@
 #define DIO_GPIO4_BASE_ADDR             (0x30230000UL)
 #define DIO_GPIO5_BASE_ADDR             (0x30240000UL)
 #define DIO_GPIO_DR                     (0x00)
+#define DIO_GPIO_PSR_SET                (0x04U)  /* PSOR: atomic bit set */
+#define DIO_GPIO_PCR_CLR                (0x08U)  /* PCOR: atomic bit clear */
+#define DIO_GPIO_PTOR_TOG               (0x0CU)  /* PTOR: atomic bit toggle */
 #define DIO_GPIO_GDIR                   (0x04)
 #define DIO_GPIO_PSR                    (0x08)
 #define DIO_GPIO_ICR1                   (0x0C)
@@ -146,14 +159,12 @@ void Dio_WriteChannel(Dio_ChannelType ChannelId, Dio_LevelType Level)
     uint8 port = DIO_GET_PORT(ChannelId);
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
-    uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
 
     if (Level == STD_HIGH) {
-        drValue |= (1U << pin);
+        REG_WRITE32(gpioBase + DIO_GPIO_PSR_SET, (1U << pin));
     } else {
-        drValue &= ~(1U << pin);
+        REG_WRITE32(gpioBase + DIO_GPIO_PCR_CLR, (1U << pin));
     }
-    REG_WRITE32(gpioBase + DIO_GPIO_DR, drValue);
 }
 
 /** @req SWS_Dio_00004 */
@@ -230,10 +241,13 @@ void Dio_WriteChannelGroup(const Dio_ChannelGroupType* ChannelGroupIdPtr, Dio_Po
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)ChannelGroupIdPtr->port);
-    uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
+    uint32 drValue;
+    DIO_ENTER_CRITICAL();
+    drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
     drValue &= ~(ChannelGroupIdPtr->mask);
     drValue |= ((uint32)Level << ChannelGroupIdPtr->offset) & ChannelGroupIdPtr->mask;
     REG_WRITE32(gpioBase + DIO_GPIO_DR, drValue);
+    DIO_EXIT_CRITICAL();
 }
 
 #if (DIO_VERSION_INFO_API == STD_ON)
@@ -273,16 +287,10 @@ Dio_LevelType Dio_FlipChannel(Dio_ChannelType ChannelId)
     uint8 port = DIO_GET_PORT(ChannelId);
     uint8 pin = DIO_GET_PIN(ChannelId);
     uint32 gpioBase = Dio_GetGpioBaseAddr(port);
-    uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
 
-    if ((drValue & (1U << pin)) != 0U) {
-        drValue &= ~(1U << pin);
-        newLevel = STD_LOW;
-    } else {
-        drValue |= (1U << pin);
-        newLevel = STD_HIGH;
-    }
-    REG_WRITE32(gpioBase + DIO_GPIO_DR, drValue);
+    uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
+    newLevel = ((drValue & (1U << pin)) != 0U) ? STD_LOW : STD_HIGH;
+    REG_WRITE32(gpioBase + DIO_GPIO_PTOR_TOG, (1U << pin));
     return newLevel;
 }
 #endif
@@ -303,10 +311,13 @@ void Dio_MaskedWritePort(Dio_PortType PortId, Dio_PortLevelType Level, Dio_PortL
     #endif
 
     uint32 gpioBase = Dio_GetGpioBaseAddr((uint8)PortId);
-    uint32 drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
+    uint32 drValue;
+    DIO_ENTER_CRITICAL();
+    drValue = REG_READ32(gpioBase + DIO_GPIO_DR);
     drValue &= ~((uint32)Mask);
     drValue |= ((uint32)Level & (uint32)Mask);
     REG_WRITE32(gpioBase + DIO_GPIO_DR, drValue);
+    DIO_EXIT_CRITICAL();
 }
 #endif
 

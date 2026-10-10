@@ -77,6 +77,8 @@ typedef struct
     uint32 TimeCounter;
     boolean Updated;
     boolean GroupEnabled;
+    uint16 DeadlineCounter;
+    boolean DMActive;
 } Com_IPduStateType;
 
 /* Signal runtime state */
@@ -950,6 +952,17 @@ void Com_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
 
             /* Mark signals as updated */
             Com_InternalState.IPduStates[RxPduId].Updated = TRUE;
+
+            /* Reset deadline monitoring counter on successful reception */
+            {
+                const Com_IPduConfigType* rxConfig = Com_GetIPduConfig(RxPduId);
+                if ((rxConfig != NULL_PTR) && (rxConfig->DeadlineLimit > 0U) &&
+                    Com_DMEnabled[RxPduId])
+                {
+                    Com_InternalState.IPduStates[RxPduId].DeadlineCounter = rxConfig->DeadlineLimit;
+                    Com_InternalState.IPduStates[RxPduId].DMActive = TRUE;
+                }
+            }
         }
     }
 }
@@ -980,6 +993,25 @@ void Com_MainFunctionRx(void)
                         /* Signal unpacking is done on-demand in Com_ReceiveSignal */
                         /* Clear IPDU update flag after processing cycle */
                         Com_InternalState.IPduStates[i].Updated = FALSE;
+                    }
+                }
+
+                /* Deadline monitoring countdown */
+                if (Com_DMEnabled[i] && Com_InternalState.IPduStates[i].DMActive &&
+                    (ipduConfig->DeadlineLimit > 0U))
+                {
+                    if (Com_InternalState.IPduStates[i].DeadlineCounter > 0U)
+                    {
+                        Com_InternalState.IPduStates[i].DeadlineCounter--;
+                    }
+                    else
+                    {
+                        /* Deadline missed */
+                        Com_InternalState.IPduStates[i].DMActive = FALSE;
+                        if (ipduConfig->DeadlineNotification != NULL_PTR)
+                        {
+                            ipduConfig->DeadlineNotification(i);
+                        }
                     }
                 }
             }
@@ -1157,6 +1189,7 @@ void Com_IpduGroupControl(Com_IpduGroupVector ipduGroupVector, boolean enable)
 void Com_ReceptionDMControl(Com_IpduGroupVector ipduGroupVector, boolean Enable)
 {
     uint16 i;
+    const Com_ConfigType* cfg = Com_InternalState.ConfigPtr;
 
 #if (COM_DEV_ERROR_DETECT == STD_ON)
     if (Com_InternalState.State != COM_STATE_INIT)
@@ -1168,9 +1201,26 @@ void Com_ReceptionDMControl(Com_IpduGroupVector ipduGroupVector, boolean Enable)
 
     for (i = 0U; i < COM_NUM_OF_IPDUS; i++)
     {
-        Com_DMEnabled[i] = Enable;
+        if ((cfg != NULL_PTR) && (cfg->IPdus != NULL_PTR) && (i < cfg->NumIPdus))
+        {
+            Com_IpduGroupIdType grp = cfg->IPdus[i].IpduGroupRef;
+
+            if ((grp < COM_NUM_OF_IPDU_GROUPS) &&
+                ((ipduGroupVector[grp / 8U] & (uint8)(1U << (grp % 8U))) != 0U))
+            {
+                Com_DMEnabled[i] = Enable;
+                if (Enable && (cfg->IPdus[i].DeadlineLimit > 0U))
+                {
+                    Com_InternalState.IPduStates[i].DeadlineCounter = cfg->IPdus[i].DeadlineLimit;
+                    Com_InternalState.IPduStates[i].DMActive = TRUE;
+                }
+                else if (!Enable)
+                {
+                    Com_InternalState.IPduStates[i].DMActive = FALSE;
+                }
+            }
+        }
     }
-    (void)ipduGroupVector;
 }
 
 /** @req SWS_Com_00023 */

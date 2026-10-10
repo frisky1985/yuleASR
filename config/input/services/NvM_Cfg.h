@@ -43,6 +43,7 @@
 #define NVM_BLOCK_ID_ODOMETER           ((NvM_BlockIdType)5U)
 #define NVM_BLOCK_ID_USER_DATA_1        ((NvM_BlockIdType)6U)
 #define NVM_BLOCK_ID_USER_DATA_2        ((NvM_BlockIdType)7U)
+#define NVM_BLOCK_ID_FRESHNESS          ((NvM_BlockIdType)8U)
 #define NVM_BLOCK_ID_LAST               ((NvM_BlockIdType)31U)
 #define NVM_BLOCK_ID_RESERVED           ((NvM_BlockIdType)0U)
 
@@ -55,6 +56,7 @@
 #define NVM_BLOCK_SIZE_VIN              (17U)
 #define NVM_BLOCK_SIZE_ODOMETER         (8U)
 #define NVM_BLOCK_SIZE_USER_DATA        (128U)
+#define NVM_BLOCK_SIZE_FRESHNESS        (48U)
 
 /*==================================================================================================
 *                                    RETRY CONFIGURATION

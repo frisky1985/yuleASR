@@ -221,6 +221,10 @@ typedef struct {
      *  struct so existing positional initializers that omit it default
      *  to 0 (= group 0) and stay source-compatible. */
     Com_IpduGroupIdType IpduGroupRef;
+    /** @brief Deadline monitoring limit (main-function cycles). 0 = disabled. */
+    uint16 DeadlineLimit;
+    /** @brief Notification callback invoked on deadline miss. NULL = none. */
+    void (*DeadlineNotification)(PduIdType PduId);
 } Com_IPduConfigType;
 
 /** @brief Type for COM configuration */

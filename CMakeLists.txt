@@ -307,6 +307,7 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/libs/CMakeLists.txt)
     add_subdirectory(src/libs)
 endif()
 
+add_subdirectory(src/bsw/cdd)
 add_subdirectory(src/bsw/services)
 
 # Diagnostics 传输层 (IsoTp) — 合并自 archive/main-20260429 (2026-08-08)

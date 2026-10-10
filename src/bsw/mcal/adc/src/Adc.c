@@ -68,9 +68,17 @@ static boolean Adc_DriverInitialized = FALSE;
 static Adc_StatusType Adc_GroupStatus[ADC_NUM_GROUPS];
 static Adc_ValueGroupType Adc_GroupResults[ADC_NUM_GROUPS][ADC_NUM_CHANNELS];
 static const Adc_ConfigType* Adc_ConfigPtr = NULL_PTR;
+static boolean Adc_CalibrationFailed[ADC_NUM_HW_UNITS];
+static uint8 Adc_DiagnosticStatus;
 
 #define ADC_STOP_SEC_VAR_CLEARED_UNSPECIFIED
 #include "MemMap.h"
+
+__attribute__((weak)) void Adc_ErrorNotification(Adc_GroupType Group, uint8 ErrorCode)
+{
+    (void)Group;
+    (void)ErrorCode;
+}
 
 /** @req SWS_Adc_00101 */
 static uint32 Adc_GetBaseAddr(Adc_HWUnitType hwUnit)
@@ -129,6 +137,10 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
     Adc_ConfigPtr = ConfigPtr;
 
     for (uint8 i = 0U; i < ADC_NUM_HW_UNITS; i++) {
+        Adc_CalibrationFailed[i] = FALSE;
+    }
+
+    for (uint8 i = 0U; i < ADC_NUM_HW_UNITS; i++) {
         uint32 baseAddr = Adc_GetBaseAddr(ConfigPtr->HwUnits[i].HwUnitId);
         if (baseAddr == 0U) { continue; }
 
@@ -149,6 +161,13 @@ void Adc_Init(const Adc_ConfigType* ConfigPtr)
         gcValue |= ADC_GC_ADCONV;
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
         while ((REG_READ32(baseAddr + ADC_GS) & ADC_GS_ADACT) != 0U){ ; }
+
+        /* Check calibration failure flag */
+        if ((REG_READ32(baseAddr + ADC_GS) & ADC_GS_CALF) != 0U) {
+            Adc_CalibrationFailed[i] = TRUE;
+            Adc_DiagnosticStatus |= 0x01U;
+            REG_WRITE32(baseAddr + ADC_GS, ADC_GS_CALF);
+        }
     }
 
     for (uint8 i = 0U; i < ADC_NUM_GROUPS; i++) {
@@ -230,11 +249,29 @@ void Adc_StartGroupConversion(Adc_GroupType Group)
         gcValue |= ADC_GC_ADCONV;
         REG_WRITE32(baseAddr + ADC_GC, gcValue);
 
-        /* Wait for conversion complete */
-        while ((REG_READ32(baseAddr + ADC_HS) & ADC_HS_COCO0) == 0U){ ; }
+        /* Wait for conversion complete with timeout watchdog */
+        uint32 timeout = ADC_CONVERSION_TIMEOUT_CYCLES;
+        while (((REG_READ32(baseAddr + ADC_HS) & ADC_HS_COCO0) == 0U) && (timeout > 0U)) {
+            timeout--;
+        }
+
+        if (timeout == 0U) {
+            Adc_GroupStatus[Group] = ADC_IDLE;
+            Adc_DiagnosticStatus |= 0x02U;
+            Adc_ErrorNotification(Group, 0x02U);
+            return;
+        }
 
         /* Read result */
-        Adc_GroupResults[Group][i] = (Adc_ValueGroupType)(REG_READ32(baseAddr + ADC_R0) & 0xFFFU);
+        Adc_ValueGroupType rawValue = (Adc_ValueGroupType)(REG_READ32(baseAddr + ADC_R0) & 0xFFFU);
+
+        /* Range plausibility check: 12-bit result must not be all-zeros or all-ones */
+        if ((rawValue == 0x000U) || (rawValue == 0xFFFU)) {
+            Adc_DiagnosticStatus |= 0x04U;
+            Adc_ErrorNotification(Group, 0x04U);
+        }
+
+        Adc_GroupResults[Group][i] = rawValue;
     }
 
     Adc_GroupStatus[Group] = ADC_STREAM_COMPLETED;
@@ -404,6 +441,72 @@ Adc_StatusType Adc_GetGroupStatus(Adc_GroupType Group)
     }
     #endif
     return Adc_GroupStatus[Group];
+}
+
+/** @req SWS_Adc_00018 */
+Std_ReturnType Adc_SelfGroupCheck(Adc_GroupType Group)
+{
+    Std_ReturnType result = E_NOT_OK;
+
+    #if (ADC_DEV_ERROR_DETECT == STD_ON)
+    if (Adc_DriverInitialized == FALSE) {
+        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SELFGROUPCHECK, ADC_E_UNINIT);
+        return E_NOT_OK;
+    }
+    if (Group >= ADC_NUM_GROUPS) {
+        Det_ReportError(ADC_MODULE_ID, 0U, ADC_SID_SELFGROUPCHECK, ADC_E_PARAM_GROUP);
+        return E_NOT_OK;
+    }
+    #endif
+
+    const Adc_GroupConfigType* groupConfig = &Adc_ConfigPtr->Groups[Group];
+    uint32 baseAddr = Adc_GetBaseAddr(groupConfig->HwUnit);
+
+    if (baseAddr == 0U) {
+        return E_NOT_OK;
+    }
+
+    /* Check calibration status for this HW unit */
+    uint8 hwIdx = groupConfig->HwUnit;
+    if ((hwIdx < ADC_NUM_HW_UNITS) && Adc_CalibrationFailed[hwIdx]) {
+        Adc_ErrorNotification(Group, 0x01U);
+        return E_NOT_OK;
+    }
+
+    /* Trigger a single conversion on channel 0 as BIST */
+    if (groupConfig->NumChannels > 0U) {
+        Adc_StatusType prevStatus = Adc_GroupStatus[Group];
+        Adc_GroupStatus[Group] = ADC_BUSY;
+
+        uint32 hcValue = groupConfig->Channels[0] & ADC_HC_ADCH_MASK;
+        REG_WRITE32(baseAddr + ADC_HC0, hcValue);
+
+        uint32 gcValue = REG_READ32(baseAddr + ADC_GC);
+        gcValue |= ADC_GC_ADCONV;
+        REG_WRITE32(baseAddr + ADC_GC, gcValue);
+
+        uint32 timeout = ADC_CONVERSION_TIMEOUT_CYCLES;
+        while (((REG_READ32(baseAddr + ADC_HS) & ADC_HS_COCO0) == 0U) && (timeout > 0U)) {
+            timeout--;
+        }
+
+        if (timeout > 0U) {
+            Adc_ValueGroupType bistValue = (Adc_ValueGroupType)(REG_READ32(baseAddr + ADC_R0) & 0xFFFU);
+            if ((bistValue != 0x000U) && (bistValue != 0xFFFU)) {
+                result = E_OK;
+            } else {
+                Adc_DiagnosticStatus |= 0x08U;
+                Adc_ErrorNotification(Group, 0x08U);
+            }
+        } else {
+            Adc_DiagnosticStatus |= 0x02U;
+            Adc_ErrorNotification(Group, 0x02U);
+        }
+
+        Adc_GroupStatus[Group] = prevStatus;
+    }
+
+    return result;
 }
 
 /** @req SWS_Adc_00011 */

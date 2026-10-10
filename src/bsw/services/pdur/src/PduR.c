@@ -467,11 +467,19 @@ Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
     /* Find routing path for this TxPduId from COM/DCM module */
     if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_COM, &pathIndex) == E_OK)
     {
+        if (!PduR_InternalState.PathStates[pathIndex].IsEnabled)
+        {
+            return E_NOT_OK;
+        }
         const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
         result = PduR_RoutePdu(pathPtr, PduInfoPtr);
     }
     else if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_DCM, &pathIndex) == E_OK)
     {
+        if (!PduR_InternalState.PathStates[pathIndex].IsEnabled)
+        {
+            return E_NOT_OK;
+        }
         const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
         result = PduR_RoutePdu(pathPtr, PduInfoPtr);
     }
@@ -513,6 +521,10 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr)
     /* Find routing path for this RxPduId from CanIf module */
     if (PduR_FindRoutingPath(RxPduId, PDUR_MODULE_CANIF, &pathIndex) == E_OK)
     {
+        if (!PduR_InternalState.PathStates[pathIndex].IsEnabled)
+        {
+            return;
+        }
         const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
         (void)PduR_RoutePdu(pathPtr, PduInfoPtr);
     }
@@ -547,6 +559,10 @@ void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
     /* Note: TxConfirmation typically comes from CanIf, route to Com/Dcm */
     if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_CANIF, &pathIndex) == E_OK)
     {
+        if (!PduR_InternalState.PathStates[pathIndex].IsEnabled)
+        {
+            return;
+        }
         const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
         uint8 i;
 
@@ -575,6 +591,10 @@ void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
            search for paths where CanIf is the destination */
         if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_COM, &pathIndex) == E_OK)
         {
+            if (!PduR_InternalState.PathStates[pathIndex].IsEnabled)
+            {
+                return;
+            }
             const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
             if ((pathPtr->NumDestPdus > 0U) && (pathPtr->DestPdus[0U].DestModule == PDUR_MODULE_CANIF))
             {
@@ -583,6 +603,10 @@ void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result)
         }
         else if (PduR_FindRoutingPath(TxPduId, PDUR_MODULE_DCM, &pathIndex) == E_OK)
         {
+            if (!PduR_InternalState.PathStates[pathIndex].IsEnabled)
+            {
+                return;
+            }
             const PduR_RoutingPathConfigType* pathPtr = &PduR_InternalState.ConfigPtr->RoutingPaths[pathIndex];
             if ((pathPtr->NumDestPdus > 0U) && (pathPtr->DestPdus[0U].DestModule == PDUR_MODULE_CANIF))
             {

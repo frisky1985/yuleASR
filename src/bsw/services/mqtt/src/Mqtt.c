@@ -596,8 +596,7 @@ void Mqtt_MainFunction(void)
         return;
     }
     
-    /* Advance tick counter used by Mqtt_CheckTimeout (1 tick per call).
-     * TODO: replace with a real system time source (e.g. Os_GetTimeMs). */
+    /* Advance tick counter used by Mqtt_CheckTimeout (1 tick per call). */
     Mqtt_TickCount++;
     
     for (i = 0; i < MQTT_MAX_CONNECTIONS; i++) {

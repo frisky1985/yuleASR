@@ -390,9 +390,26 @@ static void SecOC_ProcessRxPdu(PduIdType pduId)
                            securedPdu[originalDataLen + i];
     }
     
-    /* Reconstruct full freshness value (simplified - should use freshness manager) */
-    receivedFreshness |= (SecOC_RxPduState[idx].lastVerifiedFreshness & 
-                         ~(0xFFFFFFFFu >> SECOC_FRESHNESS_VALUE_TX_LENGTH));
+    /* Reconstruct full 32-bit freshness from the 16-bit truncated RX value.
+     * Window method: take high bits from lastVerifiedFreshness, then adjust
+     * for wrap-around when the truncated counter rolled over since the last
+     * verified value.  Half-range threshold = 0x8000 for 16-bit truncation. */
+    {
+        uint32 lastVerified = SecOC_RxPduState[idx].lastVerifiedFreshness;
+        uint32 highBits = lastVerified & 0xFFFF0000u;
+        uint16 lastLow = (uint16)(lastVerified & 0xFFFFu);
+        uint16 rxLow = (uint16)(receivedFreshness & 0xFFFFu);
+        int32 diff = (int32)rxLow - (int32)lastLow;
+
+        if (diff < -0x8000) {
+            highBits += 0x10000u;
+        } else if (diff > 0x8000) {
+            if (highBits >= 0x10000u) {
+                highBits -= 0x10000u;
+            }
+        }
+        receivedFreshness = highBits | (uint32)rxLow;
+    }
     
     /* Extract authentication code */
     for (i = 0u; i < SECOC_AUTH_INFO_LENGTH; i++) {
@@ -518,7 +535,11 @@ void SecOC_DeInit(void)
 #endif
 
     SchM_Enter_SecOC_SECOC_EXCLUSIVE_AREA_0();
-    
+
+#if (SECOC_ENABLE_FRESHNESS_PERSISTENCE == STD_ON)
+    SecOC_ScheduleFreshnessWrite();
+#endif
+
     /* Reset TX state */
     for (i = 0u; i < SECOC_NUM_TX_PDUS; i++) {
         SecOC_TxPduState[i].txInProgress = FALSE;
