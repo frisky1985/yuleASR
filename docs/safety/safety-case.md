@@ -1,7 +1,7 @@
 # yuleASR — Safety Case 安全论据 (GSN 框架)
 
 > **文档**: Safety Case (安全论据) — 基于 GSN (Goal Structuring Notation) 框架
-> **版本**: 1.0 | **日期**: 2026-07-30
+> **版本**: 1.1 | **日期**: 2026-10-09
 > **作者**: 小马 🐴 (质量架构师)
 > **状态**: 正式发布
 > **ASIL 目标**: ASIL B + QM 混合分解
@@ -17,6 +17,7 @@
 | 版本 | 日期 | 作者 | 变更 |
 |------|------|------|------|
 | 1.0 | 2026-07-30 | 小马 🐴 | 初始版本 — 完整 GSN 安全论据 |
+| 1.1 | 2026-10-09 | 小马 🐴 | 证据链补齐: 修正 R07 ASIL 等级 (D→B), 扩展 R11 追溯矩阵 (16→100+ 条), 更新 R06 覆盖率数据, 新增 R15 FvM 集成证据 |
 
 ### 0.2 参考文档 (证据索引)
 
@@ -27,15 +28,16 @@
 | [R03] | DFA 分析 | docs/safety/dfa-analysis.md | 相依失效分析 (ISO 26262-9 §8) |
 | [R04] | FMEA/FTA 量化分析 | docs/safety/fmea-fta-quantitative-analysis.md | FMEA + FTA 量化分析 (本报告核心引用) |
 | [R05] | MPU 分区方案 | docs/safety/mpu-partition.md | MPU 内存保护分区规划 |
-| [R06] | 验证报告 | docs/safety/VERIFICATION_REPORT.md | 测试覆盖率 (MC/DC 88-90%) |
-| [R07] | 安全手册 | docs/safety/SAFETY_MANUAL.md | ISO 26262 ASIL-D 安全手册 |
+| [R06] | 验证报告 | docs/safety/VERIFICATION_REPORT.md | 测试覆盖率 (语句 91.57%, 分支 79.79%) |
+| [R07] | 安全手册 | docs/safety/SAFETY_MANUAL.md | ISO 26262 ASIL-B 安全手册 |
 | [R08] | ASIL 分解报告 | docs/safety/asil-decomposition-report.md | ASIL 分解与 SWE.6 对齐 |
 | [R09] | MISRA 合规报告 | docs/misra_compliance_report.md | MISRA C:2012/C:2023 合规 |
 | [R10] | MISRA 偏差报告 | docs/misra_deviations.md | MISRA 偏差许可 |
-| [R11] | 需求追溯矩阵 | docs/requirement-traceability-matrix.md | SHALL → 测试追溯 |
-| [R12] | 模块审查证据 | .osh/evidence/reviews/ | 13 个 ASIL-B 模块审查记录：Can/CanIf/CanSM/CanTp/Com/PduR/NvM/Dcm/Dem/E2E/WdgM/SecOC/BswM |
+| [R11] | 需求追溯矩阵 | docs/requirement-traceability-matrix.md | SHALL → 测试追溯 (100+ 条, 覆盖安全/模块/集成/安全需求) |
+| [R12] | 模块审查证据 | .osh/evidence/reviews/ | 14 个 ASIL-B 模块审查记录：Can/CanIf/CanSM/CanTp/Com/PduR/NvM/Dcm/Dem/E2E/WdgM/SecOC/BswM/CryIf |
 | [R13] | CI 层报告 | .yuleosh/reports/ | CI L1/L2/L3 自动化证据 |
 | [R14] | 硬件安全分析 | docs/safety/safety-architecture.md §4 | S32K312 FMEDA + PMHF |
+| [R15] | FvM 集成证据 | src/bsw/cdd/src/Cdd_Fvm.c | SecOC Freshness NvM 持久化 + EcuM 生命周期集成 |
 
 ---
 
@@ -402,9 +404,18 @@
 │   ASIL 等级标注"                                               │
 └────────────────────────────────────────────────────────────────┘
          [R02 §5]
+
+┌────────────────────────────────────────────────────────────────┐
+│  Sn-21b (Solution) — v1.1 新增                                 │
+│  "SecOC Freshness 持久化: Cdd_Fvm 双 Bank 冗余存储            │
+│   (48 bytes NvM Block 8), EcuM 生命周期集成 (Init/MainFunc/   │
+│   DeInit), 掉电安全: dirty flag + 窗口重建算法。              │
+│   消除 SecOC freshness 掉电归零导致的重放攻击窗口"            │
+└────────────────────────────────────────────────────────────────┘
+         [R15]
 ```
 
-**G-2 结论: ✅ 已证明 — ASIL 分解正确、FMEDA 定量达标、DFA 已验证、安全状态完整。**
+**G-2 结论: ✅ 已证明 — ASIL 分解正确、FMEDA 定量达标、DFA 已验证、安全状态完整、Freshness 持久化已集成。**
 
 ---
 
