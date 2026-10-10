@@ -1,12 +1,10 @@
-# SomeIpSd unit tests — substantiated against the production SOME/IP Service
-# Discovery implementation (src/bsw/ecual/someipsd). Links the real
-# ecual_someipsd library; Det_ReportError is defined inline in the test
-# source (the SUT never calls it — kept to assert that actual behavior), so
-# no mocks from tests/mocks are linked.
+# SomeIpSd unit tests — substantiated against the canonical SOME/IP Service
+# Discovery implementation (src/bsw/services/someip). The ecual/someipsd copy
+# was converged (shimmed) in Phase 2; this test now links service_someip.
 #
-# Note: another worker mounts tests/bsw/ecual/someipsd2/ as a separate
-# someipsd2_test executable against the same SUT; the two executables are
-# independent and do not conflict.
+# Det_ReportError is defined inline in the test source (the SUT's DET guards
+# compile out because SomeIpSd.c does not #include SomeIpSd_Cfg.h, so the
+# mock is never called — kept to catch any future wiring change).
 
 cmake_minimum_required(VERSION 3.16)
 
@@ -17,10 +15,10 @@ add_executable(someipsd_test
 target_include_directories(someipsd_test
     PRIVATE
         ${TEST_FRAMEWORK_INCLUDE}
-        ${CMAKE_SOURCE_DIR}/src/bsw/ecual/someipsd/include
+        ${CMAKE_SOURCE_DIR}/src/bsw/services/someip/include
         ${CMAKE_SOURCE_DIR}/src/common/include
         ${CMAKE_SOURCE_DIR}/include/autosar
-        ${CMAKE_SOURCE_DIR}/config/input/ecual
+        ${CMAKE_SOURCE_DIR}/config/input/services
 )
 
 target_compile_options(someipsd_test PRIVATE
@@ -36,8 +34,8 @@ set_target_properties(someipsd_test PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
 )
 
-if(TARGET ecual_someipsd)
-    target_link_libraries(someipsd_test PRIVATE ecual_someipsd)
+if(TARGET service_someip)
+    target_link_libraries(someipsd_test PRIVATE service_someip)
 endif()
 
 if(TEST_FRAMEWORK_LIB)

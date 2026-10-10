@@ -192,7 +192,9 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/mem)
 endif()
 # @ANCHOR3:someip
 # @ANCHOR3:someiptp
-# @ANCHOR3:someipsd
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/bsw/ecual/someipsd)
+    add_subdirectory(bsw/ecual/someipsd)
+endif()
 # @ANCHOR3:someipsd2
 # @ANCHOR3:someipxf
 # @ANCHOR3:srp
@@ -263,7 +265,9 @@ if(NOT CMAKE_CROSSCOMPILING)
             # MCAL Can + ECUAL Ea/Fee (CanIf and NvM-MemIf hardware backends)
             mcal_can
             mcal_dio
+            mcal_mcu
             service_ecum
+            cdd
             service_comM
             service_schm
             ecual_ea

@@ -60,6 +60,7 @@ set(ECUAL_SHIMMED_MODULES
     memif
     xcp
     fim
+    someipsd
 )
 
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/generated/shim-stubs")

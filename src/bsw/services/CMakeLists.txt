@@ -20,6 +20,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/canif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/linif/include
     ${CMAKE_CURRENT_SOURCE_DIR}/../ecual/ea/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../cdd/include
     ${CMAKE_CURRENT_SOURCE_DIR}/tcpip/include
     ${CMAKE_SOURCE_DIR}/config/input/services
     ${CMAKE_SOURCE_DIR}/config/input/mcal
@@ -63,6 +64,7 @@ set(SERVICES_SHIMMED_MODULES
     canm
     linsm
     ramtst
+    lntm
 )
 
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/generated/shim-stubs")
