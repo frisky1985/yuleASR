@@ -56,7 +56,6 @@ set(MCAL_TEST_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/include/autosar
     ${CMAKE_SOURCE_DIR}/src/common/include
-    ${CMAKE_SOURCE_DIR}/coverage_run            # Contains Det.c stubs, Std_Types.h stub
     ${SRC_OS}/include
     ${SRC_DET}/include
     ${SRC_MCAL}/dio/include
@@ -167,7 +166,9 @@ function(add_mcal_test)
     # Link coverage when enabled
     if(ENABLE_COVERAGE)
         target_compile_options(${TEST_TARGET} PRIVATE --coverage)
-        target_link_libraries(${TEST_TARGET} PRIVATE gcov)
+        if(NOT APPLE)
+            target_link_libraries(${TEST_TARGET} PRIVATE gcov)
+        endif()
     endif()
 
     # Register test
@@ -297,7 +298,9 @@ function(add_bsw_mcal_test)
 
     if(ENABLE_COVERAGE)
         target_compile_options(${TEST_TARGET} PRIVATE --coverage)
-        target_link_libraries(${TEST_TARGET} PRIVATE gcov)
+        if(NOT APPLE)
+            target_link_libraries(${TEST_TARGET} PRIVATE gcov)
+        endif()
     endif()
 
     add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
@@ -554,7 +557,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_ETH.c)
         MCAL_SRCS
             ${SRC_MCAL}/eth/src/Eth.c
         MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+            ${MOCK_DIR}/stubs/Det_stub.c
     )
 endif()
 
@@ -571,7 +574,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_fls.c)
             ${SRC_MCAL}/fls/src/Fls.c
             ${SRC_MCAL}/fls/src/Fls_Hw.c
         MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+            ${MOCK_DIR}/stubs/Det_stub.c
             ${MOCK_DIR}/stubs/fls_job_notification_stubs.c
     )
 endif()
@@ -593,7 +596,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_linslave.c)
             ${SRC_MCAL}/lin/src/LinSlave_Hal.c
             ${SRC_MCAL}/lin/src/LinSlave_CfgTable.c
         MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+            ${MOCK_DIR}/stubs/Det_stub.c
     )
 endif()
 
@@ -614,7 +617,7 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/tests/unit/autosar/mcal/test_Crypto.c)
             ${SRC_MCAL}/crypto/src/Crypto_Hsm.c
             ${SRC_MCAL}/crypto/src/Crypto_Cfg.c
         MOCK_SRCS
-            ${CMAKE_SOURCE_DIR}/coverage_run/Det.c
+            ${MOCK_DIR}/stubs/Det_stub.c
     )
     target_link_libraries(mcal_crypto_real_test PRIVATE
         mbedtls mbedx509 mbedcrypto blake2

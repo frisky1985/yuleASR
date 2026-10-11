@@ -120,3 +120,54 @@ set_target_properties(NvM_Redundant_UnitTest PROPERTIES
 )
 add_test(NAME NvM_Redundant_UnitTest COMMAND NvM_Redundant_UnitTest)
 message(STATUS "  Unit test: NvM_Redundant_UnitTest (redundant storage, 8 cases)")
+
+# ── Os_Callback_Alarm 单元测试 (alarm dispatch branches 5,6: NvM/Dem) ──
+# 提供 stub MainFunctions, 仅编译 Os_Cfg.c (不链接完整 Os 库, 避免拉入 FreeRTOS/Rte 依赖)
+add_executable(OsCfg_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_os_cfg.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/os/src/Os_Cfg.c
+)
+target_include_directories(OsCfg_UnitTest
+    PRIVATE
+        ${TEST_FRAMEWORK_INCLUDE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/os/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/bswm/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/com/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/dcm/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/nvm/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/dem/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/ecual/canif/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/mcal/can/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/common/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../include/autosar
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/middleware/rte/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/freertos/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../third_party/freertos/portable/posix
+)
+target_link_libraries(OsCfg_UnitTest PRIVATE Unity)
+target_compile_options(OsCfg_UnitTest PRIVATE -Wno-unused-parameter)
+set_target_properties(OsCfg_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+add_test(NAME OsCfg_UnitTest COMMAND OsCfg_UnitTest)
+message(STATUS "  Unit test: OsCfg_UnitTest (Os_Callback_Alarm dispatch)")
+
+# ── OS PCP (Priority Ceiling Protocol) 单元测试 ──
+# 独立测试 Os_Internal_GetResource / Os_Internal_ReleaseResource 的 PCP 逻辑
+# stub 所有 FreeRTOS API，不链接 FreeRTOS 内核
+add_executable(OsPcp_UnitTest
+    ${CMAKE_CURRENT_SOURCE_DIR}/test_os_pcp.c
+)
+target_include_directories(OsPcp_UnitTest
+    PRIVATE
+        ${TEST_FRAMEWORK_INCLUDE}
+)
+target_link_libraries(OsPcp_UnitTest PRIVATE Unity)
+target_compile_options(OsPcp_UnitTest PRIVATE -Wall -Wextra -Werror -g -O0)
+set_target_properties(OsPcp_UnitTest PROPERTIES
+    C_STANDARD 99
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests
+)
+add_test(NAME OsPcp_UnitTest COMMAND OsPcp_UnitTest)
+message(STATUS "  Unit test: OsPcp_UnitTest (PCP elevation/restore, 15 cases)")
