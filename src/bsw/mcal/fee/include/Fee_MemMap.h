@@ -8,6 +8,12 @@
 #ifndef FEE_MEMMAP_H
 #define FEE_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 #ifndef FEE_START_SEC_CODE
 #define FEE_START_SEC_CODE
 #endif
@@ -37,6 +43,11 @@
 #endif
 #ifndef FEE_STOP_SEC_VAR_NO_INIT
 #define FEE_STOP_SEC_VAR_NO_INIT
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* FEE_MEMMAP_H */

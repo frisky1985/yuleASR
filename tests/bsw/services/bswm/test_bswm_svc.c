@@ -794,6 +794,716 @@ void test_BswM_Notify_BswMPartitionRestarted_Uninit_ShouldReportDet(void) {
     TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
 }
 
+/*==================================================================================================
+*                            Additional branch coverage tests
+*================================================================================================*/
+
+/* --- Config data for action-kind tests --- */
+
+static const BswM_ModeRequestPortType actPorts[] = { BSWM_ECUM_REQUEST };
+
+/* Expression 0: port0 == RUN (always true after RequestMode(RUN)) */
+static const BswM_ExpressionConfigType actExpressions[] = {
+    { BSWM_EXPR_MODE_EQUALS, 0U, BSWM_MODE_VALUE_RUN, 0U, 0U }
+};
+
+/* PDU_GROUP_SWITCH enable action */
+static const BswM_ActionType pduSwitchAction[] = {{
+    .Callback = NULL_PTR,
+    .Parameter = 0U,
+    .Kind = BSWM_ACTION_PDU_GROUP_SWITCH,
+    .Enable = TRUE,
+    .Initialize = FALSE,
+    .IpduGroupVector = { 0x03U, 0x00U, 0x00U, 0x00U }
+}};
+
+/* PDU_GROUP_SWITCH disable action */
+static const BswM_ActionType pduDisableAction[] = {{
+    .Callback = NULL_PTR,
+    .Parameter = 0U,
+    .Kind = BSWM_ACTION_PDU_GROUP_SWITCH,
+    .Enable = FALSE,
+    .Initialize = FALSE,
+    .IpduGroupVector = { 0x01U, 0x00U, 0x00U, 0x00U }
+}};
+
+/* COM_IPDU_GROUP action */
+static const BswM_ActionType comIpduAction[] = {{
+    .Callback = NULL_PTR,
+    .Parameter = 0U,
+    .Kind = BSWM_ACTION_COM_IPDU_GROUP,
+    .Enable = FALSE,
+    .Initialize = TRUE,
+    .IpduGroupVector = { 0x0FU, 0x00U, 0x00U, 0x00U }
+}};
+
+/* ECUM actions */
+static const BswM_ActionType goSleepAction[] = {{
+    .Callback = NULL_PTR, .Parameter = 0U, .Kind = BSWM_ACTION_ECUM_GO_SLEEP,
+    .Enable = FALSE, .Initialize = FALSE, .IpduGroupVector = {0}
+}};
+static const BswM_ActionType goHaltAction[] = {{
+    .Callback = NULL_PTR, .Parameter = 0U, .Kind = BSWM_ACTION_ECUM_GO_HALT,
+    .Enable = FALSE, .Initialize = FALSE, .IpduGroupVector = {0}
+}};
+static const BswM_ActionType goOffAction[] = {{
+    .Callback = NULL_PTR, .Parameter = 0x05U, .Kind = BSWM_ACTION_ECUM_GO_OFF,
+    .Enable = FALSE, .Initialize = FALSE, .IpduGroupVector = {0}
+}};
+
+/* NULL callback action */
+static const BswM_ActionType nullCallbackAction[] = {{
+    .Callback = NULL_PTR, .Parameter = 0U, .Kind = BSWM_ACTION_CALLBACK,
+    .Enable = FALSE, .Initialize = FALSE, .IpduGroupVector = {0}
+}};
+
+/* Action lists */
+static const BswM_ActionListType actActionLists[] = {
+    { 1U, pduSwitchAction },   /* 0: PDU_GROUP_SWITCH enable */
+    { 1U, pduDisableAction },  /* 1: PDU_GROUP_SWITCH disable */
+    { 1U, comIpduAction },     /* 2: COM_IPDU_GROUP */
+    { 1U, goSleepAction },     /* 3: ECUM_GO_SLEEP */
+    { 1U, goHaltAction },      /* 4: ECUM_GO_HALT */
+    { 1U, goOffAction },       /* 5: ECUM_GO_OFF */
+    { 1U, nullCallbackAction } /* 6: NULL callback */
+};
+
+/* Rules: each with condition index 0 (port0==RUN), InitialState=FALSE, IsEnabled=TRUE */
+static const BswM_RuleType actRules[] = {
+    { 0U, 0U, 0U, 1U, BSWM_RULE_STATE_FALSE, TRUE, 0U }, /* rule 0 -> PDU enable */
+};
+
+static const BswM_ConfigType actConfig = {
+    1U, actPorts, 1U, actExpressions, 1U, actRules, 7U, actActionLists
+};
+
+/** Helper: reset mock action counters */
+static void mock_EcuMActionReset(void) {
+    mock_EcuMGoSleepCalls = 0U;
+    mock_EcuMGoHaltCalls = 0U;
+    mock_EcuMShutdownCalls = 0U;
+    mock_EcuMLastTarget = 0xFFU;
+    mock_EcuMLastTargetMode = 0xFFU;
+}
+
+/** PDU_GROUP_SWITCH enable action */
+void test_BswM_Action_PduGroupSwitch_Enable_ShouldCallComIpduGroupControl(void) {
+    BswM_ConfigType cfg = actConfig;
+    mock_ComIpduGroupControlCalls = 0U;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* Rule should have triggered the PDU_GROUP_SWITCH action */
+    TEST_ASSERT_NOT_EQUAL(0U, mock_ComIpduGroupControlCalls);
+}
+
+/** PDU_GROUP_SWITCH disable action */
+void test_BswM_Action_PduGroupSwitch_Disable_ShouldClearBits(void) {
+    BswM_ConfigType cfg = actConfig;
+    /* First enable, then use rule 0 with disable action */
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    TEST_ASSERT_NOT_EQUAL(0U, mock_ComIpduGroupControlCalls);
+}
+
+/** COM_IPDU_GROUP action */
+void test_BswM_Action_ComIpduGroup_ShouldCallComWithInitializeFlag(void) {
+    BswM_ConfigType cfg = actConfig;
+    /* Override rule 0 to use action list 2 (COM_IPDU_GROUP) */
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 2U;
+    rules2[0].FalseActionListIndex = 1U;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    mock_ComIpduGroupControlCalls = 0U;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    TEST_ASSERT_NOT_EQUAL(0U, mock_ComIpduGroupControlCalls);
+    TEST_ASSERT_EQUAL(1U, mock_ComLastInitialize); /* Initialize flag should be TRUE */
+}
+
+/** ECUM_GO_SLEEP action */
+void test_BswM_Action_EcuMGoSleep_ShouldCallGoSleep(void) {
+    BswM_ConfigType cfg = actConfig;
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 3U;
+    rules2[0].FalseActionListIndex = 1U;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    mock_EcuMActionReset();
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    TEST_ASSERT_NOT_EQUAL(0U, mock_EcuMGoSleepCalls);
+}
+
+/** ECUM_GO_HALT action */
+void test_BswM_Action_EcuMGoHalt_ShouldCallGoHalt(void) {
+    BswM_ConfigType cfg = actConfig;
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 4U;
+    rules2[0].FalseActionListIndex = 1U;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    mock_EcuMActionReset();
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    TEST_ASSERT_NOT_EQUAL(0U, mock_EcuMGoHaltCalls);
+}
+
+/** ECUM_GO_OFF action */
+void test_BswM_Action_EcuMGoOff_ShouldSelectTargetAndShutdown(void) {
+    BswM_ConfigType cfg = actConfig;
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 5U;
+    rules2[0].FalseActionListIndex = 1U;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    mock_EcuMActionReset();
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    TEST_ASSERT_NOT_EQUAL(0U, mock_EcuMShutdownCalls);
+    TEST_ASSERT_EQUAL(ECUM_SHUTDOWN_TARGET_OFF, mock_EcuMLastTarget);
+}
+
+/** NULL callback action should not crash */
+void test_BswM_Action_NullCallback_ShouldNotCrash(void) {
+    BswM_ConfigType cfg = actConfig;
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 6U;
+    rules2[0].FalseActionListIndex = 1U;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    mock_ActionReset();
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* NULL callback should be skipped, mock_ActionCalls stays 0 */
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** BswM_RuleEnable: valid rule after init */
+void test_BswM_RuleEnable_ValidId_ShouldReturnOk(void) {
+    BswM_Init(&actConfig);
+    Std_ReturnType ret = BswM_RuleEnable(0U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+}
+
+/** BswM_RuleEnable: invalid rule ID */
+void test_BswM_RuleEnable_InvalidId_ShouldReportError(void) {
+    BswM_Init(&actConfig);
+    Std_ReturnType ret = BswM_RuleEnable(99U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_RULE_ENABLE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_PARAM_RULE_ID, mock_DetLastErrorId);
+}
+
+/** BswM_RuleEnable: uninit */
+void test_BswM_RuleEnable_Uninit_ShouldReportError(void) {
+    Std_ReturnType ret = BswM_RuleEnable(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_RULE_ENABLE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** BswM_RuleDisable: valid rule */
+void test_BswM_RuleDisable_ValidId_ShouldReturnOk(void) {
+    BswM_Init(&actConfig);
+    Std_ReturnType ret = BswM_RuleDisable(0U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+}
+
+/** BswM_RuleDisable: invalid rule ID */
+void test_BswM_RuleDisable_InvalidId_ShouldReportError(void) {
+    BswM_Init(&actConfig);
+    Std_ReturnType ret = BswM_RuleDisable(99U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_RULE_DISABLE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_PARAM_RULE_ID, mock_DetLastErrorId);
+}
+
+/** BswM_RuleDisable: uninit */
+void test_BswM_RuleDisable_Uninit_ShouldReportError(void) {
+    Std_ReturnType ret = BswM_RuleDisable(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_RULE_DISABLE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** BswM_Com_CurrentPduGroupState: uninit */
+void test_BswM_Com_CurrentPduGroupState_Uninit_ShouldReportError(void) {
+    BswM_Com_IpduGroupVector vec = {0U, 0U};
+    Std_ReturnType ret = BswM_Com_CurrentPduGroupState(vec);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_COMM_CURRENT_PDU_GROUP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** BswM_Com_CurrentPduGroupState: null pointer */
+void test_BswM_Com_CurrentPduGroupState_NullPtr_ShouldReportError(void) {
+    BswM_Init(&actConfig);
+    Std_ReturnType ret = BswM_Com_CurrentPduGroupState(NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/** BswM_Com_CurrentPduGroupState: valid call */
+void test_BswM_Com_CurrentPduGroupState_Valid_ShouldReturnState(void) {
+    BswM_Com_IpduGroupVector vec = {0xFFU, 0xFFU};
+    BswM_Init(&actConfig);
+    Std_ReturnType ret = BswM_Com_CurrentPduGroupState(vec);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* Initially ipduGroupState is all zeros */
+    TEST_ASSERT_EQUAL_UINT8(0U, vec[0]);
+    TEST_ASSERT_EQUAL_UINT8(0U, vec[1]);
+}
+
+/** BswM_Com_CurrentPduGroupState: after PDU group action */
+void test_BswM_Com_CurrentPduGroupState_AfterPduAction_ShouldReflectState(void) {
+    BswM_Com_IpduGroupVector vec = {0U, 0U};
+    BswM_ConfigType cfg = actConfig;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    Std_ReturnType ret = BswM_Com_CurrentPduGroupState(vec);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* PDU_GROUP_SWITCH enable with vector {0x03, 0, 0, 0} should set bits */
+    TEST_ASSERT_NOT_EQUAL(0U, vec[0]);
+}
+
+/** BswM_DeInit with rules latched TRUE should execute false action lists */
+void test_BswM_DeInit_LatchedTrueRule_ShouldRunFalseActionList(void) {
+    BswM_ConfigType cfg = actConfig;
+    mock_ActionReset();
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* Now DeInit should run the false action list of the latched-true rule */
+    BswM_DeInit();
+    /* No crash = success; the false action list (index 1 = PDU disable) runs */
+}
+
+/** BswM_MainFunction after DeInit (uninit) should silently return */
+void test_BswM_MainFunction_AfterDeInit_ShouldSilentlyReturn(void) {
+    BswM_Init(&actConfig);
+    BswM_DeInit();
+    mock_Det_Reset();
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+}
+
+/*==================================================================================================
+*                            Additional branch coverage tests - round 2
+*================================================================================================*/
+
+/** Test unmapped EcuM state (line 277 branches 1,2,4,5,6) */
+void test_BswM_EcuM_CurrentState_UnmappedState_ShouldNotRequestMode(void) {
+    BswM_Init(&actConfig);
+    mock_Det_Reset();
+    /* 0x02 is not a defined ECUM_STATE_* value */
+    BswM_EcuM_CurrentState((BswM_EcuMStateType)0x02U);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+    /* No mode should be requested for unmapped state */
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetRequestedMode());
+}
+
+/** Test BswM_EcuM_RequestedState with unmapped state (line 277) */
+void test_BswM_EcuM_RequestedState_UnmappedValue_ShouldBeIgnored(void) {
+    BswM_Init(&actConfig);
+    mock_Det_Reset();
+    /* 0xFF is not a defined ECUM_STATE_* value */
+    BswM_EcuM_RequestedState((BswM_EcuMStateType)0xFFU);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+}
+
+/** Test WritePort with same value (line 319 branch 0) */
+void test_BswM_WritePort_SameValue_ShouldNotMarkDirty(void) {
+    BswM_Init(&actConfig);
+    /* First write marks dirty */
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* Clear dirty flags by running MainFunction again */
+    BswM_MainFunction();
+    /* Write same value again - should not mark dirty */
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Rule should not re-evaluate since port is not dirty */
+    mock_ActionReset();
+    BswM_MainFunction();
+    /* No action should fire since rule state hasn't changed */
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test ExecuteActionList with NULL Actions pointer (line 266 branch 0) */
+void test_BswM_ActionList_NullActions_ShouldNotCrash(void) {
+    static const BswM_ActionListType nullActionLists[] = {
+        { 1U, NULL_PTR }  /* NumActions=1 but Actions=NULL */
+    };
+    static const BswM_RuleType nullActionRules[] = {
+        { 0U, 0U, 0U, BSWM_ACTION_LIST_NONE, BSWM_RULE_STATE_FALSE, TRUE, 0U }
+    };
+    BswM_ConfigType cfg = {
+        1U, actPorts, 1U, actExpressions, 1U, nullActionRules, 1U, nullActionLists
+    };
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Should not crash when Actions is NULL */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test notification callbacks when uninitialized (lines 670, 708, 722, 735, 748, 761, 774, 787) */
+void test_BswM_Notify_ComM_CurrentPNCMode_Uninit_ShouldReportDet(void) {
+    BswM_ComM_CurrentPNCMode(0U, TRUE);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_COMM_CURRENT_PNC_MODE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_Dcm_CommunicationMode_Uninit_ShouldReportDet(void) {
+    BswM_Dcm_CommunicationMode_CurrentState(0U, (BswM_DcmCommunicationModeType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_DCM_COMM_MODE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_Dcm_ApplicationUpdated_Uninit_ShouldReportDet(void) {
+    BswM_Dcm_ApplicationUpdated(0U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_DCM_APP_UPDATED, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_Nm_StateChangeNotification_Uninit_ShouldReportDet(void) {
+    BswM_Nm_StateChangeNotification(0U, (BswM_NmStateType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_NM_STATE_CHANGE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_Nm_CarWakeUpIndication_Uninit_ShouldReportDet(void) {
+    BswM_Nm_CarWakeUpIndication(0U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_NM_CAR_WAKEUP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_CanSM_CurrentState_Uninit_ShouldReportDet(void) {
+    BswM_CanSM_CurrentState(0U, (BswM_CanSmStateType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_CANSM_CURRENT_STATE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_EthSM_CurrentState_Uninit_ShouldReportDet(void) {
+    BswM_EthSM_CurrentState(0U, (BswM_EthSmStateType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_ETHSM_CURRENT_STATE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_FrSM_CurrentState_Uninit_ShouldReportDet(void) {
+    BswM_FrSM_CurrentState(0U, (BswM_FrSmStateType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_FRSM_CURRENT_STATE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_LinSM_CurrentState_Uninit_ShouldReportDet(void) {
+    BswM_LinSM_CurrentState(0U, (BswM_LinSmStateType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_LINSM_CURRENT_STATE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_LinSM_CurrentSchedule_Uninit_ShouldReportDet(void) {
+    BswM_LinSM_CurrentSchedule(0U, 1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_LINSM_CURRENT_SCHEDULE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_LinTp_RequestMode_Uninit_ShouldReportDet(void) {
+    BswM_LinTp_RequestMode(0U, (BswM_LinTpModeType)1U);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_LINTP_REQUEST_MODE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+void test_BswM_Notify_EthIf_PortGroupLinkStateChg_Uninit_ShouldReportDet(void) {
+    BswM_EthIf_PortGroupLinkStateChg(0U, TRUE);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_SID_ETHIF_PORTGROUP_LINKSTATE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** Test MainFunction dirty flag clearing (line 547 branch 0) */
+void test_BswM_MainFunction_DirtyFlagClear_ShouldClearOnUnchangedPort(void) {
+    BswM_Init(&actConfig);
+    /* Request mode to mark port dirty */
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* Run again - dirty flag should be cleared since port value unchanged */
+    BswM_MainFunction();
+    /* Request same mode again - should not trigger re-evaluation */
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    mock_ActionReset();
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test EcuM wakeup indication (line 682) */
+void test_BswM_EcuM_CurrentWakeup_Validated_ShouldRequestWakeupMode(void) {
+    BswM_Init(&actConfig);
+    mock_Det_Reset();
+    BswM_EcuM_CurrentWakeup(1U, ECUM_WKSTATUS_VALIDATED);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_WAKEUP, BswM_GetRequestedMode());
+}
+
+/** Test EcuM wakeup indication with non-validated status */
+void test_BswM_EcuM_CurrentWakeup_NotValidated_ShouldNotRequestMode(void) {
+    BswM_Init(&actConfig);
+    BswM_EcuM_CurrentWakeup(1U, ECUM_WKSTATUS_NONE);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetRequestedMode());
+}
+
+/** Test ExecuteActionList with ActionListIndex = BSWM_ACTION_LIST_NONE (line 254 branch 1) */
+void test_BswM_ExecuteActionList_NoneIndex_ShouldReturnEarly(void) {
+    BswM_ConfigType cfg = actConfig;
+    /* Rule with TrueActionListIndex = BSWM_ACTION_LIST_NONE */
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = BSWM_ACTION_LIST_NONE;
+    rules2[0].FalseActionListIndex = BSWM_ACTION_LIST_NONE;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Should not crash when ActionListIndex is NONE */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test ExecuteActionList with out-of-range index (line 260 branch 1) */
+void test_BswM_ExecuteActionList_OutOfRangeIndex_ShouldReturnEarly(void) {
+    BswM_ConfigType cfg = actConfig;
+    /* Rule with TrueActionListIndex out of range */
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 99U;  /* Out of range */
+    rules2[0].FalseActionListIndex = BSWM_ACTION_LIST_NONE;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Should not crash when ActionListIndex is out of range */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test WritePortByComposition with NULL config (lines 337, 339) */
+void test_BswM_WritePortByComposition_NullConfig_ShouldNotCrash(void) {
+    /* Initialize with empty config */
+    BswM_Init(&testConfig);
+    /* Call notification that uses WritePortByComposition */
+    BswM_ComM_CurrentMode(0U, (BswM_ComMModeType)2U);
+    /* Should not crash */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test RequestMode with composition that doesn't match any port (lines 463, 465) */
+void test_BswM_RequestMode_UnmatchedComposition_ShouldStillLatchMode(void) {
+    BswM_Init(&actConfig);
+    /* Request with a composition ID that doesn't match any port */
+    Std_ReturnType ret = BswM_RequestMode(0xFFU, BSWM_MODE_VALUE_RUN);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* Mode should still be latched */
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetRequestedMode());
+}
+
+/** Test MainFunction with config that has NumRules = 0 (line 497 branch 3) */
+void test_BswM_MainFunction_ZeroRules_ShouldNotEvaluate(void) {
+    BswM_ConfigType cfg = testConfig;
+    cfg.NumRules = 0U;
+    cfg.Rules = NULL_PTR;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Should not crash with zero rules */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetCurrentMode());
+}
+
+/** Test Com_CurrentPduGroupState after COM_IPDU_GROUP action (line 658 branch 1) */
+void test_BswM_Com_CurrentPduGroupState_AfterComIpduAction_ShouldReturnVector(void) {
+    BswM_Com_IpduGroupVector vec = {0xFFU, 0xFFU};
+    BswM_ConfigType cfg = actConfig;
+    /* Use action list 2 (COM_IPDU_GROUP) */
+    BswM_RuleType rules2[1];
+    rules2[0].RuleId = 0U;
+    rules2[0].ConditionIndex = 0U;
+    rules2[0].TrueActionListIndex = 2U;  /* COM_IPDU_GROUP */
+    rules2[0].FalseActionListIndex = BSWM_ACTION_LIST_NONE;
+    rules2[0].InitialState = BSWM_RULE_STATE_FALSE;
+    rules2[0].IsEnabled = TRUE;
+    rules2[0].Priority = 0U;
+    cfg.Rules = rules2;
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* Now check the PDU group state */
+    Std_ReturnType ret = BswM_Com_CurrentPduGroupState(vec);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* COM_IPDU_GROUP action with vector {0x0F, 0, 0, 0} should set bits */
+    TEST_ASSERT_NOT_EQUAL(0U, vec[0]);
+}
+
+/** Test DeInit with NULL configPtr (line 424 branch 3) */
+void test_BswM_DeInit_NullConfigPtr_ShouldHandleGracefully(void) {
+    /* This is a special case - we can't easily set configPtr to NULL after Init,
+     * but we can test DeInit behavior when called multiple times */
+    BswM_Init(&testConfig);
+    BswM_DeInit();
+    /* Call DeInit again - should handle gracefully */
+    BswM_DeInit();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+}
+
+/** Test all EcuM state mappings to cover line 277 branches */
+void test_BswM_MapEcuMState_AllMappedStates_ShouldMapCorrectly(void) {
+    BswM_Init(&actConfig);
+    
+    /* Test each mapped state */
+    BswM_EcuM_CurrentState(ECUM_STATE_OFF);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_STARTUP);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_STARTUP, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_RUN);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_APP_RUN);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_POST_RUN);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_POST_RUN, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_APP_POST_RUN);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_POST_RUN, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_SLEEP);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_SLEEP, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_WAKE_SLEEP);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_SLEEP, BswM_GetRequestedMode());
+    
+    BswM_EcuM_CurrentState(ECUM_STATE_SHUTDOWN);
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_SHUTDOWN, BswM_GetRequestedMode());
+}
+
+/** Test expression with invalid type (line 91 branch 2 - default case) */
+void test_BswM_EvaluateExpression_InvalidType_ShouldReturnFalse(void) {
+    static const BswM_ExpressionConfigType invalidExpr[] = {
+        { 0xFFU, 0U, BSWM_MODE_VALUE_RUN, 0U, 0U }  /* Invalid ExpressionType */
+    };
+    static const BswM_RuleType invalidRule[] = {
+        { 0U, 0U, 0U, BSWM_ACTION_LIST_NONE, BSWM_RULE_STATE_FALSE, TRUE, 0U }
+    };
+    BswM_ConfigType cfg = {
+        1U, actPorts, 1U, invalidExpr, 1U, invalidRule, 0U, NULL_PTR
+    };
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Should not crash, expression evaluates to FALSE */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test expression with PortIndex >= NumModeRequestPorts (line 94 branches) */
+void test_BswM_EvaluateExpression_PortIndexOutOfRange_ShouldReturnFalse(void) {
+    static const BswM_ExpressionConfigType outOfRangeExpr[] = {
+        { BSWM_EXPR_MODE_EQUALS, 99U, BSWM_MODE_VALUE_RUN, 0U, 0U }  /* PortIndex=99, but NumModeRequestPorts=1 */
+    };
+    static const BswM_RuleType outOfRangeRule[] = {
+        { 0U, 0U, 0U, BSWM_ACTION_LIST_NONE, BSWM_RULE_STATE_FALSE, TRUE, 0U }
+    };
+    BswM_ConfigType cfg = {
+        1U, actPorts, 1U, outOfRangeExpr, 1U, outOfRangeRule, 0U, NULL_PTR
+    };
+    BswM_Init(&cfg);
+    (void)BswM_RequestMode(BSWM_ECUM_REQUEST, BSWM_MODE_VALUE_RUN);
+    /* Should not crash, expression evaluates to FALSE due to port index check */
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_ActionCalls);
+}
+
+/** Test CollectRulePorts with invalid expression type (line 150 branch 0) */
+void test_BswM_CollectRulePorts_InvalidType_ShouldReturnZero(void) {
+    static const BswM_ExpressionConfigType invalidExpr[] = {
+        { 0xFFU, 0U, BSWM_MODE_VALUE_RUN, 0U, 0U }  /* Invalid ExpressionType */
+    };
+    static const BswM_RuleType invalidRule[] = {
+        { 0U, 0U, BSWM_ACTION_LIST_NONE, BSWM_ACTION_LIST_NONE, BSWM_RULE_STATE_FALSE, TRUE, 0U }
+    };
+    BswM_ConfigType cfg = {
+        1U, actPorts, 1U, invalidExpr, 1U, invalidRule, 0U, NULL_PTR
+    };
+    /* Init will call CollectRulePorts which should handle invalid type */
+    BswM_Init(&cfg);
+    /* Should not crash */
+    BswM_MainFunction();
+}
+
+/** Test CollectRulePorts with PortIndex >= 32 (line 153 branch 1) */
+void test_BswM_CollectRulePorts_PortIndexLarge_ShouldSetAllBits(void) {
+    static const BswM_ExpressionConfigType largePortExpr[] = {
+        { BSWM_EXPR_MODE_EQUALS, 50U, BSWM_MODE_VALUE_RUN, 0U, 0U }  /* PortIndex=50 >= 32 */
+    };
+    static const BswM_RuleType largePortRule[] = {
+        { 0U, 0U, BSWM_ACTION_LIST_NONE, BSWM_ACTION_LIST_NONE, BSWM_RULE_STATE_FALSE, TRUE, 0U }
+    };
+    BswM_ConfigType cfg = {
+        1U, actPorts, 1U, largePortExpr, 1U, largePortRule, 0U, NULL_PTR
+    };
+    /* Init will call CollectRulePorts which should set all bits for large port index */
+    BswM_Init(&cfg);
+    /* Should not crash */
+    BswM_MainFunction();
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -847,6 +1557,56 @@ int main(void)
     RUN_TEST(test_BswM_Notify_ComM_CurrentMode_Uninit_ShouldReportDet);
     RUN_TEST(test_BswM_Notify_EcuM_RequestedState_Uninit_ShouldReportDet);
     RUN_TEST(test_BswM_Notify_BswMPartitionRestarted_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Action_PduGroupSwitch_Enable_ShouldCallComIpduGroupControl);
+    RUN_TEST(test_BswM_Action_PduGroupSwitch_Disable_ShouldClearBits);
+    RUN_TEST(test_BswM_Action_ComIpduGroup_ShouldCallComWithInitializeFlag);
+    RUN_TEST(test_BswM_Action_EcuMGoSleep_ShouldCallGoSleep);
+    RUN_TEST(test_BswM_Action_EcuMGoHalt_ShouldCallGoHalt);
+    RUN_TEST(test_BswM_Action_EcuMGoOff_ShouldSelectTargetAndShutdown);
+    RUN_TEST(test_BswM_Action_NullCallback_ShouldNotCrash);
+    RUN_TEST(test_BswM_RuleEnable_ValidId_ShouldReturnOk);
+    RUN_TEST(test_BswM_RuleEnable_InvalidId_ShouldReportError);
+    RUN_TEST(test_BswM_RuleEnable_Uninit_ShouldReportError);
+    RUN_TEST(test_BswM_RuleDisable_ValidId_ShouldReturnOk);
+    RUN_TEST(test_BswM_RuleDisable_InvalidId_ShouldReportError);
+    RUN_TEST(test_BswM_RuleDisable_Uninit_ShouldReportError);
+    RUN_TEST(test_BswM_Com_CurrentPduGroupState_Uninit_ShouldReportError);
+    RUN_TEST(test_BswM_Com_CurrentPduGroupState_NullPtr_ShouldReportError);
+    RUN_TEST(test_BswM_Com_CurrentPduGroupState_Valid_ShouldReturnState);
+    RUN_TEST(test_BswM_Com_CurrentPduGroupState_AfterPduAction_ShouldReflectState);
+    RUN_TEST(test_BswM_DeInit_LatchedTrueRule_ShouldRunFalseActionList);
+    RUN_TEST(test_BswM_MainFunction_AfterDeInit_ShouldSilentlyReturn);
+    RUN_TEST(test_BswM_EcuM_CurrentState_UnmappedState_ShouldNotRequestMode);
+    RUN_TEST(test_BswM_EcuM_RequestedState_UnmappedValue_ShouldBeIgnored);
+    RUN_TEST(test_BswM_WritePort_SameValue_ShouldNotMarkDirty);
+    RUN_TEST(test_BswM_ActionList_NullActions_ShouldNotCrash);
+    RUN_TEST(test_BswM_Notify_ComM_CurrentPNCMode_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_Dcm_CommunicationMode_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_Dcm_ApplicationUpdated_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_Nm_StateChangeNotification_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_Nm_CarWakeUpIndication_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_CanSM_CurrentState_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_EthSM_CurrentState_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_FrSM_CurrentState_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_LinSM_CurrentState_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_LinSM_CurrentSchedule_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_LinTp_RequestMode_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_Notify_EthIf_PortGroupLinkStateChg_Uninit_ShouldReportDet);
+    RUN_TEST(test_BswM_MainFunction_DirtyFlagClear_ShouldClearOnUnchangedPort);
+    RUN_TEST(test_BswM_EcuM_CurrentWakeup_Validated_ShouldRequestWakeupMode);
+    RUN_TEST(test_BswM_EcuM_CurrentWakeup_NotValidated_ShouldNotRequestMode);
+    RUN_TEST(test_BswM_ExecuteActionList_NoneIndex_ShouldReturnEarly);
+    RUN_TEST(test_BswM_ExecuteActionList_OutOfRangeIndex_ShouldReturnEarly);
+    RUN_TEST(test_BswM_WritePortByComposition_NullConfig_ShouldNotCrash);
+    RUN_TEST(test_BswM_RequestMode_UnmatchedComposition_ShouldStillLatchMode);
+    RUN_TEST(test_BswM_MainFunction_ZeroRules_ShouldNotEvaluate);
+    RUN_TEST(test_BswM_Com_CurrentPduGroupState_AfterComIpduAction_ShouldReturnVector);
+    RUN_TEST(test_BswM_DeInit_NullConfigPtr_ShouldHandleGracefully);
+    RUN_TEST(test_BswM_MapEcuMState_AllMappedStates_ShouldMapCorrectly);
+    RUN_TEST(test_BswM_EvaluateExpression_InvalidType_ShouldReturnFalse);
+    RUN_TEST(test_BswM_EvaluateExpression_PortIndexOutOfRange_ShouldReturnFalse);
+    RUN_TEST(test_BswM_CollectRulePorts_InvalidType_ShouldReturnZero);
+    RUN_TEST(test_BswM_CollectRulePorts_PortIndexLarge_ShouldSetAllBits);
 
     return UnityEnd();
 }

@@ -49,10 +49,18 @@
 #define CRYPTO_E_PARAM_HANDLE               (0x04U)
 #define CRYPTO_E_PARAM_VALUE                (0x05U)
 #define CRYPTO_E_PARAM_STATE                (0x06U)
+#ifndef CRYPTO_E_SMALL_BUFFER
 #define CRYPTO_E_SMALL_BUFFER               (0x07U)
+#endif
+#ifndef CRYPTO_E_NOT_SUPPORTED
 #define CRYPTO_E_NOT_SUPPORTED              (0x08U)
+#endif
+#ifndef CRYPTO_E_QUEUE_FULL
 #define CRYPTO_E_QUEUE_FULL                 (0x09U)
+#endif
+#ifndef CRYPTO_E_JOB_CANCELED
 #define CRYPTO_E_JOB_CANCELED               (0x0AU)
+#endif
 
 #define CRYPTO_SID_INIT                     (0x00U)
 #define CRYPTO_SID_DEINIT                   (0x01U)

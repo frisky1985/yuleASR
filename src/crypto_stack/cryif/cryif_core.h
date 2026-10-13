@@ -255,10 +255,10 @@ typedef struct {
 } cryif_channel_t;
 
 /* Forward declaration */
-typedef struct cryif_context_s cryif_context_t;
+struct cryif_context_s;
 
 /* Driver selection function pointer */
-typedef cryif_driver_t* (*cryif_select_driver_fn_t)(cryif_context_t *ctx,
+typedef cryif_driver_t* (*cryif_select_driver_fn_t)(struct cryif_context_s *ctx,
                                                     cryif_operation_t op,
                                                     uint32_t algorithm);
 
@@ -266,6 +266,8 @@ typedef cryif_driver_t* (*cryif_select_driver_fn_t)(cryif_context_t *ctx,
  * CryIf上下文
  * ============================================================================ */
 
+#ifndef CRYIF_CONTEXT_T_DEFINED
+#define CRYIF_CONTEXT_T_DEFINED
 typedef struct cryif_context_s {
     /* 注册的驱动 */
     cryif_driver_t *drivers[CRYIF_MAX_DRIVERS];
@@ -304,6 +306,7 @@ typedef struct cryif_context_s {
     /* 同步原语 */
     void *mutex;
 } cryif_context_t;
+#endif /* CRYIF_CONTEXT_T_DEFINED */
 
 /* ============================================================================
  * 初始化/反初始化

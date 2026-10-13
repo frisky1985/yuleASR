@@ -77,14 +77,26 @@ typedef uint8               Std_ReturnType;
 /*******************************************************************************
  * Standard On/Off
  ******************************************************************************/
+#ifndef STD_ON
 #define STD_ON              1U
+#endif
+#ifndef STD_OFF
 #define STD_OFF             0U
+#endif
 
+#ifndef STD_HIGH
 #define STD_HIGH            1U
+#endif
+#ifndef STD_LOW
 #define STD_LOW             0U
+#endif
 
+#ifndef STD_ACTIVE
 #define STD_ACTIVE          1U
+#endif
+#ifndef STD_IDLE
 #define STD_IDLE            0U
+#endif
 
 /*******************************************************************************
  * NULL Pointer

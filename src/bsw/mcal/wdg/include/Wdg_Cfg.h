@@ -40,7 +40,9 @@
 /*==================================================================================================
 *                                    Other Configuration
 *================================================================================================*/
+#ifndef WDG_DISABLE_ALLOWED
 #define WDG_DISABLE_ALLOWED    STD_OFF
+#endif
 #define WDG_INITIAL_MODE    WDGIF_FAST_MODE
 #define WDG_FAST_MODE_PRESCALER    WDG_PRESCALER_64
 #define WDG_FAST_MODE_WINDOW_ENABLED    STD_ON

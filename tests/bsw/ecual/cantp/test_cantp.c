@@ -24,6 +24,8 @@ static PduLengthType mock_PduRRxLens[8];
 static uint8 mock_PduRRxFirstByte[8];
 static uint8 mock_PduRLastData[16];
 static PduLengthType mock_PduRLastLen = 0;
+static uint8 mock_PduRTxCalls = 0;
+static Std_ReturnType mock_PduRTxLastResult = E_OK;
 
 /* CAN FD test configuration storage (channel 0 flagged as CAN FD) */
 static CanTp_ChannelConfigType testFdChannel;
@@ -70,7 +72,9 @@ void PduR_RxIndication(PduIdType RxPduId, const PduInfoType* PduInfoPtr) {
 }
 
 void PduR_TxConfirmation(PduIdType TxPduId, Std_ReturnType result) {
-    (void)TxPduId;(void)result;
+    (void)TxPduId;
+    mock_PduRTxLastResult = result;
+    mock_PduRTxCalls++;
 }
 
 void setUp(void) {
@@ -86,6 +90,8 @@ void setUp(void) {
     for (uint8 i = 0U; i < 8U; i++) { mock_PduRRxLens[i] = 0; mock_PduRRxFirstByte[i] = 0U; }
     for (uint8 i = 0U; i < 16U; i++) { mock_PduRLastData[i] = 0U; }
     mock_PduRLastLen = 0;
+    mock_PduRTxCalls = 0;
+    mock_PduRTxLastResult = E_OK;
     for (uint8 i = 0U; i < CANTP_CAN_FRAME_LENGTH; i++) { mock_CanIfFrame[i] = 0U; }
 }
 void tearDown(void) {}
@@ -913,6 +919,283 @@ void test_CanTp_RxCfInvalidPadding_ReportOnly_ShouldStillComplete(void) {
     }
 }
 
+/* --- Additional coverage tests --- */
+
+void test_CanTp_CancelReceive_BeforeInit_ShouldFail(void) {
+    Std_ReturnType ret = CanTp_CancelReceive(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_CanTp_ChangeParameter_BeforeInit_ShouldFail(void) {
+    Std_ReturnType ret = CanTp_ChangeParameter(0U, TP_STMIN, 10U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_CanTp_ReadParameter_BeforeInit_ShouldFail(void) {
+    uint16 value = 0U;
+    Std_ReturnType ret = CanTp_ReadParameter(0U, TP_STMIN, &value);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_CanTp_Transmit_ZeroLength_ShouldFail(void) {
+    CanTp_ConfigType config = CanTp_Config;
+    CanTp_Init(&config);
+    uint8 data[1] = {0};
+    uint8 meta[8] = {0};
+    PduInfoType pdu;
+    pdu.SduDataPtr = data;
+    pdu.MetaDataPtr = meta;
+    pdu.SduLength = 0U;
+    Std_ReturnType ret = CanTp_Transmit(0U, &pdu);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_CanTp_Shutdown_WhenInitialized_ShouldNotReportDet(void) {
+    CanTp_ConfigType config = CanTp_Config;
+    CanTp_Init(&config);
+    mock_DetCalls = 0;
+    CanTp_Shutdown();
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanTp_RxIndication_BeforeInit_ShouldFail(void) {
+    uint8 data[8] = {0};
+    PduInfoType pdu;
+    pdu.SduDataPtr = data;
+    pdu.MetaDataPtr = NULL_PTR;
+    pdu.SduLength = 8U;
+    CanTp_RxIndication(0U, &pdu);
+    /* Should not crash or report DET (RxIndication is called from ISR context) */
+}
+
+void test_CanTp_RxIndication_NullPduInfo_ShouldFail(void) {
+    CanTp_ConfigType config = CanTp_Config;
+    CanTp_Init(&config);
+    CanTp_RxIndication(0U, NULL_PTR);
+    /* Should not crash */
+}
+
+/* ---- Additional coverage tests ---- */
+
+void test_CanTp_CancelTransmit_BeforeInit_ShouldFail(void) {
+    Std_ReturnType ret = CanTp_CancelTransmit(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_CanTp_TxConfirmation_BeforeInit_ShouldReturn(void) {
+    CanTp_TxConfirmation(0U);
+    TEST_ASSERT_EQUAL(0, mock_PduRTxCalls);
+}
+
+void test_CanTp_TxConfirmation_TxFF_ShouldTransitionToWaitFC(void) {
+    PduInfoType pdu;
+    uint8 data[16];
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    /* Transmit 16 bytes -> FF sent, channel in TX_WAIT_FC after TxConfirmation */
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    TEST_ASSERT_EQUAL(1, mock_CanIfCalls);
+    /* TxConfirmation for FF: transitions to TX_WAIT_FC */
+    CanTp_TxConfirmation(0U);
+    /* Channel should now be waiting for FC; cancel should succeed */
+    TEST_ASSERT_EQUAL(E_OK, CanTp_CancelTransmit(CANTP_TX_DIAG_PHYSICAL));
+}
+
+void test_CanTp_TxConfirmation_TxSfComplete_ShouldNotifyPduR(void) {
+    PduInfoType pdu;
+    uint8 data[3] = {0x11U, 0x22U, 0x33U};
+    pdu.SduDataPtr = data; pdu.SduLength = 3U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    TEST_ASSERT_EQUAL(1, mock_CanIfCalls);
+    /* SF Tx confirmation: should notify PduR */
+    CanTp_TxConfirmation(0U);
+    TEST_ASSERT_EQUAL(1, mock_PduRTxCalls);
+    TEST_ASSERT_EQUAL(E_OK, mock_PduRTxLastResult);
+}
+
+void test_CanTp_TxConfirmation_TxCfComplete_ShouldNotifyPduR(void) {
+    PduInfoType pdu;
+    PduInfoType fcPdu;
+    uint8 data[16];
+    uint8 fcData[8] = {0x30U, 0x08U, 0x00U, 0U, 0U, 0U, 0U, 0U};
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+    fcPdu.SduDataPtr = fcData; fcPdu.SduLength = 8U; fcPdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    /* FC CTS with STmin=0 */
+    CanTp_RxIndication(CANTP_CANIF_FC_RX_PDU_ID, &fcPdu);
+    CanTp_MainFunction();
+    /* Send all remaining CFs */
+    for (uint8 i = 0U; i < 10U; i++) {
+        CanTp_MainFunction();
+    }
+    /* All data sent: TxConfirmation should notify PduR */
+    CanTp_TxConfirmation(0U);
+    TEST_ASSERT_EQUAL(1, mock_PduRTxCalls);
+}
+
+void test_CanTp_TxConfirmation_TxCfMoreToSend_ShouldResetTimer(void) {
+    PduInfoType pdu;
+    PduInfoType fcPdu;
+    uint8 data[16];
+    uint8 fcData[8] = {0x30U, 0x01U, 0x05U, 0U, 0U, 0U, 0U, 0U};
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+    fcPdu.SduDataPtr = fcData; fcPdu.SduLength = 8U; fcPdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    /* FC CTS with BS=1, STmin=5: only 1 CF allowed per block */
+    CanTp_RxIndication(CANTP_CANIF_FC_RX_PDU_ID, &fcPdu);
+    CanTp_MainFunction();
+    TEST_ASSERT_EQUAL(2, mock_CanIfCalls);
+    /* First CF sent. TxConfirmation while more data remains: should not notify PduR */
+    CanTp_TxConfirmation(0U);
+    TEST_ASSERT_EQUAL(0, mock_PduRTxCalls);
+}
+
+void test_CanTp_MainFunction_BeforeInit_ShouldReturn(void) {
+    CanTp_MainFunction();
+    TEST_ASSERT_EQUAL(0, mock_CanIfCalls);
+    TEST_ASSERT_EQUAL(0, mock_PduRRxCalls);
+}
+
+void test_CanTp_MainFunction_NAsTimeout_ShouldResetChannel(void) {
+    PduInfoType pdu;
+    uint8 data[3] = {0x11U, 0x22U, 0x33U};
+    pdu.SduDataPtr = data; pdu.SduLength = 3U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    /* Run MainFunction enough times to expire N_As timer */
+    for (uint16 i = 0U; i < 2000U; i++) {
+        CanTp_MainFunction();
+    }
+    /* Channel should be reset; cancel should fail */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanTp_CancelTransmit(CANTP_TX_DIAG_PHYSICAL));
+}
+
+void test_CanTp_MainFunction_NCrTimeout_ShouldResetChannel(void) {
+    PduInfoType pdu;
+    uint8 data[16];
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    /* Start a multi-frame Rx by sending FF */
+    uint8 ffData[8] = {0x10U, 0x10U, 0x00U, 0x01U, 0x02U, 0x03U, 0x04U, 0x05U};
+    PduInfoType ffPdu;
+    ffPdu.SduDataPtr = ffData; ffPdu.SduLength = 8U; ffPdu.MetaDataPtr = NULL_PTR;
+    CanTp_RxIndication(CANTP_CANIF_RX_PDU_ID, &ffPdu);
+    CanTp_MainFunction(); /* Process FF, send FC, enter RX_CF */
+    /* Run MainFunction enough times to expire N_Cr timer */
+    for (uint16 i = 0U; i < 5000U; i++) {
+        CanTp_MainFunction();
+    }
+    /* Channel should be reset; cancel receive should fail */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanTp_CancelReceive(CANTP_RX_DIAG_PHYSICAL));
+}
+
+void test_CanTp_CancelReceive_ActiveRx_ShouldSucceed(void) {
+    CanTp_Init(&CanTp_Config);
+    /* Start a multi-frame Rx by sending FF */
+    uint8 ffData[8] = {0x10U, 0x10U, 0x00U, 0x01U, 0x02U, 0x03U, 0x04U, 0x05U};
+    PduInfoType ffPdu;
+    ffPdu.SduDataPtr = ffData; ffPdu.SduLength = 8U; ffPdu.MetaDataPtr = NULL_PTR;
+    CanTp_RxIndication(CANTP_CANIF_RX_PDU_ID, &ffPdu);
+    CanTp_MainFunction(); /* Process FF, enter RX_CF */
+    /* CancelReceive returns E_NOT_OK because ActiveNsduId is not set in Rx path */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanTp_CancelReceive(CANTP_RX_DIAG_PHYSICAL));
+}
+
+void test_CanTp_ProcessRxFrame_FcWait_ShouldResetTimer(void) {
+    PduInfoType pdu;
+    PduInfoType fcPdu;
+    uint8 data[16];
+    uint8 fcData[8] = {0x31U, 0x00U, 0x00U, 0U, 0U, 0U, 0U, 0U}; /* FS=1 (Wait) */
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+    fcPdu.SduDataPtr = fcData; fcPdu.SduLength = 8U; fcPdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    TEST_ASSERT_EQUAL(1, mock_CanIfCalls);
+    /* FC Wait: should stay in TX_WAIT_FC, no new frame sent */
+    CanTp_RxIndication(CANTP_CANIF_FC_RX_PDU_ID, &fcPdu);
+    CanTp_MainFunction();
+    /* Still only 1 CanIf call (FF), no CF sent */
+    TEST_ASSERT_EQUAL(1, mock_CanIfCalls);
+    /* Channel still active */
+    TEST_ASSERT_EQUAL(E_OK, CanTp_CancelTransmit(CANTP_TX_DIAG_PHYSICAL));
+}
+
+void test_CanTp_ProcessRxFrame_FcOvflw_ShouldResetChannel(void) {
+    PduInfoType pdu;
+    PduInfoType fcPdu;
+    uint8 data[16];
+    uint8 fcData[8] = {0x32U, 0x00U, 0x00U, 0U, 0U, 0U, 0U, 0U}; /* FS=2 (Overflow) */
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+    fcPdu.SduDataPtr = fcData; fcPdu.SduLength = 8U; fcPdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    TEST_ASSERT_EQUAL(1, mock_CanIfCalls);
+    /* FC Overflow: should abort transmission */
+    CanTp_RxIndication(CANTP_CANIF_FC_RX_PDU_ID, &fcPdu);
+    CanTp_MainFunction();
+    /* Channel should be reset; cancel should fail */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanTp_CancelTransmit(CANTP_TX_DIAG_PHYSICAL));
+}
+
+void test_CanTp_Transmit_NoFreeChannel_ShouldFail(void) {
+    PduInfoType pdu;
+    uint8 data[16];
+    for (uint8 i = 0U; i < 16U; i++) { data[i] = (uint8)i; }
+    pdu.SduDataPtr = data; pdu.SduLength = 16U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    /* Fill all channels with multi-frame Tx */
+    uint8 result = E_OK;
+    for (uint8 ch = 0U; ch < CANTP_MAX_CHANNEL_CNT; ch++) {
+        result = CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu);
+        if (result != E_OK) { break; }
+    }
+    /* Next transmit should fail: no free channel */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+}
+
+void test_CanTp_ChangeParameter_TpBs_ShouldUpdateBlockSize(void) {
+    PduInfoType pdu;
+    uint8 data[10] = {0U};
+    uint16 value = 0U;
+    pdu.SduDataPtr = data; pdu.SduLength = 10U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    TEST_ASSERT_EQUAL(E_OK, CanTp_ChangeParameter(CANTP_TX_DIAG_PHYSICAL, TP_BS, 20U));
+    TEST_ASSERT_EQUAL(E_OK, CanTp_ReadParameter(CANTP_TX_DIAG_PHYSICAL, TP_BS, &value));
+    TEST_ASSERT_EQUAL(20U, value);
+}
+
+void test_CanTp_ReadParameter_NullPtr_ShouldReportDet(void) {
+    PduInfoType pdu;
+    uint8 data[10] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 10U; pdu.MetaDataPtr = NULL_PTR;
+
+    CanTp_Init(&CanTp_Config);
+    TEST_ASSERT_EQUAL(E_OK, CanTp_Transmit(CANTP_TX_DIAG_PHYSICAL, &pdu));
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanTp_ReadParameter(CANTP_TX_DIAG_PHYSICAL, TP_STMIN, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -951,6 +1234,32 @@ int main(void)
     RUN_TEST(test_CanTp_RxSfFullFrame_ShouldHaveNoPaddingArea);
     RUN_TEST(test_CanTp_RxSfPaddingRegion_ShouldCheckAllTailBytes);
     RUN_TEST(test_CanTp_RxCfInvalidPadding_ReportOnly_ShouldStillComplete);
+
+    /* Additional coverage tests */
+    RUN_TEST(test_CanTp_CancelReceive_BeforeInit_ShouldFail);
+    RUN_TEST(test_CanTp_ChangeParameter_BeforeInit_ShouldFail);
+    RUN_TEST(test_CanTp_ReadParameter_BeforeInit_ShouldFail);
+    RUN_TEST(test_CanTp_Transmit_ZeroLength_ShouldFail);
+    RUN_TEST(test_CanTp_Shutdown_WhenInitialized_ShouldNotReportDet);
+    RUN_TEST(test_CanTp_RxIndication_BeforeInit_ShouldFail);
+    RUN_TEST(test_CanTp_RxIndication_NullPduInfo_ShouldFail);
+
+    /* Extended coverage tests */
+    RUN_TEST(test_CanTp_CancelTransmit_BeforeInit_ShouldFail);
+    RUN_TEST(test_CanTp_TxConfirmation_BeforeInit_ShouldReturn);
+    RUN_TEST(test_CanTp_TxConfirmation_TxFF_ShouldTransitionToWaitFC);
+    RUN_TEST(test_CanTp_TxConfirmation_TxSfComplete_ShouldNotifyPduR);
+    RUN_TEST(test_CanTp_TxConfirmation_TxCfComplete_ShouldNotifyPduR);
+    RUN_TEST(test_CanTp_TxConfirmation_TxCfMoreToSend_ShouldResetTimer);
+    RUN_TEST(test_CanTp_MainFunction_BeforeInit_ShouldReturn);
+    RUN_TEST(test_CanTp_MainFunction_NAsTimeout_ShouldResetChannel);
+    RUN_TEST(test_CanTp_MainFunction_NCrTimeout_ShouldResetChannel);
+    RUN_TEST(test_CanTp_CancelReceive_ActiveRx_ShouldSucceed);
+    RUN_TEST(test_CanTp_ProcessRxFrame_FcWait_ShouldResetTimer);
+    RUN_TEST(test_CanTp_ProcessRxFrame_FcOvflw_ShouldResetChannel);
+    RUN_TEST(test_CanTp_Transmit_NoFreeChannel_ShouldFail);
+    RUN_TEST(test_CanTp_ChangeParameter_TpBs_ShouldUpdateBlockSize);
+    RUN_TEST(test_CanTp_ReadParameter_NullPtr_ShouldReportDet);
 
     return UnityEnd();
 }

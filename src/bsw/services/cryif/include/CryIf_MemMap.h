@@ -26,6 +26,12 @@
 #ifndef CRYIF_MEMMAP_H
 #define CRYIF_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
  *                                         SECTIONS
  *==================================================================================================*/
@@ -98,6 +104,11 @@
 #ifdef CRYIF_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #undef CRYIF_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #define STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* CRYIF_MEMMAP_H */

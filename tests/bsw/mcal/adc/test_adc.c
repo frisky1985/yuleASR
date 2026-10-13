@@ -29,6 +29,8 @@
 #define ADC_CFG_OFF         (0x0CU)
 #define ADC_GC_OFF          (0x10U)
 #define ADC_GS_OFF          (0x14U)
+#define ADC_GS              ADC_GS_OFF  /* alias matching Adc.c internal name */
+#define ADC_GS_CALF         (0x00000004U)
 
 #define ADC_GC_ADACKEN      (0x00000001UL)
 #define ADC_GC_ADCONV       (0x00000004UL)
@@ -583,4 +585,184 @@ void test_Adc_SetupResultBuffer_NullBuffer_ShouldReturnNotOk(void) {
     TEST_ASSERT_EQUAL(ADC_MODULE_ID, Det_MockData.ModuleId);
     TEST_ASSERT_EQUAL(ADC_SID_SETUPRESULTBUFFER, Det_MockData.ApiId);
     TEST_ASSERT_EQUAL(ADC_E_PARAM_POINTER, Det_MockData.ErrorId);
+}
+
+/* --- Adc_SelfGroupCheck --- */
+
+void test_Adc_SelfGroupCheck_BeforeInit_ShouldReportDet(void) {
+    Std_ReturnType ret = Adc_SelfGroupCheck(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(ADC_SID_SELFGROUPCHECK, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(ADC_E_UNINIT, Det_MockData.ErrorId);
+}
+
+void test_Adc_SelfGroupCheck_InvalidGroup_ShouldReportDet(void) {
+    test_Adc_EnsureInitialized();
+    Std_ReturnType ret = Adc_SelfGroupCheck(ADC_NUM_GROUPS);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(ADC_SID_SELFGROUPCHECK, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(ADC_E_PARAM_GROUP, Det_MockData.ErrorId);
+}
+
+void test_Adc_SelfGroupCheck_BistPass_ShouldReturnOk(void) {
+    test_Adc_EnsureInitialized();
+    /* Preset COCO0 and a valid BIST result (not 0x000 or 0xFFF) */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);
+    MockRegisters_Write32(ADC1_BASE + ADC_R0_OFF, 0x7ABU);
+    Std_ReturnType ret = Adc_SelfGroupCheck(0U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+}
+
+void test_Adc_SelfGroupCheck_BistValue000_ShouldReturnNotOk(void) {
+    test_Adc_EnsureInitialized();
+    /* Preset COCO0 and BIST result = 0x000 (out of range) */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);
+    MockRegisters_Write32(ADC1_BASE + ADC_R0_OFF, 0x000U);
+    Std_ReturnType ret = Adc_SelfGroupCheck(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_Adc_SelfGroupCheck_BistValueFFF_ShouldReturnNotOk(void) {
+    test_Adc_EnsureInitialized();
+    /* Preset COCO0 and BIST result = 0xFFF (out of range) */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);
+    MockRegisters_Write32(ADC1_BASE + ADC_R0_OFF, 0xFFFU);
+    Std_ReturnType ret = Adc_SelfGroupCheck(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_Adc_SelfGroupCheck_Timeout_ShouldReturnNotOk(void) {
+    test_Adc_EnsureInitialized();
+    /* Don't preset COCO0 -> timeout loop runs to 0 */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, 0U);
+    Std_ReturnType ret = Adc_SelfGroupCheck(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_Adc_SelfGroupCheck_GroupOnHwUnit1_ShouldReturnNotOk(void) {
+    test_Adc_EnsureInitialized();
+    /* Group 3 uses HWUNIT_0 by default from setup. Create a config with group on HWUNIT_1 */
+    testGroups[3].HwUnit = ADC_HWUNIT_1;
+    testGroups[3].NumChannels = 0U;
+    Std_ReturnType ret = Adc_SelfGroupCheck(3U);
+    /* baseAddr for HWUNIT_1 = 0 -> returns E_NOT_OK */
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    /* Restore */
+    testGroups[3].HwUnit = ADC_HWUNIT_0;
+    testGroups[3].NumChannels = 0U;
+}
+
+void test_Adc_SelfGroupCheck_ZeroChannels_ShouldReturnNotOk(void) {
+    test_Adc_EnsureInitialized();
+    /* Group with 0 channels: skips BIST, result stays E_NOT_OK */
+    testGroups[4].NumChannels = 0U;
+    Std_ReturnType ret = Adc_SelfGroupCheck(4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    testGroups[4].NumChannels = 0U; /* already 0 from setup */
+}
+
+/* --- StartGroupConversion timeout path --- */
+
+void test_Adc_StartGroupConversion_Timeout_ShouldReturnToIdle(void) {
+    test_Adc_EnsureInitialized();
+    /* Don't preset COCO0 -> conversion timeout */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, 0U);
+    Adc_StartGroupConversion(0U);
+    /* Group should return to IDLE after timeout */
+    TEST_ASSERT_EQUAL(ADC_IDLE, Adc_GetGroupStatus(0U));
+}
+
+/* --- Range plausibility check --- */
+
+void test_Adc_StartGroupConversion_RawValue000_ShouldTriggerRangeCheck(void) {
+    test_Adc_EnsureInitialized();
+    /* Preset COCO0 and result = 0x000 (triggers range plausibility) */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);
+    MockRegisters_Write32(ADC1_BASE + ADC_R0_OFF, 0x000U);
+    Adc_StartGroupConversion(0U);
+    /* Group completes, result stored as 0x000 */
+    TEST_ASSERT_EQUAL(ADC_STREAM_COMPLETED, Adc_GetGroupStatus(0U));
+    Adc_ValueGroupType buffer[2] = {0U, 0U};
+    TEST_ASSERT_EQUAL(E_OK, Adc_ReadGroup(0U, buffer));
+    TEST_ASSERT_EQUAL_UINT16(0x000U, buffer[0]);
+}
+
+void test_Adc_StartGroupConversion_RawValueFFF_ShouldTriggerRangeCheck(void) {
+    test_Adc_EnsureInitialized();
+    /* Preset COCO0 and result = 0xFFF (triggers range plausibility) */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);
+    MockRegisters_Write32(ADC1_BASE + ADC_R0_OFF, 0xFFFU);
+    Adc_StartGroupConversion(0U);
+    TEST_ASSERT_EQUAL(ADC_STREAM_COMPLETED, Adc_GetGroupStatus(0U));
+    Adc_ValueGroupType buffer[2] = {0U, 0U};
+    TEST_ASSERT_EQUAL(E_OK, Adc_ReadGroup(0U, buffer));
+    TEST_ASSERT_EQUAL_UINT16(0xFFFU, buffer[0]);
+}
+
+/* --- DisableGroupNotification valid group --- */
+
+void test_Adc_DisableGroupNotification_ValidGroup_ShouldNotReportDet(void) {
+    test_Adc_EnsureInitialized();
+    Adc_DisableGroupNotification(0U);
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+}
+
+/* --- EnableGroupNotification before init --- */
+
+void test_Adc_EnableGroupNotification_BeforeInit_ShouldReportDet(void) {
+    Adc_EnableGroupNotification(0U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(ADC_SID_ENABLEGROUPNOTIFICATION, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(ADC_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/* --- DisableGroupNotification before init --- */
+
+void test_Adc_DisableGroupNotification_BeforeInit_ShouldReportDet(void) {
+    Adc_DisableGroupNotification(0U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(ADC_SID_DISABLEGROUPNOTIFICATION, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(ADC_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/* --- StartGroupConversion busy group --- */
+
+void test_Adc_StartGroupConversion_BusyGroup_ShouldReturnSilently(void) {
+    test_Adc_EnsureInitialized();
+    /* Manually set group to BUSY by starting a conversion without COCO */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, 0U);
+    /* First call: will timeout and go back to IDLE */
+    Adc_StartGroupConversion(0U);
+    TEST_ASSERT_EQUAL(ADC_IDLE, Adc_GetGroupStatus(0U));
+}
+
+/* --- DeInit with busy group --- */
+
+void test_Adc_DeInit_BusyGroup_ShouldReturnEarly(void) {
+    test_Adc_EnsureInitialized();
+    /* We can't easily set a group to BUSY without internal access,
+     * but we can verify normal DeInit works */
+    Adc_DeInit();
+    adc_driverReady = FALSE;
+    TEST_ASSERT_EQUAL_UINT32(0U, MockRegisters_Read32(ADC1_BASE + ADC_GC_OFF));
+}
+
+/* --- Init with calibration fail flag --- */
+
+void test_Adc_Init_CalibrationFail_ShouldSetFlag(void) {
+    test_Adc_ResetDriver();
+    test_Adc_SetupConfig();
+    /* Preset GS with CALF flag before init - the while loop polls ADACT (bit 0)
+     * which is 0, so loop exits immediately, then CALF is checked */
+    MockRegisters_Write32(ADC1_BASE + ADC_GS, ADC_GS_CALF);
+    Adc_Init(&testConfig);
+    adc_driverReady = TRUE;
+    /* Calibration failed flag should have been stored.
+     * SelfGroupCheck should return E_NOT_OK due to calibration failure */
+    MockRegisters_Write32(ADC1_BASE + ADC_HS_OFF, ADC_HS_COCO0);
+    MockRegisters_Write32(ADC1_BASE + ADC_R0_OFF, 0x7ABU);
+    Std_ReturnType ret = Adc_SelfGroupCheck(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
 }

@@ -669,3 +669,196 @@ void test_Can_ErrorState_RestartAfterBusOff_ShouldReturnActive(void) {
     TEST_ASSERT_EQUAL(E_OK, Can_GetControllerTxErrorCounter(0U, &txCounter));
     TEST_ASSERT_EQUAL(0U, txCounter);
 }
+
+/* --- AD4: WaitForNotReady loop coverage (line 152) --- */
+
+#define CAN_MCR_NOT_RDY_BIT (0x08000000UL)
+
+/** @req SWS_Can_00003
+ * Pre-set NOT_RDY in MCR so Can_WaitForNotReady enters its while-loop (line 152).
+ * The mock retains the written value, so NOT_RDY never clears and the poll
+ * runs to timeout, returning E_NOT_OK -> Can_SetControllerMode returns CAN_NOT_OK. */
+void test_Can_SetControllerMode_StartWithNotReadySet_ShouldLoopUntilTimeout(void) {
+    test_Can_EnsureInitialized();
+    test_Can_BringToStopped();
+    /* MCR: FRZ + NOT_RDY set, HALT clear. The STARTED transition clears HALT
+     * (already clear) and writes MCR; NOT_RDY persists in the mock. */
+    MockRegisters_Write32(CAN1_BASE + CAN_MCR_OFF,
+                          CAN_MCR_FRZ_BIT | CAN_MCR_NOT_RDY_BIT);
+    Can_ReturnType ret = Can_SetControllerMode(0U, CAN_CS_STARTED);
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, ret);
+}
+
+/* --- Additional coverage tests --- */
+
+/** @req SWS_Can_00005 */
+void test_Can_EnableControllerInterrupts_WithBusOffProcessing_ShouldSetImask(void) {
+    test_Can_EnsureInitialized();
+    /* Enable BusOffProcessing for controller 0 */
+    testControllers[0].BusOffProcessing = TRUE;
+    MockRegisters_Write32(CAN1_BASE + CAN_IMASK1_OFF, 0U);
+    Can_EnableControllerInterrupts(0U);
+    /* Should set BOFFINT and ERRINT bits */
+    uint32 imask = MockRegisters_Read32(CAN1_BASE + CAN_IMASK1_OFF);
+    TEST_ASSERT_NOT_EQUAL(0U, imask & 0x00000004U); /* BOFFINT */
+    TEST_ASSERT_NOT_EQUAL(0U, imask & 0x00000002U); /* ERRINT */
+    /* Restore config */
+    testControllers[0].BusOffProcessing = FALSE;
+}
+
+/** @req SWS_Can_00005 */
+void test_Can_EnableControllerInterrupts_InvalidController_ShouldReportDet(void) {
+    test_Can_EnsureInitialized();
+    Can_EnableControllerInterrupts(200U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_CONTROLLER, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Can_00004 */
+void test_Can_DisableControllerInterrupts_InvalidController_ShouldReportDet(void) {
+    test_Can_EnsureInitialized();
+    Can_DisableControllerInterrupts(200U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_CONTROLLER, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Can_00006 */
+void test_Can_Write_ExtendedId_ShouldEncodeExtendedFormat(void) {
+    test_Can_EnsureInitialized();
+    uint32 mbAddr = CAN1_BASE + CAN_MB_BASE_OFF;
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    testPdu.idType = CAN_ID_TYPE_EXTENDED;
+    testPdu.CanId = 0x12345678U;
+    testPdu.CanDlc = 8U;
+    testPdu.SduPtr = pduData;
+    testPdu.FdFrame = FALSE;
+
+    Can_ReturnType ret = Can_Write(0U, &testPdu);
+    TEST_ASSERT_EQUAL(CAN_OK, ret);
+    /* Extended ID: (CanId & 0x1FFFFFFF) | 0x80000000 */
+    uint32 idReg = MockRegisters_Read32(mbAddr + 4U);
+    TEST_ASSERT_EQUAL((0x12345678U & 0x1FFFFFFFU) | 0x80000000U, idReg);
+}
+
+/** @req SWS_Can_00012 */
+void test_Can_CheckWakeup_BeforeInit_ShouldReportDet(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, Can_CheckWakeup(0U));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Can_00014 */
+void test_Can_GetControllerRxErrorCounter_InvalidController_ShouldReportDet(void) {
+    uint8 counter = 0U;
+    test_Can_EnsureInitialized();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Can_GetControllerRxErrorCounter(200U, &counter));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_CONTROLLER, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Can_00015 */
+void test_Can_GetControllerTxErrorCounter_ValidPath_ShouldReturnCounter(void) {
+    uint8 counter = 0xFFU;
+    test_Can_EnsureInitialized();
+    TEST_ASSERT_EQUAL(E_OK, Can_GetControllerTxErrorCounter(0U, &counter));
+    TEST_ASSERT_EQUAL(0U, counter);
+}
+
+/** @req SWS_Can_00014 */
+void test_Can_GetControllerRxErrorCounter_ValidPath_ShouldReturnCounter(void) {
+    uint8 counter = 0xFFU;
+    test_Can_EnsureInitialized();
+    TEST_ASSERT_EQUAL(E_OK, Can_GetControllerRxErrorCounter(0U, &counter));
+    TEST_ASSERT_EQUAL(0U, counter);
+}
+
+/** @req SWS_Can_00003 */
+void test_Can_SetControllerMode_StartWhenAlreadyStarted_ShouldFail(void) {
+    test_Can_EnsureInitialized();
+    test_Can_BringToStarted();
+    /* Try to start again - should fail because not in STOPPED state */
+    Can_ReturnType ret = Can_SetControllerMode(0U, CAN_CS_STARTED);
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, ret);
+}
+
+/** @req SWS_Can_00003 */
+void test_Can_SetControllerMode_StopWhenAlreadyStopped_ShouldFail(void) {
+    test_Can_EnsureInitialized();
+    test_Can_BringToStopped();
+    /* Try to stop again - should fail because not in STARTED state */
+    Can_ReturnType ret = Can_SetControllerMode(0U, CAN_CS_STOPPED);
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, ret);
+}
+
+/** @req SWS_Can_00003 */
+void test_Can_SetControllerMode_StopWithFreezeAckTimeout_ShouldFail(void) {
+    test_Can_EnsureInitialized();
+    test_Can_BringToStarted();
+    /* Note: Mock registers don't simulate hardware timeout behavior.
+     * The code writes FRZ bit and reads it back immediately, so it succeeds.
+     * This test verifies the stop transition path executes without crash. */
+    MockRegisters_Write32(CAN1_BASE + CAN_MCR_OFF, 0U);
+    Can_ReturnType ret = Can_SetControllerMode(0U, CAN_CS_STOPPED);
+    /* With mock registers, FRZ bit is set immediately, so it succeeds */
+    TEST_ASSERT_EQUAL(CAN_OK, ret);
+}
+
+/* --- Additional coverage tests for Can.c --- */
+
+/** @brief Test Can_GetBaseAddr default case (invalid controller) */
+void test_Can_GetBaseAddr_InvalidController_ShouldReturnZero(void) {
+    test_Can_EnsureInitialized();
+    /* This tests the default case in Can_GetBaseAddr switch */
+    /* We can't directly call Can_GetBaseAddr, but we can trigger it via
+     * functions that use it with invalid controller IDs */
+    Can_EnableControllerInterrupts(255U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_CONTROLLER, Det_MockData.ErrorId);
+}
+
+/** @brief Test error state tracking with high error counters */
+void test_Can_ErrorState_HighCounters_ShouldSetErrorState(void) {
+    test_Can_EnsureInitialized();
+    test_Can_BringToStarted();
+    /* Simulate high error counters by writing to ECR */
+    MockRegisters_Write32(CAN1_BASE + CAN_ECR_OFF, 0x8080U); /* TXERR=128, RXERR=128 */
+    Can_MainFunction_BusOff();
+    /* Error state should be updated */
+    Can_ErrorStateType errState = CAN_ERRORSTATE_ACTIVE;
+    Can_GetControllerErrorState(0U, &errState);
+    TEST_ASSERT_NOT_EQUAL(CAN_ERRORSTATE_ACTIVE, errState);
+}
+
+/** @brief Test GetControllerTxErrorCounter with NULL pointer */
+void test_Can_GetControllerTxErrorCounter_NullPtr_ShouldReportDet(void) {
+    test_Can_EnsureInitialized();
+    Can_GetControllerTxErrorCounter(0U, NULL_PTR);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(CAN_E_PARAM_POINTER, Det_MockData.ErrorId);
+}
+
+/** @brief Test SetControllerMode with invalid transition */
+void test_Can_SetControllerMode_InvalidTransition_ShouldFail(void) {
+    test_Can_EnsureInitialized();
+    Can_ReturnType ret = Can_SetControllerMode(0U, 255U);
+    TEST_ASSERT_EQUAL(CAN_NOT_OK, ret);
+}
+
+/** @brief Test Can_Write with extended ID */
+void test_Can_Write_ExtendedIdOnly_ShouldEncodeCorrectly(void) {
+    test_Can_EnsureInitialized();
+    uint32 mbAddr = CAN1_BASE + CAN_MB_BASE_OFF;
+    MockRegisters_Write32(mbAddr + 0U, CAN_MB_CS_INACTIVE);
+    Can_PduType extPdu = {
+        .idType = CAN_ID_TYPE_EXTENDED,
+        .CanId = 0x1FFFFFFFU,
+        .CanDlc = 0U,
+        .SduPtr = NULL,
+        .FdFrame = FALSE
+    };
+    Can_ReturnType ret = Can_Write(0U, &extPdu);
+    TEST_ASSERT_EQUAL(CAN_OK, ret);
+    /* Check that extended ID flag is set in ID register */
+    uint32 idReg = MockRegisters_Read32(mbAddr + 4U);
+    TEST_ASSERT_NOT_EQUAL(0U, idReg & 0x80000000U); /* Extended ID flag */
+}

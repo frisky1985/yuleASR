@@ -345,6 +345,58 @@ void test_aes_cbc_null_buffers(void)
 }
 
 /*==================================================================================================
+*                               ADDITIONAL BRANCH COVERAGE TESTS
+==================================================================================================*/
+
+/* Line 414: Lib_AesInit with NULL key (key==NULL false branch) */
+void test_aes_init_null_key(void)
+{
+    Lib_AesContextType ctx;
+    TEST_ASSERT_EQUAL_INT(LIB_AES_ERR_PARAM, Lib_AesInit(&ctx, NULL, LIB_AES_KEY_128));
+}
+
+/* Line 423: Lib_AesInit with invalid key length -> ExpandKey returns error */
+void test_aes_init_invalid_key_len(void)
+{
+    Lib_AesContextType ctx;
+    uint8_t key[16] = {0};
+    /* Use an out-of-range key length enum value to hit default case in ExpandKey switch */
+    TEST_ASSERT_EQUAL_INT(LIB_AES_ERR_KEY_LEN, Lib_AesInit(&ctx, key, (Lib_AesKeyLenType)0xFFu));
+}
+
+/* Line 471: Lib_AesDecryptBlock with each NULL parameter separately */
+void test_aes_decrypt_block_null_params(void)
+{
+    Lib_AesContextType ctx;
+    uint8_t in[16] = {0};
+    uint8_t out[16] = {0};
+
+    /* First init a valid context */
+    TEST_ASSERT_EQUAL_INT(LIB_AES_OK, Lib_AesInit(&ctx, Key128, LIB_AES_KEY_128));
+
+    /* NULL ctx */
+    TEST_ASSERT_EQUAL_INT(LIB_AES_ERR_PARAM, Lib_AesDecryptBlock(NULL, in, out));
+    /* NULL in */
+    TEST_ASSERT_EQUAL_INT(LIB_AES_ERR_PARAM, Lib_AesDecryptBlock(&ctx, NULL, out));
+    /* NULL out */
+    TEST_ASSERT_EQUAL_INT(LIB_AES_ERR_PARAM, Lib_AesDecryptBlock(&ctx, in, NULL));
+}
+
+/* Line 125: Exercise GfInv loop by running a full encrypt (exercises the GF inverse search) */
+void test_aes_gf_inverse_coverage(void)
+{
+    Lib_AesContextType ctx;
+    uint8_t out[16];
+    uint8_t decrypted[16];
+
+    /* AES-192 encrypt+decrypt exercises GfInv for all non-zero GF elements via S-box gen */
+    TEST_ASSERT_EQUAL_INT(LIB_AES_OK, Lib_AesInit(&ctx, Key192, LIB_AES_KEY_192));
+    TEST_ASSERT_EQUAL_INT(LIB_AES_OK, Lib_AesEncryptBlock(&ctx, PtBlock, out));
+    TEST_ASSERT_EQUAL_INT(LIB_AES_OK, Lib_AesDecryptBlock(&ctx, out, decrypted));
+    TEST_ASSERT_EQUAL_MEMORY(PtBlock, decrypted, 16);
+}
+
+/*==================================================================================================
 *                                      RUNNER
 *==================================================================================================*/
 int main(void)
@@ -372,6 +424,12 @@ int main(void)
     RUN_TEST(test_aes_ecb_bad_length);
     RUN_TEST(test_aes_ecb_null_buffers);
     RUN_TEST(test_aes_cbc_null_buffers);
+
+    /* Additional branch coverage tests */
+    RUN_TEST(test_aes_init_null_key);
+    RUN_TEST(test_aes_init_invalid_key_len);
+    RUN_TEST(test_aes_decrypt_block_null_params);
+    RUN_TEST(test_aes_gf_inverse_coverage);
 
     return UNITY_END();
 }

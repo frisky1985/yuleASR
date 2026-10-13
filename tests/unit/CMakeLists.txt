@@ -171,3 +171,41 @@ set_target_properties(OsPcp_UnitTest PROPERTIES
 )
 add_test(NAME OsPcp_UnitTest COMMAND OsPcp_UnitTest)
 message(STATUS "  Unit test: OsPcp_UnitTest (PCP elevation/restore, 15 cases)")
+
+# ── OS Task Management, Event Management, Alarm Management unit tests ──
+# Each compiles actual Os.c with mock FreeRTOS headers (tests/unit/os_mocks/)
+# and stubs all FreeRTOS API functions. No real FreeRTOS linked.
+
+set(OS_TEST_COMMON_INCLUDES
+    ${TEST_FRAMEWORK_INCLUDE}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/os/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/services/det/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/common/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../include/autosar
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../src/middleware/rte/include
+)
+
+# Helper function to add an OS unit test that compiles Os.c
+function(add_os_unit_test TEST_NAME TEST_SRC)
+    add_executable(${TEST_NAME}
+        ${CMAKE_CURRENT_SOURCE_DIR}/${TEST_SRC}
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../src/bsw/os/src/Os.c
+    )
+    target_include_directories(${TEST_NAME}
+        BEFORE PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/os_mocks
+    )
+    target_include_directories(${TEST_NAME}
+        PRIVATE
+        ${OS_TEST_COMMON_INCLUDES}
+    )
+    target_link_libraries(${TEST_NAME} PRIVATE Unity)
+    target_compile_options(${TEST_NAME} PRIVATE -Wno-unused-parameter -Wno-unused-function)
+    set_target_properties(${TEST_NAME} PROPERTIES C_STANDARD 99 RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/tests)
+    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+    message(STATUS "  Unit test: ${TEST_NAME}")
+endfunction()
+
+add_os_unit_test(OsTask_UnitTest test_os_task.c)
+add_os_unit_test(OsEvent_UnitTest test_os_event.c)
+add_os_unit_test(OsAlarm_UnitTest test_os_alarm.c)

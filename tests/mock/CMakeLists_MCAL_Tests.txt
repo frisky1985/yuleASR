@@ -415,6 +415,26 @@ if(EXISTS ${MCAL_TEST_SRC_DIR}/wdg/test_wdg.c)
         TEST_FILE   ${MCAL_TEST_SRC_DIR}/wdg/test_wdg.c
         MCAL_SRCS
             ${SRC_MCAL}/wdg/src/Wdg.c
+        DEFINES
+            WDG_ENABLE_TEST_HOOKS
+    )
+endif()
+
+#----------------------------------------------------------------------
+# WDG OFF mode test (compiled with patched Wdg_offmode.c)
+# Wdg_offmode.c is a copy of Wdg.c with the compile-time guard
+#   #if (WDG_DISABLE_ALLOWED == STD_OFF)
+# replaced by  #if 0  so that OFF-mode runtime branches are reachable.
+#----------------------------------------------------------------------
+if(EXISTS ${MCAL_TEST_SRC_DIR}/wdg/test_wdg_offmode.c)
+    add_bsw_mcal_test(
+        NAME        mcal_wdg_offmode_test
+        TEST_FILE   ${MCAL_TEST_SRC_DIR}/wdg/test_wdg_offmode.c
+        MCAL_SRCS
+            ${SRC_MCAL}/wdg/src/Wdg.c
+        DEFINES
+            WDG_DISABLE_ALLOWED=STD_ON
+            WDG_ENABLE_TEST_HOOKS
     )
 endif()
 

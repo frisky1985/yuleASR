@@ -59,7 +59,7 @@ cryif_context_t* cryif_init(void)
     
     /* Initialize key slots */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_KEY_SLOTS; i++) {
-        ctx->key_slots[i].slot_id = i;
+        ctx->key_slots[i].slot_id = (uint8_t)i;
         ctx->key_slots[i].driver = NULL;
         ctx->key_slots[i].driver_slot_id = CRYIF_KEY_SLOT_INVALID;
         ctx->key_slots[i].state = CRYIF_KEY_STATE_EMPTY;
@@ -243,7 +243,7 @@ cryif_status_t cryif_key_slot_allocate(cryif_context_t *ctx, uint8_t *slot_id,
         /* Find free slot */
         for (int i = 0; (unsigned int)((unsigned int)(i)) < CRYIF_MAX_KEY_SLOTS; i++) {
             if (ctx->key_slots[i].state == CRYIF_KEY_STATE_EMPTY) {
-                *slot_id = i;
+                *slot_id = (uint8_t)i;
                 break;
             }
         }

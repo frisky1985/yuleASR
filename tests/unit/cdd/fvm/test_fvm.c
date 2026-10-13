@@ -38,6 +38,9 @@
 #define CDD_FVM_SID_WRITE               0x0Cu
 #define CDD_FVM_SID_ERASEBANK           0x0Du
 #define CDD_FVM_SID_COPYBANK            0x0Eu
+#define CDD_FVM_SID_MAINFUNCTION        0x03u
+#define CDD_FVM_SID_GETBANKINFO         0x09u
+#define CDD_FVM_SID_ISBANKPROTECTED     0x10u
 #define CDD_FVM_SID_CHECKBANKINTEGRITY  0x11u
 #define CDD_FVM_SID_FAILOVER            0x12u
 #define CDD_FVM_SID_GETVERSIONINFO      0x13u
@@ -762,6 +765,160 @@ void test_fvm_restore_corrupt_active_from_backup(void)
 }
 
 /*==================================================================================================
+*                                      FVM HW DIRECT TESTS
+*==================================================================================================*/
+
+/* Test Cdd_Fvm_HwErase and Cdd_Fvm_HwWrite directly to cover HwRamMap branches */
+
+/* Line 84: addr >= BASE && length <= POOL_SIZE (true path -> enter inner check) */
+void test_fvm_hw_erase_valid_address(void)
+{
+    /* Erase at a valid address within the RAM pool */
+    TEST_ASSERT_EQUAL(E_OK, Cdd_Fvm_HwErase(CDD_FVM_RAM_BASE_ADDR, 16u));
+}
+
+/* Line 84: addr < BASE (false path -> region = NULL_PTR) */
+void test_fvm_hw_erase_below_base_address(void)
+{
+    /* Address below base -> HwRamMap returns NULL -> erase returns E_NOT_OK */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_HwErase(CDD_FVM_RAM_BASE_ADDR - 4u, 16u));
+}
+
+/* Line 84: length > POOL_SIZE (false path -> region = NULL_PTR) */
+void test_fvm_hw_erase_oversized_length(void)
+{
+    /* Length exceeds pool size -> HwRamMap returns NULL -> E_NOT_OK */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_HwErase(CDD_FVM_RAM_BASE_ADDR, CDD_FVM_RAM_POOL_SIZE + 1u));
+}
+
+/* Line 87: offset > POOL_SIZE - length (false path -> region = NULL_PTR) */
+void test_fvm_hw_erase_out_of_range(void)
+{
+    /* Address valid base but offset + length > POOL_SIZE -> NULL */
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_HwErase(CDD_FVM_RAM_BASE_ADDR + CDD_FVM_RAM_POOL_SIZE - 4u, 16u));
+}
+
+/* Line 101: region != NULL (true path -> erase succeeds) */
+void test_fvm_hw_erase_region_not_null(void)
+{
+    /* Valid mapping: region != NULL -> memset + E_OK */
+    TEST_ASSERT_EQUAL(E_OK, Cdd_Fvm_HwErase(CDD_FVM_RAM_BASE_ADDR + 0x100u, 32u));
+
+    /* Verify the erased area is 0xFF */
+    uint8 buf[32];
+    TEST_ASSERT_EQUAL(E_OK, Cdd_Fvm_HwRead(CDD_FVM_RAM_BASE_ADDR + 0x100u, buf, 32u));
+    for (uint32 i = 0u; i < 32u; i++)
+    {
+        TEST_ASSERT_EQUAL_UINT8(0xFFu, buf[i]);
+    }
+}
+
+/* Line 114: data != NULL (true path -> write proceeds) */
+void test_fvm_hw_write_data_not_null(void)
+{
+    uint8 data[8] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
+    uint8 buf[8];
+
+    TEST_ASSERT_EQUAL(E_OK, Cdd_Fvm_HwWrite(CDD_FVM_RAM_BASE_ADDR + 0x200u, data, 8u));
+    TEST_ASSERT_EQUAL(E_OK, Cdd_Fvm_HwRead(CDD_FVM_RAM_BASE_ADDR + 0x200u, buf, 8u));
+    TEST_ASSERT_EQUAL_UINT8_ARRAY(data, buf, 8);
+}
+
+/* Line 114: data == NULL (false path -> return E_NOT_OK) */
+void test_fvm_hw_write_data_null(void)
+{
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_HwWrite(CDD_FVM_RAM_BASE_ADDR, NULL_PTR, 16u));
+}
+
+/* HwWrite to out-of-range address */
+void test_fvm_hw_write_out_of_range(void)
+{
+    uint8 data[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_HwWrite(CDD_FVM_RAM_BASE_ADDR - 4u, data, 4u));
+}
+
+/*==================================================================================================
+*                                      ADDITIONAL BRANCH COVERAGE
+*==================================================================================================*/
+
+/* Cdd_Fvm_MainFunction on uninitialized module */
+void test_fvm_mainfunction_uninit(void)
+{
+    (void)Cdd_Fvm_DeInit();
+    mock_det_reset();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_MainFunction());
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_MAINFUNCTION));
+}
+
+/* Cdd_Fvm_GetBankInfo with NULL info pointer */
+void test_fvm_getbankinfo_null_ptr(void)
+{
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_GetBankInfo(0u, NULL_PTR));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_GETBANKINFO));
+}
+
+/* Cdd_Fvm_GetBankInfo with unregistered bank */
+void test_fvm_getbankinfo_unregistered_bank(void)
+{
+    Cdd_Fvm_BankInfoType info;
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_GetBankInfo(5u, &info));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_GETBANKINFO));
+}
+
+/* Cdd_Fvm_GetBankInfo on uninitialized module */
+void test_fvm_getbankinfo_uninit(void)
+{
+    Cdd_Fvm_BankInfoType info;
+    (void)Cdd_Fvm_DeInit();
+    mock_det_reset();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_GetBankInfo(0u, &info));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_GETBANKINFO));
+}
+
+/* Cdd_Fvm_IsBankProtected with NULL protect pointer */
+void test_fvm_isbankprotected_null_ptr(void)
+{
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_IsBankProtected(0u, NULL_PTR));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_ISBANKPROTECTED));
+}
+
+/* Cdd_Fvm_IsBankProtected on uninitialized module */
+void test_fvm_isbankprotected_uninit(void)
+{
+    boolean protect = FALSE;
+    (void)Cdd_Fvm_DeInit();
+    mock_det_reset();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_IsBankProtected(0u, &protect));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_ISBANKPROTECTED));
+}
+
+/* Cdd_Fvm_IsBankProtected with unregistered bank */
+void test_fvm_isbankprotected_unregistered_bank(void)
+{
+    boolean protect = FALSE;
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_IsBankProtected(5u, &protect));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_ISBANKPROTECTED));
+}
+
+/* Cdd_Fvm_CopyBank on uninitialized module */
+void test_fvm_copybank_uninit(void)
+{
+    (void)Cdd_Fvm_DeInit();
+    mock_det_reset();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_CopyBank(0u, 1u));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_COPYBANK));
+}
+
+/* Cdd_Fvm_EraseBank on uninitialized module */
+void test_fvm_erasebank_uninit(void)
+{
+    (void)Cdd_Fvm_DeInit();
+    mock_det_reset();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Cdd_Fvm_EraseBank(0u));
+    TEST_ASSERT_EQUAL(1u, mock_det_count_for(CDD_FVM_SID_ERASEBANK));
+}
+
+/*==================================================================================================
 *                                      RUNNER
 *==================================================================================================*/
 int main(void)
@@ -829,6 +986,27 @@ int main(void)
 
     /* Restore */
     RUN_TEST(test_fvm_restore_corrupt_active_from_backup);
+
+    /* FVM HW direct tests */
+    RUN_TEST(test_fvm_hw_erase_valid_address);
+    RUN_TEST(test_fvm_hw_erase_below_base_address);
+    RUN_TEST(test_fvm_hw_erase_oversized_length);
+    RUN_TEST(test_fvm_hw_erase_out_of_range);
+    RUN_TEST(test_fvm_hw_erase_region_not_null);
+    RUN_TEST(test_fvm_hw_write_data_not_null);
+    RUN_TEST(test_fvm_hw_write_data_null);
+    RUN_TEST(test_fvm_hw_write_out_of_range);
+
+    /* Additional branch coverage */
+    RUN_TEST(test_fvm_mainfunction_uninit);
+    RUN_TEST(test_fvm_getbankinfo_null_ptr);
+    RUN_TEST(test_fvm_getbankinfo_unregistered_bank);
+    RUN_TEST(test_fvm_getbankinfo_uninit);
+    RUN_TEST(test_fvm_isbankprotected_null_ptr);
+    RUN_TEST(test_fvm_isbankprotected_uninit);
+    RUN_TEST(test_fvm_isbankprotected_unregistered_bank);
+    RUN_TEST(test_fvm_copybank_uninit);
+    RUN_TEST(test_fvm_erasebank_uninit);
 
     return UNITY_END();
 }

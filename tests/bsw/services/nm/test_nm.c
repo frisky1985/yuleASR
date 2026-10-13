@@ -151,6 +151,29 @@ void test_Nm_NetworkRequest_AfterInit_TransitionsToRepeatMessage(void) {
     TEST_ASSERT_EQUAL_UINT8(NM_STATE_REPEAT_MESSAGE, state);
 }
 
+/** @req SWS_Nm_00005 — Nm_NetworkRequest before init reports E_UNINIT */
+void test_Nm_NetworkRequest_BeforeInit_ReportsUninit(void) {
+    Std_ReturnType ret;
+    mock_Det_Reset();
+    ret = Nm_NetworkRequest(NM_CHANNEL_CAN0);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_NETWORKREQUEST_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00005 — Nm_NetworkRequest with invalid channel reports E_INVALID_CHANNEL */
+void test_Nm_NetworkRequest_InvalidChannel_ReportsInvalidChannel(void) {
+    Std_ReturnType ret;
+    Nm_Init(&testConfig);
+    mock_Det_Reset();
+    ret = Nm_NetworkRequest(NM_MAX_CHANNELS);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_NETWORKREQUEST_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
+}
+
 /** @req SWS_Nm_00006 */
 void test_Nm_NetworkRelease_AfterInit_TransitionsToReadySleep(void) {
     Nm_StateType state = NM_STATE_UNINIT;
@@ -161,6 +184,29 @@ void test_Nm_NetworkRelease_AfterInit_TransitionsToReadySleep(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
     TEST_ASSERT_EQUAL(E_OK, Nm_GetState(NM_CHANNEL_CAN0, &state));
     TEST_ASSERT_EQUAL_UINT8(NM_STATE_READY_SLEEP, state);
+}
+
+/** @req SWS_Nm_00006 — Nm_NetworkRelease before init reports E_UNINIT */
+void test_Nm_NetworkRelease_BeforeInit_ReportsUninit(void) {
+    Std_ReturnType ret;
+    mock_Det_Reset();
+    ret = Nm_NetworkRelease(NM_CHANNEL_CAN0);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_NETWORKRELEASE_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00006 — Nm_NetworkRelease with invalid channel reports E_INVALID_CHANNEL */
+void test_Nm_NetworkRelease_InvalidChannel_ReportsInvalidChannel(void) {
+    Std_ReturnType ret;
+    Nm_Init(&testConfig);
+    mock_Det_Reset();
+    ret = Nm_NetworkRelease(NM_MAX_CHANNELS);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_NETWORKRELEASE_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
 }
 
 /** @req SWS_Nm_00005 SWS_Nm_00012 */
@@ -241,6 +287,17 @@ void test_Nm_DisableEnableCommunication_BothReturnOk(void) {
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
 }
 
+/** @req SWS_Nm_00007 — Nm_DisableCommunication before init reports E_UNINIT */
+void test_Nm_DisableCommunication_BeforeInit_ReportsUninit(void) {
+    Std_ReturnType ret;
+    mock_Det_Reset();
+    ret = Nm_DisableCommunication(NM_CHANNEL_CAN0);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_DISABLECOMMUNICATION_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
 /** @req SWS_Nm_00101 SWS_Nm_00102 SWS_Nm_00014 */
 void test_Nm_RemoteSleepIndication_ReflectedInCheckApi(void) {
     boolean remoteSleep = FALSE;
@@ -251,6 +308,188 @@ void test_Nm_RemoteSleepIndication_ReflectedInCheckApi(void) {
     Nm_RemoteSleepCancellation(NM_CHANNEL_CAN0);
     TEST_ASSERT_EQUAL(E_OK, Nm_CheckRemoteSleepIndication(NM_CHANNEL_CAN0, &remoteSleep));
     TEST_ASSERT_FALSE(remoteSleep);
+}
+
+/* --- Additional coverage tests --- */
+
+/** @req SWS_Nm_00009 */
+void test_Nm_GetState_BeforeInit_ReportsUninit(void) {
+    Nm_StateType state = NM_STATE_UNINIT;
+    Std_ReturnType ret = Nm_GetState(NM_CHANNEL_CAN0, &state);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_GETSTATE_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00009 */
+void test_Nm_GetState_InvalidChannel_ReportsInvalidChannel(void) {
+    Nm_StateType state = NM_STATE_UNINIT;
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_GetState(NM_MAX_CHANNELS, &state);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00010 */
+void test_Nm_GetMode_BeforeInit_ReportsUninit(void) {
+    Nm_ModeType mode = NM_MODE_BUS_SLEEP;
+    Std_ReturnType ret = Nm_GetMode(NM_CHANNEL_CAN0, &mode);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(0x90U, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00010 */
+void test_Nm_GetMode_InvalidChannel_ReportsInvalidChannel(void) {
+    Nm_ModeType mode = NM_MODE_BUS_SLEEP;
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_GetMode(NM_MAX_CHANNELS, &mode);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00008 */
+void test_Nm_EnableCommunication_BeforeInit_ReportsUninit(void) {
+    Std_ReturnType ret = Nm_EnableCommunication(NM_CHANNEL_CAN0);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_ENABLECOMMUNICATION_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00008 */
+void test_Nm_EnableCommunication_InvalidChannel_ReportsInvalidChannel(void) {
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_EnableCommunication(NM_MAX_CHANNELS);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00012 */
+void test_Nm_GetUserData_BeforeInit_ReportsUninit(void) {
+    uint8 data[8] = {0};
+    Std_ReturnType ret = Nm_GetUserData(NM_CHANNEL_CAN0, data);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_GETUSERDATA_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00012 */
+void test_Nm_GetUserData_InvalidChannel_ReportsInvalidChannel(void) {
+    uint8 data[8] = {0};
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_GetUserData(NM_MAX_CHANNELS, data);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00012 */
+void test_Nm_GetUserData_NullPtr_ReportsInvalidPointer(void) {
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_GetUserData(NM_CHANNEL_CAN0, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_POINTER, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00013 */
+void test_Nm_SetUserData_BeforeInit_ReportsUninit(void) {
+    uint8 data[8] = {0};
+    Std_ReturnType ret = Nm_SetUserData(NM_CHANNEL_CAN0, data);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(0x91U, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00013 */
+void test_Nm_SetUserData_InvalidChannel_ReportsInvalidChannel(void) {
+    uint8 data[8] = {0};
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_SetUserData(NM_MAX_CHANNELS, data);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_CHANNEL, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00013 */
+void test_Nm_SetUserData_NullPtr_ReportsInvalidPointer(void) {
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_SetUserData(NM_CHANNEL_CAN0, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_INVALID_POINTER, mock_DetLastErrorId);
+}
+
+/** @req SWS_Nm_00014 */
+void test_Nm_CheckRemoteSleepIndication_BeforeInit_ReturnsNotOk(void) {
+    boolean remoteSleep = FALSE;
+    Std_ReturnType ret = Nm_CheckRemoteSleepIndication(NM_CHANNEL_CAN0, &remoteSleep);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/** @req SWS_Nm_00014 */
+void test_Nm_CheckRemoteSleepIndication_InvalidChannel_ReturnsNotOk(void) {
+    boolean remoteSleep = FALSE;
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_CheckRemoteSleepIndication(NM_MAX_CHANNELS, &remoteSleep);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/** @req SWS_Nm_00014 */
+void test_Nm_CheckRemoteSleepIndication_NullPtr_ReturnsNotOk(void) {
+    Nm_Init(&testConfig);
+    Std_ReturnType ret = Nm_CheckRemoteSleepIndication(NM_CHANNEL_CAN0, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/** @req SWS_Nm_00012 */
+void test_Nm_MainFunction_ReadySleepWithRemoteSleepInd_TransitionsToPrepareBusSleep(void) {
+    Nm_StateType state = NM_STATE_UNINIT;
+    Nm_ModeType mode = NM_MODE_BUS_SLEEP;
+    Nm_Init(&testConfig);
+    /* Bring channel to Ready Sleep state */
+    (void)Nm_NetworkRequest(NM_CHANNEL_CAN0);
+    (void)Nm_NetworkRelease(NM_CHANNEL_CAN0);
+    /* Set remote sleep indication */
+    Nm_RemoteSleepIndication(NM_CHANNEL_CAN0);
+    /* MainFunction should transition to Prepare Bus Sleep */
+    Nm_MainFunction();
+    TEST_ASSERT_EQUAL(E_OK, Nm_GetState(NM_CHANNEL_CAN0, &state));
+    TEST_ASSERT_EQUAL_UINT8(NM_STATE_PREPARE_BUS_SLEEP, state);
+    TEST_ASSERT_EQUAL(E_OK, Nm_GetMode(NM_CHANNEL_CAN0, &mode));
+    TEST_ASSERT_EQUAL_UINT8(NM_MODE_PREPARE_BUS_SLEEP, mode);
+}
+
+/** @req SWS_Nm_00012 */
+void test_Nm_MainFunction_CommunicationDisabled_ShouldSkipProcessing(void) {
+    Nm_StateType state = NM_STATE_UNINIT;
+    Nm_Init(&testConfig);
+    (void)Nm_NetworkRequest(NM_CHANNEL_CAN0);
+    /* Disable communication */
+    (void)Nm_DisableCommunication(NM_CHANNEL_CAN0);
+    /* MainFunction should skip processing */
+    Nm_MainFunction();
+    /* State should remain in Repeat Message (not transition to Normal Operation) */
+    TEST_ASSERT_EQUAL(E_OK, Nm_GetState(NM_CHANNEL_CAN0, &state));
+    TEST_ASSERT_EQUAL_UINT8(NM_STATE_REPEAT_MESSAGE, state);
+}
+
+/** @req SWS_Nm_00011 */
+void test_Nm_GetLocalNodeIdentifier_BeforeInit_ReportsUninit(void) {
+    Nm_NodeIdType nodeId = 0xFFU;
+    Std_ReturnType ret = Nm_GetLocalNodeIdentifier(NM_CHANNEL_CAN0, &nodeId);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(NM_GETLOCALNODEIDENTIFIER_SID, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(NM_E_UNINIT, mock_DetLastErrorId);
 }
 
 int main(void)
@@ -267,7 +506,11 @@ int main(void)
     RUN_TEST(test_Nm_PassiveStartUp_InvalidChannel_ReportsInvalidChannel);
     RUN_TEST(test_Nm_PassiveStartUp_ValidChannel_EnthersRepeatMessageState);
     RUN_TEST(test_Nm_NetworkRequest_AfterInit_TransitionsToRepeatMessage);
+    RUN_TEST(test_Nm_NetworkRequest_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_NetworkRequest_InvalidChannel_ReportsInvalidChannel);
     RUN_TEST(test_Nm_NetworkRelease_AfterInit_TransitionsToReadySleep);
+    RUN_TEST(test_Nm_NetworkRelease_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_NetworkRelease_InvalidChannel_ReportsInvalidChannel);
     RUN_TEST(test_Nm_MainFunction_RepeatMessageWithRequest_BecomesNormalOperation);
     RUN_TEST(test_Nm_MainFunction_BeforeInit_IsSilentNoDet);
     RUN_TEST(test_Nm_GetState_NullPtr_ReportsInvalidPointer);
@@ -276,7 +519,26 @@ int main(void)
     RUN_TEST(test_Nm_GetLocalNodeIdentifier_NullPtr_ReportsInvalidPointer);
     RUN_TEST(test_Nm_SetUserData_GetUserData_RoundTrip);
     RUN_TEST(test_Nm_DisableEnableCommunication_BothReturnOk);
+    RUN_TEST(test_Nm_DisableCommunication_BeforeInit_ReportsUninit);
     RUN_TEST(test_Nm_RemoteSleepIndication_ReflectedInCheckApi);
+    RUN_TEST(test_Nm_GetState_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_GetState_InvalidChannel_ReportsInvalidChannel);
+    RUN_TEST(test_Nm_GetMode_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_GetMode_InvalidChannel_ReportsInvalidChannel);
+    RUN_TEST(test_Nm_EnableCommunication_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_EnableCommunication_InvalidChannel_ReportsInvalidChannel);
+    RUN_TEST(test_Nm_GetUserData_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_GetUserData_InvalidChannel_ReportsInvalidChannel);
+    RUN_TEST(test_Nm_GetUserData_NullPtr_ReportsInvalidPointer);
+    RUN_TEST(test_Nm_SetUserData_BeforeInit_ReportsUninit);
+    RUN_TEST(test_Nm_SetUserData_InvalidChannel_ReportsInvalidChannel);
+    RUN_TEST(test_Nm_SetUserData_NullPtr_ReportsInvalidPointer);
+    RUN_TEST(test_Nm_CheckRemoteSleepIndication_BeforeInit_ReturnsNotOk);
+    RUN_TEST(test_Nm_CheckRemoteSleepIndication_InvalidChannel_ReturnsNotOk);
+    RUN_TEST(test_Nm_CheckRemoteSleepIndication_NullPtr_ReturnsNotOk);
+    RUN_TEST(test_Nm_MainFunction_ReadySleepWithRemoteSleepInd_TransitionsToPrepareBusSleep);
+    RUN_TEST(test_Nm_MainFunction_CommunicationDisabled_ShouldSkipProcessing);
+    RUN_TEST(test_Nm_GetLocalNodeIdentifier_BeforeInit_ReportsUninit);
 
     return UnityEnd();
 }

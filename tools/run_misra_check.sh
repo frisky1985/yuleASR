@@ -1,12 +1,12 @@
 #!/bin/bash
 #=============================================================================
-# MISRA C:2012 Compliance Check Script for COM Module
+# MISRA C:2012 Compliance Check Script - BSW Full Scan
 #=============================================================================
-# Project: ETH-DDS Integration (AutoSAR Classic COM Module)
+# Project: YuleTech AutoSAR BSW Platform
 # Standard: MISRA C:2012 Amendment 2
 # Tool: cppcheck with MISRA addon
-# Version: 1.0
-# Date: 2026-04-29
+# Version: 2.0
+# Date: 2026-10-13
 #=============================================================================
 
 set -e
@@ -21,35 +21,24 @@ NC='\033[0m' # No Color
 # Script configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-COM_SRC_DIR="${PROJECT_ROOT}/src/autosar/classic/com"
-COM_INC_DIR="${PROJECT_ROOT}/include/autosar/classic/com"
+BSW_SRC_DIR="${PROJECT_ROOT}/src/bsw"
 REPORTS_DIR="${PROJECT_ROOT}/reports"
-MISRA_CONFIG="${PROJECT_ROOT}/.misra_config"
-SUPPRESSIONS_FILE="${PROJECT_ROOT}/tools/misra/cppcheck_suppressions.xml"
 
-# Dynamically detect include paths via yuleOSH (single source of truth)
-INCLUDE_PATHS=$(python3 -c "
-import sys, os
-sys.path.insert(0, os.path.expanduser('~/.openclaw/workspace/tasks/yuleOSH/src'))
-from yuleosh.ci.stages.review import _detect_include_paths
-paths = _detect_include_paths('${PROJECT_ROOT}')
-for p in sorted(paths):
-    print('-I ' + p)
-" 2>/dev/null)
+# Allow overriding the target module/directory via argument
+TARGET_DIR="${1:-${BSW_SRC_DIR}}"
 
 # Output files
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-REPORT_XML="${REPORTS_DIR}/misra_com_check_${TIMESTAMP}.xml"
-REPORT_TXT="${REPORTS_DIR}/misra_com_check_${TIMESTAMP}.txt"
-REPORT_HTML="${REPORTS_DIR}/misra_com_check_${TIMESTAMP}.html"
-SUMMARY_FILE="${REPORTS_DIR}/misra_com_summary_${TIMESTAMP}.md"
+REPORT_XML="${REPORTS_DIR}/misra_bsw_check_${TIMESTAMP}.xml"
+REPORT_TXT="${REPORTS_DIR}/misra_bsw_check_${TIMESTAMP}.txt"
+SUMMARY_FILE="${REPORTS_DIR}/misra_bsw_summary_${TIMESTAMP}.md"
 
 echo "============================================================================="
-echo "  MISRA C:2012 Compliance Check - COM Module"
+echo "  MISRA C:2012 Compliance Check - BSW"
 echo "============================================================================="
 echo ""
 echo "Project Root: ${PROJECT_ROOT}"
-echo "Source Dir:   ${COM_SRC_DIR}"
+echo "Target Dir:   ${TARGET_DIR}"
 echo "Reports Dir:  ${REPORTS_DIR}"
 echo "Timestamp:    ${TIMESTAMP}"
 echo ""
@@ -60,7 +49,7 @@ mkdir -p "${REPORTS_DIR}"
 # Check if cppcheck is available
 if ! command -v cppcheck &> /dev/null; then
     echo -e "${RED}ERROR: cppcheck not found in PATH${NC}"
-    echo "Please install cppcheck or use: sudo snap install cppcheck"
+    echo "Please install cppcheck or use: brew install cppcheck"
     exit 1
 fi
 
@@ -68,10 +57,25 @@ CPPCHECK_VERSION=$(cppcheck --version)
 echo "Tool: ${CPPCHECK_VERSION}"
 echo ""
 
+# Verify target directory exists
+if [ ! -d "${TARGET_DIR}" ]; then
+    echo -e "${RED}ERROR: Target directory not found: ${TARGET_DIR}${NC}"
+    exit 1
+fi
+
+# Build include paths from BSW source tree
+BSW_INCLUDES=""
+for inc_dir in $(find "${PROJECT_ROOT}/src/bsw" -type d -name "include" 2>/dev/null); do
+    BSW_INCLUDES="${BSW_INCLUDES} -I${inc_dir}"
+done
+# Add common types include
+if [ -d "${PROJECT_ROOT}/src/common" ]; then
+    BSW_INCLUDES="${BSW_INCLUDES} -I${PROJECT_ROOT}/src/common"
+fi
+
 #=============================================================================
 # MISRA Rule Categories
 #=============================================================================
-# Required rules - must be compliant (non-compliant requires deviation)
 declare -a REQUIRED_RULES=(
     "misra-c2012-1.1" "misra-c2012-1.3"
     "misra-c2012-2.1" "misra-c2012-2.2"
@@ -92,7 +96,6 @@ declare -a REQUIRED_RULES=(
     "misra-c2012-21.3" "misra-c2012-21.6"
 )
 
-# Advisory rules - should be followed (deviation recommended but not required)
 declare -a ADVISORY_RULES=(
     "misra-c2012-5.9"
     "misra-c2012-8.13"
@@ -102,84 +105,73 @@ declare -a ADVISORY_RULES=(
 )
 
 #=============================================================================
-# Function to run cppcheck
+# Run cppcheck
 #=============================================================================
 run_cppcheck() {
-    local output_format="$1"
-    local output_file="$2"
-    local extra_args="$3"
-    
-    echo -e "${BLUE}Running cppcheck MISRA analysis...${NC}"
-    
+    local output_file="$1"
+    local extra_args="$2"
+
+    echo -e "${BLUE}Running cppcheck MISRA analysis on ${TARGET_DIR}...${NC}"
+
     eval cppcheck \
         --enable=all \
         --std=c11 \
         --language=c \
         --platform=unix64 \
-        ${INCLUDE_PATHS} \
+        ${BSW_INCLUDES} \
         --suppress=missingIncludeSystem \
+        --suppress=missingInclude \
         --suppress=unusedFunction \
         --suppress=unmatchedSuppression \
         --inline-suppr \
         --force \
         --max-configs=10 \
         ${extra_args} \
-        "${COM_SRC_DIR}" \
+        "${TARGET_DIR}" \
         2> "${output_file}"
-    
+
     return $?
 }
 
 #=============================================================================
-# Run XML analysis for detailed report
+# Phase 1: XML report
 #=============================================================================
 echo -e "${YELLOW}Phase 1: Generating XML report...${NC}"
-run_cppcheck "xml" "${REPORT_XML}" "--xml --xml-version=2"
-if [ $? -eq 0 ]; then
+run_cppcheck "${REPORT_XML}" "--xml --xml-version=2" || true
+if [ -f "${REPORT_XML}" ]; then
     echo -e "${GREEN}✓ XML report generated: ${REPORT_XML}${NC}"
 else
-    echo -e "${YELLOW}⚠ cppcheck completed with findings (see ${REPORT_XML})${NC}"
+    echo -e "${YELLOW}⚠ No XML report generated${NC}"
 fi
 
 #=============================================================================
-# Run text analysis for console output
+# Phase 2: Text report
 #=============================================================================
 echo ""
 echo -e "${YELLOW}Phase 2: Generating text report...${NC}"
-run_cppcheck "text" "${REPORT_TXT}" ""
-if [ $? -eq 0 ]; then
+run_cppcheck "${REPORT_TXT}" "" || true
+if [ -f "${REPORT_TXT}" ]; then
     echo -e "${GREEN}✓ Text report generated: ${REPORT_TXT}${NC}"
 else
-    echo -e "${YELLOW}⚠ cppcheck completed with findings (see ${REPORT_TXT})${NC}"
+    echo -e "${YELLOW}⚠ No text report generated${NC}"
 fi
 
 #=============================================================================
-# Parse results and generate summary
+# Phase 3: Analyze results
 #=============================================================================
 echo ""
 echo -e "${YELLOW}Phase 3: Analyzing results...${NC}"
 
-# Count violations by severity
 if [ -f "${REPORT_XML}" ]; then
-    ERROR_COUNT=$(grep -o 'severity="error"' "${REPORT_XML}" 2>/dev/null | wc -l)
-    WARNING_COUNT=$(grep -o 'severity="warning"' "${REPORT_XML}" 2>/dev/null | wc -l)
-    STYLE_COUNT=$(grep -o 'severity="style"' "${REPORT_XML}" 2>/dev/null | wc -l)
-    PERFORMANCE_COUNT=$(grep -o 'severity="performance"' "${REPORT_XML}" 2>/dev/null | wc -l)
-    PORTABILITY_COUNT=$(grep -o 'severity="portability"' "${REPORT_XML}" 2>/dev/null | wc -l)
-    INFORMATION_COUNT=$(grep -o 'severity="information"' "${REPORT_XML}" 2>/dev/null | wc -l)
+    ERROR_COUNT=$(grep -o 'severity="error"' "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
+    WARNING_COUNT=$(grep -o 'severity="warning"' "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
+    STYLE_COUNT=$(grep -o 'severity="style"' "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
+    PERFORMANCE_COUNT=$(grep -o 'severity="performance"' "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
+    PORTABILITY_COUNT=$(grep -o 'severity="portability"' "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
 else
-    ERROR_COUNT=0
-    WARNING_COUNT=0
-    STYLE_COUNT=0
-    PERFORMANCE_COUNT=0
-    PORTABILITY_COUNT=0
-    INFORMATION_COUNT=0
+    ERROR_COUNT=0; WARNING_COUNT=0; STYLE_COUNT=0
+    PERFORMANCE_COUNT=0; PORTABILITY_COUNT=0
 fi
-
-# Trim whitespace
-ERROR_COUNT=$(echo "$ERROR_COUNT" | tr -d ' ')
-WARNING_COUNT=$(echo "$WARNING_COUNT" | tr -d ' ')
-STYLE_COUNT=$(echo "$STYLE_COUNT" | tr -d ' ')
 
 echo ""
 echo "============================================================================="
@@ -192,10 +184,9 @@ echo "  Warnings:     ${WARNING_COUNT}"
 echo "  Style:        ${STYLE_COUNT}"
 echo "  Performance:  ${PERFORMANCE_COUNT}"
 echo "  Portability:  ${PORTABILITY_COUNT}"
-echo "  Information:  ${INFORMATION_COUNT}"
 echo ""
 
-# Generate summary markdown file
+# Generate summary markdown
 cat > "${SUMMARY_FILE}" << EOF
 # MISRA C:2012 Compliance Check Summary
 
@@ -205,7 +196,7 @@ cat > "${SUMMARY_FILE}" << EOF
 | Date | $(date '+%Y-%m-%d %H:%M:%S') |
 | Tool | ${CPPCHECK_VERSION} |
 | Standard | MISRA C:2012 Amendment 2 |
-| Module | COM (Classic AutoSAR) |
+| Target | ${TARGET_DIR} |
 
 ## Violations Summary
 | Severity | Count | Status |
@@ -213,65 +204,13 @@ cat > "${SUMMARY_FILE}" << EOF
 | Error | ${ERROR_COUNT} | $([ ${ERROR_COUNT} -eq 0 ] && echo "✓ PASS" || echo "✗ FAIL") |
 | Warning | ${WARNING_COUNT} | $([ ${WARNING_COUNT} -eq 0 ] && echo "✓ PASS" || echo "⚠ REVIEW") |
 | Style | ${STYLE_COUNT} | $([ ${STYLE_COUNT} -eq 0 ] && echo "✓ PASS" || echo "⚠ REVIEW") |
-| Performance | ${PERFORMANCE_COUNT} | $([ ${PERFORMANCE_COUNT} -eq 0 ] && echo "✓ PASS" || echo "⚠ REVIEW") |
-| Portability | ${PORTABILITY_COUNT} | $([ ${PORTABILITY_COUNT} -eq 0 ] && echo "✓ PASS" || echo "⚠ REVIEW") |
-| Information | ${INFORMATION_COUNT} | - |
 
-## Files Checked
-EOF
-
-# Add list of checked files
-for file in "${COM_SRC_DIR}"/*.c; do
-    echo "- $(basename "$file")" >> "${SUMMARY_FILE}"
-done
-
-cat >> "${SUMMARY_FILE}" << EOF
-
-## Generated Reports
-- XML Report: ${REPORT_XML}
-- Text Report: ${REPORT_TXT}
-
-## Compliance Status
-$([ ${ERROR_COUNT} -eq 0 ] && echo "**✓ COMPLIANT** - No required rule violations detected." || echo "**✗ NON-COMPLIANT** - Required rule violations detected.")
-
-$([ ${WARNING_COUNT} -eq 0 ] && echo "**✓ COMPLIANT** - No advisory rule violations detected." || echo "**⚠ ADVISORY** - Advisory rule violations require review.")
-
----
-*Generated by ETH-DDS MISRA Compliance Checker*
+## Reports
+- XML: ${REPORT_XML}
+- Text: ${REPORT_TXT}
 EOF
 
 echo -e "${GREEN}✓ Summary generated: ${SUMMARY_FILE}${NC}"
-
-#=============================================================================
-# Check specific MISRA rules
-#=============================================================================
-echo ""
-echo -e "${YELLOW}Phase 4: Checking specific MISRA rules...${NC}"
-
-# Check for specific MISRA violations in the report
-if [ -f "${REPORT_XML}" ]; then
-    echo ""
-    echo "Required Rule Violations:"
-    for rule in "${REQUIRED_RULES[@]}"; do
-        count=$(grep -o "${rule}" "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
-        if [ "$count" -gt 0 ]; then
-            echo -e "  ${RED}✗${NC} ${rule}: ${count} violation(s)"
-        else
-            echo -e "  ${GREEN}✓${NC} ${rule}: No violations"
-        fi
-    done
-    
-    echo ""
-    echo "Advisory Rule Violations:"
-    for rule in "${ADVISORY_RULES[@]}"; do
-        count=$(grep -o "${rule}" "${REPORT_XML}" 2>/dev/null | wc -l | tr -d ' ')
-        if [ "$count" -gt 0 ]; then
-            echo -e "  ${YELLOW}⚠${NC} ${rule}: ${count} violation(s)"
-        else
-            echo -e "  ${GREEN}✓${NC} ${rule}: No violations"
-        fi
-    done
-fi
 
 #=============================================================================
 # Final status
@@ -284,31 +223,18 @@ echo ""
 
 if [ ${ERROR_COUNT} -eq 0 ]; then
     echo -e "${GREEN}✓ REQUIRED RULES: COMPLIANT${NC}"
-    echo "  All required MISRA C:2012 rules are satisfied."
 else
-    echo -e "${RED}✗ REQUIRED RULES: NON-COMPLIANT${NC}"
-    echo "  ${ERROR_COUNT} error-level violations detected."
-    echo "  See ${REPORT_XML} for details."
+    echo -e "${RED}✗ REQUIRED RULES: NON-COMPLIANT (${ERROR_COUNT} errors)${NC}"
 fi
 
 if [ ${WARNING_COUNT} -eq 0 ] && [ ${STYLE_COUNT} -eq 0 ]; then
     echo -e "${GREEN}✓ ADVISORY RULES: COMPLIANT${NC}"
 else
     echo -e "${YELLOW}⚠ ADVISORY RULES: REVIEW REQUIRED${NC}"
-    echo "  ${WARNING_COUNT} warnings, ${STYLE_COUNT} style issues detected."
 fi
 
 echo ""
-echo "Reports generated:"
-echo "  - ${REPORT_XML}"
-echo "  - ${REPORT_TXT}"
-echo "  - ${SUMMARY_FILE}"
+echo "Reports: ${REPORT_XML}, ${REPORT_TXT}, ${SUMMARY_FILE}"
 echo ""
-echo "============================================================================="
 
-# Exit with appropriate code
-if [ ${ERROR_COUNT} -gt 0 ]; then
-    exit 1
-else
-    exit 0
-fi
+[ ${ERROR_COUNT} -eq 0 ] && exit 0 || exit 1

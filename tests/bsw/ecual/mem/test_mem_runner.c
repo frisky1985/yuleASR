@@ -42,6 +42,20 @@ extern void test_Mem_GetMemInfo_InvalidPool_ShouldReportError(void);
 extern void test_Mem_GetMemInfo_ValidCall_ShouldReflectAllocation(void);
 extern void test_Mem_CheckIntegrity_ValidState_ShouldReturnOk(void);
 
+/* New branch coverage tests */
+extern void test_Mem_Allocate_SmallBlock_ShouldSplitFreeRegion(void);
+extern void test_Mem_Free_AdjacentBlocks_ShouldMergeFreeBlocks(void);
+extern void test_Mem_Allocate_StandardPool_ShouldAllocateFromStandardPool(void);
+extern void test_Mem_Allocate_LargePool_ShouldAllocateFromLargePool(void);
+extern void test_Mem_Reallocate_InvalidHandle_ShouldReportError(void);
+extern void test_Mem_Reallocate_NewSizeZero_ShouldFreeAndReturnInvalid(void);
+extern void test_Mem_GetPointer_InvalidHandle_ShouldReturnNull(void);
+extern void test_Mem_GetMemInfo_NullPtr_ShouldReportError(void);
+extern void test_Mem_GetMemInfo_Uninit_ShouldReportError(void);
+extern void test_Mem_CheckIntegrity_Uninit_ShouldReportError(void);
+extern void test_Mem_Defragment_Uninit_ShouldReportError(void);
+extern void test_Mem_Defragment_InvalidPool_ShouldReportError(void);
+
 int main(void) {
     UNITY_BEGIN();
 
@@ -72,6 +86,20 @@ int main(void) {
     RUN_TEST(test_Mem_GetMemInfo_InvalidPool_ShouldReportError);
     RUN_TEST(test_Mem_GetMemInfo_ValidCall_ShouldReflectAllocation);
     RUN_TEST(test_Mem_CheckIntegrity_ValidState_ShouldReturnOk);
+
+    /* New branch coverage tests */
+    RUN_TEST(test_Mem_Allocate_SmallBlock_ShouldSplitFreeRegion);
+    RUN_TEST(test_Mem_Free_AdjacentBlocks_ShouldMergeFreeBlocks);
+    RUN_TEST(test_Mem_Allocate_StandardPool_ShouldAllocateFromStandardPool);
+    RUN_TEST(test_Mem_Allocate_LargePool_ShouldAllocateFromLargePool);
+    RUN_TEST(test_Mem_Reallocate_InvalidHandle_ShouldReportError);
+    RUN_TEST(test_Mem_Reallocate_NewSizeZero_ShouldFreeAndReturnInvalid);
+    RUN_TEST(test_Mem_GetPointer_InvalidHandle_ShouldReturnNull);
+    RUN_TEST(test_Mem_GetMemInfo_NullPtr_ShouldReportError);
+    RUN_TEST(test_Mem_GetMemInfo_Uninit_ShouldReportError);
+    RUN_TEST(test_Mem_CheckIntegrity_Uninit_ShouldReportError);
+    RUN_TEST(test_Mem_Defragment_Uninit_ShouldReportError);
+    RUN_TEST(test_Mem_Defragment_InvalidPool_ShouldReportError);
 
     return UnityEnd();
 }

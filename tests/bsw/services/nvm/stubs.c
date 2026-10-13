@@ -30,6 +30,11 @@ Std_ReturnType stub_MemIf_Invalidate_ret = E_OK;
 MemIf_StatusType stub_MemIf_Status = MEMIF_IDLE;
 MemIf_JobResultType stub_MemIf_JobResult = MEMIF_JOB_OK;
 
+/* ---- read callback (fills buffer before returning) ---- */
+void (*stub_MemIf_Read_callback)(uint8 DeviceIndex, uint16 BlockNumber,
+                                  uint16 BlockOffset, uint8* DataPtr,
+                                  uint16 Length) = (void*)0;
+
 Std_ReturnType MemIf_Read(uint8 DeviceIndex,
                           uint16 BlockNumber,
                           uint16 BlockOffset,
@@ -42,6 +47,9 @@ Std_ReturnType MemIf_Read(uint8 DeviceIndex,
     stub_last_Offset = BlockOffset;
     stub_last_ReadPtr = DataPtr;
     stub_last_Length = Length;
+    if (stub_MemIf_Read_callback != (void*)0) {
+        stub_MemIf_Read_callback(DeviceIndex, BlockNumber, BlockOffset, DataPtr, Length);
+    }
     return stub_MemIf_Read_ret;
 }
 
@@ -84,4 +92,18 @@ MemIf_JobResultType MemIf_GetJobResult(uint8 DeviceIndex)
 {
     stub_last_Device = DeviceIndex;
     return stub_MemIf_JobResult;
+}
+
+/* ---- Mcal stubs (needed by NvM_EccHandler) ---- */
+static uint32 stub_Mcal_DisableIRQ_calls = 0u;
+static uint32 stub_Mcal_EnableIRQ_calls = 0u;
+
+void Mcal_DisableAllInterrupts(void)
+{
+    stub_Mcal_DisableIRQ_calls++;
+}
+
+void Mcal_EnableAllInterrupts(void)
+{
+    stub_Mcal_EnableIRQ_calls++;
 }

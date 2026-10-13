@@ -379,3 +379,224 @@ void test_Gpt_GetPredefTimerValue_AfterInit_ShouldReturnCounter(void) {
     TEST_ASSERT_EQUAL(E_OK, ret);
     TEST_ASSERT_EQUAL(1234U, value);
 }
+
+/* --- Gpt_GetBaseAddr switch coverage (line 97) and DeInit paths --- */
+
+/**
+ * Init with a config that has an invalid channel ID (>= 8) exercises the
+ * default branch of Gpt_GetBaseAddr (returns 0) and the false branch of
+ * the `if (baseAddr != 0U)` check at line 161.
+ */
+void test_Gpt_Init_InvalidChannelId_ShouldSkipBaseAddrZero(void) {
+    test_Gpt_ResetDriver();
+    /* Override channel 0 to an invalid ID so Gpt_GetBaseAddr returns 0 */
+    test_Gpt_SetupConfig();
+    testChannels[0].ChannelId = 200U; /* invalid -> default -> baseAddr = 0 */
+    Gpt_Init(&testConfig);
+    gpt_driverReady = TRUE;
+    /* No DET error (invalid channel ID is not checked by Init) */
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+    /* GPT1 CR should NOT have been written for channel 0 (skipped),
+     * but channels 1-3 still use GPT1 so it will be written for those.
+     * Just verify init succeeded. */
+    /* Restore channel 0 for subsequent tests */
+    testChannels[0].ChannelId = 0U;
+}
+
+/**
+ * DeInit with a running channel exercises line 213 (Gpt_ChannelRunning != 0).
+ * DeInit must refuse and return without clearing Gpt_DriverInitialized.
+ */
+void test_Gpt_DeInit_ChannelRunning_ShouldRefuse(void) {
+    test_Gpt_EnsureInitialized();
+    /* Start channel 0 so Gpt_ChannelRunning[0] = TRUE */
+    Gpt_StartTimer(0U, 5000U);
+    Det_Mock_Reset();
+    /* DeInit should abort because a channel is running */
+    Gpt_DeInit();
+    /* Driver should still be initialized (DeInit was aborted) */
+    /* Verify by checking that StopTimer does NOT report E_UNINIT */
+    Det_Mock_Reset();
+    Gpt_StopTimer(0U);
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+    /* Clean up */
+    Gpt_DeInit();
+    gpt_driverReady = FALSE;
+}
+
+/**
+ * SWR timeout: after writing GPT_CR_SWR, the mock register retains the
+ * value, so the SWR bit stays set and the while loop at line 168 runs
+ * until the timeout counter reaches 0.
+ */
+void test_Gpt_Init_SwrTimeout_ShouldCompleteInitDespiteTimeout(void) {
+    test_Gpt_ResetDriver();
+    test_Gpt_SetupConfig();
+    /* Pre-load CR with SWR set so the poll loop sees it */
+    MockRegisters_Write32(GPT1_BASE + GPT_CR_OFF, GPT_CR_SWR);
+    MockRegisters_Write32(GPT2_BASE + GPT_CR_OFF, GPT_CR_SWR);
+    Gpt_Init(&testConfig);
+    gpt_driverReady = TRUE;
+    /* Init should still complete (timeout just breaks the loop) */
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+    /* After init, CR should have been overwritten (last write wins) */
+    uint32 cr = MockRegisters_Read32(GPT1_BASE + GPT_CR_OFF);
+    TEST_ASSERT_EQUAL(0U, cr & GPT_CR_SWR);
+}
+
+/**
+ * DeInit with an invalid channel ID in config exercises the false branch
+ * of `if (baseAddr != 0U)` at line 220.
+ */
+void test_Gpt_DeInit_InvalidChannelInConfig_ShouldSkipBaseAddrZero(void) {
+    test_Gpt_EnsureInitialized();
+    test_Gpt_BringChannelStopped();
+    /* Tamper config to have an invalid channel ID for DeInit's loop */
+    testChannels[0].ChannelId = 200U;
+    Gpt_DeInit();
+    gpt_driverReady = FALSE;
+    /* Restore */
+    testChannels[0].ChannelId = 0U;
+}
+
+/* --- Additional coverage tests --- */
+
+/** @req SWS_Gpt_00004 */
+void test_Gpt_GetTimeRemaining_BeforeInit_ShouldReportDet(void) {
+    test_Gpt_ResetDriver();
+    TEST_ASSERT_EQUAL(0U, Gpt_GetTimeRemaining(0U));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00004 */
+void test_Gpt_GetTimeRemaining_InvalidChannel_ShouldReportDet(void) {
+    test_Gpt_EnsureInitialized();
+    TEST_ASSERT_EQUAL(0U, Gpt_GetTimeRemaining(200U));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_PARAM_CHANNEL, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00004 */
+void test_Gpt_GetTimeRemaining_TargetReached_ShouldReturnZero(void) {
+    test_Gpt_EnsureInitialized();
+    test_Gpt_BringChannelStopped();
+    Gpt_StartTimer(0U, 1000U);
+    /* Set current counter >= target so remaining should be 0 */
+    MockRegisters_Write32(GPT1_BASE + GPT_CNT_OFF, 1000U);
+    TEST_ASSERT_EQUAL(0U, Gpt_GetTimeRemaining(0U));
+    Gpt_StopTimer(0U);
+}
+
+/** @req SWS_Gpt_00006 */
+void test_Gpt_StopTimer_BeforeInit_ShouldReportDet(void) {
+    test_Gpt_ResetDriver();
+    Gpt_StopTimer(0U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00006 */
+void test_Gpt_StopTimer_InvalidChannel_ShouldReportDet(void) {
+    test_Gpt_EnsureInitialized();
+    Gpt_StopTimer(200U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_PARAM_CHANNEL, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00007 */
+void test_Gpt_EnableNotification_BeforeInit_ShouldReportDet(void) {
+    test_Gpt_ResetDriver();
+    Gpt_EnableNotification(0U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00007 */
+void test_Gpt_EnableNotification_RunningChannel_ShouldSetIrBit(void) {
+    test_Gpt_EnsureInitialized();
+    test_Gpt_BringChannelStopped();
+    Gpt_StartTimer(0U, 1000U);
+    MockRegisters_Write32(GPT1_BASE + GPT_IR_OFF, 0U);
+    Gpt_EnableNotification(0U);
+    TEST_ASSERT_NOT_EQUAL(0U, MockRegisters_Read32(GPT1_BASE + GPT_IR_OFF) & GPT_IR_OF1IE);
+    Gpt_StopTimer(0U);
+}
+
+/** @req SWS_Gpt_00008 */
+void test_Gpt_DisableNotification_BeforeInit_ShouldReportDet(void) {
+    test_Gpt_ResetDriver();
+    Gpt_DisableNotification(0U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00008 */
+void test_Gpt_DisableNotification_InvalidChannel_ShouldReportDet(void) {
+    test_Gpt_EnsureInitialized();
+    Gpt_DisableNotification(200U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_PARAM_CHANNEL, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00005 */
+void test_Gpt_GetTimeElapsed_BeforeInit_ShouldReportDet(void) {
+    test_Gpt_ResetDriver();
+    TEST_ASSERT_EQUAL(0U, Gpt_GetTimeElapsed(0U));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00010 */
+void test_Gpt_SetMode_Normal_ShouldNotStopTimers(void) {
+    test_Gpt_EnsureInitialized();
+    test_Gpt_BringChannelStopped();
+    Gpt_StartTimer(0U, 1000U);
+    TEST_ASSERT_NOT_EQUAL(0U, MockRegisters_Read32(GPT1_BASE + GPT_CR_OFF) & GPT_CR_EN);
+    /* Set to NORMAL mode - should NOT stop the timer */
+    Gpt_SetMode(GPT_MODE_NORMAL);
+    TEST_ASSERT_NOT_EQUAL(0U, MockRegisters_Read32(GPT1_BASE + GPT_CR_OFF) & GPT_CR_EN);
+    Gpt_StopTimer(0U);
+}
+
+/** @req SWS_Gpt_00003 */
+void test_Gpt_StartTimer_ValueExceedsMax_ShouldReportDet(void) {
+    test_Gpt_EnsureInitialized();
+    test_Gpt_BringChannelStopped();
+    /* MaxTickValue is 0xFFFF, so try a value > that */
+    Gpt_StartTimer(0U, 0x10000U);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_PARAM_VALUE, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00003 */
+void test_Gpt_StartTimer_NotificationEnabled_ShouldSetInterrupt(void) {
+    test_Gpt_EnsureInitialized();
+    test_Gpt_BringChannelStopped();
+    /* Enable notification for channel 0 */
+    testChannels[0].NotificationEnabled = TRUE;
+    MockRegisters_Write32(GPT1_BASE + GPT_IR_OFF, 0U);
+    Gpt_StartTimer(0U, 1000U);
+    /* Should set the interrupt enable bit */
+    TEST_ASSERT_NOT_EQUAL(0U, MockRegisters_Read32(GPT1_BASE + GPT_IR_OFF) & GPT_IR_OF1IE);
+    Gpt_StopTimer(0U);
+    /* Restore */
+    testChannels[0].NotificationEnabled = FALSE;
+}
+
+/** @req SWS_Gpt_00014 */
+void test_Gpt_GetPredefTimerValue_BeforeInit_ShouldReportDet(void) {
+    test_Gpt_ResetDriver();
+    uint32 value = 0U;
+    TEST_ASSERT_EQUAL(E_NOT_OK, Gpt_GetPredefTimerValue(GPT_PREDEF_TIMER_1US_16BIT, &value));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_UNINIT, Det_MockData.ErrorId);
+}
+
+/** @req SWS_Gpt_00014 */
+void test_Gpt_GetPredefTimerValue_NullPtr_ShouldReportDet(void) {
+    test_Gpt_EnsureInitialized();
+    TEST_ASSERT_EQUAL(E_NOT_OK, Gpt_GetPredefTimerValue(GPT_PREDEF_TIMER_1US_16BIT, NULL_PTR));
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(GPT_E_PARAM_POINTER, Det_MockData.ErrorId);
+}

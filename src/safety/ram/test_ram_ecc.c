@@ -101,6 +101,87 @@ static void test_ecc_encoder(void)
 }
 
 /******************************************************************************
+ * Test: ECC Encoder Edge Cases (uncovered branches)
+ ******************************************************************************/
+static void test_ecc_encoder_edge_cases(void)
+{
+    Std_ReturnType status;
+    uint8_t ecc_code;
+    
+    printf("\n=== Testing ECC Encoder Edge Cases ===\n");
+    
+    /* Line 177: Init with NULL config -> uses defaults (32-bit, ASIL_D) */
+    status = EccEncoder_Init(NULL);
+    TEST_ASSERT(status == E_OK, "ECC Init with NULL config uses defaults");
+    
+    /* Verify defaults were applied */
+    {
+        const EccEncoderStateType *state = EccEncoder_GetState();
+        TEST_ASSERT(state != NULL, "State accessible after NULL-config init");
+        TEST_ASSERT(state->initialized == TRUE, "Encoder initialized with defaults");
+        TEST_ASSERT(state->config.mode == ECC_MODE_32BIT, "Default mode is 32-bit");
+        TEST_ASSERT(state->config.asil_level == ASIL_D, "Default ASIL level is D");
+    }
+    EccEncoder_DeInit();
+    
+    /* Line 215: Encode32 when not initialized -> E_NOT_OK */
+    status = EccEncoder_Encode32(0x12345678U, &ecc_code);
+    TEST_ASSERT(status == E_NOT_OK, "Encode32 returns NOT_OK when uninitialized");
+    
+    /* Line 241: Encode64 when not initialized -> E_NOT_OK */
+    status = EccEncoder_Encode64(0x123456789ABCDEF0ULL, &ecc_code);
+    TEST_ASSERT(status == E_NOT_OK, "Encode64 returns NOT_OK when uninitialized");
+    
+    /* Re-initialize for NULL ecc_code tests */
+    {
+        EccEncoderConfigType config;
+        memset(&config, 0, sizeof(config));
+        config.mode = ECC_MODE_32BIT;
+        config.asil_level = ASIL_D;
+        status = EccEncoder_Init(&config);
+        TEST_ASSERT(status == E_OK, "Re-init for NULL ecc_code tests");
+    }
+    
+    /* Line 219: Encode32 with NULL ecc_code -> E_NOT_OK, error_count++ */
+    {
+        const EccEncoderStateType *state_before = EccEncoder_GetState();
+        uint32_t errors_before = state_before ? state_before->error_count : 0;
+        
+        status = EccEncoder_Encode32(0x12345678U, NULL);
+        TEST_ASSERT(status == E_NOT_OK, "Encode32 with NULL ecc_code returns NOT_OK");
+        
+        {
+            const EccEncoderStateType *state_after = EccEncoder_GetState();
+            TEST_ASSERT(state_after != NULL, "State accessible");
+            TEST_ASSERT(state_after->error_count == errors_before + 1, "Error count incremented");
+        }
+    }
+    
+    /* Line 245: Encode64 with NULL ecc_code -> E_NOT_OK, error_count++ */
+    {
+        const EccEncoderStateType *state_before = EccEncoder_GetState();
+        uint32_t errors_before = state_before ? state_before->error_count : 0;
+        
+        status = EccEncoder_Encode64(0x123456789ABCDEF0ULL, NULL);
+        TEST_ASSERT(status == E_NOT_OK, "Encode64 with NULL ecc_code returns NOT_OK");
+        
+        {
+            const EccEncoderStateType *state_after = EccEncoder_GetState();
+            TEST_ASSERT(state_after != NULL, "State accessible");
+            TEST_ASSERT(state_after->error_count == errors_before + 1, "Error count incremented");
+        }
+    }
+    
+    /* Encode64 valid path */
+    status = EccEncoder_Encode64(0xAABBCCDDEEFF0011ULL, &ecc_code);
+    TEST_ASSERT(status == E_OK, "Encode64 valid path");
+    TEST_ASSERT(ecc_code != 0, "Encode64 produces non-zero ECC");
+    
+    EccEncoder_DeInit();
+    printf("ECC Encoder edge case tests complete.\n");
+}
+
+/******************************************************************************
  * Test: ECC Checker
  ******************************************************************************/
 static void test_ecc_checker(void)
@@ -378,6 +459,7 @@ int main(void)
     printf("========================================\n");
     
     test_ecc_encoder();
+    test_ecc_encoder_edge_cases();
     test_ecc_checker();
     test_ecc_allocator();
     test_ram_monitor();

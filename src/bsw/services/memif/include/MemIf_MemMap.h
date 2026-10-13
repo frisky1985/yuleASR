@@ -26,6 +26,12 @@
 #ifndef MEMIF_MEMMAP_H
 #define MEMIF_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
  *                                    MEMORY SECTION MAPPING
  *==================================================================================================*/
@@ -78,6 +84,11 @@
 #ifdef MEMIF_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #undef MEMIF_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #pragma section
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* MEMIF_MEMMAP_H */

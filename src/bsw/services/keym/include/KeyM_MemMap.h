@@ -26,6 +26,12 @@
 #ifndef KEYM_MEMMAP_H
 #define KEYM_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
  *                                         MACRO DEFINITIONS
  *==================================================================================================*/
@@ -95,6 +101,11 @@
 
 #ifndef KEYM_STOP_SEC_VAR_CLEARED_32
 #define KEYM_STOP_SEC_VAR_CLEARED_32
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* KEYM_MEMMAP_H */

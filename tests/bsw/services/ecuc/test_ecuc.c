@@ -168,6 +168,51 @@ void test_EcuC_SetConfigValue_Uninit_ShouldReportDet(void) {
     TEST_ASSERT_EQUAL_UINT8(ECUC_E_UNINIT, mock_DetLastErrorId);
 }
 
+/** @req SWS_EcuC_00004 — GetConfigValue for BUS_FREQ */
+void test_EcuC_GetConfigValue_BusFreq_ShouldReturnBusFrequency(void) {
+    EcuC_Init(&testConfig);
+    uint32 value = 0U;
+    TEST_ASSERT_EQUAL(E_OK, EcuC_GetConfigValue(ECUC_CONFIG_ID_BUS_FREQ, &value));
+    TEST_ASSERT_EQUAL_UINT32(80000000UL, value);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** @req SWS_EcuC_00004 — GetConfigValue for FLASH_SIZE */
+void test_EcuC_GetConfigValue_FlashSize_ShouldReturnFlashSize(void) {
+    EcuC_Init(&testConfig);
+    uint32 value = 0U;
+    TEST_ASSERT_EQUAL(E_OK, EcuC_GetConfigValue(ECUC_CONFIG_ID_FLASH_SIZE, &value));
+    TEST_ASSERT_EQUAL_UINT32(0x400000UL, value);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** @req SWS_EcuC_00004 — GetConfigValue for EEPROM_SIZE */
+void test_EcuC_GetConfigValue_EepromSize_ShouldReturnEepromSize(void) {
+    EcuC_Init(&testConfig);
+    uint32 value = 0U;
+    TEST_ASSERT_EQUAL(E_OK, EcuC_GetConfigValue(ECUC_CONFIG_ID_EEPROM_SIZE, &value));
+    TEST_ASSERT_EQUAL_UINT32(0x8000UL, value);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** @req SWS_EcuC_00004 — GetConfigValue for CAN_BAUD */
+void test_EcuC_GetConfigValue_CanBaud_ShouldReturnCanBaudrate(void) {
+    EcuC_Init(&testConfig);
+    uint32 value = 0U;
+    TEST_ASSERT_EQUAL(E_OK, EcuC_GetConfigValue(ECUC_CONFIG_ID_CAN_BAUD, &value));
+    TEST_ASSERT_EQUAL_UINT32(500000UL, value);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** @req SWS_EcuC_00004 — GetConfigValue for LIN_BAUD */
+void test_EcuC_GetConfigValue_LinBaud_ShouldReturnLinBaudrate(void) {
+    EcuC_Init(&testConfig);
+    uint32 value = 0U;
+    TEST_ASSERT_EQUAL(E_OK, EcuC_GetConfigValue(ECUC_CONFIG_ID_LIN_BAUD, &value));
+    TEST_ASSERT_EQUAL_UINT32(19200UL, value);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
 /** @req SWS_EcuC_00003 */
 void test_EcuC_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     EcuC_GetVersionInfo(NULL_PTR);
@@ -203,6 +248,11 @@ int main(void)
     RUN_TEST(test_EcuC_GetConfigValue_InvalidId_ShouldReturnNotOk);
     RUN_TEST(test_EcuC_SetConfigValue_ValidId_ShouldUpdateAndReadBack);
     RUN_TEST(test_EcuC_SetConfigValue_Uninit_ShouldReportDet);
+    RUN_TEST(test_EcuC_GetConfigValue_BusFreq_ShouldReturnBusFrequency);
+    RUN_TEST(test_EcuC_GetConfigValue_FlashSize_ShouldReturnFlashSize);
+    RUN_TEST(test_EcuC_GetConfigValue_EepromSize_ShouldReturnEepromSize);
+    RUN_TEST(test_EcuC_GetConfigValue_CanBaud_ShouldReturnCanBaudrate);
+    RUN_TEST(test_EcuC_GetConfigValue_LinBaud_ShouldReturnLinBaudrate);
     RUN_TEST(test_EcuC_GetVersionInfo_NullPtr_ShouldReportDet);
     RUN_TEST(test_EcuC_GetVersionInfo_ValidPtr_ShouldSucceed);
 

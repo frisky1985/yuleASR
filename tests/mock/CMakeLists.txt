@@ -61,13 +61,14 @@ target_compile_options(MockHAL PRIVATE
 )
 
 # Coverage support (optional)
-option(ENABLE_COVERAGE "Enable coverage instrumentation" OFF)
 if(ENABLE_COVERAGE)
     target_compile_options(MockHAL PRIVATE
         -fprofile-arcs
         -ftest-coverage
     )
-    target_link_libraries(MockHAL PRIVATE gcov)
+    if(NOT APPLE)
+        target_link_libraries(MockHAL PRIVATE gcov)
+    endif()
 endif()
 
 # Properties

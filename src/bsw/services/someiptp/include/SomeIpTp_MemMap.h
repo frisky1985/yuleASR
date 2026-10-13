@@ -21,6 +21,12 @@
 #ifndef SOMEIPTP_MEMMAP_H
 #define SOMEIPTP_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
 *                                    MEMORY SECTION MAPPING
 ==================================================================================================*/
@@ -76,6 +82,11 @@
 #ifdef MEMMAP_ERROR
     #error "SomeIpTp_MemMap.h: Invalid memory section directive"
     #undef MEMMAP_ERROR
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* SOMEIPTP_MEMMAP_H */

@@ -23,6 +23,12 @@
 #ifndef CSM_MEMMAP_H
 #define CSM_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
 *                                       内存映射定义
 ==================================================================================================*/
@@ -75,6 +81,11 @@
 #ifdef CSM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #undef CSM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #pragma section
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* CSM_MEMMAP_H */

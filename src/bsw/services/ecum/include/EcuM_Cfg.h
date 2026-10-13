@@ -166,7 +166,10 @@ ECUM_WKSOURCE_CAN | ECUM_WKSOURCE_CAN0 | ECUM_WKSOURCE_GPIO)
 *  NON-MACRO SEGMENT (preserved from handwritten header, merged by codegen splice)
 *  typedef(1) + struct(0) + extern config tables(0) — 依赖宏段计数宏, 故置于宏段之后
 *================================================================================================*/
+#ifndef ECUM_RESET_TYPE_DEFINED
+#define ECUM_RESET_TYPE_DEFINED
 typedef uint8 EcuM_ResetType;
+#endif
 #endif /* ECUM_CFG_H */
 
 /*==================[end of file]===========================================*/

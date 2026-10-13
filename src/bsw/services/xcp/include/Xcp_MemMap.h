@@ -10,6 +10,12 @@
 #ifndef XCP_MEMMAP_H
 #define XCP_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
 *                                          START SECTIONS
 ==================================================================================================*/
@@ -76,6 +82,11 @@
 #ifdef XCP_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #undef XCP_STOP_SEC_CONFIG_DATA_UNSPECIFIED
     #undef MEMMAP_ERROR
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* XCP_MEMMAP_H */

@@ -132,7 +132,10 @@
  ******************************************************************************/
 
 /* Reset Types */
+#ifndef ECUM_RESET_TYPE_DEFINED
+#define ECUM_RESET_TYPE_DEFINED
 typedef uint8 EcuM_ResetType;
+#endif
 #define ECUM_RESET_MCU                      0x00u
 #define ECUM_RESET_WDG                      0x01u
 #define ECUM_RESET_IO                       0x02u

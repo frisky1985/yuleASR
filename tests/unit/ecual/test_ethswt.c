@@ -1058,6 +1058,148 @@ TEST_CASE(ethswt_det_uninit_new_apis)
                    mock_det_count_for(ETHSWT_SID_GETMACFILTER));
 }
 
+/* ══════════════════════════════════════════════════════════════════════
+ * B3: Additional branch coverage tests
+ * ══════════════════════════════════════════════════════════════════════ */
+
+/** @req SWS_EthSwt_00009 */
+TEST_CASE(ethswt_config_vlan_max_overflow)
+{
+    EthSwt_VlanConfigType vlan;
+    uint8 i;
+    setup_default_config();
+    EthSwt_Init(&g_test_config);
+
+    /* Fill up to ETHSWT_MAX_VLANS (16) using ConfigVlan.
+     * Init already loaded 1 VLAN, so add 15 more to reach 16. */
+    for (i = 0U; i < 15U; i++)
+    {
+        vlan.VlanId = 100U + i;
+        vlan.PortMask = 0x03;
+        vlan.Tagged = FALSE;
+        vlan.VlanPriority = 0;
+        vlan.DropUntagged = FALSE;
+        ASSERT_EQ(E_OK, EthSwt_ConfigVlan(&vlan));
+    }
+
+    /* Now NumVlans == 16 (ETHSWT_MAX_VLANS). Next should fail. */
+    vlan.VlanId = 999U;
+    ASSERT_EQ(E_NOT_OK, EthSwt_ConfigVlan(&vlan));
+}
+
+/** @req SWS_EthSwt_00029 */
+TEST_CASE(ethswt_indicate_pause_no_rx_pause_enable)
+{
+    EthSwt_FlowControlConfigType fc;
+    EthSwt_PortStatsType stats;
+    setup_default_config();
+    EthSwt_Init(&g_test_config);
+
+    /* Port 0 has RxPauseEnable = FALSE */
+    fc.TxPauseEnable = FALSE;
+    fc.RxPauseEnable = FALSE;
+    fc.HighWatermark = 8;
+    fc.LowWatermark = 2;
+    fc.PauseTime = 128;
+    ASSERT_EQ(E_OK, EthSwt_SetFlowControl(0, &fc));
+
+    /* IndicatePause(TRUE) but RxPauseEnable is FALSE:
+     * Line 1281: (Pause != FALSE) && (RxPauseEnable != FALSE) -> FALSE
+     * So RxPauseFrames should NOT increment */
+    ASSERT_EQ(E_OK, EthSwt_IndicatePause(0, TRUE));
+    EthSwt_GetPortStats(0, &stats);
+    ASSERT_EQ(0U, stats.RxPauseFrames);
+}
+
+/** @req SWS_EthSwt_00033 */
+TEST_CASE(ethswt_reset_not_initialized)
+{
+    /* Guarantee UNINIT state */
+    EthSwt_DeInit();
+    mock_det_reset();
+
+    /* Reset when not initialized: line 1402 condition is FALSE,
+     * so the function just returns E_OK without doing anything */
+    ASSERT_EQ(E_OK, EthSwt_Reset());
+}
+
+/** @req SWS_EthSwt_00025 */
+TEST_CASE(ethswt_flow_control_pause_release_via_watermark)
+{
+    uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    EthSwt_FlowControlConfigType fc;
+    EthSwt_PortStatsType stats;
+    setup_default_config();
+    EthSwt_Init(&g_test_config);
+
+    /* Set up flow control to trigger pause */
+    fc.TxPauseEnable = TRUE;
+    fc.RxPauseEnable = FALSE;
+    fc.HighWatermark = 2;
+    fc.LowWatermark = 1;
+    fc.PauseTime = 64;
+    ASSERT_EQ(E_OK, EthSwt_SetFlowControl(0, &fc));
+
+    /* Trigger pause by exceeding high watermark */
+    (void)EthSwt_ForwardFrame(0, 0x02, frame, sizeof(frame));
+    (void)EthSwt_ForwardFrame(0, 0x02, frame, sizeof(frame));
+    EthSwt_GetPortStats(0, &stats);
+    ASSERT_EQ(1U, stats.TxPauseFrames);
+
+    /* Now set new flow control with LowWatermark above current TxQueueDepth.
+     * Line 1175: TxQueueDepth < LowWatermark -> PauseActive = FALSE
+     * Watermark validity requires HighWatermark > LowWatermark (strict). */
+    fc.HighWatermark = 21;
+    fc.LowWatermark = 3;
+    ASSERT_EQ(E_OK, EthSwt_SetFlowControl(0, &fc));
+
+    /* Pause should be released; next forward should not emit a new pause frame
+     * until high watermark is reached again */
+    (void)EthSwt_ForwardFrame(0, 0x02, frame, sizeof(frame));
+    EthSwt_GetPortStats(0, &stats);
+    ASSERT_EQ(1U, stats.TxPauseFrames);  /* still 1, no new pause emitted */
+}
+
+/** @req SWS_EthSwt_00019 */
+TEST_CASE(ethswt_forward_vlan_tagged_explicit)
+{
+    uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    EthSwt_PortStatsType stats;
+    setup_default_config();
+    EthSwt_Init(&g_test_config);
+
+    /* ForwardFrameVlan with explicit VlanId=1 (tagged path, line 917-921) */
+    ASSERT_EQ(E_OK, EthSwt_ForwardFrameVlan(0, 1, 0x02, frame, sizeof(frame)));
+    EthSwt_GetPortStats(1, &stats);
+    ASSERT_EQ(1U, stats.RxFrames);
+    ASSERT_EQ(1U, stats.RxVlanFrames);
+}
+
+/** @req SWS_EthSwt_00030 */
+TEST_CASE(ethswt_mirror_dest_port_disabled)
+{
+    uint8 frame[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
+    EthSwt_MirrorConfigType mirror;
+    EthSwt_PortStatsType stats;
+    setup_default_config();
+    EthSwt_Init(&g_test_config);
+
+    /* Set up mirroring: source port 0, dest port 1 */
+    mirror.MirrorSourcePortMask = 0x01;
+    mirror.MirrorDestinationPort = 1;
+    mirror.MirrorEnabled = TRUE;
+    ASSERT_EQ(E_OK, EthSwt_SetPortMirroring(&mirror));
+
+    /* Disable destination port 1 */
+    ASSERT_EQ(E_OK, EthSwt_SetPortEnable(1, ETHSWT_PORT_DISABLED));
+
+    /* Forward from port 0 — mirror copy should NOT go to disabled port 1
+     * (line 965: Ports[mport].Enable == ETHSWT_PORT_ENABLED -> FALSE) */
+    (void)EthSwt_ForwardFrame(0, 0x01, frame, sizeof(frame));
+    EthSwt_GetPortStats(1, &stats);
+    ASSERT_EQ(0U, stats.MirroredFrames);
+}
+
 /*==================================================================================================
 *                                      TEST SUITE
 *==================================================================================================*/
@@ -1154,6 +1296,14 @@ int main(void)
 
     /* B2: DET */
     RUN_TEST(test_ethswt_det_uninit_new_apis);
+
+    /* B3: Additional branch coverage */
+    RUN_TEST(test_ethswt_config_vlan_max_overflow);
+    RUN_TEST(test_ethswt_indicate_pause_no_rx_pause_enable);
+    RUN_TEST(test_ethswt_reset_not_initialized);
+    RUN_TEST(test_ethswt_flow_control_pause_release_via_watermark);
+    RUN_TEST(test_ethswt_forward_vlan_tagged_explicit);
+    RUN_TEST(test_ethswt_mirror_dest_port_disabled);
 
     return UNITY_END();
 }

@@ -24,6 +24,8 @@
 #define LINIF_SID_WAKEUP        (0x09U)
 #define LINIF_SID_GOTOSLEEP     (0x0AU)
 #define LINIF_SID_SCHEDREQ      (0x0BU)
+#define LINIF_SID_RX_IND        (0x03U)
+#define LINIF_SID_MAINFUNC      (0x04U)
 #define LINIF_E_UNINIT          (0x20U)
 #define LINIF_E_PARAM_PDU       (0x30U)
 #define LINIF_E_PARAM_SCHEDULE  (0x40U)
@@ -862,6 +864,175 @@ void test_LinIf_IsSupportTpTransmit_BeforeInit_ShouldReturnFalse(void) {
     TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
 }
 
+/* ===== New tests for additional branch coverage ===== */
+
+/** WakeUp returns E_NOT_OK when Lin_WakeUp fails (HW failure path). */
+void test_LinIf_WakeUp_HwFailure_ShouldReturnNotOk(void) {
+    LinIf_Init(&LinIf_Config);
+    (void)LinIf_SetSchedule(LINIF_Normal);
+
+    mock_LinRetVal = E_NOT_OK;
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_WakeUp(0U));
+    TEST_ASSERT_EQUAL(1U, mock_WakeUpCount);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/** GotoSleep returns E_NOT_OK when Lin_GoToSleep fails (HW failure path). */
+void test_LinIf_GotoSleep_HwFailure_ShouldReturnNotOk(void) {
+    LinIf_Init(&LinIf_Config);
+
+    mock_LinRetVal = E_NOT_OK;
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_GotoSleep(0U));
+    TEST_ASSERT_EQUAL(1U, mock_GoToSleepCount);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/** RxIndication with DataPtr=NULL: skips memcpy but still calls RxCallback. */
+void test_LinIf_RxIndication_NullDataPtr_ShouldSkipCopy(void) {
+    LinIf_PduType rxPdu;
+    rxPdu.Id = 0x3DU; rxPdu.Dlc = 8U; rxPdu.DataPtr = NULL_PTR;
+
+    LinIf_Init(&LinIf_Config);
+    LinIf_RxIndication(0U, &rxPdu);
+    TEST_ASSERT_EQUAL(1U, mock_RxCallbackCount);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/** RxIndication with Dlc > LINIF_MAX_FRAME_LENGTH: skips copy, calls callback. */
+void test_LinIf_RxIndication_DlcTooLarge_ShouldSkipCopy(void) {
+    LinIf_PduType rxPdu;
+    uint8 data[16] = {0U};
+    rxPdu.Id = 0x3DU; rxPdu.Dlc = 16U; rxPdu.DataPtr = data;
+
+    LinIf_Init(&LinIf_Config);
+    LinIf_RxIndication(0U, &rxPdu);
+    TEST_ASSERT_EQUAL(1U, mock_RxCallbackCount);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/** RxIndication with invalid channel: returns silently. */
+void test_LinIf_RxIndication_InvalidChannel_ShouldReturnSilently(void) {
+    LinIf_PduType rxPdu;
+    uint8 data[8] = {0U};
+    rxPdu.Id = 0x3DU; rxPdu.Dlc = 8U; rxPdu.DataPtr = data;
+
+    LinIf_Init(&LinIf_Config);
+    LinIf_RxIndication(9U, &rxPdu);
+    TEST_ASSERT_EQUAL(0U, mock_RxCallbackCount);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/** MainFunction skips channel in SLEEP state (state != ONLINE branch). */
+void test_LinIf_MainFunction_SleepState_ShouldNotSend(void) {
+    LinIf_Init(&LinIf_Config);
+    (void)LinIf_SetSchedule(LINIF_Normal);
+
+    /* Go to sleep: state becomes LINIF_CHANNEL_SLEEP */
+    (void)LinIf_GotoSleep(0U);
+
+    linif_RunTicks(20U);
+    TEST_ASSERT_EQUAL(0U, mock_SendCount);
+}
+
+/** Transmit with SduDataPtr=NULL: reports LINIF_E_PARAM_PDU. */
+void test_LinIf_Transmit_NullSduDataPtr_ShouldReportDet(void) {
+    PduInfoType pdu;
+    pdu.SduDataPtr = NULL_PTR; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+
+    LinIf_Init(&LinIf_Config);
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_Transmit(0U, &pdu));
+    TEST_ASSERT_EQUAL(LINIF_SID_TRANSMIT, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(LINIF_E_PARAM_PDU, mock_DetLastErrorId);
+}
+
+/** GotoSleep with invalid channel: reports LINIF_E_PARAM_CHANNEL. */
+void test_LinIf_GotoSleep_InvalidChannel_ShouldReportParamChannel(void) {
+    LinIf_Init(&LinIf_Config);
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_GotoSleep(5U));
+    TEST_ASSERT_EQUAL(LINIF_SID_GOTOSLEEP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(LINIF_E_PARAM_CHANNEL, mock_DetLastErrorId);
+}
+
+/** SetConfiguredNAD with NULL configPtr (uninit): reports LINIF_E_UNINIT. */
+void test_LinIf_SetConfiguredNAD_Uninit_ShouldReportUninit(void) {
+    LinIf_DeInit();
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_SetConfiguredNAD(0U, 0x2EU));
+    TEST_ASSERT_EQUAL(LINIF_SID_SETCONFIGUREDNAD, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(LINIF_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** SetPIDTable with zero frames: boundary condition (0 <= NumFrames). */
+void test_LinIf_SetPIDTable_ZeroFrames_ShouldSucceed(void) {
+    uint8 buf[LINIF_MAX_FRAMES] = {0U};
+    uint8 numFrames = 0xFFU;
+    static const uint8 dummyPid = 0x11U;
+
+    LinIf_Init(&LinIf_Config);
+    TEST_ASSERT_EQUAL(E_OK, LinIf_SetPIDTable(0U, &dummyPid, 0U));
+    TEST_ASSERT_EQUAL(E_OK, LinIf_GetPIDTable(0U, buf, &numFrames));
+    TEST_ASSERT_EQUAL(0U, numFrames);
+}
+
+/** Init with config holding NULL Channels: exercises else branch in Init. */
+void test_LinIf_Init_NullChannels_ShouldInitGracefully(void) {
+    static const LinIf_ConfigType nullChCfg = { 1U, NULL_PTR, 0U, NULL_PTR };
+    PduInfoType pdu;
+    uint8 data[8] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+
+    LinIf_Init(&nullChCfg);
+    /* Module is initialized but channel config is unreachable */
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_Transmit(0U, &pdu));
+}
+
+/** RxIndication before init (configPtr NULL): reports LINIF_E_PARAM_POINTER. */
+void test_LinIf_RxIndication_BeforeInit_ShouldReportDet(void) {
+    LinIf_PduType rxPdu;
+    uint8 data[8] = {0U};
+    rxPdu.Id = 0x3DU; rxPdu.Dlc = 8U; rxPdu.DataPtr = data;
+
+    LinIf_DeInit();
+    LinIf_RxIndication(0U, &rxPdu);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(LINIF_SID_RX_IND, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(LINIF_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/** SetSchedule transitions channel from INIT to ONLINE state. */
+void test_LinIf_SetSchedule_ShouldTransitionToOnline(void) {
+    LinIf_Init(&LinIf_Config);
+    /* After Init, state = LINIF_CHANNEL_INIT */
+    TEST_ASSERT_EQUAL(E_OK, LinIf_SetSchedule(LINIF_Normal));
+    /* After SetSchedule, state should be LINIF_CHANNEL_ONLINE */
+    /* Verify by running MainFunction: ONLINE channels process schedules */
+    linif_RunTicks(5U);
+    TEST_ASSERT_EQUAL(1U, mock_SendCount);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/** MainFunction before init: returns silently (configPtr NULL). */
+void test_LinIf_MainFunction_DeInit_ShouldNotSend(void) {
+    LinIf_Init(&LinIf_Config);
+    (void)LinIf_SetSchedule(LINIF_Normal);
+    linif_RunTicks(5U);
+    TEST_ASSERT_EQUAL(1U, mock_SendCount);
+
+    LinIf_DeInit();
+    linif_RunTicks(10U);
+    /* No additional sends after DeInit */
+    TEST_ASSERT_EQUAL(1U, mock_SendCount);
+}
+
+/** GetTrcvMode with invalid channel: reports LINIF_E_PARAM_CHANNEL. */
+void test_LinIf_GetTrcvMode_InvalidChannel_ShouldReportParamChannel(void) {
+    LinIf_TrcvModeType mode = LINIF_TRCV_MODE_NORMAL;
+    LinIf_Init(&LinIf_Config);
+    linifTest_InitLinTrcv();
+    TEST_ASSERT_EQUAL(E_NOT_OK, LinIf_GetTrcvMode(9U, &mode));
+    TEST_ASSERT_EQUAL(LINIF_SID_GETTRCVMODE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(LINIF_E_PARAM_CHANNEL, mock_DetLastErrorId);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -910,6 +1081,23 @@ int main(void)
     RUN_TEST(test_LinIf_DeInit_ShouldRestoreDefaultNadAndPidTable);
     RUN_TEST(test_LinIf_IsSupportTpTransmit_ShouldReflectDiagnosticFrames);
     RUN_TEST(test_LinIf_IsSupportTpTransmit_BeforeInit_ShouldReturnFalse);
+
+    /* New tests for additional branch coverage */
+    RUN_TEST(test_LinIf_WakeUp_HwFailure_ShouldReturnNotOk);
+    RUN_TEST(test_LinIf_GotoSleep_HwFailure_ShouldReturnNotOk);
+    RUN_TEST(test_LinIf_RxIndication_NullDataPtr_ShouldSkipCopy);
+    RUN_TEST(test_LinIf_RxIndication_DlcTooLarge_ShouldSkipCopy);
+    RUN_TEST(test_LinIf_RxIndication_InvalidChannel_ShouldReturnSilently);
+    RUN_TEST(test_LinIf_MainFunction_SleepState_ShouldNotSend);
+    RUN_TEST(test_LinIf_Transmit_NullSduDataPtr_ShouldReportDet);
+    RUN_TEST(test_LinIf_GotoSleep_InvalidChannel_ShouldReportParamChannel);
+    RUN_TEST(test_LinIf_SetConfiguredNAD_Uninit_ShouldReportUninit);
+    RUN_TEST(test_LinIf_SetPIDTable_ZeroFrames_ShouldSucceed);
+    RUN_TEST(test_LinIf_Init_NullChannels_ShouldInitGracefully);
+    RUN_TEST(test_LinIf_RxIndication_BeforeInit_ShouldReportDet);
+    RUN_TEST(test_LinIf_SetSchedule_ShouldTransitionToOnline);
+    RUN_TEST(test_LinIf_MainFunction_DeInit_ShouldNotSend);
+    RUN_TEST(test_LinIf_GetTrcvMode_InvalidChannel_ShouldReportParamChannel);
 
     return UnityEnd();
 }

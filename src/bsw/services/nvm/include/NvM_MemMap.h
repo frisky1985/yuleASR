@@ -25,6 +25,12 @@
 #ifndef NVM_MEMMAP_H
 #define NVM_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /* All sections map to their default (no special section assignment).
  * In a production build, these would be defined by the linker script.
  */
@@ -59,6 +65,11 @@
 
 #ifndef NVM_STOP_SEC_VAR_NO_INIT
 #define NVM_STOP_SEC_VAR_NO_INIT
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* NVM_MEMMAP_H */

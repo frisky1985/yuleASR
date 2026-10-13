@@ -447,6 +447,198 @@ void test_BswM_DefaultConfig_UnboundNotification_ShouldSilentlyDrop(void) {
     TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetCurrentMode());
 }
 
+/*==============================================================================
+*                            BRANCH COVERAGE SUPPLEMENT
+* Lines: 81 (Depth > BSWM_EXPR_MAX_DEPTH), 84 (ExpressionIndex out of range),
+*        91 (switch ExpressionType: NOT_EQUALS, OR, NOT)
+*==============================================================================*/
+
+static void bswm_noop_callback(BswM_ModeType mode) { (void)mode; }
+
+/* --- Line 91: Expression types NOT_EQUALS, OR, NOT --- */
+
+/* Expressions:
+ * 0: MODE_EQUALS port0==RUN (leaf)
+ * 1: MODE_NOT_EQUALS port0==OFF (leaf, TRUE when port0 != OFF)
+ * 2: LOGICAL_OR Left=0, Right=1 (TRUE if either 0 or 1 is TRUE)
+ * 3: LOGICAL_NOT Left=0 (TRUE if expr 0 is FALSE)
+ */
+static const BswM_ExpressionConfigType branchExprs[4] = {
+    { BSWM_EXPR_MODE_EQUALS,     0U, BSWM_MODE_VALUE_RUN, 0U, 0U },
+    { BSWM_EXPR_MODE_NOT_EQUALS, 0U, BSWM_MODE_VALUE_OFF, 0U, 0U },
+    { BSWM_EXPR_LOGICAL_OR,      0U, 0U, 0U, 1U },
+    { BSWM_EXPR_LOGICAL_NOT,     0U, 0U, 0U, 0U }
+};
+
+static const BswM_ActionType branchActions[2] = {
+    { BswM_ActionSwitchMode, BSWM_MODE_VALUE_RUN, BSWM_ACTION_CALLBACK, FALSE, FALSE, {0} },
+    { BswM_ActionSwitchMode, BSWM_MODE_VALUE_OFF, BSWM_ACTION_CALLBACK, FALSE, FALSE, {0} }
+};
+
+static const BswM_ActionListType branchActionLists[2] = {
+    { 1U, &branchActions[0] },
+    { 1U, &branchActions[1] }
+};
+
+static const BswM_ModeRequestPortType branchPorts[1] = { BSWM_NM_REQUEST };
+
+/* Rule: condition = expr 1 (NOT_EQUALS), triggers on TRUE */
+static const BswM_RuleType branchRules[1] = {
+    { 0U, 1U, 0U, 1U, 0U, TRUE, 0U }
+};
+
+static const BswM_ConfigType branchConfig = {
+    1U, branchPorts,
+    4U, branchExprs,
+    1U, branchRules,
+    2U, branchActionLists
+};
+
+/* Exercise MODE_NOT_EQUALS (expr 1) via rule condition.
+ * Uses BswM_Nm_StateChangeNotification to set port values WITHOUT setting
+ * requestPending, so currentMode reflects rule evaluation only. */
+void test_BswM_ExprNotEquals_ShouldEvaluate(void)
+{
+    BswM_Init(&branchConfig);
+    /* Port 0 = RUN (not OFF), so NOT_EQUALS(port0==OFF) = TRUE */
+    BswM_Nm_StateChangeNotification(0U, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    /* Rule condition (expr 1 = NOT_EQUALS) is TRUE -> TrueActionList runs -> currentMode = RUN */
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetCurrentMode());
+}
+
+/* Rule with LOGICAL_OR (expr 2) as condition */
+static const BswM_RuleType branchRulesOr[1] = {
+    { 0U, 2U, 0U, 1U, 0U, TRUE, 0U }
+};
+
+static const BswM_ConfigType branchConfigOr = {
+    1U, branchPorts,
+    4U, branchExprs,
+    1U, branchRulesOr,
+    2U, branchActionLists
+};
+
+void test_BswM_ExprLogicalOr_ShouldEvaluate(void)
+{
+    BswM_Init(&branchConfigOr);
+    /* Port 0 = RUN: expr0 = TRUE (RUN==RUN), expr1 = TRUE (RUN!=OFF)
+     * expr2 = OR(TRUE, TRUE) = TRUE -> TrueActionList */
+    BswM_Nm_StateChangeNotification(0U, BSWM_MODE_VALUE_RUN);
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetCurrentMode());
+}
+
+/* Rule with LOGICAL_NOT (expr 3) as condition */
+static const BswM_RuleType branchRulesNot[1] = {
+    { 0U, 3U, 0U, 1U, 0U, TRUE, 0U }
+};
+
+static const BswM_ConfigType branchConfigNot = {
+    1U, branchPorts,
+    4U, branchExprs,
+    1U, branchRulesNot,
+    2U, branchActionLists
+};
+
+void test_BswM_ExprLogicalNot_ShouldEvaluate(void)
+{
+    BswM_Init(&branchConfigNot);
+    /* Port 0 = OFF: expr0 = FALSE (OFF!=RUN), expr3 = NOT(FALSE) = TRUE
+     * -> TrueActionList runs -> currentMode = RUN */
+    BswM_Nm_StateChangeNotification(0U, BSWM_MODE_VALUE_OFF);
+    BswM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_RUN, BswM_GetCurrentMode());
+}
+
+/* --- Line 81: Depth > BSWM_EXPR_MAX_DEPTH (16) --- */
+/* Build a chain of 18 LOGICAL_NOT expressions, each referencing the next.
+ * The last one (index 17) is a leaf MODE_EQUALS. */
+#define DEEP_CHAIN_LEN 18U
+static BswM_ExpressionConfigType deepChainExprs[DEEP_CHAIN_LEN];
+static const BswM_ModeRequestPortType deepPorts[1] = { BSWM_NM_REQUEST };
+static const BswM_ActionType deepActions[1] = {
+    { BswM_ActionSwitchMode, BSWM_MODE_VALUE_RUN, BSWM_ACTION_CALLBACK, FALSE, FALSE, {0} }
+};
+static const BswM_ActionListType deepActionLists[2] = {
+    { 1U, &deepActions[0] },
+    { 0U, NULL_PTR }
+};
+static const BswM_RuleType deepRule[1] = {
+    { 0U, 0U, 0U, 1U, 0U, TRUE, 0U }
+};
+
+static BswM_ConfigType deepChainConfig;
+static boolean deepChainInited = FALSE;
+
+static void initDeepChain(void)
+{
+    uint16 i;
+    if (deepChainInited) return;
+    for (i = 0U; i < DEEP_CHAIN_LEN - 1U; i++) {
+        deepChainExprs[i].ExpressionType = BSWM_EXPR_LOGICAL_NOT;
+        deepChainExprs[i].PortIndex = 0U;
+        deepChainExprs[i].CompareValue = 0U;
+        deepChainExprs[i].LeftIndex = (uint16)(i + 1U);
+        deepChainExprs[i].RightIndex = 0U;
+    }
+    /* Leaf at the end */
+    deepChainExprs[DEEP_CHAIN_LEN - 1U].ExpressionType = BSWM_EXPR_MODE_EQUALS;
+    deepChainExprs[DEEP_CHAIN_LEN - 1U].PortIndex = 0U;
+    deepChainExprs[DEEP_CHAIN_LEN - 1U].CompareValue = BSWM_MODE_VALUE_RUN;
+    deepChainExprs[DEEP_CHAIN_LEN - 1U].LeftIndex = 0U;
+    deepChainExprs[DEEP_CHAIN_LEN - 1U].RightIndex = 0U;
+
+    deepChainConfig.NumModeRequestPorts = 1U;
+    deepChainConfig.ModeRequestPorts = deepPorts;
+    deepChainConfig.NumExpressions = DEEP_CHAIN_LEN;
+    deepChainConfig.Expressions = deepChainExprs;
+    deepChainConfig.NumRules = 1U;
+    deepChainConfig.Rules = deepRule;
+    deepChainConfig.NumActionLists = 2U;
+    deepChainConfig.ActionLists = deepActionLists;
+    deepChainInited = TRUE;
+}
+
+void test_BswM_ExprDeepChain_ShouldHitMaxDepth(void)
+{
+    initDeepChain();
+    BswM_Init(&deepChainConfig);
+    /* Use notification to set port value WITHOUT setting requestPending */
+    BswM_Nm_StateChangeNotification(0U, BSWM_MODE_VALUE_RUN);
+    /* The chain is 18 deep; Depth > 16 guard returns FALSE at level 17 */
+    BswM_MainFunction();
+    /* Should not crash; rule evaluates to FALSE (depth exceeded) -> no action list fires */
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetCurrentMode());
+}
+
+/* --- Line 84: ExpressionIndex >= NumExpressions --- */
+/* Expression 0 is LOGICAL_AND with LeftIndex=99 (out of range) */
+static const BswM_ExpressionConfigType invalidRefExprs[1] = {
+    { BSWM_EXPR_LOGICAL_AND, 0U, 0U, 99U, 0U }
+};
+static const BswM_RuleType invalidRefRule[1] = {
+    { 0U, 0U, 0U, 1U, 0U, TRUE, 0U }
+};
+static const BswM_ConfigType invalidRefConfig = {
+    1U, deepPorts,
+    1U, invalidRefExprs,
+    1U, invalidRefRule,
+    2U, deepActionLists
+};
+
+void test_BswM_ExprInvalidIndex_ShouldReturnFalse(void)
+{
+    BswM_Init(&invalidRefConfig);
+    /* Use notification to set port value WITHOUT setting requestPending */
+    BswM_Nm_StateChangeNotification(0U, BSWM_MODE_VALUE_RUN);
+    /* Expression 0 references LeftIndex=99 which is >= NumExpressions(1)
+     * -> recursive call returns FALSE at line 84 */
+    BswM_MainFunction();
+    /* Rule evaluates to FALSE -> no action list fires -> currentMode stays OFF */
+    TEST_ASSERT_EQUAL_UINT8(BSWM_MODE_VALUE_OFF, BswM_GetCurrentMode());
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -486,6 +678,12 @@ int main(void)
     RUN_TEST(test_BswM_DefaultConfig_ComMCurrentMode_ShouldNotLatchRequest);
     RUN_TEST(test_BswM_DefaultConfig_EcuMRequestedState_ShouldNotAffectLegacyPorts);
     RUN_TEST(test_BswM_DefaultConfig_UnboundNotification_ShouldSilentlyDrop);
+    /* Branch coverage supplement */
+    RUN_TEST(test_BswM_ExprNotEquals_ShouldEvaluate);
+    RUN_TEST(test_BswM_ExprLogicalOr_ShouldEvaluate);
+    RUN_TEST(test_BswM_ExprLogicalNot_ShouldEvaluate);
+    RUN_TEST(test_BswM_ExprDeepChain_ShouldHitMaxDepth);
+    RUN_TEST(test_BswM_ExprInvalidIndex_ShouldReturnFalse);
 
     return UnityEnd();
 }

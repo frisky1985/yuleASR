@@ -340,6 +340,324 @@ void test_Sd_SetEventStatus_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
 }
 
+/* ============================================================================
+ * Additional Branch Coverage Tests
+ * ============================================================================ */
+
+/* Line 457: SubscribeEventGroup alloc failure when all subscription slots are full */
+void test_Sd_SubscribeEventGroup_AllocFailure_ShouldReturnNotOk(void) {
+    Std_ReturnType ret;
+    uint8 i;
+    test_Sd_DoInit();
+    /* Fill all SD_MAX_SUBSCRIPTIONS (16) slots with unique subscriptions */
+    for (i = 0U; i < 16U; i++)
+    {
+        ret = Sd_SubscribeEventGroup(0x1001U, 0x0001U, i + 1U);
+        TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    }
+    /* 17th subscription should fail (alloc returns NULL) */
+    ret = Sd_SubscribeEventGroup(0x1001U, 0x0001U, 100U);
+    TEST_ASSERT_EQUAL_UINT8(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* Line 376: OfferService alloc failure when all offer slots are full */
+void test_Sd_OfferService_AllocFailure_ShouldReturnNotOk(void) {
+    Std_ReturnType ret;
+    uint8 i;
+    test_Sd_DoInit();
+    /* Fill all SD_MAX_OFFERED_SERVICES (16) slots */
+    for (i = 0U; i < 16U; i++)
+    {
+        ret = Sd_OfferService(0x1001U + i, 0x0001U, 1U, 0U, &testEndpoint);
+        TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    }
+    /* 17th offer should fail (alloc returns NULL) */
+    ret = Sd_OfferService(0x2001U, 0x0001U, 1U, 0U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* Line 560: MainFunction initial delay elapsed after enough calls */
+void test_Sd_MainFunction_InitialDelayElapsed_ShouldTransition(void) {
+    uint8 i;
+    test_Sd_DoInit();
+    /* SD_INITIAL_DELAY_MS=500, SD_MAIN_FUNCTION_PERIOD_MS=10 -> 50 calls needed */
+    for (i = 0U; i < 55U; i++)
+    {
+        Sd_MainFunction();
+    }
+    /* After delay elapsed, module still operational */
+    TEST_ASSERT_EQUAL_UINT8(E_OK, Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint));
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* Line 535-538: SetEventStatus with non-PENDING subscriber (already SUBSCRIBED) */
+void test_Sd_SetEventStatus_NonPendingSubscriber_ShouldNotTransition(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    /* Subscribe (PENDING state) */
+    ret = Sd_SubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Set READY: PENDING -> SUBSCRIBED */
+    ret = Sd_SetEventStatus(0x1001U, 0x0001U, 3U, SD_EVENTGROUP_READY);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Set READY again: subscriber is now SUBSCRIBED, not PENDING -> condition false */
+    ret = Sd_SetEventStatus(0x1001U, 0x0001U, 3U, SD_EVENTGROUP_READY);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* Line 595: HandleMessage when uninitialized */
+void test_Sd_HandleMessage_Uninit_ShouldReturnNotOk(void) {
+    Std_ReturnType ret;
+    /* Not initialized (setUp does DeInit) */
+    ret = Sd_HandleMessage(NULL_PTR, 0U);
+    TEST_ASSERT_EQUAL_UINT8(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* ============================================================================
+ * Additional Branch Coverage Tests — Round 2
+ * ============================================================================ */
+
+/* FindService NULL endpoint → DET param pointer */
+void test_Sd_FindService_NullEndpoint_ShouldReportDet(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    ret = Sd_FindService(0x1001U, 0x0001U, NULL_PTR);
+    TEST_ASSERT_EQUAL_UINT8(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(SD_SID_FINDSERVICE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(SD_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* SetEventStatus uninit → DET */
+void test_Sd_SetEventStatus_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret;
+    /* Not initialized */
+    ret = Sd_SetEventStatus(0x1001U, 0x0001U, 3U, SD_EVENTGROUP_READY);
+    TEST_ASSERT_EQUAL_UINT8(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(SD_SID_SETEVENTSTATUS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(SD_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* StopService with multiple entries → exercises compaction loop body (i < NumOffered-1) */
+void test_Sd_StopService_MultipleEntries_ShouldCompact(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    (void)Sd_OfferService(0x1002U, 0x0001U, 1U, 0U, &testEndpoint);
+    (void)Sd_OfferService(0x1003U, 0x0001U, 1U, 0U, &testEndpoint);
+    /* Stop first → compaction loop shifts entries */
+    ret = Sd_StopService(0x1001U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Remaining entries still accessible */
+    ret = Sd_StopService(0x1002U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    ret = Sd_StopService(0x1003U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* UnsubscribeEventGroup with multiple → exercises compaction loop body */
+void test_Sd_UnsubscribeEventGroup_Multiple_ShouldCompact(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 1U);
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 2U);
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    /* Unsubscribe first → compaction loop shifts entries */
+    ret = Sd_UnsubscribeEventGroup(0x1001U, 0x0001U, 1U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    ret = Sd_UnsubscribeEventGroup(0x1001U, 0x0001U, 2U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    ret = Sd_UnsubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* SetEventStatus with NOT_READY → condition (Status==READY) is false */
+void test_Sd_SetEventStatus_NotReady_ShouldNotTransition(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    ret = Sd_SetEventStatus(0x1001U, 0x0001U, 3U, SD_EVENTGROUP_NOT_READY);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* MainFunction periodic offer/find cycles — run enough calls to trigger both */
+void test_Sd_MainFunction_PeriodicCycles_ShouldExecute(void) {
+    uint16 i;
+    test_Sd_DoInit();
+    /* SD_INITIAL_DELAY_MS=500, SD_MAIN_FUNCTION_PERIOD_MS=10 → 50 calls for delay
+     * SD_OFFER_CYCLE_TIME_MS=2000 → first true at TickMs=4000 (call 400)
+     * SD_FIND_CYCLE_TIME_MS=3000 → first true at TickMs=6000 (call 600) */
+    for (i = 0U; i < 601U; i++)
+    {
+        Sd_MainFunction();
+    }
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* OfferService update path with existing entry → exercises entry!=NULL branch */
+void test_Sd_OfferService_UpdateExisting_ShouldUpdateFields(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    ret = Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Update same service with different version */
+    ret = Sd_OfferService(0x1001U, 0x0001U, 2U, 5U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* ============================================================================
+ * Additional Branch Coverage Tests — Round 3 (target ≥90%)
+ * ============================================================================ */
+
+/* Lifetime expiry: use TtlDefault=0 so RemainingLifetimeMs starts at 0,
+ * which is <= SD_MAIN_FUNCTION_PERIOD_MS, triggering the else (removal) branch.
+ * We need a found service in the registry. Since HandleMessage is a stub that
+ * doesn't populate FoundServices, we use OfferService + StopService to exercise
+ * the compaction path, and test the lifetime expiry via a separate mechanism.
+ *
+ * Actually, FoundServices can only be populated through HandleMessage which is
+ * a stub. So the lifetime expiry path (Sd_LocalUpdateLifetimes) is unreachable
+ * via the public API. We test it indirectly by verifying MainFunction runs
+ * without crash after the initial delay with offered services. */
+
+/* Exercise Sd_LocalFindFound with entries present: since HandleMessage is a stub
+ * and FoundServices can't be populated, we exercise the for-loop at line 116
+ * by having 0 entries (loop body never entered). The loop condition i < 0 is
+ * false, covering the FALSE branch of line 116. */
+
+/* OfferService with TtlDefault=0 → RemainingLifetimeMs=0, tests ternary at line 368/385 */
+void test_Sd_OfferService_ZeroTtl_ShouldSetZeroLifetime(void) {
+    Std_ReturnType ret;
+    test_Sd_SetupDefaultConfig();
+    testConfig.TtlDefault = 0U;
+    Sd_Init(&testConfig);
+    ret = Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Update the zero-TTL entry → exercises line 368 ternary */
+    ret = Sd_OfferService(0x1001U, 0x0001U, 2U, 1U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* StopService: remove last entry → compaction loop body NOT entered (i < 0 is false) */
+void test_Sd_StopService_LastEntry_ShouldNotCompact(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    /* Only one entry; removing it → NumOfferedServices becomes 0, loop i < 0 is false */
+    ret = Sd_StopService(0x1001U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* UnsubscribeEventGroup: remove last entry → compaction loop body NOT entered */
+void test_Sd_UnsubscribeEventGroup_LastEntry_ShouldNotCompact(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    /* Only one subscription; removing it → loop i < 0 is false */
+    ret = Sd_UnsubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* StopService: remove middle entry → compaction loop shifts multiple entries */
+void test_Sd_StopService_MiddleEntry_ShouldCompact(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    (void)Sd_OfferService(0x1002U, 0x0001U, 1U, 0U, &testEndpoint);
+    (void)Sd_OfferService(0x1003U, 0x0001U, 1U, 0U, &testEndpoint);
+    /* Remove middle entry → compaction shifts the last entry forward */
+    ret = Sd_StopService(0x1002U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* First and third should still be stoppable */
+    ret = Sd_StopService(0x1001U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    ret = Sd_StopService(0x1003U, 0x0001U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* MainFunction: run after initial delay with offered services to exercise
+ * the periodic offer/find cycle conditions at lines 571 and 577 */
+void test_Sd_MainFunction_AfterDelayWithServices_ShouldProcessCycles(void) {
+    uint16 i;
+    test_Sd_DoInit();
+    /* Offer a service before the initial delay elapses */
+    (void)Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 1U);
+    /* Run MainFunction past the initial delay (500ms / 10ms = 50 calls) */
+    for (i = 0U; i < 50U; i++) {
+        Sd_MainFunction();
+    }
+    /* Continue running to hit offer cycle (2000ms) and find cycle (3000ms) */
+    for (i = 0U; i < 600U; i++) {
+        Sd_MainFunction();
+    }
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* SetEventStatus: set to READY when subscriber is PENDING → exercises line 535-537 TRUE */
+void test_Sd_SetEventStatus_ReadyWhenPending_ShouldTransitionToSubscribed(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    (void)Sd_SubscribeEventGroup(0x1001U, 0x0001U, 3U);
+    /* SubscriberStatus is PENDING, setting READY → condition at line 535 is TRUE */
+    ret = Sd_SetEventStatus(0x1001U, 0x0001U, 3U, SD_EVENTGROUP_READY);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* FindService: service not found after offering (FindService searches FoundServices,
+ * not OfferedServices) → exercises line 329 TRUE branch (entry == NULL) */
+void test_Sd_FindService_NotInFoundRegistry_ShouldReturnNotOk(void) {
+    Std_ReturnType ret;
+    Sd_Ipv4EndpointType endpoint;
+    test_Sd_DoInit();
+    /* Offer a service (goes to OfferedServices, not FoundServices) */
+    (void)Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    /* FindService searches FoundServices → not found */
+    ret = Sd_FindService(0x1001U, 0x0001U, &endpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* Sd_LocalFindOffered: match found → exercises line 104 TRUE branch.
+ * Already covered by StopService/UpdateExisting tests, but adding explicit test. */
+void test_Sd_OfferService_FindMatch_ShouldUpdateExisting(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    /* First offer creates entry */
+    ret = Sd_OfferService(0x1001U, 0x0001U, 1U, 0U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Second offer with same IDs → Sd_LocalFindOffered returns match (line 104 TRUE) */
+    ret = Sd_OfferService(0x1001U, 0x0001U, 3U, 7U, &testEndpoint);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/* SubscribeEventGroup: find match (duplicate) → exercises line 157-158 TRUE */
+void test_Sd_SubscribeEventGroup_FindMatch_ShouldReturnDuplicate(void) {
+    Std_ReturnType ret;
+    test_Sd_DoInit();
+    ret = Sd_SubscribeEventGroup(0x1001U, 0x0001U, 5U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    /* Duplicate → Sd_LocalFindSub returns match (line 157 TRUE) */
+    ret = Sd_SubscribeEventGroup(0x1001U, 0x0001U, 5U);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_Sd_Init_NullPtr_ShouldNotCrash);
@@ -366,5 +684,26 @@ int main(void) {
     RUN_TEST(test_Sd_FindService_Uninit_ShouldReportError);
     RUN_TEST(test_Sd_FindService_UnknownService_ShouldReturnNotOk);
     RUN_TEST(test_Sd_SetEventStatus_ValidCall_ShouldSucceed);
+    RUN_TEST(test_Sd_SubscribeEventGroup_AllocFailure_ShouldReturnNotOk);
+    RUN_TEST(test_Sd_OfferService_AllocFailure_ShouldReturnNotOk);
+    RUN_TEST(test_Sd_MainFunction_InitialDelayElapsed_ShouldTransition);
+    RUN_TEST(test_Sd_SetEventStatus_NonPendingSubscriber_ShouldNotTransition);
+    RUN_TEST(test_Sd_HandleMessage_Uninit_ShouldReturnNotOk);
+    RUN_TEST(test_Sd_FindService_NullEndpoint_ShouldReportDet);
+    RUN_TEST(test_Sd_SetEventStatus_Uninit_ShouldReportDet);
+    RUN_TEST(test_Sd_StopService_MultipleEntries_ShouldCompact);
+    RUN_TEST(test_Sd_UnsubscribeEventGroup_Multiple_ShouldCompact);
+    RUN_TEST(test_Sd_SetEventStatus_NotReady_ShouldNotTransition);
+    RUN_TEST(test_Sd_MainFunction_PeriodicCycles_ShouldExecute);
+    RUN_TEST(test_Sd_OfferService_UpdateExisting_ShouldUpdateFields);
+    RUN_TEST(test_Sd_OfferService_ZeroTtl_ShouldSetZeroLifetime);
+    RUN_TEST(test_Sd_StopService_LastEntry_ShouldNotCompact);
+    RUN_TEST(test_Sd_UnsubscribeEventGroup_LastEntry_ShouldNotCompact);
+    RUN_TEST(test_Sd_StopService_MiddleEntry_ShouldCompact);
+    RUN_TEST(test_Sd_MainFunction_AfterDelayWithServices_ShouldProcessCycles);
+    RUN_TEST(test_Sd_SetEventStatus_ReadyWhenPending_ShouldTransitionToSubscribed);
+    RUN_TEST(test_Sd_FindService_NotInFoundRegistry_ShouldReturnNotOk);
+    RUN_TEST(test_Sd_OfferService_FindMatch_ShouldUpdateExisting);
+    RUN_TEST(test_Sd_SubscribeEventGroup_FindMatch_ShouldReturnDuplicate);
     return UnityEnd();
 }

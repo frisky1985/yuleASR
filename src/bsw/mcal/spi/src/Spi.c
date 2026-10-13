@@ -404,14 +404,14 @@ Std_ReturnType Spi_AsyncTransmit(uint8 DeviceId, const uint8* TxData, uint8* RxD
         
         /* 配置TX DMA */
         if ((TxData) != 0U) {
-            Dma_ConfigTx(chCfg->DmaTxChannel, (uint32)TxData, 
+            Dma_ConfigTx(chCfg->DmaTxChannel, (uint32)(uintptr_t)TxData, 
                         (uint32)(Spi_BaseAddr[channel] + ECSPI_TXDATA), Length);
         }
         
         /* 配置RX DMA */
         if ((RxData) != 0U) {
             Dma_ConfigRx(chCfg->DmaRxChannel, 
-                        (uint32)(Spi_BaseAddr[channel] + ECSPI_RXDATA), (uint32)RxData, Length);
+                        (uint32)(Spi_BaseAddr[channel] + ECSPI_RXDATA), (uint32)(uintptr_t)RxData, Length);
         }
         
         /* 启动DMA */

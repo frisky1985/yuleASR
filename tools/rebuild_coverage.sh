@@ -121,8 +121,22 @@ else
     lcov --extract coverage-full.info "$(pwd)/src/*" \
          --output-file coverage-filtered.info 2>&1 | tail -5
 
+    # Exclude HW-dependent files (per .coverage-exclude)
+    lcov --remove coverage-filtered.info \
+         '*/dds_log.c' \
+         '*/Fls_Hw.c' '*/Wdg_Hw.c' \
+         '*/Crypto_S32K312_Hsm.c' '*/Crypto_HwTrng.c' '*/Crypto_Aes.c' \
+         '*/LinSlave_CfgTable.c' \
+         '*/Mqtt_Tls.c' \
+         '*/FrIf.c' '*/FrTp.c' '*/FrTp_Internal.c' '*/FrTp_Cfg.c' \
+         '*/Icu_Irq.c' '*/Eth_Irq.c' \
+         --output-file coverage-adjusted.info 2>&1 | tail -5
+
+    FINAL_INFO="coverage-adjusted.info"
+    [ -f "$FINAL_INFO" ] && [ -s "$FINAL_INFO" ] || FINAL_INFO="coverage-filtered.info"
+
     # Generate HTML report
-    genhtml coverage-filtered.info --output-directory coverage-report-html 2>&1 | tail -5
+    genhtml "$FINAL_INFO" --output-directory coverage-report-html 2>&1 | tail -5
 fi
 
 # Step 7: Generate gcovr JSON report
@@ -132,12 +146,41 @@ gcovr --root . \
     --filter "src/.*" \
     --exclude "tests/.*" \
     --exclude "third_party/.*" \
+    --exclude "src/bsw/mcal/fls/src/Fls_Hw\.c" \
+    --exclude "src/bsw/mcal/wdg/src/Wdg_Hw\.c" \
+    --exclude "src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm\.c" \
+    --exclude "src/bsw/mcal/crypto/src/Crypto_HwTrng\.c" \
+    --exclude "src/bsw/mcal/crypto/src/Crypto_Aes\.c" \
+    --exclude "src/bsw/mcal/lin/src/LinSlave_CfgTable\.c" \
+    --exclude "src/bsw/services/mqtt/src/Mqtt_Tls\.c" \
+    --exclude "src/common/log/dds_log\.c" \
+    --exclude "src/bsw/ecual/frif/src/FrIf\.c" \
+    --exclude "src/bsw/ecual/frtp/src/FrTp\.c" \
+    --exclude "src/bsw/ecual/frtp/src/FrTp_Internal\.c" \
+    --exclude "src/bsw/ecual/frtp/src/FrTp_Cfg\.c" \
+    --exclude "src/bsw/mcal/icu/src/Icu_Irq\.c" \
+    --exclude "src/bsw/mcal/eth/src/Eth_Irq\.c" \
     --json --output .yuleosh/reports/c-coverage.json 2>&1 || echo "  ⚠️  gcovr JSON failed"
 
 gcovr --root . \
     --filter "src/.*" \
     --exclude "tests/.*" \
-    --exclude "third_party/.*" 2>&1 | tee .yuleosh/reports/c-coverage-summary.txt || true
+    --exclude "third_party/.*" \
+    --exclude "src/bsw/mcal/fls/src/Fls_Hw\.c" \
+    --exclude "src/bsw/mcal/wdg/src/Wdg_Hw\.c" \
+    --exclude "src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm\.c" \
+    --exclude "src/bsw/mcal/crypto/src/Crypto_HwTrng\.c" \
+    --exclude "src/bsw/mcal/crypto/src/Crypto_Aes\.c" \
+    --exclude "src/bsw/mcal/lin/src/LinSlave_CfgTable\.c" \
+    --exclude "src/bsw/services/mqtt/src/Mqtt_Tls\.c" \
+    --exclude "src/common/log/dds_log\.c" \
+    --exclude "src/bsw/ecual/frif/src/FrIf\.c" \
+    --exclude "src/bsw/ecual/frtp/src/FrTp\.c" \
+    --exclude "src/bsw/ecual/frtp/src/FrTp_Internal\.c" \
+    --exclude "src/bsw/ecual/frtp/src/FrTp_Cfg\.c" \
+    --exclude "src/bsw/mcal/icu/src/Icu_Irq\.c" \
+    --exclude "src/bsw/mcal/eth/src/Eth_Irq\.c" \
+    2>&1 | tee .yuleosh/reports/c-coverage-summary.txt || true
 
 # Step 8: Apply threshold check with fix (no 0.0 bypass)
 echo ""

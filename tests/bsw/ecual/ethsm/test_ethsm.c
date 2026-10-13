@@ -42,6 +42,7 @@ static Std_ReturnType mock_EthIf_SetMode_Return = E_OK;
 static uint32 mock_EthIf_GetLink_Count = 0U;
 static uint8 mock_EthIf_GetLink_LastTrcv = 0xFFU;
 static boolean mock_EthIf_LinkUp = TRUE;
+static Std_ReturnType mock_EthIf_GetLink_Return = E_OK;
 
 Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode Mode) {
     mock_EthIf_SetMode_Count++;
@@ -53,8 +54,10 @@ Std_ReturnType EthIf_SetControllerMode(uint8 ControllerId, EthIf_ControllerMode 
 Std_ReturnType EthIf_GetTransceiverLinkState(uint8 TrcvIdx, EthIf_LinkStateType* LinkStatePtr) {
     mock_EthIf_GetLink_Count++;
     mock_EthIf_GetLink_LastTrcv = TrcvIdx;
-    *LinkStatePtr = (mock_EthIf_LinkUp == TRUE) ? ETHIF_LINK_STATE_ACTIVE : ETHIF_LINK_STATE_DOWN;
-    return E_OK;
+    if (mock_EthIf_GetLink_Return == E_OK) {
+        *LinkStatePtr = (mock_EthIf_LinkUp == TRUE) ? ETHIF_LINK_STATE_ACTIVE : ETHIF_LINK_STATE_DOWN;
+    }
+    return mock_EthIf_GetLink_Return;
 }
 
 /* Stub ComM mode-indication callback */
@@ -77,6 +80,7 @@ void setUp(void) {
     mock_EthIf_GetLink_Count = 0U;
     mock_EthIf_GetLink_LastTrcv = 0xFFU;
     mock_EthIf_LinkUp = TRUE;
+    mock_EthIf_GetLink_Return = E_OK;
     mock_ComM_Indication_Count = 0U;
     mock_ComM_Indication_LastChannel = 0xFFU;
     mock_ComM_Indication_LastMode = 0xFFU;
@@ -415,6 +419,168 @@ void test_EthSM_GetInternalState_InvalidHandle_ShouldReturnUninit(void) {
 }
 
 /* ---------------------------------------------------------------------------
+ * Additional tests for branch coverage
+ * ------------------------------------------------------------------------- */
+
+/** @req SWS_EthSM_00007 - Network 1 link check covers CheckLinkState branch for NETWORK_1 */
+void test_EthSM_Network1_Transition_NoComToWaitTrcvLink(void) {
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(1U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(1U));
+    /* Controller 1 activated via EthIf */
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_EthIf_SetMode_LastCtrl);
+    TEST_ASSERT_EQUAL_UINT8(ETHIF_MODE_ACTIVE, mock_EthIf_SetMode_LastMode);
+}
+
+/** @req SWS_EthSM_00007 - Network 1 timeout in WAIT_TRCVLINK */
+void test_EthSM_Network1_Timeout_WaitTrcvLink_ShouldReturnToNoCom(void) {
+    uint8 i;
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(1U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(1U));
+    mock_EthIf_LinkUp = FALSE;
+    for (i = 0U; i < 10U; i++) {
+        EthSM_MainFunction();
+    }
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_NO_COM, EthSM_GetInternalState(1U));
+}
+
+/** @req SWS_EthSM_00007 - CheckLinkState returns false when EthIf_GetTransceiverLinkState fails */
+void test_EthSM_CheckLinkState_EthIfFails_ShouldTreatAsLinkDown(void) {
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(0U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_COM_READY, EthSM_GetInternalState(0U));
+    /* Now make EthIf_GetTransceiverLinkState fail */
+    mock_EthIf_GetLink_Return = E_NOT_OK;
+    EthSM_MainFunction();
+    /* Link treated as down -> should go back to WAIT_TRCVLINK */
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(0U));
+}
+
+/** @req SWS_EthSM_00007 - ONHOLD state: NoCom request should transition to NO_COM */
+void test_EthSM_Transition_OnHoldToNoCom_OnNoComRequest(void) {
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(0U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONHOLD);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_ONHOLD, EthSM_GetInternalState(0U));
+    /* Request NoCom while in ONHOLD */
+    (void)EthSM_RequestComMode(0U, COMM_NO_COMMUNICATION);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_NO_COM, EthSM_GetInternalState(0U));
+    TEST_ASSERT_EQUAL_UINT8(ETHIF_MODE_DOWN, mock_EthIf_SetMode_LastMode);
+}
+
+/** @req SWS_EthSM_00007 - ONHOLD state: TcpIp ONLINE should transition to COM_READY */
+void test_EthSM_Transition_OnHoldToComReady_OnTcpIpOnline_Again(void) {
+    ComM_ModeType mode;
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(0U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONHOLD);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_ONHOLD, EthSM_GetInternalState(0U));
+    /* TcpIp comes back online */
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_COM_READY, EthSM_GetInternalState(0U));
+    TEST_ASSERT_EQUAL_UINT8(E_OK, EthSM_GetCurrentComMode(0U, &mode));
+    TEST_ASSERT_EQUAL_UINT8(COMM_FULL_COMMUNICATION, mode);
+}
+
+/** @req SWS_EthSM_00007 - ONHOLD state: TcpIp OFFLINE should go to WAIT_TRCVLINK */
+void test_EthSM_Transition_OnHoldToWaitTrcvLink_OnTcpIpOffline(void) {
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(0U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONHOLD);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_ONHOLD, EthSM_GetInternalState(0U));
+    /* TcpIp goes offline */
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_OFFLINE);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(0U));
+}
+
+/** @req SWS_EthSM_00007 - COM_READY: TcpIp OFFLINE should go to WAIT_TRCVLINK */
+void test_EthSM_Transition_ComReadyToWaitTrcvLink_OnTcpIpOffline(void) {
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(0U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    EthSM_MainFunction();
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_COM_READY, EthSM_GetInternalState(0U));
+    /* TcpIp goes offline */
+    EthSM_TcpIpModeIndication(0U, TCPIP_STATE_OFFLINE);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(0U));
+}
+
+/** @req SWS_EthSM_00004 - RequestComMode with COMM_SILENT_COMMUNICATION should be accepted */
+void test_EthSM_RequestComMode_SilentCom_ShouldAccept(void) {
+    Std_ReturnType ret;
+    EthSM_Init(NULL_PTR);
+    ret = EthSM_RequestComMode(0U, COMM_SILENT_COMMUNICATION);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+}
+
+/** @req SWS_EthSM_00006 - TcpIpModeIndication with invalid mode should be silently ignored */
+void test_EthSM_TcpIpModeIndication_InvalidMode_ShouldIgnore(void) {
+    EthSM_Init(NULL_PTR);
+    /* TCPIP_STATE_ONHOLD is typically 2, so 0xFF is invalid */
+    EthSM_TcpIpModeIndication(0U, (TcpIp_StateType)0xFFU);
+    TEST_ASSERT_EQUAL_UINT32(0U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_NO_COM, EthSM_GetInternalState(0U));
+}
+
+/** @req SWS_EthSM_00007 - WAIT_ONLINE: NoCom request should transition to NO_COM */
+void test_EthSM_Transition_WaitOnlineToNoCom_OnNoComRequest(void) {
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(0U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_ONLINE, EthSM_GetInternalState(0U));
+    /* Request NoCom while in WAIT_ONLINE */
+    (void)EthSM_RequestComMode(0U, COMM_NO_COMMUNICATION);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_NO_COM, EthSM_GetInternalState(0U));
+}
+
+/** @req SWS_EthSM_00007 - Network 1: full state machine cycle */
+void test_EthSM_Network1_FullTransitionCycle(void) {
+    ComM_ModeType mode;
+    EthSM_Init(NULL_PTR);
+    (void)EthSM_RequestComMode(1U, COMM_FULL_COMMUNICATION);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(1U));
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_WAIT_ONLINE, EthSM_GetInternalState(1U));
+    EthSM_TcpIpModeIndication(1U, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_STATE_COM_READY, EthSM_GetInternalState(1U));
+    TEST_ASSERT_EQUAL_UINT8(E_OK, EthSM_GetCurrentComMode(1U, &mode));
+    TEST_ASSERT_EQUAL_UINT8(COMM_FULL_COMMUNICATION, mode);
+}
+
+/* ---------------------------------------------------------------------------
  * Runner
  * ------------------------------------------------------------------------- */
 int main(void) {
@@ -450,6 +616,17 @@ int main(void) {
     RUN_TEST(test_EthSM_TcpIpModeIndication_InvalidHandle_ShouldSilentlyIgnore);
     RUN_TEST(test_EthSM_GetInternalState_Uninit_ShouldReturnUninit);
     RUN_TEST(test_EthSM_GetInternalState_InvalidHandle_ShouldReturnUninit);
+    RUN_TEST(test_EthSM_Network1_Transition_NoComToWaitTrcvLink);
+    RUN_TEST(test_EthSM_Network1_Timeout_WaitTrcvLink_ShouldReturnToNoCom);
+    RUN_TEST(test_EthSM_CheckLinkState_EthIfFails_ShouldTreatAsLinkDown);
+    RUN_TEST(test_EthSM_Transition_OnHoldToNoCom_OnNoComRequest);
+    RUN_TEST(test_EthSM_Transition_OnHoldToComReady_OnTcpIpOnline_Again);
+    RUN_TEST(test_EthSM_Transition_OnHoldToWaitTrcvLink_OnTcpIpOffline);
+    RUN_TEST(test_EthSM_Transition_ComReadyToWaitTrcvLink_OnTcpIpOffline);
+    RUN_TEST(test_EthSM_RequestComMode_SilentCom_ShouldAccept);
+    RUN_TEST(test_EthSM_TcpIpModeIndication_InvalidMode_ShouldIgnore);
+    RUN_TEST(test_EthSM_Transition_WaitOnlineToNoCom_OnNoComRequest);
+    RUN_TEST(test_EthSM_Network1_FullTransitionCycle);
 
     return UNITY_END();
 }

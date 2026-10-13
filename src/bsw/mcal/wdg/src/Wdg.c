@@ -516,5 +516,17 @@ uint32 Wdg_GetLastTriggerTime(void)
     return Wdg_LastTriggerTime;
 }
 
+#ifdef WDG_ENABLE_TEST_HOOKS
+void Wdg_TestReset(void) {
+    Wdg_DriverInitialized = FALSE;
+    Wdg_CurrentMode = WDGIF_OFF_MODE;
+    Wdg_CurrentTimeout = 0U;
+    Wdg_ConfigPtr = NULL_PTR;
+    Wdg_ModuleState = WDG_STATE_UNINIT;
+    Wdg_TriggerCounter = 0U;
+    Wdg_LastTriggerTime = 0U;
+}
+#endif
+
 #define WDG_STOP_SEC_CODE
 #include "MemMap.h"

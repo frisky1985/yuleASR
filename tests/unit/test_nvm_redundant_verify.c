@@ -35,10 +35,19 @@ Std_ReturnType Det_ReportError(
 static uint8 mockStorage[MOCK_NUM_BLOCKS][MOCK_BLOCK_SIZE];
 static boolean mockValid[MOCK_NUM_BLOCKS];
 
+/* Failure injection flags */
+static boolean mock_write_fail_primary = FALSE;
+static boolean mock_write_fail_mirror = FALSE;
+static boolean mock_read_fail_primary = FALSE;
+static boolean mock_read_fail_mirror = FALSE;
+
 Std_ReturnType NvM_ReadBlock(NvM_BlockIdType BlockId, void* NvM_DstPtr)
 {
     if (BlockId >= MOCK_NUM_BLOCKS) { return E_NOT_OK; }
     if (mockValid[BlockId] == FALSE) { return E_NOT_OK; }
+    /* Failure injection: BlockId 0 = primary of group 0, BlockId 1 = mirror of group 0 */
+    if (BlockId == 0U && mock_read_fail_primary) { return E_NOT_OK; }
+    if (BlockId == 1U && mock_read_fail_mirror) { return E_NOT_OK; }
     (void)memcpy(NvM_DstPtr, mockStorage[BlockId], MOCK_BLOCK_SIZE);
     return E_OK;
 }
@@ -46,6 +55,9 @@ Std_ReturnType NvM_ReadBlock(NvM_BlockIdType BlockId, void* NvM_DstPtr)
 Std_ReturnType NvM_WriteBlock(NvM_BlockIdType BlockId, const void* NvM_SrcPtr)
 {
     if (BlockId >= MOCK_NUM_BLOCKS) { return E_NOT_OK; }
+    /* Failure injection: BlockId 0 = primary of group 0, BlockId 1 = mirror of group 0 */
+    if (BlockId == 0U && mock_write_fail_primary) { return E_NOT_OK; }
+    if (BlockId == 1U && mock_write_fail_mirror) { return E_NOT_OK; }
     (void)memcpy(mockStorage[BlockId], NvM_SrcPtr, MOCK_BLOCK_SIZE);
     mockValid[BlockId] = TRUE;
     return E_OK;
@@ -122,6 +134,10 @@ static void reset_mock(void)
         (void)memset(mockStorage[i], 0x00, MOCK_BLOCK_SIZE);
         mockValid[i] = TRUE;
     }
+    mock_write_fail_primary = FALSE;
+    mock_write_fail_mirror = FALSE;
+    mock_read_fail_primary = FALSE;
+    mock_read_fail_mirror = FALSE;
 }
 
 int main(void)
@@ -181,6 +197,42 @@ int main(void)
     assert(NvM_RedundantRead((NvM_BlockIdType)NVM_NUM_REDUNDANT_BLOCKS, out) == E_NOT_OK);
     printf("[PASS] 8. 越界 BlockId 返回 E_NOT_OK\n");
 
-    printf("\n=== ALL NvM_REDUNDANT VERIFY TESTS PASSED (%u/%u) ===\n", 8U, 8U);
+    /* 9. Line 97: BlockDesc == NULL in Write (BlockId=2 < 8 but no matching descriptor) */
+    reset_mock();
+    assert(NvM_RedundantWrite((NvM_BlockIdType)2U, data) == E_NOT_OK);
+    printf("[PASS] 9. Write BlockDesc==NULL returns E_NOT_OK\n");
+
+    /* 10. Line 153: BlockDesc == NULL in Read */
+    reset_mock();
+    assert(NvM_RedundantRead((NvM_BlockIdType)2U, out) == E_NOT_OK);
+    printf("[PASS] 10. Read BlockDesc==NULL returns E_NOT_OK\n");
+
+    /* 11. Line 109: Primary write fails -> RetVal != E_OK, skip mirror */
+    reset_mock();
+    mock_write_fail_primary = TRUE;
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_NOT_OK);
+    printf("[PASS] 11. Primary write failure returns E_NOT_OK\n");
+
+    /* 12. Line 114: Mirror write fails -> inconsistent state */
+    reset_mock();
+    mock_write_fail_mirror = TRUE;
+    /* Primary write succeeds, mirror write fails -> returns mirror write result (E_NOT_OK) */
+    {
+        Std_ReturnType ret = NvM_RedundantWrite(RED_GROUP, data);
+        assert(ret == E_NOT_OK);
+    }
+    printf("[PASS] 12. Mirror write failure returns E_NOT_OK\n");
+
+    /* 13. Line 168: PrimaryRetVal != E_OK -> PrimaryValid = FALSE */
+    reset_mock();
+    /* First write valid data */
+    assert(NvM_RedundantWrite(RED_GROUP, data) == E_OK);
+    /* Now make primary read fail; mirror is still valid -> should recover from mirror */
+    mock_read_fail_primary = TRUE;
+    assert(NvM_RedundantRead(RED_GROUP, out) == E_OK);
+    assert(memcmp(out, data, TEST_BLOCK_LEN) == 0);
+    printf("[PASS] 13. Primary read failure -> mirror recovery (line 168)\n");
+
+    printf("\n=== ALL NvM_REDUNDANT VERIFY TESTS PASSED (%u/%u) ===\n", 13U, 13U);
     return 0;
 }

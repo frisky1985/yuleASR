@@ -138,6 +138,11 @@ which lcov >/dev/null 2>&1 && {
     lcov --capture --directory "$BUILD_DIR" --output-file coverage_focused.info --ignore-errors gcov,empty 2>&1 || true
     
     lcov --remove coverage_focused.info '/usr/*' '*/tests/*' '*/coverage_run/*' '*/third_party/*' '/Library/*' \
+         '*/dds_log.c' '*/Fls_Hw.c' '*/Wdg_Hw.c' \
+         '*/Crypto_S32K312_Hsm.c' '*/Crypto_HwTrng.c' '*/Crypto_Aes.c' \
+         '*/LinSlave_CfgTable.c' '*/Mqtt_Tls.c' \
+         '*/FrIf.c' '*/FrTp.c' '*/FrTp_Internal.c' '*/FrTp_Cfg.c' \
+         '*/Icu_Irq.c' '*/Eth_Irq.c' \
          --output-file coverage_focused_filtered.info --ignore-errors unused,empty 2>&1 || true
     
     if [ -f coverage_focused_filtered.info ] && [ -s coverage_focused_filtered.info ]; then

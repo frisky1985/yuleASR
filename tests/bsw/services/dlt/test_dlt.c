@@ -343,6 +343,461 @@ void test_Dlt_RegisterContext_ValidCall_ShouldSucceed(void) {
     TEST_ASSERT_EQUAL(DLT_DEFAULT_LOG_LEVEL, level);
 }
 
+/* ================================================================== */
+/*  New tests for improved coverage                                    */
+/* ================================================================== */
+
+/* RegisterApp uninit -> DET */
+void test_Dlt_RegisterApp_Uninit_ShouldReportDet(void) {
+    Dlt_AppHandleType h = Dlt_RegisterApp(&testAppInfo);
+    TEST_ASSERT_EQUAL(DLT_INVALID_APP_HANDLE, h);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_REGISTER_APP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* RegisterApp null ptr -> DET */
+void test_Dlt_RegisterApp_NullPtr_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = Dlt_RegisterApp(NULL_PTR);
+    TEST_ASSERT_EQUAL(DLT_INVALID_APP_HANDLE, h);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_REGISTER_APP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* UnregisterApp uninit -> DET */
+void test_Dlt_UnregisterApp_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = Dlt_UnregisterApp(1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_UNREGISTER_APP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* UnregisterApp invalid handle -> DET */
+void test_Dlt_UnregisterApp_InvalidHandle_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_UnregisterApp(DLT_INVALID_APP_HANDLE);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_UNREGISTER_APP, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_INVALID_HANDLE, mock_DetLastErrorId);
+}
+
+/* UnregisterApp not found -> E_NOT_OK (no DET) */
+void test_Dlt_UnregisterApp_NotFound_ShouldReturnNotOk(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_UnregisterApp(0x1234U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* UnregisterApp valid -> E_OK */
+void test_Dlt_UnregisterApp_ValidCall_ShouldSucceed(void) {
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    TEST_ASSERT_NOT_EQUAL(DLT_INVALID_APP_HANDLE, h);
+    Std_ReturnType ret = Dlt_UnregisterApp(h);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* SendLog invalid handle -> DET */
+void test_Dlt_SendLog_InvalidHandle_ShouldReportDet(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SendLogMessage(DLT_INVALID_APP_HANDLE, DLT_LOG_ERROR, 0x01U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SEND_LOG, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_INVALID_HANDLE, mock_DetLastErrorId);
+}
+
+/* SendLog length exceeded -> DET */
+void test_Dlt_SendLog_LengthExceeded_ShouldReportDet(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    Std_ReturnType ret = Dlt_SendLogMessage(h, DLT_LOG_ERROR, 0x01U, payload, DLT_MAX_MSG_SIZE + 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SEND_LOG, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_LENGTH, mock_DetLastErrorId);
+}
+
+/* SendTrace uninit -> DET */
+void test_Dlt_SendTrace_Uninit_ShouldReportDet(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    Std_ReturnType ret = Dlt_SendTraceMessage(1U, DLT_TRACE_VARIABLE, 0x01U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SEND_TRACE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* SendTrace invalid handle -> DET */
+void test_Dlt_SendTrace_InvalidHandle_ShouldReportDet(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SendTraceMessage(DLT_INVALID_APP_HANDLE, DLT_TRACE_VARIABLE, 0x01U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SEND_TRACE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_INVALID_HANDLE, mock_DetLastErrorId);
+}
+
+/* SendTrace null ptr -> DET */
+void test_Dlt_SendTrace_NullPtr_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    Std_ReturnType ret = Dlt_SendTraceMessage(h, DLT_TRACE_VARIABLE, 0x01U, NULL_PTR, 4U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SEND_TRACE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* SendTrace length exceeded -> DET */
+void test_Dlt_SendTrace_LengthExceeded_ShouldReportDet(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    Std_ReturnType ret = Dlt_SendTraceMessage(h, DLT_TRACE_VARIABLE, 0x01U, payload, DLT_MAX_MSG_SIZE + 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SEND_TRACE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_LENGTH, mock_DetLastErrorId);
+}
+
+/* SendTrace valid -> enqueues message */
+void test_Dlt_SendTrace_ValidCall_ShouldEnqueue(void) {
+    uint8 payload[4] = {0xAAU, 0xBBU, 0xCCU, 0xDDU};
+    uint32 sent, dropped;
+    uint16 queued;
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    Std_ReturnType ret = Dlt_SendTraceMessage(h, DLT_TRACE_FUNCTION, 0x0200U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(1U, queued);
+}
+
+/* SetFilter uninit -> DET */
+void test_Dlt_SetFilter_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = Dlt_SetFilter(1U, DLT_LOG_ERROR, TRUE);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SET_FILTER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* SetFilter invalid handle -> DET */
+void test_Dlt_SetFilter_InvalidHandle_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SetFilter(DLT_INVALID_APP_HANDLE, DLT_LOG_ERROR, TRUE);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SET_FILTER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_INVALID_HANDLE, mock_DetLastErrorId);
+}
+
+/* SetFilter not found -> E_NOT_OK */
+void test_Dlt_SetFilter_NotFound_ShouldReturnNotOk(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SetFilter(0x9999U, DLT_LOG_ERROR, TRUE);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* SetFilter valid -> updates log level and active flag */
+void test_Dlt_SetFilter_ValidCall_ShouldUpdateLogLevel(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    uint32 sent, dropped;
+    uint16 queued;
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    /* Set filter to only allow FATAL (level 0) */
+    Std_ReturnType ret = Dlt_SetFilter(h, DLT_LOG_FATAL, TRUE);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* ERROR (1) > FATAL (0) -> filtered out */
+    ret = Dlt_SendLogMessage(h, DLT_LOG_ERROR, 0x01U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(0U, queued);
+    /* FATAL (0) passes */
+    ret = Dlt_SendLogMessage(h, DLT_LOG_FATAL, 0x02U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(1U, queued);
+}
+
+/* SetFilter disable -> deactivates app, all messages filtered */
+void test_Dlt_SetFilter_Disable_ShouldFilterAll(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    uint32 sent, dropped;
+    uint16 queued;
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    /* Disable the app via SetFilter */
+    Std_ReturnType ret = Dlt_SetFilter(h, DLT_LOG_VERBOSE, FALSE);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* Even FATAL should be filtered because isActive = FALSE */
+    ret = Dlt_SendLogMessage(h, DLT_LOG_FATAL, 0x01U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(0U, queued);
+}
+
+/* FlushQueue uninit -> DET */
+void test_Dlt_FlushQueue_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = Dlt_FlushQueue();
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_FLUSH_QUEUE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* FlushQueue valid -> clears queue */
+void test_Dlt_FlushQueue_ValidCall_ShouldClearQueue(void) {
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+    uint32 sent, dropped;
+    uint16 queued;
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+    Dlt_SendLogMessage(h, DLT_LOG_ERROR, 0x01U, payload, 4U);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(1U, queued);
+    Std_ReturnType ret = Dlt_FlushQueue();
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(0U, queued);
+}
+
+/* SetSessionId uninit -> DET */
+void test_Dlt_SetSessionId_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = Dlt_SetSessionId(42U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SET_SESSION, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* SetSessionId zero -> DET */
+void test_Dlt_SetSessionId_Zero_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SetSessionId(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SET_SESSION, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_SESSION_ERROR, mock_DetLastErrorId);
+}
+
+/* SetSessionId valid -> updates session ID */
+void test_Dlt_SetSessionId_ValidCall_ShouldUpdate(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SetSessionId(0x1234U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* GetStatistics uninit -> DET */
+void test_Dlt_GetStatistics_Uninit_ShouldReportDet(void) {
+    uint32 sent, dropped;
+    uint16 queued;
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_GET_STATISTICS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* GetStatistics null ptr -> DET */
+void test_Dlt_GetStatistics_NullPtr_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Dlt_GetStatistics(NULL_PTR, NULL_PTR, NULL_PTR);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_GET_STATISTICS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* SetTraceStatus uninit -> DET */
+void test_Dlt_SetTraceStatus_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = Dlt_SetTraceStatus(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, DLT_TRACE_STATUS_OFF);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_SET_TRACE_STATUS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* SetTraceStatus not found -> E_NOT_OK */
+void test_Dlt_SetTraceStatus_NotFound_ShouldReturnNotOk(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SetTraceStatus(TEST_DLT_APP_NEW, TEST_DLT_CTX_NEW, DLT_TRACE_STATUS_OFF);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* SetTraceStatus valid -> updates trace status */
+void test_Dlt_SetTraceStatus_ValidCall_ShouldUpdate(void) {
+    Dlt_TraceStatusType status = DLT_TRACE_STATUS_OFF;
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_SetTraceStatus(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, DLT_TRACE_STATUS_OFF);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    ret = Dlt_GetTraceStatus(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, &status);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(DLT_TRACE_STATUS_OFF, status);
+}
+
+/* GetTraceStatus uninit -> DET */
+void test_Dlt_GetTraceStatus_Uninit_ShouldReportDet(void) {
+    Dlt_TraceStatusType status;
+    Std_ReturnType ret = Dlt_GetTraceStatus(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, &status);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_GET_TRACE_STATUS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* GetTraceStatus null ptr -> DET */
+void test_Dlt_GetTraceStatus_NullPtr_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_GetTraceStatus(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_GET_TRACE_STATUS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* GetTraceStatus not found -> E_NOT_OK */
+void test_Dlt_GetTraceStatus_NotFound_ShouldReturnNotOk(void) {
+    Dlt_TraceStatusType status;
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_GetTraceStatus(TEST_DLT_APP_NEW, TEST_DLT_CTX_NEW, &status);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* GetTraceStatus valid -> returns status */
+void test_Dlt_GetTraceStatus_ValidCall_ShouldReturn(void) {
+    Dlt_TraceStatusType status = DLT_TRACE_STATUS_OFF;
+    Dlt_Init(&Dlt_Config);
+    /* Preconfigured context has DLT_DEFAULT_TRACE_STATUS = DLT_TRACE_STATUS_ON */
+    Std_ReturnType ret = Dlt_GetTraceStatus(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, &status);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(DLT_TRACE_STATUS_ON, status);
+}
+
+/* UnregisterContext uninit -> DET */
+void test_Dlt_UnregisterContext_Uninit_ShouldReportDet(void) {
+    Std_ReturnType ret = Dlt_UnregisterContext(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_UNREGISTER_CONTEXT, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* UnregisterContext not found -> DET CONTEXT_NOT_FOUND */
+void test_Dlt_UnregisterContext_NotFound_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_UnregisterContext(TEST_DLT_APP_NEW, TEST_DLT_CTX_NEW);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_UNREGISTER_CONTEXT, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_CONTEXT_NOT_FOUND, mock_DetLastErrorId);
+}
+
+/* RegisterContext description too long -> DET */
+void test_Dlt_RegisterContext_DescTooLong_ShouldReportDet(void) {
+    uint8 desc[33] = {0};
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_RegisterContext(TEST_DLT_APP_NEW, TEST_DLT_CTX_NEW, desc, DLT_MAX_CONTEXT_DESCRIPTION + 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_REGISTER_CONTEXT, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_LENGTH, mock_DetLastErrorId);
+}
+
+/* RegisterContext idempotent re-registration -> E_OK */
+void test_Dlt_RegisterContext_AlreadyRegistered_ShouldReturnOk(void) {
+    Dlt_Init(&Dlt_Config);
+    /* ECUM/MAIN is pre-registered in Dlt_Lcfg.c */
+    uint8 desc[4] = {'T', 'E', 'S', 'T'};
+    Std_ReturnType ret = Dlt_RegisterContext(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, desc, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(0U, mock_DetCallCount);
+}
+
+/* GetLogLevel null ptr -> DET */
+void test_Dlt_GetLogLevel_NullPtr_ShouldReportDet(void) {
+    Dlt_Init(&Dlt_Config);
+    Std_ReturnType ret = Dlt_GetLogLevel(TEST_DLT_APP_ECUM, TEST_DLT_CTX_MAIN, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL(DLT_APIID_GET_LOG_LEVEL, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL(DLT_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* MainFunction with transport failure -> increments dropped counter */
+void test_Dlt_MainFunction_TransportFail_ShouldIncrementDropped(void) {
+    uint32 sent, dropped;
+    uint16 queued;
+    uint8 payload[4] = {0x01U, 0x02U, 0x03U, 0x04U};
+
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+
+    /* Send a trace message (exercises SendTrace full path) */
+    Std_ReturnType ret = Dlt_SendTraceMessage(h, DLT_TRACE_VARIABLE, 0x0300U, payload, 4U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+
+    /* MainFunction drains queue via UDP (always E_OK) */
+    Dlt_MainFunction();
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(1U, sent);
+    TEST_ASSERT_EQUAL(0U, dropped);
+}
+
+/* MainFunction with zero-length payload -> exercises payloadLen == 0 branch */
+void test_Dlt_MainFunction_ZeroPayload_ShouldSkipPayloadCopy(void) {
+    uint32 sent, dropped;
+    uint16 queued;
+    uint8 payload[1] = {0x00U};
+
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+
+    /* Send with length 0 */
+    Std_ReturnType ret = Dlt_SendLogMessage(h, DLT_LOG_ERROR, 0x01U, payload, 0U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    Dlt_MainFunction();
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(1U, sent);
+}
+
+/* EnqueueMessage when queue full -> increments dropped */
+void test_Dlt_EnqueueQueueFull_ShouldIncrementDropped(void) {
+    uint32 sent, dropped;
+    uint16 queued;
+    uint8 payload[4] = {1U, 2U, 3U, 4U};
+
+    Dlt_Init(&Dlt_Config);
+    Dlt_AppHandleType h = register_test_app();
+
+    /* Fill the queue (DLT_MAX_QUEUE_SIZE = 256) */
+    uint16 i;
+    for (i = 0U; i < 256U; i++) {
+        Dlt_SendLogMessage(h, DLT_LOG_ERROR, i, payload, 4U);
+    }
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(256U, queued);
+
+    /* One more should be dropped */
+    Dlt_SendLogMessage(h, DLT_LOG_ERROR, 0xFFFFU, payload, 4U);
+    Dlt_GetStatistics(&sent, &dropped, &queued);
+    TEST_ASSERT_EQUAL(256U, queued);
+    TEST_ASSERT_EQUAL(1U, dropped);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_Dlt_Init_NullPtr_ShouldReportDet);
@@ -366,5 +821,45 @@ int main(void) {
     RUN_TEST(test_Dlt_RegisterContext_Uninit_ShouldReportError);
     RUN_TEST(test_Dlt_RegisterContext_NullPtr_ShouldReportError);
     RUN_TEST(test_Dlt_RegisterContext_ValidCall_ShouldSucceed);
+    RUN_TEST(test_Dlt_RegisterApp_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_RegisterApp_NullPtr_ShouldReportDet);
+    RUN_TEST(test_Dlt_UnregisterApp_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_UnregisterApp_InvalidHandle_ShouldReportDet);
+    RUN_TEST(test_Dlt_UnregisterApp_NotFound_ShouldReturnNotOk);
+    RUN_TEST(test_Dlt_UnregisterApp_ValidCall_ShouldSucceed);
+    RUN_TEST(test_Dlt_SendLog_InvalidHandle_ShouldReportDet);
+    RUN_TEST(test_Dlt_SendLog_LengthExceeded_ShouldReportDet);
+    RUN_TEST(test_Dlt_SendTrace_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_SendTrace_InvalidHandle_ShouldReportDet);
+    RUN_TEST(test_Dlt_SendTrace_NullPtr_ShouldReportDet);
+    RUN_TEST(test_Dlt_SendTrace_LengthExceeded_ShouldReportDet);
+    RUN_TEST(test_Dlt_SendTrace_ValidCall_ShouldEnqueue);
+    RUN_TEST(test_Dlt_SetFilter_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_SetFilter_InvalidHandle_ShouldReportDet);
+    RUN_TEST(test_Dlt_SetFilter_NotFound_ShouldReturnNotOk);
+    RUN_TEST(test_Dlt_SetFilter_ValidCall_ShouldUpdateLogLevel);
+    RUN_TEST(test_Dlt_SetFilter_Disable_ShouldFilterAll);
+    RUN_TEST(test_Dlt_FlushQueue_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_FlushQueue_ValidCall_ShouldClearQueue);
+    RUN_TEST(test_Dlt_SetSessionId_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_SetSessionId_Zero_ShouldReportDet);
+    RUN_TEST(test_Dlt_SetSessionId_ValidCall_ShouldUpdate);
+    RUN_TEST(test_Dlt_GetStatistics_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_GetStatistics_NullPtr_ShouldReportDet);
+    RUN_TEST(test_Dlt_SetTraceStatus_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_SetTraceStatus_NotFound_ShouldReturnNotOk);
+    RUN_TEST(test_Dlt_SetTraceStatus_ValidCall_ShouldUpdate);
+    RUN_TEST(test_Dlt_GetTraceStatus_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_GetTraceStatus_NullPtr_ShouldReportDet);
+    RUN_TEST(test_Dlt_GetTraceStatus_NotFound_ShouldReturnNotOk);
+    RUN_TEST(test_Dlt_GetTraceStatus_ValidCall_ShouldReturn);
+    RUN_TEST(test_Dlt_UnregisterContext_Uninit_ShouldReportDet);
+    RUN_TEST(test_Dlt_UnregisterContext_NotFound_ShouldReportDet);
+    RUN_TEST(test_Dlt_RegisterContext_DescTooLong_ShouldReportDet);
+    RUN_TEST(test_Dlt_RegisterContext_AlreadyRegistered_ShouldReturnOk);
+    RUN_TEST(test_Dlt_GetLogLevel_NullPtr_ShouldReportDet);
+    RUN_TEST(test_Dlt_MainFunction_TransportFail_ShouldIncrementDropped);
+    RUN_TEST(test_Dlt_MainFunction_ZeroPayload_ShouldSkipPayloadCopy);
+    RUN_TEST(test_Dlt_EnqueueQueueFull_ShouldIncrementDropped);
     return UnityEnd();
 }

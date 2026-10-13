@@ -237,6 +237,28 @@ void test_LdCom_GetProgress_ShouldReturnZeros(void) {
     TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
 }
 
+/** @req SWS_LdCom_00008 — NULL bytesSent is tolerated (no write, no DET) */
+void test_LdCom_GetProgress_NullBytesSent_ShouldReturnOk(void) {
+    Std_ReturnType ret;
+    uint16 totalBytes = 9U;
+    test_LdCom_DoInit();
+    ret = LdCom_GetProgress(0U, NULL_PTR, &totalBytes);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT16(0U, totalBytes);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** @req SWS_LdCom_00008 — NULL totalBytes is tolerated (no write, no DET) */
+void test_LdCom_GetProgress_NullTotalBytes_ShouldReturnOk(void) {
+    Std_ReturnType ret;
+    uint16 bytesSent = 7U;
+    test_LdCom_DoInit();
+    ret = LdCom_GetProgress(0U, &bytesSent, NULL_PTR);
+    TEST_ASSERT_EQUAL_UINT8(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT16(0U, bytesSent);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
 /** @req SWS_LdCom_00009 — TriggerTransmit is unsupported: always E_NOT_OK */
 void test_LdCom_TriggerTransmit_ShouldReturnNotOk(void) {
     Std_ReturnType ret;
@@ -264,6 +286,8 @@ int main(void) {
     RUN_TEST(test_LdCom_GetSegmentStatus_ShouldReturnIdle);
     RUN_TEST(test_LdCom_GetSegmentStatus_NullStatus_ShouldReturnOk);
     RUN_TEST(test_LdCom_GetProgress_ShouldReturnZeros);
+    RUN_TEST(test_LdCom_GetProgress_NullBytesSent_ShouldReturnOk);
+    RUN_TEST(test_LdCom_GetProgress_NullTotalBytes_ShouldReturnOk);
     RUN_TEST(test_LdCom_TriggerTransmit_ShouldReturnNotOk);
     return UnityEnd();
 }

@@ -7,6 +7,7 @@
 #include <string.h>
 #include <assert.h>
 #include "Boot_Verify.h"
+#include "Boot_Types.h"
 
 static void test_constant_cmp_equal(void)
 {
@@ -100,6 +101,42 @@ static void test_hash_padding_vectors(void)
     printf("PASS: hash_padding_vectors (%zu vectors)\n", n);
 }
 
+/* ---- Signature NULL parameter tests (line 75) ---- */
+
+static void test_signature_null_hash(void)
+{
+    uint8_t sig[64];
+    Boot_PubKey key = { .data = (const uint8_t *)0x1, .length = 1 };
+    memset(sig, 0xAA, sizeof(sig));
+    assert(Boot_Verify_Signature(NULL_PTR, sig, &key) == BOOT_E_PARAM);
+    printf("PASS: signature_null_hash\n");
+}
+
+static void test_signature_null_signature(void)
+{
+    uint8_t hash[32];
+    Boot_PubKey key = { .data = (const uint8_t *)0x1, .length = 1 };
+    memset(hash, 0xBB, sizeof(hash));
+    assert(Boot_Verify_Signature(hash, NULL_PTR, &key) == BOOT_E_PARAM);
+    printf("PASS: signature_null_signature\n");
+}
+
+static void test_signature_null_pubkey(void)
+{
+    uint8_t hash[32];
+    uint8_t sig[64];
+    memset(hash, 0xCC, sizeof(hash));
+    memset(sig, 0xDD, sizeof(sig));
+    assert(Boot_Verify_Signature(hash, sig, NULL_PTR) == BOOT_E_PARAM);
+    printf("PASS: signature_null_pubkey\n");
+}
+
+static void test_signature_all_null(void)
+{
+    assert(Boot_Verify_Signature(NULL_PTR, NULL_PTR, NULL_PTR) == BOOT_E_PARAM);
+    printf("PASS: signature_all_null\n");
+}
+
 int main(void)
 {
     printf("=== Boot_Verify Unit Tests ===\n\n");
@@ -108,6 +145,10 @@ int main(void)
     test_hash_empty();
     test_hash_known();
     test_hash_padding_vectors();
+    test_signature_null_hash();
+    test_signature_null_signature();
+    test_signature_null_pubkey();
+    test_signature_all_null();
     printf("\n=== ALL TESTS PASSED ===\n");
     return 0;
 }

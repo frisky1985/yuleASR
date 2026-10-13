@@ -607,6 +607,122 @@ static int test_confirm_business_health_forward(void)
 }
 
 /* ============================================================================
+ * bib_pending_valid 分支覆盖测试 (lines 74, 77)
+ * ============================================================================ */
+
+/* GIVEN pending_counter == 0 / WHEN NotifyBootSuccess / THEN 视为无待确认 (line 74) */
+static int test_pending_valid_counter_zero(void)
+{
+    printf("  Testing bib_pending_valid with pending_counter == 0...\n");
+
+    (void)Boot_Update_Abort();
+
+    Boot_InfoBlock bib;
+    memset(&bib, 0, sizeof(bib));
+    bib.magic = 0x30424942U;
+    bib.max_boot_attempts = 5U;
+    bib.anti_rollback_counter = 0x100U;
+    bib.pending_counter = 0U;   /* Line 74: pending_counter == 0 → FALSE */
+    bib.pending_boot_count = 0U;
+    bib.update_state = BOOT_UPDATE_IDLE;
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+
+    /* NotifyBootSuccess → bib_pending_valid returns FALSE (line 74) */
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x100U), BOOT_OK);
+
+    /* Verify counter unchanged */
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.anti_rollback_counter, 0x100U);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* GIVEN pending_counter <= anti_rollback_counter / WHEN NotifyBootSuccess /
+ * THEN 视为无效残留 (line 77) */
+static int test_pending_valid_counter_below_floor(void)
+{
+    printf("  Testing bib_pending_valid with pending_counter <= anti_rollback_counter...\n");
+
+    (void)Boot_Update_Abort();
+
+    Boot_InfoBlock bib;
+    memset(&bib, 0, sizeof(bib));
+    bib.magic = 0x30424942U;
+    bib.max_boot_attempts = 5U;
+    bib.anti_rollback_counter = 0x200U;
+    bib.pending_counter = 0x100U;   /* Line 77: 0x100 <= 0x200 → FALSE */
+    bib.pending_boot_count = 0U;
+    bib.update_state = BOOT_UPDATE_IDLE;
+    bib.crc32 = test_bib_crc(&bib);
+    TEST_ASSERT_EQ(Boot_Flash_Write(BOOT_BIB_ADDR, (const uint8_t *)&bib, sizeof(bib)),
+                   BOOT_OK);
+
+    /* NotifyBootSuccess → bib_pending_valid returns FALSE (line 77) */
+    TEST_ASSERT_EQ(Boot_Update_NotifyBootSuccess(0x100U), BOOT_OK);
+
+    /* Verify counter unchanged */
+    TEST_ASSERT_EQ(Boot_Flash_Read(BOOT_BIB_ADDR, (uint8_t *)&bib, sizeof(bib)), BOOT_OK);
+    TEST_ASSERT_EQ(bib.anti_rollback_counter, 0x200U);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
+ * confirm_gate 分支覆盖测试 (line 128)
+ * ============================================================================ */
+
+/* GIVEN confirm_state == BOOT_CONFIRM_IDLE / WHEN confirm_gate (via Prepare) /
+ * THEN 走 default → PENDING 分支 (line 128 IDLE/default branch) */
+static int test_confirm_gate_idle_state(void)
+{
+    printf("  Testing confirm_gate with IDLE state...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();   /* confirm_state → IDLE (memset 0) */
+
+    /* Prepare calls confirm_gate with IDLE state → default/PENDING path */
+    Boot_Result ret = Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP);
+    /* IDLE is not GRANTED, so confirm_gate returns BOOT_E_CONFIRM_PENDING */
+    TEST_ASSERT_EQ(ret, BOOT_E_CONFIRM_PENDING);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
+ * RequestUserConfirm 终态幂等测试 (lines 159-160)
+ * ============================================================================ */
+
+/* GIVEN confirm_state == BOOT_CONFIRM_TIMEOUT / WHEN RequestUserConfirm /
+ * THEN 终态保持不变 (lines 159-160 TIMEOUT branch) */
+static int test_request_confirm_timeout_terminal(void)
+{
+    printf("  Testing RequestUserConfirm with TIMEOUT terminal state...\n");
+
+    (void)Boot_Update_SetTimeSource(mock_tick_ms);
+    g_tick_ms = 0U;
+    (void)Boot_Update_Abort();
+
+    /* Enter PENDING then timeout */
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    g_tick_ms = (uint64_t)BOOT_USER_CONFIRM_TIMEOUT_MS + 1U;
+    (void)Boot_Update_Prepare(BOOT_APP_SLOT_A_ADDR, BOOT_IMAGE_APP);
+    TEST_ASSERT_EQ(Boot_Update_GetConfirmState(), BOOT_CONFIRM_TIMEOUT);
+
+    /* RequestUserConfirm with TIMEOUT → terminal state, returns BOOT_OK */
+    TEST_ASSERT_EQ(Boot_Update_RequestUserConfirm(), BOOT_OK);
+    TEST_ASSERT_EQ(Boot_Update_GetConfirmState(), BOOT_CONFIRM_TIMEOUT);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * Test Runner
  * ============================================================================ */
 
@@ -683,6 +799,10 @@ int main(void)
     run_test(test_update_state_downloading_invalidates_pending, "DOWNLOADING Invalidates Pending");
     run_test(test_confirm_business_health_forward, "Health Forwarding via Injected Storage");
     run_test(test_prepare_rejects_active_slot, "Prepare Rejects Active Slot Write (P1-1)");
+    run_test(test_pending_valid_counter_zero, "bib_pending_valid pending_counter==0 (line 74)");
+    run_test(test_pending_valid_counter_below_floor, "bib_pending_valid pending_counter<=floor (line 77)");
+    run_test(test_confirm_gate_idle_state, "confirm_gate IDLE state (line 128)");
+    run_test(test_request_confirm_timeout_terminal, "RequestUserConfirm TIMEOUT terminal (lines 159-160)");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

@@ -13,11 +13,34 @@
 #include "Dcm_Cfg.h"
 
 /*==================================================================================================
+*                                    STUBS
+==================================================================================================*/
+
+static uint32 stub_pduR_transmit_calls = 0U;
+
+Std_ReturnType PduR_Transmit(PduIdType TxPduId, const PduInfoType* PduInfoPtr)
+{
+    (void)TxPduId;
+    (void)PduInfoPtr;
+    stub_pduR_transmit_calls++;
+    return E_OK;
+}
+
+void Det_ReportError(uint16 ModuleId, uint8 InstanceId, uint8 ApiId, uint8 ErrorId)
+{
+    (void)ModuleId;
+    (void)InstanceId;
+    (void)ApiId;
+    (void)ErrorId;
+}
+
+/*==================================================================================================
 *                                    TEST FIXTURE
 ==================================================================================================*/
 
 void setUp(void)
 {
+    stub_pduR_transmit_calls = 0U;
     Dcm_TransferInit();
 }
 
@@ -107,13 +130,40 @@ void test_Dcm_ValidateMemoryRange_ShouldRejectInvalidRange(void)
 }
 
 /**
- * @brief Test: Address format extraction
+ * @brief Address extraction via RequestDownload with valid format but invalid address
+ *        Exercises Dcm_TransferExtractAddressAndSize through public API.
  */
-void test_Dcm_TransferExtractAddressAndSize(void)
+void test_Dcm_TransferExtractAddressAndSize_ShouldRejectBadAddress(void)
 {
-    /* This would require access to static functions
-     * For now, we test the public interface */
-    TEST_IGNORE_MESSAGE("Static function test - requires test helper");
+    uint8 requestData[9] = {
+        0x44,                       /* addrLen=4 (low nibble), sizeLen=4 (high nibble) */
+        0x00, 0x00, 0x00, 0x00,     /* address = 0x00000000 (invalid) */
+        0x00, 0x00, 0x10, 0x00      /* size = 4096 */
+    };
+    Std_ReturnType result;
+
+    Dcm_TransferInit();
+    result = Dcm_TransferProcessRequestDownload(0, requestData, 9);
+    TEST_ASSERT_EQUAL(E_NOT_OK, result);
+}
+
+/**
+ * @brief Address extraction with valid address should proceed past extract step
+ */
+void test_Dcm_TransferExtractAddressAndSize_ShouldAcceptValidAddress(void)
+{
+    uint8 requestData[9] = {
+        0x44,                       /* addrLen=4, sizeLen=4 */
+        0x08, 0x00, 0x00, 0x00,     /* address = 0x08000000 (valid flash) */
+        0x00, 0x10, 0x00, 0x00      /* size = 0x00001000 = 4096 */
+    };
+    Std_ReturnType result;
+
+    Dcm_TransferInit();
+    result = Dcm_TransferProcessRequestDownload(0, requestData, 9);
+    /* With valid address+size and no active transfer, should succeed or
+     * proceed past address extraction (may fail at later validation) */
+    TEST_ASSERT_EQUAL(E_OK, result);
 }
 
 /**
@@ -242,6 +292,10 @@ int main(void)
     RUN_TEST(test_Dcm_TransferProcessRequestDownload_ShouldRejectInvalidLength);
     RUN_TEST(test_Dcm_TransferProcessTransferData_ShouldRejectWhenInactive);
     RUN_TEST(test_Dcm_TransferProcessRequestTransferExit_ShouldRejectWhenInactive);
+
+    /* Address extraction tests (exercises static function via public API) */
+    RUN_TEST(test_Dcm_TransferExtractAddressAndSize_ShouldRejectBadAddress);
+    RUN_TEST(test_Dcm_TransferExtractAddressAndSize_ShouldAcceptValidAddress);
 
     /* Address mapping tests */
     RUN_TEST(test_Dcm_MapLogicalToPhysicalAddress);

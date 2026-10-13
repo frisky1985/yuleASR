@@ -21,6 +21,12 @@
 #ifndef STBM_MEMMAP_H
 #define STBM_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*==================================================================================================
 *                                    MEMORY SECTION MAPPING
 ==================================================================================================*/
@@ -63,6 +69,11 @@
 #ifdef MEMMAP_ERROR
     #error "StbM_MemMap.h: Invalid memory section directive"
     #undef MEMMAP_ERROR
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* STBM_MEMMAP_H */

@@ -110,7 +110,9 @@
 /*==================================================================================================
 *                                    DTC GROUP DEFINITIONS
 ==================================================================================================*/
+#ifndef DEM_DTC_GROUP_ALL
 #define DEM_DTC_GROUP_ALL               ((Dem_DtcType)0xFFFFFFU)
+#endif
 #define DEM_DTC_GROUP_EMISSION_RELATED  ((Dem_DtcType)0x000001U)
 #define DEM_DTC_GROUP_POWERTRAIN        ((Dem_DtcType)0x010000U)
 #define DEM_DTC_GROUP_CHASSIS           ((Dem_DtcType)0x020000U)

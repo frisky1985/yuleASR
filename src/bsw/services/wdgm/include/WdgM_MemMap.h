@@ -17,6 +17,12 @@
 #ifndef WDGM_MEMMAP_H
 #define WDGM_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /*============================================================================
  *  CODE SECTIONS
  *===========================================================================*/
@@ -75,6 +81,11 @@
     #pragma section
     #undef WDGM_STOP_SEC_VAR_NOINIT_UNSPECIFIED
     #undef MEMMAP_ERROR
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* WDGM_MEMMAP_H */

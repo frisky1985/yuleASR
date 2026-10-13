@@ -106,6 +106,74 @@ void test_ea_JobErrorNotification_should_not_crash(void) {
     TEST_PASS();
 }
 
+void test_ea_Write_invalid_block_should_return_error(void) {
+    Ea_Init(&Ea_Config);
+    uint8 data[4] = {0x01, 0x02, 0x03, 0x04};
+    /* Try to write to an invalid block number */
+    Std_ReturnType ret = Ea_Write(0xFFFF, data);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_ea_Write_when_busy_should_return_error(void) {
+    Ea_Init(&Ea_Config);
+    uint8 data[4] = {0x01, 0x02, 0x03, 0x04};
+    /* Start a write operation to set status to BUSY */
+    Ea_Write(0, data);
+    /* Try another write while busy */
+    Std_ReturnType ret = Ea_Write(0, data);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_ea_Cancel_when_busy_should_cancel_job(void) {
+    Ea_Init(&Ea_Config);
+    uint8 data[4] = {0x01, 0x02, 0x03, 0x04};
+    /* Start a write operation */
+    Ea_Write(0, data);
+    /* Cancel should work when busy */
+    Ea_Cancel();
+    Ea_StatusType status = Ea_GetStatus();
+    TEST_ASSERT_EQUAL(EA_IDLE, status);
+}
+
+void test_ea_InvalidateBlock_when_busy_should_return_error(void) {
+    Ea_Init(&Ea_Config);
+    uint8 data[4] = {0x01, 0x02, 0x03, 0x04};
+    /* Start a write operation to set status to BUSY */
+    Ea_Write(0, data);
+    /* Try to invalidate while busy */
+    Std_ReturnType ret = Ea_InvalidateBlock(0);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_ea_EraseImmediateBlock_when_busy_should_return_error(void) {
+    Ea_Init(&Ea_Config);
+    uint8 data[4] = {0x01, 0x02, 0x03, 0x04};
+    /* Start a write operation to set status to BUSY */
+    Ea_Write(0, data);
+    /* Try to erase while busy */
+    Std_ReturnType ret = Ea_EraseImmediateBlock(0);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_ea_Read_invalid_block_should_return_error(void) {
+    Ea_Init(&Ea_Config);
+    uint8 buffer[8];
+    /* Try to read from an invalid block */
+    Std_ReturnType ret = Ea_Read(0xFFFF, 0, buffer, sizeof(buffer));
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+void test_ea_Read_when_busy_should_return_error(void) {
+    Ea_Init(&Ea_Config);
+    uint8 data[4] = {0x01, 0x02, 0x03, 0x04};
+    uint8 buffer[8];
+    /* Start a write operation to set status to BUSY */
+    Ea_Write(0, data);
+    /* Try to read while busy */
+    Std_ReturnType ret = Ea_Read(0, 0, buffer, sizeof(buffer));
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
 int main(void) {
     UNITY_BEGIN();
     RUN_TEST(test_ea_Init_should_initialize);
@@ -123,5 +191,12 @@ int main(void) {
     RUN_TEST(test_ea_MainFunction_should_not_crash);
     RUN_TEST(test_ea_JobEndNotification_should_not_crash);
     RUN_TEST(test_ea_JobErrorNotification_should_not_crash);
+    RUN_TEST(test_ea_Write_invalid_block_should_return_error);
+    RUN_TEST(test_ea_Write_when_busy_should_return_error);
+    RUN_TEST(test_ea_Cancel_when_busy_should_cancel_job);
+    RUN_TEST(test_ea_InvalidateBlock_when_busy_should_return_error);
+    RUN_TEST(test_ea_EraseImmediateBlock_when_busy_should_return_error);
+    RUN_TEST(test_ea_Read_invalid_block_should_return_error);
+    RUN_TEST(test_ea_Read_when_busy_should_return_error);
     return UNITY_END();
 }

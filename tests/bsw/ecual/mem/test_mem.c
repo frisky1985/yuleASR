@@ -328,3 +328,187 @@ void test_Mem_CheckIntegrity_ValidState_ShouldReturnOk(void) {
     TEST_ASSERT_EQUAL_UINT32(0U, mock_DetRuntimeCallCount);
     TEST_ASSERT_EQUAL(E_OK, Mem_Free(h));
 }
+
+/* --- Block splitting: small allocation from large free region --- */
+
+/**
+ * Line 225: if (block->size >= (size + minBlockSize))
+ * Allocate a small block; the remainder should be split into a new free block.
+ */
+void test_Mem_Allocate_SmallBlock_ShouldSplitFreeRegion(void) {
+    Mem_Init(&testConfig);
+    Mem_InfoType infoBefore, infoAfter;
+    Mem_GetMemInfo(0U, &infoBefore);
+    uint32 numBlocksBefore = infoBefore.numFragments;
+
+    /* Allocate a small block (16 bytes) — should split the initial free block */
+    Mem_HandleType h = Mem_Allocate(16U, MEM_DEFAULT_ALIGNMENT);
+    TEST_ASSERT_NOT_EQUAL(MEM_INVALID_HANDLE, h);
+
+    Mem_GetMemInfo(0U, &infoAfter);
+    /* After splitting, there should be more fragments (the remainder free block) */
+    TEST_ASSERT_TRUE(infoAfter.numFragments > 0U);
+    TEST_ASSERT_EQUAL(E_OK, Mem_Free(h));
+}
+
+/* --- Merge free blocks: free adjacent blocks to trigger merge --- */
+
+/**
+ * Lines 256-277: Merge with next/prev free block.
+ * Allocate two adjacent blocks, free both — merge should combine them.
+ */
+void test_Mem_Free_AdjacentBlocks_ShouldMergeFreeBlocks(void) {
+    Mem_Init(&testConfig);
+    Mem_HandleType h1 = Mem_Allocate(32U, MEM_DEFAULT_ALIGNMENT);
+    Mem_HandleType h2 = Mem_Allocate(32U, MEM_DEFAULT_ALIGNMENT);
+    TEST_ASSERT_NOT_EQUAL(MEM_INVALID_HANDLE, h1);
+    TEST_ASSERT_NOT_EQUAL(MEM_INVALID_HANDLE, h2);
+
+    /* Free both — the second free should trigger merge with adjacent free */
+    TEST_ASSERT_EQUAL(E_OK, Mem_Free(h1));
+    TEST_ASSERT_EQUAL(E_OK, Mem_Free(h2));
+
+    /* After merging, integrity should still pass */
+    TEST_ASSERT_EQUAL(E_OK, Mem_CheckIntegrity());
+}
+
+/* --- Pool selection: standard pool (size > MEM_FAST_POOL_MAX_BLOCK) --- */
+
+/**
+ * Lines 288-289: size <= MEM_STANDARD_POOL_MAX_BLOCK -> pool 1.
+ * MEM_FAST_POOL_MAX_BLOCK = 256, so allocate > 256 bytes to hit standard pool.
+ */
+void test_Mem_Allocate_StandardPool_ShouldAllocateFromStandardPool(void) {
+    Mem_Init(&testConfig);
+    /* Allocate 512 bytes — exceeds fast pool max (256), goes to standard pool */
+    Mem_HandleType h = Mem_Allocate(512U, MEM_DEFAULT_ALIGNMENT);
+    TEST_ASSERT_NOT_EQUAL(MEM_INVALID_HANDLE, h);
+
+    /* Verify the allocation is in pool 1 (standard) via GetMemInfo */
+    Mem_InfoType infoStd;
+    TEST_ASSERT_EQUAL(E_OK, Mem_GetMemInfo(1U, &infoStd));
+    TEST_ASSERT_TRUE(infoStd.usedSize > 0U);
+
+    TEST_ASSERT_EQUAL(E_OK, Mem_Free(h));
+}
+
+/* --- Pool selection: large pool (size > MEM_STANDARD_POOL_MAX_BLOCK) --- */
+
+/**
+ * Lines 290-292: else -> pool 2 (large).
+ * MEM_STANDARD_POOL_MAX_BLOCK = 2048, so allocate > 2048 bytes.
+ */
+void test_Mem_Allocate_LargePool_ShouldAllocateFromLargePool(void) {
+    Mem_Init(&testConfig);
+    /* Allocate 4096 bytes — exceeds standard pool max (2048), goes to large pool */
+    Mem_HandleType h = Mem_Allocate(4096U, MEM_DEFAULT_ALIGNMENT);
+    TEST_ASSERT_NOT_EQUAL(MEM_INVALID_HANDLE, h);
+
+    /* Verify the allocation is in pool 2 (large) via GetMemInfo */
+    Mem_InfoType infoLarge;
+    TEST_ASSERT_EQUAL(E_OK, Mem_GetMemInfo(2U, &infoLarge));
+    TEST_ASSERT_TRUE(infoLarge.usedSize > 0U);
+
+    TEST_ASSERT_EQUAL(E_OK, Mem_Free(h));
+}
+
+/* --- Reallocate with invalid handle --- */
+
+/**
+ * Lines 530-533: Handle == MEM_INVALID_HANDLE.
+ */
+void test_Mem_Reallocate_InvalidHandle_ShouldReportError(void) {
+    Mem_Init(&testConfig);
+    Mem_HandleType h = Mem_Reallocate(MEM_INVALID_HANDLE, 64U);
+    TEST_ASSERT_EQUAL(MEM_INVALID_HANDLE, h);
+    TEST_ASSERT_EQUAL_UINT8(MEM_SID_REALLOCATE, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(MEM_E_INVALID_HANDLE, mock_DetLastErrorId);
+}
+
+/* --- Reallocate with NewSize=0 --- */
+
+/**
+ * Lines 535-538: NewSize == 0 -> calls Mem_Free, returns INVALID_HANDLE.
+ */
+void test_Mem_Reallocate_NewSizeZero_ShouldFreeAndReturnInvalid(void) {
+    Mem_Init(&testConfig);
+    Mem_HandleType h = Mem_Allocate(32U, MEM_DEFAULT_ALIGNMENT);
+    TEST_ASSERT_NOT_EQUAL(MEM_INVALID_HANDLE, h);
+
+    Mem_HandleType h2 = Mem_Reallocate(h, 0U);
+    TEST_ASSERT_EQUAL(MEM_INVALID_HANDLE, h2);
+    /* Original block should have been freed */
+    TEST_ASSERT_NULL(Mem_GetPointer(h));
+}
+
+/* --- GetPointer with invalid handle --- */
+
+/**
+ * Line 610: Handle == MEM_INVALID_HANDLE -> returns NULL_PTR.
+ */
+void test_Mem_GetPointer_InvalidHandle_ShouldReturnNull(void) {
+    Mem_Init(&testConfig);
+    void* p = Mem_GetPointer(MEM_INVALID_HANDLE);
+    TEST_ASSERT_NULL(p);
+}
+
+/* --- GetMemInfo with NULL InfoPtr --- */
+
+/**
+ * Lines 665-668: InfoPtr == NULL_PTR.
+ */
+void test_Mem_GetMemInfo_NullPtr_ShouldReportError(void) {
+    Mem_Init(&testConfig);
+    Std_ReturnType ret = Mem_GetMemInfo(0U, NULL_PTR);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(MEM_SID_GETMEMINFO, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(MEM_E_PARAM_POINTER, mock_DetLastErrorId);
+}
+
+/* --- GetMemInfo uninit --- */
+
+/**
+ * Lines 660-662: Mem_Initialized == FALSE.
+ */
+void test_Mem_GetMemInfo_Uninit_ShouldReportError(void) {
+    Mem_InfoType info;
+    Std_ReturnType ret = Mem_GetMemInfo(0U, &info);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(MEM_SID_GETMEMINFO, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(MEM_E_UNINIT, mock_DetLastErrorId);
+}
+
+/* --- CheckIntegrity uninit --- */
+
+/**
+ * Lines 748-752: Mem_Initialized == FALSE.
+ */
+void test_Mem_CheckIntegrity_Uninit_ShouldReportError(void) {
+    Std_ReturnType ret = Mem_CheckIntegrity();
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(1U, mock_DetCallCount);
+}
+
+/* --- Defragment uninit --- */
+
+/**
+ * Lines 790-794: Mem_Initialized == FALSE.
+ */
+void test_Mem_Defragment_Uninit_ShouldReportError(void) {
+    Std_ReturnType ret = Mem_Defragment(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(1U, mock_DetCallCount);
+}
+
+/* --- Defragment invalid pool --- */
+
+/**
+ * Lines 796-799: PoolIndex >= MEM_NUM_POOLS.
+ */
+void test_Mem_Defragment_InvalidPool_ShouldReportError(void) {
+    Mem_Init(&testConfig);
+    Std_ReturnType ret = Mem_Defragment(MEM_NUM_POOLS);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0x41U, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8(MEM_E_PARAM_SIZE, mock_DetLastErrorId);
+}

@@ -23,6 +23,12 @@
 #ifndef FLS_MEMMAP_H
 #define FLS_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /* Prevent double definition of memory mapping macros */
 #ifdef FLS_START_SEC_CODE
     #undef FLS_START_SEC_CODE
@@ -65,5 +71,10 @@
 #endif
 
 /* For this implementation, memory sections are handled by the compiler/linker */
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 #endif /* FLS_MEMMAP_H */

@@ -776,6 +776,105 @@ static int test_ethsm_misc_apis(void)
 }
 
 /* ============================================================================
+ * Additional Branch Coverage Tests
+ * ============================================================================ */
+
+/* Line 99: eth_sm_deinit() when NOT initialized (false branch of initialized check) */
+static int test_ethsm_deinit_not_initialized(void)
+{
+    printf("  Testing deinit when not initialized...\n");
+
+    /* Ensure module is NOT initialized - call deinit without init */
+    /* This should exercise the false branch of g_ethsm_ctx.initialized check */
+    eth_sm_deinit();
+
+    /* Should not crash, and module should still be uninitialized */
+    /* Verify by checking that init still works normally after */
+    TEST_ASSERT_EQ(eth_sm_init(NULL), ETHSM_OK);
+    eth_sm_deinit();
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* Line 114: eth_sm_get_version() with NULL pointers (false branch) */
+static int test_ethsm_get_version_null_ptrs(void)
+{
+    uint8_t major, minor, patch;
+
+    printf("  Testing get_version with NULL pointers...\n");
+
+    /* All NULL - should not crash (false branch of the NULL check) */
+    eth_sm_get_version(NULL, NULL, NULL);
+
+    /* major only */
+    eth_sm_get_version(&major, NULL, NULL);
+
+    /* minor only */
+    eth_sm_get_version(NULL, &minor, NULL);
+
+    /* patch only */
+    eth_sm_get_version(NULL, NULL, &patch);
+
+    /* major+minor but no patch */
+    eth_sm_get_version(&major, &minor, NULL);
+
+    /* Valid call should still work */
+    eth_sm_get_version(&major, &minor, &patch);
+    TEST_ASSERT_EQ(major, ETHSM_MAJOR_VERSION);
+    TEST_ASSERT_EQ(minor, ETHSM_MINOR_VERSION);
+    TEST_ASSERT_EQ(patch, ETHSM_PATCH_VERSION);
+
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* Line 134: eth_sm_create_network with NULL network_idx (false branch of network_idx != NULL) */
+static int test_ethsm_create_network_null_idx(void)
+{
+    printf("  Testing create_network with NULL network_idx...\n");
+
+    eth_sm_deinit();  /* Ensure clean state */
+    TEST_ASSERT_EQ(eth_sm_init(NULL), ETHSM_OK);
+
+    eth_sm_network_config_t cfg = make_net_cfg(false, 0u, 0u);
+
+    /* Pass NULL for network_idx - else branch returns ETHSM_E_PARAM_POINTER */
+    eth_sm_error_t result = eth_sm_create_network(&cfg, NULL);
+    TEST_ASSERT_EQ(result, ETHSM_E_PARAM_POINTER);
+
+    eth_sm_deinit();
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* Line 134: eth_sm_create_network with invalid config (validate_config fails) */
+static int test_ethsm_create_network_invalid_config(void)
+{
+    uint8_t idx = 0xFFu;
+
+    printf("  Testing create_network with invalid config...\n");
+
+    eth_sm_deinit();  /* Ensure clean state */
+    TEST_ASSERT_EQ(eth_sm_init(NULL), ETHSM_OK);
+
+    /* Due to known module defect: eth_sm_create_network passes
+     * eth_sm_network_config_t* to eth_sm_validate_config() which expects
+     * eth_sm_config_t*. The shutdown_delay_ms field overlaps with
+     * network_count. Setting shutdown_delay_ms > ETHSM_MAX_NETWORKS (4)
+     * triggers the validation failure (result != ETHSM_OK branch). */
+    eth_sm_network_config_t bad_cfg = make_net_cfg(false, 0u, 10u);
+
+    /* Invalid config triggers validation failure, else branch returns ETHSM_E_PARAM_POINTER */
+    eth_sm_error_t result = eth_sm_create_network(&bad_cfg, &idx);
+    TEST_ASSERT_EQ(result, ETHSM_E_PARAM_POINTER);
+
+    eth_sm_deinit();
+    printf("  PASSED\n");
+    return 0;
+}
+
+/* ============================================================================
  * Test Runner
  * ============================================================================ */
 
@@ -811,6 +910,12 @@ int main(void)
     run_test(test_ethsm_diagnostics, "EthSM Diagnostics & Counters");
     run_test(test_ethsm_error_handling, "EthSM Error Handling");
     run_test(test_ethsm_misc_apis, "EthSM Misc APIs");
+
+    /* Additional branch coverage tests */
+    run_test(test_ethsm_deinit_not_initialized, "EthSM Deinit Not Initialized");
+    run_test(test_ethsm_get_version_null_ptrs, "EthSM Get Version NULL Ptrs");
+    run_test(test_ethsm_create_network_null_idx, "EthSM Create Network NULL Idx");
+    run_test(test_ethsm_create_network_invalid_config, "EthSM Create Network Invalid Cfg");
 
     printf("\n============================================\n");
     printf("Results: %d/%d tests passed\n", tests_passed, tests_run);

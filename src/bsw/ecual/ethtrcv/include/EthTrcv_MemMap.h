@@ -8,6 +8,12 @@
 #ifndef ETHTRCV_MEMMAP_H
 #define ETHTRCV_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 #ifndef ETHTRCV_START_SEC_CODE
 #define ETHTRCV_START_SEC_CODE
 #endif
@@ -37,6 +43,11 @@
 #endif
 #ifndef ETHTRCV_STOP_SEC_VAR_NO_INIT
 #define ETHTRCV_STOP_SEC_VAR_NO_INIT
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* ETHTRCV_MEMMAP_H */

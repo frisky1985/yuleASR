@@ -325,7 +325,7 @@ keym_context_t* keym_init(void *cryif, void *csm)
     
     /* Initialize key slots */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
-        ctx->slots[i].slot_id = i;
+        ctx->slots[i].slot_id = (uint8_t)i;
         ctx->slots[i].state = KEYM_STATE_EMPTY;
         ctx->slots[i].key_version = 0;
         ctx->slots[i].key_generation = 0;
@@ -335,7 +335,7 @@ keym_context_t* keym_init(void *cryif, void *csm)
     
     /* Initialize certificates */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_CERTIFICATES; i++) {
-        ctx->certificates[i].cert_id = i;
+        ctx->certificates[i].cert_id = (uint8_t)i;
         ctx->certificates[i].is_revoked = false;
     }
     
@@ -371,7 +371,7 @@ void keym_deinit(keym_context_t *ctx)
     /* Clear all key slots */
     for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         if (ctx->slots[i].state != KEYM_STATE_EMPTY) {
-            keym_slot_free(ctx, i);
+            keym_slot_free(ctx, (uint8_t)i);
         }
     }
     
@@ -409,7 +409,7 @@ keym_status_t keym_slot_allocate(keym_context_t *ctx, uint8_t *slot_id,
         /* Find free slot */
         for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
             if (ctx->slots[i].state == KEYM_STATE_EMPTY) {
-                *slot_id = i;
+                *slot_id = (uint8_t)i;
                 break;
             }
         }
@@ -493,7 +493,7 @@ uint8_t keym_slot_find_by_name(keym_context_t *ctx, const char *name)
     for (int i = 0; (unsigned int)((unsigned int)(i)) < KEYM_MAX_KEY_SLOTS; i++) {
         if ((ctx->slots[i].state != KEYM_STATE_EMPTY) &&
             (strcmp(ctx->slots[i].name, name) == 0)) {
-            return i;
+            return (uint8_t)i;
         }
     }
     
@@ -993,7 +993,7 @@ uint32_t keym_check_and_rotate(keym_context_t *ctx, uint64_t current_time)
                 ((current_time - ctx->slots[i].activated_time) >= ctx->rotation_policy.max_key_age_ms)) {
                 
                 uint8_t new_slot = KEYM_SLOT_ID_INVALID;
-                if (keym_rotate_key(ctx, i, &new_slot) == KEYM_OK) {
+                if (keym_rotate_key(ctx, (uint8_t)i, &new_slot) == KEYM_OK) {
                     rotations++;
                 }
             }

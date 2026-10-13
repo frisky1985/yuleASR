@@ -70,8 +70,12 @@
 #define CANIF_HTH_1    (1U)
 #define CANIF_HRH_0    (2U)
 #define CANIF_HRH_1    (3U)
+#ifndef CANIF_E_PARAM_CANID
 #define CANIF_E_PARAM_CANID    (1U)
+#endif
+#ifndef CANIF_E_PARAM_DLC
 #define CANIF_E_PARAM_DLC    (2U)
+#endif
 
 
 /*==================================================================================================

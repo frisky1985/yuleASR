@@ -1099,6 +1099,488 @@ void test_CanIf_MetaData_RoundTrip_ShouldPreserveCanId(void) {
     }
 }
 
+/* --- Coverage expansion: SetControllerMode branches --- */
+
+void test_CanIf_SetControllerMode_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetControllerMode(0U, CANIF_CS_STARTED));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetControllerMode_InvalidController_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetControllerMode(CANIF_NUM_CONTROLLERS, CANIF_CS_STARTED));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetControllerMode_Stopped_ShouldSucceed(void) {
+    CanIf_ControllerModeType mode = CANIF_CS_STARTED;
+    CanIf_Init(&testConfig);
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetControllerMode(0U, CANIF_CS_STOPPED));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetControllerMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_CS_STOPPED, mode);
+}
+
+void test_CanIf_SetControllerMode_Sleep_ShouldSucceed(void) {
+    CanIf_ControllerModeType mode = CANIF_CS_STARTED;
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetControllerMode(0U, CANIF_CS_SLEEP));
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetControllerMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_CS_SLEEP, mode);
+}
+
+void test_CanIf_SetControllerMode_InvalidMode_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetControllerMode(0U, (CanIf_ControllerModeType)0xFFU));
+}
+
+/* --- Coverage expansion: GetControllerMode error paths --- */
+
+void test_CanIf_GetControllerMode_BeforeInit_ShouldFail(void) {
+    CanIf_ControllerModeType mode;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerMode(0U, &mode));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetControllerMode_InvalidController_ShouldFail(void) {
+    CanIf_ControllerModeType mode;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerMode(CANIF_NUM_CONTROLLERS, &mode));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetControllerMode_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerMode(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: Transmit error paths --- */
+
+void test_CanIf_Transmit_InvalidTxPduId_ShouldFail(void) {
+    PduInfoType pdu;
+    uint8 data[8] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_Transmit(CANIF_NUM_TX_PDUS, &pdu));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_Transmit_ControllerNotStarted_ShouldFail(void) {
+    PduInfoType pdu;
+    uint8 data[8] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+    CanIf_Init(&testConfig);
+    /* Controller is STOPPED after init */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_Transmit(0U, &pdu));
+    TEST_ASSERT_EQUAL(0, mock_CanWriteCalls);
+}
+
+void test_CanIf_Transmit_PduModeOffline_ShouldFail(void) {
+    PduInfoType pdu;
+    uint8 data[8] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+    CanIf_Init(&testConfig);
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    /* PDU mode is OFFLINE after init */
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_Transmit(0U, &pdu));
+    TEST_ASSERT_EQUAL(0, mock_CanWriteCalls);
+}
+
+void test_CanIf_Transmit_CanNotOk_ShouldReturnNotOk(void) {
+    PduInfoType pdu;
+    uint8 data[8] = {0U};
+    pdu.SduDataPtr = data; pdu.SduLength = 8U; pdu.MetaDataPtr = NULL_PTR;
+    CanIf_Init(&testConfig);
+    (void)CanIf_SetControllerMode(0U, CANIF_CS_STARTED);
+    (void)CanIf_SetPduMode(0U, CANIF_ONLINE);
+    /* CAN_NOT_OK is neither CAN_OK nor CAN_BUSY -> line 473 */
+    mock_CanWriteReturn = CAN_NOT_OK;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_Transmit(0U, &pdu));
+}
+
+/* --- Coverage expansion: CancelTransmit error paths --- */
+
+void test_CanIf_CancelTransmit_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CancelTransmit(0U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_CancelTransmit_InvalidTxPduId_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CancelTransmit(CANIF_NUM_TX_PDUS));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: SetPduMode error paths --- */
+
+void test_CanIf_SetPduMode_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetPduMode(0U, CANIF_ONLINE));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetPduMode_InvalidController_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetPduMode(CANIF_NUM_CONTROLLERS, CANIF_ONLINE));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: GetPduMode error paths --- */
+
+void test_CanIf_GetPduMode_BeforeInit_ShouldFail(void) {
+    CanIf_PduModeType mode;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetPduMode(0U, &mode));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetPduMode_InvalidController_ShouldFail(void) {
+    CanIf_PduModeType mode;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetPduMode(CANIF_NUM_CONTROLLERS, &mode));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetPduMode_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetPduMode(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: SetDynamicTxId all paths --- */
+
+void test_CanIf_SetDynamicTxId_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetDynamicTxId(0U, 0x100U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetDynamicTxId_InvalidTxPduId_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetDynamicTxId(CANIF_NUM_TX_PDUS, 0x100U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetDynamicTxId_Valid_ShouldSucceed(void) {
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetDynamicTxId(0U, 0x123U));
+    TEST_ASSERT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: SetTrcvMode NORMAL and SLEEP --- */
+
+void test_CanIf_SetTrcvMode_Normal_ShouldSucceed(void) {
+    CanIf_TransceiverModeType mode = CANIF_TRCV_MODE_STANDBY;
+    CanIf_Init(&testConfig);
+    (void)CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_STANDBY);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_NORMAL));
+    TEST_ASSERT_EQUAL(CANTRCV_TRCVMODE_NORMAL, mock_CanTrcvLastMode);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetTrcvMode(0U, &mode));
+    TEST_ASSERT_EQUAL(CANIF_TRCV_MODE_NORMAL, mode);
+}
+
+void test_CanIf_SetTrcvMode_Sleep_ShouldSucceed(void) {
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetTrcvMode(0U, CANIF_TRCV_MODE_SLEEP));
+    TEST_ASSERT_EQUAL(CANTRCV_TRCVMODE_SLEEP, mock_CanTrcvLastMode);
+}
+
+void test_CanIf_SetTrcvMode_InvalidMode_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetTrcvMode(0U, (CanIf_TransceiverModeType)0xFFU));
+    TEST_ASSERT_EQUAL(0, mock_CanTrcvCalls);
+}
+
+/* --- Coverage expansion: GetTrcvMode error paths --- */
+
+void test_CanIf_GetTrcvMode_BeforeInit_ShouldFail(void) {
+    CanIf_TransceiverModeType mode;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetTrcvMode(0U, &mode));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetTrcvMode_InvalidTrcv_ShouldFail(void) {
+    CanIf_TransceiverModeType mode;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetTrcvMode(CANIF_NUM_TRANSCEIVERS, &mode));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetTrcvMode_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetTrcvMode(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: GetTrcvWakeupReason all paths --- */
+
+void test_CanIf_GetTrcvWakeupReason_BeforeInit_ShouldFail(void) {
+    CanIf_TrcvWakeupReasonType reason;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetTrcvWakeupReason(0U, &reason));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetTrcvWakeupReason_InvalidTrcv_ShouldFail(void) {
+    CanIf_TrcvWakeupReasonType reason;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetTrcvWakeupReason(CANIF_NUM_TRANSCEIVERS, &reason));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetTrcvWakeupReason_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetTrcvWakeupReason(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetTrcvWakeupReason_Valid_ShouldReturnNotSupported(void) {
+    CanIf_TrcvWakeupReasonType reason = (CanIf_TrcvWakeupReasonType)0xFFU;
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetTrcvWakeupReason(0U, &reason));
+    TEST_ASSERT_EQUAL(CANIF_TRCV_WU_NOT_SUPPORTED, reason);
+}
+
+/* --- Coverage expansion: SetTrcvWakeupMode all paths --- */
+
+void test_CanIf_SetTrcvWakeupMode_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetTrcvWakeupMode(0U, (CanIf_TrcvWakeupModeType)0U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetTrcvWakeupMode_InvalidTrcv_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetTrcvWakeupMode(CANIF_NUM_TRANSCEIVERS, (CanIf_TrcvWakeupModeType)0U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetTrcvWakeupMode_Valid_ShouldSucceed(void) {
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetTrcvWakeupMode(0U, (CanIf_TrcvWakeupModeType)0U));
+}
+
+/* --- Coverage expansion: SetBaudrate all paths --- */
+
+void test_CanIf_SetBaudrate_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetBaudrate(0U, 500U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetBaudrate_InvalidController_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_SetBaudrate(CANIF_NUM_CONTROLLERS, 500U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_SetBaudrate_Valid_ShouldSucceed(void) {
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_SetBaudrate(0U, 250U));
+}
+
+/* --- Coverage expansion: GetBaudrate all paths --- */
+
+void test_CanIf_GetBaudrate_BeforeInit_ShouldFail(void) {
+    uint16 baudrate;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetBaudrate(0U, &baudrate));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetBaudrate_InvalidController_ShouldFail(void) {
+    uint16 baudrate;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetBaudrate(CANIF_NUM_CONTROLLERS, &baudrate));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetBaudrate_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetBaudrate(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetBaudrate_Valid_ShouldReturnDefault(void) {
+    uint16 baudrate = 0U;
+    CanIf_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, CanIf_GetBaudrate(0U, &baudrate));
+    TEST_ASSERT_EQUAL(CANIF_DEFAULT_BAUDRATE, baudrate);
+}
+
+/* --- Coverage expansion: DeInit before init --- */
+
+void test_CanIf_DeInit_BeforeInit_ShouldReportDet(void) {
+    /* setUp already calls DeInit, so driver is uninit here */
+    CanIf_DeInit();
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: CheckWakeup / CheckValidation before init --- */
+
+void test_CanIf_CheckWakeup_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CheckWakeup(0U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_CheckValidation_BeforeInit_ShouldFail(void) {
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_CheckValidation(0U));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: GetControllerErrorState invalid controller --- */
+
+void test_CanIf_GetControllerErrorState_InvalidController_ShouldFail(void) {
+    Can_ErrorStateType state;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerErrorState(CANIF_NUM_CONTROLLERS, &state));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: GetControllerRxErrorCounter before init --- */
+
+void test_CanIf_GetControllerRxErrorCounter_BeforeInit_ShouldFail(void) {
+    uint8 counter;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerRxErrorCounter(0U, &counter));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetControllerRxErrorCounter_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerRxErrorCounter(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: GetControllerTxErrorCounter error paths --- */
+
+void test_CanIf_GetControllerTxErrorCounter_BeforeInit_ShouldFail(void) {
+    uint8 counter;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerTxErrorCounter(0U, &counter));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetControllerTxErrorCounter_InvalidController_ShouldFail(void) {
+    uint8 counter;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerTxErrorCounter(CANIF_NUM_CONTROLLERS, &counter));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_GetControllerTxErrorCounter_NullPtr_ShouldFail(void) {
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_GetControllerTxErrorCounter(0U, NULL_PTR));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: ReadTxNotifStatus / ReadRxNotifStatus invalid PDU --- */
+
+void test_CanIf_ReadTxNotifStatus_InvalidTxPduId_ShouldFail(void) {
+    CanIf_Init(&testConfigNotify);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(CANIF_NO_NOTIFICATION, CanIf_ReadTxNotifStatus(CANIF_NUM_TX_PDUS));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+void test_CanIf_ReadRxNotifStatus_InvalidRxPduId_ShouldFail(void) {
+    CanIf_Init(&testConfigNotify);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(CANIF_NO_NOTIFICATION, CanIf_ReadRxNotifStatus(CANIF_NUM_RX_PDUS));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: TriggerTransmit invalid TxPduId --- */
+
+void test_CanIf_TriggerTransmit_InvalidTxPduId_ShouldFail(void) {
+    PduInfoType trigPdu;
+    uint8 buf[8] = {0U};
+    trigPdu.SduDataPtr = buf; trigPdu.SduLength = 8U; trigPdu.MetaDataPtr = NULL_PTR;
+    CanIf_Init(&testConfig);
+    mock_DetCalls = 0;
+    TEST_ASSERT_EQUAL(E_NOT_OK, CanIf_TriggerTransmit(CANIF_NUM_TX_PDUS, &trigPdu));
+    TEST_ASSERT_NOT_EQUAL(0, mock_DetCalls);
+}
+
+/* --- Coverage expansion: indication callbacks before init / invalid index --- */
+
+void test_CanIf_TxConfirmation_BeforeInit_ShouldReturnSilently(void) {
+    CanIf_TxConfirmation(0U);
+    TEST_ASSERT_EQUAL(0, mock_PduRTxConfCalls);
+}
+
+void test_CanIf_RxIndication_BeforeInit_ShouldReturnSilently(void) {
+    Can_HwType mailbox;
+    PduInfoType pdu;
+    uint8 data[2] = {0U};
+    mailbox.CanId = 0x150U; mailbox.Hoh = 0U; mailbox.ControllerId = 0U;
+    pdu.SduDataPtr = data; pdu.SduLength = 2U; pdu.MetaDataPtr = NULL_PTR;
+    CanIf_RxIndication(&mailbox, &pdu);
+    TEST_ASSERT_EQUAL(0, mock_PduRRxIndCalls);
+}
+
+void test_CanIf_ControllerBusOff_BeforeInit_ShouldReturnSilently(void) {
+    CanIf_ControllerBusOff(0U);
+    /* no crash, no DET (silent return) */
+}
+
+void test_CanIf_CheckTrcvWakeFlagIndication_BeforeInit_ShouldReturnSilently(void) {
+    CanIf_CheckTrcvWakeFlagIndication(0U);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_CheckWufCalls);
+}
+
+void test_CanIf_CheckTrcvWakeFlagIndication_InvalidTrcv_ShouldNotNotifyCanSM(void) {
+    CanIf_Init(&testConfig);
+    CanIf_CheckTrcvWakeFlagIndication(CANIF_NUM_TRANSCEIVERS);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_CheckWufCalls);
+}
+
+void test_CanIf_ClearTrcvWufFlagIndication_BeforeInit_ShouldReturnSilently(void) {
+    CanIf_ClearTrcvWufFlagIndication(0U);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_ClearWufCalls);
+}
+
+void test_CanIf_ClearTrcvWufFlagIndication_InvalidTrcv_ShouldNotNotifyCanSM(void) {
+    CanIf_Init(&testConfig);
+    CanIf_ClearTrcvWufFlagIndication(CANIF_NUM_TRANSCEIVERS);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_ClearWufCalls);
+}
+
+void test_CanIf_TrcvModeIndication_BeforeInit_ShouldReturnSilently(void) {
+    CanIf_TrcvModeIndication(0U, CANIF_TRCV_MODE_NORMAL);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_TrcvModeCalls);
+}
+
+void test_CanIf_TrcvModeIndication_InvalidTrcv_ShouldNotNotifyCanSM(void) {
+    CanIf_Init(&testConfig);
+    CanIf_TrcvModeIndication(CANIF_NUM_TRANSCEIVERS, CANIF_TRCV_MODE_NORMAL);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_TrcvModeCalls);
+}
+
+void test_CanIf_ControllerModeIndication_BeforeInit_ShouldReturnSilently(void) {
+    CanIf_ControllerModeIndication(0U, CANIF_CS_STARTED);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_CtrlModeCalls);
+}
+
+void test_CanIf_ControllerModeIndication_InvalidController_ShouldNotNotifyCanSM(void) {
+    CanIf_Init(&testConfig);
+    CanIf_ControllerModeIndication(CANIF_NUM_CONTROLLERS, CANIF_CS_STARTED);
+    TEST_ASSERT_EQUAL(0, mock_CanSM_CtrlModeCalls);
+}
+
 int main(void)
 {
     UNITY_BEGIN();
@@ -1183,6 +1665,73 @@ int main(void)
         RUN_TEST(test_CanIf_Transmit_OversizedFrame_ShouldNotBeBuffered);
         RUN_TEST(test_CanIf_ControllerBusOff_ShouldFlushTxQueue);
         RUN_TEST(test_CanIf_DeInit_ShouldFlushTxQueue);
+
+        /* Coverage expansion tests */
+        RUN_TEST(test_CanIf_SetControllerMode_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_SetControllerMode_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_SetControllerMode_Stopped_ShouldSucceed);
+        RUN_TEST(test_CanIf_SetControllerMode_Sleep_ShouldSucceed);
+        RUN_TEST(test_CanIf_SetControllerMode_InvalidMode_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerMode_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerMode_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerMode_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_Transmit_InvalidTxPduId_ShouldFail);
+        RUN_TEST(test_CanIf_Transmit_ControllerNotStarted_ShouldFail);
+        RUN_TEST(test_CanIf_Transmit_PduModeOffline_ShouldFail);
+        RUN_TEST(test_CanIf_Transmit_CanNotOk_ShouldReturnNotOk);
+        RUN_TEST(test_CanIf_CancelTransmit_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_CancelTransmit_InvalidTxPduId_ShouldFail);
+        RUN_TEST(test_CanIf_SetPduMode_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_SetPduMode_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_GetPduMode_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetPduMode_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_GetPduMode_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_SetDynamicTxId_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_SetDynamicTxId_InvalidTxPduId_ShouldFail);
+        RUN_TEST(test_CanIf_SetDynamicTxId_Valid_ShouldSucceed);
+        RUN_TEST(test_CanIf_SetTrcvMode_Normal_ShouldSucceed);
+        RUN_TEST(test_CanIf_SetTrcvMode_Sleep_ShouldSucceed);
+        RUN_TEST(test_CanIf_SetTrcvMode_InvalidMode_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvMode_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvMode_InvalidTrcv_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvMode_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvWakeupReason_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvWakeupReason_InvalidTrcv_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvWakeupReason_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_GetTrcvWakeupReason_Valid_ShouldReturnNotSupported);
+        RUN_TEST(test_CanIf_SetTrcvWakeupMode_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_SetTrcvWakeupMode_InvalidTrcv_ShouldFail);
+        RUN_TEST(test_CanIf_SetTrcvWakeupMode_Valid_ShouldSucceed);
+        RUN_TEST(test_CanIf_SetBaudrate_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_SetBaudrate_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_SetBaudrate_Valid_ShouldSucceed);
+        RUN_TEST(test_CanIf_GetBaudrate_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetBaudrate_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_GetBaudrate_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_GetBaudrate_Valid_ShouldReturnDefault);
+        RUN_TEST(test_CanIf_DeInit_BeforeInit_ShouldReportDet);
+        RUN_TEST(test_CanIf_CheckWakeup_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_CheckValidation_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerErrorState_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerRxErrorCounter_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerRxErrorCounter_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerTxErrorCounter_BeforeInit_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerTxErrorCounter_InvalidController_ShouldFail);
+        RUN_TEST(test_CanIf_GetControllerTxErrorCounter_NullPtr_ShouldFail);
+        RUN_TEST(test_CanIf_ReadTxNotifStatus_InvalidTxPduId_ShouldFail);
+        RUN_TEST(test_CanIf_ReadRxNotifStatus_InvalidRxPduId_ShouldFail);
+        RUN_TEST(test_CanIf_TriggerTransmit_InvalidTxPduId_ShouldFail);
+        RUN_TEST(test_CanIf_TxConfirmation_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_RxIndication_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_ControllerBusOff_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_CheckTrcvWakeFlagIndication_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_CheckTrcvWakeFlagIndication_InvalidTrcv_ShouldNotNotifyCanSM);
+        RUN_TEST(test_CanIf_ClearTrcvWufFlagIndication_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_ClearTrcvWufFlagIndication_InvalidTrcv_ShouldNotNotifyCanSM);
+        RUN_TEST(test_CanIf_TrcvModeIndication_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_TrcvModeIndication_InvalidTrcv_ShouldNotNotifyCanSM);
+        RUN_TEST(test_CanIf_ControllerModeIndication_BeforeInit_ShouldReturnSilently);
+        RUN_TEST(test_CanIf_ControllerModeIndication_InvalidController_ShouldNotNotifyCanSM);
 
     return UnityEnd();
 }

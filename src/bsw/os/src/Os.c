@@ -131,6 +131,7 @@ void Os_Internal_StartOS(AppModeType Mode)
             Os_GlobalState.Resources[i].NestCount = 0;
             Os_GlobalState.Resources[i].IsCeilingPriority = FALSE;
             Os_GlobalState.Resources[i].CeilingPriority = 0;
+            Os_GlobalState.Resources[i].OriginalPriority = 0;
         }
     }
 
@@ -867,6 +868,7 @@ StatusType GetResource(ResourceType ResID)
 StatusType Os_Internal_GetResource(ResourceType ResID)
 {
     Os_ResourceConfigType* resource;
+    UBaseType_t currentPriority;
 
     resource = &Os_GlobalState.Resources[ResID];
 
@@ -883,6 +885,19 @@ StatusType Os_Internal_GetResource(ResourceType ResID)
 
     resource->OwnerTask = (TaskType)xTaskGetCurrentTaskHandle();
     resource->NestCount++;
+
+    /* Priority Ceiling Protocol: elevate task priority to ceiling if needed.
+     * Only on first acquisition (NestCount == 1) to avoid repeated saves. */
+    if (resource->IsCeilingPriority && (resource->NestCount == 1U))
+    {
+        currentPriority = uxTaskPriorityGet(NULL_PTR);
+        resource->OriginalPriority = (uint32)currentPriority;
+
+        if (resource->CeilingPriority > currentPriority)
+        {
+            vTaskPrioritySet(NULL_PTR, (UBaseType_t)resource->CeilingPriority);
+        }
+    }
 
     return E_OS_OK;
 }
@@ -945,6 +960,12 @@ StatusType Os_Internal_ReleaseResource(ResourceType ResID)
 
     if (resource->NestCount == 0U )
     {
+        /* Priority Ceiling Protocol: restore original task priority. */
+        if (resource->IsCeilingPriority)
+        {
+            vTaskPrioritySet(currentTask, (UBaseType_t)resource->OriginalPriority);
+        }
+
         resource->OwnerTask = 0;
     }
 

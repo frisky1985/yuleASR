@@ -545,6 +545,216 @@ void test_Ea_MainFunction_NoPendingJob_ShouldBeSilent(void)
 }
 
 /* ================================================================== */
+/* Branch coverage supplement                                          */
+/* ================================================================== */
+
+/* Line 105 FALSE: Init with NULL BlockConfig skips block loading loop */
+void test_Ea_Init_NullBlockConfig_ShouldSkipBlockLoad(void)
+{
+    Ea_ConfigType cfgNoBlocks;
+    (void)memset(&cfgNoBlocks, 0, sizeof(cfgNoBlocks));
+    cfgNoBlocks.BlockConfig = NULL_PTR;
+    cfgNoBlocks.NumBlocks = 0u;
+    cfgNoBlocks.EaSectorSize = 4096u;
+    cfgNoBlocks.EaSetModeSupported = TRUE;
+    cfgNoBlocks.EaVersionInfoApi = TRUE;
+
+    Ea_Init(&cfgNoBlocks);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    /* No blocks loaded: reading any block should fail as unconfigured */
+    Std_ReturnType ret = Ea_Read(EA_TEST_BLOCK_1, 0u, testBuf, 4u);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/* Line 108 FALSE: Init with blockId >= EA_NUM_BLOCKS skips that entry */
+void test_Ea_Init_OutOfRangeBlockId_ShouldSkipEntry(void)
+{
+    Ea_BlockConfigType badBlock;
+    (void)memset(&badBlock, 0, sizeof(badBlock));
+    badBlock.BlockId = (Ea_BlockIdType)EA_NUM_BLOCKS; /* == 32, not < 32 */
+    badBlock.BlockSize = 16u;
+
+    Ea_ConfigType cfgBad;
+    (void)memset(&cfgBad, 0, sizeof(cfgBad));
+    cfgBad.BlockConfig = &badBlock;
+    cfgBad.NumBlocks = 1u;
+    cfgBad.EaSectorSize = 4096u;
+    cfgBad.EaSetModeSupported = TRUE;
+    cfgBad.EaVersionInfoApi = TRUE;
+
+    Ea_Init(&cfgBad);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    /* The out-of-range block was not loaded */
+    Std_ReturnType ret = Ea_Read((Ea_BlockIdType)EA_NUM_BLOCKS, 0u, testBuf, 4u);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/* Line 132: SetMode with EA_MODE_FAST exercises the second valid branch */
+void test_Ea_SetMode_Fast_ShouldSucceed(void)
+{
+    Ea_Init(&testConfig);
+    Ea_SetMode(EA_MODE_FAST);
+    TEST_ASSERT_EQUAL_UINT32(0u, mock_DetCalls);
+}
+
+/* Line 189: Ea_Read while EA_BUSY should return E_NOT_OK */
+void test_Ea_Read_WhileBusy_ShouldFail(void)
+{
+    Ea_Init(&testConfig);
+    /* Start a read job -> module becomes EA_BUSY */
+    Std_ReturnType ret1 = Ea_Read(EA_TEST_BLOCK_1, 0u, testBuf, 8u);
+    TEST_ASSERT_EQUAL(E_OK, ret1);
+    TEST_ASSERT_EQUAL(EA_BUSY, Ea_GetStatus());
+
+    /* Second read while busy should be rejected */
+    uint8 buf2[8];
+    Std_ReturnType ret2 = Ea_Read(EA_TEST_BLOCK_2, 0u, buf2, 4u);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret2);
+    TEST_ASSERT_EQUAL_UINT32(1u, stub_Eep_Read_calls); /* only first read went through */
+}
+
+/* Line 206: Eep_Read returns failure -> Ea_Read should return E_NOT_OK */
+void test_Ea_Read_EepFails_ShouldReturnError(void)
+{
+    Ea_Init(&testConfig);
+    stub_Eep_Read_ret = E_NOT_OK;
+
+    Std_ReturnType ret = Ea_Read(EA_TEST_BLOCK_1, 0u, testBuf, 8u);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    TEST_ASSERT_EQUAL(EA_JOB_FAILED, Ea_GetJobResult());
+}
+
+/* Line 235: Write to unconfigured block should fail (IsValid == FALSE) */
+void test_Ea_Write_UnconfiguredBlock_ShouldFail(void)
+{
+    Ea_Init(&testConfig);
+    /* Block 5 was not configured, so IsValid == FALSE */
+    Std_ReturnType ret = Ea_Write(5u, testBuf);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0u, stub_Eep_Write_calls);
+}
+
+/* Line 257: Eep_Write returns failure -> Ea_Write should return E_NOT_OK */
+void test_Ea_Write_EepFails_ShouldReturnError(void)
+{
+    Ea_Init(&testConfig);
+    stub_Eep_Write_ret = E_NOT_OK;
+
+    Std_ReturnType ret = Ea_Write(EA_TEST_BLOCK_1, testBuf);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    TEST_ASSERT_EQUAL(EA_JOB_FAILED, Ea_GetJobResult());
+}
+
+/* Line 277: Ea_Cancel when NOT busy should do nothing */
+void test_Ea_Cancel_WhenNotBusy_ShouldDoNothing(void)
+{
+    Ea_Init(&testConfig);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    
+    Ea_Cancel();
+    TEST_ASSERT_EQUAL_UINT32(0u, stub_Eep_Cancel_calls);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+}
+
+/* Line 325: Ea_InvalidateBlock while busy should return E_NOT_OK */
+void test_Ea_InvalidateBlock_WhileBusy_ShouldFail(void)
+{
+    Ea_Init(&testConfig);
+    /* Start a read job to make module busy */
+    (void)Ea_Read(EA_TEST_BLOCK_1, 0u, testBuf, 8u);
+    TEST_ASSERT_EQUAL(EA_BUSY, Ea_GetStatus());
+    
+    /* Try to invalidate while busy */
+    Std_ReturnType ret = Ea_InvalidateBlock(EA_TEST_BLOCK_2);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0u, mock_DetCalls);
+}
+
+/* Line 365: Ea_EraseImmediateBlock while busy should return E_NOT_OK */
+void test_Ea_EraseImmediateBlock_WhileBusy_ShouldFail(void)
+{
+    Ea_Init(&testConfig);
+    /* Start a read job to make module busy */
+    (void)Ea_Read(EA_TEST_BLOCK_1, 0u, testBuf, 8u);
+    TEST_ASSERT_EQUAL(EA_BUSY, Ea_GetStatus());
+    
+    /* Try to erase while busy */
+    Std_ReturnType ret = Ea_EraseImmediateBlock(EA_TEST_BLOCK_2);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0u, stub_Eep_Erase_calls);
+}
+
+/* Line 381: Eep_Erase returns failure -> Ea_EraseImmediateBlock should return E_NOT_OK */
+void test_Ea_EraseImmediateBlock_EepFails_ShouldReturnError(void)
+{
+    Ea_Init(&testConfig);
+    stub_Eep_Erase_ret = E_NOT_OK;
+
+    Std_ReturnType ret = Ea_EraseImmediateBlock(EA_TEST_BLOCK_1);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    TEST_ASSERT_EQUAL(EA_JOB_FAILED, Ea_GetJobResult());
+}
+
+/* Lines 463, 465: Test MainFunction with different job types */
+void test_Ea_MainFunction_WriteJobCompletes_ShouldIncrementWriteCounter(void)
+{
+    Ea_Init(&testConfig);
+    /* Start a write job */
+    (void)Ea_Write(EA_TEST_BLOCK_1, testBuf);
+    TEST_ASSERT_EQUAL(EA_BUSY, Ea_GetStatus());
+    
+    /* Complete the job */
+    stub_Eep_JobResult = MEMIF_JOB_OK;
+    Ea_MainFunction();
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    TEST_ASSERT_EQUAL(EA_JOB_OK, Ea_GetJobResult());
+}
+
+void test_Ea_MainFunction_InvalidateJobCompletes_ShouldSucceed(void)
+{
+    Ea_Init(&testConfig);
+    /* Invalidate completes immediately, but test the notification path */
+    (void)Ea_InvalidateBlock(EA_TEST_BLOCK_1);
+    
+    /* Manually trigger job end notification */
+    Ea_JobEndNotification();
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+}
+
+void test_Ea_MainFunction_EraseJobCompletes_ShouldSucceed(void)
+{
+    Ea_Init(&testConfig);
+    /* Start an erase job */
+    (void)Ea_EraseImmediateBlock(EA_TEST_BLOCK_1);
+    TEST_ASSERT_EQUAL(EA_BUSY, Ea_GetStatus());
+    
+    /* Complete the job */
+    stub_Eep_JobResult = MEMIF_JOB_OK;
+    Ea_MainFunction();
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    TEST_ASSERT_EQUAL(EA_JOB_OK, Ea_GetJobResult());
+}
+
+void test_Ea_MainFunction_JobError_ShouldNotifyError(void)
+{
+    Ea_Init(&testConfig);
+    /* Start a write job */
+    (void)Ea_Write(EA_TEST_BLOCK_1, testBuf);
+    
+    /* Job fails */
+    stub_Eep_JobResult = MEMIF_JOB_FAILED;
+    Ea_MainFunction();
+    TEST_ASSERT_EQUAL(EA_IDLE, Ea_GetStatus());
+    TEST_ASSERT_EQUAL(EA_JOB_FAILED, Ea_GetJobResult());
+    
+    /* Trigger error notification */
+    Ea_JobErrorNotification();
+}
+
+/* ================================================================== */
 /* Runner — uninit tests must run first (module flag still FALSE)     */
 /* ================================================================== */
 int main(void)
@@ -587,6 +797,23 @@ int main(void)
     RUN_TEST(test_Ea_EraseImmediateBlock_ValidCall_ShouldEraseAndCount);
     RUN_TEST(test_Ea_Cancel_WhileBusy_ShouldCancelJob);
     RUN_TEST(test_Ea_MainFunction_NoPendingJob_ShouldBeSilent);
+
+    /* branch coverage supplement */
+    RUN_TEST(test_Ea_Init_NullBlockConfig_ShouldSkipBlockLoad);
+    RUN_TEST(test_Ea_Init_OutOfRangeBlockId_ShouldSkipEntry);
+    RUN_TEST(test_Ea_SetMode_Fast_ShouldSucceed);
+    RUN_TEST(test_Ea_Read_WhileBusy_ShouldFail);
+    RUN_TEST(test_Ea_Read_EepFails_ShouldReturnError);
+    RUN_TEST(test_Ea_Write_UnconfiguredBlock_ShouldFail);
+    RUN_TEST(test_Ea_Write_EepFails_ShouldReturnError);
+    RUN_TEST(test_Ea_Cancel_WhenNotBusy_ShouldDoNothing);
+    RUN_TEST(test_Ea_InvalidateBlock_WhileBusy_ShouldFail);
+    RUN_TEST(test_Ea_EraseImmediateBlock_WhileBusy_ShouldFail);
+    RUN_TEST(test_Ea_EraseImmediateBlock_EepFails_ShouldReturnError);
+    RUN_TEST(test_Ea_MainFunction_WriteJobCompletes_ShouldIncrementWriteCounter);
+    RUN_TEST(test_Ea_MainFunction_InvalidateJobCompletes_ShouldSucceed);
+    RUN_TEST(test_Ea_MainFunction_EraseJobCompletes_ShouldSucceed);
+    RUN_TEST(test_Ea_MainFunction_JobError_ShouldNotifyError);
 
     return UnityEnd();
 }

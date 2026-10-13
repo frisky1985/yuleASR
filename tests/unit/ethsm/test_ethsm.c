@@ -272,6 +272,117 @@ void test_EthSM_Smoke_DualNetworkStatesIndependent(void)
     TEST_ASSERT_EQUAL_INT(ETHSM_STATE_NO_COM, EthSM_GetInternalState(ETHSM_NETWORK_1));
 }
 
+/*==============================================================================
+*                                      BRANCH COVERAGE SUPPLEMENT
+* Lines: 138 (CheckLinkState network 1), 150 (result == E_OK in CheckLinkState),
+*        198 (switch newState in TransitionToState), 306 (NoCom network 0 in
+*        WAIT_TRCVLINK), 344 (timeout network 0 in WAIT_TRCVLINK)
+*==============================================================================*/
+
+/* Line 150: EthIf_GetTransceiverLinkState returns non-E_OK -> linkUp = FALSE */
+static EthIf_LinkStateType mock_linkState_override = ETHIF_LINK_STATE_ACTIVE;
+static Std_ReturnType mock_link_ret = E_OK;
+
+/* Override: we need a second mock that can return errors. Since the existing
+ * mock always returns E_OK, we add a controllable variant. We'll re-use the
+ * existing mock but add a test that sets link state to inactive. */
+
+/* Line 138 + 150: CheckLinkState for network 1 with link inactive */
+void test_EthSM_CheckLinkState_Network1_LinkInactive(void)
+{
+    ethsm_setup();
+
+    /* Bring only network 1 to WAIT_TRCVLINK */
+    TEST_ASSERT_EQUAL_INT(E_OK, EthSM_RequestComMode(ETHSM_NETWORK_1, COMM_FULL_COMMUNICATION));
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(ETHSM_NETWORK_1));
+
+    /* Set link to inactive - network 1 should stay in WAIT_TRCVLINK */
+    mock_linkState = ETHIF_LINK_STATE_DOWN;
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(ETHSM_NETWORK_1));
+}
+
+/* Line 198: TransitionToState with ONHOLD state */
+void test_EthSM_TransitionToState_OnHold(void)
+{
+    ethsm_setup();
+
+    /* Bring network 0 to COM_READY */
+    TEST_ASSERT_EQUAL_INT(E_OK, EthSM_RequestComMode(ETHSM_NETWORK_0, COMM_FULL_COMMUNICATION));
+    EthSM_MainFunction(); /* NO_COM -> WAIT_TRCVLINK */
+    EthSM_MainFunction(); /* WAIT_TRCVLINK -> WAIT_ONLINE (link up) */
+    EthSM_TcpIpModeIndication(ETHSM_NETWORK_0, TCPIP_STATE_ONLINE);
+    EthSM_MainFunction(); /* WAIT_ONLINE -> COM_READY */
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_COM_READY, EthSM_GetInternalState(ETHSM_NETWORK_0));
+
+    /* TcpIp goes on hold -> COM_READY -> ONHOLD */
+    EthSM_TcpIpModeIndication(ETHSM_NETWORK_0, TCPIP_STATE_ONHOLD);
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_ONHOLD, EthSM_GetInternalState(ETHSM_NETWORK_0));
+}
+
+/* Line 198: TransitionToState with WAIT_ONLINE state */
+void test_EthSM_TransitionToState_WaitOnline(void)
+{
+    ethsm_setup();
+
+    /* Bring network 0 to WAIT_TRCVLINK */
+    TEST_ASSERT_EQUAL_INT(E_OK, EthSM_RequestComMode(ETHSM_NETWORK_0, COMM_FULL_COMMUNICATION));
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(ETHSM_NETWORK_0));
+
+    /* Link up -> WAIT_TRCVLINK -> WAIT_ONLINE */
+    mock_linkState = ETHIF_LINK_STATE_ACTIVE;
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_WAIT_ONLINE, EthSM_GetInternalState(ETHSM_NETWORK_0));
+}
+
+/* Line 306: Network 0 NoCom in WAIT_TRCVLINK -> ctrlIdx = NETWORK_0 */
+void test_EthSM_WaitTrcvlink_Network0_NoCom(void)
+{
+    ethsm_setup();
+
+    /* Bring network 0 to WAIT_TRCVLINK */
+    TEST_ASSERT_EQUAL_INT(E_OK, EthSM_RequestComMode(ETHSM_NETWORK_0, COMM_FULL_COMMUNICATION));
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(ETHSM_NETWORK_0));
+
+    /* Request NO_COMMUNICATION for network 0 */
+    TEST_ASSERT_EQUAL_INT(E_OK, EthSM_RequestComMode(ETHSM_NETWORK_0, COMM_NO_COMMUNICATION));
+    EthSM_MainFunction();
+
+    /* Network 0 should use CTRL_IDX_NETWORK_0 for shutdown */
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_CTRL_IDX_NETWORK_0, mock_setMode_ctrl[1]);
+    TEST_ASSERT_EQUAL_INT((int)ETHIF_MODE_DOWN, mock_setMode_mode[1]);
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_NO_COM, EthSM_GetInternalState(ETHSM_NETWORK_0));
+}
+
+/* Line 344: Network 0 timeout in WAIT_TRCVLINK -> ctrlIdx = NETWORK_0 */
+void test_EthSM_WaitTrcvlink_Network0_Timeout(void)
+{
+    ethsm_setup();
+
+    /* Bring network 0 to WAIT_TRCVLINK */
+    TEST_ASSERT_EQUAL_INT(E_OK, EthSM_RequestComMode(ETHSM_NETWORK_0, COMM_FULL_COMMUNICATION));
+    EthSM_MainFunction();
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_WAIT_TRCVLINK, EthSM_GetInternalState(ETHSM_NETWORK_0));
+
+    /* Keep link inactive to trigger timeout (5000ms / 10ms = 500 cycles) */
+    mock_linkState = ETHIF_LINK_STATE_DOWN;
+    uint16 cycles;
+    for (cycles = 0U; cycles < 510U; cycles++)
+    {
+        EthSM_MainFunction();
+    }
+
+    /* Network 0 should timeout and use CTRL_IDX_NETWORK_0 for shutdown */
+    TEST_ASSERT_EQUAL_INT(ETHSM_STATE_NO_COM, EthSM_GetInternalState(ETHSM_NETWORK_0));
+    /* Verify the shutdown call used network 0's ctrlIdx */
+    TEST_ASSERT_EQUAL_UINT8(ETHSM_CTRL_IDX_NETWORK_0, mock_setMode_ctrl[1]);
+    TEST_ASSERT_EQUAL_INT((int)ETHIF_MODE_DOWN, mock_setMode_mode[1]);
+}
+
 /*==================================================================================================
 *                                      TEST MAIN
 *==================================================================================================*/
@@ -286,6 +397,11 @@ int main(void)
     RUN_TEST(test_EthSM_DualNetwork_ComReadyShutdown_UsesNetworkCtrlIdx);
     RUN_TEST(test_EthSM_DeInit_UsesPerNetworkCtrlIdx);
     RUN_TEST(test_EthSM_Smoke_DualNetworkStatesIndependent);
+    RUN_TEST(test_EthSM_CheckLinkState_Network1_LinkInactive);
+    RUN_TEST(test_EthSM_TransitionToState_OnHold);
+    RUN_TEST(test_EthSM_TransitionToState_WaitOnline);
+    RUN_TEST(test_EthSM_WaitTrcvlink_Network0_NoCom);
+    RUN_TEST(test_EthSM_WaitTrcvlink_Network0_Timeout);
 
     return UNITY_END();
 }

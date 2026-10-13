@@ -27,25 +27,63 @@
 /**********************************************************************************************************************
  * ERROR CODES
  *********************************************************************************************************************/
+#ifndef CRYPTO_E_NO_ERROR
 #define CRYPTO_E_NO_ERROR                   (0x00U)
+#endif
+#ifndef CRYPTO_E_BUSY
 #define CRYPTO_E_BUSY                       (0x01U)
+#endif
+#ifndef CRYPTO_E_SMALL_BUFFER
 #define CRYPTO_E_SMALL_BUFFER               (0x02U)
+#endif
+#ifndef CRYPTO_E_ENTROPY_EXHAUSTION
 #define CRYPTO_E_ENTROPY_EXHAUSTION         (0x03U)
+#endif
+#ifndef CRYPTO_E_QUEUE_FULL
 #define CRYPTO_E_QUEUE_FULL                 (0x04U)
+#endif
+#ifndef CRYPTO_E_JOB_CANCELED
 #define CRYPTO_E_JOB_CANCELED               (0x05U)
+#endif
+#ifndef CRYPTO_E_KEY_NOT_VALID
 #define CRYPTO_E_KEY_NOT_VALID              (0x06U)
+#endif
+#ifndef CRYPTO_E_KEY_SIZE_MISMATCH
 #define CRYPTO_E_KEY_SIZE_MISMATCH          (0x07U)
+#endif
+#ifndef CRYPTO_E_COUNTER_OVERFLOW
 #define CRYPTO_E_COUNTER_OVERFLOW           (0x08U)
+#endif
+#ifndef CRYPTO_E_NOT_SUPPORTED
 #define CRYPTO_E_NOT_SUPPORTED              (0x09U)
+#endif
+#ifndef CRYPTO_E_KEY_READ_FAIL
 #define CRYPTO_E_KEY_READ_FAIL              (0x0AU)
+#endif
+#ifndef CRYPTO_E_KEY_WRITE_FAIL
 #define CRYPTO_E_KEY_WRITE_FAIL             (0x0BU)
+#endif
+#ifndef CRYPTO_E_KEY_NOT_AVAILABLE
 #define CRYPTO_E_KEY_NOT_AVAILABLE          (0x0CU)
+#endif
+#ifndef CRYPTO_E_KEY_NOT_VALID_STATE
 #define CRYPTO_E_KEY_NOT_VALID_STATE        (0x0DU)
+#endif
+#ifndef CRYPTO_E_KEY_INVALID
 #define CRYPTO_E_KEY_INVALID                (0x0EU)
+#endif
+#ifndef CRYPTO_E_HSM_GENERAL_ERROR
 #define CRYPTO_E_HSM_GENERAL_ERROR          (0x10U)
+#endif
+#ifndef CRYPTO_E_HSM_NOT_RESPONDING
 #define CRYPTO_E_HSM_NOT_RESPONDING         (0x11U)
+#endif
+#ifndef CRYPTO_E_HSM_BUFFER_TOO_SMALL
 #define CRYPTO_E_HSM_BUFFER_TOO_SMALL       (0x12U)
+#endif
+#ifndef CRYPTO_E_HSM_FATAL_ERROR
 #define CRYPTO_E_HSM_FATAL_ERROR            (0x13U)
+#endif
 
 /**********************************************************************************************************************
  * CRYPTO ALGORITHM MACROS
@@ -121,15 +159,33 @@
 /**********************************************************************************************************************
  * KEY MANAGEMENT MACROS
  *********************************************************************************************************************/
+#ifndef CRYPTO_KEY_ELEMENT_IV
 #define CRYPTO_KEY_ELEMENT_IV               (1U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_SALT
 #define CRYPTO_KEY_ELEMENT_SALT             (2U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_SEED
 #define CRYPTO_KEY_ELEMENT_SEED             (3U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_DIGEST
 #define CRYPTO_KEY_ELEMENT_DIGEST           (4U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_TAG
 #define CRYPTO_KEY_ELEMENT_TAG              (5U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_KEY
 #define CRYPTO_KEY_ELEMENT_KEY              (10U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_PRIVATE_KEY
 #define CRYPTO_KEY_ELEMENT_PRIVATE_KEY      (11U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_PUBLIC_KEY
 #define CRYPTO_KEY_ELEMENT_PUBLIC_KEY       (12U)
+#endif
+#ifndef CRYPTO_KEY_ELEMENT_SIGNATURE
 #define CRYPTO_KEY_ELEMENT_SIGNATURE        (20U)
+#endif
 
 #define CRYPTO_KEY_WRITE_ACCESS_ALLOWED     (0x00U)
 #define CRYPTO_KEY_WRITE_ACCESS_DENIED      (0x01U)

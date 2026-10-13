@@ -501,3 +501,256 @@ void test_FrIf_MainFunction_ValidCall_ShouldKeepStateStable(void) {
     TEST_ASSERT_EQUAL_INT(E_OK, ret);
     TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_MODE_READY, poc.State);
 }
+
+/* ---------------------------------------------------------------- */
+/* Additional tests for uncovered branches                           */
+/* ---------------------------------------------------------------- */
+
+/** SetAbsoluteTimer with invalid CtrlIdx */
+void test_FrIf_SetAbsoluteTimer_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SetAbsoluteTimer((uint8)FRIF_NUM_CONTROLLERS, 0U, 0U, 0U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_SETABSOLUTETIMER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** SetRelativeTimer with invalid CtrlIdx */
+void test_FrIf_SetRelativeTimer_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SetRelativeTimer((uint8)FRIF_NUM_CONTROLLERS, 0U, 0U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_SETRELATIVETIMER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** CancelAbsoluteTimer with invalid CtrlIdx */
+void test_FrIf_CancelAbsoluteTimer_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_CancelAbsoluteTimer((uint8)FRIF_NUM_CONTROLLERS, 0U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_CANCELABSOLUTETIMER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** CancelAbsoluteTimer with invalid timer idx */
+void test_FrIf_CancelAbsoluteTimer_InvalidTimer_ShouldReportInvTimerIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_CancelAbsoluteTimer(0U, 4U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_CANCELABSOLUTETIMER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_TIMER_IDX, mock_DetLastErrorId);
+}
+
+/** CancelRelativeTimer with invalid CtrlIdx */
+void test_FrIf_CancelRelativeTimer_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_CancelRelativeTimer((uint8)FRIF_NUM_CONTROLLERS, 0U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_CANCELRELATIVETIMER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** CancelRelativeTimer with invalid timer idx */
+void test_FrIf_CancelRelativeTimer_InvalidTimer_ShouldReportInvTimerIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_CancelRelativeTimer(0U, 4U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_CANCELRELATIVETIMER, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_TIMER_IDX, mock_DetLastErrorId);
+}
+
+/** GetGlobalTime with NULL MacrotickPtr */
+void test_FrIf_GetGlobalTime_NullMacrotickPtr_ShouldReportInvPointer(void) {
+    uint8 cycle = 0U;
+    Std_ReturnType ret;
+    ret = FrIf_GetGlobalTime(0U, &cycle, NULL_PTR);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_GETGLOBALTIME, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_POINTER, mock_DetLastErrorId);
+}
+
+/** GetGlobalTime with invalid CtrlIdx */
+void test_FrIf_GetGlobalTime_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    uint8 cycle = 0U;
+    uint16 mt = 0U;
+    Std_ReturnType ret;
+    ret = FrIf_GetGlobalTime((uint8)FRIF_NUM_CONTROLLERS, &cycle, &mt);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_GETGLOBALTIME, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** AllowColdstart with invalid CtrlIdx */
+void test_FrIf_AllowColdstart_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_AllowColdstart((uint8)FRIF_NUM_CONTROLLERS);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_ALLOWCOLDSTART, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** HaltCommunication with uninit */
+void test_FrIf_HaltCommunication_Uninit_ShouldReportUninit(void) {
+    Std_ReturnType ret;
+    ret = FrIf_HaltCommunication(0U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_HALTCOMMUNICATION, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** HaltCommunication with invalid CtrlIdx */
+void test_FrIf_HaltCommunication_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_HaltCommunication((uint8)FRIF_NUM_CONTROLLERS);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_HALTCOMMUNICATION, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** AbortCommunication with uninit */
+void test_FrIf_AbortCommunication_Uninit_ShouldReportUninit(void) {
+    Std_ReturnType ret;
+    ret = FrIf_AbortCommunication(0U);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_ABORTCOMMUNICATION, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** AbortCommunication with invalid CtrlIdx */
+void test_FrIf_AbortCommunication_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_AbortCommunication((uint8)FRIF_NUM_CONTROLLERS);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_ABORTCOMMUNICATION, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** SendWUP with invalid CtrlIdx */
+void test_FrIf_SendWUP_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SendWUP((uint8)FRIF_NUM_CONTROLLERS);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_WAKEUPCTRL, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** SetWakeupChannel with uninit */
+void test_FrIf_SetWakeupChannel_Uninit_ShouldReportUninit(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SetWakeupChannel(0U, (FrIf_ChannelType)FRIF_CHANNEL_A);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_SETWAKEUPCHANNEL, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_UNINIT, mock_DetLastErrorId);
+}
+
+/** SetWakeupChannel with invalid CtrlIdx */
+void test_FrIf_SetWakeupChannel_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SetWakeupChannel((uint8)FRIF_NUM_CONTROLLERS, (FrIf_ChannelType)FRIF_CHANNEL_A);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_SETWAKEUPCHANNEL, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** Transmit with unconfigured LPDU (LPDU index valid but not configured) */
+void test_FrIf_Transmit_UnconfiguredLpdu_ShouldReturnNotOk(void) {
+    uint8 sdu[8] = { 0U };
+    PduInfoType info = { sdu, 8U };
+    Std_ReturnType ret;
+    /* LPDU index 1 is < FRIF_NUM_LPDUS but was never configured */
+    ret = FrIf_Transmit(1U, &info);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** GetPOCStatus with invalid CtrlIdx */
+void test_FrIf_GetPOCStatus_InvalidCtrl_ShouldReportInvCtrlIdx(void) {
+    FrIf_POCStatusType poc;
+    Std_ReturnType ret;
+    ret = FrIf_GetPOCStatus((uint8)FRIF_NUM_CONTROLLERS, &poc);
+    TEST_ASSERT_EQUAL_INT(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(1U, mock_DetCallCount);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_SID_GETPOCSTATUS, mock_DetLastApiId);
+    TEST_ASSERT_EQUAL_UINT8((uint8)FRIF_E_INV_CTRL_IDX, mock_DetLastErrorId);
+}
+
+/** MainFunction with controller in STARTUP mode */
+void test_FrIf_MainFunction_StartupMode_ShouldProcess(void) {
+    /* AllowColdstart sets mode to COLDSTART; we need STARTUP.
+     * Use ControllerInit -> READY, then manually test MainFunction.
+     * We can set the mode to STARTUP via AllowColdstart then check. */
+    (void)FrIf_AllowColdstart(0U);  /* sets COLDSTART mode */
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** MainFunction with controller in HALT mode */
+void test_FrIf_MainFunction_HaltMode_ShouldProcess(void) {
+    (void)FrIf_HaltCommunication(0U);  /* sets HALT mode */
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** MainFunction with controller in NORMAL_ACTIVE mode (via Transmit path) */
+void test_FrIf_MainFunction_NormalActiveMode_ShouldProcess(void) {
+    /* We need to get the controller into NORMAL_ACTIVE mode.
+     * There's no direct API, but we can verify via Transmit succeeding.
+     * Since no API sets NORMAL_ACTIVE directly, test MainFunction after ControllerInit. */
+    (void)FrIf_ControllerInit(0U);  /* sets READY mode */
+    /* Set all 4 absolute timers and all 4 relative timers active */
+    (void)FrIf_SetAbsoluteTimer(0U, 0U, 1U, 10U);
+    (void)FrIf_SetAbsoluteTimer(0U, 1U, 2U, 20U);
+    (void)FrIf_SetAbsoluteTimer(0U, 2U, 3U, 30U);
+    (void)FrIf_SetAbsoluteTimer(0U, 3U, 4U, 40U);
+    (void)FrIf_SetRelativeTimer(0U, 0U, 10U);
+    (void)FrIf_SetRelativeTimer(0U, 1U, 20U);
+    (void)FrIf_SetRelativeTimer(0U, 2U, 30U);
+    (void)FrIf_SetRelativeTimer(0U, 3U, 40U);
+    FrIf_MainFunction();
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** SetAbsoluteTimer with valid call on all timer indices */
+void test_FrIf_SetAbsoluteTimer_AllTimers_ShouldSucceed(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SetAbsoluteTimer(0U, 0U, 1U, 100U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    ret = FrIf_SetAbsoluteTimer(0U, 1U, 2U, 200U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    ret = FrIf_SetAbsoluteTimer(0U, 2U, 3U, 300U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    ret = FrIf_SetAbsoluteTimer(0U, 3U, 4U, 400U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** SetRelativeTimer with valid call on all timer indices */
+void test_FrIf_SetRelativeTimer_AllTimers_ShouldSucceed(void) {
+    Std_ReturnType ret;
+    ret = FrIf_SetRelativeTimer(0U, 0U, 100U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    ret = FrIf_SetRelativeTimer(0U, 1U, 200U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    ret = FrIf_SetRelativeTimer(0U, 2U, 300U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    ret = FrIf_SetRelativeTimer(0U, 3U, 400U);
+    TEST_ASSERT_EQUAL_INT(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}

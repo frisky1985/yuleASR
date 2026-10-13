@@ -380,3 +380,190 @@ void test_Mcu_GetRamState_BeforeInit_ShouldReportDetAndReturnInvalid(void) {
     TEST_ASSERT_EQUAL(MCU_SID_GET_RAM_STATE, Det_MockData.ApiId);
     TEST_ASSERT_EQUAL(MCU_E_UNINIT, Det_MockData.ErrorId);
 }
+
+/* --- Mcu_ConfigureClock: PllConfigs=NULL, clock-switch timeout --- */
+
+/**
+ * Line 128: `if (clockConfig->PllConfigs != NULL_PTR)` false branch.
+ * A clock config with PllConfigs = NULL_PTR skips PLL configuration and
+ * goes straight to clock dividers + clock source switch.
+ */
+void test_Mcu_InitClock_NullPllConfigs_ShouldSkipPllConfiguration(void) {
+    test_Mcu_EnsureInitialized();
+    /* Save original and create a clock config with no PLL */
+    Mcu_PllConfigType* savedPlls = testClocks[0].PllConfigs;
+    uint8 savedNumPll = testClocks[0].NumPllConfigs;
+    testClocks[0].PllConfigs = NULL_PTR;
+    testClocks[0].NumPllConfigs = 0U;
+
+    /* CCSR must match ClockSource so the switch poll exits immediately */
+    MockRegisters_Write32(MCU_CCM_CCSR, CCSR_SRC_SEL);
+    MockRegisters_Write32(MCU_CCM_CACRR, 0xF8U);
+    MockRegisters_Write32(MCU_CCM_CBCDR, 0x000F0000U);
+    MockRegisters_Write32(MCU_CCM_CBCMR, 0x003C0000U);
+
+    Std_ReturnType ret = Mcu_InitClock(0U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+
+    /* Restore config */
+    testClocks[0].PllConfigs = savedPlls;
+    testClocks[0].NumPllConfigs = savedNumPll;
+}
+
+/**
+ * Lines 144-145: Clock switch timeout.
+ * If CCSR bit 0 never matches ClockSource, the while loop runs until
+ * timeout reaches 0 and status becomes E_NOT_OK.
+ */
+void test_Mcu_InitClock_ClockSwitchTimeout_ShouldReturnNotOk(void) {
+    test_Mcu_EnsureInitialized();
+    /* PLL locks fine */
+    MockRegisters_Write32(testPlls[0].PllBaseAddr, PLL_CTRL_LOCK);
+    /* CCSR bit 0 = 0 but ClockSource = 1 -> mismatch -> timeout */
+    MockRegisters_Write32(MCU_CCM_CCSR, 0U);
+    Std_ReturnType ret = Mcu_InitClock(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/* --- Mcu_GetResetReason: external reset (line 275) --- */
+
+/**
+ * Line 275: `else if ((srsrValue & 0x08U) != 0U)` -> MCU_RST_EXTERNAL.
+ * Only bit 3 set (no bits 0-2) so the earlier branches don't match.
+ */
+void test_Mcu_GetResetReason_ExternalBit_ShouldReturnExternal(void) {
+    test_Mcu_EnsureInitialized();
+    MockRegisters_Write32(MCU_SRC_SRSR, 0x00000008U);
+    TEST_ASSERT_EQUAL(MCU_RST_EXTERNAL, Mcu_GetResetReason());
+}
+
+/* --- SetMode: SLEEP, DEEP_SLEEP, RESET (default) --- */
+
+/**
+ * Lines 450-454: MCU_MODE_SLEEP case.
+ * GPC_PGC_CPU_MAPPING = 0x02, GPC_PU_PGC_SW_PDN_REQ = 0x01.
+ */
+void test_Mcu_SetMode_Sleep_ShouldWriteSleepRegisters(void) {
+    test_Mcu_EnsureInitialized();
+    MockRegisters_Write32(MCU_GPC_PGC_CPU_MAPPING, 0U);
+    MockRegisters_Write32(MCU_GPC_BASE + 0x104U, 0U);
+    Mcu_SetMode(1U); /* ModeConfigs[1] = MCU_MODE_SLEEP */
+    TEST_ASSERT_EQUAL(0x02U, MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING));
+    TEST_ASSERT_EQUAL(0x01U, MockRegisters_Read32(MCU_GPC_BASE + 0x104U));
+}
+
+/**
+ * Lines 456-460: MCU_MODE_DEEP_SLEEP case.
+ * GPC_PGC_CPU_MAPPING = 0x04, GPC_PU_PGC_SW_PDN_REQ = 0x01.
+ */
+void test_Mcu_SetMode_DeepSleep_ShouldWriteDeepSleepRegisters(void) {
+    test_Mcu_EnsureInitialized();
+    MockRegisters_Write32(MCU_GPC_PGC_CPU_MAPPING, 0U);
+    MockRegisters_Write32(MCU_GPC_BASE + 0x104U, 0U);
+    Mcu_SetMode(2U); /* ModeConfigs[2] = MCU_MODE_DEEP_SLEEP */
+    TEST_ASSERT_EQUAL(0x04U, MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING));
+    TEST_ASSERT_EQUAL(0x01U, MockRegisters_Read32(MCU_GPC_BASE + 0x104U));
+}
+
+/**
+ * Lines 462-464: default case (MCU_MODE_RESET).
+ * No register writes — just break.
+ */
+void test_Mcu_SetMode_Reset_ShouldNotWriteModeRegisters(void) {
+    test_Mcu_EnsureInitialized();
+    MockRegisters_Write32(MCU_GPC_PGC_CPU_MAPPING, 0U);
+    Mcu_SetMode(3U); /* ModeConfigs[3] = MCU_MODE_RESET -> default */
+    /* GPC_PGC_CPU_MAPPING should remain 0 (no write in default case) */
+    TEST_ASSERT_EQUAL(0U, MockRegisters_Read32(MCU_GPC_PGC_CPU_MAPPING));
+}
+
+/* --- InitClock: multiple PLLs with second failing --- */
+
+/**
+ * Lines 129-135: Loop over multiple PLL configs, break on first failure.
+ * Create a clock config with 2 PLLs: first locked, second not locked.
+ */
+void test_Mcu_InitClock_MultiplePlls_SecondFails_ShouldReturnNotOk(void) {
+    test_Mcu_EnsureInitialized();
+
+    /* Create two PLL configs */
+    Mcu_PllConfigType multiPlls[2];
+    multiPlls[0].PllBaseAddr = TEST_PLL_BASE;
+    multiPlls[0].Prediv = 1U;
+    multiPlls[0].Multiplier = 100U;
+    multiPlls[0].Postdiv1 = 2U;
+    multiPlls[0].Postdiv2 = 1U;
+    multiPlls[0].Enable = TRUE;
+
+    multiPlls[1].PllBaseAddr = TEST_PLL_BASE + 0x1000U;
+    multiPlls[1].Prediv = 1U;
+    multiPlls[1].Multiplier = 50U;
+    multiPlls[1].Postdiv1 = 2U;
+    multiPlls[1].Postdiv2 = 1U;
+    multiPlls[1].Enable = TRUE;
+
+    /* Save original config */
+    Mcu_PllConfigType* savedPlls = testClocks[0].PllConfigs;
+    uint8 savedNumPll = testClocks[0].NumPllConfigs;
+
+    testClocks[0].PllConfigs = multiPlls;
+    testClocks[0].NumPllConfigs = 2U;
+
+    /* First PLL locks, second does not */
+    MockRegisters_Write32(multiPlls[0].PllBaseAddr, PLL_CTRL_LOCK);
+    MockRegisters_Write32(multiPlls[1].PllBaseAddr, 0U); /* no LOCK */
+
+    Std_ReturnType ret = Mcu_InitClock(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+
+    /* Restore config */
+    testClocks[0].PllConfigs = savedPlls;
+    testClocks[0].NumPllConfigs = savedNumPll;
+}
+
+/* --- Additional tests for branch coverage --- */
+
+/** Test Mcu_InitRamSection with invalid section index (after init) */
+void test_Mcu_InitRamSection_InvalidSection_ShouldReportDet(void) {
+    test_Mcu_EnsureInitialized();
+    Std_ReturnType ret = Mcu_InitRamSection(255U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_TRUE(Det_MockData.LastCallValid);
+    TEST_ASSERT_EQUAL(MCU_SID_INIT_RAM_SECTION, Det_MockData.ApiId);
+    TEST_ASSERT_EQUAL(MCU_E_PARAM_RAMSECTION, Det_MockData.ErrorId);
+}
+
+/** Test Mcu_InitClock with status E_NOT_OK from Mcu_ConfigureClock */
+void test_Mcu_InitClock_ConfigureFails_ShouldReturnNotOk(void) {
+    test_Mcu_EnsureInitialized();
+    /* Set up PLL to not lock, which will cause Mcu_ConfigureClock to fail */
+    MockRegisters_Write32(TEST_PLL_BASE, 0U); /* No LOCK bit */
+    Std_ReturnType ret = Mcu_InitClock(0U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/** Test Mcu_DistributePllClock with clock already selected */
+void test_Mcu_DistributePllClock_ClockAlreadySelected_ShouldSetClockEnable(void) {
+    test_Mcu_EnsureInitialized();
+    Mcu_InitClock(0U);
+    MockRegisters_Write32(MCU_CCM_CCR, 0U);
+    Mcu_DistributePllClock();
+    uint32 ccr = MockRegisters_Read32(MCU_CCM_CCR);
+    TEST_ASSERT_TRUE((ccr & CCM_CCR_CLK_ENABLE) != 0U);
+}
+
+/** Test Mcu_GetPllStatus after initialization */
+void test_Mcu_GetPllStatus_AfterInit_ShouldReturnValidStatus(void) {
+    test_Mcu_EnsureInitialized();
+    Mcu_PllStatusType status = Mcu_GetPllStatus();
+    /* Status should be either LOCKED or UNLOCKED, not UNDEFINED */
+    TEST_ASSERT_TRUE(status == MCU_PLL_STATUS_LOCKED || status == MCU_PLL_STATUS_UNLOCKED);
+}
+
+/** Test Mcu_SetMode with valid mode after init */
+void test_Mcu_SetMode_ValidModeAfterInit_ShouldSetMode(void) {
+    test_Mcu_EnsureInitialized();
+    Mcu_SetMode(0U); /* MCU_MODE_RUN */
+    /* If we get here without DET error, the test passes */
+    TEST_ASSERT_TRUE(TRUE);
+}

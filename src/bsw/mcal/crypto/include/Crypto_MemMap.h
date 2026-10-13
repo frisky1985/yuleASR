@@ -21,6 +21,12 @@
 #ifndef CRYPTO_MEMMAP_H
 #define CRYPTO_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -103,6 +109,11 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* CRYPTO_MEMMAP_H */

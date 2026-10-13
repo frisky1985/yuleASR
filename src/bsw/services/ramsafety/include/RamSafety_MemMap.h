@@ -8,6 +8,12 @@
 #ifndef RAMSAFETY_MEMMAP_H
 #define RAMSAFETY_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 #ifndef RAMSAFETY_START_SEC_CODE
 #define RAMSAFETY_START_SEC_CODE
 #endif
@@ -31,6 +37,11 @@
 #endif
 #ifndef RAMSAFETY_STOP_SEC_VAR_NO_INIT
 #define RAMSAFETY_STOP_SEC_VAR_NO_INIT
+#endif
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* RAMSAFETY_MEMMAP_H */

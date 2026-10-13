@@ -21,10 +21,6 @@
 #define SPI_H
 
 #include "Spi_Cfg.h"
-
-/* SPI sequence / channel types (used by CanTrcv and other ECUALs) */
-typedef uint8 Spi_SequenceType;
-typedef uint8 Spi_ChannelType;
 #include "Std_Types.h"
 
 /* 版本 */

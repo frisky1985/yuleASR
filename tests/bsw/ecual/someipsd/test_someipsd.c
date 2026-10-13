@@ -320,6 +320,83 @@ void test_SomeIpSd_EventSubscriptionCallback_ShouldNotCrash(void) {
  * compiled out and does not exist in the service_someip library.
  * ------------------------------------------------------------------------- */
 
+/* ---------------------------------------------------------------------------
+ * Additional branch-coverage tests
+ * ------------------------------------------------------------------------- */
+
+/** Fill the 32-slot registry to exercise the "no free entry" branch */
+void test_SomeIpSd_OfferService_RegistryFull_ShouldReturnNotOk(void) {
+    SomeIpSd_Init(&testConfig);
+    uint16 i;
+    for (i = 0U; i < 32U; i++) {
+        Std_ReturnType ret = SomeIpSd_OfferService(
+            (SomeIp_ServiceIdType)(0x1000U + i),
+            (SomeIpSd_InstanceIdType)(0x0001U + (i / 100U)),
+            1U, 0U, 3000U);
+        /* InstanceId wraps: 0..31 are all distinct (i/100 = 0 for all i<32) */
+        TEST_ASSERT_EQUAL(E_OK, ret);
+    }
+    /* 33rd offer must fail — entryPtr == NULL_PTR after full scan */
+    TEST_ASSERT_EQUAL(E_NOT_OK, SomeIpSd_OfferService(
+        0x2000U, 0x0001U, 1U, 0U, 3000U));
+}
+
+/** Drive static cyclicCounter past the 300 threshold with an active service */
+void test_SomeIpSd_MainFunction_CyclicOffer_ShouldReOfferServices(void) {
+    SomeIpSd_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, SomeIpSd_OfferService(0x7777U, 0x0001U, 1U, 0U, 3000U));
+    uint16 i;
+    for (i = 0U; i < 301U; i++) {
+        SomeIpSd_MainFunction();
+    }
+    /* Service is still registered after cyclic re-offer */
+    TEST_ASSERT_EQUAL(E_OK, SomeIpSd_FindService(0x7777U, NULL_PTR, NULL_PTR));
+}
+
+/** Valid SD message with matching MessageId → passes the MessageId check */
+void test_SomeIpSd_RxIndication_ValidSdMessage_ShouldPassMessageIdCheck(void) {
+    SomeIpSd_Init(&testConfig);
+    uint8 msg[32];
+    memset(msg, 0, sizeof(msg));
+    /* MessageId = (SOMEIPSD_SERVICE_ID << 16) | SOMEIPSD_METHOD_ID
+     *            = 0xFFFF8100  → big-endian bytes: FF FF 81 00 */
+    msg[0] = 0xFFU;
+    msg[1] = 0xFFU;
+    msg[2] = 0x81U;
+    msg[3] = 0x00U;
+    /* Length field (bytes 4-7) = 16 (header only, big-endian) */
+    msg[7] = 16U;
+    SomeIpSd_RxIndication(msg, 32U);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** Non-SD MessageId → hits the "return" branch after ParseHeader */
+void test_SomeIpSd_RxIndication_WrongMessageId_ShouldBeIgnored(void) {
+    SomeIpSd_Init(&testConfig);
+    uint8 msg[32];
+    memset(msg, 0, sizeof(msg));
+    /* MessageId = 0x12340001 ≠ 0xFFFF8100 */
+    msg[0] = 0x12U;
+    msg[1] = 0x34U;
+    msg[2] = 0x00U;
+    msg[3] = 0x01U;
+    msg[7] = 16U;
+    SomeIpSd_RxIndication(msg, 32U);
+    TEST_ASSERT_EQUAL_UINT8(0U, mock_DetCallCount);
+}
+
+/** FindService with NULL InstanceIdPtr but valid ServiceInfoPtr */
+void test_SomeIpSd_FindService_NullInstanceIdPtr_ShouldReturnInfo(void) {
+    SomeIpSd_Init(&testConfig);
+    TEST_ASSERT_EQUAL(E_OK, SomeIpSd_OfferService(0x5555U, 0x0002U, 2U, 100U, 5000U));
+    SomeIpSd_ServiceInfoType info;
+    memset(&info, 0, sizeof(info));
+    TEST_ASSERT_EQUAL(E_OK, SomeIpSd_FindService(0x5555U, NULL_PTR, &info));
+    TEST_ASSERT_EQUAL_UINT16(0x5555U, info.ServiceId);
+    TEST_ASSERT_EQUAL_UINT16(0x0002U, info.InstanceId);
+    TEST_ASSERT_EQUAL(1, info.IsAvailable);
+}
+
 int main(void) {
     UNITY_BEGIN();
 
@@ -334,6 +411,7 @@ int main(void) {
     RUN_TEST(test_SomeIpSd_OfferService_Uninit_ShouldReturnNotOk);
     RUN_TEST(test_SomeIpSd_OfferService_ValidCall_ShouldReturnOk);
     RUN_TEST(test_SomeIpSd_OfferService_ReOffer_ShouldReturnNotOk);
+    RUN_TEST(test_SomeIpSd_OfferService_RegistryFull_ShouldReturnNotOk);
 
     /* StopOfferService */
     RUN_TEST(test_SomeIpSd_StopOfferService_Uninit_ShouldReturnNotOk);
@@ -345,6 +423,7 @@ int main(void) {
     RUN_TEST(test_SomeIpSd_FindService_NotFound_ShouldReturnNotOk);
     RUN_TEST(test_SomeIpSd_FindService_AfterOffer_ShouldReturnOkWithInfo);
     RUN_TEST(test_SomeIpSd_FindService_NullOutputPtrs_ShouldStillReturnOk);
+    RUN_TEST(test_SomeIpSd_FindService_NullInstanceIdPtr_ShouldReturnInfo);
 
     /* SubscribeEventGroup / UnsubscribeEventGroup */
     RUN_TEST(test_SomeIpSd_SubscribeEventGroup_Uninit_ShouldReturnNotOk);
@@ -356,10 +435,13 @@ int main(void) {
     RUN_TEST(test_SomeIpSd_RxIndication_Uninit_ShouldBeIgnored);
     RUN_TEST(test_SomeIpSd_RxIndication_NullData_ShouldBeIgnored);
     RUN_TEST(test_SomeIpSd_RxIndication_Truncated_ShouldBeIgnored);
+    RUN_TEST(test_SomeIpSd_RxIndication_ValidSdMessage_ShouldPassMessageIdCheck);
+    RUN_TEST(test_SomeIpSd_RxIndication_WrongMessageId_ShouldBeIgnored);
 
     /* MainFunction */
     RUN_TEST(test_SomeIpSd_MainFunction_Uninit_ShouldBeSilentNoOp);
     RUN_TEST(test_SomeIpSd_MainFunction_Init_ShouldRunSilently);
+    RUN_TEST(test_SomeIpSd_MainFunction_CyclicOffer_ShouldReOfferServices);
 
     /* Callbacks */
     RUN_TEST(test_SomeIpSd_ServiceAvailableCallback_ShouldNotCrash);

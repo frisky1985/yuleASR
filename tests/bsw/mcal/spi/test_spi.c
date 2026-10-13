@@ -44,6 +44,7 @@
 /* STATREG bits */
 #define STATREG_RR              (0x00000008UL)
 #define STATREG_TE              (0x00000020UL)
+#define STATREG_TF              (0x00000040UL)
 
 /* INTREG bits */
 #define INTREG_TEEN             (0x00000020UL)
@@ -497,4 +498,228 @@ void test_Spi_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     TEST_ASSERT_EQUAL(SPI_MODULE_ID, Det_MockData.ModuleId);
     TEST_ASSERT_EQUAL(SPI_SERVICE_ID_GETVERSIONINFO, Det_MockData.ApiId);
     TEST_ASSERT_EQUAL(SPI_E_PARAM_POINTER, Det_MockData.ErrorId);
+}
+
+/*==================================================================================================
+ * Additional Branch Coverage Tests (Target > 90%)
+ *==================================================================================================*/
+
+/* --- Init: 32-bit data mode branch (line 176) --- */
+void test_Spi_Init_32BitDataMode_ShouldSetConfigreg(void) {
+    test_Spi_SetupConfig();
+    testChannels[0].DataMode = SPI_DATA_MODE_32BIT;
+    testChannels[0].ClockMode = SPI_CLOCK_MODE_0; /* Clear clock mode bits */
+    Spi_Init(&testConfig);
+    /* 32-bit: cfgreg |= (3u << 4) = 0x30 */
+    TEST_ASSERT_EQUAL_HEX32(0x30UL, MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_CONFIGREG_OFF));
+}
+
+/* --- Init: baud rate divider not-found fallback (line 238) --- */
+void test_Spi_Init_VeryLowBaudRate_ShouldFallbackToMaxDivider(void) {
+    test_Spi_SetupConfig();
+    /* Set an extremely low baud rate so no preDiv/postDiv combo in 0..15 range
+     * satisfies 2^preDiv*(postDiv+1) >= refClock/baudRate.
+     * refClock=80MHz, baud=1Hz -> tempDiv=80000000. Max achievable: 2^15*16=524288 < 80M */
+    testChannels[0].BaudRate = 1U;
+    Spi_Init(&testConfig);
+    /* Fallback: bestPre=15, bestPost=15 -> periodreg = 15 | (15<<4) = 0xFF */
+    TEST_ASSERT_EQUAL_HEX32(0xFFUL, MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_PERIODREG_OFF));
+}
+
+/* --- SyncTransmit: TxData=NULL (line 333 TRUE branch) --- */
+void test_Spi_SyncTransmit_NullTxData_ShouldSendFF(void) {
+    uint8 rx[2] = {0x00U, 0x00U};
+    test_Spi_EnsureInit();
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_STATREG_OFF, STATREG_RR);
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_RXDATA_OFF, 0x55U);
+
+    Std_ReturnType ret = Spi_SyncTransmit(0U, NULL_PTR, rx, 2U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* When TxData is NULL, driver sends 0xFF */
+    TEST_ASSERT_EQUAL_HEX32(0xFFU, MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_TXDATA_OFF));
+}
+
+/* --- SyncTransmit: RxData=NULL (line 345 FALSE branch) --- */
+void test_Spi_SyncTransmit_NullRxData_ShouldDiscardRxData(void) {
+    uint8 tx[1] = {0xAAU};
+    test_Spi_EnsureInit();
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_STATREG_OFF, STATREG_RR);
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_RXDATA_OFF, 0xBBU);
+
+    Std_ReturnType ret = Spi_SyncTransmit(0U, tx, NULL_PTR, 1U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
+}
+
+/* --- SyncTransmit: TX FIFO full timeout (line 324-325) --- */
+void test_Spi_SyncTransmit_TxFifoFullTimeout_ShouldFail(void) {
+    uint8 tx[1] = {0x11U};
+    test_Spi_EnsureInit();
+    /* Set TF (TX FIFO full) bit so the while loop at line 324 spins */
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_STATREG_OFF, STATREG_TF);
+    gpt_autoAdvance = TRUE;
+
+    Std_ReturnType ret = Spi_SyncTransmit(0U, tx, NULL_PTR, 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+    TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
+}
+
+/* --- AsyncTransmit: invalid device (line 370) --- */
+void test_Spi_AsyncTransmit_InvalidDevice_ShouldReturnNotOk(void) {
+    uint8 tx[1] = {0x00U};
+    test_Spi_EnsureInit();
+    Std_ReturnType ret = Spi_AsyncTransmit(5U, tx, NULL_PTR, 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/* --- AsyncTransmit: while busy (line 379) --- */
+void test_Spi_AsyncTransmit_WhileBusy_ShouldReturnNotOk(void) {
+    uint8 tx[1] = {0x00U};
+    test_Spi_EnsureInit();
+    TEST_ASSERT_EQUAL(E_OK, Spi_AsyncTransmit(0U, tx, NULL_PTR, 1U));
+    TEST_ASSERT_EQUAL(SPI_BUSY, Spi_GetStatus());
+    Std_ReturnType ret = Spi_AsyncTransmit(0U, tx, NULL_PTR, 1U);
+    TEST_ASSERT_EQUAL(E_NOT_OK, ret);
+}
+
+/* --- AsyncTransmit: DMA mode with NULL TxData (line 406 FALSE) --- */
+void test_Spi_AsyncTransmit_DmaNullTx_ShouldSkipTxConfig(void) {
+    uint8 rx[8] = {0U};
+    test_Spi_EnsureInit();
+    Std_ReturnType ret = Spi_AsyncTransmit(1U, NULL_PTR, rx, 8U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* TxData=NULL: Dma_ConfigTx should NOT be called */
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_configTxCalls);
+    /* RxData valid: Dma_ConfigRx should be called */
+    TEST_ASSERT_EQUAL_UINT32(1U, dma_configRxCalls);
+    /* Both DMA enable calls still happen */
+    TEST_ASSERT_EQUAL_UINT32(2U, dma_enableCalls);
+}
+
+/* --- AsyncTransmit: DMA mode with NULL RxData (line 412 FALSE) --- */
+void test_Spi_AsyncTransmit_DmaNullRx_ShouldSkipRxConfig(void) {
+    uint8 tx[8] = {0x10U, 0x11U, 0x12U, 0x13U, 0x14U, 0x15U, 0x16U, 0x17U};
+    test_Spi_EnsureInit();
+    Std_ReturnType ret = Spi_AsyncTransmit(1U, tx, NULL_PTR, 8U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* TxData valid: Dma_ConfigTx should be called */
+    TEST_ASSERT_EQUAL_UINT32(1U, dma_configTxCalls);
+    /* RxData=NULL: Dma_ConfigRx should NOT be called */
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_configRxCalls);
+}
+
+/* --- AsyncTransmit: DMA with both NULL (lines 406 FALSE + 412 FALSE) --- */
+void test_Spi_AsyncTransmit_DmaBothNull_ShouldSkipBothDmaConfigs(void) {
+    test_Spi_EnsureInit();
+    Std_ReturnType ret = Spi_AsyncTransmit(1U, NULL_PTR, NULL_PTR, 8U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_configTxCalls);
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_configRxCalls);
+    TEST_ASSERT_EQUAL_UINT32(2U, dma_enableCalls);
+}
+
+/* --- AsyncTransmit: interrupt mode with NULL TxData (line 431 ternary) --- */
+void test_Spi_AsyncTransmit_InterruptNullTx_ShouldPrefillFF(void) {
+    test_Spi_EnsureInit();
+    Std_ReturnType ret = Spi_AsyncTransmit(0U, NULL_PTR, NULL_PTR, 3U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* When TxData is NULL, prefill sends 0xFF */
+    TEST_ASSERT_EQUAL_HEX32(0xFFU, MockRegisters_Read32(SPI_TEST_ECSPI1_BASE + ECSPI_TXDATA_OFF));
+}
+
+/* --- ISR: invalid channel (line 486 TRUE) --- */
+void test_Spi_IsrHandler_InvalidChannel_ShouldReturnEarly(void) {
+    test_Spi_EnsureInit();
+    /* Channel >= SPI_CHANNEL_COUNT should return immediately */
+    Spi_IsrHandler(SPI_CHANNEL_COUNT);
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+}
+
+/* --- ISR: called before init (line 486 FALSE via initialized==FALSE) --- */
+void test_Spi_IsrHandler_BeforeInit_ShouldReturnEarly(void) {
+    /* Don't init - just call ISR */
+    Spi_IsrHandler(0U);
+    TEST_ASSERT_EQUAL(SPI_UNINIT, Spi_GetStatus());
+}
+
+/* --- ISR: RX interrupt with NULL RxBuffer (line 497 FALSE) --- */
+void test_Spi_IsrHandler_RxInterruptNullRx_ShouldDiscardData(void) {
+    uint8 tx[2] = {0x01U, 0x02U};
+    test_Spi_EnsureInit();
+    TEST_ASSERT_EQUAL(E_OK, Spi_AsyncTransmit(0U, tx, NULL_PTR, 2U));
+    /* Set RR to enter the RX interrupt block */
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_STATREG_OFF, STATREG_RR);
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_RXDATA_OFF, 0xEEU);
+
+    Spi_IsrHandler(0U);
+    /* RxBuffer is NULL, so data is discarded (void read) */
+    TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
+}
+
+/* --- ISR: TX interrupt path (lines 508-511) --- */
+void test_Spi_IsrHandler_TxInterrupt_ShouldFillFifo(void) {
+    uint8 tx[2] = {0xAAU, 0xBBU};
+    uint8 rx[2] = {0x00U, 0x00U};
+    test_Spi_EnsureInit();
+    TEST_ASSERT_EQUAL(E_OK, Spi_AsyncTransmit(0U, tx, rx, 2U));
+    /* Set TE (TX empty) and RR (RX ready) bits.
+     * The RX handler will drain first, then TX handler checks TE. */
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_STATREG_OFF, STATREG_TE | STATREG_RR);
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_RXDATA_OFF, 0xCCU);
+
+    Spi_IsrHandler(0U);
+    /* After ISR, transferred should be complete */
+    TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
+    TEST_ASSERT_EQUAL(SPI_JOB_OK, Spi_GetJobResult());
+}
+
+/* --- MainFunction: not initialized (line 533 first part) --- */
+void test_Spi_MainFunction_NotInitialized_ShouldReturnEarly(void) {
+    /* Init then deinit to get clean uninitialized state */
+    test_Spi_EnsureInit();
+    Spi_DeInit();
+    TEST_ASSERT_EQUAL(SPI_UNINIT, Spi_GetStatus());
+    /* Now call MainFunction - should return early since not initialized */
+    Spi_MainFunction();
+    TEST_ASSERT_EQUAL(SPI_UNINIT, Spi_GetStatus());
+}
+
+/* --- MainFunction: not busy (line 533 second part) --- */
+void test_Spi_MainFunction_NotBusy_ShouldReturnEarly(void) {
+    test_Spi_EnsureInit();
+    TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
+    Spi_MainFunction();
+    TEST_ASSERT_EQUAL(SPI_IDLE, Spi_GetStatus());
+}
+
+/* --- GetElapsedTime: timer wraparound (line 570 FALSE branch) --- */
+void test_Spi_SyncTransmit_TimerWraparound_ShouldHandleCorrectly(void) {
+    uint8 tx[1] = {0x55U};
+    uint8 rx[1] = {0x00U};
+    test_Spi_EnsureInit();
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_STATREG_OFF, STATREG_RR);
+    MockRegisters_Write32(SPI_TEST_ECSPI1_BASE + ECSPI_RXDATA_OFF, 0xDDU);
+
+    /* Set time close to max so it wraps during the transfer */
+    gpt_timeMs = 0xFFFFFFF0U;
+    gpt_autoAdvance = FALSE;
+
+    Std_ReturnType ret = Spi_SyncTransmit(0U, tx, rx, 1U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+}
+
+/* --- AsyncTransmit: DMA with Length <= threshold (line 401 FALSE) --- */
+void test_Spi_AsyncTransmit_DmaShortLength_ShouldUseInterruptMode(void) {
+    uint8 tx[2] = {0x01U, 0x02U};
+    uint8 rx[2] = {0x00U, 0x00U};
+    test_Spi_EnsureInit();
+    /* Channel 1 has DMA enabled, but Length=2 which is <= SPI_DMA_FIFO_THRESHOLD */
+    Std_ReturnType ret = Spi_AsyncTransmit(1U, tx, rx, 2U);
+    TEST_ASSERT_EQUAL(E_OK, ret);
+    /* Should use interrupt mode, not DMA */
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_configTxCalls);
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_configRxCalls);
+    TEST_ASSERT_EQUAL_UINT32(0U, dma_enableCalls);
+    /* FIFO should be prefilled (interrupt mode) */
+    TEST_ASSERT_NOT_EQUAL(0U, MockRegisters_Read32(SPI_TEST_ECSPI2_BASE + ECSPI_TXDATA_OFF));
 }

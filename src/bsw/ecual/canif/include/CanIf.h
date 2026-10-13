@@ -79,8 +79,12 @@ typedef uint32 EcuM_WakeupSourceType;
 /*==================================================================================================
 *                                    DET ERROR CODES
 ==================================================================================================*/
+#ifndef CANIF_E_PARAM_CANID
 #define CANIF_E_PARAM_CANID             (0x01U)
+#endif
+#ifndef CANIF_E_PARAM_DLC
 #define CANIF_E_PARAM_DLC               (0x02U)
+#endif
 #define CANIF_E_PARAM_CONTROLLER        (0x03U)
 #define CANIF_E_PARAM_POINTER           (0x04U)
 #define CANIF_E_PARAM_CONTROLLERMODE    (0x05U)

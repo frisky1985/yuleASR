@@ -77,6 +77,7 @@ typedef struct
     uint8               NestCount;
     boolean             IsCeilingPriority;
     uint32              CeilingPriority;
+    uint32              OriginalPriority;
 } Os_ResourceConfigType;
 
 typedef struct

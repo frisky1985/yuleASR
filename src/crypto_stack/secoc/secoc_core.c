@@ -284,7 +284,7 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
     uint32_t n = (msg_len + AES_BLOCK_SIZE - 1U) / AES_BLOCK_SIZE;
     bool flag = (msg_len == 0U) || ((msg_len % AES_BLOCK_SIZE) != 0U);
     
-    generate_subkeys(key, key_len * 8U, k1, k2);
+    generate_subkeys(key, (uint32_t)(key_len * 8U), k1, k2);
     
     if (n == 0U) {
         n = 1;
@@ -315,7 +315,7 @@ static void aes_cmac(const uint8_t *key, uint32_t key_len,
         for (uint32_t j = 0U; j < AES_BLOCK_SIZE; j++) {
             y[j] = x[j] ^ msg[((uint32_t)i * AES_BLOCK_SIZE) + j];
         }
-        aes_encrypt_block(y, x, key, key_len * 8U);
+        aes_encrypt_block(y, x, key, (uint32_t)(key_len * 8U));
     }
     
     for (uint32_t j = 0U; j < AES_BLOCK_SIZE; j++) {
@@ -350,7 +350,7 @@ secoc_context_t* secoc_init(dds_crypto_context_t *crypto_ctx) {
     
     /* 初始化密钥槽 */
     for (uint32_t i = 0U; i < SECOC_MAX_KEY_SLOTS; i++) {
-        ctx->key_slots[i].slot_id = i;
+        ctx->key_slots[i].slot_id = (uint8_t)i;
         ctx->key_slots[i].is_valid = false;
     }
     

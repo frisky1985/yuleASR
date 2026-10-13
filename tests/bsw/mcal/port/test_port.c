@@ -416,3 +416,122 @@ void test_Port_GetVersionInfo_NullPtr_ShouldReportDet(void) {
     TEST_ASSERT_EQUAL(PORT_SID_GET_VERSION_INFO, Det_MockData.ApiId);
     TEST_ASSERT_EQUAL(PORT_E_PARAM_POINTER, Det_MockData.ErrorId);
 }
+
+/* --- Port_GetGpioBaseAddr switch coverage (line 136) --- */
+
+/* GPIO base addresses for ports B-E (must match Port.c) */
+#define PORT_GPIO2_BASE  (0x30210000UL)
+#define PORT_GPIO3_BASE  (0x30220000UL)
+#define PORT_GPIO4_BASE  (0x30230000UL)
+#define PORT_GPIO5_BASE  (0x30240000UL)
+
+/**
+ * Port_Init has no pin-range check, so pins on ports B-E exercise the
+ * Port_GetGpioBaseAddr switch cases PORT_B..PORT_E.  A pin with port=5
+ * (exceeds PORT_E) exercises the default branch (baseAddr = 0).
+ * All pins use GPIO mode so that Port_GetGpioBaseAddr is actually called.
+ */
+void test_Port_Init_MultiPortGpioPins_ShouldCoverAllSwitchBranches(void)
+{
+    test_Port_ResetDriver();
+
+    /* 6 pins: port B pin0, port C pin0, port D pin0, port E pin0,
+     * port 5 pin0 (default), port A pin10 (already covered, sanity check) */
+    Port_PinConfigType multiPins[6];
+
+    /* PORT_B pin 0: Pin = (1<<8)|0 = 0x0100 */
+    multiPins[0].Pin = 0x0100U;
+    multiPins[0].Direction = PORT_PIN_OUT;
+    multiPins[0].Mode = PORT_PIN_MODE_GPIO;
+    multiPins[0].DirectionChangeable = FALSE;
+    multiPins[0].ModeChangeable = FALSE;
+    multiPins[0].InitialLevel = PORT_PIN_LEVEL_HIGH;
+    multiPins[0].PullUpEnable = FALSE;
+    multiPins[0].PullDownEnable = FALSE;
+
+    /* PORT_C pin 0: Pin = (2<<8)|0 = 0x0200 */
+    multiPins[1].Pin = 0x0200U;
+    multiPins[1].Direction = PORT_PIN_OUT;
+    multiPins[1].Mode = PORT_PIN_MODE_GPIO;
+    multiPins[1].DirectionChangeable = FALSE;
+    multiPins[1].ModeChangeable = FALSE;
+    multiPins[1].InitialLevel = PORT_PIN_LEVEL_LOW;
+    multiPins[1].PullUpEnable = FALSE;
+    multiPins[1].PullDownEnable = FALSE;
+
+    /* PORT_D pin 0: Pin = (3<<8)|0 = 0x0300 */
+    multiPins[2].Pin = 0x0300U;
+    multiPins[2].Direction = PORT_PIN_IN;
+    multiPins[2].Mode = PORT_PIN_MODE_GPIO;
+    multiPins[2].DirectionChangeable = FALSE;
+    multiPins[2].ModeChangeable = FALSE;
+    multiPins[2].InitialLevel = PORT_PIN_LEVEL_LOW;
+    multiPins[2].PullUpEnable = FALSE;
+    multiPins[2].PullDownEnable = FALSE;
+
+    /* PORT_E pin 0: Pin = (4<<8)|0 = 0x0400 */
+    multiPins[3].Pin = 0x0400U;
+    multiPins[3].Direction = PORT_PIN_OUT;
+    multiPins[3].Mode = PORT_PIN_MODE_GPIO;
+    multiPins[3].DirectionChangeable = FALSE;
+    multiPins[3].ModeChangeable = FALSE;
+    multiPins[3].InitialLevel = PORT_PIN_LEVEL_LOW;
+    multiPins[3].PullUpEnable = FALSE;
+    multiPins[3].PullDownEnable = FALSE;
+
+    /* Default port (5): Pin = (5<<8)|0 = 0x0500 -> baseAddr = 0 */
+    multiPins[4].Pin = 0x0500U;
+    multiPins[4].Direction = PORT_PIN_OUT;
+    multiPins[4].Mode = PORT_PIN_MODE_GPIO;
+    multiPins[4].DirectionChangeable = FALSE;
+    multiPins[4].ModeChangeable = FALSE;
+    multiPins[4].InitialLevel = PORT_PIN_LEVEL_LOW;
+    multiPins[4].PullUpEnable = FALSE;
+    multiPins[4].PullDownEnable = FALSE;
+
+    /* PORT_A pin 10: sanity check (existing coverage) */
+    multiPins[5].Pin = 10U;
+    multiPins[5].Direction = PORT_PIN_OUT;
+    multiPins[5].Mode = PORT_PIN_MODE_GPIO;
+    multiPins[5].DirectionChangeable = FALSE;
+    multiPins[5].ModeChangeable = FALSE;
+    multiPins[5].InitialLevel = PORT_PIN_LEVEL_HIGH;
+    multiPins[5].PullUpEnable = FALSE;
+    multiPins[5].PullDownEnable = FALSE;
+
+    Port_ConfigType multiConfig;
+    multiConfig.NumPins = 6U;
+    multiConfig.PinConfigs = multiPins;
+
+    Port_Init(&multiConfig);
+    port_driverReady = TRUE;
+    TEST_ASSERT_EQUAL_UINT32(0U, Det_MockData.CallCount);
+
+    /* PORT_B (GPIO2): output, bit 0 set -> GDIR bit0 = 1, DR bit0 = 1 */
+    TEST_ASSERT_EQUAL_UINT32(1U,
+                             MockRegisters_Read32(PORT_GPIO2_BASE + PORT_GPIO_GDIR_OFF));
+    TEST_ASSERT_EQUAL_UINT32(1U,
+                             MockRegisters_Read32(PORT_GPIO2_BASE + PORT_GPIO_DR_OFF));
+
+    /* PORT_C (GPIO3): output, bit 0, initial low -> GDIR bit0 = 1, DR bit0 = 0 */
+    TEST_ASSERT_EQUAL_UINT32(1U,
+                             MockRegisters_Read32(PORT_GPIO3_BASE + PORT_GPIO_GDIR_OFF));
+    TEST_ASSERT_EQUAL_UINT32(0U,
+                             MockRegisters_Read32(PORT_GPIO3_BASE + PORT_GPIO_DR_OFF));
+
+    /* PORT_D (GPIO4): input, bit 0 -> GDIR bit0 = 0 */
+    TEST_ASSERT_EQUAL_UINT32(0U,
+                             MockRegisters_Read32(PORT_GPIO4_BASE + PORT_GPIO_GDIR_OFF));
+
+    /* PORT_E (GPIO5): output, bit 0 -> GDIR bit0 = 1 */
+    TEST_ASSERT_EQUAL_UINT32(1U,
+                             MockRegisters_Read32(PORT_GPIO5_BASE + PORT_GPIO_GDIR_OFF));
+
+    /* Default (port 5): baseAddr = 0, writes go to address 0 + GDIR/DR offsets.
+     * The mock register map will accept writes to address 0x0000 + offset.
+     * We just verify no crash and that PORT_A pin10 was handled correctly. */
+    TEST_ASSERT_EQUAL_UINT32((1U << 10U),
+                             MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_GDIR_OFF));
+    TEST_ASSERT_EQUAL_UINT32((1U << 10U),
+                             MockRegisters_Read32(PORT_GPIO1_BASE + PORT_GPIO_DR_OFF));
+}

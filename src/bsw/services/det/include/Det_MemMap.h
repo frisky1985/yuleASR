@@ -23,6 +23,12 @@
 #ifndef DET_MEMMAP_H
 #define DET_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
+
 /* Prevent double definition of memory mapping macros */
 #ifdef DET_START_SEC_CODE
     #undef DET_START_SEC_CODE
@@ -66,5 +72,10 @@
 
 /* For this implementation, memory sections are handled by the compiler/linker */
 /* No special pragmas needed for simplified implementation */
+
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#endif
 
 #endif /* DET_MEMMAP_H */

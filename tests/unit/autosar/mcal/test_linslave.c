@@ -10,6 +10,7 @@
 #include "LinSlave.h"
 #include "LinSlave_Pid.h"
 #include "LinSlave_Checksum.h"
+#include "LinSlave_Hal.h"
 
 /* 测试结果计数 */
 static int tests_run = 0;
@@ -230,6 +231,118 @@ void test_response_data(void)
     LinSlave_DeInit();
 }
 
+/* 校验和进位测试 - 覆盖经典/增强校验和的 Sum >= 256U 分支 */
+void test_checksum_carry(void)
+{
+    uint8 csum;
+    boolean valid;
+    
+    printf("\n=== Checksum Carry Tests ===\n");
+    
+    /* 经典校验和进位: 数据之和 >= 256 触发 carry 分支 (line 33) */
+    {
+        /* 0xFF + 0xFF = 0x1FE >= 256, 触发 Sum -= 255 */
+        uint8 data_carry[] = {0xFF, 0xFF};
+        csum = LinSlave_CalculateChecksum(data_carry, 2, 0, LINSLAVE_CHECKSUM_CLASSIC);
+        printf("  Classic carry checksum: 0x%02X\n", csum);
+        TEST_ASSERT(csum != 0xFF);
+        
+        valid = LinSlave_ValidateChecksum(data_carry, 2, 0, LINSLAVE_CHECKSUM_CLASSIC, csum);
+        TEST_ASSERT(valid);
+    }
+    
+    /* 经典校验和多次进位: 多个字节累加多次 >= 256 */
+    {
+        uint8 data_multi[] = {0x80, 0x80, 0x80, 0x80};
+        csum = LinSlave_CalculateChecksum(data_multi, 4, 0, LINSLAVE_CHECKSUM_CLASSIC);
+        printf("  Classic multi-carry checksum: 0x%02X\n", csum);
+        TEST_ASSERT(csum != 0xFF);
+        
+        valid = LinSlave_ValidateChecksum(data_multi, 4, 0, LINSLAVE_CHECKSUM_CLASSIC, csum);
+        TEST_ASSERT(valid);
+    }
+    
+    /* 增强校验和进位: PID + 数据之和 >= 256 触发 carry 分支 (line 52) */
+    {
+        /* PID=0xFF, data[0]=0xFF, data[1]=0xFF -> Sum starts at 0xFF, +0xFF=0x1FE >= 256 */
+        uint8 data_enh_carry[] = {0xFF, 0xFF};
+        csum = LinSlave_CalculateChecksum(data_enh_carry, 2, 0xFF, LINSLAVE_CHECKSUM_ENHANCED);
+        printf("  Enhanced carry checksum: 0x%02X\n", csum);
+        TEST_ASSERT(csum != 0xFF);
+        
+        valid = LinSlave_ValidateChecksum(data_enh_carry, 2, 0xFF, LINSLAVE_CHECKSUM_ENHANCED, csum);
+        TEST_ASSERT(valid);
+    }
+    
+    /* 增强校验和无进位: PID + 数据之和 < 256 (覆盖 false 分支) */
+    {
+        uint8 data_no_carry[] = {0x01, 0x02};
+        csum = LinSlave_CalculateChecksum(data_no_carry, 2, 0x10, LINSLAVE_CHECKSUM_ENHANCED);
+        TEST_ASSERT(csum != 0xFF);
+        
+        valid = LinSlave_ValidateChecksum(data_no_carry, 2, 0x10, LINSLAVE_CHECKSUM_ENHANCED, csum);
+        TEST_ASSERT(valid);
+    }
+}
+
+/* 校验和参数验证测试 - 覆盖 NULL/Length==0/Length>8 分支 (line 71) */
+void test_checksum_param_validation(void)
+{
+    uint8 data[] = {0x01, 0x02, 0x03};
+    uint8 csum;
+    boolean valid;
+    
+    printf("\n=== Checksum Parameter Validation Tests ===\n");
+    
+    /* NULL DataPtr -> 返回 0xFF */
+    csum = LinSlave_CalculateChecksum(NULL_PTR, 4, 0, LINSLAVE_CHECKSUM_CLASSIC);
+    TEST_ASSERT_EQ(0xFF, csum);
+    
+    /* Length == 0 -> 返回 0xFF */
+    csum = LinSlave_CalculateChecksum(data, 0, 0, LINSLAVE_CHECKSUM_CLASSIC);
+    TEST_ASSERT_EQ(0xFF, csum);
+    
+    /* Length > 8 -> 返回 0xFF */
+    csum = LinSlave_CalculateChecksum(data, 9, 0, LINSLAVE_CHECKSUM_CLASSIC);
+    TEST_ASSERT_EQ(0xFF, csum);
+    
+    /* ValidateChecksum NULL DataPtr -> FALSE */
+    valid = LinSlave_ValidateChecksum(NULL_PTR, 4, 0, LINSLAVE_CHECKSUM_CLASSIC, 0x00);
+    TEST_ASSERT(!valid);
+    
+    /* ValidateChecksum Length == 0 -> FALSE */
+    valid = LinSlave_ValidateChecksum(data, 0, 0, LINSLAVE_CHECKSUM_CLASSIC, 0x00);
+    TEST_ASSERT(!valid);
+    
+    /* ValidateChecksum Length > 8 -> FALSE */
+    valid = LinSlave_ValidateChecksum(data, 9, 0, LINSLAVE_CHECKSUM_CLASSIC, 0x00);
+    TEST_ASSERT(!valid);
+}
+
+/* HAL UART发送缓冲区测试 - 覆盖 LinSlave_Hal_UartSendBuffer 循环分支 (line 44) */
+void test_hal_uart_send_buffer(void)
+{
+    printf("\n=== HAL UART SendBuffer Tests ===\n");
+    
+    /* Length = 0: 循环不进入 (i < Length 为 false) */
+    LinSlave_Hal_UartSendBuffer(NULL, 0);
+    TEST_ASSERT(1);  /* 不崩溃即通过 */
+    
+    /* Length > 0: 循环执行 (i < Length 为 true 再 false) */
+    {
+        uint8 buf[] = {0xAA, 0xBB, 0xCC};
+        LinSlave_Hal_UartSendBuffer(buf, 3);
+        TEST_ASSERT(1);  /* 不崩溃即通过 */
+    }
+    
+    /* Length = 1: 循环恰好执行一次 */
+    {
+        uint8 buf_single[] = {0x55};
+        LinSlave_Hal_UartSendBuffer(buf_single, 1);
+        TEST_ASSERT(1);
+    }
+}
+
 /* 主函数 */
 int main(void)
 {
@@ -239,6 +352,9 @@ int main(void)
     
     test_pid_calculation();
     test_checksum();
+    test_checksum_carry();
+    test_checksum_param_validation();
+    test_hal_uart_send_buffer();
     test_init();
     test_callbacks();
     test_state_machine();

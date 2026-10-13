@@ -992,3 +992,28 @@ STATIC void WdgM_PerformSafetyAction(uint32 errorCode)
 
 #define WDGM_STOP_SEC_CODE
 #include "WdgM_MemMap.h"
+
+#ifdef UNIT_TEST
+#include <string.h>
+void WdgM_TestReset(void)
+{
+    WdgM_State = WDGM_STATE_UNINIT;
+    WdgM_CurrentMode = WDGM_WATCHDOG_MODE_OFF;
+    WdgM_CurrentConfig = NULL_PTR;
+    WdgM_SafetyMagic = 0U;
+    (void)memset(WdgM_SupervisedEntities, 0, sizeof(WdgM_SupervisedEntities));
+    (void)memset(&WdgM_GlobalStatus, 0, sizeof(WdgM_GlobalStatus));
+    WdgM_CycleTimer = 0U;
+    WdgM_TriggerTimer = 0U;
+    WdgM_ConsecutiveErrors = 0U;
+    WdgM_SafetyCallback = NULL_PTR;
+    WdgM_SafetyCallbackContext = NULL_PTR;
+    WdgM_FirstExpiredSEID = 0U;
+    WdgM_DisableAllowed = FALSE;
+}
+
+void WdgM_TestSetDisableAllowed(boolean allow)
+{
+    WdgM_DisableAllowed = allow;
+}
+#endif

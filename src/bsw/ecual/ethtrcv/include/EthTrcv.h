@@ -208,9 +208,6 @@ typedef uint8 EthTrcv_TrcvIdxType;
 /* Transceiver Type */
 typedef uint8 EthTrcv_TypeType;
 
-typedef struct EthTrcv_TrcvConfigType_s EthTrcv_TrcvConfigType;
-typedef struct EthTrcv_InterfaceConfigType_s EthTrcv_InterfaceConfigType;
-
 /* Transceiver configuration (full definition) */
 typedef struct EthTrcv_TrcvConfigType_s
 {

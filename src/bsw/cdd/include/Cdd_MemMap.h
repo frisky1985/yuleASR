@@ -34,6 +34,11 @@
 #ifndef CDD_MEMMAP_H
 #define CDD_MEMMAP_H
 
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunknown-pragmas"
+#endif
+
 /*==================================================================================================
  *  DISCLAIMER
  *  The actual memory mapping is tool-chain specific.  This implementation
@@ -372,6 +377,10 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
+#if defined(__clang__)
+#pragma clang diagnostic pop
 #endif
 
 #endif /* CDD_MEMMAP_H */
