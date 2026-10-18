@@ -879,8 +879,8 @@ modules:
     general:
       dev_error_detect: true
       version_info_api: true
-  doIP:
-    name: doIP
+  DoIP:
+    name: DoIP
     enabled: true
     version: 1.0.0
     general:

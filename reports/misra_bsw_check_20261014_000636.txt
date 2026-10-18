@@ -1,0 +1,38 @@
+src/bsw/mcal/dio/src/Dio.c:141:30: warning: Shifting 32-bit value by 255 bits is undefined behaviour. See condition at line 130. [shiftTooManyBits]
+    level = ((psrValue & (1U << pin)) != 0U) ? STD_HIGH : STD_LOW;
+                             ^
+src/bsw/mcal/dio/src/Dio.c:130:19: note: Assuming that condition 'ChannelId>=(8U*32U)' is not redundant
+    if (ChannelId >= (DIO_NUM_PORTS * DIO_NUM_CHANNELS_PER_PORT)) {
+                  ^
+src/bsw/mcal/dio/src/Dio.c:137:15: note: pin is assigned '(unsigned char)((ChannelId)&0xFFU)' here.
+    uint8 pin = DIO_GET_PIN(ChannelId);
+              ^
+src/bsw/mcal/dio/src/Dio.c:141:30: note: Shift
+    level = ((psrValue & (1U << pin)) != 0U) ? STD_HIGH : STD_LOW;
+                             ^
+src/bsw/mcal/dio/src/Dio.c:292:32: warning: Shifting 32-bit value by 255 bits is undefined behaviour. See condition at line 281. [shiftTooManyBits]
+    newLevel = ((drValue & (1U << pin)) != 0U) ? STD_LOW : STD_HIGH;
+                               ^
+src/bsw/mcal/dio/src/Dio.c:281:19: note: Assuming that condition 'ChannelId>=(8U*32U)' is not redundant
+    if (ChannelId >= (DIO_NUM_PORTS * DIO_NUM_CHANNELS_PER_PORT)) {
+                  ^
+src/bsw/mcal/dio/src/Dio.c:288:15: note: pin is assigned '(unsigned char)((ChannelId)&0xFFU)' here.
+    uint8 pin = DIO_GET_PIN(ChannelId);
+              ^
+src/bsw/mcal/dio/src/Dio.c:292:32: note: Shift
+    newLevel = ((drValue & (1U << pin)) != 0U) ? STD_LOW : STD_HIGH;
+                               ^
+src/bsw/mcal/dio/src/Dio.c:293:51: warning: Shifting 32-bit value by 255 bits is undefined behaviour. See condition at line 281. [shiftTooManyBits]
+    REG_WRITE32(gpioBase + DIO_GPIO_PTOR_TOG, (1U << pin));
+                                                  ^
+src/bsw/mcal/dio/src/Dio.c:281:19: note: Assuming that condition 'ChannelId>=(8U*32U)' is not redundant
+    if (ChannelId >= (DIO_NUM_PORTS * DIO_NUM_CHANNELS_PER_PORT)) {
+                  ^
+src/bsw/mcal/dio/src/Dio.c:288:15: note: pin is assigned '(unsigned char)((ChannelId)&0xFFU)' here.
+    uint8 pin = DIO_GET_PIN(ChannelId);
+              ^
+src/bsw/mcal/dio/src/Dio.c:293:51: note: Shift
+    REG_WRITE32(gpioBase + DIO_GPIO_PTOR_TOG, (1U << pin));
+                                                  ^
+nofile:0:0: information: Active checkers: 113/186 (use --checkers-report=<filename> to see details) [checkersReport]
+

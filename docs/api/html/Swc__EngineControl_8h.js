@@ -1,0 +1,48 @@
+var Swc__EngineControl_8h =
+[
+    [ "Swc_EngineParametersType", "structSwc__EngineParametersType.html", "structSwc__EngineParametersType" ],
+    [ "Swc_EngineControlOutputType", "structSwc__EngineControlOutputType.html", "structSwc__EngineControlOutputType" ],
+    [ "Rte_Read_CoolantTemperature", "Swc__EngineControl_8h.html#a33f86363e1fec1a0529581d8961922e9", null ],
+    [ "Rte_Read_ThrottlePosition", "Swc__EngineControl_8h.html#a80d848f1ac63296eb76e71c02e07f1ac", null ],
+    [ "Rte_Read_VehicleSpeed", "Swc__EngineControl_8h.html#a8751d8a3322c6dba93f4ee515b6c4af5", null ],
+    [ "RTE_RUNNABLE_EngineControl_100ms", "Swc__EngineControl_8h.html#a1eac0392b6ef5b03da2807ce6987d153", null ],
+    [ "RTE_RUNNABLE_EngineControl_10ms", "Swc__EngineControl_8h.html#a13ba0b3a34be2ccbf855bf7628c5af57", null ],
+    [ "RTE_RUNNABLE_EngineControl_Init", "Swc__EngineControl_8h.html#a64495ba8261fb4ca734108d187f8627e", null ],
+    [ "RTE_RUNNABLE_EngineControl_StateMachine", "Swc__EngineControl_8h.html#a8f84ead4efaa1c24eaf0068fdc6c7b82", null ],
+    [ "RTE_START_SEC_CODE", "Swc__EngineControl_8h.html#aa3ab66e1dd2bf6a04157c24a8cd34e23", null ],
+    [ "RTE_STOP_SEC_CODE", "Swc__EngineControl_8h.html#a971ba994e8862f25876dfa1db6929b11", null ],
+    [ "Rte_Switch_EngineMode", "Swc__EngineControl_8h.html#ab9fed274b29fe6c1bd2241dffe7fbce2", null ],
+    [ "Rte_Write_EngineControlOutput", "Swc__EngineControl_8h.html#a25423816df11a950cbf4eb507994bf1e", null ],
+    [ "Rte_Write_EngineParameters", "Swc__EngineControl_8h.html#af3660d86d7c41608906a30d8e0ff6a3f", null ],
+    [ "Rte_Write_EngineState", "Swc__EngineControl_8h.html#a897fb145bfd024e69ed190508ccfc6a5", null ],
+    [ "SWC_ENGINECONTROL_PORT_COOLANT_TEMP_R", "Swc__EngineControl_8h.html#ab4bd076c351ac4e73a2552ee224d1eb8", null ],
+    [ "SWC_ENGINECONTROL_PORT_ENGINE_CONTROL_P", "Swc__EngineControl_8h.html#a720bc54ffe02697e730f065e78b0de58", null ],
+    [ "SWC_ENGINECONTROL_PORT_ENGINE_PARAMS_P", "Swc__EngineControl_8h.html#a2d91fe349f08d512e346c902994e1b5f", null ],
+    [ "SWC_ENGINECONTROL_PORT_ENGINE_STATE_P", "Swc__EngineControl_8h.html#a104186bd41db469ed1376d74fe17970d", null ],
+    [ "SWC_ENGINECONTROL_PORT_THROTTLE_POS_R", "Swc__EngineControl_8h.html#a0a1d945b87108528faf52c29a305be56", null ],
+    [ "SWC_ENGINECONTROL_PORT_VEHICLE_SPEED_R", "Swc__EngineControl_8h.html#a43f97f4ec7a8006f7ad4083257069d97", null ],
+    [ "Swc_EngineControlModeType", "Swc__EngineControl_8h.html#ac6cfdfdfa319d9f8c33f77d728c5ef93", [
+      [ "ENGINE_MODE_NORMAL", "Swc__EngineControl_8h.html#ac6cfdfdfa319d9f8c33f77d728c5ef93afe7185d20f7898be147ae7f6e85bce7c", null ],
+      [ "ENGINE_MODE_ECO", "Swc__EngineControl_8h.html#ac6cfdfdfa319d9f8c33f77d728c5ef93ac791bb6fa181d2a88cde346fabcd19af", null ],
+      [ "ENGINE_MODE_SPORT", "Swc__EngineControl_8h.html#ac6cfdfdfa319d9f8c33f77d728c5ef93a512ad593c5e052dcaaefedffa2450346", null ],
+      [ "ENGINE_MODE_LIMP_HOME", "Swc__EngineControl_8h.html#ac6cfdfdfa319d9f8c33f77d728c5ef93a63c63504e49e9bbd84186d5fdf7e4641", null ]
+    ] ],
+    [ "Swc_EngineStateType", "Swc__EngineControl_8h.html#a8042394af9f7942540e0f0f6193e6ee0", [
+      [ "ENGINE_STATE_OFF", "Swc__EngineControl_8h.html#a8042394af9f7942540e0f0f6193e6ee0a485d783e0535290adad657c8d16cb102", null ],
+      [ "ENGINE_STATE_CRANKING", "Swc__EngineControl_8h.html#a8042394af9f7942540e0f0f6193e6ee0a6cba0286e0fad6cca221384da6092f13", null ],
+      [ "ENGINE_STATE_RUNNING", "Swc__EngineControl_8h.html#a8042394af9f7942540e0f0f6193e6ee0a77e73c914ad6c9ef62d20591d8a03f8d", null ],
+      [ "ENGINE_STATE_STOPPING", "Swc__EngineControl_8h.html#a8042394af9f7942540e0f0f6193e6ee0aa721faea95047dcb6c386144d9313875", null ],
+      [ "ENGINE_STATE_FAULT", "Swc__EngineControl_8h.html#a8042394af9f7942540e0f0f6193e6ee0a0a72ba5cb3392ee3763c8912b1dee0eb", null ]
+    ] ],
+    [ "Swc_EngineControl_100ms", "Swc__EngineControl_8h.html#a9b2f6b87317ef29dade393567ac1874e", null ],
+    [ "Swc_EngineControl_10ms", "Swc__EngineControl_8h.html#a72ffcca19b72f87cddde0d30384170fa", null ],
+    [ "Swc_EngineControl_CalculateFuelInjection", "Swc__EngineControl_8h.html#a710f7e95b74f50cefd2061b276e74091", null ],
+    [ "Swc_EngineControl_CalculateIgnitionTiming", "Swc__EngineControl_8h.html#afe3f3de2727e274fdacbd0eb17356aea", null ],
+    [ "Swc_EngineControl_Deinit", "Swc__EngineControl_8h.html#aee30ac59b99a05d27fe90dd45992baf4", null ],
+    [ "Swc_EngineControl_GetEngineParameters", "Swc__EngineControl_8h.html#a59d6b55717059208937ff9e6982ed761", null ],
+    [ "Swc_EngineControl_GetEngineState", "Swc__EngineControl_8h.html#a6d9543589af07f6b84a4abcc0a13475e", null ],
+    [ "Swc_EngineControl_Init", "Swc__EngineControl_8h.html#ab0e9b3f48c9a14119901c630a69cb6b3", null ],
+    [ "Swc_EngineControl_MainFunction", "Swc__EngineControl_8h.html#af9e761d388f1a9fd99d9c86caefdd868", null ],
+    [ "Swc_EngineControl_SetControlMode", "Swc__EngineControl_8h.html#aac0916d3524e08fb694f8d120a7a9aff", null ],
+    [ "Swc_EngineControl_StateMachine", "Swc__EngineControl_8h.html#aa336ed5254305982577ff7a50c163a32", null ]
+];

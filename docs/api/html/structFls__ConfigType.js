@@ -1,0 +1,27 @@
+var structFls__ConfigType =
+[
+    [ "BaseAddress", "structFls__ConfigType.html#a1f5ce4aa2c4d972b1a92cc4ec3cb3341", null ],
+    [ "CallCycle", "structFls__ConfigType.html#ab1ccec3b1f7ca9269b1c6c3513c43b11", null ],
+    [ "DefaultMode", "structFls__ConfigType.html#af6833cc028af1de12863ed1fc6b65314", null ],
+    [ "defaultMode", "structFls__ConfigType.html#a548dd8b906536ab7d56d378ba294464a", null ],
+    [ "JobEndNotification", "structFls__ConfigType.html#aaef4c562ace1a6bffc9040c7d71a521e", null ],
+    [ "jobEndNotificationEnabled", "structFls__ConfigType.html#ad5a4685364afb320e8e2a87dd77c209b", null ],
+    [ "JobErrorNotification", "structFls__ConfigType.html#af1a005c9fe43bf83a52882c85e05b7bd", null ],
+    [ "jobErrorNotificationEnabled", "structFls__ConfigType.html#a6f2f7bd35506ed35d9b2416aafea04de", null ],
+    [ "MaxReadFastMode", "structFls__ConfigType.html#a7cb13e744f5c15f2d79af1c4a778e8fe", null ],
+    [ "maxReadFastMode", "structFls__ConfigType.html#aecb69084fc7d2853f076d6e8e147d1a8", null ],
+    [ "MaxReadNormalMode", "structFls__ConfigType.html#a73ee089d9272f39b33cec6bf65e2f16a", null ],
+    [ "maxReadNormalMode", "structFls__ConfigType.html#a539f53df61332b4308cb070ca229db8a", null ],
+    [ "MaxWriteFastMode", "structFls__ConfigType.html#af5cc6ab6d589fcb1dc469450d4e04338", null ],
+    [ "maxWriteFastMode", "structFls__ConfigType.html#ad8a6b1a127a6e174001aaa9ad0940661", null ],
+    [ "MaxWriteNormalMode", "structFls__ConfigType.html#a9cc1b0ab21415456d62dc035507aa9b5", null ],
+    [ "maxWriteNormalMode", "structFls__ConfigType.html#a33ba476a94f8b6d408bca050af273227", null ],
+    [ "PageSize", "structFls__ConfigType.html#aee85a3170aa673ef219f402a2b779892", null ],
+    [ "ProgrammingUnit", "structFls__ConfigType.html#a08e72eaefeb7a169e01b3efd76ee0d61", null ],
+    [ "SectorCount", "structFls__ConfigType.html#a657588dfbb8161f3fc58e15133e70442", null ],
+    [ "sectorCount", "structFls__ConfigType.html#aa365c6c15acf2107b307e87b816ae681", null ],
+    [ "SectorInfo", "structFls__ConfigType.html#a84d3a3bc055843866b44274ed4c1873b", null ],
+    [ "sectorList", "structFls__ConfigType.html#a9a7a8de5a6358bd7cd52b52ede1dc350", null ],
+    [ "TotalSize", "structFls__ConfigType.html#aa11e9cced478c0b2750ee56e113ce718", null ],
+    [ "UseInterrupts", "structFls__ConfigType.html#a4ead00995da6a1846d5116f699f03e53", null ]
+];

@@ -1,0 +1,27 @@
+var Mem__Cfg_8h =
+[
+    [ "MEM_CFG_AR_RELEASE_MAJOR_VERSION", "Mem__Cfg_8h.html#a1bed24f220dd3d70386dda76bacc7463", null ],
+    [ "MEM_CFG_AR_RELEASE_MINOR_VERSION", "Mem__Cfg_8h.html#a35860df0f57a4eda910fd0ee39be05d4", null ],
+    [ "MEM_CFG_AR_RELEASE_REVISION_VERSION", "Mem__Cfg_8h.html#ae0a96e9d5baa3c280970531085349503", null ],
+    [ "MEM_CFG_SW_MAJOR_VERSION", "Mem__Cfg_8h.html#a73612807143e88b9fa440eecd93ab02e", null ],
+    [ "MEM_CFG_SW_MINOR_VERSION", "Mem__Cfg_8h.html#a76fd998d725d55fe9321ec717eea9dbf", null ],
+    [ "MEM_CFG_SW_PATCH_VERSION", "Mem__Cfg_8h.html#af557b160ef71e0b251c0803bdc11f75d", null ],
+    [ "MEM_DEFAULT_ALIGNMENT", "Mem__Cfg_8h.html#ae4cb3db546aee581e3b47972f3cbb63e", null ],
+    [ "MEM_DEFAULT_POOL_INDEX", "Mem__Cfg_8h.html#ac8f573010092941c680c80ae053951f8", null ],
+    [ "MEM_DEFRAG_THRESHOLD", "Mem__Cfg_8h.html#a5d58323db063d28f9c154f6398a0a225", null ],
+    [ "MEM_DEV_ERROR_DETECT", "Mem__Cfg_8h.html#aba83a3f0e60a48f85ae0603c5ff9e758", null ],
+    [ "MEM_ENABLE_CHECKSUM", "Mem__Cfg_8h.html#a5c8f3d980f0aa947b2024610add71e55", null ],
+    [ "MEM_ENABLE_MONITORING", "Mem__Cfg_8h.html#a7555f0e5e5f9a7c3f770cc6351cf8592", null ],
+    [ "MEM_FAST_POOL_MAX_BLOCK", "Mem__Cfg_8h.html#afda6904d2765a49781e3079319456493", null ],
+    [ "MEM_FAST_POOL_SIZE", "Mem__Cfg_8h.html#aaf62dfa92226cd9e83b911e5f6464098", null ],
+    [ "MEM_LARGE_POOL_MAX_BLOCK", "Mem__Cfg_8h.html#acda4c8c29069c2b4fb15eb2298def6a7", null ],
+    [ "MEM_LARGE_POOL_SIZE", "Mem__Cfg_8h.html#af6128f9d0d6f1190fe03fb22ed4f9c52", null ],
+    [ "MEM_MAGIC_NUMBER_CFG", "Mem__Cfg_8h.html#a589edc7e88b64a7fdb035219278aa24f", null ],
+    [ "MEM_MAIN_FUNCTION_PERIOD_MS", "Mem__Cfg_8h.html#aebeca62969cb8301ed2ccc07c51f77f2", null ],
+    [ "MEM_MAX_ALLOCATIONS", "Mem__Cfg_8h.html#aef925c5916f76d962a17b6fc674ba60b", null ],
+    [ "MEM_MIN_BLOCK_SIZE", "Mem__Cfg_8h.html#a8b1e91501c2db74842c01b050dc7c961", null ],
+    [ "MEM_NUM_POOLS", "Mem__Cfg_8h.html#a19db619f8d20e1e08aab68ee0b24b473", null ],
+    [ "MEM_STANDARD_POOL_MAX_BLOCK", "Mem__Cfg_8h.html#a32fa222950201e7a93b4154f690b505c", null ],
+    [ "MEM_STANDARD_POOL_SIZE", "Mem__Cfg_8h.html#a48ad9d77b0acede8e35473a8d04bc1b3", null ],
+    [ "MEM_VERSION_INFO_API", "Mem__Cfg_8h.html#a996b83b8a65f7e9ecf745c7b4517ee46", null ]
+];

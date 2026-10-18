@@ -1,0 +1,28 @@
+var structCom__IPduConfigType =
+[
+    [ "ComIPduCallout", "structCom__IPduConfigType.html#a1517f625780b31153b605bc5a26a8110", null ],
+    [ "DataLength", "structCom__IPduConfigType.html#a047d1ff19c429d561a453425f96020fe", null ],
+    [ "DataPtr", "structCom__IPduConfigType.html#a331c0691f3ee9622aeace4d9b284080e", null ],
+    [ "DeadlineLimit", "structCom__IPduConfigType.html#a3b4b17157b497ede97b3526d5fd2caa1", null ],
+    [ "DeadlineNotification", "structCom__IPduConfigType.html#adb441de59eb30429a6cdacdcc075153b", null ],
+    [ "Direction", "structCom__IPduConfigType.html#a861b46cd8fc142756f9e06f46004d0b7", null ],
+    [ "IpduGroupRef", "structCom__IPduConfigType.html#a022836ae5ab4835c125312e61f4f9ebb", null ],
+    [ "IpduGroupRefs", "structCom__IPduConfigType.html#abe1e7994f0ae13687e7210f95e45cfc7", null ],
+    [ "IPduId", "structCom__IPduConfigType.html#a7f296a49af70327cf82405c2a2b98a28", null ],
+    [ "Length", "structCom__IPduConfigType.html#a677f1c1502e32f3e92ca0169e4a60466", null ],
+    [ "NumIpduGroups", "structCom__IPduConfigType.html#a47e683254212e3a1096e594a16511ca6", null ],
+    [ "NumRepetitions", "structCom__IPduConfigType.html#a3f607e82110179fe1fb4c3f87741dd8d", null ],
+    [ "NumSignalGroups", "structCom__IPduConfigType.html#a974019c80fd1e48bbc54d91e5748de22", null ],
+    [ "NumSignals", "structCom__IPduConfigType.html#a5dd5d97f414e0767f2512d173e9b3a30", null ],
+    [ "PduId", "structCom__IPduConfigType.html#a01ee1289cf4d2e399d020a57fa4989d0", null ],
+    [ "RepeatingEnabled", "structCom__IPduConfigType.html#a70c6e869f1651b536ef48a96339aa54f", null ],
+    [ "SignalGroupRefs", "structCom__IPduConfigType.html#adde02be1f7a884cdaeb826d7a9a37de6", null ],
+    [ "SignalProcessing", "structCom__IPduConfigType.html#ab3b0c36a1f078ad6f69b6f150ac86835", null ],
+    [ "SignalRefs", "structCom__IPduConfigType.html#a3842e85aa90a5f5960a66bae2c17cb11", null ],
+    [ "TimeBetweenRepetitions", "structCom__IPduConfigType.html#a8d38b23d024b96228ef505dc3a7d39fa", null ],
+    [ "Timeout", "structCom__IPduConfigType.html#a0751fc2a0a3efac0e56cf6198b1f0231", null ],
+    [ "TimePeriod", "structCom__IPduConfigType.html#a083b3ff9c089b3ba21f98d6d526bc076", null ],
+    [ "TxConfirmation", "structCom__IPduConfigType.html#a92698c44059a783eab0c975b0f99e13c", null ],
+    [ "TxMode", "structCom__IPduConfigType.html#a8fdb45fc60ff378a75a9f7961906f964", null ],
+    [ "Type", "structCom__IPduConfigType.html#a9cd8c06952a74cb47613f0169a1bec93", null ]
+];

@@ -1,0 +1,65 @@
+var LinSlave__CfgTable_8h =
+[
+    [ "LinSlave_UnconditionalFrameConfigType", "structLinSlave__UnconditionalFrameConfigType.html", "structLinSlave__UnconditionalFrameConfigType" ],
+    [ "LinSlave_EventFrameConfigType", "structLinSlave__EventFrameConfigType.html", "structLinSlave__EventFrameConfigType" ],
+    [ "LinSlave_SporadicFrameConfigType", "structLinSlave__SporadicFrameConfigType.html", "structLinSlave__SporadicFrameConfigType" ],
+    [ "LinSlave_DiagnosticFrameConfigType", "structLinSlave__DiagnosticFrameConfigType.html", "structLinSlave__DiagnosticFrameConfigType" ],
+    [ "LinSlave_ConfigTableType", "structLinSlave__ConfigTableType.html", "structLinSlave__ConfigTableType" ],
+    [ "LINSAVE_CFGTABLE_H", "LinSlave__CfgTable_8h.html#a5e6bdbccebab39f9ba6473788b114923", null ],
+    [ "LINSLAVE_CFGTABLE_MAJOR_VERSION", "LinSlave__CfgTable_8h.html#a59d18ab31f03c05c802e0864664f230f", null ],
+    [ "LINSLAVE_CFGTABLE_MINOR_VERSION", "LinSlave__CfgTable_8h.html#ae97f25aa5ffab28c101409c7892d665d", null ],
+    [ "LINSLAVE_CFGTABLE_PATCH_VERSION", "LinSlave__CfgTable_8h.html#a1161e60756d8e40b9334f9ac3b96753f", null ],
+    [ "LINSLAVE_MAX_EVENT_FRAMES", "LinSlave__CfgTable_8h.html#a5b78a0392f4f741403982b7a0291cbbd", null ],
+    [ "LINSLAVE_MAX_SPORADIC_FRAMES", "LinSlave__CfgTable_8h.html#a331903d8fa63b00d3e2e219e9d52d690", null ],
+    [ "LINSLAVE_MAX_TP_CHANNELS", "LinSlave__CfgTable_8h.html#a226555d33d9b2cf8fc255c7a1332d718", null ],
+    [ "LINSLAVE_MAX_UNCONDITIONAL_FRAMES", "LinSlave__CfgTable_8h.html#a267da02ec349a283ab6671474b750836", null ],
+    [ "LinSlave_DataCallbackFuncType", "LinSlave__CfgTable_8h.html#a87cdb635dbe525ddbd8f23a0c7ab8c3d", null ],
+    [ "LinSlave_DiagCallbackFuncType", "LinSlave__CfgTable_8h.html#a41afcc23288b733430764f210b4c4917", null ],
+    [ "LinSlave_FrameErrorCallbackFuncType", "LinSlave__CfgTable_8h.html#ab39e1e4481bb6b4249758f4b03e6f85e", null ],
+    [ "LinSlave_UnconditionalRxCallbackType", "LinSlave__CfgTable_8h.html#aa71a1abb91a97766a7654390b6ba7ba7", null ],
+    [ "LinSlave_UnconditionalTxCallbackType", "LinSlave__CfgTable_8h.html#a6c103b6333ed2b109114666bbc0fabe9", null ],
+    [ "LinSlave_DirectionType", "LinSlave__CfgTable_8h.html#a49fe85f6acfb1a40b319bb0331f41597", [
+      [ "LINSLAVE_DIR_NONE", "LinSlave__CfgTable_8h.html#a49fe85f6acfb1a40b319bb0331f41597a60b56076f1f4bb0f18a62452d3ff9ef8", null ],
+      [ "LINSLAVE_DIR_RX", "LinSlave__CfgTable_8h.html#a49fe85f6acfb1a40b319bb0331f41597a0a1df3d585e3b72fbfa16f0d9a5f09b0", null ],
+      [ "LINSLAVE_DIR_TX", "LinSlave__CfgTable_8h.html#a49fe85f6acfb1a40b319bb0331f41597aedad0de8521e9d50649796825213f725", null ],
+      [ "LINSLAVE_DIR_RX_TX", "LinSlave__CfgTable_8h.html#a49fe85f6acfb1a40b319bb0331f41597af9d34018e09bc25364b39c9ed07c748b", null ]
+    ] ],
+    [ "LinSlave_FrameStatusType", "LinSlave__CfgTable_8h.html#a5746156ffc21dad4d5cf1ee9267e2f25", [
+      [ "LINSLAVE_FRAME_STATUS_IDLE", "LinSlave__CfgTable_8h.html#a5746156ffc21dad4d5cf1ee9267e2f25a2bcc1c4a64e8f0d672972c4ccec4d5ac", null ],
+      [ "LINSLAVE_FRAME_STATUS_UPDATED", "LinSlave__CfgTable_8h.html#a5746156ffc21dad4d5cf1ee9267e2f25ae0091973c3ae90cd03dda5e77653ce43", null ],
+      [ "LINSLAVE_FRAME_STATUS_ERROR", "LinSlave__CfgTable_8h.html#a5746156ffc21dad4d5cf1ee9267e2f25a44da67defe3e8457411490d25aa3f891", null ]
+    ] ],
+    [ "LinSlave_MsgTypeType", "LinSlave__CfgTable_8h.html#af9d6f4151f466dd82cb0b56a38e9efe7", [
+      [ "LINSLAVE_MSG_TYPE_UNCONDITIONAL", "LinSlave__CfgTable_8h.html#af9d6f4151f466dd82cb0b56a38e9efe7ae576db087593bd0126ff3923933ee4f4", null ],
+      [ "LINSLAVE_MSG_TYPE_EVENT", "LinSlave__CfgTable_8h.html#af9d6f4151f466dd82cb0b56a38e9efe7a85ec3bacb223ebf27d70b4e69c86b7d1", null ],
+      [ "LINSLAVE_MSG_TYPE_SPORADIC", "LinSlave__CfgTable_8h.html#af9d6f4151f466dd82cb0b56a38e9efe7a04d6b98da456204ded31141018a88ed1", null ],
+      [ "LINSLAVE_MSG_TYPE_DIAGNOSTIC", "LinSlave__CfgTable_8h.html#af9d6f4151f466dd82cb0b56a38e9efe7a4f52b5560e408a86cc6bfda5304bd123", null ],
+      [ "LINSLAVE_MSG_TYPE_RESERVED", "LinSlave__CfgTable_8h.html#af9d6f4151f466dd82cb0b56a38e9efe7a7279e1129b67a8dddc8782d4b44f3d3e", null ]
+    ] ],
+    [ "LinSlave_TPTypeType", "LinSlave__CfgTable_8h.html#af6e65c164271d4350cf6ad12bc46286c", [
+      [ "LINSLAVE_TP_NONE", "LinSlave__CfgTable_8h.html#af6e65c164271d4350cf6ad12bc46286cabafa8cfc65cf3bdb34b3dfbcbaf29af7", null ],
+      [ "LINSLAVE_TP_LIN_TP", "LinSlave__CfgTable_8h.html#af6e65c164271d4350cf6ad12bc46286caebc6dd585c3e7aa7175ed7bc78dd27fe", null ]
+    ] ],
+    [ "LinSlave_CfgTable_ClearUpdateFlag", "LinSlave__CfgTable_8h.html#a4f5c8994f20b11c39e8a2cf69667b852", null ],
+    [ "LinSlave_CfgTable_FindEventFrame", "LinSlave__CfgTable_8h.html#a796baa1b5cda44f09621616374f61bdb", null ],
+    [ "LinSlave_CfgTable_FindSporadicFrame", "LinSlave__CfgTable_8h.html#a180bdadf1eab1de0c4e3973e06b8ed61", null ],
+    [ "LinSlave_CfgTable_FindUnconditionalByPid", "LinSlave__CfgTable_8h.html#ae332ca1bb913bd41398026671b1e465e", null ],
+    [ "LinSlave_CfgTable_GetAllUnconditionalPids", "LinSlave__CfgTable_8h.html#a44330cde05c9735e909289feb5fbc3b1", null ],
+    [ "LinSlave_CfgTable_GetDiagnosticConfig", "LinSlave__CfgTable_8h.html#a7d5fef8c4e8c7288bb5b6e0c2e3f98ee", null ],
+    [ "LinSlave_CfgTable_GetFrameData", "LinSlave__CfgTable_8h.html#a303d328891e26f0bd7a41da99c43531a", null ],
+    [ "LinSlave_CfgTable_GetFrameStatus", "LinSlave__CfgTable_8h.html#a5bfccae4c7371e468439070b90783bc5", null ],
+    [ "LinSlave_CfgTable_GetIndexByPid", "LinSlave__CfgTable_8h.html#a8b1bce083afede871a6ab4053626151d", null ],
+    [ "LinSlave_CfgTable_GetPidByIndex", "LinSlave__CfgTable_8h.html#a23c7557d1b7f909a496fba95a7c554b2", null ],
+    [ "LinSlave_CfgTable_GetUnconditionalCount", "LinSlave__CfgTable_8h.html#a4451dc1e0fb8b3f0af246813b5e880c6", null ],
+    [ "LinSlave_CfgTable_GetUnconditionalEntry", "LinSlave__CfgTable_8h.html#a41c3e8ede1e1dcb866f34ab460e327c9", null ],
+    [ "LinSlave_CfgTable_Init", "LinSlave__CfgTable_8h.html#a32818bd00c3d8f5515e1dbbe0ca61822", null ],
+    [ "LinSlave_CfgTable_IsDiagnosticFrame", "LinSlave__CfgTable_8h.html#a96ce406d0de00f0553b225297fb47c90", null ],
+    [ "LinSlave_CfgTable_IsDirectionMatching", "LinSlave__CfgTable_8h.html#a0767b6c8da1d1e97976a3d64bbbc807e", null ],
+    [ "LinSlave_CfgTable_IsEventFrame", "LinSlave__CfgTable_8h.html#ab2b20cc75f7f0ea873e2d8e3c7967198", null ],
+    [ "LinSlave_CfgTable_IsFrameUpdated", "LinSlave__CfgTable_8h.html#ae67fe1585c5b3bf8a79fc4d896bbff4b", null ],
+    [ "LinSlave_CfgTable_IsSporadicFrame", "LinSlave__CfgTable_8h.html#a3556b3bb2c9488a8741b9ea959c14325", null ],
+    [ "LinSlave_CfgTable_IsUnconditionalFrame", "LinSlave__CfgTable_8h.html#ac85072cedc480962b89dd59aa5e27318", null ],
+    [ "LinSlave_CfgTable_SetFrameData", "LinSlave__CfgTable_8h.html#acfb77b075d2343d4a90ae00bbc1c0984", null ],
+    [ "LinSlave_CfgTable_SetFrameStatus", "LinSlave__CfgTable_8h.html#a3e08ac0f6b47d3140abc2a257dfe478e", null ],
+    [ "LinSlave_ConfigTable", "LinSlave__CfgTable_8h.html#ac62494abc9d469a271740780039e3e7a", null ]
+];

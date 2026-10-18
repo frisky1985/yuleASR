@@ -1,0 +1,25 @@
+var structXcp__GeneralConfigType =
+[
+    [ "AddressGranularity", "structXcp__GeneralConfigType.html#a1d135c61ec57d9d9543ecc77a4d0a3ec", null ],
+    [ "addressGranularity", "structXcp__GeneralConfigType.html#af6739313ef7f10a618935eb04b61fe69", null ],
+    [ "byteOrder", "structXcp__GeneralConfigType.html#a1dd7f84430c8f2f4bac434bc94148925", null ],
+    [ "IdentificationField", "structXcp__GeneralConfigType.html#ad97c069ee5122f433bf08278aa2dd7de", null ],
+    [ "MaxCto", "structXcp__GeneralConfigType.html#a37fb4d6410432aebfbb195f3eb90a197", null ],
+    [ "maxCto", "structXcp__GeneralConfigType.html#a548162aca604a438fbd65e1d342df28d", null ],
+    [ "MaxDaq", "structXcp__GeneralConfigType.html#ab370b5c7ba6abc6440642f85898a8060", null ],
+    [ "MaxDto", "structXcp__GeneralConfigType.html#a7f11eeaccdc8b239005a32f49435b9cd", null ],
+    [ "maxDto", "structXcp__GeneralConfigType.html#a3eece2a0a83fecc691d021721abe398f", null ],
+    [ "MaxEventChannels", "structXcp__GeneralConfigType.html#ae6b6c49353e7e7cbfe01d3dd22d44c68", null ],
+    [ "MaxOdt", "structXcp__GeneralConfigType.html#a3ec4f82c3c1b1866b9ebb7eb11012866", null ],
+    [ "MaxOdtEntries", "structXcp__GeneralConfigType.html#a49c1bc0602c1942c6367ad91848bec37", null ],
+    [ "MaxPages", "structXcp__GeneralConfigType.html#af9838a1c0eca2797557bc898b357dd16", null ],
+    [ "MaxSeedKeySize", "structXcp__GeneralConfigType.html#a86cda41310583abd222a3c3cc2c99b2a", null ],
+    [ "MaxSegments", "structXcp__GeneralConfigType.html#a03c97507904e0c2ca203aeafbcd1b591", null ],
+    [ "MaxStim", "structXcp__GeneralConfigType.html#a99195c3697e781e5a8c56d72dbf471eb", null ],
+    [ "protocolLayerVersion", "structXcp__GeneralConfigType.html#ab42b914c2c90d347362d76236525b8af", null ],
+    [ "slaveBlockMode", "structXcp__GeneralConfigType.html#a9852b173cd7db4c2740e22f9e4114895", null ],
+    [ "TimestampResolution", "structXcp__GeneralConfigType.html#afa2605bfefc908642149aeaae783a485", null ],
+    [ "TimestampSize", "structXcp__GeneralConfigType.html#a9545cba955ce5d4c57b522a000af293a", null ],
+    [ "TimestampSupport", "structXcp__GeneralConfigType.html#a28af574ba7455baa3f319677cfc109f0", null ],
+    [ "transportLayerVersion", "structXcp__GeneralConfigType.html#a4e486d270a7ce58b6632a07b73b88aac", null ]
+];

@@ -1,0 +1,25 @@
+var structNvM__ConfigType =
+[
+    [ "BlockDescriptors", "structNvM__ConfigType.html#a3a522773ccfa8911cd12ee71f5227b99", null ],
+    [ "CalcRamBlockCrc", "structNvM__ConfigType.html#ad458fa0189534f9bc2eb4a5eb1e98a21", null ],
+    [ "CancelJobApi", "structNvM__ConfigType.html#a8fa1c65c74f4d5aa65f547681cb4e0ee", null ],
+    [ "DevErrorDetect", "structNvM__ConfigType.html#a6aec11cffa11e1435d7a673e2927e862", null ],
+    [ "GetBlockProtectionApi", "structNvM__ConfigType.html#a35613e4c42d9e5d3d273a113f64b1e64", null ],
+    [ "GetDataIndexApi", "structNvM__ConfigType.html#a6ee8ba79f685736d3623b74525d4a8b7", null ],
+    [ "GetErrorStatusApi", "structNvM__ConfigType.html#a61b7ecbba7ca64de62a5b59c9ae3af72", null ],
+    [ "KillReadAllApi", "structNvM__ConfigType.html#a5ce80d11bd90a804c1259c7b31d9f0d3", null ],
+    [ "KillWriteAllApi", "structNvM__ConfigType.html#af1ba485e2dd452cf713090ba209e0c80", null ],
+    [ "MainFunctionPeriod", "structNvM__ConfigType.html#a80efb1c9cf24de243b7962152eb97981", null ],
+    [ "MaxNumberOfReadRetries", "structNvM__ConfigType.html#a9b238691a4309ef4aec965a7ef58010e", null ],
+    [ "MaxNumberOfWriteRetries", "structNvM__ConfigType.html#a78b98dc95fbc2aafb5ff917b568d30c0", null ],
+    [ "NumBlockDescriptors", "structNvM__ConfigType.html#a776e896c097e7e2ff5f291937fbb8992", null ],
+    [ "NumOfDataSets", "structNvM__ConfigType.html#aaa5fc6a1222e5446c7fd75422c2b582a", null ],
+    [ "NumOfNvBlocks", "structNvM__ConfigType.html#ada2f29cb9d7d49e797826ea83791762d", null ],
+    [ "NumOfRomBlocks", "structNvM__ConfigType.html#accef017f3a18d0b9dfe7390727cc3ec8", null ],
+    [ "RepairDamagedBlocksApi", "structNvM__ConfigType.html#ad7b62fc32e395ab3a144448233dda6d4", null ],
+    [ "SetBlockProtectionApi", "structNvM__ConfigType.html#a47cd4288124747b99392a0362f6959eb", null ],
+    [ "SetDataIndexApi", "structNvM__ConfigType.html#a0b57f1ea5d4f61ffcb9f7a3fa441ad99", null ],
+    [ "SetRamBlockStatusApi", "structNvM__ConfigType.html#a6f0d89ce52832d6fb18fe1761229d35d", null ],
+    [ "UseCrcCompMechanism", "structNvM__ConfigType.html#a0b35bbb3f2a18f92dc2f32b316e07d14", null ],
+    [ "VersionInfoApi", "structNvM__ConfigType.html#a215feb85079422275e42aa1efa419566", null ]
+];

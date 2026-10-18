@@ -1,0 +1,45 @@
+var Swc__WatchdogManager_8h =
+[
+    [ "Swc_SupervisedEntityConfigType", "structSwc__SupervisedEntityConfigType.html", "structSwc__SupervisedEntityConfigType" ],
+    [ "Swc_SupervisedEntityStatusType", "structSwc__SupervisedEntityStatusType.html", "structSwc__SupervisedEntityStatusType" ],
+    [ "Swc_WatchdogManagerConfigType", "structSwc__WatchdogManagerConfigType.html", "structSwc__WatchdogManagerConfigType" ],
+    [ "Swc_WatchdogManagerStatusType", "structSwc__WatchdogManagerStatusType.html", "structSwc__WatchdogManagerStatusType" ],
+    [ "Rte_Read_AliveIndication", "Swc__WatchdogManager_8h.html#ae3b573be684a4a3cd58403763e3353ee", null ],
+    [ "RTE_RUNNABLE_WatchdogManager_10ms", "Swc__WatchdogManager_8h.html#a1d07add8fe5eb0f132c3986476cc4ff5", null ],
+    [ "RTE_RUNNABLE_WatchdogManager_Init", "Swc__WatchdogManager_8h.html#ad2c1f2acaf412e0534a5263a3751885d", null ],
+    [ "RTE_RUNNABLE_WatchdogManager_Trigger", "Swc__WatchdogManager_8h.html#a8969351016b041aecb9c7ed90f3a91c3", null ],
+    [ "RTE_START_SEC_CODE", "Swc__WatchdogManager_8h.html#aa3ab66e1dd2bf6a04157c24a8cd34e23", null ],
+    [ "RTE_STOP_SEC_CODE", "Swc__WatchdogManager_8h.html#a971ba994e8862f25876dfa1db6929b11", null ],
+    [ "Rte_Write_EntityStatus", "Swc__WatchdogManager_8h.html#a549619f44c8be8b50e3cbb4d24050751", null ],
+    [ "Rte_Write_WatchdogStatus", "Swc__WatchdogManager_8h.html#ad23a458296185a3062c433990e78f37c", null ],
+    [ "Rte_Write_WatchdogTrigger", "Swc__WatchdogManager_8h.html#ac09d52c0cf69de7e0b27278713af0f96", null ],
+    [ "SWC_WATCHDOGMANAGER_PORT_ALIVE_INDICATION_R", "Swc__WatchdogManager_8h.html#aa215f9763c6f670d3a617cb0a4786b66", null ],
+    [ "SWC_WATCHDOGMANAGER_PORT_ENTITY_STATUS_P", "Swc__WatchdogManager_8h.html#a0d9b99b8636e8c296a61736953d8b547", null ],
+    [ "SWC_WATCHDOGMANAGER_PORT_WDG_STATUS_P", "Swc__WatchdogManager_8h.html#ae8a2093a6f5be32c44942948a8f1616e", null ],
+    [ "SWC_WATCHDOGMANAGER_PORT_WDG_TRIGGER_P", "Swc__WatchdogManager_8h.html#a21cdd9805935e7a309defc515b9e4a9d", null ],
+    [ "Swc_AliveStateType", "Swc__WatchdogManager_8h.html#a867505888ce51ba9664eeaf17f03ca6f", [
+      [ "ALIVE_STATE_CORRECT", "Swc__WatchdogManager_8h.html#a867505888ce51ba9664eeaf17f03ca6faa6c99a59bc1d042cf67cdc3985e15a7c", null ],
+      [ "ALIVE_STATE_INCORRECT", "Swc__WatchdogManager_8h.html#a867505888ce51ba9664eeaf17f03ca6fa4a8b98d6b0f92d7ee4f85fc81fcec4ec", null ],
+      [ "ALIVE_STATE_EXPIRED", "Swc__WatchdogManager_8h.html#a867505888ce51ba9664eeaf17f03ca6fa4240f3efad323af36198a1160f2874aa", null ],
+      [ "ALIVE_STATE_DEACTIVATED", "Swc__WatchdogManager_8h.html#a867505888ce51ba9664eeaf17f03ca6fa9d6e1efba5b3b41188fd5d8018e0c531", null ]
+    ] ],
+    [ "Swc_WatchdogStatusType", "Swc__WatchdogManager_8h.html#af97fcc349a637876636be36db3870c6c", [
+      [ "WDG_STATUS_OK", "Swc__WatchdogManager_8h.html#af97fcc349a637876636be36db3870c6ca1c18a719d3bff85aa2c40a42e801cc7e", null ],
+      [ "WDG_STATUS_EXPIRED", "Swc__WatchdogManager_8h.html#af97fcc349a637876636be36db3870c6ca4a371f163788cecb4ee1ac59bb523140", null ],
+      [ "WDG_STATUS_STOPPED", "Swc__WatchdogManager_8h.html#af97fcc349a637876636be36db3870c6ca8f81a4246aa198fdff86b89ce43a63f8", null ],
+      [ "WDG_STATUS_FAULT", "Swc__WatchdogManager_8h.html#af97fcc349a637876636be36db3870c6cae47b8283f0509995a8833c517f99f04e", null ]
+    ] ],
+    [ "Swc_WatchdogManager_10ms", "Swc__WatchdogManager_8h.html#a07cf3c28cfaf92dfa788881d00820916", null ],
+    [ "Swc_WatchdogManager_CheckpointReached", "Swc__WatchdogManager_8h.html#a1fd82cce90d8b4730d30f22fa32f8491", null ],
+    [ "Swc_WatchdogManager_Deinit", "Swc__WatchdogManager_8h.html#a14f2aa455276db07222e41eaf81afa5f", null ],
+    [ "Swc_WatchdogManager_GetEntityStatus", "Swc__WatchdogManager_8h.html#a24724c5358c10174be7cf1a1e597a799", null ],
+    [ "Swc_WatchdogManager_GetStatus", "Swc__WatchdogManager_8h.html#ac39e0875dc135a3adf7b0e96817e603c", null ],
+    [ "Swc_WatchdogManager_HandleExpiration", "Swc__WatchdogManager_8h.html#adea44d907644db0eca5672c95a251da5", null ],
+    [ "Swc_WatchdogManager_Init", "Swc__WatchdogManager_8h.html#ae9823adc9f5351fc082639da7eb770bf", null ],
+    [ "Swc_WatchdogManager_IsGlobalStatusCorrect", "Swc__WatchdogManager_8h.html#afb47927267e83ac706b99ac9bd3b1950", null ],
+    [ "Swc_WatchdogManager_MainFunction", "Swc__WatchdogManager_8h.html#a17e9f2954bd0484fec1cd3c4fa32da62", null ],
+    [ "Swc_WatchdogManager_RegisterEntity", "Swc__WatchdogManager_8h.html#a23e5bbbfb2c186d32d5ecdb2409198a2", null ],
+    [ "Swc_WatchdogManager_SetEntityActive", "Swc__WatchdogManager_8h.html#a6e7633e6bd82ef6eeea51296433b8d12", null ],
+    [ "Swc_WatchdogManager_Trigger", "Swc__WatchdogManager_8h.html#a0acfe84546aafaffc108df9cc337e55f", null ],
+    [ "Swc_WatchdogManager_UnregisterEntity", "Swc__WatchdogManager_8h.html#a7070390f7ea2074b4cfcba86c3ccc970", null ]
+];
