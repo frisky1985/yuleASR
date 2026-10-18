@@ -48,18 +48,18 @@ def get_modules():
     """获取支持的模块列表"""
     modules = {
         "mcal": [
-            {"id": "mcu", "name": "MCU", "description": "微控制器驱动", "icon": "cpu"},
-            {"id": "port", "name": "Port", "description": "GPIO引脚配置", "icon": "plug"},
-            {"id": "can", "name": "CAN", "description": "CAN通信驱动", "icon": "broadcast"},
-            {"id": "spi", "name": "SPI", "description": "SPI串行通信", "icon": "exchange"},
+            {"id": "Mcu", "name": "MCU", "description": "微控制器驱动", "icon": "cpu"},
+            {"id": "Port", "name": "Port", "description": "GPIO引脚配置", "icon": "plug"},
+            {"id": "Can", "name": "CAN", "description": "CAN通信驱动", "icon": "broadcast"},
+            {"id": "Spi", "name": "SPI", "description": "SPI串行通信", "icon": "exchange"},
             {"id": "gpt", "name": "Gpt", "description": "通用定时器", "icon": "clock"},
-            {"id": "pwm", "name": "Pwm", "description": "脉宽调制", "icon": "wave-square"},
-            {"id": "adc", "name": "Adc", "description": "模拟转换", "icon": "tachometer-alt"},
+            {"id": "Pwm", "name": "Pwm", "description": "脉宽调制", "icon": "wave-square"},
+            {"id": "Adc", "name": "Adc", "description": "模拟转换", "icon": "tachometer-alt"},
         ],
         "bsw": [
-            {"id": "com", "name": "COM", "description": "通信服务", "icon": "comments"},
-            {"id": "pdur", "name": "PduR", "description": "PDU路由", "icon": "route"},
-            {"id": "nvm", "name": "NvM", "description": "NVRAM管理", "icon": "save"},
+            {"id": "Com", "name": "COM", "description": "通信服务", "icon": "comments"},
+            {"id": "PduR", "name": "PduR", "description": "PDU路由", "icon": "route"},
+            {"id": "NvM", "name": "NvM", "description": "NVRAM管理", "icon": "save"},
         ]
     }
     return jsonify(modules)
@@ -69,7 +69,7 @@ def get_modules():
 def get_module_schema(module_id):
     """获取模块的配置索引"""
     schemas = {
-        "mcu": {
+        "Mcu": {
             "containers": [
                 {
                     "name": "McuGeneral",
@@ -90,7 +90,7 @@ def get_module_schema(module_id):
                 }
             ]
         },
-        "port": {
+        "Port": {
             "containers": [
                 {
                     "name": "PortGeneral",
@@ -114,7 +114,7 @@ def get_module_schema(module_id):
                 }
             ]
         },
-        "can": {
+        "Can": {
             "containers": [
                 {
                     "name": "CanGeneral",
@@ -139,7 +139,7 @@ def get_module_schema(module_id):
                 }
             ]
         },
-        "nvm": {
+        "NvM": {
             "containers": [
                 {
                     "name": "NvMCommon",
@@ -163,7 +163,7 @@ def get_module_schema(module_id):
                 }
             ]
         },
-        "com": {
+        "Com": {
             "containers": [
                 {
                     "name": "ComGeneral",
@@ -216,7 +216,7 @@ def generate_arxml():
     
     try:
         # 根据模块类型创建配置生成器
-        if module_id == "mcu":
+        if module_id == "Mcu":
             gen = create_mcu_config(ecu_name)
             general = config.get("McuGeneral", {})
             gen.add_general_config(
@@ -230,7 +230,7 @@ def generate_arxml():
                 peripheral_clock=clock.get("McuClockPeripheralFrequency", 40000000)
             )
             
-        elif module_id == "port":
+        elif module_id == "Port":
             gen = create_port_config(ecu_name)
             general = config.get("PortGeneral", {})
             gen.add_general_config(
@@ -248,7 +248,7 @@ def generate_arxml():
                     mode=pin.get("PortPinMode", "PORT_PIN_MODE_GPIO")
                 )
                 
-        elif module_id == "can":
+        elif module_id == "Can":
             gen = create_can_config(ecu_name)
             general = config.get("CanGeneral", {})
             gen.add_general_config(
@@ -266,7 +266,7 @@ def generate_arxml():
                 rx_objects=controller.get("CanControllerRxObjects", 2)
             )
             
-        elif module_id == "nvm":
+        elif module_id == "NvM":
             gen = create_nvm_config(ecu_name)
             common = config.get("NvMCommon", {})
             crc_bytes = {"NVM_CRC8": 1, "NVM_CRC16": 2, "NVM_CRC32": 4, "NVM_CRC_NONE": 0}
@@ -288,7 +288,7 @@ def generate_arxml():
                     job_priority=block.get("NvMBlockJobPriority", 1)
                 )
                 
-        elif module_id == "com":
+        elif module_id == "Com":
             gen = create_com_config(ecu_name)
             general = config.get("ComGeneral", {})
             gen.add_general_config(

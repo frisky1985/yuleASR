@@ -25,10 +25,10 @@ DESIGN_DIR = ROOT / "docs" / "design" / "modules"
 
 # 聚合/无文档文件 → 归属模块 (src 路径子串 → 设计文档模块名)
 FALLBACK_MODULE = {
-    "mcal/mcu/src/Mcal.c": "mcu",
+    "mcal/mcu/src/Mcal.c": "Mcu",
     "boot": "boot",
     "cdd": "cdd",
-    "os": "os",
+    "Os": "Os",
     "classic": "classic",
 }
 

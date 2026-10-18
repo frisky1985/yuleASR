@@ -25,7 +25,7 @@ SRC_DIR = ROOT / "src"
 # 跳过非单元测试目录（mock/qemu/集成等 —— 无对应单一源码）
 SKIP_DIR_PARTS = {"mock", "mocks", "qemu", "qemu_m33", "qemu_full_stack",
                   "fixtures", "prebuilt", "crypto_benchmark", "hil",
-                  "integration", "e2e"}
+                  "integration", "E2E"}
 
 
 def _module_dir(layer: str, module: str) -> Path | None:
@@ -65,12 +65,12 @@ def resolve_sources(test_file: Path) -> list[str]:
             break
     # 已知命名漂移 (测试名 → 模块名)
     NAME_DRIFT = {
-        "canm": "cannm",        # test_canm.c → CanNm.c
-        "lntm": "lintp",        # test_lntm.c → LinTp.c
-        "someipsd2": "someipsd",  # test_someipsd2.c → someipsd/
-        "cantpsyn": "cantp",    # 归并到 CanTp
-        "flsstst": "fls",       # test_flsstst.c → FLS
-        "dcm_obd": "dcm",       # test_dcm_obd.c → dcm 模块
+        "CanM": "CanNm",        # test_canm.c → CanNm.c
+        "LntM": "LinTp",        # test_lntm.c → LinTp.c
+        "someipsd2": "SomeIpSd",  # test_someipsd2.c → someipsd/
+        "cantpsyn": "CanTp",    # 归并到 CanTp
+        "flsstst": "Fls",       # test_flsstst.c → FLS
+        "dcm_obd": "Dcm",       # test_dcm_obd.c → dcm 模块
     }
     stem = NAME_DRIFT.get(stem.lower(), stem)
     # 聚合契约测试: test_<layer>_api_contracts.c → 映射到该层 (无单一模块)

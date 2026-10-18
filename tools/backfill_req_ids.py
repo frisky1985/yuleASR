@@ -85,8 +85,8 @@ def _infer_layer(module: str) -> str:
                     return p
             break
     # 回退: 常见服务层模块
-    if module.lower() in {"canm", "cannm", "bswm", "comm", "dcm", "dem", "nvm",
-                          "wdgm", "e2e", "csm", "cryif", "secoc", "someip"}:
+    if module.lower() in {"CanM", "CanNm", "BswM", "ComM", "Dcm", "Dem", "NvM",
+                          "WdgM", "E2E", "Csm", "CryIf", "SecOC", "SomeIp"}:
         return "services"
     return "ecual"
 

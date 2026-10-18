@@ -59,7 +59,7 @@ except ImportError as e:
 def create_mcu_parser(subparsers):
     """MCU配置子命令"""
     parser = subparsers.add_parser(
-        "mcu",
+        "Mcu",
         help="生成MCU驱动配置",
         description="生成微控制器驱动的ARXML配置文件"
     )
@@ -101,7 +101,7 @@ def cmd_mcu(args):
 def create_port_parser(subparsers):
     """Port配置子命令"""
     parser = subparsers.add_parser(
-        "port",
+        "Port",
         help="生成Port驱动配置",
         description="生成端口驱动的ARXML配置文件"
     )
@@ -172,7 +172,7 @@ def cmd_port(args):
 def create_can_parser(subparsers):
     """CAN配置子命令"""
     parser = subparsers.add_parser(
-        "can",
+        "Can",
         help="生成CAN驱动配置",
         description="生成CAN驱动的ARXML配置文件"
     )
@@ -226,7 +226,7 @@ def cmd_can(args):
 def create_com_parser(subparsers):
     """COM配置子命令"""
     parser = subparsers.add_parser(
-        "com",
+        "Com",
         help="生成COM通信服务配置",
         description="生成COM模块的ARXML配置文件"
     )
@@ -274,7 +274,7 @@ def cmd_com(args):
 def create_nvm_parser(subparsers):
     """NvM配置子命令"""
     parser = subparsers.add_parser(
-        "nvm",
+        "NvM",
         help="生成NvM NVRAM管理器配置",
         description="生成NvM模块的ARXML配置文件"
     )
@@ -345,13 +345,13 @@ def cmd_from_json(args):
     module_type = config.get("module_type", "").lower()
     
     generators = {
-        "mcu": create_mcu_config,
-        "port": create_port_config,
-        "can": create_can_config,
-        "com": create_com_config,
-        "pdur": create_pdur_config,
-        "canif": create_canif_config,
-        "nvm": create_nvm_config
+        "Mcu": create_mcu_config,
+        "Port": create_port_config,
+        "Can": create_can_config,
+        "Com": create_com_config,
+        "PduR": create_pdur_config,
+        "CanIf": create_canif_config,
+        "NvM": create_nvm_config
     }
     
     if module_type not in generators:

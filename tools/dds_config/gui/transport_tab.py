@@ -558,7 +558,7 @@ class TransportTab(QWidget):
         
         # UDP
         udp = transport.get('udp', {})
-        self.udp_port_spin.setValue(udp.get('port', 7400))
+        self.udp_port_spin.setValue(udp.get('Port', 7400))
         self.udp_ttl_spin.setValue(udp.get('ttl', 1))
         self.udp_recv_buffer_spin.setValue(udp.get('recv_buffer', 2097152))
         self.udp_send_buffer_spin.setValue(udp.get('send_buffer', 65536))
@@ -585,7 +585,7 @@ class TransportTab(QWidget):
         self.shm_mode_combo.setCurrentText(shm.get('mode', 'POSIX'))
         self.shm_segment_size_spin.setValue(shm.get('segment_size', 65536))
         self.shm_max_segments_spin.setValue(shm.get('max_segments', 10))
-        self.shm_port_spin.setValue(shm.get('port', 0))
+        self.shm_port_spin.setValue(shm.get('Port', 0))
         self.shm_timeout_spin.setValue(shm.get('timeout', 5000))
         self.shm_zero_copy_check.setChecked(shm.get('zero_copy', True))
         self.shm_lock_free_check.setChecked(shm.get('lock_free', False))
@@ -633,7 +633,7 @@ class TransportTab(QWidget):
             'whitelist': [w.strip() for w in self.whitelist_edit.toPlainText().split('\n') if w.strip()],
             'blacklist': [b.strip() for b in self.blacklist_edit.toPlainText().split('\n') if b.strip()],
             'udp': {
-                'port': self.udp_port_spin.value(),
+                'Port': self.udp_port_spin.value(),
                 'ttl': self.udp_ttl_spin.value(),
                 'recv_buffer': self.udp_recv_buffer_spin.value(),
                 'send_buffer': self.udp_send_buffer_spin.value(),
@@ -658,7 +658,7 @@ class TransportTab(QWidget):
                 'mode': self.shm_mode_combo.currentText(),
                 'segment_size': self.shm_segment_size_spin.value(),
                 'max_segments': self.shm_max_segments_spin.value(),
-                'port': self.shm_port_spin.value(),
+                'Port': self.shm_port_spin.value(),
                 'timeout': self.shm_timeout_spin.value(),
                 'zero_copy': self.shm_zero_copy_check.isChecked(),
                 'lock_free': self.shm_lock_free_check.isChecked(),
@@ -689,7 +689,7 @@ class TransportTab(QWidget):
             'name': f"Transport_{len(self.transports) + 1}",
             'type': 'UDPv4',
             'enabled': True,
-            'udp': {'port': 7400},
+            'udp': {'Port': 7400},
             'shm': {},
             'tcp': {}
         }
@@ -713,7 +713,7 @@ class TransportTab(QWidget):
             'type': 'UDPv4',
             'enabled': True,
             'udp': {
-                'port': 7400,
+                'Port': 7400,
                 'ttl': 1,
                 'recv_buffer': 2097152,
                 'send_buffer': 65536

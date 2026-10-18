@@ -143,7 +143,7 @@ class CGenerator:
         content.append("/* Multicast Settings */")
         content.append(f"#define DDS_CFG_MULTICAST_ENABLED     STD_{'ENABLED' if multicast.get('enabled', True) else 'DISABLED'}")
         content.append(f"#define DDS_CFG_MULTICAST_ADDR        \"{multicast.get('address', '239.255.0.1')}\"")
-        content.append(f"#define DDS_CFG_MULTICAST_PORT        ({multicast.get('port', 7400)}U)")
+        content.append(f"#define DDS_CFG_MULTICAST_PORT        ({multicast.get('Port', 7400)}U)")
         content.append("")
         
         # Transport configuration
@@ -612,7 +612,7 @@ class CGenerator:
             content.append(f"        .enabled = {enabled},")
             content.append(f"        .priority = {priority}U,")
             content.append("        .udp = {")
-            content.append(f"            .port = {udp.get('port', 7400)}U,")
+            content.append(f"            .port = {udp.get('Port', 7400)}U,")
             content.append(f"            .ttl = {udp.get('ttl', 1)}U,")
             content.append(f"            .recvBufferSize = {udp.get('recv_buffer', 2097152)}U,")
             content.append(f"            .sendBufferSize = {udp.get('send_buffer', 65536)}U")

@@ -18,10 +18,10 @@ class TestYuleasrMonitor:
         assert isinstance(modules, list)
         assert len(modules) > 10
         # Check for representative modules
-        assert "det" in modules
-        assert "pdur" in modules
-        assert "com" in modules
-        assert "dcm" in modules
+        assert "Det" in modules
+        assert "PduR" in modules
+        assert "Com" in modules
+        assert "Dcm" in modules
 
     def test_get_mcal_module_list(self):
         """MCAL module list should contain hardware abstraction modules."""
@@ -30,10 +30,10 @@ class TestYuleasrMonitor:
         assert isinstance(modules, list)
         assert len(modules) > 10
         # Check for representative modules
-        assert "adc" in modules
-        assert "can" in modules
-        assert "dio" in modules
-        assert "spi" in modules
+        assert "Adc" in modules
+        assert "Can" in modules
+        assert "Dio" in modules
+        assert "Spi" in modules
 
     def test_get_ecual_module_list(self):
         """ECUAL module list should contain ECU abstraction modules."""
@@ -42,23 +42,23 @@ class TestYuleasrMonitor:
         assert isinstance(modules, list)
         assert len(modules) > 10
         # Check for representative modules
-        assert "ethif" in modules
-        assert "canif" in modules
-        assert "fee" in modules
-        assert "iohwab" in modules
+        assert "EthIf" in modules
+        assert "CanIf" in modules
+        assert "Fee" in modules
+        assert "IoHwAb" in modules
 
     def test_get_bsw_module_list_contains_expected(self):
         """Verify BSW list has key AUTOSAR service modules."""
         from yuleasr_monitor import get_bsw_module_list
         modules = get_bsw_module_list()
-        essential = {"det", "dcm", "dem", "com", "pdur", "nvm", "ecum", "wdgm", "schm"}
+        essential = {"Det", "Dcm", "Dem", "Com", "PduR", "NvM", "EcuM", "WdgM", "SchM"}
         assert essential.issubset(set(modules)), f"Missing: {essential - set(modules)}"
 
     def test_get_mcal_module_list_contains_expected(self):
         """Verify MCAL list has key hardware driver modules."""
         from yuleasr_monitor import get_mcal_module_list
         modules = get_mcal_module_list()
-        essential = {"adc", "can", "dio", "eth", "spi", "gpt", "pwm"}
+        essential = {"Adc", "Can", "Dio", "Eth", "Spi", "gpt", "Pwm"}
         assert essential.issubset(set(modules)), f"Missing: {essential - set(modules)}"
 
     def test_lists_have_no_duplicates(self):

@@ -8,7 +8,7 @@ import subprocess
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRACE_REPORT = os.path.join(BASE_DIR, ".yuleosh", "reports", "traceability-report.json")
-E2E_DIR = os.path.join(BASE_DIR, "tests", "e2e")
+E2E_DIR = os.path.join(BASE_DIR, "tests", "E2E")
 UNIT_DIR = os.path.join(BASE_DIR, "tests", "unit")
 
 SECTION_PREFIX = {

@@ -348,7 +348,7 @@ def test_json_config():
     print("Testing JSON config...")
     
     json_content = """{
-  "os": {"name": "TestOS"},
+  "Os": {"name": "TestOS"},
   "tasks": [
     {"name": "Task1", "priority": 10, "activation": 1, "autostart": true, "schedule": "FULL"}
   ],

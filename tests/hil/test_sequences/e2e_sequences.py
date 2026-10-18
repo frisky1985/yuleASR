@@ -11,7 +11,7 @@ E2E_HEADER_NAMES = ("E2E_P01.h", "E2E.h")
 
 
 def _e2e_headers():
-    return [h for h in load_src_headers(("E2E", "e2e")) if h.name in E2E_HEADER_NAMES]
+    return [h for h in load_src_headers(("E2E", "E2E")) if h.name in E2E_HEADER_NAMES]
 
 
 def test_e2e_profile1_header_exists():
@@ -40,9 +40,9 @@ def test_e2e_p01_api_surface():
 def test_e2e_p01_source_implements_protect():
     """真实 E2E_P01.c 必须实现 Protect（非空实现）。"""
     src_root = __import__("conftest").PROJECT_ROOT
-    impl = src_root / "src" / "bsw" / "services" / "e2e" / "src" / "E2E_P01.c"
+    impl = src_root / "src" / "bsw" / "services" / "E2E" / "src" / "E2E_P01.c"
     assert impl.exists(), "E2E_P01.c 不存在"
     text = impl.read_text(encoding="utf-8")
     assert "Std_ReturnType E2E_P01Protect" in text
     # 实现必须写 CRC 与 counter（非空壳）
-    assert "State->Counter" in text and "crc" in text.lower()
+    assert "State->Counter" in text and "Crc" in text.lower()

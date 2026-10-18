@@ -203,7 +203,7 @@ class AbiChecker:
             stderr=subprocess.STDOUT
         )
         self.log.debug(update_output.decode("utf-8"))
-        if not (os.path.exists(os.path.join(git_worktree_path, "crypto"))
+        if not (os.path.exists(os.path.join(git_worktree_path, "Crypto"))
                 and version.crypto_revision):
             return
 
@@ -211,7 +211,7 @@ class AbiChecker:
             fetch_output = subprocess.check_output(
                 [self.git_command, "fetch", version.crypto_repository,
                  version.crypto_revision],
-                cwd=os.path.join(git_worktree_path, "crypto"),
+                cwd=os.path.join(git_worktree_path, "Crypto"),
                 stderr=subprocess.STDOUT
             )
             self.log.debug(fetch_output.decode("utf-8"))
@@ -221,7 +221,7 @@ class AbiChecker:
 
         checkout_output = subprocess.check_output(
             [self.git_command, "checkout", crypto_rev],
-            cwd=os.path.join(git_worktree_path, "crypto"),
+            cwd=os.path.join(git_worktree_path, "Crypto"),
             stderr=subprocess.STDOUT
         )
         self.log.debug(checkout_output.decode("utf-8"))
@@ -231,7 +231,7 @@ class AbiChecker:
         my_environment = os.environ.copy()
         my_environment["CFLAGS"] = "-g -Og"
         my_environment["SHARED"] = "1"
-        if os.path.exists(os.path.join(git_worktree_path, "crypto")):
+        if os.path.exists(os.path.join(git_worktree_path, "Crypto")):
             my_environment["USE_CRYPTO_SUBMODULE"] = "1"
         make_output = subprocess.check_output(
             [self.make_command, "lib"],

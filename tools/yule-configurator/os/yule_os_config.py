@@ -278,7 +278,7 @@ class ConfigParser:
         config = OSConfig()
 
         # 解析 OS 属性
-        config.os_properties = data.get('os', {})
+        config.os_properties = data.get('Os', {})
 
         # 解析任务
         for task_data in data.get('tasks', []):

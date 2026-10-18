@@ -132,15 +132,15 @@ def main():
 
 def determine_layer(module_name: str) -> str:
     """Determine AUTOSAR layer for a module."""
-    mcal = {"mcu", "port", "dio", "can", "spi", "adc", "pwm", "gpt", "wdg", "icu", "lin",
-            "eep", "flash", "fls", "flstst", "i2c", "uart", "ocu", "ramsafety", "ramtst"}
-    ecual = {"canif", "cantp", "canm", "cansm", "cannm", "cantrcv", "cantsyn",
-             "linif", "linm", "linnm", "linsm", "lintp", "lintrcv", "lntm",
-             "ethif", "ethsm", "ethswt", "ethtrcv", "ethtsyn", "eth",
-             "frif", "frtp", "iohwab", "memif", "fee", "ea",
-             "nm", "udpnm", "j1939nm", "j1939tp", "ipdum", "tcpip"}
-    os_set = {"os"}
-    integration = {"bswm", "ecum", "ecuc"}
+    mcal = {"Mcu", "Port", "Dio", "Can", "Spi", "Adc", "Pwm", "gpt", "Wdg", "Icu", "Lin",
+            "Eep", "Flash", "Fls", "FlStSt", "I2c", "Uart", "Ocu", "RamSafety", "RamTst"}
+    ecual = {"CanIf", "CanTp", "CanM", "CanSM", "CanNm", "CanTrcv", "CanTSyn",
+             "LinIf", "LinM", "LinNm", "LinSM", "LinTp", "LinTrcv", "LntM",
+             "EthIf", "EthSM", "EthSwt", "EthTrcv", "EthTSyn", "Eth",
+             "FrIf", "FrTp", "IoHwAb", "MemIf", "Fee", "Ea",
+             "Nm", "UdpNm", "J1939Nm", "J1939Tp", "IpduM", "TcpIp"}
+    os_set = {"Os"}
+    integration = {"BswM", "EcuM", "EcuC"}
 
     lower = module_name.lower()
     if lower in mcal:
@@ -148,7 +148,7 @@ def determine_layer(module_name: str) -> str:
     elif lower in ecual:
         return "ecual"
     elif lower in os_set:
-        return "os"
+        return "Os"
     elif lower in integration:
         return "integration"
     else:

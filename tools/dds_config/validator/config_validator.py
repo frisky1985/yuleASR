@@ -150,7 +150,7 @@ class ConfigValidator:
             self.result.add_error(f"Invalid multicast address: {address}")
         
         # Port
-        port = multicast.get('port', 7400)
+        port = multicast.get('Port', 7400)
         if not isinstance(port, int) or port < 1024 or port > 65535:
             self.result.add_error(f"Invalid multicast port: {port}")
     

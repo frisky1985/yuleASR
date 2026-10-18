@@ -1,81 +1,510 @@
 {
   "success": true,
-  "line_rate": 91.57,
-  "branch_rate": 79.79,
-  "total_files": 15,
+  "line_rate": 62.9,
+  "branch_rate": 50.6,
+  "total_files": 124,
   "totals": {
     "lines": {
-      "found": 2881,
-      "hit": 2638
+      "found": 34404,
+      "hit": 21639
     },
     "functions": {
-      "found": 199,
-      "hit": 192
+      "found": 2530,
+      "hit": 1837
     },
     "branches": {
-      "found": 1247,
-      "hit": 995
+      "found": 16066,
+      "hit": 8129
     }
   },
   "files": [
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/os/src/Os_TimingProtection.c",
-      "line_rate": 100.0,
-      "branch_rate": 95.35,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/communication_manager/src/Swc_CommunicationManager.c",
+      "line_rate": 16.28,
+      "branch_rate": 8.33,
       "lines": {
-        "found": 107,
-        "hit": 107
+        "found": 258,
+        "hit": 42
       },
       "functions": {
-        "found": 16,
-        "hit": 16
+        "found": 20,
+        "hit": 3
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/com/src/Com.c",
-      "line_rate": 96.52,
-      "branch_rate": 80.09,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/diagnostic_manager/src/Swc_DiagnosticManager.c",
+      "line_rate": 6.69,
+      "branch_rate": 5.45,
       "lines": {
-        "found": 488,
-        "hit": 471
+        "found": 314,
+        "hit": 21
       },
       "functions": {
-        "found": 40,
-        "hit": 39
-      }
-    },
-    {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/crc/src/Crc.c",
-      "line_rate": 92.5,
-      "branch_rate": 100.0,
-      "lines": {
-        "found": 40,
-        "hit": 37
-      },
-      "functions": {
-        "found": 5,
+        "found": 21,
         "hit": 4
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/src/Det.c",
-      "line_rate": 100.0,
-      "branch_rate": 88.46,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/engine_control/src/Swc_EngineControl.c",
+      "line_rate": 50.59,
+      "branch_rate": 29.25,
       "lines": {
-        "found": 74,
-        "hit": 74
+        "found": 253,
+        "hit": 128
       },
       "functions": {
-        "found": 9,
+        "found": 17,
         "hit": 9
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/det/src/Det_Lcfg.c",
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/io_control/src/Swc_IOControl.c",
+      "line_rate": 23.39,
+      "branch_rate": 13.33,
+      "lines": {
+        "found": 342,
+        "hit": 80
+      },
+      "functions": {
+        "found": 24,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/mode_manager/src/Swc_ModeManager.c",
+      "line_rate": 18.8,
+      "branch_rate": 7.69,
+      "lines": {
+        "found": 250,
+        "hit": 47
+      },
+      "functions": {
+        "found": 20,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/storage_manager/src/Swc_StorageManager.c",
+      "line_rate": 23.08,
+      "branch_rate": 11.11,
+      "lines": {
+        "found": 195,
+        "hit": 45
+      },
+      "functions": {
+        "found": 16,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/vehicle_dynamics/src/Swc_VehicleDynamics.c",
+      "line_rate": 38.1,
+      "branch_rate": 17.86,
+      "lines": {
+        "found": 210,
+        "hit": 80
+      },
+      "functions": {
+        "found": 16,
+        "hit": 8
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/application/watchdog_manager/src/Swc_WatchdogManager.c",
+      "line_rate": 30.77,
+      "branch_rate": 16.98,
+      "lines": {
+        "found": 234,
+        "hit": 72
+      },
+      "functions": {
+        "found": 18,
+        "hit": 7
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/src/Boot_Image.c",
+      "line_rate": 91.67,
+      "branch_rate": 72.22,
+      "lines": {
+        "found": 36,
+        "hit": 33
+      },
+      "functions": {
+        "found": 5,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/src/Boot_Loader.c",
+      "line_rate": 24.79,
+      "branch_rate": 18.42,
+      "lines": {
+        "found": 117,
+        "hit": 29
+      },
+      "functions": {
+        "found": 8,
+        "hit": 3
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/src/Boot_Update.c",
+      "line_rate": 84.48,
+      "branch_rate": 72.8,
+      "lines": {
+        "found": 290,
+        "hit": 245
+      },
+      "functions": {
+        "found": 23,
+        "hit": 22
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/src/Boot_Verify.c",
+      "line_rate": 52.94,
+      "branch_rate": 25.0,
+      "lines": {
+        "found": 17,
+        "hit": 9
+      },
+      "functions": {
+        "found": 3,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/test/test_boot_integration.c",
+      "line_rate": 88.99,
+      "branch_rate": 52.44,
+      "lines": {
+        "found": 218,
+        "hit": 194
+      },
+      "functions": {
+        "found": 23,
+        "hit": 14
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/test/test_boot_update_confirm.c",
+      "line_rate": 95.51,
+      "branch_rate": 51.33,
+      "lines": {
+        "found": 379,
+        "hit": 362
+      },
+      "functions": {
+        "found": 31,
+        "hit": 23
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/boot/test/test_boot_verify.c",
+      "line_rate": 93.62,
+      "branch_rate": 50.0,
+      "lines": {
+        "found": 47,
+        "hit": 44
+      },
+      "functions": {
+        "found": 6,
+        "hit": 6
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/cdd/src/Cdd_Fvm.c",
+      "line_rate": 86.26,
+      "branch_rate": 74.36,
+      "lines": {
+        "found": 524,
+        "hit": 452
+      },
+      "functions": {
+        "found": 30,
+        "hit": 30
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/cdd/src/Cdd_Fvm_Hw.c",
+      "line_rate": 100.0,
+      "branch_rate": 50.0,
+      "lines": {
+        "found": 40,
+        "hit": 40
+      },
+      "functions": {
+        "found": 5,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/canif/src/CanIf.c",
+      "line_rate": 75.12,
+      "branch_rate": 64.26,
+      "lines": {
+        "found": 643,
+        "hit": 483
+      },
+      "functions": {
+        "found": 43,
+        "hit": 38
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/cantp/src/CanTp.c",
+      "line_rate": 80.87,
+      "branch_rate": 62.07,
+      "lines": {
+        "found": 643,
+        "hit": 520
+      },
+      "functions": {
+        "found": 30,
+        "hit": 29
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/cantrcv/src/CanTrcv.c",
       "line_rate": 0.0,
       "branch_rate": 0.0,
       "lines": {
+        "found": 172,
+        "hit": 0
+      },
+      "functions": {
         "found": 12,
+        "hit": 0
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/ea/src/Ea.c",
+      "line_rate": 88.6,
+      "branch_rate": 83.91,
+      "lines": {
+        "found": 228,
+        "hit": 202
+      },
+      "functions": {
+        "found": 16,
+        "hit": 15
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/ethSm/src/EthSM.c",
+      "line_rate": 90.07,
+      "branch_rate": 83.93,
+      "lines": {
+        "found": 282,
+        "hit": 254
+      },
+      "functions": {
+        "found": 18,
+        "hit": 18
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/ethswt/src/EthSwt.c",
+      "line_rate": 88.08,
+      "branch_rate": 79.49,
+      "lines": {
+        "found": 621,
+        "hit": 547
+      },
+      "functions": {
+        "found": 43,
+        "hit": 43
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/ethtrcv/src/EthTrcv.c",
+      "line_rate": 71.01,
+      "branch_rate": 62.84,
+      "lines": {
+        "found": 545,
+        "hit": 387
+      },
+      "functions": {
+        "found": 28,
+        "hit": 24
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/linTp/src/LinTp.c",
+      "line_rate": 27.72,
+      "branch_rate": 24.34,
+      "lines": {
+        "found": 523,
+        "hit": 145
+      },
+      "functions": {
+        "found": 25,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/linif/src/LinIf.c",
+      "line_rate": 89.47,
+      "branch_rate": 75.86,
+      "lines": {
+        "found": 437,
+        "hit": 391
+      },
+      "functions": {
+        "found": 34,
+        "hit": 31
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/ecual/lintrcv/src/LinTrcv.c",
+      "line_rate": 76.81,
+      "branch_rate": 63.56,
+      "lines": {
+        "found": 263,
+        "hit": 202
+      },
+      "functions": {
+        "found": 17,
+        "hit": 16
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/adc/src/Adc.c",
+      "line_rate": 74.37,
+      "branch_rate": 70.49,
+      "lines": {
+        "found": 277,
+        "hit": 206
+      },
+      "functions": {
+        "found": 18,
+        "hit": 16
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/can/src/Can.c",
+      "line_rate": 88.96,
+      "branch_rate": 77.42,
+      "lines": {
+        "found": 335,
+        "hit": 298
+      },
+      "functions": {
+        "found": 22,
+        "hit": 22
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/crypto/src/Crypto.c",
+      "line_rate": 38.7,
+      "branch_rate": 38.43,
+      "lines": {
+        "found": 447,
+        "hit": 173
+      },
+      "functions": {
+        "found": 37,
+        "hit": 18
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/crypto/src/Crypto_Cfg.c",
+      "line_rate": 0.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 16,
+        "hit": 0
+      },
+      "functions": {
+        "found": 4,
+        "hit": 0
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/crypto/src/Crypto_Hsm.c",
+      "line_rate": 12.35,
+      "branch_rate": 5.13,
+      "lines": {
+        "found": 81,
+        "hit": 10
+      },
+      "functions": {
+        "found": 10,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/crypto/src/Crypto_MbedTLS.c",
+      "line_rate": 20.92,
+      "branch_rate": 13.49,
+      "lines": {
+        "found": 325,
+        "hit": 68
+      },
+      "functions": {
+        "found": 18,
+        "hit": 9
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/crypto/src/Crypto_MbedTLS_Mem.c",
+      "line_rate": 30.0,
+      "branch_rate": 25.0,
+      "lines": {
+        "found": 20,
+        "hit": 6
+      },
+      "functions": {
+        "found": 3,
+        "hit": 1
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/dio/src/Dio.c",
+      "line_rate": 52.63,
+      "branch_rate": 43.18,
+      "lines": {
+        "found": 133,
+        "hit": 70
+      },
+      "functions": {
+        "found": 11,
+        "hit": 8
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/eep/src/Eep.c",
+      "line_rate": 72.49,
+      "branch_rate": 69.44,
+      "lines": {
+        "found": 189,
+        "hit": 137
+      },
+      "functions": {
+        "found": 15,
+        "hit": 11
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/eth/src/Eth.c",
+      "line_rate": 90.36,
+      "branch_rate": 75.26,
+      "lines": {
+        "found": 384,
+        "hit": 347
+      },
+      "functions": {
+        "found": 33,
+        "hit": 32
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/flash/src/Flash_Lcfg.c",
+      "line_rate": 0.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 4,
         "hit": 0
       },
       "functions": {
@@ -84,103 +513,64 @@
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P01.c",
-      "line_rate": 98.15,
-      "branch_rate": 87.23,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/fls/src/Fls.c",
+      "line_rate": 85.67,
+      "branch_rate": 67.79,
       "lines": {
-        "found": 108,
-        "hit": 106
+        "found": 349,
+        "hit": 299
       },
       "functions": {
-        "found": 4,
-        "hit": 4
+        "found": 25,
+        "hit": 25
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P02.c",
-      "line_rate": 100.0,
-      "branch_rate": 83.78,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/gpt/src/Gpt.c",
+      "line_rate": 80.09,
+      "branch_rate": 74.03,
       "lines": {
-        "found": 74,
-        "hit": 74
+        "found": 211,
+        "hit": 169
       },
       "functions": {
-        "found": 4,
-        "hit": 4
+        "found": 18,
+        "hit": 15
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P04.c",
-      "line_rate": 100.0,
-      "branch_rate": 88.57,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/i2c/src/I2c.c",
+      "line_rate": 69.92,
+      "branch_rate": 60.07,
       "lines": {
-        "found": 82,
-        "hit": 82
+        "found": 625,
+        "hit": 437
       },
       "functions": {
-        "found": 4,
-        "hit": 4
+        "found": 37,
+        "hit": 29
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P05.c",
-      "line_rate": 81.48,
-      "branch_rate": 70.18,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/icu/src/Icu.c",
+      "line_rate": 51.51,
+      "branch_rate": 38.32,
       "lines": {
-        "found": 162,
-        "hit": 132
+        "found": 530,
+        "hit": 273
       },
       "functions": {
-        "found": 8,
-        "hit": 8
+        "found": 34,
+        "hit": 24
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P06.c",
-      "line_rate": 94.24,
-      "branch_rate": 83.64,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/Lin.c",
+      "line_rate": 95.36,
+      "branch_rate": 89.47,
       "lines": {
-        "found": 139,
-        "hit": 131
-      },
-      "functions": {
-        "found": 8,
-        "hit": 8
-      }
-    },
-    {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/e2e/src/E2E_P07.c",
-      "line_rate": 94.4,
-      "branch_rate": 83.64,
-      "lines": {
-        "found": 125,
-        "hit": 118
-      },
-      "functions": {
-        "found": 8,
-        "hit": 8
-      }
-    },
-    {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM.c",
-      "line_rate": 88.69,
-      "branch_rate": 74.34,
-      "lines": {
-        "found": 911,
-        "hit": 808
-      },
-      "functions": {
-        "found": 41,
-        "hit": 41
-      }
-    },
-    {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/nvm/src/NvM_EccHandler.c",
-      "line_rate": 96.15,
-      "branch_rate": 89.26,
-      "lines": {
-        "found": 234,
-        "hit": 225
+        "found": 151,
+        "hit": 144
       },
       "functions": {
         "found": 17,
@@ -188,12 +578,51 @@
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/WdgM_Cfg.c",
-      "line_rate": 66.67,
-      "branch_rate": 30.0,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/LinSlave.c",
+      "line_rate": 37.04,
+      "branch_rate": 24.3,
+      "lines": {
+        "found": 270,
+        "hit": 100
+      },
+      "functions": {
+        "found": 17,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/LinSlave_Checksum.c",
+      "line_rate": 80.65,
+      "branch_rate": 63.64,
+      "lines": {
+        "found": 31,
+        "hit": 25
+      },
+      "functions": {
+        "found": 4,
+        "hit": 4
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/LinSlave_Hal.c",
+      "line_rate": 50.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 30,
+        "hit": 15
+      },
+      "functions": {
+        "found": 9,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/LinSlave_Pid.c",
+      "line_rate": 100.0,
+      "branch_rate": 100.0,
       "lines": {
         "found": 21,
-        "hit": 14
+        "hit": 21
       },
       "functions": {
         "found": 3,
@@ -201,16 +630,1004 @@
       }
     },
     {
-      "file": "/Users/stefan/.openclaw/workspace/yuleASR/src/bsw/services/wdgm/src/Wdgm.c",
-      "line_rate": 85.2,
-      "branch_rate": 77.36,
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/LinSlave_Tp.c",
+      "line_rate": 4.37,
+      "branch_rate": 2.47,
       "lines": {
-        "found": 304,
-        "hit": 259
+        "found": 183,
+        "hit": 8
+      },
+      "functions": {
+        "found": 16,
+        "hit": 1
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/lin/src/LinSlave_Uds.c",
+      "line_rate": 27.84,
+      "branch_rate": 14.81,
+      "lines": {
+        "found": 176,
+        "hit": 49
+      },
+      "functions": {
+        "found": 19,
+        "hit": 4
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/mcu/src/Mcal.c",
+      "line_rate": 57.14,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 7,
+        "hit": 4
+      },
+      "functions": {
+        "found": 3,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/mcu/src/Mcu.c",
+      "line_rate": 82.93,
+      "branch_rate": 70.83,
+      "lines": {
+        "found": 205,
+        "hit": 170
+      },
+      "functions": {
+        "found": 16,
+        "hit": 16
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/ocu/src/Ocu.c",
+      "line_rate": 72.78,
+      "branch_rate": 62.5,
+      "lines": {
+        "found": 180,
+        "hit": 131
+      },
+      "functions": {
+        "found": 14,
+        "hit": 14
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/ocu/src/Ocu_Irq.c",
+      "line_rate": 51.04,
+      "branch_rate": 5.88,
+      "lines": {
+        "found": 96,
+        "hit": 49
+      },
+      "functions": {
+        "found": 15,
+        "hit": 9
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/port/src/Port.c",
+      "line_rate": 89.3,
+      "branch_rate": 84.06,
+      "lines": {
+        "found": 187,
+        "hit": 167
+      },
+      "functions": {
+        "found": 11,
+        "hit": 11
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/pwm/src/Pwm.c",
+      "line_rate": 95.95,
+      "branch_rate": 93.44,
+      "lines": {
+        "found": 148,
+        "hit": 142
+      },
+      "functions": {
+        "found": 12,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/spi/src/Spi.c",
+      "line_rate": 90.64,
+      "branch_rate": 70.69,
+      "lines": {
+        "found": 235,
+        "hit": 213
+      },
+      "functions": {
+        "found": 12,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/uart/src/Uart.c",
+      "line_rate": 83.11,
+      "branch_rate": 65.57,
+      "lines": {
+        "found": 444,
+        "hit": 369
+      },
+      "functions": {
+        "found": 29,
+        "hit": 29
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/mcal/wdg/src/Wdg.c",
+      "line_rate": 65.84,
+      "branch_rate": 40.0,
+      "lines": {
+        "found": 202,
+        "hit": 133
+      },
+      "functions": {
+        "found": 15,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/os/src/Os.c",
+      "line_rate": 41.55,
+      "branch_rate": 37.16,
+      "lines": {
+        "found": 503,
+        "hit": 209
+      },
+      "functions": {
+        "found": 62,
+        "hit": 23
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/os/src/Os_Cfg.c",
+      "line_rate": 82.35,
+      "branch_rate": 71.43,
+      "lines": {
+        "found": 34,
+        "hit": 28
+      },
+      "functions": {
+        "found": 7,
+        "hit": 6
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/os/src/Os_FreertosHooks.c",
+      "line_rate": 71.43,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 14,
+        "hit": 10
+      },
+      "functions": {
+        "found": 3,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/os/src/Os_TaskEntries.c",
+      "line_rate": 64.0,
+      "branch_rate": 33.33,
+      "lines": {
+        "found": 50,
+        "hit": 32
+      },
+      "functions": {
+        "found": 9,
+        "hit": 7
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/bswm/src/BswM.c",
+      "line_rate": 94.85,
+      "branch_rate": 83.4,
+      "lines": {
+        "found": 447,
+        "hit": 424
+      },
+      "functions": {
+        "found": 36,
+        "hit": 36
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/cansm/src/CanSm.c",
+      "line_rate": 90.0,
+      "branch_rate": 73.82,
+      "lines": {
+        "found": 540,
+        "hit": 486
+      },
+      "functions": {
+        "found": 37,
+        "hit": 37
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/cantsyn/src/CanTSyn.c",
+      "line_rate": 72.37,
+      "branch_rate": 78.57,
+      "lines": {
+        "found": 152,
+        "hit": 110
+      },
+      "functions": {
+        "found": 9,
+        "hit": 7
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/com/src/Com.c",
+      "line_rate": 54.73,
+      "branch_rate": 46.31,
+      "lines": {
+        "found": 603,
+        "hit": 330
+      },
+      "functions": {
+        "found": 40,
+        "hit": 21
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/comM/src/ComM.c",
+      "line_rate": 51.62,
+      "branch_rate": 47.2,
+      "lines": {
+        "found": 432,
+        "hit": 223
+      },
+      "functions": {
+        "found": 42,
+        "hit": 18
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/crc/src/Crc.c",
+      "line_rate": 100.0,
+      "branch_rate": 100.0,
+      "lines": {
+        "found": 40,
+        "hit": 40
+      },
+      "functions": {
+        "found": 5,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/csm/src/Csm.c",
+      "line_rate": 20.8,
+      "branch_rate": 15.5,
+      "lines": {
+        "found": 1125,
+        "hit": 234
+      },
+      "functions": {
+        "found": 42,
+        "hit": 21
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/csm/src/Csm_Cfg.c",
+      "line_rate": 37.58,
+      "branch_rate": 22.12,
+      "lines": {
+        "found": 149,
+        "hit": 56
+      },
+      "functions": {
+        "found": 7,
+        "hit": 4
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/dcm/src/Dcm.c",
+      "line_rate": 82.9,
+      "branch_rate": 70.76,
+      "lines": {
+        "found": 614,
+        "hit": 509
+      },
+      "functions": {
+        "found": 27,
+        "hit": 25
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/dcm/src/dcm_transfer.c",
+      "line_rate": 45.19,
+      "branch_rate": 35.54,
+      "lines": {
+        "found": 405,
+        "hit": 183
+      },
+      "functions": {
+        "found": 16,
+        "hit": 13
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/dem/src/Dem.c",
+      "line_rate": 60.43,
+      "branch_rate": 49.58,
+      "lines": {
+        "found": 508,
+        "hit": 307
+      },
+      "functions": {
+        "found": 32,
+        "hit": 21
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/dem/src/Dem_Int.c",
+      "line_rate": 71.71,
+      "branch_rate": 56.52,
+      "lines": {
+        "found": 403,
+        "hit": 289
+      },
+      "functions": {
+        "found": 29,
+        "hit": 23
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/det/src/Det.c",
+      "line_rate": 83.78,
+      "branch_rate": 65.38,
+      "lines": {
+        "found": 74,
+        "hit": 62
+      },
+      "functions": {
+        "found": 9,
+        "hit": 9
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/dlt/src/Dlt.c",
+      "line_rate": 86.62,
+      "branch_rate": 72.09,
+      "lines": {
+        "found": 426,
+        "hit": 369
+      },
+      "functions": {
+        "found": 33,
+        "hit": 32
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/e2e/src/E2E.c",
+      "line_rate": 100.0,
+      "branch_rate": 100.0,
+      "lines": {
+        "found": 16,
+        "hit": 16
+      },
+      "functions": {
+        "found": 2,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/e2e/src/E2E_P01.c",
+      "line_rate": 78.7,
+      "branch_rate": 74.47,
+      "lines": {
+        "found": 108,
+        "hit": 85
+      },
+      "functions": {
+        "found": 4,
+        "hit": 4
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/ecuC/src/EcuC.c",
+      "line_rate": 78.57,
+      "branch_rate": 53.85,
+      "lines": {
+        "found": 56,
+        "hit": 44
+      },
+      "functions": {
+        "found": 5,
+        "hit": 5
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/ecum/src/EcuM.c",
+      "line_rate": 32.48,
+      "branch_rate": 20.21,
+      "lines": {
+        "found": 588,
+        "hit": 191
+      },
+      "functions": {
+        "found": 72,
+        "hit": 25
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/ethtsyn/src/EthTSyn.c",
+      "line_rate": 100.0,
+      "branch_rate": 100.0,
+      "lines": {
+        "found": 74,
+        "hit": 74
+      },
+      "functions": {
+        "found": 8,
+        "hit": 8
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/fim/src/FiM.c",
+      "line_rate": 88.14,
+      "branch_rate": 61.11,
+      "lines": {
+        "found": 194,
+        "hit": 171
+      },
+      "functions": {
+        "found": 10,
+        "hit": 10
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/flstst/src/FlStSt.c",
+      "line_rate": 73.95,
+      "branch_rate": 61.68,
+      "lines": {
+        "found": 215,
+        "hit": 159
+      },
+      "functions": {
+        "found": 13,
+        "hit": 13
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/keym/src/KeyM.c",
+      "line_rate": 45.93,
+      "branch_rate": 38.64,
+      "lines": {
+        "found": 381,
+        "hit": 175
+      },
+      "functions": {
+        "found": 26,
+        "hit": 16
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/ldcom/src/LdCom.c",
+      "line_rate": 100.0,
+      "branch_rate": 85.71,
+      "lines": {
+        "found": 49,
+        "hit": 49
+      },
+      "functions": {
+        "found": 9,
+        "hit": 9
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/mem/src/Mem.c",
+      "line_rate": 84.72,
+      "branch_rate": 67.07,
+      "lines": {
+        "found": 360,
+        "hit": 305
+      },
+      "functions": {
+        "found": 20,
+        "hit": 20
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/memif/src/MemIf.c",
+      "line_rate": 65.45,
+      "branch_rate": 42.65,
+      "lines": {
+        "found": 191,
+        "hit": 125
+      },
+      "functions": {
+        "found": 15,
+        "hit": 14
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/mqtt/src/Mqtt.c",
+      "line_rate": 30.42,
+      "branch_rate": 29.86,
+      "lines": {
+        "found": 503,
+        "hit": 153
+      },
+      "functions": {
+        "found": 24,
+        "hit": 13
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/mqtt/src/Mqtt_Lcfg.c",
+      "line_rate": 0.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 14,
+        "hit": 0
+      },
+      "functions": {
+        "found": 3,
+        "hit": 0
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/nm/src/Nm.c",
+      "line_rate": 76.52,
+      "branch_rate": 66.29,
+      "lines": {
+        "found": 230,
+        "hit": 176
+      },
+      "functions": {
+        "found": 23,
+        "hit": 21
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/nvm/src/NvM.c",
+      "line_rate": 47.86,
+      "branch_rate": 36.87,
+      "lines": {
+        "found": 1143,
+        "hit": 547
+      },
+      "functions": {
+        "found": 47,
+        "hit": 33
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/nvm/src/NvM_Redundant.c",
+      "line_rate": 69.81,
+      "branch_rate": 52.08,
+      "lines": {
+        "found": 106,
+        "hit": 74
+      },
+      "functions": {
+        "found": 8,
+        "hit": 7
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/pdur/src/PduR.c",
+      "line_rate": 61.57,
+      "branch_rate": 47.62,
+      "lines": {
+        "found": 242,
+        "hit": 149
+      },
+      "functions": {
+        "found": 19,
+        "hit": 15
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/ramsafety/src/RamSafety.c",
+      "line_rate": 38.03,
+      "branch_rate": 27.01,
+      "lines": {
+        "found": 447,
+        "hit": 170
+      },
+      "functions": {
+        "found": 21,
+        "hit": 15
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/schm/src/SchM.c",
+      "line_rate": 100.0,
+      "branch_rate": 90.0,
+      "lines": {
+        "found": 52,
+        "hit": 52
+      },
+      "functions": {
+        "found": 8,
+        "hit": 8
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/sd/src/Sd.c",
+      "line_rate": 79.36,
+      "branch_rate": 63.83,
+      "lines": {
+        "found": 218,
+        "hit": 173
+      },
+      "functions": {
+        "found": 19,
+        "hit": 16
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/secoc/src/SecOC.c",
+      "line_rate": 87.62,
+      "branch_rate": 71.09,
+      "lines": {
+        "found": 315,
+        "hit": 276
+      },
+      "functions": {
+        "found": 21,
+        "hit": 21
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/someip/src/SomeIp.c",
+      "line_rate": 0.0,
+      "branch_rate": 0.0,
+      "lines": {
+        "found": 135,
+        "hit": 0
+      },
+      "functions": {
+        "found": 14,
+        "hit": 0
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/someip/src/SomeIpSd.c",
+      "line_rate": 88.8,
+      "branch_rate": 75.71,
+      "lines": {
+        "found": 125,
+        "hit": 111
+      },
+      "functions": {
+        "found": 11,
+        "hit": 11
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/stbm/src/StbM.c",
+      "line_rate": 84.39,
+      "branch_rate": 70.59,
+      "lines": {
+        "found": 173,
+        "hit": 146
+      },
+      "functions": {
+        "found": 10,
+        "hit": 10
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/swc/src/Swc.c",
+      "line_rate": 68.25,
+      "branch_rate": 61.25,
+      "lines": {
+        "found": 252,
+        "hit": 172
+      },
+      "functions": {
+        "found": 28,
+        "hit": 18
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/tcpip/src/TcpIp.c",
+      "line_rate": 68.2,
+      "branch_rate": 56.52,
+      "lines": {
+        "found": 890,
+        "hit": 607
+      },
+      "functions": {
+        "found": 62,
+        "hit": 54
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/tm/src/Tm.c",
+      "line_rate": 100.0,
+      "branch_rate": 90.0,
+      "lines": {
+        "found": 68,
+        "hit": 68
+      },
+      "functions": {
+        "found": 10,
+        "hit": 10
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/udpNm/src/UdpNm.c",
+      "line_rate": 71.52,
+      "branch_rate": 57.69,
+      "lines": {
+        "found": 453,
+        "hit": 324
+      },
+      "functions": {
+        "found": 37,
+        "hit": 33
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/wdgm/src/WdgM.c",
+      "line_rate": 66.67,
+      "branch_rate": 50.0,
+      "lines": {
+        "found": 327,
+        "hit": 218
       },
       "functions": {
         "found": 30,
-        "hit": 27
+        "hit": 25
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/bsw/services/wdgm/src/WdgM_Cfg.c",
+      "line_rate": 38.1,
+      "branch_rate": 20.0,
+      "lines": {
+        "found": 21,
+        "hit": 8
+      },
+      "functions": {
+        "found": 3,
+        "hit": 2
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/crypto_stack/cryif/cryif_core.c",
+      "line_rate": 42.93,
+      "branch_rate": 26.65,
+      "lines": {
+        "found": 375,
+        "hit": 161
+      },
+      "functions": {
+        "found": 31,
+        "hit": 14
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/crypto_stack/csm/csm_core.c",
+      "line_rate": 72.73,
+      "branch_rate": 49.37,
+      "lines": {
+        "found": 528,
+        "hit": 384
+      },
+      "functions": {
+        "found": 33,
+        "hit": 26
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/crypto_stack/csm/csm_jobs.c",
+      "line_rate": 69.83,
+      "branch_rate": 53.85,
+      "lines": {
+        "found": 116,
+        "hit": 81
+      },
+      "functions": {
+        "found": 10,
+        "hit": 7
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/crypto_stack/keym/keym_core.c",
+      "line_rate": 68.11,
+      "branch_rate": 45.9,
+      "lines": {
+        "found": 715,
+        "hit": 487
+      },
+      "functions": {
+        "found": 44,
+        "hit": 34
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/crypto_stack/secoc/secoc_core.c",
+      "line_rate": 60.61,
+      "branch_rate": 50.83,
+      "lines": {
+        "found": 429,
+        "hit": 260
+      },
+      "functions": {
+        "found": 31,
+        "hit": 19
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/crypto_stack/secoc/secoc_freshness.c",
+      "line_rate": 59.95,
+      "branch_rate": 42.62,
+      "lines": {
+        "found": 422,
+        "hit": 253
+      },
+      "functions": {
+        "found": 29,
+        "hit": 22
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/eth_sm/eth_sm.c",
+      "line_rate": 95.98,
+      "branch_rate": 79.43,
+      "lines": {
+        "found": 398,
+        "hit": 382
+      },
+      "functions": {
+        "found": 45,
+        "hit": 45
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/ethernet/driver/eth_automotive.c",
+      "line_rate": 52.38,
+      "branch_rate": 41.67,
+      "lines": {
+        "found": 273,
+        "hit": 143
+      },
+      "functions": {
+        "found": 31,
+        "hit": 16
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/ethernet/driver/eth_dma.c",
+      "line_rate": 52.28,
+      "branch_rate": 35.94,
+      "lines": {
+        "found": 438,
+        "hit": 229
+      },
+      "functions": {
+        "found": 37,
+        "hit": 22
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/ethernet/driver/eth_mac_driver.c",
+      "line_rate": 35.34,
+      "branch_rate": 28.12,
+      "lines": {
+        "found": 266,
+        "hit": 94
+      },
+      "functions": {
+        "found": 32,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/ethernet/eth_manager.c",
+      "line_rate": 86.34,
+      "branch_rate": 70.55,
+      "lines": {
+        "found": 366,
+        "hit": 316
+      },
+      "functions": {
+        "found": 34,
+        "hit": 34
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/libs/aes/src/Lib_Aes.c",
+      "line_rate": 95.6,
+      "branch_rate": 84.72,
+      "lines": {
+        "found": 273,
+        "hit": 261
+      },
+      "functions": {
+        "found": 20,
+        "hit": 20
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/libs/crc/src/Lib_Crc.c",
+      "line_rate": 100.0,
+      "branch_rate": 100.0,
+      "lines": {
+        "found": 47,
+        "hit": 47
+      },
+      "functions": {
+        "found": 12,
+        "hit": 12
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/safety/ram/ecc_checker.c",
+      "line_rate": 57.48,
+      "branch_rate": 34.09,
+      "lines": {
+        "found": 254,
+        "hit": 146
+      },
+      "functions": {
+        "found": 18,
+        "hit": 13
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/safety/ram/ecc_encoder.c",
+      "line_rate": 55.26,
+      "branch_rate": 26.47,
+      "lines": {
+        "found": 114,
+        "hit": 63
+      },
+      "functions": {
+        "found": 13,
+        "hit": 8
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/telemetry/telemetry.c",
+      "line_rate": 98.53,
+      "branch_rate": 93.52,
+      "lines": {
+        "found": 204,
+        "hit": 201
+      },
+      "functions": {
+        "found": 19,
+        "hit": 18
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/telemetry/telemetry_dds.c",
+      "line_rate": 78.67,
+      "branch_rate": 76.67,
+      "lines": {
+        "found": 75,
+        "hit": 59
+      },
+      "functions": {
+        "found": 10,
+        "hit": 8
+      }
+    },
+    {
+      "file": "/Users/ingeek/workspace/AUTOSAR/src/telemetry/telemetry_diag.c",
+      "line_rate": 90.41,
+      "branch_rate": 77.78,
+      "lines": {
+        "found": 73,
+        "hit": 66
+      },
+      "functions": {
+        "found": 3,
+        "hit": 2
       }
     }
   ]

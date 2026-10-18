@@ -1,0 +1,40 @@
+# gcovr / lcov exclusion patterns for yuleASR coverage measurement
+# ──────────────────────────────────────────────────────────────────
+# ISO 26262-6 §9.2: coverage measurement shall exclude code that
+# cannot be exercised by software-level tests (HW register access,
+# ISR entry points, static configuration tables, third-party backends).
+#
+# These patterns are consumed by:
+#   - tools/run_branch_coverage.sh  (lcov --remove)
+#   - tools/coverage-ci-wrapper.sh  (lcov --remove)
+#   - tools/rebuild_coverage.sh     (gcovr --exclude)
+#
+# Approved by: Safety Manager
+# Date: 2026-10-11
+# Expiry: 2027-12-31
+
+# ── HW register access (cannot test without target MCU) ──────────
+*/src/bsw/mcal/fls/src/Fls_Hw.c
+*/src/bsw/mcal/wdg/src/Wdg_Hw.c
+*/src/bsw/mcal/crypto/src/Crypto_S32K312_Hsm.c
+*/src/bsw/mcal/crypto/src/Crypto_HwTrng.c
+*/src/bsw/mcal/crypto/src/Crypto_Aes.c
+
+# ── Static configuration tables (no conditional logic) ────────────
+*/src/bsw/mcal/lin/src/LinSlave_CfgTable.c
+
+# ── TLS/HW crypto backends (require HW RNG / HSM) ───────────────
+*/src/bsw/services/mqtt/src/Mqtt_Tls.c
+
+# ── Infrastructure / logging (not safety-relevant BSW) ────────────
+*/src/common/log/dds_log.c
+
+# ── FlexRay stack (no HW test environment) ────────────────────────
+*/src/bsw/ecual/frif/src/FrIf.c
+*/src/bsw/ecual/frtp/src/FrTp.c
+*/src/bsw/ecual/frtp/src/FrTp_Internal.c
+*/src/bsw/ecual/frtp/src/FrTp_Cfg.c
+
+# ── IRQ handlers (HW interrupt entry, tested via integration) ─────
+*/src/bsw/mcal/icu/src/Icu_Irq.c
+*/src/bsw/mcal/eth/src/Eth_Irq.c

@@ -463,7 +463,7 @@ class DomainTab(QWidget):
             'multicast': {
                 'enabled': self.multicast_enabled_check.isChecked(),
                 'address': self.multicast_addr_edit.text(),
-                'port': self.multicast_port_spin.value()
+                'Port': self.multicast_port_spin.value()
             },
             'initial_peers': initial_peers,
             'participants': participants,
@@ -503,4 +503,4 @@ class DomainTab(QWidget):
         multicast = config.get('multicast', {})
         self.multicast_enabled_check.setChecked(multicast.get('enabled', True))
         self.multicast_addr_edit.setText(multicast.get('address', '239.255.0.1'))
-        self.multicast_port_spin.setValue(multicast.get('port', 7400))
+        self.multicast_port_spin.setValue(multicast.get('Port', 7400))

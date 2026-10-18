@@ -123,7 +123,7 @@ def _execute_stage(opts, result: Dict[str, Any]) -> None:
         search_paths = [
             project_root / 'config' / 'input' / 'arxml' / 'bcm_demo.arxml',
             project_root / 'config' / 'input' / 'arxml' / 'example.arxml',
-            project_root / 'tools' / 'code_generators' / 'rte' / 'examples' / 'bcm_demo.arxml',
+            project_root / 'tools' / 'code_generators' / 'Rte' / 'examples' / 'bcm_demo.arxml',
             project_root / 'configs' / 'arxml' / 'example.arxml',
         ]
         arxml_path = None
@@ -159,7 +159,7 @@ def _execute_stage(opts, result: Dict[str, Any]) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Add the generator to sys.path
-    gen_dir = project_root / 'tools' / 'code_generators' / 'rte'
+    gen_dir = project_root / 'tools' / 'code_generators' / 'Rte'
     sys.path.insert(0, str(gen_dir))
 
     from rte_generator import generate_rte
@@ -267,7 +267,7 @@ def _run_misra_check(output_dir: str, project_root: str) -> Dict[str, Any]:
         '--enable=warning,style,performance',
         '--suppress=*',
         '-I', output_dir,
-        '-I', os.path.join(project_root, 'src', 'rte', 'include'),
+        '-I', os.path.join(project_root, 'src', 'Rte', 'include'),
         output_dir,
     ]
 

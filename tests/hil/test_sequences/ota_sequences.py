@@ -11,14 +11,14 @@ from conftest import PROJECT_ROOT, load_src_headers
 
 def test_ota_flash_driver_headers_exist():
     """Fls 驱动头文件必须存在（OTA 刷写依赖）。"""
-    fls = load_src_headers(("Fls", "fls"))
+    fls = load_src_headers(("Fls", "Fls"))
     assert fls, "未找到 Fls 产品头文件"
 
 
 def test_ota_flash_api_surface():
     """Fls 驱动必须提供 Erase/Write/Read API。"""
     text = "\n".join(
-        h.read_text(encoding="utf-8", errors="replace") for h in load_src_headers(("Fls", "fls"))
+        h.read_text(encoding="utf-8", errors="replace") for h in load_src_headers(("Fls", "Fls"))
     )
     assert "Fls_Erase" in text
     assert "Fls_Write" in text
@@ -42,6 +42,6 @@ def test_ota_rollback_support_declared():
 
 def test_ota_sequence_defines_none_vacuous():
     """OTA 序列验证必须基于真实文件（非空断言）。"""
-    fls = load_src_headers(("Fls", "fls"))
+    fls = load_src_headers(("Fls", "Fls"))
     total = sum(len(h.read_text(encoding="utf-8", errors="replace")) for h in fls)
     assert total > 500, "Fls 头文件内容过少，无法支撑 OTA 序列"

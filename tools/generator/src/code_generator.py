@@ -203,15 +203,15 @@ DEFAULT_CONFIG: Dict[str, Dict[str, Any]] = {
 # 模板→模块名映射工具
 # ======================================================================
 KNOWN_MODULES = {
-    "wdgif": "WdgIf", "bswm": "BswM", "dem": "Dem",
-    "ecum": "EcuM", "wdgm": "WdgM", "mcu": "Mcu",
-    "can": "Can", "canif": "CanIf", "cantp": "CanTp",
-    "ethif": "EthIf", "iohwab": "IoHwAb", "memif": "MemIf",
-    "fee": "Fee", "ea": "Ea", "frif": "FrIf", "linif": "LinIf",
-    "com": "Com", "pdur": "PduR", "nvm": "NvM", "dcm": "Dcm",
-    "port": "Port", "dio": "Dio", "lin": "Lin", "spi": "Spi",
-    "gpt": "Gpt", "adc": "Adc", "icu": "Icu", "pwm": "Pwm",
-    "fls": "Fls", "crc": "Crc",
+    "WdgIf": "WdgIf", "BswM": "BswM", "Dem": "Dem",
+    "EcuM": "EcuM", "WdgM": "WdgM", "Mcu": "Mcu",
+    "Can": "Can", "CanIf": "CanIf", "CanTp": "CanTp",
+    "EthIf": "EthIf", "IoHwAb": "IoHwAb", "MemIf": "MemIf",
+    "Fee": "Fee", "Ea": "Ea", "FrIf": "FrIf", "LinIf": "LinIf",
+    "Com": "Com", "PduR": "PduR", "NvM": "NvM", "Dcm": "Dcm",
+    "Port": "Port", "Dio": "Dio", "Lin": "Lin", "Spi": "Spi",
+    "gpt": "Gpt", "Adc": "Adc", "Icu": "Icu", "Pwm": "Pwm",
+    "Fls": "Fls", "Crc": "Crc",
 }
 
 def module_from_template(tpl_rel_path: str) -> str:

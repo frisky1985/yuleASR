@@ -114,7 +114,7 @@ def main():
 
     print("\nAdding minimal config for missing modules...")
     for module in sorted(missing_modules):
-        # Convert module name to proper case (e.g., "canif" -> "CanIf")
+        # Convert module name to proper case (e.g., "CanIf" -> "CanIf")
         # Use the directory name as-is for now
         module_key = module
 

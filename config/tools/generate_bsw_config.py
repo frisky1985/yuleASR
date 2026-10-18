@@ -47,7 +47,7 @@ DEFAULT_CONFIG = REPO_ROOT / "config" / "bsw_config.json"
 DEFAULT_SCHEMA = REPO_ROOT / "config" / "bsw_config_schema.json"
 DEFAULT_TEMPLATES = REPO_ROOT / "config" / "templates"
 DEFAULT_OUTPUT = REPO_ROOT / "config" / "generated"
-RTE_GENERATOR_DIR = REPO_ROOT / "tools" / "code_generators" / "rte"
+RTE_GENERATOR_DIR = REPO_ROOT / "tools" / "code_generators" / "Rte"
 
 LOG = logging.getLogger("generate_bsw_config")
 
@@ -294,8 +294,8 @@ def _freeze_rte_datetime() -> None:
 
 
 def run_rte_generation(cfg: Dict[str, Any], output_dir: Path, strict: bool) -> bool:
-    """Invoke the ARXML RTE generator as configured in cfg['rte']."""
-    rte_cfg = cfg.get("rte") or {}
+    """Invoke the ARXML RTE generator as configured in cfg['Rte']."""
+    rte_cfg = cfg.get("Rte") or {}
     if not rte_cfg.get("enabled", False):
         LOG.info("RTE generation disabled in config — skipping")
         return True
@@ -323,7 +323,7 @@ def run_rte_generation(cfg: Dict[str, Any], output_dir: Path, strict: bool) -> b
     rte_generator.datetime = frozen_dt
 
     gen_flags = rte_cfg.get("generate", {})
-    out_sub = output_dir / rte_cfg.get("output_subdir", "rte")
+    out_sub = output_dir / rte_cfg.get("output_subdir", "Rte")
     try:
         generated = rte_generator.generate_rte(
             arxml_path=str(arxml),

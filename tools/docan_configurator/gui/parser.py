@@ -283,7 +283,7 @@ class AutosarConfigParser:
                             'type': row.get('ENTITY_TYPE', 'NODE'),
                             'logical_addr': int(row.get('LOGICAL_ADDRESS', '0x0'), 16),
                             'ip': row.get('IP_ADDRESS', '192.168.1.1'),
-                            'port': int(row.get('PORT', 13400))
+                            'Port': int(row.get('PORT', 13400))
                         })
                     elif 'Timing' in section_name:
                         entities[entity_id].update({

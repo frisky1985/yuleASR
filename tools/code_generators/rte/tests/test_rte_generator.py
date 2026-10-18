@@ -1123,7 +1123,7 @@ class TestTypeEmitterFilter:
         assert order == ['MyType']
 
     def test_case_insensitive_rte(self):
-        defs = {'MyType': _mk_type('MyType', c_type='uint16', type_emitter='rte')}
+        defs = {'MyType': _mk_type('MyType', c_type='uint16', type_emitter='Rte')}
         order = [td.name for td in gen_type_creation_order(defs, ['MyType'])]
         assert order == ['MyType']
 

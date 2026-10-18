@@ -187,7 +187,7 @@ class JsonParser:
             'multicast': {
                 'enabled': data.get('multicast', {}).get('enabled', True),
                 'address': data.get('multicast', {}).get('address', '239.255.0.1'),
-                'port': data.get('multicast', {}).get('port', 7400)
+                'Port': data.get('multicast', {}).get('Port', 7400)
             }
         }
     

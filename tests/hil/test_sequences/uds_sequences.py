@@ -42,7 +42,7 @@ def test_hil_diag_can_ids_defined():
 
 def test_hil_diag_sids_match_real_dcm_headers():
     """序列 SID 与真实 Dcm 头文件常量一致。"""
-    dcm_headers = load_src_headers(("Dcm", "dcm"))
+    dcm_headers = load_src_headers(("Dcm", "Dcm"))
     assert dcm_headers, "未找到 Dcm 产品头文件"
     haystack = "\n".join(h.read_text(encoding="utf-8", errors="replace") for h in dcm_headers)
     # DCM 模块应包含 0x10/0x22/0x2E 服务定义

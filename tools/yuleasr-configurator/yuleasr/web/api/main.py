@@ -321,13 +321,13 @@ async def list_modules(path: Optional[str] = None):
             # Determine layer
             lower_name = name.lower()
             layer = "services"  # default
-            if lower_name in {"mcu", "port", "dio", "can", "spi", "adc", "pwm", "gpt", "wdg", "icu", "lin", "eep", "flash", "i2c", "uart"}:
+            if lower_name in {"Mcu", "Port", "Dio", "Can", "Spi", "Adc", "Pwm", "gpt", "Wdg", "Icu", "Lin", "Eep", "Flash", "I2c", "Uart"}:
                 layer = "mcal"
-            elif lower_name in {"canif", "cantp", "ethif", "memif", "fee", "ea", "linif"}:
+            elif lower_name in {"CanIf", "CanTp", "EthIf", "MemIf", "Fee", "Ea", "LinIf"}:
                 layer = "ecual"
-            elif lower_name == "os":
-                layer = "os"
-            elif lower_name in {"bswm", "ecum", "ecuc"}:
+            elif lower_name == "Os":
+                layer = "Os"
+            elif lower_name in {"BswM", "EcuM", "EcuC"}:
                 layer = "integration"
             
             module_infos.append(ModuleInfo(

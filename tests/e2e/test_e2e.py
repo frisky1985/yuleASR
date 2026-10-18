@@ -18,25 +18,25 @@ INCLUDE_DIRS = [
     str(PROJECT_DIR / "include"),
     str(PROJECT_DIR / "include" / "autosar"),
     str(PROJECT_DIR / "src"),
-    str(PROJECT_DIR / "src" / "bsw" / "os" / "include"),
-    str(PROJECT_DIR / "src" / "bsw" / "services" / "det" / "include"),
-    str(PROJECT_DIR / "src" / "bsw" / "services" / "crc" / "include"),
-    str(PROJECT_DIR / "src" / "bsw" / "services" / "com" / "include"),
-    str(PROJECT_DIR / "src" / "bsw" / "services" / "dcm" / "include"),
-    str(PROJECT_DIR / "src" / "bsw" / "services" / "dem" / "include"),
-    str(PROJECT_DIR / "src" / "rte" / "include"),
-    str(PROJECT_DIR / "src" / "bsw" / "mcal" / "lin" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "Os" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "Det" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "Crc" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "Com" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "Dcm" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "services" / "Dem" / "include"),
+    str(PROJECT_DIR / "src" / "Rte" / "include"),
+    str(PROJECT_DIR / "src" / "bsw" / "mcal" / "Lin" / "include"),
 ]
 
 # Source files needed by real AUTOSAR C API tests (for linking)
 REAL_TEST_SOURCES = {
     "test_e2e_det_real": [
-        str(SOURCES_DIR / "bsw" / "services" / "det" / "src" / "Det.c"),
+        str(SOURCES_DIR / "bsw" / "services" / "Det" / "src" / "Det.c"),
     ],
     "test_e2e_crc_real": [
-        str(SOURCES_DIR / "bsw" / "services" / "crc" / "src" / "Crc.c"),
-        str(SOURCES_DIR / "bsw" / "services" / "crc" / "src" / "Crc_Lcfg.c"),
-        str(SOURCES_DIR / "bsw" / "services" / "det" / "src" / "Det.c"),
+        str(SOURCES_DIR / "bsw" / "services" / "Crc" / "src" / "Crc.c"),
+        str(SOURCES_DIR / "bsw" / "services" / "Crc" / "src" / "Crc_Lcfg.c"),
+        str(SOURCES_DIR / "bsw" / "services" / "Det" / "src" / "Det.c"),
     ],
 }
 

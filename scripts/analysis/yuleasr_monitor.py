@@ -14,33 +14,33 @@ import sys
 def get_bsw_module_list():
     """Get the list of BSW modules implemented in the project."""
     return [
-        "bswm", "canm", "cansm", "cantsyn", "com", "comm",
-        "crc", "cryif", "csm", "dcm", "dem", "det", "dlt",
-        "docan", "doip", "e2e", "ecuc", "ecum", "ethsm",
-        "fim", "ipdum", "j1939nm", "j1939tp", "keym", "linm",
-        "linsm", "lntm", "mem", "memif", "mqtt", "nm", "nvm",
-        "pdur", "ramsafety", "schm", "secoc", "soad", "someip",
-        "someiptp", "someipxf", "stbm", "swc", "udpnm", "wdgm", "xcp"
+        "BswM", "CanM", "CanSM", "CanTSyn", "Com", "ComM",
+        "Crc", "CryIf", "Csm", "Dcm", "Dem", "Det", "Dlt",
+        "DoCan", "DoIP", "E2E", "EcuC", "EcuM", "EthSM",
+        "FiM", "IpduM", "J1939Nm", "J1939Tp", "KeyM", "LinM",
+        "LinSM", "LntM", "Mem", "MemIf", "Mqtt", "Nm", "NvM",
+        "PduR", "RamSafety", "SchM", "SecOC", "SoAd", "SomeIp",
+        "SomeIpTp", "SomeIpXf", "StbM", "SwC", "UdpNm", "WdgM", "Xcp"
     ]
 
 
 def get_mcal_module_list():
     """Get the list of MCAL modules implemented in the project."""
     return [
-        "adc", "can", "crypto", "dio", "eep", "eth", "fee",
-        "flash", "fls", "gpt", "i2c", "icu", "lin", "mcu",
-        "ocu", "port", "pwm", "ramtst", "spi", "uart", "wdg"
+        "Adc", "Can", "Crypto", "Dio", "Eep", "Eth", "Fee",
+        "Flash", "Fls", "gpt", "I2c", "Icu", "Lin", "Mcu",
+        "Ocu", "Port", "Pwm", "RamTst", "Spi", "Uart", "Wdg"
     ]
 
 
 def get_ecual_module_list():
     """Get the list of ECUAL modules implemented in the project."""
     return [
-        "cannm", "cansm", "canif", "cantp", "cantrcv", "dlt",
-        "doip", "ea", "ethsm", "ethif", "ethtrcv", "fee", "fim",
-        "frif", "frtp", "iohwab", "ipdum", "j1939tp", "linnm",
-        "linsm", "lintp", "linif", "lintrcv", "memif", "someipif",
-        "someipsd", "srp", "wdgif", "xcp"
+        "CanNm", "CanSM", "CanIf", "CanTp", "CanTrcv", "Dlt",
+        "DoIP", "Ea", "EthSM", "EthIf", "EthTrcv", "Fee", "FiM",
+        "FrIf", "FrTp", "IoHwAb", "IpduM", "J1939Tp", "LinNm",
+        "LinSM", "LinTp", "LinIf", "LinTrcv", "MemIf", "SomeIpIf",
+        "SomeIpSd", "Srp", "WdgIf", "Xcp"
     ]
 
 

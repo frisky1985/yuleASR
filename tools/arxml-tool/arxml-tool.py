@@ -207,7 +207,7 @@ def cmd_parse(args) -> int:
             query_engine = ArxmlQueryEngine(parser)
             query_type, query_value = args.query.split(':', 1)
             
-            if query_type == 'swc':
+            if query_type == 'SwC':
                 swc = parser.find_swc_by_name(query_value)
                 data['query_result'] = {"software_component": swc.__dict__ if swc else None}
             elif query_type == 'interface':

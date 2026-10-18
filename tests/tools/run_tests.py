@@ -53,16 +53,16 @@ TESTS_DIR = PROJECT_ROOT / "tests"
 BUILD_DIR = TESTS_DIR / "build"
 
 # Test module mapping
-MCAL_MODULES = ["mcu", "port", "dio", "can", "spi", "gpt", "pwm", "adc", "wdg"]
-ECUAL_MODULES = ["canif", "cantp", "iohwab", "ethif", "memif", "fee", "ea", "frif", "linif"]
-SERVICE_MODULES = ["com", "pdur", "nvm", "dcm", "dem"]
-OS_MODULES = ["os"]
+MCAL_MODULES = ["Mcu", "Port", "Dio", "Can", "Spi", "gpt", "Pwm", "Adc", "Wdg"]
+ECUAL_MODULES = ["CanIf", "CanTp", "IoHwAb", "EthIf", "MemIf", "Fee", "Ea", "FrIf", "LinIf"]
+SERVICE_MODULES = ["Com", "PduR", "NvM", "Dcm", "Dem"]
+OS_MODULES = ["Os"]
 
 ALL_MODULES = {
     "mcal": MCAL_MODULES,
     "ecual": ECUAL_MODULES,
     "services": SERVICE_MODULES,
-    "os": OS_MODULES
+    "Os": OS_MODULES
 }
 
 #==================================================================================================
@@ -415,7 +415,7 @@ Examples:
     parser.add_argument("-m", "--module", 
                        help="Run tests for specific module")
     parser.add_argument("-l", "--layer", 
-                       choices=["mcal", "ecual", "services", "os", "all"],
+                       choices=["mcal", "ecual", "services", "Os", "all"],
                        default="all",
                        help="Run tests for specific layer")
     parser.add_argument("-c", "--coverage", 

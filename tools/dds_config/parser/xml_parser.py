@@ -222,7 +222,7 @@ class XmlParser:
             'multicast': {
                 'enabled': True,
                 'address': '239.255.0.1',
-                'port': 7400
+                'Port': 7400
             }
         }
         
@@ -283,7 +283,7 @@ class XmlParser:
         return {
             'enabled': self._get_bool(element.find('.//enabled'), True),
             'address': self._get_text(element.find('.//address'), '239.255.0.1'),
-            'port': self._get_int(element.find('.//port'), 7400)
+            'Port': self._get_int(element.find('.//port'), 7400)
         }
     
     def _parse_transport_config(self, element: ET.Element) -> Dict[str, Any]:
@@ -546,7 +546,7 @@ class XmlParser:
     def _parse_udp_config(self, element: ET.Element) -> Dict[str, Any]:
         """Parse UDP configuration."""
         return {
-            'port': self._get_int(element.find('.//port'), 7400),
+            'Port': self._get_int(element.find('.//port'), 7400),
             'ttl': self._get_int(element.find('.//ttl'), 1),
             'recv_buffer': self._get_int(element.find('.//recv_buffer'), 2097152),
             'send_buffer': self._get_int(element.find('.//send_buffer'), 65536)

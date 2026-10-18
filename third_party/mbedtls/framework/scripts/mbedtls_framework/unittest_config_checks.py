@@ -129,7 +129,7 @@ class TestConfigChecks(unittest.TestCase):
             #    create a file optionally (we only do it when xxx_user_config
             #    is not None).
             crypto_user_config_file = \
-                self.write_user_config('crypto', crypto_user_config)
+                self.write_user_config('Crypto', crypto_user_config)
             mbedtls_user_config_file = \
                 self.write_user_config('mbedtls', mbedtls_user_config)
             cp = self.run_with_config_files(crypto_user_config_file,

@@ -12,7 +12,7 @@ SECOC_HEADERS = ("SecOC.h", "SecOC_Cfg.h")
 
 
 def _secoc_headers():
-    return [h for h in load_src_headers(("SecOC", "secoc")) if h.name in SECOC_HEADERS]
+    return [h for h in load_src_headers(("SecOC", "SecOC")) if h.name in SECOC_HEADERS]
 
 
 def test_secoc_header_exists():
@@ -38,7 +38,7 @@ def test_secoc_freshness_support():
 
 def test_secoc_crypto_dependency():
     """SecOC 依赖 Crypto 服务（MAC 计算）。"""
-    crypto = load_src_headers(("CryIf", "cryif", "Csm", "csm"))
+    crypto = load_src_headers(("CryIf", "CryIf", "Csm", "Csm"))
     assert crypto, "未找到 CryIf/Csm 产品头文件（SecOC MAC 依赖）"
 
 

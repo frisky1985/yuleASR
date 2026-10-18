@@ -9,29 +9,29 @@ SRC = REPO / "config" / "templates"
 DST = REPO / "tools" / "yuleasr-configurator" / "templates"
 
 MCAL = {
-    "mcu", "port", "dio", "can", "spi", "adc", "pwm", "gpt", "wdg", "icu", "lin",
-    "eep", "flash", "fls", "flstst", "i2c", "uart", "ocu", "ramsafety", "ramtst",
+    "Mcu", "Port", "Dio", "Can", "Spi", "Adc", "Pwm", "gpt", "Wdg", "Icu", "Lin",
+    "Eep", "Flash", "Fls", "FlStSt", "I2c", "Uart", "Ocu", "RamSafety", "RamTst",
 }
 
 ECUAL = {
-    "canif", "cantp", "canm", "cansm", "canNm", "cantrcv", "cantsyn",
-    "linif", "linm", "linNm", "linSM", "linTp", "lintrcv", "lntm",
-    "ethif", "ethSm", "ethswt", "ethtrcv", "ethtsyn", "eth",
-    "frif", "frtp", "iohwab", "memif", "fee", "ea",
-    "nm", "udpNm", "j1939nm", "j1939tp", "ipdum", "tcpip",
+    "CanIf", "CanTp", "CanM", "CanSM", "canNm", "CanTrcv", "CanTSyn",
+    "LinIf", "LinM", "linNm", "linSM", "linTp", "LinTrcv", "LntM",
+    "EthIf", "ethSm", "EthSwt", "EthTrcv", "EthTSyn", "Eth",
+    "FrIf", "FrTp", "IoHwAb", "MemIf", "Fee", "Ea",
+    "Nm", "udpNm", "J1939Nm", "J1939Tp", "IpduM", "TcpIp",
 }
 
 SERVICES = {
-    "com", "comM", "pdur", "nvm", "dcm", "dem", "det", "fim", "e2e", "crc",
-    "sd", "someip", "someipif", "someipsd", "someiptp", "someipxf",
-    "soad", "doIP", "docan", "dlt", "xcp", "wdgif",
-    "csm", "cryif", "crypto", "keym", "srp", "SecOC", "stbm",
-    "mqtt", "ldcom", "tm", "swc", "schm",
+    "Com", "comM", "PduR", "NvM", "Dcm", "Dem", "Det", "FiM", "E2E", "Crc",
+    "Sd", "SomeIp", "SomeIpIf", "SomeIpSd", "SomeIpTp", "SomeIpXf",
+    "SoAd", "doIP", "DoCan", "Dlt", "Xcp", "WdgIf",
+    "Csm", "CryIf", "Crypto", "KeyM", "Srp", "SecOC", "StbM",
+    "Mqtt", "LdCom", "Tm", "SwC", "SchM",
 }
 
-OS = {"os", "Os"}
+OS = {"Os", "Os"}
 
-INTEGRATION = {"bswm", "BswM", "ecum", "ecuC"}
+INTEGRATION = {"BswM", "BswM", "EcuM", "ecuC"}
 
 LAYER_MAP = {}
 for mod in MCAL:
@@ -41,7 +41,7 @@ for mod in ECUAL:
 for mod in SERVICES:
     LAYER_MAP[mod.lower()] = "services"
 for mod in OS:
-    LAYER_MAP[mod.lower()] = "os"
+    LAYER_MAP[mod.lower()] = "Os"
 for mod in INTEGRATION:
     LAYER_MAP[mod.lower()] = "integration"
 
@@ -53,7 +53,7 @@ def classify(template_name: str) -> str:
 
 def main():
     templates = sorted(SRC.glob("*.j2"))
-    stats = {"mcal": 0, "ecual": 0, "services": 0, "os": 0, "integration": 0}
+    stats = {"mcal": 0, "ecual": 0, "services": 0, "Os": 0, "integration": 0}
     unmapped = []
 
     for tpl in templates:

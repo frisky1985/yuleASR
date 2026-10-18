@@ -749,7 +749,7 @@ class CodeParser():
         nm_output = ""
         for lib in object_files:
             nm_output += subprocess.run(
-                ["nm", "-og", lib],
+                ["Nm", "-og", lib],
                 universal_newlines=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,

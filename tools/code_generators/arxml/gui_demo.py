@@ -288,9 +288,9 @@ class ArxmlDemoGUI:
         self.config_widgets['blocks'].pack(fill=tk.X, pady=2)
         
         ttk.Label(common_frame, text="CRC类型:").pack(anchor=tk.W, pady=(10, 0))
-        self.config_widgets['crc'] = ttk.Combobox(common_frame, values=["NVM_CRC32", "NVM_CRC16", "NVM_CRC8", "NVM_CRC_NONE"], state='readonly')
-        self.config_widgets['crc'].set("NVM_CRC32")
-        self.config_widgets['crc'].pack(fill=tk.X)
+        self.config_widgets['Crc'] = ttk.Combobox(common_frame, values=["NVM_CRC32", "NVM_CRC16", "NVM_CRC8", "NVM_CRC_NONE"], state='readonly')
+        self.config_widgets['Crc'].set("NVM_CRC32")
+        self.config_widgets['Crc'].pack(fill=tk.X)
         
         self.config_widgets['dev_error'] = tk.BooleanVar(value=True)
         ttk.Checkbutton(common_frame, text="启用开发错误检测", variable=self.config_widgets['dev_error']).pack(anchor=tk.W, pady=(10, 0))
@@ -352,7 +352,7 @@ class ArxmlDemoGUI:
             elif self.current_module == "NvM":
                 gen = create_nvm_config(ecu_name)
                 crc_map = {"NVM_CRC8": 1, "NVM_CRC16": 2, "NVM_CRC32": 4, "NVM_CRC_NONE": 0}
-                crc_bytes = crc_map.get(self.config_widgets['crc'].get(), 4)
+                crc_bytes = crc_map.get(self.config_widgets['Crc'].get(), 4)
                 gen.add_common_config(crc_num_bytes=crc_bytes)
                 
                 num_blocks = int(self.config_widgets['blocks'].get())
@@ -361,7 +361,7 @@ class ArxmlDemoGUI:
                         block_name=f"NvMBlockDescriptor_{i}",
                         block_id=i,
                         block_size=32 + i * 16,
-                        crc_type=self.config_widgets['crc'].get()
+                        crc_type=self.config_widgets['Crc'].get()
                     )
             else:
                 messagebox.showinfo("提示", f"{self.current_module} 演示版暂未实现")

@@ -567,7 +567,7 @@ if __name__ == '__main__':
         add_adapter('realfull', realfull_adapter,
                     """Uncomment all boolean #defines.
                     Suitable for generating documentation, but not for building.""")
-        add_adapter('crypto', crypto_adapter(None),
+        add_adapter('Crypto', crypto_adapter(None),
                     """Only include crypto features. Exclude X.509 and TLS.""")
         add_adapter('crypto_baremetal', crypto_adapter(baremetal_adapter),
                     """Like baremetal, but with only crypto features,

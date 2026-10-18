@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 autosar_4-0-3.xsd">
+  <ADMIN-DATA>
+    <LANGUAGE>EN</LANGUAGE>
+    <USED-LANGUAGES>
+      <L-10>L-EN</L-10>
+    </USED-LANGUAGES>
+  </ADMIN-DATA>
+
+  <ECUC-VALUES>
+    <!-- Mcu Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>Mcu</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>Mcu</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Mcu/McuGeneral/McuDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Mcu/McuGeneral/McuVersionInfoApi</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Mcu/McuClockSettingConfig/McuCoreCount</DEFINITION-REF>
+          <VALUE>4</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Mcu/McuClockSettingConfig/McuSystemFrequencyHz</DEFINITION-REF>
+          <VALUE>800000000</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Mcu/McuClockSettingConfig/McuBusFrequencyHz</DEFINITION-REF>
+          <VALUE>200000000</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- Can Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>Can</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>Can</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Can/CanGeneral/CanDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Can/CanConfigSet/CanControllerCount</DEFINITION-REF>
+          <VALUE>2</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Can/CanConfigSet/CanHohCount</DEFINITION-REF>
+          <VALUE>8</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Can/CanConfigSet/CanBaudrate</DEFINITION-REF>
+          <VALUE>500000</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- CanIf Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>CanIf</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>CanIf</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/CanIf/CanIfGeneral/CanIfDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/CanIf/CanIfInitCfg/CanIfNumberOfCanCtrlrs</DEFINITION-REF>
+          <VALUE>2</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/CanIf/CanIfInitCfg/CanIfNumberOfRxLBoxes</DEFINITION-REF>
+          <VALUE>16</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/CanIf/CanIfInitCfg/CanIfNumberOfTxLBoxes</DEFINITION-REF>
+          <VALUE>16</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- Com Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>Com</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>Com</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Com/ComGeneral/ComDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Com/ComGeneral/ComSignalGroupSupport</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Com/ComConfig/ComNumberOfSignalGroups</DEFINITION-REF>
+          <VALUE>10</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- PduR Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>PduR</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>PduR</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/PduR/PduRGeneral/PduRDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/PduR/PduRGeneral/PduRZeroCostOperation</DEFINITION-REF>
+          <VALUE>FALSE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/PduR/PduRConfig/PduRNumberOfRoutingPaths</DEFINITION-REF>
+          <VALUE>32</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- NvM Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>NvM</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>NvM</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/NvM/NvMGeneral/NvMDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/NvM/NvMConfig/NvMNumberOfBlocks</DEFINITION-REF>
+          <VALUE>64</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/NvM/NvMConfig/NvMMaxNumOfWriteRetries</DEFINITION-REF>
+          <VALUE>3</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- Dcm Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>Dcm</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>Dcm</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Dcm/DcmGeneral/DcmDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Dcm/DcmConfig/DcmNumberOfDspSessions</DEFINITION-REF>
+          <VALUE>2</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Dcm/DcmConfig/DcmNumberOfDid</DEFINITION-REF>
+          <VALUE>128</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- Dem Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>Dem</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>Dem</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Dem/DemGeneral/DemDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Dem/DemConfig/DemNumberOfDtc</DEFINITION-REF>
+          <VALUE>256</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/Dem/DemConfig/DemMaxNumberOfFreezeFrameRecords</DEFINITION-REF>
+          <VALUE>10</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- EcuM Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>EcuM</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>EcuM</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/EcuM/EcuMGeneral/EcuMDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/EcuM/EcuMConfig/EcuMNumberOfStates</DEFINITION-REF>
+          <VALUE>8</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/EcuM/EcuMConfig/EcuMNumberOfWakeupSources</DEFINITION-REF>
+          <VALUE>4</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+
+    <!-- BswM Module Configuration -->
+    <ECUC-VALUE>
+      <SHORT-NAME>BswM</SHORT-NAME>
+      <CONTAINER>
+        <SHORT-NAME>BswM</SHORT-NAME>
+        <ECUC-BOOLEAN-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/BswM/BswMGeneral/BswMDevErrorDetect</DEFINITION-REF>
+          <VALUE>TRUE</VALUE>
+        </ECUC-BOOLEAN-PARAM-VALUE>
+        <ECUC-NUMERICAL-PARAM-VALUE>
+          <DEFINITION-REF DEST="ECUC-PARAM-DEF">/BswM/BswMConfig/BswMNumberOfRules</DEFINITION-REF>
+          <VALUE>20</VALUE>
+        </ECUC-NUMERICAL-PARAM-VALUE>
+      </CONTAINER>
+    </ECUC-VALUE>
+  </ECUC-VALUES>
+</AUTOSAR>
