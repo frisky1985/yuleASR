@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for cryif
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef CRYIF_CFG_H
+#define CRYIF_CFG_H
+
+/* Module enabled: {{ modules.cryif.enabled }} */
+#define CRYIF_ENABLED \
+    {% if modules.cryif.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.cryif.general.dev_error_detect }} */
+#define CRYIF_DEV_ERROR_DETECT \
+    {% if modules.cryif.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.cryif.general.version_info_api }} */
+#define CRYIF_VERSION_INFO_API \
+    {% if modules.cryif.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* CRYIF_CFG_H */

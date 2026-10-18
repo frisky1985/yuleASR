@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for flash
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef FLASH_CFG_H
+#define FLASH_CFG_H
+
+/* Module enabled: {{ modules.flash.enabled }} */
+#define FLASH_ENABLED \
+    {% if modules.flash.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.flash.general.dev_error_detect }} */
+#define FLASH_DEV_ERROR_DETECT \
+    {% if modules.flash.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.flash.general.version_info_api }} */
+#define FLASH_VERSION_INFO_API \
+    {% if modules.flash.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* FLASH_CFG_H */

@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for nvm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef NVM_CFG_H
+#define NVM_CFG_H
+
+/* Module enabled: {{ modules.nvm.enabled }} */
+#define NVM_ENABLED \
+    {% if modules.nvm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.nvm.general.dev_error_detect }} */
+#define NVM_DEV_ERROR_DETECT \
+    {% if modules.nvm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.nvm.general.version_info_api }} */
+#define NVM_VERSION_INFO_API \
+    {% if modules.nvm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* NVM_CFG_H */

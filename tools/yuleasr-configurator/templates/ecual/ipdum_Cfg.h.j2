@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ipdum
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef IPDUM_CFG_H
+#define IPDUM_CFG_H
+
+/* Module enabled: {{ modules.ipdum.enabled }} */
+#define IPDUM_ENABLED \
+    {% if modules.ipdum.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ipdum.general.dev_error_detect }} */
+#define IPDUM_DEV_ERROR_DETECT \
+    {% if modules.ipdum.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ipdum.general.version_info_api }} */
+#define IPDUM_VERSION_INFO_API \
+    {% if modules.ipdum.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* IPDUM_CFG_H */

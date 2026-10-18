@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ocu
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef OCU_CFG_H
+#define OCU_CFG_H
+
+/* Module enabled: {{ modules.ocu.enabled }} */
+#define OCU_ENABLED \
+    {% if modules.ocu.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ocu.general.dev_error_detect }} */
+#define OCU_DEV_ERROR_DETECT \
+    {% if modules.ocu.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ocu.general.version_info_api }} */
+#define OCU_VERSION_INFO_API \
+    {% if modules.ocu.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* OCU_CFG_H */

@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for lintrcv
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef LINTRCV_CFG_H
+#define LINTRCV_CFG_H
+
+/* Module enabled: {{ modules.lintrcv.enabled }} */
+#define LINTRCV_ENABLED \
+    {% if modules.lintrcv.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.lintrcv.general.dev_error_detect }} */
+#define LINTRCV_DEV_ERROR_DETECT \
+    {% if modules.lintrcv.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.lintrcv.general.version_info_api }} */
+#define LINTRCV_VERSION_INFO_API \
+    {% if modules.lintrcv.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* LINTRCV_CFG_H */

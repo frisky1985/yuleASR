@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for memif
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef MEMIF_CFG_H
+#define MEMIF_CFG_H
+
+/* Module enabled: {{ modules.memif.enabled }} */
+#define MEMIF_ENABLED \
+    {% if modules.memif.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.memif.general.dev_error_detect }} */
+#define MEMIF_DEV_ERROR_DETECT \
+    {% if modules.memif.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.memif.general.version_info_api }} */
+#define MEMIF_VERSION_INFO_API \
+    {% if modules.memif.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* MEMIF_CFG_H */

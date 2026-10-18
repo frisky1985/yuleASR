@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for fee
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef FEE_CFG_H
+#define FEE_CFG_H
+
+/* Module enabled: {{ modules.fee.enabled }} */
+#define FEE_ENABLED \
+    {% if modules.fee.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.fee.general.dev_error_detect }} */
+#define FEE_DEV_ERROR_DETECT \
+    {% if modules.fee.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.fee.general.version_info_api }} */
+#define FEE_VERSION_INFO_API \
+    {% if modules.fee.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* FEE_CFG_H */

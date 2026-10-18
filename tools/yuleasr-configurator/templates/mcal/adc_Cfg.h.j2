@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for adc
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ADC_CFG_H
+#define ADC_CFG_H
+
+/* Module enabled: {{ modules.adc.enabled }} */
+#define ADC_ENABLED \
+    {% if modules.adc.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.adc.general.dev_error_detect }} */
+#define ADC_DEV_ERROR_DETECT \
+    {% if modules.adc.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.adc.general.version_info_api }} */
+#define ADC_VERSION_INFO_API \
+    {% if modules.adc.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ADC_CFG_H */

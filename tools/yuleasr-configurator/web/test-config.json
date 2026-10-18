@@ -1,0 +1,45 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "Test Project",
+    "vendor_id": 1,
+    "description": "Test configuration for Electron file operations"
+  },
+  "modules": {
+    "Mcu": {
+      "name": "Mcu",
+      "enabled": true,
+      "version": "1.0.0",
+      "McuClockConfig": {
+        "oscillatorFreq": 16000000,
+        "pllFreq": 200000000
+      }
+    },
+    "Port": {
+      "name": "Port",
+      "enabled": true,
+      "version": "1.0.0",
+      "PortPins": [
+        {"pin": "PA0", "direction": "INPUT"},
+        {"pin": "PA1", "direction": "OUTPUT"}
+      ]
+    },
+    "Can": {
+      "name": "Can",
+      "enabled": true,
+      "version": "1.0.0",
+      "CanController": {
+        "baudRate": 500000,
+        "channel": 0
+      }
+    },
+    "Com": {
+      "name": "Com",
+      "enabled": true,
+      "version": "1.0.0",
+      "ComConfig": {
+        "mainFunctionPeriod": 10
+      }
+    }
+  }
+}

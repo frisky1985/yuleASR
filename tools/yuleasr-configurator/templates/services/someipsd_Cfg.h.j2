@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for someipsd
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SOMEIPSD_CFG_H
+#define SOMEIPSD_CFG_H
+
+/* Module enabled: {{ modules.someipsd.enabled }} */
+#define SOMEIPSD_ENABLED \
+    {% if modules.someipsd.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.someipsd.general.dev_error_detect }} */
+#define SOMEIPSD_DEV_ERROR_DETECT \
+    {% if modules.someipsd.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.someipsd.general.version_info_api }} */
+#define SOMEIPSD_VERSION_INFO_API \
+    {% if modules.someipsd.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SOMEIPSD_CFG_H */

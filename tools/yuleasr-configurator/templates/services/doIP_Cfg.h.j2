@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for doip
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef DOIP_CFG_H
+#define DOIP_CFG_H
+
+/* Module enabled: {{ modules.doip.enabled }} */
+#define DOIP_ENABLED \
+    {% if modules.doip.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.doip.general.dev_error_detect }} */
+#define DOIP_DEV_ERROR_DETECT \
+    {% if modules.doip.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.doip.general.version_info_api }} */
+#define DOIP_VERSION_INFO_API \
+    {% if modules.doip.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* DOIP_CFG_H */

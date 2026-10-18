@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ethtrcv
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ETHTRCV_CFG_H
+#define ETHTRCV_CFG_H
+
+/* Module enabled: {{ modules.ethtrcv.enabled }} */
+#define ETHTRCV_ENABLED \
+    {% if modules.ethtrcv.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ethtrcv.general.dev_error_detect }} */
+#define ETHTRCV_DEV_ERROR_DETECT \
+    {% if modules.ethtrcv.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ethtrcv.general.version_info_api }} */
+#define ETHTRCV_VERSION_INFO_API \
+    {% if modules.ethtrcv.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ETHTRCV_CFG_H */

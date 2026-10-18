@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for port
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef PORT_CFG_H
+#define PORT_CFG_H
+
+/* Module enabled: {{ modules.port.enabled }} */
+#define PORT_ENABLED \
+    {% if modules.port.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.port.general.dev_error_detect }} */
+#define PORT_DEV_ERROR_DETECT \
+    {% if modules.port.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.port.general.version_info_api }} */
+#define PORT_VERSION_INFO_API \
+    {% if modules.port.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* PORT_CFG_H */

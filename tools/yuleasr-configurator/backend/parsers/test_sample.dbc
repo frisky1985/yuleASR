@@ -1,0 +1,61 @@
+VERSION ""
+
+NS_ :
+    NS_DESC_
+    CM_
+    BA_DEF_
+    BA_
+    VAL_
+    CAT_DEF_
+    CAT_
+    FILTER
+    BA_DEF_DEF_
+    EV_DATA_
+    ENVVAR_DATA_
+    SGTYPE_
+    SGTYPE_VAL_
+    BA_DEF_SGTYPE_
+    BA_SGTYPE_
+    SIG_TYPE_REF_
+    VAL_TABLE_
+    SIG_GROUP_
+    SIG_VALTYPE_
+    SIGTYPE_VALTYPE_
+    BO_TX_BU_
+    BA_REL_
+    BA_DEF_DEF_REL_
+    BA_SGTYPE_REL_
+    BA_SGTYPE_VAL_
+
+BS_:
+
+BU_: ECU1 ECU2 ECU3
+
+BO_ 100 EngineData: 8 ECU1
+ SG_ EngineSpeed : 0|16@1+ (0.1,0) [0|6553.5] "rpm" ECU2,ECU3
+ SG_ EngineTemp : 16|8@1+ (1,-40) [-40|215] "degC" ECU2
+ SG_ EngineLoad : 24|8@1+ (0.5,0) [0|127.5] "%" ECU2,ECU3
+
+BO_ 200 VehicleSpeed: 4 ECU1
+ SG_ Speed : 0|16@1+ (0.01,0) [0|655.35] "km/h" ECU2,ECU3
+ SG_ GearPosition : 16|4@1+ (1,0) [0|15] "" ECU2
+
+BO_ 300 DiagnosticReq: 8 ECU2
+ SG_ DiagServiceId : 0|8@1+ (1,0) [0|255] "" ECU1
+ SG_ DiagSubFunction : 8|8@1+ (1,0) [0|255] "" ECU1
+
+BO_ 400 DiagnosticResp: 8 ECU1
+ SG_ DiagResponseId : 0|8@1+ (1,0) [0|255] "" ECU2
+ SG_ DiagData : 8|56@1+ (1,0) [0|72057594037927935] "" ECU2
+
+BO_ 500 NMMessage: 1 ECU1
+ SG_ NMNodeStatus : 0|8@1+ (1,0) [0|255] "" Vector__XXX
+
+CM_ "Example DBC file for AUTOSAR configuration testing";
+CM_ BU_ ECU1 "Engine Control Unit";
+CM_ BU_ ECU2 "Gateway ECU";
+CM_ BU_ ECU3 "Display ECU";
+CM_ BO_ 100 "Engine data message transmitted at 10ms";
+CM_ BO_ 200 "Vehicle speed message transmitted at 20ms";
+CM_ SG_ 100 EngineSpeed "Engine speed in RPM";
+CM_ SG_ 100 EngineTemp "Engine coolant temperature";

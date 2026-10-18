@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for eep
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef EEP_CFG_H
+#define EEP_CFG_H
+
+/* Module enabled: {{ modules.eep.enabled }} */
+#define EEP_ENABLED \
+    {% if modules.eep.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.eep.general.dev_error_detect }} */
+#define EEP_DEV_ERROR_DETECT \
+    {% if modules.eep.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.eep.general.version_info_api }} */
+#define EEP_VERSION_INFO_API \
+    {% if modules.eep.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* EEP_CFG_H */

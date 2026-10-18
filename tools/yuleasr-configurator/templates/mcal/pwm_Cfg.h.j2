@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for pwm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef PWM_CFG_H
+#define PWM_CFG_H
+
+/* Module enabled: {{ modules.pwm.enabled }} */
+#define PWM_ENABLED \
+    {% if modules.pwm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.pwm.general.dev_error_detect }} */
+#define PWM_DEV_ERROR_DETECT \
+    {% if modules.pwm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.pwm.general.version_info_api }} */
+#define PWM_VERSION_INFO_API \
+    {% if modules.pwm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* PWM_CFG_H */

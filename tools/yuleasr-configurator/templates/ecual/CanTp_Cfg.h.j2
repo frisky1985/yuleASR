@@ -1,0 +1,92 @@
+{#-
+ yuleASR BSW configuration template: CanTp_Cfg.h.j2
+ Context: module = modules.CanTp, cfg = full document, config_version = cfg.version
+ Filters: pad30/pad36 (left-justify for column alignment)
+ Rendered by config/tools/generate_bsw_config.py — deterministic output.
+-#}/**
+ * @file CanTp_Cfg.h
+ * @brief CAN Transport Layer Configuration - AutoSAR ECUAL
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef CANTP_CFG_H
+#define CANTP_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'CANTP_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'CANTP_VERSION_INFO_API' | pad40 }}{{'STD_ON' if module.general.version_info_api | default(true) else 'STD_OFF'}}
+#define {{ 'CANTP_DYNAMIC_CHANNEL_ALLOCATION' | pad40 }}{{'STD_ON' if module.general.dynamic_channel_allocation | default(false) else 'STD_OFF'}}
+#define {{ 'CANTP_CANFD_ENABLED' | pad40 }}{{'STD_ON' if module.general.canfd_enabled | default(false) else 'STD_OFF'}}
+#define {{ 'CANTP_PADDING_BYTE' | pad40 }}{{'STD_ON' if module.general.padding_byte | default(true) else 'STD_OFF'}}
+#define {{ 'CANTP_PADDING_BYTE_VALUE' | pad40 }}{{module.general.padding_byte_value | default(204)}}U
+#define {{ 'CANTP_CHANGE_PARAMETER_API' | pad40 }}{{'STD_ON' if module.general.change_parameter_api | default(true) else 'STD_OFF'}}
+#define {{ 'CANTP_READ_PARAMETER_API' | pad40 }}{{'STD_ON' if module.general.read_parameter_api | default(true) else 'STD_OFF'}}
+#define {{ 'CANTP_ADDRESSING_FORMAT' | pad40 }}{{module.general.addressing_format | default('CANTP_STANDARD')}}
+
+/*==================================================================================================
+*                                    MODULE CONFIGURATION COUNTS
+*================================================================================================*/
+#define {{ 'CANTP_NUM_CHANNELS' | pad40 }}{{module.channels | default([], true) | length}}U
+#define {{ 'CANTP_NUM_TX_NSDU' | pad40 }}{{module.tx_nsdu | default([], true) | length}}U
+#define {{ 'CANTP_NUM_RX_NSDU' | pad40 }}{{module.rx_nsdu | default([], true) | length}}U
+#define {{ 'CANTP_MAX_CHANNEL_CNT' | pad40 }}{{module.limits.max_channel_cnt | default(4)}}U
+
+/*==================================================================================================
+*                                    CHANNEL HANDLES
+*================================================================================================*/
+{% for c in module.channels | default([], true) -%}
+#define {{ ('CANTP_CHANNEL_' ~ (c.name | upper)) | pad26 }}({{ c.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    NSDU HANDLES
+*================================================================================================*/
+{% for n in module.tx_nsdu | default([], true) -%}
+#define {{ ('CANTP_TX_' ~ (n.name | upper)) | pad26 }}({{ n.id }}U)
+{% endfor %}
+{% for n in module.rx_nsdu | default([], true) -%}
+#define {{ ('CANTP_RX_' ~ (n.name | upper)) | pad26 }}({{ n.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    CANIF PDU ID MAPPING
+*================================================================================================*/
+#define {{ 'CANTP_TX_ADDRESS' | pad40 }}{{module.addresses.tx | default(0)}}U
+#define {{ 'CANTP_RX_ADDRESS' | pad40 }}{{module.addresses.rx | default(0)}}U
+#define {{ 'CANTP_CANIF_TX_PDU_ID' | pad40 }}{{module.canif_pdu_ids.tx | default(0)}}U
+#define {{ 'CANTP_CANIF_RX_PDU_ID' | pad40 }}{{module.canif_pdu_ids.rx | default(0)}}U
+#define {{ 'CANTP_CANIF_FC_TX_PDU_ID' | pad40 }}{{module.canif_pdu_ids.fc_tx | default(1)}}U
+#define {{ 'CANTP_CANIF_FC_RX_PDU_ID' | pad40 }}{{module.canif_pdu_ids.fc_rx | default(1)}}U
+
+/*==================================================================================================
+*                                    TIMING CONFIGURATION
+*================================================================================================*/
+#define {{ 'CANTP_MAIN_FUNCTION_PERIOD_MS' | pad40 }}{{module.timing.main_function_period_ms | default(5)}}U
+#define {{ 'CANTP_NAS_DEFAULT' | pad40 }}{{module.timing.nas_ms | default(25)}}U
+#define {{ 'CANTP_NBS_DEFAULT' | pad40 }}{{module.timing.nbs_ms | default(75)}}U
+#define {{ 'CANTP_NCS_DEFAULT' | pad40 }}{{module.timing.ncs_ms | default(25)}}U
+#define {{ 'CANTP_NAR_DEFAULT' | pad40 }}{{module.timing.nar_ms | default(25)}}U
+#define {{ 'CANTP_NBR_DEFAULT' | pad40 }}{{module.timing.nbr_ms | default(75)}}U
+#define {{ 'CANTP_NCR_DEFAULT' | pad40 }}{{module.timing.ncr_ms | default(150)}}U
+#define {{ 'CANTP_BS_DEFAULT' | pad40 }}{{module.timing.bs_default | default(8)}}U
+#define {{ 'CANTP_STMIN_DEFAULT' | pad40 }}{{module.timing.stmin_default | default(20)}}U
+#define {{ 'CANTP_WFT_MAX_DEFAULT' | pad40 }}{{module.timing.wft_max_default | default(8)}}U
+
+/*==================================================================================================
+*                                    MESSAGE LENGTH LIMITS
+*================================================================================================*/
+#define {{ 'CANTP_MAX_MESSAGE_LENGTH' | pad40 }}{{module.limits.max_message_length | default(4095)}}U
+#define {{ 'CANTP_CANFD_MAX_MESSAGE_LENGTH' | pad40 }}{{module.limits.canfd_max_message_length | default(4095)}}U
+#define {{ 'CANTP_CHANNEL_BUFFER_SIZE' | pad40 }}{{module.limits.channel_buffer_size | default(64)}}U
+#define {{ 'CANTP_CAN_FRAME_LENGTH' | pad40 }}{{module.limits.can_frame_length | default(8)}}U
+#define {{ 'CANTP_INVALID_CHANNEL_ID' | pad40 }}{{module.limits.invalid_channel_id | default(255)}}U
+
+#endif /* CANTP_CFG_H */
+
+/*==================[end of file]===========================================*/

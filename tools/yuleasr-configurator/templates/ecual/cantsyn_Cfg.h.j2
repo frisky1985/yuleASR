@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for cantsyn
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef CANTSYN_CFG_H
+#define CANTSYN_CFG_H
+
+/* Module enabled: {{ modules.cantsyn.enabled }} */
+#define CANTSYN_ENABLED \
+    {% if modules.cantsyn.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.cantsyn.general.dev_error_detect }} */
+#define CANTSYN_DEV_ERROR_DETECT \
+    {% if modules.cantsyn.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.cantsyn.general.version_info_api }} */
+#define CANTSYN_VERSION_INFO_API \
+    {% if modules.cantsyn.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* CANTSYN_CFG_H */

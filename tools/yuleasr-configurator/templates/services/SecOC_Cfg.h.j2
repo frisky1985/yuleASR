@@ -1,0 +1,109 @@
+{#-
+ yuleASR BSW configuration template: SecOC_Cfg.h.j2
+ Context: module = modules.SecOC, cfg = full document, config_version = cfg.version
+ Filters: pad30/pad36 (left-justify for column alignment)
+ Rendered by config/tools/generate_bsw_config.py — deterministic output.
+-#}/**
+ * @file SecOC_Cfg.h
+ * @brief Secure Onboard Communication Configuration - AutoSAR Service Layer
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef SECOC_CFG_H
+#define SECOC_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'SECOC_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'SECOC_VERSION_INFO_API' | pad40 }}{{'STD_ON' if module.general.version_info_api | default(true) else 'STD_OFF'}}
+#define {{ 'SECOC_ENABLE_FRESHNESS_SYNC' | pad40 }}{{'STD_ON' if module.general.enable_freshness_sync | default(true) else 'STD_OFF'}}
+#define {{ 'SECOC_OVERRIDE_STATUS_ALLOWED' | pad40 }}{{'STD_ON' if module.general.override_status_allowed | default(true) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    VERSION INFORMATION
+*================================================================================================*/
+#define {{ 'SECOC_CFG_AR_RELEASE_MAJOR_VERSION' | pad40 }}{{module.general.ar_release_major_version | default(4)}}U
+#define {{ 'SECOC_CFG_AR_RELEASE_MINOR_VERSION' | pad40 }}{{module.general.ar_release_minor_version | default(7)}}U
+#define {{ 'SECOC_CFG_AR_RELEASE_REVISION_VERSION' | pad40 }}{{module.general.ar_release_revision_version | default(0)}}U
+#define {{ 'SECOC_CFG_SW_MAJOR_VERSION' | pad40 }}{{module.general.sw_major_version | default(1)}}U
+#define {{ 'SECOC_CFG_SW_MINOR_VERSION' | pad40 }}{{module.general.sw_minor_version | default(0)}}U
+#define {{ 'SECOC_CFG_SW_PATCH_VERSION' | pad40 }}{{module.general.sw_patch_version | default(0)}}U
+
+/*==================================================================================================
+*                                    MODULE CONFIGURATION COUNTS
+*================================================================================================*/
+#define {{ 'SECOC_NUM_TX_PDUS' | pad40 }}{{module.tx_pdu_ids | default([], true) | length}}U
+#define {{ 'SECOC_NUM_RX_PDUS' | pad40 }}{{module.rx_pdu_ids | default([], true) | length}}U
+#define {{ 'SECOC_VERIFICATION_RETRY_COUNT' | pad40 }}{{module.counts.verification_retry_count | default(3)}}U
+#define {{ 'SECOC_MAX_CRYPTO_OPERATIONS' | pad40 }}{{module.counts.max_crypto_operations | default(4)}}U
+
+/*==================================================================================================
+*                                    TX/RX PDU IDs
+*================================================================================================*/
+{% for pid in module.tx_pdu_ids | default([], true) -%}
+#define {{ ('SECOC_TX_PDU_ID_' ~ loop.index0) | pad26 }}({{ pid }}U)
+{% endfor %}
+{% for pid in module.rx_pdu_ids | default([], true) -%}
+#define {{ ('SECOC_RX_PDU_ID_' ~ loop.index0) | pad26 }}({{ pid }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    TIMING CONFIGURATION
+*================================================================================================*/
+#define {{ 'SECOC_MAIN_FUNCTION_PERIOD_RX_MS' | pad40 }}{{module.timing.main_function_period_rx_ms | default(10)}}U
+#define {{ 'SECOC_MAIN_FUNCTION_PERIOD_TX_MS' | pad40 }}{{module.timing.main_function_period_tx_ms | default(10)}}U
+#define {{ 'SECOC_VERIFICATION_TIMEOUT_MS' | pad40 }}{{module.timing.verification_timeout_ms | default(100)}}U
+
+/*==================================================================================================
+*                                    AUTHENTICATION CONFIGURATION
+*================================================================================================*/
+#define {{ 'SECOC_AUTH_ALGORITHM' | pad40 }}{{module.authentication.algorithm_alias | default('SECOC_HMAC_SHA256')}}
+#define {{ 'SECOC_AUTH_INFO_LENGTH' | pad40 }}{{module.authentication.auth_info_length | default(16)}}U
+#define {{ 'SECOC_DATA_ID_LENGTH' | pad40 }}{{module.authentication.data_id_length | default(1)}}U
+#define {{ 'SECOC_CSM_JOB_ID_AUTH' | pad40 }}{{module.authentication.csm_job_id_auth_alias | default('CSM_JOB_ID_MAC_GENERATE_1')}}
+#define {{ 'SECOC_CSM_JOB_ID_VERIFY' | pad40 }}{{module.authentication.csm_job_id_verify_alias | default('CSM_JOB_ID_MAC_VERIFY_1')}}
+
+/*==================================================================================================
+*                                    FRESHNESS CONFIGURATION
+*================================================================================================*/
+#define {{ 'SECOC_FRESHNESS_VALUE_TYPE' | pad40 }}{{module.freshness.value_type_alias | default('SECOC_COUNTER')}}
+#define {{ 'SECOC_FRESHNESS_VALUE_TX_LENGTH' | pad40 }}{{module.freshness.value_tx_length | default(16)}}U
+#define {{ 'SECOC_FRESHNESS_VALUE_LENGTH' | pad40 }}{{module.freshness.value_length | default(32)}}U
+#define {{ 'SECOC_MAX_FRESHNESS_VALUE' | pad40 }}{{module.freshness.max_freshness_value | default(4294967295)}}U
+#define {{ 'SECOC_FRESHNESS_RESET_THRESHOLD' | pad40 }}{{module.freshness.reset_threshold | default(4026531840)}}U
+#define {{ 'SECOC_DEFAULT_VERIFICATION_STATUS' | pad40 }}{{module.freshness.default_verification_status_alias | default('SECOC_UNVERIFIED')}}
+
+/*==================================================================================================
+*                                    PDU LENGTH LIMITS
+*================================================================================================*/
+#define {{ 'SECOC_MAX_PDU_LENGTH' | pad40 }}{{module.limits.max_pdu_length | default(256)}}U
+
+#ifndef SECOC_MAX_PDUS
+#define {{ 'SECOC_MAX_PDUS' | pad40 }}{{module.counts.max_pdus | default(4)}}U
+#endif
+
+/*==================================================================================================
+*                                    TYPICAL CRYPTO LENGTH OPTIONS
+*================================================================================================*/
+#ifndef SECOC_AUTH_LENGTH_4
+#define SECOC_AUTH_LENGTH_4    (4U)
+#endif
+#ifndef SECOC_AUTH_LENGTH_8
+#define SECOC_AUTH_LENGTH_8    (8U)
+#endif
+#ifndef SECOC_FRESHNESS_LENGTH_3
+#define SECOC_FRESHNESS_LENGTH_3    (3U)
+#endif
+#ifndef SECOC_FRESHNESS_LENGTH_4
+#define SECOC_FRESHNESS_LENGTH_4    (4U)
+#endif
+
+#endif /* SECOC_CFG_H */
+
+/*==================[end of file]===========================================*/

@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for linNm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef LINNM_CFG_H
+#define LINNM_CFG_H
+
+/* Module enabled: {{ modules.linNm.enabled }} */
+#define LINNM_ENABLED \
+    {% if modules.linNm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.linNm.general.dev_error_detect }} */
+#define LINNM_DEV_ERROR_DETECT \
+    {% if modules.linNm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.linNm.general.version_info_api }} */
+#define LINNM_VERSION_INFO_API \
+    {% if modules.linNm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* LINNM_CFG_H */

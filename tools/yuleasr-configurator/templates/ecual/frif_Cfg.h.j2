@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for frif
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef FRIF_CFG_H
+#define FRIF_CFG_H
+
+/* Module enabled: {{ modules.frif.enabled }} */
+#define FRIF_ENABLED \
+    {% if modules.frif.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.frif.general.dev_error_detect }} */
+#define FRIF_DEV_ERROR_DETECT \
+    {% if modules.frif.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.frif.general.version_info_api }} */
+#define FRIF_VERSION_INFO_API \
+    {% if modules.frif.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* FRIF_CFG_H */

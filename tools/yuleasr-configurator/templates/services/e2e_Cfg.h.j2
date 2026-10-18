@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for e2e
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef E2E_CFG_H
+#define E2E_CFG_H
+
+/* Module enabled: {{ modules.e2e.enabled }} */
+#define E2E_ENABLED \
+    {% if modules.e2e.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.e2e.general.dev_error_detect }} */
+#define E2E_DEV_ERROR_DETECT \
+    {% if modules.e2e.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.e2e.general.version_info_api }} */
+#define E2E_VERSION_INFO_API \
+    {% if modules.e2e.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* E2E_CFG_H */

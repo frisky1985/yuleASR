@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for eth
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ETH_CFG_H
+#define ETH_CFG_H
+
+/* Module enabled: {{ modules.eth.enabled }} */
+#define ETH_ENABLED \
+    {% if modules.eth.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.eth.general.dev_error_detect }} */
+#define ETH_DEV_ERROR_DETECT \
+    {% if modules.eth.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.eth.general.version_info_api }} */
+#define ETH_VERSION_INFO_API \
+    {% if modules.eth.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ETH_CFG_H */

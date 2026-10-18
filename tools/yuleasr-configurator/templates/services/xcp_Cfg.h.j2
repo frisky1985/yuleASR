@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for xcp
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef XCP_CFG_H
+#define XCP_CFG_H
+
+/* Module enabled: {{ modules.xcp.enabled }} */
+#define XCP_ENABLED \
+    {% if modules.xcp.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.xcp.general.dev_error_detect }} */
+#define XCP_DEV_ERROR_DETECT \
+    {% if modules.xcp.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.xcp.general.version_info_api }} */
+#define XCP_VERSION_INFO_API \
+    {% if modules.xcp.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* XCP_CFG_H */

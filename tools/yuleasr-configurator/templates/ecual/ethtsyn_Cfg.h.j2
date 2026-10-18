@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ethtsyn
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ETHTSYN_CFG_H
+#define ETHTSYN_CFG_H
+
+/* Module enabled: {{ modules.ethtsyn.enabled }} */
+#define ETHTSYN_ENABLED \
+    {% if modules.ethtsyn.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ethtsyn.general.dev_error_detect }} */
+#define ETHTSYN_DEV_ERROR_DETECT \
+    {% if modules.ethtsyn.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ethtsyn.general.version_info_api }} */
+#define ETHTSYN_VERSION_INFO_API \
+    {% if modules.ethtsyn.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ETHTSYN_CFG_H */

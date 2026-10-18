@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for spi
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SPI_CFG_H
+#define SPI_CFG_H
+
+/* Module enabled: {{ modules.spi.enabled }} */
+#define SPI_ENABLED \
+    {% if modules.spi.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.spi.general.dev_error_detect }} */
+#define SPI_DEV_ERROR_DETECT \
+    {% if modules.spi.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.spi.general.version_info_api }} */
+#define SPI_VERSION_INFO_API \
+    {% if modules.spi.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SPI_CFG_H */

@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for nm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef NM_CFG_H
+#define NM_CFG_H
+
+/* Module enabled: {{ modules.nm.enabled }} */
+#define NM_ENABLED \
+    {% if modules.nm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.nm.general.dev_error_detect }} */
+#define NM_DEV_ERROR_DETECT \
+    {% if modules.nm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.nm.general.version_info_api }} */
+#define NM_VERSION_INFO_API \
+    {% if modules.nm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* NM_CFG_H */

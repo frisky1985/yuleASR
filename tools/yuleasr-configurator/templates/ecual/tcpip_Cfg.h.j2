@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for tcpip
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef TCPIP_CFG_H
+#define TCPIP_CFG_H
+
+/* Module enabled: {{ modules.tcpip.enabled }} */
+#define TCPIP_ENABLED \
+    {% if modules.tcpip.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.tcpip.general.dev_error_detect }} */
+#define TCPIP_DEV_ERROR_DETECT \
+    {% if modules.tcpip.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.tcpip.general.version_info_api }} */
+#define TCPIP_VERSION_INFO_API \
+    {% if modules.tcpip.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* TCPIP_CFG_H */

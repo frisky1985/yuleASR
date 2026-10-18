@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for schm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SCHM_CFG_H
+#define SCHM_CFG_H
+
+/* Module enabled: {{ modules.schm.enabled }} */
+#define SCHM_ENABLED \
+    {% if modules.schm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.schm.general.dev_error_detect }} */
+#define SCHM_DEV_ERROR_DETECT \
+    {% if modules.schm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.schm.general.version_info_api }} */
+#define SCHM_VERSION_INFO_API \
+    {% if modules.schm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SCHM_CFG_H */

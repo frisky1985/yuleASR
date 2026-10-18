@@ -1,0 +1,209 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/secoc.json",
+  "title": "SecOC Configuration Schema",
+  "description": "Configuration schema for AUTOSAR SecOC module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "SecOC",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "enable_freshness_sync": {
+          "type": "boolean"
+        },
+        "override_status_allowed": {
+          "type": "boolean"
+        },
+        "ar_release_major_version": {
+          "type": "integer"
+        },
+        "ar_release_minor_version": {
+          "type": "integer"
+        },
+        "ar_release_revision_version": {
+          "type": "integer"
+        },
+        "sw_major_version": {
+          "type": "integer"
+        },
+        "sw_minor_version": {
+          "type": "integer"
+        },
+        "sw_patch_version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "enable_freshness_sync",
+        "override_status_allowed",
+        "ar_release_major_version",
+        "ar_release_minor_version",
+        "ar_release_revision_version",
+        "sw_major_version",
+        "sw_minor_version",
+        "sw_patch_version"
+      ],
+      "description": "General"
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "tx_pdus": {
+          "type": "integer"
+        },
+        "rx_pdus": {
+          "type": "integer"
+        },
+        "max_pdus": {
+          "type": "integer"
+        },
+        "max_crypto_operations": {
+          "type": "integer"
+        },
+        "verification_retry_count": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tx_pdus",
+        "rx_pdus",
+        "max_pdus",
+        "max_crypto_operations",
+        "verification_retry_count"
+      ],
+      "description": "Counts"
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "main_function_period_rx_ms": {
+          "type": "integer"
+        },
+        "main_function_period_tx_ms": {
+          "type": "integer"
+        },
+        "verification_timeout_ms": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "main_function_period_rx_ms",
+        "main_function_period_tx_ms",
+        "verification_timeout_ms"
+      ],
+      "description": "Timing"
+    },
+    "authentication": {
+      "type": "object",
+      "properties": {
+        "algorithm_alias": {
+          "type": "string"
+        },
+        "auth_info_length": {
+          "type": "integer"
+        },
+        "data_id_length": {
+          "type": "integer"
+        },
+        "csm_job_id_auth_alias": {
+          "type": "string"
+        },
+        "csm_job_id_verify_alias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "algorithm_alias",
+        "auth_info_length",
+        "data_id_length",
+        "csm_job_id_auth_alias",
+        "csm_job_id_verify_alias"
+      ],
+      "description": "Authentication"
+    },
+    "freshness": {
+      "type": "object",
+      "properties": {
+        "value_type_alias": {
+          "type": "string"
+        },
+        "value_tx_length": {
+          "type": "integer"
+        },
+        "value_length": {
+          "type": "integer"
+        },
+        "max_freshness_value": {
+          "type": "integer"
+        },
+        "reset_threshold": {
+          "type": "integer"
+        },
+        "default_verification_status_alias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "value_type_alias",
+        "value_tx_length",
+        "value_length",
+        "max_freshness_value",
+        "reset_threshold",
+        "default_verification_status_alias"
+      ],
+      "description": "Freshness"
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_pdu_length": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_pdu_length"
+      ],
+      "description": "Limits"
+    },
+    "tx_pdu_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Tx Pdu Ids"
+    },
+    "rx_pdu_ids": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Rx Pdu Ids"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

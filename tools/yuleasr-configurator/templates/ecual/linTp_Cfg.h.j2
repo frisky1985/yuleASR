@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for linTp
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef LINTP_CFG_H
+#define LINTP_CFG_H
+
+/* Module enabled: {{ modules.linTp.enabled }} */
+#define LINTP_ENABLED \
+    {% if modules.linTp.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.linTp.general.dev_error_detect }} */
+#define LINTP_DEV_ERROR_DETECT \
+    {% if modules.linTp.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.linTp.general.version_info_api }} */
+#define LINTP_VERSION_INFO_API \
+    {% if modules.linTp.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* LINTP_CFG_H */

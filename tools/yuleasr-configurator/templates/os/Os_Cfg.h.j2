@@ -1,0 +1,99 @@
+{#-
+ yuleASR BSW configuration template: Os_Cfg.h.j2
+ Context: module = modules.Os, cfg = full document, config_version = cfg.version
+ Filters: pad30/pad36 (left-justify for column alignment)
+ Rendered by config/tools/generate_bsw_config.py — deterministic output.
+-#}/**
+ * @file Os_Cfg.h
+ * @brief Operating System Configuration - AutoSAR OS Layer
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef OS_CFG_H
+#define OS_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'OS_CFG_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_USE_GET_SERVICE_ID' | pad40 }}{{'STD_ON' if module.general.use_get_service_id | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_USE_PARAMETER_ACCESS' | pad40 }}{{'STD_ON' if module.general.use_parameter_access | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_PROTECTION_HOOK' | pad40 }}{{'STD_ON' if module.general.protection_hook | default(false) else 'STD_OFF'}}
+#define {{ 'OS_CFG_STACK_MONITORING' | pad40 }}{{'STD_ON' if module.general.stack_monitoring | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_STARTUP_HOOK' | pad40 }}{{'STD_ON' if module.general.startup_hook | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_SHUTDOWN_HOOK' | pad40 }}{{'STD_ON' if module.general.shutdown_hook | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_ERROR_HOOK' | pad40 }}{{'STD_ON' if module.general.error_hook | default(true) else 'STD_OFF'}}
+#define {{ 'OS_CFG_PRETASK_HOOK' | pad40 }}{{'STD_ON' if module.general.pretask_hook | default(false) else 'STD_OFF'}}
+#define {{ 'OS_CFG_POSTTASK_HOOK' | pad40 }}{{'STD_ON' if module.general.posttask_hook | default(false) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    MODULE CONFIGURATION COUNTS
+*================================================================================================*/
+#define {{ 'OS_CFG_NUM_TASKS' | pad40 }}{{module.tasks | default([], true) | length}}U
+#ifndef OS_TASK_COUNT
+#define {{ 'OS_TASK_COUNT' | pad40 }}{{module.counts.task_count_reserved | default(module.tasks | default([], true) | length)}}U
+#endif
+#ifndef OS_RESOURCE_COUNT
+#define {{ 'OS_RESOURCE_COUNT' | pad40 }}{{module.counts.resource_count_reserved | default(0)}}U
+#endif
+#define {{ 'OS_CFG_NUM_ALARMS' | pad40 }}{{module.alarms | default([], true) | length}}U
+#define {{ 'OS_CFG_NUM_RESOURCES' | pad40 }}{{module.resources | default([], true) | length}}U
+
+/*==================================================================================================
+*                                    COUNTER CONFIGURATION
+*================================================================================================*/
+#define {{ 'OS_CFG_MAIN_COUNTER_TICKS_PER_MS' | pad40 }}{{module.main_counter.ticks_per_ms | default(1)}}U
+#define {{ 'OS_CFG_MAIN_COUNTER_MAX_ALLOWED' | pad40 }}{{module.main_counter.max_allowed_value | default(4294967295)}}U
+#define {{ 'OS_CFG_MAIN_COUNTER_MIN_CYCLE' | pad40 }}{{module.main_counter.min_cycle | default(1)}}U
+
+/*==================================================================================================
+*                                    STACK CONFIGURATION
+*================================================================================================*/
+#define {{ 'OS_CFG_TASK_STACK_SIZE' | pad40 }}{{module.stacks.task_stack_size | default(4096)}}U
+#define {{ 'OS_CFG_ISR_STACK_SIZE' | pad40 }}{{module.stacks.isr_stack_size | default(2048)}}U
+
+/*==================================================================================================
+*                                    TASK IDs
+*================================================================================================*/
+{% for t in module.tasks | default([], true) -%}
+#define {{ ('OsTask_' ~ t.name) | pad26 }}({{ t.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    TASK PRIORITIES
+*================================================================================================*/
+{% for p in module.task_priorities | default([], true) -%}
+#define {{ ('OS_TASK_PRIORITY_' ~ (p.name | upper)) | pad23 }}({{ p.value }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    ALARM IDs
+*================================================================================================*/
+{% for a in module.alarms | default([], true) -%}
+#define {{ ('OsAlarm_' ~ a.name) | pad26 }}({{ a.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    ALARM PERIODS (ms)
+*================================================================================================*/
+{% for ap in module.alarm_periods | default([], true) -%}
+#define {{ ('OS_ALARM_PERIOD_' ~ (ap.name | upper)) | pad24 }}({{ ap.value }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    RESOURCE IDs
+*================================================================================================*/
+{% for r in module.resources | default([], true) -%}
+#define {{ ('OsRes_' ~ r.name) | pad26 }}({{ r.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    EVENT MASKS
+*================================================================================================*/
+{% for e in module.events | default([], true) -%}
+#define {{ ('OS_EVENT_' ~ (e.name | upper)) | pad24 }}({{ e.mask }}U)
+{% endfor %}
+#endif /* OS_CFG_H */
+
+/*==================[end of file]===========================================*/

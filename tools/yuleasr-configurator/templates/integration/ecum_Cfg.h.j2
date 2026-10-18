@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ecum
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ECUM_CFG_H
+#define ECUM_CFG_H
+
+/* Module enabled: {{ modules.ecum.enabled }} */
+#define ECUM_ENABLED \
+    {% if modules.ecum.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ecum.general.dev_error_detect }} */
+#define ECUM_DEV_ERROR_DETECT \
+    {% if modules.ecum.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ecum.general.version_info_api }} */
+#define ECUM_VERSION_INFO_API \
+    {% if modules.ecum.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ECUM_CFG_H */

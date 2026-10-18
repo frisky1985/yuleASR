@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for docan
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef DOCAN_CFG_H
+#define DOCAN_CFG_H
+
+/* Module enabled: {{ modules.docan.enabled }} */
+#define DOCAN_ENABLED \
+    {% if modules.docan.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.docan.general.dev_error_detect }} */
+#define DOCAN_DEV_ERROR_DETECT \
+    {% if modules.docan.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.docan.general.version_info_api }} */
+#define DOCAN_VERSION_INFO_API \
+    {% if modules.docan.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* DOCAN_CFG_H */

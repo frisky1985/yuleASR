@@ -1,0 +1,100 @@
+{#-
+ yuleASR BSW configuration template: BswM_Cfg.h.j2
+ Context:
+   module          — modules.BswM node from config/bsw_config.json
+   cfg             — full bsw_config.json document
+   config_version  — cfg.version string (kept in output for traceability)
+ Filters provided by config/tools/generate_bsw_config.py:
+   pad30/pad36     — left-justify macro names for column alignment
+ Rendered by config/tools/generate_bsw_config.py. Deterministic output:
+ no timestamps are embedded, so regenerated files are byte-stable.
+-#}/**
+ * @file BswM_Cfg.h
+ * @brief BSW Mode Manager Configuration - AutoSAR BSW
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef BSWM_CFG_H
+#define BSWM_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'BSWM_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'BSWM_VERSION_INFO_API' | pad40 }}{{'STD_ON' if module.general.version_info_api | default(true) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    CAPACITY LIMITS
+*================================================================================================*/
+#define {{ 'BSWM_MAX_MODE_REQUEST_PORTS' | pad40 }}{{module.limits.max_mode_request_ports | default(32)}}U
+#define {{ 'BSWM_MAX_EXPRESSIONS' | pad40 }}{{module.limits.max_expressions | default(128)}}U
+#define {{ 'BSWM_MAX_RULES' | pad40 }}{{module.limits.max_rules | default(64)}}U
+#define {{ 'BSWM_MAX_ACTIONS' | pad40 }}{{module.limits.max_actions | default(128)}}U
+#define {{ 'BSWM_MAX_ACTION_LISTS' | pad40 }}{{module.limits.max_action_lists | default(32)}}U
+
+/*==================================================================================================
+*                                    CONFIGURED ITEM COUNTS
+*================================================================================================*/
+{% set n_ports = module.mode_request_ports | default([], true) | length -%}
+{% set n_exprs = module.expressions | default([], true) | length -%}
+{% set n_rules = module.rules | default([], true) | length -%}
+{% set n_als   = module.action_lists | default([], true) | length -%}
+{% set ns_act  = namespace(v=0) -%}
+{% for al in module.action_lists | default([], true) -%}
+{% set ns_act.v = ns_act.v + (al.actions | default([], true) | length) -%}
+{% endfor -%}
+#define {{ 'BSWM_NUM_MODE_REQUEST_PORTS' | pad40 }}{{n_ports}}U
+#define {{ 'BSWM_NUM_EXPRESSIONS' | pad40 }}{{n_exprs}}U
+#define {{ 'BSWM_NUM_RULES' | pad40 }}{{n_rules}}U
+#define {{ 'BSWM_NUM_ACTION_LISTS' | pad40 }}{{n_als}}U
+#define {{ 'BSWM_NUM_ACTIONS' | pad40 }}{{ns_act.v}}U
+
+/*==================================================================================================
+*                                    BSW MODE IDs
+*================================================================================================*/
+{% for m in module.modes | default([], true) -%}
+#define {{ ('BSWM_MODE_' ~ (m.name | upper)) | pad36 }}({{ m.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    EcuM STATE VALUES
+*================================================================================================*/
+{% for s in module.ecum_states | default([], true) -%}
+#define {{ ('BSWM_ECUM_STATE_' ~ (s.name | upper)) | pad36 }}({{ s.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    MODE REQUEST PORTS
+*================================================================================================*/
+{% for p in module.mode_request_ports | default([], true) -%}
+#define {{ ('BSWM_MODE_REQ_PORT_' ~ (p.name | upper)) | pad36 }}({{ p.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    LOGIC EXPRESSIONS
+*================================================================================================*/
+{% for e in module.expressions | default([], true) -%}
+#define {{ ('BSWM_EXPR_' ~ (e.name | upper)) | pad36 }}({{ e.id }}U)
+#define {{ ('BSWM_EXPR_' ~ (e.name | upper) ~ '_TERMS') | pad36 }}({{ e.term_count | default(1) }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    RULES
+*================================================================================================*/
+{% for r in module.rules | default([], true) -%}
+/* Rule {{ r.id }}: {{ r.name }} - expr {{ r.expression | default('NONE') }} -> action list {{ r.action_list | default('NONE') }} */
+#define {{ ('BSWM_RULE_' ~ (r.name | upper)) | pad36 }}({{ r.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    ACTION LISTS
+*================================================================================================*/
+{% for al in module.action_lists | default([], true) -%}
+/* Action list {{ al.id }}: {{ al.name }} ({{ al.actions | default([], true) | length }} action(s)) */
+#define {{ ('BSWM_AL_' ~ (al.name | upper)) | pad36 }}({{ al.id }}U)
+#define {{ ('BSWM_AL_' ~ (al.name | upper) ~ '_NUM_ACTIONS') | pad36 }}({{ al.actions | default([], true) | length }}U)
+{% endfor %}
+#endif /* BSWM_CFG_H */
+
+/*==================[end of file]===========================================*/

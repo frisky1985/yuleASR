@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for wdgif
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef WDGIF_CFG_H
+#define WDGIF_CFG_H
+
+/* Module enabled: {{ modules.wdgif.enabled }} */
+#define WDGIF_ENABLED \
+    {% if modules.wdgif.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.wdgif.general.dev_error_detect }} */
+#define WDGIF_DEV_ERROR_DETECT \
+    {% if modules.wdgif.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.wdgif.general.version_info_api }} */
+#define WDGIF_VERSION_INFO_API \
+    {% if modules.wdgif.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* WDGIF_CFG_H */

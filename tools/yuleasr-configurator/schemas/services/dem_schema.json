@@ -1,0 +1,333 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/dem.json",
+  "title": "Dem Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Dem module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Dem",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "clear_dtc_supported": {
+          "type": "boolean"
+        },
+        "clear_dtc_limitation": {
+          "type": "boolean"
+        },
+        "obd_relevant_support": {
+          "type": "boolean"
+        },
+        "j1939_support": {
+          "type": "boolean"
+        },
+        "debounce_counter_based": {
+          "type": "boolean"
+        },
+        "debounce_time_based": {
+          "type": "boolean"
+        },
+        "debounce_monitor_internal": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "clear_dtc_supported",
+        "clear_dtc_limitation",
+        "obd_relevant_support",
+        "j1939_support",
+        "debounce_counter_based",
+        "debounce_time_based",
+        "debounce_monitor_internal"
+      ],
+      "description": "General"
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "events": {
+          "type": "integer"
+        },
+        "dtcs": {
+          "type": "integer"
+        },
+        "freeze_frame_records": {
+          "type": "integer"
+        },
+        "extended_data_records": {
+          "type": "integer"
+        },
+        "indicators": {
+          "type": "integer"
+        },
+        "operation_cycles": {
+          "type": "integer"
+        },
+        "enable_conditions": {
+          "type": "integer"
+        },
+        "storage_conditions": {
+          "type": "integer"
+        },
+        "obd_pids": {
+          "type": "integer"
+        },
+        "obd_tids": {
+          "type": "integer"
+        },
+        "obd_infotypes": {
+          "type": "integer"
+        },
+        "j1939_fmi": {
+          "type": "integer"
+        },
+        "j1939_oc": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "events",
+        "dtcs",
+        "freeze_frame_records",
+        "extended_data_records",
+        "indicators",
+        "operation_cycles",
+        "enable_conditions",
+        "storage_conditions",
+        "obd_pids",
+        "obd_tids",
+        "obd_infotypes",
+        "j1939_fmi",
+        "j1939_oc"
+      ],
+      "description": "Counts"
+    },
+    "debounce": {
+      "type": "object",
+      "properties": {
+        "counter_failed_threshold": {
+          "type": "integer"
+        },
+        "counter_passed_threshold": {
+          "type": "string"
+        },
+        "counter_increment": {
+          "type": "integer"
+        },
+        "counter_decrement": {
+          "type": "integer"
+        },
+        "counter_increment_step": {
+          "type": "integer"
+        },
+        "counter_decrement_step": {
+          "type": "integer"
+        },
+        "time_failed_threshold_ms": {
+          "type": "integer"
+        },
+        "time_passed_threshold_ms": {
+          "type": "integer"
+        },
+        "fdc_threshold": {
+          "type": "integer"
+        },
+        "fdc_max": {
+          "type": "integer"
+        },
+        "fdc_min": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "counter_failed_threshold",
+        "counter_passed_threshold",
+        "counter_increment",
+        "counter_decrement",
+        "counter_increment_step",
+        "counter_decrement_step",
+        "time_failed_threshold_ms",
+        "time_passed_threshold_ms",
+        "fdc_threshold",
+        "fdc_max",
+        "fdc_min"
+      ],
+      "description": "Debounce"
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "main_function_period_ms": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "main_function_period_ms"
+      ],
+      "description": "Timing"
+    },
+    "aging": {
+      "type": "object",
+      "properties": {
+        "cycle_counter_max": {
+          "type": "integer"
+        },
+        "cycle_counter_threshold": {
+          "type": "integer"
+        },
+        "threshold": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cycle_counter_max",
+        "cycle_counter_threshold",
+        "threshold"
+      ],
+      "description": "Aging"
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_occurrence_counter": {
+          "type": "integer"
+        },
+        "event_id_min": {
+          "type": "integer"
+        },
+        "event_id_max": {
+          "type": "integer"
+        },
+        "dtc_invalid": {
+          "type": "integer"
+        },
+        "dtc_min": {
+          "type": "integer"
+        },
+        "dtc_max": {
+          "type": "integer"
+        },
+        "dtc_priority_min": {
+          "type": "integer"
+        },
+        "dtc_priority_max": {
+          "type": "integer"
+        },
+        "freeze_frame_max_dids": {
+          "type": "integer"
+        },
+        "freeze_frame_max_size": {
+          "type": "integer"
+        },
+        "extended_data_max_size": {
+          "type": "integer"
+        },
+        "dtc_status_availability_mask": {
+          "type": "integer"
+        },
+        "dtc_group_all": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_occurrence_counter",
+        "event_id_min",
+        "event_id_max",
+        "dtc_invalid",
+        "dtc_min",
+        "dtc_max",
+        "dtc_priority_min",
+        "dtc_priority_max",
+        "freeze_frame_max_dids",
+        "freeze_frame_max_size",
+        "extended_data_max_size",
+        "dtc_status_availability_mask",
+        "dtc_group_all"
+      ],
+      "description": "Limits"
+    },
+    "memory": {
+      "type": "object",
+      "properties": {
+        "primary_size": {
+          "type": "integer"
+        },
+        "mirror_size": {
+          "type": "integer"
+        },
+        "permanent_size": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "primary_size",
+        "mirror_size",
+        "permanent_size"
+      ],
+      "description": "Memory"
+    },
+    "indicators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Indicators"
+    },
+    "operation_cycles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Operation Cycles"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

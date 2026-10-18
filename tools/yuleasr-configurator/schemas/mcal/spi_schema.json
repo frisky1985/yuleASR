@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/spi.json",
+  "title": "Spi Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Spi module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Spi",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "interruptible_seq_allowed": {
+          "type": "boolean"
+        },
+        "hw_status_api": {
+          "type": "boolean"
+        },
+        "cancel_api": {
+          "type": "boolean"
+        },
+        "level_delivered": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "interruptible_seq_allowed",
+        "hw_status_api",
+        "cancel_api",
+        "level_delivered"
+      ],
+      "description": "General"
+    },
+    "channels": {
+      "type": "integer",
+      "description": "Channels"
+    },
+    "jobs": {
+      "type": "integer",
+      "description": "Jobs"
+    },
+    "sequences": {
+      "type": "integer",
+      "description": "Sequences"
+    },
+    "hw_units": {
+      "type": "integer",
+      "description": "Hw Units"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

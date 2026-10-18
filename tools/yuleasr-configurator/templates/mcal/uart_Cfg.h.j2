@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for uart
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef UART_CFG_H
+#define UART_CFG_H
+
+/* Module enabled: {{ modules.uart.enabled }} */
+#define UART_ENABLED \
+    {% if modules.uart.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.uart.general.dev_error_detect }} */
+#define UART_DEV_ERROR_DETECT \
+    {% if modules.uart.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.uart.general.version_info_api }} */
+#define UART_VERSION_INFO_API \
+    {% if modules.uart.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* UART_CFG_H */

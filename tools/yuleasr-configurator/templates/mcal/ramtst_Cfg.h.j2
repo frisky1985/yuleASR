@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ramtst
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef RAMTST_CFG_H
+#define RAMTST_CFG_H
+
+/* Module enabled: {{ modules.ramtst.enabled }} */
+#define RAMTST_ENABLED \
+    {% if modules.ramtst.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ramtst.general.dev_error_detect }} */
+#define RAMTST_DEV_ERROR_DETECT \
+    {% if modules.ramtst.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ramtst.general.version_info_api }} */
+#define RAMTST_VERSION_INFO_API \
+    {% if modules.ramtst.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* RAMTST_CFG_H */

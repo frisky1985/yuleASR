@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for sd
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SD_CFG_H
+#define SD_CFG_H
+
+/* Module enabled: {{ modules.sd.enabled }} */
+#define SD_ENABLED \
+    {% if modules.sd.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.sd.general.dev_error_detect }} */
+#define SD_DEV_ERROR_DETECT \
+    {% if modules.sd.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.sd.general.version_info_api }} */
+#define SD_VERSION_INFO_API \
+    {% if modules.sd.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SD_CFG_H */

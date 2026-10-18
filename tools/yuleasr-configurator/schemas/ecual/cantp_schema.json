@@ -1,0 +1,296 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/cantp.json",
+  "title": "CanTp Configuration Schema",
+  "description": "Configuration schema for AUTOSAR CanTp module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "CanTp",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "dynamic_channel_allocation": {
+          "type": "boolean"
+        },
+        "canfd_enabled": {
+          "type": "boolean"
+        },
+        "padding_byte": {
+          "type": "boolean"
+        },
+        "padding_byte_value": {
+          "type": "integer"
+        },
+        "change_parameter_api": {
+          "type": "boolean"
+        },
+        "read_parameter_api": {
+          "type": "boolean"
+        },
+        "addressing_format": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "dynamic_channel_allocation",
+        "canfd_enabled",
+        "padding_byte",
+        "padding_byte_value",
+        "change_parameter_api",
+        "read_parameter_api",
+        "addressing_format"
+      ],
+      "description": "General"
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "main_function_period_ms": {
+          "type": "integer"
+        },
+        "nas_ms": {
+          "type": "integer"
+        },
+        "nbs_ms": {
+          "type": "integer"
+        },
+        "ncs_ms": {
+          "type": "integer"
+        },
+        "nar_ms": {
+          "type": "integer"
+        },
+        "nbr_ms": {
+          "type": "integer"
+        },
+        "ncr_ms": {
+          "type": "integer"
+        },
+        "bs_default": {
+          "type": "integer"
+        },
+        "stmin_default": {
+          "type": "integer"
+        },
+        "wft_max_default": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "main_function_period_ms",
+        "nas_ms",
+        "nbs_ms",
+        "ncs_ms",
+        "nar_ms",
+        "nbr_ms",
+        "ncr_ms",
+        "bs_default",
+        "stmin_default",
+        "wft_max_default"
+      ],
+      "description": "Timing"
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_channel_cnt": {
+          "type": "integer"
+        },
+        "max_message_length": {
+          "type": "integer"
+        },
+        "canfd_max_message_length": {
+          "type": "integer"
+        },
+        "channel_buffer_size": {
+          "type": "integer"
+        },
+        "can_frame_length": {
+          "type": "integer"
+        },
+        "invalid_channel_id": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_channel_cnt",
+        "max_message_length",
+        "canfd_max_message_length",
+        "channel_buffer_size",
+        "can_frame_length",
+        "invalid_channel_id"
+      ],
+      "description": "Limits"
+    },
+    "addresses": {
+      "type": "object",
+      "properties": {
+        "tx": {
+          "type": "integer"
+        },
+        "rx": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tx",
+        "rx"
+      ],
+      "description": "Addresses"
+    },
+    "canif_pdu_ids": {
+      "type": "object",
+      "properties": {
+        "tx": {
+          "type": "integer"
+        },
+        "rx": {
+          "type": "integer"
+        },
+        "fc_tx": {
+          "type": "integer"
+        },
+        "fc_rx": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tx",
+        "rx",
+        "fc_tx",
+        "fc_rx"
+      ],
+      "description": "Canif Pdu Ids"
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "addressing_mode": {
+            "type": "string"
+          },
+          "max_payload": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "addressing_mode",
+          "max_payload"
+        ]
+      },
+      "description": "Channels"
+    },
+    "tx_nsdu": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "channel_id": {
+            "type": "integer"
+          },
+          "ta_type": {
+            "type": "string"
+          },
+          "bs": {
+            "type": "integer"
+          },
+          "stmin": {
+            "type": "integer"
+          },
+          "wftmax": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "channel_id",
+          "ta_type",
+          "bs",
+          "stmin",
+          "wftmax"
+        ]
+      },
+      "description": "Tx Nsdu"
+    },
+    "rx_nsdu": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "channel_id": {
+            "type": "integer"
+          },
+          "ta_type": {
+            "type": "string"
+          },
+          "bs": {
+            "type": "integer"
+          },
+          "stmin": {
+            "type": "integer"
+          },
+          "wftmax": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "channel_id",
+          "ta_type",
+          "bs",
+          "stmin",
+          "wftmax"
+        ]
+      },
+      "description": "Rx Nsdu"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

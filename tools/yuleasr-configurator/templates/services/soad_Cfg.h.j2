@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for soad
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SOAD_CFG_H
+#define SOAD_CFG_H
+
+/* Module enabled: {{ modules.soad.enabled }} */
+#define SOAD_ENABLED \
+    {% if modules.soad.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.soad.general.dev_error_detect }} */
+#define SOAD_DEV_ERROR_DETECT \
+    {% if modules.soad.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.soad.general.version_info_api }} */
+#define SOAD_VERSION_INFO_API \
+    {% if modules.soad.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SOAD_CFG_H */

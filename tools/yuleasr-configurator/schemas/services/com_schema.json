@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/com.json",
+  "title": "Com Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Com module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Com",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "enable_mdt_for_cyclic_transmission": {
+          "type": "boolean"
+        },
+        "retry_failed_transmit_requests": {
+          "type": "boolean"
+        },
+        "gateway_support": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "enable_mdt_for_cyclic_transmission",
+        "retry_failed_transmit_requests",
+        "gateway_support"
+      ],
+      "description": "General"
+    },
+    "signals": {
+      "type": "integer",
+      "description": "Signals"
+    },
+    "group_signals": {
+      "type": "integer",
+      "description": "Group Signals"
+    },
+    "ipdus": {
+      "type": "integer",
+      "description": "Ipdus"
+    },
+    "ipdu_groups": {
+      "type": "integer",
+      "description": "Ipdu Groups"
+    },
+    "max_ipdu_buffer_size": {
+      "type": "integer",
+      "description": "Max Ipdu Buffer Size"
+    },
+    "num_signal_gw_mappings": {
+      "type": "integer",
+      "description": "Num Signal Gw Mappings"
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "main_function_period_ms": {
+          "type": "integer"
+        },
+        "main_function_rx_period_ms": {
+          "type": "integer"
+        },
+        "main_function_tx_period_ms": {
+          "type": "integer"
+        },
+        "first_timeout_factor": {
+          "type": "integer"
+        },
+        "timeout_factor": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "main_function_period_ms",
+        "main_function_rx_period_ms",
+        "main_function_tx_period_ms",
+        "first_timeout_factor",
+        "timeout_factor"
+      ],
+      "description": "Timing"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

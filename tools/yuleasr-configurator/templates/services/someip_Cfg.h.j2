@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for someip
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SOMEIP_CFG_H
+#define SOMEIP_CFG_H
+
+/* Module enabled: {{ modules.someip.enabled }} */
+#define SOMEIP_ENABLED \
+    {% if modules.someip.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.someip.general.dev_error_detect }} */
+#define SOMEIP_DEV_ERROR_DETECT \
+    {% if modules.someip.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.someip.general.version_info_api }} */
+#define SOMEIP_VERSION_INFO_API \
+    {% if modules.someip.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SOMEIP_CFG_H */

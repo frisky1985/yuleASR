@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for someiptp
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SOMEIPTP_CFG_H
+#define SOMEIPTP_CFG_H
+
+/* Module enabled: {{ modules.someiptp.enabled }} */
+#define SOMEIPTP_ENABLED \
+    {% if modules.someiptp.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.someiptp.general.dev_error_detect }} */
+#define SOMEIPTP_DEV_ERROR_DETECT \
+    {% if modules.someiptp.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.someiptp.general.version_info_api }} */
+#define SOMEIPTP_VERSION_INFO_API \
+    {% if modules.someiptp.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SOMEIPTP_CFG_H */

@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/nvm.json",
+  "title": "NvM Configuration Schema",
+  "description": "Configuration schema for AUTOSAR NvM module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "NvM",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "set_ram_block_status_api": {
+          "type": "boolean"
+        },
+        "get_error_status_api": {
+          "type": "boolean"
+        },
+        "set_block_protection_api": {
+          "type": "boolean"
+        },
+        "get_block_protection_api": {
+          "type": "boolean"
+        },
+        "set_data_index_api": {
+          "type": "boolean"
+        },
+        "get_data_index_api": {
+          "type": "boolean"
+        },
+        "cancel_job_api": {
+          "type": "boolean"
+        },
+        "kill_write_all_api": {
+          "type": "boolean"
+        },
+        "kill_read_all_api": {
+          "type": "boolean"
+        },
+        "repair_damaged_blocks_api": {
+          "type": "boolean"
+        },
+        "calc_ram_block_crc": {
+          "type": "boolean"
+        },
+        "use_crc_comp_mechanism": {
+          "type": "boolean"
+        },
+        "multi_block_callback": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "set_ram_block_status_api",
+        "get_error_status_api",
+        "set_block_protection_api",
+        "get_block_protection_api",
+        "set_data_index_api",
+        "get_data_index_api",
+        "cancel_job_api",
+        "kill_write_all_api",
+        "kill_read_all_api",
+        "repair_damaged_blocks_api",
+        "calc_ram_block_crc",
+        "use_crc_comp_mechanism",
+        "multi_block_callback"
+      ],
+      "description": "General"
+    },
+    "nvram_blocks": {
+      "type": "integer",
+      "description": "Nvram Blocks"
+    },
+    "datasets": {
+      "type": "integer",
+      "description": "Datasets"
+    },
+    "rom_blocks": {
+      "type": "integer",
+      "description": "Rom Blocks"
+    },
+    "max_write_retries": {
+      "type": "integer",
+      "description": "Max Write Retries"
+    },
+    "max_read_retries": {
+      "type": "integer",
+      "description": "Max Read Retries"
+    },
+    "main_function_period_ms": {
+      "type": "integer",
+      "description": "Main Function Period Ms"
+    },
+    "standard_job_queue_size": {
+      "type": "integer",
+      "description": "Standard Job Queue Size"
+    },
+    "immediate_job_queue_size": {
+      "type": "integer",
+      "description": "Immediate Job Queue Size"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

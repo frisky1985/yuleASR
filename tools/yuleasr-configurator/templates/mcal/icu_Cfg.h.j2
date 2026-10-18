@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for icu
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ICU_CFG_H
+#define ICU_CFG_H
+
+/* Module enabled: {{ modules.icu.enabled }} */
+#define ICU_ENABLED \
+    {% if modules.icu.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.icu.general.dev_error_detect }} */
+#define ICU_DEV_ERROR_DETECT \
+    {% if modules.icu.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.icu.general.version_info_api }} */
+#define ICU_VERSION_INFO_API \
+    {% if modules.icu.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ICU_CFG_H */

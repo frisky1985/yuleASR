@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for mem
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef MEM_CFG_H
+#define MEM_CFG_H
+
+/* Module enabled: {{ modules.mem.enabled }} */
+#define MEM_ENABLED \
+    {% if modules.mem.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.mem.general.dev_error_detect }} */
+#define MEM_DEV_ERROR_DETECT \
+    {% if modules.mem.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.mem.general.version_info_api }} */
+#define MEM_VERSION_INFO_API \
+    {% if modules.mem.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* MEM_CFG_H */

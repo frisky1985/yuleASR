@@ -1,0 +1,45 @@
+{
+  "name": "yuleasr-configurator",
+  "version": "1.0.0",
+  "description": "yuleASR Configurator - AUTOSAR BSW Configuration Tool",
+  "main": "dist-electron/main.cjs",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:electron": "NODE_ENV=development vite build && electron .",
+    "build": "vue-tsc && vite build",
+    "build:electron": "vite build && tsc -p tsconfig.electron.json && electron-builder",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron:build": "vite build && tsc -p tsconfig.electron.json"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.6.7",
+    "d3": "^7.8.5",
+    "element-plus": "^2.6.1",
+    "monaco-editor": "^0.46.0",
+    "pinia": "^2.1.7",
+    "splitpanes": "^4.1.2",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "@vue/eslint-config-typescript": "^12.0.0",
+    "concurrently": "^8.2.2",
+    "electron": "^29.1.0",
+    "electron-builder": "^24.13.3",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.22.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.5",
+    "vue-tsc": "^2.0.6",
+    "wait-on": "^7.2.0"
+  },
+  "allowScripts": {
+    "electron@29.4.6": true
+  }
+}

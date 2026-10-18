@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for tm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef TM_CFG_H
+#define TM_CFG_H
+
+/* Module enabled: {{ modules.tm.enabled }} */
+#define TM_ENABLED \
+    {% if modules.tm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.tm.general.dev_error_detect }} */
+#define TM_DEV_ERROR_DETECT \
+    {% if modules.tm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.tm.general.version_info_api }} */
+#define TM_VERSION_INFO_API \
+    {% if modules.tm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* TM_CFG_H */

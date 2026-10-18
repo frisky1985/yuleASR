@@ -1,0 +1,197 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/wdgm.json",
+  "title": "WdgM Configuration Schema",
+  "description": "Configuration schema for AUTOSAR WdgM module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "WdgM",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "vendor_id": {
+          "type": "integer"
+        },
+        "ar_release_major_version": {
+          "type": "integer"
+        },
+        "ar_release_minor_version": {
+          "type": "integer"
+        },
+        "ar_release_revision_version": {
+          "type": "integer"
+        },
+        "sw_major_version": {
+          "type": "integer"
+        },
+        "sw_minor_version": {
+          "type": "integer"
+        },
+        "sw_patch_version": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "vendor_id",
+        "ar_release_major_version",
+        "ar_release_minor_version",
+        "ar_release_revision_version",
+        "sw_major_version",
+        "sw_minor_version",
+        "sw_patch_version"
+      ],
+      "description": "General"
+    },
+    "window_watchdog": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "trigger_period_ms": {
+          "type": "integer"
+        },
+        "timeout_ms": {
+          "type": "integer"
+        },
+        "window_start_percent": {
+          "type": "integer"
+        },
+        "window_end_percent": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "enabled",
+        "trigger_period_ms",
+        "timeout_ms",
+        "window_start_percent",
+        "window_end_percent"
+      ],
+      "description": "Window Watchdog"
+    },
+    "independent_watchdog": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "trigger_period_ms": {
+          "type": "integer"
+        },
+        "timeout_ms": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "enabled",
+        "trigger_period_ms",
+        "timeout_ms"
+      ],
+      "description": "Independent Watchdog"
+    },
+    "supervision": {
+      "type": "object",
+      "properties": {
+        "cycle_ms": {
+          "type": "integer"
+        },
+        "failure_threshold": {
+          "type": "integer"
+        },
+        "max_supervised_entities": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cycle_ms",
+        "failure_threshold",
+        "max_supervised_entities"
+      ],
+      "description": "Supervision"
+    },
+    "integrations": {
+      "type": "object",
+      "properties": {
+        "lockstep": {
+          "type": "boolean"
+        },
+        "ramsafety": {
+          "type": "boolean"
+        },
+        "dem": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "lockstep",
+        "ramsafety",
+        "dem"
+      ],
+      "description": "Integrations"
+    },
+    "supervised_entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Supervised Entities"
+    },
+    "dem_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "event_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "event_id"
+        ]
+      },
+      "description": "Dem Events"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

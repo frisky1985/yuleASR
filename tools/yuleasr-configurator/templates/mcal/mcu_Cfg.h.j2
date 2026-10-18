@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for mcu
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef MCU_CFG_H
+#define MCU_CFG_H
+
+/* Module enabled: {{ modules.mcu.enabled }} */
+#define MCU_ENABLED \
+    {% if modules.mcu.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.mcu.general.dev_error_detect }} */
+#define MCU_DEV_ERROR_DETECT \
+    {% if modules.mcu.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.mcu.general.version_info_api }} */
+#define MCU_VERSION_INFO_API \
+    {% if modules.mcu.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* MCU_CFG_H */

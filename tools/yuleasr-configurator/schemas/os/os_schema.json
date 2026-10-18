@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/os.json",
+  "title": "Os Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Os module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Os",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "use_get_service_id": {
+          "type": "boolean"
+        },
+        "use_parameter_access": {
+          "type": "boolean"
+        },
+        "protection_hook": {
+          "type": "boolean"
+        },
+        "stack_monitoring": {
+          "type": "boolean"
+        },
+        "startup_hook": {
+          "type": "boolean"
+        },
+        "shutdown_hook": {
+          "type": "boolean"
+        },
+        "error_hook": {
+          "type": "boolean"
+        },
+        "pretask_hook": {
+          "type": "boolean"
+        },
+        "posttask_hook": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "use_get_service_id",
+        "use_parameter_access",
+        "protection_hook",
+        "stack_monitoring",
+        "startup_hook",
+        "shutdown_hook",
+        "error_hook",
+        "pretask_hook",
+        "posttask_hook"
+      ],
+      "description": "General"
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "tasks": {
+          "type": "integer"
+        },
+        "alarms": {
+          "type": "integer"
+        },
+        "resources": {
+          "type": "integer"
+        },
+        "task_count_reserved": {
+          "type": "integer"
+        },
+        "resource_count_reserved": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tasks",
+        "alarms",
+        "resources",
+        "task_count_reserved",
+        "resource_count_reserved"
+      ],
+      "description": "Counts"
+    },
+    "main_counter": {
+      "type": "object",
+      "properties": {
+        "ticks_per_ms": {
+          "type": "integer"
+        },
+        "max_allowed_value": {
+          "type": "integer"
+        },
+        "min_cycle": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ticks_per_ms",
+        "max_allowed_value",
+        "min_cycle"
+      ],
+      "description": "Main Counter"
+    },
+    "stacks": {
+      "type": "object",
+      "properties": {
+        "task_stack_size": {
+          "type": "integer"
+        },
+        "isr_stack_size": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "task_stack_size",
+        "isr_stack_size"
+      ],
+      "description": "Stacks"
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Tasks"
+    },
+    "task_priorities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "description": "Task Priorities"
+    },
+    "alarms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Alarms"
+    },
+    "alarm_periods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "description": "Alarm Periods"
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Resources"
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "mask": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "mask"
+        ]
+      },
+      "description": "Events"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for canif
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef CANIF_CFG_H
+#define CANIF_CFG_H
+
+/* Module enabled: {{ modules.canif.enabled }} */
+#define CANIF_ENABLED \
+    {% if modules.canif.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.canif.general.dev_error_detect }} */
+#define CANIF_DEV_ERROR_DETECT \
+    {% if modules.canif.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.canif.general.version_info_api }} */
+#define CANIF_VERSION_INFO_API \
+    {% if modules.canif.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* CANIF_CFG_H */

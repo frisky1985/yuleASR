@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/port.json",
+  "title": "Port Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Port module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Port",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "set_pin_direction_api": {
+          "type": "boolean"
+        },
+        "set_pin_mode_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "set_pin_direction_api",
+        "set_pin_mode_api"
+      ],
+      "description": "General"
+    },
+    "pins": {
+      "type": "integer",
+      "description": "Pins"
+    },
+    "ports": {
+      "type": "integer",
+      "description": "Ports"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

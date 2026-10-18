@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ethsm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ETHSM_CFG_H
+#define ETHSM_CFG_H
+
+/* Module enabled: {{ modules.ethsm.enabled }} */
+#define ETHSM_ENABLED \
+    {% if modules.ethsm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ethsm.general.dev_error_detect }} */
+#define ETHSM_DEV_ERROR_DETECT \
+    {% if modules.ethsm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ethsm.general.version_info_api }} */
+#define ETHSM_VERSION_INFO_API \
+    {% if modules.ethsm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ETHSM_CFG_H */

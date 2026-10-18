@@ -1,0 +1,101 @@
+{#-
+ yuleASR BSW configuration template: Dcm_Cfg.h.j2
+ Context: module = modules.Dcm, cfg = full document, config_version = cfg.version
+ Filters: pad30/pad36 (left-justify for column alignment)
+ Rendered by config/tools/generate_bsw_config.py — deterministic output.
+-#}/**
+ * @file Dcm_Cfg.h
+ * @brief Diagnostic Communication Manager Configuration - AutoSAR Service Layer
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef DCM_CFG_H
+#define DCM_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'DCM_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'DCM_VERSION_INFO_API' | pad40 }}{{'STD_ON' if module.general.version_info_api | default(true) else 'STD_OFF'}}
+#define {{ 'DCM_RESPOND_ALL_REQUEST' | pad40 }}{{'STD_ON' if module.general.respond_all_request | default(true) else 'STD_OFF'}}
+#define {{ 'DCM_TASK_TIME' | pad40 }}{{'STD_ON' if module.general.task_time | default(true) else 'STD_OFF'}}
+#define {{ 'DCM_OBD_SUPPORT' | pad40 }}{{'STD_ON' if module.general.obd_support | default(true) else 'STD_OFF'}}
+#define {{ 'DCM_ROUTINE_CONTROL_SUPPORT' | pad40 }}{{'STD_ON' if module.general.routine_control_support | default(true) else 'STD_OFF'}}
+#define {{ 'DCM_DATA_TRANSFER_SUPPORT' | pad40 }}{{'STD_ON' if module.general.data_transfer_support | default(true) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    MODULE CONFIGURATION COUNTS
+*================================================================================================*/
+#define {{ 'DCM_NUM_PROTOCOLS' | pad40 }}{{module.counts.protocols | default(2)}}U
+#define {{ 'DCM_NUM_CONNECTIONS' | pad40 }}{{module.counts.connections | default(4)}}U
+#define {{ 'DCM_NUM_RX_PDU_IDS' | pad40 }}{{module.counts.rx_pdu_ids | default(4)}}U
+#define {{ 'DCM_NUM_TX_PDU_IDS' | pad40 }}{{module.counts.tx_pdu_ids | default(4)}}U
+#define {{ 'DCM_NUM_SESSIONS' | pad40 }}{{module.counts.sessions | default(4)}}U
+#define {{ 'DCM_NUM_SECURITY_LEVELS' | pad40 }}{{module.counts.security_levels | default(3)}}U
+#define {{ 'DCM_NUM_SERVICES' | pad40 }}{{module.counts.services | default(16)}}U
+#define {{ 'DCM_OBD_NUM_PIDS' | pad40 }}{{module.counts.obd_pids | default(32)}}U
+#define {{ 'DCM_NUM_ROUTINES' | pad40 }}{{module.counts.routines | default(8)}}U
+#define {{ 'DCM_NUM_DIDS' | pad40 }}{{module.counts.dids | default(32)}}U
+#define {{ 'DCM_NUM_RIDS' | pad40 }}{{module.counts.rids | default(8)}}U
+
+/*==================================================================================================
+*                                    PROTOCOL IDs
+*================================================================================================*/
+{% for p in module.protocols | default([], true) -%}
+#define {{ ('DCM_PROTOCOL_' ~ (p.name | upper)) | pad28 }}({{ p.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    SESSION ALIASES
+*================================================================================================*/
+{% for s in module.sessions | default([], true) -%}
+{%- if s.alias -%}
+#define {{ ('DCM_SESSION_' ~ (s.name | upper)) | pad25 }}{{ s.alias }}
+{%- else -%}
+#define {{ ('DCM_SESSION_' ~ (s.name | upper)) | pad25 }}({{ s.id }}U)
+{%- endif %}
+{% endfor %}
+/*==================================================================================================
+*                                    SECURITY LEVELS
+*================================================================================================*/
+{% for sl in module.security_levels | default([], true) -%}
+#define {{ ('DCM_SEC_LEVEL_' ~ ((sl.name | upper) | replace('LEVEL_', ''))) | pad23 }}({{ sl.id }}U)
+{% endfor %}
+#define {{ 'DCM_SEC_LEV_LOCKED' | pad40 }}{{module.security_levels[0].id | default(0)}}U
+#define {{ 'DCM_SECURITY_MAX_ATTEMPTS' | pad40 }}{{module.security.max_attempts | default(3)}}U
+#define {{ 'DCM_MAX_SECURITY_ATTEMPTS' | pad40 }}{{module.security.max_attempts | default(3)}}U
+#define {{ 'DCM_SECURITY_DELAY_TIME_MS' | pad40 }}{{module.security.delay_time_ms | default(10000)}}U
+#define {{ 'DCM_SECURITY_DELAY_TIME' | pad40 }}{{module.security.delay_time_ms | default(10000)}}U
+#define {{ 'DCM_SEED_SIZE' | pad40 }}{{module.security.seed_size | default(4)}}U
+#define {{ 'DCM_KEY_SIZE' | pad40 }}{{module.security.key_size | default(4)}}U
+
+/*==================================================================================================
+*                                    BUFFER SIZES
+*================================================================================================*/
+#define {{ 'DCM_RX_BUFFER_SIZE' | pad40 }}{{module.buffers.rx_buffer_size | default(256)}}U
+#define {{ 'DCM_TX_BUFFER_SIZE' | pad40 }}{{module.buffers.tx_buffer_size | default(256)}}U
+#define {{ 'DCM_BUFFER_SIZE' | pad40 }}{{module.buffers.buffer_size | default(4095)}}U
+#define {{ 'DCM_MAX_REQUEST_SIZE' | pad40 }}{{module.buffers.max_request_size | default(4095)}}U
+#define {{ 'DCM_MAX_RESPONSE_SIZE' | pad40 }}{{module.buffers.max_response_size | default(4095)}}U
+#define {{ 'DCM_TRANSFER_BLOCK_SIZE' | pad40 }}{{module.buffers.transfer_block_size | default(1024)}}U
+#define {{ 'DCM_TRANSFER_MAX_BLOCK_SIZE' | pad40 }}{{module.buffers.transfer_max_block_size | default(4096)}}U
+
+/*==================================================================================================
+*                                    TIMING CONFIGURATION
+*================================================================================================*/
+#define {{ 'DCM_MAIN_FUNCTION_PERIOD_MS' | pad40 }}{{module.timing.main_function_period_ms | default(10)}}U
+{% for st in module.session_timeouts | default([], true) -%}
+#define {{ ('DCM_SESSION_' ~ (st.name | upper) ~ '_TIMEOUT') | pad21 }}({{ st.timeout_ms }}U)
+{% endfor %}
+#define {{ 'DCM_P2SERVER_MAX' | pad40 }}{{module.timing.p2_server_max_ms | default(50)}}U
+#define {{ 'DCM_P2STAR_SERVER_MAX' | pad40 }}{{module.timing.p2_star_server_max_ms | default(5000)}}U
+#define {{ 'DCM_S3SERVER' | pad40 }}{{module.timing.s3_server_ms | default(5000)}}U
+
+#endif /* DCM_CFG_H */
+
+/*==================[end of file]===========================================*/

@@ -1,0 +1,135 @@
+{#-
+ yuleASR BSW configuration template: WdgM_Cfg.h.j2
+ Context: module = modules.WdgM, cfg = full document, config_version = cfg.version
+ Filters: pad30/pad36 (left-justify for column alignment)
+ Rendered by config/tools/generate_bsw_config.py — deterministic output.
+-#}/**
+ * @file WdgM_Cfg.h
+ * @brief Watchdog Manager Configuration - AutoSAR Service Layer
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef WDGM_CFG_H
+#define WDGM_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'WDGM_CFG_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'WDGM_CFG_VERSION_INFO_API' | pad40 }}{{'STD_ON' if module.general.version_info_api | default(true) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    VERSION INFORMATION
+*================================================================================================*/
+#define {{ 'WDGM_CFG_VENDOR_ID' | pad40 }}{{module.general.vendor_id | default(43)}}U
+#define {{ 'WDGM_CFG_AR_RELEASE_MAJOR_VERSION' | pad40 }}{{module.general.ar_release_major_version | default(4)}}U
+#define {{ 'WDGM_CFG_AR_RELEASE_MINOR_VERSION' | pad40 }}{{module.general.ar_release_minor_version | default(7)}}U
+#define {{ 'WDGM_CFG_AR_RELEASE_REVISION_VERSION' | pad40 }}{{module.general.ar_release_revision_version | default(0)}}U
+#define {{ 'WDGM_CFG_SW_MAJOR_VERSION' | pad40 }}{{module.general.sw_major_version | default(1)}}U
+#define {{ 'WDGM_CFG_SW_MINOR_VERSION' | pad40 }}{{module.general.sw_minor_version | default(0)}}U
+#define {{ 'WDGM_CFG_SW_PATCH_VERSION' | pad40 }}{{module.general.sw_patch_version | default(0)}}U
+
+/*==================================================================================================
+*                                    WINDOW WATCHDOG (WWD)
+*================================================================================================*/
+#define {{ 'WDGM_CFG_WWD_ENABLE' | pad40 }}{{'STD_ON' if module.window_watchdog.enabled | default(true) else 'STD_OFF'}}
+#define {{ 'WDGM_CFG_WWD_TRIGGER_PERIOD_MS' | pad40 }}{{module.window_watchdog.trigger_period_ms | default(50)}}U
+#define {{ 'WDGM_CFG_WWD_TIMEOUT_MS' | pad40 }}{{module.window_watchdog.timeout_ms | default(100)}}U
+#define {{ 'WDGM_CFG_WWD_WINDOW_START_PERCENT' | pad40 }}{{module.window_watchdog.window_start_percent | default(50)}}U
+#define {{ 'WDGM_CFG_WWD_WINDOW_END_PERCENT' | pad40 }}{{module.window_watchdog.window_end_percent | default(100)}}U
+
+/*==================================================================================================
+*                                    INDEPENDENT WATCHDOG (IWD)
+*================================================================================================*/
+#define {{ 'WDGM_CFG_IWD_ENABLE' | pad40 }}{{'STD_ON' if module.independent_watchdog.enabled | default(true) else 'STD_OFF'}}
+#define {{ 'WDGM_CFG_IWD_TRIGGER_PERIOD_MS' | pad40 }}{{module.independent_watchdog.trigger_period_ms | default(100)}}U
+#define {{ 'WDGM_CFG_IWD_TIMEOUT_MS' | pad40 }}{{module.independent_watchdog.timeout_ms | default(200)}}U
+
+/*==================================================================================================
+*                                    SUPERVISION CONFIGURATION
+*================================================================================================*/
+#define {{ 'WDGM_CFG_SUPERVISION_CYCLE_MS' | pad40 }}{{module.supervision.cycle_ms | default(10)}}U
+#define {{ 'WDGM_CFG_FAILURE_THRESHOLD' | pad40 }}{{module.supervision.failure_threshold | default(3)}}U
+#define {{ 'WDGM_CFG_MAX_SUPERVISED_ENTITIES' | pad40 }}{{module.supervision.max_supervised_entities | default(8)}}U
+
+/*==================================================================================================
+*                                    SAFETY INTEGRATIONS
+*================================================================================================*/
+#define {{ 'WDGM_CFG_LOCKSTEP_INTEGRATION' | pad40 }}{{'STD_ON' if module.integrations.lockstep | default(true) else 'STD_OFF'}}
+#define {{ 'WDGM_CFG_RAMSAFETY_INTEGRATION' | pad40 }}{{'STD_ON' if module.integrations.ramsafety | default(true) else 'STD_OFF'}}
+#define {{ 'WDGM_CFG_DEM_INTEGRATION' | pad40 }}{{'STD_ON' if module.integrations.dem | default(true) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    SUPERVISED ENTITY IDs
+*================================================================================================*/
+{% for se in module.supervised_entities | default([], true) -%}
+#define {{ ('WDGM_SEID_' ~ (se.name | upper)) | pad28 }}({{ se.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    REPORTED DEM EVENT IDs
+*================================================================================================*/
+{% for ev in module.dem_events | default([], true) -%}
+#define {{ ('WDGM_DEM_' ~ (ev.name | upper) ~ '_EVENT_ID') | pad28 }}({{ ev.event_id }}U)
+{% endfor %}
+
+/*==================================================================================================
+*  NON-MACRO SEGMENT — preserved from handwritten header for source compatibility.
+*  Depends on macro counts above, therefore placed after the macro sections.
+*================================================================================================*/
+/** @req SWS_WdgM_00111 */
+extern void WdgM_WatchdogTrigger(void);
+
+/**
+ * @brief Watchdog mode setter
+ * @req SWS_WdgM_00112
+ *
+ * @param mode Mode (WDGM_WATCHDOG_MODE_OFF/SLOW/FAST)
+ */
+extern void WdgM_WatchdogSetMode(uint8 mode);
+
+/**
+ * @brief Safety event callback
+ * @req SWS_WdgM_00113
+ *
+ * Handles safety-relevant events; may be implemented at application level.
+ *
+ * @param eventType Event type
+ * @param errorCode Error code
+ * @param context   Context pointer
+ */
+extern void WdgM_SafetyEventCallback(
+    uint8 eventType,
+    uint32 errorCode,
+    const void* context
+);
+
+#define WDGM_STOP_SEC_CODE
+#include "WdgM_MemMap.h"
+
+/*==================================================================================================
+*                                       EXTERNAL VARIABLES
+==================================================================================================*/
+#define WDGM_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include "WdgM_MemMap.h"
+
+/**
+ * @brief Default configuration
+ */
+extern const WdgM_ConfigType WdgM_Config;
+
+/**
+ * @brief Debug configuration (reduced supervision strength)
+ */
+extern const WdgM_ConfigType WdgM_ConfigDebug;
+
+#define WDGM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include "WdgM_MemMap.h"
+#endif /* WDGM_CFG_H */
+
+/*==================[end of file]===========================================*/

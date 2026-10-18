@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for stbm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef STBM_CFG_H
+#define STBM_CFG_H
+
+/* Module enabled: {{ modules.stbm.enabled }} */
+#define STBM_ENABLED \
+    {% if modules.stbm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.stbm.general.dev_error_detect }} */
+#define STBM_DEV_ERROR_DETECT \
+    {% if modules.stbm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.stbm.general.version_info_api }} */
+#define STBM_VERSION_INFO_API \
+    {% if modules.stbm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* STBM_CFG_H */

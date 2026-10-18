@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/gpt.json",
+  "title": "Gpt Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Gpt module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Gpt",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "wakeup_functionality_api": {
+          "type": "boolean"
+        },
+        "deinit_api": {
+          "type": "boolean"
+        },
+        "time_elapsed_api": {
+          "type": "boolean"
+        },
+        "time_remaining_api": {
+          "type": "boolean"
+        },
+        "enable_disable_notification_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "wakeup_functionality_api",
+        "deinit_api",
+        "time_elapsed_api",
+        "time_remaining_api",
+        "enable_disable_notification_api"
+      ],
+      "description": "General"
+    },
+    "channels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "tick_frequency_hz": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "tick_frequency_hz"
+        ]
+      },
+      "description": "Channels"
+    },
+    "max_tick_value": {
+      "type": "string",
+      "description": "Max Tick Value"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

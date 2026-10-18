@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ea
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef EA_CFG_H
+#define EA_CFG_H
+
+/* Module enabled: {{ modules.ea.enabled }} */
+#define EA_ENABLED \
+    {% if modules.ea.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ea.general.dev_error_detect }} */
+#define EA_DEV_ERROR_DETECT \
+    {% if modules.ea.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ea.general.version_info_api }} */
+#define EA_VERSION_INFO_API \
+    {% if modules.ea.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* EA_CFG_H */

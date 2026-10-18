@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/can.json",
+  "title": "Can Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Can module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Can",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "multiplexed_transmission": {
+          "type": "boolean"
+        },
+        "hw_transmit_cancellation": {
+          "type": "boolean"
+        },
+        "fifo_enable": {
+          "type": "boolean"
+        },
+        "wakeup_support": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "multiplexed_transmission",
+        "hw_transmit_cancellation",
+        "fifo_enable",
+        "wakeup_support"
+      ],
+      "description": "General"
+    },
+    "controllers": {
+      "type": "integer",
+      "description": "Controllers"
+    },
+    "hoh": {
+      "type": "integer",
+      "description": "Hoh"
+    },
+    "hw_objects": {
+      "type": "integer",
+      "description": "Hw Objects"
+    },
+    "baudrate": {
+      "type": "integer",
+      "description": "Baudrate"
+    },
+    "supported_baudrates": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "description": "Supported Baudrates"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

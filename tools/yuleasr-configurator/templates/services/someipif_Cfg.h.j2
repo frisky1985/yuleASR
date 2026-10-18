@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for someipif
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SOMEIPIF_CFG_H
+#define SOMEIPIF_CFG_H
+
+/* Module enabled: {{ modules.someipif.enabled }} */
+#define SOMEIPIF_ENABLED \
+    {% if modules.someipif.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.someipif.general.dev_error_detect }} */
+#define SOMEIPIF_DEV_ERROR_DETECT \
+    {% if modules.someipif.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.someipif.general.version_info_api }} */
+#define SOMEIPIF_VERSION_INFO_API \
+    {% if modules.someipif.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SOMEIPIF_CFG_H */

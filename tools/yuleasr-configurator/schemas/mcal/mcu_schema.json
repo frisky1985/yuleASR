@@ -1,0 +1,103 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/mcu.json",
+  "title": "Mcu Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Mcu module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Mcu",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "no_pll": {
+          "type": "boolean"
+        },
+        "init_clock": {
+          "type": "boolean"
+        },
+        "get_ram_state_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "no_pll",
+        "init_clock",
+        "get_ram_state_api"
+      ],
+      "description": "General"
+    },
+    "clock": {
+      "type": "object",
+      "properties": {
+        "xtal_frequency_hz": {
+          "type": "integer"
+        },
+        "system_frequency_hz": {
+          "type": "integer"
+        },
+        "bus_frequency_hz": {
+          "type": "integer"
+        },
+        "flash_frequency_hz": {
+          "type": "integer"
+        },
+        "num_configs": {
+          "type": "integer"
+        },
+        "default_setting": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "xtal_frequency_hz",
+        "system_frequency_hz",
+        "bus_frequency_hz",
+        "flash_frequency_hz",
+        "num_configs",
+        "default_setting"
+      ],
+      "description": "Clock"
+    },
+    "ram_sectors": {
+      "type": "integer",
+      "description": "Ram Sectors"
+    },
+    "modes": {
+      "type": "integer",
+      "description": "Modes"
+    },
+    "reset_reasons": {
+      "type": "integer",
+      "description": "Reset Reasons"
+    },
+    "core_count": {
+      "type": "integer",
+      "description": "Core Count"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/canif.json",
+  "title": "CanIf Configuration Schema",
+  "description": "Configuration schema for AUTOSAR CanIf module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "CanIf",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "dlc_check": {
+          "type": "boolean"
+        },
+        "software_filter": {
+          "type": "boolean"
+        },
+        "readrxpdu_data_api": {
+          "type": "boolean"
+        },
+        "readtxpdu_notify_status_api": {
+          "type": "boolean"
+        },
+        "readrxpdu_notify_status_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "dlc_check",
+        "software_filter",
+        "readrxpdu_data_api",
+        "readtxpdu_notify_status_api",
+        "readrxpdu_notify_status_api"
+      ],
+      "description": "General"
+    },
+    "controllers": {
+      "type": "integer",
+      "description": "Controllers"
+    },
+    "hrh": {
+      "type": "integer",
+      "description": "Hrh"
+    },
+    "hth": {
+      "type": "integer",
+      "description": "Hth"
+    },
+    "tx_pdus": {
+      "type": "integer",
+      "description": "Tx Pdus"
+    },
+    "rx_pdus": {
+      "type": "integer",
+      "description": "Rx Pdus"
+    },
+    "default_baudrate": {
+      "type": "integer",
+      "description": "Default Baudrate"
+    },
+    "default_baudrate_config": {
+      "type": "integer",
+      "description": "Default Baudrate Config"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

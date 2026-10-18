@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for flstst
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef FLSTST_CFG_H
+#define FLSTST_CFG_H
+
+/* Module enabled: {{ modules.flstst.enabled }} */
+#define FLSTST_ENABLED \
+    {% if modules.flstst.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.flstst.general.dev_error_detect }} */
+#define FLSTST_DEV_ERROR_DETECT \
+    {% if modules.flstst.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.flstst.general.version_info_api }} */
+#define FLSTST_VERSION_INFO_API \
+    {% if modules.flstst.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* FLSTST_CFG_H */

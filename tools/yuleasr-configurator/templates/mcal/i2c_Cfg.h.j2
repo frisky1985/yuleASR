@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for i2c
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef I2C_CFG_H
+#define I2C_CFG_H
+
+/* Module enabled: {{ modules.i2c.enabled }} */
+#define I2C_ENABLED \
+    {% if modules.i2c.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.i2c.general.dev_error_detect }} */
+#define I2C_DEV_ERROR_DETECT \
+    {% if modules.i2c.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.i2c.general.version_info_api }} */
+#define I2C_VERSION_INFO_API \
+    {% if modules.i2c.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* I2C_CFG_H */

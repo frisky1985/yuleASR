@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/pdur.json",
+  "title": "PduR Configuration Schema",
+  "description": "Configuration schema for AUTOSAR PduR module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "PduR",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "gateway_operation_enabled": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "gateway_operation_enabled"
+      ],
+      "description": "General"
+    },
+    "routing_paths": {
+      "type": "integer",
+      "description": "Routing Paths"
+    },
+    "routing_path_groups": {
+      "type": "integer",
+      "description": "Routing Path Groups"
+    },
+    "max_destinations_per_path": {
+      "type": "integer",
+      "description": "Max Destinations Per Path"
+    },
+    "fifo_depth": {
+      "type": "integer",
+      "description": "Fifo Depth"
+    },
+    "main_function_period_ms": {
+      "type": "integer",
+      "description": "Main Function Period Ms"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

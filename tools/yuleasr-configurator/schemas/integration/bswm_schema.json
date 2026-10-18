@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/bswm.json",
+  "title": "BswM Configuration Schema",
+  "description": "Configuration schema for AUTOSAR BswM module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "BswM",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api"
+      ],
+      "description": "General"
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_mode_request_ports": {
+          "type": "integer"
+        },
+        "max_expressions": {
+          "type": "integer"
+        },
+        "max_rules": {
+          "type": "integer"
+        },
+        "max_actions": {
+          "type": "integer"
+        },
+        "max_action_lists": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_mode_request_ports",
+        "max_expressions",
+        "max_rules",
+        "max_actions",
+        "max_action_lists"
+      ],
+      "description": "Limits"
+    },
+    "modes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Modes"
+    },
+    "ecum_states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Ecum States"
+    },
+    "mode_request_ports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "source"
+        ]
+      },
+      "description": "Mode Request Ports"
+    },
+    "expressions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "term_count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "term_count"
+        ]
+      },
+      "description": "Expressions"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "expression": {
+            "type": "string"
+          },
+          "action_list": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "expression",
+          "action_list"
+        ]
+      },
+      "description": "Rules"
+    },
+    "action_lists": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "target": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "target"
+              ]
+            }
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "actions"
+        ]
+      },
+      "description": "Action Lists"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

@@ -1,0 +1,38 @@
+appId: com.yuletech.yuleasr-configurator
+productName: yuleASR Configurator
+copyright: Copyright © 2026 YuleTech
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - package.json
+
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+    - zip
+  artifactName: ${productName}-${version}-mac-${arch}.${ext}
+
+win:
+  target:
+    - nsis
+    - portable
+  artifactName: ${productName}-${version}-win-${arch}.${ext}
+
+linux:
+  target:
+    - AppImage
+    - deb
+  artifactName: ${productName}-${version}-linux-${arch}.${ext}
+  category: Development
+
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true

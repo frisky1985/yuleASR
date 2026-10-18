@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/cantrcv.json",
+  "title": "cantrcv Configuration Schema",
+  "description": "Configuration schema for AUTOSAR cantrcv module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "cantrcv",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api"
+      ],
+      "description": "General"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

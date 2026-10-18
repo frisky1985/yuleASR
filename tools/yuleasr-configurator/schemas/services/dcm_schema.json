@@ -1,0 +1,295 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/dcm.json",
+  "title": "Dcm Configuration Schema",
+  "description": "Configuration schema for AUTOSAR Dcm module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "Dcm",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        },
+        "respond_all_request": {
+          "type": "boolean"
+        },
+        "task_time": {
+          "type": "boolean"
+        },
+        "obd_support": {
+          "type": "boolean"
+        },
+        "routine_control_support": {
+          "type": "boolean"
+        },
+        "data_transfer_support": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api",
+        "respond_all_request",
+        "task_time",
+        "obd_support",
+        "routine_control_support",
+        "data_transfer_support"
+      ],
+      "description": "General"
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "protocols": {
+          "type": "integer"
+        },
+        "connections": {
+          "type": "integer"
+        },
+        "rx_pdu_ids": {
+          "type": "integer"
+        },
+        "tx_pdu_ids": {
+          "type": "integer"
+        },
+        "sessions": {
+          "type": "integer"
+        },
+        "security_levels": {
+          "type": "integer"
+        },
+        "services": {
+          "type": "integer"
+        },
+        "obd_pids": {
+          "type": "integer"
+        },
+        "routines": {
+          "type": "integer"
+        },
+        "dids": {
+          "type": "integer"
+        },
+        "rids": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "protocols",
+        "connections",
+        "rx_pdu_ids",
+        "tx_pdu_ids",
+        "sessions",
+        "security_levels",
+        "services",
+        "obd_pids",
+        "routines",
+        "dids",
+        "rids"
+      ],
+      "description": "Counts"
+    },
+    "buffers": {
+      "type": "object",
+      "properties": {
+        "rx_buffer_size": {
+          "type": "integer"
+        },
+        "tx_buffer_size": {
+          "type": "integer"
+        },
+        "buffer_size": {
+          "type": "integer"
+        },
+        "max_request_size": {
+          "type": "integer"
+        },
+        "max_response_size": {
+          "type": "integer"
+        },
+        "transfer_block_size": {
+          "type": "integer"
+        },
+        "transfer_max_block_size": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "rx_buffer_size",
+        "tx_buffer_size",
+        "buffer_size",
+        "max_request_size",
+        "max_response_size",
+        "transfer_block_size",
+        "transfer_max_block_size"
+      ],
+      "description": "Buffers"
+    },
+    "timing": {
+      "type": "object",
+      "properties": {
+        "main_function_period_ms": {
+          "type": "integer"
+        },
+        "session_default_timeout_ms": {
+          "type": "integer"
+        },
+        "session_programming_timeout_ms": {
+          "type": "integer"
+        },
+        "session_extended_timeout_ms": {
+          "type": "integer"
+        },
+        "session_safety_timeout_ms": {
+          "type": "integer"
+        },
+        "p2_server_max_ms": {
+          "type": "integer"
+        },
+        "p2_star_server_max_ms": {
+          "type": "integer"
+        },
+        "s3_server_ms": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "main_function_period_ms",
+        "session_default_timeout_ms",
+        "session_programming_timeout_ms",
+        "session_extended_timeout_ms",
+        "session_safety_timeout_ms",
+        "p2_server_max_ms",
+        "p2_star_server_max_ms",
+        "s3_server_ms"
+      ],
+      "description": "Timing"
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "max_attempts": {
+          "type": "integer"
+        },
+        "delay_time_ms": {
+          "type": "integer"
+        },
+        "seed_size": {
+          "type": "integer"
+        },
+        "key_size": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "max_attempts",
+        "delay_time_ms",
+        "seed_size",
+        "key_size"
+      ],
+      "description": "Security"
+    },
+    "protocols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Protocols"
+    },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "alias": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "alias"
+        ]
+      },
+      "description": "Sessions"
+    },
+    "security_levels": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "description": "Security Levels"
+    },
+    "session_timeouts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "timeout_ms": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "timeout_ms"
+        ]
+      },
+      "description": "Session Timeouts"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}

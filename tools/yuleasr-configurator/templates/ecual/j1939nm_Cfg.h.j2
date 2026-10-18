@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for j1939nm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef J1939NM_CFG_H
+#define J1939NM_CFG_H
+
+/* Module enabled: {{ modules.j1939nm.enabled }} */
+#define J1939NM_ENABLED \
+    {% if modules.j1939nm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.j1939nm.general.dev_error_detect }} */
+#define J1939NM_DEV_ERROR_DETECT \
+    {% if modules.j1939nm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.j1939nm.general.version_info_api }} */
+#define J1939NM_VERSION_INFO_API \
+    {% if modules.j1939nm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* J1939NM_CFG_H */

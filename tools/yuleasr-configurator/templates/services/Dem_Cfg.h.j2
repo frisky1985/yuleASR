@@ -1,0 +1,121 @@
+{#-
+ yuleASR BSW configuration template: Dem_Cfg.h.j2
+ Context: module = modules.Dem, cfg = full document, config_version = cfg.version
+ Filters: pad30/pad36 (left-justify for column alignment)
+ Rendered by config/tools/generate_bsw_config.py — deterministic output.
+-#}/**
+ * @file Dem_Cfg.h
+ * @brief Diagnostic Event Manager Configuration - AutoSAR Service Layer
+ * @version {{ module.version | default('1.0.0') }}
+ * @author ConfigGenerator
+ *
+ * @note This file is generated from config/bsw_config.json (config version {{ config_version }}).
+ *       Manual changes may be overwritten.
+ */
+
+#ifndef DEM_CFG_H
+#define DEM_CFG_H
+
+#include "Std_Types.h"
+
+/*==================================================================================================
+*                                    PRE-COMPILE CONFIGURATION
+*================================================================================================*/
+#define {{ 'DEM_DEV_ERROR_DETECT' | pad40 }}{{'STD_ON' if module.general.dev_error_detect | default(true) else 'STD_OFF'}}
+#define {{ 'DEM_VERSION_INFO_API' | pad40 }}{{'STD_ON' if module.general.version_info_api | default(true) else 'STD_OFF'}}
+#define {{ 'DEM_CLEAR_DTC_SUPPORTED' | pad40 }}{{'STD_ON' if module.general.clear_dtc_supported | default(true) else 'STD_OFF'}}
+#define {{ 'DEM_CLEAR_DTC_LIMITATION' | pad40 }}{{'STD_ON' if module.general.clear_dtc_limitation | default(false) else 'STD_OFF'}}
+#define {{ 'DEM_OBD_RELEVANT_SUPPORT' | pad40 }}{{'STD_ON' if module.general.obd_relevant_support | default(true) else 'STD_OFF'}}
+#define {{ 'DEM_J1939_SUPPORT' | pad40 }}{{'STD_ON' if module.general.j1939_support | default(false) else 'STD_OFF'}}
+#define {{ 'DEM_DEBOUNCE_COUNTER_BASED' | pad40 }}{{'STD_ON' if module.general.debounce_counter_based | default(true) else 'STD_OFF'}}
+#define {{ 'DEM_DEBOUNCE_TIME_BASED' | pad40 }}{{'STD_ON' if module.general.debounce_time_based | default(true) else 'STD_OFF'}}
+#define {{ 'DEM_DEBOUNCE_MONITOR_INTERNAL' | pad40 }}{{'STD_ON' if module.general.debounce_monitor_internal | default(true) else 'STD_OFF'}}
+
+/*==================================================================================================
+*                                    MODULE CONFIGURATION COUNTS
+*================================================================================================*/
+#define {{ 'DEM_NUM_EVENTS' | pad40 }}{{module.counts.events | default(128)}}U
+#define {{ 'DEM_NUM_DTCS' | pad40 }}{{module.counts.dtcs | default(64)}}U
+#define {{ 'DEM_NUM_FREEZE_FRAME_RECORDS' | pad40 }}{{module.counts.freeze_frame_records | default(8)}}U
+#define {{ 'DEM_NUM_EXTENDED_DATA_RECORDS' | pad40 }}{{module.counts.extended_data_records | default(4)}}U
+#define {{ 'DEM_NUM_INDICATORS' | pad40 }}{{module.indicators | default([], true) | length}}U
+#define {{ 'DEM_NUM_OPERATION_CYCLES' | pad40 }}{{module.operation_cycles | default([], true) | length}}U
+#define {{ 'DEM_NUM_ENABLE_CONDITIONS' | pad40 }}{{module.counts.enable_conditions | default(8)}}U
+#define {{ 'DEM_NUM_STORAGE_CONDITIONS' | pad40 }}{{module.counts.storage_conditions | default(8)}}U
+#define {{ 'DEM_MAX_OCCURRENCE_COUNTER' | pad40 }}{{module.limits.max_occurrence_counter | default(255)}}U
+#define {{ 'DEM_OBD_NUM_PIDS' | pad40 }}{{module.counts.obd_pids | default(32)}}U
+#define {{ 'DEM_OBD_NUM_TIDS' | pad40 }}{{module.counts.obd_tids | default(16)}}U
+#define {{ 'DEM_OBD_NUM_INFOTYPES' | pad40 }}{{module.counts.obd_infotypes | default(8)}}U
+#define {{ 'DEM_J1939_NUM_FMI' | pad40 }}{{module.counts.j1939_fmi | default(32)}}U
+#define {{ 'DEM_J1939_NUM_OC' | pad40 }}{{module.counts.j1939_oc | default(16)}}U
+
+/*==================================================================================================
+*                                    DEBOUNCE CONFIGURATION
+*================================================================================================*/
+#define {{ 'DEM_DEBOUNCE_COUNTER_FAILED_THRESHOLD' | pad40 }}{{module.debounce.counter_failed_threshold | default(127)}}U
+#define {{ 'DEM_DEBOUNCE_COUNTER_PASSED_THRESHOLD' | pad40 }}{{module.debounce.counter_passed_threshold | default('-128U')}}
+#define {{ 'DEM_DEBOUNCE_COUNTER_INCREMENT' | pad40 }}{{module.debounce.counter_increment | default(1)}}U
+#define {{ 'DEM_DEBOUNCE_COUNTER_DECREMENT' | pad40 }}{{module.debounce.counter_decrement | default(1)}}U
+#define {{ 'DEM_DEBOUNCE_COUNTER_INCREMENT_STEP' | pad40 }}{{module.debounce.counter_increment_step | default(1)}}U
+#define {{ 'DEM_DEBOUNCE_COUNTER_DECREMENT_STEP' | pad40 }}{{module.debounce.counter_decrement_step | default(1)}}U
+#define {{ 'DEM_DEBOUNCE_TIME_FAILED_THRESHOLD_MS' | pad40 }}{{module.debounce.time_failed_threshold_ms | default(100)}}U
+#define {{ 'DEM_DEBOUNCE_TIME_PASSED_THRESHOLD_MS' | pad40 }}{{module.debounce.time_passed_threshold_ms | default(100)}}U
+#define {{ 'DEM_FDC_THRESHOLD' | pad40 }}{{module.debounce.fdc_threshold | default(80)}}U
+#define {{ 'DEM_FDC_MAX' | pad40 }}{{module.debounce.fdc_max | default(127)}}U
+#define {{ 'DEM_FDC_MIN' | pad40 }}{{module.debounce.fdc_min | default('-128U')}}
+
+/*==================================================================================================
+*                                    TIMING CONFIGURATION
+*================================================================================================*/
+#define {{ 'DEM_MAIN_FUNCTION_PERIOD_MS' | pad40 }}{{module.timing.main_function_period_ms | default(10)}}U
+
+/*==================================================================================================
+*                                    AGING CONFIGURATION
+*================================================================================================*/
+#define {{ 'DEM_AGING_CYCLE_COUNTER_MAX' | pad40 }}{{module.aging.cycle_counter_max | default(255)}}U
+#define {{ 'DEM_AGING_CYCLE_COUNTER_THRESHOLD' | pad40 }}{{module.aging.cycle_counter_threshold | default(40)}}U
+#define {{ 'DEM_AGING_CYCLE_THRESHOLD' | pad40 }}{{module.aging.threshold | default(40)}}U
+#define {{ 'DEM_AGING_THRESHOLD' | pad40 }}{{module.aging.threshold | default(40)}}U
+
+/*==================================================================================================
+*                                    EVENT / DTC RANGES
+*================================================================================================*/
+#define {{ 'DEM_EVENT_ID_MIN' | pad40 }}{{module.limits.event_id_min | default(1)}}U
+#define {{ 'DEM_EVENT_ID_MAX' | pad40 }}{{module.limits.event_id_max | default(127)}}U
+#define {{ 'DEM_DTC_INVALID' | pad40 }}{{module.limits.dtc_invalid | default(0)}}U
+#define {{ 'DEM_DTC_MIN' | pad40 }}{{module.limits.dtc_min | default(1)}}U
+#define {{ 'DEM_DTC_MAX' | pad40 }}{{module.limits.dtc_max | default(16777215)}}U
+#define {{ 'DEM_DTC_PRIORITY_MIN' | pad40 }}{{module.limits.dtc_priority_min | default(1)}}U
+#define {{ 'DEM_DTC_PRIORITY_MAX' | pad40 }}{{module.limits.dtc_priority_max | default(255)}}U
+#define {{ 'DEM_DTC_STATUS_AVAILABILITY_MASK' | pad40 }}{{module.limits.dtc_status_availability_mask | default(255)}}U
+#define {{ 'DEM_DTC_GROUP_ALL' | pad40 }}{{module.limits.dtc_group_all | default(16777215)}}U
+
+/*==================================================================================================
+*                                    FREEZE FRAME / EXTENDED DATA
+*================================================================================================*/
+#define {{ 'DEM_FREEZE_FRAME_MAX_DIDS' | pad40 }}{{module.limits.freeze_frame_max_dids | default(16)}}U
+#define {{ 'DEM_FREEZE_FRAME_MAX_SIZE' | pad40 }}{{module.limits.freeze_frame_max_size | default(256)}}U
+#define {{ 'DEM_EXTENDED_DATA_MAX_SIZE' | pad40 }}{{module.limits.extended_data_max_size | default(128)}}U
+
+/*==================================================================================================
+*                                    MEMORY SIZES
+*================================================================================================*/
+#define {{ 'DEM_PRIMARY_MEMORY_SIZE' | pad40 }}{{module.memory.primary_size | default(4096)}}U
+#define {{ 'DEM_MIRROR_MEMORY_SIZE' | pad40 }}{{module.memory.mirror_size | default(2048)}}U
+#define {{ 'DEM_PERMANENT_MEMORY_SIZE' | pad40 }}{{module.memory.permanent_size | default(1024)}}U
+
+/*==================================================================================================
+*                                    INDICATOR IDs
+*================================================================================================*/
+{% for i in module.indicators | default([], true) -%}
+#define {{ ('DEM_INDICATOR_' ~ (i.name | upper)) | pad28 }}({{ i.id }}U)
+{% endfor %}
+/*==================================================================================================
+*                                    OPERATION CYCLE IDs
+*================================================================================================*/
+{% for oc in module.operation_cycles | default([], true) -%}
+#define {{ ('DEM_OPCYC_' ~ (oc.name | upper)) | pad28 }}({{ oc.id }}U)
+{% endfor %}
+#endif /* DEM_CFG_H */
+
+/*==================[end of file]===========================================*/

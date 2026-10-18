@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for cansm
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef CANSM_CFG_H
+#define CANSM_CFG_H
+
+/* Module enabled: {{ modules.cansm.enabled }} */
+#define CANSM_ENABLED \
+    {% if modules.cansm.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.cansm.general.dev_error_detect }} */
+#define CANSM_DEV_ERROR_DETECT \
+    {% if modules.cansm.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.cansm.general.version_info_api }} */
+#define CANSM_VERSION_INFO_API \
+    {% if modules.cansm.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* CANSM_CFG_H */

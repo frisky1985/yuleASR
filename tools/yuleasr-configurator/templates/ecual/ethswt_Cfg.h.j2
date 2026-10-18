@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for ethswt
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef ETHSWT_CFG_H
+#define ETHSWT_CFG_H
+
+/* Module enabled: {{ modules.ethswt.enabled }} */
+#define ETHSWT_ENABLED \
+    {% if modules.ethswt.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.ethswt.general.dev_error_detect }} */
+#define ETHSWT_DEV_ERROR_DETECT \
+    {% if modules.ethswt.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.ethswt.general.version_info_api }} */
+#define ETHSWT_VERSION_INFO_API \
+    {% if modules.ethswt.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* ETHSWT_CFG_H */

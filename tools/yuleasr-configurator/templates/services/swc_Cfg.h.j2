@@ -1,0 +1,22 @@
+/*
+ * Auto-generated configuration header for swc
+ * Source: config/bsw_config.json
+ * Do not edit manually - regenerate with: python config/tools/generate_bsw_config.py
+ */
+
+#ifndef SWC_CFG_H
+#define SWC_CFG_H
+
+/* Module enabled: {{ modules.swc.enabled }} */
+#define SWC_ENABLED \
+    {% if modules.swc.enabled %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Development error detection: {{ modules.swc.general.dev_error_detect }} */
+#define SWC_DEV_ERROR_DETECT \
+    {% if modules.swc.general.dev_error_detect %}STD_ON{% else %}STD_OFF{% endif %}
+
+/* Version info API: {{ modules.swc.general.version_info_api }} */
+#define SWC_VERSION_INFO_API \
+    {% if modules.swc.general.version_info_api %}STD_ON{% else %}STD_OFF{% endif %}
+
+#endif /* SWC_CFG_H */

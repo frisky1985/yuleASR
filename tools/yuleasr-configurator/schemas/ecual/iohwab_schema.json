@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://yuletech.com/schemas/iohwab.json",
+  "title": "IoHwAb Configuration Schema",
+  "description": "Configuration schema for AUTOSAR IoHwAb module",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "const": "IoHwAb",
+      "description": "Module name"
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable/disable module"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Module version (semver)"
+    },
+    "general": {
+      "type": "object",
+      "properties": {
+        "dev_error_detect": {
+          "type": "boolean"
+        },
+        "version_info_api": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "dev_error_detect",
+        "version_info_api"
+      ],
+      "description": "General"
+    },
+    "channels": {
+      "type": "object",
+      "properties": {
+        "analog_inputs": {
+          "type": "integer"
+        },
+        "analog_outputs": {
+          "type": "integer"
+        },
+        "digital_inputs": {
+          "type": "integer"
+        },
+        "digital_outputs": {
+          "type": "integer"
+        },
+        "pwm_outputs": {
+          "type": "integer"
+        },
+        "icu_inputs": {
+          "type": "integer"
+        },
+        "opamp_channels": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "analog_inputs",
+        "analog_outputs",
+        "digital_inputs",
+        "digital_outputs",
+        "pwm_outputs",
+        "icu_inputs",
+        "opamp_channels"
+      ],
+      "description": "Channels"
+    },
+    "adc": {
+      "type": "object",
+      "properties": {
+        "resolution": {
+          "type": "integer"
+        },
+        "max_value": {
+          "type": "integer"
+        },
+        "vref_mv": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "resolution",
+        "max_value",
+        "vref_mv"
+      ],
+      "description": "Adc"
+    },
+    "pwm": {
+      "type": "object",
+      "properties": {
+        "min_frequency_hz": {
+          "type": "integer"
+        },
+        "max_frequency_hz": {
+          "type": "integer"
+        },
+        "default_frequency_hz": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "min_frequency_hz",
+        "max_frequency_hz",
+        "default_frequency_hz"
+      ],
+      "description": "Pwm"
+    }
+  },
+  "required": [
+    "enabled"
+  ]
+}
