@@ -11,6 +11,9 @@
           <el-tooltip content="Back" placement="bottom">
             <el-button text size="small" :icon="ArrowLeft" :disabled="isHome" @click="goBack" />
           </el-tooltip>
+          <el-tooltip content="Forward" placement="bottom">
+            <el-button text size="small" :icon="ArrowRight" :disabled="!canGoForward" @click="goForward" />
+          </el-tooltip>
           <el-tooltip content="Home" placement="bottom">
             <el-button text size="small" :icon="HomeFilled" :disabled="isHome" @click="goHome" />
           </el-tooltip>
@@ -106,6 +109,7 @@ import {
   Connection,
   DocumentCopy,
   ArrowLeft,
+  ArrowRight,
   HomeFilled,
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
@@ -119,22 +123,44 @@ const isElectron = ref(false)
 const backendConnected = ref(false)
 const currentFile = ref('')
 const moduleCount = ref(0)
+const canGoForward = ref(false)
+const historyIndex = ref(0)
+const historyStack = ref<string[]>(['/'])
 
 const isHome = computed(() => route.path === '/')
 
 function goBack() {
-  if (window.history.length > 1) {
+  if (historyIndex.value > 0) {
+    historyIndex.value--
+    canGoForward.value = true
+    router.back()
+  } else if (window.history.length > 1) {
     router.back()
   } else {
     router.push('/')
   }
 }
 
+function goForward() {
+  if (historyIndex.value < historyStack.value.length - 1) {
+    historyIndex.value++
+    canGoForward.value = historyIndex.value < historyStack.value.length - 1
+    router.forward()
+  }
+}
+
 function goHome() {
-  router.push('/')
+  navigateTo('/')
 }
 
 function navigateTo(path: string) {
+  // Truncate forward history when navigating to a new page
+  if (historyIndex.value < historyStack.value.length - 1) {
+    historyStack.value = historyStack.value.slice(0, historyIndex.value + 1)
+  }
+  historyStack.value.push(path)
+  historyIndex.value = historyStack.value.length - 1
+  canGoForward.value = false
   router.push(path)
 }
 
@@ -208,6 +234,25 @@ async function checkBackend() {
 }
 
 let healthCheckInterval: ReturnType<typeof setInterval>
+
+router.afterEach((to) => {
+  const currentPath = to.path
+  const lastTracked = historyStack.value[historyIndex.value]
+  if (lastTracked !== currentPath) {
+    // Browser back/forward detected — find the path in our stack
+    const idx = historyStack.value.indexOf(currentPath)
+    if (idx >= 0) {
+      historyIndex.value = idx
+      canGoForward.value = idx < historyStack.value.length - 1
+    } else {
+      // New navigation from browser — add to stack
+      historyStack.value = historyStack.value.slice(0, historyIndex.value + 1)
+      historyStack.value.push(currentPath)
+      historyIndex.value = historyStack.value.length - 1
+      canGoForward.value = false
+    }
+  }
+})
 
 onMounted(() => {
   isElectron.value = !!window.electronAPI?.isElectron
