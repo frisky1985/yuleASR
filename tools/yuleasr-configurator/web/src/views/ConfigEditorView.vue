@@ -163,7 +163,6 @@ const validationStatus = computed(() => {
 const flattenedParamCount = computed(() => flattenParams(paramGroups.value).length)
 
 function handleNodeClick(data: ModuleNode) {
-  // Only handle leaf nodes (modules), not layer nodes
   if (!data.moduleCount && data.label) {
     tabsStore.openTab(data.label, data.label, data.iconClass)
     currentModule.value = data
@@ -233,19 +232,15 @@ async function loadModuleParams(moduleName: string) {
   }
 
   try {
-    // Fetch the JSON schema for this module to drive grouping
     moduleSchema.value = await getModuleSchema(moduleName)
   } catch {
-    // Fall back to an empty schema so the table just shows no groups
     moduleSchema.value = { type: 'object', properties: {} }
   }
 
-  // Build grouped params from schema + current config
   if (moduleSchema.value) {
     paramGroups.value = groupParams(moduleSchema.value, mod)
   }
 
-  // Run local validation across all flattened params + full config
   const allParams = flattenParams(paramGroups.value)
   validationIssues.value = validateAll(allParams, store.config ?? {})
 }

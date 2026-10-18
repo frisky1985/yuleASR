@@ -28,7 +28,7 @@ export async function getSchemas(): Promise<Record<string, SchemaInfo[]>> {
 
 export async function getModuleSchema(moduleName: string): Promise<any> {
   const response = await api.get(`/schemas/${moduleName}`)
-  return response.data.schema
+  return response.data
 }
 
 export async function getModules(): Promise<string[]> {
