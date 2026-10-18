@@ -163,7 +163,8 @@ const validationStatus = computed(() => {
 const flattenedParamCount = computed(() => flattenParams(paramGroups.value).length)
 
 function handleNodeClick(data: ModuleNode) {
-  if (data.category) {
+  // Only handle leaf nodes (modules), not layer nodes
+  if (!data.moduleCount && data.label) {
     tabsStore.openTab(data.label, data.label, data.iconClass)
     currentModule.value = data
     loadModuleParams(data.label)

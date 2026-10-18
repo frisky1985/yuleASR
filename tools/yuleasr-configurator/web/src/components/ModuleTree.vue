@@ -258,7 +258,8 @@ function guessLayer(name: string): string {
 }
 
 function handleNodeClick(data: ModuleNode) {
-  if (data.category) {
+  // Only emit for leaf nodes (modules), not layer nodes
+  if (!data.moduleCount) {
     emit('nodeClick', data)
   }
 }

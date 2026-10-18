@@ -122,10 +122,11 @@ const configStore = useConfigStore()
 const isElectron = ref(false)
 const backendConnected = ref(false)
 const currentFile = ref('')
-const moduleCount = ref(0)
 const canGoForward = ref(false)
 const historyIndex = ref(0)
 const historyStack = ref<string[]>(['/'])
+
+const moduleCount = computed(() => configStore.moduleCount)
 
 const isHome = computed(() => route.path === '/')
 
