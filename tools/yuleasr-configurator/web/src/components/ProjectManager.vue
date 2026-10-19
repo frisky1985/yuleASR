@@ -124,6 +124,10 @@
             <el-icon><Switch /></el-icon>
             <span>ECU Comparison</span>
           </div>
+          <div class="pm-ws-action" @click="handleOpenSnapshots">
+            <el-icon><Clock /></el-icon>
+            <span>Snapshots</span>
+          </div>
           <div class="pm-ws-action" @click="handleImportArxml">
             <el-icon><Upload /></el-icon>
             <span>Import ARXML</span>
@@ -399,6 +403,10 @@ function handleOpenDiff() {
 
 function handleOpenEcuCompare() {
   router.push('/ecu-compare')
+}
+
+function handleOpenSnapshots() {
+  router.push('/snapshots')
 }
 
 function handleImportArxml() {

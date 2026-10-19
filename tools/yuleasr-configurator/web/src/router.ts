@@ -50,6 +50,11 @@ const router = createRouter({
       name: 'ecu-compare',
       component: () => import('@/components/EcuComparisonView.vue'),
     },
+    {
+      path: '/snapshots',
+      name: 'snapshots',
+      component: () => import('@/components/SnapshotManager.vue'),
+    },
   ],
 })
 
