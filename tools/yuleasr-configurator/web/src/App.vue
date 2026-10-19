@@ -77,7 +77,7 @@
     <div class="app-body">
       <transition name="sidebar">
         <div v-if="sidebarVisible" class="sidebar">
-          <ProjectTree />
+          <ProjectManager />
         </div>
       </transition>
 
@@ -133,7 +133,7 @@ import {
 import { ElMessage } from 'element-plus'
 import { useConfigStore } from '@/stores/config'
 import { useProjectStore } from '@/stores/project'
-import ProjectTree from '@/components/ProjectTree.vue'
+import ProjectManager from '@/components/ProjectManager.vue'
 
 const router = useRouter()
 const route = useRoute()
