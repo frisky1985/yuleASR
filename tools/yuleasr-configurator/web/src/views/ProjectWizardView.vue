@@ -38,8 +38,8 @@
       <!-- Step 2: Target Chip -->
       <div v-if="currentStep === 1" class="step-content">
         <el-form label-width="120px" style="max-width: 600px">
-          <el-form-item label="Chip Vendor" required>
-            <el-select v-model="projectForm.chipVendor" placeholder="Select vendor" @change="onVendorChange">
+          <el-form-item label="Chip Vendor">
+            <el-select v-model="projectForm.chipVendor" placeholder="Select vendor" clearable @change="onVendorChange">
               <el-option label="Infineon" value="infineon" />
               <el-option label="NXP" value="nxp" />
               <el-option label="Renesas" value="renesas" />
@@ -47,8 +47,8 @@
               <el-option label="TI" value="ti" />
             </el-select>
           </el-form-item>
-          <el-form-item label="Chip Series" required>
-            <el-select v-model="projectForm.chipSeries" placeholder="Select series" @change="onSeriesChange">
+          <el-form-item label="Chip Series">
+            <el-select v-model="projectForm.chipSeries" placeholder="Select series" clearable :disabled="!projectForm.chipVendor" @change="onSeriesChange">
               <el-option
                 v-for="series in availableSeries"
                 :key="series.value"
@@ -57,8 +57,8 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="Chip Model" required>
-            <el-select v-model="projectForm.chipModel" placeholder="Select model">
+          <el-form-item label="Chip Model">
+            <el-select v-model="projectForm.chipModel" placeholder="Select model" clearable :disabled="!projectForm.chipSeries">
               <el-option
                 v-for="model in availableModels"
                 :key="model.value"
@@ -494,11 +494,8 @@ function nextStep() {
     ElMessage.warning('Please enter project name')
     return
   }
-  if (currentStep.value === 1 && !projectForm.value.chipModel) {
-    ElMessage.warning('Please select chip model')
-    return
-  }
-  // Step 3 (Communication) and Step 2 (MCAL) have no required validation
+  // Step 1 (Target Chip) is optional - user can skip chip selection
+  // Step 2 (MCAL) and Step 3 (Communication) have no required validation
   // Just proceed to next step
   if (currentStep.value < 4) {
     currentStep.value++
