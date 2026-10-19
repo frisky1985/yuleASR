@@ -13,15 +13,36 @@
       </el-input>
     </div>
 
+    <!-- Batch action bar -->
+    <div v-if="selectedNodes.length > 0" class="batch-action-bar">
+      <span class="batch-count">{{ selectedNodes.length }} selected</span>
+      <div class="batch-actions">
+        <el-button size="small" type="success" text @click="batchEnable">
+          <el-icon><CircleCheck /></el-icon> Enable
+        </el-button>
+        <el-button size="small" type="danger" text @click="batchDisable">
+          <el-icon><CircleClose /></el-icon> Disable
+        </el-button>
+        <el-button size="small" type="primary" text @click="batchExport">
+          <el-icon><Download /></el-icon> Export
+        </el-button>
+        <el-button size="small" text @click="clearSelection">
+          <el-icon><Close /></el-icon>
+        </el-button>
+      </div>
+    </div>
+
     <el-tree
       ref="treeRef"
       :data="filteredTreeData"
       :props="treeProps"
       node-key="id"
       highlight-current
+      show-checkbox
       :expand-on-click-node="false"
       @node-click="handleNodeClick"
       @node-contextmenu="handleContextMenu"
+      @check-change="handleCheckChange"
       default-expand-all
     >
       <template #default="{ node, data }">
@@ -108,6 +129,9 @@ import {
   Expand,
   Fold,
   Refresh,
+  CircleCheck,
+  CircleClose,
+  Download,
 } from '@element-plus/icons-vue'
 import type { ModuleConfig } from '@/types'
 
@@ -141,11 +165,13 @@ const emit = defineEmits<{
   expandAll: []
   collapseAll: []
   refresh: []
+  batchExport: [modules: string[]]
 }>()
 
 const searchText = ref('')
 const treeRef = ref()
 const contextMenu = ref({ visible: false, x: 0, y: 0, node: null as ModuleNode | null })
+const selectedNodes = ref<string[]>([])
 
 const treeProps = {
   children: 'children',
@@ -302,6 +328,37 @@ function closeContextMenu() {
   contextMenu.value.visible = false
 }
 
+function handleCheckChange() {
+  const checkedNodes = treeRef.value?.getCheckedNodes(false, false) || []
+  selectedNodes.value = checkedNodes
+    .filter((node: ModuleNode) => !node.moduleCount) // Only leaf nodes (modules)
+    .map((node: ModuleNode) => node.label)
+}
+
+function batchEnable() {
+  for (const moduleName of selectedNodes.value) {
+    emit('enableModule', moduleName)
+  }
+  clearSelection()
+}
+
+function batchDisable() {
+  for (const moduleName of selectedNodes.value) {
+    emit('disableModule', moduleName)
+  }
+  clearSelection()
+}
+
+function batchExport() {
+  emit('batchExport', selectedNodes.value)
+  clearSelection()
+}
+
+function clearSelection() {
+  treeRef.value?.setCheckedKeys([])
+  selectedNodes.value = []
+}
+
 onMounted(() => {
   document.addEventListener('click', closeContextMenu)
 })
@@ -322,6 +379,26 @@ onUnmounted(() => {
 .tree-search {
   padding: 10px;
   border-bottom: 1px solid #e4e7ed;
+}
+
+.batch-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: #ecf5ff;
+  border-bottom: 1px solid #b3d8ff;
+}
+
+.batch-count {
+  font-size: 12px;
+  color: #409eff;
+  font-weight: 500;
+}
+
+.batch-actions {
+  display: flex;
+  gap: 4px;
 }
 
 .tree-node {
