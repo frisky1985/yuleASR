@@ -91,6 +91,7 @@
             <ParamTable
               :groups="paramGroups"
               :issues="validationIssues"
+              :module-name="currentModuleName"
               @update:param="handleParamUpdate"
             />
           </div>
@@ -194,6 +195,8 @@ const validationStatus = computed(() => {
 
 const flattenedParamCount = computed(() => flattenParams(paramGroups.value).length)
 
+const currentModuleName = computed(() => currentModule.value?.label)
+
 function handleNodeClick(data: ModuleNode) {
   if (!data.moduleCount && data.label) {
     tabsStore.openTab(data.label, data.label, data.iconClass)
@@ -277,7 +280,7 @@ async function loadModuleParams(moduleName: string) {
   }
 
   if (moduleSchema.value) {
-    paramGroups.value = groupParams(moduleSchema.value, mod)
+    paramGroups.value = groupParams(moduleSchema.value, mod, moduleName)
   }
 
   const allParams = flattenParams(paramGroups.value)

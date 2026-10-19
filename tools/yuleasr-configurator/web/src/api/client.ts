@@ -41,6 +41,22 @@ export async function validateReferences(config: Config): Promise<ReferenceValid
   return response.data
 }
 
+export interface ReferenceTarget {
+  label: string
+  value: string | number
+}
+
+export interface ReferenceAutocompleteResult {
+  targets: ReferenceTarget[]
+  target_module: string
+  target_field: string
+}
+
+export async function getReferenceTargets(module: string, field: string, query = ''): Promise<ReferenceAutocompleteResult> {
+  const response = await api.post('/config/reference-autocomplete', { module, field, query })
+  return response.data
+}
+
 // Project file API
 export interface ProjectFileData {
   version: string

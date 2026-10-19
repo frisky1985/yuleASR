@@ -22,6 +22,7 @@ from yuleasr.core.smart_validator import (
     record_feedback
 )
 from yuleasr.core.cross_module_validator import validate_config_references
+from yuleasr.core.reference_validator import CROSS_MODULE_REFERENCES
 from yuleasr.core.project_file import ProjectFile, EcuEntry, ChipInfo
 from yuleasr.parsers.dbc_parser import DbcParser, AutosarConfigGenerator
 from yuleasr.parsers.chip_database import get_vendors, get_series, get_models, get_mcal_modules, get_chip_info
@@ -248,6 +249,76 @@ async def validate_references(config: Dict[str, Any]):
         return CrossModuleValidationResponse(**result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Reference validation failed: {e}")
+
+
+class ReferenceAutocompleteRequest(BaseModel):
+    module: str
+    field: str
+    query: str = ""
+
+
+class ReferenceAutocompleteResponse(BaseModel):
+    targets: List[Dict[str, Any]]
+    target_module: str
+    target_field: str
+
+
+@app.post("/api/config/reference-autocomplete", response_model=ReferenceAutocompleteResponse)
+async def reference_autocomplete(req: ReferenceAutocompleteRequest):
+    """Return valid reference targets for a module field, filtered by query string."""
+    matches = [
+        (tgt_mod, tgt_field)
+        for src_mod, src_field, tgt_mod, tgt_field in CROSS_MODULE_REFERENCES
+        if src_mod == req.module and src_field == req.field
+    ]
+    if not matches:
+        return ReferenceAutocompleteResponse(targets=[], target_module="", target_field="")
+
+    tgt_mod, tgt_field = matches[0]
+    config_path = REPO_ROOT / "config" / "bsw_config.yaml"
+    try:
+        config = load_config(str(config_path))
+    except ConfigLoadError:
+        config = {}
+
+    module_config = config.get("modules", {}).get(tgt_mod, {})
+    targets = _extract_reference_targets(module_config, tgt_field, req.query)
+    return ReferenceAutocompleteResponse(
+        targets=targets,
+        target_module=tgt_mod,
+        target_field=tgt_field,
+    )
+
+
+def _extract_reference_targets(module_config: Dict[str, Any], field_path: str, query: str) -> List[Dict[str, Any]]:
+    """Extract reference target labels from module config based on field path."""
+    parts = field_path.split(".")
+    container = module_config
+    for part in parts[:-1]:
+        container = container.get(part, {})
+        if isinstance(container, list):
+            container = {i: v for i, v in enumerate(container)}
+
+    last_key = parts[-1]
+    value = container.get(last_key)
+
+    if isinstance(value, int):
+        return [{"label": f"{tgt_mod}[{i}]", "value": i} for i in range(value) if (not query or str(i) in query)]
+    if isinstance(value, list):
+        items = []
+        for i, item in enumerate(value):
+            label = item.get("name", f"{tgt_mod}_{i}") if isinstance(item, dict) else str(item)
+            if not query or query.lower() in label.lower():
+                items.append({"label": label, "value": label})
+        return items
+    if isinstance(value, dict):
+        items = []
+        for k, v in value.items():
+            label = v.get("name", k) if isinstance(v, dict) else k
+            if not query or query.lower() in label.lower():
+                items.append({"label": label, "value": label})
+        return items
+    return []
 
 
 # ============================================================================

@@ -72,7 +72,18 @@
             <el-table-column label="Value" min-width="250">
               <template #default="{ row }">
                 <div class="param-value-cell">
+                  <RefAutocomplete
+                    v-if="row.type === 'ref'"
+                    :model-value="row.value"
+                    :source-module="moduleName || ''"
+                    :source-field="row.path"
+                    :target-module="row.refTargetModule || ''"
+                    :target-field="row.refTargetField || ''"
+                    @update:model-value="(v: any) => { row.value = v; onParamChange(row) }"
+                    :class="{ 'has-error': hasParamError(row.path) }"
+                  />
                   <component
+                    v-else
                     :is="getEditor(row)"
                     v-model="row.value"
                     @change="onParamChange(row)"
@@ -119,6 +130,7 @@
               :key="child.name"
               :groups="[child]"
               :issues="issues"
+              :module-name="moduleName"
               @update:param="$emit('update:param', $event)"
             />
           </div>
@@ -131,7 +143,18 @@
             <div class="form-group-header">{{ group.label }}</div>
             <el-form-item v-for="param in group.params" :key="param.path" :label="param.name">
               <div class="form-item-content">
+                <RefAutocomplete
+                  v-if="param.type === 'ref'"
+                  :model-value="param.value"
+                  :source-module="moduleName || ''"
+                  :source-field="param.path"
+                  :target-module="param.refTargetModule || ''"
+                  :target-field="param.refTargetField || ''"
+                  @update:model-value="(v: any) => { param.value = v; onParamChange(param) }"
+                  style="width: 300px"
+                />
                 <component
+                  v-else
                   :is="getEditor(param)"
                   v-model="param.value"
                   @change="onParamChange(param)"
@@ -167,10 +190,12 @@ import { ElInput, ElInputNumber, ElSwitch, ElSelect, ElOption } from 'element-pl
 import type { ParamGroup, ParamMeta } from '@/utils/paramGrouper'
 import { filterParamsByVisibility, filterParamsBySearch } from '@/utils/paramGrouper'
 import type { ValidationIssue } from '@/utils/localValidator'
+import RefAutocomplete from './RefAutocomplete.vue'
 
 const props = defineProps<{
   groups: ParamGroup[]
   issues: ValidationIssue[]
+  moduleName?: string
 }>()
 
 const emit = defineEmits<{
@@ -197,6 +222,7 @@ function getTypeTagType(type: string): 'primary' | 'success' | 'warning' | 'info
     integer: 'success',
     boolean: 'warning',
     enum: 'info',
+    ref: 'warning',
   }
   return map[type] || 'info'
 }

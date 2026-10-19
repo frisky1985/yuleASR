@@ -3,7 +3,7 @@ import type { JsonSchema } from '@/types'
 export interface ParamMeta {
   name: string
   path: string
-  type: 'string' | 'number' | 'integer' | 'boolean' | 'enum' | 'array' | 'object'
+  type: 'string' | 'number' | 'integer' | 'boolean' | 'enum' | 'array' | 'object' | 'ref'
   value: any
   defaultValue: any
   description: string
@@ -16,6 +16,8 @@ export interface ParamMeta {
   group: string
   groupLabel: string
   editable: boolean
+  refTargetModule?: string
+  refTargetField?: string
 }
 
 export interface ParamGroup {
@@ -29,6 +31,26 @@ export interface ParamGroup {
 }
 
 const SKIP_KEYS = new Set(['name', 'enabled', 'version'])
+
+// Cross-module reference map: "ModuleName.fieldPath" → { targetModule, targetField }
+// Mirrors CROSS_MODULE_REFERENCES from backend reference_validator.py
+const REFERENCE_FIELD_MAP: Record<string, { targetModule: string; targetField: string }> = {
+  'CanIf.controllers': { targetModule: 'Can', targetField: 'general.num_controllers' },
+  'CanIf.hrh': { targetModule: 'Can', targetField: 'general.num_hardware_objects_rx' },
+  'CanIf.hth': { targetModule: 'Can', targetField: 'general.num_hardware_objects_tx' },
+  'CanTp.canif_pdu_ids': { targetModule: 'CanIf', targetField: 'tx_pdus' },
+  'PduR.routing_paths': { targetModule: 'Com', targetField: 'ipdus' },
+  'Com.ipdus': { targetModule: 'PduR', targetField: 'routing_paths' },
+  'NvM.blocks': { targetModule: 'Fee', targetField: 'memory_areas' },
+  'NvM.general.mem_if_driver': { targetModule: 'MemIf', targetField: 'name' },
+  'Fee.general.mem_if_driver': { targetModule: 'MemIf', targetField: 'name' },
+  'Ea.general.mem_if_driver': { targetModule: 'MemIf', targetField: 'name' },
+  'Dcm.rx_pdu_ids': { targetModule: 'PduR', targetField: 'routing_paths' },
+  'Dcm.tx_pdu_ids': { targetModule: 'PduR', targetField: 'routing_paths' },
+  'SecOC.tx_pdu_ids': { targetModule: 'Com', targetField: 'ipdus' },
+  'SecOC.rx_pdu_ids': { targetModule: 'Com', targetField: 'ipdus' },
+  'SecOC.general.csm_key_id': { targetModule: 'Csm', targetField: 'keys' },
+}
 
 const VISIBILITY_HINTS: Record<string, 'basic' | 'advanced' | 'expert'> = {
   dev_error_detect: 'advanced',
@@ -72,8 +94,10 @@ function buildParam(
   required: boolean,
   groupName: string,
   groupLabel: string,
+  moduleName?: string,
 ): ParamMeta {
-  const type = inferType(schema)
+  const refInfo = moduleName ? REFERENCE_FIELD_MAP[`${moduleName}.${path}`] : undefined
+  const type: ParamMeta['type'] = refInfo ? 'ref' : inferType(schema)
   const value = configValue !== undefined ? configValue : schema.default
   const visibility = inferVisibility(name, schema)
   const editable = schema.const === undefined
@@ -94,6 +118,8 @@ function buildParam(
     group: groupName,
     groupLabel,
     editable,
+    refTargetModule: refInfo?.targetModule,
+    refTargetField: refInfo?.targetField,
   }
 }
 
@@ -103,6 +129,7 @@ function buildGroup(
   configObj: any,
   requiredFields: string[],
   parentPath: string,
+  moduleName?: string,
 ): ParamGroup {
   const label = groupSchema.description || groupName
   const params: ParamMeta[] = []
@@ -117,11 +144,11 @@ function buildGroup(
       const configValue = getNestedValue(configObj, propName)
 
       if (propSchema.type === 'object' && propSchema.properties) {
-        childGroups.push(buildGroup(propName, propSchema, configValue || {}, propSchema.required || [], propPath))
+        childGroups.push(buildGroup(propName, propSchema, configValue || {}, propSchema.required || [], propPath, moduleName))
       } else if (propSchema.type === 'array' && propSchema.items) {
-        params.push(buildParam(propName, propPath, propSchema, configValue, isRequired, groupName, label))
+        params.push(buildParam(propName, propPath, propSchema, configValue, isRequired, groupName, label, moduleName))
       } else {
-        params.push(buildParam(propName, propPath, propSchema, configValue, isRequired, groupName, label))
+        params.push(buildParam(propName, propPath, propSchema, configValue, isRequired, groupName, label, moduleName))
       }
     }
   }
@@ -144,7 +171,7 @@ function buildGroup(
   }
 }
 
-export function groupParams(schema: JsonSchema, config: Record<string, any>): ParamGroup[] {
+export function groupParams(schema: JsonSchema, config: Record<string, any>, moduleName?: string): ParamGroup[] {
   const groups: ParamGroup[] = []
   const requiredFields = schema.required || []
 
@@ -168,6 +195,7 @@ export function groupParams(schema: JsonSchema, config: Record<string, any>): Pa
         isRequired,
         '_root',
         'General',
+        moduleName,
       )
 
       let rootGroup = groups.find((g) => g.name === '_root')

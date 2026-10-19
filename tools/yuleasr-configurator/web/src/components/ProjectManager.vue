@@ -1,7 +1,7 @@
 <template>
   <div class="project-manager">
     <!-- 项目信息头 -->
-    <div class="pm-header">
+    <div class="pm-header" @contextmenu.prevent="showProjectContext($event, 'header')">
       <div class="pm-project">
         <el-icon class="pm-project-icon"><Folder /></el-icon>
         <div class="pm-project-info">
@@ -37,6 +37,7 @@
             class="pm-project-item"
             :class="{ active: proj.id === currentProjectId }"
             @click="switchProject(proj.id)"
+            @contextmenu.prevent="showProjectContext($event, 'item', proj)"
           >
             <el-icon><Folder /></el-icon>
             <span>{{ proj.name }}</span>
@@ -137,11 +138,55 @@
       :edit-data="ecuEditData"
       @confirm="handleEcuConfirm"
     />
+
+    <!-- Project Context Menu -->
+    <teleport to="body">
+      <div
+        v-if="contextMenuVisible"
+        class="pm-context-menu"
+        :style="{ left: contextMenuX + 'px', top: contextMenuY + 'px' }"
+        @click.stop
+      >
+        <div class="pm-context-item" @click="handleRenameProject">
+          <el-icon><Edit /></el-icon>
+          <span>Rename</span>
+        </div>
+        <div class="pm-context-item" @click="handleDuplicateProject">
+          <el-icon><CopyDocument /></el-icon>
+          <span>Duplicate</span>
+        </div>
+        <div class="pm-context-divider" />
+        <div class="pm-context-item" @click="handleExportProject">
+          <el-icon><Download /></el-icon>
+          <span>Export Config</span>
+        </div>
+        <div class="pm-context-item" @click="handleProjectSettings">
+          <el-icon><Setting /></el-icon>
+          <span>Settings</span>
+        </div>
+      </div>
+    </teleport>
+
+    <!-- Rename Project Dialog -->
+    <el-dialog v-model="renameDialogVisible" title="Rename Project" width="400px" @close="renameForm.name = projectName">
+      <el-form @submit.prevent="confirmRename">
+        <el-form-item label="Project Name">
+          <el-input v-model="renameForm.name" placeholder="Enter new project name" ref="renameInputRef" autofocus />
+        </el-form-item>
+        <el-form-item label="Description">
+          <el-input v-model="renameForm.description" type="textarea" :rows="2" placeholder="Optional description" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="renameDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="confirmRename" :disabled="!renameForm.name.trim()">Save</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, markRaw } from 'vue'
+import { ref, computed, markRaw, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import {
   Folder,
@@ -157,6 +202,7 @@ import {
   Monitor,
   Edit,
   Delete,
+  CopyDocument,
 } from '@element-plus/icons-vue'
 import { useProjectStore } from '@/stores/project'
 import { useConfigStore } from '@/stores/config'
@@ -174,6 +220,30 @@ const activeSection = ref('projects')
 const currentProjectId = ref('default')
 const ecuDialogVisible = ref(false)
 const ecuEditData = ref<{ id: string; name: string; description?: string; chip?: { vendor: string; series: string; model: string } } | undefined>()
+
+// Context menu state
+const contextMenuVisible = ref(false)
+const contextMenuX = ref(0)
+const contextMenuY = ref(0)
+const contextMenuTarget = ref<'header' | 'item' | null>(null)
+const contextMenuProj = ref<any>(null)
+
+// Rename dialog state
+const renameDialogVisible = ref(false)
+const renameForm = ref({ name: '', description: '' })
+const renameInputRef = ref()
+
+function closeContextMenu() {
+  contextMenuVisible.value = false
+}
+
+onMounted(() => {
+  document.addEventListener('click', closeContextMenu)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeContextMenu)
+})
 
 const projectName = computed(() => configStore.config?.project?.name ?? 'yuleASR')
 const ecuCount = computed(() => projectStore.ecus.length)
@@ -259,6 +329,51 @@ function showEcuContext(_event: MouseEvent, ecu: EcuConfig) {
   openEditEcu(ecu)
 }
 
+function showProjectContext(event: MouseEvent, target: 'header' | 'item', proj?: any) {
+  contextMenuTarget.value = target
+  contextMenuProj.value = proj ?? null
+  contextMenuX.value = event.clientX
+  contextMenuY.value = event.clientY
+  contextMenuVisible.value = true
+}
+
+function handleRenameProject() {
+  closeContextMenu()
+  renameForm.value = { name: projectName.value, description: projectStore.projectDescription }
+  renameDialogVisible.value = true
+  setTimeout(() => renameInputRef.value?.focus(), 100)
+}
+
+async function confirmRename() {
+  const newName = renameForm.value.name.trim()
+  if (!newName) return
+  projectStore.projectName = newName
+  projectStore.projectDescription = renameForm.value.description
+  if (configStore.config?.project) {
+    configStore.config.project.name = newName
+    configStore.config.project.description = renameForm.value.description
+  }
+  await projectStore.saveProject()
+  ElMessage.success(`Project renamed to "${newName}"`)
+  renameDialogVisible.value = false
+}
+
+function handleDuplicateProject() {
+  closeContextMenu()
+  ElMessage.info('Project duplication coming soon')
+}
+
+function handleExportProject() {
+  closeContextMenu()
+  ElMessage.info('Export project config coming soon')
+  router.push('/config')
+}
+
+function handleProjectSettings() {
+  closeContextMenu()
+  ElMessage.info('Project settings coming soon')
+}
+
 function openModule(name: string) {
   tabsStore.openTab(name, name, '')
   router.push('/config')
@@ -299,6 +414,7 @@ function handleExportArxml() {
   padding: 12px 16px;
   border-bottom: 1px solid #e4e7ed;
   background: #fff;
+  cursor: context-menu;
 }
 
 .pm-project {
@@ -402,7 +518,7 @@ function handleExportArxml() {
   border-radius: 4px;
   font-size: 13px;
   color: #606266;
-  cursor: pointer;
+  cursor: context-menu;
   transition: background 0.15s;
 }
 
@@ -503,5 +619,44 @@ function handleExportArxml() {
 
 .pm-ws-action .el-icon {
   font-size: 16px;
+}
+
+.pm-context-menu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 160px;
+  background: #fff;
+  border: 1px solid #e4e7ed;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  padding: 4px 0;
+}
+
+.pm-context-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-size: 13px;
+  color: #606266;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pm-context-item:hover {
+  background: #f0f2f5;
+  color: #409eff;
+}
+
+.pm-context-item .el-icon {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+.pm-context-divider {
+  height: 1px;
+  background: #e4e7ed;
+  margin: 4px 0;
 }
 </style>
