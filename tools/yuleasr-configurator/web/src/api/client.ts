@@ -21,6 +21,26 @@ export async function validateConfig(config: Config): Promise<ValidationResult> 
   return response.data
 }
 
+export interface ReferenceIssue {
+  severity: 'error' | 'warning' | 'info'
+  type: string
+  source: string
+  target: string
+  message: string
+  suggestion?: string
+}
+
+export interface ReferenceValidationResult {
+  valid: boolean
+  issues: ReferenceIssue[]
+  summary: { errors: number; warnings: number; info: number }
+}
+
+export async function validateReferences(config: Config): Promise<ReferenceValidationResult> {
+  const response = await api.post('/config/validate-references', { config })
+  return response.data
+}
+
 export async function getSchemas(): Promise<Record<string, SchemaInfo[]>> {
   const response = await api.get('/schemas')
   return response.data.schemas
@@ -125,6 +145,42 @@ export async function parseNmMatrix(content: string, format: string = 'json'): P
   const response = await api.post('/nm/parse', content, {
     params: { format },
     headers: { 'Content-Type': 'text/plain' },
+  })
+  return response.data
+}
+
+// LLM Chatbot API
+export async function chatConfig(
+  moduleName: string,
+  userRequest: string,
+  currentConfig?: Record<string, any>,
+  model?: string,
+): Promise<{
+  success: boolean
+  changes: Record<string, any>
+  raw_response: string
+  warnings: string[]
+}> {
+  const response = await api.post(
+    '/chat/config',
+    {
+      module_name: moduleName,
+      user_request: userRequest,
+      current_config: currentConfig,
+      model,
+    },
+    { timeout: 300000 },
+  )
+  return response.data
+}
+
+export async function applyChatConfig(
+  moduleName: string,
+  changes: Record<string, any>,
+): Promise<{ success: boolean; module: string; path: string }> {
+  const response = await api.post('/chat/config/apply', {
+    module_name: moduleName,
+    changes,
   })
   return response.data
 }

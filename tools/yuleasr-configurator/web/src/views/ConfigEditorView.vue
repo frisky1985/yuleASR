@@ -156,8 +156,9 @@ import EditorTabs from '@/components/EditorTabs.vue'
 import ParamTable from '@/components/ParamTable.vue'
 import ConfigChatbot from '@/components/ConfigChatbot.vue'
 import * as api from '@/api/client'
-import { getModuleSchema } from '@/api/client'
+import { getModuleSchema, validateReferences } from '@/api/client'
 import type { JsonSchema } from '@/types'
+import type { ReferenceIssue } from '@/api/client'
 import { groupParams, flattenParams, setParamValue } from '@/utils/paramGrouper'
 import type { ParamGroup, ParamMeta } from '@/utils/paramGrouper'
 import { validateAll } from '@/utils/localValidator'
@@ -180,6 +181,7 @@ const currentModule = ref<ModuleNode | null>(null)
 const moduleSchema = ref<JsonSchema | null>(null)
 const paramGroups = ref<ParamGroup[]>([])
 const validationIssues = ref<ValidationIssue[]>([])
+const referenceIssues = ref<ReferenceIssue[]>([])
 const saving = ref(false)
 const validating = ref(false)
 const chatbotVisible = ref(false)
@@ -312,10 +314,21 @@ async function validate() {
   validating.value = true
   try {
     await store.validateConfig()
-    if (store.validation?.valid) {
+    const refResult = await validateReferences(store.config as any)
+    referenceIssues.value = refResult.issues
+
+    const schemaErrors = store.validation?.errors.length || 0
+    const refErrors = refResult.summary.errors
+    const refWarnings = refResult.summary.warnings
+
+    if (store.validation?.valid && refResult.valid) {
       ElMessage.success('Configuration is valid')
     } else {
-      ElMessage.warning(`Validation failed: ${store.validation?.errors.length || 0} errors`)
+      const parts = []
+      if (schemaErrors > 0) parts.push(`${schemaErrors} schema errors`)
+      if (refErrors > 0) parts.push(`${refErrors} reference errors`)
+      if (refWarnings > 0) parts.push(`${refWarnings} warnings`)
+      ElMessage.warning(`Validation issues: ${parts.join(', ')}`)
     }
   } catch (e: any) {
     ElMessage.error(e.message || 'Validation failed')

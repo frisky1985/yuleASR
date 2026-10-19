@@ -15,6 +15,13 @@ from yuleasr.core.schema_engine import SchemaRegistry, ValidationResult
 from yuleasr.core.code_generator import CodeGenerator, GenerationReport
 from yuleasr.core.resolver import ReferenceResolver
 from yuleasr.core.arxml_handler import ArxmlParser, ArxmlExporter
+from yuleasr.core.rag_engine import get_rag_context
+from yuleasr.core.smart_validator import (
+    validate_config as smart_validate,
+    auto_fix_config,
+    record_feedback
+)
+from yuleasr.core.cross_module_validator import validate_config_references
 from yuleasr.parsers.dbc_parser import DbcParser, AutosarConfigGenerator
 from yuleasr.parsers.chip_database import get_vendors, get_series, get_models, get_mcal_modules, get_chip_info
 from yuleasr.parsers.nm_parser import generate_autosar_nm_config, parse_nm_matrix
@@ -173,11 +180,13 @@ async def get_config(path: Optional[str] = None):
     
     try:
         config = load_config(config_path)
-        module_count = len(config.get("modules", {}))
+        # Handle nested 'config' key in YAML structure
+        actual_config = config.get("config", config)
+        module_count = len(actual_config.get("modules", {}))
         
         return ConfigResponse(
             path=str(config_path),
-            config=config,
+            config=actual_config,
             module_count=module_count,
         )
     except ConfigLoadError as e:
@@ -224,6 +233,22 @@ async def validate_config(config: Dict[str, Any], schema_dir: Optional[str] = No
         raise HTTPException(status_code=500, detail=f"Validation failed: {e}")
 
 
+class CrossModuleValidationResponse(BaseModel):
+    valid: bool
+    issues: List[Dict[str, Any]]
+    summary: Dict[str, int]
+
+
+@app.post("/api/config/validate-references", response_model=CrossModuleValidationResponse)
+async def validate_references(config: Dict[str, Any]):
+    """Validate cross-module references (dangling reference detection)."""
+    try:
+        result = validate_config_references(config)
+        return CrossModuleValidationResponse(**result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Reference validation failed: {e}")
+
+
 # ============================================================================
 # Schema Endpoints
 # ============================================================================
@@ -248,15 +273,22 @@ async def list_schemas():
 @app.get("/api/schemas/{module_name}")
 async def get_schema(module_name: str):
     """Get JSON schema for a specific module."""
-    # Search for schema in all layers
+    import json
+
+    for layer_dir in DEFAULT_SCHEMAS.iterdir():
+        if layer_dir.is_dir():
+            schema_file = layer_dir / f"{module_name}_schema.json"
+            if schema_file.exists():
+                with open(schema_file) as f:
+                    return json.load(f)
+
     for layer_dir in DEFAULT_SCHEMAS.iterdir():
         if layer_dir.is_dir():
             schema_file = layer_dir / f"{module_name.lower()}_schema.json"
             if schema_file.exists():
-                import json
                 with open(schema_file) as f:
                     return json.load(f)
-    
+
     raise HTTPException(status_code=404, detail=f"Schema not found for module: {module_name}")
 
 
@@ -308,7 +340,8 @@ async def list_modules(path: Optional[str] = None):
     
     try:
         config = load_config(config_path)
-        modules = config.get("modules", {})
+        # Handle nested 'config' key in YAML structure
+        modules = config.get("config", config).get("modules", {})
         
         # Determine layer for each module
         from yuleasr.core.resolver import BSW_DEPENDENCIES
@@ -321,13 +354,13 @@ async def list_modules(path: Optional[str] = None):
             # Determine layer
             lower_name = name.lower()
             layer = "services"  # default
-            if lower_name in {"Mcu", "Port", "Dio", "Can", "Spi", "Adc", "Pwm", "gpt", "Wdg", "Icu", "Lin", "Eep", "Flash", "I2c", "Uart"}:
+            if lower_name in {"mcu", "port", "dio", "can", "spi", "adc", "pwm", "gpt", "wdg", "icu", "lin", "eep", "flash", "i2c", "uart"}:
                 layer = "mcal"
-            elif lower_name in {"CanIf", "CanTp", "EthIf", "MemIf", "Fee", "Ea", "LinIf"}:
+            elif lower_name in {"canif", "cantp", "ethif", "memif", "fee", "ea", "linif"}:
                 layer = "ecual"
-            elif lower_name == "Os":
-                layer = "Os"
-            elif lower_name in {"BswM", "EcuM", "EcuC"}:
+            elif lower_name == "os":
+                layer = "os"
+            elif lower_name in {"bswm", "ecum", "ecuc"}:
                 layer = "integration"
             
             module_infos.append(ModuleInfo(
@@ -608,6 +641,293 @@ async def extract_header_schema(request: HeaderParseRequest):
         )
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to extract schema: {e}")
+
+
+# ============================================================================
+# LLM Chatbot Endpoints
+# ============================================================================
+
+import json as json_module
+import requests as http_requests
+import yaml
+
+OLLAMA_BASE_URL = "http://localhost:11434"
+DEFAULT_LLM_MODEL = "qwen2.5-coder:14b"
+
+
+class ChatConfigRequest(BaseModel):
+    """LLM config generation request."""
+    module_name: str
+    user_request: str
+    current_config: Optional[Dict[str, Any]] = None
+    model: Optional[str] = None
+
+
+class ChatConfigResponse(BaseModel):
+    """LLM config generation response."""
+    success: bool
+    changes: Dict[str, Any]
+    raw_response: str
+    warnings: List[str]
+
+
+def _build_llm_prompt(
+    module_name: str,
+    schema: dict,
+    current_config: dict,
+    user_request: str,
+) -> str:
+    schema_str = json_module.dumps(schema, indent=2, ensure_ascii=False)
+
+    field_descriptions: list[str] = []
+
+    def extract_fields(props: dict, prefix: str = ""):
+        for fname, fdef in props.items():
+            if fdef.get("type") == "object" and "properties" in fdef:
+                extract_fields(fdef["properties"], f"{prefix}{fname}.")
+            else:
+                desc = fdef.get("description", "")
+                ftype = fdef.get("type", "")
+                field_descriptions.append(f"  - {prefix}{fname} ({ftype}): {desc}")
+
+    extract_fields(schema.get("properties", {}))
+    fields_info = "\n".join(field_descriptions) if field_descriptions else "无字段定义"
+
+    current_yaml = yaml.dump(current_config, default_flow_style=False) if current_config else "{}"
+
+    # Get RAG context
+    rag_context = get_rag_context(module_name, user_request)
+
+    return f"""你是 AUTOSAR Classic Platform 基础软件配置专家。
+
+## 任务
+根据用户的自然语言描述，生成完整的模块配置变更。你必须：
+1. **仔细阅读用户需求的每个要点**
+2. **将每个需求映射到对应的配置字段**
+3. **生成所有必要的字段变更，不要遗漏**
+
+## 模块信息
+- 模块名称：{module_name}
+- 描述：{schema.get('description', 'Unknown')}
+
+{rag_context}
+
+## 可用配置字段
+{fields_info}
+
+## JSON Schema（完整定义）
+```json
+{schema_str}
+```
+
+## 当前配置
+```yaml
+{current_yaml}
+```
+
+## 用户需求
+{user_request}
+
+## 分析步骤
+请按以下步骤思考（但不要输出思考过程）：
+1. 提取用户需求中的所有配置要点（例如："500kbps" → baudrate, "3个控制器" → controllers）
+2. 查找每个要点对应的 Schema 字段
+3. 确定每个字段的正确值（注意单位转换，如 kbps → bps）
+4. 生成包含**所有**变更的完整配置
+
+## 输出要求
+- 使用 YAML 格式
+- 只包含需要修改的字段（增量配置）
+- 必须严格符合 JSON Schema
+- **确保覆盖用户需求的所有方面**
+- 不要包含解释或思考过程
+
+## 示例
+用户需求："配置 CAN 总线，波特率 500kbps，3 个控制器，启用错误检测和唤醒支持"
+
+正确输出（注意字段层级）：
+```yaml
+baudrate: 500000
+controllers: 3
+general:
+  dev_error_detect: true
+  wakeup_support: true
+```
+
+请生成配置（确保覆盖所有需求要点）：
+"""
+
+
+def _call_ollama(prompt: str, model: str) -> str:
+    resp = http_requests.post(
+        f"{OLLAMA_BASE_URL}/api/generate",
+        json={
+            "model": model,
+            "prompt": prompt,
+            "stream": False,
+            "options": {"temperature": 0.3, "top_p": 0.9},
+        },
+        timeout=300,
+    )
+    resp.raise_for_status()
+    return resp.json().get("response", "")
+
+
+def _parse_llm_yaml(raw: str) -> dict:
+    content = raw.strip()
+    if content.startswith("```yaml"):
+        content = content[7:]
+    if content.startswith("```"):
+        content = content[3:]
+    if content.endswith("```"):
+        content = content[:-3]
+    content = content.strip()
+    parsed = yaml.safe_load(content)
+    return parsed if isinstance(parsed, dict) else {}
+
+
+@app.post("/api/chat/config", response_model=ChatConfigResponse)
+async def chat_config(request: ChatConfigRequest):
+    """Generate configuration changes from natural language via LLM."""
+    module_name = request.module_name
+    model = request.model or DEFAULT_LLM_MODEL
+
+    schema = None
+    for layer_dir in DEFAULT_SCHEMAS.iterdir():
+        if layer_dir.is_dir():
+            for candidate in [f"{module_name}_schema.json", f"{module_name.lower()}_schema.json"]:
+                schema_file = layer_dir / candidate
+                if schema_file.exists():
+                    with open(schema_file) as f:
+                        schema = json_module.load(f)
+                    break
+        if schema:
+            break
+
+    if not schema:
+        raise HTTPException(status_code=404, detail=f"Schema not found: {module_name}")
+
+    config = load_config(DEFAULT_CONFIG)
+    current_module_config = config.get("modules", {}).get(module_name, {})
+
+    if request.current_config is not None:
+        current_module_config = request.current_config
+
+    prompt = _build_llm_prompt(module_name, schema, current_module_config, request.user_request)
+
+    try:
+        raw_response = _call_ollama(prompt, model)
+    except http_requests.exceptions.ConnectionError:
+        raise HTTPException(status_code=503, detail="Cannot connect to Ollama. Is 'ollama serve' running?")
+    except http_requests.exceptions.Timeout:
+        raise HTTPException(status_code=504, detail="LLM request timed out")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"LLM call failed: {e}")
+
+    try:
+        changes = _parse_llm_yaml(raw_response)
+    except Exception:
+        return ChatConfigResponse(
+            success=False,
+            changes={},
+            raw_response=raw_response,
+            warnings=["Failed to parse LLM output as YAML"],
+        )
+
+    # Smart validation (optional)
+    warnings: list[str] = []
+    try:
+        is_valid, validation_errors = smart_validate(module_name, changes, schema)
+        if not is_valid:
+            # Attempt auto-fix
+            changes = auto_fix_config(changes, schema, validation_errors)
+            warnings.extend([f"Auto-fixed: {err}" for err in validation_errors])
+    except Exception as e:
+        warnings.append(f"Validation skipped: {e}")
+
+    if module_name == "Can":
+        baudrate = changes.get("baudrate") or changes.get("general", {}).get("baudrate")
+        if baudrate and isinstance(baudrate, (int, float)):
+            if baudrate > 1_000_000:
+                warnings.append("CAN baudrate exceeds 1 Mbps — verify hardware support")
+            if baudrate < 10_000:
+                warnings.append("CAN baudrate below 10 kbps — may not work")
+
+    if not changes:
+        warnings.append("LLM did not generate any configuration changes")
+
+    return ChatConfigResponse(
+        success=True,
+        changes=changes,
+        raw_response=raw_response,
+        warnings=warnings,
+    )
+
+
+@app.post("/api/chat/config/apply")
+async def apply_chat_config(request: Dict[str, Any]):
+    """Apply configuration changes from chatbot."""
+    module_name = request.get("module_name")
+    changes = request.get("changes", {})
+
+    if not module_name:
+        raise HTTPException(status_code=400, detail="module_name is required")
+
+    config = load_config(DEFAULT_CONFIG)
+    current = config.get("modules", {}).get(module_name, {})
+
+    def deep_merge(base: dict, override: dict) -> dict:
+        result = base.copy()
+        for k, v in override.items():
+            if k in result and isinstance(result[k], dict) and isinstance(v, dict):
+                result[k] = deep_merge(result[k], v)
+            else:
+                result[k] = v
+        return result
+
+    config.setdefault("modules", {})[module_name] = deep_merge(current, changes)
+    dump_yaml(config, DEFAULT_CONFIG)
+
+    # Record feedback
+    record_feedback(
+        module_name=module_name,
+        user_request="",  # Will be filled from frontend
+        original_config=current,
+        user_modified_config=changes,
+        applied=True
+    )
+
+    return {"success": True, "module": module_name, "path": str(DEFAULT_CONFIG)}
+
+
+@app.post("/api/chat/feedback")
+async def submit_feedback(request: Dict[str, Any]):
+    """Submit user feedback on LLM-generated configuration."""
+    module_name = request.get("module_name")
+    user_request = request.get("user_request", "")
+    original_config = request.get("original_config", {})
+    user_modified_config = request.get("user_modified_config")
+    applied = request.get("applied", False)
+
+    if not module_name:
+        raise HTTPException(status_code=400, detail="module_name is required")
+
+    feedback = record_feedback(
+        module_name=module_name,
+        user_request=user_request,
+        original_config=original_config,
+        user_modified_config=user_modified_config,
+        applied=applied
+    )
+
+    return {"success": True, "feedback_id": feedback["timestamp"]}
+
+
+@app.get("/api/chat/feedback/analysis")
+async def get_feedback_analysis(module_name: Optional[str] = None):
+    """Get feedback analysis."""
+    from yuleasr.core.smart_validator import get_feedback_analysis as analyze
+    return analyze(module_name)
 
 
 # ============================================================================
