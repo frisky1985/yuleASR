@@ -190,6 +190,7 @@ import { ElInput, ElInputNumber, ElSwitch, ElSelect, ElOption } from 'element-pl
 import type { ParamGroup, ParamMeta } from '@/utils/paramGrouper'
 import { filterParamsByVisibility, filterParamsBySearch } from '@/utils/paramGrouper'
 import type { ValidationIssue } from '@/utils/localValidator'
+import { validateParam } from '@/utils/localValidator'
 import RefAutocomplete from './RefAutocomplete.vue'
 
 const props = defineProps<{
@@ -200,6 +201,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:param': [param: ParamMeta]
+  'validation:update': [issues: ValidationIssue[]]
 }>()
 
 const searchText = ref('')
@@ -255,6 +257,12 @@ function getParamErrors(path: string): ValidationIssue[] {
 }
 
 function onParamChange(param: ParamMeta) {
+  // Trigger real-time validation
+  const paramIssues = validateParam(param)
+  if (paramIssues.length > 0) {
+    // Emit validation issues for this parameter
+    emit('validation:update', paramIssues)
+  }
   emit('update:param', param)
 }
 
