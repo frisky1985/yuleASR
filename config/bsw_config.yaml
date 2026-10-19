@@ -1,1320 +1,1327 @@
-$schema: ./bsw_config_schema.json
-version: 1.1.0
-project:
-  name: yuleASR
-  vendor_id: 43
-  description: YuleTech AutoSAR BSW Platform unified configuration source
+config:
+  $schema: ./bsw_config_schema.json
+  version: 1.1.0
+  project:
+    name: yuleASR
+    vendor_id: 43
+    description: YuleTech AutoSAR BSW Platform unified configuration source
+  modules:
+    BswM:
+      name: BswM
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+      limits:
+        max_mode_request_ports: 32
+        max_expressions: 128
+        max_rules: 64
+        max_actions: 128
+        max_action_lists: 32
+      modes:
+      - name: STARTUP
+        id: 0
+      - name: RUN
+        id: 1
+      - name: SHUTDOWN
+        id: 2
+      - name: SLEEP
+        id: 3
+      - name: WAKEUP
+        id: 4
+      ecum_states:
+      - name: STARTUP
+        id: 16
+      - name: RUN
+        id: 32
+      - name: SHUTDOWN
+        id: 48
+      - name: SLEEP
+        id: 64
+      mode_request_ports:
+      - name: ECUM
+        id: 0
+        source: EcuM
+      - name: COM
+        id: 1
+        source: Com
+      - name: CANSM
+        id: 2
+        source: CanSM
+      - name: DEM
+        id: 3
+        source: Dem
+      - name: NVM
+        id: 4
+        source: NvM
+      expressions:
+      - name: EXPR_STARTUP_DONE
+        id: 0
+        term_count: 1
+      - name: EXPR_RUN_ACTIVE
+        id: 1
+        term_count: 2
+      - name: EXPR_SHUTDOWN_REQ
+        id: 2
+        term_count: 1
+      - name: EXPR_COMM_SILENT
+        id: 3
+        term_count: 2
+      rules:
+      - name: RULE_INIT_TO_RUN
+        id: 0
+        expression: EXPR_STARTUP_DONE
+        action_list: AL_ENTER_RUN
+      - name: RULE_RUN_TO_SHUTDOWN
+        id: 1
+        expression: EXPR_SHUTDOWN_REQ
+        action_list: AL_SHUTDOWN
+      - name: RULE_COMM_SILENT
+        id: 2
+        expression: EXPR_COMM_SILENT
+        action_list: AL_COMM_SILENT
+      action_lists:
+      - name: AL_ENTER_RUN
+        id: 0
+        actions:
+        - type: BSWM_ACTION_COM_IPDU_GROUP_START
+          target: COM_IPDU_GROUP_0
+        - type: BSWM_ACTION_USER_CALLOUT
+          target: BswM_UserEnterRun
+      - name: AL_SHUTDOWN
+        id: 1
+        actions:
+        - type: BSWM_ACTION_ECUM_GO_DOWN
+          target: BSWM_ECUM_STATE_SHUTDOWN
+      - name: AL_COMM_SILENT
+        id: 2
+        actions:
+        - type: BSWM_ACTION_COM_IPDU_GROUP_STOP
+          target: COM_IPDU_GROUP_0
+    Can:
+      name: Can
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        multiplexed_transmission: false
+        hw_transmit_cancellation: false
+        fifo_enable: true
+        wakeup_support: true
+      controllers: 2
+      hoh: 8
+      hw_objects: 16
+      baudrate: 500000
+      supported_baudrates:
+      - 125000
+      - 250000
+      - 500000
+      - 1000000
+    CanIf:
+      name: CanIf
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        dlc_check: true
+        software_filter: true
+        readrxpdu_data_api: true
+        readtxpdu_notify_status_api: false
+        readrxpdu_notify_status_api: false
+      controllers: 2
+      hrh: 4
+      hth: 4
+      tx_pdus: 16
+      rx_pdus: 16
+      default_baudrate: 500000
+      default_baudrate_config: 0
+    CanTp:
+      name: CanTp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        dynamic_channel_allocation: false
+        canfd_enabled: false
+        padding_byte: true
+        padding_byte_value: 204
+        change_parameter_api: true
+        read_parameter_api: true
+        addressing_format: CANTP_STANDARD
+      timing:
+        main_function_period_ms: 5
+        nas_ms: 25
+        nbs_ms: 75
+        ncs_ms: 25
+        nar_ms: 25
+        nbr_ms: 75
+        ncr_ms: 150
+        bs_default: 8
+        stmin_default: 20
+        wft_max_default: 8
+      limits:
+        max_channel_cnt: 4
+        max_message_length: 4095
+        canfd_max_message_length: 4095
+        channel_buffer_size: 64
+        can_frame_length: 8
+        invalid_channel_id: 255
+      addresses:
+        tx: 0
+        rx: 0
+      canif_pdu_ids:
+        tx: 0
+        rx: 0
+        fc_tx: 1
+        fc_rx: 1
+      channels:
+      - name: DIAG
+        id: 0
+        addressing_mode: STANDARD
+        max_payload: 4095
+      - name: UDS
+        id: 1
+        addressing_mode: STANDARD
+        max_payload: 4095
+      tx_nsdu:
+      - name: DIAG_PHYSICAL
+        id: 0
+        channel_id: 0
+        ta_type: PHYSICAL
+        bs: 8
+        stmin: 20
+        wftmax: 3
+      - name: DIAG_FUNCTIONAL
+        id: 1
+        channel_id: 0
+        ta_type: FUNCTIONAL
+        bs: 0
+        stmin: 0
+        wftmax: 0
+      - name: UDS_PHYSICAL
+        id: 2
+        channel_id: 1
+        ta_type: PHYSICAL
+        bs: 8
+        stmin: 20
+        wftmax: 3
+      - name: UDS_FUNCTIONAL
+        id: 3
+        channel_id: 1
+        ta_type: FUNCTIONAL
+        bs: 0
+        stmin: 0
+        wftmax: 0
+      rx_nsdu:
+      - name: DIAG_PHYSICAL
+        id: 0
+        channel_id: 0
+        ta_type: PHYSICAL
+        bs: 8
+        stmin: 20
+        wftmax: 8
+      - name: DIAG_FUNCTIONAL
+        id: 1
+        channel_id: 0
+        ta_type: FUNCTIONAL
+        bs: 0
+        stmin: 0
+        wftmax: 0
+      - name: UDS_PHYSICAL
+        id: 2
+        channel_id: 1
+        ta_type: PHYSICAL
+        bs: 8
+        stmin: 20
+        wftmax: 8
+      - name: UDS_FUNCTIONAL
+        id: 3
+        channel_id: 1
+        ta_type: FUNCTIONAL
+        bs: 0
+        stmin: 0
+        wftmax: 0
+    Com:
+      name: Com
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        enable_mdt_for_cyclic_transmission: true
+        retry_failed_transmit_requests: true
+        gateway_support: true
+      signals: 64
+      group_signals: 16
+      ipdus: 32
+      ipdu_groups: 4
+      max_ipdu_buffer_size: 64
+      num_signal_gw_mappings: 8
+      timing:
+        main_function_period_ms: 10
+        main_function_rx_period_ms: 10
+        main_function_tx_period_ms: 10
+        first_timeout_factor: 10
+        timeout_factor: 100
+    Dcm:
+      name: Dcm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        respond_all_request: true
+        task_time: true
+        obd_support: true
+        routine_control_support: true
+        data_transfer_support: true
+      counts:
+        protocols: 2
+        connections: 4
+        rx_pdu_ids: 4
+        tx_pdu_ids: 4
+        sessions: 4
+        security_levels: 3
+        services: 16
+        obd_pids: 32
+        routines: 8
+        dids: 32
+        rids: 8
+      buffers:
+        rx_buffer_size: 256
+        tx_buffer_size: 256
+        buffer_size: 4095
+        max_request_size: 4095
+        max_response_size: 4095
+        transfer_block_size: 1024
+        transfer_max_block_size: 4096
+      timing:
+        main_function_period_ms: 10
+        session_default_timeout_ms: 5000
+        session_programming_timeout_ms: 5000
+        session_extended_timeout_ms: 5000
+        session_safety_timeout_ms: 5000
+        p2_server_max_ms: 50
+        p2_star_server_max_ms: 5000
+        s3_server_ms: 5000
+      security:
+        max_attempts: 3
+        delay_time_ms: 10000
+        seed_size: 4
+        key_size: 4
+      protocols:
+      - name: OBD_ON_CAN
+        id: 0
+      - name: UDS_ON_CAN
+        id: 1
+      - name: UDS_ON_FLEXRAY
+        id: 2
+      - name: UDS_ON_IP
+        id: 3
+      sessions:
+      - name: DEFAULT
+        id: 0
+        alias: DCM_DEFAULT_SESSION
+      - name: PROGRAMMING
+        id: 1
+        alias: DCM_PROGRAMMING_SESSION
+      - name: EXTENDED
+        id: 2
+        alias: DCM_EXTENDED_DIAGNOSTIC_SESSION
+      - name: SAFETY
+        id: 3
+        alias: DCM_SAFETY_SYSTEM_DIAGNOSTIC_SESSION
+      security_levels:
+      - name: LOCKED
+        id: 0
+      - name: LEVEL_1
+        id: 1
+      - name: LEVEL_2
+        id: 2
+      session_timeouts:
+      - name: DEFAULT
+        timeout_ms: 5000
+      - name: PROGRAMMING
+        timeout_ms: 5000
+      - name: EXTENDED
+        timeout_ms: 5000
+      - name: SAFETY
+        timeout_ms: 5000
+    Dem:
+      name: Dem
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        clear_dtc_supported: true
+        clear_dtc_limitation: false
+        obd_relevant_support: true
+        j1939_support: false
+        debounce_counter_based: true
+        debounce_time_based: true
+        debounce_monitor_internal: true
+      counts:
+        events: 128
+        dtcs: 64
+        freeze_frame_records: 8
+        extended_data_records: 4
+        indicators: 8
+        operation_cycles: 5
+        enable_conditions: 8
+        storage_conditions: 8
+        obd_pids: 32
+        obd_tids: 16
+        obd_infotypes: 8
+        j1939_fmi: 32
+        j1939_oc: 16
+      debounce:
+        counter_failed_threshold: 127
+        counter_passed_threshold: -128U
+        counter_increment: 1
+        counter_decrement: 1
+        counter_increment_step: 1
+        counter_decrement_step: 1
+        time_failed_threshold_ms: 100
+        time_passed_threshold_ms: 100
+        fdc_threshold: 80
+        fdc_max: 127
+        fdc_min: -128U
+      timing:
+        main_function_period_ms: 10
+      aging:
+        cycle_counter_max: 255
+        cycle_counter_threshold: 40
+        threshold: 40
+      limits:
+        max_occurrence_counter: 255
+        event_id_min: 1
+        event_id_max: 127
+        dtc_invalid: 0
+        dtc_min: 1
+        dtc_max: 16777215
+        dtc_priority_min: 1
+        dtc_priority_max: 255
+        freeze_frame_max_dids: 16
+        freeze_frame_max_size: 256
+        extended_data_max_size: 128
+        dtc_status_availability_mask: 255
+        dtc_group_all: 16777215
+      memory:
+        primary_size: 4096
+        mirror_size: 2048
+        permanent_size: 1024
+      indicators:
+      - name: MIL
+        id: 0
+      - name: SVS
+        id: 1
+      - name: AWLS
+        id: 2
+      - name: PL
+        id: 3
+      - name: SBL
+        id: 4
+      - name: AWLS2
+        id: 5
+      - name: RSL
+        id: 6
+      - name: ESL
+        id: 7
+      operation_cycles:
+      - name: POWER
+        id: 0
+      - name: IGNITION
+        id: 1
+      - name: WARMUP
+        id: 2
+      - name: OBD_DCY
+        id: 3
+      - name: OTHER
+        id: 4
+    Gpt:
+      name: Gpt
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        wakeup_functionality_api: false
+        deinit_api: true
+        time_elapsed_api: true
+        time_remaining_api: true
+        enable_disable_notification_api: true
+      channels:
+      - name: CH0
+        id: 0
+        tick_frequency_hz: 1000
+      - name: CH1
+        id: 1
+        tick_frequency_hz: 10000
+      - name: CH2
+        id: 2
+        tick_frequency_hz: 100000
+      - name: CH3
+        id: 3
+        tick_frequency_hz: 1000000
+      max_tick_value: 0xFFFFFFFFU
+    IoHwAb:
+      name: IoHwAb
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+      channels:
+        analog_inputs: 16
+        analog_outputs: 8
+        digital_inputs: 32
+        digital_outputs: 32
+        pwm_outputs: 8
+        icu_inputs: 4
+        opamp_channels: 2
+      adc:
+        resolution: 12
+        max_value: 4095
+        vref_mv: 3300
+      pwm:
+        min_frequency_hz: 1
+        max_frequency_hz: 20000
+        default_frequency_hz: 1000
+    Mcu:
+      name: Mcu
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        no_pll: false
+        init_clock: true
+        get_ram_state_api: false
+      clock:
+        xtal_frequency_hz: 24000000
+        system_frequency_hz: 800000000
+        bus_frequency_hz: 200000000
+        flash_frequency_hz: 40000000
+        num_configs: 1
+        default_setting: 0
+      ram_sectors: 1
+      modes: 3
+      reset_reasons: 8
+      core_count: 4
+    NvM:
+      name: NvM
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        set_ram_block_status_api: true
+        get_error_status_api: true
+        set_block_protection_api: true
+        get_block_protection_api: false
+        set_data_index_api: true
+        get_data_index_api: false
+        cancel_job_api: true
+        kill_write_all_api: false
+        kill_read_all_api: false
+        repair_damaged_blocks_api: false
+        calc_ram_block_crc: true
+        use_crc_comp_mechanism: true
+        multi_block_callback: false
+      nvram_blocks: 32
+      datasets: 8
+      rom_blocks: 16
+      max_write_retries: 3
+      max_read_retries: 3
+      main_function_period_ms: 10
+      standard_job_queue_size: 16
+      immediate_job_queue_size: 4
+    Os:
+      name: Os
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        use_get_service_id: true
+        use_parameter_access: true
+        protection_hook: false
+        stack_monitoring: true
+        startup_hook: true
+        shutdown_hook: true
+        error_hook: true
+        pretask_hook: false
+        posttask_hook: false
+      counts:
+        tasks: 8
+        alarms: 6
+        resources: 4
+        task_count_reserved: 8
+        resource_count_reserved: 0
+      main_counter:
+        ticks_per_ms: 1
+        max_allowed_value: 4294967295
+        min_cycle: 1
+      stacks:
+        task_stack_size: 4096
+        isr_stack_size: 2048
+      tasks:
+      - name: Init
+        id: 0
+      - name: 10ms
+        id: 1
+      - name: 50ms
+        id: 2
+      - name: 100ms
+        id: 3
+      - name: Background
+        id: 4
+      - name: ComMainFunctionRx
+        id: 5
+      - name: ComMainFunctionTx
+        id: 6
+      - name: Diagnostic
+        id: 7
+      task_priorities:
+      - name: IDLE
+        value: 1
+      - name: LOW
+        value: 2
+      - name: NORMAL
+        value: 3
+      - name: HIGH
+        value: 4
+      - name: CRITICAL
+        value: 5
+      alarms:
+      - name: BswM_MainFunction
+        id: 0
+      - name: Com_MainFunction
+        id: 1
+      - name: CanIf_MainFunction
+        id: 2
+      - name: Dcm_MainFunction
+        id: 3
+      - name: NvM_MainFunction
+        id: 4
+      - name: Dem_MainFunction
+        id: 5
+      alarm_periods:
+      - name: 10MS
+        value: 10
+      - name: 50MS
+        value: 50
+      - name: 100MS
+        value: 100
+      resources:
+      - name: CanController
+        id: 0
+      - name: NvMBlock
+        id: 1
+      - name: ComBuffer
+        id: 2
+      - name: Diagnostic
+        id: 3
+      events:
+      - name: INIT_COMPLETE
+        mask: 1
+      - name: CAN_MESSAGE_RECEIVED
+        mask: 2
+      - name: NVM_WRITE_COMPLETE
+        mask: 4
+      - name: DIAGNOSTIC_REQUEST
+        mask: 8
+      - name: MODE_SWITCH
+        mask: 16
+    PduR:
+      name: PduR
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        gateway_operation_enabled: true
+      routing_paths: 16
+      routing_path_groups: 4
+      max_destinations_per_path: 4
+      fifo_depth: 8
+      main_function_period_ms: 10
+    Port:
+      name: Port
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        set_pin_direction_api: true
+        set_pin_mode_api: true
+      pins: 32
+      ports: 5
+    SecOC:
+      name: SecOC
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        enable_freshness_sync: true
+        override_status_allowed: true
+        ar_release_major_version: 4
+        ar_release_minor_version: 7
+        ar_release_revision_version: 0
+        sw_major_version: 1
+        sw_minor_version: 0
+        sw_patch_version: 0
+      counts:
+        tx_pdus: 4
+        rx_pdus: 4
+        max_pdus: 4
+        max_crypto_operations: 4
+        verification_retry_count: 3
+      timing:
+        main_function_period_rx_ms: 10
+        main_function_period_tx_ms: 10
+        verification_timeout_ms: 100
+      authentication:
+        algorithm_alias: SECOC_HMAC_SHA256
+        auth_info_length: 16
+        data_id_length: 1
+        csm_job_id_auth_alias: CSM_JOB_ID_MAC_GENERATE_1
+        csm_job_id_verify_alias: CSM_JOB_ID_MAC_VERIFY_1
+      freshness:
+        value_type_alias: SECOC_COUNTER
+        value_tx_length: 16
+        value_length: 32
+        max_freshness_value: 4294967295
+        reset_threshold: 4026531840
+        default_verification_status_alias: SECOC_UNVERIFIED
+      limits:
+        max_pdu_length: 256
+      tx_pdu_ids:
+      - 0
+      - 1
+      - 2
+      - 3
+      rx_pdu_ids:
+      - 0
+      - 1
+      - 2
+      - 3
+    Spi:
+      name: Spi
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        interruptible_seq_allowed: false
+        hw_status_api: true
+        cancel_api: false
+        level_delivered: 2
+      channels: 4
+      jobs: 8
+      sequences: 4
+      hw_units: 3
+    WdgM:
+      name: WdgM
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+        vendor_id: 43
+        ar_release_major_version: 4
+        ar_release_minor_version: 7
+        ar_release_revision_version: 0
+        sw_major_version: 1
+        sw_minor_version: 0
+        sw_patch_version: 0
+      window_watchdog:
+        enabled: true
+        trigger_period_ms: 50
+        timeout_ms: 100
+        window_start_percent: 50
+        window_end_percent: 100
+      independent_watchdog:
+        enabled: true
+        trigger_period_ms: 100
+        timeout_ms: 200
+      supervision:
+        cycle_ms: 10
+        failure_threshold: 3
+        max_supervised_entities: 8
+      integrations:
+        lockstep: true
+        ramsafety: true
+        dem: true
+      supervised_entities:
+      - name: MAIN_CYCLE
+        id: 1
+      - name: COMMUNICATION
+        id: 2
+      - name: DIAGNOSTICS
+        id: 3
+      - name: STORAGE
+        id: 4
+      - name: SAFETY_MONITOR
+        id: 5
+      - name: LOCKSTEP
+        id: 6
+      - name: RAMSAFETY
+        id: 7
+      dem_events:
+      - name: SUPERVISION_EXPIRED
+        event_id: 1
+      - name: SET_MODE_FAILED
+        event_id: 2
+      - name: LOCKSTEP_ERROR
+        event_id: 3
+      - name: RAMSAFETY_ERROR
+        event_id: 4
+    Adc:
+      name: adc
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    CanNm:
+      name: canNm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    CanM:
+      name: canm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    CanSM:
+      name: cansm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    CanTrcv:
+      name: cantrcv
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    CanTSyn:
+      name: cantsyn
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    ComM:
+      name: comM
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Crc:
+      name: crc
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    CryIf:
+      name: cryif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Crypto:
+      name: crypto
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Csm:
+      name: csm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Det:
+      name: det
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Dio:
+      name: dio
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Dlt:
+      name: dlt
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    DoIP:
+      name: DoIP
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    DoCan:
+      name: docan
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    E2E:
+      name: e2e
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Ea:
+      name: ea
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EcuC:
+      name: ecuC
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EcuM:
+      name: ecum
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Eep:
+      name: eep
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Eth:
+      name: eth
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EthSM:
+      name: ethSm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EthIf:
+      name: ethif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EthSwt:
+      name: ethswt
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EthTrcv:
+      name: ethtrcv
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    EthTSyn:
+      name: ethtsyn
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Fee:
+      name: fee
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    FiM:
+      name: fim
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Flash:
+      name: flash
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Fls:
+      name: fls
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    FlStSt:
+      name: flstst
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    FrIf:
+      name: frif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    FrTp:
+      name: frtp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    I2c:
+      name: i2c
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Icu:
+      name: icu
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    IpduM:
+      name: ipdum
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    J1939Nm:
+      name: j1939nm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    J1939Tp:
+      name: j1939tp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    KeyM:
+      name: keym
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LdCom:
+      name: ldcom
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Lin:
+      name: lin
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LinNm:
+      name: linNm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LinSM:
+      name: linSM
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LinTp:
+      name: linTp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LinIf:
+      name: linif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LinM:
+      name: linm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LinTrcv:
+      name: lintrcv
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    LntM:
+      name: lntm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Mem:
+      name: mem
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    MemIf:
+      name: memif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Mqtt:
+      name: mqtt
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Nm:
+      name: nm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Ocu:
+      name: ocu
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Pwm:
+      name: pwm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    RamSafety:
+      name: ramsafety
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    RamTst:
+      name: ramtst
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SchM:
+      name: schm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Sd:
+      name: sd
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SoAd:
+      name: soad
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SomeIp:
+      name: someip
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SomeIpIf:
+      name: someipif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SomeIpSd:
+      name: someipsd
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SomeIpTp:
+      name: someiptp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SomeIpXf:
+      name: someipxf
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Srp:
+      name: srp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    StbM:
+      name: stbm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    SwC:
+      name: swc
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    TcpIp:
+      name: tcpip
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Tm:
+      name: tm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Uart:
+      name: uart
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    UdpNm:
+      name: udpNm
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Wdg:
+      name: wdg
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    WdgIf:
+      name: wdgif
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+    Xcp:
+      name: xcp
+      enabled: true
+      version: 1.0.0
+      general:
+        dev_error_detect: true
+        version_info_api: true
+  rte:
+    enabled: true
+    arxml: config/input/arxml/example.arxml
+    output_subdir: rte
+    swc_filter: []
+    generate:
+      rte_h: true
+      rte_c: true
+      rte_type_h: true
+    behavior:
+      timing_event_prefix: TimingEvent
+      init_event_prefix: InitEvent
 modules:
-  BswM:
-    name: BswM
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-    limits:
-      max_mode_request_ports: 32
-      max_expressions: 128
-      max_rules: 64
-      max_actions: 128
-      max_action_lists: 32
-    modes:
-    - name: STARTUP
-      id: 0
-    - name: RUN
-      id: 1
-    - name: SHUTDOWN
-      id: 2
-    - name: SLEEP
-      id: 3
-    - name: WAKEUP
-      id: 4
-    ecum_states:
-    - name: STARTUP
-      id: 16
-    - name: RUN
-      id: 32
-    - name: SHUTDOWN
-      id: 48
-    - name: SLEEP
-      id: 64
-    mode_request_ports:
-    - name: ECUM
-      id: 0
-      source: EcuM
-    - name: COM
-      id: 1
-      source: Com
-    - name: CANSM
-      id: 2
-      source: CanSM
-    - name: DEM
-      id: 3
-      source: Dem
-    - name: NVM
-      id: 4
-      source: NvM
-    expressions:
-    - name: EXPR_STARTUP_DONE
-      id: 0
-      term_count: 1
-    - name: EXPR_RUN_ACTIVE
-      id: 1
-      term_count: 2
-    - name: EXPR_SHUTDOWN_REQ
-      id: 2
-      term_count: 1
-    - name: EXPR_COMM_SILENT
-      id: 3
-      term_count: 2
-    rules:
-    - name: RULE_INIT_TO_RUN
-      id: 0
-      expression: EXPR_STARTUP_DONE
-      action_list: AL_ENTER_RUN
-    - name: RULE_RUN_TO_SHUTDOWN
-      id: 1
-      expression: EXPR_SHUTDOWN_REQ
-      action_list: AL_SHUTDOWN
-    - name: RULE_COMM_SILENT
-      id: 2
-      expression: EXPR_COMM_SILENT
-      action_list: AL_COMM_SILENT
-    action_lists:
-    - name: AL_ENTER_RUN
-      id: 0
-      actions:
-      - type: BSWM_ACTION_COM_IPDU_GROUP_START
-        target: COM_IPDU_GROUP_0
-      - type: BSWM_ACTION_USER_CALLOUT
-        target: BswM_UserEnterRun
-    - name: AL_SHUTDOWN
-      id: 1
-      actions:
-      - type: BSWM_ACTION_ECUM_GO_DOWN
-        target: BSWM_ECUM_STATE_SHUTDOWN
-    - name: AL_COMM_SILENT
-      id: 2
-      actions:
-      - type: BSWM_ACTION_COM_IPDU_GROUP_STOP
-        target: COM_IPDU_GROUP_0
-  Can:
-    name: Can
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      multiplexed_transmission: false
-      hw_transmit_cancellation: false
-      fifo_enable: true
-      wakeup_support: true
-    controllers: 2
-    hoh: 8
-    hw_objects: 16
-    baudrate: 500000
-    supported_baudrates:
-    - 125000
-    - 250000
-    - 500000
-    - 1000000
-  CanIf:
-    name: CanIf
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      dlc_check: true
-      software_filter: true
-      readrxpdu_data_api: true
-      readtxpdu_notify_status_api: false
-      readrxpdu_notify_status_api: false
-    controllers: 2
-    hrh: 4
-    hth: 4
-    tx_pdus: 16
-    rx_pdus: 16
-    default_baudrate: 500000
-    default_baudrate_config: 0
-  CanTp:
-    name: CanTp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      dynamic_channel_allocation: false
-      canfd_enabled: false
-      padding_byte: true
-      padding_byte_value: 204
-      change_parameter_api: true
-      read_parameter_api: true
-      addressing_format: CANTP_STANDARD
-    timing:
-      main_function_period_ms: 5
-      nas_ms: 25
-      nbs_ms: 75
-      ncs_ms: 25
-      nar_ms: 25
-      nbr_ms: 75
-      ncr_ms: 150
-      bs_default: 8
-      stmin_default: 20
-      wft_max_default: 8
-    limits:
-      max_channel_cnt: 4
-      max_message_length: 4095
-      canfd_max_message_length: 4095
-      channel_buffer_size: 64
-      can_frame_length: 8
-      invalid_channel_id: 255
-    addresses:
-      tx: 0
-      rx: 0
-    canif_pdu_ids:
-      tx: 0
-      rx: 0
-      fc_tx: 1
-      fc_rx: 1
-    channels:
-    - name: DIAG
-      id: 0
-      addressing_mode: STANDARD
-      max_payload: 4095
-    - name: UDS
-      id: 1
-      addressing_mode: STANDARD
-      max_payload: 4095
-    tx_nsdu:
-    - name: DIAG_PHYSICAL
-      id: 0
-      channel_id: 0
-      ta_type: PHYSICAL
-      bs: 8
-      stmin: 20
-      wftmax: 3
-    - name: DIAG_FUNCTIONAL
-      id: 1
-      channel_id: 0
-      ta_type: FUNCTIONAL
-      bs: 0
-      stmin: 0
-      wftmax: 0
-    - name: UDS_PHYSICAL
-      id: 2
-      channel_id: 1
-      ta_type: PHYSICAL
-      bs: 8
-      stmin: 20
-      wftmax: 3
-    - name: UDS_FUNCTIONAL
-      id: 3
-      channel_id: 1
-      ta_type: FUNCTIONAL
-      bs: 0
-      stmin: 0
-      wftmax: 0
-    rx_nsdu:
-    - name: DIAG_PHYSICAL
-      id: 0
-      channel_id: 0
-      ta_type: PHYSICAL
-      bs: 8
-      stmin: 20
-      wftmax: 8
-    - name: DIAG_FUNCTIONAL
-      id: 1
-      channel_id: 0
-      ta_type: FUNCTIONAL
-      bs: 0
-      stmin: 0
-      wftmax: 0
-    - name: UDS_PHYSICAL
-      id: 2
-      channel_id: 1
-      ta_type: PHYSICAL
-      bs: 8
-      stmin: 20
-      wftmax: 8
-    - name: UDS_FUNCTIONAL
-      id: 3
-      channel_id: 1
-      ta_type: FUNCTIONAL
-      bs: 0
-      stmin: 0
-      wftmax: 0
-  Com:
-    name: Com
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      enable_mdt_for_cyclic_transmission: true
-      retry_failed_transmit_requests: true
-      gateway_support: true
-    signals: 64
-    group_signals: 16
-    ipdus: 32
-    ipdu_groups: 4
-    max_ipdu_buffer_size: 64
-    num_signal_gw_mappings: 8
-    timing:
-      main_function_period_ms: 10
-      main_function_rx_period_ms: 10
-      main_function_tx_period_ms: 10
-      first_timeout_factor: 10
-      timeout_factor: 100
-  Dcm:
-    name: Dcm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      respond_all_request: true
-      task_time: true
-      obd_support: true
-      routine_control_support: true
-      data_transfer_support: true
-    counts:
-      protocols: 2
-      connections: 4
-      rx_pdu_ids: 4
-      tx_pdu_ids: 4
-      sessions: 4
-      security_levels: 3
-      services: 16
-      obd_pids: 32
-      routines: 8
-      dids: 32
-      rids: 8
-    buffers:
-      rx_buffer_size: 256
-      tx_buffer_size: 256
-      buffer_size: 4095
-      max_request_size: 4095
-      max_response_size: 4095
-      transfer_block_size: 1024
-      transfer_max_block_size: 4096
-    timing:
-      main_function_period_ms: 10
-      session_default_timeout_ms: 5000
-      session_programming_timeout_ms: 5000
-      session_extended_timeout_ms: 5000
-      session_safety_timeout_ms: 5000
-      p2_server_max_ms: 50
-      p2_star_server_max_ms: 5000
-      s3_server_ms: 5000
-    security:
-      max_attempts: 3
-      delay_time_ms: 10000
-      seed_size: 4
-      key_size: 4
-    protocols:
-    - name: OBD_ON_CAN
-      id: 0
-    - name: UDS_ON_CAN
-      id: 1
-    - name: UDS_ON_FLEXRAY
-      id: 2
-    - name: UDS_ON_IP
-      id: 3
-    sessions:
-    - name: DEFAULT
-      id: 0
-      alias: DCM_DEFAULT_SESSION
-    - name: PROGRAMMING
-      id: 1
-      alias: DCM_PROGRAMMING_SESSION
-    - name: EXTENDED
-      id: 2
-      alias: DCM_EXTENDED_DIAGNOSTIC_SESSION
-    - name: SAFETY
-      id: 3
-      alias: DCM_SAFETY_SYSTEM_DIAGNOSTIC_SESSION
-    security_levels:
-    - name: LOCKED
-      id: 0
-    - name: LEVEL_1
-      id: 1
-    - name: LEVEL_2
-      id: 2
-    session_timeouts:
-    - name: DEFAULT
-      timeout_ms: 5000
-    - name: PROGRAMMING
-      timeout_ms: 5000
-    - name: EXTENDED
-      timeout_ms: 5000
-    - name: SAFETY
-      timeout_ms: 5000
-  Dem:
-    name: Dem
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      clear_dtc_supported: true
-      clear_dtc_limitation: false
-      obd_relevant_support: true
-      j1939_support: false
-      debounce_counter_based: true
-      debounce_time_based: true
-      debounce_monitor_internal: true
-    counts:
-      events: 128
-      dtcs: 64
-      freeze_frame_records: 8
-      extended_data_records: 4
-      indicators: 8
-      operation_cycles: 5
-      enable_conditions: 8
-      storage_conditions: 8
-      obd_pids: 32
-      obd_tids: 16
-      obd_infotypes: 8
-      j1939_fmi: 32
-      j1939_oc: 16
-    debounce:
-      counter_failed_threshold: 127
-      counter_passed_threshold: -128U
-      counter_increment: 1
-      counter_decrement: 1
-      counter_increment_step: 1
-      counter_decrement_step: 1
-      time_failed_threshold_ms: 100
-      time_passed_threshold_ms: 100
-      fdc_threshold: 80
-      fdc_max: 127
-      fdc_min: -128U
-    timing:
-      main_function_period_ms: 10
-    aging:
-      cycle_counter_max: 255
-      cycle_counter_threshold: 40
-      threshold: 40
-    limits:
-      max_occurrence_counter: 255
-      event_id_min: 1
-      event_id_max: 127
-      dtc_invalid: 0
-      dtc_min: 1
-      dtc_max: 16777215
-      dtc_priority_min: 1
-      dtc_priority_max: 255
-      freeze_frame_max_dids: 16
-      freeze_frame_max_size: 256
-      extended_data_max_size: 128
-      dtc_status_availability_mask: 255
-      dtc_group_all: 16777215
-    memory:
-      primary_size: 4096
-      mirror_size: 2048
-      permanent_size: 1024
-    indicators:
-    - name: MIL
-      id: 0
-    - name: SVS
-      id: 1
-    - name: AWLS
-      id: 2
-    - name: PL
-      id: 3
-    - name: SBL
-      id: 4
-    - name: AWLS2
-      id: 5
-    - name: RSL
-      id: 6
-    - name: ESL
-      id: 7
-    operation_cycles:
-    - name: POWER
-      id: 0
-    - name: IGNITION
-      id: 1
-    - name: WARMUP
-      id: 2
-    - name: OBD_DCY
-      id: 3
-    - name: OTHER
-      id: 4
-  Gpt:
-    name: Gpt
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      wakeup_functionality_api: false
-      deinit_api: true
-      time_elapsed_api: true
-      time_remaining_api: true
-      enable_disable_notification_api: true
-    channels:
-    - name: CH0
-      id: 0
-      tick_frequency_hz: 1000
-    - name: CH1
-      id: 1
-      tick_frequency_hz: 10000
-    - name: CH2
-      id: 2
-      tick_frequency_hz: 100000
-    - name: CH3
-      id: 3
-      tick_frequency_hz: 1000000
-    max_tick_value: 0xFFFFFFFFU
-  IoHwAb:
-    name: IoHwAb
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-    channels:
-      analog_inputs: 16
-      analog_outputs: 8
-      digital_inputs: 32
-      digital_outputs: 32
-      pwm_outputs: 8
-      icu_inputs: 4
-      opamp_channels: 2
-    adc:
-      resolution: 12
-      max_value: 4095
-      vref_mv: 3300
-    pwm:
-      min_frequency_hz: 1
-      max_frequency_hz: 20000
-      default_frequency_hz: 1000
-  Mcu:
-    name: Mcu
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      no_pll: false
-      init_clock: true
-      get_ram_state_api: false
-    clock:
-      xtal_frequency_hz: 24000000
-      system_frequency_hz: 800000000
-      bus_frequency_hz: 200000000
-      flash_frequency_hz: 40000000
-      num_configs: 1
-      default_setting: 0
-    ram_sectors: 1
-    modes: 3
-    reset_reasons: 8
-    core_count: 4
-  NvM:
-    name: NvM
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      set_ram_block_status_api: true
-      get_error_status_api: true
-      set_block_protection_api: true
-      get_block_protection_api: false
-      set_data_index_api: true
-      get_data_index_api: false
-      cancel_job_api: true
-      kill_write_all_api: false
-      kill_read_all_api: false
-      repair_damaged_blocks_api: false
-      calc_ram_block_crc: true
-      use_crc_comp_mechanism: true
-      multi_block_callback: false
-    nvram_blocks: 32
-    datasets: 8
-    rom_blocks: 16
-    max_write_retries: 3
-    max_read_retries: 3
-    main_function_period_ms: 10
-    standard_job_queue_size: 16
-    immediate_job_queue_size: 4
-  Os:
-    name: Os
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      use_get_service_id: true
-      use_parameter_access: true
-      protection_hook: false
-      stack_monitoring: true
-      startup_hook: true
-      shutdown_hook: true
-      error_hook: true
-      pretask_hook: false
-      posttask_hook: false
-    counts:
-      tasks: 8
-      alarms: 6
-      resources: 4
-      task_count_reserved: 8
-      resource_count_reserved: 0
-    main_counter:
-      ticks_per_ms: 1
-      max_allowed_value: 4294967295
-      min_cycle: 1
-    stacks:
-      task_stack_size: 4096
-      isr_stack_size: 2048
-    tasks:
-    - name: Init
-      id: 0
-    - name: 10ms
-      id: 1
-    - name: 50ms
-      id: 2
-    - name: 100ms
-      id: 3
-    - name: Background
-      id: 4
-    - name: ComMainFunctionRx
-      id: 5
-    - name: ComMainFunctionTx
-      id: 6
-    - name: Diagnostic
-      id: 7
-    task_priorities:
-    - name: IDLE
-      value: 1
-    - name: LOW
-      value: 2
-    - name: NORMAL
-      value: 3
-    - name: HIGH
-      value: 4
-    - name: CRITICAL
-      value: 5
-    alarms:
-    - name: BswM_MainFunction
-      id: 0
-    - name: Com_MainFunction
-      id: 1
-    - name: CanIf_MainFunction
-      id: 2
-    - name: Dcm_MainFunction
-      id: 3
-    - name: NvM_MainFunction
-      id: 4
-    - name: Dem_MainFunction
-      id: 5
-    alarm_periods:
-    - name: 10MS
-      value: 10
-    - name: 50MS
-      value: 50
-    - name: 100MS
-      value: 100
-    resources:
-    - name: CanController
-      id: 0
-    - name: NvMBlock
-      id: 1
-    - name: ComBuffer
-      id: 2
-    - name: Diagnostic
-      id: 3
-    events:
-    - name: INIT_COMPLETE
-      mask: 1
-    - name: CAN_MESSAGE_RECEIVED
-      mask: 2
-    - name: NVM_WRITE_COMPLETE
-      mask: 4
-    - name: DIAGNOSTIC_REQUEST
-      mask: 8
-    - name: MODE_SWITCH
-      mask: 16
-  PduR:
-    name: PduR
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      gateway_operation_enabled: true
-    routing_paths: 16
-    routing_path_groups: 4
-    max_destinations_per_path: 4
-    fifo_depth: 8
-    main_function_period_ms: 10
-  Port:
-    name: Port
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      set_pin_direction_api: true
-      set_pin_mode_api: true
-    pins: 32
-    ports: 5
-  SecOC:
-    name: SecOC
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      enable_freshness_sync: true
-      override_status_allowed: true
-      ar_release_major_version: 4
-      ar_release_minor_version: 7
-      ar_release_revision_version: 0
-      sw_major_version: 1
-      sw_minor_version: 0
-      sw_patch_version: 0
-    counts:
-      tx_pdus: 4
-      rx_pdus: 4
-      max_pdus: 4
-      max_crypto_operations: 4
-      verification_retry_count: 3
-    timing:
-      main_function_period_rx_ms: 10
-      main_function_period_tx_ms: 10
-      verification_timeout_ms: 100
-    authentication:
-      algorithm_alias: SECOC_HMAC_SHA256
-      auth_info_length: 16
-      data_id_length: 1
-      csm_job_id_auth_alias: CSM_JOB_ID_MAC_GENERATE_1
-      csm_job_id_verify_alias: CSM_JOB_ID_MAC_VERIFY_1
-    freshness:
-      value_type_alias: SECOC_COUNTER
-      value_tx_length: 16
-      value_length: 32
-      max_freshness_value: 4294967295
-      reset_threshold: 4026531840
-      default_verification_status_alias: SECOC_UNVERIFIED
-    limits:
-      max_pdu_length: 256
-    tx_pdu_ids:
-    - 0
-    - 1
-    - 2
-    - 3
-    rx_pdu_ids:
-    - 0
-    - 1
-    - 2
-    - 3
-  Spi:
-    name: Spi
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      interruptible_seq_allowed: false
-      hw_status_api: true
-      cancel_api: false
-      level_delivered: 2
-    channels: 4
-    jobs: 8
-    sequences: 4
-    hw_units: 3
-  WdgM:
-    name: WdgM
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-      vendor_id: 43
-      ar_release_major_version: 4
-      ar_release_minor_version: 7
-      ar_release_revision_version: 0
-      sw_major_version: 1
-      sw_minor_version: 0
-      sw_patch_version: 0
-    window_watchdog:
-      enabled: true
-      trigger_period_ms: 50
-      timeout_ms: 100
-      window_start_percent: 50
-      window_end_percent: 100
-    independent_watchdog:
-      enabled: true
-      trigger_period_ms: 100
-      timeout_ms: 200
-    supervision:
-      cycle_ms: 10
-      failure_threshold: 3
-      max_supervised_entities: 8
-    integrations:
-      lockstep: true
-      ramsafety: true
-      dem: true
-    supervised_entities:
-    - name: MAIN_CYCLE
-      id: 1
-    - name: COMMUNICATION
-      id: 2
-    - name: DIAGNOSTICS
-      id: 3
-    - name: STORAGE
-      id: 4
-    - name: SAFETY_MONITOR
-      id: 5
-    - name: LOCKSTEP
-      id: 6
-    - name: RAMSAFETY
-      id: 7
-    dem_events:
-    - name: SUPERVISION_EXPIRED
-      event_id: 1
-    - name: SET_MODE_FAILED
-      event_id: 2
-    - name: LOCKSTEP_ERROR
-      event_id: 3
-    - name: RAMSAFETY_ERROR
-      event_id: 4
   Adc:
-    name: adc
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  CanNm:
-    name: canNm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  CanM:
-    name: canm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  CanSM:
-    name: cansm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  CanTrcv:
-    name: cantrcv
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  CanTSyn:
-    name: cantsyn
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  ComM:
-    name: comM
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Crc:
-    name: crc
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  CryIf:
-    name: cryif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Crypto:
-    name: crypto
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Csm:
-    name: csm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Det:
-    name: det
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Dio:
-    name: dio
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Dlt:
-    name: dlt
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  DoIP:
-    name: DoIP
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  DoCan:
-    name: docan
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  E2E:
-    name: e2e
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Ea:
-    name: ea
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EcuC:
-    name: ecuC
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EcuM:
-    name: ecum
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Eep:
-    name: eep
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Eth:
-    name: eth
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EthSM:
-    name: ethSm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EthIf:
-    name: ethif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EthSwt:
-    name: ethswt
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EthTrcv:
-    name: ethtrcv
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  EthTSyn:
-    name: ethtsyn
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Fee:
-    name: fee
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  FiM:
-    name: fim
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Flash:
-    name: flash
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Fls:
-    name: fls
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  FlStSt:
-    name: flstst
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  FrIf:
-    name: frif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  FrTp:
-    name: frtp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  I2c:
-    name: i2c
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Icu:
-    name: icu
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  IpduM:
-    name: ipdum
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  J1939Nm:
-    name: j1939nm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  J1939Tp:
-    name: j1939tp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  KeyM:
-    name: keym
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LdCom:
-    name: ldcom
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Lin:
-    name: lin
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LinNm:
-    name: linNm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LinSM:
-    name: linSM
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LinTp:
-    name: linTp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LinIf:
-    name: linif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LinM:
-    name: linm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LinTrcv:
-    name: lintrcv
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  LntM:
-    name: lntm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Mem:
-    name: mem
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  MemIf:
-    name: memif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Mqtt:
-    name: mqtt
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Nm:
-    name: nm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Ocu:
-    name: ocu
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Pwm:
-    name: pwm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  RamSafety:
-    name: ramsafety
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  RamTst:
-    name: ramtst
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SchM:
-    name: schm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Sd:
-    name: sd
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SoAd:
-    name: soad
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SomeIp:
-    name: someip
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SomeIpIf:
-    name: someipif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SomeIpSd:
-    name: someipsd
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SomeIpTp:
-    name: someiptp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SomeIpXf:
-    name: someipxf
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Srp:
-    name: srp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  StbM:
-    name: stbm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  SwC:
-    name: swc
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  TcpIp:
-    name: tcpip
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Tm:
-    name: tm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Uart:
-    name: uart
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  UdpNm:
-    name: udpNm
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Wdg:
-    name: wdg
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  WdgIf:
-    name: wdgif
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-  Xcp:
-    name: xcp
-    enabled: true
-    version: 1.0.0
-    general:
-      dev_error_detect: true
-      version_info_api: true
-rte:
-  enabled: true
-  arxml: config/input/arxml/example.arxml
-  output_subdir: rte
-  swc_filter: []
-  generate:
-    rte_h: true
-    rte_c: true
-    rte_type_h: true
-  behavior:
-    timing_event_prefix: TimingEvent
-    init_event_prefix: InitEvent
+    Adc:
+      AdcGroup:
+      - AdcChannel:
+        - resolution: 12
