@@ -22,6 +22,7 @@ from yuleasr.core.smart_validator import (
     record_feedback
 )
 from yuleasr.core.cross_module_validator import validate_config_references
+from yuleasr.core.project_file import ProjectFile, EcuEntry, ChipInfo
 from yuleasr.parsers.dbc_parser import DbcParser, AutosarConfigGenerator
 from yuleasr.parsers.chip_database import get_vendors, get_series, get_models, get_mcal_modules, get_chip_info
 from yuleasr.parsers.nm_parser import generate_autosar_nm_config, parse_nm_matrix
@@ -247,6 +248,110 @@ async def validate_references(config: Dict[str, Any]):
         return CrossModuleValidationResponse(**result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Reference validation failed: {e}")
+
+
+# ============================================================================
+# Project File Endpoints
+# ============================================================================
+
+DEFAULT_PROJECT_FILE = REPO_ROOT / ".yuleasr"
+
+
+class ProjectFileResponse(BaseModel):
+    version: str
+    project: Dict[str, Any]
+    ecus: List[Dict[str, Any]]
+    ui_state: Dict[str, Any]
+    recent_files: List[Dict[str, Any]]
+
+
+@app.get("/api/project", response_model=ProjectFileResponse)
+async def get_project(project_path: Optional[str] = None):
+    """Load .yuleasr project file."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        if not path.exists():
+            pf = ProjectFile()
+            pf.save(path)
+        else:
+            pf = ProjectFile.load(path)
+        return ProjectFileResponse(**pf.to_dict())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load project: {e}")
+
+
+@app.post("/api/project")
+async def save_project(data: Dict[str, Any], project_path: Optional[str] = None):
+    """Save .yuleasr project file."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.from_dict(data)
+        pf.save(path)
+        return {"success": True, "path": str(path)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save project: {e}")
+
+
+@app.post("/api/project/ecu")
+async def add_ecu(ecu: Dict[str, Any], project_path: Optional[str] = None):
+    """Add ECU to project."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.load(path) if path.exists() else ProjectFile()
+        chip = ChipInfo(**ecu.get("chip", {}))
+        ecu_entry = EcuEntry(
+            id=ecu["id"],
+            name=ecu["name"],
+            chip=chip,
+            config_path=ecu.get("config_path", ""),
+            description=ecu.get("description", ""),
+        )
+        pf.add_ecu(ecu_entry)
+        pf.save(path)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add ECU: {e}")
+
+
+@app.delete("/api/project/ecu/{ecu_id}")
+async def remove_ecu(ecu_id: str, project_path: Optional[str] = None):
+    """Remove ECU from project."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.load(path)
+        pf.remove_ecu(ecu_id)
+        pf.save(path)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to remove ECU: {e}")
+
+
+@app.post("/api/project/recent")
+async def add_recent_file(data: Dict[str, str], project_path: Optional[str] = None):
+    """Add file to recent files list."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.load(path) if path.exists() else ProjectFile()
+        pf.add_recent_file(data["path"])
+        pf.save(path)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update recent files: {e}")
+
+
+@app.post("/api/project/ui-state")
+async def save_ui_state(state: Dict[str, Any], project_path: Optional[str] = None):
+    """Save UI state (sidebar, tabs, etc.)."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.load(path) if path.exists() else ProjectFile()
+        from yuleasr.core.project_file import UIState
+        pf.ui_state = UIState.from_dict(state)
+        pf.touch()
+        pf.save(path)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save UI state: {e}")
 
 
 # ============================================================================

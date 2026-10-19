@@ -41,6 +41,40 @@ export async function validateReferences(config: Config): Promise<ReferenceValid
   return response.data
 }
 
+// Project file API
+export interface ProjectFileData {
+  version: string
+  project: { name: string; description: string; created: string; modified: string }
+  ecus: Array<{ id: string; name: string; chip: any; config_path: string; description: string }>
+  ui_state: { sidebar_visible: boolean; sidebar_width: number; active_tab: string; open_tabs: string[]; expanded_layers: string[] }
+  recent_files: Array<{ path: string; opened: string }>
+}
+
+export async function getProject(): Promise<ProjectFileData> {
+  const response = await api.get('/project')
+  return response.data
+}
+
+export async function saveProject(data: ProjectFileData): Promise<void> {
+  await api.post('/project', data)
+}
+
+export async function addEcu(ecu: { id: string; name: string; chip: any; config_path?: string; description?: string }): Promise<void> {
+  await api.post('/project/ecu', ecu)
+}
+
+export async function removeEcu(ecuId: string): Promise<void> {
+  await api.delete(`/project/ecu/${ecuId}`)
+}
+
+export async function addRecentFile(path: string): Promise<void> {
+  await api.post('/project/recent', { path })
+}
+
+export async function saveUiState(state: any): Promise<void> {
+  await api.post('/project/ui-state', state)
+}
+
 export async function getSchemas(): Promise<Record<string, SchemaInfo[]>> {
   const response = await api.get('/schemas')
   return response.data.schemas
