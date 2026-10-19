@@ -76,6 +76,7 @@ class ValidationResponse(BaseModel):
 class GenerateRequest(BaseModel):
     """Code generation request."""
     config_path: Optional[str] = None
+    config: Optional[Dict[str, Any]] = None
     output_dir: Optional[str] = None
     modules: Optional[List[str]] = None
 
@@ -394,13 +395,13 @@ async def create_project(req: CreateProjectRequest):
     config_file_path = project_dir / "bsw_config.yaml"
 
     ecu_id = f"ecu-{uuid.uuid4().hex[:8]}"
-    chip_info = ChipInfo(**req.chip) if req.chip else ChipInfo(vendor="", series="", model="", clock_freq_mhz=0, flash_size_kb=0, ram_size_kb=0)
+    chip_info = ChipInfo.from_dict(req.chip) if req.chip else ChipInfo()
 
     pf = ProjectFile()
-    pf.project.name = req.name
-    pf.project.description = req.description
-    pf.project.created = datetime.now().isoformat()
-    pf.project.modified = datetime.now().isoformat()
+    pf.project_name = req.name
+    pf.project_description = req.description
+    pf.created = datetime.now().isoformat()
+    pf.modified = datetime.now().isoformat()
 
     ecu_entry = EcuEntry(
         id=ecu_id,
@@ -431,8 +432,7 @@ async def create_project(req: CreateProjectRequest):
         "modules": modules,
     }
 
-    with open(config_file_path, "w", encoding="utf-8") as f:
-        dump_yaml(config, f)
+    dump_yaml(config, config_file_path)
 
     return CreateProjectResponse(
         success=True,
@@ -555,11 +555,21 @@ async def get_schema(module_name: str):
 @app.post("/api/generate", response_model=GenerateResponse)
 async def generate_code(request: GenerateRequest):
     """Generate configuration C files from config."""
-    config_path = Path(request.config_path) if request.config_path else DEFAULT_CONFIG
+    import tempfile
+    
     output_dir = Path(request.output_dir) if request.output_dir else DEFAULT_OUTPUT
     
-    if not config_path.exists():
-        raise HTTPException(status_code=404, detail=f"Config file not found: {config_path}")
+    # Handle config object vs config_path
+    if request.config:
+        # Save config to temp file
+        temp_config = tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False)
+        from yuleasr.core.config_loader import dump_yaml
+        dump_yaml(request.config, Path(temp_config.name))
+        config_path = Path(temp_config.name)
+    else:
+        config_path = Path(request.config_path) if request.config_path else DEFAULT_CONFIG
+        if not config_path.exists():
+            raise HTTPException(status_code=404, detail=f"Config file not found: {config_path}")
     
     try:
         generator = CodeGenerator(

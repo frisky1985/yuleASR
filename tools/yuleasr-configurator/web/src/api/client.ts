@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Config, SchemaInfo, ValidationResult, InitOrderResult } from '@/types'
+import type { Config, ValidationResult, InitOrderResult } from '@/types'
 
 const api = axios.create({
   baseURL: '/api',
@@ -13,7 +13,7 @@ export async function getConfig(path?: string): Promise<Config> {
 }
 
 export async function saveConfig(config: Config, path?: string): Promise<void> {
-  await api.post('/config', { config, path })
+  await api.post('/config', config, { params: path ? { path } : {} })
 }
 
 export async function validateConfig(config: Config): Promise<ValidationResult> {
@@ -91,9 +91,9 @@ export async function saveUiState(state: any): Promise<void> {
   await api.post('/project/ui-state', state)
 }
 
-export async function getSchemas(): Promise<Record<string, SchemaInfo[]>> {
+export async function getSchemas(): Promise<Record<string, string[]>> {
   const response = await api.get('/schemas')
-  return response.data.schemas
+  return response.data
 }
 
 export async function getModuleSchema(moduleName: string): Promise<any> {
@@ -101,9 +101,9 @@ export async function getModuleSchema(moduleName: string): Promise<any> {
   return response.data
 }
 
-export async function getModules(): Promise<string[]> {
+export async function getModules(): Promise<any[]> {
   const response = await api.get('/modules')
-  return response.data.modules
+  return response.data
 }
 
 export async function getInitOrder(): Promise<InitOrderResult> {
