@@ -2,9 +2,12 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://yuletech.github.io/yuleASR/config/bsw_config_schema.json",
   "title": "yuleASR BSW unified configuration",
-  "description": "Schema for config/bsw_config.json — the single configuration source rendered by Jinja2 templates (config/templates/*.h.j2) into BSW/RTE pre-compile configuration headers.",
+  "description": "Schema for config/bsw_config.json \u2014 the single configuration source rendered by Jinja2 templates (config/templates/*.h.j2) into BSW/RTE pre-compile configuration headers.",
   "type": "object",
-  "required": ["version", "modules"],
+  "required": [
+    "version",
+    "modules"
+  ],
   "additionalProperties": true,
   "properties": {
     "$schema": {
@@ -21,510 +24,898 @@
       "description": "Project level metadata",
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "vendor_id": { "type": "integer", "minimum": 0 },
-        "description": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "vendor_id": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "description": {
+          "type": "string"
+        }
       }
     },
-
     "modules": {
       "type": "object",
       "description": "Per-module configuration nodes keyed by module name",
-      "additionalProperties": { "$ref": "#/definitions/moduleBase" },
+      "additionalProperties": {
+        "$ref": "#/definitions/moduleBase"
+      },
       "properties": {
-        "Mcu":   { "$ref": "#/definitions/mcu" },
-        "Can":   { "$ref": "#/definitions/can" },
-        "Port":  { "$ref": "#/definitions/port" },
-        "Spi":   { "$ref": "#/definitions/spi" },
-        "Gpt":   { "$ref": "#/definitions/gpt" },
-        "CanIf": { "$ref": "#/definitions/canif" },
-        "IoHwAb":{ "$ref": "#/definitions/iohwab" },
-        "Com":   { "$ref": "#/definitions/com" },
-        "PduR":  { "$ref": "#/definitions/pdur" },
-        "NvM":   { "$ref": "#/definitions/nvm" },
-        "BswM":  { "$ref": "#/definitions/bswm" },
-        "CanTp": { "$ref": "#/definitions/cantp" },
-        "Dcm":   { "$ref": "#/definitions/dcm" },
-        "Dem":   { "$ref": "#/definitions/dem" },
-        "WdgM":  { "$ref": "#/definitions/wdgm" },
-        "SecOC": { "$ref": "#/definitions/secoc" },
-        "Os":    { "$ref": "#/definitions/os" }
+        "Mcu": {
+          "$ref": "#/definitions/mcu"
+        },
+        "Can": {
+          "$ref": "#/definitions/can"
+        },
+        "Port": {
+          "$ref": "#/definitions/port"
+        },
+        "Spi": {
+          "$ref": "#/definitions/spi"
+        },
+        "Gpt": {
+          "$ref": "#/definitions/gpt"
+        },
+        "CanIf": {
+          "$ref": "#/definitions/canif"
+        },
+        "IoHwAb": {
+          "$ref": "#/definitions/iohwab"
+        },
+        "Com": {
+          "$ref": "#/definitions/com"
+        },
+        "PduR": {
+          "$ref": "#/definitions/pdur"
+        },
+        "NvM": {
+          "$ref": "#/definitions/nvm"
+        },
+        "BswM": {
+          "$ref": "#/definitions/bswm"
+        },
+        "CanTp": {
+          "$ref": "#/definitions/cantp"
+        },
+        "Dcm": {
+          "$ref": "#/definitions/dcm"
+        },
+        "Dem": {
+          "$ref": "#/definitions/dem"
+        },
+        "WdgM": {
+          "$ref": "#/definitions/wdgm"
+        },
+        "SecOC": {
+          "$ref": "#/definitions/secoc"
+        },
+        "Os": {
+          "$ref": "#/definitions/os"
+        },
+        "adc": {
+          "$ref": "#/definitions/adc"
+        },
+        "canNm": {
+          "$ref": "#/definitions/cannm"
+        },
+        "canm": {
+          "$ref": "#/definitions/canm"
+        },
+        "cansm": {
+          "$ref": "#/definitions/cansm"
+        },
+        "cantrcv": {
+          "$ref": "#/definitions/cantrcv"
+        },
+        "cantsyn": {
+          "$ref": "#/definitions/cantsyn"
+        },
+        "comM": {
+          "$ref": "#/definitions/comm"
+        },
+        "crc": {
+          "$ref": "#/definitions/crc"
+        },
+        "cryif": {
+          "$ref": "#/definitions/cryif"
+        },
+        "crypto": {
+          "$ref": "#/definitions/crypto"
+        },
+        "csm": {
+          "$ref": "#/definitions/csm"
+        },
+        "det": {
+          "$ref": "#/definitions/det"
+        },
+        "dio": {
+          "$ref": "#/definitions/dio"
+        },
+        "dlt": {
+          "$ref": "#/definitions/dlt"
+        },
+        "doIP": {
+          "$ref": "#/definitions/doip"
+        },
+        "docan": {
+          "$ref": "#/definitions/docan"
+        },
+        "doip": {
+          "$ref": "#/definitions/doip"
+        },
+        "e2e": {
+          "$ref": "#/definitions/e2e"
+        },
+        "ea": {
+          "$ref": "#/definitions/ea"
+        },
+        "ecuC": {
+          "$ref": "#/definitions/ecuc"
+        },
+        "ecum": {
+          "$ref": "#/definitions/ecum"
+        },
+        "eep": {
+          "$ref": "#/definitions/eep"
+        },
+        "eth": {
+          "$ref": "#/definitions/eth"
+        },
+        "ethSm": {
+          "$ref": "#/definitions/ethsm"
+        },
+        "ethif": {
+          "$ref": "#/definitions/ethif"
+        },
+        "ethsm": {
+          "$ref": "#/definitions/ethsm"
+        },
+        "ethswt": {
+          "$ref": "#/definitions/ethswt"
+        },
+        "ethtrcv": {
+          "$ref": "#/definitions/ethtrcv"
+        },
+        "ethtsyn": {
+          "$ref": "#/definitions/ethtsyn"
+        },
+        "fee": {
+          "$ref": "#/definitions/fee"
+        },
+        "fim": {
+          "$ref": "#/definitions/fim"
+        },
+        "flash": {
+          "$ref": "#/definitions/flash"
+        },
+        "fls": {
+          "$ref": "#/definitions/fls"
+        },
+        "flstst": {
+          "$ref": "#/definitions/flstst"
+        },
+        "frif": {
+          "$ref": "#/definitions/frif"
+        },
+        "frtp": {
+          "$ref": "#/definitions/frtp"
+        },
+        "i2c": {
+          "$ref": "#/definitions/i2c"
+        },
+        "icu": {
+          "$ref": "#/definitions/icu"
+        },
+        "ipdum": {
+          "$ref": "#/definitions/ipdum"
+        },
+        "j1939nm": {
+          "$ref": "#/definitions/j1939nm"
+        },
+        "j1939tp": {
+          "$ref": "#/definitions/j1939tp"
+        },
+        "keym": {
+          "$ref": "#/definitions/keym"
+        },
+        "ldcom": {
+          "$ref": "#/definitions/ldcom"
+        },
+        "lin": {
+          "$ref": "#/definitions/lin"
+        },
+        "linNm": {
+          "$ref": "#/definitions/linnm"
+        },
+        "linSM": {
+          "$ref": "#/definitions/linsm"
+        },
+        "linTp": {
+          "$ref": "#/definitions/lintp"
+        },
+        "linif": {
+          "$ref": "#/definitions/linif"
+        },
+        "linm": {
+          "$ref": "#/definitions/linm"
+        },
+        "linsm": {
+          "$ref": "#/definitions/linsm"
+        },
+        "lintrcv": {
+          "$ref": "#/definitions/lintrcv"
+        },
+        "lntm": {
+          "$ref": "#/definitions/lntm"
+        },
+        "mem": {
+          "$ref": "#/definitions/mem"
+        },
+        "memif": {
+          "$ref": "#/definitions/memif"
+        },
+        "mqtt": {
+          "$ref": "#/definitions/mqtt"
+        },
+        "nm": {
+          "$ref": "#/definitions/nm"
+        },
+        "ocu": {
+          "$ref": "#/definitions/ocu"
+        },
+        "pwm": {
+          "$ref": "#/definitions/pwm"
+        },
+        "ramsafety": {
+          "$ref": "#/definitions/ramsafety"
+        },
+        "ramtst": {
+          "$ref": "#/definitions/ramtst"
+        },
+        "schm": {
+          "$ref": "#/definitions/schm"
+        },
+        "sd": {
+          "$ref": "#/definitions/sd"
+        },
+        "soad": {
+          "$ref": "#/definitions/soad"
+        },
+        "someip": {
+          "$ref": "#/definitions/someip"
+        },
+        "someipif": {
+          "$ref": "#/definitions/someipif"
+        },
+        "someipsd": {
+          "$ref": "#/definitions/someipsd"
+        },
+        "someiptp": {
+          "$ref": "#/definitions/someiptp"
+        },
+        "someipxf": {
+          "$ref": "#/definitions/someipxf"
+        },
+        "srp": {
+          "$ref": "#/definitions/srp"
+        },
+        "stbm": {
+          "$ref": "#/definitions/stbm"
+        },
+        "swc": {
+          "$ref": "#/definitions/swc"
+        },
+        "tcpip": {
+          "$ref": "#/definitions/tcpip"
+        },
+        "tm": {
+          "$ref": "#/definitions/tm"
+        },
+        "uart": {
+          "$ref": "#/definitions/uart"
+        },
+        "udpNm": {
+          "$ref": "#/definitions/udpnm"
+        },
+        "wdg": {
+          "$ref": "#/definitions/wdg"
+        },
+        "wdgif": {
+          "$ref": "#/definitions/wdgif"
+        },
+        "xcp": {
+          "$ref": "#/definitions/xcp"
+        }
       }
     },
-
     "rte": {
       "type": "object",
       "description": "RTE generator invocation settings consumed by generate_bsw_config.py",
       "additionalProperties": true,
       "properties": {
-        "enabled": { "type": "boolean" },
-        "arxml": { "type": "string", "description": "ARXML input path (relative to repo root)" },
-        "output_subdir": { "type": "string" },
+        "enabled": {
+          "type": "boolean"
+        },
+        "arxml": {
+          "type": "string",
+          "description": "ARXML input path (relative to repo root)"
+        },
+        "output_subdir": {
+          "type": "string"
+        },
         "swc_filter": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": {
+            "type": "string"
+          }
         },
         "generate": {
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "rte_h": { "type": "boolean" },
-            "rte_c": { "type": "boolean" },
-            "rte_type_h": { "type": "boolean" }
+            "rte_h": {
+              "type": "boolean"
+            },
+            "rte_c": {
+              "type": "boolean"
+            },
+            "rte_type_h": {
+              "type": "boolean"
+            }
           }
         },
         "behavior": {
           "type": "object",
           "additionalProperties": true,
           "properties": {
-            "timing_event_prefix": { "type": "string" },
-            "init_event_prefix": { "type": "string" }
+            "timing_event_prefix": {
+              "type": "string"
+            },
+            "init_event_prefix": {
+              "type": "string"
+            }
           }
         }
       }
     }
   },
-
   "definitions": {
-    "uint": { "type": "integer", "minimum": 0 },
-    "bool": { "type": "boolean" },
+    "uint": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "bool": {
+      "type": "boolean"
+    },
     "namedEntry": {
       "type": "object",
-      "required": ["name", "id"],
+      "required": [
+        "name",
+        "id"
+      ],
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string", "pattern": "^[A-Za-z0-9_]+$" },
-        "id": { "type": "integer", "minimum": 0 }
+        "name": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_]+$"
+        },
+        "id": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
-
     "moduleBase": {
       "type": "object",
-      "required": ["name", "enabled"],
+      "required": [
+        "name",
+        "enabled"
+      ],
       "additionalProperties": true,
       "properties": {
-        "name": { "type": "string" },
-        "enabled": { "type": "boolean" },
-        "version": { "type": "string" },
+        "name": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "version": {
+          "type": "string"
+        },
         "general": {
           "type": "object",
           "additionalProperties": true
         }
       }
     },
-
     "stdGeneral": {
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "dev_error_detect": { "type": "boolean" },
-        "version_info_api": { "type": "boolean" }
-      }
-    },
-
-    "mcu": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
-      "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "clock": {
-          "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "xtal_frequency_hz": { "$ref": "#/definitions/uint" },
-            "system_frequency_hz": { "$ref": "#/definitions/uint" },
-            "bus_frequency_hz": { "$ref": "#/definitions/uint" },
-            "flash_frequency_hz": { "$ref": "#/definitions/uint" }
-          }
+        "dev_error_detect": {
+          "type": "boolean"
         },
-        "ram_sectors": { "$ref": "#/definitions/uint" },
-        "modes": { "$ref": "#/definitions/uint" },
-        "reset_reasons": { "$ref": "#/definitions/uint" },
-        "core_count": { "$ref": "#/definitions/uint" }
-      }
-    },
-
-    "can": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
-      "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "controllers": { "$ref": "#/definitions/uint" },
-        "hoh": { "$ref": "#/definitions/uint" },
-        "hw_objects": { "$ref": "#/definitions/uint" },
-        "baudrate": { "$ref": "#/definitions/uint" },
-        "supported_baudrates": {
-          "type": "array",
-          "items": { "$ref": "#/definitions/uint" }
+        "version_info_api": {
+          "type": "boolean"
         }
       }
     },
-
+    "mcu": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "clock": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "ram_sectors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "modes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reset_reasons": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "core_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configuration for core count"
+        }
+      }
+    },
+    "can": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "controllers": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Controllers configuration"
+        },
+        "hoh": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hw_objects": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "baudrate": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "supported_baudrates": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    },
     "port": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "pins": { "$ref": "#/definitions/uint" },
-        "ports": { "$ref": "#/definitions/uint" }
+        "pins": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ports": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
-
     "spi": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "channels": { "$ref": "#/definitions/uint" },
-        "jobs": { "$ref": "#/definitions/uint" },
-        "sequences": { "$ref": "#/definitions/uint" },
-        "hw_units": { "$ref": "#/definitions/uint" }
+        "channels": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Channels configuration"
+        },
+        "jobs": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sequences": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hw_units": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
-
     "gpt": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
         "channels": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "id"],
-            "additionalProperties": true,
-            "properties": {
-              "name": { "type": "string" },
-              "id": { "$ref": "#/definitions/uint" },
-              "tick_frequency_hz": { "$ref": "#/definitions/uint" }
-            }
-          }
+            "additionalProperties": true
+          },
+          "description": "Channels configuration"
+        },
+        "max_tick_value": {
+          "type": "string",
+          "description": "Configuration for max tick value"
         }
       }
     },
-
     "canif": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "controllers": { "$ref": "#/definitions/uint" },
-        "hrh": { "$ref": "#/definitions/uint" },
-        "hth": { "$ref": "#/definitions/uint" },
-        "tx_pdus": { "$ref": "#/definitions/uint" },
-        "rx_pdus": { "$ref": "#/definitions/uint" },
-        "default_baudrate": { "$ref": "#/definitions/uint" }
+        "controllers": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Controllers configuration"
+        },
+        "hrh": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "hth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tx_pdus": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rx_pdus": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "default_baudrate": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "default_baudrate_config": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
-
     "iohwab": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
         "channels": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Channels configuration"
         },
         "adc": {
           "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "resolution": { "type": "integer", "enum": [8, 10, 12, 16] },
-            "max_value": { "$ref": "#/definitions/uint" },
-            "vref_mv": { "$ref": "#/definitions/uint" }
-          }
+          "additionalProperties": true
         },
         "pwm": {
           "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "min_frequency_hz": { "$ref": "#/definitions/uint" },
-            "max_frequency_hz": { "$ref": "#/definitions/uint" },
-            "default_frequency_hz": { "$ref": "#/definitions/uint" }
-          }
+          "additionalProperties": true
         }
       }
     },
-
     "com": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "signals": { "$ref": "#/definitions/uint" },
-        "group_signals": { "$ref": "#/definitions/uint" },
-        "ipdus": { "$ref": "#/definitions/uint" },
-        "ipdu_groups": { "$ref": "#/definitions/uint" },
-        "max_ipdu_buffer_size": { "$ref": "#/definitions/uint" },
+        "signals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "group_signals": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ipdus": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ipdu_groups": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_ipdu_buffer_size": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configuration for max ipdu buffer size"
+        },
+        "num_signal_gw_mappings": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configuration for num signal gw mappings"
+        },
         "timing": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Timing configuration for timing"
         }
       }
     },
-
     "pdur": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "routing_paths": { "$ref": "#/definitions/uint" },
-        "routing_path_groups": { "$ref": "#/definitions/uint" },
-        "max_destinations_per_path": { "$ref": "#/definitions/uint" },
-        "fifo_depth": { "$ref": "#/definitions/uint" },
-        "main_function_period_ms": { "$ref": "#/definitions/uint" }
+        "routing_paths": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "routing_path_groups": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_destinations_per_path": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configuration for max destinations per path"
+        },
+        "fifo_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "main_function_period_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Timing configuration for main function period ms"
+        }
       }
     },
-
     "nvm": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
-        "nvram_blocks": { "$ref": "#/definitions/uint" },
-        "datasets": { "$ref": "#/definitions/uint" },
-        "rom_blocks": { "$ref": "#/definitions/uint" },
-        "max_write_retries": { "$ref": "#/definitions/uint" },
-        "max_read_retries": { "$ref": "#/definitions/uint" },
-        "main_function_period_ms": { "$ref": "#/definitions/uint" },
-        "standard_job_queue_size": { "$ref": "#/definitions/uint" },
-        "immediate_job_queue_size": { "$ref": "#/definitions/uint" }
+        "nvram_blocks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "datasets": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rom_blocks": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_write_retries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configuration for max write retries"
+        },
+        "max_read_retries": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Configuration for max read retries"
+        },
+        "main_function_period_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Timing configuration for main function period ms"
+        },
+        "standard_job_queue_size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "immediate_job_queue_size": {
+          "type": "integer",
+          "minimum": 0
+        }
       }
     },
-
     "bswm": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": { "$ref": "#/definitions/stdGeneral" },
         "limits": {
           "type": "object",
-          "additionalProperties": false,
-          "required": ["max_mode_request_ports", "max_expressions", "max_rules", "max_actions", "max_action_lists"],
-          "properties": {
-            "max_mode_request_ports": { "$ref": "#/definitions/uint" },
-            "max_expressions": { "$ref": "#/definitions/uint" },
-            "max_rules": { "$ref": "#/definitions/uint" },
-            "max_actions": { "$ref": "#/definitions/uint" },
-            "max_action_lists": { "$ref": "#/definitions/uint" }
-          }
+          "additionalProperties": true
         },
         "modes": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "ecum_states": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "mode_request_ports": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-            "properties": {
-              "source": { "type": "string" }
-            }
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "expressions": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-            "properties": {
-              "term_count": { "$ref": "#/definitions/uint" }
-            }
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "rules": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-            "properties": {
-              "expression": { "type": "string" },
-              "action_list": { "type": "string" }
-            }
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "action_lists": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-            "properties": {
-              "actions": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "required": ["type", "target"],
-                  "additionalProperties": true,
-                  "properties": {
-                    "type": { "type": "string" },
-                    "target": { "type": "string" }
-                  }
-                }
-              }
-            }
+            "type": "object",
+            "additionalProperties": true
           }
         }
       }
     },
-
     "cantp": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": {
-          "allOf": [{ "$ref": "#/definitions/stdGeneral" }],
-          "properties": {
-            "dynamic_channel_allocation": { "type": "boolean" },
-            "canfd_enabled": { "type": "boolean" },
-            "padding_byte": { "type": "boolean" },
-            "padding_byte_value": { "$ref": "#/definitions/uint" },
-            "change_parameter_api": { "type": "boolean" },
-            "read_parameter_api": { "type": "boolean" },
-            "addressing_format": { "type": "string" }
-          }
-        },
         "timing": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Timing configuration for timing"
         },
         "limits": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
+        },
+        "addresses": {
+          "type": "object",
+          "additionalProperties": true
         },
         "canif_pdu_ids": {
           "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "tx": { "$ref": "#/definitions/uint" },
-            "rx": { "$ref": "#/definitions/uint" },
-            "fc_tx": { "$ref": "#/definitions/uint" },
-            "fc_rx": { "$ref": "#/definitions/uint" }
-          }
+          "additionalProperties": true
         },
         "channels": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-            "properties": {
-              "addressing_mode": { "type": "string", "enum": ["STANDARD", "EXTENDED", "MIXED"] },
-              "max_payload": { "$ref": "#/definitions/uint" }
-            }
+            "type": "object",
+            "additionalProperties": true
+          },
+          "description": "Channels configuration"
+        },
+        "tx_nsdu": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
           }
         },
-        "tx_nsdu": { "$ref": "#/definitions/nsduList" },
-        "rx_nsdu": { "$ref": "#/definitions/nsduList" }
-      }
-    },
-
-    "nsduList": {
-      "type": "array",
-      "items": {
-        "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-        "properties": {
-          "channel_id": { "$ref": "#/definitions/uint" },
-          "ta_type": { "type": "string", "enum": ["PHYSICAL", "FUNCTIONAL"] },
-          "bs": { "$ref": "#/definitions/uint" },
-          "stmin": { "$ref": "#/definitions/uint" },
-          "wftmax": { "$ref": "#/definitions/uint" }
+        "rx_nsdu": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         }
       }
     },
-
-    "dcm": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
-      "properties": {
-        "general": {
-          "allOf": [{ "$ref": "#/definitions/stdGeneral" }],
-          "properties": {
-            "respond_all_request": { "type": "boolean" },
-            "task_time": { "type": "boolean" },
-            "obd_support": { "type": "boolean" },
-            "routine_control_support": { "type": "boolean" },
-            "data_transfer_support": { "type": "boolean" }
+    "nsduList": {
+      "type": "array",
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/definitions/namedEntry"
           }
-        },
+        ],
+        "properties": {
+          "channel_id": {
+            "$ref": "#/definitions/uint"
+          },
+          "ta_type": {
+            "type": "string",
+            "enum": [
+              "PHYSICAL",
+              "FUNCTIONAL"
+            ]
+          },
+          "bs": {
+            "$ref": "#/definitions/uint"
+          },
+          "stmin": {
+            "$ref": "#/definitions/uint"
+          },
+          "wftmax": {
+            "$ref": "#/definitions/uint"
+          }
+        }
+      }
+    },
+    "dcm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
         "counts": {
           "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "protocols": { "$ref": "#/definitions/uint" },
-            "connections": { "$ref": "#/definitions/uint" },
-            "rx_pdu_ids": { "$ref": "#/definitions/uint" },
-            "tx_pdu_ids": { "$ref": "#/definitions/uint" },
-            "sessions": { "$ref": "#/definitions/uint" },
-            "security_levels": { "$ref": "#/definitions/uint" },
-            "services": { "$ref": "#/definitions/uint" },
-            "obd_pids": { "$ref": "#/definitions/uint" },
-            "routines": { "$ref": "#/definitions/uint" },
-            "dids": { "$ref": "#/definitions/uint" },
-            "rids": { "$ref": "#/definitions/uint" }
-          }
+          "additionalProperties": true,
+          "description": "Configuration for counts"
         },
         "buffers": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
         },
         "timing": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Timing configuration for timing"
         },
         "security": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
         },
         "protocols": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "sessions": {
           "type": "array",
           "items": {
-            "allOf": [{ "$ref": "#/definitions/namedEntry" }],
-            "properties": {
-              "alias": { "type": "string", "description": "C macro referenced by the alias define (defined elsewhere)" }
-            }
+            "type": "object",
+            "additionalProperties": true
           }
         },
         "security_levels": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "session_timeouts": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "timeout_ms"],
-            "additionalProperties": true,
-            "properties": {
-              "name": { "type": "string" },
-              "timeout_ms": { "$ref": "#/definitions/uint" }
-            }
-          }
+            "additionalProperties": true
+          },
+          "description": "Timing configuration for session timeouts"
         }
       }
     },
-
     "dem": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": {
-          "allOf": [{ "$ref": "#/definitions/stdGeneral" }],
-          "properties": {
-            "clear_dtc_supported": { "type": "boolean" },
-            "clear_dtc_limitation": { "type": "boolean" },
-            "obd_relevant_support": { "type": "boolean" },
-            "j1939_support": { "type": "boolean" },
-            "debounce_counter_based": { "type": "boolean" },
-            "debounce_time_based": { "type": "boolean" },
-            "debounce_monitor_internal": { "type": "boolean" }
-          }
-        },
         "counts": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Configuration for counts"
         },
         "debounce": {
           "type": "object",
+          "additionalProperties": true
+        },
+        "timing": {
+          "type": "object",
           "additionalProperties": true,
-          "properties": {
-            "counter_failed_threshold": { "type": "integer" },
-            "counter_passed_threshold": { "type": ["integer", "string"], "description": "int or raw C literal (e.g. \"-128U\")" },
-            "fdc_min": { "type": ["integer", "string"] }
-          }
+          "description": "Timing configuration for timing"
         },
         "aging": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
         },
         "limits": {
           "type": "object",
@@ -532,217 +923,539 @@
         },
         "memory": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
         },
         "indicators": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "operation_cycles": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         }
       }
     },
-
     "wdgm": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": {
-          "allOf": [{ "$ref": "#/definitions/stdGeneral" }],
-          "properties": {
-            "vendor_id": { "$ref": "#/definitions/uint" },
-            "ar_release_major_version": { "$ref": "#/definitions/uint" },
-            "ar_release_minor_version": { "$ref": "#/definitions/uint" },
-            "ar_release_revision_version": { "$ref": "#/definitions/uint" },
-            "sw_major_version": { "$ref": "#/definitions/uint" },
-            "sw_minor_version": { "$ref": "#/definitions/uint" },
-            "sw_patch_version": { "$ref": "#/definitions/uint" }
-          }
-        },
         "window_watchdog": {
           "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "enabled": { "type": "boolean" },
-            "trigger_period_ms": { "$ref": "#/definitions/uint" },
-            "timeout_ms": { "$ref": "#/definitions/uint" },
-            "window_start_percent": { "type": "integer", "minimum": 0, "maximum": 100 },
-            "window_end_percent": { "type": "integer", "minimum": 0, "maximum": 100 }
-          }
+          "additionalProperties": true
         },
         "independent_watchdog": {
           "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "enabled": { "type": "boolean" },
-            "trigger_period_ms": { "$ref": "#/definitions/uint" },
-            "timeout_ms": { "$ref": "#/definitions/uint" }
-          }
+          "additionalProperties": true
         },
         "supervision": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
         },
         "integrations": {
           "type": "object",
-          "additionalProperties": { "type": "boolean" }
+          "additionalProperties": true
         },
         "supervised_entities": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "dem_events": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "event_id"],
-            "additionalProperties": true,
-            "properties": {
-              "name": { "type": "string", "pattern": "^[A-Za-z0-9_]+$" },
-              "event_id": { "$ref": "#/definitions/uint" }
-            }
+            "additionalProperties": true
           }
         }
       }
     },
-
     "secoc": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": {
-          "allOf": [{ "$ref": "#/definitions/stdGeneral" }],
-          "properties": {
-            "enable_freshness_sync": { "type": "boolean" },
-            "override_status_allowed": { "type": "boolean" },
-            "ar_release_major_version": { "$ref": "#/definitions/uint" },
-            "ar_release_minor_version": { "$ref": "#/definitions/uint" },
-            "ar_release_revision_version": { "$ref": "#/definitions/uint" },
-            "sw_major_version": { "$ref": "#/definitions/uint" },
-            "sw_minor_version": { "$ref": "#/definitions/uint" },
-            "sw_patch_version": { "$ref": "#/definitions/uint" }
-          }
-        },
         "counts": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Configuration for counts"
         },
         "timing": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Timing configuration for timing"
         },
         "authentication": {
           "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "algorithm_alias": { "type": "string" },
-            "auth_info_length": { "$ref": "#/definitions/uint" },
-            "data_id_length": { "$ref": "#/definitions/uint" },
-            "csm_job_id_auth_alias": { "type": "string" },
-            "csm_job_id_verify_alias": { "type": "string" }
-          }
+          "additionalProperties": true
         },
         "freshness": {
           "type": "object",
-          "additionalProperties": true,
-          "properties": {
-            "value_type_alias": { "type": "string" },
-            "value_tx_length": { "$ref": "#/definitions/uint" },
-            "value_length": { "$ref": "#/definitions/uint" },
-            "max_freshness_value": { "$ref": "#/definitions/uint" },
-            "reset_threshold": { "$ref": "#/definitions/uint" },
-            "default_verification_status_alias": { "type": "string" }
-          }
+          "additionalProperties": true
+        },
+        "limits": {
+          "type": "object",
+          "additionalProperties": true
         },
         "tx_pdu_ids": {
           "type": "array",
-          "items": { "$ref": "#/definitions/uint" }
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
         },
         "rx_pdu_ids": {
           "type": "array",
-          "items": { "$ref": "#/definitions/uint" }
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     },
-
     "os": {
-      "allOf": [{ "$ref": "#/definitions/moduleBase" }],
+      "type": "object",
+      "additionalProperties": true,
       "properties": {
-        "general": {
-          "allOf": [{ "$ref": "#/definitions/stdGeneral" }],
-          "properties": {
-            "use_get_service_id": { "type": "boolean" },
-            "use_parameter_access": { "type": "boolean" },
-            "protection_hook": { "type": "boolean" },
-            "stack_monitoring": { "type": "boolean" },
-            "startup_hook": { "type": "boolean" },
-            "shutdown_hook": { "type": "boolean" },
-            "error_hook": { "type": "boolean" },
-            "pretask_hook": { "type": "boolean" },
-            "posttask_hook": { "type": "boolean" }
-          }
-        },
         "counts": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Configuration for counts"
         },
         "main_counter": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true,
+          "description": "Configuration for main counter"
         },
         "stacks": {
           "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/uint" }
+          "additionalProperties": true
         },
         "tasks": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "task_priorities": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "value"],
-            "additionalProperties": true,
-            "properties": {
-              "name": { "type": "string" },
-              "value": { "$ref": "#/definitions/uint" }
-            }
+            "additionalProperties": true
           }
         },
         "alarms": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "alarm_periods": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "value"],
-            "additionalProperties": true,
-            "properties": {
-              "name": { "type": "string" },
-              "value": { "$ref": "#/definitions/uint" }
-            }
-          }
+            "additionalProperties": true
+          },
+          "description": "Timing configuration for alarm periods"
         },
         "resources": {
           "type": "array",
-          "items": { "$ref": "#/definitions/namedEntry" }
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
         },
         "events": {
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "mask"],
-            "additionalProperties": true,
-            "properties": {
-              "name": { "type": "string" },
-              "mask": { "$ref": "#/definitions/uint" }
-            }
+            "additionalProperties": true
           }
         }
       }
+    },
+    "adc": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "cannm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "canm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "cansm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "cantrcv": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "cantsyn": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "comm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "crc": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "cryif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "crypto": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "csm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "det": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "dio": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "dlt": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "doip": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "docan": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "e2e": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ea": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ecuc": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ecum": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "eep": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "eth": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ethsm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ethif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ethswt": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ethtrcv": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ethtsyn": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "fee": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "fim": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "flash": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "fls": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "flstst": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "frif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "frtp": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "i2c": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "icu": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ipdum": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "j1939nm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "j1939tp": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "keym": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ldcom": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "lin": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "linnm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "linsm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "lintp": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "linif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "linm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "lintrcv": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "lntm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "mem": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "memif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "mqtt": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "nm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ocu": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "pwm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ramsafety": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "ramtst": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "schm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "sd": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "soad": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "someip": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "someipif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "someipsd": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "someiptp": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "someipxf": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "srp": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "stbm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "swc": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "tcpip": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "tm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "uart": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "udpnm": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "wdg": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "wdgif": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
+    },
+    "xcp": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {}
     }
   }
 }

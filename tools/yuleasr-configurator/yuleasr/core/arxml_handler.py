@@ -269,7 +269,9 @@ class ArxmlExporter:
     def _build_param(self, name: str, value: Any, module_name: str) -> Optional[ET.Element]:
         """Build a parameter element."""
         param_name = name.upper().replace("_", "-")
-        def_ref = f"/{module_name}/{param_name}"
+        # Use real AUTOSAR ECUC structure: /{Module}/{Module}General/{Parameter}
+        # or /{Module}/{Module}{Container}/{Parameter} for nested params
+        def_ref = f"/{module_name}/{module_name}General/{param_name}"
 
         if isinstance(value, bool):
             param = ET.Element(f"{{{self.ns}}}ECUC-BOOLEAN-PARAM-VALUE")
