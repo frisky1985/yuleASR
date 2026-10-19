@@ -145,9 +145,11 @@ class TemplateEngine:
     ) -> List[RenderResult]:
         templates = self.discover_templates()
         results = []
+        # Build case-insensitive filter lookup
+        filter_lower = [m.lower() for m in module_filter] if module_filter else None
         for tpl in templates:
             mod = self.module_name_from_template(tpl)
-            if module_filter and mod not in module_filter:
+            if filter_lower and mod.lower() not in filter_lower:
                 continue
             try:
                 result = self.render_template(tpl, config)

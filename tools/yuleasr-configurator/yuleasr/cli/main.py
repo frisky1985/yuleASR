@@ -18,7 +18,7 @@ app = typer.Typer(
 )
 console = Console()
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_ROOT = Path(__file__).resolve().parents[4]
 DEFAULT_CONFIG = REPO_ROOT / "config" / "bsw_config.json"
 DEFAULT_TEMPLATES = REPO_ROOT / "config" / "templates"
 DEFAULT_OUTPUT = REPO_ROOT / "config" / "generated"
