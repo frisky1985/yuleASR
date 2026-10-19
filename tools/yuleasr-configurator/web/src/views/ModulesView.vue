@@ -51,7 +51,7 @@ const grouped = computed(() => {
     ECUAL: [],
     Services: [],
     OS: [],
-    Integration: [],
+    'BSW Coordination': [],
   }
   for (const mod of Object.values(store.modules)) {
     if (search.value && !mod.name.toLowerCase().includes(search.value.toLowerCase())) {
@@ -74,7 +74,7 @@ function guessLayer(name: string): string {
   if (mcal.includes(name)) return 'MCAL'
   if (ecual.includes(name)) return 'ECUAL'
   if (name === 'Os') return 'OS'
-  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'Integration'
+  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'BSW Coordination'
   return 'Services'
 }
 

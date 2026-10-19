@@ -166,13 +166,13 @@ const layerIcons: Record<string, string> = {
   Services: 'icon-services',
   OS: 'icon-os',
   RTE: 'icon-rte',
-  Integration: 'icon-integration',
+  'BSW Coordination': 'icon-integration',
 }
 
 const treeData = computed<TreeNode[]>(() => {
   const modules = projectStore.ecuModules
   const grouped: Record<string, TreeNode[]> = {
-    MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], Integration: [],
+    MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], 'BSW Coordination': [],
   }
 
   for (const [name, mod] of Object.entries(modules)) {
@@ -225,7 +225,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (name === 'Os') return 'OS'
   if (name === 'Rte') return 'RTE'
-  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'Integration'
+  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'BSW Coordination'
   return 'Services'
 }
 

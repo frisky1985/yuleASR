@@ -92,7 +92,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (['Com', 'PduR', 'NvM', 'Dcm', 'Dem'].includes(name)) return 'Services'
   if (name === 'Os') return 'OS'
-  return 'Integration'
+  return 'BSW Coordination'
 }
 
 function toggleModule(name: string) {

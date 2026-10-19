@@ -184,7 +184,7 @@ const layers = computed(() => {
     { name: 'MCAL', count: layerMap['MCAL'] || 0 },
     { name: 'ECUAL', count: layerMap['ECUAL'] || 0 },
     { name: 'Services', count: layerMap['Services'] || 0 },
-    { name: 'Other', count: (layerMap['OS'] || 0) + (layerMap['Integration'] || 0) },
+    { name: 'Other', count: (layerMap['OS'] || 0) + (layerMap['BSW Coordination'] || 0) },
   ]
 })
 
@@ -196,7 +196,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (services.includes(name)) return 'Services'
   if (name === 'Os') return 'OS'
-  return 'Integration'
+  return 'BSW Coordination'
 }
 
 function getLayerPercentage(count: number): number {

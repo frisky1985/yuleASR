@@ -238,7 +238,7 @@ function guessLayerName(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (name === 'Os') return 'OS'
   if (name === 'Rte') return 'RTE'
-  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'Integration'
+  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'BSW Coordination'
   return 'Services'
 }
 

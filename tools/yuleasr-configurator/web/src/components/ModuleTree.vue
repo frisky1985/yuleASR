@@ -158,7 +158,7 @@ const layerIcons: Record<string, { icon: any; iconClass: string }> = {
   Services: { icon: markRaw(Setting), iconClass: 'icon-services' },
   OS: { icon: markRaw(Monitor), iconClass: 'icon-os' },
   RTE: { icon: markRaw(Connection), iconClass: 'icon-rte' },
-  Integration: { icon: markRaw(Folder), iconClass: 'icon-integration' },
+  'BSW Coordination': { icon: markRaw(Folder), iconClass: 'icon-integration' },
 }
 
 const treeData = computed<ModuleNode[]>(() => {
@@ -169,7 +169,7 @@ const treeData = computed<ModuleNode[]>(() => {
     Services: [],
     OS: [],
     RTE: [],
-    Integration: [],
+    'BSW Coordination': [],
   }
 
   for (const [name, mod] of Object.entries(modules)) {
@@ -253,7 +253,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (name === 'Os') return 'OS'
   if (name === 'Rte') return 'RTE'
-  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'Integration'
+  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'BSW Coordination'
   return 'Services'
 }
 

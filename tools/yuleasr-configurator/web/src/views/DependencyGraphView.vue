@@ -8,7 +8,7 @@
         <el-option label="Services" value="Services" />
         <el-option label="OS" value="OS" />
         <el-option label="RTE" value="RTE" />
-        <el-option label="Integration" value="Integration" />
+        <el-option label="BSW Coordination" value="BSW Coordination" />
       </el-select>
 
       <el-checkbox v-model="showLabels" size="small">Show Labels</el-checkbox>
@@ -65,7 +65,7 @@
       </div>
       <div class="legend-item">
         <div class="legend-color" style="background: #b37feb"></div>
-        <span>Integration</span>
+        <span>BSW Coordination</span>
       </div>
       <div class="legend-item">
         <div class="legend-color legend-cycle" style="background: #f56c6c"></div>
@@ -116,7 +116,7 @@ const LAYER_COLORS: Record<string, string> = {
   Services: '#e6a23c',
   OS: '#f56c6c',
   RTE: '#909399',
-  Integration: '#b37feb',
+  'BSW Coordination': '#b37feb',
 }
 
 const DEPENDENCIES: Record<string, string[]> = {
@@ -158,7 +158,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (name === 'Os') return 'OS'
   if (name === 'Rte') return 'RTE'
-  if (['BswM', 'EcuM'].includes(name)) return 'Integration'
+  if (['BswM', 'EcuM'].includes(name)) return 'BSW Coordination'
   return 'Services'
 }
 

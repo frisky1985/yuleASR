@@ -38,7 +38,7 @@ const layerColors: Record<string, string> = {
   ECUAL: '#67c23a',
   Services: '#e6a23c',
   OS: '#f56c6c',
-  Integration: '#909399',
+  'BSW Coordination': '#909399',
 }
 
 function guessLayer(name: string): string {
@@ -48,7 +48,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (['Com', 'PduR', 'NvM', 'Dcm', 'Dem'].includes(name)) return 'Services'
   if (name === 'Os') return 'OS'
-  return 'Integration'
+  return 'BSW Coordination'
 }
 
 async function loadGraph() {

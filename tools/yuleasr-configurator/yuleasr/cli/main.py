@@ -155,7 +155,7 @@ def list_modules() -> None:
         "ECUAL": ["CanIf", "CanTp", "IoHwAb", "EthIf", "MemIf", "Fee", "Ea", "FrIf", "LinIf"],
         "Services": ["Com", "PduR", "NvM", "Dcm", "Dem"],
         "OS": ["Os"],
-        "Integration": ["BswM", "EcuM"],
+        "BSW Coordination": ["BswM", "EcuM", "Det"],
     }
     for layer, mods in modules.items():
         for mod in mods:
