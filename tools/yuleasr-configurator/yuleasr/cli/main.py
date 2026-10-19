@@ -164,6 +164,94 @@ def list_modules() -> None:
     console.print(table)
 
 
+@app.command("export-arxml")
+def export_arxml(
+    config: Path = typer.Option(DEFAULT_CONFIG, "--config", "-c", help="Config file (YAML/JSON)"),
+    output: Path = typer.Option(Path("output.arxml"), "--output", "-o", help="Output ARXML file"),
+    verbose: bool = typer.Option(False, "--verbose", "-v"),
+) -> None:
+    """Export configuration to AUTOSAR ARXML format."""
+    _setup_logging(verbose)
+
+    from yuleasr.core.arxml_handler import ArxmlExporter
+    from yuleasr.core.config_loader import ConfigLoadError, load_config
+
+    try:
+        cfg = load_config(config)
+    except ConfigLoadError as e:
+        console.print(f"[red]ERROR:[/red] {e}")
+        raise typer.Exit(2)
+
+    exporter = ArxmlExporter()
+    exporter.export_file(cfg, output)
+    console.print(f"[green]Exported[/green] {output}")
+
+
+@app.command("import-arxml")
+def import_arxml(
+    arxml: Path = typer.Argument(..., help="Input ARXML file"),
+    output: Path = typer.Option(Path("imported_config.yaml"), "--output", "-o", help="Output YAML config"),
+    verbose: bool = typer.Option(False, "--verbose", "-v"),
+) -> None:
+    """Import AUTOSAR ARXML file to YAML configuration."""
+    _setup_logging(verbose)
+
+    from yuleasr.core.arxml_handler import ArxmlParser
+    from yuleasr.core.config_loader import dump_yaml
+
+    parser = ArxmlParser()
+    result = parser.parse_file(arxml)
+
+    dump_yaml(result.config, output)
+    console.print(f"[green]Imported[/green] {len(result.modules)} module(s) from {arxml}")
+    for w in result.warnings:
+        console.print(f"  [yellow]{w}[/yellow]")
+
+
+@app.command("check-references")
+def check_references(
+    config: Path = typer.Option(DEFAULT_CONFIG, "--config", "-c", help="Config file"),
+    verbose: bool = typer.Option(False, "--verbose", "-v"),
+) -> None:
+    """Check cross-module references for dangling links."""
+    _setup_logging(verbose)
+
+    from yuleasr.core.config_loader import ConfigLoadError, load_config
+    from yuleasr.core.reference_validator import CROSS_MODULE_REFERENCES
+
+    try:
+        cfg = load_config(config)
+    except ConfigLoadError as e:
+        console.print(f"[red]ERROR:[/red] {e}")
+        raise typer.Exit(2)
+
+    modules = cfg.get("modules", {})
+    table = Table(title="Cross-Module Reference Check")
+    table.add_column("Status", width=8)
+    table.add_column("Source Module")
+    table.add_column("Target Module")
+    table.add_column("Field")
+
+    dangling = 0
+    checked = 0
+    for src_mod, src_field, tgt_mod, tgt_field in CROSS_MODULE_REFERENCES:
+        src_cfg = modules.get(src_mod)
+        tgt_cfg = modules.get(tgt_mod)
+        checked += 1
+
+        if src_cfg and not tgt_cfg:
+            table.add_row("[red]MISS[/red]", src_mod, tgt_mod, f"{src_field} → {tgt_field}")
+            dangling += 1
+        elif src_cfg and tgt_cfg:
+            table.add_row("[green]OK[/green]", src_mod, tgt_mod, f"{src_field} → {tgt_field}")
+        elif verbose:
+            table.add_row("[dim]skip[/dim]", src_mod, tgt_mod, f"{src_field} → {tgt_field}")
+
+    console.print(table)
+    console.print(f"\n[bold]{checked}[/bold] reference(s) checked, [bold red]{dangling}[/bold red] dangling")
+    raise typer.Exit(0 if dangling == 0 else 1)
+
+
 @app.command()
 def init_order(
     config: Path = typer.Option(DEFAULT_CONFIG, "--config", "-c", help="Config file"),
