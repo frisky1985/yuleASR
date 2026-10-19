@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置看门狗，超时时间 100ms，窗口模式",
+    "config": "```yaml\nWdg:\n  general:\n    dev_error_detect: true\n  WdgConfig:\n    - id: 0\n      name: DefaultWatchdog\n      timeout_ms: 100\n      mode: WINDOW\n      window_start_percent: 50\n      enable_sleep_support: true\n```"
+  },
+  {
+    "request": "配置双看门狗，系统看门狗 500ms，应用看门狗 100ms",
+    "config": "```yaml\nWdg:\n  WdgConfig:\n    - id: 0\n      name: SystemWatchdog\n      timeout_ms: 500\n      mode: TIME_BASED\n      priority: LOW\n    - id: 1\n      name: AppWatchdog\n      timeout_ms: 100\n      mode: WINDOW\n      window_start_percent: 60\n      priority: HIGH\n```"
+  }
+]

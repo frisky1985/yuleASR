@@ -1,0 +1,37 @@
+{
+  "timestamp": "2026-10-19T01:11:02.471194",
+  "module": "Adc",
+  "request": "",
+  "original_config": {},
+  "user_modified_config": {
+    "Adc": {
+      "AdcGroup": [
+        {
+          "AdcChannel": [
+            {
+              "resolution": 12
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "applied": true,
+  "changes_made": [
+    {
+      "type": "added",
+      "field": "Adc",
+      "value": {
+        "AdcGroup": [
+          {
+            "AdcChannel": [
+              {
+                "resolution": 12
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

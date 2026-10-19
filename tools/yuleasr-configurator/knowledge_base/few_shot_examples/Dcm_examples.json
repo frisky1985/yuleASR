@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置诊断会话控制服务，支持编程会话",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  version_info_api: true\nDcmDspSession:\n  - session_id: 0x01\n    session_name: DEFAULT_SESSION\n  - session_id: 0x02\n    session_name: PROGRAMMING_SESSION\n  - session_id: 0x03\n    session_name: EXTENDED_SESSION\nDcmDspService:\n  - service_id: 0x10\n    service_name: DiagnosticSessionControl\n    enabled: true\n```"
+  },
+  {
+    "request": "启用 DTC 读取和清除功能",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\nDcmDspService:\n  - service_id: 0x14\n    service_name: ClearDiagnosticInformation\n    enabled: true\n  - service_id: 0x19\n    service_name: ReadDTCInformation\n    enabled: true\n```"
+  }
+]

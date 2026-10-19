@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置信号超时时间 5 秒，启用死区检测",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  version_info_api: true\nComSignal:\n  - signal_id: 0\n    timeout: 5000\n    dead_zone_enabled: true\n    dead_zone_value: 0.1\n```"
+  },
+  {
+    "request": "启用网关功能，配置 10 个 PDU",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  gateway_enabled: true\n  max_pdus: 10\nComPdu:\n  - pdu_id: 0\n    direction: TX\n    length: 64\n  - pdu_id: 1\n    direction: RX\n    length: 64\n```"
+  }
+]

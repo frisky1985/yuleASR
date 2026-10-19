@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 ADC 通道 0-3，12 位分辨率，软件触发",
+    "config": "```yaml\nAdc:\n  general:\n    dev_error_detect: true\n  AdcGroup:\n    - id: 0\n      name: AnalogInputs\n      trigger_source: SOFTWARE\n      conversion_mode: SINGLE\n      AdcChannel:\n        - id: 0\n          name: ADC_0\n          resolution: 12\n          sampling_time_us: 10\n        - id: 1\n          name: ADC_1\n          resolution: 12\n          sampling_time_us: 10\n        - id: 2\n          name: ADC_2\n          resolution: 12\n          sampling_time_us: 10\n        - id: 3\n          name: ADC_3\n          resolution: 12\n          sampling_time_us: 10\n```"
+  },
+  {
+    "request": "配置 ADC 用于温度传感器，带过采样和平均",
+    "config": "```yaml\nAdc:\n  AdcGroup:\n    - id: 0\n      name: TempSensor\n      trigger_source: TIMER\n      trigger_timer_us: 1000\n      conversion_mode: CONTINUOUS\n      AdcChannel:\n        - id: 0\n          name: TEMP_SENSOR\n          resolution: 12\n          sampling_time_us: 50\n          oversampling: 16\n          averaging: true\n```"
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "request": "配置 CAN 总线，波特率 500kbps，3 个控制器",
+    "config": "```yaml\nbaudrate: 500000\nnum_controllers: 3\ngeneral:\n  dev_error_detect: true\n  version_info_api: true\nCanController:\n  - id: 0\n    baudrate: 500000\n    propagation_delay: 100\n  - id: 1\n    baudrate: 500000\n    propagation_delay: 100\n  - id: 2\n    baudrate: 500000\n    propagation_delay: 100\n```"
+  },
+  {
+    "request": "启用 CAN FD 支持，数据段波特率 2Mbps",
+    "config": "```yaml\ncan_fd_support: true\ngeneral:\n  dev_error_detect: true\nCanController:\n  - id: 0\n    baudrate: 500000\n    data_baudrate: 2000000\n    can_fd: true\n```"
+  },
+  {
+    "request": "配置 CAN 唤醒支持和错误检测",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  wakeup_support: true\n  version_info_api: true\n```"
+  }
+]

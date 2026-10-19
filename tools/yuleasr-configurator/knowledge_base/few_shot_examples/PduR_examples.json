@@ -1,0 +1,6 @@
+[
+  {
+    "request": "配置 PDU 路由，CAN 到 COM",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\nPduRRoutingPath:\n  - src_pdu: CanIf_Tx\n    dest_pdu: Com_Tx\n    direction: UP\n  - src_pdu: Com_Rx\n    dest_pdu: CanIf_Rx\n    direction: DOWN\n```"
+  }
+]

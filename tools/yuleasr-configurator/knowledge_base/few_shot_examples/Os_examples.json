@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 OS 任务，3 个周期任务：1ms、10ms、100ms",
+    "config": "```yaml\nOs:\n  general:\n    dev_error_detect: true\n    use_get_service: true\n  OsTask:\n    - id: 0\n      name: Task_1ms\n      priority: 10\n      period_ms: 1\n      autostart: true\n      stack_size: 512\n    - id: 1\n      name: Task_10ms\n      priority: 5\n      period_ms: 10\n      autostart: true\n      stack_size: 1024\n    - id: 2\n      name: Task_100ms\n      priority: 1\n      period_ms: 100\n      autostart: true\n      stack_size: 2048\n```"
+  },
+  {
+    "request": "配置 OS 报警，用于延迟执行",
+    "config": "```yaml\nOs:\n  OsAlarm:\n    - id: 0\n      name: Alarm_DelayTask\n      trigger_task: Task_Delayed\n      alarm_time_ms: 50\n      cycle_time_ms: 0\n    - id: 1\n      name: Alarm_PeriodicTask\n      trigger_task: Task_Periodic\n      alarm_time_ms: 100\n      cycle_time_ms: 100\n```"
+  }
+]

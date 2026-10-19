@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 Port 引脚复用，PA0 为 GPIO 输出，PA1 为 ADC 输入",
+    "config": "```yaml\nPort:\n  PortPin:\n    - id: 0\n      name: PA0\n      direction: OUTPUT\n      initial_level: LOW\n      slew_rate: MEDIUM\n    - id: 1\n      name: PA1\n      direction: INPUT\n      adc_channel: 1\n      pull_resistor: NONE\n```"
+  },
+  {
+    "request": "配置 8 个 GPIO 引脚，4 输入 4 输出",
+    "config": "```yaml\nPort:\n  general:\n    dev_error_detect: true\n  PortPin:\n    - id: 0\n      name: PA0\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 1\n      name: PA1\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 2\n      name: PA2\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 3\n      name: PA3\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 4\n      name: PA4\n      direction: INPUT\n      pull_resistor: PULL_UP\n    - id: 5\n      name: PA5\n      direction: INPUT\n      pull_resistor: PULL_UP\n    - id: 6\n      name: PA6\n      direction: INPUT\n      pull_resistor: PULL_DOWN\n    - id: 7\n      name: PA7\n      direction: INPUT\n      pull_resistor: PULL_DOWN\n```"
+  }
+]

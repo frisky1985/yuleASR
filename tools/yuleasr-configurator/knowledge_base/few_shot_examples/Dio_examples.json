@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 Dio 通道 0-3 为输出，初始电平低",
+    "config": "```yaml\nDio:\n  general:\n    dev_error_detect: true\n  DioChannel:\n    - id: 0\n      name: LED_0\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 1\n      name: LED_1\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 2\n      name: LED_2\n      direction: OUTPUT\n      initial_level: LOW\n    - id: 3\n      name: LED_3\n      direction: OUTPUT\n      initial_level: LOW\n```"
+  },
+  {
+    "request": "配置 Dio 按钮输入，带上拉电阻",
+    "config": "```yaml\nDio:\n  DioChannel:\n    - id: 0\n      name: BUTTON_0\n      direction: INPUT\n      pull_resistor: PULL_UP\n      debounce_time_ms: 50\n    - id: 1\n      name: BUTTON_1\n      direction: INPUT\n      pull_resistor: PULL_UP\n      debounce_time_ms: 50\n```"
+  }
+]

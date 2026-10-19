@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 PWM 输出，频率 1kHz，占空比 50%",
+    "config": "```yaml\nPwm:\n  general:\n    dev_error_detect: true\n  PwmChannel:\n    - id: 0\n      name: PWM_0\n      frequency_hz: 1000\n      duty_cycle_percent: 50\n      polarity: HIGH\n      alignment: EDGE\n```"
+  },
+  {
+    "request": "配置 4 路 PWM 用于电机控制，频率 20kHz",
+    "config": "```yaml\nPwm:\n  PwmChannel:\n    - id: 0\n      name: MOTOR_A_FWD\n      frequency_hz: 20000\n      duty_cycle_percent: 0\n      polarity: HIGH\n    - id: 1\n      name: MOTOR_A_REV\n      frequency_hz: 20000\n      duty_cycle_percent: 0\n      polarity: HIGH\n    - id: 2\n      name: MOTOR_B_FWD\n      frequency_hz: 20000\n      duty_cycle_percent: 0\n      polarity: HIGH\n    - id: 3\n      name: MOTOR_B_REV\n      frequency_hz: 20000\n      duty_cycle_percent: 0\n      polarity: HIGH\n```"
+  }
+]

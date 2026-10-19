@@ -1,0 +1,6 @@
+[
+  {
+    "request": "配置 DTC 存储，支持冻结帧",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  max_dtc_count: 100\n  freeze_frame_enabled: true\nDemDtc:\n  - dtc_id: 0x000001\n    severity: high\n    freeze_frame_record: 0\n```"
+  }
+]

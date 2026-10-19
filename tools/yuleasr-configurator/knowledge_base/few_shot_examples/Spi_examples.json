@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 SPI 主机，时钟 10MHz，8 位数据",
+    "config": "```yaml\nSpi:\n  general:\n    dev_error_detect: true\n  SpiHwUnit:\n    - id: 0\n      name: SPI_0\n      mode: MASTER\n      clock_frequency_hz: 10000000\n      data_width: 8\n      clock_polarity: LOW\n      clock_phase: EDGE_1\n      cs_polarity: LOW\n```"
+  },
+  {
+    "request": "配置 SPI 用于连接外部 Flash，时钟 20MHz，带 DMA",
+    "config": "```yaml\nSpi:\n  SpiHwUnit:\n    - id: 0\n      name: SPI_Flash\n      mode: MASTER\n      clock_frequency_hz: 20000000\n      data_width: 8\n      clock_polarity: LOW\n      clock_phase: EDGE_1\n      cs_polarity: LOW\n      enable_dma: true\n      dma_tx_channel: 0\n      dma_rx_channel: 1\n```"
+  }
+]

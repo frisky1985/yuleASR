@@ -1,0 +1,10 @@
+[
+  {
+    "request": "配置 GPT 定时器，1ms 周期中断",
+    "config": "```yaml\nGpt:\n  general:\n    dev_error_detect: true\n  GptChannel:\n    - id: 0\n      name: Timer_1ms\n      period_us: 1000\n      mode: PERIODIC\n      enable_interrupt: true\n```"
+  },
+  {
+    "request": "配置 3 个定时器：1ms、10ms、100ms",
+    "config": "```yaml\nGpt:\n  GptChannel:\n    - id: 0\n      name: Timer_1ms\n      period_us: 1000\n      mode: PERIODIC\n      enable_interrupt: true\n    - id: 1\n      name: Timer_10ms\n      period_us: 10000\n      mode: PERIODIC\n      enable_interrupt: true\n    - id: 2\n      name: Timer_100ms\n      period_us: 100000\n      mode: PERIODIC\n      enable_interrupt: true\n```"
+  }
+]

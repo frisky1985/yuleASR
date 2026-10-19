@@ -1,0 +1,10 @@
+[
+  {
+    "request": "启用冗余模式，块大小 64 字节",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  version_info_api: true\nNvmBlockDescriptor:\n  - block_id: 0\n    block_size: 64\n    redundancy_enabled: true\n    crc_enabled: true\n    write_protect: false\n```"
+  },
+  {
+    "request": "配置最大块数 100，启用 CRC 校验",
+    "config": "```yaml\ngeneral:\n  dev_error_detect: true\n  max_blocks: 100\nNvmBlockDescriptor:\n  - block_id: 0\n    block_size: 256\n    crc_enabled: true\n    write_protect: false\n```"
+  }
+]
