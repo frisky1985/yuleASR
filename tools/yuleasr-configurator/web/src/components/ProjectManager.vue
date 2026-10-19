@@ -60,16 +60,21 @@
             class="pm-ecu-item"
             :class="{ active: ecu.id === projectStore.currentEcuId }"
             @click="projectStore.switchEcu(ecu.id)"
+            @contextmenu.prevent="showEcuContext($event, ecu)"
           >
             <el-icon><Cpu /></el-icon>
             <div class="pm-ecu-info">
               <span class="pm-ecu-name">{{ ecu.name }}</span>
-              <span class="pm-ecu-meta">{{ Object.keys(ecu.modules).length }} modules</span>
+              <span class="pm-ecu-meta">{{ ecu.chip?.model ?? 'No chip' }} · {{ Object.keys(ecu.modules).length }} modules</span>
+            </div>
+            <div class="pm-ecu-actions">
+              <el-icon class="pm-ecu-action-btn" @click.stop="openEditEcu(ecu)"><Edit /></el-icon>
+              <el-icon class="pm-ecu-action-btn pm-ecu-action-danger" @click.stop="confirmRemoveEcu(ecu)"><Delete /></el-icon>
             </div>
           </div>
         </div>
         <div class="pm-action">
-          <el-button text size="small" @click="handleAddEcu">
+          <el-button text size="small" @click="openAddEcu">
             <el-icon><Plus /></el-icon>
             Add ECU
           </el-button>
@@ -125,6 +130,13 @@
         </div>
       </div>
     </div>
+
+    <!-- ECU Editor Dialog -->
+    <EcuEditorDialog
+      v-model="ecuDialogVisible"
+      :edit-data="ecuEditData"
+      @confirm="handleEcuConfirm"
+    />
   </div>
 </template>
 
@@ -143,11 +155,15 @@ import {
   Download,
   List,
   Monitor,
+  Edit,
+  Delete,
 } from '@element-plus/icons-vue'
 import { useProjectStore } from '@/stores/project'
 import { useConfigStore } from '@/stores/config'
 import { useEditorTabsStore } from '@/stores/editorTabs'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import EcuEditorDialog from './EcuEditorDialog.vue'
+import type { EcuConfig } from '@/types'
 
 const router = useRouter()
 const projectStore = useProjectStore()
@@ -156,6 +172,8 @@ const tabsStore = useEditorTabsStore()
 
 const activeSection = ref('projects')
 const currentProjectId = ref('default')
+const ecuDialogVisible = ref(false)
+const ecuEditData = ref<{ id: string; name: string; description?: string; chip?: { vendor: string; series: string; model: string } } | undefined>()
 
 const projectName = computed(() => configStore.config?.project?.name ?? 'yuleASR')
 const ecuCount = computed(() => projectStore.ecus.length)
@@ -190,8 +208,55 @@ function handleNewProject() {
   router.push('/new-project')
 }
 
-function handleAddEcu() {
-  ElMessage.info('Add ECU dialog coming soon')
+function openAddEcu() {
+  ecuEditData.value = undefined
+  ecuDialogVisible.value = true
+}
+
+function openEditEcu(ecu: EcuConfig) {
+  ecuEditData.value = {
+    id: ecu.id,
+    name: ecu.name,
+    description: ecu.description,
+    chip: ecu.chip,
+  }
+  ecuDialogVisible.value = true
+}
+
+async function handleEcuConfirm(data: { name: string; description: string; chip?: { vendor: string; series: string; model: string } }) {
+  if (ecuEditData.value) {
+    // Edit existing ECU
+    const ecu = projectStore.ecus.find((e) => e.id === ecuEditData.value!.id)
+    if (ecu) {
+      ecu.name = data.name
+      ecu.description = data.description
+      ecu.chip = data.chip
+    }
+    ElMessage.success(`ECU "${data.name}" updated`)
+  } else {
+    // Add new ECU
+    await projectStore.addEcu(data.name, data.chip)
+    ElMessage.success(`ECU "${data.name}" added`)
+  }
+  ecuEditData.value = undefined
+}
+
+async function confirmRemoveEcu(ecu: EcuConfig) {
+  try {
+    await ElMessageBox.confirm(
+      `Remove ECU "${ecu.name}"? This cannot be undone.`,
+      'Confirm',
+      { type: 'warning' },
+    )
+    await projectStore.removeEcu(ecu.id)
+    ElMessage.success(`ECU "${ecu.name}" removed`)
+  } catch {
+    // Cancelled
+  }
+}
+
+function showEcuContext(_event: MouseEvent, ecu: EcuConfig) {
+  openEditEcu(ecu)
 }
 
 function openModule(name: string) {
@@ -359,6 +424,32 @@ function handleExportArxml() {
   min-width: 0;
   display: flex;
   flex-direction: column;
+}
+
+.pm-ecu-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.pm-ecu-item:hover .pm-ecu-actions {
+  opacity: 1;
+}
+
+.pm-ecu-action-btn {
+  font-size: 14px;
+  color: #909399;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.pm-ecu-action-btn:hover {
+  color: #409eff;
+}
+
+.pm-ecu-action-danger:hover {
+  color: #f56c6c !important;
 }
 
 .pm-ecu-name,

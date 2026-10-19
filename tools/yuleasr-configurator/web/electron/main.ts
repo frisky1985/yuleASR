@@ -138,6 +138,12 @@ function createMenu() {
           click: () => mainWindow?.webContents.send('menu-action', 'generate'),
         },
         { type: 'separator' },
+        {
+          label: 'AI Assistant',
+          accelerator: 'CmdOrCtrl+I',
+          click: () => mainWindow?.webContents.send('menu-action', 'open-ai-assistant'),
+        },
+        { type: 'separator' },
         { role: 'quit' },
       ],
     },
