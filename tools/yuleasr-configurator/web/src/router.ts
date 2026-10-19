@@ -45,6 +45,11 @@ const router = createRouter({
       name: 'new-project',
       component: () => import('@/views/ProjectWizardView.vue'),
     },
+    {
+      path: '/ecu-compare',
+      name: 'ecu-compare',
+      component: () => import('@/components/EcuComparisonView.vue'),
+    },
   ],
 })
 
