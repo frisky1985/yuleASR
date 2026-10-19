@@ -234,3 +234,19 @@ export async function applyChatConfig(
   })
   return response.data
 }
+
+// ARXML Export/Import API
+export async function exportArxml(config?: Config): Promise<{ success: boolean; arxml: string; module_count: number }> {
+  const response = await api.post('/arxml/export', { config })
+  return response.data
+}
+
+export async function importArxml(content: string): Promise<{
+  success: boolean
+  modules: Array<{ name: string; enabled: boolean; parameters: number }>
+  warnings: string[]
+  config: Record<string, any>
+}> {
+  const response = await api.post('/arxml/import', { content })
+  return response.data
+}

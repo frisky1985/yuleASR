@@ -365,8 +365,10 @@ function handleDuplicateProject() {
 
 function handleExportProject() {
   closeContextMenu()
-  ElMessage.info('Export project config coming soon')
   router.push('/config')
+  setTimeout(() => {
+    ElMessage.info('Click "Export ARXML" in the Configuration Editor toolbar')
+  }, 300)
 }
 
 function handleProjectSettings() {

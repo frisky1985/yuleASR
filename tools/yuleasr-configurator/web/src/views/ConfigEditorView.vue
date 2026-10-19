@@ -347,10 +347,19 @@ async function exportArxml() {
   }
 
   try {
-    await api.saveConfig(store.config)
-    ElMessage.success('Configuration exported')
+    const result = await api.exportArxml(store.config)
+    const blob = new Blob([result.arxml], { type: 'application/xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${store.config.project?.name ?? 'yuleASR'}_config.arxml`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    ElMessage.success(`ARXML exported: ${result.module_count} modules`)
   } catch (e: any) {
-    ElMessage.error(e.response?.data?.detail || e.message)
+    ElMessage.error(e.response?.data?.detail || e.message || 'Export failed')
   }
 }
 
