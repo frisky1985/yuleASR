@@ -8,6 +8,14 @@
     <div class="toolbar">
       <div class="toolbar-left">
         <div class="toolbar-section">
+          <el-tooltip content="Toggle Sidebar" placement="bottom">
+            <el-button text size="small" :icon="sidebarVisible ? Fold : Expand" @click="sidebarVisible = !sidebarVisible" />
+          </el-tooltip>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <div class="toolbar-section">
           <el-tooltip content="Back" placement="bottom">
             <el-button text size="small" :icon="ArrowLeft" :disabled="isHome" @click="goBack" />
           </el-tooltip>
@@ -66,8 +74,16 @@
       </div>
     </div>
 
-    <div class="main-content">
-      <router-view />
+    <div class="app-body">
+      <transition name="sidebar">
+        <div v-if="sidebarVisible" class="sidebar">
+          <ProjectTree />
+        </div>
+      </transition>
+
+      <div class="main-content">
+        <router-view />
+      </div>
     </div>
 
     <div class="statusbar">
@@ -95,7 +111,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import {
   Plus,
@@ -111,13 +127,18 @@ import {
   ArrowLeft,
   ArrowRight,
   HomeFilled,
+  Fold,
+  Expand,
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useConfigStore } from '@/stores/config'
+import { useProjectStore } from '@/stores/project'
+import ProjectTree from '@/components/ProjectTree.vue'
 
 const router = useRouter()
 const route = useRoute()
 const configStore = useConfigStore()
+const projectStore = useProjectStore()
 
 const isElectron = ref(false)
 const backendConnected = ref(false)
@@ -125,10 +146,14 @@ const currentFile = ref('')
 const canGoForward = ref(false)
 const historyIndex = ref(0)
 const historyStack = ref<string[]>(['/'])
+const sidebarVisible = ref(true)
 
 const moduleCount = computed(() => configStore.moduleCount)
-
 const isHome = computed(() => route.path === '/')
+
+watch(() => configStore.config, (cfg) => {
+  if (cfg) projectStore.syncFromConfig()
+}, { immediate: true })
 
 function goBack() {
   if (historyIndex.value > 0) {
@@ -155,7 +180,6 @@ function goHome() {
 }
 
 function navigateTo(path: string) {
-  // Truncate forward history when navigating to a new page
   if (historyIndex.value < historyStack.value.length - 1) {
     historyStack.value = historyStack.value.slice(0, historyIndex.value + 1)
   }
@@ -240,13 +264,11 @@ router.afterEach((to) => {
   const currentPath = to.path
   const lastTracked = historyStack.value[historyIndex.value]
   if (lastTracked !== currentPath) {
-    // Browser back/forward detected — find the path in our stack
     const idx = historyStack.value.indexOf(currentPath)
     if (idx >= 0) {
       historyIndex.value = idx
       canGoForward.value = idx < historyStack.value.length - 1
     } else {
-      // New navigation from browser — add to stack
       historyStack.value = historyStack.value.slice(0, historyIndex.value + 1)
       historyStack.value.push(currentPath)
       historyIndex.value = historyStack.value.length - 1
@@ -277,7 +299,7 @@ onMounted(() => {
           ElMessage.info('Redo')
           break
         case 'toggle-tree':
-          ElMessage.info('Toggle Module Tree')
+          sidebarVisible.value = !sidebarVisible.value
           break
         case 'toggle-properties':
           ElMessage.info('Toggle Properties')
@@ -287,6 +309,10 @@ onMounted(() => {
           break
         case 'export-arxml':
           navigateTo('/arxml')
+          break
+        case 'open-ai-assistant':
+          navigateTo('/config')
+          ElMessage.info('Navigate to Configuration Editor and click "AI Assistant" button')
           break
       }
     })
@@ -372,6 +398,7 @@ html, body, #app {
   padding: 0 16px;
   background: #fff;
   border-bottom: 1px solid #e4e7ed;
+  flex-shrink: 0;
 }
 
 .toolbar-left {
@@ -446,9 +473,38 @@ html, body, #app {
   padding: 6px 8px;
 }
 
+.app-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  min-width: 240px;
+  border-right: 1px solid #e4e7ed;
+  background: #fafbfc;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-enter-active,
+.sidebar-leave-active {
+  transition: all 0.25s ease;
+}
+
+.sidebar-enter-from,
+.sidebar-leave-to {
+  width: 0;
+  min-width: 0;
+  opacity: 0;
+}
+
 .main-content {
   flex: 1;
   overflow: hidden;
+  min-width: 0;
 }
 
 .statusbar {
@@ -460,6 +516,7 @@ html, body, #app {
   background: #409eff;
   color: #fff;
   font-size: 12px;
+  flex-shrink: 0;
 }
 
 .statusbar-left,

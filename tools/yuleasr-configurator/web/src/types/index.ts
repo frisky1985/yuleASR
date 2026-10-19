@@ -53,3 +53,34 @@ export interface InitOrderResult {
   order: string[]
   dependencies: Record<string, string[]>
 }
+
+// ── Project / ECU model (IDE-style engineering layout) ──
+
+export interface EcuConfig {
+  id: string
+  name: string
+  description?: string
+  chip?: {
+    vendor: string
+    series: string
+    model: string
+    cores?: number
+  }
+  modules: Record<string, ModuleConfig>
+}
+
+export interface ProjectConfig {
+  id: string
+  name: string
+  version: string
+  vendor_id?: number
+  description?: string
+  ecus: EcuConfig[]
+}
+
+export interface ProjectSummary {
+  id: string
+  name: string
+  ecu_count: number
+  module_count: number
+}

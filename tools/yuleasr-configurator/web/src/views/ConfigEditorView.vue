@@ -1,12 +1,11 @@
 <template>
   <div class="config-editor">
-    <!-- 顶部工具栏 -->
     <div class="toolbar">
       <div class="toolbar-left">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
           <el-breadcrumb-item>Configuration</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ currentModule?.label || 'Select Module' }}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{ currentModuleName || 'Select Module' }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="toolbar-right">
@@ -27,84 +26,85 @@
             <el-icon><UploadFilled /></el-icon>
             Export ARXML
           </el-button>
+          <el-button
+            v-if="currentModuleName"
+            type="danger"
+            size="small"
+            @click="chatbotVisible = true"
+          >
+            <el-icon><ChatDotRound /></el-icon>
+            AI Assistant
+          </el-button>
         </el-button-group>
       </div>
     </div>
 
     <EditorTabs />
 
-    <Splitpanes class="default-theme splitpanes--vertical">
-      <!-- 左侧模块树 -->
-      <Pane min-size="20" max-size="40" size="25">
-        <div class="module-tree-panel">
-          <ModuleTree
-            :modules="store.modules"
-            @node-click="handleNodeClick"
-            @enable-module="enableModule"
-            @disable-module="disableModule"
-            @expand-all="expandAll"
-            @collapse-all="collapseAll"
+    <div class="config-panel">
+      <div v-if="!currentModuleName" class="empty-state">
+        <el-empty description="Select a module from the project tree to configure" />
+      </div>
+
+      <div v-else class="config-content">
+        <div class="module-header">
+          <div class="module-title">
+            <h2>{{ currentModuleName }}</h2>
+            <el-tag :type="moduleEnabled ? 'success' : 'info'" size="small">
+              {{ moduleEnabled ? 'Enabled' : 'Disabled' }}
+            </el-tag>
+          </div>
+          <div class="module-path">
+            <el-text type="info" size="small">
+              /{{ currentLayer }}/{{ currentModuleName }}
+            </el-text>
+          </div>
+        </div>
+
+        <div class="params-section">
+          <div class="section-header">
+            <h3>Configuration Parameters</h3>
+          </div>
+          <ParamTable
+            :groups="paramGroups"
+            :issues="validationIssues"
+            @update:param="handleParamUpdate"
           />
         </div>
-      </Pane>
 
-      <!-- 右侧配置区 -->
-      <Pane min-size="50">
-        <div class="config-panel">
-        <div v-if="!currentModule" class="empty-state">
-          <el-empty description="Select a module from the tree to configure" />
-        </div>
-
-        <div v-else class="config-content">
-          <!-- 模块信息头 -->
-          <div class="module-header">
-            <div class="module-title">
-              <el-icon :class="['module-icon', currentModule.iconClass]">
-                <component :is="currentModule.icon" />
-              </el-icon>
-              <h2>{{ currentModule.label }}</h2>
-              <el-tag :type="store.modules[currentModule.label]?.enabled ? 'success' : 'info'" size="small">
-                {{ store.modules[currentModule.label]?.enabled ? 'Enabled' : 'Disabled' }}
-              </el-tag>
-            </div>
-            <div class="module-path">
-              <el-text type="info" size="small">
-                /{{ currentModule.category }}/{{ currentModule.label }}
-              </el-text>
-            </div>
+        <div class="status-bar">
+          <div class="status-left">
+            <el-text size="small">
+              <el-icon><InfoFilled /></el-icon>
+              Module: {{ currentModuleName }} | Parameters: {{ flattenedParamCount }}
+            </el-text>
           </div>
-
-          <!-- 参数表格 (ParamTable 组件) -->
-          <div class="params-section">
-            <div class="section-header">
-              <h3>Configuration Parameters</h3>
-            </div>
-            <ParamTable
-              :groups="paramGroups"
-              :issues="validationIssues"
-              @update:param="handleParamUpdate"
-            />
-          </div>
-
-          <!-- 底部状态栏 -->
-          <div class="status-bar">
-            <div class="status-left">
-              <el-text size="small">
-                <el-icon><InfoFilled /></el-icon>
-                Module: {{ currentModule.label }} | Parameters: {{ flattenedParamCount }}
-              </el-text>
-            </div>
-            <div class="status-right">
-              <el-text size="small" :type="validationStatus.type">
-                <el-icon><component :is="validationStatus.icon" /></el-icon>
-                {{ validationStatus.text }}
-              </el-text>
-            </div>
+          <div class="status-right">
+            <el-text size="small" :type="validationStatus.type">
+              <el-icon><component :is="validationStatus.icon" /></el-icon>
+              {{ validationStatus.text }}
+            </el-text>
           </div>
         </div>
-        </div>
-      </Pane>
-    </Splitpanes>
+      </div>
+    </div>
+
+    <el-drawer
+      v-model="chatbotVisible"
+      title=""
+      direction="rtl"
+      size="400px"
+      :show-close="false"
+      :with-header="false"
+    >
+      <ConfigChatbot
+        v-if="currentModuleName"
+        :module-name="currentModuleName"
+        :current-config="store.modules[currentModuleName]"
+        @close="chatbotVisible = false"
+        @applied="handleChatbotApplied"
+      />
+    </el-drawer>
   </div>
 </template>
 
@@ -118,14 +118,14 @@ import {
   UploadFilled,
   InfoFilled,
   Minus,
+  ChatDotRound,
 } from '@element-plus/icons-vue'
-import { Splitpanes, Pane } from 'splitpanes'
-import 'splitpanes/dist/splitpanes.css'
 import { useConfigStore } from '@/stores/config'
+import { useProjectStore } from '@/stores/project'
 import { useEditorTabsStore } from '@/stores/editorTabs'
-import ModuleTree from '@/components/ModuleTree.vue'
 import EditorTabs from '@/components/EditorTabs.vue'
 import ParamTable from '@/components/ParamTable.vue'
+import ConfigChatbot from '@/components/ConfigChatbot.vue'
 import * as api from '@/api/client'
 import { getModuleSchema } from '@/api/client'
 import type { JsonSchema } from '@/types'
@@ -135,24 +135,31 @@ import { validateAll } from '@/utils/localValidator'
 import type { ValidationIssue } from '@/utils/localValidator'
 
 const store = useConfigStore()
+const projectStore = useProjectStore()
 const tabsStore = useEditorTabsStore()
 
-interface ModuleNode {
-  id: string
-  label: string
-  icon: any
-  iconClass: string
-  category?: string
-  moduleCount?: number
-  children?: ModuleNode[]
-}
-
-const currentModule = ref<ModuleNode | null>(null)
 const moduleSchema = ref<JsonSchema | null>(null)
 const paramGroups = ref<ParamGroup[]>([])
 const validationIssues = ref<ValidationIssue[]>([])
 const saving = ref(false)
 const validating = ref(false)
+const chatbotVisible = ref(false)
+
+const currentModuleName = computed(() => projectStore.currentModuleName)
+const moduleEnabled = computed(() => store.modules[currentModuleName.value]?.enabled ?? false)
+
+const currentLayer = computed(() => {
+  const name = currentModuleName.value
+  if (!name) return ''
+  const mcal = ['Mcu', 'Port', 'Dio', 'Can', 'Spi', 'Adc', 'Pwm', 'Gpt', 'Wdg', 'Icu', 'Lin', 'Eep', 'Fls', 'Eth', 'EthTrcv', 'EthSwt', 'I2c', 'Ocu']
+  const ecual = ['CanIf', 'CanTp', 'IoHwAb', 'EthIf', 'MemIf', 'Fee', 'Ea', 'FrIf', 'LinIf', 'PduR', 'EthTSyn']
+  if (mcal.includes(name)) return 'MCAL'
+  if (ecual.includes(name)) return 'ECUAL'
+  if (name === 'Os') return 'OS'
+  if (name === 'Rte') return 'RTE'
+  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'Integration'
+  return 'Services'
+})
 
 const validationStatus = computed(() => {
   if (!store.validation) return { type: 'info' as const, text: 'Not validated', icon: InfoFilled }
@@ -162,65 +169,31 @@ const validationStatus = computed(() => {
 
 const flattenedParamCount = computed(() => flattenParams(paramGroups.value).length)
 
-function handleNodeClick(data: ModuleNode) {
-  if (!data.moduleCount && data.label) {
-    tabsStore.openTab(data.label, data.label, data.iconClass)
-    currentModule.value = data
-    loadModuleParams(data.label)
-  }
-}
-
-watch(() => tabsStore.activeTabId, (tabId) => {
-  if (!tabId) {
-    currentModule.value = null
+watch(currentModuleName, (name) => {
+  if (!name) {
     paramGroups.value = []
     validationIssues.value = []
     return
   }
+  tabsStore.openTab(name, name, '')
+  loadModuleParams(name)
+})
+
+watch(() => tabsStore.activeTabId, (tabId) => {
+  if (!tabId) return
   const tab = tabsStore.tabs.find((t) => t.id === tabId)
-  if (tab) {
-    const mod = store.modules[tab.moduleName]
-    if (mod) {
-      currentModule.value = {
-        id: tab.id,
-        label: tab.label,
-        icon: null,
-        iconClass: tab.iconClass,
-        category: guessLayerName(tab.moduleName),
-      }
-      loadModuleParams(tab.moduleName)
-    }
+  if (tab && tab.moduleName !== currentModuleName.value) {
+    projectStore.selectModule(tab.moduleName)
   }
 })
 
-function guessLayerName(name: string): string {
-  const mcal = ['Mcu', 'Port', 'Dio', 'Can', 'Spi', 'Adc', 'Pwm', 'Gpt', 'Wdg', 'Icu', 'Lin', 'Eep', 'Fls', 'Eth', 'EthTrcv', 'EthSwt', 'I2c', 'Ocu']
-  const ecual = ['CanIf', 'CanTp', 'IoHwAb', 'EthIf', 'MemIf', 'Fee', 'Ea', 'FrIf', 'LinIf', 'PduR', 'EthTSyn']
-  if (mcal.includes(name)) return 'MCAL'
-  if (ecual.includes(name)) return 'ECUAL'
-  if (name === 'Os') return 'OS'
-  if (name === 'Rte') return 'RTE'
-  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'Integration'
-  return 'Services'
-}
-
-function enableModule(name: string) {
-  store.updateModule(name, { enabled: true })
-  ElMessage.success(`${name} enabled`)
-}
-
-function disableModule(name: string) {
-  store.updateModule(name, { enabled: false })
-  ElMessage.info(`${name} disabled`)
-}
-
-function expandAll() {
-  // ModuleTree handles its own expand state
-  ElMessage.info('All modules expanded')
-}
-
-function collapseAll() {
-  ElMessage.info('All modules collapsed')
+async function handleChatbotApplied(_changes: Record<string, any>) {
+  if (!currentModuleName.value) return
+  await store.loadConfig()
+  projectStore.syncFromConfig()
+  await loadModuleParams(currentModuleName.value)
+  chatbotVisible.value = false
+  ElMessage.success('Configuration updated')
 }
 
 async function loadModuleParams(moduleName: string) {
@@ -246,17 +219,11 @@ async function loadModuleParams(moduleName: string) {
 }
 
 function handleParamUpdate(param: ParamMeta) {
-  if (!currentModule.value) return
-
-  const moduleName = currentModule.value.label
-  // Apply the change into the module config via the store
-  const mod = store.modules[moduleName]
+  if (!currentModuleName.value) return
+  const mod = store.modules[currentModuleName.value]
   if (!mod) return
-
   const updatedConfig = setParamValue(mod, param.path, param.value)
-  store.updateModule(moduleName, updatedConfig)
-
-  // Re-validate after the change
+  store.updateModule(currentModuleName.value, updatedConfig)
   const allParams = flattenParams(paramGroups.value)
   validationIssues.value = validateAll(allParams, store.config ?? {})
 }
@@ -294,7 +261,6 @@ async function exportArxml() {
     ElMessage.warning('No configuration loaded')
     return
   }
-
   try {
     await api.saveConfig(store.config)
     ElMessage.success('Configuration exported')
@@ -308,7 +274,7 @@ onMounted(async () => {
     try {
       await store.loadConfig()
     } catch {
-      // Config load failed, user can import ARXML
+      // Config load failed
     }
   }
 })
@@ -316,7 +282,7 @@ onMounted(async () => {
 
 <style scoped>
 .config-editor {
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   background: #f5f7fa;
@@ -331,6 +297,7 @@ onMounted(async () => {
   justify-content: space-between;
   padding: 0 20px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  flex-shrink: 0;
 }
 
 .toolbar-left {
@@ -342,22 +309,8 @@ onMounted(async () => {
   gap: 10px;
 }
 
-.splitpanes.default-theme {
-  flex: 1;
-  overflow: hidden;
-}
-
-.module-tree-panel {
-  height: 100%;
-  background: #fff;
-  border-right: 1px solid #e4e7ed;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
 .config-panel {
-  height: 100%;
+  flex: 1;
   overflow-y: auto;
   padding: 20px;
   background: #f5f7fa;
@@ -390,10 +343,6 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-
-.module-icon {
-  font-size: 24px;
 }
 
 .module-title h2 {
