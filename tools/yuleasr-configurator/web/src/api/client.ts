@@ -250,3 +250,16 @@ export async function importArxml(content: string): Promise<{
   const response = await api.post('/arxml/import', { content })
   return response.data
 }
+
+export async function createProject(data: {
+  name: string
+  description?: string
+  author?: string
+  version?: string
+  chip?: { vendor: string; series: string; model: string; clock_freq_mhz?: number }
+  mcal_modules: string[]
+  comm_modules: string[]
+}): Promise<{ success: boolean; project_path: string; config_path: string; ecu_id: string; module_count: number }> {
+  const response = await api.post('/project/create', data)
+  return response.data
+}

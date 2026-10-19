@@ -363,6 +363,86 @@ async def save_project(data: Dict[str, Any], project_path: Optional[str] = None)
         raise HTTPException(status_code=500, detail=f"Failed to save project: {e}")
 
 
+class CreateProjectRequest(BaseModel):
+    name: str
+    description: str = ""
+    author: str = ""
+    version: str = "1.0.0"
+    chip: Optional[Dict[str, Any]] = None
+    mcal_modules: List[str] = []
+    comm_modules: List[str] = []
+
+
+class CreateProjectResponse(BaseModel):
+    success: bool
+    project_path: str
+    config_path: str
+    ecu_id: str
+    module_count: int
+
+
+@app.post("/api/project/create", response_model=CreateProjectResponse)
+async def create_project(req: CreateProjectRequest):
+    """Create a new project from wizard data."""
+    import uuid
+    from datetime import datetime
+
+    project_dir = REPO_ROOT / "projects" / req.name
+    project_dir.mkdir(parents=True, exist_ok=True)
+
+    project_file_path = project_dir / ".yuleasr"
+    config_file_path = project_dir / "bsw_config.yaml"
+
+    ecu_id = f"ecu-{uuid.uuid4().hex[:8]}"
+    chip_info = ChipInfo(**req.chip) if req.chip else ChipInfo(vendor="", series="", model="", clock_freq_mhz=0, flash_size_kb=0, ram_size_kb=0)
+
+    pf = ProjectFile()
+    pf.project.name = req.name
+    pf.project.description = req.description
+    pf.project.created = datetime.now().isoformat()
+    pf.project.modified = datetime.now().isoformat()
+
+    ecu_entry = EcuEntry(
+        id=ecu_id,
+        name=f"{req.name}_ECU",
+        chip=chip_info,
+        config_path=str(config_file_path),
+        description=f"Primary ECU for {req.name}",
+    )
+    pf.add_ecu(ecu_entry)
+    pf.save(project_file_path)
+
+    modules = {}
+    for mod_name in req.mcal_modules:
+        modules[mod_name] = {"name": mod_name, "enabled": True, "version": "1.0.0"}
+    for mod_name in req.comm_modules:
+        if mod_name not in modules:
+            modules[mod_name] = {"name": mod_name, "enabled": True, "version": "1.0.0"}
+
+    config = {
+        "$schema": "./bsw_config_schema.json",
+        "version": req.version,
+        "project": {
+            "name": req.name,
+            "vendor_id": 43,
+            "description": req.description,
+            "author": req.author,
+        },
+        "modules": modules,
+    }
+
+    with open(config_file_path, "w", encoding="utf-8") as f:
+        dump_yaml(config, f)
+
+    return CreateProjectResponse(
+        success=True,
+        project_path=str(project_file_path),
+        config_path=str(config_file_path),
+        ecu_id=ecu_id,
+        module_count=len(modules),
+    )
+
+
 @app.post("/api/project/ecu")
 async def add_ecu(ecu: Dict[str, Any], project_path: Optional[str] = None):
     """Add ECU to project."""

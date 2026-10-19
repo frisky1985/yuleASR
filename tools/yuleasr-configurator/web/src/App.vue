@@ -134,6 +134,7 @@ import { ElMessage } from 'element-plus'
 import { useConfigStore } from '@/stores/config'
 import { useProjectStore } from '@/stores/project'
 import ProjectManager from '@/components/ProjectManager.vue'
+import * as api from '@/api/client'
 
 const router = useRouter()
 const route = useRoute()
@@ -244,9 +245,22 @@ function handleSave() {
   }
 }
 
-function handleGenerate() {
-  ElMessage.info('Code generation triggered')
-  router.push('/editor')
+async function handleGenerate() {
+  if (!configStore.config) {
+    ElMessage.warning('No configuration loaded. Open or create a project first.')
+    return
+  }
+  try {
+    const result = await api.generateCode(configStore.config)
+    if (result.files && result.files.length > 0) {
+      ElMessage.success(`Generated ${result.files.length} files to ${result.output_dir}`)
+    } else {
+      ElMessage.success('Code generation complete')
+    }
+    router.push('/editor')
+  } catch (e: any) {
+    ElMessage.error(e.response?.data?.detail || e.message || 'Code generation failed')
+  }
 }
 
 async function checkBackend() {

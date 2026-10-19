@@ -508,12 +508,27 @@ function prevStep() {
 async function createProject() {
   creating.value = true
   try {
-    // TODO: Call backend API to create project
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    ElMessage.success('Project created successfully')
+    const chipModelInfo = chipModelsList.value.find((m) => m.value === projectForm.value.chipModel)
+    const result = await api.createProject({
+      name: projectForm.value.name,
+      description: projectForm.value.description,
+      author: projectForm.value.author,
+      version: projectForm.value.version,
+      chip: projectForm.value.chipModel
+        ? {
+            vendor: projectForm.value.chipVendor,
+            series: projectForm.value.chipSeries,
+            model: projectForm.value.chipModel,
+            clock_freq_mhz: chipModelInfo?.clock_freq_mhz ?? projectForm.value.clockFreq,
+          }
+        : undefined,
+      mcal_modules: selectedMcalModules.value,
+      comm_modules: selectedCommModules.value,
+    })
+    ElMessage.success(`Project "${result.module_count} modules" created`)
     router.push('/config')
   } catch (e: any) {
-    ElMessage.error(e.message || 'Failed to create project')
+    ElMessage.error(e.response?.data?.detail || e.message || 'Failed to create project')
   } finally {
     creating.value = false
   }
