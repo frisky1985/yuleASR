@@ -498,7 +498,11 @@ function nextStep() {
     ElMessage.warning('Please select chip model')
     return
   }
-  currentStep.value++
+  // Step 3 (Communication) and Step 2 (MCAL) have no required validation
+  // Just proceed to next step
+  if (currentStep.value < 4) {
+    currentStep.value++
+  }
 }
 
 function prevStep() {
