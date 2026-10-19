@@ -108,9 +108,20 @@ class TemplateEngine:
         modules = config.get("modules", {})
         module_node = modules.get(module_name, {})
 
+        if not module_node:
+            for key, val in modules.items():
+                if key.lower() == module_name.lower():
+                    module_node = val
+                    module_name = key
+                    break
+
         rel_path = tpl_path.relative_to(self._templates_dir)
+        modules_lookup = dict(modules)
+        for k, v in modules.items():
+            modules_lookup[k.lower()] = v
         context = {
             "module": module_node,
+            "modules": modules_lookup,
             "cfg": config,
             "config_version": config.get("version", "unknown"),
             "project": config.get("project", {}),
