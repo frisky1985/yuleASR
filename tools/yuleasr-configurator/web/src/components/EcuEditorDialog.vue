@@ -1,56 +1,181 @@
 <template>
   <el-dialog
     v-model="visible"
-    :title="isEdit ? 'Edit ECU' : 'Add ECU'"
-    width="480px"
+    :title="isEdit ? 'Edit ECU' : 'Add New ECU'"
+    :width="isEdit ? '480px' : '720px'"
     @close="handleClose"
+    destroy-on-close
   >
-    <el-form :model="form" label-width="100px" size="default">
-      <el-form-item label="ECU Name" required>
-        <el-input v-model="form.name" placeholder="e.g. ECU_Master" />
-      </el-form-item>
+    <!-- Edit mode: simple form -->
+    <template v-if="isEdit">
+      <el-form :model="form" label-width="100px" size="default">
+        <el-form-item label="ECU Name" required>
+          <el-input v-model="form.name" placeholder="e.g. ECU_Master" />
+        </el-form-item>
+        <el-form-item label="Description">
+          <el-input v-model="form.description" type="textarea" :rows="2" placeholder="Optional description" />
+        </el-form-item>
+        <el-divider content-position="left">Target Chip</el-divider>
+        <el-form-item label="Vendor">
+          <el-select v-model="form.vendor" placeholder="Select vendor" clearable style="width: 100%" @change="onVendorChange">
+            <el-option v-for="v in vendors" :key="v.value" :label="v.label" :value="v.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Series">
+          <el-select v-model="form.series" placeholder="Select series" clearable style="width: 100%" :disabled="!form.vendor" @change="onSeriesChange">
+            <el-option v-for="s in seriesList" :key="s.value" :label="s.label" :value="s.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="Model">
+          <el-select v-model="form.model" placeholder="Select model" clearable style="width: 100%" :disabled="!form.series">
+            <el-option v-for="m in modelList" :key="m.value" :label="m.label" :value="m.value" />
+          </el-select>
+        </el-form-item>
+      </el-form>
+    </template>
 
-      <el-form-item label="Description">
-        <el-input v-model="form.description" type="textarea" :rows="2" placeholder="Optional description" />
-      </el-form-item>
+    <!-- Add mode: wizard flow -->
+    <template v-else>
+      <div class="ecu-wizard">
+        <el-steps :active="currentStep" finish-status="success" align-center style="margin-bottom: 24px">
+          <el-step title="ECU Info" />
+          <el-step title="Target Chip" />
+          <el-step title="MCAL Modules" />
+          <el-step title="Review" />
+        </el-steps>
 
-      <el-divider content-position="left">Target Chip</el-divider>
+        <div class="wizard-body">
+          <!-- Step 0: ECU Info -->
+          <div v-if="currentStep === 0" class="step-content">
+            <el-form :model="form" label-width="110px" style="max-width: 500px; margin: 0 auto">
+              <el-form-item label="ECU Name" required>
+                <el-input v-model="form.name" placeholder="e.g. ECU_Engine" autofocus />
+              </el-form-item>
+              <el-form-item label="Description">
+                <el-input v-model="form.description" type="textarea" :rows="3" placeholder="Describe the purpose of this ECU" />
+              </el-form-item>
+            </el-form>
+          </div>
 
-      <el-form-item label="Vendor">
-        <el-select v-model="form.vendor" placeholder="Select vendor" clearable style="width: 100%" @change="onVendorChange">
-          <el-option v-for="v in vendors" :key="v.value" :label="v.label" :value="v.value" />
-        </el-select>
-      </el-form-item>
+          <!-- Step 1: Target Chip -->
+          <div v-if="currentStep === 1" class="step-content">
+            <el-form label-width="110px" style="max-width: 500px; margin: 0 auto">
+              <el-form-item label="Vendor" required>
+                <el-select v-model="form.vendor" placeholder="Select chip vendor" clearable style="width: 100%" @change="onVendorChange">
+                  <el-option v-for="v in vendors" :key="v.value" :label="v.label" :value="v.value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Series" required>
+                <el-select v-model="form.series" placeholder="Select chip series" clearable style="width: 100%" :disabled="!form.vendor" @change="onSeriesChange">
+                  <el-option v-for="s in seriesList" :key="s.value" :label="s.label" :value="s.value" />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="Model" required>
+                <el-select v-model="form.model" placeholder="Select chip model" clearable style="width: 100%" :disabled="!form.series">
+                  <el-option v-for="m in modelList" :key="m.value" :label="m.label" :value="m.value" />
+                </el-select>
+              </el-form-item>
+            </el-form>
+            <el-alert
+              v-if="form.model"
+              :title="`Chip selected: ${form.vendor} / ${form.series} / ${form.model}`"
+              type="info"
+              :closable="false"
+              style="max-width: 500px; margin: 16px auto 0"
+            >
+              <template #default>
+                <span>{{ mcalModules.length }} MCAL modules available</span>
+              </template>
+            </el-alert>
+          </div>
 
-      <el-form-item label="Series">
-        <el-select v-model="form.series" placeholder="Select series" clearable style="width: 100%" :disabled="!form.vendor" @change="onSeriesChange">
-          <el-option v-for="s in seriesList" :key="s.value" :label="s.label" :value="s.value" />
-        </el-select>
-      </el-form-item>
+          <!-- Step 2: MCAL Modules -->
+          <div v-if="currentStep === 2" class="step-content">
+            <div v-if="mcalModules.length === 0" style="text-align: center; padding: 40px 0">
+              <el-empty description="Select a chip model first" :image-size="80" />
+              <el-button type="primary" size="small" @click="currentStep = 1">Go to Target Chip</el-button>
+            </div>
+            <div v-else class="module-selection">
+              <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center">
+                <el-text type="info" size="small">{{ selectedModules.length }} / {{ mcalModules.length }} selected</el-text>
+                <div style="display: flex; gap: 8px">
+                  <el-button size="small" text @click="selectAll">Select All</el-button>
+                  <el-button size="small" text @click="selectRequiredOnly">Required Only</el-button>
+                </div>
+              </div>
+              <el-checkbox-group v-model="selectedModules">
+                <div v-for="group in moduleGroups" :key="group.name" class="module-group">
+                  <h4>{{ group.name }} ({{ group.modules.length }})</h4>
+                  <div class="module-grid">
+                    <el-checkbox
+                      v-for="mod in group.modules"
+                      :key="mod.name"
+                      :label="mod.name"
+                      :disabled="mod.required"
+                    >
+                      <div class="module-item">
+                        <span>{{ mod.label }}</span>
+                        <el-tag v-if="mod.required" type="warning" size="small">Required</el-tag>
+                      </div>
+                    </el-checkbox>
+                  </div>
+                </div>
+              </el-checkbox-group>
+            </div>
+          </div>
 
-      <el-form-item label="Model">
-        <el-select v-model="form.model" placeholder="Select model" clearable style="width: 100%" :disabled="!form.series">
-          <el-option v-for="m in modelList" :key="m.value" :label="m.label" :value="m.value" />
-        </el-select>
-      </el-form-item>
+          <!-- Step 3: Review -->
+          <div v-if="currentStep === 3" class="step-content">
+            <el-descriptions :column="2" border style="max-width: 560px; margin: 0 auto">
+              <el-descriptions-item label="ECU Name">{{ form.name }}</el-descriptions-item>
+              <el-descriptions-item label="Description">{{ form.description || '-' }}</el-descriptions-item>
+              <el-descriptions-item label="Chip Vendor">{{ form.vendor || '-' }}</el-descriptions-item>
+              <el-descriptions-item label="Chip Series">{{ form.series || '-' }}</el-descriptions-item>
+              <el-descriptions-item label="Chip Model">{{ form.model || '-' }}</el-descriptions-item>
+              <el-descriptions-item label="MCAL Modules">{{ selectedModules.length }}</el-descriptions-item>
+            </el-descriptions>
 
-      <el-form-item v-if="form.model" label="MCAL Modules">
-        <el-tag v-for="mod in mcalModules" :key="mod.name" size="small" style="margin: 2px">{{ mod.label }}</el-tag>
-        <el-text v-if="mcalModules.length === 0" type="info" size="small">Select a model to see available MCAL modules</el-text>
-      </el-form-item>
-    </el-form>
+            <el-divider />
+
+            <h4 style="margin: 0 0 12px">Selected MCAL Modules</h4>
+            <div v-if="selectedModules.length === 0">
+              <el-text type="info">No modules selected</el-text>
+            </div>
+            <div v-else>
+              <el-tag
+                v-for="mod in selectedModules"
+                :key="mod"
+                type="primary"
+                style="margin: 3px"
+              >
+                {{ mod }}
+              </el-tag>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
 
     <template #footer>
-      <el-button @click="handleClose">Cancel</el-button>
-      <el-button type="primary" @click="handleConfirm" :disabled="!form.name">
-        {{ isEdit ? 'Save' : 'Add' }}
-      </el-button>
+      <template v-if="isEdit">
+        <el-button @click="handleClose">Cancel</el-button>
+        <el-button type="primary" @click="handleConfirm" :disabled="!form.name">Save</el-button>
+      </template>
+      <template v-else>
+        <el-button @click="handleClose">Cancel</el-button>
+        <el-button v-if="currentStep > 0" @click="currentStep--">Previous</el-button>
+        <el-button v-if="currentStep < 3" type="primary" @click="nextStep">Next</el-button>
+        <el-button v-if="currentStep === 3" type="success" @click="handleConfirm" :disabled="!form.name">
+          Add ECU
+        </el-button>
+      </template>
     </template>
   </el-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import { ElMessage } from 'element-plus'
 import * as api from '@/api/client'
 
 interface EcuForm {
@@ -68,7 +193,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:modelValue': [value: boolean]
-  confirm: [data: { name: string; description: string; chip?: { vendor: string; series: string; model: string } }]
+  confirm: [data: { name: string; description: string; chip?: { vendor: string; series: string; model: string }; selectedModules?: string[] }]
 }>()
 
 const visible = computed({
@@ -77,6 +202,7 @@ const visible = computed({
 })
 
 const isEdit = computed(() => !!props.editData)
+const currentStep = ref(0)
 
 const form = ref<EcuForm>({
   name: '',
@@ -90,6 +216,7 @@ const vendors = ref<Array<{ value: string; label: string }>>([])
 const seriesList = ref<Array<{ value: string; label: string }>>([])
 const modelList = ref<Array<{ value: string; label: string }>>([])
 const mcalModules = ref<Array<{ name: string; label: string; required: boolean }>>([])
+const selectedModules = ref<string[]>([])
 
 watch(() => props.modelValue, (v) => {
   if (v) {
@@ -105,6 +232,8 @@ watch(() => props.modelValue, (v) => {
       if (form.value.series) onSeriesChange(form.value.series)
     } else {
       form.value = { name: '', description: '', vendor: '', series: '', model: '' }
+      selectedModules.value = []
+      currentStep.value = 0
     }
     loadVendors()
   }
@@ -124,6 +253,7 @@ async function onVendorChange(vendor: string) {
   seriesList.value = []
   modelList.value = []
   mcalModules.value = []
+  selectedModules.value = []
   if (!vendor) return
   try {
     seriesList.value = await api.getChipSeries(vendor)
@@ -136,6 +266,7 @@ async function onSeriesChange(series: string) {
   form.value.model = ''
   modelList.value = []
   mcalModules.value = []
+  selectedModules.value = []
   if (!series) return
   try {
     modelList.value = await api.getChipModels(form.value.vendor, series)
@@ -146,13 +277,64 @@ async function onSeriesChange(series: string) {
 
 watch(() => form.value.model, async (model) => {
   mcalModules.value = []
+  selectedModules.value = []
   if (!model || !form.value.vendor || !form.value.series) return
   try {
     mcalModules.value = await api.getChipMcalModules(form.value.vendor, form.value.series, model)
+    selectedModules.value = mcalModules.value.filter((m) => m.required).map((m) => m.name)
   } catch {
     mcalModules.value = []
   }
 })
+
+const moduleGroups = computed(() => {
+  const core = ['Mcu', 'Port', 'Gpt']
+  const comm = ['Can', 'Lin', 'Spi', 'Icu', 'I2c', 'Ocu', 'Eth']
+  const analog = ['Adc', 'Pwm']
+  const memory = ['Eep', 'Fls']
+  const system = ['Wdg']
+
+  const groups: Record<string, typeof mcalModules.value> = {
+    'Core': [],
+    'Communication': [],
+    'Analog / PWM': [],
+    'Memory': [],
+    'System': [],
+  }
+
+  for (const mod of mcalModules.value) {
+    if (core.includes(mod.name)) groups['Core'].push(mod)
+    else if (comm.includes(mod.name)) groups['Communication'].push(mod)
+    else if (analog.includes(mod.name)) groups['Analog / PWM'].push(mod)
+    else if (memory.includes(mod.name)) groups['Memory'].push(mod)
+    else if (system.includes(mod.name)) groups['System'].push(mod)
+    else groups['Core'].push(mod)
+  }
+
+  return Object.entries(groups)
+    .filter(([, mods]) => mods.length > 0)
+    .map(([name, modules]) => ({ name, modules }))
+})
+
+function selectAll() {
+  selectedModules.value = mcalModules.value.map((m) => m.name)
+}
+
+function selectRequiredOnly() {
+  selectedModules.value = mcalModules.value.filter((m) => m.required).map((m) => m.name)
+}
+
+function nextStep() {
+  if (currentStep.value === 0 && !form.value.name.trim()) {
+    ElMessage.warning('Please enter ECU name')
+    return
+  }
+  if (currentStep.value === 1 && !form.value.model) {
+    ElMessage.warning('Please select a chip model')
+    return
+  }
+  currentStep.value++
+}
 
 function handleClose() {
   visible.value = false
@@ -166,7 +348,57 @@ function handleConfirm() {
     name: form.value.name,
     description: form.value.description,
     chip,
+    selectedModules: selectedModules.value,
   })
   visible.value = false
 }
 </script>
+
+<style scoped>
+.ecu-wizard {
+  min-height: 360px;
+}
+
+.wizard-body {
+  min-height: 300px;
+}
+
+.step-content {
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.module-selection {
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.module-group {
+  margin-bottom: 16px;
+}
+
+.module-group h4 {
+  margin: 0 0 8px 0;
+  color: #303133;
+  font-size: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.module-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+</style>

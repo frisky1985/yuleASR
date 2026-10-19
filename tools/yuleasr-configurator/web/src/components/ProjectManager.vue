@@ -1,144 +1,110 @@
 <template>
   <div class="project-manager">
-    <!-- 项目信息头 -->
-    <div class="pm-header" @contextmenu.prevent="showProjectContext($event, 'header')">
+    <!-- Search -->
+    <div class="pm-search">
+      <el-input
+        v-model="searchText"
+        placeholder="Search modules..."
+        size="small"
+        clearable
+      >
+        <template #prefix>
+          <el-icon><Search /></el-icon>
+        </template>
+      </el-input>
+    </div>
+
+    <!-- Project header -->
+    <div class="pm-header" @contextmenu.prevent="showProjectContext($event)">
       <div class="pm-project">
         <el-icon class="pm-project-icon"><Folder /></el-icon>
         <div class="pm-project-info">
           <div class="pm-project-name">{{ projectName }}</div>
-          <div class="pm-project-meta">{{ ecuCount }} ECU{{ ecuCount !== 1 ? 's' : '' }}</div>
+          <div class="pm-project-meta">{{ ecuCount }} ECU{{ ecuCount !== 1 ? 's' : '' }} · {{ moduleCount }} modules</div>
         </div>
       </div>
     </div>
 
-    <!-- 导航区域 -->
-    <div class="pm-nav">
-      <div
-        v-for="item in navItems"
-        :key="item.key"
-        class="pm-nav-item"
-        :class="{ active: activeSection === item.key }"
-        @click="activeSection = item.key"
+    <!-- Tree -->
+    <div class="pm-tree">
+      <el-tree
+        ref="treeRef"
+        :data="treeData"
+        :props="treeProps"
+        node-key="id"
+        highlight-current
+        :expand-on-click-node="false"
+        :default-expanded-keys="defaultExpandedKeys"
+        @node-contextmenu="handleContextMenu"
       >
-        <el-icon><component :is="item.icon" /></el-icon>
-        <span>{{ item.label }}</span>
-      </div>
+        <template #default="{ node, data }">
+          <div class="tree-node" @click.stop="onNodeClick(data)" @contextmenu.prevent="handleContextMenu($event, node, data)">
+            <div class="node-left">
+              <span v-if="data.type === 'project'" class="node-icon project-icon">
+                <el-icon><Folder /></el-icon>
+              </span>
+              <span v-else-if="data.type === 'ecu'" class="node-icon ecu-icon">
+                <el-icon><Cpu /></el-icon>
+              </span>
+              <span v-else-if="data.type === 'layer'" class="node-icon" :class="layerIconClass(data.label)">
+                <el-icon><component :is="layerIcon(data.label)" /></el-icon>
+              </span>
+              <span v-else class="node-icon module-icon">
+                <el-icon><Setting /></el-icon>
+              </span>
+              <span class="node-label">{{ data.label }}</span>
+            </div>
+            <div class="node-right">
+              <span v-if="data.type === 'layer'" class="node-badge" :class="{ 'badge-enabled': data.enabledCount > 0 }">
+                {{ data.enabledCount }}/{{ data.moduleCount }}
+              </span>
+              <span v-else-if="data.type === 'module'" class="status-badge" :class="data.enabled ? 'status-enabled' : 'status-disabled'">
+                {{ data.enabled ? 'ON' : 'OFF' }}
+              </span>
+            </div>
+          </div>
+        </template>
+      </el-tree>
     </div>
 
-    <!-- 内容区域 -->
-    <div class="pm-content">
-      <!-- 项目列表 -->
-      <div v-if="activeSection === 'projects'" class="pm-section">
-        <div class="pm-section-title">Projects</div>
-        <div class="pm-project-list">
-          <div
-            v-for="proj in projectList"
-            :key="proj.id"
-            class="pm-project-item"
-            :class="{ active: proj.id === currentProjectId }"
-            @click="switchProject(proj.id)"
-            @contextmenu.prevent="showProjectContext($event, 'item', proj)"
-          >
-            <el-icon><Folder /></el-icon>
-            <span>{{ proj.name }}</span>
-          </div>
-        </div>
-        <div class="pm-action">
-          <el-button text size="small" @click="handleNewProject">
-            <el-icon><Plus /></el-icon>
-            New Project
-          </el-button>
-        </div>
-      </div>
-
-      <!-- ECU 管理 -->
-      <div v-if="activeSection === 'ecus'" class="pm-section">
-        <div class="pm-section-title">ECU Configuration</div>
-        <div class="pm-ecu-list">
-          <div
-            v-for="ecu in projectStore.ecus"
-            :key="ecu.id"
-            class="pm-ecu-item"
-            :class="{ active: ecu.id === projectStore.currentEcuId }"
-            @click="projectStore.switchEcu(ecu.id)"
-            @contextmenu.prevent="showEcuContext($event, ecu)"
-          >
-            <el-icon><Cpu /></el-icon>
-            <div class="pm-ecu-info">
-              <span class="pm-ecu-name">{{ ecu.name }}</span>
-              <span class="pm-ecu-meta">{{ ecu.chip?.model ?? 'No chip' }} · {{ Object.keys(ecu.modules).length }} modules</span>
-            </div>
-            <div class="pm-ecu-actions">
-              <el-icon class="pm-ecu-action-btn" @click.stop="openEditEcu(ecu)"><Edit /></el-icon>
-              <el-icon class="pm-ecu-action-btn pm-ecu-action-danger" @click.stop="confirmRemoveEcu(ecu)"><Delete /></el-icon>
-            </div>
-          </div>
-        </div>
-        <div class="pm-action">
-          <el-button text size="small" @click="openAddEcu">
-            <el-icon><Plus /></el-icon>
-            Add ECU
-          </el-button>
-        </div>
-      </div>
-
-      <!-- 最近任务 -->
-      <div v-if="activeSection === 'recent'" class="pm-section">
-        <div class="pm-section-title">Recent Modules</div>
-        <div class="pm-recent-list">
-          <div
-            v-for="item in recentModules"
-            :key="item.name"
-            class="pm-recent-item"
-            @click="openModule(item.name)"
-          >
-            <el-icon><Document /></el-icon>
-            <div class="pm-recent-info">
-              <span class="pm-recent-name">{{ item.name }}</span>
-              <span class="pm-recent-time">{{ item.time }}</span>
-            </div>
-          </div>
-          <div v-if="recentModules.length === 0" class="pm-empty">
-            No recent modules
-          </div>
-        </div>
-      </div>
-
-      <!-- 工作区 -->
-      <div v-if="activeSection === 'workspace'" class="pm-section">
-        <div class="pm-section-title">Workspace</div>
-        <div class="pm-workspace-actions">
-          <div class="pm-ws-action" @click="handleOpenConfig">
-            <el-icon><Setting /></el-icon>
-            <span>Configuration Editor</span>
-          </div>
-          <div class="pm-ws-action" @click="handleOpenGraph">
-            <el-icon><Share /></el-icon>
-            <span>Dependency Graph</span>
-          </div>
-          <div class="pm-ws-action" @click="handleOpenDiff">
-            <el-icon><DocumentCopy /></el-icon>
-            <span>Config Diff</span>
-          </div>
-          <div class="pm-ws-action" @click="handleOpenEcuCompare">
-            <el-icon><Switch /></el-icon>
-            <span>ECU Comparison</span>
-          </div>
-          <div class="pm-ws-action" @click="handleOpenSnapshots">
-            <el-icon><Clock /></el-icon>
-            <span>Snapshots</span>
-          </div>
-          <div class="pm-ws-action" @click="handleImportArxml">
-            <el-icon><Upload /></el-icon>
-            <span>Import ARXML</span>
-          </div>
-          <div class="pm-ws-action" @click="handleExportArxml">
-            <el-icon><Download /></el-icon>
-            <span>Export ARXML</span>
-          </div>
-        </div>
-      </div>
+    <!-- Quick actions -->
+    <div class="pm-actions">
+      <el-button text size="small" @click="openAddEcu">
+        <el-icon><Plus /></el-icon> Add ECU
+      </el-button>
+      <el-button text size="small" @click="handleNewProject">
+        <el-icon><Plus /></el-icon> New Project
+      </el-button>
     </div>
+
+    <!-- Context Menu -->
+    <teleport to="body">
+      <div
+        v-if="contextMenu.visible"
+        class="pm-context-menu"
+        :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
+        @click.stop
+      >
+        <template v-if="contextMenu.data?.type === 'project'">
+          <div class="pm-context-item" @click="handleRenameProject"><el-icon><Edit /></el-icon><span>Rename</span></div>
+          <div class="pm-context-item" @click="handleDuplicateProject"><el-icon><CopyDocument /></el-icon><span>Duplicate</span></div>
+          <div class="pm-context-divider" />
+          <div class="pm-context-item" @click="handleExportProject"><el-icon><Download /></el-icon><span>Export Config</span></div>
+          <div class="pm-context-item" @click="handleProjectSettings"><el-icon><Setting /></el-icon><span>Settings</span></div>
+        </template>
+        <template v-else-if="contextMenu.data?.type === 'ecu'">
+          <div class="pm-context-item" @click="openEditEcu(contextMenu.data.ecu)"><el-icon><Edit /></el-icon><span>Edit ECU</span></div>
+          <div class="pm-context-divider" />
+          <div class="pm-context-item pm-context-danger" @click="confirmRemoveEcu(contextMenu.data.ecu)"><el-icon><Delete /></el-icon><span>Remove ECU</span></div>
+        </template>
+        <template v-else-if="contextMenu.data?.type === 'module'">
+          <div class="pm-context-item" @click="toggleModule(contextMenu.data)">
+            <el-icon><component :is="contextMenu.data.enabled ? Close : Check" /></el-icon>
+            <span>{{ contextMenu.data.enabled ? 'Disable' : 'Enable' }}</span>
+          </div>
+        </template>
+      </div>
+    </teleport>
 
     <!-- ECU Editor Dialog -->
     <EcuEditorDialog
@@ -146,34 +112,6 @@
       :edit-data="ecuEditData"
       @confirm="handleEcuConfirm"
     />
-
-    <!-- Project Context Menu -->
-    <teleport to="body">
-      <div
-        v-if="contextMenuVisible"
-        class="pm-context-menu"
-        :style="{ left: contextMenuX + 'px', top: contextMenuY + 'px' }"
-        @click.stop
-      >
-        <div class="pm-context-item" @click="handleRenameProject">
-          <el-icon><Edit /></el-icon>
-          <span>Rename</span>
-        </div>
-        <div class="pm-context-item" @click="handleDuplicateProject">
-          <el-icon><CopyDocument /></el-icon>
-          <span>Duplicate</span>
-        </div>
-        <div class="pm-context-divider" />
-        <div class="pm-context-item" @click="handleExportProject">
-          <el-icon><Download /></el-icon>
-          <span>Export Config</span>
-        </div>
-        <div class="pm-context-item" @click="handleProjectSettings">
-          <el-icon><Setting /></el-icon>
-          <span>Settings</span>
-        </div>
-      </div>
-    </teleport>
 
     <!-- Rename Project Dialog -->
     <el-dialog v-model="renameDialogVisible" title="Rename Project" width="400px" @close="renameForm.name = projectName">
@@ -194,96 +132,176 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, markRaw, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, markRaw, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import {
-  Folder,
-  Plus,
-  Cpu,
-  Document,
-  Setting,
-  Share,
-  DocumentCopy,
-  Upload,
-  Download,
-  List,
-  Monitor,
-  Edit,
-  Delete,
-  CopyDocument,
+  Folder, Plus, Cpu, Setting, Edit, Delete, CopyDocument,
+  Download, Search, Check, Close,
+  Monitor, Connection,
 } from '@element-plus/icons-vue'
 import { useProjectStore } from '@/stores/project'
 import { useConfigStore } from '@/stores/config'
-import { useEditorTabsStore } from '@/stores/editorTabs'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import EcuEditorDialog from './EcuEditorDialog.vue'
-import type { EcuConfig } from '@/types'
+import type { EcuConfig, ModuleConfig } from '@/types'
 
 const router = useRouter()
 const projectStore = useProjectStore()
 const configStore = useConfigStore()
-const tabsStore = useEditorTabsStore()
 
-const activeSection = ref('projects')
-const currentProjectId = ref('default')
+const searchText = ref('')
+const treeRef = ref()
 const ecuDialogVisible = ref(false)
 const ecuEditData = ref<{ id: string; name: string; description?: string; chip?: { vendor: string; series: string; model: string } } | undefined>()
-
-// Context menu state
-const contextMenuVisible = ref(false)
-const contextMenuX = ref(0)
-const contextMenuY = ref(0)
-const contextMenuTarget = ref<'header' | 'item' | null>(null)
-const contextMenuProj = ref<any>(null)
-
-// Rename dialog state
+const contextMenu = ref({ visible: false, x: 0, y: 0, data: null as any })
 const renameDialogVisible = ref(false)
 const renameForm = ref({ name: '', description: '' })
 const renameInputRef = ref()
 
-function closeContextMenu() {
-  contextMenuVisible.value = false
-}
-
-onMounted(() => {
-  document.addEventListener('click', closeContextMenu)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', closeContextMenu)
-})
-
-const projectName = computed(() => configStore.config?.project?.name ?? 'yuleASR')
+const projectName = computed(() => configStore.config?.project?.name ?? projectStore.projectName ?? 'yuleASR')
 const ecuCount = computed(() => projectStore.ecus.length)
+const moduleCount = computed(() => Object.keys(configStore.modules).length)
 
-const navItems = [
-  { key: 'projects', label: 'Projects', icon: markRaw(Folder) },
-  { key: 'ecus', label: 'ECUs', icon: markRaw(Cpu) },
-  { key: 'recent', label: 'Recent', icon: markRaw(List) },
-  { key: 'workspace', label: 'Workspace', icon: markRaw(Monitor) },
-]
+const treeProps = { children: 'children', label: 'label' }
 
-const projectList = computed(() => [
-  { id: 'default', name: projectName.value },
-])
+const layerIcons: Record<string, any> = {
+  MCAL: markRaw(Monitor),
+  ECUAL: markRaw(Connection),
+  Services: markRaw(Setting),
+  OS: markRaw(Cpu),
+  RTE: markRaw(Connection),
+  'BSW Coordination': markRaw(Folder),
+}
 
-const recentModules = computed(() => {
-  return tabsStore.tabs.slice(-10).reverse().map((tab) => ({
-    name: tab.label,
-    time: formatTime(tab.id),
-  }))
+function layerIcon(layer: string) { return layerIcons[layer] ?? markRaw(Setting) }
+function layerIconClass(layer: string): string {
+  const map: Record<string, string> = { MCAL: 'icon-mcal', ECUAL: 'icon-ecual', Services: 'icon-services', OS: 'icon-os', RTE: 'icon-rte', 'BSW Coordination': 'icon-integration' }
+  return map[layer] ?? ''
+}
+
+function guessLayer(name: string): string {
+  const mcal = ['Mcu', 'Port', 'Dio', 'Can', 'Spi', 'Adc', 'Pwm', 'Gpt', 'Wdg', 'Icu', 'Lin', 'Eep', 'Fls', 'Eth', 'EthTrcv', 'EthSwt', 'I2c', 'Ocu']
+  const ecual = ['CanIf', 'CanTp', 'IoHwAb', 'EthIf', 'MemIf', 'Fee', 'Ea', 'FrIf', 'LinIf', 'PduR', 'EthTSyn']
+  if (mcal.includes(name)) return 'MCAL'
+  if (ecual.includes(name)) return 'ECUAL'
+  if (name === 'Os') return 'OS'
+  if (name === 'Rte') return 'RTE'
+  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'BSW Coordination'
+  return 'Services'
+}
+
+interface TreeNode {
+  id: string
+  label: string
+  type: 'project' | 'ecu' | 'layer' | 'module'
+  enabled?: boolean
+  moduleCount?: number
+  enabledCount?: number
+  ecu?: EcuConfig
+  moduleName?: string
+  children?: TreeNode[]
+}
+
+const defaultExpandedKeys = computed(() => {
+  const keys: string[] = []
+  for (const ecu of projectStore.ecus) {
+    keys.push(`ecu-${ecu.id}`)
+    for (const layer of ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'BSW Coordination']) {
+      keys.push(`ecu-${ecu.id}-layer-${layer}`)
+    }
+  }
+  return keys
 })
 
-function formatTime(_id: string): string {
-  return 'Recently opened'
+const treeData = computed<TreeNode[]>(() => {
+  const ecus = projectStore.ecus
+  if (ecus.length === 0) return []
+
+  return ecus.map((ecu) => {
+    const modules = ecu.modules
+    const grouped: Record<string, { label: string; enabled: boolean; moduleName: string }[]> = {
+      MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], 'BSW Coordination': [],
+    }
+
+    for (const [name, mod] of Object.entries(modules)) {
+      const layer = guessLayer(name)
+      if (grouped[layer]) {
+        grouped[layer].push({ label: name, enabled: mod.enabled, moduleName: name })
+      }
+    }
+
+    const layerNodes: TreeNode[] = Object.entries(grouped)
+      .filter(([, mods]) => mods.length > 0)
+      .map(([layer, mods]) => {
+        const enabledCount = mods.filter((m) => m.enabled).length
+        return {
+          id: `ecu-${ecu.id}-layer-${layer}`,
+          label: layer,
+          type: 'layer' as const,
+          moduleCount: mods.length,
+          enabledCount,
+          children: mods
+            .filter((m) => !searchText.value || m.label.toLowerCase().includes(searchText.value.toLowerCase()))
+            .sort((a, b) => a.label.localeCompare(b.label))
+            .map((m) => ({
+              id: `ecu-${ecu.id}-mod-${m.moduleName}`,
+              label: m.label,
+              type: 'module' as const,
+              enabled: m.enabled,
+              moduleName: m.moduleName,
+              ecu,
+            })),
+        }
+      })
+
+    // Filter out empty layers when searching
+    const filteredLayers = searchText.value
+      ? layerNodes.filter((l) => l.children && l.children.length > 0)
+      : layerNodes
+
+    return {
+      id: `ecu-${ecu.id}`,
+      label: ecu.name,
+      type: 'ecu' as const,
+      ecu,
+      children: filteredLayers,
+    }
+  })
+})
+
+function closeContextMenu() { contextMenu.value.visible = false }
+
+function onNodeClick(data: TreeNode) {
+  if (data.type === 'module' && data.moduleName) {
+    if (data.ecu) projectStore.switchEcu(data.ecu.id)
+    projectStore.selectModule(data.moduleName)
+    // Highlight the tree node
+    nextTick(() => { treeRef.value?.setCurrentKey(data.id) })
+    router.push('/config')
+  }
 }
 
-function switchProject(_id: string) {
-  ElMessage.info('Project switched')
+function handleContextMenu(event: MouseEvent, _node: any, data: TreeNode) {
+  event.preventDefault()
+  event.stopPropagation()
+  contextMenu.value = { visible: true, x: event.clientX, y: event.clientY, data }
 }
 
-function handleNewProject() {
-  router.push('/new-project')
+function showProjectContext(event: MouseEvent) {
+  event.preventDefault()
+  contextMenu.value = {
+    visible: true,
+    x: event.clientX,
+    y: event.clientY,
+    data: { type: 'project' },
+  }
+}
+
+function toggleModule(data: TreeNode) {
+  closeContextMenu()
+  if (data.moduleName) {
+    projectStore.toggleModule(data.moduleName)
+  }
 }
 
 function openAddEcu() {
@@ -292,64 +310,46 @@ function openAddEcu() {
 }
 
 function openEditEcu(ecu: EcuConfig) {
-  ecuEditData.value = {
-    id: ecu.id,
-    name: ecu.name,
-    description: ecu.description,
-    chip: ecu.chip,
-  }
+  closeContextMenu()
+  ecuEditData.value = { id: ecu.id, name: ecu.name, description: ecu.description, chip: ecu.chip }
   ecuDialogVisible.value = true
 }
 
-async function handleEcuConfirm(data: { name: string; description: string; chip?: { vendor: string; series: string; model: string } }) {
+async function handleEcuConfirm(data: { name: string; description: string; chip?: { vendor: string; series: string; model: string }; selectedModules?: string[] }) {
   if (ecuEditData.value) {
-    // Edit existing ECU
     const ecu = projectStore.ecus.find((e) => e.id === ecuEditData.value!.id)
-    if (ecu) {
-      ecu.name = data.name
-      ecu.description = data.description
-      ecu.chip = data.chip
-    }
+    if (ecu) { ecu.name = data.name; ecu.description = data.description; ecu.chip = data.chip }
     ElMessage.success(`ECU "${data.name}" updated`)
   } else {
-    // Add new ECU
-    await projectStore.addEcu(data.name, data.chip)
-    ElMessage.success(`ECU "${data.name}" added`)
+    const ecu = await projectStore.addEcu(data.name, data.chip)
+    if (data.selectedModules?.length && ecu) {
+      for (const modName of data.selectedModules) {
+        if (!ecu.modules[modName]) {
+          ecu.modules[modName] = { name: modName, enabled: true }
+        }
+      }
+    }
+    ElMessage.success(`ECU "${data.name}" added with ${data.selectedModules?.length ?? 0} modules`)
   }
   ecuEditData.value = undefined
 }
 
 async function confirmRemoveEcu(ecu: EcuConfig) {
+  closeContextMenu()
   try {
-    await ElMessageBox.confirm(
-      `Remove ECU "${ecu.name}"? This cannot be undone.`,
-      'Confirm',
-      { type: 'warning' },
-    )
+    await ElMessageBox.confirm(`Remove ECU "${ecu.name}"? This cannot be undone.`, 'Confirm', { type: 'warning' })
     await projectStore.removeEcu(ecu.id)
     ElMessage.success(`ECU "${ecu.name}" removed`)
-  } catch {
-    // Cancelled
-  }
+  } catch { /* cancelled */ }
 }
 
-function showEcuContext(_event: MouseEvent, ecu: EcuConfig) {
-  openEditEcu(ecu)
-}
-
-function showProjectContext(event: MouseEvent, target: 'header' | 'item', proj?: any) {
-  contextMenuTarget.value = target
-  contextMenuProj.value = proj ?? null
-  contextMenuX.value = event.clientX
-  contextMenuY.value = event.clientY
-  contextMenuVisible.value = true
-}
+function handleNewProject() { router.push('/new-project') }
 
 function handleRenameProject() {
   closeContextMenu()
   renameForm.value = { name: projectName.value, description: projectStore.projectDescription }
   renameDialogVisible.value = true
-  setTimeout(() => renameInputRef.value?.focus(), 100)
+  nextTick(() => renameInputRef.value?.focus())
 }
 
 async function confirmRename() {
@@ -366,57 +366,12 @@ async function confirmRename() {
   renameDialogVisible.value = false
 }
 
-function handleDuplicateProject() {
-  closeContextMenu()
-  ElMessage.info('Project duplication coming soon')
-}
+function handleDuplicateProject() { closeContextMenu(); ElMessage.info('Project duplication coming soon') }
+function handleExportProject() { closeContextMenu(); router.push('/config'); setTimeout(() => ElMessage.info('Click "Export ARXML" in the toolbar'), 300) }
+function handleProjectSettings() { closeContextMenu(); ElMessage.info('Project settings coming soon') }
 
-function handleExportProject() {
-  closeContextMenu()
-  router.push('/config')
-  setTimeout(() => {
-    ElMessage.info('Click "Export ARXML" in the Configuration Editor toolbar')
-  }, 300)
-}
-
-function handleProjectSettings() {
-  closeContextMenu()
-  ElMessage.info('Project settings coming soon')
-}
-
-function openModule(name: string) {
-  tabsStore.openTab(name, name, '')
-  router.push('/config')
-}
-
-function handleOpenConfig() {
-  router.push('/config')
-}
-
-function handleOpenGraph() {
-  router.push('/graph')
-}
-
-function handleOpenDiff() {
-  router.push('/diff')
-}
-
-function handleOpenEcuCompare() {
-  router.push('/ecu-compare')
-}
-
-function handleOpenSnapshots() {
-  router.push('/snapshots')
-}
-
-function handleImportArxml() {
-  router.push('/arxml')
-}
-
-function handleExportArxml() {
-  ElMessage.info('Export ARXML from Configuration Editor')
-  router.push('/config')
-}
+onMounted(() => { document.addEventListener('click', closeContextMenu) })
+onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
 </script>
 
 <style scoped>
@@ -428,8 +383,14 @@ function handleExportArxml() {
   overflow: hidden;
 }
 
+.pm-search {
+  padding: 8px 12px;
+  border-bottom: 1px solid #e4e7ed;
+  background: #fff;
+}
+
 .pm-header {
-  padding: 12px 16px;
+  padding: 10px 12px;
   border-bottom: 1px solid #e4e7ed;
   background: #fff;
   cursor: context-menu;
@@ -446,10 +407,7 @@ function handleExportArxml() {
   color: #409eff;
 }
 
-.pm-project-info {
-  flex: 1;
-  min-width: 0;
-}
+.pm-project-info { flex: 1; min-width: 0; }
 
 .pm-project-name {
   font-size: 14px;
@@ -466,177 +424,104 @@ function handleExportArxml() {
   margin-top: 2px;
 }
 
-.pm-nav {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 0;
-  border-bottom: 1px solid #e4e7ed;
-}
-
-.pm-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  font-size: 13px;
-  color: #606266;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.pm-nav-item:hover {
-  background: #f0f2f5;
-  color: #409eff;
-}
-
-.pm-nav-item.active {
-  background: #ecf5ff;
-  color: #409eff;
-  font-weight: 500;
-}
-
-.pm-nav-item .el-icon {
-  font-size: 16px;
-}
-
-.pm-content {
+.pm-tree {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 0;
+  padding: 4px 0;
 }
 
-.pm-section {
-  padding: 0 16px;
-}
-
-.pm-section-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: #909399;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-
-.pm-project-list,
-.pm-ecu-list,
-.pm-recent-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.pm-project-item,
-.pm-ecu-item,
-.pm-recent-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 13px;
-  color: #606266;
-  cursor: context-menu;
-  transition: background 0.15s;
-}
-
-.pm-project-item:hover,
-.pm-ecu-item:hover,
-.pm-recent-item:hover {
-  background: #f0f2f5;
-}
-
-.pm-project-item.active,
-.pm-ecu-item.active {
-  background: #ecf5ff;
-  color: #409eff;
-}
-
-.pm-ecu-info,
-.pm-recent-info {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.pm-ecu-actions {
+.pm-actions {
   display: flex;
   gap: 4px;
-  opacity: 0;
-  transition: opacity 0.15s;
+  padding: 8px 12px;
+  border-top: 1px solid #e4e7ed;
+  background: #fff;
 }
 
-.pm-ecu-item:hover .pm-ecu-actions {
-  opacity: 1;
+.pm-actions .el-button {
+  flex: 1;
+  justify-content: center;
 }
 
-.pm-ecu-action-btn {
+.tree-node {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 8px;
+}
+
+.node-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.node-icon {
   font-size: 14px;
-  color: #909399;
-  cursor: pointer;
-  padding: 2px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
-.pm-ecu-action-btn:hover {
-  color: #409eff;
-}
+.project-icon { color: #409eff; }
+.ecu-icon { color: #67c23a; }
+.icon-mcal { color: #409eff; }
+.icon-ecual { color: #67c23a; }
+.icon-services { color: #e6a23c; }
+.icon-os { color: #f56c6c; }
+.icon-rte { color: #909399; }
+.icon-integration { color: #b37feb; }
+.module-icon { color: #606266; }
 
-.pm-ecu-action-danger:hover {
-  color: #f56c6c !important;
-}
-
-.pm-ecu-name,
-.pm-recent-name {
+.node-label {
   font-size: 13px;
+  color: #303133;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.pm-ecu-meta,
-.pm-recent-time {
-  font-size: 11px;
-  color: #909399;
-  margin-top: 1px;
-}
-
-.pm-empty {
-  padding: 20px 0;
-  text-align: center;
-  color: #c0c4cc;
-  font-size: 13px;
-}
-
-.pm-action {
-  margin-top: 8px;
-}
-
-.pm-workspace-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.pm-ws-action {
+.node-right {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  border-radius: 4px;
-  font-size: 13px;
-  color: #606266;
-  cursor: pointer;
-  transition: background 0.15s;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
-.pm-ws-action:hover {
+.node-badge {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
   background: #f0f2f5;
-  color: #409eff;
+  color: #909399;
 }
 
-.pm-ws-action .el-icon {
-  font-size: 16px;
+.node-badge.badge-enabled {
+  background: #f0f9eb;
+  color: #67c23a;
+}
+
+.status-badge {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+}
+
+.status-enabled {
+  background: #f0f9eb;
+  color: #67c23a;
+  border: 1px solid #e1f3d8;
+}
+
+.status-disabled {
+  background: #f4f4f5;
+  color: #909399;
+  border: 1px solid #e9e9eb;
 }
 
 .pm-context-menu {
@@ -666,15 +551,20 @@ function handleExportArxml() {
   color: #409eff;
 }
 
-.pm-context-item .el-icon {
-  font-size: 14px;
-  width: 16px;
-  text-align: center;
-}
+.pm-context-item .el-icon { font-size: 14px; width: 16px; text-align: center; }
 
 .pm-context-divider {
   height: 1px;
   background: #e4e7ed;
   margin: 4px 0;
 }
+
+.pm-context-danger { color: #f56c6c; }
+.pm-context-danger:hover { background: #fef0f0; color: #f56c6c; }
+
+:deep(.el-tree) { background: transparent; }
+:deep(.el-tree-node__content) { height: 32px; background: transparent; }
+:deep(.el-tree-node__content:hover) { background: #f0f2f5; }
+:deep(.el-tree-node.is-current > .el-tree-node__content) { background: #ecf5ff; }
+:deep(.el-tree-node.is-current > .el-tree-node__content .node-label) { color: #409eff; font-weight: 500; }
 </style>

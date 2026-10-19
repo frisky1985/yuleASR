@@ -54,9 +54,6 @@
         <div class="toolbar-divider"></div>
 
         <div class="toolbar-section">
-          <el-tooltip content="Configuration Editor" placement="bottom">
-            <el-button text size="small" :icon="Setting" @click="navigateTo('/config')" />
-          </el-tooltip>
           <el-tooltip content="Dependency Graph" placement="bottom">
             <el-button text size="small" :icon="Share" @click="navigateTo('/graph')" />
           </el-tooltip>
@@ -118,7 +115,6 @@ import {
   FolderOpened,
   Download,
   VideoPlay,
-  Setting,
   Share,
   Monitor,
   Document,

@@ -622,6 +622,12 @@ async function createProject() {
 
 :deep(.el-upload-dragger) {
   width: 100%;
+  max-width: 420px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 :deep(.el-descriptions__label) {
