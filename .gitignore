@@ -193,3 +193,8 @@ output/generated/
 /Testing/
 /reports/*.json
 logs/*.log
+
+# yuleASR Configurator runtime files
+config/test_export.arxml
+tools/yuleasr-configurator/knowledge_base/chroma_db/
+tools/yuleasr-configurator/models/
