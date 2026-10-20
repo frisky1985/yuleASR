@@ -11,7 +11,8 @@
       </el-steps>
     </div>
 
-    <div class="wizard-content">
+    <div class="wizard-body">
+      <div class="wizard-content">
       <!-- Step 1: Project Info -->
       <div v-if="currentStep === 0" class="step-content">
         <el-form :model="projectForm" label-width="120px" style="max-width: 600px">
@@ -249,6 +250,7 @@
         >
           {{ mod }}
         </el-tag>
+      </div>
       </div>
     </div>
 
@@ -540,6 +542,9 @@ async function createProject() {
 .project-wizard {
   max-width: 1000px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px);
 }
 
 .wizard-header {
@@ -548,11 +553,20 @@ async function createProject() {
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
 }
 
 .wizard-header h2 {
   margin: 0 0 30px 0;
   color: #303133;
+}
+
+.wizard-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .wizard-content {
@@ -561,7 +575,8 @@ async function createProject() {
   border-radius: 8px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  min-height: 400px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .step-content {
@@ -615,6 +630,7 @@ async function createProject() {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
 }
 
 :deep(.el-upload-dragger) {
