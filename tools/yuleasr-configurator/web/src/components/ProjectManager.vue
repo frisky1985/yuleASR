@@ -58,8 +58,8 @@
               <span v-if="data.type === 'layer'" class="node-badge" :class="{ 'badge-enabled': data.enabledCount > 0 }">
                 {{ data.enabledCount }}/{{ data.moduleCount }}
               </span>
-              <span v-else-if="data.type === 'module'" class="status-badge" :class="data.enabled ? 'status-enabled' : 'status-disabled'">
-                {{ data.enabled ? 'ON' : 'OFF' }}
+              <span v-else-if="data.type === 'module'" class="status-dot" :class="data.enabled ? 'dot-enabled' : 'dot-disabled'">
+                <span class="dot"></span>
               </span>
             </div>
           </div>
@@ -504,24 +504,27 @@ onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
   color: #67c23a;
 }
 
-.status-badge {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 1px 5px;
-  border-radius: 8px;
-  letter-spacing: 0.3px;
+.status-dot {
+  display: flex;
+  align-items: center;
+  padding: 2px;
 }
 
-.status-enabled {
-  background: #f0f9eb;
-  color: #67c23a;
-  border: 1px solid #e1f3d8;
+.status-dot .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
 }
 
-.status-disabled {
-  background: #f4f4f5;
-  color: #909399;
-  border: 1px solid #e9e9eb;
+.dot-enabled .dot {
+  background: #67c23a;
+  box-shadow: 0 0 4px rgba(103, 194, 58, 0.4);
+}
+
+.dot-disabled .dot {
+  background: #dcdfe6;
+  border: 1px solid #c0c4cc;
 }
 
 .pm-context-menu {
@@ -563,8 +566,9 @@ onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
 .pm-context-danger:hover { background: #fef0f0; color: #f56c6c; }
 
 :deep(.el-tree) { background: transparent; }
-:deep(.el-tree-node__content) { height: 32px; background: transparent; }
+:deep(.el-tree-node__content) { height: 34px; background: transparent; }
 :deep(.el-tree-node__content:hover) { background: #f0f2f5; }
 :deep(.el-tree-node.is-current > .el-tree-node__content) { background: #ecf5ff; }
 :deep(.el-tree-node.is-current > .el-tree-node__content .node-label) { color: #409eff; font-weight: 500; }
+:deep(.el-tree-node__content .el-tree-node__expand-icon) { font-size: 14px; }
 </style>

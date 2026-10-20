@@ -16,20 +16,6 @@
         <div class="toolbar-divider"></div>
 
         <div class="toolbar-section">
-          <el-tooltip content="Back" placement="bottom">
-            <el-button text size="small" :icon="ArrowLeft" :disabled="isHome" @click="goBack" />
-          </el-tooltip>
-          <el-tooltip content="Forward" placement="bottom">
-            <el-button text size="small" :icon="ArrowRight" :disabled="!canGoForward" @click="goForward" />
-          </el-tooltip>
-          <el-tooltip content="Home" placement="bottom">
-            <el-button text size="small" :icon="HomeFilled" :disabled="isHome" @click="goHome" />
-          </el-tooltip>
-        </div>
-
-        <div class="toolbar-divider"></div>
-
-        <div class="toolbar-section">
           <el-tooltip content="New Project (Ctrl+N)" placement="bottom">
             <el-button text size="small" :icon="Plus" @click="navigateTo('/new-project')" />
           </el-tooltip>
@@ -44,11 +30,9 @@
         <div class="toolbar-divider"></div>
 
         <div class="toolbar-section">
-          <el-tooltip content="Generate Code (F5)" placement="bottom">
-            <el-button type="primary" size="small" :icon="VideoPlay" @click="handleGenerate">
-              Generate
-            </el-button>
-          </el-tooltip>
+          <el-button type="primary" size="small" :icon="VideoPlay" @click="handleGenerate">
+            Generate Code
+          </el-button>
         </div>
 
         <div class="toolbar-divider"></div>
@@ -59,6 +43,9 @@
           </el-tooltip>
           <el-tooltip content="Configuration Diff" placement="bottom">
             <el-button text size="small" :icon="DocumentCopy" @click="navigateTo('/diff')" />
+          </el-tooltip>
+          <el-tooltip content="ARXML Import/Export" placement="bottom">
+            <el-button text size="small" :icon="Document" @click="navigateTo('/arxml')" />
           </el-tooltip>
         </div>
       </div>
@@ -120,9 +107,6 @@ import {
   Document,
   Connection,
   DocumentCopy,
-  ArrowLeft,
-  ArrowRight,
-  HomeFilled,
   Fold,
   Expand,
 } from '@element-plus/icons-vue'
@@ -146,7 +130,6 @@ const historyStack = ref<string[]>(['/'])
 const sidebarVisible = ref(true)
 
 const moduleCount = computed(() => configStore.moduleCount)
-const isHome = computed(() => route.path === '/')
 
 watch(() => configStore.config, (cfg) => {
   if (cfg) projectStore.syncFromConfig()
@@ -490,8 +473,8 @@ html, body, #app {
 }
 
 .sidebar {
-  width: 240px;
-  min-width: 240px;
+  width: 280px;
+  min-width: 280px;
   border-right: 1px solid #e4e7ed;
   background: #fafbfc;
   overflow: hidden;
@@ -521,12 +504,13 @@ html, body, #app {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 24px;
+  height: 26px;
   padding: 0 12px;
-  background: #409eff;
-  color: #fff;
+  background: #f0f2f5;
+  color: #606266;
   font-size: 12px;
   flex-shrink: 0;
+  border-top: 1px solid #e4e7ed;
 }
 
 .statusbar-left,

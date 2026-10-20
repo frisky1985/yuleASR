@@ -4,26 +4,23 @@
     <div class="ce-toolbar">
       <div class="ce-breadcrumb">
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/' }">Home</el-breadcrumb-item>
           <el-breadcrumb-item>Configuration</el-breadcrumb-item>
-          <el-breadcrumb-item>{{ selectedModuleName || 'Select Module' }}</el-breadcrumb-item>
+          <el-breadcrumb-item v-if="selectedModuleName">{{ selectedModuleName }}</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <div class="ce-actions">
-        <el-button type="primary" size="small" @click="validate" :loading="validating">
+        <el-button size="small" @click="validate" :loading="validating">
           <el-icon><Check /></el-icon> Validate
         </el-button>
-        <el-button type="success" size="small" @click="save" :loading="saving">
+        <el-button size="small" @click="save" :loading="saving">
           <el-icon><Download /></el-icon> Save
         </el-button>
-        <el-button type="warning" size="small" @click="$router.push('/arxml')">
-          <el-icon><Upload /></el-icon> Import ARXML
+        <el-divider direction="vertical" />
+        <el-button size="small" @click="$router.push('/arxml')">
+          <el-icon><Upload /></el-icon> ARXML
         </el-button>
-        <el-button type="info" size="small" @click="exportArxml">
-          <el-icon><UploadFilled /></el-icon> Export ARXML
-        </el-button>
-        <el-button v-if="selectedModuleName" type="danger" size="small" @click="chatbotVisible = true">
-          <el-icon><ChatDotRound /></el-icon> AI Assistant
+        <el-button v-if="selectedModuleName" size="small" @click="chatbotVisible = true">
+          <el-icon><ChatDotRound /></el-icon> AI
         </el-button>
       </div>
     </div>
@@ -31,19 +28,33 @@
     <!-- Content -->
     <div class="ce-content">
       <div v-if="!selectedModuleName" class="ce-empty">
-        <el-empty description="Select a module from the project tree to configure" />
+        <div class="ce-empty-content">
+          <el-icon :size="48" color="#c0c4cc"><Setting /></el-icon>
+          <h3>Select a Module</h3>
+          <p>Choose a module from the project tree on the left to view and edit its configuration parameters.</p>
+          <div class="ce-empty-hints">
+            <div class="hint-item">
+              <el-icon color="#409eff"><Monitor /></el-icon>
+              <span>{{ moduleCount }} modules available</span>
+            </div>
+            <div class="hint-item">
+              <el-icon color="#67c23a"><Check /></el-icon>
+              <span>{{ enabledCount }} enabled</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else class="ce-config">
         <div class="ce-module-header">
           <div class="ce-module-title">
             <h2>{{ selectedModuleName }}</h2>
-            <el-tag :type="moduleEnabled ? 'success' : 'info'" size="small">
+            <el-tag :type="moduleEnabled ? 'success' : 'info'" size="small" effect="plain">
               {{ moduleEnabled ? 'Enabled' : 'Disabled' }}
             </el-tag>
-          </div>
-          <div class="ce-module-layer">
-            <el-text type="info" size="small">/{{ moduleLayer }}/{{ selectedModuleName }}</el-text>
+            <el-text type="info" size="small" style="margin-left: auto">
+              {{ moduleLayer }}
+            </el-text>
           </div>
         </div>
 
@@ -98,7 +109,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Check, Download, Upload, UploadFilled, InfoFilled, ChatDotRound } from '@element-plus/icons-vue'
+import { Check, Download, Upload, InfoFilled, ChatDotRound, Setting, Monitor } from '@element-plus/icons-vue'
 import { useConfigStore } from '@/stores/config'
 import { useProjectStore } from '@/stores/project'
 import ParamTable from '@/components/ParamTable.vue'
@@ -149,6 +160,8 @@ const validationStatus = computed(() => {
 })
 
 const flattenedParamCount = computed(() => flattenParams(paramGroups.value).length)
+const moduleCount = computed(() => Object.keys(store.modules).length)
+const enabledCount = computed(() => Object.values(store.modules).filter((m: any) => m.enabled).length)
 
 async function loadModuleParams(moduleName: string) {
   const mod = store.modules[moduleName]
@@ -271,6 +284,39 @@ onMounted(async () => {
   height: 100%;
 }
 
+.ce-empty-content {
+  text-align: center;
+  max-width: 360px;
+}
+
+.ce-empty-content h3 {
+  margin: 16px 0 8px;
+  font-size: 18px;
+  color: #303133;
+  font-weight: 500;
+}
+
+.ce-empty-content p {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #909399;
+  line-height: 1.6;
+}
+
+.ce-empty-hints {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.hint-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #606266;
+}
+
 .ce-config {
   background: #fff;
   border-radius: 8px;
@@ -280,7 +326,6 @@ onMounted(async () => {
 
 .ce-module-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   padding-bottom: 12px;
   border-bottom: 2px solid #409eff;
@@ -291,6 +336,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
 }
 
 .ce-module-title h2 {
@@ -298,8 +344,6 @@ onMounted(async () => {
   font-size: 18px;
   color: #303133;
 }
-
-.ce-module-layer { color: #909399; }
 
 .ce-params { margin-top: 16px; }
 
