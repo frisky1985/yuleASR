@@ -321,14 +321,7 @@ async function handleEcuConfirm(data: { name: string; description: string; chip?
     if (ecu) { ecu.name = data.name; ecu.description = data.description; ecu.chip = data.chip }
     ElMessage.success(`ECU "${data.name}" updated`)
   } else {
-    const ecu = await projectStore.addEcu(data.name, data.chip)
-    if (data.selectedModules?.length && ecu) {
-      for (const modName of data.selectedModules) {
-        if (!ecu.modules[modName]) {
-          ecu.modules[modName] = { name: modName, enabled: true }
-        }
-      }
-    }
+    await projectStore.addEcu(data.name, data.chip, data.selectedModules)
     ElMessage.success(`ECU "${data.name}" added with ${data.selectedModules?.length ?? 0} modules`)
   }
   ecuEditData.value = undefined

@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { EcuConfig, ModuleConfig } from '@/types'
 import { useConfigStore } from './config'
 import * as api from '@/api/client'
+import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
 
 const DEFAULT_ECU_ID = 'ecu-default'
 
@@ -72,14 +73,29 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
-  async function addEcu(name: string, chip?: { vendor: string; series: string; model: string }) {
+  async function addEcu(
+    name: string,
+    chip?: { vendor: string; series: string; model: string },
+    selectedModules?: string[],
+  ) {
     const id = `ecu-${Date.now()}`
+    const modules: Record<string, ModuleConfig> = {}
+    
+    // Initialize with selected modules or default modules
+    const moduleNames = selectedModules && selectedModules.length > 0
+      ? selectedModules
+      : DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
+    
+    for (const modName of moduleNames) {
+      modules[modName] = { name: modName, enabled: true }
+    }
+    
     const ecu: EcuConfig = {
       id,
       name,
       description: '',
       chip,
-      modules: {},
+      modules,
     }
     ecus.value.push(ecu)
     try {
