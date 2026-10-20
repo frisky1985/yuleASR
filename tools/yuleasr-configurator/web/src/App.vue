@@ -115,6 +115,26 @@ import { useConfigStore } from '@/stores/config'
 import { useProjectStore } from '@/stores/project'
 import ProjectManager from '@/components/ProjectManager.vue'
 import * as api from '@/api/client'
+import type { EcuConfig } from '@/types'
+
+interface ProjectFile {
+  version: string
+  project: {
+    name: string
+    description: string
+    created: string
+    modified: string
+  }
+  ecus: Array<{
+    id: string
+    name: string
+    description: string
+    chip?: { vendor: string; series: string; model: string; cores?: number }
+    modules: Record<string, any>
+  }>
+  currentEcuId: string
+  currentModuleName: string
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -174,7 +194,8 @@ function handleOpen() {
     window.electronAPI.showOpenDialog({
       properties: ['openFile'],
       filters: [
-        { name: 'Configuration Files', extensions: ['yaml', 'yml', 'json'] },
+        { name: 'yuleASR Project', extensions: ['yuleasr', 'json'] },
+        { name: 'Configuration Files', extensions: ['yaml', 'yml'] },
         { name: 'All Files', extensions: ['*'] },
       ],
     }).then(async (result: any) => {
@@ -183,19 +204,37 @@ function handleOpen() {
         const res = await window.electronAPI!.readFile(filePath)
         if (res.success && res.content) {
           try {
-            const config = JSON.parse(res.content)
-            configStore.replaceConfig(config)
-            currentFile.value = filePath.split('/').pop() || filePath
-            ElMessage.success(`Loaded: ${currentFile.value}`)
+            const data = JSON.parse(res.content)
+            // Check if it's a project file (has ecus array) or just a config
+            if (data.ecus && Array.isArray(data.ecus)) {
+              // Restore full project state
+              projectStore.projectName = data.project?.name || 'yuleASR'
+              projectStore.projectDescription = data.project?.description || ''
+              projectStore.ecus = data.ecus.map((e: any) => ({
+                id: e.id,
+                name: e.name,
+                description: e.description || '',
+                chip: e.chip,
+                modules: e.modules || {},
+              }))
+              projectStore.currentEcuId = data.currentEcuId || data.ecus[0]?.id || ''
+              projectStore.currentModuleName = data.currentModuleName || ''
+              currentFile.value = filePath.split('/').pop() || filePath
+              ElMessage.success(`Project loaded: ${currentFile.value}`)
+            } else {
+              // Legacy config file
+              configStore.replaceConfig(data)
+              currentFile.value = filePath.split('/').pop() || filePath
+              ElMessage.success(`Configuration loaded: ${currentFile.value}`)
+            }
           } catch {
-            navigateTo('/config')
-            ElMessage.info('File loaded, navigating to config editor')
+            ElMessage.error('Failed to parse project file')
           }
         }
       }
     })
   } else {
-    navigateTo('/config')
+    ElMessage.info('Project open is available in desktop mode')
   }
 }
 
@@ -203,24 +242,41 @@ function handleSave() {
   if (isElectron.value && window.electronAPI) {
     window.electronAPI.showSaveDialog({
       filters: [
-        { name: 'YAML Files', extensions: ['yaml', 'yml'] },
+        { name: 'yuleASR Project', extensions: ['yuleasr'] },
         { name: 'JSON Files', extensions: ['json'] },
       ],
     }).then(async (result: any) => {
       if (!result.canceled && result.filePath) {
-        const content = JSON.stringify(configStore.config, null, 2)
+        const projectData: ProjectFile = {
+          version: '1.0',
+          project: {
+            name: projectStore.projectName,
+            description: projectStore.projectDescription,
+            created: new Date().toISOString(),
+            modified: new Date().toISOString(),
+          },
+          ecus: projectStore.ecus.map((ecu: EcuConfig) => ({
+            id: ecu.id,
+            name: ecu.name,
+            description: ecu.description || '',
+            chip: ecu.chip,
+            modules: ecu.modules,
+          })),
+          currentEcuId: projectStore.currentEcuId,
+          currentModuleName: projectStore.currentModuleName,
+        }
+        const content = JSON.stringify(projectData, null, 2)
         const res = await window.electronAPI!.writeFile(result.filePath, content)
         if (res.success) {
           currentFile.value = result.filePath.split('/').pop() || result.filePath
-          ElMessage.success(`Saved: ${currentFile.value}`)
+          ElMessage.success(`Project saved: ${currentFile.value}`)
         } else {
           ElMessage.error(`Save failed: ${res.error}`)
         }
       }
     })
   } else {
-    ElMessage.info('Use the Config editor to save')
-    navigateTo('/config')
+    ElMessage.info('Project save is available in desktop mode')
   }
 }
 
@@ -278,6 +334,9 @@ onMounted(() => {
       switch (action) {
         case 'new-project':
           navigateTo('/new-project')
+          break
+        case 'open':
+          handleOpen()
           break
         case 'save':
           handleSave()

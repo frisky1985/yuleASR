@@ -53,22 +53,9 @@ function createMenu() {
           click: () => mainWindow?.webContents.send('menu-action', 'new-project'),
         },
         {
-          label: 'Open Configuration...',
+          label: 'Open Project...',
           accelerator: 'CmdOrCtrl+O',
-          click: async () => {
-            const result = await dialog.showOpenDialog(mainWindow!, {
-              properties: ['openFile'],
-              filters: [
-                { name: 'Configuration Files', extensions: ['yaml', 'yml', 'json'] },
-                { name: 'All Files', extensions: ['*'] },
-              ],
-            })
-            if (!result.canceled && result.filePaths.length > 0) {
-              const filePath = result.filePaths[0]
-              const content = fs.readFileSync(filePath, 'utf-8')
-              mainWindow?.webContents.send('file-opened', { path: filePath, content })
-            }
-          },
+          click: () => mainWindow?.webContents.send('menu-action', 'open'),
         },
         {
           label: 'Open DBC File...',
@@ -97,17 +84,7 @@ function createMenu() {
         {
           label: 'Save As...',
           accelerator: 'CmdOrCtrl+Shift+S',
-          click: async () => {
-            const result = await dialog.showSaveDialog(mainWindow!, {
-              filters: [
-                { name: 'YAML Files', extensions: ['yaml', 'yml'] },
-                { name: 'JSON Files', extensions: ['json'] },
-              ],
-            })
-            if (!result.canceled && result.filePath) {
-              mainWindow?.webContents.send('save-as', { path: result.filePath })
-            }
-          },
+          click: () => mainWindow?.webContents.send('menu-action', 'save'),
         },
         { type: 'separator' },
         {
