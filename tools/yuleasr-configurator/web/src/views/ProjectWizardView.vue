@@ -89,6 +89,17 @@
 
       <!-- Step 3: MCAL Modules -->
       <div v-if="currentStep === 2" class="step-content">
+        <el-alert
+          v-if="!projectForm.chipModel"
+          title="Using default BSW module set"
+          type="info"
+          :closable="false"
+          style="margin-bottom: 16px"
+        >
+          <template #default>
+            <span>Select a chip in the previous step to see chip-specific modules, or use the default AUTOSAR BSW set below.</span>
+          </template>
+        </el-alert>
         <div class="module-selection">
           <el-checkbox-group v-model="selectedMcalModules">
             <div v-for="layer in mcalModuleGroups" :key="layer.name" class="module-group">
@@ -113,7 +124,7 @@
 
       <!-- Step 4: Communication Import -->
       <div v-if="currentStep === 3" class="step-content">
-        <el-form label-width="120px" style="max-width: 700px">
+        <el-form label-width="120px" style="max-width: 600px">
           <el-form-item label="CAN Database">
             <el-upload
               :auto-upload="false"
@@ -190,7 +201,7 @@
           title="DBC File Parsed"
           type="success"
           :closable="false"
-          style="max-width: 700px; margin-top: 20px"
+          style="max-width: 600px; margin-top: 20px"
         >
           <template #default>
             <p>Messages: {{ dbcFileInfo.messageCount }}</p>
@@ -204,7 +215,7 @@
           title="NM Matrix Parsed"
           type="success"
           :closable="false"
-          style="max-width: 700px; margin-top: 20px"
+          style="max-width: 600px; margin-top: 20px"
         >
           <template #default>
             <p>Clusters: {{ nmFileInfo.clusterCount }}</p>
@@ -270,6 +281,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
 import * as api from '@/api/client'
+import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
 
 const router = useRouter()
 const currentStep = ref(0)
@@ -346,61 +358,69 @@ watch(() => projectForm.value.chipSeries, async (series) => {
 
 watch(() => projectForm.value.chipModel, async (model) => {
   mcalModuleList.value = []
-  if (projectForm.value.chipVendor && projectForm.value.chipSeries && model) {
-    try {
-      mcalModuleList.value = await api.getChipMcalModules(
-        projectForm.value.chipVendor,
-        projectForm.value.chipSeries,
-        model
-      )
-      // Auto-select required modules
-      selectedMcalModules.value = mcalModuleList.value
-        .filter((m) => m.required)
-        .map((m) => m.name)
-      // Update clock frequency
-      const modelInfo = chipModelsList.value.find((m) => m.value === model)
-      if (modelInfo) {
-        projectForm.value.clockFreq = modelInfo.clock_freq_mhz
-      }
-    } catch (e) {
-      console.error('Failed to load MCAL modules', e)
+  if (!model || !projectForm.value.chipVendor || !projectForm.value.chipSeries) {
+    // Fall back to default BSW modules when no chip is selected
+    mcalModuleList.value = DEFAULT_BSW_MODULES.map((m) => ({
+      name: m.name,
+      label: m.label,
+      required: m.required,
+      default_params: {},
+      dependencies: [],
+    }))
+    selectedMcalModules.value = DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
+    return
+  }
+  try {
+    mcalModuleList.value = await api.getChipMcalModules(
+      projectForm.value.chipVendor,
+      projectForm.value.chipSeries,
+      model
+    )
+    // Auto-select required modules
+    selectedMcalModules.value = mcalModuleList.value
+      .filter((m) => m.required)
+      .map((m) => m.name)
+    // Update clock frequency
+    const modelInfo = chipModelsList.value.find((m) => m.value === model)
+    if (modelInfo) {
+      projectForm.value.clockFreq = modelInfo.clock_freq_mhz
     }
+  } catch (e) {
+    console.error('Failed to load MCAL modules', e)
   }
 })
 
 const mcalModuleGroups = computed(() => {
-  const allModules = [
-    { name: 'MCAL - Core', modules: [] as Array<{ name: string; label: string; required: boolean }> },
-    { name: 'MCAL - Communication', modules: [] as Array<{ name: string; label: string; required: boolean }> },
-    { name: 'MCAL - Analog/PWM', modules: [] as Array<{ name: string; label: string; required: boolean }> },
-    { name: 'MCAL - Memory', modules: [] as Array<{ name: string; label: string; required: boolean }> },
-    { name: 'MCAL - System', modules: [] as Array<{ name: string; label: string; required: boolean }> },
-  ]
+  const layerOrder = ['MCAL', 'ECUAL', 'Services', 'OS', 'Integration']
+  const layerLabels: Record<string, string> = {
+    'MCAL': 'MCAL - Microcontroller Abstraction',
+    'ECUAL': 'ECUAL - ECU Abstraction Layer',
+    'Services': 'Services Layer',
+    'OS': 'Operating System',
+    'Integration': 'Integration Layer',
+  }
 
-  // Group modules by category
-  const coreModules = ['Mcu', 'Port', 'Gpt']
-  const commModules = ['Can', 'Lin', 'Spi', 'Icu', 'I2c', 'Uart']
-  const analogModules = ['Adc', 'Pwm', 'Ocu']
-  const memoryModules = ['Eep', 'Fls']
-  const systemModules = ['Wdg', 'Eth']
+  const allModules: Record<string, Array<{ name: string; label: string; required: boolean }>> = {}
+  for (const layer of layerOrder) {
+    allModules[layer] = []
+  }
 
   for (const mod of mcalModuleList.value) {
-    if (coreModules.includes(mod.name)) {
-      allModules[0].modules.push(mod)
-    } else if (commModules.includes(mod.name)) {
-      allModules[1].modules.push(mod)
-    } else if (analogModules.includes(mod.name)) {
-      allModules[2].modules.push(mod)
-    } else if (memoryModules.includes(mod.name)) {
-      allModules[3].modules.push(mod)
-    } else if (systemModules.includes(mod.name)) {
-      allModules[4].modules.push(mod)
+    const defaultMod = DEFAULT_BSW_MODULES.find((m) => m.name === mod.name)
+    const layer = defaultMod?.layer ?? 'MCAL'
+    if (allModules[layer]) {
+      allModules[layer].push(mod)
     } else {
-      allModules[0].modules.push(mod) // Default to core
+      allModules['MCAL'].push(mod)
     }
   }
 
-  return allModules.filter((g) => g.modules.length > 0)
+  return layerOrder
+    .filter((layer) => allModules[layer].length > 0)
+    .map((layer) => ({
+      name: layerLabels[layer] ?? layer,
+      modules: allModules[layer],
+    }))
 })
 
 const selectedMcalModules = ref<string[]>([])
@@ -635,12 +655,45 @@ async function createProject() {
 
 :deep(.el-upload-dragger) {
   width: 100%;
-  max-width: 420px;
-  min-height: 160px;
+  max-width: 360px;
+  min-height: 90px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 16px;
+}
+
+:deep(.el-form-item__content) {
+  display: flex;
+  justify-content: flex-start;
+}
+
+:deep(.el-upload) {
+  width: 100%;
+  max-width: 360px;
+}
+
+:deep(.el-upload__tip) {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 8px;
+}
+
+:deep(.el-icon--upload) {
+  font-size: 28px;
+  color: #c0c4cc;
+  margin-bottom: 6px;
+}
+
+:deep(.el-upload__text) {
+  font-size: 14px;
+  color: #606266;
+}
+
+:deep(.el-upload__text em) {
+  color: #409eff;
+  font-style: normal;
 }
 
 :deep(.el-descriptions__label) {

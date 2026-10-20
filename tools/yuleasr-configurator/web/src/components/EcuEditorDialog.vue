@@ -92,10 +92,20 @@
           <!-- Step 2: MCAL Modules -->
           <div v-if="currentStep === 2" class="step-content">
             <div v-if="mcalModules.length === 0" style="text-align: center; padding: 40px 0">
-              <el-empty description="Select a chip model first" :image-size="80" />
-              <el-button type="primary" size="small" @click="currentStep = 1">Go to Target Chip</el-button>
+              <el-empty description="No modules available" :image-size="80" />
             </div>
             <div v-else class="module-selection">
+              <el-alert
+                v-if="!form.model"
+                title="Using default BSW module set"
+                type="info"
+                :closable="false"
+                style="margin-bottom: 12px"
+              >
+                <template #default>
+                  <span>Select a chip in the previous step to see chip-specific modules, or use the default AUTOSAR BSW set below.</span>
+                </template>
+              </el-alert>
               <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center">
                 <el-text type="info" size="small">{{ selectedModules.length }} / {{ mcalModules.length }} selected</el-text>
                 <div style="display: flex; gap: 8px">
@@ -177,6 +187,7 @@
 import { ref, computed, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import * as api from '@/api/client'
+import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
 
 interface EcuForm {
   name: string
@@ -278,7 +289,16 @@ async function onSeriesChange(series: string) {
 watch(() => form.value.model, async (model) => {
   mcalModules.value = []
   selectedModules.value = []
-  if (!model || !form.value.vendor || !form.value.series) return
+  if (!model || !form.value.vendor || !form.value.series) {
+    // Fall back to default BSW modules when no chip is selected
+    mcalModules.value = DEFAULT_BSW_MODULES.map((m) => ({
+      name: m.name,
+      label: m.label,
+      required: m.required,
+    }))
+    selectedModules.value = DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
+    return
+  }
   try {
     mcalModules.value = await api.getChipMcalModules(form.value.vendor, form.value.series, model)
     selectedModules.value = mcalModules.value.filter((m) => m.required).map((m) => m.name)
@@ -288,32 +308,37 @@ watch(() => form.value.model, async (model) => {
 })
 
 const moduleGroups = computed(() => {
-  const core = ['Mcu', 'Port', 'Gpt']
-  const comm = ['Can', 'Lin', 'Spi', 'Icu', 'I2c', 'Ocu', 'Eth']
-  const analog = ['Adc', 'Pwm']
-  const memory = ['Eep', 'Fls']
-  const system = ['Wdg']
+  const layerOrder = ['MCAL', 'ECUAL', 'Services', 'OS', 'Integration']
+  const layerLabels: Record<string, string> = {
+    'MCAL': 'MCAL - Microcontroller Abstraction',
+    'ECUAL': 'ECUAL - ECU Abstraction Layer',
+    'Services': 'Services Layer',
+    'OS': 'Operating System',
+    'Integration': 'Integration Layer',
+  }
 
-  const groups: Record<string, typeof mcalModules.value> = {
-    'Core': [],
-    'Communication': [],
-    'Analog / PWM': [],
-    'Memory': [],
-    'System': [],
+  const groups: Record<string, typeof mcalModules.value> = {}
+  for (const layer of layerOrder) {
+    groups[layer] = []
   }
 
   for (const mod of mcalModules.value) {
-    if (core.includes(mod.name)) groups['Core'].push(mod)
-    else if (comm.includes(mod.name)) groups['Communication'].push(mod)
-    else if (analog.includes(mod.name)) groups['Analog / PWM'].push(mod)
-    else if (memory.includes(mod.name)) groups['Memory'].push(mod)
-    else if (system.includes(mod.name)) groups['System'].push(mod)
-    else groups['Core'].push(mod)
+    // Find the layer for this module from DEFAULT_BSW_MODULES
+    const defaultMod = DEFAULT_BSW_MODULES.find((m) => m.name === mod.name)
+    const layer = defaultMod?.layer ?? 'MCAL'
+    if (groups[layer]) {
+      groups[layer].push(mod)
+    } else {
+      groups['MCAL'].push(mod)
+    }
   }
 
-  return Object.entries(groups)
-    .filter(([, mods]) => mods.length > 0)
-    .map(([name, modules]) => ({ name, modules }))
+  return layerOrder
+    .filter((layer) => groups[layer].length > 0)
+    .map((layer) => ({
+      name: layerLabels[layer] ?? layer,
+      modules: groups[layer],
+    }))
 })
 
 function selectAll() {
@@ -329,10 +354,7 @@ function nextStep() {
     ElMessage.warning('Please enter ECU name')
     return
   }
-  if (currentStep.value === 1 && !form.value.model) {
-    ElMessage.warning('Please select a chip model')
-    return
-  }
+  // Chip selection is now optional - default BSW modules will be used
   currentStep.value++
 }
 
