@@ -326,8 +326,25 @@ router.afterEach((to) => {
   }
 })
 
-onMounted(() => {
+onMounted(async () => {
   isElectron.value = !!window.electronAPI?.isElectron
+
+  // Load configuration from backend on startup
+  try {
+    const config = await api.getConfig()
+    if (config) {
+      configStore.replaceConfig(config)
+    }
+  } catch (error) {
+    console.warn('Failed to load config from backend:', error)
+  }
+
+  // Load project from backend on startup
+  try {
+    await projectStore.loadProject()
+  } catch (error) {
+    console.warn('Failed to load project from backend:', error)
+  }
 
   if (isElectron.value && window.electronAPI) {
     window.electronAPI.onMenuAction((action: string) => {
