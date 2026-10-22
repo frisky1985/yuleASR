@@ -7,10 +7,13 @@ Flask-SocketIO==5.3.6
 
 # WebSocket Support
 python-socketio==5.16.2
-python-engineio==4.8.0
+# 4.8.0 was below python-socketio's own engineio>=4.13.2 floor and carried
+# multiple high-severity advisories (GHSA-cgwc-pv48-fhj5, GHSA-m9gh-vj53-gvh9).
+python-engineio==4.14.0
 
 # Authentication
-PyJWT==2.8.0
+# 2.8.0 carried 14 advisories, incl. critical GHSA-ffc3-869f-jxw9.
+PyJWT==2.15.1
 
 # YAML Processing
 PyYAML==6.0.1
