@@ -28,7 +28,12 @@ web = [
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    # Required by fastapi.testclient (Starlette TestClient) used in tests/.
+    "httpx>=0.24",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [project.scripts]
 yuleasr = "yuleasr.cli.main:app"
