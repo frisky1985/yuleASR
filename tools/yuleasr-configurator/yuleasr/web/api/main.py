@@ -371,6 +371,8 @@ async def delete_project(project_path: Optional[str] = None):
     if not project_path:
         raise HTTPException(status_code=400, detail="project_path is required")
     path = Path(project_path)
+    if path.suffix != ".yuleasr":
+        raise HTTPException(status_code=400, detail="Only .yuleasr project files can be deleted")
     try:
         if path.exists():
             path.unlink()
@@ -606,6 +608,15 @@ async def save_workspace(data: Dict[str, Any], workspace_path: Optional[str] = N
     path = Path(workspace_path) if workspace_path else DEFAULT_WORKSPACE_FILE
     try:
         wf = WorkspaceFile.from_dict(data)
+        # Preserve creation timestamp of the existing workspace file
+        if path.exists():
+            try:
+                existing = WorkspaceFile.load(path)
+                if existing.workspace.created:
+                    wf.workspace.created = existing.workspace.created
+            except Exception:
+                pass  # Corrupted existing file: fall back to incoming data
+        wf.touch()
         wf.save(path)
         return {"success": True, "path": str(path)}
     except Exception as e:
@@ -647,7 +658,7 @@ async def create_workspace(req: CreateWorkspaceRequest):
 
 
 class AddProjectToWorkspaceRequest(BaseModel):
-    workspace_path: str
+    workspace_path: Optional[str] = None  # Defaults to DEFAULT_WORKSPACE_FILE
     project_name: str
     project_description: str = ""
     project_path: str  # Path to the .yuleasr project file
@@ -657,13 +668,12 @@ class AddProjectToWorkspaceRequest(BaseModel):
 async def add_project_to_workspace(req: AddProjectToWorkspaceRequest):
     """Add a project to workspace."""
     import uuid
-    from datetime import datetime
 
-    workspace_path = Path(req.workspace_path)
-    if not workspace_path.exists():
+    workspace_file = Path(req.workspace_path) if req.workspace_path else DEFAULT_WORKSPACE_FILE
+    if not workspace_file.exists():
         raise HTTPException(status_code=404, detail="Workspace file not found")
 
-    wf = WorkspaceFile.load(workspace_path)
+    wf = WorkspaceFile.load(workspace_file)
 
     project_ref = ProjectReference(
         id=f"proj-{uuid.uuid4().hex[:8]}",
@@ -672,26 +682,26 @@ async def add_project_to_workspace(req: AddProjectToWorkspaceRequest):
         path=req.project_path,
     )
     wf.add_project(project_ref)
-    wf.save(workspace_path)
+    wf.save(workspace_file)
 
     return {"success": True, "project_id": project_ref.id}
 
 
 class RemoveProjectFromWorkspaceRequest(BaseModel):
-    workspace_path: str
+    workspace_path: Optional[str] = None  # Defaults to DEFAULT_WORKSPACE_FILE
     project_id: str
 
 
 @app.post("/api/workspace/remove-project")
 async def remove_project_from_workspace(req: RemoveProjectFromWorkspaceRequest):
     """Remove a project from workspace."""
-    workspace_path = Path(req.workspace_path)
-    if not workspace_path.exists():
+    workspace_file = Path(req.workspace_path) if req.workspace_path else DEFAULT_WORKSPACE_FILE
+    if not workspace_file.exists():
         raise HTTPException(status_code=404, detail="Workspace file not found")
 
-    wf = WorkspaceFile.load(workspace_path)
+    wf = WorkspaceFile.load(workspace_file)
     wf.remove_project(req.project_id)
-    wf.save(workspace_path)
+    wf.save(workspace_file)
 
     return {"success": True}
 

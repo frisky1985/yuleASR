@@ -307,7 +307,7 @@ export async function createWorkspace(data: { name: string; description?: string
 }
 
 export async function addProjectToWorkspace(data: {
-  workspace_path: string
+  workspace_path?: string
   project_name: string
   project_description?: string
   project_path: string
@@ -317,7 +317,7 @@ export async function addProjectToWorkspace(data: {
 }
 
 export async function removeProjectFromWorkspace(data: {
-  workspace_path: string
+  workspace_path?: string
   project_id: string
 }): Promise<{ success: boolean }> {
   const response = await api.post('/workspace/remove-project', data)

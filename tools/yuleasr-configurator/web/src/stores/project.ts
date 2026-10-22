@@ -273,10 +273,6 @@ export const useProjectStore = defineStore('project', () => {
       const data = await api.getWorkspace(workspacePath.value || undefined)
       workspaceName.value = data.workspace.name
       workspaceDescription.value = data.workspace.description
-      // Set default workspace path if not set
-      if (!workspacePath.value) {
-        workspacePath.value = '/Users/ingeek/workspace/AUTOSAR/workspace.yuleasr'
-      }
       projects.value = data.projects.map((p: any) => ({
         id: p.id,
         name: p.name,
@@ -297,7 +293,7 @@ export const useProjectStore = defineStore('project', () => {
 
   async function loadProject(path?: string) {
     try {
-      const data = await api.getProject(path || workspacePath.value || undefined)
+      const data = await api.getProject(path || currentProject.value?.path || undefined)
       projectName.value = data.project.name
       projectDescription.value = data.project.description
       if (data.ecus.length > 0) {
@@ -346,7 +342,7 @@ export const useProjectStore = defineStore('project', () => {
           expanded_layers: [],
         },
         recent_files: [],
-      }, workspacePath.value || undefined)
+      }, currentProject.value?.path || undefined)
     } catch {
       // Backend may not be available
     }
@@ -402,34 +398,43 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
-  async function addProjectToWorkspace(name: string, description = '') {
+  async function addProjectToWorkspace(
+    name: string,
+    description = '',
+    options?: {
+      chip?: { vendor: string; series: string; model: string }
+      mcalModules?: string[]
+      commModules?: string[]
+    },
+  ) {
     // Create new project file
     const projectResult = await api.createProject({
       name,
       description,
-      mcal_modules: DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name),
-      comm_modules: ['CanIf', 'CanTp', 'PduR', 'Com'],
+      chip: options?.chip,
+      mcal_modules: options?.mcalModules ?? DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name),
+      comm_modules: options?.commModules ?? ['CanIf', 'CanTp', 'PduR', 'Com'],
     })
-    
+
     if (projectResult.success) {
       // Add to workspace
       await api.addProjectToWorkspace({
-        workspace_path: workspacePath.value,
+        workspace_path: workspacePath.value || undefined,
         project_name: name,
         project_description: description,
         project_path: projectResult.project_path,
       })
-      
+
       // Reload workspace
       await loadWorkspace()
-      
+
       // Switch to new project
       const newProject = projects.value.find((p) => p.name === name)
       if (newProject) {
         await switchProject(newProject.id)
       }
     }
-    
+
     return projectResult
   }
 

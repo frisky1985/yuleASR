@@ -542,21 +542,15 @@ async function createProject() {
     const chip = projectForm.value.chipModel
       ? { vendor: projectForm.value.chipVendor, series: projectForm.value.chipSeries, model: projectForm.value.chipModel }
       : undefined
-    
-    // Create new workspace (separate .yuleasr file)
-    await projectStore.createWorkspace(projectForm.value.name, projectForm.value.description)
-    
-    // Add ECU with selected modules to the new workspace
-    await projectStore.addEcu(
-      `${projectForm.value.name}_ECU`,
+
+    // Create a new project inside the current workspace
+    await projectStore.addProjectToWorkspace(projectForm.value.name, projectForm.value.description, {
       chip,
-      allModules
-    )
-    
-    // Persist to backend
-    await projectStore.saveProject()
-    
-    ElMessage.success(`Workspace "${projectForm.value.name}" created with ${allModules.length} modules`)
+      mcalModules: selectedMcalModules.value,
+      commModules: selectedCommModules.value,
+    })
+
+    ElMessage.success(`Project "${projectForm.value.name}" created with ${allModules.length} modules`)
     router.push('/config')
   } catch (e: any) {
     ElMessage.error(e.message || 'Failed to create project')
