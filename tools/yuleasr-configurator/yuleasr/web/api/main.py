@@ -24,6 +24,7 @@ from yuleasr.core.smart_validator import (
 from yuleasr.core.cross_module_validator import validate_config_references
 from yuleasr.core.reference_validator import CROSS_MODULE_REFERENCES
 from yuleasr.core.project_file import ProjectFile, EcuEntry, ChipInfo
+from yuleasr.core.workspace_file import WorkspaceFile, ProjectReference, WorkspaceMeta
 from yuleasr.parsers.dbc_parser import DbcParser, AutosarConfigGenerator
 from yuleasr.parsers.chip_database import get_vendors, get_series, get_models, get_mcal_modules, get_chip_info
 from yuleasr.parsers.nm_parser import generate_autosar_nm_config, parse_nm_matrix
@@ -364,6 +365,30 @@ async def save_project(data: Dict[str, Any], project_path: Optional[str] = None)
         raise HTTPException(status_code=500, detail=f"Failed to save project: {e}")
 
 
+@app.get("/api/projects")
+async def list_projects():
+    """List all available project workspaces."""
+    projects = []
+    projects_dir = REPO_ROOT / "projects"
+    if projects_dir.exists():
+        for project_dir in sorted(projects_dir.iterdir()):
+            if project_dir.is_dir():
+                yuleasr_file = project_dir / ".yuleasr"
+                if yuleasr_file.exists():
+                    try:
+                        pf = ProjectFile.load(yuleasr_file)
+                        projects.append({
+                            "name": pf.project_name or project_dir.name,
+                            "description": pf.project_description or "",
+                            "path": str(yuleasr_file),
+                            "ecu_count": len(pf.ecus),
+                            "modified": pf.modified or "",
+                        })
+                    except Exception as e:
+                        LOG.warning(f"Failed to load project {yuleasr_file}: {e}")
+    return {"projects": projects}
+
+
 class CreateProjectRequest(BaseModel):
     name: str
     description: str = ""
@@ -456,6 +481,7 @@ async def add_ecu(ecu: Dict[str, Any], project_path: Optional[str] = None):
             chip=chip,
             config_path=ecu.get("config_path", ""),
             description=ecu.get("description", ""),
+            modules=ecu.get("modules", {}),
         )
         pf.add_ecu(ecu_entry)
         pf.save(path)
@@ -475,6 +501,33 @@ async def remove_ecu(ecu_id: str, project_path: Optional[str] = None):
         return {"success": True}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to remove ECU: {e}")
+
+
+@app.post("/api/project/ecu/{ecu_id}/module")
+async def add_module_to_ecu(ecu_id: str, data: Dict[str, Any], project_path: Optional[str] = None):
+    """Add module to ECU."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.load(path)
+        module_name = data.get("module_name", "")
+        pf.add_module_to_ecu(ecu_id, module_name)
+        pf.save(path)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add module: {e}")
+
+
+@app.delete("/api/project/ecu/{ecu_id}/module/{module_name}")
+async def remove_module_from_ecu(ecu_id: str, module_name: str, project_path: Optional[str] = None):
+    """Remove module from ECU."""
+    path = Path(project_path) if project_path else DEFAULT_PROJECT_FILE
+    try:
+        pf = ProjectFile.load(path)
+        pf.remove_module_from_ecu(ecu_id, module_name)
+        pf.save(path)
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to remove module: {e}")
 
 
 @app.post("/api/project/recent")
@@ -503,6 +556,130 @@ async def save_ui_state(state: Dict[str, Any], project_path: Optional[str] = Non
         return {"success": True}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to save UI state: {e}")
+
+
+# ============================================================================
+# Workspace Endpoints
+# ============================================================================
+
+DEFAULT_WORKSPACE_FILE = REPO_ROOT / "workspace.yuleasr"
+
+
+class WorkspaceResponse(BaseModel):
+    version: str
+    workspace: Dict[str, Any]
+    projects: List[Dict[str, Any]]
+
+
+@app.get("/api/workspace", response_model=WorkspaceResponse)
+async def get_workspace(workspace_path: Optional[str] = None):
+    """Load workspace file."""
+    path = Path(workspace_path) if workspace_path else DEFAULT_WORKSPACE_FILE
+    try:
+        if not path.exists():
+            wf = WorkspaceFile()
+            wf.save(path)
+        else:
+            wf = WorkspaceFile.load(path)
+        return WorkspaceResponse(**wf.to_dict())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to load workspace: {e}")
+
+
+@app.post("/api/workspace")
+async def save_workspace(data: Dict[str, Any], workspace_path: Optional[str] = None):
+    """Save workspace file."""
+    path = Path(workspace_path) if workspace_path else DEFAULT_WORKSPACE_FILE
+    try:
+        wf = WorkspaceFile.from_dict(data)
+        wf.save(path)
+        return {"success": True, "path": str(path)}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save workspace: {e}")
+
+
+class CreateWorkspaceRequest(BaseModel):
+    name: str
+    description: str = ""
+
+
+class CreateWorkspaceResponse(BaseModel):
+    success: bool
+    workspace_path: str
+
+
+@app.post("/api/workspace/create", response_model=CreateWorkspaceResponse)
+async def create_workspace(req: CreateWorkspaceRequest):
+    """Create a new workspace."""
+    from datetime import datetime
+    import uuid
+
+    workspace_dir = REPO_ROOT / "workspaces" / req.name
+    workspace_dir.mkdir(parents=True, exist_ok=True)
+
+    workspace_file_path = workspace_dir / "workspace.yuleasr"
+
+    wf = WorkspaceFile()
+    wf.workspace.name = req.name
+    wf.workspace.description = req.description
+    wf.workspace.created = datetime.now().isoformat()
+    wf.workspace.modified = datetime.now().isoformat()
+    wf.save(workspace_file_path)
+
+    return CreateWorkspaceResponse(
+        success=True,
+        workspace_path=str(workspace_file_path),
+    )
+
+
+class AddProjectToWorkspaceRequest(BaseModel):
+    workspace_path: str
+    project_name: str
+    project_description: str = ""
+    project_path: str  # Path to the .yuleasr project file
+
+
+@app.post("/api/workspace/add-project")
+async def add_project_to_workspace(req: AddProjectToWorkspaceRequest):
+    """Add a project to workspace."""
+    import uuid
+    from datetime import datetime
+
+    workspace_path = Path(req.workspace_path)
+    if not workspace_path.exists():
+        raise HTTPException(status_code=404, detail="Workspace file not found")
+
+    wf = WorkspaceFile.load(workspace_path)
+
+    project_ref = ProjectReference(
+        id=f"proj-{uuid.uuid4().hex[:8]}",
+        name=req.project_name,
+        description=req.project_description,
+        path=req.project_path,
+    )
+    wf.add_project(project_ref)
+    wf.save(workspace_path)
+
+    return {"success": True, "project_id": project_ref.id}
+
+
+class RemoveProjectFromWorkspaceRequest(BaseModel):
+    workspace_path: str
+    project_id: str
+
+
+@app.post("/api/workspace/remove-project")
+async def remove_project_from_workspace(req: RemoveProjectFromWorkspaceRequest):
+    """Remove a project from workspace."""
+    workspace_path = Path(req.workspace_path)
+    if not workspace_path.exists():
+        raise HTTPException(status_code=404, detail="Workspace file not found")
+
+    wf = WorkspaceFile.load(workspace_path)
+    wf.remove_project(req.project_id)
+    wf.save(workspace_path)
+
+    return {"success": True}
 
 
 # ============================================================================

@@ -16,14 +16,35 @@
         <div class="toolbar-divider"></div>
 
         <div class="toolbar-section">
-          <el-tooltip content="New Project (Ctrl+N)" placement="bottom">
-            <el-button text size="small" :icon="Plus" @click="navigateTo('/new-project')" />
+          <el-dropdown trigger="click" @command="handleProjectCommand">
+            <el-button text size="small">
+              <el-icon><FolderOpened /></el-icon>
+              <span style="margin-left: 4px;">Project</span>
+              <el-icon class="el-icon--right"><ArrowDown /></el-icon>
+            </el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item command="new-project">
+                  <el-icon><Plus /></el-icon> New Project
+                  <span class="shortcut">Ctrl+N</span>
+                </el-dropdown-item>
+                <el-dropdown-item command="open">
+                  <el-icon><FolderOpened /></el-icon> Open Project
+                  <span class="shortcut">Ctrl+O</span>
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
+
+        <div class="toolbar-divider"></div>
+
+        <div class="toolbar-section">
+          <el-tooltip content="Add ECU (Ctrl+E)" placement="bottom">
+            <el-button text size="small" :icon="Cpu" @click="handleProjectCommand('add-ecu')" />
           </el-tooltip>
-          <el-tooltip content="Open Configuration (Ctrl+O)" placement="bottom">
-            <el-button text size="small" :icon="FolderOpened" @click="handleOpen" />
-          </el-tooltip>
-          <el-tooltip content="Save (Ctrl+S)" placement="bottom">
-            <el-button text size="small" :icon="Download" @click="handleSave" />
+          <el-tooltip content="Save Project (Ctrl+S)" placement="bottom">
+            <el-button text size="small" :icon="Download" @click="handleProjectCommand('save')" />
           </el-tooltip>
         </div>
 
@@ -61,7 +82,7 @@
     <div class="app-body">
       <transition name="sidebar">
         <div v-if="sidebarVisible" class="sidebar">
-          <ProjectManager />
+          <ProjectManager ref="projectManagerRef" />
         </div>
       </transition>
 
@@ -109,6 +130,8 @@ import {
   DocumentCopy,
   Fold,
   Expand,
+  ArrowDown,
+  Cpu,
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { useConfigStore } from '@/stores/config'
@@ -148,6 +171,7 @@ const canGoForward = ref(false)
 const historyIndex = ref(0)
 const historyStack = ref<string[]>(['/'])
 const sidebarVisible = ref(true)
+const projectManagerRef = ref<InstanceType<typeof ProjectManager> | null>(null)
 
 const moduleCount = computed(() => configStore.moduleCount)
 
@@ -280,6 +304,23 @@ function handleSave() {
   }
 }
 
+function handleProjectCommand(command: string) {
+  switch (command) {
+    case 'new-project':
+      navigateTo('/new-project')
+      break
+    case 'add-ecu':
+      projectManagerRef.value?.openAddEcu()
+      break
+    case 'open':
+      handleOpen()
+      break
+    case 'save':
+      handleSave()
+      break
+  }
+}
+
 async function handleGenerate() {
   if (!configStore.config) {
     ElMessage.warning('No configuration loaded. Open or create a project first.')
@@ -339,11 +380,11 @@ onMounted(async () => {
     console.warn('Failed to load config from backend:', error)
   }
 
-  // Load project from backend on startup
+  // Load workspace from backend on startup
   try {
-    await projectStore.loadProject()
+    await projectStore.loadWorkspace()
   } catch (error) {
-    console.warn('Failed to load project from backend:', error)
+    console.warn('Failed to load workspace from backend:', error)
   }
 
   if (isElectron.value && window.electronAPI) {
@@ -411,6 +452,30 @@ onMounted(async () => {
 
   checkBackend()
   healthCheckInterval = setInterval(checkBackend, 10000)
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key.toLowerCase()) {
+        case 'n':
+          e.preventDefault()
+          handleProjectCommand('new-project')
+          break
+        case 'e':
+          e.preventDefault()
+          handleProjectCommand('add-ecu')
+          break
+        case 'o':
+          e.preventDefault()
+          handleProjectCommand('open')
+          break
+        case 's':
+          e.preventDefault()
+          handleProjectCommand('save')
+          break
+      }
+    }
+  })
 })
 
 onUnmounted(() => {
@@ -600,5 +665,11 @@ html, body, #app {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.shortcut {
+  margin-left: 24px;
+  font-size: 12px;
+  color: #909399;
 }
 </style>

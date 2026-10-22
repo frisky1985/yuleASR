@@ -282,8 +282,10 @@ import { ElMessage } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
 import * as api from '@/api/client'
 import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
+import { useProjectStore } from '@/stores/project'
 
 const router = useRouter()
+const projectStore = useProjectStore()
 const currentStep = ref(0)
 const creating = ref(false)
 
@@ -313,7 +315,9 @@ const projectForm = ref<ProjectForm>({
 const chipVendors = ref<Array<{ value: string; label: string }>>([])
 const chipSeriesList = ref<Array<{ value: string; label: string }>>([])
 const chipModelsList = ref<Array<{ value: string; label: string; clock_freq_mhz: number; flash_size_kb: number; ram_size_kb: number; module_count: number }>>([])
-const mcalModuleList = ref<Array<{ name: string; label: string; required: boolean; default_params: Record<string, any>; dependencies: string[] }>>([])
+const mcalModuleList = ref<Array<{ name: string; label: string; required: boolean; default_params: Record<string, any>; dependencies: string[] }>>(
+  DEFAULT_BSW_MODULES.map((m) => ({ name: m.name, label: m.label, required: m.required, default_params: {}, dependencies: [] }))
+)
 
 // Load vendors on mount
 import { onMounted } from 'vue'
@@ -423,7 +427,9 @@ const mcalModuleGroups = computed(() => {
     }))
 })
 
-const selectedMcalModules = ref<string[]>([])
+const selectedMcalModules = ref<string[]>(
+  DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
+)
 const selectedCommModules = ref<string[]>(['CanIf', 'CanTp', 'PduR', 'Com'])
 
 interface DbcFileInfo {
@@ -531,27 +537,29 @@ function prevStep() {
 async function createProject() {
   creating.value = true
   try {
-    const chipModelInfo = chipModelsList.value.find((m) => m.value === projectForm.value.chipModel)
-    const result = await api.createProject({
-      name: projectForm.value.name,
-      description: projectForm.value.description,
-      author: projectForm.value.author,
-      version: projectForm.value.version,
-      chip: projectForm.value.chipModel
-        ? {
-            vendor: projectForm.value.chipVendor,
-            series: projectForm.value.chipSeries,
-            model: projectForm.value.chipModel,
-            clock_freq_mhz: chipModelInfo?.clock_freq_mhz ?? projectForm.value.clockFreq,
-          }
-        : undefined,
-      mcal_modules: selectedMcalModules.value,
-      comm_modules: selectedCommModules.value,
-    })
-    ElMessage.success(`Project "${result.module_count} modules" created`)
+    // Build the module list from wizard selections
+    const allModules = [...selectedMcalModules.value, ...selectedCommModules.value]
+    const chip = projectForm.value.chipModel
+      ? { vendor: projectForm.value.chipVendor, series: projectForm.value.chipSeries, model: projectForm.value.chipModel }
+      : undefined
+    
+    // Create new workspace (separate .yuleasr file)
+    await projectStore.createWorkspace(projectForm.value.name, projectForm.value.description)
+    
+    // Add ECU with selected modules to the new workspace
+    await projectStore.addEcu(
+      `${projectForm.value.name}_ECU`,
+      chip,
+      allModules
+    )
+    
+    // Persist to backend
+    await projectStore.saveProject()
+    
+    ElMessage.success(`Workspace "${projectForm.value.name}" created with ${allModules.length} modules`)
     router.push('/config')
   } catch (e: any) {
-    ElMessage.error(e.response?.data?.detail || e.message || 'Failed to create project')
+    ElMessage.error(e.message || 'Failed to create project')
   } finally {
     creating.value = false
   }

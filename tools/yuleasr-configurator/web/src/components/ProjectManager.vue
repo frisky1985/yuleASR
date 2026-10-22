@@ -14,13 +14,13 @@
       </el-input>
     </div>
 
-    <!-- Project header -->
+    <!-- Workspace header -->
     <div class="pm-header" @contextmenu.prevent="showProjectContext($event)">
       <div class="pm-project">
-        <el-icon class="pm-project-icon"><Folder /></el-icon>
+        <el-icon class="pm-project-icon"><FolderOpened /></el-icon>
         <div class="pm-project-info">
-          <div class="pm-project-name">{{ projectName }}</div>
-          <div class="pm-project-meta">{{ ecuCount }} ECU{{ ecuCount !== 1 ? 's' : '' }} · {{ moduleCount }} modules</div>
+          <div class="pm-project-name">{{ workspaceName }}</div>
+          <div class="pm-project-meta">{{ projectCount }} Project{{ projectCount !== 1 ? 's' : '' }} · {{ ecuCount }} ECU{{ ecuCount !== 1 ? 's' : '' }}</div>
         </div>
       </div>
     </div>
@@ -55,7 +55,10 @@
               <span class="node-label">{{ data.label }}</span>
             </div>
             <div class="node-right">
-              <span v-if="data.type === 'layer'" class="node-badge" :class="{ 'badge-enabled': data.enabledCount > 0 }">
+              <span v-if="data.type === 'project'" class="node-badge">
+                {{ data.ecuCount }} ECU{{ data.ecuCount !== 1 ? 's' : '' }}
+              </span>
+              <span v-else-if="data.type === 'layer'" class="node-badge" :class="{ 'badge-enabled': data.enabledCount > 0 }">
                 {{ data.enabledCount }}/{{ data.moduleCount }}
               </span>
               <span v-else-if="data.type === 'module'" class="status-dot" :class="data.enabled ? 'dot-enabled' : 'dot-disabled'">
@@ -67,16 +70,6 @@
       </el-tree>
     </div>
 
-    <!-- Quick actions -->
-    <div class="pm-actions">
-      <el-button text size="small" @click="openAddEcu">
-        <el-icon><Plus /></el-icon> Add ECU
-      </el-button>
-      <el-button text size="small" @click="handleNewProject">
-        <el-icon><Plus /></el-icon> New Project
-      </el-button>
-    </div>
-
     <!-- Context Menu -->
     <teleport to="body">
       <div
@@ -85,7 +78,12 @@
         :style="{ left: contextMenu.x + 'px', top: contextMenu.y + 'px' }"
         @click.stop
       >
-        <template v-if="contextMenu.data?.type === 'project'">
+        <template v-if="contextMenu.data?.type === 'workspace'">
+          <div class="pm-context-item" @click="handleRenameWorkspace"><el-icon><Edit /></el-icon><span>Rename Workspace</span></div>
+          <div class="pm-context-divider" />
+          <div class="pm-context-item" @click="handleNewProject"><el-icon><Plus /></el-icon><span>Add Project</span></div>
+        </template>
+        <template v-else-if="contextMenu.data?.type === 'project'">
           <div class="pm-context-item" @click="handleRenameProject"><el-icon><Edit /></el-icon><span>Rename</span></div>
           <div class="pm-context-item" @click="handleDuplicateProject"><el-icon><CopyDocument /></el-icon><span>Duplicate</span></div>
           <div class="pm-context-divider" />
@@ -97,11 +95,16 @@
           <div class="pm-context-divider" />
           <div class="pm-context-item pm-context-danger" @click="confirmRemoveEcu(contextMenu.data.ecu)"><el-icon><Delete /></el-icon><span>Remove ECU</span></div>
         </template>
+        <template v-else-if="contextMenu.data?.type === 'layer'">
+          <div class="pm-context-item" @click="openAddModule(contextMenu.data)"><el-icon><Plus /></el-icon><span>Add Module</span></div>
+        </template>
         <template v-else-if="contextMenu.data?.type === 'module'">
           <div class="pm-context-item" @click="toggleModule(contextMenu.data)">
             <el-icon><component :is="contextMenu.data.enabled ? Close : Check" /></el-icon>
             <span>{{ contextMenu.data.enabled ? 'Disable' : 'Enable' }}</span>
           </div>
+          <div class="pm-context-divider" />
+          <div class="pm-context-item pm-context-danger" @click="confirmRemoveModule(contextMenu.data)"><el-icon><Delete /></el-icon><span>Remove Module</span></div>
         </template>
       </div>
     </teleport>
@@ -111,6 +114,14 @@
       v-model="ecuDialogVisible"
       :edit-data="ecuEditData"
       @confirm="handleEcuConfirm"
+    />
+
+    <!-- Add Module Dialog -->
+    <AddModuleDialog
+      v-model="addModuleDialogVisible"
+      :ecu="addModuleEcu"
+      :layer="addModuleLayer"
+      @confirm="handleAddModuleConfirm"
     />
 
     <!-- Rename Project Dialog -->
@@ -128,6 +139,59 @@
         <el-button type="primary" @click="confirmRename" :disabled="!renameForm.name.trim()">Save</el-button>
       </template>
     </el-dialog>
+
+    <!-- Project Settings Dialog -->
+    <el-dialog v-model="settingsDialogVisible" title="Project Settings" width="480px">
+      <el-form :model="settingsForm" label-width="120px">
+        <el-form-item label="Project Name" required>
+          <el-input v-model="settingsForm.name" placeholder="Enter project name" autofocus />
+        </el-form-item>
+        <el-form-item label="Description">
+          <el-input v-model="settingsForm.description" type="textarea" :rows="3" placeholder="Project description" />
+        </el-form-item>
+        <el-divider content-position="left">Info</el-divider>
+        <el-form-item label="ECUs">
+          <el-text>{{ projectStore.currentProject?.ecus?.length ?? 0 }} ECU(s)</el-text>
+        </el-form-item>
+        <el-form-item label="Path">
+          <el-text type="info" size="small">{{ projectStore.currentProject?.path || 'Not saved' }}</el-text>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="settingsDialogVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="confirmProjectSettings" :disabled="!settingsForm.name.trim()">Save</el-button>
+      </template>
+    </el-dialog>
+
+    <!-- Open Project Dialog -->
+    <el-dialog v-model="openProjectDialogVisible" title="Open Project" width="500px" @open="loadProjectList">
+      <div v-if="projectListLoading" style="text-align: center; padding: 20px;">
+        <el-icon class="is-loading"><Loading /></el-icon>
+        <span style="margin-left: 8px;">Loading projects...</span>
+      </div>
+      <div v-else-if="projectList.length === 0" style="text-align: center; padding: 20px; color: #909399;">
+        No projects found. Create a new project to get started.
+      </div>
+      <div v-else class="project-list">
+        <div
+          v-for="proj in projectList"
+          :key="proj.path"
+          class="project-item"
+          :class="{ 'project-item-active': proj.path === projectStore.workspacePath }"
+          @click="handleOpenProject(proj.path)"
+        >
+          <div class="project-item-info">
+            <div class="project-item-name">{{ proj.name }}</div>
+            <div class="project-item-meta">{{ proj.ecu_count }} ECU{{ proj.ecu_count !== 1 ? 's' : '' }} · {{ proj.modified || 'Unknown' }}</div>
+            <div v-if="proj.description" class="project-item-desc">{{ proj.description }}</div>
+          </div>
+          <el-icon class="project-item-arrow"><ArrowRight /></el-icon>
+        </div>
+      </div>
+      <template #footer>
+        <el-button @click="openProjectDialogVisible = false">Close</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -138,12 +202,15 @@ import {
   Folder, Plus, Cpu, Setting, Edit, Delete, CopyDocument,
   Download, Search, Check, Close,
   Monitor, Connection,
+  FolderOpened, ArrowRight, Loading,
 } from '@element-plus/icons-vue'
 import { useProjectStore } from '@/stores/project'
 import { useConfigStore } from '@/stores/config'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import EcuEditorDialog from './EcuEditorDialog.vue'
+import AddModuleDialog from './AddModuleDialog.vue'
 import type { EcuConfig, ModuleConfig } from '@/types'
+import * as api from '@/api/client'
 
 const router = useRouter()
 const projectStore = useProjectStore()
@@ -153,12 +220,43 @@ const searchText = ref('')
 const treeRef = ref()
 const ecuDialogVisible = ref(false)
 const ecuEditData = ref<{ id: string; name: string; description?: string; chip?: { vendor: string; series: string; model: string } } | undefined>()
+const addModuleDialogVisible = ref(false)
+const addModuleEcu = ref<EcuConfig | null>(null)
+const addModuleLayer = ref<string>('')
 const contextMenu = ref({ visible: false, x: 0, y: 0, data: null as any })
 const renameDialogVisible = ref(false)
 const renameForm = ref({ name: '', description: '' })
 const renameInputRef = ref()
+const openProjectDialogVisible = ref(false)
+const projectList = ref<Array<{ name: string; description: string; path: string; ecu_count: number; modified: string }>>([])
+const projectListLoading = ref(false)
 
+async function loadProjectList() {
+  projectListLoading.value = true
+  try {
+    const result = await api.listProjects()
+    projectList.value = result.projects
+  } catch (e: any) {
+    ElMessage.error('Failed to load project list: ' + (e.message || 'Unknown error'))
+  } finally {
+    projectListLoading.value = false
+  }
+}
+
+async function handleOpenProject(path: string) {
+  try {
+    await projectStore.openWorkspace(path)
+    openProjectDialogVisible.value = false
+    ElMessage.success(`Opened project: ${projectStore.projectName}`)
+    router.push('/config')
+  } catch (e: any) {
+    ElMessage.error('Failed to open project: ' + (e.message || 'Unknown error'))
+  }
+}
+
+const workspaceName = computed(() => projectStore.workspaceName ?? 'yuleASR Workspace')
 const projectName = computed(() => configStore.config?.project?.name ?? projectStore.projectName ?? 'yuleASR')
+const projectCount = computed(() => projectStore.projects.length)
 const ecuCount = computed(() => projectStore.ecus.length)
 const moduleCount = computed(() => Object.keys(configStore.modules).length)
 
@@ -193,89 +291,113 @@ function guessLayer(name: string): string {
 interface TreeNode {
   id: string
   label: string
-  type: 'project' | 'ecu' | 'layer' | 'module'
+  type: 'workspace' | 'project' | 'ecu' | 'layer' | 'module'
   enabled?: boolean
   moduleCount?: number
   enabledCount?: number
+  ecuCount?: number
+  projectCount?: number
   ecu?: EcuConfig
+  projectId?: string
   moduleName?: string
   children?: TreeNode[]
 }
 
 const defaultExpandedKeys = computed(() => {
   const keys: string[] = []
-  for (const ecu of projectStore.ecus) {
-    keys.push(`ecu-${ecu.id}`)
-    for (const layer of ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'BSW Coordination']) {
-      keys.push(`ecu-${ecu.id}-layer-${layer}`)
+  for (const project of projectStore.projects) {
+    keys.push(`project-${project.id}`)
+    for (const ecu of project.ecus) {
+      keys.push(`project-${project.id}-ecu-${ecu.id}`)
+      for (const layer of ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'BSW Coordination']) {
+        keys.push(`project-${project.id}-ecu-${ecu.id}-layer-${layer}`)
+      }
     }
   }
   return keys
 })
 
 const treeData = computed<TreeNode[]>(() => {
-  const ecus = projectStore.ecus
-  if (ecus.length === 0) return []
+  const nodes: TreeNode[] = []
 
-  return ecus.map((ecu) => {
-    const modules = ecu.modules
-    const grouped: Record<string, { label: string; enabled: boolean; moduleName: string }[]> = {
-      MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], 'BSW Coordination': [],
+  for (const project of projectStore.projects) {
+    const projectNode: TreeNode = {
+      id: `project-${project.id}`,
+      label: project.name,
+      type: 'project',
+      projectId: project.id,
+      ecuCount: project.ecus.length,
+      children: [],
     }
 
-    for (const [name, mod] of Object.entries(modules)) {
-      const layer = guessLayer(name)
-      if (grouped[layer]) {
-        grouped[layer].push({ label: name, enabled: mod.enabled, moduleName: name })
+    for (const ecu of project.ecus) {
+      const modules = ecu.modules
+      const grouped: Record<string, { label: string; enabled: boolean; moduleName: string }[]> = {
+        MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], 'BSW Coordination': [],
       }
-    }
 
-    const layerNodes: TreeNode[] = Object.entries(grouped)
-      .filter(([, mods]) => mods.length > 0)
-      .map(([layer, mods]) => {
-        const enabledCount = mods.filter((m) => m.enabled).length
-        return {
-          id: `ecu-${ecu.id}-layer-${layer}`,
-          label: layer,
-          type: 'layer' as const,
-          moduleCount: mods.length,
-          enabledCount,
-          children: mods
-            .filter((m) => !searchText.value || m.label.toLowerCase().includes(searchText.value.toLowerCase()))
-            .sort((a, b) => a.label.localeCompare(b.label))
-            .map((m) => ({
-              id: `ecu-${ecu.id}-mod-${m.moduleName}`,
-              label: m.label,
-              type: 'module' as const,
-              enabled: m.enabled,
-              moduleName: m.moduleName,
-              ecu,
-            })),
+      for (const [name, mod] of Object.entries(modules)) {
+        const layer = guessLayer(name)
+        if (grouped[layer]) {
+          grouped[layer].push({ label: name, enabled: mod.enabled, moduleName: name })
         }
+      }
+
+      const layerNodes: TreeNode[] = Object.entries(grouped)
+        .filter(([, mods]) => mods.length > 0)
+        .map(([layer, mods]) => {
+          const enabledCount = mods.filter((m) => m.enabled).length
+          return {
+            id: `project-${project.id}-ecu-${ecu.id}-layer-${layer}`,
+            label: layer,
+            type: 'layer' as const,
+            moduleCount: mods.length,
+            enabledCount,
+            children: mods
+              .filter((m) => !searchText.value || m.label.toLowerCase().includes(searchText.value.toLowerCase()))
+              .sort((a, b) => a.label.localeCompare(b.label))
+              .map((m) => ({
+                id: `project-${project.id}-ecu-${ecu.id}-mod-${m.moduleName}`,
+                label: m.label,
+                type: 'module' as const,
+                enabled: m.enabled,
+                moduleName: m.moduleName,
+                ecu,
+                projectId: project.id,
+              })),
+          }
+        })
+
+      const filteredLayers = searchText.value
+        ? layerNodes.filter((l) => l.children && l.children.length > 0)
+        : layerNodes
+
+      projectNode.children!.push({
+        id: `project-${project.id}-ecu-${ecu.id}`,
+        label: ecu.name,
+        type: 'ecu' as const,
+        ecu,
+        projectId: project.id,
+        children: filteredLayers,
       })
-
-    // Filter out empty layers when searching
-    const filteredLayers = searchText.value
-      ? layerNodes.filter((l) => l.children && l.children.length > 0)
-      : layerNodes
-
-    return {
-      id: `ecu-${ecu.id}`,
-      label: ecu.name,
-      type: 'ecu' as const,
-      ecu,
-      children: filteredLayers,
     }
-  })
+
+    nodes.push(projectNode)
+  }
+
+  return nodes
 })
 
 function closeContextMenu() { contextMenu.value.visible = false }
 
 function onNodeClick(data: TreeNode) {
-  if (data.type === 'module' && data.moduleName) {
+  if (data.type === 'project' && data.projectId) {
+    projectStore.switchProject(data.projectId)
+    nextTick(() => { treeRef.value?.setCurrentKey(data.id) })
+    router.push('/config')
+  } else if (data.type === 'module' && data.moduleName) {
     if (data.ecu) projectStore.switchEcu(data.ecu.id)
     projectStore.selectModule(data.moduleName)
-    // Highlight the tree node
     nextTick(() => { treeRef.value?.setCurrentKey(data.id) })
     router.push('/config')
   }
@@ -293,7 +415,7 @@ function showProjectContext(event: MouseEvent) {
     visible: true,
     x: event.clientX,
     y: event.clientY,
-    data: { type: 'project' },
+    data: { type: 'workspace' },
   }
 }
 
@@ -336,7 +458,64 @@ async function confirmRemoveEcu(ecu: EcuConfig) {
   } catch { /* cancelled */ }
 }
 
-function handleNewProject() { router.push('/new-project') }
+function openAddModule(data: TreeNode) {
+  closeContextMenu()
+  if (data.ecu) {
+    addModuleEcu.value = data.ecu
+    addModuleLayer.value = data.label
+    addModuleDialogVisible.value = true
+  }
+}
+
+async function handleAddModuleConfirm(modules: string[]) {
+  if (addModuleEcu.value) {
+    for (const modName of modules) {
+      await projectStore.addModule(addModuleEcu.value.id, modName)
+    }
+    ElMessage.success(`Added ${modules.length} module(s) to ECU "${addModuleEcu.value.name}"`)
+  }
+  addModuleDialogVisible.value = false
+  addModuleEcu.value = null
+  addModuleLayer.value = ''
+}
+
+async function confirmRemoveModule(data: TreeNode) {
+  closeContextMenu()
+  if (!data.moduleName || !data.ecu) return
+  
+  // Check dependencies
+  const dependents = projectStore.getModuleDependents(data.ecu.id, data.moduleName)
+  let confirmMsg = `Remove module "${data.moduleName}" from ECU "${data.ecu.name}"?`
+  if (dependents.length > 0) {
+    confirmMsg += `\n\nWarning: The following modules depend on ${data.moduleName}:\n${dependents.join(', ')}\n\nThey will also be disabled.`
+  }
+  
+  try {
+    await ElMessageBox.confirm(confirmMsg, 'Confirm', { 
+      type: 'warning',
+      confirmButtonText: 'Remove',
+    })
+    await projectStore.removeModule(data.ecu.id, data.moduleName)
+    ElMessage.success(`Module "${data.moduleName}" removed from ECU "${data.ecu.name}"`)
+  } catch { /* cancelled */ }
+}
+
+async function handleNewProject() {
+  ElMessageBox.prompt('Enter project name', 'New Project', {
+    confirmButtonText: 'Create',
+    cancelButtonText: 'Cancel',
+    inputPattern: /^[a-zA-Z0-9_-]+$/,
+    inputErrorMessage: 'Only letters, numbers, underscore and hyphen allowed',
+  }).then(async ({ value }) => {
+    try {
+      await projectStore.addProjectToWorkspace(value)
+      ElMessage.success(`Project "${value}" added to workspace`)
+      router.push('/config')
+    } catch (e: any) {
+      ElMessage.error(e.message || 'Failed to create project')
+    }
+  }).catch(() => {})
+}
 
 function handleRenameProject() {
   closeContextMenu()
@@ -359,12 +538,144 @@ async function confirmRename() {
   renameDialogVisible.value = false
 }
 
-function handleDuplicateProject() { closeContextMenu(); ElMessage.info('Project duplication coming soon') }
+async function handleDuplicateProject() {
+  closeContextMenu()
+  const project = projectStore.currentProject
+  if (!project) return
+  
+  try {
+    const newName = `${project.name} (Copy)`
+    // Generate new path based on original
+    const originalPath = project.path || ''
+    const dir = originalPath.substring(0, originalPath.lastIndexOf('/'))
+    const newPath = dir ? `${dir}/${project.name.replace(/\s+/g, '_')}_copy.yuleasr` : ''
+    
+    // Build project data from current project
+    const projectData = {
+      version: '1.0',
+      project: {
+        name: newName,
+        description: project.description,
+        created: new Date().toISOString(),
+        modified: new Date().toISOString(),
+      },
+      ecus: project.ecus.map((e) => ({
+        id: e.id,
+        name: e.name,
+        chip: e.chip ?? { vendor: '', series: '', model: '' },
+        config_path: '',
+        description: e.description ?? '',
+        modules: e.modules,
+      })),
+      ui_state: {
+        sidebar_visible: true,
+        sidebar_width: 240,
+        active_tab: '',
+        open_tabs: [],
+        expanded_layers: [],
+      },
+      recent_files: [],
+    }
+    
+    // Save duplicated project
+    await api.saveProject(projectData, newPath)
+    
+    // Add to workspace
+    if (projectStore.workspacePath) {
+      await api.addProjectToWorkspace({
+        workspace_path: projectStore.workspacePath,
+        project_name: newName,
+        project_description: project.description,
+        project_path: newPath,
+      })
+    }
+    
+    // Reload workspace to pick up the new project
+    await projectStore.loadWorkspace()
+    
+    ElMessage.success(`Project duplicated as "${newName}"`)
+  } catch (e: any) {
+    ElMessage.error(`Failed to duplicate project: ${e.message || e}`)
+  }
+}
+
+const settingsDialogVisible = ref(false)
+const settingsForm = ref({ name: '', description: '' })
+
+function handleProjectSettings() {
+  closeContextMenu()
+  const project = projectStore.currentProject
+  if (!project) return
+  settingsForm.value = { name: project.name, description: project.description }
+  settingsDialogVisible.value = true
+}
+
+async function confirmProjectSettings() {
+  const project = projectStore.currentProject
+  if (!project) return
+  
+  try {
+    // Update project name in store
+    project.name = settingsForm.value.name
+    project.description = settingsForm.value.description
+    
+    // Save to backend
+    const projectData = {
+      version: '1.0',
+      project: {
+        name: settingsForm.value.name,
+        description: settingsForm.value.description,
+        created: new Date().toISOString(),
+        modified: new Date().toISOString(),
+      },
+      ecus: project.ecus.map((e) => ({
+        id: e.id,
+        name: e.name,
+        chip: e.chip ?? { vendor: '', series: '', model: '' },
+        config_path: '',
+        description: e.description ?? '',
+        modules: e.modules,
+      })),
+      ui_state: {
+        sidebar_visible: true,
+        sidebar_width: 240,
+        active_tab: '',
+        open_tabs: [],
+        expanded_layers: [],
+      },
+      recent_files: [],
+    }
+    
+    await api.saveProject(projectData, project.path)
+    settingsDialogVisible.value = false
+    ElMessage.success('Project settings saved')
+  } catch (e: any) {
+    ElMessage.error(`Failed to save settings: ${e.message || e}`)
+  }
+}
+
 function handleExportProject() { closeContextMenu(); router.push('/config'); setTimeout(() => ElMessage.info('Click "Export ARXML" in the toolbar'), 300) }
-function handleProjectSettings() { closeContextMenu(); ElMessage.info('Project settings coming soon') }
+
+async function handleRenameWorkspace() {
+  closeContextMenu()
+  try {
+    const { value } = await ElMessageBox.prompt('Enter workspace name', 'Rename Workspace', {
+      confirmButtonText: 'Save',
+      cancelButtonText: 'Cancel',
+      inputValue: projectStore.workspaceName,
+    })
+    if (value?.trim()) {
+      projectStore.workspaceName = value.trim()
+      await projectStore.saveWorkspace()
+      ElMessage.success(`Workspace renamed to "${value.trim()}"`)
+    }
+  } catch { /* cancelled */ }
+}
 
 onMounted(() => { document.addEventListener('click', closeContextMenu) })
 onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
+
+defineExpose({ openAddEcu })
 </script>
 
 <style scoped>
@@ -423,19 +734,6 @@ onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
   padding: 4px 0;
 }
 
-.pm-actions {
-  display: flex;
-  gap: 4px;
-  padding: 8px 12px;
-  border-top: 1px solid #e4e7ed;
-  background: #fff;
-}
-
-.pm-actions .el-button {
-  flex: 1;
-  justify-content: center;
-}
-
 .tree-node {
   display: flex;
   align-items: center;
@@ -460,6 +758,7 @@ onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
 }
 
 .project-icon { color: #409eff; }
+.workspace-icon { color: #909399; font-size: 16px; }
 .ecu-icon { color: #67c23a; }
 .icon-mcal { color: #409eff; }
 .icon-ecual { color: #67c23a; }
@@ -564,4 +863,68 @@ onUnmounted(() => { document.removeEventListener('click', closeContextMenu) })
 :deep(.el-tree-node.is-current > .el-tree-node__content) { background: #ecf5ff; }
 :deep(.el-tree-node.is-current > .el-tree-node__content .node-label) { color: #409eff; font-weight: 500; }
 :deep(.el-tree-node__content .el-tree-node__expand-icon) { font-size: 14px; }
+
+.project-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.project-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border: 1px solid #e4e7ed;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.project-item:hover {
+  background: #f5f7fa;
+  border-color: #409eff;
+}
+
+.project-item-active {
+  background: #ecf5ff;
+  border-color: #409eff;
+}
+
+.project-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.project-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  margin-bottom: 4px;
+}
+
+.project-item-meta {
+  font-size: 12px;
+  color: #909399;
+}
+
+.project-item-desc {
+  font-size: 12px;
+  color: #606266;
+  margin-top: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-item-arrow {
+  font-size: 16px;
+  color: #909399;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.project-item:hover .project-item-arrow {
+  color: #409eff;
+}
 </style>

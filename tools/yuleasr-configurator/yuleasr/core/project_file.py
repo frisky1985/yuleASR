@@ -69,6 +69,7 @@ class EcuEntry:
     chip: ChipInfo = field(default_factory=ChipInfo)
     config_path: str = ""
     description: str = ""
+    modules: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -77,6 +78,7 @@ class EcuEntry:
             "chip": self.chip.to_dict(),
             "config_path": self.config_path,
             "description": self.description,
+            "modules": self.modules,
         }
 
     @classmethod
@@ -88,6 +90,7 @@ class EcuEntry:
             chip=chip,
             config_path=data.get("config_path", ""),
             description=data.get("description", ""),
+            modules=data.get("modules", {}),
         )
 
 
@@ -157,6 +160,28 @@ class ProjectFile:
     def remove_ecu(self, ecu_id: str):
         self.ecus = [e for e in self.ecus if e.id != ecu_id]
         self.touch()
+
+    def add_module_to_ecu(self, ecu_id: str, module_name: str):
+        """Add a module to an ECU."""
+        for ecu in self.ecus:
+            if ecu.id == ecu_id:
+                if module_name not in ecu.modules:
+                    ecu.modules[module_name] = {"name": module_name, "enabled": True}
+                else:
+                    ecu.modules[module_name]["enabled"] = True
+                self.touch()
+                return
+        raise ValueError(f"ECU {ecu_id} not found")
+
+    def remove_module_from_ecu(self, ecu_id: str, module_name: str):
+        """Remove a module from an ECU."""
+        for ecu in self.ecus:
+            if ecu.id == ecu_id:
+                if module_name in ecu.modules:
+                    del ecu.modules[module_name]
+                    self.touch()
+                    return
+        raise ValueError(f"ECU {ecu_id} not found")
 
     def add_recent_file(self, path: str):
         now = datetime.utcnow().isoformat() + "Z"

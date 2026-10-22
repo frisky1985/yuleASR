@@ -61,26 +61,40 @@ export async function getReferenceTargets(module: string, field: string, query =
 export interface ProjectFileData {
   version: string
   project: { name: string; description: string; created: string; modified: string }
-  ecus: Array<{ id: string; name: string; chip: any; config_path: string; description: string }>
+  ecus: Array<{ id: string; name: string; chip: any; config_path: string; description: string; modules?: Record<string, any> }>
   ui_state: { sidebar_visible: boolean; sidebar_width: number; active_tab: string; open_tabs: string[]; expanded_layers: string[] }
   recent_files: Array<{ path: string; opened: string }>
 }
 
-export async function getProject(): Promise<ProjectFileData> {
-  const response = await api.get('/project')
+export async function getProject(projectPath?: string): Promise<ProjectFileData> {
+  const params = projectPath ? { project_path: projectPath } : {}
+  const response = await api.get('/project', { params })
   return response.data
 }
 
-export async function saveProject(data: ProjectFileData): Promise<void> {
-  await api.post('/project', data)
+export async function saveProject(data: ProjectFileData, projectPath?: string): Promise<void> {
+  const params = projectPath ? { project_path: projectPath } : {}
+  await api.post('/project', data, { params })
 }
 
-export async function addEcu(ecu: { id: string; name: string; chip: any; config_path?: string; description?: string }): Promise<void> {
-  await api.post('/project/ecu', ecu)
+export async function addEcu(ecu: { id: string; name: string; chip: any; config_path?: string; description?: string; modules?: Record<string, any> }, projectPath?: string): Promise<void> {
+  const params = projectPath ? { project_path: projectPath } : {}
+  await api.post('/project/ecu', ecu, { params })
 }
 
-export async function removeEcu(ecuId: string): Promise<void> {
-  await api.delete(`/project/ecu/${ecuId}`)
+export async function removeEcu(ecuId: string, projectPath?: string): Promise<void> {
+  const params = projectPath ? { project_path: projectPath } : {}
+  await api.delete(`/project/ecu/${ecuId}`, { params })
+}
+
+export async function addModule(ecuId: string, moduleName: string, projectPath?: string): Promise<void> {
+  const params = projectPath ? { project_path: projectPath } : {}
+  await api.post(`/project/ecu/${ecuId}/module`, { module_name: moduleName }, { params })
+}
+
+export async function removeModule(ecuId: string, moduleName: string, projectPath?: string): Promise<void> {
+  const params = projectPath ? { project_path: projectPath } : {}
+  await api.delete(`/project/ecu/${ecuId}/module/${moduleName}`, { params })
 }
 
 export async function addRecentFile(path: string): Promise<void> {
@@ -251,6 +265,11 @@ export async function importArxml(content: string): Promise<{
   return response.data
 }
 
+export async function listProjects(): Promise<{ projects: Array<{ name: string; description: string; path: string; ecu_count: number; modified: string }> }> {
+  const response = await api.get('/projects')
+  return response.data
+}
+
 export async function createProject(data: {
   name: string
   description?: string
@@ -261,5 +280,46 @@ export async function createProject(data: {
   comm_modules: string[]
 }): Promise<{ success: boolean; project_path: string; config_path: string; ecu_id: string; module_count: number }> {
   const response = await api.post('/project/create', data)
+  return response.data
+}
+
+// Workspace API
+export interface WorkspaceData {
+  version: string
+  workspace: { name: string; description: string; created: string; modified: string }
+  projects: Array<{ id: string; name: string; description: string; path: string }>
+}
+
+export async function getWorkspace(workspacePath?: string): Promise<WorkspaceData> {
+  const params = workspacePath ? { workspace_path: workspacePath } : {}
+  const response = await api.get('/workspace', { params })
+  return response.data
+}
+
+export async function saveWorkspace(data: WorkspaceData, workspacePath?: string): Promise<void> {
+  const params = workspacePath ? { workspace_path: workspacePath } : {}
+  await api.post('/workspace', data, { params })
+}
+
+export async function createWorkspace(data: { name: string; description?: string }): Promise<{ success: boolean; workspace_path: string }> {
+  const response = await api.post('/workspace/create', data)
+  return response.data
+}
+
+export async function addProjectToWorkspace(data: {
+  workspace_path: string
+  project_name: string
+  project_description?: string
+  project_path: string
+}): Promise<{ success: boolean; project_id: string }> {
+  const response = await api.post('/workspace/add-project', data)
+  return response.data
+}
+
+export async function removeProjectFromWorkspace(data: {
+  workspace_path: string
+  project_id: string
+}): Promise<{ success: boolean }> {
+  const response = await api.post('/workspace/remove-project', data)
   return response.data
 }
