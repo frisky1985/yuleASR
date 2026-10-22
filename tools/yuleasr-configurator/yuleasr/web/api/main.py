@@ -365,6 +365,20 @@ async def save_project(data: Dict[str, Any], project_path: Optional[str] = None)
         raise HTTPException(status_code=500, detail=f"Failed to save project: {e}")
 
 
+@app.delete("/api/project")
+async def delete_project(project_path: Optional[str] = None):
+    """Delete a .yuleasr project file."""
+    if not project_path:
+        raise HTTPException(status_code=400, detail="project_path is required")
+    path = Path(project_path)
+    try:
+        if path.exists():
+            path.unlink()
+        return {"success": True}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete project: {e}")
+
+
 @app.get("/api/projects")
 async def list_projects():
     """List all available project workspaces."""

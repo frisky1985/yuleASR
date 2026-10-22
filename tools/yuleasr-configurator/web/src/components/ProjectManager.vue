@@ -89,6 +89,8 @@
           <div class="pm-context-divider" />
           <div class="pm-context-item" @click="handleExportProject"><el-icon><Download /></el-icon><span>Export Config</span></div>
           <div class="pm-context-item" @click="handleProjectSettings"><el-icon><Setting /></el-icon><span>Settings</span></div>
+          <div class="pm-context-divider" />
+          <div class="pm-context-item pm-context-danger" @click="handleDeleteProject"><el-icon><Delete /></el-icon><span>Delete</span></div>
         </template>
         <template v-else-if="contextMenu.data?.type === 'ecu'">
           <div class="pm-context-item" @click="openEditEcu(contextMenu.data.ecu)"><el-icon><Edit /></el-icon><span>Edit ECU</span></div>
@@ -209,7 +211,7 @@ import { useConfigStore } from '@/stores/config'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import EcuEditorDialog from './EcuEditorDialog.vue'
 import AddModuleDialog from './AddModuleDialog.vue'
-import type { EcuConfig, ModuleConfig } from '@/types'
+import type { EcuConfig } from '@/types'
 import * as api from '@/api/client'
 
 const router = useRouter()
@@ -652,6 +654,46 @@ async function confirmProjectSettings() {
   } catch (e: any) {
     ElMessage.error(`Failed to save settings: ${e.message || e}`)
   }
+}
+
+async function handleDeleteProject() {
+  closeContextMenu()
+  const project = projectStore.currentProject
+  if (!project) return
+
+  try {
+    await ElMessageBox.confirm(
+      `Delete project "${project.name}"? This will remove it from the workspace.\n\nThe project file at ${project.path || '(unsaved)'} will also be deleted.`,
+      'Delete Project',
+      { type: 'warning', confirmButtonText: 'Delete', cancelButtonText: 'Cancel' },
+    )
+
+    // Remove from workspace
+    if (projectStore.workspacePath && project.id) {
+      await api.removeProjectFromWorkspace({
+        workspace_path: projectStore.workspacePath,
+        project_id: project.id,
+      })
+    }
+
+    // Delete the project file if it exists
+    if (project.path) {
+      try {
+        await api.deleteProject(project.path)
+      } catch {
+        // File may not exist, ignore
+      }
+    }
+
+    // If this was the current project, switch to another or clear
+    const remaining = projectStore.projects.filter((p) => p.id !== project.id)
+    if (remaining.length > 0) {
+      await projectStore.loadProject(remaining[0].path)
+    }
+
+    await projectStore.loadWorkspace()
+    ElMessage.success(`Project "${project.name}" deleted`)
+  } catch { /* cancelled */ }
 }
 
 function handleExportProject() { closeContextMenu(); router.push('/config'); setTimeout(() => ElMessage.info('Click "Export ARXML" in the toolbar'), 300) }

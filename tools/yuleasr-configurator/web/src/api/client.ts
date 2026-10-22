@@ -323,3 +323,8 @@ export async function removeProjectFromWorkspace(data: {
   const response = await api.post('/workspace/remove-project', data)
   return response.data
 }
+
+export async function deleteProject(projectPath: string): Promise<{ success: boolean }> {
+  const response = await api.delete('/project', { params: { project_path: projectPath } })
+  return response.data
+}
