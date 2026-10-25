@@ -152,6 +152,9 @@ void setUp(void)
 
 void tearDown(void)
 {
+    /* Rebind BswM to the static default config before the test-local config
+     * graph goes out of scope, so no later DeInit walks dangling fixtures. */
+    BswM_Init(NULL_PTR);
 }
 
 /*==================================================================================================
@@ -409,7 +412,8 @@ void test_BswM_PriorityArbitration_HighPriorityRuleFiresFirst(void)
     BswM_ActionType acts[2];
     BswM_ActionListType lists[2];
     BswM_RuleType rules[2];
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
 
     ports[0] = BSWM_ECUM_REQUEST;
     expr[0].ExpressionType = BSWM_EXPR_MODE_EQUALS;
@@ -455,7 +459,8 @@ void test_BswM_PriorityArbitration_EqualPriorityKeepsConfigOrder(void)
     BswM_ActionType acts[2];
     BswM_ActionListType lists[2];
     BswM_RuleType rules[2];
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
 
     ports[0] = BSWM_ECUM_REQUEST;
     expr[0].ExpressionType = BSWM_EXPR_MODE_EQUALS;
@@ -504,7 +509,8 @@ void test_BswM_DirtyFlag_BaselineEvaluation_EvaluatesEveryRuleOnce(void)
     BswM_ActionType falseActs[1];
     BswM_ActionListType lists[1];
     BswM_RuleType rule;
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
 
     ports[0] = BSWM_ECUM_REQUEST;
     expr[0].ExpressionType = BSWM_EXPR_MODE_EQUALS;
@@ -547,7 +553,8 @@ void test_BswM_DirtyFlag_MidCycleWrite_KeepsPortDirtyAndRetriggers(void)
     BswM_ActionType falseActs[1];
     BswM_ActionListType lists[2];
     BswM_RuleType rule;
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
 
     ports[0] = BSWM_ECUM_REQUEST;
     expr[0].ExpressionType = BSWM_EXPR_MODE_EQUALS;
@@ -623,7 +630,8 @@ void test_BswM_PduGroupSwitch_EnableThenDisable_UpdatesShadowAndCom(void)
     BswM_ActionType falseActs[1];
     BswM_ActionListType lists[2];
     BswM_RuleType rule;
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
     Com_IpduGroupVector queried;
     Std_ReturnType ret;
 
@@ -700,7 +708,8 @@ void test_BswM_ComIpduGroup_AbsoluteControl_PassesVectorAndInitialize(void)
     BswM_ActionType trueActs[1];
     BswM_ActionListType lists[1];
     BswM_RuleType rule;
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
     Com_IpduGroupVector queried;
 
     ports[0] = BSWM_ECUM_REQUEST;
@@ -844,7 +853,8 @@ void test_BswM_EcuMActions_GoSleepGoHaltGoOff_AreInvoked(void)
     BswM_ActionType trueActs[3];
     BswM_ActionListType lists[1];
     BswM_RuleType rule;
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
 
     ports[0] = BSWM_ECUM_REQUEST;
     expr[0].ExpressionType = BSWM_EXPR_MODE_EQUALS;
@@ -910,7 +920,8 @@ void test_BswM_DeInit_LatchedTrueRule_RunsFalseListInReverseOrder(void)
     BswM_ActionType falseActs[1];
     BswM_ActionListType lists[2];
     BswM_RuleType rules[2];
-    BswM_ConfigType cfg;
+    /* Static storage: BswM keeps the config pointer beyond the test scope */
+    static BswM_ConfigType cfg;
     uint8 i;
 
     ports[0] = BSWM_ECUM_REQUEST;
