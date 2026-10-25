@@ -28,10 +28,12 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'element-plus': ['element-plus'],
-          'monaco-editor': ['monaco-editor'],
-          'vue-vendor': ['vue', 'vue-router', 'pinia'],
+        manualChunks(id: string) {
+          if (!id.includes('node_modules')) return undefined
+          if (id.includes('element-plus')) return 'element-plus'
+          if (id.includes('monaco-editor')) return 'monaco-editor'
+          if (/[\\/]node_modules[\\/](vue|vue-router|pinia)[\\/]/.test(id)) return 'vue-vendor'
+          return undefined
         },
       },
     },
