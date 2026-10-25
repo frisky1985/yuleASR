@@ -152,9 +152,9 @@ void setUp(void)
 
 void tearDown(void)
 {
-    /* Tests bind BswM to a local config object; deinit while it is still alive
-     * so no dangling config pointer survives into the next test's setUp. */
-    BswM_DeInit();
+    /* Rebind BswM to the static default config before the test-local config
+     * graph goes out of scope, so no later DeInit walks dangling fixtures. */
+    BswM_Init(NULL_PTR);
 }
 
 /*==================================================================================================
