@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-10-25
+
+93 commits since v1.6.0 (f9b547ff). 主线：Configurator 工作区/项目全生命周期、ECU 模块配置链路、npm 依赖漏洞清零。
+
+### Added
+
+- **Configurator 工作区（Workspace）** — `.yuleasr` 工程文件（workspace + projects 引用），新建/打开/切换/重命名/删除/复制项目，工作区树
+- **ECU 模块操作** — Add ECU 向导、Add Module 对话框（按层勾选 + 依赖自动联动）、ECU 模块增删
+- **项目保存/导入** — `.yuleasr` 保存与导入（向后兼容旧格式），Electron 启动自动加载工程
+- **默认 BSW 模块集** — 芯片无关工作流，覆盖 MCAL/ECUAL/Services/OS/RTE/Integration 全层
+- **工作区级 API** — projects 扫描、workspace 读写、add/remove project
+- **Configurator HTTP API 冒烟测试** — 覆盖项目保存/导入/删除
+
+### Fixed
+
+- **新建项目 ECU 模块丢失** — create_project 只写入 bsw_config.yaml，`.yuleasr` 的 ECU modules 为空导致树视图无节点
+- **添加 ECU 缺少 ECUAL/Services/OS 选项** — 向导与 Add ECU 仅列芯片 MCAL，现统一为全层 BSW 模块
+- **Duplicate 未注册工作区 / Add Module 树节点缺少 ECU 上下文**
+- **芯片查询大小写敏感** — vendor/series/model 归一化，未知输入不再静默返回空
+- **工作区路径混乱与项目创建覆盖** — 移除硬编码绝对路径、修正 project 文件误传、保留 created 时间戳、删除端点后缀校验
+- **构建阻断** — 清理未使用变量，vite 8 函数式 manualChunks 兼容
+
+### Changed
+
+- **npm 依赖漏洞清零** — website 34→0、configurator 15→0、docs-site 3→0（overrides + electron 29→45、electron-builder 24→26、vite 5→8、docusaurus 3.10.2）
+- **bsw_config.yaml 扁平化** — 配置结构简化
+- **仓库卫生** — 停止跟踪 Doxygen 生成物与 configurator 运行产物，运行时文件加入 .gitignore
+
 ## [1.6.0] - 2026-08-22
 
 35 commits since v1.5.0 (9c77dcff). 主线：DLT 模块归口服务层、OTA 信息安全增强、工程结构真重构、SDK 导出工具。
