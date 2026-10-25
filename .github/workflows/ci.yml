@@ -20,7 +20,7 @@ jobs:
     name: Config Drift Gate (thresholds + bsw_config regeneration)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check gate threshold drift
         # 背景: P0-5 提升分支覆盖率阈值 (20%→25%) 时发现，ci.yml 内嵌解析
@@ -84,7 +84,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-env
         with:
@@ -109,7 +109,7 @@ jobs:
           python tools/analysis/static_analysis.py --output reports/static_analysis.json
 
       - name: Upload Analysis Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: static-analysis-report
           path: reports/static_analysis.json
@@ -154,7 +154,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-env
         with:
@@ -174,7 +174,7 @@ jobs:
         run: ctest --output-on-failure --timeout 60 -j$(nproc)
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-results
@@ -215,7 +215,7 @@ jobs:
     name: Native smoke test (Linux)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-env
         with:
@@ -250,7 +250,7 @@ jobs:
   coverage:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-env
         with:
@@ -338,7 +338,7 @@ jobs:
             build-coverage | tee coverage-reports/coverage_summary.txt
 
       - name: Upload Coverage Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report
           path: coverage-reports/
@@ -467,7 +467,7 @@ jobs:
   integration-build:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: ./.github/actions/setup-env
         with:
@@ -492,13 +492,13 @@ jobs:
 
       - name: Upload Coverage
         # 量产门禁：P0-5 硬化 (2026-10-07)。codecov 上传失败必须阻断 CI。
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v7
         with:
           files: build/coverage.info
           fail_ci_if_error: true
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-artifacts
           path: |
@@ -511,10 +511,10 @@ jobs:
     runs-on: ubuntu-22.04
     needs: integration-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build/
@@ -543,7 +543,7 @@ jobs:
           ./build/bin/test_e2e_e2e 2>&1 | tee test-results-e2e-protection.log
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: e2e-dds-test-results
@@ -556,10 +556,10 @@ jobs:
     runs-on: ubuntu-22.04
     needs: integration-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build/
@@ -570,7 +570,7 @@ jobs:
           ./build/bin/test_e2e_uds 2>&1 | tee test-results-uds.log
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: uds-test-results
@@ -581,10 +581,10 @@ jobs:
     runs-on: ubuntu-22.04
     needs: integration-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build/
@@ -595,7 +595,7 @@ jobs:
           ./build/bin/test_e2e_ota 2>&1 | tee test-results-ota.log
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: ota-test-results
@@ -606,7 +606,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: integration-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # tests/multi_ecu/ 整个目录不存在于仓库中 —— 此前因 integration-build
       # 一直失败而 skipped，掩盖了这一点。
@@ -620,7 +620,7 @@ jobs:
 
       - name: Set up Docker Buildx
         if: steps.prereq.outputs.skip != 'true'
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Install Mininet
         if: steps.prereq.outputs.skip != 'true'
@@ -662,7 +662,7 @@ jobs:
             --ping-test 127.0.0.1 2>&1 | tee test-results-fault-injection.log
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always() && steps.prereq.outputs.skip != 'true'
         with:
           name: multi-ecu-test-results
@@ -677,10 +677,10 @@ jobs:
     runs-on: ubuntu-22.04
     needs: integration-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build/
@@ -703,7 +703,7 @@ jobs:
             ./build/bin/test_memory 2>&1 | tee test-results-memory.log
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: performance-test-results
@@ -718,10 +718,10 @@ jobs:
     runs-on: ubuntu-22.04
     needs: integration-build
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: build-artifacts
           path: build/
@@ -743,7 +743,7 @@ jobs:
             src/ 2> cppcheck-report.xml
 
       - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: security-test-results
@@ -763,10 +763,10 @@ jobs:
       - security-tests
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Download All Test Results
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: all-test-results
           pattern: '*-test-results'
@@ -787,7 +787,7 @@ jobs:
           fi
 
       - name: Upload Test Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: integration-test-report
           path: |
@@ -800,7 +800,7 @@ jobs:
     needs: [integration-build, multi-ecu-tests]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # 与 multi-ecu-tests 同一缺口: tests/multi_ecu/ 不在仓库中，
       # 两个 Dockerfile.ecu / Dockerfile.ota 均不存在，此前一直被
@@ -816,11 +816,11 @@ jobs:
 
       - name: Set up Docker Buildx
         if: steps.prereq.outputs.skip != 'true'
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to Container Registry
         if: steps.prereq.outputs.skip != 'true'
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ env.DOCKER_REGISTRY }}
           username: ${{ github.actor }}
@@ -828,7 +828,7 @@ jobs:
 
       - name: Build and Push ECU Image
         if: steps.prereq.outputs.skip != 'true'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: tests/multi_ecu/docker/Dockerfile.ecu
@@ -839,7 +839,7 @@ jobs:
 
       - name: Build and Push OTA Server Image
         if: steps.prereq.outputs.skip != 'true'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: tests/multi_ecu/docker/Dockerfile.ota
@@ -857,7 +857,7 @@ jobs:
     if: github.ref == 'refs/heads/master'
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Create Release Package
         run: |
@@ -872,7 +872,7 @@ jobs:
           tar -czf yuleASR-${GITHUB_SHA::8}.tar.gz yuleASR
 
       - name: Upload Release
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: release-package
           path: release/*.tar.gz
@@ -884,7 +884,7 @@ jobs:
     name: doxygen
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Doxygen
         run: sudo apt-get update && sudo apt-get install -y doxygen
@@ -893,7 +893,7 @@ jobs:
         run: doxygen Doxyfile
 
       - name: Upload API Documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: api-documentation
           path: docs/api/html/

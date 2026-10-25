@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - uses: ./.github/actions/setup-env
       with:
@@ -73,7 +73,7 @@ jobs:
         gcovr --root .. --xml -o coverage.xml
 
     - name: Upload coverage artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: coverage-report
         path: build/coverage.html
@@ -96,10 +96,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
@@ -125,7 +125,7 @@ jobs:
       timeout-minutes: 30
 
     - name: Upload test report
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: hil-test-reports-${{ matrix.test-suite }}
         path: tests/hil/report-${{ matrix.test-suite }}.html
@@ -140,10 +140,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
@@ -182,7 +182,7 @@ jobs:
         python report_generator.py
 
     - name: Upload all test reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: hil-full-test-reports
         path: |
@@ -199,7 +199,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Install dependencies
       run: |
@@ -227,10 +227,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
@@ -258,15 +258,15 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Download all artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         path: artifacts
 
     - name: Setup Pages
-      uses: actions/configure-pages@v4
+      uses: actions/configure-pages@v6
 
     - name: Prepare report site
       run: |
@@ -319,7 +319,7 @@ jobs:
         EOF
 
     - name: Upload to GitHub Pages
-      uses: actions/upload-pages-artifact@v3
+      uses: actions/upload-pages-artifact@v5
       with:
         path: _site
 
@@ -339,7 +339,7 @@ jobs:
     steps:
     - name: Deploy to GitHub Pages
       id: deployment
-      uses: actions/deploy-pages@v4
+      uses: actions/deploy-pages@v5
 
   # Code Quality Checks
   code-quality:
@@ -348,7 +348,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Install analysis tools
       run: |
@@ -370,7 +370,7 @@ jobs:
         find tests/hil -name "*.c" -o -name "*.h" | xargs clang-format -dry-run -Werror || true
 
     - name: Upload analysis results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: code-analysis
         path: cppcheck-results.xml
