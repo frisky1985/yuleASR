@@ -371,7 +371,7 @@ async def delete_project(project_path: Optional[str] = None):
     if not project_path:
         raise HTTPException(status_code=400, detail="project_path is required")
     path = Path(project_path)
-    if path.suffix != ".yuleasr":
+    if not path.name.endswith(".yuleasr"):
         raise HTTPException(status_code=400, detail="Only .yuleasr project files can be deleted")
     try:
         if path.exists():
@@ -438,6 +438,13 @@ async def create_project(req: CreateProjectRequest):
     ecu_id = f"ecu-{uuid.uuid4().hex[:8]}"
     chip_info = ChipInfo.from_dict(req.chip) if req.chip else ChipInfo()
 
+    modules = {}
+    for mod_name in req.mcal_modules:
+        modules[mod_name] = {"name": mod_name, "enabled": True, "version": "1.0.0"}
+    for mod_name in req.comm_modules:
+        if mod_name not in modules:
+            modules[mod_name] = {"name": mod_name, "enabled": True, "version": "1.0.0"}
+
     pf = ProjectFile()
     pf.project_name = req.name
     pf.project_description = req.description
@@ -450,16 +457,10 @@ async def create_project(req: CreateProjectRequest):
         chip=chip_info,
         config_path=str(config_file_path),
         description=f"Primary ECU for {req.name}",
+        modules=dict(modules),
     )
     pf.add_ecu(ecu_entry)
     pf.save(project_file_path)
-
-    modules = {}
-    for mod_name in req.mcal_modules:
-        modules[mod_name] = {"name": mod_name, "enabled": True, "version": "1.0.0"}
-    for mod_name in req.comm_modules:
-        if mod_name not in modules:
-            modules[mod_name] = {"name": mod_name, "enabled": True, "version": "1.0.0"}
 
     config = {
         "$schema": "./bsw_config_schema.json",

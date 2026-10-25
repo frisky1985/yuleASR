@@ -225,6 +225,7 @@ const ecuEditData = ref<{ id: string; name: string; description?: string; chip?:
 const addModuleDialogVisible = ref(false)
 const addModuleEcu = ref<EcuConfig | null>(null)
 const addModuleLayer = ref<string>('')
+const addModuleProjectId = ref<string>('')
 const contextMenu = ref({ visible: false, x: 0, y: 0, data: null as any })
 const renameDialogVisible = ref(false)
 const renameForm = ref({ name: '', description: '' })
@@ -260,7 +261,6 @@ const workspaceName = computed(() => projectStore.workspaceName ?? 'yuleASR Work
 const projectName = computed(() => configStore.config?.project?.name ?? projectStore.projectName ?? 'yuleASR')
 const projectCount = computed(() => projectStore.projects.length)
 const ecuCount = computed(() => projectStore.ecus.length)
-const moduleCount = computed(() => Object.keys(configStore.modules).length)
 
 const treeProps = { children: 'children', label: 'label' }
 
@@ -286,7 +286,7 @@ function guessLayer(name: string): string {
   if (ecual.includes(name)) return 'ECUAL'
   if (name === 'Os') return 'OS'
   if (name === 'Rte') return 'RTE'
-  if (['BswM', 'EcuM', 'Det'].includes(name)) return 'BSW Coordination'
+  if (['BswM', 'EcuM'].includes(name)) return 'Integration'
   return 'Services'
 }
 
@@ -311,7 +311,7 @@ const defaultExpandedKeys = computed(() => {
     keys.push(`project-${project.id}`)
     for (const ecu of project.ecus) {
       keys.push(`project-${project.id}-ecu-${ecu.id}`)
-      for (const layer of ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'BSW Coordination']) {
+      for (const layer of ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'Integration']) {
         keys.push(`project-${project.id}-ecu-${ecu.id}-layer-${layer}`)
       }
     }
@@ -335,7 +335,7 @@ const treeData = computed<TreeNode[]>(() => {
     for (const ecu of project.ecus) {
       const modules = ecu.modules
       const grouped: Record<string, { label: string; enabled: boolean; moduleName: string }[]> = {
-        MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], 'BSW Coordination': [],
+        MCAL: [], ECUAL: [], Services: [], OS: [], RTE: [], Integration: [],
       }
 
       for (const [name, mod] of Object.entries(modules)) {
@@ -355,6 +355,8 @@ const treeData = computed<TreeNode[]>(() => {
             type: 'layer' as const,
             moduleCount: mods.length,
             enabledCount,
+            ecu,
+            projectId: project.id,
             children: mods
               .filter((m) => !searchText.value || m.label.toLowerCase().includes(searchText.value.toLowerCase()))
               .sort((a, b) => a.label.localeCompare(b.label))
@@ -460,17 +462,26 @@ async function confirmRemoveEcu(ecu: EcuConfig) {
   } catch { /* cancelled */ }
 }
 
+async function ensureProjectActive(projectId?: string) {
+  if (projectId && projectId !== projectStore.currentProjectId) {
+    await projectStore.switchProject(projectId)
+  }
+}
+
 function openAddModule(data: TreeNode) {
   closeContextMenu()
   if (data.ecu) {
     addModuleEcu.value = data.ecu
     addModuleLayer.value = data.label
+    addModuleProjectId.value = data.projectId || ''
     addModuleDialogVisible.value = true
   }
 }
 
 async function handleAddModuleConfirm(modules: string[]) {
   if (addModuleEcu.value) {
+    // Operate on the project that owns the right-clicked ECU
+    await ensureProjectActive(addModuleProjectId.value)
     for (const modName of modules) {
       await projectStore.addModule(addModuleEcu.value.id, modName)
     }
@@ -479,6 +490,7 @@ async function handleAddModuleConfirm(modules: string[]) {
   addModuleDialogVisible.value = false
   addModuleEcu.value = null
   addModuleLayer.value = ''
+  addModuleProjectId.value = ''
 }
 
 async function confirmRemoveModule(data: TreeNode) {
@@ -493,10 +505,11 @@ async function confirmRemoveModule(data: TreeNode) {
   }
   
   try {
-    await ElMessageBox.confirm(confirmMsg, 'Confirm', { 
+    await ElMessageBox.confirm(confirmMsg, 'Confirm', {
       type: 'warning',
       confirmButtonText: 'Remove',
     })
+    await ensureProjectActive(data.projectId)
     await projectStore.removeModule(data.ecu.id, data.moduleName)
     ElMessage.success(`Module "${data.moduleName}" removed from ECU "${data.ecu.name}"`)
   } catch { /* cancelled */ }
@@ -542,15 +555,20 @@ async function confirmRename() {
 
 async function handleDuplicateProject() {
   closeContextMenu()
+  const pid = contextMenu.value.data?.projectId
+  if (pid) await ensureProjectActive(pid)
   const project = projectStore.currentProject
   if (!project) return
-  
+
   try {
     const newName = `${project.name} (Copy)`
     // Generate new path based on original
     const originalPath = project.path || ''
     const dir = originalPath.substring(0, originalPath.lastIndexOf('/'))
     const newPath = dir ? `${dir}/${project.name.replace(/\s+/g, '_')}_copy.yuleasr` : ''
+    if (!newPath) {
+      throw new Error('Cannot duplicate: project has no file path')
+    }
     
     // Build project data from current project
     const projectData = {
@@ -582,15 +600,13 @@ async function handleDuplicateProject() {
     // Save duplicated project
     await api.saveProject(projectData, newPath)
     
-    // Add to workspace
-    if (projectStore.workspacePath) {
-      await api.addProjectToWorkspace({
-        workspace_path: projectStore.workspacePath,
-        project_name: newName,
-        project_description: project.description,
-        project_path: newPath,
-      })
-    }
+    // Add to workspace (backend falls back to the default workspace file)
+    await api.addProjectToWorkspace({
+      workspace_path: projectStore.workspacePath || undefined,
+      project_name: newName,
+      project_description: project.description,
+      project_path: newPath,
+    })
     
     // Reload workspace to pick up the new project
     await projectStore.loadWorkspace()

@@ -5,7 +5,7 @@
       <el-steps :active="currentStep" finish-status="success" align-center>
         <el-step title="Project Info" />
         <el-step title="Target Chip" />
-        <el-step title="MCAL Modules" />
+        <el-step title="BSW Modules" />
         <el-step title="Communication" />
         <el-step title="Review" />
       </el-steps>
@@ -82,12 +82,12 @@
           style="max-width: 600px; margin-top: 20px"
         >
           <template #default>
-            <p>MCAL Modules: {{ getMcalModuleCount() }} modules will be auto-configured</p>
+            <p>BSW Modules: {{ getMcalModuleCount() }} modules will be auto-configured</p>
           </template>
         </el-alert>
       </div>
 
-      <!-- Step 3: MCAL Modules -->
+      <!-- Step 3: BSW Modules (MCAL + ECUAL/Services/OS/RTE/Integration) -->
       <div v-if="currentStep === 2" class="step-content">
         <el-alert
           v-if="!projectForm.chipModel"
@@ -233,14 +233,14 @@
           <el-descriptions-item label="Author">{{ projectForm.author }}</el-descriptions-item>
           <el-descriptions-item label="Chip">{{ getChipFullName() }}</el-descriptions-item>
           <el-descriptions-item label="Clock">{{ projectForm.clockFreq }} MHz</el-descriptions-item>
-          <el-descriptions-item label="MCAL Modules">{{ selectedMcalModules.length }}</el-descriptions-item>
+          <el-descriptions-item label="BSW Modules">{{ selectedMcalModules.length }}</el-descriptions-item>
           <el-descriptions-item label="DBC File">{{ dbcFileInfo?.fileName || 'None' }}</el-descriptions-item>
           <el-descriptions-item label="Comm Modules">{{ selectedCommModules.length }}</el-descriptions-item>
         </el-descriptions>
 
         <el-divider />
 
-        <h4>Selected MCAL Modules</h4>
+        <h4>Selected BSW Modules</h4>
         <el-tag
           v-for="mod in selectedMcalModules"
           :key="mod"
@@ -281,7 +281,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
 import * as api from '@/api/client'
-import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
+import { DEFAULT_BSW_MODULES, buildBswModuleOptions, defaultBswModuleOptions, type BswModuleOption } from '@/utils/defaultModules'
 import { useProjectStore } from '@/stores/project'
 
 const router = useRouter()
@@ -315,9 +315,7 @@ const projectForm = ref<ProjectForm>({
 const chipVendors = ref<Array<{ value: string; label: string }>>([])
 const chipSeriesList = ref<Array<{ value: string; label: string }>>([])
 const chipModelsList = ref<Array<{ value: string; label: string; clock_freq_mhz: number; flash_size_kb: number; ram_size_kb: number; module_count: number }>>([])
-const mcalModuleList = ref<Array<{ name: string; label: string; required: boolean; default_params: Record<string, any>; dependencies: string[] }>>(
-  DEFAULT_BSW_MODULES.map((m) => ({ name: m.name, label: m.label, required: m.required, default_params: {}, dependencies: [] }))
-)
+const mcalModuleList = ref<BswModuleOption[]>(defaultBswModuleOptions())
 
 // Load vendors on mount
 import { onMounted } from 'vue'
@@ -364,22 +362,18 @@ watch(() => projectForm.value.chipModel, async (model) => {
   mcalModuleList.value = []
   if (!model || !projectForm.value.chipVendor || !projectForm.value.chipSeries) {
     // Fall back to default BSW modules when no chip is selected
-    mcalModuleList.value = DEFAULT_BSW_MODULES.map((m) => ({
-      name: m.name,
-      label: m.label,
-      required: m.required,
-      default_params: {},
-      dependencies: [],
-    }))
+    mcalModuleList.value = defaultBswModuleOptions()
     selectedMcalModules.value = DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
     return
   }
   try {
-    mcalModuleList.value = await api.getChipMcalModules(
+    // Chip-specific MCAL drivers + all chip-independent upper layers
+    const chipModules = await api.getChipMcalModules(
       projectForm.value.chipVendor,
       projectForm.value.chipSeries,
       model
     )
+    mcalModuleList.value = buildBswModuleOptions(chipModules)
     // Auto-select required modules
     selectedMcalModules.value = mcalModuleList.value
       .filter((m) => m.required)
@@ -390,17 +384,20 @@ watch(() => projectForm.value.chipModel, async (model) => {
       projectForm.value.clockFreq = modelInfo.clock_freq_mhz
     }
   } catch (e) {
-    console.error('Failed to load MCAL modules', e)
+    console.error('Failed to load BSW modules', e)
+    mcalModuleList.value = defaultBswModuleOptions()
+    selectedMcalModules.value = DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
   }
 })
 
 const mcalModuleGroups = computed(() => {
-  const layerOrder = ['MCAL', 'ECUAL', 'Services', 'OS', 'Integration']
+  const layerOrder = ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'Integration']
   const layerLabels: Record<string, string> = {
     'MCAL': 'MCAL - Microcontroller Abstraction',
     'ECUAL': 'ECUAL - ECU Abstraction Layer',
     'Services': 'Services Layer',
     'OS': 'Operating System',
+    'RTE': 'RTE - Runtime Environment',
     'Integration': 'Integration Layer',
   }
 

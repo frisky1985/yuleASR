@@ -7,8 +7,8 @@ import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
 
 const DEFAULT_ECU_ID = 'ecu-default'
 
-// Module dependency map: module -> modules that depend on it
-const MODULE_DEPENDENCIES: Record<string, string[]> = {
+// Module dependency map: module -> modules it requires (transitively selected in UI)
+export const MODULE_DEPENDENCIES: Record<string, string[]> = {
   'Can': ['CanIf', 'CanTp'],
   'CanIf': ['CanTp', 'PduR', 'Com'],
   'CanTp': ['PduR', 'Com'],

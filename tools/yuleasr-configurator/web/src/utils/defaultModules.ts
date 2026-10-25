@@ -65,3 +65,47 @@ export function getDefaultModulesByLayer(layer: string): DefaultModule[] {
 export function getRequiredModules(): DefaultModule[] {
   return DEFAULT_BSW_MODULES.filter((m) => m.required)
 }
+
+export interface BswModuleOption {
+  name: string
+  label: string
+  required: boolean
+  description?: string
+  default_params?: Record<string, any>
+  dependencies?: string[]
+}
+
+/** Full default BSW set (all layers) as selectable options. */
+export function defaultBswModuleOptions(): BswModuleOption[] {
+  return DEFAULT_BSW_MODULES.map((m) => ({
+    name: m.name,
+    label: m.label,
+    required: m.required,
+    description: m.description,
+    default_params: {},
+    dependencies: [],
+  }))
+}
+
+/**
+ * Build the complete BSW module set for an ECU:
+ * chip-specific MCAL drivers plus all chip-independent upper layers
+ * (ECUAL / Services / OS / RTE / Integration).
+ */
+export function buildBswModuleOptions(chipModules: BswModuleOption[]): BswModuleOption[] {
+  // Chip database has no MCAL entry for this model: fall back to the default set
+  if (chipModules.length === 0) return defaultBswModuleOptions()
+
+  const seen = new Set(chipModules.map((m) => m.name))
+  const upperLayers: BswModuleOption[] = DEFAULT_BSW_MODULES
+    .filter((m) => m.layer !== 'MCAL' && !seen.has(m.name))
+    .map((m) => ({
+      name: m.name,
+      label: m.label,
+      required: m.required,
+      description: m.description,
+      default_params: {},
+      dependencies: [],
+    }))
+  return [...chipModules, ...upperLayers]
+}

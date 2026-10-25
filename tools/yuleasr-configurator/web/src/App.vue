@@ -117,7 +117,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import {
   Plus,
   FolderOpened,
@@ -160,7 +160,6 @@ interface ProjectFile {
 }
 
 const router = useRouter()
-const route = useRoute()
 const configStore = useConfigStore()
 const projectStore = useProjectStore()
 
@@ -178,30 +177,6 @@ const moduleCount = computed(() => configStore.moduleCount)
 watch(() => configStore.config, (cfg) => {
   if (cfg) projectStore.syncFromConfig()
 }, { immediate: true })
-
-function goBack() {
-  if (historyIndex.value > 0) {
-    historyIndex.value--
-    canGoForward.value = true
-    router.back()
-  } else if (window.history.length > 1) {
-    router.back()
-  } else {
-    router.push('/')
-  }
-}
-
-function goForward() {
-  if (historyIndex.value < historyStack.value.length - 1) {
-    historyIndex.value++
-    canGoForward.value = historyIndex.value < historyStack.value.length - 1
-    router.forward()
-  }
-}
-
-function goHome() {
-  navigateTo('/')
-}
 
 function navigateTo(path: string) {
   if (historyIndex.value < historyStack.value.length - 1) {

@@ -114,7 +114,6 @@ import { useConfigStore } from '@/stores/config'
 import { useProjectStore } from '@/stores/project'
 import ParamTable from '@/components/ParamTable.vue'
 import ConfigChatbot from '@/components/ConfigChatbot.vue'
-import * as api from '@/api/client'
 import { getModuleSchema, validateReferences } from '@/api/client'
 import type { JsonSchema } from '@/types'
 import type { ReferenceIssue } from '@/api/client'
@@ -224,20 +223,6 @@ async function validate() {
     }
   } catch (e: any) { ElMessage.error(e.message || 'Validation failed') }
   finally { validating.value = false }
-}
-
-async function exportArxml() {
-  if (!store.config) { ElMessage.warning('No configuration loaded'); return }
-  try {
-    const result = await api.exportArxml(store.config)
-    const blob = new Blob([result.arxml], { type: 'application/xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url; a.download = `${store.config.project?.name ?? 'yuleASR'}_config.arxml`
-    document.body.appendChild(a); a.click(); document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-    ElMessage.success(`ARXML exported: ${result.module_count} modules`)
-  } catch (e: any) { ElMessage.error(e.response?.data?.detail || e.message || 'Export failed') }
 }
 
 onMounted(async () => {

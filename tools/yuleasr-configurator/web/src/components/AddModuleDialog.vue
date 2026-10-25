@@ -54,7 +54,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { ElMessage } from 'element-plus'
 import type { EcuConfig } from '@/types'
 import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
 

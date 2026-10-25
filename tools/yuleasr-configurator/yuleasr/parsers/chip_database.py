@@ -316,108 +316,136 @@ CHIP_DATABASE: Dict[ChipVendor, Dict[str, ChipSeries]] = {
 # Helper Functions
 # ============================================================================
 
+def _resolve_vendor(vendor: str) -> Optional[ChipVendor]:
+    """Resolve vendor string case-insensitively (API accepts 'NXP', 'Nxp', 'nxp')."""
+    if not vendor:
+        return None
+    key = vendor.strip().lower()
+    for v in ChipVendor:
+        if v.value.lower() == key:
+            return v
+    return None
+
+
+def _find_series(series_dict: Dict[str, "ChipSeries"], series: str) -> Optional["ChipSeries"]:
+    """Find a series entry case-insensitively."""
+    if not series:
+        return None
+    if series in series_dict:
+        return series_dict[series]
+    key = series.strip().lower()
+    for name, entry in series_dict.items():
+        if name.lower() == key:
+            return entry
+    return None
+
+
+def _find_model(chip_series: "ChipSeries", model: str) -> Optional["ChipModel"]:
+    """Find a chip model case-insensitively."""
+    if not model:
+        return None
+    key = model.strip().lower()
+    for m in chip_series.models:
+        if m.name.lower() == key:
+            return m
+    return None
+
+
 def get_vendors() -> List[Dict[str, str]]:
     """Get list of available chip vendors"""
     return [{"value": v.value, "label": v.name.title()} for v in ChipVendor]
 
 
 def get_series(vendor: str) -> List[Dict[str, str]]:
-    """Get chip series for a vendor"""
-    try:
-        chip_vendor = ChipVendor(vendor)
-        series_dict = CHIP_DATABASE.get(chip_vendor, {})
-        return [
-            {"value": s.name, "label": s.label}
-            for s in series_dict.values()
-        ]
-    except ValueError:
+    """Get chip series for a vendor (vendor is case-insensitive)"""
+    chip_vendor = _resolve_vendor(vendor)
+    if chip_vendor is None:
         return []
+    series_dict = CHIP_DATABASE.get(chip_vendor, {})
+    return [
+        {"value": s.name, "label": s.label}
+        for s in series_dict.values()
+    ]
 
 
 def get_models(vendor: str, series: str) -> List[Dict[str, any]]:
-    """Get chip models for a vendor and series"""
-    try:
-        chip_vendor = ChipVendor(vendor)
-        series_dict = CHIP_DATABASE.get(chip_vendor, {})
-        chip_series = series_dict.get(series)
-        if not chip_series:
-            return []
-
-        return [
-            {
-                "value": m.name,
-                "label": m.label,
-                "clock_freq_mhz": m.clock_freq_mhz,
-                "flash_size_kb": m.flash_size_kb,
-                "ram_size_kb": m.ram_size_kb,
-                "module_count": len(m.mcal_modules),
-            }
-            for m in chip_series.models
-        ]
-    except ValueError:
+    """Get chip models for a vendor and series (both case-insensitive)"""
+    chip_vendor = _resolve_vendor(vendor)
+    if chip_vendor is None:
         return []
+    chip_series = _find_series(CHIP_DATABASE.get(chip_vendor, {}), series)
+    if not chip_series:
+        return []
+
+    return [
+        {
+            "value": m.name,
+            "label": m.label,
+            "clock_freq_mhz": m.clock_freq_mhz,
+            "flash_size_kb": m.flash_size_kb,
+            "ram_size_kb": m.ram_size_kb,
+            "module_count": len(m.mcal_modules),
+        }
+        for m in chip_series.models
+    ]
 
 
 def get_mcal_modules(vendor: str, series: str, model: str) -> List[Dict[str, any]]:
-    """Get MCAL modules for a specific chip model"""
-    try:
-        chip_vendor = ChipVendor(vendor)
-        series_dict = CHIP_DATABASE.get(chip_vendor, {})
-        chip_series = series_dict.get(series)
-        if not chip_series:
-            return []
+    """Get MCAL modules for a specific chip model (case-insensitive)"""
+    chip_vendor = _resolve_vendor(vendor)
+    if chip_vendor is None:
+        return []
+    chip_series = _find_series(CHIP_DATABASE.get(chip_vendor, {}), series)
+    if not chip_series:
+        return []
 
-        chip_model = next((m for m in chip_series.models if m.name == model), None)
-        if not chip_model:
-            return []
+    chip_model = _find_model(chip_series, model)
+    if not chip_model:
+        return []
 
-        return [
+    return [
+        {
+            "name": mod.name,
+            "label": mod.label,
+            "required": mod.required,
+            "default_params": mod.default_params,
+            "dependencies": mod.dependencies,
+        }
+        for mod in chip_model.mcal_modules
+    ]
+
+
+def get_chip_info(vendor: str, series: str, model: str) -> Optional[Dict[str, any]]:
+    """Get complete chip information (case-insensitive)"""
+    chip_vendor = _resolve_vendor(vendor)
+    if chip_vendor is None:
+        return None
+    chip_series = _find_series(CHIP_DATABASE.get(chip_vendor, {}), series)
+    if not chip_series:
+        return None
+
+    chip_model = _find_model(chip_series, model)
+    if not chip_model:
+        return None
+
+    return {
+        "name": chip_model.name,
+        "label": chip_model.label,
+        "vendor": chip_model.vendor.value,
+        "series": chip_model.series,
+        "clock_freq_mhz": chip_model.clock_freq_mhz,
+        "flash_size_kb": chip_model.flash_size_kb,
+        "ram_size_kb": chip_model.ram_size_kb,
+        "mcal_modules": [
             {
                 "name": mod.name,
                 "label": mod.label,
                 "required": mod.required,
-                "default_params": mod.default_params,
-                "dependencies": mod.dependencies,
             }
             for mod in chip_model.mcal_modules
-        ]
-    except ValueError:
-        return []
-
-
-def get_chip_info(vendor: str, series: str, model: str) -> Optional[Dict[str, any]]:
-    """Get complete chip information"""
-    try:
-        chip_vendor = ChipVendor(vendor)
-        series_dict = CHIP_DATABASE.get(chip_vendor, {})
-        chip_series = series_dict.get(series)
-        if not chip_series:
-            return None
-
-        chip_model = next((m for m in chip_series.models if m.name == model), None)
-        if not chip_model:
-            return None
-
-        return {
-            "name": chip_model.name,
-            "label": chip_model.label,
-            "vendor": chip_model.vendor.value,
-            "series": chip_model.series,
-            "clock_freq_mhz": chip_model.clock_freq_mhz,
-            "flash_size_kb": chip_model.flash_size_kb,
-            "ram_size_kb": chip_model.ram_size_kb,
-            "mcal_modules": [
-                {
-                    "name": mod.name,
-                    "label": mod.label,
-                    "required": mod.required,
-                }
-                for mod in chip_model.mcal_modules
-            ],
-            "notes": chip_model.notes,
-        }
-    except ValueError:
-        return None
+        ],
+        "notes": chip_model.notes,
+    }
 
 
 if __name__ == "__main__":

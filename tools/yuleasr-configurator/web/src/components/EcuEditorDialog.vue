@@ -40,7 +40,7 @@
         <el-steps :active="currentStep" finish-status="success" align-center style="margin-bottom: 24px">
           <el-step title="ECU Info" />
           <el-step title="Target Chip" />
-          <el-step title="MCAL Modules" />
+          <el-step title="BSW Modules" />
           <el-step title="Review" />
         </el-steps>
 
@@ -84,14 +84,14 @@
               style="max-width: 500px; margin: 16px auto 0"
             >
               <template #default>
-                <span>{{ mcalModules.length }} MCAL modules available</span>
+                <span>{{ availableModules.length }} BSW modules available (chip MCAL drivers + upper layers)</span>
               </template>
             </el-alert>
           </div>
 
           <!-- Step 2: MCAL Modules -->
           <div v-if="currentStep === 2" class="step-content">
-            <div v-if="mcalModules.length === 0" style="text-align: center; padding: 40px 0">
+            <div v-if="availableModules.length === 0" style="text-align: center; padding: 40px 0">
               <el-empty description="No modules available" :image-size="80" />
             </div>
             <div v-else class="module-selection">
@@ -107,7 +107,7 @@
                 </template>
               </el-alert>
               <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center">
-                <el-text type="info" size="small">{{ selectedModules.length }} / {{ mcalModules.length }} selected</el-text>
+                <el-text type="info" size="small">{{ selectedModules.length }} / {{ availableModules.length }} selected</el-text>
                 <div style="display: flex; gap: 8px">
                   <el-button size="small" text @click="selectAll">Select All</el-button>
                   <el-button size="small" text @click="selectRequiredOnly">Required Only</el-button>
@@ -142,12 +142,12 @@
               <el-descriptions-item label="Chip Vendor">{{ form.vendor || '-' }}</el-descriptions-item>
               <el-descriptions-item label="Chip Series">{{ form.series || '-' }}</el-descriptions-item>
               <el-descriptions-item label="Chip Model">{{ form.model || '-' }}</el-descriptions-item>
-              <el-descriptions-item label="MCAL Modules">{{ selectedModules.length }}</el-descriptions-item>
+              <el-descriptions-item label="BSW Modules">{{ selectedModules.length }}</el-descriptions-item>
             </el-descriptions>
 
             <el-divider />
 
-            <h4 style="margin: 0 0 12px">Selected MCAL Modules</h4>
+            <h4 style="margin: 0 0 12px">Selected BSW Modules</h4>
             <div v-if="selectedModules.length === 0">
               <el-text type="info">No modules selected</el-text>
             </div>
@@ -187,7 +187,8 @@
 import { ref, computed, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import * as api from '@/api/client'
-import { DEFAULT_BSW_MODULES } from '@/utils/defaultModules'
+import { DEFAULT_BSW_MODULES, buildBswModuleOptions, defaultBswModuleOptions } from '@/utils/defaultModules'
+import { MODULE_DEPENDENCIES } from '@/stores/project'
 
 interface EcuForm {
   name: string
@@ -226,7 +227,7 @@ const form = ref<EcuForm>({
 const vendors = ref<Array<{ value: string; label: string }>>([])
 const seriesList = ref<Array<{ value: string; label: string }>>([])
 const modelList = ref<Array<{ value: string; label: string }>>([])
-const mcalModules = ref<Array<{ name: string; label: string; required: boolean }>>([])
+const availableModules = ref<Array<{ name: string; label: string; required: boolean }>>([])
 const selectedModules = ref<string[]>([])
 
 watch(() => props.modelValue, (v) => {
@@ -263,7 +264,7 @@ async function onVendorChange(vendor: string) {
   form.value.model = ''
   seriesList.value = []
   modelList.value = []
-  mcalModules.value = []
+  availableModules.value = []
   selectedModules.value = []
   if (!vendor) return
   try {
@@ -276,7 +277,7 @@ async function onVendorChange(vendor: string) {
 async function onSeriesChange(series: string) {
   form.value.model = ''
   modelList.value = []
-  mcalModules.value = []
+  availableModules.value = []
   selectedModules.value = []
   if (!series) return
   try {
@@ -287,42 +288,61 @@ async function onSeriesChange(series: string) {
 }
 
 watch(() => form.value.model, async (model) => {
-  mcalModules.value = []
+  availableModules.value = []
   selectedModules.value = []
   if (!model || !form.value.vendor || !form.value.series) {
     // Fall back to default BSW modules when no chip is selected
-    mcalModules.value = DEFAULT_BSW_MODULES.map((m) => ({
-      name: m.name,
-      label: m.label,
-      required: m.required,
-    }))
+    availableModules.value = defaultBswModuleOptions()
     selectedModules.value = DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
     return
   }
   try {
-    mcalModules.value = await api.getChipMcalModules(form.value.vendor, form.value.series, model)
-    selectedModules.value = mcalModules.value.filter((m) => m.required).map((m) => m.name)
+    // Chip-specific MCAL drivers + all chip-independent upper layers
+    const chipModules = await api.getChipMcalModules(form.value.vendor, form.value.series, model)
+    availableModules.value = buildBswModuleOptions(chipModules)
+    selectedModules.value = availableModules.value.filter((m) => m.required).map((m) => m.name)
   } catch {
-    mcalModules.value = []
+    // Chip API unavailable: fall back to the full default BSW set
+    availableModules.value = defaultBswModuleOptions()
+    selectedModules.value = DEFAULT_BSW_MODULES.filter((m) => m.required).map((m) => m.name)
   }
 })
 
+// Auto-select transitive dependencies of checked modules
+watch(selectedModules, (mods) => {
+  const selected = new Set(mods)
+  const queue = [...mods]
+  const added: string[] = []
+  while (queue.length) {
+    const cur = queue.shift()!
+    for (const dep of MODULE_DEPENDENCIES[cur] || []) {
+      if (!selected.has(dep) && availableModules.value.some((m) => m.name === dep)) {
+        selected.add(dep)
+        added.push(dep)
+        queue.push(dep)
+      }
+    }
+  }
+  if (added.length) selectedModules.value = [...mods, ...added]
+})
+
 const moduleGroups = computed(() => {
-  const layerOrder = ['MCAL', 'ECUAL', 'Services', 'OS', 'Integration']
+  const layerOrder = ['MCAL', 'ECUAL', 'Services', 'OS', 'RTE', 'Integration']
   const layerLabels: Record<string, string> = {
     'MCAL': 'MCAL - Microcontroller Abstraction',
     'ECUAL': 'ECUAL - ECU Abstraction Layer',
     'Services': 'Services Layer',
     'OS': 'Operating System',
+    'RTE': 'RTE - Runtime Environment',
     'Integration': 'Integration Layer',
   }
 
-  const groups: Record<string, typeof mcalModules.value> = {}
+  const groups: Record<string, typeof availableModules.value> = {}
   for (const layer of layerOrder) {
     groups[layer] = []
   }
 
-  for (const mod of mcalModules.value) {
+  for (const mod of availableModules.value) {
     // Find the layer for this module from DEFAULT_BSW_MODULES
     const defaultMod = DEFAULT_BSW_MODULES.find((m) => m.name === mod.name)
     const layer = defaultMod?.layer ?? 'MCAL'
@@ -342,11 +362,11 @@ const moduleGroups = computed(() => {
 })
 
 function selectAll() {
-  selectedModules.value = mcalModules.value.map((m) => m.name)
+  selectedModules.value = availableModules.value.map((m) => m.name)
 }
 
 function selectRequiredOnly() {
-  selectedModules.value = mcalModules.value.filter((m) => m.required).map((m) => m.name)
+  selectedModules.value = availableModules.value.filter((m) => m.required).map((m) => m.name)
 }
 
 function nextStep() {
