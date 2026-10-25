@@ -21,12 +21,13 @@ jobs:
           cmake -S . -B build-dbg -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTING=ON \
             -DCMAKE_C_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer -g" \
             -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined"
-          cmake --build build-dbg --target bswm_unit_test memstack_benchmark nvm_unit_test -j4
+          cmake --build build-dbg --target bswm_unit_test memstack_benchmark NvM_Redundant_UnitTest -j4
 
       - name: Run sanitized
         run: |
           ./build-dbg/tests/bswm_unit_test; echo "bswm_exit=$?"
           ./build-dbg/tests/memstack_benchmark; echo "bench_exit=$?"
+          ./build-dbg/tests/NvM_Redundant_UnitTest; echo "nvm_exit=$?"
 
       - name: Plain build + run
         run: |
